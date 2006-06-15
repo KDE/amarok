@@ -443,8 +443,8 @@ void TagDialog::init()
     connect( pushButton_next,     SIGNAL(clicked()), SLOT(nextTrack()) );
     connect( checkBox_perTrack,   SIGNAL(clicked()), SLOT(perTrack()) );
 
-    // draw an icon onto the open-in-konqui button
-    pushButton_open->setIconSet( kapp->iconLoader()->loadIconSet( "fileopen", KIcon::Small ) );
+    // set an icon for the open-in-konqui button
+    pushButton_open->setIconSet( SmallIconSet( amaroK::icon( "files" ) ) );
 
     //Update lyrics on Context Browser
     connect( this, SIGNAL(lyricsChanged( const QString& )), ContextBrowser::instance(), SLOT( lyricsChanged( const QString& ) ) );
