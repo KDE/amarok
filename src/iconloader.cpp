@@ -34,6 +34,7 @@ amaroK::icon( const QString& name ) //declared in amarok.h
 
     if( iconMap.empty() ) {
         iconMap["add_lyrics"]           = "edit_add";
+        iconMap["add_playlist"]         = "1downarrow";
         iconMap["album"]                = "cdrom_unmount";
         iconMap["artist"]               = "personal";
         iconMap["audioscrobbler"]       = "audioscrobbler";
@@ -90,6 +91,7 @@ amaroK::icon( const QString& name ) //declared in amarok.h
         iconMap["track"]                = "sound";
         iconMap["undo"]                 = "undo";
         iconMap["visualizations"]       = "visualizations";
+        iconMap["zoom"]                 = "find";
     }
 
 

@@ -719,8 +719,8 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     else if( url.protocol() == "stream" )
     {
         menu.insertTitle( i18n("Podcast"), TITLE );
-        menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), MAKE );
-        menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
+        menu.insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n( "&Load" ), MAKE );
+        menu.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( amaroK::icon( "fastforward" ) ), i18n( "&Queue Podcast" ), ASNEXT );
         //menu.insertSeparator();
         //menu.insertItem( SmallIconSet( "down" ), i18n( "&Download" ), DOWNLOAD );
@@ -730,14 +730,14 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         //TODO it would be handy and more usable to have this menu under the cover one too
 
         menu.insertTitle( i18n("Track"), TITLE );
-        menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), MAKE );
-        menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
+        menu.insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n( "&Load" ), MAKE );
+        menu.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( amaroK::icon( "fastforward" ) ), i18n( "&Queue Track" ), ASNEXT );
         if( MediaBrowser::isAvailable() )
             menu.insertItem( SmallIconSet( amaroK::icon( "device" ) ), i18n( "&Transfer to Media Device" ), MEDIA_DEVICE );
 
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet( "info" ), i18n( "Edit Track &Information..." ), INFO );
+        menu.insertItem( SmallIconSet( amaroK::icon( "info" ) ), i18n( "Edit Track &Information..." ), INFO );
 
         if ( url.protocol() == "artist" )
         {

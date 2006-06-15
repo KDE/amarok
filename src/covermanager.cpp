@@ -95,14 +95,14 @@ CoverManager::CoverManager()
             CollectionView::instance()->manipulateThe( artist, true );
 
         item = new KListViewItem( m_artistView, item, artist );
-        item->setPixmap( 0, SmallIcon("personal") );
+        item->setPixmap( 0, SmallIcon( amaroK::icon( "artist" ) ) );
     }
     m_artistView->sort();
 
     m_artistView->setSorting( -1 );
     KListViewItem *last = item;
     item = new KListViewItem( m_artistView, 0, i18n( "All Albums" ) );
-    item->setPixmap( 0, SmallIcon("cdrom_unmount") );
+    item->setPixmap( 0, SmallIcon( amaroK::icon( "album" ) ) );
 
     QueryBuilder qb;
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
@@ -167,7 +167,7 @@ CoverManager::CoverManager()
     m_amazonLocaleMenu->setItemChecked( m_currentLocale, true );
 
     //fetch missing covers button
-    m_fetchButton = new KPushButton( KGuiItem( i18n("Fetch Missing Covers"), "cdrom_unmount" ), hbox );
+    m_fetchButton = new KPushButton( KGuiItem( i18n("Fetch Missing Covers"), amaroK::icon( "download" ) ), hbox );
     connect( m_fetchButton, SIGNAL(clicked()), SLOT(fetchMissingCovers()) );
     #endif
 
@@ -472,23 +472,23 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
     QPtrList<CoverViewItem> selected = selectedItems();
     if( selected.count() > 1 ) {
         #ifdef AMAZON_SUPPORT
-        menu.insertItem( SmallIconSet( "www" ), i18n( "&Fetch Selected Covers" ), FETCH );
+        menu.insertItem( SmallIconSet( amaroK::icon( "download" ) ), i18n( "&Fetch Selected Covers" ), FETCH );
         #endif
-        menu.insertItem( SmallIconSet("folder_image"), i18n("Set &Custom Cover for Selected Albums"), CUSTOM );
-        menu.insertItem( SmallIconSet("editdelete"), i18n("&Unset Selected Covers"), DELETE );
+        menu.insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n("Set &Custom Cover for Selected Albums"), CUSTOM );
+        menu.insertItem( SmallIconSet( amaroK::icon( "remove" ) ), i18n("&Unset Selected Covers"), DELETE );
     }
     else {
-        menu.insertItem( SmallIconSet("viewmag"), i18n("&Show Fullsize"), SHOW );
+        menu.insertItem( SmallIconSet( amaroK::icon( "search" ) ), i18n("&Show Fullsize"), SHOW );
 
         #ifdef AMAZON_SUPPORT
-        menu.insertItem( SmallIconSet("www"), i18n("&Fetch From amazon.%1").arg( CoverManager::amazonTld() ), FETCH );
+        menu.insertItem( SmallIconSet( amaroK::icon( "download" ) ), i18n("&Fetch From amazon.%1").arg( CoverManager::amazonTld() ), FETCH );
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet("folder_image"), i18n("Set &Custom Image"), CUSTOM );
+        menu.insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n("Set &Custom Image"), CUSTOM );
         #else
-        menu.insertItem( SmallIconSet("folder_image"), i18n("Set &Cover Image"), CUSTOM );
+        menu.insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n("Set &Cover Image"), CUSTOM );
         #endif
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet("editdelete"), i18n("&Unset Cover Image"), DELETE );
+        menu.insertItem( SmallIconSet( amaroK::icon( "remove" ) ), i18n("&Unset Cover Image"), DELETE );
 
         menu.setItemEnabled( SHOW, item->hasCover() );
         menu.setItemEnabled( DELETE, item->canRemoveCover() );

@@ -6,14 +6,17 @@
 #define DEBUG_PREFIX "BlockAnalyzer"
 
 #include "actionclasses.h"   //mousePressEvent
+#include "amarok.h"
 #include "blockanalyzer.h"
+
 #include <cmath>
-// #include "debug.h"
+
 #include <kconfig.h>
 #include <kglobalsettings.h> //paletteChange()
 #include <kiconloader.h>     //mousePressEvent
 #include <klocale.h>         //mousePressEvent
 #include <kpopupmenu.h>      //mousePressEvent
+
 #include <qevent.h>          //mousePressEvent
 #include <qpainter.h>        //paletteChange()
 
@@ -432,7 +435,7 @@ BlockAnalyzer::mousePressEvent( QMouseEvent *e )
 
         #if defined HAVE_XMMS || defined HAVE_LIBVISUAL
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet( "visualizations" ), i18n("&Visualizations"),
+        menu.insertItem( SmallIconSet( amaroK::icon( "visualizations" ) ), i18n("&Visualizations"),
             0 );
         #endif
 

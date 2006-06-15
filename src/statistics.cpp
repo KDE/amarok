@@ -636,7 +636,7 @@ StatisticsList::showContextMenu( QListViewItem *item, const QPoint &p, int )  //
     KPopupMenu menu( this );
     enum Actions { APPEND, QUEUE, INFO };
 
-    menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
+    menu.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
     menu.insertItem( SmallIconSet( amaroK::icon( "fastforward" ) ), i18n( "&Queue Track" ), QUEUE );
 
     menu.insertSeparator();

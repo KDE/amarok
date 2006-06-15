@@ -152,10 +152,10 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     m_scoreCategory    ->setSelectable( false );
     m_transcodeCategory->setSelectable( false );
 
-    m_generalCategory  ->setPixmap( 0, SmallIcon( "folder" ) );
-    m_lyricsCategory   ->setPixmap( 0, SmallIcon( "folder" ) );
-    m_scoreCategory    ->setPixmap( 0, SmallIcon( "folder" ) );
-    m_transcodeCategory->setPixmap( 0, SmallIcon( "folder" ) );
+    m_generalCategory  ->setPixmap( 0, SmallIcon( amaroK::icon( "files" ) ) );
+    m_lyricsCategory   ->setPixmap( 0, SmallIcon( amaroK::icon( "files" ) ) );
+    m_scoreCategory    ->setPixmap( 0, SmallIcon( amaroK::icon( "files" ) ) );
+    m_transcodeCategory->setPixmap( 0, SmallIcon( amaroK::icon( "files" ) ) );
 
 
     connect( m_gui->listView, SIGNAL( currentChanged( QListViewItem* ) ), SLOT( slotCurrentChanged( QListViewItem* ) ) );
@@ -170,9 +170,9 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     connect( m_gui->configureButton, SIGNAL( clicked() ), SLOT( slotConfigureScript() ) );
     connect( m_gui->aboutButton,     SIGNAL( clicked() ), SLOT( slotAboutScript() ) );
 
-    m_gui->installButton  ->setIconSet( SmallIconSet( "fileopen" ) );
+    m_gui->installButton  ->setIconSet( SmallIconSet( amaroK::icon( "files" ) ) );
     m_gui->retrieveButton ->setIconSet( SmallIconSet( amaroK::icon( "download" ) ) );
-    m_gui->uninstallButton->setIconSet( SmallIconSet( "remove" ) );
+    m_gui->uninstallButton->setIconSet( SmallIconSet( amaroK::icon( "remove" ) ) );
     m_gui->runButton      ->setIconSet( SmallIconSet( amaroK::icon( "play" ) ) );
     m_gui->stopButton     ->setIconSet( SmallIconSet( amaroK::icon( "stop" ) ) );
     m_gui->configureButton->setIconSet( SmallIconSet( "configure" ) );

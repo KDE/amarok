@@ -126,11 +126,12 @@ PlaylistWindow::PlaylistWindow()
     KStdAction::preferences( kapp, SLOT( slotConfigAmarok() ), ac );
     KStdAction::quit( kapp, SLOT( quit() ), ac );
     KStdAction::open( this, SLOT(slotAddLocation()), ac, "playlist_add" )->setText( i18n("&Add Media...") );
+    ac->action( "playlist_add" )->setIcon( amaroK::icon( "files" ) );
     KStdAction::save( this, SLOT(savePlaylist()), ac, "playlist_save" )->setText( i18n("&Save Playlist As...") );
     KStdAction::showMenubar( this, SLOT(slotToggleMenu()), ac );
 
-    new KAction( i18n("Play Media..."), "fileopen", 0, this, SLOT(slotPlayMedia()), ac, "playlist_playmedia" );
-    new KAction( i18n("Play Audio CD"), "cdaudio_unmount", 0, this, SLOT(playAudioCD()), ac, "play_audiocd" );
+    new KAction( i18n("Play Media..."), amaroK::icon( "files" ), 0, this, SLOT(slotPlayMedia()), ac, "playlist_playmedia" );
+    new KAction( i18n("Play Audio CD"), amaroK::icon( "album" ), 0, this, SLOT(playAudioCD()), ac, "play_audiocd" );
     new KAction( i18n("Script Manager"), amaroK::icon( "scripts" ), 0, this, SLOT(showScriptSelector()), ac, "script_manager" );
     new KAction( i18n("Queue Manager"), amaroK::icon( "queue" ), 0, this, SLOT(showQueueManager()), ac, "queue_manager" );
     new KAction( i18n("Statistics"), amaroK::icon( "info" ), 0, this, SLOT(showStatistics()), ac, "statistics" );

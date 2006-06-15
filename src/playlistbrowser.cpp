@@ -536,7 +536,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
 
     item = new SmartPlaylist( m_smartDefaults, 0, i18n( "All Collection" ), qb.query() );
-    item->setPixmap( 0, SmallIcon("collection") );
+    item->setPixmap( 0, SmallIcon( amaroK::icon( "collection" ) ) );
 
     /********** Favorite Tracks **************/
     qb.initSQLDrag();
@@ -2285,13 +2285,13 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         #define item static_cast<PlaylistEntry*>(item)
         enum Id { LOAD, ADD, DYNADD, DYNSUB, RENAME, DELETE, MEDIA_DEVICE };
 
-        menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
-        menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
+        menu.insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n( "&Load" ), LOAD );
+        menu.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), ADD );
 
         if( amaroK::dynamicMode() && amaroK::dynamicMode()->appendType()== DynamicMode::CUSTOM )
         {
             if( static_cast<PlaylistEntry*>(item)->isDynamic() )
-                menu.insertItem( SmallIconSet( "edit_remove" ), i18n( "Remove From %1" ).arg(amaroK::dynamicMode()->title()), DYNSUB );
+                menu.insertItem( SmallIconSet( amaroK::icon( "remove_from_playlist" ) ), i18n( "Remove From %1" ).arg(amaroK::dynamicMode()->title()), DYNSUB );
             else
                 menu.insertItem( SmallIconSet( "edit_add" ), i18n( "Add to the %1 Entries" ).arg(amaroK::dynamicMode()->title()), DYNADD );
         }
@@ -2340,8 +2340,8 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     {
         enum Actions { LOAD, ADD, DYNADD, DYNSUB, EDIT, REMOVE, MEDIA_DEVICE, MEDIA_DEVICE_PLAYLIST };
 
-        menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
-        menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
+        menu.insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n( "&Load" ), LOAD );
+        menu.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), ADD );
         if( MediaBrowser::isAvailable() )
         {
             menu.insertSeparator();
@@ -2354,7 +2354,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         if( amaroK::dynamicMode() && amaroK::dynamicMode()->appendType()== DynamicMode::CUSTOM )
         {
             if( static_cast<SmartPlaylist*>(item)->isDynamic() )
-                menu.insertItem( SmallIconSet( "edit_remove" ), i18n( "Remove From %1" ).arg(amaroK::dynamicMode()->title()), DYNSUB );
+                menu.insertItem( SmallIconSet( amaroK::icon( "remove_from_playlist" ) ), i18n( "Remove From %1" ).arg(amaroK::dynamicMode()->title()), DYNSUB );
             else
                 menu.insertItem( SmallIconSet( "edit_add" ), i18n( "Add to the %1 Entries" ).arg(amaroK::dynamicMode()->title()), DYNADD );
         }
@@ -2413,8 +2413,8 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     {
         enum Actions { LOAD, ADD, EDIT, REMOVE, INFO };
 
-        menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
-        menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
+        menu.insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n( "&Load" ), LOAD );
+        menu.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), ADD );
         menu.insertSeparator();
         // Forbid removal of Cool-Streams
         if( item->parent() != m_coolStreams )
@@ -2449,7 +2449,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     else if( isDynamic( item ) ) {
         #define item static_cast<DynamicEntry*>(item)
         enum Actions { LOAD, RENAME, REMOVE, EDIT };
-        menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
+        menu.insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n( "&Load" ), LOAD );
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( amaroK::icon("edit") ), i18n( "E&dit" ), EDIT );
         menu.insertItem( SmallIconSet( amaroK::icon("remove_from_playlist") ), i18n( "R&emove" ), REMOVE );
@@ -2471,8 +2471,8 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     else if( isPodcastChannel( item ) ) {
         #define item static_cast<PodcastChannel*>(item)
         enum Actions { LOAD, ADD, DELETE, RESCAN, CONFIG};
-        menu.insertItem( SmallIconSet( "fileopen" ), i18n( "&Load" ), LOAD );
-        menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), ADD );
+        menu.insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n( "&Load" ), LOAD );
+        menu.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), ADD );
         menu.insertItem( SmallIconSet( amaroK::icon("remove_from_playlist") ), i18n( "&Delete" ), DELETE );
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( amaroK::icon( "refresh" ) ), i18n( "&Check for Updates" ), RESCAN );
@@ -2529,7 +2529,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         }
 
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet( "down" ), i18n( "&Download Media" ), GET );
+        menu.insertItem( SmallIconSet( amaroK::icon( "download" ) ), i18n( "&Download Media" ), GET );
         menu.insertItem( SmallIconSet( amaroK::icon("remove_from_playlist") ),
                          i18n( "De&lete Downloaded Podcast" ), DELETE );
 
@@ -2625,7 +2625,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         }
 
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet("folder"), i18n("Create Sub-Folder"), CREATE );
+        menu.insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n("Create Sub-Folder"), CREATE );
 
         QListViewItem *tracker = 0;
         PlaylistCategory *newFolder = 0;
@@ -2706,14 +2706,14 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
         enum Actions { MAKE, APPEND, QUEUE, BURN, REMOVE, INFO };
 
-        menu.insertItem( SmallIconSet( "1downarrow" ), i18n( "&Append to Playlist" ), APPEND );
+        menu.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( amaroK::icon( "fastforward" ) ), i18n( "&Queue Track" ), QUEUE );
         menu.insertItem( SmallIconSet( amaroK::icon( "playlist" ) ), i18n( "&Make Playlist" ), MAKE );
 
 
         menu.insertSeparator();
 
-        menu.insertItem( SmallIconSet( "cdrom_unmount" ), i18n("Burn to CD"), BURN );
+        menu.insertItem( SmallIconSet( amaroK::icon( "burn" ) ), i18n("Burn to CD"), BURN );
         menu.setItemEnabled( BURN, K3bExporter::isAvailable() && item->url().isLocalFile() );
 
         menu.insertSeparator();
@@ -3222,7 +3222,7 @@ QString PlaylistDialog::getSaveFileName( const QString &suggestion ) //static
 PlaylistDialog::PlaylistDialog()
     : KDialogBase( PlaylistWindow::self(), "saveplaylist", true /*modal*/,
                    i18n( "Save Playlist" ), Ok | Cancel | User1, Ok, false /*seperator*/,
-                   KGuiItem( i18n( "Save to location..." ), SmallIconSet( "folder" ) ) )
+                   KGuiItem( i18n( "Save to location..." ), SmallIconSet( amaroK::icon( "files" ) ) ) )
     , customChosen( false )
 {
     QVBox *vbox = makeVBoxMainWidget();
