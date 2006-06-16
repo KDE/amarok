@@ -76,12 +76,12 @@ EqualizerSetup::EqualizerSetup()
     m_presetCombo->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred ) );
 
     QPushButton* presetAdd = new QPushButton( presetBox );
-    presetAdd->setIconSet( KGlobal::iconLoader()->loadIconSet("filenew", KIcon::Small) );
+    presetAdd->setIconSet( SmallIconSet( amaroK::icon( "add_playlist" ) ) );
     QToolTip::add( presetAdd, i18n("Add new preset") );
     connect( presetAdd, SIGNAL( clicked() ), SLOT( addPreset() ) );
 
     QPushButton* presetConf = new QPushButton( presetBox );
-    presetConf->setIconSet( KGlobal::iconLoader()->loadIconSet("configure", KIcon::Small) );
+    presetConf->setIconSet( SmallIconSet( "configure" ) );
     QToolTip::add( presetConf, i18n("Manage presets") );
     connect( presetConf, SIGNAL( clicked() ), SLOT( editPresets() ) );
 

@@ -176,7 +176,7 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     m_gui->runButton      ->setIconSet( SmallIconSet( amaroK::icon( "play" ) ) );
     m_gui->stopButton     ->setIconSet( SmallIconSet( amaroK::icon( "stop" ) ) );
     m_gui->configureButton->setIconSet( SmallIconSet( "configure" ) );
-    m_gui->aboutButton    ->setIconSet( SmallIconSet( "help" ) );
+    m_gui->aboutButton    ->setIconSet( SmallIconSet( amaroK::icon( "info" ) ) );
 
     QSize sz = sizeHint();
     setMinimumSize( kMax( 350, sz.width() ), kMax( 250, sz.height() ) );
