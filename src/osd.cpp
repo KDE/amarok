@@ -506,8 +506,9 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
         for( int i = 0; i < PlaylistItem::NUM_COLUMNS; ++i )
             tags << bundle.prettyText( i );
 
-        if( bundle.rating() )
+        if( bundle.rating() && AmarokConfig::useRatings() )
             OSDWidget::setRating( bundle.rating() );
+
         if( bundle.length() <= 0 )
             tags[PlaylistItem::Length+1] = QString::null;
 
@@ -560,7 +561,7 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
             //get large cover for scaling if big cover needed
 
             QString location = QString::null;
-            if( bundle.podcastBundle() ) 
+            if( bundle.podcastBundle() )
                 location = CollectionDB::instance()->podcastImage( bundle, false, 0 );
             else
                 location = CollectionDB::instance()->albumImage( bundle, false, 0 );
