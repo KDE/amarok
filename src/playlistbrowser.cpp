@@ -174,10 +174,21 @@ PlaylistBrowser::polish()
         loadDefaultSmartPlaylists();
     }
 
+    KConfig *config = amaroK::config( "PlaylistBrowser" );
+
     m_dynamicCategory = loadDynamics();
-    m_randomDynamic    = new DynamicEntry( m_dynamicCategory, 0, i18n("Random Mix") );
+    m_randomDynamic   = new DynamicEntry( m_dynamicCategory, 0, i18n("Random Mix") );
+    m_randomDynamic->setCycleTracks( config->readBoolEntry( "Dynamic Random Remove Played", true ) );
+    m_randomDynamic->setMarkHistory( config->readBoolEntry( "Dynamic Random Mark History", true ) );
+    m_randomDynamic->setUpcomingCount( config->readNumEntry( "Dynamic Random Upcoming Count", 15 ) );
+    m_randomDynamic->setPreviousCount( config->readNumEntry( "Dynamic Random Previous Count", 5 ) );
+
     m_suggestedDynamic = new DynamicEntry( m_dynamicCategory, m_randomDynamic, i18n("Suggested Songs" ) );
     m_suggestedDynamic->setAppendType( DynamicMode::SUGGESTION );
+    m_suggestedDynamic->setCycleTracks( config->readBoolEntry( "Dynamic Suggest Remove Played", true ) );
+    m_suggestedDynamic->setMarkHistory( config->readBoolEntry( "Dynamic Suggest Mark History", true ) );
+    m_suggestedDynamic->setUpcomingCount( config->readNumEntry( "Dynamic Suggest Upcoming Count", 15 ) );
+    m_suggestedDynamic->setPreviousCount( config->readNumEntry( "Dynamic Suggest Previous Count", 5 ) );
 
     m_streamsCategory  = loadStreams();
     loadCoolStreams();
@@ -204,7 +215,7 @@ PlaylistBrowser::polish()
     // First we check if the number of items in the listview is the same as it was on last
     // application exit. If true, we iterate over all items and restore their open/closed state.
     // Note: We ignore podcast items, because they are added dynamically added to the ListView.
-    QValueList<int> stateList = amaroK::config( "PlaylistBrowser" )->readIntListEntry( "Item State" );
+    QValueList<int> stateList = config->readIntListEntry( "Item State" );
     QListViewItemIterator it( m_listview );
     uint count = 0;
     while ( it.current() ) {
@@ -721,6 +732,18 @@ PlaylistCategory* PlaylistBrowser::loadDynamics()
 
 void PlaylistBrowser::saveDynamics()
 {
+    // save alterations to the default dynamics
+    KConfig *config = amaroK::config( "PlaylistBrowser" );
+    config->writeEntry( "Dynamic Random Mark History",   m_randomDynamic->markHistory() );
+    config->writeEntry( "Dynamic Random Remove Played",  m_randomDynamic->cycleTracks() );
+    config->writeEntry( "Dynamic Random Upcoming Count", m_randomDynamic->upcomingCount() );
+    config->writeEntry( "Dynamic Random Previous Count", m_randomDynamic->previousCount() );
+
+    config->writeEntry( "Dynamic Suggest Mark History",   m_suggestedDynamic->markHistory() );
+    config->writeEntry( "Dynamic Suggest Remove Played",  m_suggestedDynamic->cycleTracks() );
+    config->writeEntry( "Dynamic Suggest Upcoming Count", m_suggestedDynamic->upcomingCount() );
+    config->writeEntry( "Dynamic Suggest Previous Count", m_suggestedDynamic->previousCount() );
+
     QFile file( dynamicBrowserCache() );
     QTextStream stream( &file );
 
@@ -2452,7 +2475,9 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         menu.insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n( "&Load" ), LOAD );
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( amaroK::icon("edit") ), i18n( "E&dit" ), EDIT );
-        menu.insertItem( SmallIconSet( amaroK::icon("remove_from_playlist") ), i18n( "R&emove" ), REMOVE );
+
+        if( item != m_randomDynamic || item != m_suggestedDynamic )
+            menu.insertItem( SmallIconSet( amaroK::icon("remove_from_playlist") ), i18n( "R&emove" ), REMOVE );
 
         switch( menu.exec( p ) )
         {

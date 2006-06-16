@@ -97,9 +97,8 @@ namespace ConfigDynamic
             addDynamic( nd );
     }
 
-    void editDynamicPlaylist( QWidget* parent, DynamicMode* mode )
+    void editDynamicPlaylist( QWidget* parent, DynamicMode* mode, bool isDefault )
     {
-        DEBUG_BLOCK
         KDialogBase* dialog = basicDialog( parent );
         NewDynamic*  nd     = static_cast<NewDynamic*>(dialog->mainWidget());
 
@@ -108,6 +107,9 @@ namespace ConfigDynamic
         nd->m_markHistory->setChecked( mode->markHistory() );
         nd->m_upcomingIntSpinBox->setValue( mode->upcomingCount() );
         nd->m_previousIntSpinBox->setValue( mode->previousCount() );
+
+        // don't allow editing the name of the default random and suggested dynamics
+        nd->m_name->setEnabled( !isDefault );
 
         if( mode->appendType() == DynamicMode::CUSTOM )
         {

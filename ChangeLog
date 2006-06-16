@@ -56,6 +56,7 @@ VERSION 1.4.1:
       or by configuring the children of a folder.
 
   BUGFIXES:
+    * Make changes to the default dynamic playlists persistent.
     * Send UTF-8 encoded requests to Wikipedia. Thanks to Thomas Lindroth
       <tholi945@student.liu.se> for the patch. (BR 127654)
     * Correctly restore podcast channel title when fetching fails.
