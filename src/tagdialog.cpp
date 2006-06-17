@@ -703,6 +703,8 @@ TagDialog::setMultipleTracksMode()
     kComboBox_artist->setCurrentText( "" );
     kComboBox_album->setCurrentText( "" );
     kComboBox_genre->setCurrentText( "" );
+    kLineEdit_title->setText( "" );
+    kIntSpinBox_track->setValue( kIntSpinBox_track->minValue() );
 
     kLineEdit_title->setEnabled( false );
     kIntSpinBox_track->setEnabled( false );
@@ -822,6 +824,9 @@ TagDialog::readMultipleTracks()
     }
 
     m_currentURL = m_urlList.begin();
+
+    // This will reset a wrongly enabled Ok button
+    checkModified();
 }
 
 inline bool
@@ -857,13 +862,14 @@ TagDialog::changes()
     if (modified)
         result |= TagDialog::TAGSCHANGED;
 
-    if (kIntSpinBox_score->value() != m_score)
-        result |= TagDialog::SCORECHANGED;
-    if (kComboBox_rating->currentItem() != ( m_bundle.rating() ? m_bundle.rating() - 1 : 0 ) )
-        result |= TagDialog::RATINGCHANGED;
-    if ( !equalString( kTextEdit_lyrics->text(), m_lyrics ) )
-        result |= TagDialog::LYRICSCHANGED;
-
+    if (!m_urlList.count() || m_perTrack) { //ignore these on MultipleTracksMode
+        if (kIntSpinBox_score->value() != m_score)
+            result |= TagDialog::SCORECHANGED;
+        if (kComboBox_rating->currentItem() != ( m_bundle.rating() ? m_bundle.rating() - 1 : 0 ) )
+            result |= TagDialog::RATINGCHANGED;
+        if ( !equalString( kTextEdit_lyrics->text(), m_lyrics ) )
+            result |= TagDialog::LYRICSCHANGED;
+    }
     return result;
 }
 
