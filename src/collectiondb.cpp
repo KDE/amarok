@@ -835,7 +835,7 @@ CollectionDB::dropPodcastTables()
 
 
 uint
-CollectionDB::artistID( QString value, bool autocreate, const bool temporary, bool exact /* = false */ )
+CollectionDB::artistID( QString value, bool autocreate, const bool temporary, bool exact /* = true */ )
 {
     // lookup cache
     if ( m_validArtistCache && m_cacheArtist[(int)temporary] == value )
@@ -874,7 +874,7 @@ CollectionDB::artistValue( uint id )
 
 
 uint
-CollectionDB::albumID( QString value, bool autocreate, const bool temporary, bool exact /* = false */ )
+CollectionDB::albumID( QString value, bool autocreate, const bool temporary, bool exact /* = true */ )
 {
     // lookup cache
     if ( m_validAlbumCache && m_cacheAlbum[(int)temporary] == value )
@@ -911,7 +911,7 @@ CollectionDB::albumValue( uint id )
 }
 
 uint
-CollectionDB::genreID( QString value, bool autocreate, const bool temporary, bool exact /* = false */ )
+CollectionDB::genreID( QString value, bool autocreate, const bool temporary, bool exact /* = true */ )
 {
     return exact ?
         IDfromExactValue( "genre", value, autocreate, temporary ).toUInt() :
@@ -926,7 +926,7 @@ CollectionDB::genreValue( uint id )
 
 
 uint
-CollectionDB::yearID( QString value, bool autocreate, const bool temporary, bool exact /* = false */ )
+CollectionDB::yearID( QString value, bool autocreate, const bool temporary, bool exact /* = true */ )
 {
     return exact ?
         IDfromExactValue( "year", value, autocreate, temporary ).toUInt() :

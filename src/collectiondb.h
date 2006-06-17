@@ -258,10 +258,10 @@ class CollectionDB : public QObject, public EngineObserver
         void clearTables( const bool temporary = false);
         void copyTempTables(  );
 
-        uint artistID( QString value, bool autocreate = true, const bool temporary = false, bool exact = false );
-        uint albumID( QString value, bool autocreate = true, const bool temporary = false, bool exact = false );
-        uint genreID( QString value, bool autocreate = true, const bool temporary = false, bool exact = false );
-        uint yearID( QString value, bool autocreate = true, const bool temporary = false, bool exact = false );
+        uint artistID( QString value, bool autocreate = true, const bool temporary = false, bool exact = true );
+        uint albumID( QString value, bool autocreate = true, const bool temporary = false, bool exact = true );
+        uint genreID( QString value, bool autocreate = true, const bool temporary = false, bool exact = true );
+        uint yearID( QString value, bool autocreate = true, const bool temporary = false, bool exact = true );
 
         bool isDirInCollection( QString path );
         bool isFileInCollection( const QString &url );
