@@ -220,8 +220,10 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
             a->plug( toolbar );
         if ( KAction *a = actionCollection->action( "home" ) )
             a->plug( toolbar );
-        if ( KAction *a = actionCollection->action( "reload" ) )
+        if ( KAction *a = actionCollection->action( "reload" ) ) {
+            a->setIcon( amaroK::icon( "refresh" ) );
             a->plug( toolbar );
+        }
 
         toolbar->insertLineSeparator();
 
@@ -238,7 +240,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
             a->plug( toolbar );
 
 
-        KAction *gotoCurrent = new KAction( i18n("Goto Current Track Folder"), "today", 0,
+        KAction *gotoCurrent = new KAction( i18n("Goto Current Track Folder"), amaroK::icon( "music" ), 0,
                                             this, SLOT( gotoCurrentFolder() ), actionCollection );
         gotoCurrent->plug( toolbar );
 
