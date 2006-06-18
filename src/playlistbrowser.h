@@ -91,8 +91,6 @@ class PlaylistBrowser : public QVBox
             return s_instance;
         }
 
-        bool isDefaultDynamic( DynamicMode *mode );
-
         //following used by PlaylistSelection.cpp
         PlaylistBrowserView* getListView() const { return m_listview; }
         PlaylistCategory* getDynamicCategory() const { return m_dynamicCategory; }
