@@ -2444,7 +2444,7 @@ Playlist::contentsDropEvent( QDropEvent *e )
     QListViewItem *parent = 0;
     QListViewItem *after  = m_marker;
 
-    if( m_marker && !( static_cast<PlaylistItem *>(m_marker)->isEnabled() ) )
+    if( m_marker && !( static_cast<PlaylistItem *>(m_marker)->isEnabled() ) && dynamicMode() )
     {
         slotEraseMarker();
         return;
