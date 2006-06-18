@@ -6,6 +6,8 @@
 //
 // Author: Andres Oton <andres.oton@gmail.com>, (C) 2006
 //
+// Modified by: T.R.Shashwath <trshash84@gmail.com>
+//
 // Copyright: See COPYING file that comes with this distribution
 //
 //
@@ -14,7 +16,7 @@
 
 // #include <mediadevice.h>
 #include <mediabrowser.h>
-
+#include <transferdialog.h>
 #include <libnjb.h>
 
 #include <qptrlist.h>
@@ -71,28 +73,6 @@ class NjbMediaDevice : public MediaDevice
 
         ~NjbMediaDevice();
 
-        //	bool configBool(const QString& name, bool defValue);
-        //	bool getSpacesToUnderscores();
-        //	bool isCancelled();
-        //	bool isDeleting();
-        //	bool isTransferring();
-        //	int progress() const;
-
-        // 	MediaItem* transferredItem();
-        // 	MediaView* view();
-        // 	Medium* getMedium();
-        // 	QString configString(const QString& name, const QString& defValue);
-
-
-        // 	QString deviceNode() const;
-        // 	QString deviceType();
-        // 	QString getTransferDir();
-        // 	QString name() const;
-        // 	QString uniqueId() const;
-        // 	virtual bool asynchronousTransfer();
-        // 	virtual bool autoConnect();
-        // 	virtual bool hasTransferDialog();
-
         //Implemented
         virtual bool isConnected();
 
@@ -110,6 +90,11 @@ class NjbMediaDevice : public MediaDevice
         //	virtual MediaItem* tagsChanged(MediaItem* item, const MetaBundle& changed);
 
         virtual QStringList supportedFiletypes();
+
+	virtual bool hasTransferDialog()
+	{
+	    return true;
+	}
         virtual TransferDialog* getTransferDialog();
         virtual void addConfigElements(QWidget* arg1);
         virtual void addToDirectory(MediaItem* directory, QPtrList< MediaItem > items);
@@ -153,11 +138,9 @@ class NjbMediaDevice : public MediaDevice
         int deleteTrack(NjbMediaItem *trackItem);
 
         int downloadSelectedItems( NjbMediaItem *item );
-        int downloadArtist(NjbMediaItem *artistItem);
-        int downloadAlbum(NjbMediaItem *albumItem);
-        int downloadTrack(NjbMediaItem *trackItem);
-
-        int downloadNow();
+        int downloadArtist(NjbMediaItem *artistItem, KURL destDir);
+        int downloadAlbum(NjbMediaItem *albumItem, KURL destDir);
+        int downloadTrack(NjbMediaItem *trackItem, KURL destDir);
         int downloadTrackNow(NjbMediaItem *item, QString path);
 
         //Implemented
@@ -177,9 +160,7 @@ class NjbMediaDevice : public MediaDevice
     private:
         // TODO: 
         MediaItem        *trackExists( const MetaBundle& ) { return 0; }
-
         // miscellaneous methods
-        // static int        filetransferCallback( void *pData, struct ifp_transfer_status *progress );
         static int progressCallback( u_int64_t sent, u_int64_t total, const char* /*buf*/, unsigned /*len*/, void* data);
 
         int readJukeboxMusic( void);
@@ -188,16 +169,12 @@ class NjbMediaDevice : public MediaDevice
 
         NjbMediaItem * getArtist(const QString &artist);
 
-        NjbMediaItem * getDownloadAlbum(const QString &artist, const QString &album);
-
-        NjbMediaItem * getDownloadArtist(const QString &artist);
-
         NjbMediaItem *addTrackToView(NjbTrack *track, NjbMediaItem *item=0);
 
         void clearItems();
 
-        NjbMediaItem *m_download;
 
+	TransferDialog 	 *m_td;
         njb_t njbs[NJB_MAX_DEVICES];
 
         QListView *listAmarokPlayLists;
