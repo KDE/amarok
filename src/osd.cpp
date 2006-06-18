@@ -279,7 +279,7 @@ OSDWidget::render( const uint M, const QSize &size )
 
         rect.rLeft() += m_scaledCover.width() + M;
     }
-
+#if 0
     if( m_rating > 1 )
     {
         KPixmap star;
@@ -305,7 +305,7 @@ OSDWidget::render( const uint M, const QSize &size )
 
         m_rating = 0;
     }
-
+#endif
     if( m_drawShadow )
     {
         QPixmap pixmap( rect.size() + QSize(10,10) );
