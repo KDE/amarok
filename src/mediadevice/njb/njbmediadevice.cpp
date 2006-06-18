@@ -422,20 +422,6 @@ int NjbMediaDevice::downloadArtist(NjbMediaItem *artistItem, KURL destDir)
         NjbMediaItem* auxItem = dynamic_cast<NjbMediaItem *>(artistItem->firstChild());
         while(auxItem)
         {
-            debug() << "creating directory (or not): " << destDir.path() << endl;
-            // Path to be transmitted to downloadTrack must have album path appended
-            //destDir.setPath(destDir.path() + artistItem->bundle()->artist());
-            QString path = destDir.path();
-            path += artistItem->text(0);
-	    debug() << path << endl;
-            debug() << "Added path" << endl;
-            // Create directory if it doesn't exist.
-            QDir dir;
-            if( !dir.exists(destDir.path()) )
-            {
-                dir.mkdir( destDir.path() );
-                debug() << "Created dest" << endl;
-            }
             itemsDownload += downloadAlbum( auxItem, destDir );
             auxItem = dynamic_cast<NjbMediaItem *>(auxItem->nextSibling());
         }
@@ -452,16 +438,6 @@ int NjbMediaDevice::downloadAlbum(NjbMediaItem *albumItem, KURL destDir)
 
     if(albumItem->type() == MediaItem::ALBUM)
     {
-        // Path to be transmitted to downloadTrack must have album path appended
-        //destDir.addPath(albumItem->text());
-        // Create directory if it doesn't exist.
-	QString path = destDir.path() + albumItem->text(0);
-        QDir dir;
-        if( !dir.exists( path ))
-            dir.mkdir( path );
-
-//        NjbMediaItem *dAlbum = getDownloadAlbum(albumItem->parent()->text(0),albumItem->text(0));
-
         NjbMediaItem* auxItem = dynamic_cast<NjbMediaItem *>(albumItem->firstChild());
 
         while(auxItem)
@@ -500,10 +476,16 @@ int NjbMediaDevice::downloadTrackNow( NjbMediaItem *item , QString path)
     //int   NJB_Get_Track (njb_t *njb, u_int32_t trackid, u_int32_t size, const char *path, NJB_Xfer_Callback *callback, void *data)
     path += item->bundle()->artist();
     debug() << "Getting track: "<< path << endl;
-    QDir qdir;
-    qdir.mkdir(path);
+    QDir dir;
+    if( !dir.exists( path ) )
+    {
+        dir.mkdir(path);
+    }
     path = path + "/" + item->bundle()->album();
-    qdir.mkdir(path);
+    if( !dir.exists( path ) )
+    {
+        dir.mkdir(path);
+    }
     path = path + "/" + item->getFileName();
     if(NJB_Get_Track (m_njb, item->getId(), item->bundle()->filesize(), path.latin1(), progressCallback, this) != NJB_SUCCESS)
     {
@@ -869,10 +851,10 @@ int NjbMediaDevice::readJukeboxMusic( void)
     {
         clearItems();
 
-        m_playlistItem = new NjbMediaItem( m_view );
+        /*m_playlistItem = new NjbMediaItem( m_view );
         m_playlistItem->setText( 0, i18n("Playlists") );
         m_playlistItem->m_order = -5;
-        m_playlistItem->setType( MediaItem::PLAYLISTSROOT );
+        m_playlistItem->setType( MediaItem::PLAYLISTSROOT );*/
 
         kapp->processEvents( 100 );
 
