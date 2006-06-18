@@ -1,13 +1,13 @@
 //
 // C++ Implementation: njbmediadevice
 //
-// Description: This class is used to manipulate Nomad Creative Jukebox and others media player that works with the njb libraries. 
+// Description: This class is used to manipulate Nomad Creative Jukebox and others media player that works with the njb libraries.
 //
 //
 // Author: Andres Oton <andres.oton@gmail.com>, (C) 2006
-// 
+//
 // Modified by: T.R.Shashwath <trshash84@gmail.com>
-// 
+//
 // Based on kionjb (http://sourceforge.net/projects/kionjb) and kzenexplorer (http://sourceforge.net/projects/kzenexplorer)
 // Copyright: See COPYING file that comes with this distribution
 //
@@ -279,7 +279,7 @@ int NjbMediaDevice::deleteFromDevice(unsigned id)
 int NjbMediaDevice::deleteItemFromDevice(MediaItem* item, bool onlyPlayed)
 {
     Q_UNUSED(onlyPlayed)
-    //onlyPlayed is ignored because this device doesn't suppor directories 
+    //onlyPlayed is ignored because this device doesn't suppor directories
     //and not store the number of times that a file is played
 
     debug() << endl;
@@ -380,19 +380,19 @@ int NjbMediaDevice::deleteTrack(NjbMediaItem *trackItem)
 int NjbMediaDevice::downloadSelectedItems( NjbMediaItem * item )
 {
     debug() << endl;
-    
+
     /* Copied from ifpmediadevice */
     QString save = QString::null;
-    
+
     KURLRequesterDlg dialog( save, 0, 0 );
     dialog.setCaption( kapp->makeStdCaption( i18n( "Choose a Download Directory" ) ) );
     dialog.urlRequester()->setMode( KFile::Directory | KFile::ExistingOnly );
     dialog.exec();
-    
+
     KURL destDir = dialog.selectedURL();
     if( destDir.isEmpty() )
 	    return -1;
-    
+
     destDir.adjustPath( 1 ); //add trailing slash
 
     NjbMediaItem *njbItem = dynamic_cast<NjbMediaItem *>(item);
@@ -459,7 +459,7 @@ int NjbMediaDevice::downloadAlbum(NjbMediaItem *albumItem, KURL destDir)
         QDir dir;
         if( !dir.exists( path ))
             dir.mkdir( path );
-        
+
 //        NjbMediaItem *dAlbum = getDownloadAlbum(albumItem->parent()->text(0),albumItem->text(0));
 
         NjbMediaItem* auxItem = dynamic_cast<NjbMediaItem *>(albumItem->firstChild());
@@ -481,7 +481,7 @@ int NjbMediaDevice::downloadTrack(NjbMediaItem *trackItem, KURL destDir)
     {
         debug() << "Artist: " << trackItem->parent()->parent()->text(0) << "  Album: " << trackItem->parent()->text(0) << endl;
 
-        
+
         downloadTrackNow( trackItem, destDir.path() );
 
         return 1;
@@ -567,8 +567,8 @@ MediaItem* NjbMediaDevice::copyTrackToDevice(const MetaBundle& bundle)
     debug() << "copyTrack: sending..." << endl;
     debug() << "copyTrack: "
         << taggedTrack->getTitle() << " " << taggedTrack->getAlbum() << " "
-        << taggedTrack->getGenre() << " " 
-        << "size:" << taggedTrack->getSize() << " " 
+        << taggedTrack->getGenre() << " "
+        << "size:" << taggedTrack->getSize() << " "
         << taggedTrack->getArtist() << endl;
 
     u_int32_t id;
@@ -593,7 +593,7 @@ MediaItem* NjbMediaDevice::copyTrackToDevice(const MetaBundle& bundle)
     if(NJB_Send_Track (m_njb, bundle.url().path().latin1(), songid, progressCallback, this, &id) != NJB_SUCCESS)
     {
         debug() << ": NJB_Send_Track failed\n";
-        if (NJB_Error_Pending(m_njb)) 
+        if (NJB_Error_Pending(m_njb))
         {
             const char* njbError;
             while ((njbError = NJB_Error_Geterror(m_njb)))
@@ -662,7 +662,7 @@ MediaItem* NjbMediaDevice::newPlaylist(const QString& name, MediaItem* parent, Q
     }
 
     //TODO:Crear un conversor de Playlists a las listas de Amarok
-    return 0;	
+    return 0;
 }
 
 QStringList NjbMediaDevice::supportedFiletypes()
@@ -724,12 +724,12 @@ void NjbMediaDevice::rmbPressed(QListViewItem* qitem, const QPoint& point, int )
     NjbMediaItem *item = static_cast<NjbMediaItem *>(qitem);
     if ( item )
     {
-        KPopupMenu menu(m_view);
-        menu.insertItem(SmallIconSet("down"), i18n("Download"), DOWNLOAD);
+        KPopupMenu menu( m_view);
+        menu.insertItem( SmallIconSet( amaroK::icon( "collection" ) ), i18n("Download"), DOWNLOAD );
         menu.insertSeparator();
-        //			menu.insertItem( SmallIconSet( "editclear" ), i18n( "Rename" ), RENAME );
-        menu.insertItem( SmallIconSet( "editdelete" ), i18n( "Delete" ), DELETE );
-        
+        //			menu.insertItem( SmallIconSet( amaroK::icon( "edit" ) ), i18n( "Rename" ), RENAME );
+        menu.insertItem( SmallIconSet( amaroK::icon( "remove" ) ), i18n( "Delete" ), DELETE );
+
 
         int id =  menu.exec( point );
         switch( id )
