@@ -35,7 +35,7 @@ namespace ConfigDynamic
 {
     void addDynamic( NewDynamic* dialog );
     void dynamicDialog( QWidget* parent );
-    void editDynamicPlaylist( QWidget* parent, DynamicMode* mode, bool isDefault=false );
+    void editDynamicPlaylist( QWidget* parent, DynamicMode* mode );
     void loadDynamicMode( DynamicMode* saveMe, NewDynamic* dialog );
 
     KDialogBase* basicDialog( QWidget* parent );

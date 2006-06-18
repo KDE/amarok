@@ -97,8 +97,10 @@ namespace ConfigDynamic
             addDynamic( nd );
     }
 
-    void editDynamicPlaylist( QWidget* parent, DynamicMode* mode, bool isDefault )
+    void editDynamicPlaylist( QWidget* parent, DynamicMode* mode )
     {
+        bool isDefault = PlaylistBrowser::instance()->isDefaultDynamic( mode );
+
         KDialogBase* dialog = basicDialog( parent );
         NewDynamic*  nd     = static_cast<NewDynamic*>(dialog->mainWidget());
 

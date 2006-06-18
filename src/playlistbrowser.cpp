@@ -2291,6 +2291,11 @@ void PlaylistBrowser::slotSave() // SLOT
     createPlaylist();
 }
 
+bool PlaylistBrowser::isDefaultDynamic( DynamicMode *mode )
+{
+    return ( mode == m_randomDynamic || mode == m_suggestedDynamic );
+}
+
 
 /**
  ************************
