@@ -648,6 +648,8 @@ XineEngine::timerEvent( QTimerEvent* )
 
    MyNode *myList = scope_plugin_list( m_post );
 
+   if ( ! myList ) return;
+
    //we operate on a subset of the list for thread-safety
    MyNode * const first_node = myList->next;
    MyNode const * const list_end = myList;
@@ -1051,6 +1053,7 @@ Fader::run()
     list<fade_s>::iterator it, end;
     for( it = data.begin(), end = data.end(); it != end && !m_engine->m_stopFader; ++it )
     {
+        if( (*it).stream == NULL ) continue;
 //         debug() << "sleep: " << (*it).sleep << " volume: " << (*it).volume << endl;
         if( (*it).sleep > 0 ) //FIXME
            QThread::usleep( (*it).sleep );
