@@ -26,6 +26,7 @@ Name[zh_CN]=通用音频播放器
 X-KDE-Library=libamarok_generic-mediadevice
 Comment=Plugin for Amarok
 Comment[bg]=Приставка за Amarok
+Comment[de]=Modul für Amarok
 Comment[el]=Πρόσθετο για το AmaroK
 Comment[ga]=Breiseán AmaroK
 Comment[it]=Plugin per Amarok
