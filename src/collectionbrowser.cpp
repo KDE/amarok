@@ -611,6 +611,7 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
     // MODE TREEVIEW
     if( m_viewMode == modeTreeView )
     {
+        setSorting( 0 );
         int VisYearAlbum = -1;
         int q_cat1=m_cat1;
         int q_cat2=m_cat2;
