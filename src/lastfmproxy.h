@@ -24,7 +24,6 @@
 class QHttp;
 class QHttpResponseHeader;
 class QTimer;
-class MetaBundle;
 
 class LastFmProxy : public QObject
 {
@@ -34,9 +33,7 @@ class LastFmProxy : public QObject
         enum DataType { Artist, Album, Track };
 
         LastFmProxy();
-        /**
-         * @arg bundle will have its URL changed to the lastfm.
-         */
+
         void handshake( const QString& username, const QString& password );
         void changeStation( QString url );
 
@@ -117,6 +114,9 @@ class LastFmProxy : public QObject
         QStringList parameterKeys( QString keyName, QString data );
 
     private slots:
+        void handshakeHeaderReceived( const QHttpResponseHeader &resp );
+        void handshakeFinished( int id, bool error );
+
         void changeStationFinished( int id, bool error );
         void metaDataFinished( int id, bool error );
         void enableScrobblingFinished( int id, bool error );

@@ -379,11 +379,9 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
         LastFmProxy *lfp = new LastFmProxy();
         QString u = AmarokConfig::scrobblerUsername();
         QString p = AmarokConfig::scrobblerPassword();
-        lfp->handshake( u, p ); //this operation blocks with a synchronous HTTP get
-        debug() << url.url() << endl;
-        lfp->changeStation( url.url() ); //doesn't block
-        url =  lfp->streamUrl(); //KURL has a operator=(qurl)
-        debug() << "changing station to " << url.url() << endl;
+        lfp->handshake( u, p );
+
+//         url = lfp->getProxyUrl();
     }
 
     if( m_engine->load( url, url.protocol() == "http" || url.protocol() == "rtsp" ) )
