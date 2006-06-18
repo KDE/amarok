@@ -11,17 +11,22 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-#include "lastfmproxy.h"
 #include "debug.h"
+#include "lastfmproxy.h"
+#include "playlist.h"
 
 #include <qdom.h>
 #include <qfile.h>
 #include <qhttp.h>
+#include <qregexp.h>
 #include <qsocket.h>
 #include <qtimer.h>
 
+#include <kio/job.h> //KIO::get
+#include <kio/jobclasses.h> //KIO::Job
 #include <kmdcodec.h> //md5sum
+#include <kio/netaccess.h> //synchronousRun
+
 
 #include <time.h>
 
@@ -37,85 +42,58 @@ LastFmProxy::handshake( const QString& username, const QString& password )
     m_username = username;
     m_password = password;
 
-    QHttp *http = new QHttp( "ws.audioscrobbler.com", 80, this );
-    connect( http, SIGNAL( responseHeaderReceived( const QHttpResponseHeader& ) ),
-             this,   SLOT( handshakeHeaderReceived( const QHttpResponseHeader& ) ) );
-
-    connect( http, SIGNAL( requestFinished( int, bool ) ),
-             this,   SLOT( handshakeFinished( int, bool ) ) );
-
     QString path =
-            QString( "/radio/handshake.php?version=%1&platform=%2&username=%3&passwordmd5=%4&debug=%5" )
+            QString( "http://ws.audioscrobbler.com/radio/handshake.php?version=%1&platform=%2&username=%3&passwordmd5=%4&debug=%5" )
             .arg( "1.2.0" )
             .arg( QString("linux") ) //platform
             .arg( QString( QUrl( username ).encodedPathAndQuery() ) )
             .arg( KMD5( m_password.utf8() ).hexDigest() )
             .arg( "0" );
 
-    http->get( path );
-    m_lastHttp = http;
-}
-
-
-void
-LastFmProxy::handshakeHeaderReceived( const QHttpResponseHeader &resp )
-{
-    if ( resp.statusCode() == 503 )
+   
+    KIO::Job* job = KIO::get( path, true, false);
+    QByteArray* data = new QByteArray();
+    if ( !KIO::NetAccess::synchronousRun( job, PlaylistWindow::self(), data) )
     {
-        debug() << "Handshake error" << endl;
+            emit handshakeResult( -1 );
+            return;
     }
-}
-
-
-void
-LastFmProxy::handshakeFinished( int /*id*/, bool error )
-{
-    DEBUG_BLOCK
-
-    if ( error )
-    {
-        emit handshakeResult( -1 );
-        return;
-    }
-
-    QString result( m_lastHttp->readAll() );
-
-    debug() << "result: " << result << endl;
-
+    QString result( data->data() );
+    
+  //  debug() << "result: " << result << endl;
+    
     m_session = parameter( "session", result );
     m_baseHost = parameter( "base_url", result );
     m_basePath = parameter( "base_path", result );
     m_subscriber = parameter( "subscriber", result ) == "1";
     m_streamUrl.setPath( parameter( "stream_url", result ) );
-//     bool banned = parameter( "banned", result ) == "1";
-
+    debug() << "qurl: " << m_streamUrl.toString() << ' ' <<  parameter( "stream_url", result ) << ' ' << parameter( "base_url", result ) << endl;
+    //   bool banned = parameter( "banned", result ) == "1";
+    
     if ( m_session.lower() == "failed" )
     {
         emit handshakeResult( 0 );
         return;
     }
-
-    emit streamingUrl( m_streamUrl );
     emit handshakeResult( m_session.length() == 32 ? 1 : -1 );
+    delete data;
 }
-
 
 void
 LastFmProxy::changeStation( QString url )
 {
-    debug() << "Changing station:" << url;
+    debug() << "Changing station:" << url << endl;
 
     QHttp *http = new QHttp( m_baseHost, 80, this );
-    connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( changeStationFinished( bool ) ) );
+    connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( changeStationFinished( int, bool ) ) );
 
     if ( url.startsWith( "lastfm://" ) )
         url.remove( 0, 9 ); // get rid of it!
 
     http->get( QString( m_basePath + "/adjust.php?session=%1&url=lastfm://%2&debug=%3" )
                   .arg( m_session )
-                  .arg( url.contains( "%" ) ? url : QString( QUrl( url ).encodedPathAndQuery() ) )
+                  .arg( url.contains( "%" ) ? url : QUrl( url ).toString(true, false) )
                   .arg( "0" ) );
-
     m_lastHttp = http;
 }
 
@@ -152,7 +130,7 @@ void
 LastFmProxy::requestMetaData()
 {
     QHttp *http = new QHttp( m_baseHost, 80, this );
-    connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( metaDataFinished( bool ) ) );
+    connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( metaDataFinished( int, bool ) ) );
 
     http->get( QString( m_basePath + "/np.php?session=%1&debug=%2" )
                   .arg( m_session )
@@ -192,9 +170,9 @@ void
 LastFmProxy::enableScrobbling( bool enabled )
 {
     if ( enabled )
-        debug() << "Enabling Scrobbling!";
+        debug() << "Enabling Scrobbling!" << endl;
     else
-        debug() << "Disabling Scrobbling!";
+        debug() << "Disabling Scrobbling!" << endl;
 
     QHttp *http = new QHttp( m_baseHost, 80, this );
     connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( enableScrobblingFinished( bool ) ) );
@@ -497,18 +475,18 @@ LastFmProxy::recommend( int type, QString username, QString artist, QString toke
 void
 LastFmProxy::recommendFinished( int /*id*/, bool /*error*/ )
 {
-    debug() << "Recommendation:" << m_lastHttp->readAll();
+    debug() << "Recommendation:" << m_lastHttp->readAll() << endl;
 }
 
 
 QString
 LastFmProxy::parameter( QString keyName, QString data )
 {
-    QStringList list = QStringList::split( data, "\n" );
+    QStringList list = QStringList::split( '\n', data );
 
     for ( uint i = 0; i < list.size(); i++ )
     {
-        QStringList values = QStringList::split( list[i], "=" );
+        QStringList values = QStringList::split( '=', list[i] );
         if ( values[0] == keyName )
         {
             values.remove( values.at(0) );
@@ -524,11 +502,11 @@ QStringList
 LastFmProxy::parameterArray( QString keyName, QString data )
 {
     QStringList result;
-    QStringList list = QStringList::split( data, "\n" );
+    QStringList list = QStringList::split( '\n', data );
 
     for ( uint i = 0; i < list.size(); i++ )
     {
-        QStringList values = QStringList::split( list[i], "=" );
+        QStringList values = QStringList::split( '=', list[i] );
         if ( values[0].startsWith( keyName ) )
         {
             values.remove( values.at(0) );
@@ -544,15 +522,15 @@ QStringList
 LastFmProxy::parameterKeys( QString keyName, QString data )
 {
     QStringList result;
-    QStringList list = QStringList::split( data, "\n" );
+    QStringList list = QStringList::split( '\n', data );
 
     for ( uint i = 0; i < list.size(); i++ )
     {
-        QStringList values = QStringList::split( list[i], "=" );
+        QStringList values = QStringList::split( '=', list[i] );
         if ( values[0].startsWith( keyName ) )
         {
-            values = QStringList::split( values[0], "[" );
-            values = QStringList::split( values[1], "]" );
+            values = QStringList::split( '[', values[0] );
+            values = QStringList::split( ']', values[1] );
             result.append( values[0] );
         }
     }

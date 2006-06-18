@@ -3,8 +3,9 @@ Amarok ChangeLog
 (C) 2002-2006 the Amarok authors.
 
 
-VERSION 1.4.1:
+VERSION 1.4.1-beta1:
   FEATURES:
+    * Support for lastfm:// streams from last.fm.
     * Much improved and completed custom icon theme by Vadim Petrunin
       <vnizzz@gmail.com>.
     * LibVisual 0.4 supported and required.
