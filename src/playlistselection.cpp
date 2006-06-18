@@ -151,7 +151,7 @@ namespace ConfigDynamic
 
     void loadDynamicMode( DynamicMode* saveMe, NewDynamic* dialog )
     {
-        saveMe->setTitle( dialog->m_name->text() );
+        saveMe->setTitle( dialog->m_name->text().replace( "\n", " " ) );
         saveMe->setCycleTracks( dialog->m_cycleTracks->isChecked() );
         saveMe->setMarkHistory( dialog->m_markHistory->isChecked() );
         saveMe->setUpcomingCount( dialog->m_upcomingIntSpinBox->value() );
@@ -172,7 +172,7 @@ namespace ConfigDynamic
     void addDynamic( NewDynamic* dialog )
     {
         QListViewItem *parent = PlaylistBrowser::instance()->getDynamicCategory();
-        DynamicEntry    *saveMe = new DynamicEntry( parent, 0, dialog->m_name->text() );
+        DynamicEntry    *saveMe = new DynamicEntry( parent, 0, dialog->m_name->text().replace( "\n", " " ) );
         saveMe->setAppendType( DynamicMode::CUSTOM );
 
         loadDynamicMode( saveMe, dialog );

@@ -34,7 +34,7 @@ Q_OBJECT
 
         QDomElement result();
 
-        QString name() const { return m_nameLineEdit->text(); }
+        QString name() const { return m_nameLineEdit->text().replace( "\n", " " ); }
         QString query() const { return m_query; }
         QString expandableQuery() const { return m_expandQuery; }
 
