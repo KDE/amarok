@@ -114,7 +114,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_view = new CollectionView( this );
     m_view->installEventFilter( this );
 
-    m_configureAction = new KAction( i18n( "Configure Folders" ), "configure", 0, this, SLOT( setupDirs() ), ac, "Configure" );
+    m_configureAction = new KAction( i18n( "Configure Folders" ), amaroK::icon( "configure" ), 0, this, SLOT( setupDirs() ), ac, "Configure" );
     m_treeViewAction = new KRadioAction( i18n( "Tree View" ), "view_tree", 0, m_view, SLOT( setTreeMode() ), ac, "Tree View" );
     m_flatViewAction = new KRadioAction( i18n( "Flat View" ), "view_detailed", 0, m_view, SLOT( setFlatMode() ), ac, "Flat View" );
     m_treeViewAction->setExclusiveGroup("view mode");
@@ -1381,7 +1381,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
             : i18n( "&Queue Tracks" ), QUEUE );
 
         if( selection.count() > 1 || item->isExpandable() )
-            menu.insertItem( SmallIconSet( "filesave" ), i18n( "&Save as Playlist..." ), SAVE );
+            menu.insertItem( SmallIconSet( amaroK::icon( "save" ) ), i18n( "&Save as Playlist..." ), SAVE );
 
         menu.insertSeparator();
 

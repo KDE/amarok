@@ -3819,7 +3819,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     if( itemCount > 1 )
     {
         popup.insertItem( SmallIconSet( amaroK::icon( "playlist" ) ), i18n("Set as Playlist (Crop)"), CROP_PLAYLIST );
-        popup.insertItem( SmallIconSet( "filesave" ), i18n("Save as Playlist..."), SAVE_PLAYLIST );
+        popup.insertItem( SmallIconSet( amaroK::icon( "save" ) ), i18n("Save as Playlist..."), SAVE_PLAYLIST );
         popup.insertSeparator();
     }
 

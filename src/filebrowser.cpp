@@ -171,7 +171,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         menu->clear();
         menu->insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n( "&Load" ), MakePlaylist );
         menu->insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), AppendToPlaylist );
-        menu->insertItem( SmallIconSet( "filesave" ), i18n( "&Save as Playlist..." ), SavePlaylist );
+        menu->insertItem( SmallIconSet( amaroK::icon( "save" ) ), i18n( "&Save as Playlist..." ), SavePlaylist );
         menu->insertSeparator();
 
         if (!m_medium)

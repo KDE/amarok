@@ -42,6 +42,7 @@ amaroK::icon( const QString& name ) //declared in amarok.h
         iconMap["burn"]                 = "cdrom_unmount";
         iconMap["clock"]                = "history";
         iconMap["collection"]           = "collection";
+        iconMap["configure"]            = "configure";
         iconMap["covermanager"]         = "covermanager";
         iconMap["device"]               = "usbpendrive_unmount";
         iconMap["download"]             = "khtml_get";
@@ -53,6 +54,7 @@ amaroK::icon( const QString& name ) //declared in amarok.h
         iconMap["fastforward"]          = "2rightarrow";
         iconMap["favourite_genres"]     = "kfm";
         iconMap["files"]                = "folder";
+        iconMap["files2"]               = "folder_red";
         iconMap["info"]                 = "info";
         iconMap["lyrics"]               = "document";
         iconMap["mostplayed"]           = "favorites";
@@ -78,6 +80,7 @@ amaroK::icon( const QString& name ) //declared in amarok.h
         iconMap["repeat_track"]         = "repeat_track";
         iconMap["rescan"]               = "reload";
         iconMap["rewind"]               = "2leftarrow";
+        iconMap["save"]                 = "filesave";
         iconMap["scripts"]              = "pencil";
         iconMap["search"]               = "find";
         iconMap["settings_engine"]      = "amarok";

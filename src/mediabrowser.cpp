@@ -210,7 +210,7 @@ MediaBrowser::MediaBrowser( const char *name )
     MediaItem::s_pixFile = new QPixmap(iconLoader.loadIcon( amaroK::icon( "sound" ), KIcon::Toolbar, KIcon::SizeSmall ) );
     MediaItem::s_pixPodcast = new QPixmap(iconLoader.loadIcon( amaroK::icon( "podcast" ), KIcon::Toolbar, KIcon::SizeSmall ) );
     MediaItem::s_pixPlaylist = new QPixmap(iconLoader.loadIcon( amaroK::icon( "playlist" ), KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixRootItem = new QPixmap(iconLoader.loadIcon( amaroK::icon( "folder_red" ), KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixRootItem = new QPixmap(iconLoader.loadIcon( amaroK::icon( "files2" ), KIcon::Toolbar, KIcon::SizeSmall ) );
     // history
     // favorites
     // collection

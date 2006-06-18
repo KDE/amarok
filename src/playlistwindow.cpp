@@ -128,6 +128,7 @@ PlaylistWindow::PlaylistWindow()
     KStdAction::open( this, SLOT(slotAddLocation()), ac, "playlist_add" )->setText( i18n("&Add Media...") );
     ac->action( "playlist_add" )->setIcon( amaroK::icon( "files" ) );
     KStdAction::save( this, SLOT(savePlaylist()), ac, "playlist_save" )->setText( i18n("&Save Playlist As...") );
+    ac->action( "playlist_save" )->setIcon( amaroK::icon( "save" ) );
     KStdAction::showMenubar( this, SLOT(slotToggleMenu()), ac );
 
     new KAction( i18n("Play Media..."), amaroK::icon( "files" ), 0, this, SLOT(slotPlayMedia()), ac, "playlist_playmedia" );

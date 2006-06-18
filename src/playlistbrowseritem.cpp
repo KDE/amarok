@@ -110,7 +110,7 @@ PlaylistCategory::PlaylistCategory( QListView *parent, QListViewItem *after, con
 {
     setDragEnabled( false );
     setRenameEnabled( 0, isFolder );
-    setPixmap( 0, SmallIcon("folder_red") );
+    setPixmap( 0, SmallIcon( amaroK::icon( "files2" ) ) );
     setText( 0, t );
 }
 
@@ -136,7 +136,7 @@ PlaylistCategory::PlaylistCategory( QListView *parent, QListViewItem *after, con
     setXml( xmlDefinition );
     setDragEnabled( false );
     setRenameEnabled( 0, isFolder );
-    setPixmap( 0, SmallIcon("folder_red") );
+    setPixmap( 0, SmallIcon( amaroK::icon( "files2") ) );
 }
 
 
