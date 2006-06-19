@@ -30,7 +30,7 @@
 
 #include <config.h>
 
-#include "engine/enginebase.h"
+#include "enginebase.h"
 #include "NmmLocation.h"
 #include <nmm/base/graph/CompositeNode.hpp>
 #include <nmm/base/NMMApplication.hpp>
