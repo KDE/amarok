@@ -296,6 +296,8 @@ StatusBar::longMessage( const QString &text, int type )
 
         case Error:
             image = KGlobal::iconLoader()->iconPath( "messagebox_critical", -KIcon::SizeHuge );
+            // don't hide error messages.
+            message->setTimeout( 0 );
             break;
     }
 
@@ -359,7 +361,7 @@ StatusBar::newProgressOperation( QObject *owner )
     m_progressMap.insert( owner, new ProgressBar( m_popupProgress, label ) );
 
     m_popupProgress->reposition();
-    
+
     connect( owner, SIGNAL(destroyed( QObject* )), SLOT(endProgressOperation( QObject* )) );
 
     // so we can show the correct progress information
