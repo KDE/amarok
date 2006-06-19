@@ -309,7 +309,9 @@ TagDialog::queryDone( KTRMResultList results, QString error ) //SLOT
     QApplication::restoreOverrideCursor();
     pushButton_musicbrainz->setEnabled( true );
     pushButton_musicbrainz->setText( m_buttonMbText );
-
+#else
+    Q_UNUSED(results);
+    Q_UNUSED(error);
 #endif
 }
 
@@ -337,9 +339,8 @@ TagDialog::fillSelected( KTRMResult selected ) //SLOT
 
         storedTags.replace( m_mbTrack, mb );
     }
-
-
-
+#else
+    Q_UNUSED(selected);
 #endif
 }
 

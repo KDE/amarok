@@ -352,6 +352,8 @@ KTRMResult::KTRMResult(const KTRMResult &result)
 {
 #if HAVE_TUNEPIMP
     d = new KTRMResultPrivate(*result.d);
+#else
+    Q_UNUSED(result);
 #endif
 }
 
@@ -412,6 +414,7 @@ bool KTRMResult::operator<(const KTRMResult &r) const
 #if HAVE_TUNEPIMP
     return r.d->relevance < d->relevance;
 #else
+    Q_UNUSED(r);
     return false;
 #endif
 }
@@ -421,6 +424,7 @@ bool KTRMResult::operator>(const KTRMResult &r) const
 #if HAVE_TUNEPIMP
     return r.d->relevance > d->relevance;
 #else
+    Q_UNUSED(r);
     return true;
 #endif
 }
@@ -429,6 +433,8 @@ KTRMResult &KTRMResult::operator= (const KTRMResult &r)
 {
 #if HAVE_TUNEPIMP
     d = new KTRMResultPrivate(*r.d);
+#else
+    Q_UNUSED(r);
 #endif
     return *this;
 }
@@ -437,6 +443,8 @@ bool KTRMResult::operator== (const KTRMResult &r) const
 {
 #if HAVE_TUNEPIMP
     return *d == *(r.d);
+#else
+    Q_UNUSED(r);
 #endif
     return false;
 }
@@ -480,6 +488,9 @@ KTRMLookup::KTRMLookup(const QString &file, bool autoDelete)
     d->file = file;
     d->autoDelete = autoDelete;
     d->fileId = KTRMRequestHandler::instance()->startLookup(this);
+#else
+    Q_UNUSED(file);
+    Q_UNUSED(autoDelete);
 #endif
 }
 
