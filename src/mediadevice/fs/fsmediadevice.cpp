@@ -219,7 +219,7 @@ FSBrowser::FSBrowser( QWidget *parent, MediaDevice *device, const char * name, M
         KActionMenu *a;
 
         a = (KActionMenu*)actionCollection->action( "sorting menu" );
-        a->setIcon( "configure" );
+        a->setIcon( amaroK::icon( "configure" ) );
         a->setDelayed( false ); //TODO should be done by KDirOperator
 
         actionCollection->action( "delete" )->setShortcut( KShortcut( SHIFT + Key_Delete ) );

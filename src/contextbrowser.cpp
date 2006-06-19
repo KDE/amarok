@@ -230,7 +230,7 @@ ContextBrowser::ContextBrowser( const char *name )
     m_wikiToolBar->insertButton( "contents", WIKI_TITLE, false, i18n("Title Page") );
     m_wikiToolBar->insertLineSeparator();
     m_wikiToolBar->insertButton( amaroK::icon( "external" ), WIKI_BROWSER, true, i18n("Open in external browser") );
-    m_wikiToolBar->insertButton( "configure", WIKI_CONFIG, true, i18n("Change Locale") );
+    m_wikiToolBar->insertButton( amaroK::icon( "change_language" ), WIKI_CONFIG, true, i18n("Change Locale") );
 
     m_wikiToolBar->setDelayedPopup( WIKI_BACK, m_wikiBackPopup );
     m_wikiToolBar->setDelayedPopup( WIKI_FORWARD, m_wikiForwardPopup );

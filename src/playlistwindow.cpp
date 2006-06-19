@@ -124,6 +124,11 @@ PlaylistWindow::PlaylistWindow()
     KStdAction::keyBindings( kapp, SLOT( slotConfigShortcuts() ), ac );
     KStdAction::keyBindings( kapp, SLOT( slotConfigGlobalShortcuts() ), ac, "options_configure_globals" );
     KStdAction::preferences( kapp, SLOT( slotConfigAmarok() ), ac );
+    ac->action("options_configure_globals")->setIcon( amaroK::icon( "configure" ) );
+    ac->action(KStdAction::name(KStdAction::KeyBindings))->setIcon( amaroK::icon( "configure" ) );
+    ac->action(KStdAction::name(KStdAction::ConfigureToolbars))->setIcon( amaroK::icon( "configure" ) );
+    ac->action(KStdAction::name(KStdAction::Preferences))->setIcon( amaroK::icon( "configure" ) );
+
     KStdAction::quit( kapp, SLOT( quit() ), ac );
     KStdAction::open( this, SLOT(slotAddLocation()), ac, "playlist_add" )->setText( i18n("&Add Media...") );
     ac->action( "playlist_add" )->setIcon( amaroK::icon( "files" ) );

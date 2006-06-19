@@ -200,7 +200,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         KActionMenu *a;
 
         a = static_cast<KActionMenu*>( actionCollection->action( "sorting menu" ) );
-        a->setIcon( "configure" );
+        a->setIcon( amaroK::icon( "configure" ) );
         a->setDelayed( false ); //TODO should be done by KDirOperator
 
         actionCollection->action( "delete" )->setShortcut( KShortcut( SHIFT + Key_Delete ) );

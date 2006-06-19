@@ -40,6 +40,7 @@ amaroK::icon( const QString& name ) //declared in amarok.h
         iconMap["audioscrobbler"]       = "audioscrobbler";
         iconMap["back"]                 = "player_start";
         iconMap["burn"]                 = "cdrom_unmount";
+        iconMap["change_language"]      = "configure";
         iconMap["clock"]                = "history";
         iconMap["collection"]           = "collection";
         iconMap["configure"]            = "configure";

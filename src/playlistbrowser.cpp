@@ -2497,10 +2497,10 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         enum Actions { LOAD, ADD, DELETE, RESCAN, CONFIG};
         menu.insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n( "&Load" ), LOAD );
         menu.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), ADD );
-        menu.insertItem( SmallIconSet( amaroK::icon("remove_from_playlist") ), i18n( "&Delete" ), DELETE );
+        menu.insertItem( SmallIconSet( amaroK::icon( "remove_from_playlist" ) ), i18n( "&Delete" ), DELETE );
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( amaroK::icon( "refresh" ) ), i18n( "&Check for Updates" ), RESCAN );
-        menu.insertItem( SmallIconSet( "configure" ), i18n( "&Configure..." ), CONFIG );
+        menu.insertItem( SmallIconSet( amaroK::icon( "configure" ) ), i18n( "&Configure..." ), CONFIG );
 
 
         switch( menu.exec( p ) )
@@ -2643,7 +2643,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             menu.insertItem( SmallIconSet("edit_add"), i18n("Add Podcast..."), PODCAST );
             menu.insertItem( SmallIconSet( amaroK::icon( "refresh" ) ), i18n("Refresh All Podcasts"), REFRESH );
             menu.insertSeparator();
-            menu.insertItem( SmallIconSet( "configure" ), i18n( "&Configure Children..." ), CONFIG );
+            menu.insertItem( SmallIconSet( amaroK::icon( "configure" ) ), i18n( "&Configure Children..." ), CONFIG );
             if( parentCat == item )
                 menu.insertItem( SmallIconSet("tool_timer"), i18n("Scan Interval..."), INTERVAL );
         }

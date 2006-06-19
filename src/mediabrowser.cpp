@@ -243,7 +243,7 @@ MediaBrowser::MediaBrowser( const char *name )
     m_toolbar->insertLineSeparator();
     m_toolbar->setIconText( KToolBar::IconOnly, false );
 
-    m_toolbar->insertButton( "configure", CONFIGURE, true, i18n("Configure") );
+    m_toolbar->insertButton( amaroK::icon( "configure" ), CONFIGURE, true, i18n("Configure") );
     QToolTip::add( m_toolbar->getButton(CONFIGURE), i18n( "Configure device" ) );
 
     m_deviceCombo = new KComboBox( this );

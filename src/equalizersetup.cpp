@@ -81,7 +81,7 @@ EqualizerSetup::EqualizerSetup()
     connect( presetAdd, SIGNAL( clicked() ), SLOT( addPreset() ) );
 
     QPushButton* presetConf = new QPushButton( presetBox );
-    presetConf->setIconSet( SmallIconSet( "configure" ) );
+    presetConf->setIconSet( SmallIconSet( amaroK::icon( "configure" ) ) );
     QToolTip::add( presetConf, i18n("Manage presets") );
     connect( presetConf, SIGNAL( clicked() ), SLOT( editPresets() ) );
 

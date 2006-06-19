@@ -175,7 +175,7 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     m_gui->uninstallButton->setIconSet( SmallIconSet( amaroK::icon( "remove" ) ) );
     m_gui->runButton      ->setIconSet( SmallIconSet( amaroK::icon( "play" ) ) );
     m_gui->stopButton     ->setIconSet( SmallIconSet( amaroK::icon( "stop" ) ) );
-    m_gui->configureButton->setIconSet( SmallIconSet( "configure" ) );
+    m_gui->configureButton->setIconSet( SmallIconSet( amaroK::icon( "configure" ) ) );
     m_gui->aboutButton    ->setIconSet( SmallIconSet( amaroK::icon( "info" ) ) );
 
     QSize sz = sizeHint();
