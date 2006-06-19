@@ -39,7 +39,7 @@
 
   You can find the njb libs at : http://libnjb.sourceforge.net
 
-  Based at kionjb from 
+  Based at kionjb from
 
   @author Andres Oton <andres.oton@gmail.com>
  */
@@ -73,28 +73,19 @@ class NjbMediaDevice : public MediaDevice
 
         ~NjbMediaDevice();
 
-        //Implemented
         virtual bool isConnected();
-
-        //Implemented
         virtual bool isPlayable(const MetaBundle& bundle);
-
-        //Implemented
         virtual bool isPreferredFormat(const MetaBundle& bundle);
 
-        //	virtual bool needsManualConfig();
+        //    virtual bool needsManualConfig();
 
-        //Implementing
         virtual MediaItem* newPlaylist(const QString& name, MediaItem* parent, QPtrList< MediaItem > items);
 
-        //	virtual MediaItem* tagsChanged(MediaItem* item, const MetaBundle& changed);
+        //    virtual MediaItem* tagsChanged(MediaItem* item, const MetaBundle& changed);
 
         virtual QStringList supportedFiletypes();
 
-	virtual bool hasTransferDialog()
-	{
-	    return true;
-	}
+        virtual bool hasTransferDialog() { return true; }
         virtual TransferDialog* getTransferDialog();
         virtual void addConfigElements(QWidget* arg1);
         virtual void addToDirectory(MediaItem* directory, QPtrList< MediaItem > items);
@@ -116,21 +107,14 @@ class NjbMediaDevice : public MediaDevice
 
     protected:
 
-        // Implemented
         virtual bool closeDevice();
-
-        //Implemented
         virtual bool getCapacity(KIO::filesize_t* total, KIO::filesize_t* available);
 
         // virtual bool isSpecialItem(MediaItem* item);
 
-        //Implemented
         virtual bool lockDevice(bool tryOnly);
-
-        //Implemented
         virtual bool openDevice(bool silent);
 
-        //Implemented
         int deleteFromDevice(unsigned id);
         virtual int deleteItemFromDevice(MediaItem* item, bool onlyPlayed);
         int deleteAlbum(NjbMediaItem *albumItem);
@@ -143,13 +127,11 @@ class NjbMediaDevice : public MediaDevice
         int downloadTrack(NjbMediaItem *trackItem, KURL destDir);
         int downloadTrackNow(NjbMediaItem *item, QString path);
 
-        //Implemented
         virtual MediaItem* copyTrackToDevice(const MetaBundle& bundle);
 
         virtual void cancelTransfer();
         virtual void synchronizeDevice();
 
-        //Implemented
         virtual void unlockDevice();
 
         virtual void updateRootItems();
@@ -158,7 +140,7 @@ class NjbMediaDevice : public MediaDevice
         void syncStatsToDevice(MediaItem* root);
 
     private:
-        // TODO: 
+        // TODO:
         MediaItem        *trackExists( const MetaBundle& ) { return 0; }
         // miscellaneous methods
         static int progressCallback( u_int64_t sent, u_int64_t total, const char* /*buf*/, unsigned /*len*/, void* data);
@@ -174,7 +156,7 @@ class NjbMediaDevice : public MediaDevice
         void clearItems();
 
 
-	TransferDialog 	 *m_td;
+        TransferDialog      *m_td;
         njb_t njbs[NJB_MAX_DEVICES];
 
         QListView *listAmarokPlayLists;
@@ -183,8 +165,8 @@ class NjbMediaDevice : public MediaDevice
 
         QString m_errMsg;
 
-	bool m_connected;
-	
+        bool m_connected;
+
         njb_t* m_njb;
         bool m_captured;
         int m_libcount;
@@ -192,7 +174,7 @@ class NjbMediaDevice : public MediaDevice
         trackValueList trackList;
         // playlistValueList playlistList;
         dataFileValueList dataFileList;
-        // 	friend class Playlist;
+        //     friend class Playlist;
         unsigned m_progressStart;
         QString m_progressMessage;
 

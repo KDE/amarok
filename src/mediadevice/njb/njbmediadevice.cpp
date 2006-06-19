@@ -214,7 +214,7 @@ bool NjbMediaDevice::openDevice(bool)
 
     int n;
     if( NJB_Discover( njbs, 0, &n) == -1 || n == 0) {
-        amaroK::StatusBar::instance()->shortLongMessage( genericError, i18n("Nomad: Connecting "), KDE::StatusBar::Error );
+        amaroK::StatusBar::instance()->shortLongMessage( genericError, i18n("A suitable Nomad device could not be found"), KDE::StatusBar::Error );
         debug() << ": no NJBs found\n";
         theNjb = m_njb = NULL;
         return false;
@@ -225,17 +225,12 @@ bool NjbMediaDevice::openDevice(bool)
     theNjb = m_njb;
 
     if( NJB_Open( m_njb) == -1) {
-        debug() << ": couldn't open\n";
-        debug() << ": deleting " << m_njb << "\n";
+        amaroK::StatusBar::instance()->shortLongMessage( genericError, i18n("Nomad device could not be opened"), KDE::StatusBar::Error );
         delete m_njb;
         theNjb = m_njb = NULL;
         return false;
     }
     m_connected = true;
-
-    debug() << ": m_njb " << m_njb << "\n";
-
-    debug() << ": pid=" << getpid() << "Capturing." << endl;
 
     if( NJB_Capture(m_njb) == -1) {
         debug() << ": couldn't capture\n";
@@ -244,12 +239,12 @@ bool NjbMediaDevice::openDevice(bool)
     else
         m_captured = true;
 
-    if(m_captured)
+    if( m_captured )
     {
-        readJukeboxMusic( );
-	QString s;
-	s.sprintf("%d tracks found", trackList.size());
-        amaroK::StatusBar::instance()->shortLongMessage( s, s, KDE::StatusBar::Information );
+        readJukeboxMusic();
+        QString s = i18n( "%1 tracks found on device",
+                          "%1 tracks found on device", trackList.size() ).arg( trackList.size() );
+        amaroK::StatusBar::instance()->shortMessage( s );
     }
 
     return true;
@@ -709,7 +704,7 @@ void NjbMediaDevice::rmbPressed(QListViewItem* qitem, const QPoint& point, int )
         KPopupMenu menu( m_view);
         menu.insertItem( SmallIconSet( amaroK::icon( "collection" ) ), i18n("Download"), DOWNLOAD );
         menu.insertSeparator();
-        //			menu.insertItem( SmallIconSet( amaroK::icon( "edit" ) ), i18n( "Rename" ), RENAME );
+        //menu.insertItem( SmallIconSet( amaroK::icon( "edit" ) ), i18n( "Rename" ), RENAME );
         menu.insertItem( SmallIconSet( amaroK::icon( "remove" ) ), i18n( "Delete" ), DELETE );
 
 
