@@ -9,6 +9,8 @@ VERSION 1.4.1:
   CHANGES:
 
   BUGFIXES:
+    * Disable global shortcut for ratings when ratings are disabled. 
+      (BR 129414)
 
 
 VERSION 1.4.1-beta1:

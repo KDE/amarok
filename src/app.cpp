@@ -1078,6 +1078,8 @@ KIO::Job *App::trashFiles( const KURL::List &files )
 
 void App::setRating( int n )
 {
+    if( !AmarokConfig::useRatings() ) return;
+
     n *= 2;
 
     const Engine::State s = EngineController::instance()->engine()->state();
