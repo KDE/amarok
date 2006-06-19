@@ -68,12 +68,15 @@ amaroK::SocketServer::SocketServer( const QString &socketName, QObject *parent )
 
     m_path = locateLocal( "socket", socketName ).local8Bit();
 
-    sockaddr_un local;
-    local.sun_family = AF_UNIX;
-    qstrcpy( &local.sun_path[0], m_path );
+    union {
+        sockaddr_un un;
+        sockaddr sa;
+    } local;
+    local.un.sun_family = AF_UNIX;
+    qstrcpy( &local.un.sun_path[0], m_path );
     ::unlink( m_path ); //FIXME why do we delete it?
 
-    if( ::bind( m_sockfd, reinterpret_cast<sockaddr*>( &local ), sizeof(local) ) == -1 ) {
+    if( ::bind( m_sockfd, &local.sa, sizeof(local.un) ) == -1 ) {
         warning() << "bind() error\n";
         ::close( m_sockfd );
         m_sockfd = -1;
