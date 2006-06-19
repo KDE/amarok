@@ -586,6 +586,8 @@ void ContextBrowser::engineStateChanged( Engine::State state, Engine::State oldS
             if ( m_contextBar->currentBrowser() == m_contextTab || m_contextBar->currentBrowser() == m_lyricsTab )
             {
                 showCurrentTrack();
+                if ( oldState == Engine::Paused )
+                    refreshCurrentTrackPage();
             }
             blockSignals( true );
             m_contextBar->setEnabled( m_lyricsTab, false );
