@@ -151,7 +151,7 @@ UniversalAmarok::~UniversalAmarok()
 
 extern "C"
 {
-    void* KDE_EXPORT create_konqsidebar_universalamarok(KInstance *instance,QObject *par,QWidget *widp,QString &desktopname,const char *name)
+    KDE_EXPORT void* create_konqsidebar_universalamarok(KInstance *instance,QObject *par,QWidget *widp,QString &desktopname,const char *name)
     {
         KGlobal::locale()->insertCatalogue( "amarok" );
         return new UniversalAmarok(instance,par,widp,desktopname,name);
