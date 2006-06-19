@@ -120,6 +120,8 @@ INotify::watchDir( QString directory )
         debug() << "Could not add INotify watch for: " << directory << endl;
 
     return ( wd >= 0 );
+#else
+    Q_UNUSED(directory);
 #endif
 
     return false;
