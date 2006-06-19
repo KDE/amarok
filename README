@@ -48,7 +48,7 @@ Required
       http://freshmeat.net/projects/taglib
 
     * Ruby 1.8
-      (programming language)
+      (programming language, used for scoring and lyrics)
       http://www.ruby-lang.org
 
     * One of the multimedia frameworks listed below:
@@ -104,10 +104,6 @@ Optional
     * K3B 0.11
       (CD burning support)
       http://www.k3b.org
-
-    * Exscalibar >= 1.0.1
-      (Moodbar support)
-      http://www.sf.net/projects/exscalibar
 
     * libgpod 0.3.2
       (iPod support)
