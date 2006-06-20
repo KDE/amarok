@@ -46,7 +46,7 @@ amaroK::icon( const QString& name ) //declared in amarok.h
         iconMap["configure"]            = "configure";
         iconMap["covermanager"]         = "covermanager";
         iconMap["device"]               = "usbpendrive_unmount";
-        iconMap["download"]             = "khtml_get";
+        iconMap["download"]             = "khtml_kget";
         iconMap["dynamic"]              = "dynamic";
         iconMap["edit"]                 = "edit";
         iconMap["editcopy"]             = "editcopy";
