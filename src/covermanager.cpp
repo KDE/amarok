@@ -543,14 +543,16 @@ void CoverManager::slotSetFilter() //SLOT
 
     m_coverView->selectAll( false);
     QIconViewItem *item = m_coverView->firstItem();
-    while ( item ) {
+    while ( item ) 
+    {
         QIconViewItem *tmp = item->nextItem();
         m_coverView->takeItem( item );
         item = tmp;
     }
 
     m_coverView->setAutoArrange( false );
-    for( QIconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() ) {
+    for( QIconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() ) 
+    {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
         if( coverItem->album().contains( m_filter, false ) || coverItem->artist().contains( m_filter, false ) )
             m_coverView->insertItem( item, m_coverView->lastItem() );

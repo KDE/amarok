@@ -553,8 +553,8 @@ CoverFetcher::getUserQuery( QString explanation )
             QLabel      *labelName = new QLabel( this );
             QHBox       *buttons   = new QHBox( this );
             KPushButton *save      = new KPushButton( KStdGuiItem::save(), buttons );
-            KPushButton *newsearch = new KPushButton( i18n( "New &Search..." ), buttons, "NewSearch" );
-            KPushButton *nextcover = new KPushButton( i18n( "Next &Cover" ), buttons, "NextCover" );
+            KPushButton *newsearch = new KPushButton( i18n( "Ne&w Search..." ), buttons, "NewSearch" );
+            KPushButton *nextcover = new KPushButton( i18n( "&Next Cover" ), buttons, "NextCover" );
             KPushButton *cancel    = new KPushButton( KStdGuiItem::cancel(), buttons );
 
             labelPix ->setAlignment( Qt::AlignHCenter );
