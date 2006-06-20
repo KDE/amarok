@@ -1422,7 +1422,9 @@ CurrentTrackJob::showHomeByAlbums()
             m_HTMLSource.append(
                     "</table>\n"
                     "</div>\n"
-                    "</td>\n" );
+                    "</td>\n"
+                    "</tr>\n"
+                    "<tr>\n" );
         }
     }
     // </Fresh Podcasts Information>
@@ -1467,7 +1469,9 @@ CurrentTrackJob::showHomeByAlbums()
         m_HTMLSource.append(
                 "</table>\n"
                 "</div>\n"
-                "</td>\n" );
+                "</td>\n"
+                "</tr>\n"
+                "<tr>\n" );
     }
     // </Recent Tracks Information>
 
