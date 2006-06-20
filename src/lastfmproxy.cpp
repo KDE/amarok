@@ -680,11 +680,11 @@ LastFm::Server::accept( int socket)
     /*char emptyBuf[2048];
     memset( emptyBuf, 0, sizeof( emptyBuf ) );
     m_sockProxy.writeBlock( emptyBuf, sizeof( emptyBuf ) );*/
-    QTextStream proxyStream( m_sockProxy );
+   /* QTextStream proxyStream( m_sockProxy );
     proxyStream << "HTTP/1.0 200 Ok\r\n"
                    "Content-Type: audio/x-mp3; charset=\"utf-8\"\r\n"
-                   "\r\n";
-    m_sockProxy.waitForMore( KProtocolManager::proxyConnectTimeout() * 1000 );
+                   "\r\n"; */
+    m_sockProxy->waitForMore( KProtocolManager::proxyConnectTimeout() * 1000 );
 }
 
 void
