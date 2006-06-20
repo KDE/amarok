@@ -375,13 +375,9 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
     // streams from last.fm should be handled by our proxy, in order to authenticate with the server
     else if ( url.protocol() == "lastfm" )
     {
-        debug() << "Init lastfm proxy" << endl;
-        LastFmProxy *lfp = new LastFmProxy();
-        QString u = AmarokConfig::scrobblerUsername();
-        QString p = AmarokConfig::scrobblerPassword();
-        lfp->handshake( u, p );
-
-//         url = lfp->getProxyUrl();
+        url = LastFm::Controller::instance()->getNewProxy( url.url() );
+        debug() << "New URL is " << url.url() << endl;
+        return;
     }
 
     if( m_engine->load( url, url.protocol() == "http" || url.protocol() == "rtsp" ) )

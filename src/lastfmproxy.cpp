@@ -1,6 +1,7 @@
 /***************************************************************************
  * copyright            : (C) 2006 Chris Muehlhaeuser <chris@chris.de>     *
- * copyright            : (C) 2006 Seb Ruiz <me@sebruiz.net>               *
+ *                      : (C) 2006 Seb Ruiz <me@sebruiz.net>               *
+ *                      : (C) 2006 Ian Monroe <ian@monroe.nu>              *
  **************************************************************************/
 
 /***************************************************************************
@@ -11,29 +12,103 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-#include "lastfmproxy.h"
+#include "amarok.h" //APP_VERSION
+#include "amarokconfig.h" //AS username and passwd
 #include "debug.h"
+#include "lastfmproxy.h"
+#include "enginecontroller.h"
 
 #include <qdom.h>
 #include <qfile.h>
 #include <qhttp.h>
+#include <qregexp.h>
 #include <qsocket.h>
 #include <qtimer.h>
 
+#include <kio/job.h> //KIO::get
+#include <kio/jobclasses.h> //KIO::Job
+#include <kio/netaccess.h> //synchronousRun
 #include <kmdcodec.h> //md5sum
+#include <kprotocolmanager.h>
+#include <kurl.h>
 
 #include <time.h>
+#include <unistd.h>
 
-LastFmProxy::LastFmProxy()
+LastFm::Controller::Controller()
+    : QObject( EngineController::instance(), "lastfmController" ),
+    m_playing( false ),
+    m_service( 0 ),
+    m_server( 0 )
+{ }
+
+LastFm::Controller::~Controller()
+{ } //m_service and m_server are both qobject children
+
+LastFm::Controller*
+LastFm::Controller::instance()
+{
+    static Controller* control = new Controller();
+    return control;
+}
+
+KURL
+LastFm::Controller::getNewProxy(QString genreUrl)
+{
+    DEBUG_BLOCK
+
+    m_genreUrl = genreUrl;
+
+    if ( m_playing )
+       return KURL(m_server->getProxyUrl());
+    m_service = new WebService(this);
+    m_service->handshake(  AmarokConfig::scrobblerUsername(),  AmarokConfig::scrobblerPassword() );
+    connect( m_service, SIGNAL ( handshakeResult( int ) ), this, SLOT( handshakeFinished() ) );
+    m_server = m_service->getServer();
+    KURL streamUrl = m_server->getProxyUrl();
+    m_playing=true;
+    return streamUrl;
+}
+
+void
+LastFm::Controller::handshakeFinished()
+{
+    DEBUG_BLOCK
+
+    disconnect( m_service, SIGNAL ( handshakeResult( int ) ), this, SLOT( handshakeFinished() ) );
+    connect( m_service, SIGNAL( stationChanged( QString, QString ) ), this, SLOT( initialGenreSet() ) );
+    m_service->changeStation( m_genreUrl );
+}
+
+void
+LastFm::Controller::initialGenreSet()
+{
+    DEBUG_BLOCK
+   //we only want to do this function once for each new m_server
+   disconnect( m_service, SIGNAL( stationChanged( QString, QString ) ), this, SLOT( initialGenreSet() ) ); 
+   m_server->loadStream( m_service->streamUrl() );//we only want the first time
+}
+
+void
+LastFm::Controller::playbackStopped()
+{ 
+    m_playing = false;
+    delete m_service; m_service = 0;
+    delete m_server; m_server = 0;
+}
+
+LastFm::WebService::WebService( QObject* parent )
+    : QObject( parent, "lastfmParent" )
+    , m_server( 0 )
 {
     debug() << "Initialising Web Service" << endl;
 }
 
-
 void
-LastFmProxy::handshake( const QString& username, const QString& password )
+LastFm::WebService::handshake( const QString& username, const QString& password )
 {
+    DEBUG_BLOCK
+
     m_username = username;
     m_password = password;
 
@@ -46,19 +121,21 @@ LastFmProxy::handshake( const QString& username, const QString& password )
 
     QString path =
             QString( "/radio/handshake.php?version=%1&platform=%2&username=%3&passwordmd5=%4&debug=%5" )
-            .arg( "1.2.0" )
-            .arg( QString("linux") ) //platform
+            .arg( APP_VERSION )             //Muesli-approved: Amarok version, and Amarok-as-platform
+            .arg( QString("Amarok") )
             .arg( QString( QUrl( username ).encodedPathAndQuery() ) )
             .arg( KMD5( m_password.utf8() ).hexDigest() )
             .arg( "0" );
 
     http->get( path );
     m_lastHttp = http;
+
+    m_server = new Server( this );
 }
 
 
 void
-LastFmProxy::handshakeHeaderReceived( const QHttpResponseHeader &resp )
+LastFm::WebService::handshakeHeaderReceived( const QHttpResponseHeader &resp )
 {
     if ( resp.statusCode() == 503 )
     {
@@ -68,7 +145,7 @@ LastFmProxy::handshakeHeaderReceived( const QHttpResponseHeader &resp )
 
 
 void
-LastFmProxy::handshakeFinished( int /*id*/, bool error )
+LastFm::WebService::handshakeFinished( int /*id*/, bool error )
 {
     DEBUG_BLOCK
 
@@ -86,7 +163,7 @@ LastFmProxy::handshakeFinished( int /*id*/, bool error )
     m_baseHost = parameter( "base_url", result );
     m_basePath = parameter( "base_path", result );
     m_subscriber = parameter( "subscriber", result ) == "1";
-    m_streamUrl.setPath( parameter( "stream_url", result ) );
+    m_streamUrl = QUrl( parameter( "stream_url", result ) );
 //     bool banned = parameter( "banned", result ) == "1";
 
     if ( m_session.lower() == "failed" )
@@ -99,30 +176,31 @@ LastFmProxy::handshakeFinished( int /*id*/, bool error )
     emit handshakeResult( m_session.length() == 32 ? 1 : -1 );
 }
 
-
 void
-LastFmProxy::changeStation( QString url )
+LastFm::WebService::changeStation( QString url )
 {
-    debug() << "Changing station:" << url;
+    DEBUG_BLOCK
+    debug() << "Changing station:" << url << endl;
 
     QHttp *http = new QHttp( m_baseHost, 80, this );
-    connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( changeStationFinished( bool ) ) );
+    connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( changeStationFinished( int, bool ) ) );
 
     if ( url.startsWith( "lastfm://" ) )
         url.remove( 0, 9 ); // get rid of it!
 
     http->get( QString( m_basePath + "/adjust.php?session=%1&url=lastfm://%2&debug=%3" )
                   .arg( m_session )
-                  .arg( url.contains( "%" ) ? url : QString( QUrl( url ).encodedPathAndQuery() ) )
+                  .arg( url.contains( "%" ) ? url : QUrl( url ).toString(true, false) )
                   .arg( "0" ) );
-
     m_lastHttp = http;
 }
 
 
 void
-LastFmProxy::changeStationFinished( int /*id*/, bool error )
+LastFm::WebService::changeStationFinished( int /*id*/, bool error )
 {
+    DEBUG_BLOCK
+
     if( error ) return;
 
     QString result( m_lastHttp->readAll() );
@@ -135,24 +213,19 @@ LastFmProxy::changeStationFinished( int /*id*/, bool error )
             QString stationName = parameter( "stationname", result );
             if ( stationName.isEmpty() )
                 stationName = url;
-
-            if ( !url.startsWith( "play" ) )
-            {
-                emit skipDone();
-                emit stationChanged( url, stationName );
-            }
-            else
-                emit songQueued();
+            emit stationChanged( url, stationName );
         }
+        else
+            emit stationChanged( url, QString::null );
     }
 }
 
 
 void
-LastFmProxy::requestMetaData()
+LastFm::WebService::requestMetaData()
 {
     QHttp *http = new QHttp( m_baseHost, 80, this );
-    connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( metaDataFinished( bool ) ) );
+    connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( metaDataFinished( int, bool ) ) );
 
     http->get( QString( m_basePath + "/np.php?session=%1&debug=%2" )
                   .arg( m_session )
@@ -162,7 +235,7 @@ LastFmProxy::requestMetaData()
 
 
 void
-LastFmProxy::metaDataFinished( int /*id*/, bool error )
+LastFm::WebService::metaDataFinished( int /*id*/, bool error )
 {
     if( error )
         return;
@@ -189,12 +262,12 @@ LastFmProxy::metaDataFinished( int /*id*/, bool error )
 
 
 void
-LastFmProxy::enableScrobbling( bool enabled )
+LastFm::WebService::enableScrobbling( bool enabled )
 {
     if ( enabled )
-        debug() << "Enabling Scrobbling!";
+        debug() << "Enabling Scrobbling!" << endl;
     else
-        debug() << "Disabling Scrobbling!";
+        debug() << "Disabling Scrobbling!" << endl;
 
     QHttp *http = new QHttp( m_baseHost, 80, this );
     connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( enableScrobblingFinished( bool ) ) );
@@ -208,7 +281,7 @@ LastFmProxy::enableScrobbling( bool enabled )
 
 
 void
-LastFmProxy::enableScrobblingFinished( int /*id*/, bool error )
+LastFm::WebService::enableScrobblingFinished( int /*id*/, bool error )
 {
     if ( error )
         return;
@@ -218,7 +291,7 @@ LastFmProxy::enableScrobblingFinished( int /*id*/, bool error )
 
 
 void
-LastFmProxy::love()
+LastFm::WebService::love()
 {
     QHttp *http = new QHttp( m_baseHost, 80, this );
     connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( loveFinished( bool ) ) );
@@ -232,7 +305,7 @@ LastFmProxy::love()
 
 
 void
-LastFmProxy::skip()
+LastFm::WebService::skip()
 {
     QHttp *http = new QHttp( m_baseHost, 80, this );
     connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( skipFinished( bool ) ) );
@@ -244,7 +317,7 @@ LastFmProxy::skip()
 
 
 void
-LastFmProxy::ban()
+LastFm::WebService::ban()
 {
     QHttp *http = new QHttp( m_baseHost, 80, this );
     connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( loveFinished( bool ) ) );
@@ -257,7 +330,7 @@ LastFmProxy::ban()
 
 
 void
-LastFmProxy::loveFinished( int /*id*/, bool error )
+LastFm::WebService::loveFinished( int /*id*/, bool error )
 {
     if( error ) return;
     emit loveDone();
@@ -265,7 +338,7 @@ LastFmProxy::loveFinished( int /*id*/, bool error )
 
 
 void
-LastFmProxy::skipFinished( int /*id*/, bool error )
+LastFm::WebService::skipFinished( int /*id*/, bool error )
 {
     if( error ) return;
     emit skipDone();
@@ -273,7 +346,7 @@ LastFmProxy::skipFinished( int /*id*/, bool error )
 
 
 void
-LastFmProxy::banFinished( int /*id*/, bool error )
+LastFm::WebService::banFinished( int /*id*/, bool error )
 {
     if( error ) return;
     emit banDone();
@@ -282,7 +355,7 @@ LastFmProxy::banFinished( int /*id*/, bool error )
 
 
 void
-LastFmProxy::friends( QString username )
+LastFm::WebService::friends( QString username )
 {
     if ( username.isEmpty() )
         username = m_username;
@@ -297,7 +370,7 @@ LastFmProxy::friends( QString username )
 
 
 void
-LastFmProxy::friendsFinished( int /*id*/, bool error )
+LastFm::WebService::friendsFinished( int /*id*/, bool error )
 {
     if( error ) return;
 
@@ -323,7 +396,7 @@ LastFmProxy::friendsFinished( int /*id*/, bool error )
 
 
 void
-LastFmProxy::neighbours( QString username )
+LastFm::WebService::neighbours( QString username )
 {
     if ( username.isEmpty() )
         username = m_username;
@@ -338,7 +411,7 @@ LastFmProxy::neighbours( QString username )
 
 
 void
-LastFmProxy::neighboursFinished( int /*id*/, bool error )
+LastFm::WebService::neighboursFinished( int /*id*/, bool error )
 {
     if( error )  return;
 
@@ -364,7 +437,7 @@ LastFmProxy::neighboursFinished( int /*id*/, bool error )
 
 
 void
-LastFmProxy::userTags( QString username )
+LastFm::WebService::userTags( QString username )
 {
     if ( username.isEmpty() )
         username = m_username;
@@ -379,7 +452,7 @@ LastFmProxy::userTags( QString username )
 
 
 void
-LastFmProxy::userTagsFinished( int /*id*/, bool error )
+LastFm::WebService::userTagsFinished( int /*id*/, bool error )
 {
     if( error ) return;
 
@@ -405,7 +478,7 @@ LastFmProxy::userTagsFinished( int /*id*/, bool error )
 
 
 void
-LastFmProxy::recentTracks( QString username )
+LastFm::WebService::recentTracks( QString username )
 {
     if ( username.isEmpty() )
         username = m_username;
@@ -420,7 +493,7 @@ LastFmProxy::recentTracks( QString username )
 
 
 void
-LastFmProxy::recentTracksFinished( int /*id*/, bool error )
+LastFm::WebService::recentTracksFinished( int /*id*/, bool error )
 {
     if( error ) return;
 
@@ -449,7 +522,7 @@ LastFmProxy::recentTracksFinished( int /*id*/, bool error )
 
 
 void
-LastFmProxy::recommend( int type, QString username, QString artist, QString token )
+LastFm::WebService::recommend( int type, QString username, QString artist, QString token )
 {
     QString modeToken = "";
     switch ( type )
@@ -495,20 +568,20 @@ LastFmProxy::recommend( int type, QString username, QString artist, QString toke
 
 
 void
-LastFmProxy::recommendFinished( int /*id*/, bool /*error*/ )
+LastFm::WebService::recommendFinished( int /*id*/, bool /*error*/ )
 {
-    debug() << "Recommendation:" << m_lastHttp->readAll();
+    debug() << "Recommendation:" << m_lastHttp->readAll() << endl;
 }
 
 
 QString
-LastFmProxy::parameter( QString keyName, QString data )
+LastFm::WebService::parameter( QString keyName, QString data )
 {
-    QStringList list = QStringList::split( data, "\n" );
+    QStringList list = QStringList::split( '\n', data );
 
     for ( uint i = 0; i < list.size(); i++ )
     {
-        QStringList values = QStringList::split( list[i], "=" );
+        QStringList values = QStringList::split( '=', list[i] );
         if ( values[0] == keyName )
         {
             values.remove( values.at(0) );
@@ -521,14 +594,14 @@ LastFmProxy::parameter( QString keyName, QString data )
 
 
 QStringList
-LastFmProxy::parameterArray( QString keyName, QString data )
+LastFm::WebService::parameterArray( QString keyName, QString data )
 {
     QStringList result;
-    QStringList list = QStringList::split( data, "\n" );
+    QStringList list = QStringList::split( '\n', data );
 
     for ( uint i = 0; i < list.size(); i++ )
     {
-        QStringList values = QStringList::split( list[i], "=" );
+        QStringList values = QStringList::split( '=', list[i] );
         if ( values[0].startsWith( keyName ) )
         {
             values.remove( values.at(0) );
@@ -541,18 +614,18 @@ LastFmProxy::parameterArray( QString keyName, QString data )
 
 
 QStringList
-LastFmProxy::parameterKeys( QString keyName, QString data )
+LastFm::WebService::parameterKeys( QString keyName, QString data )
 {
     QStringList result;
-    QStringList list = QStringList::split( data, "\n" );
+    QStringList list = QStringList::split( '\n', data );
 
     for ( uint i = 0; i < list.size(); i++ )
     {
-        QStringList values = QStringList::split( list[i], "=" );
+        QStringList values = QStringList::split( '=', list[i] );
         if ( values[0].startsWith( keyName ) )
         {
-            values = QStringList::split( values[0], "[" );
-            values = QStringList::split( values[1], "]" );
+            values = QStringList::split( '[', values[0] );
+            values = QStringList::split( ']', values[1] );
             result.append( values[0] );
         }
     }
@@ -560,5 +633,105 @@ LastFmProxy::parameterKeys( QString keyName, QString data )
     return result;
 }
 
+
+LastFm::Server::Server( QObject* parent )
+    : QObject(parent, "lastfmProxyServer")
+{
+    DEBUG_BLOCK
+    m_sockProxy - new QSocket( this, "socketLastFmProxy" );
+
+    StreamProxy* server = new StreamProxy( this );
+    m_proxyPort = server->port();
+    connect( server, SIGNAL( connected( int ) ), this, SLOT( accept( int ) ) );
+}
+
+LastFm::Server::~Server()
+{
+    delete m_buffer;
+}
+
+void
+LastFm::Server::loadStream( QUrl remote )
+{
+    DEBUG_BLOCK
+
+    m_remoteUrl = remote;
+    debug() << m_remoteUrl.host() << ':' << m_remoteUrl.port() << m_remoteUrl.encodedPathAndQuery() << endl;
+    debug() << m_remoteUrl.toString( true, false ) << endl;
+    m_http = new QHttp ( m_remoteUrl.host(), m_remoteUrl.port(), this, "lastfmClient" );
+    m_buffer = new QByteArray();
+    connect( m_http, SIGNAL( readyRead( const QHttpResponseHeader& ) ), this, SLOT( dataAvailable( const QHttpResponseHeader& ) ) );
+    connect( m_http, SIGNAL( responseHeaderReceived( const QHttpResponseHeader& ) ), this, SLOT( responseHeaderReceived( const QHttpResponseHeader& ) ) );
+
+    m_http->get( m_remoteUrl.encodedPathAndQuery() );
+}
+
+KURL
+LastFm::Server::getProxyUrl()
+{
+    return KURL( QString("http://localhost:%1/theBeard.mp3").arg( m_proxyPort ) );
+}
+
+void
+LastFm::Server::accept( int socket)
+{
+    DEBUG_BLOCK
+    m_sockProxy->setSocket( socket );
+    /*char emptyBuf[2048];
+    memset( emptyBuf, 0, sizeof( emptyBuf ) );
+    m_sockProxy.writeBlock( emptyBuf, sizeof( emptyBuf ) );*/
+    QTextStream proxyStream( m_sockProxy );
+    proxyStream << "HTTP/1.0 200 Ok\r\n"
+                   "Content-Type: audio/x-mp3; charset=\"utf-8\"\r\n"
+                   "\r\n";
+    m_sockProxy.waitForMore( KProtocolManager::proxyConnectTimeout() * 1000 );
+}
+
+void
+LastFm::Server::responseHeaderReceived( const QHttpResponseHeader &resp  )
+{
+    DEBUG_BLOCK
+
+    debug() << resp.statusCode() << endl;
+}
+
+void
+LastFm::Server::dataAvailable( const QHttpResponseHeader & /*resp*/ )
+{
+    DEBUG_BLOCK
+    Q_LONG index = 0;
+    Q_LONG bytesWrite = 0;   
+    
+    char inBuf[8192];
+    memset( inBuf, 0, sizeof( inBuf ) );
+    const Q_LONG bytesRead = m_http->readBlock( inBuf, sizeof( inBuf ) );
+    
+    while ( index < bytesRead ) {
+        bytesWrite = bytesRead - index;
+        debug() << inBuf << " bytesWrite: " << bytesWrite << " bytesRead: " << bytesRead << " index " << index << endl;
+        if( qstrcmp(inBuf, "SYNC") == 0 )
+            return;
+        bytesWrite = m_sockProxy->writeBlock( inBuf + index, bytesWrite );
+        
+        if ( bytesWrite == -1 )
+            return;
+        index += bytesWrite;
+    }
+ /*  for ( int i = 0; i < len; i++ )
+    {
+        QByteArray::Iterator end = m_buffer.end();
+        end++;
+        (*end) = inBuf[ i ] ;
+    } */
+
+}
+
+void
+LastFm::StreamProxy::newConnection( int socket )
+{ 
+    DEBUG_BLOCK 
+
+    emit connected( socket ); 
+}
 
 #include "lastfmproxy.moc"
