@@ -15,6 +15,7 @@
 
 #include <kaction.h>
 #include <klistview.h>
+#include <kpushbutton.h>
 #include <kurl.h>
 #include <qdom.h>
 #include <qptrlist.h>
@@ -366,6 +367,8 @@ private slots:
 
 private:
     HTMLView *m_infoBrowser;
+    KPushButton *m_pushButton;
+    bool m_enable;
 };
 
 

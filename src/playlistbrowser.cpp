@@ -3299,7 +3299,8 @@ void PlaylistDialog::slotCustomPath()
 
 
 InfoPane::InfoPane( PlaylistBrowser *parent )
-        : QVBox( parent )
+        : QVBox( parent ),
+          m_enable( false )
 {
     QFrame *container = new QVBox( this, "container" );
     container->hide();
@@ -3316,9 +3317,10 @@ InfoPane::InfoPane( PlaylistBrowser *parent )
         container->setBackgroundMode( Qt::PaletteBase );
     }
 
-    KPushButton *button = new KPushButton( KGuiItem( i18n("&Show Extended Info"), "info" ), this );
-    button->setToggleButton( true );
-    connect( button, SIGNAL(toggled( bool )), SLOT(toggle( bool )) );
+    m_pushButton = new KPushButton( KGuiItem( i18n("&Show Extended Info"), "info" ), this );
+    m_pushButton->setToggleButton( true );
+    m_pushButton->setEnabled( m_enable );
+    connect( m_pushButton, SIGNAL(toggled( bool )), SLOT(toggle( bool )) );
 }
 
 
@@ -3326,13 +3328,25 @@ void
 InfoPane::toggle( bool toggled )
 {
     static_cast<QWidget*>(child("container"))->setShown( toggled );
+
+    //Now the info pane is not shown, we can disable the button if necessary
+    if ( !toggled )
+        m_pushButton->setEnabled( m_enable );
 }
 
 
 void
 InfoPane::setInfo( const QString &title, const QString &info )
 {
+    //If the info pane is not shown, we can enable or disable the button depending on
+    //whether there is content to show. Otherwise, just remember what we wanted to do
+    //so we can do it later, when the user does hide the pane.
+    m_enable = !( info.isEmpty() && title.isEmpty() );
+    if ( !static_cast<QWidget*>(child("container"))->isShown() )
+        m_pushButton->setEnabled( m_enable );
+
     m_infoBrowser->set(
+        m_enable ?
         QString( "<div id='extended_box' class='box'>"
                   "<div id='extended_box-header-title' class='box-header'>"
                   "<span id='extended_box-header-title' class='box-header-title'>"
@@ -3346,7 +3360,8 @@ InfoPane::setInfo( const QString &title, const QString &info )
                   "</td>"
                   "</tr>"
                   "</table>"
-                  "</div>" ).arg( title, info ) );
+                  "</div>" ).arg( title, info ) :
+        QString::null );
 }
 
 #include "playlistbrowser.moc"

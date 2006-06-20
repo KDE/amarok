@@ -96,6 +96,11 @@ PlaylistBrowserEntry::compare( QListViewItem* item, int col, bool ascending ) co
     return KListViewItem::compare(item, col, ascending);
 }
 
+void PlaylistBrowserEntry::updateInfo()
+{
+    PlaylistBrowser::instance()->setInfo( QString::null, QString::null );
+    return;
+}
 
 
 /////////////////////////////////////////////////////////////////////////////

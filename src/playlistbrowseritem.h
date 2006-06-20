@@ -54,7 +54,7 @@ class PlaylistBrowserEntry : public KListViewItem
         bool    notify() const { return m_notify; }           // use as you like ;-).  eg:
         void    setNotify( const bool n ) { m_notify = n; }   // stop podcasts displaying multiple popups
 
-        virtual void updateInfo() { return; }
+        virtual void updateInfo();
 
     protected:
         /** Interval of the download pixmap animation, in milliseconds */
