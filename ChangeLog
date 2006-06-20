@@ -7,9 +7,10 @@ VERSION 1.4.1:
   FEATURES:
 
   CHANGES:
+    * GUI layout reverted to the classic Amarok layout.
 
   BUGFIXES:
-    * Disable global shortcut for ratings when ratings are disabled. 
+    * Disable global shortcut for ratings when ratings are disabled.
       (BR 129414)
 
 
