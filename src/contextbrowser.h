@@ -11,12 +11,11 @@
 #include "amarokdcophandler.h"
 #include "engineobserver.h"
 
-#include <qwidget.h>
+#include <ktabwidget.h>
 #include <kurl.h>
 
 class CollectionDB;
 class Color;
-class ContextBar;
 class HTMLView;
 class KPopupMenu;
 class MetaBundle;
@@ -25,6 +24,7 @@ class QVBox;
 class QLineEdit;
 class QComboBox;
 class KDialogBase;
+class KTabBar;
 
 class CueFile;
 
@@ -32,7 +32,7 @@ namespace Browser { class ToolBar; }
 namespace KIO { class Job; class TransferJob; }
 
 
-class ContextBrowser : public QWidget, public EngineObserver
+class ContextBrowser : public KTabWidget, public EngineObserver
 {
     Q_OBJECT
 
@@ -52,8 +52,6 @@ class ContextBrowser : public QWidget, public EngineObserver
         static KURL::List expandURL( const KURL &url ); // expand urls (album, compilation, ...)
         static bool hasContextProtocol( const KURL &url ); // is url expandable by context browser?
 
-        ContextBar   *m_contextBar;
-
     public slots:
         void openURLRequest(const KURL &url );
         void collectionScanStarted();
@@ -67,6 +65,9 @@ class ContextBrowser : public QWidget, public EngineObserver
         void engineNewMetaData( const MetaBundle&, bool );
         void engineStateChanged( Engine::State, Engine::State = Engine::Empty );
         void paletteChange( const QPalette& );
+
+    protected slots:
+        void wheelDelta( int delta );
 
     private slots:
         void tabChanged( QWidget *page );

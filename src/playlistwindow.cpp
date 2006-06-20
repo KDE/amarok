@@ -22,7 +22,6 @@
 #include "browserbar.h"
 #include "clicklineedit.h"    //m_lineEdit
 #include "collectionbrowser.h"
-#include "contextbar.h"
 #include "contextbrowser.h"
 #include "debug.h"
 #include "devicemanager.h"
@@ -201,22 +200,18 @@ void PlaylistWindow::init()
 
     m_browsers = new BrowserBar( this );
 
-    ContextBrowser *cb = new ContextBrowser( "ContextBrowser" );
-    cb->m_contextBar->reparent( m_browsers->container(), QPoint() );
-
     //<Dynamic Mode Status Bar />
-    DynamicBar *dynamicBar = new DynamicBar( cb->m_contextBar->container() );
+    DynamicBar *dynamicBar = new DynamicBar( m_browsers->container());
 
     QFrame *playlist;
 
     { //<Search LineEdit>
-        KToolBar *bar = new KToolBar( cb->m_contextBar->container(), "NotMainToolBar" );
+        KToolBar *bar = new KToolBar( m_browsers->container(), "NotMainToolBar" );
         bar->setIconSize( 22, false ); //looks more sensible
         bar->setFlat( true ); //removes the ugly frame
         bar->setMovingEnabled( false ); //removes the ugly frame
 
-        playlist = new Playlist( cb->m_contextBar->container() );
-
+        playlist = new Playlist( m_browsers->container() );
         actionCollection()->action( "playlist_clear")->plug( bar );
         bar->addSeparator();
         actionCollection()->action( "playlist_undo")->plug( bar );
@@ -242,8 +237,6 @@ void PlaylistWindow::init()
         //QToolTip::add( filter_label, filtertip );
         QToolTip::add( m_lineEdit, filtertip );
     } //</Search LineEdit>
-
-
 
 
     dynamicBar->init();
@@ -389,7 +382,7 @@ void PlaylistWindow::init()
             Debug::Block block( name ); \
             m_browsers->addBrowser( Type::instance(), text, icon ); }
 
-        //addBrowserMacro( ContextBrowser, "ContextBrowser", i18n( "Context" ), amaroK::icon( "info" ) )
+        addBrowserMacro( ContextBrowser, "ContextBrowser", i18n( "Context" ), amaroK::icon( "info" ) )
         addBrowserMacro( CollectionBrowser, "CollectionBrowser", i18n( "Collection" ), amaroK::icon( "collection" ) )
         addInstBrowserMacro( PlaylistBrowser, "PlaylistBrowser", i18n( "Playlists" ), amaroK::icon( "playlist" ) )
 
