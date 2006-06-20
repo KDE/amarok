@@ -636,13 +636,17 @@ LastFm::WebService::parameterKeys( QString keyName, QString data )
 
 LastFm::Server::Server( QObject* parent )
     : QObject(parent, "lastfmProxyServer")
+    , m_buffer( new QByteArray )
+    , m_proxyPort( -1 )
+    , m_sockProxy( new QSocket( this, "socketLastFmProxy" ) )
 {
     DEBUG_BLOCK
-    m_sockProxy - new QSocket( this, "socketLastFmProxy" );
-
     StreamProxy* server = new StreamProxy( this );
     m_proxyPort = server->port();
     connect( server, SIGNAL( connected( int ) ), this, SLOT( accept( int ) ) );
+
+    connect( m_sockProxy, SIGNAL( readyRead() )
+            , this, SLOT( proxyContacted() ) );
 }
 
 LastFm::Server::~Server()
@@ -654,16 +658,26 @@ void
 LastFm::Server::loadStream( QUrl remote )
 {
     DEBUG_BLOCK
-
     m_remoteUrl = remote;
     debug() << m_remoteUrl.host() << ':' << m_remoteUrl.port() << m_remoteUrl.encodedPathAndQuery() << endl;
     debug() << m_remoteUrl.toString( true, false ) << endl;
     m_http = new QHttp ( m_remoteUrl.host(), m_remoteUrl.port(), this, "lastfmClient" );
-    m_buffer = new QByteArray();
-    connect( m_http, SIGNAL( readyRead( const QHttpResponseHeader& ) ), this, SLOT( dataAvailable( const QHttpResponseHeader& ) ) );
-    connect( m_http, SIGNAL( responseHeaderReceived( const QHttpResponseHeader& ) ), this, SLOT( responseHeaderReceived( const QHttpResponseHeader& ) ) );
+
+    connect( m_http, SIGNAL( readyRead( const QHttpResponseHeader& ) )
+             , this, SLOT( dataAvailable( const QHttpResponseHeader& ) ) );
+    connect( m_http, SIGNAL( responseHeaderReceived( const QHttpResponseHeader& ) )
+             , this, SLOT( responseHeaderReceived( const QHttpResponseHeader& ) ) );
 
     m_http->get( m_remoteUrl.encodedPathAndQuery() );
+}
+
+void
+LastFm::Server::proxyContacted()
+{
+    DEBUG_BLOCK
+    char inBuf[8192];
+    const Q_LONG bytesRead = m_http->readBlock( inBuf, sizeof( inBuf ) );
+    debug() << inBuf << endl;
 }
 
 KURL
@@ -680,10 +694,10 @@ LastFm::Server::accept( int socket)
     /*char emptyBuf[2048];
     memset( emptyBuf, 0, sizeof( emptyBuf ) );
     m_sockProxy.writeBlock( emptyBuf, sizeof( emptyBuf ) );*/
-   /* QTextStream proxyStream( m_sockProxy );
+    QTextStream proxyStream( m_sockProxy );
     proxyStream << "HTTP/1.0 200 Ok\r\n"
                    "Content-Type: audio/x-mp3; charset=\"utf-8\"\r\n"
-                   "\r\n"; */
+                   "\r\n"; 
     m_sockProxy->waitForMore( KProtocolManager::proxyConnectTimeout() * 1000 );
 }
 
@@ -698,17 +712,19 @@ LastFm::Server::responseHeaderReceived( const QHttpResponseHeader &resp  )
 void
 LastFm::Server::dataAvailable( const QHttpResponseHeader & /*resp*/ )
 {
-    DEBUG_BLOCK
+    if( m_proxyPort == -1) //no one has connected yet
+        return;
+
     Q_LONG index = 0;
     Q_LONG bytesWrite = 0;   
-    
+
     char inBuf[8192];
     memset( inBuf, 0, sizeof( inBuf ) );
     const Q_LONG bytesRead = m_http->readBlock( inBuf, sizeof( inBuf ) );
-    
+
     while ( index < bytesRead ) {
         bytesWrite = bytesRead - index;
-        debug() << inBuf << " bytesWrite: " << bytesWrite << " bytesRead: " << bytesRead << " index " << index << endl;
+ //       debug() << inBuf << " bytesWrite: " << bytesWrite << " bytesRead: " << bytesRead << " index " << index << endl;
         if( qstrcmp(inBuf, "SYNC") == 0 )
             return;
         bytesWrite = m_sockProxy->writeBlock( inBuf + index, bytesWrite );

@@ -377,7 +377,6 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
     {
         url = LastFm::Controller::instance()->getNewProxy( url.url() );
         debug() << "New URL is " << url.url() << endl;
-        return;
     }
 
     if( m_engine->load( url, url.protocol() == "http" || url.protocol() == "rtsp" ) )

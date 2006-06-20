@@ -186,6 +186,7 @@ namespace LastFm {
              void accept( int socket );
              void dataAvailable( const QHttpResponseHeader &resp );
              void responseHeaderReceived( const QHttpResponseHeader &resp  );
+             void proxyContacted();
 
         private:
             QUrl m_remoteUrl;
