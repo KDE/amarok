@@ -189,12 +189,15 @@ namespace LastFm {
              void proxyContacted();
 
         private:
+            void startGettingStream();
+        
             QUrl m_remoteUrl;
             QHttp*  m_http;
             QByteArray* m_buffer;
             int m_proxyPort;
             QSocket* m_sockProxy;
-
+            bool m_genreSet;
+            bool m_localConnected;
     };
     
     /**
