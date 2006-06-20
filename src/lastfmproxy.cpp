@@ -667,8 +667,6 @@ LastFm::Server::loadStream( QUrl remote )
              , this, SLOT( dataAvailable( const QHttpResponseHeader& ) ) );
     connect( m_http, SIGNAL( responseHeaderReceived( const QHttpResponseHeader& ) )
              , this, SLOT( responseHeaderReceived( const QHttpResponseHeader& ) ) );
-
-    m_http->get( m_remoteUrl.encodedPathAndQuery() );
 }
 
 void
@@ -699,6 +697,7 @@ LastFm::Server::accept( int socket)
                    "Content-Type: audio/x-mp3; charset=\"utf-8\"\r\n"
                    "\r\n"; 
     m_sockProxy->waitForMore( KProtocolManager::proxyConnectTimeout() * 1000 );
+    m_http->get( m_remoteUrl.encodedPathAndQuery() ); //get the lastfm stream
 }
 
 void
@@ -712,9 +711,6 @@ LastFm::Server::responseHeaderReceived( const QHttpResponseHeader &resp  )
 void
 LastFm::Server::dataAvailable( const QHttpResponseHeader & /*resp*/ )
 {
-    if( m_proxyPort == -1) //no one has connected yet
-        return;
-
     Q_LONG index = 0;
     Q_LONG bytesWrite = 0;   
 
