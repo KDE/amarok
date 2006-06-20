@@ -90,8 +90,8 @@ amaroK::icon( const QString& name ) //declared in amarok.h
         iconMap["settings_playback"]    = "kmix";
         iconMap["settings_view"]        = "colors";
         iconMap["stop"]                 = "player_stop";
-        iconMap["podcast"]              = "sound";
-        iconMap["podcast2"]             = "favorites";
+        iconMap["podcast"]              = "podcast";
+        iconMap["podcast2"]             = "podcast_new";
         iconMap["track"]                = "sound";
         iconMap["undo"]                 = "undo";
         iconMap["visualizations"]       = "visualizations";
@@ -101,7 +101,7 @@ amaroK::icon( const QString& name ) //declared in amarok.h
 
     if( iconMap.contains( name ) )
     {
-        if( AmarokConfig::useCustomIconTheme() || name.contains( "podcast" ) )
+        if( AmarokConfig::useCustomIconTheme() )
             return QString( "amarok_" ) + name;
         else
             return iconMap[name];
