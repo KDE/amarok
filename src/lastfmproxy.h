@@ -16,18 +16,15 @@
 #ifndef AMAROK_LASTFMPROXY_H
 #define AMAROK_LASTFMPROXY_H
 
-#include "metabundle.h"
-
 #include <qobject.h>
 #include <qserversocket.h>
-#include <qsocket.h>
 #include <qurl.h>
 #include <qvaluelist.h>
-
 
 class KURL;
 class QHttp;
 class QHttpResponseHeader;
+class QSocket;
 class QTimer;
 class MetaBundle;
 
@@ -204,11 +201,11 @@ namespace LastFm
     };
 
     /**
-    * Stream proxy server.
-    */
+     * Stream proxy server.
+     */
     class StreamProxy : public QServerSocket
     {
-            Q_OBJECT
+        Q_OBJECT
 
         public:
             StreamProxy( QObject* parent)

@@ -12,11 +12,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#define DEBUG_PREFIX "LastFmProxy"
+
 #include "amarok.h" //APP_VERSION
 #include "amarokconfig.h" //AS username and passwd
 #include "debug.h"
-#include "lastfmproxy.h"
 #include "enginecontroller.h"
+#include "lastfmproxy.h"
+#include "metabundle.h"
 
 #include <qdom.h>
 #include <qfile.h>
@@ -37,6 +41,11 @@
 
 using namespace LastFm;
 
+
+////////////////////////////////////////////////////////////////////////////////
+// CLASS Controller
+////////////////////////////////////////////////////////////////////////////////
+
 Controller *Controller::s_instance = 0;
 
 Controller::Controller()
@@ -46,8 +55,10 @@ Controller::Controller()
     m_server( 0 )
 { }
 
+
 Controller::~Controller()
 { } //m_service and m_server are both qobject children
+
 
 Controller*
 Controller::instance()
@@ -55,6 +66,7 @@ Controller::instance()
     if( !s_instance ) s_instance = new Controller();
     return s_instance;
 }
+
 
 KURL
 Controller::getNewProxy(QString genreUrl)
@@ -74,8 +86,9 @@ Controller::getNewProxy(QString genreUrl)
     return streamUrl;
 }
 
+
 void
-Controller::handshakeFinished()
+Controller::handshakeFinished() //SLOT
 {
     DEBUG_BLOCK
 
@@ -84,22 +97,30 @@ Controller::handshakeFinished()
     m_service->changeStation( m_genreUrl );
 }
 
-void
-Controller::initialGenreSet()
-{
-    DEBUG_BLOCK
-   //we only want to do this function once for each new m_server
-   disconnect( m_service, SIGNAL( stationChanged( QString, QString ) ), this, SLOT( initialGenreSet() ) );
-   m_server->loadStream( m_service->streamUrl() );//we only want the first time
-}
 
 void
-Controller::playbackStopped()
+Controller::initialGenreSet() //SLOT
+{
+    DEBUG_BLOCK
+
+    //we only want to do this function once for each new m_server
+    disconnect( m_service, SIGNAL( stationChanged( QString, QString ) ), this, SLOT( initialGenreSet() ) );
+    m_server->loadStream( m_service->streamUrl() );//we only want the first time
+}
+
+
+void
+Controller::playbackStopped() //SLOT
 {
     m_playing = false;
     delete m_service; m_service = 0;
     delete m_server; m_server = 0;
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+// CLASS WebService
+////////////////////////////////////////////////////////////////////////////////
 
 WebService::WebService( QObject* parent )
     : QObject( parent, "lastfmParent" )
@@ -108,6 +129,7 @@ WebService::WebService( QObject* parent )
 {
     debug() << "Initialising Web Service" << endl;
 }
+
 
 void
 WebService::handshake( const QString& username, const QString& password )
@@ -124,7 +146,7 @@ WebService::handshake( const QString& username, const QString& password )
     connect( http, SIGNAL( requestFinished( int, bool ) ),
              this,   SLOT( handshakeFinished( int, bool ) ) );
 
-    QString path =
+    const QString path =
             QString( "/radio/handshake.php?version=%1&platform=%2&username=%3&passwordmd5=%4&debug=%5" )
             .arg( APP_VERSION )             //Muesli-approved: Amarok version, and Amarok-as-platform
             .arg( QString("Amarok") )
@@ -140,7 +162,7 @@ WebService::handshake( const QString& username, const QString& password )
 
 
 void
-WebService::handshakeHeaderReceived( const QHttpResponseHeader &resp )
+WebService::handshakeHeaderReceived( const QHttpResponseHeader &resp ) //SLOT
 {
     if ( resp.statusCode() == 503 )
     {
@@ -150,7 +172,7 @@ WebService::handshakeHeaderReceived( const QHttpResponseHeader &resp )
 
 
 void
-WebService::handshakeFinished( int /*id*/, bool error )
+WebService::handshakeFinished( int /*id*/, bool error ) //SLOT
 {
     DEBUG_BLOCK
 
@@ -160,7 +182,7 @@ WebService::handshakeFinished( int /*id*/, bool error )
         return;
     }
 
-    QString result( m_lastHttp->readAll() );
+    const QString result( m_lastHttp->readAll() );
 
     debug() << "result: " << result << endl;
 
@@ -202,17 +224,18 @@ WebService::changeStation( QString url )
 
 
 void
-WebService::changeStationFinished( int /*id*/, bool error )
+WebService::changeStationFinished( int /*id*/, bool error ) //SLOT
 {
     DEBUG_BLOCK
 
     if( error ) return;
 
-    QString result( m_lastHttp->readAll() );
-    int errCode = parameter( "error", result ).toInt();
+    const QString result( m_lastHttp->readAll() );
+    const int errCode = parameter( "error", result ).toInt();
+
     if ( errCode <= 0 )
     {
-        QString url = parameter( "url", result );
+        const QString url = parameter( "url", result );
         if ( url.startsWith( "lastfm://" ) )
         {
             QString stationName = parameter( "stationname", result );
@@ -227,7 +250,7 @@ WebService::changeStationFinished( int /*id*/, bool error )
 
 
 void
-WebService::requestMetaData()
+WebService::requestMetaData() //SLOT
 {
     QHttp *http = new QHttp( m_baseHost, 80, this );
     connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( metaDataFinished( int, bool ) ) );
@@ -240,12 +263,11 @@ WebService::requestMetaData()
 
 
 void
-WebService::metaDataFinished( int /*id*/, bool error )
+WebService::metaDataFinished( int /*id*/, bool error ) //SLOT
 {
-    if( error )
-        return;
+    if( error ) return;
 
-    QString result( m_lastHttp->readAll() );
+    const QString result( m_lastHttp->readAll() );
 
     MetaBundle song;
     song.setArtist( parameter( "artist", result ) );
@@ -267,7 +289,7 @@ WebService::metaDataFinished( int /*id*/, bool error )
 
 
 void
-WebService::enableScrobbling( bool enabled )
+WebService::enableScrobbling( bool enabled ) //SLOT
 {
     if ( enabled )
         debug() << "Enabling Scrobbling!" << endl;
@@ -286,17 +308,16 @@ WebService::enableScrobbling( bool enabled )
 
 
 void
-WebService::enableScrobblingFinished( int /*id*/, bool error )
+WebService::enableScrobblingFinished( int /*id*/, bool error ) //SLOT
 {
-    if ( error )
-        return;
+    if ( error ) return;
 
     emit enableScrobblingDone();
 }
 
 
 void
-WebService::love()
+WebService::love() //SLOT
 {
     QHttp *http = new QHttp( m_baseHost, 80, this );
     connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( loveFinished( bool ) ) );
@@ -310,7 +331,7 @@ WebService::love()
 
 
 void
-WebService::skip()
+WebService::skip() //SLOT
 {
     QHttp *http = new QHttp( m_baseHost, 80, this );
     connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( skipFinished( bool ) ) );
@@ -322,7 +343,7 @@ WebService::skip()
 
 
 void
-WebService::ban()
+WebService::ban() //SLOT
 {
     QHttp *http = new QHttp( m_baseHost, 80, this );
     connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( loveFinished( bool ) ) );
@@ -335,7 +356,7 @@ WebService::ban()
 
 
 void
-WebService::loveFinished( int /*id*/, bool error )
+WebService::loveFinished( int /*id*/, bool error ) //SLOT
 {
     if( error ) return;
     emit loveDone();
@@ -343,7 +364,7 @@ WebService::loveFinished( int /*id*/, bool error )
 
 
 void
-WebService::skipFinished( int /*id*/, bool error )
+WebService::skipFinished( int /*id*/, bool error ) //SLOT
 {
     if( error ) return;
     emit skipDone();
@@ -351,7 +372,7 @@ WebService::skipFinished( int /*id*/, bool error )
 
 
 void
-WebService::banFinished( int /*id*/, bool error )
+WebService::banFinished( int /*id*/, bool error ) //SLOT
 {
     if( error ) return;
     emit banDone();
@@ -375,7 +396,7 @@ WebService::friends( QString username )
 
 
 void
-WebService::friendsFinished( int /*id*/, bool error )
+WebService::friendsFinished( int /*id*/, bool error ) //SLOT
 {
     if( error ) return;
 
@@ -416,7 +437,7 @@ WebService::neighbours( QString username )
 
 
 void
-WebService::neighboursFinished( int /*id*/, bool error )
+WebService::neighboursFinished( int /*id*/, bool error ) //SLOT
 {
     if( error )  return;
 
@@ -457,7 +478,7 @@ WebService::userTags( QString username )
 
 
 void
-WebService::userTagsFinished( int /*id*/, bool error )
+WebService::userTagsFinished( int /*id*/, bool error ) //SLOT
 {
     if( error ) return;
 
@@ -498,7 +519,7 @@ WebService::recentTracks( QString username )
 
 
 void
-WebService::recentTracksFinished( int /*id*/, bool error )
+WebService::recentTracksFinished( int /*id*/, bool error ) //SLOT
 {
     if( error ) return;
 
@@ -573,7 +594,7 @@ WebService::recommend( int type, QString username, QString artist, QString token
 
 
 void
-WebService::recommendFinished( int /*id*/, bool /*error*/ )
+WebService::recommendFinished( int /*id*/, bool /*error*/ ) //SLOT
 {
     debug() << "Recommendation:" << m_lastHttp->readAll() << endl;
 }
@@ -639,6 +660,10 @@ WebService::parameterKeys( QString keyName, QString data )
 }
 
 
+////////////////////////////////////////////////////////////////////////////////
+// CLASS Server
+////////////////////////////////////////////////////////////////////////////////
+
 Server::Server( QObject* parent )
     : QObject(parent, "lastfmProxyServer")
     , m_http( 0 )
@@ -649,46 +674,51 @@ Server::Server( QObject* parent )
     , m_localConnected(false)
 {
     DEBUG_BLOCK
+
     StreamProxy* server = new StreamProxy( this );
     m_proxyPort = server->port();
-    connect( server, SIGNAL( connected( int ) ), this, SLOT( accept( int ) ) );
 
-    connect( m_sockProxy, SIGNAL( readyRead() )
-            , this, SLOT( proxyContacted() ) );
+    connect( server, SIGNAL( connected( int ) ), this, SLOT( accept( int ) ) );
+    connect( m_sockProxy, SIGNAL( readyRead() ), this, SLOT( proxyContacted() ) );
 }
+
 
 Server::~Server()
 {
     delete m_buffer;
 }
 
+
 void
 Server::loadStream( QUrl remote )
 {
     DEBUG_BLOCK
+
     m_remoteUrl = remote;
     debug() << m_remoteUrl.host() << ':' << m_remoteUrl.port() << m_remoteUrl.encodedPathAndQuery() << endl;
     debug() << m_remoteUrl.toString( true, false ) << endl;
     m_http = new QHttp ( m_remoteUrl.host(), m_remoteUrl.port(), this, "lastfmClient" );
 
-    connect( m_http, SIGNAL( readyRead( const QHttpResponseHeader& ) )
-             , this, SLOT( dataAvailable( const QHttpResponseHeader& ) ) );
-    connect( m_http, SIGNAL( responseHeaderReceived( const QHttpResponseHeader& ) )
-             , this, SLOT( responseHeaderReceived( const QHttpResponseHeader& ) ) );
+    connect( m_http, SIGNAL( readyRead( const QHttpResponseHeader& ) ),
+             this,   SLOT( dataAvailable( const QHttpResponseHeader& ) ) );
+    connect( m_http, SIGNAL( responseHeaderReceived( const QHttpResponseHeader& ) ),
+             this,   SLOT( responseHeaderReceived( const QHttpResponseHeader& ) ) );
 
-     m_genreSet = true;
-     startGettingStream();
+    m_genreSet = true;
+    startGettingStream();
 }
 
 void
-Server::proxyContacted()
+Server::proxyContacted() //SLOT
 {
     DEBUG_BLOCK
+
     char inBuf[8192];
     memset( inBuf, 0, sizeof( inBuf ) );
    /* const Q_LONG bytesRead = */ m_http->readBlock( inBuf, sizeof( inBuf ) );
     debug() << inBuf << endl;
 }
+
 
 KURL
 Server::getProxyUrl()
@@ -696,10 +726,12 @@ Server::getProxyUrl()
     return KURL( QString("http://localhost:%1/theBeard.mp3").arg( m_proxyPort ) );
 }
 
+
 void
-Server::accept( int socket)
+Server::accept( int socket) //SLOT
 {
     DEBUG_BLOCK
+
     m_sockProxy->setSocket( socket );
     /*char emptyBuf[2048];
     memset( emptyBuf, 0, sizeof( emptyBuf ) );
@@ -714,13 +746,15 @@ Server::accept( int socket)
     startGettingStream();
 }
 
+
 void
-Server::responseHeaderReceived( const QHttpResponseHeader &resp  )
+Server::responseHeaderReceived( const QHttpResponseHeader &resp ) //SLOT
 {
     DEBUG_BLOCK
 
     debug() << resp.statusCode() << endl;
 }
+
 
 void
 Server::startGettingStream()
@@ -731,8 +765,9 @@ Server::startGettingStream()
      }
 }
 
+
 void
-Server::dataAvailable( const QHttpResponseHeader & /*resp*/ )
+Server::dataAvailable( const QHttpResponseHeader & /*resp*/ ) //SLOT
 {
     Q_LONG index = 0;
     Q_LONG bytesWrite = 0;
@@ -758,8 +793,12 @@ Server::dataAvailable( const QHttpResponseHeader & /*resp*/ )
         end++;
         (*end) = inBuf[ i ] ;
     } */
-
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+// CLASS StreamProxy
+////////////////////////////////////////////////////////////////////////////////
 
 void
 StreamProxy::newConnection( int socket )
