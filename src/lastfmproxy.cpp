@@ -684,8 +684,9 @@ void
 Server::proxyContacted()
 {
     DEBUG_BLOCK
-    char inBuf[8192] = {0};
-//     const Q_LONG bytesRead = m_http->readBlock( inBuf, sizeof( inBuf ) );
+    char inBuf[8192];
+    memset( inBuf, 0, sizeof( inBuf ) );
+   /* const Q_LONG bytesRead = */ m_http->readBlock( inBuf, sizeof( inBuf ) );
     debug() << inBuf << endl;
 }
 
