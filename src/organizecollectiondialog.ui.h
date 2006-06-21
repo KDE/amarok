@@ -38,7 +38,8 @@ QString OrganizeCollectionDialog::buildDestination( const QString &format, const
     args["initial"] = albumartist.mid( 0, 1 ).upper();
     args["filetype"] = mb.url().path().section( ".", -1 ).lower();
     QString track;
-    track.sprintf( "%02d", mb.track() );
+    if ( mb.track() )
+        track.sprintf( "%02d", mb.track() );
     args["track"] = track;
 
     amaroK::QStringx formatx( format );
