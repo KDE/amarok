@@ -1522,14 +1522,12 @@ CurrentTrackJob::showHomeByAlbums()
 
         if ( faveAlbums.count() == 0 )
         {
-            QString rateStyle = i18n( "played" );
-            if ( sortBy == QueryBuilder::valRating )
-                rateStyle = i18n( "rated" );
-
             m_HTMLSource.append(
                     "<div id='favorites_box-body' class='box-body'><p>\n" +
-                    i18n( "A list of your favorite albums will appear here, once you have %1 a few of your songs." )
-                    .arg( rateStyle ) + "</p></div>\n" );
+                    (sortBy == QueryBuilder::valRating
+                        ? i18n( "A list of your favorite albums will appear here, once you have rated a few of your songs." )
+                        : i18n( "A list of your favorite albums will appear here, once you have played a few of your songs." ) ) +
+                    "</p></div>\n" );
         }
         else
         {
