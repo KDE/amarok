@@ -12,6 +12,8 @@ VERSION 1.4.1:
     * GUI layout reverted to the classic Amarok layout.
 
   BUGFIXES:
+    * Only enable Show Extended Info in the Playlist Browser when information
+      is available. (BR 126590)
     * Disable global shortcut for ratings when ratings are disabled.
       (BR 129414)
 
