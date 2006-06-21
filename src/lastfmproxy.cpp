@@ -35,25 +35,29 @@
 #include <time.h>
 #include <unistd.h>
 
-LastFm::Controller::Controller()
+using namespace LastFm;
+
+Controller *Controller::s_instance = 0;
+
+Controller::Controller()
     : QObject( EngineController::instance(), "lastfmController" ),
     m_playing( false ),
     m_service( 0 ),
     m_server( 0 )
 { }
 
-LastFm::Controller::~Controller()
+Controller::~Controller()
 { } //m_service and m_server are both qobject children
 
-LastFm::Controller*
-LastFm::Controller::instance()
+Controller*
+Controller::instance()
 {
-    static Controller* control = new Controller();
-    return control;
+    if( !s_instance ) s_instance = new Controller();
+    return s_instance;
 }
 
 KURL
-LastFm::Controller::getNewProxy(QString genreUrl)
+Controller::getNewProxy(QString genreUrl)
 {
     DEBUG_BLOCK
 
@@ -71,7 +75,7 @@ LastFm::Controller::getNewProxy(QString genreUrl)
 }
 
 void
-LastFm::Controller::handshakeFinished()
+Controller::handshakeFinished()
 {
     DEBUG_BLOCK
 
@@ -81,23 +85,23 @@ LastFm::Controller::handshakeFinished()
 }
 
 void
-LastFm::Controller::initialGenreSet()
+Controller::initialGenreSet()
 {
     DEBUG_BLOCK
    //we only want to do this function once for each new m_server
-   disconnect( m_service, SIGNAL( stationChanged( QString, QString ) ), this, SLOT( initialGenreSet() ) ); 
+   disconnect( m_service, SIGNAL( stationChanged( QString, QString ) ), this, SLOT( initialGenreSet() ) );
    m_server->loadStream( m_service->streamUrl() );//we only want the first time
 }
 
 void
-LastFm::Controller::playbackStopped()
-{ 
+Controller::playbackStopped()
+{
     m_playing = false;
     delete m_service; m_service = 0;
     delete m_server; m_server = 0;
 }
 
-LastFm::WebService::WebService( QObject* parent )
+WebService::WebService( QObject* parent )
     : QObject( parent, "lastfmParent" )
     , m_server( 0 )
 {
@@ -105,7 +109,7 @@ LastFm::WebService::WebService( QObject* parent )
 }
 
 void
-LastFm::WebService::handshake( const QString& username, const QString& password )
+WebService::handshake( const QString& username, const QString& password )
 {
     DEBUG_BLOCK
 
@@ -135,7 +139,7 @@ LastFm::WebService::handshake( const QString& username, const QString& password 
 
 
 void
-LastFm::WebService::handshakeHeaderReceived( const QHttpResponseHeader &resp )
+WebService::handshakeHeaderReceived( const QHttpResponseHeader &resp )
 {
     if ( resp.statusCode() == 503 )
     {
@@ -145,7 +149,7 @@ LastFm::WebService::handshakeHeaderReceived( const QHttpResponseHeader &resp )
 
 
 void
-LastFm::WebService::handshakeFinished( int /*id*/, bool error )
+WebService::handshakeFinished( int /*id*/, bool error )
 {
     DEBUG_BLOCK
 
@@ -177,7 +181,7 @@ LastFm::WebService::handshakeFinished( int /*id*/, bool error )
 }
 
 void
-LastFm::WebService::changeStation( QString url )
+WebService::changeStation( QString url )
 {
     DEBUG_BLOCK
     debug() << "Changing station:" << url << endl;
@@ -197,7 +201,7 @@ LastFm::WebService::changeStation( QString url )
 
 
 void
-LastFm::WebService::changeStationFinished( int /*id*/, bool error )
+WebService::changeStationFinished( int /*id*/, bool error )
 {
     DEBUG_BLOCK
 
@@ -222,7 +226,7 @@ LastFm::WebService::changeStationFinished( int /*id*/, bool error )
 
 
 void
-LastFm::WebService::requestMetaData()
+WebService::requestMetaData()
 {
     QHttp *http = new QHttp( m_baseHost, 80, this );
     connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( metaDataFinished( int, bool ) ) );
@@ -235,7 +239,7 @@ LastFm::WebService::requestMetaData()
 
 
 void
-LastFm::WebService::metaDataFinished( int /*id*/, bool error )
+WebService::metaDataFinished( int /*id*/, bool error )
 {
     if( error )
         return;
@@ -262,7 +266,7 @@ LastFm::WebService::metaDataFinished( int /*id*/, bool error )
 
 
 void
-LastFm::WebService::enableScrobbling( bool enabled )
+WebService::enableScrobbling( bool enabled )
 {
     if ( enabled )
         debug() << "Enabling Scrobbling!" << endl;
@@ -281,7 +285,7 @@ LastFm::WebService::enableScrobbling( bool enabled )
 
 
 void
-LastFm::WebService::enableScrobblingFinished( int /*id*/, bool error )
+WebService::enableScrobblingFinished( int /*id*/, bool error )
 {
     if ( error )
         return;
@@ -291,7 +295,7 @@ LastFm::WebService::enableScrobblingFinished( int /*id*/, bool error )
 
 
 void
-LastFm::WebService::love()
+WebService::love()
 {
     QHttp *http = new QHttp( m_baseHost, 80, this );
     connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( loveFinished( bool ) ) );
@@ -305,7 +309,7 @@ LastFm::WebService::love()
 
 
 void
-LastFm::WebService::skip()
+WebService::skip()
 {
     QHttp *http = new QHttp( m_baseHost, 80, this );
     connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( skipFinished( bool ) ) );
@@ -317,7 +321,7 @@ LastFm::WebService::skip()
 
 
 void
-LastFm::WebService::ban()
+WebService::ban()
 {
     QHttp *http = new QHttp( m_baseHost, 80, this );
     connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( loveFinished( bool ) ) );
@@ -330,7 +334,7 @@ LastFm::WebService::ban()
 
 
 void
-LastFm::WebService::loveFinished( int /*id*/, bool error )
+WebService::loveFinished( int /*id*/, bool error )
 {
     if( error ) return;
     emit loveDone();
@@ -338,7 +342,7 @@ LastFm::WebService::loveFinished( int /*id*/, bool error )
 
 
 void
-LastFm::WebService::skipFinished( int /*id*/, bool error )
+WebService::skipFinished( int /*id*/, bool error )
 {
     if( error ) return;
     emit skipDone();
@@ -346,7 +350,7 @@ LastFm::WebService::skipFinished( int /*id*/, bool error )
 
 
 void
-LastFm::WebService::banFinished( int /*id*/, bool error )
+WebService::banFinished( int /*id*/, bool error )
 {
     if( error ) return;
     emit banDone();
@@ -355,7 +359,7 @@ LastFm::WebService::banFinished( int /*id*/, bool error )
 
 
 void
-LastFm::WebService::friends( QString username )
+WebService::friends( QString username )
 {
     if ( username.isEmpty() )
         username = m_username;
@@ -370,7 +374,7 @@ LastFm::WebService::friends( QString username )
 
 
 void
-LastFm::WebService::friendsFinished( int /*id*/, bool error )
+WebService::friendsFinished( int /*id*/, bool error )
 {
     if( error ) return;
 
@@ -396,7 +400,7 @@ LastFm::WebService::friendsFinished( int /*id*/, bool error )
 
 
 void
-LastFm::WebService::neighbours( QString username )
+WebService::neighbours( QString username )
 {
     if ( username.isEmpty() )
         username = m_username;
@@ -411,7 +415,7 @@ LastFm::WebService::neighbours( QString username )
 
 
 void
-LastFm::WebService::neighboursFinished( int /*id*/, bool error )
+WebService::neighboursFinished( int /*id*/, bool error )
 {
     if( error )  return;
 
@@ -437,7 +441,7 @@ LastFm::WebService::neighboursFinished( int /*id*/, bool error )
 
 
 void
-LastFm::WebService::userTags( QString username )
+WebService::userTags( QString username )
 {
     if ( username.isEmpty() )
         username = m_username;
@@ -452,7 +456,7 @@ LastFm::WebService::userTags( QString username )
 
 
 void
-LastFm::WebService::userTagsFinished( int /*id*/, bool error )
+WebService::userTagsFinished( int /*id*/, bool error )
 {
     if( error ) return;
 
@@ -478,7 +482,7 @@ LastFm::WebService::userTagsFinished( int /*id*/, bool error )
 
 
 void
-LastFm::WebService::recentTracks( QString username )
+WebService::recentTracks( QString username )
 {
     if ( username.isEmpty() )
         username = m_username;
@@ -493,7 +497,7 @@ LastFm::WebService::recentTracks( QString username )
 
 
 void
-LastFm::WebService::recentTracksFinished( int /*id*/, bool error )
+WebService::recentTracksFinished( int /*id*/, bool error )
 {
     if( error ) return;
 
@@ -522,7 +526,7 @@ LastFm::WebService::recentTracksFinished( int /*id*/, bool error )
 
 
 void
-LastFm::WebService::recommend( int type, QString username, QString artist, QString token )
+WebService::recommend( int type, QString username, QString artist, QString token )
 {
     QString modeToken = "";
     switch ( type )
@@ -568,14 +572,14 @@ LastFm::WebService::recommend( int type, QString username, QString artist, QStri
 
 
 void
-LastFm::WebService::recommendFinished( int /*id*/, bool /*error*/ )
+WebService::recommendFinished( int /*id*/, bool /*error*/ )
 {
     debug() << "Recommendation:" << m_lastHttp->readAll() << endl;
 }
 
 
 QString
-LastFm::WebService::parameter( QString keyName, QString data )
+WebService::parameter( QString keyName, QString data )
 {
     QStringList list = QStringList::split( '\n', data );
 
@@ -594,7 +598,7 @@ LastFm::WebService::parameter( QString keyName, QString data )
 
 
 QStringList
-LastFm::WebService::parameterArray( QString keyName, QString data )
+WebService::parameterArray( QString keyName, QString data )
 {
     QStringList result;
     QStringList list = QStringList::split( '\n', data );
@@ -614,7 +618,7 @@ LastFm::WebService::parameterArray( QString keyName, QString data )
 
 
 QStringList
-LastFm::WebService::parameterKeys( QString keyName, QString data )
+WebService::parameterKeys( QString keyName, QString data )
 {
     QStringList result;
     QStringList list = QStringList::split( '\n', data );
@@ -634,7 +638,7 @@ LastFm::WebService::parameterKeys( QString keyName, QString data )
 }
 
 
-LastFm::Server::Server( QObject* parent )
+Server::Server( QObject* parent )
     : QObject(parent, "lastfmProxyServer")
     , m_buffer( new QByteArray )
     , m_proxyPort( -1 )
@@ -651,13 +655,13 @@ LastFm::Server::Server( QObject* parent )
             , this, SLOT( proxyContacted() ) );
 }
 
-LastFm::Server::~Server()
+Server::~Server()
 {
     delete m_buffer;
 }
 
 void
-LastFm::Server::loadStream( QUrl remote )
+Server::loadStream( QUrl remote )
 {
     DEBUG_BLOCK
     m_remoteUrl = remote;
@@ -669,28 +673,28 @@ LastFm::Server::loadStream( QUrl remote )
              , this, SLOT( dataAvailable( const QHttpResponseHeader& ) ) );
     connect( m_http, SIGNAL( responseHeaderReceived( const QHttpResponseHeader& ) )
              , this, SLOT( responseHeaderReceived( const QHttpResponseHeader& ) ) );
-     
+
      m_genreSet = true;
      startGettingStream();
 }
 
 void
-LastFm::Server::proxyContacted()
+Server::proxyContacted()
 {
     DEBUG_BLOCK
     char inBuf[8192];
-    const Q_LONG bytesRead = m_http->readBlock( inBuf, sizeof( inBuf ) );
+//     const Q_LONG bytesRead = m_http->readBlock( inBuf, sizeof( inBuf ) );
     debug() << inBuf << endl;
 }
 
 KURL
-LastFm::Server::getProxyUrl()
+Server::getProxyUrl()
 {
     return KURL( QString("http://localhost:%1/theBeard.mp3").arg( m_proxyPort ) );
 }
 
 void
-LastFm::Server::accept( int socket)
+Server::accept( int socket)
 {
     DEBUG_BLOCK
     m_sockProxy->setSocket( socket );
@@ -700,7 +704,7 @@ LastFm::Server::accept( int socket)
     QTextStream proxyStream( m_sockProxy );
     proxyStream << "HTTP/1.0 200 Ok\r\n"
                    "Content-Type: audio/x-mp3; charset=\"utf-8\"\r\n"
-                   "\r\n"; 
+                   "\r\n";
     m_sockProxy->waitForMore( KProtocolManager::proxyConnectTimeout() * 1000 );
 
     m_localConnected = true;
@@ -708,7 +712,7 @@ LastFm::Server::accept( int socket)
 }
 
 void
-LastFm::Server::responseHeaderReceived( const QHttpResponseHeader &resp  )
+Server::responseHeaderReceived( const QHttpResponseHeader &resp  )
 {
     DEBUG_BLOCK
 
@@ -716,7 +720,7 @@ LastFm::Server::responseHeaderReceived( const QHttpResponseHeader &resp  )
 }
 
 void
-LastFm::Server::startGettingStream()
+Server::startGettingStream()
 {
      if( m_genreSet && m_localConnected )
      {
@@ -725,10 +729,10 @@ LastFm::Server::startGettingStream()
 }
 
 void
-LastFm::Server::dataAvailable( const QHttpResponseHeader & /*resp*/ )
+Server::dataAvailable( const QHttpResponseHeader & /*resp*/ )
 {
     Q_LONG index = 0;
-    Q_LONG bytesWrite = 0;   
+    Q_LONG bytesWrite = 0;
 
     char inBuf[8192];
     memset( inBuf, 0, sizeof( inBuf ) );
@@ -740,7 +744,7 @@ LastFm::Server::dataAvailable( const QHttpResponseHeader & /*resp*/ )
         if( qstrcmp(inBuf, "SYNC") == 0 )
             return;
         bytesWrite = m_sockProxy->writeBlock( inBuf + index, bytesWrite );
-        
+
         if ( bytesWrite == -1 )
             return;
         index += bytesWrite;
@@ -755,11 +759,11 @@ LastFm::Server::dataAvailable( const QHttpResponseHeader & /*resp*/ )
 }
 
 void
-LastFm::StreamProxy::newConnection( int socket )
-{ 
-    DEBUG_BLOCK 
+StreamProxy::newConnection( int socket )
+{
+    DEBUG_BLOCK
 
-    emit connected( socket ); 
+    emit connected( socket );
 }
 
 #include "lastfmproxy.moc"
