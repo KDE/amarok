@@ -156,7 +156,6 @@ class PlaylistBrowser : public QVBox
         PodcastChannel *findPodcastChannel( const KURL &feed, QListViewItem *parent=0 ) const;
 
         PlaylistCategory* loadPlaylists();
-        void loadOldPlaylists();
         void savePlaylists();
         void savePlaylist( PlaylistEntry * );
         bool createPlaylist( QListViewItem *parent = 0, bool current = true, QString title = 0 );
