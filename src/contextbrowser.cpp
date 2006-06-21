@@ -222,7 +222,7 @@ ContextBrowser::ContextBrowser( const char *name )
     m_wikiToolBar->insertLineSeparator();
     m_wikiToolBar->insertButton( amaroK::icon( "artist" ), WIKI_ARTIST, false, i18n("Artist Page") );
     m_wikiToolBar->insertButton( amaroK::icon( "album" ), WIKI_ALBUM, false, i18n("Album Page") );
-    m_wikiToolBar->insertButton( "contents", WIKI_TITLE, false, i18n("Title Page") );
+    m_wikiToolBar->insertButton( amaroK::icon( "track" ), WIKI_TITLE, false, i18n("Title Page") );
     m_wikiToolBar->insertLineSeparator();
     m_wikiToolBar->insertButton( amaroK::icon( "external" ), WIKI_BROWSER, true, i18n("Open in external browser") );
     m_wikiToolBar->insertButton( amaroK::icon( "change_language" ), WIKI_CONFIG, true, i18n("Change Locale") );
