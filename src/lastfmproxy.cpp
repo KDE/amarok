@@ -700,7 +700,7 @@ Server::accept( int socket)
 {
     DEBUG_BLOCK
     m_sockProxy->setSocket( socket );
-    /*char emptyBuf[2048] = {0};
+    /*char emptyBuf[2048];
     memset( emptyBuf, 0, sizeof( emptyBuf ) );
     m_sockProxy.writeBlock( emptyBuf, sizeof( emptyBuf ) );*/
     QTextStream proxyStream( m_sockProxy );
@@ -736,7 +736,7 @@ Server::dataAvailable( const QHttpResponseHeader & /*resp*/ )
     Q_LONG index = 0;
     Q_LONG bytesWrite = 0;
 
-    char inBuf[8192] = {0};
+    char inBuf[8192];
     memset( inBuf, 0, sizeof( inBuf ) );
     const Q_LONG bytesRead = m_http->readBlock( inBuf, sizeof( inBuf ) );
 
