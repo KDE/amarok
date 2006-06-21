@@ -7,6 +7,8 @@ VERSION 1.4.1:
   FEATURES:
 
   CHANGES:
+    * Provide warning dialog when deleting items from the playlistbrowser.
+      (BR 129313)
     * GUI layout reverted to the classic Amarok layout.
 
   BUGFIXES:

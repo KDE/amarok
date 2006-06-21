@@ -1195,10 +1195,10 @@ void PlaylistBrowser::changePodcastInterval()
     }
 }
 
-bool PlaylistBrowser::deletePodcastItems()
+bool PlaylistBrowser::deleteSelectedPodcastItems( const bool removeItem, const bool silent )
 {
     KURL::List urls;
-    QListViewItemIterator it( m_listview, QListViewItemIterator::Selected );
+    QListViewItemIterator it( m_podcastCategory, QListViewItemIterator::Selected );
     QPtrList<PodcastEpisode> erasedItems;
 
     for( ; it.current(); ++it )
@@ -1215,36 +1215,50 @@ bool PlaylistBrowser::deletePodcastItems()
     }
 
     if( urls.isEmpty() ) return false;
-    int button = KMessageBox::warningContinueCancel( this, i18n( "<p>You have selected 1 podcast episode to be <b>irreversibly</b> deleted. ",
-                                                                 "<p>You have selected %n podcast episodes to be <b>irreversibly</b> deleted. ",
-                                                                 urls.count() ), QString::null, KStdGuiItem::del() );
-    if( button != KMessageBox::Continue )
+    int button;
+    if( !silent )
+        button = KMessageBox::warningContinueCancel( this,
+                    i18n( "<p>You have selected 1 podcast episode to be <b>irreversibly</b> deleted. ",
+                          "<p>You have selected %n podcast episodes to be <b>irreversibly</b> deleted. ",
+                           urls.count() ), QString::null, KStdGuiItem::del() );
+    if( silent || button != KMessageBox::Continue )
         return false;
 
     KIO::del( urls );
 
     PodcastEpisode *item;
     for ( item = erasedItems.first(); item; item = erasedItems.next() )
-        item->isOnDisk();
+    {
+        if( removeItem )
+        {
+            CollectionDB::instance()->removePodcastEpisode( item->dBId() );
+            delete item;
+        }
+        else
+            item->isOnDisk();
+    }
     return true;
 }
 
-bool PlaylistBrowser::deletePodcasts( QPtrList<PodcastChannel> items, const bool silent )
+/// @param items is a list of pointers to _both_ channels and episodes. delete them from
+/// the database AND the listview as required.
+bool PlaylistBrowser::deletePodcasts( QPtrList<PlaylistBrowserEntry> items )
 {
     if( items.isEmpty() ) return false;
 
-    int button;
-    if( !silent )
-        button = KMessageBox::warningContinueCancel( this, i18n( "<p>You have selected 1 podcast to be <b>irreversibly</b> deleted. "
-                                                                 "All downloaded episodes will also be deleted.",
-                                                                 "<p>You have selected %n podcasts to be <b>irreversibly</b> deleted. "
-                                                                 "All downloaded episodes will also be deleted.",
-                                                                 items.count() ), QString::null, KStdGuiItem::del() );
-
-    if( silent || button == KMessageBox::Continue )
+    KURL::List urls;
+    foreachType( QPtrList<PlaylistBrowserEntry>, items )
     {
-        KURL::List urls;
-        foreachType( QPtrList<PodcastChannel>, items )
+        if( isPodcastEpisode( *it ) )
+        {
+        #define item static_cast<PodcastEpisode*>(*it)
+            if( item->isOnDisk() )
+                urls.append( item->localUrl() );
+            // remove from the database
+            CollectionDB::instance()->removePodcastEpisode( item->dBId() );
+        #undef item
+        }
+        else if( isPodcastChannel( *it ) )
         {
             for( QListViewItem *ch = (*it)->firstChild(); ch; ch = ch->nextSibling() )
             {
@@ -1255,13 +1269,15 @@ bool PlaylistBrowser::deletePodcasts( QPtrList<PodcastChannel> items, const bool
                     urls.append( ch->localUrl() );
                 }
                 #undef  ch
+                /// we don't need to delete from the database, because removing the channel from the database
+                /// automatically removes the children as well.
             }
+            CollectionDB::instance()->removePodcastChannel( static_cast<PodcastChannel*>(*it)->url() );
         }
-        // TODO We need to check which files have been deleted successfully
-        KIO::del( urls );
-        return true;
     }
-    return false;
+    // TODO We need to check which files have been deleted successfully
+    KIO::del( urls );
+    return true;
 }
 
 void PlaylistBrowser::downloadSelectedPodcasts()
@@ -1589,26 +1605,16 @@ bool PlaylistBrowser::deletePlaylists( KURL::List items )
 {
     if ( items.isEmpty() ) return false;
 
-    int button = KMessageBox::warningContinueCancel( this, i18n( "<p>You have selected 1 playlist to be <b>irreversibly</b> deleted.",
-                                                                 "<p>You have selected %n playlists to be <b>irreversibly</b> deleted.",
-                                                                 items.count() ),
-                                                     QString::null,
-                                                     KStdGuiItem::del() );
-
-    if ( button == KMessageBox::Continue )
-    {
-        // TODO We need to check which files have been deleted successfully
-        // Avoid deleting dirs. See bug #122480
-        for ( KURL::List::iterator it = items.begin(), end = items.end(); it != end; ++it ) {
-            if ( QFileInfo( (*it).path() ).isDir() ) {
-                it = items.remove( it );
-                continue;
-            }
+    // TODO We need to check which files have been deleted successfully
+    // Avoid deleting dirs. See bug #122480
+    for ( KURL::List::iterator it = items.begin(), end = items.end(); it != end; ++it ) {
+        if ( QFileInfo( (*it).path() ).isDir() ) {
+            it = items.remove( it );
+            continue;
         }
-        KIO::del( items );
-        return true;
     }
-    return false;
+    KIO::del( items );
+    return true;
 }
 
 void PlaylistBrowser::savePlaylist( PlaylistEntry *item )
@@ -1834,14 +1840,28 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
 {
     // this function remove selected playlists and tracks
 
+    int playlistCount = 0;
+    int trackCount    = 0;
+    int streamCount   = 0;
+    int smartyCount   = 0;
+    int dynamicCount  = 0;
+    int podcastCount  = 0;
+    int folderCount   = 0;
+
+    QPtrList<PlaylistEntry>        playlistsToDelete;
+    QPtrList<PlaylistBrowserEntry> podcastsToDelete; // use base class, since we insert channels AND episodes
+
+    QPtrList<PlaylistCategory>     playlistFoldersToDelete;
+    QPtrList<PlaylistCategory>     podcastFoldersToDelete;
+
     //remove currentItem, no matter if selected or not
     m_listview->setSelected( m_listview->currentItem(), true );
 
     QPtrList<QListViewItem> selected;
-    QListViewItemIterator it( m_listview, QListViewItemIterator::Selected);
+    QListViewItemIterator it( m_listview, QListViewItemIterator::Selected );
     for( ; it.current(); ++it )
     {
-        if( (*it) == m_coolStreams || (*it) == m_smartDefaults ||
+        if( (*it) == m_coolStreams   || (*it) == m_smartDefaults ||
             (*it) == m_randomDynamic || (*it) == m_suggestedDynamic )
             continue;
 
@@ -1861,100 +1881,130 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
         if( parent == m_coolStreams || parent == m_smartDefaults )
             continue;
 
+        switch( (*it)->rtti() )
+        {
+            case PlaylistEntry::RTTI:
+                playlistsToDelete.append( static_cast<PlaylistEntry*>(*it) );
+                playlistCount++;
+                continue; // don't add the folder to selected, else it will be deleted twice
+
+            case PlaylistTrackItem::RTTI:
+                trackCount++;
+                break;
+
+            case StreamEntry::RTTI:
+                streamCount++;
+                break;
+
+            case DynamicEntry::RTTI:
+                dynamicCount++;
+                break;
+
+            case SmartPlaylist::RTTI:
+                smartyCount++;
+                break;
+
+            case PodcastChannel::RTTI:
+            case PodcastEpisode::RTTI:
+                podcastsToDelete.append( static_cast<PlaylistBrowserEntry*>(*it) );
+                podcastCount++;
+                continue; // don't add the folder to selected, else it will be deleted twice
+
+            case PlaylistCategory::RTTI:
+                folderCount++;
+                if( parent == m_playlistCategory )
+                {
+                    for( QListViewItem *ch = (*it)->firstChild(); ch; ch = ch->nextSibling() )
+                    {
+                        if( isCategory( ch ) )
+                        {
+                            folderCount++;
+                            playlistFoldersToDelete.append( static_cast<PlaylistCategory*>(ch) );
+                        }
+                        else
+                        {
+                            playlistCount++;
+                            playlistsToDelete.append( static_cast<PlaylistEntry*>(ch) );
+                        }
+                    }
+                    playlistFoldersToDelete.append( static_cast<PlaylistCategory*>(*it) );
+                    continue; // don't add the folder to selected, else it will be deleted twice
+                }
+                else if( parent == m_podcastCategory )
+                {
+                    for( QListViewItem *ch = (*it)->firstChild(); ch; ch = ch->nextSibling() )
+                    {
+                        if( isCategory( ch ) )
+                        {
+                            folderCount++;
+                            podcastFoldersToDelete.append( static_cast<PlaylistCategory*>(ch) );
+                        }
+                        else
+                        {
+                            podcastCount++;
+                            podcastsToDelete.append( static_cast<PlaylistBrowserEntry*>(*it) );
+                        }
+                    }
+                    podcastFoldersToDelete.append( static_cast<PlaylistCategory*>(*it) );
+                    continue; // don't add the folder to selected, else it will be deleted twice
+                }
+
+            default:
+                break;
+        }
+
         selected.append( it.current() );
     }
 
-    QPtrList<PlaylistEntry> playlistsToDelete;
-    QPtrList<PlaylistCategory> playlistFoldersToDelete;
-    QPtrList<PlaylistTrackItem> tracksToDelete;
+    int totalCount = playlistCount + smartyCount + dynamicCount + streamCount + podcastCount + folderCount;
 
-    bool playlistsChanged = false;
-    bool streamsChanged = false;
-    bool smartPlaylistsChanged = false;
-    bool dynamicsChanged = false;
+    if( selected.isEmpty() && !totalCount ) return;
 
-    /// @note the variable keepItem is used to tell us if there is a more sinister operation which is needed,
-    /// being deleting from disk - this includes deleting playlists and deleting all downloaded podcast media.
-    for( QListViewItem *item = selected.first(); item; item = selected.next() )
+    QString message = i18n( "<p>You have selected:<ul>" );
+
+    if( playlistCount ) message += "<li>" + i18n( "%1 playlist", "%1 playlists", playlistCount )
+                                            .arg( playlistCount ) + "</li>";
+
+    if( smartyCount   ) message += "<li>" + i18n( "%1 smart playlist", "%1 smart playlists", smartyCount )
+                                            .arg( smartyCount ) + "</li>";
+
+    if( dynamicCount  ) message += "<li>" + i18n( "%1 dynamic playlist", "%1 dynamic playlists", dynamicCount )
+                                            .arg( dynamicCount ) + "</li>";
+
+    if( streamCount   ) message += "<li>" + i18n( "%1 stream", "%1 streams", streamCount )
+                                            .arg( streamCount ) + "</li>";
+
+    if( podcastCount  ) message += "<li>" + i18n( "%1 podcast", "%1 podcasts", podcastCount )
+                                            .arg( podcastCount ) + "</li>";
+
+    if( folderCount   ) message += "<li>" + i18n( "%1 folder", "%1 folders", folderCount )
+                                            .arg( folderCount ) + "</li>";
+
+    message += "</ul><br>to be <b>irreversibly</b> deleted.</p>";
+
+    if( totalCount > 0 )
     {
-        bool keepItem = false;
-
-        if( isPlaylist( item ) )
-        {
-            keepItem = playlistsChanged = true;
-            playlistsToDelete.append( static_cast<PlaylistEntry*>(item) );
-        }
-
-        /// @note when we delete a category, we have to check if it contains either playlists or podcasts which
-        /// need deleting to occur.  We set keepItem = true to delete the folder after we have deleted the
-        /// playlists/podcasts, and only then do we remove the folder.
-        else if( isCategory( item ) )
-        {
-            if( isPlaylist( item->firstChild() ))
-            {
-                for( QListViewItem *ch = item->firstChild(); ch; ch = ch->nextSibling() )
-                {
-                    keepItem = playlistsChanged = true;
-                    playlistsToDelete.append( static_cast<PlaylistEntry*>(ch) );
-                    playlistFoldersToDelete.append( static_cast<PlaylistCategory*>(item) );
-                }
-            }
-            else
-            {
-                QListViewItem *parent = item;
-                bool isPodcastCat = false;
-                while( parent ) {
-                    if( parent == m_podcastCategory ) {
-                        removePodcastFolder( static_cast<PlaylistCategory*>(item) );
-                        isPodcastCat = true;
-                        break;
-                    }
-                    parent = parent->parent();
-                }
-                if( isPodcastCat )  continue;
-            }
-        }
-        else if( isStream( item ) )        streamsChanged = true;
-        else if( isSmartPlaylist( item ) ) smartPlaylistsChanged = true;
-        else if( isDynamic( item ) )       dynamicsChanged = true;
-
-        if( isPlaylistTrackItem( item ) )
-        {
-            //we are going to be deleting the parent playlist, dont bother removing it
-            if( playlistsToDelete.find( static_cast<PlaylistEntry*>(item->parent()) ) != -1 )
-                continue;
-
-            playlistsChanged = true;
-            //remove the track
-            PlaylistEntry *playlist = static_cast<PlaylistEntry*>(item->parent());
-            playlist->removeTrack( item );
-        }
-        else if( isPodcastChannel( item ) )
-        {
-        #define item static_cast<PodcastChannel*>(item)
-            CollectionDB::instance()->removePodcastChannel( item->url() );
-            m_podcastItemsToScan.remove( item );
-            delete item;
-        #undef  item
-        }
-        else if( isPodcastEpisode( item ) )
-        {
-            CollectionDB::instance()->removePodcastEpisode( static_cast<PodcastEpisode*>(item)->dBId() );
-            delete item;
-        }
-        else if( !keepItem )
-        {
-            m_dynamicEntries.remove(item); // if it's not there, no problem, it just returns false.
-            delete item;
-        }
+        int button = KMessageBox::warningContinueCancel( this, message, QString::null, KStdGuiItem::del() );
+        if( button != KMessageBox::Continue )
+            return;
     }
 
-    if( streamsChanged )        saveStreams();
-    if( smartPlaylistsChanged ) saveSmartPlaylists();
-    if( dynamicsChanged )       saveDynamics();
+    foreachType( QPtrList<QListViewItem>, selected )
+    {
+        if ( isPlaylistTrackItem( *it ) )
+        {
+            static_cast<PlaylistEntry*>( (*it)->parent() )->removeTrack( (*it) );
+            continue;
+        }
+        delete (*it);
+    }
+
+    if( streamCount )        saveStreams();
+    if( smartyCount ) saveSmartPlaylists();
+    if( dynamicCount )      saveDynamics();
 
     // used for deleting playlists first, then folders.
-    if( playlistsChanged )
+    if( playlistCount )
     {
         if( deletePlaylists( playlistsToDelete ) )
         {
@@ -1963,13 +2013,24 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
                 m_dynamicEntries.remove(*it);
                 delete (*it);
             }
-
-            foreachType( QPtrList<PlaylistCategory>, playlistFoldersToDelete )
-                delete (*it);
-
-            savePlaylists();
         }
     }
+
+    if( podcastCount )
+    {
+        if( deletePodcasts( podcastsToDelete ) )
+            foreachType( QPtrList<PlaylistBrowserEntry>, podcastsToDelete )
+                delete (*it);
+    }
+
+    foreachType( QPtrList<PlaylistCategory>, playlistFoldersToDelete )
+        delete (*it);
+
+    foreachType( QPtrList<PlaylistCategory>, podcastFoldersToDelete )
+        removePodcastFolder( *it );
+
+    if( playlistCount || trackCount )
+        savePlaylists();
 }
 
 // remove podcast folders. we need to do this recursively to ensure all children are removed from the db
@@ -2474,9 +2535,10 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         menu.insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n( "&Load" ), LOAD );
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( amaroK::icon("edit") ), i18n( "E&dit" ), EDIT );
+        menu.insertItem( SmallIconSet( amaroK::icon("remove_from_playlist") ), i18n( "R&emove" ), REMOVE );
 
-        if( item != m_randomDynamic || item != m_suggestedDynamic )
-            menu.insertItem( SmallIconSet( amaroK::icon("remove_from_playlist") ), i18n( "R&emove" ), REMOVE );
+        if( item == m_randomDynamic || item == m_suggestedDynamic )
+            menu.setItemEnabled( REMOVE, false );
 
         switch( menu.exec( p ) )
         {
@@ -2578,7 +2640,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 break;
 
             case DELETE:
-                deletePodcastItems();
+                deleteSelectedPodcastItems();
                 break;
 
             case MEDIA_DEVICE:
