@@ -103,6 +103,7 @@ Controller::playbackStopped()
 
 WebService::WebService( QObject* parent )
     : QObject( parent, "lastfmParent" )
+    , m_lastHttp( 0 )
     , m_server( 0 )
 {
     debug() << "Initialising Web Service" << endl;
@@ -640,6 +641,7 @@ WebService::parameterKeys( QString keyName, QString data )
 
 Server::Server( QObject* parent )
     : QObject(parent, "lastfmProxyServer")
+    , m_http( 0 )
     , m_buffer( new QByteArray )
     , m_proxyPort( -1 )
     , m_sockProxy( new QSocket( this, "socketLastFmProxy" ) )
