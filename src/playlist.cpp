@@ -458,6 +458,8 @@ Playlist::mediumChange( const Medium *med, QString name ) // SLOT
 void
 Playlist::insertMedia( KURL::List list, int options )
 {
+    if( list.isEmpty() ) return; // don't add empty items
+
     bool directPlay = options & DirectPlay;
 
     if( options & Unique ) {
