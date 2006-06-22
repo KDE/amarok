@@ -233,8 +233,12 @@ XineEngine::load( const KURL &url, bool isStream )
    // why doesn't xine do this? I cannot say.
    xine_close( m_stream );
 
+   debug() << "Before xine_open() *****" << endl;
+
    if( xine_open( m_stream, QFile::encodeName( url.url() ) ) )
    {
+      debug() << "After xine_open() *****" << endl;
+
       #ifndef XINE_SAFE_MODE
       //we must ensure the scope is pruned of old buffers
       timerEvent( 0 );
