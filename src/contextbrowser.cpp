@@ -204,11 +204,12 @@ ContextBrowser::ContextBrowser( const char *name )
 
     m_lyricsToolBar = new Browser::ToolBar( m_lyricsTab );
     m_lyricsToolBar->setIconText( KToolBar::IconTextRight, false );
-    m_lyricsToolBar->insertButton( amaroK::icon( "add_lyrics" ), LYRICS_ADD, true, i18n("Add") );
-    m_lyricsToolBar->insertButton( amaroK::icon( "edit" ), LYRICS_EDIT, true, i18n("Edit") );
-    m_lyricsToolBar->insertButton( amaroK::icon( "search" ), LYRICS_SEARCH, true, i18n("Search") );
     m_lyricsToolBar->insertButton( amaroK::icon( "refresh" ), LYRICS_REFRESH, true, i18n("Refresh") );
+    m_lyricsToolBar->insertButton( amaroK::icon( "add_lyrics" ), LYRICS_ADD, true, i18n("Add") );
     m_lyricsToolBar->insertLineSeparator();
+    m_lyricsToolBar->insertButton( amaroK::icon( "edit" ), LYRICS_EDIT, true, i18n("Edit") );
+    m_lyricsToolBar->insertLineSeparator();
+    m_lyricsToolBar->insertButton( amaroK::icon( "search" ), LYRICS_SEARCH, true, i18n("Search") );
     m_lyricsToolBar->setIconText( KToolBar::IconOnly, false );
     m_lyricsToolBar->insertButton( amaroK::icon( "external" ), LYRICS_BROWSER, true, i18n("Open in external browser") );
 
