@@ -98,7 +98,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     KAction *saveButton = new KAction( i18n("Save"), amaroK::icon( "save" ), 0, this, SLOT( slotSave() ), m_ac );
 
     renameButton   = new KAction( i18n("Rename"), "editclear", 0, this, SLOT( renameSelectedItem() ), m_ac );
-    removeButton   = new KAction( i18n("Remove"), amaroK::icon( "remove" ), 0, this, SLOT( removeSelectedItems() ), m_ac );
+    removeButton   = new KAction( i18n("Delete"), amaroK::icon( "remove" ), 0, this, SLOT( removeSelectedItems() ), m_ac );
 
     m_toolbar = new Browser::ToolBar( browserBox );
     m_toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the open button to have text on right
@@ -2448,7 +2448,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             menu.insertSeparator();
             if ( static_cast<SmartPlaylist *>(item)->isEditable() )
                 menu.insertItem( SmallIconSet( amaroK::icon("edit") ), i18n( "E&dit..." ), EDIT );
-            menu.insertItem( SmallIconSet( amaroK::icon("remove_from_playlist") ), i18n( "&Remove" ), REMOVE );
+            menu.insertItem( SmallIconSet( amaroK::icon("remove_from_playlist") ), i18n( "&Delete" ), REMOVE );
         }
 
         QString playlist;
@@ -2503,7 +2503,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         if( item->parent() != m_coolStreams )
         {
             menu.insertItem( SmallIconSet( amaroK::icon("edit") ), i18n( "E&dit" ), EDIT );
-            menu.insertItem( SmallIconSet( amaroK::icon("remove_from_playlist") ), i18n( "R&emove" ), REMOVE );
+            menu.insertItem( SmallIconSet( amaroK::icon("remove_from_playlist") ), i18n( "&Delete" ), REMOVE );
         }
         else
             menu.insertItem( SmallIconSet( amaroK::icon( "info" ) ), i18n( "Show &Information" ), INFO );
@@ -2535,7 +2535,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         menu.insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n( "&Load" ), LOAD );
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( amaroK::icon("edit") ), i18n( "E&dit" ), EDIT );
-        menu.insertItem( SmallIconSet( amaroK::icon("remove_from_playlist") ), i18n( "R&emove" ), REMOVE );
+        menu.insertItem( SmallIconSet( amaroK::icon("remove_from_playlist") ), i18n( "&Delete" ), REMOVE );
 
         if( item == m_randomDynamic || item == m_suggestedDynamic )
             menu.setItemEnabled( REMOVE, false );
@@ -2683,7 +2683,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
         if( item->isFolder() ) {
             menu.insertItem( SmallIconSet( amaroK::icon("edit") ), i18n( "&Rename" ), RENAME );
-            menu.insertItem( SmallIconSet( amaroK::icon("remove_from_playlist") ), i18n( "R&emove" ), REMOVE );
+            menu.insertItem( SmallIconSet( amaroK::icon("remove_from_playlist") ), i18n( "&Delete" ), REMOVE );
             menu.insertSeparator();
         }
 
