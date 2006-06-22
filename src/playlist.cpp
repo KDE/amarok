@@ -237,10 +237,15 @@ Playlist::Playlist( QWidget *parent )
 
     m_atfEnabled = AmarokConfig::advancedTagFeatures();
     if( m_atfEnabled )
+    {
         connect( CollectionDB::instance(), SIGNAL(fileMoved(const QString&,
                 const QString&, const QString&)), SLOT(checkDisabledChildren(const QString&,
                 const QString&, const QString&)) );
-
+        connect( CollectionDB::instance(), SIGNAL(uniqueIdChanged(const QString&,
+                const QString&, const QString&)), SLOT(updateEntriesUniqueId(const QString&,
+                const QString&, const QString&)) );
+    }
+    
     initStarPixmaps();
 
     EngineController* const ec = EngineController::instance();
@@ -1043,6 +1048,19 @@ Playlist::checkDisabledChildren( const QString &/*oldUrl*/, const QString &newUr
     }
 }
 
+void
+Playlist::updateEntriesUniqueId( const QString &/*url*/, const QString &oldid, const QString &newid )
+{
+    PlaylistItem *item;
+    if( m_uniqueMap.contains( oldid ) )
+    {
+        item = m_uniqueMap[oldid];
+        m_uniqueMap.remove( oldid );
+        m_uniqueMap[newid] = item;
+        item->setUniqueId( newid );
+    }
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 /// Current Track Handling
@@ -1643,6 +1661,7 @@ Playlist::slotCountChanged()
 bool
 Playlist::checkFileStatus( PlaylistItem * item )
 {
+    debug() << "Will check uniqueid " << item->uniqueId() << " if necessary" << endl;
     if( !item->checkExists() )
     {
         QString path = QString::null;

@@ -2480,6 +2480,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
     }
 
     //next case: not in permanent table, but a match on one or the other in the temporary table
+    //OR, we are using permanent tables (and not considering temp ones)
     if( !tempTablesAndInPermanent )
     {
         if( urls.empty() ) //uniqueid already found in temporary table but not url; check the old URL
@@ -2516,7 +2517,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
                     .arg( tempTables ? "_temp" : "" )
                     .arg( currid )
                     .arg( currurl ) );
-            emit uniqueidChanged( bundle->url().path(), urls[1], currid );
+            emit uniqueIdChanged( bundle->url().path(), urls[1], currid );
         }
         return;
     }
@@ -2570,7 +2571,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
                     currdir ) );
                 query( QString( "DELETE FROM uniqueid WHERE url='%1';" )
                       .arg( currurl ) );
-            emit uniqueidChanged( bundle->url().path(), nonTempURLs[1], currid );
+            emit uniqueIdChanged( bundle->url().path(), nonTempURLs[1], currid );
         }
         return;
     }
