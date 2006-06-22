@@ -4581,12 +4581,16 @@ Playlist::slotEraseMarker() //SLOT
 void
 Playlist::showTagDialog( QPtrList<QListViewItem> items )
 {
-    // despite being modal, the user can still modify the playlist
-    // in a dangerous fashion, eg dcop clear() will get processed by
-    // the TagDialog exec() loop. So we must lock the playlist
-    Playlist::lock();
+    /// the tag dialog was once modal, because we thought that damage would occur
+    /// when passing playlist items into the editor and it was removed from the playlist.
+    /// This is simply not the case, information is written to the URL, not the item.
 
-    if ( items.count() == 1 ) {
+    // Playlist::lock();
+
+    if( items.isEmpty() ) return;
+
+    if ( items.count() == 1 )
+    {
         PlaylistItem *item = static_cast<PlaylistItem*>( items.first() );
 
         if ( !item->url().isLocalFile() )
@@ -4599,10 +4603,8 @@ Playlist::showTagDialog( QPtrList<QListViewItem> items )
             dialog.exec();
         }
         else if ( QFile::exists( item->url().path() ) ) {
-            //NOTE we are modal because, eg, user clears playlist while
-            //this dialog is shown, then the dialog operates on the playlistitem
-            //TODO not perfect as dcop clear works for instance
-            TagDialog( *item, item, instance() ).exec();
+            TagDialog *dialog = new TagDialog( *item, item, instance() );
+            dialog->show();
         }
         else
             KMessageBox::sorry( this, i18n( "This file does not exist:" ) + " " + item->url().path() );
@@ -4618,7 +4620,7 @@ Playlist::showTagDialog( QPtrList<QListViewItem> items )
         dialog->show();
     }
 
-    Playlist::unlock();
+    // Playlist::unlock();
 }
 
 
