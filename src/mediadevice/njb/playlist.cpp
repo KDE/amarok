@@ -39,14 +39,14 @@ NjbPlaylist::NjbPlaylist()
 }
 
 NjbPlaylist::NjbPlaylist(njb_playlist_t* playlist):
-    m_playlist(NULL)
+    m_playlist(0)
 {
     // 	kdDebug( 7182) << __PRETTY_FUNCTION__ << " this=" << this << " playlist=" << playlist << endl;
     setPlaylist( playlist );
 }
 
 NjbPlaylist::NjbPlaylist(const NjbPlaylist& _copy):
-    m_playlist(NULL)
+    m_playlist(0)
 {
     // 	kdDebug( 7182) << __PRETTY_FUNCTION__ << " this=" << this << " m_playlist=" << m_playlist << " playlist=" << _copy.m_playlist << endl;
     setPlaylist( _copy.m_playlist );
@@ -60,14 +60,16 @@ NjbPlaylist::~NjbPlaylist( void)
         NJB_Playlist_Destroy( m_playlist);
 }
 
-void NjbPlaylist::operator=( const NjbPlaylist& _copy)
+void
+NjbPlaylist::operator=( const NjbPlaylist& _copy)
 {
     // 	kdDebug( 7182) << __PRETTY_FUNCTION__ << " this=" << this << " m_playlist " << m_playlist << " playlist=" << _copy.m_playlist << endl;
 
     setPlaylist( _copy.m_playlist );
 }
 
-void NjbPlaylist::setPlaylist( njb_playlist_t* _newlist )
+void
+NjbPlaylist::setPlaylist( njb_playlist_t* _newlist )
 {
     // 	kdDebug( 7182) << __PRETTY_FUNCTION__ << " this=" << this << endl;
 
@@ -105,7 +107,8 @@ void NjbPlaylist::setPlaylist( njb_playlist_t* _newlist )
     kdDebug( 7182) << __PRETTY_FUNCTION__ << " OK" << endl;
 }
 
-QString NjbPlaylist::unescapefilename( const QString& _in )
+QString
+NjbPlaylist::unescapefilename( const QString& _in )
 {
     QString result = _in;
 
@@ -114,7 +117,8 @@ QString NjbPlaylist::unescapefilename( const QString& _in )
     return result;
 }
 
-QString NjbPlaylist::escapefilename( const QString& _in )
+QString
+NjbPlaylist::escapefilename( const QString& _in )
 {
     QString result = _in;
 
@@ -123,7 +127,8 @@ QString NjbPlaylist::escapefilename( const QString& _in )
     return result;
 }
 
-int NjbPlaylist::setName( const QString& fileName)
+int
+NjbPlaylist::setName( const QString& fileName)
 {
     QString playlistName = fileName;
     if( fileName.right( 4) == ".m3u")
@@ -165,7 +170,8 @@ int NjbPlaylist::setName( const QString& fileName)
 }
 
 
-int NjbPlaylist::addTrack( const QString& fileName)
+int
+NjbPlaylist::addTrack( const QString& fileName)
 {
     kdDebug( 7182) << __PRETTY_FUNCTION__ << " filename=" << fileName << endl;
 
@@ -184,7 +190,8 @@ int NjbPlaylist::addTrack( const QString& fileName)
     return NJB_SUCCESS;
 }
 
-void playlist_dump( njb_playlist_t* playlist )
+void
+playlist_dump( njb_playlist_t* playlist )
 {
     kdDebug( 7182) << __PRETTY_FUNCTION__ << endl;
 
@@ -204,20 +211,21 @@ void playlist_dump( njb_playlist_t* playlist )
 }
 
 
-int NjbPlaylist::update( void)
+int
+NjbPlaylist::update( void)
 {
     // 	kdDebug( 7182) << "putPlaylist: state = " << m_playlist->_state << endl;
     // 	kdDebug( 7182) << "putPlaylist: id = " << m_playlist->plid << endl;
     kdDebug( 7182) << "putPlaylist: sending...\n";
 
     playlist_dump( m_playlist );
-    int status = NJB_Update_Playlist( theNjb, m_playlist);
+    int status = NJB_Update_Playlist( NjbMediaDevice::theNjb(), m_playlist);
     if( status == -1) {
         kdDebug( 7182) << "putPlaylist: NJB_Update_Playlist failed\n";
-        if (NJB_Error_Pending(theNjb))
+        if (NJB_Error_Pending(NjbMediaDevice::theNjb()))
         {
             const char* error;
-            while ((error = NJB_Error_Geterror(theNjb)))
+            while ((error = NJB_Error_Geterror(NjbMediaDevice::theNjb())))
                 kdError( 7182) << __func__ << ": " << error << endl;
         }
         else
@@ -227,7 +235,8 @@ int NjbPlaylist::update( void)
     return NJB_SUCCESS;
 }
 
-QStringList NjbPlaylist::trackNames( void) const
+QStringList
+NjbPlaylist::trackNames( void) const
 {
     QStringList result;
 
@@ -244,17 +253,20 @@ QStringList NjbPlaylist::trackNames( void) const
     return result;
 }
 
-bool NjbPlaylist::operator==(const QString& name) const
+bool
+NjbPlaylist::operator==(const QString& name) const
 {
     return escapefilename(m_playlist->name) == name;
 }
 
-bool NjbPlaylist::operator==(const NjbPlaylist& rval) const
+bool
+NjbPlaylist::operator==(const NjbPlaylist& rval) const
 {
     return getName() == rval.getName();
 }
 
-QString NjbPlaylist::getName(void) const
+QString
+NjbPlaylist::getName(void) const
 {
     kdDebug( 7182) << __PRETTY_FUNCTION__ << " this=" << this << " list=" << m_playlist << endl;
 
@@ -271,8 +283,8 @@ playlistValueList::readFromDevice( void)
     // ONLY read from the device if this list is empty.
 
     int playlists = 0;
-    NJB_Reset_Get_Playlist( theNjb);
-    while( njb_playlist_t* pl = NJB_Get_Playlist( theNjb) ) {
+    NJB_Reset_Get_Playlist( NjbMediaDevice::theNjb());
+    while( njb_playlist_t* pl = NJB_Get_Playlist( NjbMediaDevice::theNjb()) ) {
         // FIXME (acejones) Make this a signal
         // 		infoMessage( i18n( "Downloading playlist %1...").arg( ++playlists));
         ++playlists;

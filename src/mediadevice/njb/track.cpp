@@ -255,7 +255,7 @@ trackValueList::readFromDevice( void)
     int nrow, ncolumn;
     sqlite* m_db;
 
-    unsigned long counter = NJB_Get_NJB1_Libcounter( theNjb);
+    unsigned long counter = NJB_Get_NJB1_Libcounter( NjbMediaDevice::theNjb());
     if ( !counter )
         goto nocache;
 
@@ -293,10 +293,10 @@ nocache:
     // Load from the device
     int i = 0;
     // Don't get extended metadatas
-    debug() << ": theNjb is:" << theNjb << endl;
-    NJB_Get_Extended_Tags(theNjb, 0);
-    NJB_Reset_Get_Track_Tag( theNjb);
-    while( njb_songid_t* song = NJB_Get_Track_Tag( theNjb)) {
+    debug() << ": NjbMediaDevice::theNjb() is:" << NjbMediaDevice::theNjb() << endl;
+    NJB_Get_Extended_Tags(NjbMediaDevice::theNjb(), 0);
+    NJB_Reset_Get_Track_Tag( NjbMediaDevice::theNjb());
+    while( njb_songid_t* song = NJB_Get_Track_Tag( NjbMediaDevice::theNjb())) {
         //FIXME (acejones) Make this a signal
         // 		infoMessage( i18n( "Downloading track %1...").arg( i++));
         append( NjbTrack(song));
@@ -323,7 +323,8 @@ done:
     return NJB_SUCCESS;
 }
 
-MetaBundle* NjbTrack::getMetaBundle( )
+MetaBundle*
+NjbTrack::getMetaBundle( )
 {
     MetaBundle *bundle = new MetaBundle();
     // 	unsigned id;

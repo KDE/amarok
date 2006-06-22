@@ -47,9 +47,6 @@
 const int NJB_SUCCESS = 0;
 const int NJB_FAILURE = -1;
 
-// Global which NJB to use
-extern njb_t* theNjb;
-
 // Global track list
 extern trackValueList* theTracks;
 
@@ -104,7 +101,8 @@ class NjbMediaDevice : public MediaDevice
         void setSecondSort(QString text);
         void setSpacesToUnderscores(bool yesno);
         void setThirdSort(QString text);
-
+        static njb_t *theNjb();
+        
     protected:
 
         virtual bool closeDevice();
@@ -167,7 +165,7 @@ class NjbMediaDevice : public MediaDevice
 
         bool m_connected;
 
-        njb_t* m_njb;
+        static njb_t* m_njb;
         bool m_captured;
         int m_libcount;
         bool m_busy;
