@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 1.4.1:
   FEATURES:
+    * New playlist toolbar menu entry for adding streams to the playlist.
+      (BR 129349)
 
   CHANGES:
     * Provide warning dialog when deleting items from the playlistbrowser.

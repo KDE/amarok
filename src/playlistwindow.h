@@ -70,6 +70,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         void savePlaylist() const;
         void slotPlayMedia();
         void slotAddLocation( bool directPlay = false );
+        void slotAddStream();
         void playAudioCD();
         void showQueueManager();
         void showScriptSelector();

@@ -58,9 +58,10 @@
 #include <kglobal.h>
 #include <khtml_part.h>       //Welcome Tab
 #include <kiconloader.h>      //ClearFilter button
+#include <kinputdialog.h>     //slotAddStream()
 #include <klocale.h>
 #include <kmenubar.h>
-#include <kmessagebox.h>       //savePlaylist()
+#include <kmessagebox.h>      //savePlaylist()
 #include <kpopupmenu.h>
 #include <kpushbutton.h>
 #include <kstandarddirs.h>    //Welcome Tab, locate welcome.html
@@ -131,6 +132,8 @@ PlaylistWindow::PlaylistWindow()
     KStdAction::quit( kapp, SLOT( quit() ), ac );
     KStdAction::open( this, SLOT(slotAddLocation()), ac, "playlist_add" )->setText( i18n("&Add Media...") );
     ac->action( "playlist_add" )->setIcon( amaroK::icon( "files" ) );
+    KStdAction::open( this, SLOT(slotAddStream()), ac, "stream_add" )->setText( i18n("&Add Stream...") );
+    ac->action( "stream_add" )->setIcon( amaroK::icon( "files" ) );
     KStdAction::save( this, SLOT(savePlaylist()), ac, "playlist_save" )->setText( i18n("&Save Playlist As...") );
     ac->action( "playlist_save" )->setIcon( amaroK::icon( "save" ) );
     KStdAction::showMenubar( this, SLOT(slotToggleMenu()), ac );
@@ -270,6 +273,7 @@ void PlaylistWindow::init()
     //BEGIN Playlist menu
     KPopupMenu *playlistMenu = new KPopupMenu( m_menubar );
     actionCollection()->action("playlist_add")->plug( playlistMenu );
+    actionCollection()->action("stream_add")->plug( playlistMenu );
     actionCollection()->action("playlist_save")->plug( playlistMenu );
     playlistMenu->insertSeparator();
     actionCollection()->action("playlist_undo")->plug( playlistMenu );
@@ -775,8 +779,8 @@ void PlaylistWindow::slotAddLocation( bool directPlay ) //SLOT
     // open a file selector to add media to the playlist
     KURL::List files;
     //files = KFileDialog::getOpenURLs( QString::null, "*.*|" + i18n("All Files"), this, i18n("Add Media") );
-    KFileDialog dlg(QString::null, "*.*|", this, "openMediaDialog", true);
-    dlg.setCaption(directPlay ? i18n("Play Media (Files or URLs)") : i18n("Add Media (Files or URLs)"));
+    KFileDialog dlg( QString::null, "*.*|", this, "openMediaDialog", true );
+    dlg.setCaption( directPlay ? i18n("Play Media (Files or URLs)") : i18n("Add Media (Files or URLs)") );
     dlg.setMode( KFile::Files | KFile::Directory );
     dlg.exec();
     files = dlg.selectedURLs();
@@ -792,15 +796,28 @@ void PlaylistWindow::slotAddLocation( bool directPlay ) //SLOT
             Playlist::instance()->insertMedia( *it, Playlist::Append );
 }
 
+void PlaylistWindow::slotAddStream() //SLOT
+{
+    bool ok;
+    QString url = KInputDialog::getText( i18n("Add Remote Media"), i18n("URL"), QString::null, &ok, this );
+
+    if ( !ok ) return;
+
+    KURL::List media( KURL::fromPathOrURL( url ) );
+    Playlist::instance()->insertMedia( media );
+}
+
 
 void PlaylistWindow::playAudioCD() //SLOT
 {
     KURL::List urls;
-    if (EngineController::engine()->getAudioCDContents(QString::null, urls)) {
-        if (!urls.isEmpty()) {
+    if( EngineController::engine()->getAudioCDContents(QString::null, urls) )
+    {
+        if (!urls.isEmpty())
             Playlist::instance()->insertMedia(urls, Playlist::Replace);
-        }
-    } else { // Default behaviour
+    }
+    else
+    { // Default behaviour
         m_browsers->showBrowser( "FileBrowser" );
         FileBrowser *fb = static_cast<FileBrowser *>( m_browsers->browser("FileBrowser") );
         fb->setUrl( KURL("audiocd:/Wav/") );
