@@ -16,36 +16,41 @@
 
 AMAROK_EXPORT_PLUGIN( NjbMediaDevice )
 
-#include "debug.h"
-#include "metabundle.h"
-#include "collectiondb.h"
-#include "statusbar/statusbar.h"
-#include "statusbar/popupMessage.h"
 
-#include <quuid.h>
+// Amarok
+#include <debug.h>
+#include <metabundle.h>
+#include <collectiondb.h>
+#include <statusbar/statusbar.h>
+#include <statusbar/popupMessage.h>
+#include <collectiondb.h>
+#include <collectionbrowser.h>
 
-// kde
+// KDE
 #include <kapplication.h>
 #include <kdebug.h>
+#include <kfiledialog.h>
+#include <kiconloader.h>       //smallIcon
 #include <kinstance.h>
 #include <klocale.h>
 #include <kmessagebox.h>
-#include <ktempfile.h>
-#include <kurl.h>
-#include <kiconloader.h>       //smallIcon
 #include <kpopupmenu.h>
-#include <kfiledialog.h>
-#include <qlistview.h>
+#include <ktempdir.h>
+#include <kurl.h>
+#include <kurlrequester.h>     //downloadSelectedItems()
+#include <kurlrequesterdlg.h>  //downloadSelectedItems()
+
+
+// Qt
 #include <qdir.h>
+#include <qlistview.h>
+#include <quuid.h>
 
 // posix
 #include <stdint.h>
 #include <sys/stat.h>
 #include <time.h>
 #include <unistd.h>
-
-#include <kurlrequester.h>     //downloadSelectedItems()
-#include <kurlrequesterdlg.h>  //downloadSelectedItems()
 
 namespace amaroK { extern KConfig *config( const QString& ); }
 njb_t *NjbMediaDevice::m_njb = 0;
@@ -270,8 +275,8 @@ int
 NjbMediaDevice::deleteItemFromDevice(MediaItem* item, bool onlyPlayed)
 {
     Q_UNUSED(onlyPlayed)
-    //onlyPlayed is ignored because this device doesn't suppor directories
-    //and not store the number of times that a file is played
+    //onlyPlayed is ignored because this device doesn't support directories
+    //and does not store the number of times that a file is played
 
     NjbMediaItem *njbItem = dynamic_cast<NjbMediaItem *>(item);
     if(item->type() == MediaItem::ARTIST)
@@ -373,105 +378,113 @@ NjbMediaDevice::downloadSelectedItems( NjbMediaItem * item )
 
     destDir.adjustPath( 1 ); //add trailing slash
 
-    NjbMediaItem *njbItem = dynamic_cast<NjbMediaItem *>(item);
-    if(item->type() == MediaItem::ARTIST)
-        return downloadArtist(njbItem, destDir);
-
-    if(item->type() == MediaItem::ALBUM)
-        return downloadAlbum(njbItem, destDir);
-
-    if(item->type() == MediaItem::TRACK)
-        return downloadTrack( njbItem, destDir );
-    return -1;
-
-}
-
-int
-NjbMediaDevice::downloadArtist(NjbMediaItem *artistItem, KURL destDir)
-{
-    int itemsDownload = 0;
-
-    if(artistItem->type() == MediaItem::ARTIST)
-    {
-        NjbMediaItem* auxItem = dynamic_cast<NjbMediaItem *>(artistItem->firstChild());
-        while(auxItem)
-        {
-            itemsDownload += downloadAlbum( auxItem, destDir );
-            auxItem = dynamic_cast<NjbMediaItem *>(auxItem->nextSibling());
-        }
-    }
-
-    return itemsDownload;
-}
-
-int
-NjbMediaDevice::downloadAlbum(NjbMediaItem *albumItem, KURL destDir)
-{
-    int itemsDownload = 0;
-
-    if(albumItem->type() == MediaItem::ALBUM)
-    {
-        NjbMediaItem* auxItem = dynamic_cast<NjbMediaItem *>(albumItem->firstChild());
-
-        while(auxItem)
-        {
-            itemsDownload += downloadTrack( auxItem, destDir );
-            auxItem = dynamic_cast<NjbMediaItem *>(auxItem->nextSibling());
-        }
-    }
-    return itemsDownload;
-}
-
-int
-NjbMediaDevice::downloadTrack(NjbMediaItem *trackItem, KURL destDir)
-{
-    if(trackItem->type() == MediaItem::TRACK)
-    {
-        debug() << "Artist: " << trackItem->parent()->parent()->text(0) << "  Album: " << trackItem->parent()->text(0) << endl;
-
-
-        downloadTrackNow( trackItem, destDir.path() );
-
-        return 1;
-    }
-    return 0;
-}
-
-
-int
-NjbMediaDevice::downloadTrackNow( NjbMediaItem *item , QString path)
-{
-    path += item->bundle()->artist();
-    debug() << "Getting track: "<< path << endl;
+    QPtrList<MediaItem> items;
     QDir dir;
-    if( !dir.exists( path ) )
+    m_view->getSelectedLeaves( 0, &items );
+    int result = 0;
+    QString path;
+    for( MediaItem *it = items.first(); it; it = items.next() )
     {
-        dir.mkdir(path);
-    }
-    path = path + "/" + item->bundle()->album();
-    if( !dir.exists( path ) )
-    {
-        dir.mkdir(path);
-    }
-    path = path + "/" + item->getFileName();
-    if(NJB_Get_Track (m_njb, item->getId(), item->bundle()->filesize(), path.latin1(), progressCallback, this) != NJB_SUCCESS)
-    {
-        debug() << ": NJB_Send_Track failed\n";
-        if (NJB_Error_Pending(m_njb))
+        path = destDir.path();
+        switch( it->type() ) // I really need to do first, second and third level selectors for this.
         {
-            const char* njbError;
-            while ((njbError = NJB_Error_Geterror(m_njb)))
-                warning() << ": " << njbError << endl;
+            case MediaItem::ARTIST:
+                path += it->bundle()->artist();
+                if( !dir.exists( path ) )
+                {
+                    dir.mkdir( path );
+                }
+                break;
+            case MediaItem::ALBUM:
+                path += it->bundle()->artist();
+                if( !dir.exists( path ) )
+                {
+                    dir.mkdir( path );
+                }
+                path += ( "/" + it->bundle()->album() );
+                if( !dir.exists( path ) )
+                {
+                    dir.mkdir( path );
+                }
+                break;
+            case MediaItem::TRACK:
+                path += it->bundle()->artist();
+                if( !dir.exists( path ) )
+                {
+                    dir.mkdir( path );
+                }
+                path += ( "/" + it->bundle()->album() );
+                if( !dir.exists( path ) )
+                {
+                    dir.mkdir( path );
+                }
+                NjbMediaItem *auxItem = dynamic_cast<NjbMediaItem *>( (it) );
+                path +=( "/" + auxItem->getFileName() );
+                if( NJB_Get_Track( m_njb, auxItem->getId(), auxItem->bundle()->filesize(), path.latin1(), progressCallback, this)
+                    != NJB_SUCCESS )
+                {
+                    debug() << "Get Track failed. " << endl;
+                    if( NJB_Error_Pending(m_njb) )
+                    {
+                        const char *njbError;
+                        while( (njbError = NJB_Error_Geterror(m_njb) ) )
+                            error() << njbError << endl;
+                    }
+                    else
+                        debug() << "No reason to report for failure" << endl;
+                }
+                result ++;
+                break;
+            default:
+                break;                
         }
-        else
-            debug() << ": No reason for failure reported.\n";
-
-        m_busy = false;
-
-        return 0;
     }
+    return result;
 
-    return 1;
+}
+
+
+/**
+ * Download the selected items and put them into the collection DB.
+ * @return The number of files downloaded.
+*/
+int
+NjbMediaDevice::downloadToCollection()
+{
+    // We will first download all files into a temp dir, and then call move to collection.
+    
+    QPtrList<MediaItem> items;
+    m_view->getSelectedLeaves( 0, &items );
+
+    KTempDir tempdir(QString::null); // Default prefix is fine with us
+    tempdir.setAutoDelete(true); // We don't need it once the work is done.
+    QString path = tempdir.name(), filepath;
+    KURL::List urls;
+    for( MediaItem *it = items.first(); it; it = items.next() )
+    {
+        if( (it->type() == MediaItem::TRACK) )
+        {
+            NjbMediaItem* auxItem = dynamic_cast<NjbMediaItem *>( (it) );
+            filepath = path + auxItem->getFileName();
+            if( NJB_Get_Track( m_njb, auxItem->getId(), auxItem->bundle()->filesize(), filepath.latin1(), progressCallback, this)
+                != NJB_SUCCESS )
+            {
+                debug() << "Get Track failed. " << endl;
+                if( NJB_Error_Pending(m_njb) )
+                {
+                    const char *njbError;
+                    while( (njbError = NJB_Error_Geterror(m_njb) ) )
+                        error() << njbError << endl;
+                }
+                else
+                    debug() << "No reason to report for failure" << endl;
+            }
+            urls << path+auxItem->getFileName();
+        }
+    }
+    // Now, call the collection organizer.
+    CollectionView::instance()->organizeFiles( urls, i18n( "Move Files To Collection" ), false );
+    return 0;
 }
 
 MediaItem*
@@ -682,17 +695,18 @@ void
 NjbMediaDevice::rmbPressed(QListViewItem* qitem, const QPoint& point, int )
 {
 
-    enum Actions { DOWNLOAD, RENAME, DELETE};
+    enum Actions { DOWNLOAD, DOWNLOAD_TO_COLLECTION, RENAME, DELETE};
 
     NjbMediaItem *item = static_cast<NjbMediaItem *>(qitem);
     if ( item )
     {
         KPopupMenu menu( m_view);
-        menu.insertItem( SmallIconSet( amaroK::icon( "collection" ) ), i18n("Download"), DOWNLOAD );
+        menu.insertItem( SmallIconSet( amaroK::icon( "collection" ) ), i18n("Download file"), DOWNLOAD );
+        menu.insertItem( SmallIconSet( amaroK::icon( "collection" ) ), i18n("Download to collection"), DOWNLOAD_TO_COLLECTION );
         menu.insertSeparator();
         //menu.insertItem( SmallIconSet( amaroK::icon( "edit" ) ), i18n( "Rename" ), RENAME );
-        menu.insertItem( SmallIconSet( amaroK::icon( "remove" ) ), i18n( "Delete" ), DELETE );
-
+        menu.insertItem( SmallIconSet( amaroK::icon( "remove" ) ), i18n( "Delete from device" ), DELETE );
+        
 
         int id =  menu.exec( point );
         switch( id )
@@ -710,6 +724,9 @@ NjbMediaDevice::rmbPressed(QListViewItem* qitem, const QPoint& point, int )
         case DELETE:
             deleteItemFromDevice( item , false);
             break;
+        case DOWNLOAD_TO_COLLECTION:
+            downloadToCollection();
+            break;
         }
         return;
     }
@@ -721,18 +738,6 @@ NjbMediaDevice::runTransferDialog()
 {
     m_td = new TransferDialog( this );
     m_td->exec();
-}
-
-void
-NjbMediaDevice::setDeviceType(const QString& type)
-{
-    MediaDevice::setDeviceType(type);
-}
-
-void
-NjbMediaDevice::setSpacesToUnderscores(bool yesno)
-{
-    MediaDevice::setSpacesToUnderscores(yesno);
 }
 
 int

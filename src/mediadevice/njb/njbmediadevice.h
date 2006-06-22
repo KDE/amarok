@@ -107,10 +107,7 @@ class NjbMediaDevice : public MediaDevice
         int deleteTrack(NjbMediaItem *trackItem);
 
         int downloadSelectedItems( NjbMediaItem *item );
-        int downloadArtist(NjbMediaItem *artistItem, KURL destDir);
-        int downloadAlbum(NjbMediaItem *albumItem, KURL destDir);
-        int downloadTrack(NjbMediaItem *trackItem, KURL destDir);
-        int downloadTrackNow(NjbMediaItem *item, QString path);
+        int downloadToCollection();
 
         virtual MediaItem* copyTrackToDevice(const MetaBundle& bundle);
 
