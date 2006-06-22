@@ -124,7 +124,7 @@ NjbMediaDevice::closeDevice()
 
     if( m_njb ) {
         NJB_Close( m_njb);
-        delete m_njb;
+
         m_njb = 0;
         
     }
@@ -205,9 +205,10 @@ NjbMediaDevice::openDevice(bool)
 {
     DEBUG_BLOCK
 
+    
     if( m_njb )
         return true;
-
+    
     QString genericError = i18n( "Could not connect to Nomad device" );
 
     int n;
@@ -217,16 +218,17 @@ NjbMediaDevice::openDevice(bool)
         
         return false;
     }
-
-    *m_njb = njbs[0];
+    m_njb = &njbs[0];
     
 
-    if( NJB_Open( m_njb) == -1) {
+    if( NJB_Open( m_njb ) == -1) {
         amaroK::StatusBar::instance()->shortLongMessage( genericError, i18n("Nomad device could not be opened"), KDE::StatusBar::Error );
-        delete m_njb;
+
         
         return false;
     }
+    
+    debug() << "Here\n";
     m_connected = true;
 
     if( NJB_Capture(m_njb) == -1) {
@@ -357,8 +359,6 @@ NjbMediaDevice::deleteTrack(NjbMediaItem *trackItem)
 int
 NjbMediaDevice::downloadSelectedItems( NjbMediaItem * item )
 {
-    debug() << endl;
-
     /* Copied from ifpmediadevice */
     QString save = QString::null;
 
@@ -382,9 +382,6 @@ NjbMediaDevice::downloadSelectedItems( NjbMediaItem * item )
 
     if(item->type() == MediaItem::TRACK)
         return downloadTrack( njbItem, destDir );
-
-    debug() << ": OK" << endl;
-
     return -1;
 
 }
@@ -392,8 +389,6 @@ NjbMediaDevice::downloadSelectedItems( NjbMediaItem * item )
 int
 NjbMediaDevice::downloadArtist(NjbMediaItem *artistItem, KURL destDir)
 {
-    debug() << "downloadArtist" <<  endl;
-
     int itemsDownload = 0;
 
     if(artistItem->type() == MediaItem::ARTIST)
@@ -412,8 +407,6 @@ NjbMediaDevice::downloadArtist(NjbMediaItem *artistItem, KURL destDir)
 int
 NjbMediaDevice::downloadAlbum(NjbMediaItem *albumItem, KURL destDir)
 {
-    debug() << "downloadAlbum:" << endl;
-
     int itemsDownload = 0;
 
     if(albumItem->type() == MediaItem::ALBUM)
@@ -432,8 +425,6 @@ NjbMediaDevice::downloadAlbum(NjbMediaItem *albumItem, KURL destDir)
 int
 NjbMediaDevice::downloadTrack(NjbMediaItem *trackItem, KURL destDir)
 {
-    debug() << "downloadTrack:" << endl;
-
     if(trackItem->type() == MediaItem::TRACK)
     {
         debug() << "Artist: " << trackItem->parent()->parent()->text(0) << "  Album: " << trackItem->parent()->text(0) << endl;
@@ -450,9 +441,6 @@ NjbMediaDevice::downloadTrack(NjbMediaItem *trackItem, KURL destDir)
 int
 NjbMediaDevice::downloadTrackNow( NjbMediaItem *item , QString path)
 {
-    debug() << endl;
-
-    //int   NJB_Get_Track (njb_t *njb, u_int32_t trackid, u_int32_t size, const char *path, NJB_Xfer_Callback *callback, void *data)
     path += item->bundle()->artist();
     debug() << "Getting track: "<< path << endl;
     QDir dir;
@@ -684,6 +672,12 @@ NjbMediaDevice::removeConfigElements(QWidget* arg1)
     MediaDevice::removeConfigElements(arg1);
 }
 
+MediaItem *
+NjbMediaDevice::trackExists( const MetaBundle & bundle )
+{
+    return 0;
+}
+
 void
 NjbMediaDevice::rmbPressed(QListViewItem* qitem, const QPoint& point, int )
 {
@@ -730,80 +724,15 @@ NjbMediaDevice::runTransferDialog()
 }
 
 void
-NjbMediaDevice::synchronizeDevice()
-{
-}
-
-void
-NjbMediaDevice::updateRootItems()
-{
-    MediaDevice::updateRootItems();
-}
-
-void
-NjbMediaDevice::hideProgress()
-{
-    MediaDevice::hideProgress();
-}
-
-void
-NjbMediaDevice::purgeEmptyItems(MediaItem* root)
-{
-    MediaDevice::purgeEmptyItems(root);
-}
-
-void
-NjbMediaDevice::setConfigBool(const QString& name, bool value)
-{
-    MediaDevice::setConfigBool(name, value);
-}
-
-void
-NjbMediaDevice::setConfigString(const QString& name, const QString& value)
-{
-    MediaDevice::setConfigString(name, value);
-}
-
-void
 NjbMediaDevice::setDeviceType(const QString& type)
 {
     MediaDevice::setDeviceType(type);
 }
 
 void
-NjbMediaDevice::setFirstSort(QString text)
-{
-    MediaDevice::setFirstSort(text);
-}
-
-void
-NjbMediaDevice::setSecondSort(QString text)
-{
-    MediaDevice::setSecondSort(text);
-}
-
-void
 NjbMediaDevice::setSpacesToUnderscores(bool yesno)
 {
     MediaDevice::setSpacesToUnderscores(yesno);
-}
-
-void
-NjbMediaDevice::setThirdSort(QString text)
-{
-    MediaDevice::setThirdSort(text);
-}
-
-void
-NjbMediaDevice::syncStatsFromDevice(MediaItem* root)
-{
-    MediaDevice::syncStatsFromDevice(root);
-}
-
-void
-NjbMediaDevice::syncStatsToDevice(MediaItem* root)
-{
-    MediaDevice::syncStatsToDevice(root);
 }
 
 int

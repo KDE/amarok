@@ -85,14 +85,9 @@ class NjbMediaDevice : public MediaDevice
         virtual void removeConfigElements(QWidget* arg1);
         virtual void rmbPressed(QListViewItem* qitem, const QPoint& point, int arg1);
         virtual void runTransferDialog();
-        void hideProgress();
-        void setConfigBool(const QString& name, bool value);
-        void setConfigString(const QString& name, const QString& value);
+
         void setDeviceType(const QString& type);
-        void setFirstSort(QString text);
-        void setSecondSort(QString text);
         void setSpacesToUnderscores(bool yesno);
-        void setThirdSort(QString text);
         static njb_t *theNjb();
         
     protected:
@@ -120,18 +115,14 @@ class NjbMediaDevice : public MediaDevice
         virtual MediaItem* copyTrackToDevice(const MetaBundle& bundle);
 
         virtual void cancelTransfer();
-        virtual void synchronizeDevice();
+        virtual void synchronizeDevice() {};
 
         virtual void unlockDevice();
 
-        virtual void updateRootItems();
-        void purgeEmptyItems(MediaItem* root);
-        void syncStatsFromDevice(MediaItem* root);
-        void syncStatsToDevice(MediaItem* root);
-
+        virtual void updateRootItems() {};
     private:
         // TODO:
-        MediaItem        *trackExists( const MetaBundle& ) { return 0; }
+        MediaItem        *trackExists( const MetaBundle& );
         // miscellaneous methods
         static int progressCallback( u_int64_t sent, u_int64_t total, const char* /*buf*/, unsigned /*len*/, void* data);
 
