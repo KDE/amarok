@@ -347,7 +347,6 @@ Playlist::Playlist( QWidget *parent )
 
     new KAction( i18n( "&Repopulate" ), amaroK::icon( "playlist_refresh" ), 0, this, SLOT( repopulate() ), ac, "repopulate" );
     new KAction( i18n( "S&huffle" ), "rebuild", CTRL+Key_H, this, SLOT( shuffle() ), ac, "playlist_shuffle" );
-    new KAction( i18n( "&Goto Current Track" ), amaroK::icon( "music" ), CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
     new KAction( i18n( "&Remove Duplicate && Dead Entries" ), 0, this, SLOT( removeDuplicates() ), ac, "playlist_remove_duplicates" );
     new KAction( i18n( "&Queue Selected Tracks" ), amaroK::icon( "queue" ), CTRL+Key_D, this, SLOT( queueSelected() ), ac, "queue_selected" );
     KAction *stopafter = new KAction( i18n( "&Stop Playing After Track" ), amaroK::icon( "stop" ), CTRL+ALT+Key_V,
@@ -2059,7 +2058,6 @@ Playlist::updateNextPrev()
     amaroK::actionCollection()->action( "prev" )->setEnabled( isTrackBefore() );
     amaroK::actionCollection()->action( "next" )->setEnabled( isTrackAfter() );
     amaroK::actionCollection()->action( "playlist_clear" )->setEnabled( !isEmpty() );
-    amaroK::actionCollection()->action( "playlist_show" )->setEnabled( m_currentTrack );
 
     if( m_currentTrack )
         // ensure currentTrack is shown at correct height

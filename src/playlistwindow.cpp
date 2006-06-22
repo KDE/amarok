@@ -281,7 +281,6 @@ void PlaylistWindow::init()
     playlistMenu->insertSeparator();
     actionCollection()->action("playlist_clear")->plug( playlistMenu );
     actionCollection()->action("playlist_shuffle")->plug( playlistMenu );
-    actionCollection()->action("playlist_show")->plug( playlistMenu );
     //this one has no real context with regard to the menu
     //actionCollection()->action("playlist_copy")->plug( playlistMenu );
     playlistMenu->insertSeparator();
