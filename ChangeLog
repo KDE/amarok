@@ -9,6 +9,7 @@ VERSION 1.4.1:
       (BR 129349)
 
   CHANGES:
+    * Tag editor is no longer modal.
     * Provide warning dialog when deleting items from the playlistbrowser.
       (BR 129313)
     * GUI layout reverted to the classic Amarok layout.
