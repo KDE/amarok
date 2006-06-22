@@ -42,6 +42,7 @@
   Based at kionjb from
 
   @author Andres Oton <andres.oton@gmail.com>
+  @author T.R.Shashwath <trshash84@gmail.com>
  */
 
 const int NJB_SUCCESS = 0;
@@ -49,15 +50,6 @@ const int NJB_FAILURE = -1;
 
 // Global track list
 extern trackValueList* theTracks;
-
-struct DataFile
-{
-    QString   filename;
-    QString   folder;
-    u_int32_t dfid;
-    u_int64_t filesize;
-};
-typedef QValueList<DataFile> dataFileValueList;
 
 class NjbMediaItem;
 
@@ -163,16 +155,12 @@ class NjbMediaDevice : public MediaDevice
 
         QString m_errMsg;
 
-        bool m_connected;
+        bool m_connected; // Replaces m_captured from the original code.
 
         static njb_t* m_njb;
-        bool m_captured;
         int m_libcount;
         bool m_busy;
         trackValueList trackList;
-        // playlistValueList playlistList;
-        dataFileValueList dataFileList;
-        //     friend class Playlist;
         unsigned m_progressStart;
         QString m_progressMessage;
 

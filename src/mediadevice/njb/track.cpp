@@ -68,7 +68,7 @@ NjbTrack::NjbTrack( char** result)
 /* ------------------------------------------------------------------------ */
 NjbTrack::NjbTrack( njb_songid_t* song)
 {
-    // debug() << ": pid=" << getpid() << endl;
+
 
     njb_songid_frame_t* frame;
 
@@ -239,7 +239,7 @@ trackValueList::findTrackById( unsigned _id ) const
 int
 trackValueList::readFromDevice( void)
 {
-    debug() << ": pid=" << getpid() << endl;
+
 
     // ONLY read in from the device if this list is empty. 
     // 
