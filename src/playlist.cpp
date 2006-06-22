@@ -1661,7 +1661,6 @@ Playlist::slotCountChanged()
 bool
 Playlist::checkFileStatus( PlaylistItem * item )
 {
-    debug() << "Will check uniqueid " << item->uniqueId() << " if necessary" << endl;
     if( !item->checkExists() )
     {
         QString path = QString::null;
