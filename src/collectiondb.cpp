@@ -246,6 +246,9 @@ CollectionDB::CollectionDB()
 
     KConfig* atfconfig = amaroK::config( "Collection" );
     m_atfEnabled = atfconfig->readBoolEntry( "AdvancedTagFeatures", false );
+    if( m_atfEnabled )
+        connect( this, SIGNAL(fileMoved(const QString&, const QString&, const QString&)),
+                 this, SLOT(migrateStatistics(const QString&, const QString&, const QString&)) );
 
     connect( qApp, SIGNAL( aboutToQuit() ), this, SLOT( disableAutoScoring() ) );
 
@@ -4120,6 +4123,15 @@ CollectionDB::similarArtistsFetched( const QString& artist, const QStringList& s
     ThreadWeaver::instance()->queueJob( new SimilarArtistsInsertionJob( this, artist, suggestions ) );
 }
 
+void
+CollectionDB::migrateStatistics( const QString& oldUrl, const QString& newUrl, const QString& /*uniqueid*/ )
+{
+    query( QString( "DELETE FROM statistics WHERE url = '%1';" )
+                            .arg( escapeString( newUrl ) ) );
+    query( QString( "UPDATE statistics SET url = '%1' WHERE url = '%2';" )
+                            .arg( escapeString( newUrl ) )
+                            .arg( escapeString( oldUrl ) ) );
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE
