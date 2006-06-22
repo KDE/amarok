@@ -799,7 +799,7 @@ void PlaylistWindow::slotAddLocation( bool directPlay ) //SLOT
 void PlaylistWindow::slotAddStream() //SLOT
 {
     bool ok;
-    QString url = KInputDialog::getText( i18n("Add Remote Media"), i18n("URL"), QString::null, &ok, this );
+    QString url = KInputDialog::getText( i18n("Add Stream"), i18n("URL"), QString::null, &ok, this );
 
     if ( !ok ) return;
 
