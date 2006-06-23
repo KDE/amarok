@@ -237,7 +237,7 @@ trackValueList::findTrackById( unsigned _id ) const
 /* ------------------------------------------------------------------------ */
 /** Transfer musical info from the njb to local structures */
 int
-trackValueList::readFromDevice( void)
+trackValueList::readFromDevice( void )
 {
 
 

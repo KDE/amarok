@@ -14,7 +14,6 @@
 #ifndef NJBMEDIADEVICE_H
 #define NJBMEDIADEVICE_H
 
-// #include <mediadevice.h>
 #include <mediabrowser.h>
 #include <transferdialog.h>
 #include <libnjb.h>
@@ -39,7 +38,7 @@
 
   You can find the njb libs at : http://libnjb.sourceforge.net
 
-  Based at kionjb from
+  Based on kionjb
 
   @author Andres Oton <andres.oton@gmail.com>
   @author T.R.Shashwath <trshash84@gmail.com>
@@ -77,7 +76,7 @@ class NjbMediaDevice : public MediaDevice
         virtual bool hasTransferDialog() { return true; }
         virtual TransferDialog* getTransferDialog();
         virtual void addConfigElements(QWidget* arg1);
-        virtual void addToDirectory(MediaItem* directory, QPtrList< MediaItem > items);
+        virtual void addToDirectory(MediaItem* directory, QPtrList< MediaItem > items) { Q_UNUSED(directory) Q_UNUSED(items) }
         virtual void addToPlaylist(MediaItem* playlist, MediaItem* after, QPtrList< MediaItem > items);
         virtual void applyConfig();
         virtual void init(MediaBrowser* parent);
@@ -104,7 +103,7 @@ class NjbMediaDevice : public MediaDevice
         virtual int deleteItemFromDevice(MediaItem* item, bool onlyPlayed);
         int deleteTrack(NjbMediaItem *trackItem);
 
-        int downloadSelectedItems( NjbMediaItem *item );
+        int downloadSelectedItems();
         int downloadToCollection();
 
         virtual MediaItem* copyTrackToDevice(const MetaBundle& bundle);

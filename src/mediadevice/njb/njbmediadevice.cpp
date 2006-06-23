@@ -233,7 +233,6 @@ NjbMediaDevice::openDevice(bool)
         return false;
     }
     
-    debug() << "Here\n";
     m_connected = true;
 
     if( NJB_Capture(m_njb) == -1) {
@@ -291,8 +290,8 @@ NjbMediaDevice::deleteItemFromDevice(MediaItem* item, bool onlyPlayed)
             {
                 deleteTrack( dynamic_cast<NjbMediaItem *> (item) );
                 result++;
-                return result;
             }
+            return result;
             break;
         case MediaItem::ALBUM:
         case MediaItem::ARTIST:
@@ -314,11 +313,13 @@ NjbMediaDevice::deleteItemFromDevice(MediaItem* item, bool onlyPlayed)
             }
             if(item)
                 delete dynamic_cast<MediaItem *>(item);
+            return result;
             break;
         default:
             return 0;
             break;
     }
+    return result;
 }
 
 int
@@ -346,7 +347,7 @@ NjbMediaDevice::deleteTrack(NjbMediaItem *trackItem)
 }
 
 int
-NjbMediaDevice::downloadSelectedItems( NjbMediaItem * item )
+NjbMediaDevice::downloadSelectedItems()
 {
     /* Copied from ifpmediadevice */
     QString save = QString::null;
@@ -477,7 +478,8 @@ NjbMediaDevice::copyTrackToDevice(const MetaBundle& bundle)
 {
     DEBUG_BLOCK
     trackValueList::const_iterator it_track = theTracks->findTrackByName( bundle.filename() );
-    if( it_track != theTracks->end() ) {
+    if( it_track != theTracks->end() )
+    {
         deleteFromDevice( (*it_track).getId() );
     }
 
@@ -485,7 +487,8 @@ NjbMediaDevice::copyTrackToDevice(const MetaBundle& bundle)
     int duration = bundle.length();
     debug() << ": URL: " << bundle.prettyURL() << endl;
 
-    if( !duration ) {
+    if( !duration )
+    {
         m_errMsg = i18n( "Not a valid mp3 file");
         return 0;
     }
@@ -629,12 +632,6 @@ NjbMediaDevice::addConfigElements(QWidget* arg1)
 }
 
 void
-NjbMediaDevice::addToDirectory(MediaItem* directory, QPtrList< MediaItem > items)
-{
-    MediaDevice::addToDirectory(directory, items);
-}
-
-void
 NjbMediaDevice::addToPlaylist(MediaItem* playlist, MediaItem* after, QPtrList< MediaItem > items)
 {
     MediaDevice::addToPlaylist(playlist, after, items);
@@ -673,6 +670,20 @@ NjbMediaDevice::removeConfigElements(QWidget* arg1)
 MediaItem *
 NjbMediaDevice::trackExists( const MetaBundle & bundle )
 {
+    for( MediaItem *item = dynamic_cast<MediaItem *>( m_view->firstChild() );
+         item;
+         item = dynamic_cast<MediaItem *>( item->nextSibling() ) )
+    {
+        MetaBundle *trackBundle = new MetaBundle( ( *item->bundle() ) );
+        if( trackBundle->title()     == bundle.title()
+            && trackBundle->artist() == bundle.artist()
+            && trackBundle->album()  == bundle.album()
+            && trackBundle->track()  == bundle.track() )
+        {
+            return item;
+        }
+    }
+
     return 0;
 }
 
@@ -698,7 +709,7 @@ NjbMediaDevice::rmbPressed(QListViewItem* qitem, const QPoint& point, int )
         {
         case DOWNLOAD:
             debug() << "Downloading" << endl;
-            downloadSelectedItems( item );
+            downloadSelectedItems();
             break;
 
         case RENAME:
