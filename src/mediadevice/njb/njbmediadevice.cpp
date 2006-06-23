@@ -209,7 +209,7 @@ bool
 NjbMediaDevice::openDevice(bool)
 {
     DEBUG_BLOCK
-
+    
 
     if( m_njb )
         return true;
@@ -479,6 +479,7 @@ MediaItem*
 NjbMediaDevice::copyTrackToDevice(const MetaBundle& bundle)
 {
     DEBUG_BLOCK
+    debug() << "Here\n";
     trackValueList::const_iterator it_track = theTracks->findTrackByName( bundle.filename() );
     if( it_track != theTracks->end() )
     {
@@ -671,7 +672,7 @@ NjbMediaDevice::removeConfigElements(QWidget* arg1)
 
 MediaItem *
 NjbMediaDevice::trackExists( const MetaBundle & bundle )
-{
+{/*
     for( MediaItem *item = dynamic_cast<MediaItem *>( m_view->firstChild() );
          item;
          item = dynamic_cast<MediaItem *>( item->nextSibling() ) )
@@ -685,7 +686,7 @@ NjbMediaDevice::trackExists( const MetaBundle & bundle )
             return item;
         }
     }
-
+ */
     return 0;
 }
 

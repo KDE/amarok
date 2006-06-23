@@ -54,10 +54,10 @@ class NjbTrack {
         void setDuration( unsigned newDuration) { duration = newDuration; }
         void setTrackNum( unsigned newTrackNum) { tracknum = newTrackNum; }
         void setYear( QString newYear) { year = newYear; }
-        void setGenre( QString newGenre) { genre = newGenre; }
-        void setArtist( QString newArtist) { artist = newArtist; }
-        void setAlbum( QString newAlbum) { album = newAlbum; }
-        void setTitle( QString newTitle) { title = newTitle; }
+        void setGenre( QString newGenre) { genre = ( newGenre == "" ) ? "Unknown" : newGenre; }
+        void setArtist( QString newArtist) { artist = ( newArtist == "" ) ? "Unknown" : newArtist; }
+        void setAlbum( QString newAlbum) { album = ( newAlbum == "" ) ? "Unknown" : newAlbum; }
+        void setTitle( QString newTitle) { title = ( newTitle == "" ) ? "Unknown" : newTitle; }
         void setCodec( QString newCodec) { codec = newCodec; }
         void setFilename( QString newFilename) { filename = newFilename; }
 
