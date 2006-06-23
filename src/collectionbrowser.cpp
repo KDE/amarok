@@ -1426,8 +1426,8 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
         if ( cat == CollectionBrowser::IdAlbum || cat == CollectionBrowser::IdVisYearAlbum ) {
             menu.insertSeparator();
-            menu.insertItem( SmallIconSet( "ok" ), i18n( "&Mark as Compilation" ), COMPILATION_SET );
-            menu.insertItem( SmallIconSet( "cancel" ), i18n( "&Unmark as Compilation" ), COMPILATION_UNSET );
+            menu.insertItem( SmallIconSet( "ok" ), i18n( "Show under &Various Artists" ), COMPILATION_SET );
+            menu.insertItem( SmallIconSet( "cancel" ), i18n( "&Don't Show under Various Artists" ), COMPILATION_UNSET );
         }
 
         QString trueItemText;
