@@ -376,6 +376,8 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
     else if ( url.protocol() == "lastfm" )
     {
         url = LastFm::Controller::instance()->getNewProxy( url.url() );
+        connect( LastFm::Controller::instance()->getService(), SIGNAL( metaDataResult( const MetaBundle& ) ),
+                 this, SLOT( slotStreamMetaData( const MetaBundle& ) ) );
         debug() << "New URL is " << url.url() << endl;
     }
 

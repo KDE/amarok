@@ -155,6 +155,7 @@ namespace LastFm
             QStringList parameterKeys( QString keyName, QString data );
 
         private slots:
+            void readProxy();
             void changeStationFinished( int id, bool error );
             void metaDataFinished( int id, bool error );
             void enableScrobblingFinished( int id, bool error );

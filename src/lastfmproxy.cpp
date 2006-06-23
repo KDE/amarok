@@ -51,11 +51,11 @@ Controller::Controller()
     m_playing( false ),
     m_service( 0 ),
     m_server( 0 )
-{ }
+{}
 
 
 Controller::~Controller()
-{ } //m_service and m_server are both qobject children
+{} //m_service and m_server are both qobject children
 
 
 Controller*
@@ -130,6 +130,23 @@ WebService::WebService( QObject* parent )
     debug() << "Initialising Web Service" << endl;
 }
 
+void
+WebService::readProxy() //SLOT
+{
+    DEBUG_BLOCK
+
+    QString line;
+    int res;
+
+    while( true ) {
+        res = m_server->readln( line );
+        if( res == -1 ) break;
+
+        if( line == "AMAROK_PROXY: SYNC frame" )
+            requestMetaData();
+    }
+}
+
 
 void
 WebService::handshake( const QString& username, const QString& password )
@@ -186,11 +203,12 @@ WebService::handshake( const QString& username, const QString& password )
     m_proxyUrl = QString( "http://localhost:%1/theBeard.mp3" ).arg( port );
 
     m_server = new KProcIO();
-    m_server->setComm( KProcess::Stdin );
+    connect( m_server, SIGNAL( readReady( KProcIO* ) ), this, SLOT( readProxy() ) );
+    m_server->setComm( KProcess::Communication( KProcess::Stdin|KProcess::Stderr ) );
     *m_server << "amarok_proxy.rb";
     *m_server << QString::number( port );
     *m_server << m_streamUrl.toString();
-    m_server->start();
+    m_server->start( KProcIO::NotifyOnExit, true );
 
     sleep( 2 );  // Wait for server to start FIXME find a better solution
 
@@ -265,22 +283,22 @@ WebService::metaDataFinished( int /*id*/, bool error ) //SLOT
 
     const QString result( m_lastHttp->readAll() );
 
-    MetaBundle song;
-    song.setArtist( parameter( "artist", result ) );
-    song.setAlbum( parameter( "album", result ) );
-    song.setTitle( parameter( "track", result ) );
-//     song.setCover( parameter( "albumcover_medium", result ) );
-//     song.setArtistUrl( parameter( "artist_url", result ) );
-//     song.setAlbumUrl( parameter( "album_url", result ) );
-//     song.setTrackUrl( parameter( "track_url", result ) );
-    song.setLength( parameter( "trackduration", result ).toInt() );
+    MetaBundle bundle;
+    bundle.setArtist( parameter( "artist", result ) );
+    bundle.setAlbum( parameter( "album", result ) );
+    bundle.setTitle( parameter( "track", result ) );
+//     bundle.setCover( parameter( "albumcover_medium", result ) );
+//     bundle.setArtistUrl( parameter( "artist_url", result ) );
+//     bundle.setAlbumUrl( parameter( "album_url", result ) );
+//     bundle.setTrackUrl( parameter( "track_url", result ) );
+    bundle.setLength( parameter( "trackduration", result ).toInt() );
 //     bool discovery = parameter( "discovery", result ) != "-1";
 
     int errCode = parameter( "error", result ).toInt();
     if ( errCode > 0 )
         return;
 
-    emit metaDataResult( song );
+    emit metaDataResult( bundle );
 }
 
 

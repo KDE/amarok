@@ -34,7 +34,8 @@ h = Net::HTTP.new( uri.host, uri.port )
 
 response = h.get( "#{uri.path}?#{uri.query}" ) do |data|
     if data[0, 4] == "SYNC"
-        puts( "AMAROK_PROXY: SYNC frame" )
+        $stderr.puts( "AMAROK_PROXY: SYNC frame" )
+        $stdout.puts( "AMAROK_PROXY: SYNC frame" )
         next
     end
 
