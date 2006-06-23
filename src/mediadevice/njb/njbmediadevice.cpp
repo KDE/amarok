@@ -394,6 +394,7 @@ NjbMediaDevice::downloadSelectedItems()
                 }
                 break;
             case MediaItem::TRACK:
+            {
                 path += it->bundle()->artist();
                 if( !dir.exists( path ) )
                 {
@@ -421,6 +422,7 @@ NjbMediaDevice::downloadSelectedItems()
                 }
                 result ++;
                 break;
+            }
             default:
                 break;
         }
