@@ -2,6 +2,7 @@
  * copyright            : (C) 2006 Chris Muehlhaeuser <chris@chris.de>     *
  *                      : (C) 2006 Seb Ruiz <me@sebruiz.net>               *
  *                      : (C) 2006 Ian Monroe <ian@monroe.nu>              *
+ *                      : (C) 2006 Mark Kretschmann <markey@web.de>        *
  **************************************************************************/
 
 /***************************************************************************
@@ -109,6 +110,8 @@ Controller::initialGenreSet() //SLOT
 void
 Controller::playbackStopped() //SLOT
 {
+    DEBUG_BLOCK
+
     m_playing = false;
     delete m_service; m_service = 0;
     delete m_server; m_server = 0;
@@ -149,7 +152,8 @@ WebService::handshake( const QString& username, const QString& password )
     http->get( path );
     m_lastHttp = http;
 
-    do kapp->processEvents();
+    do
+        kapp->processEvents();
     while( http->state() != QHttp::Unconnected );
 
     if ( http->error() != QHttp::NoError ) {
@@ -188,7 +192,7 @@ WebService::handshake( const QString& username, const QString& password )
     *m_server << m_streamUrl.toString();
     m_server->start();
 
-    sleep( 3 );  // Wait for server to start FIXME find a better solution
+    sleep( 2 );  // Wait for server to start FIXME find a better solution
 
     emit streamingUrl( m_streamUrl );
     emit handshakeResult( m_session.length() == 32 ? 1 : -1 );

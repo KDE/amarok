@@ -2,6 +2,7 @@
  * copyright            : (C) 2006 Chris Muehlhaeuser <chris@chris.de>     *
  *                      : (C) 2006 Seb Ruiz <me@sebruiz.net>               *
  *                      : (C) 2006 Ian Monroe <ian@monroe.nu>              *
+ *                      : (C) 2006 Mark Kretschmann <markey@web.de>        *
  **************************************************************************/
 
 /***************************************************************************

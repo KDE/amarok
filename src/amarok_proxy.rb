@@ -44,11 +44,7 @@ end
 
 unless response.code == "200"
     puts( "AMAROK_PROXY: ERROR! Could not connect to last.fm. Code: #{response.code}" )
-    exit
 end
 
-
-
-# loop { sleep( 0.1 ) }
 
 

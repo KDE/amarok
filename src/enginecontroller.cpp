@@ -473,6 +473,8 @@ void EngineController::stop() //SLOT
     //where stop never properly happens if call to m_engine->load fails in play)
     //if ( m_engine->loaded() )
     m_engine->stop();
+
+    LastFm::Controller::instance()->playbackStopped();
 }
 
 
