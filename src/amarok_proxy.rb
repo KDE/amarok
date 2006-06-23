@@ -8,6 +8,7 @@ require 'socket'
 puts( "AMAROK_PROXY: startup" )
 
 port = $*[0].to_i
+$*.delete_at( 0 ) # Ensure that gets() will use Stdin, see gets() docs
 
 puts( "AMAROK_PROXY: using port: #{port}" )
 
@@ -18,7 +19,7 @@ puts( "AMAROK_PROXY: connected" )
 
 sock.puts( "HTTP/1.0 200 Ok\r\nContent-Type: audio/x-mp3; charset=\"utf-8\"\r\n\r\n" )
 
-stream_url = gets().chomp()
+stream_url = gets.chomp
 
 puts( "AMAROK_PROXY: remote stream URL: #{stream_url}" )
 
