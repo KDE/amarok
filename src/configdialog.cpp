@@ -370,7 +370,7 @@ void AmarokConfigDialog::soundSystemChanged()
         m_engineConfig = EngineController::engine()->configure();
         m_engineConfig->view()->reparent( m_engineConfigFrame, QPoint() );
         m_engineConfig->view()->show();
-        m_engineConfigFrame->setTitle( i18n( "Configure %1" ).arg( m_soundSystem->currentText() ) );
+        m_engineConfigFrame->setTitle( i18n( "to change settings", "Configure %1" ).arg( m_soundSystem->currentText() ) );
         m_engineConfigFrame->show();
 
         connect( m_engineConfig, SIGNAL(viewChanged()), SLOT(updateButtons()) );
