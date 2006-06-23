@@ -31,7 +31,11 @@ sock.puts( "HTTP/1.0 200 Ok\r\nContent-Type: audio/x-mp3; charset=\"utf-8\"\r\n\
 uri = URI.parse( remote_url )
 
 h = Net::HTTP.new( uri.host, uri.port )
-response = h.get( "#{uri.path}?#{uri.query}" )
+
+response = h.get( "#{uri.path}?#{uri.query}" ) do |data|
+    sock.puts( data )
+end
+
 
 unless response.code == "200"
     puts( "AMAROK_PROXY: ERROR! Could not connect to last.fm. Code: #{response.code}" )
@@ -39,10 +43,7 @@ unless response.code == "200"
 end
 
 
-sock.puts( response.body )
 
-
-
-loop { sleep( 0.1 ) }
+# loop { sleep( 0.1 ) }
 
 
