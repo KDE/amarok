@@ -245,7 +245,7 @@ Playlist::Playlist( QWidget *parent )
                 const QString&, const QString&)), SLOT(updateEntriesUniqueId(const QString&,
                 const QString&, const QString&)) );
     }
-    
+
     initStarPixmaps();
 
     EngineController* const ec = EngineController::instance();
@@ -4116,9 +4116,15 @@ void Playlist::leaveEvent( QEvent *e )
 void Playlist::contentsMousePressEvent( QMouseEvent *e )
 {
     PlaylistItem *item = static_cast<PlaylistItem*>( itemAt( contentsToViewport( e->pos() ) ) );
-    if( !( e->state() & Qt::ControlButton || e->state() & Qt::ShiftButton ) && ( e->button() & Qt::LeftButton ) &&
-        item && e->pos().x() > header()->sectionPos( PlaylistItem::Rating ) &&
-        e->pos().x() < header()->sectionPos( PlaylistItem::Rating ) + header()->sectionSize( PlaylistItem::Rating ) )
+
+    int beginRatingSection = header()->sectionPos( PlaylistItem::Rating );
+    int endRatingSection   = beginRatingSection + header()->sectionSize( PlaylistItem::Rating );
+
+    /// Conditions on setting the rating of an item
+    if( item &&
+       !( e->state()  & Qt::ControlButton || e->state() & Qt::ShiftButton ) &&     // skip if ctrl or shift held
+        ( e->button() & Qt::LeftButton )                                    &&     // only on a left click
+        ( e->pos().x() > beginRatingSection && e->pos().x() < endRatingSection ) ) // mouse over rating column
     {
         int rating = item->ratingAtPoint( e->pos().x() );
         if( m_selCount > 1 && item->isSelected() )
