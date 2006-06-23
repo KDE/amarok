@@ -33,6 +33,11 @@ uri = URI.parse( remote_url )
 h = Net::HTTP.new( uri.host, uri.port )
 
 response = h.get( "#{uri.path}?#{uri.query}" ) do |data|
+    if data[0, 4] == "SYNC"
+        puts( "AMAROK_PROXY: SYNC frame" )
+        next
+    end
+
     sock.puts( data )
 end
 
