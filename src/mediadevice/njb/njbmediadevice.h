@@ -102,8 +102,6 @@ class NjbMediaDevice : public MediaDevice
 
         int deleteFromDevice(unsigned id);
         virtual int deleteItemFromDevice(MediaItem* item, bool onlyPlayed);
-        int deleteAlbum(NjbMediaItem *albumItem);
-        int deleteArtist(NjbMediaItem *artistItem);
         int deleteTrack(NjbMediaItem *trackItem);
 
         int downloadSelectedItems( NjbMediaItem *item );

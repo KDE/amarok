@@ -275,65 +275,50 @@ int
 NjbMediaDevice::deleteItemFromDevice(MediaItem* item, bool onlyPlayed)
 {
     Q_UNUSED(onlyPlayed)
-    //onlyPlayed is ignored because this device doesn't support directories
-    //and does not store the number of times that a file is played
-
-    NjbMediaItem *njbItem = dynamic_cast<NjbMediaItem *>(item);
-    if(item->type() == MediaItem::ARTIST)
-        return deleteArtist(njbItem);
-
-    if(item->type() == MediaItem::ALBUM)
-        return deleteAlbum(njbItem);
-
-    if(item->type() == MediaItem::TRACK)
-        return deleteTrack( njbItem );
-
-    return -1;
-}
-
-int
-NjbMediaDevice::deleteArtist(NjbMediaItem *artistItem)
-{
-    if(artistItem->IsDownloadItem())
+    int result = 0;
+    if ( isCancelled() )
     {
-        delete artistItem;
-        return 1;
+        return -1;
     }
+    
+    MediaItem *next = 0;
+    switch( item->type() )
+    {
+        case MediaItem::TRACK:
+            if( isCancelled() )
+                break;
+            if(item)
+            {
+                deleteTrack( dynamic_cast<NjbMediaItem *> (item) );
+                result++;
+                return result;
+            }
+            break;
+        case MediaItem::ALBUM:
+        case MediaItem::ARTIST:
+            // Recurse through the lists, slashing and burning.
+            
+            if( isCancelled() )
+                break;
 
-    int itemsDeleted = 0;
-    if(artistItem->type() == MediaItem::ARTIST)
-    {
-        NjbMediaItem* auxItem = dynamic_cast<NjbMediaItem *>(artistItem->firstChild());
-        while(auxItem)
-        {
-            itemsDeleted += deleteAlbum( auxItem );
-            auxItem = dynamic_cast<NjbMediaItem *>(auxItem->nextSibling());
-        }
-    }
-    delete artistItem;
-    return itemsDeleted;
-}
+            for( MediaItem *it = dynamic_cast<MediaItem *>( item->firstChild() ); it ; it = next )
+            {
 
-int
-NjbMediaDevice::deleteAlbum(NjbMediaItem *albumItem)
-{
-    if(albumItem->IsDownloadItem())
-    {
-        delete albumItem;
-        return 1;
+                next = dynamic_cast<MediaItem *>(it->nextSibling());
+                int res = deleteItemFromDevice( it, onlyPlayed );
+                if( res >= 0 && result >= 0 )
+                    result += res;
+                else
+                    result = -1;
+                
+            }
+            if(item)
+                delete dynamic_cast<MediaItem *>(item);
+            break;
+        default:
+            return 0;
+            break;
     }
-    int itemsDeleted = 0;
-    if(albumItem->type() == MediaItem::ALBUM)
-    {
-        NjbMediaItem *auxItem = dynamic_cast<NjbMediaItem *>(albumItem->firstChild());
-        while(auxItem)
-        {
-            itemsDeleted += deleteTrack(auxItem);
-            auxItem = dynamic_cast<NjbMediaItem *>(auxItem->nextSibling());
-        }
-    }
-    delete albumItem;
-    return itemsDeleted;
 }
 
 int
@@ -356,7 +341,6 @@ NjbMediaDevice::deleteTrack(NjbMediaItem *trackItem)
 
     // remove from the cache
     trackList.remove(trackList.findTrackById( trackItem->getId() ) );
-
     delete trackItem;
     return 1;
 }
@@ -377,12 +361,13 @@ NjbMediaDevice::downloadSelectedItems( NjbMediaItem * item )
 	    return -1;
 
     destDir.adjustPath( 1 ); //add trailing slash
-
-    QPtrList<MediaItem> items;
     QDir dir;
+    QString path;
+    
+    QPtrList<MediaItem> items;
     m_view->getSelectedLeaves( 0, &items );
     int result = 0;
-    QString path;
+
     for( MediaItem *it = items.first(); it; it = items.next() )
     {
         path = destDir.path();
@@ -722,7 +707,7 @@ NjbMediaDevice::rmbPressed(QListViewItem* qitem, const QPoint& point, int )
             break;
 
         case DELETE:
-            deleteItemFromDevice( item , false);
+            MediaDevice::deleteFromDevice( item , false, true );
             break;
         case DOWNLOAD_TO_COLLECTION:
             downloadToCollection();
