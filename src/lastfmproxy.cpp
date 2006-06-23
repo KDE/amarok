@@ -26,13 +26,13 @@
 #include <qfile.h>
 #include <qhttp.h>
 #include <qregexp.h>
-#include <qsocket.h>
 #include <qtimer.h>
 
 #include <kio/job.h> //KIO::get
 #include <kio/jobclasses.h> //KIO::Job
 #include <kio/netaccess.h> //synchronousRun
 #include <kmdcodec.h> //md5sum
+#include <kprocio.h>
 #include <kprotocolmanager.h>
 #include <kurl.h>
 
@@ -75,15 +75,15 @@ Controller::getNewProxy(QString genreUrl)
 
     m_genreUrl = genreUrl;
 
-    if ( m_playing )
-       return KURL(m_server->getProxyUrl());
+    if ( m_playing ) return KURL( m_service->proxyUrl() );
+
     m_service = new WebService(this);
-    m_service->handshake(  AmarokConfig::scrobblerUsername(),  AmarokConfig::scrobblerPassword() );
+    m_service->handshake( AmarokConfig::scrobblerUsername(), AmarokConfig::scrobblerPassword() );
     connect( m_service, SIGNAL ( handshakeResult( int ) ), this, SLOT( handshakeFinished() ) );
     m_server = m_service->getServer();
-    KURL streamUrl = m_server->getProxyUrl();
     m_playing=true;
-    return streamUrl;
+
+    return KURL( m_service->proxyUrl() );
 }
 
 
@@ -105,7 +105,7 @@ Controller::initialGenreSet() //SLOT
 
     //we only want to do this function once for each new m_server
     disconnect( m_service, SIGNAL( stationChanged( QString, QString ) ), this, SLOT( initialGenreSet() ) );
-    m_server->loadStream( m_service->streamUrl() );//we only want the first time
+//     m_server->loadStream( m_service->streamUrl() );//we only want the first time
 }
 
 
@@ -157,7 +157,21 @@ WebService::handshake( const QString& username, const QString& password )
     http->get( path );
     m_lastHttp = http;
 
-    m_server = new Server( this );
+    // Find free port
+    MyServerSocket* socket = new MyServerSocket();
+    const int port = socket->port();
+    debug() << "Proxy server using port: " << port << endl;
+    delete socket;
+
+    m_proxyUrl = QString( "http://localhost:%1/theBeard.mp3" ).arg( port );
+
+    m_server = new KProcIO();
+    m_server->setComm( KProcess::Stdin );
+    *m_server << "amarok_proxy.rb";
+    *m_server << QString::number( port );
+    m_server->start();
+
+    sleep( 3 );
 }
 
 
@@ -193,6 +207,8 @@ WebService::handshakeFinished( int /*id*/, bool error ) //SLOT
     m_streamUrl = QUrl( parameter( "stream_url", result ) );
 //     bool banned = parameter( "banned", result ) == "1";
 
+    m_server->writeStdin( m_streamUrl.toString() );
+
     if ( m_session.lower() == "failed" )
     {
         emit handshakeResult( 0 );
@@ -202,6 +218,7 @@ WebService::handshakeFinished( int /*id*/, bool error ) //SLOT
     emit streamingUrl( m_streamUrl );
     emit handshakeResult( m_session.length() == 32 ? 1 : -1 );
 }
+
 
 void
 WebService::changeStation( QString url )
@@ -656,156 +673,9 @@ WebService::parameterKeys( QString keyName, QString data )
         }
     }
 
+
     return result;
 }
 
-
-////////////////////////////////////////////////////////////////////////////////
-// CLASS Server
-////////////////////////////////////////////////////////////////////////////////
-
-Server::Server( QObject* parent )
-    : QObject(parent, "lastfmProxyServer")
-    , m_http( 0 )
-    , m_buffer( new QByteArray )
-    , m_proxyPort( -1 )
-    , m_sockProxy( new QSocket( this, "socketLastFmProxy" ) )
-    , m_genreSet(false)
-    , m_localConnected(false)
-{
-    DEBUG_BLOCK
-
-    StreamProxy* server = new StreamProxy( this );
-    m_proxyPort = server->port();
-
-    connect( server, SIGNAL( connected( int ) ), this, SLOT( accept( int ) ) );
-    connect( m_sockProxy, SIGNAL( readyRead() ), this, SLOT( proxyContacted() ) );
-}
-
-
-Server::~Server()
-{
-    delete m_buffer;
-}
-
-
-void
-Server::loadStream( QUrl remote )
-{
-    DEBUG_BLOCK
-
-    m_remoteUrl = remote;
-    debug() << m_remoteUrl.host() << ':' << m_remoteUrl.port() << m_remoteUrl.encodedPathAndQuery() << endl;
-    debug() << m_remoteUrl.toString( true, false ) << endl;
-    m_http = new QHttp ( m_remoteUrl.host(), m_remoteUrl.port(), this, "lastfmClient" );
-
-    connect( m_http, SIGNAL( readyRead( const QHttpResponseHeader& ) ),
-             this,   SLOT( dataAvailable( const QHttpResponseHeader& ) ) );
-    connect( m_http, SIGNAL( responseHeaderReceived( const QHttpResponseHeader& ) ),
-             this,   SLOT( responseHeaderReceived( const QHttpResponseHeader& ) ) );
-
-    m_genreSet = true;
-    startGettingStream();
-}
-
-void
-Server::proxyContacted() //SLOT
-{
-    DEBUG_BLOCK
-
-    char inBuf[8192];
-    memset( inBuf, 0, sizeof( inBuf ) );
-   /* const Q_LONG bytesRead = */ m_http->readBlock( inBuf, sizeof( inBuf ) );
-    debug() << inBuf << endl;
-}
-
-
-KURL
-Server::getProxyUrl()
-{
-    return KURL( QString("http://localhost:%1/theBeard.mp3").arg( m_proxyPort ) );
-}
-
-
-void
-Server::accept( int socket) //SLOT
-{
-    DEBUG_BLOCK
-
-    m_sockProxy->setSocket( socket );
-    /*char emptyBuf[2048];
-    memset( emptyBuf, 0, sizeof( emptyBuf ) );
-    m_sockProxy.writeBlock( emptyBuf, sizeof( emptyBuf ) );*/
-    QTextStream proxyStream( m_sockProxy );
-    proxyStream << "HTTP/1.0 200 Ok\r\n"
-                   "Content-Type: audio/x-mp3; charset=\"utf-8\"\r\n"
-                   "\r\n";
-    m_sockProxy->waitForMore( KProtocolManager::proxyConnectTimeout() * 1000 );
-
-    m_localConnected = true;
-    startGettingStream();
-}
-
-
-void
-Server::responseHeaderReceived( const QHttpResponseHeader &resp ) //SLOT
-{
-    DEBUG_BLOCK
-
-    debug() << resp.statusCode() << endl;
-}
-
-
-void
-Server::startGettingStream()
-{
-     if( m_genreSet && m_localConnected )
-     {
-        m_http->get( m_remoteUrl.encodedPathAndQuery() );
-     }
-}
-
-
-void
-Server::dataAvailable( const QHttpResponseHeader & /*resp*/ ) //SLOT
-{
-    Q_LONG index = 0;
-    Q_LONG bytesWrite = 0;
-
-    char inBuf[8192];
-    memset( inBuf, 0, sizeof( inBuf ) );
-    const Q_LONG bytesRead = m_http->readBlock( inBuf, sizeof( inBuf ) );
-
-    while ( index < bytesRead ) {
-        bytesWrite = bytesRead - index;
- //       debug() << inBuf << " bytesWrite: " << bytesWrite << " bytesRead: " << bytesRead << " index " << index << endl;
-        if( qstrcmp(inBuf, "SYNC") == 0 )
-            return;
-        bytesWrite = m_sockProxy->writeBlock( inBuf + index, bytesWrite );
-
-        if ( bytesWrite == -1 )
-            return;
-        index += bytesWrite;
-    }
- /*  for ( int i = 0; i < len; i++ )
-    {
-        QByteArray::Iterator end = m_buffer.end();
-        end++;
-        (*end) = inBuf[ i ] ;
-    } */
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-// CLASS StreamProxy
-////////////////////////////////////////////////////////////////////////////////
-
-void
-StreamProxy::newConnection( int socket )
-{
-    DEBUG_BLOCK
-
-    emit connected( socket );
-}
 
 #include "lastfmproxy.moc"

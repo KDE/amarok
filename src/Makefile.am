@@ -164,6 +164,8 @@ KDE_ICON = \
 
 
 
+bin_SCRIPTS = amarok_proxy.rb
+
 bin_PROGRAMS = amarokapp
 
 amarokapp_SOURCES = \

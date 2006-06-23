@@ -21,6 +21,7 @@
 #include <qurl.h>
 #include <qvaluelist.h>
 
+class KProcIO;
 class KURL;
 class QHttp;
 class QHttpResponseHeader;
@@ -31,7 +32,6 @@ class MetaBundle;
 namespace LastFm
 {
     class WebService;
-    class Server;
 
     class Controller : public QObject
     {
@@ -58,7 +58,7 @@ namespace LastFm
             bool        m_playing;
             QString     m_genreUrl;
             WebService* m_service;
-            Server*     m_server;
+            KProcIO*    m_server;
     };
 
     class WebService : public QObject
@@ -101,7 +101,8 @@ namespace LastFm
             **/
             void verifyUser( const QString& user, const QString& pass );
 
-            Server* getServer() { return m_server; }
+            KProcIO* getServer() { return m_server; }
+            QString proxyUrl() { return m_proxyUrl; }
 
         public slots:
             void requestMetaData();
@@ -145,7 +146,8 @@ namespace LastFm
             bool m_subscriber;
 
             QHttp *m_lastHttp;
-            Server *m_server;
+            QString m_proxyUrl;
+            KProcIO *m_server;
 
             QString parameter( QString keyName, QString data );
             QStringList parameterArray( QString keyName, QString data );
@@ -172,51 +174,19 @@ namespace LastFm
             void recommendFinished( int id, bool error );
     };
 
-    class Server : public QObject
+
+    // We must implement this because QServerSocket has one pure virtual method.
+    // It's just used for finding a free port.
+    class MyServerSocket : public QServerSocket
     {
-        Q_OBJECT
-
         public:
-            Server( QObject* parent );
-            ~Server();
-            KURL getProxyUrl();
-            void loadStream( QUrl remote );
-
-        private slots:
-             void accept( int socket );
-             void dataAvailable( const QHttpResponseHeader &resp );
-             void responseHeaderReceived( const QHttpResponseHeader &resp  );
-             void proxyContacted();
+            MyServerSocket() : QServerSocket( 0, 1, 0 ) {};
 
         private:
-            void startGettingStream();
-
-            QUrl m_remoteUrl;
-            QHttp*  m_http;
-            QByteArray* m_buffer;
-            int m_proxyPort;
-            QSocket* m_sockProxy;
-            bool m_genreSet;
-            bool m_localConnected;
-    };
-
-    /**
-     * Stream proxy server.
-     */
-    class StreamProxy : public QServerSocket
-    {
-        Q_OBJECT
-
-        public:
-            StreamProxy( QObject* parent)
-                : QServerSocket( 0, 1, parent, "lastfmProxy" ) {};
-
-        signals:
-            void connected( int socket );
-
-        private:
-            void newConnection( int socket );
+            void newConnection( int ) {};
 
     };
+
 }
+
 #endif /*AMAROK_LASTFMPROXY_H*/
