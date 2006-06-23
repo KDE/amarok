@@ -15,8 +15,8 @@
 
 #define DEBUG_PREFIX "LastFmProxy"
 
-#include "amarok.h" //APP_VERSION
-#include "amarokconfig.h" //AS username and passwd
+#include "amarok.h"         //APP_VERSION
+#include "amarokconfig.h"   //last.fm username and passwd
 #include "debug.h"
 #include "enginecontroller.h"
 #include "lastfmproxy.h"
@@ -28,10 +28,7 @@
 #include <qregexp.h>
 #include <qtimer.h>
 
-#include <kio/job.h> //KIO::get
-#include <kio/jobclasses.h> //KIO::Job
-#include <kio/netaccess.h> //synchronousRun
-#include <kmdcodec.h> //md5sum
+#include <kmdcodec.h>       //md5sum
 #include <kprocio.h>
 #include <kprotocolmanager.h>
 #include <kurl.h>
