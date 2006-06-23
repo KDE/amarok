@@ -514,6 +514,7 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
             }
         }
 
+        m_uniqueId = QString::null;
         if ( atf )
             setUniqueId( fileref );
 
