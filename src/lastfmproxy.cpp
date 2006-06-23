@@ -76,8 +76,8 @@ Controller::getNewProxy(QString genreUrl)
     if ( m_playing ) return KURL( m_service->proxyUrl() );
 
     m_service = new WebService(this);
-    m_service->handshake( AmarokConfig::scrobblerUsername(), AmarokConfig::scrobblerPassword() );
     connect( m_service, SIGNAL ( handshakeResult( int ) ), this, SLOT( handshakeFinished() ) );
+    m_service->handshake( AmarokConfig::scrobblerUsername(), AmarokConfig::scrobblerPassword() );
     m_server = m_service->getServer();
     m_playing=true;
 
