@@ -183,7 +183,7 @@ namespace LastFm
             MyServerSocket() : QServerSocket( Q_UINT16( 0 ) ) {}
 
         private:
-            void newConnection( int ) {};
+            void newConnection( int ) {}
 
     };
 
