@@ -44,8 +44,9 @@ namespace LastFm
 
             KURL        getNewProxy( QString genreUrl );
 
-            bool        isPlaying()  { return m_playing; }
-            WebService* getService() { return m_service; }
+            bool        isPlaying() const { return m_playing; }
+            WebService* getService() const { return m_service; }
+            QString     getGenreUrl() const { return m_genreUrl; }
 
         public slots:
             void handshakeFinished();

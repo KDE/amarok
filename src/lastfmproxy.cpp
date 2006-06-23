@@ -287,6 +287,7 @@ WebService::metaDataFinished( int /*id*/, bool error ) //SLOT
     bundle.setArtist( parameter( "artist", result ) );
     bundle.setAlbum( parameter( "album", result ) );
     bundle.setTitle( parameter( "track", result ) );
+    bundle.setUrl( KURL (Controller::instance()->getGenreUrl() ) );
 //     bundle.setCover( parameter( "albumcover_medium", result ) );
 //     bundle.setArtistUrl( parameter( "artist_url", result ) );
 //     bundle.setAlbumUrl( parameter( "album_url", result ) );
