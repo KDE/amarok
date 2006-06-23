@@ -15,6 +15,8 @@ VERSION 1.4.1:
     * GUI layout reverted to the classic Amarok layout.
 
   BUGFIXES:
+    * Set half star ratings on multiple selected tracks when clicking on an
+      item. (BR 129449)
     * Only enable Show Extended Info in the Playlist Browser when information
       is available. (BR 126590)
     * Disable global shortcut for ratings when ratings are disabled.

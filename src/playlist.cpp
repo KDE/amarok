@@ -1408,11 +1408,10 @@ Playlist::setSelectedRatings( int rating )
 {
     if( !m_selCount && currentItem() && currentItem()->isVisible() )
         CollectionDB::instance()->setSongRating( currentItem()->url().path(), rating, true );
-    else if( m_selCount == 1 )
-        CollectionDB::instance()->setSongRating( (*MyIt( this, MyIt::Selected ))->url().path(), rating, true );
+
     else
         for( MyIt it( this, MyIt::Selected ); *it; ++it )
-            CollectionDB::instance()->setSongRating( (*it)->url().path(), rating );
+            CollectionDB::instance()->setSongRating( (*it)->url().path(), rating, true );
 }
 
 void
@@ -4127,7 +4126,8 @@ void Playlist::contentsMousePressEvent( QMouseEvent *e )
         ( e->pos().x() > beginRatingSection && e->pos().x() < endRatingSection ) ) // mouse over rating column
     {
         int rating = item->ratingAtPoint( e->pos().x() );
-        if( m_selCount > 1 && item->isSelected() )
+
+        if( item->isSelected() )
             setSelectedRatings( rating );
         else // toggle half star
             CollectionDB::instance()->setSongRating( item->url().path(), rating, true );
