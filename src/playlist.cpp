@@ -3743,7 +3743,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     popup.insertItem( SmallIconSet( amaroK::icon( "play" ) ), isCurrent && isPlaying
             ? i18n( "&Restart" )
-            : i18n( "&Play" ), 0, 0, Key_Enter, PLAY );
+            : i18n( "&Play" ), PLAY );
 
     // Begin queue entry logic
     popup.insertItem( SmallIconSet( amaroK::icon( "fastforward" ) ), i18n("&Queue Selected Tracks"), PLAY_NEXT );
@@ -3811,7 +3811,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     popup.insertItem( SmallIconSet( amaroK::icon( "edit" ) ), (itemCount == 1
             ? i18n( "&Edit Tag '%1'" )
-            : i18n( "&Edit '%1' Tag for Selected Tracks" )).arg( tagName ), 0, 0, Key_F2, EDIT );
+            : i18n( "&Edit '%1' Tag for Selected Tracks" )).arg( tagName ), EDIT );
 
     if( itemCount > 1 )
         popup.insertItem( trackColumn
@@ -3820,7 +3820,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
                         .arg( KStringHandler::rsqueeze( tag, 30 ).replace( "&", "&&" ) ), FILL_DOWN );
 
     if( itemCount == 1 )
-        popup.insertItem( SmallIconSet( amaroK::icon( "editcopy" ) ), i18n( "&Copy Tags to Clipboard" ), 0, 0, CTRL+Key_C, COPY );
+        popup.insertItem( SmallIconSet( amaroK::icon( "editcopy" ) ), i18n( "&Copy Tags to Clipboard" ), COPY );
 
     popup.insertSeparator();
 
