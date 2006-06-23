@@ -38,7 +38,7 @@ response = h.get( "#{uri.path}?#{uri.query}" ) do |data|
         next
     end
 
-    sock.puts( data )
+    sock.write( data )
 end
 
 
