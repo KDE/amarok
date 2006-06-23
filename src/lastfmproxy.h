@@ -180,7 +180,7 @@ namespace LastFm
     class MyServerSocket : public QServerSocket
     {
         public:
-            MyServerSocket() : QServerSocket( 0, 1, 0 ) {};
+            MyServerSocket() : QServerSocket( Q_UINT16( 0 ) ) {}
 
         private:
             void newConnection( int ) {};
