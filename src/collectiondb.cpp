@@ -2419,7 +2419,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
 {
     //DEBUG_BLOCK
     //debug() << "m_atfEnabled = " << (m_atfEnabled ? "true" : "false") << endl;
-    if( !m_atfEnabled ) return;
+    if( !m_atfEnabled || bundle->uniqueId().isEmpty() ) return;
     //ATF Stuff
     QString currid = escapeString( bundle->uniqueId() );
     QString currurl = escapeString( bundle->url().path() );

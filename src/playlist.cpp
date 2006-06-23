@@ -1663,7 +1663,7 @@ Playlist::checkFileStatus( PlaylistItem * item )
     if( !item->checkExists() )
     {
         QString path = QString::null;
-        if( m_atfEnabled )
+        if( m_atfEnabled && !item->uniqueId().isEmpty() )
             path = CollectionDB::instance()->urlFromUniqueId( item->uniqueId() );
         if( !path.isEmpty() && path != item->url().path() )
         {
