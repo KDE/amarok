@@ -118,6 +118,9 @@ Optional
       http://www.sf.net/projects/mpeg4ip
       http://www.audiocoding.com
 
+    * libnjb 2.2.4 (older versions may work)
+      (NJB mediadevice (Creative Nomad/Zen family, Dell DJ devices)
+      http://www.sf.net/projects/libnjb
 
 Please note, if compiling from source you must also install the devel versions
 of these packages.
