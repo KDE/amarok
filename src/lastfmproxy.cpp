@@ -137,11 +137,6 @@ WebService::handshake( const QString& username, const QString& password )
     m_password = password;
 
     QHttp *http = new QHttp( "ws.audioscrobbler.com", 80, this );
-    connect( http, SIGNAL( responseHeaderReceived( const QHttpResponseHeader& ) ),
-             this,   SLOT( handshakeHeaderReceived( const QHttpResponseHeader& ) ) );
-
-    connect( http, SIGNAL( requestFinished( int, bool ) ),
-             this,   SLOT( handshakeFinished( int, bool ) ) );
 
     const QString path =
             QString( "/radio/handshake.php?version=%1&platform=%2&username=%3&passwordmd5=%4&debug=%5" )
@@ -154,41 +149,10 @@ WebService::handshake( const QString& username, const QString& password )
     http->get( path );
     m_lastHttp = http;
 
-    // Find free port
-    MyServerSocket* socket = new MyServerSocket();
-    const int port = socket->port();
-    debug() << "Proxy server using port: " << port << endl;
-    delete socket;
+    do kapp->processEvents();
+    while( http->state() != QHttp::Unconnected );
 
-    m_proxyUrl = QString( "http://localhost:%1/theBeard.mp3" ).arg( port );
-
-    m_server = new KProcIO();
-    m_server->setComm( KProcess::Stdin );
-    *m_server << "amarok_proxy.rb";
-    *m_server << QString::number( port );
-    m_server->start();
-
-    sleep( 3 );
-}
-
-
-void
-WebService::handshakeHeaderReceived( const QHttpResponseHeader &resp ) //SLOT
-{
-    if ( resp.statusCode() == 503 )
-    {
-        debug() << "Handshake error" << endl;
-    }
-}
-
-
-void
-WebService::handshakeFinished( int /*id*/, bool error ) //SLOT
-{
-    DEBUG_BLOCK
-
-    if ( error )
-    {
+    if ( http->error() != QHttp::NoError ) {
         emit handshakeResult( -1 );
         return;
     }
@@ -204,13 +168,27 @@ WebService::handshakeFinished( int /*id*/, bool error ) //SLOT
     m_streamUrl = QUrl( parameter( "stream_url", result ) );
 //     bool banned = parameter( "banned", result ) == "1";
 
-    m_server->writeStdin( m_streamUrl.toString() );
-
-    if ( m_session.lower() == "failed" )
-    {
+    if ( m_session.lower() == "failed" ) {
         emit handshakeResult( 0 );
         return;
     }
+
+    // Find free port
+    MyServerSocket* socket = new MyServerSocket();
+    const int port = socket->port();
+    debug() << "Proxy server using port: " << port << endl;
+    delete socket;
+
+    m_proxyUrl = QString( "http://localhost:%1/theBeard.mp3" ).arg( port );
+
+    m_server = new KProcIO();
+    m_server->setComm( KProcess::Stdin );
+    *m_server << "amarok_proxy.rb";
+    *m_server << QString::number( port );
+    *m_server << m_streamUrl.toString();
+    m_server->start();
+
+    sleep( 3 );  // Wait for server to start FIXME find a better solution
 
     emit streamingUrl( m_streamUrl );
     emit handshakeResult( m_session.length() == 32 ? 1 : -1 );
