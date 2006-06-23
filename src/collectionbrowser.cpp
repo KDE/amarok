@@ -2648,11 +2648,15 @@ CollectionItem::compare( QListViewItem* i, int col, bool ascending ) const
 
     //Special cases go first to take priority
 
-    // Unknown is always the first one
-    if ( m_isUnknown )
-        return -1;
-    if ( dynamic_cast<CollectionItem*>( i ) && static_cast<CollectionItem*>( i )->m_isUnknown )
-        return 1;
+    // Unknown is always the first one, but if the two items to be compared are Unknown,
+    // then compare the normal way
+    if ( !( m_isUnknown && dynamic_cast<CollectionItem*>( i ) && static_cast<CollectionItem*>( i )->m_isUnknown ) )
+    {
+        if ( m_isUnknown )
+            return -1;
+        if ( dynamic_cast<CollectionItem*>( i ) && static_cast<CollectionItem*>( i )->m_isUnknown )
+            return 1;
+    }
 
     // Various Artists is always after unknown
     if ( m_cat == CollectionBrowser::IdArtist )
