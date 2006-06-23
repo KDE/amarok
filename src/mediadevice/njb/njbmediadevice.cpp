@@ -131,7 +131,7 @@ NjbMediaDevice::closeDevice()
         NJB_Close( m_njb);
 
         m_njb = 0;
-        
+
     }
 
     debug()<< "Disconnected NJB device" << endl;
@@ -210,29 +210,29 @@ NjbMediaDevice::openDevice(bool)
 {
     DEBUG_BLOCK
 
-    
+
     if( m_njb )
         return true;
-    
+
     QString genericError = i18n( "Could not connect to Nomad device" );
 
     int n;
     if( NJB_Discover( njbs, 0, &n) == -1 || n == 0) {
         amaroK::StatusBar::instance()->shortLongMessage( genericError, i18n("A suitable Nomad device could not be found"), KDE::StatusBar::Error );
         debug() << ": no NJBs found\n";
-        
+
         return false;
     }
     m_njb = &njbs[0];
-    
+
 
     if( NJB_Open( m_njb ) == -1) {
         amaroK::StatusBar::instance()->shortLongMessage( genericError, i18n("Nomad device could not be opened"), KDE::StatusBar::Error );
 
-        
+
         return false;
     }
-    
+
     m_connected = true;
 
     if( NJB_Capture(m_njb) == -1) {
@@ -245,8 +245,8 @@ NjbMediaDevice::openDevice(bool)
     if( m_connected )
     {
         readJukeboxMusic();
-        QString s = i18n( "%1 tracks found on device",
-                          "%1 tracks found on device", trackList.size() ).arg( trackList.size() );
+        QString s = i18n( "1 tracks found on device",
+                          "%n tracks found on device", trackList.size() ).arg( trackList.size() );
         amaroK::StatusBar::instance()->shortMessage( s );
     }
 
@@ -279,7 +279,7 @@ NjbMediaDevice::deleteItemFromDevice(MediaItem* item, bool onlyPlayed)
     {
         return -1;
     }
-    
+
     MediaItem *next = 0;
     switch( item->type() )
     {
@@ -296,7 +296,7 @@ NjbMediaDevice::deleteItemFromDevice(MediaItem* item, bool onlyPlayed)
         case MediaItem::ALBUM:
         case MediaItem::ARTIST:
             // Recurse through the lists, slashing and burning.
-            
+
             if( isCancelled() )
                 break;
 
@@ -309,7 +309,7 @@ NjbMediaDevice::deleteItemFromDevice(MediaItem* item, bool onlyPlayed)
                     result += res;
                 else
                     result = -1;
-                
+
             }
             if(item)
                 delete dynamic_cast<MediaItem *>(item);
@@ -364,7 +364,7 @@ NjbMediaDevice::downloadSelectedItems()
     destDir.adjustPath( 1 ); //add trailing slash
     QDir dir;
     QString path;
-    
+
     QPtrList<MediaItem> items;
     m_view->getSelectedLeaves( 0, &items );
     int result = 0;
@@ -422,7 +422,7 @@ NjbMediaDevice::downloadSelectedItems()
                 result ++;
                 break;
             default:
-                break;                
+                break;
         }
     }
     return result;
@@ -438,7 +438,7 @@ int
 NjbMediaDevice::downloadToCollection()
 {
     // We will first download all files into a temp dir, and then call move to collection.
-    
+
     QPtrList<MediaItem> items;
     m_view->getSelectedLeaves( 0, &items );
 
@@ -702,7 +702,7 @@ NjbMediaDevice::rmbPressed(QListViewItem* qitem, const QPoint& point, int )
         menu.insertSeparator();
         //menu.insertItem( SmallIconSet( amaroK::icon( "edit" ) ), i18n( "Rename" ), RENAME );
         menu.insertItem( SmallIconSet( amaroK::icon( "remove" ) ), i18n( "Delete from device" ), DELETE );
-        
+
 
         int id =  menu.exec( point );
         switch( id )
