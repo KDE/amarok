@@ -136,7 +136,7 @@ WebService::handshake( const QString& username, const QString& password )
     m_username = username;
     m_password = password;
 
-    QHttp *http = new QHttp( "ws.audioscrobbler.com", 80, this );
+    QHttp http( "ws.audioscrobbler.com", 80 );
 
     const QString path =
             QString( "/radio/handshake.php?version=%1&platform=%2&username=%3&passwordmd5=%4&debug=%5" )
@@ -146,17 +146,16 @@ WebService::handshake( const QString& username, const QString& password )
             .arg( KMD5( m_password.utf8() ).hexDigest() )
             .arg( "0" );
 
-    http->get( path );
-    m_lastHttp = http;
+    http.get( path );
 
     do
         kapp->processEvents();
-    while( http->state() != QHttp::Unconnected );
+    while( http.state() != QHttp::Unconnected );
 
-    if ( http->error() != QHttp::NoError )
+    if ( http.error() != QHttp::NoError )
         return false;
 
-    const QString result( m_lastHttp->readAll() );
+    const QString result( http.readAll() );
 
     debug() << "result: " << result << endl;
 
@@ -204,25 +203,24 @@ WebService::changeStation( QString url )
     DEBUG_BLOCK
     debug() << "Changing station:" << url << endl;
 
-    QHttp *http = new QHttp( m_baseHost, 80, this );
+    QHttp http( m_baseHost, 80 );
 
     if ( url.startsWith( "lastfm://" ) )
         url.remove( 0, 9 ); // get rid of it!
 
-    http->get( QString( m_basePath + "/adjust.php?session=%1&url=lastfm://%2&debug=%3" )
-                  .arg( m_session )
-                  .arg( url.contains( "%" ) ? url : QUrl( url ).toString(true, false) )
-                  .arg( "0" ) );
-    m_lastHttp = http;
+    http.get( QString( m_basePath + "/adjust.php?session=%1&url=lastfm://%2&debug=%3" )
+             .arg( m_session )
+             .arg( url.contains( "%" ) ? url : QUrl( url ).toString(true, false) )
+             .arg( "0" ) );
 
     do
         kapp->processEvents();
-    while( http->state() != QHttp::Unconnected );
+    while( http.state() != QHttp::Unconnected );
 
-    if ( http->error() != QHttp::NoError )
+    if ( http.error() != QHttp::NoError )
         return;
 
-    const QString result( http->readAll() );
+    const QString result( http.readAll() );
     const int errCode = parameter( "error", result ).toInt();
 
     if ( errCode <= 0 )

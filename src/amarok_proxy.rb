@@ -37,8 +37,8 @@ h = Net::HTTP.new( uri.host, uri.port )
 
 response = h.get( "#{uri.path}?#{uri.query}" ) do |data|
     if data[0, 4] == "SYNC"
+        data[0, 4] = ""
         puts( "SYNC frame" )
-        next
     end
 
     sock.write( data )
