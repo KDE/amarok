@@ -30,9 +30,6 @@ class QSocket;
 class QTimer;
 class MetaBundle;
 
-namespace KIO { class Job; }
-
-
 namespace LastFm
 {
     class WebService;
@@ -155,20 +152,20 @@ namespace LastFm
 
         private slots:
             void readProxy();
-            void metaDataFinished( KIO::Job* );
-            void enableScrobblingFinished( KIO::Job* );
+            void metaDataFinished( int id, bool error );
+            void enableScrobblingFinished( int id, bool error );
 
-            void loveFinished( KIO::Job* );
-            void skipFinished( KIO::Job* );
-            void banFinished( KIO::Job* );
+            void loveFinished( int id, bool error );
+            void skipFinished( int id, bool error );
+            void banFinished( int id, bool error );
 
-            void friendsFinished( KIO::Job* );
-            void neighboursFinished( KIO::Job* );
+            void friendsFinished( int id, bool error );
+            void neighboursFinished( int id, bool error );
 
-            void recentTracksFinished( KIO::Job* );
-            void userTagsFinished( KIO::Job* );
+            void recentTracksFinished( int id, bool error );
+            void userTagsFinished( int id, bool error );
 
-            void recommendFinished( int /*id*/, bool /*error*/ );
+            void recommendFinished( int id, bool error );
     };
 
 
