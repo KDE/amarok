@@ -597,6 +597,7 @@ void ContextBrowser::engineStateChanged( Engine::State state, Engine::State oldS
             blockSignals( true );
             setTabEnabled( m_lyricsTab, false );
             if ( currentPage() != m_wikiTab ) {
+                setTabEnabled( m_wikiTab, false );
                 m_dirtyWikiPage = true;
             }
             else // current tab is wikitab, disable some buttons.
