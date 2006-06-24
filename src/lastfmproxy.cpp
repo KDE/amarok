@@ -186,9 +186,9 @@ WebService::handshake( const QString& username, const QString& password )
 
     QString line;
     while( true ) {
+        kapp->processEvents();
         m_server->readln( line );
         if( line == "AMAROK_PROXY: startup" ) break;
-        kapp->processEvents();
     }
 
     connect( m_server, SIGNAL( readReady( KProcIO* ) ), this, SLOT( readProxy() ) );
@@ -255,9 +255,10 @@ WebService::requestMetaData() //SLOT
 void
 WebService::metaDataFinished( int /*id*/, bool error ) //SLOT
 {
-    if( error ) return;
+    if( error ) delete m_lastHttp; return;
 
     const QString result( m_lastHttp->readAll() );
+    delete m_lastHttp;
 
     MetaBundle bundle;
     bundle.setArtist( parameter( "artist", result ) );
