@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# Proxy server for last.fm
+# Proxy server for last.fm. Relays the stream from the last.fm server to localhost.
 #
 # (c) 2006 Mark Kretschmann <markey@web.de>
 #
@@ -11,19 +11,22 @@ require 'socket'
 require "uri"
 
 
-puts( "AMAROK_PROXY: startup" )
+def puts( string )
+    $stdout.puts( "AMAROK_PROXY: " + string )
+    $stderr.puts( "AMAROK_PROXY: " + string )
+end
+
+
+puts( "startup" )
 
 port = $*[0].to_i
 remote_url = $*[1]
-$*.clear # Ensure that gets() will use Stdin, see gets() docs
 
-puts( "AMAROK_PROXY: using port: #{port}" )
-puts( "AMAROK_PROXY: remote stream URL: #{remote_url}" )
 
 serv = TCPServer.new( port )
 sock = serv.accept
 
-puts( "AMAROK_PROXY: connected" )
+puts( "connected" )
 
 sock.puts( "HTTP/1.0 200 Ok\r\nContent-Type: audio/x-mp3; charset=\"utf-8\"\r\n\r\n" )
 
@@ -34,8 +37,7 @@ h = Net::HTTP.new( uri.host, uri.port )
 
 response = h.get( "#{uri.path}?#{uri.query}" ) do |data|
     if data[0, 4] == "SYNC"
-        $stderr.puts( "AMAROK_PROXY: SYNC frame" )
-        $stdout.puts( "AMAROK_PROXY: SYNC frame" )
+        puts( "SYNC frame" )
         next
     end
 
@@ -44,7 +46,7 @@ end
 
 
 unless response.code == "200"
-    puts( "AMAROK_PROXY: ERROR! Could not connect to last.fm. Code: #{response.code}" )
+    puts( "ERROR! Could not connect to last.fm. Code: #{response.code}" )
 end
 
 

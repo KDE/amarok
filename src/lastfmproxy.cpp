@@ -203,14 +203,20 @@ WebService::handshake( const QString& username, const QString& password )
     m_proxyUrl = QString( "http://localhost:%1/theBeard.mp3" ).arg( port );
 
     m_server = new KProcIO();
-    connect( m_server, SIGNAL( readReady( KProcIO* ) ), this, SLOT( readProxy() ) );
     m_server->setComm( KProcess::Communication( KProcess::Stdin|KProcess::Stderr ) );
     *m_server << "amarok_proxy.rb";
     *m_server << QString::number( port );
     *m_server << m_streamUrl.toString();
     m_server->start( KProcIO::NotifyOnExit, true );
 
-    sleep( 2 );  // Wait for server to start FIXME find a better solution
+    QString line;
+    while( true ) {
+        m_server->readln( line );
+        if( line == "AMAROK_PROXY: startup" ) break;
+        kapp->processEvents();
+    }
+
+    connect( m_server, SIGNAL( readReady( KProcIO* ) ), this, SLOT( readProxy() ) );
 
     emit streamingUrl( m_streamUrl );
     emit handshakeResult( m_session.length() == 32 ? 1 : -1 );
