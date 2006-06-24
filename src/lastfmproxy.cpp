@@ -118,6 +118,8 @@ WebService::readProxy() //SLOT
     QString line;
     int res;
 
+    connect( this, SIGNAL( skipDone() ), this, SLOT( requestMetaData() ) );
+
     while( true ) {
         res = m_server->readln( line );
         if( res == -1 ) break;
@@ -312,7 +314,7 @@ void
 WebService::love() //SLOT
 {
     QHttp *http = new QHttp( m_baseHost, 80, this );
-    connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( loveFinished( bool ) ) );
+    connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( loveFinished( int, bool ) ) );
 
     http->get( QString( m_basePath + "/control.php?session=%1&command=love&debug=%2" )
                   .arg( m_session )
@@ -325,8 +327,9 @@ WebService::love() //SLOT
 void
 WebService::skip() //SLOT
 {
+    debug() << "skipping!" << endl;
     QHttp *http = new QHttp( m_baseHost, 80, this );
-    connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( skipFinished( bool ) ) );
+    connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( skipFinished( int, bool ) ) );
 
     http->get( QString( m_basePath + "/control.php?session=%1&command=skip&debug=%2" )
                   .arg( m_session )
@@ -338,7 +341,7 @@ void
 WebService::ban() //SLOT
 {
     QHttp *http = new QHttp( m_baseHost, 80, this );
-    connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( loveFinished( bool ) ) );
+    connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( loveFinished( int, bool ) ) );
 
     http->get( QString( m_basePath + "/control.php?session=%1&command=ban&debug=%2" )
                   .arg( m_session )

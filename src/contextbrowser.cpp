@@ -21,6 +21,7 @@
 #include "cuefile.h"
 #include "enginecontroller.h"
 #include "htmlview.h"
+#include "lastfmproxy.h"
 #include "mediabrowser.h"
 #include "metabundle.h"
 #include "playlist.h"      //appendMedia()
@@ -421,11 +422,18 @@ void ContextBrowser::openURLRequest( const KURL &url )
     else if ( url.protocol() == "externalurl" )
         amaroK::invokeBrowser( url.url().replace( QRegExp( "^externalurl:" ), "http:") );
 
+    else if ( url.protocol() == "lastfm" )
+    {
+        LastFm::WebService *lfm = LastFm::Controller::instance()->getService();
+        if      ( url.path() == "skip" ) lfm->skip();
+        else if ( url.path() == "love" ) lfm->love();
+        else if ( url.path() == "ban"  ) lfm->ban();
+    }
     else if ( url.protocol() == "togglebox" )
     {
-        if ( url.path() == "ra" ) m_relatedOpen ^= true;
-        if ( url.path() == "ss" ) m_suggestionsOpen ^= true;
-        if ( url.path() == "ft" ) m_favouritesOpen ^= true;
+        if      ( url.path() == "ra" ) m_relatedOpen     ^= true;
+        else if ( url.path() == "ss" ) m_suggestionsOpen ^= true;
+        else if ( url.path() == "ft" ) m_favouritesOpen  ^= true;
     }
 
     else if ( url.protocol() == "seek" )
@@ -913,6 +921,8 @@ public:
 
 private:
     virtual bool doJob();
+    void addMetaHistory();
+    void showLastFm( const MetaBundle &currentTrack );
     void showStream( const MetaBundle &currentTrack );
     void showPodcast( const MetaBundle &currentTrack );
     void showBrowseArtistHeader( const QString &artist );
@@ -1545,6 +1555,56 @@ CurrentTrackJob::showHomeByAlbums()
     return albums;
 }
 
+void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
+{
+    QString username = AmarokConfig::scrobblerUsername();
+    QString userpage = "www.last.fm/user/" + username; // no http.
+
+    m_HTMLSource.append( QStringx(
+            "<div id='current_box' class='box'>\n"
+            "<div id='current_box-header' class='box-header'>\n"
+            "<span id='current_box-header-songname' class='box-header-title'>%1</span> "
+            "<span id='current_box-header-separator' class='box-header-title'>-</span> "
+            "<span id='current_box-header-artist' class='box-header-title'>%2</span>\n"
+            "<br />\n"
+            "<span id='current_box-header-album' class='box-header-title'>%3</span>\n"
+            "</div>\n"
+            "<table id='current_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>\n"
+            "<tr class='box-row'>\n"
+            "<td id='current_box-largecover-td'>\n"
+            "<a id='current_box-largecover-a' href='externalurl://%4>\n"
+            "<img id='current_box-largecover-image' src='%5' title='%6'>\n"
+            "</a>\n"
+            "</td>\n"
+            "<td height='42' valign='top' align='right' width='90%'>\n"
+            "<br />\n"
+            "<a href=\"lastfm:skip\">%8</a>"
+            "<br />\n"
+            "<a href=\"lastfm:love\">%9</a>"
+            "<br />\n"
+            "<a href=\"lastfm:ban\">%10</a>"
+            "<br />\n"
+            "</td>\n"
+            "</tr>\n"
+            "</table>\n"
+            "</div>\n" )
+            .args( QStringList()
+            << escapeHTML( currentTrack.title() )
+            << escapeHTML( currentTrack.artist() )
+            << escapeHTML( currentTrack.album() )
+            << escapeHTML( amaroK::icon( "audioscrobbler" ) )
+            << escapeHTML( userpage )
+            << escapeHTML( "http://" + userpage )
+            << i18n( "Skip" )
+            << i18n( "Love" )
+            << i18n( "Ban" )
+                ) );
+
+    addMetaHistory();
+
+    m_HTMLSource.append( "</body></html>\n" );
+}
+
 
 void CurrentTrackJob::showStream( const MetaBundle &currentTrack )
 {
@@ -1582,6 +1642,13 @@ void CurrentTrackJob::showStream( const MetaBundle &currentTrack )
                         << escapeHTML( currentTrack.streamUrl() )
                         << escapeHTML( currentTrack.prettyURL() ) ) );
 
+    addMetaHistory();
+
+    m_HTMLSource.append( "</body></html>\n" );
+}
+
+void CurrentTrackJob::addMetaHistory()
+{
     if ( b->m_metadataHistory.count() > 0 )
     {
         m_HTMLSource.append(
@@ -1599,10 +1666,7 @@ void CurrentTrackJob::showStream( const MetaBundle &currentTrack )
                 "</table>\n"
                 "</div>\n" );
     }
-
-    m_HTMLSource.append( "</body></html>\n" );
 }
-
 
 void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
 {
@@ -2579,6 +2643,12 @@ bool CurrentTrackJob::doJob()
         if( mb.podcastBundle() )
         {
             showPodcast( mb );
+            return true;
+        }
+
+        if( currentTrack.url().protocol() == "lastfm" )
+        {
+            showLastFm( currentTrack );
             return true;
         }
 
