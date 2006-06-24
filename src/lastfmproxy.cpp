@@ -27,6 +27,7 @@
 #include <qhttp.h>
 #include <qregexp.h>
 
+#include <kio/job.h>
 #include <kmdcodec.h>       //md5sum
 #include <kprocio.h>
 #include <kprotocolmanager.h>
@@ -241,22 +242,21 @@ WebService::changeStation( QString url )
 void
 WebService::requestMetaData() //SLOT
 {
-    QHttp *http = new QHttp( m_baseHost, 80, this );
-    connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( metaDataFinished( int, bool ) ) );
+    const KURL url( "http://" + m_baseHost + m_basePath + QString( "/np.php?session=%1&debug=0" ).arg( m_session ) );
 
-    http->get( QString( m_basePath + "/np.php?session=%1&debug=%2" )
-                  .arg( m_session )
-                  .arg( "0" ) );
-    m_lastHttp = http;
+    debug() << url.url() << endl;
+
+    KIO::Job *job = KIO::storedGet( url, true, false );
+    connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( metaDataFinished( KIO::Job* ) ) );
 }
 
 
 void
-WebService::metaDataFinished( int /*id*/, bool error ) //SLOT
+WebService::metaDataFinished( KIO::Job* job ) //SLOT
 {
-    if( error ) return;
+    if( job->error() != 0 ) return;
 
-    const QString result( m_lastHttp->readAll() );
+    const QString result( static_cast<KIO::StoredTransferJob *>( job )->data() );
 
     MetaBundle bundle;
     bundle.setArtist( parameter( "artist", result ) );
@@ -286,21 +286,17 @@ WebService::enableScrobbling( bool enabled ) //SLOT
     else
         debug() << "Disabling Scrobbling!" << endl;
 
-    QHttp *http = new QHttp( m_baseHost, 80, this );
-    connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( enableScrobblingFinished( bool ) ) );
+    const KURL url( "http://" + m_baseHost + m_basePath + QString( "/control.php?session=%1&command=%2&debug=0" ).arg( m_session ).arg( enabled ? QString( "rtp" ) : QString( "nortp" ) ) );
 
-    http->get( QString( m_basePath + "/control.php?session=%1&command=%2&debug=%3" )
-                  .arg( m_session )
-                  .arg( enabled ? QString( "rtp" ) : QString( "nortp" ) )
-                  .arg( "0" ) );
-    m_lastHttp = http;
+    KIO::Job *job = KIO::storedGet( url, true, false );
+    connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( enableScrobblingFinished( KIO::Job* ) ) );
 }
 
 
 void
-WebService::enableScrobblingFinished( int /*id*/, bool error ) //SLOT
+WebService::enableScrobblingFinished( KIO::Job* job ) //SLOT
 {
-    if ( error ) return;
+    if ( job->error() != 0 ) return;
 
     emit enableScrobblingDone();
 }
@@ -309,14 +305,10 @@ WebService::enableScrobblingFinished( int /*id*/, bool error ) //SLOT
 void
 WebService::love() //SLOT
 {
-    QHttp *http = new QHttp( m_baseHost, 80, this );
-    connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( loveFinished( int, bool ) ) );
+    const KURL url( "http://" + m_baseHost + m_basePath + QString( "/control.php?session=%1&command=love&debug=0" ).arg( m_session ) );
 
-    http->get( QString( m_basePath + "/control.php?session=%1&command=love&debug=%2" )
-                  .arg( m_session )
-                  .arg( "0" ) );
-
-    m_lastHttp = http;
+    KIO::Job *job = KIO::storedGet( url, true, false );
+    connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( loveFinished( KIO::Job* ) ) );
 }
 
 
@@ -324,48 +316,54 @@ void
 WebService::skip() //SLOT
 {
     debug() << "skipping!" << endl;
-    QHttp *http = new QHttp( m_baseHost, 80, this );
-    connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( skipFinished( int, bool ) ) );
 
-    http->get( QString( m_basePath + "/control.php?session=%1&command=skip&debug=%2" )
-                  .arg( m_session )
-                  .arg( "0" ) );
+    const KURL url( "http://" + m_baseHost + m_basePath + QString( "/control.php?session=%1&command=skip&debug=0" ).arg( m_session ) );
+
+    debug() << url.url() << endl;
+
+    KIO::Job *job = KIO::storedGet( url, true, false );
+    connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( skipFinished( KIO::Job* ) ) );
 }
 
 
 void
 WebService::ban() //SLOT
 {
-    QHttp *http = new QHttp( m_baseHost, 80, this );
-    connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( loveFinished( int, bool ) ) );
+    const KURL url( "http://" + m_baseHost + m_basePath + QString( "/control.php?session=%1&command=ban&debug=0" ).arg( m_session ) );
 
-    http->get( QString( m_basePath + "/control.php?session=%1&command=ban&debug=%2" )
-                  .arg( m_session )
-                  .arg( "0" ) );
-    m_lastHttp = http;
+    KIO::Job *job = KIO::storedGet( url, true, false );
+    connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( banFinished( KIO::Job* ) ) );
 }
 
 
 void
-WebService::loveFinished( int /*id*/, bool error ) //SLOT
+WebService::loveFinished( KIO::Job* job ) //SLOT
 {
-    if( error ) return;
+    if( job->error() != 0 ) return;
+
     emit loveDone();
 }
 
 
 void
-WebService::skipFinished( int /*id*/, bool error ) //SLOT
+WebService::skipFinished( KIO::Job* job ) //SLOT
 {
-    if( error ) return;
+    DEBUG_BLOCK
+
+    if( job->error() != 0 ) return;
+
+    debug() << "Skip succeeded\n";
+    const QString result( static_cast<KIO::StoredTransferJob *>( job )->data() );
+
     emit skipDone();
 }
 
 
 void
-WebService::banFinished( int /*id*/, bool error ) //SLOT
+WebService::banFinished( KIO::Job* job ) //SLOT
 {
-    if( error ) return;
+    if( job->error() != 0 ) return;
+
     emit banDone();
     emit skipDone();
 }
@@ -377,22 +375,20 @@ WebService::friends( QString username )
     if ( username.isEmpty() )
         username = m_username;
 
-    QHttp *http = new QHttp( m_baseHost, 80, this );
-    connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( friendsFinished( bool ) ) );
+    const KURL url( "http://" + m_baseHost + QString( "/1.0/user/%1/friends.xml" ).arg( QString( QUrl( username ).encodedPathAndQuery() ) ) );
 
-    http->get( QString( "/1.0/user/%1/friends.xml" )
-                  .arg( QString( QUrl( username ).encodedPathAndQuery() ) ) );
-    m_lastHttp = http;
+    KIO::Job *job = KIO::storedGet( url, true, false );
+    connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( friendsFinished( KIO::Job* ) ) );
 }
 
 
 void
-WebService::friendsFinished( int /*id*/, bool error ) //SLOT
+WebService::friendsFinished( KIO::Job* job ) //SLOT
 {
-    if( error ) return;
+    if( job->error() != 0 ) return;
 
     QDomDocument document;
-    document.setContent( m_lastHttp->readAll() );
+    document.setContent( static_cast<KIO::StoredTransferJob *>( job )->data() );
 
     if ( document.elementsByTagName( "friends" ).length() == 0 )
     {
@@ -418,22 +414,20 @@ WebService::neighbours( QString username )
     if ( username.isEmpty() )
         username = m_username;
 
-    QHttp *http = new QHttp( m_baseHost, 80, this );
-    connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( neighboursFinished( bool ) ) );
+    const KURL url( "http://" + m_baseHost + QString( "/1.0/user/%1/neighbours.xml" ).arg( QString( QUrl( username ).encodedPathAndQuery() ) ) );
 
-    http->get( QString( "/1.0/user/%1/neighbours.xml" )
-                  .arg( QString( QUrl( username ).encodedPathAndQuery() ) ) );
-    m_lastHttp = http;
+    KIO::Job *job = KIO::storedGet( url, true, false );
+    connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( neighboursFinished( KIO::Job* ) ) );
 }
 
 
 void
-WebService::neighboursFinished( int /*id*/, bool error ) //SLOT
+WebService::neighboursFinished( KIO::Job* job ) //SLOT
 {
-    if( error )  return;
+    if( job->error() != 0 )  return;
 
     QDomDocument document;
-    document.setContent( m_lastHttp->readAll() );
+    document.setContent( static_cast<KIO::StoredTransferJob *>( job )->data() );
 
     if ( document.elementsByTagName( "neighbours" ).length() == 0 )
     {
@@ -459,22 +453,20 @@ WebService::userTags( QString username )
     if ( username.isEmpty() )
         username = m_username;
 
-    QHttp *http = new QHttp( m_baseHost, 80, this );
-    connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( userTagsFinished( bool ) ) );
+    const KURL url( "http://" + m_baseHost + QString( "/1.0/user/%1/tags.xml?debug=0" ).arg( QString( QUrl( username ).encodedPathAndQuery() ) ) );
 
-    http->get( QString( "/1.0/user/%1/tags.xml?debug=%2" )
-                  .arg( QString( QUrl( username ).encodedPathAndQuery() ) ) );
-    m_lastHttp = http;
+    KIO::Job *job = KIO::storedGet( url, true, false );
+    connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( userTagsFinished( KIO::Job* ) ) );
 }
 
 
 void
-WebService::userTagsFinished( int /*id*/, bool error ) //SLOT
+WebService::userTagsFinished( KIO::Job* job ) //SLOT
 {
-    if( error ) return;
+    if( job->error() != 0 ) return;
 
     QDomDocument document;
-    document.setContent( m_lastHttp->readAll() );
+    document.setContent( static_cast<KIO::StoredTransferJob *>( job )->data() );
 
     if ( document.elementsByTagName( "toptags" ).length() == 0 )
     {
@@ -500,23 +492,21 @@ WebService::recentTracks( QString username )
     if ( username.isEmpty() )
         username = m_username;
 
-    QHttp *http = new QHttp( m_baseHost, 80, this );
-    connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( recentTracksFinished( bool ) ) );
+    const KURL url( "http://" + m_baseHost + QString( "/1.0/user/%1/recenttracks.xml" ).arg( QString( QUrl( username ).encodedPathAndQuery() ) ) );
 
-    http->get( QString( "/1.0/user/%1/recenttracks.xml" )
-                  .arg( QString( QUrl( username ).encodedPathAndQuery() ) ) );
-    m_lastHttp = http;
+    KIO::Job *job = KIO::storedGet( url, true, false );
+    connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( recentTracksFinished( KIO::Job* ) ) );
 }
 
 
 void
-WebService::recentTracksFinished( int /*id*/, bool error ) //SLOT
+WebService::recentTracksFinished( KIO::Job* job ) //SLOT
 {
-    if( error ) return;
+    if( job->error() != 0 ) return;
 
     QValueList< QPair<QString, QString> > songs;
     QDomDocument document;
-    document.setContent( m_lastHttp->readAll() );
+    document.setContent( static_cast<KIO::StoredTransferJob *>( job )->data() );
 
     if ( document.elementsByTagName( "recenttracks" ).length() == 0 )
     {
