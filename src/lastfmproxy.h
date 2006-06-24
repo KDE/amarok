@@ -39,28 +39,23 @@ namespace LastFm
         Q_OBJECT
 
         public:
-            ~Controller();
             static Controller* instance();
 
             KURL        getNewProxy( QString genreUrl );
 
-            bool        isPlaying() const { return m_playing; }
+            bool        isPlaying() const { return m_service != 0; }
             WebService* getService() const { return m_service; }
             QString     getGenreUrl() const { return m_genreUrl; }
 
         public slots:
-            void handshakeFinished();
-            void initialGenreSet();
             void playbackStopped();
 
         private:
             Controller();
             static Controller *s_instance;
 
-            bool        m_playing;
             QString     m_genreUrl;
             WebService* m_service;
-            KProcIO*    m_server;
     };
 
     class WebService : public QObject
@@ -71,7 +66,9 @@ namespace LastFm
             enum DataType { Artist, Album, Track };
 
             WebService( QObject* parent );
-            void handshake( const QString& username, const QString& password );
+            ~WebService();
+
+            bool handshake( const QString& username, const QString& password );
 
             void changeStation( QString url );
             QString currentUsername() { return m_username;  }
@@ -118,8 +115,6 @@ namespace LastFm
             void actionStarted();
             void actionFinished();
 
-            void handshakeResult( int result );
-            void streamingUrl( const QUrl& url );
             void stationChanged( QString url, QString name );
             void songQueued();
 
@@ -151,13 +146,12 @@ namespace LastFm
             QString m_proxyUrl;
             KProcIO *m_server;
 
-            QString parameter( QString keyName, QString data );
-            QStringList parameterArray( QString keyName, QString data );
-            QStringList parameterKeys( QString keyName, QString data );
+            QString parameter( QString keyName, QString data ) const;
+            QStringList parameterArray( QString keyName, QString data ) const;
+            QStringList parameterKeys( QString keyName, QString data ) const;
 
         private slots:
             void readProxy();
-            void changeStationFinished( int id, bool error );
             void metaDataFinished( int id, bool error );
             void enableScrobblingFinished( int id, bool error );
 

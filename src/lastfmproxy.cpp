@@ -24,10 +24,8 @@
 #include "metabundle.h"
 
 #include <qdom.h>
-#include <qfile.h>
 #include <qhttp.h>
 #include <qregexp.h>
-#include <qtimer.h>
 
 #include <kmdcodec.h>       //md5sum
 #include <kprocio.h>
@@ -47,15 +45,9 @@ using namespace LastFm;
 Controller *Controller::s_instance = 0;
 
 Controller::Controller()
-    : QObject( EngineController::instance(), "lastfmController" ),
-    m_playing( false ),
-    m_service( 0 ),
-    m_server( 0 )
+    : QObject( EngineController::instance(), "lastfmController" )
+    , m_service( 0 )
 {}
-
-
-Controller::~Controller()
-{} //m_service and m_server are both qobject children
 
 
 Controller*
@@ -67,43 +59,25 @@ Controller::instance()
 
 
 KURL
-Controller::getNewProxy(QString genreUrl)
+Controller::getNewProxy( QString genreUrl )
 {
     DEBUG_BLOCK
 
     m_genreUrl = genreUrl;
 
-    if ( m_playing ) return KURL( m_service->proxyUrl() );
+    if ( m_service ) playbackStopped();
 
-    m_service = new WebService(this);
-    connect( m_service, SIGNAL ( handshakeResult( int ) ), this, SLOT( handshakeFinished() ) );
-    m_service->handshake( AmarokConfig::scrobblerUsername(), AmarokConfig::scrobblerPassword() );
-    m_server = m_service->getServer();
-    m_playing=true;
+    m_service = new WebService( this );
 
-    return KURL( m_service->proxyUrl() );
-}
+    if( m_service->handshake( AmarokConfig::scrobblerUsername(), AmarokConfig::scrobblerPassword() ) ) {
+        m_service->changeStation( m_genreUrl );
 
+        return KURL( m_service->proxyUrl() );
+    }
 
-void
-Controller::handshakeFinished() //SLOT
-{
-    DEBUG_BLOCK
-
-    disconnect( m_service, SIGNAL ( handshakeResult( int ) ), this, SLOT( handshakeFinished() ) );
-    connect( m_service, SIGNAL( stationChanged( QString, QString ) ), this, SLOT( initialGenreSet() ) );
-    m_service->changeStation( m_genreUrl );
-}
-
-
-void
-Controller::initialGenreSet() //SLOT
-{
-    DEBUG_BLOCK
-
-    //we only want to do this function once for each new m_server
-    disconnect( m_service, SIGNAL( stationChanged( QString, QString ) ), this, SLOT( initialGenreSet() ) );
-//     m_server->loadStream( m_service->streamUrl() );//we only want the first time
+    // Some kind of failure happened, so crap out
+    playbackStopped();
+    return KURL();
 }
 
 
@@ -112,9 +86,8 @@ Controller::playbackStopped() //SLOT
 {
     DEBUG_BLOCK
 
-    m_playing = false;
-    delete m_service; m_service = 0;
-    delete m_server; m_server = 0;
+    delete m_service;
+    m_service = 0;
 }
 
 
@@ -129,6 +102,13 @@ WebService::WebService( QObject* parent )
 {
     debug() << "Initialising Web Service" << endl;
 }
+
+
+WebService::~WebService()
+{
+    delete m_server;
+}
+
 
 void
 WebService::readProxy() //SLOT
@@ -148,7 +128,7 @@ WebService::readProxy() //SLOT
 }
 
 
-void
+bool
 WebService::handshake( const QString& username, const QString& password )
 {
     DEBUG_BLOCK
@@ -173,10 +153,8 @@ WebService::handshake( const QString& username, const QString& password )
         kapp->processEvents();
     while( http->state() != QHttp::Unconnected );
 
-    if ( http->error() != QHttp::NoError ) {
-        emit handshakeResult( -1 );
-        return;
-    }
+    if ( http->error() != QHttp::NoError )
+        return false;
 
     const QString result( m_lastHttp->readAll() );
 
@@ -189,10 +167,8 @@ WebService::handshake( const QString& username, const QString& password )
     m_streamUrl = QUrl( parameter( "stream_url", result ) );
 //     bool banned = parameter( "banned", result ) == "1";
 
-    if ( m_session.lower() == "failed" ) {
-        emit handshakeResult( 0 );
-        return;
-    }
+    if ( m_session.lower() == "failed" )
+        return false;
 
     // Find free port
     MyServerSocket* socket = new MyServerSocket();
@@ -218,8 +194,7 @@ WebService::handshake( const QString& username, const QString& password )
 
     connect( m_server, SIGNAL( readReady( KProcIO* ) ), this, SLOT( readProxy() ) );
 
-    emit streamingUrl( m_streamUrl );
-    emit handshakeResult( m_session.length() == 32 ? 1 : -1 );
+    return true;
 }
 
 
@@ -230,7 +205,6 @@ WebService::changeStation( QString url )
     debug() << "Changing station:" << url << endl;
 
     QHttp *http = new QHttp( m_baseHost, 80, this );
-    connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( changeStationFinished( int, bool ) ) );
 
     if ( url.startsWith( "lastfm://" ) )
         url.remove( 0, 9 ); // get rid of it!
@@ -240,17 +214,15 @@ WebService::changeStation( QString url )
                   .arg( url.contains( "%" ) ? url : QUrl( url ).toString(true, false) )
                   .arg( "0" ) );
     m_lastHttp = http;
-}
 
+    do
+        kapp->processEvents();
+    while( http->state() != QHttp::Unconnected );
 
-void
-WebService::changeStationFinished( int /*id*/, bool error ) //SLOT
-{
-    DEBUG_BLOCK
+    if ( http->error() != QHttp::NoError )
+        return;
 
-    if( error ) return;
-
-    const QString result( m_lastHttp->readAll() );
+    const QString result( http->readAll() );
     const int errCode = parameter( "error", result ).toInt();
 
     if ( errCode <= 0 )
@@ -622,7 +594,7 @@ WebService::recommendFinished( int /*id*/, bool /*error*/ ) //SLOT
 
 
 QString
-WebService::parameter( QString keyName, QString data )
+WebService::parameter( QString keyName, QString data ) const
 {
     QStringList list = QStringList::split( '\n', data );
 
@@ -641,7 +613,7 @@ WebService::parameter( QString keyName, QString data )
 
 
 QStringList
-WebService::parameterArray( QString keyName, QString data )
+WebService::parameterArray( QString keyName, QString data ) const
 {
     QStringList result;
     QStringList list = QStringList::split( '\n', data );
@@ -661,7 +633,7 @@ WebService::parameterArray( QString keyName, QString data )
 
 
 QStringList
-WebService::parameterKeys( QString keyName, QString data )
+WebService::parameterKeys( QString keyName, QString data ) const
 {
     QStringList result;
     QStringList list = QStringList::split( '\n', data );
