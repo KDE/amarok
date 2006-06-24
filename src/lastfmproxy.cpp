@@ -118,8 +118,6 @@ WebService::readProxy() //SLOT
     QString line;
     int res;
 
-    connect( this, SIGNAL( skipDone() ), this, SLOT( requestMetaData() ) );
-
     while( true ) {
         res = m_server->readln( line );
         if( res == -1 ) break;
@@ -229,10 +227,10 @@ WebService::changeStation( QString url )
         const QString url = parameter( "url", result );
         if ( url.startsWith( "lastfm://" ) )
         {
-            QString stationName = parameter( "stationname", result );
-            if ( stationName.isEmpty() )
-                stationName = url;
-            emit stationChanged( url, stationName );
+            m_station = parameter( "stationname", result );
+            if ( m_station.isEmpty() )
+                m_station = url;
+            emit stationChanged( url, m_station );
         }
         else
             emit stationChanged( url, QString::null );

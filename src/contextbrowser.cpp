@@ -1557,44 +1557,48 @@ CurrentTrackJob::showHomeByAlbums()
 
 void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
 {
+    LastFm::WebService *lfm = LastFm::Controller::instance()->getService();
+    if( !lfm ) return;
+
     QString username = AmarokConfig::scrobblerUsername();
     QString userpage = "www.last.fm/user/" + username; // no http.
 
     m_HTMLSource.append( QStringx(
             "<div id='current_box' class='box'>\n"
             "<div id='current_box-header' class='box-header'>\n"
-            "<span id='current_box-header-songname' class='box-header-title'>%1</span> "
-            "<span id='current_box-header-separator' class='box-header-title'>-</span> "
-            "<span id='current_box-header-artist' class='box-header-title'>%2</span>\n"
-            "<br />\n"
-            "<span id='current_box-header-album' class='box-header-title'>%3</span>\n"
+            "<span id='current_box-header-stream' class='box-header-title'>%1</span> "
             "</div>\n"
             "<table id='current_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>\n"
             "<tr class='box-row'>\n"
             "<td id='current_box-largecover-td'>\n"
-            "<a id='current_box-largecover-a' href='externalurl://%4>\n"
-            "<img id='current_box-largecover-image' src='%5' title='%6'>\n"
+            "<a id='current_box-largecover-a' href='externalurl://%2>\n"
+            "<img id='current_box-largecover-image' src='%3' title='%4'>\n"
             "</a>\n"
             "</td>\n"
             "<td height='42' valign='top' align='right' width='90%'>\n"
             "<br />\n"
-            "<a href=\"lastfm:skip\">%8</a>"
+            "%5"
             "<br />\n"
-            "<a href=\"lastfm:love\">%9</a>"
+            "%6"
             "<br />\n"
-            "<a href=\"lastfm:ban\">%10</a>"
+            "<br />\n"
+            "<a href=\"lastfm:skip\">%7</a>"
+            "<br />\n"
+            "<a href=\"lastfm:love\">%8</a>"
+            "<br />\n"
+            "<a href=\"lastfm:ban\">%9</a>"
             "<br />\n"
             "</td>\n"
             "</tr>\n"
             "</table>\n"
             "</div>\n" )
             .args( QStringList()
-            << escapeHTML( currentTrack.title() )
-            << escapeHTML( currentTrack.artist() )
-            << escapeHTML( currentTrack.album() )
-            << escapeHTML( amaroK::icon( "audioscrobbler" ) )
+            << escapeHTML( lfm->currentStation() )
             << escapeHTML( userpage )
+            << escapeHTML( amaroK::icon( "audioscrobbler" ) )
             << escapeHTML( "http://" + userpage )
+            << escapeHTML( currentTrack.prettyTitle() )
+            << escapeHTML( currentTrack.album() )
             << i18n( "Skip" )
             << i18n( "Love" )
             << i18n( "Ban" )
