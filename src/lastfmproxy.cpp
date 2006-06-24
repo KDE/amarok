@@ -207,12 +207,11 @@ WebService::changeStation( QString url )
 
     QHttp http( m_baseHost, 80 );
 
-    if ( url.startsWith( "lastfm://" ) )
-        url.remove( 0, 9 ); // get rid of it!
+    url.replace( "lastfm://", "" ); // get rid of it!
 
     http.get( QString( m_basePath + "/adjust.php?session=%1&url=lastfm://%2&debug=%3" )
              .arg( m_session )
-             .arg( url.contains( "%" ) ? url : QUrl( url ).toString(true, false) )
+             .arg( url )
              .arg( "0" ) );
 
     do
@@ -257,10 +256,9 @@ WebService::requestMetaData() //SLOT
 void
 WebService::metaDataFinished( int /*id*/, bool error ) //SLOT
 {
-    if( error ) delete m_lastHttp; return;
+    if( error ) return;
 
     const QString result( m_lastHttp->readAll() );
-    delete m_lastHttp;
 
     MetaBundle bundle;
     bundle.setArtist( parameter( "artist", result ) );
