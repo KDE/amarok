@@ -475,7 +475,7 @@ void SmartPlaylistEditor::buildQuery()
         if ( !criteriaListStr.isEmpty() )
             whereStr = QString(" WHERE (%1) AND %2 = '(*ExpandString*)'").arg(criteriaListStr).arg(field);
         else
-            whereStr = QString("WHERE %1 = '(*ExpandString*)'").arg(field);
+            whereStr = QString(" WHERE %1 = '(*ExpandString*)'").arg(field);
         m_expandQuery = "SELECT album.name, artist.name, genre.name, tags.title, year.name, "
                             "tags.comment, tags.track, tags.bitrate, tags.discnumber, tags.length,"
                             "tags.samplerate, tags.filesize, tags.url, tags.sampler"
