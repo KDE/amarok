@@ -97,7 +97,6 @@ Controller::playbackStopped() //SLOT
 
 WebService::WebService( QObject* parent )
     : QObject( parent, "lastfmParent" )
-    , m_lastHttp( 0 )
     , m_server( 0 )
 {
     debug() << "Initialising Web Service" << endl;
@@ -247,16 +246,17 @@ WebService::requestMetaData() //SLOT
     http->get( QString( m_basePath + "/np.php?session=%1&debug=%2" )
                   .arg( m_session )
                   .arg( "0" ) );
-    m_lastHttp = http;
 }
 
 
 void
 WebService::metaDataFinished( int /*id*/, bool error ) //SLOT
 {
+    QHttp* http = (QHttp*) sender();
+    http->deleteLater();
     if( error ) return;
 
-    const QString result( m_lastHttp->readAll() );
+    const QString result( http->readAll() );
 
     MetaBundle bundle;
     bundle.setArtist( parameter( "artist", result ) );
@@ -293,13 +293,14 @@ WebService::enableScrobbling( bool enabled ) //SLOT
                   .arg( m_session )
                   .arg( enabled ? QString( "rtp" ) : QString( "nortp" ) )
                   .arg( "0" ) );
-    m_lastHttp = http;
 }
 
 
 void
 WebService::enableScrobblingFinished( int /*id*/, bool error ) //SLOT
 {
+    QHttp* http = (QHttp*) sender();
+    http->deleteLater();
     if ( error ) return;
 
     emit enableScrobblingDone();
@@ -315,8 +316,6 @@ WebService::love() //SLOT
     http->get( QString( m_basePath + "/control.php?session=%1&command=love&debug=%2" )
                   .arg( m_session )
                   .arg( "0" ) );
-
-    m_lastHttp = http;
 }
 
 
@@ -337,19 +336,21 @@ void
 WebService::ban() //SLOT
 {
     QHttp *http = new QHttp( m_baseHost, 80, this );
-    connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( loveFinished( int, bool ) ) );
+    connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( banFinished( int, bool ) ) );
 
     http->get( QString( m_basePath + "/control.php?session=%1&command=ban&debug=%2" )
                   .arg( m_session )
                   .arg( "0" ) );
-    m_lastHttp = http;
 }
 
 
 void
 WebService::loveFinished( int /*id*/, bool error ) //SLOT
 {
+    QHttp* http = (QHttp*) sender();
+    http->deleteLater();
     if( error ) return;
+
     emit loveDone();
 }
 
@@ -357,7 +358,10 @@ WebService::loveFinished( int /*id*/, bool error ) //SLOT
 void
 WebService::skipFinished( int /*id*/, bool error ) //SLOT
 {
+    QHttp* http = (QHttp*) sender();
+    http->deleteLater();
     if( error ) return;
+
     emit skipDone();
 }
 
@@ -365,7 +369,10 @@ WebService::skipFinished( int /*id*/, bool error ) //SLOT
 void
 WebService::banFinished( int /*id*/, bool error ) //SLOT
 {
+    QHttp* http = (QHttp*) sender();
+    http->deleteLater();
     if( error ) return;
+
     emit banDone();
     emit skipDone();
 }
@@ -382,17 +389,18 @@ WebService::friends( QString username )
 
     http->get( QString( "/1.0/user/%1/friends.xml" )
                   .arg( QString( QUrl( username ).encodedPathAndQuery() ) ) );
-    m_lastHttp = http;
 }
 
 
 void
 WebService::friendsFinished( int /*id*/, bool error ) //SLOT
 {
+    QHttp* http = (QHttp*) sender();
+    http->deleteLater();
     if( error ) return;
 
     QDomDocument document;
-    document.setContent( m_lastHttp->readAll() );
+    document.setContent( http->readAll() );
 
     if ( document.elementsByTagName( "friends" ).length() == 0 )
     {
@@ -423,17 +431,18 @@ WebService::neighbours( QString username )
 
     http->get( QString( "/1.0/user/%1/neighbours.xml" )
                   .arg( QString( QUrl( username ).encodedPathAndQuery() ) ) );
-    m_lastHttp = http;
 }
 
 
 void
 WebService::neighboursFinished( int /*id*/, bool error ) //SLOT
 {
+    QHttp* http = (QHttp*) sender();
+    http->deleteLater();
     if( error )  return;
 
     QDomDocument document;
-    document.setContent( m_lastHttp->readAll() );
+    document.setContent( http->readAll() );
 
     if ( document.elementsByTagName( "neighbours" ).length() == 0 )
     {
@@ -464,17 +473,18 @@ WebService::userTags( QString username )
 
     http->get( QString( "/1.0/user/%1/tags.xml?debug=%2" )
                   .arg( QString( QUrl( username ).encodedPathAndQuery() ) ) );
-    m_lastHttp = http;
 }
 
 
 void
 WebService::userTagsFinished( int /*id*/, bool error ) //SLOT
 {
+    QHttp* http = (QHttp*) sender();
+    http->deleteLater();
     if( error ) return;
 
     QDomDocument document;
-    document.setContent( m_lastHttp->readAll() );
+    document.setContent( http->readAll() );
 
     if ( document.elementsByTagName( "toptags" ).length() == 0 )
     {
@@ -505,18 +515,19 @@ WebService::recentTracks( QString username )
 
     http->get( QString( "/1.0/user/%1/recenttracks.xml" )
                   .arg( QString( QUrl( username ).encodedPathAndQuery() ) ) );
-    m_lastHttp = http;
 }
 
 
 void
 WebService::recentTracksFinished( int /*id*/, bool error ) //SLOT
 {
+    QHttp* http = (QHttp*) sender();
+    http->deleteLater();
     if( error ) return;
 
     QValueList< QPair<QString, QString> > songs;
     QDomDocument document;
-    document.setContent( m_lastHttp->readAll() );
+    document.setContent( http->readAll() );
 
     if ( document.elementsByTagName( "recenttracks" ).length() == 0 )
     {
@@ -579,15 +590,16 @@ WebService::recommend( int type, QString username, QString artist, QString token
     header.setValue( "Host", "wsdev.audioscrobbler.com" );
     header.setContentType( "application/x-www-form-urlencoded" );
     http->request( header, modeToken.utf8() );
-
-    m_lastHttp = http;
 }
 
 
 void
 WebService::recommendFinished( int /*id*/, bool /*error*/ ) //SLOT
 {
-    debug() << "Recommendation:" << m_lastHttp->readAll() << endl;
+    QHttp* http = (QHttp*) sender();
+    http->deleteLater();
+
+    debug() << "Recommendation:" << http->readAll() << endl;
 }
 
 

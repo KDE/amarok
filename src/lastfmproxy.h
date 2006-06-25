@@ -24,8 +24,6 @@
 
 class KProcIO;
 class KURL;
-class QHttp;
-class QHttpResponseHeader;
 class QSocket;
 class QTimer;
 class MetaBundle;
@@ -142,7 +140,6 @@ namespace LastFm
             bool m_connected;
             bool m_subscriber;
 
-            QHttp *m_lastHttp;
             QString m_proxyUrl;
             KProcIO *m_server;
 
