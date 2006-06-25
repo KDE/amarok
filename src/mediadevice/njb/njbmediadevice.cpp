@@ -245,7 +245,7 @@ NjbMediaDevice::openDevice(bool)
     if( m_connected )
     {
         readJukeboxMusic();
-        QString s = i18n( "1 tracks found on device",
+        QString s = i18n( "1 track found on device",
                           "%n tracks found on device", trackList.size() ).arg( trackList.size() );
         amaroK::StatusBar::instance()->shortMessage( s );
     }
