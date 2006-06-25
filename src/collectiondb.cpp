@@ -1681,9 +1681,9 @@ CollectionDB::findEmbeddedImage( const QString& artist, const QString& album, ui
                 "WHERE tags.url = embed.url "
                 "AND tags.album = album.id "
                 "AND album.name = '%1' "
-                "AND tags.sampler = 1 "
+                "AND tags.sampler = %2 "
                 "ORDER BY modifydate DESC LIMIT 1;" )
-                .arg( escapeString( album ) ) );
+                .arg( escapeString( album ).arg( boolT()) ) );
     } else {
         values = query( QString(
                 "SELECT embed.hash, embed.url FROM tags, embed, artist, album "
@@ -1719,7 +1719,7 @@ CollectionDB::findMetaBundleImage( MetaBundle trackInformation, uint width )
 {
     QStringList values =
             query( QString(
-            "SELECT embed.hash FROM tags LEFT JOIN embed ON tags.url = embed.url WHERE tags.url = '%1' LIMIT 1;" )
+            "SELECT embed.hash FROM tags LEFT JOIN embed ON tags.url = embed.url WHERE tags.url = '%1' ORDER BY hash DESC LIMIT 1;" )
             .arg( escapeString( trackInformation.url().path() ) ) );
 
     if ( values.empty() || !values.first().isEmpty() ) {
