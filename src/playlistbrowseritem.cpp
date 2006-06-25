@@ -1702,15 +1702,10 @@ PodcastFetcher::PodcastFetcher( QString url, const KURL &directory ):
 
 void PodcastFetcher::fetch()
 {
-    DEBUG_BLOCK
     KURL filepath = m_directory;
     debug() << "filename = " << m_url.fileName() << endl;
     filepath.addPath( m_url.fileName() );
     m_file = new QFile( filepath.path() );
-    if( m_file != 0 )
-        debug() << "QFile = " << m_file->name() << endl;
-    else
-        debug() << "BUG: m_file == NULL" << endl;
     if( m_file->exists() )
     {
         QFileInfo file( *m_file );
@@ -1727,7 +1722,7 @@ void PodcastFetcher::fetch()
         m_file->setName( file.filePath() );
     }
     m_http->get( m_url.encodedPathAndQuery(), m_file );
-    debug() << m_http->currentId() << " get( http://"<< m_url.host() << m_url.encodedPathAndQuery() << " )" << endl;
+   // debug() << m_http->currentId() << " get( http://"<< m_url.host() << m_url.encodedPathAndQuery() << " )" << endl;
     if( m_http->error() )
         debug() <<  m_http->errorString() << endl;
 }
@@ -1752,15 +1747,14 @@ void PodcastFetcher::slotProgress( int bytesDone, int bytesTotal )
 
 void PodcastFetcher::slotResponseReceived( const QHttpResponseHeader & resp )
 {
-    DEBUG_BLOCK
-        debug() << m_http->currentId() << " RESPONCE, statuscode = " << resp.statusCode() << endl;
+//        debug() << m_http->currentId() << " RESPONCE, statuscode = " << resp.statusCode() << endl;
     if( resp.statusCode() == 302 )
     {
         if (resp.hasKey( "location" ) )
         {
             QString oldHost = m_url.host();
             m_url = QUrl( resp.value( "location" ) );
-            debug() << m_http->currentId() << " m_redirected to " << m_url.toString( ) <<endl;
+  //          debug() << m_http->currentId() << " m_redirected to " << m_url.toString( ) <<endl;
             if( m_url.host() != oldHost )
                 m_http->setHost( m_url.host() );
             m_redirected = true;
@@ -1768,17 +1762,16 @@ void PodcastFetcher::slotResponseReceived( const QHttpResponseHeader & resp )
     } else if (resp.statusCode() == 200 )
     {
         //TODO: create file here, rename temp file later
-        debug() << resp.toString() << endl;
+        //debug() << resp.toString() << endl;
         debug() << m_http->currentId() << " filename = " << m_url.fileName() << endl;
     }
 }
 
 void PodcastFetcher::slotDone( bool error )
 {
-    DEBUG_BLOCK
     if( error )
     {
-            debug() << m_http->currentId() << " ERROR: " << " errorstring = " << m_http->errorString() << endl;
+     //       debug() << m_http->currentId() << " ERROR: " << " errorstring = " << m_http->errorString() << endl;
             emit result( m_http->error() );
             return;
     }
@@ -1791,7 +1784,7 @@ void PodcastFetcher::slotDone( bool error )
     }
     else if ( !error )
     {
-        debug() << m_http->currentId() << " downloaded to " << m_file->name() << endl;
+   //     debug() << m_http->currentId() << " downloaded to " << m_file->name() << endl;
         emit result( m_http->error() );
     }
 }
@@ -1930,7 +1923,6 @@ PodcastEpisode::updatePixmap()
 const bool
 PodcastEpisode::isOnDisk()
 {
-    DEBUG_BLOCK
     if( m_localUrl.isEmpty() )
             return false;
     else
