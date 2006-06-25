@@ -71,6 +71,8 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         void slotPlayMedia();
         void slotAddLocation( bool directPlay = false );
         void slotAddStream();
+        void playLastfmNeighbour();
+        void playLastfmGlobaltag( int );
         void addLastfmNeighbour();
         void addLastfmGlobaltag( int );
         void playAudioCD();
