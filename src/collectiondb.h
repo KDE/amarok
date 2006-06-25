@@ -437,7 +437,7 @@ class CollectionDB : public QObject, public EngineObserver
         void similarArtistsFetched( const QString& artist, const QStringList& suggestions );
         void fileOperationResult( KIO::Job *job ); // moveFile depends on it
         void podcastImageResult( KIO::Job *job ); //for fetching remote podcast images
-        void migrateStatistics( const QString& oldUrl, const QString& newUrl, const QString& uniqueid ); //ATF-enable stats
+        void atfMigrateStatistics( const QString& oldUrl, const QString& newUrl, const QString& uniqueid ); //ATF-enable stats
 
     private:
         //bump DATABASE_VERSION whenever changes to the table structure are made.

@@ -248,7 +248,7 @@ CollectionDB::CollectionDB()
     m_atfEnabled = atfconfig->readBoolEntry( "AdvancedTagFeatures", false );
     if( m_atfEnabled )
         connect( this, SIGNAL(fileMoved(const QString&, const QString&, const QString&)),
-                 this, SLOT(migrateStatistics(const QString&, const QString&, const QString&)) );
+                 this, SLOT(atfMigrateStatistics(const QString&, const QString&, const QString&)) );
 
     connect( qApp, SIGNAL( aboutToQuit() ), this, SLOT( disableAutoScoring() ) );
 
@@ -3383,7 +3383,10 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
             if( isFileInCollection( srcURL.path() ) )
             {
                 migrateFile( srcURL.path(), dstURL.path() );
-                emit fileMoved( src, dest, uid );
+                if( m_atfEnabled )
+                    emit fileMoved( src, dest, uid );
+                else
+                    emit fileMoved( src, dest);
                 return true;
             }
             else
@@ -4125,8 +4128,11 @@ CollectionDB::similarArtistsFetched( const QString& artist, const QStringList& s
 }
 
 void
-CollectionDB::migrateStatistics( const QString& oldUrl, const QString& newUrl, const QString& /*uniqueid*/ )
+CollectionDB::atfMigrateStatistics( const QString& oldUrl, const QString& newUrl, const QString& /*uniqueid*/ )
 {
+    if( !m_atfEnabled )
+        return;
+
     query( QString( "DELETE FROM statistics WHERE url = '%1';" )
                             .arg( escapeString( newUrl ) ) );
     query( QString( "UPDATE statistics SET url = '%1' WHERE url = '%2';" )
