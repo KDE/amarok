@@ -49,6 +49,8 @@ namespace KDE
         /** set the recipient slot for the abort button */
         ProgressBar &setAbortSlot( QObject *receiver, const char *slot );
 
+        ProgressBar &setProgressSignal( QObject *sender, const char *signal );
+
         void setDone();
 
         QString description() const { return m_description; }

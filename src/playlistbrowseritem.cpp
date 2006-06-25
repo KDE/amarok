@@ -3,6 +3,8 @@
  *                        (c) 2004 Mark Kretschmann <markey@web.de>        *
  *                        (c) 2005-2006 Seb Ruiz <me@sebruiz.net>          *
  *                        (c) 2005 Christian Muehlhaeuser <chris@chris.de> *
+ *                        (c) 2006 Bart Cerneels <bart.cerneels@gmail.com> *
+ *                        (c) 2006 Ian Monroe <ian@monroe.nu>              *
  * See COPYING file for licensing information                              *
  ***************************************************************************/
 
@@ -15,11 +17,13 @@
 #include "playlistloader.h"    //load()
 #include "podcastbundle.h"
 #include "podcastsettings.h"
+#include "progressBar.h"
 #include "metabundle.h"
 #include "statusbar.h"
 #include "threadweaver.h"
 #include "mediabrowser.h"
 
+#include <qfileinfo.h>
 #include <qlabel.h>
 #include <qpainter.h>          //paintCell()
 #include <qpixmap.h>           //paintCell()
@@ -1674,6 +1678,124 @@ PodcastChannel::slotAnimation()
     m_iconCounter++;
 }
 
+
+/////////////////////////////////////////////////////////////////////////////
+///    CLASS PodcastFetcher
+///    @note Allows us to download podcasts from any enclosure, even the weird ones, with decent filenames..
+////////////////////////////////////////////////////////////////////////////
+
+PodcastFetcher::PodcastFetcher( QString url, const KURL &directory ):
+        m_url( QUrl( url )),
+        m_directory ( directory )
+{
+
+    m_http = new QHttp( m_url.host() );
+    m_redirected = false;
+    connect(m_http, SIGNAL( responseHeaderReceived ( const QHttpResponseHeader & ) ), this,
+                      SLOT( slotResponseReceived( const QHttpResponseHeader & ) ) );
+    connect(m_http, SIGNAL( done( bool ) ), this, SLOT( slotDone( bool ) ) );
+   // connect( m_http, SIGNAL( dataTransferProgress ( int, int, QNetworkOperation * ) ), this, SLOT( slotProgress( int, int ) ) );
+    connect( m_http, SIGNAL(  dataReadProgress ( int, int ) ), this, SLOT( slotProgress( int, int ) ) );
+    
+    fetch( );
+}
+
+void PodcastFetcher::fetch()
+{
+    DEBUG_BLOCK
+    KURL filepath = m_directory;
+    debug() << "filename = " << m_url.fileName() << endl;
+    filepath.addPath( m_url.fileName() );
+    m_file = new QFile( filepath.path() );
+    if( m_file != 0 )
+        debug() << "QFile = " << m_file->name() << endl;
+    else
+        debug() << "BUG: m_file == NULL" << endl;
+    if( m_file->exists() )
+    {
+        QFileInfo file( *m_file );
+        const QString baseName = file.fileName();
+        int i = 1;
+        while( file.exists() )
+        {
+            QString newName = QString::number(i);
+            newName.append( baseName );
+            debug() << baseName << " now " << newName << " with full " << file.dirPath(true) + newName << endl;
+            file.setFile( file.dirPath( true ) + '/' + newName );
+            i++;
+        }
+        m_file->setName( file.filePath() );
+    }
+    m_http->get( m_url.encodedPathAndQuery(), m_file );
+    debug() << m_http->currentId() << " get( http://"<< m_url.host() << m_url.encodedPathAndQuery() << " )" << endl;
+    if( m_http->error() )
+        debug() <<  m_http->errorString() << endl;
+}
+
+void PodcastFetcher::kill()
+{
+    m_http->abort();
+    m_http->clearPendingRequests();
+    m_http->closeConnection();
+    if( m_file && m_file->exists() )
+        m_file->remove();
+}
+
+void PodcastFetcher::slotProgress( int bytesDone, int bytesTotal )
+{
+    int percent = 0;
+    if( bytesTotal != 0 )
+        percent = (bytesDone * 100) / bytesTotal;
+    //debug() << "Progress: " << percent << " bytesTotal: " << bytesTotal << endl;
+    emit progress( this, percent );
+}
+
+void PodcastFetcher::slotResponseReceived( const QHttpResponseHeader & resp )
+{
+    DEBUG_BLOCK
+        debug() << m_http->currentId() << " RESPONCE, statuscode = " << resp.statusCode() << endl;
+    if( resp.statusCode() == 302 )
+    {
+        if (resp.hasKey( "location" ) )
+        {
+            QString oldHost = m_url.host();
+            m_url = QUrl( resp.value( "location" ) );
+            debug() << m_http->currentId() << " m_redirected to " << m_url.toString( ) <<endl;
+            if( m_url.host() != oldHost )
+                m_http->setHost( m_url.host() );
+            m_redirected = true;
+        }
+    } else if (resp.statusCode() == 200 )
+    {
+        //TODO: create file here, rename temp file later
+        debug() << resp.toString() << endl;
+        debug() << m_http->currentId() << " filename = " << m_url.fileName() << endl;
+    }
+}
+
+void PodcastFetcher::slotDone( bool error )
+{
+    DEBUG_BLOCK
+    if( error )
+    {
+            debug() << m_http->currentId() << " ERROR: " << " errorstring = " << m_http->errorString() << endl;
+            emit result( m_http->error() );
+            return;
+    }
+    if ( m_redirected )
+    {
+        m_redirected = false;
+        if( m_file && m_file->exists() )
+            m_file->remove();
+        fetch();
+    }
+    else if ( !error )
+    {
+        debug() << m_http->currentId() << " downloaded to " << m_file->name() << endl;
+        emit result( m_http->error() );
+    }
+}
+
 /////////////////////////////////////////////////////////////////////////////
 ///    CLASS PodcastEpisode
 ///    @note we fucking hate itunes for taking over podcasts and inserting
@@ -1752,22 +1874,9 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
     if( title.isEmpty() )
         title = link.fileName();
 
-    PodcastChannel *channel = dynamic_cast<PodcastChannel*>(m_parent);
-    if( channel )
-        m_localUrl = saveURL( channel->saveLocation(), mimetype, link );
-    else
-        m_localUrl = saveURL( PodcastSettings( "Podcasts" ).saveLocation(), mimetype, link );
-
-    if( QFile::exists( m_localUrl.path() ) )
-    {
-        m_onDisk = true;
-    }
-
     KURL parentUrl = static_cast<PodcastChannel*>(parent)->url();
     m_bundle.setDBId( -1 );
     m_bundle.setURL( link );
-    if( m_onDisk )
-        m_bundle.setLocalURL( m_localUrl );
     m_bundle.setParent( parentUrl );
     m_bundle.setTitle( title );
     m_bundle.setSubtitle( subtitle );
@@ -1798,73 +1907,13 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after, Pod
       , m_onDisk( false )
 {
     m_localUrl    =  m_bundle.localUrl();
-    bool dbOnDisk = !m_localUrl.isEmpty();
-    QString _url  =  m_localUrl.path();
-
-    if( m_localUrl.isEmpty() )
-    {
-        PodcastChannel *channel = dynamic_cast<PodcastChannel*>(m_parent);
-        if( channel )
-           m_localUrl = saveURL( channel->saveLocation(), m_bundle.type(), m_bundle.url() );
-        else
-           m_localUrl = saveURL( PodcastSettings("Podcasts").saveLocation(), m_bundle.type(), m_bundle.url() );
-    }
-
-    if( QFile::exists( m_localUrl.path() ) )
-    {
-        m_onDisk = true;
-    }
-
-    if( m_onDisk )
-    {
-        m_bundle.setLocalURL( m_localUrl );
-    }
-
-    if( _url != m_bundle.localUrl().path() && dbOnDisk != m_onDisk && m_bundle.dBId() )
-       CollectionDB::instance()->updatePodcastEpisode( m_bundle.dBId(), m_bundle );
+    isOnDisk();
 
 
     setText( 0, bundle.title() );
     updatePixmap();
     setDragEnabled( true );
     setRenameEnabled( 0, false );
-}
-
-KURL
-PodcastEpisode::saveURL( const KURL &base, const QString &mimetype, const KURL &link )
-{
-    KURL url = base;
-
-    QString filename = amaroK::vfatPath( KURL::encode_string_no_slash( link.url() ) );
-    QString ext = filename.section( ".", -1 );
-    QStringList acceptExtensions, rejectExtensions;
-    acceptExtensions << "mp3" << "ogg" << "m4a" << "m4a" << "m4v";
-    rejectExtensions << "cgi" << "php";
-    QStringList patterns;
-    if( !mimetype.isEmpty() )
-        patterns = KMimeType::mimeType( mimetype )->patterns();
-    if( !patterns.isEmpty() )
-    {
-        if( ext.isEmpty() || !patterns.contains( ext ) )
-            filename += patterns[0];
-    }
-    else if( ext.isEmpty() || !acceptExtensions.contains( ext ) )
-    {
-        QString path = link.path();
-        QString newext = path.section( ".", -1 );
-        if( !newext.isEmpty() && acceptExtensions.contains( newext ) )
-            filename += "." + newext;
-        else if( ext.isEmpty() || rejectExtensions.contains( ext ) )
-        {
-            if( !newext.isEmpty() && !rejectExtensions.contains( newext ) )
-                filename += "." + newext;
-            else
-                filename += ".mp3";
-        }
-    }
-    url.setFileName( filename );
-
-    return url;
 }
 
 void
@@ -1881,13 +1930,20 @@ PodcastEpisode::updatePixmap()
 const bool
 PodcastEpisode::isOnDisk()
 {
-    bool oldOnDisk = m_onDisk;
-    m_onDisk = QFile::exists( m_localUrl.path() );
-    updatePixmap();
-    m_bundle.setLocalURL( m_onDisk ? m_localUrl : KURL() );
-    if( oldOnDisk != m_onDisk && dBId() )
-        CollectionDB::instance()->updatePodcastEpisode( dBId(), m_bundle );
-    return m_onDisk;
+    DEBUG_BLOCK
+    if( m_localUrl.isEmpty() )
+            return false;
+    else
+    {
+        bool oldOnDisk = m_onDisk;
+        m_onDisk = QFile::exists( m_localUrl.path() );
+        debug() << title() << " localUrl: " << m_localUrl << " QFile::exists = " << m_onDisk << endl;
+        updatePixmap();
+        m_bundle.setLocalURL( m_onDisk ? m_localUrl : KURL() );
+        if( oldOnDisk != m_onDisk && dBId() )
+            CollectionDB::instance()->updatePodcastEpisode( dBId(), m_bundle );
+        return m_onDisk;
+    }
 }
 
 void
@@ -1901,20 +1957,26 @@ PodcastEpisode::downloadMedia()
     m_iconCounter = 1;
     startAnimation();
     connect( &m_animationTimer, SIGNAL(timeout()), this, SLOT(slotAnimation()) );
-    KURL::List list( url() );
 
-    KURL m_localDir = KURL::fromPathOrURL( m_localUrl.directory(true, true) );
+    KURL m_localDir;
+    PodcastChannel *channel = dynamic_cast<PodcastChannel*>(m_parent);
+        if( channel )
+            m_localDir = channel->saveLocation();
+        else
+            m_localDir = PodcastSettings("Podcasts").saveLocation();
     createLocalDir( m_localDir );
 
-    m_podcastEpisodeJob = KIO::copy( list, m_localUrl, false );
+    m_podcastFetcher = new PodcastFetcher( url().url() , m_localDir );
 
-    amaroK::StatusBar::instance()->newProgressOperation( m_podcastEpisodeJob )
+    //TODO: make this work with PodcastFetcher
+    amaroK::StatusBar::instance()->newProgressOperation( m_podcastFetcher )
             .setDescription( title().isEmpty()
                     ? i18n( "Downloading Podcast Media" )
                     : i18n( "Downloading Podcast \"%1\"" ).arg( title() ) )
-            .setAbortSlot( this, SLOT(abortDownload()) );
+            .setAbortSlot( this, SLOT( abortDownload()) )
+            .setProgressSignal( m_podcastFetcher, SIGNAL( progress( const QObject*, int ) ) );
 
-    connect( m_podcastEpisodeJob, SIGNAL( result( KIO::Job* ) ), SLOT( downloadResult( KIO::Job* ) ) );
+    connect( m_podcastFetcher, SIGNAL( result( int ) ), SLOT( downloadResult( int ) ) );
 }
 
 void PodcastEpisode::createLocalDir( const KURL &localDir )
@@ -1935,11 +1997,9 @@ void
 PodcastEpisode::abortDownload() //SLOT
 {
     emit downloadAborted();
-    m_podcastEpisodeJob->kill();
+    m_podcastFetcher->kill();
 
-    KURL part = m_localUrl;
-    part.addPath( ".part" );
-    KIO::del( part );
+    delete m_podcastFetcher;
 
     stopAnimation();
     setText( 0, title() );
@@ -1948,15 +2008,15 @@ PodcastEpisode::abortDownload() //SLOT
 }
 
 void
-PodcastEpisode::downloadResult( KIO::Job* job ) //SLOT
+PodcastEpisode::downloadResult( int error ) //SLOT
 {
     emit downloadFinished();
 
     stopAnimation();
     setText( 0, title() );
-    if ( !job->error() == 0 ) {
+    if ( error != 0 ) {
         amaroK::StatusBar::instance()->shortMessage( i18n( "Media download aborted, unable to connect to server." ) );
-        debug() << "Unable to retrieve podcast media. KIO Error: " << job->error() << endl;
+        debug() << "Unable to retrieve podcast media. KIO Error: " << error << endl;
 
         setPixmap( 0, SmallIcon("cancel") );
 
@@ -1965,6 +2025,7 @@ PodcastEpisode::downloadResult( KIO::Job* job ) //SLOT
 
     m_onDisk = true;
 
+    m_localUrl = m_podcastFetcher->localUrl();
     m_bundle.setLocalURL( m_localUrl );
     CollectionDB::instance()->updatePodcastEpisode( dBId(), m_bundle );
 
@@ -1976,6 +2037,7 @@ PodcastEpisode::downloadResult( KIO::Job* job ) //SLOT
     }
 
     updatePixmap();
+    delete m_podcastFetcher;
 }
 
 void

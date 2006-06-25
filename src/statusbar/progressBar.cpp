@@ -18,10 +18,13 @@
  ***************************************************************************/
 
 #include "debug.h"
+#include "progressBar.h"
+#include "statusbar.h"
+
 #include <klocale.h>
 #include <kpushbutton.h>
 #include <kstdguiitem.h>
-#include "progressBar.h"
+
 #include <qlabel.h>
 
 
@@ -80,6 +83,15 @@ ProgressBar::setAbortSlot( QObject *receiver, const char *slot )
 
     parentWidget()->adjustSize();
 
+    return *this;
+}
+
+ProgressBar&
+ProgressBar::setProgressSignal( QObject *sender, const char *signal )
+{
+    setTotalSteps( 100 );
+    debug() << "connecting " << signal << " LOOKATME\n";
+    connect( sender, signal, amaroK::StatusBar::instance(), SLOT( setProgress ( const QObject*, int ) ) );
     return *this;
 }
 

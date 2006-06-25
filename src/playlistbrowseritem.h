@@ -1,6 +1,7 @@
 /***************************************************************************
  * copyright            : (c) 2004 Pierpaolo Di Panfilo                    *
  *                        (c) 2005-2006 Seb Ruiz <me@sebruiz.net>          *
+ *                        (c) 2006 Bart Cerneels <bart.cerneels@gmail.com> *
  * See COPYING file for licensing information                              *
  ***************************************************************************/
 
@@ -16,9 +17,12 @@
 #include <klistview.h>
 #include <kurl.h>
 
-#include <qptrlist.h>
 #include <qdom.h>
+#include <qfile.h>
+#include <qhttp.h>
+#include <qptrlist.h>
 #include <qtimer.h>     // Podcast loading animation
+#include <qurl.h>
 
 class MetaBundle;
 class PlaylistTrackItem;
@@ -210,6 +214,36 @@ class PlaylistTrackItem : public PlaylistBrowserEntry
         TrackItemInfo *m_trackInfo;
 };
 
+class PodcastFetcher : public QObject
+{
+    Q_OBJECT
+    public:
+        PodcastFetcher( QString url, const KURL &directory );
+
+        QString filename() { return m_url.fileName(); }
+        KURL localUrl() { return KURL( m_file->name() ); }
+        void kill();
+
+    signals:
+        void result( int error );
+        void progress( const QObject* thisObject, int steps );
+
+    public slots:
+        void slotResponseReceived( const QHttpResponseHeader & resp );
+        void slotDone( bool error );
+        void slotProgress( int bytesDone, int bytesTotal );
+
+    private:
+        void fetch();
+
+        QFile *m_file;
+        QUrl m_url;
+        QHttp *m_http;
+        KURL m_directory;
+        bool m_redirected;
+
+};
+
 /// Stored in the database
 class PodcastEpisode : public QObject, public PlaylistBrowserEntry
 {
@@ -261,7 +295,7 @@ class PodcastEpisode : public QObject, public PlaylistBrowserEntry
 
     private slots:
         void abortDownload();
-        void downloadResult( KIO::Job* job );
+        void downloadResult( int error );
         void slotAnimation();
 
     private:
@@ -270,7 +304,7 @@ class PodcastEpisode : public QObject, public PlaylistBrowserEntry
         void startAnimation();
         void stopAnimation();
         void updatePixmap();
-        KURL saveURL( const KURL &base, const QString &filetype, const KURL &link );
+//         KURL saveURL( const KURL &base, const QString &filetype, const KURL &link );
 
         QListViewItem *m_parent;           //podcast channel it belongs to
         PodcastEpisodeBundle m_bundle;
@@ -280,7 +314,8 @@ class PodcastEpisode : public QObject, public PlaylistBrowserEntry
         QTimer      m_animationTimer;
         uint        m_iconCounter;
 
-        KIO::CopyJob* m_podcastEpisodeJob;
+//         KIO::CopyJob* m_podcastEpisodeJob;
+        PodcastFetcher  *m_podcastFetcher;
 
         bool        m_downloaded;       //marked as downloaded in cached xml
         bool        m_onDisk;
