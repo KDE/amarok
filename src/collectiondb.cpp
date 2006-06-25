@@ -82,6 +82,8 @@
     #include <libpq-fe.h>
 #endif
 
+#undef HAVE_INOTIFY  // NOTE Disabled for now, due to stability issues
+
 #ifdef HAVE_INOTIFY
     #include <linux/inotify.h>
     #include "inotify/inotify-syscalls.h"
