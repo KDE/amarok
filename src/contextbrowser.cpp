@@ -582,9 +582,10 @@ void ContextBrowser::engineStateChanged( Engine::State state, Engine::State oldS
 {
     DEBUG_BLOCK
 
-    if( state != Engine::Paused /*pause*/ && oldState != Engine::Paused /*resume*/)
+    if( state != Engine::Paused /*pause*/ && oldState != Engine::Paused /*resume*/
+        || state == Engine::Empty )
     {
-        // Pause shouldn't clear everything
+        // Pause shouldn't clear everything (but stop should, even when paused)
         m_dirtyCurrentTrackPage = true;
         m_dirtyLyricsPage = true;
         m_wikiJob = 0; //let's forget previous wiki-fetching jobs
