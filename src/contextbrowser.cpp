@@ -555,7 +555,11 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
     if ( currentPage() == m_contextTab && ( bundle.url() != m_currentURL || newMetaData || !trackChanged ) )
         showCurrentTrack();
     else if ( currentPage() == m_lyricsTab )
-        showLyrics();
+    {
+        EngineController::engine()->isStream() ?
+                lyricsRefresh() : // can't call showLyrics() because the url hasn't changed
+                showLyrics()    ;
+    }
     else if ( CollectionDB::instance()->isEmpty() || !CollectionDB::instance()->isValid() )
         showCurrentTrack();
 
@@ -2813,7 +2817,8 @@ void ContextBrowser::showLyrics( const QString &url )
     if ( !m_dirtyLyricsPage ) return;
 
     QString lyrics = CollectionDB::instance()->getLyrics( EngineController::instance()->bundle().url().path() );
-    const bool cached = !lyrics.isEmpty();
+    // don't rely on caching for streams
+    const bool cached = !lyrics.isEmpty() && !EngineController::engine()->isStream();
 
     QString title  = EngineController::instance()->bundle().title();
     QString artist = EngineController::instance()->bundle().artist();
@@ -2833,8 +2838,8 @@ void ContextBrowser::showLyrics( const QString &url )
     }
 
     m_lyricSearchUrl = QString( "http://www.google.com/search?ie=UTF-8&q=lyrics %1 %2" )
-        .arg( KURL::encode_string_no_slash( '"'+EngineController::instance()->bundle().artist()+'"', 106 /*utf-8*/ ),
-              KURL::encode_string_no_slash( '"'+title+'"', 106 /*utf-8*/ ) );
+        .arg( KURL::encode_string_no_slash( '"' + artist + '"', 106 /*utf-8*/ ),
+              KURL::encode_string_no_slash( '"' + title  + '"', 106 /*utf-8*/ ) );
 
     m_lyricsToolBar->getButton( LYRICS_BROWSER )->setEnabled(false);
 

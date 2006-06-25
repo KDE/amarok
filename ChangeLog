@@ -5,7 +5,7 @@ Amarok ChangeLog
 
 VERSION 1.4.1:
   FEATURES:
-    * Support for last.fm streams.
+    * Support for last.fm streams. (BR 111983)
     * New playlist toolbar menu entry for adding streams to the playlist.
       (BR 129349)
 
@@ -16,6 +16,7 @@ VERSION 1.4.1:
     * GUI layout reverted to the classic Amarok layout.
 
   BUGFIXES:
+    * Automatically refresh stream lyrics on new metadata.
     * Set half star ratings on multiple selected tracks when clicking on an
       item. (BR 129449)
     * Only enable Show Extended Info in the Playlist Browser when information
