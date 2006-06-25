@@ -144,6 +144,23 @@ PlaylistWindow::PlaylistWindow()
     new KAction( i18n("Queue Manager"), amaroK::icon( "queue" ), 0, this, SLOT(showQueueManager()), ac, "queue_manager" );
     new KAction( i18n("Statistics"), amaroK::icon( "info" ), 0, this, SLOT(showStatistics()), ac, "statistics" );
 
+    m_lastfmTags << "Alternative" << "Ambient" << "Chill Out" << "Classical" << "Dance"
+                 << "Electronica" << "Favorites" << "Heavy Metal" << "Hip Hop" << "Indie Rock"
+                 << "Industrial" << "Japanese" << "Pop" << "Rap" << "Rock" << "Soundtrack"
+                 << "Techno" << "Trance";
+
+    KPopupMenu* tagRadioMenu = new KPopupMenu( this );
+    int id = 0;
+    foreach( m_lastfmTags ) {
+        tagRadioMenu->insertItem( *it, this, SLOT( addLastfmGlobaltag( int ) ), 0, id );
+        ++id;
+    }
+
+    KActionMenu* lastfm = new KActionMenu( i18n( "Add last.fm Stream" ), amaroK::icon( "audioscrobbler" ), ac, "lastfm_add" );
+    QPopupMenu* lastfmMenu = lastfm->popupMenu();
+    lastfmMenu->insertItem( i18n( "Your Neighbour Radio" ), this, SLOT( addLastfmNeighbour() ) );
+    lastfmMenu->insertItem( i18n( "Global Tag Radio" ), tagRadioMenu );
+
     ac->action( "options_configure_globals" )->setText( i18n( "Configure &Global Shortcuts..." ) );
 
     new KAction( i18n( "Previous Track" ), amaroK::icon( "back" ), 0, ec, SLOT( previous() ), ac, "prev" );
@@ -274,6 +291,7 @@ void PlaylistWindow::init()
     KPopupMenu *playlistMenu = new KPopupMenu( m_menubar );
     actionCollection()->action("playlist_add")->plug( playlistMenu );
     actionCollection()->action("stream_add")->plug( playlistMenu );
+    actionCollection()->action("lastfm_add")->plug( playlistMenu );
     actionCollection()->action("playlist_save")->plug( playlistMenu );
     playlistMenu->insertSeparator();
     actionCollection()->action("playlist_undo")->plug( playlistMenu );
@@ -804,6 +822,24 @@ void PlaylistWindow::slotAddStream() //SLOT
 
     KURL::List media( KURL::fromPathOrURL( url ) );
     Playlist::instance()->insertMedia( media );
+}
+
+
+void PlaylistWindow::addLastfmNeighbour() //SLOT
+{
+    const KURL url( QString( "lastfm://user/%1/neighbours" )
+                    .arg( AmarokConfig::scrobblerUsername() ) );
+
+    Playlist::instance()->insertMedia( url );
+}
+
+
+void PlaylistWindow::addLastfmGlobaltag( int id ) //SLOT
+{
+    const QString tag = m_lastfmTags[id].lower();
+    const KURL url( "lastfm://globaltags/" + tag );
+
+    Playlist::instance()->insertMedia( url );
 }
 
 

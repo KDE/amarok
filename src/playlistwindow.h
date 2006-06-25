@@ -71,6 +71,8 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         void slotPlayMedia();
         void slotAddLocation( bool directPlay = false );
         void slotAddStream();
+        void addLastfmNeighbour();
+        void addLastfmGlobaltag( int );
         void playAudioCD();
         void showQueueManager();
         void showScriptSelector();
@@ -97,6 +99,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         ClickLineEdit *m_lineEdit;
         KToolBar      *m_toolbar;
         QTimer        *m_timer;  //search filter timer
+        QStringList    m_lastfmTags;
 
         int m_lastBrowser;
         int m_searchField;
