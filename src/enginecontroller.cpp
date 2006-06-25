@@ -332,6 +332,11 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
 {
     DEBUG_BLOCK
 
+    if( LastFm::Controller::instance()->isPlaying() ) 
+    {
+        m_engine->stop();
+        LastFm::Controller::instance()->playbackStopped();
+    }
     //Holds the time since we started trying to play non-existent files
     //so we know when to abort
     static QTime failure_time;
@@ -477,8 +482,6 @@ void EngineController::stop() //SLOT
     //where stop never properly happens if call to m_engine->load fails in play)
     //if ( m_engine->loaded() )
     m_engine->stop();
-
-    LastFm::Controller::instance()->playbackStopped();
 }
 
 
@@ -666,6 +669,7 @@ void EngineController::slotTrackEnded() //SLOT
 
 void EngineController::slotStateChanged( Engine::State newState ) //SLOT
 {
+
     switch( newState )
     {
     case Engine::Empty:

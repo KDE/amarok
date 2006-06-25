@@ -1929,7 +1929,6 @@ PodcastEpisode::isOnDisk()
     {
         bool oldOnDisk = m_onDisk;
         m_onDisk = QFile::exists( m_localUrl.path() );
-        debug() << title() << " localUrl: " << m_localUrl << " QFile::exists = " << m_onDisk << endl;
         updatePixmap();
         m_bundle.setLocalURL( m_onDisk ? m_localUrl : KURL() );
         if( oldOnDisk != m_onDisk && dBId() )
