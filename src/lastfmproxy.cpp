@@ -105,6 +105,8 @@ WebService::WebService( QObject* parent )
 
 WebService::~WebService()
 {
+    DEBUG_BLOCK
+
     delete m_server;
 }
 
@@ -121,7 +123,7 @@ WebService::readProxy() //SLOT
         res = m_server->readln( line );
         if( res == -1 ) break;
 
-        if( line == "AMAROK_PROXY: SYNC frame" )
+        if( line == "AMAROK_PROXY: SYNC" )
             requestMetaData();
     }
 }
@@ -191,6 +193,7 @@ WebService::handshake( const QString& username, const QString& password )
     }
 
     connect( m_server, SIGNAL( readReady( KProcIO* ) ), this, SLOT( readProxy() ) );
+    connect( m_server, SIGNAL( processExited( KProcess* ) ), this, SLOT( deleteLater() ) );
 
     return true;
 }

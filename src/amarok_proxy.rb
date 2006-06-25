@@ -38,10 +38,14 @@ h = Net::HTTP.new( uri.host, uri.port )
 response = h.get( "#{uri.path}?#{uri.query}" ) do |data|
     if data[0, 4] == "SYNC"
         data[0, 4] = ""
-        puts( "SYNC frame" )
+        puts( "SYNC" )
     end
 
-    sock.write( data )
+    begin
+        sock.write( data )
+    rescue
+        break
+    end
 end
 
 
@@ -50,4 +54,4 @@ unless response.code == "200"
 end
 
 
-
+puts( "exiting" )

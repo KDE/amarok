@@ -17,6 +17,7 @@
 #ifndef AMAROK_LASTFMPROXY_H
 #define AMAROK_LASTFMPROXY_H
 
+#include <qguardedptr.h>
 #include <qobject.h>
 #include <qserversocket.h>
 #include <qurl.h>
@@ -41,7 +42,7 @@ namespace LastFm
 
             KURL        getNewProxy( QString genreUrl );
 
-            bool        isPlaying() const { return m_service != 0; }
+            bool        isPlaying() const { return !m_service.isNull(); }
             WebService* getService() const { return m_service; }
             QString     getGenreUrl() const { return m_genreUrl; }
 
@@ -53,7 +54,7 @@ namespace LastFm
             static Controller *s_instance;
 
             QString     m_genreUrl;
-            WebService* m_service;
+            QGuardedPtr<WebService> m_service;
     };
 
     class WebService : public QObject
