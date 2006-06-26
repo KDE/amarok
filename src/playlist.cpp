@@ -4158,7 +4158,8 @@ void Playlist::contentsWheelEvent( QWheelEvent *e )
                 changed << p;
             if( changed.findRef( m_nextTracks.at( dest - s ) ) == -1 )
                 changed << m_nextTracks.at( dest - s );
-            if ( dynamicMode() ) // move tracks in the dynamic list, without this the track will be played twice.
+/*
+            if ( dynamicMode() ) // move tracks in the dynamic list.
             {
                 PlaylistItem* after;
                 if ( dest == 0 ) // new position is first in queue, after the current track
@@ -4170,6 +4171,7 @@ void Playlist::contentsWheelEvent( QWheelEvent *e )
                 if ( after )
                     moveItem( item, 0, after ); // move the item
             }
+*/
             m_nextTracks.replace( dest, m_nextTracks.at( dest - s ) );
             m_nextTracks.replace( dest - s, p );
         }
