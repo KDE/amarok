@@ -1570,14 +1570,14 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
 
     QString username = AmarokConfig::scrobblerUsername();
     QString userpage = "www.last.fm/user/" + username; // no http.
-    const LastFm::Bundle* lastFmInfo = currentTrack.lastFmBundle();
+    const LastFm::Bundle& lastFmInfo = currentTrack.lastFmBundle();
 
-    if( !lastFmInfo )
+    if( 0/* !lastFmInfo */ )
     {
         debug() << "oh shit guys, this ain't no lastfm" << endl;
         return;
     }
-    QString imageUrl = QDeepCopy<QString>(lastFmInfo->imageUrl());
+    QString imageUrl = QDeepCopy<QString>(lastFmInfo.imageUrl());
     if( imageUrl.isEmpty() )
         imageUrl = "file://" + KGlobal::instance()->iconLoader()->iconPath( amaroK::icon( "audioscrobbler" ), -1*KIcon::SizeLarge  );
 
@@ -1613,7 +1613,7 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
             .args( QStringList()
             << escapeHTML( lfm->currentStation() )
             << escapeHTML( userpage )
-            << imageUrl 
+            << imageUrl
             << escapeHTML( "http://" + userpage )
             << escapeHTML( currentTrack.prettyTitle() )
             << escapeHTML( currentTrack.album() )

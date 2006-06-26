@@ -47,12 +47,13 @@ Controller *Controller::s_instance = 0;
 Controller::Controller()
     : QObject( EngineController::instance(), "lastfmController" )
     , m_service( 0 )
-{}
+{DEBUG_BLOCK}
 
 
 Controller*
 Controller::instance()
 {
+    DEBUG_BLOCK
     if( !s_instance ) s_instance = new Controller();
     return s_instance;
 }
@@ -243,6 +244,7 @@ WebService::changeStation( QString url )
 void
 WebService::requestMetaData() //SLOT
 {
+    DEBUG_BLOCK
     QHttp *http = new QHttp( m_baseHost, 80, this );
     connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( metaDataFinished( int, bool ) ) );
 
@@ -269,15 +271,15 @@ WebService::metaDataFinished( int /*id*/, bool error ) //SLOT
     bundle.setUrl( KURL (Controller::instance()->getGenreUrl() ) );
     bundle.setLength( parameter( "trackduration", result ).toInt() );
 
-    Bundle* lastFmStuff = new Bundle();
+    Bundle lastFmStuff;
     QString imageUrl = parameter( "albumcover_small", result );
     //debug() << "sending: " << imageUrl << ' ' << ((imageUrl == "http://static.last.fm/coverart/" ) ? "null": imageUrl) << endl;
-    lastFmStuff->setImageUrl( ( (imageUrl == "http://static.last.fm/coverart/" ) ? QString::null : imageUrl ) );
-    lastFmStuff->setArtistUrl( parameter( "artist_url", result )   );
-    lastFmStuff->setAlbumUrl( parameter( "album_url", result ) );
+    lastFmStuff.setImageUrl( ( (imageUrl == "http://static.last.fm/coverart/" ) ? QString::null : imageUrl ) );
+    lastFmStuff.setArtistUrl( parameter( "artist_url", result )   );
+    lastFmStuff.setAlbumUrl( parameter( "album_url", result ) );
     bundle.setLastFmBundle( lastFmStuff );
 //     bundle.setTrackUrl( parameter( "track_url", result ) );
-    
+
 //     bool discovery = parameter( "discovery", result ) != "-1";
 
     int errCode = parameter( "error", result ).toInt();
@@ -291,6 +293,7 @@ WebService::metaDataFinished( int /*id*/, bool error ) //SLOT
 void
 WebService::enableScrobbling( bool enabled ) //SLOT
 {
+    DEBUG_BLOCK
     if ( enabled )
         debug() << "Enabling Scrobbling!" << endl;
     else
@@ -309,6 +312,7 @@ WebService::enableScrobbling( bool enabled ) //SLOT
 void
 WebService::enableScrobblingFinished( int /*id*/, bool error ) //SLOT
 {
+    DEBUG_BLOCK
     QHttp* http = (QHttp*) sender();
     http->deleteLater();
     if ( error ) return;
@@ -320,6 +324,7 @@ WebService::enableScrobblingFinished( int /*id*/, bool error ) //SLOT
 void
 WebService::love() //SLOT
 {
+    DEBUG_BLOCK
     QHttp *http = new QHttp( m_baseHost, 80, this );
     connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( loveFinished( int, bool ) ) );
 
@@ -332,6 +337,7 @@ WebService::love() //SLOT
 void
 WebService::skip() //SLOT
 {
+    DEBUG_BLOCK
     QHttp *http = new QHttp( m_baseHost, 80, this );
     connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( skipFinished( int, bool ) ) );
 
@@ -344,6 +350,7 @@ WebService::skip() //SLOT
 void
 WebService::ban() //SLOT
 {
+    DEBUG_BLOCK
     QHttp *http = new QHttp( m_baseHost, 80, this );
     connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( banFinished( int, bool ) ) );
 
@@ -356,6 +363,7 @@ WebService::ban() //SLOT
 void
 WebService::loveFinished( int /*id*/, bool error ) //SLOT
 {
+    DEBUG_BLOCK
     QHttp* http = (QHttp*) sender();
     http->deleteLater();
     if( error ) return;
@@ -367,6 +375,7 @@ WebService::loveFinished( int /*id*/, bool error ) //SLOT
 void
 WebService::skipFinished( int /*id*/, bool error ) //SLOT
 {
+    DEBUG_BLOCK
     QHttp* http = (QHttp*) sender();
     http->deleteLater();
     if( error ) return;
@@ -378,6 +387,7 @@ WebService::skipFinished( int /*id*/, bool error ) //SLOT
 void
 WebService::banFinished( int /*id*/, bool error ) //SLOT
 {
+    DEBUG_BLOCK
     QHttp* http = (QHttp*) sender();
     http->deleteLater();
     if( error ) return;
@@ -390,6 +400,7 @@ WebService::banFinished( int /*id*/, bool error ) //SLOT
 void
 WebService::friends( QString username )
 {
+    DEBUG_BLOCK
     if ( username.isEmpty() )
         username = m_username;
 
@@ -404,6 +415,7 @@ WebService::friends( QString username )
 void
 WebService::friendsFinished( int /*id*/, bool error ) //SLOT
 {
+    DEBUG_BLOCK
     QHttp* http = (QHttp*) sender();
     http->deleteLater();
     if( error ) return;
@@ -432,6 +444,7 @@ WebService::friendsFinished( int /*id*/, bool error ) //SLOT
 void
 WebService::neighbours( QString username )
 {
+    DEBUG_BLOCK
     if ( username.isEmpty() )
         username = m_username;
 
@@ -446,6 +459,7 @@ WebService::neighbours( QString username )
 void
 WebService::neighboursFinished( int /*id*/, bool error ) //SLOT
 {
+    DEBUG_BLOCK
     QHttp* http = (QHttp*) sender();
     http->deleteLater();
     if( error )  return;
@@ -474,6 +488,7 @@ WebService::neighboursFinished( int /*id*/, bool error ) //SLOT
 void
 WebService::userTags( QString username )
 {
+    DEBUG_BLOCK
     if ( username.isEmpty() )
         username = m_username;
 
@@ -488,6 +503,7 @@ WebService::userTags( QString username )
 void
 WebService::userTagsFinished( int /*id*/, bool error ) //SLOT
 {
+    DEBUG_BLOCK
     QHttp* http = (QHttp*) sender();
     http->deleteLater();
     if( error ) return;
@@ -516,6 +532,7 @@ WebService::userTagsFinished( int /*id*/, bool error ) //SLOT
 void
 WebService::recentTracks( QString username )
 {
+    DEBUG_BLOCK
     if ( username.isEmpty() )
         username = m_username;
 
@@ -530,6 +547,7 @@ WebService::recentTracks( QString username )
 void
 WebService::recentTracksFinished( int /*id*/, bool error ) //SLOT
 {
+    DEBUG_BLOCK
     QHttp* http = (QHttp*) sender();
     http->deleteLater();
     if( error ) return;
@@ -561,6 +579,7 @@ WebService::recentTracksFinished( int /*id*/, bool error ) //SLOT
 void
 WebService::recommend( int type, QString username, QString artist, QString token )
 {
+    DEBUG_BLOCK
     QString modeToken = "";
     switch ( type )
     {
@@ -605,6 +624,7 @@ WebService::recommend( int type, QString username, QString artist, QString token
 void
 WebService::recommendFinished( int /*id*/, bool /*error*/ ) //SLOT
 {
+    DEBUG_BLOCK
     QHttp* http = (QHttp*) sender();
     http->deleteLater();
 
@@ -615,6 +635,7 @@ WebService::recommendFinished( int /*id*/, bool /*error*/ ) //SLOT
 QString
 WebService::parameter( QString keyName, QString data ) const
 {
+    DEBUG_BLOCK
     QStringList list = QStringList::split( '\n', data );
 
     for ( uint i = 0; i < list.size(); i++ )
@@ -636,6 +657,7 @@ WebService::parameter( QString keyName, QString data ) const
 QStringList
 WebService::parameterArray( QString keyName, QString data ) const
 {
+    DEBUG_BLOCK
     QStringList result;
     QStringList list = QStringList::split( '\n', data );
 
@@ -656,6 +678,7 @@ WebService::parameterArray( QString keyName, QString data ) const
 QStringList
 WebService::parameterKeys( QString keyName, QString data ) const
 {
+    DEBUG_BLOCK
     QStringList result;
     QStringList list = QStringList::split( '\n', data );
 
