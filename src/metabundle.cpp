@@ -1298,7 +1298,6 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
     int createID = 0;
     int randSize = 8; //largest size allowed by ID3v2.4
     bool newID = false;
-    m_uniqueId = QString::null;
 
     QString ourId = QString( "Amarok - rediscover your music at http://amarok.kde.org" ).upper();
 
@@ -1344,8 +1343,9 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
             {
                 if( TagLib::File::isWritable( file->name() ) )
                 {
+                    m_uniqueId = getRandomStringHelper( randSize );
                     file->tag()->addField( QStringToTString( ourId ),
-                            TagLib::ByteVector( getRandomStringHelper( randSize ).ascii(), randSize )
+                            TagLib::ByteVector( m_uniqueId.ascii(), randSize )
                             );
                     file->save();
                     newID = true;
@@ -1369,8 +1369,9 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
             {
                 if( TagLib::File::isWritable( file->name() ) )
                 {
+                    m_uniqueId = getRandomStringHelper( randSize );
                     file->xiphComment()->addField( QStringToTString( ourId ),
-                            TagLib::ByteVector( getRandomStringHelper( randSize ).ascii(), randSize )
+                            TagLib::ByteVector( m_uniqueId.ascii(), randSize )
                             );
                     file->save();
                     newID = true;
@@ -1393,8 +1394,9 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
             {
                 if( TagLib::File::isWritable( file->name() ) )
                 {
+                    m_uniqueId = getRandomStringHelper( randSize );
                     file->tag()->addField( QStringToTString( ourId ),
-                            TagLib::ByteVector( getRandomStringHelper( randSize ).ascii(), randSize )
+                            TagLib::ByteVector( m_uniqueId.ascii(), randSize )
                             );
                     file->save();
                     newID = true;

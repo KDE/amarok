@@ -249,9 +249,14 @@ CollectionDB::CollectionDB()
     KConfig* atfconfig = amaroK::config( "Collection" );
     m_atfEnabled = atfconfig->readBoolEntry( "AdvancedTagFeatures", false );
     if( m_atfEnabled )
+    {
         connect( this, SIGNAL(fileMoved(const QString&, const QString&, const QString&)),
-                 this, SLOT(atfMigrateStatistics(const QString&, const QString&, const QString&)) );
-
+                 this, SLOT(atfMigrateStatisticsUrl(const QString&, const QString&, const QString&)) );
+        //enable once 1.4.1's out the door, requires stats table to have uniqueid column first
+        //connect( this, SIGNAL(uniqueIdChanged(const QString&, const QString&, const QString&)),
+                 //this, SLOT(atfMigrateStatisticsUniqueId(const QString&, const QString&, const QString&)) );
+    }
+        
     connect( qApp, SIGNAL( aboutToQuit() ), this, SLOT( disableAutoScoring() ) );
 
 #ifdef HAVE_INOTIFY
@@ -4130,7 +4135,7 @@ CollectionDB::similarArtistsFetched( const QString& artist, const QStringList& s
 }
 
 void
-CollectionDB::atfMigrateStatistics( const QString& oldUrl, const QString& newUrl, const QString& /*uniqueid*/ )
+CollectionDB::atfMigrateStatisticsUrl( const QString& oldUrl, const QString& newUrl, const QString& /*uniqueid*/ )
 {
     if( !m_atfEnabled )
         return;
@@ -4141,6 +4146,18 @@ CollectionDB::atfMigrateStatistics( const QString& oldUrl, const QString& newUrl
                             .arg( escapeString( newUrl ) )
                             .arg( escapeString( oldUrl ) ) );
 }
+
+void
+CollectionDB::atfMigrateStatisticsUniqueId( const QString& /*url*/, const QString& oldid, const QString& newid )
+{
+    //don't need to check for ATF on, signal never emitted otherwise
+    query( QString( "DELETE FROM statistics WHERE uniqueid = '%1';" )
+                            .arg( escapeString( newid ) ) );
+    query( QString( "UPDATE statistics SET uniqueid = '%1' WHERE uniqueid = '%2';" )
+                            .arg( escapeString( newid ) )
+                            .arg( escapeString( oldid ) ) );
+}
+        
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE
@@ -4280,7 +4297,13 @@ CollectionDB::initialize()
             {
                 prev = 3;
             }
-
+            
+            if( prev == 5)
+            {
+                //Code to add unqiueid column and maybe "deleted" column will go here,
+                //pending talks with Seb...
+                //don't bump actual version in collectiondb.h before this is written!
+            }
             if( prev == 4 )
             {
                 debug() << "Updating stats-database!" << endl;

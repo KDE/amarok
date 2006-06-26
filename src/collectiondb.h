@@ -437,8 +437,9 @@ class CollectionDB : public QObject, public EngineObserver
         void similarArtistsFetched( const QString& artist, const QStringList& suggestions );
         void fileOperationResult( KIO::Job *job ); // moveFile depends on it
         void podcastImageResult( KIO::Job *job ); //for fetching remote podcast images
-        void atfMigrateStatistics( const QString& oldUrl, const QString& newUrl, const QString& uniqueid ); //ATF-enable stats
-
+        void atfMigrateStatisticsUrl( const QString& oldUrl, const QString& newUrl, const QString& uniqueid ); //ATF-enable stats
+        void atfMigrateStatisticsUniqueId( const QString& url, const QString& oldid, const QString& newid );
+        
     private:
         //bump DATABASE_VERSION whenever changes to the table structure are made.
         // This erases tags, album, artist, genre, year, images, embed, directory and related_artists tables.
