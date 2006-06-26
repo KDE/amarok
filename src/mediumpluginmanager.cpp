@@ -114,10 +114,11 @@ bool
 MediumPluginManager::detectDevices( bool redetect )
 {
     bool foundNew = false;
-
     KConfig *config = amaroK::config( "MediaBrowser" );
+    if( redetect )
+        DeviceManager::instance()->getDevice( "dummyjusttorerundecop" );
     MediumMap mmap = DeviceManager::instance()->getMediumMap();
-    for ( MediumMap::Iterator it = mmap.begin(); it != mmap.end(); it++ )
+    for( MediumMap::Iterator it = mmap.begin(); it != mmap.end(); it++ )
     {
         if( !config->readEntry( (*it)->id() ).isEmpty() &&
                 config->readEntry( (*it)->id() ) == "deleted" && !redetect)
