@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# This is a convenience script for bumping amaroK's plugin framework version
+# This is a convenience script for bumping Amarok's plugin framework version
 # in the various engine desktop files and in pluginmanager.h.
 #
 # The script should be run once before each release, in order to ensure that
@@ -21,7 +21,7 @@ def bump_desktop_files( folder )
             str = file.read()
             file.rewind()
             file.truncate( 0 )
-            str.sub!( /X-KDE-amaroK-framework-version=[0-9]*/, "X-KDE-amaroK-framework-version=#{@version}" )
+            str.sub!( /X-KDE-Amarok-framework-version=[0-9]*/, "X-KDE-Amarok-framework-version=#{@version}" )
             file << str
             file.close()
         end

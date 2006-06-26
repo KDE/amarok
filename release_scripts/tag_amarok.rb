@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# This script creates a new tag in SVN for amaroK. Upon startup, it asks you for name
+# This script creates a new tag in SVN for Amarok. Upon startup, it asks you for name
 # of the tag to create (e.g. "1.3-beta3"). Please note that the script creates the tag
 # immediately on the live SVN repository.
 #
@@ -46,8 +46,8 @@ end
 
 
 # Copy the files in the repository
-`svn cp -m "Tag amaroK #{tagname}." #{source} #{target}/multimedia`
-`svn cp -m "Tag amaroK #{tagname} - docs." #{docs} #{target}/multimedia/doc`
+`svn cp -m "Tag Amarok #{tagname}." #{source} #{target}/multimedia`
+`svn cp -m "Tag Amarok #{tagname} - docs." #{docs} #{target}/multimedia/doc`
 
 
 print "Tag created.\n"

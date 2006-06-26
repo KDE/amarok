@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# Ruby script for generating amaroK tarball releases from KDE SVN
+# Ruby script for generating Amarok tarball releases from KDE SVN
 #
 # (c) 2005 Mark Kretschmann <markey@web.de>
 # Some parts of this code taken from cvs2dist
@@ -24,7 +24,7 @@ else
     useStableBranch=false
 end
 # Ask user for targeted application version
-version  = `kdialog --inputbox "Enter amaroK version: "`.chomp()
+version  = `kdialog --inputbox "Enter Amarok version: "`.chomp()
 user = `kdialog --inputbox "Your SVN user:"`.chomp()
 protocol = `kdialog --radiolist "Do you use https or svn+ssh?" https https 0 "svn+ssh" "svn+ssh" 1`.chomp()
 
@@ -190,7 +190,7 @@ puts "done.\n"
 
 puts "**** Compressing..  "
 `mv * ..`
-Dir.chdir( ".." ) # amaroK-foo
+Dir.chdir( ".." ) # Amarok-foo
 `rm -rf multimedia`
 Dir.chdir( ".." ) # root folder
 `tar -cf #{folder}.tar #{folder}`
@@ -204,7 +204,7 @@ ENV["UNSERMAKE"] = oldmake
 
 puts "\n"
 puts "====================================================="
-puts "Congratulations :) amaroK #{version} tarball generated.\n"
+puts "Congratulations :) Amarok #{version} tarball generated.\n"
 puts "Now follow the steps in the RELEASE_HOWTO, from\n"
 puts "SECTION 3 onwards.\n"
 puts "\n"
