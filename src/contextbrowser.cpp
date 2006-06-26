@@ -1568,6 +1568,7 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
 
     QString username = AmarokConfig::scrobblerUsername();
     QString userpage = "www.last.fm/user/" + username; // no http.
+    QString albumImage = CollectionDB::instance()->albumImage( currentTrack, true, 1 );
 
     m_HTMLSource.append( QStringx(
             "<div id='current_box' class='box'>\n"
@@ -1577,7 +1578,7 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
             "<table id='current_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>\n"
             "<tr class='box-row'>\n"
             "<td id='current_box-largecover-td'>\n"
-            "<a id='current_box-largecover-a' href='externalurl://%2>\n"
+            "<a id='current_box-largecover-a' href='externalurl://%2'>\n"
             "<img id='current_box-largecover-image' src='%3' title='%4'>\n"
             "</a>\n"
             "</td>\n"
@@ -1601,7 +1602,7 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
             .args( QStringList()
             << escapeHTML( lfm->currentStation() )
             << escapeHTML( userpage )
-            << escapeHTML( amaroK::icon( "audioscrobbler" ) )
+            << escapeHTML( albumImage )
             << escapeHTML( "http://" + userpage )
             << escapeHTML( currentTrack.prettyTitle() )
             << escapeHTML( currentTrack.album() )

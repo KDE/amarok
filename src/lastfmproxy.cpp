@@ -325,7 +325,6 @@ WebService::love() //SLOT
 void
 WebService::skip() //SLOT
 {
-    debug() << "skipping!" << endl;
     QHttp *http = new QHttp( m_baseHost, 80, this );
     connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( skipFinished( int, bool ) ) );
 
