@@ -35,17 +35,21 @@ uri = URI.parse( remote_url )
 
 h = Net::HTTP.new( uri.host, uri.port )
 
-response = h.get( "#{uri.path}?#{uri.query}" ) do |data|
-    if data[0, 4] == "SYNC"
-        data[0, 4] = ""
-        puts( "SYNC" )
+begin
+    response = h.get( "#{uri.path}?#{uri.query}" ) do |data|
+        if data[0, 4] == "SYNC"
+            data[0, 4] = ""
+            puts( "SYNC" )
+        end
+    
+        begin
+            sock.write( data )
+        rescue
+            puts "error from sock.write, #{$!}"
+        end
     end
-
-    begin
-        sock.write( data )
-    rescue
-        break
-    end
+rescue
+    puts "error from gets #{$!}"
 end
 
 
