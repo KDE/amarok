@@ -173,6 +173,9 @@ PlaylistWindow::PlaylistWindow()
     addLastfmMenu->insertItem( i18n( "Neighbor Radio" ), this, SLOT( addLastfmNeighbour() ) );
     addLastfmMenu->insertItem( i18n( "Global Tag Radio" ), addTagRadioMenu );
 
+    playLastfm->setEnabled( ! AmarokConfig::scrobblerUsername().isEmpty() ); //disable if we have no lastfm stream
+    addLastfm ->setEnabled( ! AmarokConfig::scrobblerUsername().isEmpty() ); //disable if we have no lastfm stream
+
     ac->action( "options_configure_globals" )->setText( i18n( "Configure &Global Shortcuts..." ) );
 
     new KAction( i18n( "Previous Track" ), amaroK::icon( "back" ), 0, ec, SLOT( previous() ), ac, "prev" );
