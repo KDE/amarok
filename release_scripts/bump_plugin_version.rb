@@ -16,7 +16,8 @@ def bump_desktop_files( folder )
         next if x[0, 1] == "."
         if FileTest.directory?( "#{folder}/#{x}" )
             print x + "\n"
-            file = File.new( Dir["#{folder}/#{x}/*.desktop"].join(), File::RDWR )
+            files = Dir["#{folder}/#{x}/*.desktop"].delete_if { |a| a.include?( "install.desktop" ) }
+            file = File.new( files.join(), File::RDWR )
             str = file.read()
             file.rewind()
             file.truncate( 0 )
