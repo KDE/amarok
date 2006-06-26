@@ -1561,7 +1561,7 @@ CurrentTrackJob::showHomeByAlbums()
     return albums;
 }
 
-#include <qdeepcopy.h>
+
 void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
 {
     DEBUG_BLOCK
@@ -1572,14 +1572,9 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
     QString userpage = "www.last.fm/user/" + username; // no http.
     const LastFm::Bundle& lastFmInfo = currentTrack.lastFmBundle();
 
-    if( 0/* !lastFmInfo */ )
-    {
-        debug() << "oh shit guys, this ain't no lastfm" << endl;
-        return;
-    }
-    QString imageUrl = QDeepCopy<QString>(lastFmInfo.imageUrl());
+    QString imageUrl = lastFmInfo.imageUrl();
     if( imageUrl.isEmpty() )
-        imageUrl = "file://" + KGlobal::instance()->iconLoader()->iconPath( amaroK::icon( "audioscrobbler" ), -1*KIcon::SizeLarge  );
+        imageUrl = "file://" + KGlobal::instance()->iconLoader()->iconPath( amaroK::icon( "audioscrobbler" ), -KIcon::SizeHuge ).replace( "32x32", "64x64" );
 
     m_HTMLSource.append( QStringx(
             "<div id='current_box' class='box'>\n"
