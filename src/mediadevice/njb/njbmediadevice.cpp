@@ -244,6 +244,7 @@ NjbMediaDevice::openDevice(bool)
 
     if( m_connected )
     {
+        NJB_Set_Unicode( NJB_UC_UTF8 ); // I assume that UTF-8 is fine with everyone...
         readJukeboxMusic();
         QString s = i18n( "1 track found on device",
                           "%n tracks found on device", trackList.size() ).arg( trackList.size() );
@@ -407,7 +408,7 @@ NjbMediaDevice::downloadSelectedItems()
                 }
                 NjbMediaItem *auxItem = dynamic_cast<NjbMediaItem *>( (it) );
                 path +=( "/" + auxItem->getFileName() );
-                if( NJB_Get_Track( m_njb, auxItem->getId(), auxItem->bundle()->filesize(), path.latin1(), progressCallback, this)
+                if( NJB_Get_Track( m_njb, auxItem->getId(), auxItem->bundle()->filesize(), path.utf8(), progressCallback, this)
                     != NJB_SUCCESS )
                 {
                     debug() << "Get Track failed. " << endl;
@@ -454,7 +455,7 @@ NjbMediaDevice::downloadToCollection()
         {
             NjbMediaItem* auxItem = dynamic_cast<NjbMediaItem *>( (it) );
             filepath = path + auxItem->getFileName();
-            if( NJB_Get_Track( m_njb, auxItem->getId(), auxItem->bundle()->filesize(), filepath.latin1(), progressCallback, this)
+            if( NJB_Get_Track( m_njb, auxItem->getId(), auxItem->bundle()->filesize(), filepath.utf8(), progressCallback, this)
                 != NJB_SUCCESS )
             {
                 debug() << "Get Track failed. " << endl;
@@ -522,13 +523,13 @@ NjbMediaDevice::copyTrackToDevice(const MetaBundle& bundle)
     m_progressMessage = "Copying / Sent %1%...";
 
     njb_songid_t* songid = NJB_Songid_New();
-    NJB_Songid_Addframe(songid, NJB_Songid_Frame_New_Filename( bundle.filename().latin1() ) );
+    NJB_Songid_Addframe(songid, NJB_Songid_Frame_New_Filename( bundle.filename().utf8() ) );
     NJB_Songid_Addframe(songid, NJB_Songid_Frame_New_Filesize( taggedTrack->getSize() ));
-    NJB_Songid_Addframe(songid, NJB_Songid_Frame_New_Codec( taggedTrack->getCodec().latin1() ));
-    NJB_Songid_Addframe(songid, NJB_Songid_Frame_New_Title( taggedTrack->getTitle().latin1() ));
-    NJB_Songid_Addframe(songid, NJB_Songid_Frame_New_Album(taggedTrack->getAlbum().latin1()));
-    NJB_Songid_Addframe(songid, NJB_Songid_Frame_New_Genre(taggedTrack->getGenre().latin1()));
-    NJB_Songid_Addframe(songid, NJB_Songid_Frame_New_Artist(taggedTrack->getArtist().latin1()));
+    NJB_Songid_Addframe(songid, NJB_Songid_Frame_New_Codec( taggedTrack->getCodec().utf8() ));
+    NJB_Songid_Addframe(songid, NJB_Songid_Frame_New_Title( taggedTrack->getTitle().utf8() ));
+    NJB_Songid_Addframe(songid, NJB_Songid_Frame_New_Album(taggedTrack->getAlbum().utf8()));
+    NJB_Songid_Addframe(songid, NJB_Songid_Frame_New_Genre(taggedTrack->getGenre().utf8()));
+    NJB_Songid_Addframe(songid, NJB_Songid_Frame_New_Artist(taggedTrack->getArtist().utf8()));
     NJB_Songid_Addframe(songid, NJB_Songid_Frame_New_Length(taggedTrack->getDuration()));
     NJB_Songid_Addframe(songid, NJB_Songid_Frame_New_Tracknum(taggedTrack->getTrackNum()));
     NJB_Songid_Addframe(songid, NJB_Songid_Frame_New_Year(taggedTrack->getYear().toUInt()));
@@ -536,7 +537,7 @@ NjbMediaDevice::copyTrackToDevice(const MetaBundle& bundle)
     m_busy = true;
     debug() << ": m_njb is " << m_njb << "\n";
     kapp->processEvents( 100 );
-    if(NJB_Send_Track (m_njb, bundle.url().path().latin1(), songid, progressCallback, this, &id) != NJB_SUCCESS)
+    if(NJB_Send_Track (m_njb, bundle.url().path().utf8(), songid, progressCallback, this, &id) != NJB_SUCCESS)
     {
         debug() << ": NJB_Send_Track failed\n";
         if (NJB_Error_Pending(m_njb))
