@@ -274,7 +274,8 @@ WebService::metaDataFinished( int /*id*/, bool error ) //SLOT
     Bundle lastFmStuff;
     QString imageUrl = parameter( "albumcover_small", result );
     //debug() << "sending: " << imageUrl << ' ' << ((imageUrl == "http://static.last.fm/coverart/" ) ? "null": imageUrl) << endl;
-    lastFmStuff.setImageUrl( ( (imageUrl == "http://static.last.fm/coverart/" ) ? QString::null : imageUrl ) );
+    lastFmStuff.setImageUrl( ( (imageUrl == "http://static.last.fm/coverart/" || imageUrl == "http://static.last.fm/depth/catalogue/no_album_small.gif" )
+         ? QString::null : imageUrl ) );
     lastFmStuff.setArtistUrl( parameter( "artist_url", result )   );
     lastFmStuff.setAlbumUrl( parameter( "album_url", result ) );
     bundle.setLastFmBundle( lastFmStuff );
