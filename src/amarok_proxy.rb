@@ -28,7 +28,7 @@ sock = serv.accept
 
 puts( "connected" )
 
-sock.puts( "HTTP/1.0 200 Ok\r\nContent-Type: audio/x-mp3; charset=\"utf-8\"\r\n\r\n" )
+sock.write( "HTTP/1.0 200 Ok\r\nContent-Type: audio/x-mp3; charset=\"utf-8\"\r\n\r\n" )
 
 
 uri = URI.parse( remote_url )
@@ -41,15 +41,16 @@ begin
             data[0, 4] = ""
             puts( "SYNC" )
         end
-    
+
         begin
             sock.write( data )
         rescue
-            puts "error from sock.write, #{$!}"
+            puts( "error from sock.write, #{$!}" )
+            break
         end
     end
 rescue
-    puts "error from gets #{$!}"
+    puts( "error from get, #{$!}" )
 end
 
 
