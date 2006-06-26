@@ -1561,6 +1561,7 @@ CurrentTrackJob::showHomeByAlbums()
     return albums;
 }
 
+#include <qdeepcopy.h>
 void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
 {
     DEBUG_BLOCK
@@ -1576,7 +1577,7 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
         debug() << "oh shit guys, this ain't no lastfm" << endl;
         return;
     }
-    QString imageUrl = lastFmInfo->imageUrl();
+    QString imageUrl = QDeepCopy<QString>(lastFmInfo->imageUrl());
     if( imageUrl.isEmpty() )
         imageUrl = "file://" + KGlobal::instance()->iconLoader()->iconPath( amaroK::icon( "audioscrobbler" ), -1*KIcon::SizeLarge  );
 
@@ -1612,7 +1613,7 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
             .args( QStringList()
             << escapeHTML( lfm->currentStation() )
             << escapeHTML( userpage )
-            << escapeHTML( imageUrl )
+            << imageUrl 
             << escapeHTML( "http://" + userpage )
             << escapeHTML( currentTrack.prettyTitle() )
             << escapeHTML( currentTrack.album() )
