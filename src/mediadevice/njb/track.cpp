@@ -19,176 +19,195 @@
 static const char* rcsid __attribute__((unused)) =
 "$Id: track.cpp,v 1.10.2.8 2005/07/05 00:25:09 acejones Exp $";
 
-
-// qt
-#include <qregexp.h>
-#include <qptrlist.h>
-
-// kde
-#include <kdebug.h>
-
-// libid3
-// #include <id3/tag.h>
-// #include <id3/misc_support.h>
-// #include <id3/globals.h>
-
-// kionjb
 #include "debug.h"
 #include "track.h"
 #include "njbmediadevice.h"
 
+#include <qregexp.h>
+#include <qptrlist.h>
 
-#ifdef HAVE_SQLITE
-// sqlite
-#include "sqlite.h"
-#endif
 
-/* ------------------------------------------------------------------------ */
-NjbTrack::NjbTrack( char** result)
-{
-    id = atoi( result[ 0]);
-    size = atoi( result[ 1]);
-    duration = atoi( result[ 2]);
-    tracknum = atoi( result[ 3]);
-    genre = result[ 4];
-    // Form genre : remove starting and ending parenthesis and convert to
-    //	genre name. Ex : (35) -> "House"
-    genre.remove(0, 1);
-    genre.remove((int)(genre.length()-1), 1);
-    // genre = ID3_v1_genre_description[genre.toInt()];
-    artist = result[ 5];
-    album = result[ 6];
-    title = result[ 7];
-    codec = result[ 8];
-    filename = result[ 9];
-    //FIXME support de year
-}
 
 
 /* ------------------------------------------------------------------------ */
 NjbTrack::NjbTrack( njb_songid_t* song)
 {
 
-
     njb_songid_frame_t* frame;
-
-    id = song->trid;
-
-    frame = NJB_Songid_Findframe( song, FR_SIZE);
-     //	kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_SIZE);" << endl;
+    
+    m_id = song->trid;
+    
+    MetaBundle *bundle = new MetaBundle();
+    frame = NJB_Songid_Findframe( song, FR_SIZE );
     if ( frame->type == NJB_TYPE_UINT32 )
-        size = frame->data.u_int32_val;
+        bundle->setFilesize( frame->data.u_int32_val );
     else
     {
-        size = 0;
-        error() << " Unexpected frame type:" << frame->type << endl;
+        bundle->setFilesize( 0 );
+    error() << " Unexpected frame type:" << frame->type << endl;
     }
-
-    frame = NJB_Songid_Findframe( song, FR_LENGTH);
-    // kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_LENGTH);" << endl;
+    
+    frame = NJB_Songid_Findframe( song, FR_LENGTH );
     if ( frame->type == NJB_TYPE_UINT16 )
-        duration = frame->data.u_int16_val;
+        bundle->setLength( frame->data.u_int16_val );
     else
     {
-        duration = 0;
-        error() << " Unexpected frame type:" << frame->type << endl;
+        bundle->setLength( 0 );
+    error() << " Unexpected frame type:" << frame->type << endl;
     }
-
-    frame = NJB_Songid_Findframe( song, FR_GENRE);
-    // kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_GENRE);" << endl;
-    if( frame) {
-        genre = QCString( frame->data.strval);
-        // Form genre : remove starting and ending parenthesis and convert to 
-        //	genre name	(ex : (35) -> "House")
-        //if( genre.startsWith( "(") && genre.endsWith( ")")) {
-        //	genre.remove(0, 1);
-        //	genre.remove((int)(genre.length()-1), 1);
-        //	genre = ID3_v1_genre_description[genre.toInt()];
-        //}
-    } else
-        genre = "(none)";
-
-    frame = NJB_Songid_Findframe( song, FR_ARTIST);
-    // kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_ARTIST);" << endl;
-    if( frame) {
-        artist = QCString( frame->data.strval);
-        artist.replace( QRegExp( "/"), "-");
+    
+    frame = NJB_Songid_Findframe( song, FR_GENRE );
+    if( frame )
+    {
+        bundle->setGenre( AtomicString( frame->data.strval ) );
     }
-
-    frame = NJB_Songid_Findframe( song, FR_ALBUM);
-    // kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_ALBUM);" << endl;
-    if( frame) {
-        album = QCString( frame->data.strval);
-        album.replace( QRegExp( "/"), "-");
-    } else
-        album = "<Unknown>";
-
+    
+    frame = NJB_Songid_Findframe( song, FR_ARTIST );
+    if( frame )
+    {
+        QString artist = frame->data.strval;
+        artist.replace( QRegExp( "/" ), "-" );
+        bundle->setArtist( artist );
+    }
+    else
+        bundle->setArtist( QString("Unknown artist") );
+    
+    frame = NJB_Songid_Findframe( song, FR_ALBUM );
+    if( frame)
+    {
+        QString album = frame->data.strval;
+        album.replace( QRegExp( "/" ), "-" );
+        bundle->setAlbum( album );
+    }
+    else
+        bundle->setAlbum( QString("Unknown album") );
+    
     frame = NJB_Songid_Findframe( song, FR_TITLE);
-    // kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_TITLE);" << endl;
-    if( frame) {
-        title = QCString( frame->data.strval);
+    if( frame )
+    {
+        QString title = frame->data.strval;
         title.replace( QRegExp( "/"), "-");
+        bundle->setTitle( title );
     }
-
-    frame = NJB_Songid_Findframe( song, FR_TRACK);
-    // kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_TRACK);" << endl;
-    if( frame) 
+    else
+        bundle->setTitle( "Unknown title" );
+    
+    frame = NJB_Songid_Findframe( song, FR_TRACK );
+    if( frame )
     {
         switch ( frame->type )
         {
         case NJB_TYPE_UINT16:
-            tracknum = frame->data.u_int16_val;
+            bundle->setTrack( frame->data.u_int16_val );
             break;
         case NJB_TYPE_UINT32:
-            tracknum = frame->data.u_int32_val;
+            bundle->setTrack( frame->data.u_int32_val );
             break;
         case NJB_TYPE_STRING:
-            tracknum = QString(frame->data.strval).toUInt();
+            bundle->setTrack( QString(frame->data.strval).toUInt() );
             break;
         default:
-            tracknum = 0;
-     // debug() << ": unknown data type returnd for FR_TRACK;" << endl;
+            bundle->setTrack( 0 );
         }
     }
-
+    
+    QString codec;
     frame = NJB_Songid_Findframe( song, FR_CODEC);
-    if( frame)
+    if( frame )
+    {
         codec = QCString( frame->data.strval).lower();
+        if( codec == "mp3" )
+            bundle->setFileType( MetaBundle::mp3 );
+        else if (codec == "wma" )
+            bundle->setFileType( MetaBundle::wma );
+        else
+            bundle->setFileType( MetaBundle::other ); // It's a wav...
+    }
     else
-        codec = "mp3";
-
-    // kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_CODEC): " << codec << endl;
-
-    frame = NJB_Songid_Findframe( song, FR_FNAME);
-    if( frame)
-        filename = QCString(  frame->data.strval);
-    else
-        filename = artist + " - " + title + "." + codec;
-    // kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_FNAME): " << filename << endl;
-
-    frame = NJB_Songid_Findframe( song, FR_YEAR);
-    // kdDebug( 7182) << "frame = NJB_Songid_Findframe( song, FR_YEAR);" << endl;
-    if( frame) 
+    {
+        bundle->setFileType( MetaBundle::mp3 ); //Assumed...
+        codec = "mp3"; // Used for the next frame as a fallback
+    }
+    
+    frame = NJB_Songid_Findframe( song, FR_FNAME );
+    QString filename;
+    if( frame )
+    {
+        //bundle->setUrl( KURL( frame->data.strval ) );
+        filename = frame->data.strval;
+        
+    }
+    if( filename == "" )
+    {
+        //bundle->setUrl( bundle->artist() + " - " + bundle->title() + "." + codec );
+        filename = bundle->artist() + " - " + bundle->title() + "." + codec;
+        
+    }
+    bundle->setPath( filename );
+    debug() << bundle->filename() << endl;
+    
+    frame = NJB_Songid_Findframe( song, FR_YEAR );
+    if( frame )
     {
         switch ( frame->type )
         {
         case NJB_TYPE_UINT16:
-            year = QString::number(frame->data.u_int16_val).utf8();
+            bundle->setYear( frame->data.u_int16_val );
             break;
         case NJB_TYPE_UINT32:
-            year = QString::number(frame->data.u_int32_val).utf8();
+            bundle->setYear( frame->data.u_int32_val );
             break;
         case NJB_TYPE_STRING:
-            year = QCString(frame->data.strval);
+            bundle->setYear( QString( frame->data.strval ).toInt() );
             break;
         default:
-            year = "0";
-    // debug() << ": unknown data type returnd for FR_YEAR;" << endl;
+            bundle->setYear( 0 );
         }
     }
-    // debug() << ": OK" << endl;
+    this->setBundle( *bundle );
+/*    debug() << "title: " << bundle->title()
+            << "artist: " << bundle->artist()
+            << "album: " << bundle->album()
+    << endl;*/
 }
 
+void
+NjbTrack::writeToSongid( njb_songid_t *songid )
+{
+    NJB_Songid_Addframe( songid, NJB_Songid_Frame_New_Filename( m_bundle.filename().utf8() ) );
+    NJB_Songid_Addframe( songid, NJB_Songid_Frame_New_Filesize( m_bundle.filesize() ) );
+    NJB_Songid_Addframe( songid, NJB_Songid_Frame_New_Codec( "mp3" ) ); //for now
+    NJB_Songid_Addframe( songid, NJB_Songid_Frame_New_Title( m_bundle.title().utf8() ) );
+    NJB_Songid_Addframe( songid, NJB_Songid_Frame_New_Album( m_bundle.album().ptr()->utf8() ) );
+    NJB_Songid_Addframe( songid, NJB_Songid_Frame_New_Genre( m_bundle.genre().ptr()->utf8() ) );
+    NJB_Songid_Addframe( songid, NJB_Songid_Frame_New_Artist( m_bundle.artist().ptr()->utf8() ) );
+    NJB_Songid_Addframe( songid, NJB_Songid_Frame_New_Length( m_bundle.length() ) );
+    NJB_Songid_Addframe( songid, NJB_Songid_Frame_New_Tracknum( m_bundle.track() ) );
+    NJB_Songid_Addframe( songid, NJB_Songid_Frame_New_Year( m_bundle.year() ) );
+}
+
+njb_songid_t *
+NjbTrack::newSongid()
+{
+    njb_songid_t *songid = new njb_songid_t;
+    writeToSongid( songid );
+    return songid;
+}
+
+void
+NjbTrack::setBundle( MetaBundle &bundle )
+{
+    if( bundle.title() == "" )
+        bundle.setTitle( QString( "Unknown title" ) );
+    if( bundle.artist() == "" )
+        bundle.setArtist( QString( "Unknown" ) );
+    if( bundle.album() == "" )
+        bundle.setAlbum( QString( "Unknown" ) );
+    if( bundle.genre() == "" )
+        bundle.setGenre( QString( "Unknown" ) );
+    
+    m_bundle = bundle;
+}
 
 /* ------------------------------------------------------------------------ */
 trackValueList::iterator 
@@ -196,21 +215,24 @@ trackValueList::findTrackByName( const QString& _filename )
 {
     trackValueList::iterator it;
     for( it = begin(); it != end(); it++)
-        if( (*it).getFilename() == _filename) 
+        if( (*it)->bundle()->url().path() == _filename)
             break;
     return it;
 }
 
 /* ------------------------------------------------------------------------ */
-trackValueList::const_iterator 
-trackValueList::findTrackByName( const QString& _filename ) const
-{
-    trackValueList::const_iterator it;
-    for( it = begin(); it != end(); it++)
-        if( (*it).getFilename() == _filename) 
-            break;
-    return it;
-}
+// trackValueList::const_iterator 
+// trackValueList::findTrackByName( const QString& _filename ) const
+// {
+//     trackValueList::const_iterator it;
+//     for( it = begin(); it != end(); it++)
+//     {
+//         MetaBundle bundle = ( ( *it ).getBundle() );
+//         if( (*it).getFilename() == _filename)
+//             break;
+//     }
+//     return it;
+// }
 
 /* ------------------------------------------------------------------------ */
 trackValueList::iterator 
@@ -218,7 +240,7 @@ trackValueList::findTrackById( unsigned _id )
 {
     trackValueList::iterator it;
     for( it = begin(); it != end(); it++)
-        if( (*it).getId() == _id) 
+        if( (*it)->id() == _id)
             break;
     return it;
 }
@@ -229,7 +251,7 @@ trackValueList::findTrackById( unsigned _id ) const
 {
     trackValueList::const_iterator it;
     for( it = begin(); it != end(); it++)
-        if( (*it).getId() == _id) 
+        if( (*it)->id() == _id)
             break;
     return it;
 }
@@ -239,114 +261,24 @@ trackValueList::findTrackById( unsigned _id ) const
 int
 trackValueList::readFromDevice( void )
 {
-
-
-    // ONLY read in from the device if this list is empty. 
-    // 
-    // Support for cache:
-    // - If the sqlite cache exists, and it's up-to-date with the device:
-    //     Read from the cache instead of the device
-#ifdef HAVE_SQLITE
-
-    // if the libcounter is 0, we need to reread the cache no matter what
-    unsigned long cachecounter = 0;
-    char* errmsg;
-    char** result;
-    int nrow, ncolumn;
-    sqlite* m_db;
-
-    unsigned long counter = NJB_Get_NJB1_Libcounter( NjbMediaDevice::theNjb());
-    if ( !counter )
-        goto nocache;
-
-    // Open up the tracks db, if it's there
-    m_db = sqlite_open("tracks.db",0,&errmsg);
-    if ( errmsg )
-    {
-        debug() << ": cache file not used, " << errmsg << endl;
-        free(errmsg);
-        goto nocache;
-    }
-
-    // Fetch the cache counter from the file
-    sqlite_get_table( m_db, "SELECT value from etc WHERE key == 'counter'", &result, &nrow, &ncolumn, &errmsg );
-    if ( errmsg )
-    {
-        sqlite_free_table(result);
-        debug() << ": cache file not used, " << errmsg << endl;
-        goto nocache;
-    }
-
-    // Compare the cache counter versus the device counter
-    if ( nrow )
-        cachecounter = QString(result[1]).toULong();
-    if ( counter != cachecounter )
-    {
-        debug() << ": cache file not used, counter=" << counter << ", cache=" << cachecounter << endl;
-        goto nocache;
-    }
-
-    // Load from the cache
-
-nocache:
-#endif	
-    // Load from the device
-    int i = 0;
-    // Don't get extended metadatas
+    DEBUG_BLOCK
     debug() << ": NjbMediaDevice::theNjb() is:" << NjbMediaDevice::theNjb() << endl;
+    int i = 0;
+    
+    // Don't get extended metadatas
+    
     NJB_Get_Extended_Tags(NjbMediaDevice::theNjb(), 0);
     NJB_Reset_Get_Track_Tag( NjbMediaDevice::theNjb());
-    while( njb_songid_t* song = NJB_Get_Track_Tag( NjbMediaDevice::theNjb())) {
-        //FIXME (acejones) Make this a signal
-        // 		infoMessage( i18n( "Downloading track %1...").arg( i++));
-        append( NjbTrack(song));
-        NJB_Songid_Destroy( song);
+    while( njb_songid_t* song = NJB_Get_Track_Tag( NjbMediaDevice::theNjb()))
+    {
+        NjbTrack *track = new NjbTrack( song );
+        append( track );
+        NJB_Songid_Destroy( song );
+        //debug() << track->bundle()->title() << " " << track->bundle()->artist() << " " << track->bundle()->album() << endl;
+
         ++i;
     }
     debug() << ": " << i << " jukebox tracks loaded from device." << endl;
 
-#ifdef HAVE_SQLITE
-    // Support for cache:
-    // - After reading from device, wipe and rebuild cache
-
-    // Open up the tracks db, if it's there
-    m_db = sqlite_open("tracks.db",0,&errmsg);
-    if ( errmsg )
-    {
-        debug() << ": Unable to create db file, " << errmsg << endl;
-        free(errmsg);
-        goto done;
-    }
-
-done:
-#endif
     return NJB_SUCCESS;
-}
-
-MetaBundle*
-NjbTrack::getMetaBundle( )
-{
-    MetaBundle *bundle = new MetaBundle();
-    // 	unsigned id;
-    // 	unsigned size;
-    // 	unsigned duration;
-    // 	unsigned tracknum;
-    // 	QString year;
-    // 	QString genre;
-    // 	QString artist;
-    // 	QString album;
-    // 	QString title;
-    // 	QString codec;
-    // 	QString filename;
-
-    bundle->setAlbum( album);
-    bundle->setArtist( artist);
-    bundle->setFilesize( size);
-    bundle->setLength( duration);
-    bundle->setTrack( tracknum);
-    bundle->setYear( year.toInt());
-    bundle->setGenre( genre);
-    bundle->setTitle( title);
-    //	bundle->setPath( filename );
-    return bundle;
 }

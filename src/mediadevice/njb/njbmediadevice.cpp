@@ -1,4 +1,4 @@
-//
+// //
 // C++ Implementation: njbmediadevice
 //
 // Description: This class is used to manipulate Nomad Creative Jukebox and others media player that works with the njb libraries.
@@ -18,13 +18,13 @@ AMAROK_EXPORT_PLUGIN( NjbMediaDevice )
 
 
 // Amarok
-#include <debug.h>
-#include <metabundle.h>
-#include <collectiondb.h>
-#include <statusbar/statusbar.h>
-#include <statusbar/popupMessage.h>
 #include <collectiondb.h>
 #include <collectionbrowser.h>
+#include <debug.h>
+#include <metabundle.h>
+#include <statusbar/statusbar.h>
+#include <statusbar/popupMessage.h>
+
 
 // KDE
 #include <kapplication.h>
@@ -44,6 +44,7 @@ AMAROK_EXPORT_PLUGIN( NjbMediaDevice )
 // Qt
 #include <qdir.h>
 #include <qlistview.h>
+#include <qregexp.h>
 #include <quuid.h>
 
 // posix
@@ -63,37 +64,6 @@ const int NJB_HANDLED = -1;
 
 
 trackValueList* theTracks = 0;
-
-class NjbMediaItem : public MediaItem
-{
-    public:
-        NjbMediaItem( QListView *parent, QListViewItem *after = 0 )
-            : MediaItem( parent, after )
-        {isdownload = false;}
-
-        NjbMediaItem( QListViewItem *parent, QListViewItem *after = 0 )
-            : MediaItem( parent, after )
-        {isdownload=false;}
-
-        void setId(unsigned id) {trid=id;}
-
-        unsigned getId() {return trid;}
-
-        QString getFileName() {return filename;}
-
-        void setFileName(QString name) {filename = name;}
-
-        void setIsDownloadItem(bool d) {isdownload = d;}
-
-        bool IsDownloadItem() {return isdownload;}
-
-    private:
-
-        unsigned trid;
-        QString filename;
-        bool isdownload;
-};
-
 
 NjbMediaDevice::NjbMediaDevice(): MediaDevice()
 {
@@ -250,7 +220,6 @@ NjbMediaDevice::openDevice(bool)
                           "%n tracks found on device", trackList.size() ).arg( trackList.size() );
         amaroK::StatusBar::instance()->shortMessage( s );
     }
-
     return true;
 
 }
@@ -274,6 +243,7 @@ NjbMediaDevice::deleteFromDevice(unsigned id)
 int
 NjbMediaDevice::deleteItemFromDevice(MediaItem* item, bool onlyPlayed)
 {
+    DEBUG_BLOCK
     Q_UNUSED(onlyPlayed)
     int result = 0;
     if ( isCancelled() )
@@ -326,23 +296,18 @@ NjbMediaDevice::deleteItemFromDevice(MediaItem* item, bool onlyPlayed)
 int
 NjbMediaDevice::deleteTrack(NjbMediaItem *trackItem)
 {
-    if(trackItem->IsDownloadItem())
-    {
-        delete trackItem;
-        return 1;
-    }
-
-    int status = NJB_Delete_Track( m_njb, trackItem->getId());
+    int status = NJB_Delete_Track( m_njb, trackItem->track()->id() );
 
     if( status != NJB_SUCCESS) {
         debug() << ": NJB_Delete_Track failed" << endl;
+//        amaroK::StatusBar::instance()->shortLongMessage( i18n( "Deleting failed" ), i18n( "Deleting track(s) failed." ), KDE::StatusBar::Error );
         return -1;
     }
 
     debug() << ": NJB_Delete_Track track deleted" << endl;
 
     // remove from the cache
-    trackList.remove(trackList.findTrackById( trackItem->getId() ) );
+    trackList.remove(trackList.findTrackById( trackItem->track()->id() ) );
     delete trackItem;
     return 1;
 }
@@ -407,8 +372,10 @@ NjbMediaDevice::downloadSelectedItems()
                     dir.mkdir( path );
                 }
                 NjbMediaItem *auxItem = dynamic_cast<NjbMediaItem *>( (it) );
-                path +=( "/" + auxItem->getFileName() );
-                if( NJB_Get_Track( m_njb, auxItem->getId(), auxItem->bundle()->filesize(), path.utf8(), progressCallback, this)
+                path +=( "/" + auxItem->bundle()->filename() );
+                
+                debug() << path << endl;
+                if( NJB_Get_Track( m_njb, auxItem->track()->id(), auxItem->bundle()->filesize(), path.utf8(), progressCallback, this)
                     != NJB_SUCCESS )
                 {
                     debug() << "Get Track failed. " << endl;
@@ -445,8 +412,8 @@ NjbMediaDevice::downloadToCollection()
     QPtrList<MediaItem> items;
     m_view->getSelectedLeaves( 0, &items );
 
-    KTempDir tempdir(QString::null); // Default prefix is fine with us
-    tempdir.setAutoDelete(true); // We don't need it once the work is done.
+    KTempDir tempdir( QString::null ); // Default prefix is fine with us
+    tempdir.setAutoDelete( true ); // We don't need it once the work is done.
     QString path = tempdir.name(), filepath;
     KURL::List urls;
     for( MediaItem *it = items.first(); it; it = items.next() )
@@ -454,8 +421,11 @@ NjbMediaDevice::downloadToCollection()
         if( (it->type() == MediaItem::TRACK) )
         {
             NjbMediaItem* auxItem = dynamic_cast<NjbMediaItem *>( (it) );
-            filepath = path + auxItem->getFileName();
-            if( NJB_Get_Track( m_njb, auxItem->getId(), auxItem->bundle()->filesize(), filepath.utf8(), progressCallback, this)
+            QString track_id;
+            track_id.setNum( auxItem->track()->id() );
+            filepath = path + auxItem->bundle()->url().path();
+
+            if( NJB_Get_Track( m_njb, auxItem->track()->id(), auxItem->bundle()->filesize(), filepath.utf8(), progressCallback, this)
                 != NJB_SUCCESS )
             {
                 debug() << "Get Track failed. " << endl;
@@ -468,7 +438,7 @@ NjbMediaDevice::downloadToCollection()
                 else
                     debug() << "No reason to report for failure" << endl;
             }
-            urls << path+auxItem->getFileName();
+            urls << filepath;
         }
     }
     // Now, call the collection organizer.
@@ -484,7 +454,7 @@ NjbMediaDevice::copyTrackToDevice(const MetaBundle& bundle)
     trackValueList::const_iterator it_track = theTracks->findTrackByName( bundle.filename() );
     if( it_track != theTracks->end() )
     {
-        deleteFromDevice( (*it_track).getId() );
+        deleteFromDevice( (*it_track)->id() );
     }
 
     // read the mp3 header
@@ -496,44 +466,29 @@ NjbMediaDevice::copyTrackToDevice(const MetaBundle& bundle)
         m_errMsg = i18n( "Not a valid mp3 file");
         return 0;
     }
+    MetaBundle temp( bundle ); 
 
     NjbTrack *taggedTrack = new NjbTrack();
-    taggedTrack->setSize( bundle.filesize() );
-    taggedTrack->setDuration( bundle.length() );
-    taggedTrack->setFilename( bundle.filename() );
-    taggedTrack->setTitle( bundle.title() );
-    taggedTrack->setGenre( bundle.genre() );
-    taggedTrack->setArtist( bundle.artist() );
-    taggedTrack->setAlbum( bundle.album() );
-    taggedTrack->setCodec( "mp3" );
-    taggedTrack->setTrackNum( bundle.track() );
-    taggedTrack->setYear( QString::number( bundle.year() ) );
 
-    // send the track
-    // totalSize( taggedTrack.getSize() );
-    debug() << "copyTrack: sending..." << endl;
-    debug() << "copyTrack: "
-        << taggedTrack->getTitle() << " " << taggedTrack->getAlbum() << " "
-        << taggedTrack->getGenre() << " "
-        << "size:" << taggedTrack->getSize() << " "
-        << taggedTrack->getArtist() << endl;
+    taggedTrack->setBundle( temp );
+
+//  I doubt we're using the below debugs at all, anymore.
+//
+//     // send the track
+//     // totalSize( taggedTrack.getSize() );
+//     debug() << "copyTrack: sending..." << endl;
+//     debug() << "copyTrack: "
+//         << taggedTrack->title() << " " << taggedTrack->getAlbum() << " "
+//         << taggedTrack->genre() << " "
+//         << "size:" << taggedTrack->getSize() << " "
+//         << taggedTrack->getArtist() << endl;
 
     u_int32_t id;
     m_progressStart = time( 0);
     m_progressMessage = "Copying / Sent %1%...";
 
     njb_songid_t* songid = NJB_Songid_New();
-    NJB_Songid_Addframe(songid, NJB_Songid_Frame_New_Filename( bundle.filename().utf8() ) );
-    NJB_Songid_Addframe(songid, NJB_Songid_Frame_New_Filesize( taggedTrack->getSize() ));
-    NJB_Songid_Addframe(songid, NJB_Songid_Frame_New_Codec( taggedTrack->getCodec().utf8() ));
-    NJB_Songid_Addframe(songid, NJB_Songid_Frame_New_Title( taggedTrack->getTitle().utf8() ));
-    NJB_Songid_Addframe(songid, NJB_Songid_Frame_New_Album(taggedTrack->getAlbum().utf8()));
-    NJB_Songid_Addframe(songid, NJB_Songid_Frame_New_Genre(taggedTrack->getGenre().utf8()));
-    NJB_Songid_Addframe(songid, NJB_Songid_Frame_New_Artist(taggedTrack->getArtist().utf8()));
-    NJB_Songid_Addframe(songid, NJB_Songid_Frame_New_Length(taggedTrack->getDuration()));
-    NJB_Songid_Addframe(songid, NJB_Songid_Frame_New_Tracknum(taggedTrack->getTrackNum()));
-    NJB_Songid_Addframe(songid, NJB_Songid_Frame_New_Year(taggedTrack->getYear().toUInt()));
-
+    taggedTrack->writeToSongid( songid );
     m_busy = true;
     debug() << ": m_njb is " << m_njb << "\n";
     kapp->processEvents( 100 );
@@ -561,7 +516,7 @@ NjbMediaDevice::copyTrackToDevice(const MetaBundle& bundle)
     taggedTrack->setId( id );
 
     // cache the track
-    trackList.append( *taggedTrack );;
+    trackList.append( taggedTrack );;
 
     //TODO: Construct a MediaItem
 
@@ -673,7 +628,9 @@ NjbMediaDevice::removeConfigElements(QWidget* arg1)
 
 MediaItem *
 NjbMediaDevice::trackExists( const MetaBundle & bundle )
-{/*
+{
+    Q_UNUSED( bundle )
+    /*
     for( MediaItem *item = dynamic_cast<MediaItem *>( m_view->firstChild() );
          item;
          item = dynamic_cast<MediaItem *>( item->nextSibling() ) )
@@ -777,6 +734,7 @@ NjbMediaDevice::clearItems()
 int
 NjbMediaDevice::readJukeboxMusic( void)
 {
+//    DEBUG_BLOCK
     int result = NJB_SUCCESS;
 
     // First, read jukebox tracks
@@ -799,14 +757,11 @@ NjbMediaDevice::readJukeboxMusic( void)
         trackValueList::iterator it;
         for( it = trackList.begin(); it != trackList.end(); it++)
         {
-
-            addTrackToView( &(*it) );
+            addTrackToView( (*it) );
 
             kapp->processEvents( 100 );
         }
-
     }
-
 
     debug() << ": return " << result << endl;
     return result;
@@ -815,8 +770,10 @@ NjbMediaDevice::readJukeboxMusic( void)
 NjbMediaItem *
 NjbMediaDevice::addTrackToView(NjbTrack *track, NjbMediaItem *item)
 {
+    //DEBUG_BLOCK
     QString artistName;
-    artistName = track->getArtist();
+//    debug() << track->bundle()->title() << " " << track->bundle()->artist() << " " << track->bundle()->album() << endl;
+    artistName = track->bundle()->artist();
 
     NjbMediaItem *artist = getArtist(artistName);
     if(!artist)
@@ -826,7 +783,7 @@ NjbMediaDevice::addTrackToView(NjbTrack *track, NjbMediaItem *item)
         artist->setType( MediaItem::ARTIST );
     }
 
-    QString albumName = track->getAlbum();
+    QString albumName = track->bundle()->album();
     NjbMediaItem *album = (NjbMediaItem*)artist->findItem(albumName);
     if(!album)
     {
@@ -841,13 +798,14 @@ NjbMediaDevice::addTrackToView(NjbTrack *track, NjbMediaItem *item)
     {
         item = new NjbMediaItem( album );
 
-        QString titleName = track->getTitle();
+        QString titleName = track->bundle()->title();
+        item->setTrack( track );
 
         item->setText( 0, titleName );
         item->setType( MediaItem::TRACK );
-        item->setBundle( track->getMetaBundle());
-        item->setId( track->getId() );
-        item->setFileName( track->getFilename() );
+        item->setBundle( track->bundle() );
+        item->track()->setId( track->id() );
+    //    debug() << "Track added: " << item->bundle()->title() << " - " << item->bundle()->artist() << " on " << item->bundle()->album() << endl;
     }
     return item;
 
@@ -870,6 +828,7 @@ NjbMediaDevice::getArtist(const QString &artist)
 NjbMediaItem *
 NjbMediaDevice::getAlbum(const QString &artist, const QString &album)
 {
+    DEBUG_BLOCK
     NjbMediaItem *item = getArtist(artist);
     if(item)
         return dynamic_cast<NjbMediaItem *>(item->findItem(album));

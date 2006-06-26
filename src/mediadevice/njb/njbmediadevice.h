@@ -50,8 +50,26 @@ const int NJB_FAILURE = -1;
 // Global track list
 extern trackValueList* theTracks;
 
-class NjbMediaItem;
+class NjbMediaItem : public MediaItem
+{
+    public:
+        NjbMediaItem( QListView *parent, QListViewItem *after = 0 ) : MediaItem( parent, after )
+        {}
 
+        NjbMediaItem( QListViewItem *parent, QListViewItem *after = 0 ) : MediaItem( parent, after )
+        {}
+
+        ~NjbMediaItem()
+        {
+            m_track->remove(this);
+        }
+        
+        void setTrack( NjbTrack *track ) { m_track = track; }
+        NjbTrack *track() { return m_track; }
+        QString filename() { return m_track->bundle()->url().path(); }
+    private:
+        NjbTrack *m_track;
+};
 class NjbMediaDevice : public MediaDevice
 {
     Q_OBJECT
