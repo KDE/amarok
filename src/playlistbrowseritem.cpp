@@ -1696,7 +1696,7 @@ PodcastFetcher::PodcastFetcher( QString url, const KURL &directory ):
     connect(m_http, SIGNAL( done( bool ) ), this, SLOT( slotDone( bool ) ) );
    // connect( m_http, SIGNAL( dataTransferProgress ( int, int, QNetworkOperation * ) ), this, SLOT( slotProgress( int, int ) ) );
     connect( m_http, SIGNAL(  dataReadProgress ( int, int ) ), this, SLOT( slotProgress( int, int ) ) );
-    
+
     fetch( );
 }
 
@@ -1713,9 +1713,12 @@ void PodcastFetcher::fetch()
         int i = 1;
         while( file.exists() )
         {
-            QString newName = QString::number(i);
-            newName.append( baseName );
-            debug() << baseName << " now " << newName << " with full " << file.dirPath(true) + newName << endl;
+            QString newName = baseName;
+            QString ext = file.extension();
+            //Insert number right before the extension: podcast.mp3 > podcast_1.mp3
+            int index = newName.findRev( ext, -1, true );
+            newName.insert( index-1, "_"+QString::number(i) );
+            debug() << baseName << " now " << newName << " with full " << file.dirPath(true) + "/" +newName << endl;
             file.setFile( file.dirPath( true ) + '/' + newName );
             i++;
         }
