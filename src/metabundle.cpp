@@ -53,6 +53,7 @@
 
 #include "metabundle.h"
 #include "podcastbundle.h"
+#include "lastfmproxy.h"
 
 MetaBundle::EmbeddedImage::EmbeddedImage( const TagLib::ByteVector& data, const TagLib::String& description )
     : m_description( TStringToQString( description ) )
@@ -167,6 +168,7 @@ MetaBundle::MetaBundle()
         , m_isCompilation( false )
         , m_notCompilation( false )
         , m_podcastBundle( 0 )
+        , m_lastFmBundle( 0 )
 {
     init();
 }
@@ -190,6 +192,7 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
     , m_isCompilation( false )
     , m_notCompilation( false )
     , m_podcastBundle( 0 )
+    , m_lastFmBundle( 0 )
 {
     if ( exists() )
     {
@@ -235,6 +238,7 @@ MetaBundle::MetaBundle( const QString& title,
         , m_isCompilation( false )
         , m_notCompilation( false )
         , m_podcastBundle( 0 )
+        , m_lastFmBundle( 0 )
 {
     if( title.contains( '-' ) )
     {
@@ -256,6 +260,7 @@ MetaBundle::MetaBundle( const MetaBundle &bundle )
 MetaBundle::~MetaBundle()
 {
     delete m_podcastBundle;
+    delete m_lastFmBundle;
 }
 
 MetaBundle&
@@ -290,6 +295,10 @@ MetaBundle::operator=( const MetaBundle& bundle )
     m_podcastBundle = 0;
     if( bundle.m_podcastBundle )
         setPodcastBundle( *bundle.m_podcastBundle );
+    m_lastFmBundle = 0;
+    if( bundle.m_lastFmBundle )
+        setLastFmBundle( bundle.m_lastFmBundle );
+
 
     return *this;
 }
@@ -618,6 +627,14 @@ void MetaBundle::copyFrom( const MetaBundle &bundle )
     {
         delete m_podcastBundle;
         m_podcastBundle = 0;
+    }
+    
+    if( bundle.m_lastFmBundle )
+        setLastFmBundle( bundle.m_lastFmBundle );
+    else
+    {
+        delete m_lastFmBundle;
+        m_lastFmBundle = 0;
     }
 }
 
@@ -1151,6 +1168,13 @@ MetaBundle::setPodcastBundle( const PodcastEpisodeBundle &peb )
     delete m_podcastBundle;
     m_podcastBundle = new PodcastEpisodeBundle;
     *m_podcastBundle = peb;
+}
+
+void
+MetaBundle::setLastFmBundle( LastFm::Bundle *last )
+{
+    delete m_lastFmBundle;
+    m_lastFmBundle = last;
 }
 
 void MetaBundle::loadImagesFromTag( const TagLib::ID3v2::Tag &tag, EmbeddedImageList& images )

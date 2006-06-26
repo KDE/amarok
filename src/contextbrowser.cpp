@@ -1563,12 +1563,22 @@ CurrentTrackJob::showHomeByAlbums()
 
 void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
 {
+    DEBUG_BLOCK
     LastFm::WebService *lfm = LastFm::Controller::instance()->getService();
     if( !lfm ) return;
 
     QString username = AmarokConfig::scrobblerUsername();
     QString userpage = "www.last.fm/user/" + username; // no http.
-    QString albumImage = CollectionDB::instance()->albumImage( currentTrack, true, 1 );
+    const LastFm::Bundle* lastFmInfo = currentTrack.lastFmBundle();
+
+    if( !lastFmInfo )
+    {
+        debug() << "oh shit guys, this ain't no lastfm" << endl;
+        return;
+    }
+    QString imageUrl = lastFmInfo->imageUrl();
+    if( imageUrl.isEmpty() )
+        imageUrl = "file://" + KGlobal::instance()->iconLoader()->iconPath( amaroK::icon( "audioscrobbler" ), -1*KIcon::SizeLarge  );
 
     m_HTMLSource.append( QStringx(
             "<div id='current_box' class='box'>\n"
@@ -1602,7 +1612,7 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
             .args( QStringList()
             << escapeHTML( lfm->currentStation() )
             << escapeHTML( userpage )
-            << escapeHTML( albumImage )
+            << escapeHTML( imageUrl )
             << escapeHTML( "http://" + userpage )
             << escapeHTML( currentTrack.prettyTitle() )
             << escapeHTML( currentTrack.album() )
@@ -1614,6 +1624,7 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
     addMetaHistory();
 
     m_HTMLSource.append( "</body></html>\n" );
+    debug() << m_HTMLSource << endl << "imageUrl: " << imageUrl << endl;
 }
 
 
@@ -2625,6 +2636,7 @@ bool CurrentTrackJob::doJob()
     DEBUG_BLOCK
 
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
+    debug() << "we don't ever get here I don't think" << endl;
     m_HTMLSource.append( "<html><body>\n"
                     "<script type='text/javascript'>\n"
                       //Toggle visibility of a block. NOTE: if the block ID starts with the T
@@ -2659,6 +2671,7 @@ bool CurrentTrackJob::doJob()
 
         if( currentTrack.url().protocol() == "lastfm" )
         {
+            debug() << "do we get here?" << endl;
             showLastFm( currentTrack );
             return true;
         }

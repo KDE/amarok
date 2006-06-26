@@ -255,22 +255,29 @@ WebService::requestMetaData() //SLOT
 void
 WebService::metaDataFinished( int /*id*/, bool error ) //SLOT
 {
+    DEBUG_BLOCK
     QHttp* http = (QHttp*) sender();
     http->deleteLater();
     if( error ) return;
 
     const QString result( http->readAll() );
-
+    debug() << result << endl;
     MetaBundle bundle;
     bundle.setArtist( parameter( "artist", result ) );
     bundle.setAlbum( parameter( "album", result ) );
     bundle.setTitle( parameter( "track", result ) );
     bundle.setUrl( KURL (Controller::instance()->getGenreUrl() ) );
-//     bundle.setCover( parameter( "albumcover_medium", result ) );
-//     bundle.setArtistUrl( parameter( "artist_url", result ) );
-//     bundle.setAlbumUrl( parameter( "album_url", result ) );
-//     bundle.setTrackUrl( parameter( "track_url", result ) );
     bundle.setLength( parameter( "trackduration", result ).toInt() );
+
+    Bundle* lastFmStuff = new Bundle();
+    QString imageUrl = parameter( "albumcover_small", result );
+    //debug() << "sending: " << imageUrl << ' ' << ((imageUrl == "http://static.last.fm/coverart/" ) ? "null": imageUrl) << endl;
+    lastFmStuff->setImageUrl( ( (imageUrl == "http://static.last.fm/coverart/" ) ? QString::null : imageUrl ) );
+    lastFmStuff->setArtistUrl( parameter( "artist_url", result )   );
+    lastFmStuff->setAlbumUrl( parameter( "album_url", result ) );
+    bundle.setLastFmBundle( lastFmStuff );
+//     bundle.setTrackUrl( parameter( "track_url", result ) );
+    
 //     bool discovery = parameter( "discovery", result ) != "-1";
 
     int errCode = parameter( "error", result ).toInt();
@@ -613,6 +620,8 @@ WebService::parameter( QString keyName, QString data ) const
     for ( uint i = 0; i < list.size(); i++ )
     {
         QStringList values = QStringList::split( '=', list[i] );
+        if ( keyName == "albumcover_small" )
+            debug() << values[0] << '-' << values[1] << endl;
         if ( values[0] == keyName )
         {
             values.remove( values.at(0) );

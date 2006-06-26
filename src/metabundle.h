@@ -36,6 +36,10 @@ namespace TagLib {
 }
 class PodcastEpisodeBundle;
 
+namespace LastFm {
+    class Bundle;
+}
+
 /**
  * @class MetaBundle
  * @author Max Howell <max.howell@methylblue.com>
@@ -225,6 +229,7 @@ public: //accessors
     int fileType() const;  // returns a value from enum FileType
     bool exists() const; // true for everything but local files that aren't there
     PodcastEpisodeBundle *podcastBundle() const;
+    LastFm::Bundle *lastFmBundle() const;
     QString streamName() const;
     QString streamUrl()  const;
     QString uniqueId() const;
@@ -264,6 +269,7 @@ public: //modifiers
     void setCompilation( int compilation );
     bool checkExists();
     void setPodcastBundle( const PodcastEpisodeBundle &peb );
+    void setLastFmBundle( LastFm::Bundle *last );
     void setUniqueId(); //will find the fileref
     void setUniqueId( const QString &id ); //WARNING WARNING WARNING SEE COMMENT in .CPP
     void setUniqueId( TagLib::FileRef &fileref, bool recreate = false );
@@ -331,6 +337,7 @@ protected:
     bool m_notCompilation: 1;
 
     PodcastEpisodeBundle *m_podcastBundle;
+    LastFm::Bundle *m_lastFmBundle;
 
 private:
 
@@ -419,6 +426,7 @@ inline QString MetaBundle::type() const
            : filename().mid( filename().findRev( '.' ) + 1 );
 }
 inline PodcastEpisodeBundle *MetaBundle::podcastBundle() const { return m_podcastBundle; }
+inline LastFm::Bundle *MetaBundle::lastFmBundle() const { return m_lastFmBundle; }
 
 inline QString MetaBundle::prettyURL() const { return url().prettyURL(); }
 inline QString MetaBundle::prettyBitrate() const { return prettyBitrate( m_bitrate ); }

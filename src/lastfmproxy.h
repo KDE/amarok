@@ -166,6 +166,22 @@ namespace LastFm
             void recommendFinished( int id, bool error );
     };
 
+    class Bundle
+    {
+        public:
+            QString imageUrl() const { return m_imageUrl; }
+            void setImageUrl( const QString& imageUrl ) { m_imageUrl = imageUrl; }
+
+            QString artistUrl() const {  return m_artistUrl; }
+            void setArtistUrl( const QString& theValue )  {  m_artistUrl = theValue; }
+
+            QString albumUrl() const {  return m_albumUrl; }
+            void setAlbumUrl( const QString& theValue )  {  m_albumUrl = theValue; }
+        private:
+            QString m_imageUrl;
+            QString m_albumUrl;
+            QString m_artistUrl;
+    };
 
     // We must implement this because QServerSocket has one pure virtual method.
     // It's just used for finding a free port.
