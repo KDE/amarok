@@ -53,6 +53,19 @@ DeviceManager::DeviceManager()
         else
         {
             m_valid = true;
+            
+            //run the DCOP query here because apparently if you don't run KDE as a DM the first call will fail
+            //...go figure
+            QByteArray data, replyData;
+            QCString replyType;
+            QDataStream arg(data, IO_WriteOnly);
+            QStringList result;
+            arg << 5;
+            if (!m_dc->call("kded", "mediamanager", "fullList()", data, replyType, replyData))
+            {
+                debug() << "During DeviceManager init, error during DCOP call" << endl;
+            }
+                                
             getDevice( "init" );
             debug() << "DeviceManager:  connectDCOPSignal returned sucessfully!" << endl;
         }
