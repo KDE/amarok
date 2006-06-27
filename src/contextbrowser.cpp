@@ -1579,6 +1579,7 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
 
     QString lastfmIcon = "file://" + locate( "data","amarok/images/lastfm.png" );
     QString imageUrl = lastFmInfo->imageUrl();
+    debug() << "ImageUrl: " << imageUrl << endl;
 
     QString albumUrl = lastFmInfo->albumUrl(),
            artistUrl = lastFmInfo->artistUrl(),
