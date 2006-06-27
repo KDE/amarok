@@ -20,13 +20,8 @@ def puts( string )
 end
 
 
-def cptoempty( s, o )
+def cp_to_empty( s, o )
     s.each_line do |data|
-        # intercept SYNCs
-        if data[0, 4] == "SYNC"
-            data[0, 4] = ""
-            puts( "SYNC" )
-        end
         puts( data )
         o.write( data )
         break if data.chomp == ""
@@ -34,16 +29,23 @@ def cptoempty( s, o )
 end
 
 
-def cpall( s, o )
+def cp_all( s, o )
     loop do
         data = s.read( 1000 )
         break if data == nil
+
         # intercept SYNCs
         if data.include?( "SYNC" ) # FIXME won't detect the SYNC if it spreads over fragment boundary
             data.gsub!( "SYNC", "" )
             puts( "SYNC" )
         end
-        o.write( data )
+
+        begin
+            o.write( data )
+        rescue
+            puts( "error from s.write, #{$!}" )
+            break
+        end
     end
 end
 
@@ -71,13 +73,14 @@ puts( data << " but sending GET " << uri.path << "?" << uri.query << " HTTP/1.1\
 serv.puts( "GET " << uri.path << "?" << uri.query << " HTTP/1.1\r\n\r\n" )
 
 # the client initiates everything - so copy it to the server
-cptoempty( amaroks, serv )
+cp_to_empty( amaroks, serv )
 
-cptoempty( serv, amaroks )
+cp_to_empty( serv, amaroks )
 
-puts( "Before cpall()" )
 
 # now copy from the server to amarok
-cpall( serv, amaroks )
+puts( "Before cp_all()" )
+cp_all( serv, amaroks )
+
 
 puts( "exiting" )
