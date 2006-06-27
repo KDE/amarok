@@ -1581,17 +1581,18 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
     QString imageUrl = lastFmInfo->imageUrl();
     debug() << "ImageUrl: " << imageUrl << endl;
 
-    QString albumUrl = lastFmInfo->albumUrl(),
-           artistUrl = lastFmInfo->artistUrl(),
-            titleUrl = lastFmInfo->titleUrl();
+    QString albumUrl  = lastFmInfo->albumUrl();
+    QString artistUrl = lastFmInfo->artistUrl();
+    QString titleUrl  = lastFmInfo->titleUrl();
 
     QPtrList<QString> newUrls;
-    newUrls.append(&albumUrl); newUrls.append(&artistUrl); newUrls.append(&titleUrl);
+    newUrls.append( &albumUrl  );
+    newUrls.append( &artistUrl );
+    newUrls.append( &titleUrl  );
 
     QString* url = newUrls.first();
-    for ( url = newUrls.first(); url; url = newUrls.next() )    {
+    for ( url = newUrls.first(); url; url = newUrls.next() )
         url->replace( QRegExp( "^http:" ), "externalurl:" );
-    }
 
 
     m_HTMLSource.append( QStringx(

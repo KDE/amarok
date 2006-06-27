@@ -293,7 +293,7 @@ WebService::metaDataFinished( int /*id*/, bool error ) //SLOT
     lastFmStuff.setImageUrl ( "file://" + CollectionDB::instance()->notAvailCover( true ) );
     lastFmStuff.setArtistUrl( parameter( "artist_url", result ) );
     lastFmStuff.setAlbumUrl ( parameter( "album_url", result ) );
-    lastFmStuff.setTitleUrl( parameter( "track_url", result ) );
+    lastFmStuff.setTitleUrl ( parameter( "track_url", result ) );
 //     bool discovery = parameter( "discovery", result ) != "-1";
 
     m_metaBundle.setLastFmBundle( lastFmStuff );
