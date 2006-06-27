@@ -3,6 +3,7 @@
 # Proxy server for last.fm. Relays the stream from the last.fm server to localhost.
 #
 # (c) 2006 Paul Cifarelli <paul@cifarelli.net>
+# (c) 2006 Mark Kretschmann <markey@web.de>
 #
 # License: GNU General Public License V2
 
@@ -20,36 +21,30 @@ end
 
 
 def cptoempty( s, o )
-   s.each_line do |data|
-      # intercept SYNCs
-      if data[0, 4] == "SYNC"
-         data[0, 4] = ""
-         puts( "SYNC" )
-      end
-      puts( data )
-      o.write( data )
-      break if data.chomp == ""
-   end
-end
-
-
-def cpall( s, o )
-    begin
-        begin
-            data = s.recvfrom( 4 )[0]
-        rescue
-            puts( "error from recvfrom(), #{$!}" )
-        end
-        puts( "after s.recvfrom" )
+    s.each_line do |data|
         # intercept SYNCs
-        if data == "SYNC"
-            data = ""
+        if data[0, 4] == "SYNC"
+            data[0, 4] = ""
             puts( "SYNC" )
         end
         puts( data )
         o.write( data )
-        puts( "cpall() iteration" )
-    end until data == ""
+        break if data.chomp == ""
+    end
+end
+
+
+def cpall( s, o )
+    loop do
+        data = s.read( 1000 )
+        break if data == nil
+        # intercept SYNCs
+        if data.include?( "SYNC" ) # FIXME won't detect the SYNC if it spreads over fragment boundary
+            data.gsub!( "SYNC", "" )
+            puts( "SYNC" )
+        end
+        o.write( data )
+    end
 end
 
 
