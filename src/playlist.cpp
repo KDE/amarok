@@ -3257,6 +3257,8 @@ Playlist::editActiveDynamicMode() //SLOT
 void
 Playlist::disableDynamicMode() //SLOT
 {
+    if ( !m_dynamicMode )
+        return;
     setDynamicMode( 0 );
     AmarokConfig::setRandomMode( m_oldRandom );
     AmarokConfig::setRepeat( m_oldRepeat );
