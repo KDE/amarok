@@ -1565,8 +1565,8 @@ CurrentTrackJob::showHomeByAlbums()
 void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
 {
     DEBUG_BLOCK
- /*   LastFm::WebService *lfm = LastFm::Controller::instance()->getService();
-    if( !lfm ) return;*/
+    LastFm::WebService *lfm = LastFm::Controller::instance()->getService();
+    if( !lfm ) return;
 
     QString username = AmarokConfig::scrobblerUsername();
     QString userpage = "www.last.fm/user/" + username; // no http.
@@ -1609,7 +1609,7 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
             "</table>\n"
             "</div>\n" )
             .args( QStringList()
-            << escapeHTML( ""/*lfm->currentStation()*/ )
+            << escapeHTML( lfm->currentStation() )
             << escapeHTML( userpage )
             << imageUrl
             << escapeHTML( "http://" + userpage )
