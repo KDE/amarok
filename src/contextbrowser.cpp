@@ -3279,7 +3279,7 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
     {
         QString tmpWikiStr;
 
-        if ( !EngineController::engine()->isStream() )
+        if ( (EngineController::instance()->bundle().url().protocol() == "lastfm") ||  !EngineController::engine()->isStream() )
         {
             if ( !EngineController::instance()->bundle().artist().isEmpty() )
             {
