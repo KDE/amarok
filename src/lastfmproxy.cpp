@@ -326,9 +326,9 @@ WebService::fetchImageFinished( int /*id*/, bool error ) //SLOT
         QImage img( http->readAll() );
         img.smoothScale( size, size ).save( path, "PNG" );
 
-        LastFm::Bundle *lastFmBundle = m_metaBundle.lastFmBundle();
-        lastFmBundle->setImageUrl( "file://" + CollectionDB::makeShadowedImage( path, false ) );
-        m_metaBundle.setLastFmBundle( *lastFmBundle );
+        LastFm::Bundle bundle( *m_metaBundle.lastFmBundle() );
+        bundle.setImageUrl( "file://" + CollectionDB::makeShadowedImage( path, false ) );
+        m_metaBundle.setLastFmBundle( bundle );
     }
 
 
@@ -728,10 +728,11 @@ WebService::parameterKeys( QString keyName, QString data ) const
 // CLASS LastFm::Bundle
 ////////////////////////////////////////////////////////////////////////////////
 
-Bundle::Bundle( const Bundle& lhs)
+Bundle::Bundle( const Bundle& lhs )
     : m_imageUrl( lhs.m_imageUrl )
     , m_albumUrl( lhs.m_albumUrl )
     , m_artistUrl( lhs.m_artistUrl )
+    , m_titleUrl( lhs.m_titleUrl )
 {}
 
 ////////////////////////////////////////////////////////////////////////////////
