@@ -136,7 +136,7 @@ XineEngine::init()
    m_xine = xine_new();
 
    if( !m_xine ) {
-      KMessageBox::error( 0, i18n("amaroK could not initialize xine.") );
+      KMessageBox::error( 0, i18n("Amarok could not initialize xine.") );
       return false;
    }
 
@@ -174,7 +174,7 @@ XineEngine::makeNewStream()
    if( !m_stream ) {
       xine_close_audio_driver( m_xine, m_audioPort );
       m_audioPort = NULL;
-      KMessageBox::error( 0, i18n("amaroK could not create a new xine stream.") );
+      KMessageBox::error( 0, i18n("Amarok could not create a new xine stream.") );
       return false;
    }
 
