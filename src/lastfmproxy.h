@@ -17,7 +17,7 @@
 #ifndef AMAROK_LASTFMPROXY_H
 #define AMAROK_LASTFMPROXY_H
 
-#include <metabundle.h>
+#include "metabundle.h"
 
 #include <qguardedptr.h>
 #include <qobject.h>
