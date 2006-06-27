@@ -1790,7 +1790,7 @@ CollectionDB::removeAlbumImage( const uint artist_id, const uint album_id )
 QString
 CollectionDB::notAvailCover( const bool withShadow, int width )
 {
-    if ( !width )
+    if ( width <= 1 )
         width = AmarokConfig::coverPreviewSize();
     QString widthKey = QString::number( width ) + "@";
     QString s;

@@ -395,7 +395,7 @@ class CollectionDB : public QObject, public EngineObserver
 
         //local cover methods
         void addImageToAlbum( const QString& image, QValueList< QPair<QString, QString> > info, const bool temporary );
-        QString notAvailCover( const bool withShadow = false, int width = 0 );
+        QString notAvailCover( const bool withShadow = false, int width = 1 );
 
         //embedded cover methods
         void addEmbeddedImage( const QString& path, const QString& hash, const QString& description );
@@ -439,7 +439,7 @@ class CollectionDB : public QObject, public EngineObserver
         void podcastImageResult( KIO::Job *job ); //for fetching remote podcast images
         void atfMigrateStatisticsUrl( const QString& oldUrl, const QString& newUrl, const QString& uniqueid ); //ATF-enable stats
         void atfMigrateStatisticsUniqueId( const QString& url, const QString& oldid, const QString& newid );
-        
+
     private:
         //bump DATABASE_VERSION whenever changes to the table structure are made.
         // This erases tags, album, artist, genre, year, images, embed, directory and related_artists tables.
