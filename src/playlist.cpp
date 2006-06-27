@@ -736,16 +736,8 @@ Playlist::addSpecialCustomTracks( uint songCount )
                 sql.replace( limitSearch, QString(" LIMIT %1 OFFSET %2;" ).arg( songCount ).arg( first ) );
 
         }
-        QStringList queryResult = CollectionDB::instance()->query( sql );
-        QStringList items;
-
-        if ( !sp->query().isEmpty() ) {
-            //We have to filter all the un-needed results from query( sql )
-            for (uint x=12; x < queryResult.count() ; x += 16)
-                items << queryResult[x];
-        } else {
-            items = queryResult;
-        }
+        sql.replace( QRegExp( "SELECT.*FROM" ), "SELECT tags.url FROM" );
+        QStringList items = CollectionDB::instance()->query( sql );
 
         KURL::List urls;
         foreach(items) //we have to run setPath on all raw paths
