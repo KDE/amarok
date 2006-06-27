@@ -1279,7 +1279,8 @@ bool PlaylistBrowser::deletePodcasts( QPtrList<PlaylistBrowserEntry> items )
         }
     }
     // TODO We need to check which files have been deleted successfully
-    KIO::del( urls );
+    if ( urls.count() )
+        KIO::del( urls );
     return true;
 }
 
@@ -1945,7 +1946,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
                         else
                         {
                             podcastCount++;
-                            podcastsToDelete.append( static_cast<PlaylistBrowserEntry*>(*it) );
+                            podcastsToDelete.append( static_cast<PlaylistBrowserEntry*>(ch) );
                         }
                     }
                     podcastFoldersToDelete.append( static_cast<PlaylistCategory*>(*it) );
