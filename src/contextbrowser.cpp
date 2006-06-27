@@ -939,6 +939,7 @@ private:
     void showArtistsAlbums( const QString &artist, uint artist_id, uint album_id );
     void showArtistsCompilations( const QString &artist, uint artist_id, uint album_id );
     void showHome();
+    QString fetchLastfmImage( const QString& url );
     QStringList showHomeByAlbums();
     void constructHTMLAlbums( const QStringList &albums, QString &htmlCode, const QString &idPrefix );
     static QString statsHTML( int score, int rating, bool statsbox = true ); // meh.
@@ -1577,16 +1578,13 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
     QString userpage = "www.last.fm/user/" + username; //no http
 
     QString lastfmIcon = "file://" + locate( "data","amarok/images/lastfm.png" );
-
     QString imageUrl = lastFmInfo->imageUrl();
-    if( imageUrl.isEmpty() )
-        imageUrl = CollectionDB::instance()->notAvailCover();
 
-    QString albumUrl = lastFmInfo->albumUrl()
-        , artistUrl = lastFmInfo->artistUrl()
-        , titleUrl = lastFmInfo->titleUrl();
-    
-    QPtrList<QString> newUrls; 
+    QString albumUrl = lastFmInfo->albumUrl(),
+           artistUrl = lastFmInfo->artistUrl(),
+            titleUrl = lastFmInfo->titleUrl();
+
+    QPtrList<QString> newUrls;
     newUrls.append(&albumUrl); newUrls.append(&artistUrl); newUrls.append(&titleUrl);
 
     QString* url = newUrls.first();

@@ -1543,7 +1543,7 @@ CollectionDB::albumImage( MetaBundle trackInformation, bool withShadow, uint wid
 
 
 QString
-CollectionDB::makeShadowedImage( const QString& albumImage )
+CollectionDB::makeShadowedImage( const QString& albumImage, bool cache )
 {
     const QImage original( albumImage );
 
@@ -1555,7 +1555,7 @@ CollectionDB::makeShadowedImage( const QString& albumImage )
     const QString cacheFile = fileInfo.fileName() + "@shadow";
     QImage shadow;
 
-    if ( cacheCoverDir().exists( cacheFile ) )
+    if ( !cache && cacheCoverDir().exists( cacheFile ) )
         return cacheCoverDir().filePath( cacheFile );
 
     const QString folder = amaroK::saveLocation( "covershadow-cache/" );
@@ -1570,9 +1570,14 @@ CollectionDB::makeShadowedImage( const QString& albumImage )
 
     QImage target( shadow );
     bitBlt( &target, 0, 0, &original );
-    target.save( cacheCoverDir().filePath( cacheFile ), "PNG" );
 
-    return cacheCoverDir().filePath( cacheFile );
+    if ( cache ) {
+        target.save( cacheCoverDir().filePath( cacheFile ), "PNG" );
+        return cacheCoverDir().filePath( cacheFile );
+    }
+
+    target.save( albumImage, "PNG" );
+    return albumImage;
 }
 
 

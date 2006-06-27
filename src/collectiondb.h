@@ -393,6 +393,8 @@ class CollectionDB : public QObject, public EngineObserver
         bool removeAlbumImage( const uint artist_id, const uint album_id );
         bool removeAlbumImage( const QString &artist, const QString &album );
 
+        static QString makeShadowedImage( const QString& albumImage, bool cache = true );
+
         //local cover methods
         void addImageToAlbum( const QString& image, QValueList< QPair<QString, QString> > info, const bool temporary );
         QString notAvailCover( const bool withShadow = false, int width = 1 );
@@ -459,7 +461,6 @@ class CollectionDB : public QObject, public EngineObserver
         static QDir largeCoverDir();
         static QDir tagCoverDir();
         static QDir cacheCoverDir();
-        static QString makeShadowedImage( const QString& albumImage );
 
         void initialize();
         void destroy();

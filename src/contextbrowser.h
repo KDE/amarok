@@ -117,6 +117,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         void showIntroduction();
         void saveHtmlData();
         void showScanning();
+
         static QString wikiLocale();
         static void setWikiLocale( const QString &locale );
         static QString wikiURL( const QString &item );

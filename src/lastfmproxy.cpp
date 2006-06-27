@@ -18,11 +18,11 @@
 
 #include "amarok.h"         //APP_VERSION
 #include "amarokconfig.h"   //last.fm username and passwd
+#include "collectiondb.h"
 #include "debug.h"
 #include "enginecontroller.h"
-#include "lastfmproxy.h"
 #include "lastfmloginbase.h"
-#include "metabundle.h"
+#include "lastfmproxy.h"
 
 #include <kmessagebox.h>
 
@@ -72,11 +72,11 @@ Controller::getNewProxy( QString genreUrl )
     if ( m_service ) playbackStopped();
 
     m_service = new WebService( this );
-    
+
     if(  AmarokConfig::scrobblerUsername().isEmpty() || AmarokConfig::scrobblerPassword().isEmpty() )
          KMessageBox::createKMessageBox( new LoginDialog( 0 ), QMessageBox::NoIcon, "" , QStringList(), "", false, KMessageBox::Notify);
     if( AmarokConfig::scrobblerUsername().isEmpty() || AmarokConfig::scrobblerPassword().isEmpty() )
-        return KURL(); 
+        return KURL();
 
     if( m_service->handshake( AmarokConfig::scrobblerUsername(), AmarokConfig::scrobblerPassword() ) )
     {
@@ -264,18 +264,24 @@ WebService::requestMetaData() //SLOT
 void
 WebService::metaDataFinished( int /*id*/, bool error ) //SLOT
 {
+    DEBUG_BLOCK
+
     QHttp* http = (QHttp*) sender();
     http->deleteLater();
     if( error ) return;
 
     const QString result( http->readAll() );
     debug() << result << endl;
-    MetaBundle bundle;
-    bundle.setArtist( parameter( "artist", result ) );
-    bundle.setAlbum ( parameter( "album", result )  );
-    bundle.setTitle ( parameter( "track", result )  );
-    bundle.setUrl   ( KURL( Controller::instance()->getGenreUrl() ) );
-    bundle.setLength( parameter( "trackduration", result ).toInt()  );
+
+    int errCode = parameter( "error", result ).toInt();
+    if ( errCode > 0 )
+        return;
+
+    m_metaBundle.setArtist( parameter( "artist", result ) );
+    m_metaBundle.setAlbum ( parameter( "album", result )  );
+    m_metaBundle.setTitle ( parameter( "track", result )  );
+    m_metaBundle.setUrl   ( KURL( Controller::instance()->getGenreUrl() ) );
+    m_metaBundle.setLength( parameter( "trackduration", result ).toInt()  );
 
     Bundle lastFmStuff;
     QString imageUrl = parameter( "albumcover_medium", result );
@@ -284,21 +290,50 @@ WebService::metaDataFinished( int /*id*/, bool error ) //SLOT
         imageUrl == "http://static.last.fm/depth/catalogue/no_album_large.gif" )
         imageUrl = QString::null;
 
-    lastFmStuff.setImageUrl ( imageUrl );
+    lastFmStuff.setImageUrl ( "file://" + CollectionDB::instance()->notAvailCover( true ) );
     lastFmStuff.setArtistUrl( parameter( "artist_url", result ) );
     lastFmStuff.setAlbumUrl ( parameter( "album_url", result ) );
     lastFmStuff.setTitleUrl( parameter( "track_url", result ) );
-    bundle.setLastFmBundle  ( lastFmStuff );
-    
-
 //     bool discovery = parameter( "discovery", result ) != "-1";
 
-    int errCode = parameter( "error", result ).toInt();
-    if ( errCode > 0 )
-        return;
+    m_metaBundle.setLastFmBundle( lastFmStuff );
 
-//     EngineController::engine()->flushBuffer();
-    emit metaDataResult( bundle );
+    if( imageUrl.isEmpty() ) {
+        emit metaDataResult( m_metaBundle );
+        return;
+    }
+
+    const KURL u( imageUrl );
+    QHttp* h = new QHttp( u.host(), 80 );
+    connect( h, SIGNAL( requestFinished( int, bool ) ), this, SLOT( fetchImageFinished( int, bool ) ) );
+
+    h->get( u.path() );
+}
+
+
+void
+WebService::fetchImageFinished( int /*id*/, bool error ) //SLOT
+{
+    DEBUG_BLOCK
+
+    QHttp* http = (QHttp*) sender();
+    http->deleteLater();
+
+    if( !error ) {
+        const QString path = amaroK::saveLocation() + "/lastfm_image.png";
+        const int size = AmarokConfig::coverPreviewSize();
+
+        QImage img( http->readAll() );
+        img.smoothScale( size, size );
+        img.save( path, "PNG" );
+
+        LastFm::Bundle *lastFmBundle = m_metaBundle.lastFmBundle();
+        lastFmBundle->setImageUrl( "file://" + CollectionDB::makeShadowedImage( path, false ) );
+        m_metaBundle.setLastFmBundle( *lastFmBundle );
+    }
+
+
+    emit metaDataResult( m_metaBundle );
 }
 
 
@@ -698,7 +733,8 @@ Bundle::Bundle( const Bundle& lhs)
     : m_imageUrl( lhs.m_imageUrl )
     , m_albumUrl( lhs.m_albumUrl )
     , m_artistUrl( lhs.m_artistUrl )
-{ }
+{}
+
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS LastFm::LoginDialog
 ////////////////////////////////////////////////////////////////////////////////

@@ -17,6 +17,8 @@
 #ifndef AMAROK_LASTFMPROXY_H
 #define AMAROK_LASTFMPROXY_H
 
+#include <metabundle.h>
+
 #include <qguardedptr.h>
 #include <qobject.h>
 #include <qserversocket.h>
@@ -29,7 +31,6 @@ class KProcIO;
 class KURL;
 class QSocket;
 class QTimer;
-class MetaBundle;
 
 namespace LastFm
 {
@@ -145,6 +146,7 @@ namespace LastFm
 
             QString m_proxyUrl;
             KProcIO *m_server;
+            MetaBundle m_metaBundle;
 
             QString parameter( QString keyName, QString data ) const;
             QStringList parameterArray( QString keyName, QString data ) const;
@@ -153,6 +155,7 @@ namespace LastFm
         private slots:
             void readProxy();
             void metaDataFinished( int id, bool error );
+            void fetchImageFinished( int id, bool error );
             void enableScrobblingFinished( int id, bool error );
 
             void loveFinished( int id, bool error );
