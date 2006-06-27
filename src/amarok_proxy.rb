@@ -43,7 +43,7 @@ def cp_all( s, o )
         begin
             o.write( data )
         rescue
-            puts( "error from s.write, #{$!}" )
+            puts( "error from o.write, #{$!}" )
             break
         end
     end
