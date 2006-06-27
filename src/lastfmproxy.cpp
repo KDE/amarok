@@ -262,19 +262,22 @@ WebService::metaDataFinished( int /*id*/, bool error ) //SLOT
     debug() << result << endl;
     MetaBundle bundle;
     bundle.setArtist( parameter( "artist", result ) );
-    bundle.setAlbum( parameter( "album", result ) );
-    bundle.setTitle( parameter( "track", result ) );
-    bundle.setUrl( KURL (Controller::instance()->getGenreUrl() ) );
-    bundle.setLength( parameter( "trackduration", result ).toInt() );
+    bundle.setAlbum ( parameter( "album", result )  );
+    bundle.setTitle ( parameter( "track", result )  );
+    bundle.setUrl   ( KURL( Controller::instance()->getGenreUrl() ) );
+    bundle.setLength( parameter( "trackduration", result ).toInt()  );
 
     Bundle lastFmStuff;
-    QString imageUrl = parameter( "albumcover_small", result );
-    //debug() << "sending: " << imageUrl << ' ' << ((imageUrl == "http://static.last.fm/coverart/" ) ? "null": imageUrl) << endl;
-    lastFmStuff.setImageUrl( ( (imageUrl == "http://static.last.fm/coverart/" || imageUrl == "http://static.last.fm/depth/catalogue/no_album_small.gif" )
-         ? QString::null : imageUrl ) );
-    lastFmStuff.setArtistUrl( parameter( "artist_url", result )   );
-    lastFmStuff.setAlbumUrl( parameter( "album_url", result ) );
-    bundle.setLastFmBundle( lastFmStuff );
+    QString imageUrl = parameter( "albumcover_medium", result );
+
+    if( imageUrl == "http://static.last.fm/coverart/" ||
+        imageUrl == "http://static.last.fm/depth/catalogue/no_album_small.gif" )
+        imageUrl = QString::null;
+
+    lastFmStuff.setImageUrl ( imageUrl );
+    lastFmStuff.setArtistUrl( parameter( "artist_url", result ) );
+    lastFmStuff.setAlbumUrl ( parameter( "album_url", result ) );
+    bundle.setLastFmBundle  ( lastFmStuff );
 //     bundle.setTrackUrl( parameter( "track_url", result ) );
 
 //     bool discovery = parameter( "discovery", result ) != "-1";
@@ -383,6 +386,7 @@ WebService::banFinished( int /*id*/, bool error ) //SLOT
     http->deleteLater();
     if( error ) return;
 
+    EngineController::engine()->flushBuffer();
     emit banDone();
     emit skipDone();
 }
