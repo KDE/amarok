@@ -2,7 +2,7 @@
 #
 # Proxy server for last.fm. Relays the stream from the last.fm server to localhost.
 #
-# (c) 2006 Mark Kretschmann <markey@web.de>
+# (c) 2006 Paul Cifarelli <paul@cifarelli.net>
 #
 # License: GNU General Public License V2
 
@@ -10,53 +10,71 @@ require "net/http"
 require 'socket'
 require "uri"
 
+include Socket::Constants
 
 def puts( string )
     $stdout.puts( "AMAROK_PROXY: " + string )
     $stderr.puts( "AMAROK_PROXY: " + string )
 end
 
+def cptoempty( s, o )
+   s.each_line {|data|
+      # intercept SYNCs
+      if data[0, 4] == "SYNC"
+         data[0, 4] = ""
+         puts( "SYNC" )
+      end
+      puts( data )
+      o.puts(data)
+      if (data.chomp == "")
+         break
+      end
+   }
+end
+
+def cpall( s, o )
+   s.recvfrom(4) {|data|
+      # intercept SYNCs
+      if data == "SYNC"
+         data = ""
+         puts( "SYNC" )
+      end
+      puts( data )
+      o.write(data)
+      if (data.chomp == "")
+         break
+      end
+   }
+end
 
 puts( "startup" )
 
 port = $*[0].to_i
 remote_url = $*[1]
 
+#
+# amarok is, well, Amarok
+#
+amarok  = TCPServer.new( port )
+amaroks = amarok.accept
 
-serv = TCPServer.new( port )
-sock = serv.accept
-
-puts( "connected" )
-
-sock.write( "HTTP/1.0 200 Ok\r\nContent-Type: audio/x-mp3; charset=\"utf-8\"\r\n\r\n" )
-
-
+#
+# serv is the lastfm stream server
+#
 uri = URI.parse( remote_url )
+serv = TCPSocket.new( uri.host, uri.port )
 
-h = Net::HTTP.new( uri.host, uri.port )
+# here we substitute the proxy GET
+data = amaroks.readline
+puts(data << " but sending GET " << uri.path << "?" << uri.query << " HTTP/1.1\r\n")
+serv.puts "GET " << uri.path << "?" << uri.query << " HTTP/1.1\r\n\r\n"
 
-begin
-    response = h.get( "#{uri.path}?#{uri.query}" ) do |data|
-        if data[0, 4] == "SYNC"
-            data[0, 4] = ""
-            puts( "SYNC" )
-        end
+# the client initiates everything - so copy it to the server
+cptoempty( amaroks, serv )
 
-        begin
-            sock.write( data )
-        rescue
-            puts( "error from sock.write, #{$!}" )
-            break
-        end
-    end
-rescue
-    puts( "error from get, #{$!}" )
-end
+cptoempty( serv, amaroks )
 
-
-unless response.code == "200"
-    puts( "ERROR! Could not connect to last.fm. Code: #{response.code}" )
-end
-
+# now copy from the server to amarok
+cpall( serv, amaroks )
 
 puts( "exiting" )
