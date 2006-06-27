@@ -1574,13 +1574,26 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
         return;
 
     QString username = AmarokConfig::scrobblerUsername();
-    QString userpage = "www.last.fm/user/" + username; // no http.
+    QString userpage = "www.last.fm/user/" + username; //no http
 
     QString lastfmIcon = "file://" + locate( "data","amarok/images/lastfm.png" );
 
     QString imageUrl = lastFmInfo->imageUrl();
     if( imageUrl.isEmpty() )
         imageUrl = CollectionDB::instance()->notAvailCover();
+
+    QString albumUrl = lastFmInfo->albumUrl()
+        , artistUrl = lastFmInfo->artistUrl()
+        , titleUrl = lastFmInfo->titleUrl();
+    
+    QPtrList<QString> newUrls; 
+    newUrls.append(&albumUrl); newUrls.append(&artistUrl); newUrls.append(&titleUrl);
+
+    QString* url = newUrls.first();
+    for ( url = newUrls.first(); url; url = newUrls.next() )    {
+        url->replace( QRegExp( "^http:" ), "externalurl:" );
+    }
+
 
     m_HTMLSource.append( QStringx(
             "<div id='current_box' class='box'>\n"
@@ -1590,44 +1603,50 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
             "<table id='current_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>\n"
             "<tr class='box-row'>\n"
             "<td id='current_box-largecover-td'>\n"
-            "<img id='current_box-largecover-image' src='%2' title='%3'>\n"
-            "</td>\n"
+            "<a href='%2'>"
+            "<img id='current_box-largecover-image' src='%3' title='%4'>\n"
+            "</a></td>\n"
             "<td id='current_box-information-td' align='right'>\n"
             "<div id='musicbrainz-div'>\n"
-            "<a id='lastfm-a' title='%4' href='externalurl://%5'>\n"
-            "<img id='lastfm-image' src='%6' />\n"
+            "<a id='lastfm-a' href='externalurl://%5'>\n"
+            "<img id='lastfm-image' title='%6' src='%7' />\n"
             "</a>\n"
             "</div>\n"
             "<br />\n"
-            "%7"
+            "<a href='%8'>%9</a> - <a href='%10'>%11</a>"
             "<br />\n"
-            "%8"
+            "<a href='%12'>%13</a>"
             "<br />\n"
             "<br />\n"
-            "<a href=\"lastfm:skip\">%9</a>"
+            "<a href=\"lastfm:skip\">%14</a>"
             "<br />\n"
-            "<a href=\"lastfm:love\">%10</a>"
+            "<a href=\"lastfm:love\">%15</a>"
             "<br />\n"
-            "<a href=\"lastfm:ban\">%11</a>"
+            "<a href=\"lastfm:ban\">%16</a>"
             "<br />\n"
             "</td>\n"
             "</tr>\n"
             "</table>\n"
             "</div>\n" )
             .args( QStringList()
-            << escapeHTML( lfm->currentStation() )
-            << imageUrl
-            << escapeHTML( userpage )
-            << escapeHTML( userpage )
-            << escapeHTML( "http://" + userpage )
-            << escapeHTML( lastfmIcon )
-            << escapeHTML( currentTrack.prettyTitle() )
-            << escapeHTML( currentTrack.album() )
-            << i18n( "Skip" )
-            << i18n( "Love" )
-            << i18n( "Ban" )
+            << escapeHTML( lfm->currentStation() )  //1
+            << albumUrl //2
+            << imageUrl //3
+            << escapeHTML( currentTrack.album() )//4
+            << escapeHTML( userpage ) //5
+            << escapeHTML( userpage ) //6
+            << escapeHTML( lastfmIcon ) //7
+            << artistUrl  //8
+            << escapeHTML( currentTrack.artist() ) //9
+            << titleUrl //10
+            << escapeHTML( currentTrack.title() ) //11
+            << albumUrl //12
+            << escapeHTML( currentTrack.album() ) //13
+            << i18n( "Skip" ) //14
+            << i18n( "Love" ) //15
+            << i18n( "Ban" ) //16
                 ) );
-
+    debug() << userpage << ' ' << escapeHTML(userpage) << endl;
     addMetaHistory();
 
     m_HTMLSource.append( "</body></html>\n" );

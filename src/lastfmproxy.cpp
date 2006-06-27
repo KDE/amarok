@@ -273,14 +273,15 @@ WebService::metaDataFinished( int /*id*/, bool error ) //SLOT
     QString imageUrl = parameter( "albumcover_medium", result );
 
     if( imageUrl == "http://static.last.fm/coverart/" ||
-        imageUrl == "http://static.last.fm/depth/catalogue/no_album_small.gif" )
+        imageUrl == "http://static.last.fm/depth/catalogue/no_album_large.gif" )
         imageUrl = QString::null;
 
     lastFmStuff.setImageUrl ( imageUrl );
     lastFmStuff.setArtistUrl( parameter( "artist_url", result ) );
     lastFmStuff.setAlbumUrl ( parameter( "album_url", result ) );
+    lastFmStuff.setTitleUrl( parameter( "track_url", result ) );
     bundle.setLastFmBundle  ( lastFmStuff );
-//     bundle.setTrackUrl( parameter( "track_url", result ) );
+    
 
 //     bool discovery = parameter( "discovery", result ) != "-1";
 

@@ -179,10 +179,15 @@ namespace LastFm
 
             QString albumUrl() const {  return m_albumUrl; }
             void setAlbumUrl( const QString& theValue )  {  m_albumUrl = theValue; }
+
+            QString titleUrl() const {  return m_titleUrl; }
+            void setTitleUrl( const QString& theValue )  {  m_titleUrl = theValue; }
+
         private:
             QString m_imageUrl;
             QString m_albumUrl;
             QString m_artistUrl;
+            QString m_titleUrl;
     };
 
     // We must implement this because QServerSocket has one pure virtual method.
