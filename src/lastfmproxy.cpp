@@ -283,6 +283,7 @@ WebService::metaDataFinished( int /*id*/, bool error ) //SLOT
     if ( errCode > 0 )
         return;
 
+//     EngineController::engine()->flushBuffer();
     emit metaDataResult( bundle );
 }
 
@@ -370,6 +371,7 @@ WebService::skipFinished( int /*id*/, bool error ) //SLOT
     http->deleteLater();
     if( error ) return;
 
+    EngineController::engine()->flushBuffer();
     emit skipDone();
 }
 
