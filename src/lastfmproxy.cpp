@@ -107,6 +107,8 @@ WebService::WebService( QObject* parent )
 
 WebService::~WebService()
 {
+    DEBUG_BLOCK
+
     delete m_server;
 }
 
