@@ -18,33 +18,29 @@ def puts( string )
 end
 
 def cptoempty( s, o )
-   s.each_line {|data|
+   s.each_line do |data|
       # intercept SYNCs
       if data[0, 4] == "SYNC"
          data[0, 4] = ""
          puts( "SYNC" )
       end
       puts( data )
-      o.puts(data)
-      if (data.chomp == "")
-         break
-      end
-   }
+      o.puts( data )
+      break if data.chomp == ""
+   end
 end
 
 def cpall( s, o )
-   s.recvfrom(4) {|data|
+   s.recvfrom( 4 ) do |data|
       # intercept SYNCs
       if data == "SYNC"
          data = ""
          puts( "SYNC" )
       end
       puts( data )
-      o.write(data)
-      if (data.chomp == "")
-         break
-      end
-   }
+      o.write( data )
+      break if data.chomp == ""
+   end
 end
 
 puts( "startup" )
@@ -66,8 +62,8 @@ serv = TCPSocket.new( uri.host, uri.port )
 
 # here we substitute the proxy GET
 data = amaroks.readline
-puts(data << " but sending GET " << uri.path << "?" << uri.query << " HTTP/1.1\r\n")
-serv.puts "GET " << uri.path << "?" << uri.query << " HTTP/1.1\r\n\r\n"
+puts( data << " but sending GET " << uri.path << "?" << uri.query << " HTTP/1.1\r\n" )
+serv.puts( "GET " << uri.path << "?" << uri.query << " HTTP/1.1\r\n\r\n" )
 
 # the client initiates everything - so copy it to the server
 cptoempty( amaroks, serv )
