@@ -12,10 +12,12 @@ require "uri"
 
 include Socket::Constants
 
+
 def puts( string )
     $stdout.puts( "AMAROK_PROXY: " + string )
     $stderr.puts( "AMAROK_PROXY: " + string )
 end
+
 
 def cptoempty( s, o )
    s.each_line do |data|
@@ -25,23 +27,31 @@ def cptoempty( s, o )
          puts( "SYNC" )
       end
       puts( data )
-      o.puts( data )
-      break if data.chomp == ""
-   end
-end
-
-def cpall( s, o )
-   s.recvfrom( 4 ) do |data|
-      # intercept SYNCs
-      if data == "SYNC"
-         data = ""
-         puts( "SYNC" )
-      end
-      puts( data )
       o.write( data )
       break if data.chomp == ""
    end
 end
+
+
+def cpall( s, o )
+    begin
+        begin
+            data = s.recvfrom( 4 )[0]
+        rescue
+            puts( "error from recvfrom(), #{$!}" )
+        end
+        puts( "after s.recvfrom" )
+        # intercept SYNCs
+        if data == "SYNC"
+            data = ""
+            puts( "SYNC" )
+        end
+        puts( data )
+        o.write( data )
+        puts( "cpall() iteration" )
+    end until data == ""
+end
+
 
 puts( "startup" )
 
@@ -69,6 +79,8 @@ serv.puts( "GET " << uri.path << "?" << uri.query << " HTTP/1.1\r\n\r\n" )
 cptoempty( amaroks, serv )
 
 cptoempty( serv, amaroks )
+
+puts( "Before cpall()" )
 
 # now copy from the server to amarok
 cpall( serv, amaroks )
