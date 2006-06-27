@@ -1623,7 +1623,6 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
     addMetaHistory();
 
     m_HTMLSource.append( "</body></html>\n" );
-    debug() << m_HTMLSource << endl << "imageUrl: " << imageUrl << endl;
 }
 
 
