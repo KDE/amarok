@@ -213,6 +213,9 @@ namespace Engine
         virtual bool getAudioCDContents(const QString &, KURL::List &)
         { return false; }
 
+        /** flush the current stream buffer */
+        virtual bool flushBuffer() { return false; }
+
     protected:
         Base();
 
