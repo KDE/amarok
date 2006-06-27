@@ -324,8 +324,7 @@ WebService::fetchImageFinished( int /*id*/, bool error ) //SLOT
         const int size = AmarokConfig::coverPreviewSize();
 
         QImage img( http->readAll() );
-        img = img.smoothScale( size, size );
-        img.save( path, "PNG" );
+        img.smoothScale( size, size ).save( path, "PNG" );
 
         LastFm::Bundle *lastFmBundle = m_metaBundle.lastFmBundle();
         lastFmBundle->setImageUrl( "file://" + CollectionDB::makeShadowedImage( path, false ) );
