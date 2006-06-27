@@ -698,5 +698,14 @@ WebService::parameterKeys( QString keyName, QString data ) const
     return result;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// CLASS LastFm::Bundle
+////////////////////////////////////////////////////////////////////////////////
+
+Bundle::Bundle( const Bundle& lhs)
+    : m_imageUrl( lhs.m_imageUrl )
+    , m_albumUrl( lhs.m_albumUrl )
+    , m_artistUrl( lhs.m_artistUrl )
+{ }
 
 #include "lastfmproxy.moc"

@@ -18,7 +18,6 @@
 #include "expression.h"
 #include "atomicstring.h"
 #include "atomicurl.h"
-#include "lastfmproxy.h"
 
 #include "amarok_export.h"
 
@@ -230,7 +229,7 @@ public: //accessors
     int fileType() const;  // returns a value from enum FileType
     bool exists() const; // true for everything but local files that aren't there
     PodcastEpisodeBundle *podcastBundle() const;
-    LastFm::Bundle lastFmBundle() const;
+    LastFm::Bundle *lastFmBundle() const;
     QString streamName() const;
     QString streamUrl()  const;
     QString uniqueId() const;
@@ -338,7 +337,7 @@ protected:
     bool m_notCompilation: 1;
 
     PodcastEpisodeBundle *m_podcastBundle;
-    LastFm::Bundle m_lastFmBundle;
+    LastFm::Bundle *m_lastFmBundle;
 
 private:
 
@@ -427,7 +426,7 @@ inline QString MetaBundle::type() const
            : filename().mid( filename().findRev( '.' ) + 1 );
 }
 inline PodcastEpisodeBundle *MetaBundle::podcastBundle() const { return m_podcastBundle; }
-inline LastFm::Bundle MetaBundle::lastFmBundle() const { return m_lastFmBundle; }
+inline LastFm::Bundle *MetaBundle::lastFmBundle() const { return m_lastFmBundle; }
 
 inline QString MetaBundle::prettyURL() const { return url().prettyURL(); }
 inline QString MetaBundle::prettyBitrate() const { return prettyBitrate( m_bitrate ); }

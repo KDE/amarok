@@ -169,6 +169,8 @@ namespace LastFm
     class Bundle
     {
         public:
+            Bundle() {};
+            Bundle( const Bundle& bundle);
             QString imageUrl() const { return m_imageUrl; }
             void setImageUrl( const QString& imageUrl ) { m_imageUrl = imageUrl; }
 
