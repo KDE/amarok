@@ -21,7 +21,10 @@
 #include "debug.h"
 #include "enginecontroller.h"
 #include "lastfmproxy.h"
+#include "lastfmloginbase.h"
 #include "metabundle.h"
+
+#include <kmessagebox.h>
 
 #include <qdom.h>
 #include <qhttp.h>
@@ -69,6 +72,11 @@ Controller::getNewProxy( QString genreUrl )
     if ( m_service ) playbackStopped();
 
     m_service = new WebService( this );
+    
+    if(  AmarokConfig::scrobblerUsername().isEmpty() || AmarokConfig::scrobblerPassword().isEmpty() )
+         KMessageBox::createKMessageBox( new LoginDialog( 0 ), QMessageBox::NoIcon, "" , QStringList(), "", false, KMessageBox::Notify);
+    if( AmarokConfig::scrobblerUsername().isEmpty() || AmarokConfig::scrobblerPassword().isEmpty() )
+        return KURL(); 
 
     if( m_service->handshake( AmarokConfig::scrobblerUsername(), AmarokConfig::scrobblerPassword() ) )
     {
@@ -691,5 +699,20 @@ Bundle::Bundle( const Bundle& lhs)
     , m_albumUrl( lhs.m_albumUrl )
     , m_artistUrl( lhs.m_artistUrl )
 { }
+////////////////////////////////////////////////////////////////////////////////
+// CLASS LastFm::LoginDialog
+////////////////////////////////////////////////////////////////////////////////
+LoginDialog::LoginDialog( QWidget *parent )
+    : KConfigDialog (parent
+        , "lastfmLogin"
+        , AmarokConfig::self()
+        , KDialogBase::Plain
+        , KDialogBase::Ok|KDialogBase::Cancel
+        , KDialogBase::Ok
+        , true )
+{
+  //  new LastFmLoginBase( plainPage(), "lastfmLoginBase" );
+    addPage( new LastFmLoginBase( this, "lastfmLoginBase"), i18n("last.fm Profile"), "nope" );
+}
 
 #include "lastfmproxy.moc"

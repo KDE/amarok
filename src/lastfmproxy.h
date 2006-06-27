@@ -23,6 +23,8 @@
 #include <qurl.h>
 #include <qvaluelist.h>
 
+#include <kconfigdialog.h>
+
 class KProcIO;
 class KURL;
 class QSocket;
@@ -190,6 +192,11 @@ namespace LastFm
             QString m_titleUrl;
     };
 
+    class LoginDialog : public KConfigDialog
+    {
+        public:
+            LoginDialog(QWidget *parent);
+    };
     // We must implement this because QServerSocket has one pure virtual method.
     // It's just used for finding a free port.
     class MyServerSocket : public QServerSocket

@@ -93,6 +93,7 @@ libamarok_la_SOURCES = \
     k3bexporter.cpp \
     kbookmarkhandler.cpp \
     ktrm.cpp \
+    lastfmloginbase.ui \
     lastfmproxy.cpp \
     mediabrowser.cpp \
     medium.cpp \
