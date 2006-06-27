@@ -25,6 +25,7 @@ images_DATA = \
     description.png \
     eq_active2.png \
     eq_inactive2.png \
+    lastfm.png \
     loading1.png \
     loading2.png \
     logo_web.png \

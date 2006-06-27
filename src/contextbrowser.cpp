@@ -1576,7 +1576,7 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
     QString username = AmarokConfig::scrobblerUsername();
     QString userpage = "www.last.fm/user/" + username; // no http.
 
-    QString lastfmIcon = "file://" + KGlobal::instance()->iconLoader()->iconPath( amaroK::icon( "audioscrobbler" ), -KIcon::SizeMedium );
+    QString lastfmIcon = "file://" + locate( "data","amarok/images/lastfm.png" );
 
     QString imageUrl = lastFmInfo->imageUrl();
     if( imageUrl.isEmpty() )
