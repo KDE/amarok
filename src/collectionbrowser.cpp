@@ -1483,8 +1483,8 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                 break;
             case DELETE:
                 KURL::List files = listSelected();
-                DeleteDialog::showTrashDialog(this, files);
-                CollectionDB::instance()->removeSongs( files );
+                if ( DeleteDialog::showTrashDialog(this, files) )
+                    CollectionDB::instance()->removeSongs( files );
                 m_dirty = true;
                 QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
                 break;
