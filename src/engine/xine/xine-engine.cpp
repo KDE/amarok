@@ -40,8 +40,6 @@ extern "C"
     #include <unistd.h>
     #include "xine-scope.h"
 }
-// must be included after xine-scope.h
-#include <xine/audio_out.h> //flush
 
 #ifndef LLONG_MAX
 #define LLONG_MAX 9223372036854775807LL
@@ -1165,9 +1163,7 @@ bool XineEngine::getAudioCDContents(const QString &device, KURL::List &urls)
 
 bool XineEngine::flushBuffer()
 {
-    debug() << "flush!" << endl;
-    m_audioPort->flush( m_audioPort );
-    return true;
+    return false;
 }
 
 #include "xine-engine.moc"
