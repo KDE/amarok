@@ -1568,16 +1568,19 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
     LastFm::WebService *lfm = LastFm::Controller::instance()->getService();
     if( !lfm ) return;
 
-    QString username = AmarokConfig::scrobblerUsername();
-    QString userpage = "www.last.fm/user/" + username; // no http.
     const LastFm::Bundle *lastFmInfo = currentTrack.lastFmBundle();
 
     if ( !lastFmInfo )
         return;
 
+    QString username = AmarokConfig::scrobblerUsername();
+    QString userpage = "www.last.fm/user/" + username; // no http.
+
+    QString lastfmIcon = "file://" + KGlobal::instance()->iconLoader()->iconPath( amaroK::icon( "audioscrobbler" ), -KIcon::SizeMedium );
+
     QString imageUrl = lastFmInfo->imageUrl();
     if( imageUrl.isEmpty() )
-        imageUrl = "file://" + KGlobal::instance()->iconLoader()->iconPath( amaroK::icon( "audioscrobbler" ), -KIcon::SizeHuge ).replace( "32x32", "64x64" );
+        imageUrl = CollectionDB::instance()->notAvailCover();
 
     m_HTMLSource.append( QStringx(
             "<div id='current_box' class='box'>\n"
@@ -1587,22 +1590,25 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
             "<table id='current_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>\n"
             "<tr class='box-row'>\n"
             "<td id='current_box-largecover-td'>\n"
-            "<a id='current_box-largecover-a' href='externalurl://%2'>\n"
-            "<img id='current_box-largecover-image' src='%3' title='%4'>\n"
-            "</a>\n"
+            "<img id='current_box-largecover-image' src='%2' title='%3'>\n"
             "</td>\n"
-            "<td height='42' valign='top' align='right' width='90%'>\n"
+            "<td id='current_box-information-td' align='right'>\n"
+            "<div id='musicbrainz-div'>\n"
+            "<a id='lastfm-a' title='%4' href='externalurl://%5'>\n"
+            "<img id='lastfm-image' src='%6' />\n"
+            "</a>\n"
+            "</div>\n"
             "<br />\n"
-            "%5"
+            "%7"
             "<br />\n"
-            "%6"
+            "%8"
             "<br />\n"
             "<br />\n"
-            "<a href=\"lastfm:skip\">%7</a>"
+            "<a href=\"lastfm:skip\">%9</a>"
             "<br />\n"
-            "<a href=\"lastfm:love\">%8</a>"
+            "<a href=\"lastfm:love\">%10</a>"
             "<br />\n"
-            "<a href=\"lastfm:ban\">%9</a>"
+            "<a href=\"lastfm:ban\">%11</a>"
             "<br />\n"
             "</td>\n"
             "</tr>\n"
@@ -1610,9 +1616,11 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
             "</div>\n" )
             .args( QStringList()
             << escapeHTML( lfm->currentStation() )
-            << escapeHTML( userpage )
             << imageUrl
+            << escapeHTML( userpage )
+            << escapeHTML( userpage )
             << escapeHTML( "http://" + userpage )
+            << escapeHTML( lastfmIcon )
             << escapeHTML( currentTrack.prettyTitle() )
             << escapeHTML( currentTrack.album() )
             << i18n( "Skip" )
@@ -2634,7 +2642,6 @@ bool CurrentTrackJob::doJob()
     DEBUG_BLOCK
 
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
-    debug() << "we don't ever get here I don't think" << endl;
     m_HTMLSource.append( "<html><body>\n"
                     "<script type='text/javascript'>\n"
                       //Toggle visibility of a block. NOTE: if the block ID starts with the T
@@ -2669,7 +2676,6 @@ bool CurrentTrackJob::doJob()
 
         if( currentTrack.url().protocol() == "lastfm" )
         {
-            debug() << "do we get here?" << endl;
             showLastFm( currentTrack );
             return true;
         }
