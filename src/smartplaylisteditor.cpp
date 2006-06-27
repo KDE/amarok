@@ -56,18 +56,18 @@ SmartPlaylistEditor::SmartPlaylistEditor( QWidget *parent, QDomElement xml, cons
     // matches
     QDomNodeList matchesList =  xml.elementsByTagName( "matches" );
     bool matchedANY = false, matchedALL = false;
-    
+
     m_matchAllCheck->setChecked( true );
     m_matchAnyCheck->setChecked( true );
 
     for (int i = 0, m = matchesList.count(); i<m; i++) {
         QDomElement matches = matchesList.item(i).toElement();
         QDomNodeList criteriaList =  matches.elementsByTagName( "criteria" );
-        
+
         if ( criteriaList.count() ) {
             for (int j = 0, c=criteriaList.count() ; j<c; ++j ) {
                 QDomElement criteria = criteriaList.item(j).toElement();
-              
+
                 if (matches.attribute( "glue" ) == "OR") {
                     matchedANY = true;
                     addCriteriaAny( criteria );
@@ -260,7 +260,7 @@ void SmartPlaylistEditor::removeCriteriaAny( CriteriaEditor *criteria )
     m_criteriaEditorAnyList.remove( criteria );
     criteria->deleteLater();
     resize( size().width(), sizeHint().height() );
-    
+
     if( m_criteriaEditorAnyList.count() == 1 )
 	m_criteriaEditorAnyList.first()->enableRemove( false );
 }
@@ -270,7 +270,7 @@ void SmartPlaylistEditor::removeCriteriaAll( CriteriaEditor *criteria )
     m_criteriaEditorAllList.remove( criteria );
     criteria->deleteLater();
     resize( size().width(), sizeHint().height() );
-    
+
     if( m_criteriaEditorAllList.count() == 1 )
 	m_criteriaEditorAllList.first()->enableRemove( false );
 }
@@ -333,7 +333,7 @@ QDomElement SmartPlaylistEditor::result() {
         matches.setAttribute( "glue",  "AND" );
         smartplaylist.appendChild( matches );
     }
-    
+
     // Order By
     if( m_orderCheck->isChecked() ) {
         QDomElement orderby = doc.createElement("orderby");
@@ -373,54 +373,54 @@ void SmartPlaylistEditor::buildQuery()
     QString criteriaListStr;
     QString orderStr;
     QString limitStr;
-    
+
     //where expression
     if( m_matchAnyCheck->isChecked() || m_matchAllCheck->isChecked() ) {
         int i = 0;
-        
+
         if( m_matchAnyCheck->isChecked() ) {
             criteriaListStr += "( (";
-            
+
             CriteriaEditor *criteria = m_criteriaEditorAnyList.first();
             for( i=0; criteria; criteria = m_criteriaEditorAnyList.next(), i++ ) {
-                
+
                 QString str = criteria->getSearchCriteria();
                 if( str.contains( "statistics." ) && !joins.contains( "statistics" ) )
                     joins += " LEFT JOIN statistics ON statistics.url=tags.url";
-                
+
                 if( i ) //multiple conditions
                     str.prepend( " OR (");
-                
+
                 criteriaListStr += str+")";
             }
-            
+
             criteriaListStr += " )"; // we want our ORs all in one bracket. :-)
         }
-        
+
         if( m_matchAllCheck->isChecked() ) {
             if ( i ) // conditions exist from above
                 criteriaListStr += " AND ";
-            
+
             criteriaListStr += "( (";
-            
+
             CriteriaEditor *criteria2 = m_criteriaEditorAllList.first();
             for( i=0; criteria2; criteria2 = m_criteriaEditorAllList.next(), i++ ) {
-                
+
                 QString str = criteria2->getSearchCriteria();
                 if( str.contains( "statistics." ) && !joins.contains( "statistics" ) )
                     joins += " LEFT JOIN statistics ON statistics.url=tags.url";
-                
+
                 if( i ) //multiple conditions
                     str.prepend( " AND (");
-                
+
                 criteriaListStr += str+")";
             }
             criteriaListStr += " )";
         }
-        
+
         whereStr = " WHERE " + criteriaListStr;
     }
-    
+
     //order by expression
     if( m_orderCheck->isChecked() ) {
         if( m_orderCombo->currentItem() != m_orderCombo->count()-1 ) {
@@ -454,12 +454,12 @@ void SmartPlaylistEditor::buildQuery()
         }
     }
 
-    if( m_limitCheck->isChecked() ) 
+    if( m_limitCheck->isChecked() )
         limitStr = " LIMIT " + QString::number( m_limitSpin->value() )+" OFFSET 0 ";
-    
+
 
     // take care to adapt SmartPlaylist::NumReturnValues accordingly
-    // album / artist / genre / title / year / comment / track / bitrate / discnumber / length / samplerate / path / compilation
+    // album / artist / genre / title / year / comment / track / bitrate / discnumber / length / samplerate / path / compilation / filetype / composer
     m_query = "SELECT album.name, artist.name, genre.name, tags.title, year.name, tags.comment, tags.track, "
                     "tags.bitrate, tags.discnumber, tags.length, tags.samplerate, tags.filesize, "
                     // here, just before tags.url, is the place to add new return values

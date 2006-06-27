@@ -1011,7 +1011,7 @@ SqlLoader::doJob()
     BundleList bundles;
     uint x = 0;
     for( for_iterators( QStringList, values ); it != end && !isAborted(); ++it ) {
-        setProgress( x += 14);
+        setProgress( x += 16);
 
         MetaBundle b;
         b.setAlbum     (    *it );
@@ -1030,6 +1030,8 @@ SqlLoader::doJob()
         bool ok;
         const int val = (*++it).toInt( &ok );
         b.setCompilation( ok ? val : MetaBundle::CompilationUnknown );
+        b.setFileType( (*++it).toInt() );
+        b.setComposer( *++it );
 
         bundles += b;
 

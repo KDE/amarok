@@ -455,7 +455,7 @@ PlaylistCategory* PlaylistBrowser::loadSmartPlaylists()
     }
     else {
         e = d.namedItem( "category" ).toElement();
-        if ( e.attribute("formatversion") == "1.5" ) {
+        if ( e.attribute("formatversion") == "1.6" ) {
             PlaylistCategory* p = new PlaylistCategory(m_listview, after, e );
             p->setText( 0, i18n("Smart Playlists") );
             return p;
@@ -463,7 +463,8 @@ PlaylistCategory* PlaylistBrowser::loadSmartPlaylists()
         else if ( e.attribute("formatversion") == "1.1"
                || e.attribute("formatversion") == "1.2"
                || e.attribute("formatversion") == "1.3"
-               || e.attribute("formatversion") == "1.4" ) {
+               || e.attribute("formatversion") == "1.4"
+               || e.attribute("formatversion") == "1.5" ) {
             PlaylistCategory* p = new PlaylistCategory(m_listview, after, e );
             p->setText( 0, i18n("Smart Playlists") );
             debug() << "loading old format smart playlists, converted to new format" << endl;
@@ -513,6 +514,8 @@ void PlaylistBrowser::updateSmartPlaylists( QListViewItem *p )
                     sql.replace( "tags.url FROM", "tags.url, tags.sampler FROM" );
                     //1.4 to 1.5
                     sql.replace( "tags.bitrate, tags.length", "tags.bitrate, tags.discnumber, tags.length" );
+                    //1.5 to 1.6
+                    sql.replace( "tags.sampler FROM", "tags.sampler, tags.filetype, tags.composer FROM" );
                     //1.2 to 1.3
                     if ( limitSearch.search( sql ) != -1 )
                         sql.replace( limitSearch,
@@ -666,7 +669,7 @@ void PlaylistBrowser::saveSmartPlaylists( PlaylistCategory *smartCategory )
     QDomElement smartB = smartCategory->xml();
     smartB.setAttribute( "product", "Amarok" );
     smartB.setAttribute( "version", APP_VERSION );
-    smartB.setAttribute( "formatversion", "1.5" );
+    smartB.setAttribute( "formatversion", "1.6" );
     QDomNode smartplaylistsNode = doc.importNode( smartB, true );
     doc.appendChild( smartplaylistsNode );
 

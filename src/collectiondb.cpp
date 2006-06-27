@@ -256,7 +256,7 @@ CollectionDB::CollectionDB()
         //connect( this, SIGNAL(uniqueIdChanged(const QString&, const QString&, const QString&)),
                  //this, SLOT(atfMigrateStatisticsUniqueId(const QString&, const QString&, const QString&)) );
     }
-        
+
     connect( qApp, SIGNAL( aboutToQuit() ), this, SLOT( disableAutoScoring() ) );
 
 #ifdef HAVE_INOTIFY
@@ -4157,7 +4157,7 @@ CollectionDB::atfMigrateStatisticsUniqueId( const QString& /*url*/, const QStrin
                             .arg( escapeString( newid ) )
                             .arg( escapeString( oldid ) ) );
 }
-        
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE
@@ -4297,7 +4297,7 @@ CollectionDB::initialize()
             {
                 prev = 3;
             }
-            
+
             if( prev == 5)
             {
                 //Code to add unqiueid column and maybe "deleted" column will go here,
@@ -5899,7 +5899,8 @@ QueryBuilder::initSQLDrag()
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFilesize );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valIsCompilation );
-    // FIXME: why does this not include Composer, ...?
+    addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFileType );
+    addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComposer );
 }
 
 
