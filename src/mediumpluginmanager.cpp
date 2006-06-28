@@ -174,6 +174,8 @@ MediumPluginManager::redetectDevices()
                                                                    "     \"dcop kded mediamanager fullList\"\n"
                                                                    "in a Konsole window.") );
     }
+    else
+        emit changed();
 }
 
 void
