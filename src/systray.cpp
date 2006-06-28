@@ -246,27 +246,23 @@ amaroK::TrayIcon::blendOverlay( QPixmap &sourcePixmap )
 void
 amaroK::TrayIcon::setLastFm( bool lastFmActive )
 {
+    if( lastFmActive == m_lastFmMode ) return;
+
     KActionCollection* const ac = amaroK::actionCollection();
     if( lastFmActive )
-        if( m_lastFmMode )
-            return;
-        else
-        {
-            ac->action( "play_pause" )->unplug( contextMenu() );
-            ac->action( "ban" )->plug( contextMenu(), 2);
-            ac->action( "love" )->plug( contextMenu(), 2 );
-            ac->action( "skip" )->plug( contextMenu(), 2 );
-            m_lastFmMode = true;
-        }
+    {
+        ac->action( "play_pause" )->unplug( contextMenu() );
+        ac->action( "ban" )->plug( contextMenu(), 2 );
+        ac->action( "love" )->plug( contextMenu(), 2 );
+        ac->action( "skip" )->plug( contextMenu(), 2 );
+        m_lastFmMode = true;
+    }
    else
-        if( !m_lastFmMode )
-            return;
-        else
-        {
-            ac->action( "play_pause" )->plug( contextMenu(), 2 );
-            ac->action( "ban" )->unplug( contextMenu() );
-            ac->action( "love" )->unplug( contextMenu() );
-            ac->action( "skip" )->unplug( contextMenu() );
-            m_lastFmMode = false;
-        }
+   {
+        ac->action( "play_pause" )->plug( contextMenu(), 2 );
+        ac->action( "ban" )->unplug( contextMenu() );
+        ac->action( "love" )->unplug( contextMenu() );
+        ac->action( "skip" )->unplug( contextMenu() );
+        m_lastFmMode = false;
+   }
 }
