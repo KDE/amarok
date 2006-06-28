@@ -40,8 +40,6 @@ SHORT-TERM (URGENT):
  <sebr>    Podcast Fixme's:
              * Have i listened to podcast streamed?
 
- <sebr>    Make infopane in playlistbrowser a qsplitter
-
  <illiss.> Loading normal (M3U) playlists from the playlist browser doesn't block the UI per se,
            but it does nothing for really long time, until suddenly the whole playlist shows up,
            which is strange and confusing.
