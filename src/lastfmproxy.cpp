@@ -324,18 +324,14 @@ WebService::fetchImageFinished( int /*id*/, bool error ) //SLOT
     http->deleteLater();
 
     if( !error ) {
-        const QString path = amaroK::saveLocation() + "/lastfm_image.png";
+        const QString path = amaroK::saveLocation() + "lastfm_image.png";
         const int size = AmarokConfig::coverPreviewSize();
 
         QImage img( http->readAll() );
         img.smoothScale( size, size ).save( path, "PNG" );
 
-        LastFm::Bundle bundle( *m_metaBundle.lastFmBundle() );
-        bundle.setImageUrl( "file://" + CollectionDB::makeShadowedImage( path, false ) );
-        m_metaBundle.setLastFmBundle( bundle );
+        m_metaBundle.lastFmBundle()->setImageUrl( "file://" + CollectionDB::makeShadowedImage( path, false ) );
     }
-
-
     emit metaDataResult( m_metaBundle );
 }
 
