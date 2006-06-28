@@ -296,7 +296,7 @@ WebService::metaDataFinished( int /*id*/, bool error ) //SLOT
         imageUrl == "http://static.last.fm/depth/catalogue/no_album_large.gif" )
         imageUrl = QString::null;
 
-    lastFmStuff.setImageUrl ( "file://" + CollectionDB::instance()->notAvailCover( true ) );
+    lastFmStuff.setImageUrl ( CollectionDB::instance()->notAvailCover( true ) );
     lastFmStuff.setArtistUrl( parameter( "artist_url", result ) );
     lastFmStuff.setAlbumUrl ( parameter( "album_url", result ) );
     lastFmStuff.setTitleUrl ( parameter( "track_url", result ) );
@@ -329,7 +329,6 @@ WebService::fetchImageFinished( int /*id*/, bool error ) //SLOT
         const QString path = amaroK::saveLocation() + "lastfm_image.png";
         const int size = AmarokConfig::coverPreviewSize();
 
-        QFile::remove( path );
         QImage img( http->readAll() );
         img.smoothScale( size, size ).save( path, "PNG" );
 
