@@ -4670,6 +4670,7 @@ QStringList SqliteConnection::query( const QString& statement )
                 }
                 ::usleep( 100000 ); // Sleep 100 msec
                 debug() << "sqlite3_step: BUSY counter: " << busyCnt << endl;
+                continue;
             }
             if ( error == SQLITE_MISUSE )
                 debug() << "sqlite3_step: MISUSE" << endl;

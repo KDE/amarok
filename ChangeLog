@@ -18,6 +18,8 @@ VERSION 1.4.1:
     * GUI layout reverted to the classic Amarok layout.
 
   BUGFIXES:
+    * Fix problems where blanks would be added to data if SQLite was busy.
+      Patch by Thomas Lindroth <tholi945@student.liu.se>. (BR 127608)
     * Automatically refresh stream lyrics on new metadata.
     * Set half star ratings on multiple selected tracks when clicking on an
       item. (BR 129449)
