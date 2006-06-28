@@ -1671,6 +1671,14 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
 
     addMetaHistory();
 
+    const uint artist_id = CollectionDB::instance()->artistID( currentTrack.artist(), false /* don't autocreate */ );
+    if( artist_id )
+    {
+       const uint album_id  = CollectionDB::instance()->albumID ( currentTrack.album(), false /* don't autocreate */ );
+       showArtistsAlbums( currentTrack.artist(), artist_id, album_id );
+       showArtistsCompilations( currentTrack.artist(), artist_id, album_id );
+    }
+
     m_HTMLSource.append( "</body></html>\n" );
 }
 
