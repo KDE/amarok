@@ -1571,14 +1571,14 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
     if( !lfm ) return;
 
     const LastFm::Bundle *lastFmInfo = currentTrack.lastFmBundle();
+    if ( !lastFmInfo ) return;
 
-    if ( !lastFmInfo )
-        return;
-
-    QString username = AmarokConfig::scrobblerUsername();
-    QString userpage = "www.last.fm/user/" + username; //no http
-
-    QString lastfmIcon = "file://" + locate( "data","amarok/images/lastfm.png" );
+    const QString username   = AmarokConfig::scrobblerUsername();
+    const QString userpage   = "www.last.fm/user/" + username; //no http
+    const QString albumUrl   = lastFmInfo->albumUrl();
+    const QString artistUrl  = lastFmInfo->artistUrl();
+    const QString titleUrl   = lastFmInfo->titleUrl();
+    const QString lastfmIcon = "file://" + locate( "data","amarok/images/lastfm.png" );
 
     // Embed cover image in html (encoded string), to get around khtml's caching
     const QImage img( lastFmInfo->imageUrl() );
@@ -1587,10 +1587,6 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
     buffer.open( IO_WriteOnly );
     img.save( &buffer, "PNG" ); // writes image into ba in PNG format
     const QString coverImage = QString( "data:image/png;base64,%1" ).arg( KCodecs::base64Encode( ba ) );
-
-    QString albumUrl  = lastFmInfo->albumUrl();
-    QString artistUrl = lastFmInfo->artistUrl();
-    QString titleUrl  = lastFmInfo->titleUrl();
 
     QPtrList<QString> newUrls;
     newUrls.append( &albumUrl  );
@@ -1601,9 +1597,9 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
     for ( url = newUrls.first(); url; url = newUrls.next() )
         url->replace( QRegExp( "^http:" ), "externalurl:" );
 
-    QString skipIcon = KGlobal::iconLoader()->iconPath( amaroK::icon("next"),     -KIcon::SizeSmallMedium );
-    QString loveIcon = KGlobal::iconLoader()->iconPath( amaroK::icon("bookmark"), -KIcon::SizeSmallMedium );
-    QString banIcon  = KGlobal::iconLoader()->iconPath( amaroK::icon("remove"),   -KIcon::SizeSmallMedium );
+    const QString skipIcon = KGlobal::iconLoader()->iconPath( amaroK::icon("next"),     -KIcon::SizeSmallMedium );
+    const QString loveIcon = KGlobal::iconLoader()->iconPath( amaroK::icon("bookmark"), -KIcon::SizeSmallMedium );
+    const QString banIcon  = KGlobal::iconLoader()->iconPath( amaroK::icon("remove"),   -KIcon::SizeSmallMedium );
 
 
     m_HTMLSource.append( QStringx(
