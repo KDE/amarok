@@ -4611,7 +4611,7 @@ Playlist::showTagDialog( QPtrList<QListViewItem> items )
             dialog.exec();
         }
         else if ( QFile::exists( item->url().path() ) ) {
-            TagDialog *dialog = new TagDialog( *item, item, instance() );
+            TagDialog *dialog = new TagDialog( *item, item );
             dialog->show();
         }
         else
@@ -4624,7 +4624,7 @@ Playlist::showTagDialog( QPtrList<QListViewItem> items )
             if ( item->isVisible() )
                 urls << static_cast<PlaylistItem*>( item )->url();
 
-        TagDialog *dialog = new TagDialog( urls, instance() );
+        TagDialog *dialog = new TagDialog( urls );
         dialog->show();
     }
 
