@@ -60,6 +60,7 @@ Comment[pt]='Plugin' para o Amarok
 Comment[pt_BR]='Plugin' para o Amarok
 Comment[ru]=Модуль amaroK
 Comment[sv]=Insticksprogram för Amarok
+Comment[uk]=Втулок Amarok
 Comment[zh_CN]=Amarok 插件
 ServiceTypes=Amarok/Plugin
 
