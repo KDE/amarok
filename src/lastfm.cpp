@@ -21,7 +21,7 @@
 #include "collectiondb.h"
 #include "debug.h"
 #include "enginecontroller.h"
-#include "lastfmproxy.h"
+#include "lastfm.h"
 
 #include <qdom.h>
 #include <qhttp.h>
@@ -767,4 +767,4 @@ void LoginDialog::slotOk()
     KDialogBase::slotOk();
 }
 
-#include "lastfmproxy.moc"
+#include "lastfm.moc"

@@ -18,7 +18,7 @@
 #include "debug.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
-#include "lastfmproxy.h"
+#include "lastfm.h"
 #include "playlist.h"
 #include "playlistloader.h"
 #include "pluginmanager.h"
@@ -332,7 +332,7 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
 {
     DEBUG_BLOCK
 
-    if( LastFm::Controller::instance()->isPlaying() ) 
+    if( LastFm::Controller::instance()->isPlaying() )
     {
         m_engine->stop();
         LastFm::Controller::instance()->playbackStopped();

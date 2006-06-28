@@ -14,8 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef AMAROK_LASTFMPROXY_H
-#define AMAROK_LASTFMPROXY_H
+#ifndef AMAROK_LASTFM_H
+#define AMAROK_LASTFM_H
 
 #include "metabundle.h"
 
@@ -225,4 +225,4 @@ namespace LastFm
 
 }
 
-#endif /*AMAROK_LASTFMPROXY_H*/
+#endif /*AMAROK_LASTFM_H*/

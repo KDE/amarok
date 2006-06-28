@@ -51,9 +51,9 @@
 #include "metadata/m4a/mp4itunestag.h"
 #endif
 
+#include "lastfm.h"
 #include "metabundle.h"
 #include "podcastbundle.h"
-#include "lastfmproxy.h"
 
 MetaBundle::EmbeddedImage::EmbeddedImage( const TagLib::ByteVector& data, const TagLib::String& description )
     : m_description( TStringToQString( description ) )

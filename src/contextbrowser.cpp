@@ -22,7 +22,7 @@
 #include "cuefile.h"
 #include "enginecontroller.h"
 #include "htmlview.h"
-#include "lastfmproxy.h"
+#include "lastfm.h"
 #include "mediabrowser.h"
 #include "metabundle.h"
 #include "playlist.h"      //appendMedia()
