@@ -275,6 +275,12 @@ PlaylistBrowser::setInfo( const QString &title, const QString &info )
     m_infoPane->setInfo( title, info );
 }
 
+void
+PlaylistBrowser::resizeEvent( QResizeEvent * )
+{
+    m_infoPane->setMaximumWidth( height() / 1.5 );
+}
+
 
 /**
  *************************************************************************
@@ -3389,6 +3395,8 @@ InfoPane::InfoPane( QWidget *parent )
     m_pushButton->setToggleButton( true );
     m_pushButton->setEnabled( m_enable );
     connect( m_pushButton, SIGNAL(toggled( bool )), SLOT(toggle( bool )) );
+
+    setMaximumHeight( m_pushButton->sizeHint().height() );
 }
 
 
@@ -3399,7 +3407,12 @@ InfoPane::toggle( bool toggled )
 
     //Now the info pane is not shown, we can disable the button if necessary
     if ( !toggled )
+    {
+        setMaximumHeight( m_pushButton->sizeHint().height() );
         m_pushButton->setEnabled( m_enable );
+    }
+    else
+        setMaximumHeight( parentWidget()->height() / 1.5 );
 }
 
 

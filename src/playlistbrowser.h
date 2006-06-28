@@ -97,6 +97,9 @@ class PlaylistBrowser : public QVBox
         PlaylistCategory* getDynamicCategory() const { return m_dynamicCategory; }
         void saveDynamics();
 
+    protected:
+        virtual void resizeEvent( QResizeEvent * );
+
     signals:
         void selectionChanged();
 
