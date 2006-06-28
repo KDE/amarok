@@ -1023,7 +1023,11 @@ CollectionDB::albumIsCompilation( const QString &album_id )
 QStringList
 CollectionDB::albumTracks( const QString &artist_id, const QString &album_id, const bool isValue )
 {
-    Q_INT64 matchType = isValue ? QueryBuilder::valName : QueryBuilder::valID;
+    Q_INT64 matchType;
+    if ( isValue )
+        matchType = QueryBuilder::valName;
+    else
+        matchType = QueryBuilder::valID;
     QueryBuilder qb;
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
     qb.addMatch( QueryBuilder::tabAlbum, matchType, album_id );
