@@ -13,7 +13,6 @@ require "uri"
 
 include Socket::Constants
 
-
 def puts( string )
     $stdout.puts( "AMAROK_PROXY: " + string )
     $stderr.puts( "AMAROK_PROXY: " + string )
@@ -21,10 +20,14 @@ end
 
 
 def cp_to_empty( s, o )
+    useragent = ""
     s.each_line do |data|
         puts( data )
+        if data.include?( "User-Agent:" )
+           label,useragent = data.split(/\s*\:\s*/) 
+        end
         o.write( data )
-        break if data.chomp == ""
+        return useragent if data.chomp == ""
     end
 end
 
@@ -69,18 +72,34 @@ serv = TCPSocket.new( uri.host, uri.port )
 
 # here we substitute the proxy GET
 data = amaroks.readline
-puts( data << " but sending GET " << uri.path << "?" << uri.query << " HTTP/1.1\r\n" )
-serv.puts( "GET " << uri.path << "?" << uri.query << " HTTP/1.1\r\n\r\n" )
+g = "GET " << uri.path
+g = g << "/" if uri.path == ""
+if ( uri.query && uri.query != "" )
+   g = g << "?" << uri.query
+end
+g = g << " HTTP/1.1\r\n"
+
+puts( data << "but sending " << g )
+serv.puts( g )
 
 # the client initiates everything - so copy it to the server
-cp_to_empty( amaroks, serv )
+puts "COPY from amarok -> serv"
+useragent = cp_to_empty( amaroks, serv )
 
+puts "COPY from serv -> amarok"
 cp_to_empty( serv, amaroks )
-
 
 # now copy from the server to amarok
 puts( "Before cp_all()" )
 cp_all( serv, amaroks )
+
+puts "useragent is " << useragent
+if !useragent.include?( "xine" ) && amaroks.eof
+   puts "EOF Detected, reconnecting"
+   amaroks = amarok.accept
+   cp_all ( serv, amaroks )
+end
+
 
 
 puts( "exiting" )
