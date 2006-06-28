@@ -21,16 +21,16 @@
 #include "collectiondb.h"
 #include "debug.h"
 #include "enginecontroller.h"
-#include "lastfmloginbase.h"
 #include "lastfmproxy.h"
-
-#include <kmessagebox.h>
 
 #include <qdom.h>
 #include <qhttp.h>
+#include <qlabel.h>
 #include <qregexp.h>
 
+#include <klineedit.h>
 #include <kmdcodec.h>       //md5sum
+#include <kmessagebox.h>
 #include <kprocio.h>
 #include <kprotocolmanager.h>
 #include <kurl.h>
@@ -73,8 +73,12 @@ Controller::getNewProxy( QString genreUrl )
 
     m_service = new WebService( this );
 
-    if(  AmarokConfig::scrobblerUsername().isEmpty() || AmarokConfig::scrobblerPassword().isEmpty() )
-         KMessageBox::createKMessageBox( new LoginDialog( 0 ), QMessageBox::NoIcon, "" , QStringList(), "", false, KMessageBox::Notify);
+    if( AmarokConfig::scrobblerUsername().isEmpty() || AmarokConfig::scrobblerPassword().isEmpty() )
+    {
+        LoginDialog dialog( 0 );
+        dialog.setCaption( "last.fm" );
+        dialog.exec();
+    }
     if( AmarokConfig::scrobblerUsername().isEmpty() || AmarokConfig::scrobblerPassword().isEmpty() )
         return KURL();
 
@@ -739,16 +743,27 @@ Bundle::Bundle( const Bundle& lhs )
 // CLASS LastFm::LoginDialog
 ////////////////////////////////////////////////////////////////////////////////
 LoginDialog::LoginDialog( QWidget *parent )
-    : KConfigDialog (parent
-        , "lastfmLogin"
-        , AmarokConfig::self()
-        , KDialogBase::Plain
-        , KDialogBase::Ok|KDialogBase::Cancel
-        , KDialogBase::Ok
-        , true )
+    : KDialogBase( parent, "LastFmLogin", true, QString::null, Ok|Cancel)
 {
-  //  new LastFmLoginBase( plainPage(), "lastfmLoginBase" );
-    addPage( new LastFmLoginBase( this, "lastfmLoginBase"), i18n("last.fm Profile"), "nope" );
+    makeGridMainWidget( 2, Qt::Horizontal );
+
+    QLabel *nameLabel = new QLabel( i18n("&Username:"), mainWidget() );
+    m_userLineEdit = new KLineEdit( mainWidget() );
+    nameLabel->setBuddy( m_userLineEdit );
+
+    QLabel *passLabel = new QLabel( i18n("&Password:"), mainWidget() );
+    m_passLineEdit = new KLineEdit( mainWidget() );
+    passLabel->setBuddy( m_passLineEdit );
+
+    m_userLineEdit->setFocus();
+}
+
+void LoginDialog::slotOK()
+{
+    AmarokConfig::setScrobblerUsername( m_userLineEdit->text() );
+    AmarokConfig::setScrobblerPassword( m_passLineEdit->text() );
+
+    KDialogBase::slotOk();
 }
 
 #include "lastfmproxy.moc"
