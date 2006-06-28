@@ -9,9 +9,13 @@ SHORT-TERM (URGENT):
 
  <sebr>    LastFm:
              - statusbar notifications of love/skip/ban
-             - cover retrieval
              - better context browser, icons etc
-
+ <eean>      - fix progress indicator 
+             - display history in the playlist somehow 
+               -subitems?
+               -just disabled?
+             - 'stop after current track' should work
+            
  <markey>  GHNS for scripts and themes only shows 20 items maximum. I understand this is due
            to some configuration on pwsp.net, where we fetch the feed. This must be fixed!!!
 
