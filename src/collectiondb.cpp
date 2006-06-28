@@ -1692,7 +1692,8 @@ CollectionDB::findEmbeddedImage( const QString& artist, const QString& album, ui
                 "AND album.name = '%1' "
                 "AND tags.sampler = %2 "
                 "ORDER BY modifydate DESC LIMIT 1;" )
-                .arg( escapeString( album ).arg( boolT()) ) );
+                .arg( escapeString( album ) )
+                .arg( boolT() ) );
     } else {
         values = query( QString(
                 "SELECT embed.hash, embed.url FROM tags, embed, artist, album "
