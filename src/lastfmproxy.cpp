@@ -79,10 +79,12 @@ Controller::getNewProxy( QString genreUrl )
         dialog.setCaption( "last.fm" );
         dialog.exec();
     }
-    if( AmarokConfig::scrobblerUsername().isEmpty() || AmarokConfig::scrobblerPassword().isEmpty() )
-        return KURL();
 
-    if( m_service->handshake( AmarokConfig::scrobblerUsername(), AmarokConfig::scrobblerPassword() ) )
+    QString user = AmarokConfig::scrobblerUsername();
+    QString pass = AmarokConfig::scrobblerPassword();
+
+    if( !user.isEmpty() && !pass.isEmpty() &&
+        m_service->handshake( user, pass ) )
     {
         m_service->changeStation( m_genreUrl );
         if( !AmarokConfig::submitPlayedSongs() )
@@ -741,8 +743,10 @@ Bundle::Bundle( const Bundle& lhs )
 LoginDialog::LoginDialog( QWidget *parent )
     : KDialogBase( parent, "LastFmLogin", true, QString::null, Ok|Cancel)
 {
-    makeGridMainWidget( 2, Qt::Horizontal );
+    makeGridMainWidget( 1, Qt::Horizontal );
+    new QLabel( i18n( "To use last.fm with Amarok, you need a last.fm profile." ), mainWidget() );
 
+    makeGridMainWidget( 2, Qt::Horizontal );
     QLabel *nameLabel = new QLabel( i18n("&Username:"), mainWidget() );
     m_userLineEdit = new KLineEdit( mainWidget() );
     nameLabel->setBuddy( m_userLineEdit );
