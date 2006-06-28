@@ -205,6 +205,8 @@ class PlaylistBrowser : public QVBox
         InfoPane *m_infoPane;
 
         bool                 m_removeDirt;
+	
+	QSplitter *m_splitter;
 };
 
 
@@ -356,7 +358,7 @@ class InfoPane : public QVBox
     Q_OBJECT
 
 public:
-    InfoPane( PlaylistBrowser *parent );
+    InfoPane( QWidget *parent );
 
 public slots:
     void setInfo( const QString &title, const QString &info );

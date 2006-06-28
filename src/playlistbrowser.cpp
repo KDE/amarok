@@ -114,7 +114,9 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     removeButton->setEnabled( false );
     //</Toolbar>
 
-    m_listview = new PlaylistBrowserView( browserBox );
+    m_splitter = new QSplitter( Qt::Vertical, browserBox );
+
+    m_listview = new PlaylistBrowserView( m_splitter );
 
     KConfig *config = amaroK::config( "PlaylistBrowser" );
 
@@ -137,7 +139,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     setMinimumWidth( m_toolbar->sizeHint().width() );
 
-    m_infoPane = new InfoPane( this );
+    m_infoPane = new InfoPane( m_splitter );
 
     m_podcastCategory = loadPodcasts();
 
@@ -3364,7 +3366,7 @@ void PlaylistDialog::slotCustomPath()
 }
 
 
-InfoPane::InfoPane( PlaylistBrowser *parent )
+InfoPane::InfoPane( QWidget *parent )
         : QVBox( parent ),
           m_enable( false )
 {
