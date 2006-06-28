@@ -1595,6 +1595,14 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
     for ( url = newUrls.first(); url; url = newUrls.next() )
         url->replace( QRegExp( "^http:" ), "externalurl:" );
 
+    QString skipIcon = KGlobal::iconLoader()->iconPath( amaroK::icon("next"),      -KIcon::SizeSmallMedium );
+    QString loveIcon = KGlobal::iconLoader()->iconPath( amaroK::icon("favorites"), -KIcon::SizeSmallMedium );
+    QString banIcon  = KGlobal::iconLoader()->iconPath( amaroK::icon("remove"),    -KIcon::SizeSmallMedium );
+
+    // bloody kiconloader
+    skipIcon = skipIcon.replace( "64x64", "22x22" );
+    loveIcon = loveIcon.replace( "64x64", "22x22" );
+    banIcon  = banIcon.replace( "64x64", "22x22" );
 
     m_HTMLSource.append( QStringx(
             "<div id='current_box' class='box'>\n"
@@ -1620,13 +1628,23 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
             "<img id='lastfm-image' title='%12' src='%13' />\n"
             "</a>\n"
             "</div>\n"
-            "<br />\n"
-            "<a href=\"lastfm:skip\">%14</a>"
-            "<br />\n"
-            "<a href=\"lastfm:love\">%15</a>"
-            "<br />\n"
-            "<a href=\"lastfm:ban\">%16</a>"
-            "<br />\n"
+            "<table cellpadding='1'>\n"
+            "<tr><td>\n"
+            "%14\n"
+            "</td><td>\n"
+            "<a href='lastfm:skip'><img id='lastfm-skip-image' src='%15'></a>\n"
+            "</td></tr>\n"
+            "<tr><td>\n"
+            "%16\n"
+            "</td><td>\n"
+            "<a href='lastfm:love'><img id='lastfm-love-image' src='%17'></a>\n"
+            "</td></tr>\n"
+            "<tr><td>\n"
+            "%18\n"
+            "</td><td>\n"
+            "<a href='lastfm:ban'><img id='lastfm-ban-image' src='%19'></a>\n"
+            "</td></tr>\n"
+            "</table>\n"
             "</td>\n"
             "</tr>\n"
             "</table>\n"
@@ -1646,8 +1664,11 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
             << escapeHTML( userpage ) //12
             << escapeHTML( lastfmIcon ) //13
             << i18n( "Skip" ) //14
-            << i18n( "Love" ) //15
-            << i18n( "Ban" ) //16
+            << escapeHTML( skipIcon ) //15
+            << i18n( "Love" ) //16
+            << escapeHTML( loveIcon ) //17
+            << i18n( "Ban" ) //18
+            << escapeHTML( banIcon ) //19
                 ) );
 
     addMetaHistory();
