@@ -10,6 +10,7 @@ VERSION 1.4.1:
       (BR 129349)
 
   CHANGES:
+    * Upgraded internal SQLite to 3.3.6.
     * Inotify support disabled for now, due to stability issues.
     * Tag editor is no longer modal.
     * Provide warning dialog when deleting items from the playlistbrowser.
