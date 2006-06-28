@@ -1649,7 +1649,7 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
             << i18n( "Love" ) //15
             << i18n( "Ban" ) //16
                 ) );
-    debug() << imageUrl << endl;
+
     addMetaHistory();
 
     m_HTMLSource.append( "</body></html>\n" );
