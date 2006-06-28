@@ -2,6 +2,7 @@
 // (c) 2005 Reigo Reinmets <xatax@hot.ee>
 // (c) 2005 Mark Kretschmann <markey@web.de>
 // (c) 2006 Peter C. Ndikuwera <pndiku@gmail.com>
+// (c) 2006 Alexandre Pereira de Oliveira <aleprj@gmail.com>
 // License: GNU General Public License V2
 
 
@@ -1602,21 +1603,23 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
             "</div>\n"
             "<table id='current_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>\n"
             "<tr class='box-row'>\n"
+            "<td id='current_box-information-td' colspan=2>\n"
+            "<a href='%2'><b>%3</b></a> - <a href='%4'><b>%5</b></a>"
+            "<br />\n"
+            "<a href='%6'><b>%7</b></a>"
+            "</td>\n"
+            "</tr>\n"
+            "<tr class='box-row'>\n"
             "<td id='current_box-largecover-td'>\n"
-            "<a href='%2'>"
-            "<img id='current_box-largecover-image' src='%3' title='%4'>\n"
+            "<a href='%8'>"
+            "<img id='current_box-largecover-image' src='%9' title='%10'>\n"
             "</a></td>\n"
             "<td id='current_box-information-td' align='right'>\n"
             "<div id='musicbrainz-div'>\n"
-            "<a id='lastfm-a' href='externalurl://%5'>\n"
-            "<img id='lastfm-image' title='%6' src='%7' />\n"
+            "<a id='lastfm-a' href='externalurl://%11'>\n"
+            "<img id='lastfm-image' title='%12' src='%13' />\n"
             "</a>\n"
             "</div>\n"
-            "<br />\n"
-            "<a href='%8'>%9</a> - <a href='%10'>%11</a>"
-            "<br />\n"
-            "<a href='%12'>%13</a>"
-            "<br />\n"
             "<br />\n"
             "<a href=\"lastfm:skip\">%14</a>"
             "<br />\n"
@@ -1630,23 +1633,23 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
             "</div>\n" )
             .args( QStringList()
             << escapeHTML( lfm->currentStation() )  //1
-            << albumUrl //2
-            << imageUrl //3
-            << escapeHTML( currentTrack.album() )//4
-            << escapeHTML( userpage ) //5
-            << escapeHTML( userpage ) //6
-            << escapeHTML( lastfmIcon ) //7
-            << artistUrl  //8
-            << escapeHTML( currentTrack.artist() ) //9
-            << titleUrl //10
-            << escapeHTML( currentTrack.title() ) //11
-            << albumUrl //12
-            << escapeHTML( currentTrack.album() ) //13
+            << artistUrl  //2
+            << escapeHTML( currentTrack.artist() ) //3
+            << titleUrl //4
+            << escapeHTML( currentTrack.title() ) //5
+            << albumUrl //6
+            << escapeHTML( currentTrack.album() ) //7
+            << albumUrl //8
+            << imageUrl //9
+            << escapeHTML( currentTrack.album() )//10
+            << escapeHTML( userpage ) //11
+            << escapeHTML( userpage ) //12
+            << escapeHTML( lastfmIcon ) //13
             << i18n( "Skip" ) //14
             << i18n( "Love" ) //15
             << i18n( "Ban" ) //16
                 ) );
-    debug() << userpage << ' ' << escapeHTML(userpage) << endl;
+    debug() << imageUrl << endl;
     addMetaHistory();
 
     m_HTMLSource.append( "</body></html>\n" );
