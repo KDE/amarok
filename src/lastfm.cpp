@@ -329,10 +329,11 @@ WebService::fetchImageFinished( int /*id*/, bool error ) //SLOT
         const QString path = amaroK::saveLocation() + "lastfm_image.png";
         const int size = AmarokConfig::coverPreviewSize();
 
+        QFile::remove( path );
         QImage img( http->readAll() );
         img.smoothScale( size, size ).save( path, "PNG" );
 
-        m_metaBundle.lastFmBundle()->setImageUrl( "file://" + CollectionDB::makeShadowedImage( path, false ) );
+        m_metaBundle.lastFmBundle()->setImageUrl( CollectionDB::makeShadowedImage( path, false ) );
     }
     emit metaDataResult( m_metaBundle );
 }

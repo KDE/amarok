@@ -1579,8 +1579,14 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
     QString userpage = "www.last.fm/user/" + username; //no http
 
     QString lastfmIcon = "file://" + locate( "data","amarok/images/lastfm.png" );
-    QString imageUrl = lastFmInfo->imageUrl();
-    debug() << "ImageUrl: " << imageUrl << endl;
+
+    // Embed cover image in html (encoded string), to get around khtml's caching
+    const QImage img( lastFmInfo->imageUrl() );
+    QByteArray ba;
+    QBuffer buffer( ba );
+    buffer.open( IO_WriteOnly );
+    img.save( &buffer, "PNG" ); // writes image into ba in PNG format
+    const QString coverImage = QString( "data:image/png;base64,%1" ).arg( KCodecs::base64Encode( ba ) );
 
     QString albumUrl  = lastFmInfo->albumUrl();
     QString artistUrl = lastFmInfo->artistUrl();
@@ -1654,7 +1660,7 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
             << albumUrl //6
             << escapeHTML( currentTrack.album() ) //7
             << albumUrl //8
-            << imageUrl //9
+            << coverImage //9
             << escapeHTML( currentTrack.album() )//10
             << escapeHTML( userpage ) //11
             << escapeHTML( userpage ) //12
