@@ -175,7 +175,7 @@ MediumPluginManager::redetectDevices()
                                                                    "in a Konsole window.") );
     }
     else
-        emit changed();
+        slotChanged();
 }
 
 void
@@ -192,7 +192,7 @@ MediumPluginManager::deleteMedium( Medium *medium )
             break;
         }
     }
-    emit changed();
+    slotChanged();
 }
 
 void
@@ -248,7 +248,7 @@ MediumPluginManager::newDevice()
         }
     }
     delete mda;
-    emit changed();
+    slotChanged();
 }
 
 /////////////////////////////////////////////////////////////////////
