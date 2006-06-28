@@ -28,6 +28,7 @@
 #include <kconfigdialog.h>
 
 class KLineEdit;
+class KAction;
 class KProcIO;
 class KURL;
 class QSocket;
@@ -54,11 +55,15 @@ namespace LastFm
 
         public slots:
             void playbackStopped();
-
+            void ban();
+            void love();
+            void skip();
         private:
             Controller();
-            static Controller *s_instance;
+            void setActionsEnabled( bool enable );
 
+            static Controller *s_instance;
+            QPtrList<KAction> m_actionList;
             QString     m_genreUrl;
             QGuardedPtr<WebService> m_service;
     };

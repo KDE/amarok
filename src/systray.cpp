@@ -131,9 +131,9 @@ amaroK::TrayIcon::engineStateChanged( Engine::State state, Engine::State /*oldSt
     case Engine::Empty:
         overlayVisible = false;
         paintIcon( -1, true ); // repaint the icon
-
+                               // fall through to default:
     default:
-        ;
+        setLastFm( false );
     }
 }
 
@@ -141,6 +141,7 @@ void
 amaroK::TrayIcon::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
     trackLength = bundle.length() * 1000;
+    setLastFm( bundle.url().protocol() == "lastfm");
 }
 
 void
@@ -240,4 +241,32 @@ amaroK::TrayIcon::blendOverlay( QPixmap &sourcePixmap )
     copyBlt( &sourcePixmapCopy, opX,opY, &sourceCropped, 0,0, opW,opH );
 
     setPixmap( sourcePixmapCopy ); // @since 3.2
+}
+
+void
+amaroK::TrayIcon::setLastFm( bool lastFmActive )
+{
+    KActionCollection* const ac = amaroK::actionCollection();
+    if( lastFmActive )
+        if( m_lastFmMode )
+            return;
+        else
+        {
+            ac->action( "play_pause" )->unplug( contextMenu() );
+            ac->action( "ban" )->plug( contextMenu(), 2);
+            ac->action( "love" )->plug( contextMenu(), 2 );
+            ac->action( "skip" )->plug( contextMenu(), 2 );
+            m_lastFmMode = true;
+        }
+   else
+        if( !m_lastFmMode )
+            return;
+        else
+        {
+            ac->action( "play_pause" )->plug( contextMenu(), 2 );
+            ac->action( "ban" )->unplug( contextMenu() );
+            ac->action( "love" )->unplug( contextMenu() );
+            ac->action( "skip" )->unplug( contextMenu() );
+            m_lastFmMode = false;
+        }
 }

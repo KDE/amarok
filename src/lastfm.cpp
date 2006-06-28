@@ -16,7 +16,7 @@
 
 #define DEBUG_PREFIX "LastFmProxy"
 
-#include "amarok.h"         //APP_VERSION
+#include "amarok.h"         //APP_VERSION, actioncollection
 #include "amarokconfig.h"   //last.fm username and passwd
 #include "collectiondb.h"
 #include "debug.h"
@@ -28,11 +28,13 @@
 #include <qlabel.h>
 #include <qregexp.h>
 
+#include <kaction.h>
 #include <klineedit.h>
 #include <kmdcodec.h>       //md5sum
 #include <kmessagebox.h>
 #include <kprocio.h>
 #include <kprotocolmanager.h>
+#include <kshortcut.h>
 #include <kurl.h>
 
 #include <time.h>
@@ -50,13 +52,18 @@ Controller *Controller::s_instance = 0;
 Controller::Controller()
     : QObject( EngineController::instance(), "lastfmController" )
     , m_service( 0 )
-{}
+{
+    KActionCollection* ac = amaroK::actionCollection();
+    m_actionList.append( new KAction( i18n( "Ban" ), amaroK::icon( "remove" ), KKey( Qt::CTRL | Qt::Key_B ), this, SLOT( ban() ), ac, "ban" ) );
+    m_actionList.append( new KAction( i18n( "Love" ), amaroK::icon( "love" ), KKey( Qt::CTRL | Qt::Key_L ), this, SLOT( love() ), ac, "love" ) );
+    m_actionList.append( new KAction( i18n( "Skip" ), 0, KKey( Qt::CTRL | Qt::Key_K ), this, SLOT( skip() ), ac, "skip" ) );
+    setActionsEnabled( false );
+}
 
 
 Controller*
 Controller::instance()
 {
-    DEBUG_BLOCK
     if( !s_instance ) s_instance = new Controller();
     return s_instance;
 }
@@ -84,7 +91,7 @@ Controller::getNewProxy( QString genreUrl )
             m_service->changeStation( m_genreUrl );
             if( !AmarokConfig::submitPlayedSongs() )
                 m_service->enableScrobbling( false );
-
+            setActionsEnabled( true );
             return KURL( m_service->proxyUrl() );
         }
     }
@@ -98,6 +105,7 @@ Controller::getNewProxy( QString genreUrl )
 void
 Controller::playbackStopped() //SLOT
 {
+    setActionsEnabled( false );
     delete m_service;
     m_service = 0;
 }
@@ -109,10 +117,41 @@ Controller::checkCredentials() //static
     {
         LoginDialog dialog( 0 );
         dialog.setCaption( "last.fm" );
-        dialog.exec();
         return dialog.exec() == QDialog::Accepted;
     }
     return true;
+}
+
+void
+Controller::ban()
+{
+    if( m_service )
+        m_service->ban();
+}
+
+void
+Controller::love()
+{
+    if( m_service )
+        m_service->love();
+}
+
+void
+Controller::skip()
+{
+    if( m_service )
+        m_service->skip();
+}
+
+void
+Controller::setActionsEnabled( bool enable )
+{   //pausing last.fm streams doesn't do anything good
+    amaroK::actionCollection()->action( "play_pause" )->setEnabled( !enable ); 
+    amaroK::actionCollection()->action( "pause" )->setEnabled( !enable );
+
+    KAction* action;
+    for( action = m_actionList.first(); action; action = m_actionList.next() )
+        action->setEnabled( enable );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -217,7 +256,7 @@ WebService::handshake( const QString& username, const QString& password )
     }
 
     connect( m_server, SIGNAL( readReady( KProcIO* ) ), this, SLOT( readProxy() ) );
-    connect( m_server, SIGNAL( processExited( KProcess* ) ), this, SLOT( deleteLater() ) );
+    connect( m_server, SIGNAL( processExited( KProcess* ) ), Controller::instance(), SLOT( playbackStopped() ) );
 
     return true;
 }
@@ -680,8 +719,6 @@ WebService::parameter( QString keyName, QString data ) const
     for ( uint i = 0; i < list.size(); i++ )
     {
         QStringList values = QStringList::split( '=', list[i] );
-        if ( keyName == "albumcover_small" )
-            debug() << values[0] << '-' << values[1] << endl;
         if ( values[0] == keyName )
         {
             values.remove( values.at(0) );

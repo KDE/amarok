@@ -33,6 +33,7 @@ protected:
 
 private:
     bool event( QEvent* );
+    void setLastFm( bool );
 
     // repaints trayIcon showing progress (and overlay if present)
     void paintIcon( int mergePixels = -1, bool force = false );
@@ -45,6 +46,8 @@ private:
     QPixmap *overlay;   // the current overlay (may be NULL)
     int blinkTimerID;   // timer ID returned by QObject::startTimer()
     bool overlayVisible;// used for blinking / hiding overlay
+    /** whether the last.fm icons are visible **/
+    bool m_lastFmMode; 
 };
 
 }
