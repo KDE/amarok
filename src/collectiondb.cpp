@@ -1023,28 +1023,25 @@ CollectionDB::albumIsCompilation( const QString &album_id )
 QStringList
 CollectionDB::albumTracks( const QString &artist_id, const QString &album_id, const bool isValue )
 {
-    if ( isValue)
-    {
-        return query( QString( "SELECT tags.url FROM tags LEFT JOIN artist ON artist.id=tags.artist LEFT JOIN album ON "
-                        "album.id=tags.album WHERE (album.name = '%1' ) AND (artist.name = '%2' ) ORDER BY tags.discnumber, tags.track;" )
-                        .arg( album_id )
-                        .arg( artist_id ) );
-    }
+    Q_INT64 matchType = isValue ? QueryBuilder::valName : QueryBuilder::valID;
+    QueryBuilder qb;
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+    qb.addMatch( QueryBuilder::tabAlbum, matchType, album_id );
+    qb.addMatch( QueryBuilder::tabArtist, matchType, artist_id );
+    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
+    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+    QStringList ret = qb.run();
 
-    if (getDbConnectionType() == DbConnection::postgresql)
-        return query( QString( "SELECT tags.url, tags.track AS __discard FROM tags, year WHERE tags.album = %1 AND "
-                           "( tags.sampler = %2 OR tags.artist = %3 ) AND year.id = tags.year "
-                           "ORDER BY tags.discnumber, tags.track;" )
-                  .arg( album_id )
-                  .arg( boolT() )
-                  .arg( artist_id ) );
+    uint returnValues = qb.countReturnValues();
+    if ( returnValues > 1 )
+    {
+        QStringList ret2;
+        for ( QStringList::size_type i = 0; i < ret.size(); i += returnValues )
+            ret2 << ret[ i ];
+        return ret2;
+    }
     else
-        return query( QString( "SELECT tags.url FROM tags, year WHERE tags.album = %1 AND "
-                           "( tags.sampler = %2 OR tags.artist = %3 ) AND year.id = tags.year "
-                           "ORDER BY tags.discnumber, tags.track;" )
-                  .arg( album_id )
-                  .arg( boolT() )
-                  .arg( artist_id ) );
+        return ret;
 }
 
 QStringList
