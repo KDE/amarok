@@ -215,7 +215,7 @@ namespace LastFm
             LoginDialog( QWidget *parent );
 
         protected slots:
-            void slotOK();
+            void slotOk();
 
         private:
             KLineEdit *m_userLineEdit;

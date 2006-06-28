@@ -759,7 +759,7 @@ LoginDialog::LoginDialog( QWidget *parent )
     m_userLineEdit->setFocus();
 }
 
-void LoginDialog::slotOK()
+void LoginDialog::slotOk()
 {
     AmarokConfig::setScrobblerUsername( m_userLineEdit->text() );
     AmarokConfig::setScrobblerPassword( m_passLineEdit->text() );
