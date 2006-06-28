@@ -73,24 +73,20 @@ Controller::getNewProxy( QString genreUrl )
 
     m_service = new WebService( this );
 
-    if( AmarokConfig::scrobblerUsername().isEmpty() || AmarokConfig::scrobblerPassword().isEmpty() )
+    if( checkCredentials() )
     {
-        LoginDialog dialog( 0 );
-        dialog.setCaption( "last.fm" );
-        dialog.exec();
-    }
+        QString user = AmarokConfig::scrobblerUsername();
+        QString pass = AmarokConfig::scrobblerPassword();
 
-    QString user = AmarokConfig::scrobblerUsername();
-    QString pass = AmarokConfig::scrobblerPassword();
+        if( !user.isEmpty() && !pass.isEmpty() &&
+            m_service->handshake( user, pass ) )
+        {
+            m_service->changeStation( m_genreUrl );
+            if( !AmarokConfig::submitPlayedSongs() )
+                m_service->enableScrobbling( false );
 
-    if( !user.isEmpty() && !pass.isEmpty() &&
-        m_service->handshake( user, pass ) )
-    {
-        m_service->changeStation( m_genreUrl );
-        if( !AmarokConfig::submitPlayedSongs() )
-            m_service->enableScrobbling( false );
-
-        return KURL( m_service->proxyUrl() );
+            return KURL( m_service->proxyUrl() );
+        }
     }
 
     // Some kind of failure happened, so crap out
@@ -106,6 +102,18 @@ Controller::playbackStopped() //SLOT
     m_service = 0;
 }
 
+bool
+Controller::checkCredentials() //static
+{
+    if( AmarokConfig::scrobblerUsername().isEmpty() || AmarokConfig::scrobblerPassword().isEmpty() )
+    {
+        LoginDialog dialog( 0 );
+        dialog.setCaption( "last.fm" );
+        dialog.exec();
+        return dialog.exec() == QDialog::Accepted;
+    }
+    return true;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS WebService

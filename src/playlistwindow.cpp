@@ -28,6 +28,7 @@
 #include "enginecontroller.h" //for actions in ctor
 #include "filebrowser.h"
 #include "k3bexporter.h"
+#include "lastfm.h"           //check credentials when adding lastfm streams
 #include "mediabrowser.h"
 #include "dynamicmode.h"
 #include "playlist.h"
@@ -840,10 +841,7 @@ void PlaylistWindow::slotAddStream() //SLOT
 
 void PlaylistWindow::playLastfmNeighbour() //SLOT
 {
-    if( AmarokConfig::scrobblerUsername().isEmpty() ) {
-        KMessageBox::information( 0, i18n( "Please enter your last.fm username in Amarok's last.fm settings to enable this function." ) );
-        return;
-    }
+    if( !LastFm::Controller::checkCredentials() ) return;
 
     const KURL url( QString( "lastfm://user/%1/neighbours" )
                     .arg( AmarokConfig::scrobblerUsername() ) );
@@ -854,6 +852,8 @@ void PlaylistWindow::playLastfmNeighbour() //SLOT
 
 void PlaylistWindow::playLastfmGlobaltag( int id ) //SLOT
 {
+    if( !LastFm::Controller::checkCredentials() ) return;
+
     const QString tag = m_lastfmTags[id].lower();
     const KURL url( "lastfm://globaltags/" + tag );
 
@@ -863,10 +863,7 @@ void PlaylistWindow::playLastfmGlobaltag( int id ) //SLOT
 
 void PlaylistWindow::addLastfmNeighbour() //SLOT
 {
-    if( AmarokConfig::scrobblerUsername().isEmpty() ) {
-        KMessageBox::information( 0, i18n( "Please enter your last.fm username in Amarok's last.fm settings to enable this function." ) );
-        return;
-    }
+    if( !LastFm::Controller::checkCredentials() ) return;
 
     const KURL url( QString( "lastfm://user/%1/neighbours" )
                     .arg( AmarokConfig::scrobblerUsername() ) );
@@ -877,6 +874,8 @@ void PlaylistWindow::addLastfmNeighbour() //SLOT
 
 void PlaylistWindow::addLastfmGlobaltag( int id ) //SLOT
 {
+    if( !LastFm::Controller::checkCredentials() ) return;
+
     const QString tag = m_lastfmTags[id].lower();
     const KURL url( "lastfm://globaltags/" + tag );
 

@@ -50,6 +50,8 @@ namespace LastFm
             WebService* getService() const { return m_service; }
             QString     getGenreUrl() const { return m_genreUrl; }
 
+            static bool checkCredentials();
+
         public slots:
             void playbackStopped();
 
