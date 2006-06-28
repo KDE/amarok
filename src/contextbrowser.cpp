@@ -1595,14 +1595,10 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
     for ( url = newUrls.first(); url; url = newUrls.next() )
         url->replace( QRegExp( "^http:" ), "externalurl:" );
 
-    QString skipIcon = KGlobal::iconLoader()->iconPath( amaroK::icon("next"),      -KIcon::SizeSmallMedium );
-    QString loveIcon = KGlobal::iconLoader()->iconPath( amaroK::icon("favorites"), -KIcon::SizeSmallMedium );
-    QString banIcon  = KGlobal::iconLoader()->iconPath( amaroK::icon("remove"),    -KIcon::SizeSmallMedium );
+    QString skipIcon = KGlobal::iconLoader()->iconPath( amaroK::icon("next"),     -KIcon::SizeSmallMedium );
+    QString loveIcon = KGlobal::iconLoader()->iconPath( amaroK::icon("bookmark"), -KIcon::SizeSmallMedium );
+    QString banIcon  = KGlobal::iconLoader()->iconPath( amaroK::icon("remove"),   -KIcon::SizeSmallMedium );
 
-    // bloody kiconloader
-    skipIcon = skipIcon.replace( "64x64", "22x22" );
-    loveIcon = loveIcon.replace( "64x64", "22x22" );
-    banIcon  = banIcon.replace( "64x64", "22x22" );
 
     m_HTMLSource.append( QStringx(
             "<div id='current_box' class='box'>\n"
