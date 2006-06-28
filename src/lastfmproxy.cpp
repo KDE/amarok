@@ -753,6 +753,7 @@ LoginDialog::LoginDialog( QWidget *parent )
 
     QLabel *passLabel = new QLabel( i18n("&Password:"), mainWidget() );
     m_passLineEdit = new KLineEdit( mainWidget() );
+    m_passLineEdit->setEchoMode( QLineEdit::Password );
     passLabel->setBuddy( m_passLineEdit );
 
     m_userLineEdit->setFocus();
