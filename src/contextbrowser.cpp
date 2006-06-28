@@ -1597,9 +1597,9 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
     for ( url = newUrls.first(); url; url = newUrls.next() )
         url->replace( QRegExp( "^http:" ), "externalurl:" );
 
-    const QString skipIcon = KGlobal::iconLoader()->iconPath( amaroK::icon("next"),     -KIcon::SizeSmallMedium );
-    const QString loveIcon = KGlobal::iconLoader()->iconPath( amaroK::icon("bookmark"), -KIcon::SizeSmallMedium );
-    const QString banIcon  = KGlobal::iconLoader()->iconPath( amaroK::icon("remove"),   -KIcon::SizeSmallMedium );
+    const QString skipIcon = KGlobal::iconLoader()->iconPath( amaroK::icon("next"),   -KIcon::SizeSmallMedium );
+    const QString loveIcon = KGlobal::iconLoader()->iconPath( amaroK::icon("love"),   -KIcon::SizeSmallMedium );
+    const QString banIcon  = KGlobal::iconLoader()->iconPath( amaroK::icon("remove"), -KIcon::SizeSmallMedium );
 
 
     m_HTMLSource.append( QStringx(
