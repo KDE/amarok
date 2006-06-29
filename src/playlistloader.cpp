@@ -1011,7 +1011,7 @@ SqlLoader::doJob()
     BundleList bundles;
     uint x = 0;
     for( for_iterators( QStringList, values ); it != end && !isAborted(); ++it ) {
-        setProgress( x += 16);
+        setProgress( x += QueryBuilder::dragFieldCount );
 
         MetaBundle b;
         b.setAlbum     (    *it );

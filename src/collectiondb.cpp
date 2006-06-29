@@ -5179,7 +5179,7 @@ QueryBuilder::addReturnValue( int table, Q_INT64 value, bool caseSensitive /* = 
         m_values += valueName( value );
     }
 
-    if ( table & tabStats && value & valScore ) 
+    if ( table & tabStats && value & valScore )
     {
         m_values += " + 0.4 )";
         if ( CollectionDB::instance()->getType() == DbConnection::sqlite )
@@ -5902,6 +5902,19 @@ QueryBuilder::setLimit( int startPos, int length )
     m_limit = QString( " LIMIT %2 OFFSET %1 " ).arg( startPos ).arg( length );
 }
 
+
+/* NOTE: It's important to keep these two functions and the const in sync! */
+const int
+QueryBuilder::dragFieldCount = 16;
+
+QString
+QueryBuilder::dragSQLFields()
+{
+    return "album.name, artist.name, genre.name, tags.title, year.name, "
+           "tags.comment, tags.track, tags.bitrate, tags.discnumber, "
+           "tags.length, tags.samplerate, tags.filesize, tags.url, "
+           "tags.sampler, tags.filetype, tags.composer";
+}
 
 void
 QueryBuilder::initSQLDrag()

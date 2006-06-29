@@ -633,7 +633,10 @@ class QueryBuilder
         void groupBy( int table, Q_INT64 value );
         void setLimit( int startPos, int length );
 
+        static const int dragFieldCount;
+        static QString dragSQLFields();
         void initSQLDrag();
+
         void buildQuery();
         QString getQuery();
         QString query() { buildQuery(); return m_query; };

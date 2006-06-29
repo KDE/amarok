@@ -469,16 +469,15 @@ PlaylistCategory* PlaylistBrowser::loadSmartPlaylists()
     }
     else {
         e = d.namedItem( "category" ).toElement();
-        if ( e.attribute("formatversion") == "1.6" ) {
+        float version = e.attribute("formatversion").toFloat();
+        if ( version == 1.7 )
+        {
             PlaylistCategory* p = new PlaylistCategory(m_listview, after, e );
             p->setText( 0, i18n("Smart Playlists") );
             return p;
         }
-        else if ( e.attribute("formatversion") == "1.1"
-               || e.attribute("formatversion") == "1.2"
-               || e.attribute("formatversion") == "1.3"
-               || e.attribute("formatversion") == "1.4"
-               || e.attribute("formatversion") == "1.5" ) {
+        else if ( version >= 1.1  )
+        {
             PlaylistCategory* p = new PlaylistCategory(m_listview, after, e );
             p->setText( 0, i18n("Smart Playlists") );
             debug() << "loading old format smart playlists, converted to new format" << endl;
@@ -513,6 +512,7 @@ void PlaylistBrowser::updateSmartPlaylists( QListViewItem *p )
             QDomElement xml = spl->xml();
             QDomElement query = xml.namedItem( "sqlquery" ).toElement();
             QRegExp limitSearch( "LIMIT.*(\\d+)\\s*,\\s*(\\d+)" );
+            QRegExp selectFromSearch( "SELECT[^'\"]*FROM" );
             for(QDomNode child = query.firstChild();
                     !child.isNull();
                     child = child.nextSibling() )
@@ -522,15 +522,8 @@ void PlaylistBrowser::updateSmartPlaylists( QListViewItem *p )
                     //HACK this should be refactored to just regenerate the SQL from the <criteria>'s
                     QDomText text = child.toText();
                     QString sql = text.data();
-                    //1.1 to 1.2 (if it's already with 1.2 format, no problem)
-                    sql.replace( "tags.samplerate, tags.url", "tags.samplerate, tags.filesize, tags.url" );
-                    //1.3 to 1.4
-                    sql.replace( "tags.url FROM", "tags.url, tags.sampler FROM" );
-                    //1.4 to 1.5
-                    sql.replace( "tags.bitrate, tags.length", "tags.bitrate, tags.discnumber, tags.length" );
-                    //1.5 to 1.6
-                    sql.replace( "tags.sampler FROM", "tags.sampler, tags.filetype, tags.composer FROM" );
-                    //1.2 to 1.3
+                    if ( selectFromSearch.search( sql ) != -1 )
+                        sql.replace( selectFromSearch, "SELECT " + QueryBuilder::dragSQLFields() + " FROM" );
                     if ( limitSearch.search( sql ) != -1 )
                         sql.replace( limitSearch,
                           QString( "LIMIT %1 OFFSET %2").arg( limitSearch.capturedTexts()[2].toInt() ).arg( limitSearch.capturedTexts()[1].toInt() ) );
@@ -683,7 +676,7 @@ void PlaylistBrowser::saveSmartPlaylists( PlaylistCategory *smartCategory )
     QDomElement smartB = smartCategory->xml();
     smartB.setAttribute( "product", "Amarok" );
     smartB.setAttribute( "version", APP_VERSION );
-    smartB.setAttribute( "formatversion", "1.6" );
+    smartB.setAttribute( "formatversion", "1.7" );
     QDomNode smartplaylistsNode = doc.importNode( smartB, true );
     doc.appendChild( smartplaylistsNode );
 
