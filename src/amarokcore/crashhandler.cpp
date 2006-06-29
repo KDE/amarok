@@ -13,6 +13,7 @@
 #include "crashhandler.h"
 
 #include <kapplication.h> //invokeMailer()
+#include <kdebug.h>       //kdBacktrace()
 #include <kdeversion.h>
 #include <klocale.h>
 #include <ktempfile.h>
