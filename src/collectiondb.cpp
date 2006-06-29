@@ -3008,10 +3008,13 @@ CollectionDB::addSongPercentage( const QString &url, int percentage,
 int
 CollectionDB::getSongPercentage( const QString &url )
 {
-    QStringList values = query( QString( "SELECT round( percentage + 0.4 ) FROM statistics WHERE url = '%1';" )
-                                         .arg( escapeString( url ) ) );
+    QueryBuilder qb;
+    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valPercentage );
+    qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valURL, url );
 
-    if( values.count() )
+    QStringList values = qb.run();
+
+    if( !values.isEmpty() )
         return values.first().toInt();
 
     return 0;
@@ -5158,7 +5161,13 @@ void
 QueryBuilder::addReturnValue( int table, Q_INT64 value, bool caseSensitive /* = false */ )
 {
     if ( !m_values.isEmpty() && m_values != "DISTINCT " ) m_values += ",";
-    if ( table & tabStats && value & valScore ) m_values += "round(";
+
+    if ( table & tabStats && value & valScore )
+    {
+        if ( CollectionDB::instance()->getType() == DbConnection::sqlite )
+            m_values += "CAST(";
+        m_values += "round(";
+    }
 
     if ( value == valDummy )
         m_values += "''";
@@ -5170,7 +5179,12 @@ QueryBuilder::addReturnValue( int table, Q_INT64 value, bool caseSensitive /* = 
         m_values += valueName( value );
     }
 
-    if ( table & tabStats && value & valScore ) m_values += " + 0.4 )";
+    if ( table & tabStats && value & valScore ) 
+    {
+        m_values += " + 0.4 )";
+        if ( CollectionDB::instance()->getType() == DbConnection::sqlite )
+            m_values += " AS INTEGER)";
+    }
 
     m_linkTables |= table;
     m_returnValues++;
