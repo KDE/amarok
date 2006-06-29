@@ -40,8 +40,8 @@ class DeviceManager : public QObject
         void mediumChanged( QString name);
         void mediumRemoved( QString name);
 
-        Medium* getDevice( QString name );
         MediumMap getMediumMap() { return m_mediumMap; }
+        Medium* getDevice( QString name );
 
         void addManualDevice( Medium* added );
         void removeManualDevice( Medium* removed );
@@ -56,6 +56,9 @@ class DeviceManager : public QObject
         void mediumAdded( const Medium*, QString );
         void mediumChanged( const Medium*, QString );
         void mediumRemoved( const Medium*, QString );
+
+    public slots:
+        void reinitDevices() { getDevice( "reiniting-blahblahblah" ); }
 
     private:
         //don't make getDeviceList public.  Use getMediumMap()...it pre-filters and keeps things in sync

@@ -18,6 +18,7 @@
 #include "medium.h"
 
 #include <qptrlist.h>
+#include <qtimer.h>
 
 #include <dcopclient.h>
 #include <dcopobject.h>
@@ -67,6 +68,7 @@ DeviceManager::DeviceManager()
             }
                                 
             getDevice( "init" );
+            QTimer::singleShot(4000, this, SLOT( reinitDevices() ) ); 
             debug() << "DeviceManager:  connectDCOPSignal returned sucessfully!" << endl;
         }
     }
