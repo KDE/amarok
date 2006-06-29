@@ -3441,7 +3441,6 @@ InfoPane::toggle( bool toggled )
         m_pushButton->setEnabled( m_enable );
     }
     else {
-        setMinimumHeight( 150 );
         setMaximumHeight( ( int )( parentWidget()->height() / 1.5 ) );
 
         //Restore the height of the InfoPane (change the splitter properties)
@@ -3452,8 +3451,7 @@ InfoPane::toggle( bool toggled )
         sizes.last() += sizeOffset;
         splitter->setSizes( sizes );
 
-        //Save the setting, it can have been changed by maximumHeight etc.
-        setStoredHeight( splitter->sizes().last() );
+        setMinimumHeight( 150 );
     }
 
     static_cast<QWidget*>( child( "container" ) )->setShown( toggled );
