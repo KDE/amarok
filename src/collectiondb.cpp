@@ -3009,8 +3009,8 @@ int
 CollectionDB::getSongPercentage( const QString &url )
 {
     QueryBuilder qb;
-    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valPercentage );
-    qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valURL, url );
+    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
+    qb.addMatch( QueryBuilder::tabStats, QueryBuilder::valURL, url );
 
     QStringList values = qb.run();
 
