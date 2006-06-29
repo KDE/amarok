@@ -11,7 +11,6 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "crashhandler.h"
-#include "debug.h"
 
 #include <kapplication.h> //invokeMailer()
 #include <kdeversion.h>
@@ -53,7 +52,7 @@ namespace amaroK
         static const uint SIZE = 40960; //40 KiB
         static char stdoutBuf[ SIZE ];
 
-        debug() << "Running: " << command << endl;
+        std::cout << "Running: " << command << std::endl;
 
         FILE *process = ::popen( command, "r" );
         stdoutBuf[ std::fread( static_cast<void*>( stdoutBuf ), sizeof(char), SIZE-1, process ) ] = '\0';
@@ -72,7 +71,7 @@ namespace amaroK
         if( pid <= 0 )
         {
             // we are the child process (the result of the fork)
-            debug() << "Amarok is crashing...\n";
+            std::cout << "Amarok is crashing...\n";
 
             QString subject = APP_VERSION " ";
             QString body = i18n(
@@ -177,7 +176,7 @@ namespace amaroK
 
             subject += QString("[%1]").arg( AmarokConfig::soundSystem().remove( QRegExp("-?engine") ) );
 
-            debug() << subject << endl;
+            std::cout << subject.latin1() << std::endl;
 
 
             //TODO -fomit-frame-pointer buggers up the backtrace, so detect it
