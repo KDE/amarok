@@ -14,7 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#define DEBUG_PREFIX "LastFmProxy"
+#define DEBUG_PREFIX "LastFm"
 
 #include "amarok.h"         //APP_VERSION, actioncollection
 #include "amarokconfig.h"   //last.fm username and passwd
@@ -206,11 +206,9 @@ WebService::readProxy() //SLOT
     DEBUG_BLOCK
 
     QString line;
-    int res;
 
-    while( true ) {
-        res = m_server->readln( line );
-        if( res == -1 ) break;
+    while( m_server->readln( line ) != -1 ) {
+        debug() << line << endl;
 
         if( line == "AMAROK_PROXY: SYNC" )
             requestMetaData();
@@ -268,11 +266,15 @@ WebService::handshake( const QString& username, const QString& password )
     m_proxyUrl = QString( "http://localhost:%1/theBeard.mp3" ).arg( port );
 
     m_server = new LastfmProcIO();
-    m_server->setComm( KProcess::Communication( KProcess::Stdin|KProcess::Stderr ) );
+    m_server->setComm( KProcess::Communication( KProcess::AllOutput ) );
     *m_server << "amarok_proxy.rb";
     *m_server << QString::number( port );
     *m_server << m_streamUrl.toString();
-    m_server->start( KProcIO::NotifyOnExit, true );
+
+    if( !m_server->start( KProcIO::NotifyOnExit, true ) ) {
+        error() << "Failed to start amarok_proxy.rb" << endl;
+        return false;
+    }
 
     QString line;
     while( true ) {
@@ -353,8 +355,10 @@ WebService::metaDataFinished( int /*id*/, bool error ) //SLOT
     debug() << result << endl;
 
     int errCode = parameter( "error", result ).toInt();
-    if ( errCode > 0 )
+    if ( errCode > 0 ) {
+        debug() << "Metadata failed with error code: " << errCode << endl;
         return;
+    }
 
     m_metaBundle.setArtist( parameter( "artist", result ) );
     m_metaBundle.setAlbum ( parameter( "album", result )  );
@@ -479,6 +483,8 @@ WebService::ban() //SLOT
 void
 WebService::loveFinished( int /*id*/, bool error ) //SLOT
 {
+    DEBUG_BLOCK
+
     QHttp* http = (QHttp*) sender();
     http->deleteLater();
     if( error ) return;
@@ -490,6 +496,8 @@ WebService::loveFinished( int /*id*/, bool error ) //SLOT
 void
 WebService::skipFinished( int /*id*/, bool error ) //SLOT
 {
+    DEBUG_BLOCK
+
     QHttp* http = (QHttp*) sender();
     http->deleteLater();
     if( error ) return;
@@ -502,6 +510,8 @@ WebService::skipFinished( int /*id*/, bool error ) //SLOT
 void
 WebService::banFinished( int /*id*/, bool error ) //SLOT
 {
+    DEBUG_BLOCK
+
     QHttp* http = (QHttp*) sender();
     http->deleteLater();
     if( error ) return;
