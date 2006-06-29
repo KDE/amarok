@@ -203,8 +203,6 @@ WebService::~WebService()
 void
 WebService::readProxy() //SLOT
 {
-    DEBUG_BLOCK
-
     QString line;
 
     while( m_server->readln( line ) != -1 ) {
