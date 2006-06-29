@@ -47,7 +47,7 @@ class MediaDeviceConfig : public QHBox
     Q_OBJECT
 
     public:
-        MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, QWidget *parent=0, const char *name=0 );
+        MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, const bool nographics=false, QWidget *parent=0, const char *name=0 );
         ~MediaDeviceConfig();
         QString oldPlugin();
         void setOldPlugin( const QString &oldPlugin );
@@ -82,8 +82,12 @@ class MediumPluginManager : public QObject
 {
     Q_OBJECT
 
+    friend class DeviceManager;
+
     public:
-        MediumPluginManager( QWidget *widget );
+        //nographics only for the initial run of detectDevices...pass in
+        //directly to detectDevices after
+        MediumPluginManager( QWidget *widget, const bool nographics=false );
         ~MediumPluginManager();
         void finished();
         bool hasChanged();
@@ -99,7 +103,7 @@ class MediumPluginManager : public QObject
         void slotChanged();
 
     private:
-        bool detectDevices( bool redetect=false );
+        bool detectDevices( bool redetect=false, bool nographics=false );
         DeletedMap m_deletedMap;
         NewDeviceMap m_newDevMap;
         DeviceList m_deviceList;

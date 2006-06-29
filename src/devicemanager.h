@@ -58,7 +58,7 @@ class DeviceManager : public QObject
         void mediumRemoved( const Medium*, QString );
 
     public slots:
-        void reinitDevices() { getDevice( "reiniting-blahblahblah" ); }
+        void reinitDevices();
 
     private:
         //don't make getDeviceList public.  Use getMediumMap()...it pre-filters and keeps things in sync

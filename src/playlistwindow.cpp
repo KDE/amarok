@@ -1033,12 +1033,18 @@ bool PlaylistWindow::isReallyShown() const
 void
 PlaylistWindow::mbAvailabilityChanged( bool isAvailable ) //SLOT
 {
-    if( isAvailable && m_browsers->indexForName( "MediaBrowser" ) == -1 )
-        m_browsers->addBrowser( MediaBrowser::instance(), i18n( "Media Device" ), amaroK::icon( "device" ) );
-    else if( m_browsers->indexForName( "MediaBrowser" ) != -1 )
+    if( isAvailable )
     {
-        showBrowser( "CollectionBrowser" );
-        m_browsers->removeMediaBrowser( MediaBrowser::instance() );
+        if( m_browsers->indexForName( "MediaBrowser" ) == -1 )
+            m_browsers->addBrowser( MediaBrowser::instance(), i18n( "Media Device" ), amaroK::icon( "device" ) );
+    }
+    else
+    {
+        if( m_browsers->indexForName( "MediaBrowser" ) != -1 )
+        {
+            showBrowser( "CollectionBrowser" );
+            m_browsers->removeMediaBrowser( MediaBrowser::instance() );
+        }
     }
 }
 

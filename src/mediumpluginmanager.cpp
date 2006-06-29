@@ -82,13 +82,12 @@ MediumPluginManagerDialog::slotOk()
     KDialogBase::slotOk();
 }
 
-MediumPluginManager::MediumPluginManager( QWidget *widget )
+MediumPluginManager::MediumPluginManager( QWidget *widget, const bool nographics )
 : m_widget( widget )
 {
-    detectDevices();
+    detectDevices( false, nographics );
 
     connect( this, SIGNAL( selectedPlugin( const Medium*, const QString ) ), MediaBrowser::instance(), SLOT( pluginSelected( const Medium*, const QString ) ) );
-
 }
 
 MediumPluginManager::~MediumPluginManager()
@@ -111,7 +110,7 @@ MediumPluginManager::slotChanged()//slot
 }
 
 bool
-MediumPluginManager::detectDevices( bool redetect )
+MediumPluginManager::detectDevices( const bool redetect, const bool nographics )
 {
     bool foundNew = false;
     KConfig *config = amaroK::config( "MediaBrowser" );
@@ -152,7 +151,7 @@ MediumPluginManager::detectDevices( bool redetect )
         if( m_deletedMap.contains( (*it)->id() ) )
             m_deletedMap.remove( (*it)->id() );
 
-        MediaDeviceConfig *dev = new MediaDeviceConfig( *it, this, m_widget );
+        MediaDeviceConfig *dev = new MediaDeviceConfig( *it, this, nographics, m_widget );
         m_deviceList.append( dev );
         connect( dev, SIGNAL(deleteMedium(Medium *)), SLOT(deleteMedium(Medium *)) );
 
@@ -369,7 +368,7 @@ ManualDeviceAdder::getMedium()
     return added;
 }
 
-MediaDeviceConfig::MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, QWidget *parent, const char *name )
+MediaDeviceConfig::MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, const bool nographics, QWidget *parent, const char *name )
 : QHBox( parent, name )
 , m_manager( mgr )
 , m_medium( medium )
@@ -442,7 +441,8 @@ MediaDeviceConfig::MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, 
     connect( m_pluginCombo, SIGNAL(activated(const QString&)), m_manager, SLOT(slotChanged()) );
     connect( this, SIGNAL(changed()), m_manager, SLOT(slotChanged()) );
 
-    show();
+    if( !nographics )
+        show();
 }
 
 MediaDeviceConfig::~MediaDeviceConfig()

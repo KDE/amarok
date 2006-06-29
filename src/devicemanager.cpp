@@ -16,6 +16,7 @@
 #include "debug.h"
 #include "devicemanager.h"
 #include "medium.h"
+#include "mediumpluginmanager.h"
 
 #include <qptrlist.h>
 #include <qtimer.h>
@@ -76,6 +77,14 @@ DeviceManager::DeviceManager()
 
 DeviceManager::~DeviceManager()
 {
+}
+
+void DeviceManager::reinitDevices() //SLOT
+{
+    MediumPluginManager *mpm = new MediumPluginManager( 0, true );
+    mpm->detectDevices( true, true );
+    mpm->finished();
+    delete mpm;
 }
 
 void DeviceManager::mediumAdded( QString name )
