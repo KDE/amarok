@@ -278,7 +278,8 @@ PlaylistBrowser::setInfo( const QString &title, const QString &info )
 void
 PlaylistBrowser::resizeEvent( QResizeEvent * )
 {
-    m_infoPane->setMaximumWidth( height() / 1.5 );
+    if( static_cast<QWidget*>(child("container"))->isShown() )
+        m_infoPane->setMaximumHeight( (int)(height() / 1.5) );
 }
 
 
@@ -3381,13 +3382,16 @@ InfoPane::InfoPane( QWidget *parent )
 
     {
         QFrame *box = new QHBox( container );
-        box->setMargin( 5 );
+        box->setMargin( 3 );
         box->setBackgroundMode( Qt::PaletteBase );
 
         m_infoBrowser = new HTMLView( box, "extended_info" );
 
+        // TODO Remember height instead of this hack... I couldn't get resize() to work, anywhere...
+        box->setMinimumHeight( 150 );
+
         container->setFrameStyle( QFrame::StyledPanel );
-        container->setMargin( 5 );
+        container->setMargin( 3 );
         container->setBackgroundMode( Qt::PaletteBase );
     }
 
@@ -3412,7 +3416,7 @@ InfoPane::toggle( bool toggled )
         m_pushButton->setEnabled( m_enable );
     }
     else
-        setMaximumHeight( parentWidget()->height() / 1.5 );
+        setMaximumHeight( (int)(parentWidget()->height() / 1.5) );
 }
 
 
