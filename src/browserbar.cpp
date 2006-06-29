@@ -87,6 +87,8 @@ BrowserBar::BrowserBar( QWidget *parent )
     m_divider->hide();
     m_playlistBox->setSpacing( 1 );
 
+    m_mediaBrowserId = -1;
+
     connect( m_mapper, SIGNAL(mapped( int )), SLOT(showHideBrowser( int )) );
 }
 
@@ -213,6 +215,8 @@ BrowserBar::addBrowser( QWidget *widget, const QString &title, const QString& ic
 {
     const int id = m_tabBar->tabs()->count(); // the next available id
     const QString name( widget->name() );
+    if( name == "MediaBrowser" )
+        m_mediaBrowserId = id;
     QWidget *tab;
 
     widget->reparent( m_browserBox, QPoint() );
@@ -228,6 +232,18 @@ BrowserBar::addBrowser( QWidget *widget, const QString &title, const QString& ic
     connect( tab, SIGNAL(initiateDrag ( int ) ), this, SLOT( showBrowser( int )) );
 
     m_browsers.push_back( widget );
+}
+
+void
+BrowserBar::removeMediaBrowser( QWidget *widget )
+{
+    BrowserList::iterator it = qFind( m_browsers.begin(), m_browsers.end(), widget );
+    if( it != m_browsers.end() )
+        m_browsers.erase( it ); 
+    QWidget *tab;
+    tab = m_tabBar->tab( m_mediaBrowserId );
+    m_mapper->removeMappings( tab );
+    m_tabBar->removeTab( m_mediaBrowserId );
 }
 
 void
@@ -326,7 +342,6 @@ BrowserBar::indexForName( const QString &name ) const
     for( uint x = 0; x < m_browsers.count(); ++x )
         if( name == m_browsers[x]->name() )
             return x;
-
     return -1;
 }
 

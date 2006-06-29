@@ -362,6 +362,7 @@ MediaBrowser::MediaBrowser( const char *name )
             break;
         }
     }
+    emit availabilityChanged( m_haveDevices );
 }
 
 bool
@@ -588,6 +589,8 @@ MediaBrowser::updateDevices()
         i++;
     }
     m_deviceCombo->setEnabled( m_devices.count() > 1 );
+    m_haveDevices = m_devices.count() > 1;
+    emit availabilityChanged( m_haveDevices );
 }
 
 QStringList
@@ -1407,7 +1410,6 @@ MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/, bool construc
     debug() << "mediumAdded: " << (medium? medium->properties():"null") << endl;
     if( medium )
     {
-        m_haveDevices = true;
         KConfig *config = amaroK::config( "MediaBrowser" );
         QString handler = config->readEntry( medium->id() );
         if( handler.isEmpty() )

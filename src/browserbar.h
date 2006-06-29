@@ -43,6 +43,8 @@ public:
     int visibleCount() const;
 
     void addBrowser( QWidget*, const QString&, const QString& );
+    void removeMediaBrowser( QWidget *widget );
+    int indexForName( const QString& ) const;
     int restoreWidth();
 
     /// for internal use
@@ -63,8 +65,6 @@ signals:
     void browserActivated( int );
 
 private:
-    int indexForName( const QString& ) const;
-
     void adjustWidgetSizes();
     uint maxBrowserWidth() const { return width() / 2; }
 
@@ -80,6 +80,7 @@ private:
     int            m_currentIndex;
     int            m_lastIndex;
     QSignalMapper *m_mapper;      ///maps tab clicks to browsers
+    int            m_mediaBrowserId; ///id of media browser, so can be both inserted and removed
 };
 
 #endif

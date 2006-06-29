@@ -276,6 +276,9 @@ void AmarokConfigDialog::updateSettings()
     if( MediaBrowser::isAvailable() )
     {
         PlaylistWindow::self()->addBrowser( "MediaBrowser", MediaBrowser::instance(), i18n( "Media Device" ), amaroK::icon( "device" ) );
+        connect( MediaBrowser::instance(), SIGNAL( availabilityChanged( bool ) ),
+                 PlaylistWindow::self(), SLOT( mbAvailabilityChanged( bool ) ) );
+        
     }
 
     amaroK::setUseScores( m_opt1->kcfg_UseScores->isChecked() );

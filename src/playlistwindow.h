@@ -25,6 +25,7 @@
 class ClickLineEdit;
 class CollectionBrowser;
 class ContextBrowser;
+class MediaBrowser;
 class KMenuBar;
 class KPopupMenu;
 class KToolBar;
@@ -65,7 +66,8 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
 
     public slots:
         void showHide();
-
+        void mbAvailabilityChanged( bool isAvailable );
+    
     private slots:
         void savePlaylist() const;
         void slotPlayMedia();
@@ -102,6 +104,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         KToolBar      *m_toolbar;
         QTimer        *m_timer;  //search filter timer
         QStringList    m_lastfmTags;
+        MediaBrowser  *m_currMediaBrowser;
 
         int m_lastBrowser;
         int m_searchField;

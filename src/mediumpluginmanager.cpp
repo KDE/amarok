@@ -202,9 +202,9 @@ MediumPluginManager::finished()
             it != m_deviceList.end();
             it++ )
     {
+        emit selectedPlugin( (*it)->medium(), (*it)->plugin() );
         if( (*it)->plugin() != (*it)->oldPlugin() )
         {
-            emit selectedPlugin( (*it)->medium(), (*it)->plugin() );
             (*it)->setOldPlugin( (*it)->plugin() );
         }
         (*it)->configButton()->setEnabled( (*it)->pluginCombo()->currentText() != i18n( "Do not handle" ) );

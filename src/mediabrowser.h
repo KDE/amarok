@@ -178,6 +178,9 @@ class MediaBrowser : public QVBox
         const MetaBundle *getBundle( const KURL &url ) const;
         bool isQuitting() const { return m_quitting; }
 
+    signals:
+        void availabilityChanged( bool isAvailable );
+
     protected slots:
         void transferClicked();
 

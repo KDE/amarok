@@ -428,7 +428,12 @@ void PlaylistWindow::init()
 
         new MediaBrowser( "MediaBrowser" );
         if( MediaBrowser::isAvailable() )
+        {
             addInstBrowserMacro( MediaBrowser, "MediaBrowser", i18n( "Media Device" ), amaroK::icon( "device" ) )
+            connect( MediaBrowser::instance(), SIGNAL( availabilityChanged( bool ) ),
+                     this, SLOT( mbAvailabilityChanged( bool ) ) );
+            
+        }
         #undef addBrowserMacro
         #undef addInstBrowserMacro
     }
@@ -1023,6 +1028,18 @@ bool PlaylistWindow::isReallyShown() const
 {
     const KWin::WindowInfo info = KWin::windowInfo( winId() );
     return isShown() && !info.isMinimized() && info.isOnDesktop( KWin::currentDesktop() );
+}
+
+void
+PlaylistWindow::mbAvailabilityChanged( bool isAvailable ) //SLOT
+{
+    if( isAvailable && m_browsers->indexForName( "MediaBrowser" ) == -1 )
+        m_browsers->addBrowser( MediaBrowser::instance(), i18n( "Media Device" ), amaroK::icon( "device" ) );
+    else if( m_browsers->indexForName( "MediaBrowser" ) != -1 )
+    {
+        showBrowser( "CollectionBrowser" );
+        m_browsers->removeMediaBrowser( MediaBrowser::instance() );
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
