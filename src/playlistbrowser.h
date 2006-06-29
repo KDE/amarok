@@ -362,6 +362,8 @@ class InfoPane : public QVBox
 
 public:
     InfoPane( QWidget *parent );
+    const int getHeight();
+    void setStoredHeight( const int newHeight );
 
 public slots:
     void setInfo( const QString &title, const QString &info );
@@ -373,6 +375,7 @@ private:
     HTMLView *m_infoBrowser;
     KPushButton *m_pushButton;
     bool m_enable;
+    int m_storedHeight;
 };
 
 

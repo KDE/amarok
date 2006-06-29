@@ -115,6 +115,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     //</Toolbar>
 
     m_splitter = new QSplitter( Qt::Vertical, browserBox );
+    m_splitter->setChildrenCollapsible( false ); // hiding the InfoPane entirely can only be confusing
 
     m_listview = new PlaylistBrowserView( m_splitter );
 
@@ -237,6 +238,9 @@ PlaylistBrowser::polish()
             ++it;
         }
     }
+
+    // Set height of InfoPane
+    m_infoPane->setStoredHeight( config->readNumEntry( "InfoPane Height", 100 ) );
 }
 
 
@@ -265,6 +269,7 @@ PlaylistBrowser::~PlaylistBrowser()
         config->writeEntry( "Sorting", m_listview->sortOrder() );
         config->writeEntry( "Podcast Interval", m_podcastTimerInterval );
         config->writeEntry( "Podcast Folder Open", m_podcastCategory->isOpen() );
+        config->writeEntry( "InfoPane Height", m_infoPane->getHeight() );
     }
 }
 
@@ -278,8 +283,8 @@ PlaylistBrowser::setInfo( const QString &title, const QString &info )
 void
 PlaylistBrowser::resizeEvent( QResizeEvent * )
 {
-    if( static_cast<QWidget*>(child("container"))->isShown() )
-        m_infoPane->setMaximumHeight( (int)(height() / 1.5) );
+    if( static_cast<QWidget*>( m_infoPane->child( "container" ) )->isShown() )
+        m_infoPane->setMaximumHeight( ( int )( m_splitter->height() / 1.5 ) );
 }
 
 
@@ -3375,7 +3380,8 @@ void PlaylistDialog::slotCustomPath()
 
 InfoPane::InfoPane( QWidget *parent )
         : QVBox( parent ),
-          m_enable( false )
+          m_enable( false ),
+          m_storedHeight( 100 )
 {
     QFrame *container = new QVBox( this, "container" );
     container->hide();
@@ -3386,9 +3392,6 @@ InfoPane::InfoPane( QWidget *parent )
         box->setBackgroundMode( Qt::PaletteBase );
 
         m_infoBrowser = new HTMLView( box, "extended_info" );
-
-        // TODO Remember height instead of this hack... I couldn't get resize() to work, anywhere...
-        box->setMinimumHeight( 150 );
 
         container->setFrameStyle( QFrame::StyledPanel );
         container->setMargin( 3 );
@@ -3403,22 +3406,55 @@ InfoPane::InfoPane( QWidget *parent )
     setMaximumHeight( m_pushButton->sizeHint().height() );
 }
 
+const int
+InfoPane::getHeight()
+{
+    if( static_cast<QWidget*>( child( "container" ) )->isShown() )
+    {
+        //If the InfoPane is shown, return true height.
+        return static_cast<QSplitter*>( parentWidget() )->sizes().last();
+    }
+
+    return m_storedHeight;
+}
+
+void
+InfoPane::setStoredHeight( const int newHeight ) {
+    m_storedHeight = newHeight;
+}
 
 void
 InfoPane::toggle( bool toggled )
 {
-    static_cast<QWidget*>(child("container"))->setShown( toggled );
+    QSplitter *splitter = static_cast<QSplitter*>( parentWidget() );
 
-    //Now the info pane is not shown, we can disable the button if necessary
     if ( !toggled )
     {
+        //Save the height for later
+        setStoredHeight( splitter->sizes().last() );
+
         setMaximumHeight( m_pushButton->sizeHint().height() );
+
+        //Now the info pane is not shown, we can disable the button if necessary
         m_pushButton->setEnabled( m_enable );
     }
-    else
-        setMaximumHeight( (int)(parentWidget()->height() / 1.5) );
-}
+    else {
+        setMaximumHeight( ( int )( parentWidget()->height() / 1.5 ) );
 
+        //Restore the height of the InfoPane (change the splitter properties)
+        //Done everytime since the pane forgets its height if you try to resize it while the info is hidden.
+        QValueList<int> sizes = splitter->sizes();
+        const int sizeOffset = getHeight() - sizes.last();
+        sizes.first() -= sizeOffset;
+        sizes.last() += sizeOffset;
+        splitter->setSizes( sizes );
+
+        //Save the setting, it can have been changed by maximumHeight etc.
+        setStoredHeight( splitter->sizes().last() );
+    }
+
+    static_cast<QWidget*>( child( "container" ) )->setShown( toggled );
+}
 
 void
 InfoPane::setInfo( const QString &title, const QString &info )
