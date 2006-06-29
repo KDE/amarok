@@ -1071,7 +1071,7 @@ void PlaylistBrowser::configureSelectedPodcasts()
     if( selected.count() == 1 )
         selected.getFirst()->configure();
     else
-        configurePodcasts( selected, i18n("%1 Podcasts").arg( selected.count() ) );
+        configurePodcasts( selected, i18n("1 Podcast", "%n Podcasts", selected.count() ) );
 
     if( m_podcastItemsToScan.isEmpty() )
         m_podcastTimer->stop();

@@ -26,7 +26,7 @@ static const char* rcsid __attribute__((unused)) =
 #include <qregexp.h>
 #include <qptrlist.h>
 
-
+#include <klocale.h>
 
 
 /* ------------------------------------------------------------------------ */
@@ -70,7 +70,7 @@ NjbTrack::NjbTrack( njb_songid_t* song)
         bundle->setArtist( artist );
     }
     else
-        bundle->setArtist( QString("Unknown artist") );
+        bundle->setArtist( i18n("Unknown artist") );
     
     frame = NJB_Songid_Findframe( song, FR_ALBUM );
     if( frame)
@@ -80,7 +80,7 @@ NjbTrack::NjbTrack( njb_songid_t* song)
         bundle->setAlbum( album );
     }
     else
-        bundle->setAlbum( QString("Unknown album") );
+        bundle->setAlbum( i18n("Unknown album") );
     
     frame = NJB_Songid_Findframe( song, FR_TITLE);
     if( frame )
@@ -90,7 +90,7 @@ NjbTrack::NjbTrack( njb_songid_t* song)
         bundle->setTitle( title );
     }
     else
-        bundle->setTitle( "Unknown title" );
+        bundle->setTitle( i18n("Unknown title") );
     
     frame = NJB_Songid_Findframe( song, FR_TRACK );
     if( frame )
@@ -198,13 +198,13 @@ void
 NjbTrack::setBundle( MetaBundle &bundle )
 {
     if( bundle.title() == "" )
-        bundle.setTitle( QString( "Unknown title" ) );
+        bundle.setTitle( i18n( "Unknown title" ) );
     if( bundle.artist() == "" )
-        bundle.setArtist( QString( "Unknown" ) );
+        bundle.setArtist( i18n( "Unknown artist" ) );
     if( bundle.album() == "" )
-        bundle.setAlbum( QString( "Unknown" ) );
+        bundle.setAlbum( i18n( "Unknown album" ) );
     if( bundle.genre() == "" )
-        bundle.setGenre( QString( "Unknown" ) );
+        bundle.setGenre( i18n( "Unknown genre" ) );
     
     m_bundle = bundle;
 }

@@ -69,7 +69,7 @@ NjbMediaDevice::NjbMediaDevice(): MediaDevice()
 {
 
     //	listAmarokPlayLists = new QListView();
-    m_name = "NJB Media device";
+    m_name = i18n("NJB Media device");
     m_njb = 0;
     m_connected = false;
     m_libcount = 0;
@@ -217,7 +217,7 @@ NjbMediaDevice::openDevice(bool)
         NJB_Set_Unicode( NJB_UC_UTF8 ); // I assume that UTF-8 is fine with everyone...
         readJukeboxMusic();
         QString s = i18n( "1 track found on device",
-                          "%n tracks found on device", trackList.size() ).arg( trackList.size() );
+                          "%n tracks found on device", trackList.size() );
         amaroK::StatusBar::instance()->shortMessage( s );
     }
     return true;
@@ -485,7 +485,7 @@ NjbMediaDevice::copyTrackToDevice(const MetaBundle& bundle)
 
     u_int32_t id;
     m_progressStart = time( 0);
-    m_progressMessage = "Copying / Sent %1%...";
+    m_progressMessage = i18n("Copying / Sent %1%...");
 
     njb_songid_t* songid = NJB_Songid_New();
     taggedTrack->writeToSongid( songid );

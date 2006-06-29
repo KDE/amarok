@@ -121,9 +121,9 @@ IfpMediaDevice::IfpMediaDevice()
     m_hasMountPoint = false;
 
     m_spacesToUnderscores = configBool("spacesToUnderscores");
-    m_firstSort           = configString( "firstGrouping", "None" );
-    m_secondSort          = configString( "secondGrouping", "None" );
-    m_thirdSort           = configString( "thirdGrouping", "None" );
+    m_firstSort           = configString( "firstGrouping", i18n("None") );
+    m_secondSort          = configString( "secondGrouping", i18n("None") );
+    m_thirdSort           = configString( "thirdGrouping", i18n("None") );
 }
 
 void
@@ -386,19 +386,19 @@ IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
     QString directory = "\\"; //root
     bool cleverFilename = false;
     bool addFileToView = true;
-    if( m_firstSort != "None" )
+    if( m_firstSort != i18n("None") )
     {
         addFileToView = false;
         directory += bundle.prettyText( bundle.columnIndex(m_firstSort) ) + "\\";
 
-        if( m_secondSort != "None" )
+        if( m_secondSort != i18n("None") )
         {
             directory += bundle.prettyText( bundle.columnIndex(m_secondSort) ) + "\\";
 
-            if( m_thirdSort != "None" )
+            if( m_thirdSort != i18n("None") )
                 directory += bundle.prettyText( bundle.columnIndex(m_thirdSort) ) + "\\";
         }
-        if( m_firstSort == "Album" || m_secondSort == "Album" || m_thirdSort == "Album" )
+        if( m_firstSort == i18n("Album") || m_secondSort == i18n("Album") || m_thirdSort == i18n("Album") )
             cleverFilename = true;
     }
 
