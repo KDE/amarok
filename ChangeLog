@@ -16,6 +16,7 @@ VERSION 1.4.1:
     * Provide warning dialog when deleting items from the playlistbrowser.
       (BR 129313)
     * GUI layout reverted to the classic Amarok layout.
+    * The Extended Info panel in the playlistbrowser is now resizeable.
 
   BUGFIXES:
     * Fix crash when pressing Back or Forward buttons multiple times quickly
