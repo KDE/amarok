@@ -240,7 +240,7 @@ PlaylistBrowser::polish()
     }
 
     // Set height of InfoPane
-    m_infoPane->setStoredHeight( config->readNumEntry( "InfoPane Height", 100 ) );
+    m_infoPane->setStoredHeight( config->readNumEntry( "InfoPane Height", 200 ) );
 }
 
 
@@ -3403,6 +3403,7 @@ InfoPane::InfoPane( QWidget *parent )
     m_pushButton->setEnabled( m_enable );
     connect( m_pushButton, SIGNAL(toggled( bool )), SLOT(toggle( bool )) );
 
+    setMinimumHeight( 150 );
     setMaximumHeight( m_pushButton->sizeHint().height() );
 }
 
