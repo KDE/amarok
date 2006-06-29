@@ -19,7 +19,6 @@
 
 #include "metabundle.h"
 
-#include <qguardedptr.h>
 #include <qobject.h>
 #include <qserversocket.h>
 #include <qurl.h>
@@ -47,7 +46,7 @@ namespace LastFm
 
             KURL        getNewProxy( QString genreUrl );
 
-            bool        isPlaying() const { return !m_service.isNull(); }
+            bool        isPlaying() const { return m_service != 0; }
             WebService* getService() const { return m_service; }
             QString     getGenreUrl() const { return m_genreUrl; }
 
@@ -58,6 +57,7 @@ namespace LastFm
             void ban();
             void love();
             void skip();
+
         private:
             Controller();
             void setActionsEnabled( bool enable );
@@ -65,7 +65,7 @@ namespace LastFm
             static Controller *s_instance;
             QPtrList<KAction> m_actionList;
             QString     m_genreUrl;
-            QGuardedPtr<WebService> m_service;
+            WebService* m_service;
     };
 
     class WebService : public QObject

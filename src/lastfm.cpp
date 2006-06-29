@@ -106,9 +106,11 @@ void
 Controller::playbackStopped() //SLOT
 {
     setActionsEnabled( false );
+
     delete m_service;
     m_service = 0;
 }
+
 
 bool
 Controller::checkCredentials() //static
@@ -122,12 +124,14 @@ Controller::checkCredentials() //static
     return true;
 }
 
+
 void
 Controller::ban()
 {
     if( m_service )
         m_service->ban();
 }
+
 
 void
 Controller::love()
@@ -136,6 +140,7 @@ Controller::love()
         m_service->love();
 }
 
+
 void
 Controller::skip()
 {
@@ -143,16 +148,18 @@ Controller::skip()
         m_service->skip();
 }
 
+
 void
 Controller::setActionsEnabled( bool enable )
 {   //pausing last.fm streams doesn't do anything good
-    amaroK::actionCollection()->action( "play_pause" )->setEnabled( !enable ); 
+    amaroK::actionCollection()->action( "play_pause" )->setEnabled( !enable );
     amaroK::actionCollection()->action( "pause" )->setEnabled( !enable );
 
     KAction* action;
     for( action = m_actionList.first(); action; action = m_actionList.next() )
         action->setEnabled( enable );
 }
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS WebService
