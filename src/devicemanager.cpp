@@ -93,7 +93,7 @@ void DeviceManager::mediumAdded( QString name )
     if ( !m_valid )
         return;
     Medium* addedMedium = getDevice(name);
-    if ( addedMedium != NULL )
+    if ( addedMedium != 0 )
         debug() << "[DeviceManager::mediumAdded] Obtained medium name is " << name << ", id is: " << addedMedium->id() << endl;
     else
         debug() << "[DeviceManager::mediumAdded] Obtained medium is null; name was " << name << endl;
@@ -106,10 +106,10 @@ void DeviceManager::mediumRemoved( QString name )
     DEBUG_BLOCK
     if ( !m_valid )
         return;
-    Medium* removedMedium = NULL;
+    Medium* removedMedium = 0;
     if ( m_mediumMap.contains(name) )
         removedMedium = m_mediumMap[name];
-    if ( removedMedium != NULL )
+    if ( removedMedium != 0 )
         debug() << "[DeviceManager::mediumRemoved] Obtained medium name is " << name << ", id is: " << removedMedium->id() << endl;
     else
         debug() << "[DeviceManager::mediumRemoved] Medium was unknown and is null; name was " << name << endl;
@@ -120,6 +120,7 @@ void DeviceManager::mediumRemoved( QString name )
     emit mediumRemoved( removedMedium, name );
     if ( m_mediumMap.contains(name) )
         m_mediumMap.remove(name);
+    delete removedMedium;
 }
 
 
@@ -129,7 +130,7 @@ void DeviceManager::mediumChanged( QString name )
     if ( !m_valid )
         return;
     Medium *changedMedium = getDevice(name);
-    if ( changedMedium != NULL )
+    if ( changedMedium != 0 )
         debug() << "[DeviceManager::mediumChanged] Obtained medium name is " << name << ", id is: " << changedMedium->id() << endl;
     else
         debug() << "[DeviceManager::mediumChanged] Obtained medium is null; name was " << name << endl;
@@ -238,8 +239,8 @@ Medium* DeviceManager::getDevice( QString name )
     if ( !m_valid )
         return NULL;
     debug() << "DeviceManager: getDevice called with name argument = " << name << endl;
-    Medium* returnedMedium = NULL;
-    Medium* tempMedium = NULL;
+    Medium* returnedMedium = 0;
+    Medium* tempMedium = 0;
     MediumList currMediumList = getDeviceList();
 
     Medium::List::iterator it;
