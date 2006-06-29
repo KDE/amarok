@@ -14,7 +14,6 @@ require "uri"
 include Socket::Constants
 
 def puts( string )
-    $stdout.puts( "AMAROK_PROXY: " + string )
     $stderr.puts( "AMAROK_PROXY: " + string )
 end
 
@@ -24,7 +23,7 @@ def cp_to_empty( s, o )
     s.each_line do |data|
         puts( data )
         if data.include?( "User-Agent:" )
-           label,useragent = data.split(/\s*\:\s*/) 
+           label,useragent = data.split(/\s*\:\s*/)
         end
         o.write( data )
         return useragent if data.chomp == ""
@@ -73,11 +72,9 @@ serv = TCPSocket.new( uri.host, uri.port )
 # here we substitute the proxy GET
 data = amaroks.readline
 g = "GET " << uri.path
-g = g << "/" if uri.path == ""
-if ( uri.query && uri.query != "" )
-   g = g << "?" << uri.query
-end
-g = g << " HTTP/1.1\r\n"
+g << "/" if uri.path == ""
+g << "?" << uri.query if uri.query && uri.query != ""
+g << " HTTP/1.1\r\n"
 
 puts( data << "but sending " << g )
 serv.puts( g )
@@ -95,9 +92,9 @@ cp_all( serv, amaroks )
 
 puts "useragent is " << useragent
 if !useragent.include?( "xine" ) && amaroks.eof
-   puts "EOF Detected, reconnecting"
+   puts( "EOF Detected, reconnecting" )
    amaroks = amarok.accept
-   cp_all ( serv, amaroks )
+   cp_all( serv, amaroks )
 end
 
 
