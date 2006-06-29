@@ -23,7 +23,7 @@ function Error {
 }
 
 function Clean {
-  #unsermake clean > /dev/null
+  unsermake clean > /dev/null
   if [ "$?" != "0" ]; then #If the command didn't finish successfully
     Error "Failed to clean the source tree!"
   else
