@@ -223,6 +223,11 @@ profiledatadir = \
 profiledata_DATA = \
     amarok.profile.xml
 
+protocoldir = \
+    $(kde_servicesdir)
+
+protocol_DATA = \
+    lastfm.protocol
 
 messages: rc.cpp
 	$(EXTRACTRC) `find . -name "*.rc" -o -name "*.ui" -o -name "*.kcfg"` > rc.cpp
