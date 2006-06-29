@@ -2,7 +2,7 @@
 // AmarokSystray
 //
 // Contributors: Stanislav Karchebny <berkus@users.sf.net>, (C) 2003
-//               berkus, mxcl, eros
+//               berkus, mxcl, eros, eean
 //
 // Copyright: like rest of Amarok
 //
@@ -249,6 +249,8 @@ amaroK::TrayIcon::setLastFm( bool lastFmActive )
     if( lastFmActive == m_lastFmMode ) return;
 
     KActionCollection* const ac = amaroK::actionCollection();
+    if( ac->action( "ban" ) == 0 ) return; //if the LastFm::Controller doesn't exist yet
+
     if( lastFmActive )
     {
         ac->action( "play_pause" )->unplug( contextMenu() );
