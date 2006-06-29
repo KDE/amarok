@@ -4645,12 +4645,22 @@ QStringList SqliteConnection::query( const QString& statement )
     int error;
     const char* tail;
     sqlite3_stmt* stmt;
+    int busyCnt = 0;
 
-    //compile SQL program to virtual machine
-    error = sqlite3_prepare( m_db, statement.utf8(), -1, &stmt, &tail );
+    //compile SQL program to virtual machine, reattempting if busy
+    do {
+        if ( busyCnt++ )
+        {
+            ::usleep( 100000 );      // Sleep 100 msec
+            debug() << "sqlite3_prepare: BUSY counter: " << busyCnt << endl;
+        }
+        error = sqlite3_prepare( m_db, statement.utf8(), -1, &stmt, &tail );
+    }
+    while ( SQLITE_BUSY==error && busyCnt < 20 );
 
     if ( error != SQLITE_OK )
     {
+        debug() << "Error code is " << error << endl;
         Debug::error() << k_funcinfo << " sqlite3_compile error:" << endl;
         Debug::error() << sqlite3_errmsg( m_db ) << endl;
         Debug::error() << "on query: " << statement << endl;
@@ -4658,7 +4668,7 @@ QStringList SqliteConnection::query( const QString& statement )
     }
     else
     {
-        int busyCnt = 0;
+        busyCnt = 0;
         int number = sqlite3_column_count( stmt );
         //execute virtual machine by iterating over rows
         while ( true )
@@ -4707,8 +4717,18 @@ int SqliteConnection::insert( const QString& statement, const QString& /* table 
     int error;
     const char* tail;
     sqlite3_stmt* stmt;
-    //compile SQL program to virtual machine
-    error = sqlite3_prepare( m_db, statement.utf8(), -1, &stmt, &tail );
+    int busyCnt = 0;
+
+    //compile SQL program to virtual machine, reattempting if busy
+    do {
+        if ( busyCnt++ )
+        {
+            ::usleep( 100000 );      // Sleep 100 msec
+            debug() << "sqlite3_prepare: BUSY counter: " << busyCnt << endl;
+        }
+        error = sqlite3_prepare( m_db, statement.utf8(), -1, &stmt, &tail );
+    }
+    while ( SQLITE_BUSY==error && busyCnt < 20 );
 
     if ( error != SQLITE_OK )
     {
@@ -4718,7 +4738,7 @@ int SqliteConnection::insert( const QString& statement, const QString& /* table 
     }
     else
     {
-        int busyCnt = 0;
+        busyCnt = 0;
         //execute virtual machine by iterating over rows
         while ( true )
         {
