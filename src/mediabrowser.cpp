@@ -1322,7 +1322,7 @@ MediaView::contentsDropEvent( QDropEvent *e )
                     it != values.end();
                     it++ )
             {
-                it += SmartPlaylist::NumReturnValues-2;
+                it += QueryBuilder::dragFieldCount-2;
                 list += KURL::fromPathOrURL( *it );
                 it++;
             }
@@ -3092,7 +3092,7 @@ MediaQueue::dropEvent( QDropEvent *e )
                 it != values.end();
                 it++ )
         {
-            it += SmartPlaylist::NumReturnValues-2;
+            it += QueryBuilder::dragFieldCount-2;
             list += KURL::fromPathOrURL( *it );
             it++;
         }
