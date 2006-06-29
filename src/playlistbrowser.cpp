@@ -3403,8 +3403,8 @@ InfoPane::InfoPane( QWidget *parent )
     m_pushButton->setEnabled( m_enable );
     connect( m_pushButton, SIGNAL(toggled( bool )), SLOT(toggle( bool )) );
 
-    setMinimumHeight( 150 );
-    setMaximumHeight( m_pushButton->sizeHint().height() );
+    //Set the height to fixed. The button shouldn't be resized.
+    setFixedHeight( m_pushButton->sizeHint().height() );
 }
 
 const int
@@ -3434,12 +3434,14 @@ InfoPane::toggle( bool toggled )
         //Save the height for later
         setStoredHeight( splitter->sizes().last() );
 
-        setMaximumHeight( m_pushButton->sizeHint().height() );
+        //Set the height to fixed. The button shouldn't be resized.
+        setFixedHeight( m_pushButton->sizeHint().height() );
 
         //Now the info pane is not shown, we can disable the button if necessary
         m_pushButton->setEnabled( m_enable );
     }
     else {
+        setMinimumHeight( 150 );
         setMaximumHeight( ( int )( parentWidget()->height() / 1.5 ) );
 
         //Restore the height of the InfoPane (change the splitter properties)
