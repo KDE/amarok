@@ -3383,6 +3383,10 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
 void
 ContextBrowser::wikiHistoryBack() //SLOT
 {
+    //Disable the button as history may be empty. Reenabled later by showWikipedia.
+    m_wikiToolBar->setItemEnabled( WIKI_BACK, false );
+    m_wikiToolBar->setItemEnabled( WIKI_FORWARD, false );
+
     m_wikiForwardHistory += m_wikiBackHistory.last();
     m_wikiBackHistory.pop_back();
 
@@ -3395,6 +3399,10 @@ ContextBrowser::wikiHistoryBack() //SLOT
 void
 ContextBrowser::wikiHistoryForward() //SLOT
 {
+    //Disable the button as history may be empty. Reenabled later by showWikipedia.
+    m_wikiToolBar->setItemEnabled( WIKI_FORWARD, false );
+    m_wikiToolBar->setItemEnabled( WIKI_BACK, false );
+
     m_wikiBackHistory += m_wikiForwardHistory.last();
     m_wikiForwardHistory.pop_back();
 
