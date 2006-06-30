@@ -261,7 +261,7 @@ WebService::handshake( const QString& username, const QString& password )
     debug() << "Proxy server using port: " << port << endl;
     delete socket;
 
-    m_proxyUrl = QString( "http://localhost:%1/theBeard.mp3" ).arg( port );
+    m_proxyUrl = QString( "http://localhost:%1/lastfm.mp3" ).arg( port );
 
     m_server = new LastfmProcIO();
     m_server->setComm( KProcess::Communication( KProcess::AllOutput ) );
