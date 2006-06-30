@@ -1088,8 +1088,7 @@ void App::setRating( int n )
         const QString path = EngineController::instance()->playingURL().path();
         CollectionDB::instance()->setSongRating( path, n, true );
         const int rating = CollectionDB::instance()->getSongRating( path );
-        amaroK::OSD::instance()->OSDWidget::setRating( rating );
-        amaroK::OSD::instance()->OSDWidget::show( i18n("Rating changed") );
+        amaroK::OSD::instance()->OSDWidget::ratingChanged( rating );
     }
     else if( PlaylistWindow::self()->isReallyShown() && Playlist::instance()->qscrollview()->hasFocus() )
         Playlist::instance()->setSelectedRatings( n );
