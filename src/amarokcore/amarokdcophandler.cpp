@@ -38,6 +38,7 @@
 #include "playlistwindow.h"
 #include "scriptmanager.h"
 #include "statusbar.h"
+#include "lastfm.h"
 
 #include <qfile.h>
 
@@ -261,7 +262,10 @@ namespace amaroK
 
     QString DcopPlayerHandler::type()
     {
-        return EngineController::instance()->bundle().type();
+       if (EngineController::instance()->bundle().url().protocol() == "lastfm")
+          return QString("LastFm Stream");
+       else
+          return EngineController::instance()->bundle().type();
     }
 
     QString DcopPlayerHandler::year()
