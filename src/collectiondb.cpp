@@ -4649,18 +4649,19 @@ QStringList SqliteConnection::query( const QString& statement )
 
     //compile SQL program to virtual machine, reattempting if busy
     do {
-        if ( busyCnt++ )
+        if ( busyCnt )
         {
             ::usleep( 100000 );      // Sleep 100 msec
             debug() << "sqlite3_prepare: BUSY counter: " << busyCnt << endl;
         }
         error = sqlite3_prepare( m_db, statement.utf8(), -1, &stmt, &tail );
     }
-    while ( SQLITE_BUSY==error && busyCnt < 20 );
+    while ( SQLITE_BUSY==error && busyCnt++ < 120 );
 
     if ( error != SQLITE_OK )
     {
-        debug() << "Error code is " << error << endl;
+        if ( SQLITE_BUSY==error )
+            Debug::error() << "Gave up waiting for lock to clear" << endl;
         Debug::error() << k_funcinfo << " sqlite3_compile error:" << endl;
         Debug::error() << sqlite3_errmsg( m_db ) << endl;
         Debug::error() << "on query: " << statement << endl;
@@ -4677,7 +4678,7 @@ QStringList SqliteConnection::query( const QString& statement )
 
             if ( error == SQLITE_BUSY )
             {
-                if ( busyCnt++ > 20 ) {
+                if ( busyCnt++ > 120 ) {
                     Debug::error() << "Busy-counter has reached maximum. Aborting this sql statement!\n";
                     break;
                 }
@@ -4721,17 +4722,19 @@ int SqliteConnection::insert( const QString& statement, const QString& /* table 
 
     //compile SQL program to virtual machine, reattempting if busy
     do {
-        if ( busyCnt++ )
+        if ( busyCnt )
         {
             ::usleep( 100000 );      // Sleep 100 msec
             debug() << "sqlite3_prepare: BUSY counter: " << busyCnt << endl;
         }
         error = sqlite3_prepare( m_db, statement.utf8(), -1, &stmt, &tail );
     }
-    while ( SQLITE_BUSY==error && busyCnt < 20 );
+    while ( SQLITE_BUSY==error && busyCnt++ < 120 );
 
     if ( error != SQLITE_OK )
     {
+        if ( SQLITE_BUSY==error )
+            Debug::error() << "Gave up waiting for lock to clear" << endl;
         Debug::error() << k_funcinfo << " sqlite3_compile error:" << endl;
         Debug::error() << sqlite3_errmsg( m_db ) << endl;
         Debug::error() << "on insert: " << statement << endl;
@@ -4746,7 +4749,7 @@ int SqliteConnection::insert( const QString& statement, const QString& /* table 
 
             if ( error == SQLITE_BUSY )
             {
-                if ( busyCnt++ > 20 ) {
+                if ( busyCnt++ > 120 ) {
                     Debug::error() << "Busy-counter has reached maximum. Aborting this sql statement!\n";
                     break;
                 }
