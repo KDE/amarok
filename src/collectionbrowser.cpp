@@ -78,6 +78,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     , m_cat2Menu( new KPopupMenu( this ) )
     , m_cat3Menu( new KPopupMenu( this ) )
     , m_timer( new QTimer( this ) )
+    , m_returnPressed( false )
 {
     setSpacing( 4 );
 
@@ -178,7 +179,6 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
     connect( m_searchEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
-    connect( m_searchEdit, SIGNAL( returnPressed() ), SLOT( slotSetFilter() ) );
     connect( m_timeFilter, SIGNAL( activated( int ) ), SLOT( slotSetFilter() ) );
 
     setFocusProxy( m_view ); //default object to get focus
@@ -187,6 +187,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
 void
 CollectionBrowser::slotSetFilterTimeout() //SLOT
 {
+    m_returnPressed = false;
     m_timer->start( 280, true ); //stops the timer for us first
 }
 
@@ -198,6 +199,9 @@ CollectionBrowser::slotSetFilter() //SLOT
     m_view->setFilter( m_searchEdit->text() );
     m_view->setTimeFilter( m_timeFilter->currentItem() );
     m_view->renderView();
+    if ( m_returnPressed )
+        appendSearchResults();
+    m_returnPressed = false;
 }
 
 void
@@ -210,6 +214,18 @@ void
 CollectionBrowser::toggleDivider() //SLOT
 {
     m_view->setShowDivider( m_showDividerAction->isChecked() );
+}
+
+void
+CollectionBrowser::appendSearchResults()
+{
+    //If we are not filtering, or the search string has changed recently, do nothing
+    if ( m_searchEdit->text().stripWhiteSpace().isEmpty() || m_timer->isActive() )
+        return;
+    m_view->selectAll();
+    Playlist::instance()->insertMedia( m_view->listSelected(), Playlist::Unique | Playlist::Append );
+    m_view->clearSelection();
+    m_searchEdit->clear();
 }
 
 bool
@@ -243,12 +259,18 @@ CollectionBrowser::eventFilter( QObject *o, QEvent *e )
 
             case Key_Return:
             case Key_Enter:
-                if ( m_searchEdit->text().stripWhiteSpace().isEmpty() )
-                    return true;
-                m_view->selectAll();
-                Playlist::instance()->insertMedia( m_view->listSelected(), Playlist::Unique | Playlist::Append );
-                m_view->clearSelection();
-                m_searchEdit->clear();
+                if ( m_timer->isActive() )
+                {
+                    //Immediately filter and add results
+                    m_timer->stop();
+                    m_returnPressed = true;
+                    QTimer::singleShot( 0, this, SLOT( slotSetFilter() ) );
+                }
+                else
+                {
+                    //Add current results
+                    appendSearchResults();
+                }
                 return true;
 
             default:
@@ -1329,7 +1351,7 @@ CollectionView::enableCat3Menu( bool enable )
 void
 CollectionView::invokeItem( QListViewItem* item ) //SLOT
 {
-    if ( !item || dynamic_cast<DividerItem*>(item))
+    if ( !item || dynamic_cast<DividerItem*>(item) )
         return;
 
     item->setSelected( true );

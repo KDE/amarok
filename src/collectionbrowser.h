@@ -59,6 +59,7 @@ class CollectionBrowser: public QVBox
 
     private:
         void layoutToolbar();
+        void appendSearchResults();
 
         //attributes:
         enum CatMenuId { IdAlbum = 1, IdArtist = 2, IdGenre = 4, IdYear = 8 , IdScan = 16, IdNone = 32,
@@ -81,6 +82,8 @@ class CollectionBrowser: public QVBox
         KComboBox* m_timeFilter;
         CollectionView* m_view;
         QTimer*     m_timer;
+
+        bool m_returnPressed;
 
     // for CatMenuId
     friend class CollectionItem;

@@ -19,6 +19,8 @@ VERSION 1.4.1:
     * The Extended Info panel in the playlistbrowser is now resizeable.
 
   BUGFIXES:
+    * Pressing return in the search bar of the Collection Browser immediately
+      after typing a query no longer appends the wrong items to the playlist.
     * Fix crash when pressing Back or Forward buttons multiple times quickly
       in Artist tab. Patch by Thomas Lindroth <tholi945@student.liu.se>.
     * Fix problems where blanks would be added to data if SQLite was busy.
