@@ -2387,7 +2387,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             if( static_cast<PlaylistEntry*>(item)->isDynamic() )
                 menu.insertItem( SmallIconSet( amaroK::icon( "remove_from_playlist" ) ), i18n( "Remove From %1" ).arg(amaroK::dynamicMode()->title()), DYNSUB );
             else
-                menu.insertItem( SmallIconSet( "edit_add" ), i18n( "Add to the %1 Entries" ).arg(amaroK::dynamicMode()->title()), DYNADD );
+                menu.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "Add to the %1 Entries" ).arg(amaroK::dynamicMode()->title()), DYNADD );
         }
 
         if( MediaBrowser::isAvailable() )
@@ -2450,7 +2450,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             if( static_cast<SmartPlaylist*>(item)->isDynamic() )
                 menu.insertItem( SmallIconSet( amaroK::icon( "remove_from_playlist" ) ), i18n( "Remove From %1" ).arg(amaroK::dynamicMode()->title()), DYNSUB );
             else
-                menu.insertItem( SmallIconSet( "edit_add" ), i18n( "Add to the %1 Entries" ).arg(amaroK::dynamicMode()->title()), DYNADD );
+                menu.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "Add to the %1 Entries" ).arg(amaroK::dynamicMode()->title()), DYNADD );
         }
 
         // Forbid removal of Collection
@@ -2699,26 +2699,26 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         }
 
         if( parentCat == static_cast<QListViewItem*>(m_playlistCategory) )
-            menu.insertItem( SmallIconSet("edit_add"), i18n("Import Playlist..."), PLAYLIST );
+            menu.insertItem( SmallIconSet(amaroK::icon( "add_playlist" )), i18n("Import Playlist..."), PLAYLIST );
 
         else if( parentCat == static_cast<QListViewItem*>(m_smartCategory) )
-            menu.insertItem( SmallIconSet("edit_add"), i18n("New Smart Playlist..."), SMART );
+            menu.insertItem( SmallIconSet(amaroK::icon( "add_playlist" )), i18n("New Smart Playlist..."), SMART );
 
         else if( parentCat == static_cast<QListViewItem*>(m_dynamicCategory) )
-            menu.insertItem( SmallIconSet("edit_add"), i18n("New Dynamic Playlist..."), DYNAMIC );
+            menu.insertItem( SmallIconSet(amaroK::icon( "add_playlist" )), i18n("New Dynamic Playlist..."), DYNAMIC );
 
         else if( parentCat == static_cast<QListViewItem*>(m_streamsCategory) )
-            menu.insertItem( SmallIconSet("edit_add"), i18n("Add Radio Stream..."), STREAM );
+            menu.insertItem( SmallIconSet(amaroK::icon( "add_playlist" )), i18n("Add Radio Stream..."), STREAM );
 
         else if( parentCat == static_cast<QListViewItem*>(m_podcastCategory) )
         {
             isPodcastFolder = true;
-            menu.insertItem( SmallIconSet("edit_add"), i18n("Add Podcast..."), PODCAST );
+            menu.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n("Add Podcast..."), PODCAST );
             menu.insertItem( SmallIconSet( amaroK::icon( "refresh" ) ), i18n("Refresh All Podcasts"), REFRESH );
             menu.insertSeparator();
             menu.insertItem( SmallIconSet( amaroK::icon( "configure" ) ), i18n( "&Configure Children..." ), CONFIG );
             if( parentCat == item )
-                menu.insertItem( SmallIconSet("tool_timer"), i18n("Scan Interval..."), INTERVAL );
+                menu.insertItem( SmallIconSet( amaroK::icon( "configure" ) ), i18n("Scan Interval..."), INTERVAL );
         }
 
         menu.insertSeparator();
