@@ -714,11 +714,13 @@ TagDialog::setMultipleTracksMode()
     kComboBox_artist->setCurrentText( "" );
     kComboBox_album->setCurrentText( "" );
     kComboBox_genre->setCurrentText( "" );
+    kComboBox_composer->setCurrentText( "" );
     kLineEdit_title->setText( "" );
     kIntSpinBox_track->setValue( kIntSpinBox_track->minValue() );
 
     kLineEdit_title->setEnabled( false );
     kIntSpinBox_track->setEnabled( false );
+    kIntSpinBox_discNumber->setEnabled( false );
 
     pushButton_musicbrainz->hide();
     pushButton_guessTags->hide();
