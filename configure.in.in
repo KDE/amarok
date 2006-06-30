@@ -70,41 +70,41 @@ fi
 # BEGIN GSTREAMER-0.10 CHECK
 ###############################################################################
 
-AC_ARG_WITH(gstreamer10,
-    AC_HELP_STRING([--with-gstreamer10],[build Amarok with GStreamer 0.10-engine]),
-    [build_gstreamer10=$withval],
-    [build_gstreamer10=no]
-)
-
-if test "$build_gstreamer10" != "no"; then
-    if test "$PKGCONFIGFOUND" = "yes" ; then
-        # check for GStreamer
-        dnl Now we're ready to ask for gstreamer libs and cflags
-        dnl And we can also ask for the right version of gstreamer
-        have_gst10=no
-
-        GST10_MAJORMINOR=0.10
-        GST10_REQ=0.10.0
-
-        PKG_CHECK_MODULES(GST10, gstreamer-$GST10_MAJORMINOR >= $GST10_REQ gstreamer-base-$GST10_MAJORMINOR,
-            have_gst10=yes,have_gst10=no)
-
-        dnl Give error if we don't have gstreamer
-        if test "x$have_gst10" = "xno"; then
-            LIB_GST10=""
-            CFLAGS_GST10=""
-        else
-            LIB_GST10=$GST10_LIBS
-            CFLAGS_GST10=$GST10_CFLAGS
-            AC_SUBST(LIB_GST10)
-            AC_SUBST(CFLAGS_GST10)
-            AC_SUBST(GST10_MAJORMINOR)
-            AC_DEFINE(HAVE_GSTREAMER10, 1, [have GStreamer10])
-        fi
-    fi
-fi
-
-AM_CONDITIONAL(with_gst10, [test x$have_gst10 = xyes])
+#AC_ARG_WITH(gstreamer10,
+#    AC_HELP_STRING([--with-gstreamer10],[build Amarok with GStreamer 0.10-engine]),
+#    [build_gstreamer10=$withval],
+#    [build_gstreamer10=no]
+#)
+#
+#if test "$build_gstreamer10" != "no"; then
+#    if test "$PKGCONFIGFOUND" = "yes" ; then
+#        # check for GStreamer
+#        dnl Now we're ready to ask for gstreamer libs and cflags
+#        dnl And we can also ask for the right version of gstreamer
+#        have_gst10=no
+#
+#        GST10_MAJORMINOR=0.10
+#        GST10_REQ=0.10.0
+#
+#        PKG_CHECK_MODULES(GST10, gstreamer-$GST10_MAJORMINOR >= $GST10_REQ gstreamer-base-$GST10_MAJORMINOR,
+#            have_gst10=yes,have_gst10=no)
+#
+#        dnl Give error if we don't have gstreamer
+#        if test "x$have_gst10" = "xno"; then
+#            LIB_GST10=""
+#            CFLAGS_GST10=""
+#        else
+#            LIB_GST10=$GST10_LIBS
+#            CFLAGS_GST10=$GST10_CFLAGS
+#            AC_SUBST(LIB_GST10)
+#            AC_SUBST(CFLAGS_GST10)
+#            AC_SUBST(GST10_MAJORMINOR)
+#            AC_DEFINE(HAVE_GSTREAMER10, 1, [have GStreamer10])
+#        fi
+#    fi
+#fi
+#
+#AM_CONDITIONAL(with_gst10, [test x$have_gst10 = xyes])
 
 ###############################################################################
 # END GSTREAMER-0.10 CHECK

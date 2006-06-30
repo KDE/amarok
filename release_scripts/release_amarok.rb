@@ -161,7 +161,7 @@ Dir.chdir( "amarok" )
 # This stuff doesn't belong in the tarball
 `rm -rf src/scripts/rbot`
 `rm -rf release_scripts`
-# `rm -rf src/engine/gst10` #Removed for now
+`rm -rf src/engine/gst10` #Removed for now
 
 Dir.chdir( "src" )
 

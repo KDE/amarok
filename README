@@ -65,10 +65,6 @@ Optional
       http://www.real.com
       (Note: only HelixPlayer is exactly RealPlayer without MP3 support)
 
-    * GStreamer-0.10 + GStreamer-Plugins-0.10
-      (multimedia framework)
-      http://gstreamer.net
-
     * NMM 0.7.0
       (multimedia framework)
       http://www.networkmultimedia.org
