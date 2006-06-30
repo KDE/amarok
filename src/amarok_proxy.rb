@@ -79,9 +79,7 @@ class LastFM
     income.each_line do |data|
       puts (data = data.chomp)
       if data.empty?
-        label, useragent = data.split(/\s*\:\s*/) if data =~ /User-Agent:/
-        puts [label, useragent].inspect
-        return "\n#{useragent}"
+        return "\n"
       end
       safe_write output, data
     end
