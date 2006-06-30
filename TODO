@@ -9,12 +9,23 @@ SHORT-TERM (URGENT):
 
  <sebr>    LastFm:
              - statusbar notifications of love/skip/ban
- <eean>      - fix progress indicator 
-             - display history in the playlist somehow 
+ <eean>      - display history in the playlist somehow  <markey> I'm against this.
                -subitems?
                -just disabled?
              - 'stop after current track' should work
-            
+ <markey>    - sometimes metadata is not updated
+             - does not work with Squid proxy servers:
+                amarok: [LastFm] AMAROK_PROXY: COPY from serv -> amarok
+                amarok: [LastFm] AMAROK_PROXY: HTTP/1.0 503 Service Unavailable
+                amarok: [LastFm] AMAROK_PROXY: Server: squid/2.5.STABLE12
+                amarok: [LastFm] AMAROK_PROXY: Mime-Version: 1.0
+                amarok: [LastFm] AMAROK_PROXY: Date: Thu, 29 Jun 2006 16:31:21 GMT
+                amarok: [LastFm] AMAROK_PROXY: Content-Type: text/html
+                amarok: [LastFm] AMAROK_PROXY: Content-Length: 1050
+                amarok: [LastFm] AMAROK_PROXY: Expires: Thu, 29 Jun 2006 16:31:21 GMT
+                amarok: [LastFm] AMAROK_PROXY: X-Squid-Error: ERR_CONNECT_FAIL 111
+                amarok: [LastFm] AMAROK_PROXY: X-Cache: MISS from rst
+
  <markey>  GHNS for scripts and themes only shows 20 items maximum. I understand this is due
            to some configuration on pwsp.net, where we fetch the feed. This must be fixed!!!
 
