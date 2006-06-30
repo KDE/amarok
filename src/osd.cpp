@@ -307,6 +307,7 @@ OSDWidget::render( const uint M, const QSize &size )
         star.load( locate( "data", "amarok/images/star.png" ) );
         QRect r( rect );
 
+        r.setLeft(( rect.left() + rect.width() / 2 ) - star.width() * m_rating / 4 ); //Align to center...
         r.setTop( rect.top() + rect.height() / 2 );
 
         if( m_rating % 2 )
