@@ -38,6 +38,7 @@ amaroK::TrayIcon::TrayIcon( QWidget *playerWidget )
         , overlay( 0 )
         , blinkTimerID( 0 )
         , overlayVisible( false )
+        , m_lastFmMode( false )
 {
     KActionCollection* const ac = amaroK::actionCollection();
 
@@ -141,7 +142,7 @@ void
 amaroK::TrayIcon::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
     trackLength = bundle.length() * 1000;
-    setLastFm( bundle.url().protocol() == "lastfm");
+    setLastFm( bundle.url().protocol() == "lastfm" );
 }
 
 void
