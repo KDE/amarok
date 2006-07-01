@@ -78,10 +78,9 @@ class LastFM
   def cp_to_empty( income, output )
     puts "cp_to_empty( income => #{income.inspect}, output => #{output.inspect}"
     income.each_line do |data|
-      data.chomp!
-      return if data.empty?
       puts( data )
       safe_write output, data
+      return if data.chomp == ""
     end
   end
 
@@ -89,13 +88,19 @@ class LastFM
     puts "cp_all( income => #{income.inspect}, output => #{output.inspect}"
     loop do
       data = income.read( 1000 )
-      unless data.empty?
-        # detect SYNCs
-        if data.include?( "SYNC" ) # FIXME won't detect the SYNC if it spreads over fragment boundary
+      break if data == nil
+
+      # intercept SYNCs
+      if data.include?( "SYNC" ) # FIXME won't detect the SYNC if it spreads over fragment boundary
           data.gsub!( "SYNC", "" )
           puts( "SYNC" )
-        end
+      end
+
+      begin
         safe_write output, data
+      rescue
+        puts( "error from o.write, #{$!}" )
+        break
       end
     end
   end
