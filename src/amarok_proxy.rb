@@ -43,7 +43,7 @@ class LastFM
 
     # the client initiates everything - so copy it to the server
     puts "COPY from amarok -> serv"
-    useragent = cp_to_empty amaroks, serv
+    cp_to_empty amaroks, serv
 
     puts "COPY from serv -> amarok"
     cp_to_empty serv, amaroks
@@ -52,8 +52,9 @@ class LastFM
     puts "Before cp_all()"
     cp_all serv, amaroks
 
-    puts "useragent is #{useragent}"
-    if !useragent.include?( "xine" ) && amaroks.eof
+    engine = `dcop amarok player engine`.chomp
+    puts( "Engine is #{engine}" )
+    if engine == 'helix-engine' && amaroks.eof
       puts "EOF Detected, reconnecting"
       amaroks = amarok.accept
       cp_all( serv, amaroks )
@@ -77,10 +78,9 @@ class LastFM
   def cp_to_empty( income, output )
     puts "cp_to_empty( income => #{income.inspect}, output => #{output.inspect}"
     income.each_line do |data|
-      puts (data = data.chomp)
-      if data.empty?
-        return "\n"
-      end
+      data.chomp!
+      return if data.empty?
+      puts( data )
       safe_write output, data
     end
   end
@@ -90,15 +90,13 @@ class LastFM
     loop do
       data = income.read( 1000 )
       unless data.empty?
-        # takes double memory (2000), but makes safe that no sync comes through
-        # i think that's a good trade-off ;)
-        if (curr = (last ||= '') + data) =~ /SYNC/
-          data = curr.split('SYNC').last
-          puts 'SYNC'
+        # detect SYNCs
+        if data.include?( "SYNC" ) # FIXME won't detect the SYNC if it spreads over fragment boundary
+          data.gsub!( "SYNC", "" )
+          puts( "SYNC" )
         end
         safe_write output, data
       end
-      last = data
     end
   end
 end
