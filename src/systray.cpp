@@ -243,7 +243,7 @@ amaroK::TrayIcon::blendOverlay( QPixmap &sourcePixmap )
 
     setPixmap( sourcePixmapCopy ); // @since 3.2
 }
-#include "debug.h"
+
 void
 amaroK::TrayIcon::setLastFm( bool lastFmActive )
 {
@@ -262,7 +262,7 @@ amaroK::TrayIcon::setLastFm( bool lastFmActive )
         ac->action( "love" )->plug( contextMenu(), 4 );
         ac->action( "skip" )->plug( contextMenu(), 4 );
         separatorId = contextMenu()->insertSeparator( 4 );
-        debug() << "sepId: " << separatorId << endl;
+
         m_lastFmMode = true;
     }
     else
