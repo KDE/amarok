@@ -18,6 +18,7 @@ class LastFM
   def initialize port, remote_url
 
     puts( "startup" )
+    puts "running with port: #{port} and url: #{remote_url}"
 
     #
     # amarok is, well, Amarok
@@ -29,12 +30,18 @@ class LastFM
     # serv is the lastfm stream server
     #
     uri = URI.parse( remote_url )
+    puts("host " << uri.host << " ")
+    puts ( port )
     serv = TCPSocket.new( uri.host, uri.port )
     puts "running with port: #{uri.port} and host: #{uri.host}"
 
     # here we substitute the proxy GET
     data = amaroks.readline
-    get = "GET #{uri.path || '/'}?#{uri.query} HTTP/1.1\r\n"
+    get = "GET #{uri.path || '/'}?#{uri.query} HTTP/1.1\r\n\r\n"
+    #get = "GET " << uri.path
+    #get << "/" if uri.path == ""
+    #get << "?" << uri.query if uri.query && uri.query != ""
+    #get << " HTTP/1.1\r\n"
 
     puts data.inspect
     puts get.inspect
@@ -43,21 +50,24 @@ class LastFM
 
     # the client initiates everything - so copy it to the server
     puts "COPY from amarok -> serv"
-    cp_to_empty amaroks, serv
+    cp_to_empty_outward amaroks, serv
+
+    safe_write serv, "\r\n\r\n" 
 
     puts "COPY from serv -> amarok"
-    cp_to_empty serv, amaroks
+    cp_to_empty_inward serv, amaroks
 
     # now copy from the server to amarok
     puts "Before cp_all()"
-    cp_all serv, amaroks
+    cp_all_inward serv, amaroks
 
     engine = `dcop amarok player engine`.chomp
     puts( "Engine is #{engine}" )
+
     if engine == 'helix-engine' && amaroks.eof
       puts "EOF Detected, reconnecting"
       amaroks = amarok.accept
-      cp_all( serv, amaroks )
+      cp_all_inward( serv, amaroks )
     end
   end
 
@@ -75,8 +85,18 @@ class LastFM
     end
   end
 
-  def cp_to_empty( income, output )
-    puts "cp_to_empty( income => #{income.inspect}, output => #{output.inspect}"
+  def cp_to_empty_outward( income, output )
+    puts "cp_to_empty_outward( income => #{income.inspect}, output => #{output.inspect}"
+    income.each_line do |data|
+      puts( data )
+      data.chomp!
+      safe_write output, data
+      return if data.empty?
+    end
+  end
+
+  def cp_to_empty_inward( income, output )
+    puts "cp_to_empty_inward( income => #{income.inspect}, output => #{output.inspect}"
     income.each_line do |data|
       puts( data )
       safe_write output, data
@@ -84,7 +104,7 @@ class LastFM
     end
   end
 
-  def cp_all( income, output )
+  def cp_all_inward( income, output )
     puts "cp_all( income => #{income.inspect}, output => #{output.inspect}"
     loop do
       data = income.read( 1000 )
