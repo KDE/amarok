@@ -379,13 +379,14 @@ WebService::metaDataFinished( int /*id*/, bool error ) //SLOT
 
     m_metaBundle.setLastFmBundle( lastFmStuff );
 
-    if( imageUrl.isEmpty() ) {
+    const KURL u( imageUrl );
+    if( !u.isValid() ) {
+        debug() << "imageUrl empty or invalid." << endl;
         emit metaDataResult( m_metaBundle );
         return;
     }
 
-    const KURL u( imageUrl );
-    QHttp* h = new QHttp( u.host(), 80 );
+    QHttp* h = new QHttp( u.host(), 80, this );
     connect( h, SIGNAL( requestFinished( int, bool ) ), this, SLOT( fetchImageFinished( int, bool ) ) );
 
     h->get( u.path() );
