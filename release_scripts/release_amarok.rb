@@ -7,24 +7,27 @@
 # License: GNU General Public License V2
 
 
+# Red Cards (removes translation)
+doc_redcards = "pl"
+po_redcards = ""
+
 tag = ""
-unless $*.empty?()
-    case $*[0]
-        when "--tag"
-            tag = `kdialog --inputbox "Enter tag name: "`.chomp()
-        else
-            puts("Unknown option #{$1}. Use --branch or --tag.\n")
-    end
-end
+useStableBranch=false
 
 # Ask whether using branch or trunk
-if `kdialog --combobox "Select checkout's place:" "Trunk" "Branch"`.chomp() == "Branch"
+location = `kdialog --combobox "Select checkout's place:" "Tag" "Trunk" "Branch"`.chomp()
+if location == "Tag"
+    tag = `kdialog --inputbox "Enter tag name: "`.chomp()
+elsif location == "Branch"
     useStableBranch=true
-else
-    useStableBranch=false
 end
+
 # Ask user for targeted application version
-version  = `kdialog --inputbox "Enter Amarok version: "`.chomp()
+if not tag.empty?()
+    version = tag
+else
+    version  = `kdialog --inputbox "Enter Amarok version: "`.chomp()
+end
 user = `kdialog --inputbox "Your SVN user:"`.chomp()
 protocol = `kdialog --radiolist "Do you use https or svn+ssh?" https https 0 "svn+ssh" "svn+ssh" 1`.chomp()
 
@@ -50,8 +53,8 @@ if useStableBranch
     `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/#{branch}/extragear/multimedia/`
     Dir.chdir( "multimedia" )
 elsif not tag.empty?()
-    `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/tags/amarok/#{tag}`
-    Dir.chdir( tag )
+    `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/tags/amarok/#{tag}/multimedia`
+    Dir.chdir( "multimedia" )
 else
     `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/trunk/extragear/multimedia`
      Dir.chdir( "multimedia" )
@@ -95,6 +98,12 @@ if do_l10n == "yes"
         puts( "done.\n" )
     end
 
+    # red cards for documentation
+    for redcard in doc_redcards
+        `rm -rf #{redcard}`
+        print "\n Removed #{redcard} due to broken translation in last release \n"
+    end
+
     Dir.chdir( ".." ) # multimedia
     puts "\n"
 
@@ -120,6 +129,12 @@ if do_l10n == "yes"
         makefile.close()
 
         $subdirs = true
+    end
+
+    # red cards for translations
+    for redcard in po_redcards
+        `rm -rf #{redcard}`
+        print "\n Removed #{redcard} due to broken translation in last release \n"
     end
 
     if $subdirs
