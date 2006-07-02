@@ -23,6 +23,7 @@
 #include "enginecontroller.h"
 #include "lastfm.h"
 
+#include <qdeepcopy.h>
 #include <qdom.h>
 #include <qhttp.h>
 #include <qlabel.h>
@@ -246,7 +247,7 @@ WebService::handshake( const QString& username, const QString& password )
     if ( http.error() != QHttp::NoError )
         return false;
 
-    const QString result( http.readAll() );
+    const QString result( QDeepCopy<QString>( http.readAll() ) );
 
     debug() << "result: " << result << endl;
 
