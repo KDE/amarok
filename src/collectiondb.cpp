@@ -1158,7 +1158,6 @@ CollectionDB::createDragPixmap( const KURL::List &urls, QString textOverRide )
     KURL::List::ConstIterator it = urls.begin();
     for ( ; it != urls.end(); ++it )
     {
-        debug() << "finding cover for " << (*it).prettyURL() << endl;
         if( PlaylistFile::isPlaylistFile( *it )
             || (*it).protocol() == "playlist" || (*it).protocol() == "smartplaylist"
             || (*it).protocol() == "dynamic" )
@@ -1186,12 +1185,7 @@ CollectionDB::createDragPixmap( const KURL::List &urls, QString textOverRide )
                 QString coverName = CollectionDB::instance()->albumImage( mb.artist(), mb.album(), false, coverW );
 
                 if ( !coverName.endsWith( "@nocover.png" ) )
-                {
-                    debug() << "adding cover " << coverName << endl;
                     coverPm[covers++].load( coverName );
-                }
-                else
-                    debug() << "no cover found - skipping " << coverName << endl;
             }
         }
         else
@@ -1203,10 +1197,7 @@ CollectionDB::createDragPixmap( const KURL::List &urls, QString textOverRide )
                 QString coverName = CollectionDB::instance()->podcastImage( mb, false, coverW );
 
                 if ( !coverName.endsWith( "@nocover.png" ) )
-                {
-                    debug() << "adding cover " << coverName << endl;
                     coverPm[covers++].load( coverName );
-                }
             }
             remoteUrls++;
         }
