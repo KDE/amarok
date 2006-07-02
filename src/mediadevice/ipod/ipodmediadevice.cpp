@@ -242,7 +242,11 @@ IpodMediaDevice::updateTrackInDB(IpodMediaItem *item,
     else if(type=="m4b")
     {
         track->filetype = g_strdup( "mp4" );
+#ifdef HAVE_ITDB_SKIP_SHUFFLE_FLAG
+        track->remember_playback_position |= 0x01; // remember current position in track
+#else
         track->flag3 |= 0x01; // remember current position in track
+#endif
     }
     else if(type=="m4v" || type=="mp4v" || type=="mov" || type=="mpg")
     {
@@ -252,7 +256,11 @@ IpodMediaDevice::updateTrackInDB(IpodMediaItem *item,
     else if(type=="aa")
     {
         track->filetype = g_strdup( "audible" );
+#ifdef HAVE_ITDB_SKIP_SHUFFLE_FLAG
+        track->remember_playback_position |= 0x01; // remember current position in track
+#else
         track->flag3 |= 0x01; // remember current position in track
+#endif
 
         TagLib::Audible::File f( QFile::encodeName( bundle.url().path() ) );
         TagLib::Audible::Tag *t = f.getAudibleTag();
@@ -284,8 +292,13 @@ IpodMediaDevice::updateTrackInDB(IpodMediaItem *item,
     if(podcastInfo)
     {
         //track->flag1 |= 0x02; // artwork flag, handled by libgpod
+#ifdef HAVE_ITDB_SKIP_SHUFFLE_FLAG
+        track->remember_playback_position |= 0x01; // skip  when shuffling
+        track->remember_playback_position |= 0x01; // remember playback position
+#else
         track->flag2 |= 0x01; // skip  when shuffling
         track->flag3 |= 0x01; // remember playback position
+#endif
         track->flag4 |= 0x02; // also show description on iPod
         // FIXME: track->unk176 = 0x00020000; // for podcasts
         QString plaindesc = podcastInfo->description;
