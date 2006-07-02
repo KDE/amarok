@@ -243,11 +243,13 @@ amaroK::TrayIcon::blendOverlay( QPixmap &sourcePixmap )
 
     setPixmap( sourcePixmapCopy ); // @since 3.2
 }
-
+#include "debug.h"
 void
 amaroK::TrayIcon::setLastFm( bool lastFmActive )
 {
     if( lastFmActive == m_lastFmMode ) return;
+
+    static int separatorId = 0;
 
     KActionCollection* const ac = amaroK::actionCollection();
     if( ac->action( "ban" ) == 0 ) return; //if the LastFm::Controller doesn't exist yet
@@ -255,17 +257,23 @@ amaroK::TrayIcon::setLastFm( bool lastFmActive )
     if( lastFmActive )
     {
         ac->action( "play_pause" )->unplug( contextMenu() );
-        ac->action( "ban" )->plug( contextMenu(), 2 );
-        ac->action( "love" )->plug( contextMenu(), 2 );
-        ac->action( "skip" )->plug( contextMenu(), 2 );
+        // items are inserted in reverse order!
+        ac->action( "ban" ) ->plug( contextMenu(), 4 );
+        ac->action( "love" )->plug( contextMenu(), 4 );
+        ac->action( "skip" )->plug( contextMenu(), 4 );
+        separatorId = contextMenu()->insertSeparator( 4 );
+        debug() << "sepId: " << separatorId << endl;
         m_lastFmMode = true;
     }
-   else
-   {
+    else
+    {
         ac->action( "play_pause" )->plug( contextMenu(), 2 );
-        ac->action( "ban" )->unplug( contextMenu() );
+        ac->action( "ban" ) ->unplug( contextMenu() );
         ac->action( "love" )->unplug( contextMenu() );
         ac->action( "skip" )->unplug( contextMenu() );
+
+        if( separatorId != 0 )
+            contextMenu()->removeItem( separatorId ); // kill separator
         m_lastFmMode = false;
    }
 }

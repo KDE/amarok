@@ -73,9 +73,14 @@ Controller::Controller()
     , m_service( 0 )
 {
     KActionCollection* ac = amaroK::actionCollection();
-    m_actionList.append( new KAction( i18n( "Ban" ), amaroK::icon( "remove" ), KKey( Qt::CTRL | Qt::Key_B ), this, SLOT( ban() ), ac, "ban" ) );
-    m_actionList.append( new KAction( i18n( "Love" ), amaroK::icon( "love" ), KKey( Qt::CTRL | Qt::Key_L ), this, SLOT( love() ), ac, "love" ) );
-    m_actionList.append( new KAction( i18n( "Skip" ), 0, KKey( Qt::CTRL | Qt::Key_K ), this, SLOT( skip() ), ac, "skip" ) );
+    m_actionList.append( new KAction( i18n( "Ban" ), amaroK::icon( "remove" ),
+                         KKey( Qt::CTRL | Qt::Key_B ), this, SLOT( ban() ), ac, "ban" ) );
+
+    m_actionList.append( new KAction( i18n( "Love" ), amaroK::icon( "love" ),
+                         KKey( Qt::CTRL | Qt::Key_L ), this, SLOT( love() ), ac, "love" ) );
+
+    m_actionList.append( new KAction( i18n( "Skip" ), amaroK::icon( "next" ),
+                         KKey( Qt::CTRL | Qt::Key_K ), this, SLOT( skip() ), ac, "skip" ) );
     setActionsEnabled( false );
 }
 
