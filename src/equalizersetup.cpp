@@ -297,7 +297,7 @@ EqualizerSetup::savePresets()
     {
         const QString title = m_presetCombo->text( x );
 
-        // dont save the 'Zero' preset
+        // don't save the 'Zero' preset
         if ( title == i18n("Zero") )
             continue;
 

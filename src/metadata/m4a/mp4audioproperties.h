@@ -21,7 +21,7 @@ namespace TagLib
       void setProxy( Mp4PropsProxy* proxy );
 
       /*!
-       * Returns the lenght of the file in seconds.
+       * Returns the length of the file in seconds.
        */
       int length() const;
 

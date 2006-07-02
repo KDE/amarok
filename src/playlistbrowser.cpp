@@ -3318,7 +3318,7 @@ QString PlaylistDialog::getSaveFileName( const QString &suggestion ) //static
 
 PlaylistDialog::PlaylistDialog()
     : KDialogBase( PlaylistWindow::self(), "saveplaylist", true /*modal*/,
-                   i18n( "Save Playlist" ), Ok | Cancel | User1, Ok, false /*seperator*/,
+                   i18n( "Save Playlist" ), Ok | Cancel | User1, Ok, false /*separator*/,
                    KGuiItem( i18n( "Save to location..." ), SmallIconSet( amaroK::icon( "files" ) ) ) )
     , customChosen( false )
 {
@@ -3437,7 +3437,7 @@ InfoPane::toggle( bool toggled )
         setMaximumHeight( ( int )( parentWidget()->height() / 1.5 ) );
 
         //Restore the height of the InfoPane (change the splitter properties)
-        //Done everytime since the pane forgets its height if you try to resize it while the info is hidden.
+        //Done every time since the pane forgets its height if you try to resize it while the info is hidden.
         QValueList<int> sizes = splitter->sizes();
         const int sizeOffset = getHeight() - sizes.last();
         sizes.first() -= sizeOffset;

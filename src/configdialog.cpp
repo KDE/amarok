@@ -108,7 +108,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     KTrader::OfferList offers = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'engine'" );
     KTrader::OfferList::ConstIterator end( offers.end() );
     for( KTrader::OfferList::ConstIterator it = offers.begin(); it != end; ++it ) {
-        // Don't list the <no engine> (void engine) entry if it's not currenty active,
+        // Don't list the <no engine> (void engine) entry if it's not currently active,
         // cause there's no point in choosing this engine (it's a dummy, after all).
         if( (*it)->property( "X-KDE-Amarok-name" ).toString() == "void-engine"
             && AmarokConfig::soundSystem() != "void-engine" ) continue;

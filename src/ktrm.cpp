@@ -263,7 +263,7 @@ protected:
 };
 
 /**
- * Callback fuction for TunePimp lookup events.
+ * Callback function for TunePimp lookup events.
  */
 #if HAVE_TUNEPIMP >= 4
 static void TRMNotifyCallback(tunepimp_t /*pimp*/, void */*data*/, TPCallbackEnum type, int fileId, TPFileStatus status)

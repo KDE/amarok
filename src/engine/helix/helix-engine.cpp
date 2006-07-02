@@ -305,7 +305,7 @@ HelixEngine::load( const KURL &url, bool isStream )
          m_pfade[m_current].m_startfadetime = PlayerControl::where(m_current);
          setFadeout(true, m_xfadeLength, m_current);
       }
-      Engine::Base::load( url, false ); // we dont crossfade streams ?? do we load the base here ??
+      Engine::Base::load( url, false ); // we don't crossfade streams ?? do we load the base here ??
       PlayerControl::setURL( QFile::encodeName( url.url() ), nextPlayer, !isStream );
       m_isStream = false;
    }

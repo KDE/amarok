@@ -150,7 +150,7 @@ class GstEngine : public Engine::Base
         /** Construct the output pipeline */
         bool createPipeline();
 
-        /** Stops playback, destroys all input pipelines, destroys output pipeline, and frees ressources */
+        /** Stops playback, destroys all input pipelines, destroys output pipeline, and frees resources */
         void destroyPipeline();
 
         /* Constructs the pipeline for audio CDs, optionally selecting a device and/or track and/or setting the state to paused */
@@ -202,7 +202,7 @@ class GstEngine : public Engine::Base
         //////////
         // delay queue for synchronizing samples to where the audio device is playing
         GQueue    *m_delayq;
-        // the current set of samples for the scope, in case we dont have enough buffers yet
+        // the current set of samples for the scope, in case we don't have enough buffers yet
         // and end up with an incomplete buffer
         guint16    m_currentScope[SCOPESIZE];
         // the sample in m_currentScope we are working on

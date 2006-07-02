@@ -439,7 +439,7 @@ void SmartPlaylistEditor::buildQuery()
             This is the score weighted random order.
             The RAND() function returns random values equally distributed between 0.0 (inclusive) and 1.0 (exclusive).
             The obvious way to get this order is to put every track <score> times into a list, sort the list by RAND()
-            (i.e. shuffle it) and discard every occurence of every track but the very first of each.
+            (i.e. shuffle it) and discard every occurrence of every track but the very first of each.
             By putting every track into the list only once but applying a transfer function
             T_s(x) := 1-(1-x)^(1/s) where s is the score, to RAND() before sorting the list, exactly the same
             distribution of tracks can be achieved (for a proof write to Stefan Siegel <kde@sdas.de>)
@@ -945,7 +945,7 @@ void CriteriaEditor::loadEditWidgets()
 
 void CriteriaEditor::loadCriteriaList( int valueType, QString condition )
 {
-    if( m_currentValueType == valueType && condition == QString::null )
+    if( m_currentValueType == valueType && condition.isNull() )
         return;
 
     QStringList items;

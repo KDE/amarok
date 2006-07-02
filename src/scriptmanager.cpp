@@ -385,7 +385,7 @@ ScriptManager::slotInstallScript( const QString& path )
             + i18n( "Script Packages (*.amarokscript.tar, *.amarokscript.tar.bz2, *.amarokscript.tar.gz)" )
             , this
             , i18n( "Select Script Package" ) );
-        if( _path == QString::null ) return false;
+        if( _path.isNull() ) return false;
     }
 
     KTar archive( _path );

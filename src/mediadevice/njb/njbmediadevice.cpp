@@ -246,7 +246,7 @@ NjbMediaDevice::deleteItemFromDevice(MediaItem* item, bool onlyPlayed)
     DEBUG_BLOCK
     Q_UNUSED(onlyPlayed)
     int result = 0;
-    if ( isCancelled() )
+    if ( isCanceled() )
     {
         return -1;
     }
@@ -255,7 +255,7 @@ NjbMediaDevice::deleteItemFromDevice(MediaItem* item, bool onlyPlayed)
     switch( item->type() )
     {
         case MediaItem::TRACK:
-            if( isCancelled() )
+            if( isCanceled() )
                 break;
             if(item)
             {
@@ -268,7 +268,7 @@ NjbMediaDevice::deleteItemFromDevice(MediaItem* item, bool onlyPlayed)
         case MediaItem::ARTIST:
             // Recurse through the lists, slashing and burning.
 
-            if( isCancelled() )
+            if( isCanceled() )
                 break;
 
             for( MediaItem *it = dynamic_cast<MediaItem *>( item->firstChild() ); it ; it = next )
@@ -704,10 +704,10 @@ NjbMediaDevice::progressCallback(  u_int64_t sent, u_int64_t total, const char* 
 
     NjbMediaDevice *njb_media = reinterpret_cast<NjbMediaDevice*>(data);
 
-    if( njb_media->isCancelled() )
+    if( njb_media->isCanceled() )
     {
-        debug() << "Cancelling transfer operation" << endl;
-        njb_media->setCancelled( false );
+        debug() << "Canceling transfer operation" << endl;
+        njb_media->setCanceled( false );
         njb_media->setProgress( sent, total );
         return 1;
     }

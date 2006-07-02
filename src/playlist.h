@@ -378,9 +378,9 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         PlaylistItem *m_stopAfterTrack;
         bool          m_showHelp;
         bool          m_stateSwitched;
-        bool          m_dynamicDirt;          //So we dont call advanceDynamicTrack() on activate()
+        bool          m_dynamicDirt;        //So we don't call advanceDynamicTrack() on activate()
         bool          m_queueDirt;          //When queuing disabled items, we need to place the marker on the newly inserted item
-        bool          m_undoDirt;           //Make sure we dont repopulate the playlist when dynamic mode and undo()
+        bool          m_undoDirt;           //Make sure we don't repopulate the playlist when dynamic mode and undo()
 
         QListViewItem *m_itemToReallyCenter;
         QListViewItem *m_renameItem;

@@ -12,7 +12,11 @@
 #ifndef _HELIXUTILS_
 #define _HELIXUTILS_
 
-int SafeSprintf(char *str, int max, const char *fmt, ...);
+int SafeSprintf(char *str, int max, const char *fmt, ...)
+#ifdef __GNUC__
+__attribute__ ((format (printf, 3, 4)))
+#endif
+;
 char *SafeStrCpy(char *str1, const char *str2, int sz);
 
 #endif

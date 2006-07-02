@@ -438,7 +438,7 @@ KioMediaDevice::deleteFile( const KURL &url ) // used in GpodMediaDevice
     do
     {
         kapp->processEvents( 100 );
-        if( isCancelled() )
+        if( isCanceled() )
             break;
         usleep( 10000 );
     } while( m_waitForDeletion );

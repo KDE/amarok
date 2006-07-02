@@ -607,7 +607,7 @@ void MultiTabBarButton::dragEnterEvent ( QDragEnterEvent *e )
 void MultiTabBarButton::dragMoveEvent ( QDragMoveEvent * )
 {
     if ( !m_dragSwitchTimer->isActive() )
-        m_dragSwitchTimer->start( ANIM_INTERVAL * ANIM_MAX + 300, TRUE );
+        m_dragSwitchTimer->start( ANIM_INTERVAL * ANIM_MAX + 300, true );
 }
 
 void MultiTabBarButton::dragLeaveEvent ( QDragLeaveEvent *e )

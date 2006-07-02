@@ -68,7 +68,7 @@ namespace amaroK
      * playlist. You shouldn't pass every event here, ie closeEvents will not be
      * handled as expected! Check the source in app.cpp if you want to see what
      * it can do.
-     * @param recipient The object that recieved the event.
+     * @param recipient The object that received the event.
      * @param e The event you want handled in a generic fashion.
      * @return true if the event was handled.
      */

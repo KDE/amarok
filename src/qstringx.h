@@ -28,7 +28,7 @@ public:
     // the numbers following % obviously are not taken into account
     QString args( const QStringList& args ) const
     {
-        const QStringList text = QStringList::split( QRegExp( "%\\d+" ), *this, TRUE );
+        const QStringList text = QStringList::split( QRegExp( "%\\d+" ), *this, true );
         
         QValueListConstIterator<QString> itrText = text.begin();
         QValueListConstIterator<QString> itrArgs = args.begin();

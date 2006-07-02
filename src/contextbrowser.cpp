@@ -45,7 +45,7 @@
 
 #include <kapplication.h> //kapp
 #include <kcalendarsystem.h>  // for amaroK::verboseTimeSince()
-#include <kconfig.h> // suggested/related/favourite box visibility
+#include <kconfig.h> // suggested/related/favorite box visibility
 #include <kfiledialog.h>
 #include <kglobal.h>
 #include <kiconloader.h>
@@ -188,7 +188,7 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_wikiConfigDialog( NULL )
         , m_relatedOpen( true )
         , m_suggestionsOpen( true )
-        , m_favouritesOpen( true )
+        , m_favoritesOpen( true )
         , m_showFreshPodcasts( true )
         , m_showFavoriteAlbums( true )
         , m_showNewestAlbums( true )
@@ -434,7 +434,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
     {
         if      ( url.path() == "ra" ) m_relatedOpen     ^= true;
         else if ( url.path() == "ss" ) m_suggestionsOpen ^= true;
-        else if ( url.path() == "ft" ) m_favouritesOpen  ^= true;
+        else if ( url.path() == "ft" ) m_favoritesOpen  ^= true;
     }
 
     else if ( url.protocol() == "seek" )
@@ -2301,7 +2301,7 @@ void CurrentTrackJob::showArtistsFaves( const QString &artist, uint artist_id )
                 "</table>\n"
                 "</div>\n" );
 
-        if ( !b->m_favouritesOpen )
+        if ( !b->m_favoritesOpen )
             m_HTMLSource.append( "<script language='JavaScript'>toggleBlock('T_FT');</script>\n" );
 
     }

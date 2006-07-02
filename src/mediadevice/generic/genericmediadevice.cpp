@@ -497,7 +497,7 @@ GenericMediaDevice::copyTrackSortHelper( const MetaBundle& bundle, QString& sort
     if( sort != i18n("None") )
     {
         QString temp = bundle.prettyText( bundle.columnIndex(sort) );
-        temp = ( temp == QString::null ? "Unknown" : cleanPath(temp) );
+        temp = ( temp.isEmpty() ? i18n("Unknown") : cleanPath(temp) );
         QString newBase = base + '/' + temp;
 
         if( !KIO::NetAccess::exists( KURL( newBase ), false, m_parent ) )

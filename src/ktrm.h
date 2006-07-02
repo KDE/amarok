@@ -192,7 +192,7 @@ public:
 protected:
     /**
      * This method is called when any of terminal states (recognized,
-     * unrecognized, collision or error) has been reached after the specifc
+     * unrecognized, collision or error) has been reached after the specific
      * method for the result has been called.
      *
      * This should be reimplemented in the case that there is some general

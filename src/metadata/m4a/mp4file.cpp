@@ -219,7 +219,7 @@ void fillTagFromProxy( MP4::Mp4TagsProxy& proxy, MP4::Tag& mp4tag )
     // convert data to string
     TagLib::String datastring( databox->data(), String::UTF8 );
     // check if string was set
-    if( !(datastring == "") )
+    if( !datastring.isEmpty() )
       mp4tag.setTitle( datastring );
   }
 
@@ -229,7 +229,7 @@ void fillTagFromProxy( MP4::Mp4TagsProxy& proxy, MP4::Tag& mp4tag )
     // convert data to string
     TagLib::String datastring( databox->data(), String::UTF8 );
     // check if string was set
-    if( !(datastring == "") )
+    if( !datastring.isEmpty() )
       mp4tag.setArtist( datastring );
   }
 
@@ -239,7 +239,7 @@ void fillTagFromProxy( MP4::Mp4TagsProxy& proxy, MP4::Tag& mp4tag )
     // convert data to string
     TagLib::String datastring( databox->data(), String::UTF8 );
     // check if string was set
-    if( !(datastring == "") )
+    if( !datastring.isEmpty() )
       mp4tag.setAlbum( datastring );
   }
 
@@ -249,7 +249,7 @@ void fillTagFromProxy( MP4::Mp4TagsProxy& proxy, MP4::Tag& mp4tag )
     // convert data to string
     TagLib::String datastring( databox->data(), String::UTF8 );
     // check if string was set
-    if( !(datastring == "") )
+    if( !datastring.isEmpty() )
       mp4tag.setGenre( datastring );
   }
 
@@ -259,7 +259,7 @@ void fillTagFromProxy( MP4::Mp4TagsProxy& proxy, MP4::Tag& mp4tag )
     // convert data to string
     TagLib::String datastring( databox->data(), String::UTF8 );
     // check if string was set
-    if( !(datastring == "") )
+    if( !datastring.isEmpty() )
       mp4tag.setYear( datastring.toInt() );
   }
 
@@ -286,7 +286,7 @@ void fillTagFromProxy( MP4::Mp4TagsProxy& proxy, MP4::Tag& mp4tag )
     // convert data to string
     TagLib::String datastring( databox->data(), String::UTF8 );
     // check if string was set
-    if( !(datastring == "") )
+    if( !datastring.isEmpty() )
       mp4tag.setComment( datastring );
   }
 
@@ -296,7 +296,7 @@ void fillTagFromProxy( MP4::Mp4TagsProxy& proxy, MP4::Tag& mp4tag )
     // convert data to string
     TagLib::String datastring( databox->data(), String::UTF8 );
     // check if string was set
-    if( !(datastring == "") )
+    if( !datastring.isEmpty() )
       mp4tag.setGrouping( datastring );
   }
 
@@ -306,7 +306,7 @@ void fillTagFromProxy( MP4::Mp4TagsProxy& proxy, MP4::Tag& mp4tag )
     // convert data to string
     TagLib::String datastring( databox->data(), String::UTF8 );
     // check if string was set
-    if( !(datastring == "") )
+    if( !datastring.isEmpty() )
       mp4tag.setComposer( datastring );
   }
 

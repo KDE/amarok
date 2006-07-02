@@ -198,7 +198,7 @@ class MediaBrowser : public QVBox
         void connectClicked();
         void disconnectClicked();
         void configSelectPlugin( int index );
-        bool config(); // false if cancelled by user
+        bool config(); // false if canceled by user
         KURL transcode( const KURL &src, const QString &filetype );
         void tagsChanged( const MetaBundle &bundle );
         void prepareToQuit();
@@ -407,8 +407,8 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         bool         isTransferring() { return m_transferring; }
         bool         isDeleting() { return m_deleting; }
         MediaItem   *transferredItem() { return m_transferredItem; }
-        bool         isCancelled() { return m_cancelled; }
-        void         setCancelled( const bool b ) { m_cancelled = b; }
+        bool         isCanceled() { return m_canceled; }
+        void         setCanceled( const bool b ) { m_canceled = b; }
 
         int          progress() const;
         void         setProgress( const int progress, const int total = -1 /* leave total unchanged by default */ );
@@ -568,7 +568,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         bool             m_waitForDeletion;
         bool             m_copyFailed;
         bool             m_requireMount;
-        bool             m_cancelled;
+        bool             m_canceled;
         bool             m_transferring;
         bool             m_deleting;
         bool             m_deferredDisconnect;

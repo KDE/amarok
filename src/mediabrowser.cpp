@@ -651,7 +651,7 @@ MediaBrowser::transcode( const KURL &src, const QString &filetype )
 {
     const ScriptManager* const sm = ScriptManager::instance();
 
-    if( sm->transcodeScriptRunning() == QString::null )
+    if( sm->transcodeScriptRunning().isEmpty() )
     {
         debug() << "cannot transcode with no transcoder registered" << endl;
         return KURL();
@@ -751,7 +751,7 @@ MediaItem::init()
     m_bundle=0;
     m_order=0;
     m_type=UNKNOWN;
-    m_playlistName=QString::null;
+    m_playlistName = QString::null;
     m_device=0;
     setExpandable( false );
     setDragEnabled( true );
@@ -1786,7 +1786,7 @@ MediaDevice::MediaDevice()
     , m_thirdSort( QString::null )
     , m_wait( false )
     , m_requireMount( false )
-    , m_cancelled( false )
+    , m_canceled( false )
     , m_transferring( false )
     , m_deleting( false )
     , m_deferredDisconnect( false )
@@ -2061,7 +2061,7 @@ int MediaDevice::sysCall( const QString &command )
 void
 MediaDevice::abortTransfer()
 {
-    setCancelled( true );
+    setCanceled( true );
     cancelTransfer();
 }
 
@@ -2081,7 +2081,7 @@ MediaDevice::kioCopyTrack( const KURL &src, const KURL &dst )
     bool tryToRemove = false;
     while ( m_wait )
     {
-        if( isCancelled() )
+        if( isCanceled() )
         {
             job->kill( false /* still emit result */ );
             tryToRemove = true;
@@ -2140,7 +2140,7 @@ MediaDevice::fileTransferred( KIO::Job *job )  //SLOT
         m_copyFailed = false;
 
         // the track just transferred has not yet been removed from the queue
-        if( !isCancelled() )
+        if( !isCanceled() )
             MediaBrowser::instance()->queue()->takeItem( MediaBrowser::instance()->queue()->firstChild() );
         m_parent->updateStats();
     }
@@ -2369,8 +2369,8 @@ MediaDevice::syncStatsFromDevice( MediaItem *root )
                 {
                     // submit to last.fm
                     if( bundle->length() > 30
-                            && bundle->artist() != QString::null && bundle->artist() != "" && bundle->artist() != i18n( "Unknown" )
-                            && bundle->title() != QString::null && bundle->title() != "" && bundle->title() != i18n( "Unknown" ) )
+                            && !bundle->artist().isEmpty() && bundle->artist() != i18n( "Unknown" )
+                            && !bundle->title().isEmpty() && bundle->title() != i18n( "Unknown" ) )
                     {
                         // don't submit tracks shorter than 30 sec or w/o artist/title
                         debug() << "scrobbling " << bundle->artist() << " - " << bundle->title() << endl;
@@ -2452,7 +2452,7 @@ MediaDevice::transferFiles()
         return;
     }
 
-    setCancelled( false );
+    setCanceled( false );
 
     m_transferring = true;
     m_parent->m_toolbar->getButton(MediaBrowser::TRANSFER)->setEnabled( false );
@@ -2469,7 +2469,7 @@ MediaDevice::transferFiles()
     // iterate through items
     while( (m_transferredItem = static_cast<MediaItem *>(m_parent->m_queue->firstChild())) != 0 )
     {
-        if( isCancelled() )
+        if( isCanceled() )
             break;
         debug() << "Transferring: " << m_transferredItem->url().path() << endl;
 
@@ -2484,7 +2484,7 @@ MediaDevice::transferFiles()
 
         bool transcoding = false;
         MediaItem *item = trackExists( *bundle );
-        if( item && m_transferredItem->m_playlistName == QString::null )
+        if( item && !m_transferredItem->m_playlistName.isEmpty() )
         {
             amaroK::StatusBar::instance()->shortMessage( i18n( "Track already on media device: %1" ).
                     arg( m_transferredItem->url().prettyURL() ),
@@ -2537,7 +2537,7 @@ MediaDevice::transferFiles()
 
         if( !item ) // copyTrackToDevice() failed
         {
-            if( !isCancelled() )
+            if( !isCanceled() )
                 amaroK::StatusBar::instance()->longMessage(
                         i18n( "Failed to copy track to media device: %1" ).arg( bundle->url().path() ),
                         KDE::StatusBar::Sorry );
@@ -2624,7 +2624,7 @@ MediaDevice::transferFiles()
                     ", %n tracks were not transcoded", transcodeFail );
 
         const ScriptManager* const sm = ScriptManager::instance();
-        if( sm->transcodeScriptRunning() == QString::null )
+        if( !sm->transcodeScriptRunning().isEmpty() )
             msg += i18n( " (no transcode script running)" );
     }
 
@@ -2696,7 +2696,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
         if( !lockDevice( true ) )
             return 0;
 
-        setCancelled( false );
+        setCanceled( false );
 
         m_deleting = true;
 
@@ -2739,7 +2739,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
     {
         MediaItem *next = static_cast<MediaItem*>(fi->nextSibling());
 
-        if( isCancelled() )
+        if( isCanceled() )
         {
             break;
         }

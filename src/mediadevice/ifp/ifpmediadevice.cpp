@@ -168,7 +168,7 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     {
         error() << "A suitable iRiver iFP device couldn't be found" << endl;
         amaroK::StatusBar::instance()->shortLongMessage( genericError,
-                                        i18n("iFP: A suitable iRiver iFP device couldn't be found")
+                                        i18n("iFP: A suitable iRiver iFP device could not be found")
                                         , KDE::StatusBar::Error );
         return false;
     }
@@ -490,10 +490,10 @@ IfpMediaDevice::filetransferCallback( void *pData, struct ifp_transfer_status *p
 
     IfpMediaDevice *that = static_cast<IfpMediaDevice *>(pData);
 
-    if( that->isCancelled() )
+    if( that->isCanceled() )
     {
-        debug() << "Cancelling transfer operation" << endl;
-        that->setCancelled( false );
+        debug() << "Canceling transfer operation" << endl;
+        that->setCanceled( false );
         that->setProgress( progress->file_bytes, progress->file_bytes );
         return 1; //see ifp docs, return 1 for user cancel request
     }

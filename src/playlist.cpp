@@ -501,7 +501,7 @@ Playlist::insertMedia( KURL::List list, int options )
             jt = addMe.find( (*it)->url() );
 
             if ( jt != addMe.end() ) {
-                addMe.remove( jt ); //dont want to add a track which is already present in the playlist
+                addMe.remove( jt ); //don't want to add a track which is already present in the playlist
             }
         }
 
@@ -699,7 +699,7 @@ Playlist::addSpecialCustomTracks( uint songCount )
         }
         else {
             // if we do not limit the sql, it takes a long time to populate for large collections
-            // we also dont want stupid limits such as LIMIT 5 OFFSET 0 which would return the same results always
+            // we also don't want stupid limits such as LIMIT 5 OFFSET 0 which would return the same results always
             uint first=0, limit=0;
             QRegExp limitSearch( "LIMIT.*(\\d+).*OFFSET.*(\\d+)" );
             int findLocation = sql.find( limitSearch, false );
@@ -1415,7 +1415,7 @@ Playlist::queueSelected()
 
     for( MyIt it( this, MyIt::Selected ); *it; ++it )
     {
-        // Dequeuing selection with dynamic doesnt work due to the moving of the track after the last queued
+        // Dequeuing selection with dynamic doesn't work due to the moving of the track after the last queued
         if( dynamicMode() )
             dynamicList.append( *it );
         else
@@ -1753,7 +1753,7 @@ Playlist::activate( QListViewItem *item )
         emit queueChanged( PLItemList(), PLItemList( item ) );
 
     //looks bad painting selected and glowing
-    //only do when user explicitely activates an item though
+    //only do when user explicitly activates an item though
     item->setSelected( false );
 
     setCurrentTrack( item );
@@ -3913,7 +3913,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         //NOTE: This forbids dequeuing of multiple tracks
        // if( itemCount > 1 )
             // we need to dequeue everything that is already queued when
-            // the user is queueing a selection, otherwise it feels wrong
+            // the user is queuing a selection, otherwise it feels wrong
             // m_nextTracks.clear();
 
 
@@ -4295,11 +4295,11 @@ Playlist::removeItem( PlaylistItem *item, bool multi )
     if( m_stopAfterTrack == item )
         m_stopAfterTrack = 0; //to be safe
 
-    //keep m_nextTracks queue synchronised
+    //keep m_nextTracks queue synchronized
     if( m_nextTracks.removeRef( item ) && !multi )
        emit queueChanged( PLItemList(), PLItemList( item ) );
 
-    //keep recent buffer synchronised
+    //keep recent buffer synchronized
     removeFromPreviousTracks( item ); //removes all pointers to item
 
     updateNextPrev();

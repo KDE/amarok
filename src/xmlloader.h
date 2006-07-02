@@ -58,7 +58,7 @@ class MetaBundle::XmlLoader: public QObject, public QXmlDefaultHandler
                 /** The type() of BundleLoadedEvents. */
                 static const int Type = QEvent::User + 127;
 
-                /** Whether an error occured. If yes, both bundle and extraAttributes are empty. */
+                /** Whether an error occurred. If yes, both bundle and extraAttributes are empty. */
                 bool error;
 
                 /** A description of the error, if there was one. */

@@ -317,7 +317,7 @@ UrlLoader::completeJob()
     if( !m_dynamicMode.isEmpty() )
         Playlist::instance()->setDynamicMode( PlaylistBrowser::instance()->findDynamicModeByTitle( m_dynamicMode ) );
 
-    //syncronous, ie not using eventLoop
+    //synchronous, ie not using eventLoop
     QApplication::sendEvent( dependent(), this );
 }
 

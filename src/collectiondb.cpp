@@ -1241,7 +1241,7 @@ CollectionDB::createDragPixmap( const KURL::List &urls, QString textOverRide )
 
     if ( covers > 0 )
     {
-        // insert "..." cover as first image if appropiate
+        // insert "..." cover as first image if appropriate
         if ( covers < albums )
         {
             if ( covers < maxCovers ) covers++;
@@ -3272,7 +3272,7 @@ CollectionDB::organizeFile( const KURL &src, const OrganizeCollectionDialog &dia
 
    debug() << "Destination: " << dest << endl;
 
-   if( tmpSrc.path() != dest ) //supress error warning that file couldn't be moved
+   if( tmpSrc.path() != dest ) //suppress error warning that file couldn't be moved
    {
       if( !CollectionDB::instance()->moveFile( tmpSrc.url(), dest, overwrite, copy && localFile ) )
       {
@@ -4688,7 +4688,7 @@ QStringList SqliteConnection::query( const QString& statement )
                 values << QString::fromUtf8( reinterpret_cast<const char*>( sqlite3_column_text( stmt, i ) ) );
             }
         }
-        //deallocate vm ressources
+        //deallocate vm resources
         sqlite3_finalize( stmt );
 
         if ( error != SQLITE_DONE )
@@ -4752,7 +4752,7 @@ int SqliteConnection::insert( const QString& statement, const QString& /* table 
             if ( error == SQLITE_DONE || error == SQLITE_ERROR )
                 break;
         }
-        //deallocate vm ressources
+        //deallocate vm resources
         sqlite3_finalize( stmt );
 
         if ( error != SQLITE_DONE )

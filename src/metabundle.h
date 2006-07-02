@@ -220,7 +220,7 @@ public: //accessors
     int     bitrate()     const;
     int     sampleRate()  const;
     int     score()       const;
-    int     rating()      const; //returns rating * 2, to accomodate .5 ratings
+    int     rating()      const; //returns rating * 2, to accommodate .5 ratings
     int     playCount()   const;
     uint    lastPlay()    const;
     int     filesize()    const;

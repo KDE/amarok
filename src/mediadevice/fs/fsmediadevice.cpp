@@ -268,7 +268,7 @@ FSBrowser::FSBrowser( QWidget *parent, MediaDevice *device, const char * name, M
                         SLOT(dropped( const KFileItem*, QDropEvent*, const KURL::List& )) );
 
     //setSpacing( 4 );
-    setFocusProxy( m_dir ); //so the dirOperator is focussed when we get focus events
+    setFocusProxy( m_dir ); //so the dirOperator is focused when we get focus events
     setMinimumWidth( toolbar->sizeHint().width() );
 }
 

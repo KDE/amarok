@@ -583,7 +583,7 @@ IpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
     if(!item)
         return -1;
 
-    if( isCancelled() )
+    if( isCanceled() )
         return 0;
 
     if( !item->isVisible() )
@@ -611,7 +611,7 @@ IpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
                 delete it;
             }
 
-            // delete all other occurences
+            // delete all other occurrences
             for( IpodMediaItem *it = getTrack( track );
                     it;
                     it = getTrack( track ) )
@@ -655,7 +655,7 @@ IpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
                     it;
                     it = next)
             {
-                if( isCancelled() )
+                if( isCanceled() )
                     break;
 
                 next = dynamic_cast<IpodMediaItem *>(it->nextSibling());
@@ -666,7 +666,7 @@ IpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
                     count = -1;
             }
         }
-        if(item->type() == MediaItem::PLAYLIST && !isCancelled())
+        if(item->type() == MediaItem::PLAYLIST && !isCanceled())
         {
             m_dbChanged = true;
             itdb_playlist_remove(item->m_playlist);
@@ -1458,7 +1458,7 @@ class IpodWriteDBJob : public ThreadWeaver::DependentJob
 
             GError *error = 0;
             if (m_return && !itdb_write (m_itdb, &error))
-            {   /* an error occured */
+            {   /* an error occurred */
                 m_return = false;
                 if(error)
                 {
@@ -1475,7 +1475,7 @@ class IpodWriteDBJob : public ThreadWeaver::DependentJob
             {
                 /* write shuffle data */
                 if (!itdb_shuffle_write (m_itdb, &error))
-                {   /* an error occured */
+                {   /* an error occurred */
                     m_return = false;
                     if(error)
                     {
@@ -1522,7 +1522,7 @@ IpodMediaDevice::writeITunesDB( bool threaded )
             ok = true;
             GError *error = 0;
             if ( !itdb_write (m_itdb, &error) )
-            {   /* an error occured */
+            {   /* an error occurred */
                 if(error)
                 {
                     if (error->message)
@@ -1539,7 +1539,7 @@ IpodMediaDevice::writeITunesDB( bool threaded )
             {
                 /* write shuffle data */
                 if (!itdb_shuffle_write (m_itdb, &error))
-                {   /* an error occured */
+                {   /* an error occurred */
                     if(error)
                     {
                         if (error->message)

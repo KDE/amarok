@@ -322,7 +322,7 @@ XineEngine::determineAndShowErrorMessage()
         break;
 
         case XINE_ERROR_INPUT_FAILED:
-            body = i18n("Couldn't open file.");
+            body = i18n("Could not open file.");
         break;
 
         case XINE_ERROR_MALFORMED_MRL:
@@ -1111,7 +1111,7 @@ bool XineEngine::metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b)
         }
 
         if (audioCodec == "CDDA" || audioCodec == "WAV") {
-            result = TRUE;
+            result = true;
             int samplerate = xine_get_stream_info( tmpstream, XINE_STREAM_INFO_AUDIO_SAMPLERATE );
 
             // xine would provide a XINE_STREAM_INFO_AUDIO_BITRATE, but unfortunately not for CDDA or WAV

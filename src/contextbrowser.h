@@ -167,7 +167,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
 
         bool          m_relatedOpen;
         bool          m_suggestionsOpen;
-        bool          m_favouritesOpen;
+        bool          m_favoritesOpen;
         bool          m_showRelated;
         bool          m_showSuggested;
         bool          m_showFaves;

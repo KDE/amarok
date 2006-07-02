@@ -217,7 +217,7 @@ bool EngineController::canDecode( const KURL &url ) //static
 
     if ( PlaylistFile::isPlaylistFile( fileName ) ) return false;
 
-    // Ignore protocols "fetchcover" and "musicbrainz", they're not local but we dont really want them in the playlist :)
+    // Ignore protocols "fetchcover" and "musicbrainz", they're not local but we don't really want them in the playlist :)
     if ( url.protocol() == "fetchcover" || url.protocol() == "musicbrainz" ) return false;
 
     // Accept non-local files, since we can't test them for validity at this point

@@ -31,10 +31,10 @@
 
 
 
-//TODO allow stop/start and pause signals to be sent to registered visualisations
+//TODO allow stop/start and pause signals to be sent to registered visualizations
 //TODO allow transmission of visual data back to us here and allow that to be embedded in stuff
 //TODO decide whether to use 16 bit integers or 32 bit floats as data sent to analyzers
-//TODO allow visualisations to determine their own data sizes
+//TODO allow visualizations to determine their own data sizes
 
 ////////////////////////////////////////////////////////////////////////////////
 // class AmaroKProcess

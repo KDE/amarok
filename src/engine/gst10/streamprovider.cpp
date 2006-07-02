@@ -261,7 +261,7 @@ StreamProvider::transmitData( const QString &data )
 
     debug() << "Received MetaData: " << data << endl;
 
-    // we dont seem to have the recode options anymore...
+    // we don't seem to have the recode options anymore...
     // because we assumed latin1 earlier this codec conversion works
     QTextCodec *codec = QTextCodec::codecForName( "ISO8859-1" ); //Latin1 returns 0
 

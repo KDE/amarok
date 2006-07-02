@@ -720,7 +720,7 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
 
                     QString headerStr = DividerItem::createGroup( actualStr, m_cat1);
 
-                    if ( !containedDivider[headerStr] && headerStr != "" )
+                    if ( !containedDivider[headerStr] && !headerStr.isEmpty() )
                     {
                         containedDivider[headerStr] = true;
                         (void)new DividerItem(this, headerStr, m_cat1/*, m_sortYearsInverted*/);
@@ -888,7 +888,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
          m_cat3 == CollectionBrowser::IdAlbum )
             SortbyTrackFirst = true;
 
-    // initalization for year - album mode
+    // initialization for year - album mode
     QString tmptext;
     int VisYearAlbum = -1;
     int q_cat1=m_cat1;
@@ -1449,7 +1449,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         if ( cat == CollectionBrowser::IdAlbum || cat == CollectionBrowser::IdVisYearAlbum ) {
             menu.insertSeparator();
             menu.insertItem( SmallIconSet( "ok" ), i18n( "Show under &Various Artists" ), COMPILATION_SET );
-            menu.insertItem( SmallIconSet( "cancel" ), i18n( "&Don't Show under Various Artists" ), COMPILATION_UNSET );
+            menu.insertItem( SmallIconSet( "cancel" ), i18n( "&Do not Show under Various Artists" ), COMPILATION_UNSET );
         }
 
         QString trueItemText;
@@ -1929,7 +1929,7 @@ CollectionView::listSelected()
     QStringList values;
     QueryBuilder qb;
 
-    // initalization for year - album mode
+    // initialization for year - album mode
     QString tmptext;
     bool unknownText;
     int VisYearAlbum = -1;

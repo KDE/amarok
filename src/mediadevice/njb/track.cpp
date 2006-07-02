@@ -137,7 +137,7 @@ NjbTrack::NjbTrack( njb_songid_t* song)
         filename = frame->data.strval;
         
     }
-    if( filename == "" )
+    if( filename.isEmpty() )
     {
         //bundle->setUrl( bundle->artist() + " - " + bundle->title() + "." + codec );
         filename = bundle->artist() + " - " + bundle->title() + "." + codec;
@@ -197,13 +197,13 @@ NjbTrack::newSongid()
 void
 NjbTrack::setBundle( MetaBundle &bundle )
 {
-    if( bundle.title() == "" )
+    if( bundle.title().isEmpty() )
         bundle.setTitle( i18n( "Unknown title" ) );
-    if( bundle.artist() == "" )
+    if( bundle.artist().isEmpty() )
         bundle.setArtist( i18n( "Unknown artist" ) );
-    if( bundle.album() == "" )
+    if( bundle.album().isEmpty() )
         bundle.setAlbum( i18n( "Unknown album" ) );
-    if( bundle.genre() == "" )
+    if( bundle.genre().isEmpty() )
         bundle.setGenre( i18n( "Unknown genre" ) );
     
     m_bundle = bundle;
