@@ -1239,7 +1239,7 @@ PodcastChannel::downloadChildQueue()
 void
 PodcastChannel::fetch()
 {
-    setText(0, i18n( "Retrieving Podcast..." ) );
+    setText( 0, i18n( "Retrieving Podcast..." ) );
 
     m_iconCounter = 1;
     startAnimation();

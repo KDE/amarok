@@ -2519,7 +2519,8 @@ Playlist::dragObject()
     }
 
     KURLDrag *drag = new KURLDrag( list, viewport() );
-    drag->setPixmap(CollectionDB::createDragPixmap(list), QPoint(CollectionDB::DRAGPIXMAP_OFFSET_X,CollectionDB::DRAGPIXMAP_OFFSET_Y));
+    drag->setPixmap( CollectionDB::createDragPixmap( list ),
+                     QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X, CollectionDB::DRAGPIXMAP_OFFSET_Y ) );
     return drag;
 }
 
