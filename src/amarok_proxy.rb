@@ -2,6 +2,11 @@
 #
 # Proxy server for last.fm. Relays the stream from the last.fm server to localhost.
 #
+# Stream consists of pure MP3 files concatenated, with the string "SYNC" in between, which
+# marks a track change. We notify Amarok on trackchange.
+# Amarok listens to stderr and recognizes these magic strings, do not remove them:
+# "AMAROK_PROXY: startup", "AMAROK_PROXY: SYNC"
+#
 # (c) 2006 Paul Cifarelli <paul@cifarelli.net>
 # (c) 2006 Mark Kretschmann <markey@web.de>
 # (c) 2006 Michael Fellinger <manveru@weez-int.com>
@@ -17,8 +22,8 @@ include Socket::Constants
 class LastFM
   def initialize port, remote_url
 
-    puts( "startup" )
-    puts "running with port: #{port} and url: #{remote_url}"
+    myputs( "startup" )
+    myputs( "running with port: #{port} and url: #{remote_url}" )
 
     #
     # amarok is, well, Amarok
@@ -30,111 +35,106 @@ class LastFM
     # serv is the lastfm stream server
     #
     uri = URI.parse( remote_url )
-    puts("host " << uri.host << " ")
-    puts ( port )
+    myputs("host " << uri.host << " ")
+    myputs( port )
     serv = TCPSocket.new( uri.host, uri.port )
-    puts "running with port: #{uri.port} and host: #{uri.host}"
+    myputs( "running with port: #{uri.port} and host: #{uri.host}" )
 
     # here we substitute the proxy GET
     data = amaroks.readline
     get = "GET #{uri.path || '/'}?#{uri.query} HTTP/1.1\r\n\r\n"
-    #get = "GET " << uri.path
-    #get << "/" if uri.path == ""
-    #get << "?" << uri.query if uri.query && uri.query != ""
-    #get << " HTTP/1.1\r\n"
 
-    puts data.inspect
-    puts get.inspect
-    puts "#{data} but sending #{get}"
-    serv.puts get
+    myputs( data.inspect )
+    myputs( get.inspect )
+    myputs( "#{data} but sending #{get}" )
+    serv.puts( get )
 
     # the client initiates everything - so copy it to the server
-    puts "COPY from amarok -> serv"
-    cp_to_empty_outward amaroks, serv
+    myputs( "COPY from amarok -> serv" )
+    cp_to_empty_outward( amaroks, serv )
 
-    safe_write serv, "\r\n\r\n" 
+    safe_write( serv, "\r\n\r\n" )
 
-    puts "COPY from serv -> amarok"
-    cp_to_empty_inward serv, amaroks
+    myputs( "COPY from serv -> amarok" )
+    cp_to_empty_inward( serv, amaroks )
 
     # now copy from the server to amarok
-    puts "Before cp_all()"
-    cp_all_inward serv, amaroks
+    myputs( "Before cp_all()" )
+    cp_all_inward( serv, amaroks )
 
     engine = `dcop amarok player engine`.chomp
-    puts( "Engine is #{engine}" )
+    myputs( "Engine is #{engine}" )
 
     if engine == 'helix-engine' && amaroks.eof
-      puts "EOF Detected, reconnecting"
+      myputs( "EOF Detected, reconnecting" )
       amaroks = amarok.accept
       cp_all_inward( serv, amaroks )
     end
   end
 
-  def puts string
-    $stderr.puts "AMAROK_PROXY: #{string}"
-  end
-
-  def safe_write(output, data)
+  def safe_write( output, data )
     begin
       output.write data
     rescue
-      puts "error from output.write, #{$!}"
-      puts $!.backtrace.inspect
+      myputs( "error from output.write, #{$!}" )
+      myputs( $!.backtrace.inspect )
       break
     end
   end
 
   def cp_to_empty_outward( income, output )
-    puts "cp_to_empty_outward( income => #{income.inspect}, output => #{output.inspect}"
+    myputs "cp_to_empty_outward( income => #{income.inspect}, output => #{output.inspect}"
     income.each_line do |data|
-      puts( data )
+      myputs( data )
       data.chomp!
-      safe_write output, data
+      safe_write( output, data )
       return if data.empty?
     end
   end
 
   def cp_to_empty_inward( income, output )
-    puts "cp_to_empty_inward( income => #{income.inspect}, output => #{output.inspect}"
+    myputs( "cp_to_empty_inward( income => #{income.inspect}, output => #{output.inspect}" )
     income.each_line do |data|
-      puts( data )
-      safe_write output, data
+      myputs( data )
+      safe_write( output, data )
       return if data.chomp == ""
     end
   end
 
   def cp_all_inward( income, output )
-    puts "cp_all( income => #{income.inspect}, output => #{output.inspect}"
+    myputs( "cp_all( income => #{income.inspect}, output => #{output.inspect}" )
     loop do
       data = income.read( 1000 )
       break if data == nil
-
-      # intercept SYNCs
+      # Detect and remove SYNCs. Removal is not strictly necessary.
       if data.include?( "SYNC" ) # FIXME won't detect the SYNC if it spreads over fragment boundary
-          data.gsub!( "SYNC", "" )
-          puts( "SYNC" )
+        data.gsub!( "SYNC", "" )
+        myputs( "SYNC" )
       end
-
       begin
-        safe_write output, data
+        safe_write( output, data )
       rescue
-        puts( "error from o.write, #{$!}" )
+        myputs( "error from o.write, #{$!}" )
         break
       end
     end
   end
 end
 
-begin
-  puts 'startup'
-  port, remote_url = ARGV
-  puts "running with port: #{port} and url: #{remote_url}"
+def myputs( string )
+  $stderr.puts( "AMAROK_PROXY: #{string}" )
+end
 
-  LastFM.new port, remote_url
+begin
+  myputs( 'startup' )
+  port, remote_url = ARGV
+  myputs( "running with port: #{port} and url: #{remote_url}" )
+
+  LastFM.new( port, remote_url )
 rescue
-  $stderr.puts $!.to_s
-  $stderr.puts $!.backtrace.inspect
+  $stderr.puts( $!.to_s )
+  $stderr.puts( $!.backtrace.inspect )
 end
 
 puts( "exiting" )
+
