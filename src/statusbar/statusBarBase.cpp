@@ -297,7 +297,7 @@ StatusBar::longMessage( const QString &text, int type )
         case Error:
             image = KGlobal::iconLoader()->iconPath( "messagebox_critical", -KIcon::SizeHuge );
             // don't hide error messages.
-            message->setTimeout( 0 );
+//             message->setTimeout( 0 );
             break;
     }
 
