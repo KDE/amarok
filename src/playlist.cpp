@@ -1051,6 +1051,7 @@ Playlist::updateEntriesUniqueId( const QString &/*url*/, const QString &oldid, c
         m_uniqueMap.remove( oldid );
         m_uniqueMap[newid] = item;
         item->setUniqueId( newid );
+        item->readTags();
     }
 }
 
@@ -1658,7 +1659,7 @@ Playlist::checkFileStatus( PlaylistItem * item )
         QString path = QString::null;
         if( m_atfEnabled && !item->uniqueId().isEmpty() )
             path = CollectionDB::instance()->urlFromUniqueId( item->uniqueId() );
-        if( !path.isEmpty() && path != item->url().path() )
+        if( !path.isEmpty() )
         {
             item->setUrl( KURL( path ) );
             if( item->checkExists() )
@@ -2309,6 +2310,9 @@ Playlist::writeTag( QListViewItem *qitem, const QString &, int column ) //SLOT
 
     for( PlaylistItem *item = m_itemsToChangeTagsFor.first(); item; item = m_itemsToChangeTagsFor.next() )
     {
+        if( !checkFileStatus( item ) )
+            continue;
+
         const QString oldTag = item == qitem ? m_editOldTag : item->exactText(column);
 
         if( column == PlaylistItem::Score )
@@ -4611,7 +4615,7 @@ Playlist::showTagDialog( QPtrList<QListViewItem> items )
                 dialog.setCaption( i18n( "Remote Media" ) );
             dialog.exec();
         }
-        else if ( QFile::exists( item->url().path() ) ) {
+        else if ( checkFileStatus( item ) ) {
             TagDialog *dialog = new TagDialog( *item, item );
             dialog->show();
         }

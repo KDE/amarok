@@ -252,9 +252,8 @@ CollectionDB::CollectionDB()
     {
         connect( this, SIGNAL(fileMoved(const QString&, const QString&, const QString&)),
                  this, SLOT(atfMigrateStatisticsUrl(const QString&, const QString&, const QString&)) );
-        //enable once 1.4.1's out the door, requires stats table to have uniqueid column first
-        //connect( this, SIGNAL(uniqueIdChanged(const QString&, const QString&, const QString&)),
-                 //this, SLOT(atfMigrateStatisticsUniqueId(const QString&, const QString&, const QString&)) );
+        connect( this, SIGNAL(uniqueIdChanged(const QString&, const QString&, const QString&)),
+                 this, SLOT(atfMigrateStatisticsUniqueId(const QString&, const QString&, const QString&)) );
     }
 
     connect( qApp, SIGNAL( aboutToQuit() ), this, SLOT( disableAutoScoring() ) );
@@ -715,12 +714,15 @@ CollectionDB::createStatsTable()
                     "accessdate INTEGER,"
                     "percentage FLOAT,"
                     "rating INTEGER DEFAULT 0,"
-                    "playcounter INTEGER );" ) );
-
+                    "playcounter INTEGER,"
+                    "uniqueid " + textColumnType(8) + " UNIQUE,"
+                    "deleted BOOL DEFAULT " + boolF() + ");" ) );
+    
     query( "CREATE INDEX url_stats ON statistics( url );" );
     query( "CREATE INDEX percentage_stats ON statistics( percentage );" );
     query( "CREATE INDEX rating_stats ON statistics( rating );" );
     query( "CREATE INDEX playcounter_stats ON statistics( playcounter );" );
+    query( "CREATE INDEX uniqueid_stats ON statistics( uniqueid );" );
 }
 
 
@@ -2460,6 +2462,18 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
             "WHERE url = '%1';" )
                 .arg( currurl ) );
 
+    QStringList statUIDVal = query( QString(
+            "SELECT url, uniqueid "
+            "FROM statistics "
+            "WHERE uniqueid = '%1';" )
+                .arg( currid ) );
+
+    QStringList statURLVal = query( QString(
+            "SELECT url, uniqueid "
+            "FROM statistics "
+            "WHERE url = '%1';" )
+                .arg( currurl ) );
+
     bool tempTablesAndInPermanent = false;
     bool permanentFullMatch = false;
 
@@ -2479,8 +2493,22 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
                     currurl,
                     currid,
                     currdir );
-        //debug() << "running command: " << insertline << endl;
         insert( insertline, NULL );
+        if( !statUIDVal.empty() )
+        {
+            
+            query( QString( "UPDATE statistics SET url = '%1', deleted = %2 WHERE uniqueid = '%3';" )
+                                .arg( currurl )
+                                .arg( boolF() )
+                                .arg( currid ) );
+        }
+        else if( !statURLVal.empty() )
+        {
+            query( QString( "UPDATE statistics SET uniqueid = '%1', deleted = %2 WHERE url = '%3';" )
+                                .arg( currid )
+                                .arg( boolF() )
+                                .arg( currurl ) );
+        }
         return;
     }
 
@@ -2508,7 +2536,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
                          currurl,
                          currdir,
                          currid ) );
-                emit fileMoved( uniqueids[0], bundle->url().path(), currid );
+                emit fileMoved( uniqueids[0], bundle->url().path(), bundle->uniqueId() );
             }
         }
         //okay then, url already found in temporary table but different uniqueid
@@ -2522,7 +2550,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
                     .arg( tempTables ? "_temp" : "" )
                     .arg( currid )
                     .arg( currurl ) );
-            emit uniqueIdChanged( bundle->url().path(), urls[1], currid );
+            emit uniqueIdChanged( bundle->url().path(), urls[1], bundle->uniqueId() );
         }
         return;
     }
@@ -2540,6 +2568,20 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
                     currdir );
             //debug() << "running command: " << insertline << endl;
             insert( insertline, NULL );
+            if( !statUIDVal.empty() )
+            {
+                query( QString( "UPDATE statistics SET url = '%1', deleted = %2 WHERE uniqueid = '%3';" )
+                                     .arg( currurl )
+                                     .arg( boolF() )
+                                     .arg( currid ) );
+            }
+            else if( !statURLVal.empty() )
+            {
+                query( QString( "UPDATE statistics SET uniqueid = '%1', deleted = %2 WHERE url = '%3';" )
+                                    .arg( currid )
+                                    .arg( boolF() )
+                                    .arg( currurl ) );
+            }
             return;
         }
 
@@ -2564,7 +2606,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
                     currdir ) );
                 query( QString( "DELETE FROM uniqueid WHERE uniqueid='%1';" )
                       .arg( currid ) );
-                emit fileMoved( nonTempIDs[0], bundle->url().path(), currid );
+                emit fileMoved( nonTempIDs[0], bundle->url().path(), bundle->uniqueId() );
             }
         }
         else
@@ -2576,7 +2618,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
                     currdir ) );
                 query( QString( "DELETE FROM uniqueid WHERE url='%1';" )
                       .arg( currurl ) );
-            emit uniqueIdChanged( bundle->url().path(), nonTempURLs[1], currid );
+            emit uniqueIdChanged( bundle->url().path(), nonTempURLs[1], bundle->uniqueId() );
         }
         return;
     }
@@ -2951,32 +2993,20 @@ CollectionDB::addSongPercentage( const QString &url, int percentage,
 
     if ( !values.isEmpty() )
     {
-        // increment playcounter and update accesstime
-        if (getDbConnectionType() == DbConnection::postgresql) {
-            query( QString( "UPDATE statistics SET playcounter=%1, accessdate=%2 WHERE url='%3';" )
-                            .arg( values[0] + " + 1" )
-                            .arg( atime )
-                            .arg( escapeString( url ) ) );
-        }
-        else
-        {
-            query( QString( "REPLACE INTO statistics ( url, createdate, accessdate, percentage, playcounter, rating ) "
-                            "VALUES ( '%6', %2, %3, %4, %5, %1 );" )
-                            .arg( values[3] )
-                            .arg( values[1] )
-                            .arg( atime )
-                            .arg( values[2] )
-                            .arg( values[0] + " + 1" )
-                            .arg( escapeString( url ) ) );
-        }
+        query( QString( "UPDATE statistics SET playcounter=%1, accessdate=%2 WHERE url='%3';" )
+                        .arg( values[0] + " + 1" )
+                        .arg( atime )
+                        .arg( escapeString( url ) ) );
     }
     else
     {
-        insert( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter, rating ) "
-                        "VALUES ( '%3', %1, %2, 0, 1, 0 );" )
+        insert( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter, rating, uniqueid, deleted ) "
+                        "VALUES ( '%3', %1, %2, 0, 1, 0, %4, %5 );" )
                         .arg( atime )
                         .arg( atime )
-                        .arg( escapeString( url ) ), NULL );
+                        .arg( escapeString( url ) )
+                        .arg( ( getUniqueId( url ) == QString::null ? "NULL" : "'" + escapeString( getUniqueId( url ) ) + "'" ) )
+                        .arg( boolF() ), NULL );
     }
 
     double prevscore = 50;
@@ -3037,32 +3067,21 @@ CollectionDB::setSongPercentage( const QString &url , int percentage)
 
     if ( !values.isEmpty() )
     {
-        if (getDbConnectionType() == DbConnection::postgresql) {
-            query( QString( "UPDATE statistics SET percentage=%1 WHERE url='%2';" )
-                            .arg( percentage )
-                            .arg( escapeString( url ) ));
-        }
-        else
-        {
-            // entry exists
-            query( QString( "REPLACE INTO statistics ( url, createdate, accessdate, percentage, playcounter, rating ) "
-                            "VALUES ( '%6', '%2', '%3', %4, %5, %1 );" )
-                            .arg( values[3] )
-                            .arg( values[1] )
-                            .arg( values[2] )
-                            .arg( percentage )
-                            .arg( values[0] )
-                            .arg( escapeString( url ) ) );
-        }
+        query( QString( "UPDATE statistics SET percentage=%1 WHERE url='%2';" )
+                        .arg( percentage )
+                        .arg( escapeString( url ) ));
     }
     else
     {
-        insert( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter, rating ) "
-                         "VALUES ( '%4', %2, %3, %1, 0, 0 );" )
+        insert( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter, rating, uniqueid, deleted ) "
+                         "VALUES ( '%4', %2, %3, %1, 0, 0, %5, %6 );" )
                         .arg( percentage )
                         .arg( QDateTime::currentDateTime().toTime_t() )
                         .arg( QDateTime::currentDateTime().toTime_t() )
-                        .arg( escapeString( url ) ), NULL );
+                        .arg( escapeString( url ) )
+                        .arg( ( getUniqueId( url ) == QString::null ? "NULL" : "'" + escapeString( getUniqueId( url ) ) + "'" ) )
+                        .arg( boolF() ), NULL );
+        
     }
 
     emit scoreChanged( url, percentage );
@@ -3094,32 +3113,20 @@ CollectionDB::setSongRating( const QString &url, int rating, bool toggleHalf )
 
     if ( !values.isEmpty() )
     {
-        if (getDbConnectionType() == DbConnection::postgresql) {
-            query( QString( "UPDATE statistics SET rating=%1 WHERE url='%2';" )
-                            .arg( rating )
-                            .arg( escapeString( url ) ));
-        }
-        else
-        {
-            // entry exists
-            query( QString( "REPLACE INTO statistics ( url, createdate, accessdate, percentage, rating, playcounter ) "
-                            "VALUES ( '%6', '%2', '%3', %4, %5, %1 );" )
-                            .arg( values[0] )
-                            .arg( values[1] )
-                            .arg( values[2] )
-                            .arg( values[3] )
-                            .arg( rating )
-                            .arg( escapeString( url ) ) );
-        }
+        query( QString( "UPDATE statistics SET rating=%1 WHERE url='%2';" )
+                        .arg( rating )
+                        .arg( escapeString( url ) ));
     }
     else
     {
-        insert( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, rating, playcounter ) "
-                         "VALUES ( '%4', %2, %3, 0, %1, 0 );" )
+        insert( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, rating, playcounter, uniqueid, deleted ) "
+                         "VALUES ( '%4', %2, %3, 0, %1, 0, %5, %6 );" )
                         .arg( rating )
                         .arg( QDateTime::currentDateTime().toTime_t() )
                         .arg( QDateTime::currentDateTime().toTime_t() )
-                        .arg( escapeString( url ) ), NULL );
+                        .arg( escapeString( url ) )
+                        .arg( ( getUniqueId( url ) == QString::null ? "NULL" : "'" + escapeString( getUniqueId( url ) ) + "'" ) )
+                        .arg( boolF() ), NULL );
     }
 
     emit ratingChanged( url, rating );
@@ -3506,6 +3513,9 @@ CollectionDB::removeSongs( const KURL::List& urls )
         if( AmarokConfig::advancedTagFeatures() )
             query( QString( "DELETE FROM uniqueid WHERE url = '%1';" )
                 .arg( escapeString( (*it).path() ) ) );
+        query( QString( "UPDATE statistics SET deleted = %1 WHERE url = '%2';" )
+                .arg( boolT() )
+                .arg( escapeString( (*it).path() ) ) );
     }
 }
 
@@ -3756,8 +3766,11 @@ CollectionDB::updateURL( const QString &url, const bool updateView )
 QString
 CollectionDB::getUniqueId( const QString &url )
 {
-    QStringList values = query( QString( "SELECT url FROM uniqueid WHERE url = '%1';" ).arg( escapeString( url ) ));
-    return values[0];
+    QStringList values = query( QString( "SELECT uniqueid FROM uniqueid WHERE url = '%1';" ).arg( escapeString( url ) ));
+    if( !values.empty() )
+        return values[0];
+    else
+        return QString::null;
 }
 
 void
@@ -4136,16 +4149,17 @@ CollectionDB::similarArtistsFetched( const QString& artist, const QStringList& s
 }
 
 void
-CollectionDB::atfMigrateStatisticsUrl( const QString& oldUrl, const QString& newUrl, const QString& /*uniqueid*/ )
+CollectionDB::atfMigrateStatisticsUrl( const QString& /*oldUrl*/, const QString& newUrl, const QString& uniqueid )
 {
     if( !m_atfEnabled )
         return;
 
     query( QString( "DELETE FROM statistics WHERE url = '%1';" )
                             .arg( escapeString( newUrl ) ) );
-    query( QString( "UPDATE statistics SET url = '%1' WHERE url = '%2';" )
+    query( QString( "UPDATE statistics SET url = '%1', deleted = %2 WHERE uniqueid = '%2';" )
                             .arg( escapeString( newUrl ) )
-                            .arg( escapeString( oldUrl ) ) );
+                            .arg( boolF() )
+                            .arg( escapeString( uniqueid ) ) );
 }
 
 void
@@ -4154,8 +4168,9 @@ CollectionDB::atfMigrateStatisticsUniqueId( const QString& /*url*/, const QStrin
     //don't need to check for ATF on, signal never emitted otherwise
     query( QString( "DELETE FROM statistics WHERE uniqueid = '%1';" )
                             .arg( escapeString( newid ) ) );
-    query( QString( "UPDATE statistics SET uniqueid = '%1' WHERE uniqueid = '%2';" )
+    query( QString( "UPDATE statistics SET uniqueid = '%1', deleted = %2 WHERE uniqueid = '%3';" )
                             .arg( escapeString( newid ) )
+                            .arg( boolF() )
                             .arg( escapeString( oldid ) ) );
 }
 
@@ -4304,8 +4319,13 @@ CollectionDB::initialize()
                 //Code to add unqiueid column and maybe "deleted" column will go here,
                 //pending talks with Seb...
                 //don't bump actual version in collectiondb.h before this is written!
+                debug() << "Adding uniqueid field" << endl;
+                query( "ALTER TABLE statistics ADD uniqueid " + textColumnType(8) + " UNIQUE;" ); 
+                debug() << "Adding deleted field" << endl;
+                query( "ALTER TABLE statistics ADD deleted BOOL DEFAULT " + boolF() + ";" );
+                query( "CREATE INDEX uniqueid_stats ON statistics( uniqueid );" );
             }
-            if( prev == 4 )
+            else if( prev == 4 )
             {
                 debug() << "Updating stats-database!" << endl;
                 query( "UPDATE statistics SET rating = rating * 2;" );
