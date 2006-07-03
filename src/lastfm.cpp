@@ -114,11 +114,14 @@ Controller::getNewProxy( QString genreUrl )
         if( !user.isEmpty() && !pass.isEmpty() &&
             m_service->handshake( user, pass ) )
         {
-            m_service->changeStation( m_genreUrl );
-            if( !AmarokConfig::submitPlayedSongs() )
-                m_service->enableScrobbling( false );
-            setActionsEnabled( true );
-            return KURL( m_service->proxyUrl() );
+            bool ok = m_service->changeStation( m_genreUrl );
+            if( ok ) // else playbackStopped()
+            {
+                if( !AmarokConfig::submitPlayedSongs() )
+                    m_service->enableScrobbling( false );
+                setActionsEnabled( true );
+                return KURL( m_service->proxyUrl() );
+            }
         }
     }
 
@@ -295,7 +298,7 @@ WebService::handshake( const QString& username, const QString& password )
 }
 
 
-void
+bool
 WebService::changeStation( QString url )
 {
     debug() << "Changing station:" << url << endl;
@@ -314,26 +317,32 @@ WebService::changeStation( QString url )
     while( http.state() != QHttp::Unconnected );
 
     if ( http.error() != QHttp::NoError )
-        return;
+    {
+        showError( E_OTHER ); // default error
+        return false;
+    }
 
     const QString result( http.readAll() );
     const int errCode = parameter( "error", result ).toInt();
 
-    if ( errCode <= 0 )
+    if ( errCode )
     {
-        const QString url = parameter( "url", result );
-        if ( url.startsWith( "lastfm://" ) )
-        {
-            m_station = parameter( "stationname", result );
-            if ( m_station.isEmpty() )
-                m_station = url;
-            emit stationChanged( url, m_station );
-        }
-        else
-            emit stationChanged( url, QString::null );
+        showError( errCode );
+        return false;
+    }
+
+    const QString _url = parameter( "url", result );
+    if ( _url.startsWith( "lastfm://" ) )
+    {
+        m_station = parameter( "stationname", result );
+        if ( m_station.isEmpty() )
+            m_station = _url;
+        emit stationChanged( _url, m_station );
     }
     else
-        showError( errCode );
+        emit stationChanged( _url, QString::null );
+
+    return true;
 }
 
 

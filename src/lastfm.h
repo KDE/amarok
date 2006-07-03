@@ -80,7 +80,7 @@ namespace LastFm
 
             bool handshake( const QString& username, const QString& password );
 
-            void changeStation( QString url );
+            bool changeStation( QString url );
             QString currentUsername() { return m_username;  }
             QString currentPassword() { return m_password;  }
             QString currentStation()  { return m_station;   }
@@ -143,7 +143,7 @@ namespace LastFm
 
         private:
             enum errorCode { E_NOCONTENT    = 1, E_NOMEMBERS = 2, E_NOFANS = 3, E_NOAVAIL = 4, E_NOSUBSCRIBER = 5,
-                             E_NONEIGHBOURS = 6, E_NOSTOPPED = 7 };
+                             E_NONEIGHBOURS = 6, E_NOSTOPPED = 7, E_OTHER  = 0 };
 
             void        showError( int code, QString message = QString::null );
 
