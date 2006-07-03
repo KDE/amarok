@@ -8,7 +8,7 @@ SHORT-TERM (URGENT):
  <markey>  Fix "Mostly Classical" stream URL.
 
  <sebr>    LastFm:
-             - statusbar notifications of love/skip/ban
+             - determine how hard it would be to tag songs
  <eean>      - display history in the playlist somehow  <markey> I'm against this.
                -subitems?
                -just disabled?
