@@ -7,7 +7,7 @@
  * osd.cpp:   Shows some text in a pretty way independent to the WM
  * begin:     Fre Sep 26 2003
  * copyright: (C) 2004 Christian Muehlhaeuser <chris@chris.de>
- *            (C) 2004 Seb Ruiz <me@sebruiz.net>
+ *            (C) 2004-2006 Seb Ruiz <me@sebruiz.net>
  *            (C) 2004, 2005 Max Howell
  *            (C) 2005 Gábor Lehel <illissius@gmail.com>
  */
@@ -563,11 +563,17 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
             args["prettytitle"] = bundle.prettyTitle();
             for( int i = 0; i < PlaylistItem::NUM_COLUMNS; ++i )
                 args[bundle.exactColumnName( i ).lower()] = bundle.prettyText( i );
-            OSDWidget::setRating( AmarokConfig::useRatings() ? bundle.rating() : 0 );
+
             if( bundle.length() <= 0 )
                 args["length"] = QString::null;
 
             QStringx osd = AmarokConfig::osdText();
+
+            // hacky, but works...
+            if( osd.contains( "%rating" ) )
+                OSDWidget::setRating( AmarokConfig::useRatings() ? bundle.rating() : 0 );
+            osd.replace( "%rating", "" );
+
             text = osd.namedOptArgs( args );
 
             // KDE 3.3 rejects \n in the .kcfg file, and KConfig turns \n into \\n, so...
