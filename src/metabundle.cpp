@@ -1498,8 +1498,10 @@ MetaBundle::getRandomStringHelper( int size )
     bool goodvalue = false;
     bool temporary = false;
     QStringList tempcheck, uniqueids;
-    if (CollectionDB::instance()->getType() == DbConnection::postgresql)
+    if( CollectionDB::instance()->getType() == DbConnection::postgresql )
         tempcheck = CollectionDB::instance()->query( QString( "select relname from pg_stat_user_tables order by relname;" ) );
+    else if( CollectionDB::instance()->getType() == DbConnection::mysql )
+        tempcheck = CollectionDB::instance()->query( QString( "SELECT name FROM sqlite_master WHERE type = 'table';" ) );
     else
         tempcheck = CollectionDB::instance()->query( QString( "SHOW TABLES;" ) );
 
