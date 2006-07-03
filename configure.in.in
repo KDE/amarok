@@ -133,7 +133,7 @@ if test "$build_xine" != "no"; then
 
         xine_version=`xine-config --version`
         xine_version=VERSION_TO_NUMBER(echo $xine_version)
-        xine_version_min="1.0.0"
+        xine_version_min="1.0.2"
         xine_version_min=VERSION_TO_NUMBER(echo $xine_version_min)
 
         xine_include=`xine-config --cflags | sed -e 's|.*-I/|/|;s/ .*//'`
