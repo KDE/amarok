@@ -74,8 +74,8 @@ OSDWidget::show( const QString &text, QImage newImage )
 
 void OSDWidget::ratingChanged( const short rating )
 {
-    m_rating = rating;
-    m_text = i18n( "Rating changed" );
+    m_text = "\n" + i18n( "Rating changed" );
+    setRating( rating );
 
     show();
 }
@@ -308,7 +308,7 @@ OSDWidget::render( const uint M, const QSize &size )
         QRect r( rect );
 
         r.setLeft(( rect.left() + rect.width() / 2 ) - star.width() * m_rating / 4 ); //Align to center...
-        r.setTop( rect.top() + rect.height() / 2 );
+        r.setTop( rect.top() + (rect.height()*5)/8 );
 
         if( m_rating % 2 )
         {
@@ -525,9 +525,6 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
         for( int i = 0; i < PlaylistItem::NUM_COLUMNS; ++i )
             tags << bundle.prettyText( i );
 
-//         if( bundle.rating() && AmarokConfig::useRatings() )
-//             OSDWidget::setRating( bundle.rating() );
-
         if( bundle.length() <= 0 )
             tags[PlaylistItem::Length+1] = QString::null;
 
@@ -539,12 +536,14 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
                 QValueList<int>() << PlaylistItem::PlayCount  << PlaylistItem::Year   << PlaylistItem::Comment
                                   << PlaylistItem::Genre      << PlaylistItem::Length << PlaylistItem::Bitrate
                                   << PlaylistItem::LastPlayed << PlaylistItem::Score  << PlaylistItem::Filesize;
-
+            OSDWidget::setRating( 0 );
             for( int i = 0, n = Playlist::instance()->numVisibleColumns(); i < n; ++i )
             {
                 const int column = Playlist::instance()->mapToLogicalColumn( i );
                 if( !tags.at( column + 1 ).isEmpty() && column != PlaylistItem::Rating )
                     availableTags << column;
+                if( column == PlaylistItem::Rating )
+                    OSDWidget::setRating( bundle.rating() );
             }
 
             for( int n = availableTags.count(), i = 0; i < n; ++i )
@@ -564,7 +563,7 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
             args["prettytitle"] = bundle.prettyTitle();
             for( int i = 0; i < PlaylistItem::NUM_COLUMNS; ++i )
                 args[bundle.exactColumnName( i ).lower()] = bundle.prettyText( i );
-//             OSDWidget::setRating( bundle.rating() );
+            OSDWidget::setRating( AmarokConfig::useRatings() ? bundle.rating() : 0 );
             if( bundle.length() <= 0 )
                 args["length"] = QString::null;
 
