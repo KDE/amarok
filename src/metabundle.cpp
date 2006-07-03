@@ -1500,7 +1500,7 @@ MetaBundle::getRandomStringHelper( int size )
     QStringList tempcheck, uniqueids;
     if( CollectionDB::instance()->getType() == DbConnection::postgresql )
         tempcheck = CollectionDB::instance()->query( QString( "select relname from pg_stat_user_tables order by relname;" ) );
-    else if( CollectionDB::instance()->getType() == DbConnection::mysql )
+    else if( CollectionDB::instance()->getType() == DbConnection::sqlite )
         tempcheck = CollectionDB::instance()->query( QString( "SELECT name FROM sqlite_master WHERE type = 'table';" ) );
     else
         tempcheck = CollectionDB::instance()->query( QString( "SHOW TABLES;" ) );
