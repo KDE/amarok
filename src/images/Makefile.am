@@ -28,7 +28,6 @@ images_DATA = \
     lastfm.png \
     loading1.png \
     loading2.png \
-    logo_web.png \
     menu_sidepixmap.png \
     more_albums.png \
     musicbrainz.png \
