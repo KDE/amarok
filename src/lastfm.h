@@ -142,23 +142,28 @@ namespace LastFm
             void userTagsResult( const QString& username, const QStringList& tags );
 
         private:
+            enum errorCode { E_NOCONTENT    = 1, E_NOMEMBERS = 2, E_NOFANS = 3, E_NOAVAIL = 4, E_NOSUBSCRIBER = 5,
+                             E_NONEIGHBOURS = 6, E_NOSTOPPED = 7 };
+
+            void        showError( int code, QString message = QString::null );
+
+            QString     parameter( QString keyName, QString data )      const;
+            QStringList parameterArray( QString keyName, QString data ) const;
+            QStringList parameterKeys( QString keyName, QString data )  const;
+
             QString m_username;
             QString m_password;
             QString m_station;
             QString m_session;
             QString m_baseHost;
             QString m_basePath;
-            QUrl m_streamUrl;
-            bool m_connected;
-            bool m_subscriber;
+            QUrl    m_streamUrl;
+            bool    m_connected;
+            bool    m_subscriber;
 
-            QString m_proxyUrl;
-            KProcIO *m_server;
+            QString    m_proxyUrl;
+            KProcIO   *m_server;
             MetaBundle m_metaBundle;
-
-            QString parameter( QString keyName, QString data ) const;
-            QStringList parameterArray( QString keyName, QString data ) const;
-            QStringList parameterKeys( QString keyName, QString data ) const;
 
         private slots:
             void readProxy();

@@ -22,6 +22,7 @@
 #include "debug.h"
 #include "enginecontroller.h"
 #include "lastfm.h"
+#include "statusbar.h"      //showError()
 
 #include <qdeepcopy.h>
 #include <qdom.h>
@@ -331,6 +332,8 @@ WebService::changeStation( QString url )
         else
             emit stationChanged( url, QString::null );
     }
+    else
+        showError( errCode );
 }
 
 
@@ -361,6 +364,7 @@ WebService::metaDataFinished( int /*id*/, bool error ) //SLOT
     int errCode = parameter( "error", result ).toInt();
     if ( errCode > 0 ) {
         debug() << "Metadata failed with error code: " << errCode << endl;
+        showError( errCode );
         return;
     }
 
@@ -810,6 +814,40 @@ WebService::parameterKeys( QString keyName, QString data ) const
 
 
     return result;
+}
+
+void
+WebService::showError( int code, QString message )
+{
+    switch ( code )
+    {
+        case E_NOCONTENT:
+            message = i18n( "There is not enough content to play this station." );
+            break;
+        case E_NOMEMBERS:
+            message = i18n( "This group does not have enough members for radio." );
+            break;
+        case E_NOFANS:
+            message = i18n( "This artist does not have enough fans for radio." );
+            break;
+        case E_NOAVAIL:
+            message = i18n( "This item is not available for streaming." );
+            break;
+        case E_NOSUBSCRIBER:
+            message = i18n( "This feature is only available to subscribers." );
+            break;
+        case E_NONEIGHBOURS:
+            message = i18n( "There are not enough neighbors for this radio." );
+            break;
+        case E_NOSTOPPED:
+            message = i18n( "This stream has stopped! Please try another station!" );
+            break;
+        default:
+            if( message.isEmpty() )
+                message = i18n( "There was an error!" );
+    }
+
+    amaroK::StatusBar::instance()->longMessage( message, KDE::StatusBar::Sorry );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

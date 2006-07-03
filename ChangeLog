@@ -4,6 +4,7 @@ Amarok ChangeLog
 
 VERSION 1.4.2:
   FEATURES:
+    * Show error messages when connecting to last.fm streams fails.
 
   CHANGES:
 
