@@ -717,7 +717,7 @@ CollectionDB::createStatsTable()
                     "playcounter INTEGER,"
                     "uniqueid " + textColumnType(8) + " UNIQUE,"
                     "deleted BOOL DEFAULT " + boolF() + ");" ) );
-    
+
     query( "CREATE INDEX url_stats ON statistics( url );" );
     query( "CREATE INDEX percentage_stats ON statistics( percentage );" );
     query( "CREATE INDEX rating_stats ON statistics( rating );" );
@@ -2496,7 +2496,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
         insert( insertline, NULL );
         if( !statUIDVal.empty() )
         {
-            
+
             query( QString( "UPDATE statistics SET url = '%1', deleted = %2 WHERE uniqueid = '%3';" )
                                 .arg( currurl )
                                 .arg( boolF() )
@@ -3081,7 +3081,7 @@ CollectionDB::setSongPercentage( const QString &url , int percentage)
                         .arg( escapeString( url ) )
                         .arg( ( getUniqueId( url ) == QString::null ? "NULL" : "'" + escapeString( getUniqueId( url ) ) + "'" ) )
                         .arg( boolF() ), NULL );
-        
+
     }
 
     emit scoreChanged( url, percentage );
@@ -4255,8 +4255,8 @@ CollectionDB::initialize()
     DbConnection *dbConn = getMyConnection();
 
     KConfig* config = amaroK::config( "Collection Browser" );
-    if(!dbConn->isConnected())
-        amaroK::MessageQueue::instance()->addMessage(dbConn->lastError());
+    if ( !dbConn->isConnected() )
+        amaroK::MessageQueue::instance()->addMessage( dbConn->lastError() );
     if ( !dbConn->isInitialized() || !isValid() )
     {
         warning() << "Your database is either corrupt or empty. Dropping all and recreating..." << endl;
@@ -4320,7 +4320,7 @@ CollectionDB::initialize()
                 //pending talks with Seb...
                 //don't bump actual version in collectiondb.h before this is written!
                 debug() << "Adding uniqueid field" << endl;
-                query( "ALTER TABLE statistics ADD uniqueid " + textColumnType(8) + " UNIQUE;" ); 
+                query( "ALTER TABLE statistics ADD uniqueid " + textColumnType(8) + " UNIQUE;" );
                 debug() << "Adding deleted field" << endl;
                 query( "ALTER TABLE statistics ADD deleted BOOL DEFAULT " + boolF() + ";" );
                 query( "CREATE INDEX uniqueid_stats ON statistics( uniqueid );" );
@@ -4346,7 +4346,8 @@ CollectionDB::initialize()
         }
 
         QString PersistentVersion = adminValue( "Database Persistent Tables Version" );
-        if ( PersistentVersion.isEmpty() ) {
+        if ( PersistentVersion.isEmpty() )
+        {
             /* persistent tables didn't have a version on 1.3X and older, but let's be nice and try to
                copy/keep the good information instead of just deleting the tables */
             debug() << "Detected old schema for tables with important data. Amarok will convert the tables, ignore any \"table already exists\" errors." << endl;
@@ -4359,7 +4360,8 @@ CollectionDB::initialize()
             debug() << "Building podcast tables" << endl;
             createPodcastTables();
         }
-        else if ( PersistentVersion == "1" || PersistentVersion == "2" ) {
+        else if ( PersistentVersion == "1" || PersistentVersion == "2" )
+        {
             createPersistentTables(); /* From 1 to 2 nothing changed. There was just a bug on the code, and
                                          on some cases the table wouldn't be created.
                                          From 2 to 3, lyrics were made plain text, instead of HTML */
