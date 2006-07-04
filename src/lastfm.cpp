@@ -278,6 +278,7 @@ WebService::handshake( const QString& username, const QString& password )
     *m_server << "amarok_proxy.rb";
     *m_server << QString::number( port );
     *m_server << m_streamUrl.toString();
+    *m_server << AmarokConfig::soundSystem();
 
     if( !m_server->start( KProcIO::NotifyOnExit, true ) ) {
         error() << "Failed to start amarok_proxy.rb" << endl;

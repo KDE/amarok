@@ -10,6 +10,7 @@ VERSION 1.4.2:
   CHANGES:
 
   BUGFIXES:
+    * GUI will no longer freeze when starting last.fm streams.
     * Fixed problems with last.fm streams containing spaces, e.g. "Hip Hop".
 
 

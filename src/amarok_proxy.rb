@@ -20,10 +20,11 @@ require "uri"
 include Socket::Constants
 
 class LastFM
-  def initialize port, remote_url
+  def initialize( port, remote_url, engine )
+    @engine = engine
 
     myputs( "startup" )
-    myputs( "running with port: #{port} and url: #{remote_url}" )
+    myputs( "running with port: #{port} and url: #{remote_url} and engine: #{engine}" )
 
     #
     # amarok is, well, Amarok
@@ -62,10 +63,7 @@ class LastFM
     myputs( "Before cp_all()" )
     cp_all_inward( serv, amaroks )
 
-    engine = `dcop amarok player engine`.chomp
-    myputs( "Engine is #{engine}" )
-
-    if engine == 'helix-engine' && amaroks.eof
+    if @engine == 'helix-engine' && amaroks.eof
       myputs( "EOF Detected, reconnecting" )
       amaroks = amarok.accept
       cp_all_inward( serv, amaroks )
@@ -103,6 +101,10 @@ class LastFM
 
   def cp_all_inward( income, output )
     myputs( "cp_all( income => #{income.inspect}, output => #{output.inspect}" )
+    if @engine == 'xine-engine'
+      filler = Array.new( 4100, 0 )
+      safe_write( output, filler ) # HACK: Fill xine's buffer so that xine_open() won't block
+    end
     loop do
       data = income.read( 1000 )
       break if data == nil
@@ -127,10 +129,8 @@ end
 
 begin
   myputs( 'startup' )
-  port, remote_url = ARGV
-  myputs( "running with port: #{port} and url: #{remote_url}" )
-
-  LastFM.new( port, remote_url )
+  port, remote_url, engine = ARGV
+  LastFM.new( port, remote_url, engine )
 rescue
   $stderr.puts( $!.to_s )
   $stderr.puts( $!.backtrace.inspect )
