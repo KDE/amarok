@@ -1081,7 +1081,7 @@ Playlist::playNextTrack( bool forceNext )
             item = MyIt::nextVisible( item );
             while( item && ( !checkFileStatus( item ) || !item->exists() ) )
                 item = MyIt::nextVisible( item );
-            m_currentTrack = item;
+            setCurrentTrack( item );
         }
 
         return;
