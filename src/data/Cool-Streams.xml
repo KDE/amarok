@@ -40,7 +40,7 @@
   <url>http://la.campus.ltu.se:8000/stream.ogg.m3u</url>
  </stream>
  <stream name="Mostly Classical [Classical]">
-  <url>http://www.mostlyclassical.com/mp3/classical96k.pls</url>
+  <url>http://www.sky.fm/mp3/classical.pls</url>
  </stream>
  <stream name="MTH.House [House]">
   <url>http://stream.mth-house.de:8500/listen.pls</url>
