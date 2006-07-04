@@ -305,12 +305,9 @@ WebService::changeStation( QString url )
 
     QHttp http( m_baseHost, 80 );
 
-    url.replace( "lastfm://", "" ); // get rid of it!
-
-    http.get( QString( m_basePath + "/adjust.php?session=%1&url=lastfm://%2&debug=%3" )
+    http.get( QString( m_basePath + "/adjust.php?session=%1&url=%2&debug=0" )
              .arg( m_session )
-             .arg( url )
-             .arg( "0" ) );
+             .arg( url ) );
 
     do
         kapp->processEvents();
