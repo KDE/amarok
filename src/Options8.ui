@@ -18,6 +18,9 @@
             <height>1</height>
         </size>
     </property>
+    <property name="caption">
+        <string>Options8</string>
+    </property>
     <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
@@ -274,12 +277,25 @@
         </spacer>
     </vbox>
 </widget>
+<customwidgets>
+</customwidgets>
+<connections>
+    <connection>
+        <sender>kcfg_ScrobblerUsername</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>Options8</receiver>
+        <slot>updateServices(const QString&amp;)</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in implementation">Options8.ui.h</include>
+</includes>
+<slots>
+    <slot access="protected">updateServices(const QString &amp;)</slot>
+</slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>kactivelabel.h</includehint>
-    <includehint>kactivelabel.h</includehint>
     <includehint>klineedit.h</includehint>
-    <includehint>klineedit.h</includehint>
-    <includehint>kactivelabel.h</includehint>
 </includehints>
 </UI>
