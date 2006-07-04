@@ -5626,7 +5626,7 @@ QueryBuilder::excludeFilter( int tables, Q_INT64 value, const QString& filter, i
 }
 
 void
-QueryBuilder::addMatch( int tables, const QString& match, bool interpretUnknown /* = true */, bool caseSensitive /* = false */ )
+QueryBuilder::addMatch( int tables, const QString& match, bool interpretUnknown /* = true */, bool caseSensitive /* = true */ )
 {
     QString matchCondition = caseSensitive ? CollectionDB::exactCondition( match ) : CollectionDB::likeCondition( match );
 
@@ -5656,12 +5656,13 @@ QueryBuilder::addMatch( int tables, const QString& match, bool interpretUnknown 
 
 
 void
-QueryBuilder::addMatch( int tables, Q_INT64 value, const QString& match )
+QueryBuilder::addMatch( int tables, Q_INT64 value, const QString& match, bool interpretUnknown /* = true */, bool caseSensitive /* = true */  )
 {
     m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
-    m_where += QString( "OR %1.%2 %3" ).arg( tableName( tables ) ).arg( valueName( value ) ).arg( CollectionDB::likeCondition( match ) );
+    m_where += QString( "OR %1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) );
+    m_where += caseSensitive ? CollectionDB::exactCondition( match ) : CollectionDB::likeCondition( match );
 
-    if ( ( value & valName ) && match == i18n( "Unknown" ) )
+    if ( ( value & valName ) && interpretUnknown && match == i18n( "Unknown" ) )
         m_where += QString( "OR %1.%2 = '' " ).arg( tableName( tables ) ).arg( valueName( value ) );
 
     m_where += " ) ";
@@ -5671,7 +5672,7 @@ QueryBuilder::addMatch( int tables, Q_INT64 value, const QString& match )
 
 
 void
-QueryBuilder::addMatches( int tables, const QStringList& match, bool interpretUnknown /* = true */, bool caseSensitive /* = false */ )
+QueryBuilder::addMatches( int tables, const QStringList& match, bool interpretUnknown /* = true */, bool caseSensitive /* = true */ )
 {
     QStringList matchConditions;
     for ( uint i = 0; i < match.count(); i++ )
