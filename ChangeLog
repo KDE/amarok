@@ -2,6 +2,7 @@ Amarok ChangeLog
 ================
 (C) 2002-2006 the Amarok authors.
 
+
 VERSION 1.4.2:
   FEATURES:
     * Show error messages when connecting to last.fm streams fails.
@@ -9,6 +10,7 @@ VERSION 1.4.2:
   CHANGES:
 
   BUGFIXES:
+    * Fixed problems with last.fm streams containing spaces, e.g. "Hip Hop".
 
 
 VERSION 1.4.1:
