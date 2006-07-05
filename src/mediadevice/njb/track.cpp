@@ -144,7 +144,6 @@ NjbTrack::NjbTrack( njb_songid_t* song)
         
     }
     bundle->setPath( filename );
-    debug() << bundle->filename() << endl;
     
     frame = NJB_Songid_Findframe( song, FR_YEAR );
     if( frame )
@@ -165,10 +164,6 @@ NjbTrack::NjbTrack( njb_songid_t* song)
         }
     }
     this->setBundle( *bundle );
-/*    debug() << "title: " << bundle->title()
-            << "artist: " << bundle->artist()
-            << "album: " << bundle->album()
-    << endl;*/
 }
 
 void
@@ -261,8 +256,6 @@ trackValueList::findTrackById( unsigned _id ) const
 int
 trackValueList::readFromDevice( void )
 {
-    DEBUG_BLOCK
-    debug() << ": NjbMediaDevice::theNjb() is:" << NjbMediaDevice::theNjb() << endl;
     int i = 0;
     
     // Don't get extended metadatas
@@ -274,7 +267,6 @@ trackValueList::readFromDevice( void )
         NjbTrack *track = new NjbTrack( song );
         append( track );
         NJB_Songid_Destroy( song );
-        //debug() << track->bundle()->title() << " " << track->bundle()->artist() << " " << track->bundle()->album() << endl;
 
         ++i;
     }

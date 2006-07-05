@@ -108,6 +108,8 @@ NjbMediaDevice::closeDevice()
 
     clearItems();
 
+    m_name = i18n("NJB Medie device");
+
     return true;
 }
 
@@ -202,6 +204,10 @@ NjbMediaDevice::openDevice(bool)
 
         return false;
     }
+    
+    QString deviceName = NJB_Get_Device_Name( m_njb, 1 );
+    QString owner = NJB_Get_Owner_String( m_njb );
+    m_name = deviceName + " (Owned by " + owner + ")";
 
     m_connected = true;
 
@@ -220,6 +226,7 @@ NjbMediaDevice::openDevice(bool)
                           "%n tracks found on device", trackList.size() );
         amaroK::StatusBar::instance()->shortMessage( s );
     }
+
     return true;
 
 }
