@@ -12,6 +12,9 @@ SHORT-TERM (URGENT):
                -just disabled?
              - 'stop after current track' should work
  <markey>    - sometimes metadata is not updated
+             - when you've never listenend to lastfm before, all stream links on the
+               website are disabled ("Download the player"). we need to do a handshake on
+               startup once, and then set a config item, e.g. handshaked=true.
 
  <markey>  GHNS for scripts and themes only shows 20 items maximum. I understand this is due
            to some configuration on pwsp.net, where we fetch the feed. This must be fixed!!!
