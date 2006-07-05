@@ -4314,7 +4314,30 @@ CollectionDB::initialize()
                 prev = 3;
             }
 
-            if( prev == 5)
+            if( prev == 6 )
+            {
+                if ( getDbConnectionType() == DbConnection::sqlite )
+                {
+                    query( QString( "CREATE TABLE statistics_fix ("
+                        "url " + textColumnType() + " UNIQUE,"
+                        "createdate INTEGER,"
+                        "accessdate INTEGER,"
+                        "percentage FLOAT,"
+                        "rating INTEGER DEFAULT 0,"
+                        "playcounter INTEGER,"
+                        "uniqueid " + textColumnType(8) + " UNIQUE,"
+                        "deleted BOOL DEFAULT " + boolF() + ");" ) );
+                    
+                    insert( "INSERT INTO statistics_fix SELECT * FROM statistics;", NULL );
+
+                    dropStatsTable();
+                    createStatsTable();
+
+                    insert( "INSERT INTO statistics SELECT * FROM statistics_fix;", NULL );
+                    query( "DROP TABLE statistics_fix" );
+                }
+            }
+            else if( prev == 5 )
             {
                 //Code to add unqiueid column and maybe "deleted" column will go here,
                 //pending talks with Seb...
