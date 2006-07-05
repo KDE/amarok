@@ -46,6 +46,7 @@ AMAROK_EXPORT_PLUGIN( IpodMediaDevice )
 #endif
 
 #include <cstdlib>
+#include <unistd.h>
 
 
 // disable if it takes too long for you
