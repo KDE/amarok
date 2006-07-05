@@ -265,6 +265,8 @@ WebService::handshake( const QString& username, const QString& password )
     if ( m_session.lower() == "failed" )
         return false;
 
+    amaroK::config( "Scrobbler" )->writeEntry( "Subscriber", m_subscriber );
+
     // Find free port
     MyServerSocket* socket = new MyServerSocket();
     const int port = socket->port();

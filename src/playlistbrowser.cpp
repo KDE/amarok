@@ -75,6 +75,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
         , m_playlistImports( 0 )
         , m_coolStreams( 0 )
         , m_smartDefaults( 0 )
+        , m_lastfmCategory( 0 )
         , m_ac( new KActionCollection( this ) )
         , m_podcastTimer( new QTimer( this ) )
 {
@@ -195,6 +196,11 @@ PlaylistBrowser::polish()
 
     m_streamsCategory  = loadStreams();
     loadCoolStreams();
+    if( !AmarokConfig::scrobblerUsername().isEmpty() )
+    {
+        const bool subscriber = amaroK::config( "Scrobbler" )->readBoolEntry( "Subscriber", false );
+        loadLastfmStreams( subscriber );
+    }
 
     if( amaroK::dynamicMode() )
     {
@@ -365,6 +371,39 @@ void PlaylistBrowser::loadCoolStreams()
         e = n.namedItem( "url" ).toElement();
         KURL url  = KURL::KURL( e.text() );
         last = new StreamEntry( m_coolStreams, last, url, name );
+    }
+}
+
+void PlaylistBrowser::loadLastfmStreams( const bool subscriber /*false*/ )
+{
+    m_lastfmCategory = new PlaylistCategory( m_streamsCategory, m_coolStreams, i18n("Last.fm Streams"), true );
+
+    QStringList globaltags;
+    globaltags << "Alternative" << "Ambient" << "Chill Out" << "Classical" << "Dance"
+               << "Electronica" << "Favorites" << "Heavy Metal" << "Hip Hop" << "Indie Rock"
+               << "Industrial" << "Japanese" << "Pop" << "Psytrance" << "Rap" << "Rock"
+               << "Soundtrack" << "Techno" << "Trance";
+
+    PlaylistCategory *tagsFolder = new PlaylistCategory( m_lastfmCategory, 0, i18n("Global Tags") );
+    QListViewItem *last = 0;
+
+    foreach( globaltags )
+    {
+        const KURL url( "lastfm://globaltags/" + *it );
+        last = new StreamEntry( tagsFolder, last, url, *it );
+    }
+
+    QString user = AmarokConfig::scrobblerUsername();
+    KURL url( QString("lastfm://user/%1/neighbours").arg( user ) );
+    last = new StreamEntry( m_lastfmCategory, tagsFolder, url, i18n( "Neighbor Radio" ) );
+
+    if( subscriber )
+    {
+        url.setPath( QString("user/%1/personal").arg( user ) );
+        last = new StreamEntry( m_lastfmCategory, last, url, i18n( "Personal Radio" ) );
+
+        url.setPath( QString("user/%1/loved").arg( user ) );
+        last = new StreamEntry( m_lastfmCategory, last, url, i18n( "Loved Radio" ) );
     }
 }
 

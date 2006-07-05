@@ -134,6 +134,7 @@ class PlaylistBrowser : public QVBox
 
         PlaylistCategory* loadStreams();
         void loadCoolStreams();
+        void loadLastfmStreams( const bool subscriber = false );
         void saveStreams();
 
         PlaylistCategory* loadSmartPlaylists();
@@ -182,6 +183,7 @@ class PlaylistBrowser : public QVBox
         PlaylistCategory    *m_playlistImports;
         PlaylistCategory    *m_coolStreams;
         PlaylistCategory    *m_smartDefaults;
+        PlaylistCategory    *m_lastfmCategory;
         PlaylistEntry       *m_lastPlaylist;
 
         DynamicEntry          *m_randomDynamic;
@@ -208,7 +210,7 @@ class PlaylistBrowser : public QVBox
         InfoPane *m_infoPane;
 
         bool                 m_removeDirt;
-	
+
 	QSplitter *m_splitter;
 };
 
