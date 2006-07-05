@@ -673,6 +673,9 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
         qb.sortBy( q_cat1, QueryBuilder::valName );
         qb.setOptions( QueryBuilder::optRemoveDuplicates );
 
+        if( q_cat1 == QueryBuilder::tabArtist )
+            qb.setOptions( QueryBuilder::optNoCompilations );
+
         // ensure we don't get empty genres/albums/etc due to tag changes
         qb.addFilter( QueryBuilder::tabSong, QString::null );
 
@@ -939,6 +942,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             isUnknown = tmptext.isEmpty();
             if ( !static_cast<CollectionItem*>( item )->isSampler() )
             {
+                qb.setOptions( QueryBuilder::optNoCompilations );
                 if( VisYearAlbum == 1 )
                 {
                     tmptext = item->text( 0 );
@@ -996,6 +1000,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 
             if( !static_cast<CollectionItem*>( item->parent() )->isSampler() )
             {
+                qb.setOptions( QueryBuilder::optNoCompilations );
                 if( VisYearAlbum == 1 )
                 {
                     tmptext = item->parent()->text( 0 );
@@ -1068,7 +1073,8 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 
             if ( !static_cast<CollectionItem*>( item->parent()->parent() )->isSampler() )
             {
-                if (VisYearAlbum==1)
+                qb.setOptions( QueryBuilder::optNoCompilations );
+                if( VisYearAlbum == 1 )
                 {
                     tmptext = item->parent()->parent()->text( 0 );
                     QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
