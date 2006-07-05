@@ -1648,7 +1648,7 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
             "</table>\n"
             "</div>\n" )
             .args( QStringList()
-            << escapeHTML( lfm->currentStation() )  //1
+            << escapeHTML( lfm->stationDescription() )  //1
             << artistUrl  //2
             << escapeHTML( currentTrack.artist() ) //3
             << titleUrl //4

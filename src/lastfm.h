@@ -87,6 +87,8 @@ namespace LastFm
             QString session()         { return m_session;   }
             QUrl    streamUrl()       { return m_streamUrl; }
 
+            QString stationDescription();   // necessary for translation
+
             void friends( QString username );
             void neighbours( QString username );
 
@@ -151,15 +153,15 @@ namespace LastFm
             QStringList parameterArray( QString keyName, QString data ) const;
             QStringList parameterKeys( QString keyName, QString data )  const;
 
-            QString m_username;
-            QString m_password;
-            QString m_station;
-            QString m_session;
-            QString m_baseHost;
-            QString m_basePath;
-            QUrl    m_streamUrl;
-            bool    m_connected;
-            bool    m_subscriber;
+            QString m_username;     // login username
+            QString m_password;     // login password
+            QString m_station;      // the url of the station
+            QString m_session;      // session id that last.fm provides
+            QString m_baseHost;     // who are we connecting to?
+            QString m_basePath;     // where are we connecting to!
+            QUrl    m_streamUrl;    // last.fm webserver for direct connection (proxy connects to this)
+            bool    m_connected;    // self explanatory
+            bool    m_subscriber;   // self explanatory
 
             QString    m_proxyUrl;
             KProcIO   *m_server;

@@ -332,15 +332,71 @@ WebService::changeStation( QString url )
     const QString _url = parameter( "url", result );
     if ( _url.startsWith( "lastfm://" ) )
     {
-        m_station = parameter( "stationname", result );
-        if ( m_station.isEmpty() )
-            m_station = _url;
+        m_station = _url; // parse it in stationDescription
         emit stationChanged( _url, m_station );
     }
     else
         emit stationChanged( _url, QString::null );
 
     return true;
+}
+
+/// return a translatable description of the station we are connected to
+QString WebService::stationDescription()
+{
+    QStringList elements = QStringList::split( "/", m_station );
+
+    /// TAG RADIOS
+    // eg: lastfm://globaltag/rock
+    if ( elements[1] == "globaltag" )
+        return i18n( "Global Tag Radio: %1" ).arg( elements[2] );
+
+    /// ARTIST RADIOS
+    if ( elements[1] == "artist" )
+    {
+        // eg: lastfm://artist/Queen/similarartists
+        if ( elements[3] == "similarartists" )
+            return i18n( "Similar Artists to %1" ).arg( elements[2] );
+
+        if ( elements[3] == "fans" )
+            return i18n( "Artist Fan Radio: %1" ).arg( elements[2] );
+    }
+
+    /// USER RADIOS
+    else if ( elements[1] == "user" )
+    {
+        // eg: lastfm://user/sebr/neighbours
+        if ( elements[3] == "neighbours" )
+            return i18n( "%1's Neighbor Radio" ).arg( elements[2] );
+
+        // eg: lastfm://user/sebr/personal
+        if ( elements[3] == "personal" )
+            return i18n( "%1's Personal Radio" ).arg( elements[2] );
+
+        // eg: lastfm://user/sebr/loved
+        if ( elements[3] == "loved" )
+            return i18n( "%1's Loved Radio" ).arg( elements[2] );
+
+        // eg: lastfm://user/sebr/recommended/100 : 100 is number for how obscure the music should be
+        if ( elements[3] == "recommended" )
+            return i18n( "%1's Recommended Radio" ).arg( elements[2] );
+    }
+
+    /// GROUP RADIOS
+    //eg: lastfm://group/amaroK%20users
+    else if ( elements[1] == "group" )
+        return i18n( "Group Radio: %1" ).arg( elements[2] );
+
+    /// TRACK RADIOS
+    else if ( elements[1] == "play" )
+    {
+        if ( elements[2] == "tracks" )
+            return i18n( "Track Radio" );
+        else if ( elements[2] == "artist" )
+            return i18n( "Artist Radio" );
+    }
+    //kaput!
+    return m_station;
 }
 
 
