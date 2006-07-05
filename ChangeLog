@@ -9,10 +9,17 @@ VERSION 1.4.2:
     * Show error messages when connecting to last.fm streams fails.
 
   CHANGES:
+    * Enhancements to ATF/statistics to allow for better tracking of stats as
+      files are moved.
+    * Tag Editing Dialog is now ATF-enabled.
+    * In-line tag editing is now ATF-enabled.
 
   BUGFIXES:
     * GUI will no longer freeze when starting last.fm streams.
     * Fixed problems with last.fm streams containing spaces, e.g. "Hip Hop".
+    * When generic media devices were specified manually, transferred files
+      would not always get converted to vfat-friendly names if they were on a
+      vfat filesystem.
 
 
 VERSION 1.4.1:
