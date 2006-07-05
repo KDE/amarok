@@ -102,11 +102,11 @@ class LastFM
   def cp_all_inward( income, output )
     myputs( "cp_all( income => #{income.inspect}, output => #{output.inspect}" )
     if @engine == 'xine-engine'
-      filler = Array.new( 4100, 0 )
+      filler = Array.new( 4096, 0 )
       safe_write( output, filler ) # HACK: Fill xine's buffer so that xine_open() won't block
     end
     loop do
-      data = income.read( 1000 )
+      data = income.read( 256 )
       break if data == nil
       # Detect and remove SYNCs. Removal is not strictly necessary.
       if data.include?( "SYNC" ) # FIXME won't detect the SYNC if it spreads over fragment boundary
