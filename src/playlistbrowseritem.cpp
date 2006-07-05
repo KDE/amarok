@@ -1157,6 +1157,19 @@ PodcastChannel::configure()
 }
 
 void
+PodcastChannel::setListened( const bool n /*true*/ )
+{
+    QListViewItem *child = firstChild();
+    while( child )
+    {
+        static_cast<PodcastEpisode*>(child)->setListened( n );
+        child = child->nextSibling();
+    }
+
+    setNew( !n );
+}
+
+void
 PodcastChannel::setSettings( PodcastSettings *newSettings )
 {
     bool downloadMedia = ( (fetchType() != newSettings->fetchType()) && (newSettings->fetchType() == AUTOMATIC) );

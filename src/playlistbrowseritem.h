@@ -337,8 +337,10 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
 
         void sortChildItems( int /*column*/, bool /*ascending*/ ) { /* Don't sort its children */ }; //reimplemented
 
-        void setNew( bool n = true );
+        void setNew( const bool n = true );
         bool hasNew() { return m_new; }
+
+        void setListened( const bool n = true ); // over rides each child so it has been listened
 
         void  configure();
         void  fetch();
@@ -356,7 +358,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         const bool hasPurge()       { return m_bundle.hasPurge(); }
         const int  purgeCount()     { return m_bundle.purgeCount(); }
         const KURL saveLocation()   { return m_bundle.saveLocation(); }
-        PodcastSettings * getSettings() { return new PodcastSettings( title(), saveLocation().path(),
+        PodcastSettings *getSettings() { return new PodcastSettings( title(), saveLocation().path(),
             autoscan(), fetchType(), autotransfer(), hasPurge(), purgeCount() ); }
 
         void  setXml( const QDomNode &xml, const int feedType );

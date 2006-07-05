@@ -2375,7 +2375,8 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
     KPopupMenu menu( this );
 
-    if( isPlaylist( item ) ) {
+    if( isPlaylist( item ) )
+    {
         #define item static_cast<PlaylistEntry*>(item)
         enum Id { LOAD, ADD, DYNADD, DYNSUB, RENAME, DELETE, MEDIA_DEVICE };
 
@@ -2540,7 +2541,8 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         }
         #undef  item
     }
-    else if( isDynamic( item ) ) {
+    else if( isDynamic( item ) )
+    {
         #define item static_cast<DynamicEntry*>(item)
         enum Actions { LOAD, RENAME, REMOVE, EDIT };
         menu.insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n( "&Load" ), LOAD );
@@ -2565,15 +2567,17 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         }
         #undef item
     }
-    else if( isPodcastChannel( item ) ) {
+    else if( isPodcastChannel( item ) )
+    {
         #define item static_cast<PodcastChannel*>(item)
-        enum Actions { LOAD, ADD, DELETE, RESCAN, CONFIG};
-        menu.insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n( "&Load" ), LOAD );
-        menu.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), ADD );
+        enum Actions { LOAD, ADD, DELETE, RESCAN, LISTENED, CONFIG };
+        menu.insertItem( SmallIconSet( amaroK::icon( "files" ) ),                i18n( "&Load" ), LOAD );
+        menu.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ),         i18n( "&Append to Playlist" ), ADD );
         menu.insertItem( SmallIconSet( amaroK::icon( "remove_from_playlist" ) ), i18n( "&Delete" ), DELETE );
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet( amaroK::icon( "refresh" ) ), i18n( "&Check for Updates" ), RESCAN );
-        menu.insertItem( SmallIconSet( amaroK::icon( "configure" ) ), i18n( "&Configure..." ), CONFIG );
+        menu.insertItem( SmallIconSet( amaroK::icon( "refresh" ) ),   i18n( "&Check for Updates" ), RESCAN );
+        menu.insertItem( SmallIconSet( amaroK::icon( "artist" ) ),    i18n( "Mark as &Listened" ),  LISTENED );
+        menu.insertItem( SmallIconSet( amaroK::icon( "configure" ) ), i18n( "&Configure..." ),      CONFIG );
 
 
         switch( menu.exec( p ) )
@@ -2599,6 +2603,10 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 item->rescan();
                 break;
 
+            case LISTENED:
+                item->setListened();
+                break;
+
             case DELETE:
                 removeSelectedItems();
                 break;
@@ -2611,9 +2619,10 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         }
         #undef item
     }
-    else if( isPodcastEpisode( item ) ) {
+    else if( isPodcastEpisode( item ) )
+    {
         #define item static_cast<PodcastEpisode*>(item)
-        enum Actions { LOAD, QUEUE, GET, DELETE, MEDIA_DEVICE };
+        enum Actions { LOAD, QUEUE, GET, DELETE, MEDIA_DEVICE, LISTENED };
         menu.insertItem( SmallIconSet( amaroK::icon( "play" ) ), i18n( "&Play" ), LOAD );
         menu.insertItem( SmallIconSet( amaroK::icon( "fastforward" ) ), i18n( "&Queue" ), QUEUE );
 
@@ -2627,6 +2636,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( amaroK::icon( "download" ) ), i18n( "&Download Media" ), GET );
+        menu.insertItem( SmallIconSet( amaroK::icon( "artist" ) ),   i18n( "Mark as &Listened" ),  LISTENED );
         menu.insertItem( SmallIconSet( amaroK::icon("remove_from_playlist") ),
                          i18n( "De&lete Downloaded Podcast" ), DELETE );
 
@@ -2652,6 +2662,10 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
             case DELETE:
                 deleteSelectedPodcastItems();
+                break;
+
+            case LISTENED:
+                item->setListened();
                 break;
 
             case MEDIA_DEVICE:
