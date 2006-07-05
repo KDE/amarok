@@ -392,7 +392,7 @@ QString WebService::stationDescription()
     {
         if ( elements[2] == "tracks" )
             return i18n( "Track Radio" );
-        else if ( elements[2] == "artist" )
+        else if ( elements[2] == "artists" )
             return i18n( "Artist Radio" );
     }
     //kaput!
