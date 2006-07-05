@@ -54,14 +54,14 @@ DaapClient::copyTrackToDevice(const MetaBundle& /* bundle */)
     return 0;
 }
 
-MediaItem* 
+MediaItem*
 DaapClient::trackExists( const MetaBundle& )
 {
     return 0;
 }
 
 int
-MediaDevice::deleteItemFromDevice( MediaItem *item, bool onlyPlayed )
+DaapClient::deleteItemFromDevice( MediaItem *item, bool onlyPlayed )
 {
     return 0;
 }
