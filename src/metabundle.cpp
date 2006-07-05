@@ -1002,7 +1002,7 @@ MetaBundle::fuzzyTime( int time )
         hr = time % 24 ; //hours
     time /= 24;
     if( time )
-        day = time ; //days
+        day = time % 7 ; //days
     time /= 7;
     if( time )
         week = time ; //weeks
