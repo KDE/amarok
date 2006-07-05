@@ -204,6 +204,19 @@ NjbTrack::setBundle( MetaBundle &bundle )
     m_bundle = bundle;
 }
 
+void
+NjbTrack::addItem( const NjbMediaItem *item )
+{
+    ItemList.append( item );
+}        
+
+bool
+NjbTrack::removeItem( const NjbMediaItem *item )
+{
+    ItemList.remove( item );
+    return ItemList.isEmpty();
+}
+
 /* ------------------------------------------------------------------------ */
 trackValueList::iterator 
 trackValueList::findTrackByName( const QString& _filename )

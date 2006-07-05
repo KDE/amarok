@@ -44,14 +44,15 @@ class NjbTrack {
         MetaBundle* bundle() { return new MetaBundle( m_bundle ); }
         const MetaBundle & getBundle() { return m_bundle; }
         void setBundle( MetaBundle &bundle );
+        void addItem( const NjbMediaItem *item );
+        bool removeItem( const NjbMediaItem * );
         void setId( int id ) { m_id = id; }
-        void remove( NjbMediaItem * ) { }
         void writeToSongid( njb_songid_t *songid );
         njb_songid_t *newSongid();
     private:
         unsigned int m_id;
         MetaBundle m_bundle;
-        QPtrList<NjbMediaItem *> ItemList;
+        QPtrList<NjbMediaItem> ItemList;
 };
 
 class trackValueList: public QValueList<NjbTrack *>

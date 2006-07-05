@@ -61,10 +61,10 @@ class NjbMediaItem : public MediaItem
 
         ~NjbMediaItem()
         {
-            m_track->remove(this);
+            m_track->removeItem(this);
         }
         
-        void setTrack( NjbTrack *track ) { m_track = track; }
+        void setTrack( NjbTrack *track ) { m_track = track; m_track->addItem(this); }
         NjbTrack *track() { return m_track; }
         QString filename() { return m_track->bundle()->url().path(); }
     private:
