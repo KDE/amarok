@@ -40,6 +40,7 @@ AMAROK_EXPORT_PLUGIN( GenericMediaDevice )
 #include <kio/jobclasses.h>
 #include <kio/netaccess.h>
 #include <kmessagebox.h>
+#include <kmountpoint.h>
 #include <kpopupmenu.h>
 #include <kurlrequester.h>     //downloadSelectedItems()
 #include <kurlrequesterdlg.h>  //downloadSelectedItems()
@@ -356,6 +357,14 @@ GenericMediaDevice::openDevice( bool /*silent*/ )
                                                           "Please mount the device and click \"Connect\" again." ),
                                                     KDE::StatusBar::Sorry );
         return false;
+    }
+
+    KMountPoint::List currentmountpoints = KMountPoint::currentMountPoints();
+    KMountPoint::List::Iterator mountiter = currentmountpoints.begin();
+    for(; mountiter != currentmountpoints.end(); ++mountiter)
+    {
+        if( m_medium.mountPoint() == (*mountiter)->mountPoint() )
+            m_medium.setFsType( (*mountiter)->mountType() );
     }
     m_actuallyVfat = m_medium.fsType() == "vfat" ? true : false;
     m_connected = true;
