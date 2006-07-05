@@ -337,7 +337,9 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
 {
     DEBUG_BLOCK
 
-    if( LastFm::Controller::instance()->isPlaying() )
+    KURL url = bundle.url();
+    // don't destroy connection if we need to change station
+    if( url.protocol() != "lastfm" && LastFm::Controller::instance()->isPlaying() )
     {
         m_engine->stop();
         LastFm::Controller::instance()->playbackStopped();
@@ -349,7 +351,6 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
     if ( !m_playFailureCount )
         failure_time.start();
 
-    KURL url = bundle.url();
     debug() << "Loading URL: " << url.url() << endl;
     m_lastMetadata.clear();
 
@@ -386,12 +387,22 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
     // streams from last.fm should be handled by our proxy, in order to authenticate with the server
     else if ( url.protocol() == "lastfm" )
     {
-        url = LastFm::Controller::instance()->getNewProxy( url.url() );
-        if( url.isEmpty() ) goto some_kind_of_failure;
-        m_lastFm = true;
+        if( LastFm::Controller::instance()->isPlaying() )
+        {
+            LastFm::Controller::instance()->getService()->changeStation( url.url() );
+            connect( LastFm::Controller::instance()->getService(), SIGNAL( metaDataResult( const MetaBundle& ) ),
+                     this, SLOT( slotStreamMetaData( const MetaBundle& ) ) );
+            return;
+        }
+        else
+        {
+            url = LastFm::Controller::instance()->getNewProxy( url.url() );
+            if( url.isEmpty() ) goto some_kind_of_failure;
+            m_lastFm = true;
 
-        connect( LastFm::Controller::instance()->getService(), SIGNAL( metaDataResult( const MetaBundle& ) ),
-                 this, SLOT( slotStreamMetaData( const MetaBundle& ) ) );
+            connect( LastFm::Controller::instance()->getService(), SIGNAL( metaDataResult( const MetaBundle& ) ),
+                    this, SLOT( slotStreamMetaData( const MetaBundle& ) ) );
+        }
         debug() << "New URL is " << url.url() << endl;
     }
 
