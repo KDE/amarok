@@ -218,15 +218,23 @@ NjbMediaDevice::openDevice(bool)
     else
         m_connected = true;
 
+    QString tracksFound;
     if( m_connected )
     {
         NJB_Set_Unicode( NJB_UC_UTF8 ); // I assume that UTF-8 is fine with everyone...
         readJukeboxMusic();
-        QString s = i18n( "1 track found on device",
-                          "%n tracks found on device", trackList.size() );
-        amaroK::StatusBar::instance()->shortMessage( s );
+        tracksFound = i18n( "1 track found on device",
+                          "%n tracks found on device ", trackList.size() );
+        
     }
 
+    QString Information = tracksFound + "\n";
+    Information += ( (NJB_Get_Auxpower( m_njb ) == 1) ? i18n("On auxiliary power") : i18n("On main power") + "\n" );
+    Information += ( (NJB_Get_Battery_Charging( m_njb ) == 1) ? i18n("Battery charging") : i18n("Battery not charging") + "\n" );
+    Information += ("Battery level: " + QString::number( NJB_Get_Battery_Level( m_njb ) ) );
+
+    amaroK::StatusBar::instance()->shortLongMessage( tracksFound, Information );
+    
     return true;
 
 }
