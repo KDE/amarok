@@ -64,6 +64,7 @@ namespace LastFm
 
             static Controller *s_instance;
             QPtrList<KAction> m_actionList;
+
             QString     m_genreUrl;
             WebService* m_service;
     };
@@ -80,12 +81,12 @@ namespace LastFm
 
             bool handshake( const QString& username, const QString& password );
 
-            bool changeStation( QString url );
-            QString currentUsername() { return m_username;  }
-            QString currentPassword() { return m_password;  }
-            QString currentStation()  { return m_station;   }
-            QString session()         { return m_session;   }
-            QUrl    streamUrl()       { return m_streamUrl; }
+            bool    changeStation( QString url );
+            QString currentUsername() const { return m_username;  }
+            QString currentPassword() const { return m_password;  }
+            QString currentStation()  const { return m_station;   }
+            QString session()         const { return m_session;   }
+            QUrl    streamUrl()       const { return m_streamUrl; }
 
             QString stationDescription();   // necessary for translation
 
@@ -160,7 +161,6 @@ namespace LastFm
             QString m_baseHost;     // who are we connecting to?
             QString m_basePath;     // where are we connecting to!
             QUrl    m_streamUrl;    // last.fm webserver for direct connection (proxy connects to this)
-            bool    m_connected;    // self explanatory
             bool    m_subscriber;   // self explanatory
 
             QString    m_proxyUrl;

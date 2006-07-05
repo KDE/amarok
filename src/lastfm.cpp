@@ -348,7 +348,7 @@ QString WebService::stationDescription()
 
     /// TAG RADIOS
     // eg: lastfm://globaltag/rock
-    if ( elements[1] == "globaltag" )
+    if ( elements[1] == "globaltags" )
         return i18n( "Global Tag Radio: %1" ).arg( elements[2] );
 
     /// ARTIST RADIOS
