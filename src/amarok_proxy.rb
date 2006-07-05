@@ -106,7 +106,7 @@ class LastFM
       safe_write( output, filler ) # HACK: Fill xine's buffer so that xine_open() won't block
     end
     loop do
-      data = income.read( 256 )
+      data = income.read( 512 )
       break if data == nil
       # Detect and remove SYNCs. Removal is not strictly necessary.
       if data.include?( "SYNC" ) # FIXME won't detect the SYNC if it spreads over fragment boundary
