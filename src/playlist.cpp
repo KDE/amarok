@@ -2302,6 +2302,8 @@ Playlist::rename( QListViewItem *item, int column ) //SLOT
 void
 Playlist::writeTag( QListViewItem *qitem, const QString &, int column ) //SLOT
 {
+    const bool enabled = static_cast<PlaylistItem*>(qitem)->isEnabled();
+
     if( m_itemsToChangeTagsFor.isEmpty() )
         m_itemsToChangeTagsFor.append( static_cast<PlaylistItem*>( qitem ) );
 
@@ -2327,6 +2329,9 @@ Playlist::writeTag( QListViewItem *qitem, const QString &, int column ) //SLOT
                 delete item;
             }
     }
+
+    if( dynamicMode() )
+        static_cast<PlaylistItem*>(qitem)->setEnabled( enabled );
 
     m_itemsToChangeTagsFor.clear();
     m_editOldTag = QString::null;
