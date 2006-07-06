@@ -154,6 +154,22 @@ Controller::checkCredentials() //static
 }
 
 
+QString
+Controller::createCustomStation() //static
+{
+    QString token;
+    CustomStationDialog dialog( 0 );
+
+    if( dialog.exec() == QDialog::Accepted ) {
+        const QStringList artists = QStringList::split( ",", dialog.text() );
+        for( uint i = 0; i < artists.count(); i++ )
+            token += ( i > 0 ? "," : "" ) + artists[i].simplifyWhiteSpace();
+    }
+
+    return token;
+}
+
+
 void
 Controller::ban()
 {
@@ -933,7 +949,7 @@ Bundle::Bundle( const Bundle& lhs )
 // CLASS LastFm::LoginDialog
 ////////////////////////////////////////////////////////////////////////////////
 LoginDialog::LoginDialog( QWidget *parent )
-    : KDialogBase( parent, "LastFmLogin", true, QString::null, Ok|Cancel)
+    : KDialogBase( parent, "LastfmLogin", true, QString::null, Ok|Cancel)
 {
     makeGridMainWidget( 1, Qt::Horizontal );
     new QLabel( i18n( "To use last.fm with Amarok, you need a last.fm profile." ), mainWidget() );
@@ -951,6 +967,7 @@ LoginDialog::LoginDialog( QWidget *parent )
     m_userLineEdit->setFocus();
 }
 
+
 void LoginDialog::slotOk()
 {
     AmarokConfig::setScrobblerUsername( m_userLineEdit->text() );
@@ -958,5 +975,28 @@ void LoginDialog::slotOk()
 
     KDialogBase::slotOk();
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+// CLASS LastFm::CustomStationDialog
+////////////////////////////////////////////////////////////////////////////////
+CustomStationDialog::CustomStationDialog( QWidget *parent )
+    : KDialogBase( parent, "LastfmCustomStation", true, i18n( "Create Custom Station" ) , Ok|Cancel)
+{
+    makeVBoxMainWidget();
+
+    new QLabel( i18n( "Enter the name of a band or artist you like:\n(You can enter multiple artists separated by commas)" ), mainWidget() );
+
+    m_edit = new KLineEdit( mainWidget(), "CustomStationEdit" );
+    m_edit->setFocus();
+}
+
+
+QString
+CustomStationDialog::text() const
+{
+    return m_edit->text();
+}
+
 
 #include "lastfm.moc"

@@ -166,12 +166,14 @@ PlaylistWindow::PlaylistWindow()
 
     KActionMenu* playLastfm = new KActionMenu( i18n( "Play las&t.fm Stream" ), amaroK::icon( "audioscrobbler" ), ac, "lastfm_play" );
     QPopupMenu* playLastfmMenu = playLastfm->popupMenu();
-    playLastfmMenu->insertItem( i18n( "Neighbor Radio" ), this, SLOT( playLastfmNeighbour() ) );
+    playLastfmMenu->insertItem( i18n( "Neighbor Radio" ), this, SLOT( playLastfmNeighbor() ) );
+    playLastfmMenu->insertItem( i18n( "Custom Station" ), this, SLOT( playLastfmCustom() ) );
     playLastfmMenu->insertItem( i18n( "Global Tag Radio" ), playTagRadioMenu );
 
     KActionMenu* addLastfm = new KActionMenu( i18n( "Add las&t.fm Stream" ), amaroK::icon( "audioscrobbler" ), ac, "lastfm_add" );
     QPopupMenu* addLastfmMenu = addLastfm->popupMenu();
-    addLastfmMenu->insertItem( i18n( "Neighbor Radio" ), this, SLOT( addLastfmNeighbour() ) );
+    addLastfmMenu->insertItem( i18n( "Neighbor Radio" ), this, SLOT( addLastfmNeighbor() ) );
+    addLastfmMenu->insertItem( i18n( "Custom Station" ), this, SLOT( addLastfmCustom() ) );
     addLastfmMenu->insertItem( i18n( "Global Tag Radio" ), addTagRadioMenu );
 
     ac->action( "options_configure_globals" )->setText( i18n( "Configure &Global Shortcuts..." ) );
@@ -432,7 +434,7 @@ void PlaylistWindow::init()
             addInstBrowserMacro( MediaBrowser, "MediaBrowser", i18n( "Media Device" ), amaroK::icon( "device" ) )
             connect( MediaBrowser::instance(), SIGNAL( availabilityChanged( bool ) ),
                      this, SLOT( mbAvailabilityChanged( bool ) ) );
-            
+
         }
         #undef addBrowserMacro
         #undef addInstBrowserMacro
@@ -844,7 +846,7 @@ void PlaylistWindow::slotAddStream() //SLOT
 }
 
 
-void PlaylistWindow::playLastfmNeighbour() //SLOT
+void PlaylistWindow::playLastfmNeighbor() //SLOT
 {
     if( !LastFm::Controller::checkCredentials() ) return;
 
@@ -852,6 +854,37 @@ void PlaylistWindow::playLastfmNeighbour() //SLOT
                     .arg( AmarokConfig::scrobblerUsername() ) );
 
     Playlist::instance()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
+}
+
+
+void PlaylistWindow::addLastfmNeighbor() //SLOT
+{
+    if( !LastFm::Controller::checkCredentials() ) return;
+
+    const KURL url( QString( "lastfm://user/%1/neighbours" )
+                    .arg( AmarokConfig::scrobblerUsername() ) );
+
+    Playlist::instance()->insertMedia( url );
+}
+
+
+void PlaylistWindow::playLastfmCustom() //SLOT
+{
+    const QString token = LastFm::Controller::createCustomStation();
+    if( token.isEmpty() ) return;
+
+    const KURL url( "lastfm://artistnames/" + token );
+    Playlist::instance()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
+}
+
+
+void PlaylistWindow::addLastfmCustom() //SLOT
+{
+    const QString token = LastFm::Controller::createCustomStation();
+    if( token.isEmpty() ) return;
+
+    const KURL url( "lastfm://artistnames/" + token );
+    Playlist::instance()->insertMedia( url );
 }
 
 
@@ -863,17 +896,6 @@ void PlaylistWindow::playLastfmGlobaltag( int id ) //SLOT
     const KURL url( "lastfm://globaltags/" + tag );
 
     Playlist::instance()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
-}
-
-
-void PlaylistWindow::addLastfmNeighbour() //SLOT
-{
-    if( !LastFm::Controller::checkCredentials() ) return;
-
-    const KURL url( QString( "lastfm://user/%1/neighbours" )
-                    .arg( AmarokConfig::scrobblerUsername() ) );
-
-    Playlist::instance()->insertMedia( url );
 }
 
 

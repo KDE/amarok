@@ -50,7 +50,8 @@ namespace LastFm
             WebService* getService() const { return m_service; }
             QString     getGenreUrl() const { return m_genreUrl; }
 
-            static bool checkCredentials();
+            static bool    checkCredentials();
+            static QString createCustomStation();
 
         public slots:
             void playbackStopped();
@@ -225,6 +226,7 @@ namespace LastFm
     class LoginDialog : public KDialogBase
     {
         Q_OBJECT
+
         public:
             LoginDialog( QWidget *parent );
 
@@ -237,6 +239,18 @@ namespace LastFm
 
     };
 
+    class CustomStationDialog : public KDialogBase
+    {
+        Q_OBJECT
+
+        public:
+            CustomStationDialog( QWidget *parent );
+
+            QString text() const;
+
+        private:
+            KLineEdit *m_edit;
+    };
 }
 
 #endif /*AMAROK_LASTFM_H*/

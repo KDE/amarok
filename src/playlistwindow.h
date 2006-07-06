@@ -67,15 +67,17 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
     public slots:
         void showHide();
         void mbAvailabilityChanged( bool isAvailable );
-    
+
     private slots:
         void savePlaylist() const;
         void slotPlayMedia();
         void slotAddLocation( bool directPlay = false );
         void slotAddStream();
-        void playLastfmNeighbour();
+        void playLastfmNeighbor();
+        void addLastfmNeighbor();
+        void playLastfmCustom();
+        void addLastfmCustom();
         void playLastfmGlobaltag( int );
-        void addLastfmNeighbour();
         void addLastfmGlobaltag( int );
         void playAudioCD();
         void showQueueManager();
