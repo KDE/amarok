@@ -4255,21 +4255,8 @@ CollectionDB::initialize()
     DbConnection *dbConn = getMyConnection();
 
     KConfig* config = amaroK::config( "Collection Browser" );
-    if ( !dbConn->isConnected() )
+    if ( !dbConn->isConnected() || !dbConn->isInitialized() )
         amaroK::MessageQueue::instance()->addMessage( dbConn->lastError() );
-    if ( !dbConn->isInitialized() || !isValid() )
-    {
-        warning() << "Your database is either corrupt or empty. Dropping all and recreating..." << endl;
-        dropTables( false );
-        dropPersistentTables();
-        dropPodcastTables();
-        dropStatsTable();
-
-        createTables(false);
-        createPersistentTables();
-        createPodcastTables();
-        createStatsTable();
-    }
     else
     {
         if ( adminValue( "Database Stats Version" ).toInt() != DATABASE_STATS_VERSION
@@ -4882,7 +4869,7 @@ MySqlConnection::MySqlConnection( const MySqlConfig* config )
             {
                 if ( mysql_query(m_db,
                     QString( "CREATE DATABASE " + config->database() ).latin1() ) )
-                    { m_connected = true; }
+                    { m_connected = true; m_initialized = true; }
                 else
                     { setMysqlError(); }
             }
