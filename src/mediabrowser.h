@@ -162,9 +162,9 @@ class MediaBrowser : public QVBox
         MediaBrowser( const char *name );
         virtual ~MediaBrowser();
         bool blockQuit() const;
-        MediaDevice *currentDevice();
-        MediaDevice *deviceFromId( const QString &id );
-        QStringList deviceNames();
+        MediaDevice *currentDevice() const;
+        MediaDevice *deviceFromId( const QString &id ) const;
+        QStringList deviceNames() const;
         bool deviceSwitch( const QString &name );
 
         QString getInternalPluginName ( const QString string ) { return m_pluginName[string]; }

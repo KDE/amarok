@@ -426,9 +426,10 @@ MediaBrowser::getBundle( const KURL &url ) const
 }
 
 MediaDevice *
-MediaBrowser::currentDevice()
+MediaBrowser::currentDevice() const
 {
-    if( m_currentDevice != m_devices.end() )
+    QValueList<MediaDevice *>::const_iterator current = m_currentDevice;
+    if( current != m_devices.constEnd() )
     {
         return *m_currentDevice;
     }
@@ -437,9 +438,9 @@ MediaBrowser::currentDevice()
 }
 
 MediaDevice *
-MediaBrowser::deviceFromId( const QString &id )
+MediaBrowser::deviceFromId( const QString &id ) const
 {
-    for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
+    for( QValueList<MediaDevice *>::const_iterator it = m_devices.constBegin();
                 it != m_devices.end();
                 it++ )
         {
@@ -594,12 +595,12 @@ MediaBrowser::updateDevices()
 }
 
 QStringList
-MediaBrowser::deviceNames()
+MediaBrowser::deviceNames() const
 {
     QStringList list;
 
-    for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
-            it != m_devices.end();
+    for( QValueList<MediaDevice *>::const_iterator it = m_devices.constBegin();
+            it != m_devices.constEnd();
             it++ )
     {
         QString name = (*it)->name();

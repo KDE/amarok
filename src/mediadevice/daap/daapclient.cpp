@@ -118,7 +118,7 @@ DaapClient::resolvedDaap( bool success )
     const DNSSD::RemoteService* service =  static_cast<const DNSSD::RemoteService*>(sender());
     MediaItem* server =  new MediaItem( m_view );
     server->setText( 0, service->serviceName() );
-    debug() << service->serviceName() << service->hostName() << endl;
+    debug() << service->serviceName() << ' ' << service->hostName() << ' ' << service->domain() << ' ' << service->type() << endl;
 }
 
 #include "daapclient.moc"
