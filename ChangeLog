@@ -17,7 +17,6 @@ VERSION 1.4.2:
   BUGFIXES:
     * Correct action of queueing current item in dynamic mode. (BR 130313)
     * Double clicking in the filebrowser will append to playlist. (BR 117465)
-    * GUI will no longer freeze when starting last.fm streams.
     * Fixed problems with last.fm streams containing spaces, e.g. "Hip Hop".
     * When generic media devices were specified manually, transferred files
       would not always get converted to vfat-friendly names if they were on a
