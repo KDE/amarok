@@ -1485,15 +1485,14 @@ Playlist::queue( QListViewItem *item, bool multi )
             }
         }
 
-        if( item->isEnabled() )
+        if( item->isEnabled() && item != m_currentTrack )
         {
-            if( item != m_currentTrack )
-                this->moveItem( item, 0, after );
-
+            this->moveItem( item, 0, after );
             m_nextTracks.append( item );
         }
         else
         {
+            /// we do the actual queuing through customEvent, since insertMedia is threaded
             m_queueDirt = true;
             insertMediaInternal( item->url(), after );
         }
