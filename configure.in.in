@@ -985,6 +985,7 @@ AC_COMPILE_IFELSE([
     atleast_kde34="no"
     echo "no"
 )
+AM_CONDITIONAL([atleast_kde34], [test "$atleast_kde34" = "yes"])
 
 CXXFLAGS="$daapsave_CXXFLAGS"
 AC_LANG_RESTORE
