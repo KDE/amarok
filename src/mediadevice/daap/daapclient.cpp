@@ -14,7 +14,16 @@ AMAROK_EXPORT_PLUGIN( DaapClient )
 DaapClient::DaapClient()
     : MediaDevice()
     , m_browser( 0 )
-{ }
+{
+    m_name = i18n( "Shared Music" );
+    m_hasMountPoint = false;
+    m_autoDeletePodcasts = false;
+    m_syncStats = false;
+    m_transcode = false;
+    m_transcodeAlways = false;
+    m_transcodeRemove = false;
+
+}
 
 DaapClient::~DaapClient()
 {
@@ -49,7 +58,7 @@ bool
 DaapClient::openDevice(bool /* silent=false */)
 {
     DEBUG_BLOCK
-    if (!m_browser )
+    if ( !m_browser )
     {
         m_browser = new DNSSD::ServiceBrowser("_daap._tcp");
         connect( m_browser, SIGNAL( serviceAdded( RemoteService::Ptr ) ), this, SLOT( foundDaap( RemoteService::Ptr ) ) );
