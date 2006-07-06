@@ -413,7 +413,7 @@ FileBrowser::slotViewChanged( KFileView *view )
 inline void
 FileBrowser::activate( const KFileItem *item )
 {
-    Playlist::instance()->insertMedia( item->url(), Playlist::DirectPlay );
+    Playlist::instance()->insertMedia( item->url(), Playlist::Unique | Playlist::Append  );
 }
 
 inline void
