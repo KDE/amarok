@@ -4256,7 +4256,20 @@ CollectionDB::initialize()
 
     KConfig* config = amaroK::config( "Collection Browser" );
     if ( !dbConn->isConnected() || !dbConn->isInitialized() )
+    {
+        error() << "Failed to connect to or initialise database!" << endl;
         amaroK::MessageQueue::instance()->addMessage( dbConn->lastError() );
+    }
+    else if ( !isValid() )
+    {
+        warning() << "Tables seem to be empty; maybe they don't exist at all."
+        warning() << "Attempting to create tables (this should be safe; ignore any errors)..." << endl;
+        createTables(false);
+        createPersistentTables();
+        createPodcastTables();
+        createStatsTable();
+        warning() << "Tables should now definitely exist. (Stop ignoring errors)" << endl;
+    }
     else
     {
         if ( adminValue( "Database Stats Version" ).toInt() != DATABASE_STATS_VERSION
