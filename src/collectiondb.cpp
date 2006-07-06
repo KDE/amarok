@@ -4301,54 +4301,46 @@ CollectionDB::initialize()
                 prev = 3;
             }
 
-            if( prev == 6 || prev == 7 )
-            {
-                query( QString( "CREATE TABLE statistics_fix ("
-                    "url " + textColumnType() + " UNIQUE,"
-                    "createdate INTEGER,"
-                    "accessdate INTEGER,"
-                    "percentage FLOAT,"
-                    "rating INTEGER DEFAULT 0,"
-                    "playcounter INTEGER,"
-                    "uniqueid " + textColumnType(8) + " UNIQUE,"
-                    "deleted BOOL DEFAULT " + boolF() + ");" ) );
-                
-                insert( "INSERT INTO statistics_fix SELECT * FROM statistics;", NULL );
-
-                dropStatsTable();
-                createStatsTable();
-
-                insert( "INSERT INTO statistics SELECT * FROM statistics_fix;", NULL );
-                query( "DROP TABLE statistics_fix" );
-            }
-            else if( prev == 5 )
-            {
-                //Code to add unqiueid column and maybe "deleted" column will go here,
-                //pending talks with Seb...
-                //don't bump actual version in collectiondb.h before this is written!
-                debug() << "Adding uniqueid field" << endl;
-                query( "ALTER TABLE statistics ADD uniqueid " + textColumnType(8) + " UNIQUE;" );
-                debug() << "Adding deleted field" << endl;
-                query( "ALTER TABLE statistics ADD deleted BOOL DEFAULT " + boolF() + ";" );
-                query( "CREATE INDEX uniqueid_stats ON statistics( uniqueid );" );
-            }
-            else if( prev == 4 )
-            {
-                debug() << "Updating stats-database!" << endl;
-                query( "UPDATE statistics SET rating = rating * 2;" );
-            }
-            else if( prev == 3 ) //every version from 1.2 forward had a stats version of 3
-            {
-                debug() << "Updating stats-database!" << endl;
-                query( "ALTER TABLE statistics ADD rating INTEGER DEFAULT 0;" );
-                query( "CREATE INDEX rating_stats ON statistics( rating );" );
-                query( "UPDATE statistics SET rating=0 WHERE " + boolT() + ";" );
-            }
-            else //it is from before 1.2, or our poor user is otherwise fucked
+            if ( prev < 3 ) //it is from before 1.2, or our poor user is otherwise fucked
             {
                 debug() << "Rebuilding stats-database!" << endl;
                 dropStatsTable();
                 createStatsTable();
+            }
+            else        //Incrementally update the stats table to reach the present version
+            {
+                if( prev < 4 ) //every version from 1.2 forward had a stats version of 3
+                {
+                    debug() << "Updating stats-database!" << endl;
+                    query( "ALTER TABLE statistics ADD rating INTEGER DEFAULT 0;" );
+                    query( "CREATE INDEX rating_stats ON statistics( rating );" );
+                    query( "UPDATE statistics SET rating=0 WHERE " + boolT() + ";" );
+                }
+                if( prev < 5 )
+                {
+                    debug() << "Updating stats-database!" << endl;
+                    query( "UPDATE statistics SET rating = rating * 2;" );
+                }
+                if( prev < 8 )  //Versions 6, 7 and 8 all were all attempts to add columns for ATF. his code should do it all.
+                {
+                    query( QString( "CREATE TABLE statistics_fix ("
+                        "url " + textColumnType() + " UNIQUE,"
+                        "createdate INTEGER,"
+                        "accessdate INTEGER,"
+                        "percentage FLOAT,"
+                        "rating INTEGER DEFAULT 0,"
+                        "playcounter INTEGER,"
+                        "uniqueid " + textColumnType(8) + " UNIQUE,"
+                        "deleted BOOL DEFAULT " + boolF() + ");" ) );
+
+                    insert( "INSERT INTO statistics_fix SELECT * FROM statistics;", NULL );
+
+                    dropStatsTable();
+                    createStatsTable();
+
+                    insert( "INSERT INTO statistics SELECT * FROM statistics_fix;", NULL );
+                    query( "DROP TABLE statistics_fix" );
+                }
             }
         }
 
