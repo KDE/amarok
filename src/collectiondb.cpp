@@ -5217,8 +5217,10 @@ QueryBuilder::linkTables( int tables )
 
 
 void
-QueryBuilder::addReturnValue( int table, Q_INT64 value, bool caseSensitive /* = false */ )
+QueryBuilder::addReturnValue( int table, Q_INT64 value, bool caseSensitive /* = false, unless value refers to a string */ )
 {
+    caseSensitive |= value == valName || value == valTitle || value == valComposer || value == valComment;
+
     if ( !m_values.isEmpty() && m_values != "DISTINCT " ) m_values += ",";
 
     if ( table & tabStats && value & valScore )
@@ -5233,7 +5235,7 @@ QueryBuilder::addReturnValue( int table, Q_INT64 value, bool caseSensitive /* = 
     else
     {
         if ( caseSensitive && CollectionDB::instance()->getType() == DbConnection::mysql )
-            m_values += " BINARY ";
+            m_values += "BINARY ";
         m_values += tableName( table ) + ".";
         m_values += valueName( value );
     }

@@ -602,7 +602,7 @@ class QueryBuilder
 
         QueryBuilder();
 
-        void addReturnValue( int table, Q_INT64 value, bool caseSensitive = false );
+        void addReturnValue( int table, Q_INT64 value, bool caseSensitive = false /* unless value refers to a string */ );
         void addReturnFunctionValue( int function, int table, Q_INT64 value);
         uint countReturnValues();
 
