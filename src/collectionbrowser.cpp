@@ -285,7 +285,8 @@ CollectionBrowser::eventFilter( QObject *o, QEvent *e )
                 lastitem = lastitem->itemBelow();
             m_view->currentItem()->setSelected( false );
             m_view->setCurrentItem( lastitem );
-            lastitem->setSelected( true );
+            if ( lastitem )
+                lastitem->setSelected( true );
             m_view->ensureItemVisible( lastitem );
             return true;
         }
