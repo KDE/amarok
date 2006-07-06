@@ -8,7 +8,6 @@ INCLUDES = \
     -I$(top_srcdir)/amarok/src/engine \
     -I$(top_srcdir)/amarok/src/engine \
     -I$(top_srcdir)/amarok/src/mediadevice \
-    $(LIBGPOD_CFLAGS) \
     $(taglib_includes) \
     $(all_includes)
 

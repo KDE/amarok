@@ -11,6 +11,9 @@ namespace DNSSD {
 
 class DaapClient : public MediaDevice
 {
+
+    Q_OBJECT
+
     public:
          DaapClient();
          virtual ~DaapClient();

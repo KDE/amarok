@@ -65,7 +65,7 @@ DaapClient::openDevice(bool /* silent=false */)
     {
         m_browser = new DNSSD::ServiceBrowser("_daap._tcp");
         m_browser->setName("daapServiceBrowser");
-        connect( m_browser, SIGNAL( serviceAdded( DNSSD::RemoteService::Ptr ) ), this, SLOT( foundDaap( RemoteService::Ptr ) ) );
+        connect( m_browser, SIGNAL( serviceAdded( DNSSD::RemoteService::Ptr ) ), this, SLOT( foundDaap( DNSSD::RemoteService::Ptr ) ) );
         m_browser->startBrowse();
     }
     return true;
@@ -120,5 +120,7 @@ DaapClient::resolvedDaap( bool success )
     server->setText( 0, service->serviceName() );
     debug() << service->serviceName() << service->hostName() << endl;
 }
+
+#include "daapclient.moc"
 
 #endif /* AMAROK_DAAPCLIENT_CPP */
