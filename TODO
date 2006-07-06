@@ -5,6 +5,8 @@ TODO-list for Amarok
 
 
 SHORT-TERM (URGENT):
+ <markey>  Side-pixmap in playlist context menu still reads "amaroK".
+
  <sebr>    LastFm:
              - determine how hard it would be to tag songs
  <eean>      - display history in the playlist somehow  <markey> I'm against this.
