@@ -186,24 +186,27 @@ class PlaylistBrowser : public QVBox
         PlaylistCategory    *m_lastfmCategory;
         PlaylistEntry       *m_lastPlaylist;
 
-        DynamicEntry          *m_randomDynamic;
-        DynamicEntry          *m_suggestedDynamic;
+        DynamicEntry        *m_randomDynamic;
+        DynamicEntry        *m_suggestedDynamic;
 
         bool                 m_coolStreamsOpen;
         bool                 m_smartDefaultsOpen;
+        bool                 m_lastfmOpen;
 
         PlaylistBrowserView *m_listview;
         KActionCollection   *m_ac;
-        KAction             *removeButton, *renameButton;
+        KAction             *removeButton;
+        KAction             *renameButton;
         KActionMenu         *viewMenuButton;
         KActionMenu         *addMenuButton;
         KToolBar            *m_toolbar;
-        QDict<PodcastSettings> m_podcastSettings;
         QValueList<int>      m_dynamicSizeSave;
-        QPtrList<QListViewItem> m_dynamicEntries;
 
-        QTimer              *m_podcastTimer;
-        int                  m_podcastTimerInterval;        //in ms
+        QDict<PodcastSettings>   m_podcastSettings;
+        QPtrList<QListViewItem>  m_dynamicEntries;
+
+        QTimer                  *m_podcastTimer;
+        int                      m_podcastTimerInterval;        //in ms
         QPtrList<PodcastChannel> m_podcastItemsToScan;
         QPtrList<PodcastEpisode> m_podcastDownloadQueue;
 

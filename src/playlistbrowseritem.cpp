@@ -204,6 +204,8 @@ void PlaylistCategory::setXml( const QDomElement &xml )
                     pb->m_coolStreamsOpen   = (e.attribute( "isOpen" ) == "true");
                 if( e.attribute( "type" ) == "smartplaylist" )
                     pb->m_smartDefaultsOpen = (e.attribute( "isOpen" ) == "true");
+                if( e.attribute( "type" ) == "lastfm" )
+                    pb->m_lastfmOpen = (e.attribute( "isOpen" ) == "true");
                 continue;
             }
             else if ( e.tagName() == "stream" ) {
@@ -269,6 +271,15 @@ QDomElement PlaylistCategory::xml()
                 QDomDocument doc;
                 QDomElement e = doc.createElement("default");
                 e.setAttribute( "type", "stream" );
+                if( it->isOpen() )
+                    e.setAttribute( "isOpen", "true" );
+                i.appendChild( d.importNode( e, true ) );
+            }
+            else if( it == PlaylistBrowser::instance()->m_lastfmCategory )
+            {
+                QDomDocument doc;
+                QDomElement e = doc.createElement("default");
+                e.setAttribute( "type", "lastfm" );
                 if( it->isOpen() )
                     e.setAttribute( "isOpen", "true" );
                 i.appendChild( d.importNode( e, true ) );

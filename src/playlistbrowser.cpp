@@ -405,6 +405,8 @@ void PlaylistBrowser::loadLastfmStreams( const bool subscriber /*false*/ )
         url.setPath( QString("user/%1/loved").arg( user ) );
         last = new StreamEntry( m_lastfmCategory, last, url, i18n( "Loved Radio" ) );
     }
+
+    m_lastfmCategory->setOpen( m_lastfmOpen );
 }
 
 
