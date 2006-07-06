@@ -11,7 +11,7 @@ if with_libnjb
 endif
 
 if atleast_kde34
-	DAAP_SUBDIR = daap
+    DAAP_SUBDIR = daap
 endif
 
 METASOURCES = AUTO

@@ -30,6 +30,7 @@ class DaapClient : public MediaDevice
          void resolvedDaap( bool );
    private:
         DNSSD::ServiceBrowser* m_browser;
+        bool    m_connected;
 
 };
 

@@ -14,6 +14,7 @@ AMAROK_EXPORT_PLUGIN( DaapClient )
 DaapClient::DaapClient()
     : MediaDevice()
     , m_browser( 0 )
+    , m_connected( false )
 {
     m_name = i18n( "Shared Music" );
     m_hasMountPoint = false;
@@ -33,7 +34,7 @@ DaapClient::~DaapClient()
 bool
 DaapClient::isConnected()
 {
-    return true;
+    return m_connected;
 }
 
 bool
@@ -58,6 +59,7 @@ bool
 DaapClient::openDevice(bool /* silent=false */)
 {
     DEBUG_BLOCK
+    m_connected = true;
     if ( !m_browser )
     {
         m_browser = new DNSSD::ServiceBrowser("_daap._tcp");
