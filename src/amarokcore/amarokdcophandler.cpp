@@ -306,12 +306,14 @@ namespace amaroK
 
     void DcopPlayerHandler::mediaDeviceMount()
     {
-        MediaBrowser::instance()->currentDevice()->connectDevice();
+        if ( MediaBrowser::instance()->currentDevice() )
+            MediaBrowser::instance()->currentDevice()->connectDevice();
     }
 
     void DcopPlayerHandler::mediaDeviceUmount()
     {
-        MediaBrowser::instance()->currentDevice()->disconnectDevice();
+        if ( MediaBrowser::instance()->currentDevice() )
+            MediaBrowser::instance()->currentDevice()->disconnectDevice();
     }
 
     void DcopPlayerHandler::mute()
