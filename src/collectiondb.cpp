@@ -4262,7 +4262,7 @@ CollectionDB::initialize()
     }
     else if ( !isValid() )
     {
-        warning() << "Tables seem to be empty; maybe they don't exist at all."
+        warning() << "Tables seem to be empty; maybe they don't exist at all." << endl;
         warning() << "Attempting to create tables (this should be safe; ignore any errors)..." << endl;
         createTables(false);
         createPersistentTables();
