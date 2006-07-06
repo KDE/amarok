@@ -16,6 +16,7 @@ DaapClient::DaapClient()
     , m_browser( 0 )
     , m_connected( false )
 {
+    setName( "daapclient" );
     m_name = i18n( "Shared Music" );
     m_hasMountPoint = false;
     m_autoDeletePodcasts = false;
@@ -63,8 +64,8 @@ DaapClient::openDevice(bool /* silent=false */)
     if ( !m_browser )
     {
         m_browser = new DNSSD::ServiceBrowser("_daap._tcp");
-        connect( m_browser, SIGNAL( serviceAdded( RemoteService::Ptr ) ), this, SLOT( foundDaap( RemoteService::Ptr ) ) );
-        connect( m_browser, SIGNAL( resolved( bool ) ), this, SLOT( resolvedDaap( bool ) ) );
+        m_browser->setName("daapServiceBrowser");
+        connect( m_browser, SIGNAL( serviceAdded( DNSSD::RemoteService::Ptr ) ), this, SLOT( foundDaap( RemoteService::Ptr ) ) );
         m_browser->startBrowse();
     }
     return true;
@@ -73,6 +74,7 @@ DaapClient::openDevice(bool /* silent=false */)
 bool
 DaapClient::closeDevice()
 {
+    m_connected = false;
     return true;
 }
 
@@ -104,6 +106,7 @@ void
 DaapClient::foundDaap( DNSSD::RemoteService::Ptr service )
 {
     DEBUG_BLOCK
+    connect( service, SIGNAL( resolved( bool ) ), this, SLOT( resolvedDaap( bool ) ) );
     service->resolveAsync();
 }
 
