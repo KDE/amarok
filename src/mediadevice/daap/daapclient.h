@@ -3,11 +3,17 @@
 
 #include "mediabrowser.h"
 
+#include <dnssd/remoteservice.h> //for DNSSD::RemoteService::Ptr
+
+namespace DNSSD {
+    class ServiceBrowser;
+}
+
 class DaapClient : public MediaDevice
 {
     public:
-         DaapClient() { }
-         virtual ~DaapClient() { }
+         DaapClient();
+         virtual ~DaapClient();
          bool isConnected();
     protected:
          bool getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
@@ -19,6 +25,11 @@ class DaapClient : public MediaDevice
          MediaItem* copyTrackToDevice(const MetaBundle& bundle);
          MediaItem* trackExists( const MetaBundle& );
          int    deleteItemFromDevice( MediaItem *item, bool onlyPlayed = false );
+   private slots:
+         void foundDaap( DNSSD::RemoteService::Ptr );
+         void resolvedDaap( bool );
+   private:
+        DNSSD::ServiceBrowser* m_browser;
 
 };
 

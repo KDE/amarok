@@ -964,7 +964,33 @@ AM_CONDITIONAL(with_mp4v2, [test x$have_mp4v2 != xno ])
 # END MP4V2 CHECK
 ###############################################################################
 
+###############################################################################
+# BEGIN DAAP KDE 3.4 CHECK
+###############################################################################
+daapsave_CXXFLAGS="$CXXFLAGS"
+CXXFLAGS="$CXXFLAGS $all_includes"
+AC_LANG_SAVE
+AC_LANG_CPLUSPLUS
 
+AC_MSG_CHECKING([if KDE is at least 3.4 for DAAP support])
+AC_COMPILE_IFELSE([
+#include <kdeversion.h>
+#if ! ( KDE_IS_VERSION( 3, 4, 0 ) )
+#error KDE 3.4
+#endif
+],
+    atleast_kde34="yes"
+    echo "yes"
+,
+    atleast_kde34="no"
+    echo "no"
+)
+
+CXXFLAGS="$daapsave_CXXFLAGS"
+AC_LANG_RESTORE
+###############################################################################
+# END DAAP KDE 3.4 CHECK
+###############################################################################
 
 ###############################################################################
 # BEGIN DO_NOT_COMPILE CHECK
