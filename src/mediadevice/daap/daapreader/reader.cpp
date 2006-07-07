@@ -229,7 +229,7 @@ Reader::songListFinished( int /*id*/, bool error )
     SongList result;
     QValueList<QVariant> songList;
     songList = songResults["adbs"].asList()[0].asMap()["mlcl"].asList()[0].asMap()["mlit"].asList();
-    debug() << songList.count() << endl;
+    debug() << "songList.count() = " << songList.count() << endl;
     QValueList<QVariant>::iterator it;
     for( it = songList.begin(); it != songList.end(); ++it )
     {
@@ -252,6 +252,7 @@ Reader::songListFinished( int /*id*/, bool error )
     //    debug() << artist << ' ' << album <<  endl;
         result[artist][album].append(bundle);
     }
+    debug() << "emitting daapBundles for host " << m_host << endl;
     emit daapBundles( m_host , result );
 }
 

@@ -142,22 +142,26 @@ DaapClient::resolvedDaap( bool success )
     Daap::Reader* reader = new Daap::Reader( ip, server, this, ( service->hostName() + service->serviceName() ).ascii() );
     connect( reader, SIGNAL( daapBundles( const QString&, Daap::SongList ) ),
             this, SLOT( createTree( const QString&, Daap::SongList ) ) );
-    m_servers[ ( service->hostName() + service->serviceName() ).ascii() ] = server; debug() << server << endl;
+    m_servers[ ( service->hostName() + service->serviceName() ).ascii() ] = server; debug() << "server = " << server << endl;
     reader->loginRequest();
 }
 
 void
-DaapClient::createTree( const QString& /*host*/, Daap::SongList bundles )
+DaapClient::createTree( const QString& host, Daap::SongList bundles )
 {
     DEBUG_BLOCK
     const Daap::Reader* callback = dynamic_cast<const Daap::Reader*>(sender());
     if( !callback )
+    {
+        debug() << "No callback!" << endl;
         return;
+    }
     MediaItem* root = callback->rootMediaItem();
     QStringList artists = bundles.keys();
+    debug() << "listing for " << host << endl;
     foreach( artists )
     {
-        debug() << "artist " << *it << endl;
+        //debug() << "artist " << *it << endl;
         MediaItem* parentArtist =  new MediaItem( root );
         parentArtist->setText( 0, (*it) );
         parentArtist->setType( MediaItem::ARTIST );
@@ -165,7 +169,7 @@ DaapClient::createTree( const QString& /*host*/, Daap::SongList bundles )
         QStringList albums = albumMap.keys();
         for ( QStringList::Iterator itAlbum = albums.begin(); itAlbum != albums.end(); ++itAlbum )
         {
-            debug() << "      album " << *itAlbum << endl;
+            //debug() << "      album " << *itAlbum << endl;
             MediaItem* parentAlbum = new MediaItem( parentArtist );
             parentAlbum->setText( 0, (*itAlbum) );
             parentAlbum->setType( MediaItem::ALBUM );
@@ -173,7 +177,7 @@ DaapClient::createTree( const QString& /*host*/, Daap::SongList bundles )
             Daap::TrackList trackList = *albumMap.find(*itAlbum);
             for( track = trackList.first(); track; track = trackList.next() )
             {
-                debug() << "            track " << track->title() << endl;
+                //debug() << "            track " << track->title() << endl;
                 MediaItem* childTrack = new MediaItem( parentAlbum );
                 childTrack->setText( 0, track->title() );
                 childTrack->setType( MediaItem::TRACK );
