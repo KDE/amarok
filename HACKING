@@ -191,6 +191,56 @@ SHOULD_BE_GUI outputs a warning message if it occurs in a thread that isn't in
     functions and to prevent problems in the future.
 
 
+Usage of amaroK::config()
+-------------------------
+We provide this method for convenience, but it is important to use it properly. By
+inspection, we can see that we may produce very obscure bugs in the wrong case:
+
+ | KConfig *config( const QString &group )
+ | {
+ |    //Slightly more useful config() that allows setting the group simultaneously
+ |    kapp->config()->setGroup( group );
+ |    return kapp->config();
+ | }
+
+Take the following example:
+
+ | f1()
+ | {
+ |    KConfig *config = amaroK::config( "Group 1" );
+ |    config->writeEntry( "Group 1 Variable", true );
+ | }
+ |
+ | f2()
+ | {
+ |    KConfig *config = amaroK::config( "Group 2" );
+ |    config->writeEntry( "Group 2 Variable", true );
+ | }
+ |
+ | doStuff()
+ | {
+ |    newThread( f1() );
+ |    newThread( f2() );
+ | }
+
+We would expect the following results:
+
+ | [Group 1]
+ | Group 1 Variable = true
+ |
+ | [Group 2]
+ | Group 2 Variable = true
+
+However, it is possible, due to threads, that the config group is changed before writing the entry:
+ | [Group 1]
+ |
+ | [Group 2]
+ | Group 1 Variable = true
+ | Group 2 Variable = true
+
+Which is clearly incorrect.
+
+
 Errors & Asserts
 ----------------
 *Never use assert() or fatal(). There must be a better option than crashing a user's
