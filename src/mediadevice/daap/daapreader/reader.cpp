@@ -10,6 +10,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#ifndef AMAROK_DAAP_READER_CPP
+#define AMAROK_DAAP_READER_CPP
+
 #include "authentication/contentfetcher.h"
 #include "debug.h"
 #include "metabundle.h"
@@ -352,3 +356,5 @@ Reader::addElement( Map &parentMap, char* tag, QVariant element )
     parentMap[tag].asList().append(element);
 }
 #include "reader.moc"
+
+#endif //AMAROK_DAAP_READER_CPP

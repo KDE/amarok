@@ -6,7 +6,7 @@ INCLUDES = \
 
 libdaapreader_la_SOURCES = reader.cpp
 
-libdaapreader_la_LDADD = \
+libdaapreader_la_LIBADD = \
         $(LIB_QT) \
         $(LIB_KDECORE) \
         $(LIB_KDEUI) \
