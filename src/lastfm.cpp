@@ -383,8 +383,19 @@ QString WebService::stationDescription()
     /// CUSTOM STATION
     if ( elements[1] == "artistnames" )
     {
-        // eg: lastfm://artistnames/queen,genesis,madonna
-        return i18n( "Custom Station: %1" ).arg( elements[2] );
+        // eg: lastfm://artistnames/genesis,pink floyd,queen
+
+        // turn "genesis,pink floyd,queen" into "Genesis, Pink Floyd, Queen"
+        QString artists = elements[2];
+        artists.replace( ",", ", " );
+        const QStringList words = QStringList::split( " ", QString( artists ).remove( "," ) );
+        foreach( words ) {
+            QString capitalized = *it;
+            capitalized.replace( 0, 1, (*it)[0].upper() );
+            artists.replace( *it, capitalized );
+        }
+
+        return i18n( "Custom Station: %1" ).arg( artists );
     }
 
     /// USER RADIOS
