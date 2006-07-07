@@ -120,12 +120,10 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     m_listview = new PlaylistBrowserView( m_splitter );
 
-    KConfig *config = amaroK::config( "PlaylistBrowser" );
-
-    int sort = config->readNumEntry( "Sorting", Qt::Ascending );
+    int sort = amaroK::config( "PlaylistBrowser" )->readNumEntry( "Sorting", Qt::Ascending );
     m_listview->setSorting( 0, sort == Qt::Ascending ? true : false );
 
-    m_podcastTimerInterval = config->readNumEntry( "Podcast Interval", 14400000 );
+    m_podcastTimerInterval = amaroK::config( "PlaylistBrowser" )->readNumEntry( "Podcast Interval", 14400000 );
     connect( m_podcastTimer, SIGNAL(timeout()), this, SLOT(scanPodcasts()) );
 
     // signals and slots connections
@@ -178,21 +176,23 @@ PlaylistBrowser::polish()
         loadDefaultSmartPlaylists();
     }
 
-    KConfig *config = amaroK::config( "PlaylistBrowser" );
+#define config amaroK::config( "PlaylistBrowser" )
 
     m_dynamicCategory = loadDynamics();
     m_randomDynamic   = new DynamicEntry( m_dynamicCategory, 0, i18n("Random Mix") );
-    m_randomDynamic->setCycleTracks( config->readBoolEntry( "Dynamic Random Remove Played", true ) );
-    m_randomDynamic->setMarkHistory( config->readBoolEntry( "Dynamic Random Mark History", true ) );
-    m_randomDynamic->setUpcomingCount( config->readNumEntry( "Dynamic Random Upcoming Count", 15 ) );
-    m_randomDynamic->setPreviousCount( config->readNumEntry( "Dynamic Random Previous Count", 5 ) );
+    m_randomDynamic->setCycleTracks(   config->readBoolEntry( "Dynamic Random Remove Played", true ) );
+    m_randomDynamic->setMarkHistory(   config->readBoolEntry( "Dynamic Random Mark History", true ) );
+    m_randomDynamic->setUpcomingCount( config->readNumEntry ( "Dynamic Random Upcoming Count", 15 ) );
+    m_randomDynamic->setPreviousCount( config->readNumEntry ( "Dynamic Random Previous Count", 5 ) );
 
     m_suggestedDynamic = new DynamicEntry( m_dynamicCategory, m_randomDynamic, i18n("Suggested Songs" ) );
     m_suggestedDynamic->setAppendType( DynamicMode::SUGGESTION );
-    m_suggestedDynamic->setCycleTracks( config->readBoolEntry( "Dynamic Suggest Remove Played", true ) );
-    m_suggestedDynamic->setMarkHistory( config->readBoolEntry( "Dynamic Suggest Mark History", true ) );
-    m_suggestedDynamic->setUpcomingCount( config->readNumEntry( "Dynamic Suggest Upcoming Count", 15 ) );
-    m_suggestedDynamic->setPreviousCount( config->readNumEntry( "Dynamic Suggest Previous Count", 5 ) );
+    m_suggestedDynamic->setCycleTracks(   config->readBoolEntry( "Dynamic Suggest Remove Played", true ) );
+    m_suggestedDynamic->setMarkHistory(   config->readBoolEntry( "Dynamic Suggest Mark History", true ) );
+    m_suggestedDynamic->setUpcomingCount( config->readNumEntry ( "Dynamic Suggest Upcoming Count", 15 ) );
+    m_suggestedDynamic->setPreviousCount( config->readNumEntry ( "Dynamic Suggest Previous Count", 5 ) );
+
+#undef config
 
     m_streamsCategory  = loadStreams();
     loadCoolStreams();
@@ -224,7 +224,7 @@ PlaylistBrowser::polish()
     // First we check if the number of items in the listview is the same as it was on last
     // application exit. If true, we iterate over all items and restore their open/closed state.
     // Note: We ignore podcast items, because they are added dynamically added to the ListView.
-    QValueList<int> stateList = config->readIntListEntry( "Item State" );
+    QValueList<int> stateList = amaroK::config( "PlaylistBrowser" )->readIntListEntry( "Item State" );
     QListViewItemIterator it( m_listview );
     uint count = 0;
     while ( it.current() ) {
@@ -246,7 +246,7 @@ PlaylistBrowser::polish()
     }
 
     // Set height of InfoPane
-    m_infoPane->setStoredHeight( config->readNumEntry( "InfoPane Height", 200 ) );
+    m_infoPane->setStoredHeight( amaroK::config( "PlaylistBrowser" )->readNumEntry( "InfoPane Height", 200 ) );
 }
 
 
@@ -271,11 +271,10 @@ PlaylistBrowser::~PlaylistBrowser()
             list.append( item->text(0) );
         }
 
-        KConfig *config = amaroK::config( "PlaylistBrowser" );
-        config->writeEntry( "Sorting", m_listview->sortOrder() );
-        config->writeEntry( "Podcast Interval", m_podcastTimerInterval );
-        config->writeEntry( "Podcast Folder Open", m_podcastCategory->isOpen() );
-        config->writeEntry( "InfoPane Height", m_infoPane->getHeight() );
+        amaroK::config( "PlaylistBrowser" )->writeEntry( "Sorting", m_listview->sortOrder() );
+        amaroK::config( "PlaylistBrowser" )->writeEntry( "Podcast Interval", m_podcastTimerInterval );
+        amaroK::config( "PlaylistBrowser" )->writeEntry( "Podcast Folder Open", m_podcastCategory->isOpen() );
+        amaroK::config( "PlaylistBrowser" )->writeEntry( "InfoPane Height", m_infoPane->getHeight() );
     }
 }
 
@@ -783,17 +782,15 @@ PlaylistCategory* PlaylistBrowser::loadDynamics()
 
 void PlaylistBrowser::saveDynamics()
 {
-    // save alterations to the default dynamics
-    KConfig *config = amaroK::config( "PlaylistBrowser" );
-    config->writeEntry( "Dynamic Random Mark History",   m_randomDynamic->markHistory() );
-    config->writeEntry( "Dynamic Random Remove Played",  m_randomDynamic->cycleTracks() );
-    config->writeEntry( "Dynamic Random Upcoming Count", m_randomDynamic->upcomingCount() );
-    config->writeEntry( "Dynamic Random Previous Count", m_randomDynamic->previousCount() );
+    amaroK::config( "PlaylistBrowser" )->writeEntry( "Dynamic Random Mark History",   m_randomDynamic->markHistory() );
+    amaroK::config( "PlaylistBrowser" )->writeEntry( "Dynamic Random Remove Played",  m_randomDynamic->cycleTracks() );
+    amaroK::config( "PlaylistBrowser" )->writeEntry( "Dynamic Random Upcoming Count", m_randomDynamic->upcomingCount() );
+    amaroK::config( "PlaylistBrowser" )->writeEntry( "Dynamic Random Previous Count", m_randomDynamic->previousCount() );
 
-    config->writeEntry( "Dynamic Suggest Mark History",   m_suggestedDynamic->markHistory() );
-    config->writeEntry( "Dynamic Suggest Remove Played",  m_suggestedDynamic->cycleTracks() );
-    config->writeEntry( "Dynamic Suggest Upcoming Count", m_suggestedDynamic->upcomingCount() );
-    config->writeEntry( "Dynamic Suggest Previous Count", m_suggestedDynamic->previousCount() );
+    amaroK::config( "PlaylistBrowser" )->writeEntry( "Dynamic Suggest Mark History",   m_suggestedDynamic->markHistory() );
+    amaroK::config( "PlaylistBrowser" )->writeEntry( "Dynamic Suggest Remove Played",  m_suggestedDynamic->cycleTracks() );
+    amaroK::config( "PlaylistBrowser" )->writeEntry( "Dynamic Suggest Upcoming Count", m_suggestedDynamic->upcomingCount() );
+    amaroK::config( "PlaylistBrowser" )->writeEntry( "Dynamic Suggest Previous Count", m_suggestedDynamic->previousCount() );
 
     QFile file( dynamicBrowserCache() );
     QTextStream stream( &file );
@@ -996,8 +993,7 @@ PlaylistBrowser::loadPodcastFolders( PlaylistCategory *p )
         folderMap[id] = folder;
     }
     // check if the base folder exists
-    KConfig *config = amaroK::config( "PlaylistBrowser" );
-    p->setOpen( config->readBoolEntry( "Podcast Folder Open", true ) );
+    p->setOpen( amaroK::config( "PlaylistBrowser" )->readBoolEntry( "Podcast Folder Open", true ) );
 
     return folderMap;
 }
@@ -2352,12 +2348,12 @@ void PlaylistBrowser::currentItemChanged( QListViewItem *item )    //SLOT
     else
         enable_remove = true;
 
+    static_cast<PlaylistBrowserEntry*>(item)->updateInfo();
+
     enable_buttons:
 
     removeButton->setEnabled( enable_remove );
     renameButton->setEnabled( enable_rename );
-
-    static_cast<PlaylistBrowserEntry*>(item)->updateInfo();
 }
 
 

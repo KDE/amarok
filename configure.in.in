@@ -745,7 +745,6 @@ AC_LANG_RESTORE
 
 AC_MSG_RESULT($amarok_glibcsched_works)
 
-
 ###############################################################################
 # END SCHED_SETAFFINITY BUGGY GLIBC CHECK
 ###############################################################################
@@ -771,6 +770,7 @@ AM_CONDITIONAL(with_konqsidebar, [test x$have_konqsidebar = xyes])
 # BEGIN NJB CHECK
 ###############################################################################
 ### mediabrowser.cpp can use libnjb if available
+
 AC_ARG_WITH(libnjb,
     AC_HELP_STRING([--with-libnjb],[build Amarok with Nomad Jukebox support from libnjb]),
     [build_libnjb=$withval],
@@ -791,6 +791,7 @@ if test "$build_libnjb" != "no"; then
 fi
 
 AM_CONDITIONAL(with_libnjb, [test x$have_libnjb = xyes])
+
 ###############################################################################
 # END NJB CHECK
 ###############################################################################
@@ -894,7 +895,9 @@ AM_CONDITIONAL(with_libgpod, [test x$have_libgpod = xyes])
 ###############################################################################
 # BEGIN statvfs(2) CHECK
 ###############################################################################
+
 AC_CHECK_FUNCS(statvfs)
+
 ###############################################################################
 # END statvfs(2) CHECK
 ###############################################################################
@@ -964,9 +967,12 @@ AM_CONDITIONAL(with_mp4v2, [test x$have_mp4v2 != xno ])
 # END MP4V2 CHECK
 ###############################################################################
 
+
+
 ###############################################################################
 # BEGIN DAAP KDE 3.4 CHECK
 ###############################################################################
+
 daapsave_CXXFLAGS="$CXXFLAGS"
 CXXFLAGS="$CXXFLAGS $all_includes"
 AC_LANG_SAVE
@@ -989,9 +995,12 @@ AM_CONDITIONAL([atleast_kde34], [test "$atleast_kde34" = "yes"])
 
 CXXFLAGS="$daapsave_CXXFLAGS"
 AC_LANG_RESTORE
+
 ###############################################################################
 # END DAAP KDE 3.4 CHECK
 ###############################################################################
+
+
 
 ###############################################################################
 # BEGIN DO_NOT_COMPILE CHECK

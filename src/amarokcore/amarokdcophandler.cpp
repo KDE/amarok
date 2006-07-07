@@ -306,12 +306,14 @@ namespace amaroK
 
     void DcopPlayerHandler::mediaDeviceMount()
     {
-        MediaBrowser::instance()->currentDevice()->connectDevice();
+        if ( MediaBrowser::instance()->currentDevice() )
+            MediaBrowser::instance()->currentDevice()->connectDevice();
     }
 
     void DcopPlayerHandler::mediaDeviceUmount()
     {
-        MediaBrowser::instance()->currentDevice()->disconnectDevice();
+        if ( MediaBrowser::instance()->currentDevice() )
+            MediaBrowser::instance()->currentDevice()->disconnectDevice();
     }
 
     void DcopPlayerHandler::mute()
@@ -461,7 +463,8 @@ namespace amaroK
 
     void DcopPlayerHandler::transferDeviceFiles()
     {
-        MediaBrowser::instance()->currentDevice()->transferFiles();
+        if ( MediaBrowser::instance()->currentDevice() )
+            MediaBrowser::instance()->currentDevice()->transferFiles();
     }
 
     void DcopPlayerHandler::volumeDown()
@@ -878,12 +881,14 @@ namespace amaroK
 
     void DcopMediaBrowserHandler::deviceConnect()
     {
-        MediaBrowser::instance()->currentDevice()->connectDevice();
+        if ( MediaBrowser::instance()->currentDevice() )
+            MediaBrowser::instance()->currentDevice()->connectDevice();
     }
 
     void DcopMediaBrowserHandler::deviceDisconnect()
     {
-        MediaBrowser::instance()->currentDevice()->disconnectDevice();
+        if ( MediaBrowser::instance()->currentDevice() )
+            MediaBrowser::instance()->currentDevice()->disconnectDevice();
     }
 
     QStringList DcopMediaBrowserHandler::deviceList()
@@ -909,7 +914,8 @@ namespace amaroK
 
     void DcopMediaBrowserHandler::transfer()
     {
-        MediaBrowser::instance()->currentDevice()->transferFiles();
+        if ( MediaBrowser::instance()->currentDevice() )
+            MediaBrowser::instance()->currentDevice()->transferFiles();
     }
 
     void DcopMediaBrowserHandler::transcodingFinished( QString src, QString dest )

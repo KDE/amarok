@@ -2905,7 +2905,7 @@ void ContextBrowser::showLyrics( const QString &url )
         }
     }
 
-    m_lyricSearchUrl = QString( "http://www.google.com/search?ie=UTF-8&q=lyrics %1 %2" )
+    m_lyricSearchUrl = QString( "http://www.google.com/search?ie=UTF-8&q=lyrics+%1+%2" )
         .arg( KURL::encode_string_no_slash( '"' + artist + '"', 106 /*utf-8*/ ),
               KURL::encode_string_no_slash( '"' + title  + '"', 106 /*utf-8*/ ) );
 
