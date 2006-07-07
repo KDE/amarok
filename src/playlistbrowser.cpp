@@ -2352,12 +2352,12 @@ void PlaylistBrowser::currentItemChanged( QListViewItem *item )    //SLOT
     else
         enable_remove = true;
 
+    static_cast<PlaylistBrowserEntry*>(item)->updateInfo();
+
     enable_buttons:
 
     removeButton->setEnabled( enable_remove );
     renameButton->setEnabled( enable_rename );
-
-    static_cast<PlaylistBrowserEntry*>(item)->updateInfo();
 }
 
 
