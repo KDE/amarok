@@ -8,6 +8,7 @@
 
 #include <qmetaobject.h>
 
+#include <kresolver.h>
 #include <dnssd/remoteservice.h>
 #include <dnssd/servicebase.h>
 #include <dnssd/servicebrowser.h>
@@ -110,7 +111,7 @@ DaapClient::foundDaap( DNSSD::RemoteService::Ptr service )
 {
     DEBUG_BLOCK
     connect( service, SIGNAL( resolved( bool ) ), this, SLOT( resolvedDaap( bool ) ) );
-    service->resolveAsync();
+        service->resolveAsync();
 }
 
 void
@@ -123,6 +124,22 @@ DaapClient::resolvedDaap( bool success )
     server->setText( 0, service->serviceName() );
     server->setType( MediaItem::DIRECTORY );
     debug() << service->serviceName() << ' ' << service->hostName() << ' ' << service->domain() << ' ' << service->type() << endl;
+
+    KNetwork::KResolverResults results = KNetwork::KResolver::resolve( service->hostName(), service->type() );
+    debug() << "Resolver error code (0 is no error): " << results.error() << endl;
+
+    //Below will not work either because although the 3.5-api docs state that the second
+    //parameter of resolver defaults to null, it lies like a dog, so code doesn't even compile
+
+    /*QString resolvedServer = service->hostName();
+    KNetwork::KResolver resolver(server);
+    resolver.start();
+    if(resolver.wait(500)) {
+        KNetwork::KResolverResults results = resolver.results();
+        if(!results.empty()) {
+            QString ip = results[0].address().asInet().ipAddress().toString();
+        }
+    }*/
     
     //cheap find-the-hostname...
     QString actualHostname = service->hostName();
