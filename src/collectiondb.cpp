@@ -4002,7 +4002,7 @@ void CollectionDB::engineTrackEnded( int finalPosition, int trackLength, const Q
     PodcastEpisodeBundle peb;
     if( getPodcastEpisodeBundle( url.url(), &peb ) )
     {
-        PodcastChannel *p = PlaylistBrowser::instance()->findPodcastEpisode( peb.url(), peb.parent() );
+        PodcastEpisode *p = PlaylistBrowser::instance()->findPodcastEpisode( peb.url(), peb.parent() );
         if ( p )
             p->setListened();
 
