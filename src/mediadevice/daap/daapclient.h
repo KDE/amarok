@@ -2,12 +2,16 @@
 #define AMAROK_DAAPCLIENT_H
 
 #include "mediabrowser.h"
+#include "daapreader/reader.h"
 
 #include <dnssd/remoteservice.h> //for DNSSD::RemoteService::Ptr
 
 namespace DNSSD {
     class ServiceBrowser;
 }
+
+class QString;
+class MediaItem;
 
 class DaapClient : public MediaDevice
 {
@@ -31,10 +35,11 @@ class DaapClient : public MediaDevice
    private slots:
          void foundDaap( DNSSD::RemoteService::Ptr );
          void resolvedDaap( bool );
+         void createTree( const QString& host, Daap::SongList bundles );
    private:
         DNSSD::ServiceBrowser* m_browser;
         bool    m_connected;
-
+        QMap<const char*, MediaItem*> m_servers;
 };
 
 #endif /*AMAROK_DAAPCLIENT_H*/
