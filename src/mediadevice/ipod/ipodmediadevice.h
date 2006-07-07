@@ -33,7 +33,7 @@ class IpodMediaDevice : public KioMediaDevice
         IpodMediaDevice();
         void              init( MediaBrowser* parent );
         virtual           ~IpodMediaDevice();
-        virtual bool      autoConnect() { return true; }
+        virtual bool      autoConnect()          { return true; }
         virtual bool      asynchronousTransfer() { return false; /* kernel buffer flushes freeze amaroK */ }
         QStringList       supportedFiletypes();
 
@@ -52,7 +52,7 @@ class IpodMediaDevice : public KioMediaDevice
         bool              closeDevice();
         void              initView();
 
-        virtual MediaItem*copyTrackToDevice(const MetaBundle& bundle);
+        virtual MediaItem*copyTrackToDevice( const MetaBundle& bundle );
         /**
          * Insert track already located on media device into the device's database
          * @param pathname Location of file on the device to add to the database
@@ -60,10 +60,11 @@ class IpodMediaDevice : public KioMediaDevice
          * @param podcastInfo PodcastInfo of track if it is a podcast, 0 otherwise
          * @return If successful, the created MediaItem in the media device view, else 0
          */
-        virtual MediaItem *insertTrackIntoDB( const QString& pathname, const MetaBundle& bundle, const PodcastInfo *podcastInfo);
+        virtual MediaItem *insertTrackIntoDB( const QString& pathname, const MetaBundle& bundle,
+                                              const PodcastInfo *podcastInfo );
 
-        virtual MediaItem * updateTrackInDB(IpodMediaItem *item,
-                            const QString &pathname, const MetaBundle &bundle, const PodcastInfo *podcastInfo);
+        virtual MediaItem * updateTrackInDB( IpodMediaItem *item, const QString &pathname,
+                                             const MetaBundle &bundle, const PodcastInfo *podcastInfo );
 
 
         /**
@@ -71,13 +72,13 @@ class IpodMediaDevice : public KioMediaDevice
          * @param bundle MetaBundle of track to base pathname creation on
          * @return the url to upload the track to
          */
-        virtual KURL determineURLOnDevice(const MetaBundle& bundle);
+        virtual KURL determineURLOnDevice( const MetaBundle& bundle );
 
         void              synchronizeDevice();
-        int               deleteItemFromDevice(MediaItem *item, bool onlyPlayed=false );
-        void              addToPlaylist(MediaItem *list, MediaItem *after, QPtrList<MediaItem> items);
-        MediaItem        *newPlaylist(const QString &name, MediaItem *list, QPtrList<MediaItem> items);
-        bool              getCapacity(KIO::filesize_t *total, KIO::filesize_t *available);
+        int               deleteItemFromDevice( MediaItem *item, bool onlyPlayed = false );
+        void              addToPlaylist( MediaItem *list, MediaItem *after, QPtrList<MediaItem> items );
+        MediaItem        *newPlaylist( const QString &name, MediaItem *list, QPtrList<MediaItem> items );
+        bool              getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
         void              rmbPressed( QListViewItem* qitem, const QPoint& point, int );
         bool              checkIntegrity();
 
@@ -88,12 +89,12 @@ class IpodMediaDevice : public KioMediaDevice
         bool              initializeIpod( const QString &mountpoint );
         bool              writeITunesDB( bool threaded=true );
         bool              createLockFile( const QString &mountpoint, bool silent );
-        IpodMediaItem    *addTrackToView(Itdb_Track *track, IpodMediaItem *item=0, bool checkIntegrity=false );
-        void              addPlaylistToView(Itdb_Playlist *playlist);
-        void              playlistFromItem(IpodMediaItem *item);
+        IpodMediaItem    *addTrackToView( Itdb_Track *track, IpodMediaItem *item=0, bool checkIntegrity=false );
+        void              addPlaylistToView( Itdb_Playlist *playlist );
+        void              playlistFromItem( IpodMediaItem *item );
 
-        QString           realPath(const char *ipodPath);
-        QString           ipodPath(const QString &realPath);
+        QString           realPath( const char *ipodPath );
+        QString           ipodPath( const QString &realPath );
 
         // ipod database
         Itdb_iTunesDB    *m_itdb;
@@ -107,12 +108,13 @@ class IpodMediaDevice : public KioMediaDevice
         bool              m_supportsArtwork;
         bool              m_supportsVideo;
 
-        IpodMediaItem    *getArtist(const QString &artist);
-        IpodMediaItem    *getAlbum(const QString &artist, const QString &album);
-        IpodMediaItem    *getTrack(const QString &artist, const QString &album, const QString &title, int trackNumber=-1);
-        IpodMediaItem    *getTrack(const Itdb_Track *itrack);
+        IpodMediaItem    *getArtist( const QString &artist );
+        IpodMediaItem    *getAlbum( const QString &artist, const QString &album );
+        IpodMediaItem    *getTrack( const QString &artist, const QString &album,
+                                    const QString &title,  int trackNumber = -1 );
+        IpodMediaItem    *getTrack( const Itdb_Track *itrack );
 
-        bool              removeDBTrack(Itdb_Track *track);
+        bool              removeDBTrack( Itdb_Track *track );
 
         bool              m_dbChanged;
 

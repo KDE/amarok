@@ -429,7 +429,8 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     //doing it in the second loop looks really bad, unfortunately
     //this is the slowest step in the bit that we can't process events
     uint x = 0;
-    for( QStringList::ConstIterator it = albums.begin(), end = albums.end(); it != end; ++it ) {
+    foreach( albums )
+    {
         const QString artist = *it;
         const QString album = *(++it);
         m_coverItems.append( new CoverViewItem( m_coverView, m_coverView->lastItem(), artist, album ) );
@@ -543,7 +544,7 @@ void CoverManager::slotSetFilter() //SLOT
 
     m_coverView->selectAll( false);
     QIconViewItem *item = m_coverView->firstItem();
-    while ( item ) 
+    while ( item )
     {
         QIconViewItem *tmp = item->nextItem();
         m_coverView->takeItem( item );
@@ -551,7 +552,7 @@ void CoverManager::slotSetFilter() //SLOT
     }
 
     m_coverView->setAutoArrange( false );
-    for( QIconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() ) 
+    for( QIconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() )
     {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
         if( coverItem->album().contains( m_filter, false ) || coverItem->artist().contains( m_filter, false ) )

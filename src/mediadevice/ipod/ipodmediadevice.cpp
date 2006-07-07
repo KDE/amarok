@@ -89,55 +89,86 @@ class TrackList : public QPtrList<Itdb_Track>
 class IpodMediaItem : public MediaItem
 {
     public:
-        IpodMediaItem(QListView *parent, MediaDevice *dev ) : MediaItem(parent) { init( dev ); }
-        IpodMediaItem(QListViewItem *parent, MediaDevice *dev ) : MediaItem(parent) { init( dev ); }
-        IpodMediaItem(QListView *parent, QListViewItem *after, MediaDevice *dev ) : MediaItem(parent, after) { init( dev ); }
-        IpodMediaItem(QListViewItem *parent, QListViewItem *after, MediaDevice *dev ) : MediaItem(parent, after) { init( dev ); }
+        IpodMediaItem( QListView *parent, MediaDevice *dev )
+            : MediaItem( parent ) { init( dev ); }
+
+        IpodMediaItem( QListViewItem *parent, MediaDevice *dev )
+            : MediaItem( parent ) { init( dev ); }
+
+        IpodMediaItem( QListView *parent, QListViewItem *after, MediaDevice *dev )
+            : MediaItem( parent, after ) { init( dev ); }
+
+        IpodMediaItem( QListViewItem *parent, QListViewItem *after, MediaDevice *dev )
+            : MediaItem( parent, after ) { init( dev ); }
+
         ~IpodMediaItem() { delete m_podcastInfo; }
-        void init(MediaDevice *dev) {m_track=0; m_playlist=0; m_device=dev;m_podcastInfo=0;}
+
+        void init( MediaDevice *dev )
+        {
+            m_track       = 0;
+            m_playlist    = 0;
+            m_device      = dev;
+            m_podcastInfo = 0;
+        }
+
         void bundleFromTrack( Itdb_Track *track, const QString& path )
         {
             MetaBundle *bundle = new MetaBundle();
-            bundle->setArtist( QString::fromUtf8( track->artist ) );
-            bundle->setComposer( QString::fromUtf8( track->composer ) );
-            bundle->setAlbum( QString::fromUtf8( track->album ) );
-            bundle->setTitle( QString::fromUtf8( track->title ) );
-            bundle->setComment( QString::fromUtf8( track->comment ) );
-            bundle->setGenre( QString::fromUtf8( track->genre ) );
-            bundle->setYear( track->year );
-            bundle->setTrack( track->track_nr );
+
+            bundle->setArtist    ( QString::fromUtf8( track->artist ) );
+            bundle->setComposer  ( QString::fromUtf8( track->composer ) );
+            bundle->setAlbum     ( QString::fromUtf8( track->album ) );
+            bundle->setTitle     ( QString::fromUtf8( track->title ) );
+            bundle->setComment   ( QString::fromUtf8( track->comment ) );
+            bundle->setGenre     ( QString::fromUtf8( track->genre ) );
+            bundle->setYear      ( track->year );
+            bundle->setTrack     ( track->track_nr );
             bundle->setDiscNumber( track->cd_nr );
-            bundle->setLength( track->tracklen/1000 );
-            bundle->setBitrate( track->bitrate );
+            bundle->setLength    ( track->tracklen/1000 );
+            bundle->setBitrate   ( track->bitrate );
             bundle->setSampleRate( track->samplerate );
-            bundle->setPath( path );
-            bundle->setFilesize( track->size );
+            bundle->setPath      ( path );
+            bundle->setFilesize  ( track->size );
+
             setBundle( bundle );
         }
-        Itdb_Track *m_track;
-        Itdb_Playlist *m_playlist;
-        PodcastInfo *m_podcastInfo;
-        int played() const { if(m_track) return m_track->playcount; else return 0; }
-        int recentlyPlayed() const { if(m_track) return m_track->recent_playcount; else return 0; }
-        int rating() const { if(m_track) return m_track->rating; else return 0; }
-        void setRating(int rating) {
-            if(m_track) m_track->rating = m_track->app_rating = rating;
-            if( dynamic_cast<IpodMediaDevice *>(device()) )
-                static_cast<IpodMediaDevice *>(device())->m_dbChanged=true;
-        }
-        bool ratingChanged() const { if(m_track) return m_track->rating != m_track->app_rating; else return false; }
-        QDateTime playTime() const { QDateTime t; if(m_track) t.setTime_t( itdb_time_mac_to_host( m_track->time_played ) ); return t; }
-        IpodMediaItem *findTrack(Itdb_Track *track)
+
+        Itdb_Track      *m_track;
+        Itdb_Playlist   *m_playlist;
+        PodcastInfo     *m_podcastInfo;
+
+        int played()         const { return m_track ? m_track->playcount        : 0; }
+        int recentlyPlayed() const { return m_track ? m_track->recent_playcount : 0; }
+        int rating()         const { return m_track ? m_track->rating           : 0; }
+
+        void setRating( int rating )
         {
-            if(m_track == track)
+            if( m_track ) m_track->rating = m_track->app_rating = rating;
+            if( dynamic_cast<IpodMediaDevice *>(device()) )
+                static_cast<IpodMediaDevice *>(device())->m_dbChanged = true;
+        }
+
+        bool ratingChanged() const { return m_track ? m_track->rating != m_track->app_rating : false; }
+
+        QDateTime playTime() const
+        {
+            QDateTime t;
+            if( m_track )
+                t.setTime_t( itdb_time_mac_to_host( m_track->time_played ) );
+            return t;
+        }
+
+        IpodMediaItem *findTrack( Itdb_Track *track )
+        {
+            if( m_track == track )
                 return this;
 
-            for(IpodMediaItem *it=dynamic_cast<IpodMediaItem *>(firstChild());
+            for( IpodMediaItem *it = dynamic_cast<IpodMediaItem *>( firstChild() );
                     it;
-                    it = dynamic_cast<IpodMediaItem *>(it->nextSibling()))
+                    it = dynamic_cast<IpodMediaItem *>( it->nextSibling()) )
             {
                 IpodMediaItem *found = it->findTrack(track);
-                if(found)
+                if( found )
                     return found;
             }
 
@@ -152,7 +183,6 @@ IpodMediaDevice::IpodMediaDevice()
     , m_podcastPlaylist( 0 )
     , m_lockFile( 0 )
 {
-
     registerTaglibPlugins();
 
     m_dbChanged = false;
@@ -182,7 +212,7 @@ IpodMediaDevice::init( MediaBrowser* parent )
 
 IpodMediaDevice::~IpodMediaDevice()
 {
-    if(m_itdb)
+    if( m_itdb )
         itdb_free(m_itdb);
 
     m_files.clear();
@@ -191,18 +221,18 @@ IpodMediaDevice::~IpodMediaDevice()
 bool
 IpodMediaDevice::isConnected()
 {
-    return (m_itdb != 0);
+    return ( m_itdb != 0 );
 }
 
 MediaItem *
-IpodMediaDevice::insertTrackIntoDB(const QString &pathname, const MetaBundle &bundle, const PodcastInfo *podcastInfo)
+IpodMediaDevice::insertTrackIntoDB( const QString &pathname, const MetaBundle &bundle, const PodcastInfo *podcastInfo )
 {
     return updateTrackInDB( 0, pathname, bundle, podcastInfo );
 }
 
 MediaItem *
-IpodMediaDevice::updateTrackInDB(IpodMediaItem *item,
-        const QString &pathname, const MetaBundle &bundle, const PodcastInfo *podcastInfo)
+IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
+                                  const MetaBundle &bundle, const PodcastInfo *podcastInfo )
 {
     if( !m_itdb )
         return 0;
@@ -212,7 +242,7 @@ IpodMediaDevice::updateTrackInDB(IpodMediaItem *item,
         track = item->m_track;
     if( !track )
         track = itdb_track_new();
-    if(!track)
+    if( !track )
     {
         delete item;
         return 0;
@@ -898,10 +928,10 @@ IpodMediaDevice::openDevice( bool silent )
     }
 
     GError *err = 0;
-    m_itdb = itdb_parse(QFile::encodeName(mountPoint()), &err);
-    if(err)
+    m_itdb = itdb_parse( QFile::encodeName(mountPoint()), &err );
+    if( err )
     {
-        g_error_free(err);
+        g_error_free( err );
         if( m_itdb )
         {
             itdb_free( m_itdb );

@@ -66,26 +66,26 @@ class LIBAMAROK_EXPORT MediaItem : public KListViewItem
         Type type() const { return m_type; }
         MediaItem *findItem(const QString &key, const MediaItem *after=0) const;
 
-        virtual bool isLeafItem() const;        // A leaf node of the tree
-        virtual bool isFileBacked() const;      // Should the file be deleted of the device when removed
-        virtual QDateTime playTime() const { return QDateTime(); }
-        virtual int  played() const { return 0; }
+        virtual bool isLeafItem()     const;        // A leaf node of the tree
+        virtual bool isFileBacked()   const;      // Should the file be deleted of the device when removed
+        virtual QDateTime playTime()  const { return QDateTime(); }
+        virtual int  played()         const { return 0; }
         virtual int  recentlyPlayed() const { return 0; } // no of times played on device since last sync
-        virtual int  rating() const { return 0; } // rating on device, normalized to 100
-        virtual void setRating( int rating ) { (void)rating; }
-        virtual bool ratingChanged() const { return false; }
-        virtual long size() const;
+        virtual int  rating()         const { return 0; } // rating on device, normalized to 100
+        virtual void setRating( int /*rating*/ ) {}
+        virtual bool ratingChanged()  const { return false; }
+        virtual long size()           const;
         virtual MediaDevice *device() const { return m_device; }
 
-        int compare(QListViewItem *i, int col, bool ascending) const;
+        int compare( QListViewItem *i, int col, bool ascending ) const;
 
         void paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align );
 
         //attributes:
-        int          m_order;
-        Type         m_type;
-        QString      m_playlistName;
-        MediaDevice *m_device;
+        int             m_order;
+        Type            m_type;
+        QString         m_playlistName;
+        MediaDevice    *m_device;
 
         static QPixmap *s_pixUnknown;
         static QPixmap *s_pixRootItem;
