@@ -918,7 +918,7 @@ WebService::showError( int code, QString message )
             message = i18n( "This item is not available for streaming." );
             break;
         case E_NOSUBSCRIBER:
-            message = i18n( "This feature is only available to subscribers." );
+            message = i18n( "This feature is only available to last.fm subscribers." );
             break;
         case E_NONEIGHBOURS:
             message = i18n( "There are not enough neighbors for this radio." );
