@@ -126,14 +126,14 @@ void Options2::retrievePushButton_clicked()
     // we need this because KNewStuffGeneric's install function isn't clever enough
     AmarokThemeNewStuff *kns = new AmarokThemeNewStuff( "amarok/themes", this );
     KNS::Engine *engine = new KNS::Engine( kns, "amarok/theme", this );
-    KNS::DownloadDialog *d = new KNS::DownloadDialog( engine, this );
-    d->setType( "amarok/theme" );
+    KNS::DownloadDialog d( engine, this );
+    d.setType( "amarok/theme" );
     // you have to do this by hand when providing your own Engine
     KNS::ProviderLoader *p = new KNS::ProviderLoader( this );
-    QObject::connect( p, SIGNAL( providersLoaded(Provider::List*) ), d, SLOT( slotProviders (Provider::List *) ) );
+    QObject::connect( p, SIGNAL( providersLoaded(Provider::List*) ), &d, SLOT( slotProviders(Provider::List *) ) );
     p->load( "amarok/theme", "http://amarok.kde.org/knewstuff/amarokthemes-providers.xml" );
 
-    d->exec();
+    d.exec();
 
     styleComboBox->clear();
     updateStyleComboBox();
@@ -178,6 +178,6 @@ void Options2::styleComboBox_activated(const QString& s)
     QDir dir( amaroK::saveLocation( "themes/" ) + s );
     if( !dir.exists() )
         disable = true;
-    
+
     uninstallPushButton->setEnabled ( !disable );
 }
