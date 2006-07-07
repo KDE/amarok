@@ -11,9 +11,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef AMAROK_DAAP_CONTENTFETCHER_CPP
-#define AMAROK_DAAP_CONTENTFETCHER_CPP
-
 #include "contentfetcher.h"
 #include "debug.h"
 #include "hasher.h"
@@ -75,4 +72,3 @@ ContentFetcher::getDaap( const QString & command )
 
 #include "contentfetcher.moc"
 
-#endif //DAAP_CONTENTFETCHER
