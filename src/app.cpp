@@ -1177,7 +1177,7 @@ namespace amaroK
         // german umlauts
         result.replace( QChar(0x00e4), "ae" ).replace( QChar(0x00c4), "Ae" );
         result.replace( QChar(0x00f6), "oe" ).replace( QChar(0x00d6), "Oe" );
-        result.replace( QChar(0x00dc), "ue" ).replace( QChar(0x00fc), "Ue" );
+        result.replace( QChar(0x00fc), "ue" ).replace( QChar(0x00dc), "Ue" );
         result.replace( QChar(0x00df), "ss" );
 
         // some strange accents
