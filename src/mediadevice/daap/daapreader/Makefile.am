@@ -1,7 +1,7 @@
 noinst_LTLIBRARIES = libdaapreader.la
 
 INCLUDES = \
-        -I$(top_builddir)/amarok/src \
+        -I$(top_srcdir)/amarok/src \
         $(all_includes)
 
 libdaapreader_la_SOURCES = reader.cpp
