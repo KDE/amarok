@@ -16,8 +16,8 @@ METASOURCES = AUTO
 libamarok_daap_mediadevice_la_LIBADD  = \
     $(top_builddir)/amarok/src/libamarok.la \
     $(top_builddir)/amarok/src/mediadevice/daap/daapreader/libdaapreader.la \
-    $(top_builddir)/amarok/src/mediadevice/daap/daapreader/authentication/libauthentication.la \
-    -lkdeui -lkdecore -lkio -lkdnssd
+	-lkdeui lkdecore -lkio -lkdnssd
+    #$(top_builddir)/amarok/src/mediadevice/daap/daapreader/authentication/libauthentication.la \
 
 libamarok_daap_mediadevice_la_LDFLAGS = \
     $(KDE_PLUGIN) \

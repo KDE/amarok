@@ -25,12 +25,13 @@ namespace Daap {
 */
 class ContentFetcher : public QHttp
 {
-Q_OBJECT
-public:
-    ContentFetcher( const QString & hostname, Q_UINT16 port = 80, QObject * parent = 0, const char * name = 0 );
-    ~ContentFetcher();
+    Q_OBJECT
 
-    void getDaap( const QString & path );
+    public:
+        ContentFetcher( const QString & hostname, Q_UINT16 port = 80, QObject * parent = 0, const char * name = 0 );
+        ~ContentFetcher();
+
+        void getDaap( const QString & path );
 
     private:
         QString m_hostname;

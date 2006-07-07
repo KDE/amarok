@@ -1,8 +1,12 @@
 noinst_LTLIBRARIES = libauthentication.la
 
 INCLUDES = \
-        $(all_includes) \
-	-I$(top_builddir)/amarok/src
+        -I$(top_srcdir)/amarok/src \
+        -I$(top_srcdir)/amarok/src/amarokcore \
+        -I$(top_srcdir)/amarok/src/mediadevice \
+        -I$(top_srcdir)/amarok/src/mediadevice/daap \
+        -I$(top_srcdir)/amarok/src/mediadevice/daap/daapreader \
+        $(all_includes)
 
 libauthentication_la_SOURCES = contentfetcher.cpp md5.c hasher.c
 
