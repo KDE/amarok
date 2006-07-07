@@ -924,11 +924,11 @@ WebService::showError( int code, QString message )
             message = i18n( "There are not enough neighbors for this radio." );
             break;
         case E_NOSTOPPED:
-            message = i18n( "This stream has stopped! Please try another station!" );
+            message = i18n( "This stream has stopped. Please try another station." );
             break;
         default:
             if( message.isEmpty() )
-                message = i18n( "There was an error!" );
+                message = i18n( "Failed to play this last.fm stream." );
     }
 
     amaroK::StatusBar::instance()->longMessage( message, KDE::StatusBar::Sorry );
