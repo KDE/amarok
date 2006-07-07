@@ -125,24 +125,21 @@ DaapClient::resolvedDaap( bool success )
     server->setType( MediaItem::DIRECTORY );
     debug() << service->serviceName() << ' ' << service->hostName() << ' ' << service->domain() << ' ' << service->type() << endl;
 
+    QString ip = QString::null;
     QString resolvedServer = service->hostName();
     KNetwork::KResolver resolver( service->hostName() );
     resolver.start();
-    if(resolver.wait(500)) {
+    if( resolver.wait( 5000 ) ) {
         KNetwork::KResolverResults results = resolver.results();
         debug() << "Resolver error code (0 is no error): " << results.error() << endl;
         if(!results.empty()) {
-            QString ip = results[0].address().asInet().ipAddress().toString();
+            ip = results[0].address().asInet().ipAddress().toString();
             debug() << "ip found is " << ip << endl;
         }
     }
     
-    //cheap find-the-hostname...
-    QString actualHostname = service->hostName();
-    actualHostname = actualHostname.remove( service->domain() );
-    actualHostname = actualHostname.left( actualHostname.length() - 1 ); //trailing period
-    
-    Daap::Reader* reader = new Daap::Reader( actualHostname, server, this, ( service->hostName() + service->serviceName() ).ascii() );
+    if( ip.isEmpty() ) return;
+    Daap::Reader* reader = new Daap::Reader( ip, server, this, ( service->hostName() + service->serviceName() ).ascii() );
     connect( reader, SIGNAL( daapBundles( const QString&, Daap::SongList ) ),
             this, SLOT( createTree( const QString&, Daap::SongList ) ) );
     m_servers[ ( service->hostName() + service->serviceName() ).ascii() ] = server; debug() << server << endl;
