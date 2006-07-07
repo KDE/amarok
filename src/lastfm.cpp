@@ -380,6 +380,13 @@ QString WebService::stationDescription()
             return i18n( "Artist Fan Radio: %1" ).arg( elements[2] );
     }
 
+    /// CUSTOM STATION
+    if ( elements[1] == "artistnames" )
+    {
+        // eg: lastfm://artistnames/queen,genesis,madonna
+        return i18n( "Custom Station: %1" ).arg( elements[2] );
+    }
+
     /// USER RADIOS
     else if ( elements[1] == "user" )
     {
