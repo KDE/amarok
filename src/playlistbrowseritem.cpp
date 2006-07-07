@@ -250,8 +250,7 @@ void PlaylistCategory::setXml( const QDomElement &xml )
             {
                 PlaylistBrowser::instance()->registerPodcastSettings(  title(), new PodcastSettings( e, title() ) );
             }
-            if( !e.attribute( "isOpen" ).isNull() && last )
-                last->setOpen( e.attribute( "isOpen" ) == "true" ); //settings doesn't have an attribute "isOpen"
+            if( !e.attribute( "isOpen" ).isNull() ) last->setOpen( e.attribute( "isOpen" ) == "true" ); //settings doesn't have an attribute "isOpen"
         }
         setText( 0, xml.attribute("name") );
     }

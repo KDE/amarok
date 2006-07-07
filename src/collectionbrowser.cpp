@@ -285,8 +285,7 @@ CollectionBrowser::eventFilter( QObject *o, QEvent *e )
                 lastitem = lastitem->itemBelow();
             m_view->currentItem()->setSelected( false );
             m_view->setCurrentItem( lastitem );
-            if ( lastitem )
-                lastitem->setSelected( true );
+            lastitem->setSelected( true );
             m_view->ensureItemVisible( lastitem );
             return true;
         }
@@ -972,7 +971,6 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                     qb.sortBy( q_cat2, QueryBuilder::valDiscNumber );
                     qb.sortBy( q_cat2, QueryBuilder::valTrack );
                 }
-                if ( c ) qb.sortBy( QueryBuilder::tabArtist, QueryBuilder::valName );
                 qb.sortBy( q_cat2, QueryBuilder::valTitle );
                 if ( !SortbyTrackFirst ) {
                     qb.sortBy( q_cat2, QueryBuilder::valDiscNumber );
@@ -1047,7 +1045,6 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                     qb.sortBy( q_cat3, QueryBuilder::valDiscNumber );
                     qb.sortBy( q_cat3, QueryBuilder::valTrack );
                 }
-                if ( c ) qb.sortBy( QueryBuilder::tabArtist, QueryBuilder::valName );
                 qb.sortBy( q_cat3, QueryBuilder::valTitle );
                 if ( !SortbyTrackFirst ) {
                     qb.sortBy( q_cat3, QueryBuilder::valDiscNumber );
@@ -1139,7 +1136,6 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
                 qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
                 qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
             }
-            if ( c ) qb.sortBy( QueryBuilder::tabArtist, QueryBuilder::valName );
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTitle );
             if ( !SortbyTrackFirst ) {
                 qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );

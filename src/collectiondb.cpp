@@ -233,11 +233,12 @@ CollectionDB::CollectionDB()
         cacheCoverDir().remove( *it );
 
     // TODO Should write to config in dtor, but it crashes...
-    amaroK::config( "Collection Browser" )->writeEntry( "Database Version", DATABASE_VERSION );
-    amaroK::config( "Collection Browser" )->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
-    amaroK::config( "Collection Browser" )->writeEntry( "Database Persistent Tables Version", DATABASE_PERSISTENT_TABLES_VERSION );
-    amaroK::config( "Collection Browser" )->writeEntry( "Database Podcast Tables Version", DATABASE_PODCAST_TABLES_VERSION );
-    amaroK::config( "Collection Browser" )->writeEntry( "Database ATF Version", DATABASE_ATF_VERSION );
+    KConfig* config = amaroK::config( "Collection Browser" );
+    config->writeEntry( "Database Version", DATABASE_VERSION );
+    config->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
+    config->writeEntry( "Database Persistent Tables Version", DATABASE_PERSISTENT_TABLES_VERSION );
+    config->writeEntry( "Database Podcast Tables Version", DATABASE_PODCAST_TABLES_VERSION );
+    config->writeEntry( "Database ATF Version", DATABASE_ATF_VERSION );
 
     setAdminValue( "Database Version", QString::number( DATABASE_VERSION ) );
     setAdminValue( "Database Stats Version", QString::number( DATABASE_STATS_VERSION ) );
@@ -245,7 +246,8 @@ CollectionDB::CollectionDB()
     setAdminValue( "Database Podcast Tables Version", QString::number( DATABASE_PODCAST_TABLES_VERSION ) );
     setAdminValue( "Database ATF Version", QString::number( DATABASE_ATF_VERSION ) );
 
-    m_atfEnabled = amaroK::config( "Collection" )->readBoolEntry( "AdvancedTagFeatures", false );
+    KConfig* atfconfig = amaroK::config( "Collection" );
+    m_atfEnabled = atfconfig->readBoolEntry( "AdvancedTagFeatures", false );
     if( m_atfEnabled )
     {
         connect( this, SIGNAL(fileMoved(const QString&, const QString&, const QString&)),
@@ -4000,9 +4002,7 @@ void CollectionDB::engineTrackEnded( int finalPosition, int trackLength, const Q
     PodcastEpisodeBundle peb;
     if( getPodcastEpisodeBundle( url.url(), &peb ) )
     {
-        PodcastEpisode *p = PlaylistBrowser::instance()->findPodcastEpisode( peb.url(), peb.parent() );
-        if ( p )
-            p->setListened();
+        PlaylistBrowser::instance()->findPodcastEpisode( peb.url(), peb.parent() )->setListened();
 
         if( !url.isLocalFile() )
             return;
@@ -4254,25 +4254,13 @@ CollectionDB::initialize()
 
     DbConnection *dbConn = getMyConnection();
 
+    KConfig* config = amaroK::config( "Collection Browser" );
     if ( !dbConn->isConnected() || !dbConn->isInitialized() )
-    {
-        error() << "Failed to connect to or initialise database!" << endl;
         amaroK::MessageQueue::instance()->addMessage( dbConn->lastError() );
-    }
-    else if ( !isValid() )
-    {
-        warning() << "Tables seem to be empty; maybe they don't exist at all." << endl;
-        warning() << "Attempting to create tables (this should be safe; ignore any errors)..." << endl;
-        createTables(false);
-        createPersistentTables();
-        createPodcastTables();
-        createStatsTable();
-        warning() << "Tables should now definitely exist. (Stop ignoring errors)" << endl;
-    }
     else
     {
         if ( adminValue( "Database Stats Version" ).toInt() != DATABASE_STATS_VERSION
-          || amaroK::config( "Collection Browser" )->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION )
+          || config->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION )
         {
             debug() << "Different database stats version detected! Stats table will be updated or rebuilt." << endl;
 
@@ -4298,9 +4286,9 @@ CollectionDB::initialize()
 
             /* If config returns 3 or lower, it came from an Amarok version that was not aware of
                admin table, so we can't trust this table at all */
-            if( !prev || ( amaroK::config( "Collection Browser" )->readNumEntry( "Database Stats Version", 0 )
-                      && amaroK::config( "Collection Browser" )->readNumEntry( "Database Stats Version", 0 ) <= 3  ) )
-                prev = amaroK::config( "Collection Browser" )->readNumEntry( "Database Stats Version", 0 );
+            if( !prev || ( config->readNumEntry( "Database Stats Version", 0 )
+                      && config->readNumEntry( "Database Stats Version", 0 ) <= 3  ) )
+                prev = config->readNumEntry( "Database Stats Version", 0 );
 
             //pre somewhere in the 1.3-1.4 timeframe, the version wasn't stored in the DB, so try to guess it
             const QString q = "SELECT COUNT( %1 ) FROM statistics;";
@@ -4341,18 +4329,16 @@ CollectionDB::initialize()
                         "accessdate INTEGER,"
                         "percentage FLOAT,"
                         "rating INTEGER DEFAULT 0,"
-                        "playcounter INTEGER);" ) );
+                        "playcounter INTEGER,"
+                        "uniqueid " + textColumnType(8) + " UNIQUE,"
+                        "deleted BOOL DEFAULT " + boolF() + ");" ) );
 
-                    insert( "INSERT INTO statistics_fix (url, createdate, accessdate, percentage, playcounter, rating)"
-                            "SELECT url, createdate, accessdate, percentage, playcounter, rating FROM statistics;"
-                            , NULL );
+                    insert( "INSERT INTO statistics_fix SELECT * FROM statistics;", NULL );
 
                     dropStatsTable();
                     createStatsTable();
 
-                    insert( "INSERT INTO statistics (url, createdate, accessdate, percentage, playcounter, rating)"
-                            "SELECT url, createdate, accessdate, percentage, playcounter, rating FROM statistics_fix;"
-                            , NULL );
+                    insert( "INSERT INTO statistics SELECT * FROM statistics_fix;", NULL );
                     query( "DROP TABLE statistics_fix" );
                 }
             }
@@ -4447,7 +4433,7 @@ CollectionDB::initialize()
         }
 
         //remove database file if version is incompatible
-        if ( amaroK::config( "Collection Browser" )->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION
+        if ( config->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION
              || adminValue( "Database Version" ).toInt() != DATABASE_VERSION )
         {
             debug() << "Rebuilding database!" << endl;
