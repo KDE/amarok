@@ -125,21 +125,17 @@ DaapClient::resolvedDaap( bool success )
     server->setType( MediaItem::DIRECTORY );
     debug() << service->serviceName() << ' ' << service->hostName() << ' ' << service->domain() << ' ' << service->type() << endl;
 
-    KNetwork::KResolverResults results = KNetwork::KResolver::resolve( service->hostName(), service->type() );
-    debug() << "Resolver error code (0 is no error): " << results.error() << endl;
-
-    //Below will not work either because although the 3.5-api docs state that the second
-    //parameter of resolver defaults to null, it lies like a dog, so code doesn't even compile
-
-    /*QString resolvedServer = service->hostName();
-    KNetwork::KResolver resolver(server);
+    QString resolvedServer = service->hostName();
+    KNetwork::KResolver resolver( service->hostName() );
     resolver.start();
     if(resolver.wait(500)) {
         KNetwork::KResolverResults results = resolver.results();
+        debug() << "Resolver error code (0 is no error): " << results.error() << endl;
         if(!results.empty()) {
             QString ip = results[0].address().asInet().ipAddress().toString();
+            debug() << "ip found is " << ip << endl;
         }
-    }*/
+    }
     
     //cheap find-the-hostname...
     QString actualHostname = service->hostName();
