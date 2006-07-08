@@ -22,9 +22,12 @@
 #include <qmetaobject.h>
 #include <qobjectlist.h>
 #include <kresolver.h>
-#include <dnssd/remoteservice.h>
-#include <dnssd/servicebase.h>
-#include <dnssd/servicebrowser.h>
+
+#if DNSSD_SUPPORT
+    #include <dnssd/remoteservice.h>
+    #include <dnssd/servicebase.h>
+    #include <dnssd/servicebrowser.h>
+#endif
 
 AMAROK_EXPORT_PLUGIN( DaapClient )
 
@@ -78,6 +81,7 @@ DaapClient::openDevice(bool /* silent=false */)
 {
     DEBUG_BLOCK
     m_connected = true;
+#if DNSSD_SUPPORT
     if ( !m_browser )
     {
         m_browser = new DNSSD::ServiceBrowser("_daap._tcp");
@@ -85,6 +89,7 @@ DaapClient::openDevice(bool /* silent=false */)
         connect( m_browser, SIGNAL( serviceAdded( DNSSD::RemoteService::Ptr ) ), this, SLOT( foundDaap( DNSSD::RemoteService::Ptr ) ) );
         m_browser->startBrowse();
     }
+#endif
     return true;
 }
 
@@ -128,6 +133,7 @@ DaapClient::deleteItemFromDevice( MediaItem* /*item*/, bool /*onlyPlayed*/ )
     return 0;
 }
 
+#if DNSSD_SUPPORT
 void
 DaapClient::foundDaap( DNSSD::RemoteService::Ptr service )
 {
@@ -166,6 +172,7 @@ DaapClient::resolvedDaap( bool success )
             this, SLOT( createTree( const QString&, Daap::SongList ) ) );
     reader->loginRequest();
 }
+#endif
 
 void
 DaapClient::createTree( const QString& host, Daap::SongList bundles )

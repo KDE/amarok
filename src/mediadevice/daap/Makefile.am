@@ -23,9 +23,11 @@ libamarok_daap_mediadevice_la_LDFLAGS = \
     $(all_libraries)
 
 libamarok_daap_mediadevice_la_SOURCES = \
-    daapclient.cpp
+    daapclient.cpp \
+    proxy.cpp
 
 noinst_HEADERS = \
-    daapclient.h
+    daapclient.h \
+    proxy.h
 
 SUBDIRS = daapreader

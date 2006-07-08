@@ -19,7 +19,7 @@ require "uri"
 
 include Socket::Constants
 
-class LastFM
+class Proxy
   def initialize( port, remote_url, engine )
     @engine = engine
 
@@ -43,7 +43,7 @@ class LastFM
 
     # here we substitute the proxy GET
     data = amaroks.readline
-    get = "GET #{uri.path || '/'}?#{uri.query} HTTP/1.1\r\n\r\n"
+    get = get_request( uri )
 
     myputs( data.inspect )
     myputs( get.inspect )
@@ -123,14 +123,50 @@ class LastFM
   end
 end
 
+class LastFM < Proxy
+
+    def get_request( remote_uri )
+        "GET #{remote_uri.path || '/'}?#{remote_uri.query} HTTP/1.1\r\n\r\n"
+    end
+
+end
+
+class DaapProxy < Proxy
+    ENDL = "\r\n"
+
+    def initialize( port, remote_url, engine, hash, request_id )
+        @hash = hash
+        @requestId = request_id
+        super( port, remote_url, engine )
+    end
+
+   def get_request( remote_uri )
+        get += "GET #{uri.path || '/'}?#{uri.query} HTTP/1.1" + ENDL
+        get =  "Accept: */*" + ENDL
+        get += "User-Agent: iTunes/4.6 (Windows; N)" + ENDL
+        get += "Client-DAAP-Version: 3.0" + ENDL
+        get += "Client-DAAP-Validation: #{@hash}" + ENDL
+        get += "Client-DAAP-Access-Index: 2" + ENDL
+        get += "Client-DAAP-Request-ID: #{@requestId}" + ENDL
+        get += "Host: #{remote_uri.host}:#{remote_uri.port}" + ENDL + ENDL
+        get
+   end
+
+end
+
 def myputs( string )
   $stderr.puts( "AMAROK_PROXY: #{string}" )
 end
 
 begin
   myputs( 'startup' )
-  port, remote_url, engine = ARGV
-  LastFM.new( port, remote_url, engine )
+  if( ARGV[0] == "--lastfm" ) then
+     option, port, remote_url, engine = ARGV
+     LastFM.new( port, remote_url, engine )
+  else
+     option, port, remote_url, engine, hash, request_id = ARGV
+     DaapProxy.new( port, remote_url, engine, hash, request_id )
+  end
 rescue
   $stderr.puts( $!.to_s )
   $stderr.puts( $!.backtrace.inspect )
