@@ -1,3 +1,16 @@
+/***************************************************************************
+ * copyright            : (C) 2006 Ian Monroe <ian@monroe.nu>              *
+ **************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #ifndef AMAROK_DAAPCLIENT_CPP
 #define AMAROK_DAAPCLIENT_CPP
 
@@ -7,7 +20,7 @@
 #include "mediabrowser.h"
 
 #include <qmetaobject.h>
-
+#include <qobjectlist.h>
 #include <kresolver.h>
 #include <dnssd/remoteservice.h>
 #include <dnssd/servicebase.h>
@@ -78,7 +91,16 @@ DaapClient::openDevice(bool /* silent=false */)
 bool
 DaapClient::closeDevice()
 {
+    m_view->clear();
+    QObjectList* readers =  queryList( "Daap::Reader");
+    QObject* itRead;
+    for( itRead = readers->first(); itRead; itRead = readers->next() )
+    {
+        static_cast<Daap::Reader*>(itRead)->logoutRequest();
+    }
     m_connected = false;
+    delete m_browser; 
+    m_browser = 0;
     return true;
 }
 
@@ -131,7 +153,7 @@ DaapClient::resolvedDaap( bool success )
     resolver.start();
     if( resolver.wait( 5000 ) ) {
         KNetwork::KResolverResults results = resolver.results();
-        debug() << "Resolver error code (0 is no error): " << results.error() << endl;
+        debug() << "Resolver error code (0 is no error): " << resolver.errorString( results.error() ) << ' ' <<  service->hostName() << endl;
         if(!results.empty()) {
             ip = results[0].address().asInet().ipAddress().toString();
             debug() << "ip found is " << ip << endl;
@@ -142,7 +164,6 @@ DaapClient::resolvedDaap( bool success )
     Daap::Reader* reader = new Daap::Reader( ip, server, this, ( service->hostName() + service->serviceName() ).ascii() );
     connect( reader, SIGNAL( daapBundles( const QString&, Daap::SongList ) ),
             this, SLOT( createTree( const QString&, Daap::SongList ) ) );
-    m_servers[ ( service->hostName() + service->serviceName() ).ascii() ] = server; debug() << "server = " << server << endl;
     reader->loginRequest();
 }
 
@@ -158,10 +179,8 @@ DaapClient::createTree( const QString& host, Daap::SongList bundles )
     }
     MediaItem* root = callback->rootMediaItem();
     QStringList artists = bundles.keys();
-    debug() << "listing for " << host << endl;
     foreach( artists )
     {
-        //debug() << "artist " << *it << endl;
         MediaItem* parentArtist =  new MediaItem( root );
         parentArtist->setText( 0, (*it) );
         parentArtist->setType( MediaItem::ARTIST );
@@ -169,7 +188,6 @@ DaapClient::createTree( const QString& host, Daap::SongList bundles )
         QStringList albums = albumMap.keys();
         for ( QStringList::Iterator itAlbum = albums.begin(); itAlbum != albums.end(); ++itAlbum )
         {
-            //debug() << "      album " << *itAlbum << endl;
             MediaItem* parentAlbum = new MediaItem( parentArtist );
             parentAlbum->setText( 0, (*itAlbum) );
             parentAlbum->setType( MediaItem::ALBUM );
@@ -177,7 +195,6 @@ DaapClient::createTree( const QString& host, Daap::SongList bundles )
             Daap::TrackList trackList = *albumMap.find(*itAlbum);
             for( track = trackList.first(); track; track = trackList.next() )
             {
-                //debug() << "            track " << track->title() << endl;
                 MediaItem* childTrack = new MediaItem( parentAlbum );
                 childTrack->setText( 0, track->title() );
                 childTrack->setType( MediaItem::TRACK );
