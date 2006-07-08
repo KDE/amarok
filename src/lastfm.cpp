@@ -34,7 +34,6 @@
 #include <klineedit.h>
 #include <kmdcodec.h>       //md5sum
 #include <kmessagebox.h>
-#include <kprocio.h>
 #include <kprotocolmanager.h>
 #include <kshortcut.h>
 #include <kurl.h>
@@ -44,27 +43,7 @@
 
 using namespace LastFm;
 
-
-////////////////////////////////////////////////////////////////////////////////
-// class LastfmProcIO
-////////////////////////////////////////////////////////////////////////////////
-/**
- * Due to xine-lib, we have to make KProcess close all fds, otherwise we get "device is busy" messages
- * Used by AmaroKProcIO and AmaroKProcess, exploiting commSetupDoneC(), a virtual method that
- * happens to be called in the forked process
- * See bug #103750 for more information.
- */
-class LastfmProcIO : public KProcIO {
-    public:
-    virtual int commSetupDoneC() {
-        const int i = KProcIO::commSetupDoneC();
-        amaroK::closeOpenFiles( KProcIO::out[0],KProcIO::in[0],KProcIO::err[0] );
-        return i;
-    };
-};
-
-
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 // CLASS Controller
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -291,9 +270,10 @@ WebService::handshake( const QString& username, const QString& password )
 
     m_proxyUrl = QString( "http://localhost:%1/lastfm.mp3" ).arg( port );
 
-    m_server = new LastfmProcIO();
+    m_server = new amaroK::ProcIO();
     m_server->setComm( KProcess::Communication( KProcess::AllOutput ) );
     *m_server << "amarok_proxy.rb";
+    *m_server << "--lastfm";
     *m_server << QString::number( port );
     *m_server << m_streamUrl.toString();
     *m_server << AmarokConfig::soundSystem();

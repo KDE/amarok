@@ -35,34 +35,6 @@
 #include <kapplication.h>
 #include <klocale.h>
 #include <kmessagebox.h>
-#include <kprocio.h>
-
-
-////////////////////////////////////////////////////////////////////////////////
-// class ScannerProcIO
-////////////////////////////////////////////////////////////////////////////////
-/**
- * Due to xine-lib, we have to make KProcess close all fds, otherwise we get "device is busy" messages
- * Used by AmaroKProcIO and AmaroKProcess, exploiting commSetupDoneC(), a virtual method that
- * happens to be called in the forked process
- * See bug #103750 for more information.
- */
-class ScannerProcIO : public KProcIO {
-    public:
-    ScannerProcIO();
-    virtual int commSetupDoneC() {
-        const int i = KProcIO::commSetupDoneC();
-        amaroK::closeOpenFiles( KProcIO::out[0],KProcIO::in[0],KProcIO::err[0] );
-        return i;
-    };
-};
-
-/**
- * This constructor is needed so that the correct codec is used. KProcIO defaults
- * to latin1, while the scanner uses UTF-8.
- */
-ScannerProcIO::ScannerProcIO() : KProcIO( QTextCodec::codecForName( "UTF-8" ) ) {}
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // class ScanController
@@ -71,7 +43,7 @@ ScannerProcIO::ScannerProcIO() : KProcIO( QTextCodec::codecForName( "UTF-8" ) ) 
 ScanController::ScanController( CollectionDB* parent, bool incremental, const QStringList& folders )
     : DependentJob( parent, "CollectionScanner" )
     , QXmlDefaultHandler()
-    , m_scanner( new ScannerProcIO() )
+    , m_scanner( new amaroK::ProcIO() )
     , m_folders( QDeepCopy<QStringList>( folders ) )
     , m_incremental( incremental )
     , m_hasChanged( false )
@@ -392,7 +364,7 @@ ScanController::customEvent( QCustomEvent* e )
         m_reader->parse( m_source, true );
 
         delete m_scanner; // Reusing doesn't work, so we have to destroy and reinstantiate
-        m_scanner = new ScannerProcIO();
+        m_scanner = new amaroK::ProcIO();
         connect( m_scanner, SIGNAL( readReady( KProcIO* ) ), SLOT( slotReadReady() ) );
 
         *m_scanner << "amarokcollectionscanner";
