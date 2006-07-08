@@ -373,42 +373,6 @@ void PlaylistBrowser::loadCoolStreams()
     }
 }
 
-void PlaylistBrowser::loadLastfmStreams( const bool subscriber /*false*/ )
-{
-    m_lastfmCategory = new PlaylistCategory( m_streamsCategory, m_coolStreams, i18n("Last.fm Streams"), true );
-
-    QStringList globaltags;
-    globaltags << "Alternative" << "Ambient" << "Chill Out" << "Classical" << "Dance"
-               << "Electronica" << "Favorites" << "Heavy Metal" << "Hip Hop" << "Indie Rock"
-               << "Industrial" << "Japanese" << "Pop" << "Psytrance" << "Rap" << "Rock"
-               << "Soundtrack" << "Techno" << "Trance";
-
-    PlaylistCategory *tagsFolder = new PlaylistCategory( m_lastfmCategory, 0, i18n("Global Tags") );
-    QListViewItem *last = 0;
-
-    foreach( globaltags )
-    {
-        const KURL url( "lastfm://globaltags/" + *it );
-        last = new StreamEntry( tagsFolder, last, url, *it );
-    }
-
-    QString user = AmarokConfig::scrobblerUsername();
-    KURL url( QString("lastfm://user/%1/neighbours").arg( user ) );
-    last = new StreamEntry( m_lastfmCategory, tagsFolder, url, i18n( "Neighbor Radio" ) );
-
-    if( subscriber )
-    {
-        url.setPath( QString("user/%1/personal").arg( user ) );
-        last = new StreamEntry( m_lastfmCategory, last, url, i18n( "Personal Radio" ) );
-
-        url.setPath( QString("user/%1/loved").arg( user ) );
-        last = new StreamEntry( m_lastfmCategory, last, url, i18n( "Loved Radio" ) );
-    }
-
-    m_lastfmCategory->setOpen( m_lastfmOpen );
-}
-
-
 void PlaylistBrowser::addStream( QListViewItem *parent )
 {
     StreamEditor dialog( this, i18n( "Radio Stream" ), QString::null );
@@ -440,7 +404,6 @@ void PlaylistBrowser::editStreamURL( StreamEntry *item, const bool readonly )
     }
 }
 
-
 void PlaylistBrowser::saveStreams()
 {
     QFile file( streamBrowserCache() );
@@ -463,6 +426,48 @@ void PlaylistBrowser::saveStreams()
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     stream << temp;
 }
+
+/**
+ *************************************************************************
+ *  LAST.FM
+ *************************************************************************
+ **/
+
+void PlaylistBrowser::loadLastfmStreams( const bool subscriber /*false*/ )
+{
+    m_lastfmCategory = new PlaylistCategory( m_listview, m_streamsCategory, i18n("Last.fm Streams") );
+
+    QStringList globaltags;
+    globaltags << "Alternative" << "Ambient" << "Chill Out" << "Classical" << "Dance"
+            << "Electronica" << "Favorites" << "Heavy Metal" << "Hip Hop" << "Indie Rock"
+            << "Industrial" << "Japanese" << "Pop" << "Psytrance" << "Rap" << "Rock"
+            << "Soundtrack" << "Techno" << "Trance";
+
+    PlaylistCategory *tagsFolder = new PlaylistCategory( m_lastfmCategory, 0, i18n("Global Tags") );
+    QListViewItem *last = 0;
+
+    foreach( globaltags )
+    {
+        const KURL url( "lastfm://globaltags/" + *it );
+        last = new StreamEntry( tagsFolder, last, url, *it );
+    }
+
+    QString user = AmarokConfig::scrobblerUsername();
+    KURL url( QString("lastfm://user/%1/neighbours").arg( user ) );
+    last = new LastFmEntry( m_lastfmCategory, tagsFolder, url, i18n( "Neighbor Radio" ) );
+
+    if( subscriber )
+    {
+        url.setPath( QString("user/%1/personal").arg( user ) );
+        last = new LastFmEntry( m_lastfmCategory, last, url, i18n( "Personal Radio" ) );
+
+        url.setPath( QString("user/%1/loved").arg( user ) );
+        last = new LastFmEntry( m_lastfmCategory, last, url, i18n( "Loved Radio" ) );
+    }
+
+    m_lastfmCategory->setOpen( m_lastfmOpen );
+}
+
 
 /**
  *************************************************************************

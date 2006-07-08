@@ -422,17 +422,30 @@ class StreamEntry : public PlaylistBrowserEntry
         const KURL &url()      { return m_url; }
         const QString &title() { return m_title; }
 
-        QDomElement xml();
+        virtual QDomElement xml();
 
-        void  updateInfo();
+        virtual void  updateInfo();
 
         int   rtti() const { return RTTI; }
         static const int RTTI = 1003;    //stream item
 
-    private:
+    protected:
         QString m_title;
         KURL    m_url;
+};
 
+class LastFmEntry : public StreamEntry
+{
+    public:
+        LastFmEntry( QListViewItem *parent, QListViewItem *after, const KURL &u, const QString &t )
+            : StreamEntry( parent, after, u, t ) { }
+        LastFmEntry( QListViewItem *parent, QListViewItem *after, const QDomElement &xmlDefinition )
+            : StreamEntry( parent, after, xmlDefinition ) { }
+        virtual QDomElement xml();
+//         virtual void  updateInfo();
+
+        int   rtti() const { return RTTI; }
+        static const int RTTI = 1008;    //lastfm item
 };
 
 class StreamEditor : public KDialogBase

@@ -919,6 +919,23 @@ void StreamEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, int
 }
 
 /////////////////////////////////////////////////////////////////////////////
+///    CLASS LastFmEntry
+////////////////////////////////////////////////////////////////////////////
+
+QDomElement LastFmEntry::xml()
+{
+    QDomDocument doc;
+    QDomElement i = doc.createElement("lastfm");
+    i.setAttribute( "name", title() );
+    if( isOpen() )
+        i.setAttribute( "isOpen", "true" );
+    QDomElement url = doc.createElement( "url" );
+    url.appendChild( doc.createTextNode( m_url.prettyURL() ));
+    i.appendChild( url );
+    return i;
+}
+
+/////////////////////////////////////////////////////////////////////////////
 ///    CLASS StreamEditor
 ////////////////////////////////////////////////////////////////////////////
 
