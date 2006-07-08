@@ -66,7 +66,7 @@ class DaapClient : public MediaDevice
         DNSSD::ServiceBrowser* m_browser;
 #endif
         bool    m_connected;
-        QMap<const char*, MediaItem*> m_servers;
+        QMap<QString, ServerInfo> m_servers;
 };
 
 #endif /*AMAROK_DAAPCLIENT_H*/
