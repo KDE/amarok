@@ -108,7 +108,7 @@ NjbMediaDevice::closeDevice()
 
     clearItems();
 
-    m_name = i18n("NJB Medie device");
+    m_name = i18n("NJB Media device");
     debug() << "Done" << endl;
     return true;
 }
