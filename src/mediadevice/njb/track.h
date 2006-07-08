@@ -34,8 +34,8 @@ class NjbTrack {
     friend class NjbMediaItem;
     public:
         NjbTrack( void ) {}
-        
         NjbTrack( njb_songid_t* song );
+        ~NjbTrack();
 
         bool operator==( const NjbTrack& second ) const { return m_id == second.m_id; }
 

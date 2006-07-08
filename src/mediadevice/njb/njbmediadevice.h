@@ -61,7 +61,7 @@ class NjbMediaItem : public MediaItem
 
         ~NjbMediaItem()
         {
-            m_track->removeItem(this);
+            //m_track->removeItem(this);
         }
         
         void setTrack( NjbTrack *track ) { m_track = track; m_track->addItem(this); }
@@ -70,6 +70,7 @@ class NjbMediaItem : public MediaItem
     private:
         NjbTrack *m_track;
 };
+
 class NjbMediaDevice : public MediaDevice
 {
     Q_OBJECT
@@ -106,6 +107,8 @@ class NjbMediaDevice : public MediaDevice
         void setDeviceType(const QString& type);
         void setSpacesToUnderscores(bool yesno);
         static njb_t *theNjb();
+    public slots:
+        void expandItem( QListViewItem *item );
         
     protected:
 
@@ -132,6 +135,7 @@ class NjbMediaDevice : public MediaDevice
         virtual void unlockDevice();
 
         virtual void updateRootItems() {};
+        
     private:
         // TODO:
         MediaItem        *trackExists( const MetaBundle& );
@@ -139,34 +143,31 @@ class NjbMediaDevice : public MediaDevice
         static int progressCallback( u_int64_t sent, u_int64_t total, const char* /*buf*/, unsigned /*len*/, void* data);
 
         int readJukeboxMusic( void);
-
-        NjbMediaItem *getAlbum(const QString &artist, const QString &album);
-
-        NjbMediaItem * getArtist(const QString &artist);
-
-        NjbMediaItem *addTrackToView(NjbTrack *track, NjbMediaItem *item=0);
-
         void clearItems();
-
-
+        
+        NjbMediaItem *addTrackToView(NjbTrack *track, NjbMediaItem *item=0);
+        NjbMediaItem* addAlbums( const QString &artist, NjbMediaItem *item );
+        NjbMediaItem* addTracks( const QString &artist, const QString &track, NjbMediaItem *item );
+        NjbMediaItem* addTrack( NjbTrack *track );
+        NjbMediaItem* addArtist( NjbTrack *track );
         TransferDialog      *m_td;
-        njb_t njbs[NJB_MAX_DEVICES];
-
+        
         QListView *listAmarokPlayLists;
-
         QString devNode;
-
         QString m_errMsg;
-
         bool m_connected; // Replaces m_captured from the original code.
 
+        njb_t njbs[NJB_MAX_DEVICES];
         static njb_t* m_njb;
+        trackValueList trackList;
+        
         int m_libcount;
         bool m_busy;
-        trackValueList trackList;
         unsigned m_progressStart;
         QString m_progressMessage;
-
+        NjbMediaItem *m_artistItem;
+        NjbMediaItem *m_albumItem;
+        NjbMediaItem *m_allTracksItem;
 };
 
 #endif

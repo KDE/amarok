@@ -166,6 +166,15 @@ NjbTrack::NjbTrack( njb_songid_t* song)
     this->setBundle( *bundle );
 }
 
+NjbTrack::~NjbTrack()
+{
+    ItemList.setAutoDelete( true );
+    while( ItemList.count() > 0 )
+    {
+        delete ItemList.first();
+    }
+}
+
 void
 NjbTrack::writeToSongid( njb_songid_t *songid )
 {
@@ -214,6 +223,7 @@ bool
 NjbTrack::removeItem( const NjbMediaItem *item )
 {
     ItemList.remove( item );
+    debug() << "Removed item\n";
     return ItemList.isEmpty();
 }
 

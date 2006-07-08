@@ -109,7 +109,7 @@ NjbMediaDevice::closeDevice()
     clearItems();
 
     m_name = i18n("NJB Medie device");
-
+    debug() << "Done" << endl;
     return true;
 }
 
@@ -487,17 +487,6 @@ NjbMediaDevice::copyTrackToDevice(const MetaBundle& bundle)
 
     taggedTrack->setBundle( temp );
 
-//  I doubt we're using the below debugs at all, anymore.
-//
-//     // send the track
-//     // totalSize( taggedTrack.getSize() );
-//     debug() << "copyTrack: sending..." << endl;
-//     debug() << "copyTrack: "
-//         << taggedTrack->title() << " " << taggedTrack->getAlbum() << " "
-//         << taggedTrack->genre() << " "
-//         << "size:" << taggedTrack->getSize() << " "
-//         << taggedTrack->getArtist() << endl;
-
     u_int32_t id;
     m_progressStart = time( 0);
     m_progressMessage = i18n("Copying / Sent %1%...");
@@ -533,10 +522,7 @@ NjbMediaDevice::copyTrackToDevice(const MetaBundle& bundle)
     // cache the track
     trackList.append( taggedTrack );;
 
-    //TODO: Construct a MediaItem
-
     return addTrackToView( taggedTrack );
-
 }
 
 MediaItem*
@@ -644,22 +630,15 @@ NjbMediaDevice::removeConfigElements(QWidget* arg1)
 MediaItem *
 NjbMediaDevice::trackExists( const MetaBundle & bundle )
 {
-    Q_UNUSED( bundle )
-    /*
-    for( MediaItem *item = dynamic_cast<MediaItem *>( m_view->firstChild() );
-         item;
-         item = dynamic_cast<MediaItem *>( item->nextSibling() ) )
+    MediaItem *artist = dynamic_cast<MediaItem *>( m_view->findItem( bundle.artist(), 0 ) );
+    if ( artist )
     {
-        MetaBundle *trackBundle = new MetaBundle( ( *item->bundle() ) );
-        if( trackBundle->title()     == bundle.title()
-            && trackBundle->artist() == bundle.artist()
-            && trackBundle->album()  == bundle.album()
-            && trackBundle->track()  == bundle.track() )
+        MediaItem *album = dynamic_cast<MediaItem *>( artist->findItem( bundle.album() ) );
+        if( album )
         {
-            return item;
+            return dynamic_cast<MediaItem *>( album->findItem( bundle.title() ) );
         }
     }
- */
     return 0;
 }
 
@@ -735,16 +714,9 @@ NjbMediaDevice::progressCallback(  u_int64_t sent, u_int64_t total, const char* 
 void
 NjbMediaDevice::clearItems()
 {
-    NjbMediaItem *auxItem = dynamic_cast<NjbMediaItem *>( m_view->firstChild() );
-    while(auxItem)
-    {
-        NjbMediaItem *nextItem = dynamic_cast<NjbMediaItem *>(auxItem->nextSibling());
-        delete auxItem;
-        auxItem = nextItem;
-    }
+    m_view->clear();
 }
 
-/* ------------------------------------------------------------------------ */
 /** Transfer musical info from the njb to local structures */
 int
 NjbMediaDevice::readJukeboxMusic( void)
@@ -768,16 +740,20 @@ NjbMediaDevice::readJukeboxMusic( void)
         m_playlistItem->setType( MediaItem::PLAYLISTSROOT );*/
 
         kapp->processEvents( 100 );
-
-        trackValueList::iterator it;
-        for( it = trackList.begin(); it != trackList.end(); it++)
+         
+        for( trackValueList::iterator it = trackList.begin(); it != trackList.end(); it++ )
         {
-            addTrackToView( (*it) );
-
-            kapp->processEvents( 100 );
+            if( m_view->findItem( ((*it)->bundle()->artist().string()), 0 ) == 0 )
+            {
+                NjbMediaItem *artist = new NjbMediaItem( m_view );
+                artist->setText( 0, (*it)->bundle()->artist() );
+                debug() << (*it)->bundle()->artist() << " " <<artist->text(0) << endl;
+                artist->setType( MediaItem::ARTIST );
+                artist->setExpandable( true );
+                artist->setBundle( (*it)->bundle() );
+            }
         }
     }
-
     debug() << ": return " << result << endl;
     return result;
 }
@@ -785,12 +761,9 @@ NjbMediaDevice::readJukeboxMusic( void)
 NjbMediaItem *
 NjbMediaDevice::addTrackToView(NjbTrack *track, NjbMediaItem *item)
 {
-    //DEBUG_BLOCK
-    QString artistName;
-//    debug() << track->bundle()->title() << " " << track->bundle()->artist() << " " << track->bundle()->album() << endl;
-    artistName = track->bundle()->artist();
+    QString artistName = track->bundle()->artist();
 
-    NjbMediaItem *artist = getArtist(artistName);
+    NjbMediaItem *artist = dynamic_cast<NjbMediaItem *>( m_view->findItem( artistName, 0 ) );
     if(!artist)
     {
         artist = new NjbMediaItem(m_view);
@@ -799,7 +772,7 @@ NjbMediaDevice::addTrackToView(NjbTrack *track, NjbMediaItem *item)
     }
 
     QString albumName = track->bundle()->album();
-    NjbMediaItem *album = (NjbMediaItem*)artist->findItem(albumName);
+    NjbMediaItem *album = dynamic_cast<NjbMediaItem *>( artist->findItem( albumName ) );
     if(!album)
     {
         album = new NjbMediaItem( artist );
@@ -820,39 +793,86 @@ NjbMediaDevice::addTrackToView(NjbTrack *track, NjbMediaItem *item)
         item->setType( MediaItem::TRACK );
         item->setBundle( track->bundle() );
         item->track()->setId( track->id() );
-    //    debug() << "Track added: " << item->bundle()->title() << " - " << item->bundle()->artist() << " on " << item->bundle()->album() << endl;
     }
     return item;
 
-}
-
-NjbMediaItem *
-NjbMediaDevice::getArtist(const QString &artist)
-{
-    for(NjbMediaItem *it = dynamic_cast<NjbMediaItem *>(m_view->firstChild());
-            it;
-            it = dynamic_cast<NjbMediaItem *>(it->nextSibling()))
-    {
-        if(it->m_type==MediaItem::ARTIST && artist == it->text(0))
-            return it;
-    }
-
-    return 0;
-}
-
-NjbMediaItem *
-NjbMediaDevice::getAlbum(const QString &artist, const QString &album)
-{
-    DEBUG_BLOCK
-    NjbMediaItem *item = getArtist(artist);
-    if(item)
-        return dynamic_cast<NjbMediaItem *>(item->findItem(album));
-
-    return 0;
 }
 
 njb_t *
 NjbMediaDevice::theNjb()
 {
     return NjbMediaDevice::m_njb;
+}
+
+void
+NjbMediaDevice::expandItem( QListViewItem *item )
+{
+    DEBUG_BLOCK
+    // First clear the item's children to repopulate.
+    while( item->firstChild() )
+        delete item->firstChild();
+
+    NjbMediaItem *it = dynamic_cast<NjbMediaItem *>( item );
+
+    switch( it->type() )
+    {
+        case MediaItem::ARTIST:
+            if( it->childCount() == 0 ) // Just to be sure
+                addAlbums( item->text( 0 ), it );
+            break;
+        case MediaItem::ALBUM:
+            if( it->childCount() == 0 )
+                addTracks( it->bundle()->artist(), item->text( 0 ), it );
+            break;
+        default:
+            break;
+    }
+}
+
+NjbMediaItem*
+NjbMediaDevice::addAlbums(const QString &artist, NjbMediaItem *item)
+{
+    for( trackValueList::iterator it = trackList.begin(); it != trackList.end(); it++ )
+    {
+        if( item->findItem( (*it)->bundle()->album() ) == 0 && ( (*it)->bundle()->artist().string() == artist ) )
+        {
+            NjbMediaItem *album = new NjbMediaItem( item );
+            album->setText( 0, (*it)->bundle()->album() );
+            album->setType( MediaItem::ALBUM );
+            album->setExpandable( true );
+            album->setBundle( (*it)->bundle() );
+        }
+    }
+    return item;
+}
+
+NjbMediaItem*
+NjbMediaDevice::addTracks(const QString &artist, const QString &album, NjbMediaItem *item)
+{
+    for( trackValueList::iterator it = trackList.begin(); it != trackList.end(); it++ )
+    {
+        if( ( (*it)->bundle()->album().string() == album ) && ( (*it)->bundle()->artist().string() == artist ))
+        {
+            NjbMediaItem *track = new NjbMediaItem( item );
+            track->setText( 0, (*it)->bundle()->title() );
+            track->setType( MediaItem::TRACK );
+            track->setBundle( (*it)->bundle() );
+            track->setTrack( (*it) );
+        }
+    }
+    return item;
+}
+
+NjbMediaItem*
+NjbMediaDevice::addArtist( NjbTrack *track )
+{
+    if( m_view->findItem( track->bundle()->artist().string(), 0 ) == 0 )
+    {
+        NjbMediaItem *artist = new NjbMediaItem( m_view );
+        artist->setText( 0, track->bundle()->artist() );
+        artist->setType( MediaItem::ARTIST );
+        artist->setExpandable( true );
+        artist->setBundle( track->bundle() );
+    }
+    return dynamic_cast<NjbMediaItem *>( m_view->findItem( track->bundle()->artist().string(), 0 ) );
 }
