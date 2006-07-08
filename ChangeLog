@@ -16,6 +16,8 @@ VERSION 1.4.2:
     * In-line tag editing is now ATF-enabled.
 
   BUGFIXES:
+    * Make handling of filenames on iPods case-insensitive and thus fix
+      fix problems with too many orphaned and stale items. (BR 126431)
     * Correct action of queueing current item in dynamic mode. (BR 130313)
     * Double clicking in the filebrowser will append to playlist. (BR 117465)
     * Fixed problems with last.fm streams containing spaces, e.g. "Hip Hop".

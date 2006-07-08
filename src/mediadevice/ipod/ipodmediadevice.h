@@ -86,15 +86,16 @@ class IpodMediaDevice : public KioMediaDevice
         void              renameItem( QListViewItem *item );
 
     private:
-        bool              initializeIpod( const QString &mountpoint );
+        bool              initializeIpod();
         bool              writeITunesDB( bool threaded=true );
-        bool              createLockFile( const QString &mountpoint, bool silent );
+        bool              createLockFile( bool silent );
         IpodMediaItem    *addTrackToView( Itdb_Track *track, IpodMediaItem *item=0, bool checkIntegrity=false );
         void              addPlaylistToView( Itdb_Playlist *playlist );
         void              playlistFromItem( IpodMediaItem *item );
 
         QString           realPath( const char *ipodPath );
         QString           ipodPath( const QString &realPath );
+        bool              pathExists( const QString &ipodPath, QString *realPath=0 );
 
         // ipod database
         Itdb_iTunesDB    *m_itdb;

@@ -101,7 +101,7 @@ class IpodMediaItem : public MediaItem
         IpodMediaItem( QListViewItem *parent, QListViewItem *after, MediaDevice *dev )
             : MediaItem( parent, after ) { init( dev ); }
 
-        ~IpodMediaItem() { delete m_podcastInfo; }
+        virtual ~IpodMediaItem() { delete m_podcastInfo; }
 
         void init( MediaDevice *dev )
         {
@@ -749,17 +749,19 @@ IpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
 }
 
 bool
-IpodMediaDevice::createLockFile( const QString &mountpoint, bool silent )
+IpodMediaDevice::createLockFile( bool silent )
 {
-    m_lockFile = new QFile( QFile::encodeName(mountpoint + "/iPod_Control/iTunes/iTunesLock") );
+    QString lockFilePath;
+    pathExists( ":iPod_Control:iTunes:iTunesLock", &lockFilePath );
+    m_lockFile = new QFile( lockFilePath );
     QString msg;
     bool ok = true;
     if( m_lockFile->exists() )
     {
         ok = false;
-        msg = i18n( "Media Device: iPod mounted at %1 already locked! " ).arg( mountpoint );
+        msg = i18n( "Media Device: iPod mounted at %1 already locked! " ).arg( mountPoint() );
         msg += i18n( "If you are sure that this is an error, then remove the file %1 and try again." )
-           .arg( mountpoint + "/iPod_Control/iTunes/iTunesLock" );
+           .arg( lockFilePath );
 
         if( !silent )
         {
@@ -768,7 +770,7 @@ IpodMediaDevice::createLockFile( const QString &mountpoint, bool silent )
                     == KMessageBox::Continue )
             {
                 msg = i18n( "Media Device: removing lockfile %1 failed: %2! " )
-                    .arg( mountpoint + "/iPod_Control/iTunes/iTunesLock", m_lockFile->errorString() );
+                    .arg( lockFilePath, m_lockFile->errorString() );
                 ok = m_lockFile->remove();
             }
             else
@@ -782,7 +784,7 @@ IpodMediaDevice::createLockFile( const QString &mountpoint, bool silent )
     {
         ok = false;
         msg = i18n( "Media Device: failed to create lockfile on iPod mounted at %1: %2" )
-            .arg(mountpoint, m_lockFile->errorString());
+            .arg(mountPoint(), m_lockFile->errorString());
     }
 
     if( ok )
@@ -797,25 +799,25 @@ IpodMediaDevice::createLockFile( const QString &mountpoint, bool silent )
 }
 
 bool
-IpodMediaDevice::initializeIpod( const QString &mountpoint )
+IpodMediaDevice::initializeIpod()
 {
-    QDir dir( mountpoint );
+    QDir dir( mountPoint() );
     if( !dir.exists() )
     {
         amaroK::StatusBar::instance()->longMessage(
-                i18n("Media device: Mount point %1 does not exist").arg(mountpoint),
+                i18n("Media device: Mount point %1 does not exist").arg(mountPoint()),
                 KDE::StatusBar::Error );
         return false;
     }
 
-    debug() << "initializing iPod mounted at " << mountpoint << endl;
+    debug() << "initializing iPod mounted at " << mountPoint() << endl;
 
     // initialize iPod
     m_itdb = itdb_new();
     if( m_itdb == 0 )
         return false;
 
-    itdb_set_mountpoint(m_itdb, QFile::encodeName(mountpoint));
+    itdb_set_mountpoint(m_itdb, QFile::encodeName(mountPoint()));
 
     Itdb_Playlist *mpl = itdb_playlist_new("iPod", false);
     itdb_playlist_set_mpl(mpl);
@@ -824,25 +826,28 @@ IpodMediaDevice::initializeIpod( const QString &mountpoint )
     itdb_playlist_add(m_itdb, podcasts, -1);
     itdb_playlist_add(m_itdb, mpl, 0);
 
-    QString path = mountpoint + "/iPod_Control";
-    dir.setPath(path);
-    if(!dir.exists())
+    QString realPath;
+    if(!pathExists(":iPod_Control", &realPath) )
+    {
+        dir.setPath(realPath);
         dir.mkdir(dir.absPath());
+    }
     if(!dir.exists())
         return false;
 
-
-    path = mountpoint + "/iPod_Control/Music";
-    dir.setPath(path);
-    if(!dir.exists())
+    if(!pathExists(":iPod_Control:Music", &realPath) )
+    {
+        dir.setPath(realPath);
         dir.mkdir(dir.absPath());
+    }
     if(!dir.exists())
         return false;
 
-    path = mountpoint + "/iPod_Control/iTunes";
-    dir.setPath(path);
-    if(!dir.exists())
+    if(!pathExists(":iPod_Control:iTunes", &realPath) )
+    {
+        dir.setPath(realPath);
         dir.mkdir(dir.absPath());
+    }
     if(!dir.exists())
         return false;
 
@@ -850,7 +855,7 @@ IpodMediaDevice::initializeIpod( const QString &mountpoint )
         return false;
 
     amaroK::StatusBar::instance()->longMessage(
-            i18n("Media Device: Initialized iPod mounted at %1").arg(mountpoint),
+            i18n("Media Device: Initialized iPod mounted at %1").arg(mountPoint()),
             KDE::StatusBar::Information );
 
     return true;
@@ -876,8 +881,9 @@ IpodMediaDevice::openDevice( bool silent )
     // try to find a mounted ipod
     bool ipodFound = false;
     KMountPoint::List currentmountpoints = KMountPoint::currentMountPoints();
-    KMountPoint::List::Iterator mountiter = currentmountpoints.begin();
-    for(; mountiter != currentmountpoints.end(); ++mountiter)
+    for( KMountPoint::List::Iterator mountiter = currentmountpoints.begin();
+        mountiter != currentmountpoints.end();
+        ++mountiter )
     {
         QString devicenode = (*mountiter)->mountedFrom();
         QString mountpoint = (*mountiter)->mountPoint();
@@ -948,7 +954,7 @@ IpodMediaDevice::openDevice( bool silent )
                 && KMessageBox::warningContinueCancel( m_parent, msg, i18n( "Initialize iPod?" ),
                     KGuiItem(i18n("&Initialize"), "new") ) == KMessageBox::Continue )
         {
-            if( !initializeIpod( mountPoint() ) )
+            if( !initializeIpod() )
             {
                 if( m_itdb )
                 {
@@ -967,7 +973,7 @@ IpodMediaDevice::openDevice( bool silent )
            return false;
     }
 
-    if( !createLockFile( mountPoint(), silent ) )
+    if( !createLockFile( silent ) )
     {
         if( m_itdb )
         {
@@ -1054,27 +1060,21 @@ IpodMediaDevice::openDevice( bool silent )
 
     for( int i=0; i < itdb_musicdirs_number(m_itdb); i++)
     {
+        QString real;
         QString ipod;
         ipod.sprintf( ":iPod_Control:Music:f%02d", i );
-        QString real = realPath( ipod.latin1() );
-        QDir dir( real );
-        if( !dir.exists() )
+        if(!pathExists( ipod, &real ) )
         {
-            ipod.sprintf( ":iPod_Control:Music:F%02d", i );
-            real = realPath( ipod.latin1() );
+            QDir dir( real );
+            dir.mkdir( real );
             dir.setPath( real );
             if( !dir.exists() )
             {
-                dir.mkdir( real );
-                dir.setPath( real );
-                if( !dir.exists() )
-                {
-                    debug() << "failed to create hash dir " << real << endl;
-                    amaroK::StatusBar::instance()->longMessage(
-                            i18n("Media device: Failed to create directory %1").arg(real),
-                            KDE::StatusBar::Error );
-                    return false;
-                }
+                debug() << "failed to create hash dir " << real << endl;
+                amaroK::StatusBar::instance()->longMessage(
+                        i18n("Media device: Failed to create directory %1").arg(real),
+                        KDE::StatusBar::Error );
+                return false;
             }
         }
     }
@@ -1167,17 +1167,16 @@ IpodMediaDevice::checkIntegrity()
     }
 
     QString musicpath = QString(itdb_get_mountpoint(m_itdb)) + "/iPod_Control/Music";
-    QDir dir( musicpath, QString::null, QDir::Name | QDir::IgnoreCase, QDir::Dirs );
+    QDir dir( musicpath, QString::null, QDir::Unsorted, QDir::Dirs );
     for(unsigned i=0; i<dir.count(); i++)
     {
         if(dir[i] == "." || dir[i] == "..")
             continue;
 
         QString hashpath = musicpath + "/" + dir[i];
-        QDir hashdir( hashpath, QString::null, QDir::Name | QDir::IgnoreCase, QDir::Files );
+        QDir hashdir( hashpath, QString::null, QDir::Unsorted, QDir::Files );
         for(unsigned j=0; j<hashdir.count(); j++)
         {
-
             QString filename = hashpath + "/" + hashdir[j];
             QString ipodPath = ":iPod_Control:Music:" + dir[i] + ":" + hashdir[j];
             Itdb_Track *track = m_files[ipodPath.lower()];
@@ -1275,9 +1274,7 @@ IpodMediaDevice::addTrackToView(Itdb_Track *track, IpodMediaItem *item, bool che
 
     if( checkIntegrity )
     {
-        QString path = realPath(track->ipod_path);
-        QFileInfo finfo(path);
-        if(!finfo.exists())
+        if( !pathExists( track->ipod_path ) )
         {
             stale = true;
             debug() << "track: " << track->artist << " - " << track->album << " - " << track->title << " is stale: " << track->ipod_path << " does not exist" << endl;
@@ -1745,7 +1742,6 @@ IpodMediaDevice::determineURLOnDevice(const MetaBundle &bundle)
     QString type = local.section('.', -1);
 
     QString trackpath;
-    bool exists = false;
     do
     {
         int num = std::rand() % 1000000;
@@ -1753,25 +1749,17 @@ IpodMediaDevice::determineURLOnDevice(const MetaBundle &bundle)
         int dir = num % music_dirs;
         QString dirname;
         dirname.sprintf( ":iPod_Control:Music:f%02d", dir );
-        QString realdir = realPath(dirname.latin1());
-        QDir qdir( realdir );
-        if( !qdir.exists() )
+        if( !pathExists( dirname ) )
         {
-            dirname.sprintf( ":iPod_Control:Music:F%02d", dir );
-            realdir = realPath(dirname.latin1());
-            qdir.setPath( realdir );
-            if( !qdir.exists() )
-            {
-                qdir.mkdir( realdir );
-            }
+            QString realdir = realPath(dirname.latin1());
+            QDir qdir( realdir );
+            qdir.mkdir( realdir );
         }
         QString filename;
         filename.sprintf( ":kpod%07d.%s", num, type.latin1() );
         trackpath = dirname + filename;
-        QFileInfo finfo(realPath(trackpath.latin1()));
-        exists = finfo.exists();
     }
-    while(exists);
+    while( pathExists( trackpath ) );
 
     return realPath(trackpath.latin1());
 }
@@ -2246,6 +2234,43 @@ IpodMediaDevice::loadConfig()
 
     m_syncStats = configBool( "SyncStats", false );
     m_autoDeletePodcasts = configBool( "AutoDeletePodcasts", false );
+}
+
+bool
+IpodMediaDevice::pathExists( const QString &ipodPath, QString *realPath )
+{
+    QDir curDir( mountPoint() );
+    QString curPath = mountPoint();
+    QStringList components = QStringList::split( ":", ipodPath );
+
+    bool found = false;
+    QStringList::iterator it = components.begin();
+    for( ; it != components.end(); ++it )
+    {
+        found = false;
+        for(uint i=0; i<curDir.count(); i++)
+        {
+            if( curDir[i].lower() == (*it).lower())
+            {
+                curPath += "/" + curDir[i];
+                curDir.cd( curPath );
+                found = true;
+                break;
+            }
+        }
+        if(!found)
+            break;
+    }
+
+    for( ; it != components.end(); ++it )
+        curPath += "/" + *it;
+
+    debug() << ipodPath << ( found ? "" : " not" ) << " found, actually " << curPath << endl;
+
+    if( realPath )
+        *realPath = curPath;
+
+    return found;
 }
 
 #include "ipodmediadevice.moc"
