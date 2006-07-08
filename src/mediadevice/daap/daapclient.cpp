@@ -99,7 +99,7 @@ DaapClient::closeDevice()
         static_cast<Daap::Reader*>(itRead)->logoutRequest();
     }
     m_connected = false;
-    delete m_browser; 
+    delete m_browser;
     m_browser = 0;
     return true;
 }
@@ -123,7 +123,7 @@ DaapClient::trackExists( const MetaBundle& )
 }
 
 int
-DaapClient::deleteItemFromDevice( MediaItem* /*item*/, bool /*onlyPlayed*/, bool /*deleteItem*/ )
+DaapClient::deleteItemFromDevice( MediaItem* /*item*/, bool /*onlyPlayed*/ )
 {
     return 0;
 }
@@ -159,7 +159,7 @@ DaapClient::resolvedDaap( bool success )
             debug() << "ip found is " << ip << endl;
         }
     }
-    
+
     if( ip.isEmpty() ) return;
     Daap::Reader* reader = new Daap::Reader( ip, server, this, ( service->hostName() + service->serviceName() ).ascii() );
     connect( reader, SIGNAL( daapBundles( const QString&, Daap::SongList ) ),
