@@ -59,9 +59,11 @@ typedef QMap< QString, AlbumList > SongList;
             //QPtrList<MetaBundle> getSongList();
             enum Options { SESSION_ID = 1, SERVER_VERSION = 2  };
             void loginRequest();
+            void logoutRequest();
             MediaItem* rootMediaItem() const { return m_root; }
 
         public slots: 
+            void logoutRequest(int, bool );
             void loginFinished( int id , bool error );
             void updateFinished( int id , bool error );
             void databaseIdFinished( int id , bool error );

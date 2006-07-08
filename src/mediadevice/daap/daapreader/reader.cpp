@@ -13,8 +13,8 @@
 
 #include "authentication/contentfetcher.h"
 #include "debug.h"
-#include "metabundle.h"
 #include "reader.h"
+#include "metabundle.h"
 #include "qstringx.h"
 
 #include <qcstring.h>
@@ -153,7 +153,22 @@ Reader::Reader(const QString& host, MediaItem* root, QObject* parent, const char
 }
 
 Reader::~Reader()
-{ }
+{  }
+
+void
+Reader::logoutRequest()
+{
+    ContentFetcher* http = new ContentFetcher( m_host, Q_UINT16(3689), this, "readerLogoutHttp" );
+    connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( logoutRequest( int, bool ) ) );
+    http->getDaap( "/logout?" + m_loginString );
+}
+
+void
+Reader::logoutRequest( int, bool )
+{
+     const_cast<QObject*>(sender())->deleteLater();
+    deleteLater();
+}
 
 void
 Reader::loginRequest()
@@ -168,7 +183,11 @@ Reader::loginFinished( int /* id */, bool error )
 {
     ContentFetcher* http = (ContentFetcher*) sender();
     disconnect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( loginFinished( int, bool ) ) );
-    if( error ) return;
+    if( error )
+    { 
+        http->deleteLater();
+        return;
+    }
 
 
     QByteArray resultArr = http->readAll();
@@ -185,7 +204,11 @@ Reader::updateFinished( int /*id*/, bool error )
 {
     ContentFetcher* http = (ContentFetcher*) sender();
     disconnect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( updateFinished( int, bool ) ) );
-    if( error ) return;
+    if( error )
+    { 
+        http->deleteLater();
+        return;
+    }
 
     QByteArray resultArr = http->readAll();
     QDataStream results( resultArr,  IO_ReadOnly );
@@ -203,7 +226,11 @@ Reader::databaseIdFinished( int /*id*/, bool error )
 {
     ContentFetcher* http = (ContentFetcher*) sender();
     disconnect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( databaseIdFinished( int, bool ) ) );
-    if( error ) return;
+    if( error )
+    { 
+        http->deleteLater();
+        return;
+    }
 
     QByteArray resultArr = http->readAll();
     QDataStream results( resultArr,  IO_ReadOnly );
@@ -220,7 +247,11 @@ Reader::songListFinished( int /*id*/, bool error )
 {
     ContentFetcher* http = (ContentFetcher*) sender();
     disconnect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( songListFinished( int, bool ) ) );
-    if( error ) return;
+    if( error )
+    { 
+        http->deleteLater();
+        return;
+    }
 
     QByteArray resultArr = http->readAll();
     QDataStream results( resultArr,  IO_ReadOnly );
@@ -254,6 +285,7 @@ Reader::songListFinished( int /*id*/, bool error )
     }
     debug() << "emitting daapBundles for host " << m_host << endl;
     emit daapBundles( m_host , result );
+    http->deleteLater();
 }
 
 Q_UINT32
