@@ -632,7 +632,7 @@ GenericMediaDevice::getSelectedItems()
 /// Deleting
 
 int
-GenericMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/, bool /*deleteTrack*/ )
+GenericMediaDevice::deleteItemFromDevice( MediaItem *item, bool onlyPlayed )
 {
     if( !item || !m_connected ) return -1;
 

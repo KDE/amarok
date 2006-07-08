@@ -1,6 +1,7 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // (c) 2005 Martin Aumueller <aumuell@reserv.at>
 // (c) 2005 Seb Ruiz <me@sebruiz.net>
+// (c) 2006 T.R.Shashwath <trshash84@gmail.com>
 // See COPYING file for licensing information
 
 #ifndef AMAROK_MEDIABROWSER_H
@@ -119,7 +120,9 @@ class MediaQueue : public KListView
         void load( const QString &path );
         void save( const QString &path );
         void addURL( const KURL& url, MetaBundle *bundle=NULL, const QString &playlistName=QString::null );
+        void addURL( const KURL& url, MediaItem *item );
         void addURLs( const KURL::List urls, const QString &playlistName=QString::null );
+        
         void URLsAdded(); // call after finishing adding single urls
 
         // Reimplemented from KListView
@@ -519,12 +522,20 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         virtual MediaItem *copyTrackToDevice(const MetaBundle& bundle) = 0;
 
         /**
+         * Copy track from device to computer
+         * @param item The MediaItem of the track to transfer.
+         * @param url The URL to transfer the track to.
+         * @return The MediaItem transfered.
+         */
+        virtual void copyTrackFromDevice(MediaItem *item) { Q_UNUSED(item) }
+
+        /**
          * Recursively remove MediaItem from the tracklist and the device
          * @param item MediaItem to remove
          * @param onlyPlayed True if item should be deleted only if it has been played
          * @return -1 on failure, number of files deleted otherwise
          */
-        virtual int deleteItemFromDevice( MediaItem *item, bool onlyPlayed=false, bool deleteTrack=true ) = 0;
+        virtual int deleteItemFromDevice( MediaItem *item, bool onlyPlayed=false ) = 0;
 
         /**
          * Abort the currently active track transfer
@@ -535,7 +546,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
 
         virtual bool isSpecialItem( MediaItem *item );
 
-        int deleteFromDevice( MediaItem *item=0, bool onlyPlayed=false, bool deleteTrack=true, bool recursing=false );
+        int deleteFromDevice( MediaItem *item=0, bool onlyPlayed=false, bool recursing=false );
 
         void purgeEmptyItems( MediaItem *root=0 );
         void syncStatsFromDevice( MediaItem *root=0 );

@@ -121,13 +121,14 @@ class NjbMediaDevice : public MediaDevice
         virtual bool openDevice(bool silent);
 
         int deleteFromDevice(unsigned id);
-        virtual int deleteItemFromDevice(MediaItem* item, bool onlyPlayed = false, bool deleteTrack = true );
+        int deleteItemFromDevice(MediaItem* item, bool onlyPlayed);
         int deleteTrack(NjbMediaItem *trackItem);
 
         int downloadSelectedItems();
         int downloadToCollection();
 
         virtual MediaItem* copyTrackToDevice(const MetaBundle& bundle);
+        virtual void copyTrackFromDevice(MediaItem *item);
 
         virtual void cancelTransfer();
         virtual void synchronizeDevice() {};

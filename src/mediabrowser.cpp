@@ -1,6 +1,7 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // (c) 2005-2006 Martin Aumueller <aumuell@reserv.at>
 // (c) 2005 Seb Ruiz <me@sebruiz.net>
+// (c) 2006 T.R.Shashwath <trshash84@gmail.com>
 // See COPYING file for licensing information
 
 
@@ -191,7 +192,7 @@ class DummyMediaDevice : public MediaDevice
     virtual bool closeDevice() { return false; }
     virtual void synchronizeDevice() {}
     virtual MediaItem* copyTrackToDevice(const MetaBundle&) { return 0; }
-    virtual int deleteItemFromDevice(MediaItem*, bool, bool) { return -1; }
+    virtual int deleteItemFromDevice(MediaItem*, bool) { return -1; }
 };
 
 
@@ -1208,7 +1209,6 @@ MediaView::getSelectedLeaves( MediaItem *parent, QPtrList<MediaItem> *list, bool
                 if( it->type() == MediaItem::TRACK       ||
                     it->type() == MediaItem::DIRECTORY   ||
                     it->type() == MediaItem::PODCASTITEM ||
-                    it->type() == MediaItem::PLAYLISTITEM||
                     it->type() == MediaItem::INVISIBLE   ||
                     it->type() == MediaItem::ORPHANED     )
                 {
@@ -1976,6 +1976,37 @@ MediaQueue::addURL( const KURL& url, MetaBundle *bundle, const QString &playlist
 }
 
 void
+MediaQueue::addURL( const KURL &url, MediaItem *item )
+{
+    DEBUG_BLOCK
+    MediaItem *newitem = new MediaItem( this, lastItem() );
+    newitem->setExpandable( false );
+    newitem->setDropEnabled( true );
+    MetaBundle *bundle = new MetaBundle( *item->bundle() );
+    KURL filepath(url);
+    filepath.addPath( bundle->filename() );
+    bundle->setUrl( filepath );
+    newitem->m_device = item->m_device;
+    if(bundle->podcastBundle() )
+    {
+        item->setType( MediaItem::PODCASTITEM );
+    }
+    QString text = item->bundle()->prettyTitle();
+    if( text.isEmpty() || (!item->bundle()->isValidMedia() && !item->bundle()->podcastBundle()) )
+        text = item->bundle()->url().prettyURL();
+    if( item->m_playlistName != QString::null )
+    {
+        text += " (" + item->m_playlistName + ")";
+    }
+    newitem->setText( 0, text);
+    newitem->setBundle( bundle );
+    m_parent->updateButtons();
+    m_parent->m_progress->setTotalSteps( m_parent->m_progress->totalSteps() + 1 );
+    itemCountChanged();
+    
+}
+
+void
 MediaQueue::addURLs( const KURL::List urls, const QString &playlistName )
 {
     KURL::List::ConstIterator it = urls.begin();
@@ -2453,7 +2484,7 @@ MediaDevice::transferFiles()
     {
         return;
     }
-
+    
     setCanceled( false );
 
     m_transferring = true;
@@ -2473,7 +2504,6 @@ MediaDevice::transferFiles()
     {
         if( isCanceled() )
             break;
-        debug() << "Transferring: " << m_transferredItem->url().path() << endl;
 
         const MetaBundle *bundle = m_transferredItem->bundle();
         if(!bundle)
@@ -2483,7 +2513,20 @@ MediaDevice::transferFiles()
             m_parent->m_queue->itemCountChanged();
             continue;
         }
-
+        
+        if( m_transferredItem->device() )
+        {
+            m_transferredItem->device()->copyTrackFromDevice( m_transferredItem );
+            delete m_transferredItem;
+            m_transferredItem = 0;
+            setProgress( progress() + 1 );
+            m_parent->m_queue->itemCountChanged();
+            kapp->processEvents( 100 );
+            continue;
+        }
+        else
+            debug() << "Device not found\n";
+        
         bool transcoding = false;
         MediaItem *item = trackExists( *bundle );
         if( item && !m_transferredItem->m_playlistName.isEmpty() )
@@ -2688,7 +2731,7 @@ MediaDevice::fileTransferFinished()  //SLOT
 
 
 int
-MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool deleteTrack, bool recursing)
+MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
 {
     MediaItem* fi = item;
     int count = 0;
@@ -2707,7 +2750,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool deleteTrack
         int numFiles  = m_view->getSelectedLeaves(item, &list, true /* only selected */, onlyPlayed);
 
         m_parent->m_stats->setText( i18n( "1 track to be deleted", "%n tracks to be deleted", numFiles ) );
-        if(numFiles > 0 && deleteTrack)
+        if(numFiles > 0)
         {
             int button = KMessageBox::warningContinueCancel( m_parent,
                     i18n( "<p>You have selected 1 track to be <b>irreversibly</b> deleted.",
@@ -2754,7 +2797,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool deleteTrack
 
         if( fi->isSelected() )
         {
-            int ret = deleteItemFromDevice(fi, onlyPlayed, deleteTrack);
+            int ret = deleteItemFromDevice(fi, onlyPlayed);
             if( ret >= 0 && count >= 0 )
                 count += ret;
             else
@@ -2764,7 +2807,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool deleteTrack
         {
             if( fi->childCount() )
             {
-                int ret = deleteFromDevice( static_cast<MediaItem*>(fi->firstChild()), onlyPlayed, deleteTrack, true );
+                int ret = deleteFromDevice( static_cast<MediaItem*>(fi->firstChild()), onlyPlayed, true );
                 if( ret >= 0 && count >= 0 )
                     count += ret;
                 else

@@ -62,7 +62,7 @@ class GenericMediaDevice : public MediaDevice
         bool              closeDevice();
 
         MediaItem        *copyTrackToDevice( const MetaBundle& bundle );
-        int               deleteItemFromDevice( MediaItem *item, bool onlyPlayed = false, bool deleteTrack = true );
+        int               deleteItemFromDevice( MediaItem *item, bool onlyPlayed );
         MediaItem        *newDirectory( const QString &name, MediaItem *parent );
         void              addToDirectory( MediaItem *directory, QPtrList<MediaItem> items );
 

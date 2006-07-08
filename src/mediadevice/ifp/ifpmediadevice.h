@@ -55,7 +55,7 @@ class IfpMediaDevice : public MediaDevice
         void              synchronizeDevice() {}
 
         MediaItem        *copyTrackToDevice( const MetaBundle& bundle);
-        int               deleteItemFromDevice( MediaItem *item, bool onlyPlayed = false, bool deleteTrack = true );
+        int               deleteItemFromDevice( MediaItem *item, bool onlyPlayed );
         bool              getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
         MediaItem        *newDirectory( const QString &name, MediaItem *parent );
         void              addToDirectory( MediaItem *directory, QPtrList<MediaItem> items );

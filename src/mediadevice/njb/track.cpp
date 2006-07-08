@@ -239,20 +239,6 @@ trackValueList::findTrackByName( const QString& _filename )
 }
 
 /* ------------------------------------------------------------------------ */
-// trackValueList::const_iterator 
-// trackValueList::findTrackByName( const QString& _filename ) const
-// {
-//     trackValueList::const_iterator it;
-//     for( it = begin(); it != end(); it++)
-//     {
-//         MetaBundle bundle = ( ( *it ).getBundle() );
-//         if( (*it).getFilename() == _filename)
-//             break;
-//     }
-//     return it;
-// }
-
-/* ------------------------------------------------------------------------ */
 trackValueList::iterator 
 trackValueList::findTrackById( unsigned _id )
 {
