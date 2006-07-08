@@ -1,5 +1,5 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
-// (c) 2005 Martin Aumueller <aumuell@reserv.at>
+// (c) 2005-2006 Martin Aumueller <aumuell@reserv.at>
 // See COPYING file for licensing information
 
 #ifndef AMAROK_IPODMEDIADEVICE_H
@@ -9,8 +9,10 @@ extern "C" {
 #include <gpod/itdb.h>
 }
 
-#include "kiomediadevice.h"
 
+#include "mediabrowser.h"
+
+#include <qmutex.h>
 #include <qptrlist.h>
 #include <qdict.h>
 
@@ -24,7 +26,7 @@ class QFile;
 class IpodMediaItem;
 class PodcastInfo;
 
-class IpodMediaDevice : public KioMediaDevice
+class IpodMediaDevice : public MediaDevice
 {
     friend class IpodMediaItem;
     Q_OBJECT
@@ -50,6 +52,8 @@ class IpodMediaDevice : public KioMediaDevice
 
         bool              openDevice( bool silent=false );
         bool              closeDevice();
+        bool              lockDevice(bool tryLock=false ) { if( tryLock ) { return m_mutex.tryLock(); } else { m_mutex.lock(); return true; } }
+        void              unlockDevice() { m_mutex.unlock(); }
         void              initView();
 
         virtual MediaItem*copyTrackToDevice( const MetaBundle& bundle );
@@ -76,6 +80,7 @@ class IpodMediaDevice : public KioMediaDevice
 
         void              synchronizeDevice();
         int               deleteItemFromDevice( MediaItem *item, bool onlyPlayed = false, bool deleteTrack = true );
+        virtual void      deleteFile( const KURL &url );
         void              addToPlaylist( MediaItem *list, MediaItem *after, QPtrList<MediaItem> items );
         MediaItem        *newPlaylist( const QString &name, MediaItem *list, QPtrList<MediaItem> items );
         bool              getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
@@ -84,6 +89,7 @@ class IpodMediaDevice : public KioMediaDevice
 
     protected slots:
         void              renameItem( QListViewItem *item );
+        virtual void      fileDeleted( KIO::Job *job );
 
     private:
         bool              initializeIpod();
@@ -122,6 +128,7 @@ class IpodMediaDevice : public KioMediaDevice
         QCheckBox        *m_syncStatsCheck;
         QCheckBox        *m_autoDeletePodcastsCheck;
         QFile            *m_lockFile;
+        QMutex            m_mutex;
 };
 
 #endif

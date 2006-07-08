@@ -1,5 +1,5 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
-// (c) 2005 Martin Aumueller <aumuell@reserv.at>
+// (c) 2005-2006 Martin Aumueller <aumuell@reserv.at>
 // See COPYING file for licensing information
 
 #define DEBUG_PREFIX "IpodMediaDevice"
@@ -55,8 +55,6 @@ AMAROK_EXPORT_PLUGIN( IpodMediaDevice )
 #ifndef HAVE_ITDB_GET_MOUNTPOINT
 #define itdb_get_mountpoint(x) (x)->mountpoint
 #endif
-
-
 
 #include "metadata/audible/taglib_audiblefile.h"
 
@@ -178,12 +176,18 @@ class IpodMediaItem : public MediaItem
 
 
 IpodMediaDevice::IpodMediaDevice()
-    : KioMediaDevice()
+    : MediaDevice()
     , m_masterPlaylist( 0 )
     , m_podcastPlaylist( 0 )
     , m_lockFile( 0 )
 {
     registerTaglibPlugins();
+
+    m_podcastItem = 0;
+    m_staleItem = 0;
+    m_orphanedItem = 0;
+    m_invisibleItem = 0;
+    m_playlistItem = 0;
 
     m_dbChanged = false;
     m_itdb = 0;
@@ -207,7 +211,7 @@ IpodMediaDevice::IpodMediaDevice()
 void
 IpodMediaDevice::init( MediaBrowser* parent )
 {
-    KioMediaDevice::init( parent );
+    MediaDevice::init( parent );
 }
 
 IpodMediaDevice::~IpodMediaDevice()
@@ -2287,6 +2291,37 @@ IpodMediaDevice::pathExists( const QString &ipodPath, QString *realPath )
         *realPath = curPath;
 
     return found;
+}
+
+void
+IpodMediaDevice::fileDeleted( KIO::Job *job )  //SLOT
+{
+    if(job->error())
+    {
+        debug() << "file deletion failed: " << job->errorText() << endl;
+    }
+    m_waitForDeletion = false;
+    m_parent->updateStats();
+}
+
+void
+IpodMediaDevice::deleteFile( const KURL &url )
+{
+    debug() << "deleting " << url.prettyURL() << endl;
+    m_waitForDeletion = true;
+    KIO::Job *job = KIO::file_delete( url, false );
+    connect( job, SIGNAL( result( KIO::Job * ) ),
+            this,  SLOT( fileDeleted( KIO::Job * ) ) );
+    do
+    {
+        kapp->processEvents( 100 );
+        if( isCanceled() )
+            break;
+        usleep( 10000 );
+    } while( m_waitForDeletion );
+
+    if(!isTransferring())
+        setProgress( progress() + 1 );
 }
 
 #include "ipodmediadevice.moc"

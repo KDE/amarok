@@ -24,10 +24,8 @@ libamarok_ipod_mediadevice_la_LDFLAGS = \
     $(all_libraries)
 
 libamarok_ipod_mediadevice_la_SOURCES = \
-    kiomediadevice.cpp \
     ipodmediadevice.cpp
 
 noinst_HEADERS = \
-    kiomediadevice.h \
     ipodmediadevice.h
 
