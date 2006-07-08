@@ -524,7 +524,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
          * @param onlyPlayed True if item should be deleted only if it has been played
          * @return -1 on failure, number of files deleted otherwise
          */
-        virtual int deleteItemFromDevice( MediaItem *item, bool onlyPlayed=false ) = 0;
+        virtual int deleteItemFromDevice( MediaItem *item, bool onlyPlayed=false, bool deleteTrack=true ) = 0;
 
         /**
          * Abort the currently active track transfer
@@ -535,7 +535,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
 
         virtual bool isSpecialItem( MediaItem *item );
 
-        int deleteFromDevice( MediaItem *item=0, bool onlyPlayed=false, bool recursing=false );
+        int deleteFromDevice( MediaItem *item=0, bool onlyPlayed=false, bool deleteTrack=true, bool recursing=false );
 
         void purgeEmptyItems( MediaItem *root=0 );
         void syncStatsFromDevice( MediaItem *root=0 );

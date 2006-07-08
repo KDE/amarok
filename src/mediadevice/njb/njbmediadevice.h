@@ -121,7 +121,7 @@ class NjbMediaDevice : public MediaDevice
         virtual bool openDevice(bool silent);
 
         int deleteFromDevice(unsigned id);
-        virtual int deleteItemFromDevice(MediaItem* item, bool onlyPlayed);
+        virtual int deleteItemFromDevice(MediaItem* item, bool onlyPlayed = false, bool deleteTrack = true );
         int deleteTrack(NjbMediaItem *trackItem);
 
         int downloadSelectedItems();

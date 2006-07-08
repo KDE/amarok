@@ -75,7 +75,7 @@ class IpodMediaDevice : public KioMediaDevice
         virtual KURL determineURLOnDevice( const MetaBundle& bundle );
 
         void              synchronizeDevice();
-        int               deleteItemFromDevice( MediaItem *item, bool onlyPlayed = false );
+        int               deleteItemFromDevice( MediaItem *item, bool onlyPlayed = false, bool deleteTrack = true );
         void              addToPlaylist( MediaItem *list, MediaItem *after, QPtrList<MediaItem> items );
         MediaItem        *newPlaylist( const QString &name, MediaItem *list, QPtrList<MediaItem> items );
         bool              getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );

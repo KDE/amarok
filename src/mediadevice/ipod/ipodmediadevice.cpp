@@ -621,7 +621,7 @@ IpodMediaDevice::addToPlaylist(MediaItem *mlist, MediaItem *after, QPtrList<Medi
 }
 
 int
-IpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
+IpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed, bool deleteTrack )
 {
     IpodMediaItem *item = dynamic_cast<IpodMediaItem *>(mediaitem);
     if(!item)
@@ -637,6 +637,16 @@ IpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
 
     switch(item->type())
     {
+    case MediaItem::PLAYLISTITEM:
+        if( !deleteTrack )
+        {
+            // FIXME possibly wrong instance of track is removed
+            itdb_playlist_remove_track(item->m_playlist, item->m_track);
+            delete item;
+            m_dbChanged = true;
+            break;
+        }
+        // else fall through
     case MediaItem::STALE:
     case MediaItem::TRACK:
     case MediaItem::INVISIBLE:
@@ -703,7 +713,7 @@ IpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
                     break;
 
                 next = dynamic_cast<IpodMediaItem *>(it->nextSibling());
-                int ret = deleteItemFromDevice(it, onlyPlayed);
+                int ret = deleteItemFromDevice(it, onlyPlayed, deleteTrack);
                 if( ret >= 0 && count >= 0 )
                     count += ret;
                 else
@@ -729,12 +739,6 @@ IpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed )
                     delete item;
             }
         }
-        break;
-    case MediaItem::PLAYLISTITEM:
-        // FIXME possibly wrong instance of track is removed
-        itdb_playlist_remove_track(item->m_playlist, item->m_track);
-        delete item;
-        m_dbChanged = true;
         break;
     case MediaItem::DIRECTORY:
     case MediaItem::UNKNOWN:
@@ -1845,7 +1849,7 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
             BURN_ARTIST, BURN_ALBUM, BURN_DATACD, BURN_AUDIOCD,
             RENAME, SUBSCRIBE,
             MAKE_PLAYLIST, ADD_TO_PLAYLIST, ADD,
-            DELETE_PLAYED, DELETE,
+            DELETE_PLAYED, DELETE_FROM_IPOD, REMOVE_FROM_PLAYLIST,
             REPAIR_MENU, REPAIR_SCAN, REPAIR_COVERS,
             FIRST_PLAYLIST};
 
@@ -1940,13 +1944,22 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
             break;
         }
 
+        if( item->type() == MediaItem::PLAYLIST || item->type() == MediaItem::PLAYLISTITEM )
+        {
+            menu.insertItem( SmallIconSet( amaroK::icon( "remove" ) ),
+                    item->type()==MediaItem::PLAYLIST ? i18n( "Remove Playlist" ) : i18n( "Remove from Playlist" ),
+                    REMOVE_FROM_PLAYLIST );
+            menu.setItemEnabled( REMOVE_FROM_PLAYLIST, !locked );
+        }
         if( item->type() == MediaItem::PODCASTSROOT || item->type() == MediaItem::PODCASTCHANNEL )
         {
             menu.insertItem( SmallIconSet( amaroK::icon( "remove" ) ), i18n( "Delete Podcasts Already Played" ), DELETE_PLAYED );
             menu.setItemEnabled( DELETE_PLAYED, !locked );
         }
-        menu.insertItem( SmallIconSet( amaroK::icon( "remove" ) ), i18n( "Delete" ), DELETE );
-        menu.setItemEnabled( DELETE, !locked );
+        menu.insertItem( SmallIconSet( amaroK::icon( "remove" ) ),
+                i18n( "Delete Track from iPod", "Delete %n Tracks from iPod", urls.count() ),
+                DELETE_FROM_IPOD );
+        menu.setItemEnabled( DELETE_FROM_IPOD, !locked && urls.count() > 0 );
 
         KPopupMenu repairMenu;
         repairMenu.insertItem( SmallIconSet( amaroK::icon( "playlist_refresh" ) ), i18n( "Scan for Orphaned and Missing Files" ), REPAIR_SCAN );
@@ -2103,7 +2116,10 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                     deleteFromDevice( podcasts, true );
                 }
                 break;
-            case DELETE:
+            case REMOVE_FROM_PLAYLIST:
+                deleteFromDevice(m_playlistItem, false, false);
+                break;
+            case DELETE_FROM_IPOD:
                 deleteFromDevice();
                 break;
             case REPAIR_SCAN:

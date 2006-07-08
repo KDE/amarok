@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 1.4.2:
   FEATURES:
+    * Allow for deleting all the tracks on a playlist from iPods. (BR 127855)
     * Ability to create custom last.fm station from the GUI.
     * Ability to mark podcasts as listened.
     * Show error messages when connecting to last.fm streams fails.
