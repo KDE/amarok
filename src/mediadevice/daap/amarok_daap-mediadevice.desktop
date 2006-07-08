@@ -2,6 +2,8 @@
 Type=Service
 Name=DAAP Client
 Name[et]=DAAP-klient
+Name[it]=Client DAAP
+Name[ja]=DAAP クライアント
 Name[pt]=Cliente de DAAP
 Name[pt_BR]=Cliente de DAAP
 Name[sv]=DAAP-klient
