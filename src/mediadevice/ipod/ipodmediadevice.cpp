@@ -888,14 +888,14 @@ IpodMediaDevice::openDevice( bool silent )
         QString devicenode = (*mountiter)->mountedFrom();
         QString mountpoint = (*mountiter)->mountPoint();
 
-        if( !deviceNode().isEmpty() )
-        {
-            if( devicenode != deviceNode() )
-                continue;
-        }
-        else if( !mountPoint().isEmpty() )
+        if( !mountPoint().isEmpty() )
         {
             if( mountPoint() != mountpoint )
+                continue;
+        }
+        else if( !deviceNode().isEmpty() )
+        {
+            if( devicenode != deviceNode() )
                 continue;
         }
         else
