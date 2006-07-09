@@ -140,7 +140,7 @@ if test "$build_xine" != "no"; then
         xine_rc_version=`sed -ne '/^#define XINE_VERSION/s/.*-rc\([0-9]\+\).*/\1/p' $xine_include/xine.h`
         : ${xine_rc_version:=4} # if this is no rc version, it fulfills the requirements
 
-        AC_MSG_CHECKING([for xine-lib version >= 1.0-rc4])
+        AC_MSG_CHECKING([for xine-lib version >= 1.0.2])
 
         if test $xine_version -eq $xine_version_min \
              -a $xine_rc_version -gt 3 \
