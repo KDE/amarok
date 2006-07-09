@@ -21,6 +21,12 @@
 
 #if DNSSD_SUPPORT
     #include <dnssd/remoteservice.h> //for DNSSD::RemoteService::Ptr
+#else
+namespace DNSSD {
+    namespace RemoteService {
+        class Ptr {}; //HACK Dummy class, so that daapclient.moc compiles
+    }
+}
 #endif
 
 namespace DNSSD {
@@ -62,7 +68,7 @@ class DaapClient : public MediaDevice
          virtual int deleteItemFromDevice( MediaItem *item, bool onlyPlayed = false, bool deleteTrack = true );
 
    private slots:
-        void foundDaap( void* );
+        void foundDaap( DNSSD::RemoteService::Ptr );
         void resolvedDaap( bool );
         void createTree( const QString& host, Daap::SongList bundles );
 

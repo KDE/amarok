@@ -92,7 +92,7 @@ DaapClient::openDevice(bool /* silent=false */)
     {
         m_browser = new DNSSD::ServiceBrowser("_daap._tcp");
         m_browser->setName("daapServiceBrowser");
-        connect( m_browser, SIGNAL( serviceAdded( DNSSD::RemoteService::Ptr ) ), this, SLOT( foundDaap( void* ) ) );
+        connect( m_browser, SIGNAL( serviceAdded( DNSSD::RemoteService::Ptr ) ), this, SLOT( foundDaap( DNSSD::RemoteService::Ptr ) ) );
         m_browser->startBrowse();
     }
 #endif
@@ -150,12 +150,10 @@ DaapClient::deleteItemFromDevice( MediaItem* /*item*/, bool /*onlyPlayed*/, bool
 }
 
 void
-DaapClient::foundDaap( void* p )
+DaapClient::foundDaap( DNSSD::RemoteService::Ptr p )
 {
 #if DNSSD_SUPPORT
     DEBUG_BLOCK
-
-    DNSSD::RemoteService::Ptr service = (DNSSD::RemoteService::Ptr) p;
 
     connect( service, SIGNAL( resolved( bool ) ), this, SLOT( resolvedDaap( bool ) ) );
         service->resolveAsync();
