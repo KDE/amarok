@@ -193,7 +193,7 @@ class DummyMediaDevice : public MediaDevice
     virtual bool closeDevice() { return false; }
     virtual void synchronizeDevice() {}
     virtual MediaItem* copyTrackToDevice(const MetaBundle&) { return 0; }
-    virtual int deleteItemFromDevice(MediaItem*, bool) { return -1; }
+    virtual int deleteItemFromDevice(MediaItem*, bool, bool) { return -1; }
 };
 
 
@@ -1225,6 +1225,7 @@ MediaView::getSelectedLeaves( MediaItem *parent, QPtrList<MediaItem> *list, bool
                 if( it->type() == MediaItem::TRACK       ||
                     it->type() == MediaItem::DIRECTORY   ||
                     it->type() == MediaItem::PODCASTITEM ||
+                    it->type() == MediaItem::PLAYLISTITEM||
                     it->type() == MediaItem::INVISIBLE   ||
                     it->type() == MediaItem::ORPHANED     )
                 {
@@ -2747,7 +2748,7 @@ MediaDevice::fileTransferFinished()  //SLOT
 
 
 int
-MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
+MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool deleteTrack, bool recursing)
 {
     MediaItem* fi = item;
     int count = 0;
@@ -2766,7 +2767,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
         int numFiles  = m_view->getSelectedLeaves(item, &list, true /* only selected */, onlyPlayed);
 
         m_parent->m_stats->setText( i18n( "1 track to be deleted", "%n tracks to be deleted", numFiles ) );
-        if(numFiles > 0)
+        if(numFiles > 0 && deleteTrack)
         {
             int button = KMessageBox::warningContinueCancel( m_parent,
                     i18n( "<p>You have selected 1 track to be <b>irreversibly</b> deleted.",
@@ -2813,7 +2814,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
 
         if( fi->isSelected() )
         {
-            int ret = deleteItemFromDevice(fi, onlyPlayed);
+            int ret = deleteItemFromDevice(fi, onlyPlayed, deleteTrack);
             if( ret >= 0 && count >= 0 )
                 count += ret;
             else
@@ -2823,7 +2824,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool recursing)
         {
             if( fi->childCount() )
             {
-                int ret = deleteFromDevice( static_cast<MediaItem*>(fi->firstChild()), onlyPlayed, true );
+                int ret = deleteFromDevice( static_cast<MediaItem*>(fi->firstChild()), onlyPlayed, deleteTrack, true );
                 if( ret >= 0 && count >= 0 )
                     count += ret;
                 else

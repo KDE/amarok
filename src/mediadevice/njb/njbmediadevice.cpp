@@ -256,10 +256,11 @@ NjbMediaDevice::deleteFromDevice(unsigned id)
 }
 
 int
-NjbMediaDevice::deleteItemFromDevice(MediaItem* item, bool onlyPlayed )
+NjbMediaDevice::deleteItemFromDevice(MediaItem* item, bool onlyPlayed, bool removeTrack )
 {
     DEBUG_BLOCK
     Q_UNUSED(onlyPlayed)
+    Q_UNUSED(removeTrack)
     int result = 0;
     if ( isCanceled() )
     {

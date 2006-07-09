@@ -56,7 +56,7 @@ class DaapClient : public MediaDevice
          void synchronizeDevice();
          MediaItem* copyTrackToDevice(const MetaBundle& bundle);
          MediaItem* trackExists( const MetaBundle& );
-         virtual int deleteItemFromDevice( MediaItem *item, bool onlyPlayed=false );
+         virtual int deleteItemFromDevice( MediaItem *item, bool onlyPlayed = false, bool deleteTrack = true );
    private slots:
 #if DNSSD_SUPPORT
         void foundDaap( DNSSD::RemoteService::Ptr );

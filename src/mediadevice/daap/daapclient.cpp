@@ -138,7 +138,7 @@ DaapClient::trackExists( const MetaBundle& )
 }
 
 int
-DaapClient::deleteItemFromDevice( MediaItem* /*item*/, bool /*onlyPlayed*/ )
+DaapClient::deleteItemFromDevice( MediaItem* /*item*/, bool /*onlyPlayed*/, bool /*deleteItem*/ )
 {
     return 0;
 }
