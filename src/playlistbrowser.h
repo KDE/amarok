@@ -367,6 +367,7 @@ class InfoPane : public QVBox
 
 public:
     InfoPane( QWidget *parent );
+    ~InfoPane();
     const int getHeight();
     void setStoredHeight( const int newHeight );
 

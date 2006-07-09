@@ -319,6 +319,12 @@ ContextBrowser::ContextBrowser( const char *name )
 
 ContextBrowser::~ContextBrowser()
 {
+    // Ensure the KHTMLPart dies before its KHTMLView dies,
+    // because KHTMLPart's dtoring relies on its KHTMLView still being alive
+    // (see bug 130494).
+    delete m_currentTrackPage;
+    delete m_lyricsPage;
+    delete m_wikiPage;
     m_cuefile->clear();
 }
 

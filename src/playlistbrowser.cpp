@@ -3456,6 +3456,14 @@ InfoPane::InfoPane( QWidget *parent )
     setFixedHeight( m_pushButton->sizeHint().height() );
 }
 
+InfoPane::~InfoPane()
+{
+    // Ensure the KHTMLPart dies before its KHTMLView dies,
+    // because KHTMLPart's dtoring relies on its KHTMLView still being alive
+    // (see bug 130494).
+    delete m_infoBrowser;
+}
+
 const int
 InfoPane::getHeight()
 {
