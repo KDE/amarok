@@ -150,13 +150,13 @@ DaapClient::deleteItemFromDevice( MediaItem* /*item*/, bool /*onlyPlayed*/, bool
 }
 
 void
-DaapClient::foundDaap( DNSSD::RemoteService::Ptr p )
+DaapClient::foundDaap( DNSSD::RemoteService::Ptr service )
 {
 #if DNSSD_SUPPORT
     DEBUG_BLOCK
 
     connect( service, SIGNAL( resolved( bool ) ), this, SLOT( resolvedDaap( bool ) ) );
-        service->resolveAsync();
+    service->resolveAsync();
 #endif
 }
 
