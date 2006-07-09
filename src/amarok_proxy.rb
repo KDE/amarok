@@ -23,13 +23,14 @@ class Proxy
   def initialize( port, remote_url, engine )
     @engine = engine
 
-    myputs( "startup" )
     myputs( "running with port: #{port} and url: #{remote_url} and engine: #{engine}" )
 
     #
     # amarok is, well, Amarok
     #
     amarok  = TCPServer.new( port )
+    myputs( "startup" )
+
     amaroks = amarok.accept
 
     #
@@ -159,7 +160,7 @@ def myputs( string )
 end
 
 begin
-  myputs( 'startup' )
+  myputs( ARGV )
   if( ARGV[0] == "--lastfm" ) then
      option, port, remote_url, engine = ARGV
      LastFM.new( port, remote_url, engine )
@@ -168,8 +169,8 @@ begin
      DaapProxy.new( port, remote_url, engine, hash, request_id )
   end
 rescue
-  $stderr.puts( $!.to_s )
-  $stderr.puts( $!.backtrace.inspect )
+  myputs( $!.to_s )
+  myputs( $!.backtrace.inspect )
 end
 
 puts( "exiting" )
