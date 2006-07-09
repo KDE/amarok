@@ -13,12 +13,15 @@
 #ifndef AMAROK_DAAPCLIENT_H
 #define AMAROK_DAAPCLIENT_H
 
-#include "mediabrowser.h"
 #include "daapreader/reader.h"
-#include <dnssd/remoteservice.h> //for DNSSD::RemoteService::Ptr
-
+#include "mediabrowser.h"
 #include <kdeversion.h>
+
 #define DNSSD_SUPPORT KDE_IS_VERSION(3,4,0)
+
+#if DNSSD_SUPPORT
+    #include <dnssd/remoteservice.h> //for DNSSD::RemoteService::Ptr
+#endif
 
 namespace DNSSD {
     class ServiceBrowser;
@@ -32,7 +35,7 @@ class DaapClient : public MediaDevice
 
     Q_OBJECT
    public:
-        struct ServerInfo 
+        struct ServerInfo
         {
             ServerInfo() : sessionId( -1 ), revisionID( 10 ) { }
             int sessionId;
@@ -57,12 +60,12 @@ class DaapClient : public MediaDevice
          MediaItem* copyTrackToDevice(const MetaBundle& bundle);
          MediaItem* trackExists( const MetaBundle& );
          virtual int deleteItemFromDevice( MediaItem *item, bool onlyPlayed = false, bool deleteTrack = true );
+
    private slots:
-#if DNSSD_SUPPORT
-        void foundDaap( DNSSD::RemoteService::Ptr );
+        void foundDaap( void* );
         void resolvedDaap( bool );
-#endif
         void createTree( const QString& host, Daap::SongList bundles );
+
    private:
 #if DNSSD_SUPPORT
         DNSSD::ServiceBrowser* m_browser;

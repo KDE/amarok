@@ -34,7 +34,9 @@ AMAROK_EXPORT_PLUGIN( DaapClient )
 
 DaapClient::DaapClient()
     : MediaDevice()
+#if DNSSD_SUPPORT
     , m_browser( 0 )
+#endif
     , m_connected( false )
 {
     setName( "daapclient" );
@@ -51,7 +53,9 @@ DaapClient::DaapClient()
 
 DaapClient::~DaapClient()
 {
+#if DNSSD_SUPPORT
     delete m_browser;
+#endif
 }
 
 bool
@@ -106,8 +110,10 @@ DaapClient::closeDevice()
         static_cast<Daap::Reader*>(itRead)->logoutRequest();
     }
     m_connected = false;
+#if DNSSD_SUPPORT
     delete m_browser;
     m_browser = 0;
+#endif
     return true;
 }
 
@@ -143,18 +149,23 @@ DaapClient::deleteItemFromDevice( MediaItem* /*item*/, bool /*onlyPlayed*/, bool
     return 0;
 }
 
-#if DNSSD_SUPPORT
 void
-DaapClient::foundDaap( DNSSD::RemoteService::Ptr service )
+DaapClient::foundDaap( void* p )
 {
+#if DNSSD_SUPPORT
     DEBUG_BLOCK
+
+    DNSSD::RemoteService::Ptr service = (DNSSD::RemoteService::Ptr) p;
+
     connect( service, SIGNAL( resolved( bool ) ), this, SLOT( resolvedDaap( bool ) ) );
         service->resolveAsync();
+#endif
 }
 
 void
 DaapClient::resolvedDaap( bool success )
 {
+#if DNSSD_SUPPORT
     DEBUG_BLOCK
     if( !success ) return;
     const DNSSD::RemoteService* service =  static_cast<const DNSSD::RemoteService*>(sender());
@@ -181,8 +192,8 @@ DaapClient::resolvedDaap( bool success )
     connect( reader, SIGNAL( daapBundles( const QString&, Daap::SongList ) ),
             this, SLOT( createTree( const QString&, Daap::SongList ) ) );
     reader->loginRequest();
-}
 #endif
+}
 
 void
 DaapClient::createTree( const QString& host, Daap::SongList bundles )
