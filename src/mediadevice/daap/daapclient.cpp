@@ -92,7 +92,7 @@ DaapClient::openDevice(bool /* silent=false */)
     {
         m_browser = new DNSSD::ServiceBrowser("_daap._tcp");
         m_browser->setName("daapServiceBrowser");
-        connect( m_browser, SIGNAL( serviceAdded( DNSSD::RemoteService::Ptr ) ), this, SLOT( foundDaap( DNSSD::RemoteService::Ptr ) ) );
+        connect( m_browser, SIGNAL( serviceAdded( DNSSD::RemoteService::Ptr ) ), this, SLOT( foundDaap( void* ) ) );
         m_browser->startBrowse();
     }
 #endif
