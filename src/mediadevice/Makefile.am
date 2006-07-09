@@ -10,11 +10,7 @@ if with_libnjb
     NJB_SUBDIR = njb
 endif
 
-if atleast_kde34
-    DAAP_SUBDIR = daap
-endif
-
 METASOURCES = AUTO
 
-SUBDIRS = generic $(DAAP_SUBDIR) $(IPOD_SUBDIR) $(IFP_SUBDIR) $(NJB_SUBDIR)
+SUBDIRS = generic daap $(IPOD_SUBDIR) $(IFP_SUBDIR) $(NJB_SUBDIR)
 

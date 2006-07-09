@@ -45,6 +45,8 @@ class DaapClient : public MediaDevice
 
         int incRevision( const QString& host ) { m_servers[host].revisionID++; return m_servers[host].revisionID; }
         int getSession( const QString& host ) { return m_servers[host].sessionId; }
+        KURL getProxyUrl( const KURL& url );
+
     protected:
          bool getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
          bool lockDevice( bool tryOnly = false );

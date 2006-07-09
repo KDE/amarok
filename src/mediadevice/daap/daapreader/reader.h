@@ -62,6 +62,7 @@ typedef QMap< QString, AlbumList > SongList;
             void logoutRequest();
             MediaItem* rootMediaItem() const { return m_root; }
 
+            int sessionId() const { return m_sessionId; }
         public slots: 
             void logoutRequest(int, bool );
             void loginFinished( int id , bool error );
@@ -87,7 +88,7 @@ typedef QMap< QString, AlbumList > SongList;
             QString m_host;
             QString m_loginString;
             QString m_databaseId;
-            
+            int m_sessionId;
             MediaItem* m_root;
     };
 

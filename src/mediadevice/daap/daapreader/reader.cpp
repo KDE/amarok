@@ -31,6 +31,7 @@ QMap<QString, Code> Reader::s_codes;
 Reader::Reader(const QString& host, MediaItem* root, QObject* parent, const char* name)
     : QObject(parent, name)
     , m_host( host )
+    , m_sessionId( -1 )
     , m_root( root )
 {
    
@@ -194,7 +195,8 @@ Reader::loginFinished( int /* id */, bool error )
     QDataStream results( resultArr,  IO_ReadOnly );
     Map loginResults = parse( results, resultArr.size() );
 
-    m_loginString = "session-id=" + QString::number( loginResults["mlog"].asList()[0].asMap()["mlid"].asList()[0].asInt() );
+    m_sessionId = loginResults["mlog"].asList()[0].asMap()["mlid"].asList()[0].asInt();
+    m_loginString = "session-id=" + QString::number( m_sessionId );
     connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( updateFinished( int, bool ) ) );
     http->getDaap( "/update?" + m_loginString );
 }
@@ -266,12 +268,12 @@ Reader::songListFinished( int /*id*/, bool error )
     {
         MetaBundle* bundle = new MetaBundle();
         bundle->setTitle( (*it).asMap()["minm"].asList()[0].toString() );
-        bundle->setUrl( amaroK::QStringx("http://%1:3689/databases/%2/items/%3.%4?%5").args(
+//input url: daap://host:port/databaseId/music.ext
+        bundle->setUrl( amaroK::QStringx("daap://%1:3689/%2/%3.%4").args(
             QStringList() << m_host
                         << m_databaseId
                         << QString::number( (*it).asMap()["miid"].asList()[0].asInt() ) 
-                        << (*it).asMap()["asfm"].asList()[0].asString()
-                        << m_loginString ) );
+                        << (*it).asMap()["asfm"].asList()[0].asString() ) );
         bundle->setLength( (*it).asMap()["astm"].asList()[0].toInt() );
         bundle->setTrack( (*it).asMap()["astn"].asList()[0].toInt() );
         

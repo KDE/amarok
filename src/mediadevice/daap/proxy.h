@@ -21,8 +21,10 @@ namespace Daap {
 
     class Proxy : public QObject
     {
+        Q_OBJECT
+        
         public:
-            Proxy(KURL stream, DaapClient* client, QObject* parent, const char* name);
+            Proxy(KURL stream, DaapClient* client, const char* name);
             ~Proxy();
             KURL proxyUrl() { return m_proxyUrl; }
 

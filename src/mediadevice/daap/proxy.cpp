@@ -31,8 +31,8 @@ using namespace Daap;
                         << m_loginString ) );
 
 */
-Proxy::Proxy(KURL stream, DaapClient* client, QObject* parent, const char* name)
-    : QObject(parent, name)
+Proxy::Proxy(KURL stream, DaapClient* client, const char* name)
+    : QObject(client, name)
     , m_proxy( new amaroK::ProcIO() )
 {
     DEBUG_BLOCK
@@ -42,9 +42,10 @@ Proxy::Proxy(KURL stream, DaapClient* client, QObject* parent, const char* name)
     const int sessionId = client->getSession( hostKey );
     //compose URL
     KURL realStream;
+    realStream.setProtocol( "http" );
     realStream.setHost(stream.host());
     realStream.setPort(stream.port());
-    realStream.setPath( "databases" + stream.directory() + "/items/" + stream.fileName() );
+    realStream.setPath( "/databases" + stream.directory() + "/items/" + stream.fileName() );
     realStream.setQuery( QString("?session-id=") + sessionId + "&revision-number=" + revisionId );
     
     //get hash
@@ -108,3 +109,5 @@ Proxy::readProxy()
         debug() << line << endl;
     }
 }
+
+#include "proxy.moc"

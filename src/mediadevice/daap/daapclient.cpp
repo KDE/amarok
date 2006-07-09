@@ -18,6 +18,7 @@
 #include "daapclient.h"
 #include "debug.h"
 #include "mediabrowser.h"
+#include "proxy.h"
 
 #include <qmetaobject.h>
 #include <qobjectlist.h>
@@ -44,7 +45,8 @@ DaapClient::DaapClient()
     m_transcode = false;
     m_transcodeAlways = false;
     m_transcodeRemove = false;
-
+    MediaBrowser::instance()->insertChild( this );
+    debug() << "lookatme " << (parent() ? parent()->name() : "no parent") << (parent() ? parent()->metaObject()->className() : " ") << endl;
 }
 
 DaapClient::~DaapClient()
@@ -107,6 +109,14 @@ DaapClient::closeDevice()
     delete m_browser;
     m_browser = 0;
     return true;
+}
+
+KURL
+DaapClient::getProxyUrl( const KURL& url )
+{
+    DEBUG_BLOCK
+    Daap::Proxy* daapProxy = new Daap::Proxy( url, this, "daapProxy" );
+    return daapProxy->proxyUrl();
 }
 
 void
@@ -184,6 +194,14 @@ DaapClient::createTree( const QString& host, Daap::SongList bundles )
         debug() << "No callback!" << endl;
         return;
     }
+
+    {
+        const QString hostKey = host + ":3689";
+        ServerInfo si;
+        si.sessionId = callback->sessionId();
+        m_servers[ hostKey ] = si;
+    }
+
     MediaItem* root = callback->rootMediaItem();
     QStringList artists = bundles.keys();
     foreach( artists )

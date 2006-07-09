@@ -47,6 +47,7 @@
 #include <qheader.h>
 #include <qimage.h>
 #include <qlabel.h>
+#include <qobjectlist.h>
 #include <qpainter.h>
 #include <qradiobutton.h>
 #include <qsimplerichtext.h>
@@ -424,6 +425,21 @@ MediaBrowser::getBundle( const KURL &url ) const
         return 0;
 
     return (*it)->bundle();
+}
+
+KURL
+MediaBrowser::getProxyUrl( const KURL& daapUrl ) const
+{
+    DEBUG_BLOCK
+    KURL url;
+    MediaDevice* dc = dynamic_cast<MediaDevice*>( queryList( "DaapClient" )->getFirst() );
+    if( dc )
+    {
+        url = dc->getProxyUrl( daapUrl );
+        debug() << "found" << endl;
+    }
+    debug() << "not found" << endl;
+    return url;
 }
 
 MediaDevice *

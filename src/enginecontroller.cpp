@@ -19,8 +19,7 @@
 #include "enginebase.h"
 #include "enginecontroller.h"
 #include "lastfm.h"
-//#include "mediadevice/daap/daapclient.h"
-//#include "mediadevice/daap/proxy.h"
+#include "mediabrowser.h"
 #include "playlist.h"
 #include "playlistloader.h"
 #include "pluginmanager.h"
@@ -410,13 +409,13 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
     }
     else if (url.protocol() == "daap" )
     {
-/*        DaapClient* dc = dynamic_cast<DaapClient*>(MediaBrowser::instance()->queryList( "DaapClient" )->getFirst());
-        if( dc )
+        KURL newUrl = MediaBrowser::instance()->getProxyUrl( url );
+        if( !newUrl.isEmpty() )
         {
-            Daap::Proxy* daapProxy = new Daap::Proxy( url, dc, this, "daapProxy" );
-            url = daapProxy->proxyUrl();
+            debug() << newUrl << endl;
+            url = newUrl;
         }
-        else */
+        else 
             return;
     }
 

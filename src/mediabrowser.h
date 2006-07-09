@@ -181,6 +181,8 @@ class MediaBrowser : public QVBox
         const MetaBundle *getBundle( const KURL &url ) const;
         bool isQuitting() const { return m_quitting; }
 
+        KURL getProxyUrl( const KURL& daapUrl ) const;
+
     signals:
         void availabilityChanged( bool isAvailable );
 
@@ -452,7 +454,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         void              setThirdSort( QString text ) { m_thirdSort = text;
             setConfigString( "thirdGrouping", text ); }
 
-
+        virtual KURL getProxyUrl( const KURL& /*url*/) { return KURL(); }
 
     public slots:
         void abortTransfer();
