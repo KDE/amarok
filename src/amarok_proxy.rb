@@ -141,8 +141,8 @@ class DaapProxy < Proxy
     end
 
    def get_request( remote_uri )
-        get += "GET #{uri.path || '/'}?#{uri.query} HTTP/1.1" + ENDL
-        get =  "Accept: */*" + ENDL
+        get = "GET #{remote_uri.path || '/'}?#{remote_uri.query} HTTP/1.1" + ENDL
+        get +=  "Accept: */*" + ENDL
         get += "User-Agent: iTunes/4.6 (Windows; N)" + ENDL
         get += "Client-DAAP-Version: 3.0" + ENDL
         get += "Client-DAAP-Validation: #{@hash}" + ENDL

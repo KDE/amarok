@@ -37,19 +37,20 @@ Proxy::Proxy(KURL stream, DaapClient* client, const char* name)
 {
     DEBUG_BLOCK
     //find the request id and increment it
-    const QString hostKey = stream.host() + ':' + stream.port();
+    const QString hostKey = stream.host() + ':' + QString::number(stream.port());
     const int revisionId = client->incRevision( hostKey );
     const int sessionId = client->getSession( hostKey );
+//    const int sessionId = 0;
     //compose URL
     KURL realStream;
     realStream.setProtocol( "http" );
     realStream.setHost(stream.host());
     realStream.setPort(stream.port());
     realStream.setPath( "/databases" + stream.directory() + "/items/" + stream.fileName() );
-    realStream.setQuery( QString("?session-id=") + sessionId + "&revision-number=" + revisionId );
+    realStream.setQuery( QString("?session-id=") + QString::number(sessionId) + "&revision-number=" + QString::number(revisionId) );
     
     //get hash
-    char hash[33];
+    char hash[33] = {0};
     GenerateHash( 3
         , reinterpret_cast<const unsigned char*>((realStream.path() + realStream.query()).ascii())
         , 2
@@ -70,7 +71,7 @@ Proxy::Proxy(KURL stream, DaapClient* client, const char* name)
     *m_proxy << realStream.url();
     *m_proxy << AmarokConfig::soundSystem();
     *m_proxy << hash;
-    *m_proxy << revisionId;
+    *m_proxy << QString::number( revisionId );
 
     if( !m_proxy->start( KProcIO::NotifyOnExit, true ) ) {
         error() << "Failed to start amarok_proxy.rb" << endl;
@@ -83,7 +84,7 @@ Proxy::Proxy(KURL stream, DaapClient* client, const char* name)
         m_proxy->readln( line );
         if( line == "AMAROK_PROXY: startup" ) break;
     }
-
+    debug() << "started amarok_proxy.rb --daap " << QString::number( port ) << ' ' << realStream.url() << ' ' << AmarokConfig::soundSystem() << ' ' << hash << ' ' << revisionId << endl;
     connect( m_proxy, SIGNAL( processExited( KProcess* ) ), this, SLOT( playbackStopped() ) );
     connect( m_proxy, SIGNAL( readReady( KProcIO* ) ), this, SLOT( readProxy() ) );
 }

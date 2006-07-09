@@ -52,8 +52,8 @@ class DaapClient : public MediaDevice
         virtual ~DaapClient();
         bool isConnected();
 
-        int incRevision( const QString& host ) { m_servers[host].revisionID++; return m_servers[host].revisionID; }
-        int getSession( const QString& host ) { return m_servers[host].sessionId; }
+        int incRevision( const QString& host );
+        int getSession( const QString& host );
         KURL getProxyUrl( const KURL& url );
 
     protected:
@@ -77,7 +77,7 @@ class DaapClient : public MediaDevice
         DNSSD::ServiceBrowser* m_browser;
 #endif
         bool    m_connected;
-        QMap<QString, ServerInfo> m_servers;
+        QMap<QString, ServerInfo*> m_servers;
 };
 
 #endif /*AMAROK_DAAPCLIENT_H*/

@@ -108,6 +108,8 @@ DaapClient::closeDevice()
     for( itRead = readers->first(); itRead; itRead = readers->next() )
     {
         static_cast<Daap::Reader*>(itRead)->logoutRequest();
+        delete m_servers[ itRead->name() ];
+        m_servers.remove( itRead->name() );
     }
     m_connected = false;
 #if DNSSD_SUPPORT
@@ -186,7 +188,7 @@ DaapClient::resolvedDaap( bool success )
     }
 
     if( ip.isEmpty() ) return;
-    Daap::Reader* reader = new Daap::Reader( ip, server, this, ( service->hostName() + service->serviceName() ).ascii() );
+    Daap::Reader* reader = new Daap::Reader( ip, server, this, ( ip + ":3689" ).ascii() );
     connect( reader, SIGNAL( daapBundles( const QString&, Daap::SongList ) ),
             this, SLOT( createTree( const QString&, Daap::SongList ) ) );
     reader->loginRequest();
@@ -205,9 +207,9 @@ DaapClient::createTree( const QString& host, Daap::SongList bundles )
     }
 
     {
-        const QString hostKey = host + ":3689";
-        ServerInfo si;
-        si.sessionId = callback->sessionId();
+        const QString hostKey = callback->name();
+        ServerInfo* si = new ServerInfo();
+        si->sessionId = callback->sessionId();
         m_servers[ hostKey ] = si;
     }
 
@@ -238,6 +240,26 @@ DaapClient::createTree( const QString& host, Daap::SongList bundles )
     }
 }
 
+int
+DaapClient::incRevision( const QString& host ) 
+{ 
+    if( m_servers.contains(host) )
+    {
+        m_servers[host]->revisionID++;
+        return m_servers[host]->revisionID; 
+    }
+    else
+        return 0;
+}
+
+int
+DaapClient::getSession( const QString& host )
+{
+    if( m_servers.contains(host) )
+        return m_servers[host]->sessionId; 
+    else
+        return -1;
+}
 #include "daapclient.moc"
 
 #endif /* AMAROK_DAAPCLIENT_CPP */
