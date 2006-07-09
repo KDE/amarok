@@ -142,6 +142,7 @@ class PlaylistBrowser : public QVBox
         void editSmartPlaylist( SmartPlaylist* );
         void saveSmartPlaylists( PlaylistCategory *smartCategory = NULL );
         void updateSmartPlaylists( QListViewItem *root );
+        void updateSmartPlaylistElement( QDomElement& query );
 
         PlaylistCategory* loadDynamics();
 

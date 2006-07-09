@@ -460,8 +460,8 @@ void SmartPlaylistEditor::buildQuery()
 
     // take care to adapt SmartPlaylist::NumReturnValues accordingly
     // album / artist / genre / title / year / comment / track / bitrate / discnumber / length / samplerate / path / compilation / filetype / composer
-    m_query = "SELECT " + QueryBuilder::dragSQLFields() +
-                    " FROM " + joins + whereStr + orderStr + limitStr + ";";
+    m_query = "SELECT (*ListOfFields*) FROM "
+              + joins + whereStr + orderStr + limitStr + ";";
 
     if( m_expandCheck->isChecked() ) { //We use "(*ExpandString*)" as a marker, if a artist/track/album has this bizarre name, it won't work.
         QString field = m_expandableDbFields[ m_expandCombo->currentItem() ];
@@ -473,10 +473,8 @@ void SmartPlaylistEditor::buildQuery()
             whereStr = QString(" WHERE (%1) AND %2 = '(*ExpandString*)'").arg(criteriaListStr).arg(field);
         else
             whereStr = QString(" WHERE %1 = '(*ExpandString*)'").arg(field);
-        m_expandQuery = "SELECT album.name, artist.name, genre.name, tags.title, year.name, "
-                            "tags.comment, tags.track, tags.bitrate, tags.discnumber, tags.length,"
-                            "tags.samplerate, tags.filesize, tags.url, tags.sampler"
-                            " FROM " + joins + whereStr + orderStr + limitStr + ";";
+        m_expandQuery = "SELECT (*ListOfFields*) FROM "
+                        + joins + whereStr + orderStr + limitStr + ";";
     }
 }
 

@@ -515,7 +515,7 @@ PlaylistCategory* PlaylistBrowser::loadSmartPlaylists()
     else {
         e = d.namedItem( "category" ).toElement();
         float version = e.attribute("formatversion").toFloat();
-        if ( version == 1.7 )
+        if ( version == 1.8 )
         {
             PlaylistCategory* p = new PlaylistCategory(m_listview, after, e );
             p->setText( 0, i18n("Smart Playlists") );
@@ -556,31 +556,38 @@ void PlaylistBrowser::updateSmartPlaylists( QListViewItem *p )
         {
             QDomElement xml = spl->xml();
             QDomElement query = xml.namedItem( "sqlquery" ).toElement();
-            QRegExp limitSearch( "LIMIT.*(\\d+)\\s*,\\s*(\\d+)" );
-            QRegExp selectFromSearch( "SELECT[^'\"]*FROM" );
-            for(QDomNode child = query.firstChild();
-                    !child.isNull();
-                    child = child.nextSibling() )
-            {
-                if( child.isText() )
-                {
-                    //HACK this should be refactored to just regenerate the SQL from the <criteria>'s
-                    QDomText text = child.toText();
-                    QString sql = text.data();
-                    if ( selectFromSearch.search( sql ) != -1 )
-                        sql.replace( selectFromSearch, "SELECT " + QueryBuilder::dragSQLFields() + " FROM" );
-                    if ( limitSearch.search( sql ) != -1 )
-                        sql.replace( limitSearch,
-                          QString( "LIMIT %1 OFFSET %2").arg( limitSearch.capturedTexts()[2].toInt() ).arg( limitSearch.capturedTexts()[1].toInt() ) );
-
-                    text.setData( sql );
-                    break;
-                }
-            }
+            QDomElement expandBy = xml.namedItem( "expandby" ).toElement();
+            updateSmartPlaylistElement( query );
+            updateSmartPlaylistElement( expandBy );
             spl->setXml( xml );
         }
         else
             updateSmartPlaylists( it );
+    }
+}
+
+void PlaylistBrowser::updateSmartPlaylistElement( QDomElement& query )
+{
+    QRegExp limitSearch( "LIMIT.*(\\d+)\\s*,\\s*(\\d+)" );
+    QRegExp selectFromSearch( "SELECT[^'\"]*FROM" );
+    for(QDomNode child = query.firstChild();
+            !child.isNull();
+            child = child.nextSibling() )
+    {
+        if( child.isText() )
+        {
+            //HACK this should be refactored to just regenerate the SQL from the <criteria>'s
+            QDomText text = child.toText();
+            QString sql = text.data();
+            if ( selectFromSearch.search( sql ) != -1 )
+                sql.replace( selectFromSearch, "SELECT (*ListOfFields*) FROM" );
+            if ( limitSearch.search( sql ) != -1 )
+                sql.replace( limitSearch,
+                    QString( "LIMIT %1 OFFSET %2").arg( limitSearch.capturedTexts()[2].toInt() ).arg( limitSearch.capturedTexts()[1].toInt() ) );
+
+            text.setData( sql );
+            break;
+        }
     }
 }
 
@@ -721,7 +728,7 @@ void PlaylistBrowser::saveSmartPlaylists( PlaylistCategory *smartCategory )
     QDomElement smartB = smartCategory->xml();
     smartB.setAttribute( "product", "Amarok" );
     smartB.setAttribute( "version", APP_VERSION );
-    smartB.setAttribute( "formatversion", "1.7" );
+    smartB.setAttribute( "formatversion", "1.8" );
     QDomNode smartplaylistsNode = doc.importNode( smartB, true );
     doc.appendChild( smartplaylistsNode );
 
