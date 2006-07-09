@@ -1950,7 +1950,7 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
 
         if( item->type() == MediaItem::PLAYLIST || item->type() == MediaItem::PLAYLISTITEM )
         {
-            menu.insertItem( SmallIconSet( amaroK::icon( "remove" ) ),
+            menu.insertItem( SmallIconSet( amaroK::icon( "remove_from_playlist" ) ),
                     item->type()==MediaItem::PLAYLIST ? i18n( "Remove Playlist" ) : i18n( "Remove from Playlist" ),
                     REMOVE_FROM_PLAYLIST );
             menu.setItemEnabled( REMOVE_FROM_PLAYLIST, !locked );
