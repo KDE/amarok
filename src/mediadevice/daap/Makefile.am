@@ -1,3 +1,7 @@
+if atleast_kde34
+	LIB_KDNSSD_34 = ${LIB_KDNSSD}
+endif
+
 kde_module_LTLIBRARIES = libamarok_daap-mediadevice.la
 kde_services_DATA = amarok_daap-mediadevice.desktop
 
@@ -16,7 +20,7 @@ METASOURCES = AUTO
 libamarok_daap_mediadevice_la_LIBADD  = \
     $(top_builddir)/amarok/src/libamarok.la \
     $(top_builddir)/amarok/src/mediadevice/daap/daapreader/libdaapreader.la \
-	${LIB_KDNSSD} ${LIB_KDEUI} ${LIB_KDECORE} ${LIB_KIO}
+	${LIB_KDNSSD_34} ${LIB_KDEUI} ${LIB_KDECORE} ${LIB_KIO}
 
 libamarok_daap_mediadevice_la_LDFLAGS = \
     $(KDE_PLUGIN) \
