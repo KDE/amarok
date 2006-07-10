@@ -983,16 +983,16 @@ AC_COMPILE_IFELSE([
 #error KDE 3.4
 #endif
 ],
-    atleast_kde34="yes"
+    have_kde34="yes"
     echo "yes"
 ,
-    atleast_kde34="no"
+    have_kde34="no"
     echo "no"
 )
-AM_CONDITIONAL([atleast_kde34], [test "$atleast_kde34" = "yes"])
-
 CXXFLAGS="$daapsave_CXXFLAGS"
 AC_LANG_RESTORE
+
+AM_CONDITIONAL(atleast_kde34, [test x$have_kde34 != xno ])
 
 ###############################################################################
 # END DAAP KDE 3.4 CHECK

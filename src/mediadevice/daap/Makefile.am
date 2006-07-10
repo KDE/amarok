@@ -1,5 +1,5 @@
 if atleast_kde34
-	LIB_KDNSSD_34 = ${LIB_KDNSSD}
+	LIB_KDNSSD_34 = $(LIB_KDNSSD)
 endif
 
 kde_module_LTLIBRARIES = libamarok_daap-mediadevice.la
