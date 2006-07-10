@@ -1,6 +1,6 @@
 # Plugin for the Ruby IRC bot (http://linuxbrit.co.uk/rbot/)
 #
-# A trivia quiz game.
+# A trivia quiz game. Fast paced, featureful and fun.
 #
 # (c) 2006 Mark Kretschmann <markey@web.de>
 # (c) 2006 Jocke Andersson <ajocke@gmail.com>
@@ -195,7 +195,7 @@ class QuizPlugin < Plugin
         if topic == "admin"
             "Quiz game aministration commands (requires authentication): 'quiz autoask <on/off>' => enable/disable autoask mode. 'quiz transfer <source> <dest> [score] [jokers]' => transfer [score] points and [jokers] jokers from <source> to <dest> (default is entire score and all jokers). 'quiz setscore <player> <score>' => set <player>'s score to <score>. 'quiz setjokers <player> <jokers>' => set <player>'s number of jokers to <jokers>. 'quiz deleteplayer <player>' => delete one player from the rank table (only works when score and jokers are set to 0)."
         else
-            "Quiz game. 'quiz' => ask a question. 'quiz hint' => get a hint. 'quiz solve' => solve this question. 'quiz skip' => skip to next question. 'quiz repeat' => repeat the current question. 'quiz joker' => draw a joker to win this round. 'quiz score [player]' => show score for [player] (default is yourself). 'quiz top5' => show top 5 players. 'quiz top <number>' => show top <number> players (max 50). 'quiz stats' => show some statistics. 'quiz fetch' => refetch questions from databases.\nYou can add new questions at http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz"
+            "Quiz game. 'quiz' => ask a question. 'quiz hint' => get a hint. 'quiz solve' => solve this question. 'quiz skip' => skip to next question. 'quiz joker' => draw a joker to win this round. 'quiz score [player]' => show score for [player] (default is yourself). 'quiz top5' => show top 5 players. 'quiz top <number>' => show top <number> players (max 50). 'quiz stats' => show some statistics. 'quiz fetch' => refetch questions from databases.\nYou can add new questions at http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz"
         end
     end
 
@@ -337,8 +337,9 @@ class QuizPlugin < Plugin
 
         q = create_quiz( m.target )
 
-        unless q.question == nil
-            m.reply "#{m.sourcenick}: Answer the current question first!"
+        if q.question
+            m.reply "#{Bold}#{Color}03Current question: #{Color}#{Bold}#{q.question}"
+            m.reply "Hint: #{q.hint}" if q.hinted
             return
         end
 
@@ -459,18 +460,6 @@ class QuizPlugin < Plugin
     end
 
 
-    def cmd_repeat( m, params )
-        q = @quizzes[m.target]
-
-        begin
-            m.reply "#{Bold}#{Color}03Current question: #{Color}#{Bold}" + q.question
-            if q.hinted then m.reply "Hint: " + q.hint end
-        rescue
-            m.reply "#{m.sourcenick}: There's currently no open question!"
-        end
-    end
-
-
     def cmd_joker( m, params )
         q = create_quiz( m.target )
 
@@ -542,10 +531,10 @@ class QuizPlugin < Plugin
         end
         str = ar.join(" | ")
 
-        if str != ""
-            m.reply str
-        else
+        if str.empty?
             m.reply "Noone in #{m.target} has a score!"
+        else
+            m.reply str
         end
     end
 
@@ -715,7 +704,6 @@ plugin.map 'quiz',                  :action => 'cmd_quiz'
 plugin.map 'quiz solve',            :action => 'cmd_solve'
 plugin.map 'quiz hint',             :action => 'cmd_hint'
 plugin.map 'quiz skip',             :action => 'cmd_skip'
-plugin.map 'quiz repeat',           :action => 'cmd_repeat'
 plugin.map 'quiz joker',            :action => 'cmd_joker'
 plugin.map 'quiz score',            :action => 'cmd_score'
 plugin.map 'quiz score :player',    :action => 'cmd_score_player'
