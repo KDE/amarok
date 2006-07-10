@@ -5,6 +5,8 @@ TODO-list for Amarok
 
 
 SHORT-TERM (URGENT):
+ <markey>  After doing "Delete downloaded podcast", the icon still indicates downloaded.
+
  <sebr>    LastFm:
              - determine how hard it would be to tag songs
  <eean>      - display history in the playlist somehow  <markey> I'm against this.
