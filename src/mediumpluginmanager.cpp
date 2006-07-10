@@ -334,7 +334,8 @@ ManualDeviceAdder::comboChanged( const QString &string )
     //best thing to do here would be to find out if the plugin selected
     //has m_hasMountPoint set to false...but any way to do this
     //without instantiating it?  This way will suffice for now...
-    if( MediaBrowser::instance()->getInternalPluginName( string ) == "ifp-mediadevice" )
+    if( MediaBrowser::instance()->getInternalPluginName( string ) == "ifp-mediadevice" ||
+            MediaBrowser::instance()->getInternalPluginName( string ) == "daap-mediadevice" )
     {
         m_comboOldText = m_mdaMountPoint->text();
         m_mdaMountPoint->setText( QString::null );
