@@ -984,15 +984,18 @@ AC_COMPILE_IFELSE([
 #endif
 ],
     have_kde34="yes"
-    echo "yes"
+    DNSSD_LIBS=$LIB_KDNSSD
+#    echo "yes"
 ,
     have_kde34="no"
-    echo "no"
+    DNSSD_LIBS=""
+#    echo "no"
 )
 CXXFLAGS="$daapsave_CXXFLAGS"
 AC_LANG_RESTORE
-
+AC_SUBST(DNSSD_LIBS)
 AM_CONDITIONAL(atleast_kde34, [test x$have_kde34 != xno ])
+AC_MSG_RESULT($have_kde34)
 
 ###############################################################################
 # END DAAP KDE 3.4 CHECK
