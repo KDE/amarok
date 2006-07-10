@@ -40,16 +40,14 @@ Proxy::Proxy(KURL stream, DaapClient* client, const char* name)
     const QString hostKey = stream.host() + ':' + QString::number(stream.port());
     const int revisionId = client->incRevision( hostKey );
     const int sessionId = client->getSession( hostKey );
-//    const int sessionId = 0;
     //compose URL
     KURL realStream;
     realStream.setProtocol( "http" );
     realStream.setHost(stream.host());
     realStream.setPort(stream.port());
     realStream.setPath( "/databases" + stream.directory() + "/items/" + stream.fileName() );
- //   realStream.setQuery( QString("?session-id=") + QString::number(sessionId) + "&revision-number=" + QString::number(revisionId) );
     realStream.setQuery( QString("?session-id=") + QString::number(sessionId) );
-    
+
     //get hash
     char hash[33] = {0};
     GenerateHash( 3
