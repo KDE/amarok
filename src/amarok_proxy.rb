@@ -102,10 +102,10 @@ class Proxy
 
   def cp_all_inward( income, output )
     myputs( "cp_all( income => #{income.inspect}, output => #{output.inspect}" )
-#     if @engine == 'xine-engine'
-#       filler = Array.new( 4096, 0 )
-#       safe_write( output, filler ) # HACK: Fill xine's buffer so that xine_open() won't block
-#     end
+    #     if @engine == 'xine-engine'
+    #       filler = Array.new( 4096, 0 )
+    #       safe_write( output, filler ) # HACK: Fill xine's buffer so that xine_open() won't block
+    #     end
     loop do
       data = income.read( 512 )
       break if data == nil
@@ -125,34 +125,31 @@ class Proxy
 end
 
 class LastFM < Proxy
-
-    def get_request( remote_uri )
-        "GET #{remote_uri.path || '/'}?#{remote_uri.query} HTTP/1.1\r\n\r\n"
-    end
-
+  def get_request( remote_uri )
+    "GET #{remote_uri.path || '/'}?#{remote_uri.query} HTTP/1.1\r\n\r\n"
+  end
 end
 
 class DaapProxy < Proxy
-    ENDL = "\r\n"
+  ENDL = "\r\n"
 
-    def initialize( port, remote_url, engine, hash, request_id )
-        @hash = hash
-        @requestId = request_id
-        super( port, remote_url, engine )
-    end
+  def initialize( port, remote_url, engine, hash, request_id )
+    @hash = hash
+    @requestId = request_id
+    super( port, remote_url, engine )
+  end
 
-   def get_request( remote_uri )
-        get = "GET #{remote_uri.path || '/'}?#{remote_uri.query} HTTP/1.1" + ENDL
-        get +=  "Accept: */*" + ENDL
-        get += "User-Agent: iTunes/4.6 (Windows; N)" + ENDL
-        get += "Client-DAAP-Version: 3.0" + ENDL
-        get += "Client-DAAP-Validation: #{@hash}" + ENDL
-        get += "Client-DAAP-Access-Index: 2" + ENDL
-        get += "Client-DAAP-Request-ID: #{@requestId}" + ENDL
-        get += "Host: #{remote_uri.host}:#{remote_uri.port}" + ENDL + ENDL
-        get
-   end
-
+  def get_request( remote_uri )
+    get = "GET #{remote_uri.path || '/'}?#{remote_uri.query} HTTP/1.1" + ENDL
+    get +=  "Accept: */*" + ENDL
+    get += "User-Agent: iTunes/4.6 (Windows; N)" + ENDL
+    get += "Client-DAAP-Version: 3.0" + ENDL
+    get += "Client-DAAP-Validation: #{@hash}" + ENDL
+    get += "Client-DAAP-Access-Index: 2" + ENDL
+    get += "Client-DAAP-Request-ID: #{@requestId}" + ENDL
+    get += "Host: #{remote_uri.host}:#{remote_uri.port}" + ENDL + ENDL
+    get
+  end
 end
 
 def myputs( string )
@@ -162,11 +159,11 @@ end
 begin
   myputs( ARGV )
   if( ARGV[0] == "--lastfm" ) then
-     option, port, remote_url, engine = ARGV
-     LastFM.new( port, remote_url, engine )
+    option, port, remote_url, engine = ARGV
+    LastFM.new( port, remote_url, engine )
   else
-     option, port, remote_url, engine, hash, request_id = ARGV
-     DaapProxy.new( port, remote_url, engine, hash, request_id )
+    option, port, remote_url, engine, hash, request_id = ARGV
+    DaapProxy.new( port, remote_url, engine, hash, request_id )
   end
 rescue
   myputs( $!.to_s )
@@ -174,4 +171,3 @@ rescue
 end
 
 puts( "exiting" )
-
