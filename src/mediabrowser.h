@@ -10,6 +10,7 @@
 #include "amarok.h"
 #include "amarok_export.h"
 #include "medium.h"
+#include "multitabbar.h"     //baseclass
 #include "plugin/plugin.h"   //baseclass
 #include "pluginmanager.h"
 
@@ -105,7 +106,7 @@ class LIBAMAROK_EXPORT MediaItem : public KListViewItem
         mutable MetaBundle *m_bundle;
 };
 
-class MediaQueue : public KListView
+class MediaQueue : public KListView, public DropProxyTarget
 {
     Q_OBJECT
 
@@ -128,6 +129,7 @@ class MediaQueue : public KListView
         // Reimplemented from KListView
         void dragEnterEvent( QDragEnterEvent* );
         void dropEvent( QDropEvent *e );
+        void dropProxyEvent( QDropEvent *e );
         void contentsDragEnterEvent( QDragEnterEvent* );
         void contentsDropEvent( QDropEvent *e );
         void contentsDragMoveEvent( QDragMoveEvent* e );

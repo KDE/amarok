@@ -423,6 +423,7 @@ void PlaylistWindow::init()
 
         addBrowserMacro( ContextBrowser, "ContextBrowser", i18n( "Context" ), amaroK::icon( "info" ) )
         addBrowserMacro( CollectionBrowser, "CollectionBrowser", i18n( "Collection" ), amaroK::icon( "collection" ) )
+        m_browsers->makeDropProxy( "CollectionBrowser", CollectionView::instance() );
         addInstBrowserMacro( PlaylistBrowser, "PlaylistBrowser", i18n( "Playlists" ), amaroK::icon( "playlist" ) )
 
         //DEBUG: Comment out the addBrowserMacro line and uncomment the m_browsers line (passing in a vfat device name) to see the "virtual root" functionality
@@ -436,6 +437,7 @@ void PlaylistWindow::init()
             addInstBrowserMacro( MediaBrowser, "MediaBrowser", i18n( "Media Device" ), amaroK::icon( "device" ) )
             connect( MediaBrowser::instance(), SIGNAL( availabilityChanged( bool ) ),
                      this, SLOT( mbAvailabilityChanged( bool ) ) );
+            m_browsers->makeDropProxy( "MediaBrowser", MediaBrowser::queue() );
 
         }
         #undef addBrowserMacro
@@ -459,8 +461,13 @@ void PlaylistWindow::init()
 
 void PlaylistWindow::addBrowser( const QString &name, QWidget *browser, const QString &text, const QString &icon )
 {
+    debug() << "name=" << name << endl;
     if( !m_browsers->browser( name ) )
         m_browsers->addBrowser( browser, text, icon );
+    if( name == "MediaBrowser" )
+    {
+        m_browsers->makeDropProxy( "MediaBrowser", MediaBrowser::queue() );
+    }
 }
 
 

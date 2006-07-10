@@ -1795,6 +1795,12 @@ CollectionView::contentsDropEvent( QDropEvent *e )
 }
 
 void
+CollectionView::dropProxyEvent( QDropEvent *e )
+{
+    contentsDropEvent( e );
+}
+
+void
 CollectionView::safeClear()
 {
     bool block = signalsBlocked();

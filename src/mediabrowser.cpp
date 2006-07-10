@@ -3167,6 +3167,12 @@ MediaQueue::dropEvent( QDropEvent *e )
 }
 
 void
+MediaQueue::dropProxyEvent( QDropEvent *e )
+{
+    dropEvent( e );
+}
+
+void
 MediaQueue::contentsDragEnterEvent( QDragEnterEvent *e )
 {
     KListView::contentsDragEnterEvent( e );

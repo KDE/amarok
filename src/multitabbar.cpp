@@ -58,6 +58,13 @@ class MultiTabBarTabPrivate
         QPixmap pix;
 };
 
+class MultiTabBarButtonPrivate
+{
+    public:
+        MultiTabBarButtonPrivate() : finalDropTarget( 0 ) {}
+        DropProxyTarget *finalDropTarget;
+};
+
 
 MultiTabBarInternal::MultiTabBarInternal( QWidget *parent, MultiTabBar::MultiTabBarMode bm ) : QScrollView( parent )
 {
@@ -520,6 +527,7 @@ MultiTabBarButton::MultiTabBarButton( const QString& text, QPopupMenu *popup,
         , m_animTimer( new QTimer( this ) )
         , m_dragSwitchTimer( new QTimer( this ) )
 {
+    d = new MultiTabBarButtonPrivate;
     setAcceptDrops( true );
     setText( text );
     m_position = pos;
@@ -536,7 +544,9 @@ MultiTabBarButton::MultiTabBarButton( const QString& text, QPopupMenu *popup,
 }
 
 MultiTabBarButton::~MultiTabBarButton()
-{}
+{
+    delete d;
+}
 
 int MultiTabBarButton::id() const
 {
@@ -548,6 +558,11 @@ void MultiTabBarButton::setText( const QString& text )
     QPushButton::setText( text );
     m_text = text;
 //     QToolTip::add( this, text );
+}
+
+void MultiTabBarButton::proxyDrops( DropProxyTarget *finalDropTarget )
+{
+    d->finalDropTarget = finalDropTarget;
 }
 
 void MultiTabBarButton::slotClicked()
@@ -602,6 +617,7 @@ void MultiTabBarButton::leaveEvent( QEvent* )
 void MultiTabBarButton::dragEnterEvent ( QDragEnterEvent *e )
 {
     enterEvent ( e );
+    e->accept( d->finalDropTarget );
 }
 
 void MultiTabBarButton::dragMoveEvent ( QDragMoveEvent * )
@@ -614,6 +630,13 @@ void MultiTabBarButton::dragLeaveEvent ( QDragLeaveEvent *e )
 {
     m_dragSwitchTimer->stop();
     leaveEvent( e );
+}
+
+void MultiTabBarButton::dropEvent( QDropEvent *e )
+{
+    m_dragSwitchTimer->stop();
+    if( d->finalDropTarget )
+        d->finalDropTarget->dropProxyEvent( e );
 }
 
 void MultiTabBarButton::slotDragSwitchTimer()

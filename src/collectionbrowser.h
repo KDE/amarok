@@ -7,8 +7,8 @@
 #ifndef AMAROK_COLLECTIONBROWSER_H
 #define AMAROK_COLLECTIONBROWSER_H
 
-#include "qlabel.h"
-#include "qvbox.h"           //baseclass
+#include <qlabel.h>
+#include <qvbox.h>           //baseclass
 
 #include <klistview.h>       //baseclass
 #include <qstringlist.h>     //stack allocated
@@ -16,6 +16,7 @@
 #include <kdialogbase.h>     //baseclass
 #include <kprogress.h>
 
+#include "multitabbar.h"     //baseclass
 #include "collectiondb.h"
 #include "amarok_export.h"
 
@@ -154,7 +155,7 @@ class CollectionItem : public KListViewItem {
 };
 
 
-class CollectionView : public KListView
+class CollectionView : public KListView, public DropProxyTarget
 {
     Q_OBJECT
     friend class CollectionBrowser;
@@ -251,6 +252,8 @@ class CollectionView : public KListView
         void contentsDragEnterEvent( QDragEnterEvent* );
         void contentsDragMoveEvent( QDragMoveEvent* );
         void contentsDropEvent( QDropEvent *e );
+        // Reimplemented from DropProxyTarget
+        void dropProxyEvent( QDropEvent *e );
 
         void safeClear();
 

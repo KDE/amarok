@@ -64,7 +64,7 @@ BrowserBar::BrowserBar( QWidget *parent )
         , m_playlistBox( new QVBox( this ) )
         , m_divider( new amaroK::Splitter( this ) )
         , m_tabBar( new MultiTabBar( MultiTabBar::Vertical, this ) )
-        , m_browserBox( new QWidget( this ) )
+        , m_browserBox( new QVBox( this ) )
         , m_currentIndex( -1 )
         , m_lastIndex( -1 )
         , m_mapper( new QSignalMapper( this ) )
@@ -87,8 +87,6 @@ BrowserBar::BrowserBar( QWidget *parent )
     m_divider->hide();
     m_playlistBox->setSpacing( 1 );
 
-    m_mediaBrowserId = -1;
-
     connect( m_mapper, SIGNAL(mapped( int )), SLOT(showHideBrowser( int )) );
 }
 
@@ -97,6 +95,18 @@ BrowserBar::~BrowserBar()
     KConfig* const config = amaroK::config( "BrowserBar" );
     config->writeEntry( "CurrentPane", m_currentIndex != -1 ? QString(currentBrowser()->name()) : QString::null );
     config->writeEntry( "Width", m_browserBox->width() );
+}
+
+void
+BrowserBar::makeDropProxy( const QString &name, DropProxyTarget *finalTarget )
+{
+    int id = m_browserIds[name];
+    debug() << "id for " << name << " is " << id << endl;
+    MultiTabBarButton *button = m_tabBar->tab( id );
+    debug() << "button for " << id << " is " << button << endl;
+    debug() << "final target for " << button << " is " << finalTarget << endl;
+    if( button )
+        button->proxyDrops( finalTarget );
 }
 
 int
@@ -215,8 +225,7 @@ BrowserBar::addBrowser( QWidget *widget, const QString &title, const QString& ic
 {
     const int id = m_tabBar->tabs()->count(); // the next available id
     const QString name( widget->name() );
-    if( name == "MediaBrowser" )
-        m_mediaBrowserId = id;
+    m_browserIds[name] = id;
     QWidget *tab;
 
     widget->reparent( m_browserBox, QPoint() );
@@ -241,9 +250,9 @@ BrowserBar::removeMediaBrowser( QWidget *widget )
     if( it != m_browsers.end() )
         m_browsers.erase( it ); 
     QWidget *tab;
-    tab = m_tabBar->tab( m_mediaBrowserId );
+    tab = m_tabBar->tab( m_browserIds["MediaBrowser"] );
     m_mapper->removeMappings( tab );
-    m_tabBar->removeTab( m_mediaBrowserId );
+    m_tabBar->removeTab( m_browserIds["MediaBrowser"] );
 }
 
 void
