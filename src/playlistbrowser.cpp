@@ -1330,6 +1330,7 @@ bool PlaylistBrowser::deletePodcasts( QPtrList<PlaylistBrowserEntry> items )
                 #undef  ch
                 /// we don't need to delete from the database, because removing the channel from the database
                 /// automatically removes the children as well.
+                m_podcastItemsToScan.remove( static_cast<PodcastChannel*>(*it) );
             }
             CollectionDB::instance()->removePodcastChannel( static_cast<PodcastChannel*>(*it)->url() );
         }
