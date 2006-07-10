@@ -101,10 +101,7 @@ void
 BrowserBar::makeDropProxy( const QString &name, DropProxyTarget *finalTarget )
 {
     int id = m_browserIds[name];
-    debug() << "id for " << name << " is " << id << endl;
     MultiTabBarButton *button = m_tabBar->tab( id );
-    debug() << "button for " << id << " is " << button << endl;
-    debug() << "final target for " << button << " is " << finalTarget << endl;
     if( button )
         button->proxyDrops( finalTarget );
 }
