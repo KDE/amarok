@@ -3725,7 +3725,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     #define item static_cast<PlaylistItem*>(item)
 
     enum {
-        PLAY, PLAY_NEXT, STOP_DONE, VIEW, EDIT, FILL_DOWN, COPY, CROP_PLAYLIST, SAVE_PLAYLIST, REMOVE, DELETE,
+        PLAY, PLAY_NEXT, STOP_DONE, VIEW, EDIT, FILL_DOWN, COPY, CROP_PLAYLIST, SAVE_PLAYLIST, REMOVE, FILE_MENU, ORGANIZE, DELETE,
         TRASH, BURN_MENU, BURN_SELECTION, BURN_ALBUM, BURN_ARTIST, REPEAT, LAST }; //keep LAST last
 
     const bool canRename   = isRenameable( col ) && item->url().isLocalFile();
@@ -3847,10 +3847,6 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     popup.insertItem( SmallIconSet( amaroK::icon( "remove_from_playlist" ) ), i18n( "&Remove From Playlist" ), this, SLOT( removeSelectedItems() ), Key_Delete, REMOVE );
 
-    popup.insertItem( SmallIconSet( amaroK::icon( "remove" ) ), itemCount == 1
-                ? i18n("&Delete File")
-                : i18n("&Delete Selected Files"), this, SLOT( deleteSelectedFiles() ), SHIFT+Key_Delete, DELETE );
-
     popup.insertSeparator();
 
     popup.insertItem( SmallIconSet( amaroK::icon( "info" ) )
@@ -3859,13 +3855,25 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
               i18n( "Track &Information...",  "&Information for %n Tracks...", itemCount)
         , VIEW );
 
+    KPopupMenu fileMenu;
+    fileMenu.insertItem( SmallIconSet( "filesaveas" ),
+            CollectionDB::instance()->isDirInCollection( item->url().directory() )
+                ? i18n("Organize File...", "Organize %n Files...", itemCount)
+                : i18n("Copy Track to Collection...", "Copy %n Tracks to Collection...", itemCount),
+            ORGANIZE );
+    fileMenu.insertItem( SmallIconSet( amaroK::icon( "remove" ) ), i18n("Delete File...", "Delete %n Selected Files...", itemCount ), this, SLOT( deleteSelectedFiles() ), SHIFT+Key_Delete, DELETE );
+
+    popup.insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n("Manage Files"), &fileMenu, FILE_MENU );
+
     popup.setItemEnabled( EDIT, canRename ); //only enable for columns that have editable tags
     popup.setItemEnabled( FILL_DOWN, canRename );
     popup.setItemEnabled( BURN_MENU, item->url().isLocalFile() && K3bExporter::isAvailable() );
     popup.setItemEnabled( REMOVE, !isLocked() ); // can't remove things when playlist is locked,
-    popup.setItemEnabled( DELETE, !isLocked() && item->url().isLocalFile() ); // that's the whole point
+    popup.setItemEnabled( DELETE, !isLocked() && item->url().isLocalFile() );
     popup.setItemEnabled( VIEW, item->url().isLocalFile() || itemCount == 1 ); // disable for CDAudio multiselection
 
+    if( m_customSubmenuItem.count() > 0 )
+        popup.insertSeparator();
     QValueList<QString> submenuTexts = m_customSubmenuItem.keys();
     for( QValueList<QString>::Iterator keyIt =submenuTexts.begin(); keyIt !=  submenuTexts.end(); ++keyIt )
     {
@@ -4052,6 +4060,25 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
             ->setCurrentItem( amaroK::repeatTrack()
                               ? 0 /*AmarokConfig::EnumRepeat::Off*/
                               : 1 /*AmarokConfig::EnumRepeat::Track*/ );
+        break;
+
+    case ORGANIZE:
+        {
+            KURL::List list;
+
+            for( QListViewItemIterator it( this, QListViewItemIterator::Selected );
+                    it.current();
+                    ++it )
+            {
+                PlaylistItem *i= static_cast<PlaylistItem*>(*it);
+                KURL url = i->url();
+                list << url;
+            }
+            bool organize = CollectionDB::instance()->isDirInCollection( item->url().path() );
+            CollectionView::instance()->organizeFiles( list,
+                    organize ? i18n( "Organize Files" ) : i18n( "Copy Tracks to Collection"),
+                    !organize );
+        }
         break;
 
     default:
