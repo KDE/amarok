@@ -31,6 +31,7 @@
 #include <taglib/mpegfile.h>
 #include <taglib/tag.h>
 #include <taglib/tstring.h>
+#include <taglib/tlist.h>
 #include <taglib/id3v2tag.h>
 #include <taglib/id3v1tag.h>
 #include <taglib/mpegfile.h>
@@ -1294,6 +1295,21 @@ void MetaBundle::setUniqueId( const QString &id )
     m_uniqueId = id;
 }
 
+TagLib::ID3v2::UniqueFileIdentifierFrame *
+MetaBundle::ourMP3UidFrame( TagLib::MPEG::File *file, QString ourId )
+{
+    //WARNING: this function is not safe if tag has no UFID frames (should never be called in that case)
+    TagLib::ID3v2::FrameList ufidlist = file->ID3v2Tag()->frameListMap()["UFID"];
+    TagLib::ID3v2::UniqueFileIdentifierFrame* currFrame;
+    for( TagLib::ID3v2::FrameList::Iterator iter = ufidlist.begin(); iter != ufidlist.end(); iter++ )
+    {
+        currFrame = dynamic_cast<TagLib::ID3v2::UniqueFileIdentifierFrame*>(*iter);
+        if( TStringToQString( currFrame->owner() ) == ourId )
+            return currFrame;
+    }
+    return 0;
+}
+
 void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
 {
     //DEBUG_BLOCK
@@ -1311,29 +1327,20 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
     {
         if ( file->ID3v2Tag( true ) )
         {
-            if( file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() )
+            if( file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() || !ourMP3UidFrame( file, ourId ) || recreate )
                 createID = 1;
             else
-            {
-                TagLib::ID3v2::UniqueFileIdentifierFrame* ufidf =
-                        dynamic_cast<TagLib::ID3v2::UniqueFileIdentifierFrame*>(
-                                    file->ID3v2Tag()->frameListMap()["UFID"].front() );
-                if( TStringToQString( ufidf->owner() ) != ourId || recreate )
-                {
-                    file->ID3v2Tag()->removeFrames( "UFID" );
-                    createID = 1;
-                }
-                else
-                    //this is really ugly, but otherwise we get an incorrect ? at the end of the string...possibly a null value?  Not sure of another way to fix this.
-                    m_uniqueId = TStringToQString( TagLib::String( ufidf->identifier().data() ) ).left( randSize );
-            }
+                //this is really ugly, but otherwise we get an incorrect ? at the end of the string...possibly a null value?  Not sure of another way to fix this.
+                m_uniqueId = TStringToQString( TagLib::String( ourMP3UidFrame( file, ourId )->identifier().data() ) ).left( randSize );
             if( createID == 1 && TagLib::File::isWritable( file->name() ) )
             {
                 m_uniqueId = getRandomStringHelper( randSize );
+                if( !file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() && ourMP3UidFrame( file, ourId ) )
+                    file->ID3v2Tag()->removeFrame( ourMP3UidFrame( file, ourId ) ); 
                 file->ID3v2Tag()->addFrame( new TagLib::ID3v2::UniqueFileIdentifierFrame(
-                            QStringToTString( ourId ),
-                            TagLib::ByteVector( m_uniqueId.ascii(), randSize )
-                            ) );
+                        QStringToTString( ourId ),
+                        TagLib::ByteVector( m_uniqueId.ascii(), randSize )
+                        ) );
                 file->save( TagLib::MPEG::File::ID3v2 );
                 newID = true;
             }

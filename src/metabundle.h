@@ -26,12 +26,16 @@ class QDir;
 class QTextStream;
 template<class T> class QValueList;
 namespace TagLib {
+    class ByteVector;
     class File;
     class FileRef;
-    class ByteVector;
     class String;
     namespace ID3v2 {
+        class UniqueFileIdentifierFrame;
         class Tag;
+    }
+    namespace MPEG {
+        class File;
     }
 }
 class PodcastEpisodeBundle;
@@ -356,6 +360,7 @@ private:
     int getRand();
     QString getRandomString( int size );
     QString getRandomStringHelper( int size );
+    TagLib::ID3v2::UniqueFileIdentifierFrame *ourMP3UidFrame( TagLib::MPEG::File *file, QString ourId );
 };
 
 /// for your convenience
