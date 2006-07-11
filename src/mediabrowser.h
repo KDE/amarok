@@ -9,6 +9,7 @@
 
 #include "amarok.h"
 #include "amarok_export.h"
+#include "browserToolBar.h"
 #include "medium.h"
 #include "multitabbar.h"     //baseclass
 #include "plugin/plugin.h"   //baseclass
@@ -38,11 +39,6 @@ class KShellProcess;
 class QLabel;
 class QPalette;
 class MediaItemTip;
-
-namespace Browser
-{
-    class ToolBar;
-}
 
 class LIBAMAROK_EXPORT MediaItem : public KListViewItem
 {
@@ -160,6 +156,8 @@ class MediaBrowser : public QVBox
     friend class MediaItem;
 
     public:
+        enum { CONNECT, DISCONNECT, TRANSFER, CONFIGURE, CUSTOM };
+
         static bool isAvailable();
         LIBAMAROK_EXPORT static MediaBrowser *instance() { return s_instance; }
         LIBAMAROK_EXPORT static MediaQueue *queue() { return s_instance ? s_instance->m_queue : 0; }
@@ -184,6 +182,7 @@ class MediaBrowser : public QVBox
         bool isQuitting() const { return m_quitting; }
 
         KURL getProxyUrl( const KURL& daapUrl ) const;
+        KToolBar* getToolBar() const { return m_toolbar; }
 
     signals:
         void availabilityChanged( bool isAvailable );
@@ -204,6 +203,7 @@ class MediaBrowser : public QVBox
         void cancelClicked();
         void connectClicked();
         void disconnectClicked();
+        void customClicked();
         void configSelectPlugin( int index );
         bool config(); // false if canceled by user
         KURL transcode( const KURL &src, const QString &filetype );
@@ -240,7 +240,6 @@ class MediaBrowser : public QVBox
         QVBox*           m_configBox;
         KComboBox*       m_configPluginCombo;
         KComboBox*       m_deviceCombo;
-        enum { CONNECT, DISCONNECT, TRANSFER, CONFIGURE };
         Browser::ToolBar*m_toolbar;
         typedef QMap<QString, MediaItem*> ItemMap;
         ItemMap          m_itemMap;
@@ -457,6 +456,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
             setConfigString( "thirdGrouping", text ); }
 
         virtual KURL getProxyUrl( const KURL& /*url*/) { return KURL(); }
+        virtual void customClicked() { return; }
 
     public slots:
         void abortTransfer();
@@ -589,6 +589,9 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         bool             m_deferredDisconnect;
         bool             m_runDisconnectHook;
         bool             m_spacesToUnderscores;
+        bool             m_transfer;
+        bool             m_configure;
+        bool             m_customButton;
 
         MediaItem       *m_transferredItem;
         QString          m_type;

@@ -16,6 +16,7 @@
 #include "daapreader/reader.h"
 #include "mediabrowser.h"
 #include <kdeversion.h>
+#include <kdialogbase.h>
 
 #define DNSSD_SUPPORT KDE_IS_VERSION(3,4,0)
 
@@ -55,6 +56,7 @@ class DaapClient : public MediaDevice
         int incRevision( const QString& host );
         int getSession( const QString& host );
         KURL getProxyUrl( const KURL& url );
+        void customClicked();
 
     protected:
          bool getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
@@ -73,11 +75,27 @@ class DaapClient : public MediaDevice
         void createTree( const QString& host, Daap::SongList bundles );
 
    private:
+        void newHost( const QString serviveName, const QString& ip );
+
 #if DNSSD_SUPPORT
         DNSSD::ServiceBrowser* m_browser;
 #endif
         bool    m_connected;
         QMap<QString, ServerInfo*> m_servers;
 };
+
+class AddHostDialog : public KDialogBase
+{
+    Q_OBJECT
+
+    public:
+        AddHostDialog( QWidget *parent );
+
+        QString text() const;
+
+    private:
+        KLineEdit *m_edit;
+};
+
 
 #endif /*AMAROK_DAAPCLIENT_H*/

@@ -22,7 +22,14 @@
 
 #include <qmetaobject.h>
 #include <qobjectlist.h>
+#include <qlabel.h>
+#include <klineedit.h>
+#include <qtooltip.h>
+
+#include <kiconloader.h>
 #include <kresolver.h>
+#include <ktoolbar.h>
+#include <ktoolbarbutton.h>
 
 #if DNSSD_SUPPORT
     #include <dnssd/remoteservice.h>
@@ -39,6 +46,7 @@ DaapClient::DaapClient()
 #endif
     , m_connected( false )
 {
+DEBUG_BLOCK
     setName( "daapclient" );
     m_name = i18n( "Shared Music" );
     m_hasMountPoint = false;
@@ -47,6 +55,12 @@ DaapClient::DaapClient()
     m_transcode = false;
     m_transcodeAlways = false;
     m_transcodeRemove = false;
+    m_configure = false;
+    m_customButton = true;
+    m_transfer = false;
+    KToolBarButton* customButton = MediaBrowser::instance()->getToolBar()->getButton( MediaBrowser::CUSTOM );
+    customButton->setText( i18n("Add computer") );
+    QToolTip::add( customButton, i18n( "List music from a remote host" ) );
     MediaBrowser::instance()->insertChild( this );
     debug() << "lookatme " << (parent() ? parent()->name() : "no parent") << (parent() ? parent()->metaObject()->className() : " ") << endl;
 }
@@ -167,11 +181,8 @@ DaapClient::resolvedDaap( bool success )
 {
 #if DNSSD_SUPPORT
     DEBUG_BLOCK
-    if( !success ) return;
-    const DNSSD::RemoteService* service =  static_cast<const DNSSD::RemoteService*>(sender());
-    MediaItem* server =  new MediaItem( m_view );
-    server->setText( 0, service->serviceName() );
-    server->setType( MediaItem::DIRECTORY );
+    const DNSSD::RemoteService* service =  dynamic_cast<const DNSSD::RemoteService*>(sender());
+    if( !success || !service ) return;
     debug() << service->serviceName() << ' ' << service->hostName() << ' ' << service->domain() << ' ' << service->type() << endl;
 
     QString ip = QString::null;
@@ -187,16 +198,12 @@ DaapClient::resolvedDaap( bool success )
         }
     }
 
-    if( ip.isEmpty() ) return;
-    Daap::Reader* reader = new Daap::Reader( ip, server, this, ( ip + ":3689" ).ascii() );
-    connect( reader, SIGNAL( daapBundles( const QString&, Daap::SongList ) ),
-            this, SLOT( createTree( const QString&, Daap::SongList ) ) );
-    reader->loginRequest();
+    newHost( service->serviceName(), ip );
 #endif
 }
 
 void
-DaapClient::createTree( const QString& host, Daap::SongList bundles )
+DaapClient::createTree( const QString& /*host*/, Daap::SongList bundles )
 {
     DEBUG_BLOCK
     const Daap::Reader* callback = dynamic_cast<const Daap::Reader*>(sender());
@@ -260,6 +267,57 @@ DaapClient::getSession( const QString& host )
     else
         return -1;
 }
+
+void
+DaapClient::customClicked()
+{
+    AddHostDialog dialog( 0 );
+    if( dialog.exec() == QDialog::Accepted ) {
+        newHost( dialog.text(), dialog.text() );
+    }
+}
+
+void
+DaapClient::newHost( const QString serviceName, const QString& ip )
+{
+    if( ip.isEmpty() ) return;
+
+    MediaItem* server =  new MediaItem( m_view );
+    server->setText( 0, serviceName );
+    server->setType( MediaItem::DIRECTORY );
+
+    Daap::Reader* reader = new Daap::Reader( ip, server, this, ( ip + ":3689" ).ascii() );
+    connect( reader, SIGNAL( daapBundles( const QString&, Daap::SongList ) ),
+            this, SLOT( createTree( const QString&, Daap::SongList ) ) );
+    reader->loginRequest();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// CLASS AddHostDialog
+////////////////////////////////////////////////////////////////////////////////
+AddHostDialog::AddHostDialog( QWidget *parent )
+    : KDialogBase( parent, "DaapAddHostDialog", true, i18n( "Add Computer" ) , Ok|Cancel)
+{
+    makeVBoxMainWidget();
+    QHBox* header = new QHBox( mainWidget(), "hostHeader" );
+    header->setSpacing( 20 );
+//    QLabel* image = new QLabel( header, "hostImage" );
+//    image->setPixmap( QPixmap( KGlobal::iconLoader()->iconPath( amaroK::icon( "download" ), -KIcon::SizeEnormous ) ) );
+    debug() << KGlobal::iconLoader()->iconPath( amaroK::icon( "download" ), -KIcon::SizeEnormous ) << endl;
+    new QLabel( i18n( "Browse the music of the following hostname or IP address:" ), header );
+
+    m_edit = new KLineEdit( mainWidget(), "AddHostEdit" );
+    m_edit->setFocus();
+}
+
+
+QString
+AddHostDialog::text() const
+{
+    return m_edit->text();
+}
+
+
 #include "daapclient.moc"
 
 #endif /* AMAROK_DAAPCLIENT_CPP */

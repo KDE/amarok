@@ -243,10 +243,16 @@ MediaBrowser::MediaBrowser( const char *name )
     QToolTip::add( m_toolbar->getButton(TRANSFER), i18n( "Transfer tracks to media device" ) );
 
     m_toolbar->insertLineSeparator();
+
+   // m_toolbar->setIconText( KToolBar::IconTextRight, true );
+    m_toolbar->insertButton( amaroK::icon( "add_playlist" ), CUSTOM, SIGNAL( clicked() ), this, SLOT( customClicked() ), true, "custom" );
+    QToolTip::add( m_toolbar->getButton(TRANSFER), i18n( "Transfer tracks to media device" ) );
+
     m_toolbar->setIconText( KToolBar::IconOnly, false );
 
     m_toolbar->insertButton( amaroK::icon( "configure" ), CONFIGURE, true, i18n("Configure") );
     QToolTip::add( m_toolbar->getButton(CONFIGURE), i18n( "Configure device" ) );
+
 
     m_deviceCombo = new KComboBox( this );
 
@@ -1398,6 +1404,7 @@ MediaView::viewportPaintEvent( QPaintEvent *e )
         p.drawRoundRect( 15, 15, w, h, (8*200)/w, (8*200)/h );
         t.draw( &p, 20, 20, QRect(), colorGroup() );
     }
+    MediaBrowser::instance()->updateButtons();
 }
 
 void
@@ -1686,9 +1693,10 @@ MediaBrowser::configSelectPlugin( int index )
 void
 MediaBrowser::updateButtons()
 {
+DEBUG_BLOCK
     if( !m_toolbar->getButton(CONNECT) ||
             !m_toolbar->getButton(DISCONNECT) ||
-            !m_toolbar->getButton(TRANSFER) )
+            !m_toolbar->getButton(TRANSFER) ) //TODO add CUSTOM
         return;
 
     if( currentDevice() )
@@ -1703,6 +1711,22 @@ MediaBrowser::updateButtons()
         m_toolbar->getButton(DISCONNECT)->setEnabled( false );
         m_toolbar->getButton(TRANSFER)->setEnabled( false );
     }
+
+    if( currentDevice()->m_transfer )
+        m_toolbar->showItem( TRANSFER );
+    else
+        m_toolbar->hideItem( TRANSFER );
+    
+    if( currentDevice()->m_customButton )
+        m_toolbar->showItem( CUSTOM );
+    else
+        m_toolbar->hideItem( CUSTOM );
+
+    if( currentDevice()->m_configure )
+        m_toolbar->showItem( CONFIGURE );
+    else
+        m_toolbar->hideItem( CONFIGURE );
+   debug() << currentDevice()->m_transfer << ' ' << currentDevice()->m_customButton << ' ' << currentDevice()->m_configure << endl;
 }
 
 void
@@ -1797,8 +1821,8 @@ MediaDevice::MediaDevice()
     , m_transcode( false )
     , m_transcodeAlways( false )
     , m_transcodeRemove( false )
-    , m_parent( NULL )
-    , m_view( NULL )
+    , m_parent( 0 )
+    , m_view( 0 )
     , m_transferDir( QString::null )
     , m_firstSort( QString::null )
     , m_secondSort( QString::null )
@@ -1809,6 +1833,9 @@ MediaDevice::MediaDevice()
     , m_transferring( false )
     , m_deleting( false )
     , m_deferredDisconnect( false )
+    , m_transfer( true )
+    , m_configure( true )
+    , m_customButton( false )
     , m_transferredItem( 0 )
     , m_playlistItem( 0 )
     , m_podcastItem( 0 )
@@ -2274,6 +2301,13 @@ MediaBrowser::disconnectClicked()
     updateDevices();
     updateButtons();
     updateStats();
+}
+
+void
+MediaBrowser::customClicked()
+{
+    if( currentDevice() )
+        currentDevice()->customClicked();
 }
 
 bool
