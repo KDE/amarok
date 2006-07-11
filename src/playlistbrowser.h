@@ -134,8 +134,12 @@ class PlaylistBrowser : public QVBox
 
         PlaylistCategory* loadStreams();
         void loadCoolStreams();
-        void loadLastfmStreams( const bool subscriber = false );
         void saveStreams();
+
+        void loadLastfmStreams( const bool subscriber = false );
+        void addLastFmRadio( QListViewItem *parent );
+        void addLastFmCustomRadio( QListViewItem *parent );
+        void saveLastFm();
 
         PlaylistCategory* loadSmartPlaylists();
         void loadDefaultSmartPlaylists();

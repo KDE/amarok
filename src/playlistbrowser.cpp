@@ -17,6 +17,7 @@
 #include "k3bexporter.h"
 #include "mediabrowser.h"
 #include "dynamicmode.h"
+#include "lastfm.h"
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h"
@@ -260,6 +261,7 @@ PlaylistBrowser::~PlaylistBrowser()
         //          the state after each change.
         savePlaylists();
         saveStreams();
+        saveLastFm();
         saveSmartPlaylists();
         saveDynamics();
         savePodcastFolderStates( m_podcastCategory );
@@ -435,7 +437,7 @@ void PlaylistBrowser::saveStreams()
 
 void PlaylistBrowser::loadLastfmStreams( const bool subscriber /*false*/ )
 {
-    m_lastfmCategory = new PlaylistCategory( m_listview, m_streamsCategory, i18n("Last.fm Streams") );
+    m_lastfmCategory = new PlaylistCategory( m_listview, m_streamsCategory, i18n("Last.fm Radio") );
 
     QStringList globaltags;
     globaltags << "Alternative" << "Ambient" << "Chill Out" << "Classical" << "Dance"
@@ -466,6 +468,56 @@ void PlaylistBrowser::loadLastfmStreams( const bool subscriber /*false*/ )
     }
 
     m_lastfmCategory->setOpen( m_lastfmOpen );
+}
+
+void PlaylistBrowser::addLastFmRadio( QListViewItem *parent )
+{
+    StreamEditor dialog( this, i18n( "Last.fm Radio" ), QString::null );
+    dialog.setCaption( i18n( "Add Last.fm Radio" ) );
+
+    if( !parent ) parent = static_cast<QListViewItem*>(m_lastfmCategory);
+
+    if( dialog.exec() == QDialog::Accepted )
+    {
+        new LastFmEntry( parent, 0, dialog.url(), dialog.name() );
+        parent->sortChildItems( 0, true );
+        parent->setOpen( true );
+        saveLastFm();
+    }
+}
+
+void PlaylistBrowser::addLastFmCustomRadio( QListViewItem *parent )
+{
+    const QString token = LastFm::Controller::createCustomStation();
+    if( token.isEmpty() ) return;
+
+    const QString text = "lastfm://artistnames/" + token;
+    const KURL url( text );
+    const QString name = LastFm::Controller::stationDescription( text );
+    new LastFmEntry( parent, 0, url, name );
+}
+
+void PlaylistBrowser::saveLastFm()
+{
+    QFile file( amaroK::saveLocation() + "lastfmbrowser_save.xml" );
+
+    QDomDocument doc;
+    QDomElement lastfmB = m_lastfmCategory->xml();
+    lastfmB.setAttribute( "product", "Amarok" );
+    lastfmB.setAttribute( "version", APP_VERSION );
+    lastfmB.setAttribute( "formatversion", "1.1" );
+    QDomNode lastfmNode = doc.importNode( lastfmB, true );
+    doc.appendChild( lastfmNode );
+
+    QString temp( doc.toString() );
+
+    // Only open the file after all data is ready. If it crashes, data is not lost!
+    if ( !file.open( IO_WriteOnly ) ) return;
+
+    QTextStream stream( &file );
+    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+    stream << temp;
 }
 
 
@@ -2747,7 +2799,8 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     }
     else if( isCategory( item ) ) {
         #define item static_cast<PlaylistCategory*>(item)
-        enum Actions { RENAME, REMOVE, CREATE, PLAYLIST, SMART, STREAM, DYNAMIC, PODCAST, REFRESH, CONFIG, INTERVAL };
+        enum Actions { RENAME, REMOVE, CREATE, PLAYLIST, SMART, STREAM, DYNAMIC,
+                       LASTFM, LASTFMCUSTOM, PODCAST, REFRESH, CONFIG, INTERVAL };
 
         QListViewItem *parentCat = item;
 
@@ -2773,6 +2826,12 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
         else if( parentCat == static_cast<QListViewItem*>(m_streamsCategory) )
             menu.insertItem( SmallIconSet(amaroK::icon( "add_playlist" )), i18n("Add Radio Stream..."), STREAM );
+
+        else if( parentCat == static_cast<QListViewItem*>(m_lastfmCategory) )
+        {
+            menu.insertItem( SmallIconSet(amaroK::icon( "add_playlist" )), i18n("Add Last.fm Radio..."), LASTFM );
+            menu.insertItem( SmallIconSet(amaroK::icon( "add_playlist" )), i18n("Add Custom Last.fm Radio..."), LASTFMCUSTOM );
+        }
 
         else if( parentCat == static_cast<QListViewItem*>(m_podcastCategory) )
         {
@@ -2818,6 +2877,14 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 ConfigDynamic::dynamicDialog(this);
                 break;
 
+            case LASTFM:
+                addLastFmRadio( item );
+                break;
+
+            case LASTFMCUSTOM:
+                addLastFmCustomRadio( item );
+                break;
+
             case PODCAST:
                 addPodcast( item );
                 break;
@@ -2826,9 +2893,9 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 refreshPodcasts(item);
                 break;
 
-             case CONFIG:
-                 configurePodcasts( item );
-                 break;
+            case CONFIG:
+                configurePodcasts( item );
+                break;
 
             case CREATE:
                 tracker = item->firstChild();

@@ -1573,8 +1573,7 @@ CurrentTrackJob::showHomeByAlbums()
 void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
 {
     DEBUG_BLOCK
-    LastFm::WebService *lfm = LastFm::Controller::instance()->getService();
-    if( !lfm ) return;
+    if( !LastFm::Controller::instance()->isPlaying() ) return;
 
     const LastFm::Bundle *lastFmInfo = currentTrack.lastFmBundle();
     if ( !lastFmInfo ) return;
@@ -1654,7 +1653,7 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
             "</table>\n"
             "</div>\n" )
             .args( QStringList()
-            << escapeHTML( lfm->stationDescription() )  //1
+            << escapeHTML( LastFm::Controller::stationDescription() )  //1
             << artistUrl  //2
             << escapeHTML( currentTrack.artist() ) //3
             << titleUrl //4

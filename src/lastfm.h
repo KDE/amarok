@@ -52,6 +52,7 @@ namespace LastFm
 
             static bool    checkCredentials();
             static QString createCustomStation();
+            static QString stationDescription( QString url = QString::null );   // necessary for translation
 
         public slots:
             void playbackStopped();
@@ -88,8 +89,6 @@ namespace LastFm
             QString currentStation()  const { return m_station;   }
             QString session()         const { return m_session;   }
             QUrl    streamUrl()       const { return m_streamUrl; }
-
-            QString stationDescription();   // necessary for translation
 
             void friends( QString username );
             void neighbours( QString username );
