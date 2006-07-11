@@ -637,6 +637,7 @@ void MultiTabBarButton::dropEvent( QDropEvent *e )
     m_dragSwitchTimer->stop();
     if( d->finalDropTarget )
         d->finalDropTarget->dropProxyEvent( e );
+    leaveEvent( e );
 }
 
 void MultiTabBarButton::slotDragSwitchTimer()
