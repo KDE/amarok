@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Service
 Name=KDEMM Engine
+Name[ar]=محرك KDEMM
 Name[bg]=Система KDEMM
 Name[bn]=কেডিই-এমএম ইঞ্জিন
 Name[br]=Keflusker KDEMM
@@ -43,6 +44,7 @@ Name[xx]=xxKDEMM Enginexx
 Name[zh_CN]=KDEMM 引擎
 Name[zh_TW]=KDEMM 引擎
 Comment=Plugin for Amarok
+Comment[ar]= قابس ( برنامج مضاف الى) AmaroK
 Comment[bg]=Приставка за Amarok
 Comment[br]=Lugent evit Amarok
 Comment[cs]=Modul pro AmaroK

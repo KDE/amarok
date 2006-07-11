@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Service
 Name=Creative Nomad Jukebox Media Device
+Name[ar]=جهاز اخراج وساءط Creative Nomad Jukebox
 Name[bg]=Устройство Creative Nomad Jukebox
 Name[ca]=Dispositiu de mitjans Creative Nomad Jukebox
 Name[cs]=Mediální zařízení Creative Nomad Jukebox
@@ -26,6 +27,7 @@ Name[uk]=Пристрій носія Nomad Jukebox
 Name[zh_CN]=Creative Nomad Jukebox 媒体设备
 X-KDE-Library=libamarok_njb-mediadevice
 Comment=Plugin for Amarok
+Comment[ar]= قابس ( برنامج مضاف الى) AmaroK
 Comment[bg]=Приставка за Amarok
 Comment[br]=Lugent evit Amarok
 Comment[cs]=Modul pro AmaroK

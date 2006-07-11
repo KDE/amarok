@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Service
 Name=Apple iPod Media Device
+Name[ar]=جهاز اخراج وساءط Apple iPod
 Name[bg]=Устройство Apple iPod
 Name[bn]=অ্যাপেল আই-পড মিডিয়া ডিভাইস
 Name[br]=Trobarzhell media Apple iPod
@@ -32,6 +33,7 @@ Name[xx]=xxApple iPod Media Devicexx
 Name[zh_CN]=Apple iPod 媒体设备
 X-KDE-Library=libamarok_ipod-mediadevice
 Comment=Plugin for Amarok
+Comment[ar]= قابس ( برنامج مضاف الى) AmaroK
 Comment[bg]=Приставка за Amarok
 Comment[br]=Lugent evit Amarok
 Comment[cs]=Modul pro AmaroK

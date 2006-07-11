@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Service
 Name=xine Engine
+Name[ar]=محرك xine
 Name[bg]=Система Xine
 Name[bn]=জাইন ইঞ্জিন
 Name[br]=Keflusker xine
@@ -46,6 +47,7 @@ Name[zh_CN]=xine 引擎
 Name[zh_TW]=xine 解碼引擎
 X-KDE-Library=libamarok_xine-engine
 Comment=Plugin for Amarok
+Comment[ar]= قابس ( برنامج مضاف الى) AmaroK
 Comment[bg]=Приставка за Amarok
 Comment[br]=Lugent evit Amarok
 Comment[cs]=Modul pro AmaroK

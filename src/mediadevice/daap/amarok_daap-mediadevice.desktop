@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Service
 Name=DAAP Client
+Name[ar]= زبون DAAP
 Name[et]=DAAP-klient
 Name[it]=Client DAAP
 Name[ja]=DAAP クライアント
@@ -9,6 +10,7 @@ Name[pt_BR]=Cliente de DAAP
 Name[sv]=DAAP-klient
 X-KDE-Library=libamarok_daap-mediadevice
 Comment=Plugin for Amarok
+Comment[ar]= قابس ( برنامج مضاف الى) AmaroK
 Comment[bg]=Приставка за Amarok
 Comment[br]=Lugent evit Amarok
 Comment[cs]=Modul pro AmaroK

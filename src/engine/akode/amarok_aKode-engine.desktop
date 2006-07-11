@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Service
 Name=aKode Engine
+Name[ar]=محرك aKode
 Name[bg]=Система aKode
 Name[bn]=aKode ইঞ্জিন
 Name[br]=Keflusker aKode
@@ -42,6 +43,7 @@ Name[zh_TW]=aKode 解碼引擎
 ServiceTypes=Amarok/Plugin
 X-KDE-Library=libamarok_aKode-engine
 Comment=aKode audio-engine for Amarok
+Comment[ar]=محرك صوتي aKode ل- AmaroK
 Comment[bg]=Аудио система aKode за Amarok
 Comment[br]=Keflusker klevet aKode evit Amarok
 Comment[cs]=Zvukový modul aKode pro Amarok

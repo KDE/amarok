@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Service
 Name=<no engine>
+Name[ar]= <ليس هناك محرك صوتي >
 Name[bg]=<без система>
 Name[bn]=<কোনও ইঞ্জিন নয়>
 Name[br]=<keflusker ebet>
@@ -42,6 +43,7 @@ Name[zh_CN]=<无引擎>
 Name[zh_TW]=<不使用解碼引擎>
 X-KDE-Library=libamarok_void-engine_plugin
 Comment=Plugin for Amarok
+Comment[ar]= قابس ( برنامج مضاف الى) AmaroK
 Comment[bg]=Приставка за Amarok
 Comment[br]=Lugent evit Amarok
 Comment[cs]=Modul pro AmaroK

@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Service
 Name=iRiver iFP Media Device
+Name[ar]=جهاز اخراج وساءط iRiver iFP
 Name[bg]=Устройство iRiver iFP
 Name[bn]=আই-রিভার আই-এফ-পি মিডিয়া ডিভাইস
 Name[br]=Trobarzhell media iRiver iFP 
@@ -32,6 +33,7 @@ Name[xx]=xxiRiver iFP Media Devicexx
 Name[zh_CN]=iRiver iFP 媒体设备
 X-KDE-Library=libamarok_ifp-mediadevice
 Comment=Plugin for Amarok
+Comment[ar]= قابس ( برنامج مضاف الى) AmaroK
 Comment[bg]=Приставка за Amarok
 Comment[br]=Lugent evit Amarok
 Comment[cs]=Modul pro AmaroK
