@@ -1298,7 +1298,8 @@ void MetaBundle::setUniqueId( const QString &id )
 TagLib::ID3v2::UniqueFileIdentifierFrame *
 MetaBundle::ourMP3UidFrame( TagLib::MPEG::File *file, QString ourId )
 {
-    //WARNING: this function is not safe if tag has no UFID frames (should never be called in that case)
+    //WARNING: this function may not be safe if tag has no UFID frames
+    //(should never be called in that case as checks are run first)
     TagLib::ID3v2::FrameList ufidlist = file->ID3v2Tag()->frameListMap()["UFID"];
     TagLib::ID3v2::UniqueFileIdentifierFrame* currFrame;
     for( TagLib::ID3v2::FrameList::Iterator iter = ufidlist.begin(); iter != ufidlist.end(); iter++ )
@@ -1318,7 +1319,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
         return;
 
     int createID = 0;
-    int randSize = 8; //largest size allowed by ID3v2.4
+    int randSize = 8;
     bool newID = false;
 
     QString ourId = QString( "Amarok - rediscover your music at http://amarok.kde.org" ).upper();
@@ -1341,7 +1342,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
                         QStringToTString( ourId ),
                         TagLib::ByteVector( m_uniqueId.ascii(), randSize )
                         ) );
-                file->save( TagLib::MPEG::File::ID3v2 );
+                file->save( TagLib::MPEG::File::AllTags );
                 newID = true;
             }
         }
