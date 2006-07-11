@@ -299,16 +299,6 @@ DaapClient::newHost( const QString serviceName, const QString& ip )
 AddHostDialog::AddHostDialog( QWidget *parent )
     : KDialogBase( parent, "DaapAddHostDialog", true, i18n( "Add Computer" ) , Ok|Cancel)
 {
-//     makeVBoxMainWidget();
-//     QHBox* header = new QHBox( mainWidget(), "hostHeader" );
-//     header->setSpacing( 20 );
-// //    QLabel* image = new QLabel( header, "hostImage" );
-// //    image->setPixmap( QPixmap( KGlobal::iconLoader()->iconPath( amaroK::icon( "download" ), -KIcon::SizeEnormous ) ) );
-//     debug() << KGlobal::iconLoader()->iconPath( amaroK::icon( "download" ), -KIcon::SizeEnormous ) << endl;
-//     new QLabel( i18n( "Browse the music of the following hostname or IP address:" ), header );
-// 
-//     m_edit = new KLineEdit( mainWidget(), "AddHostEdit" );
-//     m_edit->setFocus();
     m_base = new AddHostBase( this, "DaapAddHostBase" );
     m_base->m_downloadPixmap->setPixmap( QPixmap( KGlobal::iconLoader()->iconPath( amaroK::icon( "download" ), -KIcon::SizeEnormous ) ) );
     setMainWidget( m_base );
