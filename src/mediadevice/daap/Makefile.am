@@ -23,6 +23,7 @@ libamarok_daap_mediadevice_la_LDFLAGS = \
     $(all_libraries)
 
 libamarok_daap_mediadevice_la_SOURCES = \
+    addhostbase.ui \
     daapclient.cpp \
     proxy.cpp
 

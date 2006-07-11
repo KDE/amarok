@@ -33,7 +33,7 @@ namespace DNSSD {
 namespace DNSSD {
     class ServiceBrowser;
 }
-
+class AddHostBase;
 class QString;
 class MediaItem;
 
@@ -94,7 +94,7 @@ class AddHostDialog : public KDialogBase
         QString text() const;
 
     private:
-        KLineEdit *m_edit;
+        AddHostBase* m_base;
 };
 
 
