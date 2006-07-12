@@ -36,6 +36,7 @@ namespace DNSSD {
 class AddHostBase;
 class QString;
 class MediaItem;
+class ServerItem;
 
 class DaapClient : public MediaDevice
 {
@@ -58,6 +59,8 @@ class DaapClient : public MediaDevice
         KURL getProxyUrl( const KURL& url );
         void customClicked();
         bool autoConnect() { return true; }
+    public slots:
+         void passwordPrompt();
 
     protected:
          bool getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
@@ -71,15 +74,17 @@ class DaapClient : public MediaDevice
          virtual int deleteItemFromDevice( MediaItem *item, bool onlyPlayed = false, bool deleteTrack = true );
 
    private slots:
+        void serverOffline( DNSSD::RemoteService::Ptr );
         void foundDaap( DNSSD::RemoteService::Ptr );
         void resolvedDaap( bool );
         void createTree( const QString& host, Daap::SongList bundles );
 
    private:
-        void newHost( const QString serviveName, const QString& ip );
+        ServerItem* newHost( const QString serviveName, const QString& ip );
 
 #if DNSSD_SUPPORT
         DNSSD::ServiceBrowser* m_browser;
+        QMap<const DNSSD::RemoteService*, ServerItem*> m_serverItemMap;
 #endif
         bool    m_connected;
         QMap<QString, ServerInfo*> m_servers;
@@ -91,8 +96,12 @@ class ServerItem : public MediaItem
         ServerItem( QListView* parent, DaapClient* client, const QString& ip, const QString& title );
         void setOpen( bool o );
         void resetTitle() { setText( 0, m_title ); }
+        void unLoaded() { m_loaded = false; }
+        void setReader(Daap::Reader* reader) { m_reader = reader; }
+        Daap::Reader* getReader() const { return m_reader; }
     private:
         DaapClient* m_daapClient;
+        Daap::Reader* m_reader;
         const QString m_ip;
         const QString m_title;
         bool m_loaded;

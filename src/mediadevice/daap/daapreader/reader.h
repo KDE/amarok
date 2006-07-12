@@ -23,7 +23,7 @@ template <class T>
 class QPtrList;
 class MetaBundle;
 class ServerItem;
-
+class QHttpResponseHeader;
 namespace Daap {
 typedef QMap<QString, QVariant> Map;
 
@@ -53,7 +53,7 @@ typedef QMap< QString, AlbumList > SongList;
         Q_OBJECT
         
         public:
-            Reader(const QString& host, ServerItem* root, QObject* parent, const char* name);
+            Reader(const QString& host, ServerItem* root, const QString& password, QObject* parent, const char* name);
            ~Reader();
 
             //QPtrList<MetaBundle> getSongList();
@@ -63,8 +63,10 @@ typedef QMap< QString, AlbumList > SongList;
             ServerItem* rootMediaItem() const { return m_root; }
 
             int sessionId() const { return m_sessionId; }
+            QString host() const { return m_host; }
         public slots: 
             void logoutRequest(int, bool );
+            void loginHeaderReceived( const QHttpResponseHeader& resp );
             void loginFinished( int id , bool error );
             void updateFinished( int id , bool error );
             void databaseIdFinished( int id , bool error );
@@ -72,6 +74,7 @@ typedef QMap< QString, AlbumList > SongList;
 
         signals:
             void daapBundles( const QString& host, Daap::SongList bundles );
+            void passwordRequired();
 
         private:
             /**
@@ -90,6 +93,8 @@ typedef QMap< QString, AlbumList > SongList;
             QString m_databaseId;
             int m_sessionId;
             ServerItem* m_root;
+            QString m_password;
+
     };
 
 }

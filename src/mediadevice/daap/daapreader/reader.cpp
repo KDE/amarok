@@ -28,11 +28,12 @@ using namespace Daap;
 QMap<QString, Code> Reader::s_codes;
 
 
-Reader::Reader(const QString& host, ServerItem* root, QObject* parent, const char* name)
+Reader::Reader(const QString& host, ServerItem* root, const QString& password, QObject* parent, const char* name)
     : QObject(parent, name)
     , m_host( host )
     , m_sessionId( -1 )
     , m_root( root )
+    , m_password( password )
 {
    
 
@@ -159,7 +160,7 @@ Reader::~Reader()
 void
 Reader::logoutRequest()
 {
-    ContentFetcher* http = new ContentFetcher( m_host, Q_UINT16(3689), this, "readerLogoutHttp" );
+    ContentFetcher* http = new ContentFetcher( m_host, Q_UINT16(3689), m_password, this, "readerLogoutHttp" );
     connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( logoutRequest( int, bool ) ) );
     http->getDaap( "/logout?" + m_loginString );
 }
@@ -174,9 +175,25 @@ Reader::logoutRequest( int, bool )
 void
 Reader::loginRequest()
 {
-    ContentFetcher* http = new ContentFetcher( m_host, Q_UINT16(3689), this, "readerHttp");
-    connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( loginFinished( int, bool ) ) );
+    ContentFetcher* http = new ContentFetcher( m_host, Q_UINT16(3689), m_password, this, "readerHttp");
+    connect( http, SIGNAL(  responseHeaderReceived( const QHttpResponseHeader & ) )
+            , this, SLOT( loginHeaderReceived( const QHttpResponseHeader & ) ) );
     http->getDaap( "/login" );
+}
+
+void
+Reader::loginHeaderReceived( const QHttpResponseHeader & resp )
+{
+    ContentFetcher* http = (ContentFetcher*) sender();
+    disconnect( http, SIGNAL(  responseHeaderReceived( const QHttpResponseHeader & ) )
+            , this, SLOT( loginHeaderReceived( const QHttpResponseHeader & ) ) );
+    if( resp.statusCode() == 401 /*authorization required*/)
+    {
+        emit passwordRequired();
+        http->deleteLater();
+        return;
+    }
+    connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( loginFinished( int, bool ) ) );
 }
 
 void
@@ -186,6 +203,7 @@ Reader::loginFinished( int /* id */, bool error )
     disconnect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( loginFinished( int, bool ) ) );
     if( error )
     { 
+        debug() << http->error() << endl;
         http->deleteLater();
         return;
     }
@@ -209,6 +227,7 @@ Reader::updateFinished( int /*id*/, bool error )
     if( error )
     { 
         http->deleteLater();
+        warning() << "what is going on here? " << http->error() << endl;
         return;
     }
 

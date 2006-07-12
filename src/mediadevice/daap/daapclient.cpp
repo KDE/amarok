@@ -24,10 +24,11 @@
 #include <qmetaobject.h>
 #include <qobjectlist.h>
 #include <qlabel.h>
-#include <klineedit.h>
 #include <qtooltip.h>
 
 #include <kiconloader.h>
+#include <klineedit.h>
+#include <kpassdlg.h>
 #include <kresolver.h>
 #include <ktoolbar.h>
 #include <ktoolbarbutton.h>
@@ -108,6 +109,7 @@ DaapClient::openDevice(bool /* silent=false */)
         m_browser = new DNSSD::ServiceBrowser("_daap._tcp");
         m_browser->setName("daapServiceBrowser");
         connect( m_browser, SIGNAL( serviceAdded( DNSSD::RemoteService::Ptr ) ), this, SLOT( foundDaap( DNSSD::RemoteService::Ptr ) ) );
+        connect( m_browser, SIGNAL( serviceRemoved( DNSSD::RemoteService::Ptr ) ), this, SLOT( serverOffline( DNSSD::RemoteService::Ptr ) ) );
         m_browser->startBrowse();
     }
 #endif
@@ -127,7 +129,9 @@ DaapClient::closeDevice()
         m_servers.remove( itRead->name() );
     }
     m_connected = false;
+    m_servers.clear();
 #if DNSSD_SUPPORT
+    m_serverItemMap.clear();
     delete m_browser;
     m_browser = 0;
 #endif
@@ -167,6 +171,23 @@ DaapClient::deleteItemFromDevice( MediaItem* /*item*/, bool /*onlyPlayed*/, bool
 }
 
 void
+DaapClient::serverOffline( DNSSD::RemoteService::Ptr service )
+{
+#if DNSSD_SUPPORT
+    DEBUG_BLOCK
+    if( m_serverItemMap.contains( service.data() ) )
+    {
+        ServerItem* removeMe = m_serverItemMap[ service.data() ];
+        delete removeMe->getReader();
+        removeMe->setReader( 0 );
+        delete removeMe;
+    }
+    else
+        warning() << "removing non-existant service" << endl;
+#endif
+}
+
+void
 DaapClient::foundDaap( DNSSD::RemoteService::Ptr service )
 {
 #if DNSSD_SUPPORT
@@ -199,7 +220,10 @@ DaapClient::resolvedDaap( bool success )
         }
     }
 
-    newHost( service->serviceName(), ip );
+    if( m_serverItemMap.contains(service) ) //work around weird DNSSD bug
+        return;
+
+    m_serverItemMap[service] = newHost( service->serviceName(), ip );
 #endif
 }
 
@@ -280,17 +304,70 @@ DaapClient::customClicked()
     }
 }
 
-void
+ServerItem*
 DaapClient::newHost( const QString serviceName, const QString& ip )
 {
-    if( ip.isEmpty() ) return;
+    if( ip.isEmpty() ) return 0;
 
-    new ServerItem( m_view, this, ip, serviceName );
+    return new ServerItem( m_view, this, ip, serviceName );
 }
+
+void
+DaapClient::passwordPrompt()
+{
+    class PasswordDialog : public KDialogBase
+    {
+        public:
+            PasswordDialog( QWidget *parent )
+            : KDialogBase( parent, "PasswordDialog", true, i18n( "Password Required" ) , Ok|Cancel)
+            {
+                makeHBoxMainWidget();
+
+                KGuiItem ok( KStdGuiItem::ok() );
+                ok.setText( i18n( "Login" ) );
+                ok.setToolTip( i18n("Login to the music share with the password given.") );
+                setButtonOK( ok );
+
+                QLabel* passIcon = new QLabel( mainWidget(), "passicon" );
+                passIcon->setPixmap( QPixmap( KGlobal::iconLoader()->iconPath( "password", -KIcon::SizeHuge ) ) );
+                QHBox* loginArea = new QHBox( mainWidget(), "passhbox" );
+                new QLabel( i18n( "Password:"), loginArea, "passlabel" );
+                m_input = new KPasswordEdit( loginArea, "passedit" );
+                m_input->setFocus();
+            }
+            KPasswordEdit* m_input;
+    };
+
+    Daap::Reader* callback = dynamic_cast<Daap::Reader*>( const_cast<QObject*>( sender() ) );
+    ServerItem* root = callback->rootMediaItem();
+
+    PasswordDialog dialog( 0 );
+    if( dialog.exec() == QDialog::Accepted ) 
+    {
+        Daap::Reader* reader = new Daap::Reader( callback->host(), root, QString( dialog.m_input->password() ), this, callback->name() );
+        root->setReader( reader );
+        connect( reader, SIGNAL( daapBundles( const QString&, Daap::SongList ) ),
+                this, SLOT( createTree( const QString&, Daap::SongList ) ) );
+        connect( reader, SIGNAL( passwordRequired() ), this, SLOT( passwordPrompt() ) );
+        reader->loginRequest();
+    }
+    else
+    {
+         root->setOpen( false );
+         root->resetTitle();
+         root->unLoaded();
+    }
+    callback->deleteLater();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// CLASS ServerItem
+////////////////////////////////////////////////////////////////////////////////
 
 ServerItem::ServerItem( QListView* parent, DaapClient* client, const QString& ip, const QString& title )
     : MediaItem( parent )
-    , m_daapClient( client ) 
+    , m_daapClient( client )
+    , m_reader( 0 )
     , m_ip( ip )
     , m_title( title )
     , m_loaded( false )
@@ -310,9 +387,12 @@ ServerItem::setOpen( bool o )
 
     if( !m_loaded )
     {
-        Daap::Reader* reader = new Daap::Reader( m_ip, this, m_daapClient, ( m_ip + ":3689" ).ascii() );
+        Daap::Reader* reader = new Daap::Reader( m_ip, this, QString::null, m_daapClient, ( m_ip + ":3689" ).ascii() );
+        setReader ( reader );
+
         reader->connect( reader, SIGNAL( daapBundles( const QString&, Daap::SongList ) ),
                 m_daapClient, SLOT( createTree( const QString&, Daap::SongList ) ) );
+        reader->connect( reader, SIGNAL( passwordRequired() ), m_daapClient, SLOT( passwordPrompt() ) );
         reader->loginRequest();
         m_loaded = true;
         setText( 0, i18n( "Loading %1").arg( text( 0 ) ) );
@@ -329,6 +409,7 @@ AddHostDialog::AddHostDialog( QWidget *parent )
 {
     m_base = new AddHostBase( this, "DaapAddHostBase" );
     m_base->m_downloadPixmap->setPixmap( QPixmap( KGlobal::iconLoader()->iconPath( amaroK::icon( "download" ), -KIcon::SizeEnormous ) ) );
+    m_base->m_hostName->setFocus();
     setMainWidget( m_base );
 }
 

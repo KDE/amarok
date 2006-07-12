@@ -20,35 +20,24 @@
 #include <qdatastream.h>
 #include <qhttp.h>
 
+#include <kmdcodec.h>
+
 using namespace Daap;
 int ContentFetcher::s_requestId = 10;
 
-ContentFetcher::ContentFetcher( const QString & hostname, Q_UINT16 port, QObject * parent, const char * name )
+ContentFetcher::ContentFetcher( const QString & hostname, Q_UINT16 port, const QString& password, QObject * parent, const char * name )
  : QHttp(hostname, port, parent, name)
  , m_hostname( hostname )
 {
+    QCString pass = password.utf8();
+    if( !password.isNull() )
+    {
+        m_authorize = "Basic " + KCodecs::base64Encode( "none:" + pass );
+    }
 }
 
 ContentFetcher::~ContentFetcher()
 { }
-
-/*QDataStream*
-ContentFetcher::dataStream() const
-{
-    return m_dataStream;
-}
-
-void
-ContentFetcher::clearStream()
-{
-    if( m_dataStream )
-    {
-        delete m_dataStream->device();
-        m_dataStream->unsetDevice();
-        delete m_dataStream;
-        m_dataStream = 0;
-    }
-}*/
 
 void
 ContentFetcher::getDaap( const QString & command )
@@ -57,6 +46,12 @@ ContentFetcher::getDaap( const QString & command )
     QHttpRequestHeader header( "GET", command );
     char hash[33] = {0};
     GenerateHash(3, reinterpret_cast<const unsigned char*>(command.ascii()), 2, reinterpret_cast<unsigned char*>(hash), 0 /*s_requestId*/);
+
+    if( !m_authorize.isEmpty() )
+    {
+        header.setValue( "Authorization", m_authorize );
+    }
+
     header.setValue( "Host", m_hostname + ":3689" );
     header.setValue( "Client-DAAP-Request-ID", "0"/*QString::number( s_requestId )*/ );
     header.setValue( "Client-DAAP-Access-Index", "2" );
