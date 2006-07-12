@@ -221,7 +221,7 @@ DaapClient::createTree( const QString& /*host*/, Daap::SongList bundles )
         m_servers[ hostKey ] = si;
     }
 
-    MediaItem* root = callback->rootMediaItem();
+    ServerItem* root = callback->rootMediaItem();
     QStringList artists = bundles.keys();
     foreach( artists )
     {
@@ -246,6 +246,8 @@ DaapClient::createTree( const QString& /*host*/, Daap::SongList bundles )
             }
         }
     }
+    root->resetTitle();
+    root->setOpen( true );
 }
 
 int
@@ -283,14 +285,40 @@ DaapClient::newHost( const QString serviceName, const QString& ip )
 {
     if( ip.isEmpty() ) return;
 
-    MediaItem* server =  new MediaItem( m_view );
-    server->setText( 0, serviceName );
-    server->setType( MediaItem::DIRECTORY );
+    new ServerItem( m_view, this, ip, serviceName );
+}
 
-    Daap::Reader* reader = new Daap::Reader( ip, server, this, ( ip + ":3689" ).ascii() );
-    connect( reader, SIGNAL( daapBundles( const QString&, Daap::SongList ) ),
-            this, SLOT( createTree( const QString&, Daap::SongList ) ) );
-    reader->loginRequest();
+ServerItem::ServerItem( QListView* parent, DaapClient* client, const QString& ip, const QString& title )
+    : MediaItem( parent )
+    , m_daapClient( client ) 
+    , m_ip( ip )
+    , m_title( title )
+    , m_loaded( false )
+{
+    setText( 0, title );
+    setType( MediaItem::DIRECTORY ); 
+}
+
+void
+ServerItem::setOpen( bool o )
+{
+    if( !o )
+    {
+        MediaItem::setOpen( o );
+        return;
+    }
+
+    if( !m_loaded )
+    {
+        Daap::Reader* reader = new Daap::Reader( m_ip, this, m_daapClient, ( m_ip + ":3689" ).ascii() );
+        reader->connect( reader, SIGNAL( daapBundles( const QString&, Daap::SongList ) ),
+                m_daapClient, SLOT( createTree( const QString&, Daap::SongList ) ) );
+        reader->loginRequest();
+        m_loaded = true;
+        setText( 0, i18n( "Loading %1").arg( text( 0 ) ) );
+    }
+    else
+         MediaItem::setOpen( true );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

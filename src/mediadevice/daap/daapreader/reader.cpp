@@ -28,7 +28,7 @@ using namespace Daap;
 QMap<QString, Code> Reader::s_codes;
 
 
-Reader::Reader(const QString& host, MediaItem* root, QObject* parent, const char* name)
+Reader::Reader(const QString& host, ServerItem* root, QObject* parent, const char* name)
     : QObject(parent, name)
     , m_host( host )
     , m_sessionId( -1 )

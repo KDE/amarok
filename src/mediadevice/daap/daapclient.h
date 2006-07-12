@@ -57,6 +57,7 @@ class DaapClient : public MediaDevice
         int getSession( const QString& host );
         KURL getProxyUrl( const KURL& url );
         void customClicked();
+        bool autoConnect() { return true; }
 
     protected:
          bool getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
@@ -82,6 +83,19 @@ class DaapClient : public MediaDevice
 #endif
         bool    m_connected;
         QMap<QString, ServerInfo*> m_servers;
+};
+
+class ServerItem : public MediaItem
+{
+    public:
+        ServerItem( QListView* parent, DaapClient* client, const QString& ip, const QString& title );
+        void setOpen( bool o );
+        void resetTitle() { setText( 0, m_title ); }
+    private:
+        DaapClient* m_daapClient;
+        const QString m_ip;
+        const QString m_title;
+        bool m_loaded;
 };
 
 class AddHostDialog : public KDialogBase

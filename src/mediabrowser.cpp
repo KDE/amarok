@@ -1701,32 +1701,33 @@ DEBUG_BLOCK
 
     if( currentDevice() )
     {
+        if( currentDevice()->m_transfer )
+            m_toolbar->showItem( TRANSFER );
+        else
+            m_toolbar->hideItem( TRANSFER );
+
+        if( currentDevice()->m_customButton )
+            m_toolbar->showItem( CUSTOM );
+        else
+            m_toolbar->hideItem( CUSTOM );
+
+        if( currentDevice()->m_configure )
+            m_toolbar->showItem( CONFIGURE );
+        else
+            m_toolbar->hideItem( CONFIGURE );
+
         m_toolbar->getButton(CONNECT)->setEnabled( !currentDevice()->isConnected() );
         m_toolbar->getButton(DISCONNECT)->setEnabled( currentDevice()->isConnected() );
         m_toolbar->getButton(TRANSFER)->setEnabled( currentDevice()->isConnected() && m_queue->childCount() > 0 );
+        m_toolbar->getButton( CUSTOM )->setEnabled( true );
     }
     else
     {
-        m_toolbar->getButton(CONNECT)->setEnabled( false );
-        m_toolbar->getButton(DISCONNECT)->setEnabled( false );
-        m_toolbar->getButton(TRANSFER)->setEnabled( false );
+        m_toolbar->getButton( CONNECT )->setEnabled( false );
+        m_toolbar->getButton( DISCONNECT )->setEnabled( false );
+        m_toolbar->getButton( TRANSFER )->setEnabled( false );
+        m_toolbar->getButton( CUSTOM )->setEnabled( false );
     }
-
-    if( currentDevice()->m_transfer )
-        m_toolbar->showItem( TRANSFER );
-    else
-        m_toolbar->hideItem( TRANSFER );
-    
-    if( currentDevice()->m_customButton )
-        m_toolbar->showItem( CUSTOM );
-    else
-        m_toolbar->hideItem( CUSTOM );
-
-    if( currentDevice()->m_configure )
-        m_toolbar->showItem( CONFIGURE );
-    else
-        m_toolbar->hideItem( CONFIGURE );
-   debug() << currentDevice()->m_transfer << ' ' << currentDevice()->m_customButton << ' ' << currentDevice()->m_configure << endl;
 }
 
 void

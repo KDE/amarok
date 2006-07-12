@@ -10,6 +10,8 @@ VERSION 1.4.2:
     * Ability to create custom last.fm station from the GUI.
     * Ability to mark podcasts as listened.
     * Show error messages when connecting to last.fm streams fails.
+    * A new media device implements a DAAP client. So Amarok can connect 
+      to iTunes, Firefly Media Server etc. (BR 100513)    
 
   CHANGES:
     * Enhancements to ATF/statistics to allow for better tracking of stats as

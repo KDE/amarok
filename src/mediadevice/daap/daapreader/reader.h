@@ -22,7 +22,7 @@ class QString;
 template <class T>
 class QPtrList;
 class MetaBundle;
-class MediaItem;
+class ServerItem;
 
 namespace Daap {
 typedef QMap<QString, QVariant> Map;
@@ -53,14 +53,14 @@ typedef QMap< QString, AlbumList > SongList;
         Q_OBJECT
         
         public:
-            Reader(const QString& host, MediaItem* root, QObject* parent, const char* name);
+            Reader(const QString& host, ServerItem* root, QObject* parent, const char* name);
            ~Reader();
 
             //QPtrList<MetaBundle> getSongList();
             enum Options { SESSION_ID = 1, SERVER_VERSION = 2  };
             void loginRequest();
             void logoutRequest();
-            MediaItem* rootMediaItem() const { return m_root; }
+            ServerItem* rootMediaItem() const { return m_root; }
 
             int sessionId() const { return m_sessionId; }
         public slots: 
@@ -89,7 +89,7 @@ typedef QMap< QString, AlbumList > SongList;
             QString m_loginString;
             QString m_databaseId;
             int m_sessionId;
-            MediaItem* m_root;
+            ServerItem* m_root;
     };
 
 }
