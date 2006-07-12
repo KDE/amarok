@@ -1,23 +1,21 @@
 #!/usr/bin/env ruby
 #
-# Proxy server for last.fm. Relays the stream from the last.fm server to localhost.
-#
-# Stream consists of pure MP3 files concatenated, with the string "SYNC" in between, which
-# marks a track change. We notify Amarok on trackchange.
-# Amarok listens to stderr and recognizes these magic strings, do not remove them:
-# "AMAROK_PROXY: startup", "AMAROK_PROXY: SYNC"
+# Proxy server for Last.fm and DAAP. Relays the stream from the server to localhost, and
+# converts the protocol to http on the fly.
 #
 # (c) 2006 Paul Cifarelli <paul@cifarelli.net>
 # (c) 2006 Mark Kretschmann <markey@web.de>
 # (c) 2006 Michael Fellinger <manveru@weez-int.com>
+# (c) 2006 Ian Monroe <ian@monroe.nu>
 #
 # License: GNU General Public License V2
 
-require "net/http"
+# Amarok listens to stderr and recognizes these magic strings, do not remove them:
+# "AMAROK_PROXY: startup", "AMAROK_PROXY: SYNC"
+
+
 require 'socket'
 require "uri"
-
-include Socket::Constants
 
 class Proxy
   def initialize( port, remote_url, engine )
@@ -141,6 +139,9 @@ class Proxy
 end
 
 class LastFM < Proxy
+# Last.fm protocol:
+# Stream consists of pure MP3 files concatenated, with the string "SYNC" in between, which
+# marks a track change. The proxy notifies Amarok on track change.
   def get_request( remote_uri )
     "GET #{remote_uri.path || '/'}?#{remote_uri.query} HTTP/1.1\r\n\r\n"
   end
