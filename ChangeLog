@@ -16,6 +16,9 @@ VERSION 1.4.2:
       files are moved.
     * Tag Editing Dialog is now ATF-enabled.
     * In-line tag editing is now ATF-enabled.
+    * Previously, using ATF with MP3 files would wipe out existing UFID
+      frames, including those from other applications. Now Amarok plays nicely
+      and only touches its own UFID frame.
 
   BUGFIXES:
     * Reverse check for mount point and device node when connecting to iPods
@@ -28,6 +31,10 @@ VERSION 1.4.2:
     * When generic media devices were specified manually, transferred files
       would not always get converted to vfat-friendly names if they were on a
       vfat filesystem.
+    * When using ATF, tags in MP3 files would be written as ID3v2 only and
+      existing ID3v1 tags would be stripped, which could lead to media devices
+      and tagging libraries that were not ID3v2.4-aware to report that no tag
+      existed.  Now both tags are written with identical data.
 
 
 VERSION 1.4.1:
