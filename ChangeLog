@@ -16,9 +16,9 @@ VERSION 1.4.2:
       files are moved.
     * Tag Editing Dialog is now ATF-enabled.
     * In-line tag editing is now ATF-enabled.
-    * Previously, using ATF with MP3 files would wipe out existing UFID
-      frames, including those from other applications. Now Amarok plays nicely
-      and only touches its own UFID frame.
+    * Previously, using ATF with MP3 files would wipe out existing UFID frames
+      from other applications. Now Amarok plays nicely and only touches its
+      own UFID frame.
 
   BUGFIXES:
     * Reverse check for mount point and device node when connecting to iPods
