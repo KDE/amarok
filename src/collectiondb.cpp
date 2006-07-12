@@ -1196,7 +1196,7 @@ CollectionDB::createDragPixmap( const KURL::List &urls, QString textOverRide )
                 albumMap[ mb.artist() + mb.album() ] = 1;
                 QString coverName = CollectionDB::instance()->podcastImage( mb, false, coverW );
 
-                if ( !coverName.endsWith( "@nocover.png" ) )
+                if ( covers < maxCovers && !coverName.endsWith( "@nocover.png" ) )
                     coverPm[covers++].load( coverName );
             }
             remoteUrls++;
