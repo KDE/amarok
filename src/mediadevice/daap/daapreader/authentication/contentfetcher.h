@@ -20,7 +20,8 @@ class QDataStream;
 namespace Daap {
 
 /**
-   Inspired by a daapsharp class of the same name. Basically it interfaces with the 
+   Inspired by a daapsharp class of the same name. Basically it adds all the silly headers
+   that DAAP needs
 	@author Ian Monroe <ian@monroe.nu>
 */
 class ContentFetcher : public QHttp
@@ -32,7 +33,8 @@ class ContentFetcher : public QHttp
         ~ContentFetcher();
 
         void getDaap( const QString & path );
-
+        QDataStream& results();
+ 
     private:
         QString m_hostname;
         QCString m_authorize;

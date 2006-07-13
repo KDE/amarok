@@ -207,11 +207,7 @@ Reader::loginFinished( int /* id */, bool error )
         http->deleteLater();
         return;
     }
-
-
-    QByteArray resultArr = http->readAll();
-    QDataStream results( resultArr,  IO_ReadOnly );
-    Map loginResults = parse( results, resultArr.size() );
+    Map loginResults = parse( http->results() , 0 ,true );
 
     m_sessionId = loginResults["mlog"].asList()[0].asMap()["mlid"].asList()[0].asInt();
     m_loginString = "session-id=" + QString::number( m_sessionId );
@@ -231,12 +227,10 @@ Reader::updateFinished( int /*id*/, bool error )
         return;
     }
 
-    QByteArray resultArr = http->readAll();
-    QDataStream results( resultArr,  IO_ReadOnly );
-    Map updateResults = parse( results, resultArr.size() );
+    Map updateResults = parse( http->results(), 0, true );
     m_loginString = m_loginString + "&revision-number="  +
             QString::number( updateResults["mupd"].asList()[0].asMap()["musr"].asList()[0].asInt() );
-    
+
     connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( databaseIdFinished( int, bool ) ) );
     http->getDaap( "/databases?" + m_loginString );
 
@@ -253,9 +247,7 @@ Reader::databaseIdFinished( int /*id*/, bool error )
         return;
     }
 
-    QByteArray resultArr = http->readAll();
-    QDataStream results( resultArr,  IO_ReadOnly );
-    Map dbIdResults = parse( results, resultArr.size() );
+    Map dbIdResults = parse( http->results(), 0, true );
     m_databaseId = QString::number( dbIdResults["avdb"].asList()[0].asMap()["mlcl"].asList()[0].asMap()["mlit"].asList()[0].asMap()["miid"].asList()[0].asInt() );
     connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( songListFinished( int, bool ) ) );
     http->getDaap( QString("/databases/%1/items?type=music&meta=dmap.itemid,dmap.itemname,daap.songformat,daap.songartist,daap.songalbum,daap.songtime,daap.songtracknumber,daap.songcomment&%2")
@@ -274,10 +266,8 @@ Reader::songListFinished( int /*id*/, bool error )
         return;
     }
 
-    QByteArray resultArr = http->readAll();
-    QDataStream results( resultArr,  IO_ReadOnly );
-    Map songResults = parse( results, resultArr.size() );
-    
+    Map songResults = parse( http->results(), 0, true );
+
     SongList result;
     QValueList<QVariant> songList;
     songList = songResults["adbs"].asList()[0].asMap()["mlcl"].asList()[0].asMap()["mlit"].asList();
@@ -301,10 +291,8 @@ Reader::songListFinished( int /*id*/, bool error )
         
         QString artist = (*it).asMap()["asar"].asList()[0].toString();
         bundle->setArtist( artist );
-    //    debug() << artist << ' ' << album <<  endl;
         result[artist][album].append(bundle);
     }
-    debug() << "emitting daapBundles for host " << m_host << endl;
     emit daapBundles( m_host , result );
     http->deleteLater();
 }
@@ -320,7 +308,7 @@ Reader::getTagAndLength( QDataStream &raw, char tag[5] )
 }
 
 Map
-Reader::parse( QDataStream &raw, uint containerLength )
+Reader::parse( QDataStream &raw, uint containerLength, bool first )
 {
 //DEBUG_BLOCK
 /* http://daap.sourceforge.net/docs/index.html
@@ -329,12 +317,12 @@ Reader::parse( QDataStream &raw, uint containerLength )
 8-      Data    The data contained within the chunk */
     Map childMap;
     uint index = 0;
-    while( index < containerLength )
+    while( (first ? !raw.atEnd() : ( index < containerLength ) ) )
     {
     //    debug() << "at index " << index << " of a total container size " << containerLength << endl;
         char tag[5];
         Q_UINT32 tagLength = getTagAndLength( raw, tag );
-//        debug() << "The type is " << tagLength << endl << "The tag is " << tag << endl;
+        debug() << "The type is " << tagLength << endl << "The tag is " << tag << endl;
         switch( s_codes[tag].type )
         {
             case CHAR: {

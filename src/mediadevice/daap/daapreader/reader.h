@@ -82,7 +82,7 @@ typedef QMap< QString, AlbumList > SongList;
             * @param raw stream of DAAP reply
             * @param containerLength length of the container (or entire result) being analyzed
             */
-            static Map parse( QDataStream &raw, uint containerLength );
+            static Map parse( QDataStream &raw, uint containerLength, bool first = false );
             static void addElement( Map &parentMap, char* tag, QVariant element ); //! supporter function for parse
             static Q_UINT32 getTagAndLength( QDataStream &raw, char tag[5] );
 

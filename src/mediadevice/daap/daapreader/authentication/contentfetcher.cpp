@@ -20,6 +20,7 @@
 #include <qdatastream.h>
 #include <qhttp.h>
 
+#include <kfilterdev.h>
 #include <kmdcodec.h>
 
 using namespace Daap;
@@ -39,10 +40,20 @@ ContentFetcher::ContentFetcher( const QString & hostname, Q_UINT16 port, const Q
 ContentFetcher::~ContentFetcher()
 { }
 
+QDataStream&
+ContentFetcher::results()
+{
+    QBuffer* bytes = new QBuffer( readAll() ); 
+    QIODevice* stream =  KFilterDev::device( bytes, "application/x-gzip", false );
+    stream->open( IO_ReadOnly );
+    QDataStream* ds = new QDataStream( stream );
+    return *ds;
+}
+
 void
 ContentFetcher::getDaap( const QString & command )
 {
-//    DEBUG_BLOCK
+    delete m_toDevice;
     QHttpRequestHeader header( "GET", command );
     char hash[33] = {0};
     GenerateHash(3, reinterpret_cast<const unsigned char*>(command.ascii()), 2, reinterpret_cast<unsigned char*>(hash), 0 /*s_requestId*/);
@@ -59,10 +70,9 @@ ContentFetcher::getDaap( const QString & command )
     header.setValue( "Client-DAAP-Version", "3.0" );
     header.setValue( "User-Agent", "iTunes/4.6 (Windows; N)" );
     header.setValue( "Accept", "*/*" );
- //   header.setValue( "Accept-Encoding", "gzip" );
+    header.setValue( "Accept-Encoding", "gzip" );
 
     request( header );
-//    debug() << hash << ' ' << command.ascii() << ' ' << reinterpret_cast<const unsigned char*>(command.ascii()) << endl;
 }
 
 #include "contentfetcher.moc"
