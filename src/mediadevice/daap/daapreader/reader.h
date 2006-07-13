@@ -53,7 +53,7 @@ typedef QMap< QString, AlbumList > SongList;
         Q_OBJECT
         
         public:
-            Reader(const QString& host, ServerItem* root, const QString& password, QObject* parent, const char* name);
+            Reader(const QString& host, Q_UINT16 port, ServerItem* root, const QString& password, QObject* parent, const char* name);
            ~Reader();
 
             //QPtrList<MetaBundle> getSongList();
@@ -64,6 +64,7 @@ typedef QMap< QString, AlbumList > SongList;
 
             int sessionId() const { return m_sessionId; }
             QString host() const { return m_host; }
+            Q_UINT16 port() const { return m_port; }
         public slots: 
             void logoutRequest(int, bool );
             void loginHeaderReceived( const QHttpResponseHeader& resp );
@@ -89,6 +90,7 @@ typedef QMap< QString, AlbumList > SongList;
             static QMap<QString, Code> s_codes;
 
             QString m_host;
+            Q_UINT16 m_port;
             QString m_loginString;
             QString m_databaseId;
             int m_sessionId;

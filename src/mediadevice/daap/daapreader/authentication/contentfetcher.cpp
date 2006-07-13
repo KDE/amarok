@@ -29,6 +29,7 @@ int ContentFetcher::s_requestId = 10;
 ContentFetcher::ContentFetcher( const QString & hostname, Q_UINT16 port, const QString& password, QObject * parent, const char * name )
  : QHttp(hostname, port, parent, name)
  , m_hostname( hostname )
+ , m_port( port )
 {
     QCString pass = password.utf8();
     if( !password.isNull() )
@@ -62,7 +63,7 @@ ContentFetcher::getDaap( const QString & command )
         header.setValue( "Authorization", m_authorize );
     }
 
-    header.setValue( "Host", m_hostname + ":3689" );
+    header.setValue( "Host", m_hostname + QString::number( m_port ) );
     header.setValue( "Client-DAAP-Request-ID", "0"/*QString::number( s_requestId )*/ );
     header.setValue( "Client-DAAP-Access-Index", "2" );
     header.setValue( "Client-DAAP-Validation", hash );

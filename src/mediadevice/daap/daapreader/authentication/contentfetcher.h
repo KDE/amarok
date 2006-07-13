@@ -37,6 +37,7 @@ class ContentFetcher : public QHttp
  
     private:
         QString m_hostname;
+        Q_UINT16 m_port;
         QCString m_authorize;
         static int s_requestId; //! Apple needs this for some reason
 };

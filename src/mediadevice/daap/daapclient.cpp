@@ -28,6 +28,7 @@
 
 #include <kiconloader.h>
 #include <klineedit.h>
+#include <knuminput.h>
 #include <kpassdlg.h>
 #include <kresolver.h>
 #include <ktoolbar.h>
@@ -223,7 +224,7 @@ DaapClient::resolvedDaap( bool success )
     if( m_serverItemMap.contains(service) ) //work around weird DNSSD bug
         return;
 
-    m_serverItemMap[service] = newHost( service->serviceName(), ip );
+    m_serverItemMap[service] = newHost( service->serviceName(), ip, service->port() );
 #endif
 }
 
@@ -250,17 +251,21 @@ DaapClient::createTree( const QString& /*host*/, Daap::SongList bundles )
     foreach( artists )
     {
         MediaItem* parentArtist =  new MediaItem( root );
-        parentArtist->setText( 0, (*it) );
         parentArtist->setType( MediaItem::ARTIST );
         Daap::AlbumList albumMap = *( bundles.find(*it) );
+        parentArtist->setText( 0, (*albumMap.begin()).getFirst()->artist() ); //map was made case insensitively
+                                                                              //just get the displayed-case from
+                                                                              //the first track
         QStringList albums = albumMap.keys();
         for ( QStringList::Iterator itAlbum = albums.begin(); itAlbum != albums.end(); ++itAlbum )
         {
             MediaItem* parentAlbum = new MediaItem( parentArtist );
-            parentAlbum->setText( 0, (*itAlbum) );
             parentAlbum->setType( MediaItem::ALBUM );
             MetaBundle* track;
+
             Daap::TrackList trackList = *albumMap.find(*itAlbum);
+            parentAlbum->setText( 0, trackList.getFirst()->album() );
+
             for( track = trackList.first(); track; track = trackList.next() )
             {
                 MediaItem* childTrack = new MediaItem( parentAlbum );
@@ -298,18 +303,33 @@ DaapClient::getSession( const QString& host )
 void
 DaapClient::customClicked()
 {
+    class AddHostDialog : public KDialogBase
+    {
+
+        public:
+            AddHostDialog( QWidget *parent )
+                : KDialogBase( parent, "DaapAddHostDialog", true, i18n( "Add Computer" ) , Ok|Cancel)
+            {
+                m_base = new AddHostBase( this, "DaapAddHostBase" );
+                m_base->m_downloadPixmap->setPixmap( QPixmap( KGlobal::iconLoader()->iconPath( amaroK::icon( "download" ), -KIcon::SizeEnormous ) ) );
+                m_base->m_hostName->setFocus();
+                setMainWidget( m_base );
+            }
+            AddHostBase* m_base;
+    };
+
     AddHostDialog dialog( 0 );
     if( dialog.exec() == QDialog::Accepted ) {
-        newHost( dialog.text(), dialog.text() );
+        newHost( dialog.m_base->m_hostName->text(), dialog.m_base->m_hostName->text(), dialog.m_base->m_portInput->value() );
     }
 }
 
 ServerItem*
-DaapClient::newHost( const QString serviceName, const QString& ip )
+DaapClient::newHost( const QString serviceName, const QString& ip, const Q_INT16 port )
 {
     if( ip.isEmpty() ) return 0;
 
-    return new ServerItem( m_view, this, ip, serviceName );
+    return new ServerItem( m_view, this, ip, port, serviceName );
 }
 
 void
@@ -344,7 +364,7 @@ DaapClient::passwordPrompt()
     PasswordDialog dialog( 0 );
     if( dialog.exec() == QDialog::Accepted ) 
     {
-        Daap::Reader* reader = new Daap::Reader( callback->host(), root, QString( dialog.m_input->password() ), this, callback->name() );
+        Daap::Reader* reader = new Daap::Reader( callback->host(), callback->port(), root, QString( dialog.m_input->password() ), this, callback->name() );
         root->setReader( reader );
         connect( reader, SIGNAL( daapBundles( const QString&, Daap::SongList ) ),
                 this, SLOT( createTree( const QString&, Daap::SongList ) ) );
@@ -364,11 +384,12 @@ DaapClient::passwordPrompt()
 // CLASS ServerItem
 ////////////////////////////////////////////////////////////////////////////////
 
-ServerItem::ServerItem( QListView* parent, DaapClient* client, const QString& ip, const QString& title )
+ServerItem::ServerItem( QListView* parent, DaapClient* client, const QString& ip, Q_UINT16 port, const QString& title )
     : MediaItem( parent )
     , m_daapClient( client )
     , m_reader( 0 )
     , m_ip( ip )
+    , m_port( port )
     , m_title( title )
     , m_loaded( false )
 {
@@ -387,7 +408,7 @@ ServerItem::setOpen( bool o )
 
     if( !m_loaded )
     {
-        Daap::Reader* reader = new Daap::Reader( m_ip, this, QString::null, m_daapClient, ( m_ip + ":3689" ).ascii() );
+        Daap::Reader* reader = new Daap::Reader( m_ip, m_port, this, QString::null, m_daapClient, ( m_ip + ":3689" ).ascii() );
         setReader ( reader );
 
         reader->connect( reader, SIGNAL( daapBundles( const QString&, Daap::SongList ) ),
@@ -400,26 +421,6 @@ ServerItem::setOpen( bool o )
     else
          MediaItem::setOpen( true );
 }
-
-////////////////////////////////////////////////////////////////////////////////
-// CLASS AddHostDialog
-////////////////////////////////////////////////////////////////////////////////
-AddHostDialog::AddHostDialog( QWidget *parent )
-    : KDialogBase( parent, "DaapAddHostDialog", true, i18n( "Add Computer" ) , Ok|Cancel)
-{
-    m_base = new AddHostBase( this, "DaapAddHostBase" );
-    m_base->m_downloadPixmap->setPixmap( QPixmap( KGlobal::iconLoader()->iconPath( amaroK::icon( "download" ), -KIcon::SizeEnormous ) ) );
-    m_base->m_hostName->setFocus();
-    setMainWidget( m_base );
-}
-
-
-QString
-AddHostDialog::text() const
-{
-    return m_base->m_hostName->text();
-}
-
 
 #include "daapclient.moc"
 

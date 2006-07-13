@@ -80,7 +80,7 @@ class DaapClient : public MediaDevice
         void createTree( const QString& host, Daap::SongList bundles );
 
    private:
-        ServerItem* newHost( const QString serviveName, const QString& ip );
+        ServerItem* newHost( const QString serviceName, const QString& ip, const Q_INT16 port );
 
 #if DNSSD_SUPPORT
         DNSSD::ServiceBrowser* m_browser;
@@ -93,7 +93,7 @@ class DaapClient : public MediaDevice
 class ServerItem : public MediaItem
 {
     public:
-        ServerItem( QListView* parent, DaapClient* client, const QString& ip, const QString& title );
+        ServerItem( QListView* parent, DaapClient* client, const QString& ip, Q_UINT16 port, const QString& title );
         void setOpen( bool o );
         void resetTitle() { setText( 0, m_title ); }
         void unLoaded() { m_loaded = false; }
@@ -103,22 +103,9 @@ class ServerItem : public MediaItem
         DaapClient* m_daapClient;
         Daap::Reader* m_reader;
         const QString m_ip;
+        const Q_UINT16 m_port;
         const QString m_title;
         bool m_loaded;
 };
-
-class AddHostDialog : public KDialogBase
-{
-    Q_OBJECT
-
-    public:
-        AddHostDialog( QWidget *parent );
-
-        QString text() const;
-
-    private:
-        AddHostBase* m_base;
-};
-
 
 #endif /*AMAROK_DAAPCLIENT_H*/

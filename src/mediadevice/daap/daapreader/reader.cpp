@@ -28,9 +28,10 @@ using namespace Daap;
 QMap<QString, Code> Reader::s_codes;
 
 
-Reader::Reader(const QString& host, ServerItem* root, const QString& password, QObject* parent, const char* name)
+Reader::Reader(const QString& host, Q_UINT16 port, ServerItem* root, const QString& password, QObject* parent, const char* name)
     : QObject(parent, name)
     , m_host( host )
+    , m_port( port )
     , m_sessionId( -1 )
     , m_root( root )
     , m_password( password )
@@ -160,7 +161,7 @@ Reader::~Reader()
 void
 Reader::logoutRequest()
 {
-    ContentFetcher* http = new ContentFetcher( m_host, Q_UINT16(3689), m_password, this, "readerLogoutHttp" );
+    ContentFetcher* http = new ContentFetcher( m_host, m_port, m_password, this, "readerLogoutHttp" );
     connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( logoutRequest( int, bool ) ) );
     http->getDaap( "/logout?" + m_loginString );
 }
@@ -175,7 +176,7 @@ Reader::logoutRequest( int, bool )
 void
 Reader::loginRequest()
 {
-    ContentFetcher* http = new ContentFetcher( m_host, Q_UINT16(3689), m_password, this, "readerHttp");
+    ContentFetcher* http = new ContentFetcher( m_host, m_port, m_password, this, "readerHttp");
     connect( http, SIGNAL(  responseHeaderReceived( const QHttpResponseHeader & ) )
             , this, SLOT( loginHeaderReceived( const QHttpResponseHeader & ) ) );
     http->getDaap( "/login" );
@@ -278,8 +279,9 @@ Reader::songListFinished( int /*id*/, bool error )
         MetaBundle* bundle = new MetaBundle();
         bundle->setTitle( (*it).asMap()["minm"].asList()[0].toString() );
 //input url: daap://host:port/databaseId/music.ext
-        bundle->setUrl( amaroK::QStringx("daap://%1:3689/%2/%3.%4").args(
+        bundle->setUrl( amaroK::QStringx("daap://%1:%2/%3/%4.%5").args(
             QStringList() << m_host
+                        << QString::number( m_port )
                         << m_databaseId
                         << QString::number( (*it).asMap()["miid"].asList()[0].asInt() ) 
                         << (*it).asMap()["asfm"].asList()[0].asString() ) );
@@ -291,7 +293,7 @@ Reader::songListFinished( int /*id*/, bool error )
         
         QString artist = (*it).asMap()["asar"].asList()[0].toString();
         bundle->setArtist( artist );
-        result[artist][album].append(bundle);
+        result[ artist.lower() ][ album.lower() ].append(bundle);
     }
     emit daapBundles( m_host , result );
     http->deleteLater();
@@ -322,7 +324,6 @@ Reader::parse( QDataStream &raw, uint containerLength, bool first )
     //    debug() << "at index " << index << " of a total container size " << containerLength << endl;
         char tag[5];
         Q_UINT32 tagLength = getTagAndLength( raw, tag );
-        debug() << "The type is " << tagLength << endl << "The tag is " << tag << endl;
         switch( s_codes[tag].type )
         {
             case CHAR: {
@@ -378,7 +379,7 @@ Reader::parse( QDataStream &raw, uint containerLength, bool first )
                 }
                 break;
             default:
-                debug() << s_codes[tag].type << " doesn't work" << endl;
+                warning() << s_codes[tag].type << " doesn't work" << endl;
             break;
         }
         index += tagLength + 8;
