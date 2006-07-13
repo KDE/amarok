@@ -24,7 +24,6 @@
 #ifndef AMAROK_SELECTLABEL_H
 #define AMAROK_SELECTLABEL_H
 
-#include "debug.h"
 #include "actionclasses.h"
 #include "overlayWidget.h"
 #include "popupMessage.h"
@@ -53,19 +52,20 @@ class SelectLabel : public QLabel
                 , m_tooltipShowing( false )
                 , m_tooltipHidden( false )
         {
-            connect( this,   SIGNAL(activated( int )), action, SLOT(setCurrentItem( int )) );
-            connect( action, SIGNAL(activated( int )), this,   SLOT(setCurrentItem( int )) );
-            connect( action, SIGNAL(enabled( bool )), this,   SLOT(setEnabled( bool )) );
+            connect( this,   SIGNAL( activated( int ) ), action, SLOT( setCurrentItem( int ) ) );
+            connect( action, SIGNAL( activated( int ) ), this,   SLOT( setCurrentItem( int ) ) );
+            connect( action, SIGNAL( enabled( bool )  ), this,   SLOT( setEnabled( bool )    ) );
 
             setCurrentItem( currentItem() );
         }
 
         inline int currentItem() const { return m_action->currentItem(); }
-        inline bool isEnabled() const { return m_action->isEnabled(); }
+        inline bool isEnabled()  const { return m_action->isEnabled();   }
 
     protected:
         void mousePressEvent( QMouseEvent* )
         {
+            bool shown = m_tooltipShowing;
             hideToolTip();
             int n = currentItem();
             do //TODO doesn't handle all of them being disabled, but we don't do that anyways.
@@ -76,6 +76,11 @@ class SelectLabel : public QLabel
             {
                 setCurrentItem( n );
                 emit activated( n );
+                if( shown )
+                {
+                    m_tooltipHidden = false;
+                    showToolTip();
+                }
             }
         }
 
@@ -130,8 +135,7 @@ class SelectLabel : public QLabel
             {
                 KSelectAction *a = static_cast<KSelectAction*>( amaroK::actionCollection()->action( "favor_tracks" ) );
                 tip += QString("<br><br>") + i18n("%1: %2")
-                                             .arg( a->text().remove( '&' ) )
-                                             .arg( a->currentText().remove( '&' ) );
+                                             .arg( a->text().remove( '&' ), a->currentText().remove( '&' ) );
             }
 
             tip += "&nbsp;";
