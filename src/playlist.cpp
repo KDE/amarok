@@ -3382,11 +3382,17 @@ Playlist::removeSelectedItems() //SLOT
     }
 
     //remove the items
-    for( QListViewItem *item = queued.first(); item; item = queued.next() )
-        removeItem( static_cast<PlaylistItem*>( item ), true );
-    emit queueChanged( PLItemList(), queued );
-    for( QListViewItem *item = queued.first(); item; item = queued.next() )
-        delete item;
+    if( queued.count() )
+    {
+        for( QListViewItem *item = queued.first(); item; item = queued.next() )
+            removeItem( static_cast<PlaylistItem*>( item ), true );
+
+        emit queueChanged( PLItemList(), queued );
+
+        for( QListViewItem *item = queued.first(); item; item = queued.next() )
+            delete item;
+    }
+
     for( QListViewItem *item = list.first(); item; item = list.next() )
     {
         removeItem( static_cast<PlaylistItem*>( item ) );
@@ -3397,7 +3403,7 @@ Playlist::removeSelectedItems() //SLOT
     //NOTE no need to emit childCountChanged(), removeItem() does that for us
 
     //select next item in list
-    setSelected(  currentItem(), true );
+    setSelected( currentItem(), true );
 }
 
 void
@@ -4647,7 +4653,7 @@ Playlist::showTagDialog( QPtrList<QListViewItem> items )
             dialog.exec();
         }
         else if ( checkFileStatus( item ) ) {
-            TagDialog *dialog = new TagDialog( *item, item );
+            TagDialog *dialog = new TagDialog( *item, item, instance() );
             dialog->show();
         }
         else
@@ -4660,7 +4666,7 @@ Playlist::showTagDialog( QPtrList<QListViewItem> items )
             if ( item->isVisible() )
                 urls << static_cast<PlaylistItem*>( item )->url();
 
-        TagDialog *dialog = new TagDialog( urls );
+        TagDialog *dialog = new TagDialog( urls, instance() );
         dialog->show();
     }
 
