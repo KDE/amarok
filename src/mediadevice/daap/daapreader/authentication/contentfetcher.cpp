@@ -53,7 +53,6 @@ ContentFetcher::results()
 void
 ContentFetcher::getDaap( const QString & command )
 {
-    delete m_toDevice;
     QHttpRequestHeader header( "GET", command );
     char hash[33] = {0};
     GenerateHash(3, reinterpret_cast<const unsigned char*>(command.ascii()), 2, reinterpret_cast<unsigned char*>(hash), 0 /*s_requestId*/);
