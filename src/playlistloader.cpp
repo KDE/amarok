@@ -1014,7 +1014,8 @@ SqlLoader::doJob()
         setProgress( x += QueryBuilder::dragFieldCount );
 
         MetaBundle b;
-        b.setAlbum     (    *it );
+        b.setPath      (    *it );
+        b.setAlbum     (  *++it );
         b.setArtist    (  *++it );
         b.setGenre     (  *++it );
         b.setTitle     (  *++it );
@@ -1026,7 +1027,6 @@ SqlLoader::doJob()
         b.setLength    ( (*++it).toInt() );
         b.setSampleRate( (*++it).toInt() );
         b.setFilesize  ( (*++it).toInt() );
-        b.setPath      (  *++it );
         bool ok;
         const int val = (*++it).toInt( &ok );
         b.setCompilation( ok ? val : MetaBundle::CompilationUnknown );

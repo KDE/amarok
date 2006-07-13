@@ -5956,15 +5956,16 @@ QueryBuilder::setLimit( int startPos, int length )
 
 
 /* NOTE: It's important to keep these two functions and the const in sync! */
+/* NOTE: It's just as important to keep tags.url first! */
 const int
 QueryBuilder::dragFieldCount = 16;
 
 QString
 QueryBuilder::dragSQLFields()
 {
-    return "album.name, artist.name, genre.name, tags.title, year.name, "
+    return "tags.url, album.name, artist.name, genre.name, tags.title, year.name, "
            "tags.comment, tags.track, tags.bitrate, tags.discnumber, "
-           "tags.length, tags.samplerate, tags.filesize, tags.url, "
+           "tags.length, tags.samplerate, tags.filesize, "
            "tags.sampler, tags.filetype, tags.composer";
 }
 
@@ -5972,6 +5973,7 @@ void
 QueryBuilder::initSQLDrag()
 {
     clear();
+    addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
     addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
     addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
     addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
@@ -5984,7 +5986,6 @@ QueryBuilder::initSQLDrag()
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valLength );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valSamplerate );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFilesize );
-    addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valIsCompilation );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFileType );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComposer );

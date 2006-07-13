@@ -1345,11 +1345,9 @@ MediaView::contentsDropEvent( QDropEvent *e )
             QStringList values = CollectionDB::instance()->query( data );
             for( QStringList::iterator it = values.begin();
                     it != values.end();
-                    it++ )
+                    it += QueryBuilder::dragFieldCount )
             {
-                it += QueryBuilder::dragFieldCount-2;
                 list += KURL::fromPathOrURL( *it );
-                it++;
             }
             MediaBrowser::queue()->addURLs( list );
         }
@@ -3187,11 +3185,9 @@ MediaQueue::dropEvent( QDropEvent *e )
         QStringList values = CollectionDB::instance()->query( data );
         for( QStringList::iterator it = values.begin();
                 it != values.end();
-                it++ )
+                it += QueryBuilder::dragFieldCount )
         {
-            it += QueryBuilder::dragFieldCount-2;
             list += KURL::fromPathOrURL( *it );
-            it++;
         }
         addURLs( list );
     }
