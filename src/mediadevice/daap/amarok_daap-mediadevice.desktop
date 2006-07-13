@@ -1,6 +1,8 @@
 [Desktop Entry]
 Type=Service
 Name=Music Sharing
+Name[pt]=Partilha de Músicas
+Name[pt_BR]=Partilha de Músicas
 X-KDE-Library=libamarok_daap-mediadevice
 Comment=Plugin for Amarok
 Comment[ar]= قابس ( برنامج مضاف الى) AmaroK
