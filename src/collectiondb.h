@@ -516,7 +516,6 @@ class CollectionDB : public QObject, public EngineObserver
         //organize files stuff
         bool m_waitForFileOperation;
         bool m_fileOperationFailed;
-        bool m_atfEnabled;
         bool m_scanInProgress;
         bool m_rescanRequired;
 

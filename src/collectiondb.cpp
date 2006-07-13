@@ -245,8 +245,7 @@ CollectionDB::CollectionDB()
     setAdminValue( "Database Podcast Tables Version", QString::number( DATABASE_PODCAST_TABLES_VERSION ) );
     setAdminValue( "Database ATF Version", QString::number( DATABASE_ATF_VERSION ) );
 
-    m_atfEnabled = amaroK::config( "Collection" )->readBoolEntry( "AdvancedTagFeatures", false );
-    if( m_atfEnabled )
+    if( AmarokConfig::advancedTagFeatures() )
     {
         connect( this, SIGNAL(fileMoved(const QString&, const QString&, const QString&)),
                  this, SLOT(atfMigrateStatisticsUrl(const QString&, const QString&, const QString&)) );
@@ -2423,8 +2422,8 @@ void
 CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
 {
     //DEBUG_BLOCK
-    //debug() << "m_atfEnabled = " << (m_atfEnabled ? "true" : "false") << endl;
-    if( !m_atfEnabled || bundle->uniqueId().isEmpty() ) return;
+    //debug() << "AmarokConfig::advancedTagFeatures() = " << (AmarokConfig::advancedTagFeatures() ? "true" : "false") << endl;
+    if( !AmarokConfig::advancedTagFeatures() || bundle->uniqueId().isEmpty() ) return;
     //ATF Stuff
     QString currid = escapeString( bundle->uniqueId() );
     QString currurl = escapeString( bundle->url().path() );
@@ -2664,7 +2663,7 @@ CollectionDB::removeUniqueIdFromFile( const QString &path )
 QString
 CollectionDB::urlFromUniqueId( const QString &id )
 {
-    if( !m_atfEnabled )
+    if( !AmarokConfig::advancedTagFeatures() )
         return QString::null;
 
     QStringList urls = query( QString(
@@ -2756,7 +2755,7 @@ fillInBundle( QStringList values, MetaBundle &bundle )
     int val = (*it).toInt( &ok );
     bundle.setCompilation( ok ? val : MetaBundle::CompilationUnknown );
 
-    if( AmarokConfig::advancedTagFeatures() )
+    if( AmarokConfig::advancedTagFeatures() && bundle.uniqueId().isEmpty() )
         bundle.setUniqueId();
 }
 
@@ -2827,6 +2826,7 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
 
     for( KURL::List::ConstIterator it = urls.begin(), end = urls.end(), last = urls.fromLast(); it != end; ++it )
     {
+        debug() << "Processing url: " << (*it).path() << endl;;
         // non file stuff won't exist in the db, but we still need to
         // re-insert it into the list we return, just with no tags assigned
         paths += (*it).protocol() == "file" ? (*it).path() : (*it).url();
@@ -2876,14 +2876,14 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                 b.setFilesize  ( (*++it).toInt() );
                 b.setFileType  ( (*++it).toInt() );
                 b.setPath      (  *++it );
+
                 bool ok;
                 int val = (*++it).toInt( &ok );
                 b.setCompilation( ok ? val : MetaBundle::CompilationUnknown );
 
-                if( m_atfEnabled )
-                    b.setUniqueId();
-
                 b.checkExists();
+
+                b.setUniqueId();
 
                 buns50.append( b );
             }
@@ -3415,7 +3415,7 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
             if( isFileInCollection( srcURL.path() ) )
             {
                 migrateFile( srcURL.path(), dstURL.path() );
-                if( m_atfEnabled )
+                if( AmarokConfig::advancedTagFeatures() )
                     emit fileMoved( src, dest, uid );
                 else
                     emit fileMoved( src, dest);
@@ -4170,7 +4170,7 @@ CollectionDB::similarArtistsFetched( const QString& artist, const QStringList& s
 void
 CollectionDB::atfMigrateStatisticsUrl( const QString& /*oldUrl*/, const QString& newUrl, const QString& uniqueid )
 {
-    if( !m_atfEnabled )
+    if( !AmarokConfig::advancedTagFeatures() )
         return;
 
     query( QString( "DELETE FROM statistics WHERE url = '%1';" )

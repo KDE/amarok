@@ -402,8 +402,6 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
 
         std::vector<double> m_columnFraction;
 
-        bool m_atfEnabled;
-
         QPtrList<PlaylistItem> m_disabledChildren;
         QMap<QString,PlaylistItem*> m_uniqueMap;
         int m_oldRandom;

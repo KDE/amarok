@@ -60,7 +60,7 @@ public:
         for( BundleList::Iterator it = bundles.begin(), end = bundles.end(); it != end; ++it )
             /// @see MetaBundle for explanation of audioproperties < 0
             if( (*it).length() <= 0 || (*it).bitrate() <= 0 )
-                (*it).readTags( TagLib::AudioProperties::Fast );
+                (*it).readTags( TagLib::AudioProperties::Fast, 0, false );
     }
 
     QValueList<XMLData> xml;
@@ -76,7 +76,6 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, bool playFir
         , m_oldQueue( Playlist::instance()->m_nextTracks )
         , m_xmlSource( 0 )
 {
-    DEBUG_BLOCK
 
     connect( this,                 SIGNAL( queueChanged( const PLItemList &, const PLItemList & ) ),
              Playlist::instance(), SIGNAL( queueChanged( const PLItemList &, const PLItemList & ) ) );
@@ -214,7 +213,7 @@ UrlLoader::doJob()
 void
 UrlLoader::customEvent( QCustomEvent *e)
 {
-    bool atfEnabled = AmarokConfig::advancedTagFeatures();
+    DEBUG_BLOCK
     #define e static_cast<TagsEvent*>(e)
     switch( e->type() ) {
     case 1000:
@@ -223,7 +222,7 @@ UrlLoader::customEvent( QCustomEvent *e)
             //Only add files that exist to the playlist
             if( !(*it).exists() )
             {
-                if( !atfEnabled )
+                if( !AmarokConfig::advancedTagFeatures() )
                     continue;
 
                 //ATF on, so add anyways, but disable, we expect to find with an update

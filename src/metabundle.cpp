@@ -204,7 +204,7 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
 
         if ( !isValidMedia() || m_length <= 0 )
             readTags( readStyle, images );
-        else
+        else if( AmarokConfig::advancedTagFeatures() && m_uniqueId.isEmpty() );
             setUniqueId();
     }
     else
@@ -256,14 +256,15 @@ MetaBundle::MetaBundle( const QString& title,
         m_title  = title;
         m_artist = streamName; //which is sort of correct..
     }
-    setUniqueId();
+    if( AmarokConfig::advancedTagFeatures() && m_uniqueId.isEmpty() );
+        setUniqueId();
 }
 
 MetaBundle::MetaBundle( const MetaBundle &bundle )
 {
     *this = bundle;
-    //otherwise can get weird state where it's set to null...not QString::null, but null
-    setUniqueId();
+    if( AmarokConfig::advancedTagFeatures() && m_uniqueId.isEmpty() );
+        setUniqueId();
 }
 
 MetaBundle::~MetaBundle()
@@ -312,7 +313,8 @@ MetaBundle::operator=( const MetaBundle& bundle )
     if( bundle.m_lastFmBundle )
         setLastFmBundle( *bundle.m_lastFmBundle );
 
-    setUniqueId();
+    if( AmarokConfig::advancedTagFeatures() && m_uniqueId.isEmpty() );
+        setUniqueId();
 
     return *this;
 }
@@ -429,7 +431,7 @@ MetaBundle::embeddedImages( MetaBundle::EmbeddedImageList& images )
 }
 
 void
-MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImageList* images )
+MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImageList* images, bool doUniqueId )
 {
     if(!( url().protocol() == "file" || url().protocol() == "audiocd" ) )
         return;
@@ -468,11 +470,10 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
 
         QString disc;
         QString compilation;
-        bool atf = AmarokConfig::advancedTagFeatures();
         if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
         {
             m_type = mp3;
-            if ( file->ID3v2Tag( atf ) )
+            if ( file->ID3v2Tag() )
             {
                 if ( !file->ID3v2Tag()->frameListMap()["TPOS"].isEmpty() )
                     disc = TStringToQString( file->ID3v2Tag()->frameListMap()["TPOS"].front()->toString() ).stripWhiteSpace();
@@ -506,7 +507,7 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
         else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
         {
             m_type = flac;
-            if ( file->xiphComment( atf ) )
+            if ( file->xiphComment() )
             {
                 if ( !file->xiphComment()->fieldListMap()[ "COMPOSER" ].isEmpty() )
                     setComposer( TStringToQString( file->xiphComment()->fieldListMap()["COMPOSER"].front() ).stripWhiteSpace() );
@@ -537,8 +538,7 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
             }
         }
 
-        m_uniqueId = QString::null;
-        if ( atf )
+        if ( AmarokConfig::advancedTagFeatures() && !m_uniqueId.isEmpty() && doUniqueId )
             setUniqueId( fileref, false );
 
         if ( !disc.isEmpty() )
@@ -1281,6 +1281,9 @@ void MetaBundle::setUrl( const KURL &url )
     QValueList<int> changes;
     for( int i = 0; i < NUM_COLUMNS; ++i ) changes << i;
     aboutToChange( changes ); m_url = url; reactToChanges( changes );
+
+    if( AmarokConfig::advancedTagFeatures() );
+        setUniqueId();
 }
 
 void MetaBundle::setPath( const QString &path )
@@ -1288,6 +1291,9 @@ void MetaBundle::setPath( const QString &path )
     QValueList<int> changes;
     for( int i = 0; i < NUM_COLUMNS; ++i ) changes << i;
     aboutToChange( changes ); m_url.setPath( path ); reactToChanges( changes );
+
+    if( AmarokConfig::advancedTagFeatures() );
+        setUniqueId();
 }
 
 void MetaBundle::setUniqueId()
@@ -1336,8 +1342,8 @@ MetaBundle::ourMP3UidFrame( TagLib::MPEG::File *file, QString ourId )
 
 void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
 {
-    DEBUG_BLOCK
-    if( !AmarokConfig::advancedTagFeatures() && !strip )
+    if( isStream() || url().protocol() == "cdda" || url().protocol() == "audiocd" ||
+                !m_uniqueId.isEmpty() || ( !AmarokConfig::advancedTagFeatures() && !strip ) )
         return;
 
     bool createID = false;
@@ -1353,8 +1359,18 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
             if( file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() || !ourMP3UidFrame( file, ourId ) || recreate || strip )
                 createID = true;
             else
+            {
                 //this is really ugly, but otherwise we get an incorrect ? at the end of the string...possibly a null value?  Not sure of another way to fix this.
+                QString temp = TStringToQString( TagLib::String( ourMP3UidFrame( file, ourId )->identifier().data() ) );
+                QChar currchar;
+                uint i;
+                for( i = 0; i < temp.length(); i++)
+                {
+                    currchar = temp.at( i );
+                    debug() << "value " << i << " is " << int((currchar.latin1())) << endl;
+                }
                 m_uniqueId = TStringToQString( TagLib::String( ourMP3UidFrame( file, ourId )->identifier().data() ) ).left( randSize );
+            }
             if( ( strip || createID ) && TagLib::File::isWritable( file->name() ) )
             {
                 m_uniqueId = getRandomStringHelper( randSize );

@@ -156,7 +156,7 @@ public:
     void embeddedImages(EmbeddedImageList &images);
 
     /** If you want Accurate reading say so. If EmbeddedImageList != NULL, embedded art is loaded into it */
-    void readTags( TagLib::AudioProperties::ReadStyle = TagLib::AudioProperties::Fast, EmbeddedImageList* images = 0 );
+    void readTags( TagLib::AudioProperties::ReadStyle = TagLib::AudioProperties::Fast, EmbeddedImageList* images = 0, bool doUniqueId = true );
 
     /** Saves the changes to the file. Returns false on error. */
     bool save();

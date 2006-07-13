@@ -15,7 +15,6 @@
     <description/>
     <ignoreparts/>
     <secondaryLanguages/>
-    <versioncontrol>kdevsubversion</versioncontrol>
     <defaultencoding/>
   </general>
   <kdevautoproject>
@@ -168,7 +167,7 @@
     <qt>
       <used>true</used>
       <version>3</version>
-      <root>/home/kde-dev/kde-svn/branches/qt/3.3/qt-copy</root>
+      <root>/usr/qt/3</root>
     </qt>
     <splitheadersource>
       <enabled>false</enabled>

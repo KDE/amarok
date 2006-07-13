@@ -235,8 +235,7 @@ Playlist::Playlist( QWidget *parent )
 {
     s_instance = this;
 
-    m_atfEnabled = AmarokConfig::advancedTagFeatures();
-    if( m_atfEnabled )
+    if( AmarokConfig::advancedTagFeatures() )
     {
         connect( CollectionDB::instance(), SIGNAL(fileMoved(const QString&,
                 const QString&, const QString&)), SLOT(checkDisabledChildren(const QString&,
@@ -1049,9 +1048,9 @@ Playlist::updateEntriesUniqueId( const QString &/*url*/, const QString &oldid, c
     {
         item = m_uniqueMap[oldid];
         m_uniqueMap.remove( oldid );
-        m_uniqueMap[newid] = item;
         item->setUniqueId( newid );
         item->readTags();
+        m_uniqueMap[newid] = item;
     }
 }
 
@@ -1656,7 +1655,7 @@ Playlist::checkFileStatus( PlaylistItem * item )
     if( !item->checkExists() )
     {
         QString path = QString::null;
-        if( m_atfEnabled && !item->uniqueId().isEmpty() )
+        if( AmarokConfig::advancedTagFeatures() && !item->uniqueId().isEmpty() )
             path = CollectionDB::instance()->urlFromUniqueId( item->uniqueId() );
         if( !path.isEmpty() )
         {
