@@ -181,8 +181,6 @@ amaroK::TrayIcon::paintIcon( int mergePixels, bool force )
         KIconEffect::semiTransparent( tmpTrayIcon );
         grayedIcon = tmpTrayIcon;
     }
-    if ( mergePixels == 0 )
-        return blendOverlay( grayedIcon );
 
     // make up the alternate icon (use hilight color but more saturated)
     if ( alternateIcon.isNull() )
@@ -198,13 +196,16 @@ amaroK::TrayIcon::paintIcon( int mergePixels, bool force )
         KIconEffect::colorize( tmpTrayIcon, saturatedColor/* Qt::blue */, 0.9 );
         alternateIcon = tmpTrayIcon;
     }
+
     if ( mergePixels >= alternateIcon.height() )
+        return blendOverlay( grayedIcon );
+    if ( mergePixels == 0 )
         return blendOverlay( alternateIcon );
 
     // mix [ grayed <-> colored ] icons
     QPixmap tmpTrayPixmap = alternateIcon;
     copyBlt( &tmpTrayPixmap, 0,0, &grayedIcon, 0,0,
-            alternateIcon.width(), alternateIcon.height() - mergePixels );
+            alternateIcon.width(), mergePixels>0 ? mergePixels-1 : 0 );
     blendOverlay( tmpTrayPixmap );
 }
 
