@@ -175,6 +175,9 @@
       <synchronize>true</synchronize>
       <orientation>Vertical</orientation>
     </splitheadersource>
+    <designerintegration>
+      <qtdesigner/>
+    </designerintegration>
   </kdevcppsupport>
   <kdevclassview>
     <folderhierarchy>true</folderhierarchy>

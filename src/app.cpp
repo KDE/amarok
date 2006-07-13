@@ -177,9 +177,25 @@ App::App()
     new RefreshImages();
     #endif
 
-    // Trigger collection scan if folder setup was changed by wizard
-    if ( oldCollectionFolders != AmarokConfig::collectionFolders() )
+    // If just turned ATF on, clear the playlist and force a rescan
+    if ( AmarokConfig::aTFJustTurnedOn() )
+    {
+        amaroK::StatusBar::instance()->longMessage( i18n("ATF was just enabled.  Amarok needs to clear\n"
+                                                         "the playlist and then rescan the collection.\n"
+                                                         "(ATF will not work with any tracks added to the\n"
+                                                         "playlist before the end of this scan.)\n"
+                                                         "This first rescan may take much longer than normal.\n"
+                                                         "Please be patient."), KDE::StatusBar::Information );
         QTimer::singleShot( 0, CollectionDB::instance(), SLOT( startScan() ) );
+        Playlist::instance()->clear();
+        AmarokConfig::setATFJustTurnedOn( false );
+        amaroK::config()->sync();
+    }
+    // Trigger collection scan if folder setup was changed by wizard
+    else if ( oldCollectionFolders != AmarokConfig::collectionFolders() )
+    {
+        QTimer::singleShot( 0, CollectionDB::instance(), SLOT( startScan() ) );
+    }
     // If database version is updated, the collection needs to be rescanned.
     // Works also if the collection is empty for some other reason
     // (e.g. deleted collection.db)

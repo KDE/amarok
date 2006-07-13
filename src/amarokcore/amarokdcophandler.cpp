@@ -773,10 +773,9 @@ namespace amaroK
         CollectionDB::instance()->newUniqueIdForFile( path );
     }
 
-    void DcopCollectionHandler::newUniqueIdForFiles( const QStringList &list )
+    void DcopCollectionHandler::removeUniqueIdFromFile( const QString &path )
     {
-        foreach( list )
-            CollectionDB::instance()->newUniqueIdForFile( *it );
+        CollectionDB::instance()->removeUniqueIdFromFile( path );
     }
 
 /////////////////////////////////////////////////////////////////////////////////////

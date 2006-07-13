@@ -166,7 +166,7 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void addToUniqueMap( const QString uniqueid, PlaylistItem * item ) { m_uniqueMap[uniqueid] = item; }
         void removeFromUniqueMap( const QString uniqueid )
             { if( m_uniqueMap.contains( uniqueid ) ) m_uniqueMap.remove( uniqueid ); }
-        
+
         enum RequestType { Prev = -1, Current = 0, Next = 1 };
         enum StopAfterMode { DoNotStop, StopAfterCurrent, StopAfterQueue, StopAfterOther };
 

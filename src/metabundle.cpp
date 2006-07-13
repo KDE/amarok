@@ -152,7 +152,8 @@ int MetaBundle::columnIndex( const QString &name )
 }
 
 MetaBundle::MetaBundle()
-        : m_year( Undetermined )
+        : m_uniqueId( QString::null )
+        , m_year( Undetermined )
         , m_discNumber( Undetermined )
         , m_track( Undetermined )
         , m_bitrate( Undetermined )
@@ -176,6 +177,7 @@ MetaBundle::MetaBundle()
 
 MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImageList* images )
     : m_url( url )
+    , m_uniqueId( QString::null )
     , m_year( Undetermined )
     , m_discNumber( Undetermined )
     , m_track( Undetermined )
@@ -202,6 +204,8 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
 
         if ( !isValidMedia() || m_length <= 0 )
             readTags( readStyle, images );
+        else
+            setUniqueId();
     }
     else
     {
@@ -222,6 +226,7 @@ MetaBundle::MetaBundle( const QString& title,
         , m_genre     ( genre )
         , m_streamName( streamName )
         , m_streamUrl ( streamUrl )
+        , m_uniqueId( QString::null )
         , m_year( 0 )
         , m_discNumber( 0 )
         , m_track( 0 )
@@ -251,11 +256,14 @@ MetaBundle::MetaBundle( const QString& title,
         m_title  = title;
         m_artist = streamName; //which is sort of correct..
     }
+    setUniqueId();
 }
 
 MetaBundle::MetaBundle( const MetaBundle &bundle )
 {
     *this = bundle;
+    //otherwise can get weird state where it's set to null...not QString::null, but null
+    setUniqueId();
 }
 
 MetaBundle::~MetaBundle()
@@ -304,6 +312,7 @@ MetaBundle::operator=( const MetaBundle& bundle )
     if( bundle.m_lastFmBundle )
         setLastFmBundle( *bundle.m_lastFmBundle );
 
+    setUniqueId();
 
     return *this;
 }
@@ -530,7 +539,7 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
 
         m_uniqueId = QString::null;
         if ( atf )
-            setUniqueId( fileref );
+            setUniqueId( fileref, false );
 
         if ( !disc.isEmpty() )
         {
@@ -1282,7 +1291,7 @@ void MetaBundle::setUniqueId()
     fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
 
     if( !fileref.isNull() )
-        setUniqueId( fileref );
+        setUniqueId( fileref, false );
 }
 
 void MetaBundle::setUniqueId( const QString &id )
@@ -1306,19 +1315,20 @@ MetaBundle::ourMP3UidFrame( TagLib::MPEG::File *file, QString ourId )
     {
         currFrame = dynamic_cast<TagLib::ID3v2::UniqueFileIdentifierFrame*>(*iter);
         if( TStringToQString( currFrame->owner() ) == ourId )
+        {
             return currFrame;
+        }
     }
     return 0;
 }
 
-void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
+void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
 {
-    //DEBUG_BLOCK
-
-    if( !AmarokConfig::advancedTagFeatures() )
+    DEBUG_BLOCK
+    if( !AmarokConfig::advancedTagFeatures() && !strip )
         return;
 
-    int createID = 0;
+    bool createID = false;
     int randSize = 8;
     bool newID = false;
 
@@ -1326,18 +1336,25 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
 
     if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
     {
-        if ( file->ID3v2Tag( true ) )
+        if ( file->ID3v2Tag( !strip ) )
         {
-            if( file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() || !ourMP3UidFrame( file, ourId ) || recreate )
-                createID = 1;
+            if( file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() || !ourMP3UidFrame( file, ourId ) || recreate || strip )
+                createID = true;
             else
                 //this is really ugly, but otherwise we get an incorrect ? at the end of the string...possibly a null value?  Not sure of another way to fix this.
                 m_uniqueId = TStringToQString( TagLib::String( ourMP3UidFrame( file, ourId )->identifier().data() ) ).left( randSize );
-            if( createID == 1 && TagLib::File::isWritable( file->name() ) )
+            if( ( strip || createID ) && TagLib::File::isWritable( file->name() ) )
             {
                 m_uniqueId = getRandomStringHelper( randSize );
                 if( !file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() && ourMP3UidFrame( file, ourId ) )
                     file->ID3v2Tag()->removeFrame( ourMP3UidFrame( file, ourId ) ); 
+
+                if( strip )
+                {
+                        file->save( TagLib::MPEG::File::AllTags );
+                        return;
+                }
+
                 file->ID3v2Tag()->addFrame( new TagLib::ID3v2::UniqueFileIdentifierFrame(
                         QStringToTString( ourId ),
                         TagLib::ByteVector( m_uniqueId.ascii(), randSize )
@@ -1351,8 +1368,16 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
     {
         if( file->tag() )
         {
-            if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) && recreate )
+            if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) )
+                        && ( recreate || strip ) && TagLib::File::isWritable( file->name() ) )
                 file->tag()->removeField( QStringToTString( ourId ) );
+
+            if( strip )
+            {
+                file->save();
+                return;
+            }
+
             if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) )
             {
                 if( TagLib::File::isWritable( file->name() ) )
@@ -1375,10 +1400,18 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
     //This will have to be tested.  It's also supposedly a TagLib bug so maybe it could be fixed, especially with some pressure on wheels
     else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
     {
-        /*if ( file->xiphComment( true ) )
+        /*if ( file->xiphComment( !strip ) )
         {
-            if( file->xiphComment()->fieldListMap().contains( QStringToTString( ourId ) ) && recreate )
+            if( file->xiphComment()->fieldListMap().contains( QStringToTString( ourId ) )
+                        && ( recreate || strip ) && TagLib::File::isWritable( file->name() ) )
                 file->xiphComment()->removeField( QStringToTString( ourId ) );
+
+            if( strip )
+            {
+                file->save();
+                return;
+            }
+
             if( !file->xiphComment()->fieldListMap().contains( QStringToTString( ourId ) ) )
             {
                 if( TagLib::File::isWritable( file->name() ) )
@@ -1402,8 +1435,16 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
     {
         /*if( file->tag() )
         {
-            if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) && recreate )
+            if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) )
+                        && ( recreate || strip ) && TagLib::File::isWritable( file->name() ) )
                 file->tag()->removeField( QStringToTString( ourId ) );
+
+            if( strip )
+            {
+                file->save();
+                return;
+            }
+
             if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) )
             {
                 if( TagLib::File::isWritable( file->name() ) )
@@ -1433,7 +1474,6 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
 void
 MetaBundle::newUniqueId()
 {
-    //DEBUG_BLOCK
     const QString path = url().path();
     TagLib::FileRef fileref;
     fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
@@ -1442,6 +1482,18 @@ MetaBundle::newUniqueId()
         setUniqueId( fileref, true );
     else
         debug() << "ERROR: failed to set new uniqueid (could not open fileref)" << endl;
+}
+
+void MetaBundle::removeUniqueId()
+{
+    const QString path = url().path();
+    TagLib::FileRef fileref;
+    fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
+
+    if( !fileref.isNull() )
+        setUniqueId( fileref, false, true );
+    else
+        debug() << "ERROR: failed to remove uniqueid (could not open fileref)" << endl;
 }
 
 int

@@ -69,7 +69,7 @@ PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi, bool e
     m_atfEnabled = AmarokConfig::advancedTagFeatures();
     if( m_atfEnabled && !uniqueId().isEmpty() )
         Playlist::instance()->addToUniqueMap( uniqueId(), this );
-    
+
     refAlbum();
 
     listView()->m_totalCount++;
@@ -118,11 +118,8 @@ PlaylistItem::~PlaylistItem()
     if( listView()->m_hoveredRating == this )
         listView()->m_hoveredRating = 0;
 
-    if( m_atfEnabled && !uniqueId().isEmpty() )
-    {
-        Playlist::instance()->removeDisabledChild( this );
-        Playlist::instance()->removeFromUniqueMap( uniqueId() );
-    }
+    Playlist::instance()->removeDisabledChild( this );
+    Playlist::instance()->removeFromUniqueMap( uniqueId() );
 }
 
 

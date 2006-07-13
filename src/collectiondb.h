@@ -275,6 +275,7 @@ class CollectionDB : public QObject, public EngineObserver
         bool addSong( MetaBundle* bundle, const bool incremental = false );
         void doATFStuff( MetaBundle *bundle, const bool tempTables = true );
         void newUniqueIdForFile( const QString &path );
+        void removeUniqueIdFromFile( const QString &path );
         QString urlFromUniqueId( const QString &id );
 
         //podcast methods

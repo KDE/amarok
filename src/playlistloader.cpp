@@ -226,8 +226,8 @@ UrlLoader::customEvent( QCustomEvent *e)
                 if( !atfEnabled )
                     continue;
 
-                //add anyways, but disable
-                new PlaylistItem( *it, m_markerListViewItem, false );
+                //ATF on, so add anyways, but disable, we expect to find with an update
+                PlaylistItem *item = new PlaylistItem( *it, m_markerListViewItem, false );
             }
             else
             {

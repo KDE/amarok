@@ -2642,6 +2642,25 @@ CollectionDB::newUniqueIdForFile( const QString &path )
     doATFStuff( &bundle, false );
 }
 
+void
+CollectionDB::removeUniqueIdFromFile( const QString &path )
+{
+    DEBUG_BLOCK
+    KURL url = KURL::fromPathOrURL( path );
+
+    if( !QFile::exists( path ) )
+    {
+        debug() << "QFile::exists returned false for " << path << endl;
+        return;
+    }
+
+    url.cleanPath();
+
+    MetaBundle bundle( url );
+    bundle.removeUniqueId();
+    doATFStuff( &bundle, false );
+}
+
 QString
 CollectionDB::urlFromUniqueId( const QString &id )
 {

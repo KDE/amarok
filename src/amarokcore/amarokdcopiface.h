@@ -181,7 +181,7 @@ k_dcop:
    virtual void scanCollectionChanges() = 0;               ///< Scan the collection for changes only.
    virtual void disableAutoScoring( bool disable ) = 0;    ///< Disable updating track stats on track change.
    virtual void newUniqueIdForFile( const QString &path ) = 0; ///< Assign a new unique ID to a file.
-   virtual void newUniqueIdForFiles( const QStringList &list ) = 0; ///< Assign new unique IDs to the given files.
+   virtual void removeUniqueIdFromFile( const QString &path ) = 0; ///< Remove our unique ID from a given file.
 };
 
 

@@ -308,12 +308,7 @@ ManualDeviceAdder::slotCancel()
 void
 ManualDeviceAdder::slotOk()
 {
-    debug() << "medium: " << getMedium() << endl;
-    if( getMedium() )
-    {
-       debug() << "name: " << getMedium()->name() << ", managed: " << DeviceManager::instance()->getDevice( getMedium()->name() ) << endl;
-    }
-    if( getMedium() != NULL && !getMedium()->name().isEmpty() &&
+    if( getMedium() && !getMedium()->name().isEmpty() &&
             DeviceManager::instance()->getDevice( getMedium()->name() ) == NULL )
     {
         m_successful = true;
@@ -347,7 +342,6 @@ ManualDeviceAdder::comboChanged( const QString &string )
         m_mdaMountPoint->setEnabled(true);
     }
     m_selectedPlugin = MediaBrowser::instance()->getInternalPluginName( string );
-    debug() << "selected plugin: " << m_selectedPlugin << endl;
 }
 
 Medium*
@@ -387,8 +381,6 @@ MediaDeviceConfig::MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, 
 
     setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
     setSpacing( 5 );
-
-    //debug() << "[MediumPluginManager] medium->id() = " << medium->id() << ", config->readEntry = " << config->readEntry( medium->id() ) << endl;
 
     const QString labelTextNone = i18n( "(none)" );
     QString row = "<tr><td>%1</td><td>%2</td></tr>";
