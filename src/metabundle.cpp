@@ -1292,7 +1292,7 @@ void MetaBundle::setPath( const QString &path )
     for( int i = 0; i < NUM_COLUMNS; ++i ) changes << i;
     aboutToChange( changes ); m_url.setPath( path ); reactToChanges( changes );
 
-    if( AmarokConfig::advancedTagFeatures() );
+    if( AmarokConfig::advancedTagFeatures() )
         setUniqueId();
 }
 
