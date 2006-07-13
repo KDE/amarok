@@ -204,7 +204,7 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
 
         if ( !isValidMedia() || m_length <= 0 )
             readTags( readStyle, images );
-        else if( AmarokConfig::advancedTagFeatures() && m_uniqueId.isEmpty() );
+        else if( AmarokConfig::advancedTagFeatures() && m_uniqueId.isEmpty() )
             setUniqueId();
     }
     else
@@ -256,14 +256,14 @@ MetaBundle::MetaBundle( const QString& title,
         m_title  = title;
         m_artist = streamName; //which is sort of correct..
     }
-    if( AmarokConfig::advancedTagFeatures() && m_uniqueId.isEmpty() );
+    if( AmarokConfig::advancedTagFeatures() && m_uniqueId.isEmpty() )
         setUniqueId();
 }
 
 MetaBundle::MetaBundle( const MetaBundle &bundle )
 {
     *this = bundle;
-    if( AmarokConfig::advancedTagFeatures() && m_uniqueId.isEmpty() );
+    if( AmarokConfig::advancedTagFeatures() && m_uniqueId.isEmpty() )
         setUniqueId();
 }
 
@@ -313,7 +313,7 @@ MetaBundle::operator=( const MetaBundle& bundle )
     if( bundle.m_lastFmBundle )
         setLastFmBundle( *bundle.m_lastFmBundle );
 
-    if( AmarokConfig::advancedTagFeatures() && m_uniqueId.isEmpty() );
+    if( AmarokConfig::advancedTagFeatures() && m_uniqueId.isEmpty() )
         setUniqueId();
 
     return *this;
