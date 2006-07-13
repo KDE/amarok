@@ -59,7 +59,7 @@ class Proxy
     cp_to_empty_inward( serv, amaroks )
 
     if @engine == 'gst10-engine'
-      loop do
+      3.times do
         myputs( "gst10-engine waiting for reconnect" )
         sleep 1
         break if amaroks.eof
