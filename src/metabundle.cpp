@@ -1212,6 +1212,12 @@ void MetaBundle::loadImagesFromTag( const TagLib::ID3v2::Tag &tag, EmbeddedImage
 bool
 MetaBundle::save()
 {
+    if( !(url().protocol() == "file") )
+    {
+        debug() << "no file protocol url" << endl;
+        return false;
+    }
+
     //Set default codec to UTF-8 (see bugs 111246 and 111232)
     TagLib::ID3v2::FrameFactory::instance()->setDefaultTextEncoding(TagLib::String::UTF8);
 
@@ -1286,6 +1292,12 @@ void MetaBundle::setPath( const QString &path )
 
 void MetaBundle::setUniqueId()
 {
+    if( !(url().protocol() == "file") )
+    {
+        debug() << "no file protocol url" << endl;
+        return;
+    }
+
     const QString path = url().path();
     TagLib::FileRef fileref;
     fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
@@ -1474,6 +1486,12 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
 void
 MetaBundle::newUniqueId()
 {
+    if( !(url().protocol() == "file") )
+    {
+        debug() << "no file protocol url" << endl;
+        return;
+    }
+
     const QString path = url().path();
     TagLib::FileRef fileref;
     fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
@@ -1486,6 +1504,12 @@ MetaBundle::newUniqueId()
 
 void MetaBundle::removeUniqueId()
 {
+    if( !(url().protocol() == "file") )
+    {
+        debug() << "no file protocol url" << endl;
+        return;
+    }
+
     const QString path = url().path();
     TagLib::FileRef fileref;
     fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
