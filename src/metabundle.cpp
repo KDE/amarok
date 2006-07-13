@@ -1282,7 +1282,7 @@ void MetaBundle::setUrl( const KURL &url )
     for( int i = 0; i < NUM_COLUMNS; ++i ) changes << i;
     aboutToChange( changes ); m_url = url; reactToChanges( changes );
 
-    if( AmarokConfig::advancedTagFeatures() );
+    if( AmarokConfig::advancedTagFeatures() )
         setUniqueId();
 }
 
@@ -1375,7 +1375,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
             {
                 m_uniqueId = getRandomStringHelper( randSize );
                 if( !file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() && ourMP3UidFrame( file, ourId ) )
-                    file->ID3v2Tag()->removeFrame( ourMP3UidFrame( file, ourId ) ); 
+                    file->ID3v2Tag()->removeFrame( ourMP3UidFrame( file, ourId ) );
 
                 if( strip )
                 {
