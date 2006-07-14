@@ -720,7 +720,7 @@ TagDialog::setMultipleTracksMode()
 
     kLineEdit_title->setEnabled( false );
     kIntSpinBox_track->setEnabled( false );
-    kIntSpinBox_discNumber->setEnabled( false );
+    kIntSpinBox_discNumber->setValue( 0 );
 
     pushButton_musicbrainz->hide();
     pushButton_guessTags->hide();
