@@ -1092,26 +1092,19 @@ IpodMediaDevice::openDevice( bool silent )
 
     initView();
     GList *cur = m_itdb->playlists;
-    while(cur)
+    for( ; cur; cur = cur->next )
     {
         Itdb_Playlist *playlist = (Itdb_Playlist *)cur->data;
-
-        addPlaylistToView(playlist);
-
-        cur = cur->next;
+        addPlaylistToView( playlist );
     }
 
     if( !silent )
         kapp->processEvents( 100 );
 
-    cur = m_itdb->tracks;
-    while(cur)
+    for( cur = m_itdb->tracks; cur; cur = cur->next )
     {
         Itdb_Track *track = (Itdb_Track *)cur->data;
-
-        addTrackToView(track);
-
-        cur = cur->next;
+        addTrackToView( track, 0 /*parent*/, false /*checkintegrity*/, true /*batchmode*/ );
     }
 
     if( !silent )
@@ -1169,7 +1162,7 @@ IpodMediaDevice::checkIntegrity()
     {
         Itdb_Track *track = (Itdb_Track *)cur->data;
 
-        addTrackToView(track, 0, true);
+        addTrackToView( track, 0, true );
 
         cur = cur->next;
     }
@@ -1275,7 +1268,7 @@ IpodMediaDevice::playlistFromItem(IpodMediaItem *item)
 
 
 IpodMediaItem *
-IpodMediaDevice::addTrackToView(Itdb_Track *track, IpodMediaItem *item, bool checkIntegrity )
+IpodMediaDevice::addTrackToView(Itdb_Track *track, IpodMediaItem *item, bool checkIntegrity, bool batchmode )
 {
     bool visible = false;
     bool stale = false;
@@ -1365,7 +1358,7 @@ IpodMediaDevice::addTrackToView(Itdb_Track *track, IpodMediaItem *item, bool che
         if( item )
             channel->insertItem( item );
         else
-            item = new IpodMediaItem(channel, this);
+            item = new IpodMediaItem( channel, this );
         item->setText( 0, QString::fromUtf8(track->title) );
         item->setType( MediaItem::PODCASTITEM );
         item->m_track = track;
@@ -1384,7 +1377,7 @@ IpodMediaDevice::addTrackToView(Itdb_Track *track, IpodMediaItem *item, bool che
         }
     }
 
-    if(!stale && !visible)
+    if( !stale && !visible )
     {
         debug() << "invisible, title=" << track->title << endl;
         if( item )
@@ -1399,35 +1392,36 @@ IpodMediaDevice::addTrackToView(Itdb_Track *track, IpodMediaItem *item, bool che
         item->bundleFromTrack( track, realPath(track->ipod_path) );
     }
 
-    updateRootItems();
+    if ( !batchmode )
+        updateRootItems();
 
     return item;
 }
 
 void
-IpodMediaDevice::addPlaylistToView(Itdb_Playlist *pl)
+IpodMediaDevice::addPlaylistToView( Itdb_Playlist *pl )
 {
-    if(itdb_playlist_is_mpl(pl))
+    if( itdb_playlist_is_mpl( pl ) )
     {
         m_masterPlaylist = pl;
         return;
     }
 
-    if(itdb_playlist_is_podcasts(pl))
+    if( itdb_playlist_is_podcasts( pl ) )
     {
         m_podcastPlaylist = pl;
         return;
     }
 
-    if(pl->is_spl)
+    if( pl->is_spl )
     {
         debug() << "playlist " << pl->name << " is a smart playlist, ignored" << endl;
         return;
     }
 
-    QString name(QString::fromUtf8(pl->name));
+    QString name( QString::fromUtf8(pl->name) );
     IpodMediaItem *playlist = dynamic_cast<IpodMediaItem *>(m_playlistItem->findItem(name));
-    if(!playlist)
+    if( !playlist )
     {
         playlist = new IpodMediaItem( m_playlistItem, this );
         playlist->setText( 0, name );
@@ -1437,7 +1431,7 @@ IpodMediaDevice::addPlaylistToView(Itdb_Playlist *pl)
 
     int i=0;
     GList *cur = pl->members;
-    while(cur)
+    while( cur )
     {
         Itdb_Track *track = (Itdb_Track *)cur->data;
         IpodMediaItem *item = new IpodMediaItem(playlist, this);
