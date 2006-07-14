@@ -218,7 +218,7 @@ class PodcastFetcher : public QObject
 {
     Q_OBJECT
     public:
-        PodcastFetcher( QString url, const KURL &directory );
+        PodcastFetcher( QString url, const KURL &directory, int size );
 
         QString filename() { return m_url.fileName(); }
         KURL localUrl() { return KURL( m_file->name() ); }
@@ -242,6 +242,7 @@ class PodcastFetcher : public QObject
         KURL m_directory;
         bool m_redirected;
         int m_error;
+        int m_size;
 
 };
 
