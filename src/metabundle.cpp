@@ -1298,6 +1298,9 @@ void MetaBundle::setPath( const QString &path )
 
 void MetaBundle::setUniqueId()
 {
+    if( !AmarokConfig::advancedTagFeatures() )
+        return;
+
     if( !(url().protocol() == "file") )
     {
         debug() << "no file protocol url" << endl;
@@ -1342,6 +1345,15 @@ MetaBundle::ourMP3UidFrame( TagLib::MPEG::File *file, QString ourId )
 
 void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
 {
+    if( !AmarokConfig::advancedTagFeatures() )
+        return;
+
+    if( !(url().protocol() == "file") )
+    {
+        debug() << "no file protocol url" << endl;
+        return;
+    }
+
     if( isStream() || url().protocol() == "cdda" || url().protocol() == "audiocd" ||
                 !m_uniqueId.isEmpty() || ( !AmarokConfig::advancedTagFeatures() && !strip ) )
         return;
@@ -1502,6 +1514,9 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
 void
 MetaBundle::newUniqueId()
 {
+    if( !AmarokConfig::advancedTagFeatures() )
+        return;
+
     if( !(url().protocol() == "file") )
     {
         debug() << "no file protocol url" << endl;
@@ -1520,6 +1535,9 @@ MetaBundle::newUniqueId()
 
 void MetaBundle::removeUniqueId()
 {
+    if( !AmarokConfig::advancedTagFeatures() )
+        return;
+
     if( !(url().protocol() == "file") )
     {
         debug() << "no file protocol url" << endl;
