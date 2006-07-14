@@ -1216,9 +1216,10 @@ PodcastChannel::setSettings( PodcastSettings *newSettings )
         while( item )
         {
             if( item->isOnDisk() )
+            {
                 copyList << item->localUrl();
-
-            item->setLocalUrlBase( newSettings->saveLocation().prettyURL() );
+                item->setLocalUrlBase( newSettings->saveLocation().prettyURL() );
+            }
             item = static_cast<PodcastEpisode*>( item->nextSibling() );
         }
             // move the items
@@ -1728,7 +1729,8 @@ PodcastChannel::slotAnimation()
 
 PodcastFetcher::PodcastFetcher( QString url, const KURL &directory ):
         m_url( QUrl( url )),
-        m_directory ( directory )
+        m_directory ( directory ),
+        m_error( 0 )
 {
 
     m_http = new QHttp( m_url.host() );
@@ -1774,6 +1776,7 @@ void PodcastFetcher::fetch()
 
 void PodcastFetcher::kill()
 {
+    //TODO: this is a async function, causes crash after delete m_podcastfetcher
     m_http->abort();
     m_http->clearPendingRequests();
     m_http->closeConnection();
@@ -1799,6 +1802,12 @@ void PodcastFetcher::slotResponseReceived( const QHttpResponseHeader & resp )
         {
             QString oldHost = m_url.host();
             m_url = QUrl( resp.value( "location" ) );
+            //prevent crashing when redirected to host-only url (like www.michaelandevo.com)
+            if( m_url.fileName().isNull() )
+            {
+                m_error = QHttp::InvalidResponseHeader;
+                return;
+            }
   //          debug() << m_http->currentId() << " m_redirected to " << m_url.toString( ) <<endl;
             if( m_url.host() != oldHost )
                 m_http->setHost( m_url.host() );
@@ -1820,6 +1829,11 @@ void PodcastFetcher::slotDone( bool error )
             emit result( m_http->error() );
             return;
     }
+    if( m_error )
+    {
+        emit result( m_error );
+        return;
+    }
     if ( m_redirected )
     {
         m_redirected = false;
@@ -1830,7 +1844,7 @@ void PodcastFetcher::slotDone( bool error )
     else if ( !error )
     {
    //     debug() << m_http->currentId() << " downloaded to " << m_file->name() << endl;
-        emit result( m_http->error() );
+        emit result( m_http->error() ); //0
     }
 }
 

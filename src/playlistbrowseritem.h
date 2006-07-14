@@ -241,6 +241,7 @@ class PodcastFetcher : public QObject
         QHttp *m_http;
         KURL m_directory;
         bool m_redirected;
+        int m_error;
 
 };
 
