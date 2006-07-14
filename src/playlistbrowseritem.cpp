@@ -1727,10 +1727,11 @@ PodcastChannel::slotAnimation()
 ///    @note Allows us to download podcasts from any enclosure, even the weird ones, with decent filenames..
 ////////////////////////////////////////////////////////////////////////////
 
-PodcastFetcher::PodcastFetcher( QString url, const KURL &directory ):
+PodcastFetcher::PodcastFetcher( QString url, const KURL &directory, int size ):
         m_url( QUrl( url )),
         m_directory ( directory ),
-        m_error( 0 )
+        m_error( 0 ),
+        m_size( size)
 {
 
     m_http = new QHttp( m_url.host() );
@@ -1776,7 +1777,6 @@ void PodcastFetcher::fetch()
 
 void PodcastFetcher::kill()
 {
-    //TODO: this is a async function, causes crash after delete m_podcastfetcher
     m_http->abort();
     m_http->clearPendingRequests();
     m_http->closeConnection();
@@ -2016,7 +2016,7 @@ PodcastEpisode::downloadMedia()
             m_localDir = PodcastSettings("Podcasts").saveLocation();
     createLocalDir( m_localDir );
 
-    m_podcastFetcher = new PodcastFetcher( url().url() , m_localDir );
+    m_podcastFetcher = new PodcastFetcher( url().url() , m_localDir, m_bundle.size() );
 
     //TODO: make this work with PodcastFetcher
     amaroK::StatusBar::instance()->newProgressOperation( m_podcastFetcher )
@@ -2049,8 +2049,7 @@ PodcastEpisode::abortDownload() //SLOT
     emit downloadAborted();
     m_podcastFetcher->kill();
 
-    delete m_podcastFetcher;
-
+    //don't delete m_podcastFetcher yet, kill() is async
     stopAnimation();
     setText( 0, title() );
     m_onDisk = false;
@@ -2060,16 +2059,24 @@ PodcastEpisode::abortDownload() //SLOT
 void
 PodcastEpisode::downloadResult( int error ) //SLOT
 {
+    //gets called after PodcastFetcher::kill()
+    if( error == QHttp::Aborted )
+    {
+        delete m_podcastFetcher;
+        return;
+    }
     emit downloadFinished();
 
     stopAnimation();
     setText( 0, title() );
+
     if ( error != 0 ) {
         amaroK::StatusBar::instance()->shortMessage( i18n( "Media download aborted, unable to connect to server." ) );
         debug() << "Unable to retrieve podcast media. KIO Error: " << error << endl;
 
         setPixmap( 0, SmallIcon("cancel") );
 
+        delete m_podcastFetcher;
         return;
     }
 
