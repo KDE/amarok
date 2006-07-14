@@ -707,7 +707,7 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
         name = KStringHandler::rPixelSqueeze( name, pBuf.fontMetrics(), _width );
     }
 
-    pBuf.drawText( text_x, 0, width, textHeight, AlignVCenter, name );
+    pBuf.drawText( text_x, 0, width - text_x, textHeight, AlignVCenter, name );
 
     pBuf.end();
     p->drawPixmap( 0, 0, buffer );
@@ -912,7 +912,7 @@ void StreamEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, int
         name = KStringHandler::rPixelSqueeze( name, pBuf.fontMetrics(), _width );
     }
 
-    pBuf.drawText( text_x, 0, width, textHeight, AlignVCenter, name );
+    pBuf.drawText( text_x, 0, width - text_x, textHeight, AlignVCenter, name );
 
     pBuf.end();
     p->drawPixmap( 0, 0, buffer );
@@ -2219,7 +2219,7 @@ PodcastEpisode::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
             name = KStringHandler::rPixelSqueeze( name, pBuf.fontMetrics(), _width );
     }
 
-    pBuf.drawText( text_x, 0, width, textHeight, AlignVCenter, name );
+    pBuf.drawText( text_x, 0, width - text_x, textHeight, AlignVCenter, name );
 
     pBuf.end();
     p->drawPixmap( 0, 0, buffer );
