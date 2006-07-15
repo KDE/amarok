@@ -3,6 +3,8 @@ Amarok ChangeLog
 (C) 2002-2006 the Amarok authors.
 
 
+**** NEW ENTRIES GO ON TOP ****
+
 VERSION 1.4.2:
   FEATURES:
     * Media and collection browser tabs now support dropping.
@@ -10,8 +12,8 @@ VERSION 1.4.2:
     * Ability to create custom last.fm station from the GUI.
     * Ability to mark podcasts as listened.
     * Show error messages when connecting to last.fm streams fails.
-    * A new media device implements a DAAP client. So Amarok can connect 
-      to iTunes, Firefly Media Server etc. (BR 100513)    
+    * A new media device implements a DAAP client. So Amarok can connect
+      to iTunes, Firefly Media Server etc. (BR 100513)
 
   CHANGES:
     * Enhancements to ATF/statistics to allow for better tracking of stats as
