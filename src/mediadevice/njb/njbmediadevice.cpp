@@ -36,6 +36,7 @@ AMAROK_EXPORT_PLUGIN( NjbMediaDevice )
 #include <kmessagebox.h>
 #include <kpopupmenu.h>
 #include <ktempdir.h>
+#include <ktoolbarbutton.h>
 #include <kurl.h>
 #include <kurlrequester.h>     //downloadSelectedItems()
 #include <kurlrequesterdlg.h>  //downloadSelectedItems()
@@ -45,6 +46,7 @@ AMAROK_EXPORT_PLUGIN( NjbMediaDevice )
 #include <qdir.h>
 #include <qlistview.h>
 #include <qregexp.h>
+#include <qtooltip.h>
 #include <quuid.h>
 
 // posix
@@ -75,9 +77,14 @@ NjbMediaDevice::NjbMediaDevice(): MediaDevice()
     m_libcount = 0;
     theTracks = &trackList;
     m_connected = false;
+    m_customButton = true;
     m_td = 0;
     NJB_Set_Debug(0); // or try DD_SUBTRACE
-
+    KToolBarButton* customButton = MediaBrowser::instance()->getToolBar()->getButton( MediaBrowser::CUSTOM );
+    customButton->setText( i18n("Special device functions") );
+    QToolTip::remove( customButton );
+    QToolTip::add( customButton, i18n( "Special functions of your jukebox" ) );
+    
 }
 
 
@@ -209,32 +216,17 @@ NjbMediaDevice::openDevice(bool)
     QString owner = NJB_Get_Owner_String( m_njb );
     m_name = deviceName + " (Owned by " + owner + ")";
 
-    m_connected = true;
 
     if( NJB_Capture(m_njb) == -1) {
         debug() << ": couldn't capture\n";
         m_connected = false;
     }
     else
-        m_connected = true;
-
-    QString tracksFound;
-    if( m_connected )
     {
-        NJB_Set_Unicode( NJB_UC_UTF8 ); // I assume that UTF-8 is fine with everyone...
+        m_connected = true;
         readJukeboxMusic();
-        tracksFound = i18n( "1 track found on device",
-                          "%n tracks found on device ", trackList.size() );
-        
     }
 
-    QString Information = tracksFound + "\n";
-    Information += ( (NJB_Get_Auxpower( m_njb ) == 1) ? i18n("On auxiliary power") : i18n("On main power") + "\n" );
-    Information += ( (NJB_Get_Battery_Charging( m_njb ) == 1) ? i18n("Battery charging") : i18n("Battery not charging") + "\n" );
-    Information += ("Battery level: " + QString::number( NJB_Get_Battery_Level( m_njb ) ) );
-
-    amaroK::StatusBar::instance()->shortLongMessage( tracksFound, Information );
-    
     return true;
 
 }
@@ -911,3 +903,34 @@ NjbMediaDevice::addArtist( NjbTrack *track )
     }
     return dynamic_cast<NjbMediaItem *>( m_view->findItem( track->bundle()->artist().string(), 0 ) );
 }
+
+void
+NjbMediaDevice::customClicked()
+{
+    QString Information;
+    QString tracksFound;
+    QString powerStatus;
+    QString batteryLevel;
+    QString batteryCharging;
+    
+    if( m_connected )
+    {
+        NJB_Set_Unicode( NJB_UC_UTF8 ); // I assume that UTF-8 is fine with everyone...
+        tracksFound = i18n( "1 track found on device",
+                            "%n tracks found on device ", trackList.size() );
+        powerStatus = ( (NJB_Get_Auxpower( m_njb ) == 1) ? i18n("On auxiliary power") : i18n("On main power") );
+        batteryCharging = ( (NJB_Get_Battery_Charging( m_njb ) == 1) ? i18n("Battery charging") : i18n("Battery not charging") );
+        batteryLevel = (i18n("Battery level: ") + QString::number( NJB_Get_Battery_Level( m_njb ) ) );
+
+        Information = ( i18n("Player Information for ") + m_name +"\n" +
+                        i18n("Power status: ") + powerStatus + "\n" +
+                        i18n("Battery status: ") + batteryLevel + " (" +
+                        batteryCharging + ")" );
+    }
+    else
+    {
+        Information = i18n("Player not connected");
+    }
+    
+    KMessageBox::information(0, Information, i18n("Device information") );
+}    

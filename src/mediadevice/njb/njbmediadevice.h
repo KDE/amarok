@@ -103,6 +103,7 @@ class NjbMediaDevice : public MediaDevice
         virtual void removeConfigElements(QWidget* arg1);
         virtual void rmbPressed(QListViewItem* qitem, const QPoint& point, int arg1);
         virtual void runTransferDialog();
+        virtual void customClicked();
 
         void setDeviceType(const QString& type);
         void setSpacesToUnderscores(bool yesno);
