@@ -451,7 +451,7 @@ void PlaylistBrowser::loadLastfmStreams( const bool subscriber /*false*/ )
     foreach( globaltags )
     {
         const KURL url( "lastfm://globaltags/" + *it );
-        last = new StreamEntry( tagsFolder, last, url, *it );
+        last = new LastFmEntry( tagsFolder, last, url, *it );
     }
 
     QString user = AmarokConfig::scrobblerUsername();
@@ -460,10 +460,10 @@ void PlaylistBrowser::loadLastfmStreams( const bool subscriber /*false*/ )
 
     if( subscriber )
     {
-        url.setPath( QString("user/%1/personal").arg( user ) );
+        url = KURL::fromPathOrURL( QString("lastfm://user/%1/personal").arg( user ) );
         last = new LastFmEntry( m_lastfmCategory, last, url, i18n( "Personal Radio" ) );
 
-        url.setPath( QString("user/%1/loved").arg( user ) );
+        url = KURL::fromPathOrURL( QString("lastfm://user/%1/loved").arg( user ) );
         last = new LastFmEntry( m_lastfmCategory, last, url, i18n( "Loved Radio" ) );
     }
 
@@ -2606,7 +2606,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 break;
         }
     }
-    else if( isStream( item ) )
+    else if( isStream( item ) || isLastFm( item ) )
     {
         enum Actions { LOAD, ADD, EDIT, REMOVE, INFO };
 
@@ -3337,10 +3337,18 @@ void PlaylistBrowserView::startDrag()
             itemList += static_cast<PlaylistEntry*>(*it)->url();
             pixText = (*it)->text(0);
         }
+
         else if( isStream( *it ) )
         {
             urls     += static_cast<StreamEntry*>(*it)->url();
             itemList += KURL::fromPathOrURL( "stream://" );
+            pixText = (*it)->text(0);
+        }
+
+        else if( isLastFm( *it ) )
+        {
+            urls     += static_cast<LastFmEntry*>(*it)->url();
+            itemList += static_cast<LastFmEntry*>(*it)->url();
             pixText = (*it)->text(0);
         }
 

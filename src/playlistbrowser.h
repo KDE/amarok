@@ -349,6 +349,14 @@ isStream( QListViewItem *item )
     return item->rtti() == StreamEntry::RTTI ? true : false;
 }
 
+inline bool
+isLastFm( QListViewItem *item )
+{
+    if( !item )
+        return false;
+    return item->rtti() == LastFmEntry::RTTI ? true : false;
+}
+
 inline QString
 fileBaseName( const QString &filePath )
 {
