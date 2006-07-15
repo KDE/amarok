@@ -484,56 +484,46 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
         {
             switch ( *it )
             {
-                case Artist: {
+                case Artist:
                     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName, true );
                     filterTables |= QueryBuilder::tabArtist;
-                    }
                     break;
-                case Album: {
+                case Album:
                     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName, true );
                     filterTables |= QueryBuilder::tabAlbum;
-                    }
                     break;
-                case Genre: {
+                case Genre:
                     qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName, true );
                     filterTables |= QueryBuilder::tabGenre;
-                    }
                     break;
-                case Title: {
+                case Title:
                     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle, true );
                     filterTables |= QueryBuilder::tabSong;
-                    }
                     break;
-                case Length: {
+                case Length:
                     qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valLength );
                     filterTables |= QueryBuilder::tabSong;
-                    }
                     break;
-                case Composer: {
+                case Composer:
                     qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valComposer );
                     filterTables |= QueryBuilder::tabSong;
                     filterTables |= QueryBuilder::tabComposer;
-                    }
                     break;
-                case DiscNumber: {
+                case DiscNumber:
                     qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
                     filterTables |= QueryBuilder::tabSong;
-                    }
                     break;
-                case Track: {
+                case Track:
                     qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valTrack );
                     filterTables |= QueryBuilder::tabSong;
-                    }
                     break;
-                case Year: {
+                case Year:
                     qb.addReturnValue ( QueryBuilder::tabYear, QueryBuilder::valName );
                     filterTables |= QueryBuilder::tabYear;
-                    }
                     break;
-                case Comment: {
+                case Comment:
                     qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valComment );
                     filterTables |= QueryBuilder::tabSong;
-                    }
                     break;
                 case Playcount:
                     qb.addReturnValue ( QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
@@ -601,21 +591,18 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
                         break;
                     case Firstplay:
                     case Lastplay:
-                    case Modified: {
+                    case Modified:
                         QDateTime time = QDateTime();
                         time.setTime_t( (*it).toUInt() );
                         item->setText( *it_c, time.date().toString( Qt::LocalDate ) );
                         break;
-                    }
                     case Playcount:
-                    case Score: {
+                    case Score:
                         item->setText( *it_c, (*it).isNull() ? "0" : (*it) );
                         break;
-                    }
-                    case Rating: {
+                    case Rating:
                         item->setText( *it_c, (*it).isNull() ? "0" : (*it) );
                         break;
-                    }
                     case Filename:
                         item->setText( *it_c, KURL::fromPathOrURL(*it).filename() );
                         break;
@@ -753,7 +740,9 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
         {
             qb.clear();
             if ( translateTimeFilter( timeFilter() ) > 0 )
-                qb.addFilter( QueryBuilder::tabSong, QueryBuilder::valCreateDate, QString().setNum( QDateTime::currentDateTime().toTime_t() - translateTimeFilter( timeFilter() ) ), QueryBuilder::modeGreater );
+                qb.addFilter( QueryBuilder::tabSong, QueryBuilder::valCreateDate,
+                              QString().setNum( QDateTime::currentDateTime().toTime_t() -
+                              translateTimeFilter( timeFilter() ) ), QueryBuilder::modeGreater );
 
             qb.addReturnValue( q_cat1, QueryBuilder::valName, true );
             qb.setGoogleFilter( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, m_filter );
