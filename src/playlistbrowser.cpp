@@ -524,6 +524,9 @@ void PlaylistBrowser::addLastFmCustomRadio( QListViewItem *parent )
 
 void PlaylistBrowser::saveLastFm()
 {
+    if ( !m_lastfmCategory )
+        return;
+
     QFile file( amaroK::saveLocation() + "lastfmbrowser_save.xml" );
 
     QDomDocument doc;
