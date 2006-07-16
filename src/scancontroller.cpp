@@ -212,6 +212,12 @@ main_loop:
                 CollectionDB::instance()->clearTables( false ); // empty permanent tables
 
             CollectionDB::instance()->copyTempTables(); // copy temp into permanent tables
+	    if( AmarokConfig::aTFJustTurnedOn() )
+	    {
+		    Playlist::instance()->clear();
+		    AmarokConfig::setATFJustTurnedOn( false );
+		    amaroK::config->sync();
+	    }
         }
         else {
             if( m_crashedFiles.size() < MAX_RESTARTS ) {
