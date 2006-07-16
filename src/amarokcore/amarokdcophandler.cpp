@@ -223,16 +223,7 @@ namespace amaroK
 
     QString DcopPlayerHandler::lastfmStation()
     {
-       if (type() == "LastFm Stream")
-       {
-          LastFm::WebService *service = LastFm::Controller::instance()->getService();
-          QString station = service->currentStation();
-          KURL url(station);
-
-          return url.host() + url.path(-1);
-       }
-       else
-          return "";
+       return LastFm::Controller::stationDescription(); //return QString::null if not playing
     }
 
     QString DcopPlayerHandler::nowPlaying()
