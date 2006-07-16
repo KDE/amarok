@@ -1976,7 +1976,7 @@ CollectionView::listSelected()
     for ( item = firstChild(); item; item = item->nextSibling() )
         if ( item->isSelected() )
         {
-            const bool sampler = static_cast<CollectionItem*>(  item )->isSampler();
+            const bool sampler = static_cast<CollectionItem*>( item )->isSampler();
             qb.clear();
             if ( translateTimeFilter( timeFilter() ) > 0 )
                 qb.addFilter( QueryBuilder::tabSong, QueryBuilder::valCreateDate, QString().setNum( QDateTime::currentDateTime().toTime_t() - translateTimeFilter( timeFilter() ) ), QueryBuilder::modeGreater );
@@ -1988,6 +1988,8 @@ CollectionView::listSelected()
 
             if ( !sampler )
             {
+                if ( q_cat1 == CollectionBrowser::IdArtist )
+                    qb.setOptions( QueryBuilder::optNoCompilations );
                 if( VisYearAlbum == 1 )
                 {
                     tmptext = item->text( 0 );
@@ -2059,6 +2061,8 @@ CollectionView::listSelected()
 
                     if ( !sampler )
                     {
+                        if ( q_cat1 == CollectionBrowser::IdArtist )
+                            qb.setOptions( QueryBuilder::optNoCompilations );
 
                         tmptext = static_cast<CollectionItem*>( item )->getSQLText( 0 );
                         unknownText = tmptext.isEmpty();
@@ -2161,6 +2165,9 @@ CollectionView::listSelected()
 
                         if ( !sampler )
                         {
+                            if ( q_cat1 == CollectionBrowser::IdArtist )
+                                qb.setOptions( QueryBuilder::optNoCompilations );
+
                             tmptext = static_cast<CollectionItem*>( item )->getSQLText( 0 );
                             unknownText = tmptext.isEmpty();
 
