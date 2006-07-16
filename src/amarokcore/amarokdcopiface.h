@@ -64,6 +64,7 @@ k_dcop:
    virtual QString genre() = 0;                             ///< Return the genre of the currently playing track.
    virtual QString lyrics() = 0;                            ///< Return the lyrics of the currently playing track.
    virtual QString lyricsByPath( QString path ) = 0;        ///< Return the lyrics of a track by path.
+   virtual QString lastfmStation() = 0;                     ///< Return the lastfm stream that we are playing, if we are playing one
 
    /* Compatibility method (used by mediacontrol as well). DO NOT TOUCH! */
    virtual QString nowPlaying() = 0;                        ///< The title of now playing media.
