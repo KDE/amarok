@@ -591,11 +591,12 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
                         break;
                     case Firstplay:
                     case Lastplay:
-                    case Modified:
+                    case Modified: {
                         QDateTime time = QDateTime();
                         time.setTime_t( (*it).toUInt() );
                         item->setText( *it_c, time.date().toString( Qt::LocalDate ) );
                         break;
+                    }
                     case Playcount:
                     case Score:
                         item->setText( *it_c, (*it).isNull() ? "0" : (*it) );
