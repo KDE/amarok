@@ -196,9 +196,9 @@ void PlaylistCategory::setXml( const QDomElement &xml )
         for( QDomNode n = xml.firstChild() ; !n.isNull(); n = n.nextSibling() )
         {
             QDomElement e = n.toElement();
-            if ( e.tagName() == "category" ) {
+            if ( e.tagName() == "category" )
                 last = new PlaylistCategory( this, last, e);
-            }
+
             else if ( e.tagName() == "default" ) {
                 if( e.attribute( "type" ) == "stream" )
                     pb->m_coolStreamsOpen   = (e.attribute( "isOpen" ) == "true");
@@ -208,15 +208,18 @@ void PlaylistCategory::setXml( const QDomElement &xml )
                     pb->m_lastfmOpen = (e.attribute( "isOpen" ) == "true");
                 continue;
             }
-            else if ( e.tagName() == "stream" ) {
+            else if ( e.tagName() == "stream" )
                 last = new StreamEntry( this, last, e );
-            }
-            else if ( e.tagName() == "smartplaylist" ) {
+
+            else if ( e.tagName() == "smartplaylist" )
                 last = new SmartPlaylist( this, last, e );
-            }
-            else if ( e.tagName() == "playlist" ) {
+
+            else if ( e.tagName() == "playlist" )
                 last = new PlaylistEntry( this, last, e );
-            }
+
+            else if ( e.tagName() == "lastfm" )
+                last = new LastFmEntry( this, last, e );
+
             else if ( e.tagName() == "dynamic" ) {
                 if ( e.attribute( "name" ) == i18n("Random Mix") || e.attribute( "name" ) == i18n("Suggested Songs" ) )
                     continue;
@@ -247,9 +250,8 @@ void PlaylistCategory::setXml( const QDomElement &xml )
                 #undef  item
             }
             else if ( e.tagName() == "settings" )
-            {
                 PlaylistBrowser::instance()->registerPodcastSettings(  title(), new PodcastSettings( e, title() ) );
-            }
+
             if( !e.attribute( "isOpen" ).isNull() && last )
                 last->setOpen( e.attribute( "isOpen" ) == "true" ); //settings doesn't have an attribute "isOpen"
         }
@@ -265,7 +267,8 @@ QDomElement PlaylistCategory::xml()
         i.setAttribute( "name", text(0) );
         if( isOpen() )
             i.setAttribute( "isOpen", "true" );
-        for( PlaylistBrowserEntry *it = static_cast<PlaylistBrowserEntry*>( firstChild() ); it; it = static_cast<PlaylistBrowserEntry*>( it->nextSibling() ) )
+        for( PlaylistBrowserEntry *it = static_cast<PlaylistBrowserEntry*>( firstChild() ); it;
+             it = static_cast<PlaylistBrowserEntry*>( it->nextSibling() ) )
         {
             if( it == PlaylistBrowser::instance()->m_coolStreams )
             {
@@ -294,8 +297,7 @@ QDomElement PlaylistCategory::xml()
                     e.setAttribute( "isOpen", "true" );
                 i.appendChild( d.importNode( e, true ) );
             }
-            else if( it != PlaylistBrowser::instance()->m_randomDynamic &&
-                     it != PlaylistBrowser::instance()->m_suggestedDynamic )
+            else if( it->isKept() )
                 i.appendChild( d.importNode( it->xml(), true ) );
         }
         return i;
@@ -831,16 +833,17 @@ StreamEntry::StreamEntry( QListViewItem *parent, QListViewItem *after, const QDo
 }
 
 
-QDomElement StreamEntry::xml() {
-        QDomDocument doc;
-        QDomElement i = doc.createElement("stream");
-        i.setAttribute( "name", title() );
-        if( isOpen() )
-            i.setAttribute( "isOpen", "true" );
-        QDomElement url = doc.createElement( "url" );
-        url.appendChild( doc.createTextNode( m_url.prettyURL() ));
-        i.appendChild( url );
-        return i;
+QDomElement StreamEntry::xml()
+{
+    QDomDocument doc;
+    QDomElement i = doc.createElement("stream");
+    i.setAttribute( "name", title() );
+    if( isOpen() )
+        i.setAttribute( "isOpen", "true" );
+    QDomElement url = doc.createElement( "url" );
+    url.appendChild( doc.createTextNode( m_url.prettyURL() ));
+    i.appendChild( url );
+    return i;
 }
 
 void StreamEntry::updateInfo()

@@ -47,16 +47,16 @@ namespace KIO { class Job; class TransferJob; class CopyJob; } //podcast downloa
 class PlaylistBrowserEntry : public KListViewItem
 {
     public:
-        PlaylistBrowserEntry(QListViewItem *parent, QListViewItem *after)
-            :KListViewItem(parent, after) { m_notify = false; }
-        PlaylistBrowserEntry(QListView *parent, QListViewItem *after)
-            :KListViewItem(parent, after) { m_notify = false; }
-        PlaylistBrowserEntry(QListViewItem *parent, QListViewItem *after, const QString &name )
-            :KListViewItem(parent, after, name) { m_notify = false; }
+        PlaylistBrowserEntry( QListViewItem *parent, QListViewItem *after )
+            : KListViewItem( parent, after) { m_kept = true; }
+        PlaylistBrowserEntry( QListView *parent, QListViewItem *after )
+            : KListViewItem( parent, after) { m_kept = true; }
+        PlaylistBrowserEntry( QListViewItem *parent, QListViewItem *after, const QString &name )
+            : KListViewItem( parent, after, name) { m_kept = true; }
 
-        virtual QDomElement xml() { return QDomElement(); };
-        bool    notify() const { return m_notify; }           // use as you like ;-).  eg:
-        void    setNotify( const bool n ) { m_notify = n; }   // stop podcasts displaying multiple popups
+        virtual QDomElement xml() { return QDomElement(); }
+        bool    isKept() const { return m_kept; }           // if kept == true, then it will be saved
+        void    setKept( const bool k ) { m_kept = k; }     // to the cache files.
 
         virtual void updateInfo();
 
@@ -68,7 +68,7 @@ class PlaylistBrowserEntry : public KListViewItem
 
         virtual int compare( QListViewItem*, int, bool ) const; //reimplemented
 
-        bool    m_notify;
+        bool    m_kept;
 };
 
 class DynamicEntry : public PlaylistBrowserEntry, public DynamicMode

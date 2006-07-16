@@ -181,12 +181,14 @@ PlaylistBrowser::polish()
 
     m_dynamicCategory = loadDynamics();
     m_randomDynamic   = new DynamicEntry( m_dynamicCategory, 0, i18n("Random Mix") );
+    m_randomDynamic->setKept( false ); //dont save it
     m_randomDynamic->setCycleTracks(   config->readBoolEntry( "Dynamic Random Remove Played", true ) );
     m_randomDynamic->setMarkHistory(   config->readBoolEntry( "Dynamic Random Mark History", true ) );
     m_randomDynamic->setUpcomingCount( config->readNumEntry ( "Dynamic Random Upcoming Count", 15 ) );
     m_randomDynamic->setPreviousCount( config->readNumEntry ( "Dynamic Random Previous Count", 5 ) );
 
     m_suggestedDynamic = new DynamicEntry( m_dynamicCategory, m_randomDynamic, i18n("Suggested Songs" ) );
+    m_suggestedDynamic->setKept( false ); //dont save it
     m_suggestedDynamic->setAppendType( DynamicMode::SUGGESTION );
     m_suggestedDynamic->setCycleTracks(   config->readBoolEntry( "Dynamic Suggest Remove Played", true ) );
     m_suggestedDynamic->setMarkHistory(   config->readBoolEntry( "Dynamic Suggest Mark History", true ) );
@@ -321,7 +323,7 @@ PlaylistCategory* PlaylistBrowser::loadStreams()
 
     if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
     { /*Couldn't open the file or it had invalid content, so let's create an empty element*/
-        return new PlaylistCategory(m_listview, after , i18n("Radio Streams") );
+        return new PlaylistCategory( m_listview, after , i18n("Radio Streams") );
     }
     else {
         e = d.namedItem( "category" ).toElement();
@@ -437,7 +439,27 @@ void PlaylistBrowser::saveStreams()
 
 void PlaylistBrowser::loadLastfmStreams( const bool subscriber /*false*/ )
 {
-    m_lastfmCategory = new PlaylistCategory( m_listview, m_streamsCategory, i18n("Last.fm Radio") );
+    QFile file( amaroK::saveLocation() + "lastfmbrowser_save.xml" );
+
+    QTextStream stream( &file );
+    stream.setEncoding( QTextStream::UnicodeUTF8 );
+
+    QDomDocument d;
+    QDomElement e;
+
+    QListViewItem *after = m_streamsCategory;
+
+    if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
+    { /*Couldn't open the file or it had invalid content, so let's create an empty element*/
+        m_lastfmCategory = new PlaylistCategory( m_listview, after , i18n("Last.fm Radio") );
+    }
+    else {
+        e = d.namedItem( "category" ).toElement();
+        m_lastfmCategory = new PlaylistCategory( m_listview, after, e );
+        m_lastfmCategory->setText( 0, i18n("Last.fm Radio") );
+    }
+
+    /// Load the default items
 
     QStringList globaltags;
     globaltags << "Alternative" << "Ambient" << "Chill Out" << "Classical" << "Dance"
@@ -446,28 +468,31 @@ void PlaylistBrowser::loadLastfmStreams( const bool subscriber /*false*/ )
             << "Soundtrack" << "Techno" << "Trance";
 
     PlaylistCategory *tagsFolder = new PlaylistCategory( m_lastfmCategory, 0, i18n("Global Tags") );
-    QListViewItem *last = 0;
+    tagsFolder->setKept( false );
+    LastFmEntry *last = 0;
 
     foreach( globaltags )
     {
         const KURL url( "lastfm://globaltags/" + *it );
         last = new LastFmEntry( tagsFolder, last, url, *it );
+        last->setKept( false );
     }
 
     QString user = AmarokConfig::scrobblerUsername();
     KURL url( QString("lastfm://user/%1/neighbours").arg( user ) );
     last = new LastFmEntry( m_lastfmCategory, tagsFolder, url, i18n( "Neighbor Radio" ) );
+    last->setKept( false );
 
     if( subscriber )
     {
         url = KURL::fromPathOrURL( QString("lastfm://user/%1/personal").arg( user ) );
         last = new LastFmEntry( m_lastfmCategory, last, url, i18n( "Personal Radio" ) );
+        last->setKept( false );
 
         url = KURL::fromPathOrURL( QString("lastfm://user/%1/loved").arg( user ) );
         last = new LastFmEntry( m_lastfmCategory, last, url, i18n( "Loved Radio" ) );
+        last->setKept( false );
     }
-
-    m_lastfmCategory->setOpen( m_lastfmOpen );
 }
 
 void PlaylistBrowser::addLastFmRadio( QListViewItem *parent )
@@ -2608,21 +2633,22 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     }
     else if( isStream( item ) || isLastFm( item ) )
     {
-        enum Actions { LOAD, ADD, EDIT, REMOVE, INFO };
+        enum Actions { LOAD, ADD, EDIT, REMOVE };
 
         menu.insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n( "&Load" ), LOAD );
         menu.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), ADD );
         menu.insertSeparator();
-        // Forbid removal of Cool-Streams
-        if( item->parent() != m_coolStreams )
+
+        #define item static_cast<StreamEntry *>(item)
+        // Forbid editing non removable items
+        if( item->isKept() )
         {
             menu.insertItem( SmallIconSet( amaroK::icon("edit") ), i18n( "E&dit" ), EDIT );
             menu.insertItem( SmallIconSet( amaroK::icon("remove_from_playlist") ), i18n( "&Delete" ), REMOVE );
         }
         else
-            menu.insertItem( SmallIconSet( amaroK::icon( "info" ) ), i18n( "Show &Information" ), INFO );
+            menu.insertItem( SmallIconSet( amaroK::icon( "info" ) ), i18n( "Show &Information" ), EDIT );
 
-        #define item static_cast<StreamEntry *>(item)
         switch( menu.exec( p ) )
         {
             case LOAD:
@@ -2632,10 +2658,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 Playlist::instance()->insertMedia( item->url() );
                 break;
             case EDIT:
-                editStreamURL( item );
-                break;
-            case INFO:
-                editStreamURL( item, true );
+                editStreamURL( item, item->isKept() ); //only editable if we keep it
                 break;
             case REMOVE:
                 removeSelectedItems();
