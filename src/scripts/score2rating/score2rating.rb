@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# Score2Rating 2.1 (for Amarok 1.4)
+# Score2Rating 2.2 (for Amarok 1.4)
 # ---------------------------------
 #
 # First of all:
@@ -45,28 +45,28 @@ loop do
 
       percentage = Float( `dcop amarok collection query "SELECT percentage FROM statistics WHERE url='#{sqlurl}'"`.chomp() )
 
-      rating = Float( `dcop amarok collection query "SELECT rating FROM statistics WHERE url='#{sqlurl}'"`.chomp() )
+      rating = Integer( `dcop amarok collection query "SELECT rating FROM statistics WHERE url='#{sqlurl}'"`.chomp() )
       oldrating = rating
 
       case percentage #The intervals are wrapped so that no scores will be left out. No existing ratings will be downgraded either.
-      when 0...30
-        rating = [ rating, 2 ].max #Awful
-      when 30...45
-        rating = [ rating, 3 ].max #Barely Tolerable
-      when 45...60
-        rating = [ rating, 4 ].max #Tolerable
-      when 60...70
-        rating = [ rating, 5 ].max #Okay
-      when 70...80
-        rating = [ rating, 6 ].max #Good (Tracks played full length once (75) will be here)
-      when 80...85
-        rating = [ rating, 7 ].max #Very good
-      when 85...90
-        rating = [ rating, 8 ].max #Excellent (Tracks played full length twice (87) will be here)
-      when 90...95
-        rating = [ rating, 9 ].max #Amazing (Tracks played full length three times (91) will be here)
-      when 95...100
-        rating = [ rating, 10 ].max #Favourite
+        when 0..30
+          rating = [ rating, 2 ].max #Awful
+        when 30..45
+          rating = [ rating, 3 ].max #Barely Tolerable
+        when 45..60
+          rating = [ rating, 4 ].max #Tolerable
+        when 60..70
+          rating = [ rating, 5 ].max #Okay
+        when 70..80
+          rating = [ rating, 6 ].max #Good (Tracks played full length once (75) will be here)
+        when 80..85
+          rating = [ rating, 7 ].max #Very good
+        when 85..90
+          rating = [ rating, 8 ].max #Excellent (Tracks played full length twice (87) will be here)
+        when 90..95
+          rating = [ rating, 9 ].max #Amazing (Tracks played full length three times (91) will be here)
+        when 95..100
+          rating = [ rating, 10 ].max #Favourite
       end
 
       if rating != oldrating then #If a new rating was calculated
