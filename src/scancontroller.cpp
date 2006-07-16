@@ -24,6 +24,7 @@
 #include "collectiondb.h"
 #include "debug.h"
 #include "metabundle.h"
+#include "playlist.h"
 #include "playlistbrowser.h"
 #include "scancontroller.h"
 #include "statusbar.h"
@@ -216,7 +217,7 @@ main_loop:
 	    {
 		    Playlist::instance()->clear();
 		    AmarokConfig::setATFJustTurnedOn( false );
-		    amaroK::config->sync();
+		    amaroK::config()->sync();
 	    }
         }
         else {
