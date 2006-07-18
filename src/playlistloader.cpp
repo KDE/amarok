@@ -1003,6 +1003,7 @@ SqlLoader::SqlLoader( const QString &sql, QListViewItem *after )
 bool
 SqlLoader::doJob()
 {
+    DEBUG_BLOCK
     const QStringList values = CollectionDB::instance()->query( m_sql );
 
     setProgressTotalSteps( values.count() );
@@ -1014,7 +1015,7 @@ SqlLoader::doJob()
 
         MetaBundle b;
         //QueryBuilder automatically inserts the deviceid as return value if asked for the path
-        QString rpath = *++it;
+        QString rpath = *it;
         int deviceid = (*++it).toInt();
         b.setPath      ( MountPointManager::instance()->getAbsolutePath( deviceid, rpath ) );
         b.setAlbum     (  *++it );
