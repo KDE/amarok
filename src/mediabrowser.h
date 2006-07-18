@@ -531,7 +531,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
          * @param url The URL to transfer the track to.
          * @return The MediaItem transfered.
          */
-        virtual void copyTrackFromDevice(MediaItem *item) { Q_UNUSED(item) }
+        virtual void copyTrackFromDevice(MediaItem *item);
 
         /**
          * Recursively remove MediaItem from the tracklist and the device

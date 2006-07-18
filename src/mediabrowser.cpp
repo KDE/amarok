@@ -2006,7 +2006,7 @@ MediaQueue::addURL( const KURL& url, MetaBundle *bundle, const QString &playlist
     QString text = item->bundle()->prettyTitle();
     if( text.isEmpty() || (!item->bundle()->isValidMedia() && !item->bundle()->podcastBundle()) )
         text = item->bundle()->url().prettyURL();
-    if( item->m_playlistName != QString::null )
+    if( !item->m_playlistName.isNull() )
     {
         text += " (" + item->m_playlistName + ")";
     }
@@ -2039,7 +2039,7 @@ MediaQueue::addURL( const KURL &url, MediaItem *item )
     if( text.isEmpty() || (!item->bundle()->isValidMedia() && !item->bundle()->podcastBundle()) )
         text = item->bundle()->url().prettyURL();
 
-    if( item->m_playlistName != QString::null )
+    if( !item->m_playlistName.isNull() )
         text += " (" + item->m_playlistName + ")";
 
     newitem->setText( 0, text );
@@ -2070,6 +2070,12 @@ MediaQueue::URLsAdded()
             && m_parent->currentDevice()->asynchronousTransfer()
             && !m_parent->currentDevice()->isTransferring() )
         m_parent->currentDevice()->transferFiles();
+}
+
+void
+MediaDevice::copyTrackFromDevice( MediaItem *item )
+{
+    debug() << "copyTrackFromDevice: not copying " << item->url() << ": not implemented" << endl;
 }
 
 void
@@ -2546,11 +2552,8 @@ MediaDevice::transferFiles()
 
     // ok, let's copy the stuff to the device
 
-    MediaItem *playlist = 0;
-
     KURL::List existing, unplayable;
     unsigned transcodeFail = 0;
-    MediaItem *after = 0; // item after which to insert into playlist
     // iterate through items
     while( (m_transferredItem = static_cast<MediaItem *>(m_parent->m_queue->firstChild())) != 0 )
     {
@@ -2576,12 +2579,10 @@ MediaDevice::transferFiles()
             kapp->processEvents( 100 );
             continue;
         }
-        else
-            debug() << "Device not found\n";
 
         bool transcoding = false;
         MediaItem *item = trackExists( *bundle );
-        if( item && !m_transferredItem->m_playlistName.isEmpty() )
+        if( item && m_transferredItem->m_playlistName.isNull() )
         {
             amaroK::StatusBar::instance()->shortMessage( i18n( "Track already on media device: %1" ).
                     arg( m_transferredItem->url().prettyURL() ),
@@ -2659,15 +2660,7 @@ MediaDevice::transferFiles()
         int rating = CollectionDB::instance()->getSongRating( m_transferredItem->bundle()->url().path() ) * 10;
         item->setRating( rating );
 
-        if( playlist )
-        {
-            QPtrList<MediaItem> items;
-            items.append(item);
-            addToPlaylist(playlist, after, items);
-            after = item;
-        }
-
-        if( m_playlistItem && m_transferredItem->m_playlistName!=QString::null )
+        if( m_playlistItem && !m_transferredItem->m_playlistName.isNull() )
         {
             MediaItem *pl = m_playlistItem->findItem( m_transferredItem->m_playlistName );
             if( !pl )
