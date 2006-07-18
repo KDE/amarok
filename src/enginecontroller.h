@@ -115,8 +115,6 @@ private:
 
     EngineBase* loadEngine( const QString &engineName );
 
-    uint            trackPosition() const;
-
     EngineBase*     m_engine;
     EngineBase*     m_voidEngine;
     MetaBundle      m_bundle;
@@ -127,9 +125,6 @@ private:
     bool            m_isTiming;
     QTimer*         m_timer;
     uint            m_playFailureCount;
-    // try to correct start time for tracks from last.fm streams
-    bool            m_lastFm;
-    uint            m_positionOffset, m_lastPositionOffset;
 };
 
 

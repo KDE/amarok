@@ -43,13 +43,6 @@ class MultiTabBarTabPrivate;
 class MultiTabBarButtonPrivate;
 class MultiTabBarInternal;
 
-// this exists only because dropEvent is protected
-class DropProxyTarget
-{
-    public:
-        virtual void dropProxyEvent( QDropEvent *e ) = 0;
-};
-
 /**
 * A Widget for horizontal and vertical tabs.
 * It is possible to add normal buttons to the top/left
@@ -195,11 +188,6 @@ class MultiTabBarButton: public QPushButton
         */
         void setText( const QString & );
 
-        /**
-        * make this a drop proxy for finalDropTarget
-        */
-        void proxyDrops( DropProxyTarget *finalDropTarget );
-
         QSize sizeHint() const;
 
     protected:
@@ -224,7 +212,6 @@ class MultiTabBarButton: public QPushButton
         virtual void dragEnterEvent ( class QDragEnterEvent * );
         virtual void dragMoveEvent ( class QDragMoveEvent * );
         virtual void dragLeaveEvent ( class QDragLeaveEvent * );
-        virtual void dropEvent( class QDropEvent * );
     private:
         MultiTabBarButtonPrivate *d;
     signals:

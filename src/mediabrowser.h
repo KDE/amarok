@@ -1,7 +1,6 @@
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
 // (c) 2005 Martin Aumueller <aumuell@reserv.at>
 // (c) 2005 Seb Ruiz <me@sebruiz.net>
-// (c) 2006 T.R.Shashwath <trshash84@gmail.com>
 // See COPYING file for licensing information
 
 #ifndef AMAROK_MEDIABROWSER_H
@@ -9,9 +8,7 @@
 
 #include "amarok.h"
 #include "amarok_export.h"
-#include "browserToolBar.h"
 #include "medium.h"
-#include "multitabbar.h"     //baseclass
 #include "plugin/plugin.h"   //baseclass
 #include "pluginmanager.h"
 
@@ -22,11 +19,11 @@
 #include <kurl.h>            //stack allocated
 #include <kio/global.h>      //filesize_t
 #include "scrobbler.h"       //SubmitItem
-#include "metabundle.h"
 
 class MediaBrowser;
 class MediaDevice;
 class MediaView;
+class MetaBundle;
 class SpaceLabel;
 class TransferDialog;
 
@@ -39,6 +36,11 @@ class KShellProcess;
 class QLabel;
 class QPalette;
 class MediaItemTip;
+
+namespace Browser
+{
+    class ToolBar;
+}
 
 class LIBAMAROK_EXPORT MediaItem : public KListViewItem
 {
@@ -64,26 +66,26 @@ class LIBAMAROK_EXPORT MediaItem : public KListViewItem
         Type type() const { return m_type; }
         MediaItem *findItem(const QString &key, const MediaItem *after=0) const;
 
-        virtual bool isLeafItem()     const;        // A leaf node of the tree
-        virtual bool isFileBacked()   const;      // Should the file be deleted of the device when removed
-        virtual QDateTime playTime()  const { return QDateTime(); }
-        virtual int  played()         const { return 0; }
+        virtual bool isLeafItem() const;        // A leaf node of the tree
+        virtual bool isFileBacked() const;      // Should the file be deleted of the device when removed
+        virtual QDateTime playTime() const { return QDateTime(); }
+        virtual int  played() const { return 0; }
         virtual int  recentlyPlayed() const { return 0; } // no of times played on device since last sync
-        virtual int  rating()         const { return 0; } // rating on device, normalized to 100
-        virtual void setRating( int /*rating*/ ) {}
-        virtual bool ratingChanged()  const { return false; }
-        virtual long size()           const;
+        virtual int  rating() const { return 0; } // rating on device, normalized to 100
+        virtual void setRating( int rating ) { (void)rating; }
+        virtual bool ratingChanged() const { return false; }
+        virtual long size() const;
         virtual MediaDevice *device() const { return m_device; }
 
-        int compare( QListViewItem *i, int col, bool ascending ) const;
+        int compare(QListViewItem *i, int col, bool ascending) const;
 
         void paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align );
 
         //attributes:
-        int             m_order;
-        Type            m_type;
-        QString         m_playlistName;
-        MediaDevice    *m_device;
+        int          m_order;
+        Type         m_type;
+        QString      m_playlistName;
+        MediaDevice *m_device;
 
         static QPixmap *s_pixUnknown;
         static QPixmap *s_pixRootItem;
@@ -102,7 +104,7 @@ class LIBAMAROK_EXPORT MediaItem : public KListViewItem
         mutable MetaBundle *m_bundle;
 };
 
-class MediaQueue : public KListView, public DropProxyTarget
+class MediaQueue : public KListView
 {
     Q_OBJECT
 
@@ -117,15 +119,12 @@ class MediaQueue : public KListView, public DropProxyTarget
         void load( const QString &path );
         void save( const QString &path );
         void addURL( const KURL& url, MetaBundle *bundle=NULL, const QString &playlistName=QString::null );
-        void addURL( const KURL& url, MediaItem *item );
         void addURLs( const KURL::List urls, const QString &playlistName=QString::null );
-
         void URLsAdded(); // call after finishing adding single urls
 
         // Reimplemented from KListView
         void dragEnterEvent( QDragEnterEvent* );
         void dropEvent( QDropEvent *e );
-        void dropProxyEvent( QDropEvent *e );
         void contentsDragEnterEvent( QDragEnterEvent* );
         void contentsDropEvent( QDropEvent *e );
         void contentsDragMoveEvent( QDragMoveEvent* e );
@@ -156,8 +155,6 @@ class MediaBrowser : public QVBox
     friend class MediaItem;
 
     public:
-        enum { CONNECT, DISCONNECT, TRANSFER, CONFIGURE, CUSTOM };
-
         static bool isAvailable();
         LIBAMAROK_EXPORT static MediaBrowser *instance() { return s_instance; }
         LIBAMAROK_EXPORT static MediaQueue *queue() { return s_instance ? s_instance->m_queue : 0; }
@@ -165,9 +162,9 @@ class MediaBrowser : public QVBox
         MediaBrowser( const char *name );
         virtual ~MediaBrowser();
         bool blockQuit() const;
-        MediaDevice *currentDevice() const;
-        MediaDevice *deviceFromId( const QString &id ) const;
-        QStringList deviceNames() const;
+        MediaDevice *currentDevice();
+        MediaDevice *deviceFromId( const QString &id );
+        QStringList deviceNames();
         bool deviceSwitch( const QString &name );
 
         QString getInternalPluginName ( const QString string ) { return m_pluginName[string]; }
@@ -180,12 +177,6 @@ class MediaBrowser : public QVBox
         // return bundle for url if it is known to MediaBrowser
         const MetaBundle *getBundle( const KURL &url ) const;
         bool isQuitting() const { return m_quitting; }
-
-        KURL getProxyUrl( const KURL& daapUrl ) const;
-        KToolBar* getToolBar() const { return m_toolbar; }
-
-    signals:
-        void availabilityChanged( bool isAvailable );
 
     protected slots:
         void transferClicked();
@@ -203,9 +194,8 @@ class MediaBrowser : public QVBox
         void cancelClicked();
         void connectClicked();
         void disconnectClicked();
-        void customClicked();
         void configSelectPlugin( int index );
-        bool config(); // false if canceled by user
+        bool config(); // false if cancelled by user
         KURL transcode( const KURL &src, const QString &filetype );
         void tagsChanged( const MetaBundle &bundle );
         void prepareToQuit();
@@ -240,6 +230,7 @@ class MediaBrowser : public QVBox
         QVBox*           m_configBox;
         KComboBox*       m_configPluginCombo;
         KComboBox*       m_deviceCombo;
+        enum { CONNECT, DISCONNECT, TRANSFER, CONFIGURE };
         Browser::ToolBar*m_toolbar;
         typedef QMap<QString, MediaItem*> ItemMap;
         ItemMap          m_itemMap;
@@ -413,8 +404,8 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         bool         isTransferring() { return m_transferring; }
         bool         isDeleting() { return m_deleting; }
         MediaItem   *transferredItem() { return m_transferredItem; }
-        bool         isCanceled() { return m_canceled; }
-        void         setCanceled( const bool b ) { m_canceled = b; }
+        bool         isCancelled() { return m_cancelled; }
+        void         setCancelled( const bool b ) { m_cancelled = b; }
 
         int          progress() const;
         void         setProgress( const int progress, const int total = -1 /* leave total unchanged by default */ );
@@ -455,8 +446,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         void              setThirdSort( QString text ) { m_thirdSort = text;
             setConfigString( "thirdGrouping", text ); }
 
-        virtual KURL getProxyUrl( const KURL& /*url*/) { return KURL(); }
-        virtual void customClicked() { return; }
+
 
     public slots:
         void abortTransfer();
@@ -526,20 +516,12 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         virtual MediaItem *copyTrackToDevice(const MetaBundle& bundle) = 0;
 
         /**
-         * Copy track from device to computer
-         * @param item The MediaItem of the track to transfer.
-         * @param url The URL to transfer the track to.
-         * @return The MediaItem transfered.
-         */
-        virtual void copyTrackFromDevice(MediaItem *item);
-
-        /**
          * Recursively remove MediaItem from the tracklist and the device
          * @param item MediaItem to remove
          * @param onlyPlayed True if item should be deleted only if it has been played
          * @return -1 on failure, number of files deleted otherwise
          */
-        virtual int deleteItemFromDevice( MediaItem *item, bool onlyPlayed=false, bool deleteTrack=true ) = 0;
+        virtual int deleteItemFromDevice( MediaItem *item, bool onlyPlayed=false ) = 0;
 
         /**
          * Abort the currently active track transfer
@@ -550,7 +532,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
 
         virtual bool isSpecialItem( MediaItem *item );
 
-        int deleteFromDevice( MediaItem *item=0, bool onlyPlayed=false, bool deleteTrack=true, bool recursing=false );
+        int deleteFromDevice( MediaItem *item=0, bool onlyPlayed=false, bool recursing=false );
 
         void purgeEmptyItems( MediaItem *root=0 );
         void syncStatsFromDevice( MediaItem *root=0 );
@@ -583,15 +565,12 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         bool             m_waitForDeletion;
         bool             m_copyFailed;
         bool             m_requireMount;
-        bool             m_canceled;
+        bool             m_cancelled;
         bool             m_transferring;
         bool             m_deleting;
         bool             m_deferredDisconnect;
         bool             m_runDisconnectHook;
         bool             m_spacesToUnderscores;
-        bool             m_transfer;
-        bool             m_configure;
-        bool             m_customButton;
 
         MediaItem       *m_transferredItem;
         QString          m_type;

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# Ruby script for generating Amarok tarball releases from KDE SVN
+# Ruby script for generating amaroK tarball releases from KDE SVN
 #
 # (c) 2005 Mark Kretschmann <markey@web.de>
 # Some parts of this code taken from cvs2dist
@@ -44,7 +44,7 @@ for lang in i18nlangs
         docdirname = "l10n/#{lang}/#{part}/extragear-multimedia"
         `svn co #{protocol}://#{user}@svn.kde.org/home/kde/#{branch}/#{docdirname}`
         print docdirname;
-        unless FileTest.exists?( "extragear-multimedia" )
+        unless FileTest.exists?( "extragear-multimedia" ) 
             Dir.chdir("..")
             Dir.rmdir(part)
             next

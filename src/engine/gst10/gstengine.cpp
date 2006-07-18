@@ -274,7 +274,7 @@ GstEngine::init()
 
     s_instance = this;
 
-    // GStreamer initialization
+    // GStreamer initilization
     GError *err;
     if ( !gst_init_check( NULL, NULL, &err ) ) {
         KMessageBox::error( 0,
@@ -1189,7 +1189,7 @@ GstEngine::sendBufferStatus()
 
 gint64 GstEngine::pruneScope()
 {
-    if ( !m_pipelineFilled ) return 0; // don't prune if we aren't playing
+    if ( !m_pipelineFilled ) return 0; // dont prune if we aren't playing
 
     // get the position playing in the audio device
     GstFormat fmt = GST_FORMAT_TIME;

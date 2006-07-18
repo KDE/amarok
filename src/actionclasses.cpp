@@ -113,7 +113,6 @@ Menu::Menu()
 
     safePlug( ac, "playlist_playmedia", this );
     safePlug( ac, "play_audiocd", this );
-    safePlug( ac, "lastfm_play", this );
 
     insertSeparator();
 

@@ -28,34 +28,57 @@
 
 #include "metabundle.h"
 
-class NjbMediaItem;
-
 class NjbTrack {
-    friend class NjbMediaItem;
     public:
-        NjbTrack( void ) {}
-        NjbTrack( njb_songid_t* song );
-        ~NjbTrack();
+        NjbTrack( void) {}
+        NjbTrack( njb_songid_t* song);
+        NjbTrack( char** result);
 
-        bool operator==( const NjbTrack& second ) const { return m_id == second.m_id; }
+        bool operator==( const NjbTrack& second ) const { return id == second.id; }
 
     public:
-        unsigned int id() const { return m_id; }
-        MetaBundle* bundle() { return new MetaBundle( m_bundle ); }
-        const MetaBundle & getBundle() { return m_bundle; }
-        void setBundle( MetaBundle &bundle );
-        void addItem( const NjbMediaItem *item );
-        bool removeItem( const NjbMediaItem * );
-        void setId( int id ) { m_id = id; }
-        void writeToSongid( njb_songid_t *songid );
-        njb_songid_t *newSongid();
+        unsigned getId() const { return id; }
+        unsigned getSize() const { return size; }
+        unsigned getDuration() const { return duration; }
+        unsigned getTrackNum() const { return tracknum; }
+        QString getYear() const { return year; }
+        QString getGenre() const { return genre; }
+        QString getArtist() const { return artist; }
+        QString getAlbum() const { return album; }
+        QString getTitle() const { return title; }
+        QString getCodec() const { return codec; }
+        QString getFilename() const { return filename; }
+
+        void setId( unsigned newId) { id = newId; }
+        void setSize( unsigned newSize) { size = newSize; }
+        void setDuration( unsigned newDuration) { duration = newDuration; }
+        void setTrackNum( unsigned newTrackNum) { tracknum = newTrackNum; }
+        void setYear( QString newYear) { year = newYear; }
+        void setGenre( QString newGenre) { genre = newGenre; }
+        void setArtist( QString newArtist) { artist = newArtist; }
+        void setAlbum( QString newAlbum) { album = newAlbum; }
+        void setTitle( QString newTitle) { title = newTitle; }
+        void setCodec( QString newCodec) { codec = newCodec; }
+        void setFilename( QString newFilename) { filename = newFilename; }
+
+        MetaBundle* getMetaBundle();
+
     private:
-        unsigned int m_id;
-        MetaBundle m_bundle;
-        QPtrList<NjbMediaItem> ItemList;
+        unsigned id;
+        unsigned size;
+        unsigned duration;
+        unsigned tracknum;
+        QString year;
+        QString genre;
+        QString artist;
+        QString album;
+        QString title;
+        QString codec;
+        QString filename;
+
 };
 
-class trackValueList: public QValueList<NjbTrack *>
+class trackValueList: public QValueList<NjbTrack>
 {
     public:
         trackValueList::iterator findTrackByName( const QString& );
@@ -63,7 +86,7 @@ class trackValueList: public QValueList<NjbTrack *>
         trackValueList::iterator findTrackById( unsigned );
         trackValueList::const_iterator findTrackById( unsigned ) const;
 
-        int readFromDevice( void );
+        int readFromDevice( void);
 };
 
 #endif

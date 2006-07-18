@@ -114,6 +114,18 @@
 
 /*
 ** If the following macro is set to 1, then NULL values are considered
+** distinct for the SELECT DISTINCT statement and for UNION or EXCEPT
+** compound queries.  No other SQL database engine (among those tested) 
+** works this way except for OCELOT.  But the SQL92 spec implies that
+** this is how things should work.
+**
+** If the following macro is set to 0, then NULLs are indistinct for
+** SELECT DISTINCT and for UNION.
+*/
+#define NULL_ALWAYS_DISTINCT 0
+
+/*
+** If the following macro is set to 1, then NULL values are considered
 ** distinct when determining whether or not two entries are the same
 ** in a UNIQUE index.  This is the way PostgreSQL, Oracle, DB2, MySQL,
 ** OCELOT, and Firebird all work.  The SQL92 spec explicitly says this
@@ -168,22 +180,19 @@
 #endif
 
 /*
-** Check to see if this machine uses EBCDIC.  (Yes, believe it or
-** not, there are still machines out there that use EBCDIC.)
-*/
-#if 'A' == '\301'
-# define SQLITE_EBCDIC 1
-#else
-# define SQLITE_ASCII 1
-#endif
-
-/*
 ** Integers of known sizes.  These typedefs might change for architectures
 ** where the sizes very.  Preprocessor macros are available so that the
 ** types can be conveniently redefined at compile-type.  Like this:
 **
 **         cc '-DUINTPTR_TYPE=long long int' ...
 */
+#ifndef UINT64_TYPE
+# if defined(_MSC_VER) || defined(__BORLANDC__)
+#   define UINT64_TYPE unsigned __int64
+# else
+#   define UINT64_TYPE unsigned long long int
+# endif
+#endif
 #ifndef UINT32_TYPE
 # define UINT32_TYPE unsigned int
 #endif
@@ -203,7 +212,7 @@
 # define LONGDOUBLE_TYPE long double
 #endif
 typedef sqlite_int64 i64;          /* 8-byte signed integer */
-typedef sqlite_uint64 u64;         /* 8-byte unsigned integer */
+typedef UINT64_TYPE u64;           /* 8-byte unsigned integer */
 typedef UINT32_TYPE u32;           /* 4-byte unsigned integer */
 typedef UINT16_TYPE u16;           /* 2-byte unsigned integer */
 typedef INT16_TYPE i16;            /* 2-byte signed integer */
@@ -242,6 +251,12 @@ struct BusyHandler {
 #include "btree.h"
 #include "pager.h"
 
+/*
+** This macro casts a pointer to an integer.  Useful for doing
+** pointer arithmetic.
+*/
+#define Addr(X)  ((uptr)X)
+
 #ifdef SQLITE_MEMDEBUG
 /*
 ** The following global variables are used for testing and debugging
@@ -252,6 +267,7 @@ extern int sqlite3_nFree;        /* Number of sqliteFree() calls */
 extern int sqlite3_iMallocFail;  /* Fail sqliteMalloc() after this many calls */
 extern int sqlite3_iMallocReset; /* Set iMallocFail to this when it reaches 0 */
 
+
 extern void *sqlite3_pFirst;         /* Pointer to linked list of allocations */
 extern int sqlite3_nMaxAlloc;        /* High water mark of ThreadData.nAlloc */
 extern int sqlite3_mallocDisallowed; /* assert() in sqlite3Malloc() if set */
@@ -260,8 +276,8 @@ extern const char *sqlite3_zFile;    /* Filename to associate debug info with */
 extern int sqlite3_iLine;            /* Line number for debug info */
 
 #define ENTER_MALLOC (sqlite3_zFile = __FILE__, sqlite3_iLine = __LINE__)
-#define sqliteMalloc(x)          (ENTER_MALLOC, sqlite3Malloc(x,1))
-#define sqliteMallocRaw(x)       (ENTER_MALLOC, sqlite3MallocRaw(x,1))
+#define sqliteMalloc(x)          (ENTER_MALLOC, sqlite3Malloc(x))
+#define sqliteMallocRaw(x)       (ENTER_MALLOC, sqlite3MallocRaw(x))
 #define sqliteRealloc(x,y)       (ENTER_MALLOC, sqlite3Realloc(x,y))
 #define sqliteStrDup(x)          (ENTER_MALLOC, sqlite3StrDup(x))
 #define sqliteStrNDup(x,y)       (ENTER_MALLOC, sqlite3StrNDup(x,y))
@@ -269,9 +285,8 @@ extern int sqlite3_iLine;            /* Line number for debug info */
 
 #else
 
-#define ENTER_MALLOC 0
-#define sqliteMalloc(x)          sqlite3Malloc(x,1)
-#define sqliteMallocRaw(x)       sqlite3MallocRaw(x,1)
+#define sqliteMalloc(x)          sqlite3Malloc(x)
+#define sqliteMallocRaw(x)       sqlite3MallocRaw(x)
 #define sqliteRealloc(x,y)       sqlite3Realloc(x,y)
 #define sqliteStrDup(x)          sqlite3StrDup(x)
 #define sqliteStrNDup(x,y)       sqlite3StrNDup(x,y)
@@ -501,9 +516,6 @@ struct sqlite3 {
 #endif
 };
 
-/*
-** A macro to discover the encoding of a database.
-*/
 #define ENC(db) ((db)->aDb[0].pSchema->enc)
 
 /*
@@ -1237,7 +1249,6 @@ struct Parse {
   u8 nameClash;        /* A permanent table name clashes with temp table name */
   u8 checkSchema;      /* Causes schema cookie check after an error */
   u8 nested;           /* Number of nested calls to the parser/code generator */
-  u8 parseError;       /* True if a parsing error has been seen */
   int nErr;            /* Number of errors seen */
   int nTab;            /* Number of previously allocated VDBE cursors */
   int nMem;            /* Number of memory cells used so far */
@@ -1378,8 +1389,8 @@ struct TriggerStep {
   ExprList *pExprList; /* Valid for UPDATE statements and sometimes 
 			   INSERT steps (when pSelect == 0)         */
   IdList *pIdList;     /* Valid for INSERT statements only */
-  TriggerStep *pNext;  /* Next in the link-list */
-  TriggerStep *pLast;  /* Last element in link-list. Valid for 1st elem only */
+
+  TriggerStep * pNext; /* Next in the link-list */
 };
 
 /*
@@ -1472,8 +1483,8 @@ int sqlite3Compare(const char *, const char *);
 int sqlite3SortCompare(const char *, const char *);
 void sqlite3RealToSortable(double r, char *);
 
-void *sqlite3Malloc(int,int);
-void *sqlite3MallocRaw(int,int);
+void *sqlite3Malloc(int);
+void *sqlite3MallocRaw(int);
 void sqlite3Free(void*);
 void *sqlite3Realloc(void*,int);
 char *sqlite3StrDup(const char*);
@@ -1514,7 +1525,7 @@ void sqlite3RollbackInternalChanges(sqlite3*);
 void sqlite3CommitInternalChanges(sqlite3*);
 Table *sqlite3ResultSetOfSelect(Parse*,char*,Select*);
 void sqlite3OpenMasterTable(Parse *, int);
-void sqlite3StartTable(Parse*,Token*,Token*,int,int,int);
+void sqlite3StartTable(Parse*,Token*,Token*,Token*,int,int,int);
 void sqlite3AddColumn(Parse*,Token*);
 void sqlite3AddNotNull(Parse*, int);
 void sqlite3AddPrimaryKey(Parse*, ExprList*, int, int, int);
@@ -1570,7 +1581,7 @@ Table *sqlite3LocateTable(Parse*,const char*, const char*);
 Index *sqlite3FindIndex(sqlite3*,const char*, const char*);
 void sqlite3UnlinkAndDeleteTable(sqlite3*,int,const char*);
 void sqlite3UnlinkAndDeleteIndex(sqlite3*,int,const char*);
-void sqlite3Vacuum(Parse*);
+void sqlite3Vacuum(Parse*, Token*);
 int sqlite3RunVacuum(char**, sqlite3*);
 char *sqlite3NameFromToken(Token*);
 int sqlite3ExprCheck(Parse*, Expr*, int, int*);
@@ -1591,7 +1602,7 @@ int sqlite3ExprIsConstantOrFunction(Expr*);
 int sqlite3ExprIsInteger(Expr*, int*);
 int sqlite3IsRowid(const char*);
 void sqlite3GenerateRowDelete(sqlite3*, Vdbe*, Table*, int, int);
-void sqlite3GenerateRowIndexDelete(Vdbe*, Table*, int, char*);
+void sqlite3GenerateRowIndexDelete(sqlite3*, Vdbe*, Table*, int, char*);
 void sqlite3GenerateIndexKey(Vdbe*, Index*, int);
 void sqlite3GenerateConstraintChecks(Parse*,Table*,int,char*,int,int,int,int);
 void sqlite3CompleteInsertion(Parse*, Table*, int, char*, int, int, int);
@@ -1616,7 +1627,7 @@ void sqlite3ChangeCookie(sqlite3*, Vdbe*, int);
                            int,Expr*,int);
   void sqlite3FinishTrigger(Parse*, TriggerStep*, Token*);
   void sqlite3DropTrigger(Parse*, SrcList*);
-  void sqlite3DropTriggerPtr(Parse*, Trigger*);
+  void sqlite3DropTriggerPtr(Parse*, Trigger*, int);
   int sqlite3TriggersExist(Parse*, Table*, int, ExprList*);
   int sqlite3CodeRowTrigger(Parse*, int, ExprList*, int, Table *, int, int, 
                            int, int);
@@ -1631,7 +1642,7 @@ void sqlite3ChangeCookie(sqlite3*, Vdbe*, int);
 #else
 # define sqlite3TriggersExist(A,B,C,D,E,F) 0
 # define sqlite3DeleteTrigger(A)
-# define sqlite3DropTriggerPtr(A,B)
+# define sqlite3DropTriggerPtr(A,B,C)
 # define sqlite3UnlinkAndDeleteTrigger(A,B,C)
 # define sqlite3CodeRowTrigger(A,B,C,D,E,F,G,H,I) 0
 #endif
@@ -1739,7 +1750,6 @@ int sqlite3ApiExit(sqlite3 *db, int);
 int sqlite3MallocFailed(void);
 void sqlite3FailedMalloc(void);
 void sqlite3AbortOtherActiveVdbes(sqlite3 *, Vdbe *);
-int sqlite3OpenTempDatabase(Parse *);
 
 #ifndef SQLITE_OMIT_SHARED_CACHE
   void sqlite3TableLock(Parse *, int, int, u8, const char *);
@@ -1755,14 +1765,6 @@ int sqlite3OpenTempDatabase(Parse *);
   #define sqlite3TestMallocFail() 0
   #define sqlite3MallocDisallow()
   #define sqlite3MallocAllow()
-#endif
-
-#ifdef SQLITE_ENABLE_MEMORY_MANAGEMENT
-  void *sqlite3ThreadSafeMalloc(int);
-  void sqlite3ThreadSafeFree(void *);
-#else
-  #define sqlite3ThreadSafeMalloc sqlite3MallocX
-  #define sqlite3ThreadSafeFree sqlite3FreeX
 #endif
 
 #ifdef SQLITE_SSE

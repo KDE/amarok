@@ -23,24 +23,22 @@ Formatting
 * For if, else, while and similar statements put the brackets on the next line,
   although brackets are not needed for single statements.
 * Function and class definitions have their brackets on separate lines
-* A function implementation's return type is on its own line.
 * amarok.h contains some helpful macros, foreach and foreachType.  Use them,
   they improve coding style and readability.
 
 Example:
 
- | bool 
- | MyClass::myMethod( QPtrList<QListViewItem> items, const QString &name )
- | {
- |     if( items.isEmpty() )
- |         return false;
- |
- |     foreachType( QPtrList<QListViewItem>, items )
- |     {
- |         (*it)->setText( 0, name );
- |         debug() << "Setting item name: " << name << endl;
- |     }
- | }
+bool MyClass::myMethod( QPtrList<QListViewItem> items, const QString &name )
+{
+    if( items.isEmpty() )
+        return false;
+
+    foreachType( QPtrList<QListViewItem>, items )
+    {
+        (*it)->setText( 0, name );
+        debug() << "Setting item name: " << name << endl;
+    }
+}
 
 Header includes should be listed in the following order:
     - Amarok includes
@@ -61,15 +59,15 @@ then Tools -> Filter Selection Through Command -> "sort".
 
 Example:
 
- | #include "amarok.h"
- | #include "debug.h"
- | #include "playlist.h"
- |
- | #include "kdialogbase.h"    //baseclass
- | #include "kpushbutton.h"    //see function...
- |
- | #include "qlistviewitem.h"
- | #include "qwidget.h"
+#include "amarok.h"
+#include "debug.h"
+#include "playlist.h"
+
+#include "kdialogbase.h"    //baseclass
+#include "kpushbutton.h"    //see function...
+
+#include "qlistviewitem.h"
+#include "qwidget.h"
 
 
 Comments
@@ -79,31 +77,31 @@ good for others reading your code, and ultimately it's good for you too.
 
 Comments are essential when adding a strange hack, like the following example:
 
- | /** Due to xine-lib, we have to make KProcess close all fds, otherwise we get "device is busy" messages
- |   * Used by AmaroKProcIO and AmaroKProcess, exploiting commSetupDoneC(), a virtual method that
- |   * happens to be called in the forked process
- |   * See bug #103750 for more information.
- |   */
- | class AmaroKProcIO : public KProcIO {
- |     public:
- |     virtual int commSetupDoneC() {
- |         const int i = KProcIO::commSetupDoneC();
- |         Amarok::closeOpenFiles(KProcIO::out[0],KProcIO::in[0],KProcIO::err[0]);
- |         return i;
- |     }
- | };
+/** Due to xine-lib, we have to make KProcess close all fds, otherwise we get "device is busy" messages
+  * Used by AmaroKProcIO and AmaroKProcess, exploiting commSetupDoneC(), a virtual method that
+  * happens to be called in the forked process
+  * See bug #103750 for more information.
+  */
+class AmaroKProcIO : public KProcIO {
+    public:
+    virtual int commSetupDoneC() {
+        const int i = KProcIO::commSetupDoneC();
+        Amarok::closeOpenFiles(KProcIO::out[0],KProcIO::in[0],KProcIO::err[0]);
+        return i;
+    }
+};
 
 
 For headers, use the Doxygen syntax. See: http://www.stack.nl/~dimitri/doxygen/
 
 Example:
 
- | /**
- |  * Start playback.
- |  * @param offset Start playing at @p msec position.
- |  * @return True for success.
- |  */
- | virtual bool play( uint offset = 0 ) = 0;
+/**
+ * Start playback.
+ * @param offset Start playing at @p msec position.
+ * @return True for success.
+ */
+virtual bool play( uint offset = 0 ) = 0;
 
 
 Header Formatting
@@ -114,21 +112,21 @@ either by name or by their function (ie, group all related methods together) is
 great too.
 
 
- | #ifndef AMAROK_QUEUEMANAGER_H
- | #define AMAROK_QUEUEMANAGER_H
+#ifndef AMAROK_QUEUEMANAGER_H
+#define AMAROK_QUEUEMANAGER_H
 
- | class QueueList : public KListView
- | {
- |         Q_OBJECT
- |
- |     public:
- |         Queuelist( QWidget *parent, const char *name = 0 );
- |         ~QueueList() {};
- |
- |     public slots:
- |         void    moveSelectedUp();
- |         void    moveSelectedDown();
- | };
+class QueueList : public KListView
+{
+        Q_OBJECT
+
+    public:
+        Queuelist( QWidget *parent, const char *name = 0 );
+        ~QueueList() {};
+
+    public slots:
+        void    moveSelectedUp();
+        void    moveSelectedDown();
+};
 
 #endif /* AMAROK_QUEUEMANAGER_H */
 
@@ -140,7 +138,7 @@ The use of 0 to express a null pointer is preferred over the use of NULL.
 NULL, on the other hand, is a preprocessor directive (#define) and not only is
 it more typing than '0' but preprocessor directives are less elegant.
 
- |     SomeClass *instance = 0;
+    SomeClass *instance = 0;
 
 
 Const Correctness
@@ -153,13 +151,12 @@ See: http://www.parashift.com/c++-faq-lite/const-correctness.html
 
 Example:
 
- | bool 
- | MyClass::isValidFile( const QString& path ) const
- | {
- |     const bool valid = QFile::exist( path );
- |
- |     return valid;
- | }
+bool MyClass::isValidFile( const QString& path ) const
+{
+    const bool valid = QFile::exist( path );
+
+    return valid;
+}
 
 
 Debugging
@@ -169,11 +166,11 @@ Please use there instead of kdDebug().
 
 Usage:
 
- | #include "debug.h"
- |
- | debug()   << "Something is happening" << endl;
- | warning() << "Something bad may happen" << endl;
- | error()   << "Something bad did happen!" << endl;
+#include "debug.h"
+
+debug()   << "Something is happening" << endl;
+warning() << "Something bad may happen" << endl;
+error()   << "Something bad did happen!" << endl;
 
 Additionally, there are some macros for debugging functions:
 
@@ -192,59 +189,6 @@ DEBUG_THREAD_FUNC_INFO outputs the memory address of the current QThread or 'non
 SHOULD_BE_GUI outputs a warning message if it occurs in a thread that isn't in
     the original "GUI Thread", otherwise it is silent. Useful for documenting
     functions and to prevent problems in the future.
-
-
-Usage of amaroK::config()
--------------------------
-We provide this method for convenience, but it is important to use it properly. By
-inspection, we can see that we may produce very obscure bugs in the wrong case:
-
- | KConfig 
- | *config( const QString &group )
- | {
- |    //Slightly more useful config() that allows setting the group simultaneously
- |    kapp->config()->setGroup( group );
- |    return kapp->config();
- | }
-
-Take the following example:
- 
- | void
- | f1()
- | {
- |    KConfig *config = amaroK::config( "Group 2" );
- |    config->writeEntry( "Group 2 Variable", true );
- | }
- |
- | void
- | doStuff()
- | {
- |   KConfig *config = amaroK::config( "Group 1" );
- |   f1();
- |   config->writeEntry( "Group 1 Variable", true );
- | }
-
-We would expect the following results:
-
- | [Group 1]
- | Group 1 Variable = true
- |
- | [Group 2]
- | Group 2 Variable = true
-
-However because the config group is changed before writing the entry:
- | [Group 1]
- |
- | [Group 2]
- | Group 1 Variable = true
- | Group 2 Variable = true
-
-Which is clearly incorrect. And hard to see when your wondering why f1() is not
-working. So do not store a value of amaroK::config, make it a habit to just 
-always call writeEntry or readEntry directly.
-
-Correct:
-| amarok::config( "Group 1" )->writeEntry( "Group 1 Variable", true );
 
 
 Errors & Asserts

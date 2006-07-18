@@ -278,8 +278,8 @@ TagDialog::musicbrainzQuery() //SLOT
 #if HAVE_TUNEPIMP
     kdDebug() << k_funcinfo << endl;
 
-    m_mbTrack = m_bundle.url();
-    KTRMLookup* ktrm = new KTRMLookup( m_mbTrack.path(), true );
+    m_mbTrack = m_bundle.url().path();
+    KTRMLookup* ktrm = new KTRMLookup( m_mbTrack, true );
     connect( ktrm, SIGNAL( sigResult( KTRMResultList, QString ) ), SLOT( queryDone( KTRMResultList, QString ) ) );
 
     pushButton_musicbrainz->setEnabled( false );
@@ -299,14 +299,11 @@ TagDialog::queryDone( KTRMResultList results, QString error ) //SLOT
     else {
         if ( !results.isEmpty() )
         {
-            TrackPickerDialog* t = new TrackPickerDialog( m_mbTrack.filename(), results, this );
+            TrackPickerDialog* t = new TrackPickerDialog(m_bundle.url().filename(),results,this);
             t->show();
-            connect( t, SIGNAL( finished() ), SLOT( resetMusicbrainz() ) ); // clear m_mbTrack
         }
-        else {
+        else
             KMessageBox::sorry( this, i18n( "The track was not found in the MusicBrainz database." ) );
-            resetMusicbrainz(); // clear m_mbTrack
-        }
     }
 
     QApplication::restoreOverrideCursor();
@@ -325,7 +322,7 @@ TagDialog::fillSelected( KTRMResult selected ) //SLOT
     kdDebug() << k_funcinfo << endl;
 
 
-    if ( m_bundle.url() == m_mbTrack ) {
+    if ( m_bundle.url().path() == m_mbTrack ) {
         if ( !selected.title().isEmpty() )    kLineEdit_title->setText( selected.title() );
         if ( !selected.artist().isEmpty() )   kComboBox_artist->setCurrentText( selected.artist() );
         if ( !selected.album().isEmpty() )    kComboBox_album->setCurrentText( selected.album() );
@@ -333,26 +330,20 @@ TagDialog::fillSelected( KTRMResult selected ) //SLOT
         if ( selected.year() != 0 )           kIntSpinBox_year->setValue( selected.year() );
     } else {
         MetaBundle mb;
-        mb.setPath( m_mbTrack.path() );
+        mb.setPath( m_mbTrack );
         if ( !selected.title().isEmpty() )    mb.setTitle( selected.title() );
         if ( !selected.artist().isEmpty() )   mb.setArtist( selected.artist() );
         if ( !selected.album().isEmpty() )    mb.setAlbum( selected.album() );
         if ( selected.track() != 0 )          mb.setTrack( selected.track() );
         if ( selected.year() != 0 )           mb.setYear( selected.year() );
 
-        storedTags.replace( m_mbTrack.path(), mb );
+        storedTags.replace( m_mbTrack, mb );
     }
 #else
     Q_UNUSED(selected);
 #endif
 }
 
-void TagDialog::resetMusicbrainz() //SLOT
-{
-#if HAVE_TUNEPIMP
-    m_mbTrack = "";
-#endif
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE
@@ -689,8 +680,7 @@ void TagDialog::readTags()
     pushButton_ok->setEnabled( storedTags.count() > 0 || storedScores.count() > 0 || storedLyrics.count() > 0 );
 
 #if HAVE_TUNEPIMP
-    // Don't enable button if a query is in progress already (or if the file isn't local)
-    pushButton_musicbrainz->setEnabled( m_bundle.url().isLocalFile() && m_mbTrack.isEmpty() );
+    pushButton_musicbrainz->setEnabled( m_bundle.url().isLocalFile() );
 #else
     pushButton_musicbrainz->setEnabled( false );
 #endif
@@ -714,13 +704,11 @@ TagDialog::setMultipleTracksMode()
     kComboBox_artist->setCurrentText( "" );
     kComboBox_album->setCurrentText( "" );
     kComboBox_genre->setCurrentText( "" );
-    kComboBox_composer->setCurrentText( "" );
     kLineEdit_title->setText( "" );
     kIntSpinBox_track->setValue( kIntSpinBox_track->minValue() );
 
     kLineEdit_title->setEnabled( false );
     kIntSpinBox_track->setEnabled( false );
-    kIntSpinBox_discNumber->setValue( 0 );
 
     pushButton_musicbrainz->hide();
     pushButton_guessTags->hide();

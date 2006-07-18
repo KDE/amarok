@@ -38,7 +38,6 @@ amaroK::icon( const QString& name ) //declared in amarok.h
         iconMap["album"]                = "cdrom_unmount";
         iconMap["artist"]               = "personal";
         iconMap["audioscrobbler"]       = "audioscrobbler";
-        iconMap["love"]                 = "bookmark";
         iconMap["back"]                 = "player_start";
         iconMap["burn"]                 = "cdrom_unmount";
         iconMap["change_language"]      = "configure";

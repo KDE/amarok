@@ -123,7 +123,7 @@ main( int argc, char** argv )
     {
         gtk_main_iteration_do( false );
 
-        //set the time to wait, we have to do this every time on linux
+        //set the time to wait, we have to do this everytime on linux
         tv.tv_sec  = 0;
         tv.tv_usec = 16*1000; //60Hz
 

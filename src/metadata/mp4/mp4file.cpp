@@ -37,12 +37,12 @@ namespace TagLib {
 MP4::File::File(const char *file,
         bool readProperties,
         Properties::ReadStyle propertiesStyle,
-        MP4FileHandle handle) : TagLib::File(file),
-	properties(NULL), mp4tag(NULL)
+        MP4FileHandle handle) : TagLib::File(file)
 {
 
     //   debug ("MP4::File: create new file object.");
     //debug ( file );
+    mp4tag = NULL;
     /**
      * Create the MP4 file.
      */

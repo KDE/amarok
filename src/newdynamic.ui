@@ -328,10 +328,10 @@
                 <string>M&amp;ark history</string>
             </property>
             <property name="toolTip" stdset="0">
-                <string>Once played, tracks will be grayed out</string>
+                <string>Once played, tracks will be greyed out</string>
             </property>
             <property name="whatsThis" stdset="0">
-                <string>Once played, tracks will be grayed out</string>
+                <string>Once played, tracks will be greyed out</string>
             </property>
         </widget>
     </grid>

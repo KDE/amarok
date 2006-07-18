@@ -158,7 +158,7 @@ STDMETHODIMP HSPPreMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioData
 
 STDMETHODIMP HSPPreMixAudioHook::OnInit(HXAudioFormat *pFormat)
 {
-   m_Player->print2stderr("PRE MIX HOOK OnInit AudioFormat: ch %d, bps %d, sps %ld, mbs %d\n", pFormat->uChannels,
+   m_Player->print2stderr("PRE MIX HOOK OnInit AudioFormat: ch %d, bps %d, sps %d, mbs %d\n", pFormat->uChannels,
           pFormat->uBitsPerSample,
           pFormat->ulSamplesPerSec,
           pFormat->uMaxBlockSize);
@@ -628,7 +628,7 @@ STDMETHODIMP HSPPostMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioDat
 
 STDMETHODIMP HSPPostMixAudioHook::OnInit(HXAudioFormat *pFormat)
 {
-   m_Player->print2stderr("POST MIX HOOK OnInit AudioFormat: idx %d ch %d, bps %d, sps %ld, mbs %d\n", m_index, pFormat->uChannels,
+   m_Player->print2stderr("POST MIX HOOK OnInit AudioFormat: idx %d ch %d, bps %d, sps %d, mbs %d\n", m_index, pFormat->uChannels,
           pFormat->uBitsPerSample,
           pFormat->ulSamplesPerSec,
           pFormat->uMaxBlockSize);
@@ -732,7 +732,7 @@ STDMETHODIMP HSPFinalAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioData 
 
 STDMETHODIMP HSPFinalAudioHook::OnInit(HXAudioFormat *pFormat)
 {
-   m_Player->print2stderr("FINAL HOOK OnInit AudioFormat: ch %d, bps %d, sps %ld, mbs %d\n",  pFormat->uChannels,
+   m_Player->print2stderr("FINAL HOOK OnInit AudioFormat: ch %d, bps %d, sps %d, mbs %d\n",  pFormat->uChannels,
           pFormat->uBitsPerSample,
           pFormat->ulSamplesPerSec,
           pFormat->uMaxBlockSize);

@@ -108,7 +108,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     KTrader::OfferList offers = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'engine'" );
     KTrader::OfferList::ConstIterator end( offers.end() );
     for( KTrader::OfferList::ConstIterator it = offers.begin(); it != end; ++it ) {
-        // Don't list the <no engine> (void engine) entry if it's not currently active,
+        // Don't list the <no engine> (void engine) entry if it's not currenty active,
         // cause there's no point in choosing this engine (it's a dummy, after all).
         if( (*it)->property( "X-KDE-Amarok-name" ).toString() == "void-engine"
             && AmarokConfig::soundSystem() != "void-engine" ) continue;
@@ -276,9 +276,6 @@ void AmarokConfigDialog::updateSettings()
     if( MediaBrowser::isAvailable() )
     {
         PlaylistWindow::self()->addBrowser( "MediaBrowser", MediaBrowser::instance(), i18n( "Media Device" ), amaroK::icon( "device" ) );
-        connect( MediaBrowser::instance(), SIGNAL( availabilityChanged( bool ) ),
-                 PlaylistWindow::self(), SLOT( mbAvailabilityChanged( bool ) ) );
-        
     }
 
     amaroK::setUseScores( m_opt1->kcfg_UseScores->isChecked() );
@@ -373,7 +370,7 @@ void AmarokConfigDialog::soundSystemChanged()
         m_engineConfig = EngineController::engine()->configure();
         m_engineConfig->view()->reparent( m_engineConfigFrame, QPoint() );
         m_engineConfig->view()->show();
-        m_engineConfigFrame->setTitle( i18n( "to change settings", "Configure %1" ).arg( m_soundSystem->currentText() ) );
+        m_engineConfigFrame->setTitle( i18n( "Configure %1" ).arg( m_soundSystem->currentText() ) );
         m_engineConfigFrame->show();
 
         connect( m_engineConfig, SIGNAL(viewChanged()), SLOT(updateButtons()) );

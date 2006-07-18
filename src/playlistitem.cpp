@@ -53,21 +53,18 @@ bool    PlaylistItem::s_pixmapChanged = false;
 
 PlaylistItem::PlaylistItem( QListView *listview, QListViewItem *item )
         : KListViewItem( listview, item )
-        , m_album( 0 )
 {
     KListViewItem::setVisible( false );
 }
 
 PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi, bool enabled )
         : MetaBundle( bundle ), KListViewItem( lvi->listView(), lvi->itemAbove() )
-        , m_album( 0 )
         , m_deleteAfterEdit( false )
         , m_isBeingRenamed( false )
 {
     setDragEnabled( true );
 
-    if( AmarokConfig::advancedTagFeatures() && !uniqueId().isEmpty() )
-        Playlist::instance()->addToUniqueMap( uniqueId(), this );
+    m_atfEnabled = AmarokConfig::advancedTagFeatures();
 
     refAlbum();
 
@@ -117,8 +114,8 @@ PlaylistItem::~PlaylistItem()
     if( listView()->m_hoveredRating == this )
         listView()->m_hoveredRating = 0;
 
-    Playlist::instance()->removeDisabledChild( this );
-    Playlist::instance()->removeFromUniqueMap( uniqueId() );
+    if( m_atfEnabled )
+        Playlist::instance()->removeDisabledChild( this );
 }
 
 
@@ -213,9 +210,9 @@ int PlaylistItem::queuePosition() const
 void PlaylistItem::setEnabled( bool enabled )
 {
     m_enabled = enabled;
-    if( AmarokConfig::advancedTagFeatures() && !m_enabled )
+    if( m_atfEnabled && !m_enabled )
         Playlist::instance()->disabledChild( this );
-    else if ( AmarokConfig::advancedTagFeatures() )
+    else if ( m_atfEnabled )
         Playlist::instance()->removeDisabledChild( this );
     setDropEnabled( enabled ); // this forbids items to be dropped into a history queue.
 
@@ -383,8 +380,6 @@ PlaylistItem::operator< ( const PlaylistItem & item ) const
 PlaylistItem*
 PlaylistItem::nextInAlbum() const
 {
-    if( !m_album )
-        return 0;
     const int index = m_album->tracks.findRef( this );
     if( index == int(m_album->tracks.count() - 1) )
         return 0;
@@ -406,8 +401,6 @@ PlaylistItem::nextInAlbum() const
 PlaylistItem*
 PlaylistItem::prevInAlbum() const
 {
-    if( !m_album )
-        return 0;
     const int index = m_album->tracks.findRef( this );
     if( index == 0 )
         return 0;
@@ -921,7 +914,7 @@ void PlaylistItem::refAlbum()
 
 void PlaylistItem::derefAlbum()
 {
-    if( amaroK::entireAlbums() && m_album )
+    if( amaroK::entireAlbums() )
     {
         m_album->refcount--;
         if( !m_album->refcount )
@@ -937,7 +930,7 @@ void PlaylistItem::derefAlbum()
 
 void PlaylistItem::incrementTotals()
 {
-    if( amaroK::entireAlbums() && m_album )
+    if( amaroK::entireAlbums() )
     {
         const uint prevCount = m_album->tracks.count();
         if( !track() || !m_album->tracks.count() || ( m_album->tracks.getLast()->track() && m_album->tracks.getLast()->track() < track() ) )
@@ -962,7 +955,7 @@ void PlaylistItem::incrementTotals()
 
 void PlaylistItem::decrementTotals()
 {
-    if( amaroK::entireAlbums() && m_album )
+    if( amaroK::entireAlbums() )
     {
         const Q_INT64 prevTotal = m_album->total;
         Q_INT64 total = m_album->total * m_album->tracks.count();

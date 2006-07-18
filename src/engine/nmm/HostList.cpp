@@ -44,7 +44,7 @@ HostList::HostList( QWidget *parent, const char *name )
   addColumn( i18n("Video"   ) );
   addColumn( i18n("Audio"   ) );
   addColumn( i18n("Volume"  ), 113 );
-  header()->setResizeEnabled(false, 3);
+  header()->setResizeEnabled(FALSE, 3);
   addColumn( i18n("Status"  ) );
   addColumn( i18n("Playback"  ) );
 

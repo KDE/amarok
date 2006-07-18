@@ -6,14 +6,17 @@
  <stream name="Bluemars [Ambient/Space-Music]">
   <url>http://207.200.96.225:8020/listen.pls</url>
  </stream>
- <stream name="Digitally Imported - Chillout [Chill-Out]">
-  <url>http://di.fm/mp3/chillout.pls</url>
- </stream>
  <stream name="Digitally Imported - Classic Techno [Techno]">
-  <url>http://di.fm/mp3/classictechno.pls</url>
+  <url>http://www.digitallyimported.com/mp3/classictechno96k.pls</url>
+ </stream>
+ <stream name="Digitally Imported - Deep House [Deep House]">
+  <url>http://www.digitallyimported.com/mp3/deephouse96k.pls</url>
+ </stream>
+ <stream name="Digitally Imported - Progressive [Progressive Techno]">
+  <url>http://www.digitallyimported.com/mp3/progressive96k.pls</url>
  </stream>
  <stream name="Digitally Imported - Trance [Trance]">
-  <url>http://di.fm/mp3/trance.pls</url>
+  <url>http://www.digitallyimported.com/mp3/trance96k.pls</url>
  </stream>
  <stream name="Electronic Culture [Minimal Techno]">
   <url>http://www.shouted.fm/tunein/electro-dsl.m3u</url>
@@ -40,7 +43,7 @@
   <url>http://la.campus.ltu.se:8000/stream.ogg.m3u</url>
  </stream>
  <stream name="Mostly Classical [Classical]">
-  <url>http://www.sky.fm/mp3/classical.pls</url>
+  <url>http://www.mostlyclassical.com/mp3/classical96k.pls</url>
  </stream>
  <stream name="MTH.House [House]">
   <url>http://stream.mth-house.de:8500/listen.pls</url>

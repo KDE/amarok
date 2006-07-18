@@ -60,11 +60,9 @@ void sqlite3BeginTrigger(
   DbFixer sFix;
   int iTabDb;
 
-  assert( pName1!=0 );   /* pName1->z might be NULL, but not pName1 itself */
-  assert( pName2!=0 );
   if( isTemp ){
     /* If TEMP was specified, then the trigger name may not be qualified. */
-    if( pName2->n>0 ){
+    if( pName2 && pName2->n>0 ){
       sqlite3ErrorMsg(pParse, "temporary trigger may not have qualified name");
       goto trigger_cleanup;
     }
@@ -110,7 +108,7 @@ void sqlite3BeginTrigger(
   if( !zName || SQLITE_OK!=sqlite3CheckObjectName(pParse, zName) ){
     goto trigger_cleanup;
   }
-  if( sqlite3HashFind(&(db->aDb[iDb].pSchema->trigHash), zName,strlen(zName)) ){
+  if( sqlite3HashFind(&(db->aDb[iDb].pSchema->trigHash), zName,pName->n+1) ){
     sqlite3ErrorMsg(pParse, "trigger %T already exists", pName);
     goto trigger_cleanup;
   }
@@ -257,7 +255,7 @@ void sqlite3FinishTrigger(
     Table *pTab;
     Trigger *pDel;
     pDel = sqlite3HashInsert(&db->aDb[iDb].pSchema->trigHash, 
-                     pTrig->name, strlen(pTrig->name), pTrig);
+                     pTrig->name, strlen(pTrig->name)+1, pTrig);
     if( pDel ){
       assert( sqlite3MallocFailed() && pDel==pTrig );
       goto triggerfinish_cleanup;
@@ -455,14 +453,14 @@ void sqlite3DropTrigger(Parse *pParse, SrcList *pName){
   for(i=OMIT_TEMPDB; i<db->nDb; i++){
     int j = (i<2) ? i^1 : i;  /* Search TEMP before MAIN */
     if( zDb && sqlite3StrICmp(db->aDb[j].zName, zDb) ) continue;
-    pTrigger = sqlite3HashFind(&(db->aDb[j].pSchema->trigHash), zName, nName);
+    pTrigger = sqlite3HashFind(&(db->aDb[j].pSchema->trigHash), zName, nName+1);
     if( pTrigger ) break;
   }
   if( !pTrigger ){
     sqlite3ErrorMsg(pParse, "no such trigger: %S", pName, 0);
     goto drop_trigger_cleanup;
   }
-  sqlite3DropTriggerPtr(pParse, pTrigger);
+  sqlite3DropTriggerPtr(pParse, pTrigger, 0);
 
 drop_trigger_cleanup:
   sqlite3SrcListDelete(pName);
@@ -472,16 +470,18 @@ drop_trigger_cleanup:
 ** Return a pointer to the Table structure for the table that a trigger
 ** is set on.
 */
-static Table *tableOfTrigger(Trigger *pTrigger){
+static Table *tableOfTrigger(sqlite3 *db, Trigger *pTrigger){
   int n = strlen(pTrigger->table) + 1;
   return sqlite3HashFind(&pTrigger->pTabSchema->tblHash, pTrigger->table, n);
 }
 
 
 /*
-** Drop a trigger given a pointer to that trigger. 
+** Drop a trigger given a pointer to that trigger.  If nested is false,
+** then also generate code to remove the trigger from the SQLITE_MASTER
+** table.
 */
-void sqlite3DropTriggerPtr(Parse *pParse, Trigger *pTrigger){
+void sqlite3DropTriggerPtr(Parse *pParse, Trigger *pTrigger, int nested){
   Table   *pTable;
   Vdbe *v;
   sqlite3 *db = pParse->db;
@@ -489,8 +489,8 @@ void sqlite3DropTriggerPtr(Parse *pParse, Trigger *pTrigger){
 
   iDb = sqlite3SchemaToIndex(pParse->db, pTrigger->pSchema);
   assert( iDb>=0 && iDb<db->nDb );
-  pTable = tableOfTrigger(pTrigger);
-  assert( pTable );
+  pTable = tableOfTrigger(db, pTrigger);
+  assert(pTable);
   assert( pTable->pSchema==pTrigger->pSchema || iDb==1 );
 #ifndef SQLITE_OMIT_AUTHORIZATION
   {
@@ -507,8 +507,7 @@ void sqlite3DropTriggerPtr(Parse *pParse, Trigger *pTrigger){
 
   /* Generate code to destroy the database record of the trigger.
   */
-  assert( pTable!=0 );
-  if( (v = sqlite3GetVdbe(pParse))!=0 ){
+  if( pTable!=0 && (v = sqlite3GetVdbe(pParse))!=0 ){
     int base;
     static const VdbeOpList dropTrigger[] = {
       { OP_Rewind,     0, ADDR(9),  0},
@@ -538,10 +537,9 @@ void sqlite3DropTriggerPtr(Parse *pParse, Trigger *pTrigger){
 void sqlite3UnlinkAndDeleteTrigger(sqlite3 *db, int iDb, const char *zName){
   Trigger *pTrigger;
   int nName = strlen(zName);
-  pTrigger = sqlite3HashInsert(&(db->aDb[iDb].pSchema->trigHash),
-                               zName, nName, 0);
+  pTrigger = sqlite3HashInsert(&(db->aDb[iDb].pSchema->trigHash), zName, nName+1, 0);
   if( pTrigger ){
-    Table *pTable = tableOfTrigger(pTrigger);
+    Table *pTable = tableOfTrigger(db, pTrigger);
     assert( pTable!=0 );
     if( pTable->pTrigger == pTrigger ){
       pTable->pTrigger = pTrigger->pNext;
@@ -599,7 +597,14 @@ int sqlite3TriggersExist(
 
   while( pTrigger ){
     if( pTrigger->op==op && checkColumnOverLap(pTrigger->pColumns, pChanges) ){
-      mask |= pTrigger->tr_tm;
+      TriggerStack *ss;
+      ss = pParse->trigStack;
+      while( ss && ss->pTrigger!=pTab->pTrigger ){
+	ss = ss->pNext;
+      }
+      if( ss==0 ){
+        mask |= pTrigger->tr_tm;
+      }
     }
     pTrigger = pTrigger->pNext;
   }
@@ -756,17 +761,10 @@ int sqlite3CodeRowTrigger(
       (op!=TK_UPDATE||!p->pColumns||checkColumnOverLap(p->pColumns,pChanges))
     ){
       TriggerStack *pS;      /* Pointer to trigger-stack entry */
-      for(pS=pParse->trigStack; pS && p!=pS->pTrigger; pS=pS->pNext){}
+      for(pS=pParse->trigStack; pS && p!=pS->pTrigger; pS=pS->pNext);
       if( !pS ){
         fire_this = 1;
       }
-#if 0    /* Give no warning for recursive triggers.  Just do not do them */
-      else{
-        sqlite3ErrorMsg(pParse, "recursive triggers not supported (%s)",
-            p->name);
-        return SQLITE_ERROR;
-      }
-#endif
     }
  
     if( fire_this ){

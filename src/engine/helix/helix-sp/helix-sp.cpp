@@ -138,7 +138,7 @@ HelixSimplePlayerAudioStreamInfoResponse::Release()
 
 STDMETHODIMP HelixSimplePlayerAudioStreamInfoResponse::OnStream(IHXAudioStream *pAudioStream)
 {
-   m_Player->print2stderr("Stream Added on player %d, stream duration %ld, sources %d\n", m_index, 
+   m_Player->print2stderr("Stream Added on player %d, stream duration %d, sources %d\n", m_index, 
                           m_Player->duration(m_index), m_Player->ppctrl[m_index]->pPlayer->GetSourceCount());
 
    m_Player->ppctrl[m_index]->pStream = pAudioStream;
@@ -1130,7 +1130,7 @@ void HelixSimplePlayer::openAudioDevice()
 
             if (!elem)
             {
-               print2stderr("Could not find a usable mixer element\n");
+               print2stderr("Could not find a usable mixer element\n", snd_strerror(err));
                err = -1;
             }
          }
@@ -1539,10 +1539,9 @@ int HelixSimplePlayer::setURL(const char *file, int playerIndex, bool islocal)
 
       ppctrl[playerIndex]->isLocal = islocal;
 
+#ifdef __NOCROSSFADER__
       print2stderr("opening %s on player %d, src cnt %d\n", 
              ppctrl[playerIndex]->pszURL, playerIndex, ppctrl[playerIndex]->pPlayer->GetSourceCount());
-
-#ifdef __NOCROSSFADER__
 
       if (HXR_OK == ppctrl[playerIndex]->pPlayer->OpenURL(ppctrl[playerIndex]->pszURL))
       {

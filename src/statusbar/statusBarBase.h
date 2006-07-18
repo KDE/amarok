@@ -101,6 +101,7 @@ namespace KDE
          */
         ProgressBar &newProgressOperation( KIO::Job* );
 
+        void setProgress( const QObject *owner, int steps );
         void incrementProgressTotalSteps( const QObject *owner, int inc = 1 );
         void incrementProgress( const QObject *owner );
         void setProgressStatus( const QObject *owner, const QString &text );
@@ -150,7 +151,7 @@ namespace KDE
          * the progress bar in question
          */
         void setProgress( int steps );
-        void setProgress( const QObject *owner, int steps );
+
         /**
          * Convenience function works like setTotalSteps( QObject*, int )
          * Uses the return value from sender() to determine the owner of

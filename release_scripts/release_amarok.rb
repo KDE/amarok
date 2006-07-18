@@ -1,33 +1,30 @@
 #!/usr/bin/env ruby
 #
-# Ruby script for generating Amarok tarball releases from KDE SVN
+# Ruby script for generating amaroK tarball releases from KDE SVN
 #
 # (c) 2005 Mark Kretschmann <markey@web.de>
 # Some parts of this code taken from cvs2dist
 # License: GNU General Public License V2
 
 
-# Red Cards (removes translation)
-doc_redcards = "pl"
-po_redcards = ""
-
 tag = ""
-useStableBranch=false
+unless $*.empty?()
+    case $*[0]
+        when "--tag"
+            tag = `kdialog --inputbox "Enter tag name: "`.chomp()
+        else
+            puts("Unknown option #{$1}. Use --branch or --tag.\n")
+    end
+end
 
 # Ask whether using branch or trunk
-location = `kdialog --combobox "Select checkout's place:" "Tag" "Trunk" "Branch"`.chomp()
-if location == "Tag"
-    tag = `kdialog --inputbox "Enter tag name: "`.chomp()
-elsif location == "Branch"
+if `kdialog --combobox "Select checkout's place:" "Trunk" "Branch"`.chomp() == "Branch"
     useStableBranch=true
-end
-
-# Ask user for targeted application version
-if not tag.empty?()
-    version = tag
 else
-    version  = `kdialog --inputbox "Enter Amarok version: "`.chomp()
+    useStableBranch=false
 end
+# Ask user for targeted application version
+version  = `kdialog --inputbox "Enter amaroK version: "`.chomp()
 user = `kdialog --inputbox "Your SVN user:"`.chomp()
 protocol = `kdialog --radiolist "Do you use https or svn+ssh?" https https 0 "svn+ssh" "svn+ssh" 1`.chomp()
 
@@ -53,8 +50,8 @@ if useStableBranch
     `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/#{branch}/extragear/multimedia/`
     Dir.chdir( "multimedia" )
 elsif not tag.empty?()
-    `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/tags/amarok/#{tag}/multimedia`
-    Dir.chdir( "multimedia" )
+    `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/tags/amarok/#{tag}`
+    Dir.chdir( tag )
 else
     `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/trunk/extragear/multimedia`
      Dir.chdir( "multimedia" )
@@ -98,12 +95,6 @@ if do_l10n == "yes"
         puts( "done.\n" )
     end
 
-    # red cards for documentation
-    for redcard in doc_redcards
-        `rm -rf #{redcard}`
-        print "\n Removed #{redcard} due to broken translation in last release \n"
-    end
-
     Dir.chdir( ".." ) # multimedia
     puts "\n"
 
@@ -129,12 +120,6 @@ if do_l10n == "yes"
         makefile.close()
 
         $subdirs = true
-    end
-
-    # red cards for translations
-    for redcard in po_redcards
-        `rm -rf #{redcard}`
-        print "\n Removed #{redcard} due to broken translation in last release \n"
     end
 
     if $subdirs
@@ -176,7 +161,7 @@ Dir.chdir( "amarok" )
 # This stuff doesn't belong in the tarball
 `rm -rf src/scripts/rbot`
 `rm -rf release_scripts`
-`rm -rf src/engine/gst10` #Removed for now
+# `rm -rf src/engine/gst10` #Removed for now
 
 Dir.chdir( "src" )
 
@@ -205,7 +190,7 @@ puts "done.\n"
 
 puts "**** Compressing..  "
 `mv * ..`
-Dir.chdir( ".." ) # Amarok-foo
+Dir.chdir( ".." ) # amaroK-foo
 `rm -rf multimedia`
 Dir.chdir( ".." ) # root folder
 `tar -cf #{folder}.tar #{folder}`
@@ -219,7 +204,7 @@ ENV["UNSERMAKE"] = oldmake
 
 puts "\n"
 puts "====================================================="
-puts "Congratulations :) Amarok #{version} tarball generated.\n"
+puts "Congratulations :) amaroK #{version} tarball generated.\n"
 puts "Now follow the steps in the RELEASE_HOWTO, from\n"
 puts "SECTION 3 onwards.\n"
 puts "\n"

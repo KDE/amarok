@@ -16,10 +16,7 @@ email                : fh@ez.no
  ***************************************************************************/
 
 #include "debug.h"
-#include "collectiondb.h"
 #include "engineobserver.h"
-#include "metabundle.h"
-#include "podcastbundle.h"
 #include <qptrlist.h>
 
 
@@ -78,18 +75,10 @@ void EngineSubject::newMetaDataNotify( const MetaBundle &bundle, bool trackChang
 
     QPtrListIterator<EngineObserver> it( Observers );
     EngineObserver *observer;
-
-    PodcastEpisodeBundle peb;
-    MetaBundle b( bundle );
-    if( CollectionDB::instance()->getPodcastEpisodeBundle( bundle.url(), &peb ) )
-    {
-        b.setPodcastBundle( peb );
-    }
-
     while( ( observer = it.current() ) != 0 )
     {
         ++it;
-        observer->engineNewMetaData( b, trackChanged );
+        observer->engineNewMetaData( bundle, trackChanged );
     }
 }
 

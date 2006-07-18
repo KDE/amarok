@@ -17,17 +17,12 @@
  ***************************************************************************/
 
 
-#include "debug.h"
-
-
 // kionjb
 #include "njbmediadevice.h"
 #include "playlist.h"
 
 #define NJB_SUCCESS 0
 #define NJB_FAILURE -1
-
-
 
 // KDE
 #include <kdebug.h>
@@ -40,43 +35,41 @@ NjbPlaylist::NjbPlaylist()
 {
     m_playlist = NJB_Playlist_New();
     if( !m_playlist)
-        debug() << "putPlaylist: playlist_new failed\n";
+        kdDebug( 7182) << "putPlaylist: playlist_new failed\n";
 }
 
 NjbPlaylist::NjbPlaylist(njb_playlist_t* playlist):
-    m_playlist(0)
+    m_playlist(NULL)
 {
-    // 	debug() << __PRETTY_FUNCTION__ << " this=" << this << " playlist=" << playlist << endl;
+    // 	kdDebug( 7182) << __PRETTY_FUNCTION__ << " this=" << this << " playlist=" << playlist << endl;
     setPlaylist( playlist );
 }
 
 NjbPlaylist::NjbPlaylist(const NjbPlaylist& _copy):
-    m_playlist(0)
+    m_playlist(NULL)
 {
-    // 	debug() << __PRETTY_FUNCTION__ << " this=" << this << " m_playlist=" << m_playlist << " playlist=" << _copy.m_playlist << endl;
+    // 	kdDebug( 7182) << __PRETTY_FUNCTION__ << " this=" << this << " m_playlist=" << m_playlist << " playlist=" << _copy.m_playlist << endl;
     setPlaylist( _copy.m_playlist );
 }
 
 NjbPlaylist::~NjbPlaylist( void)
 {
-    // 	debug() << __PRETTY_FUNCTION__ << " this=" << this << " m_playlist=" << m_playlist << endl;
+    // 	kdDebug( 7182) << __PRETTY_FUNCTION__ << " this=" << this << " m_playlist=" << m_playlist << endl;
 
     if ( m_playlist )
         NJB_Playlist_Destroy( m_playlist);
 }
 
-void
-NjbPlaylist::operator=( const NjbPlaylist& _copy)
+void NjbPlaylist::operator=( const NjbPlaylist& _copy)
 {
-    // 	debug() << __PRETTY_FUNCTION__ << " this=" << this << " m_playlist " << m_playlist << " playlist=" << _copy.m_playlist << endl;
+    // 	kdDebug( 7182) << __PRETTY_FUNCTION__ << " this=" << this << " m_playlist " << m_playlist << " playlist=" << _copy.m_playlist << endl;
 
     setPlaylist( _copy.m_playlist );
 }
 
-void
-NjbPlaylist::setPlaylist( njb_playlist_t* _newlist )
+void NjbPlaylist::setPlaylist( njb_playlist_t* _newlist )
 {
-    // 	debug() << __PRETTY_FUNCTION__ << " this=" << this << endl;
+    // 	kdDebug( 7182) << __PRETTY_FUNCTION__ << " this=" << this << endl;
 
     //
     // This function copys the new playlist BY VALUE over our current list.
@@ -109,11 +102,10 @@ NjbPlaylist::setPlaylist( njb_playlist_t* _newlist )
         // And move on...
         track = NJB_Playlist_Gettrack( _newlist  );
     }
-    debug() << __PRETTY_FUNCTION__ << " OK" << endl;
+    kdDebug( 7182) << __PRETTY_FUNCTION__ << " OK" << endl;
 }
 
-QString
-NjbPlaylist::unescapefilename( const QString& _in )
+QString NjbPlaylist::unescapefilename( const QString& _in )
 {
     QString result = _in;
 
@@ -122,8 +114,7 @@ NjbPlaylist::unescapefilename( const QString& _in )
     return result;
 }
 
-QString
-NjbPlaylist::escapefilename( const QString& _in )
+QString NjbPlaylist::escapefilename( const QString& _in )
 {
     QString result = _in;
 
@@ -132,8 +123,7 @@ NjbPlaylist::escapefilename( const QString& _in )
     return result;
 }
 
-int
-NjbPlaylist::setName( const QString& fileName)
+int NjbPlaylist::setName( const QString& fileName)
 {
     QString playlistName = fileName;
     if( fileName.right( 4) == ".m3u")
@@ -161,13 +151,13 @@ NjbPlaylist::setName( const QString& fileName)
         }
 
         if( playlist_set_name( m_playlist, playlistName) == -1) {
-        debug() << "putPlaylist: playlist_set_name failed\n";
+        kdDebug( 7182) << "putPlaylist: playlist_set_name failed\n";
         return ERR_COULD_NOT_WRITE;
         }*/
 
     if ( NJB_Playlist_Set_Name( m_playlist, unescapefilename(fileName).latin1() ) == NJB_FAILURE )
     {
-        debug() << __PRETTY_FUNCTION__ << ": NJB_Playlist_Set_Name failed\n";
+        kdDebug( 7182) << __PRETTY_FUNCTION__ << ": NJB_Playlist_Set_Name failed\n";
         return ERR_COULD_NOT_WRITE;
     }
 
@@ -175,109 +165,98 @@ NjbPlaylist::setName( const QString& fileName)
 }
 
 
-int
-NjbPlaylist::addTrack( const QString& fileName)
+int NjbPlaylist::addTrack( const QString& fileName)
 {
-    debug() << __PRETTY_FUNCTION__ << " filename=" << fileName << endl;
+    kdDebug( 7182) << __PRETTY_FUNCTION__ << " filename=" << fileName << endl;
 
     trackValueList::const_iterator it_track = theTracks->findTrackByName( fileName );
     if( it_track == theTracks->end() ) {
         // couldn't find this track, skip it
-        debug() << "putPlaylist: couldn't find " << fileName << endl;
+        kdDebug( 7182) << "putPlaylist: couldn't find " << fileName << endl;
         return NJB_FAILURE;
     }
-    njb_playlist_track_t* pl_track = NJB_Playlist_Track_New( (*it_track)->id());
+    njb_playlist_track_t* pl_track = NJB_Playlist_Track_New( (*it_track).getId());
     if( !pl_track) {
-        debug() << "putPlaylist: playlist_track_new failed\n";
+        kdDebug( 7182) << "putPlaylist: playlist_track_new failed\n";
         return ERR_COULD_NOT_WRITE;
     }
     NJB_Playlist_Addtrack( m_playlist, pl_track, NJB_PL_END);
     return NJB_SUCCESS;
 }
 
-void
-playlist_dump( njb_playlist_t* playlist )
+void playlist_dump( njb_playlist_t* playlist )
 {
-    debug() << __PRETTY_FUNCTION__ << endl;
+    kdDebug( 7182) << __PRETTY_FUNCTION__ << endl;
 
-    debug() << "name: " << playlist->name << endl;
-    debug() << "state: " << playlist->_state << endl;
-    debug() << "ntracks: " << playlist->ntracks << endl;
-    debug() << "plid: " << playlist->plid << endl;
+    kdDebug( 7182) << "name: " << playlist->name << endl;
+    kdDebug( 7182) << "state: " << playlist->_state << endl;
+    kdDebug( 7182) << "ntracks: " << playlist->ntracks << endl;
+    kdDebug( 7182) << "plid: " << playlist->plid << endl;
 
     NJB_Playlist_Reset_Gettrack( playlist );
     njb_playlist_track_t* track = NJB_Playlist_Gettrack( playlist );
     while ( track )
     {
-        debug() << "track: " << track->trackid << endl;
+        kdDebug( 7182) << "track: " << track->trackid << endl;
         track = NJB_Playlist_Gettrack( playlist );
     }
-    debug() << __PRETTY_FUNCTION__ << " done" << endl;
+    kdDebug( 7182) << __PRETTY_FUNCTION__ << " done" << endl;
 }
 
 
-int
-NjbPlaylist::update( void)
+int NjbPlaylist::update( void)
 {
-    // 	debug() << "putPlaylist: state = " << m_playlist->_state << endl;
-    // 	debug() << "putPlaylist: id = " << m_playlist->plid << endl;
-    debug() << "putPlaylist: sending...\n";
+    // 	kdDebug( 7182) << "putPlaylist: state = " << m_playlist->_state << endl;
+    // 	kdDebug( 7182) << "putPlaylist: id = " << m_playlist->plid << endl;
+    kdDebug( 7182) << "putPlaylist: sending...\n";
 
     playlist_dump( m_playlist );
-    int status = NJB_Update_Playlist( NjbMediaDevice::theNjb(), m_playlist);
+    int status = NJB_Update_Playlist( theNjb, m_playlist);
     if( status == -1) {
-        debug() << "putPlaylist: NJB_Update_Playlist failed\n";
-        if (NJB_Error_Pending(NjbMediaDevice::theNjb()))
+        kdDebug( 7182) << "putPlaylist: NJB_Update_Playlist failed\n";
+        if (NJB_Error_Pending(theNjb))
         {
             const char* error;
-            while ((error = NJB_Error_Geterror(NjbMediaDevice::theNjb())))
+            while ((error = NJB_Error_Geterror(theNjb)))
                 kdError( 7182) << __func__ << ": " << error << endl;
         }
         else
-            debug() << __func__ << ": No reason for failure reported.\n";
+            kdDebug( 7182) << __func__ << ": No reason for failure reported.\n";
         return ERR_COULD_NOT_WRITE;
     }
     return NJB_SUCCESS;
 }
 
-QStringList
-NjbPlaylist::trackNames( void ) const
+QStringList NjbPlaylist::trackNames( void) const
 {
     QStringList result;
 
     // find tracks in trackList by their ID
-    MetaBundle bundle;
-    NjbTrack track;
     njb_playlist_track_t *it_pltrack = m_playlist->first;
     while ( it_pltrack) 
     {
         trackValueList::const_iterator it_track = theTracks->findTrackById( it_pltrack->trackid );
         if ( it_track != theTracks->end() )
-        {
-//            result += it_track.item().bundle()->title();
-        }
+            result += (*it_track).getFilename();
         it_pltrack = it_pltrack->next;
     }
 
     return result;
 }
 
-bool
-NjbPlaylist::operator==(const QString& name) const
+bool NjbPlaylist::operator==(const QString& name) const
 {
     return escapefilename(m_playlist->name) == name;
 }
 
-bool
-NjbPlaylist::operator==(const NjbPlaylist& rval) const
+bool NjbPlaylist::operator==(const NjbPlaylist& rval) const
 {
     return getName() == rval.getName();
 }
 
-QString
-NjbPlaylist::getName(void) const
+QString NjbPlaylist::getName(void) const
 {
-    debug() << __PRETTY_FUNCTION__ << " this=" << this << " list=" << m_playlist << endl;
+    kdDebug( 7182) << __PRETTY_FUNCTION__ << " this=" << this << " list=" << m_playlist << endl;
 
     return escapefilename(m_playlist->name);
 }
@@ -287,13 +266,13 @@ NjbPlaylist::getName(void) const
 int
 playlistValueList::readFromDevice( void)
 {
-
+    kdDebug( 7182) << __func__ << ": pid=" << getpid() << endl;
 
     // ONLY read from the device if this list is empty.
 
     int playlists = 0;
-    NJB_Reset_Get_Playlist( NjbMediaDevice::theNjb());
-    while( njb_playlist_t* pl = NJB_Get_Playlist( NjbMediaDevice::theNjb()) ) {
+    NJB_Reset_Get_Playlist( theNjb);
+    while( njb_playlist_t* pl = NJB_Get_Playlist( theNjb) ) {
         // FIXME (acejones) Make this a signal
         // 		infoMessage( i18n( "Downloading playlist %1...").arg( ++playlists));
         ++playlists;
@@ -301,6 +280,6 @@ playlistValueList::readFromDevice( void)
         NJB_Playlist_Destroy( pl);
     }
 
-    debug() << __func__ << ": cached " << playlists << " playlist(s)\n";
+    kdDebug( 7182) << __func__ << ": cached " << playlists << " playlist(s)\n";
     return NJB_SUCCESS;
 }

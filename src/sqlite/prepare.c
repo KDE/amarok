@@ -13,7 +13,7 @@
 ** interface, and routines that contribute to loading the database schema
 ** from disk.
 **
-** $Id: prepare.c,v 1.34 2006/05/23 23:22:29 drh Exp $
+** $Id: prepare.c,v 1.31 2006/02/10 02:27:43 danielk1977 Exp $
 */
 #include "sqliteInt.h"
 #include "os.h"
@@ -74,7 +74,6 @@ int sqlite3InitCallback(void *pInit, int argc, char **argv, char **azColName){
     db->init.newTnum = atoi(argv[1]);
     rc = sqlite3_exec(db, argv[2], 0, 0, &zErr);
     db->init.iDb = 0;
-    assert( rc!=SQLITE_OK || zErr==0 );
     if( SQLITE_OK!=rc ){
       if( rc==SQLITE_NOMEM ){
         sqlite3FailedMalloc();
@@ -211,7 +210,7 @@ static int sqlite3InitOne(sqlite3 *db, int iDb, char **pzErrMsg){
   **    meta[1]   File format of schema layer.
   **    meta[2]   Size of the page cache.
   **    meta[3]   Use freelist if 0.  Autovacuum if greater than zero.
-  **    meta[4]   Db text encoding. 1:UTF-8 2:UTF-16LE 3:UTF-16BE
+  **    meta[4]   Db text encoding. 1:UTF-8 3:UTF-16 LE 4:UTF-16 BE
   **    meta[5]   The user cookie. Used by the application.
   **    meta[6]   
   **    meta[7]
@@ -408,6 +407,57 @@ static int schemaIsValid(sqlite3 *db){
     }
   }
   return allOk;
+}
+
+/*
+** Free all resources held by the schema structure. The void* argument points
+** at a Schema struct. This function does not call sqliteFree() on the 
+** pointer itself, it just cleans up subsiduary resources (i.e. the contents
+** of the schema hash tables).
+*/
+void sqlite3SchemaFree(void *p){
+  Hash temp1;
+  Hash temp2;
+  HashElem *pElem;
+  Schema *pSchema = (Schema *)p;
+
+  temp1 = pSchema->tblHash;
+  temp2 = pSchema->trigHash;
+  sqlite3HashInit(&pSchema->trigHash, SQLITE_HASH_STRING, 0);
+  sqlite3HashClear(&pSchema->aFKey);
+  sqlite3HashClear(&pSchema->idxHash);
+  for(pElem=sqliteHashFirst(&temp2); pElem; pElem=sqliteHashNext(pElem)){
+    sqlite3DeleteTrigger((Trigger*)sqliteHashData(pElem));
+  }
+  sqlite3HashClear(&temp2);
+  sqlite3HashInit(&pSchema->tblHash, SQLITE_HASH_STRING, 0);
+  for(pElem=sqliteHashFirst(&temp1); pElem; pElem=sqliteHashNext(pElem)){
+    Table *pTab = sqliteHashData(pElem);
+    sqlite3DeleteTable(0, pTab);
+  }
+  sqlite3HashClear(&temp1);
+  pSchema->pSeqTab = 0;
+  pSchema->flags &= ~DB_SchemaLoaded;
+}
+
+/*
+** Find and return the schema associated with a BTree.  Create
+** a new one if necessary.
+*/
+Schema *sqlite3SchemaGet(Btree *pBt){
+  Schema * p;
+  if( pBt ){
+    p = (Schema *)sqlite3BtreeSchema(pBt,sizeof(Schema),sqlite3SchemaFree);
+  }else{
+    p = (Schema *)sqliteMalloc(sizeof(Schema));
+  }
+  if( p && 0==p->file_format ){
+    sqlite3HashInit(&p->tblHash, SQLITE_HASH_STRING, 0);
+    sqlite3HashInit(&p->idxHash, SQLITE_HASH_STRING, 0);
+    sqlite3HashInit(&p->trigHash, SQLITE_HASH_STRING, 0);
+    sqlite3HashInit(&p->aFKey, SQLITE_HASH_STRING, 1);
+  }
+  return p;
 }
 
 /*

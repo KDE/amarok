@@ -1,12 +1,10 @@
 // (c) 2005 Christian Muehlhaeuser <chris@chris.de>
-// (c) 2006 Seb Ruiz <me@sebruiz.net>
 // License: GNU General Public License V2
 
 
 #ifndef AMAROK_HTMLVIEW_H
 #define AMAROK_HTMLVIEW_H
 
-#include <khtml_events.h>
 #include <khtml_part.h>
 #include <khtmlview.h>
 
@@ -26,9 +24,6 @@ class HTMLView : public KHTMLPart
         static void paletteChange();
 
     private:
-        // for overloading the drag and drop image
-        void   khtmlMouseMoveEvent( khtml::MouseMoveEvent *event );
-
         static KTempFile *m_bgGradientImage;
         static KTempFile *m_headerGradientImage;
         static KTempFile *m_shadowGradientImage;

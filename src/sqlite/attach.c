@@ -73,8 +73,6 @@ static void attachFunc(
 
   zFile = (const char *)sqlite3_value_text(argv[0]);
   zName = (const char *)sqlite3_value_text(argv[1]);
-  if( zFile==0 ) zFile = "";
-  if( zName==0 ) zName = "";
 
   /* Check for the following errors:
   **
@@ -84,7 +82,7 @@ static void attachFunc(
   */
   if( db->nDb>=MAX_ATTACHED+2 ){
     sqlite3_snprintf(
-      sizeof(zErr), zErr, "too many attached databases - max %d", MAX_ATTACHED
+      127, zErr, "too many attached databases - max %d", MAX_ATTACHED
     );
     goto attach_error;
   }
@@ -94,8 +92,8 @@ static void attachFunc(
   }
   for(i=0; i<db->nDb; i++){
     char *z = db->aDb[i].zName;
-    if( z && zName && sqlite3StrICmp(z, zName)==0 ){
-      sqlite3_snprintf(sizeof(zErr), zErr, "database %s is already in use", zName);
+    if( z && sqlite3StrICmp(z, zName)==0 ){
+      sqlite3_snprintf(127, zErr, "database %s is already in use", zName);
       goto attach_error;
     }
   }
@@ -187,12 +185,7 @@ static void attachFunc(
     }
     sqlite3ResetInternalSchema(db, 0);
     db->nDb = iDb;
-    if( rc==SQLITE_NOMEM ){
-      if( !sqlite3MallocFailed() ) sqlite3FailedMalloc();
-      sqlite3_snprintf(sizeof(zErr),zErr, "out of memory");
-    }else{
-      sqlite3_snprintf(sizeof(zErr),zErr, "unable to open database: %s", zFile);
-    }
+    sqlite3_snprintf(127, zErr, "unable to open database: %s", zFile);
     goto attach_error;
   }
   
@@ -228,7 +221,7 @@ static void detachFunc(
   Db *pDb = 0;
   char zErr[128];
 
-  if( zName==0 ) zName = "";
+  assert(zName);
   for(i=0; i<db->nDb; i++){
     pDb = &db->aDb[i];
     if( pDb->pBt==0 ) continue;
@@ -236,11 +229,11 @@ static void detachFunc(
   }
 
   if( i>=db->nDb ){
-    sqlite3_snprintf(sizeof(zErr),zErr, "no such database: %s", zName);
+    sqlite3_snprintf(sizeof(zErr), zErr, "no such database: %s", zName);
     goto detach_error;
   }
   if( i<2 ){
-    sqlite3_snprintf(sizeof(zErr),zErr, "cannot detach database %s", zName);
+    sqlite3_snprintf(sizeof(zErr), zErr, "cannot detach database %s", zName);
     goto detach_error;
   }
   if( !db->autoCommit ){

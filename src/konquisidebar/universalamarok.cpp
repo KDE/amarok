@@ -198,7 +198,7 @@ void UniversalAmarok::updateBrowser(const QString& file)
             line = stream.readLine(); // line of text excluding '\n'
              text += QString("\n") + line;
         } f_file.close();
-            text=text.replace("<img id='current_box-largecover-image' ", "<img id='current_box-largecover-image' width=70 height=70 ");
+            text=text.replace("<img id='current_box-largecover-image' ", "<img id='current_box-largecover-image' width=70 heigth=70 ");
         browser->begin();
         browser->write(text);
         browser->end();

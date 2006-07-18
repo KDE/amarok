@@ -80,7 +80,6 @@ struct unixFile {
   unsigned char isOpen;     /* True if needs to be closed */
   unsigned char fullSync;   /* Use F_FULLSYNC if available */
   int dirfd;                /* File descriptor for the directory */
-  i64 offset;               /* Seek offset */
 #ifdef SQLITE_UNIX_THREADS
   pthread_t tid;            /* The thread that "owns" this OsFile */
 #endif
@@ -341,10 +340,9 @@ struct openCnt {
 ** openKey structures) into lockInfo and openCnt structures.  Access to 
 ** these hash tables must be protected by a mutex.
 */
-static Hash lockHash = {SQLITE_HASH_BINARY, 0, 0, 0, 
-    sqlite3ThreadSafeMalloc, sqlite3ThreadSafeFree, 0, 0};
-static Hash openHash = {SQLITE_HASH_BINARY, 0, 0, 0, 
-    sqlite3ThreadSafeMalloc, sqlite3ThreadSafeFree, 0, 0};
+static Hash lockHash = { SQLITE_HASH_BINARY, 0, 0, 0, 0, 0 };
+static Hash openHash = { SQLITE_HASH_BINARY, 0, 0, 0, 0, 0 };
+
 
 #ifdef SQLITE_UNIX_THREADS
 /*
@@ -493,7 +491,7 @@ static void releaseLockInfo(struct lockInfo *pLock){
   pLock->nRef--;
   if( pLock->nRef==0 ){
     sqlite3HashInsert(&lockHash, &pLock->key, sizeof(pLock->key), 0);
-    sqlite3ThreadSafeFree(pLock);
+    sqliteFree(pLock);
   }
 }
 
@@ -506,7 +504,7 @@ static void releaseOpenCnt(struct openCnt *pOpen){
   if( pOpen->nRef==0 ){
     sqlite3HashInsert(&openHash, &pOpen->key, sizeof(pOpen->key), 0);
     free(pOpen->aPending);
-    sqlite3ThreadSafeFree(pOpen);
+    sqliteFree(pOpen);
   }
 }
 
@@ -547,7 +545,7 @@ static int findLockInfo(
   pLock = (struct lockInfo*)sqlite3HashFind(&lockHash, &key1, sizeof(key1));
   if( pLock==0 ){
     struct lockInfo *pOld;
-    pLock = sqlite3ThreadSafeMalloc( sizeof(*pLock) );
+    pLock = sqliteMallocRaw( sizeof(*pLock) );
     if( pLock==0 ){
       rc = 1;
       goto exit_findlockinfo;
@@ -559,7 +557,7 @@ static int findLockInfo(
     pOld = sqlite3HashInsert(&lockHash, &pLock->key, sizeof(key1), pLock);
     if( pOld!=0 ){
       assert( pOld==pLock );
-      sqlite3ThreadSafeFree(pLock);
+      sqliteFree(pLock);
       rc = 1;
       goto exit_findlockinfo;
     }
@@ -571,7 +569,7 @@ static int findLockInfo(
     pOpen = (struct openCnt*)sqlite3HashFind(&openHash, &key2, sizeof(key2));
     if( pOpen==0 ){
       struct openCnt *pOld;
-      pOpen = sqlite3ThreadSafeMalloc( sizeof(*pOpen) );
+      pOpen = sqliteMallocRaw( sizeof(*pOpen) );
       if( pOpen==0 ){
         releaseLockInfo(pLock);
         rc = 1;
@@ -585,7 +583,7 @@ static int findLockInfo(
       pOld = sqlite3HashInsert(&openHash, &pOpen->key, sizeof(key2), pOpen);
       if( pOld!=0 ){
         assert( pOld==pOpen );
-        sqlite3ThreadSafeFree(pOpen);
+        sqliteFree(pOpen);
         releaseLockInfo(pLock);
         rc = 1;
         goto exit_findlockinfo;
@@ -752,6 +750,9 @@ int sqlite3UnixOpenExclusive(const char *zFilename, OsFile **pId, int delFlag){
 
   CRASH_TEST_OVERRIDE(sqlite3CrashOpenExclusive, zFilename, pId, delFlag);
   assert( 0==*pId );
+  if( access(zFilename, 0)==0 ){
+    return SQLITE_CANTOPEN;
+  }
   f.h = open(zFilename,
                 O_RDWR|O_CREAT|O_EXCL|O_NOFOLLOW|O_LARGEFILE|O_BINARY,
                 SQLITE_DEFAULT_FILE_PERMISSIONS);
@@ -903,24 +904,6 @@ int sqlite3UnixIsDirWritable(char *zBuf){
 }
 
 /*
-** Seek to the offset in id->offset then read cnt bytes into pBuf.
-** Return the number of bytes actually read.  Update the offset.
-*/
-static int seekAndRead(unixFile *id, void *pBuf, int cnt){
-  int got;
-#ifdef USE_PREAD
-  got = pread(id->h, pBuf, cnt, id->offset);
-#else
-  lseek(id->h, id->offset, SEEK_SET);
-  got = read(id->h, pBuf, cnt);
-#endif
-  if( got>0 ){
-    id->offset += got;
-  }
-  return got;
-}
-
-/*
 ** Read data from a file into a buffer.  Return SQLITE_OK if all
 ** bytes were read successfully and SQLITE_IOERR if anything goes
 ** wrong.
@@ -930,7 +913,7 @@ static int unixRead(OsFile *id, void *pBuf, int amt){
   assert( id );
   SimulateIOError(SQLITE_IOERR);
   TIMER_START;
-  got = seekAndRead((unixFile*)id, pBuf, amt);
+  got = read(((unixFile*)id)->h, pBuf, amt);
   TIMER_END;
   TRACE5("READ    %-3d %5d %7d %d\n", ((unixFile*)id)->h, got,
           last_page, TIMER_ELAPSED);
@@ -944,25 +927,6 @@ static int unixRead(OsFile *id, void *pBuf, int amt){
 }
 
 /*
-** Seek to the offset in id->offset then read cnt bytes into pBuf.
-** Return the number of bytes actually read.  Update the offset.
-*/
-static int seekAndWrite(unixFile *id, const void *pBuf, int cnt){
-  int got;
-#ifdef USE_PREAD
-  got = pwrite(id->h, pBuf, cnt, id->offset);
-#else
-  lseek(id->h, id->offset, SEEK_SET);
-  got = write(id->h, pBuf, cnt);
-#endif
-  if( got>0 ){
-    id->offset += got;
-  }
-  return got;
-}
-
-
-/*
 ** Write data from a buffer into a file.  Return SQLITE_OK on success
 ** or some other error code on failure.
 */
@@ -973,7 +937,7 @@ static int unixWrite(OsFile *id, const void *pBuf, int amt){
   SimulateIOError(SQLITE_IOERR);
   SimulateDiskfullError;
   TIMER_START;
-  while( amt>0 && (wrote = seekAndWrite((unixFile*)id, pBuf, amt))>0 ){
+  while( amt>0 && (wrote = write(((unixFile*)id)->h, pBuf, amt))>0 ){
     amt -= wrote;
     pBuf = &((char*)pBuf)[wrote];
   }
@@ -996,7 +960,7 @@ static int unixSeek(OsFile *id, i64 offset){
 #ifdef SQLITE_TEST
   if( offset ) SimulateDiskfullError
 #endif
-  ((unixFile*)id)->offset = offset;
+  lseek(((unixFile*)id)->h, offset, SEEK_SET);
   return SQLITE_OK;
 }
 
@@ -1562,7 +1526,7 @@ static int unixClose(OsFile **pId){
   id->isOpen = 0;
   TRACE2("CLOSE   %-3d\n", id->h);
   OpenCounter(-1);
-  sqlite3ThreadSafeFree(id);
+  sqliteFree(id);
   *pId = 0;
   return SQLITE_OK;
 }
@@ -1587,33 +1551,6 @@ char *sqlite3UnixFullPathname(const char *zRelative){
                     (char*)0);
     sqliteFree(zBuf);
   }
-
-#if 0
-  /*
-  ** Remove "/./" path elements and convert "/A/./" path elements
-  ** to just "/".
-  */
-  if( zFull ){
-    int i, j;
-    for(i=j=0; zFull[i]; i++){
-      if( zFull[i]=='/' ){
-        if( zFull[i+1]=='/' ) continue;
-        if( zFull[i+1]=='.' && zFull[i+2]=='/' ){
-          i += 1;
-          continue;
-        }
-        if( zFull[i+1]=='.' && zFull[i+2]=='.' && zFull[i+3]=='/' ){
-          while( j>0 && zFull[j-1]!='/' ){ j--; }
-          i += 3;
-          continue;
-        }
-      }
-      zFull[j++] = zFull[i];
-    }
-    zFull[j] = 0;
-  }
-#endif
-
   return zFull;
 }
 
@@ -1670,9 +1607,8 @@ static int allocateUnixFile(unixFile *pInit, OsFile **pId){
   pInit->dirfd = -1;
   pInit->fullSync = 0;
   pInit->locktype = 0;
-  pInit->offset = 0;
   SET_THREADID(pInit);
-  pNew = sqlite3ThreadSafeMalloc( sizeof(unixFile) );
+  pNew = sqliteMalloc( sizeof(unixFile) );
   if( pNew==0 ){
     close(pInit->h);
     sqlite3OsEnterMutex();

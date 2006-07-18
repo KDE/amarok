@@ -25,7 +25,7 @@ void Options1::init()
 
     // Remove browsers which are not actually installed
     for( QStringList::Iterator it = browsers.begin(), end = browsers.end(); it != end; ) {
-        if( KStandardDirs::findExe( *it ).isEmpty() )
+        if( KStandardDirs::findExe( *it ) == QString::null )
             it = browsers.erase( it );
         else
             ++it;

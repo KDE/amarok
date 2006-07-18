@@ -2,7 +2,7 @@
 <class>Options7</class>
 <widget class="QWidget">
     <property name="name">
-        <cstring>Options7</cstring>
+        <cstring>MySql</cstring>
     </property>
     <property name="geometry">
         <rect>
@@ -13,7 +13,7 @@
         </rect>
     </property>
     <property name="caption">
-        <string>Collection Setup</string>
+        <string>MySql</string>
     </property>
     <vbox>
         <property name="name">
@@ -22,77 +22,6 @@
         <property name="margin">
             <number>0</number>
         </property>
-        <widget class="QGroupBox">
-            <property name="name">
-                <cstring>atfBox</cstring>
-            </property>
-            <property name="title">
-                <string>Advanced Tag Features (ATF)</string>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>kcfg_AdvancedTagFeatures</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Enable &amp;ATF (recommended; requires restart)</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Check to enable Amarok's Advanced Tag Features.&lt;br&gt;</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Check to enable Amarok's Advanced Tag Features.</string>
-                    </property>
-                </widget>
-                <widget class="KActiveLabel">
-                    <property name="name">
-                        <cstring>atfActiveInfoLabel</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>5</hsizetype>
-                            <vsizetype>4</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>-1</width>
-                            <height>-1</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>&lt;a href='whatsthis:&lt;em&gt;Advanced Tag Features (ATF)&lt;/em&gt;&lt;p&gt;This is an optional but recommended set of features that use a unique identifier stored in the metadata of your files to allow Amarok to track your files in useful ways.&lt;p&gt;With ATF on, for instance, when you move or rename files within your collection folders, the Playlist will keep the URL of the file current, so that you do not need to remove and re-add the file.  Statistics information will not be lost due to file renames or moves, either.&lt;p&gt;This feature is not turned on by default since it does require making (safe and transparent) physical metadata additions to your files, but its use is encouraged.&lt;p&gt;&lt;em&gt;Turning on this feature requires a full collection rescan and clearing your current playlist.  These actions will be performed when you next start Amarok.&lt;/em&gt;'&gt;Information&lt;/a&gt;</string>
-                    </property>
-                </widget>
-                <widget class="KActiveLabel">
-                    <property name="name">
-                        <cstring>atfActiveHomepageLabel</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>5</hsizetype>
-                            <vsizetype>4</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>-1</width>
-                            <height>-1</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>&lt;a href='http://amarok.kde.org/amarokwiki/index.php/ATF'&gt;Homepage&lt;/a&gt;</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
         <widget class="QGroupBox">
             <property name="name">
                 <cstring>collectionFoldersBox</cstring>
@@ -139,20 +68,6 @@
         <pixmap>image0</pixmap>
     </customwidget>
 </customwidgets>
-<connections>
-    <connection>
-        <sender>kcfg_AdvancedTagFeatures</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>Options7</receiver>
-        <slot>atf_clicked(bool)</slot>
-    </connection>
-</connections>
-<includes>
-    <include location="local" impldecl="in implementation">Options7.ui.h</include>
-</includes>
-<slots>
-    <slot>atf_clicked(bool)</slot>
-</slots>
 <images>
     <image name="image0">
         <data format="XBM.GZ" length="79">789c534e494dcbcc4b554829cdcdad8c2fcf4c29c95030e0524611cd48cd4ccf28010a1797249664262b2467241641a592324b8aa363156c15aab914146aadb90067111b1f</data>

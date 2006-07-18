@@ -121,13 +121,7 @@ static void absFunc(sqlite3_context *context, int argc, sqlite3_value **argv){
   switch( sqlite3_value_type(argv[0]) ){
     case SQLITE_INTEGER: {
       i64 iVal = sqlite3_value_int64(argv[0]);
-      if( iVal<0 ){
-        if( (iVal<<1)==0 ){
-          sqlite3_result_error(context, "integer overflow", -1);
-          return;
-        }
-        iVal = -iVal;
-      } 
+      if( iVal<0 ) iVal = iVal * -1;
       sqlite3_result_int64(context, iVal);
       break;
     }
@@ -137,7 +131,7 @@ static void absFunc(sqlite3_context *context, int argc, sqlite3_value **argv){
     }
     default: {
       double rVal = sqlite3_value_double(argv[0]);
-      if( rVal<0 ) rVal = -rVal;
+      if( rVal<0 ) rVal = rVal * -1.0;
       sqlite3_result_double(context, rVal);
       break;
     }
@@ -201,11 +195,10 @@ static void roundFunc(sqlite3_context *context, int argc, sqlite3_value **argv){
     if( n>30 ) n = 30;
     if( n<0 ) n = 0;
   }
-  if( sqlite3_value_type(argv[0])==SQLITE_NULL ) return;
+  if( SQLITE_NULL==sqlite3_value_type(argv[0]) ) return;
   r = sqlite3_value_double(argv[0]);
   sqlite3_snprintf(sizeof(zBuf),zBuf,"%.*f",n,r);
-  sqlite3AtoF(zBuf, &r);
-  sqlite3_result_double(context, r);
+  sqlite3_result_text(context, zBuf, -1, SQLITE_TRANSIENT);
 }
 
 /*
@@ -265,11 +258,9 @@ static void randomFunc(
   int argc,
   sqlite3_value **argv
 ){
-  sqlite_int64 r;
+  int r;
   sqlite3Randomness(sizeof(r), &r);
-  if( (r<<1)==0 ) r = 0;  /* Prevent 0x8000.... as the result so that we */
-                          /* can always do abs() of the result */
-  sqlite3_result_int64(context, r);
+  sqlite3_result_int(context, r);
 }
 
 /*
@@ -826,11 +817,9 @@ static void test_error(
 */
 typedef struct SumCtx SumCtx;
 struct SumCtx {
-  double rSum;      /* Floating point sum */
-  i64 iSum;         /* Integer sum */   
-  i64 cnt;          /* Number of elements summed */
-  u8 overflow;      /* True if integer overflow seen */
-  u8 approx;        /* True if non-integer value was input to the sum */
+  LONGDOUBLE_TYPE sum;    /* Sum of terms */
+  i64 cnt;                /* Number of elements summed */
+  u8 approx;              /* True if sum is approximate */
 };
 
 /*
@@ -840,8 +829,16 @@ struct SumCtx {
 ** that it returns NULL if it sums over no inputs.  TOTAL returns
 ** 0.0 in that case.  In addition, TOTAL always returns a float where
 ** SUM might return an integer if it never encounters a floating point
-** value.  TOTAL never fails, but SUM might through an exception if
-** it overflows an integer.
+** value.
+**
+** I am told that SUM() should raise an exception if it encounters
+** a integer overflow.  But after pondering this, I decided that 
+** behavior leads to brittle programs.  So instead, I have coded
+** SUM() to revert to using floating point if it encounters an
+** integer overflow.  The answer may not be exact, but it will be
+** close.  If the SUM() function returns an integer, the value is
+** exact.  If SUM() returns a floating point value, it means the
+** value might be approximated.
 */
 static void sumStep(sqlite3_context *context, int argc, sqlite3_value **argv){
   SumCtx *p;
@@ -852,18 +849,13 @@ static void sumStep(sqlite3_context *context, int argc, sqlite3_value **argv){
   if( p && type!=SQLITE_NULL ){
     p->cnt++;
     if( type==SQLITE_INTEGER ){
-      i64 v = sqlite3_value_int64(argv[0]);
-      p->rSum += v;
-      if( (p->approx|p->overflow)==0 ){
-        i64 iNewSum = p->iSum + v;
-        int s1 = p->iSum >> (sizeof(i64)*8-1);
-        int s2 = v       >> (sizeof(i64)*8-1);
-        int s3 = iNewSum >> (sizeof(i64)*8-1);
-        p->overflow = (s1&s2&~s3) | (~s1&~s2&s3);
-        p->iSum = iNewSum;
+      p->sum += sqlite3_value_int64(argv[0]);
+      if( !p->approx ){
+        i64 iVal;
+        p->approx = p->sum!=(LONGDOUBLE_TYPE)(iVal = (i64)p->sum);
       }
     }else{
-      p->rSum += sqlite3_value_double(argv[0]);
+      p->sum += sqlite3_value_double(argv[0]);
       p->approx = 1;
     }
   }
@@ -872,12 +864,10 @@ static void sumFinalize(sqlite3_context *context){
   SumCtx *p;
   p = sqlite3_aggregate_context(context, 0);
   if( p && p->cnt>0 ){
-    if( p->overflow ){
-      sqlite3_result_error(context,"integer overflow",-1);
-    }else if( p->approx ){
-      sqlite3_result_double(context, p->rSum);
+    if( p->approx ){
+      sqlite3_result_double(context, p->sum);
     }else{
-      sqlite3_result_int64(context, p->iSum);
+      sqlite3_result_int64(context, (i64)p->sum);
     }
   }
 }
@@ -885,13 +875,13 @@ static void avgFinalize(sqlite3_context *context){
   SumCtx *p;
   p = sqlite3_aggregate_context(context, 0);
   if( p && p->cnt>0 ){
-    sqlite3_result_double(context, p->rSum/(double)p->cnt);
+    sqlite3_result_double(context, p->sum/(double)p->cnt);
   }
 }
 static void totalFinalize(sqlite3_context *context){
   SumCtx *p;
   p = sqlite3_aggregate_context(context, 0);
-  sqlite3_result_double(context, p ? p->rSum : 0.0);
+  sqlite3_result_double(context, p ? p->sum : 0.0);
 }
 
 /*
@@ -1072,7 +1062,7 @@ void sqlite3RegisterBuiltinFunctions(sqlite3 *db){
   }
   sqlite3RegisterDateTimeFunctions(db);
 #ifdef SQLITE_SSE
-  (void)sqlite3SseFunctions(db);
+  sqlite3SseFunctions(db);
 #endif
 #ifdef SQLITE_CASE_SENSITIVE_LIKE
   sqlite3RegisterLikeFunctions(db, 1);

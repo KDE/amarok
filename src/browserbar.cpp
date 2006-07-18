@@ -64,7 +64,7 @@ BrowserBar::BrowserBar( QWidget *parent )
         , m_playlistBox( new QVBox( this ) )
         , m_divider( new amaroK::Splitter( this ) )
         , m_tabBar( new MultiTabBar( MultiTabBar::Vertical, this ) )
-        , m_browserBox( new QVBox( this ) )
+        , m_browserBox( new QWidget( this ) )
         , m_currentIndex( -1 )
         , m_lastIndex( -1 )
         , m_mapper( new QSignalMapper( this ) )
@@ -95,15 +95,6 @@ BrowserBar::~BrowserBar()
     KConfig* const config = amaroK::config( "BrowserBar" );
     config->writeEntry( "CurrentPane", m_currentIndex != -1 ? QString(currentBrowser()->name()) : QString::null );
     config->writeEntry( "Width", m_browserBox->width() );
-}
-
-void
-BrowserBar::makeDropProxy( const QString &name, DropProxyTarget *finalTarget )
-{
-    int id = m_browserIds[name];
-    MultiTabBarButton *button = m_tabBar->tab( id );
-    if( button )
-        button->proxyDrops( finalTarget );
 }
 
 int
@@ -222,7 +213,6 @@ BrowserBar::addBrowser( QWidget *widget, const QString &title, const QString& ic
 {
     const int id = m_tabBar->tabs()->count(); // the next available id
     const QString name( widget->name() );
-    m_browserIds[name] = id;
     QWidget *tab;
 
     widget->reparent( m_browserBox, QPoint() );
@@ -238,18 +228,6 @@ BrowserBar::addBrowser( QWidget *widget, const QString &title, const QString& ic
     connect( tab, SIGNAL(initiateDrag ( int ) ), this, SLOT( showBrowser( int )) );
 
     m_browsers.push_back( widget );
-}
-
-void
-BrowserBar::removeMediaBrowser( QWidget *widget )
-{
-    BrowserList::iterator it = qFind( m_browsers.begin(), m_browsers.end(), widget );
-    if( it != m_browsers.end() )
-        m_browsers.erase( it ); 
-    QWidget *tab;
-    tab = m_tabBar->tab( m_browserIds["MediaBrowser"] );
-    m_mapper->removeMappings( tab );
-    m_tabBar->removeTab( m_browserIds["MediaBrowser"] );
 }
 
 void
@@ -348,6 +326,7 @@ BrowserBar::indexForName( const QString &name ) const
     for( uint x = 0; x < m_browsers.count(); ++x )
         if( name == m_browsers[x]->name() )
             return x;
+
     return -1;
 }
 

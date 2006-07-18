@@ -115,7 +115,7 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
                                                       -1, 0)) )
       pmapped = 0;
       
-   // we do this the old fashioned way, so that we don't have to include an executable with our plugin...
+   // we do this the old fashioned way, so that we dont have to include an executable with our plugin...
    for (int i = 0; i < numPlayers; i++)
    {
       if (pmapped)

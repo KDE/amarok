@@ -26,23 +26,15 @@ class QDir;
 class QTextStream;
 template<class T> class QValueList;
 namespace TagLib {
-    class ByteVector;
     class File;
     class FileRef;
+    class ByteVector;
     class String;
     namespace ID3v2 {
-        class UniqueFileIdentifierFrame;
         class Tag;
-    }
-    namespace MPEG {
-        class File;
     }
 }
 class PodcastEpisodeBundle;
-
-namespace LastFm {
-    class Bundle;
-}
 
 /**
  * @class MetaBundle
@@ -156,7 +148,7 @@ public:
     void embeddedImages(EmbeddedImageList &images);
 
     /** If you want Accurate reading say so. If EmbeddedImageList != NULL, embedded art is loaded into it */
-    void readTags( TagLib::AudioProperties::ReadStyle = TagLib::AudioProperties::Fast, EmbeddedImageList* images = 0, bool doUniqueId = true );
+    void readTags( TagLib::AudioProperties::ReadStyle, EmbeddedImageList* images = 0 );
 
     /** Saves the changes to the file. Returns false on error. */
     bool save();
@@ -170,8 +162,6 @@ public:
     bool hasExtendedMetaInformation() const;
 
     void copyFrom( const MetaBundle& bundle );
-
-    void copyFrom( const PodcastEpisodeBundle &peb );
 
     /** Returns a string representation of the tag at \p column, in a format suitable for internal purposes.
         For example, for a track 3:24 long, it'll return "204" (seconds).
@@ -226,7 +216,7 @@ public: //accessors
     int     bitrate()     const;
     int     sampleRate()  const;
     int     score()       const;
-    int     rating()      const; //returns rating * 2, to accommodate .5 ratings
+    int     rating()      const; //returns rating * 2, to accomodate .5 ratings
     int     playCount()   const;
     uint    lastPlay()    const;
     int     filesize()    const;
@@ -235,7 +225,6 @@ public: //accessors
     int fileType() const;  // returns a value from enum FileType
     bool exists() const; // true for everything but local files that aren't there
     PodcastEpisodeBundle *podcastBundle() const;
-    LastFm::Bundle *lastFmBundle() const;
     QString streamName() const;
     QString streamUrl()  const;
     QString uniqueId() const;
@@ -275,11 +264,9 @@ public: //modifiers
     void setCompilation( int compilation );
     bool checkExists();
     void setPodcastBundle( const PodcastEpisodeBundle &peb );
-    void setLastFmBundle( const LastFm::Bundle &last );
     void setUniqueId(); //will find the fileref
     void setUniqueId( const QString &id ); //WARNING WARNING WARNING SEE COMMENT in .CPP
-    void setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip = false );
-    void removeUniqueId();
+    void setUniqueId( TagLib::FileRef &fileref, bool recreate = false );
     void newUniqueId();
 
 public: //static helper functions
@@ -344,7 +331,6 @@ protected:
     bool m_notCompilation: 1;
 
     PodcastEpisodeBundle *m_podcastBundle;
-    LastFm::Bundle *m_lastFmBundle;
 
 private:
 
@@ -363,7 +349,6 @@ private:
     int getRand();
     QString getRandomString( int size );
     QString getRandomStringHelper( int size );
-    TagLib::ID3v2::UniqueFileIdentifierFrame *ourMP3UidFrame( TagLib::MPEG::File *file, QString ourId );
 };
 
 /// for your convenience
@@ -434,7 +419,6 @@ inline QString MetaBundle::type() const
            : filename().mid( filename().findRev( '.' ) + 1 );
 }
 inline PodcastEpisodeBundle *MetaBundle::podcastBundle() const { return m_podcastBundle; }
-inline LastFm::Bundle *MetaBundle::lastFmBundle() const { return m_lastFmBundle; }
 
 inline QString MetaBundle::prettyURL() const { return url().prettyURL(); }
 inline QString MetaBundle::prettyBitrate() const { return prettyBitrate( m_bitrate ); }

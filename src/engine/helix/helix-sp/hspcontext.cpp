@@ -215,7 +215,7 @@ HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
           strcpy((char *)outbuf, "1");
           buffer = ibuf;
 
-          m_splayer->print2stderr("setting ThreadedAudio to value = %ld\n",atol((const char*) buffer->GetBuffer()));
+          m_splayer->print2stderr("setting ThreadedAudio to value = %d\n",atol((const char*) buffer->GetBuffer()));
        }
     }
     else if (0 == (stricmp(pref_key, "UseCoreThread")))
@@ -228,7 +228,7 @@ HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
           strcpy((char *)outbuf, "1");
           buffer = ibuf;
 
-          m_splayer->print2stderr("setting initial UseCoreThread to value = %ld\n",atol((const char*) buffer->GetBuffer()));
+          m_splayer->print2stderr("setting initial UseCoreThread to value = %d\n",atol((const char*) buffer->GetBuffer()));
        }
     }
     else if (0 == (stricmp(pref_key, "NetworkThreading")))
@@ -241,7 +241,7 @@ HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
           strcpy((char *)outbuf, "1");
           buffer = ibuf;
 
-          m_splayer->print2stderr("setting initial NetworkTheading to value = %ld\n",atol((const char*) buffer->GetBuffer()));
+          m_splayer->print2stderr("setting initial NetworkTheading to value = %d\n",atol((const char*) buffer->GetBuffer()));
        }
     }
     else

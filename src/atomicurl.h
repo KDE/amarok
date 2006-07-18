@@ -19,7 +19,7 @@
 
 /**
     While having two equivalent URLs is usually rare, parts of many URLs (the directories, mostly),
-    are often equivalent. AtomicURL uses AtomicStrings internally for the separate parts to try and
+    are often equivalent. AtomicURL uses AtomicStrings internally for the seperate parts to try and
     reduce memory usage for large numbers of URLs.
 **/
 

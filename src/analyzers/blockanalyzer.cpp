@@ -296,7 +296,7 @@ ensureContrast( const QColor &bg, const QColor &fg, uint _amount = 150 )
           _amount = 0;
     }
 
-    // test that there is available value to honor our contrast requirement
+    // test that there is available value to honour our contrast requirement
     if( 255 - dv < amount )
     {
         // we have to modify the value and saturation of fg

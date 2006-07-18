@@ -18,15 +18,13 @@
 #include "debug.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
-#include "lastfm.h"
-#include "mediabrowser.h"
+#include "lastfmproxy.h"
 #include "playlist.h"
 #include "playlistloader.h"
 #include "pluginmanager.h"
 #include "statusbar.h"
 
 #include <qfile.h>
-#include <qobjectlist.h>
 #include <qtimer.h>
 
 #include <kapplication.h>
@@ -61,9 +59,6 @@ EngineController::EngineController()
         , m_xFadeThisTrack( false )
         , m_timer( new QTimer( this ) )
         , m_playFailureCount( 0 )
-        , m_lastFm( false )
-        , m_positionOffset( 0 )
-        , m_lastPositionOffset( 0 )
 {
     m_voidEngine = m_engine = static_cast<EngineBase*>( loadEngine( "void-engine" ) );
 
@@ -219,7 +214,7 @@ bool EngineController::canDecode( const KURL &url ) //static
 
     if ( PlaylistFile::isPlaylistFile( fileName ) ) return false;
 
-    // Ignore protocols "fetchcover" and "musicbrainz", they're not local but we don't really want them in the playlist :)
+    // Ignore protocols "fetchcover" and "musicbrainz", they're not local but we dont really want them in the playlist :)
     if ( url.protocol() == "fetchcover" || url.protocol() == "musicbrainz" ) return false;
 
     // Accept non-local files, since we can't test them for validity at this point
@@ -300,9 +295,7 @@ void EngineController::endSession()
 {
     //only update song stats, when we're not going to resume it
     if ( !AmarokConfig::resumePlayback() )
-    {
-        trackEnded( trackPosition(), m_bundle.length() * 1000, "quit" );
-    }
+        trackEnded( m_engine->position(), m_bundle.length() * 1000, "quit" );
 
     PluginManager::unload( m_voidEngine );
     m_voidEngine = 0;
@@ -339,27 +332,20 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
 {
     DEBUG_BLOCK
 
-    KURL url = bundle.url();
-    // don't destroy connection if we need to change station
-    if( url.protocol() != "lastfm" && LastFm::Controller::instance()->isPlaying() )
-    {
-        m_engine->stop();
-        LastFm::Controller::instance()->playbackStopped();
-    }
-    m_lastFm = false;
     //Holds the time since we started trying to play non-existent files
     //so we know when to abort
     static QTime failure_time;
     if ( !m_playFailureCount )
         failure_time.start();
 
+    KURL url = bundle.url();
     debug() << "Loading URL: " << url.url() << endl;
     m_lastMetadata.clear();
 
     //TODO bummer why'd I do it this way? it should _not_ be in play!
     //let Amarok know that the previous track is no longer playing
     if ( m_timer->isActive() )
-        trackEnded( trackPosition(), m_bundle.length() * 1000, "change" );
+        trackEnded( m_engine->position(), m_bundle.length() * 1000, "change" );
 
     if ( url.isLocalFile() ) {
         // does the file really exist? the playlist entry might be old
@@ -389,34 +375,8 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
     // streams from last.fm should be handled by our proxy, in order to authenticate with the server
     else if ( url.protocol() == "lastfm" )
     {
-        if( LastFm::Controller::instance()->isPlaying() )
-        {
-            LastFm::Controller::instance()->getService()->changeStation( url.url() );
-            connect( LastFm::Controller::instance()->getService(), SIGNAL( metaDataResult( const MetaBundle& ) ),
-                     this, SLOT( slotStreamMetaData( const MetaBundle& ) ) );
-            return;
-        }
-        else
-        {
-            url = LastFm::Controller::instance()->getNewProxy( url.url() );
-            if( url.isEmpty() ) goto some_kind_of_failure;
-            m_lastFm = true;
-
-            connect( LastFm::Controller::instance()->getService(), SIGNAL( metaDataResult( const MetaBundle& ) ),
-                    this, SLOT( slotStreamMetaData( const MetaBundle& ) ) );
-        }
+        url = LastFm::Controller::instance()->getNewProxy( url.url() );
         debug() << "New URL is " << url.url() << endl;
-    }
-    else if (url.protocol() == "daap" )
-    {
-        KURL newUrl = MediaBrowser::instance()->getProxyUrl( url );
-        if( !newUrl.isEmpty() )
-        {
-            debug() << newUrl << endl;
-            url = newUrl;
-        }
-        else 
-            return;
     }
 
     if( m_engine->load( url, url.protocol() == "http" || url.protocol() == "rtsp" ) )
@@ -507,7 +467,7 @@ void EngineController::stop() //SLOT
     m_playFailureCount = 0;
 
     //let Amarok know that the previous track is no longer playing
-    trackEnded( trackPosition(), m_bundle.length() * 1000, "stop" );
+    trackEnded( m_engine->position(), m_bundle.length() * 1000, "stop" );
 
     //Remove requirement for track to be loaded for stop to be called (fixes gltiches
     //where stop never properly happens if call to m_engine->load fails in play)
@@ -629,11 +589,6 @@ void EngineController::slotStreamMetaData( const MetaBundle &bundle ) //SLOT
     m_lastMetadata << bundle;
 
     m_bundle = bundle;
-    m_lastPositionOffset = m_positionOffset;
-    if( m_lastFm )
-        m_positionOffset = m_engine->position();
-    else
-        m_positionOffset = 0;
     newMetaDataNotify( m_bundle, false /* not a new track */ );
 }
 
@@ -670,7 +625,7 @@ void EngineController::slotEngineMetaData( const Engine::SimpleMetaBundle &simpl
 
 void EngineController::slotMainTimer() //SLOT
 {
-    const uint position = trackPosition();
+    const uint position = m_engine->position();
 
     trackPositionChangedNotify( position );
 
@@ -705,7 +660,6 @@ void EngineController::slotTrackEnded() //SLOT
 
 void EngineController::slotStateChanged( Engine::State newState ) //SLOT
 {
-
     switch( newState )
     {
     case Engine::Empty:
@@ -727,22 +681,6 @@ void EngineController::slotStateChanged( Engine::State newState ) //SLOT
     }
 
     stateChangedNotify( newState );
-}
-
-uint EngineController::trackPosition() const
-{
-    const uint buffertime = 5000; // worked for me with xine engine over 1 mbit dsl
-    if( !m_engine )
-        return 0;
-    uint pos = m_engine->position();
-    if( !m_lastFm )
-        return pos;
-
-    if( m_positionOffset + buffertime <= pos )
-        return pos - m_positionOffset - buffertime;
-    if( m_lastPositionOffset + buffertime <= pos )
-        return pos - m_lastPositionOffset - buffertime;
-    return pos;
 }
 
 

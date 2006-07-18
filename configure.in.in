@@ -70,41 +70,41 @@ fi
 # BEGIN GSTREAMER-0.10 CHECK
 ###############################################################################
 
-#AC_ARG_WITH(gstreamer10,
-#    AC_HELP_STRING([--with-gstreamer10],[build Amarok with GStreamer 0.10-engine]),
-#    [build_gstreamer10=$withval],
-#    [build_gstreamer10=no]
-#)
-#
-#if test "$build_gstreamer10" != "no"; then
-#    if test "$PKGCONFIGFOUND" = "yes" ; then
-#        # check for GStreamer
-#        dnl Now we're ready to ask for gstreamer libs and cflags
-#        dnl And we can also ask for the right version of gstreamer
-#        have_gst10=no
-#
-#        GST10_MAJORMINOR=0.10
-#        GST10_REQ=0.10.0
-#
-#        PKG_CHECK_MODULES(GST10, gstreamer-$GST10_MAJORMINOR >= $GST10_REQ gstreamer-base-$GST10_MAJORMINOR,
-#            have_gst10=yes,have_gst10=no)
-#
-#        dnl Give error if we don't have gstreamer
-#        if test "x$have_gst10" = "xno"; then
-#            LIB_GST10=""
-#            CFLAGS_GST10=""
-#        else
-#            LIB_GST10=$GST10_LIBS
-#            CFLAGS_GST10=$GST10_CFLAGS
-#            AC_SUBST(LIB_GST10)
-#            AC_SUBST(CFLAGS_GST10)
-#            AC_SUBST(GST10_MAJORMINOR)
-#            AC_DEFINE(HAVE_GSTREAMER10, 1, [have GStreamer10])
-#        fi
-#    fi
-#fi
-#
-#AM_CONDITIONAL(with_gst10, [test x$have_gst10 = xyes])
+AC_ARG_WITH(gstreamer10,
+    AC_HELP_STRING([--with-gstreamer10],[build Amarok with GStreamer 0.10-engine]),
+    [build_gstreamer10=$withval],
+    [build_gstreamer10=no]
+)
+
+if test "$build_gstreamer10" != "no"; then
+    if test "$PKGCONFIGFOUND" = "yes" ; then
+        # check for GStreamer
+        dnl Now we're ready to ask for gstreamer libs and cflags
+        dnl And we can also ask for the right version of gstreamer
+        have_gst10=no
+
+        GST10_MAJORMINOR=0.10
+        GST10_REQ=0.10.0
+
+        PKG_CHECK_MODULES(GST10, gstreamer-$GST10_MAJORMINOR >= $GST10_REQ gstreamer-base-$GST10_MAJORMINOR,
+            have_gst10=yes,have_gst10=no)
+
+        dnl Give error if we don't have gstreamer
+        if test "x$have_gst10" = "xno"; then
+            LIB_GST10=""
+            CFLAGS_GST10=""
+        else
+            LIB_GST10=$GST10_LIBS
+            CFLAGS_GST10=$GST10_CFLAGS
+            AC_SUBST(LIB_GST10)
+            AC_SUBST(CFLAGS_GST10)
+            AC_SUBST(GST10_MAJORMINOR)
+            AC_DEFINE(HAVE_GSTREAMER10, 1, [have GStreamer10])
+        fi
+    fi
+fi
+
+AM_CONDITIONAL(with_gst10, [test x$have_gst10 = xyes])
 
 ###############################################################################
 # END GSTREAMER-0.10 CHECK
@@ -133,14 +133,14 @@ if test "$build_xine" != "no"; then
 
         xine_version=`xine-config --version`
         xine_version=VERSION_TO_NUMBER(echo $xine_version)
-        xine_version_min="1.0.2"
+        xine_version_min="1.0.0"
         xine_version_min=VERSION_TO_NUMBER(echo $xine_version_min)
 
         xine_include=`xine-config --cflags | sed -e 's|.*-I/|/|;s/ .*//'`
         xine_rc_version=`sed -ne '/^#define XINE_VERSION/s/.*-rc\([0-9]\+\).*/\1/p' $xine_include/xine.h`
         : ${xine_rc_version:=4} # if this is no rc version, it fulfills the requirements
 
-        AC_MSG_CHECKING([for xine-lib version >= 1.0.2])
+        AC_MSG_CHECKING([for xine-lib version >= 1.0-rc4])
 
         if test $xine_version -eq $xine_version_min \
              -a $xine_rc_version -gt 3 \
@@ -745,6 +745,7 @@ AC_LANG_RESTORE
 
 AC_MSG_RESULT($amarok_glibcsched_works)
 
+
 ###############################################################################
 # END SCHED_SETAFFINITY BUGGY GLIBC CHECK
 ###############################################################################
@@ -770,7 +771,6 @@ AM_CONDITIONAL(with_konqsidebar, [test x$have_konqsidebar = xyes])
 # BEGIN NJB CHECK
 ###############################################################################
 ### mediabrowser.cpp can use libnjb if available
-
 AC_ARG_WITH(libnjb,
     AC_HELP_STRING([--with-libnjb],[build Amarok with Nomad Jukebox support from libnjb]),
     [build_libnjb=$withval],
@@ -791,7 +791,6 @@ if test "$build_libnjb" != "no"; then
 fi
 
 AM_CONDITIONAL(with_libnjb, [test x$have_libnjb = xyes])
-
 ###############################################################################
 # END NJB CHECK
 ###############################################################################
@@ -871,12 +870,6 @@ if test "$build_libgpod" != "no"; then
                   [AC_DEFINE(HAVE_ITDB_MOVIE_FLAG, 1, [have libgpod movie flag])],
                   ,
                   [#include <gpod/itdb.h>])
-
-            AC_CHECK_MEMBER(struct _Itdb_Track.skip_when_shuffling,
-                  [AC_DEFINE(HAVE_ITDB_SKIP_SHUFFLE_FLAG, 1, [have libgpod skip when shuffling flag])],
-                  ,
-                  [#include <gpod/itdb.h>])
-
             CPPFLAGS=$ac_cppflags_save
             CFLAGS=$ac_cflags_save
             LDFLAGS=$ac_ldflags_save
@@ -895,9 +888,7 @@ AM_CONDITIONAL(with_libgpod, [test x$have_libgpod = xyes])
 ###############################################################################
 # BEGIN statvfs(2) CHECK
 ###############################################################################
-
 AC_CHECK_FUNCS(statvfs)
-
 ###############################################################################
 # END statvfs(2) CHECK
 ###############################################################################
@@ -965,42 +956,6 @@ AM_CONDITIONAL(with_mp4v2, [test x$have_mp4v2 != xno ])
 
 ###############################################################################
 # END MP4V2 CHECK
-###############################################################################
-
-
-
-###############################################################################
-# BEGIN DAAP KDE 3.4 CHECK
-###############################################################################
-
-daapsave_CXXFLAGS="$CXXFLAGS"
-CXXFLAGS="$CXXFLAGS $all_includes"
-AC_LANG_SAVE
-AC_LANG_CPLUSPLUS
-
-AC_MSG_CHECKING([if KDE is at least 3.4 for DAAP support])
-AC_COMPILE_IFELSE([
-#include <kdeversion.h>
-#if ! ( KDE_IS_VERSION( 3, 4, 0 ) )
-#error KDE 3.4
-#endif
-],
-    have_kde34="yes"
-    DNSSD_LIBS=$LIB_KDNSSD
-#    echo "yes"
-,
-    have_kde34="no"
-    DNSSD_LIBS=""
-#    echo "no"
-)
-CXXFLAGS="$daapsave_CXXFLAGS"
-AC_LANG_RESTORE
-AC_SUBST(DNSSD_LIBS)
-AM_CONDITIONAL(atleast_kde34, [test x$have_kde34 != xno ])
-AC_MSG_RESULT($have_kde34)
-
-###############################################################################
-# END DAAP KDE 3.4 CHECK
 ###############################################################################
 
 

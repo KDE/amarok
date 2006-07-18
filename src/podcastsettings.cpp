@@ -63,7 +63,7 @@ PodcastSettings::PodcastSettings( const QString &title, const QString &save, con
 }
 
 PodcastSettingsDialog::PodcastSettingsDialog( PodcastSettings *settings, QWidget* parent )
-                            : KDialogBase(  parent, 0, true, i18n("change options", "Configure %1").arg( settings->m_title )
+                            : KDialogBase(  parent, 0, true, i18n("Configure %1").arg( settings->m_title )
                             , KDialogBase::User1|KDialogBase::Ok|KDialogBase::Cancel
                             , KDialogBase::Ok, true
                             , KGuiItem(i18n("Reset"), "reset" ) )
@@ -74,7 +74,7 @@ PodcastSettingsDialog::PodcastSettingsDialog( PodcastSettings *settings, QWidget
 }
 
 PodcastSettingsDialog::PodcastSettingsDialog( const QPtrList<PodcastSettings> &list, const QString &caption, QWidget* parent )
-    : KDialogBase(  parent, 0, true, i18n("change options", "Configure %1").arg( caption )
+    : KDialogBase(  parent, 0, true, i18n("Configure %1").arg( caption )
             , KDialogBase::User1|KDialogBase::Ok|KDialogBase::Cancel
                     , KDialogBase::Ok, true
                     , KGuiItem(i18n("Reset"), "reset" ) )

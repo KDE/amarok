@@ -37,7 +37,7 @@ int main( int argc, char *argv[] )
     aboutData.addAuthor( "Gábor '" I18N_NOOP("Opera owns your mom") "' Lehel",
             I18N_NOOP( "Developer (illissius)" ), "illissius@gmail.com" );
     aboutData.addAuthor( "Ian '" I18N_NOOP("The Beard") "' Monroe",
-            I18N_NOOP( "Developer (eean)" ), "ian@monroe.nu", "http://www.monroe.nu/" );
+            I18N_NOOP( "Developer (eean)" ), "ian@monroe.nu" );
     aboutData.addAuthor( "Jeff '"I18N_NOOP("IROCKSOHARD") "' Mitchell",
             I18N_NOOP( "Developer (jefferai)" ), "kde-dev@emailgoeshere.com" );
     aboutData.addAuthor( "Mark '"I18N_NOOP("It's good, but it's not irssi") "' Kretschmann",

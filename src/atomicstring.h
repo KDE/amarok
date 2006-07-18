@@ -34,7 +34,7 @@
 #define AMAROK_ATOMICSTRING_H
 
 #include "config.h"
-#if __GNUC__ >= 3
+#ifdef __GNUC__
     #include <ext/hash_set>
 #else
     #include <set>
@@ -136,16 +136,12 @@ public:
     uint refcount() const;
 
 private:
-    #if __GNUC__ >= 3
+    #ifdef __GNUC__
         struct SuperFastHash;
         struct equal;
         typedef __gnu_cxx::hash_set<QString*, SuperFastHash, equal> set_type;
     #else
-        struct less
-        {
-             bool operator()( const QString *a, const QString *b ) const
-             { return *a < *b; }
-        };
+        struct less;
         typedef std::set<QString*, less> set_type;
     #endif
 

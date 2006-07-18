@@ -841,13 +841,11 @@ static int lookupName(
 
     if( pSrcList ){
       for(i=0, pItem=pSrcList->a; i<pSrcList->nSrc; i++, pItem++){
-        Table *pTab;
-        int iDb;
+        Table *pTab = pItem->pTab;
+        int iDb = sqlite3SchemaToIndex(db, pTab->pSchema);
         Column *pCol;
   
-        pTab = pItem->pTab;
-        assert( pTab!=0 );
-        iDb = sqlite3SchemaToIndex(db, pTab->pSchema);
+        if( pTab==0 ) continue;
         assert( pTab->nCol>0 );
         if( zTab ){
           if( pItem->zAlias ){
@@ -1367,7 +1365,7 @@ void sqlite3CodeSubselect(Parse *pParse, Expr *pExpr){
         struct ExprList_item *pItem;
 
         if( !affinity ){
-          affinity = SQLITE_AFF_NONE;
+          affinity = SQLITE_AFF_NUMERIC;
         }
         keyInfo.aColl[0] = pExpr->pLeft->pColl;
 
@@ -1381,7 +1379,11 @@ void sqlite3CodeSubselect(Parse *pParse, Expr *pExpr){
           ** expression we need to rerun this code each time.
           */
           if( testAddr>0 && !sqlite3ExprIsConstant(pE2) ){
-            sqlite3VdbeChangeToNoop(v, testAddr-1, 3);
+            VdbeOp *aOp = sqlite3VdbeGetOp(v, testAddr-1);
+            int j;
+            for(j=0; j<3; j++){
+              aOp[j].opcode = OP_Noop;
+            }
             testAddr = 0;
           }
 
@@ -1690,9 +1692,7 @@ void sqlite3ExprCode(Parse *pParse, Expr *pExpr){
 #ifndef SQLITE_OMIT_SUBQUERY
     case TK_EXISTS:
     case TK_SELECT: {
-      if( pExpr->iColumn==0 ){
-        sqlite3CodeSubselect(pParse, pExpr);
-      }
+      sqlite3CodeSubselect(pParse, pExpr);
       sqlite3VdbeAddOp(v, OP_MemLoad, pExpr->iColumn, 0);
       VdbeComment((v, "# load subquery result"));
       break;

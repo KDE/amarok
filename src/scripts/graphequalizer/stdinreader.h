@@ -26,7 +26,7 @@ Q_OBJECT
     public slots:
     void dataRecieved()
     {
-        //separate stdin pointer necesary for OS X for reasons unknown
+        //seperate stdin pointer necesary for OS X for reasons unknown
         FILE * stdin_ptr = stdin;
         QString signal;
         QTextIStream( stdin_ptr ) >> signal;

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# This is a convenience script for bumping Amarok's plugin framework version
+# This is a convenience script for bumping amaroK's plugin framework version
 # in the various engine desktop files and in pluginmanager.h.
 #
 # The script should be run once before each release, in order to ensure that
@@ -16,12 +16,11 @@ def bump_desktop_files( folder )
         next if x[0, 1] == "."
         if FileTest.directory?( "#{folder}/#{x}" )
             print x + "\n"
-            files = Dir["#{folder}/#{x}/*.desktop"].delete_if { |a| a.include?( "install.desktop" ) }
-            file = File.new( files.join(), File::RDWR )
+            file = File.new( Dir["#{folder}/#{x}/*.desktop"].join(), File::RDWR )
             str = file.read()
             file.rewind()
             file.truncate( 0 )
-            str.sub!( /X-KDE-Amarok-framework-version=[0-9]*/, "X-KDE-Amarok-framework-version=#{@version}" )
+            str.sub!( /X-KDE-amaroK-framework-version=[0-9]*/, "X-KDE-amaroK-framework-version=#{@version}" )
             file << str
             file.close()
         end

@@ -112,8 +112,11 @@ DeviceConfigureDialog::DeviceConfigureDialog( const Medium &medium )
 
 DeviceConfigureDialog::~DeviceConfigureDialog()
 {
+     DEBUG_BLOCK
+     debug() << "Starting deleting..." << endl;
      delete m_connectEdit;
      delete m_disconnectEdit;
+     debug() << "Deleted private variables..." << endl;
      delete m_medium;
 }
 

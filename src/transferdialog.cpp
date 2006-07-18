@@ -73,10 +73,10 @@ TransferDialog::TransferDialog( MediaDevice *mdev )
     KComboBox * comboTemp;
     for( comboTemp = m_combolist->first(); comboTemp; comboTemp = m_combolist->next() )
     {
-        comboTemp->insertItem( i18n("None") );
-        comboTemp->insertItem( i18n("Artist") );
-        comboTemp->insertItem( i18n("Album") );
-        comboTemp->insertItem( i18n("Genre") );
+        comboTemp->insertItem( "None" );
+        comboTemp->insertItem( "Artist" );
+        comboTemp->insertItem( "Album" );
+        comboTemp->insertItem( "Genre" );
         comboTemp->setCurrentItem( 0 );
     }
 

@@ -71,7 +71,7 @@ class NmmConfigDialog : public amaroK::PluginConfig
 
     /**
      * Updates status column for m_user_list and m_environment_list
-     * to reflect that an error occurred for a host.
+     * to reflect that an error occured for a host.
      * \param hostname host the error is related to
      * \param error error identification, see NMMEngineException::Error
      */

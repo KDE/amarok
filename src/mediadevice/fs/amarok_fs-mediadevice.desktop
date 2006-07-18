@@ -1,14 +1,11 @@
 [Desktop Entry]
 Type=Service
 Name=File System Media Device
-Name[ar]=جهاز اخراج وسائط ملفات النظام
 Name[bg]=Устройство за файлова система
 Name[ca]=Dispositiu de mitjans de sistema de fitxers
-Name[cs]=Souborové mediální zařízení
 Name[da]=Filsystem-medieenhed
 Name[de]=Dateisystem-Media-Player
 Name[el]=Συσκευή πολυμέσων συστήματος αρχείων
-Name[et]=Failisüsteemi meediaseade
 Name[fi]=Tiedostojärjestelmämedialaite
 Name[fr]=Système de fichiers du périphérique de média
 Name[ga]=Gléas Meán Chóras Comhad
@@ -38,4 +35,4 @@ X-KDE-Amarok-authors=Amarok Team & Others
 X-KDE-Amarok-email=amarok-devel@lists.sourceforge.net
 X-KDE-Amarok-rank=100
 X-KDE-Amarok-version=1
-X-KDE-Amarok-framework-version=25
+X-KDE-Amarok-framework-version=24

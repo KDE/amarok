@@ -187,7 +187,7 @@ HSPErrorSink::ConvertErrorToString(const ULONG32 ulHXCode, char* pszBuffer, UINT
  
     if( strlen(pszBuffer)==0 )
     {
-        SafeSprintf( pszBuffer, (int) ulBufLen, "Can't convert error code %lu - please find corresponding HXR code in common/include/hxresult.h", (unsigned long)ulHXCode );
+        SafeSprintf( pszBuffer, (int) ulBufLen, "Can't convert error code %p - please find corresponding HXR code in common/include/hxresult.h", ulHXCode );
     }
 
 }
