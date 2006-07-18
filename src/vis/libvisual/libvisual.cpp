@@ -301,12 +301,11 @@ namespace LibVisual
     static int
     upload_callback( VisInput*, VisAudio *audio, void* )
     {
-        for( uint i = 0; i < 1024; i+=2 )
-        {
-            // amarok provides us with dual channel interleaved PCM
-            audio->plugpcm[0][i] = pcm_data[i];
-            audio->plugpcm[1][i] = pcm_data[i+1];
-        }
+        VisBuffer buf;
+
+        visual_buffer_init( &buf, pcm_data, 1024, 0 );
+        visual_audio_samplepool_input( audio->samplepool, &buf, VISUAL_AUDIO_SAMPLE_RATE_44100,
+            VISUAL_AUDIO_SAMPLE_FORMAT_S16, VISUAL_AUDIO_SAMPLE_CHANNEL_STEREO );
 
         return 0;
     }

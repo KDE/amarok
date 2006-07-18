@@ -27,6 +27,7 @@ VERSION 1.4.2:
       own UFID frame.
 
   BUGFIXES:
+    * Support for libvisual 0.4.0 was fixed. Patch by Dennis Smit.
     * Adding songs already on a media device to playlists would not work.
     * Fix adding smart playlists to media devices. (BR 130540)
     * Reverse check for mount point and device node when connecting to iPods
