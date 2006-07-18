@@ -128,7 +128,7 @@ SmbDeviceHandlerFactory::createHandler( const Medium * m ) const
     QString share = m->deviceNode().section( "/", 3, 3 );
     QStringList ids = CollectionDB::instance()->query( QString( "SELECT id, label, lastmountpoint "
                                                                 "FROM devices WHERE type = 'smb' "
-                                                                "AND server = '%1' AND share = '%2';" )
+                                                                "AND servername = '%1' AND sharename = '%2';" )
                                                                 .arg( server )
                                                                 .arg( share ) );
     if ( ids.size() == 3 )
@@ -141,7 +141,7 @@ SmbDeviceHandlerFactory::createHandler( const Medium * m ) const
     else
     {
         int id = CollectionDB::instance()->insert( QString( "INSERT INTO devices"
-                                                            "( type, server, share, lastmountpoint ) "
+                                                            "( type, servername, sharename, lastmountpoint ) "
                                                             "VALUES ( 'smb', '%1', '%2', '%3' );" )
                                                             .arg( server )
                                                             .arg( share )
