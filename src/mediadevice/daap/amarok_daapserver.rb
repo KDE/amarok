@@ -82,7 +82,7 @@ end
 
 class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
  #TODO:
-ARGSMETA = { "dmap.itemid"=> "dmap.itemname", "daap.songformat", "daap.songartist", "daap.songalbum" "daap.songtime", "daap.songtracknumber", "daap.songcomment" }
+ARGSMETA = 
 
     def intialize
         artists = Array.new
@@ -100,7 +100,7 @@ ARGSMETA = { "dmap.itemid"=> "dmap.itemname", "daap.songformat", "daap.songartis
             }
         }
         columns =     [ "album, ", "artist, ", "genre, ", "url, ", "track, ", "title, ", "year, ", "length, ", "samplerate, ", "composer, ", "deviceid" ]
-        column_keys = [ :album,    :artist,    :genre,    :url,    :track,    :title,    :year,    :length,    :samplerate,    :composer,    :deviceid ]
+        column_keys = [ :songalbum, :songartist, :songgenre, :url, :songtracknumber, :itemname, :songyear, :songtime, :songsamplerate,    :songcomposer, :deviceid ]
         dbitems = collection.query( 'SELECT #{columns.to_s} FROM tags' )
         @items = Array.new
         0.step( dbitems.size, columns.size ) { |overallIt|
@@ -142,7 +142,7 @@ ARGSMETA = { "dmap.itemid"=> "dmap.itemname", "daap.songformat", "daap.songartis
                     mlcl << mlit
                       mlit << Element.new( 'miid', 1 )
                       mlit << Element.new( 'mper', 0 )
-                      mlit << Element.new( 'minm', "Amarok Music Share" ) #TODO i18n? not sure if user-visible
+                      mlit << Element.new( 'minm', ENV['USER'] + " Amarok" )
                       mlit << Element.new( 'mctc', 1 )
                       mlit << Element.new( 'mimc' @items.size )
                  resp.body = avdb.to_s
@@ -162,6 +162,7 @@ ARGSMETA = { "dmap.itemid"=> "dmap.itemname", "daap.songformat", "daap.songartis
             #             "asar"=>["Yoko Kanno"],
             #             "ascm"=>[""]},
             #             ...
+                requested = req.query['meta'].split(',')
                 adbs = Element.new( 'adbs' )
                   avdb << Element.new( 'muty', 0 )
                   avdb << Element.new( 'mstt', WEBrick::HTTPStatus::OK.code )
@@ -172,7 +173,7 @@ ARGSMETA = { "dmap.itemid"=> "dmap.itemname", "daap.songformat", "daap.songartis
                   root = Element.new( 'mlit' ) 
                   #TODO
             else
-                puts "unimplemented request #{req.path}
+                puts "unimplemented request #{req.path}"
         end
     end
 end
