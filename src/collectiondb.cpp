@@ -6718,7 +6718,7 @@ QueryBuilder::dragFieldCount = 17;
 QString
 QueryBuilder::dragSQLFields()
 {
-    return "tags.url, tags.deviceid album.name, artist.name, genre.name, tags.title, year.name, "
+    return "tags.url, tags.deviceid, album.name, artist.name, genre.name, tags.title, year.name, "
            "tags.comment, tags.track, tags.bitrate, tags.discnumber, "
            "tags.length, tags.samplerate, tags.filesize, "
            "tags.sampler, tags.filetype, tags.composer";
