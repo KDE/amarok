@@ -24,7 +24,7 @@
 #include "collectionbrowser.h"
 #include "contextbrowser.h"
 #include "debug.h"
-#include "devicemanager.h"
+#include "mediadevicemanager.h"
 #include "enginecontroller.h" //for actions in ctor
 #include "filebrowser.h"
 #include "k3bexporter.h"
@@ -429,7 +429,7 @@ void PlaylistWindow::init()
         //DEBUG: Comment out the addBrowserMacro line and uncomment the m_browsers line (passing in a vfat device name) to see the "virtual root" functionality
 
         addBrowserMacro( FileBrowser, "FileBrowser", i18n( "Files" ), amaroK::icon( "files" ) )
-        //m_browsers->addBrowser( new FileBrowser( "FileBrowser", DeviceManager::instance()->getDevice( "hda5" ) ), i18n( "Files" ), "folder" );
+        //m_browsers->addBrowser( new FileBrowser( "FileBrowser", MediaDeviceManager::instance()->getDevice( "hda5" ) ), i18n( "Files" ), "folder" );
 
         new MediaBrowser( "MediaBrowser" );
         if( MediaBrowser::isAvailable() )

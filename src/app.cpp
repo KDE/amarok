@@ -25,13 +25,14 @@ email                : markey@web.de
 #include "collectionbrowser.h"
 #include "dbsetup.h"             //firstRunWizard()
 #include "debug.h"
-#include "devicemanager.h"
+#include "mediadevicemanager.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
 #include "equalizersetup.h"
 #include "firstrunwizard.h"
 #include "mediabrowser.h"
 #include "metabundle.h"
+#include "mountpointmanager.h"
 #include "osd.h"
 #include "playerwindow.h"
 #include "playlist.h"
@@ -113,8 +114,12 @@ App::App()
     new amaroK::DcopScriptHandler();
     new amaroK::DcopDevicesHandler();
 
+    //start database check...needs to be done early because the database update code
+    //is not called automatically from the CollectionDB ctor anymore
+    CollectionDB::instance()->checkDatabase();
+
     // Remember old folder setup, so we can detect changes after the wizard was used
-    const QStringList oldCollectionFolders = AmarokConfig::collectionFolders();
+    const QStringList oldCollectionFolders = MountPointManager::instance()->collectionFolders();
 
     if ( amaroK::config()->readBoolEntry( "First Run", true ) || args->isSet( "wizard" ) ) {
         std::cout << "STARTUP\n" << std::flush; //hide the splashscreen
@@ -125,7 +130,7 @@ App::App()
 
     fixHyperThreading();
 
-    m_pDeviceManager = DeviceManager::instance();
+    m_pMediaDeviceManager = MediaDeviceManager::instance();
 
     m_pGlobalAccel    = new KGlobalAccel( this );
     m_pPlaylistWindow = new PlaylistWindow();
@@ -192,7 +197,7 @@ App::App()
         amaroK::config()->sync();
     }
     // Trigger collection scan if folder setup was changed by wizard
-    else if ( oldCollectionFolders != AmarokConfig::collectionFolders() )
+    else if ( oldCollectionFolders != MountPointManager::instance()->collectionFolders() )
     {
         QTimer::singleShot( 0, CollectionDB::instance(), SLOT( startScan() ) );
     }
@@ -1052,12 +1057,12 @@ void App::firstRunWizard()
 
     if( wizard.exec() != QDialog::Rejected )
     {
-        const QStringList oldCollectionFolders = AmarokConfig::collectionFolders();
+        const QStringList oldCollectionFolders = MountPointManager::instance()->collectionFolders();
         wizard.writeCollectionConfig();
 
         // If wizard is invoked at runtime, rescan collection if folder setup has changed
         if ( !amaroK::config()->readBoolEntry( "First Run", true ) &&
-             oldCollectionFolders != AmarokConfig::collectionFolders() )
+             oldCollectionFolders != MountPointManager::instance()->collectionFolders() )
             CollectionDB::instance()->startScan();
 
         AmarokConfig::setDatabaseEngine(

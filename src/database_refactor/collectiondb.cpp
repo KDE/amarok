@@ -1698,7 +1698,7 @@ CollectionDB::scanMonitor()  //SLOT
 void
 CollectionDB::startScan()  //SLOT
 {
-    QStringList folders = AmarokConfig::collectionFolders();
+    QStringList folders = MountPointManager::instance()->collectionFolders();
 
     if ( folders.isEmpty() ) {
         dropTables();

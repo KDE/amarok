@@ -6,6 +6,7 @@
 //
 //
 // Author: Jeff Mitchell <kde-dev@emailgoeshere.com>, (C) 2006
+//         Maximilian Kossick <maximilian.kossick@googlemail.com>, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
 //
@@ -23,6 +24,9 @@
 
 typedef QMap<QString, Medium*> MediumMap;
 
+
+//this class provides support for MountPointManager and MediaDeviceManager
+//the latter is responsible for handling mediadevices (e.g. ipod)
 class DeviceManager : public QObject
 {
 
@@ -43,30 +47,26 @@ class DeviceManager : public QObject
         MediumMap getMediumMap() { return m_mediumMap; }
         Medium* getDevice( QString name );
 
-        void addManualDevice( Medium* added );
-        void removeManualDevice( Medium* removed );
-
         bool isValid() { return m_valid; }
+
+        //only use getDeviceList to initialise clients
+        Medium::List getDeviceList();
 
         //public so can be called from DCOP...but don't use this, see the
         //warning about getDeviceList()
-        QStringList getDeviceStringList( bool auto_only = false );
+        QStringList getDeviceStringList();
 
     signals:
         void mediumAdded( const Medium*, QString );
         void mediumChanged( const Medium*, QString );
         void mediumRemoved( const Medium*, QString );
 
-    public slots:
-        void reinitDevices();
-
-    private:
-        //don't make getDeviceList public.  Use getMediumMap()...it pre-filters and keeps things in sync
-        Medium::List getDeviceList( bool auto_only = false );
+    private: 
 
         DCOPClient *m_dc;
         bool m_valid;
         MediumMap m_mediumMap;
+
 };
 
 #endif

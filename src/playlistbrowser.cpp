@@ -170,13 +170,13 @@ PlaylistBrowser::polish()
     m_polished = true;
 
     m_playlistCategory = loadPlaylists();
-
+    debug() << "after playlists" << endl;
     if( !CollectionDB::instance()->isEmpty() )
     {
         m_smartCategory = loadSmartPlaylists();
+        debug() << "after smartplaylists" << endl;
         loadDefaultSmartPlaylists();
     }
-
 #define config amaroK::config( "PlaylistBrowser" )
 
     m_dynamicCategory = loadDynamics();
@@ -673,15 +673,14 @@ void PlaylistBrowser::updateSmartPlaylistElement( QDomElement& query )
 
 void PlaylistBrowser::loadDefaultSmartPlaylists()
 {
+    DEBUG_BLOCK
     const QStringList genres  = CollectionDB::instance()->query( "SELECT DISTINCT name FROM genre;" );
     const QStringList artists = CollectionDB::instance()->artistList();
     SmartPlaylist *item;
     QueryBuilder qb;
     QListViewItem *last = 0;
-
     m_smartDefaults = new PlaylistCategory( m_smartCategory, 0, i18n("Collection") );
     m_smartDefaults->setOpen( m_smartDefaultsOpen );
-
     /********** All Collection **************/
     qb.initSQLDrag();
     qb.sortBy( QueryBuilder::tabArtist, QueryBuilder::valName );
@@ -690,12 +689,10 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
 
     item = new SmartPlaylist( m_smartDefaults, 0, i18n( "All Collection" ), qb.query() );
     item->setPixmap( 0, SmallIcon( amaroK::icon( "collection" ) ) );
-
     /********** Favorite Tracks **************/
     qb.initSQLDrag();
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
     qb.setLimit( 0, 15 );
-
     item = new SmartPlaylist( m_smartDefaults, item, i18n( "Favorite Tracks" ), qb.query() );
     last = 0;
     foreach( artists ) {
@@ -2619,14 +2616,14 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 /* fall through */
             case MEDIA_DEVICE:
                 {
-                    int i=0;
                     KURL::List urls;
-                    QStringList values = CollectionDB::instance()->query( static_cast<SmartPlaylist *>(item)->query() );
-                    for( QStringList::iterator it = values.begin();
-                         it != values.end();
-                         it += QueryBuilder::dragFieldCount )
-                    {
-                        urls << KURL::fromPathOrURL( *it );
+                    const QStringList values = CollectionDB::instance()->query( static_cast<SmartPlaylist *>(item)->query() );
+                    int i=0;
+                    for( for_iterators( QStringList, values ); it != end; ++it ) {
+                        if(i%QueryBuilder::dragFieldCount == QueryBuilder::dragFieldCount-2)
+                        {
+                            urls << KURL::fromPathOrURL( *it );
+                        }
                         i++;
                     }
                     MediaBrowser::queue()->addURLs( urls, playlist );

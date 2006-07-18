@@ -24,6 +24,7 @@
 #include "expression.h"
 #include "mediabrowser.h"
 #include "metabundle.h"           //updateTags()
+#include "mountpointmanager.h"    //buildQuery()
 #include "organizecollectiondialog.h"
 #include "playlist.h"
 #include "playlistloader.h"
@@ -55,6 +56,7 @@
 #include <klineedit.h>            //setupCoverFetcher()
 #include <klocale.h>
 #include <kmdcodec.h>
+#include <kmessagebox.h>
 #include <ksimpleconfig.h>
 #include <kstandarddirs.h>
 #include <kio/job.h>
@@ -136,11 +138,21 @@ INotify::doJob()
 #ifdef HAVE_INOTIFY
     DEBUG_BLOCK
 
-    const QStringList values = m_parent->query( "SELECT dir FROM directories;" );
+    IdList list = MountPointManager::instance()->getMountedDeviceIds();
+    QString deviceIds;
+    foreachType( IdList, list )
+    {
+        if ( !deviceIds.isEmpty() ) deviceIds += ",";
+        deviceIds += QString::number(*it);
+    }
+    const QStringList values = m_parent->query( QString( "SELECT dir, deviceid FROM directories WHERE deviceid IN (%1);" )
+                                                    .arg( deviceIds ) );
     foreach( values )
     {
-        const QString dir = *it;
-        watchDir( dir );
+        QString rpath = *it;
+        int deviceid = (*(++it)).toInt();
+        QString abspath = MountPointManager::instance()->getAbsolutePath( deviceid, rpath );
+        watchDir( abspath );
     }
 
     /* size of the event structure, not counting name */
@@ -222,6 +234,10 @@ CollectionDB::CollectionDB()
 #endif
         m_dbConnType = DbConnection::sqlite;
 
+    //perform all necessary operations to allow MountPointManager to access the devices table here
+    //there is a recursive dependency between CollectionDB and MountPointManager and this is the workaround
+    //checkDatabase has to be able to access MountPointManager
+
     //<OPEN DATABASE>
     initialize();
     //</OPEN DATABASE>
@@ -232,18 +248,6 @@ CollectionDB::CollectionDB()
     foreach( entryList )
         cacheCoverDir().remove( *it );
 
-    // TODO Should write to config in dtor, but it crashes...
-    amaroK::config( "Collection Browser" )->writeEntry( "Database Version", DATABASE_VERSION );
-    amaroK::config( "Collection Browser" )->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
-    amaroK::config( "Collection Browser" )->writeEntry( "Database Persistent Tables Version", DATABASE_PERSISTENT_TABLES_VERSION );
-    amaroK::config( "Collection Browser" )->writeEntry( "Database Podcast Tables Version", DATABASE_PODCAST_TABLES_VERSION );
-    amaroK::config( "Collection Browser" )->writeEntry( "Database ATF Version", DATABASE_ATF_VERSION );
-
-    setAdminValue( "Database Version", QString::number( DATABASE_VERSION ) );
-    setAdminValue( "Database Stats Version", QString::number( DATABASE_STATS_VERSION ) );
-    setAdminValue( "Database Persistent Tables Version", QString::number( DATABASE_PERSISTENT_TABLES_VERSION ) );
-    setAdminValue( "Database Podcast Tables Version", QString::number( DATABASE_PODCAST_TABLES_VERSION ) );
-    setAdminValue( "Database ATF Version", QString::number( DATABASE_ATF_VERSION ) );
 
     if( AmarokConfig::advancedTagFeatures() )
     {
@@ -255,23 +259,6 @@ CollectionDB::CollectionDB()
 
     connect( qApp, SIGNAL( aboutToQuit() ), this, SLOT( disableAutoScoring() ) );
 
-#ifdef HAVE_INOTIFY
-    // Try to initialize inotify, if not available use the old timer approach.
-    int inotify_fd = inotify_init();
-    if ( inotify_fd < 0 )
-#endif
-    {
-        debug() << "INotify not available, using QTimer!" << endl;
-        startTimer( MONITOR_INTERVAL * 1000 );
-    }
-#ifdef HAVE_INOTIFY
-    else
-    {
-        debug() << "INotify enabled!" << endl;
-        ThreadWeaver::instance()->onlyOneJob( new INotify( this, inotify_fd ) );
-    }
-#endif
-
     connect( this, SIGNAL( coverRemoved( const QString&, const QString& ) ),
                    SIGNAL( coverChanged( const QString&, const QString& ) ) );
     connect( Scrobbler::instance(), SIGNAL( similarArtistsFetched( const QString&, const QStringList& ) ),
@@ -279,7 +266,8 @@ CollectionDB::CollectionDB()
 
     // If we're supposed to monitor dirs for changes, make sure we run it once
     // on startup, since inotify can't inform us about old events
-//     QTimer::singleShot( 0, this, SLOT( scanMonitor() ) );
+//     QTimer::singleShot( 0, this, SLOT( scanMonitor() ) )
+    initDirOperations();
 }
 
 
@@ -343,6 +331,35 @@ CollectionDB::likeCondition( const QString &right, bool anyBegin, bool anyEnd )
 // PUBLIC
 //////////////////////////////////////////////////////////////////////////////////////////
 
+void
+CollectionDB::initDirOperations()
+{
+    //this code was originally part of the ctor. It has to call MountPointManager to
+    //generate absolute paths from deviceids and relative paths. MountPointManager's ctor
+    //absolutely has to access the database, which resulted in a recursive ctor call. To
+    //solve this problem, the directory access code was moved into its own method, which can
+    //only be called when the CollectionDB object already exists.
+
+    //FIXME max: make sure we check additional directories if we connect a new device
+#ifdef HAVE_INOTIFY
+    // Try to initialize inotify, if not available use the old timer approach.
+    int inotify_fd = inotify_init();
+    if ( inotify_fd < 0 )
+#endif
+    {
+        debug() << "INotify not available, using QTimer!" << endl;
+        startTimer( MONITOR_INTERVAL * 1000 );
+    }
+#ifdef HAVE_INOTIFY
+    else
+    {
+        debug() << "INotify enabled!" << endl;
+        ThreadWeaver::instance()->onlyOneJob( new INotify( this, inotify_fd ) );
+    }
+#endif
+
+}
+
 
 /**
  * Executes a SQL query on the already opened database
@@ -365,7 +382,6 @@ CollectionDB::query( const QString& statement )
     dbConn = getMyConnection();
 
     QStringList values = dbConn->query( statement );
-
     if ( DEBUG )
     {
         clock_t finish = clock();
@@ -405,6 +421,40 @@ CollectionDB::insert( const QString& statement, const QString& table )
     return id;
 }
 
+QString
+CollectionDB::deviceidSelection( const bool showAll )
+{
+    if ( !showAll )
+    {
+        IdList list = MountPointManager::instance()->getMountedDeviceIds();
+        QString deviceIds = "";
+        foreachType( IdList, list )
+        {
+            if ( it != list.begin() ) deviceIds += ",";
+            deviceIds += QString::number(*it);
+        }
+        return " AND tags.deviceid IN (" + deviceIds + ")";
+    }
+    else return "";
+}
+
+QStringList
+CollectionDB::URLsFromQuery( const QStringList result ) const
+{
+   QStringList values = QStringList();
+    foreach( result )
+    {
+        int id = (*it).toInt();
+        if ( MountPointManager::instance()->isMounted( id ) )
+        {
+            //KURL relativePath = KURL::fromPathOrURL( *(++it) );
+            values.append( ( MountPointManager::instance()->getAbsolutePath( id, *(++it) ) ) );
+        }
+        else ++it;
+    }
+    return values;
+}
+
 bool
 CollectionDB::isEmpty( )
 {
@@ -423,14 +473,16 @@ CollectionDB::isValid( )
     QStringList values2;
     QStringList values3;
     QStringList values4;
+    QStringList values5;
 
     values1 = query( "SELECT COUNT( url ) FROM tags LIMIT 1 OFFSET 0;" );
     values2 = query( "SELECT COUNT( url ) FROM statistics LIMIT 1 OFFSET 0;" );
     values3 = query( "SELECT COUNT( url ) FROM podcastchannels LIMIT 1 OFFSET 0;" );
     values4 = query( "SELECT COUNT( url ) FROM podcastepisodes LIMIT 1 OFFSET 0;" );
+    values5 = query( "SELECT COUNT( id ) FROM devices LIMIT 1 OFFSET 0;" );
 
     //It's valid as long as we've got _some_ tables that have something in.
-    return !( values1.isEmpty() && values2.isEmpty() && values3.isEmpty() && values4.isEmpty() );
+    return !( values1.isEmpty() && values2.isEmpty() && values3.isEmpty() && values4.isEmpty() && values5.isEmpty() );
 }
 
 
@@ -468,8 +520,8 @@ CollectionDB::createTables( const bool temporary )
 
     //create tag table
     query( QString( "CREATE %1 TABLE tags%2 ("
-                    "url " + textColumnType() + ","
-                    "dir " + textColumnType() + ","
+                    "url " + exactTextColumnType() + ","
+                    "dir " + exactTextColumnType() + ","
                     "createdate INTEGER,"
                     "modifydate INTEGER,"
                     "album INTEGER,"
@@ -486,7 +538,8 @@ CollectionDB::createTables( const bool temporary )
                     "samplerate INTEGER,"
                     "filesize INTEGER,"
                     "filetype INTEGER,"
-                    "sampler BOOL );" )
+                    "sampler BOOL,"
+                    "deviceid INTEGER);" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
@@ -516,6 +569,7 @@ CollectionDB::createTables( const bool temporary )
         genreAutoIncrement = "AUTO_INCREMENT";
         yearAutoIncrement = "AUTO_INCREMENT";
     }
+
     //create album table
     query( QString( "CREATE %1 TABLE album%2 ("
                     "id INTEGER PRIMARY KEY %3,"
@@ -550,7 +604,8 @@ CollectionDB::createTables( const bool temporary )
 
     //create images table
     query( QString( "CREATE %1 TABLE images%2 ("
-                    "path " + textColumnType() + ","
+                    "path " + exactTextColumnType() + ","
+                    "deviceid INTEGER,"
                     "artist " + textColumnType() + ","
                     "album " + textColumnType() + ");" )
                     .arg( temporary ? "TEMPORARY" : "" )
@@ -558,24 +613,27 @@ CollectionDB::createTables( const bool temporary )
 
     //create embed table
     query( QString( "CREATE %1 TABLE embed%2 ("
-                    "url " + textColumnType() + ","
-                    "hash " + textColumnType() + ","
+                    "url " + exactTextColumnType() + ","
+                    "deviceid INTEGER,"
+                    "hash " + exactTextColumnType() + ","
                     "description " + textColumnType() + ");" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
     // create directory statistics table
     query( QString( "CREATE %1 TABLE directories%2 ("
-                    "dir " + textColumnType() + " UNIQUE,"
-                    "changedate INTEGER );" )
+                    "dir " + exactTextColumnType() + ","
+                    "deviceid INTEGER,"
+                    "changedate INTEGER);" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
     //create uniqueid table
     query( QString( "CREATE %1 TABLE uniqueid%2 ("
-                    "url " + textColumnType() + ","
-                    "uniqueid " + textColumnType(8) + " UNIQUE,"
-                    "dir " + textColumnType() + ");" )
+                    "url " + exactTextColumnType() + ","
+                    "deviceid INTEGER,"
+                    "uniqueid " + exactTextColumnType(8) + " UNIQUE,"
+                    "dir " + exactTextColumnType() + ");" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
 
@@ -610,7 +668,7 @@ CollectionDB::createTables( const bool temporary )
 void
 CollectionDB::createIndices()
 {
-    query( "CREATE INDEX url_tag ON tags( url );" );
+    query( "CREATE UNIQUE INDEX url_tag ON tags( url, deviceid );" );
     query( "CREATE INDEX album_tag ON tags( album );" );
     query( "CREATE INDEX artist_tag ON tags( artist );" );
     query( "CREATE INDEX genre_tag ON tags( genre );" );
@@ -620,12 +678,16 @@ CollectionDB::createIndices()
     query( "CREATE INDEX images_album ON images( album );" );
     query( "CREATE INDEX images_artist ON images( artist );" );
 
-    query( "CREATE INDEX embed_url ON embed( url );" );
+    query( "CREATE INDEX images_url ON images( path, deviceid );" );
+
+    query( "CREATE UNIQUE INDEX lyrics_url ON lyrics( url, deviceid );" );
+
+    query( "CREATE UNIQUE INDEX embed_url ON embed( url, deviceid );" );
     query( "CREATE INDEX embed_hash ON embed( hash );" );
 
-    query( "CREATE INDEX directories_dir ON directories( dir );" );
+    query( "CREATE UNIQUE INDEX directories_dir ON directories( dir, deviceid );" );
     query( "CREATE INDEX uniqueid_uniqueid ON uniqueid( uniqueid );");
-    query( "CREATE INDEX uniqueid_url ON uniqueid( url );");
+    query( "CREATE INDEX uniqueid_url ON uniqueid( url, deviceid );");
 }
 
 
@@ -644,6 +706,7 @@ CollectionDB::dropTables( const bool temporary )
     if ( !temporary )
     {
         query( QString( "DROP TABLE related_artists;" ) );
+        debug() << "Dropping media table" << endl;
     }
 
     if ( getDbConnectionType() == DbConnection::postgresql )
@@ -662,24 +725,33 @@ void
 CollectionDB::clearTables( const bool temporary )
 {
     QString clearCommand = "DELETE FROM";
-    if ( getDbConnectionType() == DbConnection::mysql || getDbConnectionType() == DbConnection::postgresql)
-    {
+    //if ( getDbConnectionType() == DbConnection::mysql || getDbConnectionType() == DbConnection::postgresql)
+    //{
         // TRUNCATE TABLE is faster than DELETE FROM TABLE, so use it when supported.
-        clearCommand = "TRUNCATE TABLE";
+    //    clearCommand = "TRUNCATE TABLE";
+    //}
+    IdList list = MountPointManager::instance()->getMountedDeviceIds();
+    QString deviceIds = "";
+    foreachType( IdList, list )
+    {
+        if ( it != list.begin() ) deviceIds += ",";
+        deviceIds += QString::number(*it);
     }
 
-    query( QString( "%1 tags%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
-    query( QString( "%1 album%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
-    query( QString( "%1 artist%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
-    query( QString( "%1 genre%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
-    query( QString( "%1 year%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
-    query( QString( "%1 images%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
-    query( QString( "%1 embed%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
-    query( QString( "%1 directories%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
-    query( QString( "%1 uniqueid%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "%1 tags%2 WHERE deviceid IN (%3);" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ).arg( deviceIds ) );
+    //query( QString( "%1 album%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
+    //query( QString( "%1 artist%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
+    //query( QString( "%1 genre%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
+    //query( QString( "%1 year%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "%1 images%2 WHERE deviceid IN (%3);" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ).arg( deviceIds ) );
+    query( QString( "%1 embed%2 WHERE deviceid IN (%3);" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ).arg( deviceIds ) );
+    query( QString( "%1 directories%2 WHERE deviceid IN (%3);" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ).arg( deviceIds ) );
+    query( QString( "%1 uniqueid%2 WHERE deviceid IN (%3);" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ).arg( deviceIds ) );
     if ( !temporary )
     {
         query( QString( "%1 related_artists;" ).arg( clearCommand ) );
+        //debug() << "Clearing media table" << endl;
+        //query( QString( "%1 media;" ).arg( clearCommand ) );
     }
 }
 
@@ -688,16 +760,57 @@ void
 CollectionDB::copyTempTables( )
 {
     DEBUG_BLOCK
-
+    
     insert( "INSERT INTO tags SELECT * FROM tags_temp;", NULL );
-    insert( "INSERT INTO album SELECT * FROM album_temp;", NULL );
-    insert( "INSERT INTO artist SELECT * FROM artist_temp;", NULL );
-    insert( "INSERT INTO genre SELECT * FROM genre_temp;", NULL );
-    insert( "INSERT INTO year SELECT * FROM year_temp;", NULL );
+    //mysql 5 supports subqueries with IN, mysql 4 doesn't. this way will work for all SQL servers
+    QStringList albumIdList = query( "SELECT album.id FROM album;" );
+    //in an empty database, albumIdList is empty. This would result in a SQL query like NOT IN ( ) without
+    //the -1 below which is invalid SQL. The auto generated values start at 1 so this is fine
+    QString albumIds = "-1";
+    foreach( albumIdList )
+    {
+        albumIds += ",";
+        albumIds += *it;
+    }
+    insert( QString ( "INSERT INTO album SELECT * FROM album_temp WHERE album_temp.id NOT IN ( %1 );" ).arg( albumIds ), NULL );
+    QStringList artistIdList = query( "SELECT artist.id FROM artist;" );
+    QString artistIds = "-1";
+    foreach( artistIdList )
+    {
+        artistIds += ",";
+        artistIds += *it;
+    }
+    insert( QString ( "INSERT INTO artist SELECT * FROM artist_temp WHERE artist_temp.id NOT IN ( %1 );" ).arg( artistIds ), NULL );
+    QStringList genreIdList = query( "SELECT genre.id FROM genre;" );
+    QString genreIds = "-1";
+    foreach( genreIdList )
+    {
+        genreIds += ",";
+        genreIds += *it;
+    }
+    insert( QString ( "INSERT INTO genre SELECT * FROM genre_temp WHERE genre_temp.id NOT IN ( %1 );" ).arg( genreIds ), NULL );
+    QStringList yearIdList = query( "SELECT year.id FROM year;" );
+    QString yearIds = "-1";
+    foreach( yearIdList )
+    {
+        yearIds += ",";
+        yearIds += *it;
+    }
+    insert( QString ( "INSERT INTO year SELECT * FROM year_temp WHERE year_temp.id NOT IN ( %1 );" ).arg( yearIds ), NULL );
     insert( "INSERT INTO images SELECT * FROM images_temp;", NULL );
     insert( "INSERT INTO embed SELECT * FROM embed_temp;", NULL );
     insert( "INSERT INTO directories SELECT * FROM directories_temp;", NULL );
     insert( "INSERT INTO uniqueid SELECT * FROM uniqueid_temp;", NULL );
+}
+
+void
+CollectionDB::prepareTempTables()
+{
+    DEBUG_BLOCK
+    insert( "INSERT INTO album_temp SELECT * from album;", 0 );
+    insert( "INSERT INTO artist_temp SELECT * from artist;", 0 );
+    insert( "INSERT INTO genre_temp SELECT * from genre;", 0 );
+    insert( "INSERT INTO year_temp SELECT * from year;", 0 );
 }
 
 
@@ -705,6 +818,31 @@ void
 CollectionDB::createStatsTable()
 {
     // create music statistics database
+    query( QString( "CREATE TABLE statistics ("
+                    "url " + exactTextColumnType() + ","
+                    "deviceid INTEGER,"
+                    "createdate INTEGER,"
+                    "accessdate INTEGER,"
+                    "percentage FLOAT,"
+                    "rating INTEGER DEFAULT 0,"
+                    "playcounter INTEGER,"
+                    "uniqueid " + exactTextColumnType(8) + " UNIQUE,"
+                    "deleted BOOL DEFAULT " + boolF() + ","
+                    "PRIMARY KEY(url, deviceid) );" ) );
+
+//    query( "CREATE INDEX url_stats ON statistics( url );" );
+
+    query( "CREATE INDEX percentage_stats ON statistics( percentage );" );
+    query( "CREATE INDEX rating_stats ON statistics( rating );" );
+    query( "CREATE INDEX playcounter_stats ON statistics( playcounter );" );
+    query( "CREATE INDEX uniqueid_stats ON statistics( uniqueid );" );
+}
+
+//Old version, used in upgrade code. This should never be changed.
+void
+CollectionDB::createStatsTableV8()
+{
+    // create music statistics database - old form, for upgrade code.
     query( QString( "CREATE TABLE statistics ("
                     "url " + textColumnType() + " UNIQUE,"
                     "createdate INTEGER,"
@@ -722,6 +860,35 @@ CollectionDB::createStatsTable()
     query( "CREATE INDEX uniqueid_stats ON statistics( uniqueid );" );
 }
 
+void
+CollectionDB::createStatsTableV10( bool temp )
+{
+    // create music statistics database
+    query( QString( "CREATE %1 TABLE statistics%2 ("
+                    "url " + exactTextColumnType() + ","
+                    "deviceid INTEGER,"
+                    "createdate INTEGER,"
+                    "accessdate INTEGER,"
+                    "percentage FLOAT,"
+                    "rating INTEGER DEFAULT 0,"
+                    "playcounter INTEGER,"
+                    "uniqueid " + exactTextColumnType(8) + " UNIQUE,"
+                    "deleted BOOL DEFAULT " + boolF() + ","
+                    "PRIMARY KEY(url, deviceid) );"
+                    ).arg( temp ? "TEMPORARY" : "" )
+                     .arg( temp ? "_fix_ten" : "" ) );
+
+//    query( "CREATE INDEX url_stats ON statistics( url );" );
+
+    if ( !temp )
+    {
+        query( "CREATE INDEX percentage_stats ON statistics( percentage );" );
+        query( "CREATE INDEX rating_stats ON statistics( rating );" );
+        query( "CREATE INDEX playcounter_stats ON statistics( playcounter );" );
+        query( "CREATE INDEX uniqueid_stats ON statistics( uniqueid );" );
+    }
+}
+
 
 void
 CollectionDB::dropStatsTable()
@@ -729,9 +896,67 @@ CollectionDB::dropStatsTable()
     query( "DROP TABLE statistics;" );
 }
 
+void
+CollectionDB::dropStatsTableV1()
+{
+    query( "DROP TABLE statistics;" );
+}
 
 void
 CollectionDB::createPersistentTables()
+{
+    // create amazon table
+    query(          "CREATE TABLE amazon ( "
+            "asin " + textColumnType(20) + ", "
+            "locale " + textColumnType(2) + ", "
+            "filename " + exactTextColumnType(33) + ", "
+            "refetchdate INTEGER );" );
+
+    // create lyrics table
+    query( QString( "CREATE TABLE lyrics ("
+            "url " + exactTextColumnType() + ", "
+            "deviceid INTEGER,"
+            "lyrics " + longTextColumnType() + ");" ) );
+
+    query( QString( "CREATE TABLE playlists ("
+            "playlist " + textColumnType() + ", "
+            "url " + exactTextColumnType() + ", "
+            "tracknum INTEGER );" ) );
+
+    query( "CREATE INDEX url_label ON label( url );" );
+    query( "CREATE INDEX deviceid_label ON label( deviceid );" );
+    query( "CREATE INDEX label_label ON label( label );" );
+    query( "CREATE INDEX url_lyrics ON lyrics( url );" );
+    query( "CREATE INDEX deviceid_lyrics ON lyrics( deviceid );" );
+    query( "CREATE INDEX playlist_playlists ON playlists( playlist );" );
+    query( "CREATE INDEX url_playlists ON playlists( url );" );
+
+    QString deviceAutoIncrement = "";
+    if ( getDbConnectionType() == DbConnection::postgresql )
+    {
+        query( QString( "CREATE SEQUENCE devices_seq;" ) );
+        deviceAutoIncrement = QString("DEFAULT nextval('devices_seq')");
+    }
+    else if ( getDbConnectionType() == DbConnection::mysql )
+    {
+        deviceAutoIncrement = "AUTO_INCREMENT";
+    }
+    query( QString( "CREATE TABLE devices ("
+                    "id INTEGER PRIMARY KEY %1,"
+                    "type " + textColumnType() + ","
+                    "label " + textColumnType() + ","
+                    "lastmountpoint " + textColumnType() + ","
+                    "uuid " + textColumnType() + ","
+                    "servername " + textColumnType() + ","
+                    "sharename " + textColumnType() + ");" )
+                  .arg( deviceAutoIncrement ) );
+    query( "CREATE INDEX devices_type ON devices( type );" );
+    query( "CREATE INDEX devices_uuid ON devices( uuid );" );
+    query( "CREATE INDEX devices_rshare ON devices( servername, sharename );" );
+}
+
+void
+CollectionDB::createPersistentTablesV12()
 {
     // create amazon table
     query(          "CREATE TABLE amazon ( "
@@ -762,6 +987,39 @@ CollectionDB::createPersistentTables()
 }
 
 void
+CollectionDB::createPersistentTablesV14( bool temp )
+{
+    const QString a( temp ? "TEMPORARY" : "" );
+    const QString b( temp ? "_fix" : "" );
+
+    // create amazon table
+    query(  QString( "CREATE %1 TABLE amazon%2 ( "
+            "asin " + textColumnType(20) + ", "
+            "locale " + textColumnType(2) + ", "
+            "filename " + exactTextColumnType(33) + ", "
+            "refetchdate INTEGER );" ).arg( a,b ) );
+
+    // create lyrics table
+    query( QString( "CREATE %1 TABLE lyrics%2 ("
+            "url " + exactTextColumnType() + ", "
+            "deviceid INTEGER,"
+            "lyrics " + longTextColumnType() + ");" ).arg( a,b ) );
+
+    query( QString( "CREATE %1 TABLE playlists%2 ("
+            "playlist " + textColumnType() + ", "
+            "url " + exactTextColumnType() + ", "
+            "tracknum INTEGER );" ).arg( a,b ) );
+
+    if ( !temp )
+    {
+        query( "CREATE INDEX url_lyrics ON lyrics( url );" );
+        query( "CREATE INDEX deviceid_lyrics ON lyrics( deviceid );" );
+        query( "CREATE INDEX playlist_playlists ON playlists( playlist );" );
+        query( "CREATE INDEX url_playlists ON playlists( url );" );
+    }
+}
+
+void
 CollectionDB::createPodcastTables()
 {
     QString podcastAutoIncrement = "";
@@ -783,10 +1041,10 @@ CollectionDB::createPodcastTables()
 
     // create podcast channels table
     query( QString( "CREATE TABLE podcastchannels ("
-                    "url " + textColumnType() + " UNIQUE,"
+                    "url " + exactTextColumnType() + " UNIQUE,"
                     "title " + textColumnType() + ","
-                    "weblink " + textColumnType() + ","
-                    "image " + textColumnType() + ","
+                    "weblink " + exactTextColumnType() + ","
+                    "image " + exactTextColumnType() + ","
                     "comment " + longTextColumnType() + ","
                     "copyright "  + textColumnType() + ","
                     "parent INTEGER,"
@@ -797,10 +1055,10 @@ CollectionDB::createPodcastTables()
     // create podcast episodes table
     query( QString( "CREATE TABLE podcastepisodes ("
                     "id INTEGER PRIMARY KEY %1, "
-                    "url " + textColumnType() + " UNIQUE,"
-                    "localurl " + textColumnType() + ","
-                    "parent " + textColumnType() + ","
-                    "guid " + textColumnType() + ","
+                    "url " + exactTextColumnType() + " UNIQUE,"
+                    "localurl " + exactTextColumnType() + ","
+                    "parent " + exactTextColumnType() + ","
+                    "guid " + exactTextColumnType() + ","
                     "title " + textColumnType() + ","
                     "subtitle " + textColumnType() + ","
                     "composer " + textColumnType() + ","
@@ -825,9 +1083,87 @@ CollectionDB::createPodcastTables()
     query( "CREATE INDEX url_podfolder ON podcastfolders( id );" );
 }
 
+void
+CollectionDB::createPodcastTablesV2( bool temp )
+{
+    const QString a( temp ? "TEMPORARY" : "" );
+    const QString b( temp ? "_fix" : "" );
+
+    QString podcastAutoIncrement = "";
+    QString podcastFolderAutoInc = "";
+    if ( getDbConnectionType() == DbConnection::postgresql )
+    {
+        query( QString( "CREATE SEQUENCE podcastepisode_seq;" ) );
+
+        query( QString( "CREATE SEQUENCE podcastfolder_seq;" ) );
+
+        podcastAutoIncrement = QString("DEFAULT nextval('podcastepisode_seq')");
+        podcastFolderAutoInc = QString("DEFAULT nextval('podcastfolder_seq')");
+    }
+    else if ( getDbConnectionType() == DbConnection::mysql )
+    {
+        podcastAutoIncrement = "AUTO_INCREMENT";
+        podcastFolderAutoInc = "AUTO_INCREMENT";
+    }
+
+    // create podcast channels table
+    query( QString( "CREATE %1 TABLE podcastchannels%2 ("
+                    "url " + exactTextColumnType() + " UNIQUE,"
+                    "title " + textColumnType() + ","
+                    "weblink " + exactTextColumnType() + ","
+                    "image " + exactTextColumnType() + ","
+                    "comment " + longTextColumnType() + ","
+                    "copyright "  + textColumnType() + ","
+                    "parent INTEGER,"
+                    "directory "  + textColumnType() + ","
+                    "autoscan BOOL, fetchtype INTEGER, "
+                    "autotransfer BOOL, haspurge BOOL, purgecount INTEGER );" ).arg( a,b ) );
+
+    // create podcast episodes table
+    query( QString( "CREATE %2 TABLE podcastepisodes%3 ("
+                    "id INTEGER PRIMARY KEY %1, "
+                    "url " + exactTextColumnType() + " UNIQUE,"
+                    "localurl " + exactTextColumnType() + ","
+                    "parent " + exactTextColumnType() + ","
+                    "guid " + exactTextColumnType() + ","
+                    "title " + textColumnType() + ","
+                    "subtitle " + textColumnType() + ","
+                    "composer " + textColumnType() + ","
+                    "comment " + longTextColumnType() + ","
+                    "filetype "  + textColumnType() + ","
+                    "createdate "  + textColumnType() + ","
+                    "length INTEGER,"
+                    "size INTEGER,"
+                    "isNew BOOL );" )
+                    .arg( podcastAutoIncrement, a, b ) );
+
+    // create podcast folders table
+    query( QString( "CREATE %2 TABLE podcastfolders%3 ("
+                    "id INTEGER PRIMARY KEY %1, "
+                    "name " + textColumnType() + ","
+                    "parent INTEGER, isOpen BOOL );" )
+                    .arg( podcastFolderAutoInc, a, b ) );
+
+    if ( !temp )
+    {
+        query( "CREATE INDEX url_podchannel ON podcastchannels( url );" );
+        query( "CREATE INDEX url_podepisode ON podcastepisodes( url );" );
+        query( "CREATE INDEX localurl_podepisode ON podcastepisodes( localurl );" );
+        query( "CREATE INDEX url_podfolder ON podcastfolders( id );" );
+    }
+}
+
 
 void
 CollectionDB::dropPersistentTables()
+{
+    query( "DROP TABLE amazon;" );
+    query( "DROP TABLE lyrics;" );
+    query( "DROP TABLE playlists;" );
+}
+
+void
+CollectionDB::dropPersistentTablesV14()
 {
     query( "DROP TABLE amazon;" );
     query( "DROP TABLE lyrics;" );
@@ -835,15 +1171,22 @@ CollectionDB::dropPersistentTables()
     query( "DROP TABLE playlists;" );
 }
 
-
 void
 CollectionDB::dropPodcastTables()
 {
     query( "DROP TABLE podcastchannels;" );
     query( "DROP TABLE podcastepisodes;" );
     query( "DROP TABLE podcastfolders;" );
+    query( "DROP TABLE devices;" );
 }
 
+void
+CollectionDB::dropPodcastTablesV2()
+{
+    query( "DROP TABLE podcastchannels;" );
+    query( "DROP TABLE podcastepisodes;" );
+    query( "DROP TABLE podcastfolders;" );
+}
 
 uint
 CollectionDB::artistID( QString value, bool autocreate, const bool temporary, bool exact /* = true */ )
@@ -1050,45 +1393,73 @@ CollectionDB::albumTracks( const QString &artist_id, const QString &album_id, co
 QStringList
 CollectionDB::albumDiscTracks( const QString &artist_id, const QString &album_id, const QString &discNumber)
 {
+    QStringList rs;
     if (getDbConnectionType() == DbConnection::postgresql)
-        return query( QString( "SELECT tags.url, tags.track AS __discard FROM tags, year WHERE tags.album = %1 AND "
-                            "tags.artist = %2 AND year.id = tags.year AND tags.discnumber = %3 ORDER BY tags.track;" )
+        rs = query( QString( "SELECT tags.deviceid, tags.url, tags.track AS __discard FROM tags, year WHERE tags.album = %1 AND "
+                           "tags.artist = %2 AND year.id = tags.year AND tags.discnumber = %3 ORDER BY tags.track;" )
                   .arg( album_id )
                   .arg( artist_id )
                   .arg( discNumber ) );
     else
-        return query( QString( "SELECT tags.url FROM tags, year WHERE tags.album = %1 AND "
-                            "tags.artist = %2 AND year.id = tags.year AND tags.discnumber = %3 ORDER BY tags.track;" )
+        rs = query( QString( "SELECT tags.deviceid, tags.url FROM tags, year WHERE tags.album = %1 AND "
+                           "tags.artist = %2 AND year.id = tags.year AND tags.discnumber = %3 ORDER BY tags.track;" )
                   .arg( album_id )
                   .arg( artist_id )
                   .arg( discNumber ) );
-
+    QStringList result;
+    foreach( rs )
+    {
+        int id = (*it).toInt();
+        if ( MountPointManager::instance()->isMounted( id ) )
+        {
+            result.append( ( MountPointManager::instance()->getAbsolutePath( id, *(++it) ) ) );
+        }
+        else ++it;
+        //PostGreSql requires a third column
+        if ( getDbConnectionType() == DbConnection::postgresql ) ++it;
+    }
+    return result;
 }
 
 QStringList
 CollectionDB::artistTracks( const QString &artist_id )
 {
-    return query( QString( "SELECT tags.url FROM tags, album "
-                "WHERE tags.artist = '%1' AND album.id = tags.album "
+    QStringList rs = query( QString( "SELECT tags.deviceid, tags.url FROM tags, album "
+                "WHERE tags.artist = '%1' AND album.id = tags.album " + deviceidSelection() +
                 "ORDER BY album.name, tags.discnumber, tags.track;" )
             .arg( artist_id ) );
+    QStringList result = QStringList();
+    foreach( rs )
+    {
+        int id = (*it).toInt();
+        if ( MountPointManager::instance()->isMounted( id ) )
+        {
+            //KURL relativePath = KURL::fromPathOrURL( *(++it) );
+            result.append( ( MountPointManager::instance()->getAbsolutePath( id, *(++it) ) ) );
+        }
+        else ++it;
+    }
+    return result;
 }
 
 
 void
 CollectionDB::addImageToAlbum( const QString& image, QValueList< QPair<QString, QString> > info, const bool temporary )
 {
+    int deviceid = MountPointManager::instance()->getIdForUrl( image );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, image );
     for ( QValueList< QPair<QString, QString> >::ConstIterator it = info.begin(); it != info.end(); ++it )
     {
         if ( (*it).first.isEmpty() || (*it).second.isEmpty() )
             continue;
 
 //         debug() << "Added image for album: " << (*it).first << " - " << (*it).second << ": " << image << endl;
-        insert( QString( "INSERT INTO images%1 ( path, artist, album ) VALUES ( '%2', '%3', '%4' );" )
-              .arg( temporary ? "_temp" : "",
-                 escapeString( image ),
-                 escapeString( (*it).first ),
-                 escapeString( (*it).second ) ), NULL );
+        insert( QString( "INSERT INTO images%1 ( path, deviceid, artist, album ) VALUES ( '%2', %3, '%4', '%5' );" )
+              .arg( temporary ? "_temp" : "" )
+              .arg( escapeString( rpath ) )
+              .arg( deviceid ) 
+              .arg( escapeString( (*it).first ) )
+              .arg( escapeString( (*it).second ) ) , NULL );
     }
 }
 
@@ -1096,20 +1467,26 @@ void
 CollectionDB::addEmbeddedImage( const QString& path, const QString& hash, const QString& description )
 {
 //     debug() << "Added embedded image hash " << hash << " for file " << path << endl;
-    insert( QString( "INSERT INTO embed_temp ( url, hash, description ) VALUES ( '%1', '%2', '%3' );" )
-     .arg( escapeString( path ),
-        escapeString( hash ),
-        escapeString( description ) ), NULL );
+    //TODO: figure out what this embedded table does and then add the encessary code
+    //what are embedded images anyway?
+    int deviceid = MountPointManager::instance()->getIdForUrl( path );
+    QString rpath = MountPointManager::instance()->getRelativePath(deviceid, path );
+    insert( QString( "INSERT INTO embed_temp ( url, deviceid, hash, description ) VALUES ( '%1', %2, '%3', '%4' );" )
+     .arg( escapeString( rpath ) )
+     .arg( deviceid )
+     .arg( escapeString( hash ), escapeString( description ) ), NULL );
 }
 
 void
 CollectionDB::removeOrphanedEmbeddedImages()
 {
+    //TODO refactor
     // do it the hard way, since a delete subquery wont work on MySQL
-    QStringList orphaned = query( "SELECT embed.url FROM embed LEFT JOIN tags ON embed.url = tags.url WHERE tags.url IS NULL;" );
+    QStringList orphaned = query( "SELECT embed.url, embed.deviceid FROM embed LEFT JOIN tags ON embed.url = tags.url AND embed.deviceid = tags.deviceid WHERE tags.url IS NULL;" );
     foreachType( QStringList, orphaned ) {
-        query( QString( "DELETE FROM embed WHERE embed.url = '%1';" )
-                .arg( escapeString( *it ) ) );
+        query( QString( "DELETE FROM embed WHERE embed.url = '%1' AND embed.deviceid = %2;" )
+                .arg( escapeString( *it ) )
+                .arg( (*++it).toInt() ) );
     }
 }
 
@@ -1117,6 +1494,7 @@ QPixmap
 CollectionDB::createDragPixmapFromSQL( const QString &sql, QString textOverRide )
 {
     // it is too slow to check if the url is actually in the colleciton.
+    //TODO mountpointmanager: figure out what has to be done here
     QStringList values = instance()->query( sql );
     KURL::List list;
     foreach( values )
@@ -1516,19 +1894,14 @@ CollectionDB::albumImage( MetaBundle trackInformation, bool withShadow, uint wid
 
     if( s.isEmpty() )
         s = findAmazonImage( artist, album, width );
-
     if( s.isEmpty() )
         s = findAmazonImage( "", album, width );
-
     if( s.isEmpty() )
         s = findDirectoryImage( artist, album, width );
-
     if( s.isEmpty() )
         s = notAvailCover( withShadow, width );
-
     if ( withShadow )
         s = makeShadowedImage( s );
-
     return s;
 }
 
@@ -1612,15 +1985,14 @@ CollectionDB::findDirectoryImage( const QString& artist, const QString& album, u
     if ( width == 1 )
         width = AmarokConfig::coverPreviewSize();
     QCString widthKey = makeWidthKey( width );
-
     if ( album.isEmpty() )
         return QString::null;
 
-    QStringList values;
+    QStringList rs;
     if ( artist == i18n( "Various Artists" ) )
     {
-         values = query( QString(
-            "SELECT path FROM images, artist, tags "
+         rs = query( QString(
+            "SELECT images.deviceid,images.path FROM images, artist, tags "
             "WHERE images.artist = artist.name "
             "AND artist.id = tags.artist "
             "AND tags.sampler = %1 "
@@ -1630,12 +2002,12 @@ CollectionDB::findDirectoryImage( const QString& artist, const QString& album, u
     }
     else
     {
-        values = query( QString(
-            "SELECT path FROM images WHERE artist %1 AND album %2 ORDER BY path;" )
+        rs = query( QString(
+            "SELECT images.deviceid,images.path FROM images WHERE artist %1 AND album %2 ORDER BY path;" )
             .arg( CollectionDB::likeCondition( artist ),
                   CollectionDB::likeCondition( album ) ) );
     }
-
+    QStringList values = URLsFromQuery( rs );
     if ( !values.isEmpty() )
     {
         QString image( values.first() );
@@ -1676,11 +2048,11 @@ CollectionDB::findEmbeddedImage( const QString& artist, const QString& album, ui
     // could potentially select multiple images within a file based on description, although a
     // lot of tagging software doesn't fill in that field, so we just get whatever the DB
     // happens to return for us
-    QStringList values;
+    QStringList rs;
     if ( artist == i18n("Various Artists") ) {
         // VAs need special handling to not match on artist name but instead check for sampler flag
-        values = query( QString(
-                "SELECT embed.hash, embed.url FROM tags, embed, album "
+        rs = query( QString(
+                "SELECT embed.hash, embed.deviceid, embed.url FROM tags, embed, album "
                 "WHERE tags.url = embed.url "
                 "AND tags.album = album.id "
                 "AND album.name = '%1' "
@@ -1689,8 +2061,8 @@ CollectionDB::findEmbeddedImage( const QString& artist, const QString& album, ui
                 .arg( escapeString( album ) )
                 .arg( boolT() ) );
     } else {
-        values = query( QString(
-                "SELECT embed.hash, embed.url FROM tags, embed, artist, album "
+        rs = query( QString(
+                "SELECT embed.hash, embed.deviceid, embed.url FROM tags, embed, artist, album "
                 "WHERE tags.url = embed.url "
                 "AND tags.artist = artist.id "
                 "AND tags.album = album.id "
@@ -1699,6 +2071,12 @@ CollectionDB::findEmbeddedImage( const QString& artist, const QString& album, ui
                 "ORDER BY modifydate DESC LIMIT 1;" )
                 .arg( escapeString( artist ) )
                 .arg( escapeString( album ) ) );
+    }
+
+    QStringList values = QStringList();
+    if ( rs.count() == 3 ) {
+        values[0] = rs.first();
+        values[1] = MountPointManager::instance()->getAbsolutePath( rs[1].toInt(), rs[2] );
     }
 
     if ( values.count() == 2 ) {
@@ -1721,10 +2099,13 @@ CollectionDB::findEmbeddedImage( const QString& artist, const QString& album, ui
 QString
 CollectionDB::findMetaBundleImage( MetaBundle trackInformation, uint width )
 {
+    int deviceid = MountPointManager::instance()->getIdForUrl( trackInformation.url() );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, trackInformation.url().path() );
     QStringList values =
             query( QString(
-            "SELECT embed.hash FROM tags LEFT JOIN embed ON tags.url = embed.url WHERE tags.url = '%1' ORDER BY hash DESC LIMIT 1;" )
-            .arg( escapeString( trackInformation.url().path() ) ) );
+            "SELECT embed.hash FROM tags LEFT JOIN embed ON tags.url = embed.url "
+            " AND tags.deviceid = embed.deviceid WHERE tags.url = '%2' AND tags.deviceid = %1 ORDER BY hash DESC LIMIT 1;" )
+            .arg( deviceid ).arg( escapeString( rpath ) ) );
 
     if ( values.empty() || !values.first().isEmpty() ) {
         QCString hash;
@@ -1810,6 +2191,7 @@ CollectionDB::notAvailCover( const bool withShadow, int width )
 QStringList
 CollectionDB::artistList( bool withUnknowns, bool withCompilations )
 {
+    DEBUG_BLOCK
     QueryBuilder qb;
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
 
@@ -1819,6 +2201,11 @@ CollectionDB::artistList( bool withUnknowns, bool withCompilations )
         qb.setOptions( QueryBuilder::optNoCompilations );
 
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    //FIXME max: quick hack to improve the DB response time
+    //without it the query looks something like
+    //SELECT DISTINCT artist.name FROM artist,tags WHERE 1 AND tags.deviceid IN (1,2,3) ORDER BY LOWER (artist.name)
+    //---> very bad...has to be fixed for all CollectionDB::*List methods
+    qb.setOptions( QueryBuilder::optShowAll );
     qb.sortBy( QueryBuilder::tabArtist, QueryBuilder::valName );
     return qb.run();
 }
@@ -1836,6 +2223,7 @@ CollectionDB::composerList( bool withUnknowns, bool withCompilations )
         qb.setOptions( QueryBuilder::optNoCompilations );
 
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    qb.setOptions( QueryBuilder::optShowAll );
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valComposer );
     return qb.run();
 }
@@ -1853,6 +2241,7 @@ CollectionDB::albumList( bool withUnknowns, bool withCompilations )
         qb.setOptions( QueryBuilder::optNoCompilations );
 
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    qb.setOptions( QueryBuilder::optShowAll );
     qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
     return qb.run();
 }
@@ -1873,6 +2262,7 @@ CollectionDB::genreList( bool withUnknowns, bool withCompilations )
         qb.setOptions( QueryBuilder::optNoCompilations );
 
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    qb.setOptions( QueryBuilder::optShowAll );
     qb.sortBy( QueryBuilder::tabGenre, QueryBuilder::valName );
     return qb.run();
 }
@@ -1890,6 +2280,7 @@ CollectionDB::yearList( bool withUnknowns, bool withCompilations )
         qb.setOptions( QueryBuilder::optNoCompilations );
 
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    qb.setOptions( QueryBuilder::optShowAll );
     qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName );
     return qb.run();
 }
@@ -1904,7 +2295,7 @@ CollectionDB::albumListOfArtist( const QString &artist, bool withUnknown, bool w
                       "tags.album = album.id AND tags.artist = artist.id "
                       "AND lower(artist.name) = lower('" + escapeString( artist ) + "') " +
                       ( withUnknown ? QString::null : "AND album.name <> '' " ) +
-                      ( withCompilations ? QString::null : "AND tags.sampler = " + boolF() ) +
+                      ( withCompilations ? QString::null : "AND tags.sampler = " + boolF() ) + deviceidSelection() +
                       " ORDER BY lower( album.name );" );
     }
     else
@@ -1913,7 +2304,7 @@ CollectionDB::albumListOfArtist( const QString &artist, bool withUnknown, bool w
                       "tags.album = album.id AND tags.artist = artist.id "
                       "AND lower(artist.name) = lower('" + escapeString( artist ) + "') " +
                       ( withUnknown ? QString::null : "AND album.name <> '' " ) +
-                      ( withCompilations ? QString::null : "AND tags.sampler = " + boolF() ) +
+                      ( withCompilations ? QString::null : "AND tags.sampler = " + boolF() ) + deviceidSelection() +
                       " ORDER BY lower( album.name );" );
     }
 }
@@ -1927,7 +2318,7 @@ CollectionDB::artistAlbumList( bool withUnknown, bool withCompilations )
         return query( "SELECT DISTINCT artist.name, album.name, lower( album.name ) AS __discard FROM tags, album, artist WHERE "
                       "tags.album = album.id AND tags.artist = artist.id " +
                       ( withUnknown ? QString::null : "AND album.name <> '' AND artist.name <> '' " ) +
-                      ( withCompilations ? QString::null : "AND tags.sampler = " + boolF() ) +
+                      ( withCompilations ? QString::null : "AND tags.sampler = " + boolF() ) + deviceidSelection() +
                       " ORDER BY lower( album.name );" );
     }
     else
@@ -1935,7 +2326,7 @@ CollectionDB::artistAlbumList( bool withUnknown, bool withCompilations )
         return query( "SELECT DISTINCT artist.name, album.name FROM tags, album, artist WHERE "
                       "tags.album = album.id AND tags.artist = artist.id " +
                       ( withUnknown ? QString::null : "AND album.name <> '' AND artist.name <> '' " ) +
-                      ( withCompilations ? QString::null : "AND tags.sampler = " + boolF() ) +
+                      ( withCompilations ? QString::null : "AND tags.sampler = " + boolF() ) + deviceidSelection() +
                       " ORDER BY lower( album.name );" );
     }
 }
@@ -2347,7 +2738,7 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
     if ( !QFileInfo( bundle->url().path() ).isReadable() ) return false;
 
     QString command = "INSERT INTO tags_temp "
-                      "( url, dir, createdate, modifydate, album, artist, genre, year, title, "
+                      "( url, dir, deviceid, createdate, modifydate, album, artist, genre, year, title, "
                       "composer, comment, track, discnumber, sampler, length, bitrate, "
                       "samplerate, filesize, filetype ) "
                       "VALUES ('";
@@ -2371,8 +2762,14 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
         bundle->setTitle( title );
     }
 
-    command += escapeString( bundle->url().path() ) + "','";
-    command += escapeString( bundle->url().directory() ) + "',";
+    int deviceId = MountPointManager::instance()->getIdForUrl( bundle->url() );
+    KURL relativePath;
+    MountPointManager::instance()->getRelativePath( deviceId, bundle->url(), relativePath );
+    //debug() << "File has deviceId " << deviceId << ", relative path " << relativePath.path() << ", absolute path " << bundle->url().path() << endl;
+
+    command += escapeString( relativePath.path() ) + "','";
+    command += escapeString( relativePath.directory() ) + "',";
+    command += QString::number( deviceId ) + ",";
     command += QString::number( QFileInfo( bundle->url().path() ).created().toTime_t() ) + ",";
     command += QString::number( QFileInfo( bundle->url().path() ).lastModified().toTime_t() ) + ",";
 
@@ -2424,21 +2821,26 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
     //DEBUG_BLOCK
     //debug() << "AmarokConfig::advancedTagFeatures() = " << (AmarokConfig::advancedTagFeatures() ? "true" : "false") << endl;
     if( !AmarokConfig::advancedTagFeatures() || bundle->uniqueId().isEmpty() ) return;
-    //ATF Stuff
-    QString currid = escapeString( bundle->uniqueId() );
-    QString currurl = escapeString( bundle->url().path() );
-    QString currdir = escapeString( bundle->url().directory() );
 
     //debug() << "Checking currid = " << currid << ", currurl = " << currurl << endl;
 
-    if( currid.isEmpty() || currurl.isEmpty() )
+    if( bundle->uniqueId().isEmpty() || bundle->url().path().isEmpty() )
         return;
 
+    //ATF Stuff
+    MountPointManager *mpm = MountPointManager::instance();
+    int currdeviceid = mpm->getIdForUrl( bundle->url().path() );
+    QString currid = escapeString( bundle->uniqueId() );
+    QString currurl = escapeString( mpm->getRelativePath( currdeviceid, bundle->url().path() ) );
+    QString currdir = escapeString( mpm->getRelativePath( currdeviceid, bundle->url().directory() ) );
+
+    
     QStringList urls = query( QString(
             "SELECT url, uniqueid "
             "FROM uniqueid%1 "
-            "WHERE url = '%2';" )
+            "WHERE deviceid = %2 AND url = '%3';" )
                 .arg( tempTables ? "_temp" : "" )
+                .arg( currdeviceid )
                 .arg( currurl ) );
     QStringList uniqueids = query( QString(
             "SELECT url, uniqueid "
@@ -2456,7 +2858,8 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
     QStringList nonTempURLs = query( QString(
             "SELECT url, uniqueid "
             "FROM uniqueid "
-            "WHERE url = '%1';" )
+            "WHERE deviceid = %1 AND url = '%1';" )
+                .arg( currdeviceid )
                 .arg( currurl ) );
 
     QStringList statUIDVal = query( QString(
@@ -2468,7 +2871,8 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
     QStringList statURLVal = query( QString(
             "SELECT url, uniqueid "
             "FROM statistics "
-            "WHERE url = '%1';" )
+            "WHERE deviceid = %1 AND url = '%2';" )
+                .arg( currdeviceid )
                 .arg( currurl ) );
 
     bool tempTablesAndInPermanent = false;
@@ -2485,25 +2889,30 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
     //first case: not in permanent table or temporary table
     if( !tempTablesAndInPermanent && urls.empty() && uniqueids.empty() )
     {
-        QString insertline = QString( "INSERT INTO uniqueid%1 (url, uniqueid, dir) VALUES ('%2', '%3', '%4')" )
-                .arg( ( tempTables ? "_temp" : "" ),
-                    currurl,
-                    currid,
-                    currdir );
+        QString insertline = QString( "INSERT INTO uniqueid%1 (deviceid, url, uniqueid, dir) "
+                                      "VALUES ( %2,'%3', '%4', '%5')" )
+                .arg( tempTables ? "_temp" : "" )
+                .arg( currdeviceid )
+                .arg( currurl )
+                .arg( currid )
+                .arg( currdir );
         insert( insertline, NULL );
         if( !statUIDVal.empty() )
         {
 
-            query( QString( "UPDATE statistics SET url = '%1', deleted = %2 WHERE uniqueid = '%3';" )
-                                .arg( currurl )
+            query( QString( "UPDATE statistics SET deviceid = %1 url = '%4', deleted = %2 WHERE uniqueid = '%3';" )
+                                .arg( currdeviceid )
                                 .arg( boolF() )
-                                .arg( currid ) );
+                                .arg( currid )
+                                .arg( currurl ) );
         }
         else if( !statURLVal.empty() )
         {
-            query( QString( "UPDATE statistics SET uniqueid = '%1', deleted = %2 WHERE url = '%3';" )
+            query( QString( "UPDATE statistics SET uniqueid = '%1', deleted = %2 "
+                            "WHERE deviceid = %3 AND url = '%4';" )
                                 .arg( currid )
                                 .arg( boolF() )
+                                .arg( currdeviceid )
                                 .arg( currurl ) );
         }
         return;
@@ -2528,11 +2937,12 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
             {
                 //debug() << "stat was NOT successful, updating tables with: " << endl;
                 //debug() << QString( "UPDATE uniqueid%1 SET url='%2', dir='%3' WHERE uniqueid='%4';" ).arg( ( tempTables ? "_temp" : "" ), currurl, currdir, currid ) << endl;
-                query( QString( "UPDATE uniqueid%1 SET url='%2', dir='%3' WHERE uniqueid='%4';" )
-                      .arg( ( tempTables ? "_temp" : "" ),
-                         currurl,
-                         currdir,
-                         currid ) );
+                query( QString( "UPDATE uniqueid%1 SET deviceid = %2, url='%3', dir='%4' WHERE uniqueid='%5';" )
+                      .arg( tempTables ? "_temp" : "" )
+                      .arg( currdeviceid )
+                      .arg( currurl )
+                      .arg( currdir )
+                      .arg( currid ) );
                 emit fileMoved( uniqueids[0], bundle->url().path(), bundle->uniqueId() );
             }
         }
@@ -2543,9 +2953,10 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
         else //uniqueids.empty()
         {
             //debug() << "file exists in same place as before, new uniqueid" << endl;
-            query( QString( "UPDATE uniqueid%1 SET uniqueid='%2' WHERE url='%3';" )
+            query( QString( "UPDATE uniqueid%1 SET uniqueid='%2' WHERE deviceid = %3 AND url='%4';" )
                     .arg( tempTables ? "_temp" : "" )
                     .arg( currid )
+                    .arg( currdeviceid )
                     .arg( currurl ) );
             emit uniqueIdChanged( bundle->url().path(), urls[1], bundle->uniqueId() );
         }
@@ -2559,24 +2970,29 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
         //in this case, just insert into temp table
         if( permanentFullMatch )
         {
-            QString insertline = QString( "INSERT INTO uniqueid_temp (url, uniqueid, dir) VALUES ('%1', '%2', '%3')" )
-                .arg( currurl,
-                    currid,
-                    currdir );
+            QString insertline = QString( "INSERT INTO uniqueid_temp (deviceid, url, uniqueid, dir) "
+                                          "VALUES ( %1, '%2', '%3', '%4')" )
+                                            .arg( currdeviceid )
+                                            .arg( currurl )
+                                            .arg( currid )
+                                            .arg( currdir );
             //debug() << "running command: " << insertline << endl;
             insert( insertline, NULL );
             if( !statUIDVal.empty() )
             {
-                query( QString( "UPDATE statistics SET url = '%1', deleted = %2 WHERE uniqueid = '%3';" )
+                query( QString( "UPDATE statistics SET deviceid = %1 url = '%2', deleted = %3 WHERE uniqueid = '%4';" )
+                                     .arg( currdeviceid )
                                      .arg( currurl )
                                      .arg( boolF() )
                                      .arg( currid ) );
             }
             else if( !statURLVal.empty() )
             {
-                query( QString( "UPDATE statistics SET uniqueid = '%1', deleted = %2 WHERE url = '%3';" )
+                query( QString( "UPDATE statistics SET uniqueid = '%1', deleted = %2 "
+                                "WHERE deviceid = %3 AND url = '%4';" )
                                     .arg( currid )
                                     .arg( boolF() )
+                                    .arg( currdeviceid )
                                     .arg( currurl ) );
             }
             return;
@@ -2597,10 +3013,12 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
             else  //it's a move, not a copy, or a copy and then both files were moved...can't detect that
             {
                 //debug() << "stat part 2 was NOT successful, updating tables with: " << endl;
-                query( QString( "INSERT INTO uniqueid_temp (url, uniqueid, dir) VALUES ('%1', '%2', '%3')" )
-                .arg( currurl,
-                    currid,
-                    currdir ) );
+                query( QString( "INSERT INTO uniqueid_temp (deviceid, url, uniqueid, dir) "
+                                "VALUES ( %1, '%2', '%3', '%4')" )
+                                .arg( currdeviceid )
+                                .arg( currurl )
+                                .arg( currid )
+                                .arg( currdir ) );
                 query( QString( "DELETE FROM uniqueid WHERE uniqueid='%1';" )
                       .arg( currid ) );
                 emit fileMoved( nonTempIDs[0], bundle->url().path(), bundle->uniqueId() );
@@ -2609,11 +3027,13 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
         else
         {
             //debug() << "file exists in same place as before, part 2, new uniqueid" << endl;
-            query( QString( "INSERT INTO uniqueid_temp (url, uniqueid, dir) VALUES ('%1', '%2', '%3')" )
-                .arg( currurl,
-                    currid,
-                    currdir ) );
-                query( QString( "DELETE FROM uniqueid WHERE url='%1';" )
+            query( QString( "INSERT INTO uniqueid_temp (deviceid, url, uniqueid, dir) VALUES (' %1, %2', '%3', '%4')" )
+                .arg( currdeviceid )
+                .arg( currurl )
+                .arg ( currid )
+                .arg( currdir ) );
+                query( QString( "DELETE FROM uniqueid WHERE deviceid = %1 AND url='%2';" )
+                      .arg( currdeviceid )
                       .arg( currurl ) );
             emit uniqueIdChanged( bundle->url().path(), nonTempURLs[1], bundle->uniqueId() );
         }
@@ -2667,7 +3087,7 @@ CollectionDB::urlFromUniqueId( const QString &id )
         return QString::null;
 
     QStringList urls = query( QString(
-            "SELECT url, uniqueid "
+            "SELECT deivceid, url "
             "FROM uniqueid "
             "WHERE uniqueid = '%1';" )
                 .arg( id ) );
@@ -2675,7 +3095,7 @@ CollectionDB::urlFromUniqueId( const QString &id )
     if( urls.empty() )
         return QString::null;
 
-    return urls[0];
+    return MountPointManager::instance()->getAbsolutePath( urls[0].toInt(), urls[1] );
 }
 
 QString
@@ -2689,15 +3109,16 @@ CollectionDB::getURL( const MetaBundle &bundle )
     if( !albID )
         return QString::null;
 
-    QString q = QString( "SELECT tags.url "
+    QString q = QString( "SELECT tags.deviceid, tags.url "
             "FROM tags "
-            "WHERE tags.album = '%1' AND tags.artist = '%2' AND tags.track = '%3' AND tags.title = '%4';" )
+            "WHERE tags.album = '%1' AND tags.artist = '%2' AND tags.track = '%3' AND tags.title = '%4'" +
+            deviceidSelection() + ";" )
         .arg( albID )
         .arg( artID )
         .arg( bundle.track() )
         .arg( escapeString( bundle.title() ) );
 
-    QStringList urls = query( q );
+    QStringList urls = URLsFromQuery( query( q ) );
 
     if( urls.empty() )
         return QString::null;
@@ -2762,7 +3183,9 @@ fillInBundle( QStringList values, MetaBundle &bundle )
 bool
 CollectionDB::bundleForUrl( MetaBundle* bundle )
 {
-    bool valid = false;
+    int deviceid = MountPointManager::instance()->getIdForUrl( bundle->url() );
+    KURL rpath;
+    MountPointManager::instance()->getRelativePath( deviceid, bundle->url(), rpath );
     QStringList values = query( QString(
             "SELECT album.name, artist.name, genre.name, tags.title, "
             "year.name, tags.comment, tags.discnumber, tags.composer, "
@@ -2770,8 +3193,11 @@ CollectionDB::bundleForUrl( MetaBundle* bundle )
             "tags.filesize, tags.filetype, tags.sampler "
             "FROM tags, album, artist, genre, year "
             "WHERE album.id = tags.album AND artist.id = tags.artist AND "
-            "genre.id = tags.genre AND year.id = tags.year AND tags.url = '%1';" )
-                .arg( escapeString( bundle->url().path() ) ) );
+            "genre.id = tags.genre AND year.id = tags.year AND tags.url = '%2' AND tags.deviceid = %1;" )
+                .arg( deviceid )
+                .arg( escapeString( rpath.path( ) ) ) );
+
+    bool valid = false;
 
     if ( !values.empty() )
     {
@@ -2981,11 +3407,15 @@ success: ;
 void
 CollectionDB::addAudioproperties( const MetaBundle& bundle )
 {
-    query( QString( "UPDATE tags SET bitrate='%1', length='%2', samplerate='%3' WHERE url='%4';" )
+    int deviceid = MountPointManager::instance()->getIdForUrl( bundle.url() );
+    KURL rpath;
+    MountPointManager::instance()->getRelativePath( deviceid, bundle.url(), rpath );
+    query( QString( "UPDATE tags SET bitrate='%1', length='%2', samplerate='%3' WHERE url='%5' AND deviceid = %4;" )
                     .arg( bundle.bitrate() )
                     .arg( bundle.length() )
                     .arg( bundle.sampleRate() )
-                    .arg( escapeString( bundle.url().path() ) ) );
+                    .arg( deviceid )
+                    .arg( escapeString( rpath.path() ) ) );
 }
 
 
@@ -2993,11 +3423,14 @@ void
 CollectionDB::addSongPercentage( const QString &url, int percentage,
         const QString &reason, const QDateTime *playtime )
 {
+    //the URL must always be inserted last! an escaped URL can contain Strings like %1->bug
+    int deviceid = MountPointManager::instance()->getIdForUrl( url );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
     QStringList values =
         query( QString(
             "SELECT playcounter, createdate, percentage, rating FROM statistics "
-            "WHERE url = '%1';" )
-            .arg( escapeString( url ) ) );
+            "WHERE url = '%2' AND deviceid = %1;" )
+            .arg( deviceid ).arg( escapeString( rpath ) ) );
 
     uint atime = playtime ? playtime->toTime_t() : QDateTime::currentDateTime().toTime_t();
 
@@ -3007,20 +3440,24 @@ CollectionDB::addSongPercentage( const QString &url, int percentage,
 
     if ( !values.isEmpty() )
     {
-        query( QString( "UPDATE statistics SET playcounter=%1, accessdate=%2 WHERE url='%3';" )
+
+        // increment playcounter and update accesstime
+        query( QString( "UPDATE statistics SET playcounter=%1, accessdate=%2 WHERE url='%4' AND deviceid= %3;" )
                         .arg( values[0] + " + 1" )
                         .arg( atime )
-                        .arg( escapeString( url ) ) );
+                        .arg( deviceid )
+                        .arg( escapeString( rpath ) ) ); 
     }
     else
     {
-        insert( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter, rating, uniqueid, deleted ) "
-                        "VALUES ( '%3', %1, %2, 0, 1, 0, %4, %5 );" )
+        insert( QString( "INSERT INTO statistics ( url, deviceid, createdate, accessdate, percentage, playcounter, rating, uniqueid, deleted ) "
+                        "VALUES ( '%6', %5, %1, %2, 0, 1, 0, %3, %4 );" )
                         .arg( atime )
                         .arg( atime )
-                        .arg( escapeString( url ) )
                         .arg( ( getUniqueId( url ) == QString::null ? "NULL" : "'" + escapeString( getUniqueId( url ) ) + "'" ) )
-                        .arg( boolF() ), NULL );
+                        .arg( boolF() )
+                        .arg( deviceid )
+                        .arg( escapeString( rpath ) ), 0 );
     }
 
     double prevscore = 50;
@@ -3033,7 +3470,8 @@ CollectionDB::addSongPercentage( const QString &url, int percentage,
         if ( playcount )
             prevscore = values[ 2 ].toDouble();
     }
-    const QStringList v = query( QString( "SELECT length FROM tags WHERE url = '%1';" ).arg( escapeString( url ) ) );
+    const QStringList v = query( QString( "SELECT length FROM tags WHERE url = '%2' AND deviceid = %1;" )
+                            .arg( deviceid ).arg( escapeString( rpath ) ) );
     const int length = v.isEmpty() ? 0 : v.first().toInt();
 
     ScriptManager::instance()->requestNewScore( url, prevscore, playcount, length, percentage, reason );
@@ -3058,8 +3496,10 @@ CollectionDB::getSongPercentage( const QString &url )
 int
 CollectionDB::getSongRating( const QString &url )
 {
-    QStringList values = query( QString( "SELECT rating FROM statistics WHERE url = '%1';" )
-                                         .arg( escapeString( url ) ) );
+    int deviceid = MountPointManager::instance()->getIdForUrl( url );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
+    QStringList values = query( QString( "SELECT rating FROM statistics WHERE url = '%2' AND deviceid = %1;" )
+                                         .arg( deviceid ).arg( escapeString( rpath ) ) );
 
     if( values.count() )
         return kClamp( values.first().toInt(), 0, 10 );
@@ -3070,10 +3510,12 @@ CollectionDB::getSongRating( const QString &url )
 void
 CollectionDB::setSongPercentage( const QString &url , int percentage)
 {
+    int deviceid = MountPointManager::instance()->getIdForUrl( url );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
     QStringList values =
         query( QString(
-            "SELECT playcounter, createdate, accessdate, rating FROM statistics WHERE url = '%1';" )
-            .arg( escapeString( url ) ));
+            "SELECT playcounter, createdate, accessdate, rating FROM statistics WHERE url = '%2' AND deviceid = %1;" )
+            .arg( deviceid ).arg( escapeString( rpath ) ) );
 
     // check boundaries
     if ( percentage > 100 ) percentage = 100;
@@ -3081,21 +3523,21 @@ CollectionDB::setSongPercentage( const QString &url , int percentage)
 
     if ( !values.isEmpty() )
     {
-        query( QString( "UPDATE statistics SET percentage=%1 WHERE url='%2';" )
+        query( QString( "UPDATE statistics SET percentage=%1 WHERE url='%3' AND deviceid = %2;" )
                         .arg( percentage )
-                        .arg( escapeString( url ) ));
+                        .arg( deviceid ).arg( escapeString( rpath ) ) );
     }
     else
     {
-        insert( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter, rating, uniqueid, deleted ) "
-                         "VALUES ( '%4', %2, %3, %1, 0, 0, %5, %6 );" )
+        insert( QString( "INSERT INTO statistics ( url, deviceid, createdate, accessdate, percentage, playcounter, rating, uniqueid, deleted ) "
+                         "VALUES ( '%7', %6, %2, %3, %1, 0, 0, %3, %4 );" )
                         .arg( percentage )
                         .arg( QDateTime::currentDateTime().toTime_t() )
                         .arg( QDateTime::currentDateTime().toTime_t() )
-                        .arg( escapeString( url ) )
                         .arg( ( getUniqueId( url ) == QString::null ? "NULL" : "'" + escapeString( getUniqueId( url ) ) + "'" ) )
-                        .arg( boolF() ), NULL );
-
+                        .arg( boolF() )
+                        .arg( deviceid )
+                        .arg( escapeString( rpath ) ),0 );
     }
 
     emit scoreChanged( url, percentage );
@@ -3104,10 +3546,13 @@ CollectionDB::setSongPercentage( const QString &url , int percentage)
 void
 CollectionDB::setSongRating( const QString &url, int rating, bool toggleHalf )
 {
+    int deviceid = MountPointManager::instance()->getIdForUrl( url );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
     QStringList values =
         query( QString(
-            "SELECT playcounter, createdate, accessdate, percentage, rating FROM statistics WHERE url = '%1';" )
-            .arg( escapeString( url ) ));
+            "SELECT playcounter, createdate, accessdate, percentage, rating FROM statistics WHERE url = '%2' AND deviceid = %1;" )
+            .arg( deviceid )
+            .arg( escapeString( rpath ) ) );
 
     bool ok = true;
     int prev = values[4].toInt( &ok );
@@ -3127,20 +3572,22 @@ CollectionDB::setSongRating( const QString &url, int rating, bool toggleHalf )
 
     if ( !values.isEmpty() )
     {
-        query( QString( "UPDATE statistics SET rating=%1 WHERE url='%2';" )
+        query( QString( "UPDATE statistics SET rating=%1 WHERE url='%3' AND deviceid = %2;" )
                         .arg( rating )
-                        .arg( escapeString( url ) ));
+                        .arg( deviceid )
+                        .arg( escapeString( rpath ) ) );
     }
     else
     {
-        insert( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, rating, playcounter, uniqueid, deleted ) "
-                         "VALUES ( '%4', %2, %3, 0, %1, 0, %5, %6 );" )
+        insert( QString( "INSERT INTO statistics ( url, deviceid, createdate, accessdate, percentage, rating, playcounter, uniqueid, deleted ) "
+                         "VALUES ( '%7', %6, %2, %3, 0, %1, 0, %4, %5 );" )
                         .arg( rating )
                         .arg( QDateTime::currentDateTime().toTime_t() )
                         .arg( QDateTime::currentDateTime().toTime_t() )
-                        .arg( escapeString( url ) )
                         .arg( ( getUniqueId( url ) == QString::null ? "NULL" : "'" + escapeString( getUniqueId( url ) ) + "'" ) )
-                        .arg( boolF() ), NULL );
+                        .arg( boolF() )
+                        .arg( deviceid )
+                        .arg( escapeString( rpath ) ), NULL );
     }
 
     emit ratingChanged( url, rating );
@@ -3149,8 +3596,10 @@ CollectionDB::setSongRating( const QString &url, int rating, bool toggleHalf )
 int
 CollectionDB::getPlayCount( const QString &url )
 {
-    QStringList values = query( QString( "SELECT playcounter FROM statistics WHERE url = '%1';" )
-                                         .arg( escapeString( url ) ) );
+    int deviceid = MountPointManager::instance()->getIdForUrl( url );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
+    QStringList values = query( QString( "SELECT playcounter FROM statistics WHERE url = '%2' AND deviceid = %1;" )
+                                         .arg( deviceid ).arg( escapeString( rpath ) ) );
     if( values.count() )
         return values.first().toInt();
     return 0;
@@ -3159,9 +3608,11 @@ CollectionDB::getPlayCount( const QString &url )
 QDateTime
 CollectionDB::getFirstPlay( const QString &url )
 {
+    int deviceid = MountPointManager::instance()->getIdForUrl( url );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
     QDateTime dt = QDateTime();
-    QStringList values = query( QString( "SELECT createdate FROM statistics WHERE url = '%1';" )
-                                         .arg( escapeString( url ) ) );
+    QStringList values = query( QString( "SELECT createdate FROM statistics WHERE url = '%2' AND deviceid = %1;" )
+                                         .arg( deviceid ).arg( escapeString( rpath ) ) );
     if( values.count() )
         dt.setTime_t( values.first().toUInt() );
     return dt;
@@ -3170,9 +3621,11 @@ CollectionDB::getFirstPlay( const QString &url )
 QDateTime
 CollectionDB::getLastPlay( const QString &url )
 {
+    int deviceid = MountPointManager::instance()->getIdForUrl( url );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
     QDateTime dt = QDateTime();
-    QStringList values = query( QString( "SELECT accessdate FROM statistics WHERE url = '%1';" )
-                                         .arg( escapeString( url ) ) );
+    QStringList values = query( QString( "SELECT accessdate FROM statistics WHERE url = '%2' AND deviceid = %1;" )
+                                         .arg( deviceid ).arg( escapeString( rpath ) ) );
     if( values.count() )
         dt.setTime_t( values.first().toUInt() );
     else
@@ -3187,41 +3640,51 @@ CollectionDB::getLastPlay( const QString &url )
 void
 CollectionDB::migrateFile( const QString &oldURL, const QString &newURL )
 {
-    //  Ensure destination is clear.
-    query( QString( "DELETE FROM tags WHERE url = '%1';" )
-        .arg( escapeString( newURL ) ) );
+    int oldMediaid = MountPointManager::instance()->getIdForUrl( oldURL );
+    QString oldRpath = MountPointManager::instance()->getRelativePath( oldMediaid, oldURL );
 
-    query( QString( "DELETE FROM statistics WHERE url = '%1';" )
-        .arg( escapeString( newURL ) ) );
+    int newMediaid = MountPointManager::instance()->getIdForUrl( newURL );
+    QString newRpath = MountPointManager::instance()->getRelativePath( newMediaid, newURL );
+
+    //  Ensure destination is clear.
+    query( QString( "DELETE FROM tags WHERE url = '%2' AND deviceid = %1;" )
+        .arg( newMediaid ).arg( escapeString( newRpath ) ) );
+
+    query( QString( "DELETE FROM statistics WHERE url = '%2' AND deviceid = %1;" )
+        .arg( newMediaid ).arg( escapeString( newRpath ) ) );
 
     if ( !getLyrics( oldURL ).isEmpty() )
-        query( QString( "DELETE FROM lyrics WHERE url = '%1';" )
-            .arg( escapeString( newURL ) ) );
+        query( QString( "DELETE FROM lyrics WHERE url = '%2' AND deviceid = %1;" )
+            .arg( newMediaid ).arg( escapeString( newRpath ) ) );
     //  Migrate
-    query( QString( "UPDATE tags SET url = '%1' WHERE url = '%2';" )
-        .arg( escapeString( newURL ),
-              escapeString( oldURL ) ) );
+    //code looks ugly but prevents problems when the URL contains HTTP escaped characters
+    query( QString( "UPDATE tags SET url = '%3', deviceid = %1" )
+        .arg( newMediaid ).arg( escapeString( newRpath ) )
+        + QString( " WHERE deviceid=%1 AND url = '%2';" )
+        .arg( oldMediaid ).arg( escapeString( oldRpath ) ) );
 
-    query( QString( "UPDATE statistics SET url = '%1' WHERE url = '%2';" )
-        .arg( escapeString( newURL ),
-              escapeString( oldURL ) ) );
+    query( QString( "UPDATE statistics SET url = '%2', deviceid = %1" )
+        .arg( newMediaid ).arg( escapeString( newRpath ) )
+        + QString( " WHERE deviceid=%1 AND url = '%2';" )
+        .arg( oldMediaid ).arg( escapeString( oldRpath ) ) );
 
-    query( QString( "UPDATE lyrics SET url = '%1' WHERE url = '%2';" )
-        .arg( escapeString( newURL ),
-              escapeString( oldURL ) ) );
+    query( QString( "UPDATE lyrics SET url = '%2', deviceid = %1" )
+        .arg( newMediaid ).arg( escapeString( newRpath ) )
+        + QString( " WHERE deviceid=%1 AND url = '%2';" )
+        .arg( oldMediaid ).arg( escapeString( oldRpath ) ) );
     //  Clean up.
-    query( QString( "DELETE FROM tags WHERE url = '%1';" )
-        .arg( escapeString( oldURL ) ) );
+    query( QString( "DELETE FROM tags WHERE url = '%2' AND deviceid = %1;" )
+        .arg( oldMediaid ).arg( escapeString( oldURL ) ) );
 
-    query( QString( "DELETE FROM statistics WHERE url = '%1';" )
-        .arg( escapeString( oldURL ) ) );
+    query( QString( "DELETE FROM statistics WHERE url = '%2' AND deviceid = %1;" )
+        .arg( oldMediaid ).arg( escapeString( oldRpath ) ) );
 
-    query( QString( "DELETE FROM lyrics WHERE url = '%1';" )
-        .arg( escapeString( oldURL ) ) );
+    query( QString( "DELETE FROM lyrics WHERE url = '%2' AND deviceid = %1;" )
+        .arg( oldMediaid ).arg( escapeString( oldRpath ) ) );
 
-    query( QString( "UPDATE uniqueid SET url = '%1' WHERE url = '%2';" )
-        .arg( escapeString( newURL ),
-              escapeString( oldURL ) ) );
+    query( QString( "UPDATE uniqueid SET url = '%1', deviceid = %2 WHERE url = '%3' AND deviceid = %4;" )
+        .arg( escapeString( newRpath ), QString::number( newMediaid ),
+              escapeString( oldRpath ), QString::number( oldMediaid ) ) );
 
     query( QString( "UPDATE playlists SET url = '%1' WHERE url = '%2';" )
         .arg( escapeString( newURL ),
@@ -3438,40 +3901,46 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
 void
 CollectionDB::updateDirStats( QString path, const long datetime, const bool temporary )
 {
-    if ( path.endsWith( "/" ) )
-        path = path.left( path.length() - 1 );
+    //if ( path.endsWith( "/" ) )
+    //    path = path.left( path.length() - 1 );
 
-    if ( getDbConnectionType() == DbConnection::postgresql )
+    int deviceid = MountPointManager::instance()->getIdForUrl( path );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, path );
+
+    if (getDbConnectionType() == DbConnection::postgresql)
     {
         // REPLACE INTO is not valid SQL for postgres, so we need to check whether we
         // should UPDATE() or INSERT()
-        QStringList values = query( QString("SELECT * FROM directories%1 WHERE dir='%2';")
+        QStringList values = query( QString("SELECT * FROM directories%1 WHERE dir='%2' AND deviceid=%4;")
             .arg( temporary ? "_temp" : "")
-            .arg( escapeString( path ) ) );
+            .arg( escapeString( rpath ) )
+            .arg( deviceid ) );
 
-        if ( values.count() > 0 )
+        if(values.count() > 0 )
         {
-            query( QString( "UPDATE directories%1 SET changedate=%2 WHERE dir='%3';")
+            query( QString( "UPDATE directories%1 SET changedate=%2 WHERE dir='%3'AND deviceid=%4;")
             .arg( temporary ? "_temp" : "" )
             .arg( datetime )
-            .arg( escapeString( path ) ) );
+            .arg( escapeString( rpath ) )
+            .arg( deviceid ) );
         }
         else
         {
-            query( QString( "INSERT INTO directories%1 (dir,changedate) VALUES ('%3','%2');")
+
+            query( QString( "INSERT INTO directories%1 (dir, deviceid,changedate) VALUES ('%3', %4, '%2');")
             .arg( temporary ? "_temp" : "")
             .arg( datetime )
-            .arg( escapeString( path ) )
-            );
+            .arg( escapeString( rpath ) )
+            .arg( deviceid ) );
         }
     }
     else
     {
-        query( QString( "REPLACE INTO directories%1 ( dir, changedate ) VALUES ( '%3', %2 );" )
+        query( QString( "REPLACE INTO directories%1 ( dir, deviceid, changedate ) VALUES ( '%3', %4, %2 );" )
                   .arg( temporary ? "_temp" : "" )
                   .arg( datetime )
-                  .arg( escapeString( path ) )
-                  );
+                  .arg( escapeString( rpath ) )
+                  .arg( deviceid ) );
     }
 
     INotify::instance()->watchDir( path );
@@ -3481,26 +3950,33 @@ CollectionDB::updateDirStats( QString path, const long datetime, const bool temp
 void
 CollectionDB::removeSongsInDir( QString path )
 {
-    if ( path.endsWith( "/" ) )
-        path = path.left( path.length() - 1 );
+    //if ( path.endsWith( "/" ) )
+    //    path = path.left( path.length() - 1 );
+    int deviceid = MountPointManager::instance()->getIdForUrl( path );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, path );
 
-    query( QString( "DELETE FROM tags WHERE dir = '%1';" )
-              .arg( escapeString( path ) ) );
+    query( QString( "DELETE FROM tags WHERE dir = '%1' AND deviceid = %2;" )
+              .arg( escapeString( rpath ) )
+              .arg( deviceid ) );
 
-    query( QString( "DELETE FROM uniqueid WHERE dir = '%1';" )
-              .arg( escapeString( path ) ) );
+    query( QString( "DELETE FROM uniqueid WHERE dir = '%1' AND deviceid = %2;" )
+              .arg( escapeString( rpath ) )
+              .arg( deviceid ) );
 }
 
 
 bool
 CollectionDB::isDirInCollection( QString path )
 {
-    if ( path.endsWith( "/" ) )
-        path = path.left( path.length() - 1 );
+    //if ( path.endsWith( "/" ) )
+    //    path = path.left( path.length() - 1 );
+    int deviceid = MountPointManager::instance()->getIdForUrl( path );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, path );
 
     QStringList values =
-        query( QString( "SELECT changedate FROM directories WHERE dir = '%1';" )
-                  .arg( escapeString( path ) ) );
+        query( QString( "SELECT changedate FROM directories WHERE dir = '%1' AND deviceid = %2;" )
+                  .arg( escapeString( rpath ) )
+                  .arg( deviceid ) );
 
     return !values.isEmpty();
 }
@@ -3509,9 +3985,13 @@ CollectionDB::isDirInCollection( QString path )
 bool
 CollectionDB::isFileInCollection( const QString &url  )
 {
+    int deviceid = MountPointManager::instance()->getIdForUrl( url );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
+
     QStringList values =
-        query( QString( "SELECT url FROM tags WHERE url = '%1';" )
-                  .arg( escapeString( url ) ) );
+        query( QString( "SELECT url FROM tags WHERE url = '%1' AND deviceid = %2;" )
+                  .arg( escapeString( rpath ) )
+                  .arg( deviceid ) );
 
     return !values.isEmpty();
 }
@@ -3522,10 +4002,18 @@ CollectionDB::removeSongs( const KURL::List& urls )
 {
     for( KURL::List::ConstIterator it = urls.begin(), end = urls.end(); it != end; ++it )
     {
-        query( QString( "DELETE FROM tags WHERE url = '%1';" )
-            .arg( escapeString( (*it).path() ) ) );
+        int deviceid = MountPointManager::instance()->getIdForUrl( *it );
+        QString rpath = MountPointManager::instance()->getRelativePath( deviceid, (*it).path() );
+
+        query( QString( "DELETE FROM tags WHERE url = '%1' AND deviceid = %2;" )
+            .arg( escapeString( rpath ) )
+            .arg( deviceid ) );
         if( AmarokConfig::advancedTagFeatures() )
-            query( QString( "DELETE FROM uniqueid WHERE url = '%1';" )
+            query( QString( "DELETE FROM uniqueid WHERE url = '%1' AND deviceid = %2;" )
+                .arg( escapeString( rpath ) )
+                .arg( deviceid ) );
+        query( QString( "UPDATE statistics SET deleted = %1 WHERE url = '%2';" )
+                .arg( boolT() )
                 .arg( escapeString( (*it).path() ) ) );
         query( QString( "UPDATE statistics SET deleted = %1 WHERE url = '%2';" )
                 .arg( boolT() )
@@ -3562,9 +4050,13 @@ CollectionDB::checkCompilations( const QString &path, const bool temporary )
     QStringList artists;
     QStringList dirs;
 
-    albums = query( QString( "SELECT DISTINCT album.name FROM tags_temp, album%1 AS album WHERE tags_temp.dir = '%2' AND album.id = tags_temp.album AND tags_temp.sampler IS NULL;" )
+    int deviceid = MountPointManager::instance()->getIdForUrl( path );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, path );
+
+    albums = query( QString( "SELECT DISTINCT album.name FROM tags_temp, album%1 AS album WHERE tags_temp.dir = '%2' AND tags_temp.deviceid = %3 AND album.id = tags_temp.album AND tags_temp.sampler IS NULL;" )
               .arg( temporary ? "_temp" : "" )
-              .arg( escapeString( path ) ));
+              .arg( escapeString( path ) )
+              .arg( deviceid ) );
 
     for ( uint i = 0; i < albums.count(); i++ )
     {
@@ -3591,7 +4083,7 @@ QStringList
 CollectionDB::setCompilation( const QString &album, const bool enabled, const bool updateView )
 {
     uint id = albumID( album, false, false, true );
-    QStringList retval;
+    QStringList rs;
 
     if ( id )
     {
@@ -3599,7 +4091,8 @@ CollectionDB::setCompilation( const QString &album, const bool enabled, const bo
         query( QString( "UPDATE tags SET sampler = %1 WHERE tags.album = %2;" )
                 .arg( enabled ? boolT() : boolF() )
                 .arg( idString ) );
-        retval = query( QString( "SELECT url FROM tags WHERE tags.album = %1;" ).arg( idString ) );
+        //FIXME max: do we have to restrict the query to the available devices?
+        rs = query( QString( "SELECT deviceid, url FROM tags WHERE tags.album = %1;" ).arg( idString ) );
     }
 
     // Update the Collection-Browser view,
@@ -3608,18 +4101,21 @@ CollectionDB::setCompilation( const QString &album, const bool enabled, const bo
         QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
 
     // return a list so tags can be updated
-    return retval;
+    return URLsFromQuery( rs );
 }
 
 
 void
 CollectionDB::removeDirFromCollection( QString path )
 {
-    if ( path.endsWith( "/" ) )
-        path = path.left( path.length() - 1 );
+    //if ( path.endsWith( "/" ) )
+    //    path = path.left( path.length() - 1 );
+    int deviceid = MountPointManager::instance()->getIdForUrl( path );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, path );
 
-    query( QString( "DELETE FROM directories WHERE dir = '%1';" )
-                    .arg( escapeString( path ) ) );
+    query( QString( "DELETE FROM directories WHERE dir = '%1' AND deviceid = %2;" )
+                    .arg( escapeString( rpath ) )
+                    .arg( deviceid ) );
 }
 
 
@@ -3627,7 +4123,9 @@ QString
 CollectionDB::IDfromExactValue( QString table, QString value, bool autocreate, bool temporary /* = false */ )
 {
     if ( temporary )
-        table.append( "_temp" );
+    {
+            table.append( "_temp" );
+    }
 
     QString querystr( QString( "SELECT id FROM %1 WHERE name " ).arg( table ) );
     querystr += exactCondition( value ) + ';';
@@ -3736,8 +4234,11 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
     }
     else
     {
+        int deviceid = MountPointManager::instance()->getIdForUrl( url );
+        QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
         //We have to remove the trailing comma from command
-        query( command.left( command.length() - 2 ) + " WHERE url = '" + escapeString( url ) + "';" );
+        query( command.left( command.length() - 2 ) + " WHERE url = '" + escapeString( rpath ) +
+                                                      "' AND deviceid = " + QString::number( deviceid ) + ";" );
     }
 
     //Check to see if we use the entry anymore. If not, delete it
@@ -3780,7 +4281,11 @@ CollectionDB::updateURL( const QString &url, const bool updateView )
 QString
 CollectionDB::getUniqueId( const QString &url )
 {
-    QStringList values = query( QString( "SELECT uniqueid FROM uniqueid WHERE url = '%1';" ).arg( escapeString( url ) ));
+    int deviceid = MountPointManager::instance()->getIdForUrl( url );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
+    QStringList values = query( QString( "SELECT uniqueid FROM uniqueid WHERE deviceid = %1 AND url = '%2';" )
+                                .arg( deviceid )
+                                .arg( escapeString( rpath ) ));
     if( !values.empty() )
         return values[0];
     else
@@ -3790,18 +4295,24 @@ CollectionDB::getUniqueId( const QString &url )
 void
 CollectionDB::setLyrics( const QString &url, const QString &lyrics )
 {
-    QStringList values = query(QString("SELECT lyrics FROM lyrics WHERE url = '%1';").arg( escapeString( url ) ) );
+    int deviceid = MountPointManager::instance()->getIdForUrl( url );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
+
+    QStringList values = query(QString("SELECT lyrics FROM lyrics WHERE url = '%1' AND deviceid = %2;")
+                    .arg( escapeString( rpath ) ).arg( deviceid ) );
     if(values.count() > 0)
     {
         if ( !lyrics.isEmpty() )
-            query( QString( "UPDATE lyrics SET lyrics = '%1' WHERE url = '%2';" ).arg( escapeString( lyrics), escapeString( url ) ));
+            query( QString( "UPDATE lyrics SET lyrics = '%1' WHERE url = '%2' AND deviceid = %3;" )
+                    .arg( escapeString( lyrics) ).arg( escapeString( rpath ) ).arg( deviceid ) );
         else
-            query( QString( "DELETE FROM lyrics WHERE url = '%1';" ).arg( escapeString( url ) ));
+            query( QString( "DELETE FROM lyrics WHERE url = '%1' AND deviceid = %2;" )
+                    .arg( escapeString( rpath ) ).arg( deviceid) );
     }
     else
     {
-        insert( QString( "INSERT INTO lyrics (url, lyrics) values ( '%1', '%2' );" ).arg( escapeString( url ), escapeString( lyrics ) ),
-         NULL);
+        insert( QString( "INSERT INTO lyrics (url, deviceid, lyrics) values ( '%1', %2, '%3' );" )
+                .arg( escapeString( rpath ) ).arg( deviceid ).arg( escapeString( lyrics ) ), NULL);
     }
 }
 
@@ -3809,7 +4320,10 @@ CollectionDB::setLyrics( const QString &url, const QString &lyrics )
 QString
 CollectionDB::getLyrics( const QString &url )
 {
-    QStringList values = query( QString( "SELECT lyrics FROM lyrics WHERE url = '%1';" ).arg( escapeString( url ) ));
+    int deviceid = MountPointManager::instance()->getIdForUrl( url );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
+    QStringList values = query( QString( "SELECT lyrics FROM lyrics WHERE url = '%1' AND deviceid = %2;" )
+                .arg( escapeString( rpath ) ).arg( deviceid ) );
     return values[0];
 }
 
@@ -4073,12 +4587,13 @@ CollectionDB::scanMonitor()  //SLOT
 void
 CollectionDB::startScan()  //SLOT
 {
-    QStringList folders = AmarokConfig::collectionFolders();
+    QStringList folders = MountPointManager::instance()->collectionFolders();
 
     if ( folders.isEmpty() )
     {
-        dropTables( false );
-        createTables( false );
+        //dropTables( false );
+        //createTables( false );
+        clearTables( false );
     }
     else if( PlaylistBrowser::instance() )
     {
@@ -4170,12 +4685,16 @@ CollectionDB::atfMigrateStatisticsUrl( const QString& /*oldUrl*/, const QString&
     if( !AmarokConfig::advancedTagFeatures() )
         return;
 
-    query( QString( "DELETE FROM statistics WHERE url = '%1';" )
+    int deviceid = MountPointManager::instance()->getIdForUrl( newUrl );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, newUrl );
+    query( QString( "DELETE FROM statistics WHERE deviceid = %1, url = '%2';" )
+                            .arg( deviceid )
                             .arg( escapeString( newUrl ) ) );
-    query( QString( "UPDATE statistics SET url = '%1', deleted = %2 WHERE uniqueid = '%2';" )
-                            .arg( escapeString( newUrl ) )
+    query( QString( "UPDATE statistics SET deviceid = %1, url = '%4', deleted = %2 WHERE uniqueid = '%3';" )
+                            .arg( deviceid )
                             .arg( boolF() )
-                            .arg( escapeString( uniqueid ) ) );
+                            .arg( escapeString( uniqueid ) )
+                            .arg( escapeString( newUrl ) ) );
 }
 
 void
@@ -4285,12 +4804,110 @@ CollectionDB::initialize()
         createStatsTable();
         warning() << "Tables should now definitely exist. (Stop ignoring errors)" << endl;
     }
-    else
-    {
-        if ( adminValue( "Database Stats Version" ).toInt() != DATABASE_STATS_VERSION
-          || amaroK::config( "Collection Browser" )->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION )
+    else {
+        //updates for the Devices table go here
+        //put all other update code into checkDatabase()
+        //make sure that there is no call to MountPointManager in CollectionDB's ctor
+        //or in methods called from the ctor.
+        if ( adminValue( "Database Devices Version" ).isEmpty()
+             && amaroK::config( "CollectionBrowser" )->readNumEntry( "Database Devices Version", 0 ) == 0 )
         {
-            debug() << "Different database stats version detected! Stats table will be updated or rebuilt." << endl;
+            debug() << "Creating DEVICES table" << endl;
+            QString deviceAutoIncrement = "";
+            if ( getDbConnectionType() == DbConnection::postgresql )
+            {
+                query( QString( "CREATE SEQUENCE devices_seq;" ) );
+                deviceAutoIncrement = QString("DEFAULT nextval('devices_seq')");
+            }
+            else if ( getDbConnectionType() == DbConnection::mysql )
+            {
+                deviceAutoIncrement = "AUTO_INCREMENT";
+            }
+            query( QString( "CREATE TABLE devices ("
+                            "id INTEGER PRIMARY KEY %1,"
+                            "type " + textColumnType() + ","
+                            "label " + textColumnType() + ","
+                            "lastmountpoint " + textColumnType() + ","
+                            "uuid " + textColumnType() + ","
+                            "servername " + textColumnType() + ","
+                            "sharename " + textColumnType() + ");" )
+                         .arg( deviceAutoIncrement ) );
+            query( "CREATE INDEX devices_type ON devices( type );" );
+            query( "CREATE INDEX devices_uuid ON devices( uuid );" );
+            query( "CREATE INDEX devices_remoteshare ON devices( servername, sharename );" );
+        }
+        else if ( adminValue( "Database Devices Version" ).toInt() != DATABASE_DEVICES_VERSION
+              || amaroK::config( "Collection Browser" )->readNumEntry( "Database Devices Version", 0 ) != DATABASE_DEVICES_VERSION )
+        {
+            debug() << "Updating DEVICES table" << endl;
+            //add future Devices update code here
+        }
+    }
+
+    amaroK::config( "Collection Browser" )->writeEntry( "Database Devices Version", DATABASE_DEVICES_VERSION );
+
+    setAdminValue( "Database Devices Version", QString::number( DATABASE_DEVICES_VERSION ) );
+}
+
+void
+CollectionDB::checkDatabase()
+{
+    if ( isValid() )
+    {
+        //Inform the user that he should attach as many devices with music as possible
+        //Hopefully this won't be necessary soon.
+        //
+        //Currently broken, so disabled - seems to cause crashes as events are sent to
+        //the Playlist - maybe it's not fully initialised?
+        /*
+        QString text = i18n( "Amarok has to update your database to be able to use the new Dynamic Collection(insert link) feature. Amarok now has to determine on which physical devices your collection is stored. Please attach all removable devices which contain part of your collection and continue. Cancelling will exit Amarok." );
+        int result = KMessageBox::warningContinueCancel( 0, text, "Database migration" );
+        if ( result != KMessageBox::Continue )
+        {
+            error() << "Dynamic Collection migration was aborted by user...exiting" << endl;
+            exit( 1 );
+        }
+        */
+
+        updateStatsTables();
+
+        updatePersistentTables();
+
+        updatePodcastTables();
+
+        //remove database file if version is incompatible
+        if ( amaroK::config( "Collection Browser" )->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION
+             || adminValue( "Database Version" ).toInt() != DATABASE_VERSION )
+        {
+            debug() << "Rebuilding database!" << endl;
+            dropTables(false);
+            createTables(false);
+        }
+    }
+
+    // TODO Should write to config in dtor, but it crashes...
+    amaroK::config( "Collection Browser" )->writeEntry( "Database Version", DATABASE_VERSION );
+    amaroK::config( "Collection Browser" )->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
+    amaroK::config( "Collection Browser" )->writeEntry( "Database Persistent Tables Version", DATABASE_PERSISTENT_TABLES_VERSION );
+    amaroK::config( "Collection Browser" )->writeEntry( "Database Podcast Tables Version", DATABASE_PODCAST_TABLES_VERSION );
+    amaroK::config( "Collection Browser" )->writeEntry( "Database ATF Version", DATABASE_ATF_VERSION );
+
+    setAdminValue( "Database Version", QString::number( DATABASE_VERSION ) );
+    setAdminValue( "Database Stats Version", QString::number( DATABASE_STATS_VERSION ) );
+    setAdminValue( "Database Persistent Tables Version", QString::number( DATABASE_PERSISTENT_TABLES_VERSION ) );
+    setAdminValue( "Database Podcast Tables Version", QString::number( DATABASE_PODCAST_TABLES_VERSION ) );
+    setAdminValue( "Database ATF Version", QString::number( DATABASE_ATF_VERSION ) );
+
+    initDirOperations();
+}
+
+void
+CollectionDB::updateStatsTables()
+{
+    if ( adminValue( "Database Stats Version" ).toInt() != DATABASE_STATS_VERSION
+          || amaroK::config( "Collection Browser" )->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION )
+    {
+        debug() << "Different database stats version detected! Stats table will be updated or rebuilt." << endl;
 
             #if 0 // causes mysterious crashes
             if( getType() == DbConnection::sqlite && QFile::exists( amaroK::saveLocation()+"collection.db" ) )
@@ -4310,103 +4927,145 @@ CollectionDB::initialize()
             }
             #endif
 
-            int prev = adminValue( "Database Stats Version" ).toInt();
+        int prev = adminValue( "Database Stats Version" ).toInt();
 
-            /* If config returns 3 or lower, it came from an Amarok version that was not aware of
-               admin table, so we can't trust this table at all */
-            if( !prev || ( amaroK::config( "Collection Browser" )->readNumEntry( "Database Stats Version", 0 )
-                      && amaroK::config( "Collection Browser" )->readNumEntry( "Database Stats Version", 0 ) <= 3  ) )
-                prev = amaroK::config( "Collection Browser" )->readNumEntry( "Database Stats Version", 0 );
+        /* If config returns 3 or lower, it came from an Amarok version that was not aware of
+           admin table, so we can't trust this table at all */
+        if( !prev || ( amaroK::config( "Collection Browser" )->readNumEntry( "Database Stats Version", 0 )
+                  && amaroK::config( "Collection Browser" )->readNumEntry( "Database Stats Version", 0 ) <= 3  ) )
+            prev = amaroK::config( "Collection Browser" )->readNumEntry( "Database Stats Version", 0 );
 
-            //pre somewhere in the 1.3-1.4 timeframe, the version wasn't stored in the DB, so try to guess it
-            const QString q = "SELECT COUNT( %1 ) FROM statistics;";
-            if( !prev && query( q.arg( "url" ) ).first().toInt()
-                      && query( q.arg( "createdate" ) ).first().toInt()
-                      && query( q.arg( "accessdate" ) ).first().toInt()
-                      && query( q.arg( "percentage" ) ).first().toInt()
-                      && query( q.arg( "playcounter" ) ).first().toInt() )
-            {
-                prev = 3;
-            }
-
-            if ( prev < 3 ) //it is from before 1.2, or our poor user is otherwise fucked
-            {
-                debug() << "Rebuilding stats-database!" << endl;
-                dropStatsTable();
-                createStatsTable();
-            }
-            else        //Incrementally update the stats table to reach the present version
-            {
-                if( prev < 4 ) //every version from 1.2 forward had a stats version of 3
-                {
-                    debug() << "Updating stats-database!" << endl;
-                    query( "ALTER TABLE statistics ADD rating INTEGER DEFAULT 0;" );
-                    query( "CREATE INDEX rating_stats ON statistics( rating );" );
-                    query( "UPDATE statistics SET rating=0 WHERE " + boolT() + ";" );
-                }
-                if( prev < 5 )
-                {
-                    debug() << "Updating stats-database!" << endl;
-                    query( "UPDATE statistics SET rating = rating * 2;" );
-                }
-                if( prev < 8 )  //Versions 6, 7 and 8 all were all attempts to add columns for ATF. his code should do it all.
-                {
-                    query( QString( "CREATE TABLE statistics_fix ("
-                        "url " + textColumnType() + " UNIQUE,"
-                        "createdate INTEGER,"
-                        "accessdate INTEGER,"
-                        "percentage FLOAT,"
-                        "rating INTEGER DEFAULT 0,"
-                        "playcounter INTEGER);" ) );
-
-                    insert( "INSERT INTO statistics_fix (url, createdate, accessdate, percentage, playcounter, rating)"
-                            "SELECT url, createdate, accessdate, percentage, playcounter, rating FROM statistics;"
-                            , NULL );
-
-                    dropStatsTable();
-                    createStatsTable();
-
-                    insert( "INSERT INTO statistics (url, createdate, accessdate, percentage, playcounter, rating)"
-                            "SELECT url, createdate, accessdate, percentage, playcounter, rating FROM statistics_fix;"
-                            , NULL );
-                    query( "DROP TABLE statistics_fix" );
-                }
-            }
-        }
-
-        QString PersistentVersion = adminValue( "Database Persistent Tables Version" );
-        if ( PersistentVersion.isEmpty() )
+        //pre somewhere in the 1.3-1.4 timeframe, the version wasn't stored in the DB, so try to guess it
+        const QString q = "SELECT COUNT( %1 ) FROM statistics;";
+        if( !prev && query( q.arg( "url" ) ).first().toInt()
+                  && query( q.arg( "createdate" ) ).first().toInt()
+                  && query( q.arg( "accessdate" ) ).first().toInt()
+                  && query( q.arg( "percentage" ) ).first().toInt()
+                  && query( q.arg( "playcounter" ) ).first().toInt() )
         {
-            /* persistent tables didn't have a version on 1.3X and older, but let's be nice and try to
-               copy/keep the good information instead of just deleting the tables */
-            debug() << "Detected old schema for tables with important data. Amarok will convert the tables, ignore any \"table already exists\" errors." << endl;
-            createPersistentTables();
-            /* Copy lyrics */
-            debug() << "Trying to get lyrics from old db schema." << endl;
-            QStringList Lyrics = query( "SELECT url, lyrics FROM tags where tags.lyrics IS NOT NULL;" );
-            for (uint i=0; i<Lyrics.count(); i+=2  )
-                setLyrics( Lyrics[i], Lyrics[i+1]  );
-            debug() << "Building podcast tables" << endl;
-            createPodcastTables();
+            prev = 3;
         }
-        else if ( PersistentVersion == "1" || PersistentVersion == "2" )
+
+        if ( prev < 3 ) //it is from before 1.2, or our poor user is otherwise fucked
         {
-            createPersistentTables(); /* From 1 to 2 nothing changed. There was just a bug on the code, and
-                                         on some cases the table wouldn't be created.
-                                         From 2 to 3, lyrics were made plain text, instead of HTML */
-            debug() << "Converting Lyrics to Plain Text." << endl;
-            QStringList Lyrics = query( "SELECT url, lyrics FROM lyrics;" );
-            for (uint i=0; i<Lyrics.count(); i+=2  )
-                setLyrics( Lyrics[i], Lyrics[i+1]  );
-            debug() << "Building podcast tables" << endl;
-            createPodcastTables();
+            debug() << "Rebuilding stats-database!" << endl;
+            dropStatsTableV1();
+            createStatsTable();
         }
-        else if ( PersistentVersion.toInt() < 4 )
+        else        //Incrementally update the stats table to reach the present version
         {
-            debug() << "Building podcast tables" << endl;
-            createPodcastTables();
+            if( prev < 4 ) //every version from 1.2 forward had a stats version of 3
+            {
+                debug() << "Updating stats-database!" << endl;
+                query( "ALTER TABLE statistics ADD rating INTEGER DEFAULT 0;" );
+                query( "CREATE INDEX rating_stats ON statistics( rating );" );
+                query( "UPDATE statistics SET rating=0 WHERE " + boolT() + ";" );
+            }
+            if( prev < 5 )
+            {
+                debug() << "Updating stats-database!" << endl;
+                query( "UPDATE statistics SET rating = rating * 2;" );
+            }
+            if( prev < 8 )  //Versions 6, 7 and 8 all were all attempts to add columns for ATF. his code should do it all.
+            {
+                query( QString( "CREATE TABLE statistics_fix ("
+                    "url " + textColumnType() + " UNIQUE,"
+                    "createdate INTEGER,"
+                    "accessdate INTEGER,"
+                    "percentage FLOAT,"
+                    "rating INTEGER DEFAULT 0,"
+                    "playcounter INTEGER);" ) );
+
+                insert( "INSERT INTO statistics_fix (url, createdate, accessdate, percentage, playcounter, rating)"
+                        "SELECT url, createdate, accessdate, percentage, playcounter, rating FROM statistics;"
+                        , NULL );
+
+                dropStatsTableV1();
+                createStatsTableV8();
+
+                insert( "INSERT INTO statistics (url, createdate, accessdate, percentage, playcounter, rating)"
+                        "SELECT url, createdate, accessdate, percentage, playcounter, rating FROM statistics_fix;"
+                        , NULL );
+                query( "DROP TABLE statistics_fix" );
+            }
+            if( prev < 9 )
+            {
+                //Update for Dynamic Collection:
+
+                //This is not technically for the stats table, but it is part of the same
+                //update, so put it here anyway.
+                MountPointManager::instance()->setCollectionFolders( amaroK::config( "Collection" )->readPathListEntry( "Collection Folders" ) );
+
+                query( "ALTER TABLE statistics ADD deviceid INTEGER;" );
+
+                //FIXME: (max) i know this is bad but its fast 
+                QStringList oldURLs = query( "SELECT url FROM statistics;" );
+                //it might be necessary to use batch updates to improve speed
+                debug() << "Updating " << oldURLs.count() << " rows in statistics" << endl;
+                foreach( oldURLs )
+                {
+                    bool exists = QFile::exists( *it );
+                    int deviceid = exists ? MountPointManager::instance()->getIdForUrl( *it ) : -2;
+                    QString rpath = exists ? MountPointManager::instance()->getRelativePath( deviceid, *it ) : *it;
+                    QString update = QString( "UPDATE statistics SET deviceid = %1, url = '%2' WHERE " )
+                                     .arg( deviceid )
+                                     .arg( escapeString( rpath ) );
+                    update += QString( "url = '%1';" ).arg( escapeString( *it ) );
+                    query ( update );
+                }
+            }
+            if ( prev < 10 )
+            {
+                createStatsTableV10( true );
+                query( "INSERT INTO statistics_fix_ten SELECT url,deviceid,createdate,"
+                       "accessdate,percentage,rating,playcounter,uniqueid,deleted FROM "
+                       "statistics;" );
+                dropStatsTableV1();
+                createStatsTableV10( false );
+                query( "INSERT INTO statistics SELECT * FROM statistics_fix_ten;" );
+            }
         }
-        else if ( PersistentVersion.toInt() < 5 )
+    }
+}
+
+void
+CollectionDB::updatePersistentTables()
+{
+    QString PersistentVersion = adminValue( "Database Persistent Tables Version" );
+    if ( PersistentVersion.isEmpty() )
+    {
+        /* persistent tables didn't have a version on 1.3X and older, but let's be nice and try to
+           copy/keep the good information instead of just deleting the tables */
+        debug() << "Detected old schema for tables with important data. Amarok will convert the tables, ignore any \"table already exists\" errors." << endl;
+        createPersistentTables();
+        /* Copy lyrics */
+        debug() << "Trying to get lyrics from old db schema." << endl;
+        QStringList Lyrics = query( "SELECT url, lyrics FROM tags where tags.lyrics IS NOT NULL;" );
+        for (uint i=0; i<Lyrics.count(); i+=2  )
+        setLyrics( Lyrics[i], Lyrics[i+1]  );
+        debug() << "Building podcast tables" << endl;
+        createPodcastTables();
+    }
+    else if ( PersistentVersion == "1" || PersistentVersion == "2" )
+    {
+        createPersistentTables(); /* From 1 to 2 nothing changed. There was just a bug on the code, and
+                                     on some cases the table wouldn't be created.
+                                     From 2 to 3, lyrics were made plain text, instead of HTML */
+        debug() << "Converting Lyrics to Plain Text." << endl;
+        QStringList Lyrics = query( "SELECT url, lyrics FROM lyrics;" );
+        for (uint i=0; i<Lyrics.count(); i+=2  )
+        setLyrics( Lyrics[i], Lyrics[i+1]  );
+        debug() << "Building podcast tables" << endl;
+        createPodcastTables();
+    }
+    else if ( PersistentVersion.toInt() < 4 )
+    {
+        debug() << "Building podcast tables" << endl;
+        createPodcastTables();
+    }
+    else
+    {
+        if ( PersistentVersion.toInt() < 5 )
         {
             debug() << "Updating podcast tables" << endl;
             query( "ALTER TABLE podcastchannels ADD image " + textColumnType() + ";" );
@@ -4417,7 +5076,7 @@ CollectionDB::initialize()
             query( "ALTER TABLE podcastepisodes ADD comment " + longTextColumnType() + ";" );
             query( "CREATE INDEX localurl_podepisode ON podcastepisodes( localurl );" );
         }
-        else if ( PersistentVersion.toInt() < 6 )
+        if ( PersistentVersion.toInt() < 6 )
         {
             debug() << "Updating podcast tables" << endl;
             query( "ALTER TABLE podcastchannels ADD image " + textColumnType() + ";" );
@@ -4426,22 +5085,56 @@ CollectionDB::initialize()
             query( "ALTER TABLE podcastepisodes DROP comment;" );
             query( "ALTER TABLE podcastepisodes ADD comment " + longTextColumnType() + ";" );
         }
-        else if ( PersistentVersion.toInt() < 11 )
+        if ( PersistentVersion.toInt() < 11 )
         {
             debug() << "This is used to handle problems from uniqueid changeover and should not do anything" << endl;
         }
-        else if ( PersistentVersion.toInt() < 12 )
+        if ( PersistentVersion.toInt() < 12 )
         {
             debug() << "Adding playlists table..." << endl;
-            createPersistentTables();
+            createPersistentTablesV12();
         }
-        else if ( PersistentVersion.toInt() == 12 )
+        if ( PersistentVersion.toInt() < 13 )
         {
-            //UP-TO-DATE!  Keep that number in sync to make things easier.
+            //Update for Dynamic Collection:
+            query( "ALTER TABLE lyrics ADD deviceid INTEGER;" );
+
+            //FIXME: (max) i know this is bad but its fast
+            QStringList oldURLs = query( "SELECT url FROM lyrics;" );
+            //it might be necessary to use batch updates to improve speed
+            debug() << "Updating " << oldURLs.count() << " rows in lyrics" << endl;
+            foreach( oldURLs )
+            {
+                int deviceid = MountPointManager::instance()->getIdForUrl( *it );
+                QString rpath = MountPointManager::instance()->getRelativePath( deviceid, *it );
+                QString update = QString( "UPDATE lyrics SET deviceid = %1, url = '%2' WHERE " )
+                                 .arg( deviceid )
+                                 .arg( escapeString( rpath ) );
+                update += QString( "url = '%1';" ).arg( escapeString( *it ) );
+                query ( update );
+            }
         }
-        else {
-            if ( adminValue( "Database Persistent Tables Version" ).toInt() != DATABASE_PERSISTENT_TABLES_VERSION ) {
-                error() << "There is a bug in Amarok: instead of destroying your valuable database tables, I'm quitting" << endl;
+        if ( PersistentVersion.toInt() < 14 )
+        {
+            createPersistentTablesV14( true );
+            query( "INSERT INTO amazon_fix SELECT asin,locale,filename,refetchdate FROM amazon;" );
+            query( "INSERT INTO lyrics_fix SELECT url,deviceid,lyrics FROM lyrics;" );
+            query( "INSERT INTO playlists_fix SELECT playlist,url,tracknum FROM playlists;" );
+            dropPersistentTablesV14();
+            createPersistentTablesV14( false );
+            query( "INSERT INTO amazon SELECT * FROM amazon_fix;" );
+            query( "INSERT INTO lyrics SELECT * FROM lyrics_fix;" );
+            query( "INSERT INTO playlists SELECT * FROM playlists_fix;" );
+        }
+
+        //Up to date. Keep this number   \/   in sync!
+        if ( PersistentVersion.toInt() > 14 || PersistentVersion.toInt() < 0 )
+        {
+            //Something is horribly wrong
+            if ( adminValue( "Database Persistent Tables Version" ).toInt() != DATABASE_PERSISTENT_TABLES_VERSION )
+            {
+                error() << "There is a bug in Amarok: instead of destroying your valuable"
+                        << " database tables, I'm quitting" << endl;
                 exit( 1 );
 
                 debug() << "Rebuilding persistent tables database!" << endl;
@@ -4449,30 +5142,39 @@ CollectionDB::initialize()
                 createPersistentTables();
             }
         }
-
-        QString PodcastVersion = adminValue( "Database Podcast Tables Version" );
-        if ( PodcastVersion.isEmpty() || PodcastVersion.toInt() < 2 )
-        {
-            debug() << "Podcast tables created and up to date" << endl;
-        }
-        else
-        {
-            debug() << "Rebuilding podcast tables database!" << endl;
-            dropPodcastTables();
-            createPodcastTables();
-        }
-
-        //remove database file if version is incompatible
-        if ( amaroK::config( "Collection Browser" )->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION
-             || adminValue( "Database Version" ).toInt() != DATABASE_VERSION )
-        {
-            debug() << "Rebuilding database!" << endl;
-            dropTables(false);
-            createTables(false);
-        }
     }
 }
 
+void
+CollectionDB::updatePodcastTables()
+{
+    QString PodcastVersion = adminValue( "Database Podcast Tables Version" );
+    if ( PodcastVersion.toInt() < 2 )
+    {
+        createPodcastTablesV2( true );
+        query( "INSERT INTO podcastchannels_fix SELECT url,title,weblink,image,comment,"
+               "copyright,parent,directory,autoscan,fetchtype,autotransfer,haspurge,"
+               "purgecount FROM podcastchannels;" );
+        query( "INSERT INTO podcastepisodes_fix SELECT id,url,localurl,parent,guid,title,"
+               "subtitle,composer,comment,filetype,createdate,length,size,isNew FROM "
+               "podcastepisodes;" );
+        query( "INSERT INTO podcastfolders_fix SELECT id,name,parent,isOpen FROM podcastfolders;" );
+        dropPodcastTablesV2();
+        createPodcastTablesV2( false );
+        query( "INSERT INTO podcastchannels SELECT * FROM podcastchannels_fix;" );
+        query( "INSERT INTO podcastepisodes SELECT * FROM podcastepisodes_fix;" );
+        query( "INSERT INTO podcastfolders SELECT * FROM podcastfolders_fix;" );
+    }
+
+    //Keep this number in sync    \/
+    if ( PodcastVersion.toInt() > 2 )
+    {
+        error() << "Something is very wrong with the Podcast Tables. Aborting" << endl;
+        exit( 1 );
+        dropPodcastTables();
+        createPodcastTables();
+    }
+}
 
 void
 CollectionDB::destroy()
@@ -4490,7 +5192,6 @@ CollectionDB::destroy()
 
     connectionMutex->unlock();
 }
-
 
 void
 CollectionDB::scanModifiedDirs()
@@ -4953,6 +5654,10 @@ QStringList MySqlConnection::query( const QString& statement )
 int MySqlConnection::insert( const QString& statement, const QString& /* table */ )
 {
     mysql_query( m_db, statement.utf8() );
+    if ( mysql_errno( m_db ) )
+    {
+        debug() << "MYSQL INSERT FAILED: " << mysql_error( m_db ) << "\n" << "FAILED INSERT: " << statement << endl;
+    }
     return mysql_insert_id( m_db );
 }
 
@@ -5255,6 +5960,14 @@ QueryBuilder::addReturnValue( int table, Q_INT64 value, bool caseSensitive /* = 
 
     m_linkTables |= table;
     m_returnValues++;
+    if ( value & valURL )
+    {
+        // make handling of deviceid transparent to calling code
+        m_deviceidPos = m_returnValues + 1;  //the return value after the url is the deviceid
+        m_values += ",";
+        m_values += tableName( table ) + ".";
+        m_values += valueName( valMediaId );
+    }
 }
 
 void
@@ -5283,6 +5996,7 @@ QueryBuilder::addReturnFunctionValue( int function, int table, Q_INT64 value)
     m_values += functionName( function )+tableName( table )+valueName( value );
 
     m_linkTables |= table;
+    if ( !m_showAll ) m_linkTables |= tabSong;
     m_returnValues++;
 }
 
@@ -5301,7 +6015,11 @@ QueryBuilder::addURLFilters( const QStringList& filter )
 
         for ( uint i = 0; i < filter.count(); i++ )
         {
-                m_where += "OR tags.url = '" + CollectionDB::instance()->escapeString( filter[i] ) + "' ";
+                int deviceid = MountPointManager::instance()->getIdForUrl( filter[i] );
+                QString rpath = MountPointManager::instance()->getRelativePath( deviceid , filter[i] );
+                m_where += "OR (tags.url = '" + CollectionDB::instance()->escapeString( rpath ) + "' ";
+                m_where += QString( "AND tags.deviceid = %1 ) " ).arg( QString::number( deviceid ) );
+                //TODO MountPointManager fix this
         }
 
         m_where += " ) ";
@@ -5313,6 +6031,8 @@ QueryBuilder::addURLFilters( const QStringList& filter )
 void
 QueryBuilder::setGoogleFilter( int defaultTables, QString query )
 {
+    //TODO MountPointManager fix google syntax
+    //no clue about what needs to be done atm
     ParsedExpression parsed = ExpressionParser::parse( query );
 
     for( uint i = 0, n = parsed.count(); i < n; ++i ) //check each part for matchiness
@@ -5690,8 +6410,25 @@ void
 QueryBuilder::addMatch( int tables, Q_INT64 value, const QString& match, bool interpretUnknown /* = true */, bool caseSensitive /* = true */  )
 {
     m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
-    m_where += QString( "OR %1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) );
-    m_where += caseSensitive ? CollectionDB::exactCondition( match ) : CollectionDB::likeCondition( match );
+    //FIXME max: doesn't work yet if we are querying for the mount point part of a directory
+    if ( value & valURL || value & valDirectory )
+    {
+        int deviceid = MountPointManager::instance()->getIdForUrl( match );
+        QString rpath = MountPointManager::instance()->getRelativePath( deviceid, match );
+        //we are querying for a specific path, so we dont' need the tags.deviceid IN (...) stuff
+        //which is automatially appended if m_showAll = false
+        m_showAll = true;
+        m_where += QString( "OR %1.%2 " )
+            .arg( tableName( tables ) )
+            .arg( valueName( value ) );
+        m_where += caseSensitive ? CollectionDB::exactCondition( rpath ) : CollectionDB::likeCondition( rpath );
+        m_where += QString( " AND %1.deviceid = %2 " ).arg( tableName( tables ) ).arg( deviceid );
+    }
+    else
+    {
+        m_where += QString( "OR %1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) );
+        m_where += caseSensitive ? CollectionDB::exactCondition( match ) : CollectionDB::likeCondition( match );
+    }
 
     if ( ( value & valName ) && interpretUnknown && match == i18n( "Unknown" ) )
         m_where += QString( "OR %1.%2 = '' " ).arg( tableName( tables ) ).arg( valueName( value ) );
@@ -5809,6 +6546,8 @@ QueryBuilder::setOptions( int options )
                 m_sort += CollectionDB::instance()->randomFunc() + " ";
             }
     }
+
+    if ( options & optShowAll ) m_showAll = true;
 }
 
 
@@ -5974,12 +6713,12 @@ QueryBuilder::setLimit( int startPos, int length )
 /* NOTE: It's important to keep these two functions and the const in sync! */
 /* NOTE: It's just as important to keep tags.url first! */
 const int
-QueryBuilder::dragFieldCount = 16;
+QueryBuilder::dragFieldCount = 17;
 
 QString
 QueryBuilder::dragSQLFields()
 {
-    return "tags.url, album.name, artist.name, genre.name, tags.title, year.name, "
+    return "tags.url, tags.deviceid album.name, artist.name, genre.name, tags.title, year.name, "
            "tags.comment, tags.track, tags.bitrate, tags.discnumber, "
            "tags.length, tags.samplerate, tags.filesize, "
            "tags.sampler, tags.filetype, tags.composer";
@@ -6014,8 +6753,23 @@ QueryBuilder::buildQuery()
     if ( m_query.isEmpty() )
     {
         linkTables( m_linkTables );
-
+        if ( !m_showAll && !m_tables.contains("tags") )
+        {
+            m_tables += ",tags";
+        }
         m_query = "SELECT " + m_values + " FROM " + m_tables + " " + m_join + " WHERE " + CollectionDB::instance()->boolT() + " " + m_where;
+        if ( !m_showAll )
+        {
+            IdList list = MountPointManager::instance()->getMountedDeviceIds();
+            QString deviceIds = "";
+            //debug() << "number of device ids " << list.count() << endl;
+            foreachType( IdList, list )
+            {
+                if ( it != list.begin() ) deviceIds += ",";
+                deviceIds += QString::number( *it );
+            }
+            m_query += " AND tags.deviceid IN (" + deviceIds + ")";
+        }
         // GROUP BY must be before ORDER BY for sqlite
         // HAVING must be between GROUP BY and ORDER BY
         if ( !m_group.isEmpty() )  m_query += " GROUP BY " + m_group;
@@ -6042,7 +6796,12 @@ QueryBuilder::run()
 {
     buildQuery();
     //debug() << m_query << endl;
-    return CollectionDB::instance()->query( m_query );
+    QStringList rs = CollectionDB::instance()->query( m_query );
+    //calling code is unaware of the dynamic collection implementation, it simply expects an URL
+    if( m_deviceidPos > 0 )
+        return cleanURL( rs );
+    else
+        return rs;
 }
 
 
@@ -6061,6 +6820,9 @@ QueryBuilder::clear()
 
     m_linkTables = 0;
     m_returnValues = 0;
+
+    m_showAll = false;
+    m_deviceidPos = 0;
 }
 
 
@@ -6132,6 +6894,7 @@ QueryBuilder::valueName( Q_INT64 value )
     if ( value & valPurge )       values += "haspurge";
     if ( value & valPurgeCount )  values += "purgeCount";
     if ( value & valIsNew )       values += "isNew";
+    if ( value & valMediaId )     values += "deviceid";
 
     return values;
 }
@@ -6148,6 +6911,36 @@ QueryBuilder::functionName( int function )
     if ( function & funcSum )       functions += "Sum";
 
     return functions;
+}
+
+QStringList
+QueryBuilder::cleanURL( QStringList result )
+{   
+    //this method replaces the fields for relative path and devive/media id with a
+    //single field containing the absolute path for each row
+    //TODO Max improve this code
+    int count = 1;
+    for( QStringList::Iterator it = result.begin(), end = result.end(); it != end; )
+    {
+        QString rpath;
+        if ( (count % (m_returnValues + 1)) + 1== m_deviceidPos )
+        {
+            //this block is reached when the iterator points at the relative path
+            //deviceid is next
+            QString rpath = *it;
+            int deviceid = (*(++it)).toInt();
+            QString abspath = MountPointManager::instance()->getAbsolutePath( deviceid, rpath );
+            it = result.remove(--it);
+            result.insert( it, abspath );
+            it = result.remove( it );
+            //we advanced the iterator over two fields in this iteration
+            ++count;
+        }
+        else
+            ++it;
+        ++count;
+    }
+    return result;
 }
 
 

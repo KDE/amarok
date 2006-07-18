@@ -19,7 +19,7 @@
 #include "contextbrowser.h"
 #include "debug.h"
 #include "deviceconfiguredialog.h"
-#include "devicemanager.h"
+#include "mediadevicemanager.h"
 #include "expression.h"
 #include "hintlineedit.h"
 #include "mediabrowser.h"
@@ -276,11 +276,11 @@ MediaBrowser::MediaBrowser( const char *name )
     connect( m_searchEdit, SIGNAL( returnPressed() ), SLOT( slotSetFilter() ) );
 
     // connect to device manager
-    connect( DeviceManager::instance(), SIGNAL( mediumAdded(const Medium *, QString) ),
+    connect( MediaDeviceManager::instance(), SIGNAL( mediumAdded(const Medium *, QString) ),
             SLOT( mediumAdded(const Medium *, QString) ) );
-    connect( DeviceManager::instance(), SIGNAL( mediumChanged(const Medium *, QString) ),
+    connect( MediaDeviceManager::instance(), SIGNAL( mediumChanged(const Medium *, QString) ),
             SLOT( mediumChanged(const Medium *, QString) ) );
-    connect( DeviceManager::instance(), SIGNAL( mediumRemoved(const Medium *, QString) ),
+    connect( MediaDeviceManager::instance(), SIGNAL( mediumRemoved(const Medium *, QString) ),
             SLOT( mediumRemoved(const Medium *, QString) ) );
 
 
@@ -318,7 +318,7 @@ MediaBrowser::MediaBrowser( const char *name )
 
     updateStats();
 
-    QMap<QString, Medium*> mmap = DeviceManager::instance()->getMediumMap();
+    QMap<QString, Medium*> mmap = MediaDeviceManager::instance()->getMediumMap();
 
     bool newflag = false;
     //This deals with <strike>auto-detectable</strike> ALL devices!
@@ -1691,6 +1691,7 @@ MediaBrowser::configSelectPlugin( int index )
 void
 MediaBrowser::updateButtons()
 {
+DEBUG_BLOCK
     if( !m_toolbar->getButton(CONNECT) ||
             !m_toolbar->getButton(DISCONNECT) ||
             !m_toolbar->getButton(TRANSFER) ) //TODO add CUSTOM
@@ -2024,30 +2025,28 @@ MediaQueue::addURL( const KURL &url, MediaItem *item )
     MediaItem *newitem = new MediaItem( this, lastItem() );
     newitem->setExpandable( false );
     newitem->setDropEnabled( true );
-
     MetaBundle *bundle = new MetaBundle( *item->bundle() );
-    KURL filepath( url );
+    KURL filepath(url);
     filepath.addPath( bundle->filename() );
-
     bundle->setUrl( filepath );
     newitem->m_device = item->m_device;
-
-    if( bundle->podcastBundle() )
+    if(bundle->podcastBundle() )
+    {
         item->setType( MediaItem::PODCASTITEM );
-
+    }
     QString text = item->bundle()->prettyTitle();
     if( text.isEmpty() || (!item->bundle()->isValidMedia() && !item->bundle()->podcastBundle()) )
         text = item->bundle()->url().prettyURL();
-
-    if( !item->m_playlistName.isNull() )
+    if( item->m_playlistName != QString::null )
+    {
         text += " (" + item->m_playlistName + ")";
-
-    newitem->setText( 0, text );
+    }
+    newitem->setText( 0, text);
     newitem->setBundle( bundle );
     m_parent->updateButtons();
     m_parent->m_progress->setTotalSteps( m_parent->m_progress->totalSteps() + 1 );
     itemCountChanged();
-
+    
 }
 
 void
@@ -2542,7 +2541,7 @@ MediaDevice::transferFiles()
     {
         return;
     }
-
+    
     setCanceled( false );
 
     m_transferring = true;
@@ -2568,7 +2567,20 @@ MediaDevice::transferFiles()
             m_parent->m_queue->itemCountChanged();
             continue;
         }
-
+        
+        if( m_transferredItem->device() )
+        {
+            m_transferredItem->device()->copyTrackFromDevice( m_transferredItem );
+            delete m_transferredItem;
+            m_transferredItem = 0;
+            setProgress( progress() + 1 );
+            m_parent->m_queue->itemCountChanged();
+            kapp->processEvents( 100 );
+            continue;
+        }
+        else
+            debug() << "Device not found\n";
+        
         if( m_transferredItem->device() )
         {
             m_transferredItem->device()->copyTrackFromDevice( m_transferredItem );
@@ -2582,7 +2594,7 @@ MediaDevice::transferFiles()
 
         bool transcoding = false;
         MediaItem *item = trackExists( *bundle );
-        if( item && m_transferredItem->m_playlistName.isNull() )
+        if( item && !m_transferredItem->m_playlistName.isEmpty() )
         {
             amaroK::StatusBar::instance()->shortMessage( i18n( "Track already on media device: %1" ).
                     arg( m_transferredItem->url().prettyURL() ),

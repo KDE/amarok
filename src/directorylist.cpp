@@ -18,6 +18,7 @@
 
 #include "amarokconfig.h"
 #include "directorylist.h"
+#include "mountpointmanager.h"
 
 #include <kfileitem.h>
 #include <klocale.h>
@@ -48,7 +49,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     QToolTip::add( m_monitor,   i18n( "If selected, folders will automatically get rescanned when the content is modified, e.g. when a new file was added." ) );
 
     // Read config values
-    m_dirs = AmarokConfig::collectionFolders();
+    m_dirs = MountPointManager::instance()->collectionFolders();
 
     m_recursive->setChecked( AmarokConfig::scanRecursively() );
     m_monitor->setChecked( AmarokConfig::monitorChanges() );
@@ -94,7 +95,7 @@ CollectionSetup::writeConfig()
         }
     }
 
-    AmarokConfig::setCollectionFolders( m_dirs );
+    MountPointManager::instance()->setCollectionFolders( m_dirs );
     AmarokConfig::setScanRecursively( recursive() );
     AmarokConfig::setMonitorChanges( monitor() );
 }

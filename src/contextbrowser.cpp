@@ -25,6 +25,7 @@
 #include "lastfm.h"
 #include "mediabrowser.h"
 #include "metabundle.h"
+#include "mountpointmanager.h"
 #include "playlist.h"      //appendMedia()
 #include "podcastbundle.h"
 #include "qstringx.h"
@@ -310,6 +311,11 @@ ContextBrowser::ContextBrowser( const char *name )
              this, SLOT( refreshCurrentTrackPage() ) );
     connect( App::instance(), SIGNAL( useRatings( bool ) ),
              this, SLOT( refreshCurrentTrackPage() ) );
+
+    connect( MountPointManager::instance(), SIGNAL( mediumConnected( int ) ),
+             this, SLOT( renderView() ) );
+    connect( MountPointManager::instance(), SIGNAL( mediumRemoved( int ) ),
+             this, SLOT( renderView() ) );
 
     showContext( KURL( "current://track" ) );
 
@@ -1030,8 +1036,6 @@ void ContextBrowser::showCurrentTrack() //SLOT
         return;
     }
 #endif
-    debug() << "Rendering showCurrentTrack()" << endl;
-
     if ( currentPage() != m_contextTab ) {
         blockSignals( true );
         showPage( m_contextTab );
@@ -1039,7 +1043,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
     }
 
     // TODO: Show CurrentTrack or Lyric tab if they were selected
-    if ( m_emptyDB && CollectionDB::instance()->isValid() && !AmarokConfig::collectionFolders().isEmpty() )
+    if ( m_emptyDB && CollectionDB::instance()->isValid() && !MountPointManager::instance()->collectionFolders().isEmpty() )
     {
         showScanning();
         return;
@@ -1049,13 +1053,10 @@ void ContextBrowser::showCurrentTrack() //SLOT
         showIntroduction();
         return;
     }
-
     if( !m_dirtyCurrentTrackPage )
         return;
-
     m_currentURL = EngineController::instance()->bundle().url();
     m_currentTrackPage->write( QString::null );
-
     ThreadWeaver::instance()->onlyOneJob( new CurrentTrackJob( this ) );
 }
 
@@ -1067,8 +1068,6 @@ void ContextBrowser::showCurrentTrack() //SLOT
 
 void CurrentTrackJob::showHome()
 {
-    DEBUG_BLOCK
-
     QueryBuilder qb;
     qb.clear();
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
@@ -1086,22 +1085,32 @@ void CurrentTrackJob::showHome()
     QString songCount = a[0];
 
     qb.clear(); //Artist count
-    qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabArtist, QueryBuilder::valID );
+    //qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabArtist, QueryBuilder::valID );
+    //qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    //a = qb.run();
+    //QString artistCount = a[0];
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
-    a = qb.run();
-    QString artistCount = a[0];
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valArtistID );
+    //I can't get the correct value w/o suing a subquery, and querybuilder doesn't support those
+    QString artistCount = QString::number( qb.run().count() );
 
     qb.clear(); //Album count
-    qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabAlbum, QueryBuilder::valID );
+    //qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabAlbum, QueryBuilder::valID );
+    //qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    //a = qb.run();
+    //QString albumCount = a[0];
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
-    a = qb.run();
-    QString albumCount = a[0];
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valAlbumID );
+    QString albumCount = QString::number( qb.run().count() );
 
     qb.clear(); //Genre count
-    qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabGenre, QueryBuilder::valID );
+    //qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabGenre, QueryBuilder::valID );
+    //qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    //a = qb.run();
+    //QString genreCount = a[0];
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
-    a = qb.run();
-    QString genreCount = a[0];
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valGenreID );
+    QString genreCount = QString::number( qb.run().count() );
 
     qb.clear(); //Total Playtime
     qb.addReturnFunctionValue( QueryBuilder::funcSum, QueryBuilder::tabSong, QueryBuilder::valLength );
@@ -1973,6 +1982,8 @@ void CurrentTrackJob::showBrowseArtistHeader( const QString &artist )
 
 void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
 {
+    DEBUG_BLOCK
+
     QueryBuilder qb;
     QStringList values;
     // <Current Track Information>
@@ -1989,6 +2000,7 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
     //making 2 tables is most probably not the cleanest way to do it, but it works.
     QString albumImage = CollectionDB::instance()->albumImage( currentTrack, true, 1 );
     QString albumImageTitleAttr = albumImageTooltip( albumImage, 0 );
+    debug() << "retrieved album image name" << endl;
 
     bool isCompilation = false;
     if( !currentTrack.album().isEmpty() )
@@ -1996,6 +2008,7 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
         isCompilation = CollectionDB::instance()->albumIsCompilation(
                 QString::number( CollectionDB::instance()->albumID( currentTrack.album() ) )
                 );
+        debug() << "checked for compilation: " << isCompilation << endl;
     }
 
     m_HTMLSource.append(
@@ -2055,6 +2068,7 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
                 .arg( escapeHTMLAttr( albumImage ) )
                 .arg( albumImageTitleAttr )
                 ) );
+    debug() << "handled html append" << endl;
 
     if ( !values.isEmpty() && values[2].toInt() )
     {
@@ -2262,6 +2276,7 @@ void CurrentTrackJob::showSuggestedSongs( const QStringList &relArtists )
 
 void CurrentTrackJob::showArtistsFaves( const QString &artist, uint artist_id )
 {
+    DEBUG_BLOCK
     QString artistName = artist.isEmpty() ? escapeHTML( i18n( "This Artist" ) ) : escapeHTML( artist );
     QueryBuilder qb;
     QStringList values;
@@ -2314,6 +2329,8 @@ void CurrentTrackJob::showArtistsFaves( const QString &artist, uint artist_id )
 
 void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, uint album_id )
 {
+    DEBUG_BLOCK
+    //FIXME max: an assertion fails in qvaluelist somewhere in the method
     QString artistName = artist.isEmpty() ? escapeHTML( i18n( "This Artist" ) ) : escapeHTML( artist );
     QueryBuilder qb;
     QStringList values;
@@ -2477,6 +2494,7 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
 
 void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artist_id, uint album_id )
 {
+    DEBUG_BLOCK
     QString artistName = artist.isEmpty() ? escapeHTML( i18n( "This Artist" ) ) : escapeHTML( artist );
     QueryBuilder qb;
     QStringList values;
@@ -2693,8 +2711,6 @@ QString CurrentTrackJob::statsHTML( int score, int rating, bool statsbox ) //sta
 
 bool CurrentTrackJob::doJob()
 {
-    DEBUG_BLOCK
-
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
     m_HTMLSource.append( "<html><body>\n"
                     "<script type='text/javascript'>\n"
@@ -2720,7 +2736,8 @@ bool CurrentTrackJob::doJob()
             showHome();
             return true;
         }
-
+        //FIXME max: amarok freezes here for some reason
+        //the last message is the debug statement from colelctionDB: retrieving media bundle...
         MetaBundle mb( currentTrack.url() );
         if( mb.podcastBundle() )
         {
@@ -2758,14 +2775,12 @@ bool CurrentTrackJob::doJob()
 
     const uint artist_id = CollectionDB::instance()->artistID( artist );
     const uint album_id  = CollectionDB::instance()->albumID ( currentTrack.album() );
-
     QueryBuilder qb;
     QStringList values;
     if( b->m_browseArtists )
         showBrowseArtistHeader( artist );
     else
         showCurrentArtistHeader( currentTrack );
-
     QStringList relArtists = CollectionDB::instance()->similarArtists( artist, 10 );
     if ( !relArtists.isEmpty() )
     {
@@ -2775,7 +2790,8 @@ bool CurrentTrackJob::doJob()
         if( ContextBrowser::instance()->m_showSuggested )
             showSuggestedSongs( relArtists );
     }
-
+    //FIXME max: between this two debug statement qvaluelist throws two asserts i <= nodes
+    //FIXME max: the code hangs somewhere here
     QString artistName = artist.isEmpty() ? i18n( "This Artist" ) : artist ;
     if ( !artist.isEmpty() )
     {
@@ -2878,7 +2894,7 @@ void ContextBrowser::showLyrics( const QString &url )
     }
     #endif
 
-    debug() << "rendering showLyrics()" << endl;
+    DEBUG_BLOCK
 
     if ( currentPage() != m_lyricsTab )
     {
@@ -2886,13 +2902,11 @@ void ContextBrowser::showLyrics( const QString &url )
         showPage( m_lyricsTab );
         blockSignals( false );
     }
-
     if ( !m_dirtyLyricsPage ) return;
 
     QString lyrics = CollectionDB::instance()->getLyrics( EngineController::instance()->bundle().url().path() );
     // don't rely on caching for streams
     const bool cached = !lyrics.isEmpty() && !EngineController::engine()->isStream();
-
     QString title  = EngineController::instance()->bundle().title();
     QString artist = EngineController::instance()->bundle().artist();
 

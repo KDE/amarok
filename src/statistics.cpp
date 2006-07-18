@@ -233,25 +233,37 @@ StatisticsList::renderView()
     m_mostplayedItem->setSubtext( i18n("%n play", "%n plays", a[0].toInt()) );
 
     qb.clear();
-    qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabArtist, QueryBuilder::valID );
+    //qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabArtist, QueryBuilder::valID );
+    //qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    //a = qb.run();
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
-    a = qb.run();
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valArtistID );
+    //I can't get the correct value w/o using a subquery, and querybuilder doesn't support those
+    a = QString::number( qb.run().count() );
 
     m_artistItem = new StatisticsItem( i18n("Favorite Artists"), this, m_mostplayedItem );
     m_artistItem->setSubtext( i18n("%n artist", "%n artists", a[0].toInt()) );
 
     qb.clear();
-    qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabAlbum, QueryBuilder::valID );
+    //qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabAlbum, QueryBuilder::valID );
+    //qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    //a = qb.run();
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
-    a = qb.run();
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valAlbumID );
+    //I can't get the correct value w/o using a subquery, and querybuilder doesn't support those
+    a = QString::number( qb.run().count() );
 
     m_albumItem = new StatisticsItem( i18n("Favorite Albums"), this, m_artistItem );
     m_albumItem->setSubtext( i18n("%n album", "%n albums", a[0].toInt()) );
 
     qb.clear();
-    qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabGenre, QueryBuilder::valID );
+    //qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabGenre, QueryBuilder::valID );
+    //qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    //a = qb.run();
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
-    a = qb.run();
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valGenreID );
+    //I can't get the correct value w/o using a subquery, and querybuilder doesn't support those
+    a = QString::number( qb.run().count() );
 
     m_genreItem = new StatisticsItem( i18n("Favorite Genres"), this, m_albumItem );
     m_genreItem->setSubtext( i18n("%n genre", "%n genres", a[0].toInt()) );
@@ -984,6 +996,7 @@ StatisticsDetailedItem::getSQL()
         qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valGenreID, QString::number( genre_id ) );
         qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
     }
+    debug() << "DetailedStatisticsItem: query is: " << qb.query() << endl;
 
     return qb.query();
 }

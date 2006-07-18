@@ -6,6 +6,7 @@
 //
 //
 // Author: Jeff Mitchell <kde-dev@emailgoeshere.com>, (C) 2006
+//         Maximilian Kossick <maximilian.kossick@googlemail.com>, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
 //
@@ -79,15 +80,8 @@ DeviceManager::~DeviceManager()
 {
 }
 
-void DeviceManager::reinitDevices() //SLOT
-{
-    MediumPluginManager *mpm = new MediumPluginManager( 0, true );
-    mpm->detectDevices( true, true );
-    mpm->finished();
-    delete mpm;
-}
-
-void DeviceManager::mediumAdded( QString name )
+void
+DeviceManager::mediumAdded( QString name )
 {
     DEBUG_BLOCK
     if ( !m_valid )
@@ -98,10 +92,12 @@ void DeviceManager::mediumAdded( QString name )
     else
         debug() << "[DeviceManager::mediumAdded] Obtained medium is null; name was " << name << endl;
     emit mediumAdded( addedMedium, name );
+    delete addedMedium;
 }
 
 
-void DeviceManager::mediumRemoved( QString name )
+void
+DeviceManager::mediumRemoved( QString name )
 {
     DEBUG_BLOCK
     if ( !m_valid )
@@ -124,7 +120,8 @@ void DeviceManager::mediumRemoved( QString name )
 }
 
 
-void DeviceManager::mediumChanged( QString name )
+void
+DeviceManager::mediumChanged( QString name )
 {
     DEBUG_BLOCK
     if ( !m_valid )
@@ -135,6 +132,7 @@ void DeviceManager::mediumChanged( QString name )
     else
         debug() << "[DeviceManager::mediumChanged] Obtained medium is null; name was " << name << endl;
     emit mediumChanged( changedMedium, name );
+    delete changedMedium;
 }
 
 
@@ -150,13 +148,14 @@ Use the Medium's name or id, not the pointer value, for equality comparison!!!
 This function does rebuild the map every time it is called, however this should be rare enough
 that it is not a problem.
 */
-Medium::List DeviceManager::getDeviceList( bool autoonly )
+Medium::List
+DeviceManager::getDeviceList()
 {
-    return Medium::createList( getDeviceStringList( autoonly ) );
+    return Medium::createList( getDeviceStringList() );
 }
 
 QStringList
-DeviceManager::getDeviceStringList( bool autoonly )
+DeviceManager::getDeviceStringList()
 {
     DEBUG_BLOCK
     MediumList currMediumList;
@@ -197,43 +196,11 @@ DeviceManager::getDeviceStringList( bool autoonly )
         }
     }
     
-    if( autoonly )
-        return result;
-
-    KConfig *config = amaroK::config( "MediaBrowser" );
-    QMap<QString,QString> savedDevices = config->entryMap( "MediaBrowser" );
-    QMap<QString,QString>::Iterator qit;
-    QString curr, currMountPoint, currName;
-    for( qit = savedDevices.begin(); qit != savedDevices.end(); ++qit )
-    {
-        //only handle manual devices, autodetected devices should be added on the fly
-        if( qit.key().startsWith( "manual|" ) )
-        {
-            curr = qit.key();
-            curr = curr.remove( "manual|" );
-            currName = curr.left( curr.find( '|' ) );
-            currMountPoint = curr.remove( currName + '|' );
-            result.append( "false" );           //autodetected
-            result.append( qit.key() );          //id
-            result.append( currName );          //name
-            result.append( currName );          //label
-            result.append( QString::null );     //userLabel
-            result.append( "unknown" );         //mountable?
-            result.append( QString::null );     //device node
-            result.append( currMountPoint );    //mountPoint
-            result.append( "manual" );          //fsType
-            result.append( "unknown" );         //mounted
-            result.append( QString::null );     //baseURL
-            result.append( QString::null );     //MIMEtype
-            result.append( QString::null );     //iconName
-            result.append( "---" );             //separator
-        }
-    }
-
     return result;
 }
 
-Medium* DeviceManager::getDevice( QString name )
+Medium*
+DeviceManager::getDevice( QString name )
 {
     DEBUG_BLOCK
     if ( !m_valid )
@@ -247,10 +214,6 @@ Medium* DeviceManager::getDevice( QString name )
     QString mountwhere, halid;
     for ( it = currMediumList.begin(); it != currMediumList.end(); it++ )
     {
-        if ( (*it).fsType() != "vfat" &&
-             (*it).fsType() != "hfsplus" &&
-             (*it).fsType() != "manual" ) //&& other supported fsTypes here later
-            continue;
         if ( (*it).name() == name )
         {
             returnedMedium = new Medium(*it);
@@ -265,22 +228,6 @@ Medium* DeviceManager::getDevice( QString name )
     }
 
     return returnedMedium;
-}
-
-void
-DeviceManager::addManualDevice( Medium* added )
-{
-    m_mediumMap[added->name()] = added;
-    added->setFsType( "manual" );
-    emit mediumAdded( added, added->name() );
-}
-
-void
-DeviceManager::removeManualDevice( Medium* removed )
-{
-    emit mediumRemoved( removed, removed->name() );
-    if( m_mediumMap.contains( removed->name() ) )
-        m_mediumMap.remove( removed->name() );
 }
 
 #include "devicemanager.moc"

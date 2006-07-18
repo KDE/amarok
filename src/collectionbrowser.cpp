@@ -20,6 +20,7 @@
 #include "k3bexporter.h"
 #include "mediabrowser.h"
 #include "metabundle.h"
+#include "mountpointmanager.h"
 #include "organizecollectiondialog.h"
 #include "playlist.h"       //insertMedia()
 #include "playlistbrowser.h"
@@ -401,6 +402,11 @@ CollectionView::CollectionView( CollectionBrowser* parent )
              this,             SLOT( rmbPressed( QListViewItem*, const QPoint&, int ) ) );
     connect( header(),       SIGNAL( sizeChange( int, int, int ) ),
              this,             SLOT( triggerUpdate() ) );
+
+    connect( MountPointManager::instance(), SIGNAL( mediumConnected( int ) ),
+             this,                            SLOT( databaseChanged() ) );
+    connect( MountPointManager::instance(), SIGNAL( mediumRemoved( int ) ),
+             this,                            SLOT( databaseChanged() ) );
 }
 
 
@@ -432,7 +438,6 @@ void
 CollectionView::renderView(bool force /* = false */)  //SLOT
 {
     SHOULD_BE_GUI
-    DEBUG_BLOCK
     if(!force && !m_dirty )
         return;
 
@@ -478,6 +483,7 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
 
         //always fetch URL
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valMediaId );
 
         int filterTables = 0;
         for ( QValueList<Tag>::ConstIterator it = visibleColumns.constBegin(); it != visibleColumns.constEnd(); ++it )
@@ -833,7 +839,7 @@ CollectionView::setupDirs()  //SLOT
 
     if ( dialog.exec() != QDialog::Rejected )
     {
-        const bool rescan = ( AmarokConfig::collectionFolders() != setup->dirs() );
+        const bool rescan = ( MountPointManager::instance()->collectionFolders() != setup->dirs() );
         setup->writeConfig();
 
         if ( rescan )
@@ -1577,6 +1583,7 @@ CollectionView::fetchCover() //SLOT
 void
 CollectionView::showTrackInfo() //SLOT
 {
+    DEBUG_BLOCK
      KURL::List urls = listSelected();
      int selectedTracksNumber = urls.count();
 
@@ -1613,7 +1620,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
         }
     }
 
-    QStringList folders = AmarokConfig::collectionFolders();
+    QStringList folders = MountPointManager::instance()->collectionFolders();
 
     OrganizeCollectionDialogBase base( m_parent, "OrganizeFiles", true, caption,
             KDialogBase::Ok|KDialogBase::Cancel|KDialogBase::Details );
@@ -2283,8 +2290,12 @@ CollectionView::playlistFromURLs( const KURL::List &urls )
     QValueList<int> lengths;
     for( KURL::List::ConstIterator it = urls.constBegin(), end = urls.constEnd(); it != end; ++it )
     {
-        const QString query = QString("SELECT title, length FROM tags WHERE url = '%1';")
-                              .arg( db->escapeString( (*it).path() ) ); //no operator->, how suck!
+        int deviceid = MountPointManager::instance()->getIdForUrl( *it );
+        KURL rpath;
+        MountPointManager::instance()->getRelativePath( deviceid, *it, rpath );
+        const QString query = QString("SELECT title, length FROM tags WHERE url = '%1' AND deviceid = %2;")
+                              .arg( db->escapeString( rpath.path() ) ).arg( deviceid ); 
+        debug() << "media id: " << deviceid << " rpath: " << rpath.path() << endl;
         QStringList result = db->query( query );
         titles << result[0];
         lengths << result[1].toInt();

@@ -28,6 +28,7 @@ SUBDIRS = \
     . \
     engine \
     mediadevice \
+    device \
     collectionscanner
 
 
@@ -38,6 +39,7 @@ INCLUDES = \
     -I$(top_srcdir)/amarok/src/plugin \
     -I$(top_srcdir)/amarok/src/statusbar \
     -I$(top_srcdir)/amarok/src/mediadevice \
+    -I$(top_srcdir)/amarok/src/device \
     -I$(top_srcdir)/amarok/src \
     -I$(kde_includes)/arts \
     $(taglib_includes) \
@@ -95,9 +97,11 @@ libamarok_la_SOURCES = \
     ktrm.cpp \
     lastfm.cpp \
     mediabrowser.cpp \
+    mediadevicemanager.cpp \
     medium.cpp \
     mediumpluginmanager.cpp \
     metabundle.cpp \
+    mountpointmanager.cpp \
     multitabbar.cpp \
     mydiroperator.cpp \
     newdynamic.ui \

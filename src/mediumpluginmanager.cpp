@@ -13,7 +13,7 @@
 #include "amarok.h"
 #include "debug.h"
 #include "deviceconfiguredialog.h"
-#include "devicemanager.h"
+#include "mediadevicemanager.h"
 #include "hintlineedit.h"
 #include "mediabrowser.h"
 #include "medium.h"
@@ -115,8 +115,8 @@ MediumPluginManager::detectDevices( const bool redetect, const bool nographics )
     bool foundNew = false;
     KConfig *config = amaroK::config( "MediaBrowser" );
     if( redetect )
-        DeviceManager::instance()->getDevice( "dummyjusttorerundecop" );
-    MediumMap mmap = DeviceManager::instance()->getMediumMap();
+        MediaDeviceManager::instance()->getDevice( "dummyjusttorerundecop" );
+    MediumMap mmap = MediaDeviceManager::instance()->getMediumMap();
     for( MediumMap::Iterator it = mmap.begin(); it != mmap.end(); it++ )
     {
         if( !config->readEntry( (*it)->id() ).isEmpty() &&
@@ -218,7 +218,7 @@ MediumPluginManager::finished()
             config->writeEntry( dit.data()->id(), "deleted" );
         else
             config->deleteEntry( dit.data()->id() );
-        DeviceManager::instance()->removeManualDevice( dit.data() );
+        MediaDeviceManager::instance()->removeManualDevice( dit.data() );
     }
     m_deletedMap.clear();
 }
@@ -241,7 +241,7 @@ MediumPluginManager::newDevice()
         {
             Medium *newdev = mda->getMedium();
             amaroK::config( "MediaBrowser" )->writeEntry( newdev->id(), mda->getPlugin() );
-            DeviceManager::instance()->addManualDevice( newdev );
+            MediaDeviceManager::instance()->addManualDevice( newdev );
             m_newDevMap[newdev->id()] = newdev;
             detectDevices();
         }
@@ -309,7 +309,7 @@ void
 ManualDeviceAdder::slotOk()
 {
     if( getMedium() && !getMedium()->name().isEmpty() &&
-            DeviceManager::instance()->getDevice( getMedium()->name() ) == NULL )
+            MediaDeviceManager::instance()->getDevice( getMedium()->name() ) == NULL )
     {
         m_successful = true;
         KDialogBase::slotOk( );

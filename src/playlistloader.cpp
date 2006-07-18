@@ -18,6 +18,7 @@
 #include "collectiondb.h"
 #include "debug.h"
 #include "enginecontroller.h"
+#include "mountpointmanager.h"
 #include "mydirlister.h"
 #include "playlist.h"
 #include "playlistbrowser.h"
@@ -59,7 +60,7 @@ public:
     TagsEvent( const BundleList &bees ) : QCustomEvent( 1000 ), bundles( bees ) {
         for( BundleList::Iterator it = bundles.begin(), end = bundles.end(); it != end; ++it )
             /// @see MetaBundle for explanation of audioproperties < 0
-            if( !(*it).podcastBundle() && ( (*it).length() <= 0 || (*it).bitrate() <= 0 ) )
+            if( (*it).length() <= 0 || (*it).bitrate() <= 0 )
                 (*it).readTags( TagLib::AudioProperties::Fast, 0, false );
     }
 
@@ -287,6 +288,7 @@ UrlLoader::customEvent( QCustomEvent *e)
 void
 UrlLoader::completeJob()
 {
+    DEBUG_BLOCK
     const PLItemList &newQueue = Playlist::instance()->m_nextTracks;
     QPtrListIterator<PlaylistItem> it( newQueue );
     PLItemList added;
@@ -296,7 +298,7 @@ UrlLoader::completeJob()
 
     if( !added.isEmpty() )
         emit queueChanged( added, PLItemList() );
-
+    Debug::stamp();
     if ( !m_badURLs.isEmpty() ) {
         QString text = i18n("These media could not be loaded into the playlist: " );
         debug() << "The following urls were not suitable for the playlist:" << endl;
@@ -315,7 +317,7 @@ UrlLoader::completeJob()
 
     if( !m_dynamicMode.isEmpty() )
         Playlist::instance()->setDynamicMode( PlaylistBrowser::instance()->findDynamicModeByTitle( m_dynamicMode ) );
-
+    Debug::stamp();
     //synchronous, ie not using eventLoop
     QApplication::sendEvent( dependent(), this );
 }
@@ -1001,8 +1003,6 @@ SqlLoader::SqlLoader( const QString &sql, QListViewItem *after )
 bool
 SqlLoader::doJob()
 {
-    DEBUG_BLOCK
-
     const QStringList values = CollectionDB::instance()->query( m_sql );
 
     setProgressTotalSteps( values.count() );
@@ -1013,7 +1013,10 @@ SqlLoader::doJob()
         setProgress( x += QueryBuilder::dragFieldCount );
 
         MetaBundle b;
-        b.setPath      (    *it );
+        //QueryBuilder automatically inserts the deviceid as return value if asked for the path
+        QString rpath = *++it;
+        int deviceid = (*++it).toInt();
+        b.setPath      ( MountPointManager::instance()->getAbsolutePath( deviceid, rpath ) );
         b.setAlbum     (  *++it );
         b.setArtist    (  *++it );
         b.setGenre     (  *++it );

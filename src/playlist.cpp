@@ -22,11 +22,12 @@
 #include "collectionbrowser.h"
 #include "columnlist.h"
 #include "deletedialog.h"
-#include "devicemanager.h"
+#include "mediadevicemanager.h"
 #include "enginecontroller.h"
 #include "expression.h"
 #include "k3bexporter.h"
 #include "metabundle.h"
+#include "mountpointmanager.h"
 #include "osd.h"
 #include "playerwindow.h"
 #include "playlistitem.h"
@@ -406,11 +407,11 @@ Playlist::Playlist( QWidget *parent )
     m_filtertimer = new QTimer( this );
     connect( m_filtertimer, SIGNAL(timeout()), this, SLOT(setDelayedFilter()) );
 
-    connect( DeviceManager::instance(), SIGNAL(mediumAdded( const Medium*, QString )),
+    connect( MediaDeviceManager::instance(), SIGNAL(mediumAdded( const Medium*, QString )),
             SLOT(mediumChange( const Medium*, QString )) );
-    connect( DeviceManager::instance(), SIGNAL(mediumChanged( const Medium*, QString )),
+    connect( MediaDeviceManager::instance(), SIGNAL(mediumChanged( const Medium*, QString )),
             SLOT(mediumChange( const Medium*, QString )) );
-    connect( DeviceManager::instance(), SIGNAL(mediumRemoved( const Medium*, QString )),
+    connect( MediaDeviceManager::instance(), SIGNAL(mediumRemoved( const Medium*, QString )),
             SLOT(mediumChange( const Medium*, QString )) );
 
     m_clicktimer = new QTimer( this );
@@ -735,8 +736,17 @@ Playlist::addSpecialCustomTracks( uint songCount )
                 sql.replace( limitSearch, QString(" LIMIT %1 OFFSET %2;" ).arg( songCount ).arg( first ) );
 
         }
-        sql.replace( QRegExp( "SELECT.*FROM" ), "SELECT tags.url FROM" );
-        QStringList items = CollectionDB::instance()->query( sql );
+        sql.replace( QRegExp( "SELECT.*FROM" ), "SELECT tags.url, tags.deviceid FROM" );
+        QStringList queryResult = CollectionDB::instance()->query( sql );
+        QStringList items;
+        debug() << "Playlist: adding urls from query: " << sql << endl;
+        if ( !sp->query().isEmpty() ) {
+            //We have to filter all the un-needed results from query( sql )
+            for (uint x=12; x < queryResult.count() ; x += 15)
+                items << MountPointManager::instance()->getAbsolutePath( queryResult[x+1].toInt(), queryResult[x] );
+        } else {
+            items = queryResult;
+        }
 
         KURL::List urls;
         foreach(items) //we have to run setPath on all raw paths

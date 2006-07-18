@@ -220,6 +220,13 @@ class CollectionDB : public QObject, public EngineObserver
 
         static CollectionDB *instance();
 
+        /**
+         * performs all initializations which require directory or URL data stored in the
+         * database.
+         */
+        void initDirOperations();
+        void checkDatabase();
+
         QString escapeString(QString string ) const
         {
             return
@@ -233,8 +240,13 @@ class CollectionDB : public QObject, public EngineObserver
 
         QString boolT() const { if (getDbConnectionType() == DbConnection::postgresql) return "true"; else return "1"; }
         QString boolF() const { if (getDbConnectionType() == DbConnection::postgresql) return "false"; else return "0"; }
-        QString textColumnType() const { if ( getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return "VARCHAR(255)"; }
-        QString textColumnType(int length) const { if ( getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return QString("VARCHAR(%1)").arg(length); }
+        //textColumnType should be used for normal strings, which need to be compared
+        //either case-sensitively or -insensitively
+        QString textColumnType( int length=255 ) const { if ( getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return QString("VARCHAR(%1)").arg(length); }
+        //exactTextColumnType should be used for strings that must be stored exactly, such
+        //as URLs (necessary for holding control chars etc. if present in URL), except for
+        //trailing spaces. Comparisions should always be done case-sensitively.
+        QString exactTextColumnType( int length=255 ) const { if ( getDbConnectionType() == DbConnection::mysql ) return QString( "VARBINARY(%1)" ).arg( length ); else return textColumnType( length ); }
         // We might consider using LONGTEXT type, as some lyrics could be VERY long..???
         QString longTextColumnType() const { if ( getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return "TEXT"; }
         QString randomFunc() const { if ( getDbConnectionType() == DbConnection::postgresql ) return "random()"; else return "RAND()"; }
@@ -246,6 +258,22 @@ class CollectionDB : public QObject, public EngineObserver
         //sql helper methods
         QStringList query( const QString& statement );
         int insert( const QString& statement, const QString& table );
+        
+        /**
+         * TODO: write doc
+         * @param showAll 
+         * @return a string which can be appended to an existing sql where statement
+         */
+        QString deviceidSelection( const bool showAll = false );
+
+        /**
+         * converts the result of a query which contains a deviceid and a relative path
+         * to a list of absolute paths. the order of entries in each result row must be
+         * deviceid first, relative path second.
+         * @param result the result of the sql query, deviceid first, relative path second
+         * @return a list of urls
+         */
+        QStringList URLsFromQuery( const QStringList result ) const;
 
         //table management methods
         bool isEmpty();
@@ -257,6 +285,7 @@ class CollectionDB : public QObject, public EngineObserver
         void dropTables( const bool temporary = false);
         void clearTables( const bool temporary = false);
         void copyTempTables(  );
+        void prepareTempTables();
 
         uint artistID( QString value, bool autocreate = true, const bool temporary = false, bool exact = true );
         uint albumID( QString value, bool autocreate = true, const bool temporary = false, bool exact = true );
@@ -446,15 +475,17 @@ class CollectionDB : public QObject, public EngineObserver
     private:
         //bump DATABASE_VERSION whenever changes to the table structure are made.
         // This erases tags, album, artist, genre, year, images, embed, directory and related_artists tables.
-        static const int DATABASE_VERSION = 28;
+        static const int DATABASE_VERSION = 30;
         // Persistent Tables hold data that is somehow valuable to the user, and can't be erased when rescaning.
         // When bumping this, write code to convert the data!
-        static const int DATABASE_PERSISTENT_TABLES_VERSION = 12;
+        static const int DATABASE_PERSISTENT_TABLES_VERSION = 14;
         // Bumping this erases stats table. If you ever need to, write code to convert the data!
-        static const int DATABASE_STATS_VERSION = 8;
+        static const int DATABASE_STATS_VERSION = 10;
         // When bumping this, you should provide code to convert the data.
-        static const int DATABASE_PODCAST_TABLES_VERSION = 1;
-        static const int DATABASE_ATF_VERSION = 1;
+        static const int DATABASE_PODCAST_TABLES_VERSION = 2;
+        static const int DATABASE_ATF_VERSION = 2;
+        // persistent table. you should provide code to convert the data when bumping this
+        static const int DATABASE_DEVICES_VERSION = 1;
 
         static const int MONITOR_INTERVAL = 60; //sec
         static const bool DEBUG = false;
@@ -466,6 +497,11 @@ class CollectionDB : public QObject, public EngineObserver
         void initialize();
         void destroy();
         DbConnection* getMyConnection();
+
+        //helper methods which perform updates of amarok's database
+        void updateStatsTables();
+        void updatePersistentTables();
+        void updatePodcastTables();
 
         void customEvent( QCustomEvent * );
 
@@ -480,6 +516,18 @@ class CollectionDB : public QObject, public EngineObserver
         void dropPersistentTables();
         void createPodcastTables();
         void dropPodcastTables();
+
+        //Archived forms of the above. useful for providing a linear upgrade routine that
+        //stays the same
+        void createStatsTableV8();
+        void createStatsTableV10( bool temp );
+        void dropStatsTableV1();
+        void createPersistentTablesV12();
+        void createPersistentTablesV14( bool temp );
+        void dropPersistentTablesV14();
+        void createPodcastTablesV2( bool temp );
+        void dropPodcastTablesV2();
+
 
         QCString makeWidthKey( uint width );
         QString artistValue( uint id );
@@ -523,7 +571,6 @@ class CollectionDB : public QObject, public EngineObserver
         QMap<KIO::Job *, QString> m_podcastImageJobs;
 };
 
-
 class INotify : public ThreadWeaver::DependentJob
 {
     Q_OBJECT
@@ -554,9 +601,11 @@ class QueryBuilder
         enum qBuilderTables  { tabAlbum = 1, tabArtist = 2, tabGenre = 4, tabYear = 8, tabSong = 32,
                                tabStats = 64, tabLyrics = 128, tabPodcastChannels = 256,
                                tabPodcastEpisodes = 512, tabPodcastFolders = 1024,
-                               tabComposer = 2048 /* dummy table for filtering */, tabDummy = 0 };
+                               tabComposer = 2048, tabMedia = 4096
+                               /* dummy table for filtering */, tabDummy = 0 };
         enum qBuilderOptions { optNoCompilations = 1, optOnlyCompilations = 2, optRemoveDuplicates = 4,
-                               optRandomize = 8 };
+                               optRandomize = 8,
+                               optShowAll = 16 /* get all songs, not just mounted ones */ };
         /* This has been an enum in the past, but 32 bits wasn't enough anymore :-( */
         static const Q_INT64 valDummy         = 0;
         static const Q_INT64 valID            = 1 << 0;
@@ -595,6 +644,7 @@ class QueryBuilder
         static const Q_INT64 valPurge         = 1LL << 32;
         static const Q_INT64 valPurgeCount    = 1LL << 33;
         static const Q_INT64 valIsNew         = 1LL << 34;
+        static const Q_INT64 valMediaId       = 1LL << 35;
 
         enum qBuilderFunctions  { funcNone = 0, funcCount = 1, funcMax = 2, funcMin = 4, funcAvg = 8, funcSum = 16 };
 
@@ -648,10 +698,15 @@ class QueryBuilder
         QString tableName( int table );
         QString valueName( Q_INT64 value );
         QString functionName( int functions );
+        
+        QStringList cleanURL( QStringList result );
 
         void linkTables( int tables );
 
         bool m_OR;
+        bool m_showAll;
+        uint m_deviceidPos;
+
         QString ANDslashOR() const;
 
         QString m_query;

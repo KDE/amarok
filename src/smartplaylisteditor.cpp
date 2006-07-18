@@ -134,6 +134,7 @@ void SmartPlaylistEditor::init(QString defaultName)
              << i18n("Modified Date") << i18n("File Path");
 
     m_dbFields.clear();
+    //TODO max: make sure the search for URL workds correctly
     m_dbFields << "artist.name" << "album.name" << "genre.name" << "tags.title" << "tags.length"
                << "tags.track" << "year.name" << "tags.comment" << "statistics.playcounter"
                << "statistics.percentage" << "statistics.rating" << "statistics.createdate"
@@ -366,6 +367,7 @@ QDomElement SmartPlaylistEditor::result() {
 void SmartPlaylistEditor::buildQuery()
 {
     DEBUG_BLOCK
+    //FIXME max: make sure sql queries are correct
 
     QString joins = "tags LEFT JOIN year ON year.id=tags.year LEFT JOIN genre ON genre.id=tags.genre"
                     " LEFT JOIN artist ON artist.id=tags.artist LEFT JOIN album ON album.id=tags.album";
