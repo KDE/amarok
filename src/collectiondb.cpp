@@ -2762,6 +2762,7 @@ fillInBundle( QStringList values, MetaBundle &bundle )
 bool
 CollectionDB::bundleForUrl( MetaBundle* bundle )
 {
+    bool valid = false;
     QStringList values = query( QString(
             "SELECT album.name, artist.name, genre.name, tags.title, "
             "year.name, tags.comment, tags.discnumber, tags.composer, "
@@ -2773,47 +2774,58 @@ CollectionDB::bundleForUrl( MetaBundle* bundle )
                 .arg( escapeString( bundle->url().path() ) ) );
 
     if ( !values.empty() )
+    {
         fillInBundle( values, *bundle );
+        valid = true;
+    }
     else
     {
-        int id = 0;
-        values = query( QString(
-                    "SELECT id FROM podcastepisodes WHERE localurl = '%1';" )
-                .arg( escapeString( bundle->url().url() ) ) );
-        if( !values.isEmpty() )
+        // check if it's a podcast
+        PodcastEpisodeBundle peb;
+        if( getPodcastEpisodeBundle( bundle->url(), &peb ) )
         {
             if( bundle->url().protocol() == "file" && QFile::exists( bundle->url().path() ) )
             {
                 MetaBundle mb( bundle->url(), true /* avoid infinite recursion */ );
                 *bundle = mb;
             }
-            id = values[0].toInt();
-        }
-        else
-        {
-            values = query( QString(
-                        "SELECT id FROM podcastepisodes WHERE url = '%1';" )
-                    .arg( escapeString( bundle->url().url() ) ) );
-            if( !values.isEmpty() )
-                id = values[0].toInt();
-        }
-
-        if( id )
-        {
-            bundle->setPodcastBundle( getPodcastEpisodeById( id ) );
-            bundle->setTitle( bundle->podcastBundle()->title() );
-            if( bundle->artist().isEmpty() )
-                bundle->setArtist( bundle->podcastBundle()->author() );
+            bundle->setPodcastBundle( peb );
+            bundle->setTitle( peb.title() );
+            bundle->setArtist( peb.author() );
             PodcastChannelBundle pcb;
-            if( getPodcastChannelBundle( bundle->podcastBundle()->parent(), &pcb ) )
+            if( getPodcastChannelBundle( peb.parent(), &pcb ) )
             {
-                bundle->setAlbum( pcb.title() );
+                if( !pcb.title().isEmpty() )
+                    bundle->setAlbum( pcb.title() );
             }
-            bundle->setGenre( QString( "Podcast" ) );
+            bundle->setGenre( QString ( "Podcast" ) );
+            valid = true;
+        }
+        else if( bundle->url().protocol() == "audiocd" )
+        {
+            // try to see if the engine has some info about the
+            // item (the intended behaviour should be that if the
+            // item is an AudioCD track, the engine can return
+            // CDDB data for it)
+            Engine::SimpleMetaBundle smb;
+            if ( EngineController::engine()->metaDataForUrl( bundle->url(), smb ) )
+            {
+                valid = true;
+                bundle->setTitle( smb.title );
+                bundle->setArtist( smb.artist );
+                bundle->setAlbum( smb.album );
+                bundle->setComment( smb.comment );
+                bundle->setGenre( smb.genre );
+                bundle->setBitrate( smb.bitrate.toInt() );
+                bundle->setSampleRate( smb.samplerate.toInt() );
+                bundle->setLength( smb.length.toInt() );
+                bundle->setYear( smb.year.toInt() );
+                bundle->setTrack( smb.tracknr.toInt() );
+            }
         }
     }
 
-    return !values.isEmpty();
+    return valid;
 }
 
 
@@ -2932,40 +2944,43 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                                      url.directory( false ) ) );
                         }
 
-                        // try to see if the engine has some info about the
-                        // item (the intended behaviour should be that if the
-                        // item is an AudioCD track, the engine can return
-                        // CDDB data for it)
-                        Engine::SimpleMetaBundle smb;
-                        if ( EngineController::engine()->metaDataForUrl( b.url(), smb ) )
-                        {
-                            b.setTitle( smb.title );
-                            b.setArtist( smb.artist );
-                            b.setAlbum( smb.album );
-                            b.setComment( smb.comment );
-                            b.setGenre( smb.genre );
-                            b.setBitrate( smb.bitrate.toInt() );
-                            b.setSampleRate( smb.samplerate.toInt() );
-                            b.setLength( smb.length.toInt() );
-                            b.setYear( smb.year.toInt() );
-                            b.setTrack( smb.tracknr.toInt() );
-                        }
-
                         // check if it's a podcast
                         PodcastEpisodeBundle peb;
                         if( getPodcastEpisodeBundle( url, &peb ) )
                         {
                             b.setPodcastBundle( peb );
                             b.setTitle( peb.title() );
-                            if( b.artist().isEmpty() )
-                                b.setArtist( peb.author() );
+                            b.setArtist( peb.author() );
                             PodcastChannelBundle pcb;
                             if( getPodcastChannelBundle( peb.parent(), &pcb ) )
                             {
-                                b.setAlbum( pcb.title() );
+                                if( !pcb.title().isEmpty() )
+                                    b.setAlbum( pcb.title() );
                             }
                             b.setGenre( QString ( "Podcast" ) );
                         }
+                        else if( b.url().protocol() == "audiocd" )
+                        {
+                            // try to see if the engine has some info about the
+                            // item (the intended behaviour should be that if the
+                            // item is an AudioCD track, the engine can return
+                            // CDDB data for it)
+                            Engine::SimpleMetaBundle smb;
+                            if ( EngineController::engine()->metaDataForUrl( b.url(), smb ) )
+                            {
+                                b.setTitle( smb.title );
+                                b.setArtist( smb.artist );
+                                b.setAlbum( smb.album );
+                                b.setComment( smb.comment );
+                                b.setGenre( smb.genre );
+                                b.setBitrate( smb.bitrate.toInt() );
+                                b.setSampleRate( smb.samplerate.toInt() );
+                                b.setLength( smb.length.toInt() );
+                                b.setYear( smb.year.toInt() );
+                                b.setTrack( smb.tracknr.toInt() );
+                            }
+                        }
+
                     }
                 }
                 bundles += b;
