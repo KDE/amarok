@@ -1744,6 +1744,7 @@ IpodMediaDevice::determineURLOnDevice(const MetaBundle &bundle)
     QString type = local.section('.', -1);
 
     QString trackpath;
+    QString realpath;
     do
     {
         int num = std::rand() % 1000000;
@@ -1761,9 +1762,9 @@ IpodMediaDevice::determineURLOnDevice(const MetaBundle &bundle)
         filename.sprintf( ":kpod%07d.%s", num, type.latin1() );
         trackpath = dirname + filename;
     }
-    while( pathExists( trackpath ) );
+    while( pathExists( trackpath, &realpath ) );
 
-    return realPath(trackpath.latin1());
+    return realpath;
 }
 
 bool
