@@ -171,6 +171,8 @@ public:
 
     void copyFrom( const MetaBundle& bundle );
 
+    void copyFrom( const PodcastEpisodeBundle &peb );
+
     /** Returns a string representation of the tag at \p column, in a format suitable for internal purposes.
         For example, for a track 3:24 long, it'll return "204" (seconds).
         This should not be used for displaying the tag to the user. */

@@ -652,6 +652,20 @@ void MetaBundle::copyFrom( const MetaBundle &bundle )
     }
 }
 
+void MetaBundle::copyFrom( const PodcastEpisodeBundle &peb )
+{
+    setPodcastBundle( peb );
+    setTitle( peb.title() );
+    setArtist( peb.author() );
+    PodcastChannelBundle pcb;
+    if( CollectionDB::instance()->getPodcastChannelBundle( peb.parent(), &pcb ) )
+    {
+        if( !pcb.title().isEmpty() )
+            setAlbum( pcb.title() );
+    }
+    setGenre( QString ( "Podcast" ) );
+}
+
 void MetaBundle::setExactText( int column, const QString &newText )
 {
     switch( column )

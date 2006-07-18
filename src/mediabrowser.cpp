@@ -2610,7 +2610,13 @@ MediaDevice::transferFiles()
                 else
                 {
                     transcoding = true;
-                    bundle = new MetaBundle( transcoded );
+                    MetaBundle *transcodedBundle = new MetaBundle( transcoded );
+                    if( bundle->podcastBundle() )
+                    {
+                        transcodedBundle->setPodcastBundle( *bundle->podcastBundle() );
+                        transcodedBundle->copyFrom( *bundle->podcastBundle() );
+                    }
+                    bundle = transcodedBundle;
                 }
             }
 

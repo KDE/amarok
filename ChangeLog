@@ -16,6 +16,8 @@ VERSION 1.4.2:
       to iTunes, Firefly Media Server etc. (BR 100513)
 
   CHANGES:
+    * Better handling of podcasts that need to be transcoded before copying to
+      media device.
     * Enhancements to ATF/statistics to allow for better tracking of stats as
       files are moved.
     * Tag Editing Dialog is now ATF-enabled.

@@ -2789,16 +2789,7 @@ CollectionDB::bundleForUrl( MetaBundle* bundle )
                 MetaBundle mb( bundle->url(), true /* avoid infinite recursion */ );
                 *bundle = mb;
             }
-            bundle->setPodcastBundle( peb );
-            bundle->setTitle( peb.title() );
-            bundle->setArtist( peb.author() );
-            PodcastChannelBundle pcb;
-            if( getPodcastChannelBundle( peb.parent(), &pcb ) )
-            {
-                if( !pcb.title().isEmpty() )
-                    bundle->setAlbum( pcb.title() );
-            }
-            bundle->setGenre( QString ( "Podcast" ) );
+            bundle->copyFrom( peb );
             valid = true;
         }
         else if( bundle->url().protocol() == "audiocd" )
@@ -2948,16 +2939,7 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                         PodcastEpisodeBundle peb;
                         if( getPodcastEpisodeBundle( url, &peb ) )
                         {
-                            b.setPodcastBundle( peb );
-                            b.setTitle( peb.title() );
-                            b.setArtist( peb.author() );
-                            PodcastChannelBundle pcb;
-                            if( getPodcastChannelBundle( peb.parent(), &pcb ) )
-                            {
-                                if( !pcb.title().isEmpty() )
-                                    b.setAlbum( pcb.title() );
-                            }
-                            b.setGenre( QString ( "Podcast" ) );
+                            b.copyFrom( peb );
                         }
                         else if( b.url().protocol() == "audiocd" )
                         {
