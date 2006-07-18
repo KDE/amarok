@@ -25,6 +25,8 @@ VERSION 1.4.2:
       own UFID frame.
 
   BUGFIXES:
+    * Adding songs already on a media device to playlists would not work.
+    * Fix adding smart playlists to media devices. (BR 130540)
     * Reverse check for mount point and device node when connecting to iPods
       for better handling of device nodes pointed to by symlinks. (BR 129965)
     * Make handling of filenames on iPods case-insensitive and thus fix
