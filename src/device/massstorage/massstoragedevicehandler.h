@@ -31,6 +31,9 @@ public:
     virtual DeviceHandler* createHandler( const KConfig* c ) const;
 
     virtual QString type() const;
+
+private:
+    bool excludedFilesystem( QString fstype ) const;
 };
 
 /**

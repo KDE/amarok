@@ -98,7 +98,7 @@ bool MassStorageDeviceHandlerFactory::canCreateFromConfig( ) const
 
 bool MassStorageDeviceHandlerFactory::canHandle( const Medium * m ) const
 {
-    return m && !m->id().isEmpty() && m->fsType().find( "smb" ) == -1 && m->fsType().find( "nfs" ) == -1;
+    return m && !m->id().isEmpty() && !excludedFilesystem( m->fsType() );
 }
 
 MassStorageDeviceHandlerFactory::MassStorageDeviceHandlerFactory( )
@@ -140,4 +140,15 @@ DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( const Medium * m
         debug() << "Created new UUID device with ID " << id << " , uuid " << m->id() << endl;
         return new MassStorageDeviceHandler( id, m->mountPoint(), m->id() );
     }
+}
+
+bool
+MassStorageDeviceHandlerFactory::excludedFilesystem( QString fstype ) const
+{
+    return fstype.isEmpty() ||
+           fstype.find( "smb" ) != -1 ||
+           fstype.find( "cifs" ) != -1 ||
+           fstype.find( "nfs" ) != -1 ||
+           fstype == "udf"  ||
+           fstype == "iso9660" ;
 }
