@@ -344,8 +344,16 @@ private:
 
 
 protected:
-   virtual int print2stdout(const char *fmt, ...);
-   virtual int print2stderr(const char *fmt, ...);
+   virtual int print2stdout(const char *fmt, ...)
+#ifdef __GNUC__
+      __attribute__ ((format (printf, 2, 3)))
+#endif
+      ;
+   virtual int print2stderr(const char *fmt, ...)
+#ifdef __GNUC__
+      __attribute__ ((format (printf, 2, 3)))
+#endif
+      ;
    virtual void notifyUser(unsigned long/*code*/, const char */*moreinfo*/, const char */*moreinfourl*/) {}
    virtual void interruptUser(unsigned long/*code*/, const char */*moreinfo*/, const char */*moreinfourl*/) {}
 

@@ -63,6 +63,7 @@ class TagDialog : public TagDialogBase
         void setFileNameSchemes();
         void queryDone( KTRMResultList results, QString error );
         void fillSelected( KTRMResult selected );
+        void resetMusicbrainz();
 
     private:
         void init();
@@ -108,7 +109,7 @@ class TagDialog : public TagDialogBase
         QString m_buttonMbText;
         QString m_path;
         QString m_currentCover;
-        QString m_mbTrack;
+        KURL m_mbTrack;
 };
 
 

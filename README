@@ -48,7 +48,7 @@ Required
       http://freshmeat.net/projects/taglib
 
     * Ruby 1.8
-      (programming language, used for scoring and lyrics)
+      (programming language, used for scoring, lyrics, last.fm streams)
       http://www.ruby-lang.org
 
     * One of the multimedia frameworks listed below:
@@ -64,10 +64,6 @@ Optional
       (multimedia framework)
       http://www.real.com
       (Note: only HelixPlayer is exactly RealPlayer without MP3 support)
-
-    * GStreamer-0.10 + GStreamer-Plugins-0.10
-      (multimedia framework)
-      http://gstreamer.net
 
     * NMM 0.7.0
       (multimedia framework)
@@ -118,6 +114,9 @@ Optional
       http://www.sf.net/projects/mpeg4ip
       http://www.audiocoding.com
 
+    * libnjb 2.2.4 (older versions may work)
+      (NJB mediadevice (Creative Nomad/Zen family, Dell DJ devices)
+      http://www.sf.net/projects/libnjb
 
 Please note, if compiling from source you must also install the devel versions
 of these packages.
@@ -184,18 +183,8 @@ For Amarok packages we suggest you build:
 
                 % ./configure --disable-debug
 
-There is a special option for packagers who wish to use the version of sqlite
-that is distributed with their operating system:
-
-                % ./configure --without-included-sqlite
-
-It is also possible to build Amarok to use MySQL as the database backend. Using
-MySQL makes the Amarok collection faster. We suggest not building sqlite into
-Amarok if you plan to ship Amarok with a MySQL dependency.
-
-However, the sqlite you ship MUST be threadsafe! Also Amarok will take longer
-to start with this option since sqlite is not statically linked into the
-amarok binary. The Amarok binary will be approximately 200kB smaller.
+It is possible to build Amarok to use MySQL as the database backend. Using
+MySQL makes the Amarok collection faster.
 
 We suggest compiling Os, there is no particular part of Amarok that would
 benefit from optimisation, so the smallest binary is probably the best route.
@@ -208,6 +197,9 @@ splitting Amarok into the following packages:
    3. xine-engine
    4. Helix-engine
    5. amarok_xmmswrapper + amarok_libvisual
+   6. ipod media device
+   7. ifp media device
+   8. njb media device
 
 Amarok is modular and will be fully functional as long as one of 2, 3, or 4 is
 also installed. Hence we suggest Amarok + one backend. Feel free to include the

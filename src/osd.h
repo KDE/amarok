@@ -36,6 +36,7 @@ class OSDWidget : public QWidget
       public slots:
         /** calls setText() then show(), after setting image if needed */
         void show( const QString &text, QImage newImage = QImage::QImage() );
+        void ratingChanged( const short rating );
 
         /** reimplemented, shows the OSD */
         virtual void show();
@@ -55,9 +56,9 @@ class OSDWidget : public QWidget
         void setImage( const QImage &image ) { m_cover = image; }
         void setScreen( int screen );
         void setText( const QString &text ) { m_text = text; }
-        void setDrawShadow( bool b ) { m_drawShadow = b; }
-        void setTranslucency( bool b ) { m_translucency = b; }
-        void setRating( short rating ) { m_rating = rating; }
+        void setDrawShadow( const bool b ) { m_drawShadow = b; }
+        void setTranslucency( const bool b ) { m_translucency = b; }
+        void setRating( const short rating ) { m_rating = rating; }
 
     protected:
         /** determine new size and position */

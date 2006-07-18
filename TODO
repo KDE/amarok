@@ -5,8 +5,29 @@ TODO-list for Amarok
 
 
 SHORT-TERM (URGENT):
+ <markey>  After doing "Delete downloaded podcast", the icon still indicates downloaded.
+
+ <sebr>    LastFm:
+             - determine how hard it would be to tag songs
+ <eean>      - display history in the playlist somehow  <markey> I'm against this.
+               -subitems?
+               -just disabled?
+             - 'stop after current track' should work
+ <markey>    - sometimes metadata is not updated
+             - when you've never listenend to lastfm before, all stream links on the
+               website are disabled ("Download the player"). we need to do a handshake on
+               startup once, and then set a config item, e.g. handshaked=true.
+
  <markey>  GHNS for scripts and themes only shows 20 items maximum. I understand this is due
            to some configuration on pwsp.net, where we fetch the feed. This must be fixed!!!
+           <sebr> I know the problem!! We reference the kde feeds for kde-apps/look, which are
+                  only providing 20 or so items.  What crap!  Have a look here:
+                  http://download.kde.org/khotnewstuff/amarokscripts/amarokscripts.xml
+
+                  Also, we need to change the spelling of the category names to Amarok. The feeds
+                  use an id, so it should be fine: <type>56</type>
+
+                  Who do we contact? Frank?
 
  <markey>  xine-engine: when "xine could not init any audio driver" happens, always retry
            with Autodetect. This seems to be an issue with leftover amarokrc's from 1.3.
@@ -29,8 +50,6 @@ SHORT-TERM (URGENT):
 
  <sebr>    Podcast Fixme's:
              * Have i listened to podcast streamed?
-
- <sebr>    Make infopane in playlistbrowser a qsplitter
 
  <illiss.> Loading normal (M3U) playlists from the playlist browser doesn't block the UI per se,
            but it does nothing for really long time, until suddenly the whole playlist shows up,

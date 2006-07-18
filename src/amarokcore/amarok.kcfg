@@ -530,7 +530,11 @@
         <label>List of folders in the Collection</label>
     </entry>
     <entry key="AdvancedTagFeatures" type="Bool">
-        <label>Enable/disable advanced tag-based features (warning: alpha status, and changes your files!)</label>
+        <label>Enable/disable advanced features using tag-based unique identifiers</label>
+        <default>false</default>
+    </entry>
+    <entry key="ATFJustTurnedOn" type="Bool">
+        <label>When true, ATF has just been turned on, to enable special behavior at startup.</label>
         <default>false</default>
     </entry>
 </group>

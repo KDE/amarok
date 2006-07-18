@@ -25,6 +25,7 @@
 class ClickLineEdit;
 class CollectionBrowser;
 class ContextBrowser;
+class MediaBrowser;
 class KMenuBar;
 class KPopupMenu;
 class KToolBar;
@@ -65,11 +66,21 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
 
     public slots:
         void showHide();
+        void mbAvailabilityChanged( bool isAvailable );
 
     private slots:
         void savePlaylist() const;
         void slotPlayMedia();
         void slotAddLocation( bool directPlay = false );
+        void slotAddStream();
+        void playLastfmPersonal();
+        void addLastfmPersonal();
+        void playLastfmNeighbor();
+        void addLastfmNeighbor();
+        void playLastfmCustom();
+        void addLastfmCustom();
+        void playLastfmGlobaltag( int );
+        void addLastfmGlobaltag( int );
         void playAudioCD();
         void showQueueManager();
         void showScriptSelector();
@@ -96,6 +107,8 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         ClickLineEdit *m_lineEdit;
         KToolBar      *m_toolbar;
         QTimer        *m_timer;  //search filter timer
+        QStringList    m_lastfmTags;
+        MediaBrowser  *m_currMediaBrowser;
 
         int m_lastBrowser;
         int m_searchField;

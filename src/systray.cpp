@@ -2,7 +2,7 @@
 // AmarokSystray
 //
 // Contributors: Stanislav Karchebny <berkus@users.sf.net>, (C) 2003
-//               berkus, mxcl, eros
+//               berkus, mxcl, eros, eean
 //
 // Copyright: like rest of Amarok
 //
@@ -38,6 +38,7 @@ amaroK::TrayIcon::TrayIcon( QWidget *playerWidget )
         , overlay( 0 )
         , blinkTimerID( 0 )
         , overlayVisible( false )
+        , m_lastFmMode( false )
 {
     KActionCollection* const ac = amaroK::actionCollection();
 
@@ -131,9 +132,9 @@ amaroK::TrayIcon::engineStateChanged( Engine::State state, Engine::State /*oldSt
     case Engine::Empty:
         overlayVisible = false;
         paintIcon( -1, true ); // repaint the icon
-
+                               // fall through to default:
     default:
-        ;
+        setLastFm( false );
     }
 }
 
@@ -141,6 +142,7 @@ void
 amaroK::TrayIcon::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
     trackLength = bundle.length() * 1000;
+    setLastFm( bundle.url().protocol() == "lastfm" );
 }
 
 void
@@ -179,8 +181,6 @@ amaroK::TrayIcon::paintIcon( int mergePixels, bool force )
         KIconEffect::semiTransparent( tmpTrayIcon );
         grayedIcon = tmpTrayIcon;
     }
-    if ( mergePixels == 0 )
-        return blendOverlay( grayedIcon );
 
     // make up the alternate icon (use hilight color but more saturated)
     if ( alternateIcon.isNull() )
@@ -196,13 +196,16 @@ amaroK::TrayIcon::paintIcon( int mergePixels, bool force )
         KIconEffect::colorize( tmpTrayIcon, saturatedColor/* Qt::blue */, 0.9 );
         alternateIcon = tmpTrayIcon;
     }
+
     if ( mergePixels >= alternateIcon.height() )
+        return blendOverlay( grayedIcon );
+    if ( mergePixels == 0 )
         return blendOverlay( alternateIcon );
 
     // mix [ grayed <-> colored ] icons
     QPixmap tmpTrayPixmap = alternateIcon;
     copyBlt( &tmpTrayPixmap, 0,0, &grayedIcon, 0,0,
-            alternateIcon.width(), alternateIcon.height() - mergePixels );
+            alternateIcon.width(), mergePixels>0 ? mergePixels-1 : 0 );
     blendOverlay( tmpTrayPixmap );
 }
 
@@ -240,4 +243,38 @@ amaroK::TrayIcon::blendOverlay( QPixmap &sourcePixmap )
     copyBlt( &sourcePixmapCopy, opX,opY, &sourceCropped, 0,0, opW,opH );
 
     setPixmap( sourcePixmapCopy ); // @since 3.2
+}
+
+void
+amaroK::TrayIcon::setLastFm( bool lastFmActive )
+{
+    if( lastFmActive == m_lastFmMode ) return;
+
+    static int separatorId = 0;
+
+    KActionCollection* const ac = amaroK::actionCollection();
+    if( ac->action( "ban" ) == 0 ) return; //if the LastFm::Controller doesn't exist yet
+
+    if( lastFmActive )
+    {
+        ac->action( "play_pause" )->unplug( contextMenu() );
+        // items are inserted in reverse order!
+        ac->action( "ban" ) ->plug( contextMenu(), 4 );
+        ac->action( "love" )->plug( contextMenu(), 4 );
+        ac->action( "skip" )->plug( contextMenu(), 4 );
+        separatorId = contextMenu()->insertSeparator( 4 );
+
+        m_lastFmMode = true;
+    }
+    else
+    {
+        ac->action( "play_pause" )->plug( contextMenu(), 2 );
+        ac->action( "ban" ) ->unplug( contextMenu() );
+        ac->action( "love" )->unplug( contextMenu() );
+        ac->action( "skip" )->unplug( contextMenu() );
+
+        if( separatorId != 0 )
+            contextMenu()->removeItem( separatorId ); // kill separator
+        m_lastFmMode = false;
+   }
 }

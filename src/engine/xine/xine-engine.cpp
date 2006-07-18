@@ -18,6 +18,7 @@
 #include "xinecfg.h"
 #include "xine-engine.h"
 #include "amarok.h"
+#include "amarokconfig.h"
 //these files are from libamarok
 #include "playlist.h"
 #include "enginecontroller.h"
@@ -136,7 +137,7 @@ XineEngine::init()
    m_xine = xine_new();
 
    if( !m_xine ) {
-      KMessageBox::error( 0, i18n("amaroK could not initialize xine.") );
+      KMessageBox::error( 0, i18n("Amarok could not initialize xine.") );
       return false;
    }
 
@@ -174,7 +175,7 @@ XineEngine::makeNewStream()
    if( !m_stream ) {
       xine_close_audio_driver( m_xine, m_audioPort );
       m_audioPort = NULL;
-      KMessageBox::error( 0, i18n("amaroK could not create a new xine stream.") );
+      KMessageBox::error( 0, i18n("Amarok could not create a new xine stream.") );
       return false;
    }
 
@@ -194,7 +195,7 @@ XineEngine::makeNewStream()
    xine_set_param( m_stream, XINE_PARAM_IGNORE_VIDEO, 1 );
    #endif
 #ifdef XINE_PARAM_EARLY_FINISHED_EVENT
-    if ( xine_check_version(1,1,1) ) {
+    if ( xine_check_version(1,1,1) && !(m_xfadeLength > 0) ) {
         // enable gapless playback
         debug() << "gapless playback enabled." << endl;
         xine_set_param(m_stream, XINE_PARAM_EARLY_FINISHED_EVENT, 1 );
@@ -233,8 +234,12 @@ XineEngine::load( const KURL &url, bool isStream )
    // why doesn't xine do this? I cannot say.
    xine_close( m_stream );
 
+   debug() << "Before xine_open() *****" << endl;
+
    if( xine_open( m_stream, QFile::encodeName( url.url() ) ) )
    {
+      debug() << "After xine_open() *****" << endl;
+
       #ifndef XINE_SAFE_MODE
       //we must ensure the scope is pruned of old buffers
       timerEvent( 0 );
@@ -249,7 +254,7 @@ XineEngine::load( const KURL &url, bool isStream )
    else
    {
       #ifdef XINE_PARAM_GAPLESS_SWITCH
-        if ( xine_check_version(1,1,1) )
+        if ( xine_check_version(1,1,1) && !(m_xfadeLength > 0) )
             xine_set_param( m_stream, XINE_PARAM_GAPLESS_SWITCH, 0);
       #endif
    }
@@ -318,7 +323,7 @@ XineEngine::determineAndShowErrorMessage()
         break;
 
         case XINE_ERROR_INPUT_FAILED:
-            body = i18n("Couldn't open file.");
+            body = i18n("Could not open file.");
         break;
 
         case XINE_ERROR_MALFORMED_MRL:
@@ -781,7 +786,8 @@ XineEngine::XineEventListener( void *p, const xine_event_t* xineEvent )
         #ifdef XINE_PARAM_GAPLESS_SWITCH
             if ( xine_check_version(1,1,1) && xe->m_url.isLocalFile() //Remote media break with gapless
             //don't prepare for a track that isn't coming
-            && ( Playlist::instance()->isTrackAfter() ) )
+            && Playlist::instance()->isTrackAfter()
+            && !AmarokConfig::crossfade() )
                 xine_set_param( xe->m_stream, XINE_PARAM_GAPLESS_SWITCH, 1);
         #endif
         //emit signal from GUI thread
@@ -1107,7 +1113,7 @@ bool XineEngine::metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b)
         }
 
         if (audioCodec == "CDDA" || audioCodec == "WAV") {
-            result = TRUE;
+            result = true;
             int samplerate = xine_get_stream_info( tmpstream, XINE_STREAM_INFO_AUDIO_SAMPLERATE );
 
             // xine would provide a XINE_STREAM_INFO_AUDIO_BITRATE, but unfortunately not for CDDA or WAV
@@ -1155,6 +1161,11 @@ bool XineEngine::getAudioCDContents(const QString &device, KURL::List &urls)
     else emit statusText(i18n("Could not read AudioCD"));
 
     return true;
+}
+
+bool XineEngine::flushBuffer()
+{
+    return false;
 }
 
 #include "xine-engine.moc"

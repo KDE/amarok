@@ -3,19 +3,79 @@ Amarok ChangeLog
 (C) 2002-2006 the Amarok authors.
 
 
-VERSION 1.4.1:
+**** NEW ENTRIES GO ON TOP ****
+
+VERSION 1.4.2:
   FEATURES:
+    * Media and collection browser tabs now support dropping.
+    * Allow for deleting all the tracks on a playlist from iPods. (BR 127855)
+    * Ability to create custom last.fm station from the GUI.
+    * Ability to mark podcasts as listened.
+    * Show error messages when connecting to last.fm streams fails.
+    * A new media device implements a DAAP client. So Amarok can connect
+      to iTunes, Firefly Media Server etc. (BR 100513)
 
   CHANGES:
+    * Better handling of podcasts that need to be transcoded before copying to
+      media device.
+    * Enhancements to ATF/statistics to allow for better tracking of stats as
+      files are moved.
+    * Tag Editing Dialog is now ATF-enabled.
+    * In-line tag editing is now ATF-enabled.
+    * Previously, using ATF with MP3 files would wipe out existing UFID frames
+      from other applications. Now Amarok plays nicely and only touches its
+      own UFID frame.
+
+  BUGFIXES:
+    * Adding songs already on a media device to playlists would not work.
+    * Fix adding smart playlists to media devices. (BR 130540)
+    * Reverse check for mount point and device node when connecting to iPods
+      for better handling of device nodes pointed to by symlinks. (BR 129965)
+    * Make handling of filenames on iPods case-insensitive and thus fix
+      fix problems with too many orphaned and stale items. (BR 126431)
+    * Correct action of queueing current item in dynamic mode. (BR 130313)
+    * Double clicking in the filebrowser will append to playlist. (BR 117465)
+    * Fixed problems with last.fm streams containing spaces, e.g. "Hip Hop".
+    * When generic media devices were specified manually, transferred files
+      would not always get converted to vfat-friendly names if they were on a
+      vfat filesystem.
+    * When using ATF, tags in MP3 files would be written as ID3v2 only and
+      existing ID3v1 tags would be stripped, which could lead to media devices
+      and tagging libraries that were not ID3v2.4-aware to report that no tag
+      existed.  Now both tags are written with identical data.
+
+
+VERSION 1.4.1:
+  FEATURES:
+    * Support for last.fm streams. (BR 111983)
+    * New playlist toolbar menu entry for adding streams to the playlist.
+      (BR 129349)
+
+  CHANGES:
+    * Upgraded internal SQLite to 3.3.6.
+    * Inotify support disabled for now, due to stability issues.
+    * Tag editor is no longer modal.
     * Provide warning dialog when deleting items from the playlistbrowser.
       (BR 129313)
     * GUI layout reverted to the classic Amarok layout.
+    * The Extended Info panel in the playlistbrowser is now resizeable.
 
   BUGFIXES:
+    * Pressing return in the search bar of the Collection Browser immediately
+      after typing a query no longer appends the wrong items to the playlist.
+    * Fix crash when pressing Back or Forward buttons multiple times quickly
+      in Artist tab. Patch by Thomas Lindroth <tholi945@student.liu.se>.
+    * Fix problems where blanks would be added to data if SQLite was busy.
+      Patch by Thomas Lindroth <tholi945@student.liu.se>. (BR 127608)
+    * Automatically refresh stream lyrics on new metadata.
+    * Set half star ratings on multiple selected tracks when clicking on an
+      item. (BR 129449)
     * Only enable Show Extended Info in the Playlist Browser when information
       is available. (BR 126590)
     * Disable global shortcut for ratings when ratings are disabled.
       (BR 129414)
+    * Autodetect button in Media Devices configuration dialog would not
+      properly signal changes, so that new devices were not always saved.
 
 
 VERSION 1.4.1-beta1:

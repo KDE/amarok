@@ -251,7 +251,7 @@ Item::newItems( const KFileItemList &list ) //SLOT
 {
     for( KFileItemListIterator it( list ); *it; ++it )
     {
-        //Fully disable (always appears off and greyed-out) if it is "/proc", "/sys" or
+        //Fully disable (always appears off and grayed-out) if it is "/proc", "/sys" or
         //"/dev" or one of their children. This is because we will never scan them, so we
         //might as well show that.
         //These match up with the skipped dirs in CollectionScanner::readDir.

@@ -97,6 +97,9 @@ class PlaylistBrowser : public QVBox
         PlaylistCategory* getDynamicCategory() const { return m_dynamicCategory; }
         void saveDynamics();
 
+    protected:
+        virtual void resizeEvent( QResizeEvent * );
+
     signals:
         void selectionChanged();
 
@@ -133,11 +136,17 @@ class PlaylistBrowser : public QVBox
         void loadCoolStreams();
         void saveStreams();
 
+        void loadLastfmStreams( const bool subscriber = false );
+        void addLastFmRadio( QListViewItem *parent );
+        void addLastFmCustomRadio( QListViewItem *parent );
+        void saveLastFm();
+
         PlaylistCategory* loadSmartPlaylists();
         void loadDefaultSmartPlaylists();
         void editSmartPlaylist( SmartPlaylist* );
         void saveSmartPlaylists( PlaylistCategory *smartCategory = NULL );
         void updateSmartPlaylists( QListViewItem *root );
+        void updateSmartPlaylistElement( QDomElement& query );
 
         PlaylistCategory* loadDynamics();
 
@@ -179,32 +188,38 @@ class PlaylistBrowser : public QVBox
         PlaylistCategory    *m_playlistImports;
         PlaylistCategory    *m_coolStreams;
         PlaylistCategory    *m_smartDefaults;
+        PlaylistCategory    *m_lastfmCategory;
         PlaylistEntry       *m_lastPlaylist;
 
-        DynamicEntry          *m_randomDynamic;
-        DynamicEntry          *m_suggestedDynamic;
+        DynamicEntry        *m_randomDynamic;
+        DynamicEntry        *m_suggestedDynamic;
 
         bool                 m_coolStreamsOpen;
         bool                 m_smartDefaultsOpen;
+        bool                 m_lastfmOpen;
 
         PlaylistBrowserView *m_listview;
         KActionCollection   *m_ac;
-        KAction             *removeButton, *renameButton;
+        KAction             *removeButton;
+        KAction             *renameButton;
         KActionMenu         *viewMenuButton;
         KActionMenu         *addMenuButton;
         KToolBar            *m_toolbar;
-        QDict<PodcastSettings> m_podcastSettings;
         QValueList<int>      m_dynamicSizeSave;
-        QPtrList<QListViewItem> m_dynamicEntries;
 
-        QTimer              *m_podcastTimer;
-        int                  m_podcastTimerInterval;        //in ms
+        QDict<PodcastSettings>   m_podcastSettings;
+        QPtrList<QListViewItem>  m_dynamicEntries;
+
+        QTimer                  *m_podcastTimer;
+        int                      m_podcastTimerInterval;        //in ms
         QPtrList<PodcastChannel> m_podcastItemsToScan;
         QPtrList<PodcastEpisode> m_podcastDownloadQueue;
 
         InfoPane *m_infoPane;
 
         bool                 m_removeDirt;
+
+	QSplitter *m_splitter;
 };
 
 
@@ -334,6 +349,14 @@ isStream( QListViewItem *item )
     return item->rtti() == StreamEntry::RTTI ? true : false;
 }
 
+inline bool
+isLastFm( QListViewItem *item )
+{
+    if( !item )
+        return false;
+    return item->rtti() == LastFmEntry::RTTI ? true : false;
+}
+
 inline QString
 fileBaseName( const QString &filePath )
 {
@@ -356,7 +379,10 @@ class InfoPane : public QVBox
     Q_OBJECT
 
 public:
-    InfoPane( PlaylistBrowser *parent );
+    InfoPane( QWidget *parent );
+    ~InfoPane();
+    const int getHeight();
+    void setStoredHeight( const int newHeight );
 
 public slots:
     void setInfo( const QString &title, const QString &info );
@@ -368,6 +394,7 @@ private:
     HTMLView *m_infoBrowser;
     KPushButton *m_pushButton;
     bool m_enable;
+    int m_storedHeight;
 };
 
 

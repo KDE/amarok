@@ -40,6 +40,7 @@ AMAROK_EXPORT_PLUGIN( GenericMediaDevice )
 #include <kio/jobclasses.h>
 #include <kio/netaccess.h>
 #include <kmessagebox.h>
+#include <kmountpoint.h>
 #include <kpopupmenu.h>
 #include <kurlrequester.h>     //downloadSelectedItems()
 #include <kurlrequesterdlg.h>  //downloadSelectedItems()
@@ -303,15 +304,15 @@ GenericMediaDevice::GenericMediaDevice()
     , m_connected( false )
 {
     DEBUG_BLOCK
-    m_name = "Generic Audio Player";
+    m_name = i18n("Generic Audio Player");
     m_td = 0;
     m_dirLister = new KDirLister();
     m_dirLister->setNameFilter( "*.mp3 *.wav *.asf *.flac *.wma *.ogg *.aac *.m4a" );
     m_dirLister->setAutoUpdate( false );
     m_spacesToUnderscores = false;
-    m_firstSort = "None";
-    m_secondSort = "None";
-    m_thirdSort = "None";
+    m_firstSort = i18n("None");
+    m_secondSort = i18n("None");
+    m_thirdSort = i18n("None");
     connect( m_dirLister, SIGNAL( newItems(const KFileItemList &) ), this, SLOT( newItems(const KFileItemList &) ) );
     connect( m_dirLister, SIGNAL( completed() ), this, SLOT( dirListerCompleted() ) );
     connect( m_dirLister, SIGNAL( clear() ), this, SLOT( dirListerClear() ) );
@@ -341,9 +342,9 @@ GenericMediaDevice::loadConfig()
     MediaDevice::loadConfig();
 
     m_spacesToUnderscores = configBool("spacesToUnderscores");
-    m_firstSort           = configString( "firstGrouping", "None" );
-    m_secondSort          = configString( "secondGrouping", "None" );
-    m_thirdSort           = configString( "thirdGrouping", "None" );
+    m_firstSort           = configString( "firstGrouping", i18n("None") );
+    m_secondSort          = configString( "secondGrouping", i18n("None") );
+    m_thirdSort           = configString( "thirdGrouping", i18n("None") );
 }
 
 bool
@@ -356,6 +357,14 @@ GenericMediaDevice::openDevice( bool /*silent*/ )
                                                           "Please mount the device and click \"Connect\" again." ),
                                                     KDE::StatusBar::Sorry );
         return false;
+    }
+
+    KMountPoint::List currentmountpoints = KMountPoint::currentMountPoints();
+    KMountPoint::List::Iterator mountiter = currentmountpoints.begin();
+    for(; mountiter != currentmountpoints.end(); ++mountiter)
+    {
+        if( m_medium.mountPoint() == (*mountiter)->mountPoint() )
+            m_medium.setFsType( (*mountiter)->mountType() );
     }
     m_actuallyVfat = m_medium.fsType() == "vfat" ? true : false;
     m_connected = true;
@@ -494,10 +503,10 @@ GenericMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> it
 void
 GenericMediaDevice::copyTrackSortHelper( const MetaBundle& bundle, QString& sort, QString& base )
 {
-    if( sort != "None" )
+    if( sort != i18n("None") )
     {
         QString temp = bundle.prettyText( bundle.columnIndex(sort) );
-        temp = ( temp == QString::null ? "Unknown" : cleanPath(temp) );
+        temp = ( temp.isEmpty() ? i18n("Unknown") : cleanPath(temp) );
         QString newBase = base + '/' + temp;
 
         if( !KIO::NetAccess::exists( KURL( newBase ), false, m_parent ) )
@@ -553,10 +562,10 @@ GenericMediaDevice::trackExists( const MetaBundle& bundle )
 {
     QString key;
     QListViewItem *it = view()->firstChild();
-    if( m_firstSort != "None")
+    if( m_firstSort != i18n("None") )
     {
         key = bundle.prettyText( bundle.columnIndex( m_firstSort ) );
-        key = cleanPath( ( key.isEmpty() ? "Unknown" : key ) );
+        key = cleanPath( ( key.isEmpty() ? i18n("Unknown") : key ) );
         while( it && it->text( 0 ) != key )
             it = it->nextSibling();
         if( !it )
@@ -566,10 +575,10 @@ GenericMediaDevice::trackExists( const MetaBundle& bundle )
         it = it->firstChild();
     }
 
-    if( m_secondSort != "None")
+    if( m_secondSort != i18n("None") )
     {
         key = bundle.prettyText( bundle.columnIndex( m_secondSort ) );
-        key = cleanPath( ( key.isEmpty() ? "Unknown" : key ) );
+        key = cleanPath( ( key.isEmpty() ? i18n("Unknown") : key ) );
         while( it && it->text( 0 ) != key )
         {
             it = it->nextSibling();
@@ -581,10 +590,10 @@ GenericMediaDevice::trackExists( const MetaBundle& bundle )
         it = it->firstChild();
     }
 
-    if( m_thirdSort != "None")
+    if( m_thirdSort != i18n("None") )
     {
         key = bundle.prettyText( bundle.columnIndex( m_thirdSort ) );
-        key = cleanPath( ( key.isEmpty() ? "Unknown" : key ) );
+        key = cleanPath( ( key.isEmpty() ? i18n("Unknown") : key ) );
         while( it && it->text( 0 ) != key )
             it = it->nextSibling();
         if( !it )
@@ -609,7 +618,7 @@ GenericMediaDevice::downloadSelectedItems()
 {
     KURL::List urls = getSelectedItems();
 
-    CollectionView::instance()->organizeFiles( urls, "Copy Files to Collection", true );
+    CollectionView::instance()->organizeFiles( urls, i18n("Copy Files to Collection"), true );
 
     hideProgress();
 }
@@ -623,7 +632,7 @@ GenericMediaDevice::getSelectedItems()
 /// Deleting
 
 int
-GenericMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
+GenericMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/, bool /*deleteTrack*/ )
 {
     if( !item || !m_connected ) return -1;
 

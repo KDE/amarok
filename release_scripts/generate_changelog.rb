@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# Script for generating a HTML page from amaroK's text ChangeLog
+# Script for generating a HTML page from Amarok's text ChangeLog
 #
 # (c) 2005 Mark Kretschmann <markey@web.de>, Ian Monroe <ian@monroe.nu>
 # License: GPL V2
@@ -29,7 +29,7 @@ a.each{|s|
 }
 
 # Beautify heading
-$changelog.gsub!( /amaroK ChangeLog\n\=*\n/, "<h2>amaroK ChangeLog</h2>" )
+$changelog.gsub!( /Amarok ChangeLog\n\=*\n/, "<h2>Amarok ChangeLog</h2>" )
 
 # Makes an extra </ul>... meh
 ['FEATURES','CHANGES','BUGFIXES'].each { |header|

@@ -42,6 +42,7 @@ class XineEngine : public Engine::Base
 
     virtual bool metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b);
     virtual bool getAudioCDContents(const QString &device, KURL::List &urls);
+    virtual bool flushBuffer();
 
     virtual Engine::State state() const;
     virtual const Engine::Scope &scope();

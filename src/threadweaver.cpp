@@ -413,7 +413,7 @@ ThreadWeaver::DependentJob::DependentJob( QObject *dependent, const char *name )
 void
 ThreadWeaver::DependentJob::completeJob()
 {
-    //syncronous, so we don't get deleted twice
+    //synchronous, so we don't get deleted twice
     QApplication::sendEvent( m_dependent, this );
 }
 

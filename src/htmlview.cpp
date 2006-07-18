@@ -1,4 +1,5 @@
 // (c) 2005 Christian Muehlhaeuser <chris@chris.de>
+// (c) 2006 Seb Ruiz <me@sebruiz.net>
 // License: GNU General Public License V2
 
 
@@ -68,11 +69,13 @@ HTMLView::loadStyleSheet()
             return QString::null; //FIXME: should actually return the default style sheet, then
 
         const QString pxSize = QString::number( ContextBrowser::instance()->fontMetrics().height() - 4 );
-        const QString fontFamily = AmarokConfig::useCustomFonts() ? AmarokConfig::contextBrowserFont().family() : QApplication::font().family();
-        const QString text = ContextBrowser::instance()->colorGroup().text().name();
-        const QString link = ContextBrowser::instance()->colorGroup().link().name();
-        const QString fg   = ContextBrowser::instance()->colorGroup().highlightedText().name();
-        const QString bg   = ContextBrowser::instance()->colorGroup().highlight().name();
+        const QString fontFamily = AmarokConfig::useCustomFonts() ?
+                                        AmarokConfig::contextBrowserFont().family() :
+                                        QApplication::font().family();
+        const QString text   = ContextBrowser::instance()->colorGroup().text().name();
+        const QString link   = ContextBrowser::instance()->colorGroup().link().name();
+        const QString fg     = ContextBrowser::instance()->colorGroup().highlightedText().name();
+        const QString bg     = ContextBrowser::instance()->colorGroup().highlight().name();
         const QString base   = ContextBrowser::instance()->colorGroup().base().name();
         const QColor bgColor = ContextBrowser::instance()->colorGroup().highlight();
         QColor gradientColor = bgColor;
@@ -253,5 +256,44 @@ void HTMLView::openURLRequest( const KURL &url )
         Playlist::instance()->insertMedia( url, Playlist::DirectPlay | Playlist::Unique );
 }
 
+#include "debug.h"
+#include "qpixmap.h"
+#include "qdragobject.h"
+#include "kurldrag.h"
+#include "collectiondb.h"
+
+void HTMLView::khtmlMouseMoveEvent( khtml::MouseMoveEvent *event )
+{
+    QMouseEvent *mouse = event->qmouseEvent();
+
+    QString url = event->url().string();
+
+    if( mouse->state() & LeftButton && !url.isEmpty() && url.startsWith("fetchcover") ) // clicking
+    {
+        KURL u = KURL::fromPathOrURL( url );
+        KURL::List list;
+        list << u;
+
+        url = url.mid( 11 );
+
+        QStringList params = QStringList::split( " @@@ ", url );
+        QString image = CollectionDB::instance()->albumImage( params[0], params[1] );
+        QPixmap pix( image );
+
+        KURLDrag *drag = new KURLDrag( list, PlaylistWindow::self() );
+
+        drag->setPixmap( pix, QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X, CollectionDB::DRAGPIXMAP_OFFSET_Y ) );
+
+        drag->dragCopy();
+
+        /// khtmlPart wasn't very well designed. The only way to tell it that the drag finished, is to set a private
+        /// member, KHTMLPart::d->m_bMousePressed = false, which is of course impossible, because it is private.
+        /// TODO: GET AROUND IT!!!
+        return;
+    }
+
+    // let KHTMLPart terminate
+    KHTMLPart::khtmlMouseMoveEvent( event );
+}
 
 #include "htmlview.moc"

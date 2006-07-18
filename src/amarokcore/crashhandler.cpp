@@ -11,9 +11,9 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "crashhandler.h"
-#include "debug.h"
 
 #include <kapplication.h> //invokeMailer()
+#include <kdebug.h>       //kdBacktrace()
 #include <kdeversion.h>
 #include <klocale.h>
 #include <ktempfile.h>
@@ -51,14 +51,16 @@ namespace amaroK
     runCommand( const QCString &command )
     {
         static const uint SIZE = 40960; //40 KiB
-        static char stdoutBuf[ SIZE ];
+        static char stdoutBuf[ SIZE ] = {0};
 
-        debug() << "Running: " << command << endl;
+        std::cout << "Running: " << command << std::endl;
 
         FILE *process = ::popen( command, "r" );
-        stdoutBuf[ std::fread( static_cast<void*>( stdoutBuf ), sizeof(char), SIZE-1, process ) ] = '\0';
-        ::pclose( process );
-
+        if ( process )
+        {
+            stdoutBuf[ std::fread( static_cast<void*>( stdoutBuf ), sizeof(char), SIZE-1, process ) ] = '\0';
+            ::pclose( process );
+        }
         return QString::fromLocal8Bit( stdoutBuf );
     }
 
@@ -72,11 +74,11 @@ namespace amaroK
         if( pid <= 0 )
         {
             // we are the child process (the result of the fork)
-            debug() << "Amarok is crashing...\n";
+            std::cout << "Amarok is crashing...\n";
 
             QString subject = APP_VERSION " ";
             QString body = i18n(
-                    "Amarok has crashed! We're terribly sorry about this :(\n\n"
+                    "Amarok has crashed! We are terribly sorry about this :(\n\n"
                     "But, all is not lost! You could potentially help us fix the crash. "
                     "Information describing the crash is below, so just click send, "
                     "or if you have time, write a brief description of how the crash happened first.\n\n"
@@ -177,7 +179,7 @@ namespace amaroK
 
             subject += QString("[%1]").arg( AmarokConfig::soundSystem().remove( QRegExp("-?engine") ) );
 
-            debug() << subject << endl;
+            std::cout << subject.latin1() << std::endl;
 
 
             //TODO -fomit-frame-pointer buggers up the backtrace, so detect it
@@ -204,7 +206,7 @@ namespace amaroK
                         /*startup_id*/  "" );
             }
             else {
-                std::cout << i18n( "\nAmarok has crashed! We're terribly sorry about this :(\n\n"
+                std::cout << i18n( "\nAmarok has crashed! We are terribly sorry about this :(\n\n"
                                    "But, all is not lost! Perhaps an upgrade is already available "
                                    "which fixes the problem. Please check your distribution's software repository.\n" ).local8Bit();
             }
@@ -253,7 +255,7 @@ amaroK::CrashHandlerWidget::CrashHandlerWidget()
     layout = new QVBoxLayout( layout, 6 );
 
     layout->add( new QLabel( /*i18n*/(
-            "<p>" "Amarok has crashed! We're terribly sorry about this :("
+            "<p>" "Amarok has crashed! We are terribly sorry about this :("
             "<p>" "However you now have an opportunity to help us fix this crash so that it doesn't "
                   "happen again! Click <b>Send Email</b> and Amarok will prepare an email that you "
                   "can send to us that contains information about the crash, and we'll try to fix it "

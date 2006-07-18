@@ -18,7 +18,7 @@ using namespace std;
 
 #include "helix-errors.h"
 
-struct
+struct HelixCoreErrors
 {
    unsigned long code;
    QString error_string;

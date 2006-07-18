@@ -38,6 +38,7 @@
 #include <qfileinfo.h>
 #include <qfont.h>
 #include <qlabel.h>
+#include <qtextcodec.h>
 #include <qtimer.h>
 
 #include <kaboutdialog.h>
@@ -69,25 +70,14 @@ namespace amaroK {
             if(i!=out && i!=in && i!=err)
                 close(i);
     }
+
+     /**
+    * This constructor is needed so that the correct codec is used. KProcIO defaults
+    * to latin1, while the scanner uses UTF-8.
+    */
+    ProcIO::ProcIO() : KProcIO( QTextCodec::codecForName( "UTF-8" ) ) {}
+
 }
-
-////////////////////////////////////////////////////////////////////////////////
-// class AmaroKProcIO
-////////////////////////////////////////////////////////////////////////////////
-/** Due to xine-lib, we have to make KProcess close all fds, otherwise we get "device is busy" messages
-  * Used by AmaroKProcIO and AmaroKProcess, exploiting commSetupDoneC(), a virtual method that
-  * happens to be called in the forked process
-  * See bug #103750 for more information.
-  */
-class AmaroKProcIO : public KProcIO {
-    public:
-    virtual int commSetupDoneC() {
-        const int i = KProcIO::commSetupDoneC();
-        amaroK::closeOpenFiles(KProcIO::out[0],KProcIO::in[0],KProcIO::err[0]);
-        return i;
-    };
-};
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // class AmarokScriptNewStuff
@@ -385,7 +375,7 @@ ScriptManager::slotInstallScript( const QString& path )
             + i18n( "Script Packages (*.amarokscript.tar, *.amarokscript.tar.bz2, *.amarokscript.tar.gz)" )
             , this
             , i18n( "Select Script Package" ) );
-        if( _path == QString::null ) return false;
+        if( _path.isNull() ) return false;
     }
 
     KTar archive( _path );
@@ -538,7 +528,7 @@ ScriptManager::slotRunScript( bool silent )
     // Don't start a script twice
     if( m_scripts[name].process ) return false;
 
-    AmaroKProcIO* script = new AmaroKProcIO();
+    amaroK::ProcIO* script = new amaroK::ProcIO();
     script->setComm( static_cast<KProcess::Communication>( KProcess::All ) );
     const KURL url = m_scripts[name].url;
     *script << url.path();

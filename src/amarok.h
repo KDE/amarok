@@ -7,6 +7,7 @@
 #include <qstring.h>
 
 #include <kurl.h> // recursiveUrlExpand
+#include <kprocio.h> //amaroK::ProcIO
 
 #include "amarok_export.h"
 
@@ -68,7 +69,7 @@ namespace amaroK
      * playlist. You shouldn't pass every event here, ie closeEvents will not be
      * handled as expected! Check the source in app.cpp if you want to see what
      * it can do.
-     * @param recipient The object that recieved the event.
+     * @param recipient The object that received the event.
      * @param e The event you want handled in a generic fashion.
      * @return true if the event was handled.
      */
@@ -215,6 +216,25 @@ namespace amaroK
     LIBAMAROK_EXPORT QString escapeHTML( const QString &s );
     LIBAMAROK_EXPORT QString escapeHTMLAttr( const QString &s );
     LIBAMAROK_EXPORT QString unescapeHTMLAttr( const QString &s );
+    
+    ////////////////////////////////////////////////////////////////////////////////
+    // class amaroK::ProcIO
+    ////////////////////////////////////////////////////////////////////////////////
+    /**
+    * Due to xine-lib, we have to make KProcess close all fds, otherwise we get "device is busy" messages
+    * Used by amaroK::ProcIO and AmaroKProcess, exploiting commSetupDoneC(), a virtual method that
+    * happens to be called in the forked process
+    * See bug #103750 for more information.
+    */
+    class LIBAMAROK_EXPORT ProcIO : public KProcIO {
+        public:
+        ProcIO(); // ctor sets the textcodec to UTF-8, in scriptmanager.cpp
+        virtual int commSetupDoneC() {
+            const int i = KProcIO::commSetupDoneC();
+            amaroK::closeOpenFiles( KProcIO::out[0],KProcIO::in[0],KProcIO::err[0] );
+            return i;
+        };
+    };
 }
 
 

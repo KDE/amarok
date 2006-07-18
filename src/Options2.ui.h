@@ -28,6 +28,7 @@
 
 #include <qdir.h>
 #include <qfileinfo.h>
+#include <qtimer.h>
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -97,23 +98,9 @@ void Options2::installPushButton_clicked()
     const KArchiveDirectory* archiveDir = archive.directory();
     archiveDir->copyTo( destination, true );
 
-    styleComboBox->clear();
     updateStyleComboBox();
 }
 
-
-//function assumes emtpy styleComboBox
-void Options2::updateStyleComboBox()
-{
-    const QStringList styleList = kapp->dirs()->findAllResources("data","amarok/themes/*/stylesheet.css", false);
-    QStringList sortedList;
-    foreach (styleList) sortedList.append(QFileInfo( *it ).dir().dirName());
-    sortedList.append( "Default" );
-    sortedList.sort();
-    foreach(sortedList) styleComboBox->insertItem(*it);
-
-    styleComboBox->setCurrentItem(AmarokConfig::contextBrowserStyleSheet());
-}
 
 
 void Options2::retrievePushButton_clicked()
@@ -126,17 +113,19 @@ void Options2::retrievePushButton_clicked()
     // we need this because KNewStuffGeneric's install function isn't clever enough
     AmarokThemeNewStuff *kns = new AmarokThemeNewStuff( "amarok/themes", this );
     KNS::Engine *engine = new KNS::Engine( kns, "amarok/theme", this );
-    KNS::DownloadDialog *d = new KNS::DownloadDialog( engine, this );
+    KNS::DownloadDialog* d = new KNS::DownloadDialog( engine, this );
     d->setType( "amarok/theme" );
     // you have to do this by hand when providing your own Engine
     KNS::ProviderLoader *p = new KNS::ProviderLoader( this );
-    QObject::connect( p, SIGNAL( providersLoaded(Provider::List*) ), d, SLOT( slotProviders (Provider::List *) ) );
+    connect( p, SIGNAL( providersLoaded(Provider::List*) ), d, SLOT( slotProviders(Provider::List *) ) );
     p->load( "amarok/theme", "http://amarok.kde.org/knewstuff/amarokthemes-providers.xml" );
 
-    d->exec();
+    connect( d, SIGNAL( finished() ), d, SLOT( delayedDestruct() ) );
+    connect( d, SIGNAL( finished() ), this, SLOT( updateStyleComboBox() ) );
 
-    styleComboBox->clear();
-    updateStyleComboBox();
+    // Due to kdelibs idiocy, KNS::DownloadDialog is /always/ non-modal. So we have to
+    // ensure that closing the settings dialog before the DownloadDialog doesn't crash.
+    QTimer::singleShot( 0, d, SLOT( exec() ) );
 }
 
 
@@ -167,7 +156,6 @@ void Options2::uninstallPushButton_clicked()
         return;
     }
 
-    styleComboBox->clear();
     updateStyleComboBox();
 }
 
@@ -178,6 +166,24 @@ void Options2::styleComboBox_activated(const QString& s)
     QDir dir( amaroK::saveLocation( "themes/" ) + s );
     if( !dir.exists() )
         disable = true;
-    
+
     uninstallPushButton->setEnabled ( !disable );
 }
+
+
+void Options2::updateStyleComboBox()
+{
+    DEBUG_BLOCK
+
+    styleComboBox->clear();
+
+    const QStringList styleList = kapp->dirs()->findAllResources("data","amarok/themes/*/stylesheet.css", false);
+    QStringList sortedList;
+    foreach (styleList) sortedList.append(QFileInfo( *it ).dir().dirName());
+    sortedList.append( "Default" );
+    sortedList.sort();
+    foreach(sortedList) styleComboBox->insertItem(*it);
+
+    styleComboBox->setCurrentItem(AmarokConfig::contextBrowserStyleSheet());
+}
+

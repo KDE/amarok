@@ -20,6 +20,9 @@
             <verstretch>0</verstretch>
         </sizepolicy>
     </property>
+    <property name="caption">
+        <string>Options2</string>
+    </property>
     <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
@@ -752,10 +755,10 @@
     <slot>retrievePushButton_clicked()</slot>
     <slot>uninstallPushButton_clicked()</slot>
     <slot>styleComboBox_activated( const QString &amp; s )</slot>
+    <slot>updateStyleComboBox()</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
-    <function access="private" specifier="non virtual">updateStyleComboBox()</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

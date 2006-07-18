@@ -14,7 +14,6 @@
 #ifndef NJBMEDIADEVICE_H
 #define NJBMEDIADEVICE_H
 
-// #include <mediadevice.h>
 #include <mediabrowser.h>
 #include <transferdialog.h>
 #include <libnjb.h>
@@ -39,30 +38,38 @@
 
   You can find the njb libs at : http://libnjb.sourceforge.net
 
-  Based at kionjb from
+  Based on kionjb
 
   @author Andres Oton <andres.oton@gmail.com>
+  @author T.R.Shashwath <trshash84@gmail.com>
  */
 
 const int NJB_SUCCESS = 0;
 const int NJB_FAILURE = -1;
 
-// Global which NJB to use
-extern njb_t* theNjb;
-
 // Global track list
 extern trackValueList* theTracks;
 
-struct DataFile
+class NjbMediaItem : public MediaItem
 {
-    QString   filename;
-    QString   folder;
-    u_int32_t dfid;
-    u_int64_t filesize;
-};
-typedef QValueList<DataFile> dataFileValueList;
+    public:
+        NjbMediaItem( QListView *parent, QListViewItem *after = 0 ) : MediaItem( parent, after )
+        {}
 
-class NjbMediaItem;
+        NjbMediaItem( QListViewItem *parent, QListViewItem *after = 0 ) : MediaItem( parent, after )
+        {}
+
+        ~NjbMediaItem()
+        {
+            //m_track->removeItem(this);
+        }
+        
+        void setTrack( NjbTrack *track ) { m_track = track; m_track->addItem(this); }
+        NjbTrack *track() { return m_track; }
+        QString filename() { return m_track->bundle()->url().path(); }
+    private:
+        NjbTrack *m_track;
+};
 
 class NjbMediaDevice : public MediaDevice
 {
@@ -88,7 +95,7 @@ class NjbMediaDevice : public MediaDevice
         virtual bool hasTransferDialog() { return true; }
         virtual TransferDialog* getTransferDialog();
         virtual void addConfigElements(QWidget* arg1);
-        virtual void addToDirectory(MediaItem* directory, QPtrList< MediaItem > items);
+        virtual void addToDirectory(MediaItem* directory, QPtrList< MediaItem > items) { Q_UNUSED(directory) Q_UNUSED(items) }
         virtual void addToPlaylist(MediaItem* playlist, MediaItem* after, QPtrList< MediaItem > items);
         virtual void applyConfig();
         virtual void init(MediaBrowser* parent);
@@ -96,15 +103,14 @@ class NjbMediaDevice : public MediaDevice
         virtual void removeConfigElements(QWidget* arg1);
         virtual void rmbPressed(QListViewItem* qitem, const QPoint& point, int arg1);
         virtual void runTransferDialog();
-        void hideProgress();
-        void setConfigBool(const QString& name, bool value);
-        void setConfigString(const QString& name, const QString& value);
-        void setDeviceType(const QString& type);
-        void setFirstSort(QString text);
-        void setSecondSort(QString text);
-        void setSpacesToUnderscores(bool yesno);
-        void setThirdSort(QString text);
+        virtual void customClicked();
 
+        void setDeviceType(const QString& type);
+        void setSpacesToUnderscores(bool yesno);
+        static njb_t *theNjb();
+    public slots:
+        void expandItem( QListViewItem *item );
+        
     protected:
 
         virtual bool closeDevice();
@@ -116,68 +122,54 @@ class NjbMediaDevice : public MediaDevice
         virtual bool openDevice(bool silent);
 
         int deleteFromDevice(unsigned id);
-        virtual int deleteItemFromDevice(MediaItem* item, bool onlyPlayed);
-        int deleteAlbum(NjbMediaItem *albumItem);
-        int deleteArtist(NjbMediaItem *artistItem);
+        int deleteItemFromDevice(MediaItem* item, bool onlyPlayed, bool deleteTrack = true);
         int deleteTrack(NjbMediaItem *trackItem);
 
-        int downloadSelectedItems( NjbMediaItem *item );
-        int downloadArtist(NjbMediaItem *artistItem, KURL destDir);
-        int downloadAlbum(NjbMediaItem *albumItem, KURL destDir);
-        int downloadTrack(NjbMediaItem *trackItem, KURL destDir);
-        int downloadTrackNow(NjbMediaItem *item, QString path);
+        int downloadSelectedItems();
+        int downloadToCollection();
 
         virtual MediaItem* copyTrackToDevice(const MetaBundle& bundle);
+        virtual void copyTrackFromDevice(MediaItem *item);
 
         virtual void cancelTransfer();
-        virtual void synchronizeDevice();
+        virtual void synchronizeDevice() {};
 
         virtual void unlockDevice();
 
-        virtual void updateRootItems();
-        void purgeEmptyItems(MediaItem* root);
-        void syncStatsFromDevice(MediaItem* root);
-        void syncStatsToDevice(MediaItem* root);
-
+        virtual void updateRootItems() {};
+        
     private:
         // TODO:
-        MediaItem        *trackExists( const MetaBundle& ) { return 0; }
+        MediaItem        *trackExists( const MetaBundle& );
         // miscellaneous methods
         static int progressCallback( u_int64_t sent, u_int64_t total, const char* /*buf*/, unsigned /*len*/, void* data);
 
         int readJukeboxMusic( void);
-
-        NjbMediaItem *getAlbum(const QString &artist, const QString &album);
-
-        NjbMediaItem * getArtist(const QString &artist);
-
-        NjbMediaItem *addTrackToView(NjbTrack *track, NjbMediaItem *item=0);
-
         void clearItems();
-
-
+        
+        NjbMediaItem *addTrackToView(NjbTrack *track, NjbMediaItem *item=0);
+        NjbMediaItem* addAlbums( const QString &artist, NjbMediaItem *item );
+        NjbMediaItem* addTracks( const QString &artist, const QString &track, NjbMediaItem *item );
+        NjbMediaItem* addTrack( NjbTrack *track );
+        NjbMediaItem* addArtist( NjbTrack *track );
         TransferDialog      *m_td;
-        njb_t njbs[NJB_MAX_DEVICES];
-
+        
         QListView *listAmarokPlayLists;
-
         QString devNode;
-
         QString m_errMsg;
+        bool m_connected; // Replaces m_captured from the original code.
 
-        bool m_connected;
-
-        njb_t* m_njb;
-        bool m_captured;
+        njb_t njbs[NJB_MAX_DEVICES];
+        static njb_t* m_njb;
+        trackValueList trackList;
+        
         int m_libcount;
         bool m_busy;
-        trackValueList trackList;
-        // playlistValueList playlistList;
-        dataFileValueList dataFileList;
-        //     friend class Playlist;
         unsigned m_progressStart;
         QString m_progressMessage;
-
+        NjbMediaItem *m_artistItem;
+        NjbMediaItem *m_albumItem;
+        NjbMediaItem *m_allTracksItem;
 };
 
 #endif

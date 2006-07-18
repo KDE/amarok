@@ -161,9 +161,11 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
 
         //ATF-related functions
         bool checkFileStatus( PlaylistItem * item );
-
         void disabledChild( PlaylistItem * item ) { m_disabledChildren.append( item ); }
         void removeDisabledChild( PlaylistItem * item ) { m_disabledChildren.removeRef( item ); }
+        void addToUniqueMap( const QString uniqueid, PlaylistItem * item ) { m_uniqueMap[uniqueid] = item; }
+        void removeFromUniqueMap( const QString uniqueid )
+            { if( m_uniqueMap.contains( uniqueid ) ) m_uniqueMap.remove( uniqueid ); }
 
         enum RequestType { Prev = -1, Current = 0, Next = 1 };
         enum StopAfterMode { DoNotStop, StopAfterCurrent, StopAfterQueue, StopAfterOther };
@@ -232,6 +234,7 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void updateMetaData( const MetaBundle& );
         void adjustColumn( int n );
         void checkDisabledChildren( const QString &oldUrl, const QString &newUrl, const QString &uniqueid );
+        void updateEntriesUniqueId( const QString &url, const QString &oldid, const QString &newid );
 
     protected:
         virtual void fontChange( const QFont &old );
@@ -375,9 +378,9 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         PlaylistItem *m_stopAfterTrack;
         bool          m_showHelp;
         bool          m_stateSwitched;
-        bool          m_dynamicDirt;          //So we dont call advanceDynamicTrack() on activate()
+        bool          m_dynamicDirt;        //So we don't call advanceDynamicTrack() on activate()
         bool          m_queueDirt;          //When queuing disabled items, we need to place the marker on the newly inserted item
-        bool          m_undoDirt;           //Make sure we dont repopulate the playlist when dynamic mode and undo()
+        bool          m_undoDirt;           //Make sure we don't repopulate the playlist when dynamic mode and undo()
 
         QListViewItem *m_itemToReallyCenter;
         QListViewItem *m_renameItem;
@@ -399,9 +402,8 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
 
         std::vector<double> m_columnFraction;
 
-        bool m_atfEnabled;
-
         QPtrList<PlaylistItem> m_disabledChildren;
+        QMap<QString,PlaylistItem*> m_uniqueMap;
         int m_oldRandom;
         int m_oldRepeat;
 };

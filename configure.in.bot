@@ -78,18 +78,18 @@ if test x$build_xine = xno; then
     echo " ="
 fi
 
-if test x$have_gst_plugins = xno -a x$have_gst = xyes; then
-    echo " =========================="
-    echo " ===  Amarok - WARNING  ========================================================"
-    echo " =========================="
-    echo " ="
-    echo " = No GStreamer plugins were detected!"
-    echo " = Without plugins you will not be able to play any media using the"
-    echo " = GStreamer-engine! You need at least the MP3 plugin and a sink plugin, (eg."
-    echo " = ALSAsink). Please refer to http://gstreamer.freedesktop.org/"
-    echo " = NOTE: you will still be able to play media with another engine plugin."
-    echo " ="
-fi
+#if test x$have_gst_plugins = xno -a x$have_gst = xyes; then
+#    echo " =========================="
+#    echo " ===  Amarok - WARNING  ========================================================"
+#    echo " =========================="
+#    echo " ="
+#    echo " = No GStreamer plugins were detected!"
+#    echo " = Without plugins you will not be able to play any media using the"
+#    echo " = GStreamer-engine! You need at least the MP3 plugin and a sink plugin, (eg."
+#    echo " = ALSAsink). Please refer to http://gstreamer.freedesktop.org/"
+#    echo " = NOTE: you will still be able to play media with another engine plugin."
+#    echo " ="
+#fi
 
 if test x$included_sqlite = xno; then
   if test x$have_sqlite = xyes; then
@@ -173,9 +173,9 @@ else
 #        echo " =   - aKode-engine"
 #    fi
 
-    if test x$have_gst10 != xyes; then
-        echo " =   - GStreamer0.10-engine"
-    fi
+#    if test x$have_gst10 != xyes; then
+#        echo " =   - GStreamer0.10-engine"
+#    fi
 
     if test x$build_xine != xyes; then
         echo " =   - xine-engine"
@@ -242,9 +242,9 @@ else
 #        echo " =   + aKode-engine"
 #    fi
 
-    if test x$have_gst10 = xyes; then
-        echo " =   + GStreamer0.10-engine"
-    fi
+#    if test x$have_gst10 = xyes; then
+#        echo " =   + GStreamer0.10-engine"
+#    fi
 
     if test x$build_xine = xyes; then
         echo " =   + xine-engine"

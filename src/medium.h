@@ -28,7 +28,7 @@ class Medium
 public:
 	typedef QValueList<const Medium> List;
 
-        static const uint AUTODETECTED = 0;
+    static const uint AUTODETECTED = 0;
 	static const uint ID = 1;
 	static const uint NAME = 2;
 	static const uint LABEL = 3;
@@ -45,14 +45,14 @@ public:
 	static const QString SEPARATOR;
 
 	Medium();
-        Medium(const Medium *medium);
+    Medium(const Medium *medium);
 	Medium(const QString &id, const QString &name);
 	static const Medium create(const QStringList &properties);
 	static List createList(const QStringList &properties);
 
 	const QStringList &properties() const { return m_properties; };
 
-        bool isAutodetected() const { return m_properties[AUTODETECTED]=="true"; };
+    bool isAutodetected() const { return m_properties[AUTODETECTED]=="true"; };
 	QString id() const { return m_properties[ID]; };
 	QString name() const { return m_properties[NAME]; };
 	QString label() const { return m_properties[LABEL]; };
@@ -70,13 +70,13 @@ public:
 	KURL prettyBaseURL() const;
 	QString prettyLabel() const;
 
-        void setAutodetected(bool autodetected);
-        void setId(const QString &id);
-        void setMountPoint(const QString &mountPoint);
+    void setAutodetected(bool autodetected);
+    void setId(const QString &id);
+    void setMountPoint(const QString &mountPoint);
 	void setName(const QString &name);
 	void setLabel(const QString &label);
 	void setUserLabel(const QString &label);
-        void setFsType(const QString &type);
+    void setFsType(const QString &type);
 
 	bool mountableState(bool mounted);
 	void mountableState(const QString &deviceNode,

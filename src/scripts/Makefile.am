@@ -1,5 +1,4 @@
 SUBDIRS = \
-    amarok_live \
     common \
     lyrics_astraweb \
     lyrics_lyrc \

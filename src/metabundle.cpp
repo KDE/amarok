@@ -31,6 +31,7 @@
 #include <taglib/mpegfile.h>
 #include <taglib/tag.h>
 #include <taglib/tstring.h>
+#include <taglib/tlist.h>
 #include <taglib/id3v2tag.h>
 #include <taglib/id3v1tag.h>
 #include <taglib/mpegfile.h>
@@ -51,6 +52,7 @@
 #include "metadata/m4a/mp4itunestag.h"
 #endif
 
+#include "lastfm.h"
 #include "metabundle.h"
 #include "podcastbundle.h"
 
@@ -150,7 +152,8 @@ int MetaBundle::columnIndex( const QString &name )
 }
 
 MetaBundle::MetaBundle()
-        : m_year( Undetermined )
+        : m_uniqueId( QString::null )
+        , m_year( Undetermined )
         , m_discNumber( Undetermined )
         , m_track( Undetermined )
         , m_bitrate( Undetermined )
@@ -167,12 +170,14 @@ MetaBundle::MetaBundle()
         , m_isCompilation( false )
         , m_notCompilation( false )
         , m_podcastBundle( 0 )
+        , m_lastFmBundle( 0 )
 {
     init();
 }
 
 MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImageList* images )
     : m_url( url )
+    , m_uniqueId( QString::null )
     , m_year( Undetermined )
     , m_discNumber( Undetermined )
     , m_track( Undetermined )
@@ -190,14 +195,17 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
     , m_isCompilation( false )
     , m_notCompilation( false )
     , m_podcastBundle( 0 )
+    , m_lastFmBundle( 0 )
 {
     if ( exists() )
     {
         if ( !noCache )
             m_isValidMedia = CollectionDB::instance()->bundleForUrl( this );
 
-        if ( !isValidMedia() || m_length <= 0 )
+        if ( !isValidMedia() || ( !m_podcastBundle && m_length <= 0 ) )
             readTags( readStyle, images );
+        else if( AmarokConfig::advancedTagFeatures() && m_uniqueId.isEmpty() )
+            setUniqueId();
     }
     else
     {
@@ -218,6 +226,7 @@ MetaBundle::MetaBundle( const QString& title,
         , m_genre     ( genre )
         , m_streamName( streamName )
         , m_streamUrl ( streamUrl )
+        , m_uniqueId( QString::null )
         , m_year( 0 )
         , m_discNumber( 0 )
         , m_track( 0 )
@@ -235,6 +244,7 @@ MetaBundle::MetaBundle( const QString& title,
         , m_isCompilation( false )
         , m_notCompilation( false )
         , m_podcastBundle( 0 )
+        , m_lastFmBundle( 0 )
 {
     if( title.contains( '-' ) )
     {
@@ -246,16 +256,21 @@ MetaBundle::MetaBundle( const QString& title,
         m_title  = title;
         m_artist = streamName; //which is sort of correct..
     }
+    if( AmarokConfig::advancedTagFeatures() && m_uniqueId.isEmpty() )
+        setUniqueId();
 }
 
 MetaBundle::MetaBundle( const MetaBundle &bundle )
 {
     *this = bundle;
+    if( AmarokConfig::advancedTagFeatures() && m_uniqueId.isEmpty() )
+        setUniqueId();
 }
 
 MetaBundle::~MetaBundle()
 {
     delete m_podcastBundle;
+    delete m_lastFmBundle;
 }
 
 MetaBundle&
@@ -287,9 +302,19 @@ MetaBundle::operator=( const MetaBundle& bundle )
     m_isValidMedia = bundle.m_isValidMedia;
     m_isCompilation = bundle.m_isCompilation;
     m_notCompilation = bundle.m_notCompilation;
+
+//    delete m_podcastBundle; why does this crash Amarok? apparently m_podcastBundle isn't always initialized.
     m_podcastBundle = 0;
     if( bundle.m_podcastBundle )
         setPodcastBundle( *bundle.m_podcastBundle );
+
+//    delete m_lastFmBundle; same as above
+    m_lastFmBundle = 0;
+    if( bundle.m_lastFmBundle )
+        setLastFmBundle( *bundle.m_lastFmBundle );
+
+    if( AmarokConfig::advancedTagFeatures() && m_uniqueId.isEmpty() )
+        setUniqueId();
 
     return *this;
 }
@@ -406,7 +431,7 @@ MetaBundle::embeddedImages( MetaBundle::EmbeddedImageList& images )
 }
 
 void
-MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImageList* images )
+MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImageList* images, bool doUniqueId )
 {
     if(!( url().protocol() == "file" || url().protocol() == "audiocd" ) )
         return;
@@ -445,11 +470,10 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
 
         QString disc;
         QString compilation;
-        bool atf = AmarokConfig::advancedTagFeatures();
         if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
         {
             m_type = mp3;
-            if ( file->ID3v2Tag( atf ) )
+            if ( file->ID3v2Tag() )
             {
                 if ( !file->ID3v2Tag()->frameListMap()["TPOS"].isEmpty() )
                     disc = TStringToQString( file->ID3v2Tag()->frameListMap()["TPOS"].front()->toString() ).stripWhiteSpace();
@@ -483,7 +507,7 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
         else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
         {
             m_type = flac;
-            if ( file->xiphComment( atf ) )
+            if ( file->xiphComment() )
             {
                 if ( !file->xiphComment()->fieldListMap()[ "COMPOSER" ].isEmpty() )
                     setComposer( TStringToQString( file->xiphComment()->fieldListMap()["COMPOSER"].front() ).stripWhiteSpace() );
@@ -514,8 +538,8 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
             }
         }
 
-        if ( atf )
-            setUniqueId( fileref );
+        if ( AmarokConfig::advancedTagFeatures() && !m_uniqueId.isEmpty() && doUniqueId )
+            setUniqueId( fileref, false );
 
         if ( !disc.isEmpty() )
         {
@@ -618,6 +642,28 @@ void MetaBundle::copyFrom( const MetaBundle &bundle )
         delete m_podcastBundle;
         m_podcastBundle = 0;
     }
+
+    if( bundle.m_lastFmBundle )
+        setLastFmBundle( *bundle.m_lastFmBundle );
+    else
+    {
+        delete m_lastFmBundle;
+        m_lastFmBundle = 0;
+    }
+}
+
+void MetaBundle::copyFrom( const PodcastEpisodeBundle &peb )
+{
+    setPodcastBundle( peb );
+    setTitle( peb.title() );
+    setArtist( peb.author() );
+    PodcastChannelBundle pcb;
+    if( CollectionDB::instance()->getPodcastChannelBundle( peb.parent(), &pcb ) )
+    {
+        if( !pcb.title().isEmpty() )
+            setAlbum( pcb.title() );
+    }
+    setGenre( QString ( "Podcast" ) );
 }
 
 void MetaBundle::setExactText( int column, const QString &newText )
@@ -970,7 +1016,7 @@ MetaBundle::fuzzyTime( int time )
         return i18n( "?" );
     if( time == Irrelevant )
         return i18n( "-" );
-    
+
     secs = time % 60; //seconds
     time /= 60;
     if( time )
@@ -980,12 +1026,12 @@ MetaBundle::fuzzyTime( int time )
         hr = time % 24 ; //hours
     time /= 24;
     if( time )
-        day = time ; //days
+        day = time % 7 ; //days
     time /= 7;
     if( time )
         week = time ; //weeks
 
-    if ( week ) 
+    if ( week )
         return i18n( "%1 weeks" ).arg( QString::number( week + (float( day ) / 7), 'f', 1 ));
     else if ( day )
         return i18n( "%1 days" ).arg( QString::number( day + (float( hr ) / 24), 'f', 1 ));
@@ -1152,6 +1198,15 @@ MetaBundle::setPodcastBundle( const PodcastEpisodeBundle &peb )
     *m_podcastBundle = peb;
 }
 
+void
+MetaBundle::setLastFmBundle( const LastFm::Bundle &last )
+{
+    delete m_lastFmBundle;
+   // m_lastFmBundle = new LastFm::Bundle(last);
+   m_lastFmBundle = new LastFm::Bundle;
+   *m_lastFmBundle = last;
+}
+
 void MetaBundle::loadImagesFromTag( const TagLib::ID3v2::Tag &tag, EmbeddedImageList& images )
 {
     TagLib::ID3v2::FrameList l = tag.frameListMap()[ "APIC" ];
@@ -1171,6 +1226,12 @@ void MetaBundle::loadImagesFromTag( const TagLib::ID3v2::Tag &tag, EmbeddedImage
 bool
 MetaBundle::save()
 {
+    if( !(url().protocol() == "file") )
+    {
+        debug() << "no file protocol url" << endl;
+        return false;
+    }
+
     //Set default codec to UTF-8 (see bugs 111246 and 111232)
     TagLib::ID3v2::FrameFactory::instance()->setDefaultTextEncoding(TagLib::String::UTF8);
 
@@ -1234,6 +1295,9 @@ void MetaBundle::setUrl( const KURL &url )
     QValueList<int> changes;
     for( int i = 0; i < NUM_COLUMNS; ++i ) changes << i;
     aboutToChange( changes ); m_url = url; reactToChanges( changes );
+
+    if( AmarokConfig::advancedTagFeatures() )
+        setUniqueId();
 }
 
 void MetaBundle::setPath( const QString &path )
@@ -1241,6 +1305,9 @@ void MetaBundle::setPath( const QString &path )
     QValueList<int> changes;
     for( int i = 0; i < NUM_COLUMNS; ++i ) changes << i;
     aboutToChange( changes ); m_url.setPath( path ); reactToChanges( changes );
+
+    if( AmarokConfig::advancedTagFeatures() )
+        setUniqueId();
 }
 
 void MetaBundle::setUniqueId()
@@ -1250,58 +1317,85 @@ void MetaBundle::setUniqueId()
     fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
 
     if( !fileref.isNull() )
-        setUniqueId( fileref );
+        setUniqueId( fileref, false );
 }
 
 void MetaBundle::setUniqueId( const QString &id )
 {
-    //WARNING WARNING WARNING
+    ///WARNING WARNING WARNING
     //NEVER CALL THIS FUNCTION UNLESS YOU'RE DAMN SURE YOU KNOW WHAT YOU ARE DOING
+    //i.e. IF YOU ARE NOT JEFF, ASK HIM BEFORE DOING THIS! YOU CAN CAUSE BAD
+    //THINGS TO HAPPEN LIKE MESSING UP USERS' COLLECTIONS, WHICH THEY ARE NOT
+    //VERY FORGIVING ABOUT
     m_uniqueId = id;
 }
 
-void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
+TagLib::ID3v2::UniqueFileIdentifierFrame *
+MetaBundle::ourMP3UidFrame( TagLib::MPEG::File *file, QString ourId )
 {
-    //DEBUG_BLOCK
+    //WARNING: this function may not be safe if tag has no UFID frames
+    //(should never be called in that case as checks are run first)
+    TagLib::ID3v2::FrameList ufidlist = file->ID3v2Tag()->frameListMap()["UFID"];
+    TagLib::ID3v2::UniqueFileIdentifierFrame* currFrame;
+    for( TagLib::ID3v2::FrameList::Iterator iter = ufidlist.begin(); iter != ufidlist.end(); iter++ )
+    {
+        currFrame = dynamic_cast<TagLib::ID3v2::UniqueFileIdentifierFrame*>(*iter);
+        if( TStringToQString( currFrame->owner() ) == ourId )
+        {
+            return currFrame;
+        }
+    }
+    return 0;
+}
 
-    if( !AmarokConfig::advancedTagFeatures() )
+void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
+{
+    if( isStream() || url().protocol() == "cdda" || url().protocol() == "audiocd" ||
+                !m_uniqueId.isEmpty() || ( !AmarokConfig::advancedTagFeatures() && !strip ) )
         return;
 
-    int createID = 0;
-    int randSize = 8; //largest size allowed by ID3v2.4
+    bool createID = false;
+    int randSize = 8;
     bool newID = false;
-    m_uniqueId = QString::null;
 
     QString ourId = QString( "Amarok - rediscover your music at http://amarok.kde.org" ).upper();
 
     if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
     {
-        if ( file->ID3v2Tag( true ) )
+        if ( file->ID3v2Tag( !strip ) )
         {
-            if( file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() )
-                createID = 1;
+            if( file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() || !ourMP3UidFrame( file, ourId ) || recreate || strip )
+                createID = true;
             else
             {
-                TagLib::ID3v2::UniqueFileIdentifierFrame* ufidf =
-                        dynamic_cast<TagLib::ID3v2::UniqueFileIdentifierFrame*>(
-                                    file->ID3v2Tag()->frameListMap()["UFID"].front() );
-                if( TStringToQString( ufidf->owner() ) != ourId || recreate )
+                //this is really ugly, but otherwise we get an incorrect ? at the end of the string...possibly a null value?  Not sure of another way to fix this.
+                QString temp = TStringToQString( TagLib::String( ourMP3UidFrame( file, ourId )->identifier().data() ) );
+                QChar currchar;
+                uint i;
+                for( i = 0; i < temp.length(); i++)
                 {
-                    file->ID3v2Tag()->removeFrames( "UFID" );
-                    createID = 1;
+                    currchar = temp.at( i );
+                    debug() << "value " << i << " is " << int((currchar.latin1())) << endl;
                 }
-                else
-                    //this is really ugly, but otherwise we get an incorrect ? at the end of the string...possibly a null value?  Not sure of another way to fix this.
-                    m_uniqueId = TStringToQString( TagLib::String( ufidf->identifier().data() ) ).left( randSize );
+                m_uniqueId = TStringToQString( TagLib::String( ourMP3UidFrame( file, ourId )->identifier().data() ) ).left( randSize );
             }
-            if( createID == 1 && TagLib::File::isWritable( file->name() ) )
+            if( ( strip || createID ) && TagLib::File::isWritable( file->name() ) )
             {
                 m_uniqueId = getRandomStringHelper( randSize );
+                if( !file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() && ourMP3UidFrame( file, ourId ) )
+                    file->ID3v2Tag()->removeFrame( ourMP3UidFrame( file, ourId ) );
+
+                if( strip )
+                {
+                        file->save( TagLib::MPEG::File::AllTags );
+                        return;
+                }
+
                 file->ID3v2Tag()->addFrame( new TagLib::ID3v2::UniqueFileIdentifierFrame(
-                            QStringToTString( ourId ),
-                            TagLib::ByteVector( m_uniqueId.ascii(), randSize )
-                            ) );
-                file->save( TagLib::MPEG::File::ID3v2 );
+                        QStringToTString( ourId ),
+                        TagLib::ByteVector( m_uniqueId.ascii(), randSize )
+                        ) );
+                file->save( TagLib::MPEG::File::AllTags );
                 newID = true;
             }
         }
@@ -1310,14 +1404,23 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
     {
         if( file->tag() )
         {
-            if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) && recreate )
+            if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) )
+                        && ( recreate || strip ) && TagLib::File::isWritable( file->name() ) )
                 file->tag()->removeField( QStringToTString( ourId ) );
+
+            if( strip )
+            {
+                file->save();
+                return;
+            }
+
             if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) )
             {
                 if( TagLib::File::isWritable( file->name() ) )
                 {
+                    m_uniqueId = getRandomStringHelper( randSize );
                     file->tag()->addField( QStringToTString( ourId ),
-                            TagLib::ByteVector( getRandomStringHelper( randSize ).ascii(), randSize )
+                            TagLib::ByteVector( m_uniqueId.ascii(), randSize )
                             );
                     file->save();
                     newID = true;
@@ -1333,16 +1436,25 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
     //This will have to be tested.  It's also supposedly a TagLib bug so maybe it could be fixed, especially with some pressure on wheels
     else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
     {
-        /*if ( file->xiphComment( true ) )
+        /*if ( file->xiphComment( !strip ) )
         {
-            if( file->xiphComment()->fieldListMap().contains( QStringToTString( ourId ) ) && recreate )
+            if( file->xiphComment()->fieldListMap().contains( QStringToTString( ourId ) )
+                        && ( recreate || strip ) && TagLib::File::isWritable( file->name() ) )
                 file->xiphComment()->removeField( QStringToTString( ourId ) );
+
+            if( strip )
+            {
+                file->save();
+                return;
+            }
+
             if( !file->xiphComment()->fieldListMap().contains( QStringToTString( ourId ) ) )
             {
                 if( TagLib::File::isWritable( file->name() ) )
                 {
+                    m_uniqueId = getRandomStringHelper( randSize );
                     file->xiphComment()->addField( QStringToTString( ourId ),
-                            TagLib::ByteVector( getRandomStringHelper( randSize ).ascii(), randSize )
+                            TagLib::ByteVector( m_uniqueId.ascii(), randSize )
                             );
                     file->save();
                     newID = true;
@@ -1359,14 +1471,23 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
     {
         /*if( file->tag() )
         {
-            if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) && recreate )
+            if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) )
+                        && ( recreate || strip ) && TagLib::File::isWritable( file->name() ) )
                 file->tag()->removeField( QStringToTString( ourId ) );
+
+            if( strip )
+            {
+                file->save();
+                return;
+            }
+
             if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) )
             {
                 if( TagLib::File::isWritable( file->name() ) )
                 {
+                    m_uniqueId = getRandomStringHelper( randSize );
                     file->tag()->addField( QStringToTString( ourId ),
-                            TagLib::ByteVector( getRandomStringHelper( randSize ).ascii(), randSize )
+                            TagLib::ByteVector( m_uniqueId.ascii(), randSize )
                             );
                     file->save();
                     newID = true;
@@ -1389,7 +1510,9 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate )
 void
 MetaBundle::newUniqueId()
 {
-    //DEBUG_BLOCK
+    if( !AmarokConfig::advancedTagFeatures() )
+        return;
+
     const QString path = url().path();
     TagLib::FileRef fileref;
     fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
@@ -1398,6 +1521,18 @@ MetaBundle::newUniqueId()
         setUniqueId( fileref, true );
     else
         debug() << "ERROR: failed to set new uniqueid (could not open fileref)" << endl;
+}
+
+void MetaBundle::removeUniqueId()
+{
+    const QString path = url().path();
+    TagLib::FileRef fileref;
+    fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
+
+    if( !fileref.isNull() )
+        setUniqueId( fileref, false, true );
+    else
+        debug() << "ERROR: failed to remove uniqueid (could not open fileref)" << endl;
 }
 
 int
@@ -1462,8 +1597,10 @@ MetaBundle::getRandomStringHelper( int size )
     bool goodvalue = false;
     bool temporary = false;
     QStringList tempcheck, uniqueids;
-    if (CollectionDB::instance()->getType() == DbConnection::postgresql)
+    if( CollectionDB::instance()->getType() == DbConnection::postgresql )
         tempcheck = CollectionDB::instance()->query( QString( "select relname from pg_stat_user_tables order by relname;" ) );
+    else if( CollectionDB::instance()->getType() == DbConnection::sqlite )
+        tempcheck = CollectionDB::instance()->query( QString( "SELECT name FROM sqlite_master WHERE type = 'table';" ) );
     else
         tempcheck = CollectionDB::instance()->query( QString( "SHOW TABLES;" ) );
 

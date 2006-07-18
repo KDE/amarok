@@ -121,9 +121,9 @@ IfpMediaDevice::IfpMediaDevice()
     m_hasMountPoint = false;
 
     m_spacesToUnderscores = configBool("spacesToUnderscores");
-    m_firstSort           = configString( "firstGrouping", "None" );
-    m_secondSort          = configString( "secondGrouping", "None" );
-    m_thirdSort           = configString( "thirdGrouping", "None" );
+    m_firstSort           = configString( "firstGrouping", i18n("None") );
+    m_secondSort          = configString( "secondGrouping", i18n("None") );
+    m_thirdSort           = configString( "thirdGrouping", i18n("None") );
 }
 
 void
@@ -168,7 +168,7 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     {
         error() << "A suitable iRiver iFP device couldn't be found" << endl;
         amaroK::StatusBar::instance()->shortLongMessage( genericError,
-                                        i18n("iFP: A suitable iRiver iFP device couldn't be found")
+                                        i18n("iFP: A suitable iRiver iFP device could not be found")
                                         , KDE::StatusBar::Error );
         return false;
     }
@@ -386,19 +386,19 @@ IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
     QString directory = "\\"; //root
     bool cleverFilename = false;
     bool addFileToView = true;
-    if( m_firstSort != "None" )
+    if( m_firstSort != i18n("None") )
     {
         addFileToView = false;
         directory += bundle.prettyText( bundle.columnIndex(m_firstSort) ) + "\\";
 
-        if( m_secondSort != "None" )
+        if( m_secondSort != i18n("None") )
         {
             directory += bundle.prettyText( bundle.columnIndex(m_secondSort) ) + "\\";
 
-            if( m_thirdSort != "None" )
+            if( m_thirdSort != i18n("None") )
                 directory += bundle.prettyText( bundle.columnIndex(m_thirdSort) ) + "\\";
         }
-        if( m_firstSort == "Album" || m_secondSort == "Album" || m_thirdSort == "Album" )
+        if( m_firstSort == i18n("Album") || m_secondSort == i18n("Album") || m_thirdSort == i18n("Album") )
             cleverFilename = true;
     }
 
@@ -490,10 +490,10 @@ IfpMediaDevice::filetransferCallback( void *pData, struct ifp_transfer_status *p
 
     IfpMediaDevice *that = static_cast<IfpMediaDevice *>(pData);
 
-    if( that->isCancelled() )
+    if( that->isCanceled() )
     {
-        debug() << "Cancelling transfer operation" << endl;
-        that->setCancelled( false );
+        debug() << "Canceling transfer operation" << endl;
+        that->setCanceled( false );
         that->setProgress( progress->file_bytes, progress->file_bytes );
         return 1; //see ifp docs, return 1 for user cancel request
     }
@@ -511,7 +511,7 @@ IfpMediaDevice::setProgressInfo( struct ifp_transfer_status *progress )
 /// Deleting
 
 int
-IfpMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/ )
+IfpMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/, bool /*deleteTrack*/ )
 {
     if( !item || !m_connected ) return -1;
 

@@ -74,7 +74,7 @@ namespace TagLib {
       {
       public:
          Properties(RealMediaFF *rmff) : TagLib::AudioProperties(Average), m_rmff(rmff) {}
-         virtual ~Properties() {}  // you dont own rmff
+         virtual ~Properties() {}  // you don't own rmff
          virtual int length () const;
          virtual int bitrate () const;
          virtual int sampleRate () const;

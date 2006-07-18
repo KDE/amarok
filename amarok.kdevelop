@@ -15,7 +15,7 @@
     <description/>
     <ignoreparts/>
     <secondaryLanguages/>
-    <versioncontrol/>
+    <defaultencoding/>
   </general>
   <kdevautoproject>
     <general>
@@ -57,14 +57,14 @@
     </run>
     <configurations>
       <default>
-        <configargs>--prefix `kde-config --prefix`</configargs>
+        <configargs>--enable-debug=full</configargs>
         <builddir/>
         <topsourcedir/>
         <cppflags/>
         <ldflags/>
-        <ccompiler>GccOptions</ccompiler>
-        <cxxcompiler>GppOptions</cxxcompiler>
-        <f77compiler>G77Options</f77compiler>
+        <ccompiler>kdevgccoptions</ccompiler>
+        <cxxcompiler>kdevgppoptions</cxxcompiler>
+        <f77compiler>kdevpgf77options</f77compiler>
         <ccompilerbinary/>
         <cxxcompilerbinary/>
         <f77compilerbinary/>
@@ -150,8 +150,8 @@
       <includeTypedefs>false</includeTypedefs>
       <automaticCodeCompletion>true</automaticCodeCompletion>
       <automaticArgumentsHint>true</automaticArgumentsHint>
-      <codeCompletionDelay>250</codeCompletionDelay>
-      <argumentsHintDelay>400</argumentsHintDelay>
+      <codeCompletionDelay>100</codeCompletionDelay>
+      <argumentsHintDelay>100</argumentsHintDelay>
       <automaticHeaderCompletion>true</automaticHeaderCompletion>
       <headerCompletionDelay>250</headerCompletionDelay>
     </codecompletion>
@@ -165,10 +165,18 @@
       <inlineSet>true</inlineSet>
     </creategettersetter>
     <qt>
-      <used>false</used>
+      <used>true</used>
       <version>3</version>
-      <root>/home/kde-dev/kde-svn/branches/qt/3.3/qt-copy</root>
+      <root>/usr/qt/3</root>
     </qt>
+    <splitheadersource>
+      <enabled>false</enabled>
+      <synchronize>true</synchronize>
+      <orientation>Vertical</orientation>
+    </splitheadersource>
+    <designerintegration>
+      <qtdesigner/>
+    </designerintegration>
   </kdevcppsupport>
   <kdevclassview>
     <folderhierarchy>true</folderhierarchy>
@@ -201,6 +209,7 @@
   </kdevdocumentation>
   <ctagspart>
     <customArguments/>
-    <customTagfilePath/>
+    <customTagfilePath>/home/ian/workspace/local/amarok/tags</customTagfilePath>
+    <activeTagsFiles/>
   </ctagspart>
 </kdevelop>

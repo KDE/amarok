@@ -109,8 +109,16 @@ private:
    void timerEvent( QTimerEvent * );
    void resetScope(int playerIndex);
 
-   int print2stdout(const char *fmt, ...);
-   int print2stderr(const char *fmt, ...);
+   int print2stdout(const char *fmt, ...)
+#ifdef __GNUC__
+      __attribute__ ((format (printf, 2, 3)))
+#endif
+      ;
+   int print2stderr(const char *fmt, ...)
+#ifdef __GNUC__
+      __attribute__ ((format (printf, 2, 3)))
+#endif
+      ;
    void notifyUser(unsigned long code, const char *moreinfo, const char *moreinfourl);
    void interruptUser(unsigned long code, const char *moreinfo, const char *moreinfourl);
 

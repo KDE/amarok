@@ -431,7 +431,7 @@ void sqlite3Update(
 
     /* Delete the old indices for the current record.
     */
-    sqlite3GenerateRowIndexDelete(db, v, pTab, iCur, aIdxUsed);
+    sqlite3GenerateRowIndexDelete(v, pTab, iCur, aIdxUsed);
 
     /* If changing the record number, delete the old record.
     */

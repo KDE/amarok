@@ -96,7 +96,7 @@ private slots:
 
 signals:
     /**
-     * Emitted when an error occured during NMM setup.
+     * Emitted when an error occurred during NMM setup.
      * \param hostname host the error is related to
      * \param error error identification, see NMMEngineException::Error
      */

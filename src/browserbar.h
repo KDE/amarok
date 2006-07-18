@@ -14,11 +14,14 @@
 #include "amarok_export.h"  //LIBAMAROK_EXPORT
 #include <qwidget.h>        //baseclass
 #include <qvaluevector.h>   //stack allocated
+#include <qmap.h>           //stack allocated
 
 typedef QValueVector<QWidget*> BrowserList;
+typedef QMap<QString,int> BrowserIdMap;
 
 class MultiTabBar;
 class MultiTabBarTab;
+class DropProxyTarget;
 class KURL;
 class QSignalMapper;
 class QVBox;
@@ -34,6 +37,7 @@ public:
 
     LIBAMAROK_EXPORT static BrowserBar* instance() { return s_instance; }
     QVBox *container() const { return m_playlistBox; }
+    QVBox *browserBox() const { return m_browserBox; }
 
     QWidget *browser( const QString& ) const;
     QWidget *browser( int index ) const { if( index < 0 ) index = 0; return m_browsers[index]; }
@@ -43,10 +47,13 @@ public:
     int visibleCount() const;
 
     void addBrowser( QWidget*, const QString&, const QString& );
+    void removeMediaBrowser( QWidget *widget );
+    int indexForName( const QString& ) const;
     int restoreWidth();
 
     /// for internal use
     void mouseMovedOverSplitter( QMouseEvent* );
+    void makeDropProxy( const QString &browserName, DropProxyTarget *finalTarget );
 
 protected:
     virtual bool event( QEvent* );
@@ -63,8 +70,6 @@ signals:
     void browserActivated( int );
 
 private:
-    int indexForName( const QString& ) const;
-
     void adjustWidgetSizes();
     uint maxBrowserWidth() const { return width() / 2; }
 
@@ -76,7 +81,8 @@ private:
     QWidget       *m_divider;     ///a qsplitter like widget
     MultiTabBar   *m_tabBar;
     BrowserList    m_browsers;
-    QWidget       *m_browserBox;  ///parent widget to the browsers
+    BrowserIdMap   m_browserIds;
+    QVBox         *m_browserBox;  ///parent widget to the browsers
     int            m_currentIndex;
     int            m_lastIndex;
     QSignalMapper *m_mapper;      ///maps tab clicks to browsers

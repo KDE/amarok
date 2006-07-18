@@ -7,7 +7,7 @@
  * osd.cpp:   Shows some text in a pretty way independent to the WM
  * begin:     Fre Sep 26 2003
  * copyright: (C) 2004 Christian Muehlhaeuser <chris@chris.de>
- *            (C) 2004 Seb Ruiz <me@sebruiz.net>
+ *            (C) 2004-2006 Seb Ruiz <me@sebruiz.net>
  *            (C) 2004, 2005 Max Howell
  *            (C) 2005 Gábor Lehel <illissius@gmail.com>
  */
@@ -69,6 +69,14 @@ OSDWidget::show( const QString &text, QImage newImage )
         int h = m_scaledCover.height();
         m_scaledCover = m_cover.smoothScale(w, h);
     }
+    show();
+}
+
+void OSDWidget::ratingChanged( const short rating )
+{
+    m_text = "\n" + i18n( "Rating changed" );
+    setRating( rating );
+
     show();
 }
 
@@ -134,12 +142,24 @@ OSDWidget::determineMetrics( const uint M )
     // remove consecutive line breaks
     m_text.replace( QRegExp("\n+"), "\n" );
 
+    if( m_rating ) // we add another 3 lines of spacing to show the stars
+        m_text += "\n\n\n";
+
     // The osd cannot be larger than the screen
     QRect rect = fontMetrics().boundingRect( 0, 0,
             max.width() - image.width(), max.height(),
             AlignCenter | WordBreak, m_text );
 
-    if( !m_cover.isNull() ) {
+    if( m_rating )
+    {
+        KPixmap star;
+        star.load( locate( "data", "amarok/images/star.png" ) );
+        if( rect.width() < star.width() * 5 )
+            rect.setWidth( star.width() * 5 ); //changes right edge position
+    }
+
+    if( !m_cover.isNull() )
+    {
         const int availableWidth = max.width() - rect.width() - M; //WILL be >= (minImageSize.width() - M)
 
         m_scaledCover = m_cover.smoothScale(
@@ -245,7 +265,8 @@ OSDWidget::render( const uint M, const QSize &size )
 
     rect.addCoords( M, M, -M, -M );
 
-    if( !m_cover.isNull() ) {
+    if( !m_cover.isNull() )
+    {
         QRect r( rect );
         r.setTop( (size.height() - m_scaledCover.height()) / 2 );
         r.setSize( m_scaledCover.size() );
@@ -279,22 +300,20 @@ OSDWidget::render( const uint M, const QSize &size )
 
         rect.rLeft() += m_scaledCover.width() + M;
     }
-#if 0
+
     if( m_rating > 1 )
     {
         KPixmap star;
         star.load( locate( "data", "amarok/images/star.png" ) );
         QRect r( rect );
+
         r.setLeft(( rect.left() + rect.width() / 2 ) - star.width() * m_rating / 4 ); //Align to center...
-        r.setTop( rect.top() + rect.height() / 2 - star.width() / 2 );
-        KPixmapEffect::fade( star, 0.50, backgroundColor() );
+        r.setTop( rect.top() + (rect.height()*5)/8 );
 
         if( m_rating % 2 )
         {
             KPixmap halfStar;
             halfStar.load( locate( "data", "amarok/images/smallstar.png" ) );
-            r.setLeft( r.left() - halfStar.width() / 2);
-            KPixmapEffect::fade( halfStar, 0.50, backgroundColor() );
             p.drawPixmap( r.left() + star.width() * ( m_rating / 2 ), r.top(), halfStar );
         }
 
@@ -305,7 +324,7 @@ OSDWidget::render( const uint M, const QSize &size )
 
         m_rating = 0;
     }
-#endif
+
     if( m_drawShadow )
     {
         QPixmap pixmap( rect.size() + QSize(10,10) );
@@ -506,9 +525,6 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
         for( int i = 0; i < PlaylistItem::NUM_COLUMNS; ++i )
             tags << bundle.prettyText( i );
 
-        if( bundle.rating() && AmarokConfig::useRatings() )
-            OSDWidget::setRating( bundle.rating() );
-
         if( bundle.length() <= 0 )
             tags[PlaylistItem::Length+1] = QString::null;
 
@@ -520,12 +536,14 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
                 QValueList<int>() << PlaylistItem::PlayCount  << PlaylistItem::Year   << PlaylistItem::Comment
                                   << PlaylistItem::Genre      << PlaylistItem::Length << PlaylistItem::Bitrate
                                   << PlaylistItem::LastPlayed << PlaylistItem::Score  << PlaylistItem::Filesize;
-
+            OSDWidget::setRating( 0 );
             for( int i = 0, n = Playlist::instance()->numVisibleColumns(); i < n; ++i )
             {
                 const int column = Playlist::instance()->mapToLogicalColumn( i );
                 if( !tags.at( column + 1 ).isEmpty() && column != PlaylistItem::Rating )
                     availableTags << column;
+                if( column == PlaylistItem::Rating )
+                    OSDWidget::setRating( bundle.rating() );
             }
 
             for( int n = availableTags.count(), i = 0; i < n; ++i )
@@ -545,11 +563,17 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
             args["prettytitle"] = bundle.prettyTitle();
             for( int i = 0; i < PlaylistItem::NUM_COLUMNS; ++i )
                 args[bundle.exactColumnName( i ).lower()] = bundle.prettyText( i );
-            OSDWidget::setRating( bundle.rating() );
+
             if( bundle.length() <= 0 )
                 args["length"] = QString::null;
 
             QStringx osd = AmarokConfig::osdText();
+
+            // hacky, but works...
+            if( osd.contains( "%rating" ) )
+                OSDWidget::setRating( AmarokConfig::useRatings() ? bundle.rating() : 0 );
+            osd.replace( "%rating", "" );
+
             text = osd.namedOptArgs( args );
 
             // KDE 3.3 rejects \n in the .kcfg file, and KConfig turns \n into \\n, so...

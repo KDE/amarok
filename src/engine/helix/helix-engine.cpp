@@ -262,6 +262,9 @@ HelixEngine::init()
       entry->type = QStringList::split('|', mt);
       entry->ext = QStringList::split('|', me);
       m_mimes[i] = *entry;
+
+      debug() << ml->mimetypes << endl;
+
       i++;
       ml = ml->fwd;
    }
@@ -305,7 +308,7 @@ HelixEngine::load( const KURL &url, bool isStream )
          m_pfade[m_current].m_startfadetime = PlayerControl::where(m_current);
          setFadeout(true, m_xfadeLength, m_current);
       }
-      Engine::Base::load( url, false ); // we dont crossfade streams ?? do we load the base here ??
+      Engine::Base::load( url, false ); // we don't crossfade streams ?? do we load the base here ??
       PlayerControl::setURL( QFile::encodeName( url.url() ), nextPlayer, !isStream );
       m_isStream = false;
    }
@@ -563,13 +566,14 @@ HelixEngine::timerEvent( QTimerEvent * )
 
       debug() << "{Title}: " << md->title << " {Artist}: " << md->artist << " {Bitrate}: " << md->bitrate << endl;
 
-      // Real Radio One (and Rhapsody?) streams have their own format, where title is:
-      // clipinfo:title=<title>|artist name=<artist>|Album name=<album>|Artist:Next artist=<next artist>| \
-      // ordinal=<some number>|duration=<in secs>|Track:Rhapsody Track Id=<some number>
-
-      // for all other streams helix sends the title of the song in the artist string.
-      // this prevents context lookup, so we split it here (the artist and title are separated by a '-'
-      // we'll put the 'title' in album instead...
+      /* Real Radio One (and Rhapsody?) streams have their own format, where title is:
+       * clipinfo:title=<title>|artist name=<artist>|Album name=<album>|Artist:Next artist=<next artist>| \
+       * ordinal=<some number>|duration=<in secs>|Track:Rhapsody Track Id=<some number>
+       *
+       * for all other streams helix sends the title of the song in the artist string.
+       * this prevents context lookup, so we split it here (the artist and title are separated by a '-'
+       * we'll put the 'title' in album instead...
+       */
       Engine::SimpleMetaBundle bndl;
       bndl.album = QString::fromUtf8( m_md.title );
       if ( bndl.album.startsWith( QString("clipinfo:") ) )
