@@ -716,11 +716,13 @@ TagDialog::setMultipleTracksMode()
     kComboBox_genre->setCurrentText( "" );
     kComboBox_composer->setCurrentText( "" );
     kLineEdit_title->setText( "" );
+    kTextEdit_comment->setText( "" );
     kIntSpinBox_track->setValue( kIntSpinBox_track->minValue() );
+    kIntSpinBox_discNumber->setValue( kIntSpinBox_discNumber->minValue() );
+    kIntSpinBox_year->setValue( kIntSpinBox_year->minValue() );
 
     kLineEdit_title->setEnabled( false );
     kIntSpinBox_track->setEnabled( false );
-    kIntSpinBox_discNumber->setValue( 0 );
 
     pushButton_musicbrainz->hide();
     pushButton_guessTags->hide();
@@ -739,10 +741,6 @@ TagDialog::setSingleTrackMode()
     kTabWidget->setTabEnabled( summaryTab, true );
     kTabWidget->setTabEnabled( lyricsTab, true );
     kTabWidget->setTabEnabled( statisticsTab, true );
-
-    kComboBox_artist->setCurrentText( "" );
-    kComboBox_album->setCurrentText( "" );
-    kComboBox_genre->setCurrentText( "" );
 
     kLineEdit_title->setEnabled( true );
     kIntSpinBox_track->setEnabled( true );
