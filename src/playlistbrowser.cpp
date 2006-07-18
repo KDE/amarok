@@ -2619,14 +2619,14 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 /* fall through */
             case MEDIA_DEVICE:
                 {
-                    KURL::List urls;
-                    const QStringList values = CollectionDB::instance()->query( static_cast<SmartPlaylist *>(item)->query() );
                     int i=0;
-                    for( for_iterators( QStringList, values ); it != end; ++it ) {
-                        if(i%QueryBuilder::dragFieldCount == QueryBuilder::dragFieldCount-2)
-                        {
-                            urls << KURL::fromPathOrURL( *it );
-                        }
+                    KURL::List urls;
+                    QStringList values = CollectionDB::instance()->query( static_cast<SmartPlaylist *>(item)->query() );
+                    for( QStringList::iterator it = values.begin();
+                         it != values.end();
+                         it += QueryBuilder::dragFieldCount )
+                    {
+                        urls << KURL::fromPathOrURL( *it );
                         i++;
                     }
                     MediaBrowser::queue()->addURLs( urls, playlist );

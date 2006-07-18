@@ -1691,7 +1691,6 @@ MediaBrowser::configSelectPlugin( int index )
 void
 MediaBrowser::updateButtons()
 {
-DEBUG_BLOCK
     if( !m_toolbar->getButton(CONNECT) ||
             !m_toolbar->getButton(DISCONNECT) ||
             !m_toolbar->getButton(TRANSFER) ) //TODO add CUSTOM
@@ -2025,28 +2024,30 @@ MediaQueue::addURL( const KURL &url, MediaItem *item )
     MediaItem *newitem = new MediaItem( this, lastItem() );
     newitem->setExpandable( false );
     newitem->setDropEnabled( true );
+
     MetaBundle *bundle = new MetaBundle( *item->bundle() );
-    KURL filepath(url);
+    KURL filepath( url );
     filepath.addPath( bundle->filename() );
+
     bundle->setUrl( filepath );
     newitem->m_device = item->m_device;
-    if(bundle->podcastBundle() )
-    {
+
+    if( bundle->podcastBundle() )
         item->setType( MediaItem::PODCASTITEM );
-    }
+
     QString text = item->bundle()->prettyTitle();
     if( text.isEmpty() || (!item->bundle()->isValidMedia() && !item->bundle()->podcastBundle()) )
         text = item->bundle()->url().prettyURL();
+
     if( item->m_playlistName != QString::null )
-    {
         text += " (" + item->m_playlistName + ")";
-    }
-    newitem->setText( 0, text);
+
+    newitem->setText( 0, text );
     newitem->setBundle( bundle );
     m_parent->updateButtons();
     m_parent->m_progress->setTotalSteps( m_parent->m_progress->totalSteps() + 1 );
     itemCountChanged();
-    
+
 }
 
 void
@@ -2063,6 +2064,7 @@ void
 MediaQueue::URLsAdded()
 {
     m_parent->updateStats();
+    m_parent->updateButtons();
     if( m_parent->currentDevice()
             && m_parent->currentDevice()->isConnected()
             && m_parent->currentDevice()->asynchronousTransfer()
@@ -2534,7 +2536,7 @@ MediaDevice::transferFiles()
     {
         return;
     }
-    
+
     setCanceled( false );
 
     m_transferring = true;
@@ -2563,7 +2565,7 @@ MediaDevice::transferFiles()
             m_parent->m_queue->itemCountChanged();
             continue;
         }
-        
+
         if( m_transferredItem->device() )
         {
             m_transferredItem->device()->copyTrackFromDevice( m_transferredItem );
@@ -2576,7 +2578,7 @@ MediaDevice::transferFiles()
         }
         else
             debug() << "Device not found\n";
-        
+
         bool transcoding = false;
         MediaItem *item = trackExists( *bundle );
         if( item && !m_transferredItem->m_playlistName.isEmpty() )

@@ -119,7 +119,7 @@ class MediaQueue : public KListView, public DropProxyTarget
         void addURL( const KURL& url, MetaBundle *bundle=NULL, const QString &playlistName=QString::null );
         void addURL( const KURL& url, MediaItem *item );
         void addURLs( const KURL::List urls, const QString &playlistName=QString::null );
-        
+
         void URLsAdded(); // call after finishing adding single urls
 
         // Reimplemented from KListView
