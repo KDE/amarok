@@ -8,7 +8,7 @@
 
 
 # Red Cards (removes translation)
-doc_redcards = "pl"
+doc_redcards = ""
 po_redcards = ""
 
 tag = ""
