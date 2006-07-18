@@ -432,7 +432,7 @@ HX_RESULT HSPClientAdviceSink::DumpRegTree(const char* pszTreeName, UINT16 index
                nVal = 0;
                m_pRegistry->GetIntById( ulRegID, nVal );
                if(m_splayer->bEnableAdviceSink)
-                  m_splayer->print2stdout("%s : %d\n", pszName, nVal ); 
+                  m_splayer->print2stdout("%s : %ld\n", pszName, nVal ); 
                if (bw)
                   m_splayer->ppctrl[index]->md.bitrate = nVal;
                break;
@@ -440,7 +440,7 @@ HX_RESULT HSPClientAdviceSink::DumpRegTree(const char* pszTreeName, UINT16 index
                nVal = 0;
                m_pRegistry->GetIntById( ulRegID, nVal );
                if(m_splayer->bEnableAdviceSink)
-                  m_splayer->print2stdout("%s : %d\n", pszName, nVal ); 
+                  m_splayer->print2stdout("%s : %ld\n", pszName, nVal ); 
                if (bw)
                   m_splayer->ppctrl[index]->md.bitrate = nVal;
                break;
@@ -469,7 +469,7 @@ HX_RESULT HSPClientAdviceSink::DumpRegTree(const char* pszTreeName, UINT16 index
                break;
            case PT_BUFFER :
                if(m_splayer->bEnableAdviceSink)
-                  m_splayer->print2stdout("%s : BUFFER TYPE NOT SHOWN\n",
+                  m_splayer->print2stdout("%s %ld : BUFFER TYPE NOT SHOWN\n",
                         pszName, nVal ); 
                break;
            case PT_UNKNOWN:

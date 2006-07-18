@@ -342,7 +342,7 @@ HSPAudioDevice::_Write( const HXAudioData* pAudioData )
    if ( pAudioData->ulAudioTime < m_ulCurrentTime ||
         pAudioData->ulAudioTime - m_ulCurrentTime > (1000 * len) / (m_unNumChannels * m_unSampleRate) + 1 ) 
    {
-      m_Player->print2stderr("########## seek detected %d %d, len = %d %d\n", m_ulCurrentTime, pAudioData->ulAudioTime, len,
+      m_Player->print2stderr("########## seek detected %ld %ld, len = %ld %d\n", m_ulCurrentTime, pAudioData->ulAudioTime, len,
                              abs(pAudioData->ulAudioTime - (m_ulCurrentTime + (1000 * len) / (m_unNumChannels * m_unSampleRate))));
       //_Reset();
       //clearQueue();
@@ -604,7 +604,7 @@ HX_RESULT HSPAudioDevice::_OpenAudio()
 
     if(err == 0)
     {
-       m_Player->print2stderr("########## return from OpenAudio: %d\n", m_pAlsaPCMHandle);
+       m_Player->print2stderr("########## return from OpenAudio\n");
        m_wLastError = RA_AOE_NOERR;
     }
     else
@@ -1425,7 +1425,7 @@ HX_RESULT HSPAudioDevice::WriteBytes( UCHAR* buffer, ULONG32 ulBuffLength, LONG3
                 break;
                 
              default:
-                m_Player->print2stderr("########### snd_pcm_writei: %s  dev=%d num_frames=%d\n", snd_strerror(err), m_pAlsaPCMHandle, num_frames);
+                m_Player->print2stderr("########### snd_pcm_writei: %s  num_frames=%ld\n", snd_strerror(err), num_frames);
 #ifdef HX_LOG_SUBSYSTEM
                 HXLOGL1 ( HXLOG_ADEV, "snd_pcm_writei: %s", snd_strerror(err));
 #endif
