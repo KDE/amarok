@@ -59,7 +59,7 @@ public:
     TagsEvent( const BundleList &bees ) : QCustomEvent( 1000 ), bundles( bees ) {
         for( BundleList::Iterator it = bundles.begin(), end = bundles.end(); it != end; ++it )
             /// @see MetaBundle for explanation of audioproperties < 0
-            if( (*it).length() <= 0 || (*it).bitrate() <= 0 )
+            if( !(*it).podcastBundle() && ( (*it).length() <= 0 || (*it).bitrate() <= 0 ) )
                 (*it).readTags( TagLib::AudioProperties::Fast, 0, false );
     }
 

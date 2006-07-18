@@ -2082,19 +2082,25 @@ Playlist::updateNextPrev()
 void
 Playlist::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
 {
-    if ( m_currentTrack && !trackChanged ) {
-         //if the track hasn't changed then this is a meta-data update
+    if ( !bundle.podcastBundle() )
+    {
+        if ( m_currentTrack && !trackChanged ) {
+            //if the track hasn't changed then this is a meta-data update
 
-        //this is a hack, I repeat a hack! FIXME FIXME
-        //we do it because often the stream title is from the pls file and is informative
-        //we don't want to lose it when we get the meta data
-        if ( m_currentTrack->artist().isEmpty() ) {
-            QString comment = m_currentTrack->title();
-            m_currentTrack->copyFrom( bundle );
-            m_currentTrack->setComment( comment );
+            //this is a hack, I repeat a hack! FIXME FIXME
+            //we do it because often the stream title is from the pls file and is informative
+            //we don't want to lose it when we get the meta data
+            if ( m_currentTrack->artist().isEmpty() ) {
+                QString comment = m_currentTrack->title();
+                m_currentTrack->copyFrom( bundle );
+                m_currentTrack->setComment( comment );
+            }
+            else
+                m_currentTrack->copyFrom( bundle );
         }
         else
-            m_currentTrack->copyFrom( bundle );
+            //ensure the currentTrack is set correctly and highlight it
+            restoreCurrentTrack();
     }
     else
         //ensure the currentTrack is set correctly and highlight it

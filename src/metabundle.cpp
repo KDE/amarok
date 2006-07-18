@@ -202,7 +202,7 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
         if ( !noCache )
             m_isValidMedia = CollectionDB::instance()->bundleForUrl( this );
 
-        if ( !isValidMedia() || m_length <= 0 )
+        if ( !isValidMedia() || ( !m_podcastBundle && m_length <= 0 ) )
             readTags( readStyle, images );
         else if( AmarokConfig::advancedTagFeatures() && m_uniqueId.isEmpty() )
             setUniqueId();
