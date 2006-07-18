@@ -19,11 +19,13 @@
 #ifndef _MEDIUM_H_
 #define _MEDIUM_H_
 
+#include "amarok_export.h"
+
 #include <qstring.h>
 #include <qstringlist.h>
 #include <kurl.h>
 
-class Medium
+class LIBAMAROK_EXPORT Medium
 {
 public:
 	typedef QValueList<const Medium> List;

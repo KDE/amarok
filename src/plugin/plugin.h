@@ -5,6 +5,7 @@
 #define AMAROK_PLUGIN_H
 
 #include <config.h>
+#include "amarok_export.h"
 
 #define AMAROK_EXPORT_PLUGIN( classname ) \
     extern "C" { \
@@ -20,7 +21,7 @@ namespace amaroK
 {
     class PluginConfig;
 
-    class Plugin
+    class LIBAMAROK_EXPORT Plugin
     {
         public:
             virtual ~Plugin();

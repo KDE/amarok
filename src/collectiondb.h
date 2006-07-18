@@ -15,6 +15,7 @@
 
 #include "engineobserver.h"
 #include "threadweaver.h" //baseclass
+#include "amarok_export.h"
 
 #include <kurl.h>
 #include <qdir.h>            //stack allocated
@@ -189,7 +190,7 @@ class PostgresqlConnection : public DbConnection
 #endif
 
 
-class CollectionDB : public QObject, public EngineObserver
+class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
 {
     Q_OBJECT
 

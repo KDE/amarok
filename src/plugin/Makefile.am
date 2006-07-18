@@ -2,6 +2,7 @@ noinst_LTLIBRARIES = \
     libplugin.la
 
 INCLUDES = \
+    -I$(top_srcdir)/amarok/src \
     $(all_includes)
 
 libplugin_la_SOURCES = \
