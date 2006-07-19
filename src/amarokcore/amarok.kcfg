@@ -316,8 +316,8 @@
     <entry key="Crossfade Length" type="Int">
         <label>Length of crossfade, in milliseconds</label>
         <whatsthis>The length of the crossfade between tracks in milliseconds.</whatsthis>
-        <default>3000</default>
-        <min>1500</min>
+        <default>4000</default>
+        <min>400</min>
     </entry>
     <entry key="Crossfade Manual Only" type="Bool">
         <label>Only crossfade when manually changing tracks</label>

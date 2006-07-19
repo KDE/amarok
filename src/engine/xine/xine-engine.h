@@ -101,11 +101,12 @@ class Fader : public QObject, public QThread
     xine_stream_t      *m_increase;
     xine_audio_port_t  *m_port;
     xine_post_t        *m_post;
+    uint               m_fadeLength;
 
     virtual void run();
 
 public:
-    Fader( XineEngine* );
+    Fader( XineEngine *, uint fadeLengthMs );
    ~Fader();
 };
 

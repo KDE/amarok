@@ -35,6 +35,7 @@ AMAROK_EXPORT_PLUGIN( XineEngine )
 
 #include <qapplication.h>
 #include <qdir.h>
+#include <qtimer.h>
 
 extern "C"
 {
@@ -226,7 +227,7 @@ XineEngine::load( const KURL &url, bool isStream )
 
     if( m_xfadeLength > 0 && xine_get_status( m_stream ) == XINE_STATUS_PLAY )
     {
-       s_fader = new Fader( this );
+       s_fader = new Fader( this, m_xfadeLength );
        setEqualizerParameters( m_intPreamp, m_equalizerGains );
     }
 
@@ -950,7 +951,7 @@ XineEngine::fetchMetaData() const
 /// class Fader
 //////////////////
 
-Fader::Fader( XineEngine *engine )
+Fader::Fader( XineEngine *engine, uint fadeMs )
    : QObject( engine )
    , QThread()
    , m_engine( engine )
@@ -959,6 +960,7 @@ Fader::Fader( XineEngine *engine )
    , m_increase( 0 )
    , m_port( engine->m_audioPort )
    , m_post( engine->m_post )
+   , m_fadeLength( fadeMs )
 {
     if( engine->makeNewStream() )
     {
@@ -990,84 +992,46 @@ Fader::~Fader()
      s_fader = 0;
 }
 
-struct fade_s {
-    int sleep;
-    uint volume;
-    xine_stream_t *stream;
-
-    fade_s( uint s, uint v, xine_stream_t *st ) : sleep( s ), volume( v ), stream( st ) {}
-};
-
-#include <list>
 void
 Fader::run()
 {
-    using std::list;
+    // do a volume change in 100 steps (or every 10ms)
+    uint stepsCount = m_fadeLength < 1000 ? m_fadeLength / 10 : 100;
+    uint stepSizeUs = (int)( 1000.0 * (float)m_fadeLength / (float)stepsCount );
 
-    list<fade_s> data;
-
-    int sleeps[100];
-    for( uint v = 0; v < 100; ++v )
-        //the usleep time for this volume
-        sleeps[v] = int(120000.0 * (-log10( v+1 ) + 2));
-
-    for( int v = 99; v >= 0; --v )
-        data.push_back( fade_s( sleeps[v], v, m_decrease ) );
-
+    QTime t;
+    t.start();
+    float mix = 0.0;
+    while ( mix < 1.0 )
     {
-        /**
-         * Here we try to make a list consisting of many small sleeps
-         * inbetween each volume increase/decrease
-         */
+        // sleep a constant amount of time
+        QThread::usleep( stepSizeUs );
 
-        uint v = 0;
-        int tu = 0;
-        int td = sleeps[0];
-        for( list<fade_s>::iterator it = data.begin(), end = data.end(); it != end; ++it ) {
-            tu += (*it).sleep;
+        // get volume (amarok main * equalizer preamp)
+        float vol = Engine::Base::makeVolumeLogarithmic( m_engine->m_volume ) * m_engine->m_preamp;
 
-            while ( tu > td ) {
-//                 kdDebug() << tu << ", " << td << " for v=" << v << endl;
-
-                //this is the sleeptime for the structure we are about to insert
-                const int newsleep = tu - td;
-
-                //first we need to update the sleep for the previous structure
-                list<fade_s>::iterator jt = it; --jt;
-                (*jt).sleep -= newsleep;
-
-                //insert the new structure for the increasing stream
-                data.insert( it, fade_s( newsleep, v, m_increase ) );
-
-//                 kdDebug() << "new: " << newsleep << endl;
-
-                //decrease the contextual volume
-                if( ++v > 99 )
-                    goto done;
-
-                //update td
-                td += sleeps[v];
-            }
-
-//             kdDebug() << tu << ", " << td << " for v=" << v << endl;
+        // compute the mix factor as the percentage of time spent since fade begun
+        float mix = (float)t.elapsed() / (float)m_fadeLength;
+        if ( mix > 1.0 )
+        {
+            if ( m_increase )
+                xine_set_param( m_increase, XINE_PARAM_AUDIO_AMP_LEVEL, (uint)vol );
+            break;
         }
 
-        done: ;
-    }
-
-    // perform the fading operations
-    list<fade_s>::iterator it, end;
-    for( it = data.begin(), end = data.end(); it != end && !m_engine->m_stopFader; ++it )
-    {
-        if( (*it).stream == NULL ) continue;
-//         debug() << "sleep: " << (*it).sleep << " volume: " << (*it).volume << endl;
-        if( (*it).sleep > 0 ) //FIXME
-           QThread::usleep( (*it).sleep );
-
-        float vol = Engine::Base::makeVolumeLogarithmic( m_engine->m_volume );
-        vol = vol * m_engine->m_preamp * ( (*it).volume * 0.01 );
-
-        xine_set_param( (*it).stream, XINE_PARAM_AUDIO_AMP_LEVEL, (uint) vol );
+        // change volume of streams (using dj-like cross-fade profile)
+        if ( m_decrease )
+        {
+            //xine_set_param( m_decrease, XINE_PARAM_AUDIO_AMP_LEVEL, (uint)(vol * (1.0 - mix)) );  // linear
+            float v = 4.0 * (1.0 - mix) / 3.0;
+            xine_set_param( m_decrease, XINE_PARAM_AUDIO_AMP_LEVEL, (uint)( v < 1.0 ? vol * v : vol ) );
+        }
+        if ( m_increase )
+        {
+            //xine_set_param( m_increase, XINE_PARAM_AUDIO_AMP_LEVEL, (uint)(vol * mix) );  //linear
+            float v = 4.0 * mix / 3.0;
+            xine_set_param( m_increase, XINE_PARAM_AUDIO_AMP_LEVEL, (uint)( v < 1.0 ? vol * v : vol ) );
+        }
     }
 
     //stop using cpu!

@@ -7,6 +7,9 @@ Amarok ChangeLog
 
 VERSION 1.4.2:
   FEATURES:
+    * Improved crossfading for xine-engine: Honours the 'Crossfade Length'
+      setting precisely, and uses a better mixing style profile. Patch by
+      Enrico Ros <koral@email.it>.
     * Media and collection browser tabs now support dropping.
     * Allow for deleting all the tracks on a playlist from iPods. (BR 127855)
     * Ability to create custom last.fm station from the GUI.
