@@ -312,11 +312,11 @@ XineEngine::determineAndShowErrorMessage()
     debug() << "xine_get_error()\n";
     switch (xine_get_error( m_stream )) {
         case XINE_ERROR_NO_INPUT_PLUGIN:
-            body = i18n("No suitable input plugin.");
+            body = i18n("No suitable input plugin. This often means that the url's protocol is not supported.");
         break;
 
         case XINE_ERROR_NO_DEMUX_PLUGIN:
-            body = i18n("No suitable demux plugin.");
+            body = i18n("No suitable demux plugin. This often means that the file format is not supported.");
         break;
 
         case XINE_ERROR_DEMUX_FAILED:
