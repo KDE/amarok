@@ -38,7 +38,7 @@
                         <cstring>kcfg_AdvancedTagFeatures</cstring>
                     </property>
                     <property name="text">
-                        <string>Enable &amp;ATF (recommended; requires restart)</string>
+                        <string>Enable &amp;ATF (recommended; see "Information")</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Check to enable Amarok's Advanced Tag Features.&lt;br&gt;</string>
@@ -66,7 +66,7 @@
                         </size>
                     </property>
                     <property name="text">
-                        <string>&lt;a href='whatsthis:&lt;em&gt;Advanced Tag Features (ATF)&lt;/em&gt;&lt;p&gt;This is an optional but recommended set of features that use a unique identifier stored in the metadata of your files to allow Amarok to track your files in useful ways.&lt;p&gt;With ATF on, for instance, when you move or rename files within your collection folders, the Playlist will keep the URL of the file current, so that you do not need to remove and re-add the file.  Statistics information will not be lost due to file renames or moves, either.&lt;p&gt;This feature is not turned on by default since it does require making (safe and transparent) physical metadata additions to your files, but its use is encouraged.&lt;p&gt;&lt;em&gt;Turning on this feature requires a full collection rescan and clearing your current playlist.  These actions will be performed when you next start Amarok.&lt;/em&gt;'&gt;Information&lt;/a&gt;</string>
+                        <string>&lt;a href='whatsthis:&lt;em&gt;Advanced Tag Features (ATF)&lt;/em&gt;&lt;p&gt;This is an optional but recommended set of features that use a unique identifier stored in the metadata of your files to allow Amarok to track your files in useful ways.&lt;p&gt;With ATF on, for instance, when you move or rename files within your collection folders, the Playlist will keep the URL of the file current, so that you do not need to remove and re-add the file.  Statistics information will not be lost due to file renames or moves, either.&lt;p&gt;This feature is not turned on by default since it does require making (safe and transparent) physical metadata additions to your files, but its use is encouraged.&lt;p&gt;&lt;em&gt;Turning on this feature requires a full collection rescan and clearing your current playlist.  These actions will be performed when you click OK or Apply in the Settings window.&lt;/em&gt;'&gt;Information&lt;/a&gt;</string>
                     </property>
                 </widget>
                 <widget class="KActiveLabel">

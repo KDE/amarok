@@ -251,13 +251,10 @@ CollectionDB::CollectionDB()
         cacheCoverDir().remove( *it );
 
 
-    if( AmarokConfig::advancedTagFeatures() )
-    {
-        connect( this, SIGNAL(fileMoved(const QString&, const QString&, const QString&)),
-                 this, SLOT(atfMigrateStatisticsUrl(const QString&, const QString&, const QString&)) );
-        connect( this, SIGNAL(uniqueIdChanged(const QString&, const QString&, const QString&)),
-                 this, SLOT(atfMigrateStatisticsUniqueId(const QString&, const QString&, const QString&)) );
-    }
+    connect( this, SIGNAL(fileMoved(const QString&, const QString&, const QString&)),
+             this, SLOT(atfMigrateStatisticsUrl(const QString&, const QString&, const QString&)) );
+    connect( this, SIGNAL(uniqueIdChanged(const QString&, const QString&, const QString&)),
+             this, SLOT(atfMigrateStatisticsUniqueId(const QString&, const QString&, const QString&)) );
 
     connect( qApp, SIGNAL( aboutToQuit() ), this, SLOT( disableAutoScoring() ) );
 
@@ -2830,7 +2827,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
 {
     //DEBUG_BLOCK
     //debug() << "AmarokConfig::advancedTagFeatures() = " << (AmarokConfig::advancedTagFeatures() ? "true" : "false") << endl;
-    if( !AmarokConfig::advancedTagFeatures() || bundle->uniqueId().isEmpty() ) return;
+    if( !AmarokConfig::advancedTagFeatures() ) return;
 
     //debug() << "Checking currid = " << currid << ", currurl = " << currurl << endl;
 
@@ -2896,6 +2893,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
     if( tempTablesAndInPermanent && nonTempURLs.count() > 0 && nonTempIDs.count() > 0 )
             permanentFullMatch = true;
 
+    //debug() << "Entering checks" << endl;
     //first case: not in permanent table or temporary table
     if( !tempTablesAndInPermanent && urls.empty() && uniqueids.empty() )
     {
@@ -2925,6 +2923,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
                                 .arg( currdeviceid )
                                 .arg( currurl ) );
         }
+        //debug() << "First insert" << endl;
         return;
     }
 
@@ -3186,7 +3185,7 @@ fillInBundle( QStringList values, MetaBundle &bundle )
     int val = (*it).toInt( &ok );
     bundle.setCompilation( ok ? val : MetaBundle::CompilationUnknown );
 
-    if( AmarokConfig::advancedTagFeatures() && bundle.uniqueId().isEmpty() )
+    if( AmarokConfig::advancedTagFeatures() )
         bundle.setUniqueId();
 }
 

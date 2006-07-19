@@ -213,7 +213,7 @@ int PlaylistItem::queuePosition() const
 void PlaylistItem::setEnabled( bool enabled )
 {
     m_enabled = enabled;
-    if( AmarokConfig::advancedTagFeatures() && !m_enabled )
+    if( AmarokConfig::advancedTagFeatures() && !enabled )
         Playlist::instance()->disabledChild( this );
     else if ( AmarokConfig::advancedTagFeatures() )
         Playlist::instance()->removeDisabledChild( this );

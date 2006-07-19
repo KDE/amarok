@@ -204,7 +204,7 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
 
         if ( !isValidMedia() || ( !m_podcastBundle && m_length <= 0 ) )
             readTags( readStyle, images );
-        else if( AmarokConfig::advancedTagFeatures() && m_uniqueId.isEmpty() )
+        else if( AmarokConfig::advancedTagFeatures() )
             setUniqueId();
     }
     else
@@ -256,14 +256,14 @@ MetaBundle::MetaBundle( const QString& title,
         m_title  = title;
         m_artist = streamName; //which is sort of correct..
     }
-    if( AmarokConfig::advancedTagFeatures() && m_uniqueId.isEmpty() )
+    if( AmarokConfig::advancedTagFeatures() )
         setUniqueId();
 }
 
 MetaBundle::MetaBundle( const MetaBundle &bundle )
 {
     *this = bundle;
-    if( AmarokConfig::advancedTagFeatures() && m_uniqueId.isEmpty() )
+    if( AmarokConfig::advancedTagFeatures() )
         setUniqueId();
 }
 
@@ -538,7 +538,7 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
             }
         }
 
-        if ( AmarokConfig::advancedTagFeatures() && !m_uniqueId.isEmpty() && doUniqueId )
+        if ( AmarokConfig::advancedTagFeatures() && doUniqueId )
             setUniqueId( fileref, false );
 
         if ( !disc.isEmpty() )
@@ -1350,8 +1350,7 @@ MetaBundle::ourMP3UidFrame( TagLib::MPEG::File *file, QString ourId )
 
 void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
 {
-    if( isStream() || url().protocol() == "cdda" || url().protocol() == "audiocd" ||
-                !m_uniqueId.isEmpty() || ( !AmarokConfig::advancedTagFeatures() && !strip ) )
+    if( isStream() || url().protocol() == "cdda" || url().protocol() == "audiocd" || ( !AmarokConfig::advancedTagFeatures() && !strip ) )
         return;
 
     bool createID = false;
@@ -1369,6 +1368,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
             else
             {
                 //this is really ugly, but otherwise we get an incorrect ? at the end of the string...possibly a null value?  Not sure of another way to fix this.
+                /*
                 QString temp = TStringToQString( TagLib::String( ourMP3UidFrame( file, ourId )->identifier().data() ) );
                 QChar currchar;
                 uint i;
@@ -1377,6 +1377,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
                     currchar = temp.at( i );
                     //debug() << "value " << i << " is " << int((currchar.latin1())) << endl;
                 }
+                */
                 m_uniqueId = TStringToQString( TagLib::String( ourMP3UidFrame( file, ourId )->identifier().data() ) ).left( randSize );
             }
             if( ( strip || createID ) && TagLib::File::isWritable( file->name() ) )
@@ -1504,7 +1505,6 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
         if( file || !file )
             return; //not handled, at least not yet
     }
-    //debug() << "Unique id for file = " << fileref.file()->name() << " is " << m_uniqueId << " and this " << (newID ? "IS" : "is NOT" ) << " a new unique id." << endl;
 }
 
 void

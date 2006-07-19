@@ -613,10 +613,22 @@ void App::applySettings( bool firstTime )
                 QFile( cacheDir.filePath( *it ) ).remove();
     }
 
+    // If just turned ATF on, clear the playlist and force a rescan
+    if ( AmarokConfig::aTFJustTurnedOn() )
+    {
+        amaroK::StatusBar::instance()->longMessage( i18n("ATF was just enabled.  Amarok needs to rescan\n"
+                                                         "your collection.  When this is done Amarok will\n"
+                                                         "clear the Playlist and you'll be good to go!\n"
+                                                         "This first rescan may take much longer than normal.\n"
+                                                         "Please be patient."), KDE::StatusBar::Information );
+        QTimer::singleShot( 0, CollectionDB::instance(), SLOT( startScan() ) );
+    }
+
     //if ( !firstTime )
         // Bizarrely and ironically calling this causes crashes for
         // some people! FIXME
         //AmarokConfig::writeConfig();
+
 }
 
 //SLOT

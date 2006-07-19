@@ -24,7 +24,6 @@
 #include "collectiondb.h"
 #include "debug.h"
 #include "metabundle.h"
-#include "mountpointmanager.h"
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "scancontroller.h"
@@ -118,21 +117,10 @@ ScanController::initIncremental()
 {
     DEBUG_BLOCK
 
-    IdList list = MountPointManager::instance()->getMountedDeviceIds();
-    QString deviceIds;
-    foreachType( IdList, list )
-    {
-        if ( !deviceIds.isEmpty() ) deviceIds += ",";
-        deviceIds += QString::number(*it);
-    }
-
-    const QStringList values = CollectionDB::instance()->query(
-            QString( "SELECT deviceid, dir, changedate FROM directories WHERE deviceid IN (%1);" )
-            .arg( deviceIds ) );
+    const QStringList values = CollectionDB::instance()->query( "SELECT dir, changedate FROM directories;" );
     foreach( values )
     {
-        int id = (*it).toInt();
-        const QString folder = MountPointManager::instance()->getAbsolutePath( id, (*++it) );
+        const QString folder = *it;
         const QString mtime  = *++it;
 
         const QFileInfo info( folder );
@@ -180,7 +168,6 @@ ScanController::doJob()
         return true;
 
     CollectionDB::instance()->createTables( true );
-    CollectionDB::instance()->prepareTempTables();
     CollectionDB::instance()->invalidateArtistAlbumCache();
     setProgressTotalSteps( 100 );
 
@@ -226,13 +213,15 @@ main_loop:
                 CollectionDB::instance()->clearTables( false ); // empty permanent tables
 
             CollectionDB::instance()->copyTempTables(); // copy temp into permanent tables
+            if( AmarokConfig::aTFJustTurnedOn() )
+            {
+                amaroK::StatusBar::instance()->longMessage( i18n("ATF is now enabled.  Enjoy!\n"),
+                            KDE::StatusBar::Information );
 
-	    if( AmarokConfig::aTFJustTurnedOn() )
-	    {
-		    Playlist::instance()->clear();
-		    AmarokConfig::setATFJustTurnedOn( false );
-		    amaroK::config()->sync();
-	    }
+                Playlist::instance()->clear();
+                AmarokConfig::setATFJustTurnedOn( false );
+                amaroK::config()->sync();
+            }
         }
         else {
             if( m_crashedFiles.size() < MAX_RESTARTS ) {

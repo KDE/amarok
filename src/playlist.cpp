@@ -236,15 +236,12 @@ Playlist::Playlist( QWidget *parent )
 {
     s_instance = this;
 
-    if( AmarokConfig::advancedTagFeatures() )
-    {
-        connect( CollectionDB::instance(), SIGNAL(fileMoved(const QString&,
-                const QString&, const QString&)), SLOT(checkDisabledChildren(const QString&,
-                const QString&, const QString&)) );
-        connect( CollectionDB::instance(), SIGNAL(uniqueIdChanged(const QString&,
-                const QString&, const QString&)), SLOT(updateEntriesUniqueId(const QString&,
-                const QString&, const QString&)) );
-    }
+    connect( CollectionDB::instance(), SIGNAL(fileMoved(const QString&,
+            const QString&, const QString&)), SLOT(checkDisabledChildren(const QString&,
+            const QString&, const QString&)) );
+    connect( CollectionDB::instance(), SIGNAL(uniqueIdChanged(const QString&,
+            const QString&, const QString&)), SLOT(updateEntriesUniqueId(const QString&,
+            const QString&, const QString&)) );
 
     initStarPixmaps();
 
@@ -1037,9 +1034,12 @@ void Playlist::restoreLayout(KConfig *config, const QString &group)
 void
 Playlist::checkDisabledChildren( const QString &/*oldUrl*/, const QString &newUrl, const QString &uniqueid )
 {
+    //DEBUG_BLOCK
+    //debug() << "checking for uniqueid = " << uniqueid << endl;
     PlaylistItem *item;
     for ( item = m_disabledChildren.first(); item; item = m_disabledChildren.next() )
     {
+        //debug() << "item's uniqueid = " << item->uniqueId() << endl;
         if( item && item->uniqueId() == uniqueid )
         {
             item->setUrl( KURL( newUrl ) );
@@ -1662,11 +1662,26 @@ Playlist::slotCountChanged()
 bool
 Playlist::checkFileStatus( PlaylistItem * item )
 {
+    //DEBUG_BLOCK
+    //debug() << "uniqueid of item = " << item->uniqueId() << ", url = " << item->url().path() << endl;
     if( !item->checkExists() )
     {
+        //debug() << "not found, finding new url" << endl;
         QString path = QString::null;
         if( AmarokConfig::advancedTagFeatures() && !item->uniqueId().isEmpty() )
+        {
             path = CollectionDB::instance()->urlFromUniqueId( item->uniqueId() );
+            //debug() << "found path = " << path << endl;
+        }
+        else if( AmarokConfig::advancedTagFeatures() )
+        {
+            //debug() << "Setting uniqueid of item" << endl;
+            item->setUniqueId();
+            //debug() << "Now, uniqueid is: " << item->uniqueId() << endl;
+            if( !item->uniqueId().isEmpty() )
+                path = CollectionDB::instance()->urlFromUniqueId( item->uniqueId() );
+            //debug() << "Now, path is: " << path << endl;
+        }
         if( !path.isEmpty() )
         {
             item->setUrl( KURL( path ) );
