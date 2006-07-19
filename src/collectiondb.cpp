@@ -51,6 +51,8 @@
 #include <kcharsets.h>            //setHTMLLyrics()
 #include <kcombobox.h>
 #include <kconfig.h>
+#include <kdialog.h>              //checkDatabase()
+#include <kdialogbase.h>          //checkDatabase()
 #include <kglobal.h>
 #include <kinputdialog.h>         //setupCoverFetcher()
 #include <klineedit.h>            //setupCoverFetcher()
@@ -4834,7 +4836,7 @@ CollectionDB::initialize()
                          .arg( deviceAutoIncrement ) );
             query( "CREATE INDEX devices_type ON devices( type );" );
             query( "CREATE INDEX devices_uuid ON devices( uuid );" );
-            query( "CREATE INDEX devices_remoteshare ON devices( servername, sharename );" );
+            query( "CREATE INDEX devices_rshare ON devices( servername, sharename );" );
         }
         else if ( adminValue( "Database Devices Version" ).toInt() != DATABASE_DEVICES_VERSION
               || amaroK::config( "Collection Browser" )->readNumEntry( "Database Devices Version", 0 ) != DATABASE_DEVICES_VERSION )
@@ -4852,6 +4854,7 @@ CollectionDB::initialize()
 void
 CollectionDB::checkDatabase()
 {
+    DEBUG_BLOCK
     if ( isValid() )
     {
         //Inform the user that he should attach as many devices with music as possible
@@ -4869,20 +4872,49 @@ CollectionDB::checkDatabase()
         }
         */
 
-        updateStatsTables();
+        bool needsUpdate = adminValue( "Database Stats Version" ).toInt() != DATABASE_STATS_VERSION
+                           || amaroK::config( "Collection Browser" )->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION
+                           || amaroK::config( "Collection Browser" )->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION
+                           || adminValue( "Database Version" ).toInt() != DATABASE_VERSION
+                           || amaroK::config( "CollectionBrowser" )->readNumEntry( "Database Persistent Tables Version", 0 ) != DATABASE_PERSISTENT_TABLES_VERSION
+                           || adminValue( "Database Persistent Tables Version" ).toInt() != DATABASE_PERSISTENT_TABLES_VERSION
+                           || amaroK::config( "CollectionBrowser" )->readNumEntry( "Database Podcast Tables Version", 0 ) != DATABASE_PODCAST_TABLES_VERSION
+                           || adminValue( "Database Podcast Tables Version" ).toInt() != DATABASE_PODCAST_TABLES_VERSION
+                           || amaroK::config( "CollectionBrowser" )->readNumEntry( "Database ATF Version", 0 ) != DATABASE_ATF_VERSION
+                           || adminValue( "Database ATF Version" ).toInt() != DATABASE_ATF_VERSION;
 
-        updatePersistentTables();
-
-        updatePodcastTables();
-
-        //remove database file if version is incompatible
-        if ( amaroK::config( "Collection Browser" )->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION
-             || adminValue( "Database Version" ).toInt() != DATABASE_VERSION )
+        if ( needsUpdate )
         {
-            debug() << "Rebuilding database!" << endl;
-            dropTables(false);
-            createTables(false);
+
+            KDialog *dialog = new KDialogBase( i18n( "Updating database, please wait" ),
+                                               0,
+                                               KDialogBase::Yes,
+                                               KDialogBase::Cancel,
+                                               0,
+                                               0,
+                                               false );
+            //QTimer::singleShot( 0, dialog, SLOT( show() ) );
+            dialog->show();
+            debug() << "Beginning database update" << endl;
+
+            updateStatsTables();
+
+            updatePersistentTables();
+
+            updatePodcastTables();
+
+            //remove database file if version is incompatible
+            if ( amaroK::config( "Collection Browser" )->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION
+                 || adminValue( "Database Version" ).toInt() != DATABASE_VERSION )
+            {
+                debug() << "Rebuilding database!" << endl;
+                dropTables(false);
+                createTables(false);
+            }
+            delete dialog;
         }
+        
+        emit databaseUpdateDone();
     }
 
     // TODO Should write to config in dtor, but it crashes...

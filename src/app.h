@@ -74,6 +74,8 @@ class LIBAMAROK_EXPORT App : public KApplication, public EngineObserver
         void setRating3() { setRating( 3 ); }
         void setRating4() { setRating( 4 ); }
         void setRating5() { setRating( 5 ); }
+        void continueInit();
+        
 
     public slots:
         void applySettings( bool firstTime = false );

@@ -201,6 +201,8 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         void scanDone( bool changed );
         void databaseEngineChanged();
 
+        void databaseUpdateDone();
+
         void scoreChanged( const QString &url, int score );
         void ratingChanged( const QString &url, int rating );
         void fileMoved( const QString &srcUrl, const QString &dstUrl );
@@ -226,7 +228,6 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
          * database.
          */
         void initDirOperations();
-        void checkDatabase();
 
         QString escapeString(QString string ) const
         {
@@ -463,6 +464,8 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         void stopScan();
         void scanModifiedDirs();
         void disableAutoScoring( bool disable = true ) { m_autoScoring = !disable; }
+
+        void checkDatabase();
 
     private slots:
         void dirDirty( const QString& path );

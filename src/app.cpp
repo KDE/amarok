@@ -98,10 +98,6 @@ App::App()
 {
     DEBUG_BLOCK
 
-    const KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
-    bool restoreSession = args->count() == 0 || args->isSet( "append" ) || args->isSet( "enqueue" )
-                                || amaroK::config()->readBoolEntry( "AppendAsDefault", false );
-
     QPixmap::setDefaultOptimization( QPixmap::MemoryOptim );
 
     //needs to be created before the wizard
@@ -114,105 +110,10 @@ App::App()
     new amaroK::DcopScriptHandler();
     new amaroK::DcopDevicesHandler();
 
-    //start database check...needs to be done early because the database update code
-    //is not called automatically from the CollectionDB ctor anymore
-    CollectionDB::instance()->checkDatabase();
-
-    // Remember old folder setup, so we can detect changes after the wizard was used
-    const QStringList oldCollectionFolders = MountPointManager::instance()->collectionFolders();
-
-    if ( amaroK::config()->readBoolEntry( "First Run", true ) || args->isSet( "wizard" ) ) {
-        std::cout << "STARTUP\n" << std::flush; //hide the splashscreen
-        firstRunWizard();
-        amaroK::config()->writeEntry( "First Run", false );
-        amaroK::config()->sync();
-    }
-
     fixHyperThreading();
 
-    m_pMediaDeviceManager = MediaDeviceManager::instance();
+    QTimer::singleShot( 0, this, SLOT( continueInit() ) );
 
-    m_pGlobalAccel    = new KGlobalAccel( this );
-    m_pPlaylistWindow = new PlaylistWindow();
-    m_pTray           = new amaroK::TrayIcon( m_pPlaylistWindow );
-
-    m_pPlaylistWindow->init(); //creates the playlist, browsers, etc.
-    initGlobalShortcuts();
-
-    //load previous playlist in separate thread
-    if ( restoreSession && AmarokConfig::savePlaylist() )
-        Playlist::instance()->restoreSession();
-
-    if( args->isSet( "engine" ) ) {
-        // we correct some common errors (case issues, missing -engine off the end)
-        QString engine = args->getOption( "engine" ).lower();
-        if( engine.startsWith( "gstreamer" ) ) engine = "gst-engine";
-        if( !engine.endsWith( "engine" ) ) engine += "-engine";
-
-        AmarokConfig::setSoundSystem( engine );
-    }
-
-    //create engine, show PlayerWindow, show TrayIcon etc.
-    applySettings( true );
-
-    // Start ScriptManager. Must be created _after_ PlaylistWindow.
-    ScriptManager::instance();
-
-    //notify loader application that we have started
-    std::cout << "STARTUP\n" << std::flush;
-
-    //after this point only analyzer and temporary pixmaps will be created
-    QPixmap::setDefaultOptimization( QPixmap::BestOptim );
-
-    //do after applySettings(), or the OSD will flicker and other wierdness!
-    //do before restoreSession()!
-    EngineController::instance()->attach( this );
-
-    //set a default interface
-    engineStateChanged( Engine::Empty );
-
-    if ( AmarokConfig::resumePlayback() && restoreSession && !args->isSet( "stop" ) ) {
-        //restore session as long as the user didn't specify media to play etc.
-        //do this after applySettings() so OSD displays correctly
-        EngineController::instance()->restoreSession();
-    }
-
-    // Refetch covers every 80 days to comply with Amazon license
-    #ifdef AMAZON_SUPPORT
-    new RefreshImages();
-    #endif
-
-    // If just turned ATF on, clear the playlist and force a rescan
-    if ( AmarokConfig::aTFJustTurnedOn() )
-    {
-        amaroK::StatusBar::instance()->longMessage( i18n("ATF was just enabled.  Amarok needs to clear\n"
-                                                         "the playlist and then rescan the collection.\n"
-                                                         "(ATF will not work with any tracks added to the\n"
-                                                         "playlist before the end of this scan.)\n"
-                                                         "This first rescan may take much longer than normal.\n"
-                                                         "Please be patient."), KDE::StatusBar::Information );
-        QTimer::singleShot( 0, CollectionDB::instance(), SLOT( startScan() ) );
-        Playlist::instance()->clear();
-        AmarokConfig::setATFJustTurnedOn( false );
-        amaroK::config()->sync();
-    }
-    // Trigger collection scan if folder setup was changed by wizard
-    else if ( oldCollectionFolders != MountPointManager::instance()->collectionFolders() )
-    {
-        QTimer::singleShot( 0, CollectionDB::instance(), SLOT( startScan() ) );
-    }
-    // If database version is updated, the collection needs to be rescanned.
-    // Works also if the collection is empty for some other reason
-    // (e.g. deleted collection.db)
-    else if ( CollectionDB::instance()->isEmpty() )
-    {
-        QTimer::singleShot( 0, CollectionDB::instance(), SLOT( startScan() ) );
-    }
-    else if ( AmarokConfig::monitorChanges() )
-        QTimer::singleShot( 0, CollectionDB::instance(), SLOT( scanModifiedDirs() ) );
-
-
-    handleCliArgs();
 }
 
 App::~App()
@@ -716,6 +617,118 @@ void App::applySettings( bool firstTime )
         // Bizarrely and ironically calling this causes crashes for
         // some people! FIXME
         //AmarokConfig::writeConfig();
+}
+
+//SLOT
+void
+App::continueInit()
+{
+    DEBUG_BLOCK
+    const KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
+    bool restoreSession = args->count() == 0 || args->isSet( "append" ) || args->isSet( "enqueue" )
+                                || amaroK::config()->readBoolEntry( "AppendAsDefault", false );
+
+    // Remember old folder setup, so we can detect changes after the wizard was used
+    const QStringList oldCollectionFolders = MountPointManager::instance()->collectionFolders();
+
+    CollectionDB::instance()->checkDatabase();
+
+    if ( amaroK::config()->readBoolEntry( "First Run", true ) || args->isSet( "wizard" ) ) {
+        std::cout << "STARTUP\n" << std::flush; //hide the splashscreen
+        firstRunWizard();
+        amaroK::config()->writeEntry( "First Run", false );
+        amaroK::config()->sync();
+    }
+    m_pMediaDeviceManager = MediaDeviceManager::instance();
+    m_pGlobalAccel    = new KGlobalAccel( this );
+    m_pPlaylistWindow = new PlaylistWindow();
+    m_pTray           = new amaroK::TrayIcon( m_pPlaylistWindow );
+    m_pPlaylistWindow->init(); //creates the playlist, browsers, etc.
+    //init playlist window as soon as the database is guaranteed to be usable
+    //connect( CollectionDB::instance(), SIGNAL( databaseUpdateDone() ), m_pPlaylistWindow, SLOT( init() ) );
+    initGlobalShortcuts();
+    //load previous playlist in separate thread
+    if ( restoreSession && AmarokConfig::savePlaylist() )
+    {
+        Playlist::instance()->restoreSession();
+        //Debug::stamp();
+        //p->restoreSession();
+    }
+    if( args->isSet( "engine" ) ) {
+        // we correct some common errors (case issues, missing -engine off the end)
+        QString engine = args->getOption( "engine" ).lower();
+        if( engine.startsWith( "gstreamer" ) ) engine = "gst-engine";
+        if( !engine.endsWith( "engine" ) ) engine += "-engine";
+
+        AmarokConfig::setSoundSystem( engine );
+    }
+    Debug::stamp();
+    //create engine, show PlayerWindow, show TrayIcon etc.
+    applySettings( true );
+    Debug::stamp();
+    // Start ScriptManager. Must be created _after_ PlaylistWindow.
+    ScriptManager::instance();
+    Debug::stamp();
+    //notify loader application that we have started
+    std::cout << "STARTUP\n" << std::flush;
+
+    //after this point only analyzer and temporary pixmaps will be created
+    QPixmap::setDefaultOptimization( QPixmap::BestOptim );
+
+    //do after applySettings(), or the OSD will flicker and other wierdness!
+    //do before restoreSession()!
+    EngineController::instance()->attach( this );
+
+    //set a default interface
+    engineStateChanged( Engine::Empty );
+
+    if ( AmarokConfig::resumePlayback() && restoreSession && !args->isSet( "stop" ) ) {
+        //restore session as long as the user didn't specify media to play etc.
+        //do this after applySettings() so OSD displays correctly
+        EngineController::instance()->restoreSession();
+    }
+
+    // Refetch covers every 80 days to comply with Amazon license
+    #ifdef AMAZON_SUPPORT
+    new RefreshImages();
+    #endif
+
+    CollectionDB *collDB = CollectionDB::instance();
+    // If just turned ATF on, clear the playlist and force a rescan
+    if ( AmarokConfig::aTFJustTurnedOn() )
+    {
+        amaroK::StatusBar::instance()->longMessage( i18n("ATF was just enabled.  Amarok needs to clear\n"
+                                                         "the playlist and then rescan the collection.\n"
+                                                         "(ATF will not work with any tracks added to the\n"
+                                                         "playlist before the end of this scan.)\n"
+                                                         "This first rescan may take much longer than normal.\n"
+                                                         "Please be patient."), KDE::StatusBar::Information );
+        //connect( collDB, SIGNAL( databaseUpdateDone() ), collDB, SLOT( startScan() ) );
+        collDB->startScan();
+        Playlist::instance()->clear();
+        AmarokConfig::setATFJustTurnedOn( false );
+        amaroK::config()->sync();
+    }
+    // Trigger collection scan if folder setup was changed by wizard
+    else if ( oldCollectionFolders != MountPointManager::instance()->collectionFolders() )
+    {
+         //connect( collDB, SIGNAL( databaseUpdateDone() ), collDB, SLOT( startScan() ) );
+        collDB->startScan();
+    }
+    // If database version is updated, the collection needs to be rescanned.
+    // Works also if the collection is empty for some other reason
+    // (e.g. deleted collection.db)
+    else if ( CollectionDB::instance()->isEmpty() )
+    {
+         //connect( collDB, SIGNAL( databaseUpdateDone() ), collDB, SLOT( startScan() ) );
+        collDB->startScan();
+    }
+    else if ( AmarokConfig::monitorChanges() )
+        //connect( collDB, SIGNAL( databaseUpdateDone() ), collDB, SLOT( scanModifiedDirs() ) );
+        collDB->scanModifiedDirs();
+
+
+    handleCliArgs();
 }
 
 void
