@@ -486,7 +486,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         // Bumping this erases stats table. If you ever need to, write code to convert the data!
         static const int DATABASE_STATS_VERSION = 10;
         // When bumping this, you should provide code to convert the data.
-        static const int DATABASE_PODCAST_TABLES_VERSION = 2;
+        static const int DATABASE_PODCAST_TABLES_VERSION = 3;
         static const int DATABASE_ATF_VERSION = 2;
         // persistent table. you should provide code to convert the data when bumping this
         static const int DATABASE_DEVICES_VERSION = 1;

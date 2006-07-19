@@ -30,6 +30,9 @@ VERSION 1.4.2:
       own UFID frame.
 
   BUGFIXES:
+    * Removing podcast episodes will be remembered when clearing all 
+      episodes in a feed. (BR 126358)
+    * Support non-chronologically ordered podcast feeds. (BR 119911)
     * Support for libvisual 0.4.0 was fixed. Patch by Dennis Smit.
     * Adding songs already on a media device to playlists would not work.
     * Fix adding smart playlists to media devices. (BR 130540)

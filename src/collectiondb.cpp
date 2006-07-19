@@ -4915,7 +4915,7 @@ CollectionDB::checkDatabase()
             }
             delete dialog;
         }
-        
+
         emit databaseUpdateDone();
     }
 
@@ -5203,9 +5203,13 @@ CollectionDB::updatePodcastTables()
         query( "INSERT INTO podcastepisodes SELECT * FROM podcastepisodes_fix;" );
         query( "INSERT INTO podcastfolders SELECT * FROM podcastfolders_fix;" );
     }
+    if ( PodcastVersion.toInt() < 3 )
+    {
+        // fix mistake... sorry!
+    }
 
     //Keep this number in sync    \/
-    if ( PodcastVersion.toInt() > 2 )
+    if ( PodcastVersion.toInt() > 3 )
     {
         error() << "Something is very wrong with the Podcast Tables. Aborting" << endl;
         exit( 1 );
