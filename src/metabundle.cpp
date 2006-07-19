@@ -1375,7 +1375,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
                 for( i = 0; i < temp.length(); i++)
                 {
                     currchar = temp.at( i );
-                    debug() << "value " << i << " is " << int((currchar.latin1())) << endl;
+                    //debug() << "value " << i << " is " << int((currchar.latin1())) << endl;
                 }
                 m_uniqueId = TStringToQString( TagLib::String( ourMP3UidFrame( file, ourId )->identifier().data() ) ).left( randSize );
             }
