@@ -170,11 +170,9 @@ PlaylistBrowser::polish()
     m_polished = true;
 
     m_playlistCategory = loadPlaylists();
-    debug() << "after playlists" << endl;
     if( !CollectionDB::instance()->isEmpty() )
     {
         m_smartCategory = loadSmartPlaylists();
-        debug() << "after smartplaylists" << endl;
         loadDefaultSmartPlaylists();
     }
 #define config amaroK::config( "PlaylistBrowser" )
@@ -1831,6 +1829,53 @@ bool PlaylistBrowser::createPlaylist( QListViewItem *parent, bool current, QStri
     return true;
 }
 
+void PlaylistBrowser::addSelectedToPlaylist( int options )
+{
+    if ( options == -1 )
+        options = Playlist::Unique | Playlist::Append;
+
+    KURL::List list;
+
+    QListViewItemIterator it( m_listview, QListViewItemIterator::Selected );
+    for( ; it.current(); ++it )
+    {
+        #define item (*it)
+        if ( isPlaylist( item ) )
+            list << static_cast<PlaylistEntry*>(item)->url();
+
+        else if ( isStream( item ) )
+            list << static_cast<StreamEntry*>(item)->url();
+
+        else if ( isPodcastChannel( item ) )
+        {
+            KURL::List list;
+            QListViewItem *child = item->firstChild();
+            while( child )
+            {
+                list << static_cast<PodcastEpisode*>( child )->url();
+                child = child->nextSibling();
+            }
+        }
+
+        else if ( isPodcastEpisode( item ) )
+        {
+            #define pod static_cast<PodcastEpisode*>(item)
+            if( pod->isOnDisk() )
+                list << pod->localUrl();
+            else
+                list << pod->url();
+            #undef  pod
+        }
+
+        else if ( isPlaylistTrackItem( item ) )
+            list << static_cast<PlaylistTrackItem*>(item)->url();
+        #undef item
+    }
+
+    if( !list.isEmpty() )
+        Playlist::instance()->insertMedia( list, options );
+}
+
 void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
 {
     if( !item ) return;
@@ -2538,7 +2583,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 slotDoubleClicked( item );
                 break;
             case ADD:
-                Playlist::instance()->insertMedia( item->url() );
+                addSelectedToPlaylist();
                 break;
             case DYNADD:
                 addToDynamic();
@@ -2572,20 +2617,22 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             menu.insertItem( SmallIconSet( amaroK::icon( "device" ) ),
                     i18n( "&Transfer Contents to Media Device" ), MEDIA_DEVICE );
         }
-
+        #define item static_cast<SmartPlaylist*>(item)
         if( amaroK::dynamicMode() && amaroK::dynamicMode()->appendType()== DynamicMode::CUSTOM )
         {
-            if( static_cast<SmartPlaylist*>(item)->isDynamic() )
-                menu.insertItem( SmallIconSet( amaroK::icon( "remove_from_playlist" ) ), i18n( "Remove From %1" ).arg(amaroK::dynamicMode()->title()), DYNSUB );
+            if( item->isDynamic() )
+                menu.insertItem( SmallIconSet( amaroK::icon( "remove_from_playlist" ) ),
+                                 i18n( "Remove From %1" ).arg(amaroK::dynamicMode()->title()), DYNSUB );
             else
-                menu.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "Add to the %1 Entries" ).arg(amaroK::dynamicMode()->title()), DYNADD );
+                menu.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ),
+                                 i18n( "Add to the %1 Entries" ).arg(amaroK::dynamicMode()->title()), DYNADD );
         }
 
         // Forbid removal of Collection
         if( item->parent()->text(0) != i18n("Collection") )
         {
             menu.insertSeparator();
-            if ( static_cast<SmartPlaylist *>(item)->isEditable() )
+            if ( item->isEditable() )
                 menu.insertItem( SmallIconSet( amaroK::icon("edit") ), i18n( "E&dit..." ), EDIT );
             menu.insertItem( SmallIconSet( amaroK::icon("remove_from_playlist") ), i18n( "&Delete" ), REMOVE );
         }
@@ -2597,7 +2644,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 slotDoubleClicked( item );
                 break;
             case ADD:
-                Playlist::instance()->insertMediaSql( static_cast<SmartPlaylist *>(item)->query(), Playlist::Append );
+                Playlist::instance()->insertMediaSql( item->query(), Playlist::Append );
                 break;
             case DYNADD:
                 addToDynamic();
@@ -2606,7 +2653,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 subFromDynamic();
                 break;
             case EDIT:
-                editSmartPlaylist( static_cast<SmartPlaylist *>(item) );
+                editSmartPlaylist( item );
                 break;
             case REMOVE:
                 removeSelectedItems();
@@ -2617,7 +2664,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             case MEDIA_DEVICE:
                 {
                     KURL::List urls;
-                    const QStringList values = CollectionDB::instance()->query( static_cast<SmartPlaylist *>(item)->query() );
+                    const QStringList values = CollectionDB::instance()->query( item->query() );
                     int i=0;
                     for( for_iterators( QStringList, values ); it != end; ++it ) {
                         if(i%QueryBuilder::dragFieldCount == QueryBuilder::dragFieldCount-2)
@@ -2630,6 +2677,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 }
                 break;
         }
+        #undef item
     }
     else if( isStream( item ) || isLastFm( item ) )
     {
@@ -2655,7 +2703,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 slotDoubleClicked( item );
                 break;
             case ADD:
-                Playlist::instance()->insertMedia( item->url() );
+                addSelectedToPlaylist();
                 break;
             case EDIT:
                 editStreamURL( item, item->isKept() ); //only editable if we keep it
@@ -2712,17 +2760,8 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 break;
 
             case ADD:
-            {
-                KURL::List list;
-                QListViewItem *child = item->firstChild();
-                while( child )
-                {
-                    list.append( static_cast<PodcastEpisode*>( child )->url() );
-                    child = child->nextSibling();
-                }
-                Playlist::instance()->insertMedia( list );
+                addSelectedToPlaylist();
                 break;
-            }
 
             case RESCAN:
                 item->rescan();
@@ -2747,9 +2786,9 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     else if( isPodcastEpisode( item ) )
     {
         #define item static_cast<PodcastEpisode*>(item)
-        enum Actions { LOAD, QUEUE, GET, DELETE, MEDIA_DEVICE, LISTENED };
+        enum Actions { LOAD, ADD, GET, DELETE, MEDIA_DEVICE, LISTENED };
         menu.insertItem( SmallIconSet( amaroK::icon( "play" ) ), i18n( "&Play" ), LOAD );
-        menu.insertItem( SmallIconSet( amaroK::icon( "fastforward" ) ), i18n( "&Queue" ), QUEUE );
+        menu.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), ADD );
 
         if( MediaBrowser::isAvailable() )
         {
@@ -2774,11 +2813,8 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 slotDoubleClicked( item );
                 break;
 
-            case QUEUE:
-                if( item->isOnDisk() )
-                    Playlist::instance()->insertMedia( item->localUrl(), Playlist::Queue );
-                else
-                    Playlist::instance()->insertMedia( item->url(), Playlist::Queue );
+            case ADD:
+                addSelectedToPlaylist();
                 break;
 
             case GET:
@@ -2820,7 +2856,8 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         }
         #undef item
     }
-    else if( isCategory( item ) ) {
+    else if( isCategory( item ) )
+    {
         #define item static_cast<PlaylistCategory*>(item)
         enum Actions { RENAME, REMOVE, CREATE, PLAYLIST, SMART, STREAM, DYNAMIC,
                        LASTFM, LASTFMCUSTOM, PODCAST, REFRESH, CONFIG, INTERVAL };
@@ -2976,10 +3013,10 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             case MAKE:
                 Playlist::instance()->clear(); //FALL THROUGH
             case APPEND:
-                Playlist::instance()->insertMedia( item->url() );
+                addSelectedToPlaylist();
                 break;
             case QUEUE:
-                Playlist::instance()->insertMedia( item->url(), Playlist::Queue );
+                addSelectedToPlaylist( Playlist::Queue );
                 break;
             case BURN:
                  K3bExporter::instance()->exportTracks( item->url() );

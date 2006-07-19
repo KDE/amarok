@@ -110,6 +110,7 @@ class PlaylistBrowser : public QVBox
     private slots:
         void abortPodcastQueue();
         void addToDynamic();
+        void addSelectedToPlaylist( int options = -1 );
         void collectionScanDone();
         void currentItemChanged( QListViewItem * );
         void downloadPodcastQueue();
