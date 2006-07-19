@@ -15,6 +15,7 @@
 #include "debug.h"
 
 #include "amarok.h"
+#include "collectiondb.h"
 #include "devicemanager.h"
 #include "mountpointmanager.h"
 #include "pluginmanager.h"
@@ -38,6 +39,7 @@ MountPointManager::MountPointManager()
     if (DeviceManager::instance()->isValid() )
     {
         connect( DeviceManager::instance(), SIGNAL( mediumChanged( const Medium*, QString ) ), SLOT( mediumChanged( const Medium* ) ) );
+        connect( DeviceManager::instance(), SIGNAL( mediumRemoved( const Medium*, QString ) ), SLOT( mediumRemoved( const Medium* ) ) );
     }
     else
     {
@@ -53,8 +55,8 @@ MountPointManager::MountPointManager()
     if ( collDB->adminValue( "Database Stats Version" ).toInt() >= 9 && /* make sure that deviceid actually exists*/
          collDB->query( "SELECT COUNT(url) FROM statistics WHERE deviceid = -2;" ).first().toInt() != 0 )
     {
-        connect( this, SIGNAL( mediumChanged( int ) ), SLOT( migrateStatistics( int ) ) );
-        QTimer::singleShot( 0, this, SLOT(migrateStatistics( 0 ) ) );
+        connect( this, SIGNAL( mediumConnected( int ) ), SLOT( migrateStatistics() ) );
+        QTimer::singleShot( 0, this, SLOT( migrateStatistics() ) );
     }
 }
 
@@ -148,17 +150,38 @@ void
 MountPointManager::getAbsolutePath( const int& deviceId, const KURL& relativePath, KURL& absolutePath) const
 {
     //debug() << "id is " << deviceId << ", relative path is " << relativePath.path() << endl;
-    if ( deviceId != -1 && m_handlerMap.contains( deviceId ) )
+    if ( deviceId == -1 )
+    {
+        absolutePath.setPath( "/" );
+        absolutePath.addPath( relativePath.path() );
+        absolutePath.cleanPath();
+        debug() << "Deviceid is -1, using relative Path as absolute Path, returning " << absolutePath.path() << endl;
+        return;
+    }
+    if ( m_handlerMap.contains( deviceId ) )
     {
         m_handlerMap[deviceId]->getURL( absolutePath, relativePath );
     }
     else
     {
-        //TODO: error handling
-        absolutePath.setPath( "/" );
-        absolutePath.addPath( relativePath.path() );
-        absolutePath.cleanPath();
-        debug() << "No mountpoint found for " << deviceId << ", returning " << absolutePath.path() << endl;
+        QStringList lastMountPoint = CollectionDB::instance()->query(
+                                                 QString( "SELECT lastmountpoint FROM devices WHERE id = %1" )
+                                                 .arg( deviceId ) );
+        if ( lastMountPoint.count() == 0 )
+        {
+            //hmm, no device with that id in the DB...serious problem
+            absolutePath.setPath( "/" );
+            absolutePath.addPath( relativePath.path() );
+            absolutePath.cleanPath();
+            warning() << "Device " << deviceId << " not in database, this should never happen! Returning " << absolutePath.path() << endl;
+        }
+        else
+        {
+            absolutePath.setPath( lastMountPoint.first() );
+            absolutePath.addPath( relativePath.path() );
+            absolutePath.cleanPath();
+            debug() << "Device " << deviceId << " not mounted, using last mount point and returning " << absolutePath.path() << endl;
+        }
     }
 }
 
@@ -236,6 +259,11 @@ MountPointManager::mediumChanged( const Medium *m )
     }
 }
 
+void
+MountPointManager::mediumRemoved( const Medium* m )
+{
+}
+
 IdList
 MountPointManager::getMountedDeviceIds() const {
     IdList list( m_handlerMap.keys() );
@@ -284,7 +312,7 @@ MountPointManager::setCollectionFolders( QStringList folders )
 }
 
 void
-MountPointManager::migrateStatistics( int /* deviceid */ )
+MountPointManager::migrateStatistics()
 {
     QStringList urls = CollectionDB::instance()->query( "SELECT url FROM statistics WHERE deviceid = -2;" );
     foreach( urls )
@@ -308,6 +336,12 @@ MountPointManager::handleMissingMediaManager()
 {
     m_noDeviceManager = true;
     amaroK::StatusBar::instance()->longMessage( i18n( "BlaBla" ), KDE::StatusBar::Warning );
+}
+
+void
+MountPointManager::checkDeviceAvailability()
+{
+    
 }
 
 #include "mountpointmanager.moc"

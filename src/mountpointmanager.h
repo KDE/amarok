@@ -204,9 +204,11 @@ public slots:
      * @param m the medium whose status changed
      */
     void mediumChanged( const Medium* m );
+    void mediumRemoved( const Medium* m );
 
 private slots:
-    void migrateStatistics( int deviceid );
+    void migrateStatistics();
+    void checkDeviceAvailability();
 
 private:
     MountPointManager();
