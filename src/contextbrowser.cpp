@@ -56,7 +56,6 @@
 #include <kmdcodec.h> // for data: URLs
 #include <kmessagebox.h>
 #include <kpopupmenu.h>
-#include <krfcdate.h>
 #include <kstandarddirs.h>
 #include <ktoolbarbutton.h>
 
@@ -1389,19 +1388,9 @@ CurrentTrackJob::showHomeByAlbums()
                     PodcastEpisodeBundle &ep = *episodes.begin();
 
                     QString date;
-                    time_t t = 0;
-                    if( !ep.date().isEmpty() )
-                        t = KRFCDate::parseDate( ep.date() );
-                    if( t )
-                    {
-                        QDateTime d;
-                        d.setTime_t( t );
-                        date = locale.formatDateTime( d );
-                    }
-                    else
-                    {
-                        date = ep.date();
-                    }
+                    ep.dateTime().isNull() ?
+                            date = ep.date() :
+                            date = locale.formatDateTime( ep.dateTime() );
 
                     QString image = CollectionDB::instance()->podcastImage( pcb.imageURL().url(), true, 50 );
                     QString imageAttr = escapeHTMLAttr( i18n( "Click to go to podcast website: %1." ).arg( pcb.link().prettyURL() ) );
@@ -1859,19 +1848,10 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
     {
         PodcastEpisodeBundle &ep = episodes.back();
         QString date;
-        time_t t = 0;
-        if( !ep.date().isEmpty() )
-            t = KRFCDate::parseDate( ep.date() );
-        if( t )
-        {
-            QDateTime d;
-            d.setTime_t( t );
-	    date = locale.formatDateTime( d );
-        }
-        else
-        {
-            date = ep.date();
-        }
+
+        ep.dateTime().isNull() ?
+                date = ep.date() :
+                date = locale.formatDateTime( ep.dateTime() );
 
         m_HTMLSource.append( QStringx (
                     "<tr class='" + QString( (i % 2) ? "box-row-alt" : "box-row" ) + "'>\n"

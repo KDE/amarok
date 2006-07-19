@@ -1488,7 +1488,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
         if( m_updating )
         {
             if( episodeExists( n, feedType ) )
-                break;
+                continue;
 
             if( !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
             {
@@ -1549,6 +1549,8 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
 
     if( hasPurge() && purgeCount() != 0 && childCount() > purgeCount() )
         purge();
+
+    sortChildItems( 0, true ); // ensure the correct date order
 
     if( downloadMedia )
         downloadChildren();
@@ -1964,11 +1966,25 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after, Pod
     m_localUrl    =  m_bundle.localUrl();
     isOnDisk();
 
-
     setText( 0, bundle.title() );
     updatePixmap();
     setDragEnabled( true );
     setRenameEnabled( 0, false );
+}
+
+int
+PodcastEpisode::compare( QListViewItem* item, int col, bool ascending ) const
+{
+    DEBUG_BLOCK
+    if ( item->rtti() == PodcastEpisode::RTTI )
+    {
+        debug() << "okay, its a podcast" << endl;
+        #define item static_cast<PodcastEpisode*>(item)
+        return m_bundle.dateTime() < item->m_bundle.dateTime() ? -1 : 1;
+        #undef item
+    }
+
+    return PlaylistBrowserEntry::compare( item, col, ascending );
 }
 
 void
@@ -1986,7 +2002,7 @@ const bool
 PodcastEpisode::isOnDisk()
 {
     if( m_localUrl.isEmpty() )
-            return false;
+        return false;
     else
     {
         bool oldOnDisk = m_onDisk;
@@ -2005,7 +2021,7 @@ PodcastEpisode::downloadMedia()
     if( isOnDisk() )
         return;
 
-    setText(0, i18n( "Downloading Media..." ) );
+    setText( 0, i18n( "Downloading Media..." ) );
 
     m_iconCounter = 1;
     startAnimation();

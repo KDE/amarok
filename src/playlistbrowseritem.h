@@ -61,13 +61,12 @@ class PlaylistBrowserEntry : public KListViewItem
         virtual void updateInfo();
 
     protected:
+        virtual int compare( QListViewItem*, int, bool ) const; //reimplemented
+
         /** Interval of the download pixmap animation, in milliseconds */
         static const int ANIMATION_INTERVAL = 250;
 
     private:
-
-        virtual int compare( QListViewItem*, int, bool ) const; //reimplemented
-
         bool    m_kept;
 };
 
@@ -302,6 +301,8 @@ class PodcastEpisode : public QObject, public PlaylistBrowserEntry
 
     private:
         enum FeedType{ RSS=0, ATOM=1 };
+
+        virtual int compare( QListViewItem*, int, bool ) const; //reimplemented
 
         void startAnimation();
         void stopAnimation();

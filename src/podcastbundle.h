@@ -6,6 +6,8 @@
 
 #include "podcastsettings.h"
 #include <kurl.h>
+#include <krfcdate.h>
+#include <qdatetime.h>
 
 class PodcastChannelBundle
 {
@@ -33,7 +35,7 @@ class PodcastChannelBundle
 
         PodcastSettings * getSettings()
         {
-            return new PodcastSettings( m_title, m_saveLocation.url(), m_autoscan, m_fetchType, 
+            return new PodcastSettings( m_title, m_saveLocation.url(), m_autoscan, m_fetchType,
                                         m_autotransfer, m_purge, m_purgeCount );
         }
 
@@ -46,7 +48,7 @@ class PodcastChannelBundle
         /// A url to the webpage of the podcast
         KURL    link()        const;
         /// A url to the image of the podcast
-        KURL    imageURL()        const;
+        KURL    imageURL()    const;
         QString description() const;
         QString copyright()   const;
         /// The id which the parent folder has in the database
@@ -153,8 +155,10 @@ class PodcastEpisodeBundle
             m_duration = duration < 0 ? 0 : duration;
             m_guid = guid;
             m_isNew = isNew;
-        }
 
+            if( !date.isEmpty() )
+                m_dateTime.setTime_t( KRFCDate::parseDate( date ) );
+        }
 
         /// The row id which this podcast episode has in the database
         int     dBId()        const;
@@ -169,6 +173,7 @@ class PodcastEpisodeBundle
         QString subtitle()    const;
         QString description() const;
         QString date()        const;
+        QDateTime dateTime()  const;
         /// File type of the podcast episode, eg ogg, mp3 etc
         QString type()        const;
         int     duration()    const; // duration in seconds
@@ -203,6 +208,7 @@ class PodcastEpisodeBundle
         QString m_subtitle;
         QString m_description;
         QString m_date;
+        QDateTime m_dateTime;
         QString m_type;
         int     m_duration;
         uint    m_size;
@@ -219,6 +225,7 @@ inline QString PodcastEpisodeBundle::title()       const { return m_title; }
 inline QString PodcastEpisodeBundle::subtitle()    const { return m_subtitle; }
 inline QString PodcastEpisodeBundle::description() const { return m_description; }
 inline QString PodcastEpisodeBundle::date()        const { return m_date; }
+inline QDateTime PodcastEpisodeBundle::dateTime()  const { return m_dateTime; }
 inline QString PodcastEpisodeBundle::type()        const { return m_type; }
 inline int     PodcastEpisodeBundle::duration()    const { return m_duration; }
 inline uint    PodcastEpisodeBundle::size()        const { return m_size; }

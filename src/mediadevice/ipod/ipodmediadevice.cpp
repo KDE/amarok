@@ -29,7 +29,6 @@ AMAROK_EXPORT_PLUGIN( IpodMediaDevice )
 #include <kmessagebox.h>
 #include <kiconloader.h>
 #include <kpopupmenu.h>
-#include <krfcdate.h>
 
 #include <qcheckbox.h>
 #include <qdir.h>
@@ -480,8 +479,7 @@ IpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle)
         podcastInfo->description = peb->description();
         podcastInfo->author = peb->author();
         podcastInfo->rss = peb->parent().url();
-        if( !peb->date().isEmpty()  )
-            podcastInfo->date.setTime_t( KRFCDate::parseDate( peb->date() ) );
+        podcastInfo->date = peb->dateTime();
     }
 
     MetaBundle *newBundle = 0;

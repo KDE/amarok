@@ -1033,7 +1033,7 @@ void PlaylistBrowser::loadPodcastsFromDatabase( PlaylistCategory *p )
         episodes = CollectionDB::instance()->getPodcastEpisodes( (*it).url() );
 
         PodcastEpisodeBundle bundle;
-         // podcasts are retured chronologically, insert them in reverse
+         // podcasts are hopefully retured chronologically, insert them in reverse
         while( !episodes.isEmpty() )
         {
             bundle = episodes.first();
@@ -1044,6 +1044,7 @@ void PlaylistBrowser::loadPodcastsFromDatabase( PlaylistCategory *p )
 
             episodes.pop_front();
         }
+        channel->sortChildItems( 0, true );
         channel->setNew( hasNew );
 
         if( channel->autoscan() )
