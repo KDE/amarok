@@ -1697,6 +1697,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
             amaroK::StatusBar::instance()->incrementProgress( this );
         }
 
+        CollectionDB::instance()->sanitizeCompilations(); //queryBuilder doesn't handle unknownCompilations
         CollectionDB::instance()->copyTempTables(); // copy temp table contents to permanent tables
         CollectionDB::instance()->dropTables( true ); // and drop them
 
