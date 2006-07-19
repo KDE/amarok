@@ -742,7 +742,7 @@ Playlist::addSpecialCustomTracks( uint songCount )
         debug() << "Playlist: adding urls from query: " << sql << endl;
         if ( !sp->query().isEmpty() ) {
             //We have to filter all the un-needed results from query( sql )
-            for (uint x=12; x < queryResult.count() ; x += 15)
+            for (uint x=0; x < queryResult.count() ; x += 2)
                 items << MountPointManager::instance()->getAbsolutePath( queryResult[x+1].toInt(), queryResult[x] );
         } else {
             items = queryResult;
