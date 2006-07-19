@@ -31,6 +31,7 @@
 #include <taglib/oggflacfile.h>
 #include <taglib/vorbisfile.h>
 #include <taglib/flacfile.h>
+#include <taglib/mpcfile.h>
 
 
 class MimeTypeFileTypeResolver : public TagLib::FileRef::FileTypeResolver
@@ -88,6 +89,10 @@ TagLib::File *MimeTypeFileTypeResolver::createFile(const char *fileName,
     else if( mimetype->is( "audio/x-flac" ) )
     {
         return new TagLib::FLAC::File(fileName, readProperties, propertiesStyle);
+    }
+    else if( mimetype->is( "audio/x-musepack" ) )
+    {
+        return new TagLib::MPC::File(fileName, readProperties, propertiesStyle);
     }
 
     debug() << "kmimetype filetype guessing failed for" << fileName << endl;
