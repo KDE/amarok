@@ -665,6 +665,12 @@ CollectionDB::createTables( const bool temporary )
 
         createIndices();
     }
+    else
+    {
+        query( "CREATE UNIQUE INDEX url_tagtemp ON tags_temp( url, deviceid );" );
+        query( "CREATE UNIQUE INDEX embed_urltemp ON embed_temp( url, deviceid );" );
+        query( "CREATE UNIQUE INDEX dir_temp_dir ON directories_temp( dir, deviceid );" );
+    }
 }
 
 void
