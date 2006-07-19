@@ -762,7 +762,7 @@ void
 CollectionDB::copyTempTables( )
 {
     DEBUG_BLOCK
-    
+
     insert( "INSERT INTO tags SELECT * FROM tags_temp;", NULL );
     //mysql 5 supports subqueries with IN, mysql 4 doesn't. this way will work for all SQL servers
     QStringList albumIdList = query( "SELECT album.id FROM album;" );
@@ -1067,9 +1067,8 @@ CollectionDB::createPodcastTables()
                     "comment " + longTextColumnType() + ","
                     "filetype "  + textColumnType() + ","
                     "createdate "  + textColumnType() + ","
-                    "length INTEGER,"
-                    "size INTEGER,"
-                    "isNew BOOL );" )
+                    "length INTEGER, size INTEGER,"
+                    "isNew BOOL, deleted BOOL DEFAULT " + boolF() + ");" )
                     .arg( podcastAutoIncrement ) );
 
     // create podcast folders table
@@ -1134,9 +1133,8 @@ CollectionDB::createPodcastTablesV2( bool temp )
                     "comment " + longTextColumnType() + ","
                     "filetype "  + textColumnType() + ","
                     "createdate "  + textColumnType() + ","
-                    "length INTEGER,"
-                    "size INTEGER,"
-                    "isNew BOOL );" )
+                    "length INTEGER, size INTEGER,"
+                    "isNew BOOL, deleted BOOL DEFAULT " + boolF() + ");" )
                     .arg( podcastAutoIncrement, a, b ) );
 
     // create podcast folders table
@@ -1459,7 +1457,7 @@ CollectionDB::addImageToAlbum( const QString& image, QValueList< QPair<QString, 
         insert( QString( "INSERT INTO images%1 ( path, deviceid, artist, album ) VALUES ( '%2', %3, '%4', '%5' );" )
               .arg( temporary ? "_temp" : "" )
               .arg( escapeString( rpath ) )
-              .arg( deviceid ) 
+              .arg( deviceid )
               .arg( escapeString( (*it).first ) )
               .arg( escapeString( (*it).second ) ) , NULL );
     }
@@ -2379,17 +2377,17 @@ CollectionDB::addPodcastChannel( const PodcastChannelBundle &pcb, const bool &re
 }
 
 int
-CollectionDB::addPodcastEpisode( const PodcastEpisodeBundle &episode, const int idToUpdate )
+CollectionDB::addPodcastEpisode( const PodcastEpisodeBundle &episode, const int idToUpdate, const bool &deleted )
 {
     QString command;
 
     if( idToUpdate ) {
         command = "REPLACE INTO podcastepisodes "
-                  "( id, url, localurl, parent, title, subtitle, composer, comment, filetype, createdate, guid, length, size, isNew ) "
+                  "( id, url, localurl, parent, title, subtitle, composer, comment, filetype, createdate, guid, length, size, isNew, deleted ) "
                   "VALUES (";
     } else {
         command = "INSERT INTO podcastepisodes "
-                  "( url, localurl, parent, title, subtitle, composer, comment, filetype, createdate, guid, length, size, isNew ) "
+                  "( url, localurl, parent, title, subtitle, composer, comment, filetype, createdate, guid, length, size, isNew, deleted ) "
                   "VALUES (";
     }
 
@@ -2422,7 +2420,8 @@ CollectionDB::addPodcastEpisode( const PodcastEpisodeBundle &episode, const int 
     command += ( guid.isEmpty()        ? "NULL" : "'" + escapeString( guid )        + "'" ) + ",";
     command += QString::number( duration ) + ",";
     command += QString::number( size ) + ",";
-    command += episode.isNew() ? boolT() + " );" : boolF() + " );";
+    command += episode.isNew() ? boolT() + ", " : boolF() + ", ";
+    command += deleted ? boolT() + " );" : boolF() + " );";
 
     insert( command, NULL );
 
@@ -2474,6 +2473,7 @@ CollectionDB::getPodcastEpisodes( const KURL &parent, bool onlyNew, int limit )
     QString command = QString( "SELECT id, url, localurl, parent, guid, title, subtitle, composer, comment, filetype, createdate, length, size, isNew FROM podcastepisodes WHERE ( parent='%1'" ).arg( parent.url() );
     if( onlyNew )
         command += QString( " AND isNew='%1'" ).arg( boolT() );
+    command += QString( " AND deleted='%1'" ).arg( boolF() );
     command += " ) ORDER BY id";
     if( limit != -1 )
         command += QString( " DESC LIMIT %1 OFFSET 0" ).arg( limit );
@@ -2627,22 +2627,22 @@ CollectionDB::updatePodcastChannel( const PodcastChannelBundle &b )
     {
         query( QStringx( "UPDATE podcastchannels SET title='%1', weblink='%2', comment='%3', "
                          "copyright='%4', parent=%5, directory='%6', autoscan=%7, fetchtype=%8, "
-			 "autotransfer=%9, haspurge=%10, purgecount=%11 WHERE url='%12';" )
-	       .args ( QStringList()
-		       << escapeString( b.title() )
-		       << escapeString( b.link().url() )
-		       << escapeString( b.description() )
-		       << escapeString( b.copyright() )
-		       << QString::number( b.parentId() )
-		       << escapeString( b.saveLocation().url() )
-		       << ( b.autoscan() ? boolT() : boolF() )
-		       << QString::number( b.fetchType() )
-		       << (b.hasPurge() ? boolT() : boolF() )
-		       << (b.autotransfer() ? boolT() : boolF() )
-		       << QString::number( b.purgeCount() )
-		       << escapeString( b.url().url() )
-		   )
-	    );
+                         "autotransfer=%9, haspurge=%10, purgecount=%11 WHERE url='%12';" )
+           .args ( QStringList()
+               << escapeString( b.title() )
+               << escapeString( b.link().url() )
+               << escapeString( b.description() )
+               << escapeString( b.copyright() )
+               << QString::number( b.parentId() )
+               << escapeString( b.saveLocation().url() )
+               << ( b.autoscan() ? boolT() : boolF() )
+               << QString::number( b.fetchType() )
+               << (b.hasPurge() ? boolT() : boolF() )
+               << (b.autotransfer() ? boolT() : boolF() )
+               << QString::number( b.purgeCount() )
+               << escapeString( b.url().url() )
+           )
+        );
     }
     else {
         addPodcastChannel( b, true ); //replace the already existing row
@@ -2650,12 +2650,13 @@ CollectionDB::updatePodcastChannel( const PodcastChannelBundle &b )
 }
 
 void
-CollectionDB::updatePodcastEpisode( const int id, const PodcastEpisodeBundle &b )
+CollectionDB::updatePodcastEpisode( const int id, const PodcastEpisodeBundle &b, const bool deleted )
 {
     if( getDbConnectionType() == DbConnection::postgresql )
     {
-        query( QStringx( "UPDATE podcastepisodes SET url='%1', localurl='%2', parent='%3', title='%4', subtitle='%5', composer='%6', comment='%7', "
-                 "filetype='%8', createdate='%9', guid='%10', length=%11, size=%12, isNew=%13 WHERE id=%14;" )
+        query( QStringx( "UPDATE podcastepisodes SET url='%1', localurl='%2', parent='%3', title='%4', "
+                         "subtitle='%5', composer='%6', comment='%7', filetype='%8', createdate='%9', "
+                         "guid='%10', length=%11, size=%12, isNew=%13, deleted=%14 WHERE id=%15;" )
               .args( QStringList()
                   << escapeString( b.url().url() )
                   << ( b.localUrl().isValid() ? escapeString( b.url().url() ) : "NULL" )
@@ -2670,12 +2671,13 @@ CollectionDB::updatePodcastEpisode( const int id, const PodcastEpisodeBundle &b 
                   << QString::number( b.duration() )
                   << escapeString( QString::number( b.size() ) )
                   << ( b.isNew() ? boolT() : boolF() )
+                  << ( deleted ? boolT() : boolF() )
                   << QString::number( id )
                   )
              );
     }
     else {
-        addPodcastEpisode( b, id );
+        addPodcastEpisode( b, id, deleted );
     }
 }
 
@@ -2718,12 +2720,12 @@ CollectionDB::removePodcastChannel( const KURL &url )
 
 
 /// Try not to delete by url, since some podcast feeds have all the same url
+/// this method only marks them as deleted, to avoid having the item reappear on a refetch
 void
 CollectionDB::removePodcastEpisode( const int id )
 {
     if( id < 0 ) return;
-    query( QString( "DELETE FROM podcastepisodes WHERE id = '%1';" )
-              .arg( QString::number(id) ) );
+    updatePodcastEpisode( id, getPodcastEpisodeById( id ), true/*deleted*/ );
 }
 
 void
@@ -2836,7 +2838,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
     QString currurl = escapeString( mpm->getRelativePath( currdeviceid, bundle->url().path() ) );
     QString currdir = escapeString( mpm->getRelativePath( currdeviceid, bundle->url().directory() ) );
 
-    
+
     QStringList urls = query( QString(
             "SELECT url, uniqueid "
             "FROM uniqueid%1 "
@@ -3448,7 +3450,7 @@ CollectionDB::addSongPercentage( const QString &url, int percentage,
                         .arg( values[0] + " + 1" )
                         .arg( atime )
                         .arg( deviceid )
-                        .arg( escapeString( rpath ) ) ); 
+                        .arg( escapeString( rpath ) ) );
     }
     else
     {
@@ -5030,7 +5032,7 @@ CollectionDB::updateStatsTables()
 
                 query( "ALTER TABLE statistics ADD deviceid INTEGER;" );
 
-                //FIXME: (max) i know this is bad but its fast 
+                //FIXME: (max) i know this is bad but its fast
                 QStringList oldURLs = query( "SELECT url FROM statistics;" );
                 //it might be necessary to use batch updates to improve speed
                 debug() << "Updating " << oldURLs.count() << " rows in statistics" << endl;
@@ -5158,9 +5160,13 @@ CollectionDB::updatePersistentTables()
             query( "INSERT INTO lyrics SELECT * FROM lyrics_fix;" );
             query( "INSERT INTO playlists SELECT * FROM playlists_fix;" );
         }
-
+        if ( PersistentVersion.toInt() < 15 )
+        {
+            debug() << "Updating podcast tables" << endl;
+            query( "ALTER TABLE podcastepisodes ADD deleted BOOL DEFAULT " + boolF() + ";" );
+        }
         //Up to date. Keep this number   \/   in sync!
-        if ( PersistentVersion.toInt() > 14 || PersistentVersion.toInt() < 0 )
+        if ( PersistentVersion.toInt() > 15 || PersistentVersion.toInt() < 0 )
         {
             //Something is horribly wrong
             if ( adminValue( "Database Persistent Tables Version" ).toInt() != DATABASE_PERSISTENT_TABLES_VERSION )
@@ -6594,10 +6600,10 @@ QueryBuilder::sortBy( int table, Q_INT64 value, bool descending )
          table & tabYear )
         b = false;
 
-	// only coalesce for certain columns
-	bool c = false;
+    // only coalesce for certain columns
+    bool c = false;
     if ( value & valScore || value & valRating || value & valPlayCounter || value & valPercentage || value & valAccessDate || value & valCreateDate )
-		c = true;
+        c = true;
 
     if ( !m_sort.isEmpty() ) m_sort += ",";
     if ( b ) m_sort += "LOWER( ";
@@ -6947,7 +6953,7 @@ QueryBuilder::functionName( int function )
 
 QStringList
 QueryBuilder::cleanURL( QStringList result )
-{   
+{
     //this method replaces the fields for relative path and devive/media id with a
     //single field containing the absolute path for each row
     //TODO Max improve this code

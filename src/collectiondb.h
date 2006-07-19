@@ -260,10 +260,10 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         //sql helper methods
         QStringList query( const QString& statement );
         int insert( const QString& statement, const QString& table );
-        
+
         /**
          * TODO: write doc
-         * @param showAll 
+         * @param showAll
          * @return a string which can be appended to an existing sql where statement
          */
         QString deviceidSelection( const bool showAll = false );
@@ -315,7 +315,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         bool addPodcastChannel( const PodcastChannelBundle &pcb, const bool &replace=false );
         /// Insert a podcast episode into the database.  If @param idToUpdate is provided, replace the row
         /// use updatePodcastEpisode() always in preference
-        int  addPodcastEpisode( const PodcastEpisodeBundle &episode, const int idToUpdate=0 );
+        int  addPodcastEpisode( const PodcastEpisodeBundle &episode, const int idToUpdate=0, const bool &deleted=false );
         int  addPodcastFolder( const QString &name, const int parent_id=0, const bool isOpen=false );
         QValueList<PodcastChannelBundle> getPodcastChannels();
         PodcastEpisodeBundle getPodcastEpisodeById( int id );
@@ -324,7 +324,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         void removePodcastEpisode( const int id );
         void removePodcastFolder( const int id );
         void updatePodcastChannel( const PodcastChannelBundle &b );
-        void updatePodcastEpisode( const int id, const PodcastEpisodeBundle &b );
+        void updatePodcastEpisode( const int id, const PodcastEpisodeBundle &b, const bool deleted=false );
         void updatePodcastFolder( const int folder_id, const QString &name, const int parent_id=0, const bool isOpen=false );
         // these return false when no bundle was available
         bool getPodcastChannelBundle( const KURL &url, PodcastChannelBundle *channel );
@@ -482,7 +482,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         static const int DATABASE_VERSION = 30;
         // Persistent Tables hold data that is somehow valuable to the user, and can't be erased when rescaning.
         // When bumping this, write code to convert the data!
-        static const int DATABASE_PERSISTENT_TABLES_VERSION = 14;
+        static const int DATABASE_PERSISTENT_TABLES_VERSION = 15;
         // Bumping this erases stats table. If you ever need to, write code to convert the data!
         static const int DATABASE_STATS_VERSION = 10;
         // When bumping this, you should provide code to convert the data.
@@ -702,7 +702,7 @@ class QueryBuilder
         QString tableName( int table );
         QString valueName( Q_INT64 value );
         QString functionName( int functions );
-        
+
         QStringList cleanURL( QStringList result );
 
         void linkTables( int tables );
