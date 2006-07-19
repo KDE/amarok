@@ -2827,31 +2827,30 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 break;
 
             case LISTENED:
-                item->setListened();
+                for ( QListViewItemIterator it(m_listview, QListViewItemIterator::Selected); *it; ++it )
+                {
+                    if ( isPodcastEpisode( *it ) )
+                        static_cast<PodcastEpisode*>(*it)->setListened();
+                }
                 break;
 
             case MEDIA_DEVICE:
                 // tags on podcasts are sometimes bad, thus use other meta information if available
                 if( item->isSelected() )
                 {
-                    for(QListViewItemIterator it(m_listview, QListViewItemIterator::Selected);
-                            *it;
-                            ++it)
+                    for ( QListViewItemIterator it(m_listview, QListViewItemIterator::Selected); *it;  ++it)
                     {
-                        if(isPodcastEpisode( *it ) )
+                        if( isPodcastEpisode( *it ) )
                         {
                             PodcastEpisode *podcast = static_cast<PodcastEpisode*>(*it);
-                            if(podcast->isOnDisk())
-                            {
+                            if( podcast->isOnDisk() )
                                 podcast->addToMediaDevice();
-                            }
                         }
                     }
                 }
                 else
-                {
                     static_cast<PodcastEpisode*>(item)->addToMediaDevice();
-                }
+
                 MediaBrowser::queue()->URLsAdded();
                 break;
         }
