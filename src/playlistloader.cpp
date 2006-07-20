@@ -298,7 +298,7 @@ UrlLoader::completeJob()
 
     if( !added.isEmpty() )
         emit queueChanged( added, PLItemList() );
-    Debug::stamp();
+
     if ( !m_badURLs.isEmpty() ) {
         QString text = i18n("These media could not be loaded into the playlist: " );
         debug() << "The following urls were not suitable for the playlist:" << endl;
@@ -317,7 +317,7 @@ UrlLoader::completeJob()
 
     if( !m_dynamicMode.isEmpty() )
         Playlist::instance()->setDynamicMode( PlaylistBrowser::instance()->findDynamicModeByTitle( m_dynamicMode ) );
-    Debug::stamp();
+
     //synchronous, ie not using eventLoop
     QApplication::sendEvent( dependent(), this );
 }
