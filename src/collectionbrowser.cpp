@@ -483,7 +483,7 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
 
         //always fetch URL
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valMediaId );
+        //qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valMediaId ); //device automatically added
 
         int filterTables = 0;
         for ( QValueList<Tag>::ConstIterator it = visibleColumns.constBegin(); it != visibleColumns.constEnd(); ++it )
@@ -582,7 +582,8 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
             CollectionItem* item = new CollectionItem( this );
             item->setDragEnabled( true );
             item->setDropEnabled( false );
-            item->setUrl( *it );
+            QString rpath = *it;
+            item->setUrl( MountPointManager::instance()->getAbsolutePath( (*++it).toInt(), rpath ) );
             ++it;
 
             for ( QValueList<Tag>::ConstIterator it_c = visibleColumns.constBegin(); it_c != visibleColumns.constEnd(); ++it_c )
