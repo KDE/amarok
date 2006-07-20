@@ -2906,7 +2906,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
         if( !statUIDVal.empty() )
         {
 
-            query( QString( "UPDATE statistics SET deviceid = %1 url = '%4', deleted = %2 WHERE uniqueid = '%3';" )
+            query( QString( "UPDATE statistics SET deviceid = %1, url = '%4', deleted = %2 WHERE uniqueid = '%3';" )
                                 .arg( currdeviceid )
                                 .arg( boolF() )
                                 .arg( currid )
