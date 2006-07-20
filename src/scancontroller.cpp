@@ -24,6 +24,7 @@
 #include "collectiondb.h"
 #include "debug.h"
 #include "metabundle.h"
+#include "mountpointmanager.h"
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "scancontroller.h"
@@ -117,10 +118,22 @@ ScanController::initIncremental()
 {
     DEBUG_BLOCK
 
-    const QStringList values = CollectionDB::instance()->query( "SELECT dir, changedate FROM directories;" );
+    IdList list = MountPointManager::instance()->getMountedDeviceIds();
+    QString deviceIds;
+    foreachType( IdList, list )
+    {
+        if ( !deviceIds.isEmpty() ) deviceIds += ",";
+        deviceIds += QString::number(*it);
+    }
+
+    const QStringList values = CollectionDB::instance()->query(
+            QString( "SELECT deviceid, dir, changedate FROM directories WHERE deviceid IN (%1);" )
+            .arg( deviceIds ) );
+
     foreach( values )
     {
-        const QString folder = *it;
+        int id = (*it).toInt();
+        const QString folder = MountPointManager::instance()->getAbsolutePath( id, (*++it) );
         const QString mtime  = *++it;
 
         const QFileInfo info( folder );
@@ -168,6 +181,7 @@ ScanController::doJob()
         return true;
 
     CollectionDB::instance()->createTables( true );
+    CollectionDB::instance()->prepareTempTables();
     CollectionDB::instance()->invalidateArtistAlbumCache();
     setProgressTotalSteps( 100 );
 
