@@ -38,6 +38,7 @@ VERSION 1.4.2:
     * ATF no longer requires a restart to enable or disable it.
 
   BUGFIXES:
+    * Support non-chronologically ordered podcast feeds. (BR 119911)
     * Support for libvisual 0.4.0 was fixed. Patch by Dennis Smit.
     * Adding songs already on a media device to playlists would not work.
     * Fix adding smart playlists to media devices. (BR 130540)
