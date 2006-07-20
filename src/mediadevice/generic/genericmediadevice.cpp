@@ -35,7 +35,6 @@ AMAROK_EXPORT_PLUGIN( GenericMediaDevice )
 #include "statusbar/statusbar.h"
 #include "transferdialog.h"
 #include "genericmediadeviceconfigdialog.h"
-#include "genericmediadevicetransferdialog.h"
 
 #include <kapplication.h>
 #include <kconfig.h>           //download saveLocation
@@ -580,7 +579,7 @@ GenericMediaDevice::buildDestination( const QString &format, const MetaBundle &m
     QString result = formatx.namedOptArgs( args );
     if( !result.startsWith( "/" ) )
         result.prepend( "/" );
- 
+
    return result.replace( QRegExp( "/\\.*" ), "/" );
 }
 
