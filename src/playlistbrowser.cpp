@@ -2730,7 +2730,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         menu.insertItem( SmallIconSet( amaroK::icon( "refresh" ) ),   i18n( "&Check for Updates" ), RESCAN );
         menu.insertItem( SmallIconSet( amaroK::icon( "artist" ) ),    i18n( "Mark as &Listened" ),  LISTENED );
         menu.insertItem( SmallIconSet( amaroK::icon( "configure" ) ), i18n( "&Configure..." ),      CONFIG );
-
+        menu.setItemEnabled( LISTENED, item->hasNew() );
 
         switch( menu.exec( p ) )
         {
@@ -2785,6 +2785,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
         menu.setItemEnabled( GET, !item->isOnDisk() );
         menu.setItemEnabled( DELETE, item->isOnDisk() );
+        menu.setItemEnabled( LISTENED, item->isNew() );
 
         switch( menu.exec( p ) )
         {
