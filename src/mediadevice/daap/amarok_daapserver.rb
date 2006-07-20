@@ -6,6 +6,8 @@
 
 require 'webrick'
 require 'Korundum' 
+require 'codes.rb'
+require 'pp'
 
 class Fixnum
     def to_daapNet
@@ -81,41 +83,67 @@ class UpdateServlet < WEBrick::HTTPServlet::AbstractServlet
 end
 
 class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
- #TODO:
-ARGSMETA = 
-
-    def intialize
+    
+    @@instance = nil
+    def self.get_instance( config, *options )
+        @@instance = @@instance || self.new
+    end
+    
+    def initialize
         artists = Array.new
         albums = Array.new
         genre = Array.new
         device_paths = Array.new
-        
+
         collection = KDE::DCOPRef.new( 'amarok', 'collection' )
-        [  { :dbresult=>collection.query( 'select * from albums' ),  :indexed => albums }
-         , { :dbresult=>collection.query( 'select * from artists' ), :indexed => artists }
-         , { :dbresult=>collection.query( 'select * from genre' )  , :indexed => genre } 
-         , { :dbresult=>collection.query( 'select id, lastmountpoint from devices' ), :indexed => device_paths } ].each { |h|
+        indexes = [  { :dbresult=>collection.query( 'select * from album' ),  :indexed => albums }, 
+           { :dbresult=>collection.query( 'select * from artist' ), :indexed => artists },
+           { :dbresult=>collection.query( 'select * from genre' )  , :indexed => genre },
+           { :dbresult=>collection.query( 'select id, lastmountpoint from devices' ), :indexed => device_paths } ]
+        indexes.each { |h|
              0.step( h[ :dbresult ].size, 2 ) { |i|
-                h[ :indexed ][ h[ :dbresult ][i] ] = h[ :dbresult ][ i+1 ]
+                h[ :indexed ][ h[ :dbresult ][i].to_i ] = h[ :dbresult ][ i.to_i+1 ]
             }
         }
-        columns =     [ "album, ", "artist, ", "genre, ", "url, ", "track, ", "title, ", "year, ", "length, ", "samplerate, ", "composer, ", "deviceid" ]
-        column_keys = [ :songalbum, :songartist, :songgenre, :url, :songtracknumber, :itemname, :songyear, :songtime, :songsamplerate,    :songcomposer, :deviceid ]
-        dbitems = collection.query( 'SELECT #{columns.to_s} FROM tags' )
+        columns =     [ "album, ", "artist, ", "genre, ", "track, ", "title, ", "year, ", "length, ", "samplerate, ", "url, ", "deviceid" ]
+        @column_keys = [ :songalbum, :songartist, :songgenre,  :songtracknumber, :itemname, :songyear, :songtime, :songsamplerate, :url,  :deviceid ]
+        #TODO composer :songcomposer
+        dbitems = collection.query( "SELECT #{columns.to_s} FROM tags LIMIT 10" )
+
         @items = Array.new
-        0.step( dbitems.size, columns.size ) { |overallIt|
+        @music = Array.new
+        id = 0
+        0.step( dbitems.size - columns.size, columns.size ) { |overallIt|
             track = Hash.new
             0.step( 3, 1 ) { |columnIt|
-                track[ column_keys[columnIt] ] = collection[columnIt][:indexed][ dbitems[ overallIt + columnIt] ]
+                track[ @column_keys[columnIt] ] = indexes[columnIt][ :indexed ][ dbitems[ overallIt + columnIt].to_i ]
             }
-            4.step( column_keys.size, 1 ) { |columnIt|
-               track[ column_keys[columnIt] ] = dbitems[ overallIt + columnIt ]
+            4.step( @column_keys.size-2, 1 ) { |columnIt|
+               track[ @column_keys[columnIt] ] = dbitems[ overallIt + columnIt ]
             }
-            @items.push(track)     
+            if overallIt > (dbitems.size - 500) then
+                puts dbitems[ overallIt, overallIt + @column_keys.size].inspect
+            end
+            columnIt = @column_keys.size-2
+            id += 1
+            url = dbitems[ overallIt + columnIt ].reverse.chop.reverse
+            url[0] = ''
+         #   puts "indexes: #{dbitems[ columnIt + overallIt + 1 ]} - #{indexes[3][:indexed][ dbitems[ columnIt + overallIt + 1 ].to_i ]} #{url}"
+            @music[id] = "#{indexes[3][:indexed][ dbitems[ columnIt + overallIt + 1 ].to_i ]}/#{url}"
+            track[ :itemid ] = id
+            ext = File::extname( url ).reverse.chop.reverse;
+            track[ :songformat ] = ext
+            @items.push(track)
         }
+        @column_keys.push( :itemid )
+        @column_keys.push( :songformat )
     end
     
     def do_GET( req, resp )
+        if @items.nil? then
+            initItems()
+        end
+    
         command = File.basename( req.path )
         case command
             when "databases" then
@@ -144,7 +172,7 @@ ARGSMETA =
                       mlit << Element.new( 'mper', 0 )
                       mlit << Element.new( 'minm', ENV['USER'] + " Amarok" )
                       mlit << Element.new( 'mctc', 1 )
-                      mlit << Element.new( 'mimc' @items.size )
+                      mlit << Element.new( 'mimc', @items.size )
                  resp.body = avdb.to_s
             when "items" then
             # {"adbs"=>
@@ -163,34 +191,74 @@ ARGSMETA =
             #             "ascm"=>[""]},
             #             ...
                 requested = req.query['meta'].split(',')
-                adbs = Element.new( 'adbs' )
-                  avdb << Element.new( 'muty', 0 )
-                  avdb << Element.new( 'mstt', WEBrick::HTTPStatus::OK.code )
-                  avdb << Element.new( 'mrco', @items.size )
-                  avdb << Element.new( 'mtco', @items.size )
+                toDisplay =  Array.new
+                requested.each { |str|
+                    str[0,5] = ''
+                    index = str.to_sym
+                    if @column_keys.include?( index ) then
+                        if( METAS[ index ] )
+                            toDisplay.push( { :index=>index, :code=> METAS[ index ][:code] } )
+                        else
+                            puts "not being displayed #{index.to_s}"
+                        end
+                    end
+                }
+                  adbs = Element.new( 'adbs' )
+                  adbs << Element.new( 'muty', 0 )
+                  adbs << Element.new( 'mstt', WEBrick::HTTPStatus::OK.code )
+                  adbs << Element.new( 'mrco', @items.size )
+                  adbs << Element.new( 'mtco', @items.size )
                   mlcl = Element.new( 'mlcl' )
-                  avdb << mlcl
-                  root = Element.new( 'mlit' ) 
-                  #TODO
-            else
-                puts "unimplemented request #{req.path}"
+                  adbs << mlcl
+                  @items.each { |item|
+                    mlit = Element.new( 'mlit' )
+                    toDisplay.each{  |meta|                        
+                        mlit << Element.new( meta[:code], item[ meta[:index] ] || 0 )
+                    }
+                    mlcl << mlit
+                  }
+                 puts adbs.to_s.inspect
+                 resp.body = adbs.to_s
+            else if command =~ /([\d]*)\.(.*)$/ #1232.mp3
+                    puts "sending #{@music[ $1.to_i ]}"
+                    resp.body = open( @music[ $1.to_i ] )
+                else
+                    puts "unimplemented request #{req.path}"
+                end
         end
     end
 end
 
 class Controller
 
-    def initialize
+    def initialize(a)
         server = WEBrick::HTTPServer.new( { :Port=>8081 } )
         ['INT', 'TERM'].each { |signal|
-            trap(signal) { server.shutdown } #play nice in irb
+            trap(signal) { server.shutdown; a.quit }
         }
         server.mount( '/login', LoginServlet )
         server.mount( '/update', UpdateServlet )
+        server.mount( '/databases', DatabaseServlet )
         server.start
     end
 
 end
 
+class Dummy < Qt::Object
+    slots 'itStarts()'    
+    
+    def itStarts()
+        Controller.new( parent() )
+    end
+end
 
-Controller.new
+about = KDE::AboutData.new("amarok_daapserver", 
+"amarok_daapserver", "1.4.2")
+KDE::CmdLineArgs.init(ARGV, about)
+a = KDE::Application.new()
+d = Dummy.new( a, "dummyobject" )
+
+Qt::Timer::singleShot( 0, d, SLOT( "itStarts()" ) );
+
+a.exec()
+
