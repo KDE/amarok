@@ -1375,41 +1375,28 @@ bool PlaylistBrowser::deleteSelectedPodcastItems( const bool removeItem, const b
     return true;
 }
 
-/// @param items is a list of pointers to _both_ channels and episodes. delete them from
-/// the database AND the listview as required.
-bool PlaylistBrowser::deletePodcasts( QPtrList<PlaylistBrowserEntry> items )
+bool PlaylistBrowser::deletePodcasts( QPtrList<PodcastChannel> items )
 {
     if( items.isEmpty() ) return false;
 
     KURL::List urls;
-    foreachType( QPtrList<PlaylistBrowserEntry>, items )
+    foreachType( QPtrList<PodcastChannel>, items )
     {
-        if( isPodcastEpisode( *it ) )
+        for( QListViewItem *ch = (*it)->firstChild(); ch; ch = ch->nextSibling() )
         {
-        #define item static_cast<PodcastEpisode*>(*it)
-            if( item->isOnDisk() )
-                urls.append( item->localUrl() );
-            // remove from the database
-            CollectionDB::instance()->removePodcastEpisode( item->dBId() );
-        #undef item
-        }
-        else if( isPodcastChannel( *it ) )
-        {
-            for( QListViewItem *ch = (*it)->firstChild(); ch; ch = ch->nextSibling() )
+            #define ch static_cast<PodcastEpisode*>(ch)
+            if( ch->isOnDisk() )
             {
-                #define ch static_cast<PodcastEpisode*>(ch)
-                if( ch->isOnDisk() )
-                {
-                    //delete downloaded media
-                    urls.append( ch->localUrl() );
-                }
-                #undef  ch
-                /// we don't need to delete from the database, because removing the channel from the database
-                /// automatically removes the children as well.
-                m_podcastItemsToScan.remove( static_cast<PodcastChannel*>(*it) );
+                //delete downloaded media
+                urls.append( ch->localUrl() );
             }
-            CollectionDB::instance()->removePodcastChannel( static_cast<PodcastChannel*>(*it)->url() );
+            #undef  ch
+            /// we don't need to delete from the database, because removing the channel from the database
+            /// automatically removes the children as well.
+            m_podcastItemsToScan.remove( static_cast<PodcastChannel*>(*it) );
         }
+        CollectionDB::instance()->removePodcastChannel( static_cast<PodcastChannel*>(*it)->url() );
+
     }
     // TODO We need to check which files have been deleted successfully
     if ( urls.count() )
@@ -2032,11 +2019,11 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
     int podcastCount  = 0;
     int folderCount   = 0;
 
-    QPtrList<PlaylistEntry>        playlistsToDelete;
-    QPtrList<PlaylistBrowserEntry> podcastsToDelete; // use base class, since we insert channels AND episodes
+    QPtrList<PlaylistEntry>    playlistsToDelete;
+    QPtrList<PodcastChannel>   podcastsToDelete;
 
-    QPtrList<PlaylistCategory>     playlistFoldersToDelete;
-    QPtrList<PlaylistCategory>     podcastFoldersToDelete;
+    QPtrList<PlaylistCategory> playlistFoldersToDelete;
+    QPtrList<PlaylistCategory> podcastFoldersToDelete;
 
     //remove currentItem, no matter if selected or not
     m_listview->setSelected( m_listview->currentItem(), true );
@@ -2089,9 +2076,9 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
                 break;
 
             case PodcastChannel::RTTI:
-            case PodcastEpisode::RTTI:
-                podcastsToDelete.append( static_cast<PlaylistBrowserEntry*>(*it) );
                 podcastCount++;
+                podcastsToDelete.append( static_cast<PodcastChannel*>(*it) );
+            case PodcastEpisode::RTTI: //episodes can't be removed
                 continue; // don't add the folder to selected, else it will be deleted twice
 
             case PlaylistCategory::RTTI:
@@ -2126,7 +2113,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
                         else
                         {
                             podcastCount++;
-                            podcastsToDelete.append( static_cast<PlaylistBrowserEntry*>(ch) );
+                            podcastsToDelete.append( static_cast<PodcastChannel*>(ch) );
                         }
                     }
                     podcastFoldersToDelete.append( static_cast<PlaylistCategory*>(*it) );
@@ -2203,7 +2190,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
     if( podcastCount )
     {
         if( deletePodcasts( podcastsToDelete ) )
-            foreachType( QPtrList<PlaylistBrowserEntry>, podcastsToDelete )
+            foreachType( QPtrList<PodcastChannel>, podcastsToDelete )
                 delete (*it);
     }
 
