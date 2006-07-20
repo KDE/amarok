@@ -4694,7 +4694,7 @@ CollectionDB::atfMigrateStatisticsUrl( const QString& /*oldUrl*/, const QString&
 
     int deviceid = MountPointManager::instance()->getIdForUrl( newUrl );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, newUrl );
-    query( QString( "DELETE FROM statistics WHERE deviceid = %1, url = '%2';" )
+    query( QString( "DELETE FROM statistics WHERE deviceid = %1 AND url = '%2';" )
                             .arg( deviceid )
                             .arg( escapeString( newUrl ) ) );
     query( QString( "UPDATE statistics SET deviceid = %1, url = '%4', deleted = %2 WHERE uniqueid = '%3';" )
