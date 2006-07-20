@@ -4877,16 +4877,16 @@ CollectionDB::checkDatabase()
         }
         */
 
-        bool needsUpdate = adminValue( "Database Stats Version" ).toInt() != DATABASE_STATS_VERSION
+        bool needsUpdate = ( adminValue( "Database Stats Version" ).toInt() != DATABASE_STATS_VERSION
                            || amaroK::config( "Collection Browser" )->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION
                            || amaroK::config( "Collection Browser" )->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION
                            || adminValue( "Database Version" ).toInt() != DATABASE_VERSION
-                           || amaroK::config( "CollectionBrowser" )->readNumEntry( "Database Persistent Tables Version", 0 ) != DATABASE_PERSISTENT_TABLES_VERSION
+                           || amaroK::config( "Collection Browser" )->readNumEntry( "Database Persistent Tables Version", 0 ) != DATABASE_PERSISTENT_TABLES_VERSION
                            || adminValue( "Database Persistent Tables Version" ).toInt() != DATABASE_PERSISTENT_TABLES_VERSION
-                           || amaroK::config( "CollectionBrowser" )->readNumEntry( "Database Podcast Tables Version", 0 ) != DATABASE_PODCAST_TABLES_VERSION
+                           || amaroK::config( "Collection Browser" )->readNumEntry( "Database Podcast Tables Version", 0 ) != DATABASE_PODCAST_TABLES_VERSION
                            || adminValue( "Database Podcast Tables Version" ).toInt() != DATABASE_PODCAST_TABLES_VERSION
-                           || amaroK::config( "CollectionBrowser" )->readNumEntry( "Database ATF Version", 0 ) != DATABASE_ATF_VERSION
-                           || adminValue( "Database ATF Version" ).toInt() != DATABASE_ATF_VERSION;
+                           || amaroK::config( "Collection Browser" )->readNumEntry( "Database ATF Version", 0 ) != DATABASE_ATF_VERSION
+                           || adminValue( "Database ATF Version" ).toInt() != DATABASE_ATF_VERSION );
 
         if ( needsUpdate )
         {
