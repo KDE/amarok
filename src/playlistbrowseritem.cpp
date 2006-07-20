@@ -1975,12 +1975,10 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after, Pod
 int
 PodcastEpisode::compare( QListViewItem* item, int col, bool ascending ) const
 {
-    DEBUG_BLOCK
     if ( item->rtti() == PodcastEpisode::RTTI )
     {
-        debug() << "okay, its a podcast" << endl;
         #define item static_cast<PodcastEpisode*>(item)
-        return m_bundle.dateTime() < item->m_bundle.dateTime() ? -1 : 1;
+        return m_bundle.dateTime() < item->m_bundle.dateTime() ? 1 : -1;
         #undef item
     }
 

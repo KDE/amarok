@@ -338,8 +338,6 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
 
         enum MediaFetch{ STREAM=0, AUTOMATIC=1 };
 
-        void sortChildItems( int /*column*/, bool /*ascending*/ ) { /* Don't sort its children */ }; //reimplemented
-
         void setNew( const bool n = true );
         bool hasNew() { return m_new; }
 

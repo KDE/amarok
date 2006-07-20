@@ -240,7 +240,8 @@ inline void    PodcastEpisodeBundle::setAuthor( const QString &a )      { m_auth
 inline void    PodcastEpisodeBundle::setTitle( const QString &t )       { m_title = t; }
 inline void    PodcastEpisodeBundle::setSubtitle( const QString &t )    { m_subtitle = t; }
 inline void    PodcastEpisodeBundle::setDescription( const QString &d ) { m_description = d; }
-inline void    PodcastEpisodeBundle::setDate( const QString &d )        { m_date = d; }
+inline void    PodcastEpisodeBundle::setDate( const QString &d )
+               { m_date = d; m_dateTime.setTime_t( KRFCDate::parseDate( d ) );}
 inline void    PodcastEpisodeBundle::setType( const QString &t )        { m_type = t; }
 inline void    PodcastEpisodeBundle::setDuration( const int i )         { m_duration = i; }
 inline void    PodcastEpisodeBundle::setSize( const uint i )            { m_size = i; }
