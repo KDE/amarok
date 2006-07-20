@@ -1,0 +1,464 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>GenericMediaDeviceConfigDialog</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>GenericMediaDeviceConfigDialog</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>486</width>
+            <height>577</height>
+        </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>7</hsizetype>
+            <vsizetype>7</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+    </property>
+    <property name="caption">
+        <string>GenericMediaDeviceConfigDialog1</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>0</number>
+        </property>
+        <property name="spacing">
+            <number>0</number>
+        </property>
+        <widget class="QLayoutWidget" row="0" column="0">
+            <property name="name">
+                <cstring>layout88</cstring>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <widget class="QGroupBox">
+                    <property name="name">
+                        <cstring>groupBox1</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>3</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="frameShape">
+                        <enum>GroupBoxPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
+                    <property name="title">
+                        <string>Transferring files to media device</string>
+                    </property>
+                    <property name="flat">
+                        <bool>false</bool>
+                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel" row="0" column="0">
+                            <property name="name">
+                                <cstring>textLabel2</cstring>
+                            </property>
+                            <property name="frameShape">
+                                <enum>NoFrame</enum>
+                            </property>
+                            <property name="frameShadow">
+                                <enum>Plain</enum>
+                            </property>
+                            <property name="text">
+                                <string>The following formats will be transferred directly:</string>
+                            </property>
+                        </widget>
+                        <widget class="QLayoutWidget" row="1" column="0">
+                            <property name="name">
+                                <cstring>layout24</cstring>
+                            </property>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLayoutWidget">
+                                    <property name="name">
+                                        <cstring>layout23</cstring>
+                                    </property>
+                                    <vbox>
+                                        <property name="name">
+                                            <cstring>unnamed</cstring>
+                                        </property>
+                                        <widget class="QListBox">
+                                            <property name="name">
+                                                <cstring>m_supportedListBox</cstring>
+                                            </property>
+                                            <property name="selectionMode">
+                                                <enum>Multi</enum>
+                                            </property>
+                                            <property name="toolTip" stdset="0">
+                                                <string>The formats supported by the generic media device.</string>
+                                            </property>
+                                        </widget>
+                                        <widget class="QLabel">
+                                            <property name="name">
+                                                <cstring>textLabel1</cstring>
+                                            </property>
+                                            <property name="sizePolicy">
+                                                <sizepolicy>
+                                                    <hsizetype>7</hsizetype>
+                                                    <vsizetype>0</vsizetype>
+                                                    <horstretch>0</horstretch>
+                                                    <verstretch>0</verstretch>
+                                                </sizepolicy>
+                                            </property>
+                                            <property name="text">
+                                                <string>Other formats will be converted to:</string>
+                                            </property>
+                                        </widget>
+                                    </vbox>
+                                </widget>
+                                <widget class="QLayoutWidget">
+                                    <property name="name">
+                                        <cstring>layout19</cstring>
+                                    </property>
+                                    <vbox>
+                                        <property name="name">
+                                            <cstring>unnamed</cstring>
+                                        </property>
+                                        <widget class="QPushButton">
+                                            <property name="name">
+                                                <cstring>m_addSupportedButton</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>&amp;Add format...</string>
+                                            </property>
+                                            <property name="accel">
+                                                <string>Alt+A</string>
+                                            </property>
+                                            <property name="toolTip" stdset="0">
+                                                <string>Add the above format to the list.</string>
+                                            </property>
+                                        </widget>
+                                        <widget class="QPushButton">
+                                            <property name="name">
+                                                <cstring>m_removeSupportedButton</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Remove selected</string>
+                                            </property>
+                                            <property name="toolTip" stdset="0">
+                                                <string>Remove the selected formats from the list.</string>
+                                            </property>
+                                        </widget>
+                                        <spacer>
+                                            <property name="name">
+                                                <cstring>spacer1</cstring>
+                                            </property>
+                                            <property name="orientation">
+                                                <enum>Vertical</enum>
+                                            </property>
+                                            <property name="sizeType">
+                                                <enum>Expanding</enum>
+                                            </property>
+                                            <property name="sizeHint">
+                                                <size>
+                                                    <width>20</width>
+                                                    <height>93</height>
+                                                </size>
+                                            </property>
+                                        </spacer>
+                                        <widget class="QComboBox">
+                                            <property name="name">
+                                                <cstring>m_convertComboBox</cstring>
+                                            </property>
+                                            <property name="sizePolicy">
+                                                <sizepolicy>
+                                                    <hsizetype>1</hsizetype>
+                                                    <vsizetype>0</vsizetype>
+                                                    <horstretch>0</horstretch>
+                                                    <verstretch>0</verstretch>
+                                                </sizepolicy>
+                                            </property>
+                                            <property name="toolTip" stdset="0">
+                                                <string>The preferred format for transcoding files.</string>
+                                            </property>
+                                        </widget>
+                                    </vbox>
+                                </widget>
+                            </hbox>
+                        </widget>
+                    </grid>
+                </widget>
+                <widget class="QGroupBox">
+                    <property name="name">
+                        <cstring>groupBox2</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="title">
+                        <string>Transfered files locations</string>
+                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLayoutWidget" row="0" column="0">
+                            <property name="name">
+                                <cstring>layout120</cstring>
+                            </property>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLayoutWidget">
+                                    <property name="name">
+                                        <cstring>layout119</cstring>
+                                    </property>
+                                    <grid>
+                                        <property name="name">
+                                            <cstring>unnamed</cstring>
+                                        </property>
+                                        <widget class="QCheckBox" row="0" column="2">
+                                            <property name="name">
+                                                <cstring>m_ignoreTheCheck</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Ig&amp;nore "The"</string>
+                                            </property>
+                                            <property name="accel">
+                                                <string>Alt+N</string>
+                                            </property>
+                                        </widget>
+                                        <widget class="QCheckBox" row="0" column="1">
+                                            <property name="name">
+                                                <cstring>m_spaceCheck</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Convert spaces</string>
+                                            </property>
+                                            <property name="accel">
+                                                <string></string>
+                                            </property>
+                                        </widget>
+                                        <widget class="QCheckBox" row="0" column="0">
+                                            <property name="name">
+                                                <cstring>m_asciiCheck</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>ASCII te&amp;xt</string>
+                                            </property>
+                                            <property name="accel">
+                                                <string>Alt+X</string>
+                                            </property>
+                                        </widget>
+                                    </grid>
+                                </widget>
+                                <widget class="QLayoutWidget">
+                                    <property name="name">
+                                        <cstring>layout96</cstring>
+                                    </property>
+                                    <vbox>
+                                        <property name="name">
+                                            <cstring>unnamed</cstring>
+                                        </property>
+                                        <widget class="QLabel">
+                                            <property name="name">
+                                                <cstring>textLabel1_2_2</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Song location:</string>
+                                            </property>
+                                        </widget>
+                                        <widget class="QLayoutWidget">
+                                            <property name="name">
+                                                <cstring>layout86</cstring>
+                                            </property>
+                                            <hbox>
+                                                <property name="name">
+                                                    <cstring>unnamed</cstring>
+                                                </property>
+                                                <widget class="QLineEdit">
+                                                    <property name="name">
+                                                        <cstring>m_songLocationBox</cstring>
+                                                    </property>
+                                                    <property name="text">
+                                                        <string></string>
+                                                    </property>
+                                                    <property name="toolTip" stdset="0">
+                                                        <string>The location of the transfered songs relative to the device mount point.</string>
+                                                    </property>
+                                                </widget>
+                                                <widget class="KActiveLabel">
+                                                    <property name="name">
+                                                        <cstring>m_formatHelp</cstring>
+                                                    </property>
+                                                    <property name="sizePolicy">
+                                                        <sizepolicy>
+                                                            <hsizetype>1</hsizetype>
+                                                            <vsizetype>7</vsizetype>
+                                                            <horstretch>0</horstretch>
+                                                            <verstretch>0</verstretch>
+                                                        </sizepolicy>
+                                                    </property>
+                                                    <property name="text">
+                                                        <string>&lt;p align="center"&gt;(help)&lt;/p&gt;</string>
+                                                    </property>
+                                                    <property name="autoFormatting">
+                                                        <set>AutoAll</set>
+                                                    </property>
+                                                </widget>
+                                            </hbox>
+                                        </widget>
+                                        <widget class="QLabel">
+                                            <property name="name">
+                                                <cstring>textLabel2_2</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Example song location:</string>
+                                            </property>
+                                        </widget>
+                                        <widget class="QLabel">
+                                            <property name="name">
+                                                <cstring>m_previewLabel</cstring>
+                                            </property>
+                                            <property name="sizePolicy">
+                                                <sizepolicy>
+                                                    <hsizetype>7</hsizetype>
+                                                    <vsizetype>5</vsizetype>
+                                                    <horstretch>0</horstretch>
+                                                    <verstretch>0</verstretch>
+                                                </sizepolicy>
+                                            </property>
+                                            <property name="frameShape">
+                                                <enum>StyledPanel</enum>
+                                            </property>
+                                            <property name="frameShadow">
+                                                <enum>Plain</enum>
+                                            </property>
+                                            <property name="margin">
+                                                <number>2</number>
+                                            </property>
+                                            <property name="text">
+                                                <string></string>
+                                            </property>
+                                        </widget>
+                                        <widget class="QLabel">
+                                            <property name="name">
+                                                <cstring>textLabel2_2_2</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Podcast location:</string>
+                                            </property>
+                                        </widget>
+                                        <widget class="QLineEdit">
+                                            <property name="name">
+                                                <cstring>m_podcastLocationBox</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string></string>
+                                            </property>
+                                            <property name="toolTip" stdset="0">
+                                                <string>The location of the transfered podcasts relative to the device mount point.</string>
+                                            </property>
+                                        </widget>
+                                    </vbox>
+                                </widget>
+                            </vbox>
+                        </widget>
+                    </grid>
+                </widget>
+            </vbox>
+        </widget>
+    </grid>
+</widget>
+<connections>
+    <connection>
+        <sender>m_removeSupportedButton</sender>
+        <signal>clicked()</signal>
+        <receiver>GenericMediaDeviceConfigDialog</receiver>
+        <slot>removeSupportedButtonClicked()</slot>
+    </connection>
+    <connection>
+        <sender>m_supportedListBox</sender>
+        <signal>doubleClicked(QListBoxItem*)</signal>
+        <receiver>GenericMediaDeviceConfigDialog</receiver>
+        <slot>supportedListBoxDoubleClicked(QListBoxItem*)</slot>
+    </connection>
+    <connection>
+        <sender>m_songLocationBox</sender>
+        <signal>textChanged(const QString&amp;)</signal>
+        <receiver>GenericMediaDeviceConfigDialog</receiver>
+        <slot>updatePreviewLabel(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>m_asciiCheck</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>GenericMediaDeviceConfigDialog</receiver>
+        <slot>updatePreviewLabel()</slot>
+    </connection>
+    <connection>
+        <sender>m_spaceCheck</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>GenericMediaDeviceConfigDialog</receiver>
+        <slot>updatePreviewLabel()</slot>
+    </connection>
+    <connection>
+        <sender>m_ignoreTheCheck</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>GenericMediaDeviceConfigDialog</receiver>
+        <slot>updatePreviewLabel()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="global" impldecl="in implementation">metabundle.h</include>
+    <include location="global" impldecl="in implementation">qstringx.h</include>
+    <include location="global" impldecl="in implementation">collectionbrowser.h</include>
+    <include location="local" impldecl="in declaration">genericmediadevice.h</include>
+    <include location="global" impldecl="in declaration">qpopupmenu.h</include>
+</includes>
+<variables>
+    <variable access="private">QPopupMenu *m_unsupportedMenu;</variable>
+    <variable access="private">MetaBundle *m_previewBundle;</variable>
+    <variable access="private">GenericMediaDevice *m_device;</variable>
+</variables>
+<slots>
+    <slot>addSupportedButtonClicked( int id )</slot>
+    <slot specifier="non virtual">removeSupportedButtonClicked()</slot>
+    <slot specifier="non virtual">supportedListBoxDoubleClicked( QListBoxItem * item )</slot>
+    <slot>updatePreviewLabel()</slot>
+    <slot>updatePreviewLabel( const QString &amp; format )</slot>
+</slots>
+<functions>
+    <function access="private" specifier="non virtual">updateConfigDialogLists( const QStringList &amp; supportedFileTypes )</function>
+    <function access="private" specifier="non virtual" returnType="QString">buildDestination( const QString &amp; format, const MetaBundle &amp; mb ) const</function>
+    <function access="private" specifier="non virtual" returnType="QString">cleanPath( const QString &amp; component ) const</function>
+    <function specifier="non virtual">setDevice( GenericMediaDevice * device )</function>
+    <function access="private" specifier="non virtual" returnType="QString">buildFormatTip() const</function>
+    <function access="private" specifier="non virtual">init()</function>
+    <function access="private" specifier="non virtual">destroy()</function>
+</functions>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kactivelabel.h</includehint>
+</includehints>
+</UI>

@@ -22,8 +22,10 @@ libamarok_generic_mediadevice_la_LDFLAGS = \
     $(all_libraries)
 
 libamarok_generic_mediadevice_la_SOURCES = \
+    genericmediadeviceconfigdialog.ui\
     genericmediadevice.cpp
 
 noinst_HEADERS = \
+    genericmediadeviceconfigdialog.ui.h\
     genericmediadevice.h
 

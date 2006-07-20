@@ -1,8 +1,9 @@
 /****************************************************************************
- * copyright            :(C) 2005 Jeff Mitchell <kde-dev@emailgoeshere.com> *
+ * copyright            :(C) 2006 Roel Meeuws <r.j.meeuws+amarok@gmail.com> *
+ *                       (C) 2005 Jeff Mitchell <kde-dev@emailgoeshere.com> *
  *                       (C) 2005 Seb Ruiz <me@sebruiz.net>                 *
  *                                                                          *
- * With some code helpers from KIO_GENERIC                                     *
+ * With some code helpers from KIO_GENERIC                                  *
  *                        (c) 2004 Thomas Loeber <vfat@loeber1.de>          *
  ***************************************************************************/
 
@@ -29,6 +30,10 @@
 
 class GenericMediaItem;
 class GenericMediaFile;
+class GenericMediaDeviceConfigDialog;
+class PodcastEpisodeBundle;
+
+class QStringList;
 
 typedef QMap<QString, GenericMediaFile*> MediaFileMap;
 typedef QMap<GenericMediaItem*, GenericMediaFile*> MediaItemMap;
@@ -36,6 +41,8 @@ typedef QMap<GenericMediaItem*, GenericMediaFile*> MediaItemMap;
 class GenericMediaDevice : public MediaDevice
 {
     Q_OBJECT
+
+    friend  class GenericMediaDeviceConfigDialog;
 
     public:
                           GenericMediaDevice();
@@ -46,11 +53,15 @@ class GenericMediaDevice : public MediaDevice
 
         void              rmbPressed( QListViewItem* qitem, const QPoint& point, int );
 
-        bool              hasTransferDialog() { return true; }
-        void              runTransferDialog();
-        TransferDialog   *getTransferDialog() { return m_td; }
+        QStringList       supportedFiletypes() { return m_supportedFileTypes; }
+        bool              isPlayable( const MetaBundle& bundle );
+        bool              isPreferredFormat( const MetaBundle &bundle );
 
         bool              needsManualConfig() { return false; }
+        void              addConfigElements( QWidget * parent );
+        void              removeConfigElements( QWidget * /* parent */);
+
+        void              applyConfig();
         void              loadConfig();
 
         MediaFileMap     &getFileMap() { return m_mfm; }
@@ -99,6 +110,10 @@ class GenericMediaDevice : public MediaDevice
 
         MediaItem        *trackExists( const MetaBundle& );
 
+        QString           buildDestination( const QString &format, const MetaBundle &mb );
+        QString           buildPodcastDestination( const PodcastEpisodeBundle *bundle );
+        void              checkAndBuildLocation( const QString& location );
+
         KURL::List        getSelectedItems();
         void              downloadSelectedItems();
         void              copyTrackSortHelper( const MetaBundle& bundle, QString& sort, QString& base );
@@ -115,14 +130,20 @@ class GenericMediaDevice : public MediaDevice
 
         KDirLister        *m_dirLister;
 
-        TransferDialog    *m_td;
         bool              m_actuallyVfat;
         bool              m_dirListerComplete;
         bool              m_connected;
         KURL::List        m_downloadList;
         MediaFileMap      m_mfm;
         MediaItemMap      m_mim;
+
+        QStringList       m_supportedFileTypes;
+        QString           m_songLocation;
+        QString           m_podcastLocation;
+        bool              m_asciiTextOnly;
+        bool              m_ignoreThePrefix;
+
+        GenericMediaDeviceConfigDialog *m_configDialog;
 };
 
 #endif /*AMAROK_GENERICMEDIADEVICE_H*/
-

@@ -1,5 +1,6 @@
 /****************************************************************************
- * copyright            :(C) 2005 Jeff Mitchell <kde-dev@emailgoeshere.com> *
+ * copyright            :(C) 2006 Roel Meeuws <r.j.meeuws+amarok@gmail.com  *
+ *                       (C) 2005 Jeff Mitchell <kde-dev@emailgoeshere.com> *
  *                       (C) 2005 Seb Ruiz <me@sebruiz.net>                 *
  *                                                                          *
  * With some code helpers from KIO_VFAT                                     *
@@ -22,6 +23,7 @@
 
 AMAROK_EXPORT_PLUGIN( GenericMediaDevice )
 
+#include "amarok.h"
 #include "debug.h"
 #include "medium.h"
 #include "metabundle.h"
@@ -29,8 +31,11 @@ AMAROK_EXPORT_PLUGIN( GenericMediaDevice )
 #include "collectionbrowser.h"
 #include "k3bexporter.h"
 #include "playlist.h"
+#include "podcastbundle.h"
 #include "statusbar/statusbar.h"
 #include "transferdialog.h"
+#include "genericmediadeviceconfigdialog.h"
+#include "genericmediadevicetransferdialog.h"
 
 #include <kapplication.h>
 #include <kconfig.h>           //download saveLocation
@@ -52,6 +57,11 @@ AMAROK_EXPORT_PLUGIN( GenericMediaDevice )
 #include <qcstring.h>
 #include <qfile.h>
 #include <qstringx.h>
+#include <qstringlist.h>
+
+#include <qcombobox.h>
+#include <qlistbox.h>
+#include <qlineedit.h>
 
 typedef QPtrList<GenericMediaFile> MediaFileList;
 typedef QPtrListIterator<GenericMediaFile> MediaFileListIterator;
@@ -305,14 +315,21 @@ GenericMediaDevice::GenericMediaDevice()
 {
     DEBUG_BLOCK
     m_name = i18n("Generic Audio Player");
-    m_td = 0;
     m_dirLister = new KDirLister();
-    m_dirLister->setNameFilter( "*.mp3 *.wav *.asf *.flac *.wma *.ogg *.aac *.m4a" );
+    m_dirLister->setNameFilter( "*.mp3 *.wav *.asf *.flac *.wma *.ogg *.aac *.m4a *.mp4 *.mp2 *.ac3" );
     m_dirLister->setAutoUpdate( false );
+
     m_spacesToUnderscores = false;
-    m_firstSort = i18n("None");
-    m_secondSort = i18n("None");
-    m_thirdSort = i18n("None");
+    m_ignoreThePrefix = false;
+    m_asciiTextOnly = false;
+
+    m_songLocation = "";
+    m_podcastLocation = "";
+
+    m_supportedFileTypes.empty();
+
+    m_configDialog = 0;
+
     connect( m_dirLister, SIGNAL( newItems(const KFileItemList &) ), this, SLOT( newItems(const KFileItemList &) ) );
     connect( m_dirLister, SIGNAL( completed() ), this, SLOT( dirListerCompleted() ) );
     connect( m_dirLister, SIGNAL( clear() ), this, SLOT( dirListerClear() ) );
@@ -328,23 +345,56 @@ GenericMediaDevice::init( MediaBrowser* parent )
 
 GenericMediaDevice::~GenericMediaDevice()
 {
-    setConfigString( "firstGrouping"    , m_firstSort );
-    setConfigString( "secondGrouping"   , m_secondSort );
-    setConfigString( "thirdGrouping"    , m_thirdSort );
-    setConfigBool( "spacesToUnderscores", m_spacesToUnderscores );
-
     closeDevice();
 }
+
+void
+GenericMediaDevice::applyConfig()
+{
+    if( m_configDialog != 0)
+    {
+        m_supportedFileTypes.clear();
+        for( uint i = 0; i < m_configDialog->m_supportedListBox->count(); i++ )
+        {
+            QString currentText = m_configDialog->m_supportedListBox->item( i )->text();
+
+            if( currentText == m_configDialog->m_convertComboBox->currentText() )
+                m_supportedFileTypes.prepend( currentText );
+            else
+                m_supportedFileTypes.append( currentText );
+        }
+
+        m_spacesToUnderscores = m_configDialog->m_spaceCheck->isChecked();
+        m_asciiTextOnly = m_configDialog->m_asciiCheck->isChecked();
+        m_ignoreThePrefix = m_configDialog->m_ignoreTheCheck->isChecked();
+
+        m_songLocation = m_configDialog->m_songLocationBox->text();
+        m_podcastLocation = m_configDialog->m_podcastLocationBox->text();
+    }
+
+
+    setConfigString( "songLocation"       , m_songLocation );
+    setConfigString( "podcastLocation"    , m_podcastLocation );
+    setConfigBool(   "spacesToUnderscores", m_spacesToUnderscores );
+    setConfigBool(   "ignoreThePrefix"    , m_ignoreThePrefix );
+    setConfigBool(   "asciiTextOnly"      , m_asciiTextOnly );
+    setConfigString( "supportedFiletypes" , m_supportedFileTypes.join( ", " ) );
+}
+
 
 void
 GenericMediaDevice::loadConfig()
 {
     MediaDevice::loadConfig();
 
-    m_spacesToUnderscores = configBool("spacesToUnderscores");
-    m_firstSort           = configString( "firstGrouping", i18n("None") );
-    m_secondSort          = configString( "secondGrouping", i18n("None") );
-    m_thirdSort           = configString( "thirdGrouping", i18n("None") );
+    m_spacesToUnderscores = configBool( "spacesToUnderscores", false );
+    m_ignoreThePrefix = configBool( "ignoreThePrefix", false);
+    m_asciiTextOnly = configBool( "asciiTextOnly", false );
+
+    m_songLocation = configString( "songLocation", "/%artist/%album/%title.%filetype" );
+    m_podcastLocation = configString( "podcastLocation", "/podcasts/" );
+
+    m_supportedFileTypes = QStringList::split( ", ", configString( "supportedFiletypes", "mp3"), true);
 }
 
 bool
@@ -389,13 +439,6 @@ GenericMediaDevice::closeDevice()  //SLOT
     m_mfm.clear();
     m_mim.clear();
     return true;
-}
-
-void
-GenericMediaDevice::runTransferDialog()
-{
-    m_td = new TransferDialog( this );
-    m_td->exec();
 }
 
 /// Renaming
@@ -500,26 +543,108 @@ GenericMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> it
 
 /// Uploading
 
-void
-GenericMediaDevice::copyTrackSortHelper( const MetaBundle& bundle, QString& sort, QString& base )
+QString
+GenericMediaDevice::buildDestination( const QString &format, const MetaBundle &mb )
 {
-    if( sort != i18n("None") )
-    {
-        QString temp = bundle.prettyText( bundle.columnIndex(sort) );
-        temp = ( temp.isEmpty() ? i18n("Unknown") : cleanPath(temp) );
-        QString newBase = base + '/' + temp;
+    bool isCompilation = mb.compilation() > 0;
+    QMap<QString, QString> args;
+    QString artist = mb.artist();
+    QString albumartist = artist;
+    if( isCompilation )
+        albumartist = i18n( "Various Artists" );
+    args["theartist"] = cleanPath( artist );
+    args["thealbumartist"] = cleanPath( albumartist );
+    if( m_ignoreThePrefix && artist.startsWith( "The " ) )
+        CollectionView::instance()->manipulateThe( artist, true );
+    artist = cleanPath( artist );
+    if( m_ignoreThePrefix && albumartist.startsWith( "The " ) )
+        CollectionView::instance()->manipulateThe( albumartist, true );
 
-        if( !KIO::NetAccess::exists( KURL( newBase ), false, m_parent ) )
+    albumartist = cleanPath( albumartist );
+    for( int i = 0; i < MetaBundle::NUM_COLUMNS; i++ )
+    {
+        if( i == MetaBundle::Score || i == MetaBundle::PlayCount || i == MetaBundle::LastPlayed )
+            continue;
+        args[mb.exactColumnName( i ).lower()] = cleanPath( mb.prettyText( i ) );
+    }
+    args["artist"] = artist;
+    args["albumartist"] = albumartist;
+    args["initial"] = albumartist.mid( 0, 1 ).upper();
+    args["filetype"] = mb.url().path().section( ".", -1 ).lower();
+    QString track;
+    if ( mb.track() )
+        track.sprintf( "%02d", mb.track() );
+    args["track"] = track;
+
+    amaroK::QStringx formatx( format );
+    QString result = formatx.namedOptArgs( args );
+    if( !result.startsWith( "/" ) )
+        result.prepend( "/" );
+ 
+   return result.replace( QRegExp( "/\\.*" ), "/" );
+}
+
+void
+GenericMediaDevice::checkAndBuildLocation( const QString& location )
+{
+    // check for every directory from the mount point to the location
+    // whether they exist or not.
+    int mountPointDepth = m_medium.mountPoint().contains( '/', false );
+    int locationDepth = location.contains( '/', false );
+
+    if( m_medium.mountPoint().endsWith( "/" ) )
+        mountPointDepth--;
+
+    if( location.endsWith( "/") )
+        locationDepth--;
+
+    // the locationDepth indicates the filename, in the following loop
+    // however, we only look at the direcories. hence i < locationDepth
+    // instead of '<='
+    for( int i = mountPointDepth;
+         i < locationDepth;
+         i++ )
+    {
+
+        QString path = location.section( '/', 0, i );
+        KURL url( path );
+
+        if( !KIO::NetAccess::exists( url, false, m_parent ) )
         {
             debug() << "directory does not exist, creating..." << endl;
-            if( !KIO::NetAccess::mkdir( KURL( QFile::encodeName( newBase ) ), m_view ) ) //failed
+            if( !KIO::NetAccess::mkdir(url, m_view ) ) //failed
             {
-                debug() << "Failed to create directory " << temp << endl;
+                debug() << "Failed to create directory " << url << endl;
                 return;
             }
         }
-        base = newBase;
     }
+}
+
+QString
+GenericMediaDevice::buildPodcastDestination( const PodcastEpisodeBundle *bundle )
+{
+    QString location = m_podcastLocation.endsWith("/") ? m_podcastLocation : m_podcastLocation + '/';
+    // get info about the PodcastChannel
+    QString parentUrl = bundle->parent().url();
+    QString sql = "SELECT title,parent FROM podcastchannels WHERE url='" + CollectionDB::instance()->escapeString( parentUrl ) + "';";
+    QStringList values = CollectionDB::instance()->query( sql );
+    QString channelTitle;
+    int parent = 0;
+    channelTitle = values.first();
+    parent = values.last().toInt();
+    // Put the file in a directory tree like in the playlistbrowser
+    sql = "SELECT name,parent FROM podcastfolders WHERE id=%1;";
+    QString name;
+    while ( parent > 0 )
+    {
+        values = CollectionDB::instance()->query( sql.arg( parent ) );
+        name    =    values.first();
+        parent  =   values.last().toInt();
+        location += amaroK::vfatPath( name ) + '/';
+    }
+    location += amaroK::vfatPath( channelTitle ) + '/' + bundle->localUrl().filename();
+    return location;
 }
 
 
@@ -528,16 +653,17 @@ GenericMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
 {
     if( !m_connected ) return 0;
 
-    QString  newFilenameSansBaseDir = fileName( bundle );
-    QString  base = m_transferDir;
+    // use different naming schemes for differen kinds of tracks
+    QString path = m_transferDir;
+    debug() << "bundle exists: " << bundle.podcastBundle() << endl;
+    if( bundle.podcastBundle() )
+        path += buildPodcastDestination( bundle.podcastBundle() );
+    else
+        path += buildDestination( m_songLocation, bundle );
 
-    copyTrackSortHelper( bundle, m_firstSort, base);
-    copyTrackSortHelper( bundle, m_secondSort, base);
-    copyTrackSortHelper( bundle, m_thirdSort, base);
+    checkAndBuildLocation( path );
 
-    QString  newFilename = base + '/' + newFilenameSansBaseDir;
-
-    const QCString dest = QFile::encodeName( newFilename );
+    const QCString dest = QFile::encodeName( path );
     const KURL desturl = KURL::fromPathOrURL( dest );
 
     //kapp->processEvents( 100 );
@@ -561,49 +687,27 @@ MediaItem *
 GenericMediaDevice::trackExists( const MetaBundle& bundle )
 {
     QString key;
+    QString path = buildDestination( m_songLocation, bundle);
+    KURL url( path );
+    QStringList directories = QStringList::split( "/", url.directory(1,1), false );
+
     QListViewItem *it = view()->firstChild();
-    if( m_firstSort != i18n("None") )
+    for( QStringList::Iterator directory = directories.begin();
+         directory != directories.end();
+         directory++ )
     {
-        key = bundle.prettyText( bundle.columnIndex( m_firstSort ) );
-        key = cleanPath( ( key.isEmpty() ? i18n("Unknown") : key ) );
+        key = *directory;
         while( it && it->text( 0 ) != key )
             it = it->nextSibling();
         if( !it )
             return 0;
         if( !it->childCount() )
-           expandItem( it );
+            expandItem( it );
         it = it->firstChild();
     }
 
-    if( m_secondSort != i18n("None") )
-    {
-        key = bundle.prettyText( bundle.columnIndex( m_secondSort ) );
-        key = cleanPath( ( key.isEmpty() ? i18n("Unknown") : key ) );
-        while( it && it->text( 0 ) != key )
-        {
-            it = it->nextSibling();
-        }
-        if( !it )
-            return 0;
-        if( !it->childCount() )
-           expandItem( it );
-        it = it->firstChild();
-    }
-
-    if( m_thirdSort != i18n("None") )
-    {
-        key = bundle.prettyText( bundle.columnIndex( m_thirdSort ) );
-        key = cleanPath( ( key.isEmpty() ? i18n("Unknown") : key ) );
-        while( it && it->text( 0 ) != key )
-            it = it->nextSibling();
-        if( !it )
-            return 0;
-        if( !it->childCount() )
-           expandItem( it );
-        it = it->firstChild();
-    }
-
-    key = fileName( bundle );
+    key = url.fileName( true );
+    key = key.isEmpty() ? fileName( bundle ) : key;
     while( it && it->text( 0 ) != key )
         it = it->nextSibling();
 
@@ -955,5 +1059,44 @@ QString GenericMediaDevice::cleanPath( const QString &component )
 
     return result;
 }
+
+/// File Information functions
+
+bool GenericMediaDevice::isPlayable( const MetaBundle& bundle )
+{
+    for( QStringList::Iterator it = m_supportedFileTypes.begin(); it != m_supportedFileTypes.end() ; it++ )
+    {
+        if( bundle.type() == *it )
+            return true;
+    }
+
+    return false;
+}
+
+
+bool GenericMediaDevice::isPreferredFormat( const MetaBundle &bundle )
+{
+    return m_supportedFileTypes.first() == bundle.type();
+}
+
+/// Configuration Dialog Extension
+
+void GenericMediaDevice::addConfigElements( QWidget * parent )
+{
+    m_configDialog = new GenericMediaDeviceConfigDialog( parent );
+
+    m_configDialog->setDevice( this );
+}
+
+
+void GenericMediaDevice::removeConfigElements( QWidget * /* parent */ )
+{
+    if( m_configDialog != 0 )
+        delete m_configDialog;
+
+    m_configDialog = 0;
+
+}
+
 
 #include "genericmediadevice.moc"
