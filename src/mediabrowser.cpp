@@ -2623,6 +2623,15 @@ MediaDevice::transferFiles()
                 {
                     transcoding = true;
                     MetaBundle *transcodedBundle = new MetaBundle( transcoded );
+                    transcodedBundle->setArtist( bundle->artist() );
+                    transcodedBundle->setTitle( bundle->title() );
+                    transcodedBundle->setComposer( bundle->composer() );
+                    transcodedBundle->setAlbum( bundle->album() );
+                    transcodedBundle->setGenre( bundle->genre() );
+                    transcodedBundle->setComment( bundle->comment() );
+                    transcodedBundle->setYear( bundle->year() );
+                    transcodedBundle->setDiscNumber( bundle->discNumber() );
+                    transcodedBundle->setTrack( bundle->track() );
                     if( bundle->podcastBundle() )
                     {
                         transcodedBundle->setPodcastBundle( *bundle->podcastBundle() );
