@@ -155,7 +155,7 @@ MountPointManager::getAbsolutePath( const int& deviceId, const KURL& relativePat
         absolutePath.setPath( "/" );
         absolutePath.addPath( relativePath.path() );
         absolutePath.cleanPath();
-        debug() << "Deviceid is -1, using relative Path as absolute Path, returning " << absolutePath.path() << endl;
+        //debug() << "Deviceid is -1, using relative Path as absolute Path, returning " << absolutePath.path() << endl;
         return;
     }
     if ( m_handlerMap.contains( deviceId ) )

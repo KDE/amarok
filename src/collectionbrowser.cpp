@@ -483,7 +483,7 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
 
         //always fetch URL
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-        //qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valMediaId ); //device automatically added
+        //device automatically added
 
         int filterTables = 0;
         for ( QValueList<Tag>::ConstIterator it = visibleColumns.constBegin(); it != visibleColumns.constEnd(); ++it )
