@@ -38,7 +38,7 @@ MP4::File::File(const char *file,
         bool readProperties,
         Properties::ReadStyle propertiesStyle,
         MP4FileHandle handle) : TagLib::File(file),
-	properties(NULL), mp4tag(NULL)
+        mp4tag(NULL), properties(NULL)
 {
 
     //   debug ("MP4::File: create new file object.");
@@ -99,9 +99,6 @@ bool MP4::File::save()
     /* according to gtkpod we have to delete all meta data before modifying it,
        save the stuff we would not touch */
 
-    uint16_t tempo = 0;
-    bool has_tempo = MP4GetMetadataTempo(handle, &tempo);
-
     // need to fetch/rewrite this only if we aren't going to anyway
     uint8_t compilation = 0;
     bool has_compilation = mp4tag->compilation() == MP4::Tag::Undefined ? MP4GetMetadataCompilation(handle, &compilation) : false;
@@ -135,6 +132,8 @@ bool MP4::File::save()
     u_int16_t t1, t2;
     MP4GetMetadataTrack(handle, &t1, &t2);
     MP4SetMetadataTrack(handle, mp4tag->track(), t2);
+    if(mp4tag->bpm() != 0)
+        MP4SetMetadataTempo(handle, mp4tag->bpm());
     if(mp4tag->compilation() != MP4::Tag::Undefined) {
         MP4SetMetadataCompilation(handle, mp4tag->compilation());
     }
@@ -144,8 +143,6 @@ bool MP4::File::save()
 #ifdef MP4V2_HAS_WRITE_BUG
     // set the saved data again
 
-    if(has_tempo)
-        MP4SetMetadataTempo(handle, tempo);
     if(has_compilation)
         MP4SetMetadataCompilation(handle, compilation);
     if(tool)

@@ -102,6 +102,11 @@ namespace TagLib {
                 virtual uint disk() const { return m_disk; }
 
                 /*!
+                 * Returns the BPM (tempo);  if there is no BPM, this will return 0.
+                 */
+                virtual uint bpm() const { return m_bpm; }
+
+                /*!
                 * Returns the embedded cover image; if there is no cover set, this will
                 * return an empty ByteVector.
                 */
@@ -162,6 +167,11 @@ namespace TagLib {
                 virtual void setDisk(uint i) { m_disk = i; }
 
                 /*!
+                 * Sets the BPM (tempo) to \a i.  It \a i is 0 then this value will be cleared.
+                 */
+                virtual void setBpm(uint i) { m_bpm = i; }
+
+                /*!
                  * Sets whether this is part of a compilation.
                  */
                 virtual void setCompilation(bool compilation) { m_compilation = compilation ? 1 : 0; }
@@ -208,6 +218,7 @@ namespace TagLib {
                 uint m_year;
                 uint m_track;
                 uint m_disk;
+                uint m_bpm;
                 int m_compilation;
                 ByteVector m_image;
         };

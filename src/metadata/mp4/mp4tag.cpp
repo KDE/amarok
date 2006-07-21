@@ -37,6 +37,7 @@ MP4::Tag::Tag() : TagLib::Tag::Tag() {
     m_year = 0;
     m_track = 0;
     m_disk = 0;
+    m_bpm = 0;
     m_compilation = Undefined;
 }
 
@@ -53,6 +54,7 @@ bool MP4::Tag::isEmpty() const {
         m_year == 0 &&
         m_track == 0 &&
         m_disk == 0 &&
+        m_bpm == 0 &&
         m_compilation == Undefined &&
         m_image.size() == 0;
 }
@@ -103,6 +105,9 @@ void MP4::Tag::readTags( MP4FileHandle mp4file )
     }
     if (MP4GetMetadataDisk(mp4file, &numvalue, &numvalue2)) {
         m_disk = numvalue;
+    }
+    if (MP4GetMetadataTempo(mp4file, &numvalue)) {
+        m_bpm = numvalue;
     }
     if (MP4GetMetadataCompilation(mp4file, &boolvalue)) {
         m_compilation = boolvalue;
