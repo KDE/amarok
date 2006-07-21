@@ -2716,8 +2716,6 @@ bool CurrentTrackJob::doJob()
             showHome();
             return true;
         }
-        //FIXME max: amarok freezes here for some reason
-        //the last message is the debug statement from colelctionDB: retrieving media bundle...
         MetaBundle mb( currentTrack.url() );
         if( mb.podcastBundle() )
         {
@@ -2770,8 +2768,6 @@ bool CurrentTrackJob::doJob()
         if( ContextBrowser::instance()->m_showSuggested )
             showSuggestedSongs( relArtists );
     }
-    //FIXME max: between this two debug statement qvaluelist throws two asserts i <= nodes
-    //FIXME max: the code hangs somewhere here
     QString artistName = artist.isEmpty() ? i18n( "This Artist" ) : artist ;
     if ( !artist.isEmpty() )
     {
