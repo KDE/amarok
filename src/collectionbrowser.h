@@ -184,6 +184,8 @@ class CollectionView : public KListView, public DropProxyTarget
 
         void setShowDivider(bool show);
 
+        bool isOrganizingFiles() const;
+
     public slots:
         /** Rebuilds and displays the treeview by querying the database. */
         void renderView(bool force = false);

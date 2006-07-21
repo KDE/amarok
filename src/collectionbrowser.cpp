@@ -1601,6 +1601,12 @@ CollectionView::showTrackInfo() //SLOT
      }
 }
 
+bool
+CollectionView::isOrganizingFiles() const
+{
+    return m_organizeURLs.count() > 0;
+}
+
 
 void
 CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, bool copy )  //SLOT
@@ -1701,6 +1707,9 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
         CollectionDB::instance()->sanitizeCompilations(); //queryBuilder doesn't handle unknownCompilations
         CollectionDB::instance()->copyTempTables(); // copy temp table contents to permanent tables
         CollectionDB::instance()->dropTables( true ); // and drop them
+
+        // and now do an incremental scan since this was disabled while organizing files
+        QTimer::singleShot( 0, CollectionDB::instance(), SLOT( scanMonitor() ) );
 
         if( skipped.count() > 0 )
         {
