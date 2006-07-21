@@ -10,7 +10,7 @@
 
 
 title  = `dcop amarok player title 2> /dev/null`.chomp
-exit( 1 ) unless $?.success? # Abort if amaroK isn't running
+exit( 1 ) unless $?.success? # Abort if Amarok isn't running
 artist = `dcop amarok player artist`.chomp
 album  = `dcop amarok player album`.chomp
 year   = `dcop amarok player year`.chomp
