@@ -95,7 +95,7 @@
 
 using amaroK::QStringx;
 
-#define DEBUG 0
+#define DEBUG 1
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS INotify
@@ -2987,7 +2987,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
             insert( insertline, NULL );
             if( !statUIDVal.empty() )
             {
-                query( QString( "UPDATE statistics SET deviceid = %1 url = '%2', deleted = %3 WHERE uniqueid = '%4';" )
+                query( QString( "UPDATE statistics SET deviceid = %1, url = '%2', deleted = %3 WHERE uniqueid = '%4';" )
                                      .arg( currdeviceid )
                                      .arg( currurl )
                                      .arg( boolF() )
@@ -3034,7 +3034,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
         else
         {
             //debug() << "file exists in same place as before, part 2, new uniqueid" << endl;
-            query( QString( "INSERT INTO uniqueid_temp (deviceid, url, uniqueid, dir) VALUES (' %1, %2', '%3', '%4')" )
+            query( QString( "INSERT INTO uniqueid_temp (deviceid, url, uniqueid, dir) VALUES ( %1, '%2', '%3', '%4')" )
                 .arg( currdeviceid )
                 .arg( currurl )
                 .arg ( currid )
@@ -3433,11 +3433,29 @@ CollectionDB::addSongPercentage( const QString &url, int percentage,
     //the URL must always be inserted last! an escaped URL can contain Strings like %1->bug
     int deviceid = MountPointManager::instance()->getIdForUrl( url );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
+    //statistics table might not have those values, but we need them later, so keep them
+    int statDevId = deviceid;
+    QString statRPath = rpath;
     QStringList values =
         query( QString(
             "SELECT playcounter, createdate, percentage, rating FROM statistics "
             "WHERE url = '%2' AND deviceid = %1;" )
-            .arg( deviceid ).arg( escapeString( rpath ) ) );
+            .arg( statDevId ).arg( escapeString( statRPath ) ) );
+    
+    //handle corner case: deviceid!=-1 but there is a statistics row for that song with deviceid -1
+    if ( values.isEmpty() )
+    {
+        QString rpath2 = QString( "." ) + url;
+        values = query( QString(
+            "SELECT playcounter, createdate, percentage, rating FROM statistics "
+            "WHERE url = '%1' AND deviceid = -1;" )
+            .arg( escapeString( rpath2 ) ) );
+        if ( !values.isEmpty() )
+        {
+            statRPath = rpath2;
+            statDevId = -1;
+        }
+    }
 
     uint atime = playtime ? playtime->toTime_t() : QDateTime::currentDateTime().toTime_t();
 
@@ -3452,8 +3470,8 @@ CollectionDB::addSongPercentage( const QString &url, int percentage,
         query( QString( "UPDATE statistics SET playcounter=%1, accessdate=%2 WHERE url='%4' AND deviceid= %3;" )
                         .arg( values[0] + " + 1" )
                         .arg( atime )
-                        .arg( deviceid )
-                        .arg( escapeString( rpath ) ) ); 
+                        .arg( statDevId )
+                        .arg( escapeString( statRPath ) ) ); 
     }
     else
     {
@@ -3463,8 +3481,8 @@ CollectionDB::addSongPercentage( const QString &url, int percentage,
                         .arg( atime )
                         .arg( ( getUniqueId( url ) == QString::null ? "NULL" : "'" + escapeString( getUniqueId( url ) ) + "'" ) )
                         .arg( boolF() )
-                        .arg( deviceid )
-                        .arg( escapeString( rpath ) ), 0 );
+                        .arg( statDevId )
+                        .arg( escapeString( statRPath ) ), 0 );
     }
 
     double prevscore = 50;
@@ -3503,10 +3521,11 @@ CollectionDB::getSongPercentage( const QString &url )
 int
 CollectionDB::getSongRating( const QString &url )
 {
-    int deviceid = MountPointManager::instance()->getIdForUrl( url );
-    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
-    QStringList values = query( QString( "SELECT rating FROM statistics WHERE url = '%2' AND deviceid = %1;" )
-                                         .arg( deviceid ).arg( escapeString( rpath ) ) );
+    QueryBuilder qb;
+    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
+    qb.addMatch( QueryBuilder::tabStats, QueryBuilder::valURL, url );
+
+    QStringList values = qb.run();
 
     if( values.count() )
         return kClamp( values.first().toInt(), 0, 10 );
@@ -3523,6 +3542,21 @@ CollectionDB::setSongPercentage( const QString &url , int percentage)
         query( QString(
             "SELECT playcounter, createdate, accessdate, rating FROM statistics WHERE url = '%2' AND deviceid = %1;" )
             .arg( deviceid ).arg( escapeString( rpath ) ) );
+
+    //handle corner case: deviceid!=-1 but there is a statistics row for that song with deviceid -1
+    if ( values.isEmpty() )
+    {
+        QString rpath2 = QString( "." ) + url;
+        values = query( QString(
+            "SELECT playcounter, createdate, accessdate, rating FROM statistics "
+            "WHERE url = '%1' AND deviceid = -1;" )
+            .arg( escapeString( rpath2 ) ) );
+        if ( !values.isEmpty() )
+        {
+            rpath = rpath2;
+            deviceid = -1;
+        }
+    }
 
     // check boundaries
     if ( percentage > 100 ) percentage = 100;
@@ -3560,6 +3594,21 @@ CollectionDB::setSongRating( const QString &url, int rating, bool toggleHalf )
             "SELECT playcounter, createdate, accessdate, percentage, rating FROM statistics WHERE url = '%2' AND deviceid = %1;" )
             .arg( deviceid )
             .arg( escapeString( rpath ) ) );
+
+    //handle corner case: deviceid!=-1 but there is a statistics row for that song with deviceid -1
+    if ( values.isEmpty() )
+    {
+        QString rpath2 = QString( "." ) + url;
+        values = query( QString(
+            "SELECT playcounter, createdate, accessdate, percentage, rating FROM statistics "
+            "WHERE url = '%1' AND deviceid = -1;" )
+            .arg( escapeString( rpath2 ) ) );
+        if ( !values.isEmpty() )
+        {
+            rpath = rpath2;
+            deviceid = -1;
+        }
+    }
 
     bool ok = true;
     int prev = values[4].toInt( &ok );
@@ -3603,10 +3652,11 @@ CollectionDB::setSongRating( const QString &url, int rating, bool toggleHalf )
 int
 CollectionDB::getPlayCount( const QString &url )
 {
-    int deviceid = MountPointManager::instance()->getIdForUrl( url );
-    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
-    QStringList values = query( QString( "SELECT playcounter FROM statistics WHERE url = '%2' AND deviceid = %1;" )
-                                         .arg( deviceid ).arg( escapeString( rpath ) ) );
+    //queryBuilder is good
+    QueryBuilder qb;
+    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
+    qb.addMatch( QueryBuilder::tabStats, QueryBuilder::valURL, url );
+    QStringList values = qb.run();
     if( values.count() )
         return values.first().toInt();
     return 0;
@@ -3615,11 +3665,11 @@ CollectionDB::getPlayCount( const QString &url )
 QDateTime
 CollectionDB::getFirstPlay( const QString &url )
 {
-    int deviceid = MountPointManager::instance()->getIdForUrl( url );
-    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
-    QDateTime dt = QDateTime();
-    QStringList values = query( QString( "SELECT createdate FROM statistics WHERE url = '%2' AND deviceid = %1;" )
-                                         .arg( deviceid ).arg( escapeString( rpath ) ) );
+    QueryBuilder qb;
+    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valCreateDate );
+    qb.addMatch( QueryBuilder::tabStats, QueryBuilder::valURL, url );
+    QStringList values = qb.run();
+    QDateTime dt;
     if( values.count() )
         dt.setTime_t( values.first().toUInt() );
     return dt;
@@ -3628,11 +3678,11 @@ CollectionDB::getFirstPlay( const QString &url )
 QDateTime
 CollectionDB::getLastPlay( const QString &url )
 {
-    int deviceid = MountPointManager::instance()->getIdForUrl( url );
-    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
-    QDateTime dt = QDateTime();
-    QStringList values = query( QString( "SELECT accessdate FROM statistics WHERE url = '%2' AND deviceid = %1;" )
-                                         .arg( deviceid ).arg( escapeString( rpath ) ) );
+    QueryBuilder qb;
+    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
+    qb.addMatch( QueryBuilder::tabStats, QueryBuilder::valURL, url );
+    QStringList values = qb.run();
+    QDateTime dt;
     if( values.count() )
         dt.setTime_t( values.first().toUInt() );
     else
@@ -3995,10 +4045,20 @@ CollectionDB::isFileInCollection( const QString &url  )
     int deviceid = MountPointManager::instance()->getIdForUrl( url );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
 
-    QStringList values =
-        query( QString( "SELECT url FROM tags WHERE url = '%1' AND deviceid = %2;" )
-                  .arg( escapeString( rpath ) )
-                  .arg( deviceid ) );
+    QString sql = QString( "SELECT url FROM tags WHERE url = '%1' AND deviceid = %2" )
+                             .arg( escapeString( rpath ) )
+                             .arg( deviceid );
+    if ( deviceid == -1 )
+    {
+        sql += ";";
+    }
+    else
+    {
+        QString rpath2 = QString( "." ) + url;
+        sql += QString( " OR url = '%1' AND deviceid = -1;" )
+                      .arg( escapeString( rpath2 ) );
+    }
+    QStringList values = query( sql );
 
     return !values.isEmpty();
 }
@@ -5956,9 +6016,16 @@ QueryBuilder::linkTables( int tables )
         if ( tables & tabYear )
             m_tables += " LEFT JOIN " + tableName( tabYear) + " ON year.id=tags.year";
         if ( tables & tabStats )
-            m_tables += " LEFT JOIN " + tableName( tabStats) + " ON statistics.url=tags.url";
+        {
+            QString url = QString( "." ) + m_url;
+            m_tables += " LEFT JOIN " + tableName( tabStats)
+                                      + " ON statistics.url=tags.url AND statistics.deviceid = tags.deviceid"
+                                      + QString ( " OR statistics.deviceid = -1 AND statistics.url = '%1'" )
+                                                .arg( CollectionDB::instance()->escapeString( url ) );
+        }
         if ( tables & tabLyrics )
-            m_tables += " LEFT JOIN " + tableName( tabLyrics) + " ON lyrics.url=tags.url";
+            m_tables += " LEFT JOIN " + tableName( tabLyrics)
+                                      + " ON lyrics.url=tags.url AND statistics.deviceid = tags.deviceid";
 
     }
 }
@@ -6447,6 +6514,8 @@ void
 QueryBuilder::addMatch( int tables, Q_INT64 value, const QString& match, bool interpretUnknown /* = true */, bool caseSensitive /* = true */  )
 {
     m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
+    if ( value & valURL )
+        m_url = match;
     //FIXME max: doesn't work yet if we are querying for the mount point part of a directory
     if ( value & valURL || value & valDirectory )
     {
@@ -6460,6 +6529,15 @@ QueryBuilder::addMatch( int tables, Q_INT64 value, const QString& match, bool in
             .arg( valueName( value ) );
         m_where += caseSensitive ? CollectionDB::exactCondition( rpath ) : CollectionDB::likeCondition( rpath );
         m_where += QString( " AND %1.deviceid = %2 " ).arg( tableName( tables ) ).arg( deviceid );
+        if ( deviceid != -1 )
+        {
+            //handle corner case
+            QString rpath2 = ".";
+            rpath2 += match;
+            m_where += QString( " OR %1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) );
+            m_where += caseSensitive ? CollectionDB::exactCondition( rpath2 ) : CollectionDB::likeCondition( rpath2 );
+            m_where += QString( " AND %1.deviceid = -1 " ).arg( tableName( tables ) );
+        }
     }
     else
     {

@@ -723,6 +723,8 @@ class QueryBuilder
         QString m_limit;
         QString m_having;
 
+        QString m_url;      //url is used as primary key and linkTables needs to do some special stuff with it
+
         int m_linkTables;
         uint m_returnValues;
 };
