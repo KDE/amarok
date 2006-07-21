@@ -4,12 +4,30 @@
 # (c) 2005 Mark Kretschmann <markey@web.de>
 # Licensed under MIT License.
 
-
 require 'rss/parser'
 require 'rss/1.0'
 require 'rss/2.0'
 require 'rss/dublincore'
 require 'rss/dublincore/2.0'
+
+class ::String
+    def shorten(limit)
+    if self.length > limit
+        self+". " =~ /^(.{#{limit}}[^.!;?]*[.!;?])/mi
+        return $1
+    end
+    self
+    end
+
+    def riphtml
+    self.gsub(/<[^>]+>/, '').gsub(/&amp;/,'&').gsub(/&quot;/,'"').gsub(/&lt;/,'<').gsub(/&gt;/,'>').gsub(/&ellip;/,'...').gsub(/&apos;/, "'").gsub("\n",'')
+    end
+
+    def mysqlize
+    self.gsub(/'/, "''")
+    end
+end
+
 
 class RSSFeedsPlugin < Plugin
     @@watchThreads = Hash.new
@@ -48,7 +66,7 @@ class RSSFeedsPlugin < Plugin
         rescue
             puts "no watchlist"
         end
-        
+
     end
 
     def cleanup
@@ -109,7 +127,7 @@ class RSSFeedsPlugin < Plugin
             end
             m.params.gsub!(/\s+\d+$/, '')
         end
-	
+
 	url = ''
 	if m.params =~ /^http:\/\//
 	    url = m.params
