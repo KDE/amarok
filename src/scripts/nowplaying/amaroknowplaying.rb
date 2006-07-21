@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 #
-# Now playing script for IRC. Use with the "/exec -o" command of your client.
+# Now playing script for IRC.
+
+# Use with the "/exec -o" command of your client. You can bind an alias like this:
+# /alias np exec -o /home/myself/amaroknowplaying.rb
 #
 # (c) 2005-2006 Mark Kretschmann <markey@web.de>
 # License: GNU General Public License V2
@@ -20,13 +23,18 @@ if title.empty?
     output += `dcop amarok player nowPlaying`.chomp
 else
     # Strip file extension
-    extensions = ".ogg", ".mp3", ".wav"
-    if extensions.include?( File.extname( title ).downcase )
-        title = title[0, title.length-4]
+    extensions = ".ogg", ".mp3", ".wav", ".flac", ".fla", ".wma", ".mpc"
+    ext = File.extname( title ).downcase
+
+    if extensions.include?( ext )
+        title = title[0, title.length - ext.length]
     end
 
-    output += "#{title}"
-    output += " - #{artist}" unless artist.empty?
+    if artist.empty?
+        output += "#{title}"
+    else
+        output += "#{artist} - #{title}"
+    end
 
     unless album.empty?
         output += " [#{album}"
