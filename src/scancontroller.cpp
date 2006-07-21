@@ -311,6 +311,9 @@ ScanController::startElement( const QString&, const QString& localName, const QS
         bundle.setUniqueId( attrs.value( "uniqueid" ) );
         bundle.setCompilation( attrs.value( "compilation" ).toInt() );
 
+        if ( m_incremental )
+            debug() << "Incremental scan: adding " << bundle.url().path() << " with UID " << bundle.uniqueId() << endl;
+
         if( attrs.value( "audioproperties" ) == "true" ) {
             bundle.setBitrate   ( attrs.value( "bitrate" ).toInt() );
             bundle.setLength    ( attrs.value( "length" ).toInt() );
