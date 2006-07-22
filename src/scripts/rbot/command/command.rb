@@ -15,7 +15,9 @@ class CommandPlugin < Plugin
 
   def listen( m )
     if m.address? and @commands.has_key?( m.message )
+      $SAFE = 4  #better safe than sorry
       eval( m.message )
+      $SAFE = 0
     end
   end
 
