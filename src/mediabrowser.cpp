@@ -666,7 +666,8 @@ MediaBrowser::transcodingFinished( const QString &src, const QString &dst )
     else
     {
         debug() << "transcoding for " << src << " finished, "
-            << "but we are waiting for " << m_transcodeSrc << endl;
+            << "but we are waiting for " << m_transcodeSrc << " -- aborting" << endl;
+        m_waitForTranscode = false;
     }
 }
 
