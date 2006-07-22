@@ -25,6 +25,8 @@ VERSION 1.4.2:
       to iTunes, Firefly Media Server etc. (BR 100513)
 
   CHANGES:
+    * Exact playtime as tooltip in statusbar. Patch by Markus Kaufhold
+      <M.Kaufhold@gmx.de>. (BR 130463)
     * Suspend collection rescanning while organizing files. (BR 129885)
     * Always use metadata from original file for transcoded files transfered
       to media devices. (BR 131171)

@@ -219,11 +219,12 @@ StatusBar::slotItemCountChanged( int newCount, int newLength,  //total
     else
         getValue = newLength;
 
-    if( getValue ) {
+    if( getValue )
         m_itemCountLabel->setText( i18n( "X visible/selected tracks (time) ", "%1 (%2)" ).arg( text, MetaBundle::fuzzyTime( getValue ) ) );
-    }
     else
-    m_itemCountLabel->setText( text );
+        m_itemCountLabel->setText( text );
+
+    QToolTip::add( m_itemCountLabel,  i18n( "Play-time: %1" ).arg( MetaBundle::veryPrettyTime( getValue ) ) );
 }
 
 void
