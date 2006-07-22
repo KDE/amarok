@@ -25,7 +25,7 @@ class CommandPlugin < Plugin
 
   def cmd_command_add( m, params )
     cmd = params[:command]
-    code = params[:code].join
+    code = params[:code].join( " " )
 
     @commands[cmd] = code
 
