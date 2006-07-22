@@ -20,13 +20,13 @@ class CommandPlugin < Plugin
   end
 
   def cmd_command_add( m, params )
-    cmd = params[command]
-    code = params[code]
+    cmd = params[:command]
+    code = params[:code]
 
     @commands[cmd] = code
 
     debug "added code: " + code 
-    @bot.say( "done" )
+    m.reply( "done" )
   end
 end
 
