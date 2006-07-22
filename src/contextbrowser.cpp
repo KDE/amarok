@@ -1114,7 +1114,7 @@ void CurrentTrackJob::showHome()
     qb.clear(); //Total Playtime
     qb.addReturnFunctionValue( QueryBuilder::funcSum, QueryBuilder::tabSong, QueryBuilder::valLength );
     a = qb.run();
-    QString playTime = MetaBundle::veryPrettyTime( a[0].toInt() );
+    QString playTime = MetaBundle::fuzzyTime( a[0].toInt() );
 
     m_HTMLSource.append(
             QStringx(
