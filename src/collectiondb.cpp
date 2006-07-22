@@ -4037,8 +4037,8 @@ CollectionDB::updateDirStats( QString path, const long datetime, const bool temp
 void
 CollectionDB::removeSongsInDir( QString path )
 {
-    //if ( path.endsWith( "/" ) )
-    //    path = path.left( path.length() - 1 );
+    if ( path.endsWith( "/" ) )
+        path = path.left( path.length() - 1 );
     int deviceid = MountPointManager::instance()->getIdForUrl( path );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, path );
 
