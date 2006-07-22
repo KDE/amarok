@@ -1483,13 +1483,15 @@ CollectionDB::addImageToAlbum( const QString& image, QValueList< QPair<QString, 
         if ( (*it).first.isEmpty() || (*it).second.isEmpty() )
             continue;
 
+        QString sql = QString( "INSERT INTO images%1 ( path, deviceid, artist, album ) VALUES ( '%3', %2" )
+                            .arg( temporary ? "_temp" : "" )
+                            .arg( deviceid )
+                            .arg( escapeString( rpath ) );
+        sql += QString( ", '%1'" ).arg( escapeString( (*it).first ) );
+        sql += QString( ", '%1' );" ).arg( escapeString( (*it).second ) );
+
 //         debug() << "Added image for album: " << (*it).first << " - " << (*it).second << ": " << image << endl;
-        insert( QString( "INSERT INTO images%1 ( path, deviceid, artist, album ) VALUES ( '%2', %3, '%4', '%5' );" )
-              .arg( temporary ? "_temp" : "" )
-              .arg( escapeString( rpath ) )
-              .arg( deviceid ) 
-              .arg( escapeString( (*it).first ) )
-              .arg( escapeString( (*it).second ) ) , NULL );
+        insert( sql, NULL );
     }
 }
 
@@ -1501,10 +1503,9 @@ CollectionDB::addEmbeddedImage( const QString& path, const QString& hash, const 
     //what are embedded images anyway?
     int deviceid = MountPointManager::instance()->getIdForUrl( path );
     QString rpath = MountPointManager::instance()->getRelativePath(deviceid, path );
-    insert( QString( "INSERT INTO embed_temp ( url, deviceid, hash, description ) VALUES ( '%1', %2, '%3', '%4' );" )
-     .arg( escapeString( rpath ) )
-     .arg( deviceid )
-     .arg( escapeString( hash ), escapeString( description ) ), NULL );
+    insert( QString( "INSERT INTO embed_temp ( url, deviceid, hash, description ) VALUES ( '%2', %1, '%3', '%4' );" )
+                .arg( deviceid )
+                .arg( escapeString( rpath ), escapeString( hash ), escapeString( description ) ), NULL );
 }
 
 void
@@ -1512,11 +1513,11 @@ CollectionDB::removeOrphanedEmbeddedImages()
 {
     //TODO refactor
     // do it the hard way, since a delete subquery wont work on MySQL
-    QStringList orphaned = query( "SELECT embed.url, embed.deviceid FROM embed LEFT JOIN tags ON embed.url = tags.url AND embed.deviceid = tags.deviceid WHERE tags.url IS NULL;" );
+    QStringList orphaned = query( "SELECT embed.deviceid, embed.url FROM embed LEFT JOIN tags ON embed.url = tags.url AND embed.deviceid = tags.deviceid WHERE tags.url IS NULL;" );
     foreachType( QStringList, orphaned ) {
-        query( QString( "DELETE FROM embed WHERE embed.url = '%1' AND embed.deviceid = %2;" )
-                .arg( escapeString( *it ) )
-                .arg( (*++it).toInt() ) );
+        query( QString( "DELETE FROM embed WHERE embed.url = '%2' AND embed.deviceid = %1;" )
+                .arg( (*it).toInt() )
+                .arg( escapeString( *++it ) ) );
     }
 }
 
