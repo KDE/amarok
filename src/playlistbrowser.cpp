@@ -2642,17 +2642,8 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 /* fall through */
             case MEDIA_DEVICE:
                 {
-                    KURL::List urls;
                     const QStringList values = CollectionDB::instance()->query( item->query() );
-                    int i=0;
-                    for( for_iterators( QStringList, values ); it != end; ++it ) {
-                        if(i%QueryBuilder::dragFieldCount == QueryBuilder::dragFieldCount-2)
-                        {
-                            urls << KURL::fromPathOrURL( *it );
-                        }
-                        i++;
-                    }
-                    MediaBrowser::queue()->addURLs( urls, playlist );
+                    MediaBrowser::queue()->addURLs( CollectionDB::instance()->URLsFromSqlDrag( values ), playlist );
                 }
                 break;
         }

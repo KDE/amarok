@@ -275,7 +275,12 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
          * @param result the result of the sql query, deviceid first, relative path second
          * @return a list of urls
          */
-        QStringList URLsFromQuery( const QStringList result ) const;
+        QStringList URLsFromQuery( const QStringList &result ) const;
+
+        /**
+         * converts the result list of a amarok-sql query to a list of urls
+         */
+        KURL::List URLsFromSqlDrag( const QStringList &values ) const;
 
         //table management methods
         bool isEmpty();

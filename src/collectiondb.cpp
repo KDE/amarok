@@ -438,7 +438,7 @@ CollectionDB::deviceidSelection( const bool showAll )
 }
 
 QStringList
-CollectionDB::URLsFromQuery( const QStringList result ) const
+CollectionDB::URLsFromQuery( const QStringList &result ) const
 {
    QStringList values = QStringList();
     foreach( result )
@@ -452,6 +452,30 @@ CollectionDB::URLsFromQuery( const QStringList result ) const
         else ++it;
     }
     return values;
+}
+
+KURL::List
+CollectionDB::URLsFromSqlDrag( const QStringList &values ) const
+{
+    KURL::List urls;
+    for( QStringList::const_iterator it = values.begin();
+            it != values.end();
+            it++ )
+    {
+        const QString &rel = *it;
+        it++;
+        int id = (*it).toInt();
+        if ( MountPointManager::instance()->isMounted( id ) )
+        {
+            urls += KURL::fromPathOrURL( MountPointManager::instance()->getAbsolutePath( id, rel ) );
+        }
+        for( int i = 0;
+                i < QueryBuilder::dragFieldCount-1 && it != values.end();
+                i++ )
+            it++;
+    }
+
+    return urls;
 }
 
 bool
