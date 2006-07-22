@@ -330,9 +330,9 @@ class RSSFeedsPlugin < Plugin
     case type
     when 'amarokblog'
       @bot.say whichChan, "::#{item.category.content} just blogged at #{item.link}::"
-      @bot.say whichChan, "::#{item.title.chomp.riphtml.shorten(20)} - #{item.description.chomp.riphtml.shorten(60)}::"
+      @bot.say whichChan, "::#{item.title.chomp.riphtml} - #{item.description.chomp.riphtml.shorten(60)}::"
     when 'amarokforum'
-      @bot.say whichChan, "::Forum:: #{item.pubDate.to_s.chomp+": " if item.pubDate}#{item.title.chomp.riphtml.shorten(20)+" :: " if item.title}#{" @ "+item.link.chomp if item.link}"
+      @bot.say whichChan, "::Forum:: #{item.pubDate.to_s.chomp+": " if item.pubDate}#{item.title.chomp.riphtml+" :: " if item.title}#{" @ "+item.link.chomp if item.link}"
     when 'mediawiki'
       @bot.say whichChan, "::Wiki:: #{item.title} has been edited by #{item.dc_creator}. #{item.description.split("\n")[0].chomp.riphtml.shorten(60)} #{item.link} ::"
       puts "mediawiki #{item.title}"
