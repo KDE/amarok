@@ -9,23 +9,31 @@ class CommandPlugin < Plugin
   def initialize()
     super
 
-    @commands = Hash.new
+    @registry["commands"] = Hash.new unless @registry.has_key?( "commands" )
+    @commands = @registry["commands"]
   end
 
-def listen( m )
-  if m.address? and @commands.has_key?( m.message )
-    eval( m.message )
+  def listen( m )
+    if m.address? and @commands.has_key?( m.message )
+      eval( m.message )
+    end
   end
-end
 
+  def cmd_command_add( m, params )
+    cmd = params[command]
+    code = params[code]
 
-def cmd_command_add( m, params )
+    @commands[cmd] = code
+
+    debug "added code: " + code 
+    @bot.say( "done" )
+  end
 end
 
 
 plugin = CommandPlugin.new
 plugin.register( "command" )
 
-plugin.map 'command add :command', :action => 'cmd_command_add' :auth => 'commandedit'
+plugin.map 'command add :command :code', :action => 'cmd_command_add', :auth => 'commandedit'
 
 
