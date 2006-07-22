@@ -15,15 +15,17 @@ class CommandPlugin < Plugin
 
   def listen( m )
     if m.address? and @commands.has_key?( m.message )
-      $SAFE = 4  #better safe than sorry
-      eval( m.message )
+      code = @commands[m.message].untaint
+
+      $SAFE = 3  #better safe than sorry
+      eval( code )
       $SAFE = 0
     end
   end
 
   def cmd_command_add( m, params )
     cmd = params[:command]
-    code = params[:code]
+    code = params[:code].join
 
     @commands[cmd] = code
 
@@ -36,6 +38,6 @@ end
 plugin = CommandPlugin.new
 plugin.register( "command" )
 
-plugin.map 'command add :command :code', :action => 'cmd_command_add', :auth => 'commandedit'
+plugin.map 'command add :command *code', :action => 'cmd_command_add', :auth => 'commandedit'
 
 
