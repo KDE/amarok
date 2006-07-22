@@ -1035,6 +1035,7 @@ SqlLoader::doJob()
         b.setCompilation( ok ? val : MetaBundle::CompilationUnknown );
         b.setFileType( (*++it).toInt() );
         b.setComposer( *++it );
+        b.setBpm       ( (*++it).toFloat() );
 
         bundles += b;
 

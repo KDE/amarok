@@ -558,6 +558,10 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
                 case Filesize:
                     qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valFilesize );
                     break;
+                case BPM:
+                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valBPM );
+                    filterTables |= QueryBuilder::tabSong;
+                    break;
                 default:
                     qb.addReturnValue( QueryBuilder::tabDummy, QueryBuilder::valDummy );
                     break;
@@ -1888,6 +1892,7 @@ CollectionView::updateColumnHeader()
         addColumn( captionForTag( Modified ), 0 );
         addColumn( captionForTag( Bitrate ), 0 );
         addColumn( captionForTag( Filesize ), 0 );
+        addColumn( captionForTag( BPM ), 0 );
 
         setColumnAlignment( Track, Qt::AlignCenter );
         setColumnAlignment( DiscNumber, Qt::AlignCenter );
@@ -1895,6 +1900,7 @@ CollectionView::updateColumnHeader()
         setColumnAlignment( Bitrate, Qt::AlignCenter );
         setColumnAlignment( Score, Qt::AlignCenter );
         setColumnAlignment( Playcount, Qt::AlignCenter );
+        setColumnAlignment( BPM, Qt::AlignRight );
 
         //QListView allows invisible columns to be resized, so we disable resizing for them
         for ( int i = 0; i < columns(); ++i ) {
@@ -2396,6 +2402,7 @@ CollectionView::captionForTag( const Tag tag) const
         case Modified:  caption = i18n( "Modified Date" ); break;
         case Bitrate:   caption = i18n( "Bitrate" ); break;
         case Filesize:  caption = i18n( "File Size" ); break;
+        case BPM:       caption = i18n( "BPM" ); break;
         default: break;
     }
     return caption;

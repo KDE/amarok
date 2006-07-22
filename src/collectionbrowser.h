@@ -221,7 +221,7 @@ class CollectionView : public KListView, public DropProxyTarget
     private:
         enum Tag { Title, Artist, Composer, Album, Genre, Length, DiscNumber, Track, Year,
             Comment, Playcount, Score, Rating, Filename, Firstplay, Lastplay, Modified,
-            Bitrate, Filesize };
+            Bitrate, Filesize, BPM };
 
         void setViewMode( int mode, bool rerender = true );
         void startDrag();

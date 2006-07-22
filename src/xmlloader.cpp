@@ -84,6 +84,7 @@ void MetaBundle::XmlLoader::newTag( const QString &name, const QString &value )
                 case Album:
                 case DiscNumber:
                 case Track:
+                case Bpm:
                 case Title:
                 case Genre:
                 case Comment:
@@ -112,6 +113,7 @@ void MetaBundle::XmlLoader::newTag( const QString &name, const QString &value )
                 case Album:
                 case DiscNumber:
                 case Track:
+                case Bpm:
                 case Title:
                 case Genre:
                 case Comment:

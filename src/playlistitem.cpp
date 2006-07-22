@@ -292,6 +292,7 @@ void PlaylistItem::setEditing( int column )
         case Year:       m_year       = -1; break;
         case DiscNumber: m_discNumber = -1; break;
         case Track:      m_track      = -1; break;
+        case Bpm:        m_bpm        = -1; break;
         case Length:     m_length     = -1; break;
         case Bitrate:    m_bitrate    = -1; break;
         case SampleRate: m_sampleRate = -1; break;
@@ -319,6 +320,7 @@ bool PlaylistItem::isEditing( int column ) const
         case Year:       return m_year       == -1;
         case DiscNumber: return m_discNumber == -1;
         case Track:      return m_track      == -1;
+        case Bpm:        return m_bpm        == -1;
         case Length:     return m_length     == -1;
         case Bitrate:    return m_bitrate    == -1;
         case SampleRate: return m_sampleRate == -1;
@@ -448,6 +450,7 @@ PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
         case PlayCount:  return cmp( playCount(), i->playCount() );
         case LastPlayed: return cmp( lastPlay(),  i->lastPlay() );
         case Bitrate:    return cmp( bitrate(),   i->bitrate() );
+        case Bpm:        return cmp( bpm(),       i->bpm() );
         case Filesize:   return cmp( filesize(),  i->filesize() );
         case Year:
             if( year() == i->year() )

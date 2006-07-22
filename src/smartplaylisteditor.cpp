@@ -129,16 +129,19 @@ void SmartPlaylistEditor::init(QString defaultName)
     makeVBoxMainWidget();
 
     m_fields.clear();
-    m_fields << i18n("Artist") << i18n("Album") << i18n("Genre") << i18n("Title") << i18n("Length") << i18n("Track #") << i18n("Year")
-             << i18n("Comment") << i18n("Play Counter") << i18n("Score") << i18n( "Rating" ) << i18n("First Play") << i18n("Last Play")
-             << i18n("Modified Date") << i18n("File Path");
+    m_fields << i18n("Artist") << i18n("Album") << i18n("Genre") << i18n("Title") << i18n("Length")
+             << i18n("Track #") << i18n("Year") << i18n("Comment") << i18n("Play Counter")
+             << i18n("Score") << i18n( "Rating" ) << i18n("First Play")
+             << i18n("Last Play") << i18n("Modified Date") << i18n("File Path")
+             << i18n("BPM");
 
     m_dbFields.clear();
     //TODO max: make sure the search for URL workds correctly
     m_dbFields << "artist.name" << "album.name" << "genre.name" << "tags.title" << "tags.length"
                << "tags.track" << "year.name" << "tags.comment" << "statistics.playcounter"
                << "statistics.percentage" << "statistics.rating" << "statistics.createdate"
-               << "statistics.accessdate" << "tags.createdate" << "tags.url" << "tags.sampler";
+               << "statistics.accessdate" << "tags.createdate" << "tags.url" << "tags.sampler"
+               << "tags.bpm";
 
     m_expandableFields.clear();
     m_expandableFields << i18n("Artist") << i18n("Album") << i18n("Genre") <<  i18n("Year");
@@ -460,8 +463,7 @@ void SmartPlaylistEditor::buildQuery()
         limitStr = " LIMIT " + QString::number( m_limitSpin->value() )+" OFFSET 0 ";
 
 
-    // take care to adapt SmartPlaylist::NumReturnValues accordingly
-    // album / artist / genre / title / year / comment / track / bitrate / discnumber / length / samplerate / path / compilation / filetype / composer
+    // album / artist / genre / title / year / comment / track / bitrate / discnumber / length / samplerate / path / compilation / filetype / composer / bpm
     m_query = "SELECT (*ListOfFields*) FROM "
               + joins + whereStr + orderStr + limitStr + ";";
 
@@ -1001,6 +1003,7 @@ int CriteriaEditor::getValueType( int index )
         case 5:
         case 8:
         case 9:
+        case 15:
             valueType = Number;
             break;
         case 10:

@@ -121,6 +121,7 @@ class IpodMediaItem : public MediaItem
             bundle->setYear      ( track->year );
             bundle->setTrack     ( track->track_nr );
             bundle->setDiscNumber( track->cd_nr );
+            bundle->setBpm       ( track->BPM );
             bundle->setLength    ( track->tracklen/1000 );
             bundle->setBitrate   ( track->bitrate );
             bundle->setSampleRate( track->samplerate );
@@ -313,6 +314,7 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
     track->comment = g_strdup( bundle.comment()->utf8() );
     track->track_nr = bundle.track();
     track->cd_nr = bundle.discNumber();
+    track->BPM = static_cast<int>( bundle.bpm() );
     track->year = bundle.year();
     track->size = bundle.filesize();
     if( track->size == 0 )

@@ -99,6 +99,7 @@ const QString MetaBundle::exactColumnName( int c ) //static
         case Album:      return "Album";
         case DiscNumber: return "DiscNumber";
         case Track:      return "Track";
+        case Bpm:        return "BPM";
         case Genre:      return "Genre";
         case Comment:    return "Comment";
         case Directory:  return "Directory";
@@ -127,6 +128,7 @@ const QString MetaBundle::prettyColumnName( int index ) //static
         case Album:      return i18n( "Album"       );
         case DiscNumber: return i18n( "Disc Number" );
         case Track:      return i18n( "Track"       );
+        case Bpm:        return i18n( "BPM"         );
         case Genre:      return i18n( "Genre"       );
         case Comment:    return i18n( "Comment"     );
         case Directory:  return i18n( "Directory"   );
@@ -156,6 +158,7 @@ MetaBundle::MetaBundle()
         , m_year( Undetermined )
         , m_discNumber( Undetermined )
         , m_track( Undetermined )
+        , m_bpm( Undetermined )
         , m_bitrate( Undetermined )
         , m_length( Undetermined )
         , m_sampleRate( Undetermined )
@@ -181,6 +184,7 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
     , m_year( Undetermined )
     , m_discNumber( Undetermined )
     , m_track( Undetermined )
+    , m_bpm( Undetermined )
     , m_bitrate( Undetermined )
     , m_length( Undetermined )
     , m_sampleRate( Undetermined )
@@ -230,6 +234,7 @@ MetaBundle::MetaBundle( const QString& title,
         , m_year( 0 )
         , m_discNumber( 0 )
         , m_track( 0 )
+        , m_bpm( Undetermined )
         , m_bitrate( bitrate )
         , m_length( Irrelevant )
         , m_sampleRate( Unavailable )
@@ -289,6 +294,7 @@ MetaBundle::operator=( const MetaBundle& bundle )
     m_year = bundle.m_year;
     m_discNumber = bundle.m_discNumber;
     m_track = bundle.m_track;
+    m_bpm = bundle.m_bpm;
     m_bitrate = bundle.m_bitrate;
     m_length = bundle.m_length;
     m_sampleRate = bundle.m_sampleRate;
@@ -341,6 +347,7 @@ MetaBundle::operator==( const MetaBundle& bundle ) const
            genre()      == bundle.genre() &&
            track()      == bundle.track() &&
            discNumber() == bundle.discNumber() &&
+           bpm()        == bundle.bpm() &&
            length()     == bundle.length() &&
            bitrate()    == bundle.bitrate() &&
            sampleRate() == bundle.sampleRate();
@@ -478,6 +485,9 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
                 if ( !file->ID3v2Tag()->frameListMap()["TPOS"].isEmpty() )
                     disc = TStringToQString( file->ID3v2Tag()->frameListMap()["TPOS"].front()->toString() ).stripWhiteSpace();
 
+                if ( !file->ID3v2Tag()->frameListMap()["TBPM"].isEmpty() )
+                    setBpm( TStringToQString( file->ID3v2Tag()->frameListMap()["TBPM"].front()->toString() ).stripWhiteSpace().toFloat() );
+
                 if ( !file->ID3v2Tag()->frameListMap()["TCOM"].isEmpty() )
                     setComposer( TStringToQString( file->ID3v2Tag()->frameListMap()["TCOM"].front()->toString() ).stripWhiteSpace() );
 
@@ -497,6 +507,9 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
                 if ( !file->tag()->fieldListMap()[ "COMPOSER" ].isEmpty() )
                     setComposer( TStringToQString( file->tag()->fieldListMap()["COMPOSER"].front() ).stripWhiteSpace() );
 
+                if ( !file->tag()->fieldListMap()[ "BPM" ].isEmpty() )
+                    setBpm( TStringToQString( file->tag()->fieldListMap()["BPM"].front() ).stripWhiteSpace().toFloat() );
+
                 if ( !file->tag()->fieldListMap()[ "DISCNUMBER" ].isEmpty() )
                     disc = TStringToQString( file->tag()->fieldListMap()["DISCNUMBER"].front() ).stripWhiteSpace();
 
@@ -511,6 +524,9 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
             {
                 if ( !file->xiphComment()->fieldListMap()[ "COMPOSER" ].isEmpty() )
                     setComposer( TStringToQString( file->xiphComment()->fieldListMap()["COMPOSER"].front() ).stripWhiteSpace() );
+
+                if ( !file->xiphComment()->fieldListMap()[ "BPM" ].isEmpty() )
+                    setBpm( TStringToQString( file->xiphComment()->fieldListMap()["BPM"].front() ).stripWhiteSpace().toFloat() );
 
                 if ( !file->xiphComment()->fieldListMap()[ "DISCNUMBER" ].isEmpty() )
                     disc = TStringToQString( file->xiphComment()->fieldListMap()["DISCNUMBER"].front() ).stripWhiteSpace();
@@ -530,6 +546,7 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
             if( mp4tag )
             {
                 setComposer( TStringToQString( mp4tag->composer() ) );
+                setBpm( QString::number( mp4tag->bpm() ).toFloat() );
                 disc = QString::number( mp4tag->disk() );
                 compilation = QString::number( mp4tag->compilation() );
                 if ( images && mp4tag->cover().size() ) {
@@ -623,6 +640,7 @@ void MetaBundle::copyFrom( const MetaBundle &bundle )
     setAlbum( bundle.album() );
     setYear( bundle.year() );
     setDiscNumber( bundle.discNumber() );
+    setBpm( bundle.bpm() );
     setComment( bundle.comment() );
     setGenre( bundle.genre() );
     setTrack( bundle.track() );
@@ -670,24 +688,25 @@ void MetaBundle::setExactText( int column, const QString &newText )
 {
     switch( column )
     {
-        case Title:      setTitle(      newText );         break;
-        case Artist:     setArtist(     newText );         break;
-        case Composer:   setComposer(   newText );         break;
-        case Year:       setYear(       newText.toInt() ); break;
-        case Album:      setAlbum(      newText );         break;
-        case DiscNumber: setDiscNumber( newText.toInt() ); break;
-        case Track:      setTrack(      newText.toInt() ); break;
-        case Genre:      setGenre(      newText );         break;
-        case Comment:    setComment(    newText );         break;
-        case Length:     setLength(     newText.toInt() ); break;
-        case Bitrate:    setBitrate(    newText.toInt() ); break;
-        case SampleRate: setSampleRate( newText.toInt() ); break;
-        case Score:      setScore(      newText.toInt() ); break;
-        case Rating:     setRating(     newText.toInt() ); break;
-        case PlayCount:  setPlayCount(  newText.toInt() ); break;
-        case LastPlayed: setLastPlay(   newText.toInt() ); break;
-        case Filesize:   setFilesize(   newText.toInt() ); break;
-        case Type:       setFileType(   newText.toInt() ); break;
+        case Title:      setTitle(      newText );           break;
+        case Artist:     setArtist(     newText );           break;
+        case Composer:   setComposer(   newText );           break;
+        case Year:       setYear(       newText.toInt() );   break;
+        case Album:      setAlbum(      newText );           break;
+        case DiscNumber: setDiscNumber( newText.toInt() );   break;
+        case Track:      setTrack(      newText.toInt() );   break;
+        case Bpm:        setBpm(        newText.toFloat() ); break;
+        case Genre:      setGenre(      newText );           break;
+        case Comment:    setComment(    newText );           break;
+        case Length:     setLength(     newText.toInt() );   break;
+        case Bitrate:    setBitrate(    newText.toInt() );   break;
+        case SampleRate: setSampleRate( newText.toInt() );   break;
+        case Score:      setScore(      newText.toInt() );   break;
+        case Rating:     setRating(     newText.toInt() );   break;
+        case PlayCount:  setPlayCount(  newText.toInt() );   break;
+        case LastPlayed: setLastPlay(   newText.toInt() );   break;
+        case Filesize:   setFilesize(   newText.toInt() );   break;
+        case Type:       setFileType(   newText.toInt() );   break;
         default: warning() << "Tried to set the text of an immutable or nonexistent column! [" << column << endl;
    }
 }
@@ -704,6 +723,7 @@ QString MetaBundle::exactText( int column ) const
         case Album:      return album();
         case DiscNumber: return QString::number( discNumber() );
         case Track:      return QString::number( track() );
+        case Bpm:        return QString::number( bpm() );
         case Genre:      return genre();
         case Comment:    return comment();
         case Directory:  return directory();
@@ -734,6 +754,7 @@ QString MetaBundle::prettyText( int column ) const
         case Year:       text = year() ? QString::number( year() ) : QString::null;                  break;
         case Album:      text = album();                                                             break;
         case DiscNumber: text = discNumber() ? QString::number( discNumber() ) : QString::null;      break;
+        case Bpm:        text = bpm() ? QString::number( bpm() ) : QString::null;                    break;
         case Track:      text = track() ? QString::number( track() ) : QString::null;                break;
         case Genre:      text = genre();                                                             break;
         case Comment:    text = comment();                                                           break;
@@ -797,6 +818,7 @@ bool MetaBundle::matchesParsedExpression( const ParsedExpression &data, const QV
                     case Year:
                     case DiscNumber:
                     case Track:
+                    case Bpm:
                     case Bitrate:
                     case SampleRate:
                     case Score:
@@ -1123,6 +1145,7 @@ MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value )
         {
             case ( composerTag ): id = "TCOM"; break;
             case ( discNumberTag ): id = "TPOS"; break;
+            case ( bpmTag ): id = "TBPM"; break;
             case ( compilationTag ): id = "TCMP"; break;
         }
         TagLib::MPEG::File *mpegFile = dynamic_cast<TagLib::MPEG::File *>( file );
@@ -1149,6 +1172,7 @@ MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value )
         {
             case ( composerTag ): id = "COMPOSER"; break;
             case ( discNumberTag ): id = "DISCNUMBER"; break;
+            case ( bpmTag ): id = "BPM"; break;
             case ( compilationTag ): id = "COMPILATION"; break;
         }
         TagLib::Ogg::Vorbis::File *oggFile = dynamic_cast<TagLib::Ogg::Vorbis::File *>( file );
@@ -1165,6 +1189,7 @@ MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value )
         {
             case ( composerTag ): id = "COMPOSER"; break;
             case ( discNumberTag ): id = "DISCNUMBER"; break;
+            case ( bpmTag ): id = "BPM"; break;
             case ( compilationTag ): id = "COMPILATION"; break;
         }
         TagLib::FLAC::File *flacFile = dynamic_cast<TagLib::FLAC::File *>( file );
@@ -1184,6 +1209,7 @@ MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value )
             {
                 case ( composerTag ): mp4tag->setComposer( QStringToTString( value ) ); break;
                 case ( discNumberTag ): mp4tag->setDisk( value.toInt() );
+                case ( bpmTag ): mp4tag->setBpm( value.toInt() ); // mp4 doesn't support float bpm
                 case ( compilationTag ): mp4tag->setCompilation( value.toInt() == CompilationYes );
             }
         }
@@ -1254,6 +1280,7 @@ MetaBundle::save()
             {
                 setExtendedTag( f.file(), composerTag, composer() );
                 setExtendedTag( f.file(), discNumberTag, discNumber() ? QString::number( discNumber() ) : QString() );
+                setExtendedTag( f.file(), bpmTag, bpm() ? QString::number( bpm() ) : QString() );
                 if ( compilation() != CompilationUnknown )
                     setExtendedTag( f.file(), compilationTag, QString::number( compilation() ) );
             }
@@ -1671,6 +1698,9 @@ void MetaBundle::setSampleRate( int sampleRate )
 
 void MetaBundle::setDiscNumber( int discnumber )
 { aboutToChange( DiscNumber ); m_discNumber = discnumber; reactToChange( DiscNumber ); }
+
+void MetaBundle::setBpm( float bpm )
+{ aboutToChange( Bpm ); m_bpm = bpm; reactToChange( Bpm ); }
 
 void MetaBundle::setComposer( const AtomicString &composer )
 { aboutToChange( Composer ); m_composer = composer; reactToChange( Composer ); }

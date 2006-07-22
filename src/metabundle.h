@@ -65,6 +65,7 @@ public:
         Album,
         DiscNumber,
         Track,
+        Bpm,
         Genre,
         Comment,
         Directory,
@@ -166,7 +167,7 @@ public:
 
     bool isStream() const;
 
-    /** Returns whether composer and disc number fields are available. */
+    /** Returns whether composer, disc number and bpm fields are available. */
     bool hasExtendedMetaInformation() const;
 
     void copyFrom( const MetaBundle& bundle );
@@ -222,6 +223,7 @@ public: //accessors
     int     year()        const;
     int     discNumber()  const;
     int     track()       const;
+    float   bpm()         const;
     int     length()      const;
     int     bitrate()     const;
     int     sampleRate()  const;
@@ -261,6 +263,7 @@ public: //modifiers
     void setYear( int year );
     void setDiscNumber( int discNumber );
     void setTrack( int track );
+    void setBpm( float bpm );
     void setLength( int length );
     void setBitrate( int bitrate );
     void setSampleRate( int sampleRate );
@@ -297,7 +300,7 @@ public: //static helper functions
     static QStringList genreList();
 
 protected:
-    enum ExtendedTags { composerTag,  discNumberTag, compilationTag };
+    enum ExtendedTags { composerTag,  discNumberTag, bpmTag, compilationTag };
 
     /** Called before the tags in \p columns are changed. */
     virtual void aboutToChange( const QValueList<int> &columns );
@@ -326,6 +329,7 @@ protected:
     int m_year;
     int m_discNumber;
     int m_track;
+    float m_bpm;
     int m_bitrate;
     int m_length;
     int m_sampleRate;
@@ -415,6 +419,7 @@ inline QString MetaBundle::streamUrl()  const { return m_streamUrl; }
 inline QString MetaBundle::uniqueId()   const { return m_uniqueId; }
 
 inline int MetaBundle::discNumber() const { return m_discNumber == Undetermined ? 0 : m_discNumber; }
+inline float MetaBundle::bpm() const { return m_bpm == Undetermined ? 0 : m_bpm; }
 inline int MetaBundle::compilation() const
 {
     if( m_isCompilation )

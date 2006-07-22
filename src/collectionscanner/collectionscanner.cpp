@@ -341,6 +341,7 @@ CollectionScanner::readTags( const MetaBundle& mb )
     attributes["year"]    = mb.year() ? QString::number( mb.year() ) : QString();
     attributes["track"]   = mb.track() ? QString::number( mb.track() ) : QString();
     attributes["discnumber"]   = mb.discNumber() ? QString::number( mb.discNumber() ) : QString();
+    attributes["bpm"]   = mb.bpm() ? QString::number( mb.bpm() ) : QString();
     attributes["filetype"]  = QString::number( mb.fileType() );
     attributes["uniqueid"] = mb.uniqueId();
     attributes["compilation"] = QString::number( mb.compilation() );

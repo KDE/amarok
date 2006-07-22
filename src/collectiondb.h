@@ -479,7 +479,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
     private:
         //bump DATABASE_VERSION whenever changes to the table structure are made.
         // This erases tags, album, artist, genre, year, images, embed, directory and related_artists tables.
-        static const int DATABASE_VERSION = 30;
+        static const int DATABASE_VERSION = 31;
         // Persistent Tables hold data that is somehow valuable to the user, and can't be erased when rescaning.
         // When bumping this, write code to convert the data!
         static const int DATABASE_PERSISTENT_TABLES_VERSION = 14;
@@ -612,43 +612,44 @@ class QueryBuilder
                                optShowAll = 16 /* get all songs, not just mounted ones */ };
         /* This has been an enum in the past, but 32 bits wasn't enough anymore :-( */
         static const Q_INT64 valDummy         = 0;
-        static const Q_INT64 valID            = 1 << 0;
-        static const Q_INT64 valName          = 1 << 1;
-        static const Q_INT64 valURL           = 1 << 2;
-        static const Q_INT64 valTitle         = 1 << 3;
-        static const Q_INT64 valTrack         = 1 << 4;
-        static const Q_INT64 valScore         = 1 << 5;
-        static const Q_INT64 valComment       = 1 << 6;
-        static const Q_INT64 valBitrate       = 1 << 7;
-        static const Q_INT64 valLength        = 1 << 8;
-        static const Q_INT64 valSamplerate    = 1 << 9;
-        static const Q_INT64 valPlayCounter   = 1 << 10;
-        static const Q_INT64 valCreateDate    = 1 << 11;
-        static const Q_INT64 valAccessDate    = 1 << 12;
-        static const Q_INT64 valPercentage    = 1 << 13;
-        static const Q_INT64 valArtistID      = 1 << 14;
-        static const Q_INT64 valAlbumID       = 1 << 15;
-        static const Q_INT64 valYearID        = 1 << 16;
-        static const Q_INT64 valGenreID       = 1 << 17;
-        static const Q_INT64 valDirectory     = 1 << 18;
-        static const Q_INT64 valLyrics        = 1 << 19;
-        static const Q_INT64 valRating        = 1 << 20;
-        static const Q_INT64 valComposer      = 1 << 21;
-        static const Q_INT64 valDiscNumber    = 1 << 22;
-        static const Q_INT64 valFilesize      = 1 << 23;
-        static const Q_INT64 valFileType      = 1 << 24;
-        static const Q_INT64 valIsCompilation = 1 << 25;
+        static const Q_INT64 valID            = 1LL << 0;
+        static const Q_INT64 valName          = 1LL << 1;
+        static const Q_INT64 valURL           = 1LL << 2;
+        static const Q_INT64 valTitle         = 1LL << 3;
+        static const Q_INT64 valTrack         = 1LL << 4;
+        static const Q_INT64 valScore         = 1LL << 5;
+        static const Q_INT64 valComment       = 1LL << 6;
+        static const Q_INT64 valBitrate       = 1LL << 7;
+        static const Q_INT64 valLength        = 1LL << 8;
+        static const Q_INT64 valSamplerate    = 1LL << 9;
+        static const Q_INT64 valPlayCounter   = 1LL << 10;
+        static const Q_INT64 valCreateDate    = 1LL << 11;
+        static const Q_INT64 valAccessDate    = 1LL << 12;
+        static const Q_INT64 valPercentage    = 1LL << 13;
+        static const Q_INT64 valArtistID      = 1LL << 14;
+        static const Q_INT64 valAlbumID       = 1LL << 15;
+        static const Q_INT64 valYearID        = 1LL << 16;
+        static const Q_INT64 valGenreID       = 1LL << 17;
+        static const Q_INT64 valDirectory     = 1LL << 18;
+        static const Q_INT64 valLyrics        = 1LL << 19;
+        static const Q_INT64 valRating        = 1LL << 20;
+        static const Q_INT64 valComposer      = 1LL << 21;
+        static const Q_INT64 valDiscNumber    = 1LL << 22;
+        static const Q_INT64 valFilesize      = 1LL << 23;
+        static const Q_INT64 valFileType      = 1LL << 24;
+        static const Q_INT64 valIsCompilation = 1LL << 25;
+        static const Q_INT64 valBPM           = 1LL << 26;
         // podcast relevant:
-        static const Q_INT64 valCopyright     = 1 << 26;
-        static const Q_INT64 valParent        = 1 << 27;
-        static const Q_INT64 valWeblink       = 1 << 28;
-        static const Q_INT64 valAutoscan      = 1 << 29;
-        static const Q_INT64 valFetchtype     = 1 << 30;
-        static const Q_INT64 valAutotransfer  = 1LL << 31;
-        static const Q_INT64 valPurge         = 1LL << 32;
-        static const Q_INT64 valPurgeCount    = 1LL << 33;
-        static const Q_INT64 valIsNew         = 1LL << 34;
-        static const Q_INT64 valMediaId       = 1LL << 35;
+        static const Q_INT64 valCopyright     = 1LL << 27;
+        static const Q_INT64 valParent        = 1LL << 28;
+        static const Q_INT64 valWeblink       = 1LL << 29;
+        static const Q_INT64 valAutoscan      = 1LL << 30;
+        static const Q_INT64 valFetchtype     = 1LL << 31;
+        static const Q_INT64 valAutotransfer  = 1LL << 32;
+        static const Q_INT64 valPurge         = 1LL << 33;
+        static const Q_INT64 valPurgeCount    = 1LL << 34;
+        static const Q_INT64 valIsNew         = 1LL << 35;
+        static const Q_INT64 valMediaId       = 1LL << 36;
 
         enum qBuilderFunctions  { funcNone = 0, funcCount = 1, funcMax = 2, funcMin = 4, funcAvg = 8, funcSum = 16 };
 

@@ -281,6 +281,7 @@ Playlist::Playlist( QWidget *parent )
             case PlaylistItem::Album:
             case PlaylistItem::DiscNumber:
             case PlaylistItem::Track:
+            case PlaylistItem::Bpm:
             case PlaylistItem::Genre:
             case PlaylistItem::Comment:
             case PlaylistItem::Score:
@@ -302,6 +303,7 @@ Playlist::Playlist( QWidget *parent )
     setColumnAlignment( PlaylistItem::Length,     Qt::AlignRight  );
     setColumnAlignment( PlaylistItem::Track,      Qt::AlignCenter );
     setColumnAlignment( PlaylistItem::DiscNumber, Qt::AlignCenter );
+    setColumnAlignment( PlaylistItem::Bpm,        Qt::AlignRight  );
     setColumnAlignment( PlaylistItem::Year,       Qt::AlignCenter );
     setColumnAlignment( PlaylistItem::Bitrate,    Qt::AlignCenter );
     setColumnAlignment( PlaylistItem::SampleRate, Qt::AlignCenter );
@@ -2645,6 +2647,7 @@ Playlist::viewportResizeEvent( QResizeEvent *e )
         case PlaylistItem::Length:
         case PlaylistItem::Year:
         case PlaylistItem::DiscNumber:
+        case PlaylistItem::Bpm:
             break; //these columns retain their width - their items tend to have uniform size
         default:
             if( m_columnFraction[c] > 0 )
@@ -2691,6 +2694,7 @@ Playlist::columnResizeEvent( int col, int oldw, int neww )
             case PlaylistItem::Length:
             case PlaylistItem::Year:
             case PlaylistItem::DiscNumber:
+            case PlaylistItem::Bpm:
                 break;
             default:
                 if( m_columnFraction[c] > 0 )
@@ -2735,6 +2739,7 @@ Playlist::columnResizeEvent( int col, int oldw, int neww )
         case PlaylistItem::Length:
         case PlaylistItem::Year:
         case PlaylistItem::DiscNumber:
+        case PlaylistItem::Bpm:
             break;
         default:
             w += columnWidth( x );
@@ -4867,6 +4872,11 @@ TagWriter::doJob()
             if ( !mb.hasExtendedMetaInformation() )
                 return true;
             mb.setDiscNumber( m_newTagString.toInt() );
+            break;
+        case PlaylistItem::Bpm:
+            if ( !mb.hasExtendedMetaInformation() )
+                return true;
+            mb.setBpm( m_newTagString.toFloat() );
             break;
         case PlaylistItem::Album:
             mb.setAlbum( m_newTagString );

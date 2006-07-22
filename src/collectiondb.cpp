@@ -538,6 +538,7 @@ CollectionDB::createTables( const bool temporary )
                     "filesize INTEGER,"
                     "filetype INTEGER,"
                     "sampler BOOL,"
+                    "bpm FLOAT,"
                     "deviceid INTEGER);" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
@@ -2744,7 +2745,7 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
 
     QString command = "INSERT INTO tags_temp "
                       "( url, dir, deviceid, createdate, modifydate, album, artist, genre, year, title, "
-                      "composer, comment, track, discnumber, sampler, length, bitrate, "
+                      "composer, comment, track, discnumber, bpm, sampler, length, bitrate, "
                       "samplerate, filesize, filetype ) "
                       "VALUES ('";
 
@@ -2788,6 +2789,7 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
     command += escapeString( bundle->comment() ) + "', ";
     command += escapeString( QString::number( bundle->track() ) ) + " , ";
     command += escapeString( QString::number( bundle->discNumber() ) ) + " , ";
+    command += escapeString( QString::number( bundle->bpm() ) ) + " , ";
     switch( bundle->compilation() ) {
         case MetaBundle::CompilationNo:
             command += boolF();
@@ -3159,7 +3161,7 @@ fillInBundle( QStringList values, MetaBundle &bundle )
     //TODO use this whenever possible
 
     // crash prevention
-    while( values.count() < 15 )
+    while( values.count() < 16 )
         values += "IF YOU CAN SEE THIS THERE IS A BUG!";
 
     QStringList::ConstIterator it = values.begin();
@@ -3178,6 +3180,7 @@ fillInBundle( QStringList values, MetaBundle &bundle )
     bundle.setSampleRate( (*it).toInt() ); ++it;
     bundle.setFilesize  ( (*it).toInt() ); ++it;
     bundle.setFileType  ( (*it).toInt() ); ++it;
+    bundle.setBpm       ( (*it).toFloat() ); ++it;
 
     bool ok;
     int val = (*it).toInt( &ok );
@@ -3197,7 +3200,7 @@ CollectionDB::bundleForUrl( MetaBundle* bundle )
             "SELECT album.name, artist.name, genre.name, tags.title, "
             "year.name, tags.comment, tags.discnumber, tags.composer, "
             "tags.track, tags.bitrate, tags.length, tags.samplerate, "
-            "tags.filesize, tags.filetype, tags.sampler "
+            "tags.filesize, tags.filetype, tags.bpm, tags.sampler "
             "FROM tags, album, artist, genre, year "
             "WHERE album.id = tags.album AND artist.id = tags.artist AND "
             "genre.id = tags.genre AND year.id = tags.year AND tags.url = '%2' AND tags.deviceid = %1;" )
@@ -3285,6 +3288,7 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valSamplerate );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFilesize );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFileType );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valBPM );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valIsCompilation );
 
@@ -3311,6 +3315,7 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                 b.setSampleRate( (*++it).toInt() );
                 b.setFilesize  ( (*++it).toInt() );
                 b.setFileType  ( (*++it).toInt() );
+                b.setBpm       ( (*++it).toFloat() );
                 b.setPath      (  *++it );
 
                 bool ok;
@@ -4239,6 +4244,7 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFilesize );
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFileType );
     // [10] is above. [11] is below.
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valBPM );
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valID );
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
     qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valID );
@@ -4251,7 +4257,7 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
     if ( values.isEmpty() )
         return;
 
-    if ( values.count() > 15 )
+    if ( values.count() > 16 )
     {
         error() << "Query returned more than 1 song. Aborting updating metadata" << endl;
         return;
@@ -4294,6 +4300,8 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
         command += "filesize = '" + QString::number( bundle.filesize() ) + "', ";
     if ( values[ 10 ] != QString::number( bundle.fileType() ) )
         command += "filetype = '" + QString::number( bundle.fileType() ) + "', ";
+    if ( values[ 11 ] != QString::number( bundle.bpm() ) )
+        command += "bpm = '" + QString::number( bundle.bpm() ) + "', ";
 
     if ( "UPDATE tags SET " == command )
     {
@@ -4310,13 +4318,13 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
 
     //Check to see if we use the entry anymore. If not, delete it
     if ( art )
-        deleteRedundantName( "artist", values[ 11 ] );
+        deleteRedundantName( "artist", values[ 12 ] );
     if ( alb )
-        deleteRedundantName( "album", values[ 12 ] );
+        deleteRedundantName( "album", values[ 13 ] );
     if ( gen )
-        deleteRedundantName( "genre", values[ 13 ] );
+        deleteRedundantName( "genre", values[ 14 ] );
     if ( year )
-        deleteRedundantName( "year", values[ 14 ] );
+        deleteRedundantName( "year", values[ 15 ] );
 
     if ( EngineController::instance()->bundle().url() == bundle.url() )
     {
@@ -6257,6 +6265,12 @@ QueryBuilder::setGoogleFilter( int defaultTables, QString query )
                 table = tabSong;
                 value = valComposer;
             }
+            else if( e.field == "bpm" )
+            {
+                table = tabSong;
+                value = valBPM;
+                exact = true;
+            }
             else if( e.field == "lyrics" )
             {
                 table = tabLyrics;
@@ -6836,7 +6850,7 @@ QueryBuilder::dragSQLFields()
     return "tags.url, tags.deviceid, album.name, artist.name, genre.name, tags.title, year.name, "
            "tags.comment, tags.track, tags.bitrate, tags.discnumber, "
            "tags.length, tags.samplerate, tags.filesize, "
-           "tags.sampler, tags.filetype, tags.composer";
+           "tags.sampler, tags.filetype, tags.composer, tags.bpm";
 }
 
 void
@@ -6859,6 +6873,7 @@ QueryBuilder::initSQLDrag()
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valIsCompilation );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFileType );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComposer );
+    addReturnValue( QueryBuilder::tabSong, QueryBuilder::valBPM );
 }
 
 
@@ -7000,6 +7015,8 @@ QueryBuilder::valueName( Q_INT64 value )
     if ( value & valFilesize )    values += "filesize";
     if ( value & valFileType )    values += "filetype";
     if ( value & valIsCompilation)values += "sampler";
+    if ( value & valBPM )         values += "bpm";
+
     if ( value & valCopyright )   values += "copyright";
     if ( value & valParent )      values += "parent";
     if ( value & valWeblink )     values += "weblink";

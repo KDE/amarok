@@ -421,6 +421,22 @@ namespace amaroK
         CollectionDB::instance()->setSongPercentage(url, score);
     }
 
+    void DcopPlayerHandler::setBpm( float bpm )
+    {
+        MetaBundle bundle = EngineController::instance()->bundle();
+        bundle.setBpm( bpm );
+        bundle.save();
+        CollectionDB::instance()->updateTags( bundle.url().path(), bundle, true );
+    }
+
+    void DcopPlayerHandler::setBpmByPath( const QString &url, float bpm )
+    {
+        MetaBundle bundle( url );
+        bundle.setBpm(bpm);
+        bundle.save();
+        CollectionDB::instance()->updateTags( bundle.url().path(), bundle, true );
+    }
+
     void DcopPlayerHandler::setRating( int rating )
     {
         const QString &url = EngineController::instance()->bundle().url().path();
