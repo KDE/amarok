@@ -1041,24 +1041,31 @@ MetaBundle::fuzzyTime( int time )
 
     secs = time % 60; //seconds
     time /= 60;
-    if( time )
-        min = time % 60; //minutes
+    min = time % 60; //minutes
     time /= 60;
-    if( time )
-        hr = time % 24 ; //hours
+    hr = time % 24 ; //hours
     time /= 24;
-    if( time )
-        day = time % 7 ; //days
+    day = time % 7 ; //days
     time /= 7;
-    if( time )
-        week = time ; //weeks
+    week = time; //weeks
 
-    if ( week )
-        return i18n( "%1 weeks" ).arg( QString::number( week + (float( day ) / 7), 'f', 1 ));
+    if( week && hr >= 12 )
+        day++;
+    else if( day && min >= 30 )
+        hr++;
+    else if( hr && secs >= 30 )
+        min++;
+
+    QString weeks = i18n( "1 week %1", "%n weeks %1", week );
+    QString days = i18n( "1 day %1", "%n days %1", day );
+    QString hours = i18n( "1 hour", "%n hours", hr );
+
+    if( week )
+        return weeks.arg( day ? days.arg("") : "" ).simplifyWhiteSpace();
     else if ( day )
-        return i18n( "%1 days" ).arg( QString::number( day + (float( hr ) / 24), 'f', 1 ));
+        return days.arg( hr ? hours : "" ).simplifyWhiteSpace();
     else if ( hr )
-        return i18n( "%1 hours" ).arg( QString::number( hr + (float( min ) / 60), 'f', 1 ));
+        return i18n( "%1:%2 hours" ).arg( hr ).arg( zeroPad( min ) );
     else
         return i18n( "%1:%2").arg( min ).arg( zeroPad( secs ) );
 }
