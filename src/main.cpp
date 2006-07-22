@@ -48,6 +48,8 @@ int main( int argc, char *argv[] )
             I18N_NOOP( "Cowboy mxcl" ), "max.howell@methylblue.com", "http://www.methylblue.com" );
     aboutData.addAuthor( "Mike '" I18N_NOOP("Purple is not girly!") "' Diehl",
             I18N_NOOP( "DCOP, improvements, Preci-i-o-u-u-s handbook maintainer (madpenguin8)" ), "madpenguin8@yahoo.com" );
+    aboutData.addAuthor( "Paul '" I18N_NOOP("Meet me at the Amarok Bar!") "' Cifarelli",
+            I18N_NOOP( "Developer (foreboy)" ), "paul@cifarelli.net" );
     aboutData.addAuthor( "Pierpaolo '" I18N_NOOP("Spaghetti Coder") "' Di Panfilo",
             I18N_NOOP( "Playlist-browser, cover-manager (teax)" ), "pippo_dp@libero.it" );
     aboutData.addAuthor( "Roman '" I18N_NOOP("And God said, let there be Mac") "' Becker",
@@ -80,7 +82,6 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Michael Pyne", I18N_NOOP( "K3B export code" ), "michael.pyne@kdemail.net" );
     aboutData.addCredit( "Nenad Grujicic", I18N_NOOP( "Splash screen" ), "mchitman@neobee.net" );
     aboutData.addCredit( "Olivier Bédard", I18N_NOOP( "Website hosting" ), "paleo@pwsp.net" );
-    aboutData.addCredit( "Paul Cifarelli", I18N_NOOP( "Helix engine, Gst10 Engine (foreboy)" ), "paul@cifarelli.net" );
     aboutData.addCredit( "Peter C. Ndikuwera", I18N_NOOP( "Bugfixes, PostgreSQL support" ), "pndiku@gmail.com" );
     aboutData.addCredit( "Reigo Reinmets", I18N_NOOP( "Wikipedia support, patches" ), "xatax@hot.ee" );
     aboutData.addCredit( "Roland Gigler", I18N_NOOP( "MAS engine" ), "rolandg@web.de" );
