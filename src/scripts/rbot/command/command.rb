@@ -32,12 +32,28 @@ class CommandPlugin < Plugin
     debug "added code: " + code 
     m.reply( "done" )
   end
-end
 
+  def cmd_command_list( m, params )
+    if @commands.empty?
+      m.reply( "No commands available." )
+      return
+    end
+      
+    txt = ""
+    @commands.each_key { |cmd| txt << "#{cmd}, " }
+    txt = txt[0, txt.length - 2] #Strip last comma
+
+    m.reply( "Available commands:" )
+    m.reply( txt )
+  end
+end
+ 
 
 plugin = CommandPlugin.new
 plugin.register( "command" )
 
 plugin.map 'command add :command *code', :action => 'cmd_command_add', :auth => 'commandedit'
+plugin.map 'command list', :action => 'cmd_command_list'
+
 
 
