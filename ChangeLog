@@ -45,6 +45,7 @@ VERSION 1.4.2:
     * ATF no longer requires a restart to enable or disable it.
 
   BUGFIXES:
+    * If disabled, don't show splash screen - even on Kubuntu. (BR 125210)
     * Correctly request last.fm similar artist information for artists
       containing non-ASCII characters. Patch by Thomas Lindroth
       <tholi945@student.liu.se>. (BR 131254)

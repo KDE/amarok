@@ -22,6 +22,9 @@
 #include <qmessagebox.h>
 #include <qprocess.h>
 #include <qstring.h>
+#include <kinstance.h>
+#include <kglobal.h>
+#include <kstandarddirs.h>
 #include "splash.h"
 
 extern "C"
@@ -208,21 +211,29 @@ bool
 isSplashEnabled()
 {
     //determine whether splash-screen is enabled in amarokrc
+    KInstance instance("amarok"); // KGlobal::dirs() crashes without
+    (void)KGlobal::config(); // the kubuntu special directory is not present without this
+    QStringList dirs = KGlobal::dirs()->findAllResources( "config", "amarokrc" );
 
-    QString path( ::getenv( "KDEHOME" ) );
-    if ( path.isEmpty() )
-        path = ::getenv( "HOME" ) + QString("/.kde");
-    path += "/share/config/amarokrc";
-
-    QFile file( path );
-    if ( file.open( IO_ReadOnly ) ) {
-        QString line;
-        while( file.readLine( line, 2000 ) != -1 )
-            if ( line.contains( "Show Splashscreen" ) && line.contains( "false" ) )
-                return false;
+    for( QStringList::iterator path = dirs.begin();
+            path != dirs.end();
+            ++path )
+    {
+        QFile file( *path );
+        if ( file.open( IO_ReadOnly ) )
+        {
+            QString line;
+            while( file.readLine( line, 2000 ) != -1 )
+                if ( line.contains( "Show Splashscreen" ) )
+                {
+                    if( line.contains( "false" ) )
+                        return false;
+                    else
+                        return true;
+                }
+        }
     }
 
-    //if we fail to open it, just show the splash
-
+    //if we fail to open anything, just show the splash
     return true;
 }
