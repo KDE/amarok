@@ -60,6 +60,7 @@ class CollectionBrowser: public QVBox
 
     private:
         void layoutToolbar();
+        void ipodToolbar( bool activate );
         void appendSearchResults();
 
         //attributes:
@@ -70,9 +71,15 @@ class CollectionBrowser: public QVBox
         class KToolBar    *m_toolbar;
         KAction           *m_configureAction;
         KAction           *m_scanAction;
+        // For iPod-style browsing
+        KAction           *m_ipodIncrement, *m_ipodDecrement;
+        class KToolBar    *m_ipodToolbar;
+        class QHBox       *m_ipodHbox;
+
         KToggleAction     *m_showDividerAction;
         KRadioAction      *m_treeViewAction;
         KRadioAction      *m_flatViewAction;
+        KRadioAction      *m_ipodViewAction;
         class KActionMenu *m_tagfilterMenuButton;
 
         KPopupMenu* m_categoryMenu;
@@ -161,7 +168,7 @@ class CollectionView : public KListView, public DropProxyTarget
     friend class CollectionBrowser;
 
     public:
-        enum ViewMode  { modeTreeView, modeFlatView };
+        enum ViewMode  { modeTreeView, modeFlatView, modeIpodView };
 
         friend class CollectionItem; // for access to m_cat2
         friend class ContextBrowser; // for setupDirs()
@@ -178,6 +185,7 @@ class CollectionView : public KListView, public DropProxyTarget
         CollectionItem* currentItem() { return static_cast<CollectionItem*>( KListView::currentItem() ); }
 
         int trackDepth() { return m_trackDepth; }
+	int viewMode() const { return m_viewMode; }
 
         // Transform "The Who" -> "Who, The" or the other way
         static void manipulateThe( QString &str, bool reverse );
@@ -185,6 +193,11 @@ class CollectionView : public KListView, public DropProxyTarget
         void setShowDivider(bool show);
 
         bool isOrganizingFiles() const;
+
+    protected:
+	// Reimplemented for iPod-style navigation, etc.
+	virtual void keyPressEvent( QKeyEvent *e );
+ 
 
     public slots:
         /** Rebuilds and displays the treeview by querying the database. */
@@ -194,6 +207,7 @@ class CollectionView : public KListView, public DropProxyTarget
 
         void setTreeMode() { setViewMode( modeTreeView ); };
         void setFlatMode() { setViewMode( modeFlatView ); };
+        void setIpodMode() { setViewMode( modeIpodView ); };
 
         void presetMenu( int id );
         void cat1Menu( int id, bool rerender = true );
@@ -211,6 +225,12 @@ class CollectionView : public KListView, public DropProxyTarget
         void slotCollapse( QListViewItem* );
         void enableCat3Menu( bool );
         void invokeItem( QListViewItem* );
+
+	// ipod-style navigation slots
+        void ipodItemClicked( QListViewItem*, const QPoint&, int );
+        void incrementDepth ( bool rerender = true );
+        void decrementDepth ( bool rerender = true );
+
         void rmbPressed( QListViewItem*, const QPoint&, int );
         void selectAll() {QListView::selectAll(true); }
         /** Tries to download the cover image from Amazon.com */
@@ -226,12 +246,20 @@ class CollectionView : public KListView, public DropProxyTarget
         void setViewMode( int mode, bool rerender = true );
         void startDrag();
         KURL::List listSelected();
-
+  
         void playlistFromURLs( const KURL::List &urls );
         QPixmap iconForCategory( const int cat ) const;
         QString captionForCategory( const int cat ) const;
         inline QString captionForTag( const Tag ) const;
 
+        // For iPod-style navigation
+        QString allForCategory( const int cat, const int num ) const;
+        void resetIpodDepth ( void );
+        void buildIpodQuery ( QueryBuilder &qb, int depth, QStringList filters[3], QStringList filterYear, bool recursiveSort = false, bool compilationsOnly = false );
+        void selectIpodItems ( void );
+        QPixmap ipodIncrementIcon ( void );
+        QPixmap ipodDecrementIcon ( void );
+  
         void setCompilation( const QString &album, bool compilation );
 
         /** Rebuild selections, viewport and expanded items after reloads */
@@ -271,6 +299,17 @@ class CollectionView : public KListView, public DropProxyTarget
         int m_cat3;
         int m_trackDepth;
         int m_viewMode;
+
+	// The iPod-style viewing attributes
+	int         m_currentDepth;   // Current viewing depth
+	QStringList m_ipodFilters[3]; // Selections at each stage
+	QStringList m_ipodFilterYear; // See the comment for incrementDepth()
+        // For auto-selection
+        int         m_ipodIncremented; // 0 = nothing, 1 = just incremented, 2 = just decremented
+        QStringList m_ipodSelected[3]; // Saved selections at lower levels
+        QString     m_ipodCurrent[3];  // Saved current selections 
+        QString     m_ipodTopItem[3];  // Saved viewport positions 
+
         bool m_dirty; // we use this to avoid re-rendering the view when unnecessary (eg, browser is not visible)
 
         QValueList<QStringList> m_cacheOpenItemPaths;

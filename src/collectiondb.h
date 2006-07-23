@@ -668,6 +668,8 @@ class QueryBuilder
 
         void beginOR(); //filters will be ORed instead of ANDed
         void endOR();   //don't forget to end it!
+        void beginAND(); // These do the opposite; for recursive and/or
+        void endAND();   
 
         void setGoogleFilter( int defaultTables, QString query );
 
@@ -743,6 +745,16 @@ inline void QueryBuilder::beginOR()
 inline void QueryBuilder::endOR()
 {
     m_OR = false;
+    m_where += " ) ";
+}
+inline void QueryBuilder::beginAND()
+{
+    m_OR = false;
+    m_where += "OR ( " + CollectionDB::instance()->boolT() + " ";
+}
+inline void QueryBuilder::endAND()
+{
+    m_OR = true;
     m_where += " ) ";
 }
 inline QString QueryBuilder::ANDslashOR() const { return m_OR ? "OR" : "AND"; }

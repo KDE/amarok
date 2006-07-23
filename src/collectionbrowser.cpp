@@ -3,6 +3,7 @@
 // (c) 2005 Gábor Lehel <illissius@gmail.com>
 // (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>
 // (c) 2005 Christan Baumgart <christianbaumgart@web.de>
+// (c) 2006 Joe Rabinoff <bobqwatson@yahoo.com>
 // See COPYING file for licensing information.
 
 #include <config.h>
@@ -101,13 +102,30 @@ CollectionBrowser::CollectionBrowser( const char* name )
         QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to filter collection" ) );
     } //</Search LineEdit>
 
-    m_timeFilter = new KComboBox( this );
+
+    // We put a little toolbar for the forward/back buttons for iPod
+    // navigation to the right of m_timeFilter.  This toolbar is
+    // hidden when not in iPod browsing mode; it is shown and hidden
+    // in CollectionView::setViewMode().  m_ipodHbox holds m_timeFilter
+    // and m_ipodToolbar
+    m_ipodHbox = new QHBox( this );  
+    m_ipodHbox->setSpacing( 7 );  // looks better
+
+    m_timeFilter = new KComboBox( m_ipodHbox, "timeFilter" );
+    m_ipodHbox->setStretchFactor( m_timeFilter, 1 );
     m_timeFilter->insertItem( i18n( "Entire Collection" ) );
     m_timeFilter->insertItem( i18n( "Added Within One Year" ) );
     m_timeFilter->insertItem( i18n( "Added Within Three Months" ) );
     m_timeFilter->insertItem( i18n( "Added Within One Month" ) );
     m_timeFilter->insertItem( i18n( "Added Within One Week" ) );
     m_timeFilter->insertItem( i18n( "Added Today" ) );
+
+    // m_ipodToolbar just holds the forward and back buttons, which are
+    // plugged below
+    m_ipodToolbar = new Browser::ToolBar( m_ipodHbox );
+    m_ipodHbox->setStretchFactor( m_ipodToolbar, 0 );
+    m_ipodToolbar->setIconText( KToolBar::IconOnly, false );
+
 
     KActionCollection* ac = new KActionCollection( this );
     m_scanAction = new KAction( i18n( "Scan Changes" ), amaroK::icon( "refresh" ), 0, CollectionDB::instance(), SLOT( scanModifiedDirs() ), ac, "Start Scan" );
@@ -119,15 +137,44 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_configureAction = new KAction( i18n( "Configure Folders" ), amaroK::icon( "configure" ), 0, this, SLOT( setupDirs() ), ac, "Configure" );
     m_treeViewAction = new KRadioAction( i18n( "Tree View" ), "view_tree", 0, m_view, SLOT( setTreeMode() ), ac, "Tree View" );
     m_flatViewAction = new KRadioAction( i18n( "Flat View" ), "view_detailed", 0, m_view, SLOT( setFlatMode() ), ac, "Flat View" );
+    m_ipodViewAction = new KRadioAction( i18n( "iPod View" ), amaroK::icon("device"), 0, m_view, SLOT( setIpodMode() ), ac, "iPod View" );
     m_treeViewAction->setExclusiveGroup("view mode");
     m_flatViewAction->setExclusiveGroup("view mode");
-    if(m_view->m_viewMode == CollectionView::modeTreeView)
-        m_treeViewAction->setChecked(true);
-    else
-        m_flatViewAction->setChecked(true);
+    m_ipodViewAction->setExclusiveGroup("view mode");
+    switch( m_view->m_viewMode )
+      {
+      case CollectionView::modeTreeView:
+        m_treeViewAction->setChecked( true );
+	break;
+      case CollectionView::modeFlatView:
+        m_flatViewAction->setChecked( true );
+	break;
+      case CollectionView::modeIpodView:
+        m_ipodViewAction->setChecked( true );
+	break;
+      }
 
     m_showDividerAction = new KToggleAction( i18n( "Show Divider" ), "leftjust", 0, this, SLOT( toggleDivider() ), ac, "Show Divider" );
     m_showDividerAction->setChecked(m_view->m_showDivider);
+
+
+    // m_ipodIncrement and m_ipodDecrement are the actions that
+    // correspond to moving forward / backward in the iPod collection
+    // browser window; see the "For iPod-style navigation" comments below.
+    m_ipodDecrement = new KAction( i18n( "Browse backward" ), 
+				   QIconSet( m_view->ipodDecrementIcon(), QIconSet::Small ),
+				   0, m_view, SLOT( decrementDepth() ), ac,
+				   "iPod Decrement" );
+    m_ipodIncrement = new KAction( i18n( "Browse forward" ), 
+				   QIconSet( m_view->ipodIncrementIcon(), QIconSet::Small ),
+				   0, m_view, SLOT( incrementDepth() ), ac,
+				   "iPod Increment" );
+    m_ipodDecrement->plug( m_ipodToolbar );
+    m_ipodIncrement->plug( m_ipodToolbar );
+
+    // Show / hide m_ipodToolbar based on the view mode
+    ipodToolbar( m_view->m_viewMode == CollectionView::modeIpodView );
+
 
     m_tagfilterMenuButton = new KActionMenu( i18n( "Group By" ), "filter", ac );
     m_tagfilterMenuButton->setDelayed( false );
@@ -185,6 +232,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     setFocusProxy( m_view ); //default object to get focus
 }
 
+
 void
 CollectionBrowser::slotSetFilterTimeout() //SLOT
 {
@@ -232,8 +280,6 @@ CollectionBrowser::appendSearchResults()
 bool
 CollectionBrowser::eventFilter( QObject *o, QEvent *e )
 {
-    typedef QListViewItemIterator It;
-
     switch( e->type() )
     {
     case 6/*QEvent::KeyPress*/:
@@ -279,27 +325,10 @@ CollectionBrowser::eventFilter( QObject *o, QEvent *e )
             }
         }
 
-        if( m_view->currentItem() && ( e->key() == Key_Up && m_view->currentItem()->itemAbove() == 0 ) )
-        {
-            QListViewItem *lastitem = *It( m_view, It::Visible );
-            while( lastitem && lastitem->itemBelow() )
-                lastitem = lastitem->itemBelow();
-            m_view->currentItem()->setSelected( false );
-            m_view->setCurrentItem( lastitem );
-            if ( lastitem )
-                lastitem->setSelected( true );
-            m_view->ensureItemVisible( lastitem );
-            return true;
-        }
-
-        if( m_view->currentItem() && ( e->key() == Key_Down && m_view->currentItem()->itemBelow() == 0 ) )
-        {
-            m_view->currentItem()->setSelected( false );
-            m_view->setCurrentItem( *It( m_view, It::Visible ) );
-            (*It( m_view, It::Visible ))->setSelected( true );
-            m_view->ensureItemVisible( *It( m_view, It::Visible ) );
-            return true;
-        }
+	// (Joe Rabinoff) the code that was here which dealt with wrapping
+	// the selection around when Key_Up or Key_Down was pressed was 
+	// moved to CollectionView::keyPressEvent().  That code also
+	// skips dividers.
 
         if( ( e->key() >= Key_0 && e->key() <= Key_Z ) || e->key() == Key_Backspace || e->key() == Key_Escape )
         {
@@ -331,6 +360,7 @@ CollectionBrowser::layoutToolbar()
     m_toolbar->insertLineSeparator();
     m_treeViewAction->plug( m_toolbar );
     m_flatViewAction->plug( m_toolbar );
+    m_ipodViewAction->plug( m_toolbar );
     m_toolbar->insertLineSeparator();
 
     m_showDividerAction->plug( m_toolbar );
@@ -348,6 +378,20 @@ CollectionBrowser::layoutToolbar()
 }
 
 
+// (De)activate the iPod toolbar when switching into and out of
+// iPod browsing mode
+void 
+CollectionBrowser::ipodToolbar( bool activate )
+{
+    if( activate )
+        m_ipodToolbar->show();
+
+    else
+        m_ipodToolbar->hide();
+}
+
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS CollectionView
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -359,6 +403,8 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         : KListView( parent )
         , m_parent( parent )
         , m_timeFilter( 0 )
+	, m_currentDepth( 0 )
+	, m_ipodIncremented ( 1 )
         , m_dirty( true )
 {
     DEBUG_FUNC_INFO
@@ -398,6 +444,8 @@ CollectionView::CollectionView( CollectionBrowser* parent )
              this,             SLOT( invokeItem( QListViewItem* ) ) );
     connect( this,           SIGNAL( doubleClicked( QListViewItem*, const QPoint&, int ) ),
              this,             SLOT( invokeItem( QListViewItem* ) ) );
+    connect( this,           SIGNAL( clicked( QListViewItem*, const QPoint&, int ) ),
+             this,             SLOT( ipodItemClicked( QListViewItem*, const QPoint&, int ) ) );
     connect( this,           SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
              this,             SLOT( rmbPressed( QListViewItem*, const QPoint&, int ) ) );
     connect( header(),       SIGNAL( sizeChange( int, int, int ) ),
@@ -430,6 +478,101 @@ CollectionView::setShowDivider( bool show )
     }
 }
 
+
+// Reimplemented for iPod-style navigation, and to skip dividers
+// Specifically, this method traps the Key_Up/Down/Left/Right events.
+// When Up or Down is pressed, it skips dividers and wraps around when
+// necessary.  When Left or Right is pressed and we are viewing in
+// iPod mode, the iPod "move forward / backward" actions are activated.
+void
+CollectionView::keyPressEvent( QKeyEvent *e )
+{
+    typedef QListViewItemIterator It;
+
+    // Reimplement up and down to skip dividers and to loop around.
+    // Some of this code used to be in CollectionBrowser::eventFilter.
+    // This rewritten code is more faithful to the ordinary moving
+    // behavior, even when looping around.  (For instance, it behaves
+    // correctly if control-up is pressed at the top of the screen.)  
+    // It sends fake keypress events to the parent instead of programatically
+    // selecting items.
+    if( (e->key() == Key_Up  ||  e->key() == Key_Down )  && currentItem() )
+    {
+        // Handle both up and down at once to avoid code duplication (it's
+        // a delicate piece of logic, and was hard to get right)
+
+        QListViewItem *cur = currentItem();
+
+        #define nextItem (e->key() == Key_Up ? cur->itemAbove() : cur->itemBelow())
+
+        bool wraparound = true;
+      
+        // First skip any dividers directly above / below
+        do
+        {
+            KListView::keyPressEvent( e );
+            if( currentItem() == cur ) // Prevent infinite loops
+            {
+                if( nextItem != 0 )
+                    wraparound = false;
+                break;
+            }
+            cur = currentItem();
+
+            if( cur && dynamic_cast<DividerItem*>( cur ) == 0 )
+                wraparound = false;  // Found an item above / below
+
+        } while( cur != NULL 
+		 && dynamic_cast<DividerItem*>(cur) != 0
+		 && nextItem != 0 );
+
+        if( cur == 0 ) return;  // Shouldn't happen
+      
+        // Wrap around if necessary, by sending a Key_Home/Key_End event.
+        if( wraparound )
+        {
+            QKeyEvent e2 ( e->type(), 
+                    (e->key() == Key_Up ? Key_End : Key_Home), 
+                    0, e->state(),
+                    QString::null, e->isAutoRepeat(), e->count() );
+            QApplication::sendEvent( this, &e2 );
+            cur = currentItem();
+
+            // The first item may also be a divider, so keep moving
+            // until it's not
+            while ( cur != 0
+                    && dynamic_cast<DividerItem*>(cur) != 0
+                    && nextItem != 0 )
+            {
+                KListView::keyPressEvent( e );
+                if( currentItem() == cur ) // Prevent infinite loops
+                    break;
+                cur = currentItem();
+            }
+        }
+      
+      #undef nextItem
+
+    }
+
+    // When Right/Left is pressed in iPod view mode, activate the iPod 
+    // "move forward/backward" action.
+    else if( (e->key() == Key_Left  ||  e->key() == Key_Right)
+	   && m_viewMode == modeIpodView )
+    {
+        if( e->key() == Key_Right )
+            m_parent->m_ipodIncrement->activate();
+
+        else if( e->key() == Key_Left )
+            m_parent->m_ipodDecrement->activate();
+
+    }
+
+    else // we don't want the event
+        KListView::keyPressEvent( e );
+}
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // public slots
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -451,7 +594,11 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
     }
     m_dirty = false;
 
-    if( childCount() )
+    // Don't cache / restore view if we're in ipod mode and we've
+    // just incremented or decremented, since we'll run selectIpodItems()
+    // below anyway.
+    if( childCount()  &&  
+	!(m_viewMode == modeIpodView && m_ipodIncremented > 0) )
         cacheView();
 
     //clear();
@@ -629,6 +776,196 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
             }
         }
     }
+
+    // MODE IPODVIEW This is the heart of the iPod view mode code.  It
+    // applies the current filters (as defined by previous "move
+    // forward" actions).  If we're not viewing tracks (stillFiltering
+    // == true), then display the results in the standard order, with
+    // dividers if applicable, with an "All" (i.e., no filter) item if
+    // there is more than one result, and with "Unknown" items if
+    // there are any.  Note that the "All" item is a CollectionItem
+    // with the Sampler bit set, since it behaves similar to the
+    // Various Artists node.
+    //   If we are viewing tracks (stillFiltering ==
+    // false), then just apply all of the filters and show the
+    // selected tracks.  The track ordering is similar to in list view
+    // mode; see the comments in buildIpodQuery() for details.
+    if( m_viewMode == modeIpodView )
+    {		
+        int catArr[3] = {m_cat1, m_cat2, m_cat3};
+        // stillFiltering is true when we're not viewing tracks
+        bool stillFiltering = (m_currentDepth < trackDepth());
+        // q_cat is the "query category" -- it's undefined if 
+        // stillFiltering is true; otherwise it's the category
+        // at the current iPod viewing depth (m_currentDepth), unless
+        // that category is IdVisYearAlbum, in which case it's IdAlbum.
+        int q_cat = (stillFiltering ? catArr[m_currentDepth] : catArr[0]);
+        // m_cat is the current actual category -- it agrees with q_cat
+        // if and only if m_cat != IdVisYearAlbum
+        int m_cat = q_cat;
+        // This is set to true if the current category is IdVisYearAlbum
+        // It is only used when stillFiltering == true.
+        bool VisYearAlbum = false;
+
+        if( q_cat == CollectionBrowser::IdVisYearAlbum && stillFiltering )
+        {
+            VisYearAlbum = true;
+            q_cat = CollectionBrowser::IdAlbum;
+        }
+
+        // If we're viewing tracks, we don't want them to be sorted
+        // alphabetically, since we take great pains in
+        // buildIpodQuery() to have them returned to us from the
+        // database in the correct order.
+        setSorting( stillFiltering ? 0 : -1 );
+
+        // Do the grunt work of building the query (this method is also 
+        // called by listSelected() )
+        buildIpodQuery( qb, m_currentDepth, m_ipodFilters, m_ipodFilterYear );
+        if(stillFiltering)
+            qb.setOptions( QueryBuilder::optRemoveDuplicates );
+
+        int tables = 0;
+        for( int i = 0; i < trackDepth(); ++i )
+            tables |= (catArr[i] == CollectionBrowser::IdVisYearAlbum 
+                    ? CollectionBrowser::IdAlbum
+                    : catArr[i]);
+        qb.setGoogleFilter( tables | QueryBuilder::tabSong, m_filter );
+
+        // Return values
+        if( stillFiltering )
+        {
+            qb.addReturnValue( q_cat, QueryBuilder::valName, true );
+            if( VisYearAlbum )
+                qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName, true );
+        }
+        else
+        {
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+        }
+
+        values = qb.run();
+        int total = values.count() / qb.countReturnValues();
+
+        // This can happen -- with the filter it might be empty
+        if( total == 0 )
+            return;
+
+        // We want to load the pixmap only once if we're still filtering
+        // Otherwise just load a dummy pixmap
+        QPixmap pixmap = iconForCategory( q_cat );
+        QPixmap incPixmap = ipodIncrementIcon();
+        int width = incPixmap.width() + 10;  // Set the column width below
+        // Keep track of the dividers we've created.
+        QMap<QString, bool> containedDivider;
+
+        QStringList::Iterator itStep = values.end();
+        QStringList::Iterator begin = values.begin();
+        itStep -= qb.countReturnValues();
+        // It's an awkward business stepping through a list backward
+        // when the elements are in tuples, going forward.  
+        // This loop breaks at the bottom -- don't put a continue in here!
+        while( 1 )
+        {
+            CollectionItem* item;
+            QStringList::Iterator it = itStep;
+
+            // Add non-track items
+            if( stillFiltering )
+            {
+                bool unknown = false;
+
+                if( (*it).isEmpty() )
+                {
+                    unknown = true;
+                    *it = i18n( "Unknown" );
+                }
+
+                item = new CollectionItem( this, m_cat, unknown );
+
+                if( VisYearAlbum )
+                {
+                    QString album = *it;
+                    QString year = *(++it);
+                    if( year.isEmpty() ) 
+                        year = "?";
+                    item->setText( 0, year + i18n(" - ") + album );
+                }
+
+                else
+                    item->setText( 0, *it );
+
+                item->setPixmap( 0, pixmap );
+                item->setPixmap( 1, incPixmap );
+                item->setText( 1, "" );
+                // Calculate width
+                width = item->width( fontMetrics(), this, 1 );
+
+                // Only do dividers if we're not showing tracks since
+                // dividers don't really make sense in a track-only view
+                if( !unknown && m_showDivider )
+                {
+                    //Dividers for "The Who" should be created as "W", not "T",
+                    //because that's how we sort it
+                    QString actualStr = item->text( 0 );
+                    if ( m_cat == CollectionBrowser::IdArtist && 
+                            actualStr.startsWith( "the ", false ) )
+                        manipulateThe( actualStr, true );
+
+                    QString headerStr = DividerItem::createGroup( actualStr, m_cat );
+
+                    if ( !containedDivider[headerStr] && headerStr != "" )
+                    {
+                        containedDivider[headerStr] = true;
+                        (void)new DividerItem( this, headerStr, m_cat );
+                    }
+
+                }
+
+            }
+
+            else // Add tracks
+            {
+                item = new CollectionItem( this );
+                item->setUrl( *it );
+                item->setText( 0, *(++it) );
+            }
+
+            item->setDragEnabled( true );
+            item->setDropEnabled( false );
+
+            if( itStep == begin )
+                break;
+
+            itStep -= qb.countReturnValues();
+        }
+
+        // Add the "All" filter if necessary
+        if( stillFiltering )
+        {
+            if( total > 1 )
+            {
+                // The "All" filter has much the same behavior as the 
+                // "Various Artists" item, so we use the isSampler bit
+                CollectionItem* item = new CollectionItem( this, m_cat, false, true );
+                item->setDragEnabled( true );
+                item->setDropEnabled( false );
+                item->setPixmap( 0, pixmap );
+                item->setText( 0, allForCategory( q_cat, total ) );
+                item->setPixmap( 1, incPixmap );
+                item->setText( 1, "" );
+
+                sort();
+            }
+
+            setColumnWidth( 1, width );
+            QResizeEvent rev( size(), QSize() );
+            viewportResizeEvent( &rev );
+        }
+
+    }
+
 
     // MODE TREEVIEW
     if( m_viewMode == modeTreeView )
@@ -820,7 +1157,14 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
         for ( QValueList<DividerItem *>::iterator it = toDelete.begin(); it != toDelete.end(); ++it )
             delete *it;
     }
-    restoreView();
+
+    // Don't cache or restore view when we're just going to run 
+    // selectIpodItems() below anyway.
+    if( !(m_viewMode == modeIpodView && m_ipodIncremented > 0) )
+        restoreView();
+
+    else
+        selectIpodItems();
 }
 
 
@@ -1273,6 +1617,7 @@ CollectionView::cat1Menu( int id, bool rerender )  //SLOT
     m_parent->m_cat3Menu->setItemEnabled( m_cat1, true );
     m_cat1 = id;
     updateColumnHeader();
+    resetIpodDepth();
     m_parent->m_cat1Menu->setItemChecked( m_cat1, true );
 
     //prevent choosing the same category in both menus
@@ -1308,6 +1653,7 @@ CollectionView::cat2Menu( int id, bool rerender )  //SLOT
     m_cat2 = id;
     m_parent->m_cat2Menu->setItemChecked( m_cat2, true );
     updateColumnHeader();
+    resetIpodDepth();
 
     enableCat3Menu( id != CollectionBrowser::IdNone );
 
@@ -1336,6 +1682,7 @@ CollectionView::cat3Menu( int id, bool rerender )  //SLOT
     m_cat3 = id;
     m_parent->m_cat3Menu->setItemChecked( m_cat3, true );
     updateColumnHeader();
+    resetIpodDepth();
     updateTrackDepth();
     if ( rerender )
     {
@@ -1371,11 +1718,26 @@ CollectionView::invokeItem( QListViewItem* item ) //SLOT
     item->setSelected( true );
     setCurrentItem( item );
     //append and prevent doubles in playlist
-    if( item->isExpandable() )
+    if( item->isExpandable()  ||  m_viewMode == modeIpodView )
         Playlist::instance()->insertMedia( listSelected(), Playlist::Unique | Playlist::Append );
     else
         Playlist::instance()->insertMedia( static_cast<CollectionItem*>( item )->url(), Playlist::Unique | Playlist::Append );
 
+}
+
+
+// This slot is here to handle clicks on the right-arrow buttons
+// in iPod browsing mode
+void 
+CollectionView::ipodItemClicked( QListViewItem *item, const QPoint&, int c )
+{
+    if( item == 0 || c == 0 )
+        return;
+    if( m_viewMode != modeIpodView )
+        return;
+
+    // The Qt manual says NOT to delete items from within this slot
+    QTimer::singleShot( 0, m_parent->m_ipodIncrement, SLOT( activate() ) );
 }
 
 
@@ -1388,7 +1750,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         KPopupMenu menu( this );
 
         int cat = 0;
-        if ( m_viewMode != modeFlatView ) {
+        if ( m_viewMode == modeTreeView ) {
             switch ( item->depth() )
             {
                 case 0:
@@ -1401,6 +1763,12 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                     cat = m_cat3;
                     break;
             }
+        }
+
+        else if ( m_viewMode == modeIpodView ) {
+            int catArr[3] = {m_cat1, m_cat2, m_cat3};
+            if ( m_currentDepth < trackDepth() )
+                cat = catArr[m_currentDepth];
         }
 
         #ifdef AMAZON_SUPPORT
@@ -1434,7 +1802,10 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
             menu.insertItem( SmallIconSet( amaroK::icon( "burn" ) ), i18n("Burn This Album"), BURN_ALBUM );
             menu.setItemEnabled( BURN_ALBUM, K3bExporter::isAvailable() );
         }
-        else if( !item->isExpandable() )
+	// !item->isExpandable() in tree mode corresponds to
+	// showing tracks in iPod mode
+        else if( !item->isExpandable() && 
+		 (m_viewMode != modeIpodView || m_currentDepth == trackDepth()) )
         {
             menu.insertItem( SmallIconSet( amaroK::icon( "burn" ) ), i18n("Burn to CD"), BURN_CD );
             menu.setItemEnabled( BURN_CD, K3bExporter::isAvailable() );
@@ -1536,9 +1907,26 @@ CollectionView::setViewMode( int mode, bool rerender /*=true*/ )
     clear();
     updateColumnHeader();
 
+    if( m_viewMode == modeIpodView )
+    {
+        setShadeSortColumn( false );
+        m_parent->m_ipodDecrement->setEnabled( m_currentDepth > 0 );
+        m_parent->ipodToolbar( true );
+    }
+    else
+    {
+        setShadeSortColumn( true );
+        m_parent->ipodToolbar( false );
+    }
+
     if ( rerender )
     {
-        renderView(true);
+        // Pretend we just incremented the view depth so that
+        // renderView() will call selectIpodItems()
+        if( m_viewMode == modeIpodView )
+            m_ipodIncremented = 1;
+
+        renderView( true );
     }
 }
 
@@ -1910,7 +2298,7 @@ CollectionView::updateColumnHeader()
         }
         setRootIsDecorated( false );
     }
-    else
+    else if ( m_viewMode == modeTreeView )
     {
         setResizeMode( QListView::LastColumn );
 
@@ -1924,6 +2312,43 @@ CollectionView::updateColumnHeader()
         }
         addColumn( caption );
         setRootIsDecorated( true );
+    }
+
+    // The iPod columns
+    // When not in track mode, there are two columns: the first
+    // contains the text + pixmap, and the second just has the 
+    // right-arrow pixmap.  In any case we're not in tree mode.
+    else if ( m_viewMode == modeIpodView )
+    {
+	QString caption;
+
+	if( m_currentDepth == trackDepth() )
+	  caption = i18n( "Tracks" );
+
+	else
+	  {
+	    int catArr[3] = {m_cat1, m_cat2, m_cat3};
+	    caption = captionForCategory( catArr[m_currentDepth] );
+	  }
+
+        addColumn( caption );
+
+	if( m_currentDepth != trackDepth() )
+	  {
+	    QPixmap pixmap = ipodDecrementIcon();
+	    // This column is for the "->" buttons.  The width is just
+	    // a guess, and will be changed once an item is added.
+	    addColumn( "", pixmap.width() + 10 );
+	  }
+        setRootIsDecorated( false );
+
+	// Neither column should automatically stretch, since this tends
+	// to add a scrollbar when it's not needed, and anyway we manually
+	// stretch it in viewportResizeEvent()
+        header()->setStretchEnabled( false, 0 );
+	if( m_currentDepth != trackDepth() )
+	  header()->setStretchEnabled( false, 1 );
+	
     }
 
     //manage column widths
@@ -1996,6 +2421,123 @@ CollectionView::listSelected()
 
         return list;
     }
+
+
+    // The iPod selection code is written to resemble the tree mode
+    // selection logic, as well as what happens on an actual iPod.  If
+    // we're in track mode, just return the list of tracks selected.
+    // Otherwise select all children of all currently selected items,
+    // sorting first by m_cat1, then m_cat2, then m_cat3.  Sort by
+    // track first if one of the categories is Id(VisYear)Album.
+    // There is a difficulty with compilation albums -- if we're
+    // sorting by track first then we want to group compilation albums
+    // separately, and not with the individual artists, even if that's
+    // one of the categories (e.g. if the user just adds one
+    // compilation album, we can't sort by artist first).  In other
+    // words, when one of the categories is Id(VisYear)Album,
+    // compilation albums should behave as if the artist is Various
+    // Artists, for sorting purposes.  This is handled by making two
+    // separate queries, the first for the compilations, and the
+    // second for everything else.
+
+    //   Note that if "All" is currently selected then the other
+    // selections are ignored.
+    if ( m_viewMode == modeIpodView )
+    {
+        // If we're already displaying tracks, just return the selected ones
+        if( m_currentDepth == trackDepth() )
+        {
+            QPtrList<QListViewItem> selected = selectedItems();
+            QPtrList<QListViewItem>::iterator it = selected.begin();
+            while( it != selected.end() )
+            {
+                if( dynamic_cast<CollectionItem*>(*it) != 0 )
+                    list << dynamic_cast<CollectionItem*>(*it)->url();
+                ++it;
+            }
+            return list;
+        }
+
+        // We're not displaying tracks.
+        QueryBuilder qb;
+
+        // Do a "fake" depth incrementation to figure out the 
+        // correct filters at the current depth
+        incrementDepth( false );
+
+        // Copy the filter list before calling decrementDepth() below
+        QStringList filters[3];  
+        for( int i = 0; i < m_currentDepth; ++i )
+            filters[i] = m_ipodFilters[i];
+        QStringList filterYear = m_ipodFilterYear;
+
+        // Undo the fake depth incrementation
+        decrementDepth( false );
+
+        int catArr[3] = {m_cat1, m_cat2, m_cat3};
+        int tables = 0;
+        bool sortByTrackFirst = false;
+        for(int i = 0; i < trackDepth(); ++i)
+            tables |= (catArr[i] == CollectionBrowser::IdVisYearAlbum 
+                    ? CollectionBrowser::IdAlbum
+                    : catArr[i]);
+
+        // Figure out if the results will be sorted by track first
+        // (i.e., if one of the filters is by album).  If so, we need
+        // to search compilations first.
+        if( tables & CollectionBrowser::IdAlbum )
+            sortByTrackFirst = true;
+
+        if( sortByTrackFirst )
+        {
+            // Build the query, recursively sorted.  First get compilation
+            // albums so they'll be first, not sorted by artist
+            buildIpodQuery( qb, trackDepth(), filters, filterYear, true, true );
+
+            if ( translateTimeFilter( timeFilter() ) > 0 )
+                qb.addFilter( QueryBuilder::tabSong, QueryBuilder::valCreateDate, QString().setNum( QDateTime::currentDateTime().toTime_t() - translateTimeFilter( timeFilter() ) ), QueryBuilder::modeGreater );
+
+            qb.setOptions( QueryBuilder::optOnlyCompilations );
+            qb.setGoogleFilter( tables | QueryBuilder::tabSong, m_filter );
+            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+
+            values = qb.run();
+        }
+
+        // Now build the non-compilation album query
+        qb.clear();
+
+        buildIpodQuery( qb, trackDepth(), filters, filterYear, true, false );
+
+        if ( translateTimeFilter( timeFilter() ) > 0 )
+            qb.addFilter( QueryBuilder::tabSong, QueryBuilder::valCreateDate, QString().setNum( QDateTime::currentDateTime().toTime_t() - translateTimeFilter( timeFilter() ) ), QueryBuilder::modeGreater );
+
+        if( sortByTrackFirst )
+            qb.setOptions( QueryBuilder::optNoCompilations );
+        qb.setGoogleFilter( tables | QueryBuilder::tabSong, m_filter );
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+
+        values += qb.run();
+
+        int total = values.count() / qb.countReturnValues();
+
+        // This shouldn't happen
+        if( total == 0 )
+            return list;
+
+
+        QStringList::Iterator it = values.begin();
+        KURL tmp;
+        while ( it != values.end() )
+        {
+            tmp.setPath( (*(it++)) );
+            list << tmp;
+        }
+
+        return list;
+    }
+
+
     //first pass: parents
     for ( item = firstChild(); item; item = item->nextSibling() )
         if ( item->isSelected() )
@@ -2377,6 +2919,7 @@ CollectionView::captionForCategory( const int cat ) const
     return QString::null;
 }
 
+
 QString
 CollectionView::captionForTag( const Tag tag) const
 {
@@ -2407,6 +2950,537 @@ CollectionView::captionForTag( const Tag tag) const
     }
     return caption;
 }
+
+
+//////////////////////////////
+// For iPod-style navigation
+//////////////////////////////
+
+/* 
+ * Overview
+ * --------
+ *
+ * The iPod-style navigation is a (1, 2, or) 3-tier filtering process
+ * (depending on the current "Group By" setting).  For concreteness
+ * let's say the user is grouping by Genre, Artist, Album.  The first
+ * screen he is presented with is a list of the genres, along with an
+ * "All genres" option (unless there is only one genre).  He selects
+ * one or more genres, and clicks the right arrow in the toolbar.  He
+ * is then presented with a list of albums whose genre matches one of
+ * the genres he has just chosen, unless he has chosen "All genres",
+ * in which case all albums are shown.  This is repeated until he gets
+ * to an actual track list.  If the user clicks the left arrow, he is
+ * taken back to the previous screen, with his previous selection
+ * still intact.
+ *
+ *
+ * Interface
+ * ---------
+ * 
+ * The two main actions the user can perform are "browse forward" and
+ * "browse backward", otherwise known as increment and decrement the
+ * browse depth.  There is a small toolbar with these two buttons
+ * located to the right of the time filter combobox, which is enabled
+ * in iPod view mode.  If the user is not viewing tracks, there is
+ * also a small browse forward button to the right of each entry on
+ * his screen.  If the user is viewing tracks, the browse forward
+ * action adds the currently selected tracks to the playlist.
+ * Pressing the right or left keys is an alternate way of browsing
+ * forward or backward.  At any point the user may drag and drop, press
+ * return, or double-click to add the current selection to the playlist;
+ * the logic for this is explained in a comment in listSelected().  If
+ * divider mode is on, dividers are added as expected when not in track 
+ * mode.
+ *
+ *
+ * Related methods
+ * ---------------
+ *
+ * CollectionBrowser::ipodToolbar() 
+ *    -- (de)activate the toolbar with the browse buttons
+ * CollectionView::keyPressEvent() 
+ *    -- handle the Left and Right keys, as well as the Up and Down keys 
+ *       to allow for wrapping around and skipping dividers
+ * CollectionView::renderView()
+ *    -- logic for applying the current filter and adding the matching 
+ *       items to the screen
+ * CollectionView::ipodItemClicked() 
+ *    -- slot for activating the browse forward action when the right 
+ *       arrow on a listview item is clicked
+ * CollectionView::setViewMode() 
+ *    -- enable/disable iPod toolbar
+ * CollectionView::updateColumnHeader()
+ * CollectionView::listSelected() 
+ *    -- apply current filters and current selection to get a track 
+ *       list, and order it correctly
+ * CollectionView::allForCategory() 
+ *    -- return the text for the "All" item in the current category
+ * CollectionView::incrementDepth()
+ *    -- save the current selection away as a filter, and remember it
+ *       in case the user browses back so we can reselect
+ * CollectionView::decrementDepth()
+ *    -- delete the current filter and reselect the saved selection
+ * CollectionView::resetIpodDepth()
+ *    -- reset the iPod view mode to the first screen
+ * CollectionView::buildIpodQuery()
+ *    -- adds query and sort criteria to a QueryBuilder, based on the
+ *       saved filters
+ * CollectionView::selectIpodItems()
+ *    -- if we've just browsed forward, select the All item (or the 
+ *       unique item if there's only one).  If we've just browsed back,
+ *       reselect the saved selection.
+ * CollectionView::ipodIncrementIcon(), CollectionView::ipodDecrementIcon()
+ *    -- returns a QPixmap of the small version of the right, resp. left
+ *       arrow buttons
+ * CollectionView::viewportResizeEvent()
+ * CollectionItem::compare()
+ *    -- in iPod mode the "All" item goes first
+ *
+ */
+
+
+// Returns the text for the "All" filter option for the given category
+// and the number of items in that category.
+QString 
+CollectionView::allForCategory( const int cat, const int num ) const
+{
+    switch( cat )
+    {
+        // The singular forms shouldn't get used
+        case CollectionBrowser::IdAlbum:
+        case CollectionBrowser::IdVisYearAlbum:
+            return i18n( "Album", "All %n Albums", num );
+            break;
+        case CollectionBrowser::IdArtist:
+            return i18n( "Artist", "All %n Artists", num );
+            break;
+        case CollectionBrowser::IdGenre:
+            return i18n( "Genre", "All %n Genres", num );
+            break;
+        case CollectionBrowser::IdYear:
+            return i18n( "Year", "All %n Years", num );
+            break;
+    }
+
+    return QString::null;
+}
+
+// This slot is called when the "browse right" action is activated,
+// and also in listSelected().  It is responsible for saving the 
+// current selection in two ways: first, it saves the selection as
+// a list of query match criteria in m_ipodFilters and m_ipodFilterYear,
+// and second, it saves the currently selected items, the current item,
+// and the screen position in m_ipodSelected, m_ipodCurrent, and 
+// m_ipodTopItem.
+//   The reason there's a separate m_ipodFilterYear which is not an
+// array of lists, is because if one of the categories is IdVisYearAlbum,
+// we want to save the album filter separately from the year filter;
+// since there's only one category that is IdVisYearAlbum, we don't need
+// an array of years.
+//   The main reason the cache data (m_ipodSelected, etc.) is separate
+// from the filter data (m_ipodFilters, etc.), apart from the fact it's
+// easier to code this way, is that the filter data must be deleted
+// immediately upon browsing left, whereas the cache data must not.
+//   If we're in track mode, this just inserts the currently selected
+// tracks into the playlist.
+void 
+CollectionView::incrementDepth( bool rerender /*= true*/ )
+{
+    if( m_viewMode != modeIpodView )
+        return;
+    if( selectedItems().count() == 0 )
+        return;
+
+    // Track mode?
+    if( m_currentDepth == trackDepth() )
+    {
+        Playlist::instance()->insertMedia( listSelected(), Playlist::Unique | Playlist::Append );
+        return;
+    }    
+
+    m_parent->m_ipodDecrement->setEnabled( true );
+
+    // We're not in track mode
+    int catArr[3] = {m_cat1, m_cat2, m_cat3};
+    int cat = catArr[m_currentDepth];
+
+    // Clear filters and cache data at this level
+    m_ipodFilters[m_currentDepth].clear();
+    if( cat == CollectionBrowser::IdVisYearAlbum )
+        m_ipodFilterYear.clear();
+
+    m_ipodSelected[m_currentDepth].clear();
+    m_ipodCurrent[m_currentDepth] = QString::null;
+    m_ipodTopItem[m_currentDepth] = QString::null;
+
+    // Save the current item
+    if( currentItem() )
+        m_ipodCurrent[m_currentDepth] = currentItem()->text( 0 );
+
+    //cache viewport's top item
+    QListViewItem* item = itemAt( QPoint(0, 0) );
+    if ( item )
+        m_ipodTopItem[m_currentDepth] = item->text( 0 );
+
+    // Figure out the next filter, and save the current selection
+    QPtrList<QListViewItem> selected = selectedItems();
+    QPtrList<QListViewItem>::iterator it = selected.begin();
+
+    while( it != selected.end() )
+    {
+        CollectionItem *item = dynamic_cast<CollectionItem*>( *it );
+        ++it;
+        if( item == 0 )
+            continue;
+
+        // No filter if "All" is selected
+        if( item->isSampler() )
+        {
+            m_ipodFilters[m_currentDepth].clear();
+            if( cat == CollectionBrowser::IdVisYearAlbum )
+                m_ipodFilterYear.clear();
+
+            // If "All" is selected then don't bother saving this
+            // selection, since All will then be reselected automatically
+            // in selectIpodItems()
+            m_ipodSelected[m_currentDepth].clear();
+            m_ipodCurrent[m_currentDepth] = QString::null;
+
+            break;
+        }
+
+        if( cat == CollectionBrowser::IdVisYearAlbum )
+        {
+            QString tmptext = item->text( 0 );
+            QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
+            yearAlbumCalc( year, tmptext );
+            if( !item->isUnknown() )
+                m_ipodFilters[m_currentDepth] << tmptext;
+            else
+                m_ipodFilters[m_currentDepth] << "";
+            m_ipodFilterYear << year; // May be ""
+        }
+
+        else
+            m_ipodFilters[m_currentDepth] << item->getSQLText( 0 );
+
+        // Save the selection
+        m_ipodSelected[m_currentDepth] << item->text( 0 );
+    }
+
+    m_currentDepth++;
+
+    if( rerender )
+    {
+        updateColumnHeader();
+        m_ipodIncremented = 1;
+        renderView( true );
+    }
+}
+
+
+// This slot is basically responsible for undoing whatever
+// incrementDepth did.  Namely, it deletes the filter at
+// the previous level; selectIpodItems() will then be called
+// from renderView() to reselect the remembered selection.
+void 
+CollectionView::decrementDepth ( bool rerender /*= true*/ )
+{
+    if( m_viewMode != modeIpodView )
+        return;
+    if( m_currentDepth <= 0 )
+        return;
+
+    m_currentDepth--;
+    m_parent->m_ipodDecrement->setEnabled( m_currentDepth > 0 );
+    m_ipodFilters[m_currentDepth].clear();
+    int catArr[3] = {m_cat1, m_cat2, m_cat3};
+    int cat = catArr[m_currentDepth];
+    if( cat == CollectionBrowser::IdVisYearAlbum )
+        m_ipodFilterYear.clear();
+
+    // Clear the selection on higher levels
+    for( int i = m_currentDepth + 1; i < 3; ++i )
+    {
+        m_ipodSelected[i].clear();
+        m_ipodCurrent[i] = QString::null;
+        m_ipodTopItem[i] = QString::null;
+    }
+
+    if( rerender )
+    {
+        m_ipodIncremented = 2;
+        updateColumnHeader();
+        renderView( true );
+    }
+}
+
+
+// This resets the ipod view mode to the first screen.
+// Call updateColumnHeader() as well whenever you run this
+void 
+CollectionView::resetIpodDepth ( void )
+{
+    m_currentDepth = 0;
+    m_ipodFilterYear.clear();
+    m_ipodFilters[0].clear();
+    m_ipodFilters[1].clear();
+    m_ipodFilters[2].clear();
+    m_ipodIncremented = 1;
+    m_parent->m_ipodDecrement->setEnabled( false );
+}
+
+
+
+// This method is the querying workhorse for the iPod browsing code.
+// It is used both to populate the content browser (in renderView())
+// and to generate track lists (in listSelected()).  This method only
+// runs qb.addMatch() and qb.sortBy() (as well as one qb.addFilter()
+// below); the caller should run qb.setGoogleFilter(),
+// qb.addReturnValue(), etc.  
+//   The sorting is as follows: if recursiveSort is true (for
+// listSelected()), then it sorts first by m_cat1, then by m_cat2,
+// then m_cat3, then track; if recursiveSort is false (for
+// renderView()), it only sorts by the category at m_currentDepth.
+// Tracks are sorted by track number first if either of the two
+// following conditions hold:
+// (i) recursiveSort is true and one of the categories is (Year +) Album 
+// (ii) recursiveSort is false and only one album is selected
+// This most closely mimics the behavior of the list view, as well as
+// an actual iPod.
+//   The compilationsOnly argument does *not* set the onlyCompilations
+// option (setting options is up to the caller); all it does is disable
+// sorting by artist if recursiveSort is on.  This is because when doing
+// a compilations-only search, all tracks should behave as if the artist
+// were Various Artists for sorting purposes.
+void
+CollectionView::buildIpodQuery ( QueryBuilder &qb, int depth, QStringList filters[3],
+        QStringList filterYear, bool recursiveSort /*= false*/, bool compilationsOnly /*= false*/)
+{
+    int catArr[3] = {m_cat1, m_cat2, m_cat3};
+    int q_cat; 
+    bool stillFiltering = (depth < trackDepth());
+    bool SortbyTrackFirst = false;
+
+    // First apply the filters from previous screens
+    for( int i = 0; i < depth; ++i )
+    {
+        q_cat = catArr[i];
+
+        if( q_cat == CollectionBrowser::IdVisYearAlbum )
+        {
+            q_cat = CollectionBrowser::IdAlbum;
+
+            if( filters[i].count() > 0 )
+            {
+                // This is very annoying -- we have to do an OR of queries
+                // of the form (album = ? AND year = ??)
+                QStringList::iterator album = filters[i].begin();
+                QStringList::iterator year  = filterYear.begin();
+
+                qb.beginOR();
+
+                while( album != filters[i].end() )
+                {
+                    qb.beginAND();
+                    qb.addMatch( QueryBuilder::tabAlbum, *album, false, true );
+                    qb.addMatch( QueryBuilder::tabYear,  *year,  false, true );
+                    qb.endAND();
+
+                    ++album;
+                    ++year;
+                }
+
+                qb.endOR();
+            }
+
+            if( recursiveSort )
+                qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName );
+
+        }
+
+        else
+        {
+            if( filters[i].count() > 0 )
+                qb.addMatches( q_cat, filters[i], false, true );
+        }
+
+        // Don't sort by artist if we're getting compilations
+        if( recursiveSort 
+                && !(compilationsOnly && q_cat == CollectionBrowser::IdArtist) )
+            qb.sortBy( q_cat, QueryBuilder::valName );
+
+        // Sort by track first subject to the conditions described above
+        if( q_cat == CollectionBrowser::IdAlbum  && 
+                (filters[i].count() == 1 || recursiveSort) )
+            SortbyTrackFirst = true;
+    }
+
+
+    // Now add the non-recursive sort-by
+    if( stillFiltering )   // Are we showing a category?
+    {
+        q_cat = catArr[depth];
+        if( q_cat == CollectionBrowser::IdVisYearAlbum )
+        {
+            q_cat = CollectionBrowser::IdAlbum;
+            qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName );
+        }
+
+        qb.sortBy( q_cat, QueryBuilder::valName );
+
+        // ensure we don't get empty genres/albums/etc due to tag changes
+        qb.addFilter( QueryBuilder::tabSong, QString::null );
+
+    }
+
+    // ... or are we showing tracks?
+    else
+    {
+        if ( SortbyTrackFirst ) {
+            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
+            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+        }
+        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTitle );
+        if ( !SortbyTrackFirst ) {
+            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
+            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+        }
+        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valURL );
+    }	 
+
+}
+
+
+// This method is responsible for either selecting the "All" item
+// if the iPod depth has been incremented, or selecting the previously
+// remembered items if the depth has been decremented, depending on
+// m_ipodIncremented, m_ipodSelected, m_ipodCurrent, and m_ipodTopItem.
+// Note that if the previously selected items have disappeared (due to
+// a GoogleFilter being applied, e.g.) then we select the "All" item by
+// default.
+//   Note that if there is only one item in the list then there is no
+// All option, so we select the unique item.
+void 
+CollectionView::selectIpodItems ( void )
+{
+    if( m_viewMode != modeIpodView ||
+            m_ipodIncremented == 0 )
+    {
+        m_ipodIncremented = 0;
+        return;
+    }
+
+    // If we've just decremented the iPod view depth then remember
+    // the selection and the current item last time we incremented.
+    // Note that a filter or something may have happened between then
+    // and now, so we should allow for those items no longer being
+    // here (in which case we pass through to the code below)
+    if( m_ipodIncremented == 2 )
+    {
+        // Pedantry -- presumably we're not at track depth!
+        if( m_currentDepth == trackDepth() )
+        {
+            m_ipodIncremented = 0;
+            return;
+        }
+
+        // If there's no selection or the selected items have
+        // disappeared, pass through to the code below
+        if( m_ipodSelected[m_currentDepth].count() == 0 )
+            m_ipodIncremented = 1;
+
+        else
+        {
+            KListView::selectAll( false );
+            int selected = 0;
+            QStringList::iterator it = m_ipodSelected[m_currentDepth].begin();
+            while( it != m_ipodSelected[m_currentDepth].end() )
+            {
+                QListViewItem *item = findItem( *it, 0 );
+                ++it;
+
+                if( !item )
+                    continue;
+
+                selected++;
+                // If the saved currentItem has disappeared, it's more
+                // intuitive if the last selected item is current.
+                setCurrentItem( item );  
+                item->setSelected( true );
+                setSelectionAnchor( item );
+            }
+
+            // Pass through to below
+            if( selected == 0 )
+                m_ipodIncremented = 1;
+
+            else
+            {
+                // Remember the current item and scroll position
+                if( !m_ipodTopItem[m_currentDepth].isEmpty() &&
+                        !m_ipodTopItem[m_currentDepth].isNull() )
+                {
+                    //scroll to previous viewport top item
+                    QListViewItem* item = findItem( m_ipodTopItem[m_currentDepth], 0 );
+                    if ( item )
+                        setContentsPos( 0, itemPos( item ) );
+                }
+
+                if( !m_ipodCurrent[m_currentDepth].isEmpty() &&
+                        !m_ipodCurrent[m_currentDepth].isNull() )
+                {
+                    QListViewItem *item = findItem( m_ipodCurrent[m_currentDepth], 0);
+                    if( item )
+                        setCurrentItem( item );
+                }
+            }
+        }
+    }
+
+    // If we've just incremented the iPod view depth (or are displaying
+    // the iPod window for the first time) then automatically select the
+    // All option (or the only element of the list) for keyboard
+    // navigation
+    if( m_ipodIncremented == 1 )
+    {
+        KListView::selectAll( false );
+        QListViewItem *item = firstChild();
+
+        // There will be a divider in the first slot if there is only
+        // one item in the list and m_showDivider is on
+        while( item && dynamic_cast<DividerItem*>( item ) )
+            item = item->itemBelow();
+
+        if( item )
+        {
+            setCurrentItem( item );
+            item->setSelected( true );
+            setSelectionAnchor( item );
+            setContentsPos( 0, itemPos( item ) );
+        }
+    }
+
+    m_ipodIncremented = 0;
+}
+
+
+// Convenience methods for returning the correct (small version of)
+// the browse forward / backward buttons
+
+QPixmap 
+CollectionView::ipodIncrementIcon ( void )
+{
+    return SmallIcon( amaroK::icon( "fastforward" ) ); 
+}
+
+QPixmap 
+CollectionView::ipodDecrementIcon ( void )
+{
+    return SmallIcon( amaroK::icon( "rewind" ) ); 
+}
+
+
 
 void
 CollectionView::setCompilation( const QString &album, bool compilation )
@@ -2500,6 +3574,8 @@ CollectionView::restoreView()
     if ( item ) {
         setCurrentItem( item );
         item->setSelected( true );
+	// More intuitive if shift-click selects from current selection
+	setSelectionAnchor( item ); 
     }
 
     //free cache
@@ -2601,23 +3677,43 @@ CollectionView::updateTrackDepth() {
 void
 CollectionView::viewportResizeEvent( QResizeEvent* e)
 {
-    header()->blockSignals( true );
-
-    const double width = e->size().width();
-
-    int visibleColumns = 0;
-    for ( int i = 0; i < columns(); ++i )
-        if ( columnWidth( i ) != 0 )
+    if( m_viewMode != modeIpodView )
+    {
+	header()->blockSignals( true );
+	
+	const double width = e->size().width();
+	
+	int visibleColumns = 0;
+	for ( int i = 0; i < columns(); ++i )
+	  if ( columnWidth( i ) != 0 )
             visibleColumns ++;
-
-    if ( visibleColumns != 0 ) {
-        for ( int c = 0; c < columns(); ++c ) {
+	
+	if ( visibleColumns != 0 ) {
+	  for ( int c = 0; c < columns(); ++c ) {
             if ( columnWidth( c ) != 0 )
-                setColumnWidth( c, int( width/visibleColumns) );
-        }
+	      setColumnWidth( c, int( width/visibleColumns) );
+	  }
+	}
+
+	header()->blockSignals( false );
     }
 
-    header()->blockSignals( false );
+    // iPod-mode header adjustment code
+    else
+      {
+	// Don't use header()->adjustHeaderSize(), since that doesn't
+	// do a very good job.  Instead we treat the browse-forward-button
+	// column as rigid, and stretch the text column to exactly fit
+	// the width.
+
+	int width     = visibleWidth();
+	int col1width = 0;
+	// No column 1 for tracks
+	if( m_currentDepth != trackDepth() )
+	  col1width = columnWidth(1);
+	setColumnWidth( 0, width - col1width );
+      }
+
 
     // Needed for correct redraw of bubble help
     triggerUpdate();
@@ -2715,7 +3811,18 @@ CollectionItem::compare( QListViewItem* i, int col, bool ascending ) const
 
     //Special cases go first to take priority
 
-    // Unknown is always the first one, but if the two items to be compared are Unknown,
+    // Sampler is the first one in iPod view
+    CollectionView* view = static_cast<CollectionView*>( listView() );
+    if( view->viewMode() == CollectionView::modeIpodView )
+      {
+	if ( m_isSampler )
+	  return -1;
+	if ( dynamic_cast<CollectionItem*>( i ) && static_cast<CollectionItem*>( i )->m_isSampler )
+	  return 1;
+      }
+    
+
+    // Unknown is always the first one unless we're doing iPod view, but if the two items to be compared are Unknown,
     // then compare the normal way
     if ( !( m_isUnknown && dynamic_cast<CollectionItem*>( i ) && static_cast<CollectionItem*>( i )->m_isUnknown ) )
     {
@@ -2726,13 +3833,10 @@ CollectionItem::compare( QListViewItem* i, int col, bool ascending ) const
     }
 
     // Various Artists is always after unknown
-    if ( m_cat == CollectionBrowser::IdArtist )
-    {
-        if ( m_isSampler )
-            return -1;
-        if ( dynamic_cast<CollectionItem*>( i ) && static_cast<CollectionItem*>( i )->m_isSampler )
-            return 1;
-    }
+    if ( m_isSampler )
+      return -1;
+    if ( dynamic_cast<CollectionItem*>( i ) && static_cast<CollectionItem*>( i )->m_isSampler )
+      return 1;
 
     //Group heading should go above the items in that group
     if (dynamic_cast<DividerItem*>(i) && DividerItem::shareTheSameGroup(a, b, m_cat)) {
@@ -2767,7 +3871,7 @@ CollectionItem::compare( QListViewItem* i, int col, bool ascending ) const
             break;
     }
     // Need to make single letter artist names sort lower than acented divider items
-    // (e.g. The artist "A" should sort below the divider "Ä") so the divider colapsing
+    // (e.g. The artist "A" should sort below the divider "�Ä") so the divider colapsing
     // code works correctly. Making the artist a two letter word makes localeAwareCompare
     // give the result we want. See BR 126545.
     if ( a.length() == 1 && dynamic_cast<DividerItem*>(i) )
@@ -2813,10 +3917,13 @@ DividerItem::paintCell ( QPainter * p, const QColorGroup & cg,
     p->setFont( f );
 
     // draw the text offset a little bit
-    QFontMetrics fm(p->fontMetrics());
-    int x = !QApplication::reverseLayout() ? 25 : width - 25;
-    int y = fm.ascent() + (height() - fm.height())/2;
-    p->drawText(x, y, m_text);
+    if( column == 0 )  // For iPod viewing mode
+      {
+	QFontMetrics fm( p->fontMetrics() );
+	int x = !QApplication::reverseLayout() ? 25 : width - 25;
+	int y = fm.ascent() + (height() - fm.height())/2;
+	p->drawText( x, y, m_text );
+      }
 
     //draw the baseline
     p->setPen( QPen(Qt::gray, 2) );
@@ -2884,11 +3991,21 @@ DividerItem::createGroup(const QString& src, int cat)
     }
     default:
         ret = src.stripWhiteSpace();
+	// (Joe Rabinoff) deleted.  The bug this fixes is as follows.
+	// If the category is Album and the album name is "Heroes" (by
+	// David Bowie -- the quotes are part of the title), it gets
+	// put under the H group, but then gets sorted under '"'.
+	// What I've done is the wrong fix -- albums should be sorted
+	// by their first alphanumeric character.
+	/*
         while ( !ret.isEmpty() && !ret.at(0).isLetterOrNumber() ) {
             ret = ret.right( ret.length()-1 );
         }
-        if ( !ret.isEmpty() )
-            ret = ret.left( 1 ).upper();
+	*/
+        if ( !ret.isEmpty()  &&  ret.at(0).isLetterOrNumber() )
+	  ret = ret.left( 1 ).upper();
+	else
+	  return "";
         /*else
             ret = i18n( "Others" );*/
         /* By returning an empty string, no header is created. */

@@ -7,12 +7,15 @@ Amarok ChangeLog
 
 VERSION 1.4.2:
   FEATURES:
+    * Collection browse mode similar to that used by some portable players.
+      Patch by Joe Rabinoff <bobqwatson@yahoo.com>. (BR 130586)
     * BPM field. Patch by Alf B Lervåg <alfborge@gmail.com> and Aaron
       VonderHaar <gruen0aermel@gmail.com>. (BR 123142)
     * Advanced Tag Features (ATF) goes public: Turn it on in the Collection
-    options and organize your files freely without losing your statistics or
-    needing to re-add tracks to the Playlist.  We'll keep track of where you
-    put your files or what you renamed them to and update it all for you!
+      options and organize your files freely without losing your statistics
+      or needing to re-add tracks to the Playlist.  We'll keep track of where
+      you put your files or what you renamed them to and update it all for
+      you!
     * Improved crossfading for xine-engine: Honours the 'Crossfade Length'
       setting precisely, and uses a better mixing style profile. Patch by
       Enrico Ros <koral@email.it>.
