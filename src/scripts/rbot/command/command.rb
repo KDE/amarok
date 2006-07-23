@@ -8,14 +8,11 @@
 class CommandPlugin < Plugin
   def initialize()
     super
-
-    @registry["commands"] = Hash.new unless @registry.has_key?( "commands" )
-    @commands = @registry["commands"]
   end
 
   def listen( m )
-    if m.address? and @commands.has_key?( m.message )
-      code = @commands[m.message].untaint
+    if m.address? and @registry.has_key?( m.message )
+      code = @registry[m.message].untaint
 
       $SAFE = 3  #better safe than sorry
       eval( code )
@@ -27,27 +24,27 @@ class CommandPlugin < Plugin
     cmd = params[:command]
     code = params[:code].join( " " )
 
-    @commands[cmd] = code
+    @registry[cmd] = code
 
-    debug "added code: " + code 
+    debug "added code: " + code
     m.reply( "done" )
   end
 
   def cmd_command_list( m, params )
-    if @commands.empty?
+    if @registry.length == 0
       m.reply( "No commands available." )
       return
     end
-      
+
     txt = ""
-    @commands.each_key { |cmd| txt << "#{cmd}, " }
+    @registry.each_key { |cmd| txt << "#{cmd}, " }
     txt = txt[0, txt.length - 2] #Strip last comma
 
     m.reply( "Available commands:" )
     m.reply( txt )
   end
 end
- 
+
 
 plugin = CommandPlugin.new
 plugin.register( "command" )
