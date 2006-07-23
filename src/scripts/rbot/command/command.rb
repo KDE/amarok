@@ -12,10 +12,17 @@ class CommandPlugin < Plugin
 
   def listen( m )
     if m.address? and @registry.has_key?( m.message )
-      code = @registry[m.message].untaint
+      cmd = m.message
+      code = @registry[cmd].untaint
 
       $SAFE = 3  #better safe than sorry
-      eval( code )
+      begin
+        eval( code )
+      rescue => detail
+        m.reply( "Command '#{cmd}' crapped out :(" )
+        @bot.say( m.sourcenick, "Backtrace for command '#{cmd}':" )
+        @bot.say( m.sourcenick, detail.backtrace.join("\n") )
+      end
       $SAFE = 0
     end
   end
