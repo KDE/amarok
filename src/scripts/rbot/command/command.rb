@@ -15,15 +15,16 @@ class CommandPlugin < Plugin
       cmd = m.message
       code = @registry[cmd].untaint
 
-      $SAFE = 3  #better safe than sorry
-      begin
-        eval( code )
-      rescue => detail
-        m.reply( "Command '#{cmd}' crapped out :(" )
-        @bot.say( m.sourcenick, "Backtrace for command '#{cmd}':" )
-        @bot.say( m.sourcenick, detail.backtrace.join("\n") )
+      Thread.start do
+        $SAFE = 3  #better safe than sorry
+        begin
+          eval( code )
+        rescue => detail
+          m.reply( "Command '#{cmd}' crapped out :(" )
+          @bot.say( m.sourcenick, "Backtrace for command '#{cmd}':" )
+          @bot.say( m.sourcenick, detail.backtrace.join("\n") )
+        end
       end
-      $SAFE = 0
     end
   end
 
