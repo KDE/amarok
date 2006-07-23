@@ -49,7 +49,7 @@ function Compile {
 }
 
 JOBS=$1
-[ "$JOBS" -lt "1" ] && JOBS=1
+[ "0$JOBS" -lt "1" ] && JOBS=1
 
 echo "# Cleaning source tree"
 Clean
