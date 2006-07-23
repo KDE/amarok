@@ -62,7 +62,19 @@ class CommandPlugin < Plugin
     m.reply( "Available commands:" )
     m.reply( txt )
   end
+
+  def cmd_command_show( m, params )
+    cmd = params[:command]
+    unless @registry.has_key?( cmd )
+      m.reply( "Command does not exist." )
+      return
+    end
+
+    m.reply( "Source code for command '#{cmd}':" )
+    m.reply( @registry[cmd] )
+  end
 end
+
 
 
 plugin = CommandPlugin.new
@@ -71,6 +83,7 @@ plugin.register( "command" )
 plugin.map 'command add :command *code', :action => 'cmd_command_add', :auth => 'commandedit'
 plugin.map 'command del :command', :action => 'cmd_command_del', :auth => 'commandedit'
 plugin.map 'command list', :action => 'cmd_command_list'
+plugin.map 'command show :command', :action => 'cmd_command_show'
 
 
 
