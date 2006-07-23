@@ -16,7 +16,7 @@
     </entry>
     <entry key="Player Pos" type="Point">
         <label>Position of player window</label>
-        <whatsthis>The position of the amaroK main window when amaroK is started.</whatsthis>
+        <whatsthis>The position of the Amarok main window when Amarok is started.</whatsthis>
     </entry>
     <entry key="Player Window Minimal View" type="Bool">
         <label>Whether Player Window is in minimal or normal mode</label>
@@ -25,15 +25,15 @@
     </entry>
     <entry key="Playlist Window Pos" type="Point">
         <label>Position of playlist window</label>
-        <whatsthis>The position of the playlist window when amaroK is started.</whatsthis>
+        <whatsthis>The position of the playlist window when Amarok is started.</whatsthis>
     </entry>
     <entry key="Playlist Window Size" type="Size">
         <label>Size of playlist window</label>
-        <whatsthis>The size of the playlist window when amaroK is started.</whatsthis>
+        <whatsthis>The size of the playlist window when Amarok is started.</whatsthis>
     </entry>
     <entry key="Save Playlist" type="Bool">
         <label>Whether to save playlist on quit</label>
-        <whatsthis>If set, amaroK saves the current playlist on quit and restores it when restarted.</whatsthis>
+        <whatsthis>If set, Amarok saves the current playlist on quit and restores it when restarted.</whatsthis>
         <default>true</default>
     </entry>
     <entry key="Follow Symlinks" type="Bool">
@@ -48,7 +48,7 @@
     </entry>
     <entry key="Use Scores" type="Bool">
         <label>Whether to show scores for tracks</label>
-        <whatsthis>A score is a number from 0 to 100, determined automatically by amaroK based on how often you listen to a track and how much of it you listen to.</whatsthis>
+        <whatsthis>A score is a number from 0 to 100, determined automatically by Amarok based on how often you listen to a track and how much of it you listen to.</whatsthis>
         <default>true</default>
     </entry>
     <entry key="Use Ratings" type="Bool">
@@ -88,7 +88,7 @@
     </entry>
     <entry key="Random Mode" type="Enum">
         <label>Whether to play tracks or albums in random order</label>
-        <whatsthis>If set, amaroK plays the tracks or albums in the playlist in a random order.</whatsthis>
+        <whatsthis>If set, Amarok plays the tracks or albums in the playlist in a random order.</whatsthis>
         <choices>
             <choice name="Off"></choice>
             <choice name="Tracks"></choice>
@@ -108,7 +108,7 @@
     </entry>
     <entry key="Show Tray Icon" type="Bool">
         <label>Whether to show icon in system tray</label>
-        <whatsthis>Enable/Disable tray icon for amaroK.</whatsthis>
+        <whatsthis>Enable/Disable tray icon for Amarok.</whatsthis>
         <default>true</default>
     </entry>
     <entry key="Animate Tray Icon" type="Bool">
@@ -118,7 +118,7 @@
     </entry>
     <entry key="Show Player Window" type="Bool">
         <label>Whether to show player window</label>
-        <whatsthis>Makes amaroK more like XMMS and other Winamp clones with separate player and playlist windows.</whatsthis>
+        <whatsthis>Makes Amarok more like XMMS and other Winamp clones with separate player and playlist windows.</whatsthis>
         <default>false</default>
     </entry>
     <entry key="Show Moodbar" type="Bool">
@@ -203,7 +203,7 @@
     </entry>
     <entry key="Show Splashscreen" type="Bool">
         <label>Whether a splash-screen should be displayed on startup</label>
-        <whatsthis>Enable/Disable splashscreen during amaroK startup.</whatsthis>
+        <whatsthis>Enable/Disable splashscreen during Amarok startup.</whatsthis>
         <default>true</default>
     </entry>
     <entry key="ContextBrowser StyleSheet" type="String">
@@ -213,12 +213,12 @@
     </entry>
     <entry key="Show Menu Bar" type="Bool">
         <label>Whether Menubar is shown</label>
-        <whatsthis>If set, amaroK displays a menubar on top of the application.</whatsthis>
+        <whatsthis>If set, Amarok displays a menubar on top of the application.</whatsthis>
         <default>true</default>
     </entry>
     <entry key="Relative Playlist" type="Bool">
         <label>Whether playlists store relative path</label>
-        <whatsthis>If set, amaroK manually saved playlists will contain a relative path to the tracks, not absolute.</whatsthis>
+        <whatsthis>If set, Amarok manually saved playlists will contain a relative path to the tracks, not absolute.</whatsthis>
         <default>false</default>
     </entry>
     <entry key="Overwrite Files" type="Bool">
@@ -287,11 +287,11 @@
         <default></default>
     </entry>
     <entry key="External Browser" type="String">
-        <label>Filename of the external web browser to be invoked by amaroK.</label>
+        <label>Filename of the external web browser to be invoked by Amarok.</label>
         <default>kfmclient openURL</default>
     </entry>
     <entry key="Use Custom Icon Theme" type="Bool">
-        <label>Whether amaroK's custom icon theme or the system icon theme is used.</label>
+        <label>Whether Amarok's custom icon theme or the system icon theme is used.</label>
         <default>true</default>
     </entry>
     <entry key="Collection Browser View Mode" type="Int">
@@ -303,7 +303,7 @@
 <group name="Playback">
     <entry key="Master Volume" type="Int">
         <label>Master volume</label>
-        <whatsthis>The amaroK master volume, a value between 0 (muted) and 100.</whatsthis>
+        <whatsthis>The Amarok master volume, a value between 0 (muted) and 100.</whatsthis>
         <default>80</default>
         <min>0</min>
         <max>100</max>
@@ -326,7 +326,7 @@
     </entry>
     <entry key="Sound System" type="String">
         <label>Sound system to use</label>
-        <whatsthis>Select the sound system used to play media. amaroK currently support aRts, GStreamer, xine, and NMM; however, their availability depends on the configuration used at compile time.</whatsthis>
+        <whatsthis>Select the sound system used to play media. Amarok currently support aRts, GStreamer, xine, and NMM; however, their availability depends on the configuration used at compile time.</whatsthis>
     </entry>
     <entry key="Equalizer Enabled" type="Bool">
         <label>Enables the equalizer plugin</label>
@@ -470,18 +470,18 @@
 
 <group name="Colors">
     <entry key="Scheme Amarok" type="Bool">
-        <label>Whether to use amaroK standard colors in the playlist window</label>
-        <whatsthis>If set, amaroK uses the amaroK standard colors in the playlist.</whatsthis>
+        <label>Whether to use Amarok standard colors in the playlist window</label>
+        <whatsthis>If set, Amarok uses the Amarok standard colors in the playlist.</whatsthis>
         <default>false</default>
     </entry>
     <entry key="Scheme KDE" type="Bool">
         <label>Whether to use global KDE colors in the playlist window</label>
-        <whatsthis>If set, amaroK uses the KDE standard colors in the playlist.</whatsthis>
+        <whatsthis>If set, Amarok uses the KDE standard colors in the playlist.</whatsthis>
         <default>true</default>
     </entry>
     <entry key="Scheme Custom" type="Bool">
         <label>Whether to use user-defined colors in the playlist window</label>
-        <whatsthis>If set, amaroK uses the user-defined colors in the playlist.</whatsthis>
+        <whatsthis>If set, Amarok uses the user-defined colors in the playlist.</whatsthis>
         <default>false</default>
     </entry>
     <entry key="Playlist Window Fg Color" type="Color">
@@ -499,7 +499,7 @@
 <group name="Session">
     <entry key="Resume Playback" type="Bool">
         <label>Resume playback of last played track on startup</label>
-        <whatsthis>If set, amaroK resumes playback of the last played track on startup.</whatsthis>
+        <whatsthis>If set, Amarok resumes playback of the last played track on startup.</whatsthis>
         <default>false</default>
     </entry>
     <entry key="Resume Track" type="Path">
@@ -646,7 +646,7 @@
     </entry>
     <entry key="SyncStats" type="Bool">
         <label>SyncStats</label>
-        <whatsthis>Whether amaroK statistics should be synchronized with play count/ratings on device and whether tracks played should be submitted to last.fm.</whatsthis>
+        <whatsthis>Whether Amarok statistics should be synchronized with play count/ratings on device and whether tracks played should be submitted to last.fm.</whatsthis>
     </entry>
 </group>
 
