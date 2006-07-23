@@ -119,7 +119,7 @@ void Scrobbler::similarArtists( const QString & artist )
 
         QByteArray postData;
         QDataStream stream( postData, IO_WriteOnly );
-        stream.writeRawBytes( xmlRequest.utf8(), xmlRequest.length() );
+        stream.writeRawBytes( xmlRequest.utf8(), xmlRequest.utf8().length() );
 
         m_similarArtistsBuffer = QByteArray();
         m_artist = artist;
