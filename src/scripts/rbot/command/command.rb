@@ -38,6 +38,17 @@ class CommandPlugin < Plugin
     m.reply( "done" )
   end
 
+  def cmd_command_del( m, params )
+    cmd = params[:command]
+    unless @registry.has_key?( cmd )
+      m.reply( "Command does not exist." )
+      return
+    end
+
+    @registry.delete( cmd )
+    m.reply( "done" )
+  end
+
   def cmd_command_list( m, params )
     if @registry.length == 0
       m.reply( "No commands available." )
@@ -58,6 +69,7 @@ plugin = CommandPlugin.new
 plugin.register( "command" )
 
 plugin.map 'command add :command *code', :action => 'cmd_command_add', :auth => 'commandedit'
+plugin.map 'command del :command', :action => 'cmd_command_del', :auth => 'commandedit'
 plugin.map 'command list', :action => 'cmd_command_list'
 
 
