@@ -7,6 +7,7 @@
 
 #include <kdebug.h>
 #include <qcstring.h>
+#include <qdeepcopy.h>
 #include <qmutex.h>
 #include <qobject.h>
 #include <sys/time.h>
@@ -56,17 +57,21 @@ namespace Debug
     #define qApp reinterpret_cast<QObject*>(qApp)
     class Indent : QObject
     {
-        friend QCString &indent();
+        friend QCString &modifieableIndent();
         Indent() : QObject( qApp, "DEBUG_indent" ) {}
         QCString m_string;
     };
 
-    inline QCString &indent()
+    inline QCString &modifieableIndent()
     {
-
         QObject *o = qApp ? qApp->child( "DEBUG_indent" ) : 0;
         QCString &ret = (o ? static_cast<Indent*>( o ) : new Indent)->m_string;
         return ret;
+    }
+
+    inline QCString indent()
+    {
+        return QDeepCopy<QCString>( modifieableIndent() );
     }
     #undef qApp
 
@@ -166,7 +171,7 @@ namespace Debug
             gettimeofday( &m_start, 0 );
 
             kdDebug() << "BEGIN: " << label << "\n";
-            Debug::indent() += "  ";
+            Debug::modifieableIndent() += "  ";
             mutex.unlock();
         }
 
@@ -186,7 +191,7 @@ namespace Debug
 
             double duration = double(end.tv_sec) + (double(end.tv_usec) / 1000000.0);
 
-            Debug::indent().truncate( Debug::indent().length() - 2 );
+            Debug::modifieableIndent().truncate( Debug::indent().length() - 2 );
             kdDebug() << "END__: " << m_label
                       << " - Took " << QString::number( duration, 'g', 2 ) << "s\n";
             mutex.unlock();
