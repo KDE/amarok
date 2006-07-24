@@ -240,7 +240,7 @@ public:
          * heap, ThreadWeaver will take ownership of the memory.
          */
         Job( const char *name );
-       ~Job();
+        virtual ~Job();
 
         /**
          * These are used by @class DependentJob, but are made available for
@@ -393,7 +393,7 @@ protected:
 };
 
 //useful debug thingy
-#define DEBUG_THREAD_FUNC_INFO kdDebug() << Debug::indent() << k_funcinfo << "thread: " << ThreadWeaver::Thread::threadId() << endl;
+#define DEBUG_THREAD_FUNC_INFO { Debug::mutex.lock(); kdDebug() << Debug::indent() << k_funcinfo << "thread: " << ThreadWeaver::Thread::threadId() << endl; Debug::mutex.unlock(); }
 
 #define SHOULD_BE_GUI if( ThreadWeaver::Thread::getRunning() ) warning() \
     << "Should not be Threaded, but is running in" << \

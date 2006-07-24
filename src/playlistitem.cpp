@@ -219,7 +219,7 @@ void PlaylistItem::setEnabled( bool enabled )
         Playlist::instance()->removeDisabledChild( this );
     setDropEnabled( enabled ); // this forbids items to be dropped into a history queue.
 
-    repaint();
+    update();
 }
 
 void PlaylistItem::setSelected( bool selected )

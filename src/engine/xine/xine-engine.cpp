@@ -75,6 +75,7 @@ XineEngine::XineEngine()
         , m_post( 0 )
         , m_preamp( 1.0 )
         , m_stopFader( false )
+        , m_equalizerEnabled( false )
 {
     addPluginProperty( "HasConfigure", "true" );
     addPluginProperty( "HasEqualizer", "true" );
