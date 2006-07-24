@@ -23,6 +23,7 @@
 #include "threadweaver.h"
 #include "mediabrowser.h"
 
+#include <qdatetime.h>
 #include <qfileinfo.h>
 #include <qlabel.h>
 #include <qpainter.h>          //paintCell()
@@ -1405,10 +1406,37 @@ PodcastChannel::setNew( bool n )
     m_new = n;
 }
 
+class ElementList : public QPtrList<QDomElement>
+{
+    int compareItems ( QPtrCollection::Item element1, QPtrCollection::Item element2 )
+    {
+//         DEBUG_BLOCK
+        QDomElement *e1 = (QDomElement  *)element1;
+        QDomElement *e2 = (QDomElement  *)element2;
+
+        //Note: doesn't currently work for Atom feeds
+        QDateTime dateTime1 = QDateTime();
+        if( !e1->namedItem( "pubDate" ).toElement().text().isEmpty() )
+            dateTime1.setTime_t( KRFCDate::parseDate( e1->namedItem( "pubDate" ).toElement().text() ) );
+//         debug() << dateTime1.toString( Qt::ISODate ) << endl;
+
+        QDateTime dateTime2 = QDateTime();
+        if( !e2->namedItem( "pubDate" ).toElement().text().isEmpty() )
+            dateTime2.setTime_t( KRFCDate::parseDate( e2->namedItem( "pubDate" ).toElement().text() ) );
+//         debug() << dateTime2.toString( Qt::ISODate ) << endl;
+
+        if( dateTime1 != dateTime2)
+            return dateTime1 > dateTime2;
+
+        return e1->namedItem( "title" ).toElement().text().compare( e2->namedItem( "title" ).toElement().text() );
+    }
+};
+
 /// DONT TOUCH m_url!!!  The podcast has no mention to the location of the xml file, idiots.
 void
 PodcastChannel::setXml( const QDomNode &xml, const int feedType )
 {
+    DEBUG_BLOCK
     /// Podcast Channel information
     const bool isAtom = ( feedType == ATOM );
 
@@ -1473,84 +1501,62 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     else
         n = xml.namedItem( "item" );
 
-    int  children = 0;
     bool hasNew = false;
-    int  episode_limit = (m_bundle.purgeCount() > 0 ? m_bundle.purgeCount() : 0 );
     bool downloadMedia = ( fetchType() == AUTOMATIC );
     QDomNode node;
 
     // We use an auto-increment id in the database, so we must insert podcasts in the reverse order
     // to ensure we can pull them out reliably.
-    QValueList<QDomElement> eList;
+
+    //build ElementList of [purgeCount] newest items
+    ElementList eList;
 
     for( ; !n.isNull(); n = n.nextSibling() )
     {
-        if( m_updating )
+        if( !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
         {
-            if( episodeExists( n, feedType ) )
-                continue;
-
-            if( !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
-            {
-                eList.prepend( n.toElement() );
-                hasNew = true;
-            }
-            else if( isAtom )
-            {
-                // Atom feeds have multiple nodes called link, only one which has an enclosure.
-                QDomNode nodes = n.namedItem("link");
-                for( ; !nodes.isNull(); nodes = nodes.nextSibling() )
-                {
-                    if( nodes.toElement().attribute("rel") == "enclosure" )
-                    {
-                        eList.prepend( n.toElement() );
-                        hasNew = true;
-                        break;
-                    }
-                }
-            }
-
+            //prepending ensures correct order in 99% of the channels, except those who use chronological order
+            QDomElement *el = new QDomElement( n.toElement() );
+            eList.inSort( el );
+            debug() << "appending " << ( &n.toElement() )->namedItem( "title" ).toElement().text() << endl;
         }
-        else // Freshly added podcast
+        else if( isAtom )
         {
-            if( episode_limit != 0 && children > episode_limit-1 )
-                break;
-
-            if( !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
+            // Atom feeds have multiple nodes called link, only one which has an enclosure.
+            QDomNode nodes = n.namedItem("link");
+            for( ; !nodes.isNull(); nodes = nodes.nextSibling() )
             {
-                eList.prepend( n.toElement() );
-                children++;
-                hasNew = true;
-            }
-            else if( isAtom )
-            {
-                // Atom feeds have multiple nodes called link, only one which has an enclosure.
-                QDomNode node = n.namedItem("link");
-                for( ; !node.isNull(); node = node.nextSibling() )
+                if( nodes.toElement().attribute("rel") == "enclosure" )
                 {
-                    if( node.toElement().attribute("rel") == "enclosure" )
-                    {
-                        eList.prepend( n.toElement() );
-                        children++;
-                        hasNew = true;
-                        break;
-                    }
+                    QDomElement *el = new QDomElement( n.toElement() );
+                    eList.prepend( el );
+                    break;
                 }
             }
         }
     }
 
-    foreachType( QValueList<QDomElement>, eList )
+    int i = m_bundle.hasPurge() ? m_bundle.purgeCount() : eList.count();
+    debug() << "Count = " << eList.count() << endl;
+    foreachType( ElementList, eList )
     {
-        PodcastEpisode *ep = new PodcastEpisode( this, 0 /*adding in reverse!*/, *it, feedType, m_updating/*new*/ );
-        if( m_updating )
-            ep->setNew( true );
+        debug() << "Itterate " << i << " :" << (*it)->namedItem( "title" ).toElement().text() << " pubDate: " << (*it)->namedItem( "pubDate" ).toElement().text() <<endl;
+        if( !m_updating || ( ( i++ >= eList.count() ) && !episodeExists( (**it), feedType ) ) )
+        {
+            PodcastEpisode *ep = new PodcastEpisode( this, 0, (**it), feedType, m_updating/*new*/ );
+            debug() << "NEW " << endl;
+            if( m_updating )
+            {
+                ep->setNew( true );
+                hasNew = true;
+            }
+        }
     }
 
-    if( hasPurge() && purgeCount() != 0 && childCount() > purgeCount() )
-        purge();
+//     if( hasPurge() && purgeCount() != 0 && childCount() > purgeCount() )
+//         purge();
 
-    sortChildItems( 0, true ); // ensure the correct date order
+    //sortChildItems( 0, true ); // ensure the correct date order
 
     if( downloadMedia )
         downloadChildren();
@@ -1565,6 +1571,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
 const bool
 PodcastChannel::episodeExists( const QDomNode &xml, const int feedType )
 {
+    DEBUG_BLOCK
     QString command;
     if( feedType == RSS )
     {
@@ -1576,6 +1583,7 @@ PodcastChannel::episodeExists( const QDomNode &xml, const int feedType )
                               .arg( CollectionDB::instance()->escapeString( url().url() ),
                                     CollectionDB::instance()->escapeString( guid ) );
             QStringList values = CollectionDB::instance()->query( command );
+            debug() << "guid: " << !values.isEmpty() <<endl;
             return !values.isEmpty();
         }
 
@@ -1586,7 +1594,7 @@ PodcastChannel::episodeExists( const QDomNode &xml, const int feedType )
                                 CollectionDB::instance()->escapeString( episodeURL ),
                                 CollectionDB::instance()->escapeString( episodeTitle ) );
         QStringList values = CollectionDB::instance()->query( command );
-
+        debug() << "title+url : " << !values.isEmpty() <<endl;
         return !values.isEmpty();
     }
 
@@ -1693,7 +1701,7 @@ PodcastChannel::purge()
         if( item->isOnDisk() )
             urlsToDelete.append( item->localUrl() );
 
-        CollectionDB::instance()->removePodcastEpisode( item->dBId() );
+//         CollectionDB::instance()->removePodcastEpisode( item->dBId() );
     #undef  item
         delete item;
     }
