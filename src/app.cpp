@@ -83,6 +83,8 @@ email                : markey@web.de
     #endif //SCHEDAFFINITY_SUPPORT
 #endif //__linux__
 
+QMutex Debug::mutex;
+
 int App::mainThreadId = 0;
 
 LIBAMAROK_EXPORT KAboutData aboutData( "amarok",

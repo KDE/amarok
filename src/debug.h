@@ -7,6 +7,7 @@
 
 #include <kdebug.h>
 #include <qcstring.h>
+#include <qmutex.h>
 #include <qobject.h>
 #include <sys/time.h>
 
@@ -46,6 +47,8 @@ extern QApplication *qApp; ///@see Debug::Indent
 
 namespace Debug
 {
+    extern QMutex mutex; // defined in app.cpp
+
     // we can't use a statically instantiated QCString for the indent, because
     // static namespaces are unique to each dlopened library. So we piggy back
     // the QCString on the KApplication instance
@@ -60,8 +63,10 @@ namespace Debug
 
     inline QCString &indent()
     {
+
         QObject *o = qApp ? qApp->child( "DEBUG_indent" ) : 0;
-        return (o ? static_cast<Indent*>( o ) : new Indent)->m_string;
+        QCString &ret = (o ? static_cast<Indent*>( o ) : new Indent)->m_string;
+        return ret;
     }
     #undef qApp
 
@@ -88,10 +93,10 @@ namespace Debug
             KDEBUG_FATAL = 3
         };
 
-        static inline kdbgstream debug()   { return kdbgstream( indent(), 0, KDEBUG_INFO  ) << AMK_PREFIX; }
-        static inline kdbgstream warning() { return kdbgstream( indent(), 0, KDEBUG_WARN  ) << AMK_PREFIX << "[WARNING!] "; }
-        static inline kdbgstream error()   { return kdbgstream( indent(), 0, KDEBUG_ERROR ) << AMK_PREFIX << "[ERROR!] "; }
-        static inline kdbgstream fatal()   { return kdbgstream( indent(), 0, KDEBUG_FATAL ) << AMK_PREFIX; }
+        static inline kdbgstream debug()   { mutex.lock(); QCString ind = indent(); mutex.unlock(); return kdbgstream( ind, 0, KDEBUG_INFO  ) << AMK_PREFIX; }
+        static inline kdbgstream warning() { mutex.lock(); QCString ind = indent(); mutex.unlock(); return kdbgstream( ind, 0, KDEBUG_WARN  ) << AMK_PREFIX << "[WARNING!] "; }
+        static inline kdbgstream error()   { mutex.lock(); QCString ind = indent(); mutex.unlock(); return kdbgstream( ind, 0, KDEBUG_ERROR ) << AMK_PREFIX << "[ERROR!] "; }
+        static inline kdbgstream fatal()   { mutex.lock(); QCString ind = indent(); mutex.unlock(); return kdbgstream( ind, 0, KDEBUG_FATAL ) << AMK_PREFIX; }
 
         typedef kdbgstream DebugStream;
 
@@ -108,16 +113,13 @@ using Debug::fatal;
 using Debug::DebugStream;
 
 /// Standard function announcer
-#define DEBUG_FUNC_INFO kdDebug() << Debug::indent() << k_funcinfo << endl;
+#define DEBUG_FUNC_INFO { Debug::mutex.lock(); kdDebug() << Debug::indent() << k_funcinfo << endl; Debug::mutex.unlock(); }
 
 /// Announce a line
-#define DEBUG_LINE_INFO kdDebug() << Debug::indent() << k_funcinfo << "Line: " << __LINE__ << endl;
+#define DEBUG_LINE_INFO { Debug::mutex.lock(); kdDebug() << Debug::indent() << k_funcinfo << "Line: " << __LINE__ << endl; Debug::mutex.unlock(); }
 
 /// Convenience macro for making a standard Debug::Block
 #define DEBUG_BLOCK Debug::Block uniquelyNamedStackAllocatedStandardBlock( __PRETTY_FUNCTION__ );
-
-#define DEBUG_INDENT Debug::indent() += "  ";
-#define DEBUG_UNINDENT Debug::indent().truncate( Debug::indent().length() - 2 );
 
 /// Use this to remind yourself to finish the implementation of a function
 #define AMAROK_NOTIMPLEMENTED warning() << "NOT-IMPLEMENTED: " << __PRETTY_FUNCTION__ << endl;
@@ -160,14 +162,17 @@ namespace Debug
         Block( const char *label )
                 : m_label( label )
         {
+            mutex.lock();
             gettimeofday( &m_start, 0 );
 
-            kdDebug() << indent() << "BEGIN: " << label << "\n";
-            DEBUG_INDENT
+            kdDebug() << "BEGIN: " << label << "\n";
+            Debug::indent() += "  ";
+            mutex.unlock();
         }
 
         ~Block()
         {
+            mutex.lock();
             timeval end;
             gettimeofday( &end, 0 );
 
@@ -181,9 +186,10 @@ namespace Debug
 
             double duration = double(end.tv_sec) + (double(end.tv_usec) / 1000000.0);
 
-            DEBUG_UNINDENT
-            kdDebug() << indent() << "END__: " << m_label
+            Debug::indent().truncate( Debug::indent().length() - 2 );
+            kdDebug() << "END__: " << m_label
                       << " - Took " << QString::number( duration, 'g', 2 ) << "s\n";
+            mutex.unlock();
         }
     };
 
