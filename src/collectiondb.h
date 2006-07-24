@@ -21,6 +21,7 @@
 #include <qdir.h>            //stack allocated
 #include <qdatetime.h>
 #include <qimage.h>
+#include <qmutex.h>
 #include <qobject.h>         //baseclass
 #include <qptrqueue.h>       //baseclass
 #include <qsemaphore.h>      //stack allocated
@@ -37,8 +38,6 @@ class OrganizeCollectionDialog;
 class PodcastChannelBundle;
 class PodcastEpisodeBundle;
 class Scrobbler;
-
-class QMutex;
 
 class DbConfig
 {};
@@ -578,6 +577,9 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
 
         // for handling podcast image url redirects
         QMap<KIO::Job *, QString> m_podcastImageJobs;
+
+        // protect against multiple simultaneous queries/inserts
+        QMutex m_mutex;
 };
 
 class INotify : public ThreadWeaver::DependentJob

@@ -369,6 +369,7 @@ CollectionDB::initDirOperations()
 QStringList
 CollectionDB::query( const QString& statement )
 {
+    m_mutex.lock();
     clock_t start;
     if ( DEBUG )
     {
@@ -376,7 +377,10 @@ CollectionDB::query( const QString& statement )
         start = clock();
     }
     if ( statement.stripWhiteSpace().isEmpty() )
+    {
+        m_mutex.unlock();
         return QStringList();
+    }
 
     DbConnection *dbConn;
     dbConn = getMyConnection();
@@ -388,6 +392,7 @@ CollectionDB::query( const QString& statement )
         const double duration = (double) (finish - start) / CLOCKS_PER_SEC;
         debug() << "SQL-query (" << duration << "s): " << statement << endl;
     }
+    m_mutex.unlock();
     return values;
 }
 
@@ -400,6 +405,7 @@ CollectionDB::query( const QString& statement )
 int
 CollectionDB::insert( const QString& statement, const QString& table )
 {
+    m_mutex.lock();
     clock_t start;
     if ( DEBUG )
     {
@@ -418,6 +424,7 @@ CollectionDB::insert( const QString& statement, const QString& table )
         const double duration = (double) (finish - start) / CLOCKS_PER_SEC;
         debug() << "SQL-insert (" << duration << "s): " << statement << endl;
     }
+    m_mutex.unlock();
     return id;
 }
 
