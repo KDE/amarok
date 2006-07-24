@@ -199,6 +199,7 @@ public:
     void setCollectionFolders( QStringList folders );
 
 public slots:
+    void mediumAdded( const Medium *m );
     /**
      * initiates the update of the class' internal list of mounted mediums.
      * @param m the medium whose status changed

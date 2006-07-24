@@ -38,6 +38,7 @@ MountPointManager::MountPointManager()
     //therefore it is enough to listen to DeviceManager's mediumChanged signal
     if (DeviceManager::instance()->isValid() )
     {
+        connect( DeviceManager::instance(), SIGNAL( mediumAdded( const Medium*, QString ) ), SLOT( mediumAdded( const Medium* ) ) );
         connect( DeviceManager::instance(), SIGNAL( mediumChanged( const Medium*, QString ) ), SLOT( mediumChanged( const Medium* ) ) );
         connect( DeviceManager::instance(), SIGNAL( mediumRemoved( const Medium*, QString ) ), SLOT( mediumRemoved( const Medium* ) ) );
     }
@@ -234,6 +235,12 @@ MountPointManager::mediumChanged( const Medium *m )
                 debug() << "found handler for " << m->id() << endl;
                 DeviceHandler *handler = (*it)->createHandler( m );
                 int key = handler->getDeviceID();
+                if ( m_handlerMap.contains( key ) )
+                {
+                    debug() << "Key " << key << " already exists in handlerMap, replacing" << endl;
+                    delete m_handlerMap[key];
+                    m_handlerMap.erase( key );
+                }
                 m_handlerMap.insert( key, handler );
                 debug() << "added device " << key << " with mount point " << m->mountPoint() << endl;
                 emit mediumConnected( key );
@@ -260,8 +267,60 @@ MountPointManager::mediumChanged( const Medium *m )
 }
 
 void
-MountPointManager::mediumRemoved( const Medium* m )
+MountPointManager::mediumRemoved( const Medium *m )
 {
+    DEBUG_BLOCK
+    if ( !m )
+    {
+        //reinit?
+    }
+    else
+    {
+        //this works for USB devices, special cases might be required for other devices
+        foreachType( HandlerMap, m_handlerMap )
+        {
+            if ( it.data()->deviceIsMedium( m ) )
+            {
+                delete it.data();
+                int key = it.key();
+                m_handlerMap.erase( key );
+                debug() << "removed device " << key << endl;
+                emit mediumRemoved( key );
+                //we found the medium which was removed, so we can abort the loop
+                break;
+            }
+        }
+    }
+}
+
+void
+MountPointManager::mediumAdded( const Medium *m )
+{
+    DEBUG_BLOCK
+    if ( !m ) return;
+    if ( m->isMounted() )
+    {
+        debug() << "Device added and mounted, checking handlers" << endl;
+        foreachType( FactoryList, m_mediumFactories )
+        {
+            if ( (*it)->canHandle ( m ) )
+            {
+                debug() << "found handler for " << m->id() << endl;
+                DeviceHandler *handler = (*it)->createHandler( m );
+                int key = handler->getDeviceID();
+                if ( m_handlerMap.contains( key ) )
+                {
+                    debug() << "Key " << key << " already exists in handlerMap, replacing" << endl;
+                    delete m_handlerMap[key];
+                    m_handlerMap.erase( key );
+                }
+                m_handlerMap.insert( key, handler );
+                debug() << "added device " << key << " with mount point " << m->mountPoint() << endl;
+                emit mediumConnected( key );
+                break;  //we found the added medium and dont have to check the other device handlers
+            }
+        }
+    }
 }
 
 IdList
