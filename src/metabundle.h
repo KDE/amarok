@@ -165,7 +165,7 @@ public:
     /** Saves the MetaBundle's data as XML to a text stream. */
     bool save( QTextStream &stream, const QStringList &attributes = QStringList(), int indent = 0 ) const;
 
-    bool isStream() const;
+    bool isFile() const;
 
     /** Returns whether composer, disc number and bpm fields are available. */
     bool hasExtendedMetaInformation() const;
@@ -395,7 +395,7 @@ inline void MetaBundle::reactToChange( int column ) { reactToChanges( QValueList
 
 inline bool MetaBundle::exists() const { return m_exists; }
 
-inline bool MetaBundle::isStream() const { return !url().isLocalFile(); }
+inline bool MetaBundle::isFile() const { return url().isLocalFile(); }
 
 inline int MetaBundle::track()      const { return m_track == Undetermined ? 0 : m_track; }
 inline int MetaBundle::year()       const { return m_year  == Undetermined ? 0 : m_year; }
@@ -436,9 +436,9 @@ inline AtomicString MetaBundle::composer() const { return m_composer; }
 
 inline QString MetaBundle::type() const
 {
-    return isStream()
-           ? i18n( "Stream" )
-           : filename().mid( filename().findRev( '.' ) + 1 );
+    return isFile()
+           ? filename().mid( filename().findRev( '.' ) + 1 )
+           : i18n( "Stream" );
 }
 inline PodcastEpisodeBundle *MetaBundle::podcastBundle() const { return m_podcastBundle; }
 inline LastFm::Bundle *MetaBundle::lastFmBundle() const { return m_lastFmBundle; }

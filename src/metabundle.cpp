@@ -195,7 +195,7 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
     , m_lastPlay( abs( Undetermined ) )
     , m_filesize( Undetermined )
     , m_type( other )
-    , m_exists( url.protocol() == "file" && QFile::exists( url.path() ) )
+    , m_exists( isFile() && QFile::exists( url.path() ) )
     , m_isValidMedia( false )
     , m_isCompilation( false )
     , m_notCompilation( false )
@@ -330,7 +330,7 @@ MetaBundle::operator=( const MetaBundle& bundle )
 bool
 MetaBundle::checkExists()
 {
-    m_exists = isStream() || url().protocol() == "cdda" || ( url().protocol() == "file" && QFile::exists( url().path() ) );
+    m_exists = !isFile() || QFile::exists( url().path() );
 
     return m_exists;
 }
@@ -419,7 +419,8 @@ MetaBundle::init( const KFileMetaInfo& info )
 void
 MetaBundle::embeddedImages( MetaBundle::EmbeddedImageList& images )
 {
-    if ( url().protocol() == "file" ) {
+    if ( isFile() )
+    {
         TagLib::FileRef fileref = TagLib::FileRef( QFile::encodeName( url().path() ), false );
         if ( !fileref.isNull() ) {
             if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) ) {
@@ -441,7 +442,7 @@ MetaBundle::embeddedImages( MetaBundle::EmbeddedImageList& images )
 void
 MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImageList* images, bool doUniqueId )
 {
-    if(!( url().protocol() == "file" || url().protocol() == "audiocd" ) )
+    if( !isFile() )
         return;
 
     const QString path = url().path();
@@ -591,7 +592,7 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
 
 void MetaBundle::updateFilesize()
 {
-    if( url().protocol() != "file" )
+    if( !isFile() )
     {
         m_filesize = Undetermined;
         return;
@@ -599,8 +600,6 @@ void MetaBundle::updateFilesize()
 
     const QString path = url().path();
     m_filesize = QFile( path ).size();
-
-    debug() << "filesize = " << m_filesize << endl;
 }
 
 int MetaBundle::score() const
@@ -748,7 +747,7 @@ QString MetaBundle::prettyText( int column ) const
     QString text;
     switch( column )
     {
-        case Filename:   text = isStream() ? url().prettyURL():MetaBundle::prettyTitle(filename());  break;
+        case Filename:   text = isFile() ? MetaBundle::prettyTitle(filename()) : url().prettyURL();  break;
         case Title:      text = title().isEmpty() ? MetaBundle::prettyTitle( filename() ) : title(); break;
         case Artist:     text = artist();                                                            break;
         case Composer:   text = composer();                                                          break;
@@ -1260,11 +1259,8 @@ void MetaBundle::loadImagesFromTag( const TagLib::ID3v2::Tag &tag, EmbeddedImage
 bool
 MetaBundle::save()
 {
-    if( !(url().protocol() == "file") )
-    {
-        debug() << "no file protocol url" << endl;
+    if( !isFile() )
         return false;
-    }
 
     //Set default codec to UTF-8 (see bugs 111246 and 111232)
     TagLib::ID3v2::FrameFactory::instance()->setDefaultTextEncoding(TagLib::String::UTF8);
@@ -1347,6 +1343,9 @@ void MetaBundle::setPath( const QString &path )
 
 void MetaBundle::setUniqueId()
 {
+    if( !isFile() )
+        return;
+
     const QString path = url().path();
     TagLib::FileRef fileref;
     fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
@@ -1385,7 +1384,12 @@ MetaBundle::ourMP3UidFrame( TagLib::MPEG::File *file, QString ourId )
 
 void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
 {
-    if( isStream() || url().protocol() == "cdda" || url().protocol() == "audiocd" || ( !AmarokConfig::advancedTagFeatures() && !strip ) )
+    if( !isFile() )
+    {
+        // this was probably checked before, but...
+        return;
+    }
+    if( !AmarokConfig::advancedTagFeatures() && !strip )
         return;
 
     bool createID = false;
@@ -1545,6 +1549,8 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
 void
 MetaBundle::newUniqueId()
 {
+    if( !isFile() )
+        return;
     if( !AmarokConfig::advancedTagFeatures() )
         return;
 
@@ -1560,6 +1566,8 @@ MetaBundle::newUniqueId()
 
 void MetaBundle::removeUniqueId()
 {
+    if( !isFile() )
+        return;
     const QString path = url().path();
     TagLib::FileRef fileref;
     fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
