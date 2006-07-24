@@ -70,7 +70,7 @@ class CommandPlugin < Plugin
       return
     end
 
-    m.reply "Available commands: #{@commands.keys.join(', ')}" 
+    m.reply "Available commands: #{@commands.keys.sort.join(', ')}" 
   end
 
   def cmd_command_show( m, params )
