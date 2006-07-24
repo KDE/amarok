@@ -23,6 +23,7 @@
 
 void Options7::atf_clicked( bool checked )
 {
-    AmarokConfig::setATFJustTurnedOn( checked && !AmarokConfig::advancedTagFeatures() );
+    AmarokConfig::setATFJustTurnedOn( checked
+            && !AmarokConfig::advancedTagFeatures() );
 }
 

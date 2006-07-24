@@ -227,13 +227,13 @@ main_loop:
                 CollectionDB::instance()->clearTables( false ); // empty permanent tables
 
             CollectionDB::instance()->copyTempTables(); // copy temp into permanent tables
-            if( AmarokConfig::aTFJustTurnedOn() )
+            if( AmarokConfig::advancedTagFeatures() && !AmarokConfig::aTFFirstTurnedOn() )
             {
                 amaroK::StatusBar::instance()->longMessageThreadSafe( i18n("ATF is now enabled.  Enjoy!\n"),
                             KDE::StatusBar::Information );
 
                 Playlist::instance()->clear();
-                AmarokConfig::setATFJustTurnedOn( false );
+                AmarokConfig::setATFFirstTurnedOn( true );
                 amaroK::config()->sync();
             }
         }

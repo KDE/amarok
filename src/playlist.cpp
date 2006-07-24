@@ -1670,19 +1670,17 @@ Playlist::checkFileStatus( PlaylistItem * item )
     {
         //debug() << "not found, finding new url" << endl;
         QString path = QString::null;
-        if( AmarokConfig::advancedTagFeatures() && !item->uniqueId().isEmpty() )
+        if( !item->uniqueId().isEmpty() )
         {
             path = CollectionDB::instance()->urlFromUniqueId( item->uniqueId() );
             //debug() << "found path = " << path << endl;
         }
-        else if( AmarokConfig::advancedTagFeatures() )
+        else
         {
-            //debug() << "Setting uniqueid of item" << endl;
+            //debug() << "Setting uniqueid of item and trying again" << endl;
             item->setUniqueId();
-            //debug() << "Now, uniqueid is: " << item->uniqueId() << endl;
             if( !item->uniqueId().isEmpty() )
                 path = CollectionDB::instance()->urlFromUniqueId( item->uniqueId() );
-            //debug() << "Now, path is: " << path << endl;
         }
         if( !path.isEmpty() )
         {

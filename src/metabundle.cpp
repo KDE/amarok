@@ -209,8 +209,7 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
 
         if ( !isValidMedia() || ( !m_podcastBundle && m_length <= 0 ) )
             readTags( readStyle, images );
-        else if( AmarokConfig::advancedTagFeatures() )
-            setUniqueId();
+        setUniqueId();
     }
     else
     {
@@ -262,15 +261,13 @@ MetaBundle::MetaBundle( const QString& title,
         m_title  = title;
         m_artist = streamName; //which is sort of correct..
     }
-    if( AmarokConfig::advancedTagFeatures() )
-        setUniqueId();
+    setUniqueId();
 }
 
 MetaBundle::MetaBundle( const MetaBundle &bundle )
 {
     *this = bundle;
-    if( AmarokConfig::advancedTagFeatures() )
-        setUniqueId();
+    setUniqueId();
 }
 
 MetaBundle::~MetaBundle()
@@ -320,7 +317,7 @@ MetaBundle::operator=( const MetaBundle& bundle )
     if( bundle.m_lastFmBundle )
         setLastFmBundle( *bundle.m_lastFmBundle );
 
-    if( AmarokConfig::advancedTagFeatures() && m_uniqueId.isEmpty() )
+    if( m_uniqueId.isEmpty() )
         setUniqueId();
 
     return *this;
@@ -557,7 +554,7 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
             }
         }
 
-        if ( AmarokConfig::advancedTagFeatures() && doUniqueId )
+        if ( doUniqueId )
             setUniqueId( fileref, false );
 
         if ( !disc.isEmpty() )
@@ -1327,8 +1324,7 @@ void MetaBundle::setUrl( const KURL &url )
     for( int i = 0; i < NUM_COLUMNS; ++i ) changes << i;
     aboutToChange( changes ); m_url = url; reactToChanges( changes );
 
-    if( AmarokConfig::advancedTagFeatures() )
-        setUniqueId();
+    setUniqueId();
 }
 
 void MetaBundle::setPath( const QString &path )
@@ -1389,8 +1385,6 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
         // this was probably checked before, but...
         return;
     }
-    if( !AmarokConfig::advancedTagFeatures() && !strip )
-        return;
 
     bool createID = false;
     int randSize = 8;
@@ -1400,7 +1394,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
 
     if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
     {
-        if ( file->ID3v2Tag( !strip ) )
+        if ( file->ID3v2Tag( AmarokConfig::advancedTagFeatures() ) )
         {
             if( file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() || !ourMP3UidFrame( file, ourId ) || recreate || strip )
                 createID = true;
@@ -1419,7 +1413,9 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
                 */
                 m_uniqueId = TStringToQString( TagLib::String( ourMP3UidFrame( file, ourId )->identifier().data() ) ).left( randSize );
             }
-            if( ( strip || createID ) && TagLib::File::isWritable( file->name() ) )
+            if( AmarokConfig::advancedTagFeatures()
+                    && ( strip || createID )
+                    && TagLib::File::isWritable( file->name() ) )
             {
                 m_uniqueId = getRandomStringHelper( randSize );
                 if( !file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() && ourMP3UidFrame( file, ourId ) )
@@ -1445,10 +1441,12 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
         if( file->tag() )
         {
             if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) )
-                        && ( recreate || strip ) && TagLib::File::isWritable( file->name() ) )
+                        && ( recreate || strip )
+                        && AmarokConfig::advancedTagFeatures()
+                        && TagLib::File::isWritable( file->name() ) )
                 file->tag()->removeField( QStringToTString( ourId ) );
 
-            if( strip )
+            if( AmarokConfig::advancedTagFeatures() && strip )
             {
                 file->save();
                 return;
@@ -1456,7 +1454,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
 
             if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) )
             {
-                if( TagLib::File::isWritable( file->name() ) )
+                if( AmarokConfig::advancedTagFeatures && TagLib::File::isWritable( file->name() ) )
                 {
                     m_uniqueId = getRandomStringHelper( randSize );
                     file->tag()->addField( QStringToTString( ourId ),
@@ -1479,10 +1477,12 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
         /*if ( file->xiphComment( !strip ) )
         {
             if( file->xiphComment()->fieldListMap().contains( QStringToTString( ourId ) )
-                        && ( recreate || strip ) && TagLib::File::isWritable( file->name() ) )
+                        && AmarokConfig::advancedTagFeatures()
+                        && ( recreate || strip )
+                        && TagLib::File::isWritable( file->name() ) )
                 file->xiphComment()->removeField( QStringToTString( ourId ) );
 
-            if( strip )
+            if( AmarokConfig::advancedTagFeatures() && strip )
             {
                 file->save();
                 return;
@@ -1490,7 +1490,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
 
             if( !file->xiphComment()->fieldListMap().contains( QStringToTString( ourId ) ) )
             {
-                if( TagLib::File::isWritable( file->name() ) )
+                if( AmarokConfig::advancedTagFeatures && TagLib::File::isWritable( file->name() ) )
                 {
                     m_uniqueId = getRandomStringHelper( randSize );
                     file->xiphComment()->addField( QStringToTString( ourId ),
@@ -1512,10 +1512,12 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
         /*if( file->tag() )
         {
             if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) )
-                        && ( recreate || strip ) && TagLib::File::isWritable( file->name() ) )
+                        && AmarokConfig::advancedTagFeatures()
+                        && ( recreate || strip )
+                        && TagLib::File::isWritable( file->name() ) )
                 file->tag()->removeField( QStringToTString( ourId ) );
 
-            if( strip )
+            if( AmarokConfig::advancedTagFeatures() && strip )
             {
                 file->save();
                 return;
@@ -1523,7 +1525,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
 
             if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) )
             {
-                if( TagLib::File::isWritable( file->name() ) )
+                if( AmarokConfig::advancedTagFeatures && TagLib::File::isWritable( file->name() ) )
                 {
                     m_uniqueId = getRandomStringHelper( randSize );
                     file->tag()->addField( QStringToTString( ourId ),
@@ -1551,6 +1553,7 @@ MetaBundle::newUniqueId()
 {
     if( !isFile() )
         return;
+
     if( !AmarokConfig::advancedTagFeatures() )
         return;
 
@@ -1568,6 +1571,12 @@ void MetaBundle::removeUniqueId()
 {
     if( !isFile() )
         return;
+
+    //currently need to have it enabled to strip a UID
+    //TODO: find a non-ugly way around that?  Can do with a million if conditions, but...
+    if( !AmarokConfig::advancedTagFeatures() )
+        return;
+
     const QString path = url().path();
     TagLib::FileRef fileref;
     fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );

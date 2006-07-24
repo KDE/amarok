@@ -46,6 +46,13 @@ VERSION 1.4.2:
     Collection options), and it will automatically start a rescan and clear
     the Playlist for you.
     * ATF no longer requires a restart to enable or disable it.
+    * ATF read-only functions are always enabled if a UID is found in the
+      file. Option in the configuration dialog now only controls whether new
+      UIDs are written to new files.
+    * ATF will now automatically run the rescan and clear the Playlist only on
+      the first time it is enabled.  After that it will simply display an info
+      reminding users that they may need a rescan if their library has changed
+      since the last time it was enabled.
 
   BUGFIXES:
     * If disabled, don't show splash screen - even on Kubuntu. (BR 125210)

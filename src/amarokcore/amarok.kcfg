@@ -498,8 +498,12 @@
         <label>Enable/disable advanced features using tag-based unique identifiers</label>
         <default>false</default>
     </entry>
+    <entry key="ATFFirstTurnedOn" type="Bool">
+        <label>When true, ATF has just been turned on for the very first time -- used to start a scan.</label>
+        <default>false</default>
+    </entry>
     <entry key="ATFJustTurnedOn" type="Bool">
-        <label>When true, ATF has just been turned on, to enable special behavior at startup.</label>
+        <label>When true, ATF has just been turned on.</label>
         <default>false</default>
     </entry>
 </group>

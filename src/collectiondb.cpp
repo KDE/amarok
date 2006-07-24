@@ -2860,8 +2860,6 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
 {
     //DEBUG_BLOCK
     //debug() << "AmarokConfig::advancedTagFeatures() = " << (AmarokConfig::advancedTagFeatures() ? "true" : "false") << endl;
-    if( !AmarokConfig::advancedTagFeatures() ) return;
-
     //debug() << "Checking currid = " << currid << ", currurl = " << currurl << endl;
 
     if( bundle->uniqueId().isEmpty() || bundle->url().path().isEmpty() )
@@ -2874,7 +2872,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
     QString currurl = escapeString( mpm->getRelativePath( currdeviceid, bundle->url().path() ) );
     QString currdir = escapeString( mpm->getRelativePath( currdeviceid, bundle->url().directory() ) );
 
-    
+
     QStringList urls = query( QString(
             "SELECT url, uniqueid "
             "FROM uniqueid%1 "
@@ -3125,9 +3123,6 @@ CollectionDB::removeUniqueIdFromFile( const QString &path )
 QString
 CollectionDB::urlFromUniqueId( const QString &id )
 {
-    if( !AmarokConfig::advancedTagFeatures() )
-        return QString::null;
-
     QStringList urls = query( QString(
             "SELECT deivceid, url "
             "FROM uniqueid "
@@ -3219,8 +3214,7 @@ fillInBundle( QStringList values, MetaBundle &bundle )
     int val = (*it).toInt( &ok );
     bundle.setCompilation( ok ? val : MetaBundle::CompilationUnknown );
 
-    if( AmarokConfig::advancedTagFeatures() )
-        bundle.setUniqueId();
+    bundle.setUniqueId();
 }
 
 bool
@@ -3916,8 +3910,6 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
     srcURL.cleanPath();
     dstURL.cleanPath();
 
-    QString uid = getUniqueId( src );
-
     // Make sure it is valid.
     if(!srcURL.isValid() || !dstURL.isValid())
         debug() << "Invalid URL "  << endl;
@@ -3970,7 +3962,8 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
             if( isFileInCollection( srcURL.path() ) )
             {
                 migrateFile( srcURL.path(), dstURL.path() );
-                if( AmarokConfig::advancedTagFeatures() )
+                QString uid = getUniqueId( src );
+                if( !uid.isEmpty() )
                     emit fileMoved( src, dest, uid );
                 else
                     emit fileMoved( src, dest);
@@ -4113,8 +4106,7 @@ CollectionDB::removeSongs( const KURL::List& urls )
         query( QString( "DELETE FROM tags WHERE url = '%1' AND deviceid = %2;" )
             .arg( escapeString( rpath ) )
             .arg( deviceid ) );
-        if( AmarokConfig::advancedTagFeatures() )
-            query( QString( "DELETE FROM uniqueid WHERE url = '%1' AND deviceid = %2;" )
+        query( QString( "DELETE FROM uniqueid WHERE url = '%1' AND deviceid = %2;" )
                 .arg( escapeString( rpath ) )
                 .arg( deviceid ) );
         query( QString( "UPDATE statistics SET deleted = %1 WHERE url = '%2';" )
@@ -4790,9 +4782,6 @@ CollectionDB::similarArtistsFetched( const QString& artist, const QStringList& s
 void
 CollectionDB::atfMigrateStatisticsUrl( const QString& /*oldUrl*/, const QString& newUrl, const QString& uniqueid )
 {
-    if( !AmarokConfig::advancedTagFeatures() )
-        return;
-
     int deviceid = MountPointManager::instance()->getIdForUrl( newUrl );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, newUrl );
     query( QString( "DELETE FROM statistics WHERE deviceid = %1 AND url = '%2';" )

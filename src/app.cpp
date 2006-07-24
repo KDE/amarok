@@ -616,14 +616,26 @@ void App::applySettings( bool firstTime )
     }
 
     // If just turned ATF on, clear the playlist and force a rescan
-    if ( AmarokConfig::aTFJustTurnedOn() )
+    if ( !AmarokConfig::aTFFirstTurnedOn() )
     {
-        amaroK::StatusBar::instance()->longMessage( i18n("ATF was just enabled.  Amarok needs to rescan\n"
-                                                         "your collection.  When this is done Amarok will\n"
-                                                         "clear the Playlist and you'll be good to go!\n"
-                                                         "This first rescan may take much longer than normal.\n"
-                                                         "Please be patient."), KDE::StatusBar::Information );
+        amaroK::StatusBar::instance()->longMessageThreadSafe(
+                    i18n("ATF tagging was just enabled for the first time.\n"
+                         "Amarok needs to rescan your collection.\n"
+                         "When this is done Amarok will clear the\n"
+                         "Playlist and you'll be good to go!\n"
+                         "This first rescan may take much longer than normal.\n"
+                         "Please be patient."), KDE::StatusBar::Information );
         QTimer::singleShot( 0, CollectionDB::instance(), SLOT( startScan() ) );
+    }
+    else if ( AmarokConfig::aTFJustTurnedOn() )
+    {
+        amaroK::StatusBar::instance()->longMessageThreadSafe( 
+                    i18n( "You have re-enabled ATF tagging. Please\n"
+                          "remember that new files that have been\n"
+                          "added to your collection since you last\n"
+                          "had ATF tagging enabled will need to be\n"
+                          "rescanned for full functionality."), KDE::StatusBar::Information );
+        AmarokConfig::setATFJustTurnedOn( false );
     }
 
     //if ( !firstTime )
@@ -708,23 +720,8 @@ App::continueInit()
     #endif
 
     CollectionDB *collDB = CollectionDB::instance();
-    // If just turned ATF on, clear the playlist and force a rescan
-    if ( AmarokConfig::aTFJustTurnedOn() )
-    {
-        amaroK::StatusBar::instance()->longMessage( i18n("ATF was just enabled.  Amarok needs to clear\n"
-                                                         "the playlist and then rescan the collection.\n"
-                                                         "(ATF will not work with any tracks added to the\n"
-                                                         "playlist before the end of this scan.)\n"
-                                                         "This first rescan may take much longer than normal.\n"
-                                                         "Please be patient."), KDE::StatusBar::Information );
-        //connect( collDB, SIGNAL( databaseUpdateDone() ), collDB, SLOT( startScan() ) );
-        collDB->startScan();
-        Playlist::instance()->clear();
-        AmarokConfig::setATFJustTurnedOn( false );
-        amaroK::config()->sync();
-    }
     // Trigger collection scan if folder setup was changed by wizard
-    else if ( oldCollectionFolders != MountPointManager::instance()->collectionFolders() )
+    if ( oldCollectionFolders != MountPointManager::instance()->collectionFolders() )
     {
          //connect( collDB, SIGNAL( databaseUpdateDone() ), collDB, SLOT( startScan() ) );
         collDB->startScan();

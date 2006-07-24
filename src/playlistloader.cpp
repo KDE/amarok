@@ -223,10 +223,8 @@ UrlLoader::customEvent( QCustomEvent *e)
             //Only add files that exist to the playlist
             if( !(*it).exists() )
             {
-                if( !AmarokConfig::advancedTagFeatures() )
-                    continue;
-
-                //ATF on, so add anyways, but disable, we expect to find with an update
+                //Since ATF's read-only functions will now always be on, always use the ATF
+                //behavior...add anyways, but disable, we expect to find with an update
                 /*PlaylistItem *item = */ new PlaylistItem( *it, m_markerListViewItem, false );
             }
             else

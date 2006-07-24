@@ -66,7 +66,7 @@ PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi, bool e
 {
     setDragEnabled( true );
 
-    if( AmarokConfig::advancedTagFeatures() && !uniqueId().isEmpty() )
+    if( !uniqueId().isEmpty() )
         Playlist::instance()->addToUniqueMap( uniqueId(), this );
 
     refAlbum();
@@ -213,9 +213,9 @@ int PlaylistItem::queuePosition() const
 void PlaylistItem::setEnabled( bool enabled )
 {
     m_enabled = enabled;
-    if( AmarokConfig::advancedTagFeatures() && !enabled )
+    if( !enabled && !uniqueId().isEmpty() )
         Playlist::instance()->disabledChild( this );
-    else if ( AmarokConfig::advancedTagFeatures() )
+    else if ( !uniqueId().isEmpty()  )
         Playlist::instance()->removeDisabledChild( this );
     setDropEnabled( enabled ); // this forbids items to be dropped into a history queue.
 
