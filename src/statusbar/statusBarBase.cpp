@@ -24,6 +24,7 @@
 #include "debug.h"
 #include "squeezedtextlabel.h"
 #include "statusBarBase.h"
+#include "threadweaver.h"
 
 #include <kio/job.h>
 #include <kiconloader.h>
@@ -206,6 +207,8 @@ StatusBar::event( QEvent *e )
 void
 StatusBar::setMainText( const QString &text )
 {
+    SHOULD_BE_GUI
+
     m_mainText = text;
 
     // it may not be appropriate for us to set the mainText yet
@@ -215,6 +218,8 @@ StatusBar::setMainText( const QString &text )
 void
 StatusBar::shortMessage( const QString &text, bool longShort )
 {
+    SHOULD_BE_GUI
+
     m_mainTextLabel->setText( text );
     m_mainTextLabel->setPalette( QToolTip::palette() );
 
@@ -258,6 +263,8 @@ StatusBar::resetMainText()
 void
 StatusBar::shortLongMessage( const QString &_short, const QString &_long, int type )
 {
+    SHOULD_BE_GUI
+
     m_shortLongType = type;
 
     if( !_short.isEmpty() )
@@ -273,6 +280,8 @@ StatusBar::shortLongMessage( const QString &_short, const QString &_long, int ty
 void
 StatusBar::longMessage( const QString &text, int type )
 {
+    SHOULD_BE_GUI
+
     if( text.isEmpty() )
         return;
 
@@ -348,6 +357,8 @@ StatusBar::allDone()
 ProgressBar&
 StatusBar::newProgressOperation( QObject *owner )
 {
+    SHOULD_BE_GUI
+
     if ( m_progressMap.contains( owner ) )
         return *m_progressMap[owner];
 
@@ -377,6 +388,8 @@ StatusBar::newProgressOperation( QObject *owner )
 ProgressBar&
 StatusBar::newProgressOperation( KIO::Job *job )
 {
+    SHOULD_BE_GUI
+
     ProgressBar & bar = newProgressOperation( static_cast<QObject*>( job ) );
     bar.setTotalSteps( 100 );
 
