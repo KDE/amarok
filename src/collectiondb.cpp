@@ -39,6 +39,7 @@
 
 #include <qbuffer.h>
 #include <qcheckbox.h>
+#include <qdeepcopy.h>
 #include <qfile.h>
 #include <qmap.h>
 #include <qmutex.h>
@@ -4765,9 +4766,9 @@ class SimilarArtistsInsertionJob : public ThreadWeaver::DependentJob
 public:
     SimilarArtistsInsertionJob( CollectionDB *parent, const QString &s, const QStringList &list )
             : ThreadWeaver::DependentJob( parent, "SimilarArtistsInsertionJob" )
-            , artist( s )
-            , escapedArtist( parent->escapeString( s ) )
-            , suggestions( list )
+            , artist( QDeepCopy<QString>(s) )
+            , escapedArtist( parent->escapeString( QDeepCopy<QString>(s) ) )
+            , suggestions( QDeepCopy<QStringList>(list) )
     {}
 };
 
