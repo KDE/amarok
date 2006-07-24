@@ -325,6 +325,8 @@ ContextBrowser::ContextBrowser( const char *name )
 
 ContextBrowser::~ContextBrowser()
 {
+    ThreadWeaver::instance()->abortAllJobsNamed( "CurrentTrackJob" );
+
     // Ensure the KHTMLPart dies before its KHTMLView dies,
     // because KHTMLPart's dtoring relies on its KHTMLView still being alive
     // (see bug 130494).
