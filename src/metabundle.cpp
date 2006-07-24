@@ -23,6 +23,7 @@
 #include <kio/global.h>
 #include <kmdcodec.h>
 #include <kmimetype.h>
+#include <qdeepcopy.h>
 #include <qdom.h>
 #include <qfile.h> //decodePath()
 #include <taglib/attachedpictureframe.h>
@@ -1728,3 +1729,20 @@ void MetaBundle::setFilesize( int bytes )
 { aboutToChange( Filesize ); m_filesize = bytes; reactToChange( Filesize ); }
 
 void MetaBundle::setFileType( int type ) { m_type = type; }
+
+void MetaBundle::detach()
+{
+    // we'd do that, but unfortunately it does not exist
+    //m_url.detach();
+    QString url( QDeepCopy<QString>( m_url.url() ) );
+    m_url = KURL::fromPathOrURL( url );
+
+    m_title = QDeepCopy<QString>(m_title);
+    m_artist = m_artist.deepCopy();
+    m_album = m_album.deepCopy();
+    m_comment = m_comment.deepCopy();
+    m_composer = m_composer.deepCopy();
+    m_genre = m_genre.deepCopy();
+    m_streamName = QDeepCopy<QString>(m_streamName);
+    m_streamUrl = QDeepCopy<QString>(m_streamUrl);
+}

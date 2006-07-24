@@ -35,6 +35,7 @@
 #include "threadweaver.h"
 
 #include <qdatetime.h>
+#include <qdeepcopy.h>
 #include <qdom.h>
 #include <qimage.h>
 #include <qregexp.h>
@@ -934,8 +935,12 @@ class CurrentTrackJob : public ThreadWeaver::DependentJob
 {
 public:
     CurrentTrackJob( ContextBrowser *parent )
-            : ThreadWeaver::DependentJob( parent, "CurrentTrackJob" )
-            , b( parent ) {}
+        : ThreadWeaver::DependentJob( parent, "CurrentTrackJob" )
+        , b( parent )
+        , m_currentTrack( QDeepCopy<MetaBundle>( EngineController::instance()->bundle() ) )
+        , m_isStream( EngineController::engine()->isStream() )
+    {
+    }
 
 private:
     virtual bool doJob();
@@ -970,6 +975,8 @@ private:
     QString m_HTMLSource;
 
     ContextBrowser *b;
+    MetaBundle m_currentTrack;
+    bool m_isStream;
 };
 
 void
@@ -1812,7 +1819,7 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
                 )
             );
 
-    if ( EngineController::engine()->isStream() && b->m_metadataHistory.count() > 1 )
+    if ( m_isStream && b->m_metadataHistory.count() > 1 )
     {
         m_HTMLSource.append(
                 "<div id='stream-history_box' class='box'>\n"
@@ -2691,7 +2698,6 @@ QString CurrentTrackJob::statsHTML( int score, int rating, bool statsbox ) //sta
 
 bool CurrentTrackJob::doJob()
 {
-    const MetaBundle &currentTrack = EngineController::instance()->bundle();
     m_HTMLSource.append( "<html><body>\n"
                     "<script type='text/javascript'>\n"
                       //Toggle visibility of a block. NOTE: if the block ID starts with the T
@@ -2716,22 +2722,22 @@ bool CurrentTrackJob::doJob()
             showHome();
             return true;
         }
-        MetaBundle mb( currentTrack.url() );
+        MetaBundle mb( m_currentTrack.url() );
         if( mb.podcastBundle() )
         {
             showPodcast( mb );
             return true;
         }
 
-        if( currentTrack.url().protocol() == "lastfm" )
+        if( m_currentTrack.url().protocol() == "lastfm" )
         {
-            showLastFm( currentTrack );
+            showLastFm( m_currentTrack );
             return true;
         }
 
-        if( EngineController::engine()->isStream() )
+        if( m_isStream )
         {
-            showStream( currentTrack );
+            showStream( m_currentTrack );
             return true;
         }
     }
@@ -2740,7 +2746,7 @@ bool CurrentTrackJob::doJob()
     if( b->m_browseArtists )
     {
         artist = b->m_artist;
-        if( artist == currentTrack.artist() )
+        if( artist == m_currentTrack.artist() )
         {
             b->m_browseArtists = false;
             b->m_artist = QString::null;
@@ -2749,16 +2755,16 @@ bool CurrentTrackJob::doJob()
         }
     }
     else
-        artist = currentTrack.artist();
+        artist = m_currentTrack.artist();
 
     const uint artist_id = CollectionDB::instance()->artistID( artist );
-    const uint album_id  = CollectionDB::instance()->albumID ( currentTrack.album() );
+    const uint album_id  = CollectionDB::instance()->albumID ( m_currentTrack.album() );
     QueryBuilder qb;
     QStringList values;
     if( b->m_browseArtists )
         showBrowseArtistHeader( artist );
     else
-        showCurrentArtistHeader( currentTrack );
+        showCurrentArtistHeader( m_currentTrack );
     QStringList relArtists = CollectionDB::instance()->similarArtists( artist, 10 );
     if ( !relArtists.isEmpty() )
     {

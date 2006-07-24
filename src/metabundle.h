@@ -285,6 +285,8 @@ public: //modifiers
     void removeUniqueId();
     void newUniqueId();
 
+    void detach(); // for being able to apply QDeepCopy<>
+
 public: //static helper functions
     static QString prettyBitrate( int );
     static QString prettyLength( int, bool showHours = false ); //must be int, see Unavailable, etc. above
