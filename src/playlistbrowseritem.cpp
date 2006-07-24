@@ -1518,7 +1518,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
             //prepending ensures correct order in 99% of the channels, except those who use chronological order
             QDomElement *el = new QDomElement( n.toElement() );
             eList.inSort( el );
-            debug() << "appending " << ( &n.toElement() )->namedItem( "title" ).toElement().text() << endl;
+            debug() << "appending " << n.toElement().namedItem( "title" ).toElement().text() << endl;
         }
         else if( isAtom )
         {
@@ -1536,7 +1536,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
         }
     }
 
-    int i = m_bundle.hasPurge() ? m_bundle.purgeCount() : eList.count();
+    uint i = m_bundle.hasPurge() ? m_bundle.purgeCount() : eList.count();
     debug() << "Count = " << eList.count() << endl;
     foreachType( ElementList, eList )
     {
