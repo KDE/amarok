@@ -11,8 +11,9 @@ class CommandPlugin < Plugin
   end
 
   def listen( m )
-    if m.address? and @registry.has_key?( m.message )
-      cmd = m.message
+    cmd = m.message.split.first
+
+    if m.address? and @registry.has_key?( cmd )
       code = @registry[cmd].untaint
 
       Thread.start do
