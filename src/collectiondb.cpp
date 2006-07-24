@@ -3989,8 +3989,8 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
 void
 CollectionDB::updateDirStats( QString path, const long datetime, const bool temporary )
 {
-    //if ( path.endsWith( "/" ) )
-    //    path = path.left( path.length() - 1 );
+    if ( path.endsWith( "/" ) )
+        path = path.left( path.length() - 1 );
 
     int deviceid = MountPointManager::instance()->getIdForUrl( path );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, path );
@@ -4056,8 +4056,8 @@ CollectionDB::removeSongsInDir( QString path )
 bool
 CollectionDB::isDirInCollection( QString path )
 {
-    //if ( path.endsWith( "/" ) )
-    //    path = path.left( path.length() - 1 );
+    if ( path.endsWith( "/" ) )
+        path = path.left( path.length() - 1 );
     int deviceid = MountPointManager::instance()->getIdForUrl( path );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, path );
 
@@ -6047,11 +6047,13 @@ QueryBuilder::linkTables( int tables )
             m_tables += " LEFT JOIN " + tableName( tabYear) + " ON year.id=tags.year";
         if ( tables & tabStats )
         {
-            QString url = QString( "." ) + m_url;
             m_tables += " LEFT JOIN " + tableName( tabStats)
-                                      + " ON statistics.url=tags.url AND statistics.deviceid = tags.deviceid"
-                                      + QString ( " OR statistics.deviceid = -1 AND statistics.url = '%1'" )
-                                                .arg( CollectionDB::instance()->escapeString( url ) );
+                                      + " ON statistics.url=tags.url AND statistics.deviceid = tags.deviceid";
+            //if ( !m_url.isEmpty() ) {
+            //    QString url = QString( "." ) + m_url;
+            //    m_tables += QString( " OR statistics.deviceid = -1 AND statistics.url = '%1'" )
+            //                                    .arg( CollectionDB::instance()->escapeString( url ) );
+            //}
         }
         if ( tables & tabLyrics )
             m_tables += " LEFT JOIN " + tableName( tabLyrics)
