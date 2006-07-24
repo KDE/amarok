@@ -10,6 +10,10 @@ class CommandPlugin < Plugin
     super
   end
 
+  def help( plugin, topic="" )
+    "Create mini plugins on IRC. 'command add <name> <code>' => Create command named <name> with the code <source>. 'command list' => Show a list of all known commands. 'command show <name>' => Show the source code for <name>. 'command del <name>' => Delete command <name>."
+  end
+
   def listen( m )
     cmd = m.message.split.first
 
