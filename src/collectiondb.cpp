@@ -2114,8 +2114,8 @@ CollectionDB::findEmbeddedImage( const QString& artist, const QString& album, ui
 
     QStringList values = QStringList();
     if ( rs.count() == 3 ) {
-        values[0] = rs.first();
-        values[1] = MountPointManager::instance()->getAbsolutePath( rs[1].toInt(), rs[2] );
+        values += rs.first();
+        values += MountPointManager::instance()->getAbsolutePath( rs[1].toInt(), rs[2] );
     }
 
     if ( values.count() == 2 ) {

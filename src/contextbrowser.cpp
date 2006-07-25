@@ -2321,7 +2321,6 @@ void CurrentTrackJob::showArtistsFaves( const QString &artist, uint artist_id )
 void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, uint album_id )
 {
     DEBUG_BLOCK
-    //FIXME max: an assertion fails in qvaluelist somewhere in the method
     QString artistName = artist.isEmpty() ? escapeHTML( i18n( "This Artist" ) ) : escapeHTML( artist );
     QueryBuilder qb;
     QStringList values;
