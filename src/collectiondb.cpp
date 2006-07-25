@@ -798,7 +798,7 @@ void
 CollectionDB::copyTempTables( )
 {
     DEBUG_BLOCK
-    
+
     insert( "INSERT INTO tags SELECT * FROM tags_temp;", NULL );
     //mysql 5 supports subqueries with IN, mysql 4 doesn't. this way will work for all SQL servers
     QStringList albumIdList = query( "SELECT album.id FROM album;" );
@@ -3494,7 +3494,7 @@ CollectionDB::addSongPercentage( const QString &url, int percentage,
             "SELECT playcounter, createdate, percentage, rating FROM statistics "
             "WHERE url = '%2' AND deviceid = %1;" )
             .arg( statDevId ).arg( escapeString( statRPath ) ) );
-    
+
     //handle corner case: deviceid!=-1 but there is a statistics row for that song with deviceid -1
     if ( values.isEmpty() )
     {
@@ -3524,7 +3524,7 @@ CollectionDB::addSongPercentage( const QString &url, int percentage,
                         .arg( values[0] + " + 1" )
                         .arg( atime )
                         .arg( statDevId )
-                        .arg( escapeString( statRPath ) ) ); 
+                        .arg( escapeString( statRPath ) ) );
     }
     else
     {
@@ -4277,6 +4277,7 @@ void CollectionDB::deleteRedundantName( const QString &table, QString ID )
 void
 CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bool updateView )
 {
+    DEBUG_BLOCK
     QueryBuilder qb;
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
@@ -5029,7 +5030,7 @@ CollectionDB::checkDatabase()
             }
             delete dialog;
         }
-        
+
         emit databaseUpdateDone();
     }
 
@@ -5146,7 +5147,7 @@ CollectionDB::updateStatsTables()
 
                 query( "ALTER TABLE statistics ADD deviceid INTEGER;" );
 
-                //FIXME: (max) i know this is bad but its fast 
+                //FIXME: (max) i know this is bad but its fast
                 QStringList oldURLs = query( "SELECT url FROM statistics;" );
                 //it might be necessary to use batch updates to improve speed
                 debug() << "Updating " << oldURLs.count() << " rows in statistics" << endl;
@@ -7092,7 +7093,7 @@ QueryBuilder::functionName( int function )
 
 QStringList
 QueryBuilder::cleanURL( QStringList result )
-{   
+{
     //this method replaces the fields for relative path and devive/media id with a
     //single field containing the absolute path for each row
     //TODO Max improve this code

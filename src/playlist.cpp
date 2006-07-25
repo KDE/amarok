@@ -1,5 +1,5 @@
 /* Copyright 2002-2004 Mark Kretschmann, Max Howell, Christian Muehlhaeuser
- * Copyright 2005 Seb Ruiz, Mike Diehl, Ian Monroe, Gábor Lehel, Alexandre Pereira de Oliveira
+ * Copyright 2005-2006 Seb Ruiz, Mike Diehl, Ian Monroe, Gábor Lehel, Alexandre Pereira de Oliveira
  * Licensed as described in the COPYING file found in the root of this distribution
  * Maintainer: Max Howell <max.howell@methylblue.com>
 
@@ -3539,6 +3539,7 @@ void Playlist::redo()
 void
 Playlist::updateMetaData( const MetaBundle &mb ) //SLOT
 {
+    SHOULD_BE_GUI
     for( MyIt it( this, MyIt::All ); *it; ++it )
         if( mb.url() == (*it)->url() )
         {

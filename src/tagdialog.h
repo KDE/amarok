@@ -76,7 +76,7 @@ class TagDialog : public TagDialogBase
         int changes();
         void storeTags();
         void storeTags( const KURL& url );
-        void storeTags( const KURL& url, int changes, const MetaBundle &mb, int score = 0 );
+        void storeTags( const KURL& url, int changes, const MetaBundle &mb );
         void loadTags( const KURL& url );
         void loadLyrics( const KURL& url );
         MetaBundle bundleForURL( const KURL &url );
@@ -93,13 +93,8 @@ class TagDialog : public TagDialogBase
 
         MetaBundle m_bundle;
         KURL::List::iterator m_currentURL;
-        int m_score;
         QString m_lyrics;
-        int m_playcount;
-        int m_changedCount;
         bool m_perTrack;
-        QDateTime m_firstPlay;
-        QDateTime m_lastPlay;
         PlaylistItem* m_playlistItem;
         QMap<QString, MetaBundle> storedTags;
         QMap<QString, int> storedScores;
