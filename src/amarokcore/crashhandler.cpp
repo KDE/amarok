@@ -101,13 +101,31 @@ namespace amaroK
                     "CC version: " __VERSION__ "\n" //assuming we're using GCC
                     "KDElibs:    " KDE_VERSION_STRING "\n"
                     "Qt:         %2\n"
-                    "TagLib:     %3.%4.%5\n";
+                    "TagLib:     %3.%4.%5\n"
+                    "CPU count:  %6\n";
+
+            QString cpucount = "unknown";
+#ifdef __linux__
+            QString line;
+            uint cpuCount = 0;
+            QFile cpuinfo( "/proc/cpuinfo" );
+            if ( cpuinfo.open( IO_ReadOnly ) ) {
+                while ( cpuinfo.readLine( line, 20000 ) != -1 ) {
+                    if ( line.startsWith( "processor" ) ) {
+                        ++cpuCount;
+                    }
+                }
+            }
+            cpucount = QString::number( cpuCount );
+#endif
+
 
             body = body.arg( AmarokConfig::soundSystem() )
                     .arg( qVersion() )
                     .arg( TAGLIB_MAJOR_VERSION )
                     .arg( TAGLIB_MINOR_VERSION )
-                    .arg( TAGLIB_PATCH_VERSION );
+                    .arg( TAGLIB_PATCH_VERSION )
+                    .arg( cpucount );
 
             #ifdef NDEBUG
             body += "NDEBUG:     true";
