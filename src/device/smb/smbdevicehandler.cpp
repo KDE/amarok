@@ -53,7 +53,7 @@ SmbDeviceHandler::getDeviceID()
     return m_deviceID;
 }
 
-QString
+const QString &
 SmbDeviceHandler::getDevicePath() const
 {
     return m_mountPoint;

@@ -46,7 +46,7 @@ public:
     virtual bool isAvailable() const;
     virtual QString type() const;
     virtual int getDeviceID( );
-    virtual QString getDevicePath() const;
+    virtual const QString &getDevicePath() const;
     virtual void getURL( KURL &absolutePath, const KURL &relativePath );
     virtual void getPlayableURL( KURL &absolutePath, const KURL &relativePath );
     virtual bool deviceIsMedium( const Medium *m ) const;
@@ -54,7 +54,7 @@ public:
 private:
 
     int m_deviceID;
-    QString m_mountPoint;
+    const QString m_mountPoint;
     QString m_server;
     QString m_dir;
 

@@ -124,7 +124,7 @@ public:
      */
     virtual int getDeviceID() = 0;
 
-    virtual QString getDevicePath() const = 0;
+    virtual const QString &getDevicePath() const = 0;
 
     /**
      * allows MountPointManager to check if a device handler handles a specific medium.

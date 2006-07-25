@@ -55,7 +55,7 @@ int MassStorageDeviceHandler::getDeviceID()
     return m_deviceID;
 }
 
-QString MassStorageDeviceHandler::getDevicePath() const
+const QString &MassStorageDeviceHandler::getDevicePath() const
 {
     return m_mountPoint;
 }

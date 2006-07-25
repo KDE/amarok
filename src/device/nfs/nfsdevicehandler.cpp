@@ -53,7 +53,7 @@ NfsDeviceHandler::getDeviceID()
     return m_deviceID;
 }
 
-QString
+const QString &
 NfsDeviceHandler::getDevicePath() const
 {
     return m_mountPoint;
