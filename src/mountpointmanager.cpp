@@ -1,7 +1,7 @@
 //
 // C++ Implementation: mountpointmanager
 //
-// Description: 
+// Description:
 //
 //
 // Author: Maximilian Kossick <maximilian.kossick@googlemail.com>, (C) 2006
@@ -414,7 +414,7 @@ MountPointManager::handleMissingMediaManager()
 void
 MountPointManager::checkDeviceAvailability()
 {
-    
+
 }
 
 bool StatisticsUpdateJob::doJob( )
@@ -452,6 +452,7 @@ bool StatisticsUpdateJob::doJob( )
             collDB->query( sql );
         }
     }
+    return true;
 }
 
 #include "mountpointmanager.moc"
