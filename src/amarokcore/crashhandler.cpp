@@ -71,7 +71,13 @@ namespace amaroK
         // semi-decent bt - I dunno why
         const pid_t pid = ::fork();
 
-        if( pid <= 0 )
+        if( pid < 0 )
+        {
+            std::cout << "forking crash reporter failed\n";
+            // continuing now can't do no good
+            _exit( 1 );
+        }
+        else if ( pid == 0 )
         {
             // we are the child process (the result of the fork)
             std::cout << "Amarok is crashing...\n";
