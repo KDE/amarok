@@ -1847,6 +1847,9 @@ void PlaylistBrowser::addSelectedToPlaylist( int options )
         if ( isPlaylist( item ) )
             list << static_cast<PlaylistEntry*>(item)->url();
 
+        else if( isLastFm( item ) )
+            list << static_cast<LastFmEntry*>(item)->url();
+
         else if ( isStream( item ) )
             list << static_cast<StreamEntry*>(item)->url();
 
@@ -1928,6 +1931,10 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
         item->setListened();
 
         #undef item
+    }
+    else if( isLastFm( item ) )
+    {
+        Playlist::instance()->insertMedia( static_cast<LastFmEntry*>(item)->url(), Playlist::Replace );
     }
     else if( isStream( item ) )
     {
