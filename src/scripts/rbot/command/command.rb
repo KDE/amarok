@@ -25,19 +25,27 @@ class CommandPlugin < Plugin
   end
 
   def listen( m )
-    cmd = m.message.split.first
+    cmd = m.message.split.first.dup.untaint
 
     if m.address? and @commands.has_key?( cmd )
       code = @commands[cmd].dup.untaint
 
       Thread.start {
+        str  = 'begin; '
+        str += code
+        str += '; rescue => e; '
+        str += 'm.reply( "Command #{cmd} crapped out :(" ); '
+        str += '@bot.say( m.sourcenick, "Backtrace for command #{cmd}:\n" + e.backtrace.first ); '
+        str += 'end'       
+
         $SAFE = 3
+
         begin
-          eval( code )
-        rescue => detail
+          eval( str )
+        rescue => e
           m.reply( "Command '#{cmd}' crapped out :(" )
-          @bot.say( m.sourcenick, "Backtrace for command '#{cmd}':" )
-          @bot.say( m.sourcenick, detail.backtrace.join("\n") )
+          @bot.say( m.sourcenick, "Backtrace from eval for command '#{cmd}':" )
+          @bot.say( m.sourcenick, e.backtrace.join( " " ) )
         end
       }
     end
