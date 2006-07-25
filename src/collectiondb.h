@@ -312,6 +312,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         void newUniqueIdForFile( const QString &path );
         void removeUniqueIdFromFile( const QString &path );
         QString urlFromUniqueId( const QString &id );
+        QString uniqueIdFromUrl( const KURL &url );
 
         //podcast methods
         /// Insert a podcast channel into the database.  If @param replace is true, replace the row

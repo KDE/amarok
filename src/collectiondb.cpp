@@ -3136,6 +3136,27 @@ CollectionDB::urlFromUniqueId( const QString &id )
 }
 
 QString
+CollectionDB::uniqueIdFromUrl( const KURL &url )
+{
+    //ATF Stuff
+    MountPointManager *mpm = MountPointManager::instance();
+    int currdeviceid = mpm->getIdForUrl( url.path() );
+    QString currurl = escapeString( mpm->getRelativePath( currdeviceid, url.path() ) );
+
+    QStringList uid = query( QString(
+            "SELECT uniqueid "
+            "FROM uniqueid "
+            "WHERE deviceid = %2 AND url = '%3';" )
+                .arg( currdeviceid )
+                .arg( currurl ) );
+
+    if( uid.empty() )
+        return QString::null;
+    else
+        return uid[0];
+}
+
+QString
 CollectionDB::getURL( const MetaBundle &bundle )
 {
     uint artID = artistID( bundle.artist(), false );

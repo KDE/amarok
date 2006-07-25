@@ -1342,6 +1342,10 @@ void MetaBundle::setUniqueId()
     if( !isFile() )
         return;
 
+    m_uniqueId = CollectionDB::instance()->uniqueIdFromUrl( url() );
+    if( !m_uniqueId.isEmpty() )
+        return;
+
     const QString path = url().path();
     TagLib::FileRef fileref;
     fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
@@ -1385,6 +1389,10 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
         // this was probably checked before, but...
         return;
     }
+
+    m_uniqueId = CollectionDB::instance()->uniqueIdFromUrl( url() );
+    if( !m_uniqueId.isEmpty() )
+        return;
 
     bool createID = false;
     int randSize = 8;
