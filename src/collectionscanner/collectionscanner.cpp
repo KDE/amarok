@@ -27,6 +27,8 @@
 #include <iostream>
 
 #include <dirent.h>    //stat
+#include <limits.h>    //PATH_MAX
+#include <stdlib.h>    //realpath
 
 #include <taglib/audioproperties.h>
 #include <taglib/fileref.h>
@@ -150,6 +152,7 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
 
     const QCString dir8Bit = QFile::encodeName( dir );
     struct stat statBuf;
+    struct stat statBuf_symlink;
     stat( dir8Bit, &statBuf );
 
     struct direntry de;
@@ -197,6 +200,8 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
 
         if ( stat( entry, &statBuf ) != 0 )
             continue;
+        if ( lstat( entry, &statBuf_symlink ) != 0 )
+            continue;
 
         // loop protection
         if ( ! ( S_ISDIR( statBuf.st_mode ) || S_ISREG( statBuf.st_mode ) ) )
@@ -204,6 +209,13 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
 
         if ( S_ISDIR( statBuf.st_mode ) && m_recursively && entry.length() && entryname[0] != '.' )
         {
+            if ( S_ISLNK( statBuf_symlink.st_mode ) ) {
+                char nosymlink[PATH_MAX];
+                if ( realpath( entry, nosymlink ) ) {
+                    debug() << entry << " is a symlink. Using: " << nosymlink << endl;
+                    entry = nosymlink;
+                }
+            }
             const QString file = QFile::decodeName( entry );
 
             bool isInCollection = false;
