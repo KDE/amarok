@@ -59,6 +59,8 @@ MountPointManager::MountPointManager()
         connect( this, SIGNAL( mediumConnected( int ) ), SLOT( migrateStatistics() ) );
         QTimer::singleShot( 0, this, SLOT( migrateStatistics() ) );
     }
+    connect( this, SIGNAL( mediumConnected( int ) ), SLOT( updateStatisticsURLs() ) );
+    updateStatisticsURLs();
 }
 
 
@@ -391,6 +393,18 @@ MountPointManager::migrateStatistics()
 }
 
 void
+MountPointManager::updateStatisticsURLs()
+{
+    QTimer::singleShot( 0, this, SLOT( startStatisticsUpdateJob() ) );
+}
+
+void
+MountPointManager::startStatisticsUpdateJob()
+{
+    ThreadWeaver::instance()->queueJob( new StatisticsUpdateJob( this ) );
+}
+
+void
 MountPointManager::handleMissingMediaManager()
 {
     m_noDeviceManager = true;
@@ -401,6 +415,43 @@ void
 MountPointManager::checkDeviceAvailability()
 {
     
+}
+
+bool StatisticsUpdateJob::doJob( )
+{
+    DEBUG_BLOCK
+    CollectionDB *collDB = CollectionDB::instance();
+    QStringList urls = collDB->query( "SELECT url FROM statistics WHERE deviceid = -1;" );
+    foreach( urls )
+    {
+        debug() << "Updating statistics url for " << *it << endl;
+        QString realURL = (*it).right( (*it).length() -1 ); //remove leading dot
+        if ( QFile::exists( realURL ) )
+        {
+            int deviceid = MountPointManager::instance()->getIdForUrl( realURL );
+            if ( deviceid == -1 )
+                continue;
+
+            int tagsCount = collDB->query(
+                            QString( "SELECT COUNT( url ) FROM tags WHERE deviceid = -1 AND url = '%1';" )
+                                        .arg( collDB->escapeString( *it ) ) ).first().toInt();
+            if ( tagsCount != 0 )
+                continue;       //only update statistics if there's now tags row with deviceid = -1 and url = *it
+
+            int statCount = collDB->query(
+                            QString( "SELECT COUNT( url ) FROM statistics WHERE deviceid = %1 AND url = '%2';" )
+                                        .arg( deviceid )
+                                        .arg( collDB->escapeString( *it ) ) ).first().toInt();
+            if ( statCount != 0 )
+                continue;       //statistics row woth new values already exists
+            QString rpath = MountPointManager::instance()->getRelativePath( deviceid, realURL );
+            QString sql = QString( "UPDATE statistics SET deviceid = %1, url = '%2'" )
+                                .arg( deviceid ).arg( collDB->escapeString( rpath ) );
+            sql += QString( " WHERE deviceid = -1 AND url = '%1';" )
+                                .arg( collDB->escapeString( *it ) );
+            collDB->query( sql );
+        }
+    }
 }
 
 #include "mountpointmanager.moc"

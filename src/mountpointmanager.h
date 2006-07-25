@@ -18,6 +18,7 @@
 #include "medium.h"
 #include "plugin/plugin.h"
 #include "pluginmanager.h"
+#include "threadweaver.h"
 
 #include <kconfig.h>
 #include <kurl.h>
@@ -210,6 +211,8 @@ public slots:
 private slots:
     void migrateStatistics();
     void checkDeviceAvailability();
+    void updateStatisticsURLs();
+    void startStatisticsUpdateJob();
 
 private:
     MountPointManager();
@@ -227,6 +230,16 @@ private:
     FactoryList m_remoteFactories;
     bool m_noDeviceManager;
 
+};
+
+class StatisticsUpdateJob : public ThreadWeaver::DependentJob
+{
+public:
+    StatisticsUpdateJob( QObject *dependent ) : DependentJob( dependent, "StatisticsUpdateJob" ) {}
+
+    virtual bool doJob();
+
+    virtual void completeJob() {}
 };
 
 #endif
