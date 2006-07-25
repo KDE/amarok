@@ -56,8 +56,8 @@ struct XMLData
 
 class TagsEvent : public QCustomEvent {
 public:
-    TagsEvent( const QValueList<XMLData> &x ) : QCustomEvent( 1001 ), xml( x ) {}
-    TagsEvent( const BundleList &bees ) : QCustomEvent( 1000 ), bundles( bees ) {
+    TagsEvent( const QValueList<XMLData> &x ) : QCustomEvent( 1001 ), xml( QDeepCopy<QValueList<XMLData> >( x ) ) { }
+    TagsEvent( const BundleList &bees ) : QCustomEvent( 1000 ), bundles( QDeepCopy<BundleList>( bees ) ) {
         for( BundleList::Iterator it = bundles.begin(), end = bundles.end(); it != end; ++it )
         {
             (*it).detach();
