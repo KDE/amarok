@@ -29,6 +29,8 @@ class CommandPlugin < Plugin
 
     if m.address? and @commands.has_key?( cmd )
       code = @commands[cmd].dup.untaint
+      @args = m.message.split #for convenience access from command code
+      @args.delete_at( 0 ) 
 
       Thread.start {
         str  = 'begin; '
