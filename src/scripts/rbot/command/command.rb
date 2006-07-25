@@ -29,7 +29,7 @@ class CommandPlugin < Plugin
 
     if m.address? and @commands.has_key?( cmd )
       code = @commands[cmd].dup.untaint
-      @args = m.message.split #for convenience access from command code
+      @args = m.message.split  #Convenience variable that can be accessed by commands
       @args.delete_at( 0 ) 
 
       Thread.start {
