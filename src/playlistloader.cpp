@@ -59,9 +59,12 @@ public:
     TagsEvent( const QValueList<XMLData> &x ) : QCustomEvent( 1001 ), xml( x ) {}
     TagsEvent( const BundleList &bees ) : QCustomEvent( 1000 ), bundles( bees ) {
         for( BundleList::Iterator it = bundles.begin(), end = bundles.end(); it != end; ++it )
+        {
+            (*it).detach();
             /// @see MetaBundle for explanation of audioproperties < 0
             if( (*it).length() <= 0 || (*it).bitrate() <= 0 )
                 (*it).readTags( TagLib::AudioProperties::Fast, 0, false );
+        }
     }
 
     QValueList<XMLData> xml;
@@ -461,7 +464,7 @@ UrlLoader::loadXml( const KURL &url )
 void UrlLoader::slotNewBundle( const MetaBundle &bundle, const XmlAttributeList &atts )
 {
     XMLData data;
-    data.bundle = bundle;
+    data.bundle = QDeepCopy<MetaBundle>( bundle );
     for( int i = 0, n = atts.count(); i < n; ++i )
     {
         if( atts[i].first == "queue_index" )
