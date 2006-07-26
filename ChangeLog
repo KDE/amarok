@@ -7,6 +7,7 @@ Amarok ChangeLog
 
 VERSION 1.4.2:
   FEATURES:
+    * Lyrics can be edited directly on Context Browser's Lyrics tab.
     * Collection browse mode similar to that used by some portable players.
       Patch by Joe Rabinoff <bobqwatson@yahoo.com>. (BR 130586)
     * BPM field. Patch by Alf B Lervåg <alfborge@gmail.com> and Aaron
@@ -28,6 +29,10 @@ VERSION 1.4.2:
       to iTunes, Firefly Media Server etc. (BR 100513)
 
   CHANGES:
+    * It's now possible to edit scores and ratings for multiple tracks in
+      TagDialog.
+    * TagDialog won't make Amarok unresponsive while committing tags changes
+      to files anymore.
     * Exact playtime as tooltip in statusbar. Patch by Markus Kaufhold
       <M.Kaufhold@gmx.de>. (BR 130463)
     * Suspend collection rescanning while organizing files. (BR 129885)
