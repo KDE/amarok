@@ -1406,10 +1406,6 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
         return;
     }
 
-    m_uniqueId = CollectionDB::instance()->uniqueIdFromUrl( url() );
-    if( !m_uniqueId.isEmpty() && !recreate && !strip )
-        return;
-
     bool createID = false;
     int randSize = 8;
     bool newID = false;
