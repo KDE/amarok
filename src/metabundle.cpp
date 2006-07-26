@@ -1047,11 +1047,32 @@ MetaBundle::fuzzyTime( int time )
     week = time; //weeks
 
     if( week && hr >= 12 )
+    {
         day++;
+        if( day == 7 )
+        {
+            week++;
+            day = 0;
+        }
+    }
     else if( day && min >= 30 )
+    {
         hr++;
+        if( hr == 24 )
+        {
+            day++;
+            hr = 0;
+        }
+    }
     else if( hr && secs >= 30 )
+    {
         min++;
+        if( min == 60 )
+        {
+            hr++;
+            min = 0;
+        }
+    }
 
     QString weeks = i18n( "1 week %1", "%n weeks %1", week );
     QString days = i18n( "1 day %1", "%n days %1", day );
