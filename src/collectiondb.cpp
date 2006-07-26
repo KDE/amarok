@@ -3426,7 +3426,7 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                         {
                             b.copyFrom( peb );
                         }
-                        else if( b.url().protocol() == "audiocd" || bundle->url().protocol() == "cdda" )
+                        else if( b.url().protocol() == "audiocd" || b.url().protocol() == "cdda" )
                         {
                             // try to see if the engine has some info about the
                             // item (the intended behaviour should be that if the
