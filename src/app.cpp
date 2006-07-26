@@ -616,7 +616,7 @@ void App::applySettings( bool firstTime )
     }
 
     // If just turned ATF on, clear the playlist and force a rescan
-    if ( AmarokConfig::aTFFirstTurnedOn() )
+    if ( AmarokConfig::advancedTagFeatures() && !AmarokConfig::aTFFirstTurnedOn() )
     {
         amaroK::StatusBar::instance()->longMessageThreadSafe(
                     i18n("ATF tagging was just enabled for the first time.\n"
@@ -626,6 +626,15 @@ void App::applySettings( bool firstTime )
                          "This first rescan may take much longer than normal.\n"
                          "Please be patient."), KDE::StatusBar::Information );
         QTimer::singleShot( 0, CollectionDB::instance(), SLOT( startScan() ) );
+    }
+    else if ( AmarokConfig::advancedTagFeatures() && AmarokConfig::aTFJustTurnedOn() )
+    {
+        amaroK::StatusBar::instance()->longMessageThreadSafe( 
+                    i18n( "You have re-enabled ATF tagging. Please\n"
+                          "remember that new files that have been\n"
+                          "added to your collection since you last\n"
+                          "had ATF tagging enabled will need to be\n"
+                          "rescanned for full functionality."), KDE::StatusBar::Information );
         AmarokConfig::setATFJustTurnedOn( false );
     }
 
