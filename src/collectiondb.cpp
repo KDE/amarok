@@ -3277,7 +3277,7 @@ CollectionDB::bundleForUrl( MetaBundle* bundle )
             bundle->copyFrom( peb );
             valid = true;
         }
-        else if( bundle->url().protocol() == "audiocd" )
+        else if( bundle->url().protocol() == "audiocd" || bundle->url().protocol() == "cdda" )
         {
             // try to see if the engine has some info about the
             // item (the intended behaviour should be that if the
@@ -3426,7 +3426,7 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                         {
                             b.copyFrom( peb );
                         }
-                        else if( b.url().protocol() == "audiocd" )
+                        else if( b.url().protocol() == "audiocd" || bundle->url().protocol() == "cdda" )
                         {
                             // try to see if the engine has some info about the
                             // item (the intended behaviour should be that if the

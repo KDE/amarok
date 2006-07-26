@@ -998,7 +998,7 @@ RemotePlaylistFetcher::result( KIO::Job *job )
 
 SqlLoader::SqlLoader( const QString &sql, QListViewItem *after )
         : UrlLoader( KURL::List(), after, false )
-        , m_sql( sql )
+        , m_sql( QDeepCopy<QString>( sql ) )
 {}
 
 bool
