@@ -3124,7 +3124,7 @@ QString
 CollectionDB::urlFromUniqueId( const QString &id )
 {
     QStringList urls = query( QString(
-            "SELECT deivceid, url "
+            "SELECT deviceid, url "
             "FROM uniqueid "
             "WHERE uniqueid = '%1';" )
                 .arg( id ) );
