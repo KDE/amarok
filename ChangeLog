@@ -29,8 +29,8 @@ VERSION 1.4.2:
       to iTunes, Firefly Media Server etc. (BR 100513)
 
   CHANGES:
-    * It's now possible to edit scores and ratings for multiple tracks in
-      TagDialog.
+    * Optionally finish transferring all queued tracks to media device after
+      pressing disconnect button. (BR 129716)
     * TagDialog won't make Amarok unresponsive while committing tags changes
       to files anymore.
     * Exact playtime as tooltip in statusbar. Patch by Markus Kaufhold

@@ -1828,6 +1828,7 @@ MediaDevice::MediaDevice()
     , m_transferring( false )
     , m_deleting( false )
     , m_deferredDisconnect( false )
+    , m_scheduledDisconnect( false )
     , m_transfer( true )
     , m_configure( true )
     , m_customButton( false )
@@ -2292,6 +2293,24 @@ MediaBrowser::connectClicked()
 void
 MediaBrowser::disconnectClicked()
 {
+    if( currentDevice() && currentDevice()->isTransferring() )
+    {
+        int action = KMessageBox::questionYesNoCancel( MediaBrowser::instance(),
+                i18n( "Transfer in progress. Finish or stop after current track?" ),
+                i18n( "Stop Transfer?" ),
+                KGuiItem(i18n("&Finish"), "goto"),
+                KGuiItem(i18n("&Stop"), "player_eject") );
+        if( action == KMessageBox::Cancel )
+        {
+            return;
+        }
+        else if( action == KMessageBox::Yes )
+        {
+            currentDevice()->scheduleDisconnect();
+            return;
+        }
+    }
+
     m_toolbar->getButton(TRANSFER)->setEnabled( false );
     m_toolbar->getButton(DISCONNECT)->setEnabled( false );
 
@@ -2771,6 +2790,11 @@ MediaDevice::transferFiles()
         m_deferredDisconnect = false;
         disconnectDevice( m_runDisconnectHook );
     }
+    else if( m_scheduledDisconnect )
+    {
+        disconnectDevice( true );
+    }
+    m_scheduledDisconnect = false;
 }
 
 int

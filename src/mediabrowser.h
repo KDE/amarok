@@ -465,6 +465,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         virtual void expandItem( QListViewItem *item ) {(void)item; }
         bool connectDevice( bool silent=false );
         bool disconnectDevice( bool postdisconnecthook=true );
+        void scheduleDisconnect() { m_scheduledDisconnect = true; }
 
     protected slots:
         void fileTransferred( KIO::Job *job );
@@ -587,6 +588,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         bool             m_transferring;
         bool             m_deleting;
         bool             m_deferredDisconnect;
+        bool             m_scheduledDisconnect;
         bool             m_runDisconnectHook;
         bool             m_spacesToUnderscores;
         bool             m_transfer;
