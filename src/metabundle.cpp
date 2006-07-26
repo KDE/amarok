@@ -1359,7 +1359,7 @@ void MetaBundle::setUniqueId()
         return;
 
     m_uniqueId = CollectionDB::instance()->uniqueIdFromUrl( url() );
-    if( !m_uniqueId.isEmpty() )
+    if( !m_uniqueId.isEmpty() || ( m_uniqueId.isEmpty() && !AmarokConfig::advancedTagFeatures() ) )
         return;
 
     const QString path = url().path();
@@ -1407,7 +1407,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
     }
 
     m_uniqueId = CollectionDB::instance()->uniqueIdFromUrl( url() );
-    if( !m_uniqueId.isEmpty() )
+    if( !m_uniqueId.isEmpty() && !recreate && !strip )
         return;
 
     bool createID = false;
@@ -1575,10 +1575,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
 void
 MetaBundle::newUniqueId()
 {
-    if( !isFile() )
-        return;
-
-    if( !AmarokConfig::advancedTagFeatures() )
+    if( !isFile() || !AmarokConfig::advancedTagFeatures() )
         return;
 
     const QString path = url().path();
