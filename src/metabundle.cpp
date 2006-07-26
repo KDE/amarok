@@ -1362,12 +1362,8 @@ void MetaBundle::setUniqueId()
     if( !m_uniqueId.isEmpty() || ( m_uniqueId.isEmpty() && !AmarokConfig::advancedTagFeatures() ) )
         return;
 
-    const QString path = url().path();
-    TagLib::FileRef fileref;
-    fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
-
-    if( !fileref.isNull() )
-        setUniqueId( fileref, false );
+    //at this point,  used to set a UID from this function if one didn't exist by
+    //calling the filref version of setUniqueId; explicitly use the fileref version for this now
 }
 
 void MetaBundle::setUniqueId( const QString &id )
