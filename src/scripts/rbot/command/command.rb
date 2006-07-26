@@ -2,6 +2,9 @@
 #
 # Create mini plugins on IRC.
 #
+# Commands are little Ruby programs that run in the context of the command plugin. You 
+# can create them directly in an IRC channel, and invoke them just like normal rbot plugins. 
+#
 # (c) 2006 Mark Kretschmann <markey@web.de>
 # Licensed under GPL V2.
 
@@ -21,7 +24,11 @@ class CommandPlugin < Plugin
   end
 
   def help( plugin, topic="" )
-    "Create mini plugins on IRC. 'command add <name> <code>' => Create command named <name> with the code <source>. 'command list' => Show a list of all known commands. 'command show <name>' => Show the source code for <name>. 'command del <name>' => Delete command <name>."
+    if topic == "add"
+      "Commands are little Ruby programs that run in the context of the command plugin. You can access @bot (class IrcBot), m (class PrivMessage), and @args (class Array, an array of arguments). Example: 'Command add greet m.reply( 'Hello ' + @args.empty? ? m.sourcenick : @args.first )'. Invoke the command just like a plugin: '<botnick>: greet'."
+    else  
+      "Create mini plugins on IRC. 'command add <name> <code>' => Create command named <name> with the code <source>. 'command list' => Show a list of all known commands. 'command show <name>' => Show the source code for <name>. 'command del <name>' => Delete command <name>."
+    end
   end
 
   def listen( m )
