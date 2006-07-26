@@ -25,7 +25,7 @@ class CommandPlugin < Plugin
 
   def help( plugin, topic="" )
     if topic == "add"
-      "Commands are little Ruby programs that run in the context of the command plugin. You can access @bot (class IrcBot), m (class PrivMessage), and @args (class Array, an array of arguments). Example: 'command add greet m.reply( 'Hello ' + @args.empty? ? m.sourcenick : @args.first )'. Invoke the command just like a plugin: '<botnick>: greet'."
+      "Commands are little Ruby programs that run in the context of the command plugin. You can access @bot (class IrcBot), m (class PrivMessage), user (class String, either the first argument, or if missing the sourcenick), and args (class Array, an array of arguments). Example: 'command add greet m.reply( 'Hello ' + user )'. Invoke the command just like a plugin: '<botnick>: greet'."
     else  
       "Create mini plugins on IRC. 'command add <name> <code>' => Create command named <name> with the code <source>. 'command list' => Show a list of all known commands. 'command show <name>' => Show the source code for <name>. 'command del <name>' => Delete command <name>."
     end
@@ -36,8 +36,11 @@ class CommandPlugin < Plugin
 
     if m.address? and @commands.has_key?( cmd )
       code = @commands[cmd].dup.untaint
-      @args = m.message.split  #Convenience variable that can be accessed by commands
-      @args.delete_at( 0 ) 
+
+      # Convenience variables, can be accessed by commands:
+      args = m.message.split
+      args.delete_at( 0 ) 
+      user = args.empty? ? m.sourcenick : args.first  
 
       Thread.start {
         str  = 'begin; '
