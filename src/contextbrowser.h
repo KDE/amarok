@@ -25,6 +25,7 @@ class QLineEdit;
 class QComboBox;
 class KDialogBase;
 class KTabBar;
+class KTextEdit;
 
 class CueFile;
 
@@ -88,7 +89,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         void contextHistoryBack();
 
         void lyricsAdd();
-        void lyricsEdit();
+        void lyricsEditToggle();
         void lyricsSearch();
         void lyricsRefresh();
         void lyricsExternalPage();
@@ -144,6 +145,10 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         QString       m_lyricSearchUrl;
         QString       m_lyricCurrentUrl;
         Browser::ToolBar* m_lyricsToolBar;
+        KTextEdit*    m_lyricsTextEdit;
+        QString       m_lyricsBeingEditedUrl;
+        QString       m_lyricsBeingEditedArtist;
+        QString       m_lyricsBeingEditedTitle;
 
         QString       m_wiki;
         QString       m_wikiLanguages;

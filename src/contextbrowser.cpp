@@ -58,6 +58,7 @@
 #include <kmessagebox.h>
 #include <kpopupmenu.h>
 #include <kstandarddirs.h>
+#include <ktextedit.h>
 #include <ktoolbarbutton.h>
 
 #include <unistd.h> //usleep()
@@ -211,12 +212,15 @@ ContextBrowser::ContextBrowser( const char *name )
     m_lyricsToolBar->insertButton( amaroK::icon( "add_lyrics" ), LYRICS_ADD, true, i18n("Add") );
     m_lyricsToolBar->insertLineSeparator();
     m_lyricsToolBar->insertButton( amaroK::icon( "edit" ), LYRICS_EDIT, true, i18n("Edit") );
+    m_lyricsToolBar->setToggle( LYRICS_EDIT, true );
     m_lyricsToolBar->insertLineSeparator();
     m_lyricsToolBar->insertButton( amaroK::icon( "search" ), LYRICS_SEARCH, true, i18n("Search") );
     m_lyricsToolBar->setIconText( KToolBar::IconOnly, false );
     m_lyricsToolBar->insertButton( amaroK::icon( "external" ), LYRICS_BROWSER, true, i18n("Open in external browser") );
 
     m_lyricsPage = new HTMLView( m_lyricsTab, "lyrics_page", true /* DNDEnabled */, true /* JScriptEnabled */ );
+    m_lyricsTextEdit = new KTextEdit ( m_lyricsTab, "lyrics_text_edit");
+    m_lyricsTextEdit->hide();
 
     m_wikiTab = new QVBox(this, "wiki_tab");
 
@@ -277,7 +281,7 @@ ContextBrowser::ContextBrowser( const char *name )
              this,               SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
 
     connect( m_lyricsToolBar->getButton( LYRICS_ADD ),     SIGNAL(clicked( int )), SLOT(lyricsAdd()) );
-    connect( m_lyricsToolBar->getButton( LYRICS_EDIT ),    SIGNAL(clicked( int )), SLOT(lyricsEdit()) );
+    connect( m_lyricsToolBar->getButton( LYRICS_EDIT ),    SIGNAL(toggled( int )), SLOT(lyricsEditToggle()) );
     connect( m_lyricsToolBar->getButton( LYRICS_SEARCH ),  SIGNAL(clicked( int )), SLOT(lyricsSearch()) );
     connect( m_lyricsToolBar->getButton( LYRICS_REFRESH ), SIGNAL(clicked( int )), SLOT(lyricsRefresh()) );
     connect( m_lyricsToolBar->getButton( LYRICS_BROWSER ), SIGNAL(clicked( int )), SLOT(lyricsExternalPage()) );
@@ -3110,11 +3114,36 @@ ContextBrowser::lyricsAdd() //SLOT
 }
 
 void
-ContextBrowser::lyricsEdit() //SLOT
+ContextBrowser::lyricsEditToggle() //SLOT
 {
-    TagDialog* dialog = new TagDialog( EngineController::instance()->bundle().url() );
-    dialog->setTab( TagDialog::LYRICSTAB );
-    dialog->show();
+    if ( m_lyricsToolBar->getButton( LYRICS_EDIT )->isOn() ) {
+        m_lyricsBeingEditedUrl = EngineController::instance()->bundle().url().path();
+        m_lyricsBeingEditedArtist = EngineController::instance()->bundle().artist();
+        m_lyricsBeingEditedTitle = EngineController::instance()->bundle().title();
+        QString xml = CollectionDB::instance()->getLyrics( m_lyricsBeingEditedUrl ), lyrics;
+        QDomDocument doc;
+        if( doc.setContent( xml ) )
+            lyrics = doc.documentElement().text();
+        else
+            lyrics = QString::null;
+        m_lyricsTextEdit->setText( lyrics );
+        m_lyricsPage->hide();
+        m_lyricsTextEdit->show();
+    }
+    else {
+        m_lyricsTextEdit->hide();
+
+        QDomDocument doc;
+        QDomElement e = doc.createElement( "lyrics" );
+        e.setAttribute( "artist", m_lyricsBeingEditedArtist );
+        e.setAttribute( "title", m_lyricsBeingEditedTitle );
+        QDomText t = doc.createTextNode( m_lyricsTextEdit->text() );
+        e.appendChild( t );
+        doc.appendChild( e );
+        CollectionDB::instance()->setLyrics( m_lyricsBeingEditedUrl, doc.toString() );
+        m_lyricsPage->show();
+        lyricsChanged( m_lyricsBeingEditedUrl );
+    }
 }
 
 void
