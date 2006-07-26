@@ -3373,8 +3373,6 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
 
                 b.checkExists();
 
-                b.setUniqueId();
-
                 buns50.append( b );
             }
 

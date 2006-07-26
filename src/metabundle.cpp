@@ -267,7 +267,6 @@ MetaBundle::MetaBundle( const QString& title,
 MetaBundle::MetaBundle( const MetaBundle &bundle )
 {
     *this = bundle;
-    setUniqueId();
 }
 
 MetaBundle::~MetaBundle()
@@ -316,9 +315,6 @@ MetaBundle::operator=( const MetaBundle& bundle )
     m_lastFmBundle = 0;
     if( bundle.m_lastFmBundle )
         setLastFmBundle( *bundle.m_lastFmBundle );
-
-    if( m_uniqueId.isEmpty() )
-        setUniqueId();
 
     return *this;
 }
@@ -1354,8 +1350,7 @@ void MetaBundle::setPath( const QString &path )
     for( int i = 0; i < NUM_COLUMNS; ++i ) changes << i;
     aboutToChange( changes ); m_url.setPath( path ); reactToChanges( changes );
 
-    if( AmarokConfig::advancedTagFeatures() )
-        setUniqueId();
+    setUniqueId();
 }
 
 void MetaBundle::setUniqueId()
