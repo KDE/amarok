@@ -4172,7 +4172,7 @@ CollectionDB::checkCompilations( const QString &path, const bool temporary )
 
     albums = query( QString( "SELECT DISTINCT album.name FROM tags_temp, album%1 AS album WHERE tags_temp.dir = '%2' AND tags_temp.deviceid = %3 AND album.id = tags_temp.album AND tags_temp.sampler IS NULL;" )
               .arg( temporary ? "_temp" : "" )
-              .arg( escapeString( path ) )
+              .arg( escapeString( rpath ) )
               .arg( deviceid ) );
 
     for ( uint i = 0; i < albums.count(); i++ )
