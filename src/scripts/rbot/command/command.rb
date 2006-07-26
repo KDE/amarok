@@ -43,21 +43,13 @@ class CommandPlugin < Plugin
       user = args.empty? ? m.sourcenick : args.first  
 
       Thread.start {
-        str  = 'begin; '
-        str += code
-        str += '; rescue => e; '
-        str += 'm.reply( "Command #{cmd} crapped out :(" ); '
-        str += '@bot.say( m.sourcenick, "Backtrace for command #{cmd}:\n" + e.backtrace.first ); '
-        str += 'end'       
-
         $SAFE = 3
 
         begin
-          eval( str )
+          eval( code )
         rescue => e
           m.reply( "Command '#{cmd}' crapped out :(" )
-          @bot.say( m.sourcenick, "Backtrace from eval for command '#{cmd}':" )
-          @bot.say( m.sourcenick, e.backtrace.join( " " ) )
+          m.reply( e.inspect )
         end
       }
     end
