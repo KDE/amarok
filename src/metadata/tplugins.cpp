@@ -102,7 +102,7 @@ TagLib::File *MimeTypeFileTypeResolver::createFile(const char *fileName,
 
 void registerTaglibPlugins()
 {
-    TagLib::FileRef::addFileTypeResolver(new MimeTypeFileTypeResolver);
+    //TagLib::FileRef::addFileTypeResolver(new MimeTypeFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new MP4FileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new WMAFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new RealMediaFileTypeResolver);
