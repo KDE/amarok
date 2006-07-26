@@ -19,6 +19,7 @@
 #include "amarokconfig.h"
 #include "debug.h"
 #include "collectiondb.h"
+#include <kapplication.h>
 #include <kfilemetainfo.h>
 #include <kio/global.h>
 #include <kmdcodec.h>
@@ -433,7 +434,7 @@ MetaBundle::embeddedImages( MetaBundle::EmbeddedImageList& images )
 }
 
 void
-MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImageList* images, bool doUniqueId )
+MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImageList* images )
 {
     if( !isFile() )
         return;
@@ -550,8 +551,7 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
             }
         }
 
-        if ( doUniqueId )
-            setUniqueId( fileref, false );
+        setUniqueId( fileref, false );
 
         if ( !disc.isEmpty() )
         {
@@ -1396,7 +1396,7 @@ MetaBundle::ourMP3UidFrame( TagLib::MPEG::File *file, QString ourId )
 
 void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
 {
-    if( !isFile() )
+    if( !isFile() || ( QString( kapp->name() ) != QString( "amarokcollectionscanner" ) && !recreate && !strip ) )
     {
         // this was probably checked before, but...
         return;

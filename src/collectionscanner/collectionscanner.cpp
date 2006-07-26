@@ -68,6 +68,7 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
         , m_restart( restart )
         , m_logfile( amaroK::saveLocation( QString::null ) + "collection_scan.log"  )
 {
+    kapp->setName( QString( "amarokcollectionscanner" ).ascii() );
     if( !restart )
         QFile::remove( m_logfile );
 

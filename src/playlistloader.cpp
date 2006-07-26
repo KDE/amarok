@@ -63,7 +63,7 @@ public:
             (*it).detach();
             /// @see MetaBundle for explanation of audioproperties < 0
             if( (*it).length() <= 0 || (*it).bitrate() <= 0 )
-                (*it).readTags( TagLib::AudioProperties::Fast, 0, false );
+                (*it).readTags( TagLib::AudioProperties::Fast, 0 );
         }
     }
 
