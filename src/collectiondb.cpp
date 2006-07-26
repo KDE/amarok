@@ -2880,6 +2880,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
                 .arg( tempTables ? "_temp" : "" )
                 .arg( currdeviceid )
                 .arg( currurl ) );
+
     QStringList uniqueids = query( QString(
             "SELECT url, uniqueid "
             "FROM uniqueid%1 "
@@ -4808,12 +4809,12 @@ CollectionDB::atfMigrateStatisticsUrl( const QString& /*oldUrl*/, const QString&
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, newUrl );
     query( QString( "DELETE FROM statistics WHERE deviceid = %1 AND url = '%2';" )
                             .arg( deviceid )
-                            .arg( escapeString( newUrl ) ) );
+                            .arg( escapeString( rpath ) ) );
     query( QString( "UPDATE statistics SET deviceid = %1, url = '%4', deleted = %2 WHERE uniqueid = '%3';" )
                             .arg( deviceid )
                             .arg( boolF() )
                             .arg( escapeString( uniqueid ) )
-                            .arg( escapeString( newUrl ) ) );
+                            .arg( escapeString( rpath ) ) );
 }
 
 void
