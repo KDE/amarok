@@ -1478,7 +1478,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
 
             if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) )
             {
-                if( AmarokConfig::advancedTagFeatures && TagLib::File::isWritable( file->name() ) )
+                if( AmarokConfig::advancedTagFeatures() && TagLib::File::isWritable( file->name() ) )
                 {
                     m_uniqueId = getRandomStringHelper( randSize );
                     file->tag()->addField( QStringToTString( ourId ),
@@ -1514,7 +1514,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
 
             if( !file->xiphComment()->fieldListMap().contains( QStringToTString( ourId ) ) )
             {
-                if( AmarokConfig::advancedTagFeatures && TagLib::File::isWritable( file->name() ) )
+                if( AmarokConfig::advancedTagFeatures() && TagLib::File::isWritable( file->name() ) )
                 {
                     m_uniqueId = getRandomStringHelper( randSize );
                     file->xiphComment()->addField( QStringToTString( ourId ),
@@ -1549,7 +1549,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
 
             if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) )
             {
-                if( AmarokConfig::advancedTagFeatures && TagLib::File::isWritable( file->name() ) )
+                if( AmarokConfig::advancedTagFeatures() && TagLib::File::isWritable( file->name() ) )
                 {
                     m_uniqueId = getRandomStringHelper( randSize );
                     file->tag()->addField( QStringToTString( ourId ),
