@@ -286,6 +286,9 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
     else if(type=="m4v" || type=="mp4v" || type=="mov" || type=="mpg")
     {
         track->filetype = g_strdup( "m4v video" );
+#ifdef HAVE_ITDB_SKIP_SHUFFLE_FLAG
+        track->movie_flag = 0x01; // for videos
+#endif
         track->unk208 = 0x02; // for videos
     }
     else if(type=="aa")
@@ -327,16 +330,16 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
 
     if(podcastInfo)
     {
-        //track->flag1 |= 0x02; // artwork flag, handled by libgpod
 #ifdef HAVE_ITDB_SKIP_SHUFFLE_FLAG
-        track->remember_playback_position |= 0x01; // skip  when shuffling
-        track->remember_playback_position |= 0x01; // remember playback position
+        track->skip_when_shuffling = 0x01; // skip  when shuffling
+        track->remember_playback_position = 0x01; // remember playback position
+        track->mark_unplayed = 0x02; // for podcasts
 #else
-        track->flag2 |= 0x01; // skip  when shuffling
-        track->flag3 |= 0x01; // remember playback position
-#endif
-        track->flag4 |= 0x02; // also show description on iPod
+        track->flag2 = 0x01; // skip  when shuffling
+        track->flag3 = 0x01; // remember playback position
         // FIXME: track->unk176 = 0x00020000; // for podcasts
+#endif
+        track->flag4 = 0x01; // also show description on iPod
         QString plaindesc = podcastInfo->description;
         plaindesc.replace( QRegExp("<[^>]*>"), "" );
         track->description = g_strdup( plaindesc.utf8() );
@@ -352,7 +355,7 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
         // FIXME: track->unk176 = 0x00010000; // for non-podcasts
 
         uint albumID = CollectionDB::instance()->albumID( bundle.album(), false );
-        if( CollectionDB::instance()->albumIsCompilation( QString::number( albumID ) ) )
+        if( albumID && CollectionDB::instance()->albumIsCompilation( QString::number( albumID ) ) )
         {
             track->compilation = 0x01;
         }

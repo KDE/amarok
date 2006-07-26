@@ -62,6 +62,7 @@ VERSION 1.4.2:
       since the last time it was enabled.
 
   BUGFIXES:
+    * iPods would not show podcast descriptions. (BR 129824)
     * Carry over rounding increments to next larger unit for fuzzy time
       display. (BR 131383)
     * If disabled, don't show splash screen - even on Kubuntu. (BR 125210)
