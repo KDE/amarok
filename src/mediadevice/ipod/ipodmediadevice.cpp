@@ -994,73 +994,35 @@ IpodMediaDevice::openDevice( bool silent )
         return false;
     }
 
-#if 0
-    // does not work any longer in libgpod-cvs (0.3.3)
+#ifdef HAVE_ITDB_DEVICE_GET_IPOD_INFO
+    // needs recent libgpod-0.3.3 from cvs
     if( m_itdb->device )
     {
-        guint model;
-        gchar *modelString;
-        gchar *name;
-        g_object_get(m_itdb->device,
-                "device-model", &model,
-                "device-model-string", &modelString,
-                "device-name", &name,
-                NULL); // 0 -> warning about missing sentinel
-
-        switch(model)
+        const Itdb_IpodInfo *ipodInfo = itdb_device_get_ipod_info( m_itdb->device );
+        const gchar *modelString = 0;
+        if( ipodInfo )
         {
-        case MODEL_TYPE_COLOR:
-        case MODEL_TYPE_COLOR_U2:
-        case MODEL_TYPE_NANO_WHITE:
-        case MODEL_TYPE_NANO_BLACK:
-            m_supportsArtwork = true;
-            m_isShuffle = false;
-            debug() << "detected iPod photo/nano" << endl;
-            break;
-        case MODEL_TYPE_VIDEO_WHITE:
-        case MODEL_TYPE_VIDEO_BLACK:
-            m_supportsArtwork = true;
-            m_isShuffle = false;
-            m_supportsVideo = true;
-            debug() << "detected iPod video" << endl;
-            break;
-        case MODEL_TYPE_REGULAR:
-        case MODEL_TYPE_REGULAR_U2:
-        case MODEL_TYPE_MINI:
-        case MODEL_TYPE_MINI_BLUE:
-        case MODEL_TYPE_MINI_PINK:
-        case MODEL_TYPE_MINI_GREEN:
-        case MODEL_TYPE_MINI_GOLD:
-            m_supportsArtwork = false;
-            m_isShuffle = false;
-            debug() << "detected regular iPod (b/w display)" << endl;
-            break;
-        case MODEL_TYPE_SHUFFLE:
-            m_supportsArtwork = false;
-            m_isShuffle = true;
-            debug() << "detected iPod shuffle" << endl;
-            break;
-        default:
-        case MODEL_TYPE_INVALID:
-        case MODEL_TYPE_UNKNOWN:
-            m_supportsArtwork = false;
-            m_isShuffle = true;
-            debug() << "unknown type" << endl;
-            break;
+            modelString = itdb_info_get_ipod_model_name_string ( ipodInfo->ipod_model );
+
+            switch( ipodInfo->ipod_model )
+            {
+            case ITDB_IPOD_MODEL_VIDEO_WHITE:
+            case ITDB_IPOD_MODEL_VIDEO_BLACK:
+                m_supportsVideo = true;
+                debug() << "detected video-capable iPod" << endl;
+                break;
+            default:
+                break;
+            }
         }
 
-        m_name = name != NULL ?
-            QString( "iPod %1 \"%2\"" )
-            .arg( QString::fromUtf8( modelString ) )
-            .arg( QString::fromUtf8( name ) )
-            :
-            QString( "iPod %1" )
-            .arg( QString::fromUtf8( modelString ) );
+        if( modelString )
+            m_name = QString( "iPod %1" ).arg( QString::fromUtf8( modelString ) );
     }
     else
     {
-        debug() << "device type detection failed, assuming iPod shuffle" << endl;
-        amaroK::StatusBar::instance()->shortMessage( i18n("Media device: device type detection failed, assuming iPod shuffle") );
+        debug() << "iPod type detection failed, no video support" << endl;
+        //amaroK::StatusBar::instance()->shortMessage( i18n("Media device: iPod type detection failed, no video support") );
     }
 #endif
 

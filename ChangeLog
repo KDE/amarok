@@ -29,6 +29,7 @@ VERSION 1.4.2:
       to iTunes, Firefly Media Server etc. (BR 100513)
 
   CHANGES:
+    * Re-enable adding videos to iPods with recent libgpod-cvs. (BR 130117)
     * Include Skip, Love and Ban in playlist right-click menu for last.fm
       streams.
     * Optionally finish transferring all queued tracks to media device after
