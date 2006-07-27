@@ -29,6 +29,8 @@ VERSION 1.4.2:
       to iTunes, Firefly Media Server etc. (BR 100513)
 
   CHANGES:
+    * Include Skip, Love and Ban in playlist right-click menu for last.fm
+      streams.
     * Optionally finish transferring all queued tracks to media device after
       pressing disconnect button. (BR 129716)
     * It's now possible to edit scores and ratings for multiple tracks in

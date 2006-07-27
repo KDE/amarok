@@ -3772,6 +3772,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     const bool isCurrent   = (item == m_currentTrack);
     const bool isPlaying   = EngineController::engine()->state() == Engine::Playing;
     const bool trackColumn = col == PlaylistItem::Track;
+    const bool isLastFm    = item->url().protocol() == "lastfm";
     const QString tagName  = columnText( col );
     const QString tag      = item->text( col );
 
@@ -3785,6 +3786,15 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 //         popup.insertTitle( KStringHandler::rsqueeze( MetaBundle( item ).prettyTitle(), 50 ));
 //     else
 //         popup.insertTitle(i18n("1 Track", "%n Selected Tracks", itemCount));
+
+    if( isLastFm )
+    {
+        KActionCollection *ac = amaroK::actionCollection();
+        if( ac->action( "ban" ) ) ac->action( "ban" )->plug( &popup );
+        if( ac->action( "love" ) ) ac->action( "love" )->plug( &popup );
+        if( ac->action( "skip" ) ) ac->action( "skip" )->plug( &popup );
+        popup.insertSeparator();
+    }
 
     popup.insertItem( SmallIconSet( amaroK::icon( "play" ) ), isCurrent && isPlaying
             ? i18n( "&Restart" )
@@ -3822,8 +3832,8 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     }
     // End queue entry logic
 
-    if( isCurrent )
-       amaroK::actionCollection()->action( "pause" )->plug( &popup );
+    if( isCurrent && !isLastFm )
+        amaroK::actionCollection()->action( "pause" )->plug( &popup );
 
     bool afterCurrent = false;
     if(  !m_nextTracks.isEmpty() ? m_nextTracks.getLast() : m_currentTrack  )
@@ -3910,6 +3920,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     popup.setItemEnabled( BURN_MENU, item->url().isLocalFile() && K3bExporter::isAvailable() );
     popup.setItemEnabled( REMOVE, !isLocked() ); // can't remove things when playlist is locked,
     popup.setItemEnabled( DELETE, !isLocked() && item->url().isLocalFile() );
+    popup.setItemEnabled( ORGANIZE, !isLocked() && !isLastFm );
     popup.setItemEnabled( VIEW, item->url().isLocalFile() || itemCount == 1 ); // disable for CDAudio multiselection
 
     if( m_customSubmenuItem.count() > 0 )
