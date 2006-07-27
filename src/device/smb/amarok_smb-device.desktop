@@ -1,12 +1,16 @@
 [Desktop Entry]
 Type=Service
 Name=SMB Device
+Name[bg]=SMB устройство
 Name[ga]=Gléas SMB
+Name[nl]=SMB-apparaat
 Name[pt]=Dispositivo SMB
 Name[pt_BR]=Dispositivo SMB
 Comment=Device plugin for Amarok which supports SMBFS
+Comment[bg]=Приставка за устройство за Amarok, поддържаща SMBFS
+Comment[nl]=Apparaatplugin voor Amarok met ondersteuning voor SMBFS
 Comment[pt]=Um 'plugin' de dispositivo para o Amarok que suporta o SMBFS
-Comment[pt_BR]=Um 'plugin' de dispositivo para o Amarok que suporta o SMBFS
+Comment[pt_BR]=Plugin de dispositivo para o Amarok, que suporta SMBFS
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Library=libamarok_smb-device

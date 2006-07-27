@@ -1,12 +1,16 @@
 [Desktop Entry]
 Type=Service
 Name=NFS Device
+Name[bg]=NFS устройство
 Name[ga]=Gléas NFS
+Name[nl]=NFS-apparaat
 Name[pt]=Dispositivo NFS
 Name[pt_BR]=Dispositivo NFS
 Comment=Device plugin for Amarok which supports NFS
+Comment[bg]=Приставка за устройство за Amarok, поддържаща NFS
+Comment[nl]=Apparaatplugin voor Amarok met ondersteuning voor NFS
 Comment[pt]=Um 'plugin' de dispositivo para o Amarok que suporta o NFS
-Comment[pt_BR]=Um 'plugin' de dispositivo para o Amarok que suporta o NFS
+Comment[pt_BR]=Plugin de dispositivo para o Amarok, que suporta NFS
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Library=libamarok_nfs-device
