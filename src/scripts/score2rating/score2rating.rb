@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #
-# Score2Rating 2.5 (for Amarok 1.4)
+# Score2Rating 3.0 (for Amarok 1.4)
 # ---------------------------------
 #
 # First of all:
@@ -12,87 +12,66 @@
 #
 
 
-if !system( "dcop amarok playlist popupMessage \"Score2Rating started. Click the 'Configure' button in the script manager (with Score2Rating selected) to start the conversion. IT IS RECOMMENDED THAT YOU MAKE A BACKUP OF YOUR DATABASE BEFORE DOING THIS!\" > /dev/null 2>&1" ) then #Info message, and running check combined
-  print "ERROR: A suitable Amarok wasn't found running!\n"
-  exit(1) #Exit with error
+if !system( "dcop amarok playlist popupMessage \"Score2Rating started. Click the 'Configure' button in the script manager (with Score2Rating selected) to start the conversion. It is recommended that you make a backup of your Amarok database BEFORE doing this.\" > /dev/null 2>&1" ) then #Info message, and running check combined
+    print "ERROR: A suitable Amarok wasn't found running!\n"
+    exit(1) #Exit with error
 end
 
 dialog = ""
 
 trap( "SIGTERM" ) { system( "dcop #{dialog} close" ) if dialog.length > 0 }
 
-loop do
-  message = gets().chomp()
-  command = /[A-Za-z]*/.match( message ).to_s()
+###THRESHOLDS START###
+thres = Array.new
 
-  case command
-  when "configure"
-    result = `dcop amarok collection query "SELECT url FROM statistics WHERE percentage > 0 ORDER BY url"`.chomp() #List tracks that have a score
-    list = result.split( "\n" )
+#Awful (1)
+thres << 10
 
-    success = true #Assume the procedure is successful
-    failList = Array.new()
+#Barely Tolerable (1.5)
+thres << 30
 
-    tracknum = 0
+#Tolerable (2)
+thres << 45
 
-    dialog = `kdialog --title Score2Rating --icon amarok --progressbar "Converting Scores to Ratings..." #{list.length}`.chomp()
-    dialog = dialog.gsub( /DCOPRef\((.*),(.*)\)/, '\1 \2') #Convert the DCOPRef, Ruby doesn't seem to like it.
+#Okay (2.5)
+thres << 60
 
-    list.each do |url|
-      tracknum += 1
-      system( "dcop #{dialog} setProgress #{tracknum}" ) if dialog.length > 0
+#Good (3, Tracks played full length once (75) will be here)
+thres << 70
 
-      sqlurl = url.gsub( /(['"`])/, '\\\\\\1' ) #\Escape 'single' and "double" quotes and `backticks`
+#Very good (3.5)
+thres << 80
 
-      begin
-        percentage = Float( `dcop amarok collection query "SELECT percentage FROM statistics WHERE url='#{sqlurl}'"`.chomp() )
+#Excellent (4, Tracks played full length twice (87) will be here)
+thres << 85
 
-        rating = Integer( `dcop amarok collection query "SELECT rating FROM statistics WHERE url='#{sqlurl}'"`.chomp() )
-        oldrating = rating
+#Amazing (4.5, Tracks played full length three times (91) will be here)
+thres << 90
 
-        case percentage #The intervals are wrapped so that no scores will be left out. No existing ratings will be downgraded either.
-        when 0..30
-            rating = [ rating, 2 ].max #Awful
-        when 30..45
-            rating = [ rating, 3 ].max #Barely Tolerable
-        when 45..60
-            rating = [ rating, 4 ].max #Tolerable
-        when 60..70
-            rating = [ rating, 5 ].max #Okay
-        when 70..80
-            rating = [ rating, 6 ].max #Good (Tracks played full length once (75) will be here)
-        when 80..85
-            rating = [ rating, 7 ].max #Very good
-        when 85..90
-            rating = [ rating, 8 ].max #Excellent (Tracks played full length twice (87) will be here)
-        when 90..95
-            rating = [ rating, 9 ].max #Amazing (Tracks played full length three times (91) will be here)
-        when 95..100
-            rating = [ rating, 10 ].max #Favourite
-        end
+#Favourite (5)
+thres << 95
 
-        if rating != oldrating then #If a new rating was calculated
-          if !system( "dcop amarok collection query \"UPDATE statistics SET rating='#{rating}' WHERE url='#{sqlurl}'\" > /dev/null 2>&1" ) then #If the command fails:
-            success = false #The procedure wasn't successful
-            failList << "DCOP: " + url
-          end
-        end
-      rescue
-        success = false
-        failList << "SEVERE: " + url
-      end
-    end
+###THRESHOLDS END###
+thres << 100
 
-    system( "dcop #{dialog} close" ) if dialog.length > 0
-
-    if success == true then #If the procedure was sucessful
-      system( "kdialog --msgbox \"Done! All your tracks (that have a score) should now have ratings. You will have to reload your playlist to see them, though.\"" )
-    else
-      failCount = failList.length
-      STDERR.puts( "FAILED URL LIST START\n" + failList.join("\n") + "\nFAILED URL LIST END\nPlease e-mail the entire contents of this error report to ajocke (at) gmail (dot) com to help further development of Score2Rating.")
-
-      system( "kdialog --sorry \"Score2Rating has finished its conversion, but the process failed for #{failCount} track(s).\nA list of the failed URL(s) will be given to you if you click Details in Amarok's error dialog which will appear after you dismiss this dialog.\n(To see the new ratings, you will have to reload your playlist.)\"" )
-      exit(38) #Exit with error to give the user Amarok's error box
-    end
-  end
+command = ""
+while command != "configure"
+    command = /[A-Za-z]*/.match( gets().chomp() ).to_s() #Wait until user clicks on Configure
 end
+
+dialog = `kdialog --title Score2Rating --icon amarok --progressbar "Converting Scores to Ratings..." 9`.chomp()
+dialog = dialog.gsub( /DCOPRef\((.*),(.*)\)/, '\1 \2') #Convert the DCOPRef, Ruby doesn't seem to like it.
+
+for r in 2 .. 10
+
+    system( "dcop amarok collection query \"UPDATE statistics SET rating='#{r}' WHERE percentage >= '#{thres[r - 2]}' AND percentage <= '#{thres[r - 1]}' AND rating < '#{r}'\" > /dev/null" )
+
+    system( "dcop #{dialog} setProgress #{r - 1}" ) if dialog.length > 0
+
+end
+
+system( "dcop #{dialog} close" ) if dialog.length > 0
+dialog = ""
+
+system( "dcop amarok playlist popupMessage \"Score2Rating is done! All your tracks (that have a score) should now have ratings. You will have to reload your playlist to see them, though.\"" )
+exit(0)

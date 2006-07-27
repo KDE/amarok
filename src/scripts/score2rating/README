@@ -1,4 +1,4 @@
-<div align="center"><b>Score2Rating (v2.5)</b></div>
+<div align="center"><b>Score2Rating (v3.0)</b></div>
 
 <p>
 <b>About:</b><br>
@@ -7,14 +7,6 @@ pretty accurate intervals. (In the future, the intervals might become changeable
 This is mostly usable to give you a starting point for using the new rating system in Amarok 1.4.
 Tracks that already have a rating will only be updated if the calculated rating is higher.
 If you have kdialog installed, a nice progressbar will be displayed showing how the script progresses.
-</p>
-<p>
-Note that tracks with the same score can get different ratings, this is because Amarok rounds the
-score that is saved in the database.<br>
-An example: <i>If the shown score is 95 (the limit between rating 4.5 and 5), the database can
-contain anything from 94.500 to 95.499. If the "real" score is below 95 (94.500-94.999), the track
-will get a rating of 4.5, if it's above 95 (95.000-95.499), the rating will be 5.</i><br>
-This will happen around all the rating limits.
 </p>
 <p>
 It is recommended that you <i>back up</i> your database (the statistics table at least) before
