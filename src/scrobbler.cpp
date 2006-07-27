@@ -238,7 +238,7 @@ void Scrobbler::engineNewMetaData( const MetaBundle& bundle, bool trackChanged )
 
     // Plugins must not submit tracks played from online radio stations, even
     // if they appear to be providing correct metadata.
-    if ( bundle.streamUrl() != NULL )
+    if ( !bundle.streamUrl().isEmpty() )
     {
         debug() << "Won't submit: It's a stream." << endl;
         m_validForSending = false;
