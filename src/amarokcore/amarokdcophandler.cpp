@@ -646,6 +646,25 @@ namespace amaroK
         PlaylistWindow::self()->showHide();
     }
 
+    QStringList DcopPlaylistHandler::filenames()
+    {
+        Playlist *p_inst = Playlist::instance();
+        QStringList songlist;
+
+        if (!p_inst)
+                return songlist;
+
+        PlaylistItem *p_item = p_inst->firstChild();
+
+        while (p_item)
+        {
+                songlist.append(p_item->filename());
+                p_item = p_item->nextSibling();
+        }
+
+        return songlist;
+    }
+
 /////////////////////////////////////////////////////////////////////////////////////
 // class DcopPlaylistBrowserHandler
 /////////////////////////////////////////////////////////////////////////////////////

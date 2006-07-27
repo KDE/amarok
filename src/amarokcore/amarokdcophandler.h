@@ -136,6 +136,7 @@ class DcopPlaylistHandler : public QObject, virtual public AmarokPlaylistInterfa
       virtual void    shortStatusMessage(const QString&);
       virtual void    shufflePlaylist();
       virtual void    togglePlaylist();
+      virtual QStringList filenames();
 };
 
 class DcopPlaylistBrowserHandler : public QObject, virtual public AmarokPlaylistBrowserInterface

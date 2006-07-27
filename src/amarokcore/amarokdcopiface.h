@@ -138,6 +138,7 @@ k_dcop:
    virtual void shortStatusMessage(const QString&) = 0;     ///< Shows a temporary message on the statusbar.
    virtual void shufflePlaylist() = 0;                      ///< Shuffles the playlist.
    virtual void togglePlaylist() = 0;                       ///< Toggle the Playlist-window.
+   virtual QStringList filenames() = 0;                     ///< Show filnames of all enqueued tracks.
 };
 
 

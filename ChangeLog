@@ -27,6 +27,9 @@ VERSION 1.4.2:
     * Show error messages when connecting to last.fm streams fails.
     * A new media device implements a DAAP client. So Amarok can connect
       to iTunes, Firefly Media Server etc. (BR 100513)
+    * New DCOP call "playlist: filenames" returns the filenames of the songs
+      currently in the playlist. Patch by Arash Abedinzadeh
+      <arash@netcologne.de>
 
   CHANGES:
     * Re-enable adding videos to iPods with recent libgpod-cvs. (BR 130117)
