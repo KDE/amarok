@@ -949,6 +949,13 @@ Bundle::Bundle( const Bundle& lhs )
     , m_titleUrl( lhs.m_titleUrl )
 {}
 
+void Bundle::detach() {
+    m_imageUrl = QDeepCopy<QString>(m_imageUrl);
+    m_albumUrl = QDeepCopy<QString>(m_albumUrl);
+    m_artistUrl = QDeepCopy<QString>(m_artistUrl);
+    m_titleUrl = QDeepCopy<QString>(m_titleUrl);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS LastFm::LoginDialog
 ////////////////////////////////////////////////////////////////////////////////

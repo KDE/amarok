@@ -203,6 +203,8 @@ namespace LastFm
             QString titleUrl() const {  return m_titleUrl; }
             void setTitleUrl( const QString& theValue )  {  m_titleUrl = theValue; }
 
+            void detach(); // for being able to apply QDeepCopy<>
+
         private:
             QString m_imageUrl;
             QString m_albumUrl;

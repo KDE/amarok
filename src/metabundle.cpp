@@ -1775,4 +1775,30 @@ void MetaBundle::detach()
     m_genre = m_genre.deepCopy();
     m_streamName = QDeepCopy<QString>(m_streamName);
     m_streamUrl = QDeepCopy<QString>(m_streamUrl);
+
+    m_uniqueId = QDeepCopy<QString>( m_uniqueId );
+
+    if ( m_podcastBundle )
+         setPodcastBundle( QDeepCopy<PodcastEpisodeBundle>( *m_podcastBundle ) );
+    if ( m_lastFmBundle )
+         setLastFmBundle( QDeepCopy<LastFm::Bundle>( *m_lastFmBundle ) );
+}
+
+
+void PodcastEpisodeBundle::detach()
+{
+    QString url( QDeepCopy<QString>( m_url.url() ) );
+    m_url = KURL::fromPathOrURL( url );
+    QString localUrl( QDeepCopy<QString>( m_localUrl.url() ) );
+    m_localUrl = KURL::fromPathOrURL( localUrl );
+    QString parent( QDeepCopy<QString>( m_parent.url() ) );
+    m_parent = KURL::fromPathOrURL( parent );
+
+    m_author = QDeepCopy<QString>(m_author);
+    m_title = QDeepCopy<QString>(m_title);
+    m_subtitle = QDeepCopy<QString>(m_subtitle);
+    m_description = QDeepCopy<QString>(m_subtitle);
+    m_date =  QDeepCopy<QString>(m_date);
+    m_type = QDeepCopy<QString>(m_type);
+    m_guid = QDeepCopy<QString>(m_guid);
 }
