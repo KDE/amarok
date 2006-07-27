@@ -70,10 +70,11 @@ class CommandPlugin < Plugin
   end
 
 
-  def handle_add( m, params )
+  def handle_add( m, params, force = false )
     name    = params[:name]
-    if @commands.has_key?( name )
-      m.reply( "#{name} already exists. Use 'del' if you really want to overwrite it." ); return
+    if !force and @commands.has_key?( name )
+      m.reply( "#{name} already exists. Use 'addforce' if you really want to overwrite it." )
+      return
     end
 
     code    = params[:code].join( " " )
@@ -87,6 +88,11 @@ class CommandPlugin < Plugin
     m.reply( "done" )
   end
 
+
+  def handle_addforce( m, params )
+    handle_add( m, params, true )
+  end
+    
 
   def handle_del( m, params )
     name = params[:name]
@@ -124,9 +130,10 @@ end
 plugin = CommandPlugin.new
 plugin.register( "command" )
 
-plugin.map 'command add :name *code', :action => 'handle_add', :auth => 'commandedit'
-plugin.map 'command del :name',       :action => 'handle_del', :auth => 'commandedit'
-plugin.map 'command list',            :action => 'handle_list'
-plugin.map 'command show :name',      :action => 'handle_show'
+plugin.map 'command add :name *code',      :action => 'handle_add',      :auth => 'commandedit'
+plugin.map 'command addforce :name *code', :action => 'handle_addforce', :auth => 'commandedit'
+plugin.map 'command del :name',            :action => 'handle_del',      :auth => 'commandedit'
+plugin.map 'command list',                 :action => 'handle_list'
+plugin.map 'command show :name',           :action => 'handle_show'
 
 
