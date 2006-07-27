@@ -1675,16 +1675,16 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
             << escapeHTML( currentTrack.album() ) //7
             << albumUrl //8
             << coverImage //9
-            << escapeHTML( currentTrack.album() )//10
-            << escapeHTML( userpage ) //11
-            << escapeHTML( userpage ) //12
-            << escapeHTML( lastfmIcon ) //13
-            << i18n( "Skip" ) //14
-            << escapeHTML( skipIcon ) //15
-            << i18n( "Love" ) //16
-            << escapeHTML( loveIcon ) //17
-            << i18n( "Ban" ) //18
-            << escapeHTML( banIcon ) //19
+            << escapeHTMLAttr( currentTrack.album() )//10
+            << escapeHTMLAttr( userpage ) //11
+            << escapeHTMLAttr( userpage ) //12
+            << escapeHTMLAttr( lastfmIcon ) //13
+            << escapeHTML( i18n( "Skip" ) ) //14
+            << escapeHTMLAttr( skipIcon ) //15
+            << escapeHTML( i18n( "Love" ) ) //16
+            << escapeHTMLAttr( loveIcon ) //17
+            << escapeHTML( i18n( "Ban" ) ) //18
+            << escapeHTMLAttr( banIcon ) //19
                 ) );
 
     addMetaHistory();
