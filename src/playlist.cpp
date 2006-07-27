@@ -3787,7 +3787,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 //     else
 //         popup.insertTitle(i18n("1 Track", "%n Selected Tracks", itemCount));
 
-    if( isLastFm )
+    if( isCurrent && isLastFm )
     {
         KActionCollection *ac = amaroK::actionCollection();
         if( ac->action( "ban" ) ) ac->action( "ban" )->plug( &popup );
