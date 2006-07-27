@@ -1687,7 +1687,6 @@ MediaBrowser::configSelectPlugin( int index )
 void
 MediaBrowser::updateButtons()
 {
-DEBUG_BLOCK
     if( !m_toolbar->getButton(CONNECT) ||
             !m_toolbar->getButton(DISCONNECT) ||
             !m_toolbar->getButton(TRANSFER) ) //TODO add CUSTOM
