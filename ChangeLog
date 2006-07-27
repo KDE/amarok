@@ -7,6 +7,9 @@ Amarok ChangeLog
 
 VERSION 1.4.2:
   FEATURES:
+    * New DCOP call "playlist: filenames" returns the filenames of the songs
+      currently in the playlist. Patch by Arash Abedinzadeh
+      <arash@netcologne.de>
     * Lyrics can be edited directly on Context Browser's Lyrics tab.
     * Collection browse mode similar to that used by some portable players.
       Patch by Joe Rabinoff <bobqwatson@yahoo.com>. (BR 130586)
@@ -27,9 +30,6 @@ VERSION 1.4.2:
     * Show error messages when connecting to last.fm streams fails.
     * A new media device implements a DAAP client. So Amarok can connect
       to iTunes, Firefly Media Server etc. (BR 100513)
-    * New DCOP call "playlist: filenames" returns the filenames of the songs
-      currently in the playlist. Patch by Arash Abedinzadeh
-      <arash@netcologne.de>
 
   CHANGES:
     * Re-enable adding videos to iPods with recent libgpod-cvs. (BR 130117)
