@@ -72,6 +72,10 @@ class CommandPlugin < Plugin
 
   def handle_add( m, params )
     name    = params[:name]
+    if @commands.has_key?( name )
+      m.reply( "#{name} already exists. Use 'del' if you really want to remove it." ); return
+    end
+
     code    = params[:code].join( " " )
     nick    = m.sourcenick
     created = Time.new.strftime '%Y/%m/%d %H:%m'
