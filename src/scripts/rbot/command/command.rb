@@ -9,7 +9,11 @@
 # Licensed under GPL V2.
 
 
+Command = Struct.new( "Command", :code, :nick, :created, :channel )
+
+
 class CommandPlugin < Plugin
+
   def initialize
     super
     if @registry.has_key?(:commands)
@@ -17,11 +21,20 @@ class CommandPlugin < Plugin
     else
       @commands = Hash.new
     end
+
+    # Migrate old Hash to new:
+    @commands.each_pair do |name, cmd|
+      unless cmd.instance_of?( Command )
+        @commands[name] = Command.new( cmd, 'unknown hacker', 'somedate', '#somechan' )
+      end
+    end
   end
+
 
   def save
     @registry[:commands] = @commands
   end
+
 
   def help( plugin, topic="" )
     if topic == "add"
@@ -31,11 +44,12 @@ class CommandPlugin < Plugin
     end
   end
 
-  def listen( m )
-    cmd = m.message.split.first.dup.untaint
 
-    if m.address? and @commands.has_key?( cmd )
-      code = @commands[cmd].dup.untaint
+  def listen( m )
+    name = m.message.split.first
+
+    if m.address? and @commands.has_key?( name )
+      code = @commands[name].code.dup.untaint
 
       # Convenience variables, can be accessed by commands:
       args = m.message.split
@@ -48,62 +62,67 @@ class CommandPlugin < Plugin
         begin
           eval( code )
         rescue => e
-          m.reply( "Command '#{cmd}' crapped out :(" )
+          m.reply( "Command '#{name}' crapped out :(" )
           m.reply( e.inspect )
         end
       }
     end
   end
 
-  def cmd_command_add( m, params )
-    cmd = params[:command]
-    code = params[:code].join( " " )
 
-    @commands[cmd] = code
+  def handle_add( m, params )
+    name    = params[:name]
+    code    = params[:code].join( " " )
+    nick    = m.sourcenick
+    created = Time.new.strftime '%Y/%m/%d %H:%m'
+    channel = m.target
 
-    debug "added code: " + code
+    command = Command.new( code, nick, created, channel )
+    @commands[name] = command
+
     m.reply( "done" )
   end
 
-  def cmd_command_del( m, params )
-    cmd = params[:command]
-    unless @commands.has_key?( cmd )
-      m.reply( "Command does not exist." )
-      return
+
+  def handle_del( m, params )
+    name = params[:name]
+    unless @commands.has_key?( name )
+      m.reply( "Command does not exist." ); return
     end
 
-    @commands.delete( cmd )
+    @commands.delete( name )
     m.reply( "done" )
   end
 
-  def cmd_command_list( m, params )
+
+  def handle_list( m, params )
     if @commands.length == 0
-      m.reply( "No commands available." )
-      return
+      m.reply( "No commands available." ); return
     end
 
     m.reply "Available commands: #{@commands.keys.sort.join(', ')}" 
   end
 
-  def cmd_command_show( m, params )
-    cmd = params[:command]
-    unless @commands.has_key?( cmd )
-      m.reply( "Command does not exist." )
-      return
+
+  def handle_show( m, params )
+    name = params[:name]
+    unless @commands.has_key?( name )
+      m.reply( "Command does not exist." ); return
     end
 
-    m.reply( "Source code for command '#{cmd}':" )
-    m.reply( @commands[cmd] )
-  end
+    cmd = @commands[name]
+    m.reply( "#{cmd.code} [#{cmd.nick}, #{cmd.created} in #{cmd.channel}]" )
+ end
+
 end
 
 
 plugin = CommandPlugin.new
 plugin.register( "command" )
 
-plugin.map 'command add :command *code', :action => 'cmd_command_add', :auth => 'commandedit'
-plugin.map 'command del :command', :action => 'cmd_command_del', :auth => 'commandedit'
-plugin.map 'command list', :action => 'cmd_command_list'
-plugin.map 'command show :command', :action => 'cmd_command_show'
+plugin.map 'command add :name *code', :action => 'handle_add', :auth => 'commandedit'
+plugin.map 'command del :name',       :action => 'handle_del', :auth => 'commandedit'
+plugin.map 'command list',            :action => 'handle_list'
+plugin.map 'command show :name',      :action => 'handle_show'
 
 
