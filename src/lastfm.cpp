@@ -401,7 +401,7 @@ WebService::changeStation( QString url )
         return false;
     }
 
-    const QString result( http.readAll() );
+    const QString result( QDeepCopy<QString>( http.readAll() ) );
     const int errCode = parameter( "error", result ).toInt();
 
     if ( errCode )
