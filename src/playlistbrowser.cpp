@@ -3472,7 +3472,7 @@ QString PlaylistDialog::getSaveFileName( const QString &suggestion ) //static
     PlaylistDialog dialog;
     if( !suggestion.isEmpty() )
     {
-        QString path = KGlobal::dirs()->saveLocation( "data", "amarok/playlists/", true ) + "%1" + ".m3u";
+        QString path = amaroK::saveLocation("playlists/") + "%1" + ".m3u";
         if( QFileInfo( path.arg( suggestion ) ).exists() )
         {
             int n = 2;
@@ -3508,12 +3508,12 @@ PlaylistDialog::PlaylistDialog()
 void PlaylistDialog::slotOk()
 {
     // TODO Remove this hack for 1.2. It's needed because playlists was a file once.
-    QString folder = KGlobal::dirs()->saveLocation( "data", "amarok/playlists", false );
+    QString folder = amaroK::saveLocation( "playlists" );
     QFileInfo info( folder );
     if ( !info.isDir() ) QFile::remove( folder );
 
     if( !customChosen && !edit->text().isEmpty() )
-        result = KGlobal::dirs()->saveLocation( "data", "amarok/playlists/", true ) + edit->text() + ".m3u";
+        result = amaroK::saveLocation( "playlists/" ) + edit->text() + ".m3u";
 
     if( !QFileInfo( result ).exists() ||
         KMessageBox::warningContinueCancel(

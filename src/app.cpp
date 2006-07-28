@@ -84,6 +84,7 @@ email                : markey@web.de
 #endif //__linux__
 
 QMutex Debug::mutex;
+QMutex amaroK::globalDirsMutex;
 
 int App::mainThreadId = 0;
 
@@ -629,7 +630,7 @@ void App::applySettings( bool firstTime )
     }
     else if ( AmarokConfig::advancedTagFeatures() && AmarokConfig::aTFJustTurnedOn() )
     {
-        amaroK::StatusBar::instance()->longMessageThreadSafe( 
+        amaroK::StatusBar::instance()->longMessageThreadSafe(
                     i18n( "You have re-enabled ATF tagging. Please\n"
                           "remember that new files that have been\n"
                           "added to your collection since you last\n"
@@ -1213,7 +1214,10 @@ namespace amaroK
 
     QString saveLocation( const QString &directory )
     {
-        return KGlobal::dirs()->saveLocation( "data", QString("amarok/") + directory, true );
+        globalDirsMutex.lock();
+        QString result = KGlobal::dirs()->saveLocation( "data", QString("amarok/") + directory, true );
+        globalDirsMutex.unlock();
+        return result;
     }
 
     QString cleanPath( const QString &path, bool onlyASCII )

@@ -16,6 +16,7 @@ class KConfig;
 class QColor;
 class QDateTime;
 class QEvent;
+class QMutex;
 class QPixmap;
 class QWidget;
 class DynamicMode;
@@ -28,6 +29,8 @@ namespace amaroK
     const int blue       = 0x202050;
     const int VOLUME_SENSITIVITY = 30; //for mouse wheels
     const int GUI_THREAD_ID = 0;
+
+    extern QMutex globalDirsMutex; // defined in app.cpp
 
     namespace ColorScheme
     {
@@ -216,7 +219,7 @@ namespace amaroK
     LIBAMAROK_EXPORT QString escapeHTML( const QString &s );
     LIBAMAROK_EXPORT QString escapeHTMLAttr( const QString &s );
     LIBAMAROK_EXPORT QString unescapeHTMLAttr( const QString &s );
-    
+
     ////////////////////////////////////////////////////////////////////////////////
     // class amaroK::ProcIO
     ////////////////////////////////////////////////////////////////////////////////
