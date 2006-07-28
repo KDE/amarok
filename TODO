@@ -5,6 +5,11 @@ TODO-list for Amarok
 
 
 SHORT-TERM (URGENT):
+ <sebr>    Fix podcasts by 1.4.2
+
+ <sebr>    Don't reload media device plugins when saving config settings. Its annoying, slow
+           and all around unnecessary.
+
  <markey>  After doing "Delete downloaded podcast", the icon still indicates downloaded.
 
  <sebr>    LastFm:
