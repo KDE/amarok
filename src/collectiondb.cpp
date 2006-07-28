@@ -3233,10 +3233,10 @@ fillInBundle( QStringList values, MetaBundle &bundle )
     bundle.setBpm       ( (*it).toFloat() ); ++it;
 
     bool ok;
-    int val = (*it).toInt( &ok );
+    int val = (*it).toInt( &ok ); ++it;
     bundle.setCompilation( ok ? val : MetaBundle::CompilationUnknown );
 
-    bundle.setUniqueId();
+    bundle.setUniqueId(*it);
 }
 
 bool
@@ -3249,8 +3249,8 @@ CollectionDB::bundleForUrl( MetaBundle* bundle )
             "SELECT album.name, artist.name, genre.name, tags.title, "
             "year.name, tags.comment, tags.discnumber, tags.composer, "
             "tags.track, tags.bitrate, tags.length, tags.samplerate, "
-            "tags.filesize, tags.filetype, tags.bpm, tags.sampler "
-            "FROM tags, album, artist, genre, year "
+            "tags.filesize, tags.filetype, tags.bpm, tags.sampler, uniqueid.uniqueid "
+            "FROM tags LEFT OUTER JOIN uniqueid ON tags.url = uniqueid.url, album, artist, genre, year "
             "WHERE album.id = tags.album AND artist.id = tags.artist AND "
             "genre.id = tags.genre AND year.id = tags.year AND tags.url = '%2' AND tags.deviceid = %1;" )
                 .arg( deviceid )

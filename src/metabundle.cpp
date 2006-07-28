@@ -209,8 +209,10 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
             m_isValidMedia = CollectionDB::instance()->bundleForUrl( this );
 
         if ( !isValidMedia() || ( !m_podcastBundle && m_length <= 0 ) )
+        {
             readTags( readStyle, images );
-        setUniqueId();
+            setUniqueId(); //done in bundleForUrl for the case above
+        }
     }
     else
     {
@@ -262,7 +264,6 @@ MetaBundle::MetaBundle( const QString& title,
         m_title  = title;
         m_artist = streamName; //which is sort of correct..
     }
-    setUniqueId();
 }
 
 MetaBundle::MetaBundle( const MetaBundle &bundle )
@@ -1429,8 +1430,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
                 */
                 m_uniqueId = TStringToQString( TagLib::String( ourMP3UidFrame( file, ourId )->identifier().data() ) ).left( randSize );
             }
-            if( AmarokConfig::advancedTagFeatures()
-                    && ( strip || createID )
+            if( ( strip || ( AmarokConfig::advancedTagFeatures() && createID ) )
                     && TagLib::File::isWritable( file->name() ) )
             {
                 m_uniqueId = getRandomStringHelper( randSize );
@@ -1582,12 +1582,8 @@ MetaBundle::newUniqueId()
 
 void MetaBundle::removeUniqueId()
 {
+    DEBUG_BLOCK
     if( !isFile() )
-        return;
-
-    //currently need to have it enabled to strip a UID
-    //TODO: find a non-ugly way around that?  Can do with a million if conditions, but...
-    if( !AmarokConfig::advancedTagFeatures() )
         return;
 
     const QString path = url().path();
