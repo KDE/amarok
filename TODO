@@ -5,6 +5,10 @@ TODO-list for Amarok
 
 
 SHORT-TERM (URGENT):
+ <sebr>    We need to check for pkg-config when configuring, otherwise we can't check for things
+           like libgpod. Currently its a silent error, and its very difficult to debug without
+           trawling through configure.in.in
+
  <sebr>    Fix podcasts by 1.4.2
 
  <sebr>    Don't reload media device plugins when saving config settings. Its annoying, slow
