@@ -8,7 +8,7 @@ SHORT-TERM (URGENT):
  <sebr>    Fix podcasts by 1.4.2
 
  <sebr>    Don't reload media device plugins when saving config settings. Its annoying, slow
-           and all around unnecessary.
+           and all around unnecessary.  It also crashes if the device is connected/loaded.
 
  <markey>  After doing "Delete downloaded podcast", the icon still indicates downloaded.
 
