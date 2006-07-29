@@ -461,7 +461,6 @@ void PlaylistWindow::init()
 
 void PlaylistWindow::addBrowser( const QString &name, QWidget *browser, const QString &text, const QString &icon )
 {
-    debug() << "name=" << name << endl;
     if( !m_browsers->browser( name ) )
         m_browsers->addBrowser( browser, text, icon );
     if( name == "MediaBrowser" )
