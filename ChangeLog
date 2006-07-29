@@ -68,6 +68,8 @@ VERSION 1.4.2:
       since the last time it was enabled.
 
   BUGFIXES:
+    * Correctly pass links containing parentheses to external browsers. Patch
+      by Thomas Lindroth <tholi945@student.liu.se>. (BR 131307)
     * iPods would not show podcast descriptions. (BR 129824)
     * Carry over rounding increments to next larger unit for fuzzy time
       display. (BR 131383)
