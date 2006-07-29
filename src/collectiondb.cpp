@@ -3396,11 +3396,9 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                 {
                     KURL url = KURL::fromPathOrURL( *it );
 
-                    const MetaBundle *mb = MediaBrowser::instance()->getBundle( url );
-                    if ( mb )
+                    if( MediaBrowser::instance()->getBundle( url, &b ) )
                     {
                         debug() << "Bundle recovered from media browser for: " << *it << endl;
-                        b = MetaBundle( *mb );
                     }
                     else
                     {

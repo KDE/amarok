@@ -15,6 +15,7 @@
 #include "plugin/plugin.h"   //baseclass
 #include "pluginmanager.h"
 
+#include <qmutex.h>
 #include <qvbox.h>           //baseclass
 #include <qdatetime.h>
 
@@ -178,7 +179,7 @@ class MediaBrowser : public QVBox
         void updateButtons();
         void updateDevices();
         // return bundle for url if it is known to MediaBrowser
-        const MetaBundle *getBundle( const KURL &url ) const;
+        bool getBundle( const KURL &url, MetaBundle *bundle ) const;
         bool isQuitting() const { return m_quitting; }
 
         KURL getProxyUrl( const KURL& daapUrl ) const;
@@ -242,6 +243,7 @@ class MediaBrowser : public QVBox
         KComboBox*       m_deviceCombo;
         Browser::ToolBar*m_toolbar;
         typedef QMap<QString, MediaItem*> ItemMap;
+        mutable QMutex   m_itemMapMutex;
         ItemMap          m_itemMap;
         KTrader::OfferList m_plugins;
         bool             m_haveDevices;

@@ -390,7 +390,8 @@ MediaBrowser::blockQuit() const
 void
 MediaBrowser::tagsChanged( const MetaBundle &bundle )
 {
-    ItemMap::iterator it = m_itemMap.find( bundle.url().path() );
+    m_itemMapMutex.lock();
+    ItemMap::iterator it = m_itemMap.find( bundle.url().url() );
     if( it != m_itemMap.end() )
     {
         MediaItem *item = *it;
@@ -415,22 +416,24 @@ MediaBrowser::tagsChanged( const MetaBundle &bundle )
             item->setText( 0, text);
         }
     }
+    m_itemMapMutex.unlock();
 }
 
-const MetaBundle *
-MediaBrowser::getBundle( const KURL &url ) const
+bool
+MediaBrowser::getBundle( const KURL &url, MetaBundle *bundle ) const
 {
-    if( url.protocol() != "file" )
-        return 0;
-
-    ItemMap::const_iterator it = m_itemMap.find( url.path() );
+    QMutexLocker locker( &m_itemMapMutex );
+    ItemMap::const_iterator it = m_itemMap.find( url.url() );
     if( it == m_itemMap.end() )
-        return 0;
+        return false;
 
     if( !(*it)->device() )
-        return 0;
+        return false;
 
-    return (*it)->bundle();
+    if( bundle )
+        *bundle = QDeepCopy<MetaBundle>( *(*it)->bundle() );
+
+    return true;
 }
 
 KURL
@@ -786,21 +789,23 @@ MediaItem::init()
 void
 MediaItem::setBundle( MetaBundle *bundle )
 {
+    MediaBrowser::instance()->m_itemMapMutex.lock();
     if( m_bundle )
     {
-        MediaBrowser::ItemMap::iterator it = MediaBrowser::instance()->m_itemMap.find( url().path() );
+        MediaBrowser::ItemMap::iterator it = MediaBrowser::instance()->m_itemMap.find( url().url() );
         if( it != MediaBrowser::instance()->m_itemMap.end() && *it == this )
-            MediaBrowser::instance()->m_itemMap.remove(url().path());
+            MediaBrowser::instance()->m_itemMap.remove(url().url());
     }
     delete m_bundle;
     m_bundle = bundle;
 
     if( m_bundle )
     {
-        MediaBrowser::ItemMap::iterator it = MediaBrowser::instance()->m_itemMap.find( url().path() );
+        MediaBrowser::ItemMap::iterator it = MediaBrowser::instance()->m_itemMap.find( url().url() );
         if( it == MediaBrowser::instance()->m_itemMap.end() )
-            MediaBrowser::instance()->m_itemMap[url().path()] = this;
+            MediaBrowser::instance()->m_itemMap[url().url()] = this;
     }
+    MediaBrowser::instance()->m_itemMapMutex.unlock();
 }
 
 void MediaItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
@@ -2592,20 +2597,7 @@ MediaDevice::transferFiles()
             kapp->processEvents( 100 );
             continue;
         }
-        else
-            debug() << "Device not found\n";
         
-        if( m_transferredItem->device() )
-        {
-            m_transferredItem->device()->copyTrackFromDevice( m_transferredItem );
-            delete m_transferredItem;
-            m_transferredItem = 0;
-            setProgress( progress() + 1 );
-            m_parent->m_queue->itemCountChanged();
-            kapp->processEvents( 100 );
-            continue;
-        }
-
         bool transcoding = false;
         MediaItem *item = trackExists( *bundle );
         if( item && !m_transferredItem->m_playlistName.isEmpty() )
