@@ -119,7 +119,7 @@ public:
      * retrieves the unique database id of a given Medium. Implementations are responsible
      * for generating a (sufficiently) unique value which identifies the Medium.
      * Additionally, implementations must recognize unknown mediums and store the necessary
-     * informations to recognize them the next time they are connected in the database.
+     * information to recognize them the next time they are connected in the database.
      * @return unique identifier which can be used as a foreign key to the media table.
      */
     virtual int getDeviceID() = 0;
@@ -192,7 +192,7 @@ public:
     QString getRelativePath( const int& deviceId, const QString& absolutePath ) const;
     /**
      * allows calling code to access the ids of all active devices
-     * @return the ids of all devices which are currently mounted or otherwise accesible
+     * @return the ids of all devices which are currently mounted or otherwise accessible
      */
     IdList getMountedDeviceIds() const;
 

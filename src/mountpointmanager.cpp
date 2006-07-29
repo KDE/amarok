@@ -34,6 +34,13 @@ MountPointManager::MountPointManager()
     : QObject( 0, "MountPointManager" )
     , m_noDeviceManager( false )
 {
+
+    KConfig* const conf = amaroK::config( "Collection" );
+    if ( !conf->readBoolEntry( "DynamicCollection", true ) )
+    {
+        debug() << "Dynamic Collection deactivated in amarokrc, not loading plugins, not connecting signals" << endl;
+        return;
+    }
     //we are only interested in the mounting or unmounting of mediums
     //therefore it is enough to listen to DeviceManager's mediumChanged signal
     if (DeviceManager::instance()->isValid() )
@@ -246,7 +253,7 @@ MountPointManager::mediumChanged( const Medium *m )
                 m_handlerMap.insert( key, handler );
                 debug() << "added device " << key << " with mount point " << m->mountPoint() << endl;
                 emit mediumConnected( key );
-                break;  //we found the added medium and dont have to check the other device handlers
+                break;  //we found the added medium and don't have to check the other device handlers
             }
         }
     }
@@ -319,7 +326,7 @@ MountPointManager::mediumAdded( const Medium *m )
                 m_handlerMap.insert( key, handler );
                 debug() << "added device " << key << " with mount point " << m->mountPoint() << endl;
                 emit mediumConnected( key );
-                break;  //we found the added medium and dont have to check the other device handlers
+                break;  //we found the added medium and don't have to check the other device handlers
             }
         }
     }
