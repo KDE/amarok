@@ -3639,6 +3639,7 @@ Playlist::setFilter( const QString &query ) //SLOT
         m_prevfilter = m_filter;
         m_filter = query;
     }
+    updateNextPrev();
 }
 
 void
