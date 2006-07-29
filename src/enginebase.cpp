@@ -9,6 +9,7 @@
 
 Engine::Base::Base()
         : amaroK::Plugin()
+        , m_xfadeLength( 0 )
         , m_volume( 50 )
         , m_scope( SCOPESIZE )
         , m_isStream( false )
