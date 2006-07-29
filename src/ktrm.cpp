@@ -28,6 +28,7 @@
 #include <kapplication.h>
 #include <kprotocolmanager.h>
 #include <kurl.h>
+#include <kresolver.h>
 
 #include <qmutex.h>
 #include <qevent.h>
@@ -142,9 +143,41 @@ protected:
 #endif
         tp_SetNotifyCallback(m_pimp, TRMNotifyCallback, 0);
 
+        KProtocolManager::reparseConfiguration();
+
         if(KProtocolManager::useProxy()) {
-            KURL proxy = KProtocolManager::proxyFor("http");
-            tp_SetProxy(m_pimp, proxy.host().latin1(), short(proxy.port()));
+            QString noProxiesFor = KProtocolManager::noProxyFor();
+            QStringList noProxies = QStringList::split(QRegExp("[',''\t'' ']"), noProxiesFor);
+            bool useProxy = true;
+
+            char server[255];
+            short port;
+            tp_GetServer(m_pimp, server, 255, &port);
+            QString tunepimpHost = QString(server);
+            QString tunepimpHostWithPort = (tunepimpHost + ":%1").arg(port);
+
+            for(QStringList::ConstIterator it = noProxies.constBegin(); it != noProxies.constEnd(); ++it) {
+                QString normalizedHost = KNetwork::KResolver::normalizeDomain(*it);
+                if(normalizedHost == tunepimpHost ||
+                    tunepimpHost.endsWith("." + normalizedHost)) {
+                    useProxy = false;
+                    break;
+                }
+
+                if(normalizedHost == tunepimpHostWithPort ||
+                    tunepimpHostWithPort.endsWith("." + normalizedHost)) {
+                    useProxy = false;
+                    break;
+                }
+            }
+
+            if(KProtocolManager::useReverseProxy())
+                useProxy = !useProxy;
+
+            if(useProxy) {
+                KURL proxy = KProtocolManager::proxyFor("http");
+                tp_SetProxy(m_pimp, proxy.host().latin1(), short(proxy.port()));
+            }
         }
     }
 

@@ -68,6 +68,8 @@ VERSION 1.4.2:
       since the last time it was enabled.
 
   BUGFIXES:
+    * Honour proxy exceptions for MusicBrainz lookups. Patch by N. Cat
+      <trisk-bug@quasarnet.org>. (BR 131377)
     * Correctly pass links containing parentheses to external browsers. Patch
       by Thomas Lindroth <tholi945@student.liu.se>. (BR 131307)
     * iPods would not show podcast descriptions. (BR 129824)
