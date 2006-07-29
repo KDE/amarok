@@ -397,16 +397,13 @@ void App::fixHyperThreading()
     QFile cpuinfo( "/proc/cpuinfo" );
     if ( cpuinfo.open( IO_ReadOnly ) ) {
         while ( cpuinfo.readLine( line, 20000 ) != -1 ) {
-            if ( line.startsWith( "flags" ) ) {
-                const QString flagsLine = line.section( ":", 1 );
-                const QStringList flags = QStringList::split( " ", flagsLine );
-                if ( flags.contains( "ht" ) ) ++cpuCount;
-            }
+            if ( line.startsWith( "flags" ) )
+                cpuCount++;
         }
     }
     // If multiple CPUs are listed with the HT flag, we got HyperThreading enabled
     if ( cpuCount > 1 ) {
-        debug() << "CPU with active HyperThreading detected. Enabling WORKAROUND.\n";
+        debug() << "SMP system detected. Enabling WORKAROUND.\n";
 
         // If the library is new enough try and call sched_setaffinity.
         #ifdef SCHEDAFFINITY_SUPPORT
@@ -428,7 +425,7 @@ void App::fixHyperThreading()
         QTimer::singleShot( 0, this, SLOT( showHyperThreadingWarning() ) );
         #endif //SCHEDAFFINITY_SUPPORT
     }
-    else { debug() << "Fix not enabled" << endl; }
+    else { debug() << "Workaround not enabled" << endl; }
     #else //__linux__
     debug() << "SCHEDAFFINITY_SUPPORT disabled since this isn't Linux" << endl;
     #endif //__linux__
@@ -438,11 +435,11 @@ void App::fixHyperThreading()
 void App::showHyperThreadingWarning() // SLOT
 {
     const QString text =
-        i18n( "<p>You are using a processor with the <i>HyperThreading</i> "
-              "feature enabled. Please note that Amarok may be unstable with this "
+        i18n( "<p>You are using a system with multiple CPUs. "
+              "Please note that Amarok may be unstable with this "
               "configuration.</p>"
-              "<p>If you are experiencing problems, use the Linux kernel option 'NOHT', "
-              "or disable <i>HyperThreading</i> in your BIOS setup.</p>"
+              "<p>If your systems has hyperthreading, you can improve Amarok's stability by using the Linux kernel option 'NOHT', "
+              "or by disabling <i>HyperThreading</i> in your BIOS setup.</p>"
               "<p>More information can be found in the README file. For further assistance "
               "join us at #amarok on irc.freenode.net.</p>" );
 
