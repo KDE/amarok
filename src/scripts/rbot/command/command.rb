@@ -73,7 +73,7 @@ class CommandPlugin < Plugin
   def handle_add( m, params, force = false )
     name    = params[:name]
     if !force and @commands.has_key?( name )
-      m.reply( "#{name} already exists. Use 'add -f' if you really want to overwrite it." )
+      m.reply( "#{m.sourcenick}: #{name} already exists. Use 'add -f' if you really want to overwrite it." )
       return
     end
 
