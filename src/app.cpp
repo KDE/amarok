@@ -1185,8 +1185,9 @@ namespace amaroK
     bool invokeBrowser( const QString& url )
     {
         const QString cmd = "%1 \"%2\"";
-        int pid = KRun::runCommand( cmd.arg( AmarokConfig::externalBrowser(), url ) );
-
+        QString cleanUrl( url );
+        cleanUrl.replace( "(", "%28" ).replace( ")", "%29" );
+        int pid = KRun::runCommand( cmd.arg( AmarokConfig::externalBrowser(), cleanUrl ) );
         return pid > 0;
     }
 
