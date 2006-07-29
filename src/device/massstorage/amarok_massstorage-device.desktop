@@ -2,12 +2,14 @@
 Type=Service
 Name=Mass Storage Device
 Name[bg]=Устройство за съхранение
+Name[ja]=マスストレージ デバイス
 Name[nl]=Massa-opslag-apparaat
 Name[pt]=Dispositivo Multimédia com Armazenamento
 Name[pt_BR]=Dispositivo de Armazenamento em Massa
 Comment=Device plugin for Amarok
 Comment[bg]=Приставка за устройство за Amarok
 Comment[ga]=Breiseán gléis le haghaidh AmaroK
+Comment[ja]=Amarok のためのデバイスプラグイン
 Comment[nl]=Apparaatplugin voor Amarok
 Comment[pt]='Plugin' de dispositivo para o Amarok
 Comment[pt_BR]=Plugin de dispositivo para o Amarok
