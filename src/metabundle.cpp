@@ -209,10 +209,7 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
             m_isValidMedia = CollectionDB::instance()->bundleForUrl( this );
 
         if ( !isValidMedia() || ( !m_podcastBundle && m_length <= 0 ) )
-        {
             readTags( readStyle, images );
-            setUniqueId(); //done in bundleForUrl for the case above
-        }
     }
     else
     {
@@ -1356,12 +1353,16 @@ void MetaBundle::setPath( const QString &path )
 
 void MetaBundle::setUniqueId()
 {
-    if( !isFile() )
+    //if the file isn't already in the database, not checking for amarokcollectionscanner
+    //will result in the UID being set to QString::null during the scan...bad!
+    if( !isFile() || ( QString( kapp->name() ) == QString( "amarokcollectionscanner" ) ) )
         return;
 
     m_uniqueId = CollectionDB::instance()->uniqueIdFromUrl( url() );
-    if( !m_uniqueId.isEmpty() || ( m_uniqueId.isEmpty() && !AmarokConfig::advancedTagFeatures() ) )
-        return;
+
+    //NOTE: Do we still need this below anymore?
+    //if( !m_uniqueId.isEmpty() || ( m_uniqueId.isEmpty() && !AmarokConfig::advancedTagFeatures() ) )
+    //    return;
 
     //at this point,  used to set a UID from this function if one didn't exist by
     //calling the filref version of setUniqueId; explicitly use the fileref version for this now
@@ -1398,10 +1399,7 @@ MetaBundle::ourMP3UidFrame( TagLib::MPEG::File *file, QString ourId )
 void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
 {
     if( !isFile() || ( QString( kapp->name() ) != QString( "amarokcollectionscanner" ) && !recreate && !strip ) )
-    {
-        // this was probably checked before, but...
         return;
-    }
 
     bool createID = false;
     int randSize = 8;
@@ -1418,16 +1416,14 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
             else
             {
                 //this is really ugly, but otherwise we get an incorrect ? at the end of the string...possibly a null value?  Not sure of another way to fix this.
-                /*
-                QString temp = TStringToQString( TagLib::String( ourMP3UidFrame( file, ourId )->identifier().data() ) );
+                /*QString temp = TStringToQString( TagLib::String( ourMP3UidFrame( file, ourId )->identifier().data() ) );
                 QChar currchar;
                 uint i;
                 for( i = 0; i < temp.length(); i++)
                 {
                     currchar = temp.at( i );
-                    //debug() << "value " << i << " is " << int((currchar.latin1())) << endl;
-                }
-                */
+                    debug() << "value at position " << i << " is " << int((currchar.latin1())) << endl;
+                }*/
                 m_uniqueId = TStringToQString( TagLib::String( ourMP3UidFrame( file, ourId )->identifier().data() ) ).left( randSize );
             }
             if( ( strip || ( AmarokConfig::advancedTagFeatures() && createID ) )

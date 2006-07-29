@@ -2859,10 +2859,6 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
 void
 CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
 {
-    //DEBUG_BLOCK
-    //debug() << "AmarokConfig::advancedTagFeatures() = " << (AmarokConfig::advancedTagFeatures() ? "true" : "false") << endl;
-    //debug() << "Checking currid = " << currid << ", currurl = " << currurl << endl;
-
     if( bundle->uniqueId().isEmpty() || bundle->url().path().isEmpty() )
         return;
 
@@ -2872,6 +2868,9 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
     QString currid = escapeString( bundle->uniqueId() );
     QString currurl = escapeString( mpm->getRelativePath( currdeviceid, bundle->url().path() ) );
     QString currdir = escapeString( mpm->getRelativePath( currdeviceid, bundle->url().directory() ) );
+    //debug() << "AmarokConfig::advancedTagFeatures() = " << (AmarokConfig::advancedTagFeatures() ? "true" : "false") << endl;
+    //debug() << "Checking currid = " << currid << ", currdir = " << currdir << ", currurl = " << currurl << endl;
+
 
 
     QStringList urls = query( QString(
