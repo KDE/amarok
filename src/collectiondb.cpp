@@ -1522,10 +1522,11 @@ CollectionDB::removeOrphanedEmbeddedImages()
     //TODO refactor
     // do it the hard way, since a delete subquery wont work on MySQL
     QStringList orphaned = query( "SELECT embed.deviceid, embed.url FROM embed LEFT JOIN tags ON embed.url = tags.url AND embed.deviceid = tags.deviceid WHERE tags.url IS NULL;" );
-    foreachType( QStringList, orphaned ) {
-        query( QString( "DELETE FROM embed WHERE embed.url = '%2' AND embed.deviceid = %1;" )
-                .arg( (*it).toInt() )
-                .arg( escapeString( *++it ) ) );
+    foreach( orphaned ) {
+        QString deviceid = *it;
+        QString rpath = *(++it);
+        query( QString( "DELETE FROM embed WHERE embed.deviceid = %1 AND embed.url = '%2';" )
+                .arg( deviceid, escapeString( rpath ) ) );
     }
 }
 
