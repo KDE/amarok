@@ -2,17 +2,25 @@
 Type=Service
 Name=SMB Device
 Name[bg]=SMB устройство
+Name[de]=SMB-Gerät
+Name[fr]=Périphérique SMB
 Name[ga]=Gléas SMB
 Name[ja]=SMB デバイス
 Name[nl]=SMB-apparaat
 Name[pt]=Dispositivo SMB
 Name[pt_BR]=Dispositivo SMB
+Name[sr]=SMB уређај
+Name[sr@Latn]=SMB uređaj
 Comment=Device plugin for Amarok which supports SMBFS
 Comment[bg]=Приставка за устройство за Amarok, поддържаща SMBFS
+Comment[de]=Geräte-Modul für Amarok mit Unterstützung für SMB-Dateisystem
+Comment[fr]=Plugin de périphérique pour Amarok qui supporte SMBFS
 Comment[ja]=SMBFS をサポートする Amarok のためのデバイスプラグイン
 Comment[nl]=Apparaatplugin voor Amarok met ondersteuning voor SMBFS
 Comment[pt]=Um 'plugin' de dispositivo para o Amarok que suporta o SMBFS
 Comment[pt_BR]=Plugin de dispositivo para o Amarok, que suporta SMBFS
+Comment[sr]=Уређајски прикључак за Amarok који подржава SMBFS
+Comment[sr@Latn]=Uređajski priključak za Amarok koji podržava SMBFS
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Library=libamarok_smb-device
