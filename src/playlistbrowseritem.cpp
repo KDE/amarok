@@ -2225,7 +2225,7 @@ PodcastEpisode::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
     if( fmName.width( name ) > _width )
     {
         //decapitateString removes the channels title from the epsiodes title
-//         name = amaroK::decapitateString( name, static_cast<PodcastChannel *>(m_parent)->title() );
+        name = amaroK::decapitateString( name, static_cast<PodcastChannel *>(m_parent)->title() );
         if( fmName.width( name ) > _width )
             name = KStringHandler::rPixelSqueeze( name, pBuf.fontMetrics(), _width );
     }

@@ -1316,25 +1316,26 @@ namespace amaroK
 
     QString decapitateString( const QString &input, const QString &ref )
     {
-        QString t = ref;
-        QString p = QString();
+        QString t = ref.upper();
         int length = t.length();
         int commonLength = 0;
         while( length > 0 )
         {
-            if ( !input.contains( t ) )
+            if ( input.upper().startsWith( t ) )
             {
-                t = ref.left( t.length() - length/2 );
+                commonLength = t.length();
+                t = ref.upper().left( t.length() + length/2 );
                 length = length/2;
             }
             else
             {
-                commonLength = t.length();
-                t = ref.left( t.length() + length/2 );
+                t = ref.upper().left( t.length() - length/2 );
                 length = length/2;
             }
         }
-        QString clean = input.right( input.length() - commonLength ).stripWhiteSpace();
+        QString clean = input;
+        if( t.endsWith( " " ) || !ref.at( t.length() ).isLetterOrNumber() ) // common part ends with a space or complete word
+            clean = input.right( input.length() - commonLength ).stripWhiteSpace();
         return clean;
     }
 
