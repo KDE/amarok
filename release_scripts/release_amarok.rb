@@ -53,7 +53,7 @@ if useStableBranch
     `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/#{branch}/extragear/multimedia/`
     Dir.chdir( "multimedia" )
 elsif not tag.empty?()
-    `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/#{branch}/extragear/multimedia/`
+    `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/trunk/extragear/multimedia`
     Dir.chdir( "multimedia" )
 else
     `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/trunk/extragear/multimedia`
