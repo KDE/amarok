@@ -110,7 +110,15 @@ class CommandPlugin < Plugin
       m.reply( "No commands available." ); return
     end
 
-    m.reply "Available commands: #{@commands.keys.sort.join(', ')}" 
+    cmds_per_page = 30
+    cmds = @commands.keys.sort
+    num_pages = cmds.length / cmds_per_page
+    page = params[:page].to_i
+    page = [page, 1].max
+    page = [page, num_pages].min
+    str = cmds[(page-1)*num_pages, cmds_per_page].join(', ') 
+
+    m.reply "Available commands (page #{page}/#{num_pages}): #{str}" 
   end
 
 
@@ -133,7 +141,7 @@ plugin.register( "command" )
 plugin.map 'command add -f :name *code', :action => 'handle_add_force', :auth => 'commandedit'
 plugin.map 'command add :name *code',    :action => 'handle_add',       :auth => 'commandedit'
 plugin.map 'command del :name',          :action => 'handle_del',       :auth => 'commandedit'
-plugin.map 'command list',               :action => 'handle_list'
+plugin.map 'command list :page',         :action => 'handle_list',      :defaults => { :page => '1' }
 plugin.map 'command show :name',         :action => 'handle_show'
 
 
