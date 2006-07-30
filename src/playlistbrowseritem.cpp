@@ -2235,14 +2235,14 @@ PodcastEpisode::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
     QFontMetrics fmName( font );
 
     QString name = text(column);
-//     const int _width = width - text_x - lv->itemMargin()*2;
-//     if( fmName.width( name ) > _width )
-//     {
+    const int _width = width - text_x - lv->itemMargin()*2;
+    if( fmName.width( name ) > _width )
+    {
         //decapitateString removes the channels title from the epsiodes title
 //         name = amaroK::decapitateString( name, static_cast<PodcastChannel *>(m_parent)->title() );
-//         if( fmName.width( name ) > _width )
-//             name = KStringHandler::rPixelSqueeze( name, pBuf.fontMetrics(), _width );
-//     }
+        if( fmName.width( name ) > _width )
+            name = KStringHandler::rPixelSqueeze( name, pBuf.fontMetrics(), _width );
+    }
 
     pBuf.drawText( text_x, 0, width - text_x, textHeight, AlignVCenter, name );
 
