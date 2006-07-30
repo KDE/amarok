@@ -171,8 +171,9 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
 
     // Show information labels (must be done after insertions)
     QObjectList *list = queryList( "QLabel", "infoPixmap" );
+    QPixmap const info = KGlobal::iconLoader()->iconPath( "messagebox_info", -KIcon::SizeHuge );
     for( QObject *label = list->first(); label; label = list->next() )
-        static_cast<QLabel*>(label)->setPixmap( QMessageBox::standardIcon( QMessageBox::Information ) );
+        static_cast<QLabel*>(label)->setPixmap( info );
     delete list;
 
     //stop KFont Requesters getting stupidly large
@@ -278,7 +279,7 @@ void AmarokConfigDialog::updateSettings()
         PlaylistWindow::self()->addBrowser( "MediaBrowser", MediaBrowser::instance(), i18n( "Media Device" ), amaroK::icon( "device" ) );
         connect( MediaBrowser::instance(), SIGNAL( availabilityChanged( bool ) ),
                  PlaylistWindow::self(), SLOT( mbAvailabilityChanged( bool ) ) );
-        
+
     }
 
     amaroK::setUseScores( m_opt1->kcfg_UseScores->isChecked() );
