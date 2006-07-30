@@ -1052,8 +1052,11 @@ void PlaylistBrowser::loadPodcastsFromDatabase( PlaylistCategory *p )
         episodes = CollectionDB::instance()->getPodcastEpisodes( (*it).url() );
 
         PodcastEpisodeBundle bundle;
+        debug() << (*it).title() << endl;
+        int episodeCount = (*it).hasPurge() ? (*it).purgeCount() : episodes.size();
+        int i =0;
          // podcasts are hopefully retured chronologically, insert them in reverse
-        while( !episodes.isEmpty() )
+        while( !episodes.isEmpty() && i < episodeCount )
         {
             bundle = episodes.first();
             new PodcastEpisode( channel, 0, bundle );
@@ -1062,6 +1065,7 @@ void PlaylistBrowser::loadPodcastsFromDatabase( PlaylistCategory *p )
                 hasNew = true;
 
             episodes.pop_front();
+            i++;
         }
         channel->sortChildItems( 0, true );
         channel->setNew( hasNew );
