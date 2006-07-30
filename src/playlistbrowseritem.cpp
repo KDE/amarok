@@ -1411,7 +1411,6 @@ PodcastChannel::setNew( bool n )
 void
 PodcastChannel::setXml( const QDomNode &xml, const int feedType )
 {
-    DEBUG_BLOCK
     /// Podcast Channel information
     const bool isAtom = ( feedType == ATOM );
 
@@ -1490,9 +1489,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
         if( !n.namedItem( "enclosure" ).toElement().attribute( "url" ).isEmpty() )
         {
             //prepending ensures correct order in 99% of the channels, except those who use chronological order
-            QDomElement *el = new QDomElement( n.toElement() );
-            eList.append( el );
-            debug() << "appending " << n.toElement().namedItem( "title" ).toElement().text() << endl;
+            eList.prepend( new QDomElement( n.toElement() ) );
         }
         else if( isAtom )
         {
@@ -1502,8 +1499,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
             {
                 if( nodes.toElement().attribute("rel") == "enclosure" )
                 {
-                    QDomElement *el = new QDomElement( n.toElement() );
-                    eList.prepend( el );
+                    eList.prepend( new QDomElement( n.toElement() ) );
                     break;
                 }
             }
@@ -1511,10 +1507,8 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     }
 
     uint i = m_bundle.hasPurge() ? m_bundle.purgeCount() : eList.count();
-    debug() << "Count = " << eList.count() << endl;
     foreachType( QPtrList<QDomElement>, eList )
     {
-        debug() << "Adding:" << (*it)->namedItem( "title" ).toElement().text() << " pubDate: " << (*it)->namedItem( "pubDate" ).toElement().text() << endl;
         if( !m_updating || ( ( i++ >= eList.count() ) && !episodeExists( (**it), feedType ) ) )
         {
             PodcastEpisode *ep = new PodcastEpisode( this, 0, (**it), feedType, m_updating/*new*/ );
@@ -1968,7 +1962,7 @@ PodcastEpisode::compare( QListViewItem* item, int col, bool ascending ) const
         // if neither has a date, then we order upon the id in the database.  This
         // should be the order in which it arrives in the feed.
         if( !thisHasDate && !thatHasDate )
-            return m_bundle.dBId() < item->m_bundle.dBId() ?  -1 : 1;
+            return m_bundle.dBId() < item->m_bundle.dBId() ?  1 : -1;
 
         // if one has a date, and the other doesnt, always keep non-dated at the bottom.
         // hypothetically, this should never happen, but it might.
