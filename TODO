@@ -5,8 +5,6 @@ TODO-list for Amarok
 
 
 SHORT-TERM (URGENT):
- <markey>  We depend on MySQL v5 now! So we must update configure.in.in and the README
-
  <sebr>    We need to check for pkg-config when configuring, otherwise we can't check for things
            like libgpod. Currently its a silent error, and its very difficult to debug without
            trawling through configure.in.in
