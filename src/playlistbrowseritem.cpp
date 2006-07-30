@@ -1406,31 +1406,6 @@ PodcastChannel::setNew( bool n )
     m_new = n;
 }
 
-class ElementList : public QPtrList<QDomElement>
-{
-    int compareItems ( QPtrCollection::Item element1, QPtrCollection::Item element2 )
-    {
-//         DEBUG_BLOCK
-        QDomElement *e1 = (QDomElement  *)element1;
-        QDomElement *e2 = (QDomElement  *)element2;
-
-        //Note: doesn't currently work for Atom feeds
-        QDateTime dateTime1 = QDateTime();
-        if( !e1->namedItem( "pubDate" ).toElement().text().isEmpty() )
-            dateTime1.setTime_t( KRFCDate::parseDate( e1->namedItem( "pubDate" ).toElement().text() ) );
-//         debug() << dateTime1.toString( Qt::ISODate ) << endl;
-
-        QDateTime dateTime2 = QDateTime();
-        if( !e2->namedItem( "pubDate" ).toElement().text().isEmpty() )
-            dateTime2.setTime_t( KRFCDate::parseDate( e2->namedItem( "pubDate" ).toElement().text() ) );
-//         debug() << dateTime2.toString( Qt::ISODate ) << endl;
-
-        if( dateTime1 != dateTime2)
-            return dateTime1 > dateTime2;
-
-        return e1->namedItem( "title" ).toElement().text().compare( e2->namedItem( "title" ).toElement().text() );
-    }
-};
 
 /// DONT TOUCH m_url!!!  The podcast has no mention to the location of the xml file, idiots.
 void
@@ -1508,8 +1483,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     // We use an auto-increment id in the database, so we must insert podcasts in the reverse order
     // to ensure we can pull them out reliably.
 
-    //build ElementList of [purgeCount] newest items
-    ElementList eList;
+    QPtrList<QDomElement> eList;
 
     for( ; !n.isNull(); n = n.nextSibling() )
     {
@@ -1517,7 +1491,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
         {
             //prepending ensures correct order in 99% of the channels, except those who use chronological order
             QDomElement *el = new QDomElement( n.toElement() );
-            eList.inSort( el );
+            eList.append( el );
             debug() << "appending " << n.toElement().namedItem( "title" ).toElement().text() << endl;
         }
         else if( isAtom )
@@ -1538,13 +1512,12 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
 
     uint i = m_bundle.hasPurge() ? m_bundle.purgeCount() : eList.count();
     debug() << "Count = " << eList.count() << endl;
-    foreachType( ElementList, eList )
+    foreachType( QPtrList<QDomElement>, eList )
     {
-        debug() << "Itterate " << i << " :" << (*it)->namedItem( "title" ).toElement().text() << " pubDate: " << (*it)->namedItem( "pubDate" ).toElement().text() <<endl;
+        debug() << "Adding:" << (*it)->namedItem( "title" ).toElement().text() << " pubDate: " << (*it)->namedItem( "pubDate" ).toElement().text() << endl;
         if( !m_updating || ( ( i++ >= eList.count() ) && !episodeExists( (**it), feedType ) ) )
         {
             PodcastEpisode *ep = new PodcastEpisode( this, 0, (**it), feedType, m_updating/*new*/ );
-            debug() << "NEW " << endl;
             if( m_updating )
             {
                 ep->setNew( true );
@@ -1761,7 +1734,7 @@ PodcastFetcher::PodcastFetcher( QString url, const KURL &directory, int size ):
 void PodcastFetcher::fetch()
 {
     KURL filepath = m_directory;
-    debug() << "filename = " << m_url.fileName() << endl;
+
     filepath.addPath( m_url.fileName() );
     m_file = new QFile( filepath.path() );
     if( m_file->exists() )
@@ -1776,7 +1749,7 @@ void PodcastFetcher::fetch()
             //Insert number right before the extension: podcast.mp3 > podcast_1.mp3
             int index = newName.findRev( ext, -1, true );
             newName.insert( index-1, "_"+QString::number(i) );
-            debug() << baseName << " now " << newName << " with full " << file.dirPath(true) + "/" +newName << endl;
+
             file.setFile( file.dirPath( true ) + '/' + newName );
             i++;
         }
@@ -1986,7 +1959,20 @@ PodcastEpisode::compare( QListViewItem* item, int col, bool ascending ) const
     if ( item->rtti() == PodcastEpisode::RTTI )
     {
         #define item static_cast<PodcastEpisode*>(item)
-        return m_bundle.dateTime() < item->m_bundle.dateTime() ? 1 : -1;
+        // date is priority
+        bool thisHasDate = m_bundle.dateTime().isValid();
+        bool thatHasDate = item->m_bundle.dateTime().isValid();
+        if( thisHasDate && thatHasDate )
+            return m_bundle.dateTime() < item->m_bundle.dateTime() ? 1 : -1;
+
+        // if neither has a date, then we order upon the id in the database.  This
+        // should be the order in which it arrives in the feed.
+        if( !thisHasDate && !thatHasDate )
+            return m_bundle.dBId() < item->m_bundle.dBId() ?  -1 : 1;
+
+        // if one has a date, and the other doesnt, always keep non-dated at the bottom.
+        // hypothetically, this should never happen, but it might.
+        return thisHasDate ? 1 : -1;
         #undef item
     }
 
