@@ -106,7 +106,9 @@ AtomicString::AtomicString( const QString &string ): m_string( 0 )
         return;
 
     Data *s = new Data( string );
+    storeMutex.lock();
     m_string = static_cast<Data*>( *( s_store.insert( s ).first ) );
+    storeMutex.unlock();
     ref( m_string );
     if( !s->refcount )
         delete s;
@@ -176,7 +178,9 @@ void AtomicString::deref( Data *s )
         return;
     if( !( --s->refcount ) )
     {
+        storeMutex.lock();
         s_store.erase( s );
+        storeMutex.unlock();
         delete s;
     }
 }

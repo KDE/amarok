@@ -42,6 +42,7 @@
 #include "amarok_export.h"
 
 #include <qstring.h>
+#include <qmutex.h>
 
 class LIBAMAROK_EXPORT AtomicString
 {
@@ -158,6 +159,8 @@ private:
     static set_type s_store;
 
     Data *m_string;
+
+    QMutex storeMutex;
 };
 
 #endif
