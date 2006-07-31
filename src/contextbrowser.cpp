@@ -911,7 +911,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         }
         else if ( !urls.isEmpty() )
         {
-            TagDialog* dialog = new TagDialog( urls.first() );
+            TagDialog* dialog = new TagDialog( urls.first(), instance() );
             dialog->show();
         }
         break;
