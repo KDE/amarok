@@ -2181,8 +2181,8 @@ IpodMediaDevice::addConfigElements( QWidget *parent )
     m_autoDeletePodcastsCheck->setChecked( m_autoDeletePodcasts );
 
     m_syncStatsCheck = new QCheckBox( parent );
-    m_syncStatsCheck->setText( i18n( "&Synchronize with amaroK statistics" ) );
-    QToolTip::add( m_syncStatsCheck, i18n( "Synchronize with amaroK statistics and submit tracks played to last.fm" ) );
+    m_syncStatsCheck->setText( i18n( "&Synchronize with Amarok statistics" ) );
+    QToolTip::add( m_syncStatsCheck, i18n( "Synchronize with Amarok statistics and submit tracks played to last.fm" ) );
     m_syncStatsCheck->setChecked( m_syncStats );
 }
 
