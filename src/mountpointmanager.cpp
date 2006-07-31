@@ -73,10 +73,12 @@ MountPointManager::MountPointManager()
 
 MountPointManager::~MountPointManager()
 {
+    m_handlerMapMutex.lock();
     foreachType( HandlerMap, m_handlerMap )
     {
         delete it.data();
     }
+    m_handlerMapMutex.unlock();
 }
 
 MountPointManager * MountPointManager::instance( )
@@ -120,6 +122,7 @@ MountPointManager::getIdForUrl( KURL url )
 {
     uint mountPointLength = 0;
     int id = -1;
+    m_handlerMapMutex.lock();
     foreachType( HandlerMap, m_handlerMap )
     {
         if ( url.path().startsWith( it.data()->getDevicePath() ) && mountPointLength < it.data()->getDevicePath().length() )
@@ -128,6 +131,7 @@ MountPointManager::getIdForUrl( KURL url )
             mountPointLength = it.data()->getDevicePath().length();
         }
     }
+    m_handlerMapMutex.unlock();
     if ( mountPointLength > 0 )
     {
         return id;
@@ -146,11 +150,23 @@ MountPointManager::getIdForUrl( QString url )
     return getIdForUrl( KURL::fromPathOrURL( url ) );
 }
 
+bool
+MountPointManager::isMounted ( const int deviceId ) const {
+    m_handlerMapMutex.lock();
+    bool result = m_handlerMap.contains( deviceId );
+    m_handlerMapMutex.unlock();
+    return result;
+}
+
 void
 MountPointManager::getMountPointForId( const int& id, KURL& url ) const
 {
     if ( isMounted( id ) )
+    {
+        m_handlerMapMutex.lock();
         url = KURL( m_handlerMap[id]->getDevicePath() );
+        m_handlerMapMutex.unlock();
+    }
     else
         //TODO better error handling
         url = KURL::fromPathOrURL( "/" );
@@ -168,12 +184,15 @@ MountPointManager::getAbsolutePath( const int& deviceId, const KURL& relativePat
         //debug() << "Deviceid is -1, using relative Path as absolute Path, returning " << absolutePath.path() << endl;
         return;
     }
+    m_handlerMapMutex.lock();
     if ( m_handlerMap.contains( deviceId ) )
     {
         m_handlerMap[deviceId]->getURL( absolutePath, relativePath );
+        m_handlerMapMutex.unlock();
     }
     else
     {
+        m_handlerMapMutex.unlock();
         QStringList lastMountPoint = CollectionDB::instance()->query(
                                                  QString( "SELECT lastmountpoint FROM devices WHERE id = %1" )
                                                  .arg( deviceId ) );
@@ -208,14 +227,17 @@ MountPointManager::getAbsolutePath( const int& deviceId, const QString& relative
 void
 MountPointManager::getRelativePath( const int& deviceId, const KURL& absolutePath, KURL& relativePath ) const
 {
+    m_handlerMapMutex.lock();
     if ( deviceId != -1 && m_handlerMap.contains( deviceId ) )
     {
         //FIXME max: returns garbage if the absolute path is actually not under the device's mount point
         QString rpath = KURL::relativePath( m_handlerMap[deviceId]->getDevicePath(), absolutePath.path() );
+        m_handlerMapMutex.unlock();
         relativePath.setPath( rpath );
     }
     else
     {
+        m_handlerMapMutex.unlock();
         //TODO: better error handling
         QString rpath = KURL::relativePath( "/", absolutePath.path() );
         relativePath.setPath( rpath );
@@ -244,6 +266,7 @@ MountPointManager::mediumChanged( const Medium *m )
                 debug() << "found handler for " << m->id() << endl;
                 DeviceHandler *handler = (*it)->createHandler( m );
                 int key = handler->getDeviceID();
+                m_handlerMapMutex.lock();
                 if ( m_handlerMap.contains( key ) )
                 {
                     debug() << "Key " << key << " already exists in handlerMap, replacing" << endl;
@@ -251,6 +274,7 @@ MountPointManager::mediumChanged( const Medium *m )
                     m_handlerMap.erase( key );
                 }
                 m_handlerMap.insert( key, handler );
+                m_handlerMapMutex.unlock();
                 debug() << "added device " << key << " with mount point " << m->mountPoint() << endl;
                 emit mediumConnected( key );
                 break;  //we found the added medium and don't have to check the other device handlers
@@ -259,6 +283,7 @@ MountPointManager::mediumChanged( const Medium *m )
     }
     else
     {
+        m_handlerMapMutex.lock();
         foreachType( HandlerMap, m_handlerMap )
         {
             if ( it.data()->deviceIsMedium( m ) )
@@ -272,6 +297,7 @@ MountPointManager::mediumChanged( const Medium *m )
                 break;
             }
         }
+        m_handlerMapMutex.unlock();
     }
 }
 
@@ -286,6 +312,7 @@ MountPointManager::mediumRemoved( const Medium *m )
     else
     {
         //this works for USB devices, special cases might be required for other devices
+        m_handlerMapMutex.lock();
         foreachType( HandlerMap, m_handlerMap )
         {
             if ( it.data()->deviceIsMedium( m ) )
@@ -299,6 +326,7 @@ MountPointManager::mediumRemoved( const Medium *m )
                 break;
             }
         }
+        m_handlerMapMutex.unlock();
     }
 }
 
@@ -317,6 +345,7 @@ MountPointManager::mediumAdded( const Medium *m )
                 debug() << "found handler for " << m->id() << endl;
                 DeviceHandler *handler = (*it)->createHandler( m );
                 int key = handler->getDeviceID();
+                m_handlerMapMutex.lock();
                 if ( m_handlerMap.contains( key ) )
                 {
                     debug() << "Key " << key << " already exists in handlerMap, replacing" << endl;
@@ -324,6 +353,7 @@ MountPointManager::mediumAdded( const Medium *m )
                     m_handlerMap.erase( key );
                 }
                 m_handlerMap.insert( key, handler );
+                m_handlerMapMutex.unlock();
                 debug() << "added device " << key << " with mount point " << m->mountPoint() << endl;
                 emit mediumConnected( key );
                 break;  //we found the added medium and don't have to check the other device handlers
@@ -334,7 +364,9 @@ MountPointManager::mediumAdded( const Medium *m )
 
 IdList
 MountPointManager::getMountedDeviceIds() const {
+    m_handlerMapMutex.lock();
     IdList list( m_handlerMap.keys() );
+    m_handlerMapMutex.unlock();
     list.append( -1 );
     return list;
 }

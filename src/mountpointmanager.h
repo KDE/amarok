@@ -1,7 +1,7 @@
 //
 // C++ Interface: mountpointmanager
 //
-// Description: This class is responsible for 
+// Description: This class is responsible for
 //
 //
 // Author: Maximilian Kossick <maximilian.kossick@googlemail.com>, (C) 2006
@@ -24,6 +24,7 @@
 #include <kurl.h>
 
 #include <qmap.h>
+#include <qmutex.h>
 #include <qptrlist.h>
 #include <qstringlist.h>
 #include <qvaluelist.h>
@@ -67,7 +68,7 @@ public:
     virtual bool canCreateFromConfig() const = 0;
 
     virtual DeviceHandler* createHandler( const KConfig* c ) const = 0;
-    
+
     /**
      * returns the type of the DeviceHandler. Should be the same as the value used in
      * ~/.kde/share/config/amarokrc
@@ -102,8 +103,8 @@ public:
      * idea by andrewt512: this method would only be called when we actually want to play the file, not when we
      * simply want to show it to the user. It could for example download a file using KIO and return a path to a
      * temporary file. Needs some more thought and is not actually used at the moment.
-     * @param absolutePath 
-     * @param relativePath 
+     * @param absolutePath
+     * @param relativePath
      */
     virtual void getPlayableURL( KURL &absolutePath, const KURL &relativePath ) = 0;
 
@@ -114,7 +115,7 @@ public:
      * @param relativePath the device specific relative path
      */
     virtual void getURL( KURL &absolutePath, const KURL &relativePath ) = 0;
-    
+
     /**
      * retrieves the unique database id of a given Medium. Implementations are responsible
      * for generating a (sufficiently) unique value which identifies the Medium.
@@ -128,7 +129,7 @@ public:
 
     /**
      * allows MountPointManager to check if a device handler handles a specific medium.
-     * @param m 
+     * @param m
      * @return true if the device handler handles the Medium m
      */
     virtual bool deviceIsMedium( const Medium *m ) const = 0;
@@ -155,9 +156,9 @@ public:
     static MountPointManager *instance();
 
     /**
-     * 
-     * @param url 
-     * @return 
+     *
+     * @param url
+     * @return
      */
     int getIdForUrl( KURL url );
     int getIdForUrl( QString url );
@@ -166,11 +167,11 @@ public:
      * @param deviceId the mediums unique id
      * @return true if the medium is mounted, false otherwise
      */
-    bool isMounted ( const int deviceId ) const { return m_handlerMap.contains( deviceId ); }
+    bool isMounted ( const int deviceId ) const;
     /**
-     * 
-     * @param id 
-     * @return 
+     *
+     * @param id
+     * @return
      */
     void getMountPointForId( const int& id, KURL& url ) const;
     /**
@@ -226,6 +227,7 @@ private:
      * changed for the real Dynamic Collection implementation.
      */
     HandlerMap m_handlerMap;
+    mutable QMutex m_handlerMapMutex;
     FactoryList m_mediumFactories;
     FactoryList m_remoteFactories;
     bool m_noDeviceManager;
