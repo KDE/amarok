@@ -277,8 +277,9 @@ void AmarokConfigDialog::updateSettings()
     if( MediaBrowser::isAvailable() )
     {
         PlaylistWindow::self()->addBrowser( "MediaBrowser", MediaBrowser::instance(), i18n( "Media Device" ), amaroK::icon( "device" ) );
-        connect( MediaBrowser::instance(), SIGNAL( availabilityChanged( bool ) ),
-                 PlaylistWindow::self(), SLOT( mbAvailabilityChanged( bool ) ) );
+        //to re-enable mediabrowser hiding, uncomment this:
+        //connect( MediaBrowser::instance(), SIGNAL( availabilityChanged( bool ) ),
+        //         PlaylistWindow::self(), SLOT( mbAvailabilityChanged( bool ) ) );
 
     }
 

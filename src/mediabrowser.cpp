@@ -97,7 +97,10 @@ bool MediaBrowser::isAvailable() //static
     if( !MediaBrowser::instance() )
         return false;
 
-    return MediaBrowser::instance()->m_haveDevices;
+    return true;
+
+    //to re-enable hiding, uncomment this and get rid of the return true above:
+    //return MediaBrowser::instance()->m_haveDevices;
 }
 
 class SpaceLabel : public QLabel {

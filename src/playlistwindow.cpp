@@ -435,8 +435,9 @@ void PlaylistWindow::init()
         if( MediaBrowser::isAvailable() )
         {
             addInstBrowserMacro( MediaBrowser, "MediaBrowser", i18n( "Media Device" ), amaroK::icon( "device" ) )
-            connect( MediaBrowser::instance(), SIGNAL( availabilityChanged( bool ) ),
-                     this, SLOT( mbAvailabilityChanged( bool ) ) );
+            //to re-enable mediabrowser hiding, uncomment this:
+            //connect( MediaBrowser::instance(), SIGNAL( availabilityChanged( bool ) ),
+            //         this, SLOT( mbAvailabilityChanged( bool ) ) );
             m_browsers->makeDropProxy( "MediaBrowser", MediaBrowser::queue() );
 
         }
