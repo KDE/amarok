@@ -1052,7 +1052,6 @@ void PlaylistBrowser::loadPodcastsFromDatabase( PlaylistCategory *p )
         episodes = CollectionDB::instance()->getPodcastEpisodes( (*it).url() );
 
         PodcastEpisodeBundle bundle;
-        debug() << (*it).title() << endl;
         int episodeCount = (*it).hasPurge() ? (*it).purgeCount() : episodes.size();
         int i =0;
          // podcasts are hopefully retured chronologically, insert them in reverse
