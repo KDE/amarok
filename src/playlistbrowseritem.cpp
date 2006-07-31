@@ -1520,8 +1520,8 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
         }
     }
 
-//     if( hasPurge() && purgeCount() != 0 && childCount() > purgeCount() )
-//         purge();
+     if( hasPurge() && purgeCount() != 0 && childCount() > purgeCount() )
+         purge();
 
     //sortChildItems( 0, true ); // ensure the correct date order
 
@@ -1538,7 +1538,6 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
 const bool
 PodcastChannel::episodeExists( const QDomNode &xml, const int feedType )
 {
-    DEBUG_BLOCK
     QString command;
     if( feedType == RSS )
     {
@@ -1550,7 +1549,6 @@ PodcastChannel::episodeExists( const QDomNode &xml, const int feedType )
                               .arg( CollectionDB::instance()->escapeString( url().url() ),
                                     CollectionDB::instance()->escapeString( guid ) );
             QStringList values = CollectionDB::instance()->query( command );
-            debug() << "guid: " << !values.isEmpty() <<endl;
             return !values.isEmpty();
         }
 
@@ -1561,7 +1559,6 @@ PodcastChannel::episodeExists( const QDomNode &xml, const int feedType )
                                 CollectionDB::instance()->escapeString( episodeURL ),
                                 CollectionDB::instance()->escapeString( episodeTitle ) );
         QStringList values = CollectionDB::instance()->query( command );
-        debug() << "title+url : " << !values.isEmpty() <<endl;
         return !values.isEmpty();
     }
 
