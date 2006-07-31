@@ -116,7 +116,7 @@ class CommandPlugin < Plugin
     page = params[:page].to_i
     page = [page, 1].max
     page = [page, num_pages].min
-    str = cmds[(page-1)*num_pages, cmds_per_page].join(', ') 
+    str = cmds[(page-1)*cmds_per_page, cmds_per_page].join(', ') 
 
     m.reply "Available commands (page #{page}/#{num_pages}): #{str}" 
   end
