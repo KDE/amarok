@@ -364,10 +364,8 @@ void TagDialog::resetMusicbrainz() //SLOT
 
 void TagDialog::init()
 {
-
-    //NOTE We allocate on the stack in Playlist
-    if( parent() != Playlist::instance()->qscrollview() )
-        setWFlags( getWFlags() | Qt::WDestructiveClose );
+    // delete itself when closing
+    setWFlags( getWFlags() | Qt::WDestructiveClose );
 
     KConfig *config = amaroK::config( "TagDialog" );
 
