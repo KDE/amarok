@@ -84,7 +84,6 @@ NjbMediaDevice::NjbMediaDevice(): MediaDevice()
     customButton->setText( i18n("Special device functions") );
     QToolTip::remove( customButton );
     QToolTip::add( customButton, i18n( "Special functions of your jukebox" ) );
-    
 }
 
 
@@ -98,13 +97,15 @@ NjbMediaDevice::closeDevice()
 {
     DEBUG_BLOCK
 
-    if(m_connected) {
+    if(m_connected)
+    {
         NJB_Release( m_njb);
         m_connected = false;
     }
     m_connected = false;
 
-    if( m_njb ) {
+    if( m_njb )
+    {
         NJB_Close( m_njb);
 
         m_njb = 0;
@@ -196,7 +197,8 @@ NjbMediaDevice::openDevice(bool)
     QString genericError = i18n( "Could not connect to Nomad device" );
 
     int n;
-    if( NJB_Discover( njbs, 0, &n) == -1 || n == 0) {
+    if( NJB_Discover( njbs, 0, &n) == -1 || n == 0 )
+    {
         amaroK::StatusBar::instance()->shortLongMessage( genericError, i18n("A suitable Nomad device could not be found"), KDE::StatusBar::Error );
         debug() << ": no NJBs found\n";
 
@@ -205,7 +207,8 @@ NjbMediaDevice::openDevice(bool)
     m_njb = &njbs[0];
 
 
-    if( NJB_Open( m_njb ) == -1) {
+    if( NJB_Open( m_njb ) == -1 )
+    {
         amaroK::StatusBar::instance()->shortLongMessage( genericError, i18n("Nomad device could not be opened"), KDE::StatusBar::Error );
 
 
@@ -217,7 +220,8 @@ NjbMediaDevice::openDevice(bool)
     m_name = deviceName + " (Owned by " + owner + ")";
 
 
-    if( NJB_Capture(m_njb) == -1) {
+    if( NJB_Capture(m_njb) == -1)
+    {
         debug() << ": couldn't capture\n";
         m_connected = false;
     }
@@ -236,7 +240,8 @@ NjbMediaDevice::deleteFromDevice(unsigned id)
 {
     int status = NJB_Delete_Track( m_njb, id );
 
-    if( status != NJB_SUCCESS) {
+    if( status != NJB_SUCCESS)
+    {
         debug() << ": NJB_Delete_Track failed" << endl;
         return -1;
     }
@@ -258,19 +263,18 @@ NjbMediaDevice::deleteItemFromDevice(MediaItem* item, bool onlyPlayed, bool remo
     {
         return -1;
     }
-
     MediaItem *next = 0;
+
     switch( item->type() )
     {
         case MediaItem::TRACK:
             if( isCanceled() )
                 break;
-            if(item)
+            if( item )
             {
                 deleteTrack( dynamic_cast<NjbMediaItem *> (item) );
                 result++;
             }
-            return result;
             break;
         case MediaItem::ALBUM:
         case MediaItem::ARTIST:
@@ -278,6 +282,8 @@ NjbMediaDevice::deleteItemFromDevice(MediaItem* item, bool onlyPlayed, bool remo
 
             if( isCanceled() )
                 break;
+
+            expandItem( dynamic_cast<QListViewItem *>(item) );
 
             for( MediaItem *it = dynamic_cast<MediaItem *>( item->firstChild() ); it ; it = next )
             {
@@ -290,14 +296,13 @@ NjbMediaDevice::deleteItemFromDevice(MediaItem* item, bool onlyPlayed, bool remo
                     result = -1;
 
             }
-            if(item)
-                delete dynamic_cast<MediaItem *>(item);
-            return result;
+            if( item )
+                delete dynamic_cast<MediaItem *>( item );
             break;
         default:
-            return 0;
-            break;
+            result = 0;
     }
+    
     return result;
 }
 
@@ -306,9 +311,10 @@ NjbMediaDevice::deleteTrack(NjbMediaItem *trackItem)
 {
     int status = NJB_Delete_Track( m_njb, trackItem->track()->id() );
 
-    if( status != NJB_SUCCESS) {
+    if( status != NJB_SUCCESS)
+    {
         debug() << ": NJB_Delete_Track failed" << endl;
-//        amaroK::StatusBar::instance()->shortLongMessage( i18n( "Deleting failed" ), i18n( "Deleting track(s) failed." ), KDE::StatusBar::Error );
+        amaroK::StatusBar::instance()->shortLongMessage( i18n( "Deleting failed" ), i18n( "Deleting track(s) failed." ), KDE::StatusBar::Error );
         return -1;
     }
 
@@ -696,6 +702,7 @@ NjbMediaDevice::rmbPressed(QListViewItem* qitem, const QPoint& point, int )
 
         case DELETE:
             MediaDevice::deleteFromDevice( item , false, true );
+            readJukeboxMusic();
             break;
         case DOWNLOAD_TO_COLLECTION:
             downloadToCollection();
@@ -747,7 +754,8 @@ NjbMediaDevice::readJukeboxMusic( void)
     int result = NJB_SUCCESS;
 
     // First, read jukebox tracks
-    if(trackList.isEmpty()) {
+    if(trackList.isEmpty())
+    {
 
         result = trackList.readFromDevice();
     }
