@@ -357,62 +357,6 @@ NjbMediaDevice::downloadSelectedItems()
             dynamic_cast<MediaBrowser *>( parent() )->queue()->addURL(path, dynamic_cast<MediaItem *>(it) );
             
         }
-/*        switch( it->type() ) // I really need to do first, second and third level selectors for this.
-        {
-            case MediaItem::ARTIST:
-                path += it->bundle()->artist();
-                if( !dir.exists( path ) )
-                {
-                    dir.mkdir( path );
-                }
-                break;
-            case MediaItem::ALBUM:
-                path += it->bundle()->artist();
-                if( !dir.exists( path ) )
-                {
-                    dir.mkdir( path );
-                }
-                path += ( "/" + it->bundle()->album() );
-                if( !dir.exists( path ) )
-                {
-                    dir.mkdir( path );
-                }
-                break;
-            case MediaItem::TRACK:
-            {
-                path += it->bundle()->artist();
-                if( !dir.exists( path ) )
-                {
-                    dir.mkdir( path );
-                }
-                path += ( "/" + it->bundle()->album() );
-                if( !dir.exists( path ) )
-                {
-                    dir.mkdir( path );
-                }
-                NjbMediaItem *auxItem = dynamic_cast<NjbMediaItem *>( (it) );
-                path +=( "/" + auxItem->bundle()->filename() );
-                
-                debug() << path << endl;
-                if( NJB_Get_Track( m_njb, auxItem->track()->id(), auxItem->bundle()->filesize(), path.utf8(), progressCallback, this)
-                    != NJB_SUCCESS )
-                {
-                    debug() << "Get Track failed. " << endl;
-                    if( NJB_Error_Pending(m_njb) )
-                    {
-                        const char *njbError;
-                        while( (njbError = NJB_Error_Geterror(m_njb) ) )
-                            error() << njbError << endl;
-                    }
-                    else
-                        debug() << "No reason to report for failure" << endl;
-                }
-                result ++;
-                break;
-            }
-            default:
-                break;
-    }*/
     }
     return result;
 
@@ -688,6 +632,8 @@ NjbMediaDevice::rmbPressed(QListViewItem* qitem, const QPoint& point, int )
 
 
         int id =  menu.exec( point );
+        MediaItem *i;
+        QPtrList<MediaItem> items;
         switch( id )
         {
         case DOWNLOAD:
@@ -701,7 +647,13 @@ NjbMediaDevice::rmbPressed(QListViewItem* qitem, const QPoint& point, int )
             break;
 
         case DELETE:
-            MediaDevice::deleteFromDevice( item , false, true );
+            m_view->getSelectedLeaves( 0, &items );
+            while( !items.isEmpty() )
+            {
+                i = items.first();
+                MediaDevice::deleteFromDevice( i , false, true );
+                items.remove(i);
+            }
             readJukeboxMusic();
             break;
         case DOWNLOAD_TO_COLLECTION:
