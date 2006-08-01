@@ -265,6 +265,11 @@ MountPointManager::mediumChanged( const Medium *m )
             {
                 debug() << "found handler for " << m->id() << endl;
                 DeviceHandler *handler = (*it)->createHandler( m );
+                if( !handler )
+                {
+                    debug() << "Factory " << (*it)->type() << "could not create device handler" << endl;
+                    break;
+                }
                 int key = handler->getDeviceID();
                 m_handlerMapMutex.lock();
                 if ( m_handlerMap.contains( key ) )
@@ -344,6 +349,11 @@ MountPointManager::mediumAdded( const Medium *m )
             {
                 debug() << "found handler for " << m->id() << endl;
                 DeviceHandler *handler = (*it)->createHandler( m );
+                if( !handler )
+                {
+                    debug() << "Factory " << (*it)->type() << "could not create device handler" << endl;
+                    break;
+                }
                 int key = handler->getDeviceID();
                 m_handlerMapMutex.lock();
                 if ( m_handlerMap.contains( key ) )
