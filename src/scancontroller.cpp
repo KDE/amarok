@@ -378,10 +378,12 @@ ScanController::customEvent( QCustomEvent* e )
         log.open( IO_ReadOnly );
         m_crashedFiles << log.readAll();
 
+        m_dataMutex.lock();
         m_xmlData = QString::null;
-
         delete m_source;
         m_source = new QXmlInputSource();
+        m_dataMutex.unlock();
+
         delete m_reader;
         m_reader = new QXmlSimpleReader();
 
