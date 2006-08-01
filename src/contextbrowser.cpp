@@ -948,6 +948,12 @@ public:
         , m_currentTrack( QDeepCopy<MetaBundle>( EngineController::instance()->bundle() ) )
         , m_isStream( EngineController::engine()->isStream() )
     {
+        for( QStringList::iterator it = b->m_metadataHistory.begin();
+                it != b->m_metadataHistory.end();
+                ++it )
+        {
+            m_metadataHistory += QDeepCopy<QString>( *it );
+        }
     }
 
 private:
@@ -975,7 +981,12 @@ private:
 //         if( b->currentPage() != b->m_contextTab )
 //             return;
 
-        b->m_HTMLSource = m_HTMLSource;
+        b->m_shownAlbums.clear();
+        for( QStringList::iterator it = m_shownAlbums.begin();
+                it != m_shownAlbums.end();
+                ++it )
+            b->m_shownAlbums.append( QDeepCopy<QString>( *it ) );
+        b->m_HTMLSource = QDeepCopy<QString>( m_HTMLSource );
         b->m_currentTrackPage->set( m_HTMLSource );
         b->m_dirtyCurrentTrackPage = false;
         b->saveHtmlData(); // Send html code to file
@@ -985,6 +996,8 @@ private:
     ContextBrowser *b;
     MetaBundle m_currentTrack;
     bool m_isStream;
+    QStringList m_shownAlbums;
+    QStringList m_metadataHistory;
 };
 
 void
@@ -1163,7 +1176,7 @@ void CurrentTrackJob::showHome()
                     << i18n( "1 Genre",  "%n Genres",  genreCount.toInt() )
                     << i18n( "%1 Play-time" ).arg ( playTime ) ) );
 
-    b->m_shownAlbums = showHomeByAlbums();
+    m_shownAlbums = showHomeByAlbums();
 
     m_HTMLSource.append(
             "</div></body></html>\n");
@@ -1744,16 +1757,16 @@ void CurrentTrackJob::showStream( const MetaBundle &currentTrack )
 
 void CurrentTrackJob::addMetaHistory()
 {
-    if ( b->m_metadataHistory.count() > 0 )
+    if ( m_metadataHistory.count() > 0 )
     {
         m_HTMLSource.append(
                 "<div id='stream-history_box' class='box'>\n"
                 "<div id='stream-history_box-header' class='box-header'>\n" + i18n( "Metadata History" ) + "</div>\n"
                 "<table id='stream-history_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>\n" );
 
-        for ( uint i = 0; i < b->m_metadataHistory.count(); ++i )
+        for ( uint i = 0; i < m_metadataHistory.count(); ++i )
         {
-            const QString str = b->m_metadataHistory[i];
+            const QString &str = m_metadataHistory[i];
             m_HTMLSource.append( QStringx( "<tr class='box-row'><td>%1</td></tr>\n" ).arg( str ) );
         }
 
@@ -1827,16 +1840,16 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
                 )
             );
 
-    if ( m_isStream && b->m_metadataHistory.count() > 1 )
+    if ( m_isStream && m_metadataHistory.count() > 1 )
     {
         m_HTMLSource.append(
                 "<div id='stream-history_box' class='box'>\n"
                 "<div id='stream-history_box-header' class='box-header'>\n" + i18n( "Metadata History" ) + "</div>\n"
                 "<table id='stream-history_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='1'>\n" );
 
-        for ( uint i = 0; i < b->m_metadataHistory.count(); ++i )
+        for ( uint i = 0; i < m_metadataHistory.count(); ++i )
         {
-            const QString str = b->m_metadataHistory[i];
+            const QString &str = m_metadataHistory[i];
             m_HTMLSource.append( QStringx( "<tr class='box-row'><td>%1</td></tr>\n" ).arg( str ) );
         }
 
