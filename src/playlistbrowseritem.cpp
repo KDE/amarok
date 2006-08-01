@@ -49,13 +49,26 @@ class PlaylistReader : public ThreadWeaver::DependentJob
     public:
         PlaylistReader( QObject *recipient, const QString &path )
                 : ThreadWeaver::DependentJob( recipient, "PlaylistReader" )
-                , m_path( path ) {}
+                , m_path( QDeepCopy<QString>( path ) ) {}
 
         virtual bool doJob() {
+            DEBUG_BLOCK
             PlaylistFile pf = PlaylistFile( m_path );
             bundles = pf.bundles();
             title   = pf.title();
             return true;
+        }
+
+        virtual void completeJob() {
+            DEBUG_BLOCK
+            PlaylistFile pf = PlaylistFile( m_path );
+            bundles = QDeepCopy<BundleList>( bundles );
+            title = QDeepCopy<QString>( title );
+            for( BundleList::iterator it = bundles.begin();
+                    it != bundles.end();
+                    ++it )
+                *it = QDeepCopy<MetaBundle>( *it );
+            ThreadWeaver::DependentJob::completeJob();
         }
 
         BundleList bundles;
