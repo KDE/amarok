@@ -1486,8 +1486,9 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
     //This will have to be tested.  It's also supposedly a TagLib bug so maybe it could be fixed, especially with some pressure on wheels
     else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
     {
-        /*if ( file->xiphComment( !strip ) )
+        if ( file->xiphComment( AmarokConfig::advancedTagFeatures() ) )
         {
+            /*
             if( file->xiphComment()->fieldListMap().contains( QStringToTString( ourId ) )
                         && AmarokConfig::advancedTagFeatures()
                         && ( recreate || strip )
@@ -1499,9 +1500,10 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
                 file->save();
                 return;
             }
-
+            */
             if( !file->xiphComment()->fieldListMap().contains( QStringToTString( ourId ) ) )
             {
+                /*
                 if( AmarokConfig::advancedTagFeatures() && TagLib::File::isWritable( file->name() ) )
                 {
                     m_uniqueId = getRandomStringHelper( randSize );
@@ -1511,18 +1513,17 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
                     file->save();
                     newID = true;
                 }
+                */
             }
             else
                 m_uniqueId = TStringToQString( file->xiphComment()->fieldListMap()[QStringToTString( ourId )].front() ).left( randSize );
-        }*/
-        //don't handle FLAC yet because causes whole file to be rewritten -- bug in TagLib?
-        if( file || !file )
-            return;
+        }
     }
     else if ( TagLib::Ogg::FLAC::File *file = dynamic_cast<TagLib::Ogg::FLAC::File *>( fileref.file() ) )
     {
-        /*if( file->tag() )
+        if( file->tag() )
         {
+            /*
             if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) )
                         && AmarokConfig::advancedTagFeatures()
                         && ( recreate || strip )
@@ -1534,9 +1535,10 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
                 file->save();
                 return;
             }
-
+            */
             if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) )
             {
+                /*
                 if( AmarokConfig::advancedTagFeatures() && TagLib::File::isWritable( file->name() ) )
                 {
                     m_uniqueId = getRandomStringHelper( randSize );
@@ -1546,12 +1548,11 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
                     file->save();
                     newID = true;
                 }
+                */
             }
             else
                 m_uniqueId = TStringToQString( file->tag()->fieldListMap()[QStringToTString( ourId )].front() ).left( randSize );
-        }*/
-        if( file || !file )
-            return;
+        }
     }
     else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
     {
@@ -1628,7 +1629,7 @@ MetaBundle::getRandomString( int size )
     {
         // check your ASCII tables
         // we want characters you can see...93 is the range from ! to ~
-        int r=rand() % 93;
+        int r=rand() % 94;
         // shift the value to the visible characters
         r+=33;
         // we don't want ", %, ', <, >, \, or `
