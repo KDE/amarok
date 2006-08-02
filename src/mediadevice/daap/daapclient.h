@@ -64,6 +64,7 @@ class DaapClient : public MediaDevice
 
     protected:
          bool getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
+         void rmbPressed( QListViewItem* qitem, const QPoint& point, int );
          bool lockDevice( bool tryOnly = false );
          void unlockDevice();
          bool openDevice( bool silent=false );

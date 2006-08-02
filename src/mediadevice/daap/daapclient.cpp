@@ -19,6 +19,7 @@
 #include "daapclient.h"
 #include "debug.h"
 #include "mediabrowser.h"
+#include "playlist.h"
 #include "proxy.h"
 
 #include <qmetaobject.h>
@@ -30,6 +31,7 @@
 #include <klineedit.h>
 #include <knuminput.h>
 #include <kpassdlg.h>
+#include <kpopupmenu.h>
 #include <kresolver.h>
 #include <ktoolbar.h>
 #include <ktoolbarbutton.h>
@@ -169,6 +171,49 @@ int
 DaapClient::deleteItemFromDevice( MediaItem* /*item*/, int /*flags*/ )
 {
     return 0;
+}
+
+void
+DaapClient::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
+{
+    enum Actions { APPEND, LOAD, QUEUE, CONNECT };
+
+    MediaItem *item = dynamic_cast<MediaItem *>(qitem);
+    if( !item )
+        return;
+
+    KURL::List urls;
+
+    KPopupMenu menu( m_view );
+    switch( item->type() )
+    {
+        case MediaItem::DIRECTORY:
+            menu.insertItem( SmallIconSet( amaroK::icon( "connect" ) ), i18n( "&Connect" ), CONNECT );
+            break;
+        default:
+            urls = m_view->nodeBuildDragList( 0 );
+            menu.insertItem( SmallIconSet( amaroK::icon( "playlist" ) ), i18n( "&Load" ), LOAD );
+            menu.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
+            menu.insertItem( SmallIconSet( amaroK::icon( "fastforward" ) ), i18n( "&Queue Tracks" ), QUEUE );
+            break;
+    }
+
+    int id =  menu.exec( point );
+    switch( id )
+    {
+        case CONNECT:
+            item->setOpen( true );
+            break;
+        case LOAD:
+            Playlist::instance()->insertMedia( urls, Playlist::Replace );
+            break;
+        case APPEND:
+            Playlist::instance()->insertMedia( urls, Playlist::Append );
+            break;
+        case QUEUE:
+            Playlist::instance()->insertMedia( urls, Playlist::Queue );
+            break;
+    }
 }
 
 void
