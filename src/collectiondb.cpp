@@ -4781,7 +4781,7 @@ void
 CollectionDB::scanMonitor()  //SLOT
 {
     if ( AmarokConfig::monitorChanges() &&
-         ( !CollectionView::instance() || CollectionView::instance()->isOrganizingFiles() ) )
+         ( !CollectionView::instance() || !CollectionView::instance()->isOrganizingFiles() ) )
         scanModifiedDirs();
 }
 
