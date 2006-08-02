@@ -79,7 +79,7 @@ class IpodMediaDevice : public MediaDevice
         virtual KURL determineURLOnDevice( const MetaBundle& bundle );
 
         void              synchronizeDevice();
-        int               deleteItemFromDevice( MediaItem *item, bool onlyPlayed = false, bool deleteTrack = true );
+        int               deleteItemFromDevice( MediaItem *item, int flags=DeleteTrack );
         virtual void      deleteFile( const KURL &url );
         void              addToPlaylist( MediaItem *list, MediaItem *after, QPtrList<MediaItem> items );
         MediaItem        *newPlaylist( const QString &name, MediaItem *list, QPtrList<MediaItem> items );

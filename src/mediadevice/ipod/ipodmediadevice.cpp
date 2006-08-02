@@ -628,7 +628,7 @@ IpodMediaDevice::addToPlaylist(MediaItem *mlist, MediaItem *after, QPtrList<Medi
 }
 
 int
-IpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed, bool deleteTrack )
+IpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, int flags )
 {
     IpodMediaItem *item = dynamic_cast<IpodMediaItem *>(mediaitem);
     if(!item)
@@ -645,7 +645,7 @@ IpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed, boo
     switch(item->type())
     {
     case MediaItem::PLAYLISTITEM:
-        if( !deleteTrack )
+        if( !(flags & DeleteTrack) )
         {
             // FIXME possibly wrong instance of track is removed
             itdb_playlist_remove_track(item->m_playlist, item->m_track);
@@ -658,7 +658,7 @@ IpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed, boo
     case MediaItem::TRACK:
     case MediaItem::INVISIBLE:
     case MediaItem::PODCASTITEM:
-        if(!onlyPlayed || item->played() > 0)
+        if(!(flags & OnlyPlayed) || item->played() > 0)
         {
             bool stale = item->type()==MediaItem::STALE;
             Itdb_Track *track = item->m_track;
@@ -720,7 +720,7 @@ IpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed, boo
                     break;
 
                 next = dynamic_cast<IpodMediaItem *>(it->nextSibling());
-                int ret = deleteItemFromDevice(it, onlyPlayed, deleteTrack);
+                int ret = deleteItemFromDevice(it, flags);
                 if( ret >= 0 && count >= 0 )
                     count += ret;
                 else
@@ -738,7 +738,7 @@ IpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, bool onlyPlayed, boo
                 && item->type() != MediaItem::STALEROOT
                 && item->type() != MediaItem::ORPHANEDROOT)
         {
-            if(!onlyPlayed || item->played() > 0 || item->childCount() == 0)
+            if(!(flags & OnlyPlayed) || item->played() > 0 || item->childCount() == 0)
             {
                 if(item->childCount() > 0)
                     debug() << "recursive deletion should have removed all children from " << item << "(" << item->text(0) << ")" << endl;
@@ -2081,7 +2081,7 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                 }
                 break;
             case REMOVE_FROM_PLAYLIST:
-                deleteFromDevice(m_playlistItem, false, false);
+                deleteFromDevice(m_playlistItem, None);
                 break;
             case DELETE_FROM_IPOD:
                 deleteFromDevice();

@@ -511,7 +511,7 @@ IfpMediaDevice::setProgressInfo( struct ifp_transfer_status *progress )
 /// Deleting
 
 int
-IfpMediaDevice::deleteItemFromDevice( MediaItem *item, bool /*onlyPlayed*/, bool /*deleteTrack*/ )
+IfpMediaDevice::deleteItemFromDevice( MediaItem *item, int /*flags*/ )
 {
     if( !item || !m_connected ) return -1;
 

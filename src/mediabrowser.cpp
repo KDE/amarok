@@ -196,7 +196,7 @@ class DummyMediaDevice : public MediaDevice
     virtual bool closeDevice() { return false; }
     virtual void synchronizeDevice() {}
     virtual MediaItem* copyTrackToDevice(const MetaBundle&) { return 0; }
-    virtual int deleteItemFromDevice(MediaItem*, bool, bool) { return -1; }
+    virtual int deleteItemFromDevice(MediaItem*, int) { return -1; }
 };
 
 
@@ -1172,7 +1172,7 @@ MediaView::startDrag()
 
 
 KURL::List
-MediaView::nodeBuildDragList( MediaItem* item, bool onlySelected )
+MediaView::nodeBuildDragList( MediaItem* item, int flags )
 {
     KURL::List items;
     MediaItem* fi;
@@ -1188,20 +1188,20 @@ MediaView::nodeBuildDragList( MediaItem* item, bool onlySelected )
     {
         if( fi->isVisible() )
         {
-            if ( fi->isSelected() || !onlySelected )
+            if ( fi->isSelected() || !(flags & OnlySelected ) )
             {
                 if( fi->isLeafItem() || fi->type() == MediaItem::DIRECTORY )
                     items += fi->url();
                 else
                 {
                     if(fi->childCount() )
-                        items += nodeBuildDragList( static_cast<MediaItem*>(fi->firstChild()), false );
+                        items += nodeBuildDragList( static_cast<MediaItem*>(fi->firstChild()), None );
                 }
             }
             else
             {
                 if ( fi->childCount() )
-                    items += nodeBuildDragList( static_cast<MediaItem*>(fi->firstChild()), true );
+                    items += nodeBuildDragList( static_cast<MediaItem*>(fi->firstChild()), OnlySelected );
             }
         }
         fi = static_cast<MediaItem*>(fi->nextSibling());
@@ -1210,7 +1210,7 @@ MediaView::nodeBuildDragList( MediaItem* item, bool onlySelected )
 }
 
 int
-MediaView::getSelectedLeaves( MediaItem *parent, QPtrList<MediaItem> *list, bool onlySelected, bool onlyPlayed )
+MediaView::getSelectedLeaves( MediaItem *parent, QPtrList<MediaItem> *list, int flags )
 {
     int numFiles = 0;
     if( !list )
@@ -1228,9 +1228,12 @@ MediaView::getSelectedLeaves( MediaItem *parent, QPtrList<MediaItem> *list, bool
         {
             if( it->childCount() && !( it->type() == MediaItem::DIRECTORY && it->isSelected() ) )
             {
-                numFiles += getSelectedLeaves(it, list, onlySelected && !it->isSelected(), onlyPlayed);
+                int f = flags;
+                if( it->isSelected() )
+                    f &= ~OnlySelected;
+                numFiles += getSelectedLeaves(it, list, f );
             }
-            if( it->isSelected() || !onlySelected )
+            if( it->isSelected() || !(flags & OnlySelected) )
             {
                 if( it->type() == MediaItem::TRACK       ||
                     it->type() == MediaItem::DIRECTORY   ||
@@ -1239,7 +1242,7 @@ MediaView::getSelectedLeaves( MediaItem *parent, QPtrList<MediaItem> *list, bool
                     it->type() == MediaItem::INVISIBLE   ||
                     it->type() == MediaItem::ORPHANED     )
                 {
-                    if( onlyPlayed )
+                    if( flags & OnlyPlayed )
                     {
                         if( it->played() > 0 )
                             numFiles++;
@@ -1247,7 +1250,7 @@ MediaView::getSelectedLeaves( MediaItem *parent, QPtrList<MediaItem> *list, bool
                     else
                         numFiles++;
                 }
-                if( ( it->isLeafItem() && (!onlyPlayed || it->played()>0) )
+                if( ( it->isLeafItem() && (!(flags & OnlyPlayed) || it->played()>0) )
                         || it->type() == MediaItem::DIRECTORY )
                     list->append( it );
             }
@@ -2368,7 +2371,7 @@ MediaDevice::connectDevice( bool silent )
     {
         QPtrList<MediaItem> list;
         //NOTE we assume that currentItem is the main target
-        int numFiles  = m_view->getSelectedLeaves( m_podcastItem, &list, false /* not only selected */, true /* only played */ );
+        int numFiles  = m_view->getSelectedLeaves( m_podcastItem, &list, MediaView::OnlyPlayed );
 
         if(numFiles > 0)
         {
@@ -2812,12 +2815,12 @@ MediaDevice::fileTransferFinished()  //SLOT
 
 
 int
-MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool deleteTrack, bool recursing)
+MediaDevice::deleteFromDevice(MediaItem *item, int flags )
 {
     MediaItem* fi = item;
     int count = 0;
 
-    if ( !recursing )
+    if ( !(flags & Recursing) )
     {
         if( !lockDevice( true ) )
             return 0;
@@ -2828,10 +2831,10 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool deleteTrack
 
         QPtrList<MediaItem> list;
         //NOTE we assume that currentItem is the main target
-        int numFiles  = m_view->getSelectedLeaves(item, &list, true /* only selected */, onlyPlayed);
+        int numFiles  = m_view->getSelectedLeaves(item, &list, MediaView::OnlySelected | ((flags & OnlyPlayed) ? MediaView::OnlyPlayed : MediaView::None) );
 
         m_parent->m_stats->setText( i18n( "1 track to be deleted", "%n tracks to be deleted", numFiles ) );
-        if(numFiles > 0 && deleteTrack)
+        if( numFiles > 0 && (flags & DeleteTrack) )
         {
             int button = KMessageBox::warningContinueCancel( m_parent,
                     i18n( "<p>You have selected 1 track to be <b>irreversibly</b> deleted.",
@@ -2878,7 +2881,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool deleteTrack
 
         if( fi->isSelected() )
         {
-            int ret = deleteItemFromDevice(fi, onlyPlayed, deleteTrack);
+            int ret = deleteItemFromDevice(fi, flags);
             if( ret >= 0 && count >= 0 )
                 count += ret;
             else
@@ -2888,7 +2891,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool deleteTrack
         {
             if( fi->childCount() )
             {
-                int ret = deleteFromDevice( static_cast<MediaItem*>(fi->firstChild()), onlyPlayed, deleteTrack, true );
+                int ret = deleteFromDevice( static_cast<MediaItem*>(fi->firstChild()), flags | Recursing );
                 if( ret >= 0 && count >= 0 )
                     count += ret;
                 else
@@ -2900,7 +2903,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, bool onlyPlayed, bool deleteTrack
         fi = next;
     }
 
-    if(!recursing)
+    if(!(flags & Recursing))
     {
         purgeEmptyItems();
         synchronizeDevice();

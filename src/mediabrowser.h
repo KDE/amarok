@@ -257,10 +257,17 @@ class MediaView : public KListView
     friend class MediaDevice;
 
     public:
+        enum Flags
+        {
+            None = 0,
+            OnlySelected = 1,
+            OnlyPlayed = 2
+        };
+
         MediaView( QWidget *parent, MediaDevice *device );
         virtual ~MediaView();
-        LIBAMAROK_EXPORT KURL::List nodeBuildDragList( MediaItem* item, bool onlySelected=true );
-        int getSelectedLeaves(MediaItem *parent, QPtrList<MediaItem> *list, bool onlySelected=true, bool onlyPlayed=false );
+        LIBAMAROK_EXPORT KURL::List nodeBuildDragList( MediaItem* item, int flags=OnlySelected );
+        int getSelectedLeaves(MediaItem *parent, QPtrList<MediaItem> *list, int flags=OnlySelected );
         LIBAMAROK_EXPORT MediaItem *newDirectory( MediaItem* parent );
         bool setFilter( const QString &filter, MediaItem *parent=NULL );
 
@@ -301,6 +308,14 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
     friend class MediaQueue;
 
     public:
+        enum Flags
+        {
+            None = 0,
+            OnlyPlayed = 1,
+            DeleteTrack = 2,
+            Recursing = 4
+        };
+
         MediaDevice();
         virtual void init( MediaBrowser* parent );
         virtual ~MediaDevice();
@@ -542,7 +557,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
          * @param onlyPlayed True if item should be deleted only if it has been played
          * @return -1 on failure, number of files deleted otherwise
          */
-        virtual int deleteItemFromDevice( MediaItem *item, bool onlyPlayed=false, bool deleteTrack=true ) = 0;
+        virtual int deleteItemFromDevice( MediaItem *item, int flags=DeleteTrack ) = 0;
 
         /**
          * Abort the currently active track transfer
@@ -553,7 +568,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
 
         virtual bool isSpecialItem( MediaItem *item );
 
-        int deleteFromDevice( MediaItem *item=0, bool onlyPlayed=false, bool deleteTrack=true, bool recursing=false );
+        int deleteFromDevice( MediaItem *item=0, int flags=DeleteTrack );
 
         void purgeEmptyItems( MediaItem *root=0 );
         void syncStatsFromDevice( MediaItem *root=0 );

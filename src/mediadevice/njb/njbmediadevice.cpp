@@ -253,11 +253,9 @@ NjbMediaDevice::deleteFromDevice(unsigned id)
 }
 
 int
-NjbMediaDevice::deleteItemFromDevice(MediaItem* item, bool onlyPlayed, bool removeTrack )
+NjbMediaDevice::deleteItemFromDevice(MediaItem* item, int flags )
 {
     DEBUG_BLOCK
-    Q_UNUSED(onlyPlayed)
-    Q_UNUSED(removeTrack)
     int result = 0;
     if ( isCanceled() )
     {
@@ -289,7 +287,7 @@ NjbMediaDevice::deleteItemFromDevice(MediaItem* item, bool onlyPlayed, bool remo
             {
 
                 next = dynamic_cast<MediaItem *>(it->nextSibling());
-                int res = deleteItemFromDevice( it, onlyPlayed );
+                int res = deleteItemFromDevice( it, flags );
                 if( res >= 0 && result >= 0 )
                     result += res;
                 else
@@ -651,7 +649,7 @@ NjbMediaDevice::rmbPressed(QListViewItem* qitem, const QPoint& point, int )
             while( !items.isEmpty() )
             {
                 i = items.first();
-                MediaDevice::deleteFromDevice( i , false, true );
+                MediaDevice::deleteFromDevice( i );
                 items.remove(i);
             }
             readJukeboxMusic();
