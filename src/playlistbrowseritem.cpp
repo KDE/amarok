@@ -2306,6 +2306,7 @@ void SmartPlaylist::setXml( const QDomElement &xml )
     m_sqlForTags = xml.namedItem( "sqlquery" ).toElement().text();
     static QStringList genres;
     static QStringList artists;
+    static QStringList composers;
     static QStringList albums;
     static QStringList years;
 
@@ -2338,6 +2339,14 @@ void SmartPlaylist::setXml( const QDomElement &xml )
                 artists = CollectionDB::instance()->artistList();
             }
             foreach( artists ) {
+                m_after = new SmartPlaylist( item, m_after, i18n( "By %1" ).arg( *it ), expand.text().replace("(*ExpandString*)", *it)  );
+            }
+        }
+        if ( field == i18n("Composer") ) {
+            if ( composers.isEmpty() ) {
+                composers = CollectionDB::instance()->composerList();
+            }
+            foreach( composers ) {
                 m_after = new SmartPlaylist( item, m_after, i18n( "By %1" ).arg( *it ), expand.text().replace("(*ExpandString*)", *it)  );
             }
         }
