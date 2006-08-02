@@ -408,11 +408,9 @@ MediaBrowser::tagsChanged( const MetaBundle &bundle )
             item->setBundle( new MetaBundle( bundle ) );
 
             QString text = item->bundle()->prettyTitle();
-            if( item->type() == MediaItem::PODCASTITEM )
-            {
-                text += " (" + i18n("Podcast") + ")";
-            }
-            if( item->m_playlistName != QString::null )
+            if( text.isEmpty() || (!item->bundle()->isValidMedia() && !item->bundle()->podcastBundle()) )
+                text = item->bundle()->url().prettyURL();
+            if( !item->m_playlistName.isNull() )
             {
                 text += " (" + item->m_playlistName + ")";
             }
@@ -428,9 +426,6 @@ MediaBrowser::getBundle( const KURL &url, MetaBundle *bundle ) const
     QMutexLocker locker( &m_itemMapMutex );
     ItemMap::const_iterator it = m_itemMap.find( url.url() );
     if( it == m_itemMap.end() )
-        return false;
-
-    if( !(*it)->device() )
         return false;
 
     if( bundle )
