@@ -18,7 +18,7 @@ echo
 ## Define global variables
 LANG="C" #Make outputs in English, like the script itself.
 RCFILE="amarok-svnrc" #Settings file, will end up in '`kde-config --localprefix`/share/config/'.
-C_STEP="1" #The current step of the instalklation process
+C_STEP="1" #The current step of the installation process
 S_STEPS="11" #Number of steps in the installation process
 TMP_FILES="" #Will be filled with URLs to temporary files
 
