@@ -285,7 +285,7 @@ Reader::songListFinished( int /*id*/, bool error )
                         << m_databaseId
                         << QString::number( (*it).asMap()["miid"].asList()[0].asInt() ) 
                         << (*it).asMap()["asfm"].asList()[0].asString() ) );
-        bundle->setLength( (*it).asMap()["astm"].asList()[0].toInt() );
+        bundle->setLength( (*it).asMap()["astm"].asList()[0].toInt()/1000 );
         bundle->setTrack( (*it).asMap()["astn"].asList()[0].toInt() );
         
         QString album = (*it).asMap()["asal"].asList()[0].toString();
