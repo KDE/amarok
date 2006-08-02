@@ -557,12 +557,12 @@ CollectionDB::createTables( const bool temporary )
                     "modifydate INTEGER,"
                     "album INTEGER,"
                     "artist INTEGER,"
+                    "composer INTEGER,"
                     "genre INTEGER,"
                     "title " + textColumnType() + ","
                     "year INTEGER,"
                     "comment " + textColumnType() + ","
                     "track NUMERIC(4),"
-                    "composer " + textColumnType() + ","
                     "discnumber INTEGER,"
                     "bitrate INTEGER,"
                     "length INTEGER,"
@@ -577,6 +577,7 @@ CollectionDB::createTables( const bool temporary )
 
     QString albumAutoIncrement = "";
     QString artistAutoIncrement = "";
+    QString composerAutoIncrement = "";
     QString genreAutoIncrement = "";
     QString yearAutoIncrement = "";
     if ( getDbConnectionType() == DbConnection::postgresql )
@@ -585,12 +586,14 @@ CollectionDB::createTables( const bool temporary )
         {
             query( QString( "CREATE SEQUENCE album_seq;" ) );
             query( QString( "CREATE SEQUENCE artist_seq;" ) );
+            query( QString( "CREATE SEQUENCE composer_seq;" ) );
             query( QString( "CREATE SEQUENCE genre_seq;" ) );
             query( QString( "CREATE SEQUENCE year_seq;" ) );
         }
 
         albumAutoIncrement = QString("DEFAULT nextval('album_seq')");
         artistAutoIncrement = QString("DEFAULT nextval('artist_seq')");
+        composerAutoIncrement = QString("DEFAULT nextval('composer_seq')");
         genreAutoIncrement = QString("DEFAULT nextval('genre_seq')");
         yearAutoIncrement = QString("DEFAULT nextval('year_seq')");
     }
@@ -598,6 +601,7 @@ CollectionDB::createTables( const bool temporary )
     {
         albumAutoIncrement = "AUTO_INCREMENT";
         artistAutoIncrement = "AUTO_INCREMENT";
+        composerAutoIncrement = "AUTO_INCREMENT";
         genreAutoIncrement = "AUTO_INCREMENT";
         yearAutoIncrement = "AUTO_INCREMENT";
     }
@@ -617,6 +621,14 @@ CollectionDB::createTables( const bool temporary )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" )
                     .arg( artistAutoIncrement ) );
+
+    //create composer table
+    query( QString( "CREATE %1 TABLE composer%2 ("
+                    "id INTEGER PRIMARY KEY %3,"
+                    "name " + textColumnType() + ");" )
+                    .arg( temporary ? "TEMPORARY" : "" )
+                    .arg( temporary ? "_temp" : "" )
+                    .arg( composerAutoIncrement ) );
 
     //create genre table
     query( QString( "CREATE %1 TABLE genre%2 ("
@@ -674,6 +686,8 @@ CollectionDB::createTables( const bool temporary )
                     .arg( temporary ? "_temp" : "" ).arg( temporary ? "_temp" : "" ) );
     query( QString( "CREATE INDEX artist_idx%1 ON artist%2( name );" )
                     .arg( temporary ? "_temp" : "" ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "CREATE INDEX composer_idx%1 ON composer%2( name );" )
+                    .arg( temporary ? "_temp" : "" ).arg( temporary ? "_temp" : "" ) );
     query( QString( "CREATE INDEX genre_idx%1 ON genre%2( name );" )
                     .arg( temporary ? "_temp" : "" ).arg( temporary ? "_temp" : "" ) );
     query( QString( "CREATE INDEX year_idx%1 ON year%2( name );" )
@@ -709,6 +723,7 @@ CollectionDB::createIndices()
     query( "CREATE UNIQUE INDEX url_tag ON tags( url, deviceid );" );
     query( "CREATE INDEX album_tag ON tags( album );" );
     query( "CREATE INDEX artist_tag ON tags( artist );" );
+    query( "CREATE INDEX composer_tag ON tags( composer );" );
     query( "CREATE INDEX genre_tag ON tags( genre );" );
     query( "CREATE INDEX year_tag ON tags( year );" );
     query( "CREATE INDEX sampler_tag ON tags( sampler );" );
@@ -735,6 +750,7 @@ CollectionDB::dropTables( const bool temporary )
     query( QString( "DROP TABLE tags%1;" ).arg( temporary ? "_temp" : "" ) );
     query( QString( "DROP TABLE album%1;" ).arg( temporary ? "_temp" : "" ) );
     query( QString( "DROP TABLE artist%1;" ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "DROP TABLE composer%1;" ).arg( temporary ? "_temp" : "" ) );
     query( QString( "DROP TABLE genre%1;" ).arg( temporary ? "_temp" : "" ) );
     query( QString( "DROP TABLE year%1;" ).arg( temporary ? "_temp" : "" ) );
     query( QString( "DROP TABLE images%1;" ).arg( temporary ? "_temp" : "" ) );
@@ -752,6 +768,7 @@ CollectionDB::dropTables( const bool temporary )
         if (temporary == false) {
             query( QString( "DROP SEQUENCE album_seq;" ) );
             query( QString( "DROP SEQUENCE artist_seq;" ) );
+            query( QString( "DROP SEQUENCE composer_seq;" ) );
             query( QString( "DROP SEQUENCE genre_seq;" ) );
             query( QString( "DROP SEQUENCE year_seq;" ) );
         }
@@ -779,6 +796,7 @@ CollectionDB::clearTables( const bool temporary )
     query( QString( "%1 tags%2 WHERE deviceid IN (%3);" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ).arg( deviceIds ) );
     //query( QString( "%1 album%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
     //query( QString( "%1 artist%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
+    //query( QString( "%1 composer%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
     //query( QString( "%1 genre%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
     //query( QString( "%1 year%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
     query( QString( "%1 images%2 WHERE deviceid IN (%3);" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ).arg( deviceIds ) );
@@ -800,6 +818,7 @@ CollectionDB::copyTempTables( )
     DEBUG_BLOCK
 
     insert( "INSERT INTO tags SELECT * FROM tags_temp;", NULL );
+
     //mysql 5 supports subqueries with IN, mysql 4 doesn't. this way will work for all SQL servers
     QStringList albumIdList = query( "SELECT album.id FROM album;" );
     //in an empty database, albumIdList is empty. This would result in a SQL query like NOT IN ( ) without
@@ -811,6 +830,7 @@ CollectionDB::copyTempTables( )
         albumIds += *it;
     }
     insert( QString ( "INSERT INTO album SELECT * FROM album_temp WHERE album_temp.id NOT IN ( %1 );" ).arg( albumIds ), NULL );
+
     QStringList artistIdList = query( "SELECT artist.id FROM artist;" );
     QString artistIds = "-1";
     foreach( artistIdList )
@@ -819,6 +839,16 @@ CollectionDB::copyTempTables( )
         artistIds += *it;
     }
     insert( QString ( "INSERT INTO artist SELECT * FROM artist_temp WHERE artist_temp.id NOT IN ( %1 );" ).arg( artistIds ), NULL );
+
+    QStringList composerIdList = query( "SELECT composer.id FROM composer;" );
+    QString composerIds = "-1";
+    foreach( composerIdList )
+    {
+        composerIds += ",";
+        composerIds += *it;
+    }
+    insert( QString ( "INSERT INTO composer SELECT * FROM composer_temp WHERE composer_temp.id NOT IN ( %1 );" ).arg( composerIds ), NULL );
+
     QStringList genreIdList = query( "SELECT genre.id FROM genre;" );
     QString genreIds = "-1";
     foreach( genreIdList )
@@ -827,6 +857,7 @@ CollectionDB::copyTempTables( )
         genreIds += *it;
     }
     insert( QString ( "INSERT INTO genre SELECT * FROM genre_temp WHERE genre_temp.id NOT IN ( %1 );" ).arg( genreIds ), NULL );
+
     QStringList yearIdList = query( "SELECT year.id FROM year;" );
     QString yearIds = "-1";
     foreach( yearIdList )
@@ -835,6 +866,7 @@ CollectionDB::copyTempTables( )
         yearIds += *it;
     }
     insert( QString ( "INSERT INTO year SELECT * FROM year_temp WHERE year_temp.id NOT IN ( %1 );" ).arg( yearIds ), NULL );
+
     insert( "INSERT INTO images SELECT * FROM images_temp;", NULL );
     insert( "INSERT INTO embed SELECT * FROM embed_temp;", NULL );
     insert( "INSERT INTO directories SELECT * FROM directories_temp;", NULL );
@@ -847,6 +879,7 @@ CollectionDB::prepareTempTables()
     DEBUG_BLOCK
     insert( "INSERT INTO album_temp SELECT * from album;", 0 );
     insert( "INSERT INTO artist_temp SELECT * from artist;", 0 );
+    insert( "INSERT INTO composer_temp SELECT * from composer;", 0 );
     insert( "INSERT INTO genre_temp SELECT * from genre;", 0 );
     insert( "INSERT INTO year_temp SELECT * from year;", 0 );
 }
@@ -1260,6 +1293,45 @@ CollectionDB::artistValue( uint id )
     // cache values
     m_cacheArtist[0] = value;
     m_cacheArtistID[0] = id;
+
+    return value;
+}
+
+
+uint
+CollectionDB::composerID( QString value, bool autocreate, const bool temporary, bool exact /* = true */ )
+{
+    // lookup cache
+    if ( m_validComposerCache && m_cacheComposer[(int)temporary] == value )
+        return m_cacheComposerID[(int)temporary];
+
+    uint id;
+    if ( exact )
+        id = IDfromExactValue( "composer", value, autocreate, temporary ).toUInt();
+    else
+        id = IDFromValue( "composer", value, autocreate, temporary );
+
+    // cache values
+    m_cacheComposer[(int)temporary] = value;
+    m_cacheComposerID[(int)temporary] = id;
+    m_validComposerCache = 1;
+
+    return id;
+}
+
+
+QString
+CollectionDB::composerValue( uint id )
+{
+    // lookup cache
+    if ( m_cacheComposerID[0] == id )
+        return m_cacheComposer[0];
+
+    QString value = valueFromID( "composer", id );
+
+    // cache values
+    m_cacheComposer[0] = value;
+    m_cacheComposerID[0] = id;
 
     return value;
 }
@@ -2254,17 +2326,22 @@ CollectionDB::artistList( bool withUnknowns, bool withCompilations )
 QStringList
 CollectionDB::composerList( bool withUnknowns, bool withCompilations )
 {
+    DEBUG_BLOCK
     QueryBuilder qb;
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComposer );
+    qb.addReturnValue( QueryBuilder::tabComposer, QueryBuilder::valName );
 
     if ( !withUnknowns )
-        qb.excludeMatch( QueryBuilder::tabSong, i18n( "Unknown" ) );
+        qb.excludeMatch( QueryBuilder::tabComposer, i18n( "Unknown" ) );
     if ( !withCompilations )
         qb.setOptions( QueryBuilder::optNoCompilations );
 
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    //FIXME max: quick hack to improve the DB response time
+    //without it the query looks something like
+    //SELECT DISTINCT composer.name FROM composer,tags WHERE 1 AND tags.deviceid IN (1,2,3) ORDER BY LOWER (composer.name)
+    //---> very bad...has to be fixed for all CollectionDB::*List methods
     qb.setOptions( QueryBuilder::optShowAll );
-    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valComposer );
+    qb.sortBy( QueryBuilder::tabComposer, QueryBuilder::valName );
     return qb.run();
 }
 
@@ -2778,8 +2855,8 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
     if ( !QFileInfo( bundle->url().path() ).isReadable() ) return false;
 
     QString command = "INSERT INTO tags_temp "
-                      "( url, dir, deviceid, createdate, modifydate, album, artist, genre, year, title, "
-                      "composer, comment, track, discnumber, bpm, sampler, length, bitrate, "
+                      "( url, dir, deviceid, createdate, modifydate, album, artist, composer, genre, year, title, "
+                      "comment, track, discnumber, bpm, sampler, length, bitrate, "
                       "samplerate, filesize, filetype ) "
                       "VALUES ('";
 
@@ -2815,11 +2892,11 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
 
     command += escapeString( QString::number( albumID( bundle->album(),   true, !incremental, true ) ) ) + ",";
     command += escapeString( QString::number( artistID( bundle->artist(), true, !incremental, true ) ) ) + ",";
+    command += escapeString( QString::number( composerID( bundle->composer(), true, !incremental, true ) ) ) + ",";
     command += escapeString( QString::number( genreID( bundle->genre(),   true, !incremental, true ) ) ) + ",'";
     command += escapeString( QString::number( yearID( QString::number( bundle->year() ), true, !incremental, true ) ) ) + "','";
 
-    command += escapeString( bundle->title() ) + "',";
-    command += ( bundle->composer().isEmpty() ? "NULL" : "'"+escapeString( bundle->composer() ) + "'" ) + ",'";
+    command += escapeString( bundle->title() ) + "','";
     command += escapeString( bundle->comment() ) + "', ";
     command += escapeString( QString::number( bundle->track() ) ) + " , ";
     command += escapeString( QString::number( bundle->discNumber() ) ) + " , ";
@@ -3245,12 +3322,12 @@ CollectionDB::bundleForUrl( MetaBundle* bundle )
     KURL rpath;
     MountPointManager::instance()->getRelativePath( deviceid, bundle->url(), rpath );
     QStringList values = query( QString(
-            "SELECT album.name, artist.name, genre.name, tags.title, "
-            "year.name, tags.comment, tags.discnumber, tags.composer, "
+            "SELECT album.name, artist.name, composer.name, genre.name, tags.title, "
+            "year.name, tags.comment, tags.discnumber, composer.name, "
             "tags.track, tags.bitrate, tags.length, tags.samplerate, "
             "tags.filesize, tags.filetype, tags.bpm, tags.sampler, uniqueid.uniqueid "
-            "FROM tags LEFT OUTER JOIN uniqueid ON tags.url = uniqueid.url, album, artist, genre, year "
-            "WHERE album.id = tags.album AND artist.id = tags.artist AND "
+            "FROM tags LEFT OUTER JOIN uniqueid ON tags.url = uniqueid.url, album, artist, composer, genre, year "
+            "WHERE album.id = tags.album AND artist.id = tags.artist AND composer.id = tags.composer AND "
             "genre.id = tags.genre AND year.id = tags.year AND tags.url = '%2' AND tags.deviceid = %1;" )
                 .arg( deviceid )
                 .arg( escapeString( rpath.path( ) ) ) );
@@ -3324,9 +3401,9 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
 
             qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
             qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+            qb.addReturnValue( QueryBuilder::tabComposer, QueryBuilder::valName );
             qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
-            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComposer );
             qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComment );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
@@ -3351,9 +3428,9 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
             {
                 b.setAlbum     (    *it );
                 b.setArtist    (  *++it );
+                b.setComposer  (  *++it );
                 b.setGenre     (  *++it );
                 b.setTitle     (  *++it );
-                b.setComposer  (  *++it );
                 b.setYear      ( (*++it).toInt() );
                 b.setComment   (  *++it );
                 b.setTrack     ( (*++it).toInt() );
@@ -4277,18 +4354,19 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
     QueryBuilder qb;
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabComposer, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTrack );
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComment );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComposer );
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFilesize );
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFileType );
     // [10] is above. [11] is below.
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valBPM );
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valID );
+    qb.addReturnValue( QueryBuilder::tabComposer, QueryBuilder::valID );
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
     qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valID );
     qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valID );
@@ -4306,7 +4384,7 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
         return;
     }
 
-    bool art=false, alb=false, gen=false, year=false;
+    bool art=false, comp=false, alb=false, gen=false, year=false;
 
     QString command = "UPDATE tags SET ";
     if ( values[ 0 ] != bundle.title() )
@@ -4316,27 +4394,30 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
         art = true;
         command += "artist = " + IDfromExactValue( "artist", bundle.artist() ) + ", ";
     }
-    if ( values[ 2 ] != bundle.album() )
+    if ( values[ 2 ] != bundle.composer() )
+    {
+        comp = true;
+        command += "composer = " + IDfromExactValue( "composer", bundle.composer() ) + ", ";
+    }
+    if ( values[ 3 ] != bundle.album() )
     {
         alb = true;
         command += "album = "  + IDfromExactValue( "album", bundle.album() ) + ", ";
     }
-    if ( values[ 3 ] != bundle.genre() )
+    if ( values[ 4 ] != bundle.genre() )
     {
         gen = true;
         command += "genre = "  + IDfromExactValue( "genre", bundle.genre() ) + ", ";
     }
-    if ( values[ 4 ] != QString::number( bundle.year() ) )
+    if ( values[ 5 ] != QString::number( bundle.year() ) )
     {
         year = false;
         command += "year = "   + IDfromExactValue( "year", QString::number( bundle.year() ) ) + ", ";
     }
-    if ( values[ 5 ] != QString::number( bundle.track() ) )
+    if ( values[ 6 ] != QString::number( bundle.track() ) )
         command += "track = " + QString::number( bundle.track() ) + ", ";
-    if ( values[ 6 ] != bundle.comment() )
+    if ( values[ 7 ] != bundle.comment() )
         command += "comment = '" + escapeString( bundle.comment() ) + "', ";
-    if ( values[ 7 ] != bundle.composer() )
-        command += "composer = '" + escapeString( bundle.composer() ) + "', ";
     if ( values[ 8 ] != QString::number( bundle.discNumber() ) )
         command += "discnumber = '" + QString::number( bundle.discNumber() ) + "', ";
     if ( values[ 9 ] != QString::number( bundle.filesize() ) )
@@ -4362,12 +4443,14 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
     //Check to see if we use the entry anymore. If not, delete it
     if ( art )
         deleteRedundantName( "artist", values[ 12 ] );
+    if ( comp )
+        deleteRedundantName( "composer", values[ 13 ] );
     if ( alb )
-        deleteRedundantName( "album", values[ 13 ] );
+        deleteRedundantName( "album", values[ 14 ] );
     if ( gen )
-        deleteRedundantName( "genre", values[ 14 ] );
+        deleteRedundantName( "genre", values[ 15 ] );
     if ( year )
-        deleteRedundantName( "year", values[ 15 ] );
+        deleteRedundantName( "year", values[ 16 ] );
 
     if ( EngineController::instance()->bundle().url() == bundle.url() )
     {
@@ -6059,6 +6142,8 @@ QueryBuilder::linkTables( int tables )
             m_tables += " LEFT JOIN " + tableName( tabAlbum) + " ON album.id=tags.album";
         if ( tables & tabArtist )
             m_tables += " LEFT JOIN " + tableName( tabArtist) + " ON artist.id=tags.artist";
+        if ( tables & tabComposer )
+            m_tables += " LEFT JOIN " + tableName( tabComposer) + " ON composer.id=tags.composer";
         if ( tables & tabGenre )
             m_tables += " LEFT JOIN " + tableName( tabGenre) + " ON genre.id=tags.genre";
         if ( tables & tabYear )
@@ -6084,7 +6169,7 @@ QueryBuilder::linkTables( int tables )
 void
 QueryBuilder::addReturnValue( int table, Q_INT64 value, bool caseSensitive /* = false, unless value refers to a string */ )
 {
-    caseSensitive |= value == valName || value == valTitle || value == valComposer || value == valComment;
+    caseSensitive |= value == valName || value == valTitle || value == valComment;
 
     if ( !m_values.isEmpty() && m_values != "DISTINCT " ) m_values += ",";
 
@@ -6209,6 +6294,8 @@ QueryBuilder::setGoogleFilter( int defaultTables, QString query )
             int table = -1, value = -1;
             if( e.field == "artist" )
                 table = tabArtist;
+            else if( e.field == "composer" )
+                table = tabComposer;
             else if( e.field == "album" )
                 table = tabAlbum;
             else if( e.field == "title" )
@@ -6302,11 +6389,6 @@ QueryBuilder::setGoogleFilter( int defaultTables, QString query )
                 table = tabSong;
                 value = valComment;
             }
-            else if( e.field == "composer" )
-            {
-                table = tabSong;
-                value = valComposer;
-            }
             else if( e.field == "bpm" )
             {
                 table = tabSong;
@@ -6349,14 +6431,14 @@ QueryBuilder::addFilter( int tables, const QString& filter )
             m_where += "OR album.name " + CollectionDB::likeCondition( filter, true, true );
         if ( tables & tabArtist )
             m_where += "OR artist.name " + CollectionDB::likeCondition( filter, true, true );
+        if ( tables & tabComposer )
+            m_where += "OR composer.name " + CollectionDB::likeCondition( filter, true, true );
         if ( tables & tabGenre )
             m_where += "OR genre.name " + CollectionDB::likeCondition( filter, true, true );
         if ( tables & tabYear )
             m_where += "OR year.name " + CollectionDB::likeCondition( filter, false, false );
         if ( tables & tabSong )
             m_where += "OR tags.title " + CollectionDB::likeCondition( filter, true, true );
-        if ( tables & tabComposer )
-            m_where += "OR tags.composer " + CollectionDB::likeCondition( filter, true, true );
 
         if ( i18n( "Unknown" ).contains( filter, false ) )
         {
@@ -6364,14 +6446,14 @@ QueryBuilder::addFilter( int tables, const QString& filter )
                 m_where += "OR album.name = '' ";
             if ( tables & tabArtist )
                 m_where += "OR artist.name = '' ";
+            if ( tables & tabComposer )
+                m_where += "OR composer.name = '' ";
             if ( tables & tabGenre )
                 m_where += "OR genre.name = '' ";
             if ( tables & tabYear )
                 m_where += "OR year.name = '' ";
             if ( tables & tabSong )
                 m_where += "OR tags.title = '' ";
-            if ( tables & tabComposer )
-                m_where += "OR tags.composer = '' OR tags.composer IS NULL ";
         }
         if ( ( tables & tabArtist ) && i18n( "Various Artists" ).contains( filter, false ) )
             m_where += QString( "OR tags.sampler = %1 " ).arg( CollectionDB::instance()->boolT() );
@@ -6401,10 +6483,8 @@ QueryBuilder::addFilter( int tables, Q_INT64 value, const QString& filter, int m
 
         m_where += QString( "OR %1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
 
-        if ( !exact && ( (value & valName) || (value & valComposer) ) && mode == modeNormal && i18n( "Unknown").contains( filter, false ) )
+        if ( !exact && (value & valName) && mode == modeNormal && i18n( "Unknown").contains( filter, false ) )
             m_where += QString( "OR %1.%2 = '' " ).arg( tableName( tables ) ).arg( valueName( value ) );
-        if ( !exact && ( value & valComposer ) && mode == modeNormal && i18n( "Unknown").contains( filter, false ) )
-            m_where += QString( "OR %1.%2 IS NULL " ).arg( tableName( tables ) ).arg( valueName( value ) );
 
         m_where += " ) ";
     }
@@ -6427,6 +6507,8 @@ QueryBuilder::addFilters( int tables, const QStringList& filter )
                 m_where += "OR album.name " + CollectionDB::likeCondition( filter[i], true, true );
             if ( tables & tabArtist )
                 m_where += "OR artist.name " + CollectionDB::likeCondition( filter[i], true, true );
+            if ( tables & tabComposer )
+                m_where += "OR composer.name " + CollectionDB::likeCondition( filter[i], true, true );
             if ( tables & tabGenre )
                 m_where += "OR genre.name " + CollectionDB::likeCondition( filter[i], true, true );
             if ( tables & tabYear )
@@ -6440,6 +6522,8 @@ QueryBuilder::addFilters( int tables, const QStringList& filter )
                     m_where += "OR album.name = '' ";
                 if ( tables & tabArtist )
                     m_where += "OR artist.name = '' ";
+                if ( tables & tabComposer )
+                    m_where += "OR composer.name = '' ";
                 if ( tables & tabGenre )
                     m_where += "OR genre.name = '' ";
                 if ( tables & tabYear )
@@ -6470,14 +6554,14 @@ QueryBuilder::excludeFilter( int tables, const QString& filter )
             m_where += "AND album.name NOT " + CollectionDB::likeCondition( filter, true, true );
         if ( tables & tabArtist )
             m_where += "AND artist.name NOT " + CollectionDB::likeCondition( filter, true, true );
+        if ( tables & tabComposer )
+            m_where += "AND composer.name NOT " + CollectionDB::likeCondition( filter, true, true );
         if ( tables & tabGenre )
             m_where += "AND genre.name NOT " + CollectionDB::likeCondition( filter, true, true );
         if ( tables & tabYear )
             m_where += "AND year.name NOT " + CollectionDB::likeCondition( filter, false, false );
         if ( tables & tabSong )
             m_where += "AND tags.title NOT " + CollectionDB::likeCondition( filter, true, true );
-        if ( tables & tabComposer )
-            m_where += "AND tags.composer NOT " + CollectionDB::likeCondition( filter, true, true );
 
         if ( i18n( "Unknown" ).contains( filter, false ) )
         {
@@ -6485,14 +6569,14 @@ QueryBuilder::excludeFilter( int tables, const QString& filter )
                 m_where += "AND album.name <> '' ";
             if ( tables & tabArtist )
                 m_where += "AND artist.name <> '' ";
+            if ( tables & tabComposer )
+                m_where += "AND composer.name <> '' ";
             if ( tables & tabGenre )
                 m_where += "AND genre.name <> '' ";
             if ( tables & tabYear )
                 m_where += "AND year.name <> '' ";
             if ( tables & tabSong )
                 m_where += "AND tags.title <> '' ";
-            if ( tables & tabComposer )
-                m_where += "AND tags.composer <> '' AND tags.composer IS NOT NULL ";
         }
 
        if ( i18n( "Various Artists" ).contains( filter, false ) && (  tables & tabArtist ) )
@@ -6525,10 +6609,8 @@ QueryBuilder::excludeFilter( int tables, Q_INT64 value, const QString& filter, i
 
         m_where += QString( "AND %1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
 
-        if ( !exact && ( (value & valName) || (value & valComposer) ) && mode == modeNormal && i18n( "Unknown").contains( filter, false ) )
+        if ( !exact && (value & valName) && mode == modeNormal && i18n( "Unknown").contains( filter, false ) )
             m_where += QString( "AND %1.%2 <> '' " ).arg( tableName( tables ) ).arg( valueName( value ) );
-        if ( !exact && ( value & valComposer ) && mode == modeNormal && i18n( "Unknown").contains( filter, false ) )
-            m_where += QString( "AND %1.%2 IS NOT NULL " ).arg( tableName( tables ) ).arg( valueName( value ) );
 
         m_where += " ) ";
     }
@@ -6546,6 +6628,8 @@ QueryBuilder::addMatch( int tables, const QString& match, bool interpretUnknown 
         m_where += "OR album.name " + matchCondition;
     if ( tables & tabArtist )
         m_where += "OR artist.name " + matchCondition;
+    if ( tables & tabComposer )
+        m_where += "OR composer.name " + matchCondition;
     if ( tables & tabGenre )
         m_where += "OR genre.name " + matchCondition;
     if ( tables & tabYear )
@@ -6557,6 +6641,7 @@ QueryBuilder::addMatch( int tables, const QString& match, bool interpretUnknown 
     {
         if ( tables & tabAlbum ) m_where += "OR album.name = '' ";
         if ( tables & tabArtist ) m_where += "OR artist.name = '' ";
+        if ( tables & tabComposer ) m_where += "OR composer.name = '' ";
         if ( tables & tabGenre ) m_where += "OR genre.name = '' ";
         if ( tables & tabYear ) m_where += "OR year.name = '' ";
     }
@@ -6625,6 +6710,8 @@ QueryBuilder::addMatches( int tables, const QStringList& match, bool interpretUn
             m_where += "OR album.name " + matchConditions[ i ];
         if ( tables & tabArtist )
             m_where += "OR artist.name " + matchConditions[ i ];
+        if ( tables & tabComposer )
+            m_where += "OR composer.name " + matchConditions[ i ];
         if ( tables & tabGenre )
             m_where += "OR genre.name " + matchConditions[ i ];
         if ( tables & tabYear )
@@ -6639,6 +6726,7 @@ QueryBuilder::addMatches( int tables, const QStringList& match, bool interpretUn
         {
             if ( tables & tabAlbum ) m_where += "OR album.name = '' ";
             if ( tables & tabArtist ) m_where += "OR artist.name = '' ";
+            if ( tables & tabComposer ) m_where += "OR composer.name = '' ";
             if ( tables & tabGenre ) m_where += "OR genre.name = '' ";
             if ( tables & tabYear ) m_where += "OR year.name = '' ";
         }
@@ -6654,6 +6742,7 @@ QueryBuilder::excludeMatch( int tables, const QString& match )
     m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolT() + " ";
     if ( tables & tabAlbum ) m_where += "AND album.name <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
     if ( tables & tabArtist ) m_where += "AND artist.name <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
+    if ( tables & tabComposer ) m_where += "AND composer.name <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
     if ( tables & tabGenre ) m_where += "AND genre.name <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
     if ( tables & tabYear ) m_where += "AND year.name <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
     if ( tables & tabSong ) m_where += "AND tags.title <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
@@ -6662,6 +6751,7 @@ QueryBuilder::excludeMatch( int tables, const QString& match )
     {
         if ( tables & tabAlbum ) m_where += "AND album.name <> '' ";
         if ( tables & tabArtist ) m_where += "AND artist.name <> '' ";
+        if ( tables & tabComposer ) m_where += "AND composer.name <> '' ";
         if ( tables & tabGenre ) m_where += "AND genre.name <> '' ";
         if ( tables & tabYear ) m_where += "AND year.name <> '' ";
     }
@@ -6889,10 +6979,10 @@ QueryBuilder::dragFieldCount = 17;
 QString
 QueryBuilder::dragSQLFields()
 {
-    return "tags.url, tags.deviceid, album.name, artist.name, genre.name, tags.title, year.name, "
+    return "tags.url, tags.deviceid, album.name, artist.name, composer.name, genre.name, tags.title, year.name, "
            "tags.comment, tags.track, tags.bitrate, tags.discnumber, "
            "tags.length, tags.samplerate, tags.filesize, "
-           "tags.sampler, tags.filetype, tags.composer, tags.bpm";
+           "tags.sampler, tags.filetype, tags.bpm";
 }
 
 void
@@ -6902,6 +6992,7 @@ QueryBuilder::initSQLDrag()
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
     addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
     addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+    addReturnValue( QueryBuilder::tabComposer, QueryBuilder::valName );
     addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
     addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName );
@@ -6914,7 +7005,6 @@ QueryBuilder::initSQLDrag()
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFilesize );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valIsCompilation );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFileType );
-    addReturnValue( QueryBuilder::tabSong, QueryBuilder::valComposer );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valBPM );
 }
 
@@ -7008,6 +7098,7 @@ QueryBuilder::tableName( int table )
         if ( table & tabSong )   tables += ",tags";
     }
     if ( table & tabArtist ) tables += ",artist";
+    if ( table & tabComposer ) tables += ",composer";
     if ( table & tabAlbum )  tables += ",album";
     if ( table & tabGenre )  tables += ",genre";
     if ( table & tabYear )   tables += ",year";
@@ -7037,7 +7128,6 @@ QueryBuilder::valueName( Q_INT64 value )
     if ( value & valDirectory )   values += "dir";
     if ( value & valTitle )       values += "title";
     if ( value & valTrack )       values += "track";
-    if ( value & valComposer )    values += "composer";
     if ( value & valDiscNumber )  values += "discnumber";
     if ( value & valScore )       values += "percentage";
     if ( value & valRating )      values += "rating";
@@ -7051,6 +7141,7 @@ QueryBuilder::valueName( Q_INT64 value )
     if ( value & valCreateDate )  values += "createdate";
     if ( value & valPercentage )  values += "percentage";
     if ( value & valArtistID )    values += "artist";
+    if ( value & valComposerID )  values += "composer";
     if ( value & valAlbumID )     values += "album";
     if ( value & valGenreID )     values += "genre";
     if ( value & valYearID )      values += "year";

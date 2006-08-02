@@ -1021,6 +1021,7 @@ SqlLoader::doJob()
         b.setPath      ( MountPointManager::instance()->getAbsolutePath( deviceid, rpath ) );
         b.setAlbum     (  *++it );
         b.setArtist    (  *++it );
+        b.setComposer  (  *++it );
         b.setGenre     (  *++it );
         b.setTitle     (  *++it );
         b.setYear      ( (*++it).toInt() );
@@ -1035,7 +1036,6 @@ SqlLoader::doJob()
         const int val = (*++it).toInt( &ok );
         b.setCompilation( ok ? val : MetaBundle::CompilationUnknown );
         b.setFileType( (*++it).toInt() );
-        b.setComposer( *++it );
         b.setBpm       ( (*++it).toFloat() );
 
         bundles += b;

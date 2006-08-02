@@ -294,6 +294,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         void prepareTempTables();
 
         uint artistID( QString value, bool autocreate = true, const bool temporary = false, bool exact = true );
+        uint composerID( QString value, bool autocreate = true, const bool temporary = false, bool exact = true );
         uint albumID( QString value, bool autocreate = true, const bool temporary = false, bool exact = true );
         uint genreID( QString value, bool autocreate = true, const bool temporary = false, bool exact = true );
         uint yearID( QString value, bool autocreate = true, const bool temporary = false, bool exact = true );
@@ -377,8 +378,8 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
 
         //list methods
         QStringList artistList( bool withUnknowns = true, bool withCompilations = true );
-        QStringList albumList( bool withUnknowns = true, bool withCompilations = true );
         QStringList composerList( bool withUnknowns = true, bool withCompilations = true );
+        QStringList albumList( bool withUnknowns = true, bool withCompilations = true );
         QStringList genreList( bool withUnknowns = true, bool withCompilations = true );
         QStringList yearList( bool withUnknowns = true, bool withCompilations = true );
 
@@ -454,7 +455,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         bool isConnected();
         void releasePreviousConnection(QThread *currThread);
 
-        void invalidateArtistAlbumCache() { m_validArtistCache=0; m_validAlbumCache=0; };
+        void invalidateArtistAlbumCache() { m_validArtistCache=false; m_validComposerCache=false; m_validAlbumCache=false; };
 
     protected:
         QCString md5sum( const QString& artist, const QString& album, const QString& file = QString::null );
@@ -483,8 +484,8 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
 
     private:
         //bump DATABASE_VERSION whenever changes to the table structure are made.
-        // This erases tags, album, artist, genre, year, images, embed, directory and related_artists tables.
-        static const int DATABASE_VERSION = 31;
+        // This erases tags, album, artist, composer, genre, year, images, embed, directory and related_artists tables.
+        static const int DATABASE_VERSION = 32;
         // Persistent Tables hold data that is somehow valuable to the user, and can't be erased when rescaning.
         // When bumping this, write code to convert the data!
         static const int DATABASE_PERSISTENT_TABLES_VERSION = 14;
@@ -540,6 +541,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
 
         QCString makeWidthKey( uint width );
         QString artistValue( uint id );
+        QString composerValue( uint id );
         QString albumValue( uint id );
         QString genreValue( uint id );
         QString yearValue( uint id );
@@ -554,9 +556,12 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         //member variables
         QString m_amazonLicense;
         bool    m_validArtistCache;
+        bool    m_validComposerCache;
         bool    m_validAlbumCache;
         QString m_cacheArtist[2];
         uint    m_cacheArtistID[2];
+        QString m_cacheComposer[2];
+        uint    m_cacheComposerID[2];
         QString m_cacheAlbum[2];
         uint    m_cacheAlbumID[2];
 
@@ -641,7 +646,7 @@ class QueryBuilder
         static const Q_INT64 valDirectory     = 1LL << 18;
         static const Q_INT64 valLyrics        = 1LL << 19;
         static const Q_INT64 valRating        = 1LL << 20;
-        static const Q_INT64 valComposer      = 1LL << 21;
+        static const Q_INT64 valComposerID    = 1LL << 21;
         static const Q_INT64 valDiscNumber    = 1LL << 22;
         static const Q_INT64 valFilesize      = 1LL << 23;
         static const Q_INT64 valFileType      = 1LL << 24;

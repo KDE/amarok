@@ -641,6 +641,10 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
                     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName, true );
                     filterTables |= QueryBuilder::tabArtist;
                     break;
+                case Composer:
+                    qb.addReturnValue ( QueryBuilder::tabComposer, QueryBuilder::valName, true );
+                    filterTables |= QueryBuilder::tabComposer;
+                    break;
                 case Album:
                     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName, true );
                     filterTables |= QueryBuilder::tabAlbum;
@@ -656,11 +660,6 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
                 case Length:
                     qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valLength );
                     filterTables |= QueryBuilder::tabSong;
-                    break;
-                case Composer:
-                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valComposer );
-                    filterTables |= QueryBuilder::tabSong;
-                    filterTables |= QueryBuilder::tabComposer;
                     break;
                 case DiscNumber:
                     qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );

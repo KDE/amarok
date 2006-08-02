@@ -30,6 +30,27 @@
 #include <qvbox.h>
 #include <qvgroupbox.h>
 
+enum Fields
+{
+    FArtist = 0,
+    FComposer,
+    FAlbum,
+    FGenre,
+    FTitle,
+    FLength,
+    FTrack,
+    FYear,
+    FComment,
+    FPlayCounter,
+    FScore,
+    FRating,
+    FFirstPlay,
+    FLastPlay,
+    FModfiedDate,
+    FFilePath,
+    FBPM
+};
+
 
 QStringList m_fields;
 QStringList m_dbFields;
@@ -129,25 +150,25 @@ void SmartPlaylistEditor::init(QString defaultName)
     makeVBoxMainWidget();
 
     m_fields.clear();
-    m_fields << i18n("Artist") << i18n("Album") << i18n("Genre") << i18n("Title") << i18n("Length")
+    m_fields << i18n("Artist") << i18n("Composer") << i18n("Album") << i18n("Genre") << i18n("Title") << i18n("Length")
              << i18n("Track #") << i18n("Year") << i18n("Comment") << i18n("Play Counter")
              << i18n("Score") << i18n( "Rating" ) << i18n("First Play")
              << i18n("Last Play") << i18n("Modified Date") << i18n("File Path")
              << i18n("BPM");
 
     m_dbFields.clear();
-    //TODO max: make sure the search for URL workds correctly
-    m_dbFields << "artist.name" << "album.name" << "genre.name" << "tags.title" << "tags.length"
+    //TODO max: make sure the search for URL works correctly
+    m_dbFields << "artist.name" << "composer.name" << "album.name" << "genre.name" << "tags.title" << "tags.length"
                << "tags.track" << "year.name" << "tags.comment" << "statistics.playcounter"
                << "statistics.percentage" << "statistics.rating" << "statistics.createdate"
                << "statistics.accessdate" << "tags.createdate" << "tags.url" << "tags.sampler"
                << "tags.bpm";
 
     m_expandableFields.clear();
-    m_expandableFields << i18n("Artist") << i18n("Album") << i18n("Genre") <<  i18n("Year");
+    m_expandableFields << i18n("Artist") << i18n("Composer") << i18n("Album") << i18n("Genre") <<  i18n("Year");
 
     m_expandableDbFields.clear();
-    m_expandableDbFields << "artist.name" << "album.name" << "genre.name" << "year.name";
+    m_expandableDbFields << "artist.name" << "composer.name" << "album.name" << "genre.name" << "year.name";
 
     QHBox *hbox = new QHBox( mainWidget() );
     hbox->setSpacing( 5 );
@@ -373,7 +394,8 @@ void SmartPlaylistEditor::buildQuery()
     //FIXME max: make sure sql queries are correct
 
     QString joins = "tags LEFT JOIN year ON year.id=tags.year LEFT JOIN genre ON genre.id=tags.genre"
-                    " LEFT JOIN artist ON artist.id=tags.artist LEFT JOIN album ON album.id=tags.album";
+                    " LEFT JOIN artist ON artist.id=tags.artist LEFT JOIN album ON album.id=tags.album"
+                    " LEFT JOIN composer ON composer.id=tags.composer";
     QString whereStr;
     QString criteriaListStr;
     QString orderStr;
@@ -463,7 +485,7 @@ void SmartPlaylistEditor::buildQuery()
         limitStr = " LIMIT " + QString::number( m_limitSpin->value() )+" OFFSET 0 ";
 
 
-    // album / artist / genre / title / year / comment / track / bitrate / discnumber / length / samplerate / path / compilation / filetype / composer / bpm
+    // album / artist / composer / genre / title / year / comment / track / bitrate / discnumber / length / samplerate / path / compilation / filetype / bpm
     m_query = "SELECT (*ListOfFields*) FROM "
               + joins + whereStr + orderStr + limitStr + ";";
 
@@ -798,15 +820,17 @@ void CriteriaEditor::slotFieldSelected( int field )
     m_currentValueType = valueType;
 
     //enable auto-completion for artist, album and genre
-    if( valueType == AutoCompletionString ) { //Artist, Album, Genre
+    if( valueType == AutoCompletionString ) { //Artist, Composer, Album, Genre
         QStringList items;
         m_comboBox->clear();
         m_comboBox->completionObject()->clear();
 
         int currentField = m_fieldCombo->currentItem();
-        if( currentField == 0 ) //artist
+        if( currentField == FArtist ) //artist
            items = CollectionDB::instance()->artistList();
-        else if( currentField == 1 ) //album
+        else if( currentField == FComposer ) //composer
+           items = CollectionDB::instance()->composerList();
+        else if( currentField == FAlbum ) //album
            items = CollectionDB::instance()->albumList();
         else  //genre
            items = CollectionDB::instance()->genreList();
@@ -852,7 +876,7 @@ void CriteriaEditor::loadEditWidgets()
             break;
         }
 
-        case AutoCompletionString:    //artist, album, genre
+        case AutoCompletionString:    //artist, composer, album, genre
         {
             m_comboBox = new KComboBox( true, m_editBox );
             m_lineEdit = static_cast<KLineEdit*>( m_comboBox->lineEdit() );
@@ -989,27 +1013,28 @@ int CriteriaEditor::getValueType( int index )
     int valueType;
 
     switch( index ) {
-        case 0:
-        case 1:
-        case 2:
+        case FArtist:
+        case FComposer:
+        case FAlbum:
+        case FGenre:
             valueType = AutoCompletionString;
             break;
-        case 3:
-        case 7:
-        case 14:
+        case FTitle:
+        case FComment:
+        case FFilePath:
             valueType = String;
             break;
-        case 4:
-        case 5:
-        case 8:
-        case 9:
-        case 15:
+        case FLength:
+        case FTrack:
+        case FScore:
+        case FPlayCounter:
+        case FBPM:
             valueType = Number;
             break;
-        case 10:
+        case FRating:
             valueType = Rating;
             break;
-        case 6:
+        case FYear:
             valueType = Year;
             break;
         default: valueType = Date;
