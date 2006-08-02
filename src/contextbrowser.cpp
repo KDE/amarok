@@ -2755,7 +2755,7 @@ bool CurrentTrackJob::doJob()
             return true;
         }
 
-        if( m_isStream )
+        if( m_isStream && m_currentTrack.url().protocol() != "daap" )
         {
             showStream( m_currentTrack );
             return true;
