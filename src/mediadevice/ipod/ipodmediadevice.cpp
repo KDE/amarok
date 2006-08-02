@@ -199,6 +199,7 @@ IpodMediaDevice::IpodMediaDevice()
     m_supportsArtwork = false;
     m_supportsVideo = false;
     m_isShuffle = true;
+    m_isMobile = false;
 
     m_requireMount = true;
     m_name = "iPod";
@@ -876,6 +877,7 @@ bool
 IpodMediaDevice::openDevice( bool silent )
 {
     m_isShuffle = true;
+    m_isMobile = false;
     m_supportsArtwork = false;
     m_supportsVideo = false;
     m_dbChanged = false;
@@ -984,16 +986,6 @@ IpodMediaDevice::openDevice( bool silent )
            return false;
     }
 
-    if( !createLockFile( silent ) )
-    {
-        if( m_itdb )
-        {
-            itdb_free( m_itdb );
-            m_itdb = 0;
-        }
-        return false;
-    }
-
 #ifdef HAVE_ITDB_DEVICE_GET_IPOD_INFO
     // needs recent libgpod-0.3.3 from cvs
     if( m_itdb->device )
@@ -1011,6 +1003,14 @@ IpodMediaDevice::openDevice( bool silent )
                 m_supportsVideo = true;
                 debug() << "detected video-capable iPod" << endl;
                 break;
+            case ITDB_IPOD_MODEL_MOBILE_1:
+                m_isMobile = true;
+                debug() << "detected iTunes phone" << endl;
+                break;
+            case ITDB_IPOD_MODEL_INVALID:
+            case ITDB_IPOD_MODEL_UNKNOWN:
+                modelString = 0;
+                break;
             default:
                 break;
             }
@@ -1025,6 +1025,16 @@ IpodMediaDevice::openDevice( bool silent )
         //amaroK::StatusBar::instance()->shortMessage( i18n("Media device: iPod type detection failed, no video support") );
     }
 #endif
+
+    if( !createLockFile( silent ) )
+    {
+        if( m_itdb )
+        {
+            itdb_free( m_itdb );
+            m_itdb = 0;
+        }
+        return false;
+    }
 
     m_isShuffle = true;
 #ifdef HAVE_ITDB_TRACK_SET_THUMBNAILS

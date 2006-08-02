@@ -113,6 +113,7 @@ class IpodMediaDevice : public MediaDevice
         Itdb_Playlist*    m_podcastPlaylist;
 
         bool              m_isShuffle;
+        bool              m_isMobile;
         bool              m_supportsArtwork;
         bool              m_supportsVideo;
 
