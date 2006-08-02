@@ -71,6 +71,14 @@ extern "C"
     #endif
 }
 
+enum CatMenuId { IdAlbum = QueryBuilder::tabAlbum,
+    IdArtist = QueryBuilder::tabArtist,
+    IdComposer = QueryBuilder::tabComposer,
+    IdGenre = QueryBuilder::tabGenre,
+    IdYear = QueryBuilder::tabYear ,
+    IdScan = 32, IdNone = 64,
+    IdArtistAlbum = 128, IdGenreArtist = 256, IdGenreArtistAlbum = 512, IdVisYearAlbum = 1024, IdArtistVisYearAlbum = 2048 };
+
 namespace amaroK { extern KConfig *config( const QString& ); }
 
 
@@ -201,6 +209,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_cat1Menu ->insertItem( i18n( "&Album" ), m_view, SLOT( cat1Menu( int ) ), 0, IdAlbum );
     m_cat1Menu ->insertItem( i18n( "(Y&ear) - Album" ), m_view, SLOT( cat1Menu( int ) ), 0, IdVisYearAlbum);
     m_cat1Menu ->insertItem( i18n( "A&rtist"), m_view, SLOT( cat1Menu( int ) ), 0, IdArtist );
+    m_cat1Menu ->insertItem( i18n( "&Composer"), m_view, SLOT( cat1Menu( int ) ), 0, IdComposer );
     m_cat1Menu ->insertItem( i18n( "&Genre" ), m_view, SLOT( cat1Menu( int ) ), 0, IdGenre );
     m_cat1Menu ->insertItem( i18n( "&Year" ), m_view, SLOT( cat1Menu( int ) ), 0, IdYear );
 
@@ -209,6 +218,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_cat2Menu ->insertItem( i18n( "&Album" ), m_view, SLOT( cat2Menu( int ) ), 0, IdAlbum );
     m_cat2Menu ->insertItem( i18n( "(Y&ear) - Album" ), m_view, SLOT( cat2Menu( int ) ), 0, IdVisYearAlbum);
     m_cat2Menu ->insertItem( i18n( "A&rtist" ), m_view, SLOT( cat2Menu( int ) ), 0, IdArtist );
+    m_cat2Menu ->insertItem( i18n( "&Composer"), m_view, SLOT( cat2Menu( int ) ), 0, IdComposer );
     m_cat2Menu ->insertItem( i18n( "&Genre" ), m_view, SLOT( cat2Menu( int ) ), 0, IdGenre );
     m_cat2Menu ->insertItem( i18n( "&Year" ), m_view, SLOT( cat2Menu( int ) ), 0, IdYear );
 
@@ -217,6 +227,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_cat3Menu ->insertItem( i18n( "A&lbum" ), m_view, SLOT( cat3Menu( int ) ), 0, IdAlbum );
     m_cat3Menu ->insertItem( i18n( "(Y&ear) - Album" ), m_view, SLOT( cat3Menu( int ) ), 0, IdVisYearAlbum);
     m_cat3Menu ->insertItem( i18n( "A&rtist" ), m_view, SLOT( cat3Menu( int ) ), 0, IdArtist );
+    m_cat3Menu ->insertItem( i18n( "&Composer"), m_view, SLOT( cat3Menu( int ) ), 0, IdComposer );
     m_cat3Menu ->insertItem( i18n( "&Genre" ), m_view, SLOT( cat3Menu( int ) ), 0, IdGenre );
     m_cat3Menu ->insertItem( i18n( "&Year" ), m_view, SLOT( cat3Menu( int ) ), 0, IdYear );
 
@@ -419,9 +430,34 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 
     //<READ CONFIG>
         KConfig* config = amaroK::config( "Collection Browser" );
-        m_cat1 = config->readNumEntry( "Category1", CollectionBrowser::IdArtist );
-        m_cat2 = config->readNumEntry( "Category2", CollectionBrowser::IdAlbum );
-        m_cat3 = config->readNumEntry( "Category3", CollectionBrowser::IdNone );
+        m_cat1 = config->readNumEntry( "Category1", IdArtist );
+        m_cat2 = config->readNumEntry( "Category2", IdAlbum );
+        m_cat3 = config->readNumEntry( "Category3", IdNone );
+
+enum CatMenuId { IdAlbum = QueryBuilder::tabAlbum,
+    IdArtist = QueryBuilder::tabArtist,
+    IdComposer = QueryBuilder::tabComposer,
+    IdGenre = QueryBuilder::tabGenre,
+    IdYear = QueryBuilder::tabYear ,
+    IdScan = 32, IdNone = 64,
+    IdArtistAlbum = 128, IdGenreArtist = 256, IdGenreArtistAlbum = 512, IdVisYearAlbum = 1024, IdArtistVisYearAlbum = 2048 };
+
+#define saneCat(x) (x==IdAlbum||x==IdArtist||x==IdComposer||x==IdGenre||x==IdYear \
+        ||x==IdNone \
+        ||x==IdArtistAlbum||x==IdGenreArtist||x==IdGenreArtistAlbum||x==IdVisYearAlbum||x==IdArtistVisYearAlbum)
+
+        if( !saneCat(m_cat1) )
+        {
+            m_cat1 = IdArtist;
+            m_cat2 = IdAlbum;
+            m_cat2 = IdNone;
+        }
+        if( !saneCat(m_cat2) || !saneCat(m_cat3) )
+        {
+            m_cat2 = m_cat3 = IdNone;
+        }
+#undef saneCat
+
         m_viewMode = config->readNumEntry( "ViewMode", modeTreeView );
         m_showDivider = config->readBoolEntry( "ShowDivider", true);
         updateTrackDepth();
@@ -806,10 +842,10 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
         // It is only used when stillFiltering == true.
         bool VisYearAlbum = false;
 
-        if( q_cat == CollectionBrowser::IdVisYearAlbum && stillFiltering )
+        if( q_cat == IdVisYearAlbum && stillFiltering )
         {
             VisYearAlbum = true;
-            q_cat = CollectionBrowser::IdAlbum;
+            q_cat = IdAlbum;
         }
 
         // If we're viewing tracks, we don't want them to be sorted
@@ -826,8 +862,8 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
 
         int tables = 0;
         for( int i = 0; i < trackDepth(); ++i )
-            tables |= (catArr[i] == CollectionBrowser::IdVisYearAlbum 
-                    ? CollectionBrowser::IdAlbum
+            tables |= (catArr[i] == IdVisYearAlbum 
+                    ? IdAlbum
                     : catArr[i]);
         qb.setGoogleFilter( tables | QueryBuilder::tabSong, m_filter );
 
@@ -908,7 +944,7 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
                     //Dividers for "The Who" should be created as "W", not "T",
                     //because that's how we sort it
                     QString actualStr = item->text( 0 );
-                    if ( m_cat == CollectionBrowser::IdArtist && 
+                    if ( m_cat == IdArtist && 
                             actualStr.startsWith( "the ", false ) )
                         manipulateThe( actualStr, true );
 
@@ -974,24 +1010,24 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
         int q_cat1=m_cat1;
         int q_cat2=m_cat2;
         int q_cat3=m_cat3;
-        if( m_cat1 == CollectionBrowser::IdVisYearAlbum ||
-            m_cat2 == CollectionBrowser::IdVisYearAlbum ||
-            m_cat3 == CollectionBrowser::IdVisYearAlbum )
+        if( m_cat1 == IdVisYearAlbum ||
+            m_cat2 == IdVisYearAlbum ||
+            m_cat3 == IdVisYearAlbum )
         {
-            if( m_cat1==CollectionBrowser::IdVisYearAlbum )
+            if( m_cat1==IdVisYearAlbum )
             {
                 VisYearAlbum = 1;
-                q_cat1 = CollectionBrowser::IdAlbum;
+                q_cat1 = IdAlbum;
             }
-            if( m_cat2==CollectionBrowser::IdVisYearAlbum )
+            if( m_cat2==IdVisYearAlbum )
             {
                 VisYearAlbum = 2;
-                q_cat2 = CollectionBrowser::IdAlbum;
+                q_cat2 = IdAlbum;
             }
-            if( m_cat3==CollectionBrowser::IdVisYearAlbum )
+            if( m_cat3==IdVisYearAlbum )
             {
                 VisYearAlbum = 3;
-                q_cat3 = CollectionBrowser::IdAlbum;
+                q_cat3 = IdAlbum;
             }
         }
         QPixmap pixmap = iconForCategory( m_cat1 );
@@ -1054,7 +1090,7 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
                     //Dividers for "The Who" should be created as "W", not "T", because
                     //that's how we sort it
                     QString actualStr = *it;
-                    if ( m_cat1 == CollectionBrowser::IdArtist && actualStr.startsWith( "the ", false ) )
+                    if ( m_cat1 == IdArtist && actualStr.startsWith( "the ", false ) )
                         manipulateThe( actualStr, true );
 
                     QString headerStr = DividerItem::createGroup( actualStr, m_cat1);
@@ -1231,9 +1267,9 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     bool SortbyTrackFirst = false;
 
     //Sort by track number first if album is in one of the categories, otherwise by track name first
-    if ( m_cat1 == CollectionBrowser::IdAlbum ||
-         m_cat2 == CollectionBrowser::IdAlbum ||
-         m_cat3 == CollectionBrowser::IdAlbum )
+    if ( m_cat1 == IdAlbum ||
+         m_cat2 == IdAlbum ||
+         m_cat3 == IdAlbum )
             SortbyTrackFirst = true;
 
     // initialization for year - album mode
@@ -1242,25 +1278,25 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     int q_cat1=m_cat1;
     int q_cat2=m_cat2;
     int q_cat3=m_cat3;
-    if( m_cat1 == CollectionBrowser::IdVisYearAlbum ||
-        m_cat2 == CollectionBrowser::IdVisYearAlbum ||
-        m_cat3 == CollectionBrowser::IdVisYearAlbum )
+    if( m_cat1 == IdVisYearAlbum ||
+        m_cat2 == IdVisYearAlbum ||
+        m_cat3 == IdVisYearAlbum )
     {
         SortbyTrackFirst = true;
-        if( m_cat1 == CollectionBrowser::IdVisYearAlbum )
+        if( m_cat1 == IdVisYearAlbum )
         {
             VisYearAlbum = 1;
-            q_cat1 = CollectionBrowser::IdAlbum;
+            q_cat1 = IdAlbum;
         }
-        if( m_cat2 == CollectionBrowser::IdVisYearAlbum )
+        if( m_cat2 == IdVisYearAlbum )
         {
             VisYearAlbum = 2;
-            q_cat2 = CollectionBrowser::IdAlbum;
+            q_cat2 = IdAlbum;
         }
-        if( m_cat3 == CollectionBrowser::IdVisYearAlbum )
+        if( m_cat3 == IdVisYearAlbum )
         {
             VisYearAlbum = 3;
-            q_cat3 = CollectionBrowser::IdAlbum;
+            q_cat3 = IdAlbum;
         }
     }
 
@@ -1287,7 +1323,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             isUnknown = tmptext.isEmpty();
             if ( !static_cast<CollectionItem*>( item )->isSampler() )
             {
-                if ( m_cat1 == CollectionBrowser::IdArtist )
+                if ( m_cat1 == IdArtist )
                     qb.setOptions( QueryBuilder::optNoCompilations );
                 if( VisYearAlbum == 1 )
                 {
@@ -1347,7 +1383,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 
             if( !static_cast<CollectionItem*>( item->parent() )->isSampler() )
             {
-                if ( m_cat1 == CollectionBrowser::IdArtist )
+                if ( m_cat1 == IdArtist )
                     qb.setOptions( QueryBuilder::optNoCompilations );
                 if( VisYearAlbum == 1 )
                 {
@@ -1422,7 +1458,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 
             if ( !static_cast<CollectionItem*>( item->parent()->parent() )->isSampler() )
             {
-                if ( m_cat1 == CollectionBrowser::IdArtist )
+                if ( m_cat1 == IdArtist )
                     qb.setOptions( QueryBuilder::optNoCompilations );
                 if( VisYearAlbum == 1 )
                 {
@@ -1492,7 +1528,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 
             qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valURL );
 
-            category = CollectionBrowser::IdNone;
+            category = IdNone;
             break;
     }
 
@@ -1502,7 +1538,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     uint countReturnValues = qb.countReturnValues();
 
     QPixmap pixmap;
-    bool expandable = category != CollectionBrowser::IdNone;
+    bool expandable = category != IdNone;
     if ( expandable )
         pixmap = iconForCategory( category );
 
@@ -1515,7 +1551,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
         QString text;
         bool unknown=false;
 
-        if (  category == CollectionBrowser::IdVisYearAlbum )
+        if (  category == IdVisYearAlbum )
             text += (  values[ i+1 ].isEmpty() ? "?" : values[ i+1 ] ) + i18n(  " - " );
 
         //show "artist - title" for compilations
@@ -1572,35 +1608,35 @@ CollectionView::presetMenu( int id )  //SLOT
 {
     switch ( id )
     {
-        case CollectionBrowser::IdArtist:
-            cat1Menu( CollectionBrowser::IdArtist, false );
-            cat2Menu( CollectionBrowser::IdNone, false );
-            cat3Menu( CollectionBrowser::IdNone, false );
+        case IdArtist:
+            cat1Menu( IdArtist, false );
+            cat2Menu( IdNone, false );
+            cat3Menu( IdNone, false );
             break;
-        case CollectionBrowser::IdAlbum:
-            cat1Menu( CollectionBrowser::IdAlbum, false );
-            cat2Menu( CollectionBrowser::IdNone, false );
-            cat3Menu( CollectionBrowser::IdNone, false );
+        case IdAlbum:
+            cat1Menu( IdAlbum, false );
+            cat2Menu( IdNone, false );
+            cat3Menu( IdNone, false );
             break;
-        case CollectionBrowser::IdArtistAlbum:
-            cat1Menu( CollectionBrowser::IdArtist, false );
-            cat2Menu( CollectionBrowser::IdAlbum, false );
-            cat3Menu( CollectionBrowser::IdNone, false );
+        case IdArtistAlbum:
+            cat1Menu( IdArtist, false );
+            cat2Menu( IdAlbum, false );
+            cat3Menu( IdNone, false );
             break;
-        case CollectionBrowser::IdArtistVisYearAlbum:
-            cat1Menu( CollectionBrowser::IdArtist, false );
-            cat2Menu( CollectionBrowser::IdVisYearAlbum, false );
-            cat3Menu( CollectionBrowser::IdNone, false );
+        case IdArtistVisYearAlbum:
+            cat1Menu( IdArtist, false );
+            cat2Menu( IdVisYearAlbum, false );
+            cat3Menu( IdNone, false );
             break;
-        case CollectionBrowser::IdGenreArtist:
-            cat1Menu( CollectionBrowser::IdGenre, false );
-            cat2Menu( CollectionBrowser::IdArtist, false );
-            cat3Menu( CollectionBrowser::IdNone, false );
+        case IdGenreArtist:
+            cat1Menu( IdGenre, false );
+            cat2Menu( IdArtist, false );
+            cat3Menu( IdNone, false );
             break;
-        case CollectionBrowser::IdGenreArtistAlbum:
-            cat1Menu( CollectionBrowser::IdGenre, false );
-            cat2Menu( CollectionBrowser::IdArtist, false );
-            cat3Menu( CollectionBrowser::IdAlbum, false );
+        case IdGenreArtistAlbum:
+            cat1Menu( IdGenre, false );
+            cat2Menu( IdArtist, false );
+            cat3Menu( IdAlbum, false );
             break;
     }
 
@@ -1626,15 +1662,15 @@ CollectionView::cat1Menu( int id, bool rerender )  //SLOT
     //if this item is checked in second menu, uncheck it
     if ( m_parent->m_cat2Menu->isItemChecked( id ) ) {
         m_parent->m_cat2Menu->setItemChecked( id, false );
-        m_parent->m_cat2Menu->setItemChecked( CollectionBrowser::IdNone, true );
-        m_cat2 = CollectionBrowser::IdNone;
+        m_parent->m_cat2Menu->setItemChecked( IdNone, true );
+        m_cat2 = IdNone;
         enableCat3Menu( false );
     }
     //if this item is checked in third menu, uncheck it
     if ( m_parent->m_cat3Menu->isItemChecked( id ) ) {
         m_parent->m_cat3Menu->setItemChecked( id, false );
-        m_parent->m_cat3Menu->setItemChecked( CollectionBrowser::IdNone, true );
-        m_cat3 = CollectionBrowser::IdNone;
+        m_parent->m_cat3Menu->setItemChecked( IdNone, true );
+        m_cat3 = IdNone;
     }
     updateTrackDepth();
     if ( rerender )
@@ -1654,11 +1690,11 @@ CollectionView::cat2Menu( int id, bool rerender )  //SLOT
     updateColumnHeader();
     resetIpodDepth();
 
-    enableCat3Menu( id != CollectionBrowser::IdNone );
+    enableCat3Menu( id != IdNone );
 
     //prevent choosing the same category in both menus
     m_parent->m_cat3Menu->setItemEnabled( m_cat1 , false );
-    if( id != CollectionBrowser::IdNone )
+    if( id != IdNone )
         m_parent->m_cat3Menu->setItemEnabled( id , false );
 
     //if this item is checked in third menu, uncheck it
@@ -1693,16 +1729,17 @@ CollectionView::cat3Menu( int id, bool rerender )  //SLOT
 void
 CollectionView::enableCat3Menu( bool enable )
 {
-    m_parent->m_cat3Menu->setItemEnabled( CollectionBrowser::IdAlbum, enable );
-    m_parent->m_cat3Menu->setItemEnabled( CollectionBrowser::IdVisYearAlbum, enable );
-    m_parent->m_cat3Menu->setItemEnabled( CollectionBrowser::IdArtist, enable );
-    m_parent->m_cat3Menu->setItemEnabled( CollectionBrowser::IdGenre, enable );
-    m_parent->m_cat3Menu->setItemEnabled( CollectionBrowser::IdYear, enable );
+    m_parent->m_cat3Menu->setItemEnabled( IdAlbum, enable );
+    m_parent->m_cat3Menu->setItemEnabled( IdVisYearAlbum, enable );
+    m_parent->m_cat3Menu->setItemEnabled( IdArtist, enable );
+    m_parent->m_cat3Menu->setItemEnabled( IdComposer, enable );
+    m_parent->m_cat3Menu->setItemEnabled( IdGenre, enable );
+    m_parent->m_cat3Menu->setItemEnabled( IdYear, enable );
 
     if( !enable ) {
         m_parent->m_cat3Menu->setItemChecked( m_cat3, false );
-        m_parent->m_cat3Menu->setItemChecked( CollectionBrowser::IdNone, true );
-        m_cat3 = CollectionBrowser::IdNone;
+        m_parent->m_cat3Menu->setItemChecked( IdNone, true );
+        m_cat3 = IdNone;
     }
     updateTrackDepth();
 }
@@ -1771,7 +1808,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         }
 
         #ifdef AMAZON_SUPPORT
-        enum Actions { APPEND, QUEUE, MAKE, SAVE, MEDIA_DEVICE, BURN_ARTIST, BURN_ALBUM, BURN_CD, COVER, INFO,
+        enum Actions { APPEND, QUEUE, MAKE, SAVE, MEDIA_DEVICE, BURN_ARTIST, BURN_COMPOSER, BURN_ALBUM, BURN_CD, COVER, INFO,
                        COMPILATION_SET, COMPILATION_UNSET, ORGANIZE, DELETE, TRASH, FILE_MENU  };
         #else
         enum Actions { APPEND, QUEUE, MAKE, SAVE, MEDIA_DEVICE, BURN_ARTIST, BURN_ALBUM, BURN_CD, INFO,
@@ -1791,12 +1828,17 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         if( MediaBrowser::isAvailable() )
             menu.insertItem( SmallIconSet( amaroK::icon( "device" ) ), i18n( "&Transfer to Media Device" ), MEDIA_DEVICE );
 
-        if( cat == CollectionBrowser::IdArtist )
+        if( cat == IdArtist )
         {
             menu.insertItem( SmallIconSet( amaroK::icon( "burn" ) ), i18n("Burn All Tracks by This Artist"), BURN_ARTIST );
             menu.setItemEnabled( BURN_ARTIST, K3bExporter::isAvailable() );
         }
-        else if( cat == CollectionBrowser::IdAlbum || cat == CollectionBrowser::IdVisYearAlbum )
+        else if( cat == IdComposer )
+        {
+            menu.insertItem( SmallIconSet( amaroK::icon( "burn" ) ), i18n("Burn All Tracks by This Composer"), BURN_COMPOSER );
+            menu.setItemEnabled( BURN_ARTIST, K3bExporter::isAvailable() );
+        }
+        else if( cat == IdAlbum || cat == IdVisYearAlbum )
         {
             menu.insertItem( SmallIconSet( amaroK::icon( "burn" ) ), i18n("Burn This Album"), BURN_ALBUM );
             menu.setItemEnabled( BURN_ALBUM, K3bExporter::isAvailable() );
@@ -1814,7 +1856,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
         #ifdef AMAZON_SUPPORT
         menu.insertItem( SmallIconSet( amaroK::icon( "download" ) ), i18n( "&Fetch Cover Image" ), this, SLOT( fetchCover() ), 0, COVER );
-        menu.setItemEnabled(COVER, cat == CollectionBrowser::IdAlbum || cat == CollectionBrowser::IdVisYearAlbum );
+        menu.setItemEnabled(COVER, cat == IdAlbum || cat == IdVisYearAlbum );
         #endif
 
         menu.insertItem( SmallIconSet( amaroK::icon( "info" ) )
@@ -1830,7 +1872,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
         menu.insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n("Manage Files"), &fileMenu, FILE_MENU );
 
-        if ( cat == CollectionBrowser::IdAlbum || cat == CollectionBrowser::IdVisYearAlbum ) {
+        if ( cat == IdAlbum || cat == IdVisYearAlbum ) {
             menu.insertSeparator();
             menu.insertItem( SmallIconSet( "ok" ), i18n( "Show under &Various Artists" ), COMPILATION_SET );
             menu.insertItem( SmallIconSet( "cancel" ), i18n( "&Do not Show under Various Artists" ), COMPILATION_UNSET );
@@ -1843,7 +1885,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         {
             CollectionItem* collectItem = static_cast<CollectionItem*>( item );
             trueItemText = collectItem->getSQLText( 0 );
-            if ( cat == CollectionBrowser::IdVisYearAlbum && !collectItem->isUnknown() )
+            if ( cat == IdVisYearAlbum && !collectItem->isUnknown() )
                 trueItemText = trueItemText.right( trueItemText.length() - trueItemText.find( i18n( " - " ) ) - i18n( " - " ).length() );
         }
         else
@@ -1868,6 +1910,9 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                 break;
             case MEDIA_DEVICE:
                 MediaBrowser::queue()->addURLs( selection );
+                break;
+            case BURN_COMPOSER:
+                K3bExporter::instance()->exportComposer( trueItemText );
                 break;
             case BURN_ARTIST:
                 K3bExporter::instance()->exportArtist( trueItemText );
@@ -1952,7 +1997,7 @@ CollectionView::fetchCover() //SLOT
     }
 
     QString album = item->text(0);
-    if( cat == CollectionBrowser::IdVisYearAlbum )
+    if( cat == IdVisYearAlbum )
     {
         // we can't use findRev since an album may have " - " within it.
         QString sep = i18n(" - ");
@@ -2229,30 +2274,33 @@ CollectionView::updateColumnHeader()
         setResizeMode( QListView::NoColumn );
 
         addColumn( captionForTag( Title ) );
-#define includesArtist(cat) (((cat)&CollectionBrowser::IdArtist) \
-        ||((cat)&CollectionBrowser::IdArtistAlbum) \
-        ||((cat)&CollectionBrowser::IdGenreArtist) \
-        ||((cat)&CollectionBrowser::IdGenreArtistAlbum) \
-        ||((cat)&CollectionBrowser::IdArtistVisYearAlbum))
+#define includesArtist(cat) (((cat)&IdArtist) \
+        ||((cat)&IdArtistAlbum) \
+        ||((cat)&IdGenreArtist) \
+        ||((cat)&IdGenreArtistAlbum) \
+        ||((cat)&IdArtistVisYearAlbum))
         if( includesArtist(m_cat1)||includesArtist(m_cat2)||includesArtist(m_cat3) )
             addColumn( captionForTag( Artist ) );
         else
             addColumn( captionForTag( Artist ), 0 );
 #undef includesArtist
-        addColumn( captionForTag( Composer ), 0 );
-#define includesAlbum(cat) (((cat)&CollectionBrowser::IdAlbum) \
-        ||((cat)&CollectionBrowser::IdArtistAlbum) \
-        ||((cat)&CollectionBrowser::IdGenreArtistAlbum) \
-        ||((cat)&CollectionBrowser::IdVisYearAlbum) \
-        ||((cat)&CollectionBrowser::IdArtistVisYearAlbum))
+        if( m_cat1&IdComposer || m_cat2&IdComposer || m_cat3&IdComposer )
+            addColumn( captionForTag( Composer ) );
+        else
+            addColumn( captionForTag( Composer ), 0 );
+#define includesAlbum(cat) (((cat)&IdAlbum) \
+        ||((cat)&IdArtistAlbum) \
+        ||((cat)&IdGenreArtistAlbum) \
+        ||((cat)&IdVisYearAlbum) \
+        ||((cat)&IdArtistVisYearAlbum))
         if( includesAlbum(m_cat1)||includesAlbum(m_cat2)||includesAlbum(m_cat3) )
             addColumn( captionForTag( Album ) );
         else
             addColumn( captionForTag( Album ), 0 );
 #undef includesAlbum
-#define includesGenre(cat) (((cat)&CollectionBrowser::IdGenre) \
-        ||((cat)&CollectionBrowser::IdGenreArtist) \
-        ||((cat)&CollectionBrowser::IdGenreArtistAlbum))
+#define includesGenre(cat) (((cat)&IdGenre) \
+        ||((cat)&IdGenreArtist) \
+        ||((cat)&IdGenreArtistAlbum))
         if( includesGenre(m_cat1)||includesGenre(m_cat2)||includesGenre(m_cat3) )
             addColumn( captionForTag( Genre ) );
         else
@@ -2261,9 +2309,9 @@ CollectionView::updateColumnHeader()
         addColumn( captionForTag( Length ),0  );
         addColumn( captionForTag( DiscNumber ), 0 );
         addColumn( captionForTag( Track ), 0 );
-#define includesYear(cat) (((cat)&CollectionBrowser::IdYear) \
-        ||((cat)&CollectionBrowser::IdVisYearAlbum) \
-        ||((cat)&CollectionBrowser::IdArtistVisYearAlbum))
+#define includesYear(cat) (((cat)&IdYear) \
+        ||((cat)&IdVisYearAlbum) \
+        ||((cat)&IdArtistVisYearAlbum))
         if( includesYear(m_cat1)||includesYear(m_cat2)||includesYear(m_cat3) )
             addColumn( captionForTag( Year ) );
         else
@@ -2305,7 +2353,7 @@ CollectionView::updateColumnHeader()
         int catArr[2] = {m_cat2, m_cat3};
 
         for(int i = 0; i < 2; i++) {
-            if (catArr[i] != CollectionBrowser::IdNone ) {
+            if (catArr[i] != IdNone ) {
                 caption += " / " + captionForCategory( catArr[i] );
             }
         }
@@ -2354,12 +2402,12 @@ CollectionView::updateColumnHeader()
     QResizeEvent rev( size(), QSize() );
     viewportResizeEvent( &rev );
 
-    m_parent->m_categoryMenu->setItemChecked( CollectionBrowser::IdArtist, m_cat1 == CollectionBrowser::IdArtist && m_cat2 == CollectionBrowser::IdNone );
-    m_parent->m_categoryMenu->setItemChecked( CollectionBrowser::IdAlbum, m_cat1 == CollectionBrowser::IdAlbum && m_cat2 == CollectionBrowser::IdNone );
-    m_parent->m_categoryMenu->setItemChecked( CollectionBrowser::IdArtistAlbum, m_cat1 == CollectionBrowser::IdArtist && m_cat2 == CollectionBrowser::IdAlbum && m_cat3 == CollectionBrowser::IdNone );
-    m_parent->m_categoryMenu->setItemChecked( CollectionBrowser::IdArtistVisYearAlbum, m_cat1 == CollectionBrowser::IdArtist && m_cat2 == CollectionBrowser::IdVisYearAlbum && m_cat3 == CollectionBrowser::IdNone );
-    m_parent->m_categoryMenu->setItemChecked( CollectionBrowser::IdGenreArtist, m_cat1 == CollectionBrowser::IdGenre && m_cat2 == CollectionBrowser::IdArtist && m_cat3 == CollectionBrowser::IdNone );
-    m_parent->m_categoryMenu->setItemChecked( CollectionBrowser::IdGenreArtistAlbum, m_cat1 == CollectionBrowser::IdGenre && m_cat2 == CollectionBrowser::IdArtist && m_cat3 == CollectionBrowser::IdAlbum );
+    m_parent->m_categoryMenu->setItemChecked( IdArtist, m_cat1 == IdArtist && m_cat2 == IdNone );
+    m_parent->m_categoryMenu->setItemChecked( IdAlbum, m_cat1 == IdAlbum && m_cat2 == IdNone );
+    m_parent->m_categoryMenu->setItemChecked( IdArtistAlbum, m_cat1 == IdArtist && m_cat2 == IdAlbum && m_cat3 == IdNone );
+    m_parent->m_categoryMenu->setItemChecked( IdArtistVisYearAlbum, m_cat1 == IdArtist && m_cat2 == IdVisYearAlbum && m_cat3 == IdNone );
+    m_parent->m_categoryMenu->setItemChecked( IdGenreArtist, m_cat1 == IdGenre && m_cat2 == IdArtist && m_cat3 == IdNone );
+    m_parent->m_categoryMenu->setItemChecked( IdGenreArtistAlbum, m_cat1 == IdGenre && m_cat2 == IdArtist && m_cat3 == IdAlbum );
 }
 
 
@@ -2393,22 +2441,22 @@ CollectionView::listSelected()
     int q_cat1=m_cat1;
     int q_cat2=m_cat2;
     int q_cat3=m_cat3;
-    if (m_cat1 == CollectionBrowser::IdVisYearAlbum || m_cat2 == CollectionBrowser::IdVisYearAlbum || m_cat3 == CollectionBrowser::IdVisYearAlbum)
+    if (m_cat1 == IdVisYearAlbum || m_cat2 == IdVisYearAlbum || m_cat3 == IdVisYearAlbum)
     {
-        if (m_cat1==CollectionBrowser::IdVisYearAlbum)
+        if (m_cat1==IdVisYearAlbum)
         {
             VisYearAlbum = 1;
-            q_cat1 = CollectionBrowser::IdAlbum;
+            q_cat1 = IdAlbum;
         }
-        if (m_cat2==CollectionBrowser::IdVisYearAlbum)
+        if (m_cat2==IdVisYearAlbum)
         {
             VisYearAlbum = 2;
-            q_cat2 = CollectionBrowser::IdAlbum;
+            q_cat2 = IdAlbum;
         }
-        if (m_cat3==CollectionBrowser::IdVisYearAlbum)
+        if (m_cat3==IdVisYearAlbum)
         {
             VisYearAlbum = 3;
-            q_cat3 = CollectionBrowser::IdAlbum;
+            q_cat3 = IdAlbum;
         }
     }
 
@@ -2477,14 +2525,14 @@ CollectionView::listSelected()
         int tables = 0;
         bool sortByTrackFirst = false;
         for(int i = 0; i < trackDepth(); ++i)
-            tables |= (catArr[i] == CollectionBrowser::IdVisYearAlbum 
-                    ? CollectionBrowser::IdAlbum
+            tables |= (catArr[i] == IdVisYearAlbum 
+                    ? IdAlbum
                     : catArr[i]);
 
         // Figure out if the results will be sorted by track first
         // (i.e., if one of the filters is by album).  If so, we need
         // to search compilations first.
-        if( tables & CollectionBrowser::IdAlbum )
+        if( tables & IdAlbum )
             sortByTrackFirst = true;
 
         if( sortByTrackFirst )
@@ -2553,7 +2601,7 @@ CollectionView::listSelected()
 
             if ( !sampler )
             {
-                if ( q_cat1 == CollectionBrowser::IdArtist )
+                if ( q_cat1 == IdArtist )
                     qb.setOptions( QueryBuilder::optNoCompilations );
                 if( VisYearAlbum == 1 )
                 {
@@ -2605,7 +2653,7 @@ CollectionView::listSelected()
         }
 
     //second pass: category 1
-    if ( m_cat2 == CollectionBrowser::IdNone )
+    if ( m_cat2 == IdNone )
     {
         for ( item = firstChild(); item; item = item->nextSibling() )
             for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
@@ -2626,7 +2674,7 @@ CollectionView::listSelected()
 
                     if ( !sampler )
                     {
-                        if ( q_cat1 == CollectionBrowser::IdArtist )
+                        if ( q_cat1 == IdArtist )
                             qb.setOptions( QueryBuilder::optNoCompilations );
 
                         tmptext = static_cast<CollectionItem*>( item )->getSQLText( 0 );
@@ -2706,7 +2754,7 @@ CollectionView::listSelected()
                     list << static_cast<CollectionItem*>( grandChild ) ->url();
 
     //category 3
-    if ( m_cat3 == CollectionBrowser::IdNone )
+    if ( m_cat3 == IdNone )
     {
         for ( item = firstChild(); item; item = item->nextSibling() )
             for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
@@ -2730,7 +2778,7 @@ CollectionView::listSelected()
 
                         if ( !sampler )
                         {
-                            if ( q_cat1 == CollectionBrowser::IdArtist )
+                            if ( q_cat1 == IdArtist )
                                 qb.setOptions( QueryBuilder::optNoCompilations );
 
                             tmptext = static_cast<CollectionItem*>( item )->getSQLText( 0 );
@@ -2869,21 +2917,24 @@ CollectionView::iconForCategory( const int cat ) const
     QString icon;
     switch( cat )
     {
-        case CollectionBrowser::IdAlbum:
+        case IdAlbum:
             icon = "cdrom_unmount";
             break;
-        case CollectionBrowser::IdVisYearAlbum:
+        case IdVisYearAlbum:
             icon = "cdrom_unmount";
             break;
-        case CollectionBrowser::IdArtist:
+        case IdArtist:
+            icon = "personal";
+            break;
+        case IdComposer:
             icon = "personal";
             break;
 
-        case CollectionBrowser::IdGenre:
+        case IdGenre:
             icon = "kfm";
             break;
 
-        case CollectionBrowser::IdYear:
+        case IdYear:
             icon = "history";
             break;
     }
@@ -2896,21 +2947,24 @@ CollectionView::captionForCategory( const int cat ) const
 {
     switch( cat )
     {
-        case CollectionBrowser::IdAlbum:
+        case IdAlbum:
             return i18n( "Album" );
             break;
-        case CollectionBrowser::IdVisYearAlbum:
+        case IdVisYearAlbum:
             return i18n( "Year" ) + i18n( " - " ) + i18n( "Album" );
             break;
-        case CollectionBrowser::IdArtist:
+        case IdArtist:
             return i18n( "Artist" );
             break;
+        case IdComposer:
+            return i18n( "Composer" );
+            break;
 
-        case CollectionBrowser::IdGenre:
+        case IdGenre:
             return i18n( "Genre" );
             break;
 
-        case CollectionBrowser::IdYear:
+        case IdYear:
             return i18n( "Year" );
             break;
     }
@@ -3046,17 +3100,20 @@ CollectionView::allForCategory( const int cat, const int num ) const
     switch( cat )
     {
         // The singular forms shouldn't get used
-        case CollectionBrowser::IdAlbum:
-        case CollectionBrowser::IdVisYearAlbum:
+        case IdAlbum:
+        case IdVisYearAlbum:
             return i18n( "Album", "All %n Albums", num );
             break;
-        case CollectionBrowser::IdArtist:
+        case IdArtist:
             return i18n( "Artist", "All %n Artists", num );
             break;
-        case CollectionBrowser::IdGenre:
+        case IdComposer:
+            return i18n( "Composer", "All %n Composers", num );
+            break;
+        case IdGenre:
             return i18n( "Genre", "All %n Genres", num );
             break;
-        case CollectionBrowser::IdYear:
+        case IdYear:
             return i18n( "Year", "All %n Years", num );
             break;
     }
@@ -3105,7 +3162,7 @@ CollectionView::incrementDepth( bool rerender /*= true*/ )
 
     // Clear filters and cache data at this level
     m_ipodFilters[m_currentDepth].clear();
-    if( cat == CollectionBrowser::IdVisYearAlbum )
+    if( cat == IdVisYearAlbum )
         m_ipodFilterYear.clear();
 
     m_ipodSelected[m_currentDepth].clear();
@@ -3136,7 +3193,7 @@ CollectionView::incrementDepth( bool rerender /*= true*/ )
         if( item->isSampler() )
         {
             m_ipodFilters[m_currentDepth].clear();
-            if( cat == CollectionBrowser::IdVisYearAlbum )
+            if( cat == IdVisYearAlbum )
                 m_ipodFilterYear.clear();
 
             // If "All" is selected then don't bother saving this
@@ -3148,7 +3205,7 @@ CollectionView::incrementDepth( bool rerender /*= true*/ )
             break;
         }
 
-        if( cat == CollectionBrowser::IdVisYearAlbum )
+        if( cat == IdVisYearAlbum )
         {
             QString tmptext = item->text( 0 );
             QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
@@ -3195,7 +3252,7 @@ CollectionView::decrementDepth ( bool rerender /*= true*/ )
     m_ipodFilters[m_currentDepth].clear();
     int catArr[3] = {m_cat1, m_cat2, m_cat3};
     int cat = catArr[m_currentDepth];
-    if( cat == CollectionBrowser::IdVisYearAlbum )
+    if( cat == IdVisYearAlbum )
         m_ipodFilterYear.clear();
 
     // Clear the selection on higher levels
@@ -3266,9 +3323,9 @@ CollectionView::buildIpodQuery ( QueryBuilder &qb, int depth, QStringList filter
     {
         q_cat = catArr[i];
 
-        if( q_cat == CollectionBrowser::IdVisYearAlbum )
+        if( q_cat == IdVisYearAlbum )
         {
-            q_cat = CollectionBrowser::IdAlbum;
+            q_cat = IdAlbum;
 
             if( filters[i].count() > 0 )
             {
@@ -3306,11 +3363,11 @@ CollectionView::buildIpodQuery ( QueryBuilder &qb, int depth, QStringList filter
 
         // Don't sort by artist if we're getting compilations
         if( recursiveSort 
-                && !(compilationsOnly && q_cat == CollectionBrowser::IdArtist) )
+                && !(compilationsOnly && q_cat == IdArtist) )
             qb.sortBy( q_cat, QueryBuilder::valName );
 
         // Sort by track first subject to the conditions described above
-        if( q_cat == CollectionBrowser::IdAlbum  && 
+        if( q_cat == IdAlbum  && 
                 (filters[i].count() == 1 || recursiveSort) )
             SortbyTrackFirst = true;
     }
@@ -3320,9 +3377,9 @@ CollectionView::buildIpodQuery ( QueryBuilder &qb, int depth, QStringList filter
     if( stillFiltering )   // Are we showing a category?
     {
         q_cat = catArr[depth];
-        if( q_cat == CollectionBrowser::IdVisYearAlbum )
+        if( q_cat == IdVisYearAlbum )
         {
-            q_cat = CollectionBrowser::IdAlbum;
+            q_cat = IdAlbum;
             qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName );
         }
 
@@ -3657,9 +3714,9 @@ CollectionView::viewportPaintEvent( QPaintEvent *e )
 
 void
 CollectionView::updateTrackDepth() {
-    bool m3 = (m_cat3 == CollectionBrowser::IdNone);
-    bool m2 = (m_cat2 == CollectionBrowser::IdNone);
-    bool m1 = (m_cat1 == CollectionBrowser::IdNone);
+    bool m3 = (m_cat3 == IdNone);
+    bool m2 = (m_cat2 == IdNone);
+    bool m1 = (m_cat1 == IdNone);
     if ( m3 || m2 || m1) {
         //The wanted depth, is the lowest IdNone
         if (m3)
@@ -3843,7 +3900,7 @@ CollectionItem::compare( QListViewItem* i, int col, bool ascending ) const
     }
 
     switch( m_cat ) {
-        case CollectionBrowser::IdVisYearAlbum:
+        case IdVisYearAlbum:
             a = a.left( a.find( i18n(" - ") ) );
             b = b.left( b.find( i18n(" - ") ) );
             // "?" are the last ones
@@ -3852,7 +3909,7 @@ CollectionItem::compare( QListViewItem* i, int col, bool ascending ) const
             if ( b == "?" )
                 return -1;
         //fall through
-        case CollectionBrowser::IdYear:
+        case IdYear:
             ia = a.toInt();
             ib = b.toInt();
             if (ia==ib)
@@ -3862,7 +3919,7 @@ CollectionItem::compare( QListViewItem* i, int col, bool ascending ) const
             else
                 return -1;
         //For artists, we sort by ignoring "The" eg "The Who" sorts as if it were "Who"
-        case CollectionBrowser::IdArtist:
+        case IdArtist:
             if ( a.startsWith( "the ", false ) )
                 CollectionView::manipulateThe( a, true );
             if ( b.startsWith( "the ", false ) )
@@ -3955,8 +4012,8 @@ DividerItem::compare( QListViewItem* i, int col, bool ascending ) const
         return -1 * i->compare(const_cast<DividerItem*>(this), col, ascending);
     }
 
-    if (m_cat == CollectionBrowser::IdYear ||
-        m_cat == CollectionBrowser::IdVisYearAlbum)
+    if (m_cat == IdYear ||
+        m_cat == IdVisYearAlbum)
     {
         bool ok_a, ok_b;
         int ia =    text(col).toInt(&ok_a);
@@ -3977,11 +4034,11 @@ DividerItem::createGroup(const QString& src, int cat)
 {
     QString ret;
     switch (cat) {
-    case CollectionBrowser::IdVisYearAlbum: {
+    case IdVisYearAlbum: {
         ret = src.left( src.find(" - ") );
         break;
     }
-    case CollectionBrowser::IdYear: {
+    case IdYear: {
         ret = src;
         if (ret.length() == 2 || ret.length() == 4) {
             ret = ret.left(ret.length() - 1) + "0";
@@ -4024,7 +4081,7 @@ DividerItem::shareTheSameGroup(const QString& itemStr, const QString& divStr, in
     QString tmp = itemStr.stripWhiteSpace();
 
     switch (cat) {
-    case CollectionBrowser::IdVisYearAlbum: {
+    case IdVisYearAlbum: {
         QString sa = itemStr.left( itemStr.find( i18n(" - ") ) );
         QString sb = divStr.left(  divStr.find( i18n(" - ") ) );
         if (sa == sb) {
@@ -4032,7 +4089,7 @@ DividerItem::shareTheSameGroup(const QString& itemStr, const QString& divStr, in
         }
         break;
     }
-    case CollectionBrowser::IdYear: {
+    case IdYear: {
         int ia = itemStr.toInt();
         int ib = divStr.toInt();
         // they share one group if:
@@ -4046,7 +4103,7 @@ DividerItem::shareTheSameGroup(const QString& itemStr, const QString& divStr, in
         }
         break;
     }
-    case CollectionBrowser::IdArtist:
+    case IdArtist:
         //"The Who" should count as being in "W" and not "T"
         if ( tmp.startsWith( "the ", false ) )
             CollectionView::manipulateThe( tmp, true );

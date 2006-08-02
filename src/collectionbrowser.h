@@ -64,9 +64,6 @@ class CollectionBrowser: public QVBox
         void appendSearchResults();
 
         //attributes:
-        enum CatMenuId { IdAlbum = 1, IdArtist = 2, IdGenre = 4, IdYear = 8 , IdScan = 16, IdNone = 32,
-                    IdArtistAlbum = 64, IdGenreArtist = 128, IdGenreArtistAlbum = 256, IdVisYearAlbum = 512, IdArtistVisYearAlbum = 1024 };
-
         KTabBar* m_tabs; //tree-view, flat-view tabs
         class KToolBar    *m_toolbar;
         KAction           *m_configureAction;

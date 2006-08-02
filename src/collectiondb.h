@@ -615,10 +615,10 @@ class QueryBuilder
 {
     public:
         //attributes:
-        enum qBuilderTables  { tabAlbum = 1, tabArtist = 2, tabGenre = 4, tabYear = 8, tabSong = 32,
-                               tabStats = 64, tabLyrics = 128, tabPodcastChannels = 256,
-                               tabPodcastEpisodes = 512, tabPodcastFolders = 1024,
-                               tabComposer = 2048, tabMedia = 4096
+        enum qBuilderTables  { tabAlbum = 1, tabArtist = 2, tabComposer = 4, tabGenre = 8, tabYear = 16, tabSong = 64,
+                               tabStats = 128, tabLyrics = 256, tabPodcastChannels = 512,
+                               tabPodcastEpisodes = 1024, tabPodcastFolders = 2048,
+                               tabMedia = 4096
                                /* dummy table for filtering */, tabDummy = 0 };
         enum qBuilderOptions { optNoCompilations = 1, optOnlyCompilations = 2, optRemoveDuplicates = 4,
                                optRandomize = 8,

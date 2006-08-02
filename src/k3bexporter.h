@@ -71,6 +71,13 @@ public:
     void exportArtist( const QString &artist, int openmode=-1 );
 
     /**
+    * Exports all tracks of the composer @p composer to K3B. The mode @p openmode will be used
+    * @param openmode The mode of the album
+    * @param artist The artists which tracks to export
+    */
+    void exportComposer( const QString &artist, int openmode=-1 );
+
+    /**
     * @return the static instance of K3bExporter
     */
     static K3bExporter *instance() { return s_instance; }

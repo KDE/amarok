@@ -109,6 +109,26 @@ void K3bExporter::exportArtist( const QString &artist, int openmode )
     }
 }
 
+void K3bExporter::exportComposer( const QString &composer, int openmode )
+{
+    const QString composerId = QString::number( CollectionDB::instance()->composerID( composer, false, false, true ) );
+
+    QStringList values =
+        CollectionDB::instance()->query(
+            "SELECT url FROM tags "
+            "WHERE composer = " + composerId + " "
+            "ORDER BY title;" );
+
+    if( !values.isEmpty() ) {
+        KURL::List urls;
+
+        for( uint i=0; i < values.count(); i++ )
+            urls << KURL( values[i] );
+
+        exportTracks( urls, openmode );
+    }
+}
+
 void K3bExporter::exportViaCmdLine( const KURL::List &urls, int openmode )
 {
     QCString cmdOption;
