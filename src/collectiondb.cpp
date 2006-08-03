@@ -3294,12 +3294,12 @@ fillInBundle( QStringList values, MetaBundle &bundle )
 
     bundle.setAlbum     ( *it ); ++it;
     bundle.setArtist    ( *it ); ++it;
+    bundle.setComposer  ( *it ); ++it;
     bundle.setGenre     ( *it ); ++it;
     bundle.setTitle     ( *it ); ++it;
     bundle.setYear      ( (*it).toInt() ); ++it;
     bundle.setComment   ( *it ); ++it;
     bundle.setDiscNumber( (*it).toInt() ); ++it;
-    bundle.setComposer  ( *it ); ++it;
     bundle.setTrack     ( (*it).toInt() ); ++it;
     bundle.setBitrate   ( (*it).toInt() ); ++it;
     bundle.setLength    ( (*it).toInt() ); ++it;
@@ -3323,7 +3323,7 @@ CollectionDB::bundleForUrl( MetaBundle* bundle )
     MountPointManager::instance()->getRelativePath( deviceid, bundle->url(), rpath );
     QStringList values = query( QString(
             "SELECT album.name, artist.name, composer.name, genre.name, tags.title, "
-            "year.name, tags.comment, tags.discnumber, composer.name, "
+            "year.name, tags.comment, tags.discnumber, "
             "tags.track, tags.bitrate, tags.length, tags.samplerate, "
             "tags.filesize, tags.filetype, tags.bpm, tags.sampler, uniqueid.uniqueid "
             "FROM tags LEFT OUTER JOIN uniqueid ON tags.url = uniqueid.url, album, artist, composer, genre, year "
