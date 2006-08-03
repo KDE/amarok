@@ -764,7 +764,7 @@ bool
 IpodMediaDevice::createLockFile( bool silent )
 {
     QString lockFilePath;
-    pathExists( ":iPod_Control:iTunes:iTunesLock", &lockFilePath );
+    pathExists( itunesDir( "iTunes:iTunesLock" ), &lockFilePath );
     m_lockFile = new QFile( lockFilePath );
     QString msg;
     bool ok = true;
@@ -839,7 +839,7 @@ IpodMediaDevice::initializeIpod()
     itdb_playlist_add(m_itdb, mpl, 0);
 
     QString realPath;
-    if(!pathExists(":iPod_Control", &realPath) )
+    if(!pathExists( itunesDir(), &realPath) )
     {
         dir.setPath(realPath);
         dir.mkdir(dir.absPath());
@@ -847,7 +847,7 @@ IpodMediaDevice::initializeIpod()
     if(!dir.exists())
         return false;
 
-    if(!pathExists(":iPod_Control:Music", &realPath) )
+    if(!pathExists( itunesDir( "Music" ), &realPath) )
     {
         dir.setPath(realPath);
         dir.mkdir(dir.absPath());
@@ -855,7 +855,7 @@ IpodMediaDevice::initializeIpod()
     if(!dir.exists())
         return false;
 
-    if(!pathExists(":iPod_Control:iTunes", &realPath) )
+    if(!pathExists( itunesDir( "iTunes" ), &realPath) )
     {
         dir.setPath(realPath);
         dir.mkdir(dir.absPath());
@@ -1045,7 +1045,7 @@ IpodMediaDevice::openDevice( bool silent )
     {
         QString real;
         QString ipod;
-        ipod.sprintf( ":iPod_Control:Music:f%02d", i );
+        ipod.sprintf( itunesDir( "Music:f%02d" ).latin1(), i );
         if(!pathExists( ipod, &real ) )
         {
             QDir dir( real );
@@ -1142,7 +1142,8 @@ IpodMediaDevice::checkIntegrity()
         cur = cur->next;
     }
 
-    QString musicpath = QString(itdb_get_mountpoint(m_itdb)) + "/iPod_Control/Music";
+    QString musicpath;
+    pathExists( itunesDir( "Music" ), &musicpath );
     QDir dir( musicpath, QString::null, QDir::Unsorted, QDir::Dirs );
     for(unsigned i=0; i<dir.count(); i++)
     {
@@ -1154,7 +1155,7 @@ IpodMediaDevice::checkIntegrity()
         for(unsigned j=0; j<hashdir.count(); j++)
         {
             QString filename = hashpath + "/" + hashdir[j];
-            QString ipodPath = ":iPod_Control:Music:" + dir[i] + ":" + hashdir[j];
+            QString ipodPath = itunesDir( "Music:" ) + dir[i] + ":" + hashdir[j];
             Itdb_Track *track = m_files[ipodPath.lower()];
             if(!track)
             {
@@ -1422,6 +1423,18 @@ IpodMediaDevice::addPlaylistToView( Itdb_Playlist *pl )
         cur = cur->next;
         i++;
     }
+}
+
+QString
+IpodMediaDevice::itunesDir(const QString &p) const
+{
+    QString base( ":iPod_Control" );
+    if( m_isMobile )
+        base = ":iTunes:iTunes_Control";
+
+    if( !p.startsWith( ":" ) )
+        base += ":";
+    return base + p;
 }
 
 QString
@@ -1726,7 +1739,7 @@ IpodMediaDevice::determineURLOnDevice(const MetaBundle &bundle)
         int music_dirs = itdb_musicdirs_number(m_itdb) > 0 ? itdb_musicdirs_number(m_itdb) : 20;
         int dir = num % music_dirs;
         QString dirname;
-        dirname.sprintf( ":iPod_Control:Music:f%02d", dir );
+        dirname.sprintf( "%s:Music:f%02d", itunesDir().latin1(), dir );
         if( !pathExists( dirname ) )
         {
             QString realdir = realPath(dirname.latin1());
@@ -1788,8 +1801,8 @@ IpodMediaDevice::getCapacity( KIO::filesize_t *total, KIO::filesize_t *available
         return false;
 
 #ifdef HAVE_STATVFS
-    QString path = QFile::decodeName(itdb_get_mountpoint(m_itdb));
-    path.append("/iPod_Control");
+    QString path;
+    pathExists( itunesDir(), &path );
     struct statvfs buf;
     if(statvfs(QFile::encodeName(path), &buf) != 0)
     {
