@@ -49,7 +49,12 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     QToolTip::add( m_monitor,   i18n( "If selected, folders will automatically get rescanned when the content is modified, e.g. when a new file was added." ) );
 
     // Read config values
-    m_dirs = MountPointManager::instance()->collectionFolders();
+    //we have to detect if this is the actual first run and not get the collectionFolders in that case
+    //there won't be any anyway and accessing them creates a Sqlite database, even if the user wants to
+    //use another database
+    //bug 131719 131724
+    if( !amaroK::config()->readBoolEntry( "First Run", true ) )
+        m_dirs = MountPointManager::instance()->collectionFolders();
 
     m_recursive->setChecked( AmarokConfig::scanRecursively() );
     m_monitor->setChecked( AmarokConfig::monitorChanges() );

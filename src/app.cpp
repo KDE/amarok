@@ -653,9 +653,8 @@ App::continueInit()
                                 || amaroK::config()->readBoolEntry( "AppendAsDefault", false );
 
     // Remember old folder setup, so we can detect changes after the wizard was used
-    const QStringList oldCollectionFolders = MountPointManager::instance()->collectionFolders();
+    //const QStringList oldCollectionFolders = MountPointManager::instance()->collectionFolders();
 
-    CollectionDB::instance()->checkDatabase();
 
     if ( amaroK::config()->readBoolEntry( "First Run", true ) || args->isSet( "wizard" ) ) {
         std::cout << "STARTUP\n" << std::flush; //hide the splashscreen
@@ -663,6 +662,9 @@ App::continueInit()
         amaroK::config()->writeEntry( "First Run", false );
         amaroK::config()->sync();
     }
+
+    CollectionDB::instance()->checkDatabase();
+
     m_pMediaDeviceManager = MediaDeviceManager::instance();
     m_pGlobalAccel    = new KGlobalAccel( this );
     m_pPlaylistWindow = new PlaylistWindow();
@@ -718,16 +720,12 @@ App::continueInit()
     #endif
 
     CollectionDB *collDB = CollectionDB::instance();
-    // Trigger collection scan if folder setup was changed by wizard
-    if ( oldCollectionFolders != MountPointManager::instance()->collectionFolders() )
-    {
-         //connect( collDB, SIGNAL( databaseUpdateDone() ), collDB, SLOT( startScan() ) );
-        collDB->startScan();
-    }
+    //Collection scan is triggered in firstRunWizard if the colelction folder setup was changed in the wizard
+
     // If database version is updated, the collection needs to be rescanned.
     // Works also if the collection is empty for some other reason
     // (e.g. deleted collection.db)
-    else if ( CollectionDB::instance()->isEmpty() )
+    if ( CollectionDB::instance()->isEmpty() )
     {
          //connect( collDB, SIGNAL( databaseUpdateDone() ), collDB, SLOT( startScan() ) );
         collDB->startScan();
@@ -1069,6 +1067,7 @@ void App::slotConfigToolBars()
 void App::firstRunWizard()
 {
     ///show firstRunWizard
+    DEBUG_BLOCK
 
     FirstRunWizard wizard;
     setTopWidget( &wizard );
@@ -1079,6 +1078,11 @@ void App::firstRunWizard()
 
     if( wizard.exec() != QDialog::Rejected )
     {
+        //make sure that the DB config is stored in amarokrc before calling CollectionDB's ctor
+        AmarokConfig::setDatabaseEngine(
+            QString::number( amaroK::databaseTypeCode( wizard.dbSetup7->databaseEngine->currentText() ) ) );
+        config->updateSettings();
+
         const QStringList oldCollectionFolders = MountPointManager::instance()->collectionFolders();
         wizard.writeCollectionConfig();
 
@@ -1087,10 +1091,6 @@ void App::firstRunWizard()
              oldCollectionFolders != MountPointManager::instance()->collectionFolders() )
             CollectionDB::instance()->startScan();
 
-        AmarokConfig::setDatabaseEngine(
-            QString::number( amaroK::databaseTypeCode( wizard.dbSetup7->databaseEngine->currentText() ) ) );
-
-        config->updateSettings();
     }
 }
 
