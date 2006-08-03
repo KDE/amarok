@@ -76,7 +76,7 @@ NfsDeviceHandler::getPlayableURL( KURL &absolutePath, const KURL &relativePath )
 bool
 NfsDeviceHandler::deviceIsMedium( const Medium * m ) const
 {
-    return m->deviceNode() == m_server + ":" + m_dir;
+    return m->deviceNode() == m_server + ':' + m_dir;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

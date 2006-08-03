@@ -76,7 +76,7 @@ SmbDeviceHandler::getPlayableURL( KURL &absolutePath, const KURL &relativePath )
 bool
 SmbDeviceHandler::deviceIsMedium( const Medium * m ) const
 {
-    return m->deviceNode() == m_server + ":" + m_dir;
+    return m->deviceNode() == m_server + ':' + m_dir;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
