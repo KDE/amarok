@@ -297,9 +297,10 @@ MountPointManager::mediumChanged( const Medium *m )
                 int key = it.key();
                 m_handlerMap.erase( key );
                 debug() << "removed device " << key << endl;
+                m_handlerMapMutex.unlock();
                 emit mediumRemoved( key );
                 //we found the medium which was removed, so we can abort the loop
-                break;
+                return;
             }
         }
         m_handlerMapMutex.unlock();
@@ -326,9 +327,10 @@ MountPointManager::mediumRemoved( const Medium *m )
                 int key = it.key();
                 m_handlerMap.erase( key );
                 debug() << "removed device " << key << endl;
+                m_handlerMapMutex.unlock();
                 emit mediumRemoved( key );
                 //we found the medium which was removed, so we can abort the loop
-                break;
+                return;
             }
         }
         m_handlerMapMutex.unlock();
@@ -456,48 +458,51 @@ MountPointManager::startStatisticsUpdateJob()
 void
 MountPointManager::handleMissingMediaManager()
 {
+    //TODO this method should activate a fallback mode which simply shows all songs and uses the
+    //device's last mount point to build the absolute path
     m_noDeviceManager = true;
-    amaroK::StatusBar::instance()->longMessage( i18n( "BlaBla" ), KDE::StatusBar::Warning );
+    //amaroK::StatusBar::instance()->longMessage( i18n( "BlaBla" ), KDE::StatusBar::Warning );
 }
 
 void
 MountPointManager::checkDeviceAvailability()
 {
-
+    //code to actively scan for devices which are not supported by KDE mediamanager should go here
+    //method is not actually called yet
 }
 
 bool StatisticsUpdateJob::doJob( )
 {
     DEBUG_BLOCK
     CollectionDB *collDB = CollectionDB::instance();
-    QStringList urls = collDB->query( "SELECT url FROM statistics WHERE deviceid = -1;" );
+    QStringList urls = collDB->query( "SELECT s.deviceid,s.url "
+                                      "FROM statistics AS s LEFT JOIN tags AS t ON s.deviceid = t.deviceid AND s.url = t.url "
+                                      "WHERE t.url IS NULL AND s.deviceid != -2 AND s.uniqueid IS NULL;" );
+    debug() << "Trying to update " << urls.count() / 2 << " statistics rows" << endl;
     foreach( urls )
     {
-        debug() << "Updating statistics url for " << *it << endl;
-        QString realURL = (*it).right( (*it).length() -1 ); //remove leading dot
-        if ( QFile::exists( realURL ) )
+        int deviceid = (*it).toInt();
+        QString rpath = *++it;
+        debug() << "Checking statistics path for deviceid " << deviceid << ", rpath " << rpath << endl;
+        QString realURL = MountPointManager::instance()->getAbsolutePath( deviceid, rpath );
+        if( QFile::exists( realURL ) )
         {
-            int deviceid = MountPointManager::instance()->getIdForUrl( realURL );
-            if ( deviceid == -1 )
+            int newDeviceid = MountPointManager::instance()->getIdForUrl( realURL );
+            if( newDeviceid == deviceid )
                 continue;
-
-            int tagsCount = collDB->query(
-                            QString( "SELECT COUNT( url ) FROM tags WHERE deviceid = -1 AND url = '%1';" )
-                                        .arg( collDB->escapeString( *it ) ) ).first().toInt();
-            if ( tagsCount != 0 )
-                continue;       //only update statistics if there's now tags row with deviceid = -1 and url = *it
+            QString newRpath = MountPointManager::instance()->getRelativePath( newDeviceid, realURL );
 
             int statCount = collDB->query(
                             QString( "SELECT COUNT( url ) FROM statistics WHERE deviceid = %1 AND url = '%2';" )
-                                        .arg( deviceid )
-                                        .arg( collDB->escapeString( *it ) ) ).first().toInt();
-            if ( statCount != 0 )
-                continue;       //statistics row woth new values already exists
-            QString rpath = MountPointManager::instance()->getRelativePath( deviceid, realURL );
+                                        .arg( newDeviceid )
+                                        .arg( collDB->escapeString( newRpath ) ) ).first().toInt();
+            if( statCount )
+                continue;       //statistics row with new URL/deviceid values already exists
+
             QString sql = QString( "UPDATE statistics SET deviceid = %1, url = '%2'" )
+                                .arg( newDeviceid ).arg( collDB->escapeString( newRpath ) );
+            sql += QString( " WHERE deviceid = %1 AND url = '%2';" )
                                 .arg( deviceid ).arg( collDB->escapeString( rpath ) );
-            sql += QString( " WHERE deviceid = -1 AND url = '%1';" )
-                                .arg( collDB->escapeString( *it ) );
             collDB->query( sql );
         }
     }
