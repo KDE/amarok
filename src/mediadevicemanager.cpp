@@ -121,9 +121,9 @@ void MediaDeviceManager::slotMediumAdded( const Medium *m, QString id)
                 delete tempMedium;
             }
             m_mediumMap[m->name()] = new Medium( m );
+            emit mediumAdded( m, id );
         }
     }
-    emit mediumAdded( m, id );
 }
 
 void MediaDeviceManager::slotMediumChanged( const Medium *m, QString id )
