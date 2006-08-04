@@ -36,3 +36,20 @@ void DbSetup::init()
 #endif
 }
 
+void DbSetup::databaseEngine_activated( int item )
+{
+    if( item == 0 )
+        configStack->raiseWidget( 0 );
+
+    // If built with MySQL support, the PostgreSQL config widget is #2
+    // Without MySQL it's #1
+#ifdef USE_MYSQL
+    else if( item == 1 )
+        configStack->raiseWidget( 1 );
+    else if( item == 2 )
+        configStack->raiseWidget( 2 );
+#elif defined(USE_POSTGRESQL)
+    else if( item == 1 )
+        configStack->raiseWidget( 2 );
+#endif
+}

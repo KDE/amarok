@@ -436,6 +436,12 @@
         <receiver>configStack</receiver>
         <slot>raiseWidget(int)</slot>
     </connection>
+    <connection>
+        <sender>databaseEngine</sender>
+        <signal>activated(int)</signal>
+        <receiver>DbSetup</receiver>
+        <slot>databaseEngine_activated(int)</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">amarokconfig.h</include>
@@ -443,6 +449,9 @@
     <include location="local" impldecl="in implementation">debug.h</include>
     <include location="local" impldecl="in implementation">dbsetup.ui.h</include>
 </includes>
+<slots>
+    <slot>databaseEngine_activated( int )</slot>
+</slots>
 <functions>
     <function access="private">init()</function>
 </functions>
