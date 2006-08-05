@@ -69,12 +69,7 @@
 #include <ctime>                 //query()
 #include <unistd.h>              //usleep()
 
-#include <taglib/mpegfile.h>
-#include <taglib/mpegfile.h>
-#include <taglib/flacfile.h>
-#include <taglib/id3v2tag.h>
-#include <taglib/attachedpictureframe.h>
-#include <taglib/tbytevector.h>
+#include <taglib/audioproperties.h>
 
 #include "sqlite/sqlite3.h"
 
