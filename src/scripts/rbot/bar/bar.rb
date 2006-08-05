@@ -65,9 +65,19 @@ class BAREXTPlugin < Plugin
   end
 
   def handle_add( m, params )
+
+    if m.sourcenick.to_s != "apachelogger"
+      m.reply( "sorry, not yet available for public use" )
+      return
+    end
+
     name         = params[:name].downcase
     amount       = params[:amount]
     beats        = params[:beats]
+    if amount.to_s.scan(/^([0-9]+)/).length == 0
+      m.reply( "You have to define amount and beats - note that items which names consits of more than 2 words don't work yet")
+      return
+    end
     version      = "1"
 
     beats = beats.to_f / amount.to_f
@@ -80,7 +90,7 @@ class BAREXTPlugin < Plugin
   end
 
   def handle_del( m, params )
-    name = params[:name].downcase
+    name = params[:name].downcase.sub(/[ ]/, '_')
     unless @stock.has_key?( name )
       m.reply( "Not in registry." ); return
     end
@@ -268,13 +278,15 @@ plugin = BAREXTPlugin.new
 plugin.register("order2")
 
 
-plugin.map 'order2 *wish',                       :action => 'process'
+plugin.map 'order *wish',                       :action => 'process'
 # plugin.map 'order :wish for *nick',              :action => 'process'
-plugin.map 'order-adm add :name :amount :beats', :action => 'handle_add',    :auth => 'brain'
+plugin.map 'order-adm add :name :amount :beats', :action => 'handle_add',    :auth => '80'
 # TODO: point out how to make it work with 2 or more word names
 plugin.map 'order-adm del :name',                :action => 'handle_del',    :auth => 'brain'
 plugin.map 'order-adm list',                     :action => 'handle_list'
 plugin.map 'order-adm show :name',               :action => 'handle_show'
 plugin.map 'reorder :name',                      :action => 'handle_reorder'
 plugin.map 'reorder reset :name',                :action => 'handle_reorder_reset'
+
+
 
