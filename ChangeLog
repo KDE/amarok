@@ -34,6 +34,9 @@ VERSION 1.4.2:
       to iTunes, Firefly Media Server etc. (BR 100513)
 
   CHANGES:
+    * Generic mediadevice plugin is improved. Users can configure supported
+      filetypes and get more control over the location of songs and podcasts on disk
+      (Patch by eute).
     * Move composer tag to its own database table.
     * Re-enable adding videos to iPods with recent libgpod-cvs. (BR 130117)
     * Include Skip, Love and Ban in playlist right-click menu for last.fm
@@ -49,8 +52,6 @@ VERSION 1.4.2:
     * Suspend collection rescanning while organizing files. (BR 129885)
     * Always use metadata from original file for transcoded files transfered
       to media devices. (BR 131171)
-    * Better handling of podcasts that need to be transcoded before copying to
-      media device.
     * Enhancements to ATF/statistics to allow for better tracking of stats as
       files are moved.
     * Tag Editing Dialog is now ATF-enabled.
