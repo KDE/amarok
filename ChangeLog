@@ -71,6 +71,7 @@ VERSION 1.4.2:
       since the last time it was enabled.
 
   BUGFIXES:
+    * Retain column visibility for flat collection view. (BR 126685)
     * Honour proxy exceptions for MusicBrainz lookups. Patch by N. Cat
       <trisk-bug@quasarnet.org>. (BR 131377)
     * Correctly pass links containing parentheses to external browsers. Patch

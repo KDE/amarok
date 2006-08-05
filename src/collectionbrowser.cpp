@@ -434,14 +434,6 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         m_cat2 = config->readNumEntry( "Category2", IdAlbum );
         m_cat3 = config->readNumEntry( "Category3", IdNone );
 
-enum CatMenuId { IdAlbum = QueryBuilder::tabAlbum,
-    IdArtist = QueryBuilder::tabArtist,
-    IdComposer = QueryBuilder::tabComposer,
-    IdGenre = QueryBuilder::tabGenre,
-    IdYear = QueryBuilder::tabYear ,
-    IdScan = 32, IdNone = 64,
-    IdArtistAlbum = 128, IdGenreArtist = 256, IdGenreArtistAlbum = 512, IdVisYearAlbum = 1024, IdArtistVisYearAlbum = 2048 };
-
 #define saneCat(x) (x==IdAlbum||x==IdArtist||x==IdComposer||x==IdGenre||x==IdYear \
         ||x==IdNone \
         ||x==IdArtistAlbum||x==IdGenreArtist||x==IdGenreArtistAlbum||x==IdVisYearAlbum||x==IdArtistVisYearAlbum)
@@ -461,6 +453,14 @@ enum CatMenuId { IdAlbum = QueryBuilder::tabAlbum,
         m_viewMode = config->readNumEntry( "ViewMode", modeTreeView );
         m_showDivider = config->readBoolEntry( "ShowDivider", true);
         updateTrackDepth();
+
+        m_flatColumnWidths.clear();
+        QStringList flatWidths = config->readListEntry( "FlatColumnWidths" );
+        for( QStringList::iterator it = flatWidths.begin();
+                it != flatWidths.end();
+                it++ )
+            m_flatColumnWidths.push_back( (*it).toInt() );
+
     //</READ CONFIG>
      KActionCollection* ac = new KActionCollection( this );
      KStdAction::selectAll( this, SLOT( selectAll() ), ac, "collectionview_select_all" );
@@ -503,6 +503,13 @@ CollectionView::~CollectionView() {
     config->writeEntry( "Category3", m_cat3 );
     config->writeEntry( "ViewMode", m_viewMode );
     config->writeEntry( "ShowDivider", m_showDivider );
+
+    QStringList flatWidths;
+    for( QValueList<int>::iterator it = m_flatColumnWidths.begin();
+            it != m_flatColumnWidths.end();
+            it++ )
+            flatWidths.push_back( QString::number( (*it) ) );
+    config->writeEntry( "FlatColumnWidths", flatWidths );
 }
 
 void
@@ -1947,6 +1954,13 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 void
 CollectionView::setViewMode( int mode, bool rerender /*=true*/ )
 {
+    if( m_viewMode == modeFlatView )
+    {
+        m_flatColumnWidths.clear();
+        for ( int c = 0; c < columns(); ++c )
+            m_flatColumnWidths.push_back( columnWidth( c ) );
+    }
+
     m_viewMode = mode;
     clear();
     updateColumnHeader();
@@ -2273,61 +2287,73 @@ CollectionView::updateColumnHeader()
     {
         setResizeMode( QListView::NoColumn );
 
-        addColumn( captionForTag( Title ) );
+        if( m_flatColumnWidths.size() == 0 )
+        {
+            addColumn( captionForTag( Title ) );
 #define includesArtist(cat) (((cat)&IdArtist) \
         ||((cat)&IdArtistAlbum) \
         ||((cat)&IdGenreArtist) \
         ||((cat)&IdGenreArtistAlbum) \
         ||((cat)&IdArtistVisYearAlbum))
-        if( includesArtist(m_cat1)||includesArtist(m_cat2)||includesArtist(m_cat3) )
-            addColumn( captionForTag( Artist ) );
-        else
-            addColumn( captionForTag( Artist ), 0 );
+            if( includesArtist(m_cat1)||includesArtist(m_cat2)||includesArtist(m_cat3) )
+                addColumn( captionForTag( Artist ) );
+            else
+                addColumn( captionForTag( Artist ), 0 );
 #undef includesArtist
-        if( m_cat1&IdComposer || m_cat2&IdComposer || m_cat3&IdComposer )
-            addColumn( captionForTag( Composer ) );
-        else
-            addColumn( captionForTag( Composer ), 0 );
+            if( m_cat1&IdComposer || m_cat2&IdComposer || m_cat3&IdComposer )
+                addColumn( captionForTag( Composer ) );
+            else
+                addColumn( captionForTag( Composer ), 0 );
 #define includesAlbum(cat) (((cat)&IdAlbum) \
         ||((cat)&IdArtistAlbum) \
         ||((cat)&IdGenreArtistAlbum) \
         ||((cat)&IdVisYearAlbum) \
         ||((cat)&IdArtistVisYearAlbum))
-        if( includesAlbum(m_cat1)||includesAlbum(m_cat2)||includesAlbum(m_cat3) )
-            addColumn( captionForTag( Album ) );
-        else
-            addColumn( captionForTag( Album ), 0 );
+            if( includesAlbum(m_cat1)||includesAlbum(m_cat2)||includesAlbum(m_cat3) )
+                addColumn( captionForTag( Album ) );
+            else
+                addColumn( captionForTag( Album ), 0 );
 #undef includesAlbum
 #define includesGenre(cat) (((cat)&IdGenre) \
         ||((cat)&IdGenreArtist) \
         ||((cat)&IdGenreArtistAlbum))
-        if( includesGenre(m_cat1)||includesGenre(m_cat2)||includesGenre(m_cat3) )
-            addColumn( captionForTag( Genre ) );
-        else
-            addColumn( captionForTag( Genre ), 0 );
+            if( includesGenre(m_cat1)||includesGenre(m_cat2)||includesGenre(m_cat3) )
+                addColumn( captionForTag( Genre ) );
+            else
+                addColumn( captionForTag( Genre ), 0 );
 #undef includesGenre
-        addColumn( captionForTag( Length ),0  );
-        addColumn( captionForTag( DiscNumber ), 0 );
-        addColumn( captionForTag( Track ), 0 );
+            addColumn( captionForTag( Length ),0  );
+            addColumn( captionForTag( DiscNumber ), 0 );
+            addColumn( captionForTag( Track ), 0 );
 #define includesYear(cat) (((cat)&IdYear) \
         ||((cat)&IdVisYearAlbum) \
         ||((cat)&IdArtistVisYearAlbum))
-        if( includesYear(m_cat1)||includesYear(m_cat2)||includesYear(m_cat3) )
-            addColumn( captionForTag( Year ) );
-        else
-            addColumn( captionForTag( Year ), 0 );
+            if( includesYear(m_cat1)||includesYear(m_cat2)||includesYear(m_cat3) )
+                addColumn( captionForTag( Year ) );
+            else
+                addColumn( captionForTag( Year ), 0 );
 #undef includesYear
-        addColumn( captionForTag( Comment ), 0 );
-        addColumn( captionForTag( Playcount ), 0 );
-        addColumn( captionForTag( Score ), 0 );
-        addColumn( captionForTag( Rating ), 0 );
-        addColumn( captionForTag( Filename ), 0 );
-        addColumn( captionForTag( Firstplay ), 0 );
-        addColumn( captionForTag( Lastplay ), 0 );
-        addColumn( captionForTag( Modified ), 0 );
-        addColumn( captionForTag( Bitrate ), 0 );
-        addColumn( captionForTag( Filesize ), 0 );
-        addColumn( captionForTag( BPM ), 0 );
+            addColumn( captionForTag( Comment ), 0 );
+            addColumn( captionForTag( Playcount ), 0 );
+            addColumn( captionForTag( Score ), 0 );
+            addColumn( captionForTag( Rating ), 0 );
+            addColumn( captionForTag( Filename ), 0 );
+            addColumn( captionForTag( Firstplay ), 0 );
+            addColumn( captionForTag( Lastplay ), 0 );
+            addColumn( captionForTag( Modified ), 0 );
+            addColumn( captionForTag( Bitrate ), 0 );
+            addColumn( captionForTag( Filesize ), 0 );
+            addColumn( captionForTag( BPM ), 0 );
+        }
+        else
+        {
+            for( uint tag = 0; tag < NUM_TAGS; ++tag ) {
+                if( tag < m_flatColumnWidths.size() )
+                    addColumn( captionForTag( static_cast<Tag>( tag ) ), m_flatColumnWidths[tag] );
+                else
+                    addColumn( captionForTag( static_cast<Tag>( tag ) ), 0 );
+            }
+        }
 
         setColumnAlignment( Track, Qt::AlignCenter );
         setColumnAlignment( DiscNumber, Qt::AlignCenter );
@@ -3738,37 +3764,47 @@ CollectionView::viewportResizeEvent( QResizeEvent* e)
 	header()->blockSignals( true );
 	
 	const double width = e->size().width();
-	
 	int visibleColumns = 0;
 	for ( int i = 0; i < columns(); ++i )
-	  if ( columnWidth( i ) != 0 )
-            visibleColumns ++;
+            if ( columnWidth( i ) != 0 )
+                visibleColumns ++;
+        int correct = e->size().width() - (e->size().width() / visibleColumns) * visibleColumns;
 	
-	if ( visibleColumns != 0 ) {
-	  for ( int c = 0; c < columns(); ++c ) {
-            if ( columnWidth( c ) != 0 )
-	      setColumnWidth( c, int( width/visibleColumns) );
-	  }
-	}
+        if( m_viewMode == modeFlatView )
+            m_flatColumnWidths.clear();
+
+        if ( visibleColumns != 0 ) {
+            for ( int c = 0; c < columns(); ++c ) {
+                int w = columnWidth( c ) ? static_cast<int>( width/visibleColumns ) : 0;
+                if ( w > 0 )
+                {
+                    w += correct;
+                    correct = 0;
+                    setColumnWidth( c, w );
+                    if( m_viewMode == modeFlatView )
+                        m_flatColumnWidths.push_back( w );
+                }
+            }
+        }
 
 	header()->blockSignals( false );
     }
 
     // iPod-mode header adjustment code
     else
-      {
-	// Don't use header()->adjustHeaderSize(), since that doesn't
-	// do a very good job.  Instead we treat the browse-forward-button
-	// column as rigid, and stretch the text column to exactly fit
-	// the width.
+    {
+        // Don't use header()->adjustHeaderSize(), since that doesn't
+        // do a very good job.  Instead we treat the browse-forward-button
+        // column as rigid, and stretch the text column to exactly fit
+        // the width.
 
-	int width     = visibleWidth();
-	int col1width = 0;
-	// No column 1 for tracks
-	if( m_currentDepth != trackDepth() )
-	  col1width = columnWidth(1);
-	setColumnWidth( 0, width - col1width );
-      }
+        int width     = visibleWidth();
+        int col1width = 0;
+        // No column 1 for tracks
+        if( m_currentDepth != trackDepth() )
+            col1width = columnWidth(1);
+        setColumnWidth( 0, width - col1width );
+    }
 
 
     // Needed for correct redraw of bubble help
@@ -3815,6 +3851,11 @@ CollectionView::eventFilter( QObject* o, QEvent* e )
             QResizeEvent rev ( size(), QSize() );
             viewportResizeEvent( &rev );
         }
+
+        m_flatColumnWidths.clear();
+        for ( int c = 0; c < columns(); ++c )
+            m_flatColumnWidths.push_back( columnWidth( c ) );
+
         return true;
     }
 

@@ -8,6 +8,7 @@
 #define AMAROK_COLLECTIONBROWSER_H
 
 #include <qlabel.h>
+#include <qvaluelist.h>      //stack allocated
 #include <qvbox.h>           //baseclass
 
 #include <klistview.h>       //baseclass
@@ -236,9 +237,9 @@ class CollectionView : public KListView, public DropProxyTarget
         void showTrackInfo();
 
     private:
-        enum Tag { Title, Artist, Composer, Album, Genre, Length, DiscNumber, Track, Year,
+        enum Tag { Title = 0, Artist, Composer, Album, Genre, Length, DiscNumber, Track, Year,
             Comment, Playcount, Score, Rating, Filename, Firstplay, Lastplay, Modified,
-            Bitrate, Filesize, BPM };
+            Bitrate, Filesize, BPM, NUM_TAGS };
 
         void setViewMode( int mode, bool rerender = true );
         void startDrag();
@@ -316,6 +317,7 @@ class CollectionView : public KListView, public DropProxyTarget
         bool                    m_organizeCopyMode;
 
         bool m_showDivider;
+        QValueList<int>         m_flatColumnWidths;
 };
 
 // why is signal detailsClicked() missing from KDialogBase?
