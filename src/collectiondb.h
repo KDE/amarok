@@ -247,7 +247,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         //exactTextColumnType should be used for strings that must be stored exactly, such
         //as URLs (necessary for holding control chars etc. if present in URL), except for
         //trailing spaces. Comparisions should always be done case-sensitively.
-        QString exactTextColumnType( int length=255 ) const { if ( getDbConnectionType() == DbConnection::mysql ) return QString( "VARBINARY(%1)" ).arg( length ); else return textColumnType( length ); }
+        QString exactTextColumnType( int length=1024 ) const { if ( getDbConnectionType() == DbConnection::mysql ) return QString( "VARBINARY(%1)" ).arg( length ); else return textColumnType( length ); }
         // We might consider using LONGTEXT type, as some lyrics could be VERY long..???
         QString longTextColumnType() const { if ( getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return "TEXT"; }
         QString randomFunc() const { if ( getDbConnectionType() == DbConnection::postgresql ) return "random()"; else return "RAND()"; }
@@ -485,7 +485,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
     private:
         //bump DATABASE_VERSION whenever changes to the table structure are made.
         // This erases tags, album, artist, composer, genre, year, images, embed, directory and related_artists tables.
-        static const int DATABASE_VERSION = 32;
+        static const int DATABASE_VERSION = 33;
         // Persistent Tables hold data that is somehow valuable to the user, and can't be erased when rescaning.
         // When bumping this, write code to convert the data!
         static const int DATABASE_PERSISTENT_TABLES_VERSION = 14;

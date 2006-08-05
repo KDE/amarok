@@ -561,7 +561,7 @@ CollectionDB::createTables( const bool temporary )
                     "genre INTEGER,"
                     "title " + textColumnType() + ","
                     "year INTEGER,"
-                    "comment " + textColumnType() + ","
+                    "comment " + longTextColumnType() + ","
                     "track NUMERIC(4),"
                     "discnumber INTEGER,"
                     "bitrate INTEGER,"
