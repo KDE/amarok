@@ -71,6 +71,7 @@ VERSION 1.4.2:
       since the last time it was enabled.
 
   BUGFIXES:
+    * Make 'Clear' individually translatable for playlists. (BR 131521)
     * Retain column visibility for flat collection view. (BR 126685)
     * Honour proxy exceptions for MusicBrainz lookups. Patch by N. Cat
       <trisk-bug@quasarnet.org>. (BR 131377)

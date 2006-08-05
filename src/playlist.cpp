@@ -342,10 +342,9 @@ Playlist::Playlist( QWidget *parent )
     KAction *copy = KStdAction::copy( this, SLOT( copyToClipboard() ), ac, "playlist_copy" );
     KStdAction::selectAll( this, SLOT( selectAll() ), ac, "playlist_select_all" );
 
-    m_clearButton = KStdAction::clear( this, SLOT( clear() ), ac, "playlist_clear" );
+    m_clearButton = new KAction( i18n( "clear playlist", "&Clear" ), amaroK::icon( "playlist_clear" ), 0, this, SLOT( clear() ), ac, "playlist_clear" );
     m_undoButton  = KStdAction::undo( this, SLOT( undo() ), ac, "playlist_undo" );
     m_redoButton  = KStdAction::redo( this, SLOT( redo() ), ac, "playlist_redo" );
-    m_clearButton->setIcon( amaroK::icon( "playlist_clear" ) );
     m_undoButton ->setIcon( amaroK::icon( "undo" ) );
     m_redoButton ->setIcon( amaroK::icon( "redo" ) );
 
