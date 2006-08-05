@@ -2,6 +2,7 @@
 Type=Service
 Name=NFS Device
 Name[bg]=NFS устройство
+Name[ca]=Dispositiu NFS
 Name[de]=NFS-Gerät
 Name[fr]=Périphérique NFS
 Name[ga]=Gléas NFS

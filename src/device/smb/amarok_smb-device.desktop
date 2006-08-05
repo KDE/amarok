@@ -2,6 +2,7 @@
 Type=Service
 Name=SMB Device
 Name[bg]=SMB устройство
+Name[ca]=Dispositiu SMB
 Name[de]=SMB-Gerät
 Name[fr]=Périphérique SMB
 Name[ga]=Gléas SMB
