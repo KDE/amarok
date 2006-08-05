@@ -1188,7 +1188,7 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
 {
     // This function create the html code used to display a list of albums. Each album
     // is a 'toggleable' block.
-    // Parameter stID is used to diff�entiate same albums in different album list. So if this function
+    // Parameter stID is used to differentiate same albums in different album list. So if this function
     // is called multiple time in the same HTML code, stID must be different.
     for ( uint i = 0; i < reqResult.count(); i += 4 )
     {
