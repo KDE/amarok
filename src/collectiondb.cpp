@@ -4373,7 +4373,7 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
     if ( values.isEmpty() )
         return;
 
-    if ( values.count() > 16 )
+    if ( values.count() > 17 )
     {
         error() << "Query returned more than 1 song. Aborting updating metadata" << endl;
         return;
