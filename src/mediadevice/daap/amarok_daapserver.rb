@@ -9,14 +9,6 @@ require 'Korundum'
 require 'codes.rb'
 require 'pp'
 
-class Fixnum
-    def to_daapNet
-        a = Array.new
-        a[0] = self
-        a.pack('N')
-    end
-end
-
 class Element
     #attr_accessor :length, :name, :value
     public 
@@ -25,8 +17,13 @@ class Element
         end
         
         def to_s
-            content = valueToString
-            @name + content.length.to_daapNet + content
+            if @value.nil? then
+                puts @name + ' is null'
+                @name + long_convert( 0 )
+            else
+                content = valueToString()
+                @name + long_convert(content.length) + content
+            end
         end
         
         def collection?
@@ -38,20 +35,58 @@ class Element
         end
     private
         def valueToString
-            case @value
-                when Fixnum then
-                    @value.to_daapNet
-                when String then
+            case CODE_TYPE[@name]
+                when :char then
+                    char_convert( @value )
+                when :short then
+                    short_convert( @value )
+                when :long then 
+                    long_convert( @value )
+                when :longlong then
+                    longlong_convert( @value )
+                when :string then
                     @value
-                when Array then
+                when :date then
+                    long_convert( @value )
+                when :version then
+                     short_convert( @value )
+                when :container then
                     values = String.new
                     @value.each do |i|
                         values += i.to_s
                     end
                     values
                 else
-                    puts "type error! #{@value} #{@value.class}"
+                    puts "type error! #{@value} #{CODE_TYPE[@name]}"
             end
+        end
+        
+        def char_convert( v ) 
+            packing( v, 'c' )
+        end
+        
+        def short_convert( v )
+            packing( v, 'n' )
+        end
+        
+        def long_convert( v )
+            packing( v, 'N' )
+        end
+        
+        def longlong_convert( v )
+            v = v.to_i  if( v.is_a?(String) )
+            a = Array.new
+            a[0] = v >> 32
+            b = Array.new
+            b[0] = v & 0xffffffff
+            a.pack('N') + b.pack('N')
+        end
+ 
+        def packing( v, packer )
+            v = v.to_i  if( v.is_a?(String) )
+            a = Array.new
+            a[0] = v
+            a.pack(packer)
         end
 end
 
@@ -108,7 +143,7 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
         columns =     [ "album, ", "artist, ", "genre, ", "track, ", "title, ", "year, ", "length, ", "samplerate, ", "url, ", "deviceid" ]
         @column_keys = [ :songalbum, :songartist, :songgenre,  :songtracknumber, :itemname, :songyear, :songtime, :songsamplerate, :url,  :deviceid ]
         #TODO composer :songcomposer
-        dbitems = collection.query( "SELECT #{columns.to_s} FROM tags LIMIT 10" )
+        dbitems = collection.query( "SELECT #{columns.to_s} FROM tags" )
 
         @items = Array.new
         @music = Array.new
@@ -204,7 +239,7 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
                     end
                 }
                   adbs = Element.new( 'adbs' )
-                  adbs << Element.new( 'muty', 0 )
+                  adbs << Element.new( 'muty', nil )
                   adbs << Element.new( 'mstt', WEBrick::HTTPStatus::OK.code )
                   adbs << Element.new( 'mrco', @items.size )
                   adbs << Element.new( 'mtco', @items.size )
@@ -213,7 +248,7 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
                   @items.each { |item|
                     mlit = Element.new( 'mlit' )
                     toDisplay.each{  |meta|                        
-                        mlit << Element.new( meta[:code], item[ meta[:index] ] || 0 )
+                        mlit << Element.new( meta[:code], item[ meta[:index] ] )
                     }
                     mlcl << mlit
                   }

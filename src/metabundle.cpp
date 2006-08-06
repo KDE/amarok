@@ -23,7 +23,6 @@
 #include <kfilemetainfo.h>
 #include <kio/global.h>
 #include <kmdcodec.h>
-#include <kmimetype.h>
 #include <qdeepcopy.h>
 #include <qdom.h>
 #include <qfile.h> //decodePath()

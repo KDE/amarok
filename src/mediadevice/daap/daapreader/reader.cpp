@@ -305,7 +305,7 @@ Reader::getTagAndLength( QDataStream &raw, char tag[5] )
    tag[4] = 0;
    raw.readRawBytes(tag, 4);
    Q_UINT32 tagLength = 0;
-   raw >> tagLength;
+   raw >> tagLength; debug() << tag << " tagLength has value " << tagLength << endl;
    return tagLength;
 }
 
@@ -324,42 +324,48 @@ Reader::parse( QDataStream &raw, uint containerLength, bool first )
     //    debug() << "at index " << index << " of a total container size " << containerLength << endl;
         char tag[5];
         Q_UINT32 tagLength = getTagAndLength( raw, tag );
+        if( tagLength == 0 )
+        {
+            debug() << "tag " << tag << " has 0 length." << endl;
+            index += 8;
+            continue;
+        }
         switch( s_codes[tag].type )
         {
             case CHAR: {
                 Q_INT8 charData;
-                raw >> charData;
+                raw >> charData; debug() << tag << " charData has value " << charData << endl;
                 addElement( childMap, tag, QVariant( static_cast<int>(charData) ) );
                 }
                 break;
             case SHORT: {
                 Q_INT16 shortData;
-                raw >> shortData;
+                raw >> shortData; debug() << tag << " shortData has value " << shortData << endl;
                 addElement( childMap, tag, QVariant( static_cast<int>(shortData) ) );
                 }
                 break;
             case LONG: {
                 Q_INT32 longData;
-                raw >> longData;
+                raw >> longData; debug() << tag << " longData has value " << longData << endl;
                 addElement( childMap, tag, QVariant( longData ) );
                 }
                 break;
             case LONGLONG: {
                 Q_INT64 longlongData;
-                raw >> longlongData;
+                raw >> longlongData; debug() << tag << " longlongData has value " << longlongData << endl;
                 addElement( childMap, tag, QVariant( longlongData ) );
                 }
                 break;
             case STRING: {
                 char stringData[tagLength];
-                raw.readRawBytes( stringData, tagLength );
+                raw.readRawBytes( stringData, tagLength ); debug() << tag << " stringData has value " << QString::fromUtf8( stringData, tagLength ) << endl;
                 addElement( childMap, tag, QVariant( QString::fromUtf8( stringData, tagLength ) ) );
                 }
                 break;
             case DATE: {
                 Q_INT64 dateData;
                 QDateTime date;
-                raw >> dateData;
+                raw >> dateData; debug() << tag << " dateData has value " << dateData << endl;
                 date.setTime_t(dateData);
                 addElement( childMap, tag, QVariant( date ) );
                 }
@@ -368,18 +374,19 @@ Reader::parse( QDataStream &raw, uint containerLength, bool first )
                 Q_INT16 major;
                 Q_INT8 minor;
                 Q_INT8 patchLevel;
-                raw >> major >> minor >> patchLevel;
+                raw >> major >> minor >> patchLevel; debug() << tag << " has value " << major << '.' << minor << '.' << patchLevel << endl;
                 QString version("%1.%2.%3");
                 version.arg(major, minor, patchLevel);
                 addElement( childMap, tag, QVariant(version) );
                 }
                 break;
             case CONTAINER: {
+                debug() << tag << " is an element." << endl;
                 addElement( childMap, tag, QVariant( parse( raw, tagLength ) ) );
                 }
                 break;
             default:
-                warning() << s_codes[tag].type << " doesn't work" << endl;
+                warning() << tag << " doesn't work" << endl;
             break;
         }
         index += tagLength + 8;
