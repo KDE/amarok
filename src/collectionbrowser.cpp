@@ -1818,7 +1818,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         enum Actions { APPEND, QUEUE, MAKE, SAVE, MEDIA_DEVICE, BURN_ARTIST, BURN_COMPOSER, BURN_ALBUM, BURN_CD, COVER, INFO,
                        COMPILATION_SET, COMPILATION_UNSET, ORGANIZE, DELETE, TRASH, FILE_MENU  };
         #else
-        enum Actions { APPEND, QUEUE, MAKE, SAVE, MEDIA_DEVICE, BURN_ARTIST, BURN_ALBUM, BURN_CD, INFO,
+        enum Actions { APPEND, QUEUE, MAKE, SAVE, MEDIA_DEVICE, BURN_ARTIST, BURN_COMPOSER, BURN_ALBUM, BURN_CD, INFO,
                        COMPILATION_SET, COMPILATION_UNSET, ORGANIZE, DELETE, TRASH, FILE_MENU  };
         #endif
         KURL::List selection = listSelected();
