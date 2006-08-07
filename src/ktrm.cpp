@@ -18,18 +18,21 @@
  *   Foundation, Inc., 51 Franklin Steet, Fifth Floor, Boston, MA  02111-1307  *
  *   USA                                                                   *
  ***************************************************************************/
-
 #include "config.h"
 #include "debug.h"
+#include "statusbar.h"
 #define DEBUG_PREFIX "KTRM"
 
 #include "ktrm.h"
 
 #include <kapplication.h>
+#include <kio/job.h>
+#include <kio/jobclasses.h>
 #include <kprotocolmanager.h>
 #include <kurl.h>
 #include <kresolver.h>
 
+#include <qdom.h>
 #include <qmutex.h>
 #include <qevent.h>
 #include <qobject.h>
@@ -38,7 +41,11 @@
 
 #if HAVE_TUNEPIMP
 
+#if HAVE_TUNEPIMP >= 5
+#include <tunepimp-0.5/tp_c.h>
+#else
 #include <tunepimp/tp_c.h>
+#endif
 
 class KTRMLookup;
 
@@ -70,7 +77,6 @@ public:
     int startLookup(KTRMLookup *lookup)
     {
         int id;
-
         if(!m_fileMap.contains(lookup->file())) {
 #if HAVE_TUNEPIMP >= 4
             id = tp_AddFile(m_pimp, QFile::encodeName(lookup->file()), 0);
@@ -91,7 +97,10 @@ public:
     {
         tp_ReleaseTrack(m_pimp, tp_GetTrack(m_pimp, lookup->fileId()));
         tp_Remove(m_pimp, lookup->fileId());
+        m_lookupMapMutex.lock();
         m_lookupMap.remove(lookup->fileId());
+        m_fileMap.remove( lookup->file() );
+        m_lookupMapMutex.unlock();
     }
 
     bool lookupMapContains(int fileId) const
@@ -127,12 +136,10 @@ protected:
     {
         m_pimp = tp_New("KTRM", "0.1");
         //tp_SetDebug(m_pimp, true);
-#if HAVE_TUNEPIMP >= 5
-        tp_SetPUIDCollisionThreshold(m_pimp, 100);
-#else
+#if HAVE_TUNEPIMP < 5
         tp_SetTRMCollisionThreshold(m_pimp, 100);
-#endif
         tp_SetAutoFileLookup(m_pimp,true);
+#endif
         tp_SetAutoSaveThreshold(m_pimp, -1);
         tp_SetMoveFiles(m_pimp, false);
         tp_SetRenameFiles(m_pimp, false);
@@ -143,6 +150,7 @@ protected:
 #endif
         tp_SetNotifyCallback(m_pimp, TRMNotifyCallback, 0);
 
+#if HAVE_TUNEPIMP < 5
         KProtocolManager::reparseConfiguration();
 
         if(KProtocolManager::useProxy()) {
@@ -179,6 +187,9 @@ protected:
                 tp_SetProxy(m_pimp, proxy.host().latin1(), short(proxy.port()));
             }
         }
+#else
+        tp_SetMusicDNSClientId(m_pimp, "0c6019606b1d8a54d0985e448f3603ca");
+#endif
     }
 
     ~KTRMRequestHandler()
@@ -205,6 +216,7 @@ public:
         Recognized,
         Unrecognized,
         Collision,
+        PuidGenerated,
         Error
     };
 
@@ -288,6 +300,9 @@ protected:
         case KTRMEvent::Collision:
             lookup->collision();
             break;
+        case KTRMEvent::PuidGenerated:
+            lookup->puidGenerated();
+            break;
         case KTRMEvent::Error:
             lookup->error();
             break;
@@ -306,7 +321,7 @@ static void TRMNotifyCallback(tunepimp_t pimp, void */*data*/, TPCallbackEnum ty
 {
     if(type != tpFileChanged)
         return;
-
+    debug() << "Status is: " << status << endl;
 #if HAVE_TUNEPIMP < 4
     track_t track = tp_GetTrack(pimp, fileId);
     TPFileStatus status = tr_GetStatus(track);
@@ -320,15 +335,19 @@ static void TRMNotifyCallback(tunepimp_t pimp, void */*data*/, TPCallbackEnum ty
         KTRMEventHandler::send(fileId, KTRMEvent::Unrecognized);
         break;
 #if HAVE_TUNEPIMP >= 5
+    case ePUIDLookup:
     case ePUIDCollision:
+    case eFileLookup:
+        KTRMEventHandler::send(fileId, KTRMEvent::PuidGenerated);
+        break;
 #else
     case eTRMCollision:
-#endif
 #if HAVE_TUNEPIMP >= 4
     case eUserSelection:
 #endif
         KTRMEventHandler::send(fileId, KTRMEvent::Collision);
         break;
+#endif
     case eError:
         KTRMEventHandler::send(fileId, KTRMEvent::Error);
         break;
@@ -615,7 +634,7 @@ void KTRMLookup::unrecognized()
 
 void KTRMLookup::collision()
 {
-#if HAVE_TUNEPIMP
+#if HAVE_TUNEPIMP < 5
     debug() << k_funcinfo << d->file << endl;
 
     track_t track = tp_GetTrack(KTRMRequestHandler::instance()->tunePimp(), d->fileId);
@@ -689,9 +708,98 @@ void KTRMLookup::collision()
     }
 
     tr_Unlock(track);
+    tp_ReleaseTrack(KTRMRequestHandler::instance()->tunePimp(), track);
     qHeapSort(d->results);
 
     finished();
+#endif
+}
+
+void KTRMLookup::puidGenerated()
+{
+#if HAVE_TUNEPIMP >= 5
+    DEBUG_BLOCK
+    debug() << k_funcinfo << d->file << endl;
+    char puid[255] = {0};
+    track_t track = tp_GetTrack(KTRMRequestHandler::instance()->tunePimp(), d->fileId);
+    tr_Lock(track);
+
+    tr_GetPUID(track, puid, 255);
+    debug() << puid << endl;
+    tr_Unlock(track);
+    tp_ReleaseTrack(KTRMRequestHandler::instance()->tunePimp(), track);
+    d->results.clear();
+
+    KIO::Job *job = KIO::storedGet( QString( "http://musicbrainz.org/ws/1/track/?type=xml&puid=%1" ).arg( puid ) , false, false );
+
+    amaroK::StatusBar::instance()->newProgressOperation( job )
+            .setDescription( i18n( "MusicBrainz Lookup" ) );
+
+    connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( lookupResult( KIO::Job* ) ) );
+#endif
+}
+
+void KTRMLookup::lookupResult( KIO::Job* job )
+{
+#if HAVE_TUNEPIMP >= 5
+    DEBUG_BLOCK
+    if ( !job->error() == 0 ) {
+        warning() << "[MusicBrainzLookup] KIO error! errno: " << job->error() << endl;
+        amaroK::StatusBar::instance()->longMessage( "Couldn't connect to MusicBrainz server." );
+        finished();
+        return;
+    }
+    KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
+    QString xml = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
+
+    QDomDocument doc;
+    QDomElement e;
+
+    if( !doc.setContent( xml ) ) {
+        warning() << "[MusicBrainzLookup] Invalid XML" << endl;
+        amaroK::StatusBar::instance()->longMessage( "MusicBrainz returned invalid content." );
+        finished();
+        return;
+    }
+
+    e = doc.namedItem( "metadata" ).toElement().namedItem( "track-list" ).toElement();
+
+    QStringList strList = QStringList::split ( '/', d->file );
+
+    QDomNode n = e.namedItem("track");
+    for( ; !n.isNull();  n = n.nextSibling() ) {
+        QDomElement track = n.toElement();
+        KTRMResult result;
+
+        result.d->title = track.namedItem( "title" ).toElement().text();
+        result.d->artist = track.namedItem( "artist" ).toElement().namedItem( "name" ).toElement().text();
+        QDomNode releaseNode = track.namedItem("release-list").toElement().namedItem("release");
+        for( ; !releaseNode.isNull();  releaseNode = releaseNode.nextSibling() ) {
+            KTRMResult tmpResult( result );
+            QDomElement release = releaseNode.toElement();
+
+            tmpResult.d->album = release.namedItem( "title" ).toElement().text();
+            QDomNode tracklistN = release.namedItem( "track-list" );
+            if ( !tracklistN.isNull() ) {
+                QDomElement tracklist = tracklistN.toElement();
+                if ( !tracklist.attribute( "offset" ).isEmpty() )
+                    tmpResult.d->track = tracklist.attribute( "offset" ).toInt() + 1;
+            }
+            //tmpResult.d->year = ???;
+            tmpResult.d->relevance =
+                4 * stringSimilarity(strList,tmpResult.d->title) +
+                2 * stringSimilarity(strList,tmpResult.d->artist) +
+                1 * stringSimilarity(strList,tmpResult.d->album);
+            if( !d->results.contains( tmpResult ) )
+                d->results.append( tmpResult );
+        }
+     }
+
+     qHeapSort(d->results);
+
+     finished();
+#else
+    Q_UNUSED( job );
 #endif
 }
 
@@ -729,7 +837,7 @@ void KTRMLookup::finished()
     emit sigResult( results(), d->errorString );
 
     if(d->autoDelete)
-        delete this;
+        deleteLater();
 #endif
 }
 

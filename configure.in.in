@@ -647,11 +647,13 @@ AC_ARG_WITH(musicbrainz,
 )
 
 if test "$with_musicbrainz" = "yes"; then
-    KDE_CHECK_HEADER(tunepimp/tp_c.h, [build_musicbrainz="yes"], [build_musicbrainz="no"])
+    AC_CHECK_HEADER(tunepimp-0.5/tp_c.h, [build_musicbrainz="yes"],
+      [AC_CHECK_HEADER(tunepimp/tp_c.h, [build_musicbrainz="yes"],
+        [build_musicbrainz="no"])])
 fi
 
 if test "$build_musicbrainz" = "yes"; then
-    AC_CHECK_LIB(tunepimp, tp_SetPUIDCollisionThreshold,
+    AC_CHECK_LIB(tunepimp, tr_GetPUID,
       AC_DEFINE(HAVE_TUNEPIMP, 5, [have MusicBrainz 0.5.x]),
         AC_CHECK_LIB(tunepimp, tp_SetFileNameEncoding,
         AC_DEFINE(HAVE_TUNEPIMP, 4, [have MusicBrainz 0.4.x]),

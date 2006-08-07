@@ -38,6 +38,8 @@
  * at the beginning of the list).
  */
 
+namespace KIO { class Job; }
+
 class KTRMResult
 {
     friend class KTRMLookup;
@@ -124,6 +126,9 @@ Q_OBJECT
 signals:
     void sigResult( KTRMResultList, QString );
 
+protected slots:
+    virtual void lookupResult( KIO::Job* );
+
 public:
     /**
      * Creates and starts a lookup for \a file.  If \a autoDelete is set to
@@ -145,6 +150,13 @@ public:
      * @internal
      */
     int fileId() const;
+
+    /**
+     * This method is called when the puid was already generated. It will then do
+     * the lookup with MusicBrainz's server. This may be reimplemented to provide
+     * specific behavion for the lookup.
+     */
+    virtual void puidGenerated();
 
     /**
      * This method is called if the track was recognized by the TRM server.
