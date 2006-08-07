@@ -217,6 +217,7 @@ CollectionDB::CollectionDB()
         , m_noCover( locate( "data", "amarok/images/nocover.png" ) )
         , m_scanInProgress( false )
         , m_rescanRequired( false )
+	, m_skipUpgrade( false )
 {
     DEBUG_BLOCK
 
@@ -5001,6 +5002,7 @@ CollectionDB::initialize()
         createPersistentTables();
         createPodcastTables();
         createStatsTable();
+	m_skipUpgrade = true;
         warning() << "Tables should now definitely exist. (Stop ignoring errors)" << endl;
     }
     else {
@@ -5052,7 +5054,7 @@ void
 CollectionDB::checkDatabase()
 {
     DEBUG_BLOCK
-    if ( isValid() )
+    if ( isValid() && !m_skipUpgrade )
     {
         //Inform the user that he should attach as many devices with music as possible
         //Hopefully this won't be necessary soon.

@@ -588,6 +588,8 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
 
         // protect against multiple simultaneous queries/inserts
         QMutex m_mutex;
+
+	bool m_skipUpgrade;
 };
 
 class INotify : public ThreadWeaver::DependentJob
