@@ -49,7 +49,7 @@ static void MD5Transform(u_int32_t buf[4], u_int32_t const in[16], int apple_ver
  * I don't really know why... but otherwise it fails..
  * Any MD5 gurus out there know why???
  */
-#if 0 /*ndef WORDS_BIGENDIAN /* was: HIGHFIRST */
+#if 0 /*ndef WORDS_BIGENDIAN was: HIGHFIRST */
 #define byteReverse(buf, len)     /* Nothing */
 #else
 static void byteReverse(unsigned char *buf, unsigned longs);
