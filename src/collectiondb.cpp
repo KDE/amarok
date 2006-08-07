@@ -3386,7 +3386,6 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
 
     for( KURL::List::ConstIterator it = urls.begin(), end = urls.end(), last = urls.fromLast(); it != end; ++it )
     {
-        debug() << "Processing url: " << (*it).path() << endl;;
         // non file stuff won't exist in the db, but we still need to
         // re-insert it into the list we return, just with no tags assigned
         paths += (*it).protocol() == "file" ? (*it).path() : (*it).url();
@@ -3467,13 +3466,8 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                 {
                     KURL url = KURL::fromPathOrURL( *it );
 
-                    if( MediaBrowser::instance()->getBundle( url, &b ) )
+                    if( !MediaBrowser::instance()->getBundle( url, &b ) )
                     {
-                        debug() << "Bundle recovered from media browser for: " << *it << endl;
-                    }
-                    else
-                    {
-                        debug() << "No bundle recovered for: " << *it << endl;
                         if( url.isLocalFile() )
                         {
                             b = MetaBundle( url );

@@ -217,7 +217,7 @@ UrlLoader::doJob()
 void
 UrlLoader::customEvent( QCustomEvent *e)
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     #define e static_cast<TagsEvent*>(e)
     switch( e->type() ) {
     case 1000:
