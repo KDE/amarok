@@ -59,12 +59,15 @@ TrackPickerDialog::TrackPickerDialog(const QString &name, const KTRMResultList &
 
     m_base = new TrackPickerDialogBase(this);
     setMainWidget(m_base);
+    //setSorting with a column that doesn't exist means manual sorting only
+    m_base->trackList->setSorting( 5 );
+
 #if HAVE_TUNEPIMP >= 5
     //remove year column, there won't be any results anyway
     m_base->trackList->removeColumn( 4 );
 #endif
+
     m_base->fileLabel->setText(name);
-//    m_base->trackList->setSorting(-1);
     KTRMResultList::ConstIterator end( results.end() );
     for(KTRMResultList::ConstIterator it = results.begin(); it != end; ++it)
         new TrackPickerItem(m_base->trackList, *it);
