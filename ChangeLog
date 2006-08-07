@@ -35,7 +35,8 @@ VERSION 1.4.2:
 
   CHANGES:
     * libtunepimp 0.5.0 actually compiles successfully now.
-    * Lift size limit on pathnames and comments in collection db. (BR 130585)
+    * Lift size limit on pathnames and comments in collection databases not
+      managed by MySQL. (BR 130585)
     * Generic mediadevice plugin is improved. Users can configure supported
       filetypes and get more control over the location of songs and podcasts on disk
       (Patch by eute).

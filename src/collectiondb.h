@@ -247,12 +247,12 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         //exactTextColumnType should be used for strings that must be stored exactly, such
         //as URLs (necessary for holding control chars etc. if present in URL), except for
         //trailing spaces. Comparisions should always be done case-sensitively.
-        QString exactTextColumnType( int length=1024 ) const { if ( getDbConnectionType() == DbConnection::mysql ) return QString( "VARBINARY(%1)" ).arg( length ); else return textColumnType( length ); }
+        //As we create indices on these columns, we have to restrict them to
+        //<= 255 chars for mysql < 5.0.3
+        QString exactTextColumnType( int length=1024 ) const { if ( getDbConnectionType() == DbConnection::mysql ) return QString( "VARBINARY(%1)" ).arg( length>255 ? 255 : length ); else return textColumnType( length ); }
         // We might consider using LONGTEXT type, as some lyrics could be VERY long..???
         QString longTextColumnType() const { if ( getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return "TEXT"; }
         QString randomFunc() const { if ( getDbConnectionType() == DbConnection::postgresql ) return "random()"; else return "RAND()"; }
-	QString longIndexType( const QString &type, const QString &column ) const { if ( getDbConnectionType() == DbConnection::mysql ) return QString( ", %1(%2(255))," ).arg( type ).arg( column ); else return QString( " %1," ).arg( type ); }
-	QString indexLength() const { if ( getDbConnectionType() == DbConnection::mysql ) return "(255)"; else return QString::null; }
 
         inline static QString exactCondition( const QString &right );
         static QString likeCondition( const QString &right, bool anyBegin=false, bool anyEnd=false );
@@ -588,8 +588,6 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
 
         // protect against multiple simultaneous queries/inserts
         QMutex m_mutex;
-
-	bool m_skipUpgrade;
 };
 
 class INotify : public ThreadWeaver::DependentJob
