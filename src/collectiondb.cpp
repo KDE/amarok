@@ -715,6 +715,9 @@ CollectionDB::createTables( const bool temporary )
 void
 CollectionDB::createIndices()
 {
+    //This creates the indices for tables created in createTables. It should not refer to
+    //tables which are not created in that function.
+
     query( "CREATE UNIQUE INDEX url_tag ON tags( url, deviceid );" );
     query( "CREATE INDEX album_tag ON tags( album );" );
     query( "CREATE INDEX artist_tag ON tags( artist );" );
@@ -727,8 +730,6 @@ CollectionDB::createIndices()
     query( "CREATE INDEX images_artist ON images( artist );" );
 
     query( "CREATE INDEX images_url ON images( path, deviceid );" );
-
-    query( "CREATE UNIQUE INDEX lyrics_url ON lyrics( url, deviceid );" );
 
     query( "CREATE UNIQUE INDEX embed_url ON embed( url, deviceid );" );
     query( "CREATE INDEX embed_hash ON embed( hash );" );
@@ -989,8 +990,11 @@ CollectionDB::createPersistentTables()
             "url " + exactTextColumnType() + ", "
             "tracknum INTEGER );" ) );
 
+    //FIXME: Do we need/want these two indices?
     query( "CREATE INDEX url_lyrics ON lyrics( url );" );
     query( "CREATE INDEX deviceid_lyrics ON lyrics( deviceid );" );
+
+    query( "CREATE UNIQUE INDEX lyrics_url ON lyrics( url, deviceid );" );
     query( "CREATE INDEX playlist_playlists ON playlists( playlist );" );
     query( "CREATE INDEX url_playlists ON playlists( url );" );
 
