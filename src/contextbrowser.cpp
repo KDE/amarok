@@ -1096,14 +1096,6 @@ void ContextBrowser::showCurrentTrack() //SLOT
 void CurrentTrackJob::showHome()
 {
     QueryBuilder qb;
-    qb.clear();
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valAccessDate, true );
-    qb.setLimit( 0, 10 );
-    QStringList lastplayed = qb.run();
 
     qb.clear(); //Song count
     qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabSong, QueryBuilder::valURL );
@@ -1239,60 +1231,36 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
 
         QString albumName = escapeHTML( reqResult[ i ].isEmpty() ? i18n( "Unknown album" ) : reqResult[ i ] );
 
-        if ( CollectionDB::instance()->albumIsCompilation( reqResult[ i + 1 ] ) )
-        {
-            QString albumImage = CollectionDB::instance()->albumImage( albumValues[5], reqResult[ i ], true, 50 );
-            QString albumImageTitleAttr = albumImageTooltip( albumImage, 50 );
+        QString artistName = albumValues[5].isEmpty() ? i18n( "Unknown artist" ) : albumValues[5];
 
-            // Compilation image
-            htmlCode.append( QStringx (
-                        "<td width='1'>\n"
-                        "<a href='fetchcover: @@@ %1'>\n"
-                        "<img class='album-image' align='left' vspace='2' hspace='2' title='%2' src='%3'/>\n"
-                        "</a>\n"
-                        "</td>\n"
-                        "<td valign='middle' align='left'>\n"
-                        "<a href='compilation:%4'><span class='album-title'>%5</span></a>\n" )
-                    .args( QStringList()
-                        << escapeHTMLAttr( reqResult[ i ].isEmpty() ? i18n( "Unknown" ) : reqResult[ i ] ) // album.name
-                        << albumImageTitleAttr
-                        << escapeHTMLAttr( albumImage )
-                        << reqResult[ i + 1 ] //album.id
-                        << albumName ) );
-        }
-        else
-        {
-            QString artistName = albumValues[5].isEmpty() ? i18n( "Unknown artist" ) : albumValues[5];
+        QString albumImage = CollectionDB::instance()->albumImage( albumValues[5], reqResult[ i ], true, 50 );
+        QString albumImageTitleAttr = albumImageTooltip( albumImage, 50 );
 
-            QString albumImage = CollectionDB::instance()->albumImage( albumValues[5], reqResult[ i ], true, 50 );
-            QString albumImageTitleAttr = albumImageTooltip( albumImage, 50 );
-
-            // Album image
-            htmlCode.append( QStringx (
-                        "<td width='1'>\n"
-                        "<a href='fetchcover:%1 @@@ %2'>\n"
-                        "<img class='album-image' align='left' vspace='2' hspace='2' title='%3' src='%4'/>\n"
-                        "</a>\n"
-                        "</td>\n"
-                        "<td valign='middle' align='left'>\n"
-                        "<a href='artist:%5'>\n"
-                        "<span class='album-title'>%6</span>\n"
-                        "</a>\n"
-                        "<span class='song-separator'> - </span>\n"
-                        "<a href='album:%7 @@@ %8'>\n"
-                        "<span class='album-title'>%9</span>\n"
-                        "</a>\n" )
-                    .args( QStringList()
-                        << escapeHTMLAttr( albumValues[5] ) // artist name
-                        << escapeHTMLAttr( reqResult[ i ].isEmpty() ? i18n( "Unknown" ) : reqResult[ i ] ) // album.name
-                        << albumImageTitleAttr
-                        << escapeHTMLAttr( albumImage )
-                        << escapeHTMLAttr( artistName )
-                        << escapeHTML( artistName )
-                        << albumValues[6]
-                        << reqResult[ i + 1 ] //album.id
-                        << albumName ) );
-        }
+        // Album image
+        htmlCode.append( QStringx (
+                    "<td width='1'>\n"
+                    "<a href='fetchcover:%1 @@@ %2'>\n"
+                    "<img class='album-image' align='left' vspace='2' hspace='2' title='%3' src='%4'/>\n"
+                    "</a>\n"
+                    "</td>\n"
+                    "<td valign='middle' align='left'>\n"
+                    "<a href='artist:%5'>\n"
+                    "<span class='album-title'>%6</span>\n"
+                    "</a>\n"
+                    "<span class='song-separator'> - </span>\n"
+                    "<a href='album:%7 @@@ %8'>\n"
+                    "<span class='album-title'>%9</span>\n"
+                    "</a>\n" )
+                .args( QStringList()
+                    << escapeHTMLAttr( albumValues[5] ) // artist name
+                    << escapeHTMLAttr( reqResult[ i ].isEmpty() ? i18n( "Unknown" ) : reqResult[ i ] ) // album.name
+                    << albumImageTitleAttr
+                    << escapeHTMLAttr( albumImage )
+                    << escapeHTMLAttr( artistName )
+                    << escapeHTML( artistName )
+                    << albumValues[6]
+                    << reqResult[ i + 1 ] //album.id
+                    << albumName ) );
 
         // Tracks number, year and length
         htmlCode.append( QStringx (
@@ -1327,16 +1295,16 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
                 {
                     discNumber = newDiscNumber;
                     htmlCode.append( QStringx (
-                                         "<div class='disc-separator'>\n"
-                                         "<a href=\"albumdisc: %1 @@@ %2 @@@ %3\">\n"
-                                         "%4"
-                                         "</a>\n"
-                                         "</div>\n" )
-                                     .args( QStringList()
-                                            << albumValues[6]
-                                            << reqResult[ i + 1 ] //album.id
-                                            << escapeHTMLAttr( discNumber )
-                                            << i18n( "Disc %1" ).arg( discNumber ) ) );
+                                "<div class='disc-separator'>\n"
+                                "<a href=\"albumdisc: %1 @@@ %2 @@@ %3\">\n"
+                                "%4"
+                                "</a>\n"
+                                "</div>\n" )
+                            .args( QStringList()
+                                << albumValues[6]
+                                << reqResult[ i + 1 ] //album.id
+                                << escapeHTMLAttr( discNumber )
+                                << i18n( "Disc %1" ).arg( discNumber ) ) );
                 }
                 QString track = albumValues[j + 2].stripWhiteSpace();
                 if( track.length() > 0 )
@@ -1352,13 +1320,13 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
                     length = "<span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), true ) + ")</span>\n";
 
                 htmlCode.append(
-                    "<div class='album-song'>\n"
-                    "<a href=\"file:" + escapeHTMLAttr( albumValues[j + 1] ) + "\">\n"
-                    + track +
-                    "<span class='album-song-title'>\n" + escapeHTML( albumValues[j] ) + "</span>&nbsp;"
-                    + length +
-                    "</a>\n"
-                    "</div>\n" );
+                        "<div class='album-song'>\n"
+                        "<a href=\"file:" + escapeHTMLAttr( albumValues[j + 1] ) + "\">\n"
+                        + track +
+                        "<span class='album-song-title'>\n" + escapeHTML( albumValues[j] ) + "</span>&nbsp;"
+                        + length +
+                        "</a>\n"
+                        "</div>\n" );
             }
         }
 
