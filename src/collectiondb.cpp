@@ -4987,13 +4987,28 @@ CollectionDB::initialize()
     }
     else if ( !isValid() )
     {
-        warning() << "Tables seem to be empty; maybe they don't exist at all." << endl;
+        //No tables seem to exist (as doing a count(url) didn't even return any number, even 0).
+        warning() << "Tables seem to not exist." << endl;
         warning() << "Attempting to create tables (this should be safe; ignore any errors)..." << endl;
         createTables(false);
         createPersistentTables();
         createPodcastTables();
         createStatsTable();
         warning() << "Tables should now definitely exist. (Stop ignoring errors)" << endl;
+
+        //Since we have created the tables, we need to make sure the version numbers are
+        //set to the correct values. If this is not done now, the database update code may
+        //run, which could corrupt things.
+        amaroK::config( "Collection Browser" )->writeEntry( "Database Version", DATABASE_VERSION );
+        amaroK::config( "Collection Browser" )->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
+        amaroK::config( "Collection Browser" )->writeEntry( "Database Persistent Tables Version", DATABASE_PERSISTENT_TABLES_VERSION );
+        amaroK::config( "Collection Browser" )->writeEntry( "Database Podcast Tables Version", DATABASE_PODCAST_TABLES_VERSION );    amaroK::config( "Collection Browser" )->writeEntry( "Database ATF Version", DATABASE_ATF_VERSION );
+
+        setAdminValue( "Database Version", QString::number( DATABASE_VERSION ) );
+        setAdminValue( "Database Stats Version", QString::number( DATABASE_STATS_VERSION ) );
+        setAdminValue( "Database Persistent Tables Version", QString::number( DATABASE_PERSISTENT_TABLES_VERSION ) );
+        setAdminValue( "Database Podcast Tables Version", QString::number( DATABASE_PODCAST_TABLES_VERSION ) );
+        setAdminValue( "Database ATF Version", QString::number( DATABASE_ATF_VERSION ) );
     }
     else {
         //updates for the Devices table go here
