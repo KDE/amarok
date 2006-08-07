@@ -321,11 +321,13 @@ static void TRMNotifyCallback(tunepimp_t pimp, void */*data*/, TPCallbackEnum ty
 {
     if(type != tpFileChanged)
         return;
-    debug() << "Status is: " << status << endl;
+
 #if HAVE_TUNEPIMP < 4
     track_t track = tp_GetTrack(pimp, fileId);
     TPFileStatus status = tr_GetStatus(track);
 #endif
+
+    debug() << "Status is: " << status << endl;
 
     switch(status) {
     case eRecognized:
@@ -634,7 +636,7 @@ void KTRMLookup::unrecognized()
 
 void KTRMLookup::collision()
 {
-#if HAVE_TUNEPIMP < 5 && HAVE_TUNEPIMP
+#if HAVE_TUNEPIMP && HAVE_TUNEPIMP < 5
     debug() << k_funcinfo << d->file << endl;
 
     track_t track = tp_GetTrack(KTRMRequestHandler::instance()->tunePimp(), d->fileId);
