@@ -252,6 +252,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         QString longTextColumnType() const { if ( getDbConnectionType() == DbConnection::postgresql ) return "TEXT"; else return "TEXT"; }
         QString randomFunc() const { if ( getDbConnectionType() == DbConnection::postgresql ) return "random()"; else return "RAND()"; }
 	QString longIndexType( const QString &type, const QString &column ) const { if ( getDbConnectionType() == DbConnection::mysql ) return QString( ", %1(%2(255))," ).arg( type ).arg( column ); else return QString( " %1," ).arg( type ); }
+	QString indexLength() const { if ( getDbConnectionType() == DbConnection::mysql ) return "(255)"; else return QString::null; }
 
         inline static QString exactCondition( const QString &right );
         static QString likeCondition( const QString &right, bool anyBegin=false, bool anyEnd=false );
