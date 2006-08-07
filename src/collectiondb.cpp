@@ -706,16 +706,16 @@ CollectionDB::createTables( const bool temporary )
     }
     else
     {
-        query( "CREATE UNIQUE INDEX url_tagtemp ON tags_temp( url, deviceid );" );
-        query( "CREATE UNIQUE INDEX embed_urltemp ON embed_temp( url, deviceid );" );
-        query( "CREATE UNIQUE INDEX dir_temp_dir ON directories_temp( dir, deviceid );" );
+        query( "CREATE UNIQUE INDEX url_tagtemp ON tags_temp( url(255), deviceid );" );
+        query( "CREATE UNIQUE INDEX embed_urltemp ON embed_temp( url(255), deviceid );" );
+        query( "CREATE UNIQUE INDEX dir_temp_dir ON directories_temp( dir(255), deviceid );" );
     }
 }
 
 void
 CollectionDB::createIndices()
 {
-    query( "CREATE UNIQUE INDEX url_tag ON tags( url, deviceid );" );
+    query( "CREATE UNIQUE INDEX url_tag ON tags( url(255), deviceid );" );
     query( "CREATE INDEX album_tag ON tags( album );" );
     query( "CREATE INDEX artist_tag ON tags( artist );" );
     query( "CREATE INDEX composer_tag ON tags( composer );" );
@@ -726,16 +726,14 @@ CollectionDB::createIndices()
     query( "CREATE INDEX images_album ON images( album );" );
     query( "CREATE INDEX images_artist ON images( artist );" );
 
-    query( "CREATE INDEX images_url ON images( path, deviceid );" );
+    query( "CREATE INDEX images_url ON images( path(255), deviceid );" );
 
-    query( "CREATE UNIQUE INDEX lyrics_url ON lyrics( url, deviceid );" );
+    query( "CREATE UNIQUE INDEX embed_url ON embed( url(255), deviceid );" );
+    query( "CREATE INDEX embed_hash ON embed( hash(255) );" );
 
-    query( "CREATE UNIQUE INDEX embed_url ON embed( url, deviceid );" );
-    query( "CREATE INDEX embed_hash ON embed( hash );" );
-
-    query( "CREATE UNIQUE INDEX directories_dir ON directories( dir, deviceid );" );
+    query( "CREATE UNIQUE INDEX directories_dir ON directories( dir(255), deviceid );" );
     query( "CREATE INDEX uniqueid_uniqueid ON uniqueid( uniqueid );");
-    query( "CREATE INDEX uniqueid_url ON uniqueid( url, deviceid );");
+    query( "CREATE INDEX uniqueid_url ON uniqueid( url(255), deviceid );");
 }
 
 
@@ -894,7 +892,7 @@ CollectionDB::createStatsTable()
                     "playcounter INTEGER,"
                     "uniqueid " + exactTextColumnType(8) + " UNIQUE,"
                     "deleted BOOL DEFAULT " + boolF() + ","
-                    "PRIMARY KEY(url, deviceid) );" ) );
+                    "PRIMARY KEY(url(255), deviceid) );" ) );
 
 //    query( "CREATE INDEX url_stats ON statistics( url );" );
 
@@ -989,13 +987,20 @@ CollectionDB::createPersistentTables()
             "url " + exactTextColumnType() + ", "
             "tracknum INTEGER );" ) );
 
-    query( "CREATE INDEX url_label ON label( url );" );
+    // create labels table
+    query( QString( "CREATE TABLE label ("
+            "url " + textColumnType() + ","
+            "deviceid INTEGER,"
+            "label " + textColumnType() + ");" ) );                     
+    
+    query( "CREATE UNIQUE INDEX lyrics_url ON lyrics( url(255), deviceid );" );
+    query( "CREATE INDEX url_label ON label( url(255) );" );
     query( "CREATE INDEX deviceid_label ON label( deviceid );" );
-    query( "CREATE INDEX label_label ON label( label );" );
-    query( "CREATE INDEX url_lyrics ON lyrics( url );" );
+    query( "CREATE INDEX label_label ON label( label(255) );" );
+    query( "CREATE INDEX url_lyrics ON lyrics( url(255) );" );
     query( "CREATE INDEX deviceid_lyrics ON lyrics( deviceid );" );
     query( "CREATE INDEX playlist_playlists ON playlists( playlist );" );
-    query( "CREATE INDEX url_playlists ON playlists( url );" );
+    query( "CREATE INDEX url_playlists ON playlists( url(255) );" );
 
     QString deviceAutoIncrement = "";
     if ( getDbConnectionType() == DbConnection::postgresql )
@@ -1018,7 +1023,7 @@ CollectionDB::createPersistentTables()
                   .arg( deviceAutoIncrement ) );
     query( "CREATE INDEX devices_type ON devices( type );" );
     query( "CREATE INDEX devices_uuid ON devices( uuid );" );
-    query( "CREATE INDEX devices_rshare ON devices( servername, sharename );" );
+    query( "CREATE INDEX devices_rshare ON devices( servername(255), sharename(255) );" );
 }
 
 void
@@ -1107,7 +1112,7 @@ CollectionDB::createPodcastTables()
 
     // create podcast channels table
     query( QString( "CREATE TABLE podcastchannels ("
-                    "url " + exactTextColumnType() + " UNIQUE,"
+                    "url " + exactTextColumnType() + longIndexType( "UNIQUE", "url" ) +
                     "title " + textColumnType() + ","
                     "weblink " + exactTextColumnType() + ","
                     "image " + exactTextColumnType() + ","
@@ -1121,7 +1126,7 @@ CollectionDB::createPodcastTables()
     // create podcast episodes table
     query( QString( "CREATE TABLE podcastepisodes ("
                     "id INTEGER PRIMARY KEY %1, "
-                    "url " + exactTextColumnType() + " UNIQUE,"
+                    "url " + exactTextColumnType() + longIndexType( "UNIQUE", "url" ) +
                     "localurl " + exactTextColumnType() + ","
                     "parent " + exactTextColumnType() + ","
                     "guid " + exactTextColumnType() + ","
@@ -1143,9 +1148,9 @@ CollectionDB::createPodcastTables()
                     "parent INTEGER, isOpen BOOL );" )
                     .arg( podcastFolderAutoInc ) );
 
-    query( "CREATE INDEX url_podchannel ON podcastchannels( url );" );
-    query( "CREATE INDEX url_podepisode ON podcastepisodes( url );" );
-    query( "CREATE INDEX localurl_podepisode ON podcastepisodes( localurl );" );
+    query( "CREATE INDEX url_podchannel ON podcastchannels( url(255) );" );
+    query( "CREATE INDEX url_podepisode ON podcastepisodes( url(255) );" );
+    query( "CREATE INDEX localurl_podepisode ON podcastepisodes( localurl(255) );" );
     query( "CREATE INDEX url_podfolder ON podcastfolders( id );" );
 }
 
