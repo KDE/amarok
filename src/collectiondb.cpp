@@ -989,9 +989,6 @@ CollectionDB::createPersistentTables()
             "url " + exactTextColumnType() + ", "
             "tracknum INTEGER );" ) );
 
-    query( "CREATE INDEX url_label ON label( url );" );
-    query( "CREATE INDEX deviceid_label ON label( deviceid );" );
-    query( "CREATE INDEX label_label ON label( label );" );
     query( "CREATE INDEX url_lyrics ON lyrics( url );" );
     query( "CREATE INDEX deviceid_lyrics ON lyrics( deviceid );" );
     query( "CREATE INDEX playlist_playlists ON playlists( playlist );" );
