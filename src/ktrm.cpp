@@ -634,7 +634,7 @@ void KTRMLookup::unrecognized()
 
 void KTRMLookup::collision()
 {
-#if HAVE_TUNEPIMP < 5
+#if HAVE_TUNEPIMP < 5 && HAVE_TUNEPIMP
     debug() << k_funcinfo << d->file << endl;
 
     track_t track = tp_GetTrack(KTRMRequestHandler::instance()->tunePimp(), d->fileId);
