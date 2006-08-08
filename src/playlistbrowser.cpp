@@ -3411,15 +3411,18 @@ void PlaylistBrowserView::startDrag()
         {
             #define item static_cast<PodcastChannel *>(*it)
             QListViewItem *child = item->firstChild();
+            KURL::List tmp;
+            // we add the podcasts in reverse, its much nicer to add them chronologically :)
             while( child )
             {
                 PodcastEpisode *pe = static_cast<PodcastEpisode*>( child );
                 if( pe->isOnDisk() )
-                    urls += pe->localUrl();
+                    tmp.prepend( pe->localUrl() );
                 else
-                    urls += pe->url();
+                    tmp.prepend( pe->url() );
                 child = child->nextSibling();
             }
+            urls += tmp;
             itemList += KURL::fromPathOrURL( item->url().url() );
             pixText = (*it)->text(0);
             #undef item
