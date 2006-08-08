@@ -620,7 +620,7 @@ class QueryBuilder
         enum qBuilderTables  { tabAlbum = 1, tabArtist = 2, tabComposer = 4, tabGenre = 8, tabYear = 16, tabSong = 64,
                                tabStats = 128, tabLyrics = 256, tabPodcastChannels = 512,
                                tabPodcastEpisodes = 1024, tabPodcastFolders = 2048,
-                               tabMedia = 4096
+                               tabDevices = 4096
                                /* dummy table for filtering */, tabDummy = 0 };
         enum qBuilderOptions { optNoCompilations = 1, optOnlyCompilations = 2, optRemoveDuplicates = 4,
                                optRandomize = 8,
@@ -664,7 +664,11 @@ class QueryBuilder
         static const Q_INT64 valPurge         = 1LL << 33;
         static const Q_INT64 valPurgeCount    = 1LL << 34;
         static const Q_INT64 valIsNew         = 1LL << 35;
-        static const Q_INT64 valMediaId       = 1LL << 36;
+        // dynamic collection relevant:
+        static const Q_INT64 valDeviceId      = 1LL << 36;
+        static const Q_INT64 valRelativePath  = 1LL << 37;
+        static const Q_INT64 valDeviceLabel   = 1LL << 38;
+        static const Q_INT64 valMountPoint    = 1LL << 39;
 
         enum qBuilderFunctions  { funcNone = 0, funcCount = 1, funcMax = 2, funcMin = 4, funcAvg = 8, funcSum = 16 };
 

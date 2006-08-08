@@ -6168,6 +6168,9 @@ QueryBuilder::linkTables( int tables )
             m_tables += " LEFT JOIN " + tableName( tabLyrics)
                                       + " ON lyrics.url=tags.url AND statistics.deviceid = tags.deviceid";
 
+        if ( tables & tabDevices )
+            m_tables += " LEFT JOIN " + tableName( tabDevices ) + " ON tags.deviceid = devices.id";
+
     }
 }
 
@@ -6211,7 +6214,7 @@ QueryBuilder::addReturnValue( int table, Q_INT64 value, bool caseSensitive /* = 
         m_deviceidPos = m_returnValues + 1;  //the return value after the url is the deviceid
         m_values += ",";
         m_values += tableName( table ) + ".";
-        m_values += valueName( valMediaId );
+        m_values += valueName( valDeviceId );
     }
 }
 
@@ -6297,7 +6300,8 @@ QueryBuilder::setGoogleFilter( int defaultTables, QString query )
             }
             bool exact = false; // enable for numeric values
 
-            int table = -1, value = -1;
+            int table = -1;
+            Q_INT64 value = -1;
             if( e.field == "artist" )
                 table = tabArtist;
             else if( e.field == "composer" )
@@ -6405,6 +6409,16 @@ QueryBuilder::setGoogleFilter( int defaultTables, QString query )
             {
                 table = tabLyrics;
                 value = valLyrics;
+            }
+            else if( e.field == "device" )
+            {
+                table = tabDevices;
+                value = valDeviceLabel;
+            }
+            else if( e.field == "mountpoint" )
+            {
+                table = tabDevices;
+                value = valMountPoint;
             }
 
             if( e.negate )
@@ -7117,6 +7131,7 @@ QueryBuilder::tableName( int table )
     {
         if ( table & tabSong )   tables += ",tags";
     }
+    if ( table & tabDevices ) tables += ", devices";
 
     // when there are multiple tables involved, we always need table tags for linking them
     return tables.mid( 1 );
@@ -7153,7 +7168,7 @@ QueryBuilder::valueName( Q_INT64 value )
     if ( value & valYearID )      values += "year";
     if ( value & valFilesize )    values += "filesize";
     if ( value & valFileType )    values += "filetype";
-    if ( value & valIsCompilation)values += "sampler";
+    if ( value & valIsCompilation) values += "sampler";
     if ( value & valBPM )         values += "bpm";
 
     if ( value & valCopyright )   values += "copyright";
@@ -7161,11 +7176,14 @@ QueryBuilder::valueName( Q_INT64 value )
     if ( value & valWeblink )     values += "weblink";
     if ( value & valAutoscan )    values += "autoscan";
     if ( value & valFetchtype )   values += "fetchtype";
-    if ( value & valAutotransfer )values += "autotransfer";
+    if ( value & valAutotransfer ) values += "autotransfer";
     if ( value & valPurge )       values += "haspurge";
     if ( value & valPurgeCount )  values += "purgeCount";
     if ( value & valIsNew )       values += "isNew";
-    if ( value & valMediaId )     values += "deviceid";
+    if ( value & valDeviceId )    values += "deviceid";
+    if ( value & valRelativePath ) values += "url";
+    if ( value & valDeviceLabel ) values += "label";
+    if ( value & valMountPoint )  values += "lastmountpoint";
 
     return values;
 }
