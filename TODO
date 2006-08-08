@@ -5,7 +5,10 @@ TODO-list for Amarok
 
 
 SHORT-TERM (URGENT):
+ <markey>  Fix Bassdrive stream URL.
+
 <shanachie> update podcast-tuples when the feed get's corrected after a mistake by the podcaster/publisher. eg. pubdate, url, title.
+
  <sebr>    We need to check for pkg-config when configuring, otherwise we can't check for things
            like libgpod. Currently its a silent error, and its very difficult to debug without
            trawling through configure.in.in
