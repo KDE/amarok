@@ -256,7 +256,7 @@ void HTMLView::openURLRequest( const KURL &url )
         Playlist::instance()->insertMedia( url, Playlist::DirectPlay | Playlist::Unique );
 }
 
-#include "debug.h"
+#if 0
 #include "qpixmap.h"
 #include "qdragobject.h"
 #include "kurldrag.h"
@@ -285,15 +285,12 @@ void HTMLView::khtmlMouseMoveEvent( khtml::MouseMoveEvent *event )
         drag->setPixmap( pix, QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X, CollectionDB::DRAGPIXMAP_OFFSET_Y ) );
 
         drag->dragCopy();
-
-        /// khtmlPart wasn't very well designed. The only way to tell it that the drag finished, is to set a private
-        /// member, KHTMLPart::d->m_bMousePressed = false, which is of course impossible, because it is private.
-        /// TODO: GET AROUND IT!!!
         return;
     }
 
     // let KHTMLPart terminate
     KHTMLPart::khtmlMouseMoveEvent( event );
 }
+#endif
 
 #include "htmlview.moc"

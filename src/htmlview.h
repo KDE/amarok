@@ -27,7 +27,7 @@ class HTMLView : public KHTMLPart
 
     private:
         // for overloading the drag and drop image
-        void   khtmlMouseMoveEvent( khtml::MouseMoveEvent *event );
+//         void   khtmlMouseMoveEvent( khtml::MouseMoveEvent *event );
 
         static KTempFile *m_bgGradientImage;
         static KTempFile *m_headerGradientImage;
