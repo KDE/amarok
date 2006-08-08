@@ -1010,6 +1010,11 @@ IpodMediaDevice::openDevice( bool silent )
             case ITDB_IPOD_MODEL_INVALID:
             case ITDB_IPOD_MODEL_UNKNOWN:
                 modelString = 0;
+                if( pathExists( "iTunes:iTunes_Control" ) )
+                {
+                    debug() << "iTunes/iTunes_Control found - assuming itunes phone" << endl;
+                    m_isMobile = true;
+                }
                 break;
             default:
                 break;
