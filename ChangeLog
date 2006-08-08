@@ -7,7 +7,7 @@ Amarok ChangeLog
 
 VERSION 1.4.2:
   FEATURES:
-    * Support for MTP/PlaysForSure media devices.
+    * Support for MTP/PlaysForSure media devices. (BR 128532)
     * iPod plugin usable with iTunes phones. (BR 131487)
     * Browse collection by composer. (BR 122452)
     * New DCOP call "playlist: filenames" returns the filenames of the songs
