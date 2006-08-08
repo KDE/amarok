@@ -121,7 +121,7 @@ DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( const Medium * m
                                                                "AND uuid = '%1';" ).arg( m->id() ) );
     if ( ids.size() == 3 )
     {
-        debug() << "Found existing UUID config for ID " << ids[0] << " , uuid" << m->id() << endl;
+        debug() << "Found existing UUID config for ID " << ids[0] << " , uuid " << m->id() << endl;
         CollectionDB::instance()->query( QString( "UPDATE devices SET lastmountpoint = '%2' WHERE "
                                                   "id = %1;" ).arg( ids[0] ).arg( m->mountPoint() ) );
         return new MassStorageDeviceHandler( ids[0].toInt(), m->mountPoint(), m->id() );
