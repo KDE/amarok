@@ -37,6 +37,7 @@ class KProgress;
 class KPushButton;
 class KShellProcess;
 
+class QDragObject;
 class QLabel;
 class QPalette;
 class MediaItemTip;
@@ -60,6 +61,8 @@ class LIBAMAROK_EXPORT MediaItem : public KListViewItem
         enum Type { UNKNOWN, ARTIST, ALBUM, TRACK, PODCASTSROOT, PODCASTCHANNEL,
                     PODCASTITEM, PLAYLISTSROOT, PLAYLIST, PLAYLISTITEM, INVISIBLEROOT,
                     INVISIBLE, STALEROOT, STALE, ORPHANEDROOT, ORPHANED, DIRECTORY };
+
+        enum Flags { Failed=1, BeginTransfer=2, StopTransfer=4 };
 
         void setType( Type type );
         Type type() const { return m_type; }
@@ -85,6 +88,7 @@ class LIBAMAROK_EXPORT MediaItem : public KListViewItem
         Type            m_type;
         QString         m_playlistName;
         MediaDevice    *m_device;
+        int             m_flags;
 
         static QPixmap *s_pixUnknown;
         static QPixmap *s_pixRootItem;
@@ -98,6 +102,9 @@ class LIBAMAROK_EXPORT MediaItem : public KListViewItem
         static QPixmap *s_pixStale;
         static QPixmap *s_pixOrphaned;
         static QPixmap *s_pixDirectory;
+        static QPixmap *s_pixTransferFailed;
+        static QPixmap *s_pixTransferBegin;
+        static QPixmap *s_pixTransferEnd;
 
     private:
         mutable MetaBundle *m_bundle;
@@ -123,14 +130,10 @@ class MediaQueue : public KListView, public DropProxyTarget
 
         void URLsAdded(); // call after finishing adding single urls
 
-        // Reimplemented from KListView
-        void dragEnterEvent( QDragEnterEvent* );
-        void dropEvent( QDropEvent *e );
         void dropProxyEvent( QDropEvent *e );
-        void contentsDragEnterEvent( QDragEnterEvent* );
-        void contentsDropEvent( QDropEvent *e );
-        void contentsDragMoveEvent( QDragMoveEvent* e );
-        void startDrag();
+        // Reimplemented from KListView
+        bool acceptDrag( QDropEvent *e ) const;
+        QDragObject *dragObject();
 
     public slots:
         void itemCountChanged();
@@ -138,6 +141,7 @@ class MediaQueue : public KListView, public DropProxyTarget
     private slots:
         void selectAll() {QListView::selectAll(true); }
         void slotShowContextMenu( QListViewItem* item, const QPoint& point, int );
+        void slotDropped (QDropEvent* e, QListViewItem* parent, QListViewItem* after);
 
     private:
         void keyPressEvent( QKeyEvent *e );
@@ -279,14 +283,11 @@ class MediaView : public KListView
         void invokeItem( QListViewItem* );
 
     private:
-        void startDrag();
-        // leaves of selected items, returns no. of files within leaves
-
         // Reimplemented from KListView
-        void contentsDragEnterEvent( QDragEnterEvent* );
         void contentsDropEvent( QDropEvent *e );
-        void contentsDragMoveEvent( QDragMoveEvent* e );
         void viewportPaintEvent( QPaintEvent* );
+        bool acceptDrag( QDropEvent *e ) const;
+        QDragObject *dragObject();
 
         QWidget *m_parent;
         MediaDevice *m_device;

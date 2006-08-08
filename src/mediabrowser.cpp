@@ -64,6 +64,7 @@
 #include <kio/job.h>
 #include <klocale.h>
 #include <kmessagebox.h>
+#include <kmultipledrag.h>
 #include <kpopupmenu.h>
 #include <kprocess.h>
 #include <kprogress.h>
@@ -91,6 +92,9 @@ QPixmap *MediaItem::s_pixStale = 0;
 QPixmap *MediaItem::s_pixOrphaned = 0;
 QPixmap *MediaItem::s_pixDirectory = 0;
 QPixmap *MediaItem::s_pixRootItem = 0;
+QPixmap *MediaItem::s_pixTransferFailed = 0;
+QPixmap *MediaItem::s_pixTransferBegin = 0;
+QPixmap *MediaItem::s_pixTransferEnd = 0;
 
 bool MediaBrowser::isAvailable() //static
 {
@@ -230,6 +234,9 @@ MediaBrowser::MediaBrowser( const char *name )
     MediaItem::s_pixStale = new QPixmap(iconLoader.loadIcon( amaroK::icon( "cancel" ), KIcon::Toolbar, KIcon::SizeSmall ) );
     MediaItem::s_pixOrphaned = new QPixmap(iconLoader.loadIcon( amaroK::icon( "cancel" ), KIcon::Toolbar, KIcon::SizeSmall ) );
     MediaItem::s_pixDirectory = new QPixmap(iconLoader.loadIcon( amaroK::icon( "folder" ), KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixTransferBegin = new QPixmap(iconLoader.loadIcon( amaroK::icon( "play" ), KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixTransferEnd = new QPixmap(iconLoader.loadIcon( amaroK::icon( "stop" ), KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixTransferFailed = new QPixmap(iconLoader.loadIcon( amaroK::icon( "cancel" ), KIcon::Toolbar, KIcon::SizeSmall ) );
 
     setSpacing( 4 );
 
@@ -1160,14 +1167,17 @@ MediaView::~MediaView()
 }
 
 
-void
-MediaView::startDrag()
+QDragObject *
+MediaView::dragObject()
 {
     KURL::List urls = nodeBuildDragList( 0 );
-    KURLDrag* d = new KURLDrag( urls, this );
-    d->setPixmap( CollectionDB::createDragPixmap( urls ),
+    KMultipleDrag *md = new KMultipleDrag( viewport() );
+    md->addDragObject( KListView::dragObject() );
+    KURLDrag* ud = new KURLDrag( urls, viewport() );
+    md->addDragObject( ud );
+    md->setPixmap( CollectionDB::createDragPixmap( urls ),
                   QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X, CollectionDB::DRAGPIXMAP_OFFSET_Y ) );
-    d->dragCopy();
+    return md;
 }
 
 
@@ -1260,23 +1270,28 @@ MediaView::getSelectedLeaves( MediaItem *parent, QPtrList<MediaItem> *list, int 
 }
 
 
-void
-MediaView::contentsDragEnterEvent( QDragEnterEvent *e )
+bool
+MediaView::acceptDrag( QDropEvent *e ) const
 {
+    if( e->source() == MediaBrowser::queue()->viewport() )
+        return false;
+
     QString data;
     QCString subtype;
     QTextDrag::decode( e, data, subtype );
 
-    e->accept( e->source() == viewport()
-            || subtype == "amarok-sql"
-            || KURLDrag::canDecode( e ) );
+    return e->source() == viewport()
+        || subtype == "amarok-sql"
+        || KURLDrag::canDecode( e );
 }
-
 
 void
 MediaView::contentsDropEvent( QDropEvent *e )
 {
-    if(e->source() == viewport() || e->source() == this)
+    cleanDropVisualizer();
+    cleanItemHighlighter();
+
+    if(e->source() == viewport())
     {
         const QPoint p = contentsToViewport( e->pos() );
         MediaItem *item = dynamic_cast<MediaItem *>(itemAt( p ));
@@ -1359,22 +1374,6 @@ MediaView::contentsDropEvent( QDropEvent *e )
         }
     }
 }
-
-
-void
-MediaView::contentsDragMoveEvent( QDragMoveEvent *e )
-{
-//    const QPoint p = contentsToViewport( e->pos() );
-//    QListViewItem *item = itemAt( p );
-    e->accept( e->source() == viewport()
-            || e->source() == this
-            || (e->source() != m_parent
-                && e->source() != MediaBrowser::instance()->m_queue
-                && e->source() != MediaBrowser::instance()->m_queue->viewport()
-                && KURLDrag::canDecode( e )) );
-
-}
-
 
 void
 MediaView::viewportPaintEvent( QPaintEvent *e )
@@ -2079,21 +2078,24 @@ MediaDevice::copyTrackFromDevice( MediaItem *item )
     debug() << "copyTrackFromDevice: not copying " << item->url() << ": not implemented" << endl;
 }
 
-void
-MediaQueue::startDrag()
+QDragObject *
+MediaQueue::dragObject()
 {
     KURL::List urls;
-
     for( QListViewItem *it = firstChild(); it; it = it->nextSibling() )
     {
         if( it->isVisible() && it->isSelected() && dynamic_cast<MediaItem *>(it) )
             urls += static_cast<MediaItem *>(it)->url();
     }
 
-    KURLDrag* d = new KURLDrag( urls, this );
-    d->setPixmap( CollectionDB::createDragPixmap( urls ),
+    KMultipleDrag *md = new KMultipleDrag( viewport() );
+    QDragObject *d = KListView::dragObject();
+    KURLDrag* urldrag = new KURLDrag( urls, viewport() );
+    md->addDragObject( d );
+    md->addDragObject( urldrag );
+    md->setPixmap( CollectionDB::createDragPixmap( urls ),
                   QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X, CollectionDB::DRAGPIXMAP_OFFSET_Y ) );
-    d->dragCopy();
+    return md;
 }
 
 QString
@@ -2225,8 +2227,6 @@ MediaDevice::fileTransferred( KIO::Job *job )  //SLOT
         m_copyFailed = false;
 
         // the track just transferred has not yet been removed from the queue
-        if( !isCanceled() )
-            MediaBrowser::instance()->queue()->takeItem( MediaBrowser::instance()->queue()->firstChild() );
         m_parent->updateStats();
     }
 
@@ -3186,81 +3186,54 @@ MediaQueue::MediaQueue(MediaBrowser *parent)
     KStdAction::selectAll( this, SLOT( selectAll() ), ac, "MediaQueue" );
 
     connect( this, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
-             SLOT( slotShowContextMenu( QListViewItem*, const QPoint&, int ) ) );
+            SLOT( slotShowContextMenu( QListViewItem*, const QPoint&, int ) ) );
+    connect( this, SIGNAL( dropped(QDropEvent*, QListViewItem*, QListViewItem*) ),
+            SLOT( slotDropped(QDropEvent*, QListViewItem*, QListViewItem*) ) );
 }
 
-void
-MediaQueue::dragEnterEvent( QDragEnterEvent *e )
+bool
+MediaQueue::acceptDrag( QDropEvent *e ) const
 {
-    KListView::dragEnterEvent( e );
-
     QString data;
     QCString subtype;
     QTextDrag::decode( e, data, subtype );
 
-    e->accept( e->source() != viewport()
-            && e->source() != m_parent
-            && (subtype == "amarok-sql" || KURLDrag::canDecode( e )) );
+    return e->source() == viewport()
+        || subtype == "amarok-sql"
+        || KURLDrag::canDecode( e );
 }
 
-
 void
-MediaQueue::dropEvent( QDropEvent *e )
+MediaQueue::slotDropped( QDropEvent* e, QListViewItem* parent, QListViewItem* after)
 {
-    KListView::dropEvent( e );
-
-    QString data;
-    QCString subtype;
-    QTextDrag::decode( e, data, subtype );
-    KURL::List list;
-
-    if( subtype == "amarok-sql" )
+    if( e->source() != viewport() )
     {
-        QStringList values = CollectionDB::instance()->query( data );
-        list = CollectionDB::instance()->URLsFromSqlDrag( values );
-        addURLs( list );
+        QString data;
+        QCString subtype;
+        QTextDrag::decode( e, data, subtype );
+        KURL::List list;
+
+        if( subtype == "amarok-sql" )
+        {
+            QStringList values = CollectionDB::instance()->query( data );
+            list = CollectionDB::instance()->URLsFromSqlDrag( values );
+            addURLs( list );
+        }
+        else if ( KURLDrag::decode( e, list ) )
+        {
+            addURLs( list );
+        }
     }
-    else if ( KURLDrag::decode( e, list ) )
+    else if( QListViewItem *i = currentItem() )
     {
-        addURLs( list );
+        moveItem( i, parent, after );
     }
 }
 
 void
 MediaQueue::dropProxyEvent( QDropEvent *e )
 {
-    dropEvent( e );
-}
-
-void
-MediaQueue::contentsDragEnterEvent( QDragEnterEvent *e )
-{
-    KListView::contentsDragEnterEvent( e );
-
-    e->accept( e->source() != viewport()
-            && e->source() != m_parent
-            && KURLDrag::canDecode( e ) );
-}
-
-
-void
-MediaQueue::contentsDropEvent( QDropEvent *e )
-{
-    KListView::contentsDropEvent( e );
-
-    KURL::List list;
-    if ( KURLDrag::decode( e, list ) )
-        addURLs( list );
-}
-
-void
-MediaQueue::contentsDragMoveEvent( QDragMoveEvent *e )
-{
-    KListView::contentsDragMoveEvent( e );
-
-    e->accept( e->source() != viewport()
-            && e->source() != m_parent
-            && KURLDrag::canDecode( e ) );
+    slotDropped( e, 0, 0 );
 }
 
 MediaItem*
