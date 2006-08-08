@@ -1185,7 +1185,7 @@ TagDialogWriter::TagDialogWriter( const QMap<QString, MetaBundle> tagsToChange )
         mb.detach();
         m_tags += mb;
     }
-};
+}
 
 bool
 TagDialogWriter::doJob()
