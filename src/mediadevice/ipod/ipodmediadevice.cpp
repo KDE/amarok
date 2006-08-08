@@ -1142,6 +1142,13 @@ IpodMediaDevice::checkIntegrity()
         cur = cur->next;
     }
 
+    cur = m_itdb->playlists;
+    for( ; cur; cur = cur->next )
+    {
+        Itdb_Playlist *playlist = (Itdb_Playlist *)cur->data;
+        addPlaylistToView( playlist );
+    }
+
     QString musicpath;
     pathExists( itunesDir( "Music" ), &musicpath );
     QDir dir( musicpath, QString::null, QDir::Unsorted, QDir::Dirs );
