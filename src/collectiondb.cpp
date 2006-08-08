@@ -990,10 +990,6 @@ CollectionDB::createPersistentTables()
             "url " + exactTextColumnType() + ", "
             "tracknum INTEGER );" ) );
 
-    //FIXME: Do we need/want these two indices?
-    query( "CREATE INDEX url_lyrics ON lyrics( url );" );
-    query( "CREATE INDEX deviceid_lyrics ON lyrics( deviceid );" );
-
     query( "CREATE UNIQUE INDEX lyrics_url ON lyrics( url, deviceid );" );
     query( "CREATE INDEX playlist_playlists ON playlists( playlist );" );
     query( "CREATE INDEX url_playlists ON playlists( url );" );
