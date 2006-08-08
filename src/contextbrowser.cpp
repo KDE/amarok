@@ -3282,6 +3282,7 @@ ContextBrowser::showWikipediaEntry( const QString &entry )
 
 void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
 {
+    DEBUG_BLOCK
     #if 0
     if( BrowserBar::instance()->currentBrowser() != this )
     {
@@ -3325,7 +3326,9 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
     {
         QString tmpWikiStr;
 
-        if ( (EngineController::instance()->bundle().url().protocol() == "lastfm") ||  !EngineController::engine()->isStream() )
+        if ( (EngineController::instance()->bundle().url().protocol() == "lastfm") ||
+             (EngineController::instance()->bundle().url().protocol() == "daap") ||
+             !EngineController::engine()->isStream() )
         {
             if ( !EngineController::instance()->bundle().artist().isEmpty() )
             {
