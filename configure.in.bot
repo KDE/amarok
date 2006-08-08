@@ -233,6 +233,9 @@ else
         echo " =   - Creative Nomad Jukebox Support"
     fi
 
+    if test x$have_libmtp != xyes; then
+        echo " =   - MTP Device Support"
+    fi
 
     echo " ="
     echo " = The following extra functionality will be included:"
@@ -306,6 +309,9 @@ else
         echo " =   + Creative Nomad Jukebox Support"
     fi
 
+    if test x$have_libmtp = xyes; then
+        echo " =   + MTP Device Support"
+    fi
 
    echo " ="
 fi

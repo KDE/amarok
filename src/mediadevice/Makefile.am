@@ -10,7 +10,11 @@ if with_libnjb
     NJB_SUBDIR = njb
 endif
 
+if with_libmtp
+    MTP_SUBDIR = mtp
+endif
+
 METASOURCES = AUTO
 
-SUBDIRS = generic daap $(IPOD_SUBDIR) $(IFP_SUBDIR) $(NJB_SUBDIR)
+SUBDIRS = generic daap $(IPOD_SUBDIR) $(IFP_SUBDIR) $(NJB_SUBDIR) $(MTP_SUBDIR)
 

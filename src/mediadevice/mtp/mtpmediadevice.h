@@ -1,0 +1,159 @@
+/***************************************************************************
+ * copyright            : (C) 2006 Andy Kelk <andy@mopoke.co.uk>           *
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+ /**
+  *  Based on njb mediadevice with some code hints from the libmtp
+  *  example tools
+  */
+
+ /**
+  *  MTP media device
+  *  @author Andy Kelk <andy@mopoke.co.uk>
+  *  @see http://libmtp.sourceforge.net/
+  */
+
+#ifndef AMAROK_MTPMEDIADEVICE_H
+#define AMAROK_MTPMEDIADEVICE_H
+
+#include "mediabrowser.h"
+
+#include <qptrlist.h>
+#include <qmutex.h>
+
+#include <libmtp.h>
+
+class MtpMediaDevice;
+class MtpMediaItem;
+
+class MtpTrack {
+    friend class MediaItem;
+    public:
+        MtpTrack( LIBMTP_track_t* track );
+        ~MtpTrack();
+        bool                    operator==( const MtpTrack& second ) const { return m_id == second.m_id; }
+
+    public:
+        unsigned int            id() const { return m_id; }
+        MetaBundle              *bundle() { return new MetaBundle( m_bundle ); }
+        void                    setBundle( MetaBundle &bundle );
+        void                    setId( int id ) { m_id = id; }
+        void                    MtpTrack::readMetaData( LIBMTP_track_t *track );
+        void                    addItem( const MtpMediaItem *item );
+        bool                    removeItem( const MtpMediaItem *item );
+
+    private:
+        u_int32_t               m_id;
+        MetaBundle              m_bundle;
+        QPtrList<MtpMediaItem>  m_itemList;
+};
+
+
+class MtpMediaItem : public MediaItem
+{
+    public:
+        MtpMediaItem( QListView *parent, QListViewItem *after = 0 ) : MediaItem( parent, after )
+        {}
+        MtpMediaItem( QListViewItem *parent, QListViewItem *after = 0 ) : MediaItem( parent, after )
+        {}
+        ~MtpMediaItem()
+        {
+            //m_track->removeItem(this);
+        }
+        void                setTrack( MtpTrack *track ) { m_track = track; m_track->addItem(this); }
+        MtpTrack            *track() { return m_track; }
+        QString             filename() { return m_track->bundle()->url().path(); }
+
+    private:
+        MtpTrack            *m_track;
+};
+
+
+class trackValueList: public QValueList<MtpTrack *>
+{
+    public:
+        trackValueList::iterator        findTrackById( unsigned );
+        trackValueList::const_iterator  findTrackById( unsigned ) const;
+        trackValueList::iterator        findTrackByName( const QString& );
+        int                             readFromDevice( MtpMediaDevice *mtp );
+};
+
+
+class MtpMediaDevice : public MediaDevice
+{
+    Q_OBJECT
+
+    public:
+        MtpMediaDevice();
+        virtual bool            autoConnect()          { return true; }
+        virtual bool            asynchronousTransfer() { return false; }
+        bool                    isConnected();
+        LIBMTP_mtpdevice_t      *current_device();
+        void                    setDisconnected();
+        virtual void            rmbPressed( QListViewItem *qitem, const QPoint &point, int arg1 );
+        virtual void            init( MediaBrowser* parent );
+        virtual QStringList     supportedFiletypes();
+        void                    setFolders( LIBMTP_folder_t *folders );
+        void                    cancelTransfer();
+        void                    customClicked();
+        virtual void            addConfigElements( QWidget *parent );
+        virtual void            removeConfigElements( QWidget *parent );
+        virtual void            applyConfig();
+        virtual void            loadConfig();
+
+    public slots:
+        void                    expandItem( QListViewItem *item );
+
+    protected:
+        MediaItem*              trackExists( const MetaBundle &bundle );
+
+        bool                    openDevice( bool silent );
+        bool                    closeDevice();
+        bool                    lockDevice( bool tryLock=false ) { if( tryLock ) { return m_mutex.tryLock(); } else { m_mutex.lock(); return true; } }
+        void                    unlockDevice() { m_mutex.unlock(); }
+
+        virtual MediaItem       *copyTrackToDevice( const MetaBundle &bundle );
+
+        void                    synchronizeDevice();
+        int                     deleteItemFromDevice( MediaItem *mediaitem, int flags=DeleteTrack );
+        void                    addToPlaylist( MediaItem *list, MediaItem *after, QPtrList<MediaItem> items );
+        MtpMediaItem            *newPlaylist( const QString &name, MediaItem *list, QPtrList<MediaItem> items );
+        bool                    getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
+        virtual void            updateRootItems() {};
+
+    private:
+        MtpMediaItem            *addAlbums( const QString &artist, MtpMediaItem *item );
+        MtpMediaItem            *addTracks( const QString &artist, const QString &track, MtpMediaItem *item );
+        MtpMediaItem            *addArtist( MtpTrack *track );
+        MtpMediaItem            *addTrackToView(MtpTrack *track, MtpMediaItem *item=0 );
+        int                     readMtpMusic( void );
+        void                    clearItems();
+        int                     deleteTrack(MtpMediaItem *trackItem);
+        uint32_t                checkFolderStructure( uint32_t parent_id, const LIBMTP_track_t *trackmeta );
+        uint32_t                createFolder( const char *name, uint32_t parent_id );
+        uint32_t                folderNameToID( char *name, LIBMTP_folder_t *folderlist );
+        uint32_t                subfolderNameToID( const char *name, LIBMTP_folder_t *folderlist, uint32_t parent_id );
+        trackValueList          m_trackList;
+        LIBMTP_mtpdevice_t      *m_device;
+        QMutex                  m_mutex;
+        QMutex                  m_critical_mutex;
+        LIBMTP_folder_t         *m_folders;
+        uint32_t		        m_default_parent_folder;
+        QString                 m_folderStructure;
+        QLineEdit               *m_folderStructureBox;
+        QLabel                  *m_folderLabel;
+        QStringList             m_supportedFiles;
+        QStringList             mtpFileTypes;
+
+};
+
+#endif

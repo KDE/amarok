@@ -798,7 +798,35 @@ AM_CONDITIONAL(with_libnjb, [test x$have_libnjb = xyes])
 # END NJB CHECK
 ###############################################################################
 
+###############################################################################
+# BEGIN MTP CHECK
+###############################################################################
+### mediabrowser.cpp can use libmtp if available
 
+AC_ARG_WITH(libmtp,
+    AC_HELP_STRING([--with-libmtp],[build Amarok with support for MTP devices]),
+    [build_libmtp=$withval],
+    [build_libmtp=yes]
+)
+
+    if test "$build_libmtp" != "no"; then
+        if test "$PKGCONFIGFOUND" = "yes" ; then
+
+        # check for libmtp
+        have_libmtp=no
+
+        PKG_CHECK_MODULES(LIBMTP, libmtp, have_libmtp=yes,have_libmtp=no)
+        if test "x$have_libmtp" != "xno"; then
+            AC_DEFINE(HAVE_LIBMTP, 1, [have libmtp])
+        fi
+    fi
+fi
+
+AM_CONDITIONAL(with_libmtp, [test x$have_libmtp = xyes])
+
+###############################################################################
+# END MTP CHECK
+###############################################################################
 
 ###############################################################################
 # BEGIN IFP CHECK
