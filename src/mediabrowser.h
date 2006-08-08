@@ -62,9 +62,10 @@ class LIBAMAROK_EXPORT MediaItem : public KListViewItem
                     PODCASTITEM, PLAYLISTSROOT, PLAYLIST, PLAYLISTITEM, INVISIBLEROOT,
                     INVISIBLE, STALEROOT, STALE, ORPHANEDROOT, ORPHANED, DIRECTORY };
 
-        enum Flags { Failed=1, BeginTransfer=2, StopTransfer=4 };
+        enum Flags { Failed=1, BeginTransfer=2, StopTransfer=4, Transferring=8 };
 
         void setType( Type type );
+        void setFailed( bool failed=true );
         Type type() const { return m_type; }
         MediaItem *findItem(const QString &key, const MediaItem *after=0) const;
 
@@ -80,6 +81,7 @@ class LIBAMAROK_EXPORT MediaItem : public KListViewItem
         virtual MediaDevice *device() const { return m_device; }
 
         int compare( QListViewItem *i, int col, bool ascending ) const;
+        int flags() const { return m_flags; }
 
         void paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align );
 
@@ -430,7 +432,6 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         virtual bool asynchronousTransfer() { return false; }
         bool         isTransferring() { return m_transferring; }
         bool         isDeleting() { return m_deleting; }
-        MediaItem   *transferredItem() { return m_transferredItem; }
         bool         isCanceled() { return m_canceled; }
         void         setCanceled( const bool b ) { m_canceled = b; }
 
@@ -613,7 +614,6 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
         bool             m_configure;
         bool             m_customButton;
 
-        MediaItem       *m_transferredItem;
         QString          m_type;
 
         // root listview items

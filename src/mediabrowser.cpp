@@ -786,6 +786,7 @@ MediaItem::init()
     m_type=UNKNOWN;
     m_playlistName = QString::null;
     m_device=0;
+    m_flags=0;
     setExpandable( false );
     setDragEnabled( true );
     setDropEnabled( true );
@@ -949,6 +950,25 @@ MediaItem::setType( Type type )
             setDropEnabled( true );
             setPixmap(0, *s_pixDirectory);
             break;
+    }
+}
+
+void
+MediaItem::setFailed( bool failed )
+{
+    if( failed )
+    {
+        m_flags &= ~MediaItem::Transferring;
+        m_flags |= MediaItem::Failed;
+        setPixmap(0, *MediaItem::s_pixTransferFailed);
+    }
+    else
+    {
+        m_flags &= ~MediaItem::Failed;
+        if( m_type == PODCASTITEM )
+            setPixmap(0, *s_pixPodcast);
+        else
+            setPixmap(0, QPixmap() );
     }
 }
 
@@ -1836,7 +1856,6 @@ MediaDevice::MediaDevice()
     , m_transfer( true )
     , m_configure( true )
     , m_customButton( false )
-    , m_transferredItem( 0 )
     , m_playlistItem( 0 )
     , m_podcastItem( 0 )
     , m_invisibleItem( 0 )
@@ -2574,25 +2593,31 @@ MediaDevice::transferFiles()
     KURL::List existing, unplayable;
     unsigned transcodeFail = 0;
     // iterate through items
-    while( (m_transferredItem = static_cast<MediaItem *>(m_parent->m_queue->firstChild())) != 0 )
+    MediaItem *next = static_cast<MediaItem *>(m_parent->m_queue->firstChild());
+    while( next )
     {
+        MediaItem *transferredItem = next;
+        transferredItem->setFailed( false );
+        transferredItem->m_flags |= MediaItem::Transferring;
+        next = static_cast<MediaItem *>( transferredItem->nextSibling() );
+
         if( isCanceled() )
             break;
 
-        const MetaBundle *bundle = m_transferredItem->bundle();
+        const MetaBundle *bundle = transferredItem->bundle();
         if(!bundle)
         {
-            delete m_transferredItem;
-            m_transferredItem = 0;
+            // this should not happen
+            debug() << "invalid item in transfer queue" << endl;
+            delete transferredItem;
             m_parent->m_queue->itemCountChanged();
             continue;
         }
         
-        if( m_transferredItem->device() )
+        if( transferredItem->device() )
         {
-            m_transferredItem->device()->copyTrackFromDevice( m_transferredItem );
-            delete m_transferredItem;
-            m_transferredItem = 0;
+            transferredItem->device()->copyTrackFromDevice( transferredItem );
+            delete transferredItem;
             setProgress( progress() + 1 );
             m_parent->m_queue->itemCountChanged();
             kapp->processEvents( 100 );
@@ -2601,14 +2626,13 @@ MediaDevice::transferFiles()
         
         bool transcoding = false;
         MediaItem *item = trackExists( *bundle );
-        if( item && !m_transferredItem->m_playlistName.isEmpty() )
+        if( item && !transferredItem->m_playlistName.isEmpty() )
         {
             amaroK::StatusBar::instance()->shortMessage( i18n( "Track already on media device: %1" ).
-                    arg( m_transferredItem->url().prettyURL() ),
+                    arg( transferredItem->url().prettyURL() ),
                     KDE::StatusBar::Sorry );
-            existing += m_transferredItem->url();
-            delete m_transferredItem;
-            m_transferredItem = 0;
+            existing += transferredItem->url();
+            delete transferredItem;
             m_parent->m_queue->itemCountChanged();
             setProgress( progress() + 1 );
             continue;
@@ -2652,9 +2676,8 @@ MediaDevice::transferFiles()
             {
                 amaroK::StatusBar::instance()->shortMessage( i18n( "Track not playable on media device: %1" ).arg( bundle->url().path() ),
                         KDE::StatusBar::Sorry );
-                unplayable += m_transferredItem->url();
-                delete m_transferredItem;
-                m_transferredItem = 0;
+                unplayable += transferredItem->url();
+                transferredItem->setFailed();
                 m_parent->m_queue->itemCountChanged();
                 if( transcoding )
                 {
@@ -2670,16 +2693,12 @@ MediaDevice::transferFiles()
         if( !item ) // copyTrackToDevice() failed
         {
             if( !isCanceled() )
+            {
                 amaroK::StatusBar::instance()->longMessage(
                         i18n( "Failed to copy track to media device: %1" ).arg( bundle->url().path() ),
                         KDE::StatusBar::Sorry );
-            if( transcoding )
-            {
-                delete bundle;
-                bundle = 0;
+                transferredItem->setFailed();
             }
-            m_transferredItem = 0;
-            break;
         }
 
         if( transcoding )
@@ -2691,16 +2710,22 @@ MediaDevice::transferFiles()
             bundle = 0;
         }
 
-        int rating = CollectionDB::instance()->getSongRating( m_transferredItem->bundle()->url().path() ) * 10;
+        if( isCanceled() )
+            break;
+
+        if( !item )
+            continue;
+
+        int rating = CollectionDB::instance()->getSongRating( transferredItem->bundle()->url().path() ) * 10;
         item->setRating( rating );
 
-        if( m_playlistItem && !m_transferredItem->m_playlistName.isNull() )
+        if( m_playlistItem && !transferredItem->m_playlistName.isNull() )
         {
-            MediaItem *pl = m_playlistItem->findItem( m_transferredItem->m_playlistName );
+            MediaItem *pl = m_playlistItem->findItem( transferredItem->m_playlistName );
             if( !pl )
             {
                 QPtrList<MediaItem> items;
-                pl = newPlaylist( m_transferredItem->m_playlistName, m_playlistItem, items );
+                pl = newPlaylist( transferredItem->m_playlistName, m_playlistItem, items );
             }
             if( pl )
             {
@@ -2710,10 +2735,7 @@ MediaDevice::transferFiles()
             }
         }
 
-        //synchronizeDevice();
-
-        delete m_transferredItem;
-        m_transferredItem = 0;
+        delete transferredItem;
         setProgress( progress() + 1 );
         m_parent->m_queue->itemCountChanged();
 
@@ -3276,9 +3298,7 @@ MediaQueue::removeSelected()
 
     for( QListViewItem *item = selected.first(); item; item = selected.next() )
     {
-        if( !m_parent->currentDevice()
-                || !m_parent->currentDevice()->isTransferring()
-                || item != m_parent->currentDevice()->transferredItem() )
+        if( !(static_cast<MediaItem *>(item)->flags() & MediaItem::Transferring) )
         {
             delete item;
             if( m_parent->currentDevice() && m_parent->currentDevice()->isTransferring() )
