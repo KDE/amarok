@@ -43,6 +43,7 @@ Name[uk]=Додати до списку композицій
 Name[uz]=Қўшиқ рўйхатига қўшиш
 Name[xx]=xxAppend to Playlistxx
 Name[zh_CN]=追加到播放列表
+Name[zh_TW]=加入播放清單
 Icon=amarok
 Exec=amarok -e %U
 
@@ -81,6 +82,7 @@ Name[uk]=Додати і програти
 Name[uz]=Қўшиш ва ўйнаш
 Name[xx]=xxAppend & Playxx
 Name[zh_CN]=追加并播放
+Name[zh_TW]=加入播放清單 & 播放
 Icon=amarok
 Exec=dcop amarok playlist playMedia %U
 
@@ -118,5 +120,6 @@ Name[uk]=Додати доріжку в чергу
 Name[uz]=Навбатга қўйиш
 Name[xx]=xxQueue Trackxx
 Name[zh_CN]=音轨排队
+Name[zh_TW]=把曲目放入播放佇列
 Icon=amarok
 Exec=amarok --queue %U

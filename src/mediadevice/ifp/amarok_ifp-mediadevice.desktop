@@ -33,6 +33,7 @@ Name[sv]=iRiver iFP-mediaenhet
 Name[uk]=Пристрій iRiver iFP Media
 Name[xx]=xxiRiver iFP Media Devicexx
 Name[zh_CN]=iRiver iFP 媒体设备
+Name[zh_TW]=iRiver iFP 媒體裝置
 X-KDE-Library=libamarok_ifp-mediadevice
 Comment=Plugin for Amarok
 Comment[ar]= قابس ( برنامج مضاف الى) AmaroK
@@ -60,6 +61,7 @@ Comment[sr@Latn]=Priključak za Amarok
 Comment[sv]=Insticksprogram för Amarok
 Comment[uk]=Втулок для Amarok
 Comment[zh_CN]=Amarok 插件
+Comment[zh_TW]=amaroK 插件
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-plugintype=mediadevice

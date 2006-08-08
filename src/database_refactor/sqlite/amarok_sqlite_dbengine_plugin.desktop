@@ -76,7 +76,7 @@ Comment[uk]=Втулок для amaroK
 Comment[uz]=amaroK учун плагин
 Comment[xx]=xxPlugin for amaroKxx
 Comment[zh_CN]=Amarok 插件
-Comment[zh_TW]=amaroK 的外掛程式
+Comment[zh_TW]=amaroK 插件
 ServiceTypes=amaroK/Plugin
 
 X-KDE-amaroK-plugintype=dbengine

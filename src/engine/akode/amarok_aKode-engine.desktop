@@ -69,6 +69,7 @@ Comment[sr@Latn]=Audio motor aKode za Amarok
 Comment[sv]=aKode ljudgränssnitt för Amarok
 Comment[uk]=Аудіо-рушій aKode для Amarok
 Comment[zh_CN]=Amarok 的 aKode 音频引擎
+Comment[zh_TW]=AmaroK 的 aKode 解碼引擎
 
 X-KDE-Amarok-plugintype=engine
 X-KDE-Amarok-name=akode-engine

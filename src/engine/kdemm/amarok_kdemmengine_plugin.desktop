@@ -69,6 +69,7 @@ Comment[sr@Latn]=Priključak za Amarok
 Comment[sv]=Insticksprogram för Amarok
 Comment[uk]=Втулок для Amarok
 Comment[zh_CN]=Amarok 插件
+Comment[zh_TW]=amaroK 插件
 
 ServiceTypes=Amarok/Plugin
 X-KDE-Library=libamarok_kdemmengine_plugin

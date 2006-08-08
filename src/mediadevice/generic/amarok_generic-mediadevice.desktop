@@ -27,6 +27,7 @@ Name[sr@Latn]=Generički audio plejer
 Name[sv]=Generell ljudspelare
 Name[uk]=Загальний аудіо-програвач
 Name[zh_CN]=通用音频播放器
+Name[zh_TW]=通用音樂播放程式
 X-KDE-Library=libamarok_generic-mediadevice
 Comment=Plugin for Amarok
 Comment[ar]= قابس ( برنامج مضاف الى) AmaroK
@@ -54,6 +55,7 @@ Comment[sr@Latn]=Priključak za Amarok
 Comment[sv]=Insticksprogram för Amarok
 Comment[uk]=Втулок для Amarok
 Comment[zh_CN]=Amarok 插件
+Comment[zh_TW]=amaroK 插件
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-plugintype=mediadevice

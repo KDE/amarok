@@ -13,6 +13,7 @@ Name[pt_BR]=Dispositivo de Armazenamento em Massa
 Name[sr]=Уређај за масовно складиштење
 Name[sr@Latn]=Uređaj za masovno skladištenje
 Name[zh_CN]=大容量存储设备
+Name[zh_TW]=大型儲存裝置
 Comment=Device plugin for Amarok
 Comment[bg]=Приставка за устройство за Amarok
 Comment[de]=Geräte-Modul für Amarok
@@ -27,6 +28,7 @@ Comment[pt_BR]=Plugin de dispositivo para o Amarok
 Comment[sr]=Уређајски прикључак за Amarok
 Comment[sr@Latn]=Uređajski priključak za Amarok
 Comment[zh_CN]=Amarok 的设备插件
+Comment[zh_TW]=amaroK 裝置插件
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Library=libamarok_massstorage-device

@@ -15,6 +15,7 @@ Name[pt_BR]=Dispositivo SMB
 Name[sr]=SMB уређај
 Name[sr@Latn]=SMB uređaj
 Name[zh_CN]=SMB 设备
+Name[zh_TW]=MSB 裝置
 Comment=Device plugin for Amarok which supports SMBFS
 Comment[bg]=Приставка за устройство за Amarok, поддържаща SMBFS
 Comment[de]=Geräte-Modul für Amarok mit Unterstützung für SMB-Dateisystem
@@ -28,6 +29,7 @@ Comment[pt_BR]=Plugin de dispositivo para o Amarok, que suporta SMBFS
 Comment[sr]=Уређајски прикључак за Amarok који подржава SMBFS
 Comment[sr@Latn]=Uređajski priključak za Amarok koji podržava SMBFS
 Comment[zh_CN]=Amarok 支持 SMBFS 的设备插件
+Comment[zh_TW]=支援 SMBFS 的 amaroK 裝置插件
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Library=libamarok_smb-device

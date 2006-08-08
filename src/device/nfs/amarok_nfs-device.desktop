@@ -15,6 +15,7 @@ Name[pt_BR]=Dispositivo NFS
 Name[sr]=NFS уређај
 Name[sr@Latn]=NFS uređaj
 Name[zh_CN]=NFS 设备
+Name[zh_TW]=NFS 裝置
 Comment=Device plugin for Amarok which supports NFS
 Comment[bg]=Приставка за устройство за Amarok, поддържаща NFS
 Comment[de]=Geräte-Modul für Amarok mit Unterstützung für NFS
@@ -28,6 +29,7 @@ Comment[pt_BR]=Plugin de dispositivo para o Amarok, que suporta NFS
 Comment[sr]=Уређајски прикључак за Amarok који подржава NFS
 Comment[sr@Latn]=Uređajski priključak za Amarok koji podržava NFS
 Comment[zh_CN]=Amarok 支持 NFS 的设备插件
+Comment[zh_TW]=支援 NFS 的 amaroK 裝置插件
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Library=libamarok_nfs-device
