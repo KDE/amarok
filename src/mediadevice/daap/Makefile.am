@@ -25,10 +25,20 @@ libamarok_daap_mediadevice_la_LDFLAGS = \
 libamarok_daap_mediadevice_la_SOURCES = \
     addhostbase.ui \
     daapclient.cpp \
+    daapserver.cpp \
     proxy.cpp
 
 noinst_HEADERS = \
     daapclient.h \
+    daapserver.h \
     proxy.h
 
+bin_SCRIPTS = amarok_daapserver.rb
+
 SUBDIRS = daapreader
+
+amarokrubylibdir = \
+    $(kde_datadir)/amarok/ruby_lib
+
+amarokrubylib_DATA = \
+    codes.rb

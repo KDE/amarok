@@ -17,6 +17,7 @@
 #include "addhostbase.h"
 #include "daapreader/reader.h"
 #include "daapclient.h"
+#include "daapserver.h"
 #include "debug.h"
 #include "mediabrowser.h"
 #include "playlist.h"
@@ -68,6 +69,7 @@ DEBUG_BLOCK
     QToolTip::add( customButton, i18n( "List music from a remote host" ) );
     MediaBrowser::instance()->insertChild( this );
     debug() << "lookatme " << (parent() ? parent()->name() : "no parent") << (parent() ? parent()->metaObject()->className() : " ") << endl;
+    new DaapServer( this, "DaapServer" );
 }
 
 DaapClient::~DaapClient()
