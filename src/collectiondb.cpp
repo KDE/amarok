@@ -897,8 +897,7 @@ CollectionDB::createStatsTable()
                     "deleted BOOL DEFAULT " + boolF() + ","
                     "PRIMARY KEY(url, deviceid) );" ) );
 
-//    query( "CREATE INDEX url_stats ON statistics( url );" );
-
+    query( "CREATE UNIQUE INDEX url_stats ON statistics( deviceid, url );" );
     query( "CREATE INDEX percentage_stats ON statistics( percentage );" );
     query( "CREATE INDEX rating_stats ON statistics( rating );" );
     query( "CREATE INDEX playcounter_stats ON statistics( playcounter );" );
@@ -945,10 +944,9 @@ CollectionDB::createStatsTableV10( bool temp )
                     ).arg( temp ? "TEMPORARY" : "" )
                      .arg( temp ? "_fix_ten" : "" ) );
 
-//    query( "CREATE INDEX url_stats ON statistics( url );" );
-
     if ( !temp )
     {
+        query( "CREATE UNIQUE INDEX url_stats ON statistics( deviceid, url );" );
         query( "CREATE INDEX percentage_stats ON statistics( percentage );" );
         query( "CREATE INDEX rating_stats ON statistics( rating );" );
         query( "CREATE INDEX playcounter_stats ON statistics( playcounter );" );
@@ -1075,8 +1073,7 @@ CollectionDB::createPersistentTablesV14( bool temp )
 
     if ( !temp )
     {
-        query( "CREATE INDEX url_lyrics ON lyrics( url );" );
-        query( "CREATE INDEX deviceid_lyrics ON lyrics( deviceid );" );
+        query(  "CREATE UNIQUE INDEX lyrics_url ON lyrics( url, deviceid );" );
         query( "CREATE INDEX playlist_playlists ON playlists( playlist );" );
         query( "CREATE INDEX url_playlists ON playlists( url );" );
     }
@@ -5262,7 +5259,7 @@ CollectionDB::updateStatsTables()
                     query ( update );
                 }
             }
-            if ( prev < 10 )
+            if ( prev < 11 )
             {
                 createStatsTableV10( true );
                 query( "INSERT INTO statistics_fix_ten SELECT url,deviceid,createdate,"
@@ -5271,6 +5268,11 @@ CollectionDB::updateStatsTables()
                 dropStatsTableV1();
                 createStatsTableV10( false );
                 query( "INSERT INTO statistics SELECT * FROM statistics_fix_ten;" );
+            }
+            else
+            {
+                error() << "Database statistics version too new for this version of Amarok. Quitting..." << endl;
+                exit( 1 );
             }
         }
     }
@@ -5362,7 +5364,7 @@ CollectionDB::updatePersistentTables()
                 query ( update );
             }
         }
-        if ( PersistentVersion.toInt() < 14 )
+        if ( PersistentVersion.toInt() < 15 )
         {
             createPersistentTablesV14( true );
             query( "INSERT INTO amazon_fix SELECT asin,locale,filename,refetchdate FROM amazon;" );
@@ -5376,7 +5378,7 @@ CollectionDB::updatePersistentTables()
         }
 
         //Up to date. Keep this number   \/   in sync!
-        if ( PersistentVersion.toInt() > 14 || PersistentVersion.toInt() < 0 )
+        if ( PersistentVersion.toInt() > 15 || PersistentVersion.toInt() < 0 )
         {
             //Something is horribly wrong
             if ( adminValue( "Database Persistent Tables Version" ).toInt() != DATABASE_PERSISTENT_TABLES_VERSION )
