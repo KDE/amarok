@@ -3790,9 +3790,9 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     if( isCurrent && isLastFm )
     {
         KActionCollection *ac = amaroK::actionCollection();
-        if( ac->action( "ban" ) ) ac->action( "ban" )->plug( &popup );
-        if( ac->action( "love" ) ) ac->action( "love" )->plug( &popup );
         if( ac->action( "skip" ) ) ac->action( "skip" )->plug( &popup );
+        if( ac->action( "love" ) ) ac->action( "love" )->plug( &popup );
+        if( ac->action( "ban" ) ) ac->action( "ban" )->plug( &popup );
         popup.insertSeparator();
     }
 
