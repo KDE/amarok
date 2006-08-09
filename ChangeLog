@@ -78,6 +78,8 @@ VERSION 1.4.2:
       since the last time it was enabled.
 
   BUGFIXES:
+    * Better resize behavior in iPod collection view mode. Patch by Joe Rabinoff
+      <bobqwatson@yahoo.com> (BR 132016)
     * Make sure a track's compilation status is returned properly when running
       with Postgresql.
     * Check directory structure on iPods of unknown type in order to detect

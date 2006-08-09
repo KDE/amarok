@@ -121,6 +121,8 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     m_timeFilter = new KComboBox( m_ipodHbox, "timeFilter" );
     m_ipodHbox->setStretchFactor( m_timeFilter, 1 );
+    // Allow the combobox to shrink so the iPod buttons are still visible
+    m_timeFilter->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     m_timeFilter->insertItem( i18n( "Entire Collection" ) );
     m_timeFilter->insertItem( i18n( "Added Within One Year" ) );
     m_timeFilter->insertItem( i18n( "Added Within Three Months" ) );
