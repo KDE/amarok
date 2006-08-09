@@ -3272,6 +3272,23 @@ CollectionDB::getURL( const MetaBundle &bundle )
     return url;
 }
 
+// Helper function to convert the "tags.sampler" column to a MetaBundle::Collection value
+//
+// We use the first char of boolT / boolF as not all DBs store true/false as
+// numerics (and it's only a single-char column)
+static int
+samplerToCompilation( const QString &it )
+{
+    if( it == CollectionDB::instance()->boolT().mid( 0, 1 ) )
+    {
+         return MetaBundle::CompilationYes;
+    }
+    else if( it == CollectionDB::instance()->boolF().mid( 0, 1 ) )
+    {
+        return MetaBundle::CompilationNo;
+    }
+    return MetaBundle::CompilationUnknown;
+}                                           
 
 static void
 fillInBundle( QStringList values, MetaBundle &bundle )
@@ -3303,16 +3320,7 @@ fillInBundle( QStringList values, MetaBundle &bundle )
 
     // use first char of boolT / boolF as not all DBs store these as
     // numerics (and it's only a single-char column)
-    int val = MetaBundle::CompilationUnknown;
-    if( (*it) == CollectionDB::instance()->boolT().mid( 0, 1 ) )
-    {
-        val = MetaBundle::CompilationYes;
-    }
-    else if( (*it) == CollectionDB::instance()->boolF().mid( 0, 1 ) )
-    {
-        val = MetaBundle::CompilationNo;
-    }
-    bundle.setCompilation( val );
+    bundle.setCompilation( samplerToCompilation( *it ) );
     ++it;
 
     bundle.setUniqueId(*it);
@@ -3445,18 +3453,7 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                 b.setBpm       ( (*++it).toFloat() );
                 b.setPath      (  *++it );
 
-                // use first char of boolT / boolF as not all DBs store these as
-                // numerics (and it's only a single-char column)
-                int val = MetaBundle::CompilationUnknown;
-                if( (*it) == CollectionDB::instance()->boolT().mid( 0, 1 )  )
-                {
-                    val = MetaBundle::CompilationYes;
-                }
-                else if( (*it) == CollectionDB::instance()->boolF().mid( 0, 1 )  )
-                {
-                    val = MetaBundle::CompilationNo;
-                }
-                b.setCompilation( val );
+                b.setCompilation( samplerToCompilation( *it ) );
                 ++it;
 
                 b.checkExists();
