@@ -3300,9 +3300,20 @@ fillInBundle( QStringList values, MetaBundle &bundle )
     bundle.setFileType  ( (*it).toInt() ); ++it;
     bundle.setBpm       ( (*it).toFloat() ); ++it;
 
-    bool ok;
-    int val = (*it).toInt( &ok ); ++it;
-    bundle.setCompilation( ok ? val : MetaBundle::CompilationUnknown );
+
+    // use first char of boolT / boolF as not all DBs store these as
+    // numerics (and it's only a single-char column)
+    int val = MetaBundle::CompilationUnknown;
+    if( (*it) == CollectionDB::instance()->boolT().mid( 0, 1 ) )
+    {
+        val = MetaBundle::CompilationYes;
+    }
+    else if( (*it) == CollectionDB::instance()->boolF().mid( 0, 1 ) )
+    {
+        val = MetaBundle::CompilationNo;
+    }
+    bundle.setCompilation( val );
+    ++it;
 
     bundle.setUniqueId(*it);
 }
@@ -3434,9 +3445,19 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                 b.setBpm       ( (*++it).toFloat() );
                 b.setPath      (  *++it );
 
-                bool ok;
-                int val = (*++it).toInt( &ok );
-                b.setCompilation( ok ? val : MetaBundle::CompilationUnknown );
+                // use first char of boolT / boolF as not all DBs store these as
+                // numerics (and it's only a single-char column)
+                int val = MetaBundle::CompilationUnknown;
+                if( (*it) == CollectionDB::instance()->boolT().mid( 0, 1 )  )
+                {
+                    val = MetaBundle::CompilationYes;
+                }
+                else if( (*it) == CollectionDB::instance()->boolF().mid( 0, 1 )  )
+                {
+                    val = MetaBundle::CompilationNo;
+                }
+                b.setCompilation( val );
+                ++it;
 
                 b.checkExists();
 

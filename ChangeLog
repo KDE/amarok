@@ -78,6 +78,8 @@ VERSION 1.4.2:
       since the last time it was enabled.
 
   BUGFIXES:
+    * Make sure a track's compilation status is returned properly when running
+      with Postgresql.
     * Check directory structure on iPods of unknown type in order to detect
       iTunes phones. (BR 131910)
     * Make 'Clear' individually translatable for playlists. (BR 131521)
