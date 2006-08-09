@@ -355,8 +355,7 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
     {
         // FIXME: track->unk176 = 0x00010000; // for non-podcasts
 
-        uint albumID = CollectionDB::instance()->albumID( bundle.album(), false );
-        if( albumID && CollectionDB::instance()->albumIsCompilation( QString::number( albumID ) ) )
+        if( bundle.compilation() == MetaBundle::CompilationYes )
         {
             track->compilation = 0x01;
         }
