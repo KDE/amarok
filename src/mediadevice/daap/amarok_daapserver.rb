@@ -4,8 +4,13 @@
 # (c) 2006 Ian Monroe <ian@monroe.nu>
 # License: GNU General Public License V2
 
+require "#{ARGV[0]}" #codes.rb
+require "#{ARGV[1]}" #debug.rb
 require 'webrick'
 require 'pp'
+
+$app_name = "Daap"
+$debug_prefix = "Server"
 
 class Element
     #attr_accessor :length, :name, :value
@@ -16,7 +21,7 @@ class Element
         
         def to_s
             if @value.nil? then
-                debug @name + ' is null'
+                log @name + ' is null'
                 @name + long_convert( 0 )
             else
                 content = valueToString()
@@ -55,7 +60,7 @@ class Element
                     end
                     values
                 else
-                    debug "type error! #{@value} #{CODE_TYPE[@name]}"
+                    log "type error! #{@value} #{CODE_TYPE[@name]}"
             end
         end
         
@@ -97,33 +102,37 @@ class LoginServlet < WEBrick::HTTPServlet::AbstractServlet
         root << Element.new( 'mlid', @@sessionId )
         root << Element.new( 'mstt',  WEBrick::HTTPStatus::OK.code )
         resp.body = root.to_s
-        debug resp.body.dump
+        log resp.body.dump
         @@sessionId += 1
     end
 end
 
 #{"mupd"=>{"mstt"=>[200], "musr"=>[2]}}
 class UpdateServlet < WEBrick::HTTPServlet::AbstractServlet
-
+    include DebugMethods
+    
+    debugMethod(:do_GET)
     def do_GET( req, resp )
         root = Element.new( 'mupd' )
         root << Element.new( 'mstt', WEBrick::HTTPStatus::OK.code )
         root << Element.new( 'musr', 2 )
         resp.body = root.to_s
-        debug resp.body.dump
+        log resp.body.dump
     end
 
 end
 
 class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
-
+  include DebugMethods
   public
       @@instance = nil
       def self.get_instance( config, *options )
           @@instance = @@instance || self.new
       end
 
+      debugMethod(:initialize)
       def initialize
+          puts "hello"
           artists = Array.new
           albums = Array.new
           genre = Array.new
@@ -155,13 +164,13 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
               track[ @column_keys[columnIt] ] = dbitems[ overallIt + columnIt ]
               }
               if overallIt > (dbitems.size - 500) then
-                  debug dbitems[ overallIt, overallIt + @column_keys.size].inspect
+                  log dbitems[ overallIt, overallIt + @column_keys.size].inspect
               end
               columnIt = @column_keys.size-2
               id += 1
               url = dbitems[ overallIt + columnIt ].reverse.chop.reverse
               url[0] = ''
-          #   debug "indexes: #{dbitems[ columnIt + overallIt + 1 ]} - #{indexes[3][:indexed][ dbitems[ columnIt + overallIt + 1 ].to_i ]} #{url}"
+          #   log "indexes: #{dbitems[ columnIt + overallIt + 1 ]} - #{indexes[3][:indexed][ dbitems[ columnIt + overallIt + 1 ].to_i ]} #{url}"
               @music[id] = "#{indexes[3][:indexed][ dbitems[ columnIt + overallIt + 1 ].to_i ]}/#{url}"
               track[ :itemid ] = id
               ext = File::extname( url ).reverse.chop.reverse;
@@ -172,6 +181,7 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
           @column_keys.push( :songformat )
       end
       
+      debugMethod(:do_GET)
       def do_GET( req, resp )
           if @items.nil? then
               initItems()
@@ -232,7 +242,7 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
                           if( METAS[ index ] )
                               toDisplay.push( { :index=>index, :code=> METAS[ index ][:code] } )
                           else
-                              debug "not being displayed #{index.to_s}"
+                              log "not being displayed #{index.to_s}"
                           end
                       end
                   }
@@ -250,27 +260,29 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
                       }
                       mlcl << mlit
                   }
-                  debug adbs.to_s.inspect
+                  log adbs.to_s.inspect
                   resp.body = adbs.to_s
               else if command =~ /([\d]*)\.(.*)$/ #1232.mp3
-                      debug "sending #{@music[ $1.to_i ]}"
+                      log "sending #{@music[ $1.to_i ]}"
                       resp.body = open( @music[ $1.to_i ] )
                   else
-                      debug "unimplemented request #{req.path}"
+                      log "unimplemented request #{req.path}"
                   end
           end
       end
   private
-
+      debugMethod(:query)
       def query( sql )
           out = String.new
-          $stderr.puts "SQL QUERY: #{sql}"
+         # $stdout.flush
+         # $stdout.syswrite "SQL QUERY: #{sql}\n"
+          puts "SQL QUERY: #{sql}"
           out += line while (line = $stdin.gets) && (line.chop != '**** END SQL ****')
           out
       end
 end
 
-def debug( string )
+def log( string )
   f = open('/tmp/test.ruby', File::WRONLY | File::APPEND | File::CREAT )
   f.puts( string )
   f.close
@@ -293,5 +305,6 @@ class Controller
 
 end
 
-require "#{ARGV[0]}/codes.rb"
+$stdout.sync = true
+$stderr.sync = true
 Controller.new

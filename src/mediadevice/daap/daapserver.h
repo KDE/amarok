@@ -23,7 +23,7 @@ class DaapServer : public QObject
     public slots:
         void readSql();
     private:
-        amaroK::ProcIO* m_server;
+        KProcIO* m_server;
 };
 
 #endif /* AMAROK_DAAPSERVER_H */

@@ -171,6 +171,9 @@ end
 
 def myputs( string )
   $stderr.puts( "AMAROK_PROXY: #{string}" )
+  f = open('/tmp/test.ruby', File::WRONLY | File::APPEND | File::CREAT )
+  f.puts( string )
+  f.close
 end
 
 begin

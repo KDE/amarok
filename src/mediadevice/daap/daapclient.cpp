@@ -226,9 +226,14 @@ DaapClient::serverOffline( DNSSD::RemoteService::Ptr service )
     if( m_serverItemMap.contains( service.data() ) )
     {
         ServerItem* removeMe = m_serverItemMap[ service.data() ];
-        delete removeMe->getReader();
-        removeMe->setReader( 0 );
-        delete removeMe;
+        if( removeMe )
+        {
+            delete removeMe->getReader();
+            removeMe->setReader( 0 );
+            delete removeMe;
+        }
+        else
+            warning() << "root item already null" << endl;
     }
     else
         warning() << "removing non-existant service" << endl;
