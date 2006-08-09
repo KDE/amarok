@@ -1964,21 +1964,32 @@ PodcastEpisode::compare( QListViewItem* item, int col, bool ascending ) const
 {
     if ( item->rtti() == PodcastEpisode::RTTI )
     {
+        int ret;
         #define item static_cast<PodcastEpisode*>(item)
         // date is priority
         bool thisHasDate = m_bundle.dateTime().isValid();
         bool thatHasDate = item->m_bundle.dateTime().isValid();
         if( thisHasDate && thatHasDate )
-            return m_bundle.dateTime() < item->m_bundle.dateTime() ? 1 : -1;
+        {
+            ret = m_bundle.dateTime() < item->m_bundle.dateTime() ? 1 : -1;
+            if ( !ascending )  ret *= -1;
+            return ret;
+        }
 
         // if neither has a date, then we order upon the id in the database.  This
         // should be the order in which it arrives in the feed.
         if( !thisHasDate && !thatHasDate )
-            return m_bundle.dBId() < item->m_bundle.dBId() ?  1 : -1;
+        {
+            ret = m_bundle.dBId() < item->m_bundle.dBId() ?  1 : -1;
+            if ( !ascending )  ret *= -1;
+            return ret;
+        }
 
         // if one has a date, and the other doesnt, always keep non-dated at the bottom.
         // hypothetically, this should never happen, but it might.
-        return thisHasDate ? 1 : -1;
+        ret = thisHasDate ? 1 : -1;
+        if ( !ascending )  ret *= -1;
+        return ret;
         #undef item
     }
 
