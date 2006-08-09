@@ -1894,6 +1894,8 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
             author = xml.namedItem( "itunes:author" ).toElement().text();
 
         date     = xml.namedItem( "pubDate" ).toElement().text();
+        if( date.isEmpty() )
+            date = xml.namedItem( "dc:date" ).toElement().text();
 
         QString ds = xml.namedItem( "itunes:duration" ).toElement().text();
         QString secs = ds.section( ":", -1, -1 );

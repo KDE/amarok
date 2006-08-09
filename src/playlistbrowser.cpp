@@ -1910,8 +1910,8 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
             #define child static_cast<PodcastEpisode *>(child)
 
             child->isOnDisk() ?
-                list.append( child->localUrl() ):
-                list.append( child->url()      );
+                list.prepend( child->localUrl() ):
+                list.prepend( child->url()      );
 
             #undef child
             child = child->nextSibling();
