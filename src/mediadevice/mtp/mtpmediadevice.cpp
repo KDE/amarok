@@ -261,7 +261,7 @@ MediaItem
     // try and create the requested folder structure
     if( !m_folderStructure.isEmpty() )
     {
-        parent_id = checkFolderStructure( parent_id, trackmeta );
+        parent_id = checkFolderStructure( parent_id, trackmeta, bundle );
         if( parent_id == 0 )
         {
             debug() << "Couldn't create new parent (" << m_folderStructure << ")" << endl;
@@ -312,7 +312,7 @@ MediaItem
  * track into. Return the (possibly new) parent folder ID
  */
 uint32_t
-MtpMediaDevice::checkFolderStructure( uint32_t parent_id, const LIBMTP_track_t *trackmeta )
+MtpMediaDevice::checkFolderStructure( uint32_t parent_id, const LIBMTP_track_t *trackmeta, const MetaBundle &bundle )
 {
     m_critical_mutex.lock();
     QStringList folders = QStringList::split( "/", m_folderStructure ); // use slash as a dir separator
@@ -322,7 +322,10 @@ MtpMediaDevice::checkFolderStructure( uint32_t parent_id, const LIBMTP_track_t *
         if( (*it).isEmpty() )
             continue;
         // substitute %a , %b , %g
-        (*it).replace( QRegExp( "%a" ), trackmeta->artist ) // TODO : Can this be Album artist (e.g. Various)
+        QString artist = trackmeta->artist;
+        if( bundle.compilation() == MetaBundle::CompilationYes )
+            artist = i18n( "Various Artists" );
+        (*it).replace( QRegExp( "%a" ), artist )
             .replace( QRegExp( "%b" ), trackmeta->album )
             .replace( QRegExp( "%g" ), trackmeta->genre );
         // check if it exists
@@ -842,6 +845,7 @@ MtpMediaDevice::addConfigElements( QWidget *parent )
     m_folderStructureBox->setText( m_folderStructure );
     QToolTip::add( m_folderStructureBox,
         i18n( "Files copied to the device will be placed in this folder." ) + "\n"
+        + i18n( "/ is used a folder separator." ) + "\n"
         + i18n( "%a will be replaced with the artist name, ")
         + i18n( "%b with the album name," ) + "\n"
         + i18n( "%g with the genre.") + "\n"
