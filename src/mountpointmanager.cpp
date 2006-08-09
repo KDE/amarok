@@ -209,7 +209,7 @@ MountPointManager::getAbsolutePath( const int& deviceId, const KURL& relativePat
             absolutePath.setPath( lastMountPoint.first() );
             absolutePath.addPath( relativePath.path() );
             absolutePath.cleanPath();
-            debug() << "Device " << deviceId << " not mounted, using last mount point and returning " << absolutePath.path() << endl;
+//             debug() << "Device " << deviceId << " not mounted, using last mount point and returning " << absolutePath.path() << endl;
         }
     }
 }
@@ -483,7 +483,6 @@ bool StatisticsUpdateJob::doJob( )
     {
         int deviceid = (*it).toInt();
         QString rpath = *++it;
-        debug() << "Checking statistics path for deviceid " << deviceid << ", rpath " << rpath << endl;
         QString realURL = MountPointManager::instance()->getAbsolutePath( deviceid, rpath );
         if( QFile::exists( realURL ) )
         {

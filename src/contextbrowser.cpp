@@ -1566,7 +1566,6 @@ CurrentTrackJob::showHomeByAlbums()
 
 void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
 {
-    DEBUG_BLOCK
     if( !LastFm::Controller::instance()->isPlaying() ) return;
 
     const LastFm::Bundle *lastFmInfo = currentTrack.lastFmBundle();
@@ -1958,8 +1957,6 @@ void CurrentTrackJob::showBrowseArtistHeader( const QString &artist )
 
 void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
 {
-    DEBUG_BLOCK
-
     QueryBuilder qb;
     QStringList values;
     // <Current Track Information>
@@ -1976,7 +1973,6 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
     //making 2 tables is most probably not the cleanest way to do it, but it works.
     QString albumImage = CollectionDB::instance()->albumImage( currentTrack, true, 1 );
     QString albumImageTitleAttr = albumImageTooltip( albumImage, 0 );
-    debug() << "retrieved album image name" << endl;
 
     bool isCompilation = false;
     if( !currentTrack.album().isEmpty() )
@@ -1984,7 +1980,6 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
         isCompilation = CollectionDB::instance()->albumIsCompilation(
                 QString::number( CollectionDB::instance()->albumID( currentTrack.album() ) )
                 );
-        debug() << "checked for compilation: " << isCompilation << endl;
     }
 
     m_HTMLSource.append(
@@ -2044,7 +2039,6 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
                 .arg( escapeHTMLAttr( albumImage ) )
                 .arg( albumImageTitleAttr )
                 ) );
-    debug() << "handled html append" << endl;
 
     if ( !values.isEmpty() && values[2].toInt() )
     {
@@ -2252,7 +2246,6 @@ void CurrentTrackJob::showSuggestedSongs( const QStringList &relArtists )
 
 void CurrentTrackJob::showArtistsFaves( const QString &artist, uint artist_id )
 {
-    DEBUG_BLOCK
     QString artistName = artist.isEmpty() ? escapeHTML( i18n( "This Artist" ) ) : escapeHTML( artist );
     QueryBuilder qb;
     QStringList values;
@@ -2469,7 +2462,6 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
 
 void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artist_id, uint album_id )
 {
-    DEBUG_BLOCK
     QString artistName = artist.isEmpty() ? escapeHTML( i18n( "This Artist" ) ) : escapeHTML( artist );
     QueryBuilder qb;
     QStringList values;
@@ -2779,8 +2771,6 @@ bool CurrentTrackJob::doJob()
 
 void ContextBrowser::showIntroduction()
 {
-    DEBUG_BLOCK
-
     if ( currentPage() != m_contextTab )
     {
         blockSignals( true );
@@ -3282,7 +3272,6 @@ ContextBrowser::showWikipediaEntry( const QString &entry )
 
 void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
 {
-    DEBUG_BLOCK
     #if 0
     if( BrowserBar::instance()->currentBrowser() != this )
     {
