@@ -155,6 +155,11 @@ SHORT-TERM (URGENT):
            Maybe an upstream bug and nothing we can fix.
 
 MID-TERM:
+ <eean>    Implement a "Find My Music" button in the first-run wizard. Just a basic
+           thing that will look at file extensions and try to figure out where the users
+           music is located. Ignore /opt/, /usr etc. to avoid adding sound effects. Prompt
+           user with the directories at the end of the scan, allowing them to exclude some.
+
  <eean>    The FileBrowser doesn't check for recursive symlinks. This is a KDirOperator (or the
            classes it depends on) problem.
 
