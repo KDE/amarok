@@ -1669,12 +1669,28 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
 
     addMetaHistory();
 
+    if( ContextBrowser::instance()->m_showRelated || ContextBrowser::instance()->m_showSuggested )
+    {
+        QStringList relArtists = CollectionDB::instance()->similarArtists( currentTrack.artist(), 10 );
+        if ( !relArtists.isEmpty() )
+        {
+            if( ContextBrowser::instance()->m_showRelated )
+                showRelatedArtists( currentTrack.artist(), relArtists );
+
+            if( ContextBrowser::instance()->m_showSuggested )
+                showSuggestedSongs( relArtists );
+        }
+    }
+
     const uint artist_id = CollectionDB::instance()->artistID( currentTrack.artist(), false /* don't autocreate */ );
     if( artist_id )
     {
-       const uint album_id  = CollectionDB::instance()->albumID ( currentTrack.album(), false /* don't autocreate */ );
-       showArtistsAlbums( currentTrack.artist(), artist_id, album_id );
-       showArtistsCompilations( currentTrack.artist(), artist_id, album_id );
+        if( ContextBrowser::instance()->m_showFaves )
+            showArtistsFaves( currentTrack.artist(), artist_id );
+
+        const uint album_id  = CollectionDB::instance()->albumID ( currentTrack.album(), false /* don't autocreate */ );
+        showArtistsAlbums( currentTrack.artist(), artist_id, album_id );
+        showArtistsCompilations( currentTrack.artist(), artist_id, album_id );
     }
 
     m_HTMLSource.append( "</body></html>\n" );
@@ -2745,14 +2761,18 @@ bool CurrentTrackJob::doJob()
         showBrowseArtistHeader( artist );
     else
         showCurrentArtistHeader( m_currentTrack );
-    QStringList relArtists = CollectionDB::instance()->similarArtists( artist, 10 );
-    if ( !relArtists.isEmpty() )
-    {
-        if( ContextBrowser::instance()->m_showRelated )
-            showRelatedArtists( artist, relArtists );
 
-        if( ContextBrowser::instance()->m_showSuggested )
-            showSuggestedSongs( relArtists );
+    if( ContextBrowser::instance()->m_showRelated || ContextBrowser::instance()->m_showSuggested )
+    {
+        QStringList relArtists = CollectionDB::instance()->similarArtists( artist, 10 );
+        if ( !relArtists.isEmpty() )
+        {
+            if( ContextBrowser::instance()->m_showRelated )
+                showRelatedArtists( artist, relArtists );
+
+            if( ContextBrowser::instance()->m_showSuggested )
+                showSuggestedSongs( relArtists );
+        }
     }
     QString artistName = artist.isEmpty() ? i18n( "This Artist" ) : artist ;
     if ( !artist.isEmpty() )
