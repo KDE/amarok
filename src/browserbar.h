@@ -71,7 +71,7 @@ signals:
 
 private:
     void adjustWidgetSizes();
-    uint maxBrowserWidth() const { return width() / 2; }
+    uint maxBrowserWidth() const { return width() * 2 / 3; }
 
     static const int DEFAULT_HEIGHT = 50;
 
