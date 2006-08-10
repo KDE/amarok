@@ -528,6 +528,8 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         void dropPersistentTables();
         void createPodcastTables();
         void dropPodcastTables();
+        void createDevicesTable();
+        void dropDevicesTable();
 
         //Archived forms of the above. useful for providing a linear upgrade routine that
         //stays the same

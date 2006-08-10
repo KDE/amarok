@@ -880,6 +880,33 @@ CollectionDB::prepareTempTables()
     insert( "INSERT INTO year_temp SELECT * from year;", 0 );
 }
 
+void
+CollectionDB::createDevicesTable()
+{
+    debug() << "Creating DEVICES table" << endl;
+    QString deviceAutoIncrement = "";
+    if ( getDbConnectionType() == DbConnection::postgresql )
+    {
+        query( QString( "CREATE SEQUENCE devices_seq;" ) );
+        deviceAutoIncrement = QString("DEFAULT nextval('devices_seq')");
+    }
+    else if ( getDbConnectionType() == DbConnection::mysql )
+    {
+        deviceAutoIncrement = "AUTO_INCREMENT";
+    }
+    query( QString( "CREATE TABLE devices ("
+                    "id INTEGER PRIMARY KEY %1,"
+                    "type " + textColumnType() + ","
+                    "label " + textColumnType() + ","
+                    "lastmountpoint " + textColumnType() + ","
+                    "uuid " + textColumnType() + ","
+                    "servername " + textColumnType() + ","
+                    "sharename " + textColumnType() + ");" )
+                 .arg( deviceAutoIncrement ) );
+    query( "CREATE INDEX devices_type ON devices( type );" );
+    query( "CREATE INDEX devices_uuid ON devices( uuid );" );
+    query( "CREATE INDEX devices_rshare ON devices( servername, sharename );" );
+}
 
 void
 CollectionDB::createStatsTable()
@@ -991,29 +1018,6 @@ CollectionDB::createPersistentTables()
     query( "CREATE UNIQUE INDEX lyrics_url ON lyrics( url, deviceid );" );
     query( "CREATE INDEX playlist_playlists ON playlists( playlist );" );
     query( "CREATE INDEX url_playlists ON playlists( url );" );
-
-    QString deviceAutoIncrement = "";
-    if ( getDbConnectionType() == DbConnection::postgresql )
-    {
-        query( QString( "CREATE SEQUENCE devices_seq;" ) );
-        deviceAutoIncrement = QString("DEFAULT nextval('devices_seq')");
-    }
-    else if ( getDbConnectionType() == DbConnection::mysql )
-    {
-        deviceAutoIncrement = "AUTO_INCREMENT";
-    }
-    query( QString( "CREATE TABLE devices ("
-                    "id INTEGER PRIMARY KEY %1,"
-                    "type " + textColumnType() + ","
-                    "label " + textColumnType() + ","
-                    "lastmountpoint " + textColumnType() + ","
-                    "uuid " + textColumnType() + ","
-                    "servername " + textColumnType() + ","
-                    "sharename " + textColumnType() + ");" )
-                  .arg( deviceAutoIncrement ) );
-    query( "CREATE INDEX devices_type ON devices( type );" );
-    query( "CREATE INDEX devices_uuid ON devices( uuid );" );
-    query( "CREATE INDEX devices_rshare ON devices( servername, sharename );" );
 }
 
 void
@@ -1237,7 +1241,6 @@ CollectionDB::dropPodcastTables()
     query( "DROP TABLE podcastchannels;" );
     query( "DROP TABLE podcastepisodes;" );
     query( "DROP TABLE podcastfolders;" );
-    query( "DROP TABLE devices;" );
 }
 
 void
@@ -1246,6 +1249,12 @@ CollectionDB::dropPodcastTablesV2()
     query( "DROP TABLE podcastchannels;" );
     query( "DROP TABLE podcastepisodes;" );
     query( "DROP TABLE podcastfolders;" );
+}
+
+void
+CollectionDB::dropDevicesTable()
+{
+    query( "DROP TABLE devices;" );
 }
 
 uint
@@ -4994,32 +5003,34 @@ CollectionDB::initialize()
         error() << "Failed to connect to or initialise database!" << endl;
         amaroK::MessageQueue::instance()->addMessage( dbConn->lastError() );
     }
-    else if ( !isValid() )
+    else
     {
-        //No tables seem to exist (as doing a count(url) didn't even return any number, even 0).
-        warning() << "Tables seem to not exist." << endl;
-        warning() << "Attempting to create tables (this should be safe; ignore any errors)..." << endl;
-        createTables(false);
-        createPersistentTables();
-        createPodcastTables();
-        createStatsTable();
-        warning() << "Tables should now definitely exist. (Stop ignoring errors)" << endl;
+        if ( !isValid() )
+        {
+            //No tables seem to exist (as doing a count(url) didn't even return any number, even 0).
+            warning() << "Tables seem to not exist." << endl;
+            warning() << "Attempting to create tables (this should be safe; ignore any errors)..." << endl;
+            createTables(false);
+            createPersistentTables();
+            createPodcastTables();
+            createStatsTable();
+            warning() << "Tables should now definitely exist. (Stop ignoring errors)" << endl;
 
-        //Since we have created the tables, we need to make sure the version numbers are
-        //set to the correct values. If this is not done now, the database update code may
-        //run, which could corrupt things.
-        amaroK::config( "Collection Browser" )->writeEntry( "Database Version", DATABASE_VERSION );
-        amaroK::config( "Collection Browser" )->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
-        amaroK::config( "Collection Browser" )->writeEntry( "Database Persistent Tables Version", DATABASE_PERSISTENT_TABLES_VERSION );
-        amaroK::config( "Collection Browser" )->writeEntry( "Database Podcast Tables Version", DATABASE_PODCAST_TABLES_VERSION );    amaroK::config( "Collection Browser" )->writeEntry( "Database ATF Version", DATABASE_ATF_VERSION );
+            //Since we have created the tables, we need to make sure the version numbers are
+            //set to the correct values. If this is not done now, the database update code may
+            //run, which could corrupt things.
+            amaroK::config( "Collection Browser" )->writeEntry( "Database Version", DATABASE_VERSION );
+            amaroK::config( "Collection Browser" )->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
+            amaroK::config( "Collection Browser" )->writeEntry( "Database Persistent Tables Version", DATABASE_PERSISTENT_TABLES_VERSION );
+            amaroK::config( "Collection Browser" )->writeEntry( "Database Podcast Tables Version", DATABASE_PODCAST_TABLES_VERSION );    amaroK::config( "Collection Browser" )->writeEntry( "Database ATF Version", DATABASE_ATF_VERSION );
 
-        setAdminValue( "Database Version", QString::number( DATABASE_VERSION ) );
-        setAdminValue( "Database Stats Version", QString::number( DATABASE_STATS_VERSION ) );
-        setAdminValue( "Database Persistent Tables Version", QString::number( DATABASE_PERSISTENT_TABLES_VERSION ) );
-        setAdminValue( "Database Podcast Tables Version", QString::number( DATABASE_PODCAST_TABLES_VERSION ) );
-        setAdminValue( "Database ATF Version", QString::number( DATABASE_ATF_VERSION ) );
-    }
-    else {
+            setAdminValue( "Database Version", QString::number( DATABASE_VERSION ) );
+            setAdminValue( "Database Stats Version", QString::number( DATABASE_STATS_VERSION ) );
+            setAdminValue( "Database Persistent Tables Version", QString::number( DATABASE_PERSISTENT_TABLES_VERSION ) );
+            setAdminValue( "Database Podcast Tables Version", QString::number( DATABASE_PODCAST_TABLES_VERSION ) );
+            setAdminValue( "Database ATF Version", QString::number( DATABASE_ATF_VERSION ) );
+        }
+
         //updates for the Devices table go here
         //put all other update code into checkDatabase()
         //make sure that there is no call to MountPointManager in CollectionDB's ctor
@@ -5027,41 +5038,29 @@ CollectionDB::initialize()
         if ( adminValue( "Database Devices Version" ).isEmpty()
              && amaroK::config( "CollectionBrowser" )->readNumEntry( "Database Devices Version", 0 ) == 0 )
         {
-            debug() << "Creating DEVICES table" << endl;
-            QString deviceAutoIncrement = "";
-            if ( getDbConnectionType() == DbConnection::postgresql )
-            {
-                query( QString( "CREATE SEQUENCE devices_seq;" ) );
-                deviceAutoIncrement = QString("DEFAULT nextval('devices_seq')");
-            }
-            else if ( getDbConnectionType() == DbConnection::mysql )
-            {
-                deviceAutoIncrement = "AUTO_INCREMENT";
-            }
-            query( QString( "CREATE TABLE devices ("
-                            "id INTEGER PRIMARY KEY %1,"
-                            "type " + textColumnType() + ","
-                            "label " + textColumnType() + ","
-                            "lastmountpoint " + textColumnType() + ","
-                            "uuid " + textColumnType() + ","
-                            "servername " + textColumnType() + ","
-                            "sharename " + textColumnType() + ");" )
-                         .arg( deviceAutoIncrement ) );
-            query( "CREATE INDEX devices_type ON devices( type );" );
-            query( "CREATE INDEX devices_uuid ON devices( uuid );" );
-            query( "CREATE INDEX devices_rshare ON devices( servername, sharename );" );
+            createDevicesTable();
         }
         else if ( adminValue( "Database Devices Version" ).toInt() != DATABASE_DEVICES_VERSION
               || amaroK::config( "Collection Browser" )->readNumEntry( "Database Devices Version", 0 ) != DATABASE_DEVICES_VERSION )
         {
-            debug() << "Updating DEVICES table" << endl;
-            //add future Devices update code here
+            int prev = adminValue( "Database Devices Version" ).toInt();
+
+            if ( prev > DATABASE_DEVICES_VERSION || prev < 0 )
+            {
+                error() << "Database devices version too new for this version of Amarok" << endl;
+                exit( 1 );
+                //dropDevicesTable();
+            }
+            else
+            {
+                debug() << "Updating DEVICES table" << endl;
+                //add future Devices update code here
+            }
         }
+        amaroK::config( "Collection Browser" )->writeEntry( "Database Devices Version", DATABASE_DEVICES_VERSION );
+        setAdminValue( "Database Devices Version", QString::number( DATABASE_DEVICES_VERSION ) );
     }
 
-    amaroK::config( "Collection Browser" )->writeEntry( "Database Devices Version", DATABASE_DEVICES_VERSION );
-
-    setAdminValue( "Database Devices Version", QString::number( DATABASE_DEVICES_VERSION ) );
 }
 
 void
