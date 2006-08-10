@@ -2516,7 +2516,8 @@ Playlist::contentsDropEvent( QDropEvent *e )
 
         if( subtype == "amarok-sql" ) {
             setSorting( NO_SORT );
-            ThreadWeaver::instance()->queueJob( new SqlLoader( data, after ) );
+            QString query = data.section( "\n", 1 );
+            ThreadWeaver::instance()->queueJob( new SqlLoader( query, after ) );
         }
 
         else if( subtype == "dynamic" ) {

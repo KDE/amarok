@@ -173,7 +173,7 @@ StatisticsList::startDrag()
     }
     else
     {
-        QTextDrag *textdrag = new QTextDrag( item->getSQL(), 0 );
+        QTextDrag *textdrag = new QTextDrag( '\n' + item->getSQL(), 0 );
         textdrag->setSubtype( "amarok-sql" );
         drag->addDragObject( textdrag );
         drag->setPixmap( CollectionDB::createDragPixmapFromSQL( item->getSQL() ),

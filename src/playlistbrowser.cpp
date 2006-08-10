@@ -3443,7 +3443,7 @@ void PlaylistBrowserView::startDrag()
 
             if( !item->query().isEmpty() )
             {
-                QTextDrag *textdrag = new QTextDrag( item->query(), 0 );
+                QTextDrag *textdrag = new QTextDrag( item->text(0) + '\n' + item->query(), 0 );
                 textdrag->setSubtype( "amarok-sql" );
                 drag->addDragObject( textdrag );
             }

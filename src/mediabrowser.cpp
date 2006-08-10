@@ -1396,9 +1396,11 @@ MediaView::contentsDropEvent( QDropEvent *e )
 
         if( subtype == "amarok-sql" )
         {
-            QStringList values = CollectionDB::instance()->query( data );
+            QString playlist = data.section( "\n", 0, 0 );
+            QString query = data.section( "\n", 1 );
+            QStringList values = CollectionDB::instance()->query( query );
             list = CollectionDB::instance()->URLsFromSqlDrag( values );
-            MediaBrowser::queue()->addURLs( list );
+            MediaBrowser::queue()->addURLs( list, playlist );
         }
         else if ( KURLDrag::decode( e, list ) )
         {
@@ -3449,9 +3451,11 @@ MediaQueue::slotDropped( QDropEvent* e, QListViewItem* parent, QListViewItem* af
 
         if( subtype == "amarok-sql" )
         {
-            QStringList values = CollectionDB::instance()->query( data );
+            QString playlist = data.section( "\n", 0, 0 );
+            QString query = data.section( "\n", 1 );
+            QStringList values = CollectionDB::instance()->query( query );
             list = CollectionDB::instance()->URLsFromSqlDrag( values );
-            addURLs( list );
+            addURLs( list, playlist );
         }
         else if ( KURLDrag::decode( e, list ) )
         {
