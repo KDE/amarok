@@ -1706,6 +1706,19 @@ IpodMediaDevice::getTrack( const Itdb_Track *itrack )
         }
     }
 
+    item = getAlbum( i18n( "Various Artists" ), album );
+    if( item )
+    {
+        QString t = artist + i18n(" - ") + title;
+        for( IpodMediaItem *track = dynamic_cast<IpodMediaItem *>(item->findItem(t));
+                track;
+                track = dynamic_cast<IpodMediaItem *>(item->findItem(t, track)) )
+        {
+            if( track->m_track == itrack )
+                return track;
+        }
+    }
+
     if(m_podcastItem)
     {
         item = dynamic_cast<IpodMediaItem *>(m_podcastItem->findItem(album));
