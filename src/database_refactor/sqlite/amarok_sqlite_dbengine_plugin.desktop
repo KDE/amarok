@@ -32,6 +32,7 @@ Name[zh_CN]=SQLite 数据引擎
 Name[zh_TW]=SQLite 資料庫引擎
 X-KDE-Library=libamarok_sqlite_dbengine_plugin
 Comment=Plugin for amaroK
+Comment[af]=Inprop module vir amaroK
 Comment[ar]=  قابس ( برنامج مضاف الى) AmaroK
 Comment[bg]=Приставка за amaroK
 Comment[bn]=আমারক-এর জন্য প্লাগিন
