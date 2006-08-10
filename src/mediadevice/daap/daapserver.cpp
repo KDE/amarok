@@ -22,8 +22,8 @@ DaapServer::DaapServer(QObject* parent, char* name)
   : QObject( parent, name )
 {
     DEBUG_BLOCK
-    
-    
+
+
     m_server = new KProcIO();
     m_server->setComm( KProcess::All );
     *m_server << "amarok_daapserver.rb";
@@ -33,8 +33,8 @@ DaapServer::DaapServer(QObject* parent, char* name)
         error() << "Failed to start amarok_daapserver.rb" << endl;
         return;
     }
-
-    connect( m_server, SIGNAL( readReady( KProcIO* ) ), this, SLOT( readSql() ) );
+    debug() << "connectting\n\n\n";
+    connect( m_server, SIGNAL( receivedStdout( KProcess*, char*, int ) ), this, SLOT( readSql(KProcess*, char*, int) ) );
 }
 
 DaapServer::~DaapServer()
@@ -43,12 +43,12 @@ DaapServer::~DaapServer()
 }
 
 void
-DaapServer::readSql()
+DaapServer::readSql(KProcess*, char* buf , int len )
 {
-    DEBUG_BLOCK
+
     static const QCString prefix = "SQL QUERY: ";
-    QString line;
-    if( m_server->readln( line ) != -1 && line.startsWith( prefix ) )
+    QString line = QString::fromLatin1( buf, len );
+    if( line.startsWith( prefix ) )
     {
         line.remove( 0, prefix.length() );
         debug() << "sql run " << line << endl;
@@ -57,6 +57,8 @@ DaapServer::readSql()
     }
     else
         debug() << "not sql:  " << line << endl;
+
+    DEBUG_BLOCK
 }
 
 #include "daapserver.moc"
