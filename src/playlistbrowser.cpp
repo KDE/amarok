@@ -2541,7 +2541,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     if( isPlaylist( item ) )
     {
         #define item static_cast<PlaylistEntry*>(item)
-        enum Id { LOAD, ADD, DYNADD, DYNSUB, RENAME, DELETE, MEDIA_DEVICE };
+        enum Id { LOAD, ADD, DYNADD, DYNSUB, RENAME, DELETE, MEDIADEVICE_COPY, MEDIADEVICE_SYNC };
 
         menu.insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n( "&Load" ), LOAD );
         menu.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), ADD );
@@ -2558,7 +2558,9 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         {
             menu.insertSeparator();
             menu.insertItem( SmallIconSet( amaroK::icon( "device" ) ),
-                    i18n( "&Transfer to Media Device" ), MEDIA_DEVICE );
+                    i18n( "&Transfer to Media Device" ), MEDIADEVICE_COPY );
+            menu.insertItem( SmallIconSet( amaroK::icon( "device" ) ),
+                    i18n( "&Synchronize to Media Device" ), MEDIADEVICE_SYNC );
         }
 
         menu.insertSeparator();
@@ -2588,15 +2590,18 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             case DELETE:
                 removeSelectedItems();
                 break;
-            case MEDIA_DEVICE:
+            case MEDIADEVICE_COPY:
                 MediaBrowser::queue()->addURLs( item->tracksURL(), item->text(0) );
+                break;
+            case MEDIADEVICE_SYNC:
+                MediaBrowser::queue()->syncPlaylist( item->text(0), item->url() );
                 break;
         }
         #undef item
     }
     else if( isSmartPlaylist( item ) )
     {
-        enum Actions { LOAD, ADD, DYNADD, DYNSUB, EDIT, REMOVE, MEDIA_DEVICE_PLAYLIST };
+        enum Actions { LOAD, ADD, DYNADD, DYNSUB, EDIT, REMOVE, MEDIADEVICE_COPY, MEDIADEVICE_SYNC };
 
         menu.insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n( "&Load" ), LOAD );
         menu.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), ADD );
@@ -2604,7 +2609,9 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         {
             menu.insertSeparator();
             menu.insertItem( SmallIconSet( amaroK::icon( "device" ) ),
-                    i18n( "&Transfer to Media Device" ), MEDIA_DEVICE_PLAYLIST );
+                    i18n( "&Transfer to Media Device" ), MEDIADEVICE_COPY );
+            menu.insertItem( SmallIconSet( amaroK::icon( "device" ) ),
+                    i18n( "&Synchronize to Media Device" ), MEDIADEVICE_SYNC );
         }
         #define item static_cast<SmartPlaylist*>(item)
         if( amaroK::dynamicMode() && amaroK::dynamicMode()->appendType()== DynamicMode::CUSTOM )
@@ -2626,7 +2633,6 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             menu.insertItem( SmallIconSet( amaroK::icon("remove_from_playlist") ), i18n( "&Delete" ), REMOVE );
         }
 
-        QString playlist;
         switch( menu.exec( p ) )
         {
             case LOAD:
@@ -2647,12 +2653,15 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
             case REMOVE:
                 removeSelectedItems();
                 break;
-            case MEDIA_DEVICE_PLAYLIST:
-                playlist = item->text(0);
+            case MEDIADEVICE_COPY:
                 {
+                    const QString playlist = item->text(0);
                     const QStringList values = CollectionDB::instance()->query( item->query() );
                     MediaBrowser::queue()->addURLs( CollectionDB::instance()->URLsFromSqlDrag( values ), playlist );
                 }
+                break;
+            case MEDIADEVICE_SYNC:
+                MediaBrowser::queue()->syncPlaylist( item->text(0), item->query() );
                 break;
         }
         #undef item

@@ -62,12 +62,14 @@ class LIBAMAROK_EXPORT MediaItem : public KListViewItem
                     PODCASTITEM, PLAYLISTSROOT, PLAYLIST, PLAYLISTITEM, INVISIBLEROOT,
                     INVISIBLE, STALEROOT, STALE, ORPHANEDROOT, ORPHANED, DIRECTORY };
 
-        enum Flags { Failed=1, BeginTransfer=2, StopTransfer=4, Transferring=8 };
+        enum Flags { Failed=1, BeginTransfer=2, StopTransfer=4, Transferring=8, SmartPlaylist=16 };
 
         void setType( Type type );
         void setFailed( bool failed=true );
         Type type() const { return m_type; }
         MediaItem *findItem(const QString &key, const MediaItem *after=0) const;
+        const QString &data() const { return m_data; }
+        void setData( const QString &data ) { m_data = data; }
 
         virtual bool isLeafItem()     const;        // A leaf node of the tree
         virtual bool isFileBacked()   const;      // Should the file be deleted of the device when removed
@@ -89,6 +91,7 @@ class LIBAMAROK_EXPORT MediaItem : public KListViewItem
         int             m_order;
         Type            m_type;
         QString         m_playlistName;
+        QString         m_data;
         MediaDevice    *m_device;
         int             m_flags;
 
@@ -126,6 +129,8 @@ class MediaQueue : public KListView, public DropProxyTarget
 
         void load( const QString &path );
         void save( const QString &path );
+        void syncPlaylist( const QString &playlistName, const QString &sql, bool loading=false );
+        void syncPlaylist( const QString &playlistName, const KURL &url, bool loading=false );
         void addURL( const KURL& url, MetaBundle *bundle=NULL, const QString &playlistName=QString::null );
         void addURL( const KURL& url, MediaItem *item );
         void addURLs( const KURL::List urls, const QString &playlistName=QString::null );
@@ -476,6 +481,14 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
 
         virtual KURL getProxyUrl( const KURL& /*url*/) { return KURL(); }
         virtual void customClicked() { return; }
+
+        BundleList bundlesToSync( const QString &playlistName, const QString &sql );
+        BundleList bundlesToSync( const QString &playlistName, const KURL &url );
+        void preparePlaylistForSync( const QString &playlistName, const BundleList &bundles );
+        bool isOnOtherPlaylist( const QString &playlistToAvoid, const MetaBundle &bundle );
+        bool isOnPlaylist( const MediaItem &playlist, const MetaBundle &bundle );
+        bool isInBundleList( const BundleList &bundles, const MetaBundle &bundle );
+        bool bundleMatch( const MetaBundle &b1, const MetaBundle &b2 );
 
     public slots:
         void abortTransfer();

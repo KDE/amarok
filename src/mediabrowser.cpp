@@ -26,6 +26,7 @@
 #include "medium.h"
 #include "mediumpluginmanager.h"
 #include "metabundle.h"
+#include "mountpointmanager.h"
 #include "playlist.h"
 #include "playlistbrowseritem.h"
 #include "playlistloader.h"
@@ -967,6 +968,8 @@ MediaItem::setFailed( bool failed )
         m_flags &= ~MediaItem::Failed;
         if( m_type == PODCASTITEM )
             setPixmap(0, *s_pixPodcast);
+        else if( m_type == PLAYLIST )
+            setPixmap(0, *s_pixPlaylist);
         else
             setPixmap(0, QPixmap() );
     }
@@ -1969,6 +1972,204 @@ MediaDevice::updateRootItems()
 }
 
 void
+MediaQueue::syncPlaylist( const QString &name, const QString &query, bool loading )
+{
+    MediaItem* item = new MediaItem( this, lastItem() );
+    item->setType( MediaItem::PLAYLIST );
+    item->setExpandable( false );
+    item->setData( query );
+    item->m_playlistName = name;
+    item->setText( 0, name );
+    item->m_flags |= MediaItem::SmartPlaylist;
+    m_parent->m_progress->setTotalSteps( m_parent->m_progress->totalSteps() + 1 );
+    itemCountChanged();
+    if( !loading )
+        URLsAdded();
+}
+
+void
+MediaQueue::syncPlaylist( const QString &name, const KURL &url, bool loading )
+{
+    MediaItem* item = new MediaItem( this, lastItem() );
+    item->setType( MediaItem::PLAYLIST );
+    item->setExpandable( false );
+    item->setData( url.url() );
+    item->m_playlistName = name;
+    item->setText( 0, name );
+    m_parent->m_progress->setTotalSteps( m_parent->m_progress->totalSteps() + 1 );
+    itemCountChanged();
+    if( !loading )
+        URLsAdded();
+}
+
+BundleList
+MediaDevice::bundlesToSync( const QString &name, const KURL &url )
+{
+    BundleList bundles;
+    if( !PlaylistFile::isPlaylistFile( url ) )
+    {
+        amaroK::StatusBar::instance()->longMessage( i18n( "Not a playlist file: %1" ).arg( url.path() ),
+                KDE::StatusBar::Sorry );
+        return bundles;
+    }
+
+    PlaylistFile playlist( url.path() );
+    if( playlist.isError() )
+    {
+        amaroK::StatusBar::instance()->longMessage( i18n( "Failed to load playlist: %1" ).arg( url.path() ),
+                KDE::StatusBar::Sorry );
+        return bundles;
+    }
+
+    for( BundleList::iterator it = playlist.bundles().begin();
+            it != playlist.bundles().end();
+            ++it )
+    {
+        bundles += MetaBundle( (*it).url() );
+    }
+    preparePlaylistForSync( name, bundles );
+    return bundles;
+}
+
+BundleList
+MediaDevice::bundlesToSync( const QString &name, const QString &query )
+{
+    const QStringList values = CollectionDB::instance()->query( query );
+
+    BundleList bundles;
+    for( for_iterators( QStringList, values ); it != end; ++it )
+    {
+        MetaBundle b;
+        //QueryBuilder automatically inserts the deviceid as return value if asked for the path
+        QString rpath = *it;
+        int deviceid = (*++it).toInt();
+        b.setPath      ( MountPointManager::instance()->getAbsolutePath( deviceid, rpath ) );
+        b.setAlbum     (  *++it );
+        b.setArtist    (  *++it );
+        b.setComposer  (  *++it );
+        b.setGenre     (  *++it );
+        b.setTitle     (  *++it );
+        b.setYear      ( (*++it).toInt() );
+        b.setComment   (  *++it );
+        b.setTrack     ( (*++it).toInt() );
+        b.setBitrate   ( (*++it).toInt() );
+        b.setDiscNumber( (*++it).toInt() );
+        b.setLength    ( (*++it).toInt() );
+        b.setSampleRate( (*++it).toInt() );
+        b.setFilesize  ( (*++it).toInt() );
+        bool ok;
+        const int val = (*++it).toInt( &ok );
+        b.setCompilation( ok ? val : MetaBundle::CompilationUnknown );
+        b.setFileType( (*++it).toInt() );
+        b.setBpm       ( (*++it).toFloat() );
+
+        bundles += b;
+
+        if( false && b.length() <= 0 ) {
+            // we try to read the tags, despite the slow-down
+            debug() << "Audioproperties not known for: " << b.url().fileName() << endl;
+            b.readTags( TagLib::AudioProperties::Fast);
+        }
+    }
+    preparePlaylistForSync( name, bundles );
+    return bundles;
+}
+
+void
+MediaDevice::preparePlaylistForSync( const QString &name, const BundleList &bundles )
+{
+    MediaItem *pl = m_playlistItem->findItem( name );
+    if( pl )
+    {
+        MediaItem *next = 0;
+        for( MediaItem *it = static_cast<MediaItem *>(pl->firstChild());
+                it;
+                it = next )
+        {
+            next = static_cast<MediaItem *>(it->nextSibling());
+            const MetaBundle *bundle = (*it).bundle();
+            if( !bundle )
+                continue;
+            if( isOnOtherPlaylist( name, *bundle ) )
+                continue;
+            if( isInBundleList( bundles, *bundle ) )
+                continue;
+            deleteItemFromDevice( it );
+        }
+        deleteItemFromDevice( pl, None );
+    }
+    purgeEmptyItems();
+}
+
+bool
+MediaDevice::bundleMatch( const MetaBundle &b1, const MetaBundle &b2 )
+{
+    if( b1.track() != b2.track() )
+        return false;
+    if( b1.title() != b2.title() )
+        return false;
+    if( b1.album() != b2.album() )
+        return false;
+    if( b1.artist() != b2.artist() )
+        return false;
+#if 0
+    if( b1.discNumber() != b2.discNumber() )
+        return false;
+    if( b1.composer() != b2.composer() )
+        return false;
+#endif
+
+    return true;
+}
+
+bool
+MediaDevice::isInBundleList( const BundleList &bundles, const MetaBundle &b )
+{
+    for( BundleList::const_iterator it = bundles.begin();
+            it != bundles.end();
+            ++it )
+    {
+        if( bundleMatch( b, *it ) )
+            return true;
+    }
+
+    return false;
+}
+
+bool
+MediaDevice::isOnOtherPlaylist( const QString &playlistToAvoid, const MetaBundle &bundle )
+{
+    for( MediaItem *it = static_cast<MediaItem *>(m_playlistItem->firstChild());
+            it;
+            it = static_cast<MediaItem *>(it->nextSibling()) )
+    {
+        if( it->text( 0 )  == playlistToAvoid )
+            continue;
+        if( isOnPlaylist( *it, bundle ) )
+            return true;
+    }
+
+    return false;
+}
+
+bool
+MediaDevice::isOnPlaylist( const MediaItem &playlist, const MetaBundle &bundle )
+{
+    for( MediaItem *it = static_cast<MediaItem *>(playlist.firstChild());
+            it;
+            it = static_cast<MediaItem *>(it->nextSibling()) )
+    {
+        const MetaBundle *b = (*it).bundle();
+        if( !b )
+            continue;
+        if( bundleMatch( *b, bundle ) )
+            return true;
+    }
+
+    return false;
+}
+
+void
 MediaQueue::addURL( const KURL& url, MetaBundle *bundle, const QString &playlistName )
 {
     if( PlaylistFile::isPlaylistFile( url ) )
@@ -2601,19 +2802,6 @@ MediaDevice::transferFiles()
         transferredItem->m_flags |= MediaItem::Transferring;
         next = static_cast<MediaItem *>( transferredItem->nextSibling() );
 
-        if( isCanceled() )
-            break;
-
-        const MetaBundle *bundle = transferredItem->bundle();
-        if(!bundle)
-        {
-            // this should not happen
-            debug() << "invalid item in transfer queue" << endl;
-            delete transferredItem;
-            m_parent->m_queue->itemCountChanged();
-            continue;
-        }
-        
         if( transferredItem->device() )
         {
             transferredItem->device()->copyTrackFromDevice( transferredItem );
@@ -2623,120 +2811,149 @@ MediaDevice::transferFiles()
             kapp->processEvents( 100 );
             continue;
         }
-        
-        bool transcoding = false;
-        MediaItem *item = trackExists( *bundle );
-        if( item && !transferredItem->m_playlistName.isEmpty() )
+
+        BundleList bundles;
+        if( transferredItem->type() == MediaItem::PLAYLIST )
         {
-            amaroK::StatusBar::instance()->shortMessage( i18n( "Track already on media device: %1" ).
-                    arg( transferredItem->url().prettyURL() ),
-                    KDE::StatusBar::Sorry );
-            existing += transferredItem->url();
+            if( transferredItem->flags() & MediaItem::SmartPlaylist )
+                bundles = bundlesToSync( transferredItem->text( 0 ), transferredItem->data() );
+            else
+                bundles = bundlesToSync( transferredItem->text( 0 ), KURL::fromPathOrURL( transferredItem->data() ) );
+        }
+        else if( transferredItem->bundle() )
+            bundles += *transferredItem->bundle();
+        else
+        {
+            // this should not happen
+            debug() << "invalid item in transfer queue" << endl;
             delete transferredItem;
             m_parent->m_queue->itemCountChanged();
-            setProgress( progress() + 1 );
             continue;
         }
-        else if( !item ) // the item does not exist already on the media device
-        {
-            if( m_transcode &&
-                    ( !isPlayable( *bundle ) || m_transcodeAlways ) )
-            {
-                QString preferred = supportedFiletypes().isEmpty() ? "mp3" : supportedFiletypes().first();
-                debug() << "transcoding " << bundle->url() << " to " << preferred << endl;
-                KURL transcoded = MediaBrowser::instance()->transcode( bundle->url(), preferred );
-                if( transcoded.isEmpty() )
-                {
-                    debug() << "transcoding failed" << endl;
-                    transcodeFail++;
-                }
-                else
-                {
-                    transcoding = true;
-                    MetaBundle *transcodedBundle = new MetaBundle( transcoded );
-                    transcodedBundle->setArtist( bundle->artist() );
-                    transcodedBundle->setTitle( bundle->title() );
-                    transcodedBundle->setComposer( bundle->composer() );
-                    transcodedBundle->setAlbum( bundle->album() );
-                    transcodedBundle->setGenre( bundle->genre() );
-                    transcodedBundle->setComment( bundle->comment() );
-                    transcodedBundle->setYear( bundle->year() );
-                    transcodedBundle->setDiscNumber( bundle->discNumber() );
-                    transcodedBundle->setTrack( bundle->track() );
-                    if( bundle->podcastBundle() )
-                    {
-                        transcodedBundle->setPodcastBundle( *bundle->podcastBundle() );
-                        transcodedBundle->copyFrom( *bundle->podcastBundle() );
-                    }
-                    bundle = transcodedBundle;
-                }
-            }
 
-            if( !isPlayable( *bundle ) )
+        if( bundles.count() > 1 )
+            setProgress( progress(), MediaBrowser::instance()->m_progress->totalSteps() + bundles.count() - 1 );
+
+        QString playlist = transferredItem->m_playlistName;
+        for( BundleList::const_iterator it = bundles.begin();
+                it != bundles.end();
+                ++it )
+        {
+            if( isCanceled() )
+                break;
+
+            const MetaBundle *bundle = &(*it);
+
+            bool transcoding = false;
+            MediaItem *item = trackExists( *bundle );
+            if( item && playlist.isEmpty() )
             {
-                amaroK::StatusBar::instance()->shortMessage( i18n( "Track not playable on media device: %1" ).arg( bundle->url().path() ),
+                amaroK::StatusBar::instance()->shortMessage( i18n( "Track already on media device: %1" ).
+                        arg( (*it).url().prettyURL() ),
                         KDE::StatusBar::Sorry );
-                unplayable += transferredItem->url();
-                transferredItem->setFailed();
-                m_parent->m_queue->itemCountChanged();
-                if( transcoding )
-                {
-                    delete bundle;
-                    bundle = 0;
-                }
-                setProgress( progress() + 1 );
+                existing += (*it).url();
                 continue;
             }
-            item = copyTrackToDevice( *bundle );
-        }
-
-        if( !item ) // copyTrackToDevice() failed
-        {
-            if( !isCanceled() )
+            else if( !item ) // the item does not yet exist on the media device
             {
-                amaroK::StatusBar::instance()->longMessage(
-                        i18n( "Failed to copy track to media device: %1" ).arg( bundle->url().path() ),
-                        KDE::StatusBar::Sorry );
-                transferredItem->setFailed();
+                if( m_transcode && ( !isPlayable( *bundle ) || m_transcodeAlways ) )
+                {
+                    QString preferred = supportedFiletypes().isEmpty() ? "mp3" : supportedFiletypes().first();
+                    debug() << "transcoding " << bundle->url() << " to " << preferred << endl;
+                    KURL transcoded = MediaBrowser::instance()->transcode( bundle->url(), preferred );
+                    if( transcoded.isEmpty() )
+                    {
+                        debug() << "transcoding failed" << endl;
+                        transcodeFail++;
+                    }
+                    else
+                    {
+                        transcoding = true;
+                        MetaBundle *transcodedBundle = new MetaBundle( transcoded );
+                        transcodedBundle->setArtist( bundle->artist() );
+                        transcodedBundle->setTitle( bundle->title() );
+                        transcodedBundle->setComposer( bundle->composer() );
+                        transcodedBundle->setAlbum( bundle->album() );
+                        transcodedBundle->setGenre( bundle->genre() );
+                        transcodedBundle->setComment( bundle->comment() );
+                        transcodedBundle->setYear( bundle->year() );
+                        transcodedBundle->setDiscNumber( bundle->discNumber() );
+                        transcodedBundle->setTrack( bundle->track() );
+                        if( bundle->podcastBundle() )
+                        {
+                            transcodedBundle->setPodcastBundle( *bundle->podcastBundle() );
+                            transcodedBundle->copyFrom( *bundle->podcastBundle() );
+                        }
+                        bundle = transcodedBundle;
+                    }
+                }
+
+                if( !isPlayable( *bundle ) )
+                {
+                    amaroK::StatusBar::instance()->shortMessage( i18n( "Track not playable on media device: %1" ).arg( bundle->url().path() ),
+                            KDE::StatusBar::Sorry );
+                    unplayable += (*it).url();
+                    transferredItem->setFailed();
+                    if( transcoding )
+                    {
+                        delete bundle;
+                        bundle = 0;
+                    }
+                    continue;
+                }
+                item = copyTrackToDevice( *bundle );
             }
-        }
 
-        if( transcoding )
-        {
-            if( m_transcodeRemove )
-                QFile( bundle->url().path() ).remove();
-
-            delete bundle;
-            bundle = 0;
-        }
-
-        if( isCanceled() )
-            break;
-
-        if( !item )
-            continue;
-
-        int rating = CollectionDB::instance()->getSongRating( transferredItem->bundle()->url().path() ) * 10;
-        item->setRating( rating );
-
-        if( m_playlistItem && !transferredItem->m_playlistName.isNull() )
-        {
-            MediaItem *pl = m_playlistItem->findItem( transferredItem->m_playlistName );
-            if( !pl )
+            if( !item ) // copyTrackToDevice() failed
             {
-                QPtrList<MediaItem> items;
-                pl = newPlaylist( transferredItem->m_playlistName, m_playlistItem, items );
+                if( !isCanceled() )
+                {
+                    amaroK::StatusBar::instance()->longMessage(
+                            i18n( "Failed to copy track to media device: %1" ).arg( bundle->url().path() ),
+                            KDE::StatusBar::Sorry );
+                    transferredItem->setFailed();
+                }
             }
-            if( pl )
+
+            if( transcoding )
             {
-                QPtrList<MediaItem> items;
-                items.append( item );
-                addToPlaylist( pl, pl->lastChild(), items );
+                if( m_transcodeRemove )
+                    QFile( bundle->url().path() ).remove();
+
+                delete bundle;
+                bundle = 0;
             }
+
+            if( isCanceled() )
+                break;
+
+            if( !item )
+                continue;
+
+            int rating = CollectionDB::instance()->getSongRating( (*it).url().path() ) * 10;
+            item->setRating( rating );
+
+            if( m_playlistItem && !playlist.isEmpty() )
+            {
+                MediaItem *pl = m_playlistItem->findItem( playlist );
+                if( !pl )
+                {
+                    QPtrList<MediaItem> items;
+                    pl = newPlaylist( playlist, m_playlistItem, items );
+                }
+                if( pl )
+                {
+                    QPtrList<MediaItem> items;
+                    items.append( item );
+                    addToPlaylist( pl, pl->lastChild(), items );
+                }
+            }
+
+            setProgress( progress() + 1 );
         }
 
-        delete transferredItem;
-        setProgress( progress() + 1 );
+        if( !(transferredItem->flags() & MediaItem::Failed) )
+            delete transferredItem;
         m_parent->m_queue->itemCountChanged();
 
         kapp->processEvents( 100 );
@@ -3067,6 +3284,13 @@ MediaQueue::save( const QString &path )
             i.setAttribute( "playlist", item->m_playlistName );
         }
 
+        if(item->type() == MediaItem::PLAYLIST)
+        {
+            i.setAttribute( "playlistdata", item->data() );
+            if( item->flags() & MediaItem::SmartPlaylist )
+                i.setAttribute( "smartplaylist", "1" );
+        }
+
         transferlist.appendChild( i );
     }
 
@@ -3153,12 +3377,23 @@ MediaQueue::load( const QString& filename )
                 peb.setURL( KURL::fromPathOrURL( node.firstChild().toText().nodeValue() ) );
         }
 
-        QString playlist = elem.attribute( "playlist" );
         if( podcast )
         {
             bundle->setPodcastBundle( peb );
         }
-        addURL( url, bundle, playlist );
+
+        QString playlist = elem.attribute( "playlist" );
+        QString playlistdata = elem.attribute( "playlistdata" );
+        if( !playlistdata.isEmpty() )
+        {
+            QString smart = elem.attribute( "smartplaylist" );
+            if( smart.isEmpty() )
+                syncPlaylist( playlist, KURL::fromPathOrURL( playlistdata ), true );
+            else
+                syncPlaylist( playlist, playlistdata, true );
+        }
+        else
+            addURL( url, bundle, playlist );
     }
 
     URLsAdded();
@@ -3282,9 +3517,10 @@ MediaQueue::totalSize() const
     {
         MediaItem *item = static_cast<MediaItem *>(it);
 
-        if( item && ( !m_parent->currentDevice()
-                || !m_parent->currentDevice()->isConnected()
-                || !m_parent->currentDevice()->trackExists(*item->bundle()) ) )
+        if( item && item->bundle() &&
+                ( !m_parent->currentDevice()
+                  || !m_parent->currentDevice()->isConnected()
+                  || !m_parent->currentDevice()->trackExists(*item->bundle()) ) )
             total += ((item->size()+1023)/1024)*1024;
     }
 
