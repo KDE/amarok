@@ -25,6 +25,7 @@ protected:
             item->name().endsWith( ".aa", false ) || //for adding to iPod
             item->name().endsWith( ".mp4", false ) || //for adding to iPod
             item->name().endsWith( ".m4v", false ) || //for adding to iPod
+            item->name().endsWith( ".m4b", false ) || //for adding to iPod
             item->name().endsWith( ".ogg", false ) ||
             item->name().endsWith( ".flac", false ) ||
             item->name().endsWith( ".wma", false );
