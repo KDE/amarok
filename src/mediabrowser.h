@@ -290,6 +290,7 @@ class MediaView : public KListView
         void invokeItem( QListViewItem* );
 
     private:
+        void keyPressEvent( QKeyEvent *e );
         // Reimplemented from KListView
         void contentsDropEvent( QDropEvent *e );
         void viewportPaintEvent( QPaintEvent* );
