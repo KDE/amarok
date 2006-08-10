@@ -603,12 +603,7 @@ IpodMediaDevice::addToPlaylist(MediaItem *mlist, MediaItem *after, QPtrList<Medi
 
         add->setType(MediaItem::PLAYLISTITEM);
         add->m_track = it->m_track;
-        MetaBundle *bundle;
-        if( it->bundle() )
-            bundle = new MetaBundle( *it->bundle() );
-        else
-            bundle = new MetaBundle();
-        add->setBundle( bundle );
+        add->bundleFromTrack( add->m_track, realPath(add->m_track->ipod_path) );
         add->setText(0, QString::fromUtf8(it->m_track->artist) + " - " + QString::fromUtf8(it->m_track->title) );
         add->m_order = order;
         order++;
@@ -1009,7 +1004,7 @@ IpodMediaDevice::openDevice( bool silent )
             case ITDB_IPOD_MODEL_INVALID:
             case ITDB_IPOD_MODEL_UNKNOWN:
                 modelString = 0;
-                if( pathExists( "iTunes:iTunes_Control" ) )
+                if( pathExists( ":iTunes:iTunes_Control" ) )
                 {
                     debug() << "iTunes/iTunes_Control found - assuming itunes phone" << endl;
                     m_isMobile = true;
