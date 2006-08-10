@@ -338,6 +338,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         bool getPodcastChannelBundle( const KURL &url, PodcastChannelBundle *channel );
         bool getPodcastEpisodeBundle( const KURL &url, PodcastEpisodeBundle *channel );
 
+        MetaBundle bundleFromQuery( QStringList::const_iterator *iter );
         /**
          * The @p bundle parameter's url() will be looked up in the Collection
          * @param bundle this will be filled in with tags for you

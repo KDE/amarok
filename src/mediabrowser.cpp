@@ -2047,39 +2047,7 @@ MediaDevice::bundlesToSync( const QString &name, const QString &query )
 
     BundleList bundles;
     for( for_iterators( QStringList, values ); it != end; ++it )
-    {
-        MetaBundle b;
-        //QueryBuilder automatically inserts the deviceid as return value if asked for the path
-        QString rpath = *it;
-        int deviceid = (*++it).toInt();
-        b.setPath      ( MountPointManager::instance()->getAbsolutePath( deviceid, rpath ) );
-        b.setAlbum     (  *++it );
-        b.setArtist    (  *++it );
-        b.setComposer  (  *++it );
-        b.setGenre     (  *++it );
-        b.setTitle     (  *++it );
-        b.setYear      ( (*++it).toInt() );
-        b.setComment   (  *++it );
-        b.setTrack     ( (*++it).toInt() );
-        b.setBitrate   ( (*++it).toInt() );
-        b.setDiscNumber( (*++it).toInt() );
-        b.setLength    ( (*++it).toInt() );
-        b.setSampleRate( (*++it).toInt() );
-        b.setFilesize  ( (*++it).toInt() );
-        bool ok;
-        const int val = (*++it).toInt( &ok );
-        b.setCompilation( ok ? val : MetaBundle::CompilationUnknown );
-        b.setFileType( (*++it).toInt() );
-        b.setBpm       ( (*++it).toFloat() );
-
-        bundles += b;
-
-        if( false && b.length() <= 0 ) {
-            // we try to read the tags, despite the slow-down
-            debug() << "Audioproperties not known for: " << b.url().fileName() << endl;
-            b.readTags( TagLib::AudioProperties::Fast);
-        }
-    }
+        bundles += CollectionDB::instance()->bundleFromQuery( &it );
     preparePlaylistForSync( name, bundles );
     return bundles;
 }
