@@ -33,8 +33,8 @@ DaapServer::DaapServer(QObject* parent, char* name)
         error() << "Failed to start amarok_daapserver.rb" << endl;
         return;
     }
-    debug() << "connectting\n\n\n";
-    connect( m_server, SIGNAL( receivedStdout( KProcess*, char*, int ) ), this, SLOT( readSql(KProcess*, char*, int) ) );
+
+    connect( m_server, SIGNAL( readReady( KProcIO* ) ), this, SLOT( readSql() ) );
 }
 
 DaapServer::~DaapServer()
@@ -43,22 +43,22 @@ DaapServer::~DaapServer()
 }
 
 void
-DaapServer::readSql(KProcess*, char* buf , int len )
+DaapServer::readSql()
 {
-
-    static const QCString prefix = "SQL QUERY: ";
-    QString line = QString::fromLatin1( buf, len );
-    if( line.startsWith( prefix ) )
-    {
-        line.remove( 0, prefix.length() );
-        debug() << "sql run " << line << endl;
-        m_server->writeStdin( CollectionDB::instance()->query( line ).join("\n") );
-        m_server->writeStdin( "**** END SQL ****" );
-    }
-    else
-        debug() << "not sql:  " << line << endl;
-
     DEBUG_BLOCK
+    static const QCString prefix = "SQL QUERY: ";
+    QString line;
+    while( m_server->readln( line ) != -1 )
+        if( line.startsWith( prefix ) )
+        {
+            line.remove( 0, prefix.length() );
+            debug() << "sql run " << line << endl;
+            m_server->writeStdin( CollectionDB::instance()->query( line ).join("\n") );
+            m_server->writeStdin( "**** END SQL ****" );
+        }
+        else
+            debug() << "not sql:  " << line << endl;
 }
+
 
 #include "daapserver.moc"

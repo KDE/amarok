@@ -21,7 +21,7 @@ class DaapServer : public QObject
         DaapServer(QObject* parent, char* name);
         ~DaapServer();
     public slots:
-        void readSql(KProcess*, char* buf , int len);
+        void readSql();
     private:
         KProcIO* m_server;
 };
