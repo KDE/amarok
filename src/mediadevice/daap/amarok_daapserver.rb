@@ -11,17 +11,14 @@ require 'pp'
 
 $app_name = "Daap"
 $debug_prefix = "Server"
-$stdout.sync = true
-$stderr.sync = true
-
 
 class Element
     #attr_accessor :length, :name, :value
-    public
+    public 
         def initialize(name, value = Array.new)
             @name, @value = name, value
         end
-
+        
         def to_s
             if @value.nil? then
                 log @name + ' is null'
@@ -31,11 +28,11 @@ class Element
                 @name + long_convert(content.length) + content
             end
         end
-
+        
         def collection?
             @value.class == Array
         end
-
+        
         def <<( child )
             @value << child
         end
@@ -46,7 +43,7 @@ class Element
                     char_convert( @value )
                 when :short then
                     short_convert( @value )
-                when :long then
+                when :long then 
                     long_convert( @value )
                 when :longlong then
                     longlong_convert( @value )
@@ -66,19 +63,19 @@ class Element
                     log "type error! #{@value} #{CODE_TYPE[@name]}"
             end
         end
-
-        def char_convert( v )
+        
+        def char_convert( v ) 
             packing( v, 'c' )
         end
-
+        
         def short_convert( v )
             packing( v, 'n' )
         end
-
+        
         def long_convert( v )
             packing( v, 'N' )
         end
-
+        
         def longlong_convert( v )
             v = v.to_i  if( v.is_a?(String) )
             a = Array.new
@@ -87,7 +84,7 @@ class Element
             b[0] = v & 0xffffffff
             a.pack('N') + b.pack('N')
         end
-
+ 
         def packing( v, packer )
             v = v.to_i  if( v.is_a?(String) )
             a = Array.new
@@ -99,7 +96,7 @@ end
 #{"mlog"=>{"mlid"=>[1842003488], "mstt"=>[200]}}
 class LoginServlet < WEBrick::HTTPServlet::AbstractServlet
     @@sessionId = 42
-
+    
     def do_GET( req, resp )
         root =  Element.new( 'mlog' )
         root << Element.new( 'mlid', @@sessionId )
@@ -113,7 +110,7 @@ end
 #{"mupd"=>{"mstt"=>[200], "musr"=>[2]}}
 class UpdateServlet < WEBrick::HTTPServlet::AbstractServlet
     include DebugMethods
-
+    
     debugMethod(:do_GET)
     def do_GET( req, resp )
         root = Element.new( 'mupd' )
@@ -135,13 +132,13 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
 
       debugMethod(:initialize)
       def initialize
-          print "hello"
+          puts "hello"
           artists = Array.new
           albums = Array.new
           genre = Array.new
           device_paths = Array.new
 
-          indexes = [  { :dbresult=> query( 'select * from album' ),  :indexed => albums },
+          indexes = [  { :dbresult=> query( 'select * from album' ),  :indexed => albums }, 
           { :dbresult=> query( 'select * from artist' ), :indexed => artists },
           { :dbresult=> query( 'select * from genre' )  , :indexed => genre },
           { :dbresult=> query( 'select id, lastmountpoint from devices' ), :indexed => device_paths } ]
@@ -153,7 +150,7 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
           columns =     [ "album, ", "artist, ", "genre, ", "track, ", "title, ", "year, ", "length, ", "samplerate, ", "url, ", "deviceid" ]
           @column_keys = [ :songalbum, :songartist, :songgenre,  :songtracknumber, :itemname, :songyear, :songtime, :songsamplerate, :url,  :deviceid ]
           #TODO composer :songcomposer
-          dbitems = query( "SELECT #{columns.to_s} FROM tags" )
+          dbitems = query( "SELECT #{columns.to_s} FROM tags LIMIT 500" )
 
           @items = Array.new
           @music = Array.new
@@ -183,13 +180,13 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
           @column_keys.push( :itemid )
           @column_keys.push( :songformat )
       end
-
+      
       debugMethod(:do_GET)
       def do_GET( req, resp )
           if @items.nil? then
               initItems()
           end
-
+      
           command = File.basename( req.path )
           case command
               when "databases" then
@@ -258,7 +255,7 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
                   adbs << mlcl
                   @items.each { |item|
                       mlit = Element.new( 'mlit' )
-                      toDisplay.each{  |meta|
+                      toDisplay.each{  |meta|                        
                           mlit << Element.new( meta[:code], item[ meta[:index] ] )
                       }
                       mlcl << mlit
@@ -276,10 +273,14 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
   private
       debugMethod(:query)
       def query( sql )
-          out = String.new
-
-          print "SQL QUERY: #{sql}"
-          out += line while (line = $stdin.gets) && (line.chop != '**** END SQL ****')
+         out = Array.new
+         # $stdout.flush
+         # $stdout.syswrite "SQL QUERY: #{sql}\n"
+          puts "SQL QUERY: #{sql}"
+         
+          while ( line = $stdin.gets) && (line.chop! != '**** END SQL ****' )
+            out.push( line )
+          end
           out
       end
 end
@@ -295,7 +296,7 @@ class Controller
     def initialize
         server = WEBrick::HTTPServer.new( { :Port=>8081 } )
         ['INT', 'TERM'].each { |signal|
-            trap(signal) {
+            trap(signal) { 
                 server.shutdown
             }
         }
@@ -306,4 +307,7 @@ class Controller
     end
 
 end
+
+$stdout.sync = true
+$stderr.sync = true
 Controller.new

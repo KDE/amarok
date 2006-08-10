@@ -49,6 +49,7 @@ DaapServer::readSql()
     static const QCString prefix = "SQL QUERY: ";
     QString line;
     while( m_server->readln( line ) != -1 )
+    {
         if( line.startsWith( prefix ) )
         {
             line.remove( 0, prefix.length() );
@@ -58,6 +59,9 @@ DaapServer::readSql()
         }
         else
             debug() << "not sql:  " << line << endl;
+   }
+   //m_server->ackRead();
+   //m_server->enableReadSignals(true);
 }
 
 
