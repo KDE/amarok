@@ -101,10 +101,6 @@ MediaDeviceManager::removeManualDevice( Medium* removed )
         m_mediumMap.remove( removed->name() );
 }
 
-//possible memory leak here in all three slots!
-//im not sure where the emitted medium instances are deleted, but the old
-//
-
 void MediaDeviceManager::slotMediumAdded( const Medium *m, QString id)
 {
     DEBUG_BLOCK
