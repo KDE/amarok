@@ -36,7 +36,7 @@ MediaDeviceManager::MediaDeviceManager()
 {
     DEBUG_BLOCK
     connect( DeviceManager::instance(), SIGNAL( mediumAdded( const Medium*, QString ) ), SLOT( slotMediumAdded( const Medium*, QString ) ) ); 
-   connect( DeviceManager::instance(), SIGNAL( mediumChanged( const Medium*, QString ) ), SLOT( slotMediumChanged( const Medium*, QString ) ) );
+    connect( DeviceManager::instance(), SIGNAL( mediumChanged( const Medium*, QString ) ), SLOT( slotMediumChanged( const Medium*, QString ) ) );
     connect( DeviceManager::instance(), SIGNAL( mediumRemoved( const Medium*, QString ) ), SLOT( slotMediumRemoved( const Medium*, QString ) ) );
     Medium::List mediums = DeviceManager::instance()->getDeviceList();
     foreachType( Medium::List, mediums )
