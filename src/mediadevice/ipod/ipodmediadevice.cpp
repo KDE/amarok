@@ -2274,7 +2274,7 @@ IpodMediaDevice::pathExists( const QString &ipodPath, QString *realPath )
     for( ; it != components.end(); ++it )
         curPath += "/" + *it;
 
-    debug() << ipodPath << ( found ? "" : " not" ) << " found, actually " << curPath << endl;
+    //debug() << ipodPath << ( found ? "" : " not" ) << " found, actually " << curPath << endl;
 
     if( realPath )
         *realPath = curPath;
