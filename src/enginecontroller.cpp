@@ -571,6 +571,8 @@ int EngineController::decreaseVolume( int ticks ) //SLOT
 
 int EngineController::setVolume( int percent ) //SLOT
 {
+    m_muteVolume = 0;
+
     if( percent < 0 ) percent = 0;
     if( percent > 100 ) percent = 100;
 
@@ -596,8 +598,9 @@ void EngineController::mute() //SLOT
 {
     if( m_muteVolume == 0 )
     {
-        m_muteVolume = m_engine->volume();
+        int saveVolume = m_engine->volume();
         setVolume( 0 );
+        m_muteVolume = saveVolume;
     }
     else
     {
