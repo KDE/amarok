@@ -16,6 +16,7 @@
 
 require 'socket'
 require "uri"
+$stdout.sync = true
 
 class Proxy
   def initialize( port, remote_url, engine )
@@ -38,6 +39,7 @@ class Proxy
     myputs("host " << uri.host << " ")
     myputs( port )
     serv = TCPSocket.new( uri.host, uri.port )
+    serv.sync = true
     myputs( "running with port: #{uri.port} and host: #{uri.host}" )
 
     # here we substitute the proxy GET
@@ -170,7 +172,7 @@ class DaapProxy < Proxy
 end
 
 def myputs( string )
-  $stderr.puts( "AMAROK_PROXY: #{string}" )
+  $stdout.puts( "AMAROK_PROXY: #{string}" )
   f = open('/tmp/test.ruby', File::WRONLY | File::APPEND | File::CREAT )
   f.puts( string )
   f.close
