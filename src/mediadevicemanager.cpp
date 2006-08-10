@@ -19,6 +19,7 @@
 #include "medium.h"
 
 #include <qptrlist.h>
+#include <qtimer.h>
 
 #include <dcopclient.h>
 #include <dcopobject.h>
@@ -42,6 +43,11 @@ MediaDeviceManager::MediaDeviceManager()
     foreachType( Medium::List, mediums )
     {
         slotMediumAdded( &(*it), (*it).id() );
+    }
+    if( !mediums.count() )
+    {
+        debug() << "DeviceManager didn't return any devices, we are probably running on a non-KDE system. Trying to reinit media devices later" << endl;
+        QTimer::singleShot( 4000, this, SLOT( reinitDevices() ) );
     }
     //load manual devices
     QStringList manualDevices;
@@ -151,6 +157,15 @@ void MediaDeviceManager::slotMediumRemoved( const Medium* , QString id )
 Medium* MediaDeviceManager::getDevice( QString name )
 {
     return DeviceManager::instance()->getDevice( name );
+}
+
+void MediaDeviceManager::reinitDevices( )
+{
+    Medium::List mediums = DeviceManager::instance()->getDeviceList();
+    foreachType( Medium::List, mediums )
+    {
+        slotMediumAdded( &(*it), (*it).id() );
+    }
 }
 
 #include "mediadevicemanager.moc"

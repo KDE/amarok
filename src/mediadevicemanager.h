@@ -53,6 +53,9 @@ class MediaDeviceManager : public QObject
         void slotMediumChanged( const Medium*, QString );
         void slotMediumRemoved( const Medium*, QString );
 
+    private slots:
+        void reinitDevices();
+
     private:
 
         MediumMap m_mediumMap;
