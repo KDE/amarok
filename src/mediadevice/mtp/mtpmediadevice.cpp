@@ -384,12 +384,7 @@ MtpMediaDevice::createFolder( const char *name, uint32_t parent_id )
         debug() << "Attempt to create folder '" << name << "' failed." << endl;
         return 0;
     }
-    // Now cache the new folder in the folders structure
-    // release old folder list
-    LIBMTP_destroy_folder_t( m_folders );
-    m_folders = 0;
-    // create new folder list
-    m_folders = LIBMTP_Get_Folder_List( m_device );
+    updateFolders();
 
     return new_folder_id;
 }
@@ -580,11 +575,19 @@ MtpMediaDevice::deleteTrack(MtpMediaItem *trackItem)
     debug() << "track deleted" << endl;
 
     // remove from the listview/tracklist
-    m_trackList.remove( m_trackList.findTrackById( track_id ) );
+    m_trackList.remove( trackItem->track() );
     delete trackItem;
     kapp->processEvents( 100 );
 
     return 1;
+}
+
+void
+MtpMediaDevice::updateFolders( void )
+{
+    LIBMTP_destroy_folder_t( m_folders );
+    m_folders = 0;
+    m_folders = LIBMTP_Get_Folder_List( m_device );
 }
 
 /**
@@ -892,7 +895,6 @@ void
 MtpMediaDevice::applyConfig()
 {
     m_folderStructure = m_folderStructureBox->text();
-
     setConfigString( "FolderStructure", m_folderStructure );
 }
 
@@ -1138,16 +1140,6 @@ MtpTrack::MtpTrack ( LIBMTP_track_t *track )
     m_id = track->item_id;
 }
 
-
-MtpTrack::~MtpTrack()
-{
-    m_itemList.setAutoDelete( true );
-    while( m_itemList.count() > 0 )
-    {
-        delete m_itemList.first();
-    }
-}
-
 /**
  * Read track properties from the device and set it on the track
  */
@@ -1192,23 +1184,4 @@ void
 MtpTrack::setBundle( MetaBundle &bundle )
 {
     m_bundle = bundle;
-}
-
-/**
- * Add a child item
- */
-void
-MtpTrack::addItem( const MtpMediaItem *item )
-{
-    m_itemList.append( item );
-}
-
-/**
- * Remove a child item
- */
-bool
-MtpTrack::removeItem( const MtpMediaItem *item )
-{
-    m_itemList.remove( item );
-    return m_itemList.isEmpty();
 }

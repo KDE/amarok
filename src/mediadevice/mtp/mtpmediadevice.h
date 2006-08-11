@@ -43,18 +43,15 @@ class MtpTrack {
         bool                    operator==( const MtpTrack& second ) const { return m_id == second.m_id; }
 
     public:
-        unsigned int            id() const { return m_id; }
+        u_int32_t               id() const { return m_id; }
         MetaBundle              *bundle() { return new MetaBundle( m_bundle ); }
         void                    setBundle( MetaBundle &bundle );
         void                    setId( int id ) { m_id = id; }
         void                    MtpTrack::readMetaData( LIBMTP_track_t *track );
-        void                    addItem( const MtpMediaItem *item );
-        bool                    removeItem( const MtpMediaItem *item );
 
     private:
         u_int32_t               m_id;
         MetaBundle              m_bundle;
-        QPtrList<MtpMediaItem>  m_itemList;
 };
 
 
@@ -69,7 +66,7 @@ class MtpMediaItem : public MediaItem
         {
             //m_track->removeItem(this);
         }
-        void                setTrack( MtpTrack *track ) { m_track = track; m_track->addItem(this); }
+        void                setTrack( MtpTrack *track ) { m_track = track; }
         MtpTrack            *track() { return m_track; }
         QString             filename() { return m_track->bundle()->url().path(); }
 
@@ -142,6 +139,7 @@ class MtpMediaDevice : public MediaDevice
         uint32_t                createFolder( const char *name, uint32_t parent_id );
         uint32_t                folderNameToID( char *name, LIBMTP_folder_t *folderlist );
         uint32_t                subfolderNameToID( const char *name, LIBMTP_folder_t *folderlist, uint32_t parent_id );
+        void                    updateFolders( void );
         trackValueList          m_trackList;
         LIBMTP_mtpdevice_t      *m_device;
         QMutex                  m_mutex;
