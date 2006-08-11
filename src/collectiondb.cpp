@@ -3010,7 +3010,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
                 .arg( currdeviceid )
                 .arg( currurl )
                 .arg( currid ); 
-        insertline += QString( ", '%1);" ).arg( currdir );
+        insertline += QString( ", '%1');" ).arg( currdir );
         insert( insertline, NULL );
         if( !statUIDVal.empty() )
         {
