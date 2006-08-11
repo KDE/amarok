@@ -4137,36 +4137,36 @@ CollectionDB::updateDirStats( QString path, const long datetime, const bool temp
     {
         // REPLACE INTO is not valid SQL for postgres, so we need to check whether we
         // should UPDATE() or INSERT()
-        QStringList values = query( QString("SELECT * FROM directories%1 WHERE dir='%2' AND deviceid=%4;")
+        QStringList values = query( QString("SELECT * FROM directories%1 WHERE dir='%3' AND deviceid=%2;")
             .arg( temporary ? "_temp" : "")
-            .arg( escapeString( rpath ) )
-            .arg( deviceid ) );
+            .arg( deviceid )
+            .arg( escapeString( rpath ) ) );
 
         if(values.count() > 0 )
         {
-            query( QString( "UPDATE directories%1 SET changedate=%2 WHERE dir='%3'AND deviceid=%4;")
+            query( QString( "UPDATE directories%1 SET changedate=%2 WHERE dir='%4'AND deviceid=%3;")
             .arg( temporary ? "_temp" : "" )
             .arg( datetime )
-            .arg( escapeString( rpath ) )
-            .arg( deviceid ) );
+            .arg( deviceid )
+            .arg( escapeString( rpath ) ) );
         }
         else
         {
 
-            query( QString( "INSERT INTO directories%1 (dir, deviceid,changedate) VALUES ('%3', %4, '%2');")
+            query( QString( "INSERT INTO directories%1 (dir, deviceid,changedate) VALUES ('%4', %3, '%2');")
             .arg( temporary ? "_temp" : "")
             .arg( datetime )
-            .arg( escapeString( rpath ) )
-            .arg( deviceid ) );
+            .arg( deviceid )
+            .arg( escapeString( rpath ) ) );
         }
     }
     else
     {
-        query( QString( "REPLACE INTO directories%1 ( dir, deviceid, changedate ) VALUES ( '%3', %4, %2 );" )
+        query( QString( "REPLACE INTO directories%1 ( dir, deviceid, changedate ) VALUES ( '%4', %3, %2 );" )
                   .arg( temporary ? "_temp" : "" )
                   .arg( datetime )
-                  .arg( escapeString( rpath ) )
-                  .arg( deviceid ) );
+                  .arg( deviceid )
+                  .arg( escapeString( rpath ) ) );
     }
 
     INotify::instance()->watchDir( path );
@@ -4181,13 +4181,13 @@ CollectionDB::removeSongsInDir( QString path )
     int deviceid = MountPointManager::instance()->getIdForUrl( path );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, path );
 
-    query( QString( "DELETE FROM tags WHERE dir = '%1' AND deviceid = %2;" )
-              .arg( escapeString( rpath ) )
-              .arg( deviceid ) );
+    query( QString( "DELETE FROM tags WHERE dir = '%2' AND deviceid = %1;" )
+              .arg( deviceid )
+              .arg( escapeString( rpath ) ) );
 
-    query( QString( "DELETE FROM uniqueid WHERE dir = '%1' AND deviceid = %2;" )
-              .arg( escapeString( rpath ) )
-              .arg( deviceid ) );
+    query( QString( "DELETE FROM uniqueid WHERE dir = '%2' AND deviceid = %1;" )
+              .arg( deviceid )
+              .arg( escapeString( rpath ) ) );
 }
 
 
@@ -4200,9 +4200,9 @@ CollectionDB::isDirInCollection( QString path )
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, path );
 
     QStringList values =
-        query( QString( "SELECT changedate FROM directories WHERE dir = '%1' AND deviceid = %2;" )
-                  .arg( escapeString( rpath ) )
-                  .arg( deviceid ) );
+        query( QString( "SELECT changedate FROM directories WHERE dir = '%2' AND deviceid = %1;" )
+                  .arg( deviceid )
+                  .arg( escapeString( rpath ) ) );
 
     return !values.isEmpty();
 }
@@ -4214,9 +4214,9 @@ CollectionDB::isFileInCollection( const QString &url  )
     int deviceid = MountPointManager::instance()->getIdForUrl( url );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
 
-    QString sql = QString( "SELECT url FROM tags WHERE url = '%1' AND deviceid = %2" )
-                             .arg( escapeString( rpath ) )
-                             .arg( deviceid );
+    QString sql = QString( "SELECT url FROM tags WHERE url = '%2' AND deviceid = %1" )
+                             .arg( deviceid )
+                             .arg( escapeString( rpath ) );
     if ( deviceid == -1 )
     {
         sql += ";";
@@ -4241,18 +4241,16 @@ CollectionDB::removeSongs( const KURL::List& urls )
         int deviceid = MountPointManager::instance()->getIdForUrl( *it );
         QString rpath = MountPointManager::instance()->getRelativePath( deviceid, (*it).path() );
 
-        query( QString( "DELETE FROM tags WHERE url = '%1' AND deviceid = %2;" )
-            .arg( escapeString( rpath ) )
-            .arg( deviceid ) );
-        query( QString( "DELETE FROM uniqueid WHERE url = '%1' AND deviceid = %2;" )
-                .arg( escapeString( rpath ) )
-                .arg( deviceid ) );
-        query( QString( "UPDATE statistics SET deleted = %1 WHERE url = '%2';" )
+        query( QString( "DELETE FROM tags WHERE url = '%2' AND deviceid = %1;" )
+            .arg( deviceid )
+            .arg( escapeString( rpath ) ) );
+        query( QString( "DELETE FROM uniqueid WHERE url = '%2' AND deviceid = %1;" )
+                .arg( deviceid )
+                .arg( escapeString( rpath ) ) );
+        query( QString( "UPDATE statistics SET deleted = %1 WHERE url = '%3' AND deviceid = %2;" )
                 .arg( boolT() )
-                .arg( escapeString( (*it).path() ) ) );
-        query( QString( "UPDATE statistics SET deleted = %1 WHERE url = '%2';" )
-                .arg( boolT() )
-                .arg( escapeString( (*it).path() ) ) );
+                .arg( deviceid )
+                .arg( escapeString( rpath ) ) );
     }
 }
 
@@ -4348,9 +4346,9 @@ CollectionDB::removeDirFromCollection( QString path )
     int deviceid = MountPointManager::instance()->getIdForUrl( path );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, path );
 
-    query( QString( "DELETE FROM directories WHERE dir = '%1' AND deviceid = %2;" )
-                    .arg( escapeString( rpath ) )
-                    .arg( deviceid ) );
+    query( QString( "DELETE FROM directories WHERE dir = '%2' AND deviceid = %1;" )
+                    .arg( deviceid )
+                    .arg( escapeString( rpath ) ) );
 }
 
 
@@ -4543,21 +4541,21 @@ CollectionDB::setLyrics( const QString &url, const QString &lyrics )
     int deviceid = MountPointManager::instance()->getIdForUrl( url );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
 
-    QStringList values = query(QString("SELECT lyrics FROM lyrics WHERE url = '%1' AND deviceid = %2;")
-                    .arg( escapeString( rpath ) ).arg( deviceid ) );
+    QStringList values = query(QString("SELECT lyrics FROM lyrics WHERE url = '%2' AND deviceid = %1;")
+                    .arg( deviceid ).arg( escapeString( rpath ) ) );
     if(values.count() > 0)
     {
         if ( !lyrics.isEmpty() )
-            query( QString( "UPDATE lyrics SET lyrics = '%1' WHERE url = '%2' AND deviceid = %3;" )
-                    .arg( escapeString( lyrics) ).arg( escapeString( rpath ) ).arg( deviceid ) );
+            query( QString( "UPDATE lyrics SET lyrics = '%1' WHERE url = '%3' AND deviceid = %2;" )
+                    .arg( escapeString( lyrics) ).arg( deviceid ).arg( escapeString( rpath ) ) );
         else
-            query( QString( "DELETE FROM lyrics WHERE url = '%1' AND deviceid = %2;" )
-                    .arg( escapeString( rpath ) ).arg( deviceid) );
+            query( QString( "DELETE FROM lyrics WHERE url = '%2' AND deviceid = %1;" )
+                    .arg( deviceid).arg( escapeString( rpath ) ) );
     }
     else
     {
-        insert( QString( "INSERT INTO lyrics (url, deviceid, lyrics) values ( '%1', %2, '%3' );" )
-                .arg( escapeString( rpath ) ).arg( deviceid ).arg( escapeString( lyrics ) ), NULL);
+        insert( QString( "INSERT INTO lyrics (deviceid, url, lyrics) values ( %1, '%2', '%3' );" )
+                .arg( deviceid ).arg( escapeString( rpath ) ).arg( escapeString( lyrics ) ), NULL);
     }
 }
 
@@ -4567,8 +4565,8 @@ CollectionDB::getLyrics( const QString &url )
 {
     int deviceid = MountPointManager::instance()->getIdForUrl( url );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
-    QStringList values = query( QString( "SELECT lyrics FROM lyrics WHERE url = '%1' AND deviceid = %2;" )
-                .arg( escapeString( rpath ) ).arg( deviceid ) );
+    QStringList values = query( QString( "SELECT lyrics FROM lyrics WHERE url = '%2' AND deviceid = %1;" )
+                .arg( deviceid ).arg( escapeString( rpath ) ) );
     return values[0];
 }
 
