@@ -152,8 +152,7 @@ class MtpMediaDevice : public MediaDevice
         QLineEdit               *m_folderStructureBox;
         QLabel                  *m_folderLabel;
         QStringList             m_supportedFiles;
-        QStringList             mtpFileTypes;
-
+        QMap<int,QString>       mtpFileTypes;
 };
 
 #endif

@@ -48,6 +48,7 @@ AMAROK_EXPORT_PLUGIN( MtpMediaDevice )
 #include <qtooltip.h>
 #include <qlineedit.h>
 #include <qregexp.h>
+#include <qmap.h>
 
 
 /**
@@ -74,13 +75,35 @@ MtpMediaDevice::MtpMediaDevice() : MediaDevice()
     QToolTip::remove( customButton );
     QToolTip::add( customButton, i18n( "Special functions of your device" ) );
 
-    mtpFileTypes << "wav" << "mp3" << "wma" << "ogg" << "aa" /*audible*/ << "mp4"
-        << "undef-audio" << "wmv" << "avi" << "mpg" << "asf" << "mov"
-        << "undef-video" << "jpg" << "jfif" << "tiff" << "bmp" << "gif" << "pict"
-        << "png" << "vcs" /*vcal1*/ << "vcs" /*vcal2*/ << "vcf" /*vcard2*/
-        << "vcf" /*vcard3*/ << "wim" /*windows image format*/ << "exe" << "txt"
-        << "html" << "unknown";
-
+    mtpFileTypes[LIBMTP_FILETYPE_WAV] = "wav";
+    mtpFileTypes[LIBMTP_FILETYPE_MP3] = "mp3";
+    mtpFileTypes[LIBMTP_FILETYPE_WMA] = "wma";
+    mtpFileTypes[LIBMTP_FILETYPE_OGG] = "ogg";
+    mtpFileTypes[LIBMTP_FILETYPE_AUDIBLE] = "aa"; // audible
+    mtpFileTypes[LIBMTP_FILETYPE_MP4] = "mp4";
+    mtpFileTypes[LIBMTP_FILETYPE_UNDEF_AUDIO] = "undef-audio";
+    mtpFileTypes[LIBMTP_FILETYPE_WMV] = "wmv";
+    mtpFileTypes[LIBMTP_FILETYPE_AVI] = "avi";
+    mtpFileTypes[LIBMTP_FILETYPE_MPEG] = "mpg";
+    mtpFileTypes[LIBMTP_FILETYPE_ASF] = "asf";
+    mtpFileTypes[LIBMTP_FILETYPE_QT] = "mov";
+    mtpFileTypes[LIBMTP_FILETYPE_UNDEF_VIDEO] = "undef-video";
+    mtpFileTypes[LIBMTP_FILETYPE_JPEG] = "jpg";
+    mtpFileTypes[LIBMTP_FILETYPE_JFIF] = "jpg";
+    mtpFileTypes[LIBMTP_FILETYPE_TIFF] = "tiff";
+    mtpFileTypes[LIBMTP_FILETYPE_BMP] = "bmp";
+    mtpFileTypes[LIBMTP_FILETYPE_GIF] = "gif";
+    mtpFileTypes[LIBMTP_FILETYPE_PICT] = "pict";
+    mtpFileTypes[LIBMTP_FILETYPE_PNG] = "png";
+    mtpFileTypes[LIBMTP_FILETYPE_VCALENDAR1] = "vcs"; // vcal1
+    mtpFileTypes[LIBMTP_FILETYPE_VCALENDAR2] = "vcs"; // vcal2
+    mtpFileTypes[LIBMTP_FILETYPE_VCARD2] = "vcf"; // vcard2
+    mtpFileTypes[LIBMTP_FILETYPE_VCARD3] = "vcf"; // vcard3
+    mtpFileTypes[LIBMTP_FILETYPE_WINDOWSIMAGEFORMAT] = "wim"; // windows image format
+    mtpFileTypes[LIBMTP_FILETYPE_WINEXEC] = "exe";
+    mtpFileTypes[LIBMTP_FILETYPE_TEXT] = "txt";
+    mtpFileTypes[LIBMTP_FILETYPE_HTML] = "html";
+    mtpFileTypes[LIBMTP_FILETYPE_UNKNOWN] = "unknown";
 }
 
 void
@@ -157,7 +180,8 @@ MediaItem
         int libmtp_type = m_supportedFiles.findIndex( extension );
         if( libmtp_type >= 0 )
         {
-            libmtp_type = mtpFileTypes.findIndex( extension );
+            int keyIndex = mtpFileTypes.values().findIndex( extension );
+            libmtp_type = mtpFileTypes.keys()[keyIndex];
             trackmeta->filetype = (LIBMTP_filetype_t) libmtp_type;
             debug() << "set filetype to " << libmtp_type << " based on extension of ." << extension << endl;
         }
