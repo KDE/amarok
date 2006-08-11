@@ -57,6 +57,8 @@ print "\n\n"
 Dir.chdir( "src" )
 bump_desktop_files( "engine" )
 bump_desktop_files( "mediadevice" )
+bump_desktop_files( "device" )
+
 
 
 print "\n"
