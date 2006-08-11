@@ -48,7 +48,8 @@ enum Fields
     FLastPlay,
     FModfiedDate,
     FFilePath,
-    FBPM
+    FBPM,
+    FMountPoint
 };
 
 
@@ -154,15 +155,15 @@ void SmartPlaylistEditor::init(QString defaultName)
              << i18n("Track #") << i18n("Year") << i18n("Comment") << i18n("Play Counter")
              << i18n("Score") << i18n( "Rating" ) << i18n("First Play")
              << i18n("Last Play") << i18n("Modified Date") << i18n("File Path")
-             << i18n("BPM");
+             << i18n("BPM") << i18n("Mount Point");
 
     m_dbFields.clear();
     //TODO max: make sure the search for URL works correctly
     m_dbFields << "artist.name" << "composer.name" << "album.name" << "genre.name" << "tags.title" << "tags.length"
                << "tags.track" << "year.name" << "tags.comment" << "statistics.playcounter"
                << "statistics.percentage" << "statistics.rating" << "statistics.createdate"
-               << "statistics.accessdate" << "tags.createdate" << "tags.url" << "tags.sampler"
-               << "tags.bpm";
+               << "statistics.accessdate" << "tags.createdate" << "tags.url"
+               << "tags.bpm" << "devices.lastmountpoint";
 
     m_expandableFields.clear();
     m_expandableFields << i18n("Artist") << i18n("Composer") << i18n("Album") << i18n("Genre") <<  i18n("Year");
@@ -413,7 +414,9 @@ void SmartPlaylistEditor::buildQuery()
 
                 QString str = criteria->getSearchCriteria();
                 if( str.contains( "statistics." ) && !joins.contains( "statistics" ) )
-                    joins += " LEFT JOIN statistics ON statistics.url=tags.url";
+                    joins += " LEFT JOIN statistics ON statistics.url=tags.url AND statistics.deviceid=tags.deviceid";
+                if( str.contains( "devices." ) && !joins.contains( "devices" ) )
+                    joins += " LEFT JOIN devices ON tags.deviceid=devices.id";
 
                 if( i ) //multiple conditions
                     str.prepend( " OR (");
@@ -435,7 +438,9 @@ void SmartPlaylistEditor::buildQuery()
 
                 QString str = criteria2->getSearchCriteria();
                 if( str.contains( "statistics." ) && !joins.contains( "statistics" ) )
-                    joins += " LEFT JOIN statistics ON statistics.url=tags.url";
+                    joins += " LEFT JOIN statistics ON statistics.url=tags.url AND statistics.deviceid=tags.deviceid";
+                if( str.contains( "devices." ) && !joins.contains( "devices" ) )
+                    joins += " LEFT JOIN devices ON tags.deviceid=devices.id";
 
                 if( i ) //multiple conditions
                     str.prepend( " AND (");
@@ -453,7 +458,7 @@ void SmartPlaylistEditor::buildQuery()
         if( m_orderCombo->currentItem() != m_orderCombo->count()-1 ) {
             QString field = m_dbFields[ m_orderCombo->currentItem() ];
             if( field.contains( "statistics." ) && !joins.contains( "statistics" ) )
-                joins += " LEFT JOIN statistics ON statistics.url=tags.url";
+                joins += " LEFT JOIN statistics ON statistics.url=tags.url AND statistics.deviceid=tags.deviceid";
 
             QString orderType = m_orderTypeCombo->currentItem() == 1 ? " DESC" : " ASC";
             orderStr = " ORDER BY " +  field + orderType;
@@ -493,7 +498,7 @@ void SmartPlaylistEditor::buildQuery()
         QString field = m_expandableDbFields[ m_expandCombo->currentItem() ];
         QString table = field.left( field.find('.') );
         if( !joins.contains( table ) ) {
-            joins += " LEFT JOIN statistics ON statistics.url=tags.url";
+            joins += " LEFT JOIN statistics ON statistics.url=tags.url AND statistics.deviceid=tags.deviceid";
         }
         if ( !criteriaListStr.isEmpty() )
             whereStr = QString(" WHERE (%1) AND %2 = '(*ExpandString*)'").arg(criteriaListStr).arg(field);
@@ -764,7 +769,16 @@ QString CriteriaEditor::getSearchCriteria()
         searchCriteria += value;
     }
     else if( criteria == i18n("starts with") )
+    {
+        if( field == "tags.url" )
+        {
+            if( value.startsWith( "/" ) )
+                value = "." + value;
+            if( !value.startsWith( "./" ) )
+                value = "./" + value;
+        }
         searchCriteria += CollectionDB::likeCondition( value, false, true );
+    }
     else if( criteria == i18n("ends with") )
         searchCriteria += CollectionDB::likeCondition( value, true, false );
     else if( criteria == i18n("is greater than") || criteria == i18n("is after") )
@@ -1022,6 +1036,7 @@ int CriteriaEditor::getValueType( int index )
         case FTitle:
         case FComment:
         case FFilePath:
+        case FMountPoint:
             valueType = String;
             break;
         case FLength:
