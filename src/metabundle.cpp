@@ -1415,13 +1415,29 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
             else
             {
                 //this is really ugly, but otherwise we get an incorrect ? at the end of the string...possibly a null value?  Not sure of another way to fix this.
-                /*QString temp = TStringToQString( TagLib::String( ourMP3UidFrame( file, ourId )->identifier().data() ) );
-                QChar currchar;
+                /*TagLib::ByteVector tempbv = ourMP3UidFrame( file, ourId )->identifier();
+                debug() << "size of ByteVector 'identifier' from UFID frame: " << tempbv.size();
                 uint i;
+                QChar currchar;
+                for( i = 0; i < tempbv.size(); i++)
+                {
+                   currchar = tempbv.at( i );
+                   debug() << "value of bytevector at position " << i << " is " << int(currchar.latin1()) << endl;
+                }
+                debug() << "string from data() is " << tempbv.data() << endl;
+                TagLib::String tlstring = tempbv.data();
+                debug() << "TString's toCString() is " << tlstring.toCString() << endl;
+                QString temp = TStringToQString( tlstring );
                 for( i = 0; i < temp.length(); i++)
                 {
                     currchar = temp.at( i );
-                    debug() << "value at position " << i << " is " << int((currchar.latin1())) << endl;
+                    debug() << "value of indirect string at position " << i << " is " << int(currchar.latin1()) << endl;
+                }
+                temp = TStringToQString( TagLib::String( ourMP3UidFrame( file, ourId )->identifier().data() ) );
+                for( i = 0; i < temp.length(); i++)
+                {
+                    currchar = temp.at( i );
+                    debug() << "value of direct string at position " << i << " is " << int(currchar.latin1()) << endl;
                 }*/
                 m_uniqueId = TStringToQString( TagLib::String( ourMP3UidFrame( file, ourId )->identifier().data() ) ).left( randSize );
             }
@@ -1451,6 +1467,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
     {
         if( file->tag() )
         {
+            /*
             if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) )
                         && ( recreate || strip )
                         && AmarokConfig::advancedTagFeatures()
@@ -1462,9 +1479,10 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
                 file->save();
                 return;
             }
-
+            */
             if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) )
             {
+                /*
                 if( AmarokConfig::advancedTagFeatures() && TagLib::File::isWritable( file->name() ) )
                 {
                     m_uniqueId = getRandomStringHelper( randSize );
@@ -1473,7 +1491,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
                             );
                     file->save();
                     newID = true;
-                }
+                }*/
             }
             else
             {
