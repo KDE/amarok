@@ -353,7 +353,7 @@ Playlist::Playlist( QWidget *parent )
     new KAction( i18n( "&Goto Current Track" ), amaroK::icon( "music" ), CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
     new KAction( i18n( "&Remove Duplicate && Dead Entries" ), 0, this, SLOT( removeDuplicates() ), ac, "playlist_remove_duplicates" );
     new KAction( i18n( "&Queue Selected Tracks" ), amaroK::icon( "fastforward" ), CTRL+Key_D, this, SLOT( queueSelected() ), ac, "queue_selected" );
-    KAction *stopafter = new KAction( i18n( "&Stop Playing After Track" ), amaroK::icon( "stop" ), CTRL+ALT+Key_V,
+    KToggleAction *stopafter = new KToggleAction( i18n( "&Stop Playing After Track" ), amaroK::icon( "stop" ), CTRL+ALT+Key_V,
                             this, SLOT( toggleStopAfterCurrentItem() ), ac, "stop_after" );
 
     { // KAction idiocy -- shortcuts don't work until they've been plugged into a menu
@@ -3854,7 +3854,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
                                                                                      //looks like fucking LISP
     {
         amaroK::actionCollection()->action( "stop_after" )->plug( &popup );
-        popup.setItemChecked( STOP_DONE, m_stopAfterTrack == item );
+        dynamic_cast<KToggleAction *>( amaroK::actionCollection()->action( "stop_after" ) )->setChecked( m_stopAfterTrack == item );
     }
 
     if( isCurrent && itemCount == 1 )
