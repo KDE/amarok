@@ -3318,9 +3318,9 @@ CollectionDB::bundleFromQuery( QStringList::const_iterator *iter )
     b.setLength    ( (*++it).toInt() );
     b.setSampleRate( (*++it).toInt() );
     b.setFilesize  ( (*++it).toInt() );
-    bool ok;
-    const int val = (*++it).toInt( &ok );
-    b.setCompilation( ok ? val : MetaBundle::CompilationUnknown );
+    
+    b.setCompilation( samplerToCompilation( *it ) );
+    ++it;
     b.setFileType( (*++it).toInt() );
     b.setBpm       ( (*++it).toFloat() );
 
@@ -3360,9 +3360,6 @@ fillInBundle( QStringList values, MetaBundle &bundle )
     bundle.setFileType  ( (*it).toInt() ); ++it;
     bundle.setBpm       ( (*it).toFloat() ); ++it;
 
-
-    // use first char of boolT / boolF as not all DBs store these as
-    // numerics (and it's only a single-char column)
     bundle.setCompilation( samplerToCompilation( *it ) );
     ++it;
 
