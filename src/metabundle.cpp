@@ -1416,7 +1416,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
             {
                 //this is really ugly, but otherwise we get an incorrect ? at the end of the string...possibly a null value?  Not sure of another way to fix this.
                 /*TagLib::ByteVector tempbv = ourMP3UidFrame( file, ourId )->identifier();
-                debug() << "size of ByteVector 'identifier' from UFID frame: " << tempbv.size();
+                debug() << "size of ByteVector 'identifier' from UFID frame: " << tempbv.size() << endl;
                 uint i;
                 QChar currchar;
                 for( i = 0; i < tempbv.size(); i++)
