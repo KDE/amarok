@@ -32,17 +32,6 @@ SHORT-TERM (URGENT):
                website are disabled ("Download the player"). we need to do a handshake on
                startup once, and then set a config item, e.g. handshaked=true.
 
- <markey>  GHNS for scripts and themes only shows 20 items maximum. I understand this is due
-           to some configuration on pwsp.net, where we fetch the feed. This must be fixed!!!
-           <sebr> I know the problem!! We reference the kde feeds for kde-apps/look, which are
-                  only providing 20 or so items.  What crap!  Have a look here:
-                  http://download.kde.org/khotnewstuff/amarokscripts/amarokscripts.xml
-
-                  Also, we need to change the spelling of the category names to Amarok. The feeds
-                  use an id, so it should be fine: <type>56</type>
-
-                  Who do we contact? Frank?
-
  <markey>  xine-engine: when "xine could not init any audio driver" happens, always retry
            with Autodetect. This seems to be an issue with leftover amarokrc's from 1.3.
 
