@@ -186,6 +186,7 @@ k_dcop:
    virtual void disableAutoScoring( bool disable ) = 0;    ///< Disable updating track stats on track change.
    virtual void newUniqueIdForFile( const QString &path ) = 0; ///< Assign a new unique ID to a file.
    virtual void removeUniqueIdFromFile( const QString &path ) = 0; ///< Remove our unique ID from a given file.
+   virtual QString currentTrackUniqueId() = 0;                ///< Return the current track's unique ID
 };
 
 

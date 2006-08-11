@@ -1358,13 +1358,6 @@ void MetaBundle::setUniqueId()
         return;
 
     m_uniqueId = CollectionDB::instance()->uniqueIdFromUrl( url() );
-
-    //NOTE: Do we still need this below anymore?
-    //if( !m_uniqueId.isEmpty() || ( m_uniqueId.isEmpty() && !AmarokConfig::advancedTagFeatures() ) )
-    //    return;
-
-    //at this point,  used to set a UID from this function if one didn't exist by
-    //calling the filref version of setUniqueId; explicitly use the fileref version for this now
 }
 
 void MetaBundle::setUniqueId( const QString &id )

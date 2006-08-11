@@ -818,6 +818,12 @@ namespace amaroK
         CollectionDB::instance()->removeUniqueIdFromFile( path );
     }
 
+    QString DcopCollectionHandler::currentTrackUniqueId()
+    {
+        if( Playlist::instance()->currentItem() )
+            return Playlist::instance()->currentItem()->uniqueId();
+    }
+
 /////////////////////////////////////////////////////////////////////////////////////
 // class DcopScriptHandler
 /////////////////////////////////////////////////////////////////////////////////////

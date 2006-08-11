@@ -3198,10 +3198,12 @@ CollectionDB::removeUniqueIdFromFile( const QString &path )
 QString
 CollectionDB::urlFromUniqueId( const QString &id )
 {
+    bool scanning = ThreadWeaver::instance()->isJobPending( "CollectionScanner" );
     QStringList urls = query( QString(
             "SELECT deviceid, url "
-            "FROM uniqueid "
-            "WHERE uniqueid = '%1';" )
+            "FROM uniqueid%1 "
+            "WHERE uniqueid = '%2';" )
+                .arg( scanning ? "_temp" : QString::null )
                 .arg( id ) );
 
     if( urls.empty() )
@@ -3218,10 +3220,13 @@ CollectionDB::uniqueIdFromUrl( const KURL &url )
     int currdeviceid = mpm->getIdForUrl( url.path() );
     QString currurl = escapeString( mpm->getRelativePath( currdeviceid, url.path() ) );
 
+    bool scanning = ThreadWeaver::instance()->isJobPending( "CollectionScanner" );
+    
     QStringList uid = query( QString(
             "SELECT uniqueid "
-            "FROM uniqueid "
+            "FROM uniqueid%1 "
             "WHERE deviceid = %2 AND url = '%3';" )
+                .arg( scanning ? "_temp" : QString::null )
                 .arg( currdeviceid )
                 .arg( currurl ) );
 
