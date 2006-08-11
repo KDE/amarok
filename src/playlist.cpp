@@ -237,7 +237,7 @@ Playlist::Playlist( QWidget *parent )
     s_instance = this;
 
     connect( CollectionDB::instance(), SIGNAL(fileMoved(const QString&,
-            const QString&, const QString&)), SLOT(checkDisabledChildren(const QString&,
+            const QString&, const QString&)), SLOT(updateEntriesUrl(const QString&,
             const QString&, const QString&)) );
     connect( CollectionDB::instance(), SIGNAL(uniqueIdChanged(const QString&,
             const QString&, const QString&)), SLOT(updateEntriesUniqueId(const QString&,
@@ -1033,21 +1033,14 @@ void Playlist::restoreLayout(KConfig *config, const QString &group)
 }
 
 void
-Playlist::checkDisabledChildren( const QString &/*oldUrl*/, const QString &newUrl, const QString &uniqueid )
+Playlist::updateEntriesUrl( const QString &/*oldUrl*/, const QString &newUrl, const QString &uniqueid )
 {
-    //DEBUG_BLOCK
-    //debug() << "checking for uniqueid = " << uniqueid << endl;
     PlaylistItem *item;
-    for ( item = m_disabledChildren.first(); item; item = m_disabledChildren.next() )
+    if( m_uniqueMap.contains( uniqueid ) )
     {
-        //debug() << "item's uniqueid = " << item->uniqueId() << endl;
-        if( item && item->uniqueId() == uniqueid )
-        {
-            item->setUrl( KURL( newUrl ) );
-            if( item->checkExists() )
-                item->setEnabled( true );
-            return;
-        }
+        item = m_uniqueMap[uniqueid];
+        item->setUrl( KURL( newUrl ) );
+        item->setEnabled( item->checkExists() );
     }
 }
 

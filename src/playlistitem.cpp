@@ -117,7 +117,6 @@ PlaylistItem::~PlaylistItem()
     if( listView()->m_hoveredRating == this )
         listView()->m_hoveredRating = 0;
 
-    Playlist::instance()->removeDisabledChild( this );
     Playlist::instance()->removeFromUniqueMap( uniqueId() );
 }
 
@@ -213,10 +212,6 @@ int PlaylistItem::queuePosition() const
 void PlaylistItem::setEnabled( bool enabled )
 {
     m_enabled = enabled;
-    if( !enabled && !uniqueId().isEmpty() )
-        Playlist::instance()->disabledChild( this );
-    else if ( !uniqueId().isEmpty()  )
-        Playlist::instance()->removeDisabledChild( this );
     setDropEnabled( enabled ); // this forbids items to be dropped into a history queue.
 
     update();

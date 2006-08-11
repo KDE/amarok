@@ -161,8 +161,6 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
 
         //ATF-related functions
         bool checkFileStatus( PlaylistItem * item );
-        void disabledChild( PlaylistItem * item ) { m_disabledChildren.append( item ); }
-        void removeDisabledChild( PlaylistItem * item ) { m_disabledChildren.removeRef( item ); }
         void addToUniqueMap( const QString uniqueid, PlaylistItem * item ) { m_uniqueMap[uniqueid] = item; }
         void removeFromUniqueMap( const QString uniqueid )
             { if( m_uniqueMap.contains( uniqueid ) ) m_uniqueMap.remove( uniqueid ); }
@@ -233,7 +231,7 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void undo();
         void updateMetaData( const MetaBundle& );
         void adjustColumn( int n );
-        void checkDisabledChildren( const QString &oldUrl, const QString &newUrl, const QString &uniqueid );
+        void updateEntriesUrl( const QString &oldUrl, const QString &newUrl, const QString &uniqueid );
         void updateEntriesUniqueId( const QString &url, const QString &oldid, const QString &newid );
 
     protected:
@@ -402,7 +400,6 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
 
         std::vector<double> m_columnFraction;
 
-        QPtrList<PlaylistItem> m_disabledChildren;
         QMap<QString,PlaylistItem*> m_uniqueMap;
         int m_oldRandom;
         int m_oldRepeat;
