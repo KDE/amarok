@@ -2972,7 +2972,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
     QStringList nonTempURLs = query( QString(
             "SELECT url, uniqueid "
             "FROM uniqueid "
-            "WHERE deviceid = %1 AND url = '%1';" )
+            "WHERE deviceid = %1 AND url = '%2';" )
                 .arg( currdeviceid )
                 .arg( currurl ) );
 
@@ -3005,12 +3005,12 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
     if( !tempTablesAndInPermanent && urls.empty() && uniqueids.empty() )
     {
         QString insertline = QString( "INSERT INTO uniqueid%1 (deviceid, url, uniqueid, dir) "
-                                      "VALUES ( %2,'%3', '%4', '%5')" )
+                                      "VALUES ( %2,'%3', '%4'" )
                 .arg( tempTables ? "_temp" : "" )
                 .arg( currdeviceid )
                 .arg( currurl )
-                .arg( currid )
-                .arg( currdir );
+                .arg( currid ); 
+        insertline += QString( ", '%1);" ).arg( currdir );
         insert( insertline, NULL );
         if( !statUIDVal.empty() )
         {
@@ -4286,10 +4286,10 @@ CollectionDB::checkCompilations( const QString &path, const bool temporary )
     int deviceid = MountPointManager::instance()->getIdForUrl( path );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, path );
 
-    albums = query( QString( "SELECT DISTINCT album.name FROM tags_temp, album%1 AS album WHERE tags_temp.dir = '%2' AND tags_temp.deviceid = %3 AND album.id = tags_temp.album AND tags_temp.sampler IS NULL;" )
+    albums = query( QString( "SELECT DISTINCT album.name FROM tags_temp, album%1 AS album WHERE tags_temp.dir = '%3' AND tags_temp.deviceid = %2 AND album.id = tags_temp.album AND tags_temp.sampler IS NULL;" )
               .arg( temporary ? "_temp" : "" )
-              .arg( escapeString( rpath ) )
-              .arg( deviceid ) );
+              .arg( deviceid )
+              .arg( escapeString( rpath ) ) );
 
     for ( uint i = 0; i < albums.count(); i++ )
     {
@@ -5130,15 +5130,23 @@ CollectionDB::checkDatabase()
         if ( needsUpdate )
         {
 
-            KDialog *dialog = new KDialogBase( i18n( "Updating database, please wait" ),
+            KDialog *dialog = new KDialogBase( i18n( "Updating database" ),
                                                0,
                                                KDialogBase::Yes,
                                                KDialogBase::Cancel,
                                                0,
                                                0,
                                                false );
-            //QTimer::singleShot( 0, dialog, SLOT( show() ) );
-            dialog->show();
+            /* TODO: remove the standard window controls from the dialog window, the user should not be able
+                     to close, minimize, maximize the dialog
+                     add additional text, e.g. Amarok is currently updating your database. This may take a while.
+                     Please wait.
+
+                     Consider using a ProgressBarDialog
+            */
+            QTimer::singleShot( 0, dialog, SLOT( show() ) );
+            //process events in the main event loop so that the dialog actually gets shown
+            kapp->processEvents();
             debug() << "Beginning database update" << endl;
 
             updateStatsTables();
@@ -5157,7 +5165,6 @@ CollectionDB::checkDatabase()
             }
             delete dialog;
         }
-
         emit databaseUpdateDone();
     }
 
