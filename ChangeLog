@@ -81,6 +81,7 @@ VERSION 1.4.2:
       since the last time it was enabled.
 
   BUGFIXES:
+    * Don't update accessdate when setting songs rating or score. (BR 132274)
     * Increasing or decreasing volume while muted would not correctly unmute.
       (BR 132228)
     * Better resize behavior in iPod collection view mode. Patch by Joe Rabinoff
