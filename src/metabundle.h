@@ -281,9 +281,9 @@ public: //modifiers
     void setLastFmBundle( const LastFm::Bundle &last );
     void setUniqueId(); //will find the fileref
     void setUniqueId( const QString &id ); //WARNING WARNING WARNING SEE COMMENT in .CPP
-    void setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip = false );
-    void removeUniqueId();
-    void newUniqueId();
+    bool setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip = false );
+    bool removeUniqueId();
+    bool newUniqueId();
 
     void detach(); // for being able to apply QDeepCopy<>
 

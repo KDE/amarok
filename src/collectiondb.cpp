@@ -2944,8 +2944,8 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
     QString currurl = escapeString( mpm->getRelativePath( currdeviceid, bundle->url().path() ) );
     QString currdir = escapeString( mpm->getRelativePath( currdeviceid, bundle->url().directory() ) );
     //debug() << "AmarokConfig::advancedTagFeatures() = " << (AmarokConfig::advancedTagFeatures() ? "true" : "false") << endl;
-    //debug() << "Checking currid = " << currid << ", currdir = " << currdir << ", currurl = " << currurl << endl;
-
+    debug() << "Checking currid = " << currid << ", currdir = " << currdir << ", currurl = " << currurl << endl;
+    debug() << "tempTables = " << (tempTables?"true":"false") << endl;
 
 
     QStringList urls = query( QString(
@@ -2957,14 +2957,14 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
                 .arg( currurl ) );
 
     QStringList uniqueids = query( QString(
-            "SELECT url, uniqueid "
+            "SELECT url, uniqueid, deviceid "
             "FROM uniqueid%1 "
             "WHERE uniqueid = '%2';" )
                 .arg( tempTables ? "_temp" : "" )
                 .arg( currid ) );
 
     QStringList nonTempIDs = query( QString(
-            "SELECT url, uniqueid "
+            "SELECT url, uniqueid, deviceid "
             "FROM uniqueid "
             "WHERE uniqueid = '%1';" )
                 .arg( currid ) );
@@ -2977,7 +2977,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
                 .arg( currurl ) );
 
     QStringList statUIDVal = query( QString(
-            "SELECT url, uniqueid "
+            "SELECT url, uniqueid, deviceid "
             "FROM statistics "
             "WHERE uniqueid = '%1';" )
                 .arg( currid ) );
@@ -3000,10 +3000,14 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
     if( tempTablesAndInPermanent && nonTempURLs.count() > 0 && nonTempIDs.count() > 0 )
             permanentFullMatch = true;
 
+    debug() << "tempTablesAndInPermanent = " << (tempTablesAndInPermanent?"true":"false") << endl;
+    debug() << "permanentFullMatch = " << (permanentFullMatch?"true":"false") << endl;
+
     //debug() << "Entering checks" << endl;
     //first case: not in permanent table or temporary table
     if( !tempTablesAndInPermanent && urls.empty() && uniqueids.empty() )
     {
+        debug() << "first case" << endl;
         QString insertline = QString( "INSERT INTO uniqueid%1 (deviceid, url, uniqueid, dir) "
                                       "VALUES ( %2,'%3', '%4'" )
                 .arg( tempTables ? "_temp" : "" )
@@ -3040,14 +3044,17 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
     {
         if( urls.empty() ) //uniqueid already found in temporary table but not url; check the old URL
         {
-            //debug() << "At doATFStuff, stat-ing file " << uniqueids[0] << endl;
             //stat the original URL
-            bool statSuccessful = QFile::exists( uniqueids[0] );
+	    QString absPath = mpm->getAbsolutePath( uniqueids[2].toInt(), uniqueids[0] );
+            debug() << "At doATFStuff, stat-ing file " << absPath << endl;
+            bool statSuccessful = QFile::exists( absPath );
             if( statSuccessful ) //if true, new one is a copy
             {
                 //debug() << "stat was successful, new file is a copy" << endl;
-                bundle->newUniqueId();
-                doATFStuff( bundle, true ); //yes, it's recursive, but what's wrong with that? :-)
+                if( bundle->newUniqueId() )
+                    doATFStuff( bundle, true ); //yes, it's recursive, but what's wrong with that? :-)
+		else
+                    error() << "Could not set new unique id" << endl;
             }
             else  //it's a move, not a copy, or a copy and then both files were moved...can't detect that
             {
@@ -3059,7 +3066,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
                       .arg( currurl )
                       .arg( currdir )
                       .arg( currid ) );
-                emit fileMoved( uniqueids[0], bundle->url().path(), bundle->uniqueId() );
+                emit fileMoved( absPath, bundle->url().path(), bundle->uniqueId() );
             }
         }
         //okay then, url already found in temporary table but different uniqueid
@@ -3116,40 +3123,43 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
         //second case...full match exists in permanent table, but path is different
         if( nonTempURLs.empty() )
         {
-            //debug() << "At doATFStuff part 2, stat-ing file " << nonTempIDs[0] << endl;
             //stat the original URL
-            bool statSuccessful = QFile::exists( nonTempIDs[0] );
+	    QString absPath = mpm->getAbsolutePath( nonTempIDs[2].toInt(), nonTempIDs[0] );
+            debug() << "At doATFStuff part 2, stat-ing file " << absPath << endl;
+            bool statSuccessful = QFile::exists( absPath );
             if( statSuccessful ) //if true, new one is a copy
             {
-                //debug() << "stat part 2 was successful, new file is a copy" << endl;
-                bundle->newUniqueId();
-                doATFStuff( bundle, true ); //yes, it's recursive, but what's wrong with that? :-)
+                debug() << "stat part 2 was successful, new file is a copy" << endl;
+                if( bundle->newUniqueId() )
+                    doATFStuff( bundle, true ); //yes, it's recursive, but what's wrong with that? :-)
+                else
+                    error() << "Could not set new unique id" << endl;
             }
             else  //it's a move, not a copy, or a copy and then both files were moved...can't detect that
             {
-                //debug() << "stat part 2 was NOT successful, updating tables with: " << endl;
+                debug() << "stat part 2 was NOT successful, updating tables with: " << endl;
+                query( QString( "DELETE FROM uniqueid WHERE uniqueid='%1';" )
+                      .arg( currid ) );
                 query( QString( "INSERT INTO uniqueid_temp (deviceid, url, uniqueid, dir) "
                                 "VALUES ( %1, '%2', '%3', '%4')" )
                                 .arg( currdeviceid )
                                 .arg( currurl )
                                 .arg( currid )
                                 .arg( currdir ) );
-                query( QString( "DELETE FROM uniqueid WHERE uniqueid='%1';" )
-                      .arg( currid ) );
-                emit fileMoved( nonTempIDs[0], bundle->url().path(), bundle->uniqueId() );
+                emit fileMoved( absPath, bundle->url().path(), bundle->uniqueId() );
             }
         }
         else
         {
-            //debug() << "file exists in same place as before, part 2, new uniqueid" << endl;
+            debug() << "file exists in same place as before, part 2, new uniqueid" << endl;
+            query( QString( "DELETE FROM uniqueid WHERE deviceid = %1 AND url='%2';" )
+                      .arg( currdeviceid )
+                      .arg( currurl ) );
             query( QString( "INSERT INTO uniqueid_temp (deviceid, url, uniqueid, dir) VALUES ( %1, '%2', '%3', '%4')" )
                 .arg( currdeviceid )
                 .arg( currurl )
-                .arg ( currid )
+                .arg( currid )
                 .arg( currdir ) );
-                query( QString( "DELETE FROM uniqueid WHERE deviceid = %1 AND url='%2';" )
-                      .arg( currdeviceid )
-                      .arg( currurl ) );
             emit uniqueIdChanged( bundle->url().path(), nonTempURLs[1], bundle->uniqueId() );
         }
         return;
@@ -3172,8 +3182,10 @@ CollectionDB::newUniqueIdForFile( const QString &path )
     url.cleanPath();
 
     MetaBundle bundle( url );
-    bundle.newUniqueId();
-    doATFStuff( &bundle, false );
+    if( bundle.newUniqueId() )
+        doATFStuff( &bundle, false );
+    else
+        debug() << "Could not set new unique id" << endl;
 }
 
 void
@@ -4095,7 +4107,6 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
             MetaBundle bundle( dstURL );
             if( bundle.isValidMedia() )
             {
-                bundle.newUniqueId();
                 addSong( &bundle, true );
                 return true;
             }
@@ -4117,7 +4128,6 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
                 MetaBundle bundle( dstURL );
                 if( bundle.isValidMedia() )
                 {
-                    bundle.newUniqueId();
                     addSong( &bundle, true );
                     return true;
                 }

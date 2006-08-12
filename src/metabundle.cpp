@@ -1388,10 +1388,11 @@ MetaBundle::ourMP3UidFrame( TagLib::MPEG::File *file, QString ourId )
     return 0;
 }
 
-void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
+bool
+MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
 {
     if( !isFile() || ( ( QString( kapp->name() ) != QString( "amarokcollectionscanner" ) ) && !recreate && !strip ) )
-        return;
+        return false;
 
     //debug() << "recreate = " << (recreate?"true":"false") << endl;
 
@@ -1421,7 +1422,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
                 if( strip )
                 {
                         file->save( TagLib::MPEG::File::AllTags );
-                        return;
+                        return true;
                 }
 
                 file->ID3v2Tag()->addFrame( new TagLib::ID3v2::UniqueFileIdentifierFrame(
@@ -1449,7 +1450,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
             if( AmarokConfig::advancedTagFeatures() && strip )
             {
                 file->save();
-                return;
+                return true;
             }
 	    */
             if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) || recreate )
@@ -1489,7 +1490,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
             if( AmarokConfig::advancedTagFeatures() && strip )
             {
                 file->save();
-                return;
+                return true;
             }
             */
             if( !file->xiphComment()->fieldListMap().contains( QStringToTString( ourId ) ) )
@@ -1522,7 +1523,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
             if( AmarokConfig::advancedTagFeatures() && strip )
             {
                 file->save();
-                return;
+                return true;
             }
             */
             if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) )
@@ -1544,40 +1545,47 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
     else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
     {
         if( file || !file )
-            return; //not handled, at least not yet
+            return false; //not handled, at least not yet
     }
+    return (recreate ? recreate && newID : !m_uniqueId.isEmpty() );
 }
 
-void
+bool
 MetaBundle::newUniqueId()
 {
     if( !isFile() || !AmarokConfig::advancedTagFeatures() )
-        return;
+        return false;
 
     const QString path = url().path();
     TagLib::FileRef fileref;
     fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
 
     if( !fileref.isNull() )
-        setUniqueId( fileref, true );
+        return setUniqueId( fileref, true );
     else
+    {
         debug() << "ERROR: failed to set new uniqueid (could not open fileref)" << endl;
+	return false;
+    }
 }
 
-void MetaBundle::removeUniqueId()
+bool
+MetaBundle::removeUniqueId()
 {
-    DEBUG_BLOCK
     if( !isFile() )
-        return;
+        return false;
 
     const QString path = url().path();
     TagLib::FileRef fileref;
     fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
 
     if( !fileref.isNull() )
-        setUniqueId( fileref, false, true );
+        return setUniqueId( fileref, false, true );
     else
+    {
         debug() << "ERROR: failed to remove uniqueid (could not open fileref)" << endl;
+        return false;
+    }
 }
 
 int

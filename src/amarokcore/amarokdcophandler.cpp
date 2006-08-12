@@ -829,6 +829,7 @@ namespace amaroK
     {
         if( Playlist::instance()->currentItem() )
             return Playlist::instance()->currentItem()->uniqueId();
+        return QString::null;
     }
 
 /////////////////////////////////////////////////////////////////////////////////////
