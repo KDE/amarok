@@ -1438,7 +1438,14 @@ MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
     {
         if( file->tag() )
         {
-            /*if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) )
+            //For now remove all tag-writing options for Vorbis files due to seeming Ogg corruption
+            //for some people...and keep bugging wheels
+            
+            //If we remove the field first, TagLib reports that it still exists later and crashes when
+            //trying to read it.  Comment out for now, although can probably remove since addField
+            //will overwrite automatically...but leave in so I remember to bug wheels about it
+            /*
+            if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) )
                         && ( recreate || strip )
                         && AmarokConfig::advancedTagFeatures()
                         && TagLib::File::isWritable( file->name() ) )
@@ -1446,31 +1453,28 @@ MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
                 debug() << "removing our id" << endl;
                 file->tag()->removeField( QStringToTString( ourId ) );
             }
-
             if( AmarokConfig::advancedTagFeatures() && strip )
             {
                 file->save();
                 return true;
             }
-	    */
+            */
             if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) || recreate )
             {
                 /*
                 if( AmarokConfig::advancedTagFeatures() && TagLib::File::isWritable( file->name() ) )
                 {
                     m_uniqueId = getRandomStringHelper( randSize );
-		    debug() << "adding uniqueid " << m_uniqueId << endl;
+                    debug() << "adding uniqueid " << m_uniqueId << endl;
                     file->tag()->addField( QStringToTString( ourId ), QStringToTString( m_uniqueId ) );
                     file->save();
                     newID = true;
-                }*/
+                }
+                */
             }
             else
             {
-                TagLib::String foo = QStringToTString( ourId );
-                TagLib::StringList bar = file->tag()->fieldListMap()[foo];
-                TagLib::String front = bar.front();
-                m_uniqueId = TStringToQString( front );
+                m_uniqueId = TStringToQString( file->tag()->fieldListMap()[QStringToTString( ourId )].front() );
             }
         }
     }
@@ -1565,7 +1569,7 @@ MetaBundle::newUniqueId()
     else
     {
         debug() << "ERROR: failed to set new uniqueid (could not open fileref)" << endl;
-	return false;
+        return false;
     }
 }
 
