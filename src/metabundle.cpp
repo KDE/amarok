@@ -1390,8 +1390,10 @@ MetaBundle::ourMP3UidFrame( TagLib::MPEG::File *file, QString ourId )
 
 void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
 {
-    if( !isFile() || ( QString( kapp->name() ) != QString( "amarokcollectionscanner" ) && !recreate && !strip ) )
+    if( !isFile() || ( ( QString( kapp->name() ) != QString( "amarokcollectionscanner" ) ) && !recreate && !strip ) )
         return;
+
+    //debug() << "recreate = " << (recreate?"true":"false") << endl;
 
     bool createID = false;
     int randSize = 8;
@@ -1440,30 +1442,34 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
                         && ( recreate || strip )
                         && AmarokConfig::advancedTagFeatures()
                         && TagLib::File::isWritable( file->name() ) )
+            {
+                debug() << "removing our id" << endl;
                 file->tag()->removeField( QStringToTString( ourId ) );
+            }
 
             if( AmarokConfig::advancedTagFeatures() && strip )
             {
                 file->save();
                 return;
             }
-            */
+            */            
             if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) )
             {
                 /*
                 if( AmarokConfig::advancedTagFeatures() && TagLib::File::isWritable( file->name() ) )
                 {
                     m_uniqueId = getRandomStringHelper( randSize );
-                    file->tag()->addField( QStringToTString( ourId ),
-                            TagLib::ByteVector( m_uniqueId.ascii(), randSize )
-                            );
+                    file->tag()->addField( QStringToTString( ourId ), QStringToTString( m_uniqueId ) );
                     file->save();
                     newID = true;
                 }*/
             }
             else
             {
-                m_uniqueId = TStringToQString( file->tag()->fieldListMap()[QStringToTString( ourId )].front() );
+                TagLib::String foo = QStringToTString( ourId );
+                TagLib::StringList bar = file->tag()->fieldListMap()[foo];
+                TagLib::String front = bar.front();
+                m_uniqueId = TStringToQString( front );
             }
         }
     }
@@ -1492,9 +1498,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
                 if( AmarokConfig::advancedTagFeatures() && TagLib::File::isWritable( file->name() ) )
                 {
                     m_uniqueId = getRandomStringHelper( randSize );
-                    file->xiphComment()->addField( QStringToTString( ourId ),
-                            TagLib::ByteVector( m_uniqueId.ascii(), randSize )
-                            );
+                    file->xiphComment()->addField( QStringToTString( ourId ), QStringToTString( m_uniqueId ) );
                     file->save();
                     newID = true;
                 }
@@ -1527,9 +1531,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
                 if( AmarokConfig::advancedTagFeatures() && TagLib::File::isWritable( file->name() ) )
                 {
                     m_uniqueId = getRandomStringHelper( randSize );
-                    file->tag()->addField( QStringToTString( ourId ),
-                            TagLib::ByteVector( m_uniqueId.ascii(), randSize )
-                            );
+                    file->tag()->addField( QStringToTString( ourId ), QStringToTString( m_uniqueId ) ),
                     file->save();
                     newID = true;
                 }
