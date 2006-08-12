@@ -287,6 +287,7 @@ StatusBar::longMessage( const QString &text, int type )
 
     PopupMessage *message;
     message = new PopupMessage( this, m_mainTextLabel );
+    connect( message, SIGNAL(destroyed(QObject *)), this, SLOT(popupDeleted(QObject *)) );
     message->setText( text );
 
     QString image;
@@ -323,6 +324,12 @@ StatusBar::longMessage( const QString &text, int type )
     m_messageQueue += message;
 
     writeLogFile( text );
+}
+
+void
+StatusBar::popupDeleted( QObject *obj )
+{
+    m_messageQueue.remove( static_cast<QWidget*>( obj ) );
 }
 
 void

@@ -176,6 +176,7 @@ namespace KDE
         void hideMainProgressBar();
         void updateProgressAppearance();
         void showShortLongDetails();
+        void popupDeleted( QObject* );
 
     protected:
         virtual void polish();
