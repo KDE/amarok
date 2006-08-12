@@ -1437,8 +1437,7 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
     {
         if( file->tag() )
         {
-            /*
-            if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) )
+            /*if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) )
                         && ( recreate || strip )
                         && AmarokConfig::advancedTagFeatures()
                         && TagLib::File::isWritable( file->name() ) )
@@ -1452,13 +1451,14 @@ void MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool stri
                 file->save();
                 return;
             }
-            */            
-            if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) )
+	    */
+            if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) || recreate )
             {
                 /*
                 if( AmarokConfig::advancedTagFeatures() && TagLib::File::isWritable( file->name() ) )
                 {
                     m_uniqueId = getRandomStringHelper( randSize );
+		    debug() << "adding uniqueid " << m_uniqueId << endl;
                     file->tag()->addField( QStringToTString( ourId ), QStringToTString( m_uniqueId ) );
                     file->save();
                     newID = true;
