@@ -1,9 +1,11 @@
 [Desktop Entry]
 Type=Service
 Name=MTP Media Device
+Name[de]=MTP Media-Player
 Name[ja]=MTP メディアデバイス
 Name[pt]=Dispositivo Multimédia MTP
 Name[pt_BR]=Dispositivo Multimédia MTP
+Name[sk]=MTP multimediálne zariadenie
 X-KDE-Library=libamarok_mtp-mediadevice
 Comment=Plugin for Amarok
 Comment[ar]= قابس ( برنامج مضاف الى) AmaroK
@@ -26,6 +28,7 @@ Comment[pl]=Wtyczka Amaroka
 Comment[pt]='Plugin' para o Amarok
 Comment[pt_BR]=Plugin para o Amarok
 Comment[ru]=Модуль amaroK
+Comment[sk]=AmaroK plugin
 Comment[sr]=Прикључак за Amarok
 Comment[sr@Latn]=Priključak za Amarok
 Comment[sv]=Insticksprogram för Amarok
