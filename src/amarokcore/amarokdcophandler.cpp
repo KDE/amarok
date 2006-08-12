@@ -746,6 +746,13 @@ namespace amaroK
         return total.toInt();
     }
 
+    int DcopCollectionHandler::totalComposers()
+    {
+        QStringList composers = CollectionDB::instance()->query( "SELECT COUNT( id ) FROM composer;" );
+        QString total = composers[0];
+        return total.toInt();
+    }
+
     int DcopCollectionHandler::totalCompilations()
     {
         QStringList comps = CollectionDB::instance()->query( "SELECT COUNT( DISTINCT album ) FROM tags WHERE sampler = 1;" );

@@ -178,6 +178,7 @@ class DcopCollectionHandler : public QObject, virtual public AmarokCollectionInt
    public /* DCOP */ slots:
       virtual int totalAlbums();
       virtual int totalArtists();
+      virtual int totalComposers();
       virtual int totalCompilations();
       virtual int totalGenres();
       virtual int totalTracks();
