@@ -147,6 +147,9 @@ def fetchLyrics( artist, title, url )
     else
         notFound()
     end
+
+    rescue SocketError
+        showLyrics( "" )
 end
 
 

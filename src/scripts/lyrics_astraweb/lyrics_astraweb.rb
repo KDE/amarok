@@ -73,6 +73,9 @@ def fetchLyrics( artist, title )
     doc.write( xml )
 #     puts( xml )
     showLyrics( xml )
+
+    rescue SocketError
+        showLyrics( "" )
 end
 
 
@@ -109,6 +112,9 @@ def fetchLyricsByUrl( url )
 
 #     puts( xml )
     showLyrics( xml )
+
+    rescue SocketError
+        showLyrics( "" )
 end
 
 
