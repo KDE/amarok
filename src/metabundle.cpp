@@ -1402,6 +1402,8 @@ MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
 
     QString ourId = QString( "Amarok - rediscover your music at http://amarok.kde.org" ).upper();
 
+    //due to bug in taglib (see bugs 132019 and 132018) it seems the genre isn't correctly updated from
+    //a preexisting id3v2.3 tag...so explicitly set it
     if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
     {
         if ( file->ID3v2Tag( AmarokConfig::advancedTagFeatures() ) )
@@ -1421,6 +1423,7 @@ MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
 
                 if( strip )
                 {
+                        file->ID3v2Tag()->setGenre( file->ID3v2Tag()->genre() );
                         file->save( TagLib::MPEG::File::AllTags );
                         return true;
                 }
@@ -1429,6 +1432,7 @@ MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
                         QStringToTString( ourId ),
                         TagLib::ByteVector( m_uniqueId.ascii(), randSize )
                         ) );
+                file->ID3v2Tag()->setGenre( file->ID3v2Tag()->genre() );
                 file->save( TagLib::MPEG::File::AllTags );
                 newID = true;
             }
