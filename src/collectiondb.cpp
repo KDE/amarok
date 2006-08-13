@@ -4858,6 +4858,7 @@ CollectionDB::startScan()  //SLOT
         //dropTables( false );
         //createTables( false );
         clearTables( false );
+        emit scanDone( true );
     }
     else if( PlaylistBrowser::instance() )
     {
