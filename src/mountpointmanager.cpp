@@ -417,6 +417,15 @@ MountPointManager::setCollectionFolders( QStringList folders )
         else
             folderMap[id] = QStringList( rpath );
     }
+    //make sure that collection folders on devices whicha re not in foldermap are deleted
+    IdList ids = getMountedDeviceIds();
+    foreachType( IdList, ids )
+    {
+        if( !folderMap.contains( *it ) )
+        {
+            folderConf->deleteEntry( QString::number( *it ) );
+        }
+    }
     foreachType( FolderMap, folderMap )
     {
         folderConf->writeEntry( QString::number( it.key() ), it.data() );
