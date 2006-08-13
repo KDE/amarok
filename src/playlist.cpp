@@ -3058,13 +3058,16 @@ Playlist::customEvent( QCustomEvent *e )
             else
                 after = static_cast<PlaylistItem *>( after->itemBelow() );
 
-            PlaylistItem *prev = static_cast<PlaylistItem *>( after->itemAbove() );
-            if( prev && dynamicMode() && dynamicMode()->markHistory() )
-                prev->setEnabled( false );
+            if( after )
+            {
+                PlaylistItem *prev = static_cast<PlaylistItem *>( after->itemAbove() );
+                if( prev && dynamicMode() && dynamicMode()->markHistory() )
+                    prev->setEnabled( false );
 
-            activate( after );
-            if ( dynamicMode() && dynamicMode()->cycleTracks() )
-                adjustDynamicPrevious( dynamicMode()->previousCount() );
+                activate( after );
+                if ( dynamicMode() && dynamicMode()->cycleTracks() )
+                    adjustDynamicPrevious( dynamicMode()->previousCount() );
+            }
         }
 
         if( m_queueDirt )
