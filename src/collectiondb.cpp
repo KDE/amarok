@@ -3018,7 +3018,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
         insert( insertline, NULL );
         if( !statUIDVal.empty() )
         {
-
+            //debug() << "first stats case" << endl;
             query( QString( "UPDATE statistics SET deviceid = %1, url = '%4', deleted = %2 WHERE uniqueid = '%3';" )
                                 .arg( currdeviceid )
                                 .arg( boolF() )
@@ -3027,6 +3027,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
         }
         else if( !statURLVal.empty() )
         {
+            //debug() << "second stats case" << endl;
             query( QString( "UPDATE statistics SET uniqueid = '%1', deleted = %2 "
                             "WHERE deviceid = %3 AND url = '%4';" )
                                 .arg( currid )
@@ -3053,7 +3054,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
                 //debug() << "stat was successful, new file is a copy" << endl;
                 if( bundle->newUniqueId() )
                     doATFStuff( bundle, true ); //yes, it's recursive, but what's wrong with that? :-)
-		else
+                else
                     error() << "Could not set new unique id" << endl;
             }
             else  //it's a move, not a copy, or a copy and then both files were moved...can't detect that
@@ -3073,7 +3074,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
         //a file exists in the same place as before, but new uniqueid...assume
         //that this is desired user behavior
         //NOTE: this should never happen during an incremental scan with temporary tables...!
-        else //uniqueids.empty()
+        else if( uniqueids.empty() )
         {
             //debug() << "file exists in same place as before, new uniqueid" << endl;
             query( QString( "UPDATE uniqueid%1 SET uniqueid='%2' WHERE deviceid = %3 AND url='%4';" )
@@ -3083,6 +3084,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
                     .arg( currurl ) );
             emit uniqueIdChanged( bundle->url().path(), urls[1], bundle->uniqueId() );
         }
+        //else uniqueid and url match; nothing happened, so safely exit
         return;
     }
     //okay...being here means, we are using temporary tables, AND it exists in the permanent table
@@ -3102,6 +3104,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
             insert( insertline, NULL );
             if( !statUIDVal.empty() )
             {
+                //debug() << "third stats case" << endl;
                 query( QString( "UPDATE statistics SET deviceid = %1, url = '%2', deleted = %3 WHERE uniqueid = '%4';" )
                                      .arg( currdeviceid )
                                      .arg( currurl )
@@ -3110,6 +3113,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
             }
             else if( !statURLVal.empty() )
             {
+                //debug() << "fourth stats case" << endl;
                 query( QString( "UPDATE statistics SET uniqueid = '%1', deleted = %2 "
                                 "WHERE deviceid = %3 AND url = '%4';" )
                                     .arg( currid )
@@ -3124,7 +3128,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
         if( nonTempURLs.empty() )
         {
             //stat the original URL
-	    QString absPath = mpm->getAbsolutePath( nonTempIDs[2].toInt(), nonTempIDs[0] );
+            QString absPath = mpm->getAbsolutePath( nonTempIDs[2].toInt(), nonTempIDs[0] );
             //debug() << "At doATFStuff part 2, stat-ing file " << absPath << endl;
             bool statSuccessful = QFile::exists( absPath );
             if( statSuccessful ) //if true, new one is a copy
@@ -3149,7 +3153,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
                 emit fileMoved( absPath, bundle->url().path(), bundle->uniqueId() );
             }
         }
-        else
+        else if( nonTempIDs.empty() )
         {
             //debug() << "file exists in same place as before, part 2, new uniqueid" << endl;
             query( QString( "DELETE FROM uniqueid WHERE deviceid = %1 AND url='%2';" )
@@ -3162,6 +3166,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
                 .arg( currdir ) );
             emit uniqueIdChanged( bundle->url().path(), nonTempURLs[1], bundle->uniqueId() );
         }
+        //else do nothing...really this case should never happen
         return;
     }
 }
