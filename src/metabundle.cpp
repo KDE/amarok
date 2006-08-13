@@ -1441,7 +1441,7 @@ MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
             //For now remove all tag-writing options for Vorbis files due to seeming Ogg corruption
             //for some people...and keep bugging wheels
             
-            if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) &&
+            if( ( file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) &&
                        !file->tag()->fieldListMap()[QStringToTString( ourId )].isEmpty() )
                         && ( recreate || strip )
                         && AmarokConfig::advancedTagFeatures()
