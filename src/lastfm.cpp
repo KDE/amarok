@@ -855,7 +855,7 @@ WebService::parameter( QString keyName, QString data ) const
         if ( values[0] == keyName )
         {
             values.remove( values.at(0) );
-            return QString().fromUtf8( values.join( "=" ).ascii() );
+            return QString::fromUtf8( values.join( "=" ).ascii() );
         }
     }
 
@@ -875,7 +875,7 @@ WebService::parameterArray( QString keyName, QString data ) const
         if ( values[0].startsWith( keyName ) )
         {
             values.remove( values.at(0) );
-            result.append( QString().fromUtf8( values.join( "=" ).ascii() ) );
+            result.append( QString::fromUtf8( values.join( "=" ).ascii() ) );
         }
     }
 
