@@ -1441,11 +1441,8 @@ MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
             //For now remove all tag-writing options for Vorbis files due to seeming Ogg corruption
             //for some people...and keep bugging wheels
             
-            //If we remove the field first, TagLib reports that it still exists later and crashes when
-            //trying to read it.  Comment out for now, although can probably remove since addField
-            //will overwrite automatically...but leave in so I remember to bug wheels about it
-            /*
-            if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) )
+            if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) &&
+                       !file->tag()->fieldListMap()[QStringToTString( ourId )].isEmpty() )
                         && ( recreate || strip )
                         && AmarokConfig::advancedTagFeatures()
                         && TagLib::File::isWritable( file->name() ) )
@@ -1458,10 +1455,13 @@ MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
                 file->save();
                 return true;
             }
-            */
-            if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) || recreate )
+            
+            if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) ||
+                   ( file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) &&
+                     !file->tag()->fieldListMap()[QStringToTString( ourId )].isEmpty() )
+                   || recreate )
             {
-                /*
+                
                 if( AmarokConfig::advancedTagFeatures() && TagLib::File::isWritable( file->name() ) )
                 {
                     m_uniqueId = getRandomStringHelper( randSize );
@@ -1470,7 +1470,7 @@ MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
                     file->save();
                     newID = true;
                 }
-                */
+                
             }
             else
             {
