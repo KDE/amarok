@@ -8,24 +8,27 @@ require "#{ARGV[0]}" #codes.rb
 require "#{ARGV[1]}" #debug.rb
 require 'webrick'
 require 'pp'
+require 'rubygems'
+require 'ruby-prof'
 
 $app_name = "Daap"
 $debug_prefix = "Server"
 
 class Element
-    #attr_accessor :length, :name, :value
+    attr_accessor :name
+
     public 
         def initialize(name, value = Array.new)
             @name, @value = name, value
         end
         
-        def to_s
+        def to_s( codes = nil )
             if @value.nil? then
                 log @name + ' is null'
-                @name + long_convert( 0 )
+                @name + Element.long_convert( 0 )
             else
-                content = valueToString()
-                @name + long_convert(content.length) + content
+                content = valueToString( codes )
+                @name + Element.long_convert(content.length) + content
             end
         end
         
@@ -36,47 +39,25 @@ class Element
         def <<( child )
             @value << child
         end
-    private
-        def valueToString
-            case CODE_TYPE[@name]
-                when :char then
-                    char_convert( @value )
-                when :short then
-                    short_convert( @value )
-                when :long then 
-                    long_convert( @value )
-                when :longlong then
-                    longlong_convert( @value )
-                when :string then
-                    @value
-                when :date then
-                    long_convert( @value )
-                when :version then
-                     short_convert( @value )
-                when :container then
-                    values = String.new
-                    @value.each do |i|
-                        values += i.to_s
-                    end
-                    values
-                else
-                    log "type error! #{@value} #{CODE_TYPE[@name]}"
-            end
-        end
         
-        def char_convert( v ) 
+        def size
+            @value.size
+        end
+
+        
+        def Element.char_convert( v ) 
             packing( v, 'c' )
         end
         
-        def short_convert( v )
+        def Element.short_convert( v )
             packing( v, 'n' )
         end
         
-        def long_convert( v )
+        def Element.long_convert( v )
             packing( v, 'N' )
         end
         
-        def longlong_convert( v )
+        def Element.longlong_convert( v )
             v = v.to_i  if( v.is_a?(String) )
             a = Array.new
             a[0] = v >> 32
@@ -85,14 +66,52 @@ class Element
             a.pack('N') + b.pack('N')
         end
  
-        def packing( v, packer )
+    private
+        def valueToString( codes )
+            case CODE_TYPE[@name]
+                when :string then
+                    @value
+                when :long then 
+                    Element.long_convert( @value )
+                when :container then
+                    values = String.new
+                    @value.each do |i|
+                        values += i.to_s( codes )
+                    end
+                    values
+                when :mlit then
+                    values = String.new
+                    @value.each { |i|
+                        values += i.to_s( codes ) if codes.member?( i.name )
+                    }
+                    values
+                when :char then
+                    Element.char_convert( @value )
+                when :short then
+                    Element.short_convert( @value )
+                when :longlong then
+                    Element.longlong_convert( @value )
+                when :date then
+                    Element.long_convert( @value )
+                when :version then
+                    Element.short_convert( @value )
+                else
+                    log "type error! #{@value} #{CODE_TYPE[@name]}"
+            end
+        end
+
+        def Element.packing( v, packer )
             v = v.to_i  if( v.is_a?(String) )
             a = Array.new
             a[0] = v
             a.pack(packer)
         end
+
 end
 
+class Mlit < Element
+	attr_accessor :songformat, :id
+end
 #{"mlog"=>{"mlid"=>[1842003488], "mstt"=>[200]}}
 class LoginServlet < WEBrick::HTTPServlet::AbstractServlet
     @@sessionId = 42
@@ -130,7 +149,6 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
           @@instance = @@instance || self.new
       end
 
-      debugMethod(:initialize)
       def initialize
           puts "hello"
           artists = Array.new
@@ -151,17 +169,17 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
           @column_keys = [ :songalbum, :songartist, :songgenre,  :songtracknumber, :itemname, :songyear, :songtime, :songsamplerate, :url,  :deviceid ]
           #TODO composer :songcomposer
           dbitems = query( "SELECT #{columns.to_s} FROM tags LIMIT 500" )
-
-          @items = Array.new
           @music = Array.new
           id = 0
+          @items = Element.new( 'mlcl' )
           0.step( dbitems.size - columns.size, columns.size ) { |overallIt|
-              track = Hash.new
-              0.step( 3, 1 ) { |columnIt|
-                  track[ @column_keys[columnIt] ] = indexes[columnIt][ :indexed ][ dbitems[ overallIt + columnIt].to_i ]
-              }
-              4.step( @column_keys.size-2, 1 ) { |columnIt|
-              track[ @column_keys[columnIt] ] = dbitems[ overallIt + columnIt ]
+              track = Mlit.new( 'mlit' )
+              0.step( 2, 1 ) { |columnIt|
+                    track << Element.new( METAS[ @column_keys[columnIt] ][:code], indexes[columnIt][ :indexed ][ dbitems[ overallIt + columnIt].to_i ] )
+                }
+              3.step( @column_keys.size-3, 1 ) { |columnIt|
+                puts @column_keys[columnIt]
+                track << Element.new( METAS[ @column_keys[columnIt] ][ :code ], dbitems[ overallIt + columnIt ] )
               }
               if overallIt > (dbitems.size - 500) then
                   log dbitems[ overallIt, overallIt + @column_keys.size].inspect
@@ -169,19 +187,23 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
               columnIt = @column_keys.size-2
               id += 1
               url = dbitems[ overallIt + columnIt ].reverse.chop.reverse
-              url[0] = ''
           #   log "indexes: #{dbitems[ columnIt + overallIt + 1 ]} - #{indexes[3][:indexed][ dbitems[ columnIt + overallIt + 1 ].to_i ]} #{url}"
-              @music[id] = "#{indexes[3][:indexed][ dbitems[ columnIt + overallIt + 1 ].to_i ]}/#{url}"
-              track[ :itemid ] = id
-              ext = File::extname( url ).reverse.chop.reverse;
-              track[ :songformat ] = ext
-              @items.push(track)
+              device_id = dbitems[ columnIt + overallIt + 1 ].to_i
+              if device_id == -1 then
+                  @music[id] = url
+              else
+                  url[0] = ''
+                  @music[id] = "#{indexes[3][:indexed][ device_id ]}/#{url}"
+              end
+              track << Element.new( 'miid', id )
+              track << Element.new( 'asfm', File::extname( url ).reverse.chop.reverse )
+              @items << track
           }
           @column_keys.push( :itemid )
           @column_keys.push( :songformat )
       end
-      
-      debugMethod(:do_GET)
+      debugMethod(:new)
+
       def do_GET( req, resp )
           if @items.nil? then
               initItems()
@@ -240,7 +262,7 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
                       index = str.to_sym
                       if @column_keys.include?( index ) then
                           if( METAS[ index ] )
-                              toDisplay.push( { :index=>index, :code=> METAS[ index ][:code] } )
+                              toDisplay.push( METAS[ index ][:code] )
                           else
                               log "not being displayed #{index.to_s}"
                           end
@@ -251,17 +273,8 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
                   adbs << Element.new( 'mstt', WEBrick::HTTPStatus::OK.code )
                   adbs << Element.new( 'mrco', @items.size )
                   adbs << Element.new( 'mtco', @items.size )
-                  mlcl = Element.new( 'mlcl' )
-                  adbs << mlcl
-                  @items.each { |item|
-                      mlit = Element.new( 'mlit' )
-                      toDisplay.each{  |meta|                        
-                          mlit << Element.new( meta[:code], item[ meta[:index] ] )
-                      }
-                      mlcl << mlit
-                  }
-                  log adbs.to_s.inspect
-                  resp.body = adbs.to_s
+                  adbs << @items
+                  resp.body = adbs.to_s( toDisplay )
               else if command =~ /([\d]*)\.(.*)$/ #1232.mp3
                       log "sending #{@music[ $1.to_i ]}"
                       resp.body = open( @music[ $1.to_i ] )
@@ -270,8 +283,9 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
                   end
           end
       end
+      debugMethod(:do_GET)
+
   private
-      debugMethod(:query)
       def query( sql )
          out = Array.new
          # $stdout.flush
@@ -283,6 +297,14 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
           end
           out
       end
+      debugMethod(:query)
+
+      def querySelect
+          @items = Array.new
+          @music = Array.new
+          id = 0
+            
+      end	
 end
 
 def log( string )
@@ -310,4 +332,15 @@ end
 
 $stdout.sync = true
 $stderr.sync = true
+
+RubyProf.start
+#start_profile
 Controller.new
+#stop_profile
+#f = open('/tmp/Ndaapserver.log', File::WRONLY | File::CREAT )
+#print_profile(f)
+result = RubyProf.stop
+
+printer = RubyProf::GraphHtmlPrinter.new(result)
+f = open('/tmp/test.html', File::WRONLY | File::CREAT )
+printer.print( f, 3 )
