@@ -1758,10 +1758,8 @@ void MetaBundle::setFileType( int type ) { m_type = type; }
 
 void MetaBundle::detach()
 {
-    // we'd do that, but unfortunately it does not exist
+    // FIXME: we'd do that, but unfortunately it does not exist
     //m_url.detach();
-    QString url( QDeepCopy<QString>( m_url.url() ) );
-    m_url = KURL::fromPathOrURL( url );
 
     m_title = QDeepCopy<QString>(m_title);
     m_artist = m_artist.deepCopy();
@@ -1783,12 +1781,7 @@ void MetaBundle::detach()
 
 void PodcastEpisodeBundle::detach()
 {
-    QString url( QDeepCopy<QString>( m_url.url() ) );
-    m_url = KURL::fromPathOrURL( url );
-    QString localUrl( QDeepCopy<QString>( m_localUrl.url() ) );
-    m_localUrl = KURL::fromPathOrURL( localUrl );
-    QString parent( QDeepCopy<QString>( m_parent.url() ) );
-    m_parent = KURL::fromPathOrURL( parent );
+    // FIXME: m_url, m_localUrl and m_parent also need detach()ing
 
     m_author = QDeepCopy<QString>(m_author);
     m_title = QDeepCopy<QString>(m_title);

@@ -97,7 +97,8 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, bool playFir
             .setTotalSteps( 100 );
 
     foreachType( KURL::List, urls ) {
-        const KURL url = KURL::fromPathOrURL( QDeepCopy<QString>( (*it).url() ) );
+        const KURL &url = *it;
+        // FIXME: url needs detach()ing
         const QString protocol = url.protocol();
 
         if( protocol == "file" ) {

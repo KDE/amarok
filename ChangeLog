@@ -81,6 +81,8 @@ VERSION 1.4.2:
       since the last time it was enabled.
 
   BUGFIXES:
+    * Do not try to detach() KURLs, as this would not work for non-ascii urls.
+      (BR 132355)
     * Adding songs while at end of playlist could crash in dynamic mode.
       Patch by Joe Rabinoff <rabinoff@post.harvard.edu>. (BR 128340)
     * Don't update accessdate when setting songs rating or score. (BR 132274)
