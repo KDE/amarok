@@ -516,6 +516,10 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         void updatePersistentTables();
         void updatePodcastTables();
 
+        //A dirty hack to preserve Group By settings in Collection Browser after addition
+        //of Composer table
+        void updateGroupBy();
+
         void customEvent( QCustomEvent * );
 
         // helpers for embedded images

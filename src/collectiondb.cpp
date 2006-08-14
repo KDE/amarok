@@ -5176,6 +5176,9 @@ CollectionDB::checkDatabase()
 
             updatePodcastTables();
 
+            //This is really a one-off call that fixes a Collection Browser glitch
+            updateGroupBy();
+
             //remove database file if version is incompatible
             if ( amaroK::config( "Collection Browser" )->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION
                  || adminValue( "Database Version" ).toInt() != DATABASE_VERSION )
@@ -5203,6 +5206,27 @@ CollectionDB::checkDatabase()
     setAdminValue( "Database ATF Version", QString::number( DATABASE_ATF_VERSION ) );
 
     initDirOperations();
+}
+
+void
+CollectionDB::updateGroupBy()
+{
+    //This ugly bit of code makes sure the Group BY setting is preserved, after the
+    //meanings of the values were changed due to the addition of the Composer table.
+    int version = adminValue( "Database Version" ).toInt();
+    if ( version && version < 32 )
+    {
+        KConfig* config = amaroK::config( "Collection Browser" );
+        int m_cat1 = config->readNumEntry( "Category1" );
+        int m_cat2 = config->readNumEntry( "Category2" );
+        int m_cat3 = config->readNumEntry( "Category3" );
+        m_cat1 = m_cat1 ? ( m_cat1 > 2 ? m_cat1 << 1 : m_cat1 ) : CollectionBrowserIds::IdArtist;
+        m_cat2 = m_cat2 ? ( m_cat2 > 2 ? m_cat2 << 1 : m_cat2 ) : CollectionBrowserIds::IdAlbum;
+        m_cat3 = m_cat3 ? ( m_cat3 > 2 ? m_cat3 << 1 : m_cat3 ) : CollectionBrowserIds::IdNone;
+        config->writeEntry( "Category1", m_cat1 );
+        config->writeEntry( "Category2", m_cat2 );
+        config->writeEntry( "Category3", m_cat3 );
+    }
 }
 
 void

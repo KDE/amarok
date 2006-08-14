@@ -71,13 +71,7 @@ extern "C"
     #endif
 }
 
-enum CatMenuId { IdAlbum = QueryBuilder::tabAlbum,
-    IdArtist = QueryBuilder::tabArtist,
-    IdComposer = QueryBuilder::tabComposer,
-    IdGenre = QueryBuilder::tabGenre,
-    IdYear = QueryBuilder::tabYear ,
-    IdScan = 32, IdNone = 64,
-    IdArtistAlbum = 128, IdGenreArtist = 256, IdGenreArtistAlbum = 512, IdVisYearAlbum = 1024, IdArtistVisYearAlbum = 2048 };
+using namespace CollectionBrowserIds;
 
 namespace amaroK { extern KConfig *config( const QString& ); }
 
