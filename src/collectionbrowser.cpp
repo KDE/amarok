@@ -1963,13 +1963,17 @@ CollectionView::setViewMode( int mode, bool rerender /*=true*/ )
 
     if( m_viewMode == modeIpodView )
     {
+        #if KDE_VERSION >= KDE_MAKE_VERSION(3,4,0)
         setShadeSortColumn( false );
+        #endif
         m_parent->m_ipodDecrement->setEnabled( m_currentDepth > 0 );
         m_parent->ipodToolbar( true );
     }
     else
     {
+        #if KDE_VERSION >= KDE_MAKE_VERSION(3,4,0)
         setShadeSortColumn( true );
+        #endif
         m_parent->ipodToolbar( false );
     }
 
