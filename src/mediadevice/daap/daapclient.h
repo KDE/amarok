@@ -37,6 +37,7 @@ class AddHostBase;
 class QString;
 class MediaItem;
 class ServerItem;
+class DaapServer;
 
 class DaapClient : public MediaDevice
 {
@@ -89,6 +90,8 @@ class DaapClient : public MediaDevice
 #endif
         bool    m_connected;
         QMap<QString, ServerInfo*> m_servers;
+
+        DaapServer* m_sharingServer;
 };
 
 class ServerItem : public MediaItem

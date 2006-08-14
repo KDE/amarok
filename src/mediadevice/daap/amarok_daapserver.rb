@@ -307,7 +307,19 @@ end
 class Controller
 
     def initialize
-        server = WEBrick::HTTPServer.new( { :Port=>8081 } )
+        port = 3689
+        no_server = true
+        while no_server 
+            begin
+                server = WEBrick::HTTPServer.new( { :Port=>port } )
+                no_server = false
+            rescue Errno::EAFNOSUPPORT
+                if port == 3700 then
+                    fatal( "No ports between 3688 and 3700 are open." )
+                end
+                port += 1
+            end
+        end
         ['INT', 'TERM'].each { |signal|
             trap(signal) { 
                 server.shutdown
@@ -316,6 +328,7 @@ class Controller
         server.mount( '/login', LoginServlet )
         server.mount( '/update', UpdateServlet )
         server.mount( '/databases', DatabaseServlet )
+        puts "SERVER STARTING: #{port}"
         server.start
     end
 

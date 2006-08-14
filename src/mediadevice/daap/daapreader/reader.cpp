@@ -305,7 +305,7 @@ Reader::getTagAndLength( QDataStream &raw, char tag[5] )
    tag[4] = 0;
    raw.readRawBytes(tag, 4);
    Q_UINT32 tagLength = 0;
-   raw >> tagLength; debug() << tag << " tagLength has value " << tagLength << endl;
+   raw >> tagLength;
    return tagLength;
 }
 
@@ -330,42 +330,44 @@ Reader::parse( QDataStream &raw, uint containerLength, bool first )
             index += 8;
             continue;
         }
+//#define DEBUGTAG( VAR ) debug() << tag << " has value " << VAR << endl;
+#define DEBUGTAG( VAR )   
         switch( s_codes[tag].type )
         {
             case CHAR: {
                 Q_INT8 charData;
-                raw >> charData; debug() << tag << " charData has value " << charData << endl;
+                raw >> charData; DEBUGTAG( charData )
                 addElement( childMap, tag, QVariant( static_cast<int>(charData) ) );
                 }
                 break;
             case SHORT: {
                 Q_INT16 shortData;
-                raw >> shortData; debug() << tag << " shortData has value " << shortData << endl;
+                raw >> shortData; DEBUGTAG( shortData )
                 addElement( childMap, tag, QVariant( static_cast<int>(shortData) ) );
                 }
                 break;
             case LONG: {
                 Q_INT32 longData;
-                raw >> longData; debug() << tag << " longData has value " << longData << endl;
+                raw >> longData; DEBUGTAG( longData )
                 addElement( childMap, tag, QVariant( longData ) );
                 }
                 break;
             case LONGLONG: {
                 Q_INT64 longlongData;
-                raw >> longlongData; debug() << tag << " longlongData has value " << longlongData << endl;
+                raw >> longlongData; DEBUGTAG( longlongData )
                 addElement( childMap, tag, QVariant( longlongData ) );
                 }
                 break;
             case STRING: {
                 char stringData[tagLength];
-                raw.readRawBytes( stringData, tagLength ); debug() << tag << " stringData has value " << QString::fromUtf8( stringData, tagLength ) << endl;
+                raw.readRawBytes( stringData, tagLength ); DEBUGTAG( QString::fromUtf8( stringData, tagLength ) )
                 addElement( childMap, tag, QVariant( QString::fromUtf8( stringData, tagLength ) ) );
                 }
                 break;
             case DATE: {
                 Q_INT64 dateData;
                 QDateTime date;
-                raw >> dateData; debug() << tag << " dateData has value " << dateData << endl;
+                raw >> dateData; DEBUGTAG( dateData )
                 date.setTime_t(dateData);
                 addElement( childMap, tag, QVariant( date ) );
                 }
@@ -374,14 +376,14 @@ Reader::parse( QDataStream &raw, uint containerLength, bool first )
                 Q_INT16 major;
                 Q_INT8 minor;
                 Q_INT8 patchLevel;
-                raw >> major >> minor >> patchLevel; debug() << tag << " has value " << major << '.' << minor << '.' << patchLevel << endl;
+                raw >> major >> minor >> patchLevel; DEBUGTAG( patchLevel )
                 QString version("%1.%2.%3");
                 version.arg(major, minor, patchLevel);
                 addElement( childMap, tag, QVariant(version) );
                 }
                 break;
             case CONTAINER: {
-                debug() << tag << " is an element." << endl;
+                DEBUGTAG( 11 )
                 addElement( childMap, tag, QVariant( parse( raw, tagLength ) ) );
                 }
                 break;

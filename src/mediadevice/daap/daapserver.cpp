@@ -13,11 +13,15 @@
 
 #include "amarok.h"
 #include "debug.h"
+#include "daapclient.h" //for DNSSD_SUPPORT
 #include "daapserver.h"
 #include "collectiondb.h"
 
 #include <kstandarddirs.h>
-
+#include <kuser.h>
+#if DNSSD_SUPPORT
+    #include <dnssd/publicservice.h>
+#endif
 DaapServer::DaapServer(QObject* parent, char* name)
   : QObject( parent, name )
 {
@@ -45,16 +49,26 @@ DaapServer::~DaapServer()
 void
 DaapServer::readSql()
 {
-    static const QCString prefix = "SQL QUERY: ";
+    static const QCString sqlPrefix = "SQL QUERY: ";
+    static const QCString serverStartPrefix = "SERVER STARTING: ";
     QString line;
     while( m_server->readln( line ) != -1 )
     {
-        if( line.startsWith( prefix ) )
+        if( line.startsWith( sqlPrefix ) )
         {
-            line.remove( 0, prefix.length() );
+            line.remove( 0, sqlPrefix.length() );
             debug() << "sql run " << line << endl;
             m_server->writeStdin( CollectionDB::instance()->query( line ).join("\n") );
             m_server->writeStdin( "**** END SQL ****" );
+        }
+        else if( line.startsWith( serverStartPrefix ) )
+        {
+            line.remove( 0, serverStartPrefix.length() );
+            debug() << "Server starting on port " << line << '.' << endl;
+            #if DNSSD_SUPPORT
+                KUser current;
+                DNSSD::PublicService *service = new DNSSD::PublicService( i18n("%1's Amarok Share").arg( current.fullName() ), "_daap._tcp", line.toInt() );
+            #endif
         }
         else
             debug() << "not sql:  " << line << endl;
