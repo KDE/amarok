@@ -665,6 +665,13 @@ namespace amaroK
         return songlist;
     }
 
+    QString DcopPlaylistHandler::currentTrackUniqueId()
+    {
+        if( Playlist::instance()->currentItem() )
+            return Playlist::instance()->currentItem()->uniqueId();
+        return QString::null;
+    }
+
 /////////////////////////////////////////////////////////////////////////////////////
 // class DcopPlaylistBrowserHandler
 /////////////////////////////////////////////////////////////////////////////////////
@@ -823,13 +830,6 @@ namespace amaroK
     void DcopCollectionHandler::removeUniqueIdFromFile( const QString &path )
     {
         CollectionDB::instance()->removeUniqueIdFromFile( path );
-    }
-
-    QString DcopCollectionHandler::currentTrackUniqueId()
-    {
-        if( Playlist::instance()->currentItem() )
-            return Playlist::instance()->currentItem()->uniqueId();
-        return QString::null;
     }
 
 /////////////////////////////////////////////////////////////////////////////////////

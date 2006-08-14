@@ -125,6 +125,7 @@ class DcopPlaylistHandler : public QObject, virtual public AmarokPlaylistInterfa
       virtual void    addMedia(const KURL &);
       virtual void    addMediaList(const KURL::List &);
       virtual void    clearPlaylist();
+      virtual QString currentTrackUniqueId();
       virtual void    playByIndex(int);
       virtual void    playMedia(const KURL &);
       virtual void    popupMessage(const QString&);

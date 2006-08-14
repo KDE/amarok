@@ -126,6 +126,7 @@ k_dcop:
    virtual void addMedia(const KURL &) = 0;                 ///< Add audio media specified by the url.
    virtual void addMediaList(const KURL::List &) = 0;       ///< Add some audio media specified by the url.
    virtual void clearPlaylist() = 0;                        ///< Clears the playlist.
+   virtual QString currentTrackUniqueId() = 0;              ///< Return the current track's unique ID
    virtual void playByIndex(int) = 0;                       ///< Starts playing the track at the specified index.
    virtual void playMedia(const KURL &) = 0;                ///< Add audio media specified by the url.
    virtual void popupMessage(const QString&) = 0;           ///< Shows a temporary popup message.
@@ -187,7 +188,6 @@ k_dcop:
    virtual void disableAutoScoring( bool disable ) = 0;    ///< Disable updating track stats on track change.
    virtual void newUniqueIdForFile( const QString &path ) = 0; ///< Assign a new unique ID to a file.
    virtual void removeUniqueIdFromFile( const QString &path ) = 0; ///< Remove our unique ID from a given file.
-   virtual QString currentTrackUniqueId() = 0;                ///< Return the current track's unique ID
 };
 
 
