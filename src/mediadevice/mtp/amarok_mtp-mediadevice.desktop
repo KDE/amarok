@@ -1,6 +1,8 @@
 [Desktop Entry]
 Type=Service
 Name=MTP Media Device
+Name[bg]=MTP медийно устройство
+Name[cs]=Mediální zařízení MTP
 Name[de]=MTP Media-Player
 Name[ja]=MTP メディアデバイス
 Name[pt]=Dispositivo Multimédia MTP
