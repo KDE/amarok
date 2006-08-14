@@ -68,6 +68,7 @@ DaapServer::readSql()
             #if DNSSD_SUPPORT
                 KUser current;
                 DNSSD::PublicService *service = new DNSSD::PublicService( i18n("%1's Amarok Share").arg( current.fullName() ), "_daap._tcp", line.toInt() );
+                service->publishAsync();
             #endif
         }
         else
