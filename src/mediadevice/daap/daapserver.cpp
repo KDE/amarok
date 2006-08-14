@@ -45,7 +45,6 @@ DaapServer::~DaapServer()
 void
 DaapServer::readSql()
 {
-    DEBUG_BLOCK
     static const QCString prefix = "SQL QUERY: ";
     QString line;
     while( m_server->readln( line ) != -1 )

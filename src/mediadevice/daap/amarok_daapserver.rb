@@ -7,9 +7,8 @@
 require "#{ARGV[0]}" #codes.rb
 require "#{ARGV[1]}" #debug.rb
 require 'webrick'
-require 'pp'
-require 'rubygems'
-require 'ruby-prof'
+#require 'rubygems'
+#require 'ruby-prof'
 
 $app_name = "Daap"
 $debug_prefix = "Server"
@@ -39,24 +38,23 @@ class Element
         def <<( child )
             @value << child
         end
-        
+
         def size
             @value.size
         end
 
-        
         def Element.char_convert( v ) 
             packing( v, 'c' )
         end
-        
+
         def Element.short_convert( v )
             packing( v, 'n' )
         end
-        
+
         def Element.long_convert( v )
             packing( v, 'N' )
         end
-        
+
         def Element.longlong_convert( v )
             v = v.to_i  if( v.is_a?(String) )
             a = Array.new
@@ -66,7 +64,7 @@ class Element
             a.pack('N') + b.pack('N')
         end
  
-    private
+    protected
         def valueToString( codes )
             case CODE_TYPE[@name]
                 when :string then
@@ -78,12 +76,6 @@ class Element
                     @value.each do |i|
                         values += i.to_s( codes )
                     end
-                    values
-                when :mlit then
-                    values = String.new
-                    @value.each { |i|
-                        values += i.to_s( codes ) if codes.member?( i.name )
-                    }
                     values
                 when :char then
                     Element.char_convert( @value )
@@ -111,6 +103,13 @@ end
 
 class Mlit < Element
 	attr_accessor :songformat, :id
+    def to_s( codes )
+        values = String.new
+        @value.each { |i|
+            values += i.to_s( codes ) if codes.member?( i.name )
+        }
+        'mlit' + Element.long_convert(values.length) + values
+    end
 end
 #{"mlog"=>{"mlid"=>[1842003488], "mstt"=>[200]}}
 class LoginServlet < WEBrick::HTTPServlet::AbstractServlet
@@ -150,12 +149,10 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
       end
 
       def initialize
-          puts "hello"
-          artists = Array.new
-          albums = Array.new
-          genre = Array.new
-          device_paths = Array.new
-
+          artists = Hash.new
+          albums = Hash.new
+          genre = Hash.new
+          device_paths = Hash.new
           indexes = [  { :dbresult=> query( 'select * from album' ),  :indexed => albums }, 
           { :dbresult=> query( 'select * from artist' ), :indexed => artists },
           { :dbresult=> query( 'select * from genre' )  , :indexed => genre },
@@ -165,40 +162,44 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
                   h[ :indexed ][ h[ :dbresult ][i].to_i ] = h[ :dbresult ][ i.to_i+1 ]
               }
           }
+
           columns =     [ "album, ", "artist, ", "genre, ", "track, ", "title, ", "year, ", "length, ", "samplerate, ", "url, ", "deviceid" ]
+          puts "SQL QUERY: SELECT #{columns.to_s} FROM tags"
           @column_keys = [ :songalbum, :songartist, :songgenre,  :songtracknumber, :itemname, :songyear, :songtime, :songsamplerate, :url,  :deviceid ]
           #TODO composer :songcomposer
-          dbitems = query( "SELECT #{columns.to_s} FROM tags LIMIT 500" )
           @music = Array.new
-          id = 0
           @items = Element.new( 'mlcl' )
-          0.step( dbitems.size - columns.size, columns.size ) { |overallIt|
-              track = Mlit.new( 'mlit' )
-              0.step( 2, 1 ) { |columnIt|
-                    track << Element.new( METAS[ @column_keys[columnIt] ][:code], indexes[columnIt][ :indexed ][ dbitems[ overallIt + columnIt].to_i ] )
-                }
-              3.step( @column_keys.size-3, 1 ) { |columnIt|
-                puts @column_keys[columnIt]
-                track << Element.new( METAS[ @column_keys[columnIt] ][ :code ], dbitems[ overallIt + columnIt ] )
-              }
-              if overallIt > (dbitems.size - 500) then
-                  log dbitems[ overallIt, overallIt + @column_keys.size].inspect
+          id = 0
+          columnIt = 0
+          track = Mlit.new( 'mlit' )
+          url = String.new
+          while ( line = $stdin.gets ) && ( line.chop! != '**** END SQL ****' )
+              puts "#{columnIt} - #{line}" if id < 10
+              case columnIt
+              when 0..2
+                  track << Element.new( METAS[ @column_keys[columnIt] ][ :code ], indexes[columnIt][ :indexed ][ line.to_i ] )
+              when (3 ..( @column_keys.size-3 ) )
+                  track << Element.new( METAS[ @column_keys[columnIt] ][ :code ], line )
+              when columns.size - 2
+                  url = line.reverse.chop.reverse
+              when columns.size - 1
+                  device_id = line.to_i
+                  if device_id == -1 then
+                      @music[id] = url
+                  else
+                      url[0] = ''
+                      @music[id] = "#{indexes[3][:indexed][ device_id ]}/#{url}"
+                  end
+                  id += 1
+                  track << Element.new( 'miid', id )
+                  track << Element.new( 'asfm', File::extname( url ).reverse.chop.reverse )
+                  @items << track
+                  columnIt = -1
+                  track = Mlit.new( 'mlit' )
+                  url = String.new
               end
-              columnIt = @column_keys.size-2
-              id += 1
-              url = dbitems[ overallIt + columnIt ].reverse.chop.reverse
-          #   log "indexes: #{dbitems[ columnIt + overallIt + 1 ]} - #{indexes[3][:indexed][ dbitems[ columnIt + overallIt + 1 ].to_i ]} #{url}"
-              device_id = dbitems[ columnIt + overallIt + 1 ].to_i
-              if device_id == -1 then
-                  @music[id] = url
-              else
-                  url[0] = ''
-                  @music[id] = "#{indexes[3][:indexed][ device_id ]}/#{url}"
-              end
-              track << Element.new( 'miid', id )
-              track << Element.new( 'asfm', File::extname( url ).reverse.chop.reverse )
-              @items << track
-          }
+              columnIt += 1
+          end
           @column_keys.push( :itemid )
           @column_keys.push( :songformat )
       end
@@ -287,24 +288,14 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
 
   private
       def query( sql )
-         out = Array.new
-         # $stdout.flush
-         # $stdout.syswrite "SQL QUERY: #{sql}\n"
+          out = Array.new
           puts "SQL QUERY: #{sql}"
-         
           while ( line = $stdin.gets) && (line.chop! != '**** END SQL ****' )
-            out.push( line )
+              out.push( line )
           end
           out
       end
       debugMethod(:query)
-
-      def querySelect
-          @items = Array.new
-          @music = Array.new
-          id = 0
-            
-      end	
 end
 
 def log( string )
@@ -333,14 +324,10 @@ end
 $stdout.sync = true
 $stderr.sync = true
 
-RubyProf.start
-#start_profile
+#RubyProf.start
 Controller.new
-#stop_profile
-#f = open('/tmp/Ndaapserver.log', File::WRONLY | File::CREAT )
-#print_profile(f)
-result = RubyProf.stop
 
-printer = RubyProf::GraphHtmlPrinter.new(result)
-f = open('/tmp/test.html', File::WRONLY | File::CREAT )
-printer.print( f, 3 )
+#result = RubyProf.stop
+#printer = RubyProf::GraphHtmlPrinter.new(result)
+#f = open('/tmp/test.html', File::WRONLY | File::CREAT )
+#printer.print( f, 3 )
