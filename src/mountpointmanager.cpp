@@ -486,7 +486,7 @@ bool StatisticsUpdateJob::doJob( )
     CollectionDB *collDB = CollectionDB::instance();
     QStringList urls = collDB->query( "SELECT s.deviceid,s.url "
                                       "FROM statistics AS s LEFT JOIN tags AS t ON s.deviceid = t.deviceid AND s.url = t.url "
-                                      "WHERE t.url IS NULL AND s.deviceid != -2 AND s.uniqueid IS NULL;" );
+                                      "WHERE t.url IS NULL AND s.deviceid != -2;" );
     debug() << "Trying to update " << urls.count() / 2 << " statistics rows" << endl;
     foreach( urls )
     {
