@@ -22,7 +22,7 @@
 #include "collectionbrowser.h"
 #include "columnlist.h"
 #include "deletedialog.h"
-#include "mediadevicemanager.h"
+#include "devicemanager.h"
 #include "enginecontroller.h"
 #include "expression.h"
 #include "k3bexporter.h"
@@ -405,11 +405,11 @@ Playlist::Playlist( QWidget *parent )
     m_filtertimer = new QTimer( this );
     connect( m_filtertimer, SIGNAL(timeout()), this, SLOT(setDelayedFilter()) );
 
-    connect( MediaDeviceManager::instance(), SIGNAL(mediumAdded( const Medium*, QString )),
+    connect( DeviceManager::instance(), SIGNAL(mediumAdded( const Medium*, QString )),
             SLOT(mediumChange( const Medium*, QString )) );
-    connect( MediaDeviceManager::instance(), SIGNAL(mediumChanged( const Medium*, QString )),
+    connect( DeviceManager::instance(), SIGNAL(mediumChanged( const Medium*, QString )),
             SLOT(mediumChange( const Medium*, QString )) );
-    connect( MediaDeviceManager::instance(), SIGNAL(mediumRemoved( const Medium*, QString )),
+    connect( DeviceManager::instance(), SIGNAL(mediumRemoved( const Medium*, QString )),
             SLOT(mediumChange( const Medium*, QString )) );
 
     m_clicktimer = new QTimer( this );
