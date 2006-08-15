@@ -4600,8 +4600,6 @@ Playlist::slotQueueChanged( const PLItemList &in, const PLItemList &out)
 {
     for( QPtrListIterator<PlaylistItem> it( out ); *it; ++it )
         (*it)->update();
-    for( QPtrListIterator<PlaylistItem> it( in ); *it; ++it )
-        (*it)->setSelected( false ); //for prettiness
     refreshNextTracks( 0 );
     updateNextPrev();
 }
