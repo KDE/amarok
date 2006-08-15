@@ -22,7 +22,6 @@
 #include "collectionbrowser.h"
 #include "columnlist.h"
 #include "deletedialog.h"
-#include "devicemanager.h"
 #include "enginecontroller.h"
 #include "expression.h"
 #include "k3bexporter.h"
@@ -405,12 +404,10 @@ Playlist::Playlist( QWidget *parent )
     m_filtertimer = new QTimer( this );
     connect( m_filtertimer, SIGNAL(timeout()), this, SLOT(setDelayedFilter()) );
 
-    connect( DeviceManager::instance(), SIGNAL(mediumAdded( const Medium*, QString )),
-            SLOT(mediumChange( const Medium*, QString )) );
-    connect( DeviceManager::instance(), SIGNAL(mediumChanged( const Medium*, QString )),
-            SLOT(mediumChange( const Medium*, QString )) );
-    connect( DeviceManager::instance(), SIGNAL(mediumRemoved( const Medium*, QString )),
-            SLOT(mediumChange( const Medium*, QString )) );
+    connect( MountPointManager::instance(), SIGNAL(mediumConnected( int )),
+            SLOT(mediumChange( int )) );
+    connect( MountPointManager::instance(), SIGNAL(mediumRemoved( int )),
+            SLOT(mediumChange( int )) );
 
     m_clicktimer = new QTimer( this );
     connect( m_clicktimer, SIGNAL(timeout()), this, SLOT(slotSingleClick()) );
@@ -439,10 +436,9 @@ Playlist::~Playlist()
 ////////////////////////////////////////////////////////////////////////////////
 
 void
-Playlist::mediumChange( const Medium *med, QString name ) // SLOT
+Playlist::mediumChange( int deviceid ) // SLOT
 {
-    Q_UNUSED( med );
-    Q_UNUSED( name );
+    Q_UNUSED( deviceid );
 
     for( QListViewItem *it = firstChild();
             it;

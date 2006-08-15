@@ -244,7 +244,7 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void contentsWheelEvent( QWheelEvent *e );
 
     private slots:
-        void mediumChange( const Medium *medium, QString name );
+        void mediumChange( int );
         void slotCountChanged();
         void activate( QListViewItem* );
         void columnOrderChanged();
