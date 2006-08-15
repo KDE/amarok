@@ -49,7 +49,8 @@ enum Fields
     FModfiedDate,
     FFilePath,
     FBPM,
-    FMountPoint
+    FMountPoint,
+    FBitRate
 };
 
 
@@ -155,15 +156,14 @@ void SmartPlaylistEditor::init(QString defaultName)
              << i18n("Track #") << i18n("Year") << i18n("Comment") << i18n("Play Counter")
              << i18n("Score") << i18n( "Rating" ) << i18n("First Play")
              << i18n("Last Play") << i18n("Modified Date") << i18n("File Path")
-             << i18n("BPM") << i18n("Mount Point");
+             << i18n("BPM") << i18n("Mount Point") << i18n( "Bitrate" );
 
     m_dbFields.clear();
-    //TODO max: make sure the search for URL works correctly
     m_dbFields << "artist.name" << "composer.name" << "album.name" << "genre.name" << "tags.title" << "tags.length"
                << "tags.track" << "year.name" << "tags.comment" << "statistics.playcounter"
                << "statistics.percentage" << "statistics.rating" << "statistics.createdate"
                << "statistics.accessdate" << "tags.createdate" << "tags.url"
-               << "tags.bpm" << "devices.lastmountpoint";
+               << "tags.bpm" << "devices.lastmountpoint" << "tags.bitrate";
 
     m_expandableFields.clear();
     m_expandableFields << i18n("Artist") << i18n("Composer") << i18n("Album") << i18n("Genre") <<  i18n("Year");
@@ -1044,6 +1044,7 @@ int CriteriaEditor::getValueType( int index )
         case FScore:
         case FPlayCounter:
         case FBPM:
+        case FBitRate:
             valueType = Number;
             break;
         case FRating:
