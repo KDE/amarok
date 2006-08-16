@@ -56,7 +56,6 @@ DeviceManager::DeviceManager()
         else
         {
             m_valid = true;
-            
             //run the DCOP query here because apparently if you don't run KDE as a DM the first call will fail
             //...go figure
             QByteArray data, replyData;
@@ -68,7 +67,6 @@ DeviceManager::DeviceManager()
             {
                 debug() << "During DeviceManager init, error during DCOP call" << endl;
             }
-                                
             getDevice( "init" );
             debug() << "DeviceManager:  connectDCOPSignal returned successfully!" << endl;
         }
