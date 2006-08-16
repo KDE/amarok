@@ -214,6 +214,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
 
         void similarArtistsFetched( const QString &artist );
         void tagsChanged( const MetaBundle &bundle );
+        void tagsChanged( const QString &oldArtist, const QString &oldAlbum );
         void imageFetched( const QString &remoteURL ); //for fetching remote podcast images
 
     public:

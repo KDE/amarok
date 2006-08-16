@@ -3731,9 +3731,8 @@ void ContextBrowser::tagsChanged( const MetaBundle &bundle ) //SLOT
 {
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
 
-    if( m_artist != bundle.artist() )
+    if( !m_shownAlbums.contains( bundle.album() ) && m_artist != bundle.artist() )
     {
-
         if( currentTrack.artist().isEmpty() && currentTrack.album().isEmpty() )
             return;
 
@@ -3743,6 +3742,23 @@ void ContextBrowser::tagsChanged( const MetaBundle &bundle ) //SLOT
 
     refreshCurrentTrackPage();
 }
+
+void ContextBrowser::tagsChanged( const QString &oldArtist, const QString &oldAlbum ) //SLOT
+{
+    const MetaBundle &currentTrack = EngineController::instance()->bundle();
+
+    if( !m_shownAlbums.contains( oldAlbum ) && m_artist != oldArtist )
+    {
+        if( currentTrack.artist().isEmpty() && currentTrack.album().isEmpty() )
+            return;
+
+        if( oldArtist != currentTrack.artist() && oldAlbum != currentTrack.album() )
+            return;
+    }
+
+    refreshCurrentTrackPage();
+}
+
 
 void ContextBrowser::refreshCurrentTrackPage() //SLOT
 {

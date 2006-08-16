@@ -4526,6 +4526,9 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
         QTimer::singleShot( 0, CollectionView::instance(), SLOT( databaseChanged() ) );
 
     emit tagsChanged( bundle );
+
+    if( art || alb )
+        emit tagsChanged( values[12], values[14] );
 }
 
 
