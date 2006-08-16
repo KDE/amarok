@@ -231,7 +231,9 @@ protocoldir = \
     $(kde_servicesdir)
 
 protocol_DATA = \
-    amaroklastfm.protocol
+    amarokitpc.protocol \
+    amaroklastfm.protocol \
+    amarokpcast.protocol
 
 messages: rc.cpp
 	$(EXTRACTRC) `find . -name "*.rc" -o -name "*.ui" -o -name "*.kcfg"` > rc.cpp

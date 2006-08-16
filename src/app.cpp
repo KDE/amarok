@@ -36,6 +36,7 @@ email                : markey@web.de
 #include "osd.h"
 #include "playerwindow.h"
 #include "playlist.h"
+#include "playlistbrowser.h"
 #include "playlistwindow.h"
 #include "pluginmanager.h"
 #include "refreshimages.h"
@@ -211,7 +212,13 @@ void App::handleCliArgs() //static
     {
         KURL::List list;
         for( int i = 0; i < args->count(); i++ )
-            list << args->url( i );
+        {
+            KURL url = args->url( i );
+            if( url.protocol() == "itpc" || url.protocol() == "pcast" )
+                PlaylistBrowser::instance()->addPodcast( url );
+            else
+                list << url;
+        }
 
         int options;
         bool appendAsDefault = amaroK::config()->readBoolEntry( "AppendAsDefault", false );

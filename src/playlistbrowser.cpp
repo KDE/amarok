@@ -1302,9 +1302,13 @@ PlaylistBrowser::findPodcastEpisode( const KURL &episode, const KURL &feed ) con
     return 0;
 }
 
-void PlaylistBrowser::addPodcast( const KURL& url, QListViewItem *parent )
+void PlaylistBrowser::addPodcast( const KURL& origUrl, QListViewItem *parent )
 {
     if( !parent ) parent = static_cast<QListViewItem*>(m_podcastCategory);
+
+    KURL url( origUrl );
+    if( url.protocol() == "itpc" || url.protocol() == "pcast" )
+        url.setProtocol( "http" );
 
     PodcastChannel *channel = findPodcastChannel( url );
     if( channel )
