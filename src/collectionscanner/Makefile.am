@@ -7,8 +7,13 @@ INCLUDES = \
     $(taglib_includes) \
     $(all_includes)
 
+noinst_HEADERS = \
+    collectionscannerdcophandler.h
+
 amarokcollectionscanner_SOURCES = \
     main.cpp \
+    collectionscannerdcopiface.skel \
+    collectionscannerdcophandler.cpp \
     collectionscanner.cpp
 
 amarokcollectionscanner_LDADD = \

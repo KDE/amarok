@@ -34,6 +34,7 @@
 #include <qfileinfo.h>
 #include <qtextcodec.h>
 
+#include <dcopref.h>
 #include <kapplication.h>
 #include <klocale.h>
 #include <kmessagebox.h>
@@ -41,6 +42,18 @@
 ////////////////////////////////////////////////////////////////////////////////
 // class ScanController
 ////////////////////////////////////////////////////////////////////////////////
+
+ScanController* ScanController::currController = 0;
+
+ScanController* ScanController::instance()
+{
+    return currController;
+}
+
+void ScanController::setInstance( ScanController* curr )
+{
+    currController = curr;
+}
 
 ScanController::ScanController( CollectionDB* parent, bool incremental, const QStringList& folders )
     : DependentJob( parent, "CollectionScanner" )
@@ -51,9 +64,11 @@ ScanController::ScanController( CollectionDB* parent, bool incremental, const QS
     , m_hasChanged( false )
     , m_source( new QXmlInputSource() )
     , m_reader( new QXmlSimpleReader() )
+    , m_dcopConnected( false )
 {
     DEBUG_BLOCK
 
+    ScanController::setInstance( this );
     m_reader->setContentHandler( this );
     m_reader->parse( m_source, true );
 
@@ -101,6 +116,7 @@ ScanController::~ScanController()
     delete m_scanner;
     delete m_reader;
     delete m_source;
+    ScanController::setInstance( 0 );
 }
 
 
@@ -269,6 +285,40 @@ ScanController::slotReadReady()
     m_dataMutex.unlock();
 }
 
+void
+ScanController::requestPause()
+{
+    DEBUG_BLOCK
+    if( !m_dcopConnected )
+    {
+        debug() << "Failed to request pause, dcop not connected" << endl;
+        return;
+    }
+    debug() << "Attempting to pause the collection scanner..." << endl;
+    DCOPRef dcopRef( "amarokcollectionscanner", "scanner" );
+    dcopRef.call( "pause" );
+}
+
+void
+ScanController::requestUnpause()
+{
+    DEBUG_BLOCK
+    if( !m_dcopConnected )
+    {
+        debug() << "Failed to request unpause, dcop not connected" << endl;
+        return;
+    }
+    debug() << "Attempting to unpause the collection scanner..." << endl;
+    DCOPRef dcopRef( "amarokcollectionscanner", "scanner" );
+    dcopRef.call( "unpause" );
+}
+
+void
+ScanController::requestAcknowledged()
+{
+    DEBUG_BLOCK
+    emit scannerAcknowledged();
+}
 
 bool
 ScanController::startElement( const QString&, const QString& localName, const QString&, const QXmlAttributes& attrs )

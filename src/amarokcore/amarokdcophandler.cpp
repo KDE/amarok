@@ -36,6 +36,7 @@
 #include "playlistbrowser.h"
 #include "playlistitem.h"
 #include "playlistwindow.h"
+#include "scancontroller.h"
 #include "scriptmanager.h"
 #include "statusbar.h"
 #include "lastfm.h"
@@ -815,6 +816,30 @@ namespace amaroK
     void DcopCollectionHandler::scanCollectionChanges()
     {
         CollectionDB::instance()->scanMonitor();
+    }
+
+    void DcopCollectionHandler::scanPause()
+    {
+        if( ScanController::instance() )
+            ScanController::instance()->requestPause();
+        else
+            debug() << "No ScanController instance available" << endl;
+    }
+
+    void DcopCollectionHandler::scanUnpause()
+    {
+        if( ScanController::instance() )
+            ScanController::instance()->requestUnpause();
+        else
+            debug() << "No ScanController instance available" << endl;
+    }
+
+    void DcopCollectionHandler::scannerAcknowledged()
+    {
+        if( ScanController::instance() )
+            ScanController::instance()->requestAcknowledged();
+        else
+            debug() << "No ScanController instance available" << endl;
     }
 
     void DcopCollectionHandler::disableAutoScoring( bool disable )

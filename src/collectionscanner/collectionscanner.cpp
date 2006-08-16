@@ -21,6 +21,7 @@
 
 #include "amarok.h"
 #include "collectionscanner.h"
+#include "collectionscannerdcophandler.h"
 #include "debug.h"
 
 #include <cerrno>
@@ -67,7 +68,11 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
         , m_incremental( incremental )
         , m_restart( restart )
         , m_logfile( amaroK::saveLocation( QString::null ) + "collection_scan.log"  )
+        , m_pause( false )
 {
+    DcopCollectionScannerHandler* dcsh = new DcopCollectionScannerHandler();
+    connect( dcsh, SIGNAL(pauseRequest()), this, SLOT(pause()) );
+    connect( dcsh, SIGNAL(unpauseRequest()), this, SLOT(resume()) );
     kapp->setName( QString( "amarokcollectionscanner" ).ascii() );
     if( !restart )
         QFile::remove( m_logfile );
@@ -80,6 +85,21 @@ CollectionScanner::~CollectionScanner()
 {
     DEBUG_BLOCK
 }
+
+void
+CollectionScanner::pause()
+{
+    DEBUG_BLOCK
+    m_pause = true;
+}
+
+void
+CollectionScanner::resume()
+{
+    DEBUG_BLOCK
+    m_pause = false;
+}
+
 
 
 void
@@ -249,10 +269,16 @@ CollectionScanner::scanFiles( const QStringList& entries )
     QValueList<CoverBundle> covers;
     QStringList images;
 
+    int itemCount = 0;
+
+    DCOPRef dcopRef( "amarok", "collection" );
+
     foreachType( QStringList, entries ) {
         const QString path = *it;
         const QString ext  = extension( path );
         const QString dir  = directory( path );
+
+        itemCount++;
 
         // Write path to logfile
         if( !m_logfile.isEmpty() ) {
@@ -321,6 +347,22 @@ CollectionScanner::scanFiles( const QStringList& entries )
             covers.clear();
             images.clear();
         }
+
+        if( itemCount % 20 == 0 )
+        {
+            kapp->processEvents();  // let DCOP through!
+            if( m_pause )
+            {
+                dcopRef.call( "scannerAcknowledged" );
+                while( m_pause )
+                {
+                    sleep( 1 );
+                    kapp->processEvents();
+                }
+                dcopRef.call( "scannerAcknowledged" );
+            }
+        }
+
     }
 }
 

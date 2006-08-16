@@ -70,9 +70,18 @@ class ScanController : public ThreadWeaver::DependentJob, public QXmlDefaultHand
     public:
         ScanController( CollectionDB* parent, bool incremental, const QStringList& folders = QStringList() );
         ~ScanController();
+        static ScanController* instance();
 
         bool isIncremental() const { return m_incremental; }
         bool hasChanged() const { return m_hasChanged; }
+
+    signals:
+        void scannerAcknowledged();
+
+    public slots:
+        void requestPause();
+        void requestUnpause();
+        void requestAcknowledged();
 
     private slots:
         void slotReadReady();
@@ -80,12 +89,13 @@ class ScanController : public ThreadWeaver::DependentJob, public QXmlDefaultHand
     private:
         void initIncremental();
         virtual bool doJob();
+        static void setInstance( ScanController* instance );
 
         bool startElement( const QString&, const QString &localName, const QString&, const QXmlAttributes &attrs );
         void customEvent( QCustomEvent* );
 
         // Member variables:
-        static const uint MAX_RESTARTS = 20;
+        static const uint MAX_RESTARTS = 2;
 
         KProcIO* m_scanner;
         QStringList m_folders;
@@ -99,6 +109,9 @@ class ScanController : public ThreadWeaver::DependentJob, public QXmlDefaultHand
         QXmlSimpleReader* m_reader;
 
         QStringList m_crashedFiles;
+
+        static ScanController* currController;
+        bool m_dcopConnected;
 };
 
 
