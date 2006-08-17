@@ -5728,12 +5728,14 @@ QStringList SqliteConnection::query( const QString& statement )
 {
 
     QStringList values;
-    int error;
+    int error, rc;
     const char* tail;
     sqlite3_stmt* stmt;
     int busyCnt = 0;
+    int retryCnt = 0;
 
-    //compile SQL program to virtual machine, reattempting if busy
+    do {
+        //compile SQL program to virtual machine, reattempting if busy
     do {
         if ( busyCnt )
         {
@@ -5784,16 +5786,31 @@ QStringList SqliteConnection::query( const QString& statement )
             }
         }
         //deallocate vm resources
-        sqlite3_finalize( stmt );
+        rc = sqlite3_finalize( stmt );
 
-        if ( error != SQLITE_DONE )
+        if ( error != SQLITE_DONE && rc != SQLITE_SCHEMA )
         {
             Debug::error() << k_funcinfo << "sqlite_step error.\n";
             Debug::error() << sqlite3_errmsg( m_db ) << endl;
             Debug::error() << "on query: " << statement << endl;
             values = QStringList();
         }
+        if ( rc == SQLITE_SCHEMA )
+        {
+            retryCnt++;
+            debug() << "SQLITE_SCHEMA error occured on query: " << statement << endl;
+            if ( retryCnt < 10 )
+                debug() << "Retrying now." << endl;
+            else
+            {
+                Debug::error() << "Retry-Count has reached maximum. Aborting this SQL statement!" << endl;
+                Debug::error() << "SQL statement: " << statement << endl;
+                values = QStringList();
+            }
+        }
     }
+    }
+    while ( rc == SQLITE_SCHEMA && retryCnt < 10 );
 
     return values;
 }
@@ -5801,11 +5818,13 @@ QStringList SqliteConnection::query( const QString& statement )
 
 int SqliteConnection::insert( const QString& statement, const QString& /* table */ )
 {
-    int error;
+    int error, rc;
     const char* tail;
     sqlite3_stmt* stmt;
     int busyCnt = 0;
+    int retryCnt = 0;
 
+    do {
     //compile SQL program to virtual machine, reattempting if busy
     do {
         if ( busyCnt )
@@ -5848,15 +5867,29 @@ int SqliteConnection::insert( const QString& statement, const QString& /* table 
                 break;
         }
         //deallocate vm resources
-        sqlite3_finalize( stmt );
+        rc = sqlite3_finalize( stmt );
 
-        if ( error != SQLITE_DONE )
+        if ( error != SQLITE_DONE && rc != SQLITE_SCHEMA)
         {
             Debug::error() << k_funcinfo << "sqlite_step error.\n";
             Debug::error() << sqlite3_errmsg( m_db ) << endl;
             Debug::error() << "on insert: " << statement << endl;
         }
+        if ( rc == SQLITE_SCHEMA )
+        {
+            retryCnt++;
+            debug() << "SQLITE_SCHEMA error occured on insert: " << statement << endl;
+            if ( retryCnt < 10 )
+                debug() << "Retrying now." << endl;
+            else
+            {
+                Debug::error() << "Retry-Count has reached maximum. Aborting this SQL insert!" << endl;
+                Debug::error() << "SQL statement: " << statement << endl;
+            }
+        }
     }
+    }
+    while ( SQLITE_SCHEMA == rc && retryCnt < 10 );
     return sqlite3_last_insert_rowid( m_db );
 }
 
