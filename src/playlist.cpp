@@ -4592,7 +4592,7 @@ void Playlist::slotContentsMoving()
 }
 
 void
-Playlist::slotQueueChanged( const PLItemList &in, const PLItemList &out)
+Playlist::slotQueueChanged( const PLItemList /*&in*/, const PLItemList &out)
 {
     for( QPtrListIterator<PlaylistItem> it( out ); *it; ++it )
         (*it)->update();
