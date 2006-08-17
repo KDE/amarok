@@ -3009,12 +3009,10 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
     {
         //debug() << "first case" << endl;
         QString insertline = QString( "INSERT INTO uniqueid%1 (deviceid, url, uniqueid, dir) "
-                                      "VALUES ( %2,'%3', '%4'" )
+                                      "VALUES ( %2,'%3', '%4', '%5');" )
                 .arg( tempTables ? "_temp" : "" )
                 .arg( currdeviceid )
-                .arg( currurl )
-                .arg( currid ); 
-        insertline += QString( ", '%1');" ).arg( currdir );
+                .arg( currurl , currid, currdir);
         insert( insertline, NULL );
         if( !statUIDVal.empty() )
         {
