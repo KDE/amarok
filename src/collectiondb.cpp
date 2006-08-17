@@ -6308,7 +6308,7 @@ QueryBuilder::linkTables( int tables )
         }
         if ( tables & tabLyrics )
             m_tables += " LEFT JOIN " + tableName( tabLyrics)
-                                      + " ON lyrics.url=tags.url AND statistics.deviceid = tags.deviceid";
+                                      + " ON lyrics.url=tags.url AND lyrics.deviceid = tags.deviceid";
 
         if ( tables & tabDevices )
             m_tables += " LEFT JOIN " + tableName( tabDevices ) + " ON tags.deviceid = devices.id";
