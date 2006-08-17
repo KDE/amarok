@@ -3169,7 +3169,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
     }
 }
 
-void
+bool
 CollectionDB::newUniqueIdForFile( const QString &path )
 {
     DEBUG_BLOCK
@@ -3178,7 +3178,7 @@ CollectionDB::newUniqueIdForFile( const QString &path )
     if( !QFile::exists( path ) )
     {
         debug() << "QFile::exists returned false for " << path << endl;
-        return;
+        return false;
     }
 
     // Clean it.
@@ -3186,12 +3186,16 @@ CollectionDB::newUniqueIdForFile( const QString &path )
 
     MetaBundle bundle( url );
     if( bundle.newUniqueId() )
+    {
         doATFStuff( &bundle, false );
-    else
-        debug() << "Could not set new unique id" << endl;
+        return true;
+    }
+
+    debug() << "Could not set new unique id" << endl;
+    return false;
 }
 
-void
+bool
 CollectionDB::removeUniqueIdFromFile( const QString &path )
 {
     DEBUG_BLOCK
@@ -3200,14 +3204,20 @@ CollectionDB::removeUniqueIdFromFile( const QString &path )
     if( !QFile::exists( path ) )
     {
         debug() << "QFile::exists returned false for " << path << endl;
-        return;
+        return false;
     }
 
     url.cleanPath();
 
     MetaBundle bundle( url );
-    bundle.removeUniqueId();
-    doATFStuff( &bundle, false );
+    if( bundle.removeUniqueId() )
+    {
+        doATFStuff( &bundle, false );
+        return true;
+    }
+
+    debug() << "Cound not remove unique id" << endl;
+    return false;
 }
 
 QString
@@ -3236,7 +3246,6 @@ CollectionDB::uniqueIdFromUrl( const KURL &url )
     QString currurl = escapeString( mpm->getRelativePath( currdeviceid, url.path() ) );
 
     bool scanning = ThreadWeaver::instance()->isJobPending( "CollectionScanner" );
-    
     QStringList uid = query( QString(
             "SELECT uniqueid "
             "FROM uniqueid%1 "

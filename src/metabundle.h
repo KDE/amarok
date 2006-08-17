@@ -285,6 +285,7 @@ public: //modifiers
     bool removeUniqueId();
     bool newUniqueId();
     void scannerAcknowledged();
+    bool safeToSave() { return m_safeToSave; }
 
     void detach(); // for being able to apply QDeepCopy<>
 

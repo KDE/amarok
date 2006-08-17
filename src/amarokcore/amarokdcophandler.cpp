@@ -836,6 +836,7 @@ namespace amaroK
 
     void DcopCollectionHandler::scannerAcknowledged()
     {
+        DEBUG_BLOCK
         if( ScanController::instance() )
             ScanController::instance()->requestAcknowledged();
         else
@@ -847,14 +848,24 @@ namespace amaroK
         CollectionDB::instance()->disableAutoScoring( disable );
     }
 
-    void DcopCollectionHandler::newUniqueIdForFile( const QString &path )
+    QString DcopCollectionHandler::newUniqueIdForFile( const QString &path )
     {
-        CollectionDB::instance()->newUniqueIdForFile( path );
+        if( ScanController::instance() )
+            return "Cannot run this DCOP call during a collection scan";
+        if( CollectionDB::instance()->newUniqueIdForFile( path ) )
+            return "success";
+        else
+            return "failed"; 
     }
 
-    void DcopCollectionHandler::removeUniqueIdFromFile( const QString &path )
+    QString DcopCollectionHandler::removeUniqueIdFromFile( const QString &path )
     {
-        CollectionDB::instance()->removeUniqueIdFromFile( path );
+        if( ScanController::instance() )
+            return "Cannot run this DCOP call during a collection scan";
+        if( CollectionDB::instance()->removeUniqueIdFromFile( path ) )
+            return "success";
+        else
+            return "failed"; 
     }
 
 /////////////////////////////////////////////////////////////////////////////////////

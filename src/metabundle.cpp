@@ -1587,11 +1587,12 @@ MetaBundle::scannerSafeSave( TagLib::File* file )
 
     int count = 0;
 
-    while( ScanController::instance() && !m_safeToSave && count < 500 ) //time out after five seconds, just in case
+    while( ScanController::instance() && !m_safeToSave && count < 50 ) //time out after five seconds, just in case
     {
-        usleep( 10000 );
+        kapp->processEvents( 100 );
+        usleep( 100000 );
         count++;
-        if( count % 100 == 0 )
+        if( count % 10 == 0 )
             debug() << "waitcount is " << count << endl;
     }
 
