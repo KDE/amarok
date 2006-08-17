@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <coolstreams version="1.3-SVN" product="amaroK" >
  <stream name="Bassdrive [Drum 'n Bass]">
-  <url>http://www.bassdrive.com/BassDrive.m3u</url>
+  <url>http://www.bassdrive.com/v2/streams/BassDrive.m3u</url>
  </stream>
  <stream name="Bluemars [Ambient/Space-Music]">
   <url>http://207.200.96.225:8020/listen.pls</url>
