@@ -284,6 +284,7 @@ public: //modifiers
     bool setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip = false );
     bool removeUniqueId();
     bool newUniqueId();
+    void scannerAcknowledged();
 
     void detach(); // for being able to apply QDeepCopy<>
 
@@ -348,6 +349,7 @@ protected:
     bool m_isValidMedia: 1;
     bool m_isCompilation: 1;
     bool m_notCompilation: 1;
+    bool m_safeToSave: 1;
 
     PodcastEpisodeBundle *m_podcastBundle;
     LastFm::Bundle *m_lastFmBundle;
@@ -370,6 +372,8 @@ private:
     QString getRandomString( int size );
     QString getRandomStringHelper( int size );
     TagLib::ID3v2::UniqueFileIdentifierFrame *ourMP3UidFrame( TagLib::MPEG::File *file, QString ourId );
+
+    void scannerSafeSave( TagLib::File* file );
 };
 
 /// for your convenience

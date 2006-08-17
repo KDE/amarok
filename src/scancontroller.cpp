@@ -64,7 +64,7 @@ ScanController::ScanController( CollectionDB* parent, bool incremental, const QS
     , m_hasChanged( false )
     , m_source( new QXmlInputSource() )
     , m_reader( new QXmlSimpleReader() )
-    , m_dcopConnected( false )
+    , m_waitingBundle( 0 )
 {
     DEBUG_BLOCK
 
@@ -289,11 +289,6 @@ void
 ScanController::requestPause()
 {
     DEBUG_BLOCK
-    if( !m_dcopConnected )
-    {
-        debug() << "Failed to request pause, dcop not connected" << endl;
-        return;
-    }
     debug() << "Attempting to pause the collection scanner..." << endl;
     DCOPRef dcopRef( "amarokcollectionscanner", "scanner" );
     dcopRef.call( "pause" );
@@ -303,11 +298,6 @@ void
 ScanController::requestUnpause()
 {
     DEBUG_BLOCK
-    if( !m_dcopConnected )
-    {
-        debug() << "Failed to request unpause, dcop not connected" << endl;
-        return;
-    }
     debug() << "Attempting to unpause the collection scanner..." << endl;
     DCOPRef dcopRef( "amarokcollectionscanner", "scanner" );
     dcopRef.call( "unpause" );
@@ -317,7 +307,15 @@ void
 ScanController::requestAcknowledged()
 {
     DEBUG_BLOCK
-    emit scannerAcknowledged();
+    if( m_waitingBundle )
+        m_waitingBundle->scannerAcknowledged();
+}
+
+void
+ScanController::notifyThisBundle( MetaBundle* bundle )
+{
+    DEBUG_BLOCK
+    m_waitingBundle = bundle;
 }
 
 bool

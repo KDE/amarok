@@ -75,6 +75,8 @@ class ScanController : public ThreadWeaver::DependentJob, public QXmlDefaultHand
         bool isIncremental() const { return m_incremental; }
         bool hasChanged() const { return m_hasChanged; }
 
+        void notifyThisBundle( MetaBundle* bundle );
+
     signals:
         void scannerAcknowledged();
 
@@ -111,7 +113,8 @@ class ScanController : public ThreadWeaver::DependentJob, public QXmlDefaultHand
         QStringList m_crashedFiles;
 
         static ScanController* currController;
-        bool m_dcopConnected;
+
+        MetaBundle* m_waitingBundle;
 };
 
 

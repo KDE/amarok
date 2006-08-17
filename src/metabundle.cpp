@@ -19,6 +19,7 @@
 #include "amarokconfig.h"
 #include "debug.h"
 #include "collectiondb.h"
+#include "scancontroller.h"
 #include <kapplication.h>
 #include <kfilemetainfo.h>
 #include <kio/global.h>
@@ -173,6 +174,7 @@ MetaBundle::MetaBundle()
         , m_isValidMedia( true )
         , m_isCompilation( false )
         , m_notCompilation( false )
+        , m_safeToSave( false )
         , m_podcastBundle( 0 )
         , m_lastFmBundle( 0 )
 {
@@ -199,6 +201,7 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
     , m_isValidMedia( false )
     , m_isCompilation( false )
     , m_notCompilation( false )
+    , m_safeToSave( false )
     , m_podcastBundle( 0 )
     , m_lastFmBundle( 0 )
 {
@@ -247,6 +250,7 @@ MetaBundle::MetaBundle( const QString& title,
         , m_isValidMedia( false )
         , m_isCompilation( false )
         , m_notCompilation( false )
+        , m_safeToSave( false )
         , m_podcastBundle( 0 )
         , m_lastFmBundle( 0 )
 {
@@ -303,6 +307,7 @@ MetaBundle::operator=( const MetaBundle& bundle )
     m_isValidMedia = bundle.m_isValidMedia;
     m_isCompilation = bundle.m_isCompilation;
     m_notCompilation = bundle.m_notCompilation;
+    m_safeToSave = bundle.m_safeToSave;
 
 //    delete m_podcastBundle; why does this crash Amarok? apparently m_podcastBundle isn't always initialized.
     m_podcastBundle = 0;
@@ -1424,7 +1429,7 @@ MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
                 if( strip )
                 {
                         file->ID3v2Tag()->setGenre( file->ID3v2Tag()->genre() );
-                        file->save( TagLib::MPEG::File::AllTags );
+                        scannerSafeSave( file );
                         return true;
                 }
 
@@ -1433,7 +1438,7 @@ MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
                         TagLib::ByteVector( m_uniqueId.ascii(), randSize )
                         ) );
                 file->ID3v2Tag()->setGenre( file->ID3v2Tag()->genre() );
-                file->save( TagLib::MPEG::File::AllTags );
+                scannerSafeSave( file );
                 newID = true;
             }
         }
@@ -1451,12 +1456,12 @@ MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
                         && AmarokConfig::advancedTagFeatures()
                         && TagLib::File::isWritable( file->name() ) )
             {
-                debug() << "removing our id" << endl;
                 file->tag()->removeField( QStringToTString( ourId ) );
             }
+
             if( AmarokConfig::advancedTagFeatures() && strip )
             {
-                file->save();
+                scannerSafeSave( file );
                 return true;
             }
 
@@ -1465,16 +1470,13 @@ MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
                      !file->tag()->fieldListMap()[QStringToTString( ourId )].isEmpty() )
                    || recreate )
             {
-
                 if( AmarokConfig::advancedTagFeatures() && TagLib::File::isWritable( file->name() ) )
                 {
                     m_uniqueId = getRandomStringHelper( randSize );
-                    debug() << "adding uniqueid " << m_uniqueId << endl;
                     file->tag()->addField( QStringToTString( ourId ), QStringToTString( m_uniqueId ) );
-                    file->save();
+                    scannerSafeSave( file );
                     newID = true;
                 }
-                
             }
             else
             {
@@ -1497,7 +1499,7 @@ MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
 
             if( AmarokConfig::advancedTagFeatures() && strip )
             {
-                file->save();
+                scannerSafeSave( file );
                 return true;
             }
             */
@@ -1508,7 +1510,7 @@ MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
                 {
                     m_uniqueId = getRandomStringHelper( randSize );
                     file->xiphComment()->addField( QStringToTString( ourId ), QStringToTString( m_uniqueId ) );
-                    file->save();
+                    scannerSafeSave( file );
                     newID = true;
                 }
                 */
@@ -1530,7 +1532,7 @@ MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
 
             if( AmarokConfig::advancedTagFeatures() && strip )
             {
-                file->save();
+                scannerSafeSave( file );
                 return true;
             }
             */
@@ -1541,7 +1543,7 @@ MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
                 {
                     m_uniqueId = getRandomStringHelper( randSize );
                     file->tag()->addField( QStringToTString( ourId ), QStringToTString( m_uniqueId ) ),
-                    file->save();
+                    scannerSafeSave( file );
                     newID = true;
                 }
                 */
@@ -1556,6 +1558,60 @@ MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
             return false; //not handled, at least not yet
     }
     return (recreate ? recreate && newID : !m_uniqueId.isEmpty() );
+}
+
+void
+MetaBundle::scannerSafeSave( TagLib::File* file )
+{
+    DEBUG_BLOCK
+    if( ( QString( kapp->name() ) == QString( "amarokcollectionscanner" ) ) || !ScanController::instance() )
+    {
+        file->save();
+        return;
+    }
+
+    m_safeToSave = false;
+
+    if( ScanController::instance() ) //yes check again, it can pull out from under us at any time
+    {
+        ScanController::instance()->notifyThisBundle( this );
+        ScanController::instance()->requestPause();
+    }
+    else
+    {
+        debug() << "Could not save tag for " << url().path() << " due to conflict with collectino scanner, please try again." << endl;
+        //TODO: add after string freeze for 1.4.2
+        //amaroK::StatusBar::instance()->longMessage( i18n( "Could not save tag for %1 due to conflict with"
+                                                            //"collection scanner, please try again." ).arg( url().path() ) );
+    }
+
+    int count = 0;
+
+    while( ScanController::instance() && !m_safeToSave && count < 500 ) //time out after five seconds, just in case
+    {
+        usleep( 10000 );
+        count++;
+        if( count % 100 == 0 )
+            debug() << "waitcount is " << count << endl;
+    }
+
+    if( m_safeToSave )
+    {
+        debug() << "Starting tag save" << endl;
+        file->save();
+    }
+    else
+        debug() << "Did not write tag for file " << url().path() << endl;
+
+    ScanController::instance()->notifyThisBundle( 0 );
+    ScanController::instance()->requestUnpause();
+}
+
+void
+MetaBundle::scannerAcknowledged()
+{
+    DEBUG_BLOCK
+    m_safeToSave = true;
 }
 
 bool

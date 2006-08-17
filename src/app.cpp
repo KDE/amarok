@@ -621,7 +621,9 @@ void App::applySettings( bool firstTime )
     }
 
     // If just turned ATF on, clear the playlist and force a rescan
-    if ( AmarokConfig::advancedTagFeatures() && !AmarokConfig::aTFFirstTurnedOn() )
+    // comment out for now until more testing is done, this seems to occur repeatedly
+    // even after scans, also seems to be doing incremental scans...odd
+    /*if ( AmarokConfig::advancedTagFeatures() && !AmarokConfig::aTFFirstTurnedOn() )
     {
         amaroK::StatusBar::instance()->longMessageThreadSafe(
                     i18n("ATF tagging was just enabled for the first time.\n"
@@ -641,7 +643,7 @@ void App::applySettings( bool firstTime )
                           "had ATF tagging enabled will need to be\n"
                           "rescanned for full functionality."), KDE::StatusBar::Information );
         AmarokConfig::setATFJustTurnedOn( false );
-    }
+    }*/
 
     //if ( !firstTime )
         // Bizarrely and ironically calling this causes crashes for
