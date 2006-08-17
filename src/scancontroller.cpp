@@ -65,6 +65,8 @@ ScanController::ScanController( CollectionDB* parent, bool incremental, const QS
     , m_source( new QXmlInputSource() )
     , m_reader( new QXmlSimpleReader() )
     , m_waitingBundle( 0 )
+    , m_isPaused( false )
+    , m_lastCommandPaused( false )
 {
     DEBUG_BLOCK
 
@@ -285,22 +287,24 @@ ScanController::slotReadReady()
     m_dataMutex.unlock();
 }
 
-void
+bool
 ScanController::requestPause()
 {
     DEBUG_BLOCK
     debug() << "Attempting to pause the collection scanner..." << endl;
     DCOPRef dcopRef( "amarokcollectionscanner", "scanner" );
-    dcopRef.call( "pause" );
+    m_lastCommandPaused = true;
+    return dcopRef.send( "pause" );
 }
 
-void
+bool
 ScanController::requestUnpause()
 {
     DEBUG_BLOCK
     debug() << "Attempting to unpause the collection scanner..." << endl;
     DCOPRef dcopRef( "amarokcollectionscanner", "scanner" );
-    dcopRef.call( "unpause" );
+    m_lastCommandPaused = false;
+    return dcopRef.send( "unpause" );
 }
 
 void
@@ -309,6 +313,10 @@ ScanController::requestAcknowledged()
     DEBUG_BLOCK
     if( m_waitingBundle )
         m_waitingBundle->scannerAcknowledged();
+    if( m_lastCommandPaused )
+        m_isPaused = true;
+    else
+        m_isPaused = false;
 }
 
 void
@@ -316,6 +324,7 @@ ScanController::notifyThisBundle( MetaBundle* bundle )
 {
     DEBUG_BLOCK
     m_waitingBundle = bundle;
+    debug() << "will notify " << m_waitingBundle << endl;
 }
 
 bool

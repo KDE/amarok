@@ -353,13 +353,13 @@ CollectionScanner::scanFiles( const QStringList& entries )
             kapp->processEvents();  // let DCOP through!
             if( m_pause )
             {
-                dcopRef.call( "scannerAcknowledged" );
+                dcopRef.send( "scannerAcknowledged" );
                 while( m_pause )
                 {
                     sleep( 1 );
                     kapp->processEvents();
                 }
-                dcopRef.call( "scannerAcknowledged" );
+                dcopRef.send( "scannerAcknowledged" );
             }
         }
 

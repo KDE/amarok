@@ -76,13 +76,14 @@ class ScanController : public ThreadWeaver::DependentJob, public QXmlDefaultHand
         bool hasChanged() const { return m_hasChanged; }
 
         void notifyThisBundle( MetaBundle* bundle );
+        bool isPaused() { return m_isPaused; }
 
     signals:
         void scannerAcknowledged();
 
     public slots:
-        void requestPause();
-        void requestUnpause();
+        bool requestPause();
+        bool requestUnpause();
         void requestAcknowledged();
 
     private slots:
@@ -115,6 +116,8 @@ class ScanController : public ThreadWeaver::DependentJob, public QXmlDefaultHand
         static ScanController* currController;
 
         MetaBundle* m_waitingBundle;
+        bool m_lastCommandPaused;
+        bool m_isPaused;
 };
 
 

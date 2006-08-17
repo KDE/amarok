@@ -1304,7 +1304,7 @@ MetaBundle::save()
                 if ( compilation() != CompilationUnknown )
                     setExtendedTag( f.file(), compilationTag, QString::number( compilation() ) );
             }
-            return f.save();
+            return scannerSafeSave( f.file() );
         }
     }
     return false;
@@ -1560,14 +1560,15 @@ MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
     return (recreate ? recreate && newID : !m_uniqueId.isEmpty() );
 }
 
-void
+bool
 MetaBundle::scannerSafeSave( TagLib::File* file )
 {
     DEBUG_BLOCK
-    if( ( QString( kapp->name() ) == QString( "amarokcollectionscanner" ) ) || !ScanController::instance() )
+    if( ( QString( kapp->name() ) == QString( "amarokcollectionscanner" ) ) //default
+            || !ScanController::instance() //no scan, we're good
+            || !AmarokConfig::advancedTagFeatures() ) //if no ATF, we're not writing to files with scanner
     {
-        file->save();
-        return;
+        return file->save();
     }
 
     m_safeToSave = false;
@@ -1575,17 +1576,21 @@ MetaBundle::scannerSafeSave( TagLib::File* file )
     if( ScanController::instance() ) //yes check again, it can pull out from under us at any time
     {
         ScanController::instance()->notifyThisBundle( this );
-        ScanController::instance()->requestPause();
+        if( !ScanController::instance()->requestPause() )
+        {
+            debug() << "DCOP call to pause scanner failed, aborting save" << endl;
+            return false;
+        }
     }
-    else
+    else //scanner seems to have exited in the interim
     {
-        debug() << "Could not save tag for " << url().path() << " due to conflict with collectino scanner, please try again." << endl;
-        //TODO: add after string freeze for 1.4.2
-        //amaroK::StatusBar::instance()->longMessage( i18n( "Could not save tag for %1 due to conflict with"
-                                                            //"collection scanner, please try again." ).arg( url().path() ) );
+        return file->save();
     }
 
     int count = 0;
+    bool result = false;
+
+    debug() << "entering loop to wait on scanner" << endl;
 
     while( ScanController::instance() && !m_safeToSave && count < 50 ) //time out after five seconds, just in case
     {
@@ -1599,13 +1604,19 @@ MetaBundle::scannerSafeSave( TagLib::File* file )
     if( m_safeToSave )
     {
         debug() << "Starting tag save" << endl;
-        file->save();
+        result = file->save();
+        debug() << "done, result is " << (result?"success":"failure") << endl;
     }
     else
         debug() << "Did not write tag for file " << url().path() << endl;
 
     ScanController::instance()->notifyThisBundle( 0 );
-    ScanController::instance()->requestUnpause();
+    if( !ScanController::instance()->requestUnpause() )
+    {
+        debug() << "DCOP call to unpause scanner failed, it may be hung" << endl;
+    }
+
+    return result;
 }
 
 void

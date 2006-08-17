@@ -3223,7 +3223,7 @@ CollectionDB::removeUniqueIdFromFile( const QString &path )
 QString
 CollectionDB::urlFromUniqueId( const QString &id )
 {
-    bool scanning = ThreadWeaver::instance()->isJobPending( "CollectionScanner" );
+    bool scanning = ( ScanController::instance() && !ScanController::instance()->isPaused() );
     QStringList urls = query( QString(
             "SELECT deviceid, url "
             "FROM uniqueid%1 "
@@ -3245,7 +3245,7 @@ CollectionDB::uniqueIdFromUrl( const KURL &url )
     int currdeviceid = mpm->getIdForUrl( url.path() );
     QString currurl = escapeString( mpm->getRelativePath( currdeviceid, url.path() ) );
 
-    bool scanning = ThreadWeaver::instance()->isJobPending( "CollectionScanner" );
+    bool scanning = ( ScanController::instance() && !ScanController::instance()->isPaused() );
     QStringList uid = query( QString(
             "SELECT uniqueid "
             "FROM uniqueid%1 "

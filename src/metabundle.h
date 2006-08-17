@@ -374,7 +374,7 @@ private:
     QString getRandomStringHelper( int size );
     TagLib::ID3v2::UniqueFileIdentifierFrame *ourMP3UidFrame( TagLib::MPEG::File *file, QString ourId );
 
-    void scannerSafeSave( TagLib::File* file );
+    bool scannerSafeSave( TagLib::File* file );
 };
 
 /// for your convenience
