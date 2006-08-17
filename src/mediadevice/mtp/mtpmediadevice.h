@@ -47,7 +47,7 @@ class MtpTrack {
         MetaBundle              *bundle() { return new MetaBundle( m_bundle ); }
         void                    setBundle( MetaBundle &bundle );
         void                    setId( int id ) { m_id = id; }
-        void                    MtpTrack::readMetaData( LIBMTP_track_t *track );
+        void                    readMetaData( LIBMTP_track_t *track );
 
     private:
         u_int32_t               m_id;
