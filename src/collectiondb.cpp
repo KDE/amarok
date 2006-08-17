@@ -5736,79 +5736,79 @@ QStringList SqliteConnection::query( const QString& statement )
 
     do {
         //compile SQL program to virtual machine, reattempting if busy
-    do {
-        if ( busyCnt )
-        {
-            ::usleep( 100000 );      // Sleep 100 msec
-            debug() << "sqlite3_prepare: BUSY counter: " << busyCnt << endl;
-        }
-        error = sqlite3_prepare( m_db, statement.utf8(), -1, &stmt, &tail );
-    }
-    while ( SQLITE_BUSY==error && busyCnt++ < 120 );
-
-    if ( error != SQLITE_OK )
-    {
-        if ( SQLITE_BUSY==error )
-            Debug::error() << "Gave up waiting for lock to clear" << endl;
-        Debug::error() << k_funcinfo << " sqlite3_compile error:" << endl;
-        Debug::error() << sqlite3_errmsg( m_db ) << endl;
-        Debug::error() << "on query: " << statement << endl;
-        values = QStringList();
-    }
-    else
-    {
-        busyCnt = 0;
-        int number = sqlite3_column_count( stmt );
-        //execute virtual machine by iterating over rows
-        while ( true )
-        {
-            error = sqlite3_step( stmt );
-
-            if ( error == SQLITE_BUSY )
+        do {
+            if ( busyCnt )
             {
-                if ( busyCnt++ > 120 ) {
-                    Debug::error() << "Busy-counter has reached maximum. Aborting this sql statement!\n";
-                    break;
-                }
-                ::usleep( 100000 ); // Sleep 100 msec
-                debug() << "sqlite3_step: BUSY counter: " << busyCnt << endl;
-                continue;
+                ::usleep( 100000 );      // Sleep 100 msec
+                debug() << "sqlite3_prepare: BUSY counter: " << busyCnt << endl;
             }
-            if ( error == SQLITE_MISUSE )
-                debug() << "sqlite3_step: MISUSE" << endl;
-            if ( error == SQLITE_DONE || error == SQLITE_ERROR )
-                break;
-
-            //iterate over columns
-            for ( int i = 0; i < number; i++ )
-            {
-                values << QString::fromUtf8( reinterpret_cast<const char*>( sqlite3_column_text( stmt, i ) ) );
-            }
+            error = sqlite3_prepare( m_db, statement.utf8(), -1, &stmt, &tail );
         }
-        //deallocate vm resources
-        rc = sqlite3_finalize( stmt );
+        while ( SQLITE_BUSY==error && busyCnt++ < 120 );
 
-        if ( error != SQLITE_DONE && rc != SQLITE_SCHEMA )
+        if ( error != SQLITE_OK )
         {
-            Debug::error() << k_funcinfo << "sqlite_step error.\n";
+            if ( SQLITE_BUSY==error )
+                Debug::error() << "Gave up waiting for lock to clear" << endl;
+            Debug::error() << k_funcinfo << " sqlite3_compile error:" << endl;
             Debug::error() << sqlite3_errmsg( m_db ) << endl;
             Debug::error() << "on query: " << statement << endl;
             values = QStringList();
         }
-        if ( rc == SQLITE_SCHEMA )
+        else
         {
-            retryCnt++;
-            debug() << "SQLITE_SCHEMA error occured on query: " << statement << endl;
-            if ( retryCnt < 10 )
-                debug() << "Retrying now." << endl;
-            else
+            busyCnt = 0;
+            int number = sqlite3_column_count( stmt );
+            //execute virtual machine by iterating over rows
+            while ( true )
             {
-                Debug::error() << "Retry-Count has reached maximum. Aborting this SQL statement!" << endl;
-                Debug::error() << "SQL statement: " << statement << endl;
+                error = sqlite3_step( stmt );
+
+                if ( error == SQLITE_BUSY )
+                {
+                    if ( busyCnt++ > 120 ) {
+                        Debug::error() << "Busy-counter has reached maximum. Aborting this sql statement!\n";
+                        break;
+                    }
+                    ::usleep( 100000 ); // Sleep 100 msec
+                    debug() << "sqlite3_step: BUSY counter: " << busyCnt << endl;
+                    continue;
+                }
+                if ( error == SQLITE_MISUSE )
+                    debug() << "sqlite3_step: MISUSE" << endl;
+                if ( error == SQLITE_DONE || error == SQLITE_ERROR )
+                    break;
+
+                //iterate over columns
+                for ( int i = 0; i < number; i++ )
+                {
+                    values << QString::fromUtf8( reinterpret_cast<const char*>( sqlite3_column_text( stmt, i ) ) );
+                }
+            }
+            //deallocate vm resources
+            rc = sqlite3_finalize( stmt );
+
+            if ( error != SQLITE_DONE && rc != SQLITE_SCHEMA )
+            {
+                Debug::error() << k_funcinfo << "sqlite_step error.\n";
+                Debug::error() << sqlite3_errmsg( m_db ) << endl;
+                Debug::error() << "on query: " << statement << endl;
                 values = QStringList();
             }
+            if ( rc == SQLITE_SCHEMA )
+            {
+                retryCnt++;
+                debug() << "SQLITE_SCHEMA error occured on query: " << statement << endl;
+                if ( retryCnt < 10 )
+                    debug() << "Retrying now." << endl;
+                else
+                {
+                    Debug::error() << "Retry-Count has reached maximum. Aborting this SQL statement!" << endl;
+                    Debug::error() << "SQL statement: " << statement << endl;
+                    values = QStringList();
+                }
+            }
         }
-    }
     }
     while ( rc == SQLITE_SCHEMA && retryCnt < 10 );
 
@@ -5825,69 +5825,69 @@ int SqliteConnection::insert( const QString& statement, const QString& /* table 
     int retryCnt = 0;
 
     do {
-    //compile SQL program to virtual machine, reattempting if busy
-    do {
-        if ( busyCnt )
-        {
-            ::usleep( 100000 );      // Sleep 100 msec
-            debug() << "sqlite3_prepare: BUSY counter: " << busyCnt << endl;
-        }
-        error = sqlite3_prepare( m_db, statement.utf8(), -1, &stmt, &tail );
-    }
-    while ( SQLITE_BUSY==error && busyCnt++ < 120 );
-
-    if ( error != SQLITE_OK )
-    {
-        if ( SQLITE_BUSY==error )
-            Debug::error() << "Gave up waiting for lock to clear" << endl;
-        Debug::error() << k_funcinfo << " sqlite3_compile error:" << endl;
-        Debug::error() << sqlite3_errmsg( m_db ) << endl;
-        Debug::error() << "on insert: " << statement << endl;
-    }
-    else
-    {
-        busyCnt = 0;
-        //execute virtual machine by iterating over rows
-        while ( true )
-        {
-            error = sqlite3_step( stmt );
-
-            if ( error == SQLITE_BUSY )
+        //compile SQL program to virtual machine, reattempting if busy
+        do {
+            if ( busyCnt )
             {
-                if ( busyCnt++ > 120 ) {
-                    Debug::error() << "Busy-counter has reached maximum. Aborting this sql statement!\n";
-                    break;
-                }
-                ::usleep( 100000 ); // Sleep 100 msec
-                debug() << "sqlite3_step: BUSY counter: " << busyCnt << endl;
+                ::usleep( 100000 );      // Sleep 100 msec
+                debug() << "sqlite3_prepare: BUSY counter: " << busyCnt << endl;
             }
-            if ( error == SQLITE_MISUSE )
-                debug() << "sqlite3_step: MISUSE" << endl;
-            if ( error == SQLITE_DONE || error == SQLITE_ERROR )
-                break;
+            error = sqlite3_prepare( m_db, statement.utf8(), -1, &stmt, &tail );
         }
-        //deallocate vm resources
-        rc = sqlite3_finalize( stmt );
+        while ( SQLITE_BUSY==error && busyCnt++ < 120 );
 
-        if ( error != SQLITE_DONE && rc != SQLITE_SCHEMA)
+        if ( error != SQLITE_OK )
         {
-            Debug::error() << k_funcinfo << "sqlite_step error.\n";
+            if ( SQLITE_BUSY==error )
+                Debug::error() << "Gave up waiting for lock to clear" << endl;
+            Debug::error() << k_funcinfo << " sqlite3_compile error:" << endl;
             Debug::error() << sqlite3_errmsg( m_db ) << endl;
             Debug::error() << "on insert: " << statement << endl;
         }
-        if ( rc == SQLITE_SCHEMA )
+        else
         {
-            retryCnt++;
-            debug() << "SQLITE_SCHEMA error occured on insert: " << statement << endl;
-            if ( retryCnt < 10 )
-                debug() << "Retrying now." << endl;
-            else
+            busyCnt = 0;
+            //execute virtual machine by iterating over rows
+            while ( true )
             {
-                Debug::error() << "Retry-Count has reached maximum. Aborting this SQL insert!" << endl;
-                Debug::error() << "SQL statement: " << statement << endl;
+                error = sqlite3_step( stmt );
+
+                if ( error == SQLITE_BUSY )
+                {
+                    if ( busyCnt++ > 120 ) {
+                        Debug::error() << "Busy-counter has reached maximum. Aborting this sql statement!\n";
+                        break;
+                    }
+                    ::usleep( 100000 ); // Sleep 100 msec
+                    debug() << "sqlite3_step: BUSY counter: " << busyCnt << endl;
+                }
+                if ( error == SQLITE_MISUSE )
+                    debug() << "sqlite3_step: MISUSE" << endl;
+                if ( error == SQLITE_DONE || error == SQLITE_ERROR )
+                    break;
+            }
+            //deallocate vm resources
+            rc = sqlite3_finalize( stmt );
+
+            if ( error != SQLITE_DONE && rc != SQLITE_SCHEMA)
+            {
+                Debug::error() << k_funcinfo << "sqlite_step error.\n";
+                Debug::error() << sqlite3_errmsg( m_db ) << endl;
+                Debug::error() << "on insert: " << statement << endl;
+            }
+            if ( rc == SQLITE_SCHEMA )
+            {
+                retryCnt++;
+                debug() << "SQLITE_SCHEMA error occured on insert: " << statement << endl;
+                if ( retryCnt < 10 )
+                    debug() << "Retrying now." << endl;
+                else
+                {
+                    Debug::error() << "Retry-Count has reached maximum. Aborting this SQL insert!" << endl;
+                    Debug::error() << "SQL statement: " << statement << endl;
+                }
             }
         }
-    }
     }
     while ( SQLITE_SCHEMA == rc && retryCnt < 10 );
     return sqlite3_last_insert_rowid( m_db );
