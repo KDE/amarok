@@ -6006,7 +6006,6 @@ QStringList MySqlConnection::query( const QString& statement )
                   values << QString::fromUtf8( (const char*)row[i] );
                 }
             }
-            mysql_free_result( result );
         }
         else
         {
@@ -6016,6 +6015,7 @@ QStringList MySqlConnection::query( const QString& statement )
                 values = QStringList();
             }
         }
+        mysql_free_result( result );
     }
     else
     {

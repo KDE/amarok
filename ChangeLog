@@ -83,6 +83,7 @@ VERSION 1.4.2:
       since the last time it was enabled.
 
   BUGFIXES:
+    * Handle changed semantics of MySQL 5.0.23+ (BR 132114)
     * Do not try to detach() KURLs, as this would not work for non-ascii urls.
       (BR 132355)
     * Adding songs while at end of playlist could crash in dynamic mode.
