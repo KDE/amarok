@@ -27,7 +27,7 @@ typedef QMap<QString, Medium*> MediumMap;
 
 //this class provides support for MountPointManager and MediaDeviceManager
 //the latter is responsible for handling mediadevices (e.g. ipod)
-//unless you have special requirements you should use either MounPointManager or
+//unless you have special requirements you should use either MountPointManager or
 //MediaDeviceManager instead of this class.
 class DeviceManager : public QObject
 {
