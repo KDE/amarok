@@ -132,6 +132,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     //button.
     delete m_opt7->dbSetupFrame->kcfg_MySqlPassword2;
 #endif
+    m_opt7->atfBox->setHidden( true );
     m_opt7->collectionFoldersBox->setColumns( 1 );
     new CollectionSetup( m_opt7->collectionFoldersBox ); //TODO this widget doesn't update the apply/ok buttons
 
