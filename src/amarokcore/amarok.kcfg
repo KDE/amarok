@@ -499,12 +499,16 @@
         <default>false</default>
     </entry>
     <entry key="ATFFirstTurnedOn" type="Bool">
-        <label>When true, ATF has just been turned on for the very first time -- used to start a scan.</label>
+        <label>When true, ATF has been turned on for the very first time -- used for some scanning behavior if ATF is on but this is false.</label>
         <default>false</default>
     </entry>
     <entry key="ATFJustTurnedOn" type="Bool">
         <label>When true, ATF has just been turned on.</label>
         <default>false</default>
+    </entry>
+    <entry key="ForceATFOff" type="Bool">
+        <label>When true, force ATF off on startup, then disable this.</label>
+        <default>true</default>
     </entry>
 </group>
 

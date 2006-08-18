@@ -620,6 +620,12 @@ void App::applySettings( bool firstTime )
                 QFile( cacheDir.filePath( *it ) ).remove();
     }
 
+    if( AmarokConfig::forceATFOff() )
+    {
+        AmarokConfig::setAdvancedTagFeatures( false );
+        AmarokConfig::setForceATFOff( false );
+    }
+
     // If just turned ATF on, clear the playlist and force a rescan
     // comment out for now until more testing is done, this seems to occur repeatedly
     // even after scans, also seems to be doing incremental scans...odd
