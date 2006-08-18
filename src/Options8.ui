@@ -18,9 +18,6 @@
             <height>1</height>
         </size>
     </property>
-    <property name="caption">
-        <string>Options8</string>
-    </property>
     <vbox>
         <property name="name">
             <cstring>unnamed</cstring>

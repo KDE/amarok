@@ -146,9 +146,6 @@
                                             <property name="text">
                                                 <string>&amp;Add format...</string>
                                             </property>
-                                            <property name="accel">
-                                                <string>Alt+A</string>
-                                            </property>
                                             <property name="toolTip" stdset="0">
                                                 <string>Add the above format to the list.</string>
                                             </property>
@@ -245,9 +242,6 @@
                                             <property name="text">
                                                 <string>Ig&amp;nore "The"</string>
                                             </property>
-                                            <property name="accel">
-                                                <string>Alt+N</string>
-                                            </property>
                                         </widget>
                                         <widget class="QCheckBox" row="0" column="1">
                                             <property name="name">
@@ -266,9 +260,6 @@
                                             </property>
                                             <property name="text">
                                                 <string>ASCII te&amp;xt</string>
-                                            </property>
-                                            <property name="accel">
-                                                <string>Alt+X</string>
                                             </property>
                                         </widget>
                                     </grid>
