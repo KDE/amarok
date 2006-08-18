@@ -65,8 +65,8 @@ ScanController::ScanController( CollectionDB* parent, bool incremental, const QS
     , m_source( new QXmlInputSource() )
     , m_reader( new QXmlSimpleReader() )
     , m_waitingBundle( 0 )
-    , m_isPaused( false )
     , m_lastCommandPaused( false )
+    , m_isPaused( false )
 {
     DEBUG_BLOCK
 
