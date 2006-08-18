@@ -38,7 +38,7 @@
                         <cstring>kcfg_AdvancedTagFeatures</cstring>
                     </property>
                     <property name="text">
-                        <string>Enable writing &amp;ATF tags (see "Information")</string>
+                        <string>Enable writing &amp;ATF tags (please see "Information")</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Check to enable writing metadata to files used by Amarok's Advanced Tag Features.&lt;br&gt;</string>
@@ -77,7 +77,13 @@
                         it does require making metadata modifications of your files.  The metadata
                         fields used conform to the tag specifications for the various file types ATF
                         supports.&lt;p&gt;&lt;em&gt;&lt;font color="red"&gt;PLEASE
-                        NOTE:&lt;/font&gt;&lt;/em&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;This process will
+                        NOTE:&lt;/em&gt;&lt;/font&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;&lt;font color="red"&gt;This
+                        is potentially unsafe for collections shared concurrently by multiple users.&lt;/font&gt;
+                        If multiple users on a single computer or on multiple computers are sharing music and have
+                        the potential to access the music at the same time, you &lt;b&gt;must&lt;/b&gt; ensure that
+                        no more than a single user has ATF tag writing enabled at a given time, or corruption of
+                        your music files can occur.  Once tagged by a single instance, all instances of
+                        Amarok will be able to use these tags to track your music.&lt;li&gt;This process will
                         update existing ID3v2 tags on MP3 files to ID3v2.4.  This has been the
                         standard for several years and supports e.g. internationalization.  However,
                         some older music player and tagging applications do not support ID3v2.4.
@@ -112,7 +118,7 @@
                         </size>
                     </property>
                     <property name="text">
-                        <string>&lt;a href='http://amarok.kde.org/amarokwiki/index.php/ATF'&gt;Homepage&lt;/a&gt;</string>
+                        <string>&lt;a href='http://amarok.kde.org/amarokwiki/index.php/ATF'&gt;Wiki Page&lt;/a&gt;</string>
                     </property>
                 </widget>
             </hbox>
