@@ -118,10 +118,10 @@ class Proxy
 
   def cp_all_inward( income, output )
     myputs( "cp_all( income => #{income.inspect}, output => #{output.inspect}" )
-    #     if @engine == 'xine-engine'
-    #       filler = Array.new( 4096, 0 )
-    #       safe_write( output, filler ) # HACK: Fill xine's buffer so that xine_open() won't block
-    #     end
+    if @engine == 'xine-engine'
+      filler = Array.new( 4096, 0 )
+      safe_write( output, filler ) # HACK: Fill xine's buffer so that xine_open() won't block
+    end
     loop do
       data = income.read( 512 )
       break if data == nil
