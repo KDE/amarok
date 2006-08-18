@@ -633,8 +633,8 @@ void App::applySettings( bool firstTime )
                          "This first rescan may take much longer than normal.\n"
                          "Please be patient."), KDE::StatusBar::Information );
         QTimer::singleShot( 0, CollectionDB::instance(), SLOT( startScan() ) );
-    }
-    else if ( AmarokConfig::advancedTagFeatures() && AmarokConfig::aTFJustTurnedOn() )
+    }*/
+    if ( AmarokConfig::advancedTagFeatures() && AmarokConfig::aTFJustTurnedOn() )
     {
         amaroK::StatusBar::instance()->longMessageThreadSafe(
                     i18n( "You have re-enabled ATF tagging. Please\n"
@@ -643,7 +643,7 @@ void App::applySettings( bool firstTime )
                           "had ATF tagging enabled will need to be\n"
                           "rescanned for full functionality."), KDE::StatusBar::Information );
         AmarokConfig::setATFJustTurnedOn( false );
-    }*/
+    }
 
     //if ( !firstTime )
         // Bizarrely and ironically calling this causes crashes for
