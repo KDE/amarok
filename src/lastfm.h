@@ -33,6 +33,8 @@ class KURL;
 class QSocket;
 class QTimer;
 
+namespace KIO { class Job; }
+
 namespace LastFm
 {
     class WebService;
@@ -170,7 +172,7 @@ namespace LastFm
         private slots:
             void readProxy();
             void metaDataFinished( int id, bool error );
-            void fetchImageFinished( int id, bool error );
+            void fetchImageFinished( KIO::Job* );
             void enableScrobblingFinished( int id, bool error );
 
             void loveFinished( int id, bool error );

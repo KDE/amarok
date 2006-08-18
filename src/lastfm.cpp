@@ -34,6 +34,8 @@
 #include <klineedit.h>
 #include <kmdcodec.h>       //md5sum
 #include <kmessagebox.h>
+#include <kio/job.h>
+#include <kio/jobclasses.h>
 #include <kprotocolmanager.h>
 #include <kshortcut.h>
 #include <kurl.h>
@@ -481,26 +483,21 @@ WebService::metaDataFinished( int /*id*/, bool error ) //SLOT
         return;
     }
 
-    QHttp* h = new QHttp( u.host(), 80, this );
-    connect( h, SIGNAL( requestFinished( int, bool ) ), this, SLOT( fetchImageFinished( int, bool ) ) );
-
-    h->get( u.path() );
+    KIO::Job* job = KIO::storedGet( u, true, false );
+    connect( job, SIGNAL( result( KIO::Job* ) ), this, SLOT( fetchImageFinished( KIO::Job* ) ) );
 }
 
 
 void
-WebService::fetchImageFinished( int /*id*/, bool error ) //SLOT
+WebService::fetchImageFinished( KIO::Job* job ) //SLOT
 {
     DEBUG_BLOCK
 
-    QHttp* http = (QHttp*) sender();
-    http->deleteLater();
-
-    if( !error ) {
+    if( job->error() == 0 ) {
         const QString path = amaroK::saveLocation() + "lastfm_image.png";
         const int size = AmarokConfig::coverPreviewSize();
 
-        QImage img( http->readAll() );
+        QImage img( static_cast<KIO::StoredTransferJob*>( job )->data() );
         img.smoothScale( size, size ).save( path, "PNG" );
 
         m_metaBundle.lastFmBundle()->setImageUrl( CollectionDB::makeShadowedImage( path, false ) );
