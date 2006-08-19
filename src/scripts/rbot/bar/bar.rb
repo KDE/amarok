@@ -120,6 +120,12 @@ class BAREXTPlugin < Plugin
 
   def handle_reorder( m, params )
     name         = params[:name].downcase
+#     cur_y        = Time.new.strftime '%Y'
+#     cur_d        = Time.new.strftime '%j'
+#     cur_h        = Time.new.strftime '%H'
+#     cur_m        = Time.new.strftime '%M'
+#     cur_s        = Time.new.strftime '%S'
+#     cur_beat     = ((cur_y.to_i * 31536000) + (cur_d.to_i * 86400) + (cur_h.to_i * 3600) + (cur_m.to_i * 60) + cur_s.to_i)
     beat_cur     = Time.new.strftime '%Y%j%H%M%S'
 
     unless @stock.has_key?( name )
@@ -237,11 +243,49 @@ end
 
 # unless order != nil
     order = case name
-             # please order alphabetically or we'll all end up in hell :S
+#       _                                     _           
+# _ __ | | ___  __ _ ___  ___    ___  _ __ __| | ___ _ __ 
+#| '_ \| |/ _ \/ _` / __|/ _ \  / _ \| '__/ _` |/ _ \ '__|
+#| |_) | |  __/ (_| \__ \  __/ | (_) | | | (_| |  __/ |   
+#| .__/|_|\___|\__,_|___/\___|  \___/|_|  \__,_|\___|_|   
+#|_|                                                      
+#       _       _           _          _   _           _ _                    
+#  __ _| |_ __ | |__   __ _| |__   ___| |_(_) ___ __ _| | |_   _    ___  _ __ 
+# / _` | | '_ \| '_ \ / _` | '_ \ / _ \ __| |/ __/ _` | | | | | |  / _ \| '__|
+#| (_| | | |_) | | | | (_| | |_) |  __/ |_| | (_| (_| | | | |_| | | (_) | |   
+# \__,_|_| .__/|_| |_|\__,_|_.__/ \___|\__|_|\___\__,_|_|_|\__, |  \___/|_|   
+#        |_|                                               |___/              
+#                         _ _ _         _ _                  _               
+#__      _____  __      _(_) | |   __ _| | |   ___ _ __   __| |  _   _ _ __  
+#\ \ /\ / / _ \ \ \ /\ / / | | |  / _` | | |  / _ \ '_ \ / _` | | | | | '_ \ 
+# \ V  V /  __/  \ V  V /| | | | | (_| | | | |  __/ | | | (_| | | |_| | |_) |
+#  \_/\_/ \___|   \_/\_/ |_|_|_|  \__,_|_|_|  \___|_| |_|\__,_|  \__,_| .__/ 
+#                                                                     |_|    
+# _         _          _ _ 
+#(_)_ __   | |__   ___| | |
+#| | '_ \  | '_ \ / _ \ | |
+#| | | | | | | | |  __/ | |
+#|_|_| |_| |_| |_|\___|_|_|
              when "bed" then
                  "is placing a cot for #{nick} in the corner of #{m.target}."
              when "beer" then
                  "gives #{name} a nice frosty mug of #{name}."
+             when "birthday package" then
+                 "is running to the corner shop to get a birthday present."
+             when "breakfast" then
+                  "slides a cigarette, a cup of hot coffee and a bagel with cream cheese down the bar to #{nick}."
+             when "breakfast, au" then
+                  "slides a slab of bread with some mixture of salt and battery acid, called vegemite, and a glass of water down the bar to #{nick}."
+             when "breakfast, at" then
+                  "slides 5 floors of backon and some wurst with bread, a glass of schnaps and a new deck down the bar to #{nick}."
+             when "breakfast, de" then
+                  "slides a noppers down the bar to #{nick}."
+             when "breakfast, hangover" then
+                  "slides 2 liter of water, one glass of tomato juice, 3 rollmops and chips down the bar to #{nick}"
+             when "breakfast, uk, full" then
+                  "slides scrambled eggs, bacon, one sausage, black pudding, mushrooms, baked beans, hash browns, half of a tomato, one toast and a tea with fresh milk down the bar to #{nick}."
+             when "breakfast, us" then
+                  "slides breakfast cereals, a bagel, 2 pancakes, scrambled eggs and a cup of hot coffee down the bar to #{nick}."
              when "brain" then
                  "shouts: OMG!!!!! RED ALERT! We lost a #{name}. Get me a medic, NOW!"
              when "can of whoopass" then
@@ -258,8 +302,12 @@ end
                  "slides the finest Belgium Trappist beer down the bar to #{nick}."
              when "kubuntu" then
                  "tells #{nick} to better use http://shipit.kubuntu.org"
+             when "release" then
+                 "pokes apachelogger."
              when "tea" then
                  "gives #{nick} a nice hot cup of #{name}."
+             when "tea, earl grey, hot" then
+                 "is replicating a hot cup of earl grey for captain #{nick}."
              when "wine" then
                  "pours #{nick} a delicious glass from the channel's wine cellar."
 
@@ -269,7 +317,15 @@ end
 
 # end
 
+
+
     @bot.action m.replyto, order
+    if name == "birthday package"
+      @bot.action m.replyto, "slides a birthday cake and a present down the bar to #{nick} and gives everyone a nice frosty mug of beer."
+      m.reply( "Happy birthday to you, happy birthday to you, happy birthday #{nick}, happy birthday to you!!!! - Wooooho!" )
+      m.reply( "\002Happy Birthday #{nick} :D" )
+      m.reply( "To your health!" )
+    end
 
   end
 end
