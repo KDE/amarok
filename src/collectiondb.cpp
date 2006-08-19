@@ -6638,7 +6638,7 @@ QueryBuilder::addFilter( int tables, Q_INT64 value, const QString& filter, int m
         else
         {
             if (exact)
-                s = " = " + CollectionDB::instance()->escapeString( filter );
+                s = " = '" + CollectionDB::instance()->escapeString( filter ) + "' ";
             else
                 s = CollectionDB::likeCondition( filter, true, mode != modeEndMatch );
         }
@@ -6764,7 +6764,7 @@ QueryBuilder::excludeFilter( int tables, Q_INT64 value, const QString& filter, i
         else
         {
             if (exact)
-                s = " <> " + CollectionDB::instance()->escapeString( filter );
+                s = " <> '" + CollectionDB::instance()->escapeString( filter ) + "' ";
             else
                 s = "NOT " + CollectionDB::instance()->likeCondition( filter, false, false && mode != modeEndMatch ) + " ";
         }
