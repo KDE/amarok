@@ -308,6 +308,12 @@ ContextBrowser::ContextBrowser( const char *name )
              this, SLOT( similarArtistsFetched( const QString& ) ) );
     connect( CollectionDB::instance(), SIGNAL( tagsChanged( const MetaBundle& ) ),
              this, SLOT( tagsChanged( const MetaBundle& ) ) );
+    connect( CollectionDB::instance(), SIGNAL( tagsChanged( const QString&, const QString& ) ),
+             this, SLOT( tagsChanged( const QString&, const QString& ) ) );
+    connect( CollectionDB::instance(), SIGNAL( ratingChanged( const QString&, int ) ),
+             this, SLOT( ratingOrScoreChanged( const QString& ) ) );
+    connect( CollectionDB::instance(), SIGNAL( scoreChanged( const QString&, int ) ),
+             this, SLOT( ratingOrScoreChanged( const QString& ) ) );
     connect( CollectionDB::instance(), SIGNAL( imageFetched( const QString& ) ),
              this, SLOT( imageFetched( const QString& ) ) );
 
@@ -3725,6 +3731,14 @@ ContextBrowser::imageFetched( const QString &url ) //SLOT
             }
         }
     }
+}
+
+void ContextBrowser::ratingOrScoreChanged( const QString &path ) //SLOT
+{
+    const MetaBundle &currentTrack = EngineController::instance()->bundle();
+
+    if( currentTrack.isFile() && currentTrack.url().path() == path )
+        refreshCurrentTrackPage();
 }
 
 void ContextBrowser::tagsChanged( const MetaBundle &bundle ) //SLOT

@@ -83,6 +83,7 @@ VERSION 1.4.2:
       since the last time it was enabled.
 
   BUGFIXES:
+    * Update context browser on score and rating changes. (BR 132496)
     * Double colons in the collection filter would lead to invalid queries.
       (BR 132551)
     * Handle changed semantics of MySQL 5.0.23+ (BR 132114)
