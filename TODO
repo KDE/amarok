@@ -5,6 +5,9 @@ TODO-list for Amarok
 
 
 SHORT-TERM (URGENT):
+ <markey>  When you start a lastfm stream, the old metadata from the last stream is 
+           shown before the new stream starts. Doesn't look nice.
+
 <shanachie> update podcast-tuples when the feed get's corrected after a mistake by the podcaster/publisher. eg. pubdate, url, title.
 
  <sebr>    We need to check for pkg-config when configuring, otherwise we can't check for things
