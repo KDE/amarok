@@ -13,6 +13,12 @@
 #ifndef AMAROK_DAAPSERVER_H
 #define AMAROK_DAAPSERVER_H
 
+#include <daapclient.h>
+
+namespace DNSSD {
+    class PublicService;
+}
+
 class DaapServer : public QObject
 {
     Q_OBJECT
@@ -24,6 +30,9 @@ class DaapServer : public QObject
         void readSql();
     private:
         KProcIO* m_server;
+        #ifdef DNSSD_SUPPORT
+            DNSSD::PublicService* m_service;
+        #endif
 };
 
 #endif /* AMAROK_DAAPSERVER_H */

@@ -13,7 +13,6 @@
 
 #include "amarok.h"
 #include "debug.h"
-#include "daapclient.h" //for DNSSD_SUPPORT
 #include "daapserver.h"
 #include "collectiondb.h"
 
@@ -24,9 +23,9 @@
 #endif
 DaapServer::DaapServer(QObject* parent, char* name)
   : QObject( parent, name )
+  , m_service( 0 )
 {
     DEBUG_BLOCK
-
 
     m_server = new KProcIO();
     m_server->setComm( KProcess::All );
@@ -43,6 +42,7 @@ DaapServer::DaapServer(QObject* parent, char* name)
 
 DaapServer::~DaapServer()
 {
+    delete m_service;
     delete m_server;
 }
 
@@ -67,8 +67,10 @@ DaapServer::readSql()
             debug() << "Server starting on port " << line << '.' << endl;
             #if DNSSD_SUPPORT
                 KUser current;
-                DNSSD::PublicService *service = new DNSSD::PublicService( i18n("%1's Amarok Share").arg( current.fullName() ), "_daap._tcp", line.toInt() );
-                service->publishAsync();
+                if( !m_service )
+                    m_service = new DNSSD::PublicService( i18n("%1's Amarok Share").arg( current.fullName() ), "_daap._tcp", line.toInt() );
+                    debug() << "port number: " << line.toInt() << endl;
+                m_service->publishAsync();
             #endif
         }
         else
