@@ -193,7 +193,7 @@ DaapClient::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
     switch( item->type() )
     {
         case MediaItem::DIRECTORY:
-            menu.insertItem( SmallIconSet( amaroK::icon( "connect" ) ), i18n( "&Connect" ), CONNECT );
+            menu.insertItem( SmallIconSet( "connect_creating" ), i18n( "&Connect" ), CONNECT );
             break;
         default:
             urls = m_view->nodeBuildDragList( 0 );
@@ -335,12 +335,12 @@ DaapClient::createTree( const QString& /*host*/, Daap::SongList bundles )
 }
 
 int
-DaapClient::incRevision( const QString& host ) 
-{ 
+DaapClient::incRevision( const QString& host )
+{
     if( m_servers.contains(host) )
     {
         m_servers[host]->revisionID++;
-        return m_servers[host]->revisionID; 
+        return m_servers[host]->revisionID;
     }
     else
         return 0;
@@ -350,7 +350,7 @@ int
 DaapClient::getSession( const QString& host )
 {
     if( m_servers.contains(host) )
-        return m_servers[host]->sessionId; 
+        return m_servers[host]->sessionId;
     else
         return -1;
 }
@@ -417,7 +417,7 @@ DaapClient::passwordPrompt()
     ServerItem* root = callback->rootMediaItem();
 
     PasswordDialog dialog( 0 );
-    if( dialog.exec() == QDialog::Accepted ) 
+    if( dialog.exec() == QDialog::Accepted )
     {
         Daap::Reader* reader = new Daap::Reader( callback->host(), callback->port(), root, QString( dialog.m_input->password() ), this, callback->name() );
         root->setReader( reader );
@@ -449,7 +449,7 @@ ServerItem::ServerItem( QListView* parent, DaapClient* client, const QString& ip
     , m_loaded( false )
 {
     setText( 0, title );
-    setType( MediaItem::DIRECTORY ); 
+    setType( MediaItem::DIRECTORY );
 }
 
 void
