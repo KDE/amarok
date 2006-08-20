@@ -83,6 +83,8 @@ VERSION 1.4.2:
       since the last time it was enabled.
 
   BUGFIXES:
+    * Last.fm streams no longer freeze Amarok's GUI with xine-engine.
+    * Sometimes metadata wasn't updated with Last.fm streams.
     * Update context browser on score and rating changes. (BR 132496)
     * Double colons in the collection filter would lead to invalid queries.
       (BR 132551)
