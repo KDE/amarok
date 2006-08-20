@@ -118,7 +118,8 @@ class Proxy
 
   def cp_all_inward( income, output )
     myputs( "cp_all( income => #{income.inspect}, output => #{output.inspect}" )
-    if @engine == 'xine-engine'
+    if self.is_a?( LastFM ) and @engine == 'xine-engine'
+      myputs( "Using buffer fill workaround." )
       filler = Array.new( 4096, 0 )
       safe_write( output, filler ) # HACK: Fill xine's buffer so that xine_open() won't block
     end
