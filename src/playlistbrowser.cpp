@@ -597,14 +597,15 @@ PlaylistCategory* PlaylistBrowser::loadSmartPlaylists()
     }
     else {
         e = d.namedItem( "category" ).toElement();
-        float version = e.attribute("formatversion").toFloat();
-        if ( version == 1.8 )
+        QString version = e.attribute("formatversion");
+        float fversion = e.attribute("formatversion").toFloat();
+        if ( version == "1.8" )
         {
             PlaylistCategory* p = new PlaylistCategory(m_listview, after, e );
             p->setText( 0, i18n("Smart Playlists") );
             return p;
         }
-        else if ( version >= 1.1  )
+        else if ( fversion > 1.0f  )
         {
             PlaylistCategory* p = new PlaylistCategory(m_listview, after, e );
             p->setText( 0, i18n("Smart Playlists") );
