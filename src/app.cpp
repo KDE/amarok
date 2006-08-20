@@ -114,7 +114,7 @@ App::App()
     new amaroK::DcopScriptHandler();
     new amaroK::DcopDevicesHandler();
 
-    //fixHyperThreading();
+    fixHyperThreading();
 
     QTimer::singleShot( 0, this, SLOT( continueInit() ) );
 
