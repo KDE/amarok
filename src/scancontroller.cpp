@@ -67,6 +67,7 @@ ScanController::ScanController( CollectionDB* parent, bool incremental, const QS
     , m_waitingBundle( 0 )
     , m_lastCommandPaused( false )
     , m_isPaused( false )
+    , m_tablesCreated( false )
 {
     DEBUG_BLOCK
 
