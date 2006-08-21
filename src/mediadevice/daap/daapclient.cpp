@@ -118,7 +118,7 @@ DaapClient::openDevice(bool /* silent=false */)
         m_browser->startBrowse();
     }
 #endif
-    //m_sharingServer = new DaapServer( this, "DaapServer" );
+    m_sharingServer = new DaapServer( this, "DaapServer" );
     return true;
 }
 

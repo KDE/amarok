@@ -4,9 +4,8 @@
  */
 
 
-extern "C" {
-	#include <ruby.h>
-}
+
+#include <ruby.h>
 #include "ext_help.h"
 #include <assert.h>
 #include <string.h>

@@ -35,7 +35,7 @@ noinst_HEADERS = \
 
 bin_SCRIPTS = amarok_daapserver.rb
 
-SUBDIRS = daapreader
+SUBDIRS = daapreader mongrel
 
 amarokrubylibdir = \
     $(kde_datadir)/amarok/ruby_lib

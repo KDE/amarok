@@ -18,9 +18,7 @@
 #include <kdeversion.h>
 #include <kdialogbase.h>
 
-//define DNSSD_SUPPORT KDE_IS_VERSION(3,4,0)
-//disabled pending fixing a segfault on serverOffline
-#define DNSSD_SUPPORT 0
+#define DNSSD_SUPPORT KDE_IS_VERSION(3,4,0)
 
 #if DNSSD_SUPPORT
     #include <dnssd/remoteservice.h> //for DNSSD::RemoteService::Ptr

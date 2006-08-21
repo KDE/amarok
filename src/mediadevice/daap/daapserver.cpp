@@ -30,7 +30,7 @@ DaapServer::DaapServer(QObject* parent, char* name)
     m_server = new KProcIO();
     m_server->setComm( KProcess::All );
     *m_server << "amarok_daapserver.rb";
-    *m_server << locate( "data", "amarok/ruby_lib/codes.rb" );
+    *m_server << locate( "data", "amarok/ruby_lib/" );
     *m_server << locate( "data", "amarok/scripts/ruby_debug/debug.rb" );
     if( !m_server->start( KProcIO::NotifyOnExit, true ) ) {
         error() << "Failed to start amarok_daapserver.rb" << endl;

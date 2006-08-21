@@ -3,11 +3,13 @@
 #A DAAP Server
 # (c) 2006 Ian Monroe <ian@monroe.nu>
 # License: GNU General Public License V2
+$LOAD_PATH.push(ARGV[0])
+puts "here it is: #{ARGV[0]}"
 
-require "#{ARGV[0]}" #codes.rb
-require "#{ARGV[1]}" #debug.rb
-require 'rubygems'
+require "codes.rb"
 require 'mongrel'
+require "#{ARGV[1]}" #debug.rb
+
 #require 'ruby-prof'
 
 $app_name = "Daap"
@@ -133,7 +135,7 @@ class DatabaseServlet < Mongrel::HttpHandler
           }
 
           columns =     [ "album, ", "artist, ", "genre, ", "track, ", "title, ", "year, ", "length, ", "samplerate, ", "url, ", "deviceid" ]
-          puts "SQL QUERY: SELECT #{columns.to_s} FROM tags LIMIT 500"
+          puts "SQL QUERY: SELECT #{columns.to_s} FROM tags"
           @column_keys = [ :songalbum, :songartist, :songgenre,  :songtracknumber, :itemname, :songyear, :songtime, :songsamplerate, :url,  :deviceid ]
           #TODO composer :songcomposer
           @music = Array.new

@@ -2,6 +2,14 @@ Amarok ChangeLog
 ================
 (C) 2002-2006 the Amarok authors.
 
+VERSION 1.4.3:
+  FEATURES:
+    * DAAP client now supports Zeroconf. With mDNSResponder properly setup
+      Amarok automatically shows local DAAP servers.
+
+  CHANGES:
+
+  BUGFIXES:
 
 VERSION 1.4.2:
   FEATURES:
