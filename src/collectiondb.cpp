@@ -52,7 +52,6 @@
 #include <kcharsets.h>            //setHTMLLyrics()
 #include <kcombobox.h>
 #include <kconfig.h>
-#include <kdialog.h>              //checkDatabase()
 #include <kdialogbase.h>          //checkDatabase()
 #include <kglobal.h>
 #include <kinputdialog.h>         //setupCoverFetcher()
@@ -5176,13 +5175,13 @@ CollectionDB::checkDatabase()
         if ( needsUpdate )
         {
 
-            KDialog *dialog = new KDialogBase( i18n( "Updating database" ),
-                                               0,
-                                               KDialogBase::Yes,
-                                               KDialogBase::Cancel,
-                                               0,
-                                               0,
-                                               false );
+            KDialogBase *dialog = new KDialogBase( KDialogBase::Swallow,
+                                                   Qt::WType_TopLevel|Qt::WStyle_Customize|Qt::WStyle_DialogBorder,
+                                                   0,
+                                                   "Update database warning dialog",
+                                                   false,
+                                                   i18n( "Updating database" ),
+                                                   0 );
             /* TODO: remove the standard window controls from the dialog window, the user should not be able
                      to close, minimize, maximize the dialog
                      add additional text, e.g. Amarok is currently updating your database. This may take a while.
@@ -5190,6 +5189,9 @@ CollectionDB::checkDatabase()
 
                      Consider using a ProgressBarDialog
             */
+            QLabel *label = new QLabel( i18n( "Updating database" ), dialog );
+            dialog->setMainWidget( label );
+            label->show();
             QTimer::singleShot( 0, dialog, SLOT( show() ) );
             //process events in the main event loop so that the dialog actually gets shown
             kapp->processEvents();
