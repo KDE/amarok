@@ -28,8 +28,7 @@ SHORT-TERM (URGENT):
                -subitems?
                -just disabled?
              - 'stop after current track' should work
- <markey>    - sometimes metadata is not updated
-             - when you've never listenend to lastfm before, all stream links on the
+ <markey>    - when you've never listenend to lastfm before, all stream links on the
                website are disabled ("Download the player"). we need to do a handshake on
                startup once, and then set a config item, e.g. handshaked=true.
 
