@@ -61,7 +61,7 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
                                       bool incremental,
                                       bool importPlaylists,
                                       bool restart )
-        : KApplication( /*allowStyles*/ false, /*GUIenabled*/ false )
+        : KUniqueApplication( /*allowStyles*/ false, /*GUIenabled*/ false )
         , m_importPlaylists( importPlaylists )
         , m_folders( folders )
         , m_recursively( recursive )

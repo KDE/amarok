@@ -29,7 +29,7 @@
 #include <qmap.h>
 #include <qstringlist.h>
 
-#include <kapplication.h>
+#include <kuniqueapplication.h>
 
 typedef QMap<QString, QString> AttributeMap;
 
@@ -39,7 +39,7 @@ typedef QMap<QString, QString> AttributeMap;
  * @short Scans directories and builds the Collection
  */
 
-class CollectionScanner : public KApplication
+class CollectionScanner : public KUniqueApplication
 {
     Q_OBJECT
 
@@ -51,6 +51,7 @@ public:
                        bool restart );
 
     ~CollectionScanner();
+    int newInstance() { return 0; }
 
 public slots:
     void pause();
