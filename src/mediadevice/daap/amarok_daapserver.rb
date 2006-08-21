@@ -6,8 +6,8 @@
 
 require "#{ARGV[0]}" #codes.rb
 require "#{ARGV[1]}" #debug.rb
-require 'webrick'
-#require 'rubygems'
+require 'rubygems'
+require 'mongrel'
 #require 'ruby-prof'
 
 $app_name = "Daap"
@@ -88,7 +88,7 @@ class Element
                 when :version then
                     Element.short_convert( @value )
                 else
-                    log "type error! #{@value} #{CODE_TYPE[@name]}"
+                    log "type error! #{@value} #{CODE_TYPE[@name]} #{@name}"
             end
         end
 
@@ -111,44 +111,13 @@ class Mlit < Element
         'mlit' + Element.long_convert(values.length) + values
     end
 end
-#{"mlog"=>{"mlid"=>[1842003488], "mstt"=>[200]}}
-class LoginServlet < WEBrick::HTTPServlet::AbstractServlet
-    @@sessionId = 42
-    
-    def do_GET( req, resp )
-        root =  Element.new( 'mlog' )
-        root << Element.new( 'mlid', @@sessionId )
-        root << Element.new( 'mstt',  WEBrick::HTTPStatus::OK.code )
-        resp.body = root.to_s
-        log resp.body.dump
-        @@sessionId += 1
-    end
-end
 
-#{"mupd"=>{"mstt"=>[200], "musr"=>[2]}}
-class UpdateServlet < WEBrick::HTTPServlet::AbstractServlet
-    include DebugMethods
-    
-    debugMethod(:do_GET)
-    def do_GET( req, resp )
-        root = Element.new( 'mupd' )
-        root << Element.new( 'mstt', WEBrick::HTTPStatus::OK.code )
-        root << Element.new( 'musr', 2 )
-        resp.body = root.to_s
-        log resp.body.dump
-    end
-
-end
-
-class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
+class DatabaseServlet < Mongrel::HttpHandler
   include DebugMethods
   public
-      @@instance = nil
-      def self.get_instance( config, *options )
-          @@instance = @@instance || self.new
-      end
 
-      def initialize
+      def initItems
+          @@sessionId = 42
           artists = Hash.new
           albums = Hash.new
           genre = Hash.new
@@ -164,7 +133,7 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
           }
 
           columns =     [ "album, ", "artist, ", "genre, ", "track, ", "title, ", "year, ", "length, ", "samplerate, ", "url, ", "deviceid" ]
-          puts "SQL QUERY: SELECT #{columns.to_s} FROM tags"
+          puts "SQL QUERY: SELECT #{columns.to_s} FROM tags LIMIT 500"
           @column_keys = [ :songalbum, :songartist, :songgenre,  :songtracknumber, :itemname, :songyear, :songtime, :songsamplerate, :url,  :deviceid ]
           #TODO composer :songcomposer
           @music = Array.new
@@ -183,6 +152,7 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
               when columns.size - 2
                   url = line.reverse.chop.reverse
               when columns.size - 1
+                  id += 1
                   device_id = line.to_i
                   if device_id == -1 then
                       @music[id] = url
@@ -190,7 +160,6 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
                       url[0] = ''
                       @music[id] = "#{indexes[3][:indexed][ device_id ]}/#{url}"
                   end
-                  id += 1
                   track << Element.new( 'miid', id )
                   track << Element.new( 'asfm', File::extname( url ).reverse.chop.reverse )
                   @items << track
@@ -205,26 +174,104 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
       end
       debugMethod(:new)
 
-      def do_GET( req, resp )
+      def process( request, response )
           if @items.nil? then
               initItems()
           end
-      
-          command = File.basename( req.path )
+
+          command = File.basename( request.params['PATH_INFO'] )
+          output = String.new
           case command
+              #{"mupd"=>{"mstt"=>[200], "musr"=>[2]}}
               when "login" then
                   root =  Element.new( 'mlog' )
                   root << Element.new( 'mlid', @@sessionId )
-                  root << Element.new( 'mstt',  WEBrick::HTTPStatus::OK.code )
-                  resp.body = root.to_s
-                  log resp.body.dump
+                  root << Element.new( 'mstt',  200 ) #200, as in the HTTP OK code
+                  response.start do | head, out |
+                      out << root.to_s
+                  end
                   @@sessionId += 1
+              #{"mupd"=>{"mstt"=>[200], "musr"=>[2]}}
               when "update" then
                   root = Element.new( 'mupd' )
-                  root << Element.new( 'mstt', WEBrick::HTTPStatus::OK.code )
+                  root << Element.new( 'mstt', 200 )
                   root << Element.new( 'musr', 2 )
-                  resp.body = root.to_s
-                  log resp.body.dump
+                  response.start do | head, out |
+                      out << root.to_s
+                  end
+              when 'server-info'
+# SimpleDaapClient output from Banshee server
+#               {"msrv"=>
+#                 {"mpro"=>[131074],
+#                 "msbr"=>[nil],
+#                 "mslr"=>[nil],
+#                 "msup"=>[nil],
+#                 "msex"=>[nil],
+#                 "msqy"=>[nil],
+#                 "msau"=>[nil],
+#                 "apro"=>[196610],
+#                 "minm"=>["Banshee Music Share"],
+#                 "msdc"=>[1],
+#                 "mstt"=>[200],
+#                 "msal"=>[nil],
+#                 "msrs"=>[nil],
+#                 "mstm"=>[1800],
+#                 "mspi"=>[nil],
+#                 "msix"=>[nil]}}
+                  msrv = Element.new( 'msrv' )
+                    msrv << Element.new( 'mpro', 0x20002 )
+                    msrv << Element.new( 'msbr', nil )
+                    msrv << Element.new( 'mslr', nil )
+                    msrv << Element.new( 'msup', nil )
+                    msrv << Element.new( 'msex', nil )
+                    msrv << Element.new( 'msqy', nil )
+                    msrv << Element.new( 'msau', nil )
+                    msrv << Element.new( 'apro', 0x30002 )
+                    msrv << Element.new( 'minm', "Amarok Music Share" )
+                    msrv << Element.new( 'msdc', 1 )
+                    msrv << Element.new( 'mstt', 200 )
+                    msrv << Element.new( 'msal', nil )
+                    msrv << Element.new( 'msrs', nil )
+                    msrv << Element.new( 'mstm', 1800 )
+                    msrv << Element.new( 'mspi', nil )
+                    msrv << Element.new( 'msix', nil )
+
+                  response.start do | head, out |
+                      out << msrv.to_s
+                  end
+              when "content-codes" then
+                response.start do | head, out |
+                    out << CONTENT_CODES #LAAAAAZY
+                end
+              when 'containers' then
+              # {"aply"=>
+              #   {"muty"=>[nil],
+              #    "mstt"=>[200],
+              #    "mrco"=>[1],
+              #    "mtco"=>[1],
+              #    "mlcl"=>
+              #     [{"mlit"=>
+              #        [{"abpl"=>[nil],
+              #          "miid"=>[1],
+              #          "mper"=>[0],
+              #          "minm"=>["Banshee Music Share"],
+              #          "mimc"=>[2463]}]}]}}
+                aply = Element.new( 'aply' )
+                    aply << Element.new( 'muty', nil )
+                    aply << Element.new( 'mstt', 200 )
+                    aply << Element.new( 'mrco', 1 )
+                    mlcl =  Element.new( 'mlcl')
+                    aply << mlcl
+                        mlit = Element.new( 'mlit' )
+                        mlcl << mlit
+                            mlit << Element.new( 'abpl', nil )
+                            mlit << Element.new( 'miid', 1 )
+                            mlit << Element.new( 'mper', 0 )
+                            mlit << Element.new( 'minm', "Amarok Music Share" )
+                            mlit << Element.new( 'mimc', @items.size )
+                response.start do | head, out |
+                    out << aply.to_s
+                end
               when "databases" then
               # {"avdb"=>
               #   {"muty"=>[nil],
@@ -240,7 +287,7 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
               #          "mimc"=>[1360]}]}]}}
                   avdb = Element.new( 'avdb' )
                   avdb << Element.new( 'muty', 0 )
-                  avdb << Element.new( 'mstt', WEBrick::HTTPStatus::OK.code )
+                  avdb << Element.new( 'mstt', 200 )
                   avdb << Element.new( 'mrco', 1 )
                   avdb << Element.new( 'mtco', 1 )
                   mlcl = Element.new( 'mlcl' )
@@ -252,7 +299,9 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
                       mlit << Element.new( 'minm', ENV['USER'] + " Amarok" )
                       mlit << Element.new( 'mctc', 1 )
                       mlit << Element.new( 'mimc', @items.size )
-                  resp.body = avdb.to_s
+                  response.start do | head, out |
+                      out << avdb.to_s
+                  end
               when "items" then
               # {"adbs"=>
               #     {"muty"=>[nil],
@@ -269,7 +318,7 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
               #             "asar"=>["Yoko Kanno"],
               #             "ascm"=>[""]},
               #             ...
-                  requested = req.query['meta'].split(',')
+                  requested = Mongrel::HttpRequest.query_parse( request.params['QUERY_STRING'] )['meta'].split(',')
                   toDisplay =  Array.new
                   requested.each { |str|
                       str[0,5] = ''
@@ -284,16 +333,29 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
                   }
                   adbs = Element.new( 'adbs' )
                   adbs << Element.new( 'muty', nil )
-                  adbs << Element.new( 'mstt', WEBrick::HTTPStatus::OK.code )
+                  adbs << Element.new( 'mstt', 200 )
                   adbs << Element.new( 'mrco', @items.size )
                   adbs << Element.new( 'mtco', @items.size )
                   adbs << @items
-                  resp.body = adbs.to_s( toDisplay )
+                  response.start do | head, out |
+                      out << adbs.to_s( toDisplay )
+                  end
               else if command =~ /([\d]*)\.(.*)$/ #1232.mp3
                       log "sending #{@music[ $1.to_i ]}"
-                      resp.body = open( @music[ $1.to_i ] )
+                      file = @music[ $1.to_i ]
+                      response.start(200) do |head,out|
+                          response.send_status(File.size( file ))
+                          response.header['Content-Type'] = "application/#{$2}"
+                          response.send_header
+                          response.send_file(file)
+                      end
+                      response.send_header
+                      response.send_file( file )
                   else
-                      log "unimplemented request #{req.path}"
+                      response.start( 404 ) do | head, out |
+                        out << "Command not implemented."
+                      end
+                      puts "#{command} not implemented"
                   end
           end
       end
@@ -324,26 +386,18 @@ class Controller
         no_server = true
         while no_server 
             begin
-                server = WEBrick::HTTPServer.new( { :ServerName=>'127.0.0.1', :Port=>port } )
+                server = Mongrel::HttpServer.new('0.0.0.0', port)
                 no_server = false
-            rescue Errno::EAFNOSUPPORT
+            rescue Errno::EADDRINUSE
                 if port == 3700 then
                     fatal( "No ports between 3688 and 3700 are open." )
                 end
                 port += 1
             end
         end
-        ['INT', 'TERM'].each { |signal|
-            trap(signal) { 
-                server.shutdown
-            }
-        }
-       # server.mount( '/login', LoginServlet )
-       # server.mount( '/update', UpdateServlet )
-       # server.mount( '/databases', DatabaseServlet )
-        server.mount( '/', DatabaseServlet )
+        server.register('/', DatabaseServlet.new )
         puts "SERVER STARTING: #{port}"
-        server.start
+        server.run.join
     end
 
 end

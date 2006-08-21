@@ -1,0 +1,26 @@
+amarokrubylibdir = \
+    $(kde_datadir)/amarok/ruby_lib
+
+amarokrubylibdir_LTLIBRARIES = libhttp11.la
+
+INCLUDES = \
+    -I$(ruby_includes) \
+    $(all_includes)
+
+libhttp11_la_LDFLAGS = \
+    $(all_libraries)
+
+libhttp11_la_SOURCES = \
+    http11.c \
+    http11_parser.c \
+    tst_cleanup.c \
+    tst_delete.c \
+    tst_grow_node_free_list.c \
+    tst_init.c \
+    tst_insert.c \
+    tst_search.c
+
+noinst_HEADERS = \
+    ext_help.h \
+    http11_parser.h \
+    tst.h
