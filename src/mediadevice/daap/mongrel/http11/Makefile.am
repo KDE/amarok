@@ -1,6 +1,6 @@
 amarokrubylibdir = $(kde_datadir)/amarok/ruby_lib
 
-amarokrubylib_LTLIBRARIES = http11.so
+amarokrubylib_LTLIBRARIES = libhttp11.la
 
 INCLUDES = \
     -I$(ruby_includes)
