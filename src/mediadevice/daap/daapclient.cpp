@@ -51,6 +51,7 @@ DaapClient::DaapClient()
     , m_browser( 0 )
 #endif
     , m_connected( false )
+    , m_sharingServer( 0 )
 {
 DEBUG_BLOCK
     setName( "daapclient" );
@@ -117,7 +118,7 @@ DaapClient::openDevice(bool /* silent=false */)
         m_browser->startBrowse();
     }
 #endif
-    m_sharingServer = new DaapServer( this, "DaapServer" );
+    //m_sharingServer = new DaapServer( this, "DaapServer" );
     return true;
 }
 
