@@ -45,10 +45,10 @@ VERSION 1.4.2:
     * Re-enable adding videos to iPods with recent libgpod-cvs. (BR 130117)
     * Include Skip, Love and Ban in playlist right-click menu for last.fm
       streams.
-    * Advanced Tag Features (ATF) deferred to 1.4.3: Pending some bug fixes in
-      both Amarok and a dependency.  It will be automatically disabled the
-      first time you run 1.4.2. (It will still be available in subversion
-      snapshots.)
+    * Advanced Tag Features (ATF) deferred to 1.4.3: Public release delayed
+      pending some bug fixes in both Amarok and a dependency. It will be
+      automatically disabled the first time you run 1.4.2 if you had it enabled
+      from 1.4.2-beta1. (It will still be available in subversion snapshots.)
     * Optionally finish transferring all queued tracks to media device after
       pressing disconnect button. (BR 129716)
     * It's now possible to edit scores and ratings for multiple tracks in
@@ -67,9 +67,6 @@ VERSION 1.4.2:
     * Previously, using ATF with MP3 files would wipe out existing UFID frames
       from other applications. Now Amarok plays nicely and only touches its
       own UFID frame.
-    * ATF now has a graphical interface to turn it on and off (in the
-      Collection options), and it will automatically start a rescan and clear
-      the Playlist for you.
     * ATF no longer requires a restart to enable or disable it.
     * ATF read-only functions are always enabled if a UID is found in the
       file. Option in the configuration dialog now only controls whether new
@@ -80,6 +77,8 @@ VERSION 1.4.2:
       since the last time it was enabled.
 
   BUGFIXES:
+    * DCOP calls to add and remove ATF tags are no longer allowed to run while
+      the collection is being scanned.
     * Last.fm streams no longer freeze Amarok's GUI with xine-engine.
     * Sometimes metadata wasn't updated with Last.fm streams.
     * Update context browser on score and rating changes. (BR 132496)
