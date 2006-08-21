@@ -212,6 +212,19 @@ class DatabaseServlet < WEBrick::HTTPServlet::AbstractServlet
       
           command = File.basename( req.path )
           case command
+              when "login" then
+                  root =  Element.new( 'mlog' )
+                  root << Element.new( 'mlid', @@sessionId )
+                  root << Element.new( 'mstt',  WEBrick::HTTPStatus::OK.code )
+                  resp.body = root.to_s
+                  log resp.body.dump
+                  @@sessionId += 1
+              when "update" then
+                  root = Element.new( 'mupd' )
+                  root << Element.new( 'mstt', WEBrick::HTTPStatus::OK.code )
+                  root << Element.new( 'musr', 2 )
+                  resp.body = root.to_s
+                  log resp.body.dump
               when "databases" then
               # {"avdb"=>
               #   {"muty"=>[nil],
@@ -311,7 +324,7 @@ class Controller
         no_server = true
         while no_server 
             begin
-                server = WEBrick::HTTPServer.new( { :Port=>port } )
+                server = WEBrick::HTTPServer.new( { :ServerName=>'127.0.0.1', :Port=>port } )
                 no_server = false
             rescue Errno::EAFNOSUPPORT
                 if port == 3700 then
@@ -325,9 +338,10 @@ class Controller
                 server.shutdown
             }
         }
-        server.mount( '/login', LoginServlet )
-        server.mount( '/update', UpdateServlet )
-        server.mount( '/databases', DatabaseServlet )
+       # server.mount( '/login', LoginServlet )
+       # server.mount( '/update', UpdateServlet )
+       # server.mount( '/databases', DatabaseServlet )
+        server.mount( '/', DatabaseServlet )
         puts "SERVER STARTING: #{port}"
         server.start
     end
