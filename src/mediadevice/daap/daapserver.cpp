@@ -42,7 +42,9 @@ DaapServer::DaapServer(QObject* parent, char* name)
 
 DaapServer::~DaapServer()
 {
-    delete m_service;
+    #if DNSSD_SUPPORT
+        delete m_service;
+    #endif
     delete m_server;
 }
 
