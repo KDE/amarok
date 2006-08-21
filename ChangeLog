@@ -21,11 +21,6 @@ VERSION 1.4.2:
       Patch by Joe Rabinoff <bobqwatson@yahoo.com>. (BR 130586)
     * BPM field. Patch by Alf B Lervåg <alfborge@gmail.com> and Aaron
       VonderHaar <gruen0aermel@gmail.com>. (BR 123142)
-    * Advanced Tag Features (ATF) goes public: Turn it on in the Collection
-      options and organize your files freely without losing your statistics
-      or needing to re-add tracks to the Playlist.  We'll keep track of where
-      you put your files or what you renamed them to and update it all for
-      you!
     * Improved crossfading for xine-engine: Honours the 'Crossfade Length'
       setting precisely, and uses a better mixing style profile. Patch by
       Enrico Ros <koral@email.it>.
@@ -50,6 +45,10 @@ VERSION 1.4.2:
     * Re-enable adding videos to iPods with recent libgpod-cvs. (BR 130117)
     * Include Skip, Love and Ban in playlist right-click menu for last.fm
       streams.
+    * Advanced Tag Features (ATF) deferred to 1.4.3: Pending some bug fixes in
+      both Amarok and a dependency.  It will be automatically disabled the
+      first time you run 1.4.2. (It will still be available in subversion
+      snapshots.)
     * Optionally finish transferring all queued tracks to media device after
       pressing disconnect button. (BR 129716)
     * It's now possible to edit scores and ratings for multiple tracks in
