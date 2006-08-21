@@ -77,6 +77,7 @@ class ScanController : public ThreadWeaver::DependentJob, public QXmlDefaultHand
 
         void notifyThisBundle( MetaBundle* bundle );
         bool isPaused() { return m_isPaused; }
+        bool tablesCreated() { return m_tablesCreated; }
 
     signals:
         void scannerAcknowledged();
@@ -118,6 +119,7 @@ class ScanController : public ThreadWeaver::DependentJob, public QXmlDefaultHand
         MetaBundle* m_waitingBundle;
         bool m_lastCommandPaused;
         bool m_isPaused;
+        bool m_tablesCreated;
 };
 
 

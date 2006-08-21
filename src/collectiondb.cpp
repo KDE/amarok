@@ -3223,13 +3223,20 @@ CollectionDB::removeUniqueIdFromFile( const QString &path )
 QString
 CollectionDB::urlFromUniqueId( const QString &id )
 {
-    bool scanning = ( ScanController::instance() && !ScanController::instance()->isPaused() );
+    bool scanning = ( ScanController::instance() && ScanController::instance()->tablesCreated() );
     QStringList urls = query( QString(
             "SELECT deviceid, url "
             "FROM uniqueid%1 "
             "WHERE uniqueid = '%2';" )
                 .arg( scanning ? "_temp" : QString::null )
                 .arg( id ) );
+
+    if( urls.empty() && scanning )
+        urls = query( QString(
+                    "SELECT deviceid, url "
+                    "FROM uniqueid "
+                    "WHERE uniqueid = '%1';" )
+                        .arg( id ) );
 
     if( urls.empty() )
         return QString::null;
@@ -3245,7 +3252,7 @@ CollectionDB::uniqueIdFromUrl( const KURL &url )
     int currdeviceid = mpm->getIdForUrl( url.path() );
     QString currurl = escapeString( mpm->getRelativePath( currdeviceid, url.path() ) );
 
-    bool scanning = ( ScanController::instance() && !ScanController::instance()->isPaused() );
+    bool scanning = ( ScanController::instance() && ScanController::instance()->tablesCreated() );
     QStringList uid = query( QString(
             "SELECT uniqueid "
             "FROM uniqueid%1 "
@@ -3254,10 +3261,18 @@ CollectionDB::uniqueIdFromUrl( const KURL &url )
                 .arg( currdeviceid )
                 .arg( currurl ) );
 
+    if( uid.empty() && scanning )
+        uid = query( QString(
+                "SELECT uniqueid "
+                "FROM uniqueid "
+                "WHERE deviceid = %1 AND url = '%2';" )
+                    .arg( currdeviceid )
+                    .arg( currurl ) );
+    
     if( uid.empty() )
         return QString::null;
-    else
-        return uid[0];
+    
+    return uid[0];
 }
 
 QString

@@ -199,6 +199,7 @@ ScanController::doJob()
         return true;
 
     CollectionDB::instance()->createTables( true );
+    m_tablesCreated = true;
     CollectionDB::instance()->prepareTempTables();
     CollectionDB::instance()->invalidateArtistAlbumCache();
     setProgressTotalSteps( 100 );
@@ -268,7 +269,10 @@ main_loop:
     }
 
     if( CollectionDB::instance()->isConnected() )
+    {
+        m_tablesCreated = false;
         CollectionDB::instance()->dropTables( true ); // drop temp tables
+    }
 
     return !isAborted();
 }
