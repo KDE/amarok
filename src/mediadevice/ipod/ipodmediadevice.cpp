@@ -1843,22 +1843,23 @@ void
 IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
 {
     MediaItem *item = dynamic_cast<MediaItem *>(qitem);
+    bool locked = m_mutex.locked();
+
+    KURL::List urls = m_view->nodeBuildDragList( 0 );
+    KPopupMenu menu( m_view );
+
+    enum Actions { APPEND, LOAD, QUEUE,
+        COPY_TO_COLLECTION,
+        BURN_ARTIST, BURN_ALBUM, BURN_DATACD, BURN_AUDIOCD,
+        RENAME, SUBSCRIBE,
+        MAKE_PLAYLIST, ADD_TO_PLAYLIST, ADD,
+        DELETE_PLAYED, DELETE_FROM_IPOD, REMOVE_FROM_PLAYLIST,
+        REPAIR_MENU, REPAIR_SCAN, REPAIR_COVERS,
+        FIRST_PLAYLIST};
+
+    KPopupMenu *playlistsMenu = 0;
     if ( item )
     {
-        bool locked = m_mutex.locked();
-
-        KURL::List urls = m_view->nodeBuildDragList( 0 );
-        KPopupMenu menu( m_view );
-
-        enum Actions { APPEND, LOAD, QUEUE,
-            COPY_TO_COLLECTION,
-            BURN_ARTIST, BURN_ALBUM, BURN_DATACD, BURN_AUDIOCD,
-            RENAME, SUBSCRIBE,
-            MAKE_PLAYLIST, ADD_TO_PLAYLIST, ADD,
-            DELETE_PLAYED, DELETE_FROM_IPOD, REMOVE_FROM_PLAYLIST,
-            REPAIR_MENU, REPAIR_SCAN, REPAIR_COVERS,
-            FIRST_PLAYLIST};
-
         menu.insertItem( SmallIconSet( amaroK::icon( "playlist" ) ), i18n( "&Load" ), LOAD );
         menu.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( amaroK::icon( "fastforward" ) ), i18n( "&Queue Tracks" ), QUEUE );
@@ -1897,7 +1898,6 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
             menu.insertSeparator();
         }
 
-        KPopupMenu *playlistsMenu = 0;
         switch( item->type() )
         {
         case MediaItem::ARTIST:
@@ -1966,80 +1966,81 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                 i18n( "Delete Track from iPod", "Delete %n Tracks from iPod", urls.count() ),
                 DELETE_FROM_IPOD );
         menu.setItemEnabled( DELETE_FROM_IPOD, !locked && urls.count() > 0 );
+    }
 
-        KPopupMenu repairMenu;
-        repairMenu.insertItem( SmallIconSet( amaroK::icon( "playlist_refresh" ) ), i18n( "Scan for Orphaned and Missing Files" ), REPAIR_SCAN );
-        repairMenu.insertItem( SmallIconSet( amaroK::icon( "covermanager" ) ), i18n( "Refresh Cover Images" ), REPAIR_COVERS );
-        repairMenu.setItemEnabled( REPAIR_COVERS, m_supportsArtwork );
-        menu.insertItem( SmallIconSet( "folder" ), i18n("Repair iPod"), &repairMenu, REPAIR_MENU );
+    KPopupMenu repairMenu;
+    repairMenu.insertItem( SmallIconSet( amaroK::icon( "playlist_refresh" ) ), i18n( "Scan for Orphaned and Missing Files" ), REPAIR_SCAN );
+    repairMenu.insertItem( SmallIconSet( amaroK::icon( "covermanager" ) ), i18n( "Refresh Cover Images" ), REPAIR_COVERS );
+    repairMenu.setItemEnabled( REPAIR_COVERS, m_supportsArtwork );
+    menu.insertItem( SmallIconSet( "folder" ), i18n("Repair iPod"), &repairMenu, REPAIR_MENU );
 
-        int id =  menu.exec( point );
+    int id =  menu.exec( point );
+    switch( id )
+    {
+        case LOAD:
+            Playlist::instance()->insertMedia( urls, Playlist::Replace );
+            break;
+        case APPEND:
+            Playlist::instance()->insertMedia( urls, Playlist::Append );
+            break;
+        case QUEUE:
+            Playlist::instance()->insertMedia( urls, Playlist::Queue );
+            break;
+        case COPY_TO_COLLECTION:
+            {
+                QPtrList<MediaItem> items;
+                m_view->getSelectedLeaves( 0, &items );
+
+                KURL::List urls;
+                for( MediaItem *it = items.first();
+                        it;
+                        it = items.next() )
+                {
+                    if( it->url().isValid() )
+                        urls << it->url();
+                }
+
+                CollectionView::instance()->organizeFiles( urls, i18n("Copy Files To Collection"), true );
+            }
+            break;
+        case BURN_ARTIST:
+            K3bExporter::instance()->exportArtist( item->text(0) );
+            break;
+        case BURN_ALBUM:
+            K3bExporter::instance()->exportAlbum( item->text(0) );
+            break;
+        case BURN_DATACD:
+            K3bExporter::instance()->exportTracks( urls, K3bExporter::DataCD );
+            break;
+        case BURN_AUDIOCD:
+            K3bExporter::instance()->exportTracks( urls, K3bExporter::AudioCD );
+            break;
+        case SUBSCRIBE:
+            PlaylistBrowser::instance()->addPodcast( static_cast<IpodMediaItem *>(item)->m_podcastInfo->rss );
+            break;
+        case RENAME:
+            if( item->type() == MediaItem::PLAYLIST )
+            {
+                m_view->rename(item, 0);
+            }
+            else
+            {
+                TagDialog *dialog = NULL;
+                if( urls.count() == 1 )
+                    dialog = new TagDialog( urls.first(), m_view );
+                else
+                    dialog = new TagDialog( urls, m_view );
+                dialog->show();
+            }
+            break;
+        default:
+            break;
+    }
+
+    if( !m_mutex.locked() )
+    {
         switch( id )
         {
-            case LOAD:
-                Playlist::instance()->insertMedia( urls, Playlist::Replace );
-                break;
-            case APPEND:
-                Playlist::instance()->insertMedia( urls, Playlist::Append );
-                break;
-            case QUEUE:
-                Playlist::instance()->insertMedia( urls, Playlist::Queue );
-                break;
-            case COPY_TO_COLLECTION:
-                {
-                    QPtrList<MediaItem> items;
-                    m_view->getSelectedLeaves( 0, &items );
-
-                    KURL::List urls;
-                    for( MediaItem *it = items.first();
-                            it;
-                            it = items.next() )
-                    {
-                        if( it->url().isValid() )
-                            urls << it->url();
-                    }
-
-                    CollectionView::instance()->organizeFiles( urls, i18n("Copy Files To Collection"), true );
-                }
-                break;
-            case BURN_ARTIST:
-                K3bExporter::instance()->exportArtist( item->text(0) );
-                break;
-            case BURN_ALBUM:
-                K3bExporter::instance()->exportAlbum( item->text(0) );
-                break;
-            case BURN_DATACD:
-                K3bExporter::instance()->exportTracks( urls, K3bExporter::DataCD );
-                break;
-            case BURN_AUDIOCD:
-                K3bExporter::instance()->exportTracks( urls, K3bExporter::AudioCD );
-                break;
-            case SUBSCRIBE:
-                PlaylistBrowser::instance()->addPodcast( static_cast<IpodMediaItem *>(item)->m_podcastInfo->rss );
-                break;
-            case RENAME:
-                if( item->type() == MediaItem::PLAYLIST )
-                {
-                    m_view->rename(item, 0);
-                }
-                else
-                {
-                    TagDialog *dialog = NULL;
-                    if( urls.count() == 1 )
-                        dialog = new TagDialog( urls.first(), m_view );
-                    else
-                        dialog = new TagDialog( urls, m_view );
-                    dialog->show();
-                }
-                break;
-            default:
-                break;
-        }
-
-        if( !m_mutex.locked() )
-        {
-            switch( id )
-            {
             case MAKE_PLAYLIST:
                 {
                     QPtrList<MediaItem> items;
@@ -2166,7 +2167,7 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
 #endif
                 break;
             default:
-                if( id >= FIRST_PLAYLIST )
+                if( playlistsMenu && id >= FIRST_PLAYLIST )
                 {
                     QString name = playlistsMenu->text(id);
                     if( name != QString::null )
@@ -2186,7 +2187,6 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                     }
                 }
                 break;
-            }
         }
     }
 }

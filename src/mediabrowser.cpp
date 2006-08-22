@@ -1443,10 +1443,8 @@ MediaView::viewportPaintEvent( QPaintEvent *e )
 void
 MediaView::rmbPressed( QListViewItem *item, const QPoint &p, int i )
 {
-    if( item )
+    if( m_device->isConnected() )
         m_device->rmbPressed( item, p, i );
-    else
-        debug() << "tried to call rmbPressed with invalid item" << endl;
 }
 
 MediaItem *
