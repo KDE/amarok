@@ -14,7 +14,7 @@ VERSION 1.4.3:
     * Delete covers from the filesystem when requested.
     * Show context menu on right-click in empty area of media device
       browser. (BR 127154)
-    * Sort numeric columns in flat collection numerically. (BR 130667)
+    * Sort numeric columns in flat collection view numerically. (BR 130667)
 
 VERSION 1.4.2:
   FEATURES:
