@@ -2,19 +2,21 @@ amarokrubylibdir = $(kde_datadir)/amarok/ruby_lib
 
 amarokrubylib_LTLIBRARIES = libhttp11.la
 
+amarokrubylib_DATA = http11.rb
+
 INCLUDES = \
     -I$(ruby_includes)
 
 CFLAGS = -Wall
 
-http11_so_LDFLAGS = \
+libhttp11_la_LDFLAGS = \
 	-shared \
     $(ruby_ldflags)
 
 #http11_so_LIBADD = \
 #    -lruby18
 
-http11_so_SOURCES = \
+libhttp11_la_SOURCES = \
     http11.c \
     http11_parser.c \
     tst_cleanup.c \

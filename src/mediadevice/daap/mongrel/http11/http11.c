@@ -520,7 +520,7 @@ VALUE URIClassifier_resolve(VALUE self, VALUE uri)
 }
 
 
-void Init_http11()
+void Init_libhttp11()
 {
 
   mMongrel = rb_define_module("Mongrel");
