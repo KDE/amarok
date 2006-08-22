@@ -8,6 +8,7 @@ VERSION 1.4.3:
       Amarok automatically shows local DAAP servers.
 
   CHANGES:
+    * Don't report "/dev/hd" style devices as new media devices. (BR 127831)
 
   BUGFIXES:
     * Show context menu on right-click in empty area of media device
