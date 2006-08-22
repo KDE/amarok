@@ -11,6 +11,7 @@
 #define PRETTY_TITLE_CACHE
 #endif
 
+#include <qobject.h>
 #include <qstringlist.h>
 #include <kurl.h>    //inline functions
 #include <klocale.h> //inline functions
@@ -38,6 +39,9 @@ namespace TagLib {
         class File;
     }
 }
+namespace KIO{
+    class Job;
+}
 class PodcastEpisodeBundle;
 
 namespace LastFm {
@@ -52,8 +56,9 @@ namespace LastFm {
  *
  */
 
-class LIBAMAROK_EXPORT MetaBundle
+class LIBAMAROK_EXPORT MetaBundle : public QObject
 {
+    Q_OBJECT
 public:
     enum Column
     {
@@ -303,6 +308,9 @@ public: //static helper functions
     static QString prettyTitle( const QString &filename );
     static QStringList genreList();
 
+public slots:
+    void kioDone( KIO::Job *job );
+
 protected:
     enum ExtendedTags { composerTag,  discNumberTag, bpmTag, compilationTag };
 
@@ -351,6 +359,7 @@ protected:
     bool m_isCompilation: 1;
     bool m_notCompilation: 1;
     bool m_safeToSave: 1;
+    int m_waitingOnKIO;
 
     PodcastEpisodeBundle *m_podcastBundle;
     LastFm::Bundle *m_lastFmBundle;
@@ -375,6 +384,8 @@ private:
     TagLib::ID3v2::UniqueFileIdentifierFrame *ourMP3UidFrame( TagLib::MPEG::File *file, QString ourId );
 
     bool scannerSafeSave( TagLib::File* file );
+    bool doSave( TagLib::File* file );
+    void abortSave( const QString message );
 };
 
 /// for your convenience

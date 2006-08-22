@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <sys/time.h>
+#include <sys/types.h>
 #include <fcntl.h>
 
 #include "amarok.h"
@@ -20,9 +21,13 @@
 #include "debug.h"
 #include "collectiondb.h"
 #include "scancontroller.h"
+#include "statusbar.h"
 #include <kapplication.h>
 #include <kfilemetainfo.h>
 #include <kio/global.h>
+#include <kio/job.h>
+#include <kio/jobclasses.h>
+#include <kio/netaccess.h>
 #include <kmdcodec.h>
 #include <qdeepcopy.h>
 #include <qdom.h>
@@ -156,7 +161,8 @@ int MetaBundle::columnIndex( const QString &name )
 }
 
 MetaBundle::MetaBundle()
-        : m_uniqueId( QString::null )
+        : QObject()
+        , m_uniqueId( QString::null )
         , m_year( Undetermined )
         , m_discNumber( Undetermined )
         , m_track( Undetermined )
@@ -175,6 +181,7 @@ MetaBundle::MetaBundle()
         , m_isCompilation( false )
         , m_notCompilation( false )
         , m_safeToSave( false )
+        , m_waitingOnKIO( 0 )
         , m_podcastBundle( 0 )
         , m_lastFmBundle( 0 )
 {
@@ -182,7 +189,8 @@ MetaBundle::MetaBundle()
 }
 
 MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImageList* images )
-    : m_url( url )
+    : QObject()
+    , m_url( url )
     , m_uniqueId( QString::null )
     , m_year( Undetermined )
     , m_discNumber( Undetermined )
@@ -202,6 +210,7 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
     , m_isCompilation( false )
     , m_notCompilation( false )
     , m_safeToSave( false )
+    , m_waitingOnKIO( 0 )
     , m_podcastBundle( 0 )
     , m_lastFmBundle( 0 )
 {
@@ -228,7 +237,8 @@ MetaBundle::MetaBundle( const QString& title,
                         const QString& genre,
                         const QString& streamName,
                         const KURL& url )
-        : m_url       ( url )
+        : QObject()
+        , m_url       ( url )
         , m_genre     ( genre )
         , m_streamName( streamName )
         , m_streamUrl ( streamUrl )
@@ -251,6 +261,7 @@ MetaBundle::MetaBundle( const QString& title,
         , m_isCompilation( false )
         , m_notCompilation( false )
         , m_safeToSave( false )
+        , m_waitingOnKIO( 0 )
         , m_podcastBundle( 0 )
         , m_lastFmBundle( 0 )
 {
@@ -267,6 +278,7 @@ MetaBundle::MetaBundle( const QString& title,
 }
 
 MetaBundle::MetaBundle( const MetaBundle &bundle )
+    :QObject()
 {
     *this = bundle;
 }
@@ -308,6 +320,7 @@ MetaBundle::operator=( const MetaBundle& bundle )
     m_isCompilation = bundle.m_isCompilation;
     m_notCompilation = bundle.m_notCompilation;
     m_safeToSave = bundle.m_safeToSave;
+    m_waitingOnKIO = bundle.m_waitingOnKIO;
 
 //    delete m_podcastBundle; why does this crash Amarok? apparently m_podcastBundle isn't always initialized.
     m_podcastBundle = 0;
@@ -1563,12 +1576,18 @@ MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
 bool
 MetaBundle::scannerSafeSave( TagLib::File* file )
 {
+
+    //NOTE: this function will probably be changed around a bit later, as the algorithm may be obsoleted
+    //by that in doSave...alternately it maybe should be kept to help reduce contention when writing to a file
+    //between amarokapp and the collection scanner
+    //note however that this save is not *yet* scanner safe with ATF turned on...
     DEBUG_BLOCK
     if( ( QString( kapp->name() ) == QString( "amarokcollectionscanner" ) ) //default
             || !ScanController::instance() //no scan, we're good
             || !AmarokConfig::advancedTagFeatures() ) //if no ATF, we're not writing to files with scanner
     {
         return file->save();
+        //return doSave( file );
     }
 
     m_safeToSave = false;
@@ -1585,6 +1604,7 @@ MetaBundle::scannerSafeSave( TagLib::File* file )
     else //scanner seems to have exited in the interim
     {
         return file->save();
+        //return doSave( file );
     }
 
     int count = 0;
@@ -1605,6 +1625,7 @@ MetaBundle::scannerSafeSave( TagLib::File* file )
     {
         debug() << "Starting tag save" << endl;
         result = file->save();
+        //result = doSave( file );
         debug() << "done, result is " << (result?"success":"failure") << endl;
     }
     else
@@ -1614,9 +1635,175 @@ MetaBundle::scannerSafeSave( TagLib::File* file )
     if( !ScanController::instance()->requestUnpause() )
     {
         debug() << "DCOP call to unpause scanner failed, it may be hung" << endl;
+        //TODO: Have ScanController kill it and restart?
     }
 
     return result;
+}
+
+bool
+MetaBundle::doSave( TagLib::File* /*file*/ )
+{
+
+    //TODO: much commenting needed.  For now this pretty much follows algorithm laid out in bug 131353,
+    //but isn't useable since I need to find a good way to switch the file path with taglib, or a good way
+    //to get all the metadata copied over.
+
+    DEBUG_BLOCK
+    bool revert = false;
+    const KURL origPath = url();
+    char buf[32];
+    int hostname = gethostname(buf, 32);
+    if( hostname != 0 )
+    {
+        abortSave( "Could not determine hostname!" );
+        return false;
+    }
+    QString pid;
+    const QString tempPath = origPath.path() + ".amaroktemp.host-" + QString( buf ) + ".pid-" + pid.setNum( getpid() );
+    const QString origRenamedPath = origPath.path() + ".original.amaroktemp.host-" + QString( buf ) + ".pid-" + pid.setNum( getpid() );
+
+    KIO::SimpleJob *deletejob, *deletejob2;
+    KIO::FileCopyJob *copyjob;
+    KIO::FileCopyJob *movejob, *movejob2, *movejob3;
+
+    QFile *tempFile, *origRenamedFile;
+    QCString tempDigest, origRenamedDigest;
+
+    copyjob = KIO::file_copy( url(), KURL::fromPathOrURL( tempPath ), -1, false, false, false );
+    connect( copyjob, SIGNAL( result(KIO::Job*) ), SLOT( kioDone(KIO::Job*) ) );
+    m_waitingOnKIO = 1;
+
+    while( m_waitingOnKIO == 1 )
+        kapp->processEvents();
+
+    if( m_waitingOnKIO != 0 )
+    {
+        abortSave( "Could not create copy!" );
+        return false;
+    }
+
+    tempFile = new QFile( tempPath );
+    tempFile->open( IO_ReadOnly );
+    KMD5 md5sum( tempFile->readAll() );
+    tempDigest = md5sum.hexDigest();
+
+    debug() << "MD5 sum of temp file: " << tempDigest.data() << endl;
+
+    //NOTE: check correctness of file somehow?  what if some other process modifying during our copy?
+    //could be a "not our problem" but is there a better way?
+    //TODO: modify tags in temporary file -- new TagLib fileref to new file, copy over metadata?
+
+    movejob = KIO::file_move( url(), KURL::fromPathOrURL( origRenamedPath ), -1, false, false, false );
+    connect( movejob, SIGNAL( result(KIO::Job*) ), SLOT( kioDone(KIO::Job*) ) );
+    m_waitingOnKIO = 1;
+
+    while( m_waitingOnKIO == 1 )
+        kapp->processEvents();
+
+    if( m_waitingOnKIO != 0 )
+    {
+        abortSave( "Could not move original!" );
+        goto fail_remove_copy;
+    }
+
+    md5sum.reset();
+    origRenamedFile = new QFile( origRenamedPath );
+    origRenamedFile->open( IO_ReadOnly );
+    md5sum.update( origRenamedFile->readAll() );
+    origRenamedDigest = md5sum.hexDigest();
+
+    debug() << "md5sum of original file: " << origRenamedDigest.data() << endl;
+
+    if( origRenamedDigest != tempDigest )
+    {
+        abortSave( "Original checksum did not match current checksum!" );
+        revert = true;
+        goto fail_remove_copy;
+    }
+
+    movejob2 = KIO::file_move( KURL::fromPathOrURL( tempPath ), url(), -1, false, false, false );
+    connect( movejob2, SIGNAL( result(KIO::Job*) ), SLOT( kioDone(KIO::Job*) ) );
+    m_waitingOnKIO = 1;
+
+    while( m_waitingOnKIO == 1 )
+        kapp->processEvents();
+
+    if( m_waitingOnKIO != 0 )
+    {
+        abortSave( "Could not rename newly-tagged file to original!" );
+        revert = true;
+        goto fail_remove_copy;
+    }
+
+    deletejob = KIO::file_delete( KURL::fromPathOrURL( origRenamedPath ), false );
+    connect( deletejob, SIGNAL( result(KIO::Job*) ), SLOT( kioDone(KIO::Job*) ) );
+    m_waitingOnKIO = 1;
+
+    while( m_waitingOnKIO == 1 )
+        kapp->processEvents();
+
+    if( m_waitingOnKIO != 0 )
+    {
+        abortSave( "Could not delete the original file!" );
+        amaroK::StatusBar::instance()->longMessageThreadSafe( QString( "Could not remove the copy of the original file, located at %1.  Please remove it manually." ).arg( origRenamedPath ) );
+        return false;
+    }
+
+    return true;
+
+    fail_remove_copy:
+        deletejob2 = KIO::file_delete( KURL::fromPathOrURL( tempPath ), false );
+        connect( deletejob2, SIGNAL( result(KIO::Job*) ), SLOT( kioDone(KIO::Job*) ) );
+        m_waitingOnKIO = 1;
+
+        while( m_waitingOnKIO == 1 )
+            kapp->processEvents();
+
+        if( m_waitingOnKIO != 0 )
+        {
+            abortSave( "Could not delete the temporary file!" );
+            amaroK::StatusBar::instance()->longMessageThreadSafe( QString( "Could not remove the temporary file %1.  Please remove it manually." ).arg( tempPath ) );
+        }
+
+        if( !revert )
+            return false;
+
+        movejob3 = KIO::file_move( KURL::fromPathOrURL( origRenamedPath ), url(), -1, false, false, false );
+        connect( movejob3, SIGNAL( result(KIO::Job*) ), SLOT( kioDone(KIO::Job*) ) );
+        m_waitingOnKIO = 1;
+
+        while( m_waitingOnKIO == 1 )
+            kapp->processEvents();
+
+        if( m_waitingOnKIO != 0 )
+        {
+            abortSave( "Could not revert file to original filename!" );
+            amaroK::StatusBar::instance()->longMessageThreadSafe( QString( "Could not revert the file to its original filename, from %1 to %2.  Please do this manually." ).arg( origRenamedPath ).arg( origPath.path() ) );
+        }
+
+        return false;
+}
+
+void
+MetaBundle::kioDone( KIO::Job *job )
+{
+    DEBUG_BLOCK
+    if( job->error() )
+    {
+        debug() << "Error! Code is: " << job->error() << endl;
+        m_waitingOnKIO = -1;
+        return;
+    }
+    m_waitingOnKIO = 0;
+}
+
+void
+MetaBundle::abortSave( const QString message  )
+{
+    DEBUG_BLOCK
+    //TODO: maybe make this pop up in the status bar?  What if there are a lot of problems?
+    debug() << message << endl;
 }
 
 void
@@ -1859,3 +2046,5 @@ void PodcastEpisodeBundle::detach()
     m_type = QDeepCopy<QString>(m_type);
     m_guid = QDeepCopy<QString>(m_guid);
 }
+
+#include "metabundle.moc"
