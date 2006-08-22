@@ -2256,8 +2256,19 @@ CollectionDB::removeAlbumImage( const QString &artist, const QString &album )
         for ( uint i = 0; i < scaledList.count(); i++ )
             QFile::remove( cacheCoverDir().filePath( scaledList[ i ] ) );
 
+    bool deleted = false;
     // remove large, original image
     if ( largeCoverDir().exists( key ) && QFile::remove( largeCoverDir().filePath( key ) ) )
+        deleted = true;
+
+    QString hardImage = findDirectoryImage( artist, album );
+    if( !hardImage.isEmpty() && QFile::remove( hardImage ) )
+    {
+        query( "DELETE FROM images WHERE path='" + hardImage + "'" );
+        deleted = true;
+    }
+
+    if ( deleted )
     {
         emit coverRemoved( artist, album );
         return true;
@@ -3267,10 +3278,10 @@ CollectionDB::uniqueIdFromUrl( const KURL &url )
                 "WHERE deviceid = %1 AND url = '%2';" )
                     .arg( currdeviceid )
                     .arg( currurl ) );
-    
+
     if( uid.empty() )
         return QString::null;
-    
+
     return uid[0];
 }
 
@@ -3337,7 +3348,7 @@ samplerToCompilation( const QString &it )
         return MetaBundle::CompilationNo;
     }
     return MetaBundle::CompilationUnknown;
-}                                           
+}
 
 MetaBundle
 CollectionDB::bundleFromQuery( QStringList::const_iterator *iter )
@@ -3361,7 +3372,7 @@ CollectionDB::bundleFromQuery( QStringList::const_iterator *iter )
     b.setLength    ( (*++it).toInt() );
     b.setSampleRate( (*++it).toInt() );
     b.setFilesize  ( (*++it).toInt() );
-    
+
     b.setCompilation( samplerToCompilation( *it ) );
     ++it;
     b.setFileType( (*++it).toInt() );
