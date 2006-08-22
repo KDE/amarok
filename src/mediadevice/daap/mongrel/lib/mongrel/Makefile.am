@@ -4,6 +4,7 @@ amarokmongreldir = \
 amarokmongrel_DATA = \
     cgi.rb \
     command.rb \
+    configurator.rb \
     debug.rb \
     handlers.rb \
     init.rb \

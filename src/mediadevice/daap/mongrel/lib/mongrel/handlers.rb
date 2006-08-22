@@ -173,14 +173,10 @@ module Mongrel
           head[Const::CONTENT_TYPE] = "text/html"
           out << "<html><head><title>Directory Listing</title></head><body>"
           Dir.entries(dir).each do |child|
-            child = HttpRequest.unescape(child)
             next if child == "."
-
-            if child == ".."
-              out << "<a href=\"#{base}/#{child}\">Up to parent..</a><br/>"
-            else
-              out << "<a href=\"#{base}/#{child}/\">#{child}</a><br/>"
-            end
+            out << "<a href=\"#{base}/#{ HttpRequest.escape(child)}\">"
+            out << (child == ".." ? "Up to parent.." : child)
+            out << "</a><br/>"
           end
           out << "</body></html>"
         end
@@ -203,18 +199,18 @@ module Mongrel
       # Calculated the same as apache, not sure how well the works on win32
       etag = Const::ETAG_FORMAT % [mtime.to_i, stat.size, stat.ino]
 
-      unmodified_since = request.params[Const::HTTP_IF_UNMODIFIED_SINCE]
+      modified_since = request.params[Const::HTTP_IF_MODIFIED_SINCE]
       none_match = request.params[Const::HTTP_IF_NONE_MATCH]
 
       # test to see if this is a conditional request, and test if
       # the response would be identical to the last response
       same_response = case
-                      when unmodified_since && !last_response_time = Time.httpdate(unmodified_since) rescue nil : false
-                      when unmodified_since && last_response_time > Time.now                                    : false
-                      when unmodified_since && mtime > last_response_time                                       : false
-                      when none_match       && none_match == '*'                                                : false
-                      when none_match       && !none_match.strip.split(/\s*,\s*/).include?(etag)                : false
-                      else unmodified_since || none_match  # validation successful if we get this far and at least one of the header exists
+                      when modified_since && !last_response_time = Time.httpdate(modified_since) rescue nil : false
+                      when modified_since && last_response_time > Time.now                                  : false
+                      when modified_since && mtime > last_response_time                                     : false
+                      when none_match     && none_match == '*'                                              : false
+                      when none_match     && !none_match.strip.split(/\s*,\s*/).include?(etag)              : false
+                      else modified_since || none_match  # validation successful if we get this far and at least one of the header exists
                       end
 
       header = response.header

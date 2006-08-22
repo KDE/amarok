@@ -2,10 +2,7 @@
  * Copyright (c) 2005 Zed A. Shaw
  * You can redistribute it and/or modify it under the same terms as Ruby.
  */
-
-
-
-#include <ruby.h>
+#include "ruby.h"
 #include "ext_help.h"
 #include <assert.h>
 #include <string.h>
@@ -17,7 +14,9 @@ static VALUE mMongrel;
 static VALUE cHttpParser;
 static VALUE cURIClassifier;
 static VALUE eHttpParserError;
-static int id_handler_map;
+
+#define id_handler_map rb_intern("@handler_map")
+#define id_http_body rb_intern("@http_body")
 
 static VALUE global_http_prefix;
 static VALUE global_request_method;
@@ -26,6 +25,7 @@ static VALUE global_query_string;
 static VALUE global_http_version;
 static VALUE global_content_length;
 static VALUE global_http_content_length;
+static VALUE global_request_path;
 static VALUE global_content_type;
 static VALUE global_http_content_type;
 static VALUE global_gateway_interface;
@@ -42,19 +42,20 @@ static VALUE global_port_80;
 #define TRIE_INCREASE 30
 
 /** Defines common length and error messages for input length validation. */
-#define DEF_MAX_LENGTH(N,length) const size_t MAX_##N##_LENGTH = length; const char *MAX_##N##_LENGTH_ERR = "HTTP element " # N  " is longer than the " # length " allowed length.";
+#define DEF_MAX_LENGTH(N,length) const size_t MAX_##N##_LENGTH = length; const char *MAX_##N##_LENGTH_ERR = "HTTP element " # N  " is longer than the " # length " allowed length."
 
 /** Validates the max length of given input and throws an HttpParserError exception if over. */
 #define VALIDATE_MAX_LENGTH(len, N) if(len > MAX_##N##_LENGTH) { rb_raise(eHttpParserError, MAX_##N##_LENGTH_ERR); }
 
 /** Defines global strings in the init method. */
-#define DEF_GLOBAL(N, val)   global_##N = rb_obj_freeze(rb_str_new2(val)); rb_global_variable(&global_##N);
+#define DEF_GLOBAL(N, val)   global_##N = rb_obj_freeze(rb_str_new2(val)); rb_global_variable(&global_##N)
 
 
 /* Defines the maximum allowed lengths for various input elements.*/
 DEF_MAX_LENGTH(FIELD_NAME, 256);
 DEF_MAX_LENGTH(FIELD_VALUE, 80 * 1024);
-DEF_MAX_LENGTH(REQUEST_URI, 512);
+DEF_MAX_LENGTH(REQUEST_URI, 1024 * 2);
+DEF_MAX_LENGTH(REQUEST_PATH, 1024);
 DEF_MAX_LENGTH(QUERY_STRING, (1024 * 10));
 DEF_MAX_LENGTH(HEADER, (1024 * (80 + 32)));
 
@@ -104,6 +105,16 @@ void request_uri(void *data, const char *at, size_t length)
   rb_hash_aset(req, global_request_uri, val);
 }
 
+void request_path(void *data, const char *at, size_t length)
+{
+  VALUE req = (VALUE)data;
+  VALUE val = Qnil;
+
+  VALIDATE_MAX_LENGTH(length, REQUEST_PATH);
+
+  val = rb_str_new(at, length);
+  rb_hash_aset(req, global_request_path, val);
+}
 
 void query_string(void *data, const char *at, size_t length)
 {
@@ -124,7 +135,7 @@ void http_version(void *data, const char *at, size_t length)
 }
 
 /** Finalizes the request header to have a bunch of stuff that's
-    needed. */
+  needed. */
 
 void header_done(void *data, const char *at, size_t length)
 {
@@ -146,49 +157,52 @@ void header_done(void *data, const char *at, size_t length)
 
   rb_hash_aset(req, global_gateway_interface, global_gateway_interface_value);
   if((temp = rb_hash_aref(req, global_http_host)) != Qnil) {
-    /* ruby better close strings off with a '\0' dammit */
+    // ruby better close strings off with a '\0' dammit
     colon = strchr(RSTRING(temp)->ptr, ':');
     if(colon != NULL) {
       rb_hash_aset(req, global_server_name, rb_str_substr(temp, 0, colon - RSTRING(temp)->ptr));
       rb_hash_aset(req, global_server_port, 
-		   rb_str_substr(temp, colon - RSTRING(temp)->ptr+1, 
-				 RSTRING(temp)->len));
+          rb_str_substr(temp, colon - RSTRING(temp)->ptr+1, 
+            RSTRING(temp)->len));
     } else {
       rb_hash_aset(req, global_server_name, temp);
       rb_hash_aset(req, global_server_port, global_port_80);
     }
   }
-  
+
+  // grab the initial body and stuff it into an ivar
+  rb_ivar_set(req, id_http_body, rb_str_new(at, length));
   rb_hash_aset(req, global_server_protocol, global_server_protocol_value);
   rb_hash_aset(req, global_server_software, global_mongrel_version);
 }
 
 
 void HttpParser_free(void *data) {
-    TRACE();
-    
-    if(data) {
-        free(data);
-    }
+  TRACE();
+
+  if(data) {
+    free(data);
+  }
 }
 
 
 VALUE HttpParser_alloc(VALUE klass)
 {
-    VALUE obj;
-    http_parser *hp = ALLOC_N(http_parser, 1);
-    TRACE();
-    hp->http_field = http_field;
-    hp->request_method = request_method;
-    hp->request_uri = request_uri;
-    hp->query_string = query_string;
-    hp->http_version = http_version;
-    hp->header_done = header_done;
-    http_parser_init(hp);
+  VALUE obj;
+  http_parser *hp = ALLOC_N(http_parser, 1);
+  TRACE();
+  hp->http_field = http_field;
+  hp->request_method = request_method;
+  hp->request_uri = request_uri;
+  hp->request_path = request_path;
+  hp->query_string = query_string;
+  hp->http_version = http_version;
+  hp->header_done = header_done;
+  http_parser_init(hp);
 
-    obj = Data_Wrap_Struct(klass, NULL, HttpParser_free, hp);
+  obj = Data_Wrap_Struct(klass, NULL, HttpParser_free, hp);
 
-    return obj;
+  return obj;
 }
 
 
@@ -203,7 +217,7 @@ VALUE HttpParser_init(VALUE self)
   http_parser *http = NULL;
   DATA_GET(self, http_parser, http);
   http_parser_init(http);
-  
+
   return self;
 }
 
@@ -220,7 +234,7 @@ VALUE HttpParser_reset(VALUE self)
   http_parser *http = NULL;
   DATA_GET(self, http_parser, http);
   http_parser_init(http);
-  
+
   return Qnil;
 }
 
@@ -237,7 +251,7 @@ VALUE HttpParser_finish(VALUE self)
   http_parser *http = NULL;
   DATA_GET(self, http_parser, http);
   http_parser_finish(http);
-  
+
   return http_parser_is_finished(http) ? Qtrue : Qfalse;
 }
 
@@ -271,15 +285,15 @@ VALUE HttpParser_execute(VALUE self, VALUE req_hash, VALUE data, VALUE start)
   from = FIX2INT(start);
   dptr = RSTRING(data)->ptr;
   dlen = RSTRING(data)->len;
-  
+
   if(from >= dlen) {
     rb_raise(eHttpParserError, "Requested start is after data buffer end.");
   } else {
     http->data = (void *)req_hash;
     http_parser_execute(http, dptr, dlen, from);
-    
+
     VALIDATE_MAX_LENGTH(http_parser_nread(http), HEADER);
-    
+
     if(http_parser_has_error(http)) {
       rb_raise(eHttpParserError, "Invalid HTTP format, parsing fails.");
     } else {
@@ -300,7 +314,7 @@ VALUE HttpParser_has_error(VALUE self)
 {
   http_parser *http = NULL;
   DATA_GET(self, http_parser, http);
-  
+
   return http_parser_has_error(http) ? Qtrue : Qfalse;
 }
 
@@ -315,7 +329,7 @@ VALUE HttpParser_is_finished(VALUE self)
 {
   http_parser *http = NULL;
   DATA_GET(self, http_parser, http);
-  
+
   return http_parser_is_finished(http) ? Qtrue : Qfalse;
 }
 
@@ -331,32 +345,32 @@ VALUE HttpParser_nread(VALUE self)
 {
   http_parser *http = NULL;
   DATA_GET(self, http_parser, http);
-  
+
   return INT2FIX(http->nread);
 }
 
 
 void URIClassifier_free(void *data) 
 {
-    TRACE();
-    
-    if(data) {
-      tst_cleanup((struct tst *)data);
-    }
+  TRACE();
+
+  if(data) {
+    tst_cleanup((struct tst *)data);
+  }
 }
 
 
 
 VALUE URIClassifier_alloc(VALUE klass)
 {
-    VALUE obj;
-    struct tst *tst = tst_init(TRIE_INCREASE);
-    TRACE();
-    assert(tst && "failed to initialize trie structure");
+  VALUE obj;
+  struct tst *tst = tst_init(TRIE_INCREASE);
+  TRACE();
+  assert(tst && "failed to initialize trie structure");
 
-    obj = Data_Wrap_Struct(klass, NULL, URIClassifier_free, tst);
+  obj = Data_Wrap_Struct(klass, NULL, URIClassifier_free, tst);
 
-    return obj;
+  return obj;
 }
 
 /**
@@ -378,7 +392,7 @@ VALUE URIClassifier_init(VALUE self)
 {
   VALUE hash;
 
-/* we create an internal hash to protect stuff from the GC */
+  // we create an internal hash to protect stuff from the GC
   hash = rb_hash_new();
   rb_ivar_set(self, id_handler_map, hash);
 
@@ -418,7 +432,7 @@ VALUE URIClassifier_register(VALUE self, VALUE uri, VALUE handler)
   } else if(rc == TST_NULL_KEY) {
     rb_raise(rb_eStandardError, "URI was empty");
   }
-  
+
   rb_hash_aset(rb_ivar_get(self, id_handler_map), uri, handler);
 
   return Qnil;
@@ -494,23 +508,23 @@ VALUE URIClassifier_resolve(VALUE self, VALUE uri)
 
   handler = tst_search(uri_str, tst, &pref_len);
 
-  /* setup for multiple return values */
+  // setup for multiple return values
   result = rb_ary_new();
 
   if(handler) {
     rb_ary_push(result, rb_str_substr (uri, 0, pref_len));
-    /* compensate for a script_name="/" where we need to add the "/" to path_info to keep it consistent */
+    // compensate for a script_name="/" where we need to add the "/" to path_info to keep it consistent
     if(pref_len == 1 && uri_str[0] == '/') {
-      /* matches the root URI so we have to use the whole URI as the path_info */
+      // matches the root URI so we have to use the whole URI as the path_info
       rb_ary_push(result, uri);
     } else {
-      /* matches a script so process like normal */
+      // matches a script so process like normal
       rb_ary_push(result, rb_str_substr(uri, pref_len, RSTRING(uri)->len));
     }
-      
+
     rb_ary_push(result, (VALUE)handler);
   } else {
-    /* not found so push back nothing */
+    // not found so push back nothing
     rb_ary_push(result, Qnil);
     rb_ary_push(result, Qnil);
     rb_ary_push(result, Qnil);
@@ -524,13 +538,13 @@ void Init_libhttp11()
 {
 
   mMongrel = rb_define_module("Mongrel");
-  id_handler_map = rb_intern("@handler_map");
 
   DEF_GLOBAL(http_prefix, "HTTP_");
   DEF_GLOBAL(request_method, "REQUEST_METHOD");
   DEF_GLOBAL(request_uri, "REQUEST_URI");
   DEF_GLOBAL(query_string, "QUERY_STRING");
   DEF_GLOBAL(http_version, "HTTP_VERSION");
+  DEF_GLOBAL(request_path, "REQUEST_PATH");
   DEF_GLOBAL(content_length, "CONTENT_LENGTH");
   DEF_GLOBAL(http_content_length, "HTTP_CONTENT_LENGTH");
   DEF_GLOBAL(content_type, "CONTENT_TYPE");
@@ -542,7 +556,7 @@ void Init_libhttp11()
   DEF_GLOBAL(server_protocol, "SERVER_PROTOCOL");
   DEF_GLOBAL(server_protocol_value, "HTTP/1.1");
   DEF_GLOBAL(http_host, "HTTP_HOST");
-  DEF_GLOBAL(mongrel_version, "Mongrel 0.3.13.3");
+  DEF_GLOBAL(mongrel_version, "Mongrel 0.3.13.4");
   DEF_GLOBAL(server_software, "SERVER_SOFTWARE");
   DEF_GLOBAL(port_80, "80");
 
@@ -565,5 +579,5 @@ void Init_libhttp11()
   rb_define_method(cURIClassifier, "unregister", URIClassifier_unregister, 1);
   rb_define_method(cURIClassifier, "resolve", URIClassifier_resolve, 1);
 }
- 
+
 

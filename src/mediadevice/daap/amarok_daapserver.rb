@@ -10,6 +10,8 @@ require "codes.rb"
 require 'mongrel'
 require "#{ARGV[1]}" #debug.rb
 
+require 'uri'
+require 'pp'
 #require 'ruby-prof'
 
 $app_name = "Daap"
@@ -180,8 +182,8 @@ class DatabaseServlet < Mongrel::HttpHandler
           if @items.nil? then
               initItems()
           end
-
-          command = File.basename( request.params['PATH_INFO'] )
+          uri = URI::parse( request.params["REQUEST_URI"] )
+          command = File.basename( uri.path )
           output = String.new
           case command
               #{"mupd"=>{"mstt"=>[200], "musr"=>[2]}}
@@ -189,18 +191,14 @@ class DatabaseServlet < Mongrel::HttpHandler
                   root =  Element.new( 'mlog' )
                   root << Element.new( 'mlid', @@sessionId )
                   root << Element.new( 'mstt',  200 ) #200, as in the HTTP OK code
-                  response.start do | head, out |
-                      out << root.to_s
-                  end
+                  write_resp( response, root.to_s )
                   @@sessionId += 1
               #{"mupd"=>{"mstt"=>[200], "musr"=>[2]}}
               when "update" then
                   root = Element.new( 'mupd' )
                   root << Element.new( 'mstt', 200 )
                   root << Element.new( 'musr', 2 )
-                  response.start do | head, out |
-                      out << root.to_s
-                  end
+                  write_resp( response, root.to_s )
               when 'server-info'
 # SimpleDaapClient output from Banshee server
 #               {"msrv"=>
@@ -222,29 +220,24 @@ class DatabaseServlet < Mongrel::HttpHandler
 #                 "msix"=>[nil]}}
                   msrv = Element.new( 'msrv' )
                     msrv << Element.new( 'mpro', 0x20002 )
-                    msrv << Element.new( 'msbr', nil )
-                    msrv << Element.new( 'mslr', nil )
-                    msrv << Element.new( 'msup', nil )
-                    msrv << Element.new( 'msex', nil )
-                    msrv << Element.new( 'msqy', nil )
-                    msrv << Element.new( 'msau', nil )
+                    msrv << Element.new( 'msbr', 1 )
+                    msrv << Element.new( 'mslr', 1 )
+                    msrv << Element.new( 'msup', 1 )
+                    msrv << Element.new( 'msex', 1 )
+                    msrv << Element.new( 'msqy', 1 )
+                    msrv << Element.new( 'msau', 0 )
                     msrv << Element.new( 'apro', 0x30002 )
                     msrv << Element.new( 'minm', "Amarok Music Share" )
                     msrv << Element.new( 'msdc', 1 )
                     msrv << Element.new( 'mstt', 200 )
-                    msrv << Element.new( 'msal', nil )
-                    msrv << Element.new( 'msrs', nil )
+                    msrv << Element.new( 'msal', 1 )
+                    msrv << Element.new( 'msrs', 1 )
                     msrv << Element.new( 'mstm', 1800 )
-                    msrv << Element.new( 'mspi', nil )
-                    msrv << Element.new( 'msix', nil )
-
-                  response.start do | head, out |
-                      out << msrv.to_s
-                  end
-              when "content-codes" then
-                response.start do | head, out |
-                    out << CONTENT_CODES #LAAAAAZY
-                end
+                    msrv << Element.new( 'mspi', 1 )
+                    msrv << Element.new( 'msix', 1 )
+                  write_resp( response, msrv.to_s )
+              when 'content-codes' then
+                  write_resp( response, CONTENT_CODES ) #LAAAAAZY
               when 'containers' then
               # {"aply"=>
               #   {"muty"=>[nil],
@@ -271,9 +264,7 @@ class DatabaseServlet < Mongrel::HttpHandler
                             mlit << Element.new( 'mper', 0 )
                             mlit << Element.new( 'minm', "Amarok Music Share" )
                             mlit << Element.new( 'mimc', @items.size )
-                response.start do | head, out |
-                    out << aply.to_s
-                end
+                write_resp( response, aply.to_s )
               when "databases" then
               # {"avdb"=>
               #   {"muty"=>[nil],
@@ -301,9 +292,7 @@ class DatabaseServlet < Mongrel::HttpHandler
                       mlit << Element.new( 'minm', ENV['USER'] + " Amarok" )
                       mlit << Element.new( 'mctc', 1 )
                       mlit << Element.new( 'mimc', @items.size )
-                  response.start do | head, out |
-                      out << avdb.to_s
-                  end
+                  write_resp( response, avdb.to_s )
               when "items" then
               # {"adbs"=>
               #     {"muty"=>[nil],
@@ -320,7 +309,8 @@ class DatabaseServlet < Mongrel::HttpHandler
               #             "asar"=>["Yoko Kanno"],
               #             "ascm"=>[""]},
               #             ...
-                  requested = Mongrel::HttpRequest.query_parse( request.params['QUERY_STRING'] )['meta'].split(',')
+                  requested = uri.query.nil? ? Array.new : Mongrel::HttpRequest.query_parse( uri.query )['meta'].split(',')
+                  puts "#{request.params.inspect} #{requested.inspect} #{uri.to_s} #{request.params["REQUEST_URI"]}"
                   toDisplay =  Array.new
                   requested.each { |str|
                       str[0,5] = ''
@@ -339,9 +329,7 @@ class DatabaseServlet < Mongrel::HttpHandler
                   adbs << Element.new( 'mrco', @items.size )
                   adbs << Element.new( 'mtco', @items.size )
                   adbs << @items
-                  response.start do | head, out |
-                      out << adbs.to_s( toDisplay )
-                  end
+                  write_resp( response, adbs.to_s( toDisplay ) )
               else if command =~ /([\d]*)\.(.*)$/ #1232.mp3
                       log "sending #{@music[ $1.to_i ]}"
                       file = @music[ $1.to_i ]
@@ -373,6 +361,14 @@ class DatabaseServlet < Mongrel::HttpHandler
           out
       end
       debugMethod(:query)
+      
+      def write_resp( response, value )
+          response.start do | head, out |
+              head['DAAP-Server'] = 'amarok-kaylee'
+              head['Content-Type'] = 'application/x-dmap-tagged'
+              out << value
+          end
+      end
 end
 
 def log( string )
@@ -397,7 +393,9 @@ class Controller
                 port += 1
             end
         end
-        server.register('/', DatabaseServlet.new )
+        ds = DatabaseServlet.new
+        server.register('/', ds )
+        server.register('daap', ds )
         puts "SERVER STARTING: #{port}"
         server.run.join
     end
@@ -408,7 +406,7 @@ $stdout.sync = true
 $stderr.sync = true
 
 #RubyProf.start
-Controller.new
+    Controller.new
 
 #result = RubyProf.stop
 #printer = RubyProf::GraphHtmlPrinter.new(result)
