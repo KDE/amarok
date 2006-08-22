@@ -11,6 +11,7 @@ VERSION 1.4.3:
     * Don't report "/dev/hd" style devices as new media devices. (BR 127831)
 
   BUGFIXES:
+    * Delete covers from the filesystem when requested.
     * Show context menu on right-click in empty area of media device
       browser. (BR 127154)
     * Sort numeric columns in flat collection numerically. (BR 130667)

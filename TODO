@@ -14,8 +14,6 @@ SHORT-TERM (URGENT):
            like libgpod. Currently its a silent error, and its very difficult to debug without
            trawling through configure.in.in
 
- <sebr>    Fix podcasts by 1.4.2
-
  <sebr>    Don't reload media device plugins when saving config settings. Its annoying, slow
            and all around unnecessary.  It also crashes if the device is connected/loaded.
            <aumuell> Cannot reproduce anything of this with ipods - i think i fixed that already.
@@ -61,11 +59,6 @@ SHORT-TERM (URGENT):
  <markey>  Tooltips don't work for 3rd level items in the Playlist Browser. They do how
            however work (for me) for 2nd level items. Very bad, cause you can't read the
            text!
-
- <sebr>    We need to compile a list of new CSS tags for the context browser themes, and email the
-           theme authors well in advance of 1.4 release to let them know so they can update.
-           ::CSS-Elements::
-            .disc-separator
 
  <sebr>    When starting a drag in the collection browser, we can block the gui if the user makes a
            selection which is sql intensive (eg, select all).  Instead of calculating the items
