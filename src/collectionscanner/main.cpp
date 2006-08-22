@@ -25,7 +25,7 @@
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
 #include <klocale.h>
-#include <kuniqueapplication.h>
+#include <kapplication.h>
 
 int main( int argc, char *argv[] )
 {
@@ -55,7 +55,6 @@ int main( int argc, char *argv[] )
     KCmdLineArgs::reset();
     KCmdLineArgs::init( argc, argv, &about ); //calls KApplication::addCmdLineOptions()
     KCmdLineArgs::addCmdLineOptions( options );  //add our own options
-    KUniqueApplication::addCmdLineOptions(); //add KUniqueApplication-specific options
 
     const KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
 
@@ -70,11 +69,6 @@ int main( int argc, char *argv[] )
     const bool restart          = args->isSet( "restart" );
 
     KApplication::disableAutoDcopRegistration();
-
-    if( !KUniqueApplication::start() ) {
-        fprintf( stderr, "You can only run one instance of amarokcollectionscanner at a time!\n");
-        exit(0);
-    }
 
     CollectionScanner scanner( folders, recursive, incremental, importplaylists, restart );
 
