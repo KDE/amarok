@@ -10,6 +10,7 @@ VERSION 1.4.3:
   CHANGES:
 
   BUGFIXES:
+    * Sort numeric columns in flat collection numerically. (BR 130667)
 
 VERSION 1.4.2:
   FEATURES:

@@ -3781,9 +3781,9 @@ CollectionView::viewportResizeEvent( QResizeEvent* e)
                     w += correct;
                     correct = 0;
                     setColumnWidth( c, w );
-                    if( m_viewMode == modeFlatView )
-                        m_flatColumnWidths.push_back( w );
                 }
+                if( m_viewMode == modeFlatView )
+                    m_flatColumnWidths.push_back( w );
             }
         }
 
@@ -3805,7 +3805,6 @@ CollectionView::viewportResizeEvent( QResizeEvent* e)
             col1width = columnWidth(1);
         setColumnWidth( 0, width - col1width );
     }
-
 
     // Needed for correct redraw of bubble help
     triggerUpdate();
@@ -3911,13 +3910,43 @@ CollectionItem::compare( QListViewItem* i, int col, bool ascending ) const
     // Sampler is the first one in iPod view
     CollectionView* view = static_cast<CollectionView*>( listView() );
     if( view->viewMode() == CollectionView::modeIpodView )
-      {
-	if ( m_isSampler )
-	  return -1;
-	if ( dynamic_cast<CollectionItem*>( i ) && static_cast<CollectionItem*>( i )->m_isSampler )
-	  return 1;
-      }
+    {
+        if ( m_isSampler )
+            return -1;
+        if ( dynamic_cast<CollectionItem*>( i ) && static_cast<CollectionItem*>( i )->m_isSampler )
+            return 1;
+    }
+    else if( view->viewMode() == CollectionView::modeFlatView )
+    {
+        ia = ib = 0;
+        // correctly treat numeric values
+        switch( col )
+        {
+            case CollectionView::Track:
+            case CollectionView::DiscNumber:
+            case CollectionView::Bitrate:
+            case CollectionView::Score:
+            case CollectionView::Rating:
+            case CollectionView::Playcount:
+            case CollectionView::BPM:
+                ia = a.toInt();
+                ib = b.toInt();
+                break;
+            case CollectionView::Length:
+                ia = a.section( ':', 0, 0 ).toInt() * 60 + a.section( ':', 1, 1 ).toInt();
+                ib = b.section( ':', 0, 0 ).toInt() * 60 + b.section( ':', 1, 1 ).toInt();
+                break;
+        }
 
+        if( ia || ib )
+        {
+            if( ia < ib )
+                return 1;
+            if( ia > ib )
+                return -1;
+            return 0;
+        }
+    }
 
     // Unknown is always the first one unless we're doing iPod view, but if the two items to be compared are Unknown,
     // then compare the normal way
