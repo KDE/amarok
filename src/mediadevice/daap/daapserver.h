@@ -36,3 +36,4 @@ class DaapServer : public QObject
 };
 
 #endif /* AMAROK_DAAPSERVER_H */
+

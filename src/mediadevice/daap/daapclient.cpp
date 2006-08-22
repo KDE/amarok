@@ -26,6 +26,8 @@
 #include <qmetaobject.h>
 #include <qobjectlist.h>
 #include <qlabel.h>
+#include <qpixmap.h>
+#include <qtimer.h>
 #include <qtooltip.h>
 
 #include <kiconloader.h>
@@ -34,6 +36,7 @@
 #include <kpassdlg.h>
 #include <kpopupmenu.h>
 #include <kresolver.h>
+#include <kstandarddirs.h>     //loading icons
 #include <ktoolbar.h>
 #include <ktoolbarbutton.h>
 
@@ -332,6 +335,7 @@ DaapClient::createTree( const QString& /*host*/, Daap::SongList bundles )
         }
     }
     root->resetTitle();
+    root->stopAnimation();
     root->setOpen( true );
 }
 
@@ -448,6 +452,8 @@ ServerItem::ServerItem( QListView* parent, DaapClient* client, const QString& ip
     , m_port( port )
     , m_title( title )
     , m_loaded( false )
+    , m_loading1( new QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
+    , m_loading2( new QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
 {
     setText( 0, title );
     setType( MediaItem::DIRECTORY );
@@ -464,7 +470,15 @@ ServerItem::setOpen( bool o )
 
     if( !m_loaded )
     {
-        Daap::Reader* reader = new Daap::Reader( m_ip, m_port, this, QString::null, m_daapClient, ( m_ip + ":3689" ).ascii() );
+        //starts loading animation
+        m_iconCounter = 1;
+        startAnimation();
+        connect( &m_animationTimer, SIGNAL(timeout()), this, SLOT(slotAnimation()) );
+
+        setText( 0, i18n( "Loading %1").arg( text( 0 ) ) );
+
+        Daap::Reader* reader = new Daap::Reader( m_ip, m_port, this,
+                                                 QString::null, m_daapClient, ( m_ip + ":3689" ).ascii() );
         setReader ( reader );
 
         reader->connect( reader, SIGNAL( daapBundles( const QString&, Daap::SongList ) ),
@@ -472,10 +486,30 @@ ServerItem::setOpen( bool o )
         reader->connect( reader, SIGNAL( passwordRequired() ), m_daapClient, SLOT( passwordPrompt() ) );
         reader->loginRequest();
         m_loaded = true;
-        setText( 0, i18n( "Loading %1").arg( text( 0 ) ) );
     }
     else
          MediaItem::setOpen( true );
+}
+
+void ServerItem::startAnimation()
+{
+    if( !m_animationTimer.isActive() )
+        m_animationTimer.start( ANIMATION_INTERVAL );
+}
+
+void ServerItem::stopAnimation()
+{
+    m_animationTimer.stop();
+    setType( MediaItem::DIRECTORY ); //restore icon
+}
+
+void ServerItem::slotAnimation()
+{
+    m_iconCounter % 2 ?
+        setPixmap( 0, *m_loading1 ):
+        setPixmap( 0, *m_loading2 );
+
+    m_iconCounter++;
 }
 
 #include "daapclient.moc"

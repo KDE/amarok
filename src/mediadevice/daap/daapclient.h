@@ -33,15 +33,17 @@ namespace DNSSD {
 namespace DNSSD {
     class ServiceBrowser;
 }
+
 class AddHostBase;
-class QString;
 class MediaItem;
 class ServerItem;
 class DaapServer;
 
+class QString;
+class QTimer;
+
 class DaapClient : public MediaDevice
 {
-
     Q_OBJECT
    public:
         struct ServerInfo
@@ -60,6 +62,7 @@ class DaapClient : public MediaDevice
         KURL getProxyUrl( const KURL& url );
         void customClicked();
         bool autoConnect() { return true; }
+
     public slots:
          void passwordPrompt();
 
@@ -94,22 +97,37 @@ class DaapClient : public MediaDevice
         DaapServer* m_sharingServer;
 };
 
-class ServerItem : public MediaItem
+class ServerItem : public QObject, public MediaItem
 {
+    Q_OBJECT
+
     public:
         ServerItem( QListView* parent, DaapClient* client, const QString& ip, Q_UINT16 port, const QString& title );
         void setOpen( bool o );
-        void resetTitle() { setText( 0, m_title ); }
-        void unLoaded() { m_loaded = false; }
-        void setReader(Daap::Reader* reader) { m_reader = reader; }
-        Daap::Reader* getReader() const { return m_reader; }
+        void resetTitle()                     { setText( 0, m_title ); }
+        void unLoaded()                       { m_loaded = false; }
+        void setReader( Daap::Reader* reader) { m_reader = reader; }
+        Daap::Reader* getReader() const       { return m_reader; }
+
+        void startAnimation();
+        void stopAnimation();
+
+    private slots:
+        void slotAnimation();
+
     private:
-        DaapClient* m_daapClient;
-        Daap::Reader* m_reader;
-        const QString m_ip;
-        const Q_UINT16 m_port;
-        const QString m_title;
-        bool m_loaded;
+        DaapClient     *m_daapClient;
+        Daap::Reader   *m_reader;
+        const QString   m_ip;
+        const Q_UINT16  m_port;
+        const QString   m_title;
+        bool            m_loaded;
+
+        QPixmap        *m_loading1, *m_loading2;    //icons for loading animation
+        QTimer          m_animationTimer;
+        uint            m_iconCounter;
+
+        static const int ANIMATION_INTERVAL = 250;
 };
 
 #endif /*AMAROK_DAAPCLIENT_H*/
