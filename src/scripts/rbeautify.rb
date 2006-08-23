@@ -1,6 +1,6 @@
 #!/usr/bin/ruby -w
 
-# Ruby beautifier, version 1.3, 04/03/2006
+# Ruby beautifier, version 1.6, 08/19/2006
 # Copyright (c) 2006, P. Lutus
 # Released under the GPL
 
@@ -56,30 +56,38 @@ end
 
 def beautifyRuby(path)
    commentBlock = false
+   programEnd = false
    multiLineArray = Array.new
    multiLineStr = ""
    tab = 0
    source = File.read(path)
    dest = ""
    source.split("\n").each do |line|
-      # combine continuing lines
-      if(!(line =~ /^\s*#/) && line =~ /[^\\]\\\s*$/)
-         multiLineArray.push line
-         multiLineStr += line.sub(/^(.*)\\\s*$/,"\\1")
-         next
-      end
+      if(!programEnd)
+         # detect program end mark
+         if(line =~ /^__END__$/)
+            programEnd = true
+         else
+            # combine continuing lines
+            if(!(line =~ /^\s*#/) && line =~ /[^\\]\\\s*$/)
+               multiLineArray.push line
+               multiLineStr += line.sub(/^(.*)\\\s*$/,"\\1")
+               next
+            end
 
-      # add final line
-      if(multiLineStr.length > 0)
-         multiLineArray.push line
-         multiLineStr += line.sub(/^(.*)\\\s*$/,"\\1")
-      end
+            # add final line
+            if(multiLineStr.length > 0)
+               multiLineArray.push line
+               multiLineStr += line.sub(/^(.*)\\\s*$/,"\\1")
+            end
 
-      tline = ((multiLineStr.length > 0)?multiLineStr:line).strip
-      if(tline =~ /^=begin/)
-         commentBlock = true
+            tline = ((multiLineStr.length > 0)?multiLineStr:line).strip
+            if(tline =~ /^=begin/)
+               commentBlock = true
+            end
+         end
       end
-      if(commentBlock)
+      if(commentBlock || programEnd)
          # add the line unchanged
          dest += line + "\n"
       else
@@ -87,7 +95,7 @@ def beautifyRuby(path)
          if(!commentLine)
             # throw out sequences that will
             # only sow confusion
-            tline.gsub!(/\/.*?\//,"")
+            tline.gsub!(/\([^\n]\)/,"")
             tline.gsub!(/%r\{.*?\}/,"")
             tline.gsub!(/%r(.).*?\1/,"")
             tline.gsub!(/\\\"/,"'")
