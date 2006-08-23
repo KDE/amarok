@@ -4,7 +4,6 @@ Hacking on Amarok
 Please respect these guidelines when coding for Amarok, thanks!
 
 * Where this document isn't clear, refer to Amarok code.
-* Avoid large commits of formatting fixes, as they easily cause merge conflicts.
 
 
 This C++ FAQ is a life saver in many situations, so you want to keep it handy:
