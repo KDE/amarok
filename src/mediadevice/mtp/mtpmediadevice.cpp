@@ -631,7 +631,11 @@ MtpMediaDevice::openDevice( bool silent )
 	}
 
     QString modelname = QString( LIBMTP_Get_Modelname( m_device ) );
+#if LIBMTP_FRIENDLY_NAME 
+    QString ownername = QString( LIBMTP_Get_Friendlyname( m_device ) );
+#else
     QString ownername = QString( LIBMTP_Get_Ownername( m_device ) );
+#endif
     m_name = modelname;
     if(! ownername.isEmpty() )
     {

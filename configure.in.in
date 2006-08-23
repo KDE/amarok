@@ -808,16 +808,22 @@ AC_ARG_WITH(libmtp,
     [build_libmtp=$withval],
     [build_libmtp=yes]
 )
-
     if test "$build_libmtp" != "no"; then
         if test "$PKGCONFIGFOUND" = "yes" ; then
+            have_libmtp=no
+            LIBMTP_FRIENDLY_NAME=0
+            PKG_CHECK_MODULES(LIBMTP, libmtp >= 0.0.12,
+            [
+                LIBMTP_FRIENDLY_NAME=1
+                have_libmtp=yes
+            ],
+            [
+                PKG_CHECK_MODULES(LIBMTP, libmtp < 0.0.12, have_libmtp=yes, have_libmtp=no)
+            ])
 
-        # check for libmtp
-        have_libmtp=no
-
-        PKG_CHECK_MODULES(LIBMTP, libmtp, have_libmtp=yes,have_libmtp=no)
         if test "x$have_libmtp" != "xno"; then
             AC_DEFINE(HAVE_LIBMTP, 1, [have libmtp])
+            AC_SUBST(LIBMTP_FRIENDLY_NAME)
         fi
     fi
 fi

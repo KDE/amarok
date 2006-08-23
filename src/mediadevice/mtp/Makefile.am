@@ -9,6 +9,7 @@ INCLUDES = \
     -I$(top_srcdir)/amarok/src/engine \
     -I$(top_builddir)/amarok/src/engine \
     -I$(top_srcdir)/amarok/src/mediadevice \
+    -DLIBMTP_FRIENDLY_NAME=$(LIBMTP_FRIENDLY_NAME) \
     $(taglib_includes) \
     $(all_includes)
 
