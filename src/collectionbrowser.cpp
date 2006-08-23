@@ -726,7 +726,7 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
                     qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
                     break;
                 case Filename:
-                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valURL );
+                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valRelativePath );
                     break;
                 case Firstplay:
                     qb.addReturnValue ( QueryBuilder::tabStats, QueryBuilder::valCreateDate );
@@ -801,7 +801,7 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
                         item->setText( *it_c, (*it).isNull() ? "0" : (*it) );
                         break;
                     case Filename:
-                        item->setText( *it_c, KURL::fromPathOrURL(*it).filename() );
+                        item->setText( *it_c, KURL::fromPathOrURL( (*it).right( (*it).length() -1 ) ).filename() );
                         break;
                     case Filesize:
                         item->setText( *it_c, MetaBundle::prettyFilesize( (*it).toInt() ) );
@@ -3997,7 +3997,7 @@ CollectionItem::compare( QListViewItem* i, int col, bool ascending ) const
             break;
     }
     // Need to make single letter artist names sort lower than acented divider items
-    // (e.g. The artist "A" should sort below the divider "�Ä") so the divider colapsing
+    // (e.g. The artist "A" should sort below the divider "Ä") so the divider colapsing
     // code works correctly. Making the artist a two letter word makes localeAwareCompare
     // give the result we want. See BR 126545.
     if ( a.length() == 1 && dynamic_cast<DividerItem*>(i) )
