@@ -125,7 +125,7 @@
                         <cstring>kLineEdit_location</cstring>
                     </property>
                     <property name="focusPolicy">
-                        <enum>NoFocus</enum>
+                        <enum>TabFocus</enum>
                     </property>
                     <property name="readOnly">
                         <bool>true</bool>
@@ -747,6 +747,7 @@
     <tabstop>kTextEdit_lyrics</tabstop>
     <tabstop>kIntSpinBox_score</tabstop>
     <tabstop>kComboBox_rating</tabstop>
+    <tabstop>kLineEdit_location</tabstop>
     <tabstop>pushButton_open</tabstop>
     <tabstop>pushButton_previous</tabstop>
     <tabstop>pushButton_next</tabstop>
