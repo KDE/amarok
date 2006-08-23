@@ -700,6 +700,7 @@ end
 
 
 plugin = QuizPlugin.new
+plugin.default_auth( 'edit', false )
 
 # Normal commands
 plugin.map 'quiz',                  :action => 'cmd_quiz'
@@ -715,8 +716,8 @@ plugin.map 'quiz top :number',      :action => 'cmd_top_number'
 plugin.map 'quiz stats',            :action => 'cmd_stats'
 
 # Admin commands
-plugin.map 'quiz autoask :enable',  :action => 'cmd_autoask', :auth => 'quizedit'
-plugin.map 'quiz transfer :source :dest :score :jokers', :action => 'cmd_transfer', :auth => 'quizedit', :defaults => {:score => '-1', :jokers => '-1'}
-plugin.map 'quiz deleteplayer :nick', :action => 'cmd_del_player', :auth => 'quizedit'
-plugin.map 'quiz setscore :nick :score', :action => 'cmd_set_score', :auth => 'quizedit'
-plugin.map 'quiz setjokers :nick :jokers', :action => 'cmd_set_jokers', :auth => 'quizedit'
+plugin.map 'quiz autoask :enable',  :action => 'cmd_autoask', :auth_path => 'edit'
+plugin.map 'quiz transfer :source :dest :score :jokers', :action => 'cmd_transfer', :auth_path => 'edit', :defaults => {:score => '-1', :jokers => '-1'}
+plugin.map 'quiz deleteplayer :nick', :action => 'cmd_del_player', :auth_path => 'edit'
+plugin.map 'quiz setscore :nick :score', :action => 'cmd_set_score', :auth_path => 'edit'
+plugin.map 'quiz setjokers :nick :jokers', :action => 'cmd_set_jokers', :auth_path => 'edit'
