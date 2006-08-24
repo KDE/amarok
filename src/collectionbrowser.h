@@ -227,6 +227,10 @@ class CollectionView : public KListView, public DropProxyTarget
     private slots:
         void setupDirs();
 
+        void renderFlatModeView(bool force = false);
+        void renderTreeModeView(bool force = false);
+        void renderIpodModeView(bool force = false);
+
         void scanStarted();
         void scanDone( bool changed = true );
 

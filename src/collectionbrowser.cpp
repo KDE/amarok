@@ -643,557 +643,19 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
     //clear();
     safeClear();
 
-    //query database for all records with the specified category
-    QStringList values;
-    QueryBuilder qb;
-
-    if ( translateTimeFilter( timeFilter() ) > 0 )
-        qb.addFilter( QueryBuilder::tabSong, QueryBuilder::valCreateDate, QString().setNum( QDateTime::currentDateTime().toTime_t() - translateTimeFilter( timeFilter() ) ), QueryBuilder::modeGreater );
-
-    // MODE FLATVIEW
     if ( m_viewMode == modeFlatView )
     {
-        if ( translateTimeFilter( timeFilter() ) <= 0
-                && (m_filter.length() < 3 || (!m_filter.contains( " " ) && m_filter.endsWith( ":" ) ) ) ) {
-            // Redraw bubble help
-            triggerUpdate();
-            return;
-        }
-
-        QValueList<Tag> visibleColumns;
-        for ( int c = 0; c < columns(); ++c )
-            if ( columnWidth( c ) != 0 )
-            {
-                visibleColumns.append( static_cast<Tag>( c ) );
-            }
-
-        //always fetch URL
-        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-        //device automatically added
-
-        int filterTables = 0;
-        for ( QValueList<Tag>::ConstIterator it = visibleColumns.constBegin(); it != visibleColumns.constEnd(); ++it )
-        {
-            switch ( *it )
-            {
-                case Artist:
-                    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName, true );
-                    filterTables |= QueryBuilder::tabArtist;
-                    break;
-                case Composer:
-                    qb.addReturnValue ( QueryBuilder::tabComposer, QueryBuilder::valName, true );
-                    filterTables |= QueryBuilder::tabComposer;
-                    break;
-                case Album:
-                    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName, true );
-                    filterTables |= QueryBuilder::tabAlbum;
-                    break;
-                case Genre:
-                    qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName, true );
-                    filterTables |= QueryBuilder::tabGenre;
-                    break;
-                case Title:
-                    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle, true );
-                    filterTables |= QueryBuilder::tabSong;
-                    break;
-                case Length:
-                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valLength );
-                    filterTables |= QueryBuilder::tabSong;
-                    break;
-                case DiscNumber:
-                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
-                    filterTables |= QueryBuilder::tabSong;
-                    break;
-                case Track:
-                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valTrack );
-                    filterTables |= QueryBuilder::tabSong;
-                    break;
-                case Year:
-                    qb.addReturnValue ( QueryBuilder::tabYear, QueryBuilder::valName );
-                    filterTables |= QueryBuilder::tabYear;
-                    break;
-                case Comment:
-                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valComment );
-                    filterTables |= QueryBuilder::tabSong;
-                    break;
-                case Playcount:
-                    qb.addReturnValue ( QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
-                    break;
-                case Score:
-                    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
-                    break;
-                case Rating:
-                    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
-                    break;
-                case Filename:
-                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valRelativePath );
-                    break;
-                case Firstplay:
-                    qb.addReturnValue ( QueryBuilder::tabStats, QueryBuilder::valCreateDate );
-                    break;
-                case Lastplay:
-                    qb.addReturnValue ( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
-                    break;
-                case Modified:
-                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valCreateDate );
-                    break;
-                case Bitrate:
-                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valBitrate );
-                    break;
-                case Filesize:
-                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valFilesize );
-                    break;
-                case BPM:
-                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valBPM );
-                    filterTables |= QueryBuilder::tabSong;
-                    break;
-                default:
-                    qb.addReturnValue( QueryBuilder::tabDummy, QueryBuilder::valDummy );
-                    break;
-            }
-        }
-
-        qb.setGoogleFilter( filterTables, m_filter );
-        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTitle );
-        qb.setOptions( QueryBuilder::optRemoveDuplicates );
-
-        //we leftjoin the query so it can return mysql NULL cells, i.e. for score and playcount
-        //this is an ugly hack - should be integrated in querybuilder itself instead.
-        QString leftQuery = qb.query();
-        leftQuery.replace( "INNER JOIN", "LEFT JOIN" );
-        values = CollectionDB::instance()->query( leftQuery );
-
-        //construct items
-        QStringList::ConstIterator it = values.constBegin();
-        QStringList::ConstIterator end = values.constEnd();
-        while ( it != end )
-        {
-            CollectionItem* item = new CollectionItem( this );
-            item->setDragEnabled( true );
-            item->setDropEnabled( false );
-            QString rpath = *it;
-            item->setUrl( MountPointManager::instance()->getAbsolutePath( (*++it).toInt(), rpath ) );
-            ++it;
-
-            for ( QValueList<Tag>::ConstIterator it_c = visibleColumns.constBegin(); it_c != visibleColumns.constEnd(); ++it_c )
-            {
-                switch ( *it_c )
-                {
-                    case Length:
-                        item->setText( *it_c, MetaBundle::prettyLength( (*it).toInt(), false) );
-                        break;
-                    case Bitrate:
-                        item->setText( *it_c, MetaBundle::prettyBitrate( (*it).toInt() ) );
-                        break;
-                    case Firstplay:
-                    case Lastplay:
-                    case Modified: {
-                        QDateTime time = QDateTime();
-                        time.setTime_t( (*it).toUInt() );
-                        item->setText( *it_c, time.date().toString( Qt::LocalDate ) );
-                        break;
-                    }
-                    case Playcount:
-                    case Score:
-                        item->setText( *it_c, (*it).isNull() ? "0" : (*it) );
-                        break;
-                    case Rating:
-                        item->setText( *it_c, (*it).isNull() ? "0" : (*it) );
-                        break;
-                    case Filename:
-                        item->setText( *it_c, KURL::fromPathOrURL( (*it).right( (*it).length() -1 ) ).filename() );
-                        break;
-                    case Filesize:
-                        item->setText( *it_c, MetaBundle::prettyFilesize( (*it).toInt() ) );
-                        break;
-                    default:
-                        item->setText( *it_c, (*it) );
-                        break;
-                }
-                ++it;
-            }
-        }
+        renderFlatModeView( force );
     }
 
-    // MODE IPODVIEW This is the heart of the iPod view mode code.  It
-    // applies the current filters (as defined by previous "move
-    // forward" actions).  If we're not viewing tracks (stillFiltering
-    // == true), then display the results in the standard order, with
-    // dividers if applicable, with an "All" (i.e., no filter) item if
-    // there is more than one result, and with "Unknown" items if
-    // there are any.  Note that the "All" item is a CollectionItem
-    // with the Sampler bit set, since it behaves similar to the
-    // Various Artists node.
-    //   If we are viewing tracks (stillFiltering ==
-    // false), then just apply all of the filters and show the
-    // selected tracks.  The track ordering is similar to in list view
-    // mode; see the comments in buildIpodQuery() for details.
     if( m_viewMode == modeIpodView )
     {
-        int catArr[3] = {m_cat1, m_cat2, m_cat3};
-        // stillFiltering is true when we're not viewing tracks
-        bool stillFiltering = (m_currentDepth < trackDepth());
-        // q_cat is the "query category" -- it's undefined if
-        // stillFiltering is true; otherwise it's the category
-        // at the current iPod viewing depth (m_currentDepth), unless
-        // that category is IdVisYearAlbum, in which case it's IdAlbum.
-        int q_cat = (stillFiltering ? catArr[m_currentDepth] : catArr[0]);
-        // m_cat is the current actual category -- it agrees with q_cat
-        // if and only if m_cat != IdVisYearAlbum
-        int m_cat = q_cat;
-        // This is set to true if the current category is IdVisYearAlbum
-        // It is only used when stillFiltering == true.
-        bool VisYearAlbum = false;
-
-        if( q_cat == IdVisYearAlbum && stillFiltering )
-        {
-            VisYearAlbum = true;
-            q_cat = IdAlbum;
-        }
-
-        // If we're viewing tracks, we don't want them to be sorted
-        // alphabetically, since we take great pains in
-        // buildIpodQuery() to have them returned to us from the
-        // database in the correct order.
-        setSorting( stillFiltering ? 0 : -1 );
-
-        // Do the grunt work of building the query (this method is also
-        // called by listSelected() )
-        buildIpodQuery( qb, m_currentDepth, m_ipodFilters, m_ipodFilterYear );
-        if(stillFiltering)
-            qb.setOptions( QueryBuilder::optRemoveDuplicates );
-
-        int tables = 0;
-        for( int i = 0; i < trackDepth(); ++i )
-            tables |= (catArr[i] == IdVisYearAlbum
-                    ? IdAlbum
-                    : catArr[i]);
-        qb.setGoogleFilter( tables | QueryBuilder::tabSong, m_filter );
-
-        // Return values
-        if( stillFiltering )
-        {
-            qb.addReturnValue( q_cat, QueryBuilder::valName, true );
-            if( VisYearAlbum )
-                qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName, true );
-        }
-        else
-        {
-            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
-        }
-
-        values = qb.run();
-        int total = values.count() / qb.countReturnValues();
-
-        // This can happen -- with the filter it might be empty
-        if( total == 0 )
-            return;
-
-        // We want to load the pixmap only once if we're still filtering
-        // Otherwise just load a dummy pixmap
-        QPixmap pixmap = iconForCategory( q_cat );
-        QPixmap incPixmap = ipodIncrementIcon();
-        int width = incPixmap.width() + 10;  // Set the column width below
-        // Keep track of the dividers we've created.
-        QMap<QString, bool> containedDivider;
-
-        QStringList::Iterator itStep = values.end();
-        QStringList::Iterator begin = values.begin();
-        itStep -= qb.countReturnValues();
-        // It's an awkward business stepping through a list backward
-        // when the elements are in tuples, going forward.
-        // This loop breaks at the bottom -- don't put a continue in here!
-        while( 1 )
-        {
-            CollectionItem* item;
-            QStringList::Iterator it = itStep;
-
-            // Add non-track items
-            if( stillFiltering )
-            {
-                bool unknown = false;
-
-                if( (*it).isEmpty() )
-                {
-                    unknown = true;
-                    *it = i18n( "Unknown" );
-                }
-
-                item = new CollectionItem( this, m_cat, unknown );
-
-                if( VisYearAlbum )
-                {
-                    QString album = *it;
-                    QString year = *(++it);
-                    if( year.isEmpty() )
-                        year = "?";
-                    item->setText( 0, year + i18n(" - ") + album );
-                }
-
-                else
-                    item->setText( 0, *it );
-
-                item->setPixmap( 0, pixmap );
-                item->setPixmap( 1, incPixmap );
-                item->setText( 1, "" );
-                // Calculate width
-                width = item->width( fontMetrics(), this, 1 );
-
-                // Only do dividers if we're not showing tracks since
-                // dividers don't really make sense in a track-only view
-                if( !unknown && m_showDivider )
-                {
-                    //Dividers for "The Who" should be created as "W", not "T",
-                    //because that's how we sort it
-                    QString actualStr = item->text( 0 );
-                    if ( m_cat == IdArtist &&
-                            actualStr.startsWith( "the ", false ) )
-                        manipulateThe( actualStr, true );
-
-                    QString headerStr = DividerItem::createGroup( actualStr, m_cat );
-
-                    if ( !containedDivider[headerStr] && headerStr != "" )
-                    {
-                        containedDivider[headerStr] = true;
-                        (void)new DividerItem( this, headerStr, m_cat );
-                    }
-
-                }
-
-            }
-
-            else // Add tracks
-            {
-                item = new CollectionItem( this );
-                item->setUrl( *it );
-                item->setText( 0, *(++it) );
-            }
-
-            item->setDragEnabled( true );
-            item->setDropEnabled( false );
-
-            if( itStep == begin )
-                break;
-
-            itStep -= qb.countReturnValues();
-        }
-
-        // Add the "All" filter if necessary
-        if( stillFiltering )
-        {
-            if( total > 1 )
-            {
-                // The "All" filter has much the same behavior as the
-                // "Various Artists" item, so we use the isSampler bit
-                CollectionItem* item = new CollectionItem( this, m_cat, false, true );
-                item->setDragEnabled( true );
-                item->setDropEnabled( false );
-                item->setPixmap( 0, pixmap );
-                item->setText( 0, allForCategory( q_cat, total ) );
-                item->setPixmap( 1, incPixmap );
-                item->setText( 1, "" );
-
-                sort();
-            }
-
-            setColumnWidth( 1, width );
-            QResizeEvent rev( size(), QSize() );
-            viewportResizeEvent( &rev );
-        }
-
+        renderIpodModeView( force );
     }
 
-
-    // MODE TREEVIEW
     if( m_viewMode == modeTreeView )
     {
-        setSorting( 0 );
-        int VisYearAlbum = -1;
-        int q_cat1=m_cat1;
-        int q_cat2=m_cat2;
-        int q_cat3=m_cat3;
-        if( m_cat1 == IdVisYearAlbum ||
-            m_cat2 == IdVisYearAlbum ||
-            m_cat3 == IdVisYearAlbum )
-        {
-            if( m_cat1==IdVisYearAlbum )
-            {
-                VisYearAlbum = 1;
-                q_cat1 = IdAlbum;
-            }
-            if( m_cat2==IdVisYearAlbum )
-            {
-                VisYearAlbum = 2;
-                q_cat2 = IdAlbum;
-            }
-            if( m_cat3==IdVisYearAlbum )
-            {
-                VisYearAlbum = 3;
-                q_cat3 = IdAlbum;
-            }
-        }
-        QPixmap pixmap = iconForCategory( m_cat1 );
-
-        qb.addReturnValue( q_cat1, QueryBuilder::valName, true );
-
-        if( VisYearAlbum == 1 )
-            qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName, true );
-
-        qb.setGoogleFilter( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, m_filter );
-
-        if( VisYearAlbum == 1 )
-            qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName );
-
-        qb.sortBy( q_cat1, QueryBuilder::valName );
-        qb.setOptions( QueryBuilder::optRemoveDuplicates );
-
-        if( q_cat1 == QueryBuilder::tabArtist )
-            qb.setOptions( QueryBuilder::optNoCompilations );
-
-        // ensure we don't get empty genres/albums/etc due to tag changes
-        qb.addFilter( QueryBuilder::tabSong, QString::null );
-
-        values = qb.run();
-
-        //add items to the view
-
-        uint dividerCount = 0;
-        if( values.count() )
-        {
-            //keep track of headers already added
-            QMap<QString, bool> containedDivider;
-
-            for ( QStringList::Iterator it = values.fromLast(), begin = values.begin(); true; --it )
-            {
-                bool unknown = false;
-
-                //For Year-Album
-                if ( VisYearAlbum == 1 )
-                {
-                    ( *it ) = ( *it ).isEmpty() ? "?" : ( *it ) + i18n(  " - " );
-                    QStringList::Iterator album = it;
-                    --album;
-                    if ( (*album).isEmpty() )
-                    {
-                        unknown = true;
-                        ( *it ) += i18n( "Unknown" );
-                    }
-                    else
-                        ( *it ) += *album;
-                }
-
-                if ( (*it).stripWhiteSpace().isEmpty() )
-                {
-                    (*it) = i18n( "Unknown" );
-                    unknown = true;
-                }
-                else if (m_showDivider)
-                {
-                    //Dividers for "The Who" should be created as "W", not "T", because
-                    //that's how we sort it
-                    QString actualStr = *it;
-                    if ( m_cat1 == IdArtist && actualStr.startsWith( "the ", false ) )
-                        manipulateThe( actualStr, true );
-
-                    QString headerStr = DividerItem::createGroup( actualStr, m_cat1);
-
-                    if ( !containedDivider[headerStr] && !headerStr.isEmpty() )
-                    {
-                        containedDivider[headerStr] = true;
-                        (void)new DividerItem(this, headerStr, m_cat1/*, m_sortYearsInverted*/);
-                        dividerCount++;
-                    }
-                }
-
-                CollectionItem* item = new CollectionItem( this, m_cat1, unknown );
-                item->setExpandable( true );
-                item->setDragEnabled( true );
-                item->setDropEnabled( false );
-                item->setText( 0, *it );
-                item->setPixmap( 0, pixmap );
-
-                //The structure of the return is different if Year - Album is format
-                if ( VisYearAlbum == 1 )
-                    --it;
-
-                if ( it == begin )
-                    break;
-            }
-        }
-
-        //check if we need to add a Various Artists node
-        if ( q_cat1 == QueryBuilder::tabArtist )
-        {
-            qb.clear();
-            if ( translateTimeFilter( timeFilter() ) > 0 )
-                qb.addFilter( QueryBuilder::tabSong, QueryBuilder::valCreateDate,
-                              QString().setNum( QDateTime::currentDateTime().toTime_t() -
-                              translateTimeFilter( timeFilter() ) ), QueryBuilder::modeGreater );
-
-            qb.addReturnValue( q_cat1, QueryBuilder::valName, true );
-            qb.setGoogleFilter( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, m_filter );
-            qb.setOptions( QueryBuilder::optOnlyCompilations | QueryBuilder::optRemoveDuplicates );
-            qb.setLimit( 0, 1 );
-            values = qb.run();
-
-            if ( values.count() )
-            {
-//                 KListViewItem* x = new DividerItem(this, i18n( "Various" ), m_cat1);
-//                 x->setExpandable(false);
-//                 x->setDropEnabled( false );
-//                 x->setSelectable(false);
-
-                CollectionItem* item = new CollectionItem( this, m_cat1, false, true );
-                item->setExpandable( true );
-                item->setDragEnabled( true );
-                item->setDropEnabled( false );
-                item->setText( 0, i18n( "Various Artists" ) );
-                item->setPixmap( 0, pixmap );
-            }
-        }
-
-        int count = childCount() - dividerCount;
-        QListViewItem *item = firstChild();
-        if( dynamic_cast<DividerItem *>( item ) )
-            item = item->nextSibling();
-        while( count == 1 && item && item->isExpandable() )
-        {
-            item->setOpen( true );
-            count = item->childCount();
-            item = item->firstChild();
-        }
-
-        /* Following code depends on the order! */
-        sort();
-
-        QValueList<DividerItem *> toDelete;
-        DividerItem *current=0, *last=0;
-        bool empty;
-        /* If we have two consecutive headers, one of them is useless, and should be removed */
-        for( item = firstChild(),empty=false; item; item=item->nextSibling() )
-        {
-            if ( (current = dynamic_cast<DividerItem *>( item )) ) {
-                if ( empty ) {
-                    if ( !current->text(0).at(0).isLetterOrNumber()
-                        || ( last->text(0).at(0).isLetterOrNumber()
-                            && current->text(0).at(0).unicode() > last->text(0).at(0).unicode() ) )
-                        toDelete += current;
-                    else {
-                        toDelete += last;
-                        last=current;
-                    }
-                }
-                else
-                    last=current;
-                empty=true;
-            }
-            else
-                empty=false;
-        }
-
-        for ( QValueList<DividerItem *>::iterator it = toDelete.begin(); it != toDelete.end(); ++it )
-            delete *it;
+        renderTreeModeView( force );
     }
 
     // Don't cache or restore view when we're just going to run
@@ -3893,6 +3355,569 @@ uint CollectionView::translateTimeFilter( uint filterMode )
     }
 
     return filterSecs;
+}
+
+void
+CollectionView::renderFlatModeView( bool /*=false*/ )
+{
+    QStringList values;
+    QueryBuilder qb;
+
+    if ( translateTimeFilter( timeFilter() ) > 0 )
+        qb.addFilter( QueryBuilder::tabSong, QueryBuilder::valCreateDate, QString().setNum( QDateTime::currentDateTime().toTime_t() - translateTimeFilter( timeFilter() ) ), QueryBuilder::modeGreater );
+
+    if ( translateTimeFilter( timeFilter() ) <= 0
+            && (m_filter.length() < 3 || (!m_filter.contains( " " ) && m_filter.endsWith( ":" ) ) ) )
+    {
+        // Redraw bubble help
+        triggerUpdate();
+        return;
+    }
+
+    QValueList<Tag> visibleColumns;
+    for ( int c = 0; c < columns(); ++c )
+        if ( columnWidth( c ) != 0 )
+        {
+            visibleColumns.append( static_cast<Tag>( c ) );
+        }
+
+    //always fetch URL
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+    //device automatically added
+
+    int filterTables = 0;
+    for ( QValueList<Tag>::ConstIterator it = visibleColumns.constBegin(); it != visibleColumns.constEnd(); ++it )
+    {
+        switch ( *it )
+        {
+                case Artist:
+                    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName, true );
+                    filterTables |= QueryBuilder::tabArtist;
+                    break;
+                case Composer:
+                    qb.addReturnValue ( QueryBuilder::tabComposer, QueryBuilder::valName, true );
+                    filterTables |= QueryBuilder::tabComposer;
+                    break;
+                case Album:
+                    qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName, true );
+                    filterTables |= QueryBuilder::tabAlbum;
+                    break;
+                case Genre:
+                    qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName, true );
+                    filterTables |= QueryBuilder::tabGenre;
+                    break;
+                case Title:
+                    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle, true );
+                    filterTables |= QueryBuilder::tabSong;
+                    break;
+                case Length:
+                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valLength );
+                    filterTables |= QueryBuilder::tabSong;
+                    break;
+                case DiscNumber:
+                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
+                    filterTables |= QueryBuilder::tabSong;
+                    break;
+                case Track:
+                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valTrack );
+                    filterTables |= QueryBuilder::tabSong;
+                    break;
+                case Year:
+                    qb.addReturnValue ( QueryBuilder::tabYear, QueryBuilder::valName );
+                    filterTables |= QueryBuilder::tabYear;
+                    break;
+                case Comment:
+                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valComment );
+                    filterTables |= QueryBuilder::tabSong;
+                    break;
+                case Playcount:
+                    qb.addReturnValue ( QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
+                    break;
+                case Score:
+                    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
+                    break;
+                case Rating:
+                    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
+                    break;
+                case Filename:
+                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valRelativePath );
+                    break;
+                case Firstplay:
+                    qb.addReturnValue ( QueryBuilder::tabStats, QueryBuilder::valCreateDate );
+                    break;
+                case Lastplay:
+                    qb.addReturnValue ( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
+                    break;
+                case Modified:
+                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valCreateDate );
+                    break;
+                case Bitrate:
+                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valBitrate );
+                    break;
+                case Filesize:
+                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valFilesize );
+                    break;
+                case BPM:
+                    qb.addReturnValue ( QueryBuilder::tabSong, QueryBuilder::valBPM );
+                    filterTables |= QueryBuilder::tabSong;
+                    break;
+                default:
+                    qb.addReturnValue( QueryBuilder::tabDummy, QueryBuilder::valDummy );
+                    break;
+        }
+    }
+
+    qb.setGoogleFilter( filterTables, m_filter );
+    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTitle );
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+
+    //we leftjoin the query so it can return mysql NULL cells, i.e. for score and playcount
+    //this is an ugly hack - should be integrated in querybuilder itself instead.
+    QString leftQuery = qb.query();
+    leftQuery.replace( "INNER JOIN", "LEFT JOIN" );
+    values = CollectionDB::instance()->query( leftQuery );
+
+    //construct items
+    QStringList::ConstIterator it = values.constBegin();
+    QStringList::ConstIterator end = values.constEnd();
+    while ( it != end )
+    {
+        CollectionItem* item = new CollectionItem( this );
+        item->setDragEnabled( true );
+        item->setDropEnabled( false );
+        QString rpath = *it;
+        item->setUrl( MountPointManager::instance()->getAbsolutePath( (*++it).toInt(), rpath ) );
+        ++it;
+
+        for ( QValueList<Tag>::ConstIterator it_c = visibleColumns.constBegin(); it_c != visibleColumns.constEnd(); ++it_c )
+        {
+            switch ( *it_c )
+            {
+                    case Length:
+                        item->setText( *it_c, MetaBundle::prettyLength( (*it).toInt(), false) );
+                        break;
+                    case Bitrate:
+                        item->setText( *it_c, MetaBundle::prettyBitrate( (*it).toInt() ) );
+                        break;
+                    case Firstplay:
+                    case Lastplay:
+                    case Modified:
+                    {
+                        QDateTime time = QDateTime();
+                        time.setTime_t( (*it).toUInt() );
+                        item->setText( *it_c, time.date().toString( Qt::LocalDate ) );
+                        break;
+                    }
+                    case Playcount:
+                    case Score:
+                        item->setText( *it_c, (*it).isNull() ? "0" : (*it) );
+                        break;
+                    case Rating:
+                        item->setText( *it_c, (*it).isNull() ? "0" : (*it) );
+                        break;
+                    case Filename:
+                        item->setText( *it_c, KURL::fromPathOrURL( (*it).right( (*it).length() -1 ) ).filename() );
+                        break;
+                    case Filesize:
+                        item->setText( *it_c, MetaBundle::prettyFilesize( (*it).toInt() ) );
+                        break;
+                    default:
+                        item->setText( *it_c, (*it) );
+                        break;
+            }
+            ++it;
+        }
+    }
+}
+
+void
+CollectionView::renderTreeModeView( bool /*=false*/ )
+{
+    QStringList values;
+    QueryBuilder qb;
+
+    if ( translateTimeFilter( timeFilter() ) > 0 )
+        qb.addFilter( QueryBuilder::tabSong, QueryBuilder::valCreateDate, QString().setNum( QDateTime::currentDateTime().toTime_t() - translateTimeFilter( timeFilter() ) ), QueryBuilder::modeGreater );
+
+    setSorting( 0 );
+    int VisYearAlbum = -1;
+    int q_cat1=m_cat1;
+    int q_cat2=m_cat2;
+    int q_cat3=m_cat3;
+    if( m_cat1 == IdVisYearAlbum ||
+            m_cat2 == IdVisYearAlbum ||
+            m_cat3 == IdVisYearAlbum )
+    {
+        if( m_cat1==IdVisYearAlbum )
+        {
+            VisYearAlbum = 1;
+            q_cat1 = IdAlbum;
+        }
+        if( m_cat2==IdVisYearAlbum )
+        {
+            VisYearAlbum = 2;
+            q_cat2 = IdAlbum;
+        }
+        if( m_cat3==IdVisYearAlbum )
+        {
+            VisYearAlbum = 3;
+            q_cat3 = IdAlbum;
+        }
+    }
+    QPixmap pixmap = iconForCategory( m_cat1 );
+
+    qb.addReturnValue( q_cat1, QueryBuilder::valName, true );
+
+    if( VisYearAlbum == 1 )
+        qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName, true );
+
+    qb.setGoogleFilter( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, m_filter );
+
+    if( VisYearAlbum == 1 )
+        qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName );
+
+    qb.sortBy( q_cat1, QueryBuilder::valName );
+    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+
+    if( q_cat1 == QueryBuilder::tabArtist )
+        qb.setOptions( QueryBuilder::optNoCompilations );
+
+    // ensure we don't get empty genres/albums/etc due to tag changes
+    qb.addFilter( QueryBuilder::tabSong, QString::null );
+
+    values = qb.run();
+
+    //add items to the view
+
+    uint dividerCount = 0;
+    if( values.count() )
+    {
+        //keep track of headers already added
+        QMap<QString, bool> containedDivider;
+
+        for ( QStringList::Iterator it = values.fromLast(), begin = values.begin(); true; --it )
+        {
+            bool unknown = false;
+
+            //For Year-Album
+            if ( VisYearAlbum == 1 )
+            {
+                ( *it ) = ( *it ).isEmpty() ? "?" : ( *it ) + i18n(  " - " );
+                QStringList::Iterator album = it;
+                --album;
+                if ( (*album).isEmpty() )
+                {
+                    unknown = true;
+                    ( *it ) += i18n( "Unknown" );
+                }
+                else
+                    ( *it ) += *album;
+            }
+
+            if ( (*it).stripWhiteSpace().isEmpty() )
+            {
+                (*it) = i18n( "Unknown" );
+                unknown = true;
+            }
+            else if (m_showDivider)
+            {
+                //Dividers for "The Who" should be created as "W", not "T", because
+                //that's how we sort it
+                QString actualStr = *it;
+                if ( m_cat1 == IdArtist && actualStr.startsWith( "the ", false ) )
+                    manipulateThe( actualStr, true );
+
+                QString headerStr = DividerItem::createGroup( actualStr, m_cat1);
+
+                if ( !containedDivider[headerStr] && !headerStr.isEmpty() )
+                {
+                    containedDivider[headerStr] = true;
+                    (void)new DividerItem(this, headerStr, m_cat1/*, m_sortYearsInverted*/);
+                    dividerCount++;
+                }
+            }
+
+            CollectionItem* item = new CollectionItem( this, m_cat1, unknown );
+            item->setExpandable( true );
+            item->setDragEnabled( true );
+            item->setDropEnabled( false );
+            item->setText( 0, *it );
+            item->setPixmap( 0, pixmap );
+
+            //The structure of the return is different if Year - Album is format
+            if ( VisYearAlbum == 1 )
+                --it;
+
+            if ( it == begin )
+                break;
+        }
+    }
+
+    //check if we need to add a Various Artists node
+    if ( q_cat1 == QueryBuilder::tabArtist )
+    {
+        qb.clear();
+        if ( translateTimeFilter( timeFilter() ) > 0 )
+            qb.addFilter( QueryBuilder::tabSong, QueryBuilder::valCreateDate,
+                          QString().setNum( QDateTime::currentDateTime().toTime_t() -
+                                            translateTimeFilter( timeFilter() ) ), QueryBuilder::modeGreater );
+
+        qb.addReturnValue( q_cat1, QueryBuilder::valName, true );
+        qb.setGoogleFilter( q_cat1 | q_cat2 | q_cat3 | QueryBuilder::tabSong, m_filter );
+        qb.setOptions( QueryBuilder::optOnlyCompilations | QueryBuilder::optRemoveDuplicates );
+        qb.setLimit( 0, 1 );
+        values = qb.run();
+
+        if ( values.count() )
+        {
+            //                 KListViewItem* x = new DividerItem(this, i18n( "Various" ), m_cat1);
+            //                 x->setExpandable(false);
+            //                 x->setDropEnabled( false );
+            //                 x->setSelectable(false);
+            CollectionItem* item = new CollectionItem( this, m_cat1, false, true );
+            item->setExpandable( true );
+            item->setDragEnabled( true );
+            item->setDropEnabled( false );
+            item->setText( 0, i18n( "Various Artists" ) );
+            item->setPixmap( 0, pixmap );
+        }
+    }
+
+    int count = childCount() - dividerCount;
+    QListViewItem *item = firstChild();
+    if( dynamic_cast<DividerItem *>( item ) )
+        item = item->nextSibling();
+    while( count == 1 && item && item->isExpandable() )
+    {
+        item->setOpen( true );
+        count = item->childCount();
+        item = item->firstChild();
+    }
+
+    /* Following code depends on the order! */
+    sort();
+
+    QValueList<DividerItem *> toDelete;
+    DividerItem *current=0, *last=0;
+    bool empty;
+    /* If we have two consecutive headers, one of them is useless, and should be removed */
+    for( item = firstChild(),empty=false; item; item=item->nextSibling() )
+    {
+        if ( (current = dynamic_cast<DividerItem *>( item )) )
+        {
+            if ( empty )
+            {
+                if ( !current->text(0).at(0).isLetterOrNumber()
+                        || ( last->text(0).at(0).isLetterOrNumber()
+                             && current->text(0).at(0).unicode() > last->text(0).at(0).unicode() ) )
+                    toDelete += current;
+                else
+                {
+                    toDelete += last;
+                    last=current;
+                }
+            }
+            else
+                last=current;
+            empty=true;
+        }
+        else
+            empty=false;
+    }
+
+    for ( QValueList<DividerItem *>::iterator it = toDelete.begin(); it != toDelete.end(); ++it )
+        delete *it;
+}
+
+// MODE IPODVIEW This is the heart of the iPod view mode code.  It
+// applies the current filters (as defined by previous "move
+// forward" actions).  If we're not viewing tracks (stillFiltering
+// == true), then display the results in the standard order, with
+// dividers if applicable, with an "All" (i.e., no filter) item if
+// there is more than one result, and with "Unknown" items if
+// there are any.  Note that the "All" item is a CollectionItem
+// with the Sampler bit set, since it behaves similar to the
+// Various Artists node.
+//   If we are viewing tracks (stillFiltering ==
+// false), then just apply all of the filters and show the
+// selected tracks.  The track ordering is similar to in list view
+// mode; see the comments in buildIpodQuery() for details.
+void
+CollectionView::renderIpodModeView( bool /*=false*/ )
+{
+    QStringList values;
+    QueryBuilder qb;
+
+    if ( translateTimeFilter( timeFilter() ) > 0 )
+        qb.addFilter( QueryBuilder::tabSong, QueryBuilder::valCreateDate, QString().setNum( QDateTime::currentDateTime().toTime_t() - translateTimeFilter( timeFilter() ) ), QueryBuilder::modeGreater );
+
+    int catArr[3] = {m_cat1, m_cat2, m_cat3};
+    // stillFiltering is true when we're not viewing tracks
+    bool stillFiltering = (m_currentDepth < trackDepth());
+    // q_cat is the "query category" -- it's undefined if
+    // stillFiltering is true; otherwise it's the category
+    // at the current iPod viewing depth (m_currentDepth), unless
+    // that category is IdVisYearAlbum, in which case it's IdAlbum.
+    int q_cat = (stillFiltering ? catArr[m_currentDepth] : catArr[0]);
+    // m_cat is the current actual category -- it agrees with q_cat
+    // if and only if m_cat != IdVisYearAlbum
+    int m_cat = q_cat;
+    // This is set to true if the current category is IdVisYearAlbum
+    // It is only used when stillFiltering == true.
+    bool VisYearAlbum = false;
+
+    if( q_cat == IdVisYearAlbum && stillFiltering )
+    {
+        VisYearAlbum = true;
+        q_cat = IdAlbum;
+    }
+
+    // If we're viewing tracks, we don't want them to be sorted
+    // alphabetically, since we take great pains in
+    // buildIpodQuery() to have them returned to us from the
+    // database in the correct order.
+    setSorting( stillFiltering ? 0 : -1 );
+
+    // Do the grunt work of building the query (this method is also
+    // called by listSelected() )
+    buildIpodQuery( qb, m_currentDepth, m_ipodFilters, m_ipodFilterYear );
+    if(stillFiltering)
+        qb.setOptions( QueryBuilder::optRemoveDuplicates );
+
+    int tables = 0;
+    for( int i = 0; i < trackDepth(); ++i )
+        tables |= (catArr[i] == IdVisYearAlbum
+                ? IdAlbum
+                : catArr[i]);
+    qb.setGoogleFilter( tables | QueryBuilder::tabSong, m_filter );
+
+    // Return values
+    if( stillFiltering )
+    {
+        qb.addReturnValue( q_cat, QueryBuilder::valName, true );
+        if( VisYearAlbum )
+            qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valName, true );
+    }
+    else
+    {
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+    }
+
+    values = qb.run();
+    int total = values.count() / qb.countReturnValues();
+
+    // This can happen -- with the filter it might be empty
+    if( total == 0 )
+        return;
+
+    // We want to load the pixmap only once if we're still filtering
+    // Otherwise just load a dummy pixmap
+    QPixmap pixmap = iconForCategory( q_cat );
+    QPixmap incPixmap = ipodIncrementIcon();
+    int width = incPixmap.width() + 10;  // Set the column width below
+    // Keep track of the dividers we've created.
+    QMap<QString, bool> containedDivider;
+
+    QStringList::Iterator itStep = values.end();
+    QStringList::Iterator begin = values.begin();
+    itStep -= qb.countReturnValues();
+    // It's an awkward business stepping through a list backward
+    // when the elements are in tuples, going forward.
+    // This loop breaks at the bottom -- don't put a continue in here!
+    while( 1 )
+    {
+        CollectionItem* item;
+        QStringList::Iterator it = itStep;
+
+        // Add non-track items
+        if( stillFiltering )
+        {
+            bool unknown = false;
+
+            if( (*it).isEmpty() )
+            {
+                unknown = true;
+                *it = i18n( "Unknown" );
+            }
+
+            item = new CollectionItem( this, m_cat, unknown );
+
+            if( VisYearAlbum )
+            {
+                QString album = *it;
+                QString year = *(++it);
+                if( year.isEmpty() )
+                    year = "?";
+                item->setText( 0, year + i18n(" - ") + album );
+            }
+            else
+                item->setText( 0, *it );
+
+            item->setPixmap( 0, pixmap );
+            item->setPixmap( 1, incPixmap );
+            item->setText( 1, "" );
+            // Calculate width
+            width = item->width( fontMetrics(), this, 1 );
+
+            // Only do dividers if we're not showing tracks since
+            // dividers don't really make sense in a track-only view
+            if( !unknown && m_showDivider )
+            {
+                //Dividers for "The Who" should be created as "W", not "T",
+                //because that's how we sort it
+                QString actualStr = item->text( 0 );
+                if ( m_cat == IdArtist &&
+                        actualStr.startsWith( "the ", false ) )
+                    manipulateThe( actualStr, true );
+
+                QString headerStr = DividerItem::createGroup( actualStr, m_cat );
+
+                if ( !containedDivider[headerStr] && headerStr != "" )
+                {
+                    containedDivider[headerStr] = true;
+                    (void)new DividerItem( this, headerStr, m_cat );
+                }
+            }
+        }
+
+        else // Add tracks
+        {
+            item = new CollectionItem( this );
+            item->setUrl( *it );
+            item->setText( 0, *(++it) );
+        }
+
+        item->setDragEnabled( true );
+        item->setDropEnabled( false );
+
+        if( itStep == begin )
+            break;
+
+        itStep -= qb.countReturnValues();
+    }
+
+    // Add the "All" filter if necessary
+    if( stillFiltering )
+    {
+        if( total > 1 )
+        {
+            // The "All" filter has much the same behavior as the
+            // "Various Artists" item, so we use the isSampler bit
+            CollectionItem* item = new CollectionItem( this, m_cat, false, true );
+            item->setDragEnabled( true );
+            item->setDropEnabled( false );
+            item->setPixmap( 0, pixmap );
+            item->setText( 0, allForCategory( q_cat, total ) );
+            item->setPixmap( 1, incPixmap );
+            item->setText( 1, "" );
+
+            sort();
+        }
+        setColumnWidth( 1, width );
+        QResizeEvent rev( size(), QSize() );
+        viewportResizeEvent( &rev );
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
