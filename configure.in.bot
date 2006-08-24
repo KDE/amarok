@@ -234,7 +234,7 @@ else
     fi
 
     if test x$build_moodbar != xyes; then
-        echo " =   - moodbar support"
+        echo " =   - Moodbar support"
     fi
 
     if test x$have_libmtp != xyes; then
@@ -314,7 +314,7 @@ else
     fi
 
     if test x$build_moodbar = xyes; then
-        echo " =   + moodbar support"
+        echo " =   + Moodbar support"
     fi
 
     if test x$have_libmtp = xyes; then
