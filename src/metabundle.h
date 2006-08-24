@@ -11,7 +11,6 @@
 #define PRETTY_TITLE_CACHE
 #endif
 
-#include <qobject.h>
 #include <qstringlist.h>
 #include <kurl.h>    //inline functions
 #include <klocale.h> //inline functions
@@ -39,9 +38,6 @@ namespace TagLib {
         class File;
     }
 }
-namespace KIO{
-    class Job;
-}
 class PodcastEpisodeBundle;
 
 namespace LastFm {
@@ -56,9 +52,9 @@ namespace LastFm {
  *
  */
 
-class LIBAMAROK_EXPORT MetaBundle : public QObject
+class LIBAMAROK_EXPORT MetaBundle
 {
-    Q_OBJECT
+
 public:
     enum Column
     {
@@ -164,8 +160,11 @@ public:
     /** If you want Accurate reading say so. If EmbeddedImageList != NULL, embedded art is loaded into it */
     void readTags( TagLib::AudioProperties::ReadStyle = TagLib::AudioProperties::Fast, EmbeddedImageList* images = 0 );
 
+    /** Saves the changes to the file using the transactional algorithm for safety. */
+    bool safeSave();
+
     /** Saves the changes to the file. Returns false on error. */
-    bool save();
+    bool save( TagLib::FileRef* fileref = 0 );
 
     /** Saves the MetaBundle's data as XML to a text stream. */
     bool save( QTextStream &stream, const QStringList &attributes = QStringList(), int indent = 0 ) const;
@@ -256,6 +255,8 @@ public: //accessors
     QString prettyFilesize() const;
     QString prettyRating() const;
 
+    bool safeToSave() { return m_safeToSave; }
+
 public: //modifiers
     void setUrl( const KURL &url );
     void setPath( const QString &path );
@@ -286,11 +287,11 @@ public: //modifiers
     void setLastFmBundle( const LastFm::Bundle &last );
     void setUniqueId(); //will find the fileref
     void setUniqueId( const QString &id ); //WARNING WARNING WARNING SEE COMMENT in .CPP
-    bool setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip = false );
+    bool readUniqueId();
+    bool createUniqueId( TagLib::FileRef* fileref, bool stripOnly = false );
     bool removeUniqueId();
     bool newUniqueId();
     void scannerAcknowledged();
-    bool safeToSave() { return m_safeToSave; }
 
     void detach(); // for being able to apply QDeepCopy<>
 
@@ -307,9 +308,6 @@ public: //static helper functions
     static QString zeroPad( uint i );
     static QString prettyTitle( const QString &filename );
     static QStringList genreList();
-
-public slots:
-    void kioDone( KIO::Job *job );
 
 protected:
     enum ExtendedTags { composerTag,  discNumberTag, bpmTag, compilationTag };
@@ -360,6 +358,10 @@ protected:
     bool m_notCompilation: 1;
     bool m_safeToSave: 1;
     int m_waitingOnKIO;
+    QString m_tempSavePath;
+    QString m_origRenamedSavePath;
+    QCString m_tempSaveDigest;
+    TagLib::FileRef* m_saveFileref;
 
     PodcastEpisodeBundle *m_podcastBundle;
     LastFm::Bundle *m_lastFmBundle;
@@ -382,10 +384,6 @@ private:
     QString getRandomString( int size );
     QString getRandomStringHelper( int size );
     TagLib::ID3v2::UniqueFileIdentifierFrame *ourMP3UidFrame( TagLib::MPEG::File *file, QString ourId );
-
-    bool scannerSafeSave( TagLib::File* file );
-    bool doSave( TagLib::File* file );
-    void abortSave( const QString message );
 };
 
 /// for your convenience

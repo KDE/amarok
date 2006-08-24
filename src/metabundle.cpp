@@ -20,8 +20,7 @@
 #include "amarokconfig.h"
 #include "debug.h"
 #include "collectiondb.h"
-#include "scancontroller.h"
-#include "statusbar.h"
+#include "metabundlesaver.h"
 #include <kapplication.h>
 #include <kfilemetainfo.h>
 #include <kio/global.h>
@@ -161,8 +160,7 @@ int MetaBundle::columnIndex( const QString &name )
 }
 
 MetaBundle::MetaBundle()
-        : QObject()
-        , m_uniqueId( QString::null )
+        : m_uniqueId( QString::null )
         , m_year( Undetermined )
         , m_discNumber( Undetermined )
         , m_track( Undetermined )
@@ -182,6 +180,10 @@ MetaBundle::MetaBundle()
         , m_notCompilation( false )
         , m_safeToSave( false )
         , m_waitingOnKIO( 0 )
+        , m_tempSavePath( QString::null )
+        , m_origRenamedSavePath( QString::null )
+        , m_tempSaveDigest( 0 )
+        , m_saveFileref( 0 )
         , m_podcastBundle( 0 )
         , m_lastFmBundle( 0 )
 {
@@ -189,8 +191,7 @@ MetaBundle::MetaBundle()
 }
 
 MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImageList* images )
-    : QObject()
-    , m_url( url )
+    : m_url( url )
     , m_uniqueId( QString::null )
     , m_year( Undetermined )
     , m_discNumber( Undetermined )
@@ -211,6 +212,10 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
     , m_notCompilation( false )
     , m_safeToSave( false )
     , m_waitingOnKIO( 0 )
+    , m_tempSavePath( QString::null )
+    , m_origRenamedSavePath( QString::null )
+    , m_tempSaveDigest( 0 )
+    , m_saveFileref( 0 )
     , m_podcastBundle( 0 )
     , m_lastFmBundle( 0 )
 {
@@ -220,7 +225,22 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
             m_isValidMedia = CollectionDB::instance()->bundleForUrl( this );
 
         if ( !isValidMedia() || ( !m_podcastBundle && m_length <= 0 ) )
+        {
             readTags( readStyle, images );
+            bool readOkay = readUniqueId(); //if read failed, probably don't want to try setting
+            if( m_uniqueId == QString::null &&
+                    readOkay && isFile() &&
+                    AmarokConfig::advancedTagFeatures() &&
+                    QString( kapp->name() ) != QString( "amarokcollectionscanner" ) )
+            {
+                MetaBundleSaver *mbs = new MetaBundleSaver( this );
+                TagLib::FileRef *fileref = mbs->prepareToSave();
+                if( fileref && createUniqueId( fileref ) )
+                    mbs->doSave();
+                mbs->cleanupSave();
+                delete mbs;
+            }
+        }
     }
     else
     {
@@ -237,8 +257,7 @@ MetaBundle::MetaBundle( const QString& title,
                         const QString& genre,
                         const QString& streamName,
                         const KURL& url )
-        : QObject()
-        , m_url       ( url )
+        : m_url       ( url )
         , m_genre     ( genre )
         , m_streamName( streamName )
         , m_streamUrl ( streamUrl )
@@ -262,6 +281,10 @@ MetaBundle::MetaBundle( const QString& title,
         , m_notCompilation( false )
         , m_safeToSave( false )
         , m_waitingOnKIO( 0 )
+        , m_tempSavePath( QString::null )
+        , m_origRenamedSavePath( QString::null )
+        , m_tempSaveDigest( 0 )
+        , m_saveFileref( 0 )
         , m_podcastBundle( 0 )
         , m_lastFmBundle( 0 )
 {
@@ -278,7 +301,6 @@ MetaBundle::MetaBundle( const QString& title,
 }
 
 MetaBundle::MetaBundle( const MetaBundle &bundle )
-    :QObject()
 {
     *this = bundle;
 }
@@ -321,6 +343,10 @@ MetaBundle::operator=( const MetaBundle& bundle )
     m_notCompilation = bundle.m_notCompilation;
     m_safeToSave = bundle.m_safeToSave;
     m_waitingOnKIO = bundle.m_waitingOnKIO;
+    m_tempSavePath = bundle.m_tempSavePath;
+    m_origRenamedSavePath = bundle.m_origRenamedSavePath;
+    m_tempSaveDigest = bundle.m_tempSaveDigest;
+    m_saveFileref = bundle.m_saveFileref;
 
 //    delete m_podcastBundle; why does this crash Amarok? apparently m_podcastBundle isn't always initialized.
     m_podcastBundle = 0;
@@ -565,8 +591,6 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
                 }
             }
         }
-
-        setUniqueId( fileref, false );
 
         if ( !disc.isEmpty() )
         {
@@ -1286,20 +1310,64 @@ void MetaBundle::loadImagesFromTag( const TagLib::ID3v2::Tag &tag, EmbeddedImage
 }
 
 bool
-MetaBundle::save()
+MetaBundle::safeSave()
 {
+    bool noproblem;
+    MetaBundleSaver* mbs = new MetaBundleSaver( this );
+    TagLib::FileRef* fileref = mbs->prepareToSave();
+    if( !fileref )
+    {
+        debug() << "Could not get a fileref!" << endl;
+        mbs->cleanupSave();
+        return false;
+    }
+
+    noproblem = save( fileref );
+
+    if( !noproblem )
+    {
+        debug() << "MetaBundle::save() didn't work!" << endl;
+        mbs->cleanupSave();
+        return false;
+    }
+
+    noproblem = mbs->doSave();
+
+    if( !noproblem )
+    {
+        debug() << "Something failed during the save, cleaning up and exiting!" << endl;
+        mbs->cleanupSave();
+        return false;
+    }
+
+    noproblem = mbs->cleanupSave();
+
+    delete mbs;
+    return noproblem;
+}
+
+bool
+MetaBundle::save( TagLib::FileRef* fileref )
+{
+    DEBUG_BLOCK
     if( !isFile() )
         return false;
 
     //Set default codec to UTF-8 (see bugs 111246 and 111232)
     TagLib::ID3v2::FrameFactory::instance()->setDefaultTextEncoding(TagLib::String::UTF8);
 
-    QCString path = QFile::encodeName( url().path() );
-    TagLib::FileRef f( path, false );
+    bool passedin = fileref;
 
-    if ( !f.isNull() )
+    TagLib::FileRef* f;
+
+    if( !passedin )
+        f = new TagLib::FileRef( QFile::encodeName( url().path() ), false );
+    else
+        f = fileref;
+
+    if ( f && !f->isNull() )
     {
-        TagLib::Tag * t = f.tag();
+        TagLib::Tag * t = f->tag();
         if ( t ) { // f.tag() can return null if the file couldn't be opened for writing
             t->setTitle( QStringToTString( title() ) );
             t->setArtist( QStringToTString( artist().string() ) );
@@ -1311,15 +1379,19 @@ MetaBundle::save()
 
             if ( hasExtendedMetaInformation() )
             {
-                setExtendedTag( f.file(), composerTag, composer() );
-                setExtendedTag( f.file(), discNumberTag, discNumber() ? QString::number( discNumber() ) : QString() );
-                setExtendedTag( f.file(), bpmTag, bpm() ? QString::number( bpm() ) : QString() );
+                setExtendedTag( f->file(), composerTag, composer() );
+                setExtendedTag( f->file(), discNumberTag, discNumber() ? QString::number( discNumber() ) : QString() );
+                setExtendedTag( f->file(), bpmTag, bpm() ? QString::number( bpm() ) : QString() );
                 if ( compilation() != CompilationUnknown )
-                    setExtendedTag( f.file(), compilationTag, QString::number( compilation() ) );
+                    setExtendedTag( f->file(), compilationTag, QString::number( compilation() ) );
             }
-            return scannerSafeSave( f.file() );
+            if( !passedin )
+                return f->save();
+            else
+                return true;
         }
     }
+
     return false;
 }
 
@@ -1372,7 +1444,7 @@ void MetaBundle::setUniqueId()
 {
     //if the file isn't already in the database, not checking for amarokcollectionscanner
     //will result in the UID being set to QString::null during the scan...bad!
-    if( !isFile() || ( QString( kapp->name() ) == QString( "amarokcollectionscanner" ) ) )
+    if( !isFile() )
         return;
 
     m_uniqueId = CollectionDB::instance()->uniqueIdFromUrl( url() );
@@ -1407,162 +1479,69 @@ MetaBundle::ourMP3UidFrame( TagLib::MPEG::File *file, QString ourId )
 }
 
 bool
-MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
+MetaBundle::readUniqueId()
 {
-    if( !isFile() || ( ( QString( kapp->name() ) != QString( "amarokcollectionscanner" ) ) && !recreate && !strip ) )
+    if( !isFile() )
         return false;
-
-    //debug() << "recreate = " << (recreate?"true":"false") << endl;
-
-    bool createID = false;
-    int randSize = 8;
-    bool newID = false;
 
     QString ourId = QString( "Amarok - rediscover your music at http://amarok.kde.org" ).upper();
 
-    //due to bug in taglib (see bugs 132019 and 132018) it seems the genre isn't correctly updated from
-    //a preexisting id3v2.3 tag...so explicitly set it
+    const QString path = url().path();
+    TagLib::FileRef fileref;
+    fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
+
+    if( fileref.isNull() )
+        return false;
+
     if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
     {
-        if ( file->ID3v2Tag( AmarokConfig::advancedTagFeatures() ) )
+        if ( file->ID3v2Tag( false ) )
         {
-            if( file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() || !ourMP3UidFrame( file, ourId ) || recreate || strip )
-                createID = true;
+            if( file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() || !ourMP3UidFrame( file, ourId ) )
+                m_uniqueId = QString::null;
             else
-            {
                 m_uniqueId = TStringToQString( TagLib::String( ourMP3UidFrame( file, ourId )->identifier() ) );
-            }
-            if( ( strip || ( AmarokConfig::advancedTagFeatures() && createID ) )
-                    && TagLib::File::isWritable( file->name() ) )
-            {
-                m_uniqueId = getRandomStringHelper( randSize );
-                if( !file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() && ourMP3UidFrame( file, ourId ) )
-                    file->ID3v2Tag()->removeFrame( ourMP3UidFrame( file, ourId ) );
 
-                if( strip )
-                {
-                        file->ID3v2Tag()->setGenre( file->ID3v2Tag()->genre() );
-                        scannerSafeSave( file );
-                        return true;
-                }
-
-                file->ID3v2Tag()->addFrame( new TagLib::ID3v2::UniqueFileIdentifierFrame(
-                        QStringToTString( ourId ),
-                        TagLib::ByteVector( m_uniqueId.ascii(), randSize )
-                        ) );
-                file->ID3v2Tag()->setGenre( file->ID3v2Tag()->genre() );
-                scannerSafeSave( file );
-                newID = true;
-            }
+            return true;
         }
     }
     else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
     {
         if( file->tag() )
         {
-            //For now remove all tag-writing options for Vorbis files due to seeming Ogg corruption
-            //for some people...and keep bugging wheels
-
-            if( ( file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) &&
-                       !file->tag()->fieldListMap()[QStringToTString( ourId )].isEmpty() )
-                        && ( recreate || strip )
-                        && AmarokConfig::advancedTagFeatures()
-                        && TagLib::File::isWritable( file->name() ) )
-            {
-                file->tag()->removeField( QStringToTString( ourId ) );
-            }
-
-            if( AmarokConfig::advancedTagFeatures() && strip )
-            {
-                scannerSafeSave( file );
-                return true;
-            }
-
-            if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) ||
-                   ( file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) &&
-                     !file->tag()->fieldListMap()[QStringToTString( ourId )].isEmpty() )
-                   || recreate )
-            {
-                if( AmarokConfig::advancedTagFeatures() && TagLib::File::isWritable( file->name() ) )
-                {
-                    m_uniqueId = getRandomStringHelper( randSize );
-                    file->tag()->addField( QStringToTString( ourId ), QStringToTString( m_uniqueId ) );
-                    scannerSafeSave( file );
-                    newID = true;
-                }
-            }
-            else
-            {
+            if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) &&
+                    !file->tag()->fieldListMap()[QStringToTString( ourId )].isEmpty() )
                 m_uniqueId = TStringToQString( file->tag()->fieldListMap()[QStringToTString( ourId )].front() );
-            }
+            else
+                m_uniqueId = QString::null;
+
+            return true;
         }
     }
-    //FLACs are commented because supposedly they have to be totally rewritten to add uniqueids, and as they're big this takes a while.
-    //This will have to be tested.  It's also supposedly a TagLib bug so maybe it could be fixed, especially with some pressure on wheels
     else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
     {
-        if ( file->xiphComment( AmarokConfig::advancedTagFeatures() ) )
+        if( file->xiphComment( false ) )
         {
-            /*
-            if( file->xiphComment()->fieldListMap().contains( QStringToTString( ourId ) )
-                        && AmarokConfig::advancedTagFeatures()
-                        && ( recreate || strip )
-                        && TagLib::File::isWritable( file->name() ) )
-                file->xiphComment()->removeField( QStringToTString( ourId ) );
-
-            if( AmarokConfig::advancedTagFeatures() && strip )
-            {
-                scannerSafeSave( file );
-                return true;
-            }
-            */
-            if( !file->xiphComment()->fieldListMap().contains( QStringToTString( ourId ) ) )
-            {
-                /*
-                if( AmarokConfig::advancedTagFeatures() && TagLib::File::isWritable( file->name() ) )
-                {
-                    m_uniqueId = getRandomStringHelper( randSize );
-                    file->xiphComment()->addField( QStringToTString( ourId ), QStringToTString( m_uniqueId ) );
-                    scannerSafeSave( file );
-                    newID = true;
-                }
-                */
-            }
-            else
+            if( file->xiphComment()->fieldListMap().contains( QStringToTString( ourId ) ) &&
+                    !file->xiphComment()->fieldListMap()[QStringToTString( ourId )].isEmpty() )
                 m_uniqueId = TStringToQString( file->xiphComment()->fieldListMap()[QStringToTString( ourId )].front() );
+            else
+                m_uniqueId = QString::null;
+
+            return true;
         }
     }
     else if ( TagLib::Ogg::FLAC::File *file = dynamic_cast<TagLib::Ogg::FLAC::File *>( fileref.file() ) )
     {
         if( file->tag() )
         {
-            /*
-            if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) )
-                        && AmarokConfig::advancedTagFeatures()
-                        && ( recreate || strip )
-                        && TagLib::File::isWritable( file->name() ) )
-                file->tag()->removeField( QStringToTString( ourId ) );
-
-            if( AmarokConfig::advancedTagFeatures() && strip )
-            {
-                scannerSafeSave( file );
-                return true;
-            }
-            */
-            if( !file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) )
-            {
-                /*
-                if( AmarokConfig::advancedTagFeatures() && TagLib::File::isWritable( file->name() ) )
-                {
-                    m_uniqueId = getRandomStringHelper( randSize );
-                    file->tag()->addField( QStringToTString( ourId ), QStringToTString( m_uniqueId ) ),
-                    scannerSafeSave( file );
-                    newID = true;
-                }
-                */
-            }
-            else
+            if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) &&
+                    !file->tag()->fieldListMap()[QStringToTString( ourId )].isEmpty() )
                 m_uniqueId = TStringToQString( file->tag()->fieldListMap()[QStringToTString( ourId )].front() );
+            else
+                m_uniqueId = QString::null;
+
+            return true;
         }
     }
     else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
@@ -1570,247 +1549,111 @@ MetaBundle::setUniqueId( TagLib::FileRef &fileref, bool recreate, bool strip )
         if( file || !file )
             return false; //not handled, at least not yet
     }
-    return (recreate ? recreate && newID : !m_uniqueId.isEmpty() );
+    return false;
 }
 
 bool
-MetaBundle::scannerSafeSave( TagLib::File* file )
+MetaBundle::createUniqueId( TagLib::FileRef *fileref, bool stripOnly )
 {
+    if( !isFile() || !TagLib::File::isWritable( fileref->file()->name() ) )
+        return false;
 
-    //NOTE: this function will probably be changed around a bit later, as the algorithm may be obsoleted
-    //by that in doSave...alternately it maybe should be kept to help reduce contention when writing to a file
-    //between amarokapp and the collection scanner
-    //note however that this save is not *yet* scanner safe with ATF turned on...
-    DEBUG_BLOCK
-    if( ( QString( kapp->name() ) == QString( "amarokcollectionscanner" ) ) //default
-            || !ScanController::instance() //no scan, we're good
-            || !AmarokConfig::advancedTagFeatures() ) //if no ATF, we're not writing to files with scanner
+    int randSize = 8;
+
+    QString ourId = QString( "Amarok - rediscover your music at http://amarok.kde.org" ).upper();
+
+    //due to bug in taglib (see bugs 132019 and 132018) it seems the genre isn't correctly updated from
+    //a preexisting id3v2.3 tag...so explicitly set it
+    if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref->file() ) )
     {
-        return file->save();
-        //return doSave( file );
-    }
-
-    m_safeToSave = false;
-
-    if( ScanController::instance() ) //yes check again, it can pull out from under us at any time
-    {
-        ScanController::instance()->notifyThisBundle( this );
-        if( !ScanController::instance()->requestPause() )
+        if ( file->ID3v2Tag( true ) )
         {
-            debug() << "DCOP call to pause scanner failed, aborting save" << endl;
-            return false;
+            if( !file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() && ourMP3UidFrame( file, ourId ) )
+                file->ID3v2Tag()->removeFrame( ourMP3UidFrame( file, ourId ) );
+
+            if( stripOnly )
+            {
+                    file->ID3v2Tag()->setGenre( file->ID3v2Tag()->genre() );
+                    m_uniqueId = QString::null;
+                    return true;
+            }
+
+            m_uniqueId = getRandomStringHelper( randSize );
+            file->ID3v2Tag()->addFrame( new TagLib::ID3v2::UniqueFileIdentifierFrame(
+                    QStringToTString( ourId ),
+                    TagLib::ByteVector( m_uniqueId.ascii(), randSize )
+                    ) );
+            file->ID3v2Tag()->setGenre( file->ID3v2Tag()->genre() );
+            return true;
         }
     }
-    else //scanner seems to have exited in the interim
+    else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref->file() ) )
     {
-        return file->save();
-        //return doSave( file );
-    }
-
-    int count = 0;
-    bool result = false;
-
-    debug() << "entering loop to wait on scanner" << endl;
-
-    while( ScanController::instance() && !m_safeToSave && count < 50 ) //time out after five seconds, just in case
-    {
-        kapp->processEvents( 100 );
-        usleep( 100000 );
-        count++;
-        if( count % 10 == 0 )
-            debug() << "waitcount is " << count << endl;
-    }
-
-    if( m_safeToSave )
-    {
-        debug() << "Starting tag save" << endl;
-        result = file->save();
-        //result = doSave( file );
-        debug() << "done, result is " << (result?"success":"failure") << endl;
-    }
-    else
-        debug() << "Did not write tag for file " << url().path() << endl;
-
-    ScanController::instance()->notifyThisBundle( 0 );
-    if( !ScanController::instance()->requestUnpause() )
-    {
-        debug() << "DCOP call to unpause scanner failed, it may be hung" << endl;
-        //TODO: Have ScanController kill it and restart?
-    }
-
-    return result;
-}
-
-bool
-MetaBundle::doSave( TagLib::File* /*file*/ )
-{
-
-    //TODO: much commenting needed.  For now this pretty much follows algorithm laid out in bug 131353,
-    //but isn't useable since I need to find a good way to switch the file path with taglib, or a good way
-    //to get all the metadata copied over.
-
-    DEBUG_BLOCK
-    bool revert = false;
-    const KURL origPath = url();
-    char buf[32];
-    int hostname = gethostname(buf, 32);
-    if( hostname != 0 )
-    {
-        abortSave( "Could not determine hostname!" );
-        return false;
-    }
-    QString pid;
-    const QString tempPath = origPath.path() + ".amaroktemp.host-" + QString( buf ) + ".pid-" + pid.setNum( getpid() );
-    const QString origRenamedPath = origPath.path() + ".original.amaroktemp.host-" + QString( buf ) + ".pid-" + pid.setNum( getpid() );
-
-    KIO::SimpleJob *deletejob, *deletejob2;
-    KIO::FileCopyJob *copyjob;
-    KIO::FileCopyJob *movejob, *movejob2, *movejob3;
-
-    QFile *tempFile, *origRenamedFile;
-    QCString tempDigest, origRenamedDigest;
-
-    copyjob = KIO::file_copy( url(), KURL::fromPathOrURL( tempPath ), -1, false, false, false );
-    connect( copyjob, SIGNAL( result(KIO::Job*) ), SLOT( kioDone(KIO::Job*) ) );
-    m_waitingOnKIO = 1;
-
-    while( m_waitingOnKIO == 1 )
-        kapp->processEvents();
-
-    if( m_waitingOnKIO != 0 )
-    {
-        abortSave( "Could not create copy!" );
-        return false;
-    }
-
-    tempFile = new QFile( tempPath );
-    tempFile->open( IO_ReadOnly );
-    KMD5 md5sum( tempFile->readAll() );
-    tempDigest = md5sum.hexDigest();
-
-    debug() << "MD5 sum of temp file: " << tempDigest.data() << endl;
-
-    //NOTE: check correctness of file somehow?  what if some other process modifying during our copy?
-    //could be a "not our problem" but is there a better way?
-    //TODO: modify tags in temporary file -- new TagLib fileref to new file, copy over metadata?
-
-    movejob = KIO::file_move( url(), KURL::fromPathOrURL( origRenamedPath ), -1, false, false, false );
-    connect( movejob, SIGNAL( result(KIO::Job*) ), SLOT( kioDone(KIO::Job*) ) );
-    m_waitingOnKIO = 1;
-
-    while( m_waitingOnKIO == 1 )
-        kapp->processEvents();
-
-    if( m_waitingOnKIO != 0 )
-    {
-        abortSave( "Could not move original!" );
-        goto fail_remove_copy;
-    }
-
-    md5sum.reset();
-    origRenamedFile = new QFile( origRenamedPath );
-    origRenamedFile->open( IO_ReadOnly );
-    md5sum.update( origRenamedFile->readAll() );
-    origRenamedDigest = md5sum.hexDigest();
-
-    debug() << "md5sum of original file: " << origRenamedDigest.data() << endl;
-
-    if( origRenamedDigest != tempDigest )
-    {
-        abortSave( "Original checksum did not match current checksum!" );
-        revert = true;
-        goto fail_remove_copy;
-    }
-
-    movejob2 = KIO::file_move( KURL::fromPathOrURL( tempPath ), url(), -1, false, false, false );
-    connect( movejob2, SIGNAL( result(KIO::Job*) ), SLOT( kioDone(KIO::Job*) ) );
-    m_waitingOnKIO = 1;
-
-    while( m_waitingOnKIO == 1 )
-        kapp->processEvents();
-
-    if( m_waitingOnKIO != 0 )
-    {
-        abortSave( "Could not rename newly-tagged file to original!" );
-        revert = true;
-        goto fail_remove_copy;
-    }
-
-    deletejob = KIO::file_delete( KURL::fromPathOrURL( origRenamedPath ), false );
-    connect( deletejob, SIGNAL( result(KIO::Job*) ), SLOT( kioDone(KIO::Job*) ) );
-    m_waitingOnKIO = 1;
-
-    while( m_waitingOnKIO == 1 )
-        kapp->processEvents();
-
-    if( m_waitingOnKIO != 0 )
-    {
-        abortSave( "Could not delete the original file!" );
-        amaroK::StatusBar::instance()->longMessageThreadSafe( QString( "Could not remove the copy of the original file, located at %1.  Please remove it manually." ).arg( origRenamedPath ) );
-        return false;
-    }
-
-    return true;
-
-    fail_remove_copy:
-        deletejob2 = KIO::file_delete( KURL::fromPathOrURL( tempPath ), false );
-        connect( deletejob2, SIGNAL( result(KIO::Job*) ), SLOT( kioDone(KIO::Job*) ) );
-        m_waitingOnKIO = 1;
-
-        while( m_waitingOnKIO == 1 )
-            kapp->processEvents();
-
-        if( m_waitingOnKIO != 0 )
+        if( file->tag() )
         {
-            abortSave( "Could not delete the temporary file!" );
-            amaroK::StatusBar::instance()->longMessageThreadSafe( QString( "Could not remove the temporary file %1.  Please remove it manually." ).arg( tempPath ) );
+            if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) &&
+                    !file->tag()->fieldListMap()[QStringToTString( ourId )].isEmpty() )
+                file->tag()->removeField( QStringToTString( ourId ) );
+
+            if( stripOnly )
+            {
+                m_uniqueId = QString::null;
+                return true;
+            }
+
+            m_uniqueId = getRandomStringHelper( randSize );
+            file->tag()->addField( QStringToTString( ourId ), QStringToTString( m_uniqueId ) );
+            return true;
         }
-
-        if( !revert )
-            return false;
-
-        movejob3 = KIO::file_move( KURL::fromPathOrURL( origRenamedPath ), url(), -1, false, false, false );
-        connect( movejob3, SIGNAL( result(KIO::Job*) ), SLOT( kioDone(KIO::Job*) ) );
-        m_waitingOnKIO = 1;
-
-        while( m_waitingOnKIO == 1 )
-            kapp->processEvents();
-
-        if( m_waitingOnKIO != 0 )
-        {
-            abortSave( "Could not revert file to original filename!" );
-            amaroK::StatusBar::instance()->longMessageThreadSafe( QString( "Could not revert the file to its original filename, from %1 to %2.  Please do this manually." ).arg( origRenamedPath ).arg( origPath.path() ) );
-        }
-
-        return false;
-}
-
-void
-MetaBundle::kioDone( KIO::Job *job )
-{
-    DEBUG_BLOCK
-    if( job->error() )
-    {
-        debug() << "Error! Code is: " << job->error() << endl;
-        m_waitingOnKIO = -1;
-        return;
     }
-    m_waitingOnKIO = 0;
-}
+    //FLACs are commented because supposedly they have to be totally rewritten to add uniqueids, and as they're big this takes a while.
+    //This will have to be tested.  It's also supposedly a TagLib bug so maybe it could be fixed, especially with some pressure on wheels
+    else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref->file() ) )
+    {
+        if( file->xiphComment( true ) )
+        {/*
+            if( file->xiphComment()->fieldListMap().contains( QStringToTString( ourId ) ) &&
+                    !file->xiphComment()->fieldListMap()[QStringToTString( ourId )].isEmpty() )
+                file->xiphComment()->removeField( QStringToTString( ourId ) );
 
-void
-MetaBundle::abortSave( const QString message  )
-{
-    DEBUG_BLOCK
-    //TODO: maybe make this pop up in the status bar?  What if there are a lot of problems?
-    debug() << message << endl;
-}
+            if( stripOnly )
+            {
+                m_uniqueId = QString::null;
+                return true;
+            }
 
-void
-MetaBundle::scannerAcknowledged()
-{
-    DEBUG_BLOCK
-    m_safeToSave = true;
+            m_uniqueId = getRandomStringHelper( randSize );
+            file->xiphComment()->addField( QStringToTString( ourId ), QStringToTString( m_uniqueId ) );
+            return true;
+        */}
+    }
+    else if ( TagLib::Ogg::FLAC::File *file = dynamic_cast<TagLib::Ogg::FLAC::File *>( fileref->file() ) )
+    {
+        if( file->tag() )
+        {/*
+            if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) &&
+                    !file->tag()->fieldListMap()[QStringToTString( ourId )].isEmpty() )
+                file->tag()->removeField( QStringToTString( ourId ) );
+
+            if( stripOnly )
+            {
+                m_uniqueId = QString::null;
+                return true;
+            }
+
+            m_uniqueId = getRandomStringHelper( randSize );
+            file->tag()->addField( QStringToTString( ourId ), QStringToTString( m_uniqueId ) );
+            return true;
+        */}
+
+    }
+    else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref->file() ) )
+    {
+        if( file || !file )
+        return false;
+    }
+
+    return false;
 }
 
 bool
@@ -1819,17 +1662,23 @@ MetaBundle::newUniqueId()
     if( !isFile() || !AmarokConfig::advancedTagFeatures() )
         return false;
 
-    const QString path = url().path();
-    TagLib::FileRef fileref;
-    fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
+    bool noproblem;
 
-    if( !fileref.isNull() )
-        return setUniqueId( fileref, true );
-    else
+    MetaBundleSaver *mbs = new MetaBundleSaver( this );
+    TagLib::FileRef *fileref = mbs->prepareToSave();
+
+    if( !fileref )
     {
         debug() << "ERROR: failed to set new uniqueid (could not open fileref)" << endl;
         return false;
     }
+
+    if( createUniqueId( fileref ) )
+        noproblem = mbs->doSave() && mbs->cleanupSave();
+
+    delete mbs;
+
+    return noproblem;
 }
 
 bool
@@ -1838,17 +1687,23 @@ MetaBundle::removeUniqueId()
     if( !isFile() )
         return false;
 
-    const QString path = url().path();
-    TagLib::FileRef fileref;
-    fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
+    bool noproblem;
 
-    if( !fileref.isNull() )
-        return setUniqueId( fileref, false, true );
-    else
+    MetaBundleSaver *mbs = new MetaBundleSaver( this );
+    TagLib::FileRef *fileref = mbs->prepareToSave();
+
+    if( !fileref )
     {
         debug() << "ERROR: failed to remove uniqueid (could not open fileref)" << endl;
         return false;
     }
+
+    if( createUniqueId( fileref, true ) )
+        noproblem = mbs->doSave() && mbs->cleanupSave();
+
+    delete mbs;
+
+    return noproblem;
 }
 
 int
@@ -1935,6 +1790,12 @@ MetaBundle::getRandomStringHelper( int size )
             goodvalue = true;
     }
     return returnvalue;
+}
+
+void
+MetaBundle::scannerAcknowledged()
+{
+    DEBUG_BLOCK
 }
 
 void MetaBundle::setTitle( const QString &title )
@@ -2046,5 +1907,3 @@ void PodcastEpisodeBundle::detach()
     m_type = QDeepCopy<QString>(m_type);
     m_guid = QDeepCopy<QString>(m_guid);
 }
-
-#include "metabundle.moc"
