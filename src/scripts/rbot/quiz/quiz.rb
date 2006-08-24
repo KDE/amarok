@@ -176,7 +176,7 @@ class QuizPlugin < Plugin
 
 
   def say_score( m, nick )
-    q = create_quiz( m.target )
+    q = create_quiz( m.target.to_s )
 
     if q.registry.has_key?( nick )
       score = q.registry[nick].score
@@ -197,7 +197,7 @@ class QuizPlugin < Plugin
     if topic == "admin"
       "Quiz game aministration commands (requires authentication): 'quiz autoask <on/off>' => enable/disable autoask mode. 'quiz transfer <source> <dest> [score] [jokers]' => transfer [score] points and [jokers] jokers from <source> to <dest> (default is entire score and all jokers). 'quiz setscore <player> <score>' => set <player>'s score to <score>. 'quiz setjokers <player> <jokers>' => set <player>'s number of jokers to <jokers>. 'quiz deleteplayer <player>' => delete one player from the rank table (only works when score and jokers are set to 0)."
     else
-      "Quiz game. 'quiz' => ask a question. 'quiz hint' => get a hint. 'quiz solve' => solve this question. 'quiz skip' => skip to next question. 'quiz joker' => draw a joker to win this round. 'quiz score [player]' => show score for [player] (default is yourself). 'quiz top5' => show top 5 players. 'quiz top <number>' => show top <number> players (max 50). 'quiz stats' => show some statistics. 'quiz fetch' => refetch questions from databases.\nYou can add new questions at http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz"
+      "A multiplayer trivia quiz. 'quiz' => ask a question. 'quiz hint' => get a hint. 'quiz solve' => solve this question. 'quiz skip' => skip to next question. 'quiz joker' => draw a joker to win this round. 'quiz score [player]' => show score for [player] (default is yourself). 'quiz top5' => show top 5 players. 'quiz top <number>' => show top <number> players (max 50). 'quiz stats' => show some statistics. 'quiz fetch' => refetch questions from databases.\nYou can add new questions at http://amarok.kde.org/amarokwiki/index.php/Rbot_Quiz"
     end
   end
 
@@ -248,8 +248,8 @@ class QuizPlugin < Plugin
   # Reimplemented from Plugin
   #
   def listen( m )
-    return unless @quizzes.has_key?( m.target )
-    q = @quizzes[m.target]
+    return unless @quizzes.has_key?( m.target.to_s )
+    q = @quizzes[m.target.to_s]
 
     return if q.question == nil
 
@@ -261,32 +261,32 @@ class QuizPlugin < Plugin
       points = 1
       if q.first_try
         points += 1
-        replies << "WHOPEEE! #{m.sourcenick} got it on the first try! That's worth an extra point. Answer was: #{q.answer}"
-      elsif q.rank_table.length >= 1 and m.sourcenick == q.rank_table[0][0]
-        replies << "THE QUIZ CHAMPION defends his throne! Seems like #{m.sourcenick} is invicible! Answer was: #{q.answer}"
-      elsif q.rank_table.length >= 2 and m.sourcenick == q.rank_table[1][0]
-        replies << "THE SECOND CHAMPION is on the way up! Hurry up #{m.sourcenick}, you only need #{q.rank_table[0][1].score - q.rank_table[1][1].score - 1} points to beat the king! Answer was: #{q.answer}"
-      elsif    q.rank_table.length >= 3 and m.sourcenick == q.rank_table[2][0]
-        replies << "THE THIRD CHAMPION strikes again! Give it all #{m.sourcenick}, with #{q.rank_table[1][1].score - q.rank_table[2][1].score - 1} more points you'll reach the 2nd place! Answer was: #{q.answer}"
+        replies << "WHOPEEE! #{m.sourcenick.to_s} got it on the first try! That's worth an extra point. Answer was: #{q.answer}"
+      elsif q.rank_table.length >= 1 and m.sourcenick.to_s == q.rank_table[0][0]
+        replies << "THE QUIZ CHAMPION defends his throne! Seems like #{m.sourcenick.to_s} is invicible! Answer was: #{q.answer}"
+      elsif q.rank_table.length >= 2 and m.sourcenick.to_s == q.rank_table[1][0]
+        replies << "THE SECOND CHAMPION is on the way up! Hurry up #{m.sourcenick.to_s}, you only need #{q.rank_table[0][1].score - q.rank_table[1][1].score - 1} points to beat the king! Answer was: #{q.answer}"
+      elsif    q.rank_table.length >= 3 and m.sourcenick.to_s == q.rank_table[2][0]
+        replies << "THE THIRD CHAMPION strikes again! Give it all #{m.sourcenick.to_s}, with #{q.rank_table[1][1].score - q.rank_table[2][1].score - 1} more points you'll reach the 2nd place! Answer was: #{q.answer}"
       else
-        replies << "BINGO!! #{m.sourcenick} got it right. The answer was: #{q.answer}"
-        replies << "OMG!! PONIES!! #{m.sourcenick} is the cutest. The answer was: #{q.answer}"
-        replies << "HUZZAAAH! #{m.sourcenick} did it again. The answer was: #{q.answer}"
-        replies << "YEEEHA! Cowboy #{m.sourcenick} scored again. The answer was: #{q.answer}"
-        replies << "STRIKE! #{m.sourcenick} pwned you all. The answer was: #{q.answer}"
-        replies << "YAY :)) #{m.sourcenick} is totally invited to my next sleepover. The answer was: #{q.answer}"
-        replies << "And the crowd GOES WILD for #{m.sourcenick}. The answer was: #{q.answer}"
-        replies << "GOOOAAALLLL! That was one fine strike by #{m.sourcenick}. The answer was: #{q.answer}"
-        replies << "HOO-RAY, #{m.sourcenick} deserves a medal! Only #{m.sourcenick} could have known the answer: #{q.answer}"
-        replies << "OKAY, #{m.sourcenick} is officially a spermatologist! Answer was: #{q.answer}"
-        replies << "WOOO, I bet that #{m.sourcenick} knows where the word 'trivia' comes from too! Answer was: #{q.answer}"
+        replies << "BINGO!! #{m.sourcenick.to_s} got it right. The answer was: #{q.answer}"
+        replies << "OMG!! PONIES!! #{m.sourcenick.to_s} is the cutest. The answer was: #{q.answer}"
+        replies << "HUZZAAAH! #{m.sourcenick.to_s} did it again. The answer was: #{q.answer}"
+        replies << "YEEEHA! Cowboy #{m.sourcenick.to_s} scored again. The answer was: #{q.answer}"
+        replies << "STRIKE! #{m.sourcenick.to_s} pwned you all. The answer was: #{q.answer}"
+        replies << "YAY :)) #{m.sourcenick.to_s} is totally invited to my next sleepover. The answer was: #{q.answer}"
+        replies << "And the crowd GOES WILD for #{m.sourcenick.to_s}. The answer was: #{q.answer}"
+        replies << "GOOOAAALLLL! That was one fine strike by #{m.sourcenick.to_s}. The answer was: #{q.answer}"
+        replies << "HOO-RAY, #{m.sourcenick.to_s} deserves a medal! Only #{m.sourcenick.to_s} could have known the answer: #{q.answer}"
+        replies << "OKAY, #{m.sourcenick.to_s} is officially a spermatologist! Answer was: #{q.answer}"
+        replies << "WOOO, I bet that #{m.sourcenick.to_s} knows where the word 'trivia' comes from too! Answer was: #{q.answer}"
       end
 
       m.reply replies[rand( replies.length )]
 
       player = nil
-      if q.registry.has_key?( m.sourcenick )
-        player = q.registry[m.sourcenick]
+      if q.registry.has_key?( m.sourcenick.to_s )
+        player = q.registry[m.sourcenick.to_s]
       else
         player = PlayerStats.new( 0, 0, 0 )
       end
@@ -296,11 +296,11 @@ class QuizPlugin < Plugin
       # Reward player with a joker every X points
       if player.score % 15 == 0 and player.jokers < Max_Jokers
         player.jokers += 1
-        m.reply "#{m.sourcenick} gains a new joker. Rejoice :)"
+        m.reply "#{m.sourcenick.to_s} gains a new joker. Rejoice :)"
       end
 
-      q.registry[m.sourcenick] = player
-      calculate_ranks( m, q, m.sourcenick )
+      q.registry[m.sourcenick.to_s] = player
+      calculate_ranks( m, q, m.sourcenick.to_s )
 
       q.question = nil
       cmd_quiz( m, nil ) if q.registry_conf["autoask"]
@@ -330,14 +330,14 @@ class QuizPlugin < Plugin
   # Command handling
   #######################################################################
   def cmd_quiz( m, params )
-    # if m.target == "#amarok"
+    # if m.target.to_s == "#amarok"
     #     m.reply "Please join #amarok.gaming for quizzing! :)"
     #     return
     # end
 
     fetch_data( m ) if @questions.empty?
 
-    q = create_quiz( m.target )
+    q = create_quiz( m.target.to_s )
 
     if q.question
       m.reply "#{Bold}#{Color}03Current question: #{Color}#{Bold}#{q.question}"
@@ -393,8 +393,8 @@ class QuizPlugin < Plugin
 
 
   def cmd_solve( m, params )
-    return unless @quizzes.has_key?( m.target )
-    q = @quizzes[m.target]
+    return unless @quizzes.has_key?( m.target.to_s )
+    q = @quizzes[m.target.to_s]
 
     m.reply "The correct answer was: #{q.answer}"
 
@@ -405,11 +405,11 @@ class QuizPlugin < Plugin
 
 
   def cmd_hint( m, params )
-    return unless @quizzes.has_key?( m.target )
-    q = @quizzes[m.target]
+    return unless @quizzes.has_key?( m.target.to_s )
+    q = @quizzes[m.target.to_s]
 
     if q.question == nil
-      m.reply "#{m.sourcenick}: Get a question first!"
+      m.reply "#{m.sourcenick.to_s}: Get a question first!"
     else
       num_chars = case q.hintrange.length    # Number of characters to reveal
       when 25..1000 then 7
@@ -432,19 +432,19 @@ class QuizPlugin < Plugin
       q.hinted = true
 
       if q.hint == q.answer_core
-        m.reply "#{Bold}#{Color}04BUST!#{Color}#{Bold} This round is over. #{Color}04Minus one point for #{m.sourcenick}#{Color}."
+        m.reply "#{Bold}#{Color}04BUST!#{Color}#{Bold} This round is over. #{Color}04Minus one point for #{m.sourcenick.to_s}#{Color}."
 
         stats = nil
-        if q.registry.has_key?( m.sourcenick )
-          stats = q.registry[m.sourcenick]
+        if q.registry.has_key?( m.sourcenick.to_s )
+          stats = q.registry[m.sourcenick.to_s]
         else
           stats = PlayerStats.new( 0, 0, 0 )
         end
 
         stats["score"] = stats.score -    1
-        q.registry[m.sourcenick] = stats
+        q.registry[m.sourcenick.to_s] = stats
 
-        calculate_ranks( m, q, m.sourcenick )
+        calculate_ranks( m, q, m.sourcenick.to_s )
 
         q.question = nil
         cmd_quiz( m, nil ) if q.registry_conf["autoask"]
@@ -454,8 +454,8 @@ class QuizPlugin < Plugin
 
 
   def cmd_skip( m, params )
-    return unless @quizzes.has_key?( m.target )
-    q = @quizzes[m.target]
+    return unless @quizzes.has_key?( m.target.to_s )
+    q = @quizzes[m.target.to_s]
 
     q.question = nil
     cmd_quiz( m, params )
@@ -463,33 +463,33 @@ class QuizPlugin < Plugin
 
 
   def cmd_joker( m, params )
-    q = create_quiz( m.target )
+    q = create_quiz( m.target.to_s )
 
     if q.question == nil
-      m.reply "#{m.sourcenick}: There is no open question."
+      m.reply "#{m.sourcenick.to_s}: There is no open question."
       return
     end
 
-    if q.registry[m.sourcenick].jokers > 0
-      player = q.registry[m.sourcenick]
+    if q.registry[m.sourcenick.to_s].jokers > 0
+      player = q.registry[m.sourcenick.to_s]
       player.jokers -= 1
       player.score += 1
-      q.registry[m.sourcenick] = player
+      q.registry[m.sourcenick.to_s] = player
 
-      calculate_ranks( m, q, m.sourcenick )
+      calculate_ranks( m, q, m.sourcenick.to_s )
 
       if player.jokers != 1
         jokers = "jokers"
       else
         jokers = "joker"
       end
-      m.reply "#{Bold}#{Color}12JOKER!#{Color}#{Bold} #{m.sourcenick} draws a joker and wins this round. You have #{player.jokers} #{jokers} left."
+      m.reply "#{Bold}#{Color}12JOKER!#{Color}#{Bold} #{m.sourcenick.to_s} draws a joker and wins this round. You have #{player.jokers} #{jokers} left."
       m.reply "The answer was: #{q.answer}."
 
       q.question = nil
       cmd_quiz( m, nil ) if q.registry_conf["autoask"]
     else
-      m.reply "#{m.sourcenick}: You don't have any jokers left ;("
+      m.reply "#{m.sourcenick.to_s}: You don't have any jokers left ;("
     end
   end
 
@@ -500,11 +500,11 @@ class QuizPlugin < Plugin
 
 
   def cmd_top5( m, params )
-    q = create_quiz( m.target )
+    q = create_quiz( m.target.to_s )
 
     debug q.rank_table.inspect
 
-    m.reply "* Top 5 Players for #{m.target}:"
+    m.reply "* Top 5 Players for #{m.target.to_s}:"
 
     [5, q.rank_table.length].min.times do |i|
       player = q.rank_table[i]
@@ -518,12 +518,12 @@ class QuizPlugin < Plugin
   def cmd_top_number( m, params )
     num = params[:number].to_i
     return unless 1..50 === num
-    q = create_quiz( m.target )
+    q = create_quiz( m.target.to_s )
 
     debug q.rank_table.inspect
 
     ar = []
-    m.reply "* Top #{num} Players for #{m.target}:"
+    m.reply "* Top #{num} Players for #{m.target.to_s}:"
     n = [ num, q.rank_table.length ].min
     n.times do |i|
       player = q.rank_table[i]
@@ -534,7 +534,7 @@ class QuizPlugin < Plugin
     str = ar.join(" | ")
 
     if str.empty?
-      m.reply "Noone in #{m.target} has a score!"
+      m.reply "Noone in #{m.target.to_s} has a score!"
     else
       m.reply str
     end
@@ -550,7 +550,7 @@ class QuizPlugin < Plugin
 
 
   def cmd_score( m, params )
-    say_score( m, m.sourcenick )
+    say_score( m, m.sourcenick.to_s )
   end
 
 
@@ -560,7 +560,7 @@ class QuizPlugin < Plugin
 
 
   def cmd_autoask( m, params )
-    q = create_quiz( m.target )
+    q = create_quiz( m.target.to_s )
 
     if params[:enable].downcase == "on"
       q.registry_conf["autoask"] = true
@@ -576,7 +576,7 @@ class QuizPlugin < Plugin
 
 
   def cmd_transfer( m, params )
-    q = create_quiz( m.target )
+    q = create_quiz( m.target.to_s )
 
     debug q.rank_table.inspect
 
@@ -629,7 +629,7 @@ class QuizPlugin < Plugin
 
 
   def cmd_del_player( m, params )
-    q = create_quiz( m.target )
+    q = create_quiz( m.target.to_s )
     debug q.rank_table.inspect
 
     nick = params[:nick]
@@ -664,7 +664,7 @@ class QuizPlugin < Plugin
 
 
   def cmd_set_score(m, params)
-    q = create_quiz( m.target )
+    q = create_quiz( m.target.to_s )
     debug q.rank_table.inspect
 
     nick = params[:nick]
@@ -682,7 +682,7 @@ class QuizPlugin < Plugin
 
 
   def cmd_set_jokers(m, params)
-    q = create_quiz( m.target )
+    q = create_quiz( m.target.to_s )
 
     nick = params[:nick]
     val = [params[:jokers].to_i, Max_Jokers].min
