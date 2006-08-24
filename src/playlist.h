@@ -19,6 +19,7 @@
 #ifndef AMAROK_PLAYLIST_H
 #define AMAROK_PLAYLIST_H
 
+#include <config.h>
 #include "amarok_export.h"
 #include "amarokconfig.h"
 #include "amarokdcophandler.h"
@@ -270,6 +271,9 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         void slotQueueChanged( const PLItemList &in, const PLItemList &out);
         void slotUseScores( bool use );
         void slotUseRatings( bool use );
+	// #ifdef HAVE_MOODBAR  <-- Don't do this, since moc doesn't preprocess
+        void slotMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic );
+	// #endif
         void updateNextPrev();
         void writeTag( QListViewItem*, const QString&, int );
 

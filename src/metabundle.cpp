@@ -118,6 +118,9 @@ const QString MetaBundle::exactColumnName( int c ) //static
         case PlayCount:  return "PlayCount";
         case LastPlayed: return "LastPlayed";
         case Filesize:   return "Filesize";
+#ifdef HAVE_MOODBAR
+        case Mood:       return "Mood";
+#endif
     }
     return "<ERROR>";
 }
@@ -147,6 +150,9 @@ const QString MetaBundle::prettyColumnName( int index ) //static
         case PlayCount:  return i18n( "Play Count"  );
         case LastPlayed: return i18n( "Last Played" );
         case Filesize:   return i18n( "File Size"   );
+#ifdef HAVE_MOODBAR
+        case Mood:       return i18n( "Mood"        );
+#endif
     }
     return "This is a bug.";
 }
@@ -173,6 +179,9 @@ MetaBundle::MetaBundle()
         , m_playCount( Undetermined )
         , m_lastPlay( abs( Undetermined ) )
         , m_filesize( Undetermined )
+#ifdef HAVE_MOODBAR
+	, m_moodbar( this )
+#endif
         , m_type( other )
         , m_exists( true )
         , m_isValidMedia( true )
@@ -205,6 +214,9 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
     , m_playCount( Undetermined )
     , m_lastPlay( abs( Undetermined ) )
     , m_filesize( Undetermined )
+#ifdef HAVE_MOODBAR
+    , m_moodbar( this )
+#endif
     , m_type( other )
     , m_exists( isFile() && QFile::exists( url.path() ) )
     , m_isValidMedia( false )
@@ -274,6 +286,9 @@ MetaBundle::MetaBundle( const QString& title,
         , m_playCount( Undetermined )
         , m_lastPlay( abs( Undetermined ) )
         , m_filesize( Undetermined )
+#ifdef HAVE_MOODBAR
+	, m_moodbar( this )
+#endif
         , m_type( other )
         , m_exists( true )
         , m_isValidMedia( false )
@@ -301,6 +316,9 @@ MetaBundle::MetaBundle( const QString& title,
 }
 
 MetaBundle::MetaBundle( const MetaBundle &bundle )
+#ifdef HAVE_MOODBAR
+        : m_moodbar( this )
+#endif
 {
     *this = bundle;
 }
@@ -335,6 +353,9 @@ MetaBundle::operator=( const MetaBundle& bundle )
     m_rating = bundle.m_rating;
     m_playCount = bundle.m_playCount;
     m_lastPlay = bundle.m_lastPlay;
+#ifdef HAVE_MOODBAR
+    m_moodbar = bundle.m_moodbar;
+#endif
     m_filesize = bundle.m_filesize;
     m_type = bundle.m_type;
     m_exists = bundle.m_exists;
@@ -768,6 +789,9 @@ QString MetaBundle::exactText( int column ) const
         case PlayCount:  return QString::number( playCount() );
         case LastPlayed: return QString::number( lastPlay() );
         case Filesize:   return QString::number( filesize() );
+#ifdef HAVE_MOODBAR
+        case Mood:       return QString::null;
+#endif
         default: warning() << "Tried to get the text of a nonexistent column! [" << column << endl;
     }
 
@@ -800,6 +824,13 @@ QString MetaBundle::prettyText( int column ) const
         case PlayCount:  text = QString::number( playCount() );                                      break;
         case LastPlayed: text = amaroK::verboseTimeSince( lastPlay() );                              break;
         case Filesize:   text = prettyFilesize();                                                    break;
+#ifdef HAVE_MOODBAR
+        case Mood:
+	  text = moodbar_const().state() == Moodbar::JobRunning ? i18n( "Calculating..." )
+	       : moodbar_const().state() == Moodbar::JobQueued  ? i18n( "Queued..." )
+	       : QString::null;
+	break;
+#endif
         default: warning() << "Tried to get the text of a nonexistent column!" << endl;              break;
     }
 
@@ -1885,6 +1916,9 @@ void MetaBundle::detach()
     m_genre = m_genre.deepCopy();
     m_streamName = QDeepCopy<QString>(m_streamName);
     m_streamUrl = QDeepCopy<QString>(m_streamUrl);
+#ifdef HAVE_MOODBAR
+    m_moodbar.detach();
+#endif
 
     m_uniqueId = QDeepCopy<QString>( m_uniqueId );
 

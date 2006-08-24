@@ -3,6 +3,8 @@
 #ifndef AMAROK_H
 #define AMAROK_H
 
+#include <config.h>  // HAVE_MOODBAR
+
 #include <qnamespace.h>
 #include <qstring.h>
 
@@ -168,6 +170,9 @@ namespace amaroK
 
     void setUseScores( bool use ); //defined in app.cpp
     void setUseRatings( bool use );
+#ifdef HAVE_MOODBAR
+    void setMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic );
+#endif
 
     bool repeatNone(); //defined in actionclasses.cpp
     bool repeatTrack();
@@ -238,6 +243,26 @@ namespace amaroK
             return i;
         };
     };
+
+    ////////////////////////////////////////////////////////////////////////////////
+    // class AmaroKProcess
+    ////////////////////////////////////////////////////////////////////////////////
+    /** Due to xine-lib, we have to make KProcess close all fds, otherwise we get "device is busy" messages
+     * Used by AmaroKProcIO and AmaroKProcess, exploiting commSetupDoneC(), a virtual method that
+     * happens to be called in the forked process
+     * See bug #103750 for more information.
+     */
+    class LIBAMAROK_EXPORT Process : public KProcess {
+        public:
+        Process( QObject *parent = 0 ) : KProcess( parent ) {}
+        virtual int commSetupDoneC() {
+            const int i = KProcess::commSetupDoneC();
+            amaroK::closeOpenFiles(KProcess::out[0],KProcess::in[0], KProcess::err[0]);
+            return i;
+        };
+    };
+
+
 }
 
 

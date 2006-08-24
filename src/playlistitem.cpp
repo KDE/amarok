@@ -447,6 +447,10 @@ PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
         case Bitrate:    return cmp( bitrate(),   i->bitrate() );
         case Bpm:        return cmp( bpm(),       i->bpm() );
         case Filesize:   return cmp( filesize(),  i->filesize() );
+#ifdef HAVE_MOODBAR
+        case Mood:       
+            return cmp( moodbar_const().hueSort(), i->moodbar_const().hueSort() );
+#endif
         case Year:
             if( year() == i->year() )
                 return compare( i, Artist, ascending );
@@ -496,6 +500,16 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
     static const QImage currentTrackLeft  = locate( "data", "amarok/images/currenttrack_bar_left.png" );
     static const QImage currentTrackMid   = locate( "data", "amarok/images/currenttrack_bar_mid.png" );
     static const QImage currentTrackRight = locate( "data", "amarok/images/currenttrack_bar_right.png" );
+
+#ifdef HAVE_MOODBAR
+    if( column == Mood  &&  !moodbar().dataExists() )
+      moodbar().load();  // Only has an effect the first time
+    // The moodbar column can have text in it, like "Calculating".
+    // moodbarType is 0 if column != Mood, 1 if we're displaying
+    // a moodbar, and 2 if we're displaying text
+    const int moodbarType = 
+        column != Mood ? 0 : moodbar().state() == Moodbar::Loaded ? 1 : 2;
+#endif
 
     const QString colText = text( column );
     const bool isCurrent = this == listView()->currentTrack();
@@ -604,7 +618,11 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                 if( align != Qt::AlignCenter )
                 align |= Qt::AlignVCenter;
 
-                if( column != Rating )
+                if( column != Rating
+#ifdef HAVE_MOODBAR		    
+		    &&  moodbarType != 1 
+#endif
+		    )
                 {
                     // Draw the text
                     static QFont font;
@@ -633,6 +651,10 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                 p.drawPixmap( 0, 0, paintCache[column].map[colorKey] );
             if( column == Rating )
                 drawRating( &p );
+#ifdef HAVE_MOODBAR
+	    if( moodbarType == 1 )
+	        drawMood( &p, width, height() );
+#endif
         }
     else
     {
@@ -688,6 +710,10 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
 
         if( column == Rating )
             drawRating( &p );
+#ifdef HAVE_MOODBAR
+	else if( moodbarType == 1 )
+	    drawMood( &p, width, height() );
+#endif
         else
         {
             // Draw the text
@@ -847,6 +873,45 @@ void PlaylistItem::drawRating( QPainter *p, int stars, int graystars, bool half 
         x += star()->width() + listView()->itemMargin();
     }
 }
+
+#ifdef HAVE_MOODBAR
+
+#define MOODBAR_SPACING 2  // The distance from the moodbar pixmap to each side
+
+void PlaylistItem::drawMood( QPainter *p, int width, int height )
+{
+    // In theory, if AmarokConfig::showMoodbar() == false, then the
+    // moodbar column should be hidden and we shouldn't be here.
+    if( !AmarokConfig::showMoodbar() )
+      return;
+
+    // Due to the logic of the calling code, this should always return true
+    if( moodbar().dataExists() )
+      {
+	QPixmap mood = moodbar().draw( width - MOODBAR_SPACING*2, 
+				       height - MOODBAR_SPACING*2 );
+	p->drawPixmap( MOODBAR_SPACING, MOODBAR_SPACING, mood );
+      }
+
+    else 
+      moodbar().load();  // This only has any effect the first time it's run
+
+    // We don't have to listen for the jobEvent() signal since we
+    // inherit MetaBundle, and the moodbar lets the MetaBundle know
+    // about new data directly via moodbarJobEvent() below.
+}
+
+// This is run when a job starts or finishes
+void PlaylistItem::moodbarJobEvent( int newState )
+{
+    (void) newState;  // want to redraw nomatter what the new state is
+    if( AmarokConfig::showMoodbar() )
+      repaint();
+    // Don't automatically resort because it's annoying
+}
+
+#endif // HAVE_MOODBAR
+
 
 void PlaylistItem::setup()
 {

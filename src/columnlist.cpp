@@ -17,6 +17,8 @@
   Boston, MA 02110-1301, USA.
 */
 
+#include <config.h>
+
 #include <qheader.h>
 #include <qpainter.h>
 #include <qtooltip.h>
@@ -88,6 +90,9 @@ ColumnList::ColumnList( QWidget *parent, const char *name )
     {
         const int s = h->mapToSection( i );
         if( ( s != MetaBundle::Rating || AmarokConfig::useRatings() ) &&
+#ifdef HAVE_MOODBAR
+	    ( s != MetaBundle::Mood || AmarokConfig::showMoodbar() ) &&
+#endif	    
             ( s != MetaBundle::Score || AmarokConfig::useScores() ) )
         {
             ( new MyCheckListItem( s, m_list, MetaBundle::prettyColumnName( s ), QCheckListItem::CheckBox, this ) )

@@ -20,6 +20,7 @@
 #include <config.h>
 
 #include "amarok.h"
+#include "amarokconfig.h"
 #include "app.h"
 #include "enginecontroller.h"
 #include "sliderwidget.h"
@@ -131,11 +132,28 @@ amaroK::Slider::setValue( int newValue )
 #define THICKNESS 7
 #define MARGIN 3
 
-amaroK::PrettySlider::PrettySlider( Qt::Orientation orientation, QWidget *parent, uint max )
+amaroK::PrettySlider::PrettySlider( Qt::Orientation orientation, SliderMode mode,
+				    QWidget *parent, uint max )
     : amaroK::Slider( orientation, parent, max )
+    , m_mode( mode )
 {
-    setWFlags( Qt::WNoAutoErase );
-    setFocusPolicy( QWidget::NoFocus );
+    if( m_mode == Pretty)
+      {
+	setWFlags( Qt::WNoAutoErase );
+	setFocusPolicy( QWidget::NoFocus );
+      }
+
+#ifdef HAVE_MOODBAR    
+    // We only have to connect this *once*, since our MetaBundle 
+    // doesn't get destroyed until we do.
+    connect( &m_bundle.moodbar(), SIGNAL( jobEvent( int ) ),
+	     SLOT( moodbarJobEvent( int ) ) );
+
+    // We want to know if we should reset our moodbar data
+    connect( App::instance(), SIGNAL( moodbarPrefs( bool, bool, int, bool ) ), 
+	     SLOT( slotMoodbarPrefs( bool, bool, int, bool ) ) );
+    
+#endif
 }
 
 void
@@ -149,9 +167,12 @@ amaroK::PrettySlider::mousePressEvent( QMouseEvent *e )
 void
 amaroK::PrettySlider::slideEvent( QMouseEvent *e )
 {
-    QSlider::setValue( orientation() == Horizontal
-        ? QRangeControl::valueFromPosition( e->pos().x(), width()-2 )
-        : QRangeControl::valueFromPosition( e->pos().y(), height()-2 ) );
+    if( m_mode == Pretty )
+      QSlider::setValue( orientation() == Horizontal
+          ? QRangeControl::valueFromPosition( e->pos().x(), width()-2 )
+          : QRangeControl::valueFromPosition( e->pos().y(), height()-2 ) );
+    else
+      amaroK::Slider::slideEvent( e );
 }
 
 namespace amaroK {
@@ -162,11 +183,37 @@ namespace amaroK {
 }
 
 void
-amaroK::PrettySlider::paintEvent( QPaintEvent* )
+amaroK::PrettySlider::paintEvent( QPaintEvent *e )
 {
     const int w   = orientation() == Qt::Horizontal ? width() : height();
     const int pos = int( double( w-2 ) / maxValue() * Slider::value() );
-    const int h   = THICKNESS;
+    int h = THICKNESS;
+
+#ifdef HAVE_MOODBAR
+    bool doMoodbar = ( !m_bundle.url().isEmpty()       && 
+		       m_bundle.moodbar().dataExists() &&
+		       AmarokConfig::showMoodbar() );
+    QPixmap mood;
+    if( doMoodbar )
+      {
+	if( m_mode == Normal )
+	  h = (orientation() == Qt::Vertical ? width() : height()) - 2*MARGIN;
+	mood = m_bundle.moodbar().draw( w, h );
+      }
+    // If we're a Normal PrettySlider and we have no moodbar, 
+    // emulate the behavior of Slider
+    else if( m_mode == Normal )
+      {
+	amaroK::Slider::paintEvent( e );
+	return;
+      }
+#else
+    if( m_mode == Normal )
+      {
+	amaroK::Slider::paintEvent( e );
+	return;
+      }
+#endif
 
     QPixmap  buf( size() );
     QPainter p( &buf, this );
@@ -179,25 +226,117 @@ amaroK::PrettySlider::paintEvent( QPaintEvent* )
         p.rotate( -90 ); //90 degrees clockwise
     }
 
-    p.translate( 0, MARGIN );
-      p.setPen( amaroK::ColorScheme::Foreground );
-      p.fillRect( 0, 0, pos, h, QColor( amaroK::ColorScheme::Background ) );
-      p.drawRect( 0, 0, w, h );
-    p.translate( 0, -MARGIN );
+#ifdef HAVE_MOODBAR
+    if( !doMoodbar )
+      {
+#endif
+	p.translate( 0, MARGIN );
+	  p.setPen( amaroK::ColorScheme::Foreground );
+	  p.fillRect( 0, 0, pos, h, QColor( amaroK::ColorScheme::Background ) );
+	  p.drawRect( 0, 0, w, h );
+	p.translate( 0, -MARGIN );
+
+#ifdef HAVE_MOODBAR
+      }
+    else
+      {
+	p.translate( 0, MARGIN );
+  	  p.drawPixmap( 0, 0, mood );
+	  p.setPen( amaroK::ColorScheme::Foreground );
+	  p.drawRect( 0, 0, w, h );
+	p.translate( 0, -MARGIN );
+
+	// Larger triangle for the moodbar
+      }
+#endif
 
     //<Triangle Marker>
-    QPointArray pa( 3 );
-    pa.setPoint( 0, pos - 3, 1 );
-    pa.setPoint( 1, pos + 3, 1 );
-    pa.setPoint( 2, pos,     5 );
-    p.setBrush( paletteForegroundColor() );
-    p.drawConvexPolygon( pa );
+    if( m_mode == Pretty )
+      {
+	QPointArray pa( 3 );
+	pa.setPoint( 0, pos - 3, 1 );
+	pa.setPoint( 1, pos + 3, 1 );
+	pa.setPoint( 2, pos,     5 );
+	p.setBrush( paletteForegroundColor() );
+	p.drawConvexPolygon( pa );
+      }
+
+    else if( m_mode == Normal )
+      {
+	QPointArray pa( 3 );
+	pa.setPoint( 0, pos - 5, 1 );
+	pa.setPoint( 1, pos + 5, 1 );
+	pa.setPoint( 2, pos,     9 );
+	p.setBrush( paletteForegroundColor() );
+	p.drawConvexPolygon( pa );
+      }
     //</Triangle Marker>
+
 
     p.end();
 
     bitBlt( this, 0, 0, &buf );
 }
+
+
+// This gets called when the moodbar job starts or finishes
+void 
+amaroK::PrettySlider::moodbarJobEvent( int newState )
+{
+#ifdef HAVE_MOODBAR // Have to do this since moc doesn't preprocess
+    if( newState == Moodbar::JobStateSucceeded )
+        update(); 
+#else
+    (void) newState;
+#endif
+}
+
+// This gets called when the user presses "Ok" or "Apply" in the
+// config dialog.  Reload our moodbar data, in case it was 
+// permanently disabled before because the moodbar was disabled.
+void 
+amaroK::PrettySlider::slotMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic )
+{
+#ifdef HAVE_MOODBAR // Have to do this since moc doesn't preprocess
+    (void) moodier;  (void) alter;  (void) withMusic;
+
+    if( show )
+      {
+	m_bundle.moodbar().reset();
+	if( !m_bundle.moodbar().dataExists() )
+	  m_bundle.moodbar().load();
+	update();
+      }
+#else
+    (void) show;  (void) moodier;  (void) alter;  (void) withMusic;
+#endif
+}
+
+
+
+
+// This is called when the track changes / stops / starts
+void 
+amaroK::PrettySlider::newBundle( const MetaBundle &bundle )
+{
+    m_bundle = bundle;
+    m_bundle.detach();
+    
+#ifdef HAVE_MOODBAR
+    // This is the easiest way to tell if the bundle refers
+    // to a real track, or if we're STOP'd.
+    if( m_bundle.url().isEmpty() )
+      return;
+
+    // It's a real track; get the moodbar data if it's not there
+    if( !m_bundle.moodbar().dataExists() )
+      m_bundle.moodbar().load();
+    else
+      update();
+#endif
+}
+
+
 
 #if 0
 /** these functions aren't required in our fixed size world,

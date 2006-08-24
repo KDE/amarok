@@ -31,6 +31,7 @@ class QTimer;
 namespace amaroK
 {
     class Slider;
+    class PrettySlider;
 
     class StatusBar : public KDE::StatusBar, public EngineObserver
     {
@@ -43,7 +44,7 @@ namespace amaroK
 
         static StatusBar* instance() { return s_instance; }
 
-        Slider *slider() { return m_slider; }
+        PrettySlider *slider() { return m_slider; }
 
     public slots:
         /** update total song count */
@@ -63,7 +64,7 @@ namespace amaroK
         QLabel *m_timeLabel;
         QLabel *m_itemCountLabel;
         QueueLabel *m_queueLabel;
-        amaroK::Slider *m_slider;
+        amaroK::PrettySlider *m_slider;
         QTimer *m_pauseTimer;
     };
     /**

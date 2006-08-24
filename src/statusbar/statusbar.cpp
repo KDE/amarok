@@ -71,7 +71,8 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     QWidget *positionBox = new QWidget( this, "positionBox" );
     QBoxLayout *box = new QHBoxLayout( positionBox, 1, 3 );
 
-    m_slider = new amaroK::Slider( Qt::Horizontal, positionBox );
+    m_slider = new amaroK::PrettySlider( Qt::Horizontal, amaroK::PrettySlider::Normal,
+					 positionBox );
     m_timeLabel = new TimeLabel( positionBox );
     m_slider->setMinimumWidth( m_timeLabel->width() );
 
@@ -122,6 +123,7 @@ StatusBar::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
         m_slider->setEnabled( false );
         m_slider->setMinValue( 0 ); //needed because setMaxValue() calls with bogus values can change minValue
         m_slider->setMaxValue( 0 );
+	m_slider->newBundle( MetaBundle() ); // Set an empty bundle
         m_timeLabel->setEnabled( false ); //must be done after the setValue() above, due to a signal connection
         setMainText( QString::null );
         break;
@@ -192,6 +194,7 @@ StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
     m_slider->setMinValue( 0 );
     m_slider->setMaxValue( bundle.length() * 1000 );
     m_slider->setEnabled( bundle.length() > 0 );
+    m_slider->newBundle( bundle );
 }
 
 void

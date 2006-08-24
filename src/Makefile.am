@@ -102,6 +102,7 @@ libamarok_la_SOURCES = \
     mediumpluginmanager.cpp \
     metabundle.cpp \
     metabundlesaver.cpp \
+    moodbar.cpp \
     mountpointmanager.cpp \
     multitabbar.cpp \
     mydiroperator.cpp \
