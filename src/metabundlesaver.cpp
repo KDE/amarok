@@ -42,6 +42,7 @@ MetaBundleSaver::MetaBundleSaver( MetaBundle *bundle )
     , m_origRenamedSavePath( QString::null )
     , m_tempSaveDigest( 0 )
     , m_saveFileref( 0 )
+    , m_maxlen( 8192 )
 
 {
     DEBUG_BLOCK
@@ -174,14 +175,11 @@ MetaBundleSaver::prepareToSave()
         return 0;
     }
 
-    char databuf[8192];
-
-    Q_ULONG maxlen = 8192;
     Q_LONG actualreadlen, actualwritelen;
 
-    while( ( actualreadlen = orig->readBlock( databuf, maxlen ) ) > 0 )
+    while( ( actualreadlen = orig->readBlock( m_databuf, m_maxlen ) ) > 0 )
     {
-        if( ( actualwritelen = copy->writeBlock( databuf, actualreadlen ) ) != actualreadlen )
+        if( ( actualwritelen = copy->writeBlock( m_databuf, actualreadlen ) ) != actualreadlen )
         {
             debug() << "Error during copying of original file data to copy!" << endl;
             delete orig;
@@ -208,12 +206,30 @@ MetaBundleSaver::prepareToSave()
 
     debug() << "Calculating MD5 of " << m_tempSavePath << endl;
 
+    md5sum = new KMD5( 0, 0 );
     QFile* tempFile = new QFile( m_tempSavePath );
-    tempFile->open( IO_ReadOnly );
-    md5sum = new KMD5( tempFile->readAll() );
-    tempFile->close();
-    delete tempFile;
+    if( !md5sum || !tempFile->open( IO_Raw | IO_ReadOnly ) )
+    {
+        debug() << "Could not calculate MD5 of temporary file!" << endl;
+        if( md5sum )
+            delete md5sum;
+        return 0;
+    }
+
+    while( ( actualreadlen = tempFile->readBlock( m_databuf, m_maxlen ) ) > 0 )
+        md5sum->update( m_databuf, actualreadlen );
+
+    if( actualreadlen == -1 )
+    {
+        delete md5sum;
+        delete tempFile;
+        debug() << "Error during checksumming temp file!" << endl;
+        return 0;
+    }
+
     m_tempSaveDigest = md5sum->hexDigest();
+    delete tempFile;
+    delete md5sum;
 
     debug() << "MD5 sum of temp file: " << m_tempSaveDigest.data() << endl;
 
@@ -241,6 +257,7 @@ MetaBundleSaver::doSave()
 
     QFile* origRenamedFile;
     KMD5* md5sum;
+    Q_LONG actualreadlen;
 
     int errcode;
 
@@ -266,12 +283,33 @@ MetaBundleSaver::doSave()
         goto fail_remove_copy;
     }
 
+    debug() << "Calculating MD5 of " << m_origRenamedSavePath << endl;
+
+    md5sum = new KMD5( 0, 0 );
     origRenamedFile = new QFile( m_origRenamedSavePath );
-    origRenamedFile->open( IO_ReadOnly );
-    md5sum = new KMD5( origRenamedFile->readAll() );
-    origRenamedFile->close();
-    delete origRenamedFile;
+
+    if( !md5sum || !origRenamedFile->open( IO_Raw | IO_ReadOnly ) )
+    {
+        debug() << "Could not calculate MD5 of temporary file!" << endl;
+        if( md5sum )
+            delete md5sum;
+        goto fail_remove_copy;
+    }
+
+    while( ( actualreadlen = origRenamedFile->readBlock( m_databuf, m_maxlen ) ) > 0 )
+        md5sum->update( m_databuf, actualreadlen );
+
+    if( actualreadlen == -1 )
+    {
+        delete md5sum;
+        delete origRenamedFile;
+        debug() << "Error during checksumming temp file!" << endl;
+        goto fail_remove_copy;
+    }
+
     origRenamedDigest = md5sum->hexDigest();
+    delete origRenamedFile;
+    delete md5sum;
 
     debug() << "md5sum of original file: " << origRenamedDigest.data() << endl;
 
@@ -309,6 +347,7 @@ MetaBundleSaver::doSave()
 
     fail_remove_copy:
 
+        debug() << "Deleting temporary file..." << endl;
         errcode = std::remove( QFile::encodeName( m_tempSavePath ).data() );
         if( errcode != 0 )
         {
@@ -320,7 +359,7 @@ MetaBundleSaver::doSave()
         if( !revert )
             return false;
 
-
+        debug() << "Reverting original file to original filename!" << endl;
         errcode = std::rename( QFile::encodeName( m_origRenamedSavePath ).data(),
                                 QFile::encodeName( m_bundle->url().path() ).data() );
         if( errcode != 0 )
@@ -339,7 +378,7 @@ MetaBundleSaver::cleanupSave()
 
     bool dirty = false;
 
-    if( !(m_tempSavePath == QString::null) && QFile::exists( m_tempSavePath ) )
+    if( !m_tempSavePath.isEmpty() && QFile::exists( m_tempSavePath ) )
     {
         int errcode;
         errcode = std::remove( QFile::encodeName( m_tempSavePath ).data() );

@@ -242,7 +242,7 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
             readTags( readStyle, images );
             bool readOkay = readUniqueId(); //if read failed, probably don't want to try setting
             //if ATF writing on and collectionscanner and no current ID, write one
-            if( m_uniqueId == QString::null &&
+            if( m_uniqueId.isEmpty() &&
                     readOkay && isFile() &&
                     AmarokConfig::advancedTagFeatures() &&
                     QString( kapp->name() ) == QString( "amarokcollectionscanner" ) )
@@ -1695,7 +1695,7 @@ MetaBundle::newUniqueId()
     if( !isFile() || !AmarokConfig::advancedTagFeatures() )
         return false;
 
-    bool noproblem;
+    bool noproblem = false;
 
     MetaBundleSaver *mbs = new MetaBundleSaver( this );
     TagLib::FileRef *fileref = mbs->prepareToSave();
@@ -1707,11 +1707,18 @@ MetaBundle::newUniqueId()
     }
 
     if( createUniqueId( fileref ) )
-        noproblem = mbs->doSave() && mbs->cleanupSave();
+        noproblem = mbs->doSave();
 
+    if( noproblem )
+    {
+        bool returnval = mbs->cleanupSave();
+        delete mbs;
+        return returnval;
+    }
+
+    mbs->cleanupSave();
     delete mbs;
-
-    return noproblem;
+    return false;
 }
 
 bool
@@ -1720,7 +1727,16 @@ MetaBundle::removeUniqueId()
     if( !isFile() )
         return false;
 
-    bool noproblem;
+    //constructor called for this function does a readUniqueId on the
+    //file's tags, so if m_uniqueId isn't set, nothing to remove...
+
+    if( m_uniqueId.isEmpty() )
+    {
+        debug() << "This file doesn't appear to have a uniqueid to remove..." << endl;
+        return true; //still a success
+    }
+
+    bool noproblem = false;
 
     MetaBundleSaver *mbs = new MetaBundleSaver( this );
     TagLib::FileRef *fileref = mbs->prepareToSave();
@@ -1732,11 +1748,18 @@ MetaBundle::removeUniqueId()
     }
 
     if( createUniqueId( fileref, true ) )
-        noproblem = mbs->doSave() && mbs->cleanupSave();
+        noproblem = mbs->doSave();
 
+    if( noproblem )
+    {
+        bool returnval = mbs->cleanupSave();
+        delete mbs;
+        return returnval;
+    }
+
+    mbs->cleanupSave();
     delete mbs;
-
-    return noproblem;
+    return false;
 }
 
 int

@@ -43,6 +43,8 @@ private:
     QString m_origRenamedSavePath;
     QCString m_tempSaveDigest;
     TagLib::FileRef* m_saveFileref;
+    char m_databuf[8192];
+    Q_ULONG m_maxlen;
 };
 
 #endif
