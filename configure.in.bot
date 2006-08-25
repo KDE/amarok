@@ -32,7 +32,8 @@ if test x$amarok_error_noruby = xyes; then
     echo " ="
     echo " = The Ruby programming language is not installed. Please obtain Ruby"
     echo " = (version 1.8 or later) from http://ruby-lang.org, or install a distribution"
-    echo " = package."
+    echo " = package. To build Amarok requires the Ruby header files as well, which some"
+    echo " = distributions package separately."
     echo " ="
 fi
 

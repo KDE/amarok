@@ -48,25 +48,6 @@ AC_SUBST(taglib_libs)
 
 
 ###############################################################################
-# BEGIN RUBY CHECK
-###############################################################################
-## TODO: Check version number >= 1.8
-
-AC_PATH_PROG(RUBY, ruby, no)
-
-if test "x$RUBY" = "xno" ; then
-    amarok_error_noruby=yes
-    DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
-    no_amarok=yes
-fi
-
-###############################################################################
-# END RUBY CHECK
-###############################################################################
-
-
-
-###############################################################################
 # BEGIN GSTREAMER-0.10 CHECK
 ###############################################################################
 
@@ -888,6 +869,7 @@ if test "$build_libgpod" != "no"; then
         have_libgpod=no
 
         PKG_CHECK_MODULES(LIBGPOD, libgpod-1.0, have_libgpod=yes,have_libgpod=no)
+        AC_MSG_RESULT($have_libgpod)
         if test "x$have_libgpod" != "xno"; then
             AC_DEFINE(HAVE_LIBGPOD, 1, [have libgpod])
         fi
@@ -1067,17 +1049,38 @@ AC_MSG_RESULT($have_kde34)
 # BEGIN DAAP MONGREL RUBY VARIABLE
 ###############################################################################
 
+AC_PATH_PROG(RUBY, ruby, no)
+
 ruby_includes=[`$RUBY -rrbconfig -e 'puts Config::MAKEFILE_CONFIG["topdir"]'`]
 ruby_ldflags=[`$RUBY -rrbconfig -e 'puts Config::MAKEFILE_CONFIG["LIBRUBYARG_SHARED"].gsub("$(libdir)", Config::MAKEFILE_CONFIG["libdir"]).gsub("$(RUBY_SO_NAME)", Config::MAKEFILE_CONFIG["RUBY_SO_NAME"]).gsub("$(DESTDIR)", "") + " " + Config::MAKEFILE_CONFIG["LIBS"]'`]
 
-AC_MSG_CHECKING([$ruby_includes])
-#AC_MSG_RESULT($ruby_includes)
 AC_SUBST(ruby_includes)
 AC_SUBST(ruby_ldflags)
+OLDCFLAGS="$CFLAGS"
+CFLAGS="-I$ruby_includes -Wall"
+OLDCPPFLAGS="$CPPFLAGS"
+CPPFLAGS="-I$ruby_includes"
+AC_CHECK_HEADERS([ruby.h], [have_ruby_h=yes], [have_ruby_h=no]) #used in ruby check below
+CFLAGS="$OLDCFLAGS"
+CPPFLAGS="$OLDCPPFLAGS"
+###############################################################################
+# END DAAP MONGREL RUBY VARIABLE
+###############################################################################
 
 
 ###############################################################################
-# END DAAP MONGREL RUBY VARIABLE
+# BEGIN RUBY CHECK
+###############################################################################
+## TODO: Check version number >= 1.8
+
+if test "x$RUBY" = "xno" -o "x$have_ruby_h" = "xno"; then
+    amarok_error_noruby=yes
+    DO_NOT_COMPILE="$DO_NOT_COMPILE amarok"
+    no_amarok=yes
+fi
+
+###############################################################################
+# END RUBY CHECK
 ###############################################################################
 
 
