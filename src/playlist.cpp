@@ -1665,6 +1665,10 @@ Playlist::slotCountChanged()
 bool
 Playlist::checkFileStatus( PlaylistItem * item )
 {
+    bool hiddenForDynamic = false;
+    if( dynamicMode() && !item->isEnabled() )
+        hiddenForDynamic = true;
+
     //DEBUG_BLOCK
     //debug() << "uniqueid of item = " << item->uniqueId() << ", url = " << item->url().path() << endl;
     if( !item->checkExists() )
@@ -1697,7 +1701,12 @@ Playlist::checkFileStatus( PlaylistItem * item )
     else if( !item->isEnabled() )
         item->setEnabled( true );
 
-    return item->isEnabled();
+    bool returnValue = item->isEnabled();
+
+    if( hiddenForDynamic )
+        item->setEnabled( false );
+
+    return returnValue;
 }
 
 void
