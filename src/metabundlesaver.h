@@ -18,9 +18,6 @@
 namespace TagLib {
     class FileRef;
 }
-namespace KIO{
-    class Job;
-}
 
 /**
  * @class MetaBundleSaver
@@ -40,12 +37,8 @@ public:
     bool cleanupSave();
     void abortSave( const QString message );
 
-public slots:
-    void kioDone( KIO::Job *job );
-
 private:
     MetaBundle *m_bundle;
-    int m_waitingOnKIO;
     QString m_tempSavePath;
     QString m_origRenamedSavePath;
     QCString m_tempSaveDigest;

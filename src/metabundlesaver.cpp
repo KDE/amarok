@@ -2,7 +2,7 @@
 // License: GNU General Public License V2
 
 
-#define DEBUG_PREFIX "MetaBundleSaverSaver"
+#define DEBUG_PREFIX "MetaBundleSaver"
 
 #include <stdlib.h>
 #include <unistd.h>
@@ -18,7 +18,6 @@
 #include "debug.h"
 #include "metabundlesaver.h"
 #include "scancontroller.h"
-#include "statusbar.h"
 #include <kapplication.h>
 #include <kfilemetainfo.h>
 #include <kio/global.h>
@@ -39,6 +38,11 @@
 MetaBundleSaver::MetaBundleSaver( MetaBundle *bundle )
     : QObject()
     , m_bundle( bundle )
+    , m_tempSavePath( QString::null )
+    , m_origRenamedSavePath( QString::null )
+    , m_tempSaveDigest( 0 )
+    , m_saveFileref( 0 )
+
 {
     DEBUG_BLOCK
 }
@@ -46,7 +50,8 @@ MetaBundleSaver::MetaBundleSaver( MetaBundle *bundle )
 MetaBundleSaver::~MetaBundleSaver()
 {
     DEBUG_BLOCK
-    delete m_saveFileref;
+    if( m_saveFileref )
+        delete m_saveFileref;
 }
 
 /*
@@ -123,34 +128,78 @@ TagLib::FileRef *
 MetaBundleSaver::prepareToSave()
 {
     DEBUG_BLOCK
+
+    KMD5* md5sum;
     const KURL origPath = m_bundle->url();
-    char buf[32];
-    int hostname = gethostname(buf, 32);
+    char hostbuf[32];
+    int hostname = gethostname( hostbuf, 32 );
     if( hostname != 0 )
     {
-        abortSave( "Could not determine hostname!" );
+        debug() << "Could not determine hostname!" << endl;
         return 0;
     }
     QString pid;
-    m_tempSavePath = origPath.path() + ".amaroktemp.host-" + QString( buf ) + ".pid-" + pid.setNum( getpid() ) + "." + m_bundle->type();
-    m_origRenamedSavePath = origPath.path() + ".amarokoriginal.host-" + QString( buf ) + ".pid-" + pid.setNum( getpid() ) + "." + m_bundle->type();
+    QString randomString = m_bundle->getRandomString( 8, true );
+    m_tempSavePath = origPath.path() + ".amaroktemp.host-" + QString( hostbuf ) +
+                        ".pid-" + pid.setNum( getpid() ) + ".random-" + randomString + "." + m_bundle->type();
+    m_origRenamedSavePath = origPath.path() + ".amarokoriginal.host-" + QString( hostbuf ) +
+                        ".pid-" + pid.setNum( getpid() ) + ".random-" + randomString + "." + m_bundle->type();
 
-    KIO::FileCopyJob *copyjob;
-    QFile *tempFile;
-    QCString tempDigest, origRenamedDigest;
 
-    copyjob = KIO::file_copy( m_bundle->url(), KURL::fromPathOrURL( m_tempSavePath ), -1, false, false, false );
-    connect( copyjob, SIGNAL( result(KIO::Job*) ), SLOT( kioDone(KIO::Job*) ) );
-    m_waitingOnKIO = 1;
+    //The next long step is to copy the file over.  We can't use KIO because it's not thread save,
+    //and std and QFile only have provisions for renaming and removing, so manual it is
+    //doing it block-by-block results it not needing a huge amount of memory overhead
 
-    while( m_waitingOnKIO == 1 )
-        kapp->processEvents();
+    debug() << "Copying original file to copy" << endl;
 
-    if( m_waitingOnKIO != 0 )
+    if( QFile::exists( m_tempSavePath ) )
     {
-        abortSave( "Could not create copy!" );
+        debug() << "Temp file already exists!" << endl;
         return 0;
     }
+
+    QFile *orig = new QFile( m_bundle->url().path() );
+    QFile *copy = new QFile( m_tempSavePath );
+
+    if( !orig->open( IO_Raw | IO_ReadOnly ) )
+    {
+        debug() << "Could not open original file!" << endl;
+        return 0;
+    }
+
+    //Do this separately so as not to create a zero-length file if you can't read from input
+    if( !copy->open( IO_Raw | IO_WriteOnly | IO_Truncate ) )
+    {
+        debug() << "Could not create file copy" << endl;
+        return 0;
+    }
+
+    char databuf[8192];
+
+    Q_ULONG maxlen = 8192;
+    Q_LONG actualreadlen, actualwritelen;
+
+    while( ( actualreadlen = orig->readBlock( databuf, maxlen ) ) > 0 )
+    {
+        if( ( actualwritelen = copy->writeBlock( databuf, actualreadlen ) ) != actualreadlen )
+        {
+            debug() << "Error during copying of original file data to copy!" << endl;
+            delete orig;
+            delete copy;
+            return 0;
+        }
+    }
+
+    if( actualreadlen == -1 )
+    {
+        delete orig;
+        delete copy;
+        debug() << "Error during reading original file!" << endl;
+        return 0;
+    }
+
+    delete orig;
+    delete copy;
 
     //By this point, we have the following:
     //The original file is copied at path m_tempSavePath
@@ -159,9 +208,9 @@ MetaBundleSaver::prepareToSave()
 
     debug() << "Calculating MD5 of " << m_tempSavePath << endl;
 
-    tempFile = new QFile( m_tempSavePath );
+    QFile* tempFile = new QFile( m_tempSavePath );
     tempFile->open( IO_ReadOnly );
-    KMD5* md5sum = new KMD5( tempFile->readAll() );
+    md5sum = new KMD5( tempFile->readAll() );
     tempFile->close();
     delete tempFile;
     m_tempSaveDigest = md5sum->hexDigest();
@@ -176,7 +225,7 @@ MetaBundleSaver::prepareToSave()
     if( m_saveFileref && !m_saveFileref->isNull() )
         return m_saveFileref;
 
-    abortSave( "Error creating temp file's fileref!" );
+    debug() << "Error creating temp file's fileref!" << endl;
     return 0;
 }
 
@@ -190,30 +239,30 @@ MetaBundleSaver::doSave()
     DEBUG_BLOCK
     bool revert = false;
 
-    KIO::SimpleJob *deletejob, *deletejob2;
-    KIO::FileCopyJob *movejob, *movejob2, *movejob3;
     QFile* origRenamedFile;
     KMD5* md5sum;
 
+    int errcode;
+
     QCString origRenamedDigest;
+
+    debug() << "Saving tag changes to the temporary file..." << endl;
 
     //We've made our changes to the fileref; save it first, then do the logic to move the correct file back
     if( !m_saveFileref->save() )
     {
-        abortSave( "Could not save the new file!" );
+        debug() << "Could not save the new file!" << endl;
         goto fail_remove_copy;
     }
 
-    movejob = KIO::file_move( m_bundle->url(), KURL::fromPathOrURL( m_origRenamedSavePath ), -1, false, false, false );
-    connect( movejob, SIGNAL( result(KIO::Job*) ), SLOT( kioDone(KIO::Job*) ) );
-    m_waitingOnKIO = 1;
+    debug() << "Renaming original file to temporary name " << m_origRenamedSavePath << endl;
 
-    while( m_waitingOnKIO == 1 )
-        kapp->processEvents();
-
-    if( m_waitingOnKIO != 0 )
+    errcode = std::rename( QFile::encodeName( m_bundle->url().path() ).data(),
+                               QFile::encodeName( m_origRenamedSavePath ).data() );
+    if( errcode != 0 )
     {
-        abortSave( "Could not move original!" );
+        debug() << "Could not move original!" << endl;
+        perror( "Could not move original!" );
         goto fail_remove_copy;
     }
 
@@ -228,71 +277,56 @@ MetaBundleSaver::doSave()
 
     if( origRenamedDigest != m_tempSaveDigest )
     {
-        abortSave( "Original checksum did not match current checksum!" );
+        debug() << "Original checksum did not match current checksum!" << endl;
         revert = true;
         goto fail_remove_copy;
     }
 
-    movejob2 = KIO::file_move( KURL::fromPathOrURL( m_tempSavePath ), m_bundle->url(), -1, false, false, false );
-    connect( movejob2, SIGNAL( result(KIO::Job*) ), SLOT( kioDone(KIO::Job*) ) );
-    m_waitingOnKIO = 1;
+    debug() << "Renaming temp file to original's filename" << endl;
 
-    while( m_waitingOnKIO == 1 )
-        kapp->processEvents();
-
-    if( m_waitingOnKIO != 0 )
+    errcode = std::rename( QFile::encodeName( m_tempSavePath ).data(),
+                                QFile::encodeName( m_bundle->url().path() ).data() );
+    if( errcode != 0 )
     {
-        abortSave( "Could not rename newly-tagged file to original!" );
-        revert = true;
+        debug() << "Could not rename newly-tagged file to original!" << endl;
+        perror( "Could not rename newly-tagged file to original!" );
         goto fail_remove_copy;
     }
 
-    deletejob = KIO::file_delete( KURL::fromPathOrURL( m_origRenamedSavePath ), false );
-    connect( deletejob, SIGNAL( result(KIO::Job*) ), SLOT( kioDone(KIO::Job*) ) );
-    m_waitingOnKIO = 1;
+    debug() << "Deleting original" << endl;
 
-    while( m_waitingOnKIO == 1 )
-        kapp->processEvents();
-
-    if( m_waitingOnKIO != 0 )
+    errcode = std::remove( QFile::encodeName( m_origRenamedSavePath ) );
+    if( errcode != 0 )
     {
-        abortSave( "Could not delete the original file!" );
-        amaroK::StatusBar::instance()->longMessageThreadSafe( QString( "Could not remove the copy of the original file, located at %1.  Please remove it manually." ).arg( m_origRenamedSavePath ) );
+        debug() << "Could not delete the original file!" << endl;
+        perror( "Could not delete the original file!" );
         return false;
     }
 
-    debug() << "doSave returning true!" << endl;
+    debug() << "Save done, returning true!" << endl;
 
     return true;
 
     fail_remove_copy:
-        deletejob2 = KIO::file_delete( KURL::fromPathOrURL( m_tempSavePath ), false );
-        connect( deletejob2, SIGNAL( result(KIO::Job*) ), SLOT( kioDone(KIO::Job*) ) );
-        m_waitingOnKIO = 1;
 
-        while( m_waitingOnKIO == 1 )
-            kapp->processEvents();
-
-        if( m_waitingOnKIO != 0 )
+        errcode = std::remove( QFile::encodeName( m_tempSavePath ).data() );
+        if( errcode != 0 )
         {
-            abortSave( "Could not delete the temporary file!" );
-            amaroK::StatusBar::instance()->longMessageThreadSafe( QString( "Could not remove the temporary file %1.  Please remove it manually." ).arg( m_tempSavePath ) );
+            debug() << "Could not delete the temporary file!" << endl;
+            perror( "Could not delete the temporary file!" );
+            return false;
         }
 
         if( !revert )
             return false;
 
-        movejob3 = KIO::file_move( KURL::fromPathOrURL( m_origRenamedSavePath ), m_bundle->url(), -1, false, false, false );
-        connect( movejob3, SIGNAL( result(KIO::Job*) ), SLOT( kioDone(KIO::Job*) ) );
-        m_waitingOnKIO = 1;
 
-        while( m_waitingOnKIO == 1 )
-            kapp->processEvents();
-
-        if( m_waitingOnKIO != 0 )
+        errcode = std::rename( QFile::encodeName( m_origRenamedSavePath ).data(),
+                                QFile::encodeName( m_bundle->url().path() ).data() );
+        if( errcode != 0 )
         {
-            abortSave( "Could not revert file to original filename!" );
-            amaroK::StatusBar::instance()->longMessageThreadSafe( QString( "Could not revert the file to its original filename, from %1 to %2.  Please do this manually." ).arg( m_origRenamedSavePath ).arg( m_bundle->url().path() ) );
+            debug() << "Could not revert file to original filename!" << endl;
+            perror( "Could not revert file to original filename!" );
         }
 
         return false;
@@ -305,40 +339,24 @@ MetaBundleSaver::cleanupSave()
 
     bool dirty = false;
 
-    if( !(m_tempSavePath == QString::null) && QFile::exists( m_tempSavePath ) && !QFile::remove( m_tempSavePath ) )
+    if( !(m_tempSavePath == QString::null) && QFile::exists( m_tempSavePath ) )
     {
-        dirty = true;
-        abortSave( "Could not delete the temporary file!" );
-        amaroK::StatusBar::instance()->longMessageThreadSafe( QString( "Could not remove the temporary file %1.  Please remove it manually." ).arg( m_tempSavePath ) );
+        int errcode;
+        errcode = std::remove( QFile::encodeName( m_tempSavePath ).data() );
+        if( errcode != 0 )
+        {
+            dirty = true;
+            debug() << "Could not delete the temporary file!" << endl;
+        }
     }
 
     m_tempSavePath = QString::null;
     m_origRenamedSavePath = QString::null;
     m_tempSaveDigest = QCString( 0 );
-    delete m_saveFileref;
+    if( m_saveFileref )
+        delete m_saveFileref;
 
     return !dirty;
-}
-
-void
-MetaBundleSaver::kioDone( KIO::Job *job )
-{
-    DEBUG_BLOCK
-    if( job->error() )
-    {
-        debug() << "Error! Code is: " << job->error() << endl;
-        m_waitingOnKIO = -1;
-        return;
-    }
-    m_waitingOnKIO = 0;
-}
-
-void
-MetaBundleSaver::abortSave( const QString message  )
-{
-    DEBUG_BLOCK
-    //TODO: maybe make this pop up in the status bar?  What if there are a lot of problems?
-    debug() << message << endl;
 }
 
 #include "metabundlesaver.moc"

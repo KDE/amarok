@@ -243,7 +243,7 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
             if( m_uniqueId == QString::null &&
                     readOkay && isFile() &&
                     AmarokConfig::advancedTagFeatures() &&
-                    QString( kapp->name() ) != QString( "amarokcollectionscanner" ) )
+                    QString( kapp->name() ) == QString( "amarokcollectionscanner" ) )
             {
                 MetaBundleSaver *mbs = new MetaBundleSaver( this );
                 TagLib::FileRef *fileref = mbs->prepareToSave();
@@ -1756,7 +1756,7 @@ MetaBundle::getRand()
 }
 
 QString
-MetaBundle::getRandomString( int size )
+MetaBundle::getRandomString( int size, bool numbersOnly )
 {
     if( size != 8 )
     {
@@ -1776,14 +1776,22 @@ MetaBundle::getRandomString( int size )
         int r=rand() % 94;
         // shift the value to the visible characters
         r+=33;
-        // we don't want ", %, ', <, >, \, or `
+        // we don't want ", %, ', <, >, \, `, or &
         // so that we don't have issues with escaping/quoting in QStrings,
         // and so that we don't have <> in our XML files where they might cause issues
         // hopefully this list is final, as once users really start using this
         // it will be a pain to change...however, there is an ATF version in CollectionDB
         // which will help if this ever needs to change
         // In addition we can change our vendor string
-        if (r==34 || r==37 || r==39 || r==60 ||r == 62 || r==92 || r==96) r+=1;
+        while ( r==34 || r==37 || r == 38 || r==39 || r==60 ||r == 62 || r==92 || r==96 )
+            r++;
+
+        if( numbersOnly && ( r < 48 || r > 57 ) )
+        {
+            size++;
+            continue;
+        }
+
         str[i++] =  char(r);
         // this next comment kept in for fun, as it was from the source of KRandomString, where I got
         // most of this code from to start with :-)

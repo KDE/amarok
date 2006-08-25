@@ -251,7 +251,7 @@ public: //accessors
     const Moodbar &moodbar_const() const;
 #endif
     uint    lastPlay()    const;
-    
+
     int     filesize()    const;
 
     int compilation() const;
@@ -273,6 +273,9 @@ public: //accessors
     QString prettyRating() const;
 
     bool safeToSave() { return m_safeToSave; }
+
+    QString getRandomString( int size, bool numbersOnly = false );
+    QString getRandomStringHelper( int size );
 
 public: //modifiers
     void setUrl( const KURL &url );
@@ -404,8 +407,6 @@ private:
     void loadImagesFromTag( const TagLib::ID3v2::Tag &tag, EmbeddedImageList& images );
 
     int getRand();
-    QString getRandomString( int size );
-    QString getRandomStringHelper( int size );
     TagLib::ID3v2::UniqueFileIdentifierFrame *ourMP3UidFrame( TagLib::MPEG::File *file, QString ourId );
 };
 
