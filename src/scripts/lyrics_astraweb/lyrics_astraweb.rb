@@ -66,8 +66,8 @@ def fetchLyrics( artist, title )
 
             suggestion = root.add_element( "suggestion" )
             suggestion.add_attribute( "url", url )
-            suggestion.add_attribute( "artist", artist.unpack("C*").pack("U*") )
-            suggestion.add_attribute( "title", title.unpack("C*").pack("U*") )
+            suggestion.add_attribute( "artist", artist.unpack("C*").pack("U*") ) if artist
+            suggestion.add_attribute( "title", title.unpack("C*").pack("U*") ) if title
         end
     end
     doc.write( xml )
@@ -103,9 +103,9 @@ def fetchLyricsByUrl( url )
     doc = REXML::Document.new( "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" )
     root = doc.add_element( "lyrics" )
     root.add_attribute( "page_url", page_url )
-    root.add_attribute( "artist", artist.unpack("C*").pack("U*") )
-    root.add_attribute( "title", title.unpack("C*").pack("U*") )
-    root.text = lyrics.unpack("C*").pack("U*")
+    root.add_attribute( "artist", artist.unpack("C*").pack("U*") ) if artist
+    root.add_attribute( "title", title.unpack("C*").pack("U*") ) if title
+    root.text = lyrics.unpack("C*").pack("U*") if lyrics
 
     xml = ""
     doc.write( xml )

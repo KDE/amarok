@@ -41,13 +41,15 @@ def parseLyrics( lyrics )
     root = doc.add_element( "lyrics" )
 
     root.add_attribute( "page_url", @page_url )
-    root.add_attribute( "title", /(<b>)([^<]*)/.match( lyrics )[2].to_s().unpack("C*").pack("U*") )
-    root.add_attribute( "artist", /(<u>)([^<]*)/.match( lyrics )[2].to_s().unpack("C*").pack("U*") )
+    title = /(<b>)([^<]*)/.match( lyrics )[2].to_s()
+    root.add_attribute( "title", title.unpack("C*").pack("U*") ) if title
+    artist = /(<u>)([^<]*)/.match( lyrics )[2]
+    root.add_attribute( "artist", artist.to_s().unpack("C*").pack("U*") ) if artist
 
     lyrics = /(<\/u><\/font>)(.*)/.match( lyrics )[2].to_s()
     lyrics.gsub!( /<[Bb][Rr][^>]*>/, "\n" ) # HTML -> Plaintext
 
-    root.text = lyrics.unpack("C*").pack("U*") #Convert to UTF-8
+    root.text = lyrics.unpack("C*").pack("U*") if lyrics #Convert to UTF-8
 
     xml = ""
     doc.write( xml )
@@ -88,8 +90,8 @@ def parseSuggestions( lyrics )
 
         suggestion = root.add_element( "suggestion" )
         suggestion.add_attribute( "url", url )
-        suggestion.add_attribute( "artist", artist.unpack("C*").pack("U*") )
-        suggestion.add_attribute( "title", title.unpack("C*").pack("U*") )
+        suggestion.add_attribute( "artist", artist.unpack("C*").pack("U*") ) if artist
+        suggestion.add_attribute( "title", title.unpack("C*").pack("U*") ) if title
     end
 
     xml = ""
@@ -137,7 +139,7 @@ def fetchLyrics( artist, title, url )
 
     lyricsPos = lyrics.index( /<[fF][oO][nN][tT][ ]*[sS][iI][zZ][eE][ ]*='2'[ ]*>/ )
 
-    if not lyricsPos == nil
+    if lyricsPos
         parseLyrics( lyrics[lyricsPos..lyrics.length()] )
         return
 
