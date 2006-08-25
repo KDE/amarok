@@ -238,8 +238,10 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
 
         if ( !isValidMedia() || ( !m_podcastBundle && m_length <= 0 ) )
         {
+            //this is the constructor used by the amarokcollectionscanner app
             readTags( readStyle, images );
             bool readOkay = readUniqueId(); //if read failed, probably don't want to try setting
+            //if ATF writing on and collectionscanner and no current ID, write one
             if( m_uniqueId == QString::null &&
                     readOkay && isFile() &&
                     AmarokConfig::advancedTagFeatures() &&
