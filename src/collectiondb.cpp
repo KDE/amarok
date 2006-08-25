@@ -3220,9 +3220,14 @@ CollectionDB::removeUniqueIdFromFile( const QString &path )
     url.cleanPath();
 
     MetaBundle bundle( url );
+    QString uid = bundle.uniqueId();
     if( bundle.removeUniqueId() )
     {
-        doATFStuff( &bundle, false );
+        query( QString( "DELETE FROM uniqueid WHERE uniqueid='%1';" )
+                      .arg( uid ) );
+        if( ScanController::instance() && ScanController::instance()->tablesCreated() )
+            query( QString( "DELETE FROM uniqueid_temp WHERE uniqueid='%1';" )
+                      .arg( uid ) );
         return true;
     }
 
