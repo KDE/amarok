@@ -354,7 +354,10 @@ MetaBundleSaver::cleanupSave()
     m_origRenamedSavePath = QString::null;
     m_tempSaveDigest = QCString( 0 );
     if( m_saveFileref )
+    {
         delete m_saveFileref;
+        m_saveFileref = 0;
+    }
 
     return !dirty;
 }
