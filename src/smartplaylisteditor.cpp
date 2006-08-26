@@ -120,7 +120,7 @@ SmartPlaylistEditor::SmartPlaylistEditor( QWidget *parent, QDomElement xml, cons
         QDomElement orderby = orderbyList.item(0).toElement(); // we only allow one orderby node
 
         //random is always the last one.
-        int dbfield = orderby.attribute( "field" ) == "random" ? m_dbFields.count()-1 : m_dbFields.findIndex( orderby.attribute( "field" ) );
+        int dbfield = orderby.attribute( "field" ) == "random" ? m_dbFields.count() : m_dbFields.findIndex( orderby.attribute( "field" ) );
 
         m_orderCombo->setCurrentItem( dbfield );
         updateOrderTypes( dbfield );
