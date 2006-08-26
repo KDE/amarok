@@ -1051,15 +1051,15 @@ AC_MSG_RESULT($have_kde34)
 
 AC_PATH_PROG(RUBY, ruby, no)
 
-ruby_includes=[`$RUBY -rrbconfig -e 'puts Config::MAKEFILE_CONFIG["topdir"]'`]
-ruby_ldflags=[`$RUBY -rrbconfig -e 'puts Config::MAKEFILE_CONFIG["LIBRUBYARG_SHARED"].gsub("$(libdir)", Config::MAKEFILE_CONFIG["libdir"]).gsub("$(RUBY_SO_NAME)", Config::MAKEFILE_CONFIG["RUBY_SO_NAME"]).gsub("$(DESTDIR)", "") + " " + Config::MAKEFILE_CONFIG["LIBS"]'`]
+ruby_includes=[`$RUBY -rrbconfig -e 'puts Config.expand( Config::MAKEFILE_CONFIG["archdir"] )'`]
+ruby_ldflags=[`$RUBY -rrbconfig -e 'puts Config.expand( Config::MAKEFILE_CONFIG["LIBRUBYARG_SHARED"] )'`]
 
 AC_SUBST(ruby_includes)
 AC_SUBST(ruby_ldflags)
 OLDCFLAGS="$CFLAGS"
 CFLAGS="-I$ruby_includes -Wall"
 OLDCPPFLAGS="$CPPFLAGS"
-CPPFLAGS="-I$ruby_includes"
+CPPFLAGS="-I$ruby_includes" #no I don't know why CPPFLAGS is used
 AC_CHECK_HEADERS([ruby.h], [have_ruby_h=yes], [have_ruby_h=no]) #used in ruby check below
 CFLAGS="$OLDCFLAGS"
 CPPFLAGS="$OLDCPPFLAGS"
