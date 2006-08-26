@@ -1051,8 +1051,8 @@ AC_MSG_RESULT($have_kde34)
 
 AC_PATH_PROG(RUBY, ruby, no)
 
-ruby_includes=[`$RUBY -rrbconfig -e 'puts Config::MAKEFILE_CONFIG["archdir"].gsub( "$(rubylibdir)" , Config::MAKEFILE_CONFIG["rubylibdir"]).gsub( "$(prefix)" , Config::MAKEFILE_CONFIG["prefix"]).gsub( "$(ruby_version)" , Config::MAKEFILE_CONFIG["ruby_version"]).gsub( "$(MAJOR)" , Config::MAKEFILE_CONFIG["MAJOR"]).gsub( "$(MINOR)" , Config::MAKEFILE_CONFIG["MINOR"]).gsub( "$(arch)" , Config::MAKEFILE_CONFIG["arch"]).gsub("$(libdir)", Config::MAKEFILE_CONFIG["libdir"]).gsub("$(DESTDIR)", "")'`]
-ruby_ldflags=[`$RUBY -rrbconfig -e 'puts Config::MAKEFILE_CONFIG["LIBRUBYARG_SHARED"].gsub("$(libdir)", Config::MAKEFILE_CONFIG["libdir"]).gsub("$(RUBY_SO_NAME)", Config::MAKEFILE_CONFIG["RUBY_SO_NAME"]).gsub("$(DESTDIR)", "").gsub( "$(RUBY_INSTALL_NAME)" , Config::MAKEFILE_CONFIG["RUBY_INSTALL_NAME"]) + " " + Config::MAKEFILE_CONFIG["LIBS"]'`]
+ruby_includes=[`$RUBY -rrbconfig -e 'puts Config::MAKEFILE_CONFIG["topdir"]'`]
+ruby_ldflags=[`$RUBY -rrbconfig -e 'puts Config::MAKEFILE_CONFIG["LIBRUBYARG_SHARED"].gsub("$(libdir)", Config::MAKEFILE_CONFIG["libdir"]).gsub("$(RUBY_SO_NAME)", Config::MAKEFILE_CONFIG["RUBY_SO_NAME"]).gsub("$(DESTDIR)", "") + " " + Config::MAKEFILE_CONFIG["LIBS"]'`]
 
 AC_SUBST(ruby_includes)
 AC_SUBST(ruby_ldflags)
