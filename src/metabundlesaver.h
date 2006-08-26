@@ -45,6 +45,7 @@ private:
     TagLib::FileRef* m_saveFileref;
     char m_databuf[8192];
     Q_ULONG m_maxlen;
+    bool m_cleanupNeeded;
 };
 
 #endif
