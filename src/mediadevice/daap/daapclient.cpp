@@ -230,21 +230,30 @@ DaapClient::serverOffline( DNSSD::RemoteService::Ptr service )
 {
 #if DNSSD_SUPPORT
     DEBUG_BLOCK
-    if( m_serverItemMap.contains( service.data() ) )
+    QString key =  serverKey( service.data() );
+    if( m_serverItemMap.contains( key ) )
     {
-        ServerItem* removeMe = m_serverItemMap[ service.data() ];
+        ServerItem* removeMe = m_serverItemMap[ key ];
         if( removeMe )
         {
             delete removeMe->getReader();
             removeMe->setReader( 0 );
             delete removeMe;
+            removeMe = 0;
         }
         else
             warning() << "root item already null" << endl;
+        m_serverItemMap.remove( key );
     }
     else
         warning() << "removing non-existant service" << endl;
 #endif
+}
+
+QString
+DaapClient::serverKey( const DNSSD::RemoteService* service )
+{
+    return service->domain() + service->hostName() + service->port();
 }
 
 void
@@ -274,16 +283,19 @@ DaapClient::resolvedDaap( bool success )
     if( resolver.wait( 5000 ) ) {
         KNetwork::KResolverResults results = resolver.results();
         debug() << "Resolver error code (0 is no error): " << resolver.errorString( results.error() ) << ' ' <<  service->hostName() << endl;
-        if(!results.empty()) {
+        if(results.empty()) {
+            return; //don't add hosts that can't resolve, likely misconfigured mdnsresponder
+        }
+        else {
             ip = results[0].address().asInet().ipAddress().toString();
             debug() << "ip found is " << ip << endl;
         }
     }
 
-    if( m_serverItemMap.contains(service) ) //work around weird DNSSD bug
+    if( m_serverItemMap.contains(serverKey( service )) ) //same server from multiple interfaces
         return;
 
-    m_serverItemMap[service] = newHost( service->serviceName(), ip, service->port() );
+    m_serverItemMap[ serverKey( service ) ] = newHost( service->serviceName(), ip, service->port() );
 #endif
 }
 

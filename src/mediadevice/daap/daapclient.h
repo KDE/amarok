@@ -83,16 +83,17 @@ class DaapClient : public MediaDevice
         void foundDaap( DNSSD::RemoteService::Ptr );
         void resolvedDaap( bool );
         void createTree( const QString& host, Daap::SongList bundles );
+        QString serverKey( const DNSSD::RemoteService* service );
 
    private:
         ServerItem* newHost( const QString serviceName, const QString& ip, const Q_INT16 port );
 
 #if DNSSD_SUPPORT
         DNSSD::ServiceBrowser* m_browser;
-        QMap<const DNSSD::RemoteService*, ServerItem*> m_serverItemMap;
 #endif
         bool    m_connected;
         QMap<QString, ServerInfo*> m_servers;
+        QMap<QString, ServerItem*> m_serverItemMap;
 
         DaapServer* m_sharingServer;
 };
