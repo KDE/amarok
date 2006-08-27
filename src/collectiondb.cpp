@@ -5761,7 +5761,8 @@ QStringList SqliteConnection::query( const QString& statement )
 {
 
     QStringList values;
-    int error, rc;
+    int error;
+    int rc = 0;
     const char* tail;
     sqlite3_stmt* stmt;
     int busyCnt = 0;
@@ -5787,6 +5788,7 @@ QStringList SqliteConnection::query( const QString& statement )
             Debug::error() << sqlite3_errmsg( m_db ) << endl;
             Debug::error() << "on query: " << statement << endl;
             values = QStringList();
+            break;
         }
         else
         {
@@ -5851,7 +5853,8 @@ QStringList SqliteConnection::query( const QString& statement )
 
 int SqliteConnection::insert( const QString& statement, const QString& /* table */ )
 {
-    int error, rc;
+    int error;
+    int rc = 0;
     const char* tail;
     sqlite3_stmt* stmt;
     int busyCnt = 0;
@@ -5876,6 +5879,7 @@ int SqliteConnection::insert( const QString& statement, const QString& /* table 
             Debug::error() << k_funcinfo << " sqlite3_compile error:" << endl;
             Debug::error() << sqlite3_errmsg( m_db ) << endl;
             Debug::error() << "on insert: " << statement << endl;
+            break;
         }
         else
         {
