@@ -643,4 +643,12 @@
     </entry>
 </group>
 
+<group name="Daap">
+  <entry key="ManuallyAddedServers" type="StringList">
+      <label>ManuallyAddedServers</label>
+      <whatsthis>Music Sharing servers added by the user.</whatsthis>
+      <default/>
+  </entry>
+</group>
+
 </kcfg>

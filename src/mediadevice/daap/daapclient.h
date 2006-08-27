@@ -86,8 +86,8 @@ class DaapClient : public MediaDevice
         QString serverKey( const DNSSD::RemoteService* service );
 
    private:
-        ServerItem* newHost( const QString serviceName, const QString& ip, const Q_INT16 port );
-
+        ServerItem* newHost( const QString& serviceName, const QString& host, const QString& ip, const Q_INT16 port );
+        QString resolve( const QString& hostname );
 #if DNSSD_SUPPORT
         DNSSD::ServiceBrowser* m_browser;
 #endif
@@ -103,7 +103,8 @@ class ServerItem : public QObject, public MediaItem
     Q_OBJECT
 
     public:
-        ServerItem( QListView* parent, DaapClient* client, const QString& ip, Q_UINT16 port, const QString& title );
+        ServerItem( QListView* parent, DaapClient* client, const QString& ip, Q_UINT16 port, const QString& title, const QString& host );
+        ~ServerItem();
         void setOpen( bool o );
         void resetTitle()                     { setText( 0, m_title ); }
         void unLoaded()                       { m_loaded = false; }
@@ -112,7 +113,9 @@ class ServerItem : public QObject, public MediaItem
 
         void startAnimation();
         void stopAnimation();
-
+        
+        QString key() { return key( m_host, m_port ); }
+        static QString key( const QString& host, Q_UINT16 port ) { return host + ':' + QString::number( port ); }
     private slots:
         void slotAnimation();
 
@@ -122,6 +125,7 @@ class ServerItem : public QObject, public MediaItem
         const QString   m_ip;
         const Q_UINT16  m_port;
         const QString   m_title;
+        const QString   m_host;
         bool            m_loaded;
 
         QPixmap        *m_loading1, *m_loading2;    //icons for loading animation

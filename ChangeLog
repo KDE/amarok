@@ -6,6 +6,7 @@ VERSION 1.4.3:
   FEATURES:
     * DAAP client now supports Zeroconf. With mDNSResponder properly setup
       Amarok automatically shows local DAAP servers.
+    * DAAP client saves manually added computers between sessions.
 
   CHANGES:
     * Don't report "/dev/hd" style devices as new media devices. (BR 127831)

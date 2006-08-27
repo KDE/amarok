@@ -22,6 +22,7 @@
 #include "mediabrowser.h"
 #include "playlist.h"
 #include "proxy.h"
+#include "statusbar/statusbar.h"
 
 #include <qmetaobject.h>
 #include <qobjectlist.h>
@@ -121,6 +122,18 @@ DaapClient::openDevice(bool /* silent=false */)
         m_browser->startBrowse();
     }
 #endif
+    QStringList sl = AmarokConfig::manuallyAddedServers();
+    foreach( sl )
+    {
+        QStringList current = QStringList::split(":", (*it) );
+        QString host = current.first();
+        Q_UINT16 port = current.last().toInt();
+        QString ip = resolve( host );
+        if( ip != "0" )
+        {
+             newHost( host, host, ip, port );
+        }
+    }
     m_sharingServer = new DaapServer( this, "DaapServer" );
     return true;
 }
@@ -185,9 +198,12 @@ DaapClient::deleteItemFromDevice( MediaItem* /*item*/, int /*flags*/ )
 void
 DaapClient::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
 {
-    enum Actions { APPEND, LOAD, QUEUE, CONNECT };
+    DEBUG_BLOCK
+
+    enum Actions { APPEND, LOAD, QUEUE, CONNECT, REMOVE };
 
     MediaItem *item = dynamic_cast<MediaItem *>(qitem);
+    ServerItem* sitem = dynamic_cast<ServerItem *>(qitem);
     if( !item )
         return;
 
@@ -198,6 +214,18 @@ DaapClient::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
     {
         case MediaItem::DIRECTORY:
             menu.insertItem( SmallIconSet( "connect_creating" ), i18n( "&Connect" ), CONNECT );
+            if( sitem && !m_serverItemMap.contains( sitem->key() ) )
+            {
+                menu.insertItem( SmallIconSet( "delete" ), i18n("&Remove Computer"), REMOVE );
+            }
+            {
+                QStringList sl = m_serverItemMap.keys();
+                foreach( sl )
+                {
+                    debug() << (*it) << endl;
+                }
+                debug() << sitem->key() << endl;
+            }
             break;
         default:
             urls = m_view->nodeBuildDragList( 0 );
@@ -222,6 +250,15 @@ DaapClient::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
         case QUEUE:
             Playlist::instance()->insertMedia( urls, Playlist::Queue );
             break;
+        case REMOVE:
+            if( sitem )
+            {
+                QStringList mas = AmarokConfig::manuallyAddedServers();
+                mas.remove( sitem->key() );
+                AmarokConfig::setManuallyAddedServers( mas );
+                delete sitem;
+            }
+            break;
     }
 }
 
@@ -236,8 +273,6 @@ DaapClient::serverOffline( DNSSD::RemoteService::Ptr service )
         ServerItem* removeMe = m_serverItemMap[ key ];
         if( removeMe )
         {
-            delete removeMe->getReader();
-            removeMe->setReader( 0 );
             delete removeMe;
             removeMe = 0;
         }
@@ -253,7 +288,7 @@ DaapClient::serverOffline( DNSSD::RemoteService::Ptr service )
 QString
 DaapClient::serverKey( const DNSSD::RemoteService* service )
 {
-    return service->domain() + service->hostName() + service->port();
+    return ServerItem::key( service->hostName(), service->port() );
 }
 
 void
@@ -276,26 +311,11 @@ DaapClient::resolvedDaap( bool success )
     if( !success || !service ) return;
     debug() << service->serviceName() << ' ' << service->hostName() << ' ' << service->domain() << ' ' << service->type() << endl;
 
-    QString ip = QString::null;
-    QString resolvedServer = service->hostName();
-    KNetwork::KResolver resolver( service->hostName() );
-    resolver.start();
-    if( resolver.wait( 5000 ) ) {
-        KNetwork::KResolverResults results = resolver.results();
-        debug() << "Resolver error code (0 is no error): " << resolver.errorString( results.error() ) << ' ' <<  service->hostName() << endl;
-        if(results.empty()) {
-            return; //don't add hosts that can't resolve, likely misconfigured mdnsresponder
-        }
-        else {
-            ip = results[0].address().asInet().ipAddress().toString();
-            debug() << "ip found is " << ip << endl;
-        }
-    }
-
-    if( m_serverItemMap.contains(serverKey( service )) ) //same server from multiple interfaces
+    QString ip = resolve( service->hostName() );
+    if( ip == "0" || m_serverItemMap.contains(serverKey( service )) ) //same server from multiple interfaces
         return;
 
-    m_serverItemMap[ serverKey( service ) ] = newHost( service->serviceName(), ip, service->port() );
+    m_serverItemMap[ serverKey( service ) ] = newHost( service->serviceName(), service->hostName(), ip, service->port() );
 #endif
 }
 
@@ -392,16 +412,29 @@ DaapClient::customClicked()
 
     AddHostDialog dialog( 0 );
     if( dialog.exec() == QDialog::Accepted ) {
-        newHost( dialog.m_base->m_hostName->text(), dialog.m_base->m_hostName->text(), dialog.m_base->m_portInput->value() );
+        QString ip = resolve( dialog.m_base->m_hostName->text() );
+        if( ip == "0" )
+            amaroK::StatusBar::instance()->shortMessage( i18n("Could not resolve %1.").arg( dialog.m_base->m_hostName->text() ) );
+        else
+        {
+            QString key = ServerItem::key( dialog.m_base->m_hostName->text(), dialog.m_base->m_portInput->value() );
+            if( !AmarokConfig::manuallyAddedServers().contains( key ) )
+            {
+                QStringList mas = AmarokConfig::manuallyAddedServers();
+                mas.append( key );
+                AmarokConfig::setManuallyAddedServers( mas );
+            }
+            newHost( dialog.m_base->m_hostName->text(), dialog.m_base->m_hostName->text(), ip, dialog.m_base->m_portInput->value() );
+        }
     }
 }
 
 ServerItem*
-DaapClient::newHost( const QString serviceName, const QString& ip, const Q_INT16 port )
+DaapClient::newHost( const QString& serviceName, const QString& host, const QString& ip, const Q_INT16 port )
 {
     if( ip.isEmpty() ) return 0;
 
-    return new ServerItem( m_view, this, ip, port, serviceName );
+    return new ServerItem( m_view, this, ip, port, serviceName, host );
 }
 
 void
@@ -452,23 +485,49 @@ DaapClient::passwordPrompt()
     callback->deleteLater();
 }
 
+QString
+DaapClient::resolve( const QString& hostname )
+{
+    KNetwork::KResolver resolver( hostname );
+    resolver.start();
+    if( resolver.wait( 5000 ) ) 
+    {
+        KNetwork::KResolverResults results = resolver.results();
+        debug() << "Resolver error code (0 is no error): " << resolver.errorString( results.error() ) << ' ' << hostname << endl;
+        if( !results.empty() ) 
+        {
+            QString ip = results[0].address().asInet().ipAddress().toString();
+            debug() << "ip found is " << ip << endl;
+            return ip;
+        }
+    }
+    return "0"; //error condition
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS ServerItem
 ////////////////////////////////////////////////////////////////////////////////
 
-ServerItem::ServerItem( QListView* parent, DaapClient* client, const QString& ip, Q_UINT16 port, const QString& title )
+ServerItem::ServerItem( QListView* parent, DaapClient* client, const QString& ip, Q_UINT16 port, const QString& title, const QString& host )
     : MediaItem( parent )
     , m_daapClient( client )
     , m_reader( 0 )
     , m_ip( ip )
     , m_port( port )
     , m_title( title )
+    , m_host( host )
     , m_loaded( false )
     , m_loading1( new QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
     , m_loading2( new QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
 {
     setText( 0, title );
     setType( MediaItem::DIRECTORY );
+}
+
+ServerItem::~ServerItem()
+{
+    delete m_reader;
+    m_reader = 0;
 }
 
 void
