@@ -287,7 +287,7 @@ DaapClient::serverOffline( DNSSD::RemoteService::Ptr service )
 
 #if DNSSD_SUPPORT
 QString
-DaapClient::serverKey( const DNSSD::RemoteService* service )
+DaapClient::serverKey( const DNSSD::RemoteService* service ) const
 {
     return ServerItem::key( service->hostName(), service->port() );
 }
