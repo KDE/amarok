@@ -2838,6 +2838,8 @@ MediaDevice::transferFiles()
                     QString preferred = supportedFiletypes().isEmpty() ? "mp3" : supportedFiletypes().first();
                     debug() << "transcoding " << bundle->url() << " to " << preferred << endl;
                     KURL transcoded = MediaBrowser::instance()->transcode( bundle->url(), preferred );
+                    if( isCanceled() )
+                        break;
                     if( transcoded.isEmpty() )
                     {
                         debug() << "transcoding failed" << endl;
@@ -2928,6 +2930,9 @@ MediaDevice::transferFiles()
 
             setProgress( progress() + 1 );
         }
+
+        if( isCanceled() )
+            break;
 
         if( !(transferredItem->flags() & MediaItem::Failed) )
             delete transferredItem;
