@@ -83,12 +83,12 @@ class DaapClient : public MediaDevice
         void foundDaap( DNSSD::RemoteService::Ptr );
         void resolvedDaap( bool );
         void createTree( const QString& host, Daap::SongList bundles );
-        QString serverKey( const DNSSD::RemoteService* service );
 
    private:
         ServerItem* newHost( const QString& serviceName, const QString& host, const QString& ip, const Q_INT16 port );
         QString resolve( const QString& hostname );
 #if DNSSD_SUPPORT
+        QString serverKey( const DNSSD::RemoteService* service ) const;
         DNSSD::ServiceBrowser* m_browser;
 #endif
         bool    m_connected;
@@ -114,7 +114,7 @@ class ServerItem : public QObject, public MediaItem
         void startAnimation();
         void stopAnimation();
         
-        QString key() { return key( m_host, m_port ); }
+        QString key() const { return key( m_host, m_port ); }
         static QString key( const QString& host, Q_UINT16 port ) { return host + ':' + QString::number( port ); }
     private slots:
         void slotAnimation();
