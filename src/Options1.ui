@@ -355,9 +355,6 @@
                     <property name="text">
                         <string>Use &amp;scores</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+S</string>
-                    </property>
                     <property name="checked">
                         <bool>false</bool>
                     </property>
@@ -412,9 +409,6 @@
                             <property name="text">
                                 <string>Use &amp;moods</string>
                             </property>
-                            <property name="accel">
-                                <string>Alt+M</string>
-                            </property>
                             <property name="checked">
                                 <bool>true</bool>
                             </property>
@@ -459,9 +453,6 @@
                                     </property>
                                     <property name="text">
                                         <string>Make m&amp;oodier:</string>
-                                    </property>
-                                    <property name="accel">
-                                        <string>Alt+O</string>
                                     </property>
                                     <property name="toolTip" stdset="0">
                                         <string>When enabled, the hue distribution is quantised and respread evenly, giving a prettier but less meaningful output.</string>
@@ -547,9 +538,6 @@
                                     <property name="text">
                                         <string>Stor&amp;e mood data files with music</string>
                                     </property>
-                                    <property name="accel">
-                                        <string>Alt+E</string>
-                                    </property>
                                     <property name="toolTip" stdset="0">
                                         <string>Enabling this option stores Mood data files with the music files. Disabling stores them in your home folder.</string>
                                     </property>
@@ -597,9 +585,6 @@
                     </property>
                     <property name="text">
                         <string>Manually sa&amp;ved playlists use relative path</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+V</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>If checked, Amarok uses a relative path for the tracks of manually saved playlists</string>
