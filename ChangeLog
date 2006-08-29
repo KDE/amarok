@@ -23,6 +23,9 @@ VERSION 1.4.3:
     * DAAP client shows connection errors to the user and no longer says
       "Loading" perpetually. After a failed connection, the user can now
       try again.
+    * DAAP client shows connection errors to the user and no longer says
+      "Loading" perpetually. After a failed connection, the user can now
+      try again.
 
 VERSION 1.4.2:
   FEATURES:
