@@ -476,6 +476,7 @@ DaapClient::passwordPrompt()
         connect( reader, SIGNAL( daapBundles( const QString&, Daap::SongList ) ),
                 this, SLOT( createTree( const QString&, Daap::SongList ) ) );
         connect( reader, SIGNAL( passwordRequired() ), this, SLOT( passwordPrompt() ) );
+        connect( reader, SIGNAL( httpError( const QString& ) ), root, SLOT( httpError( const QString& ) ) );
         reader->loginRequest();
     }
     else
@@ -554,9 +555,10 @@ ServerItem::setOpen( bool o )
                                                  QString::null, m_daapClient, ( m_ip + ":3689" ).ascii() );
         setReader ( reader );
 
-        reader->connect( reader, SIGNAL( daapBundles( const QString&, Daap::SongList ) ),
+        connect( reader, SIGNAL( daapBundles( const QString&, Daap::SongList ) ),
                 m_daapClient, SLOT( createTree( const QString&, Daap::SongList ) ) );
-        reader->connect( reader, SIGNAL( passwordRequired() ), m_daapClient, SLOT( passwordPrompt() ) );
+        connect( reader, SIGNAL( passwordRequired() ), m_daapClient, SLOT( passwordPrompt() ) );
+        connect( reader, SIGNAL( httpError( const QString& ) ), this, SLOT( httpError( const QString& ) ) );
         reader->loginRequest();
         m_loaded = true;
     }
@@ -564,25 +566,39 @@ ServerItem::setOpen( bool o )
          MediaItem::setOpen( true );
 }
 
-void ServerItem::startAnimation()
+void
+ServerItem::startAnimation()
 {
     if( !m_animationTimer.isActive() )
         m_animationTimer.start( ANIMATION_INTERVAL );
 }
 
-void ServerItem::stopAnimation()
+void
+ServerItem::stopAnimation()
 {
     m_animationTimer.stop();
     setType( MediaItem::DIRECTORY ); //restore icon
 }
 
-void ServerItem::slotAnimation()
+void
+ServerItem::slotAnimation()
 {
     m_iconCounter % 2 ?
         setPixmap( 0, *m_loading1 ):
         setPixmap( 0, *m_loading2 );
 
     m_iconCounter++;
+}
+
+void
+ServerItem::httpError( const QString& errorString )
+{
+    stopAnimation();
+    resetTitle();
+    amaroK::StatusBar::instance()->longMessage( i18n( "The following error occured while trying to connect to the remote server:<br>%1").arg( errorString ) );
+    m_reader->deleteLater();
+    m_reader = 0;
+    m_loaded = false;
 }
 
 #include "daapclient.moc"

@@ -30,7 +30,9 @@ ContentFetcher::ContentFetcher( const QString & hostname, Q_UINT16 port, const Q
  : QHttp(hostname, port, parent, name)
  , m_hostname( hostname )
  , m_port( port )
+ , m_selfDestruct( false )
 {
+    connect( this, SIGNAL( stateChanged( int ) ), this , SLOT( checkForErrors( int ) ) );
     QCString pass = password.utf8();
     if( !password.isNull() )
     {
@@ -74,6 +76,22 @@ ContentFetcher::getDaap( const QString & command )
 
     request( header );
 }
+
+/**
+ *  QHttp enjoys forgetting to emit a requestFinished when there's an error
+ *  This gets around that.
+ */
+void
+ContentFetcher::checkForErrors( int /*state*/ )
+{
+    if( !m_selfDestruct && error() != 0 )
+    {
+        debug() << "there is an error? " << error() << " " << errorString() << endl;
+        m_selfDestruct = true;
+        emit httpError( errorString() );
+    }
+}
+
 
 #include "contentfetcher.moc"
 

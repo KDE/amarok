@@ -20,8 +20,9 @@ VERSION 1.4.3:
     * Sort numeric columns in flat collection view numerically. (BR 130667)
     * Dynamic Collection broke flat collection view when the Filename column
       was added (BR 132874)
-    * fixed bug which prevented Amarok from creating the collection database
-      in rare cicumstances using Sqlite (BR 133072)
+    * DAAP client shows connection errors to the user and no longer says
+      "Loading" perpetually. After a failed connection, the user can now
+      try again.
 
 VERSION 1.4.2:
   FEATURES:

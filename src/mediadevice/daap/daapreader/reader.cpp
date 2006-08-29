@@ -162,6 +162,7 @@ void
 Reader::logoutRequest()
 {
     ContentFetcher* http = new ContentFetcher( m_host, m_port, m_password, this, "readerLogoutHttp" );
+    connect( http, SIGNAL( httpError( const QString& ) ), this, SLOT( fetchingError( const QString& ) ) );
     connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( logoutRequest( int, bool ) ) );
     http->getDaap( "/logout?" + m_loginString );
 }
@@ -176,7 +177,9 @@ Reader::logoutRequest( int, bool )
 void
 Reader::loginRequest()
 {
+    DEBUG_BLOCK
     ContentFetcher* http = new ContentFetcher( m_host, m_port, m_password, this, "readerHttp");
+    connect( http, SIGNAL( httpError( const QString& ) ), this, SLOT( fetchingError( const QString& ) ) );
     connect( http, SIGNAL(  responseHeaderReceived( const QHttpResponseHeader & ) )
             , this, SLOT( loginHeaderReceived( const QHttpResponseHeader & ) ) );
     http->getDaap( "/login" );
@@ -185,6 +188,7 @@ Reader::loginRequest()
 void
 Reader::loginHeaderReceived( const QHttpResponseHeader & resp )
 {
+    DEBUG_BLOCK
     ContentFetcher* http = (ContentFetcher*) sender();
     disconnect( http, SIGNAL(  responseHeaderReceived( const QHttpResponseHeader & ) )
             , this, SLOT( loginHeaderReceived( const QHttpResponseHeader & ) ) );
@@ -197,14 +201,15 @@ Reader::loginHeaderReceived( const QHttpResponseHeader & resp )
     connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( loginFinished( int, bool ) ) );
 }
 
+
 void
 Reader::loginFinished( int /* id */, bool error )
 {
+    DEBUG_BLOCK
     ContentFetcher* http = (ContentFetcher*) sender();
     disconnect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( loginFinished( int, bool ) ) );
     if( error )
     { 
-        debug() << http->error() << endl;
         http->deleteLater();
         return;
     }
@@ -219,6 +224,7 @@ Reader::loginFinished( int /* id */, bool error )
 void
 Reader::updateFinished( int /*id*/, bool error )
 {
+    DEBUG_BLOCK
     ContentFetcher* http = (ContentFetcher*) sender();
     disconnect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( updateFinished( int, bool ) ) );
     if( error )
@@ -403,6 +409,13 @@ Reader::addElement( Map &parentMap, char* tag, QVariant element )
         parentMap[tag] = QVariant( QValueList<QVariant>() );
 
     parentMap[tag].asList().append(element);
+}
+
+void
+Reader::fetchingError( const QString& error )
+{
+    const_cast< QObject* >( sender() )->deleteLater();
+    emit httpError( error );
 }
 #include "reader.moc"
 

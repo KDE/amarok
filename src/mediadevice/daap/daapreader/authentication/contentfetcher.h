@@ -34,11 +34,18 @@ class ContentFetcher : public QHttp
 
         void getDaap( const QString & path );
         QDataStream& results();
- 
+
+    private slots:
+        void checkForErrors( int state );
+
+    signals:
+        void httpError( const QString& );
+
     private:
         QString m_hostname;
         Q_UINT16 m_port;
         QCString m_authorize;
+        bool m_selfDestruct;
         static int s_requestId; //! Apple needs this for some reason
 };
 

@@ -24,6 +24,11 @@ class QPtrList;
 class MetaBundle;
 class ServerItem;
 class QHttpResponseHeader;
+
+namespace QHttp {
+    class Error;
+}
+
 namespace Daap {
 typedef QMap<QString, QVariant> Map;
 
@@ -72,9 +77,11 @@ typedef QMap< QString, AlbumList > SongList;
             void updateFinished( int id , bool error );
             void databaseIdFinished( int id , bool error );
             void songListFinished( int id, bool error );
+            void fetchingError( const QString& error );
 
         signals:
             void daapBundles( const QString& host, Daap::SongList bundles );
+            void httpError( const QString& );
             void passwordRequired();
 
         private:
