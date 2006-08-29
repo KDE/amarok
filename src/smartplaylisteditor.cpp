@@ -454,7 +454,7 @@ void SmartPlaylistEditor::buildQuery()
     }
    
     //only select from mounted devices
-    whereStr = whereStr + CollectionDB::instance()->deviceidSelection();
+    whereStr = whereStr + " (*MountedDeviceSelection*) ";
 
     //order by expression
     if( m_orderCheck->isChecked() ) {

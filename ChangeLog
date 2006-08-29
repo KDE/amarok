@@ -10,6 +10,7 @@ VERSION 1.4.3:
 
   CHANGES:
     * Don't report "/dev/hd" style devices as new media devices. (BR 127831)
+    * Smart Playlists only load media from currently mounted devices.
 
   BUGFIXES:
     * AudioCD playback would stutter and sometimes freeze Amarok. (BR 133015)

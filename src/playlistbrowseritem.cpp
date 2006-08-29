@@ -2388,7 +2388,8 @@ QString SmartPlaylist::query()
 {
     return QString( m_sqlForTags )
            .replace( "(*CurrentTimeT*)" , QString::number(QDateTime::currentDateTime().toTime_t()) )
-           .replace( "(*ListOfFields*)" , QueryBuilder::dragSQLFields() );
+           .replace( "(*ListOfFields*)" , QueryBuilder::dragSQLFields() )
+           .replace( "(*MountedDeviceSelection*)" , CollectionDB::instance()->deviceidSelection() );
 }
 
 
