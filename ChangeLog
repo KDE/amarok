@@ -12,6 +12,7 @@ VERSION 1.4.3:
     * Don't report "/dev/hd" style devices as new media devices. (BR 127831)
 
   BUGFIXES:
+    * AudioCD playback would stutter and sometimes freeze Amarok. (BR 133015)
     * DAAP client shows connection errors to the user and no longer says
       "Loading" perpetually. After a failed connection, the user can now
       try again.

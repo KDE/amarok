@@ -3463,28 +3463,6 @@ CollectionDB::bundleForUrl( MetaBundle* bundle )
             bundle->copyFrom( peb );
             valid = true;
         }
-        else if( bundle->url().protocol() == "audiocd" || bundle->url().protocol() == "cdda" )
-        {
-            // try to see if the engine has some info about the
-            // item (the intended behaviour should be that if the
-            // item is an AudioCD track, the engine can return
-            // CDDB data for it)
-            Engine::SimpleMetaBundle smb;
-            if ( EngineController::engine()->metaDataForUrl( bundle->url(), smb ) )
-            {
-                valid = true;
-                bundle->setTitle( smb.title );
-                bundle->setArtist( smb.artist );
-                bundle->setAlbum( smb.album );
-                bundle->setComment( smb.comment );
-                bundle->setGenre( smb.genre );
-                bundle->setBitrate( smb.bitrate.toInt() );
-                bundle->setSampleRate( smb.samplerate.toInt() );
-                bundle->setLength( smb.length.toInt() );
-                bundle->setYear( smb.year.toInt() );
-                bundle->setTrack( smb.tracknr.toInt() );
-            }
-        }
     }
 
     return valid;
