@@ -620,37 +620,6 @@ void App::applySettings( bool firstTime )
                 QFile( cacheDir.filePath( *it ) ).remove();
     }
 
-    if( AmarokConfig::forceATFOff() )
-    {
-        AmarokConfig::setAdvancedTagFeatures( false );
-        AmarokConfig::setForceATFOff( false );
-    }
-
-    // If just turned ATF on, clear the playlist and force a rescan
-    // comment out for now until more testing is done, this seems to occur repeatedly
-    // even after scans, also seems to be doing incremental scans...odd
-    /*if ( AmarokConfig::advancedTagFeatures() && !AmarokConfig::aTFFirstTurnedOn() )
-    {
-        amaroK::StatusBar::instance()->longMessageThreadSafe(
-                    i18n("ATF tagging was just enabled for the first time.\n"
-                         "Amarok needs to rescan your collection.\n"
-                         "When this is done Amarok will clear the\n"
-                         "Playlist and you'll be good to go!\n"
-                         "This first rescan may take much longer than normal.\n"
-                         "Please be patient."), KDE::StatusBar::Information );
-        QTimer::singleShot( 0, CollectionDB::instance(), SLOT( startScan() ) );
-    }*/
-    if ( AmarokConfig::advancedTagFeatures() && AmarokConfig::aTFJustTurnedOn() )
-    {
-        amaroK::StatusBar::instance()->longMessageThreadSafe(
-                    i18n( "You have re-enabled ATF tagging. Please\n"
-                          "remember that new files that have been\n"
-                          "added to your collection since you last\n"
-                          "had ATF tagging enabled will need to be\n"
-                          "rescanned for full functionality."), KDE::StatusBar::Information );
-        AmarokConfig::setATFJustTurnedOn( false );
-    }
-
     //if ( !firstTime )
         // Bizarrely and ironically calling this causes crashes for
         // some people! FIXME

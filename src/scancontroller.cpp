@@ -247,15 +247,6 @@ main_loop:
                 CollectionDB::instance()->clearTables( false ); // empty permanent tables
 
             CollectionDB::instance()->copyTempTables(); // copy temp into permanent tables
-            if( AmarokConfig::advancedTagFeatures() && !AmarokConfig::aTFFirstTurnedOn() )
-            {
-                amaroK::StatusBar::instance()->longMessageThreadSafe( i18n("ATF is now enabled.  Enjoy!\n"),
-                            KDE::StatusBar::Information );
-
-                Playlist::instance()->clear();
-                AmarokConfig::setATFFirstTurnedOn( true );
-                amaroK::config()->sync();
-            }
         }
         else {
             if( m_crashedFiles.size() < MAX_RESTARTS ) {

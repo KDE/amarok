@@ -191,8 +191,6 @@ class DcopCollectionHandler : public QObject, virtual public AmarokCollectionInt
       virtual void scanCollection();
       virtual void scanCollectionChanges();
       virtual void disableAutoScoring( bool disable );
-      virtual QString newUniqueIdForFile( const QString &path );
-      virtual QString removeUniqueIdFromFile( const QString &path );
       virtual void scanUnpause();
       virtual void scanPause();
       virtual void scannerAcknowledged();

@@ -848,26 +848,6 @@ namespace amaroK
         CollectionDB::instance()->disableAutoScoring( disable );
     }
 
-    QString DcopCollectionHandler::newUniqueIdForFile( const QString &path )
-    {
-        if( ScanController::instance() )
-            return "Cannot run this DCOP call during a collection scan";
-        if( CollectionDB::instance()->newUniqueIdForFile( path ) )
-            return "success";
-        else
-            return "failed"; 
-    }
-
-    QString DcopCollectionHandler::removeUniqueIdFromFile( const QString &path )
-    {
-        if( ScanController::instance() )
-            return "Cannot run this DCOP call during a collection scan";
-        if( CollectionDB::instance()->removeUniqueIdFromFile( path ) )
-            return "success";
-        else
-            return "failed"; 
-    }
-
 /////////////////////////////////////////////////////////////////////////////////////
 // class DcopScriptHandler
 /////////////////////////////////////////////////////////////////////////////////////

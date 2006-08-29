@@ -3058,13 +3058,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
             //debug() << "At doATFStuff, stat-ing file " << absPath << endl;
             bool statSuccessful = QFile::exists( absPath );
             if( statSuccessful ) //if true, new one is a copy
-            {
-                //debug() << "stat was successful, new file is a copy" << endl;
-                if( bundle->newUniqueId() )
-                    doATFStuff( bundle, true ); //yes, it's recursive, but what's wrong with that? :-)
-                else
-                    error() << "Could not set new unique id" << endl;
-            }
+                error() << "Already-scanned file at " << absPath << " has same UID as new file at " << currurl << endl;
             else  //it's a move, not a copy, or a copy and then both files were moved...can't detect that
             {
                 //debug() << "stat was NOT successful, updating tables with: " << endl;
@@ -3140,13 +3134,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
             //debug() << "At doATFStuff part 2, stat-ing file " << absPath << endl;
             bool statSuccessful = QFile::exists( absPath );
             if( statSuccessful ) //if true, new one is a copy
-            {
-                //debug() << "stat part 2 was successful, new file is a copy" << endl;
-                if( bundle->newUniqueId() )
-                    doATFStuff( bundle, true ); //yes, it's recursive, but what's wrong with that? :-)
-                else
-                    error() << "Could not set new unique id" << endl;
-            }
+                error() << "Already-scanned file at " << absPath << " has same UID as new file at " << currurl << endl;
             else  //it's a move, not a copy, or a copy and then both files were moved...can't detect that
             {
                 //debug() << "stat part 2 was NOT successful, updating tables with: " << endl;
