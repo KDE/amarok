@@ -670,7 +670,7 @@ CollectionDB::createTables( const bool temporary )
     query( QString( "CREATE %1 TABLE uniqueid%2 ("
                     "url " + exactTextColumnType() + ","
                     "deviceid INTEGER,"
-                    "uniqueid " + exactTextColumnType(8) + " UNIQUE,"
+                    "uniqueid " + exactTextColumnType(32) + " UNIQUE,"
                     "dir " + exactTextColumnType() + ");" )
                     .arg( temporary ? "TEMPORARY" : "" )
                     .arg( temporary ? "_temp" : "" ) );
@@ -919,7 +919,7 @@ CollectionDB::createStatsTable()
                     "percentage FLOAT,"
                     "rating INTEGER DEFAULT 0,"
                     "playcounter INTEGER,"
-                    "uniqueid " + exactTextColumnType(8) + " UNIQUE,"
+                    "uniqueid " + exactTextColumnType(32) + " UNIQUE,"
                     "deleted BOOL DEFAULT " + boolF() + ","
                     "PRIMARY KEY(url, deviceid) );" ) );
 
@@ -964,7 +964,7 @@ CollectionDB::createStatsTableV10( bool temp )
                     "percentage FLOAT,"
                     "rating INTEGER DEFAULT 0,"
                     "playcounter INTEGER,"
-                    "uniqueid " + exactTextColumnType(8) + " UNIQUE,"
+                    "uniqueid " + exactTextColumnType(32) + " UNIQUE,"
                     "deleted BOOL DEFAULT " + boolF() + ","
                     "PRIMARY KEY(url, deviceid) );"
                     ).arg( temp ? "TEMPORARY" : "" )
@@ -5372,6 +5372,20 @@ CollectionDB::updateStatsTables()
                 dropStatsTableV1();
                 createStatsTableV10( false );
                 query( "INSERT INTO statistics SELECT * FROM statistics_fix_ten;" );
+            }
+            if ( prev < 12 )
+            {
+                //re-using old method cause just a slight change to one column...
+                //if people are upgrading from earlier than 11, just get the new column
+                //earlier  :-)
+                createStatsTableV10( true );
+                query( "INSERT INTO statistics_fix_ten SELECT url,deviceid,createdate,"
+                       "accessdate,percentage,rating,playcounter,uniqueid,deleted FROM "
+                       "statistics;" );
+                dropStatsTableV1();
+                createStatsTableV10( false );
+                query( "INSERT INTO statistics SELECT * FROM statistics_fix_ten;" );
+                query( "UPDATE statistics SET uniqueid=NULL;" );
             }
             else
             {

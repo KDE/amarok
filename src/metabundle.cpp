@@ -237,24 +237,7 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
             m_isValidMedia = CollectionDB::instance()->bundleForUrl( this );
 
         if ( !isValidMedia() || ( !m_podcastBundle && m_length <= 0 ) )
-        {
-            //this is the constructor used by the amarokcollectionscanner app
             readTags( readStyle, images );
-            bool readOkay = readUniqueId(); //if read failed, probably don't want to try setting
-            //if ATF writing on and collectionscanner and no current ID, write one
-            if( m_uniqueId.isEmpty() &&
-                    readOkay && isFile() &&
-                    AmarokConfig::advancedTagFeatures() &&
-                    QString( kapp->name() ) == QString( "amarokcollectionscanner" ) )
-            {
-                MetaBundleSaver *mbs = new MetaBundleSaver( this );
-                TagLib::FileRef *fileref = mbs->prepareToSave();
-                if( fileref && createUniqueId( fileref ) )
-                    mbs->doSave();
-                mbs->cleanupSave();
-                delete mbs;
-            }
-        }
     }
     else
     {
@@ -504,10 +487,30 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
         return;
 
     const QString path = url().path();
+
+    //get our unique id
+    KMD5* md5 = new KMD5( 0, 0 );
+    char databuf[8192];
+    QFile* qfile = new QFile( path );
+    int readlen = 0;
+    QCString size = 0;
+    if( qfile->open( IO_Raw | IO_ReadOnly ) )
+    {
+        if( ( readlen = qfile->readBlock( databuf, 8192 ) ) > 0 )
+        {
+            md5->update( databuf, readlen );
+            md5->update( size.setNum( (ulong)qfile->size() ) );
+            m_uniqueId = md5->hexDigest();
+        }
+        else
+            m_uniqueId = QString::null;
+    }
+
+    delete md5;
+    delete qfile;
+
     TagLib::FileRef fileref;
     TagLib::Tag *tag = 0;
-
-
     fileref = TagLib::FileRef( QFile::encodeName( path ), true, readStyle );
 
     if( !fileref.isNull() )
@@ -1692,6 +1695,7 @@ MetaBundle::createUniqueId( TagLib::FileRef *fileref, bool stripOnly )
 bool
 MetaBundle::newUniqueId()
 {
+    return false;
     if( !isFile() || !AmarokConfig::advancedTagFeatures() )
         return false;
 
@@ -1724,6 +1728,7 @@ MetaBundle::newUniqueId()
 bool
 MetaBundle::removeUniqueId()
 {
+    return false;
     if( !isFile() )
         return false;
 
