@@ -13,6 +13,8 @@ VERSION 1.4.3:
     * Smart Playlists only load media from currently mounted devices.
 
   BUGFIXES:
+    * MTP mediadevice support would not compile against libmtp versions >=
+    0.0.12. (fixed in SVN revision 576121)
     * AudioCD playback would stutter and sometimes freeze Amarok. (BR 133015)
     * DAAP client shows connection errors to the user and no longer says
       "Loading" perpetually. After a failed connection, the user can now
