@@ -1498,7 +1498,7 @@ MetaBundle::readUniqueId()
     QString returnval;
 
     if( !md5 || !qfile )
-        return false;
+        return QString::null;
 
     if( qfile->open( IO_Raw | IO_ReadOnly ) )
     {
