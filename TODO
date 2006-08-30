@@ -5,6 +5,12 @@ TODO-list for Amarok
 
 
 SHORT-TERM (URGENT):
+ <markey>  I just deleted a tag by accident: Clicked on a file in the playlist, pressed
+           delete to remove the track from the playlist. I had not noticed that it
+           went into edit mode, though. So I clicked somewhere else, and BAM, the new
+           empty tag was written. My tag was gone :S IMHO we should require confirmation
+           before writing, e.g. only write the tag after pressing enter.
+
  <markey>  When you start a lastfm stream, the old metadata from the last stream is 
            shown before the new stream starts. Doesn't look nice.
 
