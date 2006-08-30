@@ -952,6 +952,7 @@ CollectionDB::createStatsTableV8()
     query( "CREATE INDEX uniqueid_stats ON statistics( uniqueid );" );
 }
 
+//Old version, used in upgrade code
 void
 CollectionDB::createStatsTableV10( bool temp )
 {
@@ -5290,16 +5291,6 @@ CollectionDB::updateStatsTables()
                     update += QString( "url = '%1';" ).arg( escapeString( *it ) );
                     query ( update );
                 }
-            }
-            if ( prev < 11 )
-            {
-                createStatsTableV10( true );
-                query( "INSERT INTO statistics_fix_ten SELECT url,deviceid,createdate,"
-                       "accessdate,percentage,rating,playcounter,uniqueid,deleted FROM "
-                       "statistics;" );
-                dropStatsTableV1();
-                createStatsTableV10( false );
-                query( "INSERT INTO statistics SELECT * FROM statistics_fix_ten;" );
             }
             if ( prev < 12 )
             {
