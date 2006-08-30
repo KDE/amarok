@@ -3167,62 +3167,6 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
     }
 }
 
-bool
-CollectionDB::newUniqueIdForFile( const QString &path )
-{
-    DEBUG_BLOCK
-    KURL url = KURL::fromPathOrURL( path );
-
-    if( !QFile::exists( path ) )
-    {
-        debug() << "QFile::exists returned false for " << path << endl;
-        return false;
-    }
-
-    // Clean it.
-    url.cleanPath();
-
-    MetaBundle bundle( url );
-    if( bundle.newUniqueId() )
-    {
-        doATFStuff( &bundle, false );
-        return true;
-    }
-
-    debug() << "Could not set new unique id" << endl;
-    return false;
-}
-
-bool
-CollectionDB::removeUniqueIdFromFile( const QString &path )
-{
-    DEBUG_BLOCK
-    KURL url = KURL::fromPathOrURL( path );
-
-    if( !QFile::exists( path ) )
-    {
-        debug() << "QFile::exists returned false for " << path << endl;
-        return false;
-    }
-
-    url.cleanPath();
-
-    MetaBundle bundle( url );
-    QString uid = bundle.uniqueId();
-    if( bundle.removeUniqueId() )
-    {
-        query( QString( "DELETE FROM uniqueid WHERE uniqueid='%1';" )
-                      .arg( uid ) );
-        if( ScanController::instance() && ScanController::instance()->tablesCreated() )
-            query( QString( "DELETE FROM uniqueid_temp WHERE uniqueid='%1';" )
-                      .arg( uid ) );
-        return true;
-    }
-
-    debug() << "Cound not remove unique id" << endl;
-    return false;
-}
-
 QString
 CollectionDB::urlFromUniqueId( const QString &id )
 {

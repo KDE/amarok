@@ -486,28 +486,9 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
     if( !isFile() )
         return;
 
+    setUniqueId( readUniqueId() );
+
     const QString path = url().path();
-
-    //get our unique id
-    KMD5* md5 = new KMD5( 0, 0 );
-    char databuf[8192];
-    QFile* qfile = new QFile( path );
-    int readlen = 0;
-    QCString size = 0;
-    if( qfile->open( IO_Raw | IO_ReadOnly ) )
-    {
-        if( ( readlen = qfile->readBlock( databuf, 8192 ) ) > 0 )
-        {
-            md5->update( databuf, readlen );
-            md5->update( size.setNum( (ulong)qfile->size() ) );
-            m_uniqueId = md5->hexDigest();
-        }
-        else
-            m_uniqueId = QString::null;
-    }
-
-    delete md5;
-    delete qfile;
 
     TagLib::FileRef fileref;
     TagLib::Tag *tag = 0;
@@ -1376,6 +1357,9 @@ MetaBundle::safeSave()
         return false;
     }
 
+    setUniqueId( readUniqueId() );
+    CollectionDB::instance()->doATFStuff( this, false );
+
     noproblem = mbs->cleanupSave();
 
     delete mbs;
@@ -1393,6 +1377,7 @@ MetaBundle::save( TagLib::FileRef* fileref )
     TagLib::ID3v2::FrameFactory::instance()->setDefaultTextEncoding(TagLib::String::UTF8);
 
     bool passedin = fileref;
+    bool returnval = false;
 
     TagLib::FileRef* f;
 
@@ -1422,13 +1407,21 @@ MetaBundle::save( TagLib::FileRef* fileref )
                     setExtendedTag( f->file(), compilationTag, QString::number( compilation() ) );
             }
             if( !passedin )
-                return f->save();
+            {
+                returnval = f->save();
+                if( returnval )
+                {
+                    setUniqueId( readUniqueId() );
+                    CollectionDB::instance()->doATFStuff( this, false );
+                }
+                return returnval;
+            }
             else
-                return true;
+                return returnval = true;
         }
     }
 
-    return false;
+    return returnval;
 }
 
 bool MetaBundle::save( QTextStream &stream, const QStringList &attributes, int indent ) const
@@ -1488,283 +1481,35 @@ void MetaBundle::setUniqueId()
 
 void MetaBundle::setUniqueId( const QString &id )
 {
-    ///WARNING WARNING WARNING
-    //NEVER CALL THIS FUNCTION UNLESS YOU'RE DAMN SURE YOU KNOW WHAT YOU ARE DOING
-    //i.e. IF YOU ARE NOT JEFF, ASK HIM BEFORE DOING THIS! YOU CAN CAUSE BAD
-    //THINGS TO HAPPEN LIKE MESSING UP USERS' COLLECTIONS, WHICH THEY ARE NOT
-    //VERY FORGIVING ABOUT
+    //WARNING WARNING WARNING
+    //Don't call this function if you don't know what you're doing!
     m_uniqueId = id;
 }
 
-TagLib::ID3v2::UniqueFileIdentifierFrame *
-MetaBundle::ourMP3UidFrame( TagLib::MPEG::File *file, QString ourId )
-{
-    //WARNING: this function may not be safe if tag has no UFID frames
-    //(should never be called in that case as checks are run first)
-    TagLib::ID3v2::FrameList ufidlist = file->ID3v2Tag()->frameListMap()["UFID"];
-    TagLib::ID3v2::UniqueFileIdentifierFrame* currFrame;
-    for( TagLib::ID3v2::FrameList::Iterator iter = ufidlist.begin(); iter != ufidlist.end(); iter++ )
-    {
-        currFrame = dynamic_cast<TagLib::ID3v2::UniqueFileIdentifierFrame*>(*iter);
-        if( TStringToQString( currFrame->owner() ) == ourId )
-        {
-            return currFrame;
-        }
-    }
-    return 0;
-}
-
-bool
+QString
 MetaBundle::readUniqueId()
 {
-    if( !isFile() )
-        return false;
-
-    QString ourId = QString( "Amarok - rediscover your music at http://amarok.kde.org" ).upper();
-
-    const QString path = url().path();
-    TagLib::FileRef fileref;
-    fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
-
-    if( fileref.isNull() )
-        return false;
-
-    if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
+    //get our unique id
+    KMD5* md5 = new KMD5( 0, 0 );
+    char databuf[8192];
+    QFile* qfile = new QFile( url().path() );
+    int readlen = 0;
+    QCString size = 0;
+    if( qfile->open( IO_Raw | IO_ReadOnly ) )
     {
-        if ( file->ID3v2Tag( false ) )
+        if( ( readlen = qfile->readBlock( databuf, 8192 ) ) > 0 )
         {
-            if( file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() || !ourMP3UidFrame( file, ourId ) )
-                m_uniqueId = QString::null;
-            else
-                m_uniqueId = TStringToQString( TagLib::String( ourMP3UidFrame( file, ourId )->identifier() ) );
-
-            return true;
+            md5->update( databuf, readlen );
+            md5->update( size.setNum( (ulong)qfile->size() ) );
+            return QString( md5->hexDigest().data() );
         }
-    }
-    else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
-    {
-        if( file->tag() )
-        {
-            if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) &&
-                    !file->tag()->fieldListMap()[QStringToTString( ourId )].isEmpty() )
-                m_uniqueId = TStringToQString( file->tag()->fieldListMap()[QStringToTString( ourId )].front() );
-            else
-                m_uniqueId = QString::null;
-
-            return true;
-        }
-    }
-    else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
-    {
-        if( file->xiphComment( false ) )
-        {
-            if( file->xiphComment()->fieldListMap().contains( QStringToTString( ourId ) ) &&
-                    !file->xiphComment()->fieldListMap()[QStringToTString( ourId )].isEmpty() )
-                m_uniqueId = TStringToQString( file->xiphComment()->fieldListMap()[QStringToTString( ourId )].front() );
-            else
-                m_uniqueId = QString::null;
-
-            return true;
-        }
-    }
-    else if ( TagLib::Ogg::FLAC::File *file = dynamic_cast<TagLib::Ogg::FLAC::File *>( fileref.file() ) )
-    {
-        if( file->tag() )
-        {
-            if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) &&
-                    !file->tag()->fieldListMap()[QStringToTString( ourId )].isEmpty() )
-                m_uniqueId = TStringToQString( file->tag()->fieldListMap()[QStringToTString( ourId )].front() );
-            else
-                m_uniqueId = QString::null;
-
-            return true;
-        }
-    }
-    else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
-    {
-        if( file || !file )
-            return false; //not handled, at least not yet
-    }
-    return false;
-}
-
-bool
-MetaBundle::createUniqueId( TagLib::FileRef *fileref, bool stripOnly )
-{
-    if( !isFile() || !TagLib::File::isWritable( fileref->file()->name() ) )
-        return false;
-
-    int randSize = 8;
-
-    QString ourId = QString( "Amarok - rediscover your music at http://amarok.kde.org" ).upper();
-
-    //due to bug in taglib (see bugs 132019 and 132018) it seems the genre isn't correctly updated from
-    //a preexisting id3v2.3 tag...so explicitly set it
-    if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref->file() ) )
-    {
-        if ( file->ID3v2Tag( true ) )
-        {
-            if( !file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() && ourMP3UidFrame( file, ourId ) )
-                file->ID3v2Tag()->removeFrame( ourMP3UidFrame( file, ourId ) );
-
-            if( stripOnly )
-            {
-                    file->ID3v2Tag()->setGenre( file->ID3v2Tag()->genre() );
-                    m_uniqueId = QString::null;
-                    return true;
-            }
-
-            m_uniqueId = getRandomStringHelper( randSize );
-            file->ID3v2Tag()->addFrame( new TagLib::ID3v2::UniqueFileIdentifierFrame(
-                    QStringToTString( ourId ),
-                    TagLib::ByteVector( m_uniqueId.ascii(), randSize )
-                    ) );
-            file->ID3v2Tag()->setGenre( file->ID3v2Tag()->genre() );
-            return true;
-        }
-    }
-    else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref->file() ) )
-    {
-        if( file->tag() )
-        {
-            if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) &&
-                    !file->tag()->fieldListMap()[QStringToTString( ourId )].isEmpty() )
-                file->tag()->removeField( QStringToTString( ourId ) );
-
-            if( stripOnly )
-            {
-                m_uniqueId = QString::null;
-                return true;
-            }
-
-            m_uniqueId = getRandomStringHelper( randSize );
-            file->tag()->addField( QStringToTString( ourId ), QStringToTString( m_uniqueId ) );
-            return true;
-        }
-    }
-    //FLACs are commented because supposedly they have to be totally rewritten to add uniqueids, and as they're big this takes a while.
-    //This will have to be tested.  It's also supposedly a TagLib bug so maybe it could be fixed, especially with some pressure on wheels
-    else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref->file() ) )
-    {
-        if( file->xiphComment( true ) )
-        {/*
-            if( file->xiphComment()->fieldListMap().contains( QStringToTString( ourId ) ) &&
-                    !file->xiphComment()->fieldListMap()[QStringToTString( ourId )].isEmpty() )
-                file->xiphComment()->removeField( QStringToTString( ourId ) );
-
-            if( stripOnly )
-            {
-                m_uniqueId = QString::null;
-                return true;
-            }
-
-            m_uniqueId = getRandomStringHelper( randSize );
-            file->xiphComment()->addField( QStringToTString( ourId ), QStringToTString( m_uniqueId ) );
-            return true;
-        */}
-    }
-    else if ( TagLib::Ogg::FLAC::File *file = dynamic_cast<TagLib::Ogg::FLAC::File *>( fileref->file() ) )
-    {
-        if( file->tag() )
-        {/*
-            if( file->tag()->fieldListMap().contains( QStringToTString( ourId ) ) &&
-                    !file->tag()->fieldListMap()[QStringToTString( ourId )].isEmpty() )
-                file->tag()->removeField( QStringToTString( ourId ) );
-
-            if( stripOnly )
-            {
-                m_uniqueId = QString::null;
-                return true;
-            }
-
-            m_uniqueId = getRandomStringHelper( randSize );
-            file->tag()->addField( QStringToTString( ourId ), QStringToTString( m_uniqueId ) );
-            return true;
-        */}
-
-    }
-    else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref->file() ) )
-    {
-        if( file || !file )
-        return false;
+        else
+            return QString::null;
     }
 
-    return false;
-}
+    delete md5;
+    delete qfile;
 
-bool
-MetaBundle::newUniqueId()
-{
-    return false;
-    if( !isFile() || !AmarokConfig::advancedTagFeatures() )
-        return false;
-
-    bool noproblem = false;
-
-    MetaBundleSaver *mbs = new MetaBundleSaver( this );
-    TagLib::FileRef *fileref = mbs->prepareToSave();
-
-    if( !fileref )
-    {
-        debug() << "ERROR: failed to set new uniqueid (could not open fileref)" << endl;
-        return false;
-    }
-
-    if( createUniqueId( fileref ) )
-        noproblem = mbs->doSave();
-
-    if( noproblem )
-    {
-        bool returnval = mbs->cleanupSave();
-        delete mbs;
-        return returnval;
-    }
-
-    mbs->cleanupSave();
-    delete mbs;
-    return false;
-}
-
-bool
-MetaBundle::removeUniqueId()
-{
-    return false;
-    if( !isFile() )
-        return false;
-
-    //constructor called for this function does a readUniqueId on the
-    //file's tags, so if m_uniqueId isn't set, nothing to remove...
-
-    if( m_uniqueId.isEmpty() )
-    {
-        debug() << "This file doesn't appear to have a uniqueid to remove..." << endl;
-        return true; //still a success
-    }
-
-    bool noproblem = false;
-
-    MetaBundleSaver *mbs = new MetaBundleSaver( this );
-    TagLib::FileRef *fileref = mbs->prepareToSave();
-
-    if( !fileref )
-    {
-        debug() << "ERROR: failed to remove uniqueid (could not open fileref)" << endl;
-        return false;
-    }
-
-    if( createUniqueId( fileref, true ) )
-        noproblem = mbs->doSave();
-
-    if( noproblem )
-    {
-        bool returnval = mbs->cleanupSave();
-        delete mbs;
-        return returnval;
-    }
-
-    mbs->cleanupSave();
-    delete mbs;
-    return false;
 }
 
 int
@@ -1828,43 +1573,6 @@ MetaBundle::getRandomString( int size, bool numbersOnly )
         // so what if I work backwards?
     }
     return str;
-}
-
-QString
-MetaBundle::getRandomStringHelper( int size )
-{
-    QString returnvalue;
-    bool goodvalue = false;
-    bool temporary = false;
-    QStringList tempcheck, uniqueids;
-    if( CollectionDB::instance()->getType() == DbConnection::postgresql )
-        tempcheck = CollectionDB::instance()->query( QString( "select relname from pg_stat_user_tables order by relname;" ) );
-    else if( CollectionDB::instance()->getType() == DbConnection::sqlite )
-        tempcheck = CollectionDB::instance()->query( QString( "SELECT name FROM sqlite_master WHERE type = 'table';" ) );
-    else
-        tempcheck = CollectionDB::instance()->query( QString( "SHOW TABLES;" ) );
-
-    if( tempcheck.contains( "uniqueid_temp" ) > 0 )
-        temporary = true;
-    while( !goodvalue )
-    {
-        returnvalue = getRandomString( size );
-        uniqueids = CollectionDB::instance()->query( QString(
-            "SELECT url, uniqueid "
-            "FROM uniqueid%1 "
-            "WHERE uniqueid = '%2';" )
-                .arg( temporary ? "_temp" : "" )
-                .arg( CollectionDB::instance()->escapeString( returnvalue ) ) );
-        if( uniqueids.count() == 0 )
-            goodvalue = true;
-    }
-    return returnvalue;
-}
-
-void
-MetaBundle::scannerAcknowledged()
-{
-    DEBUG_BLOCK
 }
 
 void MetaBundle::setTitle( const QString &title )

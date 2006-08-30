@@ -275,7 +275,6 @@ public: //accessors
     bool safeToSave() { return m_safeToSave; }
 
     QString getRandomString( int size, bool numbersOnly = false );
-    QString getRandomStringHelper( int size );
 
 public: //modifiers
     void setUrl( const KURL &url );
@@ -307,13 +306,10 @@ public: //modifiers
     bool checkExists();
     void setPodcastBundle( const PodcastEpisodeBundle &peb );
     void setLastFmBundle( const LastFm::Bundle &last );
-    void setUniqueId(); //will find the fileref
-    void setUniqueId( const QString &id ); //WARNING WARNING WARNING SEE COMMENT in .CPP
-    bool readUniqueId();
-    bool createUniqueId( TagLib::FileRef* fileref, bool stripOnly = false );
-    bool removeUniqueId();
-    bool newUniqueId();
-    void scannerAcknowledged();
+    void setUniqueId(); //uses database for lookup
+    void setUniqueId( const QString &id ); //SEE COMMENT in .CPP
+    QString readUniqueId();
+    void scannerAcknowledged() {}
 
     void detach(); // for being able to apply QDeepCopy<>
 
@@ -407,7 +403,6 @@ private:
     void loadImagesFromTag( const TagLib::ID3v2::Tag &tag, EmbeddedImageList& images );
 
     int getRand();
-    TagLib::ID3v2::UniqueFileIdentifierFrame *ourMP3UidFrame( TagLib::MPEG::File *file, QString ourId );
 };
 
 /// for your convenience
