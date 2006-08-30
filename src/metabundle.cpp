@@ -1490,15 +1490,9 @@ QString
 MetaBundle::readUniqueId()
 {
     //get our unique id
-    KMD5* md5 = new KMD5( 0, 0 );
-    if( !md5 ) return QString::null;
+    KMD5 md5( 0, 0 );
 
-    QFile* qfile = new QFile( url().path() );
-    if( !qfile )
-    {
-        delete md5;
-        return QString::null;
-    }
+    QFile qfile( url().path() );
 
     char databuf[8192];
     int readlen = 0;
@@ -1509,18 +1503,19 @@ MetaBundle::readUniqueId()
     {
         if( ( readlen = qfile->readBlock( databuf, 8192 ) ) > 0 )
         {
-            md5->update( databuf, readlen );
-            md5->update( size.setNum( (ulong)qfile->size() ) );
-            returnval = QString( md5->hexDigest().data() );
+            md5.update( databuf, readlen );
+            md5.update( size.setNum( (ulong)qfile.size() ) );
+            qfile.close();
+            return QString( md5.hexDigest().data() );
         }
         else
-            returnval = QString::null;
+        {
+            qfile.close();
+            return QString::null;
+        }
     }
 
-    delete md5;
-    delete qfile;
-
-    return returnval;
+    return QString::null;
 }
 
 int
