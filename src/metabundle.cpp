@@ -1499,9 +1499,9 @@ MetaBundle::readUniqueId()
     QCString size = 0;
     QString returnval;
 
-    if( qfile->open( IO_Raw | IO_ReadOnly ) )
+    if( qfile.open( IO_Raw | IO_ReadOnly ) )
     {
-        if( ( readlen = qfile->readBlock( databuf, 8192 ) ) > 0 )
+        if( ( readlen = qfile.readBlock( databuf, 8192 ) ) > 0 )
         {
             md5.update( databuf, readlen );
             md5.update( size.setNum( (ulong)qfile.size() ) );
