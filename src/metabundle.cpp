@@ -1491,14 +1491,19 @@ MetaBundle::readUniqueId()
 {
     //get our unique id
     KMD5* md5 = new KMD5( 0, 0 );
-    char databuf[8192];
+    if( !md5 ) return QString::null;
+
     QFile* qfile = new QFile( url().path() );
+    if( !qfile )
+    {
+        delete md5;
+        return QString::null;
+    }
+
+    char databuf[8192];
     int readlen = 0;
     QCString size = 0;
     QString returnval;
-
-    if( !md5 || !qfile )
-        return QString::null;
 
     if( qfile->open( IO_Raw | IO_ReadOnly ) )
     {
