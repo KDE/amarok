@@ -1495,21 +1495,27 @@ MetaBundle::readUniqueId()
     QFile* qfile = new QFile( url().path() );
     int readlen = 0;
     QCString size = 0;
+    QString returnval;
+
+    if( !md5 || !qfile )
+        return false;
+
     if( qfile->open( IO_Raw | IO_ReadOnly ) )
     {
         if( ( readlen = qfile->readBlock( databuf, 8192 ) ) > 0 )
         {
             md5->update( databuf, readlen );
             md5->update( size.setNum( (ulong)qfile->size() ) );
-            return QString( md5->hexDigest().data() );
+            returnval = QString( md5->hexDigest().data() );
         }
         else
-            return QString::null;
+            returnval = QString::null;
     }
 
     delete md5;
     delete qfile;
 
+    return returnval;
 }
 
 int
