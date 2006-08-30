@@ -18,6 +18,8 @@ VERSION 1.4.3:
     * Smart Playlists only load media from currently mounted devices.
 
   BUGFIXES:
+    * Collection scanner would only restart a maximum of 2 times instead of
+      20. (fixed in SVN revision 578922)
     * MTP mediadevice support would not compile against libmtp versions >=
     0.0.12. (fixed in SVN revision 576121)
     * AudioCD playback would stutter and sometimes freeze Amarok. (BR 133015)
