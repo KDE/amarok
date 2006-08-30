@@ -312,7 +312,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
 
         //song methods
         bool addSong( MetaBundle* bundle, const bool incremental = false );
-        void doATFStuff( MetaBundle *bundle, const bool tempTables = true );
+        void doAFTStuff( MetaBundle *bundle, const bool tempTables = true );
         bool newUniqueIdForFile( const QString &path );
         bool removeUniqueIdFromFile( const QString &path );
         QString urlFromUniqueId( const QString &id );
@@ -483,8 +483,8 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         void similarArtistsFetched( const QString& artist, const QStringList& suggestions );
         void fileOperationResult( KIO::Job *job ); // moveFile depends on it
         void podcastImageResult( KIO::Job *job ); //for fetching remote podcast images
-        void atfMigrateStatisticsUrl( const QString& oldUrl, const QString& newUrl, const QString& uniqueid ); //ATF-enable stats
-        void atfMigrateStatisticsUniqueId( const QString& url, const QString& oldid, const QString& newid );
+        void aftMigrateStatisticsUrl( const QString& oldUrl, const QString& newUrl, const QString& uniqueid ); //AFT-enable stats
+        void aftMigrateStatisticsUniqueId( const QString& url, const QString& oldid, const QString& newid );
 
     private:
         //bump DATABASE_VERSION whenever changes to the table structure are made.
@@ -497,7 +497,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         static const int DATABASE_STATS_VERSION = 12;
         // When bumping this, you should provide code to convert the data.
         static const int DATABASE_PODCAST_TABLES_VERSION = 2;
-        static const int DATABASE_ATF_VERSION = 2;
+        static const int DATABASE_AFT_VERSION = 2;
         // persistent table. you should provide code to convert the data when bumping this
         static const int DATABASE_DEVICES_VERSION = 1;
 

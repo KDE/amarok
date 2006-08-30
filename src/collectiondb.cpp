@@ -247,9 +247,9 @@ CollectionDB::CollectionDB()
 
 
     connect( this, SIGNAL(fileMoved(const QString&, const QString&, const QString&)),
-             this, SLOT(atfMigrateStatisticsUrl(const QString&, const QString&, const QString&)) );
+             this, SLOT(aftMigrateStatisticsUrl(const QString&, const QString&, const QString&)) );
     connect( this, SIGNAL(uniqueIdChanged(const QString&, const QString&, const QString&)),
-             this, SLOT(atfMigrateStatisticsUniqueId(const QString&, const QString&, const QString&)) );
+             this, SLOT(aftMigrateStatisticsUniqueId(const QString&, const QString&, const QString&)) );
 
     connect( qApp, SIGNAL( aboutToQuit() ), this, SLOT( disableAutoScoring() ) );
 
@@ -2936,24 +2936,22 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
     // Now it might be possible as insert returns the rowid.
     insert( command, NULL );
 
-    doATFStuff( bundle, true );
+    doAFTStuff( bundle, true );
 
     return true;
 }
 
 void
-CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
+CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
 {
     if( bundle->uniqueId().isEmpty() || bundle->url().path().isEmpty() )
         return;
 
-    //ATF Stuff
     MountPointManager *mpm = MountPointManager::instance();
     int currdeviceid = mpm->getIdForUrl( bundle->url().path() );
     QString currid = escapeString( bundle->uniqueId() );
     QString currurl = escapeString( mpm->getRelativePath( currdeviceid, bundle->url().path() ) );
     QString currdir = escapeString( mpm->getRelativePath( currdeviceid, bundle->url().directory() ) );
-    //debug() << "AmarokConfig::advancedTagFeatures() = " << (AmarokConfig::advancedTagFeatures() ? "true" : "false") << endl;
     //debug() << "Checking currid = " << currid << ", currdir = " << currdir << ", currurl = " << currurl << endl;
     //debug() << "tempTables = " << (tempTables?"true":"false") << endl;
 
@@ -3055,7 +3053,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
         {
             //stat the original URL
             QString absPath = mpm->getAbsolutePath( uniqueids[2].toInt(), uniqueids[0] );
-            //debug() << "At doATFStuff, stat-ing file " << absPath << endl;
+            //debug() << "At doAFTStuff, stat-ing file " << absPath << endl;
             bool statSuccessful = QFile::exists( absPath );
             if( statSuccessful ) //if true, new one is a copy
                 error() << "Already-scanned file at " << absPath << " has same UID as new file at " << currurl << endl;
@@ -3131,7 +3129,7 @@ CollectionDB::doATFStuff( MetaBundle* bundle, const bool tempTables )
         {
             //stat the original URL
             QString absPath = mpm->getAbsolutePath( nonTempIDs[2].toInt(), nonTempIDs[0] );
-            //debug() << "At doATFStuff part 2, stat-ing file " << absPath << endl;
+            //debug() << "At doAFTStuff part 2, stat-ing file " << absPath << endl;
             bool statSuccessful = QFile::exists( absPath );
             if( statSuccessful ) //if true, new one is a copy
                 error() << "Already-scanned file at " << absPath << " has same UID as new file at " << currurl << endl;
@@ -3194,7 +3192,6 @@ CollectionDB::urlFromUniqueId( const QString &id )
 QString
 CollectionDB::uniqueIdFromUrl( const KURL &url )
 {
-    //ATF Stuff
     MountPointManager *mpm = MountPointManager::instance();
     int currdeviceid = mpm->getIdForUrl( url.path() );
     QString currurl = escapeString( mpm->getRelativePath( currdeviceid, url.path() ) );
@@ -4488,7 +4485,7 @@ CollectionDB::updateURL( const QString &url, const bool updateView )
     bundle.readTags( TagLib::AudioProperties::Fast );
 
     updateTags( url, bundle, updateView);
-    doATFStuff( &bundle, false );
+    doAFTStuff( &bundle, false );
 }
 
 QString
@@ -4895,7 +4892,7 @@ CollectionDB::similarArtistsFetched( const QString& artist, const QStringList& s
 }
 
 void
-CollectionDB::atfMigrateStatisticsUrl( const QString& /*oldUrl*/, const QString& newUrl, const QString& uniqueid )
+CollectionDB::aftMigrateStatisticsUrl( const QString& /*oldUrl*/, const QString& newUrl, const QString& uniqueid )
 {
     int deviceid = MountPointManager::instance()->getIdForUrl( newUrl );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, newUrl );
@@ -4910,9 +4907,8 @@ CollectionDB::atfMigrateStatisticsUrl( const QString& /*oldUrl*/, const QString&
 }
 
 void
-CollectionDB::atfMigrateStatisticsUniqueId( const QString& /*url*/, const QString& oldid, const QString& newid )
+CollectionDB::aftMigrateStatisticsUniqueId( const QString& /*url*/, const QString& oldid, const QString& newid )
 {
-    //don't need to check for ATF on, signal never emitted otherwise
     query( QString( "DELETE FROM statistics WHERE uniqueid = '%1';" )
                             .arg( escapeString( newid ) ) );
     query( QString( "UPDATE statistics SET uniqueid = '%1', deleted = %2 WHERE uniqueid = '%3';" )
@@ -5025,13 +5021,13 @@ CollectionDB::initialize()
             amaroK::config( "Collection Browser" )->writeEntry( "Database Version", DATABASE_VERSION );
             amaroK::config( "Collection Browser" )->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
             amaroK::config( "Collection Browser" )->writeEntry( "Database Persistent Tables Version", DATABASE_PERSISTENT_TABLES_VERSION );
-            amaroK::config( "Collection Browser" )->writeEntry( "Database Podcast Tables Version", DATABASE_PODCAST_TABLES_VERSION );    amaroK::config( "Collection Browser" )->writeEntry( "Database ATF Version", DATABASE_ATF_VERSION );
+            amaroK::config( "Collection Browser" )->writeEntry( "Database Podcast Tables Version", DATABASE_PODCAST_TABLES_VERSION );    amaroK::config( "Collection Browser" )->writeEntry( "Database AFT Version", DATABASE_AFT_VERSION );
 
             setAdminValue( "Database Version", QString::number( DATABASE_VERSION ) );
             setAdminValue( "Database Stats Version", QString::number( DATABASE_STATS_VERSION ) );
             setAdminValue( "Database Persistent Tables Version", QString::number( DATABASE_PERSISTENT_TABLES_VERSION ) );
             setAdminValue( "Database Podcast Tables Version", QString::number( DATABASE_PODCAST_TABLES_VERSION ) );
-            setAdminValue( "Database ATF Version", QString::number( DATABASE_ATF_VERSION ) );
+            setAdminValue( "Database AFT Version", QString::number( DATABASE_AFT_VERSION ) );
         }
 
         //updates for the Devices table go here
@@ -5095,8 +5091,8 @@ CollectionDB::checkDatabase()
                            || adminValue( "Database Persistent Tables Version" ).toInt() != DATABASE_PERSISTENT_TABLES_VERSION
                            || amaroK::config( "Collection Browser" )->readNumEntry( "Database Podcast Tables Version", 0 ) != DATABASE_PODCAST_TABLES_VERSION
                            || adminValue( "Database Podcast Tables Version" ).toInt() != DATABASE_PODCAST_TABLES_VERSION
-                           || amaroK::config( "Collection Browser" )->readNumEntry( "Database ATF Version", 0 ) != DATABASE_ATF_VERSION
-                           || adminValue( "Database ATF Version" ).toInt() != DATABASE_ATF_VERSION );
+                           || amaroK::config( "Collection Browser" )->readNumEntry( "Database AFT Version", 0 ) != DATABASE_AFT_VERSION
+                           || adminValue( "Database AFT Version" ).toInt() != DATABASE_AFT_VERSION );
 
         if ( needsUpdate )
         {
@@ -5150,13 +5146,13 @@ CollectionDB::checkDatabase()
     amaroK::config( "Collection Browser" )->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
     amaroK::config( "Collection Browser" )->writeEntry( "Database Persistent Tables Version", DATABASE_PERSISTENT_TABLES_VERSION );
     amaroK::config( "Collection Browser" )->writeEntry( "Database Podcast Tables Version", DATABASE_PODCAST_TABLES_VERSION );
-    amaroK::config( "Collection Browser" )->writeEntry( "Database ATF Version", DATABASE_ATF_VERSION );
+    amaroK::config( "Collection Browser" )->writeEntry( "Database AFT Version", DATABASE_AFT_VERSION );
 
     setAdminValue( "Database Version", QString::number( DATABASE_VERSION ) );
     setAdminValue( "Database Stats Version", QString::number( DATABASE_STATS_VERSION ) );
     setAdminValue( "Database Persistent Tables Version", QString::number( DATABASE_PERSISTENT_TABLES_VERSION ) );
     setAdminValue( "Database Podcast Tables Version", QString::number( DATABASE_PODCAST_TABLES_VERSION ) );
-    setAdminValue( "Database ATF Version", QString::number( DATABASE_ATF_VERSION ) );
+    setAdminValue( "Database AFT Version", QString::number( DATABASE_AFT_VERSION ) );
 
     initDirOperations();
 }

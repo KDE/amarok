@@ -1358,7 +1358,7 @@ MetaBundle::safeSave()
     }
 
     setUniqueId( readUniqueId() );
-    CollectionDB::instance()->doATFStuff( this, false );
+    CollectionDB::instance()->doAFTStuff( this, false );
 
     noproblem = mbs->cleanupSave();
 
@@ -1412,7 +1412,7 @@ MetaBundle::save( TagLib::FileRef* fileref )
                 if( returnval )
                 {
                     setUniqueId( readUniqueId() );
-                    CollectionDB::instance()->doATFStuff( this, false );
+                    CollectionDB::instance()->doAFTStuff( this, false );
                 }
                 return returnval;
             }

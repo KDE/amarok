@@ -24,107 +24,6 @@
         </property>
         <widget class="QGroupBox">
             <property name="name">
-                <cstring>atfBox</cstring>
-            </property>
-            <property name="title">
-                <string>Advanced Tag Features (ATF)</string>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>kcfg_AdvancedTagFeatures</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Enable writing &amp;ATF tags (please see "Information")</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Check to enable writing metadata to files used by Amarok's Advanced Tag Features.&lt;br&gt;</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Check to enable writing metadata to files used by Amarok's Advanced Tag Features.</string>
-                    </property>
-                </widget>
-                <widget class="KActiveLabel">
-                    <property name="name">
-                        <cstring>atfActiveInfoLabel</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>5</hsizetype>
-                            <vsizetype>4</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>-1</width>
-                            <height>-1</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>&lt;a href='whatsthis:&lt;em&gt;Advanced Tag Features
-                        (ATF)&lt;/em&gt;&lt;p&gt;This is a set of features that use a special,
-                        unique tag in your files to allow Amarok to track them in useful
-                        ways.&lt;p&gt;For instance, when you move or rename files with such unique
-                        tags within your collection folders, the Playlist will keep the URL of the
-                        file current, so that you do not need to remove and re-add the file.
-                        Statistics information will not be lost due to file renames or moves,
-                        either.&lt;p&gt;Writing these uinque tags is not turned on by default since
-                        it does require making metadata modifications of your files.  The metadata
-                        fields used conform to the tag specifications for the various file types ATF
-                        supports.&lt;p&gt;&lt;em&gt;&lt;font color="red"&gt;PLEASE
-                        NOTE:&lt;/em&gt;&lt;/font&gt;&lt;p&gt;&lt;ul&gt;&lt;li&gt;&lt;font color="red"&gt;This
-                        is potentially unsafe for collections shared concurrently by multiple users.&lt;/font&gt;
-                        If multiple users on a single computer or on multiple computers are sharing music and have
-                        the potential to access the music at the same time, you &lt;b&gt;must&lt;/b&gt; ensure that
-                        no more than a single user has ATF tag writing enabled at a given time, or corruption of
-                        your music files can occur.  Once tagged by a single instance, all instances of
-                        Amarok will be able to use these tags to track your music.&lt;li&gt;This process will
-                        update existing ID3v2 tags on MP3 files to ID3v2.4.  This has been the
-                        standard for several years and supports e.g. internationalization.  However,
-                        some older music player and tagging applications do not support ID3v2.4.
-                        For compatibility with these applications, ID3v1 tags
-                        will also be written to the files.&lt;li&gt;This checkbox only
-                        enables writing these unique identifier tags to files that do not already
-                        contain them.  ATF functionality will always be enabled for any files you
-                        have that already contain an ATF tag.&lt;li&gt;If you have added new files
-                        to your collection while ATF tag writing was turned off, you must perform a
-                        rescan of your collection and then clear your Playlist to get ATF functionality
-                        for these files.  If this is the first time you are enabling ATF, these actions
-                        will be performed for you when you click OK or Apply in the Settings
-                        window.&lt;ul&gt;'&gt;Information&lt;/a&gt;</string>
-                    </property>
-                </widget>
-                <widget class="KActiveLabel">
-                    <property name="name">
-                        <cstring>atfActiveHomepageLabel</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>5</hsizetype>
-                            <vsizetype>4</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>-1</width>
-                            <height>-1</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>&lt;a href='http://amarok.kde.org/amarokwiki/index.php/ATF'&gt;Wiki Page&lt;/a&gt;</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QGroupBox">
-            <property name="name">
                 <cstring>collectionFoldersBox</cstring>
             </property>
             <property name="title">
@@ -169,20 +68,6 @@
         <pixmap>image0</pixmap>
     </customwidget>
 </customwidgets>
-<connections>
-    <connection>
-        <sender>kcfg_AdvancedTagFeatures</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>Options7</receiver>
-        <slot>atf_clicked(bool)</slot>
-    </connection>
-</connections>
-<includes>
-    <include location="local" impldecl="in implementation">Options7.ui.h</include>
-</includes>
-<slots>
-    <slot>atf_clicked(bool)</slot>
-</slots>
 <images>
     <image name="image0">
         <data format="XBM.GZ" length="79">789c534e494dcbcc4b554829cdcdad8c2fcf4c29c95030e0524611cd48cd4ccf28010a1797249664262b2467241641a592324b8aa363156c15aab914146aadb90067111b1f</data>
