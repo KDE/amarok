@@ -1505,14 +1505,10 @@ MetaBundle::readUniqueId()
         {
             md5.update( databuf, readlen );
             md5.update( size.setNum( (ulong)qfile.size() ) );
-            qfile.close();
             return QString( md5.hexDigest().data() );
         }
         else
-        {
-            qfile.close();
             return QString::null;
-        }
     }
 
     return QString::null;
