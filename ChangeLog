@@ -12,7 +12,7 @@ VERSION 1.4.3:
   CHANGES:
     * Change in file tracking behavior: IDs are no longer embedded into tags
       but are calculated from a portion of the file data instead, letting
-      users with read-only music stores to take advantage of it.
+      users with read-only music stores take advantage of it.
     * Don't report "/dev/hd" style devices as new media devices. (BR 127831)
     * Smart Playlists only load media from currently mounted devices.
 
