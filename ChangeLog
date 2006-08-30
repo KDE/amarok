@@ -4,7 +4,8 @@ Amarok ChangeLog
 
 VERSION 1.4.3:
   FEATURES:
-    * Amarok File Tracking (formerly ATF) goes public!
+    * Amarok File Tracking (formerly ATF) goes public! See
+      http://amarok.kde.org/wiki/Amarok_File_Tracking for more information.
     * DAAP client now supports Zeroconf. With mDNSResponder properly setup
       Amarok automatically shows local DAAP servers.
     * DAAP client saves manually added computers between sessions.
