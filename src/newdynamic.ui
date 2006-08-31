@@ -12,9 +12,6 @@
             <height>287</height>
         </rect>
     </property>
-    <property name="caption">
-        <string>NewDynamic</string>
-    </property>
     <grid>
         <property name="name">
             <cstring>unnamed</cstring>
@@ -219,9 +216,6 @@
             </property>
             <property name="text">
                 <string>Remove pla&amp;yed tracks</string>
-            </property>
-            <property name="accel">
-                <string>Alt+Y</string>
             </property>
             <property name="checked">
                 <bool>true</bool>
