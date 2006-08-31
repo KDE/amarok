@@ -53,7 +53,6 @@ class DynamicMode
         QString title() const;
         QStringList items() const;
         bool  cycleTracks() const;
-        bool  markHistory() const;
         int   upcomingCount() const;
         int   previousCount() const;
         int   appendType() const;
@@ -62,7 +61,6 @@ class DynamicMode
         void  setTitle( const QString& title );
         void  setItems( const QStringList &list );
         void  setCycleTracks( bool cycle );
-        void  setMarkHistory( bool mark );
         void  setUpcomingCount( int count );
         void  setPreviousCount( int count );
         void  setAppendType( int type );
@@ -72,7 +70,6 @@ class DynamicMode
 
         QString m_title;
         bool    m_cycle;
-        bool    m_mark;
         int     m_upcoming;
         int     m_previous;
         int     m_appendType;

@@ -400,7 +400,7 @@ Playlist::Playlist( QWidget *parent )
     connect( App::instance(), SIGNAL( useScores( bool ) ), this, SLOT( slotUseScores( bool ) ) );
     connect( App::instance(), SIGNAL( useRatings( bool ) ), this, SLOT( slotUseRatings( bool ) ) );
 #ifdef HAVE_MOODBAR
-    connect( App::instance(), SIGNAL( moodbarPrefs(     bool, bool, int, bool ) ), 
+    connect( App::instance(), SIGNAL( moodbarPrefs(     bool, bool, int, bool ) ),
 	     this,            SLOT(   slotMoodbarPrefs( bool, bool, int, bool ) ) );
 #endif
 
@@ -871,22 +871,15 @@ Playlist::adjustDynamicPrevious( uint songCount, bool saveUndo )
 }
 
 void
-Playlist::alterHistoryItems( bool enable /*false*/, bool entire /*FALSE*/ )
+Playlist::setDynamicHistory( bool enable /*false*/ )
 {
-    //NOTE: we must make sure that dynamicMode works perfectly as we expect it to,
-    //      for this functionality to be guarranteed. <sebr>
-
-    if( !entire && !m_currentTrack )
+    if( !m_currentTrack )
         return;
 
-    // Disable all items, since we should be leaving dynamic mode.
     for( MyIterator it( this, MyIterator::All ) ; *it ; ++it )
     {
-        if( !entire )
-        {
-            if( *it == m_currentTrack )          break;
-            if( !enable && !(*it)->isEnabled() ) break;
-        }
+        if( *it == m_currentTrack )          break;
+        if( !enable && !(*it)->isEnabled() ) break;
 
         //avoid repainting if we can.
         if( (*it)->isEnabled() != enable )
@@ -1079,9 +1072,9 @@ Playlist::playNextTrack( bool forceNext )
 
     if( !m_visCount || ( m_currentTrack && m_stopAfterTrack == m_currentTrack  ) )
     {
-        if( dynamicMode() && m_visCount ) {
-            if ( dynamicMode()->markHistory() )
-                item->setEnabled( false );
+        if( dynamicMode() && m_visCount )
+        {
+            item->setEnabled( false );
             advanceDynamicTrack( item );
             m_dynamicDirt = false;
         }
@@ -1276,7 +1269,7 @@ Playlist::playNextTrack( bool forceNext )
 
         if ( dynamicMode() && item != firstChild() )
         {
-            if( currentTrack() && dynamicMode()->markHistory() )
+            if( currentTrack() )
                 currentTrack()->setEnabled( false );
             advanceDynamicTrack();
         }
@@ -1762,7 +1755,7 @@ Playlist::activate( QListViewItem *item )
             }
 
         }
-        if( m_currentTrack && m_currentTrack != item && dynamicMode()->markHistory() )
+        if( m_currentTrack && m_currentTrack != item )
             m_currentTrack->setEnabled( false );
         advanceDynamicTrack();
     }
@@ -3069,12 +3062,12 @@ Playlist::customEvent( QCustomEvent *e )
             }
             m_queueList.clear();
         }
-        //re-disable history items
-        if( dynamicMode() && m_stateSwitched )
-        {
-            alterHistoryItems( !dynamicMode()->markHistory() );
-            m_stateSwitched = false;
-        }
+        //re-disable history items when we have a redo/undo
+//         if( dynamicMode() && m_stateSwitched )
+//         {
+//             setDynamicHistory( true );
+//             m_stateSwitched = false;
+//         }
 
         if( m_dynamicDirt )
         {
@@ -3091,7 +3084,7 @@ Playlist::customEvent( QCustomEvent *e )
             if( after )
             {
                 PlaylistItem *prev = static_cast<PlaylistItem *>( after->itemAbove() );
-                if( prev && dynamicMode() && dynamicMode()->markHistory() )
+                if( prev && dynamicMode() )
                     prev->setEnabled( false );
 
                 activate( after );
@@ -3268,6 +3261,8 @@ Playlist::customMenuClicked(int id)  //adapted from burnSelectedTracks
 void
 Playlist::setDynamicMode( DynamicMode *mode ) //SLOT
 {
+    // if mode == 0, then dynamic mode was just turned off.
+
     DynamicMode* const prev = m_dynamicMode;
     m_dynamicMode = mode;
     if( mode )
@@ -3289,11 +3284,10 @@ Playlist::setDynamicMode( DynamicMode *mode ) //SLOT
             adjustDynamicPrevious( mode->previousCount(), true );
         if( prev->upcomingCount() != mode->upcomingCount() )
             adjustDynamicUpcoming( true, mode->appendType() );
-        if( prev->markHistory() != mode->markHistory() )
-            alterHistoryItems( !mode->markHistory() );
+        setDynamicHistory( true );
     }
-    else if( !mode )
-        alterHistoryItems( true, true );
+    else if( !mode ) // enable items again, dynamic mode is no more
+        setDynamicHistory( false );
 }
 
 void
@@ -4540,7 +4534,7 @@ Playlist::switchState( QStringList &loadFromMe, QStringList &saveToMe )
     m_undoButton->setEnabled( !m_undoList.isEmpty() );
     m_redoButton->setEnabled( !m_redoList.isEmpty() );
 
-    if( dynamicMode() ) alterHistoryItems( !dynamicMode()->markHistory() );
+    if( dynamicMode() ) setDynamicHistory( true );
     m_undoDirt = false;
 }
 
@@ -4656,7 +4650,7 @@ Playlist::slotUseRatings( bool use )
 
 
 // This gets called when the user presses "Ok" or "Apply" in the
-// config dialog.  
+// config dialog.
 void
 Playlist::slotMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic )
 {

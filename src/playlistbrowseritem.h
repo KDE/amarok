@@ -385,6 +385,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         void downloadChildren();
         const bool episodeExists( const QDomNode &xml, const int feedType );
         void purge();
+        void restorePurged();
         void removeChildren();
         void setDOMSettings( const QDomNode &channelSettings );
         void startAnimation();

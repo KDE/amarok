@@ -1006,9 +1006,7 @@ DynamicEntry::DynamicEntry( QListViewItem *parent, QListViewItem *after, const Q
 
     QDomElement e;
 
-    setCycleTracks( xmlDefinition.namedItem( "cycleTracks" ).toElement().text() == "true" );
-    setMarkHistory( xmlDefinition.namedItem( "markHistory" ).toElement().text() == "true" );
-
+    setCycleTracks  ( xmlDefinition.namedItem( "cycleTracks" ).toElement().text() == "true" );
     setUpcomingCount( xmlDefinition.namedItem( "upcoming" ).toElement().text().toInt() );
     setPreviousCount( xmlDefinition.namedItem( "previous" ).toElement().text().toInt() );
 
@@ -1038,11 +1036,6 @@ QDomElement DynamicEntry::xml()
 
     QDomElement attr = doc.createElement( "cycleTracks" );
     QDomText t = doc.createTextNode( cycleTracks() ? "true" : "false" );
-    attr.appendChild( t );
-    i.appendChild( attr );
-
-    attr = doc.createElement( "markHistory" );
-    t = doc.createTextNode( markHistory() ? "true" : "false" );
     attr.appendChild( t );
     i.appendChild( attr );
 
@@ -1220,10 +1213,10 @@ PodcastChannel::setSettings( PodcastSettings *newSettings )
 {
     bool downloadMedia = ( (fetchType() != newSettings->fetchType()) && (newSettings->fetchType() == AUTOMATIC) );
 
-        /**
+    /**
      * Rewrite local url
      * Move any downloaded media to the new location
-         */
+     */
     if( saveLocation() != newSettings->saveLocation() )
     {
         KURL::List copyList;
@@ -1261,7 +1254,7 @@ PodcastChannel::setSettings( PodcastSettings *newSettings )
     m_bundle.setSettings( newSettings );
     CollectionDB::instance()->updatePodcastChannel( m_bundle );
 
-    if( hasPurge() && purgeCount() != 0 )
+    if( hasPurge() && purgeCount() != childCount() && purgeCount() != 0 )
         purge();
 
     if( downloadMedia )
@@ -1655,8 +1648,13 @@ PodcastChannel::updateInfo()
 void
 PodcastChannel::purge()
 {
+    // if the user wants to increase the max items shown, we should find those items and add them
+    // back to the episode list.
     if( childCount() - purgeCount() <= 0 )
+    {
+        restorePurged();
         return;
+    }
 
     KURL::List urlsToDelete;
     QValueList<QListViewItem*> purgedItems;
@@ -1685,6 +1683,47 @@ PodcastChannel::purge()
 
     if( !urlsToDelete.isEmpty() )
         KIO::del( urlsToDelete );
+}
+
+void
+PodcastChannel::restorePurged()
+{
+DEBUG_BLOCK
+    int restoreCount = purgeCount() - childCount();
+    debug() << "restoreCount: " << restoreCount << endl;
+    if( restoreCount <= 0 ) return;
+
+    QValueList<PodcastEpisodeBundle> episodes;
+    episodes = CollectionDB::instance()->getPodcastEpisodes( url() );
+
+    QValueList<PodcastEpisodeBundle> possibleEntries;
+
+    int i = 0;
+    foreachType( QValueList<PodcastEpisodeBundle>, episodes )
+    {
+        if ( i >= restoreCount )
+            break;
+        PodcastEpisode *existingItem = static_cast<PodcastEpisode*>( firstChild() );
+        while ( existingItem )
+        {
+            if ( (*it).url()   == existingItem->url()   &&
+                 (*it).title() == existingItem->title() &&
+                 (*it).date()  == existingItem->date()  &&
+                 (*it).guid()  == existingItem->guid() )
+                break;
+            existingItem = static_cast<PodcastEpisode*>( existingItem->nextSibling() );
+        }
+        debug() << "Salvaged: " << (*it).title() << endl;
+        possibleEntries << *it;
+        i++;
+    }
+
+    // the sorting of the channels automatically means the new episodes gets placed at the end
+    for( QValueList<PodcastEpisodeBundle>::Iterator it = possibleEntries.begin(), end = possibleEntries.end();
+         it != end; ++it )
+    {
+        new PodcastEpisode( this, 0, (*it) );
+    }
 }
 
 void

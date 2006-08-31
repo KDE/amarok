@@ -104,7 +104,6 @@ namespace ConfigDynamic
 
         nd->m_name->setText( mode->title() );
         nd->m_cycleTracks->setChecked( mode->cycleTracks() );
-        nd->m_markHistory->setChecked( mode->markHistory() );
         nd->m_upcomingIntSpinBox->setValue( mode->upcomingCount() );
         nd->m_previousIntSpinBox->setValue( mode->previousCount() );
 
@@ -153,7 +152,6 @@ namespace ConfigDynamic
     {
         saveMe->setTitle( dialog->m_name->text().replace( "\n", " " ) );
         saveMe->setCycleTracks( dialog->m_cycleTracks->isChecked() );
-        saveMe->setMarkHistory( dialog->m_markHistory->isChecked() );
         saveMe->setUpcomingCount( dialog->m_upcomingIntSpinBox->value() );
         saveMe->setPreviousCount( dialog->m_previousIntSpinBox->value() );
 

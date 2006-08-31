@@ -11,6 +11,8 @@ VERSION 1.4.3:
     * DAAP client saves manually added computers between sessions.
 
   CHANGES:
+    * Remove the option to enable/disable history in dynamic mode. (BR 133076)
+    * Reduce the minimum available tracks to show to 0. (BR 131223)
     * Change in file tracking behavior: IDs are no longer embedded into tags
       but are calculated from a portion of the file data instead, letting
       users with read-only music stores take advantage of it.

@@ -184,7 +184,6 @@ PlaylistBrowser::polish()
     m_randomDynamic   = new DynamicEntry( m_dynamicCategory, 0, i18n("Random Mix") );
     m_randomDynamic->setKept( false ); //dont save it
     m_randomDynamic->setCycleTracks(   config->readBoolEntry( "Dynamic Random Remove Played", true ) );
-    m_randomDynamic->setMarkHistory(   config->readBoolEntry( "Dynamic Random Mark History", true ) );
     m_randomDynamic->setUpcomingCount( config->readNumEntry ( "Dynamic Random Upcoming Count", 15 ) );
     m_randomDynamic->setPreviousCount( config->readNumEntry ( "Dynamic Random Previous Count", 5 ) );
 
@@ -192,7 +191,6 @@ PlaylistBrowser::polish()
     m_suggestedDynamic->setKept( false ); //dont save it
     m_suggestedDynamic->setAppendType( DynamicMode::SUGGESTION );
     m_suggestedDynamic->setCycleTracks(   config->readBoolEntry( "Dynamic Suggest Remove Played", true ) );
-    m_suggestedDynamic->setMarkHistory(   config->readBoolEntry( "Dynamic Suggest Mark History", true ) );
     m_suggestedDynamic->setUpcomingCount( config->readNumEntry ( "Dynamic Suggest Upcoming Count", 15 ) );
     m_suggestedDynamic->setPreviousCount( config->readNumEntry ( "Dynamic Suggest Previous Count", 5 ) );
 
@@ -889,12 +887,10 @@ PlaylistCategory* PlaylistBrowser::loadDynamics()
 
 void PlaylistBrowser::saveDynamics()
 {
-    amaroK::config( "PlaylistBrowser" )->writeEntry( "Dynamic Random Mark History",   m_randomDynamic->markHistory() );
     amaroK::config( "PlaylistBrowser" )->writeEntry( "Dynamic Random Remove Played",  m_randomDynamic->cycleTracks() );
     amaroK::config( "PlaylistBrowser" )->writeEntry( "Dynamic Random Upcoming Count", m_randomDynamic->upcomingCount() );
     amaroK::config( "PlaylistBrowser" )->writeEntry( "Dynamic Random Previous Count", m_randomDynamic->previousCount() );
 
-    amaroK::config( "PlaylistBrowser" )->writeEntry( "Dynamic Suggest Mark History",   m_suggestedDynamic->markHistory() );
     amaroK::config( "PlaylistBrowser" )->writeEntry( "Dynamic Suggest Remove Played",  m_suggestedDynamic->cycleTracks() );
     amaroK::config( "PlaylistBrowser" )->writeEntry( "Dynamic Suggest Upcoming Count", m_suggestedDynamic->upcomingCount() );
     amaroK::config( "PlaylistBrowser" )->writeEntry( "Dynamic Suggest Previous Count", m_suggestedDynamic->previousCount() );
