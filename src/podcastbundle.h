@@ -218,7 +218,7 @@ class PodcastEpisodeBundle
         bool    m_isNew;
 };
 
-inline int     PodcastEpisodeBundle::dBId()        const { return m_id; }
+inline int            PodcastEpisodeBundle::dBId()        const { return m_id; }
 inline const KURL    &PodcastEpisodeBundle::url()         const { return m_url; }
 inline const KURL    &PodcastEpisodeBundle::localUrl()    const { return m_localUrl; }
 inline const KURL    &PodcastEpisodeBundle::parent()      const { return m_parent; }
@@ -227,12 +227,12 @@ inline const QString &PodcastEpisodeBundle::title()       const { return m_title
 inline const QString &PodcastEpisodeBundle::subtitle()    const { return m_subtitle; }
 inline const QString &PodcastEpisodeBundle::description() const { return m_description; }
 inline const QString &PodcastEpisodeBundle::date()        const { return m_date; }
-inline QDateTime PodcastEpisodeBundle::dateTime()  const { return m_dateTime; }
+inline QDateTime      PodcastEpisodeBundle::dateTime()    const { return m_dateTime; }
 inline const QString &PodcastEpisodeBundle::type()        const { return m_type; }
-inline int     PodcastEpisodeBundle::duration()    const { return m_duration; }
-inline uint    PodcastEpisodeBundle::size()        const { return m_size; }
+inline int            PodcastEpisodeBundle::duration()    const { return m_duration; }
+inline uint           PodcastEpisodeBundle::size()        const { return m_size; }
 inline const QString &PodcastEpisodeBundle::guid()        const { return m_guid; }
-inline bool    PodcastEpisodeBundle::isNew()       const { return m_isNew; }
+inline bool           PodcastEpisodeBundle::isNew()       const { return m_isNew; }
 
 inline void    PodcastEpisodeBundle::setDBId( const int i )             { m_id = i; }
 inline void    PodcastEpisodeBundle::setURL( const KURL &u )            { m_url = u; }
