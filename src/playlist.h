@@ -379,7 +379,6 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         KURL::List    m_queueList;
         PlaylistItem *m_stopAfterTrack;
         bool          m_showHelp;
-        bool          m_stateSwitched;
         bool          m_dynamicDirt;        //So we don't call advanceDynamicTrack() on activate()
         bool          m_queueDirt;          //When queuing disabled items, we need to place the marker on the newly inserted item
         bool          m_undoDirt;           //Make sure we don't repopulate the playlist when dynamic mode and undo()

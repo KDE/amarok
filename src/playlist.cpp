@@ -223,7 +223,6 @@ Playlist::Playlist( QWidget *parent )
         , m_dynamicMode( 0 )
         , m_stopAfterTrack( 0 )
         , m_showHelp( true )
-        , m_stateSwitched( false )
         , m_dynamicDirt( false )
         , m_queueDirt( false )
         , m_undoDirt( false )
@@ -3532,23 +3531,17 @@ Playlist::copyToClipboard( const QListViewItem *item ) const //SLOT
     }
 }
 
-void Playlist::undo()
+void Playlist::undo() //SLOT
 {
     if( !isLocked() )
-    {
         switchState( m_undoList, m_redoList );
-        m_stateSwitched = true;
-    }
-} //SLOT
+}
 
-void Playlist::redo()
+void Playlist::redo() //SLOT
 {
     if( !isLocked() )
-    {
         switchState( m_redoList, m_undoList );
-        m_stateSwitched = true;
-    }
-} //SLOT
+}
 
 void
 Playlist::updateMetaData( const MetaBundle &mb ) //SLOT
