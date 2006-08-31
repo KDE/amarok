@@ -29,7 +29,7 @@ VERSION 1.4.3:
       "Loading" perpetually. After a failed connection, the user can now
       try again.
     * Fixed bug which prevented Amarok from creating the collection database
-      in rare cicumstances using SQLite. (BR 133072)
+      in rare circumstances using SQLite. (BR 133072)
     * Don't empty media device transfer queue when canceling a transfer.
     * Ctrl-C for copying urls from the tag editor would not work. (BR 123327)
     * Delete covers from the filesystem when requested.
