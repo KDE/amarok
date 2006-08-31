@@ -3062,12 +3062,6 @@ Playlist::customEvent( QCustomEvent *e )
             }
             m_queueList.clear();
         }
-        //re-disable history items when we have a redo/undo
-//         if( dynamicMode() && m_stateSwitched )
-//         {
-//             setDynamicHistory( true );
-//             m_stateSwitched = false;
-//         }
 
         if( m_dynamicDirt )
         {
