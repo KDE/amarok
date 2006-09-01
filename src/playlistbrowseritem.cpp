@@ -2066,6 +2066,10 @@ PodcastEpisode::isOnDisk()
 void
 PodcastEpisode::downloadMedia()
 {
+    DEBUG_BLOCK
+    DEBUG_THREAD_FUNC_INFO
+    SHOULD_BE_GUI
+
     if( isOnDisk() )
         return;
 

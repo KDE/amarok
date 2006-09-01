@@ -152,6 +152,11 @@ namespace amaroK
     {
         return EngineController::engine()->position() / 1000;
     }
+    
+    int DcopPlayerHandler::trackCurrentTimeMs()
+    {
+        return EngineController::engine()->position();
+    }
 
     int DcopPlayerHandler::trackPlayCounter()
     {

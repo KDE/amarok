@@ -49,8 +49,10 @@ k_dcop:
    virtual int  rating() = 0;                               ///< Return the rating of the currently playing track.
    virtual int  status() = 0;                               ///< Return playback status: 0 - stopped, 1 - paused, 2 - playing. < 0 - error
    virtual int  trackCurrentTime() = 0;                     ///< Return current play position in seconds.
+   virtual int  trackCurrentTimeMs() = 0;                     ///< Return current play position in milliseconds.
    virtual int  trackPlayCounter() = 0;                     ///< Return play counter for current song.
    virtual int  trackTotalTime() = 0;                       ///< Return track length in seconds.
+
 
    /* New player API */
    virtual QString album() = 0;                             ///< Return the album of the currently playing track.

@@ -164,7 +164,7 @@ Example:
 Debugging
 ---------
 debug.h contains some handy functions for our debug console output.
-Please use there instead of kdDebug().
+Please use them instead of kdDebug().
 
 Usage:
 

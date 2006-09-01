@@ -4,6 +4,8 @@ Amarok ChangeLog
 
 VERSION 1.4.3:
   FEATURES:
+    * New DCOP: player trackCurrentTimeMs, returns the current track position
+      in milliseconds.
     * Amarok File Tracking (formerly ATF) goes public! See
       http://amarok.kde.org/wiki/Amarok_File_Tracking for more information.
     * DAAP client now supports Zeroconf. With mDNSResponder properly setup
