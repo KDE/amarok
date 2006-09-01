@@ -45,17 +45,6 @@
 #include <klocale.h>
 
 
-/**
- * Convenience macro for const-iterating. Use like this:
- *
- *     BundleList bundles;
- *     foreachType( BundleList, bundles )
- *         debug() << *it.url() << endl;
- */
-#define foreachType( Type, x ) \
-    for( Type::ConstIterator it = x.begin(), end = x.end(); it != end; ++it )
-
-
 CollectionScanner::CollectionScanner( const QStringList& folders,
                                       bool recursive,
                                       bool incremental,
