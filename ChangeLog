@@ -22,6 +22,7 @@ VERSION 1.4.3:
     * Smart Playlists only load media from currently mounted devices.
 
   BUGFIXES:
+    * Cover images were not displayed in some cases (BR 133174)
     * Collection scanner would only restart a maximum of 2 times instead of
       20. (fixed in SVN revision 578922)
     * MTP mediadevice support would not compile against libmtp versions >=
@@ -40,7 +41,6 @@ VERSION 1.4.3:
     * Sort numeric columns in flat collection view numerically. (BR 130667)
     * Dynamic Collection broke flat collection view when the Filename column
       was added (BR 132874)
-    * Cover images were not displayed in some cases (BR 133174)
 
 
 VERSION 1.4.2:
