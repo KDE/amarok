@@ -175,7 +175,7 @@ MetaBundle::MetaBundle()
         , m_playCount( Undetermined )
         , m_lastPlay( abs( Undetermined ) )
         , m_filesize( Undetermined )
-	, m_moodbar( this )
+	, m_moodbar( 0 )
         , m_type( other )
         , m_exists( true )
         , m_isValidMedia( true )
@@ -208,7 +208,7 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
     , m_playCount( Undetermined )
     , m_lastPlay( abs( Undetermined ) )
     , m_filesize( Undetermined )
-    , m_moodbar( this )
+    , m_moodbar( 0 )
     , m_type( other )
     , m_exists( isFile() && QFile::exists( url.path() ) )
     , m_isValidMedia( false )
@@ -263,7 +263,7 @@ MetaBundle::MetaBundle( const QString& title,
         , m_playCount( Undetermined )
         , m_lastPlay( abs( Undetermined ) )
         , m_filesize( Undetermined )
-	, m_moodbar( this )
+	, m_moodbar( 0 )
         , m_type( other )
         , m_exists( true )
         , m_isValidMedia( false )
@@ -291,7 +291,7 @@ MetaBundle::MetaBundle( const QString& title,
 }
 
 MetaBundle::MetaBundle( const MetaBundle &bundle )
-        : m_moodbar( this )
+        : m_moodbar( 0 )
 {
     *this = bundle;
 }
@@ -300,6 +300,9 @@ MetaBundle::~MetaBundle()
 {
     delete m_podcastBundle;
     delete m_lastFmBundle;
+
+    if( m_moodbar != 0 )
+      delete m_moodbar;
 }
 
 MetaBundle&
@@ -326,7 +329,6 @@ MetaBundle::operator=( const MetaBundle& bundle )
     m_rating = bundle.m_rating;
     m_playCount = bundle.m_playCount;
     m_lastPlay = bundle.m_lastPlay;
-    m_moodbar = bundle.m_moodbar;
     m_filesize = bundle.m_filesize;
     m_type = bundle.m_type;
     m_exists = bundle.m_exists;
@@ -339,6 +341,22 @@ MetaBundle::operator=( const MetaBundle& bundle )
     m_origRenamedSavePath = bundle.m_origRenamedSavePath;
     m_tempSaveDigest = bundle.m_tempSaveDigest;
     m_saveFileref = bundle.m_saveFileref;
+
+    if( bundle.m_moodbar != 0)
+      {
+	if( m_moodbar == 0 )
+	  m_moodbar = new Moodbar( this );
+	*m_moodbar = *bundle.m_moodbar;
+      }
+    else
+      {
+	// If m_moodbar != 0, it's initialized for a reason
+	// Deleting it makes the PrettySlider code more ugly,
+	// since it'd have to reconnect the jobEvent() signal.
+	if( m_moodbar != 0 )
+	  m_moodbar->reset();
+      }
+
 
 //    delete m_podcastBundle; why does this crash Amarok? apparently m_podcastBundle isn't always initialized.
     m_podcastBundle = 0;
@@ -1646,7 +1664,9 @@ void MetaBundle::detach()
     m_genre = m_genre.deepCopy();
     m_streamName = QDeepCopy<QString>(m_streamName);
     m_streamUrl = QDeepCopy<QString>(m_streamUrl);
-    m_moodbar.detach();
+    
+    if( m_moodbar != 0 )
+      m_moodbar->detach();
 
     m_uniqueId = QDeepCopy<QString>( m_uniqueId );
 

@@ -361,7 +361,7 @@ protected:
     uint m_lastPlay;
     int  m_filesize;
 
-    Moodbar m_moodbar;
+    Moodbar *m_moodbar;
 
     int m_type;
 
@@ -429,8 +429,19 @@ inline int MetaBundle::sampleRate() const { return m_sampleRate == Undetermined 
 inline int MetaBundle::filesize()   const { return m_filesize == Undetermined ? 0 : m_filesize; }
 inline int MetaBundle::fileType()   const { return m_type; }
 
-inline Moodbar &MetaBundle::moodbar() { return m_moodbar; }
-inline const Moodbar &MetaBundle::moodbar_const() const { return m_moodbar; }
+inline Moodbar &MetaBundle::moodbar() 
+{
+  if( m_moodbar == 0 ) m_moodbar = new Moodbar( this ); 
+  return *m_moodbar; 
+}
+inline const Moodbar &MetaBundle::moodbar_const() const
+{
+  // Anyone know of a better way to do this?
+  if( m_moodbar == 0 ) 
+    const_cast<MetaBundle*>(this)->m_moodbar 
+      = new Moodbar( const_cast<MetaBundle*>(this) ); 
+  return *m_moodbar; 
+}
 
 inline KURL     MetaBundle::url()        const { return m_url; }
 inline QString  MetaBundle::filename()   const { return url().fileName(); }

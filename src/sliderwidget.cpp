@@ -22,6 +22,7 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "app.h"
+#include "debug.h"
 #include "enginecontroller.h"
 #include "sliderwidget.h"
 
@@ -269,7 +270,10 @@ void
 amaroK::PrettySlider::moodbarJobEvent( int newState )
 {
     if( newState == Moodbar::JobStateSucceeded )
+      {
+	debug() << "moodbarJobEvent: new moodbar data" << endl;
         update(); 
+      }
 }
 
 // This gets called when the user presses "Ok" or "Apply" in the
