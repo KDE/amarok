@@ -1,4 +1,3 @@
-#include <config.h> // HAVE_MOODBAR
 #include "amarok.h"
 #include "collectionbrowser.h"
 #include "collectiondb.h"
@@ -29,11 +28,8 @@ QString OrganizeCollectionDialog::buildDestination( const QString &format, const
     albumartist = cleanPath( albumartist );
     for( int i = 0; i < MetaBundle::NUM_COLUMNS; i++ )
     {
-        if( i == MetaBundle::Score || i == MetaBundle::PlayCount || i == MetaBundle::LastPlayed
-#ifdef HAVE_MOODBAR
-	    || i == MetaBundle::Mood
-#endif	   
-	    )
+        if( i == MetaBundle::Score || i == MetaBundle::PlayCount 
+	    || i == MetaBundle::LastPlayed || i == MetaBundle::Mood )
             continue;
         args[mb.exactColumnName( i ).lower()] = cleanPath( mb.prettyText( i ) );
     }
@@ -64,11 +60,8 @@ QString OrganizeCollectionDialog::buildFormatTip() const
     QMap<QString, QString> args;
     for( int i = 0; i < MetaBundle::NUM_COLUMNS; i++ )
     {
-        if( i == MetaBundle::Score || i == MetaBundle::PlayCount || i == MetaBundle::LastPlayed
-#ifdef HAVE_MOODBAR
-	    || i == MetaBundle::Mood
-#endif
-	    )
+        if( i == MetaBundle::Score || i == MetaBundle::PlayCount
+	    || i == MetaBundle::LastPlayed || i == MetaBundle::Mood )
             continue;
         args[MetaBundle::exactColumnName( i ).lower()] = MetaBundle::prettyColumnName( i );
     }

@@ -9,7 +9,6 @@
 #ifndef PLAYLISTITEM_H
 #define PLAYLISTITEM_H
 
-#include <config.h>  //HAVE_MOODBAR
 #include "metabundle.h" //baseclass
 #include "amarok_export.h"
 
@@ -123,10 +122,8 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
         virtual void paintCell( QPainter*, const QColorGroup&, int, int, int );
         void drawRating( QPainter *p );
         void drawRating( QPainter *p, int stars, int graystars, bool half );
-#ifdef HAVE_MOODBAR
 	void drawMood( QPainter *p, int width, int height );
 	virtual void moodbarJobEvent( int newState );
-#endif
 
         // Used for sorting
         virtual int compare( QListViewItem*, int, bool ) const;

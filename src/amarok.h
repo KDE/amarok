@@ -3,8 +3,6 @@
 #ifndef AMAROK_H
 #define AMAROK_H
 
-#include <config.h>  // HAVE_MOODBAR
-
 #include <qnamespace.h>
 #include <qstring.h>
 
@@ -170,9 +168,7 @@ namespace amaroK
 
     void setUseScores( bool use ); //defined in app.cpp
     void setUseRatings( bool use );
-#ifdef HAVE_MOODBAR
     void setMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic );
-#endif
 
     bool repeatNone(); //defined in actionclasses.cpp
     bool repeatTrack();

@@ -989,29 +989,6 @@ AM_CONDITIONAL(with_mp4v2, [test x$have_mp4v2 != xno ])
 
 
 ###############################################################################
-# BEGIN MOODBAR CHECK
-###############################################################################
-
-AC_ARG_WITH(moodbar,
-    AC_HELP_STRING([--without-moodbar],[build without Moodbar support (requires the moodbar package to use)]),
-    [build_moodbar=$withval],
-    [build_moodbar=yes]
-)
-
-AM_CONDITIONAL(build_moodbar, [test x$build_moodbar != xno])
-
-if test x$build_moodbar != xno; then
-    AC_DEFINE(HAVE_MOODBAR, 1, [compile Moodbar])
-fi
-
-
-
-###############################################################################
-# END MOODBAR CHECK
-###############################################################################
-
-
-###############################################################################
 # BEGIN DAAP KDE 3.4 CHECK
 ###############################################################################
 

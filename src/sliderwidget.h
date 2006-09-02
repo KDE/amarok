@@ -102,10 +102,8 @@ namespace amaroK
             virtual void mousePressEvent( QMouseEvent* );
 
 	protected slots:
-	  // #ifdef HAVE_MOODBAR <-- Can't do this because moc doesn't preprocess
 	    void moodbarJobEvent( int newState );
 	    void slotMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic );
-	  // #endif
 
         private:
             PrettySlider( const PrettySlider& ); //undefined

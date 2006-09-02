@@ -17,7 +17,7 @@ email                : markey@web.de
 #include "amarokconfig.h"
 #include "app.h"
 #include "collectiondb.h"
-#include "config.h" // Has USE_MYSQL, HAVE_MOODBAR
+#include "config.h" // Has USE_MYSQL
 #include "configdialog.h"
 #include "contextbrowser.h"
 #include "dbsetup.h"
@@ -288,13 +288,11 @@ void AmarokConfigDialog::updateSettings()
     amaroK::setUseScores( m_opt1->kcfg_UseScores->isChecked() );
     amaroK::setUseRatings( m_opt1->kcfg_UseRatings->isChecked() );
 
-#ifdef HAVE_MOODBAR
     // The following makes everything with a moodbar redraw itself.
     amaroK::setMoodbarPrefs( m_opt1->kcfg_ShowMoodbar->isChecked(),
 			     m_opt1->kcfg_MakeMoodier->isChecked(),
 			     m_opt1->kcfg_AlterMood->currentItem(),
 			     m_opt1->kcfg_MoodsWithMusic->isChecked() );
-#endif
 }
 
 

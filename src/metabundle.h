@@ -15,7 +15,6 @@
 #include <kurl.h>    //inline functions
 #include <klocale.h> //inline functions
 #include <taglib/audioproperties.h>
-#include <config.h> // HAVE_MOODBAR
 #include "expression.h"
 #include "atomicstring.h"
 #include "atomicurl.h"
@@ -80,9 +79,7 @@ public:
         Rating,
         PlayCount,
         LastPlayed,
-#ifdef HAVE_MOODBAR
 	Mood,
-#endif
         Filesize,
         NUM_COLUMNS
     };
@@ -211,12 +208,10 @@ public:
         @see ExpressionParser */
     bool matchesParsedExpression( const ParsedExpression &parsedData, const QValueList<int> &defaultColumns ) const;
 
-#ifdef HAVE_MOODBAR
     /** PlaylistItem reimplements this so it can be informed of moodbar
         data events without having to use signals */
     virtual void moodbarJobEvent( int newState ) 
         { (void) newState; }
-#endif
 
 public:
     /**
@@ -246,10 +241,8 @@ public: //accessors
     int     score()       const;
     int     rating()      const; //returns rating * 2, to accommodate .5 ratings
     int     playCount()   const;
-#ifdef HAVE_MOODBAR
     Moodbar       &moodbar();
     const Moodbar &moodbar_const() const;
-#endif
     uint    lastPlay()    const;
 
     int     filesize()    const;
@@ -368,9 +361,7 @@ protected:
     uint m_lastPlay;
     int  m_filesize;
 
-#ifdef HAVE_MOODBAR
     Moodbar m_moodbar;
-#endif
 
     int m_type;
 
@@ -438,10 +429,8 @@ inline int MetaBundle::sampleRate() const { return m_sampleRate == Undetermined 
 inline int MetaBundle::filesize()   const { return m_filesize == Undetermined ? 0 : m_filesize; }
 inline int MetaBundle::fileType()   const { return m_type; }
 
-#ifdef HAVE_MOODBAR
 inline Moodbar &MetaBundle::moodbar() { return m_moodbar; }
 inline const Moodbar &MetaBundle::moodbar_const() const { return m_moodbar; }
-#endif
 
 inline KURL     MetaBundle::url()        const { return m_url; }
 inline QString  MetaBundle::filename()   const { return url().fileName(); }

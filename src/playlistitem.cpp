@@ -447,10 +447,8 @@ PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
         case Bitrate:    return cmp( bitrate(),   i->bitrate() );
         case Bpm:        return cmp( bpm(),       i->bpm() );
         case Filesize:   return cmp( filesize(),  i->filesize() );
-#ifdef HAVE_MOODBAR
         case Mood:       
             return cmp( moodbar_const().hueSort(), i->moodbar_const().hueSort() );
-#endif
         case Year:
             if( year() == i->year() )
                 return compare( i, Artist, ascending );
@@ -501,7 +499,6 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
     static const QImage currentTrackMid   = locate( "data", "amarok/images/currenttrack_bar_mid.png" );
     static const QImage currentTrackRight = locate( "data", "amarok/images/currenttrack_bar_right.png" );
 
-#ifdef HAVE_MOODBAR
     if( column == Mood  &&  !moodbar().dataExists() )
       moodbar().load();  // Only has an effect the first time
     // The moodbar column can have text in it, like "Calculating".
@@ -509,7 +506,6 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
     // a moodbar, and 2 if we're displaying text
     const int moodbarType = 
         column != Mood ? 0 : moodbar().state() == Moodbar::Loaded ? 1 : 2;
-#endif
 
     const QString colText = text( column );
     const bool isCurrent = this == listView()->currentTrack();
@@ -618,11 +614,8 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                 if( align != Qt::AlignCenter )
                 align |= Qt::AlignVCenter;
 
-                if( column != Rating
-#ifdef HAVE_MOODBAR		    
-		    &&  moodbarType != 1 
-#endif
-		    )
+                if( column != Rating  &&
+		    moodbarType != 1 )
                 {
                     // Draw the text
                     static QFont font;
@@ -651,10 +644,8 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                 p.drawPixmap( 0, 0, paintCache[column].map[colorKey] );
             if( column == Rating )
                 drawRating( &p );
-#ifdef HAVE_MOODBAR
 	    if( moodbarType == 1 )
 	        drawMood( &p, width, height() );
-#endif
         }
     else
     {
@@ -710,10 +701,8 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
 
         if( column == Rating )
             drawRating( &p );
-#ifdef HAVE_MOODBAR
 	else if( moodbarType == 1 )
 	    drawMood( &p, width, height() );
-#endif
         else
         {
             // Draw the text
@@ -874,8 +863,6 @@ void PlaylistItem::drawRating( QPainter *p, int stars, int graystars, bool half 
     }
 }
 
-#ifdef HAVE_MOODBAR
-
 #define MOODBAR_SPACING 2  // The distance from the moodbar pixmap to each side
 
 void PlaylistItem::drawMood( QPainter *p, int width, int height )
@@ -909,8 +896,6 @@ void PlaylistItem::moodbarJobEvent( int newState )
       repaint();
     // Don't automatically resort because it's annoying
 }
-
-#endif // HAVE_MOODBAR
 
 
 void PlaylistItem::setup()

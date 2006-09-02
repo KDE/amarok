@@ -19,11 +19,7 @@
 
 void Options1::init()
 {
-#ifndef HAVE_MOODBAR
-    moodFrame->hide();
-#else
     slotUpdateMoodFrame();
-#endif
     
     QStringList browsers;
     browsers << "konqueror" << "firefox" << "opera" << "galeon" << "epiphany"

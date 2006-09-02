@@ -296,10 +296,8 @@ Playlist::Playlist( QWidget *parent )
     setColumnWidth( PlaylistItem::Artist, 100 );
     setColumnWidth( PlaylistItem::Album,  100 );
     setColumnWidth( PlaylistItem::Length, 80 );
-#ifdef HAVE_MOODBAR
     if( AmarokConfig::showMoodbar() )
         setColumnWidth( PlaylistItem::Mood, 40 );
-#endif
     if( AmarokConfig::useRatings() )
         setColumnWidth( PlaylistItem::Rating, PlaylistItem::ratingColumnWidth() );
 
@@ -398,10 +396,8 @@ Playlist::Playlist( QWidget *parent )
 
     connect( App::instance(), SIGNAL( useScores( bool ) ), this, SLOT( slotUseScores( bool ) ) );
     connect( App::instance(), SIGNAL( useRatings( bool ) ), this, SLOT( slotUseRatings( bool ) ) );
-#ifdef HAVE_MOODBAR
     connect( App::instance(), SIGNAL( moodbarPrefs(     bool, bool, int, bool ) ),
 	     this,            SLOT(   slotMoodbarPrefs( bool, bool, int, bool ) ) );
-#endif
 
     amaroK::ToolTip::add( this, viewport() );
 
@@ -1027,10 +1023,8 @@ void Playlist::restoreLayout(KConfig *config, const QString &group)
     hideColumn( PlaylistItem::Score );
   if( !AmarokConfig::useRatings() )
     hideColumn( PlaylistItem::Rating );
-#ifdef HAVE_MOODBAR
   if( !AmarokConfig::showMoodbar() )
     hideColumn( PlaylistItem::Mood );
-#endif
 }
 
 void
@@ -2649,9 +2643,6 @@ Playlist::viewportResizeEvent( QResizeEvent *e )
         case PlaylistItem::Year:
         case PlaylistItem::DiscNumber:
         case PlaylistItem::Bpm:
-#ifdef HAVE_MOODBAR
-	  // case PlaylistItem::Mood: //  should moodbar be fixed?
-#endif
             break; //these columns retain their width - their items tend to have uniform size
         default:
             if( m_columnFraction[c] > 0 )
@@ -2699,9 +2690,6 @@ Playlist::columnResizeEvent( int col, int oldw, int neww )
             case PlaylistItem::Year:
             case PlaylistItem::DiscNumber:
             case PlaylistItem::Bpm:
-#ifdef HAVE_MOODBAR
-	      // case PlaylistItem::Mood: //  should moodbar be fixed?
-#endif
                 break;
             default:
                 if( m_columnFraction[c] > 0 )
@@ -2747,9 +2735,6 @@ Playlist::columnResizeEvent( int col, int oldw, int neww )
         case PlaylistItem::Year:
         case PlaylistItem::DiscNumber:
         case PlaylistItem::Bpm:
-#ifdef HAVE_MOODBAR
-	  // case PlaylistItem::Mood:  //  should moodbar be fixed?
-#endif
             break;
         default:
             w += columnWidth( x );
@@ -2796,9 +2781,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
                 sub.insertItem( columnText( i ), i, i + 1 );
         sub.setItemVisible( PlaylistItem::Score, AmarokConfig::useScores() );
         sub.setItemVisible( PlaylistItem::Rating, AmarokConfig::useRatings() );
-#ifdef HAVE_MOODBAR
         sub.setItemVisible( PlaylistItem::Mood, AmarokConfig::showMoodbar() );
-#endif
 
         popup.insertItem( i18n("&Show Column" ), &sub );
 
@@ -3560,10 +3543,8 @@ Playlist::adjustColumn( int n )
 {
     if( n == PlaylistItem::Rating )
         setColumnWidth( n, PlaylistItem::ratingColumnWidth() );
-#ifdef HAVE_MOODBAR
     else if( n == PlaylistItem::Mood )
         setColumnWidth( n, 40 );
-#endif
     else
         KListView::adjustColumn( n );
 }
@@ -4641,7 +4622,6 @@ Playlist::slotUseRatings( bool use )
 void
 Playlist::slotMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic )
 {
-#ifdef HAVE_MOODBAR // Put this here since moc doesn't preprocess
     (void) moodier;  (void) alter;  (void) withMusic;
 
     if( !show && columnWidth( MetaBundle::Mood ) )
@@ -4662,9 +4642,6 @@ Playlist::slotMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic )
 	    repaintItem(*it);
 	  }
       }
-#else
-    (void) show; (void) moodier; (void) alter; (void) withMusic;
-#endif
 }
 
 void

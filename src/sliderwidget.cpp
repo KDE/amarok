@@ -143,7 +143,6 @@ amaroK::PrettySlider::PrettySlider( Qt::Orientation orientation, SliderMode mode
 	setFocusPolicy( QWidget::NoFocus );
       }
 
-#ifdef HAVE_MOODBAR    
     // We only have to connect this *once*, since our MetaBundle 
     // doesn't get destroyed until we do.
     connect( &m_bundle.moodbar(), SIGNAL( jobEvent( int ) ),
@@ -153,7 +152,6 @@ amaroK::PrettySlider::PrettySlider( Qt::Orientation orientation, SliderMode mode
     connect( App::instance(), SIGNAL( moodbarPrefs( bool, bool, int, bool ) ), 
 	     SLOT( slotMoodbarPrefs( bool, bool, int, bool ) ) );
     
-#endif
 }
 
 void
@@ -189,7 +187,6 @@ amaroK::PrettySlider::paintEvent( QPaintEvent *e )
     const int pos = int( double( w-2 ) / maxValue() * Slider::value() );
     int h = THICKNESS;
 
-#ifdef HAVE_MOODBAR
     bool doMoodbar = ( !m_bundle.url().isEmpty()       && 
 		       m_bundle.moodbar().dataExists() &&
 		       AmarokConfig::showMoodbar() );
@@ -207,13 +204,6 @@ amaroK::PrettySlider::paintEvent( QPaintEvent *e )
 	amaroK::Slider::paintEvent( e );
 	return;
       }
-#else
-    if( m_mode == Normal )
-      {
-	amaroK::Slider::paintEvent( e );
-	return;
-      }
-#endif
 
     QPixmap  buf( size() );
     QPainter p( &buf, this );
@@ -226,17 +216,13 @@ amaroK::PrettySlider::paintEvent( QPaintEvent *e )
         p.rotate( -90 ); //90 degrees clockwise
     }
 
-#ifdef HAVE_MOODBAR
     if( !doMoodbar )
       {
-#endif
 	p.translate( 0, MARGIN );
 	  p.setPen( amaroK::ColorScheme::Foreground );
 	  p.fillRect( 0, 0, pos, h, QColor( amaroK::ColorScheme::Background ) );
 	  p.drawRect( 0, 0, w, h );
 	p.translate( 0, -MARGIN );
-
-#ifdef HAVE_MOODBAR
       }
     else
       {
@@ -248,7 +234,6 @@ amaroK::PrettySlider::paintEvent( QPaintEvent *e )
 
 	// Larger triangle for the moodbar
       }
-#endif
 
     //<Triangle Marker>
     if( m_mode == Pretty )
@@ -283,12 +268,8 @@ amaroK::PrettySlider::paintEvent( QPaintEvent *e )
 void 
 amaroK::PrettySlider::moodbarJobEvent( int newState )
 {
-#ifdef HAVE_MOODBAR // Have to do this since moc doesn't preprocess
     if( newState == Moodbar::JobStateSucceeded )
         update(); 
-#else
-    (void) newState;
-#endif
 }
 
 // This gets called when the user presses "Ok" or "Apply" in the
@@ -297,7 +278,6 @@ amaroK::PrettySlider::moodbarJobEvent( int newState )
 void 
 amaroK::PrettySlider::slotMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic )
 {
-#ifdef HAVE_MOODBAR // Have to do this since moc doesn't preprocess
     (void) moodier;  (void) alter;  (void) withMusic;
 
     if( show )
@@ -307,9 +287,6 @@ amaroK::PrettySlider::slotMoodbarPrefs( bool show, bool moodier, int alter, bool
 	  m_bundle.moodbar().load();
 	update();
       }
-#else
-    (void) show;  (void) moodier;  (void) alter;  (void) withMusic;
-#endif
 }
 
 
@@ -322,7 +299,6 @@ amaroK::PrettySlider::newBundle( const MetaBundle &bundle )
     m_bundle = bundle;
     m_bundle.detach();
     
-#ifdef HAVE_MOODBAR
     // This is the easiest way to tell if the bundle refers
     // to a real track, or if we're STOP'd.
     if( m_bundle.url().isEmpty() )
@@ -333,7 +309,6 @@ amaroK::PrettySlider::newBundle( const MetaBundle &bundle )
       m_bundle.moodbar().load();
     else
       update();
-#endif
 }
 
 

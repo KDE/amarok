@@ -62,9 +62,7 @@ class LIBAMAROK_EXPORT App : public KApplication, public EngineObserver
     signals:
         void useScores( bool use );
         void useRatings( bool use );
-	// #ifdef HAVE_MOODBAR  <-- Has no effect, since moc doesn't preprocess
 	void moodbarPrefs( bool show, bool moodier, int alter, bool withMusic );
-	// #endif
         void prepareToQuit();
     protected: /* for OSD, tray, and dcop */
         void engineStateChanged( Engine::State state, Engine::State oldState = Engine::Empty );
@@ -91,9 +89,7 @@ class LIBAMAROK_EXPORT App : public KApplication, public EngineObserver
         void slotConfigEqualizer();
         void setUseScores( bool use );
         void setUseRatings( bool use );
-	// #ifdef HAVE_MOODBAR  <-- Has no effect, since moc doesn't preprocess
 	void setMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic );
-	// #endif
         KIO::Job *trashFiles( const KURL::List &files );
         void quit();
 

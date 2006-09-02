@@ -272,8 +272,6 @@
 
 #include <config.h>
 
-#ifdef HAVE_MOODBAR
-
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "app.h"
@@ -1284,4 +1282,3 @@ Moodbar::moodFilename( bool withMusic )
 
 #include "moodbar.moc"
 
-#endif // HAVE_MOODBAR

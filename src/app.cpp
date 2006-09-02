@@ -1092,15 +1092,11 @@ void App::setUseRatings( bool use )
 
 void App::setMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic )
 {
-#ifdef HAVE_MOODBAR // Have to do this here since moc doesn't preprocess
     AmarokConfig::setShowMoodbar( show );
     AmarokConfig::setMakeMoodier( moodier );
     AmarokConfig::setAlterMood( alter );
     AmarokConfig::setMoodsWithMusic( withMusic );
     emit moodbarPrefs( show, moodier, alter, withMusic );
-#else
-    (void) show; (void) moodier; (void) alter; (void) withMusic;
-#endif
 }
 
 KIO::Job *App::trashFiles( const KURL::List &files )
@@ -1338,10 +1334,8 @@ namespace amaroK
 
     void setUseScores( bool use ) { App::instance()->setUseScores( use ); }
     void setUseRatings( bool use ) { App::instance()->setUseRatings( use ); }
-#ifdef HAVE_MOODBAR
     void setMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic ) 
     { App::instance()->setMoodbarPrefs( show, moodier, alter, withMusic ); }
-#endif
     KIO::Job *trashFiles( const KURL::List &files ) { return App::instance()->trashFiles( files ); }
 }
 

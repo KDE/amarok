@@ -24,10 +24,6 @@
 #ifndef MOODBAR_H
 #define MOODBAR_H
 
-#include <config.h> // for HAVE_MOODBAR
-
-#ifdef HAVE_MOODBAR
-
 #include <qobject.h>
 #include <qvaluevector.h>
 #include <qcolor.h>
@@ -173,7 +169,5 @@ private:
   mutable QMutex m_mutex;
 };
 
-
-#endif // HAVE_MOODBAR
 
 #endif // MOODBAR_H
