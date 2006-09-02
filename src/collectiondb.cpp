@@ -442,11 +442,11 @@ CollectionDB::deviceidSelection( const bool showAll )
 QStringList
 CollectionDB::URLsFromQuery( const QStringList &result ) const
 {
-   QStringList values = QStringList();
+    QStringList values;
     foreach( result )
     {
-        int id = (*it).toInt();
-        values.append( ( MountPointManager::instance()->getAbsolutePath( id, *(++it) ) ) );
+        const int id = (*it).toInt();
+        values << MountPointManager::instance()->getAbsolutePath( id, *(++it) );
     }
     return values;
 }
@@ -1510,8 +1510,8 @@ CollectionDB::albumDiscTracks( const QString &artist_id, const QString &album_id
     QStringList result;
     foreach( rs )
     {
-        int id = (*it).toInt();
-        result.append( ( MountPointManager::instance()->getAbsolutePath( id, *(++it) ) ) );
+        const int id = (*it).toInt();
+        result << MountPointManager::instance()->getAbsolutePath( id, *(++it) );
         //PostGreSql requires a third column
         if ( getDbConnectionType() == DbConnection::postgresql ) ++it;
     }
@@ -1528,8 +1528,8 @@ CollectionDB::artistTracks( const QString &artist_id )
     QStringList result = QStringList();
     foreach( rs )
     {
-        int id = (*it).toInt();
-        result.append( ( MountPointManager::instance()->getAbsolutePath( id, *(++it) ) ) );
+        const int id = (*it).toInt();
+        result << MountPointManager::instance()->getAbsolutePath( id, *(++it) );
     }
     return result;
 }
