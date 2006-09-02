@@ -40,6 +40,7 @@ VERSION 1.4.3:
     * Sort numeric columns in flat collection view numerically. (BR 130667)
     * Dynamic Collection broke flat collection view when the Filename column
       was added (BR 132874)
+    * Cover images were not displayed in some cases (BR 133174)
 
 
 VERSION 1.4.2:

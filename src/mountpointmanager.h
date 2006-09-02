@@ -163,12 +163,6 @@ public:
     int getIdForUrl( KURL url );
     int getIdForUrl( QString url );
     /**
-     * checks whether a medium identified by its unique database id is currently mounted.
-     * @param deviceId the mediums unique id
-     * @return true if the medium is mounted, false otherwise
-     */
-    bool isMounted ( const int deviceId ) const;
-    /**
      *
      * @param id
      * @return
@@ -220,6 +214,13 @@ private:
 
     ~MountPointManager();
 
+    /**
+     * checks whether a medium identified by its unique database id is currently mounted.
+     * Note: does not handle deviceId = -1! It only checks real devices
+     * @param deviceId the mediums unique id
+     * @return true if the medium is mounted, false otherwise
+     */
+    bool isMounted ( const int deviceId ) const;
     void init();
     void handleMissingMediaManager();
     /**

@@ -446,12 +446,7 @@ CollectionDB::URLsFromQuery( const QStringList &result ) const
     foreach( result )
     {
         int id = (*it).toInt();
-        if ( MountPointManager::instance()->isMounted( id ) )
-        {
-            //KURL relativePath = KURL::fromPathOrURL( *(++it) );
-            values.append( ( MountPointManager::instance()->getAbsolutePath( id, *(++it) ) ) );
-        }
-        else ++it;
+        values.append( ( MountPointManager::instance()->getAbsolutePath( id, *(++it) ) ) );
     }
     return values;
 }
@@ -467,10 +462,7 @@ CollectionDB::URLsFromSqlDrag( const QStringList &values ) const
         const QString &rel = *it;
         it++;
         int id = (*it).toInt();
-        if ( MountPointManager::instance()->isMounted( id ) )
-        {
-            urls += KURL::fromPathOrURL( MountPointManager::instance()->getAbsolutePath( id, rel ) );
-        }
+        urls += KURL::fromPathOrURL( MountPointManager::instance()->getAbsolutePath( id, rel ) );
         for( int i = 0;
                 i < QueryBuilder::dragFieldCount-1 && it != values.end();
                 i++ )
@@ -1510,7 +1502,8 @@ CollectionDB::albumDiscTracks( const QString &artist_id, const QString &album_id
                   .arg( discNumber ) );
     else
         rs = query( QString( "SELECT tags.deviceid, tags.url FROM tags, year WHERE tags.album = %1 AND "
-                           "tags.artist = %2 AND year.id = tags.year AND tags.discnumber = %3 ORDER BY tags.track;" )
+                           "tags.artist = %2 AND year.id = tags.year AND tags.discnumber = %3 "
+                           + deviceidSelection() + " ORDER BY tags.track;" )
                   .arg( album_id )
                   .arg( artist_id )
                   .arg( discNumber ) );
@@ -1518,11 +1511,7 @@ CollectionDB::albumDiscTracks( const QString &artist_id, const QString &album_id
     foreach( rs )
     {
         int id = (*it).toInt();
-        if ( MountPointManager::instance()->isMounted( id ) )
-        {
-            result.append( ( MountPointManager::instance()->getAbsolutePath( id, *(++it) ) ) );
-        }
-        else ++it;
+        result.append( ( MountPointManager::instance()->getAbsolutePath( id, *(++it) ) ) );
         //PostGreSql requires a third column
         if ( getDbConnectionType() == DbConnection::postgresql ) ++it;
     }
@@ -1540,12 +1529,7 @@ CollectionDB::artistTracks( const QString &artist_id )
     foreach( rs )
     {
         int id = (*it).toInt();
-        if ( MountPointManager::instance()->isMounted( id ) )
-        {
-            //KURL relativePath = KURL::fromPathOrURL( *(++it) );
-            result.append( ( MountPointManager::instance()->getAbsolutePath( id, *(++it) ) ) );
-        }
-        else ++it;
+        result.append( ( MountPointManager::instance()->getAbsolutePath( id, *(++it) ) ) );
     }
     return result;
 }
