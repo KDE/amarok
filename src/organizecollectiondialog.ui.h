@@ -29,7 +29,7 @@ QString OrganizeCollectionDialog::buildDestination( const QString &format, const
     for( int i = 0; i < MetaBundle::NUM_COLUMNS; i++ )
     {
         if( i == MetaBundle::Score || i == MetaBundle::PlayCount 
-	    || i == MetaBundle::LastPlayed || i == MetaBundle::Mood )
+            || i == MetaBundle::LastPlayed || i == MetaBundle::Mood )
             continue;
         args[mb.exactColumnName( i ).lower()] = cleanPath( mb.prettyText( i ) );
     }
@@ -61,7 +61,7 @@ QString OrganizeCollectionDialog::buildFormatTip() const
     for( int i = 0; i < MetaBundle::NUM_COLUMNS; i++ )
     {
         if( i == MetaBundle::Score || i == MetaBundle::PlayCount
-	    || i == MetaBundle::LastPlayed || i == MetaBundle::Mood )
+            || i == MetaBundle::LastPlayed || i == MetaBundle::Mood )
             continue;
         args[MetaBundle::exactColumnName( i ).lower()] = MetaBundle::prettyColumnName( i );
     }

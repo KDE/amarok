@@ -194,7 +194,7 @@ class CollectionView : public KListView, public DropProxyTarget
         CollectionItem* currentItem() { return static_cast<CollectionItem*>( KListView::currentItem() ); }
 
         int trackDepth() { return m_trackDepth; }
-	int viewMode() const { return m_viewMode; }
+        int viewMode() const { return m_viewMode; }
 
         // Transform "The Who" -> "Who, The" or the other way
         static void manipulateThe( QString &str, bool reverse );
@@ -204,8 +204,8 @@ class CollectionView : public KListView, public DropProxyTarget
         bool isOrganizingFiles() const;
 
     protected:
-	// Reimplemented for iPod-style navigation, etc.
-	virtual void keyPressEvent( QKeyEvent *e );
+        // Reimplemented for iPod-style navigation, etc.
+        virtual void keyPressEvent( QKeyEvent *e );
  
 
     public slots:
@@ -239,7 +239,7 @@ class CollectionView : public KListView, public DropProxyTarget
         void enableCat3Menu( bool );
         void invokeItem( QListViewItem* );
 
-	// ipod-style navigation slots
+        // ipod-style navigation slots
         void ipodItemClicked( QListViewItem*, const QPoint&, int );
         void incrementDepth ( bool rerender = true );
         void decrementDepth ( bool rerender = true );
@@ -313,10 +313,10 @@ class CollectionView : public KListView, public DropProxyTarget
         int m_trackDepth;
         int m_viewMode;
 
-	// The iPod-style viewing attributes
-	int         m_currentDepth;   // Current viewing depth
-	QStringList m_ipodFilters[3]; // Selections at each stage
-	QStringList m_ipodFilterYear; // See the comment for incrementDepth()
+        // The iPod-style viewing attributes
+        int         m_currentDepth;   // Current viewing depth
+        QStringList m_ipodFilters[3]; // Selections at each stage
+        QStringList m_ipodFilterYear; // See the comment for incrementDepth()
         // For auto-selection
         int         m_ipodIncremented; // 0 = nothing, 1 = just incremented, 2 = just decremented
         QStringList m_ipodSelected[3]; // Saved selections at lower levels

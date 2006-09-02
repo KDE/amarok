@@ -310,7 +310,7 @@ MoodServer::MoodServer( void )
     , m_currentProcess( 0 )
 {
     connect( App::instance(), SIGNAL( moodbarPrefs( bool, bool, int, bool ) ), 
-	     SLOT( slotMoodbarPrefs( bool, bool, int, bool ) ) );
+             SLOT( slotMoodbarPrefs( bool, bool, int, bool ) ) );
 }
 
 
@@ -328,35 +328,35 @@ MoodServer::queueJob( MetaBundle *bundle )
     
     // Check if the currently running job is for that URL
     if( m_currentProcess != 0  &&  
-	m_currentData.m_url == bundle->url() )
+        m_currentData.m_url == bundle->url() )
       {
-	debug() << "MoodServer::queueJob: Not re-queueing already-running job "
-		<< bundle->url().path() << endl;
-	m_mutex.unlock();
-	return true;
+        debug() << "MoodServer::queueJob: Not re-queueing already-running job "
+                << bundle->url().path() << endl;
+        m_mutex.unlock();
+        return true;
       }
 
     // Check if there's already a job in the queue for that URL
     QValueList<ProcData>::iterator it;
     for( it = m_jobQueue.begin(); it != m_jobQueue.end(); ++it )
       {
-	if( (*it).m_url == bundle->url() )
-	  {
-	    (*it).m_refcount++;
-	    debug() << "MoodServer::queueJob: Job for " << bundle->url().path()
-		    << " already in queue, increasing refcount to "
-		    << (*it).m_refcount << endl;
-	    m_mutex.unlock();
-	    return false;
-	  }
+        if( (*it).m_url == bundle->url() )
+          {
+            (*it).m_refcount++;
+            debug() << "MoodServer::queueJob: Job for " << bundle->url().path()
+                    << " already in queue, increasing refcount to "
+                    << (*it).m_refcount << endl;
+            m_mutex.unlock();
+            return false;
+          }
       }
 
     m_jobQueue.append( ProcData( bundle->url(), 
-				 bundle->url().path(), 
-				 bundle->moodbar().moodFilename() ) );
+                                 bundle->url().path(), 
+                                 bundle->moodbar().moodFilename() ) );
 
     debug() << "MoodServer::queueJob: Queued job for " << bundle->url().path() 
-	    << ", " << m_jobQueue.size() << " jobs in queue." << endl;
+            << ", " << m_jobQueue.size() << " jobs in queue." << endl;
 
     m_mutex.unlock();
 
@@ -376,42 +376,42 @@ MoodServer::deQueueJob( KURL url )
     
     // Can't de-queue running jobs
     if( m_currentProcess != 0  &&  
-	m_currentData.m_url == url )
+        m_currentData.m_url == url )
       {
-	debug() << "MoodServer::deQueueJob: Not de-queueing already-running job "
-		<< url.path() << endl;
-	m_mutex.unlock();
-	return;
+        debug() << "MoodServer::deQueueJob: Not de-queueing already-running job "
+                << url.path() << endl;
+        m_mutex.unlock();
+        return;
       }
 
     // Check if there's already a job in the queue for that URL
     QValueList<ProcData>::iterator it;
     for( it = m_jobQueue.begin(); it != m_jobQueue.end(); ++it )
       {
-	if( (*it).m_url == url )
-	  {
-	    (*it).m_refcount--;
+        if( (*it).m_url == url )
+          {
+            (*it).m_refcount--;
 
-	    if( (*it).m_refcount == 0 )
-	      {
-		debug() << "MoodServer::deQueueJob: nobody cares about "
-			<< (*it).m_url.path() 
-			<< " anymore, deleting from queue" << endl;
-		m_jobQueue.erase( it );
-	      }
-	    
-	    else
-	      debug() << "MoodServer::deQueueJob: decrementing refcount of "
-		      << (*it).m_url.path() << " to " << (*it).m_refcount
-		      << endl;
+            if( (*it).m_refcount == 0 )
+              {
+                debug() << "MoodServer::deQueueJob: nobody cares about "
+                        << (*it).m_url.path() 
+                        << " anymore, deleting from queue" << endl;
+                m_jobQueue.erase( it );
+              }
+            
+            else
+              debug() << "MoodServer::deQueueJob: decrementing refcount of "
+                      << (*it).m_url.path() << " to " << (*it).m_refcount
+                      << endl;
 
-	    m_mutex.unlock();
-	    return;
-	  }
+            m_mutex.unlock();
+            return;
+          }
       }
 
     debug() << "MoodServer::deQueueJob: tried to delete nonexistent job "
-	    << url.path() << endl;
+            << url.path() << endl;
 
     m_mutex.unlock();
 }
@@ -439,10 +439,10 @@ MoodServer::slotNewJob( void )
   m_jobQueue.pop_front();
 
   debug() << "MoodServer::slotNewJob: starting new analyzer process: "
-	  << "moodbar -o " << m_currentData.m_outfile << ".tmp "
-	  << m_currentData.m_infile << endl;
+          << "moodbar -o " << m_currentData.m_outfile << ".tmp "
+          << m_currentData.m_infile << endl;
   debug() << "MoodServer::slotNewJob: " << m_jobQueue.size()
-	  << " jobs left in queue." << endl;
+          << " jobs left in queue." << endl;
 
 
   // Write to outfile.mood.tmp so that new Moodbar instances
@@ -451,11 +451,11 @@ MoodServer::slotNewJob( void )
   m_currentProcess = new amaroK::Process( this );
   m_currentProcess->setPriority( 19 );  // Nice the process
   *m_currentProcess << KStandardDirs::findExe( "moodbar" ) << "-o" 
-		    << (m_currentData.m_outfile + ".tmp")
-		    << m_currentData.m_infile;
+                    << (m_currentData.m_outfile + ".tmp")
+                    << m_currentData.m_infile;
 
   connect( m_currentProcess, SIGNAL( processExited( KProcess* ) ),
-	   SLOT( slotJobCompleted( KProcess* ) ) );
+           SLOT( slotJobCompleted( KProcess* ) ) );
 
   // We have to enable KProcess::Stdout (even though we don't monitor
   // it) since otherwise the child process crashes every time in
@@ -503,10 +503,10 @@ MoodServer::slotJobCompleted( KProcess *proc )
 
     if( success )
       {
-	QString file = m_currentData.m_outfile;
-	QString dir = file.left( file.findRev( '/' ) );
-	file = file.right( file.length() - file.findRev( '/' ) - 1 );
-	QDir( dir ).rename( file + ".tmp", file );
+        QString file = m_currentData.m_outfile;
+        QString dir = file.left( file.findRev( '/' ) );
+        file = file.right( file.length() - file.findRev( '/' ) - 1 );
+        QDir( dir ).rename( file + ".tmp", file );
       }
     else
       QFile::remove( m_currentData.m_outfile + ".tmp" );
@@ -518,50 +518,50 @@ MoodServer::slotJobCompleted( KProcess *proc )
     // If the moodbar was disabled, we killed the process
     if( !AmarokConfig::showMoodbar() )
       {
-	debug() << "MoodServer::slotJobCompleted: moodbar disabled, job killed" << endl;
-	m_mutex.unlock();
-	emit jobEvent( url, Moodbar::JobStateFailed );
-	return;
+        debug() << "MoodServer::slotJobCompleted: moodbar disabled, job killed" << endl;
+        m_mutex.unlock();
+        emit jobEvent( url, Moodbar::JobStateFailed );
+        return;
       }
 
 
     switch( returnval )
       {
       case Success:
-	debug() << "MoodServer::slotJobCompleted: job completed successfully" << endl;
-	m_mutex.unlock();
-	slotNewJob();
-	break;
+        debug() << "MoodServer::slotJobCompleted: job completed successfully" << endl;
+        m_mutex.unlock();
+        slotNewJob();
+        break;
 
-	// Crash and NoFile don't mean that moodbar is broken.
-	// Something bad happened, but it's probably a problem with this file
-	// Just log an error message and emit jobEvent().
+        // Crash and NoFile don't mean that moodbar is broken.
+        // Something bad happened, but it's probably a problem with this file
+        // Just log an error message and emit jobEvent().
       case Crash:
-	debug() << "MoodServer::slotJobCompleted: moodbar crashed on "
-		<< m_currentData.m_infile << endl;
-	m_mutex.unlock();
-	slotNewJob();
-	break;
-	
+        debug() << "MoodServer::slotJobCompleted: moodbar crashed on "
+                << m_currentData.m_infile << endl;
+        m_mutex.unlock();
+        slotNewJob();
+        break;
+        
       case NoFile:
-	debug() << "MoodServer::slotJobCompleted: moodbar had a problem with "
-		<< m_currentData.m_infile << endl;
-	m_mutex.unlock();
-	slotNewJob();
-	break;
+        debug() << "MoodServer::slotJobCompleted: moodbar had a problem with "
+                << m_currentData.m_infile << endl;
+        m_mutex.unlock();
+        slotNewJob();
+        break;
 
-	// NoPlugin and CommandLine mean the moodbar is broken
-	// The moodbar analyzer is not likely to work ever, so let the
-	// user know about it and disable new jobs.
+        // NoPlugin and CommandLine mean the moodbar is broken
+        // The moodbar analyzer is not likely to work ever, so let the
+        // user know about it and disable new jobs.
       default:
-	m_mutex.unlock();
-	setMoodbarBroken();
-	break;
-	
+        m_mutex.unlock();
+        setMoodbarBroken();
+        break;
+        
       }
 
     emit jobEvent( url, success ? Moodbar::JobStateSucceeded 
-		                : Moodbar::JobStateFailed );
+                                : Moodbar::JobStateFailed );
 }
 
 
@@ -593,16 +593,16 @@ void
 MoodServer::setMoodbarBroken( void )
 {
     warning() << "Uh oh, it looks like the moodbar analyzer is not going to work" 
-	      << endl;
+              << endl;
 
     amaroK::StatusBar::instance()->longMessage( i18n( 
-	"The Amarok moodbar analyzer program seems to be broken. "
-	"Most likely this is because you don't have the accompanying "
-	"moodbar analyzer + plugins package correctly installed.  Try running "
-	"moodbar -o test.mood [file], where file is a music file, "
-	"to see what the problem is.  When the problem is fixed, please "
-	"restart Amarok."),
-	KDE::StatusBar::Error );
+        "The Amarok moodbar analyzer program seems to be broken. "
+        "Most likely this is because you don't have the accompanying "
+        "moodbar analyzer + plugins package correctly installed.  Try running "
+        "moodbar -o test.mood [file], where file is a music file, "
+        "to see what the problem is.  When the problem is fixed, please "
+        "restart Amarok."),
+        KDE::StatusBar::Error );
 
 
     m_moodbarBroken = true;
@@ -689,19 +689,19 @@ Moodbar::operator=( const Moodbar &mood )
     // so those should be updated too.
     if( JOB_PENDING( m_state )  &&  !JOB_PENDING( oldState ) )
       {
-	connect( MoodServer::instance(), 
-		 SIGNAL( jobEvent( KURL, int ) ),
-		 SLOT( slotJobEvent( KURL, int ) ) );
-	// Increase the refcount for this job.  Use mood.m_bundle
-	// since that one's already initialized.
-	MoodServer::instance()->queueJob( mood.m_bundle );
+        connect( MoodServer::instance(), 
+                 SIGNAL( jobEvent( KURL, int ) ),
+                 SLOT( slotJobEvent( KURL, int ) ) );
+        // Increase the refcount for this job.  Use mood.m_bundle
+        // since that one's already initialized.
+        MoodServer::instance()->queueJob( mood.m_bundle );
       }
 
     // If we had a job pending, de-queue it
     if( !JOB_PENDING( m_state )  &&  JOB_PENDING( oldState ) )
       {
-	MoodServer::instance()->disconnect( this, SLOT( slotJobEvent( KURL, int ) ) );
-	MoodServer::instance()->deQueueJob( oldURL );
+        MoodServer::instance()->disconnect( this, SLOT( slotJobEvent( KURL, int ) ) );
+        MoodServer::instance()->deQueueJob( oldURL );
       }
       
     mood.m_mutex.unlock();
@@ -767,9 +767,9 @@ Moodbar::dataExists( void )
 
     // Should we bother checking for the file?
     if( m_state == CantLoad    ||  
-	JOB_PENDING( m_state ) || 
-	m_state == JobFailed   ||  
-	!canHaveMood() )
+        JOB_PENDING( m_state ) || 
+        m_state == JobFailed   ||  
+        !canHaveMood() )
       return false;
 
     m_mutex.lock();
@@ -796,12 +796,12 @@ Moodbar::canHaveMood( void )
     // If the moodbar is disabled, set to CantLoad -- if the user re-enables
     // the moodbar, we'll be reset() anyway.  
     if( !AmarokConfig::showMoodbar()   ||
-	!m_bundle->url().isLocalFile() ||
-	!m_bundle->length()            ||
-	moodFilename().isEmpty() )  
+        !m_bundle->url().isLocalFile() ||
+        !m_bundle->length()            ||
+        moodFilename().isEmpty() )  
       {
-	m_state = CantLoad;
-	return false;
+        m_state = CantLoad;
+        return false;
       }
 
     return true;
@@ -821,29 +821,29 @@ Moodbar::load( void )
 
     if( !canHaveMood() )
       {
-	// State is now CantLoad
-	m_mutex.unlock();
-	return;
+        // State is now CantLoad
+        m_mutex.unlock();
+        return;
       }
 
     if( readFile() )
       {
-	// State is now Loaded
-	m_mutex.unlock();
-	return;
+        // State is now Loaded
+        m_mutex.unlock();
+        return;
       }
 
     if( MoodServer::instance()->moodbarBroken() )
       {
-	m_state = JobFailed;
-	m_mutex.unlock();
-	return;
+        m_state = JobFailed;
+        m_mutex.unlock();
+        return;
       }
 
     // Ok no more excuses, we have to queue a job
     connect( MoodServer::instance(), 
-	     SIGNAL( jobEvent( KURL, int ) ),
-	     SLOT( slotJobEvent( KURL, int ) ) );
+             SIGNAL( jobEvent( KURL, int ) ),
+             SLOT( slotJobEvent( KURL, int ) ) );
     bool isRunning = MoodServer::instance()->queueJob( m_bundle );
     m_state = isRunning ? JobRunning : JobQueued;
     m_url = m_bundle->url();  // Use this URL for MoodServer::deQueueJob
@@ -867,8 +867,8 @@ Moodbar::slotJobEvent( KURL url, int newState )
     // We don't really care about this, but our listeners might
     if( newState == JobStateRunning )
       {
-	m_state = JobRunning;
-	goto out;
+        m_state = JobRunning;
+        goto out;
       }
 
     m_mutex.lock();
@@ -878,22 +878,22 @@ Moodbar::slotJobEvent( KURL url, int newState )
 
     if( !success )
       {
-	m_state = JobFailed;
-	m_mutex.unlock();
-	goto out;
+        m_state = JobFailed;
+        m_mutex.unlock();
+        goto out;
       }
 
     if( readFile() )
       {
-	// m_state is now Loaded
-	m_mutex.unlock();
-	goto out;
+        // m_state is now Loaded
+        m_mutex.unlock();
+        goto out;
       }
 
     // If we get here it means the analyzer job went wrong, but
     // somehow the MoodServer didn't know about it
     debug() << "WARNING: Failed to open file " << moodFilename() 
-	    << " -- something is very wrong" << endl;
+            << " -- something is very wrong" << endl;
     m_state = JobFailed;
     m_mutex.unlock();
 
@@ -919,8 +919,8 @@ Moodbar::draw( int width, int height )
     // Do we have to repaint, or can we use the cache?
     if( m_pixmap.width() == width  &&  m_pixmap.height() == height )
       {
-	m_mutex.unlock();
-	return m_pixmap;
+        m_mutex.unlock();
+        return m_pixmap;
       }
 
     m_pixmap = QPixmap( width, height );
@@ -939,31 +939,31 @@ Moodbar::draw( int width, int height )
 
     for( int i = 0; i < width; i++ )
       {
-	r = 0.f;  g = 0.f;  b = 0.f;
+        r = 0.f;  g = 0.f;  b = 0.f;
 
-	// m_data.size() needs to be at least 1 for this not to crash!
-	uint start = i * m_data.size() / width;
-	uint end   = (i + 1) * m_data.size() / width;
-	if( start == end )
-	  end = start + 1;
+        // m_data.size() needs to be at least 1 for this not to crash!
+        uint start = i * m_data.size() / width;
+        uint end   = (i + 1) * m_data.size() / width;
+        if( start == end )
+          end = start + 1;
 
-	for( uint j = start; j < end; j++ )
-	  {
-	    r += m_data[j].red();
-	    g += m_data[j].green();
-	    b += m_data[j].blue();
-	  }
+        for( uint j = start; j < end; j++ )
+          {
+            r += m_data[j].red();
+            g += m_data[j].green();
+            b += m_data[j].blue();
+          }
 
-	uint n = end - start;
-	bar =  QColor( int( r / float( n ) ),
-		       int( g / float( n ) ), 
-		       int( b / float( n ) ), QColor::Rgb );
+        uint n = end - start;
+        bar =  QColor( int( r / float( n ) ),
+                       int( g / float( n ) ), 
+                       int( b / float( n ) ), QColor::Rgb );
 
-	/* Snap to the HSV values for later */
-	bar.getHsv(&h, &s, &v);
-	bar.setHsv(h, s, v);
+        /* Snap to the HSV values for later */
+        bar.getHsv(&h, &s, &v);
+        bar.setHsv(h, s, v);
 
-	screenColors.push_back( bar );
+        screenColors.push_back( bar );
       }
     
     // Paint the bars.  This is Gav's painting code -- it breaks up the
@@ -972,21 +972,21 @@ Moodbar::draw( int width, int height )
 
     for( int x = 0; x < width; x++ )
       {
-	screenColors[x].getHsv( &h, &s, &v );
+        screenColors[x].getHsv( &h, &s, &v );
 
-	for( int y = 0; y <= height / 2; y++ )
-	  {
-	    float coeff = float(y) / float(height / 2);
-	    float coeff2 = 1.f - ((1.f - coeff) * (1.f - coeff));
-	    coeff = 1.f - (1.f - coeff) / 2.f;
-	    coeff2 = 1.f - (1.f - coeff2) / 2.f;
-	    paint.setPen( QColor( h, 
- 	        CLAMP( 0, int( float( s ) * coeff ), 255 ), 
+        for( int y = 0; y <= height / 2; y++ )
+          {
+            float coeff = float(y) / float(height / 2);
+            float coeff2 = 1.f - ((1.f - coeff) * (1.f - coeff));
+            coeff = 1.f - (1.f - coeff) / 2.f;
+            coeff2 = 1.f - (1.f - coeff2) / 2.f;
+            paint.setPen( QColor( h, 
+                CLAMP( 0, int( float( s ) * coeff ), 255 ), 
                 CLAMP( 0, int( 255.f - (255.f - float( v )) * coeff2), 255 ), 
-	        QColor::Hsv ) );
-	    paint.drawPoint(x, y);
-	    paint.drawPoint(x, height - 1 - y);
-	  }
+                QColor::Hsv ) );
+            paint.drawPoint(x, y);
+            paint.drawPoint(x, height - 1 - y);
+          }
       }
 
     m_mutex.unlock();
@@ -1025,47 +1025,47 @@ Moodbar::readFile( void )
     QFile moodFile( path );
 
     if( !QFile::exists( path )  ||  
-	!moodFile.open( IO_ReadOnly ) )
+        !moodFile.open( IO_ReadOnly ) )
       {
-	// If the user has changed his/her preference about where to
-	// store the mood files, he/she might have the .mood file
-	// in the other place, so we should check there before giving
-	// up.
-	
-	QString path2 = moodFilename( !AmarokConfig::moodsWithMusic() );
-	moodFile.setName( path2 );
-	
-	if( !QFile::exists( path2 )  ||
-	    !moodFile.open( IO_ReadOnly ) )
-	  return false;
+        // If the user has changed his/her preference about where to
+        // store the mood files, he/she might have the .mood file
+        // in the other place, so we should check there before giving
+        // up.
+        
+        QString path2 = moodFilename( !AmarokConfig::moodsWithMusic() );
+        moodFile.setName( path2 );
+        
+        if( !QFile::exists( path2 )  ||
+            !moodFile.open( IO_ReadOnly ) )
+          return false;
 
-	debug() << "Moodbar::readFile: Found a file at " << path2 
-		<< " instead, using that and copying." << endl;
+        debug() << "Moodbar::readFile: Found a file at " << path2 
+                << " instead, using that and copying." << endl;
 
-	QByteArray contents = moodFile.readAll();
-	moodFile.close();
-	moodFile.setName( path );
-	if( !moodFile.open( IO_WriteOnly ) )
-	  return false;
-	bool res = ( uint( moodFile.writeBlock( contents ) ) == contents.size() );
-	moodFile.close();
-	if( !res )
-	  return false;
-	if( !moodFile.open( IO_ReadOnly ) )
-	  return false;
+        QByteArray contents = moodFile.readAll();
+        moodFile.close();
+        moodFile.setName( path );
+        if( !moodFile.open( IO_WriteOnly ) )
+          return false;
+        bool res = ( uint( moodFile.writeBlock( contents ) ) == contents.size() );
+        moodFile.close();
+        if( !res )
+          return false;
+        if( !moodFile.open( IO_ReadOnly ) )
+          return false;
       }
 
     int r, g, b, samples = moodFile.size() / 3;
     debug() << "Moodbar::readFile: File " << path 
-	    << " opened. Proceeding to read contents... s=" << samples << endl;
+            << " opened. Proceeding to read contents... s=" << samples << endl;
 
     // This would be bad.
     if( samples == 0 )
       {
-	debug() << "Moodbar::readFile: File " << moodFile.name() 
-		<< " is corrupted, removing." << endl;
-	moodFile.remove();
-	return false;
+        debug() << "Moodbar::readFile: File " << moodFile.name() 
+                << " is corrupted, removing." << endl;
+        moodFile.remove();
+        return false;
       }
 
     int huedist[360], mx = 0; // For alterMood
@@ -1078,20 +1078,20 @@ Moodbar::readFile( void )
     // Read the file, keeping track of some histograms
     for( int i = 0; i < samples; i++ )
       {
-	r = moodFile.getch();
-	g = moodFile.getch();
-	b = moodFile.getch();
+        r = moodFile.getch();
+        g = moodFile.getch();
+        b = moodFile.getch();
 
-	m_data.push_back( QColor( CLAMP( 0, r, 255 ), 
-				  CLAMP( 0, g, 255 ), 
-				  CLAMP( 0, b, 255 ), QColor::Rgb ) );
+        m_data.push_back( QColor( CLAMP( 0, r, 255 ), 
+                                  CLAMP( 0, g, 255 ), 
+                                  CLAMP( 0, b, 255 ), QColor::Rgb ) );
 
-	// Make a histogram of hues
-	m_data.last().getHsv( &h, &s, &v );
-	modalHue[CLAMP( 0, h * NUM_HUES / 360, NUM_HUES - 1 )] += v;
+        // Make a histogram of hues
+        m_data.last().getHsv( &h, &s, &v );
+        modalHue[CLAMP( 0, h * NUM_HUES / 360, NUM_HUES - 1 )] += v;
 
-	if( h < 0 ) h = 0;  else h = h % 360;
-	huedist[h]++;
+        if( h < 0 ) h = 0;  else h = h % 360;
+        huedist[h]++;
       }
 
     // Make moodier -- copied straight from Gav Wood's code
@@ -1128,86 +1128,86 @@ Moodbar::readFile( void )
 
     if( AmarokConfig::makeMoodier() )
       {
-	// Explanation of the parameters:
-	//
-	//   threshold: A hue value is considered to be a "spike" in the
-	//     histogram if it's above this value.  Setting this value
-	//     higher will tend to make the hue distribution more uniform
-	//
-	//   rangeStart, rangeDelta: output hues will be more or less
-	//     evenly spaced between rangeStart and (rangeStart + rangeDelta)
-	//
-	//   sat, val: the saturation and value are scaled by these integral
-	//     percentage values
+        // Explanation of the parameters:
+        //
+        //   threshold: A hue value is considered to be a "spike" in the
+        //     histogram if it's above this value.  Setting this value
+        //     higher will tend to make the hue distribution more uniform
+        //
+        //   rangeStart, rangeDelta: output hues will be more or less
+        //     evenly spaced between rangeStart and (rangeStart + rangeDelta)
+        //
+        //   sat, val: the saturation and value are scaled by these integral
+        //     percentage values
 
-	int threshold, rangeStart, rangeDelta, sat, val;
-	int total = 0;
-	memset( modalHue, 0, sizeof( modalHue ) );  // Recalculate this
+        int threshold, rangeStart, rangeDelta, sat, val;
+        int total = 0;
+        memset( modalHue, 0, sizeof( modalHue ) );  // Recalculate this
 
-	switch( AmarokConfig::alterMood() )
-	  {
-	  case 1: // Angry
-	    threshold  = samples / 360 * 9; 
-	    rangeStart = 45; 
-	    rangeDelta = -45; 
-	    sat        = 200; 
-	    val        = 100; 
-	    break;
+        switch( AmarokConfig::alterMood() )
+          {
+          case 1: // Angry
+            threshold  = samples / 360 * 9; 
+            rangeStart = 45; 
+            rangeDelta = -45; 
+            sat        = 200; 
+            val        = 100; 
+            break;
 
-	  case 2: // Frozen
-	    threshold  = samples / 360 * 1; 
-	    rangeStart = 140; 
-	    rangeDelta = 160; 
-	    sat        = 50; 
-	    val        = 100; 
-	    break;
+          case 2: // Frozen
+            threshold  = samples / 360 * 1; 
+            rangeStart = 140; 
+            rangeDelta = 160; 
+            sat        = 50; 
+            val        = 100; 
+            break;
 
-	  default: // Happy
-	    threshold  = samples / 360 * 2; 
-	    rangeStart = 0; 
-	    rangeDelta = 359; 
-	    sat        = 150; 
-	    val        = 250;
-	  }
+          default: // Happy
+            threshold  = samples / 360 * 2; 
+            rangeStart = 0; 
+            rangeDelta = 359; 
+            sat        = 150; 
+            val        = 250;
+          }
 
-	debug() << "ReadMood: Appling filter t=" << threshold 
-		<< ", rS=" << rangeStart << ", rD=" << rangeDelta 
-		<< ", s=" << sat << "%, v=" << val << "%" << endl;
+        debug() << "ReadMood: Appling filter t=" << threshold 
+                << ", rS=" << rangeStart << ", rD=" << rangeDelta 
+                << ", s=" << sat << "%, v=" << val << "%" << endl;
 
-	// On average, huedist[i] = samples / 360.  This counts the 
-	// number of samples over the threshold, which is usually
-	// 1, 2, 9, etc. times the average samples in each bin.
-	// The total determines how many output hues there are,
-	// evenly spaced between rangeStart and rangeStart + rangeDelta.
-	for( int i = 0; i < 360; i++ ) 
-	  if( huedist[i] > threshold ) 
-	    total++;
+        // On average, huedist[i] = samples / 360.  This counts the 
+        // number of samples over the threshold, which is usually
+        // 1, 2, 9, etc. times the average samples in each bin.
+        // The total determines how many output hues there are,
+        // evenly spaced between rangeStart and rangeStart + rangeDelta.
+        for( int i = 0; i < 360; i++ ) 
+          if( huedist[i] > threshold ) 
+            total++;
 
-	if( total < 360 && total > 0 )
-	  {
-	    // Remap the hue values to be between rangeStart and
-	    // rangeStart + rangeDelta.  Every time we see an input hue
-	    // above the threshold, increment the output hue by 
-	    // (1/total) * rangeDelta.
-	    for( int i = 0, n = 0; i < 360; i++ )
-	      huedist[i] = ( ( huedist[i] > threshold ? n++ : n ) 
-			     * rangeDelta / total + rangeStart ) % 360;
+        if( total < 360 && total > 0 )
+          {
+            // Remap the hue values to be between rangeStart and
+            // rangeStart + rangeDelta.  Every time we see an input hue
+            // above the threshold, increment the output hue by 
+            // (1/total) * rangeDelta.
+            for( int i = 0, n = 0; i < 360; i++ )
+              huedist[i] = ( ( huedist[i] > threshold ? n++ : n ) 
+                             * rangeDelta / total + rangeStart ) % 360;
 
-	    // Now huedist is a hue mapper: huedist[h] is the new hue value 
-	    // for a bar with hue h
+            // Now huedist is a hue mapper: huedist[h] is the new hue value 
+            // for a bar with hue h
 
-	    for(uint i = 0; i < m_data.size(); i++)
-	      {	
-		m_data[i].getHsv( &h, &s, &v );
-		if( h < 0 ) h = 0;  else h = h % 360;
-		m_data[i].setHsv( CLAMP( 0, huedist[h], 359 ), 
-				  CLAMP( 0, s * sat / 100, 255 ), 
-				  CLAMP( 0, v * val / 100, 255 ) );
+            for(uint i = 0; i < m_data.size(); i++)
+              { 
+                m_data[i].getHsv( &h, &s, &v );
+                if( h < 0 ) h = 0;  else h = h % 360;
+                m_data[i].setHsv( CLAMP( 0, huedist[h], 359 ), 
+                                  CLAMP( 0, s * sat / 100, 255 ), 
+                                  CLAMP( 0, v * val / 100, 255 ) );
 
-		modalHue[CLAMP(0, huedist[h] * NUM_HUES / 360, NUM_HUES - 1)] 
-		  += (v * val / 100);
-	      }
-	  }
+                modalHue[CLAMP(0, huedist[h] * NUM_HUES / 360, NUM_HUES - 1)] 
+                  += (v * val / 100);
+              }
+          }
       }
 
     // Calculate m_hueSort.  This is a 3-digit number in base NUM_HUES,
@@ -1219,21 +1219,21 @@ Moodbar::readFile( void )
     mx = 0;
     for( int i = 1; i < NUM_HUES; i++ ) 
       if( modalHue[i] > modalHue[mx] ) 
-	mx = i;
+        mx = i;
     m_hueSort = mx * NUM_HUES * NUM_HUES;
     modalHue[mx] = 0;
 
     mx = 0;
     for( int i = 1; i < NUM_HUES; i++ ) 
       if( modalHue[i] > modalHue[mx] ) 
-	mx = i;
+        mx = i;
     m_hueSort += mx * NUM_HUES;
     modalHue[mx] = 0;
 
     mx = 0;
     for( int i = 1; i < NUM_HUES; i++ ) 
       if( modalHue[i] > modalHue[mx] ) 
-	mx = i;
+        mx = i;
     m_hueSort += mx;
     
 
@@ -1269,17 +1269,17 @@ Moodbar::moodFilename( bool withMusic )
 
     if( withMusic )
       {
-	path += ".mood";
-	int slash = path.findRev('/') + 1;
+        path += ".mood";
+        int slash = path.findRev('/') + 1;
         QString dir  = path.left(slash);
         QString file = path.right(path.length() - slash);
-	path = dir + "." + file;
+        path = dir + "." + file;
       }
     else
       {
-	path.replace('/', ',');
-	// Creates the path if necessary
-	path = ::locateLocal("data", "amarok/moods/" + path + ".mood");
+        path.replace('/', ',');
+        // Creates the path if necessary
+        path = ::locateLocal("data", "amarok/moods/" + path + ".mood");
       }
 
     return path;

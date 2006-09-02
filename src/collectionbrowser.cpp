@@ -1,6 +1,6 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
-// (c) 2005 G√°bor Lehel <illissius@gmail.com>
+// (c) 2005 GÅ√Å°bor Lehel <illissius@gmail.com>
 // (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>
 // (c) 2005 Christan Baumgart <christianbaumgart@web.de>
 // (c) 2006 Joe Rabinoff <bobqwatson@yahoo.com>
@@ -149,13 +149,13 @@ CollectionBrowser::CollectionBrowser( const char* name )
       {
       case CollectionView::modeTreeView:
         m_treeViewAction->setChecked( true );
-	break;
+        break;
       case CollectionView::modeFlatView:
         m_flatViewAction->setChecked( true );
-	break;
+        break;
       case CollectionView::modeIpodView:
         m_ipodViewAction->setChecked( true );
-	break;
+        break;
       }
 
     m_showDividerAction = new KToggleAction( i18n( "Show Divider" ), "leftjust", 0, this, SLOT( toggleDivider() ), ac, "Show Divider" );
@@ -166,13 +166,13 @@ CollectionBrowser::CollectionBrowser( const char* name )
     // correspond to moving forward / backward in the iPod collection
     // browser window; see the "For iPod-style navigation" comments below.
     m_ipodDecrement = new KAction( i18n( "Browse backward" ),
-				   QIconSet( m_view->ipodDecrementIcon(), QIconSet::Small ),
-				   0, m_view, SLOT( decrementDepth() ), ac,
-				   "iPod Decrement" );
+                                   QIconSet( m_view->ipodDecrementIcon(), QIconSet::Small ),
+                                   0, m_view, SLOT( decrementDepth() ), ac,
+                                   "iPod Decrement" );
     m_ipodIncrement = new KAction( i18n( "Browse forward" ),
-				   QIconSet( m_view->ipodIncrementIcon(), QIconSet::Small ),
-				   0, m_view, SLOT( incrementDepth() ), ac,
-				   "iPod Increment" );
+                                   QIconSet( m_view->ipodIncrementIcon(), QIconSet::Small ),
+                                   0, m_view, SLOT( incrementDepth() ), ac,
+                                   "iPod Increment" );
     m_ipodDecrement->plug( m_ipodToolbar );
     m_ipodIncrement->plug( m_ipodToolbar );
 
@@ -332,10 +332,10 @@ CollectionBrowser::eventFilter( QObject *o, QEvent *e )
             }
         }
 
-	// (Joe Rabinoff) the code that was here which dealt with wrapping
-	// the selection around when Key_Up or Key_Down was pressed was
-	// moved to CollectionView::keyPressEvent().  That code also
-	// skips dividers.
+        // (Joe Rabinoff) the code that was here which dealt with wrapping
+        // the selection around when Key_Up or Key_Down was pressed was
+        // moved to CollectionView::keyPressEvent().  That code also
+        // skips dividers.
 
         if( ( e->key() >= Key_0 && e->key() <= Key_Z ) || e->key() == Key_Backspace || e->key() == Key_Escape )
         {
@@ -410,8 +410,8 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         : KListView( parent )
         , m_parent( parent )
         , m_timeFilter( 0 )
-	, m_currentDepth( 0 )
-	, m_ipodIncremented ( 1 )
+        , m_currentDepth( 0 )
+        , m_ipodIncremented ( 1 )
         , m_dirty( true )
 {
     DEBUG_FUNC_INFO
@@ -562,8 +562,8 @@ CollectionView::keyPressEvent( QKeyEvent *e )
                 wraparound = false;  // Found an item above / below
 
         } while( cur != NULL
-		 && dynamic_cast<DividerItem*>(cur) != 0
-		 && nextItem != 0 );
+                 && dynamic_cast<DividerItem*>(cur) != 0
+                 && nextItem != 0 );
 
         if( cur == 0 ) return;  // Shouldn't happen
 
@@ -597,7 +597,7 @@ CollectionView::keyPressEvent( QKeyEvent *e )
     // When Right/Left is pressed in iPod view mode, activate the iPod
     // "move forward/backward" action.
     else if( (e->key() == Key_Left  ||  e->key() == Key_Right)
-	   && m_viewMode == modeIpodView )
+           && m_viewMode == modeIpodView )
     {
         if( e->key() == Key_Right )
             m_parent->m_ipodIncrement->activate();
@@ -637,7 +637,7 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
     // just incremented or decremented, since we'll run selectIpodItems()
     // below anyway.
     if( childCount()  &&
-	!(m_viewMode == modeIpodView && m_ipodIncremented > 0) )
+        !(m_viewMode == modeIpodView && m_ipodIncremented > 0) )
         cacheView();
 
     //clear();
@@ -1308,10 +1308,10 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
             menu.insertItem( SmallIconSet( amaroK::icon( "burn" ) ), i18n("Burn This Album"), BURN_ALBUM );
             menu.setItemEnabled( BURN_ALBUM, K3bExporter::isAvailable() );
         }
-	// !item->isExpandable() in tree mode corresponds to
-	// showing tracks in iPod mode
+        // !item->isExpandable() in tree mode corresponds to
+        // showing tracks in iPod mode
         else if( !item->isExpandable() &&
-		 (m_viewMode != modeIpodView || m_currentDepth == trackDepth()) )
+                 (m_viewMode != modeIpodView || m_currentDepth == trackDepth()) )
         {
             menu.insertItem( SmallIconSet( amaroK::icon( "burn" ) ), i18n("Burn to CD"), BURN_CD );
             menu.setItemEnabled( BURN_CD, K3bExporter::isAvailable() );
@@ -1855,34 +1855,34 @@ CollectionView::updateColumnHeader()
     // right-arrow pixmap.  In any case we're not in tree mode.
     else if ( m_viewMode == modeIpodView )
     {
-	QString caption;
+        QString caption;
 
-	if( m_currentDepth == trackDepth() )
-	  caption = i18n( "Tracks" );
+        if( m_currentDepth == trackDepth() )
+          caption = i18n( "Tracks" );
 
-	else
-	  {
-	    int catArr[3] = {m_cat1, m_cat2, m_cat3};
-	    caption = captionForCategory( catArr[m_currentDepth] );
-	  }
+        else
+          {
+            int catArr[3] = {m_cat1, m_cat2, m_cat3};
+            caption = captionForCategory( catArr[m_currentDepth] );
+          }
 
         addColumn( caption );
 
-	if( m_currentDepth != trackDepth() )
-	  {
-	    QPixmap pixmap = ipodDecrementIcon();
-	    // This column is for the "->" buttons.  The width is just
-	    // a guess, and will be changed once an item is added.
-	    addColumn( "", pixmap.width() + 10 );
-	  }
+        if( m_currentDepth != trackDepth() )
+          {
+            QPixmap pixmap = ipodDecrementIcon();
+            // This column is for the "->" buttons.  The width is just
+            // a guess, and will be changed once an item is added.
+            addColumn( "", pixmap.width() + 10 );
+          }
         setRootIsDecorated( false );
 
-	// Neither column should automatically stretch, since this tends
-	// to add a scrollbar when it's not needed, and anyway we manually
-	// stretch it in viewportResizeEvent()
+        // Neither column should automatically stretch, since this tends
+        // to add a scrollbar when it's not needed, and anyway we manually
+        // stretch it in viewportResizeEvent()
         header()->setStretchEnabled( false, 0 );
-	if( m_currentDepth != trackDepth() )
-	  header()->setStretchEnabled( false, 1 );
+        if( m_currentDepth != trackDepth() )
+          header()->setStretchEnabled( false, 1 );
 
     }
 
@@ -3118,8 +3118,8 @@ CollectionView::restoreView()
     if ( item ) {
         setCurrentItem( item );
         item->setSelected( true );
-	// More intuitive if shift-click selects from current selection
-	setSelectionAnchor( item );
+        // More intuitive if shift-click selects from current selection
+        setSelectionAnchor( item );
     }
 
     //free cache
@@ -3223,11 +3223,11 @@ CollectionView::viewportResizeEvent( QResizeEvent* e)
 {
     if( m_viewMode != modeIpodView )
     {
-	header()->blockSignals( true );
+        header()->blockSignals( true );
 
-	const double width = e->size().width();
-	int visibleColumns = 0;
-	for ( int i = 0; i < columns(); ++i )
+        const double width = e->size().width();
+        int visibleColumns = 0;
+        for ( int i = 0; i < columns(); ++i )
             if ( columnWidth( i ) != 0 )
                 visibleColumns ++;
         int correct = e->size().width() - (e->size().width() / visibleColumns) * visibleColumns;
@@ -3249,7 +3249,7 @@ CollectionView::viewportResizeEvent( QResizeEvent* e)
             }
         }
 
-	header()->blockSignals( false );
+        header()->blockSignals( false );
     }
 
     // iPod-mode header adjustment code
@@ -4022,7 +4022,7 @@ CollectionItem::compare( QListViewItem* i, int col, bool ascending ) const
             break;
     }
     // Need to make single letter artist names sort lower than acented divider items
-    // (e.g. The artist "A" should sort below the divider "√Ñ") so the divider colapsing
+    // (e.g. The artist "A" should sort below the divider "Å√Ñ") so the divider colapsing
     // code works correctly. Making the artist a two letter word makes localeAwareCompare
     // give the result we want. See BR 126545.
     if ( a.length() == 1 && dynamic_cast<DividerItem*>(i) )
@@ -4070,10 +4070,10 @@ DividerItem::paintCell ( QPainter * p, const QColorGroup & cg,
     // draw the text offset a little bit
     if( column == 0 )  // For iPod viewing mode
       {
-	QFontMetrics fm( p->fontMetrics() );
-	int x = !QApplication::reverseLayout() ? 25 : width - 25;
-	int y = fm.ascent() + (height() - fm.height())/2;
-	p->drawText( x, y, m_text );
+        QFontMetrics fm( p->fontMetrics() );
+        int x = !QApplication::reverseLayout() ? 25 : width - 25;
+        int y = fm.ascent() + (height() - fm.height())/2;
+        p->drawText( x, y, m_text );
       }
 
     //draw the baseline
@@ -4142,21 +4142,21 @@ DividerItem::createGroup(const QString& src, int cat)
     }
     default:
         ret = src.stripWhiteSpace();
-	// (Joe Rabinoff) deleted.  The bug this fixes is as follows.
-	// If the category is Album and the album name is "Heroes" (by
-	// David Bowie -- the quotes are part of the title), it gets
-	// put under the H group, but then gets sorted under '"'.
-	// What I've done is the wrong fix -- albums should be sorted
-	// by their first alphanumeric character.
-	/*
+        // (Joe Rabinoff) deleted.  The bug this fixes is as follows.
+        // If the category is Album and the album name is "Heroes" (by
+        // David Bowie -- the quotes are part of the title), it gets
+        // put under the H group, but then gets sorted under '"'.
+        // What I've done is the wrong fix -- albums should be sorted
+        // by their first alphanumeric character.
+        /*
         while ( !ret.isEmpty() && !ret.at(0).isLetterOrNumber() ) {
             ret = ret.right( ret.length()-1 );
         }
-	*/
+        */
         if ( !ret.isEmpty()  &&  ret.at(0).isLetterOrNumber() )
-	  ret = ret.left( 1 ).upper();
-	else
-	  return "";
+          ret = ret.left( 1 ).upper();
+        else
+          return "";
         /*else
             ret = i18n( "Others" );*/
         /* By returning an empty string, no header is created. */

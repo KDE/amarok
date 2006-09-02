@@ -79,7 +79,7 @@ public:
         Rating,
         PlayCount,
         LastPlayed,
-	Mood,
+        Mood,
         Filesize,
         NUM_COLUMNS
     };

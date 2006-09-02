@@ -85,32 +85,32 @@ namespace amaroK
         Q_OBJECT
 
         public:
-	    typedef enum
-	    {
-	        Normal,  // Same behavior as Slider *unless* there's a moodbar
-		Pretty
-	    } SliderMode;
+            typedef enum
+            {
+                Normal,  // Same behavior as Slider *unless* there's a moodbar
+                Pretty
+            } SliderMode;
 
-	    PrettySlider( Qt::Orientation orientation, SliderMode mode, 
-			  QWidget *parent, uint max = 0 );
+            PrettySlider( Qt::Orientation orientation, SliderMode mode, 
+                          QWidget *parent, uint max = 0 );
 
-	    virtual void newBundle( const MetaBundle &bundle );
+            virtual void newBundle( const MetaBundle &bundle );
 
         protected:
             virtual void paintEvent( QPaintEvent *e );
             virtual void slideEvent( QMouseEvent* );
             virtual void mousePressEvent( QMouseEvent* );
 
-	protected slots:
-	    void moodbarJobEvent( int newState );
-	    void slotMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic );
+        protected slots:
+            void moodbarJobEvent( int newState );
+            void slotMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic );
 
         private:
             PrettySlider( const PrettySlider& ); //undefined
             PrettySlider &operator=( const PrettySlider& ); //undefined
 
-	    SliderMode m_mode;
-	    MetaBundle m_bundle;  // Has our moodbar data!
+            SliderMode m_mode;
+            MetaBundle m_bundle;  // Has our moodbar data!
     };
 
     class VolumeSlider: public Slider

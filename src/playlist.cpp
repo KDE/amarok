@@ -397,7 +397,7 @@ Playlist::Playlist( QWidget *parent )
     connect( App::instance(), SIGNAL( useScores( bool ) ), this, SLOT( slotUseScores( bool ) ) );
     connect( App::instance(), SIGNAL( useRatings( bool ) ), this, SLOT( slotUseRatings( bool ) ) );
     connect( App::instance(), SIGNAL( moodbarPrefs(     bool, bool, int, bool ) ),
-	     this,            SLOT(   slotMoodbarPrefs( bool, bool, int, bool ) ) );
+             this,            SLOT(   slotMoodbarPrefs( bool, bool, int, bool ) ) );
 
     amaroK::ToolTip::add( this, viewport() );
 
@@ -4632,15 +4632,15 @@ Playlist::slotMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic )
     // do this even if the column is hidden.
     if( show )
       {
-	// No need to call moodbar().load(), since that will happen
-	// automatically next time it's displayed.  We do have to
-	// repaint so that they get displayed though.
+        // No need to call moodbar().load(), since that will happen
+        // automatically next time it's displayed.  We do have to
+        // repaint so that they get displayed though.
 
-	for( MyIterator it( this, MyIterator::All ) ; *it ; ++it )
-	  {
-	    (*it)->moodbar().reset();
-	    repaintItem(*it);
-	  }
+        for( MyIterator it( this, MyIterator::All ) ; *it ; ++it )
+          {
+            (*it)->moodbar().reset();
+            repaintItem(*it);
+          }
       }
 }
 

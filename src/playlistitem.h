@@ -122,8 +122,8 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
         virtual void paintCell( QPainter*, const QColorGroup&, int, int, int );
         void drawRating( QPainter *p );
         void drawRating( QPainter *p, int stars, int graystars, bool half );
-	void drawMood( QPainter *p, int width, int height );
-	virtual void moodbarJobEvent( int newState );
+        void drawMood( QPainter *p, int width, int height );
+        virtual void moodbarJobEvent( int newState );
 
         // Used for sorting
         virtual int compare( QListViewItem*, int, bool ) const;

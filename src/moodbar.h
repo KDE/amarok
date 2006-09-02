@@ -97,11 +97,11 @@ private:
 
   bool readFile( void );
   
-  MetaBundle    *m_bundle;	// Parent bundle
+  MetaBundle    *m_bundle;      // Parent bundle
   ColorList      m_data;        // .mood file contents
-  QPixmap        m_pixmap;	// Cached from the last time draw() was called
+  QPixmap        m_pixmap;      // Cached from the last time draw() was called
   KURL           m_url;         // Keep a copy of this, mainly for dtor
-  mutable QMutex m_mutex;	// Locks the whole object
+  mutable QMutex m_mutex;       // Locks the whole object
   int            m_hueSort;     // For PlaylistItem sorting
   State          m_state;
 };

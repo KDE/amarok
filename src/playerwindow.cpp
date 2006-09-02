@@ -141,10 +141,10 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
 
     { //<Sliders>
         m_pSlider    = new amaroK::PrettySlider( Qt::Horizontal, 
-						 amaroK::PrettySlider::Pretty, this );
+                                                 amaroK::PrettySlider::Pretty, this );
         m_pVolSlider = new amaroK::PrettySlider( Qt::Vertical, 
-						 amaroK::PrettySlider::Pretty, this, 
-						 amaroK::VOLUME_MAX );
+                                                 amaroK::PrettySlider::Pretty, this, 
+                                                 amaroK::VOLUME_MAX );
 
         m_pSlider->setGeometry( 4,103, 303, 12 );
         m_pVolSlider->setGeometry( 294,18, 12,79 );
@@ -320,7 +320,7 @@ void PlayerWidget::engineStateChanged( Engine::State state, Engine::State /*oldS
             m_pSlider->setValue( 0 );
             m_pSlider->setMinValue( 0 );
             m_pSlider->setMaxValue( 0 );
-	    m_pSlider->newBundle( MetaBundle() ); // Set an empty bundle for no moodbar
+            m_pSlider->newBundle( MetaBundle() ); // Set an empty bundle for no moodbar
             m_pTimeLabel->hide();
             m_pTimeSign->hide();
             m_rateString = QString::null;

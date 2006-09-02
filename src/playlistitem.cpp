@@ -615,7 +615,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                 align |= Qt::AlignVCenter;
 
                 if( column != Rating  &&
-		    moodbarType != 1 )
+                    moodbarType != 1 )
                 {
                     // Draw the text
                     static QFont font;
@@ -644,8 +644,8 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                 p.drawPixmap( 0, 0, paintCache[column].map[colorKey] );
             if( column == Rating )
                 drawRating( &p );
-	    if( moodbarType == 1 )
-	        drawMood( &p, width, height() );
+            if( moodbarType == 1 )
+                drawMood( &p, width, height() );
         }
     else
     {
@@ -701,8 +701,8 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
 
         if( column == Rating )
             drawRating( &p );
-	else if( moodbarType == 1 )
-	    drawMood( &p, width, height() );
+        else if( moodbarType == 1 )
+            drawMood( &p, width, height() );
         else
         {
             // Draw the text
@@ -875,9 +875,9 @@ void PlaylistItem::drawMood( QPainter *p, int width, int height )
     // Due to the logic of the calling code, this should always return true
     if( moodbar().dataExists() )
       {
-	QPixmap mood = moodbar().draw( width - MOODBAR_SPACING*2, 
-				       height - MOODBAR_SPACING*2 );
-	p->drawPixmap( MOODBAR_SPACING, MOODBAR_SPACING, mood );
+        QPixmap mood = moodbar().draw( width - MOODBAR_SPACING*2, 
+                                       height - MOODBAR_SPACING*2 );
+        p->drawPixmap( MOODBAR_SPACING, MOODBAR_SPACING, mood );
       }
 
     else 

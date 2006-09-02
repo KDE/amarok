@@ -90,7 +90,7 @@ ColumnList::ColumnList( QWidget *parent, const char *name )
     {
         const int s = h->mapToSection( i );
         if( ( s != MetaBundle::Rating || AmarokConfig::useRatings() ) &&
-	    ( s != MetaBundle::Mood   || AmarokConfig::showMoodbar() ) &&
+            ( s != MetaBundle::Mood   || AmarokConfig::showMoodbar() ) &&
             ( s != MetaBundle::Score  || AmarokConfig::useScores() ) )
         {
             ( new MyCheckListItem( s, m_list, MetaBundle::prettyColumnName( s ), QCheckListItem::CheckBox, this ) )

@@ -175,7 +175,7 @@ MetaBundle::MetaBundle()
         , m_playCount( Undetermined )
         , m_lastPlay( abs( Undetermined ) )
         , m_filesize( Undetermined )
-	, m_moodbar( 0 )
+        , m_moodbar( 0 )
         , m_type( other )
         , m_exists( true )
         , m_isValidMedia( true )
@@ -263,7 +263,7 @@ MetaBundle::MetaBundle( const QString& title,
         , m_playCount( Undetermined )
         , m_lastPlay( abs( Undetermined ) )
         , m_filesize( Undetermined )
-	, m_moodbar( 0 )
+        , m_moodbar( 0 )
         , m_type( other )
         , m_exists( true )
         , m_isValidMedia( false )
@@ -344,17 +344,17 @@ MetaBundle::operator=( const MetaBundle& bundle )
 
     if( bundle.m_moodbar != 0)
       {
-	if( m_moodbar == 0 )
-	  m_moodbar = new Moodbar( this );
-	*m_moodbar = *bundle.m_moodbar;
+        if( m_moodbar == 0 )
+          m_moodbar = new Moodbar( this );
+        *m_moodbar = *bundle.m_moodbar;
       }
     else
       {
-	// If m_moodbar != 0, it's initialized for a reason
-	// Deleting it makes the PrettySlider code more ugly,
-	// since it'd have to reconnect the jobEvent() signal.
-	if( m_moodbar != 0 )
-	  m_moodbar->reset();
+        // If m_moodbar != 0, it's initialized for a reason
+        // Deleting it makes the PrettySlider code more ugly,
+        // since it'd have to reconnect the jobEvent() signal.
+        if( m_moodbar != 0 )
+          m_moodbar->reset();
       }
 
 
@@ -813,10 +813,10 @@ QString MetaBundle::prettyText( int column ) const
         case LastPlayed: text = amaroK::verboseTimeSince( lastPlay() );                              break;
         case Filesize:   text = prettyFilesize();                                                    break;
         case Mood:
-	  text = moodbar_const().state() == Moodbar::JobRunning ? i18n( "Calculating..." )
-	       : moodbar_const().state() == Moodbar::JobQueued  ? i18n( "Queued..." )
-	       : QString::null;
-	break;
+          text = moodbar_const().state() == Moodbar::JobRunning ? i18n( "Calculating..." )
+               : moodbar_const().state() == Moodbar::JobQueued  ? i18n( "Queued..." )
+               : QString::null;
+        break;
         default: warning() << "Tried to get the text of a nonexistent column!" << endl;              break;
     }
 
