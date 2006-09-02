@@ -1268,7 +1268,13 @@ Moodbar::moodFilename( bool withMusic )
       return QString::null;
 
     if( withMusic )
-      path += ".mood";
+      {
+	path += ".mood";
+	int slash = path.findRev('/') + 1;
+        QString dir  = path.left(slash);
+        QString file = path.right(path.length() - slash);
+	path = dir + "." + file;
+      }
     else
       {
 	path.replace('/', ',');
