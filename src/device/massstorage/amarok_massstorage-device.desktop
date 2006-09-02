@@ -1,8 +1,10 @@
 [Desktop Entry]
 Type=Service
 Name=Mass Storage Device
+Name[ar]=جهاز حفظ ذو الذاكرة الضخمة
 Name[bg]=Устройство за съхранение
 Name[cs]=Souborové mediální zařízení
+Name[da]=Masseopbevaringsenhed
 Name[de]=Wechsellaufwerk
 Name[el]=Συσκευή μαζικής αποθήκευσης
 Name[et]=Mass-salvestusseade
