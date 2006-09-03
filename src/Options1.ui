@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>417</width>
+            <width>425</width>
             <height>686</height>
         </rect>
     </property>
@@ -373,6 +373,28 @@
                         <string>You can assign ratings to tracks manually, from 1 to 5 stars.</string>
                     </property>
                 </widget>
+                <widget class="Line">
+                    <property name="name">
+                        <cstring>line1</cstring>
+                    </property>
+                    <property name="frameShape">
+                        <enum>HLine</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                </widget>
+                <widget class="KActiveLabel">
+                    <property name="name">
+                        <cstring>moodbarHelpLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>You need the &lt;a href='http://amarok.kde.org/wiki/Moodbar'&gt;moodbar package&lt;/a&gt; installed to enable the moodbar feature.</string>
+                    </property>
+                </widget>
                 <widget class="QFrame">
                     <property name="name">
                         <cstring>moodFrame</cstring>
@@ -659,5 +681,6 @@
 <includehints>
     <includehint>kcombobox.h</includehint>
     <includehint>klineedit.h</includehint>
+    <includehint>kactivelabel.h</includehint>
 </includehints>
 </UI>

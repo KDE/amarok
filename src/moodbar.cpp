@@ -291,6 +291,8 @@
 
 #define CLAMP(n, v, x) ((v) < (n) ? (n) : (v) > (x) ? (x) : (v))
 
+#define WEBPAGE "http://amarok.kde.org/wiki/Moodbar"
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // MoodServer class
@@ -597,11 +599,11 @@ MoodServer::setMoodbarBroken( void )
 
     amaroK::StatusBar::instance()->longMessage( i18n( 
         "The Amarok moodbar analyzer program seems to be broken. "
-        "Most likely this is because you don't have the accompanying "
-        "moodbar analyzer + plugins package correctly installed.  Try running "
-        "moodbar -o test.mood [file], where file is a music file, "
-        "to see what the problem is.  When the problem is fixed, please "
-        "restart Amarok."),
+        "This is probably because the moodbar package is not installed "
+        "correctly.  The moodbar package, installation instructions, and "
+        "troubleshooting help can be found on the wiki page at <a href='" 
+        WEBPAGE "'>" WEBPAGE "</a>. "
+        "When the problem is fixed, please restart Amarok."),
         KDE::StatusBar::Error );
 
 
@@ -1283,6 +1285,14 @@ Moodbar::moodFilename( bool withMusic )
       }
 
     return path;
+}
+
+
+// Can we find the moodbar program?
+bool 
+Moodbar::executableExists( void )
+{
+  return !(KStandardDirs::findExe( "moodbar" ).isNull());
 }
 
 

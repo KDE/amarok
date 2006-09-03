@@ -83,6 +83,8 @@ public:
   // Where are we storing the .mood file?
   QString moodFilename( void );
   QString moodFilename( bool withMusic );
+
+  static bool executableExists( void );
   
 public slots:
   void slotJobEvent( KURL url, int newState );

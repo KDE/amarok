@@ -14,6 +14,7 @@
 #include <config.h>
 
 #include "amarokconfig.h"
+#include "moodbar.h"
 #include <kstandarddirs.h>
 
 
@@ -45,9 +46,20 @@ void Options1::init()
 
 void Options1::slotUpdateMoodFrame()
 {
-    kcfg_MakeMoodier->setEnabled(kcfg_ShowMoodbar->isChecked());
-    kcfg_AlterMood->setEnabled(kcfg_ShowMoodbar->isChecked() && kcfg_MakeMoodier->isChecked());
-    kcfg_MoodsWithMusic->setEnabled(kcfg_ShowMoodbar->isChecked());
+    if( Moodbar::executableExists() )
+      {
+        moodbarHelpLabel->hide();
+        moodFrame->setEnabled(true);
+
+        kcfg_MakeMoodier->setEnabled(kcfg_ShowMoodbar->isChecked());
+        kcfg_AlterMood->setEnabled(kcfg_ShowMoodbar->isChecked() && kcfg_MakeMoodier->isChecked());
+        kcfg_MoodsWithMusic->setEnabled(kcfg_ShowMoodbar->isChecked());
+      }
+
+    else
+      {
+        moodbarHelpLabel->show();
+        kcfg_ShowMoodbar->setChecked(false);
+        moodFrame->setEnabled(false);
+      }
 }
-
-
