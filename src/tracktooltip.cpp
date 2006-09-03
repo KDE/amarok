@@ -16,8 +16,10 @@
 */
 
 #include "amarok.h"
+#include "amarokconfig.h"
 #include "debug.h"
 #include "metabundle.h"
+#include "moodbar.h"
 #include "collectiondb.h"
 #include "playlist.h"
 #include "playlistitem.h"
@@ -46,6 +48,9 @@ TrackToolTip::TrackToolTip(): m_haspos( false )
              this, SLOT( slotUpdate( const QString& ) ) );
     connect( CollectionDB::instance(), SIGNAL( ratingChanged( const QString&, int ) ),
              this, SLOT( slotUpdate( const QString& ) ) );
+    // Only connect this once -- m_tags exists for the lifetime of this instance
+    connect( &m_tags.moodbar(), SIGNAL( jobEvent( int ) ),
+             SLOT( slotUpdate() ) );
     clear();
 }
 
@@ -66,6 +71,9 @@ void TrackToolTip::removeFromWidget( QWidget *widget )
         m_widgets.removeRef( widget );
     }
 }
+
+
+#define MOODBAR_WIDTH 150
 
 void TrackToolTip::setTrack( const MetaBundle &tags, bool force )
 {
@@ -113,6 +121,52 @@ void TrackToolTip::setTrack( const MetaBundle &tags, bool force )
                     right << s;
                     left << playlist->columnText( column );
                 }
+            }
+            else if( column == PlaylistItem::Mood )
+            {
+                if( !AmarokConfig::showMoodbar() )
+                  continue;
+
+                switch( tags.moodbar_const().state() )
+                  {
+                  case Moodbar::JobQueued:
+                  case Moodbar::JobRunning:
+                    right << tags.prettyText( column );
+                    left  << playlist->columnText( column );
+                    break;
+
+                  case Moodbar::Loaded:
+                    {
+                      // Ok so this is a hack, but it works quite well.
+                      // Save an image in the user's home directory just so
+                      // it can be referenced in an <img> tag.  Store which
+                      // moodbar is saved in m_moodbarURL so we don't have
+                      // to re-save it every second.
+                      left << playlist->columnText( column );
+                      QString filename = ::locateLocal( "data", 
+                                                        "amarok/mood_tooltip.png" );
+
+                      if( m_moodbarURL != tags.url().url() )
+                        {
+                          QPixmap moodbar 
+                            = const_cast<MetaBundle&>( tags ).moodbar().draw( 
+                                  MOODBAR_WIDTH,
+                                  QFontMetrics( QToolTip::font() ).ascent() );
+                          moodbar.save( filename, "PNG", 100 );
+                          m_moodbarURL = tags.url().url();
+                        }
+
+                      right << QString( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
+                          .arg( filename )
+                          .arg( QFontMetrics( QToolTip::font() ).height() )
+                          .arg( MOODBAR_WIDTH );
+                    }
+                    break;
+
+                  default:
+                    // no tag
+                    break;
+                  }
             }
             else if( column == PlaylistItem::PlayCount )
             {

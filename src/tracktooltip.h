@@ -57,6 +57,7 @@ class TrackToolTip: public QObject, public amaroK::ToolTipClient
     QString    m_cover;
     QString    m_tooltip;
     bool       m_haspos;
+    QString    m_moodbarURL;
 };
 
 #endif
