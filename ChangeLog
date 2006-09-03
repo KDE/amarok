@@ -22,7 +22,8 @@ VERSION 1.4.3:
     * Smart Playlists only load media from currently mounted devices.
 
   BUGFIXES:
-    * Cover images were not displayed in some cases (BR 133174)
+    * User added streams were not editable once saved. (BR 133483)
+    * Cover images were not displayed in some cases. (BR 133174)
     * Collection scanner would only restart a maximum of 2 times instead of
       20. (fixed in SVN revision 578922)
     * MTP mediadevice support would not compile against libmtp versions >=
