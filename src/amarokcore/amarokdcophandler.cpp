@@ -6,6 +6,7 @@
                           (C) 2004 Christian Muehlhaeuser
                           (C) 2005 Ian Monroe
                           (C) 2005 Seb Ruiz
+                          (C) 2006 Alexandre Oliveira
    email                : berkus@users.sf.net
 ***************************************************************************/
 
@@ -152,7 +153,7 @@ namespace amaroK
     {
         return EngineController::engine()->position() / 1000;
     }
-    
+
     int DcopPlayerHandler::trackCurrentTimeMs()
     {
         return EngineController::engine()->position();
@@ -913,6 +914,16 @@ namespace amaroK
             }
         }
         return stringList;
+    }
+
+    QString DcopScriptHandler::proxyForUrl(const QString& url)
+    {
+        return amaroK::proxyForUrl( url );
+    }
+
+    QString DcopScriptHandler::proxyForProtocol(const QString& protocol)
+    {
+        return amaroK::proxyForProtocol( protocol );
     }
 
 /////////////////////////////////////////////////////////////////////////////////////

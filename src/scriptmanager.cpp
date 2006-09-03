@@ -1,6 +1,8 @@
 /***************************************************************************
  *   Copyright (C) 2004-2006 by Mark Kretschmann <markey@web.de>           *
  *                      2005 by Seb Ruiz <me@sebruiz.net>                  *
+ *                      2006 by Alexandre Oliveira <aleprj@gmail.com>      *
+ *                      2006 by Martin Ellis <martin.ellis@kdemail.net>    *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -51,6 +53,7 @@
 #include <kmessagebox.h>
 #include <kpopupmenu.h>
 #include <kprocio.h>
+#include <kprotocolmanager.h>
 #include <kpushbutton.h>
 #include <krun.h>
 #include <kstandarddirs.h>
@@ -76,6 +79,27 @@ namespace amaroK {
     * to latin1, while the scanner uses UTF-8.
     */
     ProcIO::ProcIO() : KProcIO( QTextCodec::codecForName( "UTF-8" ) ) {}
+
+    QString
+    proxyForUrl(const QString& url)
+    {
+        KURL kurl( url );
+
+        QString proxy;
+
+        if ( KProtocolManager::useProxy() ) {
+            KProtocolManager::slaveProtocol ( kurl, proxy );
+        }
+
+        return proxy;
+    }
+
+    QString
+    proxyForProtocol(const QString& protocol)
+    {
+        return KProtocolManager::proxyFor ( protocol );
+    }
+
 
 }
 

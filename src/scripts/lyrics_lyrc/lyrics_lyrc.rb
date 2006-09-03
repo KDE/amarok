@@ -103,16 +103,18 @@ end
 
 
 def fetchLyrics( artist, title, url )
-    proxy_host = nil
-    proxy_port = nil
-    if ( ENV['http_proxy'] && proxy_uri = URI.parse( ENV['http_proxy'] ) )
-        proxy_host = proxy_uri.host
-        proxy_port = proxy_uri.port
-    end
 
     host = "lyrc.com.ar"
     path = url.empty? ? "/en/tema1en.php?artist=#{artist}&songname=#{title}" : "/en/#{url}"
     @page_url = "http://" + host + path
+
+    proxy_host = nil
+    proxy_port = nil
+    proxy = `dcop amarok script proxyForProtocol http`
+    if ( proxy && proxy_uri = URI.parse( proxy ) )
+        proxy_host = proxy_uri.host
+        proxy_port = proxy_uri.port
+    end
 
     h = Net::HTTP.new( host, 80, proxy_host, proxy_port )
     response = h.get( path )

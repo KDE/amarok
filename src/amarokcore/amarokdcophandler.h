@@ -213,6 +213,8 @@ class DcopScriptHandler : public QObject, virtual public AmarokScriptInterface
       virtual void removeCustomMenuItem(QString submenu, QString itemTitle );
       virtual QString readConfig(const QString& key);
       virtual QStringList readListConfig(const QString& key);
+      virtual QString proxyForUrl(const QString& url);
+      virtual QString proxyForProtocol(const QString& protocol);
 };
 
 class DcopDevicesHandler : public QObject, virtual public AmarokDevicesInterface

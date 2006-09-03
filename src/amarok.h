@@ -221,6 +221,21 @@ namespace amaroK
     LIBAMAROK_EXPORT QString escapeHTMLAttr( const QString &s );
     LIBAMAROK_EXPORT QString unescapeHTMLAttr( const QString &s );
 
+    /* defined in scriptmanager.cpp */
+    /**
+     * Returns the proxy that should be used for a given URL.
+     * @param url the url.
+     * @return The url of the proxy, or a empty string if no proxy should be used.
+     */
+    QString proxyForUrl(const QString& url);
+
+    /**
+     * Returns the proxy that should be used for a given protocol.
+     * @param protocol the protocol.
+     * @return The url of the proxy, or a empty string if no proxy should be used.
+     */
+    QString proxyForProtocol(const QString& protocol);
+
     ////////////////////////////////////////////////////////////////////////////////
     // class amaroK::ProcIO
     ////////////////////////////////////////////////////////////////////////////////
