@@ -16,6 +16,7 @@
 */
 
 #include "amarok.h"
+#include "app.h"
 #include "amarokconfig.h"
 #include "debug.h"
 #include "metabundle.h"
@@ -50,7 +51,10 @@ TrackToolTip::TrackToolTip(): m_haspos( false )
              this, SLOT( slotUpdate( const QString& ) ) );
     // Only connect this once -- m_tags exists for the lifetime of this instance
     connect( &m_tags.moodbar(), SIGNAL( jobEvent( int ) ),
-             SLOT( slotUpdate() ) );
+             SLOT( slotMoodbarEvent() ) );
+    // This is so the moodbar can be re-rendered when AlterMood is changed
+    connect( App::instance(), SIGNAL( moodbarPrefs( bool, bool, int, bool ) ),
+             SLOT( slotMoodbarEvent() ) );
     clear();
 }
 
@@ -145,21 +149,19 @@ void TrackToolTip::setTrack( const MetaBundle &tags, bool force )
                       left << playlist->columnText( column );
                       QString filename = ::locateLocal( "data", 
                                                         "amarok/mood_tooltip.png" );
+                      int height = QFontMetrics( QToolTip::font() ).height() - 2;
 
                       if( m_moodbarURL != tags.url().url() )
                         {
                           QPixmap moodbar 
                             = const_cast<MetaBundle&>( tags ).moodbar().draw( 
-                                  MOODBAR_WIDTH,
-                                  QFontMetrics( QToolTip::font() ).ascent() );
+                                  MOODBAR_WIDTH, height );
                           moodbar.save( filename, "PNG", 100 );
                           m_moodbarURL = tags.url().url();
                         }
 
                       right << QString( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
-                          .arg( filename )
-                          .arg( QFontMetrics( QToolTip::font() ).height() )
-                          .arg( MOODBAR_WIDTH );
+                          .arg( filename ).arg( height ).arg( MOODBAR_WIDTH );
                     }
                     break;
 
@@ -309,6 +311,19 @@ void TrackToolTip::slotUpdate( const QString &url )
     if( url.isNull() || url == m_tags.url().path() )
         setTrack( m_tags, true );
 }
+
+void 
+TrackToolTip::slotMoodbarEvent( void )
+{
+  // Clear this so the moodbar gets redrawn
+  m_moodbarURL = QString::null;
+  // Reset the moodbar in case AlterMood has changed
+  m_tags.moodbar().reset();
+  m_tags.moodbar().load();
+
+  setTrack( m_tags, true );
+}
+
 
 QString TrackToolTip::tooltip() const
 {
