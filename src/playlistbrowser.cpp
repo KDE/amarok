@@ -1933,7 +1933,6 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
             list.append( item->url()      );
 
         Playlist::instance()->insertMedia( list, Playlist::DirectPlay );
-        item->setNew( false );
         item->setListened();
 
         #undef item

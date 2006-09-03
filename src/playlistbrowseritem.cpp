@@ -1196,6 +1196,20 @@ PodcastChannel::configure()
 }
 
 void
+PodcastChannel::checkAndSetNew()
+{
+    for( QListViewItem *child = firstChild(); child; child = child->nextSibling() )
+    {
+        if( static_cast<PodcastEpisode*>(child)->isNew() )
+        {
+            setNew( true );
+            return;
+        }
+    }
+    setNew( false );
+}
+
+void
 PodcastChannel::setListened( const bool n /*true*/ )
 {
     QListViewItem *child = firstChild();
@@ -2196,14 +2210,16 @@ void
 PodcastEpisode::setNew( const bool &n )
 {
     if( n == isNew() ) return;
+
     m_bundle.setNew( n );
     updatePixmap();
     CollectionDB::instance()->updatePodcastEpisode( dBId(), m_bundle );
-}
 
-void PodcastEpisode::setListened( const bool &n )
-{
-    setNew( !n );
+    // if we mark an item as listened, we might need to update the parent
+    if( n == true )
+        static_cast<PodcastChannel*>(m_parent)->setNew( true );
+    else
+        static_cast<PodcastChannel*>(m_parent)->checkAndSetNew();
 }
 
 void

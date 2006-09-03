@@ -22,6 +22,8 @@ VERSION 1.4.3:
     * Smart Playlists only load media from currently mounted devices.
 
   BUGFIXES:
+    * When marking podcast episodes as listened, update the channel icon if
+      necessary. (BR 133497)
     * Don't always mark podcast channel icon as "listened" on rescan if. 
       (BR 133495)
     * User added streams were not editable once saved. (BR 133483)

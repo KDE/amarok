@@ -264,7 +264,7 @@ class PodcastEpisode : public QObject, public PlaylistBrowserEntry
         const bool isNew()         const { return m_bundle.isNew(); }
 
         void setNew( const bool &n = true );
-        void setListened( const bool &n = true );
+        void setListened( const bool &n = true ) { setNew( !n ); }
 
         // for convenience
         const int     dBId()        { return m_bundle.dBId(); }
@@ -340,6 +340,9 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
 
         void setNew( const bool n = true );
         bool hasNew() { return m_new; }
+        // iterate over all children and explicitly check if there are any episodes which have not been listened
+        // to.  Mark the channel as new/listened after doing this.
+        void checkAndSetNew();
 
         void setListened( const bool n = true ); // over rides each child so it has been listened
 
