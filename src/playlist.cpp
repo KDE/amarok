@@ -297,7 +297,7 @@ Playlist::Playlist( QWidget *parent )
     setColumnWidth( PlaylistItem::Album,  100 );
     setColumnWidth( PlaylistItem::Length, 80 );
     if( AmarokConfig::showMoodbar() )
-        setColumnWidth( PlaylistItem::Mood, 40 );
+        setColumnWidth( PlaylistItem::Mood, 120 );
     if( AmarokConfig::useRatings() )
         setColumnWidth( PlaylistItem::Rating, PlaylistItem::ratingColumnWidth() );
 
@@ -3544,7 +3544,7 @@ Playlist::adjustColumn( int n )
     if( n == PlaylistItem::Rating )
         setColumnWidth( n, PlaylistItem::ratingColumnWidth() );
     else if( n == PlaylistItem::Mood )
-        setColumnWidth( n, 40 );
+        setColumnWidth( n, 120 );
     else
         KListView::adjustColumn( n );
 }
