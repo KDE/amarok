@@ -183,7 +183,7 @@ public:
     /** Returns a string representation of the tag at \p column, in a format suitable for internal purposes.
         For example, for a track 3:24 long, it'll return "204" (seconds).
         This should not be used for displaying the tag to the user. */
-    QString exactText( int column ) const;
+    QString exactText( int column, bool ensureCached = false ) const;
 
     /** Sets the tag at \p column from a string in the same format as returned by exactText(). */
     void setExactText( int column, const QString &text );
@@ -238,12 +238,13 @@ public: //accessors
     int     length()      const;
     int     bitrate()     const;
     int     sampleRate()  const;
-    int     score()       const;
-    int     rating()      const; //returns rating * 2, to accommodate .5 ratings
-    int     playCount()   const;
+    int     score( bool ensureCached = false )      const;
+    int     rating( bool ensureCached = false )     const; //returns rating * 2, to accommodate .5 ratings
+    int     playCount( bool ensureCached = false )  const;
+    uint    lastPlay( bool ensureCached = false )   const;
+
     Moodbar       &moodbar();
     const Moodbar &moodbar_const() const;
-    uint    lastPlay()    const;
 
     int     filesize()    const;
 

@@ -3130,11 +3130,13 @@ Playlist::saveM3U( const QString &path, bool relative ) const
 void
 Playlist::saveXML( const QString &path )
 {
-    QFile file( path );
+    DEBUG_BLOCK
 
+    QFile file( path );
     if( !file.open( IO_WriteOnly ) ) return;
 
-    QTextStream stream( &file );
+    QString buffer;
+    QTextStream stream( &buffer, IO_WriteOnly );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 
@@ -3165,6 +3167,9 @@ Playlist::saveXML( const QString &path )
     }
 
     stream << "</playlist>\n";
+
+    QTextStream fstream( &file ); 
+    fstream << buffer;
 }
 
 void

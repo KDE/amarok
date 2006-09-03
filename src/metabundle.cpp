@@ -645,32 +645,32 @@ void MetaBundle::updateFilesize()
     m_filesize = QFile( path ).size();
 }
 
-int MetaBundle::score() const
+int MetaBundle::score( bool ensureCached ) const
 {
-    if( m_score == Undetermined )
+    if( m_score == Undetermined && !ensureCached )
         //const_cast is ugly, but other option was mutable, and then we lose const correctness checking
         //everywhere else
         *const_cast<int*>(&m_score) = CollectionDB::instance()->getSongPercentage( m_url.path() );
     return m_score;
 }
 
-int MetaBundle::rating() const
+int MetaBundle::rating( bool ensureCached ) const
 {
-    if( m_rating == Undetermined )
+    if( m_rating == Undetermined && !ensureCached )
         *const_cast<int*>(&m_rating) = CollectionDB::instance()->getSongRating( m_url.path() );
     return m_rating;
 }
 
-int MetaBundle::playCount() const
+int MetaBundle::playCount( bool ensureCached ) const
 {
-    if( m_playCount == Undetermined )
+    if( m_playCount == Undetermined && !ensureCached )
         *const_cast<int*>(&m_playCount) = CollectionDB::instance()->getPlayCount( m_url.path() );
     return m_playCount;
 }
 
-uint MetaBundle::lastPlay() const
+uint MetaBundle::lastPlay( bool ensureCached ) const
 {
-    if( (int)m_lastPlay == abs(Undetermined) )
+    if( (int)m_lastPlay == abs(Undetermined) && !ensureCached )
         *const_cast<uint*>(&m_lastPlay) = CollectionDB::instance()->getLastPlay( m_url.path() ).toTime_t();
     return m_lastPlay;
 }
@@ -754,7 +754,7 @@ void MetaBundle::setExactText( int column, const QString &newText )
    }
 }
 
-QString MetaBundle::exactText( int column ) const
+QString MetaBundle::exactText( int column, bool ensureCached ) const
 {
     switch( column )
     {
@@ -774,10 +774,10 @@ QString MetaBundle::exactText( int column ) const
         case Length:     return QString::number( length() );
         case Bitrate:    return QString::number( bitrate() );
         case SampleRate: return QString::number( sampleRate() );
-        case Score:      return QString::number( score() );
-        case Rating:     return QString::number( rating() );
-        case PlayCount:  return QString::number( playCount() );
-        case LastPlayed: return QString::number( lastPlay() );
+        case Score:      return QString::number( score( ensureCached ) );
+        case Rating:     return QString::number( rating( ensureCached ) );
+        case PlayCount:  return QString::number( playCount( ensureCached ) );
+        case LastPlayed: return QString::number( lastPlay( ensureCached ) );
         case Filesize:   return QString::number( filesize() );
         case Mood:       return QString::null;
         default: warning() << "Tried to get the text of a nonexistent column! [" << column << endl;
@@ -1440,7 +1440,7 @@ bool MetaBundle::save( QTextStream &stream, const QStringList &attributes, int i
     {
         QDomElement tag = QDomSucksItNeedsADocument.createElement( exactColumnName( i ) );
         //debug() << "exactColumName(i) = " << exactColumnName( i ) << endl;
-        QDomText text = QDomSucksItNeedsADocument.createTextNode( exactText( i ) );
+        QDomText text = QDomSucksItNeedsADocument.createTextNode( exactText( i, true ) );
         //debug() << "exactText(i) = " << exactText( i ) << endl;
         tag.appendChild( text );
 
