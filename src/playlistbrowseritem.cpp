@@ -1737,7 +1737,10 @@ void
 PodcastChannel::stopAnimation()
 {
     m_animationTimer.stop();
-    setPixmap( 0, SmallIcon( amaroK::icon( "podcast" ) ) );
+
+    hasNew() ?
+        setPixmap( 0, SmallIcon( amaroK::icon( "podcast2" ) ) ):
+        setPixmap( 0, SmallIcon( amaroK::icon( "podcast"  ) ) );
 }
 
 void
