@@ -131,6 +131,8 @@ void TrackToolTip::setTrack( const MetaBundle &tags, bool force )
                 if( !AmarokConfig::showMoodbar() )
                   continue;
 
+                m_tags.moodbar().load();
+
                 switch( tags.moodbar_const().state() )
                   {
                   case Moodbar::JobQueued:
@@ -319,7 +321,6 @@ TrackToolTip::slotMoodbarEvent( void )
   m_moodbarURL = QString::null;
   // Reset the moodbar in case AlterMood has changed
   m_tags.moodbar().reset();
-  m_tags.moodbar().load();
 
   setTrack( m_tags, true );
 }
