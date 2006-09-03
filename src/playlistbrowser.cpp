@@ -2694,7 +2694,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 addSelectedToPlaylist();
                 break;
             case EDIT:
-                editStreamURL( item, item->isKept() ); //only editable if we keep it
+                editStreamURL( item, !item->isKept() ); //only editable if we keep it
                 break;
             case REMOVE:
                 removeSelectedItems();
