@@ -874,12 +874,12 @@ Playlist::setDynamicHistory( bool enable /*false*/ )
     for( MyIterator it( this, MyIterator::All ) ; *it ; ++it )
     {
         if( *it == m_currentTrack )          break;
-        if( !enable && !(*it)->isEnabled() ) break;
 
         //avoid repainting if we can.
-        if( (*it)->isEnabled() != enable )
+        debug() << "(*it)->isEnabled(): " << (*it)->isEnabled() << ", !enable: " << !enable << endl;
+        if( (*it)->isEnabled() != !enable )
         {
-            (*it)->setEnabled( enable );
+            (*it)->setEnabled( !enable );
             (*it)->update();
         }
     }
@@ -3265,8 +3265,9 @@ Playlist::setDynamicMode( DynamicMode *mode ) //SLOT
             adjustDynamicPrevious( mode->previousCount(), true );
         if( prev->upcomingCount() != mode->upcomingCount() )
             adjustDynamicUpcoming( true, mode->appendType() );
-        setDynamicHistory( true );
     }
+    else if( !prev )
+        setDynamicHistory( true ); // disable items!
     else if( !mode ) // enable items again, dynamic mode is no more
         setDynamicHistory( false );
 }
