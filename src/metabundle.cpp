@@ -490,8 +490,6 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
     if( !isFile() )
         return;
 
-    setUniqueId( readUniqueId() );
-
     const QString path = url().path();
 
     TagLib::FileRef fileref;
@@ -500,6 +498,8 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
 
     if( !fileref.isNull() )
     {
+        setUniqueId( readUniqueId() );
+        
         tag = fileref.tag();
 
         if ( tag )
