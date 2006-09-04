@@ -50,7 +50,7 @@ class PlaylistBrowser : public QVBox
     friend class PodcastChannel;  //for changing podcast timer list
 
     public:
-        enum AddMode  { PLAYLIST, STREAM, SMARTPLAYLIST, PODCAST, ADDDYNAMIC };
+        enum AddMode  { PLAYLIST, PLAYLIST_IMPORT, STREAM, SMARTPLAYLIST, PODCAST, ADDDYNAMIC };
 
         ~PlaylistBrowser();
 
@@ -220,7 +220,7 @@ class PlaylistBrowser : public QVBox
 
         bool                 m_removeDirt;
 
-	QSplitter *m_splitter;
+        QSplitter *m_splitter;
 };
 
 

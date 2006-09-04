@@ -94,6 +94,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     KPopupMenu *addMenu  = addMenuButton->popupMenu();
     addMenu->insertItem( i18n("Playlist..."), PLAYLIST );
+    addMenu->insertItem( i18n("Playlist (Import)..."), PLAYLIST_IMPORT );
     addMenu->insertItem( i18n("Smart Playlist..."), SMARTPLAYLIST );
     addMenu->insertItem( i18n("Dynamic Playlist..."), ADDDYNAMIC);
     addMenu->insertItem( i18n("Radio Stream..."), STREAM );
@@ -2498,6 +2499,10 @@ void PlaylistBrowser::slotAddMenu( int id ) //SLOT
     switch( id )
     {
         case PLAYLIST:
+            createPlaylist( 0/*base cat*/, false/*make empty*/ );
+            break;
+
+        case PLAYLIST_IMPORT:
             openPlaylist();
             break;
 
@@ -2846,7 +2851,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     else if( isCategory( item ) )
     {
         #define item static_cast<PlaylistCategory*>(item)
-        enum Actions { RENAME, REMOVE, CREATE, PLAYLIST, SMART, STREAM, DYNAMIC,
+        enum Actions { RENAME, REMOVE, CREATE, PLAYLIST, PLAYLIST_IMPORT, SMART, STREAM, DYNAMIC,
                        LASTFM, LASTFMCUSTOM, PODCAST, REFRESH, CONFIG, INTERVAL };
 
         QListViewItem *parentCat = item;
@@ -2863,7 +2868,10 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         }
 
         if( parentCat == static_cast<QListViewItem*>(m_playlistCategory) )
-            menu.insertItem( SmallIconSet(amaroK::icon( "add_playlist" )), i18n("Import Playlist..."), PLAYLIST );
+        {
+            menu.insertItem( SmallIconSet(amaroK::icon( "add_playlist" )), i18n("Create Playlist..."), PLAYLIST );
+            menu.insertItem( SmallIconSet(amaroK::icon( "add_playlist" )), i18n("Import Playlist..."), PLAYLIST_IMPORT );
+        }
 
         else if( parentCat == static_cast<QListViewItem*>(m_smartCategory) )
             menu.insertItem( SmallIconSet(amaroK::icon( "add_playlist" )), i18n("New Smart Playlist..."), SMART );
@@ -2909,6 +2917,10 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 break;
 
             case PLAYLIST:
+                createPlaylist( item, false );
+                break;
+
+            case PLAYLIST_IMPORT:
                 openPlaylist( item );
                 break;
 

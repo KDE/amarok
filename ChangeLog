@@ -2,6 +2,16 @@ Amarok ChangeLog
 ================
 (C) 2002-2006 the Amarok authors.
 
+VERSION 1.4.4
+  FEATURES:
+    * Allow the creation of empty playlists in the playlist browser. Available
+      either from the Add button in the toolbar or the context menu of a
+      playlist folder. (BR 133543)
+
+  CHANGES:
+
+  BUGFIXES:
+
 
 VERSION 1.4.3:
   FEATURES:
