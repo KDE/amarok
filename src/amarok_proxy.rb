@@ -19,6 +19,8 @@ require "uri"
 $stdout.sync = true
 
 class Proxy
+  ENDL = "\r\n"
+
   def initialize( port, remote_url, engine )
     @engine = engine
 
@@ -146,13 +148,14 @@ class LastFM < Proxy
 # Stream consists of pure MP3 files concatenated, with the string "SYNC" in between, which
 # marks a track change. The proxy notifies Amarok on track change.
   def get_request( remote_uri )
-    "GET #{remote_uri.path || '/'}?#{remote_uri.query} HTTP/1.1\r\n\r\n"
+    get =  "GET #{remote_uri.path || '/'}?#{remote_uri.query} HTTP/1.1" + ENDL
+    get += "Host: #{remote_uri.host}:#{remote_uri.port}" + ENDL + ENDL
+    myputs( "\n\n\n\n" + get )
+    get
   end
 end
 
 class DaapProxy < Proxy
-  ENDL = "\r\n"
-
   def initialize( port, remote_url, engine, hash, request_id )
     @hash = hash
     @requestId = request_id
