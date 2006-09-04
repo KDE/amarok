@@ -2171,7 +2171,7 @@ void CurrentTrackJob::showRelatedArtists( const QString &artist, const QStringLi
         bool isInCollection = !CollectionDB::instance()->albumListOfArtist( relArtists[i] ).isEmpty();
         m_HTMLSource.append(
                 ( isInCollection ? "" : "<i>\n" )
-                + QString( "<a href='artist:" ) + escapeHTMLAttr( relArtists[i] ) + "'>\n" + escapeHTML( relArtists[i] ).replace( " ", "&nbsp;" ) + "</a>\n"
+                + QString( "<a href='artist:" ) + escapeHTMLAttr( relArtists[i] ) + "'>\n" + escapeHTML( relArtists[i] ) + "</a>\n"
                 + ( isInCollection ? "" : "</i>\n" )
                 );
         if( i != relArtists.count()-1 )
