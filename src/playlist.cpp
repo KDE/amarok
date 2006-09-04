@@ -876,7 +876,6 @@ Playlist::setDynamicHistory( bool enable /*false*/ )
         if( *it == m_currentTrack )          break;
 
         //avoid repainting if we can.
-        debug() << "(*it)->isEnabled(): " << (*it)->isEnabled() << ", !enable: " << !enable << endl;
         if( (*it)->isEnabled() != !enable )
         {
             (*it)->setEnabled( !enable );
