@@ -37,8 +37,6 @@ VERSION 1.4.4:
     * Show context menu on right-click in empty area of media device
       browser. (BR 127154)
     * Sort numeric columns in flat collection view numerically. (BR 130667)
-    * Dynamic Collection broke flat collection view when the Filename column
-      was added (BR 132874)
 
 
 VERSION 1.4.3:
@@ -55,6 +53,8 @@ VERSION 1.4.3:
     * MTP mediadevice support would not compile against libmtp versions >=
       0.0.12. (fixed in SVN revision 576121)
     * AudioCD playback would stutter and sometimes freeze Amarok. (BR 133015)
+    * Dynamic Collection broke flat collection view when the Filename column
+      was added (BR 132874)
 
 
 VERSION 1.4.2:
