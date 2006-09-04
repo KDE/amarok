@@ -110,8 +110,10 @@ def fetchLyrics( artist, title, url )
 
     proxy_host = nil
     proxy_port = nil
-    proxy = `dcop amarok script proxyForProtocol http`
-    if ( proxy && proxy_uri = URI.parse( proxy ) )
+    if ( @proxy == nil )
+        @proxy = `dcop amarok script proxyForProtocol http`
+    end
+    if ( proxy_uri = URI.parse( @proxy ) )
         proxy_host = proxy_uri.host
         proxy_port = proxy_uri.port
     end
