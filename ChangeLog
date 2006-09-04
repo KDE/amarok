@@ -2,7 +2,8 @@ Amarok ChangeLog
 ================
 (C) 2002-2006 the Amarok authors.
 
-VERSION 1.4.3:
+
+VERSION 1.4.4:
   FEATURES:
     * New DCOP: player trackCurrentTimeMs, returns the current track position
       in milliseconds.
@@ -27,17 +28,9 @@ VERSION 1.4.3:
     * Don't always mark podcast channel icon as "listened" on rescan if. 
       (BR 133495)
     * User added streams were not editable once saved. (BR 133483)
-    * Cover images were not displayed in some cases. (BR 133174)
-    * Collection scanner would only restart a maximum of 2 times instead of
-      20. (fixed in SVN revision 578922)
-    * MTP mediadevice support would not compile against libmtp versions >=
-    0.0.12. (fixed in SVN revision 576121)
-    * AudioCD playback would stutter and sometimes freeze Amarok. (BR 133015)
     * DAAP client shows connection errors to the user and no longer says
       "Loading" perpetually. After a failed connection, the user can now
       try again.
-    * Fixed bug which prevented Amarok from creating the collection database
-      in rare circumstances using SQLite. (BR 133072)
     * Don't empty media device transfer queue when canceling a transfer.
     * Ctrl-C for copying urls from the tag editor would not work. (BR 123327)
     * Delete covers from the filesystem when requested.
@@ -46,6 +39,22 @@ VERSION 1.4.3:
     * Sort numeric columns in flat collection view numerically. (BR 130667)
     * Dynamic Collection broke flat collection view when the Filename column
       was added (BR 132874)
+
+
+VERSION 1.4.3:
+  CHANGES:
+    * Performance with big playlists has been improved by a magnitude. This
+      also makes application shutdown faster.
+
+  BUGFIXES:
+    * Cover images were not displayed in some cases. (BR 133174)
+    * Fixed bug which prevented Amarok from creating the collection database
+      in rare circumstances using SQLite. (BR 133072)
+    * Collection scanner would only restart a maximum of 2 times instead of
+      20. (fixed in SVN revision 578922)
+    * MTP mediadevice support would not compile against libmtp versions >=
+    0.0.12. (fixed in SVN revision 576121)
+    * AudioCD playback would stutter and sometimes freeze Amarok. (BR 133015)
 
 
 VERSION 1.4.2:
