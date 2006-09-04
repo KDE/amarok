@@ -15,6 +15,8 @@
 #ifndef AMAROK_OSD_H
 #define AMAROK_OSD_H
 
+#include "metabundle.h"
+
 #include <kpixmap.h>
 #include <qimage.h>
 #include <qvaluelist.h>
@@ -59,6 +61,9 @@ class OSDWidget : public QWidget
         void setDrawShadow( const bool b ) { m_drawShadow = b; }
         void setTranslucency( const bool b ) { m_translucency = b; }
         void setRating( const short rating ) { m_rating = rating; }
+        void setMoodbar( void ) { m_moodbarBundle = MetaBundle(); }
+        void setMoodbar( const MetaBundle &bundle ) 
+          { m_moodbarBundle = bundle;  m_moodbarBundle.moodbar().load(); }
 
     protected:
         /** determine new size and position */
@@ -70,6 +75,8 @@ class OSDWidget : public QWidget
         /** reimplemented */
         virtual void mousePressEvent( QMouseEvent* );
         virtual bool event( QEvent* );
+
+        bool useMoodbar( void );
 
         /** distance from screen edge */
         static const int MARGIN = 15;
@@ -84,6 +91,8 @@ class OSDWidget : public QWidget
         short       m_rating;
         QString     m_text;
         QImage      m_cover;
+        // need a whole MetaBundle to draw the moodbar on the fly
+        MetaBundle  m_moodbarBundle;
         QPixmap     m_scaledCover;
         KPixmap     m_screenshot;
         QPixmap     m_buffer;
@@ -135,8 +144,6 @@ private:
 };
 
 
-
-class MetaBundle;
 
 namespace amaroK
 {

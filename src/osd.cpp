@@ -38,6 +38,10 @@ namespace ShadowEngine
     QImage makeShadow( const QPixmap &textPixmap, const QColor &bgColor );
 }
 
+
+#define MOODBAR_HEIGHT 20
+
+
 OSDWidget::OSDWidget( QWidget *parent, const char *name )
         : QWidget( parent, name, WType_TopLevel | WNoAutoErase | WStyle_Customize | WX11BypassWM | WStyle_StaysOnTop )
         , m_duration( 2000 )
@@ -142,9 +146,6 @@ OSDWidget::determineMetrics( const uint M )
     // remove consecutive line breaks
     m_text.replace( QRegExp("\n+"), "\n" );
 
-    if( m_rating ) // we add another 3 lines of spacing to show the stars
-        m_text += "\n\n\n";
-
     // The osd cannot be larger than the screen
     QRect rect = fontMetrics().boundingRect( 0, 0,
             max.width() - image.width(), max.height(),
@@ -156,7 +157,11 @@ OSDWidget::determineMetrics( const uint M )
         star.load( locate( "data", "amarok/images/star.png" ) );
         if( rect.width() < star.width() * 5 )
             rect.setWidth( star.width() * 5 ); //changes right edge position
+        rect.setHeight( rect.height() + star.height() + M ); //changes bottom edge pos
     }
+
+    if( useMoodbar() )
+      rect.setHeight( rect.height() + MOODBAR_HEIGHT + M );
 
     if( !m_cover.isNull() )
     {
@@ -301,14 +306,31 @@ OSDWidget::render( const uint M, const QSize &size )
         rect.rLeft() += m_scaledCover.width() + M;
     }
 
+    KPixmap star;
+    star.load( locate( "data", "amarok/images/star.png" ) );
+    int graphicsHeight = 0;
+
+    if( useMoodbar() )
+    {
+        QPixmap moodbar 
+          = m_moodbarBundle.moodbar().draw( rect.width(), MOODBAR_HEIGHT );
+        QRect r( rect );
+        r.setTop( rect.bottom() - moodbar.height()
+                  - (m_rating ? star.height() + M : 0) );
+        graphicsHeight += moodbar.height() + M;
+
+        p.drawPixmap( r.left(), r.top(), moodbar );
+        m_moodbarBundle = MetaBundle();
+    }
+
     if( m_rating > 1 )
     {
-        KPixmap star;
-        star.load( locate( "data", "amarok/images/star.png" ) );
         QRect r( rect );
 
-        r.setLeft(( rect.left() + rect.width() / 2 ) - star.width() * m_rating / 4 ); //Align to center...
-        r.setTop( rect.top() + (rect.height()*5)/8 );
+        //Align to center...
+        r.setLeft(( rect.left() + rect.width() / 2 ) - star.width() * m_rating / 4 );
+        r.setTop( rect.bottom() - star.height() );
+        graphicsHeight += star.height() + M;
 
         if( m_rating % 2 )
         {
@@ -324,6 +346,8 @@ OSDWidget::render( const uint M, const QSize &size )
 
         m_rating = 0;
     }
+
+    rect.setBottom( rect.bottom() - graphicsHeight );
 
     if( m_drawShadow )
     {
@@ -386,6 +410,12 @@ OSDWidget::setScreen( int screen )
     m_screen = (screen >= n) ? n-1 : screen;
 }
 
+bool 
+OSDWidget::useMoodbar( void )
+{
+  return (m_moodbarBundle.moodbar().state() == Moodbar::Loaded  &&
+          AmarokConfig::showMoodbar() );   
+}
 
 //////  OSDPreviewWidget below /////////////////////
 
@@ -536,6 +566,7 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
                 QValueList<int>() << PlaylistItem::PlayCount  << PlaylistItem::Year   << PlaylistItem::Comment
                                   << PlaylistItem::Genre      << PlaylistItem::Length << PlaylistItem::Bitrate
                                   << PlaylistItem::LastPlayed << PlaylistItem::Score  << PlaylistItem::Filesize;
+            OSDWidget::setMoodbar();
             OSDWidget::setRating( 0 );
             for( int i = 0, n = Playlist::instance()->numVisibleColumns(); i < n; ++i )
             {
@@ -544,6 +575,8 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
                     availableTags << column;
                 if( column == PlaylistItem::Rating )
                     OSDWidget::setRating( bundle.rating() );
+                else if( column == PlaylistItem::Mood )
+                    OSDWidget::setMoodbar( bundle );
             }
 
             for( int n = availableTags.count(), i = 0; i < n; ++i )
@@ -573,6 +606,10 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
             if( osd.contains( "%rating" ) )
                 OSDWidget::setRating( AmarokConfig::useRatings() ? bundle.rating() : 0 );
             osd.replace( "%rating", "" );
+
+            if( osd.contains( "%moodbar" )  &&  AmarokConfig::showMoodbar() )
+                OSDWidget::setMoodbar( bundle );
+            osd.replace( "%moodbar", "" );
 
             text = osd.namedOptArgs( args );
 
