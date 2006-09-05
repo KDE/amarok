@@ -856,9 +856,13 @@ bool amaroK::genericEventHandler( QWidget *recipient, QEvent *e )
             //FIXME this isn't a good way to determine if there is a currentTrack, need playlist() function
             const bool b = EngineController::engine()->loaded();
 
-            popup.insertItem( i18n( "&Append to Playlist" ), Playlist::Append );
-            popup.insertItem( i18n( "Append && &Play" ), Playlist::DirectPlay | Playlist::Append );
-            if( b ) popup.insertItem( i18n( "&Queue Track" ), Playlist::Queue );
+            popup.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ),
+                              Playlist::Append );
+            popup.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "Append && &Play" ),
+                              Playlist::DirectPlay | Playlist::Append );
+            if( b )
+                popup.insertItem( SmallIconSet( amaroK::icon( "fast_forward" ) ), i18n( "&Queue Track" ),
+                              Playlist::Queue );
             popup.insertSeparator();
             popup.insertItem( i18n( "&Cancel" ), 0 );
 
@@ -1334,7 +1338,7 @@ namespace amaroK
 
     void setUseScores( bool use ) { App::instance()->setUseScores( use ); }
     void setUseRatings( bool use ) { App::instance()->setUseRatings( use ); }
-    void setMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic ) 
+    void setMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic )
     { App::instance()->setMoodbarPrefs( show, moodier, alter, withMusic ); }
     KIO::Job *trashFiles( const KURL::List &files ) { return App::instance()->trashFiles( files ); }
 }
