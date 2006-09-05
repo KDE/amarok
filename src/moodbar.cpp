@@ -277,6 +277,7 @@
 #include "app.h"
 #include "debug.h"
 #include "metabundle.h"
+#include "mountpointmanager.h"
 #include "statusbar.h"
 
 #include <qfile.h>
@@ -1262,26 +1263,42 @@ QString
 Moodbar::moodFilename( bool withMusic )
 {
     // No need to lock the object
-
-    QString path = m_bundle->url().path();
-    path.truncate(path.findRev('.'));
-
-    if (path.isEmpty())  // Weird...
-      return QString::null;
+  
+    QString path;
 
     if( withMusic )
       {
+        path = m_bundle->url().path();
+        path.truncate(path.findRev('.'));
+        
+        if (path.isEmpty())  // Weird...
+          return QString::null;
+
         path += ".mood";
         int slash = path.findRev('/') + 1;
         QString dir  = path.left(slash);
         QString file = path.right(path.length() - slash);
         path = dir + "." + file;
       }
+
     else
       {
-        path.replace('/', ',');
+        // The moodbar file is {device id},{relative path}.mood}
+        int deviceid = MountPointManager::instance()->getIdForUrl( m_bundle->url() );
+        KURL relativePath;
+        MountPointManager::instance()->getRelativePath( deviceid, 
+            m_bundle->url(), relativePath );
+        path = relativePath.path();
+        path.truncate(path.findRev('.'));
+        
+        if (path.isEmpty())  // Weird...
+          return QString::null;
+
+        path = QString::number( deviceid ) + "," 
+          + path.replace('/', ',') + ".mood";
+
         // Creates the path if necessary
-        path = ::locateLocal("data", "amarok/moods/" + path + ".mood");
+        path = ::locateLocal( "data", "amarok/moods/" + path );
       }
 
     return path;
