@@ -252,7 +252,7 @@
                 </sizepolicy>
             </property>
             <property name="text">
-                <string>Why not join the &lt;A href='http://www.last.fm:80/group/amaroK+users'&gt;Amarok last.fm group&lt;/A&gt; and share your musical tastes with other Amarok users?</string>
+                <string>Why not join the &lt;A href='http://www.last.fm:80/group/Amarok+Users'&gt;Amarok last.fm group&lt;/A&gt; and share your musical tastes with other Amarok users?</string>
             </property>
         </widget>
         <spacer>
