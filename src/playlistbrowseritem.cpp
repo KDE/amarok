@@ -1434,9 +1434,9 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     /// Podcast Channel information
     const bool isAtom = ( feedType == ATOM );
 
-    QString t = xml.namedItem( "title" ).toElement().text();
+    QString t = xml.namedItem( "title" ).toElement().text().remove("\n");
 
-    QString a = xml.namedItem( "author" ).toElement().text();
+    QString a = xml.namedItem( "author" ).toElement().text().remove("\n");
 
     setText( 0, t );
 
@@ -1908,7 +1908,7 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
       , m_onDisk( false )
 {
     const bool isAtom = ( feedType == ATOM );
-    QString title = xml.namedItem( "title" ).toElement().text();
+    QString title = xml.namedItem( "title" ).toElement().text().remove("\n");
     QString subtitle;
 
     QString description, author, date, guid, type;
@@ -1922,7 +1922,7 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
         for( QDomNode n = xml.firstChild(); !n.isNull(); n = n.nextSibling() )
         {
             if      ( n.nodeName() == "summary" )   description = n.toElement().text();
-            else if ( n.nodeName() == "author" )    author      = n.toElement().text();
+            else if ( n.nodeName() == "author" )    author      = n.toElement().text().remove("\n");
             else if ( n.nodeName() == "published" ) date        = n.toElement().text();
             else if ( n.nodeName() == "id" )        guid        = n.toElement().text();
             else if ( n.nodeName() == "link" )
@@ -1945,9 +1945,9 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
         if( subtitle.isEmpty() )
             subtitle = xml.namedItem( "itunes:subtitle" ).toElement().text();
 
-        author   = xml.namedItem( "author" ).toElement().text();
+        author   = xml.namedItem( "author" ).toElement().text().remove("\n");
         if( author.isEmpty() )
-            author = xml.namedItem( "itunes:author" ).toElement().text();
+            author = xml.namedItem( "itunes:author" ).toElement().text().remove("\n");
 
         date     = xml.namedItem( "pubDate" ).toElement().text();
         if( date.isEmpty() )

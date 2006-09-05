@@ -11,6 +11,8 @@ VERSION 1.4.4
   CHANGES:
 
   BUGFIXES:
+    * Some podcasts would insert line breaks in author/title information and
+      cause graphical errors. (BR 133591)
 
 
 VERSION 1.4.3:
