@@ -23,7 +23,7 @@
 
 static inline uint myMax( uint v1, uint v2 ) { return v1 > v2 ? v1 : v2; }
 
-namespace amaroK { extern KConfig *config( const QString& ); }
+namespace Amarok { extern KConfig *config( const QString& ); }
 
 
 BlockAnalyzer::BlockAnalyzer( QWidget *parent )
@@ -39,7 +39,7 @@ BlockAnalyzer::BlockAnalyzer( QWidget *parent )
         , m_fade_pos( 1 << 8, 50 ) //vector<uint>
         , m_fade_intensity( 1 << 8, 32 ) //vector<uint>
 {
-    changeTimeout( amaroK::config( "General" )->readNumEntry( "Timeout", 20 ) );
+    changeTimeout( Amarok::config( "General" )->readNumEntry( "Timeout", 20 ) );
 
     setMinimumSize( MIN_COLUMNS*(WIDTH+1) -1, MIN_ROWS*(HEIGHT+1) -1 ); //-1 is padding, no drawing takes place there
     setMaximumWidth( MAX_COLUMNS*(WIDTH+1) -1 );
@@ -51,7 +51,7 @@ BlockAnalyzer::BlockAnalyzer( QWidget *parent )
 
 BlockAnalyzer::~BlockAnalyzer()
 {
-    amaroK::config( "General" )->writeEntry( "Timeout", timeout() );
+    Amarok::config( "General" )->writeEntry( "Timeout", timeout() );
 }
 
 void
@@ -435,14 +435,14 @@ BlockAnalyzer::mousePressEvent( QMouseEvent *e )
 
         #if defined HAVE_XMMS || defined HAVE_LIBVISUAL
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet( amaroK::icon( "visualizations" ) ), i18n("&Visualizations"),
+        menu.insertItem( SmallIconSet( Amarok::icon( "visualizations" ) ), i18n("&Visualizations"),
             0 );
         #endif
 
         const int id = menu.exec( e->globalPos() );
 
         if( id == 0 )
-            amaroK::Menu::instance()->slotActivated( amaroK::Menu::ID_SHOW_VIS_SELECTOR );
+            Amarok::Menu::instance()->slotActivated( Amarok::Menu::ID_SHOW_VIS_SELECTOR );
         else if( id != -1 ) {
             changeTimeout( id );
             determineStep();

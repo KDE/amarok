@@ -23,7 +23,7 @@
 
 class QWidget;
 
-class TrackToolTip: public QObject, public amaroK::ToolTipClient
+class TrackToolTip: public QObject, public Amarok::ToolTipClient
 {
     Q_OBJECT
 

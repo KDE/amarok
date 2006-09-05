@@ -154,7 +154,7 @@ void HelixEngine::onBuffering(int pcnt)
 }
 
 
-amaroK::PluginConfig*
+Amarok::PluginConfig*
 HelixEngine::configure() const
 {
    debug() << "Starting HelixConfigDialog\n";
@@ -242,7 +242,7 @@ HelixEngine::init()
 
    if (!exists || PlayerControl::getError())
    {
-      KMessageBox::error( 0, i18n("The Helix Engine requires the RealPlayer(tm) or HelixPlayer libraries to be installed. Please make sure one is installed, and adjust the paths in \"amaroK Settings\" -> \"Engine\"") );
+      KMessageBox::error( 0, i18n("The Helix Engine requires the RealPlayer(tm) or HelixPlayer libraries to be installed. Please make sure one is installed, and adjust the paths in \"Amarok Settings\" -> \"Engine\"") );
       // we need to return true here so that the user has an oppportunity to change the directory
       //return false;
       return true;
@@ -541,7 +541,7 @@ HelixEngine::timerEvent( QTimerEvent * )
       if ( m_state == Engine::Playing && isPlaying(m_current?0:1) && PlayerControl::done(m_current?0:1) )
          hscope[m_current?0:1].m_lasttime = 0;
 
-      if (m_pfade[m_current?0:1].m_fadeactive && 
+      if (m_pfade[m_current?0:1].m_fadeactive &&
           PlayerControl::where(m_current?0:1) > m_pfade[m_current?0:1].m_startfadetime + (unsigned)m_xfadeLength)
          play_finished(m_current?0:1);
    }
@@ -580,7 +580,7 @@ HelixEngine::timerEvent( QTimerEvent * )
       {
          bndl.album = bndl.album.remove(0, 9);
          QStringList sl = QStringList::split('|', bndl.album);
-         for ( QStringList::Iterator it = sl.begin(); it != sl.end(); ++it ) 
+         for ( QStringList::Iterator it = sl.begin(); it != sl.end(); ++it )
          {
             if ((*it).startsWith("title="))
                 bndl.title = (*it).section('=', 1, 1);
@@ -755,7 +755,7 @@ int HelixEngine::scope(int playerIndex)
                hscope[playerIndex].m_currentScope[hscope[playerIndex].m_scopeindex] = *pint;
                hscope[playerIndex].m_scopeindex++;
                hscope[playerIndex].m_currentScope[hscope[playerIndex].m_scopeindex] = *pint;
-               hscope[playerIndex].m_scopeindex++;               
+               hscope[playerIndex].m_scopeindex++;
             }
             else
             {

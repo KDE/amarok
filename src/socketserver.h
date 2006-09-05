@@ -20,7 +20,7 @@ class QPoint;
 class KProcess;
 
 
-namespace amaroK
+namespace Amarok
 {
     class SocketServer : public QServerSocket
     {
@@ -37,7 +37,7 @@ namespace amaroK
 
 namespace Vis
 {
-    class SocketServer : public amaroK::SocketServer
+    class SocketServer : public Amarok::SocketServer
     {
     public:
         SocketServer( QObject* );

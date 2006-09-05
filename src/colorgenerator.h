@@ -24,7 +24,7 @@
 
 #include "debug.h"
 
-namespace amaroK {
+namespace Amarok {
 
 
 class Color : public QColor

@@ -36,7 +36,7 @@ class IpodMediaDevice : public MediaDevice
         void              init( MediaBrowser* parent );
         virtual           ~IpodMediaDevice();
         virtual bool      autoConnect()          { return true; }
-        virtual bool      asynchronousTransfer() { return false; /* kernel buffer flushes freeze amaroK */ }
+        virtual bool      asynchronousTransfer() { return false; /* kernel buffer flushes freeze Amarok */ }
         QStringList       supportedFiletypes();
 
         bool              isConnected();

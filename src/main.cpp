@@ -100,7 +100,7 @@ int main( int argc, char *argv[] )
     App app;
 
     #ifndef AMAROK_USE_DRKONQI
-    KCrash::setCrashHandler( amaroK::Crash::crashHandler );
+    KCrash::setCrashHandler( Amarok::Crash::crashHandler );
     #endif
 
     registerTaglibPlugins();

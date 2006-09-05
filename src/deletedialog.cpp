@@ -141,10 +141,10 @@ bool DeleteDialog::showTrashDialog(QWidget* parent, const KURL::List& files)
         KIO::Job* job = 0;
         bool shouldDelete = dialog.shouldDelete();
         if ( ( shouldDelete && (job = KIO::del( files )) ) ||
-             ( job = amaroK::trashFiles( files )   ) )
+             ( job = Amarok::trashFiles( files )   ) )
         {
             if(shouldDelete) //amarok::trashFiles already does the progress operation
-                amaroK::StatusBar::instance()->newProgressOperation( job )
+                Amarok::StatusBar::instance()->newProgressOperation( job )
                     .setDescription( i18n("Deleting files") );
         }
 

@@ -38,7 +38,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
     Q_OBJECT
 
         friend class CurrentTrackJob;
-        friend class amaroK::DcopContextBrowserHandler;
+        friend class Amarok::DcopContextBrowserHandler;
 
         static ContextBrowser *s_instance;
 

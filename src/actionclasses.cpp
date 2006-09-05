@@ -30,7 +30,7 @@
 #include <ktoolbarbutton.h>
 #include <kurl.h>
 
-namespace amaroK
+namespace Amarok
 {
     bool repeatNone() { return AmarokConfig::repeat() == AmarokConfig::EnumRepeat::Off; }
     bool repeatTrack() { return AmarokConfig::repeat() == AmarokConfig::EnumRepeat::Track; }
@@ -46,7 +46,7 @@ namespace amaroK
     bool entireAlbums() { return repeatAlbum() || randomAlbums(); }
 }
 
-using namespace amaroK;
+using namespace Amarok;
 
 KHelpMenu *Menu::s_helpMenu = 0;
 
@@ -91,7 +91,7 @@ MenuAction::plug( QWidget *w, int index )
         bar->alignItemRight( id );
 
         KToolBarButton* button = bar->getButton( id );
-        button->setPopup( amaroK::Menu::instance() );
+        button->setPopup( Amarok::Menu::instance() );
         button->setName( "toolbutton_amarok_menu" );
         button->setIcon( "amarok" );
 
@@ -102,7 +102,7 @@ MenuAction::plug( QWidget *w, int index )
 
 Menu::Menu()
 {
-    KActionCollection *ac = amaroK::actionCollection();
+    KActionCollection *ac = Amarok::actionCollection();
 
     setCheckable( true );
 
@@ -117,16 +117,16 @@ Menu::Menu()
 
     insertSeparator();
 
-    insertItem( SmallIconSet( amaroK::icon( "covermanager" ) ), i18n( "C&over Manager" ), ID_SHOW_COVER_MANAGER );
+    insertItem( SmallIconSet( Amarok::icon( "covermanager" ) ), i18n( "C&over Manager" ), ID_SHOW_COVER_MANAGER );
     safePlug( ac, "queue_manager", this );
-    insertItem( SmallIconSet( amaroK::icon( "visualizations" ) ), i18n( "&Visualizations" ), ID_SHOW_VIS_SELECTOR );
-    insertItem( SmallIconSet( amaroK::icon( "equalizer" ) ), i18n( "E&qualizer" ), kapp, SLOT( slotConfigEqualizer() ), 0, ID_CONFIGURE_EQUALIZER );
+    insertItem( SmallIconSet( Amarok::icon( "visualizations" ) ), i18n( "&Visualizations" ), ID_SHOW_VIS_SELECTOR );
+    insertItem( SmallIconSet( Amarok::icon( "equalizer" ) ), i18n( "E&qualizer" ), kapp, SLOT( slotConfigEqualizer() ), 0, ID_CONFIGURE_EQUALIZER );
     safePlug( ac, "script_manager", this );
     safePlug( ac, "statistics", this );
 
     insertSeparator();
 
-    insertItem( SmallIconSet( amaroK::icon( "rescan" ) ), i18n("&Rescan Collection"), ID_RESCAN_COLLECTION );
+    insertItem( SmallIconSet( Amarok::icon( "rescan" ) ), i18n("&Rescan Collection"), ID_RESCAN_COLLECTION );
     setItemEnabled( ID_RESCAN_COLLECTION, !ThreadWeaver::instance()->isJobPending( "CollectionScanner" ) );
 
     insertSeparator();
@@ -173,10 +173,10 @@ Menu::helpMenu( QWidget *parent ) //STATIC
     extern KAboutData aboutData;
 
     if ( s_helpMenu == 0 )
-        s_helpMenu = new KHelpMenu( parent, &aboutData, amaroK::actionCollection() );
+        s_helpMenu = new KHelpMenu( parent, &aboutData, Amarok::actionCollection() );
     return s_helpMenu->menu();
 
-    return (new KHelpMenu( parent, &aboutData, amaroK::actionCollection() ))->menu();
+    return (new KHelpMenu( parent, &aboutData, Amarok::actionCollection() ))->menu();
 }
 
 void
@@ -224,17 +224,17 @@ PlayPauseAction::engineStateChanged( Engine::State state,  Engine::State /*oldSt
     switch( state ) {
     case Engine::Playing:
         setChecked( false );
-        setIcon( amaroK::icon( "pause" ) );
+        setIcon( Amarok::icon( "pause" ) );
         text = i18n( "Pause" );
         break;
     case Engine::Paused:
         setChecked( true );
-        setIcon( amaroK::icon( "pause" ) );
+        setIcon( Amarok::icon( "pause" ) );
         text = i18n( "Pause" );
         break;
     case Engine::Empty:
         setChecked( false );
-        setIcon( amaroK::icon( "play" ) );
+        setIcon( Amarok::icon( "play" ) );
         text = i18n( "Play" );
         break;
     case Engine::Idle:
@@ -321,7 +321,7 @@ AnalyzerContainer::mousePressEvent( QMouseEvent *e)
     else if( e->button() == Qt::RightButton ) {
         #if defined HAVE_XMMS || defined HAVE_LIBVISUAL
         KPopupMenu menu;
-        menu.insertItem( SmallIconSet( amaroK::icon( "visualizations" ) ), i18n("&Visualizations"), Menu::ID_SHOW_VIS_SELECTOR );
+        menu.insertItem( SmallIconSet( Amarok::icon( "visualizations" ) ), i18n("&Visualizations"), Menu::ID_SHOW_VIS_SELECTOR );
 
         if( menu.exec( mapToGlobal( e->pos() ) ) == Menu::ID_SHOW_VIS_SELECTOR )
             Menu::instance()->slotActivated( Menu::ID_SHOW_VIS_SELECTOR );
@@ -421,9 +421,9 @@ VolumeAction::plug( QWidget *w, int index )
 {
     //NOTE we only support one plugging currently
 
-    delete static_cast<amaroK::VolumeSlider*>( m_slider ); //just in case, remember, we only support one plugging!
+    delete static_cast<Amarok::VolumeSlider*>( m_slider ); //just in case, remember, we only support one plugging!
 
-    m_slider = new amaroK::VolumeSlider( w, amaroK::VOLUME_MAX );
+    m_slider = new Amarok::VolumeSlider( w, Amarok::VOLUME_MAX );
     m_slider->setName( "ToolBarVolume" );
     m_slider->setValue( AmarokConfig::masterVolume() );
     m_slider->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Ignored );
@@ -455,7 +455,7 @@ RandomAction::RandomAction( KActionCollection *ac ) :
 {
     setItems( QStringList() << i18n( "&Off" ) << i18n( "&Tracks" ) << i18n( "&Albums" ) );
     setCurrentItem( AmarokConfig::randomMode() );
-    setIcons( QStringList() << amaroK::icon( "random_no" ) << amaroK::icon( "random_track" ) << amaroK::icon( "random_album" ) );
+    setIcons( QStringList() << Amarok::icon( "random_no" ) << Amarok::icon( "random_track" ) << Amarok::icon( "random_album" ) );
 }
 
 void
@@ -490,7 +490,7 @@ RepeatAction::RepeatAction( KActionCollection *ac ) :
 {
     setItems( QStringList() << i18n( "&Off" ) << i18n( "&Track" )
                             << i18n( "&Album" ) << i18n( "&Playlist" ) );
-    setIcons( QStringList() << amaroK::icon( "repeat_no" ) << amaroK::icon( "repeat_track" ) << amaroK::icon( "repeat_album" ) << amaroK::icon( "repeat_playlist" ) );
+    setIcons( QStringList() << Amarok::icon( "repeat_no" ) << Amarok::icon( "repeat_track" ) << Amarok::icon( "repeat_album" ) << Amarok::icon( "repeat_playlist" ) );
     setCurrentItem( AmarokConfig::repeat() );
 }
 
@@ -516,7 +516,7 @@ BurnMenuAction::plug( QWidget *w, int index )
         bar->insertButton( QString::null, id, true, i18n( "Burn" ), index );
 
         KToolBarButton* button = bar->getButton( id );
-        button->setPopup( amaroK::BurnMenu::instance() );
+        button->setPopup( Amarok::BurnMenu::instance() );
         button->setName( "toolbutton_burn_menu" );
         button->setIcon( "k3b" );
 
@@ -566,7 +566,7 @@ BurnMenu::slotActivated( int index )
 //////////////////////////////////////////////////////////////////////////////////////////
 
 StopAction::StopAction( KActionCollection *ac )
-  : KAction( i18n( "Stop" ), amaroK::icon( "stop" ), 0, EngineController::instance(), SLOT( stop() ), ac, "stop" )
+  : KAction( i18n( "Stop" ), Amarok::icon( "stop" ), 0, EngineController::instance(), SLOT( stop() ), ac, "stop" )
 {}
 
 int
@@ -585,9 +585,9 @@ StopAction::plug( QWidget *w, int index )
                            true, i18n( "Stop" ), index );
 
         KToolBarButton* button = bar->getButton( id );
-        button->setDelayedPopup( amaroK::StopMenu::instance() );
+        button->setDelayedPopup( Amarok::StopMenu::instance() );
         button->setName( "toolbutton_stop_menu" );
-        button->setIcon( amaroK::icon( "stop" ) );
+        button->setIcon( Amarok::icon( "stop" ) );
         button->setEnabled( false ); // Required, otherwise the button is always enabled at startup
 
         return containerCount() - 1;
@@ -618,7 +618,7 @@ StopMenu::slotAboutToShow()
 {
     Playlist *pl = Playlist::instance();
 
-    setItemEnabled( NOW,         amaroK::actionCollection()->action( "stop" )->isEnabled() );
+    setItemEnabled( NOW,         Amarok::actionCollection()->action( "stop" )->isEnabled() );
 
     setItemEnabled( AFTER_TRACK, pl->currentTrackIndex() >= 0 );
     setItemChecked( AFTER_TRACK, pl->stopAfterMode() == Playlist::StopAfterCurrent );
@@ -636,7 +636,7 @@ StopMenu::slotActivated( int index )
     switch( index )
     {
         case NOW:
-            amaroK::actionCollection()->action( "stop" )->activate();
+            Amarok::actionCollection()->action( "stop" )->activate();
             if( mode == Playlist::StopAfterCurrent || mode == Playlist::StopAfterQueue )
                 pl->setStopAfterMode( Playlist::DoNotStop );
             break;

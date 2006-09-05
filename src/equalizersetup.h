@@ -27,7 +27,7 @@ class QCheckBox;
 class KComboBox;
 class KPopupMenu;
 
-namespace amaroK { class Slider; }
+namespace Amarok { class Slider; }
 
 
 class EqualizerSetup : public KDialogBase
@@ -63,9 +63,9 @@ class EqualizerSetup : public KDialogBase
         void    updatePresets(QString selectTitle = QString::null);
         QString presetsCache() const;
 
-        amaroK::Slider* m_slider_preamp;
+        Amarok::Slider* m_slider_preamp;
         EqualizerGraph* m_equalizerGraph;
-        QPtrList<amaroK::Slider> m_bandSliders;
+        QPtrList<Amarok::Slider> m_bandSliders;
 
         QGroupBox*      m_groupBoxSliders;
         KComboBox*      m_presetCombo;

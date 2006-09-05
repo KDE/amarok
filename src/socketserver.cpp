@@ -36,9 +36,9 @@
 //TODO decide whether to use 16 bit integers or 32 bit floats as data sent to analyzers
 //TODO allow visualizations to determine their own data sizes
 
-/// @class amaroK::SocketServer
+/// @class Amarok::SocketServer
 
-amaroK::SocketServer::SocketServer( const QString &socketName, QObject *parent )
+Amarok::SocketServer::SocketServer( const QString &socketName, QObject *parent )
         : QServerSocket( parent )
 {
     m_sockfd = ::socket( AF_UNIX, SOCK_STREAM, 0 );
@@ -75,7 +75,7 @@ amaroK::SocketServer::SocketServer( const QString &socketName, QObject *parent )
     this->setSocket( m_sockfd );
 }
 
-amaroK::SocketServer::~SocketServer()
+Amarok::SocketServer::~SocketServer()
 {
     if( m_sockfd != -1 )
         ::close( m_sockfd );
@@ -86,7 +86,7 @@ amaroK::SocketServer::~SocketServer()
 /// @class Vis::SocketServer
 
 Vis::SocketServer::SocketServer( QObject *parent )
-        : amaroK::SocketServer( "amarok.visualization_socket", parent )
+        : Amarok::SocketServer( "amarok.visualization_socket", parent )
 {}
 
 void
@@ -157,7 +157,7 @@ Vis::Selector::Selector( QWidget *parent )
         : QListView( parent, "Vis::Selector::instance", Qt::WType_Dialog )
         , m_server( new SocketServer( this ) )
 {
-    amaroK::OverrideCursor waitcursor;
+    Amarok::OverrideCursor waitcursor;
 
     setCaption( kapp->makeStdCaption( i18n( "Visualizations" ) ) );
 
@@ -269,7 +269,7 @@ Vis::Selector::viewportPaintEvent( QPaintEvent *e )
 
         //TODO the right message if amarok_libvisual is present but libvisual isn't
         hide();
-        amaroK::StatusBar::instance()->longMessage( i18n(
+        Amarok::StatusBar::instance()->longMessage( i18n(
                 "<div align=center>"
                 "<h3>No Visualizations Found</h3>"
                 "Possible reasons:"
@@ -297,7 +297,7 @@ Vis::Selector::Item::stateChange( bool ) //SLOT
 {
     switch( state() ) {
     case On:
-        m_proc = new amaroK::Process();
+        m_proc = new Amarok::Process();
        *m_proc << KStandardDirs::findExe( m_command )
                << Selector::instance()->m_server->path()
                << text( 0 );

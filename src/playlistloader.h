@@ -78,7 +78,7 @@ protected:
 inline PlaylistFile::Format
 PlaylistFile::format( const QString &fileName )
 {
-    const QString ext = amaroK::extension( fileName );
+    const QString ext = Amarok::extension( fileName );
 
     if( ext == "m3u" ) return M3U;
     if( ext == "pls" ) return PLS;

@@ -38,13 +38,13 @@
 #include <klocale.h>
 #include <kpushbutton.h>
 
-using amaroK::escapeHTML;
-using amaroK::escapeHTMLAttr;
+using Amarok::escapeHTML;
+using Amarok::escapeHTMLAttr;
 
 typedef QMap<QString, Medium*> MediumMap;
 
 MediumPluginManagerDialog::MediumPluginManagerDialog()
-        : KDialogBase( amaroK::mainWindow(), "mediumpluginmanagerdialog", false, QString::null, Ok|Cancel, Ok )
+        : KDialogBase( Amarok::mainWindow(), "mediumpluginmanagerdialog", false, QString::null, Ok|Cancel, Ok )
 {
     kapp->setTopWidget( this );
     setCaption( kapp->makeStdCaption( i18n( "Manage Devices and Plugins" ) ) );
@@ -113,7 +113,7 @@ bool
 MediumPluginManager::detectDevices( const bool redetect, const bool nographics )
 {
     bool foundNew = false;
-    KConfig *config = amaroK::config( "MediaBrowser" );
+    KConfig *config = Amarok::config( "MediaBrowser" );
     if( redetect )
         MediaDeviceManager::instance()->getDevice( "dummyjusttorerundecop" );
     MediumMap mmap = MediaDeviceManager::instance()->getMediumMap();
@@ -146,7 +146,7 @@ MediumPluginManager::detectDevices( const bool redetect, const bool nographics )
         }
 
         if( skipflag )
-            continue;   
+            continue;
 
         if( m_deletedMap.contains( (*it)->id() ) )
             m_deletedMap.remove( (*it)->id() );
@@ -166,7 +166,7 @@ MediumPluginManager::redetectDevices()
 {
     if( !detectDevices( true ) )
     {
-        amaroK::StatusBar::instance()->longMessageThreadSafe( i18n("No new media devices were found. If you feel this is an\n"
+        Amarok::StatusBar::instance()->longMessageThreadSafe( i18n("No new media devices were found. If you feel this is an\n"
                                                                    "error, ensure that the DBUS and HAL daemons are running\n"
                                                                    "and KDE was built with support for them. You can test this\n"
                                                                    "by running\n"
@@ -209,7 +209,7 @@ MediumPluginManager::finished()
         (*it)->configButton()->setEnabled( (*it)->pluginCombo()->currentText() != i18n( "Do not handle" ) );
     }
 
-    KConfig *config = amaroK::config( "MediaBrowser" );
+    KConfig *config = Amarok::config( "MediaBrowser" );
     for( DeletedMap::Iterator dit = m_deletedMap.begin();
             dit != m_deletedMap.end();
             ++dit )
@@ -230,17 +230,17 @@ MediumPluginManager::newDevice()
     ManualDeviceAdder* mda = new ManualDeviceAdder( this );
     if( mda->exec() == QDialog::Accepted && mda->successful() && mda->getMedium() != 0 )
     {
-        if( amaroK::config( "MediaBrowser" )->readEntry( mda->getMedium()->id() ) != QString::null )
+        if( Amarok::config( "MediaBrowser" )->readEntry( mda->getMedium()->id() ) != QString::null )
         {
             //abort!  Can't have the same device defined twice...should never
             //happen due to name checking earlier...right?
-            amaroK::StatusBar::instance()->longMessageThreadSafe( i18n("Sorry, you cannot define two devices\n"
+            Amarok::StatusBar::instance()->longMessageThreadSafe( i18n("Sorry, you cannot define two devices\n"
                                                                        "with the same name and mountpoint!") );
         }
         else
         {
             Medium *newdev = mda->getMedium();
-            amaroK::config( "MediaBrowser" )->writeEntry( newdev->id(), mda->getPlugin() );
+            Amarok::config( "MediaBrowser" )->writeEntry( newdev->id(), mda->getPlugin() );
             MediaDeviceManager::instance()->addManualDevice( newdev );
             m_newDevMap[newdev->id()] = newdev;
             detectDevices();
@@ -253,7 +253,7 @@ MediumPluginManager::newDevice()
 /////////////////////////////////////////////////////////////////////
 
 ManualDeviceAdder::ManualDeviceAdder( MediumPluginManager* mpm )
-: KDialogBase( amaroK::mainWindow(), "manualdeviceadder", true, QString::null, Ok|Cancel, Ok )
+: KDialogBase( Amarok::mainWindow(), "manualdeviceadder", true, QString::null, Ok|Cancel, Ok )
 {
     m_mpm = mpm;
     m_successful = false;
@@ -316,7 +316,7 @@ ManualDeviceAdder::slotOk()
     }
     else
     {
-        amaroK::StatusBar::instance()->longMessageThreadSafe( i18n("Sorry, every device must have a name and\n"
+        Amarok::StatusBar::instance()->longMessageThreadSafe( i18n("Sorry, every device must have a name and\n"
                                                                    "you cannot define two devices with the\n"
                                                                    "same name. These names must be unique\n"
                                                                    "across autodetected devices as well.\n") );
@@ -374,7 +374,7 @@ MediaDeviceConfig::MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, 
     if( !m_medium )
         return;
 
-    KConfig *config = amaroK::config( "MediaBrowser" );
+    KConfig *config = Amarok::config( "MediaBrowser" );
     m_oldPlugin = config->readEntry( m_medium->id() );
     if( !m_oldPlugin.isEmpty() )
         m_new = false;
@@ -408,7 +408,7 @@ MediaDeviceConfig::MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, 
     (void)new QLabel( i18n("Name: "), this );
     (void)new QLabel( medium->name(), this );
     (void)new KActiveLabel( i18n( "(<a href='whatsthis:%1'>Details</a>)" )
-                            .arg( amaroK::escapeHTMLAttr( details ) ), this );
+                            .arg( Amarok::escapeHTMLAttr( details ) ), this );
 
     (void)new QLabel( i18n("Plugin:"), this );
     m_pluginCombo = new KComboBox( false, this );
@@ -422,7 +422,7 @@ MediaDeviceConfig::MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, 
             m_pluginCombo->setCurrentItem( (*it)->name() );
     }
 
-    m_configButton = new KPushButton( SmallIconSet( amaroK::icon( "configure" ) ), QString::null, this );
+    m_configButton = new KPushButton( SmallIconSet( Amarok::icon( "configure" ) ), QString::null, this );
     connect( m_configButton, SIGNAL(clicked()), SLOT(configureDevice()) );
     m_configButton->setEnabled( !m_new && m_pluginCombo->currentText() != i18n( "Do not handle" ) );
     QToolTip::add( m_configButton, i18n( "Configure device settings" ) );

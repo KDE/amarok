@@ -118,7 +118,7 @@ EngineController::loadEngine() //static
     if( !AmarokConfig::soundSystem().isEmpty() && engineName != AmarokConfig::soundSystem() ) {
         //AmarokConfig::soundSystem() is empty on the first-ever-run
 
-        amaroK::StatusBar::instance()->longMessage( i18n(
+        Amarok::StatusBar::instance()->longMessage( i18n(
                 "Sorry, the '%1' could not be loaded, instead we have loaded the '%2'." )
                         .arg( AmarokConfig::soundSystem() )
                         .arg( engineName ),
@@ -158,10 +158,10 @@ EngineController::loadEngine( const QString &engineName )
     offers = PluginManager::query( query.arg( engineName ) ) + offers;
 
     foreachType( KTrader::OfferList, offers ) {
-        amaroK::Plugin *plugin = PluginManager::createFromService( *it );
+        Amarok::Plugin *plugin = PluginManager::createFromService( *it );
 
         if( plugin ) {
-            QObject *bar = amaroK::StatusBar::instance();
+            QObject *bar = Amarok::StatusBar::instance();
             EngineBase *engine = static_cast<EngineBase*>( plugin );
 
             connect( engine, SIGNAL(stateChanged( Engine::State )),
@@ -215,7 +215,7 @@ bool EngineController::canDecode( const KURL &url ) //static
     //TODO a KFileItem version? <- presumably so we can mimetype check
 
     const QString fileName = url.fileName();
-    const QString ext = amaroK::extension( fileName );
+    const QString ext = Amarok::extension( fileName );
 
     if ( PlaylistFile::isPlaylistFile( fileName ) ) return false;
 
@@ -243,7 +243,7 @@ bool EngineController::canDecode( const KURL &url ) //static
 
     //we special case this as otherwise users hate us
     if ( !valid && ext.lower() == "mp3" && !installDistroCodec(AmarokConfig::soundSystem()) )
-        amaroK::StatusBar::instance()->longMessageThreadSafe(
+        Amarok::StatusBar::instance()->longMessageThreadSafe(
            i18n( "<p>The %1 claims it <b>cannot</b> play MP3 files."
                  "<p>You may want to choose a different engine from the <i>Configure Dialog</i>, or examine "
                  "the installation of the multimedia-framework that the current engine uses. "
@@ -365,16 +365,16 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
         // does the file really exist? the playlist entry might be old
         if ( ! QFile::exists( url.path()) ) {
             //debug() << "  file >" << url.path() << "< does not exist!" << endl;
-            amaroK::StatusBar::instance()->shortMessage( i18n("Local file does not exist.") );
+            Amarok::StatusBar::instance()->shortMessage( i18n("Local file does not exist.") );
             goto some_kind_of_failure;
         }
     }
     else
     {
         if( url.protocol() == "cdda" )
-            amaroK::StatusBar::instance()->shortMessage( i18n("Starting CD Audio track...") );
+            Amarok::StatusBar::instance()->shortMessage( i18n("Starting CD Audio track...") );
         else
-            amaroK::StatusBar::instance()->shortMessage( i18n("Connecting to stream source...") );
+            Amarok::StatusBar::instance()->shortMessage( i18n("Connecting to stream source...") );
         debug() << "Connecting to protocol: " << url.protocol() << endl;
     }
 
@@ -415,7 +415,7 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
             debug() << newUrl << endl;
             url = newUrl;
         }
-        else 
+        else
             return;
     }
 
@@ -463,9 +463,9 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
         //* To prevent GUI freezes we don't try to play again after 0.5s of failure
         int totalTracks = Playlist::instance()->totalTrackCount();
         int currentTrack = Playlist::instance()->currentTrackIndex();
-        if ( ( ( amaroK::repeatPlaylist() && static_cast<int>(m_playFailureCount) < totalTracks )
-            || ( amaroK::repeatNone() && currentTrack != totalTracks - 1 )
-            || ( amaroK::repeatAlbum() && m_playFailureCount < Playlist::instance()->repeatAlbumTrackCount() ) )
+        if ( ( ( Amarok::repeatPlaylist() && static_cast<int>(m_playFailureCount) < totalTracks )
+            || ( Amarok::repeatNone() && currentTrack != totalTracks - 1 )
+            || ( Amarok::repeatAlbum() && m_playFailureCount < Playlist::instance()->repeatAlbumTrackCount() ) )
             && AmarokConfig::soundSystem() != "nmm-engine"
             && failure_time.elapsed() < 500 )
         {

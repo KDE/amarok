@@ -24,7 +24,7 @@
 
 
 QString
-amaroK::icon( const QString& name ) //declared in amarok.h
+Amarok::icon( const QString& name ) //declared in amarok.h
 {
     // We map our Amarok icon theme names to system icons, instead of using the same
     // naming scheme. This has two advantages:

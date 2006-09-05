@@ -52,7 +52,7 @@ email                : markey@web.de
 #include <kconfigdialogmanager.h>
 #include <kcombobox.h>           //firstRunWizard()
 #include <kcmdlineargs.h>        //initCliArgs()
-#include <kcursor.h>             //amaroK::OverrideCursor
+#include <kcursor.h>             //Amarok::OverrideCursor
 #include <kedittoolbar.h>        //slotConfigToolbars()
 #include <kglobalaccel.h>        //initGlobalShortcuts()
 #include <kglobalsettings.h>     //applyColorScheme()
@@ -60,7 +60,7 @@ email                : markey@web.de
 #include <kkeydialog.h>          //slotConfigShortcuts()
 #include <klocale.h>
 #include <kmessagebox.h>         //applySettings(), genericEventHandler()
-#include <krun.h>                //amaroK::invokeBrowser()
+#include <krun.h>                //Amarok::invokeBrowser()
 #include <kstandarddirs.h>
 #include <kurldrag.h>            //genericEventHandler()
 #include <kaboutdata.h>
@@ -85,7 +85,7 @@ email                : markey@web.de
 #endif //__linux__
 
 QMutex Debug::mutex;
-QMutex amaroK::globalDirsMutex;
+QMutex Amarok::globalDirsMutex;
 
 int App::mainThreadId = 0;
 
@@ -105,14 +105,14 @@ App::App()
     QPixmap::setDefaultOptimization( QPixmap::MemoryOptim );
 
     //needs to be created before the wizard
-    new amaroK::DcopPlayerHandler(); // Must be created first
-    new amaroK::DcopPlaylistHandler();
-    new amaroK::DcopPlaylistBrowserHandler();
-    new amaroK::DcopContextBrowserHandler();
-    new amaroK::DcopCollectionHandler();
-    new amaroK::DcopMediaBrowserHandler();
-    new amaroK::DcopScriptHandler();
-    new amaroK::DcopDevicesHandler();
+    new Amarok::DcopPlayerHandler(); // Must be created first
+    new Amarok::DcopPlaylistHandler();
+    new Amarok::DcopPlaylistBrowserHandler();
+    new Amarok::DcopContextBrowserHandler();
+    new Amarok::DcopCollectionHandler();
+    new Amarok::DcopMediaBrowserHandler();
+    new Amarok::DcopScriptHandler();
+    new Amarok::DcopDevicesHandler();
 
     fixHyperThreading();
 
@@ -125,7 +125,7 @@ App::~App()
     DEBUG_BLOCK
 
     // Hiding the OSD before exit prevents crash
-    amaroK::OSD::instance()->hide();
+    Amarok::OSD::instance()->hide();
 
     EngineBase* const engine = EngineController::engine();
 
@@ -141,7 +141,7 @@ App::~App()
     EngineController::instance()->detach( this );
 
     // do even if trayicon is not shown, it is safe
-    amaroK::config()->writeEntry( "HiddenOnExit", mainWindow()->isHidden() );
+    Amarok::config()->writeEntry( "HiddenOnExit", mainWindow()->isHidden() );
 
     CollectionDB::instance()->stopScan();
 
@@ -153,7 +153,7 @@ App::~App()
     // this must be deleted before the connection to the Xserver is
     // severed, or we risk a crash when the QApplication is exited,
     // I asked Trolltech! *smug*
-    delete amaroK::OSD::instance();
+    delete Amarok::OSD::instance();
 
     AmarokConfig::setVersion( APP_VERSION );
     AmarokConfig::writeConfig();
@@ -221,7 +221,7 @@ void App::handleCliArgs() //static
         }
 
         int options;
-        bool appendAsDefault = amaroK::config()->readBoolEntry( "AppendAsDefault", false );
+        bool appendAsDefault = Amarok::config()->readBoolEntry( "AppendAsDefault", false );
         if( args->isSet( "queue" ) )
            options = Playlist::Queue;
         else if( args->isSet( "append" ) || args->isSet( "enqueue" ) || appendAsDefault ) {
@@ -346,7 +346,7 @@ void App::initGlobalShortcuts()
     m_pGlobalAccel->insert( "show", i18n( "Toggle Playlist Window" ), 0, KKey("WIN+p"), 0,
                             m_pPlaylistWindow, SLOT( showHide() ), true, true );
     m_pGlobalAccel->insert( "osd", i18n( "Show OSD" ), 0, KKey("WIN+o"), 0,
-                            amaroK::OSD::instance(), SLOT( forceToggleOSD() ), true, true );
+                            Amarok::OSD::instance(), SLOT( forceToggleOSD() ), true, true );
     m_pGlobalAccel->insert( "mute", i18n( "Mute Volume" ), 0, KKey("WIN+m"), 0,
                             ec, SLOT( mute() ), true, true );
 
@@ -368,7 +368,7 @@ void App::initGlobalShortcuts()
     //TODO fix kde accel system so that kactions find appropriate global shortcuts
     //     and there is only one configure shortcuts dialog
 
-    KActionCollection* const ac = amaroK::actionCollection();
+    KActionCollection* const ac = Amarok::actionCollection();
     KAccelShortcutList list( m_pGlobalAccel );
 
     for( uint i = 0; i < list.count(); ++i )
@@ -530,7 +530,7 @@ void App::applySettings( bool firstTime )
             //may work if you set no parent for the systray?
             //KWin::setSystemTrayWindowFor( m_pTray->winId(), m_pPlayerWindow->winId() );
 
-            delete m_pTray; m_pTray = new amaroK::TrayIcon( m_pPlayerWindow );
+            delete m_pTray; m_pTray = new Amarok::TrayIcon( m_pPlayerWindow );
 
             //make tray icon behave properly after selecting to show or hide player window
             m_pTray->engineStateChanged(EngineController::instance()->engine()->state(), EngineController::instance()->engine()->state());
@@ -546,7 +546,7 @@ void App::applySettings( bool firstTime )
             m_pPlayerWindow->applySettings();
 
     } else if( m_pPlayerWindow ) {
-        delete m_pTray; m_pTray = new amaroK::TrayIcon( m_pPlaylistWindow );
+        delete m_pTray; m_pTray = new Amarok::TrayIcon( m_pPlaylistWindow );
         m_pTray->engineStateChanged(EngineController::instance()->engine()->state(), EngineController::instance()->engine()->state());
         m_pTray->engineNewMetaData(EngineController::instance()->bundle(), false);
         delete m_pPlayerWindow; m_pPlayerWindow = 0;
@@ -561,13 +561,13 @@ void App::applySettings( bool firstTime )
         //m_pPlaylistWindow->show(); //must be shown //we do below now
 
         //ensure that at least one Menu is plugged into an accessible UI element
-        if( !AmarokConfig::showMenuBar() && !amaroK::actionCollection()->action( "amarok_menu" )->isPlugged() )
+        if( !AmarokConfig::showMenuBar() && !Amarok::actionCollection()->action( "amarok_menu" )->isPlugged() )
            playlistWindow()->createGUI();
     }
 
     playlistWindow()->applySettings();
     Scrobbler::instance()->applySettings();
-    amaroK::OSD::instance()->applySettings();
+    Amarok::OSD::instance()->applySettings();
     CollectionDB::instance()->applySettings();
     m_pTray->setShown( AmarokConfig::showTrayIcon() );
     TrackToolTip::instance()->addToWidget( m_pTray );
@@ -575,7 +575,7 @@ void App::applySettings( bool firstTime )
 
     //on startup we need to show the window, but only if it wasn't hidden on exit
     //and always if the trayicon isn't showing
-    if( firstTime && !amaroK::config()->readBoolEntry( "HiddenOnExit", false ) || !AmarokConfig::showTrayIcon() )
+    if( firstTime && !Amarok::config()->readBoolEntry( "HiddenOnExit", false ) || !AmarokConfig::showTrayIcon() )
     {
         mainWindow()->show();
 
@@ -601,7 +601,7 @@ void App::applySettings( bool firstTime )
         if ( AmarokConfig::equalizerEnabled() )
             engine->setEqualizerParameters( AmarokConfig::equalizerPreamp(), AmarokConfig::equalizerGains() );
 
-        amaroK::actionCollection()->action("play_audiocd")->setEnabled( EngineController::hasEngineProperty( "HasKIO" ) || EngineController::hasEngineProperty("HasCDDA"));
+        Amarok::actionCollection()->action("play_audiocd")->setEnabled( EngineController::hasEngineProperty( "HasKIO" ) || EngineController::hasEngineProperty("HasCDDA"));
     } //</Engine>
 
     { //<Collection>
@@ -613,7 +613,7 @@ void App::applySettings( bool firstTime )
 
     {   // delete unneeded cover images from cache
         const QString size = QString::number( AmarokConfig::coverPreviewSize() ) + '@';
-        const QDir cacheDir = amaroK::saveLocation( "albumcovers/cache/" );
+        const QDir cacheDir = Amarok::saveLocation( "albumcovers/cache/" );
         const QStringList obsoleteCovers = cacheDir.entryList( "*" );
         foreach( obsoleteCovers )
             if ( !(*it).startsWith( size  ) && !(*it).startsWith( "50@" ) )
@@ -634,17 +634,17 @@ App::continueInit()
     DEBUG_BLOCK
     const KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
     bool restoreSession = args->count() == 0 || args->isSet( "append" ) || args->isSet( "enqueue" )
-                                || amaroK::config()->readBoolEntry( "AppendAsDefault", false );
+                                || Amarok::config()->readBoolEntry( "AppendAsDefault", false );
 
     // Remember old folder setup, so we can detect changes after the wizard was used
     //const QStringList oldCollectionFolders = MountPointManager::instance()->collectionFolders();
 
 
-    if ( amaroK::config()->readBoolEntry( "First Run", true ) || args->isSet( "wizard" ) ) {
+    if ( Amarok::config()->readBoolEntry( "First Run", true ) || args->isSet( "wizard" ) ) {
         std::cout << "STARTUP\n" << std::flush; //hide the splashscreen
         firstRunWizard();
-        amaroK::config()->writeEntry( "First Run", false );
-        amaroK::config()->sync();
+        Amarok::config()->writeEntry( "First Run", false );
+        Amarok::config()->sync();
     }
 
     CollectionDB::instance()->checkDatabase();
@@ -652,7 +652,7 @@ App::continueInit()
     m_pMediaDeviceManager = MediaDeviceManager::instance();
     m_pGlobalAccel    = new KGlobalAccel( this );
     m_pPlaylistWindow = new PlaylistWindow();
-    m_pTray           = new amaroK::TrayIcon( m_pPlaylistWindow );
+    m_pTray           = new Amarok::TrayIcon( m_pPlaylistWindow );
     m_pPlaylistWindow->init(); //creates the playlist, browsers, etc.
     //init playlist window as soon as the database is guaranteed to be usable
     //connect( CollectionDB::instance(), SIGNAL( databaseUpdateDone() ), m_pPlaylistWindow, SLOT( init() ) );
@@ -726,7 +726,7 @@ void
 App::applyColorScheme()
 {
     QColorGroup group;
-    using amaroK::ColorScheme::AltBase;
+    using Amarok::ColorScheme::AltBase;
     int h, s, v;
     QWidget* const browserBar = static_cast<QWidget*>( playlistWindow()->child( "BrowserBar" ) );
     QWidget* const contextBrowser = static_cast<QWidget*>( ContextBrowser::instance() );
@@ -745,7 +745,7 @@ App::applyColorScheme()
     else if( AmarokConfig::schemeAmarok() )
     {
         group = QApplication::palette().active();
-        const QColor bg( amaroK::blue );
+        const QColor bg( Amarok::blue );
         AltBase.setRgb( 57, 64, 98 );
 
         group.setColor( QColorGroup::Text, Qt::white );
@@ -773,8 +773,8 @@ App::applyColorScheme()
         //TODO set all colours, even button colours, that way we can change the dark,
         //light, etc. colours and Amarok scheme will look much better
 
-        using namespace amaroK::ColorScheme;
-        Base       = amaroK::blue;
+        using namespace Amarok::ColorScheme;
+        Base       = Amarok::blue;
         Text       = Qt::white;
         Background = 0x002090;
         Foreground = 0x80A0FF;
@@ -830,7 +830,7 @@ App::applyColorScheme()
 }
 
 
-bool amaroK::genericEventHandler( QWidget *recipient, QEvent *e )
+bool Amarok::genericEventHandler( QWidget *recipient, QEvent *e )
 {
     //this is used as a generic event handler for widgets that want to handle
     //typical events in an Amarok fashion
@@ -839,7 +839,7 @@ bool amaroK::genericEventHandler( QWidget *recipient, QEvent *e )
     //
     // void Foo::barEvent( QBarEvent *e )
     // {
-    //     amaroK::genericEventHandler( this, e );
+    //     Amarok::genericEventHandler( this, e );
     // }
 
     switch( e->type() )
@@ -856,12 +856,12 @@ bool amaroK::genericEventHandler( QWidget *recipient, QEvent *e )
             //FIXME this isn't a good way to determine if there is a currentTrack, need playlist() function
             const bool b = EngineController::engine()->loaded();
 
-            popup.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ),
+            popup.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ),
                               Playlist::Append );
-            popup.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "Append && &Play" ),
+            popup.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "Append && &Play" ),
                               Playlist::DirectPlay | Playlist::Append );
             if( b )
-                popup.insertItem( SmallIconSet( amaroK::icon( "fast_forward" ) ), i18n( "&Queue Track" ),
+                popup.insertItem( SmallIconSet( Amarok::icon( "fast_forward" ) ), i18n( "&Queue Track" ),
                               Playlist::Queue );
             popup.insertSeparator();
             popup.insertItem( i18n( "&Cancel" ), 0 );
@@ -905,7 +905,7 @@ bool amaroK::genericEventHandler( QWidget *recipient, QEvent *e )
             break;
         }
         default:
-            EngineController::instance()->increaseVolume( e->delta() / amaroK::VOLUME_SENSITIVITY );
+            EngineController::instance()->increaseVolume( e->delta() / Amarok::VOLUME_SENSITIVITY );
         }
 
         e->accept();
@@ -950,18 +950,18 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
             m_pPlaylistWindow->setCaption( kapp->makeStdCaption( i18n("Playlist") ) );
         else m_pPlaylistWindow->setCaption( "Amarok" );
         TrackToolTip::instance()->clear();
-        amaroK::OSD::instance()->setImage( KIconLoader().iconPath( "amarok", -KIcon::SizeHuge ) );
+        Amarok::OSD::instance()->setImage( KIconLoader().iconPath( "amarok", -KIcon::SizeHuge ) );
         break;
 
     case Engine::Playing:
         if ( oldState == Engine::Paused )
-            amaroK::OSD::instance()->OSDWidget::show( i18n( "state, as in playing", "Play" ) );
+            Amarok::OSD::instance()->OSDWidget::show( i18n( "state, as in playing", "Play" ) );
         if ( !bundle.prettyTitle().isEmpty() )
             m_pPlaylistWindow->setCaption( i18n("Amarok - %1").arg( bundle.veryNiceTitle() ) );
         break;
 
     case Engine::Paused:
-        amaroK::OSD::instance()->OSDWidget::show( i18n("Paused") );
+        Amarok::OSD::instance()->OSDWidget::show( i18n("Paused") );
         break;
 
     case Engine::Idle:
@@ -977,7 +977,7 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
 
 void App::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
-    amaroK::OSD::instance()->show( bundle );
+    Amarok::OSD::instance()->show( bundle );
     if ( !bundle.prettyTitle().isEmpty() )
         m_pPlaylistWindow->setCaption( i18n("Amarok - %1").arg( bundle.veryNiceTitle() ) );
 
@@ -991,7 +991,7 @@ void App::engineTrackPositionChanged( long position, bool /*userSeek*/ )
 
 void App::engineVolumeChanged( int newVolume )
 {
-    amaroK::OSD::instance()->OSDWidget::show( newVolume ? i18n("Volume: %1%").arg( newVolume ) : i18n("Mute") );
+    Amarok::OSD::instance()->OSDWidget::show( newVolume ? i18n("Volume: %1%").arg( newVolume ) : i18n("Mute") );
 }
 
 void App::slotConfigEqualizer() //SLOT
@@ -1030,7 +1030,7 @@ void App::slotConfigAmarok( const QCString& page )
 
 void App::slotConfigShortcuts()
 {
-    KKeyDialog::configure( amaroK::actionCollection(), m_pPlaylistWindow );
+    KKeyDialog::configure( Amarok::actionCollection(), m_pPlaylistWindow );
 }
 
 void App::slotConfigGlobalShortcuts()
@@ -1068,14 +1068,14 @@ void App::firstRunWizard()
     {
         //make sure that the DB config is stored in amarokrc before calling CollectionDB's ctor
         AmarokConfig::setDatabaseEngine(
-            QString::number( amaroK::databaseTypeCode( wizard.dbSetup7->databaseEngine->currentText() ) ) );
+            QString::number( Amarok::databaseTypeCode( wizard.dbSetup7->databaseEngine->currentText() ) ) );
         config->updateSettings();
 
         const QStringList oldCollectionFolders = MountPointManager::instance()->collectionFolders();
         wizard.writeCollectionConfig();
 
         // If wizard is invoked at runtime, rescan collection if folder setup has changed
-        if ( !amaroK::config()->readBoolEntry( "First Run", true ) &&
+        if ( !Amarok::config()->readBoolEntry( "First Run", true ) &&
              oldCollectionFolders != MountPointManager::instance()->collectionFolders() )
             CollectionDB::instance()->startScan();
 
@@ -1107,7 +1107,7 @@ KIO::Job *App::trashFiles( const KURL::List &files )
 {
 #if KDE_IS_VERSION( 3, 3, 91 )
     KIO::Job *job = KIO::trash( files, true /*show progress*/ );
-    amaroK::StatusBar::instance()->newProgressOperation( job ).setDescription( i18n("Moving files to trash") );
+    Amarok::StatusBar::instance()->newProgressOperation( job ).setDescription( i18n("Moving files to trash") );
     connect( job, SIGNAL( result( KIO::Job* ) ), this, SLOT( slotTrashResult( KIO::Job* ) ) );
     return job;
 #else
@@ -1128,7 +1128,7 @@ void App::setRating( int n )
         const QString path = EngineController::instance()->playingURL().path();
         CollectionDB::instance()->setSongRating( path, n, true );
         const int rating = CollectionDB::instance()->getSongRating( path );
-        amaroK::OSD::instance()->OSDWidget::ratingChanged( rating );
+        Amarok::OSD::instance()->OSDWidget::ratingChanged( rating );
     }
     else if( PlaylistWindow::self()->isReallyShown() && Playlist::instance()->qscrollview()->hasFocus() )
         Playlist::instance()->setSelectedRatings( n );
@@ -1158,7 +1158,7 @@ void App::quit()
     KApplication::quit();
 }
 
-namespace amaroK
+namespace Amarok
 {
     /// @see amarok.h
 

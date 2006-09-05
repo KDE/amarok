@@ -19,7 +19,7 @@ class KActionCollection;
 class KHelpMenu;
 
 
-namespace amaroK
+namespace Amarok
 {
     class Menu : public PrettyPopupMenu
     {
@@ -91,7 +91,7 @@ namespace amaroK
             virtual int plug( QWidget *, int index = -1 );
         private:
             void engineVolumeChanged( int value );
-            QGuardedPtr<amaroK::VolumeSlider> m_slider;
+            QGuardedPtr<Amarok::VolumeSlider> m_slider;
     };
 
 
@@ -205,7 +205,7 @@ namespace amaroK
             virtual int plug( QWidget*, int index = -1 );
     };
 
-} /* namespace amaroK */
+} /* namespace Amarok */
 
 
 #endif /* AMAROK_ACTIONCLASSES_H */

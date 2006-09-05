@@ -86,11 +86,11 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, bool playFir
 
     Playlist::instance()->lock(); // prevent user removing items as this could be bad
 
-    amaroK::OverrideCursor cursor;
+    Amarok::OverrideCursor cursor;
 
     setDescription( i18n("Populating playlist") );
 
-    amaroK::StatusBar::instance()->newProgressOperation( this )
+    Amarok::StatusBar::instance()->newProgressOperation( this )
             .setDescription( m_description )
             .setStatus( i18n("Preparing") )
             .setAbortSlot( this, SLOT(abort()) )
@@ -313,7 +313,7 @@ UrlLoader::completeJob()
             debug() << "\t" << m_badURLs[it] << endl;
         }
 
-        amaroK::StatusBar::instance()->shortLongMessage(
+        Amarok::StatusBar::instance()->shortLongMessage(
                 i18n("Some media could not be loaded (not playable)."), text );
     }
 
@@ -361,7 +361,7 @@ UrlLoader::recurse( const KURL &url )
     return urls;
 }
 
-namespace amaroK
+namespace Amarok
 {
 
 // almost the same as UrlLoader::recurse, but global
@@ -427,7 +427,7 @@ recursiveUrlExpand( const KURL::List &list, int maxURLs )
     return urls;
 }
 
-} // amaroK
+} // Amarok
 
 void
 UrlLoader::loadXml( const KURL &url )
@@ -454,7 +454,7 @@ UrlLoader::loadXml( const KURL &url )
     }
     if( !loader.lastError().isEmpty() )
     {
-        amaroK::StatusBar::instance()->longMessageThreadSafe( i18n(
+        Amarok::StatusBar::instance()->longMessageThreadSafe( i18n(
                 //TODO add a link to the path to the playlist
                 "The XML in the playlist was invalid. Please report this as a bug to the Amarok "
                 "developers. Thank you." ), KDE::StatusBar::Error );
@@ -491,9 +491,9 @@ void UrlLoader::slotNewBundle( const MetaBundle &bundle, const XmlAttributeList 
 
 void UrlLoader::slotPlaylistInfo( const QString &, const QString &version, const QString &dynamicMode )
 {
-    if( version != amaroK::xmlVersion() )
+    if( version != Amarok::xmlVersion() )
     {
-        amaroK::StatusBar::instance()->longMessageThreadSafe( i18n(
+        Amarok::StatusBar::instance()->longMessageThreadSafe( i18n(
             "Your last playlist was saved with a different version of Amarok than this one, "
             "and this version can no longer read it.\n"
             "You will have to create a new one.\n"
@@ -957,7 +957,7 @@ RemotePlaylistFetcher::RemotePlaylistFetcher( const KURL &source, QListViewItem 
             false,   /* resume download */
             false ); /* don't show stupid UIServer dialog */
 
-    amaroK::StatusBar::instance()->newProgressOperation( job )
+    Amarok::StatusBar::instance()->newProgressOperation( job )
             .setDescription( i18n("Retrieving Playlist") );
 
     connect( job, SIGNAL(result( KIO::Job* )), SLOT(result( KIO::Job* )) );

@@ -67,7 +67,7 @@ class GstEngine : public Engine::Base
         virtual bool metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b);
         virtual bool getAudioCDContents(const QString &device, KURL::List &urls);
 
-        amaroK::PluginConfig* configure() const;
+        Amarok::PluginConfig* configure() const;
 
         void gstStatusText( const QString& str ) { emit statusText( str ); }
         void gstMetaData( Engine::SimpleMetaBundle &bundle ) { emit metaData( bundle ); }
@@ -156,7 +156,7 @@ class GstEngine : public Engine::Base
         /* Constructs the pipeline for audio CDs, optionally selecting a device and/or track and/or setting the state to paused */
         bool setupAudioCD( const QString& device, unsigned track, bool pause );
 
-        /** Beams the streaming buffer status to amaroK */
+        /** Beams the streaming buffer status to Amarok */
         void sendBufferStatus();
 
         /////////////////////////////////////////////////////////////////////////////////////

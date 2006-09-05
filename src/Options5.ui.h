@@ -56,7 +56,7 @@ void Options5::init()
     connect( kcfg_OsdEnabled,         SIGNAL( toggled(bool) ),
              m_pOSDPreview,           SLOT( setShown(bool) ) );
 
-    amaroK::QStringx text = i18n(
+    Amarok::QStringx text = i18n(
             "<h3>Tags Displayed in OSD</h3>"
             "You can use the following tokens:"
                 "<ul>"
@@ -86,7 +86,7 @@ void Options5::init()
             // we don't translate these, it is not sensible to do so
             << "%title" << "%album"   << "%artist" << "%genre"     << "%bitrate"
             << "%year " << "%length"  << "%track"  << "%file"      << "%directory"
-            << "%type"  << "%comment" << "%score"  << "%playcount" << "%discnumber" 
+            << "%type"  << "%comment" << "%score"  << "%playcount" << "%discnumber"
             << "%rating" << "%moodbar"
             << "%title {Score: %score}" ) );
 }

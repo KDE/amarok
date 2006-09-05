@@ -55,14 +55,14 @@ Controller::Controller()
     : QObject( EngineController::instance(), "lastfmController" )
     , m_service( 0 )
 {
-    KActionCollection* ac = amaroK::actionCollection();
-    m_actionList.append( new KAction( i18n( "Ban" ), amaroK::icon( "remove" ),
+    KActionCollection* ac = Amarok::actionCollection();
+    m_actionList.append( new KAction( i18n( "Ban" ), Amarok::icon( "remove" ),
                          KKey( Qt::CTRL | Qt::Key_B ), this, SLOT( ban() ), ac, "ban" ) );
 
-    m_actionList.append( new KAction( i18n( "Love" ), amaroK::icon( "love" ),
+    m_actionList.append( new KAction( i18n( "Love" ), Amarok::icon( "love" ),
                          KKey( Qt::CTRL | Qt::Key_L ), this, SLOT( love() ), ac, "love" ) );
 
-    m_actionList.append( new KAction( i18n( "Skip" ), amaroK::icon( "next" ),
+    m_actionList.append( new KAction( i18n( "Skip" ), Amarok::icon( "next" ),
                          KKey( Qt::CTRL | Qt::Key_K ), this, SLOT( skip() ), ac, "skip" ) );
     setActionsEnabled( false );
 }
@@ -178,8 +178,8 @@ Controller::skip()
 void
 Controller::setActionsEnabled( bool enable )
 {   //pausing last.fm streams doesn't do anything good
-    amaroK::actionCollection()->action( "play_pause" )->setEnabled( !enable );
-    amaroK::actionCollection()->action( "pause" )->setEnabled( !enable );
+    Amarok::actionCollection()->action( "play_pause" )->setEnabled( !enable );
+    Amarok::actionCollection()->action( "pause" )->setEnabled( !enable );
 
     KAction* action;
     for( action = m_actionList.first(); action; action = m_actionList.next() )
@@ -252,7 +252,7 @@ Controller::stationDescription( QString url )
     }
 
     /// GROUP RADIOS
-    //eg: lastfm://group/amaroK%20users
+    //eg: lastfm://group/Amarok%20users
     else if ( elements[1] == "group" )
         return i18n( "Group Radio: %1" ).arg( elements[2] );
 
@@ -345,7 +345,7 @@ WebService::handshake( const QString& username, const QString& password )
     if ( m_session.lower() == "failed" )
         return false;
 
-    amaroK::config( "Scrobbler" )->writeEntry( "Subscriber", m_subscriber );
+    Amarok::config( "Scrobbler" )->writeEntry( "Subscriber", m_subscriber );
 
     // Find free port
     MyServerSocket* socket = new MyServerSocket();
@@ -355,7 +355,7 @@ WebService::handshake( const QString& username, const QString& password )
 
     m_proxyUrl = QString( "http://localhost:%1/lastfm.mp3" ).arg( port );
 
-    m_server = new amaroK::ProcIO();
+    m_server = new Amarok::ProcIO();
     m_server->setComm( KProcess::Communication( KProcess::AllOutput ) );
     *m_server << "amarok_proxy.rb";
     *m_server << "--lastfm";
@@ -494,7 +494,7 @@ WebService::fetchImageFinished( KIO::Job* job ) //SLOT
     DEBUG_BLOCK
 
     if( job->error() == 0 ) {
-        const QString path = amaroK::saveLocation() + "lastfm_image.png";
+        const QString path = Amarok::saveLocation() + "lastfm_image.png";
         const int size = AmarokConfig::coverPreviewSize();
 
         QImage img( static_cast<KIO::StoredTransferJob*>( job )->data() );
@@ -544,7 +544,7 @@ WebService::love() //SLOT
     http->get( QString( m_basePath + "/control.php?session=%1&command=love&debug=%2" )
                   .arg( m_session )
                   .arg( "0" ) );
-    amaroK::StatusBar::instance()->shortMessage( i18n("love, as in affection", "Loving song...") );
+    Amarok::StatusBar::instance()->shortMessage( i18n("love, as in affection", "Loving song...") );
 }
 
 
@@ -557,7 +557,7 @@ WebService::skip() //SLOT
     http->get( QString( m_basePath + "/control.php?session=%1&command=skip&debug=%2" )
                   .arg( m_session )
                   .arg( "0" ) );
-    amaroK::StatusBar::instance()->shortMessage( i18n("Skipping song...") );
+    Amarok::StatusBar::instance()->shortMessage( i18n("Skipping song...") );
 }
 
 
@@ -570,7 +570,7 @@ WebService::ban() //SLOT
     http->get( QString( m_basePath + "/control.php?session=%1&command=ban&debug=%2" )
                   .arg( m_session )
                   .arg( "0" ) );
-    amaroK::StatusBar::instance()->shortMessage( i18n("Ban, as in dislike", "Banning song...") );
+    Amarok::StatusBar::instance()->shortMessage( i18n("Ban, as in dislike", "Banning song...") );
 }
 
 
@@ -932,7 +932,7 @@ WebService::showError( int code, QString message )
                 message = i18n( "Failed to play this last.fm stream." );
     }
 
-    amaroK::StatusBar::instance()->longMessage( message, KDE::StatusBar::Sorry );
+    Amarok::StatusBar::instance()->longMessage( message, KDE::StatusBar::Sorry );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -39,13 +39,13 @@ class SelectLabel : public QLabel
 {
     Q_OBJECT
 
-    amaroK::SelectAction const*const m_action;
+    Amarok::SelectAction const*const m_action;
 
     signals:
         void activated( int );
 
     public:
-        SelectLabel( amaroK::SelectAction const*const action, QWidget *parent )
+        SelectLabel( Amarok::SelectAction const*const action, QWidget *parent )
                 : QLabel( parent )
                 , m_action( action )
                 , m_tooltip( 0 )
@@ -131,9 +131,9 @@ class SelectLabel : public QLabel
             if( !isEnabled() )
                 tip += i18n("&nbsp;<br>&nbsp;<i>Disabled</i>");
             else if( AmarokConfig::favorTracks() &&
-                     m_action == amaroK::actionCollection()->action( "random_mode" ) ) //hack?
+                     m_action == Amarok::actionCollection()->action( "random_mode" ) ) //hack?
             {
-                KSelectAction *a = static_cast<KSelectAction*>( amaroK::actionCollection()->action( "favor_tracks" ) );
+                KSelectAction *a = static_cast<KSelectAction*>( Amarok::actionCollection()->action( "favor_tracks" ) );
                 tip += QString("<br><br>") + i18n("%1: %2")
                                              .arg( a->text().remove( '&' ), a->currentText().remove( '&' ) );
             }

@@ -89,7 +89,6 @@ FSBrowser::FSBrowser( QWidget *parent, MediaDevice *device, const char * name, M
         : MediaView( parent, device )
 {
     KActionCollection *actionCollection;
-    KConfig* const config = amaroK::config( "Filebrowser" );
     SearchPane *searchPane;
 
     KURL *location;
@@ -99,7 +98,7 @@ FSBrowser::FSBrowser( QWidget *parent, MediaDevice *device, const char * name, M
     // so if a medium object not passed in, keep earlier behavior
     if (!medium) {
         m_medium = 0;
-        location = new KURL( config->readPathEntry( "Location", QDir::homeDirPath() ) );
+        location = new KURL( Amarok::config( "Filebrowser" )->readPathEntry( "Location", QDir::homeDirPath() ) );
         currentFolder = new KFileItem( KFileItem::Unknown, KFileItem::Unknown, *location );
         //KIO sucks, NetAccess::exists puts up a dialog and has annoying error message boxes
         //if there is a problem so there is no point in using it anyways.
@@ -154,7 +153,7 @@ FSBrowser::FSBrowser( QWidget *parent, MediaDevice *device, const char * name, M
             m_combo->setAutoDeleteCompletionObject( true );
         }
         m_combo->setMaxItems( 9 );
-        m_combo->setURLs( config->readPathListEntry( "Dir History" ) );
+        m_combo->setURLs( Amarok::config( "Filebrowser" )->readPathListEntry( "Dir History" ) );
 
         if (!m_medium)
             m_combo->lineEdit()->setText( location->path() );
@@ -165,8 +164,8 @@ FSBrowser::FSBrowser( QWidget *parent, MediaDevice *device, const char * name, M
         m_dir = new MyDirOperator( *location, container, m_medium );
         m_dir->setEnableDirHighlighting( true );
         m_dir->setMode( KFile::Mode((int)KFile::Files | (int)KFile::Directory) ); //allow selection of multiple files + dirs
-        m_dir->setOnlyDoubleClickSelectsFiles( true ); //amaroK type settings
-        m_dir->readConfig( config );
+        m_dir->setOnlyDoubleClickSelectsFiles( true ); //Amarok type settings
+        m_dir->readConfig( Amarok::config( "Filebrowser" ) );
         m_dir->setView( KFile::Default ); //will set userconfigured view, will load URL
         m_dir->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Expanding );
         m_dir->setAcceptDrops( true );
@@ -196,7 +195,7 @@ FSBrowser::FSBrowser( QWidget *parent, MediaDevice *device, const char * name, M
         menu->insertSeparator();
 
         if (!m_medium)
-            menu->insertItem( SmallIconSet( amaroK::icon( "device" ) ), i18n( "Add to Media Device &Transfer Queue" ), CopyMediaDevice );
+            menu->insertItem( SmallIconSet( Amarok::icon( "device" ) ), i18n( "Add to Media Device &Transfer Queue" ), CopyMediaDevice );
 
         menu->insertItem( SmallIconSet( "collection" ), i18n( "&Copy to Collection" ), CopyToCollection );
         menu->insertItem( SmallIconSet( "collection" ), i18n( "&Move to Collection" ), MoveToCollection );
@@ -219,7 +218,7 @@ FSBrowser::FSBrowser( QWidget *parent, MediaDevice *device, const char * name, M
         KActionMenu *a;
 
         a = (KActionMenu*)actionCollection->action( "sorting menu" );
-        a->setIcon( amaroK::icon( "configure" ) );
+        a->setIcon( Amarok::icon( "configure" ) );
         a->setDelayed( false ); //TODO should be done by KDirOperator
 
         actionCollection->action( "delete" )->setShortcut( KShortcut( SHIFT + Key_Delete ) );
@@ -275,7 +274,7 @@ FSBrowser::FSBrowser( QWidget *parent, MediaDevice *device, const char * name, M
 
 FSBrowser::~FSBrowser()
 {
-    KConfig* const c = amaroK::config( "Filebrowser" );
+    KConfig* const c = Amarok::config( "Filebrowser" );
 
     m_dir->writeConfig( c ); //uses currently set group
 
@@ -410,7 +409,7 @@ FSBrowser::slotViewChanged( KFileView *view )
 {
     if( view->widget()->inherits( "KListView" ) )
     {
-        using namespace amaroK::ColorScheme;
+        using namespace Amarok::ColorScheme;
 
         static_cast<KListView*>(view->widget())->setAlternateBackground( AltBase );
     }

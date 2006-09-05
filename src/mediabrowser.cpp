@@ -194,7 +194,7 @@ class DummyMediaDevice : public MediaDevice
         if( !silent )
         {
             //QString msg = i18n( "Sorry, you do not have a supported portable music player." );
-            //amaroK::StatusBar::instance()->longMessage( msg, KDE::StatusBar::Sorry );
+            //Amarok::StatusBar::instance()->longMessage( msg, KDE::StatusBar::Sorry );
         }
         return false;
     }
@@ -215,12 +215,12 @@ MediaBrowser::MediaBrowser( const char *name )
 
     // preload pixmaps used in browser
     KIconLoader iconLoader;
-    MediaItem::s_pixUnknown = new QPixmap(iconLoader.loadIcon( amaroK::icon( "unknown" ), KIcon::Toolbar, KIcon::SizeSmall ));
-    MediaItem::s_pixTrack = new QPixmap(iconLoader.loadIcon( amaroK::icon( "playlist" ), KIcon::Toolbar, KIcon::SizeSmall ));
-    MediaItem::s_pixFile = new QPixmap(iconLoader.loadIcon( amaroK::icon( "sound" ), KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixPodcast = new QPixmap(iconLoader.loadIcon( amaroK::icon( "podcast" ), KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixPlaylist = new QPixmap(iconLoader.loadIcon( amaroK::icon( "playlist" ), KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixRootItem = new QPixmap(iconLoader.loadIcon( amaroK::icon( "files2" ), KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixUnknown = new QPixmap(iconLoader.loadIcon( Amarok::icon( "unknown" ), KIcon::Toolbar, KIcon::SizeSmall ));
+    MediaItem::s_pixTrack = new QPixmap(iconLoader.loadIcon( Amarok::icon( "playlist" ), KIcon::Toolbar, KIcon::SizeSmall ));
+    MediaItem::s_pixFile = new QPixmap(iconLoader.loadIcon( Amarok::icon( "sound" ), KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixPodcast = new QPixmap(iconLoader.loadIcon( Amarok::icon( "podcast" ), KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixPlaylist = new QPixmap(iconLoader.loadIcon( Amarok::icon( "playlist" ), KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixRootItem = new QPixmap(iconLoader.loadIcon( Amarok::icon( "files2" ), KIcon::Toolbar, KIcon::SizeSmall ) );
     // history
     // favorites
     // collection
@@ -229,15 +229,15 @@ MediaBrowser::MediaBrowser( const char *name )
     // player_playlist_2
     // cancel
     // sound
-    MediaItem::s_pixArtist = new QPixmap(iconLoader.loadIcon( amaroK::icon( "personal" ), KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixAlbum = new QPixmap(iconLoader.loadIcon( amaroK::icon( "cdrom_unmount" ), KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixInvisible = new QPixmap(iconLoader.loadIcon( amaroK::icon( "cancel" ), KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixStale = new QPixmap(iconLoader.loadIcon( amaroK::icon( "cancel" ), KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixOrphaned = new QPixmap(iconLoader.loadIcon( amaroK::icon( "cancel" ), KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixDirectory = new QPixmap(iconLoader.loadIcon( amaroK::icon( "folder" ), KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixTransferBegin = new QPixmap(iconLoader.loadIcon( amaroK::icon( "play" ), KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixTransferEnd = new QPixmap(iconLoader.loadIcon( amaroK::icon( "stop" ), KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixTransferFailed = new QPixmap(iconLoader.loadIcon( amaroK::icon( "cancel" ), KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixArtist = new QPixmap(iconLoader.loadIcon( Amarok::icon( "personal" ), KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixAlbum = new QPixmap(iconLoader.loadIcon( Amarok::icon( "cdrom_unmount" ), KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixInvisible = new QPixmap(iconLoader.loadIcon( Amarok::icon( "cancel" ), KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixStale = new QPixmap(iconLoader.loadIcon( Amarok::icon( "cancel" ), KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixOrphaned = new QPixmap(iconLoader.loadIcon( Amarok::icon( "cancel" ), KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixDirectory = new QPixmap(iconLoader.loadIcon( Amarok::icon( "folder" ), KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixTransferBegin = new QPixmap(iconLoader.loadIcon( Amarok::icon( "play" ), KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixTransferEnd = new QPixmap(iconLoader.loadIcon( Amarok::icon( "stop" ), KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixTransferFailed = new QPixmap(iconLoader.loadIcon( Amarok::icon( "cancel" ), KIcon::Toolbar, KIcon::SizeSmall ) );
 
     setSpacing( 4 );
 
@@ -256,12 +256,12 @@ MediaBrowser::MediaBrowser( const char *name )
     m_toolbar->insertLineSeparator();
 
    // m_toolbar->setIconText( KToolBar::IconTextRight, true );
-    m_toolbar->insertButton( amaroK::icon( "add_playlist" ), CUSTOM, SIGNAL( clicked() ), this, SLOT( customClicked() ), true, "custom" );
+    m_toolbar->insertButton( Amarok::icon( "add_playlist" ), CUSTOM, SIGNAL( clicked() ), this, SLOT( customClicked() ), true, "custom" );
     QToolTip::add( m_toolbar->getButton(TRANSFER), i18n( "Transfer tracks to media device" ) );
 
     m_toolbar->setIconText( KToolBar::IconOnly, false );
 
-    m_toolbar->insertButton( amaroK::icon( "configure" ), CONFIGURE, true, i18n("Configure") );
+    m_toolbar->insertButton( Amarok::icon( "configure" ), CONFIGURE, true, i18n("Configure") );
     QToolTip::add( m_toolbar->getButton(CONFIGURE), i18n( "Configure device" ) );
 
 
@@ -312,7 +312,7 @@ MediaBrowser::MediaBrowser( const char *name )
     m_queue = new MediaQueue( this );
     m_progressBox  = new QHBox( this );
     m_progress     = new KProgress( m_progressBox );
-    m_cancelButton = new KPushButton( SmallIconSet( amaroK::icon( "cancel" ) ), i18n("Cancel"), m_progressBox );
+    m_cancelButton = new KPushButton( SmallIconSet( Amarok::icon( "cancel" ) ), i18n("Cancel"), m_progressBox );
 
 
     m_stats = new SpaceLabel(this);
@@ -323,7 +323,7 @@ MediaBrowser::MediaBrowser( const char *name )
     dev->init( this );
     addDevice( dev );
     activateDevice( 0, false );
-    queue()->load( amaroK::saveLocation() + "transferlist.xml" );
+    queue()->load( Amarok::saveLocation() + "transferlist.xml" );
 
     setFocusProxy( m_queue );
 
@@ -337,12 +337,12 @@ MediaBrowser::MediaBrowser( const char *name )
             it != mmap.end();
             it++ )
     {
-        QString handler = amaroK::config( "MediaBrowser" )->readEntry( (*it)->id() );
+        QString handler = Amarok::config( "MediaBrowser" )->readEntry( (*it)->id() );
         //debug() << "[MediaBrowser] (*it)->id() = " << (*it)->id() << ", handler = " << handler << endl;
         if( handler.isEmpty() )
         {
             //this should probably never be the case with a manually added device, unless amarokrc's been messed with
-            amaroK::config( "MediaBrowser" )->writeEntry( (*it)->id(), "ignore" );
+            Amarok::config( "MediaBrowser" )->writeEntry( (*it)->id(), "ignore" );
             newflag = true;
             mediumAdded( *it, (*it)->name(), true );
         }
@@ -352,7 +352,7 @@ MediaBrowser::MediaBrowser( const char *name )
     }
 
     if ( newflag )
-        amaroK::StatusBar::instance()->longMessageThreadSafe(
+        Amarok::StatusBar::instance()->longMessageThreadSafe(
                 i18n("Amarok has detected new portable media devices.\n"
                     "Go to the \"Media Devices\" pane of the configuration\n"
                     "dialog to choose a plugin for these devices.") );
@@ -370,7 +370,7 @@ MediaBrowser::MediaBrowser( const char *name )
             SLOT( tagsChanged( const MetaBundle& ) ) );
 
     m_haveDevices = false;
-    QMap<QString,QString> savedDevices = amaroK::config( "MediaBrowser" )->entryMap( "MediaBrowser" );
+    QMap<QString,QString> savedDevices = Amarok::config( "MediaBrowser" )->entryMap( "MediaBrowser" );
     for( QMap<QString,QString>::Iterator it = savedDevices.begin();
             it != savedDevices.end();
             ++it )
@@ -583,7 +583,7 @@ MediaBrowser::removeDevice( MediaDevice *device )
         else
         {
             debug() << "Cannot remove device because disconnect failed" << endl;
-            amaroK::StatusBar::instance()->longMessage(
+            Amarok::StatusBar::instance()->longMessage(
                     i18n( "Cannot remove device because disconnect failed" ),
                     KDE::StatusBar::Warning );
         }
@@ -743,7 +743,7 @@ MediaBrowser::~MediaBrowser()
         removeDevice( m_devices.last() );
     }
 
-    queue()->save( amaroK::saveLocation() + "transferlist.xml" );
+    queue()->save( Amarok::saveLocation() + "transferlist.xml" );
 
     delete m_deviceCombo;
     delete m_queue;
@@ -1467,8 +1467,7 @@ MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/, bool construc
     debug() << "mediumAdded: " << (medium? medium->properties():"null") << endl;
     if( medium )
     {
-        KConfig *config = amaroK::config( "MediaBrowser" );
-        QString handler = config->readEntry( medium->id() );
+        QString handler = Amarok::config( "MediaBrowser" )->readEntry( medium->id() );
         if( handler.isEmpty() )
         {
             if( !constructing && medium->isAutodetected() )
@@ -1496,7 +1495,7 @@ MediaBrowser::pluginSelected( const Medium *medium, const QString plugin )
     if( !plugin.isEmpty() )
     {
         debug() << "Medium id is " << medium->id() << " and plugin selected is: " << plugin << endl;
-        amaroK::config( "MediaBrowser" )->writeEntry( medium->id(), plugin );
+        Amarok::config( "MediaBrowser" )->writeEntry( medium->id(), plugin );
 
         bool success = true;
         for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
@@ -1526,7 +1525,7 @@ MediaBrowser::pluginSelected( const Medium *medium, const QString plugin )
         else
         {
             debug() << "Cannot change plugin while operation is in progress" << endl;
-            amaroK::StatusBar::instance()->longMessage(
+            Amarok::StatusBar::instance()->longMessage(
                     i18n( "Cannot change plugin while operation is in progress" ),
                     KDE::StatusBar::Warning );
         }
@@ -1558,7 +1557,7 @@ MediaBrowser::mediumChanged( const Medium *medium, QString /*name*/ )
 #if 0
                 if( (*it)->isConnected() && !medium->isMounted() )
                 {
-                    amaroK::StatusBar::instance()->longMessage(
+                    Amarok::StatusBar::instance()->longMessage(
                             i18n( "The device %1 was unmounted before it was synchronized. "
                                 "In order to avoid data loss, press the \"Disconnect\" button "
                                 "before unmounting the device." ).arg( name ),
@@ -1587,7 +1586,7 @@ MediaBrowser::mediumRemoved( const Medium *medium, QString name )
                 {
                     if( (*it)->disconnectDevice() )
                         removeDevice( *it );
-                    amaroK::StatusBar::instance()->longMessage(
+                    Amarok::StatusBar::instance()->longMessage(
                             i18n( "The device %1 was removed before it was disconnected. "
                                 "In order to avoid possible data loss, press the \"Disconnect\""
                                 "button before disconnecting the device." ).arg( name ),
@@ -1610,7 +1609,7 @@ MediaBrowser::loadDevicePlugin( const QString &deviceType )
         return 0;
 
     QString query = "[X-KDE-Amarok-plugintype] == 'mediadevice' and [X-KDE-Amarok-name] == '%1'";
-    amaroK::Plugin *plugin = PluginManager::createFromQuery( query.arg( deviceType ) );
+    Amarok::Plugin *plugin = PluginManager::createFromQuery( query.arg( deviceType ) );
 
     if( plugin )
     {
@@ -1672,7 +1671,7 @@ MediaBrowser::configSelectPlugin( int index )
     }
     else if( currentDevice() )
     {
-        KConfig *config = amaroK::config( "MediaBrowser" );
+        KConfig *config = Amarok::config( "MediaBrowser" );
         config->writeEntry( currentDevice()->uniqueId(), m_pluginName[m_configPluginCombo->currentText()] );
     }
 
@@ -1698,7 +1697,7 @@ MediaBrowser::configSelectPlugin( int index )
             if( AmarokConfig::deviceType() != "dummy-mediadevice" )
             {
                 QString msg = i18n( "The requested media device could not be loaded" );
-                amaroK::StatusBar::instance()->shortMessage( msg );
+                Amarok::StatusBar::instance()->shortMessage( msg );
             }
         }
         dev = currentDevice();
@@ -1845,7 +1844,7 @@ MediaView::setFilter( const QString &filter, MediaItem *parent )
 }
 
 MediaDevice::MediaDevice()
-    : amaroK::Plugin()
+    : Amarok::Plugin()
     , m_hasMountPoint( true )
     , m_autoDeletePodcasts( false )
     , m_syncStats( false )
@@ -1921,7 +1920,7 @@ MediaDevice::configString( const QString &name, const QString &defValue )
     QString configName = "MediaDevice";
     if( !uniqueId().isEmpty() )
         configName += "_" + uniqueId();
-    KConfig *config = amaroK::config( configName );
+    KConfig *config = Amarok::config( configName );
     return config->readEntry( name, defValue );
 }
 
@@ -1931,7 +1930,7 @@ MediaDevice::setConfigString( const QString &name, const QString &value )
     QString configName = "MediaDevice";
     if( !uniqueId().isEmpty() )
         configName += "_" + uniqueId();
-    KConfig *config = amaroK::config( configName );
+    KConfig *config = Amarok::config( configName );
     config->writeEntry( name, value );
 }
 
@@ -1941,7 +1940,7 @@ MediaDevice::configBool( const QString &name, bool defValue )
     QString configName = "MediaDevice";
     if( !uniqueId().isEmpty() )
         configName += "_" + uniqueId();
-    KConfig *config = amaroK::config( configName );
+    KConfig *config = Amarok::config( configName );
     return config->readBoolEntry( name, defValue );
 }
 
@@ -1951,7 +1950,7 @@ MediaDevice::setConfigBool( const QString &name, bool value )
     QString configName = "MediaDevice";
     if( !uniqueId().isEmpty() )
         configName += "_" + uniqueId();
-    KConfig *config = amaroK::config( configName );
+    KConfig *config = Amarok::config( configName );
     config->writeEntry( name, value );
 }
 
@@ -2017,7 +2016,7 @@ MediaDevice::bundlesToSync( const QString &name, const KURL &url )
     BundleList bundles;
     if( !PlaylistFile::isPlaylistFile( url ) )
     {
-        amaroK::StatusBar::instance()->longMessage( i18n( "Not a playlist file: %1" ).arg( url.path() ),
+        Amarok::StatusBar::instance()->longMessage( i18n( "Not a playlist file: %1" ).arg( url.path() ),
                 KDE::StatusBar::Sorry );
         return bundles;
     }
@@ -2025,7 +2024,7 @@ MediaDevice::bundlesToSync( const QString &name, const KURL &url )
     PlaylistFile playlist( url.path() );
     if( playlist.isError() )
     {
-        amaroK::StatusBar::instance()->longMessage( i18n( "Failed to load playlist: %1" ).arg( url.path() ),
+        Amarok::StatusBar::instance()->longMessage( i18n( "Failed to load playlist: %1" ).arg( url.path() ),
                 KDE::StatusBar::Sorry );
         return bundles;
     }
@@ -2156,7 +2155,7 @@ MediaQueue::addURL( const KURL& url, MetaBundle *bundle, const QString &playlist
 
         if( playlist.isError() )
         {
-            amaroK::StatusBar::instance()->longMessage( i18n( "Failed to load playlist: %1" ).arg( url.path() ),
+            Amarok::StatusBar::instance()->longMessage( i18n( "Failed to load playlist: %1" ).arg( url.path() ),
                     KDE::StatusBar::Sorry );
             return;
         }
@@ -2183,7 +2182,7 @@ MediaQueue::addURL( const KURL& url, MetaBundle *bundle, const QString &playlist
     }
     else if( url.protocol() == "file" && QFileInfo( url.path() ).isDir() )
     {
-        KURL::List urls = amaroK::recursiveUrlExpand( url );
+        KURL::List urls = Amarok::recursiveUrlExpand( url );
         foreachType( KURL::List, urls )
             addURL( *it );
         return;
@@ -2244,7 +2243,7 @@ MediaQueue::addURL( const KURL &url, MediaItem *item )
     m_parent->updateButtons();
     m_parent->m_progress->setTotalSteps( m_parent->m_progress->totalSteps() + 1 );
     itemCountChanged();
-    
+
 }
 
 void
@@ -2383,7 +2382,7 @@ MediaDevice::kioCopyTrack( const KURL &src, const KURL &dst )
         if(m_copyFailed)
         {
             tryToRemove = true;
-            amaroK::StatusBar::instance()->longMessage(
+            Amarok::StatusBar::instance()->longMessage(
                     i18n( "Media Device: Copying %1 to %2 failed" )
                     .arg( src.prettyURL(), dst.prettyURL() ),
                     KDE::StatusBar::Error );
@@ -2395,7 +2394,7 @@ MediaDevice::kioCopyTrack( const KURL &src, const KURL &dst )
             {
                 tryToRemove = true;
                 // probably s.th. went wrong
-                amaroK::StatusBar::instance()->longMessage(
+                Amarok::StatusBar::instance()->longMessage(
                         i18n( "Media Device: Reading tags from %1 failed" ).arg( dst.prettyURL() ),
                         KDE::StatusBar::Error );
             }
@@ -2580,13 +2579,13 @@ MediaDevice::connectDevice( bool silent )
             purgeEmptyItems();
             if( numDeleted < 0 )
             {
-                amaroK::StatusBar::instance()->longMessage(
+                Amarok::StatusBar::instance()->longMessage(
                         i18n( "Failed to purge podcasts already played" ),
                         KDE::StatusBar::Sorry );
             }
             else if( numDeleted > 0 )
             {
-                amaroK::StatusBar::instance()->shortMessage(
+                Amarok::StatusBar::instance()->shortMessage(
                         i18n( "Purged 1 podcasts already played",
                             "Purged %n podcasts already played",
                             numDeleted ) );
@@ -2608,7 +2607,7 @@ MediaDevice::connectDevice( bool silent )
         disconnectDevice( m_runDisconnectHook );
     }
 
-    amaroK::StatusBar::instance()->shortMessage( i18n( "Device successfully connected" ) );
+    Amarok::StatusBar::instance()->shortMessage( i18n( "Device successfully connected" ) );
 
     return true;
 }
@@ -2644,13 +2643,13 @@ MediaDevice::disconnectDevice( bool postDisconnectHook )
     bool result = true;
     if( postDisconnectHook && runPostDisconnectCommand() != 0 )
     {
-        amaroK::StatusBar::instance()->longMessage(
+        Amarok::StatusBar::instance()->longMessage(
                 i18n( "Post-disconnect command failed, before removing device, please make sure that it is safe to do so." ),
                 KDE::StatusBar::Information );
         result = false;
     }
     else
-        amaroK::StatusBar::instance()->shortMessage( i18n( "Device successfully disconnected" ) );
+        Amarok::StatusBar::instance()->shortMessage( i18n( "Device successfully disconnected" ) );
 
     return result;
 }
@@ -2758,7 +2757,7 @@ MediaDevice::transferFiles()
     {
         return;
     }
-    
+
     setCanceled( false );
 
     m_transferring = true;
@@ -2825,7 +2824,7 @@ MediaDevice::transferFiles()
             MediaItem *item = trackExists( *bundle );
             if( item && playlist.isEmpty() )
             {
-                amaroK::StatusBar::instance()->shortMessage( i18n( "Track already on media device: %1" ).
+                Amarok::StatusBar::instance()->shortMessage( i18n( "Track already on media device: %1" ).
                         arg( (*it).url().prettyURL() ),
                         KDE::StatusBar::Sorry );
                 existing += (*it).url();
@@ -2869,7 +2868,7 @@ MediaDevice::transferFiles()
 
                 if( !isPlayable( *bundle ) )
                 {
-                    amaroK::StatusBar::instance()->shortMessage( i18n( "Track not playable on media device: %1" ).arg( bundle->url().path() ),
+                    Amarok::StatusBar::instance()->shortMessage( i18n( "Track not playable on media device: %1" ).arg( bundle->url().path() ),
                             KDE::StatusBar::Sorry );
                     unplayable += (*it).url();
                     transferredItem->setFailed();
@@ -2887,7 +2886,7 @@ MediaDevice::transferFiles()
             {
                 if( !isCanceled() )
                 {
-                    amaroK::StatusBar::instance()->longMessage(
+                    Amarok::StatusBar::instance()->longMessage(
                             i18n( "Failed to copy track to media device: %1" ).arg( bundle->url().path() ),
                             KDE::StatusBar::Sorry );
                     transferredItem->setFailed();
@@ -2988,11 +2987,11 @@ MediaDevice::transferFiles()
         {
             longMsg += "<br>" + (*it).prettyURL();
         }
-        amaroK::StatusBar::instance()->shortLongMessage( msg, longMsg, KDE::StatusBar::Sorry );
+        Amarok::StatusBar::instance()->shortLongMessage( msg, longMsg, KDE::StatusBar::Sorry );
     }
     else if( !msg.isEmpty() )
     {
-        amaroK::StatusBar::instance()->shortMessage( msg, KDE::StatusBar::Sorry );
+        Amarok::StatusBar::instance()->shortMessage( msg, KDE::StatusBar::Sorry );
     }
 
     m_parent->updateButtons();
@@ -3300,7 +3299,7 @@ MediaQueue::load( const QString& filename )
     QString er;
     int l, c;
     if( !d.setContent( stream.read(), &er, &l, &c ) ) { // return error values
-        amaroK::StatusBar::instance()->longMessageThreadSafe( i18n(
+        Amarok::StatusBar::instance()->longMessageThreadSafe( i18n(
                 //TODO add a link to the path to the playlist
                 "The XML in the transferlist was invalid. Please report this as a bug to the Amarok "
                 "developers. Thank you." ), KDE::StatusBar::Error );
@@ -3562,10 +3561,10 @@ MediaQueue::slotShowContextMenu( QListViewItem* item, const QPoint& point, int )
     enum Actions { REMOVE_SELECTED, CLEAR_ALL, START_TRANSFER };
 
     if( item )
-        menu.insertItem( SmallIconSet( amaroK::icon( "remove_from_playlist" ) ), i18n( "&Remove From Queue" ), REMOVE_SELECTED );
+        menu.insertItem( SmallIconSet( Amarok::icon( "remove_from_playlist" ) ), i18n( "&Remove From Queue" ), REMOVE_SELECTED );
 
-    menu.insertItem( SmallIconSet( amaroK::icon( "playlist_clear" ) ), i18n( "&Clear Queue" ), CLEAR_ALL );
-    menu.insertItem( SmallIconSet( amaroK::icon( "playlist_refresh" ) ), i18n( "&Start Transfer" ), START_TRANSFER );
+    menu.insertItem( SmallIconSet( Amarok::icon( "playlist_clear" ) ), i18n( "&Clear Queue" ), CLEAR_ALL );
+    menu.insertItem( SmallIconSet( Amarok::icon( "playlist_refresh" ) ), i18n( "&Start Transfer" ), START_TRANSFER );
     menu.setItemEnabled( START_TRANSFER,
             MediaBrowser::instance()->currentDevice() &&
             MediaBrowser::instance()->currentDevice()->isConnected() );

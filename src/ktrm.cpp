@@ -734,7 +734,7 @@ void KTRMLookup::puidGenerated()
 
     KIO::Job *job = KIO::storedGet( QString( "http://musicbrainz.org/ws/1/track/?type=xml&puid=%1" ).arg( puid ) , false, false );
 
-    amaroK::StatusBar::instance()->newProgressOperation( job )
+    Amarok::StatusBar::instance()->newProgressOperation( job )
             .setDescription( i18n( "MusicBrainz Lookup" ) );
 
     connect( job, SIGNAL( result( KIO::Job* ) ), SLOT( lookupResult( KIO::Job* ) ) );
@@ -747,7 +747,7 @@ void KTRMLookup::lookupResult( KIO::Job* job )
     DEBUG_BLOCK
     if ( !job->error() == 0 ) {
         warning() << "[MusicBrainzLookup] KIO error! errno: " << job->error() << endl;
-        amaroK::StatusBar::instance()->longMessage( "Couldn't connect to MusicBrainz server." );
+        Amarok::StatusBar::instance()->longMessage( "Couldn't connect to MusicBrainz server." );
         finished();
         return;
     }
@@ -759,7 +759,7 @@ void KTRMLookup::lookupResult( KIO::Job* job )
 
     if( !doc.setContent( xml ) ) {
         warning() << "[MusicBrainzLookup] Invalid XML" << endl;
-        amaroK::StatusBar::instance()->longMessage( "MusicBrainz returned invalid content." );
+        Amarok::StatusBar::instance()->longMessage( "MusicBrainz returned invalid content." );
         finished();
         return;
     }

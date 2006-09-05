@@ -134,7 +134,7 @@ void GLAnalyzer2::analyze( const Scope &s )
             frame.energy = currentEnergy;
 //            printf( "%d  [%f :: %f ]\t%f \n", bands, frame.energy, frame.meanBand, maxValue         );
         } else
-	    frame.energy = 0.0;
+        frame.energy = 0.0;
     }
 
     // update the frame
@@ -170,11 +170,11 @@ void GLAnalyzer2::paintGL()
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     glEnable( GL_TEXTURE_2D );
     float alphaN = show.paused ? 0.2 : (frame.energy / 10.0),
-	  alphaP = show.paused ? 1.0 : (1 - frame.energy / 20.0);
+      alphaP = show.paused ? 1.0 : (1 - frame.energy / 20.0);
     if ( alphaN > 1.0 )
-	alphaN = 1.0;
+    alphaN = 1.0;
     if ( alphaP < 0.1 )
-	alphaP = 0.1;
+    alphaP = 0.1;
     glBindTexture( GL_TEXTURE_2D, w2Texture );
     setTextureMatrix( show.rotDegrees, 0.707*alphaP );
     glColor4f( 1.0f, 1.0f, 1.0f, 1.0f );
@@ -215,8 +215,8 @@ void GLAnalyzer2::paintGL()
     {
         if ( show.pauseTimer > 0.5 )
         {
-	    if ( show.pauseTimer > 0.6 )
-        	show.pauseTimer -= 0.6;
+        if ( show.pauseTimer > 0.6 )
+            show.pauseTimer -= 0.6;
             drawFullDot( 0.0f, 0.4f, 0.8f, 1.0f );
             drawFullDot( 0.0f, 0.4f, 0.8f, 1.0f );
         }
@@ -236,12 +236,12 @@ void GLAnalyzer2::paintGL()
 //     Particle * particle = particleList.first();
 //     for (; particle; particle = particleList.next())
     {
-	glColor4f( 0.0f, 1.0f, 0.0f, 1.0f );
-	drawDot( 0, 0, kMax(10.0,(10.0 * frame.energy)) );
-	glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
-	drawDot( 6, 0, kMax(10.0, (5.0 * frame.energy)) );
-	glColor4f( 0.0f, 0.4f, 1.0f, 1.0f );
-	drawDot( -6, 0, kMax(10.0, (5.0 * frame.energy)) );
+    glColor4f( 0.0f, 1.0f, 0.0f, 1.0f );
+    drawDot( 0, 0, kMax(10.0,(10.0 * frame.energy)) );
+    glColor4f( 1.0f, 0.0f, 0.0f, 1.0f );
+    drawDot( 6, 0, kMax(10.0, (5.0 * frame.energy)) );
+    glColor4f( 0.0f, 0.4f, 1.0f, 1.0f );
+    drawDot( -6, 0, kMax(10.0, (5.0 * frame.energy)) );
     }
     glEnd();
 }
@@ -289,10 +289,10 @@ void GLAnalyzer2::setTextureMatrix( float rot, float scale )
     glLoadIdentity();
     if ( rot != 0.0 || scale != 0.0 )
     {
-	glTranslatef( 0.5f, 0.5f, 0.0f );
-	glRotatef( rot, 0.0f, 0.0f, 1.0f );
-	glScalef( scale, scale, 1.0f );
-	glTranslatef( -0.5f, -0.5f, 0.0f );
+    glTranslatef( 0.5f, 0.5f, 0.0f );
+    glRotatef( rot, 0.0f, 0.0f, 1.0f );
+    glScalef( scale, scale, 1.0f );
+    glTranslatef( -0.5f, -0.5f, 0.0f );
     }
     glMatrixMode( GL_MODELVIEW );
 }

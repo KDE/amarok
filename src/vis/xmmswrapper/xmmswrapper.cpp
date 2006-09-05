@@ -91,7 +91,7 @@ main( int argc, char** argv )
     if( sockfd == -1 ) exit( 1 );
 
 
-    //register fd/pid combo with amaroK
+    //register fd/pid combo with Amarok
     {
         pid_t pid = getpid();
         char  buf[32] = "REG";
@@ -110,7 +110,7 @@ main( int argc, char** argv )
 
 
     //main loop
-    // 1. we sleep for a bit, listening for messages from amaroK
+    // 1. we sleep for a bit, listening for messages from Amarok
     // 2. render a frame
     // 3. do a gtk_event_loop iteration
 
@@ -135,7 +135,7 @@ main( int argc, char** argv )
 
         if( FD_ISSET( sockfd, &fds) )
         {
-            //amaroK sent us some data
+            //Amarok sent us some data
 
             char c[16];
             recv( sockfd, c, 16, 0 );
@@ -147,7 +147,7 @@ main( int argc, char** argv )
         }
 
         ::send( sockfd, "PCM", 4, 0 );
-        // get 1024 samples, interleaved PCM from amaroK
+        // get 1024 samples, interleaved PCM from Amarok
         gint16 data[1024];
         nbytes = ::recv( sockfd, data, 1024 * sizeof( gint16 ), 0 );
 

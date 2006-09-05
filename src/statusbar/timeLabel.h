@@ -35,7 +35,7 @@ public:
     {
         AmarokConfig::setTimeDisplayRemaining( !AmarokConfig::timeDisplayRemaining() );
 
-        amaroK::StatusBar::instance()->drawTimeDisplay( EngineController::engine()->position() );
+        Amarok::StatusBar::instance()->drawTimeDisplay( EngineController::engine()->position() );
     }
 };
 

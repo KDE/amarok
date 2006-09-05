@@ -49,7 +49,7 @@
 #include <kstartupinfo.h>
 
 
-namespace amaroK
+namespace Amarok
 {
 /////////////////////////////////////////////////////////////////////////////////////
 // class DcopPlayerHandler
@@ -73,7 +73,7 @@ namespace amaroK
 
     bool DcopPlayerHandler::dynamicModeStatus()
     {
-        return amaroK::dynamicMode();
+        return Amarok::dynamicMode();
     }
 
     bool DcopPlayerHandler::equalizerEnabled()
@@ -101,12 +101,12 @@ namespace amaroK
 
     bool DcopPlayerHandler::repeatPlaylistStatus()
     {
-        return amaroK::repeatPlaylist();
+        return Amarok::repeatPlaylist();
     }
 
     bool DcopPlayerHandler::repeatTrackStatus()
     {
-        return amaroK::repeatTrack();
+        return Amarok::repeatTrack();
     }
 
     int DcopPlayerHandler::getVolume()
@@ -248,7 +248,7 @@ namespace amaroK
         AmarokConfig::setContextBrowserStyleSheet( msg );
         ContextBrowser::instance()->reloadStyleSheet();
 
-        if ( QFile::exists( amaroK::saveLocation( "themes/" + msg + '/' ) + "stylesheet.css" ) )
+        if ( QFile::exists( Amarok::saveLocation( "themes/" + msg + '/' ) + "stylesheet.css" ) )
             return "Context browser theme '"+msg+"' applied.";
         else
             return "No such theme '"+msg+"' exists, default theme applied.";
@@ -294,25 +294,25 @@ namespace amaroK
 
     void DcopPlayerHandler::enableOSD(bool enable)
     {
-        amaroK::OSD::instance()->setEnabled( enable );
+        Amarok::OSD::instance()->setEnabled( enable );
         AmarokConfig::setOsdEnabled( enable );
     }
 
     void DcopPlayerHandler::enableRandomMode( bool enable )
     {
-        static_cast<KSelectAction*>(amaroK::actionCollection()->action( "random_mode" ))
+        static_cast<KSelectAction*>(Amarok::actionCollection()->action( "random_mode" ))
             ->setCurrentItem( enable ? AmarokConfig::EnumRandomMode::Tracks : AmarokConfig::EnumRandomMode::Off );
     }
 
     void DcopPlayerHandler::enableRepeatPlaylist( bool enable )
     {
-        static_cast<KSelectAction*>( amaroK::actionCollection()->action( "repeat" ) )
+        static_cast<KSelectAction*>( Amarok::actionCollection()->action( "repeat" ) )
                ->setCurrentItem( enable ? AmarokConfig::EnumRepeat::Playlist : AmarokConfig::EnumRepeat::Off );
     }
 
      void DcopPlayerHandler::enableRepeatTrack( bool enable)
     {
-        static_cast<KSelectAction*>( amaroK::actionCollection()->action( "repeat" ) )
+        static_cast<KSelectAction*>( Amarok::actionCollection()->action( "repeat" ) )
                ->setCurrentItem( enable ? AmarokConfig::EnumRepeat::Track : AmarokConfig::EnumRepeat::Off );
     }
 
@@ -481,7 +481,7 @@ namespace amaroK
 
     void DcopPlayerHandler::showOSD()
     {
-        amaroK::OSD::instance()->forceToggleOSD();
+        Amarok::OSD::instance()->forceToggleOSD();
     }
 
     void DcopPlayerHandler::stop()
@@ -918,12 +918,12 @@ namespace amaroK
 
     QString DcopScriptHandler::proxyForUrl(const QString& url)
     {
-        return amaroK::proxyForUrl( url );
+        return Amarok::proxyForUrl( url );
     }
 
     QString DcopScriptHandler::proxyForProtocol(const QString& protocol)
     {
-        return amaroK::proxyForProtocol( protocol );
+        return Amarok::proxyForProtocol( protocol );
     }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -1008,6 +1008,6 @@ namespace amaroK
         MediaBrowser::instance()->transcodingFinished( src, dest );
     }
 
-} //namespace amaroK
+} //namespace Amarok
 
 #include "amarokdcophandler.moc"

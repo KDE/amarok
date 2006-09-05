@@ -68,7 +68,6 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         : QVBox( 0, name )
 {
     KActionCollection *actionCollection;
-    KConfig* const config = amaroK::config( "Filebrowser" );
     SearchPane *searchPane;
 
     KURL *location;
@@ -78,7 +77,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
     // so if a medium object not passed in, keep earlier behavior
     if (!medium) {
         m_medium = 0;
-        location = new KURL( config->readPathEntry( "Location", QDir::homeDirPath() ) );
+        location = new KURL( Amarok::config( "Filebrowser" )->readPathEntry( "Location", QDir::homeDirPath() ) );
         currentFolder = new KFileItem( KFileItem::Unknown, KFileItem::Unknown, *location );
         //KIO sucks, NetAccess::exists puts up a dialog and has annoying error message boxes
         //if there is a problem so there is no point in using it anyways.
@@ -133,7 +132,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
             m_combo->setAutoDeleteCompletionObject( true );
         }
         m_combo->setMaxItems( 9 );
-        m_combo->setURLs( config->readPathListEntry( "Dir History" ) );
+        m_combo->setURLs( Amarok::config( "Filebrowser" )->readPathListEntry( "Dir History" ) );
 
         if (!m_medium)
             m_combo->lineEdit()->setText( location->path() );
@@ -145,7 +144,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         m_dir->setEnableDirHighlighting( true );
         m_dir->setMode( KFile::Mode((int)KFile::Files | (int)KFile::Directory) ); //allow selection of multiple files + dirs
         m_dir->setOnlyDoubleClickSelectsFiles( true ); //Amarok type settings
-        m_dir->readConfig( config );
+        m_dir->readConfig( Amarok::config( "Filebrowser" ) );
         m_dir->setView( KFile::Default ); //will set userconfigured view, will load URL
         m_dir->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Expanding );
         m_dir->setAcceptDrops( true );
@@ -169,25 +168,25 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         QPopupMenu* const menu = static_cast<KActionMenu*>(actionCollection->action("popupMenu"))->popupMenu();
 
         menu->clear();
-        menu->insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n( "&Load" ), MakePlaylist );
-        menu->insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), AppendToPlaylist );
-        menu->insertItem( SmallIconSet( amaroK::icon( "save" ) ), i18n( "&Save as Playlist..." ), SavePlaylist );
+        menu->insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), MakePlaylist );
+        menu->insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), AppendToPlaylist );
+        menu->insertItem( SmallIconSet( Amarok::icon( "save" ) ), i18n( "&Save as Playlist..." ), SavePlaylist );
         menu->insertSeparator();
 
         if (!m_medium)
-            menu->insertItem( SmallIconSet( amaroK::icon( "device" ) ), i18n( "&Transfer to Media Device" ), MediaDevice );
+            menu->insertItem( SmallIconSet( Amarok::icon( "device" ) ), i18n( "&Transfer to Media Device" ), MediaDevice );
 
-        menu->insertItem( SmallIconSet( amaroK::icon( "collection" ) ), i18n( "&Organize Files..." ), OrganizeFiles );
-        menu->insertItem( SmallIconSet( amaroK::icon( "collection" ) ), i18n( "&Copy Files to Collection..." ), CopyToCollection );
-        menu->insertItem( SmallIconSet( amaroK::icon( "collection" ) ), i18n( "&Move Files to Collection..." ), MoveToCollection );
-        menu->insertItem( SmallIconSet( amaroK::icon( "burn" ) ), i18n("Burn to CD..."), BurnCd );
+        menu->insertItem( SmallIconSet( Amarok::icon( "collection" ) ), i18n( "&Organize Files..." ), OrganizeFiles );
+        menu->insertItem( SmallIconSet( Amarok::icon( "collection" ) ), i18n( "&Copy Files to Collection..." ), CopyToCollection );
+        menu->insertItem( SmallIconSet( Amarok::icon( "collection" ) ), i18n( "&Move Files to Collection..." ), MoveToCollection );
+        menu->insertItem( SmallIconSet( Amarok::icon( "burn" ) ), i18n("Burn to CD..."), BurnCd );
         menu->insertSeparator();
         menu->insertItem( i18n( "&Select All Files" ), SelectAllFiles );
         menu->insertSeparator();
-        actionCollection->action( "delete" )->setIcon( amaroK::icon( "remove" ) );
+        actionCollection->action( "delete" )->setIcon( Amarok::icon( "remove" ) );
         actionCollection->action( "delete" )->plug( menu );
         menu->insertSeparator();
-        menu->insertItem( SmallIconSet( amaroK::icon( "info" ) ), i18n( "Edit Track &Information..." ), EditTags );
+        menu->insertItem( SmallIconSet( Amarok::icon( "info" ) ), i18n( "Edit Track &Information..." ), EditTags );
         actionCollection->action( "properties" )->plug( menu );
 
         menu->setItemEnabled( BurnCd, K3bExporter::isAvailable() );
@@ -200,7 +199,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         KActionMenu *a;
 
         a = static_cast<KActionMenu*>( actionCollection->action( "sorting menu" ) );
-        a->setIcon( amaroK::icon( "configure" ) );
+        a->setIcon( Amarok::icon( "configure" ) );
         a->setDelayed( false ); //TODO should be done by KDirOperator
 
         actionCollection->action( "delete" )->setShortcut( KShortcut( SHIFT + Key_Delete ) );
@@ -221,7 +220,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         if ( KAction *a = actionCollection->action( "home" ) )
             a->plug( toolbar );
         if ( KAction *a = actionCollection->action( "reload" ) ) {
-            a->setIcon( amaroK::icon( "refresh" ) );
+            a->setIcon( Amarok::icon( "refresh" ) );
             a->plug( toolbar );
         }
 
@@ -240,7 +239,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
             a->plug( toolbar );
 
 
-        KAction *gotoCurrent = new KAction( i18n("Goto Current Track Folder"), amaroK::icon( "music" ), 0,
+        KAction *gotoCurrent = new KAction( i18n("Goto Current Track Folder"), Amarok::icon( "music" ), 0,
                                             this, SLOT( gotoCurrentFolder() ), actionCollection );
         gotoCurrent->plug( toolbar );
 
@@ -269,7 +268,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
 
 FileBrowser::~FileBrowser()
 {
-    KConfig* const c = amaroK::config( "Filebrowser" );
+    KConfig* const c = Amarok::config( "Filebrowser" );
 
     m_dir->writeConfig( c ); //uses currently set group
 
@@ -404,7 +403,7 @@ FileBrowser::slotViewChanged( KFileView *view )
 {
     if( view->widget()->inherits( "KListView" ) )
     {
-        using namespace amaroK::ColorScheme;
+        using namespace Amarok::ColorScheme;
 
         static_cast<KListView*>(view->widget())->setAlternateBackground( AltBase );
     }
@@ -448,7 +447,7 @@ FileBrowser::contextMenuActivated( int id )
 
     case EditTags:
         {
-            KURL::List list = amaroK::recursiveUrlExpand( selectedItems() );
+            KURL::List list = Amarok::recursiveUrlExpand( selectedItems() );
             TagDialog *dialog = NULL;
             if( list.count() == 1 )
             {

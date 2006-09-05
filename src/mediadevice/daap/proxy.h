@@ -22,7 +22,7 @@ namespace Daap {
     class Proxy : public QObject
     {
         Q_OBJECT
-        
+
         public:
             Proxy(KURL stream, DaapClient* client, const char* name);
             ~Proxy();
@@ -34,7 +34,7 @@ namespace Daap {
 
         private:
             KURL m_proxyUrl;
-            amaroK::ProcIO* m_proxy;
+            Amarok::ProcIO* m_proxy;
     };
 
     // We must implement this because QServerSocket has one pure virtual method.

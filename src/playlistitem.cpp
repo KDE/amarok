@@ -447,7 +447,7 @@ PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
         case Bitrate:    return cmp( bitrate(),   i->bitrate() );
         case Bpm:        return cmp( bpm(),       i->bpm() );
         case Filesize:   return cmp( filesize(),  i->filesize() );
-        case Mood:       
+        case Mood:
             return cmp( moodbar_const().hueSort(), i->moodbar_const().hueSort() );
         case Year:
             if( year() == i->year() )
@@ -504,7 +504,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
     // The moodbar column can have text in it, like "Calculating".
     // moodbarType is 0 if column != Mood, 1 if we're displaying
     // a moodbar, and 2 if we're displaying text
-    const int moodbarType = 
+    const int moodbarType =
         column != Mood ? 0 : moodbar().state() == Moodbar::Loaded ? 1 : 2;
 
     const QString colText = text( column );
@@ -724,12 +724,12 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
     /// Track action symbols
     const int  queue       = listView()->m_nextTracks.findRef( this ) + 1;
     const bool stop        = ( this == listView()->m_stopAfterTrack );
-    const bool repeat      = amaroK::repeatTrack() && isCurrent;
+    const bool repeat      = Amarok::repeatTrack() && isCurrent;
 
     const uint num = ( queue ? 1 : 0 ) + ( stop ? 1 : 0 ) + ( repeat ? 1 : 0 );
 
-    static const QPixmap pixstop   = amaroK::getPNG(  "currenttrack_stop_small"  ),
-                         pixrepeat = amaroK::getPNG( "currenttrack_repeat_small" );
+    static const QPixmap pixstop   = Amarok::getPNG(  "currenttrack_stop_small"  ),
+                         pixrepeat = Amarok::getPNG( "currenttrack_repeat_small" );
 
     //figure out if we are in the actual physical first column
     if( column == listView()->m_firstColumn && num )
@@ -875,12 +875,12 @@ void PlaylistItem::drawMood( QPainter *p, int width, int height )
     // Due to the logic of the calling code, this should always return true
     if( moodbar().dataExists() )
       {
-        QPixmap mood = moodbar().draw( width - MOODBAR_SPACING*2, 
+        QPixmap mood = moodbar().draw( width - MOODBAR_SPACING*2,
                                        height - MOODBAR_SPACING*2 );
         p->drawPixmap( MOODBAR_SPACING, MOODBAR_SPACING, mood );
       }
 
-    else 
+    else
       moodbar().load();  // This only has any effect the first time it's run
 
     // We don't have to listen for the jobEvent() signal since we
@@ -958,7 +958,7 @@ AtomicString PlaylistItem::artist_album() const
 
 void PlaylistItem::refAlbum()
 {
-    if( amaroK::entireAlbums() )
+    if( Amarok::entireAlbums() )
     {
         if( listView()->m_albums[artist_album()].find( album() ) == listView()->m_albums[artist_album()].end() )
             listView()->m_albums[artist_album()][album()] = new PlaylistAlbum;
@@ -969,7 +969,7 @@ void PlaylistItem::refAlbum()
 
 void PlaylistItem::derefAlbum()
 {
-    if( amaroK::entireAlbums() && m_album )
+    if( Amarok::entireAlbums() && m_album )
     {
         m_album->refcount--;
         if( !m_album->refcount )
@@ -985,7 +985,7 @@ void PlaylistItem::derefAlbum()
 
 void PlaylistItem::incrementTotals()
 {
-    if( amaroK::entireAlbums() && m_album )
+    if( Amarok::entireAlbums() && m_album )
     {
         const uint prevCount = m_album->tracks.count();
         if( !track() || !m_album->tracks.count() || ( m_album->tracks.getLast()->track() && m_album->tracks.getLast()->track() < track() ) )
@@ -1010,7 +1010,7 @@ void PlaylistItem::incrementTotals()
 
 void PlaylistItem::decrementTotals()
 {
-    if( amaroK::entireAlbums() && m_album )
+    if( Amarok::entireAlbums() && m_album )
     {
         const Q_INT64 prevTotal = m_album->total;
         Q_INT64 total = m_album->total * m_album->tracks.count();

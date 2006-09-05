@@ -67,7 +67,7 @@
 #include <knewstuff/provider.h>       // "
 
 
-namespace amaroK {
+namespace Amarok {
     void closeOpenFiles(int out, int in, int err) {
         for(int i = sysconf(_SC_OPEN_MAX) - 1; i > 2; i--)
             if(i!=out && i!=in && i!=err)
@@ -166,10 +166,10 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     m_scoreCategory    ->setSelectable( false );
     m_transcodeCategory->setSelectable( false );
 
-    m_generalCategory  ->setPixmap( 0, SmallIcon( amaroK::icon( "files" ) ) );
-    m_lyricsCategory   ->setPixmap( 0, SmallIcon( amaroK::icon( "files" ) ) );
-    m_scoreCategory    ->setPixmap( 0, SmallIcon( amaroK::icon( "files" ) ) );
-    m_transcodeCategory->setPixmap( 0, SmallIcon( amaroK::icon( "files" ) ) );
+    m_generalCategory  ->setPixmap( 0, SmallIcon( Amarok::icon( "files" ) ) );
+    m_lyricsCategory   ->setPixmap( 0, SmallIcon( Amarok::icon( "files" ) ) );
+    m_scoreCategory    ->setPixmap( 0, SmallIcon( Amarok::icon( "files" ) ) );
+    m_transcodeCategory->setPixmap( 0, SmallIcon( Amarok::icon( "files" ) ) );
 
 
     connect( m_gui->listView, SIGNAL( currentChanged( QListViewItem* ) ), SLOT( slotCurrentChanged( QListViewItem* ) ) );
@@ -184,13 +184,13 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     connect( m_gui->configureButton, SIGNAL( clicked() ), SLOT( slotConfigureScript() ) );
     connect( m_gui->aboutButton,     SIGNAL( clicked() ), SLOT( slotAboutScript() ) );
 
-    m_gui->installButton  ->setIconSet( SmallIconSet( amaroK::icon( "files" ) ) );
-    m_gui->retrieveButton ->setIconSet( SmallIconSet( amaroK::icon( "download" ) ) );
-    m_gui->uninstallButton->setIconSet( SmallIconSet( amaroK::icon( "remove" ) ) );
-    m_gui->runButton      ->setIconSet( SmallIconSet( amaroK::icon( "play" ) ) );
-    m_gui->stopButton     ->setIconSet( SmallIconSet( amaroK::icon( "stop" ) ) );
-    m_gui->configureButton->setIconSet( SmallIconSet( amaroK::icon( "configure" ) ) );
-    m_gui->aboutButton    ->setIconSet( SmallIconSet( amaroK::icon( "info" ) ) );
+    m_gui->installButton  ->setIconSet( SmallIconSet( Amarok::icon( "files" ) ) );
+    m_gui->retrieveButton ->setIconSet( SmallIconSet( Amarok::icon( "download" ) ) );
+    m_gui->uninstallButton->setIconSet( SmallIconSet( Amarok::icon( "remove" ) ) );
+    m_gui->runButton      ->setIconSet( SmallIconSet( Amarok::icon( "play" ) ) );
+    m_gui->stopButton     ->setIconSet( SmallIconSet( Amarok::icon( "stop" ) ) );
+    m_gui->configureButton->setIconSet( SmallIconSet( Amarok::icon( "configure" ) ) );
+    m_gui->aboutButton    ->setIconSet( SmallIconSet( Amarok::icon( "info" ) ) );
 
     QSize sz = sizeHint();
     setMinimumSize( kMax( 350, sz.width() ), kMax( 250, sz.height() ) );
@@ -218,7 +218,7 @@ ScriptManager::~ScriptManager()
     }
 
     // Save config
-    KConfig* const config = amaroK::config( "ScriptManager" );
+    KConfig* const config = Amarok::config( "ScriptManager" );
     config->writeEntry( "Running Scripts", runningScripts );
 
     s_instance = 0;
@@ -311,7 +311,7 @@ ScriptManager::requestNewScore( const QString &url, double prevscore, int playco
     const QString script = ensureScoreScriptRunning();
     if( script.isNull() )
     {
-        amaroK::StatusBar::instance()->longMessage(
+        Amarok::StatusBar::instance()->longMessage(
             i18n( "No score scripts were found, or none of them worked. Automatic scoring will be disabled. Sorry." ),
             KDE::StatusBar::Sorry );
         return;
@@ -345,7 +345,7 @@ ScriptManager::findScripts() //SLOT
 
     // Handle auto-run:
 
-    KConfig* const config = amaroK::config( "ScriptManager" );
+    KConfig* const config = Amarok::config( "ScriptManager" );
     const QStringList runningScripts = config->readListEntry( "Running Scripts" );
 
     {
@@ -408,7 +408,7 @@ ScriptManager::slotInstallScript( const QString& path )
         return false;
     }
 
-    QString destination = amaroK::saveLocation( "scripts/" );
+    QString destination = Amarok::saveLocation( "scripts/" );
     const KArchiveDirectory* const archiveDir = archive.directory();
 
     // Prevent installing a script that's already installed
@@ -471,7 +471,7 @@ ScriptManager::slotRetrieveScript()
     // Delete KNewStuff's configuration entries. These entries reflect which scripts
     // are already installed. As we cannot yet keep them in sync after uninstalling
     // scripts, we deactivate the check marks entirely.
-    amaroK::config()->deleteGroup( "KNewStuffStatus" );
+    Amarok::config()->deleteGroup( "KNewStuffStatus" );
 
     // we need this because KNewStuffGeneric's install function isn't clever enough
     AmarokScriptNewStuff *kns = new AmarokScriptNewStuff( "amarok/script", this );
@@ -552,11 +552,11 @@ ScriptManager::slotRunScript( bool silent )
     // Don't start a script twice
     if( m_scripts[name].process ) return false;
 
-    amaroK::ProcIO* script = new amaroK::ProcIO();
+    Amarok::ProcIO* script = new Amarok::ProcIO();
     script->setComm( static_cast<KProcess::Communication>( KProcess::All ) );
     const KURL url = m_scripts[name].url;
     *script << url.path();
-    script->setWorkingDirectory( amaroK::saveLocation( "scripts-data/" ) );
+    script->setWorkingDirectory( Amarok::saveLocation( "scripts-data/" ) );
 
     connect( script, SIGNAL( receivedStderr( KProcess*, char*, int ) ), SLOT( slotReceivedStderr( KProcess*, char*, int ) ) );
     connect( script, SIGNAL( receivedStdout( KProcess*, char*, int ) ), SLOT( slotReceivedStdout( KProcess*, char*, int ) ) );
@@ -580,7 +580,7 @@ ScriptManager::slotRunScript( bool silent )
         return false;
     }
 
-    li->setPixmap( 0, SmallIcon( amaroK::icon( "play" ) ) );
+    li->setPixmap( 0, SmallIcon( Amarok::icon( "play" ) ) );
     debug() << "Running script: " << url.path() << endl;
 
     m_scripts[name].process = script;
@@ -673,8 +673,8 @@ ScriptManager::slotShowContextMenu( QListViewItem* item, const QPoint& pos )
     enum { SHOW_LOG, EDIT };
     KPopupMenu menu;
     menu.insertTitle( i18n( "Debugging" ) );
-    menu.insertItem( SmallIconSet( amaroK::icon( "clock" ) ), i18n( "Show Output &Log" ), SHOW_LOG );
-    menu.insertItem( SmallIconSet( amaroK::icon( "edit" ) ), i18n( "&Edit" ), EDIT );
+    menu.insertItem( SmallIconSet( Amarok::icon( "clock" ) ), i18n( "Show Output &Log" ), SHOW_LOG );
+    menu.insertItem( SmallIconSet( Amarok::icon( "edit" ) ), i18n( "&Edit" ), EDIT );
     menu.setItemEnabled( SHOW_LOG, it.data().process );
     const int id = menu.exec( pos );
 

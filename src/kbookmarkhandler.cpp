@@ -30,7 +30,7 @@ KBookmarkHandler::KBookmarkHandler( KDirOperator *parent, KPopupMenu* rootmenu )
         : QObject( parent, "KBookmarkHandler" )
         , KBookmarkOwner()
 {
-    const QString file = amaroK::saveLocation() + "fileBrowserBookmarks.xml";
+    const QString file = Amarok::saveLocation() + "fileBrowserBookmarks.xml";
 
     KBookmarkManager *manager = KBookmarkManager::managerForFile( file, false );
     manager->setUpdate( true );

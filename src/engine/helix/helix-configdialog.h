@@ -29,9 +29,9 @@ class HelixConfigEntry : public QObject
 {
 Q_OBJECT
 public:
-   HelixConfigEntry( QWidget *parent, amaroK::PluginConfig*, 
+   HelixConfigEntry( QWidget *parent, Amarok::PluginConfig*,
                      int row, const QString & description, const char *defaultvalue, const QString & tooltip );
-   HelixConfigEntry( QWidget *parent, QString &str, amaroK::PluginConfig*, 
+   HelixConfigEntry( QWidget *parent, QString &str, Amarok::PluginConfig*,
                      int row, const QString & description, const char *defaultvalue, const QString & tooltip );
 
    bool isChanged() const { return m_valueChanged; }
@@ -55,7 +55,7 @@ class HelixSoundDevice : public QObject
 {
 Q_OBJECT
 public:
-   HelixSoundDevice( QWidget *parent, amaroK::PluginConfig *config, int &row, HelixEngine *engine );
+   HelixSoundDevice( QWidget *parent, Amarok::PluginConfig *config, int &row, HelixEngine *engine );
    bool save();
    void setSoundSystem( int api );
    bool isChanged() const { return m_changed; }
@@ -78,7 +78,7 @@ private:
 class HelixConfigDialogBase : public QTabWidget
 {
 public:
-   HelixConfigDialogBase( HelixEngine *engine, amaroK::PluginConfig *config, QWidget *parent = 0 );
+   HelixConfigDialogBase( HelixEngine *engine, Amarok::PluginConfig *config, QWidget *parent = 0 );
    ~HelixConfigDialogBase();
 
    virtual QWidget *view() { return this; }
@@ -100,7 +100,7 @@ private:
    HelixEngine *m_engine;
 };
 
-class HelixConfigDialog : public amaroK::PluginConfig
+class HelixConfigDialog : public Amarok::PluginConfig
 {
 public:
    HelixConfigDialog( HelixEngine *engine, QWidget *parent = 0 );

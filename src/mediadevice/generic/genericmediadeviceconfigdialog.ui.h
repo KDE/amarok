@@ -185,7 +185,7 @@ GenericMediaDeviceConfigDialog::buildDestination( const QString &format, const M
         track.sprintf( "%02d", mb.track() );
     args["track"] = track;
 
-    amaroK::QStringx formatx( format );
+    Amarok::QStringx formatx( format );
     QString result = m_device->mountPoint().append( formatx.namedOptArgs( args ) );
     QString tail = result.mid( m_device->mountPoint().length() );
     if( !tail.startsWith( "/" ) )
@@ -200,14 +200,14 @@ QString GenericMediaDeviceConfigDialog::cleanPath( const QString &component ) co
 
     if( m_asciiCheck->isChecked() )
     {
-        result = amaroK::cleanPath(result, true /* replaces weird stuff by '_' */);
+        result = Amarok::cleanPath(result, true /* replaces weird stuff by '_' */);
     }
 
     result.simplifyWhiteSpace();
     if( m_spaceCheck->isChecked() )
         result.replace( QRegExp( "\\s" ), "_" );
     if( m_device->m_actuallyVfat )
-        result = amaroK::vfatPath( result );
+        result = Amarok::vfatPath( result );
 
     result.replace( "/", "-" );
 
@@ -302,7 +302,7 @@ GenericMediaDeviceConfigDialog::init()
     m_previewBundle->setYear( 2006 );
 
     m_formatHelp->setText( QString( "<a href='whatsthis:%1'>%2</a>" ).
-            arg( amaroK::escapeHTMLAttr( buildFormatTip() ), i18n( "(Help)" ) ) );
+            arg( Amarok::escapeHTMLAttr( buildFormatTip() ), i18n( "(Help)" ) ) );
 
     m_unsupportedMenu = new QPopupMenu( m_addSupportedButton, "unsupported" );
 

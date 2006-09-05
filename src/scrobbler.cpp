@@ -660,7 +660,7 @@ void ScrobblerSubmitter::performSubmit()
         if ( items[submitCounter] != 0 )
             m_ongoingSubmits.insert( job, items[submitCounter] );
 
-    amaroK::StatusBar::instance()->newProgressOperation( job )
+    Amarok::StatusBar::instance()->newProgressOperation( job )
             .setDescription( i18n( "Submitting to last.fm" ) );
 
     connect( job, SIGNAL( result( KIO::Job* ) ),
@@ -1095,7 +1095,7 @@ void ScrobblerSubmitter::announceSubmit( SubmitItem *item, int tracks, bool succ
                 m_submitQueue.count() + m_fakeQueue.count() );
     }
 
-    amaroK::StatusBar::instance()->shortLongMessage( _short, _long );
+    Amarok::StatusBar::instance()->shortLongMessage( _short, _long );
 }
 
 
@@ -1146,7 +1146,7 @@ void ScrobblerSubmitter::saveSubmitQueue()
 
 void ScrobblerSubmitter::readSubmitQueue()
 {
-    m_savePath = amaroK::saveLocation() + "submit.xml";
+    m_savePath = Amarok::saveLocation() + "submit.xml";
     QFile file( m_savePath );
 
     if ( !file.open( IO_ReadOnly ) )

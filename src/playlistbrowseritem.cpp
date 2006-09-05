@@ -133,7 +133,7 @@ PlaylistCategory::PlaylistCategory( QListView *parent, QListViewItem *after, con
 {
     setDragEnabled( false );
     setRenameEnabled( 0, isFolder );
-    setPixmap( 0, SmallIcon( amaroK::icon( "files2" ) ) );
+    setPixmap( 0, SmallIcon( Amarok::icon( "files2" ) ) );
     setText( 0, t );
 }
 
@@ -146,7 +146,7 @@ PlaylistCategory::PlaylistCategory( PlaylistCategory *parent, QListViewItem *aft
 {
     setDragEnabled( false );
     setRenameEnabled( 0, isFolder );
-    setPixmap( 0, SmallIcon( amaroK::icon( "files" ) ) );
+    setPixmap( 0, SmallIcon( Amarok::icon( "files" ) ) );
     setText( 0, t );
 }
 
@@ -159,7 +159,7 @@ PlaylistCategory::PlaylistCategory( QListView *parent, QListViewItem *after, con
     setXml( xmlDefinition );
     setDragEnabled( false );
     setRenameEnabled( 0, isFolder );
-    setPixmap( 0, SmallIcon( amaroK::icon( "files2") ) );
+    setPixmap( 0, SmallIcon( Amarok::icon( "files2") ) );
 }
 
 
@@ -171,7 +171,7 @@ PlaylistCategory::PlaylistCategory( PlaylistCategory *parent, QListViewItem *aft
     setXml( xmlDefinition );
     setDragEnabled( false );
     setRenameEnabled( 0, true );
-    setPixmap( 0, SmallIcon( amaroK::icon( "files" ) ) );
+    setPixmap( 0, SmallIcon( Amarok::icon( "files" ) ) );
 }
 
 PlaylistCategory::PlaylistCategory( PlaylistCategory *parent, QListViewItem *after, const QString &t, const int id )
@@ -182,7 +182,7 @@ PlaylistCategory::PlaylistCategory( PlaylistCategory *parent, QListViewItem *aft
 {
     setDragEnabled( false );
     setRenameEnabled( 0, true );
-    setPixmap( 0, SmallIcon( amaroK::icon( "files" ) ) );
+    setPixmap( 0, SmallIcon( Amarok::icon( "files" ) ) );
     setText( 0, t );
 }
 
@@ -242,7 +242,7 @@ void PlaylistCategory::setXml( const QDomElement &xml )
             else if ( e.tagName() == "podcast" )
             {
                 const KURL url( n.namedItem( "url").toElement().text() );
-                QString xmlLocation = amaroK::saveLocation( "podcasts/" );
+                QString xmlLocation = Amarok::saveLocation( "podcasts/" );
                 xmlLocation        += n.namedItem( "cache" ).toElement().text();
 
                 QDomDocument xml;
@@ -355,7 +355,7 @@ PlaylistEntry::PlaylistEntry( QListViewItem *parent, QListViewItem *after, const
     setRenameEnabled( 0, false );
     setExpandable(true);
 
-    setPixmap( 0, SmallIcon( amaroK::icon( "playlist" ) ) );
+    setPixmap( 0, SmallIcon( Amarok::icon( "playlist" ) ) );
 
     if( !m_trackCount )
     {
@@ -394,7 +394,7 @@ PlaylistEntry::PlaylistEntry( QListViewItem *parent, QListViewItem *after, const
     setRenameEnabled( 0, false );
     setExpandable(true);
 
-    setPixmap( 0, SmallIcon( amaroK::icon( "playlist" ) ) );
+    setPixmap( 0, SmallIcon( Amarok::icon( "playlist" ) ) );
 
     if( !m_trackCount )
     {
@@ -443,8 +443,8 @@ void PlaylistEntry::stopAnimation()
 {
     m_animationTimer.stop();
     m_dynamic ?
-        setPixmap( 0, SmallIcon( amaroK::icon( "favorites" ) ) ):
-        setPixmap( 0, SmallIcon( amaroK::icon( "playlist" ) ) );
+        setPixmap( 0, SmallIcon( Amarok::icon( "favorites" ) ) ):
+        setPixmap( 0, SmallIcon( Amarok::icon( "playlist" ) ) );
 }
 
 void PlaylistEntry::slotAnimation()
@@ -653,10 +653,10 @@ void PlaylistEntry::setDynamic( bool enable )
         if( enable )
         {
             if( !m_loaded ) load(); // we need to load it to ensure that we can read the contents
-            setPixmap( 0, SmallIcon( amaroK::icon( "favorites" ) ) );
+            setPixmap( 0, SmallIcon( Amarok::icon( "favorites" ) ) );
         }
         else
-            setPixmap( 0, SmallIcon( amaroK::icon( "playlist" ) ) );
+            setPixmap( 0, SmallIcon( Amarok::icon( "playlist" ) ) );
 
         m_dynamic = enable;
     }
@@ -821,7 +821,7 @@ StreamEntry::StreamEntry( QListViewItem *parent, QListViewItem *after, const KUR
     if( m_title.isEmpty() )
         m_title = fileBaseName( m_url.prettyURL() );
 
-    setPixmap( 0, SmallIcon( amaroK::icon( "playlist" ) ) );
+    setPixmap( 0, SmallIcon( Amarok::icon( "playlist" ) ) );
 
     setText( 0, m_title );
 }
@@ -841,7 +841,7 @@ StreamEntry::StreamEntry( QListViewItem *parent, QListViewItem *after, const QDo
     if( m_title.isEmpty() )
         m_title = fileBaseName( m_url.prettyURL() );
 
-    setPixmap( 0, SmallIcon( amaroK::icon( "playlist" ) ) );
+    setPixmap( 0, SmallIcon( Amarok::icon( "playlist" ) ) );
 
     setText( 0, m_title );
 }
@@ -993,7 +993,7 @@ DynamicEntry::DynamicEntry( QListViewItem *parent, QListViewItem *after, const Q
         : PlaylistBrowserEntry( parent, after, name )
         , DynamicMode( name )
 {
-    setPixmap( 0, SmallIcon( amaroK::icon( "dynamic" ) ) );
+    setPixmap( 0, SmallIcon( Amarok::icon( "dynamic" ) ) );
     setDragEnabled( true );
 }
 
@@ -1001,7 +1001,7 @@ DynamicEntry::DynamicEntry( QListViewItem *parent, QListViewItem *after, const Q
         : PlaylistBrowserEntry( parent, after )
         , DynamicMode( xmlDefinition.attribute( "name" ) )
 {
-    setPixmap( 0, SmallIcon( amaroK::icon( "dynamic" ) ) );
+    setPixmap( 0, SmallIcon( Amarok::icon( "dynamic" ) ) );
     setDragEnabled( true );
 
     QDomElement e;
@@ -1092,7 +1092,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     setRenameEnabled( 0, false );
 
     setText(0, i18n("Retrieving Podcast...") ); //HACK to fill loading time space
-    setPixmap( 0, SmallIcon( amaroK::icon( "podcast" ) ) );
+    setPixmap( 0, SmallIcon( Amarok::icon( "podcast" ) ) );
 
     fetch();
 }
@@ -1113,7 +1113,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     setDOMSettings( channelSettings );
 
     setText(0, i18n("Retrieving Podcast...") ); //HACK to fill loading time space
-    setPixmap( 0, SmallIcon( amaroK::icon( "podcast" ) ) );
+    setPixmap( 0, SmallIcon( Amarok::icon( "podcast" ) ) );
 
     fetch();
 }
@@ -1140,7 +1140,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
     setDragEnabled( true );
     setRenameEnabled( 0, false );
 
-    setPixmap( 0, SmallIcon( amaroK::icon( "podcast" ) ) );
+    setPixmap( 0, SmallIcon( Amarok::icon( "podcast" ) ) );
 }
 
 PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, const PodcastChannelBundle &pcb )
@@ -1157,7 +1157,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     setText( 0, title() );
     setDragEnabled( true );
     setRenameEnabled( 0, false );
-    setPixmap( 0, SmallIcon( amaroK::icon( "podcast" ) ) );
+    setPixmap( 0, SmallIcon( Amarok::icon( "podcast" ) ) );
 }
 
 void
@@ -1175,7 +1175,7 @@ PodcastChannel::setDOMSettings( const QDomNode &channelSettings )
     KURL saveURL;
     QString t = title();
     if( save.isEmpty() )
-        save = amaroK::saveLocation( "podcasts/" + amaroK::vfatPath( t ) );
+        save = Amarok::saveLocation( "podcasts/" + Amarok::vfatPath( t ) );
 
     PodcastSettings *settings = new PodcastSettings( t, save, scan, fetchType, false/*transfer*/, hasPurge, purgeCount );
     m_bundle.setSettings( settings );
@@ -1252,7 +1252,7 @@ PodcastChannel::setSettings( PodcastSettings *newSettings )
                 //create the local directory first
             PodcastEpisode::createLocalDir( newSettings->saveLocation().path() );
             KIO::CopyJob* m_podcastMoveJob = KIO::move( copyList, newSettings->saveLocation(), false );
-            amaroK::StatusBar::instance()->newProgressOperation( m_podcastMoveJob )
+            Amarok::StatusBar::instance()->newProgressOperation( m_podcastMoveJob )
                     .setDescription( i18n( "Moving Podcasts" ) );
         }
     }
@@ -1314,7 +1314,7 @@ PodcastChannel::fetch()
 
     m_podcastJob = KIO::storedGet( m_url, false, false );
 
-    amaroK::StatusBar::instance()->newProgressOperation( m_podcastJob )
+    Amarok::StatusBar::instance()->newProgressOperation( m_podcastJob )
         .setDescription( i18n( "Fetching Podcast" ) )
         .setAbortSlot( this, SLOT( abortFetch() ) );
 
@@ -1337,7 +1337,7 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
 {
     stopAnimation();
     if ( !job->error() == 0 ) {
-        amaroK::StatusBar::instance()->shortMessage( i18n( "Unable to connect to Podcast server." ) );
+        Amarok::StatusBar::instance()->shortMessage( i18n( "Unable to connect to Podcast server." ) );
         debug() << "Unable to retrieve podcast information. KIO Error: " << job->error() << endl;
 
         title().isEmpty() ?
@@ -1356,7 +1356,7 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
     if( !d.setContent( storedJob->data(), false /* disable namespace processing */,
                 &error, &errorline, &errorcolumn ) )
     {
-        amaroK::StatusBar::instance()->shortMessage( i18n("Podcast returned invalid data.") );
+        Amarok::StatusBar::instance()->shortMessage( i18n("Podcast returned invalid data.") );
         debug() << "Podcast DOM failure in line " << errorline << ", column " << errorcolumn << ": " << error << endl;
 
         if( title().isEmpty() )
@@ -1372,7 +1372,7 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
         type = d.namedItem("feed");
         if( type.isNull() )
         {
-            amaroK::StatusBar::instance()->shortMessage( i18n("Sorry, only RSS 2.0 or Atom feeds for podcasts!") );
+            Amarok::StatusBar::instance()->shortMessage( i18n("Sorry, only RSS 2.0 or Atom feeds for podcasts!") );
 
             if( title().isEmpty() )
                 setText( 0, m_url.prettyURL() );
@@ -1417,11 +1417,11 @@ void
 PodcastChannel::setNew( bool n )
 {
     if( n )
-        setPixmap( 0, SmallIcon( amaroK::icon( "podcast2" ) ) );
+        setPixmap( 0, SmallIcon( Amarok::icon( "podcast2" ) ) );
     else if( m_hasProblem )
         setPixmap( 0, SmallIcon("cancel") );
     else
-        setPixmap( 0, SmallIcon( amaroK::icon( "podcast" ) ) );
+        setPixmap( 0, SmallIcon( Amarok::icon( "podcast" ) ) );
 
     m_new = n;
 }
@@ -1551,7 +1551,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     if( m_updating && hasNew )
     {
         setNew();
-        amaroK::StatusBar::instance()->shortMessage( i18n("New podcasts have been retrieved!") );
+        Amarok::StatusBar::instance()->shortMessage( i18n("New podcasts have been retrieved!") );
     }
 }
 
@@ -1753,16 +1753,16 @@ PodcastChannel::stopAnimation()
     m_animationTimer.stop();
 
     hasNew() ?
-        setPixmap( 0, SmallIcon( amaroK::icon( "podcast2" ) ) ):
-        setPixmap( 0, SmallIcon( amaroK::icon( "podcast"  ) ) );
+        setPixmap( 0, SmallIcon( Amarok::icon( "podcast2" ) ) ):
+        setPixmap( 0, SmallIcon( Amarok::icon( "podcast"  ) ) );
 }
 
 void
 PodcastChannel::slotAnimation()
 {
     m_iconCounter % 2 ?
-        setPixmap( 0, SmallIcon( amaroK::icon( "podcast" ) ) ):
-        setPixmap( 0, SmallIcon( amaroK::icon( "podcast2" ) ) );
+        setPixmap( 0, SmallIcon( Amarok::icon( "podcast" ) ) ):
+        setPixmap( 0, SmallIcon( Amarok::icon( "podcast2" ) ) );
 
     m_iconCounter++;
 }
@@ -2056,11 +2056,11 @@ void
 PodcastEpisode::updatePixmap()
 {
     if( isNew() )
-        setPixmap( 0, SmallIcon( amaroK::icon( "podcast2" ) ) );
+        setPixmap( 0, SmallIcon( Amarok::icon( "podcast2" ) ) );
     else if( m_onDisk )
         setPixmap( 0, SmallIcon( "down" ) );
     else
-        setPixmap( 0, SmallIcon( amaroK::icon( "podcast" ) ) );
+        setPixmap( 0, SmallIcon( Amarok::icon( "podcast" ) ) );
 }
 
 const bool
@@ -2107,7 +2107,7 @@ PodcastEpisode::downloadMedia()
     m_podcastFetcher = new PodcastFetcher( url().url() , m_localDir, m_bundle.size() );
 
     //TODO: make this work with PodcastFetcher
-    amaroK::StatusBar::instance()->newProgressOperation( m_podcastFetcher )
+    Amarok::StatusBar::instance()->newProgressOperation( m_podcastFetcher )
             .setDescription( title().isEmpty()
                     ? i18n( "Downloading Podcast Media" )
                     : i18n( "Downloading Podcast \"%1\"" ).arg( title() ) )
@@ -2159,7 +2159,7 @@ PodcastEpisode::downloadResult( int error ) //SLOT
     setText( 0, title() );
 
     if ( error != 0 ) {
-        amaroK::StatusBar::instance()->shortMessage( i18n( "Media download aborted, unable to connect to server." ) );
+        Amarok::StatusBar::instance()->shortMessage( i18n( "Media download aborted, unable to connect to server." ) );
         debug() << "Unable to retrieve podcast media. KIO Error: " << error << endl;
 
         setPixmap( 0, SmallIcon("cancel") );
@@ -2240,8 +2240,8 @@ void
 PodcastEpisode::slotAnimation()
 {
     m_iconCounter % 2 ?
-        setPixmap( 0, SmallIcon( amaroK::icon( "podcast") ) ):
-        setPixmap( 0, SmallIcon( amaroK::icon( "podcast2") ) );
+        setPixmap( 0, SmallIcon( Amarok::icon( "podcast") ) ):
+        setPixmap( 0, SmallIcon( Amarok::icon( "podcast2") ) );
 
     m_iconCounter++;
 }
@@ -2304,7 +2304,7 @@ PodcastEpisode::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
     if( fmName.width( name ) > _width )
     {
         //decapitateString removes the channels title from the epsiodes title
-        name = amaroK::decapitateString( name, static_cast<PodcastChannel *>(m_parent)->title() );
+        name = Amarok::decapitateString( name, static_cast<PodcastChannel *>(m_parent)->title() );
         if( fmName.width( name ) > _width )
             name = KStringHandler::rPixelSqueeze( name, pBuf.fontMetrics(), _width );
     }
@@ -2344,7 +2344,7 @@ SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const
         , m_title( name )
         , m_dynamic( false )
 {
-    setPixmap( 0, SmallIcon( amaroK::icon( "playlist" ) ) );
+    setPixmap( 0, SmallIcon( Amarok::icon( "playlist" ) ) );
     setDragEnabled( query.isEmpty() ? false : true );
 
     setText( 0, name );
@@ -2356,7 +2356,7 @@ SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const
         , m_title( name )
         , m_dynamic( false )
 {
-    setPixmap( 0, SmallIcon( amaroK::icon( "playlist" ) ) );
+    setPixmap( 0, SmallIcon( Amarok::icon( "playlist" ) ) );
     setDragEnabled( !urls.isEmpty() && !tags.isEmpty() );
 
     setText( 0, name );
@@ -2368,7 +2368,7 @@ SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const
         , m_after( after )
         , m_dynamic( false )
 {
-    setPixmap( 0, SmallIcon( amaroK::icon( "playlist" ) ) );
+    setPixmap( 0, SmallIcon( Amarok::icon( "playlist" ) ) );
     setXml( xmlDefinition );
     setDragEnabled( !m_sqlForTags.isEmpty() );
 }
@@ -2461,7 +2461,7 @@ void SmartPlaylist::setDynamic( bool enable )
     {
         enable ?
             setPixmap( 0, SmallIcon( "favorites" ) ) :
-            setPixmap( 0, SmallIcon( amaroK::icon( "playlist" ) ) );
+            setPixmap( 0, SmallIcon( Amarok::icon( "playlist" ) ) );
         m_dynamic = enable;
     }
 }

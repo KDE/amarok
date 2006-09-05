@@ -18,7 +18,7 @@
 #include "collectiondb.h"
 #include "amarokconfig.h"
 
-using amaroK::StatusBar;
+using Amarok::StatusBar;
 
 volatile uint ThreadWeaver::threadIdCounter = 1; //main thread grabs zero
 QMutex* ThreadWeaver::threadIdMutex = new QMutex();

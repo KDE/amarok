@@ -85,9 +85,9 @@ NmmEngine::NmmEngine()
 bool NmmEngine::init()
 {
   DEBUG_BLOCK
-  
+
   s_instance = this;
-    
+
   // disable debug and warning streams
   NamedObject::getGlobalInstance().setDebugStream(NULL, NamedObject::ALL_LEVELS);
   NamedObject::getGlobalInstance().setWarningStream(NULL, NamedObject::ALL_LEVELS);
@@ -121,7 +121,7 @@ void NmmEngine::checkSecurity()
   bool readpaths_set = false;
   bool writepaths_set = false;
   string optionvalue("");
-  
+
   nmmconfig.getValue("allowedreadpaths", optionvalue);
   if( optionvalue != "" )
     readpaths_set = true;
@@ -144,13 +144,13 @@ void NmmEngine::checkSecurity()
 
   str += "<br/>See <a href=\"http://www.networkmultimedia.org/Download/\">http://www.networkmultimedia.org/Download/</a> for general security instructions in the correspoding <i>configure and test NMM</i> section depending on your chosen installation method.";
   str += "</body></html>";
-    
+
   if( !writepaths_set || !readpaths_set )
     KMessageBox::information(0, str, i18n( "Insecure NMM setup" ), "insecureNmmSetup", KMessageBox::AllowLink );
 }
 
 void NmmEngine::notifyHostError( QString hostname, int error )
-{  
+{
   DEBUG_BLOCK
 
   for( QValueList<NmmLocation>::Iterator it = tmp_user_list.begin(); it != tmp_user_list.end(); ++it ) {
@@ -174,7 +174,7 @@ Engine::State NmmEngine::state() const
   return __state;
 }
 
-amaroK::PluginConfig* NmmEngine::configure() const
+Amarok::PluginConfig* NmmEngine::configure() const
 {
     NmmConfigDialog* dialog = new NmmConfigDialog();
     connect( this, SIGNAL( hostError( QString, int ) ), dialog, SLOT( notifyHostError(QString, int ) ) );
@@ -247,7 +247,7 @@ bool NmmEngine::load(const KURL& url, bool stream)
       list<Response> playback_response = registry.initRequest(playback_nd);
       if (playback_response.empty()) // playback node not available
         throw( NMMEngineException( playback_nd.getLocation(), NmmEngine::ERROR_PLAYBACKNODE ) );
-        
+
       __playback = registry.requestNode( playback_response.front() );
       }
       catch( RegistryException ) {
@@ -343,7 +343,7 @@ bool NmmEngine::load(const KURL& url, bool stream)
       __display->reachStarted();
 
     __composite->reachStarted();
- 
+
     return true;
   }
   catch ( const NMMEngineException e) {
@@ -360,10 +360,10 @@ bool NmmEngine::load(const KURL& url, bool stream)
     emit statusText( i18n("NMM engine: Something went wrong...") );
   }
 
-  // loading failed, clean up 
+  // loading failed, clean up
   cleanup();
 
-  // if 'Localhost only' playback, show user an error message 
+  // if 'Localhost only' playback, show user an error message
   // and explanation how to test current NMM setup
   if( NmmKDEConfig::location() == NmmKDEConfig::EnumLocation::LocalhostOnly )
   {
@@ -407,7 +407,7 @@ void NmmEngine::cleanup()
     __display->getParentObject()->removeEventListener(&__trackDuration_listener);
 
     debug() << "removed event listener for __display" << endl;
-  } 
+  }
   else if (__playback ) {
     __playback->getParentObject()->removeEventListener(&__setProgress_listener);
     __playback->getParentObject()->removeEventListener(&__endTrack_listener);
@@ -476,9 +476,9 @@ void NmmEngine::cleanup()
 
   __with_video = false;
 
-  delete __synchronizer; 
+  delete __synchronizer;
   __synchronizer = NULL;
-  delete __av_sync; 
+  delete __av_sync;
   __av_sync = NULL;
 
   __position = 0;
@@ -489,7 +489,7 @@ void NmmEngine::createEnvironmentHostList()
 {
   QString hosts = getenv("AUDIO_HOSTS");
   QStringList list = QStringList::split(":", hosts );
-  
+
   /* merge audio hosts */
   for( QStringList::Iterator it = list.begin(); it != list.end(); ++it ) {
     tmp_environment_list.append( NmmLocation( (*it), true, false, 0, NmmEngine::STATUS_UNKNOWN ) );
@@ -500,7 +500,7 @@ void NmmEngine::createEnvironmentHostList()
   list = QStringList::split(":", hosts );
   bool found = false;
   for( QStringList::Iterator it = list.begin(); it != list.end(); ++it ) {
-    
+
     found = false;
     for( QValueList<NmmLocation>::Iterator it_t = tmp_environment_list.begin(); it_t != tmp_environment_list.end(); ++it_t ) {
       if( (*it_t).hostname() == *it ) {
@@ -509,7 +509,7 @@ void NmmEngine::createEnvironmentHostList()
         break;
       }
     }
-      
+
     if( !found )
       tmp_environment_list.append( NmmLocation( (*it), false, true, 0, NmmEngine::STATUS_UNKNOWN ) );
   }
@@ -536,12 +536,12 @@ void NmmEngine::createUserHostList()
   for(unsigned int i = 0; i < size; i++ ) {
     if( audio_list[i] == "1")
       audio = true;
-    else 
+    else
       audio = false;
 
     if( video_list[i] == "1")
       video = true;
-    else 
+    else
       video = false;
 
     tmp_user_list.append( NmmLocation( hosts[i], audio, video, /* TODO: volume */0, NmmEngine::STATUS_UNKNOWN ) );
@@ -609,7 +609,7 @@ bool NmmEngine::canDecode(const KURL& url) const
 {
     static QStringList types;
 
-    if (url.protocol() == "http" ) return false; 
+    if (url.protocol() == "http" ) return false;
 
     // the following MIME types can be decoded
     types += QString("audio/x-mp3");
@@ -653,7 +653,7 @@ QStringList NmmEngine::getSinkHosts( bool audio )
     //debug() << "locations from environment variable are => " << hosts << endl;
     return hosts;
 
-  } 
+  }
   // read locations from host list
   else if( NmmKDEConfig::location() == NmmKDEConfig::EnumLocation::HostList )
   {
@@ -678,7 +678,7 @@ Result NmmEngine::setProgress(u_int64_t& numerator, u_int64_t& denominator)
 
   if (__seeking)
     return SUCCESS;
-  
+
   __position = position;
 
   return SUCCESS;

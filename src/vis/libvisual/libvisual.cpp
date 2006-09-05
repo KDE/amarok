@@ -54,7 +54,7 @@ main( int argc, char** argv )
     //connect to socket
     const int sockfd = tryConnect( argv[1] );
 
-    //register fd/pid combo with amaroK
+    //register fd/pid combo with Amarok
     {
         pid_t pid = ::getpid();
         char  buf[32] = "REG";
@@ -69,7 +69,7 @@ main( int argc, char** argv )
 
 
     //main loop
-    // 1. we sleep for a bit, listening for messages from amaroK
+    // 1. we sleep for a bit, listening for messages from Amarok
     // 2. render a frame
 
     timeval tv;
@@ -90,7 +90,7 @@ main( int argc, char** argv )
         ::select( sockfd+1, &fds, 0, 0, &tv );
 
         if( FD_ISSET( sockfd, &fds) ) {
-            //amaroK sent us some data
+            //Amarok sent us some data
 
             char command[16];
             ::recv( sockfd, command, 16, 0 );
@@ -123,13 +123,13 @@ tryConnect( const char *path )
         std::strcpy( &local.sun_path[ 0 ], path );
         local.sun_family = AF_UNIX;
 
-        std::cout << "[amK] Connecting to: " << path << '\n';
+        std::cout << "[Amk] Connecting to: " << path << '\n';
 
         if( connect( fd, (struct sockaddr*)&local, sizeof(local) ) == -1 )
         {
             ::close( fd );
 
-            std::cerr << "[amK] Could not connect\n";
+            std::cerr << "[Amk] Could not connect\n";
             std::exit( -1 );
         }
     }
@@ -367,9 +367,9 @@ namespace LibVisual
         visual_bin_realize( bin );
         visual_bin_sync( bin, false );
 
-        std::cout << "[amK] Libvisual version " << visual_get_version() << '\n';
-        std::cout << "[amK] bpp: " << video->bpp << std::endl;
-        std::cout << "[amK]  GL: "  << (pluginIsGL ? "true\n" : "false\n");
+        std::cout << "[Amk] Libvisual version " << visual_get_version() << '\n';
+        std::cout << "[Amk] bpp: " << video->bpp << std::endl;
+        std::cout << "[Amk]  GL: "  << (pluginIsGL ? "true\n" : "false\n");
     }
 
     static uint

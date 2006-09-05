@@ -72,7 +72,7 @@ GstEngine::bus_cb(GstBus*, GstMessage* msg, gpointer) // static
 	{
 	    GError* error;
 	    gchar* debugs;
-          
+
             gst_message_parse_error(msg,&error,&debugs);
             debug() << "ERROR RECEIVED IN BUS_CB <" << error->message << ">" << endl;;
 
@@ -293,7 +293,7 @@ GstEngine::init()
                   "<p>For further assistance consult the GStreamer manual, and join #gstreamer on irc.freenode.net.</p>" ) );
         return false;
     }
-    
+
     gst_object_unref( dummy );
 
     return true;
@@ -401,7 +401,7 @@ GstEngine::state() const
              return Engine::Playing;
           case GST_STATE_PAUSED:
              return Engine::Paused;
-             
+
           default:
              return Engine::Empty;
        }
@@ -455,7 +455,7 @@ GstEngine::scope()
          // find the offset into the buffer to the sample closest to where the audio device is playing
          // it is the (time into the buffer cooresponding to the audio device pos) / (the sample rate)
          // sample rate = duration of the buffer / number of frames in the buffer
-         // then we multiply by the number of channels to find the offset of the left channel sample 
+         // then we multiply by the number of channels to find the offset of the left channel sample
          // of the frame in the buffer
          off = channels * (pos - stime) / (dur / frames);
 
@@ -465,18 +465,18 @@ GstEngine::scope()
          {
             int i = off; // starting at offset
 
-            // loop while we fill the current buffer.  If we need another buffer and one is available, 
+            // loop while we fill the current buffer.  If we need another buffer and one is available,
             // get it and keep filling.  If there are no more buffers available (not too likely)
             // then leave everything in this state and wait until the next time the scope updates
             while (buf && m_current < SCOPESIZE && i < sz)
             {
                for (int j = 0; j < channels && m_current < SCOPESIZE; j++)
                {
-                  m_currentScope[m_current] = data[i + j]; 
+                  m_currentScope[m_current] = data[i + j];
                   m_current++;
                   if (channels == 1)
                   {
-                     m_currentScope[m_current] = data[i]; 
+                     m_currentScope[m_current] = data[i];
                      m_current++;
                   }
                }
@@ -603,7 +603,7 @@ GstEngine::getAudioCDContents(const QString &device, KURL::List &urls)
 }
 
 
-amaroK::PluginConfig*
+Amarok::PluginConfig*
 GstEngine::configure() const
 {
     DEBUG_FUNC_INFO
@@ -626,13 +626,13 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
     Engine::Base::load( url, stream );
     debug() << "Loading url: " << url.url() << endl;
 
-    if ( url.protocol() == "cdda" ) 
+    if ( url.protocol() == "cdda" )
     {
         if ( !setupAudioCD( url.query().remove( QRegExp( "^\\?" ) ), url.host().toUInt(), false ) )
             return false;
     }
-    else 
-    { 
+    else
+    {
        if ( !createPipeline() )
           return false;
 
@@ -644,7 +644,7 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
        }
        else
           debug() << "**** no factory for gnomevfssrc\n";
-                
+
        GstElement *src;
 #ifdef GST_KIOSTREAMS
        if (url.isLocalFile())
@@ -662,11 +662,11 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
              m_gst_streamprovider = new StreamProvider( url, "Signal", *this );
              connect( m_gst_streamprovider, SIGNAL(streamData( char*, int )),
                       this,                 SLOT(newStreamData( char*, int )) );
-              
+
              //g_object_set( src, "buffer_min", STREAMBUF_MIN, NULL );
              //gst_bin_add ( GST_BIN ( m_gst_thread ), src );
              g_signal_connect( G_OBJECT( src ), "kio_resume", G_CALLBACK( kio_resume_cb ), NULL );
-          
+
              m_streamBufIndex = 0;
              m_streamBufStop = false;
              m_streamBuffering = true;
@@ -690,7 +690,7 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
           m_gst_src = src;
 
           gst_bin_add( GST_BIN( m_gst_pipeline ), m_gst_src );
-          g_object_set( G_OBJECT(m_gst_src), "location", static_cast<const char*>( QFile::encodeName( url.url() ) ), 
+          g_object_set( G_OBJECT(m_gst_src), "location", static_cast<const char*>( QFile::encodeName( url.url() ) ),
                         //                   "iradio-mode", true,
                                               NULL );
 
@@ -698,7 +698,7 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
           //gboolean mdenabled = false;
           //g_object_get( G_OBJECT(m_gst_src), "name",  &name, "iradio-mode", &mdenabled, NULL );
           //debug() << "NAME WAS " << name << " md enabled? " << mdenabled << endl;
-          
+
           if ( !( m_gst_decodebin = createElement( "decodebin", m_gst_pipeline ) ) ) { destroyPipeline(); return false; }
           g_signal_connect( G_OBJECT( m_gst_decodebin ), "new-decoded-pad", G_CALLBACK( newPad_cb ), NULL );
 
@@ -709,7 +709,7 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
              gst_pad_add_event_probe (p, G_CALLBACK(event_cb), this);
              gst_object_unref (p);
           }
-          
+
           // Link elements. The link from decodebin to audioconvert will be made in the newPad-callback
           gst_element_link( m_gst_src, m_gst_decodebin );
        }
@@ -717,8 +717,8 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
        {
           debug() << "******* cannot get stream src " << endl;
 
-          destroyPipeline(); 
-          return false; 
+          destroyPipeline();
+          return false;
        }
     }
 
@@ -768,7 +768,7 @@ GstEngine::stop()  //SLOT
        }
        else
           // Fading --> stop playback
-          destroyPipeline(); 
+          destroyPipeline();
     }
 
     emit stateChanged( Engine::Empty );
@@ -798,7 +798,7 @@ GstEngine::seek( uint ms )  //SLOT
     RETURN_IF_PIPELINE_EMPTY
 
     if (!gst_element_seek(m_gst_pipeline, 1.0, GST_FORMAT_TIME, GST_SEEK_FLAG_FLUSH, GST_SEEK_TYPE_SET, ms*GST_MSECOND,
-       GST_SEEK_TYPE_NONE, GST_CLOCK_TIME_NONE)) kdDebug() << "Seek failed" << endl; 
+       GST_SEEK_TYPE_NONE, GST_CLOCK_TIME_NONE)) kdDebug() << "Seek failed" << endl;
     else clearScopeQ();
     gst_element_get_state(m_gst_pipeline, NULL, NULL, 100*GST_MSECOND);
 }
@@ -1198,8 +1198,8 @@ gint64 GstEngine::pruneScope()
 
     GstBuffer *buf = 0;
     guint64 stime, etime, dur;
-  
-    // free up the buffers that the audio device has advanced past already 
+
+    // free up the buffers that the audio device has advanced past already
     do
     {
        // most delayed buffers are at the head of the queue

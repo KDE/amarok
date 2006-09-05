@@ -1,6 +1,6 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // (c) 2004 Christian Muehlhaeuser <chris@chris.de>
-// (c) 2005 GÅ√Å°bor Lehel <illissius@gmail.com>
+// (c) 2005 G√Åbor Lehel <illissius@gmail.com>
 // (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>
 // (c) 2005 Christan Baumgart <christianbaumgart@web.de>
 // (c) 2006 Joe Rabinoff <bobqwatson@yahoo.com>
@@ -73,7 +73,7 @@ extern "C"
 
 using namespace CollectionBrowserIds;
 
-namespace amaroK { extern KConfig *config( const QString& ); }
+namespace Amarok { extern KConfig *config( const QString& ); }
 
 
 CollectionBrowser::CollectionBrowser( const char* name )
@@ -132,16 +132,16 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
 
     KActionCollection* ac = new KActionCollection( this );
-    m_scanAction = new KAction( i18n( "Scan Changes" ), amaroK::icon( "refresh" ), 0, CollectionDB::instance(), SLOT( scanModifiedDirs() ), ac, "Start Scan" );
+    m_scanAction = new KAction( i18n( "Scan Changes" ), Amarok::icon( "refresh" ), 0, CollectionDB::instance(), SLOT( scanModifiedDirs() ), ac, "Start Scan" );
 
     // we need m_scanAction to be initialized before CollectionView's CTOR
     m_view = new CollectionView( this );
     m_view->installEventFilter( this );
 
-    m_configureAction = new KAction( i18n( "Configure Folders" ), amaroK::icon( "configure" ), 0, this, SLOT( setupDirs() ), ac, "Configure" );
+    m_configureAction = new KAction( i18n( "Configure Folders" ), Amarok::icon( "configure" ), 0, this, SLOT( setupDirs() ), ac, "Configure" );
     m_treeViewAction = new KRadioAction( i18n( "Tree View" ), "view_tree", 0, m_view, SLOT( setTreeMode() ), ac, "Tree View" );
     m_flatViewAction = new KRadioAction( i18n( "Flat View" ), "view_detailed", 0, m_view, SLOT( setFlatMode() ), ac, "Flat View" );
-    m_ipodViewAction = new KRadioAction( i18n( "iPod View" ), amaroK::icon("device"), 0, m_view, SLOT( setIpodMode() ), ac, "iPod View" );
+    m_ipodViewAction = new KRadioAction( i18n( "iPod View" ), Amarok::icon("device"), 0, m_view, SLOT( setIpodMode() ), ac, "iPod View" );
     m_treeViewAction->setExclusiveGroup("view mode");
     m_flatViewAction->setExclusiveGroup("view mode");
     m_ipodViewAction->setExclusiveGroup("view mode");
@@ -425,7 +425,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     setAllColumnsShowFocus( true );
 
     //<READ CONFIG>
-        KConfig* config = amaroK::config( "Collection Browser" );
+        KConfig* config = Amarok::config( "Collection Browser" );
         m_cat1 = config->readNumEntry( "Category1", IdArtist );
         m_cat2 = config->readNumEntry( "Category2", IdAlbum );
         m_cat3 = config->readNumEntry( "Category3", IdNone );
@@ -493,7 +493,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 CollectionView::~CollectionView() {
     DEBUG_FUNC_INFO
 
-    KConfig* const config = amaroK::config( "Collection Browser" );
+    KConfig* const config = Amarok::config( "Collection Browser" );
     config->writeEntry( "Category1", m_cat1 );
     config->writeEntry( "Category2", m_cat2 );
     config->writeEntry( "Category3", m_cat3 );
@@ -1280,32 +1280,32 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                        COMPILATION_SET, COMPILATION_UNSET, ORGANIZE, DELETE, TRASH, FILE_MENU  };
         #endif
         KURL::List selection = listSelected();
-        menu.insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n( "&Load" ), MAKE );
-        menu.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
-        menu.insertItem( SmallIconSet( amaroK::icon( "fastforward" ) ), selection.count() == 1 ? i18n( "&Queue Track" )
+        menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), MAKE );
+        menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
+        menu.insertItem( SmallIconSet( Amarok::icon( "fastforward" ) ), selection.count() == 1 ? i18n( "&Queue Track" )
             : i18n( "&Queue Tracks" ), QUEUE );
 
         if( selection.count() > 1 || item->isExpandable() )
-            menu.insertItem( SmallIconSet( amaroK::icon( "save" ) ), i18n( "&Save as Playlist..." ), SAVE );
+            menu.insertItem( SmallIconSet( Amarok::icon( "save" ) ), i18n( "&Save as Playlist..." ), SAVE );
 
         menu.insertSeparator();
 
         if( MediaBrowser::isAvailable() )
-            menu.insertItem( SmallIconSet( amaroK::icon( "device" ) ), i18n( "&Transfer to Media Device" ), MEDIA_DEVICE );
+            menu.insertItem( SmallIconSet( Amarok::icon( "device" ) ), i18n( "&Transfer to Media Device" ), MEDIA_DEVICE );
 
         if( cat == IdArtist )
         {
-            menu.insertItem( SmallIconSet( amaroK::icon( "burn" ) ), i18n("Burn All Tracks by This Artist"), BURN_ARTIST );
+            menu.insertItem( SmallIconSet( Amarok::icon( "burn" ) ), i18n("Burn All Tracks by This Artist"), BURN_ARTIST );
             menu.setItemEnabled( BURN_ARTIST, K3bExporter::isAvailable() );
         }
         else if( cat == IdComposer )
         {
-            menu.insertItem( SmallIconSet( amaroK::icon( "burn" ) ), i18n("Burn All Tracks by This Composer"), BURN_COMPOSER );
+            menu.insertItem( SmallIconSet( Amarok::icon( "burn" ) ), i18n("Burn All Tracks by This Composer"), BURN_COMPOSER );
             menu.setItemEnabled( BURN_ARTIST, K3bExporter::isAvailable() );
         }
         else if( cat == IdAlbum || cat == IdVisYearAlbum )
         {
-            menu.insertItem( SmallIconSet( amaroK::icon( "burn" ) ), i18n("Burn This Album"), BURN_ALBUM );
+            menu.insertItem( SmallIconSet( Amarok::icon( "burn" ) ), i18n("Burn This Album"), BURN_ALBUM );
             menu.setItemEnabled( BURN_ALBUM, K3bExporter::isAvailable() );
         }
         // !item->isExpandable() in tree mode corresponds to
@@ -1313,18 +1313,18 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         else if( !item->isExpandable() &&
                  (m_viewMode != modeIpodView || m_currentDepth == trackDepth()) )
         {
-            menu.insertItem( SmallIconSet( amaroK::icon( "burn" ) ), i18n("Burn to CD"), BURN_CD );
+            menu.insertItem( SmallIconSet( Amarok::icon( "burn" ) ), i18n("Burn to CD"), BURN_CD );
             menu.setItemEnabled( BURN_CD, K3bExporter::isAvailable() );
         }
 
         menu.insertSeparator();
 
         #ifdef AMAZON_SUPPORT
-        menu.insertItem( SmallIconSet( amaroK::icon( "download" ) ), i18n( "&Fetch Cover Image" ), this, SLOT( fetchCover() ), 0, COVER );
+        menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n( "&Fetch Cover Image" ), this, SLOT( fetchCover() ), 0, COVER );
         menu.setItemEnabled(COVER, cat == IdAlbum || cat == IdVisYearAlbum );
         #endif
 
-        menu.insertItem( SmallIconSet( amaroK::icon( "info" ) )
+        menu.insertItem( SmallIconSet( Amarok::icon( "info" ) )
             , i18n( "Edit Track &Information...",  "Edit &Information for %n Tracks...", selection.count())
             , this, SLOT( showTrackInfo() ), 0, INFO );
 
@@ -1332,10 +1332,10 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18n("Organize File...", "Organize %n Files..." , selection.count() )
                 , ORGANIZE );
 
-        fileMenu.insertItem( SmallIconSet( amaroK::icon( "remove" ) ), i18n("Delete File...", "Delete %n Files..." , selection.count() )
+        fileMenu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n("Delete File...", "Delete %n Files..." , selection.count() )
                 , DELETE );
 
-        menu.insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n("Manage Files"), &fileMenu, FILE_MENU );
+        menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n("Manage Files"), &fileMenu, FILE_MENU );
 
         if ( cat == IdAlbum || cat == IdVisYearAlbum ) {
             menu.insertSeparator();
@@ -1528,13 +1528,13 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
         if( copy != m_organizeCopyMode )
         {
             QString shortMsg = i18n( "Cannot start organize operation of different kind while another is in progress." );
-            amaroK::StatusBar::instance()->shortMessage( shortMsg, KDE::StatusBar::Sorry );
+            Amarok::StatusBar::instance()->shortMessage( shortMsg, KDE::StatusBar::Sorry );
             return;
         }
         else
         {
-            m_organizeURLs += amaroK::recursiveUrlExpand( urls );
-            amaroK::StatusBar::instance()->incrementProgressTotalSteps( this, urls.count() );
+            m_organizeURLs += Amarok::recursiveUrlExpand( urls );
+            Amarok::StatusBar::instance()->incrementProgressTotalSteps( this, urls.count() );
             return;
         }
     }
@@ -1570,7 +1570,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
         dialog.slotDetails();
     }
 
-    KURL::List previewURLs = amaroK::recursiveUrlExpand( urls.first(), 1 );
+    KURL::List previewURLs = Amarok::recursiveUrlExpand( urls.first(), 1 );
     if( previewURLs.count() )
     {
         dialog.setPreviewBundle( MetaBundle( previewURLs.first() ) );
@@ -1596,10 +1596,10 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
         AmarokConfig::setReplacementString( dialog.replaceEdit->text() );
         KURL::List skipped;
 
-        m_organizeURLs = amaroK::recursiveUrlExpand( urls );
+        m_organizeURLs = Amarok::recursiveUrlExpand( urls );
         m_organizeCopyMode = copy;
         CollectionDB::instance()->createTables( true ); // create temp tables
-        amaroK::StatusBar::instance()->newProgressOperation( this )
+        Amarok::StatusBar::instance()->newProgressOperation( this )
             .setDescription( caption )
             .setTotalSteps( m_organizeURLs.count() );
 
@@ -1613,7 +1613,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
             }
 
             m_organizeURLs.pop_front();
-            amaroK::StatusBar::instance()->incrementProgress( this );
+            Amarok::StatusBar::instance()->incrementProgress( this );
         }
 
         CollectionDB::instance()->sanitizeCompilations(); //queryBuilder doesn't handle unknownCompilations
@@ -1642,11 +1642,11 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
 
             QString shortMsg = i18n( "Sorry, one file could not be organized.",
                     "Sorry, %n files could not be organized.", skipped.count() );
-            amaroK::StatusBar::instance()->shortLongMessage( shortMsg, longMsg, KDE::StatusBar::Sorry );
+            Amarok::StatusBar::instance()->shortLongMessage( shortMsg, longMsg, KDE::StatusBar::Sorry );
         }
         m_dirty = true;
         QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
-        amaroK::StatusBar::instance()->endProgressOperation( this );
+        Amarok::StatusBar::instance()->endProgressOperation( this );
     }
 }
 
@@ -1680,7 +1680,7 @@ CollectionView::contentsDropEvent( QDropEvent *e )
                 ++it )
         {
             if( (*it).isLocalFile() && QFileInfo( (*it).path() ).isDir() )
-                expandedList += amaroK::recursiveUrlExpand( *it );
+                expandedList += Amarok::recursiveUrlExpand( *it );
             else
                 expandedList += *it;
         }
@@ -1708,7 +1708,7 @@ CollectionView::contentsDropEvent( QDropEvent *e )
                 msg += i18n( ", one dropped file is invalid",
                         ", %n dropped files are invalid", invalid );
         if( !msg.isEmpty() )
-            amaroK::StatusBar::instance()->shortMessage( msg );
+            Amarok::StatusBar::instance()->shortMessage( msg );
         if( cleanList.count() > 0 )
             organizeFiles( list, i18n( "Copy Files To Collection" ), true /* copy */ );
     }
@@ -3015,13 +3015,13 @@ CollectionView::selectIpodItems ( void )
 QPixmap
 CollectionView::ipodIncrementIcon ( void )
 {
-    return SmallIcon( amaroK::icon( "fastforward" ) );
+    return SmallIcon( Amarok::icon( "fastforward" ) );
 }
 
 QPixmap
 CollectionView::ipodDecrementIcon ( void )
 {
-    return SmallIcon( amaroK::icon( "rewind" ) );
+    return SmallIcon( Amarok::icon( "rewind" ) );
 }
 
 
@@ -4022,7 +4022,7 @@ CollectionItem::compare( QListViewItem* i, int col, bool ascending ) const
             break;
     }
     // Need to make single letter artist names sort lower than acented divider items
-    // (e.g. The artist "A" should sort below the divider "Å√Ñ") so the divider colapsing
+    // (e.g. The artist "A" should sort below the divider "√Ñ") so the divider colapsing
     // code works correctly. Making the artist a two letter word makes localeAwareCompare
     // give the result we want. See BR 126545.
     if ( a.length() == 1 && dynamic_cast<DividerItem*>(i) )

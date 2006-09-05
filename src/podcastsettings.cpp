@@ -34,8 +34,8 @@ PodcastSettings::PodcastSettings( const QDomNode &channelSettings, const QString
 PodcastSettings::PodcastSettings( const QString &title )
     : m_title( title )
 {
-    m_saveLocation = KURL::fromPathOrURL( amaroK::saveLocation( "podcasts/" ) );
-    m_saveLocation.addPath( amaroK::vfatPath( m_title ) );
+    m_saveLocation = KURL::fromPathOrURL( Amarok::saveLocation( "podcasts/" ) );
+    m_saveLocation.addPath( Amarok::vfatPath( m_title ) );
     m_autoScan = true;
     m_fetch = STREAM;
     m_addToMediaDevice = false;
@@ -49,8 +49,8 @@ PodcastSettings::PodcastSettings( const QString &title, const QString &save, con
     m_title = title;
     if( save.isEmpty() )
     {
-        m_saveLocation = KURL::fromPathOrURL( amaroK::saveLocation( "podcasts/" ) );
-        m_saveLocation.addPath( amaroK::vfatPath( m_title ) );
+        m_saveLocation = KURL::fromPathOrURL( Amarok::saveLocation( "podcasts/" ) );
+        m_saveLocation.addPath( Amarok::vfatPath( m_title ) );
     }
     else
         m_saveLocation = KURL::fromPathOrURL( save );
@@ -142,7 +142,7 @@ void PodcastSettingsDialog::slotOk()       //slot
     {
         foreachType( QPtrList<PodcastSettings>, m_settingsList)
         {
-            (*it)->m_saveLocation     = requesterSaveLocation().append( amaroK::vfatPath( (*it)->title() ) );
+            (*it)->m_saveLocation     = requesterSaveLocation().append( Amarok::vfatPath( (*it)->title() ) );
             (*it)->m_autoScan         = m_ps->m_autoFetchCheck->isChecked();
             (*it)->m_addToMediaDevice = m_ps->m_addToMediaDeviceCheck->isChecked();
             (*it)->m_purge            = m_ps->m_purgeCheck->isChecked();

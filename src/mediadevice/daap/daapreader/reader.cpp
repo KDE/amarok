@@ -36,7 +36,7 @@ Reader::Reader(const QString& host, Q_UINT16 port, ServerItem* root, const QStri
     , m_root( root )
     , m_password( password )
 {
-   
+
 
     if( s_codes.size() == 0 )
     {
@@ -209,7 +209,7 @@ Reader::loginFinished( int /* id */, bool error )
     ContentFetcher* http = (ContentFetcher*) sender();
     disconnect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( loginFinished( int, bool ) ) );
     if( error )
-    { 
+    {
         http->deleteLater();
         return;
     }
@@ -228,7 +228,7 @@ Reader::updateFinished( int /*id*/, bool error )
     ContentFetcher* http = (ContentFetcher*) sender();
     disconnect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( updateFinished( int, bool ) ) );
     if( error )
-    { 
+    {
         http->deleteLater();
         warning() << "what is going on here? " << http->error() << endl;
         return;
@@ -249,7 +249,7 @@ Reader::databaseIdFinished( int /*id*/, bool error )
     ContentFetcher* http = (ContentFetcher*) sender();
     disconnect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( databaseIdFinished( int, bool ) ) );
     if( error )
-    { 
+    {
         http->deleteLater();
         return;
     }
@@ -268,7 +268,7 @@ Reader::songListFinished( int /*id*/, bool error )
     ContentFetcher* http = (ContentFetcher*) sender();
     disconnect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( songListFinished( int, bool ) ) );
     if( error )
-    { 
+    {
         http->deleteLater();
         return;
     }
@@ -285,18 +285,18 @@ Reader::songListFinished( int /*id*/, bool error )
         MetaBundle* bundle = new MetaBundle();
         bundle->setTitle( (*it).asMap()["minm"].asList()[0].toString() );
 //input url: daap://host:port/databaseId/music.ext
-        bundle->setUrl( amaroK::QStringx("daap://%1:%2/%3/%4.%5").args(
+        bundle->setUrl( Amarok::QStringx("daap://%1:%2/%3/%4.%5").args(
             QStringList() << m_host
                         << QString::number( m_port )
                         << m_databaseId
-                        << QString::number( (*it).asMap()["miid"].asList()[0].asInt() ) 
+                        << QString::number( (*it).asMap()["miid"].asList()[0].asInt() )
                         << (*it).asMap()["asfm"].asList()[0].asString() ) );
         bundle->setLength( (*it).asMap()["astm"].asList()[0].toInt()/1000 );
         bundle->setTrack( (*it).asMap()["astn"].asList()[0].toInt() );
-        
+
         QString album = (*it).asMap()["asal"].asList()[0].toString();
         bundle->setAlbum( album );
-        
+
         QString artist = (*it).asMap()["asar"].asList()[0].toString();
         bundle->setArtist( artist );
         result[ artist.lower() ][ album.lower() ].append(bundle);
@@ -337,7 +337,7 @@ Reader::parse( QDataStream &raw, uint containerLength, bool first )
             continue;
         }
 //#define DEBUGTAG( VAR ) debug() << tag << " has value " << VAR << endl;
-#define DEBUGTAG( VAR )   
+#define DEBUGTAG( VAR )
         switch( s_codes[tag].type )
         {
             case CHAR: {

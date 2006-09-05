@@ -120,8 +120,7 @@ QStringList TagGuesser::schemeStrings()
 {
     QStringList schemes;
 
-    KConfig *config = amaroK::config( "TagGuesser" );
-    schemes = config->readListEntry( "Filename schemes" );
+    schemes = Amarok::config( "TagGuesser" )->readListEntry( "Filename schemes" );
 
     if ( schemes.isEmpty() ) {
         schemes += "%track - %title";

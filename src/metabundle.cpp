@@ -499,7 +499,7 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
     if( !fileref.isNull() )
     {
         setUniqueId( readUniqueId() );
-        
+
         tag = fileref.tag();
 
         if ( tag )
@@ -810,7 +810,7 @@ QString MetaBundle::prettyText( int column ) const
         case Score:      text = QString::number( score() );                                          break;
         case Rating:     text = prettyRating();                                                      break;
         case PlayCount:  text = QString::number( playCount() );                                      break;
-        case LastPlayed: text = amaroK::verboseTimeSince( lastPlay() );                              break;
+        case LastPlayed: text = Amarok::verboseTimeSince( lastPlay() );                              break;
         case Filesize:   text = prettyFilesize();                                                    break;
         case Mood:
           text = moodbar_const().state() == Moodbar::JobRunning ? i18n( "Calculating..." )
@@ -1664,7 +1664,7 @@ void MetaBundle::detach()
     m_genre = m_genre.deepCopy();
     m_streamName = QDeepCopy<QString>(m_streamName);
     m_streamUrl = QDeepCopy<QString>(m_streamUrl);
-    
+
     if( m_moodbar != 0 )
       m_moodbar->detach();
 

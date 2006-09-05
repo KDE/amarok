@@ -88,7 +88,7 @@
     #include "inotify/inotify-syscalls.h"
 #endif
 
-using amaroK::QStringx;
+using Amarok::QStringx;
 
 #define DEBUG 0
 
@@ -1821,7 +1821,7 @@ bool
 CollectionDB::setAlbumImage( const QString& artist, const QString& album, QImage img, const QString& amazonUrl, const QString& asin )
 {
     //show a wait cursor for the duration
-    amaroK::OverrideCursor keep;
+    Amarok::OverrideCursor keep;
 
     // remove existing album covers
     removeAlbumImage( artist, album );
@@ -2016,7 +2016,7 @@ CollectionDB::makeShadowedImage( const QString& albumImage, bool cache )
     if ( !cache && cacheCoverDir().exists( cacheFile ) )
         return cacheCoverDir().filePath( cacheFile );
 
-    const QString folder = amaroK::saveLocation( "covershadow-cache/" );
+    const QString folder = Amarok::saveLocation( "covershadow-cache/" );
     const QString file = QString( "shadow_albumcover%1x%2.png" ).arg( original.width() + shadowSize ).arg( original.height() + shadowSize  );
     if ( QFile::exists( folder + file ) )
         shadow.load( folder + file );
@@ -4919,7 +4919,7 @@ CollectionDB::initialize()
 #ifdef USE_MYSQL
     if ( m_dbConnType == DbConnection::mysql )
     {
-        QString appVersion = amaroK::config( "General Options" )->readEntry( "Version" );
+        QString appVersion = Amarok::config( "General Options" )->readEntry( "Version" );
         QString passwd = AmarokConfig::mySqlPassword2(); // stored as string type
 
         if( passwd.isEmpty() )
@@ -4932,7 +4932,7 @@ CollectionDB::initialize()
             }
             else if( appVersion.startsWith( "1.4" ) )
             {
-                passwd = amaroK::config( "MySql" )->readEntry( "MySqlPassword" ); //read the field as plaintext
+                passwd = Amarok::config( "MySql" )->readEntry( "MySqlPassword" ); //read the field as plaintext
                 AmarokConfig::setMySqlPassword2( passwd ); // store it in plaintext field
             }
         }
@@ -4949,7 +4949,7 @@ CollectionDB::initialize()
 #ifdef USE_POSTGRESQL
     if ( m_dbConnType == DbConnection::postgresql )
     {
-        QString appVersion = amaroK::config( "General Options" )->readEntry( "Version" );
+        QString appVersion = Amarok::config( "General Options" )->readEntry( "Version" );
         QString passwd = AmarokConfig::postgresqlPassword2();
 
         if( passwd.isEmpty() )
@@ -4964,7 +4964,7 @@ CollectionDB::initialize()
                    ( appVersion.contains( "beta", false ) ||
                      appVersion.contains( "svn",  false ) ) )
             {
-                passwd = amaroK::config( "Postgresql" )->readEntry( "PostgresqlPassword" );
+                passwd = Amarok::config( "Postgresql" )->readEntry( "PostgresqlPassword" );
                 AmarokConfig::setPostgresqlPassword2( passwd );
             }
         }
@@ -4987,7 +4987,7 @@ CollectionDB::initialize()
     if ( !dbConn->isConnected() || !dbConn->isInitialized() )
     {
         error() << "Failed to connect to or initialise database!" << endl;
-        amaroK::MessageQueue::instance()->addMessage( dbConn->lastError() );
+        Amarok::MessageQueue::instance()->addMessage( dbConn->lastError() );
     }
     else
     {
@@ -5005,10 +5005,10 @@ CollectionDB::initialize()
             //Since we have created the tables, we need to make sure the version numbers are
             //set to the correct values. If this is not done now, the database update code may
             //run, which could corrupt things.
-            amaroK::config( "Collection Browser" )->writeEntry( "Database Version", DATABASE_VERSION );
-            amaroK::config( "Collection Browser" )->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
-            amaroK::config( "Collection Browser" )->writeEntry( "Database Persistent Tables Version", DATABASE_PERSISTENT_TABLES_VERSION );
-            amaroK::config( "Collection Browser" )->writeEntry( "Database Podcast Tables Version", DATABASE_PODCAST_TABLES_VERSION );    amaroK::config( "Collection Browser" )->writeEntry( "Database AFT Version", DATABASE_AFT_VERSION );
+            Amarok::config( "Collection Browser" )->writeEntry( "Database Version", DATABASE_VERSION );
+            Amarok::config( "Collection Browser" )->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
+            Amarok::config( "Collection Browser" )->writeEntry( "Database Persistent Tables Version", DATABASE_PERSISTENT_TABLES_VERSION );
+            Amarok::config( "Collection Browser" )->writeEntry( "Database Podcast Tables Version", DATABASE_PODCAST_TABLES_VERSION );    Amarok::config( "Collection Browser" )->writeEntry( "Database AFT Version", DATABASE_AFT_VERSION );
 
             setAdminValue( "Database Version", QString::number( DATABASE_VERSION ) );
             setAdminValue( "Database Stats Version", QString::number( DATABASE_STATS_VERSION ) );
@@ -5022,12 +5022,12 @@ CollectionDB::initialize()
         //make sure that there is no call to MountPointManager in CollectionDB's ctor
         //or in methods called from the ctor.
         if ( adminValue( "Database Devices Version" ).isEmpty()
-             && amaroK::config( "CollectionBrowser" )->readNumEntry( "Database Devices Version", 0 ) == 0 )
+             && Amarok::config( "CollectionBrowser" )->readNumEntry( "Database Devices Version", 0 ) == 0 )
         {
             createDevicesTable();
         }
         else if ( adminValue( "Database Devices Version" ).toInt() != DATABASE_DEVICES_VERSION
-              || amaroK::config( "Collection Browser" )->readNumEntry( "Database Devices Version", 0 ) != DATABASE_DEVICES_VERSION )
+              || Amarok::config( "Collection Browser" )->readNumEntry( "Database Devices Version", 0 ) != DATABASE_DEVICES_VERSION )
         {
             int prev = adminValue( "Database Devices Version" ).toInt();
 
@@ -5043,7 +5043,7 @@ CollectionDB::initialize()
                 //add future Devices update code here
             }
         }
-        amaroK::config( "Collection Browser" )->writeEntry( "Database Devices Version", DATABASE_DEVICES_VERSION );
+        Amarok::config( "Collection Browser" )->writeEntry( "Database Devices Version", DATABASE_DEVICES_VERSION );
         setAdminValue( "Database Devices Version", QString::number( DATABASE_DEVICES_VERSION ) );
     }
 
@@ -5071,14 +5071,14 @@ CollectionDB::checkDatabase()
         */
 
         bool needsUpdate = ( adminValue( "Database Stats Version" ).toInt() != DATABASE_STATS_VERSION
-                           || amaroK::config( "Collection Browser" )->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION
-                           || amaroK::config( "Collection Browser" )->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION
+                           || Amarok::config( "Collection Browser" )->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION
+                           || Amarok::config( "Collection Browser" )->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION
                            || adminValue( "Database Version" ).toInt() != DATABASE_VERSION
-                           || amaroK::config( "Collection Browser" )->readNumEntry( "Database Persistent Tables Version", 0 ) != DATABASE_PERSISTENT_TABLES_VERSION
+                           || Amarok::config( "Collection Browser" )->readNumEntry( "Database Persistent Tables Version", 0 ) != DATABASE_PERSISTENT_TABLES_VERSION
                            || adminValue( "Database Persistent Tables Version" ).toInt() != DATABASE_PERSISTENT_TABLES_VERSION
-                           || amaroK::config( "Collection Browser" )->readNumEntry( "Database Podcast Tables Version", 0 ) != DATABASE_PODCAST_TABLES_VERSION
+                           || Amarok::config( "Collection Browser" )->readNumEntry( "Database Podcast Tables Version", 0 ) != DATABASE_PODCAST_TABLES_VERSION
                            || adminValue( "Database Podcast Tables Version" ).toInt() != DATABASE_PODCAST_TABLES_VERSION
-                           || amaroK::config( "Collection Browser" )->readNumEntry( "Database AFT Version", 0 ) != DATABASE_AFT_VERSION
+                           || Amarok::config( "Collection Browser" )->readNumEntry( "Database AFT Version", 0 ) != DATABASE_AFT_VERSION
                            || adminValue( "Database AFT Version" ).toInt() != DATABASE_AFT_VERSION );
 
         if ( needsUpdate )
@@ -5116,7 +5116,7 @@ CollectionDB::checkDatabase()
             updateGroupBy();
 
             //remove database file if version is incompatible
-            if ( amaroK::config( "Collection Browser" )->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION
+            if ( Amarok::config( "Collection Browser" )->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION
                  || adminValue( "Database Version" ).toInt() != DATABASE_VERSION )
             {
                 debug() << "Rebuilding database!" << endl;
@@ -5129,11 +5129,11 @@ CollectionDB::checkDatabase()
     }
 
     // TODO Should write to config in dtor, but it crashes...
-    amaroK::config( "Collection Browser" )->writeEntry( "Database Version", DATABASE_VERSION );
-    amaroK::config( "Collection Browser" )->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
-    amaroK::config( "Collection Browser" )->writeEntry( "Database Persistent Tables Version", DATABASE_PERSISTENT_TABLES_VERSION );
-    amaroK::config( "Collection Browser" )->writeEntry( "Database Podcast Tables Version", DATABASE_PODCAST_TABLES_VERSION );
-    amaroK::config( "Collection Browser" )->writeEntry( "Database AFT Version", DATABASE_AFT_VERSION );
+    Amarok::config( "Collection Browser" )->writeEntry( "Database Version", DATABASE_VERSION );
+    Amarok::config( "Collection Browser" )->writeEntry( "Database Stats Version", DATABASE_STATS_VERSION );
+    Amarok::config( "Collection Browser" )->writeEntry( "Database Persistent Tables Version", DATABASE_PERSISTENT_TABLES_VERSION );
+    Amarok::config( "Collection Browser" )->writeEntry( "Database Podcast Tables Version", DATABASE_PODCAST_TABLES_VERSION );
+    Amarok::config( "Collection Browser" )->writeEntry( "Database AFT Version", DATABASE_AFT_VERSION );
 
     setAdminValue( "Database Version", QString::number( DATABASE_VERSION ) );
     setAdminValue( "Database Stats Version", QString::number( DATABASE_STATS_VERSION ) );
@@ -5152,7 +5152,7 @@ CollectionDB::updateGroupBy()
     int version = adminValue( "Database Version" ).toInt();
     if ( version && version < 32 )
     {
-        KConfig* config = amaroK::config( "Collection Browser" );
+        KConfig* config = Amarok::config( "Collection Browser" );
         int m_cat1 = config->readNumEntry( "Category1" );
         int m_cat2 = config->readNumEntry( "Category2" );
         int m_cat3 = config->readNumEntry( "Category3" );
@@ -5169,18 +5169,18 @@ void
 CollectionDB::updateStatsTables()
 {
     if ( adminValue( "Database Stats Version" ).toInt() != DATABASE_STATS_VERSION
-          || amaroK::config( "Collection Browser" )->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION )
+          || Amarok::config( "Collection Browser" )->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION )
     {
         debug() << "Different database stats version detected! Stats table will be updated or rebuilt." << endl;
 
             #if 0 // causes mysterious crashes
-            if( getType() == DbConnection::sqlite && QFile::exists( amaroK::saveLocation()+"collection.db" ) )
+            if( getType() == DbConnection::sqlite && QFile::exists( Amarok::saveLocation()+"collection.db" ) )
             {
                 debug() << "Creating a backup of the database in "
-                        << amaroK::saveLocation()+"collection-backup.db" << "." << endl;
+                        << Amarok::saveLocation()+"collection-backup.db" << "." << endl;
 
-                bool copied = KIO::NetAccess::file_copy( amaroK::saveLocation()+"collection.db",
-                                                         amaroK::saveLocation()+"collection-backup.db",
+                bool copied = KIO::NetAccess::file_copy( Amarok::saveLocation()+"collection.db",
+                                                         Amarok::saveLocation()+"collection-backup.db",
                                                          -1 /*perms*/, true /*overwrite*/, false /*resume*/ );
 
                 if( !copied )
@@ -5195,9 +5195,9 @@ CollectionDB::updateStatsTables()
 
         /* If config returns 3 or lower, it came from an Amarok version that was not aware of
            admin table, so we can't trust this table at all */
-        if( !prev || ( amaroK::config( "Collection Browser" )->readNumEntry( "Database Stats Version", 0 )
-                  && amaroK::config( "Collection Browser" )->readNumEntry( "Database Stats Version", 0 ) <= 3  ) )
-            prev = amaroK::config( "Collection Browser" )->readNumEntry( "Database Stats Version", 0 );
+        if( !prev || ( Amarok::config( "Collection Browser" )->readNumEntry( "Database Stats Version", 0 )
+                  && Amarok::config( "Collection Browser" )->readNumEntry( "Database Stats Version", 0 ) <= 3  ) )
+            prev = Amarok::config( "Collection Browser" )->readNumEntry( "Database Stats Version", 0 );
 
         //pre somewhere in the 1.3-1.4 timeframe, the version wasn't stored in the DB, so try to guess it
         const QString q = "SELECT COUNT( %1 ) FROM statistics;";
@@ -5258,7 +5258,7 @@ CollectionDB::updateStatsTables()
 
                 //This is not technically for the stats table, but it is part of the same
                 //update, so put it here anyway.
-                MountPointManager::instance()->setCollectionFolders( amaroK::config( "Collection" )->readPathListEntry( "Collection Folders" ) );
+                MountPointManager::instance()->setCollectionFolders( Amarok::config( "Collection" )->readPathListEntry( "Collection Folders" ) );
 
                 query( "ALTER TABLE statistics ADD deviceid INTEGER;" );
 
@@ -5568,21 +5568,21 @@ CollectionDB::extractEmbeddedImage( MetaBundle &trackInformation, QCString& hash
 QDir
 CollectionDB::largeCoverDir() //static
 {
-    return QDir( amaroK::saveLocation( "albumcovers/large/" ) );
+    return QDir( Amarok::saveLocation( "albumcovers/large/" ) );
 }
 
 
 QDir
 CollectionDB::tagCoverDir()  //static
 {
-    return QDir( amaroK::saveLocation( "albumcovers/tagcover/" ) );
+    return QDir( Amarok::saveLocation( "albumcovers/tagcover/" ) );
 }
 
 
 QDir
 CollectionDB::cacheCoverDir()  //static
 {
-    return QDir( amaroK::saveLocation( "albumcovers/cache/" ) );
+    return QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
 }
 
 
@@ -5605,7 +5605,7 @@ SqliteConnection::SqliteConnection( const SqliteConfig* /*config*/ )
 
     DEBUG_BLOCK
 
-    const QCString path = QFile::encodeName( amaroK::saveLocation() + "collection.db" );
+    const QCString path = QFile::encodeName( Amarok::saveLocation() + "collection.db" );
 
     // Open database file and check for correctness
     QFile file( path );

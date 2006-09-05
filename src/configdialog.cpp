@@ -59,7 +59,7 @@ email                : markey@web.de
 #include <kpushbutton.h>
 #include <kstandarddirs.h>
 
-namespace amaroK {
+namespace Amarok {
     int databaseTypeCode( const QString type )
     {
         // can't use kconfigxt for the database comboxbox since we need the DBConnection id and not the index
@@ -162,14 +162,14 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     frame->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
     // add pages
-    addPage( m_opt1, i18n( "General" ), amaroK::icon( "settings_general" ), i18n( "Configure General Options" ) );
-    addPage( m_opt2, i18n( "Appearance" ), amaroK::icon( "settings_view" ), i18n( "Configure Amarok's Appearance" ) );
-    addPage( m_opt4, i18n( "Playback" ), amaroK::icon( "settings_playback" ), i18n( "Configure Playback" ) );
-    addPage( opt5,   i18n( "OSD" ), amaroK::icon( "settings_indicator" ), i18n( "Configure On-Screen-Display" ) );
-    addPage( opt6,   i18n( "Engine" ), amaroK::icon( "settings_engine" ), i18n( "Configure Engine" ) );
-    addPage( m_opt7, i18n( "Collection" ), amaroK::icon( "collection" ), i18n( "Configure Collection" ) );
-    addPage( opt8,   i18n( "last.fm" ), amaroK::icon( "audioscrobbler" ), i18n( "Configure last.fm Support" ) );
-    addPage( opt9,   i18n( "Media Devices" ), amaroK::icon( "device" ), i18n( "Configure Portable Player Support" ) );
+    addPage( m_opt1, i18n( "General" ), Amarok::icon( "settings_general" ), i18n( "Configure General Options" ) );
+    addPage( m_opt2, i18n( "Appearance" ), Amarok::icon( "settings_view" ), i18n( "Configure Amarok's Appearance" ) );
+    addPage( m_opt4, i18n( "Playback" ), Amarok::icon( "settings_playback" ), i18n( "Configure Playback" ) );
+    addPage( opt5,   i18n( "OSD" ), Amarok::icon( "settings_indicator" ), i18n( "Configure On-Screen-Display" ) );
+    addPage( opt6,   i18n( "Engine" ), Amarok::icon( "settings_engine" ), i18n( "Configure Engine" ) );
+    addPage( m_opt7, i18n( "Collection" ), Amarok::icon( "collection" ), i18n( "Configure Collection" ) );
+    addPage( opt8,   i18n( "last.fm" ), Amarok::icon( "audioscrobbler" ), i18n( "Configure last.fm Support" ) );
+    addPage( opt9,   i18n( "Media Devices" ), Amarok::icon( "device" ), i18n( "Configure Portable Player Support" ) );
 
     // Show information labels (must be done after insertions)
     QObjectList *list = queryList( "QLabel", "infoPixmap" );
@@ -247,7 +247,7 @@ void AmarokConfigDialog::updateSettings()
     OSDPreviewWidget *osd = static_cast<OSDPreviewWidget*>( child( "osdpreview" ) );
     AmarokConfig::setOsdAlignment( osd->alignment() );
     AmarokConfig::setOsdYOffset( osd->y() );
-    amaroK::OSD::instance()->applySettings();
+    Amarok::OSD::instance()->applySettings();
 
     static_cast<CollectionSetup*>(child("CollectionSetup"))->writeConfig();
 
@@ -268,7 +268,7 @@ void AmarokConfigDialog::updateSettings()
         ContextBrowser::instance()->reloadStyleSheet();
     }
 
-    int dbType = amaroK::databaseTypeCode( m_opt7->dbSetupFrame->databaseEngine->currentText() );
+    int dbType = Amarok::databaseTypeCode( m_opt7->dbSetupFrame->databaseEngine->currentText() );
     if ( dbType != AmarokConfig::databaseEngine().toInt() ) {
         AmarokConfig::setDatabaseEngine( QString::number( dbType ) );
         emit settingsChanged();
@@ -278,18 +278,18 @@ void AmarokConfigDialog::updateSettings()
 
     if( MediaBrowser::isAvailable() )
     {
-        PlaylistWindow::self()->addBrowser( "MediaBrowser", MediaBrowser::instance(), i18n( "Media Device" ), amaroK::icon( "device" ) );
+        PlaylistWindow::self()->addBrowser( "MediaBrowser", MediaBrowser::instance(), i18n( "Media Device" ), Amarok::icon( "device" ) );
         //to re-enable mediabrowser hiding, uncomment this:
         //connect( MediaBrowser::instance(), SIGNAL( availabilityChanged( bool ) ),
         //         PlaylistWindow::self(), SLOT( mbAvailabilityChanged( bool ) ) );
 
     }
 
-    amaroK::setUseScores( m_opt1->kcfg_UseScores->isChecked() );
-    amaroK::setUseRatings( m_opt1->kcfg_UseRatings->isChecked() );
+    Amarok::setUseScores( m_opt1->kcfg_UseScores->isChecked() );
+    Amarok::setUseRatings( m_opt1->kcfg_UseRatings->isChecked() );
 
     // The following makes everything with a moodbar redraw itself.
-    amaroK::setMoodbarPrefs( m_opt1->kcfg_ShowMoodbar->isChecked(),
+    Amarok::setMoodbarPrefs( m_opt1->kcfg_ShowMoodbar->isChecked(),
                              m_opt1->kcfg_MakeMoodier->isChecked(),
                              m_opt1->kcfg_AlterMood->currentItem(),
                              m_opt1->kcfg_MoodsWithMusic->isChecked() );
@@ -337,7 +337,7 @@ bool AmarokConfigDialog::hasChanged()
             osd->alignment() != AmarokConfig::osdAlignment() ||
             osd->alignment() != OSDWidget::Center && osd->y() != AmarokConfig::osdYOffset() ||
             m_opt2->styleComboBox->currentText() != AmarokConfig::contextBrowserStyleSheet() ||
-            amaroK::databaseTypeCode(  m_opt7->dbSetupFrame->databaseEngine->currentText()  ) != AmarokConfig::databaseEngine().toInt() ||
+            Amarok::databaseTypeCode(  m_opt7->dbSetupFrame->databaseEngine->currentText()  ) != AmarokConfig::databaseEngine().toInt() ||
             m_engineConfig && m_engineConfig->hasChanged() ||
             m_deviceManager && m_deviceManager->hasChanged() ||
             externalBrowser() != AmarokConfig::externalBrowser();

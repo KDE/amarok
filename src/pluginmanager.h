@@ -21,7 +21,7 @@ email                : markey@web.de
 #include <kservice.h>
 #include <ktrader.h>
 
-namespace amaroK { class Plugin; }
+namespace Amarok { class Plugin; }
 class KLibrary;
 
 class PluginManager
@@ -62,27 +62,27 @@ class PluginManager
          * @return            Pointer to Plugin, or NULL if error
          * @see               http://developer.kde.org/documentation/library/kdeqt/tradersyntax.html
          */
-        static amaroK::Plugin* createFromQuery( const QString& constraint = QString::null );
+        static Amarok::Plugin* createFromQuery( const QString& constraint = QString::null );
 
         /**
          * Load and instantiate plugin from service
          * @param service     Pointer to KService
          * @return            Pointer to Plugin, or NULL if error
          */
-        static amaroK::Plugin* createFromService( const KService::Ptr service );
+        static Amarok::Plugin* createFromService( const KService::Ptr service );
 
         /**
          * Remove library and delete plugin
          * @param plugin      Pointer to plugin
          */
-        static void unload( amaroK::Plugin* plugin );
+        static void unload( Amarok::Plugin* plugin );
 
         /**
          * Look up service for loaded plugin from store
          * @param pointer     Pointer to plugin
          * @return            KService, or 0 if not found
          */
-        static KService::Ptr getService( const amaroK::Plugin* plugin );
+        static KService::Ptr getService( const Amarok::Plugin* plugin );
 
         /**
          * Dump properties from a service to stdout for debugging
@@ -98,12 +98,12 @@ class PluginManager
 
     private:
         struct StoreItem {
-            amaroK::Plugin* plugin;
+            Amarok::Plugin* plugin;
             KLibrary* library;
             KService::Ptr service;
         };
 
-        static std::vector<StoreItem>::iterator lookupPlugin( const amaroK::Plugin* plugin );
+        static std::vector<StoreItem>::iterator lookupPlugin( const Amarok::Plugin* plugin );
 
     //attributes:
         static std::vector<StoreItem> m_store;

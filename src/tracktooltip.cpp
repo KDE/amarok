@@ -63,7 +63,7 @@ void TrackToolTip::addToWidget( QWidget *widget )
     if( widget && !m_widgets.containsRef( widget ) )
     {
         m_widgets.append( widget );
-        amaroK::ToolTip::add( this, widget );
+        Amarok::ToolTip::add( this, widget );
     }
 }
 
@@ -71,7 +71,7 @@ void TrackToolTip::removeFromWidget( QWidget *widget )
 {
     if( widget && m_widgets.containsRef( widget ) )
     {
-        amaroK::ToolTip::remove( widget );
+        Amarok::ToolTip::remove( widget );
         m_widgets.removeRef( widget );
     }
 }
@@ -149,14 +149,14 @@ void TrackToolTip::setTrack( const MetaBundle &tags, bool force )
                       // moodbar is saved in m_moodbarURL so we don't have
                       // to re-save it every second.
                       left << playlist->columnText( column );
-                      QString filename = ::locateLocal( "data", 
+                      QString filename = ::locateLocal( "data",
                                                         "amarok/mood_tooltip.png" );
                       int height = QFontMetrics( QToolTip::font() ).height() - 2;
 
                       if( m_moodbarURL != tags.url().url() )
                         {
-                          QPixmap moodbar 
-                            = const_cast<MetaBundle&>( tags ).moodbar().draw( 
+                          QPixmap moodbar
+                            = const_cast<MetaBundle&>( tags ).moodbar().draw(
                                   MOODBAR_WIDTH, height );
                           moodbar.save( filename, "PNG", 100 );
                           m_moodbarURL = tags.url().url();
@@ -184,7 +184,7 @@ void TrackToolTip::setTrack( const MetaBundle &tags, bool force )
             else if( column == PlaylistItem::LastPlayed )
             {
                 const uint lastPlayed = CollectionDB::instance()->getLastPlay( tags.url().path() ).toTime_t();
-                right << amaroK::verboseTimeSince( lastPlayed );
+                right << Amarok::verboseTimeSince( lastPlayed );
                 left << playlist->columnText( column );
             }
             else if( column == PlaylistItem::Filename && title.isEmpty() )
@@ -314,7 +314,7 @@ void TrackToolTip::slotUpdate( const QString &url )
         setTrack( m_tags, true );
 }
 
-void 
+void
 TrackToolTip::slotMoodbarEvent( void )
 {
   // Clear this so the moodbar gets redrawn
@@ -345,7 +345,7 @@ QString TrackToolTip::tooltip() const
 
 void TrackToolTip::updateWidgets()
 {
-    amaroK::ToolTip::updateTip();
+    Amarok::ToolTip::updateTip();
 }
 
 #include "tracktooltip.moc"

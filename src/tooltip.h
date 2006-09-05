@@ -25,7 +25,7 @@
 #include <qpoint.h>
 #include <qtimer.h>
 
-namespace amaroK
+namespace Amarok
 {
 
 class ToolTipClient

@@ -34,22 +34,22 @@
 #include <kwin.h>
 
 
-namespace amaroK {
+namespace Amarok {
     void coverContextMenu( QWidget *parent, QPoint point, const QString &artist, const QString &album, bool showCoverManager ) {
         KPopupMenu menu;
         enum { SHOW, FETCH, CUSTOM, DELETE, MANAGER };
 
         menu.insertTitle( i18n( "Cover Image" ) );
 
-        menu.insertItem( SmallIconSet( amaroK::icon( "zoom" ) ), i18n( "&Show Fullsize" ), SHOW );
-        menu.insertItem( SmallIconSet( amaroK::icon( "download" ) ), i18n( "&Fetch From amazon.%1" ).arg(CoverManager::amazonTld()), FETCH );
-        menu.insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n( "Set &Custom Cover" ), CUSTOM );
+        menu.insertItem( SmallIconSet( Amarok::icon( "zoom" ) ), i18n( "&Show Fullsize" ), SHOW );
+        menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n( "&Fetch From amazon.%1" ).arg(CoverManager::amazonTld()), FETCH );
+        menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "Set &Custom Cover" ), CUSTOM );
         menu.insertSeparator();
 
-        menu.insertItem( SmallIconSet( amaroK::icon( "remove" ) ), i18n("&Unset Cover"), DELETE );
+        menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n("&Unset Cover"), DELETE );
         if ( showCoverManager ) {
             menu.insertSeparator();
-            menu.insertItem( SmallIconSet( amaroK::icon( "covermanager" ) ), i18n( "Cover Manager" ), MANAGER );
+            menu.insertItem( SmallIconSet( Amarok::icon( "covermanager" ) ), i18n( "Cover Manager" ), MANAGER );
         }
         #ifndef AMAZON_SUPPORT
         menu.setItemEnabled( FETCH, false );
@@ -118,7 +118,7 @@ CoverLabel::CoverLabel ( QWidget * parent, const char * name, WFlags f )
 void CoverLabel::mouseReleaseEvent(QMouseEvent *pEvent) {
     if (pEvent->button() == LeftButton || pEvent->button() == RightButton)
     {
-        amaroK::coverContextMenu( this, pEvent->globalPos(), m_artist, m_album, false );
+        Amarok::coverContextMenu( this, pEvent->globalPos(), m_artist, m_album, false );
     }
 }
 
@@ -239,7 +239,7 @@ CoverFetcher::startFetch()
     KIO::TransferJob* job = KIO::storedGet( url, false, false );
     connect( job, SIGNAL(result( KIO::Job* )), SLOT(finishedXmlFetch( KIO::Job* )) );
 
-    amaroK::StatusBar::instance()->newProgressOperation( job );
+    Amarok::StatusBar::instance()->newProgressOperation( job );
 }
 
 
@@ -371,7 +371,7 @@ CoverFetcher::attemptAnotherFetch()
         KIO::TransferJob* job = KIO::storedGet( KURL(m_coverUrls.front()), false, false );
         connect( job, SIGNAL(result( KIO::Job* )), SLOT(finishedImageFetch( KIO::Job* )) );
 
-        amaroK::StatusBar::instance()->newProgressOperation( job );
+        Amarok::StatusBar::instance()->newProgressOperation( job );
 
         m_coverUrls.pop_front();
 

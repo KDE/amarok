@@ -23,15 +23,15 @@
 class Sonogram : public Analyzer::Base2D
 {
 public:
-	Sonogram(QWidget*);
-	~Sonogram();
+    Sonogram(QWidget*);
+    ~Sonogram();
 
 protected:
-	void init();
-	void analyze(const Scope&);
-	void transform(Scope&);
-	void demo();
-	void resizeEvent(QResizeEvent*);
+    void init();
+    void analyze(const Scope&);
+    void transform(Scope&);
+    void demo();
+    void resizeEvent(QResizeEvent*);
 };
 
 #endif

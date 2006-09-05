@@ -28,7 +28,7 @@
 
 class QTimer;
 
-namespace amaroK
+namespace Amarok
 {
     class Slider;
     class PrettySlider;
@@ -64,7 +64,7 @@ namespace amaroK
         QLabel *m_timeLabel;
         QLabel *m_itemCountLabel;
         QueueLabel *m_queueLabel;
-        amaroK::PrettySlider *m_slider;
+        Amarok::PrettySlider *m_slider;
         QTimer *m_pauseTimer;
     };
     /**
@@ -83,11 +83,11 @@ namespace amaroK
         bool m_queueMessages;
     };
 
-} //namespace amaroK
+} //namespace Amarok
 
 namespace The
 {
-    inline amaroK::StatusBar *statusbar() { return amaroK::StatusBar::instance(); }
+    inline Amarok::StatusBar *statusbar() { return Amarok::StatusBar::instance(); }
 }
 
 #endif

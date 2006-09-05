@@ -626,7 +626,7 @@ StatusBar::writeLogFile( const QString &text )
     const int counter = 4; // number of logs to keep
     const uint maxSize = 30000; // approximately 1000 lines per log file
     int c = counter;
-    QString logBase = amaroK::saveLocation() + "statusbar.log.";
+    QString logBase = Amarok::saveLocation() + "statusbar.log.";
     QFile file;
 
     if( m_logCounter < 0 ) //find which log to write to

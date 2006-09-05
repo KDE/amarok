@@ -402,7 +402,7 @@ GenericMediaDevice::openDevice( bool /*silent*/ )
     DEBUG_BLOCK
     if( !m_medium.mountPoint() )
     {
-        amaroK::StatusBar::instance()->longMessage( i18n( "Devices handled by this plugin must be mounted first.\n"
+        Amarok::StatusBar::instance()->longMessage( i18n( "Devices handled by this plugin must be mounted first.\n"
                                                           "Please mount the device and click \"Connect\" again." ),
                                                     KDE::StatusBar::Sorry );
         return false;
@@ -575,7 +575,7 @@ GenericMediaDevice::buildDestination( const QString &format, const MetaBundle &m
         track.sprintf( "%02d", mb.track() );
     args["track"] = track;
 
-    amaroK::QStringx formatx( format );
+    Amarok::QStringx formatx( format );
     QString result = formatx.namedOptArgs( args );
     if( !result.startsWith( "/" ) )
         result.prepend( "/" );
@@ -640,9 +640,9 @@ GenericMediaDevice::buildPodcastDestination( const PodcastEpisodeBundle *bundle 
         values = CollectionDB::instance()->query( sql.arg( parent ) );
         name    =    values.first();
         parent  =   values.last().toInt();
-        location += amaroK::vfatPath( name ) + '/';
+        location += Amarok::vfatPath( name ) + '/';
     }
-    location += amaroK::vfatPath( channelTitle ) + '/' + bundle->localUrl().filename();
+    location += Amarok::vfatPath( channelTitle ) + '/' + bundle->localUrl().filename();
     return location;
 }
 
@@ -945,22 +945,22 @@ GenericMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
     if ( item )
     {
         KPopupMenu menu( m_view );
-        menu.insertItem( SmallIconSet( amaroK::icon( "playlist" ) ), i18n( "&Load" ), LOAD );
-        menu.insertItem( SmallIconSet( amaroK::icon( "1downarrow" ) ), i18n( "&Append to Playlist" ), APPEND );
-        menu.insertItem( SmallIconSet( amaroK::icon( "fastforward" ) ), i18n( "&Queue Tracks" ), QUEUE );
+        menu.insertItem( SmallIconSet( Amarok::icon( "playlist" ) ), i18n( "&Load" ), LOAD );
+        menu.insertItem( SmallIconSet( Amarok::icon( "1downarrow" ) ), i18n( "&Append to Playlist" ), APPEND );
+        menu.insertItem( SmallIconSet( Amarok::icon( "fastforward" ) ), i18n( "&Queue Tracks" ), QUEUE );
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet( amaroK::icon( "collection" ) ), i18n( "&Copy Files to Collection..." ), DOWNLOAD );
-        menu.insertItem( SmallIconSet( amaroK::icon( "cdrom_unmount" ) ), i18n( "Burn to CD as Data" ), BURN_DATACD );
+        menu.insertItem( SmallIconSet( Amarok::icon( "collection" ) ), i18n( "&Copy Files to Collection..." ), DOWNLOAD );
+        menu.insertItem( SmallIconSet( Amarok::icon( "cdrom_unmount" ) ), i18n( "Burn to CD as Data" ), BURN_DATACD );
         menu.setItemEnabled( BURN_DATACD, K3bExporter::isAvailable() );
-        menu.insertItem( SmallIconSet( amaroK::icon( "cdaudio_unmount" ) ), i18n( "Burn to CD as Audio" ), BURN_AUDIOCD );
+        menu.insertItem( SmallIconSet( Amarok::icon( "cdaudio_unmount" ) ), i18n( "Burn to CD as Audio" ), BURN_AUDIOCD );
         menu.setItemEnabled( BURN_AUDIOCD, K3bExporter::isAvailable() );
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet( amaroK::icon( "folder" ) ), i18n( "Add Directory" ), DIRECTORY );
-        menu.insertItem( SmallIconSet( amaroK::icon( "edit" ) ), i18n( "Rename" ), RENAME );
-        menu.insertItem( SmallIconSet( amaroK::icon( "remove" ) ), i18n( "Delete" ), DELETE );
+        menu.insertItem( SmallIconSet( Amarok::icon( "folder" ) ), i18n( "Add Directory" ), DIRECTORY );
+        menu.insertItem( SmallIconSet( Amarok::icon( "edit" ) ), i18n( "Rename" ), RENAME );
+        menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n( "Delete" ), DELETE );
         menu.insertSeparator();
         // NOTE: need better icon
-        menu.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "Transfer Queue to Here..." ), TRANSFER_HERE );
+        menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "Transfer Queue to Here..." ), TRANSFER_HERE );
         menu.setItemEnabled( TRANSFER_HERE, MediaBrowser::queue()->childCount() );
 
         int id =  menu.exec( point );
@@ -1016,11 +1016,11 @@ GenericMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
     if( isConnected() )
     {
         KPopupMenu menu( m_view );
-        menu.insertItem( SmallIconSet( amaroK::icon( "folder" ) ), i18n("Add Directory" ), DIRECTORY );
+        menu.insertItem( SmallIconSet( Amarok::icon( "folder" ) ), i18n("Add Directory" ), DIRECTORY );
         if ( MediaBrowser::queue()->childCount())
         {
             menu.insertSeparator();
-            menu.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n(" Transfer queue to here..." ), TRANSFER_HERE );
+            menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n(" Transfer queue to here..." ), TRANSFER_HERE );
         }
         int id =  menu.exec( point );
         switch( id )
@@ -1045,14 +1045,14 @@ QString GenericMediaDevice::cleanPath( const QString &component )
 
     if( m_actuallyVfat )
     {
-        result = amaroK::cleanPath( result, true /* replaces weird stuff by '_' */);
+        result = Amarok::cleanPath( result, true /* replaces weird stuff by '_' */);
     }
 
     result.simplifyWhiteSpace();
     if( m_spacesToUnderscores )
         result.replace( QRegExp( "\\s" ), "_" );
     if( m_actuallyVfat )
-        result = amaroK::vfatPath( result );
+        result = Amarok::vfatPath( result );
 
     result.replace( "/", "-" );
 

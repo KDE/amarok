@@ -38,7 +38,7 @@
 #endif
 
 
-namespace amaroK
+namespace Amarok
 {
     #if 0
     class CrashHandlerWidget : public KDialog {
@@ -263,7 +263,7 @@ namespace amaroK
 #include <kstdguiitem.h>
 #include <kstandarddirs.h>
 
-amaroK::CrashHandlerWidget::CrashHandlerWidget()
+Amarok::CrashHandlerWidget::CrashHandlerWidget()
 {
     QBoxLayout *layout = new QHBoxLayout( this, 18, 12 );
 

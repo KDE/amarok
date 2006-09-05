@@ -54,7 +54,7 @@ class AmarokThemeNewStuff : public KNewStuff
             return false;
         }
 
-        const QString destination = amaroK::saveLocation( "themes/" );
+        const QString destination = Amarok::saveLocation( "themes/" );
         debug() << "copying to " << destination << endl;
         const KArchiveDirectory* archiveDir = archive.directory();
         archiveDir->copyTo( destination, true );
@@ -93,7 +93,7 @@ void Options2::installPushButton_clicked()
         return;
     }
 
-    const QString destination = amaroK::saveLocation( "themes/" );
+    const QString destination = Amarok::saveLocation( "themes/" );
     debug() << "copying to " << destination << endl;
     const KArchiveDirectory* archiveDir = archive.directory();
     archiveDir->copyTo( destination, true );
@@ -108,7 +108,7 @@ void Options2::retrievePushButton_clicked()
     // Delete KNewStuff's configuration entries. These entries reflect which styles
     // are already installed. As we cannot yet keep them in sync after uninstalling
     // styles, we deactivate the check marks entirely.
-    amaroK::config()->deleteGroup( "KNewStuffStatus" );
+    Amarok::config()->deleteGroup( "KNewStuffStatus" );
 
     // we need this because KNewStuffGeneric's install function isn't clever enough
     AmarokThemeNewStuff *kns = new AmarokThemeNewStuff( "amarok/themes", this );
@@ -146,7 +146,7 @@ void Options2::uninstallPushButton_clicked()
         ContextBrowser::instance()->reloadStyleSheet();
     }
 
-    KURL themeDir( KURL::fromPathOrURL( amaroK::saveLocation( "themes/" ) ) );
+    KURL themeDir( KURL::fromPathOrURL( Amarok::saveLocation( "themes/" ) ) );
     themeDir.addPath( name );
 
     if( !KIO::NetAccess::del( themeDir, 0 ) ) {
@@ -163,7 +163,7 @@ void Options2::uninstallPushButton_clicked()
 void Options2::styleComboBox_activated(const QString& s)
 {
     bool disable = false;
-    QDir dir( amaroK::saveLocation( "themes/" ) + s );
+    QDir dir( Amarok::saveLocation( "themes/" ) + s );
     if( !dir.exists() )
         disable = true;
 

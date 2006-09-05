@@ -88,7 +88,7 @@ bool MasEngine::init()
     DEBUG_BLOCK
 
     if (!masinit() ) {
-        KMessageBox::error( 0, i18n("<h3>amaroK could not initialise MAS.</h3>"
+        KMessageBox::error( 0, i18n("<h3>Amarok could not initialise MAS.</h3>"
                         "<p>Check for a running mas daemon.</p>") );
         error() << "  connecting to MAS daemon failed. Aborting. " << endl;
         debug() << "  Please restart amarok." << endl;

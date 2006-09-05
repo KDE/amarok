@@ -17,7 +17,7 @@
 AMAROK_EXPORT_PLUGIN( AkodeEngine )
 
 
-namespace amaroK
+namespace Amarok
 {
     class Manager : public aKode::Player::Manager
     {
@@ -63,7 +63,7 @@ AkodeEngine::init()
 //    startTimer( 20 );
 
     m_player = new aKode::Player();
-    m_player->setManager( new amaroK::Manager( this ) );
+    m_player->setManager( new Amarok::Manager( this ) );
     m_player->setMonitor( &m_scope );
 
     return m_player->open( "auto" );
@@ -80,7 +80,7 @@ AkodeEngine::load( const KURL &url, bool isStream )
 bool
 AkodeEngine::play( uint /*offset*/ )
 {
-    //FIXME this seemed to crash amaroK
+    //FIXME this seemed to crash Amarok
     //m_player->decoder()->seek( offset );
     m_player->play();
 

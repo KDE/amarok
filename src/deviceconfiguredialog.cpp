@@ -1,7 +1,7 @@
 //
 // C++ Implementation: deviceconfiguredialog.cpp
 //
-// Description: 
+// Description:
 //
 //
 // Author: Jeff Mitchell <kde-dev@emailgoeshere.com>, (C) 2006
@@ -33,7 +33,7 @@
 #include <kwin.h>
 
 DeviceConfigureDialog::DeviceConfigureDialog( const Medium &medium )
-        : KDialogBase( amaroK::mainWindow(), "deviceconfiguredialog", true, QString("Select Plugin for " + medium.name()), Ok|Cancel, Ok, false )
+        : KDialogBase( Amarok::mainWindow(), "deviceconfiguredialog", true, QString("Select Plugin for " + medium.name()), Ok|Cancel, Ok, false )
 {
     m_medium = new Medium( medium );
     kapp->setTopWidget( this );

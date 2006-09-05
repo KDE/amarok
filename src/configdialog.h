@@ -25,7 +25,7 @@ class QComboBox;
 class QGroupBox;
 class QVBox;
 
-namespace amaroK {
+namespace Amarok {
     class PluginConfig;
 }
 
@@ -62,7 +62,7 @@ class AmarokConfigDialog : public KConfigDialog
         QString externalBrowser() const;
 
         QComboBox* m_soundSystem;
-        amaroK::PluginConfig *m_engineConfig;
+        Amarok::PluginConfig *m_engineConfig;
         QGroupBox            *m_engineConfigFrame;
         class Options1       *m_opt1;
         class Options2       *m_opt2;

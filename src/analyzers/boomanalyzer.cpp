@@ -1,6 +1,7 @@
 // Author: Max Howell <max.howell@methylblue.com>, (C) 2004
 // Copyright: See COPYING file that comes with this distribution
 
+#include "amarok.h"
 #include "boomanalyzer.h"
 #include <cmath>
 #include <qlabel.h>
@@ -144,11 +145,11 @@ BoomAnalyzer::analyze( const Scope &scope )
 
         y = height() - uint(bar_height[i]);
         bitBlt( canvas(), x+1, y, &barPixmap, 0, y );
-        p.setPen( amaroK::ColorScheme::Foreground );
+        p.setPen( Amarok::ColorScheme::Foreground );
         p.drawRect( x, y, COLUMN_WIDTH, height() - y );
 
         y = height() - uint(peak_height[i]);
-        p.setPen( amaroK::ColorScheme::Text );
+        p.setPen( Amarok::ColorScheme::Text );
         p.drawLine( x, y, x+COLUMN_WIDTH-1, y );
     }
 }

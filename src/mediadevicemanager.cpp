@@ -36,7 +36,7 @@ MediaDeviceManager* MediaDeviceManager::instance()
 MediaDeviceManager::MediaDeviceManager()
 {
     DEBUG_BLOCK
-    connect( DeviceManager::instance(), SIGNAL( mediumAdded( const Medium*, QString ) ), SLOT( slotMediumAdded( const Medium*, QString ) ) ); 
+    connect( DeviceManager::instance(), SIGNAL( mediumAdded( const Medium*, QString ) ), SLOT( slotMediumAdded( const Medium*, QString ) ) );
     connect( DeviceManager::instance(), SIGNAL( mediumChanged( const Medium*, QString ) ), SLOT( slotMediumChanged( const Medium*, QString ) ) );
     connect( DeviceManager::instance(), SIGNAL( mediumRemoved( const Medium*, QString ) ), SLOT( slotMediumRemoved( const Medium*, QString ) ) );
     Medium::List mediums = DeviceManager::instance()->getDeviceList();
@@ -51,7 +51,7 @@ MediaDeviceManager::MediaDeviceManager()
     }
     //load manual devices
     QStringList manualDevices;
-    KConfig *config = amaroK::config( "MediaBrowser" );
+    KConfig *config = Amarok::config( "MediaBrowser" );
     QMap<QString,QString> savedDevices = config->entryMap( "MediaBrowser" );
     QMap<QString,QString>::Iterator qit;
     QString curr, currMountPoint, currName;

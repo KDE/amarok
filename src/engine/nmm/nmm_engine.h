@@ -58,7 +58,7 @@ public:
 
     Engine::State state() const;
 
-    amaroK::PluginConfig* configure() const;
+    Amarok::PluginConfig* configure() const;
 
     QValueList<NmmLocation> environmentHostList() const {return tmp_environment_list;}
     void setEnvironmentHostList(QValueList<NmmLocation> list) { tmp_environment_list = list;}
@@ -81,7 +81,7 @@ private slots:
 
     /**
      * Checks for local NMM security options.
-     * Warns user if ~/.nmmrc doesn't have 
+     * Warns user if ~/.nmmrc doesn't have
      * allowedwritepaths or allowedreadpaths set.
      * TODO: Should be called on NMM engine load and not from ::load.
      */
@@ -190,15 +190,15 @@ private:
     CompositeNode* __composite;
 
     /**
-     * The node for audio playback 
-     * where the various events like endTrack, setProgress etc. are caught 
+     * The node for audio playback
+     * where the various events like endTrack, setProgress etc. are caught
      * if video is disabled.
      */
     INode* __playback;
 
     /**
      * The display node for video playback
-     * where the various events like endTrack, setProgress etc. are caught 
+     * where the various events like endTrack, setProgress etc. are caught
      * if video is enabled.
      */
     INode* __display;
@@ -223,9 +223,9 @@ private:
      */
     bool __seeking;
 
-    /** 
-     * Used to determine whether an errorDialog is being displayed 
-     * in 'localhost only' mode. No track should be played till 
+    /**
+     * Used to determine whether an errorDialog is being displayed
+     * in 'localhost only' mode. No track should be played till
      * the user clicked 'Ok'.
      */
     bool m_localhostonly_errordialog;
@@ -254,7 +254,7 @@ public:
 
 class NMMEngineException {
   public:
-    NMMEngineException(std::string _hostname, int _error) 
+    NMMEngineException(std::string _hostname, int _error)
       : hostname( _hostname ), error( _error ) {}
 
     std::string hostname;

@@ -62,7 +62,7 @@ class OSDWidget : public QWidget
         void setTranslucency( const bool b ) { m_translucency = b; }
         void setRating( const short rating ) { m_rating = rating; }
         void setMoodbar( void ) { m_moodbarBundle = MetaBundle(); }
-        void setMoodbar( const MetaBundle &bundle ) 
+        void setMoodbar( const MetaBundle &bundle )
           { m_moodbarBundle = bundle;  m_moodbarBundle.moodbar().load(); }
 
     protected:
@@ -145,7 +145,7 @@ private:
 
 
 
-namespace amaroK
+namespace Amarok
 {
     class OSD : public OSDWidget
     {

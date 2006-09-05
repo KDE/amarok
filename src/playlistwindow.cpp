@@ -76,10 +76,10 @@
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
-/// CLASS amaroK::ToolBar
+/// CLASS Amarok::ToolBar
 //////////////////////////////////////////////////////////////////////////////////////////
 
-namespace amaroK
+namespace Amarok
 {
     class ToolBar : public KToolBar
     {
@@ -91,12 +91,12 @@ namespace amaroK
     protected:
         virtual void
         mousePressEvent( QMouseEvent *e ) {
-            if( e->button() == RightButton ) amaroK::Menu::instance()->popup( e->globalPos() );
+            if( e->button() == RightButton ) Amarok::Menu::instance()->popup( e->globalPos() );
         }
 
         virtual void
         wheelEvent( QWheelEvent *e ) {
-            EngineController::instance()->increaseVolume( e->delta() / amaroK::VOLUME_SENSITIVITY );
+            EngineController::instance()->increaseVolume( e->delta() / Amarok::VOLUME_SENSITIVITY );
         }
     };
 }
@@ -125,25 +125,25 @@ PlaylistWindow::PlaylistWindow()
     KStdAction::keyBindings( kapp, SLOT( slotConfigShortcuts() ), ac );
     KStdAction::keyBindings( kapp, SLOT( slotConfigGlobalShortcuts() ), ac, "options_configure_globals" );
     KStdAction::preferences( kapp, SLOT( slotConfigAmarok() ), ac );
-    ac->action("options_configure_globals")->setIcon( amaroK::icon( "configure" ) );
-    ac->action(KStdAction::name(KStdAction::KeyBindings))->setIcon( amaroK::icon( "configure" ) );
-    ac->action(KStdAction::name(KStdAction::ConfigureToolbars))->setIcon( amaroK::icon( "configure" ) );
-    ac->action(KStdAction::name(KStdAction::Preferences))->setIcon( amaroK::icon( "configure" ) );
+    ac->action("options_configure_globals")->setIcon( Amarok::icon( "configure" ) );
+    ac->action(KStdAction::name(KStdAction::KeyBindings))->setIcon( Amarok::icon( "configure" ) );
+    ac->action(KStdAction::name(KStdAction::ConfigureToolbars))->setIcon( Amarok::icon( "configure" ) );
+    ac->action(KStdAction::name(KStdAction::Preferences))->setIcon( Amarok::icon( "configure" ) );
 
     KStdAction::quit( kapp, SLOT( quit() ), ac );
     KStdAction::open( this, SLOT(slotAddLocation()), ac, "playlist_add" )->setText( i18n("&Add Media...") );
-    ac->action( "playlist_add" )->setIcon( amaroK::icon( "files" ) );
+    ac->action( "playlist_add" )->setIcon( Amarok::icon( "files" ) );
     KStdAction::open( this, SLOT(slotAddStream()), ac, "stream_add" )->setText( i18n("&Add Stream...") );
-    ac->action( "stream_add" )->setIcon( amaroK::icon( "files" ) );
+    ac->action( "stream_add" )->setIcon( Amarok::icon( "files" ) );
     KStdAction::save( this, SLOT(savePlaylist()), ac, "playlist_save" )->setText( i18n("&Save Playlist As...") );
-    ac->action( "playlist_save" )->setIcon( amaroK::icon( "save" ) );
+    ac->action( "playlist_save" )->setIcon( Amarok::icon( "save" ) );
     KStdAction::showMenubar( this, SLOT(slotToggleMenu()), ac );
 
-    new KAction( i18n("Play Media..."), amaroK::icon( "files" ), 0, this, SLOT(slotPlayMedia()), ac, "playlist_playmedia" );
-    new KAction( i18n("Play Audio CD"), amaroK::icon( "album" ), 0, this, SLOT(playAudioCD()), ac, "play_audiocd" );
-    new KAction( i18n("Script Manager"), amaroK::icon( "scripts" ), 0, this, SLOT(showScriptSelector()), ac, "script_manager" );
-    new KAction( i18n("Queue Manager"), amaroK::icon( "queue" ), 0, this, SLOT(showQueueManager()), ac, "queue_manager" );
-    new KAction( i18n("Statistics"), amaroK::icon( "info" ), 0, this, SLOT(showStatistics()), ac, "statistics" );
+    new KAction( i18n("Play Media..."), Amarok::icon( "files" ), 0, this, SLOT(slotPlayMedia()), ac, "playlist_playmedia" );
+    new KAction( i18n("Play Audio CD"), Amarok::icon( "album" ), 0, this, SLOT(playAudioCD()), ac, "play_audiocd" );
+    new KAction( i18n("Script Manager"), Amarok::icon( "scripts" ), 0, this, SLOT(showScriptSelector()), ac, "script_manager" );
+    new KAction( i18n("Queue Manager"), Amarok::icon( "queue" ), 0, this, SLOT(showQueueManager()), ac, "queue_manager" );
+    new KAction( i18n("Statistics"), Amarok::icon( "info" ), 0, this, SLOT(showStatistics()), ac, "statistics" );
 
     m_lastfmTags << "Alternative" << "Ambient" << "Chill Out" << "Classical" << "Dance"
                  << "Electronica" << "Favorites" << "Heavy Metal" << "Hip Hop" << "Indie Rock"
@@ -164,14 +164,14 @@ PlaylistWindow::PlaylistWindow()
         ++id;
     }
 
-    KActionMenu* playLastfm = new KActionMenu( i18n( "Play las&t.fm Stream" ), amaroK::icon( "audioscrobbler" ), ac, "lastfm_play" );
+    KActionMenu* playLastfm = new KActionMenu( i18n( "Play las&t.fm Stream" ), Amarok::icon( "audioscrobbler" ), ac, "lastfm_play" );
     QPopupMenu* playLastfmMenu = playLastfm->popupMenu();
     playLastfmMenu->insertItem( i18n( "Personal Radio" ), this, SLOT( playLastfmPersonal() ) );
     playLastfmMenu->insertItem( i18n( "Neighbor Radio" ), this, SLOT( playLastfmNeighbor() ) );
     playLastfmMenu->insertItem( i18n( "Custom Station" ), this, SLOT( playLastfmCustom() ) );
     playLastfmMenu->insertItem( i18n( "Global Tag Radio" ), playTagRadioMenu );
 
-    KActionMenu* addLastfm = new KActionMenu( i18n( "Add las&t.fm Stream" ), amaroK::icon( "audioscrobbler" ), ac, "lastfm_add" );
+    KActionMenu* addLastfm = new KActionMenu( i18n( "Add las&t.fm Stream" ), Amarok::icon( "audioscrobbler" ), ac, "lastfm_add" );
     QPopupMenu* addLastfmMenu = addLastfm->popupMenu();
     addLastfmMenu->insertItem( i18n( "Personal Radio" ), this, SLOT( addLastfmPersonal() ) );
     addLastfmMenu->insertItem( i18n( "Neighbor Radio" ), this, SLOT( addLastfmNeighbor() ) );
@@ -180,10 +180,10 @@ PlaylistWindow::PlaylistWindow()
 
     ac->action( "options_configure_globals" )->setText( i18n( "Configure &Global Shortcuts..." ) );
 
-    new KAction( i18n( "Previous Track" ), amaroK::icon( "back" ), 0, ec, SLOT( previous() ), ac, "prev" );
-    new KAction( i18n( "Play" ), amaroK::icon( "play" ), 0, ec, SLOT( play() ), ac, "play" );
-    new KAction( i18n( "Pause" ), amaroK::icon( "pause" ), 0, ec, SLOT( pause() ), ac, "pause" );
-    new KAction( i18n( "Next Track" ), amaroK::icon( "next" ), 0, ec, SLOT( next() ), ac, "next" );
+    new KAction( i18n( "Previous Track" ), Amarok::icon( "back" ), 0, ec, SLOT( previous() ), ac, "prev" );
+    new KAction( i18n( "Play" ), Amarok::icon( "play" ), 0, ec, SLOT( play() ), ac, "play" );
+    new KAction( i18n( "Pause" ), Amarok::icon( "pause" ), 0, ec, SLOT( pause() ), ac, "pause" );
+    new KAction( i18n( "Next Track" ), Amarok::icon( "next" ), 0, ec, SLOT( next() ), ac, "next" );
 
     {
         KAction *gah = new KAction( i18n( "Toggle Focus" ), "reload", CTRL+Key_Tab,
@@ -193,17 +193,17 @@ PlaylistWindow::PlaylistWindow()
         gah->unplug( &asdf );
     }
 
-    new amaroK::MenuAction( ac );
-    new amaroK::StopAction( ac );
-    new amaroK::PlayPauseAction( ac );
-    new amaroK::AnalyzerAction( ac );
-    new amaroK::RepeatAction( ac );
-    new amaroK::RandomAction( ac );
-    new amaroK::FavorAction( ac );
-    new amaroK::VolumeAction( ac );
+    new Amarok::MenuAction( ac );
+    new Amarok::StopAction( ac );
+    new Amarok::PlayPauseAction( ac );
+    new Amarok::AnalyzerAction( ac );
+    new Amarok::RepeatAction( ac );
+    new Amarok::RandomAction( ac );
+    new Amarok::FavorAction( ac );
+    new Amarok::VolumeAction( ac );
 
     if( K3bExporter::isAvailable() )
-        new amaroK::BurnMenuAction( ac );
+        new Amarok::BurnMenuAction( ac );
 
     if( AmarokConfig::playlistWindowSize().isValid() ) {
         // if first ever run, use sizeHint(), and let
@@ -215,7 +215,7 @@ PlaylistWindow::PlaylistWindow()
 
 PlaylistWindow::~PlaylistWindow()
 {
-    amaroK::config( "PlaylistWindow" )->writeEntry( "showMenuBar", m_menubar->isShown() );
+    Amarok::config( "PlaylistWindow" )->writeEntry( "showMenuBar", m_menubar->isShown() );
 
     AmarokConfig::setPlaylistWindowPos( pos() );  //TODO de XT?
     AmarokConfig::setPlaylistWindowSize( size() ); //TODO de XT?
@@ -231,7 +231,7 @@ void PlaylistWindow::init()
 {
     DEBUG_BLOCK
 
-    //this function is necessary because amaroK::actionCollection() returns our actionCollection
+    //this function is necessary because Amarok::actionCollection() returns our actionCollection
     //via the App::m_pPlaylistWindow pointer since App::m_pPlaylistWindow is not defined until
     //the above ctor returns it causes a crash unless we do the initialisation in 2 stages.
 
@@ -277,11 +277,11 @@ void PlaylistWindow::init()
 
 
     dynamicBar->init();
-    m_toolbar = new amaroK::ToolBar( m_browsers->container(), "mainToolBar" );
+    m_toolbar = new Amarok::ToolBar( m_browsers->container(), "mainToolBar" );
     m_toolbar->setShown( AmarokConfig::showToolbar() );
-    QWidget *statusbar = new amaroK::StatusBar( this );
+    QWidget *statusbar = new Amarok::StatusBar( this );
 
-    KAction* repeatAction = amaroK::actionCollection()->action( "repeat" );
+    KAction* repeatAction = Amarok::actionCollection()->action( "repeat" );
     connect( repeatAction, SIGNAL( activated( int ) ), playlist, SLOT( slotRepeatTrackToggled( int ) ) );
 
     connect( m_lineEdit, SIGNAL(textChanged( const QString& )), playlist, SLOT(setFilterSlot( const QString& )) );
@@ -336,19 +336,19 @@ void PlaylistWindow::init()
 
     //BEGIN Tools menu
     m_toolsMenu = new KPopupMenu( m_menubar );
-    m_toolsMenu->insertItem( SmallIconSet( amaroK::icon( "covermanager" ) ), i18n("&Cover Manager"), amaroK::Menu::ID_SHOW_COVER_MANAGER );
+    m_toolsMenu->insertItem( SmallIconSet( Amarok::icon( "covermanager" ) ), i18n("&Cover Manager"), Amarok::Menu::ID_SHOW_COVER_MANAGER );
     actionCollection()->action("queue_manager")->plug( m_toolsMenu );
-    m_toolsMenu->insertItem( SmallIconSet( amaroK::icon( "visualizations" ) ), i18n("&Visualizations"), amaroK::Menu::ID_SHOW_VIS_SELECTOR );
-    m_toolsMenu->insertItem( SmallIconSet( amaroK::icon( "equalizer") ), i18n("&Equalizer"), kapp, SLOT( slotConfigEqualizer() ), 0, amaroK::Menu::ID_CONFIGURE_EQUALIZER );
+    m_toolsMenu->insertItem( SmallIconSet( Amarok::icon( "visualizations" ) ), i18n("&Visualizations"), Amarok::Menu::ID_SHOW_VIS_SELECTOR );
+    m_toolsMenu->insertItem( SmallIconSet( Amarok::icon( "equalizer") ), i18n("&Equalizer"), kapp, SLOT( slotConfigEqualizer() ), 0, Amarok::Menu::ID_CONFIGURE_EQUALIZER );
     actionCollection()->action("script_manager")->plug( m_toolsMenu );
     actionCollection()->action("statistics")->plug( m_toolsMenu );
     m_toolsMenu->insertSeparator();
-    m_toolsMenu->insertItem( SmallIconSet( amaroK::icon( "rescan" ) ), i18n("&Rescan Collection"), amaroK::Menu::ID_RESCAN_COLLECTION );
+    m_toolsMenu->insertItem( SmallIconSet( Amarok::icon( "rescan" ) ), i18n("&Rescan Collection"), Amarok::Menu::ID_RESCAN_COLLECTION );
 
     #if defined HAVE_XMMS || defined HAVE_LIBVISUAL
-    m_toolsMenu->setItemEnabled( amaroK::Menu::ID_SHOW_VIS_SELECTOR, true );
+    m_toolsMenu->setItemEnabled( Amarok::Menu::ID_SHOW_VIS_SELECTOR, true );
     #else
-    m_toolsMenu->setItemEnabled( amaroK::Menu::ID_SHOW_VIS_SELECTOR, false );
+    m_toolsMenu->setItemEnabled( Amarok::Menu::ID_SHOW_VIS_SELECTOR, false );
     #endif
 
     connect( m_toolsMenu, SIGNAL( aboutToShow() ), SLOT( toolsMenuAboutToShow() ) );
@@ -376,7 +376,7 @@ void PlaylistWindow::init()
     m_menubar->insertItem( i18n( "&Mode" ), modeMenu );
     m_menubar->insertItem( i18n( "&Tools" ), m_toolsMenu );
     m_menubar->insertItem( i18n( "&Settings" ), m_settingsMenu );
-    m_menubar->insertItem( i18n( "&Help" ), amaroK::Menu::helpMenu() );
+    m_menubar->insertItem( i18n( "&Help" ), Amarok::Menu::helpMenu() );
 
 
     QBoxLayout *layV = new QVBoxLayout( this );
@@ -396,7 +396,7 @@ void PlaylistWindow::init()
 
     //<XMLGUI>
     {
-        QString xmlFile = amaroK::config()->readEntry( "XMLFile", "amarokui.rc" );
+        QString xmlFile = Amarok::config()->readEntry( "XMLFile", "amarokui.rc" );
 
         // this bug can bite you if you are a pre 1.2 user, we
         // deleted amarokui_first.rc, but we must still support it
@@ -421,20 +421,20 @@ void PlaylistWindow::init()
             Debug::Block block( name ); \
             m_browsers->addBrowser( Type::instance(), text, icon ); }
 
-        addBrowserMacro( ContextBrowser, "ContextBrowser", i18n( "Context" ), amaroK::icon( "info" ) )
-        addBrowserMacro( CollectionBrowser, "CollectionBrowser", i18n( "Collection" ), amaroK::icon( "collection" ) )
+        addBrowserMacro( ContextBrowser, "ContextBrowser", i18n( "Context" ), Amarok::icon( "info" ) )
+        addBrowserMacro( CollectionBrowser, "CollectionBrowser", i18n( "Collection" ), Amarok::icon( "collection" ) )
         m_browsers->makeDropProxy( "CollectionBrowser", CollectionView::instance() );
-        addInstBrowserMacro( PlaylistBrowser, "PlaylistBrowser", i18n( "Playlists" ), amaroK::icon( "playlist" ) )
+        addInstBrowserMacro( PlaylistBrowser, "PlaylistBrowser", i18n( "Playlists" ), Amarok::icon( "playlist" ) )
 
         //DEBUG: Comment out the addBrowserMacro line and uncomment the m_browsers line (passing in a vfat device name) to see the "virtual root" functionality
 
-        addBrowserMacro( FileBrowser, "FileBrowser", i18n( "Files" ), amaroK::icon( "files" ) )
+        addBrowserMacro( FileBrowser, "FileBrowser", i18n( "Files" ), Amarok::icon( "files" ) )
         //m_browsers->addBrowser( new FileBrowser( "FileBrowser", MediaDeviceManager::instance()->getDevice( "hda5" ) ), i18n( "Files" ), "folder" );
 
         new MediaBrowser( "MediaBrowser" );
         if( MediaBrowser::isAvailable() )
         {
-            addInstBrowserMacro( MediaBrowser, "MediaBrowser", i18n( "Media Device" ), amaroK::icon( "device" ) )
+            addInstBrowserMacro( MediaBrowser, "MediaBrowser", i18n( "Media Device" ), Amarok::icon( "device" ) )
             //to re-enable mediabrowser hiding, uncomment this:
             //connect( MediaBrowser::instance(), SIGNAL( availabilityChanged( bool ) ),
             //         this, SLOT( mbAvailabilityChanged( bool ) ) );
@@ -457,7 +457,7 @@ void PlaylistWindow::init()
     connect( playlist, SIGNAL( queueChanged( const PLItemList &, const PLItemList & ) ),
              statusbar,  SLOT( updateQueueLabel() ) );
     connect( playlist, SIGNAL( aboutToClear() ), m_lineEdit, SLOT( clear() ) );
-    amaroK::MessageQueue::instance()->sendMessages();
+    Amarok::MessageQueue::instance()->sendMessages();
 }
 
 void PlaylistWindow::addBrowser( const QString &name, QWidget *browser, const QString &text, const QString &icon )
@@ -750,7 +750,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 
 void PlaylistWindow::closeEvent( QCloseEvent *e )
 {
-    amaroK::genericEventHandler( this, e );
+    Amarok::genericEventHandler( this, e );
 }
 
 
@@ -992,8 +992,8 @@ void PlaylistWindow::slotToggleMenu() //SLOT
         AmarokConfig::setShowMenuBar( true );
         m_menubar->setShown( true );
 
-        if( amaroK::actionCollection()->action( "amarok_menu" )->isPlugged() )
-            amaroK::actionCollection()->action( "amarok_menu" )->unplugAll();
+        if( Amarok::actionCollection()->action( "amarok_menu" )->isPlugged() )
+            Amarok::actionCollection()->action( "amarok_menu" )->unplugAll();
     }
     else
     {
@@ -1009,7 +1009,7 @@ void PlaylistWindow::slotMenuActivated( int index ) //SLOT
     {
     default:
         //saves duplicating the code and header requirements
-        amaroK::Menu::instance()->slotActivated( index );
+        Amarok::Menu::instance()->slotActivated( index );
         break;
     case ID_SHOW_TOOLBAR:
         m_toolbar->setShown( !m_toolbar->isShown() );
@@ -1022,7 +1022,7 @@ void PlaylistWindow::slotMenuActivated( int index ) //SLOT
         m_settingsMenu->changeItem( index, AmarokConfig::showPlayerWindow() ? i18n("Hide Player &Window") : i18n("Show Player &Window") );
         QTimer::singleShot( 0, kapp, SLOT( applySettings() ) );
         break;
-    case amaroK::Menu::ID_RESCAN_COLLECTION:
+    case Amarok::Menu::ID_RESCAN_COLLECTION:
         CollectionDB::instance()->startScan();
         break;
     }
@@ -1034,8 +1034,8 @@ void PlaylistWindow::actionsMenuAboutToShow() //SLOT
 
 void PlaylistWindow::toolsMenuAboutToShow() //SLOT
 {
-    m_toolsMenu->setItemEnabled( amaroK::Menu::ID_CONFIGURE_EQUALIZER, EngineController::hasEngineProperty( "HasEqualizer" ) );
-    m_toolsMenu->setItemEnabled( amaroK::Menu::ID_RESCAN_COLLECTION, !ThreadWeaver::instance()->isJobPending( "CollectionScanner" ) );
+    m_toolsMenu->setItemEnabled( Amarok::Menu::ID_CONFIGURE_EQUALIZER, EngineController::hasEngineProperty( "HasEqualizer" ) );
+    m_toolsMenu->setItemEnabled( Amarok::Menu::ID_RESCAN_COLLECTION, !ThreadWeaver::instance()->isJobPending( "CollectionScanner" ) );
 }
 
 
@@ -1089,7 +1089,7 @@ PlaylistWindow::mbAvailabilityChanged( bool isAvailable ) //SLOT
     if( isAvailable )
     {
         if( m_browsers->indexForName( "MediaBrowser" ) == -1 )
-            m_browsers->addBrowser( MediaBrowser::instance(), i18n( "Media Device" ), amaroK::icon( "device" ) );
+            m_browsers->addBrowser( MediaBrowser::instance(), i18n( "Media Device" ), Amarok::icon( "device" ) );
     }
     else
     {

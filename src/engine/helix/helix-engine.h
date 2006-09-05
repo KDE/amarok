@@ -36,7 +36,7 @@ public:
    virtual void play_finished(int playerIndex);
    virtual const Engine::Scope &scope();
 
-   virtual amaroK::PluginConfig *configure() const;
+   virtual Amarok::PluginConfig *configure() const;
 
    virtual void onContacting(const char *host);
    virtual void onBuffering(int pcnt);

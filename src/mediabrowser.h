@@ -307,7 +307,7 @@ class MediaView : public KListView
    all items are stored in a hierarchy of MediaItems,
    when items are manipulated the MediaItems have to be updated accordingly */
 
-class LIBAMAROK_EXPORT MediaDevice : public QObject, public amaroK::Plugin
+class LIBAMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
 {
     Q_OBJECT
     friend class DeviceConfigureDialog;

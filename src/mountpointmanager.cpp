@@ -35,8 +35,7 @@ MountPointManager::MountPointManager()
     , m_noDeviceManager( false )
 {
 
-    KConfig* const conf = amaroK::config( "Collection" );
-    if ( !conf->readBoolEntry( "DynamicCollection", true ) )
+    if ( !Amarok::config( "Collection" )->readBoolEntry( "DynamicCollection", true ) )
     {
         debug() << "Dynamic Collection deactivated in amarokrc, not loading plugins, not connecting signals" << endl;
         return;
@@ -95,7 +94,7 @@ MountPointManager::init()
     debug() << "Received [" << QString::number( plugins.count() ) << "] device plugin offers" << endl;
     foreachType( KTrader::OfferList, plugins )
     {
-        amaroK::Plugin *plugin = PluginManager::createFromService( *it );
+        Amarok::Plugin *plugin = PluginManager::createFromService( *it );
         if( plugin )
         {
             DeviceHandlerFactory *factory = static_cast<DeviceHandlerFactory*>( plugin );
@@ -388,7 +387,7 @@ MountPointManager::collectionFolders( )
 {
     //TODO max: cache data
     QStringList result;
-    KConfig* const folders = amaroK::config( "Collection Folders" );
+    KConfig* const folders = Amarok::config( "Collection Folders" );
     IdList ids = getMountedDeviceIds();
     foreachType( IdList, ids )
     {
@@ -406,7 +405,7 @@ MountPointManager::setCollectionFolders( QStringList folders )
 {
     //TODO max: cache data
     typedef QMap<int, QStringList> FolderMap;
-    KConfig* const folderConf = amaroK::config( "Collection Folders" );
+    KConfig* const folderConf = Amarok::config( "Collection Folders" );
     FolderMap folderMap;
     foreach( folders )
     {
@@ -470,7 +469,7 @@ MountPointManager::handleMissingMediaManager()
     //TODO this method should activate a fallback mode which simply shows all songs and uses the
     //device's last mount point to build the absolute path
     m_noDeviceManager = true;
-    //amaroK::StatusBar::instance()->longMessage( i18n( "BlaBla" ), KDE::StatusBar::Warning );
+    //Amarok::StatusBar::instance()->longMessage( i18n( "BlaBla" ), KDE::StatusBar::Warning );
 }
 
 void

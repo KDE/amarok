@@ -46,7 +46,7 @@
 #include <qtooltip.h>
 
 #include <kapplication.h> //kapp
-#include <kcalendarsystem.h>  // for amaroK::verboseTimeSince()
+#include <kcalendarsystem.h>  // for Amarok::verboseTimeSince()
 #include <kconfig.h> // suggested/related/favorite box visibility
 #include <kfiledialog.h>
 #include <kglobal.h>
@@ -63,7 +63,7 @@
 
 #include <unistd.h> //usleep()
 
-namespace amaroK
+namespace Amarok
 {
     QString escapeHTML( const QString &s )
     {
@@ -157,10 +157,10 @@ namespace amaroK
 }
 
 
-using amaroK::QStringx;
-using amaroK::escapeHTML;
-using amaroK::escapeHTMLAttr;
-using amaroK::unescapeHTMLAttr;
+using Amarok::QStringx;
+using Amarok::escapeHTML;
+using Amarok::escapeHTMLAttr;
+using Amarok::unescapeHTMLAttr;
 
 
 static
@@ -208,15 +208,15 @@ ContextBrowser::ContextBrowser( const char *name )
 
     m_lyricsToolBar = new Browser::ToolBar( m_lyricsTab );
     m_lyricsToolBar->setIconText( KToolBar::IconTextRight, false );
-    m_lyricsToolBar->insertButton( amaroK::icon( "refresh" ), LYRICS_REFRESH, true, i18n("Refresh") );
-    m_lyricsToolBar->insertButton( amaroK::icon( "add_lyrics" ), LYRICS_ADD, true, i18n("Add") );
+    m_lyricsToolBar->insertButton( Amarok::icon( "refresh" ), LYRICS_REFRESH, true, i18n("Refresh") );
+    m_lyricsToolBar->insertButton( Amarok::icon( "add_lyrics" ), LYRICS_ADD, true, i18n("Add") );
     m_lyricsToolBar->insertLineSeparator();
-    m_lyricsToolBar->insertButton( amaroK::icon( "edit" ), LYRICS_EDIT, true, i18n("Edit") );
+    m_lyricsToolBar->insertButton( Amarok::icon( "edit" ), LYRICS_EDIT, true, i18n("Edit") );
     m_lyricsToolBar->setToggle( LYRICS_EDIT, true );
     m_lyricsToolBar->insertLineSeparator();
-    m_lyricsToolBar->insertButton( amaroK::icon( "search" ), LYRICS_SEARCH, true, i18n("Search") );
+    m_lyricsToolBar->insertButton( Amarok::icon( "search" ), LYRICS_SEARCH, true, i18n("Search") );
     m_lyricsToolBar->setIconText( KToolBar::IconOnly, false );
-    m_lyricsToolBar->insertButton( amaroK::icon( "external" ), LYRICS_BROWSER, true, i18n("Open in external browser") );
+    m_lyricsToolBar->insertButton( Amarok::icon( "external" ), LYRICS_BROWSER, true, i18n("Open in external browser") );
 
     m_lyricsPage = new HTMLView( m_lyricsTab, "lyrics_page", true /* DNDEnabled */, true /* JScriptEnabled */ );
     m_lyricsTextEdit = new KTextEdit ( m_lyricsTab, "lyrics_text_edit");
@@ -228,12 +228,12 @@ ContextBrowser::ContextBrowser( const char *name )
     m_wikiToolBar->insertButton( "back", WIKI_BACK, false, i18n("Back") );
     m_wikiToolBar->insertButton( "forward", WIKI_FORWARD, false, i18n("Forward") );
     m_wikiToolBar->insertLineSeparator();
-    m_wikiToolBar->insertButton( amaroK::icon( "artist" ), WIKI_ARTIST, false, i18n("Artist Page") );
-    m_wikiToolBar->insertButton( amaroK::icon( "album" ), WIKI_ALBUM, false, i18n("Album Page") );
-    m_wikiToolBar->insertButton( amaroK::icon( "track" ), WIKI_TITLE, false, i18n("Title Page") );
+    m_wikiToolBar->insertButton( Amarok::icon( "artist" ), WIKI_ARTIST, false, i18n("Artist Page") );
+    m_wikiToolBar->insertButton( Amarok::icon( "album" ), WIKI_ALBUM, false, i18n("Album Page") );
+    m_wikiToolBar->insertButton( Amarok::icon( "track" ), WIKI_TITLE, false, i18n("Title Page") );
     m_wikiToolBar->insertLineSeparator();
-    m_wikiToolBar->insertButton( amaroK::icon( "external" ), WIKI_BROWSER, true, i18n("Open in external browser") );
-    m_wikiToolBar->insertButton( amaroK::icon( "change_language" ), WIKI_CONFIG, true, i18n("Change Locale") );
+    m_wikiToolBar->insertButton( Amarok::icon( "external" ), WIKI_BROWSER, true, i18n("Open in external browser") );
+    m_wikiToolBar->insertButton( Amarok::icon( "change_language" ), WIKI_CONFIG, true, i18n("Change Locale") );
 
     m_wikiToolBar->setDelayedPopup( WIKI_BACK, m_wikiBackPopup );
     m_wikiToolBar->setDelayedPopup( WIKI_FORWARD, m_wikiForwardPopup );
@@ -246,23 +246,23 @@ ContextBrowser::ContextBrowser( const char *name )
     connect( m_cuefile, SIGNAL(newCuePoint( long, long, long )),
              Scrobbler::instance(), SLOT(subTrack( long, long, long )) );
 
-    addTab( m_contextTab, SmallIconSet( amaroK::icon( "music" ) ),  i18n( "Music" ) );
-    addTab( m_lyricsTab,  SmallIconSet( amaroK::icon( "lyrics" ) ), i18n( "Lyrics" ) );
-    addTab( m_wikiTab,    SmallIconSet( amaroK::icon( "artist" ) ), i18n( "Artist" ) );
+    addTab( m_contextTab, SmallIconSet( Amarok::icon( "music" ) ),  i18n( "Music" ) );
+    addTab( m_lyricsTab,  SmallIconSet( Amarok::icon( "lyrics" ) ), i18n( "Lyrics" ) );
+    addTab( m_wikiTab,    SmallIconSet( Amarok::icon( "artist" ) ), i18n( "Artist" ) );
 
     setTabEnabled( m_lyricsTab, false );
     setTabEnabled( m_wikiTab, false );
 
-    m_showRelated   = amaroK::config( "ContextBrowser" )->readBoolEntry( "ShowRelated", true );
-    m_showSuggested = amaroK::config( "ContextBrowser" )->readBoolEntry( "ShowSuggested", true );
-    m_showFaves     = amaroK::config( "ContextBrowser" )->readBoolEntry( "ShowFaves", true );
+    m_showRelated   = Amarok::config( "ContextBrowser" )->readBoolEntry( "ShowRelated", true );
+    m_showSuggested = Amarok::config( "ContextBrowser" )->readBoolEntry( "ShowSuggested", true );
+    m_showFaves     = Amarok::config( "ContextBrowser" )->readBoolEntry( "ShowFaves", true );
 
-    m_showFreshPodcasts  = amaroK::config( "ContextBrowser" )->readBoolEntry( "ShowFreshPodcasts", true );
-    m_showNewestAlbums   = amaroK::config( "ContextBrowser" )->readBoolEntry( "ShowNewestAlbums", true );
-    m_showFavoriteAlbums = amaroK::config( "ContextBrowser" )->readBoolEntry( "ShowFavoriteAlbums", true );
+    m_showFreshPodcasts  = Amarok::config( "ContextBrowser" )->readBoolEntry( "ShowFreshPodcasts", true );
+    m_showNewestAlbums   = Amarok::config( "ContextBrowser" )->readBoolEntry( "ShowNewestAlbums", true );
+    m_showFavoriteAlbums = Amarok::config( "ContextBrowser" )->readBoolEntry( "ShowFavoriteAlbums", true );
 
     // Delete folder with the cached coverimage shadow pixmaps
-    KIO::del( KURL::fromPathOrURL( amaroK::saveLocation( "covershadow-cache/" ) ), false, false );
+    KIO::del( KURL::fromPathOrURL( Amarok::saveLocation( "covershadow-cache/" ) ), false, false );
 
     connect( this, SIGNAL( currentChanged( QWidget* ) ), SLOT( tabChanged( QWidget* ) ) );
 
@@ -367,7 +367,7 @@ void ContextBrowser::setFont( const QFont &newFont )
 void ContextBrowser::openURLRequest( const KURL &url )
 {
     QString artist, album, track;
-    amaroK::albumArtistTrackFromUrl( url.path(), artist, album, track );
+    Amarok::albumArtistTrackFromUrl( url.path(), artist, album, track );
 
     // All http links should be loaded inside wikipedia tab, as that is the only tab that should contain them.
     // Streams should use stream:// protocol.
@@ -434,20 +434,20 @@ void ContextBrowser::openURLRequest( const KURL &url )
         if ( amazonUrl.isEmpty() )
             KMessageBox::information( this, i18n( "<p>There is no product information available for this image.<p>Right-click on image for menu." ) );
         else
-            amaroK::invokeBrowser( amazonUrl );
+            Amarok::invokeBrowser( amazonUrl );
     }
 
     /* open konqueror with musicbrainz search result for artist-album */
     else if ( url.protocol() == "musicbrainz" )
     {
         const QString url = "http://www.musicbrainz.org/taglookup.html?artist=%1&album=%2&track=%3";
-        amaroK::invokeBrowser( url.arg( KURL::encode_string_no_slash( artist, 106 /*utf-8*/ ),
+        Amarok::invokeBrowser( url.arg( KURL::encode_string_no_slash( artist, 106 /*utf-8*/ ),
         KURL::encode_string_no_slash( album, 106 /*utf-8*/ ),
         KURL::encode_string_no_slash( track, 106 /*utf-8*/ ) ) );
     }
 
     else if ( url.protocol() == "externalurl" )
-        amaroK::invokeBrowser( url.url().replace( QRegExp( "^externalurl:" ), "http:") );
+        Amarok::invokeBrowser( url.url().replace( QRegExp( "^externalurl:" ), "http:") );
 
     else if ( url.protocol() == "lastfm" )
     {
@@ -491,7 +491,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
     {
         const QString url2 = QString( "http://www.google.com/musicsearch?q=%1&res=artist" )
             .arg( KURL::encode_string_no_slash( unescapeHTMLAttr( url.path() ).replace( " ", "+" ), 106 /*utf-8*/ ) );
-        amaroK::invokeBrowser( url2 );
+        Amarok::invokeBrowser( url2 );
     }
 
     else if( url.protocol() == "stream" )
@@ -660,7 +660,7 @@ void ContextBrowser::engineStateChanged( Engine::State state, Engine::State oldS
 
 void ContextBrowser::saveHtmlData()
 {
-    QFile exportedDocument( amaroK::saveLocation() + "contextbrowser.html" );
+    QFile exportedDocument( Amarok::saveLocation() + "contextbrowser.html" );
     exportedDocument.open(IO_WriteOnly);
     QTextStream stream( &exportedDocument );
     stream.setEncoding( QTextStream::UnicodeUTF8 );
@@ -752,7 +752,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     KPopupMenu menu;
     KURL::List urls( url );
     QString artist, album, track; // track unused here
-    amaroK::albumArtistTrackFromUrl( url.path(), artist, album, track );
+    Amarok::albumArtistTrackFromUrl( url.path(), artist, album, track );
 
     if( urlString.isEmpty() )
     {
@@ -781,15 +781,15 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     }
     else if( url.protocol() == "fetchcover" )
     {
-        amaroK::coverContextMenu( this, point, artist, album );
+        Amarok::coverContextMenu( this, point, artist, album );
         return;
     }
     else if( url.protocol() == "stream" )
     {
         menu.insertTitle( i18n("Podcast"), TITLE );
-        menu.insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n( "&Load" ), MAKE );
-        menu.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
-        menu.insertItem( SmallIconSet( amaroK::icon( "fastforward" ) ), i18n( "&Queue Podcast" ), ASNEXT );
+        menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), MAKE );
+        menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
+        menu.insertItem( SmallIconSet( Amarok::icon( "fastforward" ) ), i18n( "&Queue Podcast" ), ASNEXT );
         //menu.insertSeparator();
         //menu.insertItem( SmallIconSet( "down" ), i18n( "&Download" ), DOWNLOAD );
     }
@@ -798,14 +798,14 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         //TODO it would be handy and more usable to have this menu under the cover one too
 
         menu.insertTitle( i18n("Track"), TITLE );
-        menu.insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n( "&Load" ), MAKE );
-        menu.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
-        menu.insertItem( SmallIconSet( amaroK::icon( "fastforward" ) ), i18n( "&Queue Track" ), ASNEXT );
+        menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), MAKE );
+        menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
+        menu.insertItem( SmallIconSet( Amarok::icon( "fastforward" ) ), i18n( "&Queue Track" ), ASNEXT );
         if( MediaBrowser::isAvailable() )
-            menu.insertItem( SmallIconSet( amaroK::icon( "device" ) ), i18n( "&Transfer to Media Device" ), MEDIA_DEVICE );
+            menu.insertItem( SmallIconSet( Amarok::icon( "device" ) ), i18n( "&Transfer to Media Device" ), MEDIA_DEVICE );
 
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet( amaroK::icon( "info" ) ), i18n( "Edit Track &Information..." ), INFO );
+        menu.insertItem( SmallIconSet( Amarok::icon( "info" ) ), i18n( "Edit Track &Information..." ), INFO );
 
         if ( url.protocol() == "artist" )
         {
@@ -864,42 +864,42 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
     case RELATED:
         m_showRelated = !menu.isItemChecked( RELATED );
-        amaroK::config( "ContextBrowser" )->writeEntry( "ShowRelated", m_showRelated );
+        Amarok::config( "ContextBrowser" )->writeEntry( "ShowRelated", m_showRelated );
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
         break;
 
     case SUGGEST:
         m_showSuggested = !menu.isItemChecked( SUGGEST );
-        amaroK::config( "ContextBrowser" )->writeEntry( "ShowSuggested", m_showSuggested );
+        Amarok::config( "ContextBrowser" )->writeEntry( "ShowSuggested", m_showSuggested );
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
         break;
 
     case FAVES:
         m_showFaves = !menu.isItemChecked( FAVES );
-        amaroK::config( "ContextBrowser" )->writeEntry( "ShowFaves", m_showFaves );
+        Amarok::config( "ContextBrowser" )->writeEntry( "ShowFaves", m_showFaves );
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
         break;
 
    case FRESHPODCASTS:
         m_showFreshPodcasts = !menu.isItemChecked( FRESHPODCASTS );
-        amaroK::config( "ContextBrowser" )->writeEntry( "ShowFreshPodcasts", m_showFreshPodcasts );
+        Amarok::config( "ContextBrowser" )->writeEntry( "ShowFreshPodcasts", m_showFreshPodcasts );
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
         break;
 
    case NEWALBUMS:
         m_showNewestAlbums = !menu.isItemChecked( NEWALBUMS );
-        amaroK::config( "ContextBrowser" )->writeEntry( "ShowNewestAlbums", m_showNewestAlbums );
+        Amarok::config( "ContextBrowser" )->writeEntry( "ShowNewestAlbums", m_showNewestAlbums );
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
         break;
 
    case FAVALBUMS:
         m_showFavoriteAlbums = !menu.isItemChecked( FAVALBUMS );
-        amaroK::config( "ContextBrowser" )->writeEntry( "ShowFavoriteAlbums", m_showFavoriteAlbums );
+        Amarok::config( "ContextBrowser" )->writeEntry( "ShowFavoriteAlbums", m_showFavoriteAlbums );
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
         break;
@@ -1601,9 +1601,9 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
     for ( url = newUrls.first(); url; url = newUrls.next() )
         url->replace( QRegExp( "^http:" ), "externalurl:" );
 
-    const QString skipIcon = KGlobal::iconLoader()->iconPath( amaroK::icon("next"),   -KIcon::SizeSmallMedium );
-    const QString loveIcon = KGlobal::iconLoader()->iconPath( amaroK::icon("love"),   -KIcon::SizeSmallMedium );
-    const QString banIcon  = KGlobal::iconLoader()->iconPath( amaroK::icon("remove"), -KIcon::SizeSmallMedium );
+    const QString skipIcon = KGlobal::iconLoader()->iconPath( Amarok::icon("next"),   -KIcon::SizeSmallMedium );
+    const QString loveIcon = KGlobal::iconLoader()->iconPath( Amarok::icon("love"),   -KIcon::SizeSmallMedium );
+    const QString banIcon  = KGlobal::iconLoader()->iconPath( Amarok::icon("remove"), -KIcon::SizeSmallMedium );
 
 
     m_HTMLSource.append( QStringx(
@@ -2083,8 +2083,8 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
                     )
                 .arg( i18n( "Track played once", "Track played %n times", playtimes ),
                       statsHTML( score, rating, false ),
-                      i18n( "Last played: %1" ).arg( amaroK::verboseTimeSince( lastPlay ) ),
-                      i18n( "First played: %1" ).arg( amaroK::verboseTimeSince( firstPlay ) ) ) );
+                      i18n( "Last played: %1" ).arg( Amarok::verboseTimeSince( lastPlay ) ),
+                      i18n( "First played: %1" ).arg( Amarok::verboseTimeSince( firstPlay ) ) ) );
     }
     else
         m_HTMLSource.append( i18n( "Never played before" ) );
@@ -3100,14 +3100,14 @@ ContextBrowser::lyricsResult( QCString cXmlDoc, bool cached ) //SLOT
 void
 ContextBrowser::lyricsExternalPage() //SLOT
 {
-    amaroK::invokeBrowser( m_lyricCurrentUrl );
+    Amarok::invokeBrowser( m_lyricCurrentUrl );
 }
 
 
 void
 ContextBrowser::lyricsAdd() //SLOT
 {
-    amaroK::invokeBrowser( m_lyricAddUrl );
+    Amarok::invokeBrowser( m_lyricAddUrl );
 }
 
 void
@@ -3146,7 +3146,7 @@ ContextBrowser::lyricsEditToggle() //SLOT
 void
 ContextBrowser::lyricsSearch() //SLOT
 {
-    amaroK::invokeBrowser( m_lyricSearchUrl );
+    Amarok::invokeBrowser( m_lyricSearchUrl );
 }
 
 
@@ -3405,7 +3405,7 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
     m_wikiBaseUrl = m_wikiCurrentUrl.mid(0 , m_wikiCurrentUrl.find("wiki/"));
     m_wikiJob = KIO::storedGet( m_wikiCurrentUrl, false, false );
 
-    amaroK::StatusBar::instance()->newProgressOperation( m_wikiJob )
+    Amarok::StatusBar::instance()->newProgressOperation( m_wikiJob )
             .setDescription( i18n( "Fetching Wikipedia Information" ) );
 
     connect( m_wikiJob, SIGNAL( result( KIO::Job* ) ), SLOT( wikiResult( KIO::Job* ) ) );
@@ -3507,7 +3507,7 @@ ContextBrowser::wikiTitlePage() //SLOT
 void
 ContextBrowser::wikiExternalPage() //SLOT
 {
-    amaroK::invokeBrowser( m_wikiCurrentUrl );
+    Amarok::invokeBrowser( m_wikiCurrentUrl );
 }
 
 
@@ -3814,7 +3814,7 @@ ContextBrowser::expandURL( const KURL &url )
     }
     else if( protocol == "album" ) {
         QString artist, album, track; // track unused here
-        amaroK::albumArtistTrackFromUrl( url.path(), artist, album, track );
+        Amarok::albumArtistTrackFromUrl( url.path(), artist, album, track );
 
         QStringList trackUrls = CollectionDB::instance()->albumTracks( artist, album );
         foreach( trackUrls ) {
@@ -3823,7 +3823,7 @@ ContextBrowser::expandURL( const KURL &url )
     }
     else if( protocol == "albumdisc" ) {
         QString artist, album, discnumber; // discnumber is returned in track number field
-        amaroK::albumArtistTrackFromUrl( url.path(), artist, album, discnumber );
+        Amarok::albumArtistTrackFromUrl( url.path(), artist, album, discnumber );
 
         QStringList trackUrls = CollectionDB::instance()->albumDiscTracks( artist, album, discnumber );
         foreach( trackUrls ) {
@@ -3844,7 +3844,7 @@ ContextBrowser::expandURL( const KURL &url )
     }
     else if( protocol == "compilationdisc") {
         QString artist, album, discnumber; // artist is unused
-        amaroK::albumArtistTrackFromUrl( url.path(), artist, album, discnumber );
+        Amarok::albumArtistTrackFromUrl( url.path(), artist, album, discnumber );
 
         QueryBuilder qb;
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
@@ -3861,7 +3861,7 @@ ContextBrowser::expandURL( const KURL &url )
 
     else if( protocol == "fetchcover" ) {
         QString artist, album, track; // track unused here
-        amaroK::albumArtistTrackFromUrl( url.path(), artist, album, track );
+        Amarok::albumArtistTrackFromUrl( url.path(), artist, album, track );
 
         if( artist.isEmpty() )
         {

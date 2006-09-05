@@ -8,7 +8,7 @@
 
 
 Engine::Base::Base()
-        : amaroK::Plugin()
+        : Amarok::Plugin()
         , m_xfadeLength( 0 )
         , m_volume( 50 )
         , m_scope( SCOPESIZE )

@@ -4,7 +4,7 @@
 #include "plugin.h"
 
 
-namespace amaroK {
+namespace Amarok {
 
 
 Plugin::Plugin()

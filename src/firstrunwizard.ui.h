@@ -19,7 +19,7 @@
 #include <klocale.h>
 #include <qpushbutton.h>
 
-namespace amaroK
+namespace Amarok
 {
     extern QPixmap getPNG( const QString& );
     extern QPixmap getJPG( const QString& );
@@ -30,7 +30,7 @@ namespace amaroK
 void
 FirstRunWizard::init()
 {
-    using namespace amaroK;
+    using namespace Amarok;
 
     //aesthetics
     helpButton()->hide();
@@ -75,5 +75,5 @@ FirstRunWizard::writeCollectionConfig()
 void
 FirstRunWizard::openLink(const QString& s)
 {
-    amaroK::invokeBrowser(s);
+    Amarok::invokeBrowser(s);
 }

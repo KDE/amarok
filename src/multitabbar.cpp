@@ -50,7 +50,7 @@
 
 #define NEARBYINT(i) ((int(float(i) + 0.5)))
 
-namespace amaroK { extern KConfig *config( const QString& ); }
+namespace Amarok { extern KConfig *config( const QString& ); }
 
 class MultiTabBarTabPrivate
 {
@@ -406,7 +406,7 @@ int MultiTabBarInternal::appendTab( const QPixmap &pic , int id, const QString& 
     m_tabs.append( tab = new MultiTabBarTab( pic, text, id, box, m_position, m_style ) );
     tab->installEventFilter( this );
     tab->showActiveTabText( m_showActiveTabTexts );
-    tab->setVisible( amaroK::config( "BrowserBar" )->readBoolEntry( text, true ) );
+    tab->setVisible( Amarok::config( "BrowserBar" )->readBoolEntry( text, true ) );
 
     if ( m_style == MultiTabBar::KONQSBC ) {
         if ( m_expandedTabSize < tab->neededSize() ) {
@@ -443,7 +443,7 @@ void MultiTabBarInternal::setTabVisible( int id, bool visible )
             MultiTabBarTab* tab = m_tabs.at( pos );
 
             tab->setVisible( visible );
-            amaroK::config( "BrowserBar" )->writeEntry( tab->text(), tab->visible() );
+            Amarok::config( "BrowserBar" )->writeEntry( tab->text(), tab->visible() );
 
             if ( tab->visible() )
                 tab->show();

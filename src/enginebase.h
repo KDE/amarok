@@ -58,7 +58,7 @@ namespace Engine
 {
     typedef std::vector<int16_t> Scope;
 
-    class LIBAMAROK_EXPORT Base : public QObject, public amaroK::Plugin
+    class LIBAMAROK_EXPORT Base : public QObject, public Amarok::Plugin
     {
     Q_OBJECT
 

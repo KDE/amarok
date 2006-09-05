@@ -24,7 +24,7 @@
 #include <kapplication.h>   //baseclass
 #include <kurl.h>
 
-namespace amaroK {
+namespace Amarok {
     class TrayIcon;
 }
 
@@ -78,7 +78,7 @@ class LIBAMAROK_EXPORT App : public KApplication, public EngineObserver
         void setRating4() { setRating( 4 ); }
         void setRating5() { setRating( 5 ); }
         void continueInit();
-        
+
 
     public slots:
         void applySettings( bool firstTime = false );
@@ -113,7 +113,7 @@ class LIBAMAROK_EXPORT App : public KApplication, public EngineObserver
         KGlobalAccel        *m_pGlobalAccel;
         PlayerWidget        *m_pPlayerWindow;
         PlaylistWindow      *m_pPlaylistWindow;
-        amaroK::TrayIcon    *m_pTray;
+        Amarok::TrayIcon    *m_pTray;
         MediaDeviceManager       *m_pMediaDeviceManager;
 };
 

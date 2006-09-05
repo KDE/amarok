@@ -15,7 +15,7 @@
 
 class App;
 
-namespace amaroK {
+namespace Amarok {
 
 class TrayIcon : public KSystemTray, public EngineObserver
 {
@@ -47,7 +47,7 @@ private:
     int blinkTimerID;   // timer ID returned by QObject::startTimer()
     bool overlayVisible;// used for blinking / hiding overlay
     /** whether the last.fm icons are visible **/
-    bool m_lastFmMode; 
+    bool m_lastFmMode;
 };
 
 }

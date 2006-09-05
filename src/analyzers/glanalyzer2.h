@@ -41,19 +41,19 @@ protected:
 
 private:
     struct ShowProperties {
-	bool paused;
-	double timeStamp;
-	double dT;
-	double pauseTimer;
-	float rotDegrees;
+    bool paused;
+    double timeStamp;
+    double dT;
+    double pauseTimer;
+    float rotDegrees;
     } show;
 
     struct FrameProperties {
-	float energy;
-	float dEnergy;
-	float meanBand;
-	float rotDegrees;
-	bool silence;
+    float energy;
+    float dEnergy;
+    float meanBand;
+    float rotDegrees;
+    bool silence;
     } frame;
 
     unsigned int dotTexture;

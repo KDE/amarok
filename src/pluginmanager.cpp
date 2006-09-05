@@ -29,7 +29,7 @@ email                : markey@web.de
 #include <kmessagebox.h>
 
 using std::vector;
-using amaroK::Plugin;
+using Amarok::Plugin;
 
 
 vector<PluginManager::StoreItem>

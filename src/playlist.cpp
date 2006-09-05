@@ -89,7 +89,7 @@ extern "C"
 
 #include "playlist.h"
 
-namespace amaroK
+namespace Amarok
 {
     const DynamicMode *dynamicMode() { return Playlist::instance()->dynamicMode(); }
 }
@@ -218,7 +218,7 @@ Playlist::Playlist( QWidget *parent )
         , m_visLength( 0 )
         , m_total( 0 )
         , m_itemCountDirty( false )
-        , m_undoDir( amaroK::saveLocation( "undo/" ) )
+        , m_undoDir( Amarok::saveLocation( "undo/" ) )
         , m_undoCounter( 0 )
         , m_dynamicMode( 0 )
         , m_stopAfterTrack( 0 )
@@ -339,22 +339,22 @@ Playlist::Playlist( QWidget *parent )
     connect( &Glow::timer, SIGNAL(timeout()), SLOT(slotGlowTimer()) );
 
 
-    KActionCollection* const ac = amaroK::actionCollection();
+    KActionCollection* const ac = Amarok::actionCollection();
     KAction *copy = KStdAction::copy( this, SLOT( copyToClipboard() ), ac, "playlist_copy" );
     KStdAction::selectAll( this, SLOT( selectAll() ), ac, "playlist_select_all" );
 
-    m_clearButton = new KAction( i18n( "clear playlist", "&Clear" ), amaroK::icon( "playlist_clear" ), 0, this, SLOT( clear() ), ac, "playlist_clear" );
+    m_clearButton = new KAction( i18n( "clear playlist", "&Clear" ), Amarok::icon( "playlist_clear" ), 0, this, SLOT( clear() ), ac, "playlist_clear" );
     m_undoButton  = KStdAction::undo( this, SLOT( undo() ), ac, "playlist_undo" );
     m_redoButton  = KStdAction::redo( this, SLOT( redo() ), ac, "playlist_redo" );
-    m_undoButton ->setIcon( amaroK::icon( "undo" ) );
-    m_redoButton ->setIcon( amaroK::icon( "redo" ) );
+    m_undoButton ->setIcon( Amarok::icon( "undo" ) );
+    m_redoButton ->setIcon( Amarok::icon( "redo" ) );
 
-    new KAction( i18n( "&Repopulate" ), amaroK::icon( "playlist_refresh" ), 0, this, SLOT( repopulate() ), ac, "repopulate" );
+    new KAction( i18n( "&Repopulate" ), Amarok::icon( "playlist_refresh" ), 0, this, SLOT( repopulate() ), ac, "repopulate" );
     new KAction( i18n( "S&huffle" ), "rebuild", CTRL+Key_H, this, SLOT( shuffle() ), ac, "playlist_shuffle" );
-    new KAction( i18n( "&Goto Current Track" ), amaroK::icon( "music" ), CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
+    new KAction( i18n( "&Goto Current Track" ), Amarok::icon( "music" ), CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
     new KAction( i18n( "&Remove Duplicate && Dead Entries" ), 0, this, SLOT( removeDuplicates() ), ac, "playlist_remove_duplicates" );
-    new KAction( i18n( "&Queue Selected Tracks" ), amaroK::icon( "fastforward" ), CTRL+Key_D, this, SLOT( queueSelected() ), ac, "queue_selected" );
-    KToggleAction *stopafter = new KToggleAction( i18n( "&Stop Playing After Track" ), amaroK::icon( "stop" ), CTRL+ALT+Key_V,
+    new KAction( i18n( "&Queue Selected Tracks" ), Amarok::icon( "fastforward" ), CTRL+Key_D, this, SLOT( queueSelected() ), ac, "queue_selected" );
+    KToggleAction *stopafter = new KToggleAction( i18n( "&Stop Playing After Track" ), Amarok::icon( "stop" ), CTRL+ALT+Key_V,
                             this, SLOT( toggleStopAfterCurrentItem() ), ac, "stop_after" );
 
     { // KAction idiocy -- shortcuts don't work until they've been plugged into a menu
@@ -383,7 +383,7 @@ Playlist::Playlist( QWidget *parent )
 
     setDynamicMode( 0 );
 
-    m_smartResizing = amaroK::config( "PlaylistWindow" )->readBoolEntry( "Smart Resizing", true );
+    m_smartResizing = Amarok::config( "PlaylistWindow" )->readBoolEntry( "Smart Resizing", true );
 
     columnOrderChanged();
     //cause the column fractions to be updated, but in a safe way, ie no specific column
@@ -399,7 +399,7 @@ Playlist::Playlist( QWidget *parent )
     connect( App::instance(), SIGNAL( moodbarPrefs(     bool, bool, int, bool ) ),
              this,            SLOT(   slotMoodbarPrefs( bool, bool, int, bool ) ) );
 
-    amaroK::ToolTip::add( this, viewport() );
+    Amarok::ToolTip::add( this, viewport() );
 
     header()->installEventFilter( this );
     renameLineEdit()->installEventFilter( this );
@@ -430,7 +430,7 @@ Playlist::~Playlist()
 
     //speed up quit a little
     safeClear();   //our implementation is slow
-    amaroK::ToolTip::remove( viewport() );
+    Amarok::ToolTip::remove( viewport() );
     blockSignals( true ); //might help
 }
 
@@ -547,7 +547,7 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
         ThreadWeaver::instance()->queueJob( new UrlLoader( list, after, directPlay ) );
     }
     else
-        amaroK::StatusBar::instance()->shortMessage( i18n("Attempted to insert nothing into playlist.") );
+        Amarok::StatusBar::instance()->shortMessage( i18n("Attempted to insert nothing into playlist.") );
 }
 
 void
@@ -609,7 +609,7 @@ Playlist::addSpecialTracks( uint songCount, const int type )
     //FIXME: No items to add or if user wants non-unique entries!
     if( url.isEmpty() )
     {
-        amaroK::StatusBar::instance()->shortMessage( i18n("No tracks were returned to be inserted.") );
+        Amarok::StatusBar::instance()->shortMessage( i18n("No tracks were returned to be inserted.") );
         return;
     }
     //QStringList list;
@@ -647,7 +647,7 @@ Playlist::addSpecialCustomTracks( uint songCount )
 
     if ( !item ) {
         debug() << "[DYNAMIC]: No valid source found." << endl;
-        amaroK::StatusBar::instance()->shortMessage( i18n("No valid sources set for this Dynamic Playlist.") );
+        Amarok::StatusBar::instance()->shortMessage( i18n("No valid sources set for this Dynamic Playlist.") );
         return;
     }
 
@@ -670,7 +670,7 @@ Playlist::addSpecialCustomTracks( uint songCount )
         }
 
         if( urls.isEmpty() )
-            amaroK::StatusBar::instance()->longMessage( i18n(
+            Amarok::StatusBar::instance()->longMessage( i18n(
                 "<div align=\"center\"><b>Warning</b></div>"
                 "The playlist titled <i>%1</i> contains no tracks."
                 "<br><br>"
@@ -756,7 +756,7 @@ Playlist::addSpecialCustomTracks( uint songCount )
         KURL::List addMe;
 
         if( urls.isEmpty() ) {
-            amaroK::StatusBar::instance()->longMessage( i18n(
+            Amarok::StatusBar::instance()->longMessage( i18n(
                 "<div align=\"center\"><b>Warning</b></div>"
                 "The smart-playlist titled <i>%1</i> contains no tracks."
                 "<br><br>"
@@ -887,7 +887,7 @@ Playlist::setDynamicHistory( bool enable /*false*/ )
 QString
 Playlist::defaultPlaylistPath() //static
 {
-    return amaroK::saveLocation() + "current.xml";
+    return Amarok::saveLocation() + "current.xml";
 }
 
 void
@@ -895,13 +895,13 @@ Playlist::restoreSession()
 {
     KURL url;
 
-    if ( amaroK::config()->readBoolEntry( "First 1.4 Run", true ) ) {
+    if ( Amarok::config()->readBoolEntry( "First 1.4 Run", true ) ) {
         // On first startup of 1.4, we load a special playlist with an intro track
         url.setPath( locate( "data", "amarok/data/firstrun.m3u" ) );
-        amaroK::config()->writeEntry( "First 1.4 Run", false );
+        Amarok::config()->writeEntry( "First 1.4 Run", false );
     }
     else
-        url.setPath( amaroK::saveLocation() + "current.xml" );
+        url.setPath( Amarok::saveLocation() + "current.xml" );
 
     // check it exists, because on the first ever run it doesn't and
     // it looks bad to show "some URLs were not suitable.." on the
@@ -1084,7 +1084,7 @@ Playlist::playNextTrack( bool forceNext )
         return;
     }
 
-    if( !amaroK::repeatTrack() || forceNext )
+    if( !Amarok::repeatTrack() || forceNext )
     {
         if( !m_nextTracks.isEmpty() )
         {
@@ -1097,10 +1097,10 @@ Playlist::playNextTrack( bool forceNext )
             emit queueChanged( PLItemList(), PLItemList( item ) );
         }
 
-        else if( amaroK::entireAlbums() && m_currentTrack && m_currentTrack->nextInAlbum() )
+        else if( Amarok::entireAlbums() && m_currentTrack && m_currentTrack->nextInAlbum() )
             item = m_currentTrack->nextInAlbum();
 
-        else if( amaroK::repeatAlbum() &&
+        else if( Amarok::repeatAlbum() &&
                  repeatAlbumTrackCount() && ( repeatAlbumTrackCount() > 1 || !forceNext ) )
             item = m_currentTrack->m_album->tracks.getFirst();
 
@@ -1109,7 +1109,7 @@ Playlist::playNextTrack( bool forceNext )
             QValueVector<PlaylistItem*> tracks;
 
             //make a list of everything we can play
-            if( amaroK::randomAlbums() ) // add the first visible track from every unplayed album
+            if( Amarok::randomAlbums() ) // add the first visible track from every unplayed album
             {
                 for( ArtistAlbumMap::const_iterator it = m_albums.constBegin(), end = m_albums.constEnd(); it != end;   ++it )
                     for( AlbumMap::const_iterator it2 = (*it).constBegin(), end2 = (*it).constEnd(); it2 != end2; ++it2 )
@@ -1127,7 +1127,7 @@ Playlist::playNextTrack( bool forceNext )
 
                 item = 0;
 
-                if( amaroK::randomAlbums() )
+                if( Amarok::randomAlbums() )
                 {
                     if ( m_prevAlbums.count() <= 8 ) {
                         m_prevAlbums.first();
@@ -1186,7 +1186,7 @@ Playlist::playNextTrack( bool forceNext )
                     }
                 }
 
-                if( amaroK::repeatPlaylist() )
+                if( Amarok::repeatPlaylist() )
                 {
                     playNextTrack();
                     return;
@@ -1195,19 +1195,19 @@ Playlist::playNextTrack( bool forceNext )
             }
             else
             {
-                if( amaroK::favorNone() )
+                if( Amarok::favorNone() )
                     item = tracks.at( KApplication::random() % tracks.count() ); //is O(1)
                 else
                 {
                     const uint currenttime_t = QDateTime::currentDateTime().toTime_t();
                     QValueVector<int> weights( tracks.size() );
                     Q_INT64 total = m_total;
-                    if( amaroK::randomAlbums() )
+                    if( Amarok::randomAlbums() )
                     {
                         for( int i = 0, n = tracks.count(); i < n; ++i )
                         {
                             weights[i] = tracks.at( i )->m_album->total;
-                            if( amaroK::favorLastPlay() )
+                            if( Amarok::favorLastPlay() )
                             {
                                 const int inc = int( float( ( currenttime_t - m_startupTime_t )
                                                             * tracks.at( i )->m_album->tracks.count() + 0.5 )
@@ -1222,15 +1222,15 @@ Playlist::playNextTrack( bool forceNext )
                         for( int i = 0, n = tracks.count(); i < n; ++i )
                         {
                             weights[i] = tracks.at( i )->totalIncrementAmount();
-                            if( amaroK::favorLastPlay() )
+                            if( Amarok::favorLastPlay() )
                                 weights[i] += currenttime_t - m_startupTime_t;
                         }
-                        if( amaroK::favorLastPlay() )
+                        if( Amarok::favorLastPlay() )
                             total += ( currenttime_t - m_startupTime_t ) * weights.count();
                     }
 
                     Q_INT64 random;
-                    if( amaroK::favorLastPlay() ) //really big huge numbers
+                    if( Amarok::favorLastPlay() ) //really big huge numbers
                     {
                         Q_INT64 r = Q_INT64( ( KApplication::random() / pow( 2, sizeof( int ) * 8 ) )
                                                                       * pow( 2, 64 ) );
@@ -1266,7 +1266,7 @@ Playlist::playNextTrack( bool forceNext )
             advanceDynamicTrack();
         }
 
-        if ( !item && amaroK::repeatPlaylist() )
+        if ( !item && Amarok::repeatPlaylist() )
             item = *MyIt( this ); //ie. first visible item
     }
 
@@ -1315,13 +1315,13 @@ Playlist::playPrevTrack()
 {
     PlaylistItem *item = currentTrack();
 
-    if( amaroK::entireAlbums() )
+    if( Amarok::entireAlbums() )
     {
         item = 0;
         if( m_currentTrack )
         {
             item = m_currentTrack->prevInAlbum();
-            if( !item && amaroK::repeatAlbum() && m_currentTrack->m_album->tracks.count() )
+            if( !item && Amarok::repeatAlbum() && m_currentTrack->m_album->tracks.count() )
                 item = m_currentTrack->m_album->tracks.getLast();
         }
         if( !item )
@@ -1373,7 +1373,7 @@ Playlist::playPrevTrack()
         }
     }
 
-    if ( !item && amaroK::repeatPlaylist() )
+    if ( !item && Amarok::repeatPlaylist() )
         item = *MyIt( lastItem() ); //TODO check this works!
 
     if ( EngineController::engine()->loaded() )
@@ -1386,7 +1386,7 @@ void
 Playlist::playCurrentTrack()
 {
     if ( !currentTrack() )
-        playNextTrack( amaroK::repeatTrack() );
+        playNextTrack( Amarok::repeatTrack() );
 
     //we must do this even if the above is correct
     //since the engine is not loaded the first time the user presses play
@@ -1565,14 +1565,14 @@ void Playlist::toggleStopAfterCurrentTrack()
     PlaylistItem *prev_stopafter = m_stopAfterTrack;
     if( m_stopAfterTrack == item ) {
         m_stopAfterTrack = 0;
-        amaroK::OSD::instance()->OSDWidget::show( i18n("Stop Playing After Track: Off") );
+        Amarok::OSD::instance()->OSDWidget::show( i18n("Stop Playing After Track: Off") );
     }
     else
     {
         m_stopAfterTrack = item;
         item->setSelected( false );
         item->update();
-        amaroK::OSD::instance()->OSDWidget::show( i18n("Stop Playing After Track: On") );
+        Amarok::OSD::instance()->OSDWidget::show( i18n("Stop Playing After Track: On") );
     }
 
     if( prev_stopafter )
@@ -1619,11 +1619,11 @@ int Playlist::stopAfterMode() const
 void Playlist::generateInfo()
 {
     m_albums.clear();
-    if( amaroK::entireAlbums() )
+    if( Amarok::entireAlbums() )
         for( MyIt it( this, MyIt::All ); *it; ++it )
             (*it)->refAlbum();
     m_total = 0;
-    if( amaroK::entireAlbums() || AmarokConfig::favorTracks() )
+    if( Amarok::entireAlbums() || AmarokConfig::favorTracks() )
         for( MyIt it( this, MyIt::Visible ); *it; ++it )
             (*it)->incrementTotals();
 }
@@ -1708,7 +1708,7 @@ Playlist::activate( QListViewItem *item )
         //we have reached the end of the playlist
         EngineController::instance()->stop();
         setCurrentTrack( 0 );
-        amaroK::OSD::instance()->OSDWidget::show( i18n("Playlist finished"),
+        Amarok::OSD::instance()->OSDWidget::show( i18n("Playlist finished"),
                                             QImage( KIconLoader().iconPath( "amarok", -KIcon::SizeHuge ) ) );
         return;
     }
@@ -1717,7 +1717,7 @@ Playlist::activate( QListViewItem *item )
 
     checkFileStatus( item );
 
-    if( dynamicMode() && !m_dynamicDirt && !amaroK::repeatTrack() )
+    if( dynamicMode() && !m_dynamicDirt && !Amarok::repeatTrack() )
     {
         if( m_currentTrack && item->isEnabled() )
             this->moveItem( item, 0, m_currentTrack );
@@ -1754,11 +1754,11 @@ Playlist::activate( QListViewItem *item )
 
     if( !item->isEnabled() )
     {
-        amaroK::StatusBar::instance()->shortMessage( i18n("Local file does not exist.") );
+        Amarok::StatusBar::instance()->shortMessage( i18n("Local file does not exist.") );
         return;
     }
 
-    if( amaroK::entireAlbums() )
+    if( Amarok::entireAlbums() )
     {
         if( !item->nextInAlbum() )
             appendToPreviousAlbums( item->m_album );
@@ -1846,7 +1846,7 @@ QPair<QString, QRect> Playlist::toolTipText( QWidget*, const QPoint &pos ) const
         if( item->isCurrent() )
         {
             text = QString("<i>%1</i>").arg( text );
-            amaroK::ToolTip::s_hack = 1; //HACK for precise positioning
+            Amarok::ToolTip::s_hack = 1; //HACK for precise positioning
         }
         return QPair<QString, QRect>( text, globalRect );
     }
@@ -2013,7 +2013,7 @@ Playlist::setCurrentTrackPixmap( int state )
     else if( state == Engine::Playing )
         pixmap = "currenttrack_play";
 
-    m_currentTrack->setPixmap( m_firstColumn, pixmap.isNull() ? QPixmap() : amaroK::getPNG( pixmap ) );
+    m_currentTrack->setPixmap( m_firstColumn, pixmap.isNull() ? QPixmap() : Amarok::getPNG( pixmap ) );
     PlaylistItem::setPixmapChanged();
 }
 
@@ -2063,8 +2063,8 @@ Playlist::isTrackAfter() const
    return !currentTrack() && !isEmpty() ||
           !m_nextTracks.isEmpty() ||
           currentTrack() && currentTrack()->itemBelow() ||
-          totalTrackCount() > 1 && ( AmarokConfig::randomMode() || amaroK::repeatPlaylist()
-          || amaroK::repeatAlbum() && repeatAlbumTrackCount() > 1 );
+          totalTrackCount() > 1 && ( AmarokConfig::randomMode() || Amarok::repeatPlaylist()
+          || Amarok::repeatAlbum() && repeatAlbumTrackCount() > 1 );
 }
 
 bool
@@ -2074,7 +2074,7 @@ Playlist::isTrackBefore() const
 
     return !isEmpty() &&
            (
-               currentTrack() && (currentTrack()->itemAbove() || amaroK::repeatPlaylist() && totalTrackCount() > 1)
+               currentTrack() && (currentTrack()->itemAbove() || Amarok::repeatPlaylist() && totalTrackCount() > 1)
                ||
                AmarokConfig::randomMode() && totalTrackCount() > 1
            );
@@ -2083,11 +2083,11 @@ Playlist::isTrackBefore() const
 void
 Playlist::updateNextPrev()
 {
-    amaroK::actionCollection()->action( "play" )->setEnabled( !isEmpty() );
-    amaroK::actionCollection()->action( "prev" )->setEnabled( isTrackBefore() );
-    amaroK::actionCollection()->action( "next" )->setEnabled( isTrackAfter() );
-    amaroK::actionCollection()->action( "playlist_clear" )->setEnabled( !isEmpty() );
-    amaroK::actionCollection()->action( "playlist_show" )->setEnabled( m_currentTrack );
+    Amarok::actionCollection()->action( "play" )->setEnabled( !isEmpty() );
+    Amarok::actionCollection()->action( "prev" )->setEnabled( isTrackBefore() );
+    Amarok::actionCollection()->action( "next" )->setEnabled( isTrackAfter() );
+    Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !isEmpty() );
+    Amarok::actionCollection()->action( "playlist_show" )->setEnabled( m_currentTrack );
 
     if( m_currentTrack )
         // ensure currentTrack is shown at correct height
@@ -2136,16 +2136,16 @@ Playlist::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
     switch( state )
     {
     case Engine::Playing:
-        amaroK::actionCollection()->action( "pause" )->setEnabled( true );
-        amaroK::actionCollection()->action( "stop" )->setEnabled( true );
+        Amarok::actionCollection()->action( "pause" )->setEnabled( true );
+        Amarok::actionCollection()->action( "stop" )->setEnabled( true );
 
         Glow::startTimer();
 
         break;
 
     case Engine::Paused:
-        amaroK::actionCollection()->action( "pause" )->setEnabled( true );
-        amaroK::actionCollection()->action( "stop" )->setEnabled( true );
+        Amarok::actionCollection()->action( "pause" )->setEnabled( true );
+        Amarok::actionCollection()->action( "stop" )->setEnabled( true );
 
         Glow::reset();
 
@@ -2155,8 +2155,8 @@ Playlist::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
         break;
 
     case Engine::Empty:
-        amaroK::actionCollection()->action( "pause" )->setEnabled( false );
-        amaroK::actionCollection()->action( "stop" )->setEnabled( false );
+        Amarok::actionCollection()->action( "pause" )->setEnabled( false );
+        Amarok::actionCollection()->action( "stop" )->setEnabled( false );
 
         //leave the glow state at full colour
         Glow::reset();
@@ -2221,10 +2221,10 @@ Playlist::clear() //SLOT
     emit queueChanged( PLItemList(), prev );
 
     // Update player button states
-    amaroK::actionCollection()->action( "play" )->setEnabled( false );
-    amaroK::actionCollection()->action( "prev" )->setEnabled( false );
-    amaroK::actionCollection()->action( "next" )->setEnabled( false );
-    amaroK::actionCollection()->action( "playlist_clear" )->setEnabled( false );
+    Amarok::actionCollection()->action( "play" )->setEnabled( false );
+    Amarok::actionCollection()->action( "prev" )->setEnabled( false );
+    Amarok::actionCollection()->action( "next" )->setEnabled( false );
+    Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( false );
 
     ThreadWeaver::instance()->abortAllJobsNamed( "TagWriter" );
 
@@ -2810,7 +2810,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 
         case SMARTRESIZING:
             m_smartResizing = !m_smartResizing;
-            amaroK::config( "PlaylistWindow" )->writeEntry( "Smart Resizing", m_smartResizing );
+            Amarok::config( "PlaylistWindow" )->writeEntry( "Smart Resizing", m_smartResizing );
             if ( m_smartResizing )
                 columnResizeEvent( 0, 0, 0 ); //force refit. FIXME: It doesn't work perfectly
             break;
@@ -3143,7 +3143,7 @@ Playlist::saveXML( const QString &path )
     if( dynamicMode() )
         dynamic = QString(" dynamicMode=\"%1\"").arg( dynamicMode()->title() );
     stream << QString( "<playlist product=\"%1\" version=\"%2\"%3>\n" )
-              .arg( "amaroK" ).arg( amaroK::xmlVersion() ).arg( dynamic );
+              .arg( "Amarok" ).arg( Amarok::xmlVersion() ).arg( dynamic );
 
     for( const PlaylistItem *item = firstChild(); item; item = item->nextSibling() )
     {
@@ -3254,10 +3254,10 @@ Playlist::setDynamicMode( DynamicMode *mode ) //SLOT
         m_oldRandom = AmarokConfig::randomMode();
         m_oldRepeat = AmarokConfig::repeat();
     }
-    amaroK::actionCollection()->action( "random_mode" )->setEnabled( !mode );
-    amaroK::actionCollection()->action( "repeat" )->setEnabled( !mode  );
-    amaroK::actionCollection()->action( "playlist_shuffle" )->setEnabled( !mode );
-    amaroK::actionCollection()->action( "repopulate" )->setEnabled( mode );
+    Amarok::actionCollection()->action( "random_mode" )->setEnabled( !mode );
+    Amarok::actionCollection()->action( "repeat" )->setEnabled( !mode  );
+    Amarok::actionCollection()->action( "playlist_shuffle" )->setEnabled( !mode );
+    Amarok::actionCollection()->action( "repopulate" )->setEnabled( mode );
     if( prev && mode )
     {
         if( prev->previousCount() != mode->previousCount() )
@@ -3299,8 +3299,8 @@ Playlist::disableDynamicMode() //SLOT
     setDynamicMode( 0 );
     AmarokConfig::setRandomMode( m_oldRandom );
     AmarokConfig::setRepeat( m_oldRepeat );
-    static_cast<KSelectAction*>(amaroK::actionCollection()->action( "random_mode" ))->setCurrentItem( m_oldRandom );
-    static_cast<KSelectAction*>(amaroK::actionCollection()->action( "repeat" ))->setCurrentItem( m_oldRepeat );
+    static_cast<KSelectAction*>(Amarok::actionCollection()->action( "random_mode" ))->setCurrentItem( m_oldRandom );
+    static_cast<KSelectAction*>(Amarok::actionCollection()->action( "repeat" ))->setCurrentItem( m_oldRepeat );
 }
 
 void
@@ -3514,7 +3514,7 @@ Playlist::copyToClipboard( const QListViewItem *item ) const //SLOT
         QApplication::clipboard()->setText( text, QClipboard::Clipboard );
         QApplication::clipboard()->setText( text, QClipboard::Selection );
 
-        amaroK::OSD::instance()->OSDWidget::show( i18n( "Copied: %1" ).arg( text ),
+        Amarok::OSD::instance()->OSDWidget::show( i18n( "Copied: %1" ).arg( text ),
                                  QImage(CollectionDB::instance()->albumImage(*playlistItem )) );
     }
 }
@@ -3738,17 +3738,17 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     if( item == 0 )
     {
         KPopupMenu popup;
-        amaroK::actionCollection()->action("playlist_save")->plug( &popup );
-        amaroK::actionCollection()->action("playlist_clear")->plug( &popup );
+        Amarok::actionCollection()->action("playlist_save")->plug( &popup );
+        Amarok::actionCollection()->action("playlist_clear")->plug( &popup );
         DynamicMode *m = 0;
         if(dynamicMode())
-             popup.insertItem( SmallIconSet( amaroK::icon( "dynamic" ) ), i18n("Repopulate"), REPOPULATE);
+             popup.insertItem( SmallIconSet( Amarok::icon( "dynamic" ) ), i18n("Repopulate"), REPOPULATE);
         else
         {
-            amaroK::actionCollection()->action("playlist_shuffle")->plug( &popup );
+            Amarok::actionCollection()->action("playlist_shuffle")->plug( &popup );
                 m = PlaylistBrowser::instance()->findDynamicModeByTitle( AmarokConfig::lastDynamicMode() );
                 if( m )
-                    popup.insertItem( SmallIconSet( amaroK::icon( "dynamic" ) ), i18n("L&oad %1").arg( m->title() ), ENABLEDYNAMIC);
+                    popup.insertItem( SmallIconSet( Amarok::icon( "dynamic" ) ), i18n("L&oad %1").arg( m->title() ), ENABLEDYNAMIC);
         }
         switch(popup.exec(p))
         {
@@ -3787,19 +3787,19 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     if( isCurrent && isLastFm )
     {
-        KActionCollection *ac = amaroK::actionCollection();
+        KActionCollection *ac = Amarok::actionCollection();
         if( ac->action( "skip" ) ) ac->action( "skip" )->plug( &popup );
         if( ac->action( "love" ) ) ac->action( "love" )->plug( &popup );
         if( ac->action( "ban" ) ) ac->action( "ban" )->plug( &popup );
         popup.insertSeparator();
     }
 
-    popup.insertItem( SmallIconSet( amaroK::icon( "play" ) ), isCurrent && isPlaying
+    popup.insertItem( SmallIconSet( Amarok::icon( "play" ) ), isCurrent && isPlaying
             ? i18n( "&Restart" )
             : i18n( "&Play" ), PLAY );
 
     // Begin queue entry logic
-    popup.insertItem( SmallIconSet( amaroK::icon( "fastforward" ) ), i18n("&Queue Selected Tracks"), PLAY_NEXT );
+    popup.insertItem( SmallIconSet( Amarok::icon( "fastforward" ) ), i18n("&Queue Selected Tracks"), PLAY_NEXT );
 
     bool queueToggle = false;
     MyIt it( this, MyIt::Selected );
@@ -3816,7 +3816,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         if ( !firstQueued )
             popup.changeItem( PLAY_NEXT, i18n( "&Queue Track" ) );
         else
-            popup.changeItem( PLAY_NEXT, SmallIconSet( amaroK::icon( "rewind" ) ), i18n("&Dequeue Track") );
+            popup.changeItem( PLAY_NEXT, SmallIconSet( Amarok::icon( "rewind" ) ), i18n("&Dequeue Track") );
     } else {
         if ( queueToggle )
             popup.changeItem( PLAY_NEXT, i18n( "Toggle &Queue Status (1 track)", "Toggle &Queue Status (%n tracks)", itemCount ) );
@@ -3826,12 +3826,12 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
             if ( !firstQueued )
                 popup.changeItem( PLAY_NEXT, i18n( "&Queue Selected Tracks" ) );
             else
-                popup.changeItem( PLAY_NEXT, SmallIconSet( amaroK::icon( "rewind" ) ), i18n("&Dequeue Selected Tracks") );
+                popup.changeItem( PLAY_NEXT, SmallIconSet( Amarok::icon( "rewind" ) ), i18n("&Dequeue Selected Tracks") );
     }
     // End queue entry logic
 
     if( isCurrent && !isLastFm )
-        amaroK::actionCollection()->action( "pause" )->plug( &popup );
+        Amarok::actionCollection()->action( "pause" )->plug( &popup );
 
     bool afterCurrent = false;
     if(  !m_nextTracks.isEmpty() ? m_nextTracks.getLast() : m_currentTrack  )
@@ -3843,26 +3843,26 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
             }
 
     if( itemCount == 1 && ( item->isCurrent() || item->isQueued() || m_stopAfterTrack == item ||
-                            ( !AmarokConfig::randomMode() && ( amaroK::repeatPlaylist() || afterCurrent ) ) ||
-                            ( amaroK::entireAlbums() && m_currentTrack &&
+                            ( !AmarokConfig::randomMode() && ( Amarok::repeatPlaylist() || afterCurrent ) ) ||
+                            ( Amarok::entireAlbums() && m_currentTrack &&
                               item->m_album == m_currentTrack->m_album &&
-                              ( amaroK::repeatAlbum() || ( ( !item->track() && afterCurrent ) ||
+                              ( Amarok::repeatAlbum() || ( ( !item->track() && afterCurrent ) ||
                                                              item->track() > m_currentTrack->track() ) ) ) ) )
                                                                                      //looks like fucking LISP
     {
-        amaroK::actionCollection()->action( "stop_after" )->plug( &popup );
-        dynamic_cast<KToggleAction *>( amaroK::actionCollection()->action( "stop_after" ) )->setChecked( m_stopAfterTrack == item );
+        Amarok::actionCollection()->action( "stop_after" )->plug( &popup );
+        dynamic_cast<KToggleAction *>( Amarok::actionCollection()->action( "stop_after" ) )->setChecked( m_stopAfterTrack == item );
     }
 
     if( isCurrent && itemCount == 1 )
     {
-        popup.insertItem( SmallIconSet( amaroK::icon( "repeat_track" ) ), i18n( "&Repeat Track" ), REPEAT );
-        popup.setItemChecked( REPEAT, amaroK::repeatTrack() );
+        popup.insertItem( SmallIconSet( Amarok::icon( "repeat_track" ) ), i18n( "&Repeat Track" ), REPEAT );
+        popup.setItemChecked( REPEAT, Amarok::repeatTrack() );
     }
 
     popup.insertSeparator();
 
-    popup.insertItem( SmallIconSet( amaroK::icon( "edit" ) ), (itemCount == 1
+    popup.insertItem( SmallIconSet( Amarok::icon( "edit" ) ), (itemCount == 1
             ? i18n( "&Edit Tag '%1'" )
             : i18n( "&Edit '%1' Tag for Selected Tracks" )).arg( tagName ), EDIT );
 
@@ -3873,31 +3873,31 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
                         .arg( KStringHandler::rsqueeze( tag, 30 ).replace( "&", "&&" ) ), FILL_DOWN );
 
     if( itemCount == 1 )
-        popup.insertItem( SmallIconSet( amaroK::icon( "editcopy" ) ), i18n( "&Copy Tags to Clipboard" ), COPY );
+        popup.insertItem( SmallIconSet( Amarok::icon( "editcopy" ) ), i18n( "&Copy Tags to Clipboard" ), COPY );
 
     popup.insertSeparator();
 
     KPopupMenu burnMenu;
-    burnMenu.insertItem( SmallIconSet( amaroK::icon( "burn" ) ), ( itemCount > 1 ) ? i18n( "Selected Tracks" ) : i18n("This Track" ), BURN_SELECTION );
+    burnMenu.insertItem( SmallIconSet( Amarok::icon( "burn" ) ), ( itemCount > 1 ) ? i18n( "Selected Tracks" ) : i18n("This Track" ), BURN_SELECTION );
     if ( !item->album().isEmpty() )
-        burnMenu.insertItem( SmallIconSet( amaroK::icon( "burn" ) ), i18n("This Album: %1").arg( item->album().string().replace( "&", "&&" ) ), BURN_ALBUM );
+        burnMenu.insertItem( SmallIconSet( Amarok::icon( "burn" ) ), i18n("This Album: %1").arg( item->album().string().replace( "&", "&&" ) ), BURN_ALBUM );
     if ( !item->artist().isEmpty() )
-        burnMenu.insertItem( SmallIconSet( amaroK::icon( "burn" ) ), i18n("All Tracks by %1").arg( item->artist().string().replace( "&", "&&" ) ), BURN_ARTIST );
-    popup.insertItem( SmallIconSet( amaroK::icon( "burn" ) ), i18n("Burn"), &burnMenu, BURN_MENU );
+        burnMenu.insertItem( SmallIconSet( Amarok::icon( "burn" ) ), i18n("All Tracks by %1").arg( item->artist().string().replace( "&", "&&" ) ), BURN_ARTIST );
+    popup.insertItem( SmallIconSet( Amarok::icon( "burn" ) ), i18n("Burn"), &burnMenu, BURN_MENU );
     popup.insertSeparator();
 
     if( itemCount > 1 )
     {
-        popup.insertItem( SmallIconSet( amaroK::icon( "playlist" ) ), i18n("Set as Playlist (Crop)"), CROP_PLAYLIST );
-        popup.insertItem( SmallIconSet( amaroK::icon( "save" ) ), i18n("Save as Playlist..."), SAVE_PLAYLIST );
+        popup.insertItem( SmallIconSet( Amarok::icon( "playlist" ) ), i18n("Set as Playlist (Crop)"), CROP_PLAYLIST );
+        popup.insertItem( SmallIconSet( Amarok::icon( "save" ) ), i18n("Save as Playlist..."), SAVE_PLAYLIST );
         popup.insertSeparator();
     }
 
-    popup.insertItem( SmallIconSet( amaroK::icon( "remove_from_playlist" ) ), i18n( "&Remove From Playlist" ), this, SLOT( removeSelectedItems() ), Key_Delete, REMOVE );
+    popup.insertItem( SmallIconSet( Amarok::icon( "remove_from_playlist" ) ), i18n( "&Remove From Playlist" ), this, SLOT( removeSelectedItems() ), Key_Delete, REMOVE );
 
     popup.insertSeparator();
 
-    popup.insertItem( SmallIconSet( amaroK::icon( "info" ) )
+    popup.insertItem( SmallIconSet( Amarok::icon( "info" ) )
         , item->url().isLocalFile() ?
               i18n( "Edit Track &Information...",  "Edit &Information for %n Tracks...", itemCount):
               i18n( "Track &Information...",  "&Information for %n Tracks...", itemCount)
@@ -3909,9 +3909,9 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
                 ? i18n("Organize File...", "Organize %n Files...", itemCount)
                 : i18n("Copy Track to Collection...", "Copy %n Tracks to Collection...", itemCount),
             ORGANIZE );
-    fileMenu.insertItem( SmallIconSet( amaroK::icon( "remove" ) ), i18n("Delete File...", "Delete %n Selected Files...", itemCount ), this, SLOT( deleteSelectedFiles() ), SHIFT+Key_Delete, DELETE );
+    fileMenu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n("Delete File...", "Delete %n Selected Files...", itemCount ), this, SLOT( deleteSelectedFiles() ), SHIFT+Key_Delete, DELETE );
 
-    popup.insertItem( SmallIconSet( amaroK::icon( "files" ) ), i18n("Manage Files"), &fileMenu, FILE_MENU );
+    popup.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n("Manage Files"), &fileMenu, FILE_MENU );
 
     popup.setItemEnabled( EDIT, canRename ); //only enable for columns that have editable tags
     popup.setItemEnabled( FILL_DOWN, canRename );
@@ -4092,8 +4092,8 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     case REPEAT:
         // FIXME HACK Accessing AmarokConfig::Enum* yields compile errors with GCC 3.3.
-        static_cast<KSelectAction*>( amaroK::actionCollection()->action( "repeat" ) )
-            ->setCurrentItem( amaroK::repeatTrack()
+        static_cast<KSelectAction*>( Amarok::actionCollection()->action( "repeat" ) )
+            ->setCurrentItem( Amarok::repeatTrack()
                               ? 0 /*AmarokConfig::EnumRepeat::Off*/
                               : 1 /*AmarokConfig::EnumRepeat::Track*/ );
         break;
@@ -4579,7 +4579,7 @@ Playlist::slotMouseButtonPressed( int button, QListViewItem *after, const QPoint
 
 void Playlist::slotContentsMoving()
 {
-    amaroK::ToolTip::hideTips();
+    Amarok::ToolTip::hideTips();
     QTimer::singleShot( 0, this, SLOT( contentsMouseMoveEvent() ) );
 }
 
@@ -4933,7 +4933,7 @@ TagWriter::completeJob()
     case true:
         // we write a space for some reason I cannot recall
         m_item->setExactText( m_tagType, m_oldTagString.isEmpty() ? " " : m_oldTagString );
-        amaroK::StatusBar::instance()->longMessage( i18n(
+        Amarok::StatusBar::instance()->longMessage( i18n(
                 "Sorry, the tag for %1 could not be changed." ).arg( m_item->url().fileName() ), KDE::StatusBar::Sorry );
         break;
 

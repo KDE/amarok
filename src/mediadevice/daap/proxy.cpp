@@ -23,17 +23,17 @@ using namespace Daap;
 
 //input url: daap://host:port/databaseId/music.ext
 /*
-        bundle->setUrl( amaroK::QStringx("http://%1:3689/databases/%2/items/%3.%4?%5").args(
+        bundle->setUrl( Amarok::QStringx("http://%1:3689/databases/%2/items/%3.%4?%5").args(
             QStringList() << m_host
                         << m_databaseId
-                        << QString::number( (*it).asMap()["miid"].asList()[0].asInt() ) 
+                        << QString::number( (*it).asMap()["miid"].asList()[0].asInt() )
                         << (*it).asMap()["asfm"].asList()[0].asString()
                         << m_loginString ) );
 
 */
 Proxy::Proxy(KURL stream, DaapClient* client, const char* name)
     : QObject(client, name)
-    , m_proxy( new amaroK::ProcIO() )
+    , m_proxy( new Amarok::ProcIO() )
 {
     DEBUG_BLOCK
     //find the request id and increment it

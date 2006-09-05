@@ -27,14 +27,14 @@
 #include "debug.h"
 #include "tooltip.h"
 
-class amaroK::ToolTip::Manager: public QObject
+class Amarok::ToolTip::Manager: public QObject
 {
 public:
     Manager( QObject *parent ): QObject( parent ) { qApp->installEventFilter( this ); }
     virtual ~Manager()
     {
-        for( int n = amaroK::ToolTip::s_tooltips.count() - 1; n >= 0; --n )
-            delete amaroK::ToolTip::s_tooltips[n];
+        for( int n = Amarok::ToolTip::s_tooltips.count() - 1; n >= 0; --n )
+            delete Amarok::ToolTip::s_tooltips[n];
     }
 
     bool eventFilter( QObject*, QEvent *e )
@@ -53,8 +53,8 @@ public:
             case QEvent::Enter:
             case QEvent::Leave:
             case QEvent::FocusOut:
-                if( !dynamic_cast<amaroK::ToolTip*>( qApp->widgetAt( QCursor::pos(), true ) ) )
-                    amaroK::ToolTip::hideTips();
+                if( !dynamic_cast<Amarok::ToolTip*>( qApp->widgetAt( QCursor::pos(), true ) ) )
+                    Amarok::ToolTip::hideTips();
             default: break;
         }
 
@@ -62,35 +62,35 @@ public:
     }
 };
 
-amaroK::ToolTip::Manager* amaroK::ToolTip::s_manager = 0;
-QPoint amaroK::ToolTip::s_pos;
-QRect amaroK::ToolTip::s_rect;
-QString amaroK::ToolTip::s_text;
-QValueList<amaroK::ToolTip*> amaroK::ToolTip::s_tooltips;
-int amaroK::ToolTip::s_hack = 0;
+Amarok::ToolTip::Manager* Amarok::ToolTip::s_manager = 0;
+QPoint Amarok::ToolTip::s_pos;
+QRect Amarok::ToolTip::s_rect;
+QString Amarok::ToolTip::s_text;
+QValueList<Amarok::ToolTip*> Amarok::ToolTip::s_tooltips;
+int Amarok::ToolTip::s_hack = 0;
 
-void amaroK::ToolTip::add( ToolTipClient *client, QWidget *parent ) //static
+void Amarok::ToolTip::add( ToolTipClient *client, QWidget *parent ) //static
 {
     if( !s_manager )
-        s_manager = new amaroK::ToolTip::Manager( qApp );
+        s_manager = new Amarok::ToolTip::Manager( qApp );
     new ToolTip( client, parent );
 }
 
-void amaroK::ToolTip::remove( QWidget *widget ) //static
+void Amarok::ToolTip::remove( QWidget *widget ) //static
 {
     for( int i = s_tooltips.count() - 1; i >= 0; --i )
         if( s_tooltips[i]->QToolTip::parentWidget() == widget )
             delete s_tooltips[i];
 }
 
-void amaroK::ToolTip::hideTips() //static
+void Amarok::ToolTip::hideTips() //static
 {
     for( int i = 0, n = s_tooltips.count(); i < n; ++i )
         s_tooltips[i]->hideTip();
     QToolTip::hide();
 }
 
-QString amaroK::ToolTip::textFor( QWidget *widget, const QPoint &pos ) //static
+QString Amarok::ToolTip::textFor( QWidget *widget, const QPoint &pos ) //static
 {
     for( int i = 0, n = s_tooltips.count(); i < n; ++i )
         if( s_tooltips[i]->QToolTip::parentWidget() == widget )
@@ -98,7 +98,7 @@ QString amaroK::ToolTip::textFor( QWidget *widget, const QPoint &pos ) //static
     return QToolTip::textFor( widget, pos );
 }
 
-void amaroK::ToolTip::updateTip() //static
+void Amarok::ToolTip::updateTip() //static
 {
     for( int i = 0, n = s_tooltips.count(); i < n; ++i )
         if( s_tooltips[i]->isVisible() )
@@ -116,7 +116,7 @@ void amaroK::ToolTip::updateTip() //static
         }
 }
 
-amaroK::ToolTip::ToolTip( ToolTipClient *client, QWidget *parent )
+Amarok::ToolTip::ToolTip( ToolTipClient *client, QWidget *parent )
     : QFrame( 0, 0, WStyle_Customize | WStyle_NoBorder | WStyle_Tool | WStyle_StaysOnTop | WX11BypassWM | WNoAutoErase ),
       QToolTip( parent ),
       m_client( client )
@@ -126,12 +126,12 @@ amaroK::ToolTip::ToolTip( ToolTipClient *client, QWidget *parent )
     connect( &m_timer, SIGNAL( timeout() ), this, SLOT( hideTip() ) );
 }
 
-amaroK::ToolTip::~ToolTip()
+Amarok::ToolTip::~ToolTip()
 {
     s_tooltips.remove( this );
 }
 
-void amaroK::ToolTip::maybeTip( const QPoint &pos )
+void Amarok::ToolTip::maybeTip( const QPoint &pos )
 {
     s_pos = QToolTip::parentWidget()->mapToGlobal( pos );
     QString prev = s_text;
@@ -148,7 +148,7 @@ void amaroK::ToolTip::maybeTip( const QPoint &pos )
         hideTips();
 }
 
-void amaroK::ToolTip::showTip()
+void Amarok::ToolTip::showTip()
 {
     m_timer.start( 15000, true );
     if( !isVisible() || sizeHint() != size() )
@@ -162,7 +162,7 @@ void amaroK::ToolTip::showTip()
         update();
 }
 
-void amaroK::ToolTip::hideTip()
+void Amarok::ToolTip::hideTip()
 {
     if( !isVisible() )
         return;
@@ -172,7 +172,7 @@ void amaroK::ToolTip::hideTip()
     s_hack = 0;
 }
 
-void amaroK::ToolTip::drawContents( QPainter *painter )
+void Amarok::ToolTip::drawContents( QPainter *painter )
 {
     QPixmap buf( width(), height() );
     QPainter p( &buf );
@@ -193,7 +193,7 @@ void amaroK::ToolTip::drawContents( QPainter *painter )
     painter->drawPixmap( 0, 0, buf );
 }
 
-QSize amaroK::ToolTip::sizeHint() const
+QSize Amarok::ToolTip::sizeHint() const
 {
     if( !s_rect.isNull() )
         return s_rect.size();
@@ -205,7 +205,7 @@ QSize amaroK::ToolTip::sizeHint() const
     }
 }
 
-void amaroK::ToolTip::position()
+void Amarok::ToolTip::position()
 {
     const QRect drect = QApplication::desktop()->availableGeometry( QToolTip::parentWidget() );
     const QSize size = sizeHint();

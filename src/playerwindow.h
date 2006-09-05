@@ -25,7 +25,7 @@
 
 #include "engineobserver.h" //baseclass
 
-namespace amaroK { class PrettySlider; }
+namespace Amarok { class PrettySlider; }
 class KAction;
 class MetaBundle;
 class PlayerWidget;
@@ -162,8 +162,8 @@ class PlayerWidget : public QWidget, public EngineObserver
         QLabel  *m_pDescription;
         QHBox   *m_pFrameButtons;
 
-        amaroK::PrettySlider *m_pSlider;
-        amaroK::PrettySlider *m_pVolSlider;
+        Amarok::PrettySlider *m_pSlider;
+        Amarok::PrettySlider *m_pVolSlider;
         QToolButton    *m_pButtonPlay;
         QToolButton    *m_pButtonPause;
 

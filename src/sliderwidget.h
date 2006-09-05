@@ -33,7 +33,7 @@
 class QPalette;
 class QTimer;
 
-namespace amaroK
+namespace Amarok
 {
     class Slider : public QSlider
     {
@@ -91,7 +91,7 @@ namespace amaroK
                 Pretty
             } SliderMode;
 
-            PrettySlider( Qt::Orientation orientation, SliderMode mode, 
+            PrettySlider( Qt::Orientation orientation, SliderMode mode,
                           QWidget *parent, uint max = 0 );
 
             virtual void newBundle( const MetaBundle &bundle );

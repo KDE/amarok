@@ -35,7 +35,7 @@ class HostList;
 class HostListItem;
 class NmmLocation;
 
-class NmmConfigDialog : public amaroK::PluginConfig
+class NmmConfigDialog : public Amarok::PluginConfig
 {
   Q_OBJECT
 
@@ -85,7 +85,7 @@ class NmmConfigDialog : public amaroK::PluginConfig
 
     /**
      * Called when user host list gets modified.
-     * So either a host entry has been deleted/added 
+     * So either a host entry has been deleted/added
      * or the audio/video toggle has changed.
      */
     void hostListModified();

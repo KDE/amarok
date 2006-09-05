@@ -282,7 +282,7 @@ OSDWidget::render( const uint M, const QSize &size )
             QImage shadow;
             const uint shadowSize = static_cast<uint>( m_scaledCover.width() / 100.0 * 6.0 );
 
-            const QString folder = amaroK::saveLocation( "covershadow-cache/" );
+            const QString folder = Amarok::saveLocation( "covershadow-cache/" );
             const QString file = QString( "shadow_albumcover%1x%2.png" ).arg( m_scaledCover.width()  + shadowSize )
                                                                         .arg( m_scaledCover.height() + shadowSize );
             if ( QFile::exists( folder + file ) )
@@ -312,7 +312,7 @@ OSDWidget::render( const uint M, const QSize &size )
 
     if( useMoodbar() )
     {
-        QPixmap moodbar 
+        QPixmap moodbar
           = m_moodbarBundle.moodbar().draw( rect.width(), MOODBAR_HEIGHT );
         QRect r( rect );
         r.setTop( rect.bottom() - moodbar.height()
@@ -410,11 +410,11 @@ OSDWidget::setScreen( int screen )
     m_screen = (screen >= n) ? n-1 : screen;
 }
 
-bool 
+bool
 OSDWidget::useMoodbar( void )
 {
   return (m_moodbarBundle.moodbar().state() == Moodbar::Loaded  &&
-          AmarokConfig::showMoodbar() );   
+          AmarokConfig::showMoodbar() );
 }
 
 //////  OSDPreviewWidget below /////////////////////
@@ -423,7 +423,7 @@ OSDWidget::useMoodbar( void )
 #include <kiconloader.h>
 #include <klocale.h>
 
-namespace amaroK
+namespace Amarok
 {
     QImage icon() { return QImage( KIconLoader().iconPath( "amarok", -KIcon::SizeHuge ) ); }
 }
@@ -434,7 +434,7 @@ OSDPreviewWidget::OSDPreviewWidget( QWidget *parent )
 {
     m_text = i18n( "OSD Preview - drag to reposition" );
     m_duration = 0;
-    m_cover = amaroK::icon();
+    m_cover = Amarok::icon();
 }
 
 void OSDPreviewWidget::mousePressEvent( QMouseEvent *event )
@@ -516,13 +516,13 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 
 
 
-//////  amaroK::OSD below /////////////////////
+//////  Amarok::OSD below /////////////////////
 
 #include "enginecontroller.h"
 #include "metabundle.h"
 #include <qregexp.h>
 
-amaroK::OSD::OSD(): OSDWidget( 0 )
+Amarok::OSD::OSD(): OSDWidget( 0 )
 {
     connect( CollectionDB::instance(), SIGNAL( coverChanged( const QString&, const QString& ) ),
              this,                   SLOT( slotCoverChanged( const QString&, const QString& ) ) );
@@ -542,7 +542,7 @@ class MyVector: public QValueVector<T> //QValueVector doesn't have operator<<, w
 };
 
 void
-amaroK::OSD::show( const MetaBundle &bundle ) //slot
+Amarok::OSD::show( const MetaBundle &bundle ) //slot
 {
     QString text = "";
     if( bundle.url().isEmpty() )
@@ -628,7 +628,7 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
                 location = CollectionDB::instance()->albumImage( bundle, false, 0 );
 
             if ( location.find( "nocover" ) != -1 )
-                setImage( amaroK::icon() );
+                setImage( Amarok::icon() );
             else
                 setImage( location );
         }
@@ -649,7 +649,7 @@ amaroK::OSD::show( const MetaBundle &bundle ) //slot
 }
 
 void
-amaroK::OSD::applySettings()
+Amarok::OSD::applySettings()
 {
     setAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) );
     setDuration( AmarokConfig::osdDuration() );
@@ -669,7 +669,7 @@ amaroK::OSD::applySettings()
 }
 
 void
-amaroK::OSD::forceToggleOSD()
+Amarok::OSD::forceToggleOSD()
 {
     if ( !isShown() ) {
         const bool b = isEnabled();
@@ -682,7 +682,7 @@ amaroK::OSD::forceToggleOSD()
 }
 
 void
-amaroK::OSD::slotCoverChanged( const QString &artist, const QString &album )
+Amarok::OSD::slotCoverChanged( const QString &artist, const QString &album )
 {
     if( AmarokConfig::osdCover() && artist == EngineController::instance()->bundle().artist()
                                  && album  == EngineController::instance()->bundle().album()  )
@@ -690,14 +690,14 @@ amaroK::OSD::slotCoverChanged( const QString &artist, const QString &album )
         QString location = CollectionDB::instance()->albumImage( artist, album, false, 0 );
 
         if( location.find( "nocover" ) != -1 )
-            setImage( amaroK::icon() );
+            setImage( Amarok::icon() );
         else
             setImage( location );
     }
 }
 
 void
-amaroK::OSD::slotImageChanged( const QString &remoteURL )
+Amarok::OSD::slotImageChanged( const QString &remoteURL )
 {
     QString url = EngineController::instance()->bundle().url().url();
     PodcastEpisodeBundle peb;
@@ -710,7 +710,7 @@ amaroK::OSD::slotImageChanged( const QString &remoteURL )
             {
                 QString location = CollectionDB::instance()->podcastImage( remoteURL, false, 0 );
                 if( location == CollectionDB::instance()->notAvailCover( false, 0 ) )
-                    setImage( amaroK::icon() );
+                    setImage( Amarok::icon() );
                 else
                     setImage( location );
             }

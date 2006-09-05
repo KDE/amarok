@@ -45,7 +45,7 @@ AMAROK_EXPORT_PLUGIN( IfpMediaDevice )
 #include <qcstring.h>
 #include <qregexp.h>
 
-namespace amaroK {
+namespace Amarok {
     extern KConfig *config( const QString& );
     extern QString cleanPath( const QString&, bool );
 }
@@ -167,7 +167,7 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     if( m_dh == NULL )
     {
         error() << "A suitable iRiver iFP device couldn't be found" << endl;
-        amaroK::StatusBar::instance()->shortLongMessage( genericError,
+        Amarok::StatusBar::instance()->shortLongMessage( genericError,
                                         i18n("iFP: A suitable iRiver iFP device could not be found")
                                         , KDE::StatusBar::Error );
         return false;
@@ -177,7 +177,7 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     if( m_dev == NULL )
     {
         error() << "Could not get usb_device()" << endl;
-        amaroK::StatusBar::instance()->shortLongMessage( genericError,
+        Amarok::StatusBar::instance()->shortLongMessage( genericError,
                                         i18n("iFP: Could not get a usb device handle"), KDE::StatusBar::Error );
         if( ifp_release_device( m_dh ) )
             error() << "warning: release_device failed." << endl;
@@ -188,7 +188,7 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     if( usb_claim_interface( m_dh, m_dev->config->interface->altsetting->bInterfaceNumber ) )
     {
         error() << "Device is busy.  (I was unable to claim its interface.)" << endl;
-        amaroK::StatusBar::instance()->shortLongMessage( genericError,
+        Amarok::StatusBar::instance()->shortLongMessage( genericError,
                                         i18n("iFP: Device is busy"), KDE::StatusBar::Error );
         if( ifp_release_device( m_dh ) )
             error() << "warning: release_device failed." << endl;
@@ -199,7 +199,7 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     if( i )
     {
         error() << "iFP device: Device cannot be opened." << endl;
-        amaroK::StatusBar::instance()->shortLongMessage( genericError,
+        Amarok::StatusBar::instance()->shortLongMessage( genericError,
                                         i18n("iFP: Could not open device"), KDE::StatusBar::Error );
         usb_release_interface( m_dh, m_dev->config->interface->altsetting->bInterfaceNumber );
         return false;
@@ -451,7 +451,7 @@ IfpMediaDevice::downloadTrack( const QCString& src, const QCString& dest )
 void
 IfpMediaDevice::downloadSelectedItems()
 {
-//     KConfig *config = amaroK::config( "MediaDevice" );
+//     KConfig *config = Amarok::config( "MediaDevice" );
 //     QString save = config->readEntry( "DownloadLocation", QString::null );  //restore the save directory
     QString save = QString::null;
 
@@ -650,11 +650,11 @@ IfpMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
     if ( item )
     {
         KPopupMenu menu( m_view );
-        menu.insertItem( SmallIconSet( amaroK::icon( "collection" ) ), i18n( "Download" ), DOWNLOAD );
+        menu.insertItem( SmallIconSet( Amarok::icon( "collection" ) ), i18n( "Download" ), DOWNLOAD );
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet( amaroK::icon( "folder" ) ), i18n("Add Directory" ), DIRECTORY );
-        menu.insertItem( SmallIconSet( amaroK::icon( "edit" ) ), i18n( "Rename" ), RENAME );
-        menu.insertItem( SmallIconSet( amaroK::icon( "remove" ) ), i18n( "Delete" ), DELETE );
+        menu.insertItem( SmallIconSet( Amarok::icon( "folder" ) ), i18n("Add Directory" ), DIRECTORY );
+        menu.insertItem( SmallIconSet( Amarok::icon( "edit" ) ), i18n( "Rename" ), RENAME );
+        menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n( "Delete" ), DELETE );
 
         int id =  menu.exec( point );
         switch( id )
@@ -684,7 +684,7 @@ IfpMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
     if( isConnected() )
     {
         KPopupMenu menu( m_view );
-        menu.insertItem( SmallIconSet( amaroK::icon( "folder" ) ), i18n("Add Directory" ), DIRECTORY );
+        menu.insertItem( SmallIconSet( Amarok::icon( "folder" ) ), i18n("Add Directory" ), DIRECTORY );
         int id =  menu.exec( point );
         switch( id )
         {
@@ -697,7 +697,7 @@ IfpMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
 
 QString IfpMediaDevice::cleanPath( const QString &component )
 {
-    QString result = amaroK::cleanPath( component, true );
+    QString result = Amarok::cleanPath( component, true );
 
     result.simplifyWhiteSpace();
 

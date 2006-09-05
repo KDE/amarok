@@ -271,7 +271,7 @@ QueueManager::QueueManager( QWidget *parent, const char *name )
     m_down   = new KPushButton( KGuiItem( QString::null, "down" ), buttonBox );
     m_remove = new KPushButton( KGuiItem( QString::null, "edit_remove" ), buttonBox );
     m_add    = new KPushButton( KGuiItem( QString::null, "edit_add" ), buttonBox );
-    m_clear  = new KPushButton( KGuiItem( QString::null, amaroK::icon( "playlist_clear" ) ), buttonBox );
+    m_clear  = new KPushButton( KGuiItem( QString::null, Amarok::icon( "playlist_clear" ) ), buttonBox );
 
     QToolTip::add( m_up,     i18n( "Move up" ) );
     QToolTip::add( m_down,   i18n( "Move down" ) );

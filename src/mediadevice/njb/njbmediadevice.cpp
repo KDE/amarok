@@ -55,7 +55,7 @@ AMAROK_EXPORT_PLUGIN( NjbMediaDevice )
 #include <time.h>
 #include <unistd.h>
 
-namespace amaroK { extern KConfig *config( const QString& ); }
+namespace Amarok { extern KConfig *config( const QString& ); }
 njb_t *NjbMediaDevice::m_njb = 0;
 // This function has NOT handled the request, so other functions may be called
 // upon to do so
@@ -189,7 +189,7 @@ bool
 NjbMediaDevice::openDevice(bool)
 {
     DEBUG_BLOCK
-    
+
 
     if( m_njb )
         return true;
@@ -199,7 +199,7 @@ NjbMediaDevice::openDevice(bool)
     int n;
     if( NJB_Discover( njbs, 0, &n) == -1 || n == 0 )
     {
-        amaroK::StatusBar::instance()->shortLongMessage( genericError, i18n("A suitable Nomad device could not be found"), KDE::StatusBar::Error );
+        Amarok::StatusBar::instance()->shortLongMessage( genericError, i18n("A suitable Nomad device could not be found"), KDE::StatusBar::Error );
         debug() << ": no NJBs found\n";
 
         return false;
@@ -209,12 +209,12 @@ NjbMediaDevice::openDevice(bool)
 
     if( NJB_Open( m_njb ) == -1 )
     {
-        amaroK::StatusBar::instance()->shortLongMessage( genericError, i18n("Nomad device could not be opened"), KDE::StatusBar::Error );
+        Amarok::StatusBar::instance()->shortLongMessage( genericError, i18n("Nomad device could not be opened"), KDE::StatusBar::Error );
 
 
         return false;
     }
-    
+
     QString deviceName = NJB_Get_Device_Name( m_njb, 1 );
     QString owner = NJB_Get_Owner_String( m_njb );
     m_name = deviceName + " (Owned by " + owner + ")";
@@ -300,7 +300,7 @@ NjbMediaDevice::deleteItemFromDevice(MediaItem* item, int flags )
         default:
             result = 0;
     }
-    
+
     return result;
 }
 
@@ -312,7 +312,7 @@ NjbMediaDevice::deleteTrack(NjbMediaItem *trackItem)
     if( status != NJB_SUCCESS)
     {
         debug() << ": NJB_Delete_Track failed" << endl;
-        amaroK::StatusBar::instance()->shortLongMessage( i18n( "Deleting failed" ), i18n( "Deleting track(s) failed." ), KDE::StatusBar::Error );
+        Amarok::StatusBar::instance()->shortLongMessage( i18n( "Deleting failed" ), i18n( "Deleting track(s) failed." ), KDE::StatusBar::Error );
         return -1;
     }
 
@@ -353,7 +353,7 @@ NjbMediaDevice::downloadSelectedItems()
         if( it->type() == MediaItem::TRACK )
         {
             dynamic_cast<MediaBrowser *>( parent() )->queue()->addURL(path, dynamic_cast<MediaItem *>(it) );
-            
+
         }
     }
     return result;
@@ -425,7 +425,7 @@ NjbMediaDevice::copyTrackToDevice(const MetaBundle& bundle)
         m_errMsg = i18n( "Not a valid mp3 file");
         return 0;
     }
-    MetaBundle temp( bundle ); 
+    MetaBundle temp( bundle );
 
     NjbTrack *taggedTrack = new NjbTrack();
 
@@ -478,7 +478,7 @@ NjbMediaDevice::copyTrackFromDevice( MediaItem *item )
             break;
 
     NjbTrack *track((*it));
-    
+
     QString filename = item->bundle()->directory() + track->bundle()->filename();
     if( NJB_Get_Track( m_njb, track->id(), track->bundle()->filesize(), filename.utf8(), progressCallback, this)
         != NJB_SUCCESS )
@@ -493,7 +493,7 @@ NjbMediaDevice::copyTrackFromDevice( MediaItem *item )
         else
             debug() << "No reason to report for failure" << endl;
     }
-}        
+}
 
 MediaItem*
 NjbMediaDevice::newPlaylist(const QString& name, MediaItem* parent, QPtrList< MediaItem > items)
@@ -622,11 +622,11 @@ NjbMediaDevice::rmbPressed(QListViewItem* qitem, const QPoint& point, int )
     if ( item )
     {
         KPopupMenu menu( m_view);
-        menu.insertItem( SmallIconSet( amaroK::icon( "collection" ) ), i18n("Download file"), DOWNLOAD );
-        menu.insertItem( SmallIconSet( amaroK::icon( "collection" ) ), i18n("Download to collection"), DOWNLOAD_TO_COLLECTION );
+        menu.insertItem( SmallIconSet( Amarok::icon( "collection" ) ), i18n("Download file"), DOWNLOAD );
+        menu.insertItem( SmallIconSet( Amarok::icon( "collection" ) ), i18n("Download to collection"), DOWNLOAD_TO_COLLECTION );
         menu.insertSeparator();
-        //menu.insertItem( SmallIconSet( amaroK::icon( "edit" ) ), i18n( "Rename" ), RENAME );
-        menu.insertItem( SmallIconSet( amaroK::icon( "remove" ) ), i18n( "Delete from device" ), DELETE );
+        //menu.insertItem( SmallIconSet( Amarok::icon( "edit" ) ), i18n( "Rename" ), RENAME );
+        menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n( "Delete from device" ), DELETE );
 
 
         int id =  menu.exec( point );
@@ -636,7 +636,7 @@ NjbMediaDevice::rmbPressed(QListViewItem* qitem, const QPoint& point, int )
         {
         case DOWNLOAD:
             downloadSelectedItems();
-            
+
             break;
 
         case RENAME:
@@ -720,7 +720,7 @@ NjbMediaDevice::readJukeboxMusic( void)
         m_playlistItem->setType( MediaItem::PLAYLISTSROOT );*/
 
         kapp->processEvents( 100 );
-         
+
         for( trackValueList::iterator it = trackList.begin(); it != trackList.end(); it++ )
         {
             if( m_view->findItem( ((*it)->bundle()->artist().string()), 0 ) == 0 )
@@ -870,7 +870,7 @@ NjbMediaDevice::customClicked()
     QString powerStatus;
     QString batteryLevel;
     QString batteryCharging;
-    
+
     if( m_connected )
     {
         NJB_Set_Unicode( NJB_UC_UTF8 ); // I assume that UTF-8 is fine with everyone...
@@ -889,6 +889,6 @@ NjbMediaDevice::customClicked()
     {
         Information = i18n("Player not connected");
     }
-    
+
     KMessageBox::information(0, Information, i18n("Device information") );
-}    
+}

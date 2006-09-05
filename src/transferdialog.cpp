@@ -1,5 +1,5 @@
 //
-// C++ Implementation: transferdialog 
+// C++ Implementation: transferdialog
 //
 // Description:
 //
@@ -28,7 +28,7 @@
 #include <kpushbutton.h>
 
 TransferDialog::TransferDialog( MediaDevice *mdev )
-        : KDialogBase( amaroK::mainWindow(), "transferdialog", true, QString::null, Ok|Cancel, Ok )
+        : KDialogBase( Amarok::mainWindow(), "transferdialog", true, QString::null, Ok|Cancel, Ok )
 {
     m_dev = mdev;
     m_accepted = false;
@@ -62,7 +62,7 @@ TransferDialog::TransferDialog( MediaDevice *mdev )
     m_sort1  = new KComboBox( sorting );
     m_label2 = new QLabel( i18n( "Select second grouping:\n" ), sorting );
     m_sort2  = new KComboBox( sorting );
-    m_label3 = new QLabel( i18n( "Select third grouping:\n" ), sorting ); 
+    m_label3 = new QLabel( i18n( "Select third grouping:\n" ), sorting );
     m_sort3  = new KComboBox( sorting );
 
     m_combolist = new QPtrList<KComboBox>();

@@ -46,7 +46,7 @@ email                : markey@web.de
 #include <kwin.h>            //eventFilter()
 
 //simple function for fetching amarok images
-namespace amaroK
+namespace Amarok
 {
     //TODO remove these, they suck, do a generic getImage
 
@@ -65,7 +65,7 @@ namespace amaroK
     }
 }
 
-using amaroK::getPNG;
+using Amarok::getPNG;
 
 
 //fairly pointless template which was designed to make the ctor clearer,
@@ -120,7 +120,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
         //NOTE we use a layout for the buttons so resizing will be possible
         m_pFrameButtons = createWidget<QHBox>( QRect(0, 118, 311, 22), this );
 
-        KActionCollection *ac =amaroK::actionCollection();
+        KActionCollection *ac =Amarok::actionCollection();
 
         //FIXME change the names of the icons to reflect kde names so we can fall back to them if necessary
                          new NavButton( m_pFrameButtons, "prev", ac->action( "prev" ) );
@@ -140,11 +140,11 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
     } //</NavButtons>
 
     { //<Sliders>
-        m_pSlider    = new amaroK::PrettySlider( Qt::Horizontal, 
-                                                 amaroK::PrettySlider::Pretty, this );
-        m_pVolSlider = new amaroK::PrettySlider( Qt::Vertical, 
-                                                 amaroK::PrettySlider::Pretty, this, 
-                                                 amaroK::VOLUME_MAX );
+        m_pSlider    = new Amarok::PrettySlider( Qt::Horizontal,
+                                                 Amarok::PrettySlider::Pretty, this );
+        m_pVolSlider = new Amarok::PrettySlider( Qt::Vertical,
+                                                 Amarok::PrettySlider::Pretty, this,
+                                                 Amarok::VOLUME_MAX );
 
         m_pSlider->setGeometry( 4,103, 303, 12 );
         m_pVolSlider->setGeometry( 294,18, 12,79 );
@@ -263,7 +263,7 @@ void PlayerWidget::setScroll( const QStringList &list )
     {
         p.drawText( x, baseline, *it );
         x += fm.width( *it );
-        p.fillRect( x + 8, separatorYPos, 4, 4, amaroK::ColorScheme::Foreground );
+        p.fillRect( x + 8, separatorYPos, 4, 4, Amarok::ColorScheme::Foreground );
         x += separatorWidth;
     }
 
@@ -433,7 +433,7 @@ void PlayerWidget::determineAmarokColors() //static
         : KGlobalSettings::highlightColor()
       ).getHsv( &hue, &s, &v );
 
-    using namespace amaroK::ColorScheme;
+    using namespace Amarok::ColorScheme;
 
     Text       = Qt::white;
     Background = comodulate( hue, 0x002090 );
@@ -450,15 +450,15 @@ void PlayerWidget::determineAmarokColors() //static
            hue = h;
     }
 
-    Base = comodulate( hue, amaroK::blue );
+    Base = comodulate( hue, Amarok::blue );
 }
 
 void PlayerWidget::setModifiedPalette()
 {
     QPalette p = QApplication::palette();
     QColorGroup cg = p.active();
-    cg.setColor( QColorGroup::Background, amaroK::ColorScheme::Base );
-    cg.setColor( QColorGroup::Foreground, amaroK::ColorScheme::Text );
+    cg.setColor( QColorGroup::Background, Amarok::ColorScheme::Base );
+    cg.setColor( QColorGroup::Foreground, Amarok::ColorScheme::Text );
     setPalette( QPalette(cg, p.disabled(), cg) );
 }
 
@@ -476,7 +476,7 @@ void PlayerWidget::applySettings()
     //update the scroller
     switch( EngineController::engine()->state() ) {
     case Engine::Empty:
-        m_scrollTextPixmap.fill( amaroK::ColorScheme::Base );
+        m_scrollTextPixmap.fill( Amarok::ColorScheme::Base );
         update();
         break;
     default:
@@ -534,7 +534,7 @@ bool PlayerWidget::event( QEvent *e )
     case QEvent::Drop:
     case QEvent::Close:
 
-        amaroK::genericEventHandler( this, e );
+        Amarok::genericEventHandler( this, e );
         return true; //we handled it
 
     case QEvent::ApplicationPaletteChange:
@@ -757,7 +757,7 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
 {
     if ( e->button() == QMouseEvent::RightButton )
     {
-        amaroK::Menu::instance()->exec( e->globalPos() );
+        Amarok::Menu::instance()->exec( e->globalPos() );
     }
     else if ( m_pAnalyzer->geometry().contains( e->pos() ) )
     {

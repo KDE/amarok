@@ -11,7 +11,7 @@
 #include <qstringlist.h>
 #include <qmap.h>
 
-namespace amaroK
+namespace Amarok
 {
 
 class QStringx : public QString
@@ -24,12 +24,12 @@ public:
     QStringx( const QChar* unicode, uint length ) : QString( unicode, length ) {};
     QStringx( const char* str ) : QString( str ) {};
     virtual ~QStringx() {};
-    
+
     // the numbers following % obviously are not taken into account
     QString args( const QStringList& args ) const
     {
         const QStringList text = QStringList::split( QRegExp( "%\\d+" ), *this, true );
-        
+
         QValueListConstIterator<QString> itrText = text.begin();
         QValueListConstIterator<QString> itrArgs = args.begin();
         QString merged = (*itrText);
@@ -40,9 +40,9 @@ public:
             ++itrText;
             ++itrArgs;
         }
-        
+
         Q_ASSERT( itrText == text.end() && itrArgs == args.end() );
-        
+
         return merged;
     }
 
@@ -65,7 +65,7 @@ public:
                 result += args[p];
             else if( opt )
                 return QString();
-            
+
             start = pos + len;
         }
         result += mid( start );
@@ -92,7 +92,7 @@ public:
 
             result += QStringx(mid( start, pos-start )).namedArgs( args );
             result += opt.namedArgs( args, true );
-            
+
             start = pos + len;
         }
         result += QStringx( mid( start ) ).namedArgs( args );
@@ -101,6 +101,6 @@ public:
     }
 };
 
-} // namespace amaroK
+} // namespace Amarok
 
 #endif // AMAROK_QSTRINGX_H

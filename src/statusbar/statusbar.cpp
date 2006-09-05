@@ -44,10 +44,10 @@
 #include "selectLabel.moc"
 
 
-namespace amaroK {
+namespace Amarok {
 
 
-KAction *action( const char *name ) { return amaroK::actionCollection()->action( name ); }
+KAction *action( const char *name ) { return Amarok::actionCollection()->action( name ); }
 
 //TODO disable hide statusbar? or show when required? that sucks though.
 
@@ -71,7 +71,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     QWidget *positionBox = new QWidget( this, "positionBox" );
     QBoxLayout *box = new QHBoxLayout( positionBox, 1, 3 );
 
-    m_slider = new amaroK::PrettySlider( Qt::Horizontal, amaroK::PrettySlider::Normal,
+    m_slider = new Amarok::PrettySlider( Qt::Horizontal, Amarok::PrettySlider::Normal,
 					 positionBox );
     m_timeLabel = new TimeLabel( positionBox );
     m_slider->setMinimumWidth( m_timeLabel->width() );
@@ -81,8 +81,8 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     QBoxLayout *layout = new QHBoxLayout( hbox, 0, 2 );
     layout->addSpacing( 3 );
     layout->addWidget( m_queueLabel = new QueueLabel( hbox ) );
-    layout->addWidget( new SelectLabel( static_cast<amaroK::SelectAction*>( amaroK::action( "repeat" ) ), hbox ) );
-    layout->addWidget( new SelectLabel( static_cast<amaroK::SelectAction*>( amaroK::action( "random_mode" ) ), hbox ) );
+    layout->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( Amarok::action( "repeat" ) ), hbox ) );
+    layout->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( Amarok::action( "random_mode" ) ), hbox ) );
     layout->addSpacing( 3 );
 
     //TODO reimplement insertChild() instead
@@ -310,6 +310,6 @@ MessageQueue::sendMessages()
      }
 }
 
-} //namespace amaroK
+} //namespace Amarok
 
 #include "statusbar.moc"

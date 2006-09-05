@@ -24,7 +24,7 @@
 #include "amarokdcopiface.h"
 class AmarokConfig;
 
-namespace amaroK
+namespace Amarok
 {
 
 class DcopPlayerHandler : public QObject, virtual public AmarokPlayerInterface
@@ -249,6 +249,6 @@ class DcopMediaBrowserHandler : public QObject, virtual public AmarokMediaBrowse
       virtual void transcodingFinished( QString src, QString dest );
 };
 
-} // namespace amaroK
+} // namespace Amarok
 
 #endif

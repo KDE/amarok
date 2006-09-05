@@ -15,20 +15,20 @@
 
 #include <qcanvas.h>
 #include <qlayout.h>
- 
+
 #include <qsocketnotifier.h>
 #include <qtextstream.h>
 
 
 static const char description[] =
-    I18N_NOOP("An amaroK Equalizer using a line graph");
+    I18N_NOOP("An Amarok Equalizer using a line graph");
 
 static const char version[] = "0.5";
 
 int main(int argc, char **argv)
 {
     KAboutData about("Graph Equalizer", I18N_NOOP("Graph Equalizer"), version, description,
-		     KAboutData::License_GPL, "(C) 2005 Ian Monroe", 0, 0, "ian@monroe.nu");
+             KAboutData::License_GPL, "(C) 2005 Ian Monroe", 0, 0, "ian@monroe.nu");
     about.addAuthor( "Ian Monroe", 0, "ian@monroe.nu" );
     KCmdLineArgs::init( argc, argv, &about );
     KApplication app;

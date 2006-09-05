@@ -28,7 +28,7 @@ QString OrganizeCollectionDialog::buildDestination( const QString &format, const
     albumartist = cleanPath( albumartist );
     for( int i = 0; i < MetaBundle::NUM_COLUMNS; i++ )
     {
-        if( i == MetaBundle::Score || i == MetaBundle::PlayCount 
+        if( i == MetaBundle::Score || i == MetaBundle::PlayCount
             || i == MetaBundle::LastPlayed || i == MetaBundle::Mood )
             continue;
         args[mb.exactColumnName( i ).lower()] = cleanPath( mb.prettyText( i ) );
@@ -43,7 +43,7 @@ QString OrganizeCollectionDialog::buildDestination( const QString &format, const
         track.sprintf( "%02d", mb.track() );
     args["track"] = track;
 
-    amaroK::QStringx formatx( format );
+    Amarok::QStringx formatx( format );
     QString result = formatx.namedOptArgs( args );
     if( result.startsWith( folderCombo->currentText() ) )
     {
@@ -137,7 +137,7 @@ QString OrganizeCollectionDialog::cleanPath( const QString &component ) const
 
     if( asciiCheck->isChecked() )
     {
-        result = amaroK::cleanPath(result, true /* replaces weird stuff by '_' */);
+        result = Amarok::cleanPath(result, true /* replaces weird stuff by '_' */);
     }
 
     if( !regexpEdit->text().isEmpty() )
@@ -147,7 +147,7 @@ QString OrganizeCollectionDialog::cleanPath( const QString &component ) const
     if( spaceCheck->isChecked() )
         result.replace( QRegExp( "\\s" ), "_" );
     if( vfatCheck->isChecked() )
-        result = amaroK::vfatPath( result );
+        result = Amarok::vfatPath( result );
 
     result.replace( "/", "-" );
 
@@ -212,5 +212,5 @@ void OrganizeCollectionDialog::init()
     detailed = true;
 
     formatHelp->setText( QString( "<a href='whatsthis:%1'>%2</a>" ).
-            arg( amaroK::escapeHTMLAttr( buildFormatTip() ), i18n( "(Help)" ) ) );
+            arg( Amarok::escapeHTMLAttr( buildFormatTip() ), i18n( "(Help)" ) ) );
 }

@@ -7,7 +7,7 @@
 #include <qstring.h>
 
 #include <kurl.h> // recursiveUrlExpand
-#include <kprocio.h> //amaroK::ProcIO
+#include <kprocio.h> //Amarok::ProcIO
 
 #include "amarok_export.h"
 
@@ -22,7 +22,7 @@ class QWidget;
 class DynamicMode;
 namespace KIO { class Job; }
 
-namespace amaroK
+namespace Amarok
 {
     const int VOLUME_MAX = 100;
     const int SCOPE_SIZE = 9; //= 2**9 = 512
@@ -35,10 +35,10 @@ namespace amaroK
     namespace ColorScheme
     {
         ///eg. base of the Amarok Player-window
-        extern QColor Base; //amaroK::blue
+        extern QColor Base; //Amarok::blue
         ///eg. text in the Amarok Player-window
         extern QColor Text; //Qt::white
-        ///eg. background colour for amaroK::PrettySliders
+        ///eg. background colour for Amarok::PrettySliders
         extern QColor Background; //brighter blue
         ///eg. outline of slider widgets in Player-window
         extern QColor Foreground; //lighter blue
@@ -237,11 +237,11 @@ namespace amaroK
     QString proxyForProtocol(const QString& protocol);
 
     ////////////////////////////////////////////////////////////////////////////////
-    // class amaroK::ProcIO
+    // class Amarok::ProcIO
     ////////////////////////////////////////////////////////////////////////////////
     /**
     * Due to xine-lib, we have to make KProcess close all fds, otherwise we get "device is busy" messages
-    * Used by amaroK::ProcIO and AmaroKProcess, exploiting commSetupDoneC(), a virtual method that
+    * Used by Amarok::ProcIO and AmaroKProcess, exploiting commSetupDoneC(), a virtual method that
     * happens to be called in the forked process
     * See bug #103750 for more information.
     */
@@ -250,7 +250,7 @@ namespace amaroK
         ProcIO(); // ctor sets the textcodec to UTF-8, in scriptmanager.cpp
         virtual int commSetupDoneC() {
             const int i = KProcIO::commSetupDoneC();
-            amaroK::closeOpenFiles( KProcIO::out[0],KProcIO::in[0],KProcIO::err[0] );
+            Amarok::closeOpenFiles( KProcIO::out[0],KProcIO::in[0],KProcIO::err[0] );
             return i;
         };
     };
@@ -268,7 +268,7 @@ namespace amaroK
         Process( QObject *parent = 0 ) : KProcess( parent ) {}
         virtual int commSetupDoneC() {
             const int i = KProcess::commSetupDoneC();
-            amaroK::closeOpenFiles(KProcess::out[0],KProcess::in[0], KProcess::err[0]);
+            Amarok::closeOpenFiles(KProcess::out[0],KProcess::in[0], KProcess::err[0]);
             return i;
         };
     };

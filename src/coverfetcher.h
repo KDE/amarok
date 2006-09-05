@@ -10,7 +10,7 @@
 #include <qobject.h>      //baseclass
 #include <qstringlist.h>  //stack allocated
 
-namespace amaroK {
+namespace Amarok {
     void coverContextMenu(  QWidget *parent, QPoint point, const QString &artist, const QString &album, bool showCoverManager = true );
 }
 

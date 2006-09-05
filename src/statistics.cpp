@@ -277,14 +277,14 @@ StatisticsList::renderView()
         firstPlay.setTime_t( a[0].toUInt() );
 
     m_newestItem = new StatisticsItem( i18n("Newest Items"), this, m_genreItem );
-    m_newestItem->setSubtext( i18n("Listening since %1").arg( amaroK::verboseTimeSince( firstPlay ) ) );
+    m_newestItem->setSubtext( i18n("Listening since %1").arg( Amarok::verboseTimeSince( firstPlay ) ) );
 
-    m_trackItem     ->setIcon( amaroK::icon("track") );
-    m_mostplayedItem->setIcon( amaroK::icon("mostplayed") );
-    m_artistItem    ->setIcon( amaroK::icon("artist") );
-    m_albumItem     ->setIcon( amaroK::icon("album") );
-    m_genreItem     ->setIcon( amaroK::icon("favourite_genres") );
-    m_newestItem    ->setIcon( amaroK::icon("clock") );
+    m_trackItem     ->setIcon( Amarok::icon("track") );
+    m_mostplayedItem->setIcon( Amarok::icon("mostplayed") );
+    m_artistItem    ->setIcon( Amarok::icon("artist") );
+    m_albumItem     ->setIcon( Amarok::icon("album") );
+    m_genreItem     ->setIcon( Amarok::icon("favourite_genres") );
+    m_newestItem    ->setIcon( Amarok::icon("clock") );
 }
 
 void
@@ -553,7 +553,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
                     newest[i+1].isEmpty() ? i18n( "Unknown" ) : newest[i+1] );
             QDateTime added = QDateTime();
             added.setTime_t( newest[i+4].toUInt() );
-            QString subtext = i18n("Added: %1").arg( amaroK::verboseTimeSince( added ) );
+            QString subtext = i18n("Added: %1").arg( Amarok::verboseTimeSince( added ) );
             m_last = new StatisticsDetailedItem( name, subtext, item, m_last );
             m_last->setItemType( StatisticsDetailedItem::HISTORY );
             QString url = QString("%1 @@@ %2").arg( newest[i+2] ).arg( newest[i+3] );
@@ -648,12 +648,12 @@ StatisticsList::showContextMenu( QListViewItem *item, const QPoint &p, int )  //
     KPopupMenu menu( this );
     enum Actions { APPEND, QUEUE, INFO };
 
-    menu.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
-    menu.insertItem( SmallIconSet( amaroK::icon( "fastforward" ) ), i18n( "&Queue Track" ), QUEUE );
+    menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
+    menu.insertItem( SmallIconSet( Amarok::icon( "fastforward" ) ), i18n( "&Queue Track" ), QUEUE );
 
     menu.insertSeparator();
 
-    menu.insertItem( SmallIconSet( amaroK::icon( "info" ) ), i18n( "Edit Track &Information..." ), INFO );
+    menu.insertItem( SmallIconSet( Amarok::icon( "info" ) ), i18n( "Edit Track &Information..." ), INFO );
 
     switch( menu.exec( p ) )
     {
@@ -968,7 +968,7 @@ StatisticsDetailedItem::getSQL()
     QueryBuilder qb;
     QString query = QString::null;
     QString artist, album, track;   // track is unused here
-    amaroK::albumArtistTrackFromUrl( url(), artist, album, track );
+    Amarok::albumArtistTrackFromUrl( url(), artist, album, track );
 
     if( itemType() == StatisticsDetailedItem::ALBUM || itemType() == StatisticsDetailedItem::HISTORY )
     {
@@ -1010,7 +1010,7 @@ StatisticsDetailedItem::getURLs()
     QueryBuilder qb;
     QString query = QString::null;
     QString artist, album, track;   // track is unused here
-    amaroK::albumArtistTrackFromUrl( m_url, artist, album, track );
+    Amarok::albumArtistTrackFromUrl( m_url, artist, album, track );
 
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
 

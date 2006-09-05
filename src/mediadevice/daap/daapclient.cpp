@@ -230,9 +230,9 @@ DaapClient::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
             break;
         default:
             urls = m_view->nodeBuildDragList( 0 );
-            menu.insertItem( SmallIconSet( amaroK::icon( "playlist" ) ), i18n( "&Load" ), LOAD );
-            menu.insertItem( SmallIconSet( amaroK::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
-            menu.insertItem( SmallIconSet( amaroK::icon( "fastforward" ) ), i18n( "&Queue Tracks" ), QUEUE );
+            menu.insertItem( SmallIconSet( Amarok::icon( "playlist" ) ), i18n( "&Load" ), LOAD );
+            menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
+            menu.insertItem( SmallIconSet( Amarok::icon( "fastforward" ) ), i18n( "&Queue Tracks" ), QUEUE );
             break;
     }
 
@@ -406,7 +406,7 @@ DaapClient::customClicked()
                 : KDialogBase( parent, "DaapAddHostDialog", true, i18n( "Add Computer" ) , Ok|Cancel)
             {
                 m_base = new AddHostBase( this, "DaapAddHostBase" );
-                m_base->m_downloadPixmap->setPixmap( QPixmap( KGlobal::iconLoader()->iconPath( amaroK::icon( "download" ), -KIcon::SizeEnormous ) ) );
+                m_base->m_downloadPixmap->setPixmap( QPixmap( KGlobal::iconLoader()->iconPath( Amarok::icon( "download" ), -KIcon::SizeEnormous ) ) );
                 m_base->m_hostName->setFocus();
                 setMainWidget( m_base );
             }
@@ -417,7 +417,7 @@ DaapClient::customClicked()
     if( dialog.exec() == QDialog::Accepted ) {
         QString ip = resolve( dialog.m_base->m_hostName->text() );
         if( ip == "0" )
-            amaroK::StatusBar::instance()->shortMessage( i18n("Could not resolve %1.").arg( dialog.m_base->m_hostName->text() ) );
+            Amarok::StatusBar::instance()->shortMessage( i18n("Could not resolve %1.").arg( dialog.m_base->m_hostName->text() ) );
         else
         {
             QString key = ServerItem::key( dialog.m_base->m_hostName->text(), dialog.m_base->m_portInput->value() );
@@ -494,11 +494,11 @@ DaapClient::resolve( const QString& hostname )
 {
     KNetwork::KResolver resolver( hostname );
     resolver.start();
-    if( resolver.wait( 5000 ) ) 
+    if( resolver.wait( 5000 ) )
     {
         KNetwork::KResolverResults results = resolver.results();
         debug() << "Resolver error code (0 is no error): " << resolver.errorString( results.error() ) << ' ' << hostname << endl;
-        if( !results.empty() ) 
+        if( !results.empty() )
         {
             QString ip = results[0].address().asInet().ipAddress().toString();
             debug() << "ip found is " << ip << endl;
@@ -596,7 +596,7 @@ ServerItem::httpError( const QString& errorString )
 {
     stopAnimation();
     resetTitle();
-    amaroK::StatusBar::instance()->longMessage( i18n( "The following error occured while trying to connect to the remote server:<br>%1").arg( errorString ) );
+    Amarok::StatusBar::instance()->longMessage( i18n( "The following error occured while trying to connect to the remote server:<br>%1").arg( errorString ) );
     m_reader->deleteLater();
     m_reader = 0;
     m_loaded = false;

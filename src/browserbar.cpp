@@ -22,14 +22,14 @@
 #include <qcursor.h>       //for resize cursor
 #include <qpainter.h>
 #include <qsignalmapper.h> //m_mapper
-#include <qstyle.h>        //amaroK::Splitter
+#include <qstyle.h>        //Amarok::Splitter
 
 
 // we emulate a qsplitter, mostly for historic reasons, but there are still a few advantages
 // mostly we can stop the browserbar getting resized too small so that switching browser looks wrong
 
 
-namespace amaroK
+namespace Amarok
 {
     class Splitter : public QWidget {
     public:
@@ -62,7 +62,7 @@ BrowserBar* BrowserBar::s_instance = 0;
 BrowserBar::BrowserBar( QWidget *parent )
         : QWidget( parent, "BrowserBar" )
         , m_playlistBox( new QVBox( this ) )
-        , m_divider( new amaroK::Splitter( this ) )
+        , m_divider( new Amarok::Splitter( this ) )
         , m_tabBar( new MultiTabBar( MultiTabBar::Vertical, this ) )
         , m_browserBox( new QVBox( this ) )
         , m_currentIndex( -1 )
@@ -92,7 +92,7 @@ BrowserBar::BrowserBar( QWidget *parent )
 
 BrowserBar::~BrowserBar()
 {
-    KConfig* const config = amaroK::config( "BrowserBar" );
+    KConfig* const config = Amarok::config( "BrowserBar" );
     config->writeEntry( "CurrentPane", m_currentIndex != -1 ? QString(currentBrowser()->name()) : QString::null );
     config->writeEntry( "Width", m_browserBox->width() );
 }
@@ -109,8 +109,8 @@ BrowserBar::makeDropProxy( const QString &name, DropProxyTarget *finalTarget )
 int
 BrowserBar::restoreWidth()
 {
-    const int index = indexForName( amaroK::config( "BrowserBar" )->readEntry( "CurrentPane" ) );
-    const int width = amaroK::config( "BrowserBar" )->readNumEntry( "Width", browser( index )->sizeHint().width() );
+    const int index = indexForName( Amarok::config( "BrowserBar" )->readEntry( "CurrentPane" ) );
+    const int width = Amarok::config( "BrowserBar" )->readNumEntry( "Width", browser( index )->sizeHint().width() );
 
     m_browserBox->resize( width, height() );
     m_pos = m_browserBox->width() + m_tabBar->width();
@@ -245,7 +245,7 @@ BrowserBar::removeMediaBrowser( QWidget *widget )
 {
     BrowserList::iterator it = qFind( m_browsers.begin(), m_browsers.end(), widget );
     if( it != m_browsers.end() )
-        m_browsers.erase( it ); 
+        m_browsers.erase( it );
     QWidget *tab;
     tab = m_tabBar->tab( m_browserIds["MediaBrowser"] );
     m_mapper->removeMappings( tab );

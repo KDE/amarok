@@ -70,7 +70,7 @@ class Medium;
  */
 
 
-class Playlist : private KListView, public EngineObserver, public amaroK::ToolTipClient
+class Playlist : private KListView, public EngineObserver, public Amarok::ToolTipClient
 {
         Q_OBJECT
 
@@ -176,8 +176,8 @@ class Playlist : private KListView, public EngineObserver, public amaroK::ToolTi
         friend class QueueLabel;
         friend class PlaylistWindow;
         friend class ColumnList;
-        friend void amaroK::DcopPlaylistHandler::removeCurrentTrack(); //calls removeItem() and currentTrack()
-        friend void amaroK::DcopPlaylistHandler::removeByIndex( int ); //calls removeItem()
+        friend void Amarok::DcopPlaylistHandler::removeCurrentTrack(); //calls removeItem() and currentTrack()
+        friend void Amarok::DcopPlaylistHandler::removeByIndex( int ); //calls removeItem()
         friend class TagWriter; //calls removeItem()
         friend void PlaylistWindow::init(); //setting up connections etc.
         friend TrackToolTip::TrackToolTip();

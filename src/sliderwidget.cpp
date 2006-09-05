@@ -41,7 +41,7 @@
 #include <kpopupmenu.h>
 #include <kstandarddirs.h>
 
-amaroK::Slider::Slider( Qt::Orientation orientation, QWidget *parent, uint max )
+Amarok::Slider::Slider( Qt::Orientation orientation, QWidget *parent, uint max )
         : QSlider( orientation, parent )
         , m_sliding( false )
         , m_outside( false )
@@ -51,7 +51,7 @@ amaroK::Slider::Slider( Qt::Orientation orientation, QWidget *parent, uint max )
 }
 
 void
-amaroK::Slider::wheelEvent( QWheelEvent *e )
+Amarok::Slider::wheelEvent( QWheelEvent *e )
 {
     uint step = e->delta() / 18;
     // Volume Slider
@@ -64,7 +64,7 @@ amaroK::Slider::wheelEvent( QWheelEvent *e )
 }
 
 void
-amaroK::Slider::mouseMoveEvent( QMouseEvent *e )
+Amarok::Slider::mouseMoveEvent( QMouseEvent *e )
 {
     if ( m_sliding )
     {
@@ -85,7 +85,7 @@ amaroK::Slider::mouseMoveEvent( QMouseEvent *e )
 }
 
 void
-amaroK::Slider::slideEvent( QMouseEvent *e )
+Amarok::Slider::slideEvent( QMouseEvent *e )
 {
     QSlider::setValue( orientation() == Horizontal
         ? ((QApplication::reverseLayout())
@@ -95,7 +95,7 @@ amaroK::Slider::slideEvent( QMouseEvent *e )
 }
 
 void
-amaroK::Slider::mousePressEvent( QMouseEvent *e )
+Amarok::Slider::mousePressEvent( QMouseEvent *e )
 {
     m_sliding   = true;
     m_prevValue = QSlider::value();
@@ -105,7 +105,7 @@ amaroK::Slider::mousePressEvent( QMouseEvent *e )
 }
 
 void
-amaroK::Slider::mouseReleaseEvent( QMouseEvent* )
+Amarok::Slider::mouseReleaseEvent( QMouseEvent* )
 {
     if( !m_outside && QSlider::value() != m_prevValue )
        emit sliderReleased( value() );
@@ -115,7 +115,7 @@ amaroK::Slider::mouseReleaseEvent( QMouseEvent* )
 }
 
 void
-amaroK::Slider::setValue( int newValue )
+Amarok::Slider::setValue( int newValue )
 {
     //don't adjust the slider while the user is dragging it!
 
@@ -133,9 +133,9 @@ amaroK::Slider::setValue( int newValue )
 #define THICKNESS 7
 #define MARGIN 3
 
-amaroK::PrettySlider::PrettySlider( Qt::Orientation orientation, SliderMode mode,
+Amarok::PrettySlider::PrettySlider( Qt::Orientation orientation, SliderMode mode,
                                     QWidget *parent, uint max )
-    : amaroK::Slider( orientation, parent, max )
+    : Amarok::Slider( orientation, parent, max )
     , m_mode( mode )
 {
     if( m_mode == Pretty)
@@ -144,37 +144,37 @@ amaroK::PrettySlider::PrettySlider( Qt::Orientation orientation, SliderMode mode
         setFocusPolicy( QWidget::NoFocus );
       }
 
-    // We only have to connect this *once*, since our MetaBundle 
+    // We only have to connect this *once*, since our MetaBundle
     // doesn't get destroyed until we do.
     connect( &m_bundle.moodbar(), SIGNAL( jobEvent( int ) ),
              SLOT( moodbarJobEvent( int ) ) );
 
     // We want to know if we should reset our moodbar data
-    connect( App::instance(), SIGNAL( moodbarPrefs( bool, bool, int, bool ) ), 
+    connect( App::instance(), SIGNAL( moodbarPrefs( bool, bool, int, bool ) ),
              SLOT( slotMoodbarPrefs( bool, bool, int, bool ) ) );
-    
+
 }
 
 void
-amaroK::PrettySlider::mousePressEvent( QMouseEvent *e )
+Amarok::PrettySlider::mousePressEvent( QMouseEvent *e )
 {
-    amaroK::Slider::mousePressEvent( e );
+    Amarok::Slider::mousePressEvent( e );
 
     slideEvent( e );
 }
 
 void
-amaroK::PrettySlider::slideEvent( QMouseEvent *e )
+Amarok::PrettySlider::slideEvent( QMouseEvent *e )
 {
     if( m_mode == Pretty )
       QSlider::setValue( orientation() == Horizontal
           ? QRangeControl::valueFromPosition( e->pos().x(), width()-2 )
           : QRangeControl::valueFromPosition( e->pos().y(), height()-2 ) );
     else
-      amaroK::Slider::slideEvent( e );
+      Amarok::Slider::slideEvent( e );
 }
 
-namespace amaroK {
+namespace Amarok {
     namespace ColorScheme {
         extern QColor Background;
         extern QColor Foreground;
@@ -182,13 +182,13 @@ namespace amaroK {
 }
 
 void
-amaroK::PrettySlider::paintEvent( QPaintEvent *e )
+Amarok::PrettySlider::paintEvent( QPaintEvent *e )
 {
     const int w   = orientation() == Qt::Horizontal ? width() : height();
     const int pos = int( double( w-2 ) / maxValue() * Slider::value() );
     int h = THICKNESS;
 
-    bool doMoodbar = ( !m_bundle.url().isEmpty()       && 
+    bool doMoodbar = ( !m_bundle.url().isEmpty()       &&
                        m_bundle.moodbar().dataExists() &&
                        AmarokConfig::showMoodbar() );
     QPixmap mood;
@@ -198,11 +198,11 @@ amaroK::PrettySlider::paintEvent( QPaintEvent *e )
           h = (orientation() == Qt::Vertical ? width() : height()) - 2*MARGIN;
         mood = m_bundle.moodbar().draw( w, h );
       }
-    // If we're a Normal PrettySlider and we have no moodbar, 
+    // If we're a Normal PrettySlider and we have no moodbar,
     // emulate the behavior of Slider
     else if( m_mode == Normal )
       {
-        amaroK::Slider::paintEvent( e );
+        Amarok::Slider::paintEvent( e );
         return;
       }
 
@@ -220,8 +220,8 @@ amaroK::PrettySlider::paintEvent( QPaintEvent *e )
     if( !doMoodbar )
       {
         p.translate( 0, MARGIN );
-          p.setPen( amaroK::ColorScheme::Foreground );
-          p.fillRect( 0, 0, pos, h, QColor( amaroK::ColorScheme::Background ) );
+          p.setPen( Amarok::ColorScheme::Foreground );
+          p.fillRect( 0, 0, pos, h, QColor( Amarok::ColorScheme::Background ) );
           p.drawRect( 0, 0, w, h );
         p.translate( 0, -MARGIN );
       }
@@ -229,7 +229,7 @@ amaroK::PrettySlider::paintEvent( QPaintEvent *e )
       {
         p.translate( 0, MARGIN );
           p.drawPixmap( 0, 0, mood );
-          p.setPen( amaroK::ColorScheme::Foreground );
+          p.setPen( Amarok::ColorScheme::Foreground );
           p.drawRect( 0, 0, w, h );
         p.translate( 0, -MARGIN );
 
@@ -266,21 +266,21 @@ amaroK::PrettySlider::paintEvent( QPaintEvent *e )
 
 
 // This gets called when the moodbar job starts or finishes
-void 
-amaroK::PrettySlider::moodbarJobEvent( int newState )
+void
+Amarok::PrettySlider::moodbarJobEvent( int newState )
 {
     if( newState == Moodbar::JobStateSucceeded )
       {
         debug() << "moodbarJobEvent: new moodbar data" << endl;
-        update(); 
+        update();
       }
 }
 
 // This gets called when the user presses "Ok" or "Apply" in the
-// config dialog.  Reload our moodbar data, in case it was 
+// config dialog.  Reload our moodbar data, in case it was
 // permanently disabled before because the moodbar was disabled.
-void 
-amaroK::PrettySlider::slotMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic )
+void
+Amarok::PrettySlider::slotMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic )
 {
     (void) moodier;  (void) alter;  (void) withMusic;
 
@@ -297,12 +297,12 @@ amaroK::PrettySlider::slotMoodbarPrefs( bool show, bool moodier, int alter, bool
 
 
 // This is called when the track changes / stops / starts
-void 
-amaroK::PrettySlider::newBundle( const MetaBundle &bundle )
+void
+Amarok::PrettySlider::newBundle( const MetaBundle &bundle )
 {
     m_bundle = bundle;
     m_bundle.detach();
-    
+
     // This is the easiest way to tell if the bundle refers
     // to a real track, or if we're STOP'd.
     if( m_bundle.url().isEmpty() )
@@ -322,13 +322,13 @@ amaroK::PrettySlider::newBundle( const MetaBundle &bundle )
     but they may become useful one day **/
 
 QSize
-amaroK::PrettySlider::minimumSizeHint() const
+Amarok::PrettySlider::minimumSizeHint() const
 {
     return sizeHint();
 }
 
 QSize
-amaroK::PrettySlider::sizeHint() const
+Amarok::PrettySlider::sizeHint() const
 {
     constPolish();
 
@@ -342,8 +342,8 @@ amaroK::PrettySlider::sizeHint() const
 /// CLASS VolumeSlider
 //////////////////////////////////////////////////////////////////////////////////////////
 
-amaroK::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
-    : amaroK::Slider( Qt::Horizontal, parent, max )
+Amarok::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
+    : Amarok::Slider( Qt::Horizontal, parent, max )
     , m_animCount( 0 )
     , m_animTimer( new QTimer( this ) )
     , m_pixmapInset( QPixmap( locate( "data","amarok/images/volumeslider-inset.png" ) ) )
@@ -375,7 +375,7 @@ amaroK::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
 }
 
 void
-amaroK::VolumeSlider::generateGradient()
+Amarok::VolumeSlider::generateGradient()
 {
     //QImage temp( locate( "data","amarok/images/volumeslider-gradient.png" ) );
     //KIconEffect::colorize( temp, colorGroup().highlight(), 1.0 );
@@ -390,7 +390,7 @@ amaroK::VolumeSlider::generateGradient()
 }
 
 void
-amaroK::VolumeSlider::slotAnimTimer() //SLOT
+Amarok::VolumeSlider::slotAnimTimer() //SLOT
 {
     if ( m_animEnter ) {
         m_animCount++;
@@ -406,7 +406,7 @@ amaroK::VolumeSlider::slotAnimTimer() //SLOT
 }
 
 void
-amaroK::VolumeSlider::mousePressEvent( QMouseEvent *e )
+Amarok::VolumeSlider::mousePressEvent( QMouseEvent *e )
 {
     if( e->button() == RightButton )
     {
@@ -435,29 +435,29 @@ amaroK::VolumeSlider::mousePressEvent( QMouseEvent *e )
     }
     else
     {
-        amaroK::Slider::mousePressEvent( e );
+        Amarok::Slider::mousePressEvent( e );
 
         slideEvent( e );
     }
 }
 
 void
-amaroK::VolumeSlider::slideEvent( QMouseEvent *e )
+Amarok::VolumeSlider::slideEvent( QMouseEvent *e )
 {
     QSlider::setValue( QRangeControl::valueFromPosition( e->pos().x(), width()-2 ) );
 }
 
 void
-amaroK::VolumeSlider::wheelEvent( QWheelEvent *e )
+Amarok::VolumeSlider::wheelEvent( QWheelEvent *e )
 {
-    const uint step = e->delta() / amaroK::VOLUME_SENSITIVITY;
+    const uint step = e->delta() / Amarok::VOLUME_SENSITIVITY;
     QSlider::setValue( QSlider::value() + step );
 
     emit sliderReleased( value() );
 }
 
 void
-amaroK::VolumeSlider::paintEvent( QPaintEvent * )
+Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 {
     QPixmap buf( size() );
 
@@ -491,13 +491,13 @@ amaroK::VolumeSlider::paintEvent( QPaintEvent * )
 }
 
 void
-amaroK::VolumeSlider::hideEvent( QHideEvent* )
+Amarok::VolumeSlider::hideEvent( QHideEvent* )
 {
     setBackgroundMode( PaletteBackground ); // Required to prevent erasing
 }
 
 void
-amaroK::VolumeSlider::showEvent( QShowEvent* )
+Amarok::VolumeSlider::showEvent( QShowEvent* )
 {
     // HACK To prevent ugly uninitialised background when the window is shown,
     //      needed because we use NoBackground to prevent flickering while painting
@@ -505,7 +505,7 @@ amaroK::VolumeSlider::showEvent( QShowEvent* )
 }
 
 void
-amaroK::VolumeSlider::enterEvent( QEvent* )
+Amarok::VolumeSlider::enterEvent( QEvent* )
 {
     m_animEnter = true;
     m_animCount = 0;
@@ -514,7 +514,7 @@ amaroK::VolumeSlider::enterEvent( QEvent* )
 }
 
 void
-amaroK::VolumeSlider::leaveEvent( QEvent* )
+Amarok::VolumeSlider::leaveEvent( QEvent* )
 {
     // This can happen if you enter and leave the widget quickly
     if ( m_animCount == 0 )
@@ -525,7 +525,7 @@ amaroK::VolumeSlider::leaveEvent( QEvent* )
 }
 
 void
-amaroK::VolumeSlider::paletteChange( const QPalette& )
+Amarok::VolumeSlider::paletteChange( const QPalette& )
 {
     generateGradient();
 }

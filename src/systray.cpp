@@ -20,7 +20,7 @@
 #include <kiconeffect.h>
 #include <kstandarddirs.h>
 
-namespace amaroK
+namespace Amarok
 {
     static QPixmap
     loadOverlay( const char *iconName )
@@ -30,7 +30,7 @@ namespace amaroK
 }
 
 
-amaroK::TrayIcon::TrayIcon( QWidget *playerWidget )
+Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
         : KSystemTray( playerWidget )
         , EngineObserver( EngineController::instance() )
         , trackLength( 0 )
@@ -40,7 +40,7 @@ amaroK::TrayIcon::TrayIcon( QWidget *playerWidget )
         , overlayVisible( false )
         , m_lastFmMode( false )
 {
-    KActionCollection* const ac = amaroK::actionCollection();
+    KActionCollection* const ac = Amarok::actionCollection();
 
     setAcceptDrops( true );
 
@@ -55,8 +55,8 @@ amaroK::TrayIcon::TrayIcon( QWidget *playerWidget )
     connect( quit, SIGNAL(activated()), kapp, SLOT(quit()) );
 
     baseIcon     = KSystemTray::loadIcon( "amarok" );
-    playOverlay  = amaroK::loadOverlay( "play" );
-    pauseOverlay = amaroK::loadOverlay( "pause" );
+    playOverlay  = Amarok::loadOverlay( "play" );
+    pauseOverlay = Amarok::loadOverlay( "pause" );
     overlayVisible = false;
 
     //paintIcon();
@@ -64,14 +64,14 @@ amaroK::TrayIcon::TrayIcon( QWidget *playerWidget )
 }
 
 bool
-amaroK::TrayIcon::event( QEvent *e )
+Amarok::TrayIcon::event( QEvent *e )
 {
     switch( e->type() )
     {
     case QEvent::Drop:
     case QEvent::Wheel:
     case QEvent::DragEnter:
-        return amaroK::genericEventHandler( this, e );
+        return Amarok::genericEventHandler( this, e );
 
     case QEvent::Timer:
         if( static_cast<QTimerEvent*>(e)->timerId() != blinkTimerID )
@@ -102,7 +102,7 @@ amaroK::TrayIcon::event( QEvent *e )
 }
 
 void
-amaroK::TrayIcon::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
+Amarok::TrayIcon::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
 {
     // stop timer
     if ( blinkTimerID )
@@ -139,21 +139,21 @@ amaroK::TrayIcon::engineStateChanged( Engine::State state, Engine::State /*oldSt
 }
 
 void
-amaroK::TrayIcon::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
+Amarok::TrayIcon::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
     trackLength = bundle.length() * 1000;
     setLastFm( bundle.url().protocol() == "lastfm" );
 }
 
 void
-amaroK::TrayIcon::engineTrackPositionChanged( long position, bool /*userSeek*/ )
+Amarok::TrayIcon::engineTrackPositionChanged( long position, bool /*userSeek*/ )
 {
     mergeLevel = trackLength ? ((baseIcon.height() + 1) * position) / trackLength : -1;
     paintIcon( mergeLevel );
 }
 
 void
-amaroK::TrayIcon::paletteChange( const QPalette & op )
+Amarok::TrayIcon::paletteChange( const QPalette & op )
 {
     if ( palette().active().highlight() == op.active().highlight() || alternateIcon.isNull() )
         return;
@@ -163,7 +163,7 @@ amaroK::TrayIcon::paletteChange( const QPalette & op )
 }
 
 void
-amaroK::TrayIcon::paintIcon( int mergePixels, bool force )
+Amarok::TrayIcon::paintIcon( int mergePixels, bool force )
 {
     // skip redrawing the same pixmap
     static int mergePixelsCache = 0;
@@ -210,7 +210,7 @@ amaroK::TrayIcon::paintIcon( int mergePixels, bool force )
 }
 
 void
-amaroK::TrayIcon::blendOverlay( QPixmap &sourcePixmap )
+Amarok::TrayIcon::blendOverlay( QPixmap &sourcePixmap )
 {
     if ( !overlayVisible || !overlay || overlay->isNull() )
         return setPixmap( sourcePixmap ); // @since 3.2
@@ -246,13 +246,13 @@ amaroK::TrayIcon::blendOverlay( QPixmap &sourcePixmap )
 }
 
 void
-amaroK::TrayIcon::setLastFm( bool lastFmActive )
+Amarok::TrayIcon::setLastFm( bool lastFmActive )
 {
     if( lastFmActive == m_lastFmMode ) return;
 
     static int separatorId = 0;
 
-    KActionCollection* const ac = amaroK::actionCollection();
+    KActionCollection* const ac = Amarok::actionCollection();
     if( ac->action( "ban" ) == 0 ) return; //if the LastFm::Controller doesn't exist yet
 
     if( lastFmActive )

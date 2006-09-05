@@ -91,7 +91,7 @@ ProgressBar::setProgressSignal( QObject *sender, const char *signal )
 {
     setTotalSteps( 100 );
     debug() << "connecting " << signal << " LOOKATME\n";
-    connect( sender, signal, amaroK::StatusBar::instance(), SLOT( setProgress ( const QObject*, int ) ) );
+    connect( sender, signal, Amarok::StatusBar::instance(), SLOT( setProgress ( const QObject*, int ) ) );
     return *this;
 }
 

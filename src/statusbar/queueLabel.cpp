@@ -178,8 +178,8 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
                            .arg( MetaBundle::prettyLength( length, true ) ) );
     else
         menu->insertTitle( i18n( "1 Queued Track", "%n Queued Tracks", count ) );
-    amaroK::actionCollection()->action( "queue_manager" )->plug( menu );
-    menu->insertItem( SmallIconSet( amaroK::icon( "rewind" ) ),
+    Amarok::actionCollection()->action( "queue_manager" )->plug( menu );
+    menu->insertItem( SmallIconSet( Amarok::icon( "rewind" ) ),
                       count > 1 ? i18n( "&Dequeue All Tracks" ) : i18n( "&Dequeue Track" ), 0 );
     menu->insertSeparator();
 
@@ -207,8 +207,8 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
     int mx, my;
     const int   mw      = menu->sizeHint().width(),
                 mh      = menu->sizeHint().height(),
-                sy      = mapFrom( amaroK::StatusBar::instance(), QPoint( 0, 0 ) ).y(),
-                sheight = amaroK::StatusBar::instance()->height();
+                sy      = mapFrom( Amarok::StatusBar::instance(), QPoint( 0, 0 ) ).y(),
+                sheight = Amarok::StatusBar::instance()->height();
     const QRect dr      = QApplication::desktop()->availableGeometry( this );
 
     if( mapYToGlobal( sy ) - mh > dr.y() )

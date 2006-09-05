@@ -37,7 +37,7 @@ typedef QPtrList<DeviceHandlerFactory> FactoryList;
 typedef QMap<int, DeviceHandler*> HandlerMap;
 
 
-class LIBAMAROK_EXPORT DeviceHandlerFactory : public amaroK::Plugin
+class LIBAMAROK_EXPORT DeviceHandlerFactory : public Amarok::Plugin
 {
 public:
     DeviceHandlerFactory() {};

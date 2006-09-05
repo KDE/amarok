@@ -58,7 +58,7 @@ void ScanController::setInstance( ScanController* curr )
 ScanController::ScanController( CollectionDB* parent, bool incremental, const QStringList& folders )
     : DependentJob( parent, "CollectionScanner" )
     , QXmlDefaultHandler()
-    , m_scanner( new amaroK::ProcIO() )
+    , m_scanner( new Amarok::ProcIO() )
     , m_folders( QDeepCopy<QStringList>( folders ) )
     , m_incremental( incremental )
     , m_hasChanged( false )
@@ -178,7 +178,7 @@ ScanController::initIncremental()
     {
         debug() << "Collection was modified." << endl;
         m_hasChanged = true;
-        amaroK::StatusBar::instance()->shortMessage( i18n( "Updating Collection..." ) );
+        Amarok::StatusBar::instance()->shortMessage( i18n( "Updating Collection..." ) );
 
         // Start scanner process
         if( AmarokConfig::scanRecursively() ) *m_scanner << "-r";
@@ -427,7 +427,7 @@ ScanController::customEvent( QCustomEvent* e )
     {
         debug() << "RestartEvent received." << endl;
 
-        QFile log( amaroK::saveLocation( QString::null ) + "collection_scan.log" );
+        QFile log( Amarok::saveLocation( QString::null ) + "collection_scan.log" );
         log.open( IO_ReadOnly );
         m_crashedFiles << log.readAll();
 
@@ -444,7 +444,7 @@ ScanController::customEvent( QCustomEvent* e )
         m_reader->parse( m_source, true );
 
         delete m_scanner; // Reusing doesn't work, so we have to destroy and reinstantiate
-        m_scanner = new amaroK::ProcIO();
+        m_scanner = new Amarok::ProcIO();
         connect( m_scanner, SIGNAL( readReady( KProcIO* ) ), SLOT( slotReadReady() ) );
 
         *m_scanner << "amarokcollectionscanner";

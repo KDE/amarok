@@ -14,7 +14,7 @@
 #include <qmap.h>
 #include <qobject.h>
 #include <qstringlist.h>
-#include <qvaluelist.h> 
+#include <qvaluelist.h>
 #include <qvariant.h>
 
 #include <kio/job.h>
@@ -61,7 +61,7 @@ RefreshImages::RefreshImages()
         KIO::TransferJob* job = KIO::storedGet( url, false, false );
         KIO::Scheduler::scheduleJob( job );
 
-        //amaroK::StatusBar::instance()->newProgressOperation( job );
+        //Amarok::StatusBar::instance()->newProgressOperation( job );
         job->setName( md5sum.ascii() );
         it++; //iterate to the next set
 
@@ -75,7 +75,7 @@ RefreshImages::finishedXmlFetch( KIO::Job* xmlJob ) //SLOT
 {
     if ( xmlJob->error() )
     {
-        amaroK::StatusBar::instance()->shortMessage( i18n( "There was an error communicating with Amazon." ) );
+        Amarok::StatusBar::instance()->shortMessage( i18n( "There was an error communicating with Amazon." ) );
         if ( m_jobInfo[ xmlJob->name() ].m_last )
             deleteLater();
 
@@ -101,9 +101,9 @@ RefreshImages::finishedXmlFetch( KIO::Job* xmlJob ) //SLOT
         if ( !imageNode.isNull() )
         {
             imageUrl = imageNode.namedItem( "URL" ).firstChild().toText().data();
-            if( !imageUrl.isEmpty() ) 
+            if( !imageUrl.isEmpty() )
                 break;
-        } 
+        }
     }
     debug() << imageUrl << endl;
     KURL testUrl( imageUrl );
@@ -116,7 +116,7 @@ RefreshImages::finishedXmlFetch( KIO::Job* xmlJob ) //SLOT
 
     KIO::TransferJob* imageJob = KIO::storedGet( imageUrl, false, false );
     KIO::Scheduler::scheduleJob(imageJob);
-    //amaroK::StatusBar::instance()->newProgressOperation( imageJob );
+    //Amarok::StatusBar::instance()->newProgressOperation( imageJob );
     imageJob->setName(xmlJob->name());
     //get the URL of the detail page
     m_jobInfo[xmlJob->name()].m_detailUrl = doc.documentElement()
@@ -129,7 +129,7 @@ RefreshImages::finishedXmlFetch( KIO::Job* xmlJob ) //SLOT
 void RefreshImages::finishedImageFetch(KIO::Job* imageJob)
 {
    if( imageJob->error() ) {
-        amaroK::StatusBar::instance()->shortMessage(i18n("There was an error communicating with Amazon."));
+        Amarok::StatusBar::instance()->shortMessage(i18n("There was an error communicating with Amazon."));
         if(m_jobInfo[imageJob->name()].m_last)
             deleteLater();
 
@@ -138,7 +138,7 @@ void RefreshImages::finishedImageFetch(KIO::Job* imageJob)
     QImage img;
     img.loadFromData(static_cast<KIO::StoredTransferJob*>(imageJob)->data());
     img.setText( "amazon-url", 0, m_jobInfo[imageJob->name()].m_detailUrl);
-    img.save( amaroK::saveLocation("albumcovers/large/") + imageJob->name(), "PNG");
+    img.save( Amarok::saveLocation("albumcovers/large/") + imageJob->name(), "PNG");
 
     CollectionDB::instance()->newAmazonReloadDate( m_jobInfo[imageJob->name()].m_asin
         , m_jobInfo[imageJob->name()].m_locale
@@ -150,7 +150,7 @@ void RefreshImages::finishedImageFetch(KIO::Job* imageJob)
 
 QString RefreshImages::localeToTLD(const QString& locale)
 {
-    if(locale=="us") 
+    if(locale=="us")
         return "com";
     else if(locale=="jp")
         return "co.jp";

@@ -47,7 +47,7 @@ class XineEngine : public Engine::Base
     virtual Engine::State state() const;
     virtual const Engine::Scope &scope();
 
-    virtual amaroK::PluginConfig *configure() const;
+    virtual Amarok::PluginConfig *configure() const;
     virtual void setEqualizerEnabled( bool );
     virtual void setEqualizerParameters( int preamp, const QValueList<int>& );
     virtual void setVolumeSW( uint );

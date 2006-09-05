@@ -342,7 +342,7 @@ XineEngine::determineAndShowErrorMessage()
                 // xine can read the plugin but it didn't find any codec
                 // THUS xine=daft for telling us it could handle the format in canDecode!
                 body = i18n("There is no available decoder.");
-                QString const ext = amaroK::extension( m_url.url() ).lower();
+                QString const ext = Amarok::extension( m_url.url() ).lower();
                 if (ext == "mp3" && EngineController::installDistroCodec( "xine-engine" ))
                     return;
             }
@@ -351,7 +351,7 @@ XineEngine::determineAndShowErrorMessage()
         break;
     }
 
-    amaroK::StatusBar::instance()->longMessage(
+    Amarok::StatusBar::instance()->longMessage(
             "<b>" + i18n("Error Loading Media") + "</b><p>" + body + "<p>" + m_url.prettyURL(),
             KDE::StatusBar::Error );
 }
@@ -683,7 +683,7 @@ XineEngine::timerEvent( QTimerEvent* )
    }
 }
 
-amaroK::PluginConfig*
+Amarok::PluginConfig*
 XineEngine::configure() const
 {
     XineConfigDialog* xcf = new XineConfigDialog( m_xine );

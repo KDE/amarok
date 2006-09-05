@@ -50,9 +50,9 @@ EqualizerSetup* EqualizerSetup::s_instance = 0;
 
 
 EqualizerSetup::EqualizerSetup()
-        : KDialogBase( amaroK::mainWindow(), 0, false, 0, 0, Ok, false )
+        : KDialogBase( Amarok::mainWindow(), 0, false, 0, 0, Ok, false )
 {
-    using amaroK::Slider;
+    using Amarok::Slider;
 
     s_instance = this;
 
@@ -76,12 +76,12 @@ EqualizerSetup::EqualizerSetup()
     m_presetCombo->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred ) );
 
     QPushButton* presetAdd = new QPushButton( presetBox );
-    presetAdd->setIconSet( SmallIconSet( amaroK::icon( "add_playlist" ) ) );
+    presetAdd->setIconSet( SmallIconSet( Amarok::icon( "add_playlist" ) ) );
     QToolTip::add( presetAdd, i18n("Add new preset") );
     connect( presetAdd, SIGNAL( clicked() ), SLOT( addPreset() ) );
 
     QPushButton* presetConf = new QPushButton( presetBox );
-    presetConf->setIconSet( SmallIconSet( amaroK::icon( "configure" ) ) );
+    presetConf->setIconSet( SmallIconSet( Amarok::icon( "configure" ) ) );
     QToolTip::add( presetConf, i18n("Manage presets") );
     connect( presetConf, SIGNAL( clicked() ), SLOT( editPresets() ) );
 
@@ -220,7 +220,7 @@ QString
 EqualizerSetup::presetsCache() const
 {
     // returns the playlists stats cache file
-    return amaroK::saveLocation() + "equalizerpresets_save.xml";
+    return Amarok::saveLocation() + "equalizerpresets_save.xml";
 }
 
 

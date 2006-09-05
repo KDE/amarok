@@ -9,6 +9,8 @@
 
 #include <cmath>
 #include <qpainter.h>
+
+#include "amarok.h"
 #include "turbine.h"
 
 void TurbineAnalyzer::analyze( const Scope &scope )
@@ -63,11 +65,11 @@ void TurbineAnalyzer::analyze( const Scope &scope )
         bitBlt( canvas(), x+1, y,   &barPixmap, 0, y );
         bitBlt( canvas(), x+1, hd2, &barPixmap, 0, (int)bar_height[i] );
 
-        p.setPen( amaroK::ColorScheme::Foreground );
+        p.setPen( Amarok::ColorScheme::Foreground );
         p.drawRect( x, y, COLUMN_WIDTH, (int)bar_height[i]*2 );
 
         const uint x2 = x+COLUMN_WIDTH-1;
-        p.setPen( amaroK::ColorScheme::Text );
+        p.setPen( Amarok::ColorScheme::Text );
         y = hd2 - uint(peak_height[i]);
         p.drawLine( x, y, x2, y );
         y = hd2 + uint(peak_height[i]);

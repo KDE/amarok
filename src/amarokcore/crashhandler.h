@@ -13,7 +13,7 @@
 
 #include <kcrash.h> //for main.cpp
 
-namespace amaroK
+namespace Amarok
 {
     /**
      * @author Max Howell

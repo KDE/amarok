@@ -89,8 +89,7 @@ TagDialog::TagDialog( const MetaBundle& mb, PlaylistItem* item, QWidget* parent 
 
 TagDialog::~TagDialog()
 {
-    KConfig *config = amaroK::config( "TagDialog" );
-    config->writeEntry( "CurrentTab", kTabWidget->currentPageIndex() );
+    Amarok::config( "TagDialog" )->writeEntry( "CurrentTab", kTabWidget->currentPageIndex() );
 }
 
 void
@@ -125,7 +124,7 @@ TagDialog::accept() //SLOT
 inline void
 TagDialog::openPressed() //SLOT
 {
-    amaroK::invokeBrowser( m_path );
+    Amarok::invokeBrowser( m_path );
 }
 
 
@@ -367,7 +366,7 @@ void TagDialog::init()
     // delete itself when closing
     setWFlags( getWFlags() | Qt::WDestructiveClose );
 
-    KConfig *config = amaroK::config( "TagDialog" );
+    KConfig *config = Amarok::config( "TagDialog" );
 
     kTabWidget->addTab( summaryTab, i18n( "Summary" ) );
     kTabWidget->addTab( tagsTab, i18n( "Tags" ) );
@@ -456,7 +455,7 @@ void TagDialog::init()
     connect( checkBox_perTrack,   SIGNAL(clicked()), SLOT(perTrack()) );
 
     // set an icon for the open-in-konqui button
-    pushButton_open->setIconSet( SmallIconSet( amaroK::icon( "files" ) ) );
+    pushButton_open->setIconSet( SmallIconSet( Amarok::icon( "files" ) ) );
 
     //Update lyrics on Context Browser
     connect( this, SIGNAL(lyricsChanged( const QString& )), ContextBrowser::instance(), SLOT( lyricsChanged( const QString& ) ) );
@@ -1153,7 +1152,7 @@ TagDialog::writeTag( MetaBundle mb, bool updateCB )
 {
     QCString path = QFile::encodeName( mb.url().path() );
     if ( !TagLib::File::isWritable( path ) ) {
-        amaroK::StatusBar::instance()->longMessage( i18n(
+        Amarok::StatusBar::instance()->longMessage( i18n(
            "The file %1 is not writable." ).arg( path ), KDE::StatusBar::Error );
         return false;
     }
@@ -1193,7 +1192,7 @@ TagDialogWriter::doJob()
     for( int i = 0, size=m_tags.size(); i<size; ++i ) {
         QCString path = QFile::encodeName( m_tags[i].url().path() );
         if ( !TagLib::File::isWritable( path ) ) {
-            amaroK::StatusBar::instance()->longMessageThreadSafe( i18n(
+            Amarok::StatusBar::instance()->longMessageThreadSafe( i18n(
                 "The file %1 is not writable." ).arg( path ), KDE::StatusBar::Error );
             m_failed += true;
             continue;
@@ -1226,7 +1225,7 @@ TagDialogWriter::completeJob()
      if ( m_successCount )
         CollectionView::instance()->databaseChanged();
      if ( m_failCount )
-        amaroK::StatusBar::instance()->longMessage( i18n(
+        Amarok::StatusBar::instance()->longMessage( i18n(
                         "Sorry, the tag for the following files could not be changed:\n" ).arg( m_failedURLs.join( ";\n" ) ), KDE::StatusBar::Error );
 }
 

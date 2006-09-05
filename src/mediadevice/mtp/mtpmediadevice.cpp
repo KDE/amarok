@@ -142,7 +142,7 @@ MediaItem
     {
         // track already exists. don't do anything (for now).
         debug() << "Track already exists on device." << endl;
-        amaroK::StatusBar::instance()->shortLongMessage(
+        Amarok::StatusBar::instance()->shortLongMessage(
             genericError,
             i18n( "Track already exists on device" ),
             KDE::StatusBar::Error
@@ -188,7 +188,7 @@ MediaItem
         else
         {
             debug() << "We don't support the extension ." << extension << endl;
-            amaroK::StatusBar::instance()->shortLongMessage(
+            Amarok::StatusBar::instance()->shortLongMessage(
                 genericError,
                 i18n( "Cannot determine a valid file type" ),
                 KDE::StatusBar::Error
@@ -289,7 +289,7 @@ MediaItem
         if( parent_id == 0 )
         {
             debug() << "Couldn't create new parent (" << m_folderStructure << ")" << endl;
-            amaroK::StatusBar::instance()->shortLongMessage(
+            Amarok::StatusBar::instance()->shortLongMessage(
                 genericError,
                 i18n( "Cannot create parent folder. Check your structure." ),
                 KDE::StatusBar::Error
@@ -310,7 +310,7 @@ MediaItem
     if( ret < 0 )
     {
         debug() << "Could not write file " << ret << endl;
-        amaroK::StatusBar::instance()->shortLongMessage(
+        Amarok::StatusBar::instance()->shortLongMessage(
             genericError,
             i18n( "File write failed" ),
             KDE::StatusBar::Error
@@ -565,7 +565,7 @@ MtpMediaDevice::deleteTrack(MtpMediaItem *trackItem)
     if( status != 0 )
     {
         debug() << "delete track failed" << endl;
-        amaroK::StatusBar::instance()->shortLongMessage(
+        Amarok::StatusBar::instance()->shortLongMessage(
             genericError,
             i18n( "Delete file failed" ),
             KDE::StatusBar::Error
@@ -621,7 +621,7 @@ MtpMediaDevice::openDevice( bool silent )
     m_critical_mutex.unlock();
 	if( m_device == 0 ) {
         debug() << "No devices." << endl;
-        amaroK::StatusBar::instance()->shortLongMessage(
+        Amarok::StatusBar::instance()->shortLongMessage(
             genericError,
             i18n( "MTP device could not be opened" ),
             KDE::StatusBar::Error
@@ -631,7 +631,7 @@ MtpMediaDevice::openDevice( bool silent )
 	}
 
     QString modelname = QString( LIBMTP_Get_Modelname( m_device ) );
-#if LIBMTP_FRIENDLY_NAME 
+#if LIBMTP_FRIENDLY_NAME
     QString ownername = QString( LIBMTP_Get_Friendlyname( m_device ) );
 #else
     QString ownername = QString( LIBMTP_Get_Ownername( m_device ) );
@@ -821,7 +821,7 @@ MtpMediaDevice::rmbPressed( QListViewItem *qitem, const QPoint &point, int )
     if( item )
     {
         KPopupMenu menu( m_view);
-        menu.insertItem( SmallIconSet( amaroK::icon( "remove" ) ), i18n( "Delete from device" ), DELETE );
+        menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n( "Delete from device" ), DELETE );
 
         int id =  menu.exec( point );
         switch( id )
@@ -1111,7 +1111,7 @@ trackValueList::readFromDevice( MtpMediaDevice *mtp )
     if( tracks == 0 )
     {
         debug()<< "Error reading tracks. 0 returned." << endl;
-        amaroK::StatusBar::instance()->shortLongMessage(
+        Amarok::StatusBar::instance()->shortLongMessage(
             genericError,
             i18n( "Could not read MTP Device tracks" ),
             KDE::StatusBar::Error

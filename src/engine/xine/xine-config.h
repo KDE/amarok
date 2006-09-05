@@ -101,7 +101,7 @@ public:
 };
 
 
-class XineConfigDialog : public amaroK::PluginConfig
+class XineConfigDialog : public Amarok::PluginConfig
 {
     Q_OBJECT
 

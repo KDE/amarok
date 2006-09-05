@@ -56,7 +56,7 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
         , m_recursively( recursive )
         , m_incremental( incremental )
         , m_restart( restart )
-        , m_logfile( amaroK::saveLocation( QString::null ) + "collection_scan.log"  )
+        , m_logfile( Amarok::saveLocation( QString::null ) + "collection_scan.log"  )
         , m_pause( false )
 {
     DcopCollectionScannerHandler* dcsh = new DcopCollectionScannerHandler();
@@ -105,7 +105,7 @@ CollectionScanner::doJob() //SLOT
         logFile.open( IO_ReadOnly );
         QString lastFile = logFile.readAll();
 
-        QFile folderFile( amaroK::saveLocation( QString::null ) + "collection_scan.files"   );
+        QFile folderFile( Amarok::saveLocation( QString::null ) + "collection_scan.files"   );
         folderFile.open( IO_ReadOnly );
         entries = QStringList::split( "\n", folderFile.readAll() );
 
@@ -128,7 +128,7 @@ CollectionScanner::doJob() //SLOT
             readDir( dir, entries );
         }
 
-        QFile folderFile( amaroK::saveLocation( QString::null ) + "collection_scan.files"   );
+        QFile folderFile( Amarok::saveLocation( QString::null ) + "collection_scan.files"   );
         folderFile.open( IO_WriteOnly );
         QTextStream stream( &folderFile );
         stream << entries.join( "\n" );
