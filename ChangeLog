@@ -35,7 +35,7 @@ VERSION 1.4.3:
     * Smart Playlists only load media from currently mounted devices.
 
   BUGFIXES:
-    * Dequeing tracks whilst in dynamic mode might not work. (BR 133449)
+    * Dequeuing tracks whilst in dynamic mode might not work. (BR 133449)
     * When marking podcast episodes as listened, update the channel icon if
       necessary. (BR 133497)
     * Don't always mark podcast channel icon as "listened" on rescan if. 
