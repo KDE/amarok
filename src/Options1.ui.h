@@ -46,7 +46,7 @@ void Options1::init()
 
 void Options1::slotUpdateMoodFrame()
 {
-    if( Moodbar::executableExists() )
+/*    if( Moodbar::executableExists() )
       {
         moodbarHelpLabel->hide();
         moodFrame->setEnabled(true);
@@ -61,5 +61,5 @@ void Options1::slotUpdateMoodFrame()
         moodbarHelpLabel->show();
         kcfg_ShowMoodbar->setChecked(false);
         moodFrame->setEnabled(false);
-      }
+      } */
 }

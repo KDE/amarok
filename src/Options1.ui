@@ -49,7 +49,7 @@
                         <cstring>kcfg_ShowSplashscreen</cstring>
                     </property>
                     <property name="text">
-                        <string>Sho&amp;w splash-screen on startup</string>
+                        <string>Show splash-screen &amp;on startup</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Check to enable the splashscreen during Amarok startup.</string>
@@ -105,7 +105,7 @@
                                 <bool>false</bool>
                             </property>
                             <property name="text">
-                                <string>&amp;Flash tray icon when playing</string>
+                                <string>Flash tray i&amp;con when playing</string>
                             </property>
                             <property name="toolTip" stdset="0">
                                 <string>Check to animate the Amarok system tray icon.</string>
@@ -121,7 +121,7 @@
                         <cstring>kcfg_ShowPlayerWindow</cstring>
                     </property>
                     <property name="text">
-                        <string>Show player window</string>
+                        <string>Show pla&amp;yer window</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Check to enable an extra player window.</string>
@@ -353,7 +353,7 @@
                         <cstring>kcfg_UseScores</cstring>
                     </property>
                     <property name="text">
-                        <string>Use &amp;scores</string>
+                        <string>&amp;Use scores</string>
                     </property>
                     <property name="checked">
                         <bool>false</bool>
@@ -367,209 +367,11 @@
                         <cstring>kcfg_UseRatings</cstring>
                     </property>
                     <property name="text">
-                        <string>Use ratings</string>
+                        <string>Use rati&amp;ngs</string>
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>You can assign ratings to tracks manually, from 1 to 5 stars.</string>
                     </property>
-                </widget>
-                <widget class="Line">
-                    <property name="name">
-                        <cstring>line1</cstring>
-                    </property>
-                    <property name="frameShape">
-                        <enum>HLine</enum>
-                    </property>
-                    <property name="frameShadow">
-                        <enum>Sunken</enum>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                </widget>
-                <widget class="KActiveLabel">
-                    <property name="name">
-                        <cstring>moodbarHelpLabel</cstring>
-                    </property>
-                    <property name="text">
-                        <string>You need the &lt;a href='http://amarok.kde.org/wiki/Moodbar'&gt;moodbar package&lt;/a&gt; installed to enable the moodbar feature.</string>
-                    </property>
-                </widget>
-                <widget class="QFrame">
-                    <property name="name">
-                        <cstring>moodFrame</cstring>
-                    </property>
-                    <property name="frameShape">
-                        <enum>NoFrame</enum>
-                    </property>
-                    <property name="frameShadow">
-                        <enum>Raised</enum>
-                    </property>
-                    <property name="lineWidth">
-                        <number>0</number>
-                    </property>
-                    <property name="margin">
-                        <number>0</number>
-                    </property>
-                    <vbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>0</number>
-                        </property>
-                        <property name="spacing">
-                            <number>0</number>
-                        </property>
-                        <widget class="QCheckBox">
-                            <property name="name">
-                                <cstring>kcfg_ShowMoodbar</cstring>
-                            </property>
-                            <property name="enabled">
-                                <bool>true</bool>
-                            </property>
-                            <property name="text">
-                                <string>Use &amp;moods</string>
-                            </property>
-                            <property name="checked">
-                                <bool>true</bool>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>Displays a visual representation of the current track in the slider bar of the player window and a column in the playlist window.</string>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Displays a visual representation of the current track in the slider bar of the player window and a column in the playlist window.</string>
-                            </property>
-                        </widget>
-                        <widget class="QLayoutWidget">
-                            <property name="name">
-                                <cstring>layout8_2_2</cstring>
-                            </property>
-                            <hbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <spacer>
-                                    <property name="name">
-                                        <cstring>spacerMoodier</cstring>
-                                    </property>
-                                    <property name="orientation">
-                                        <enum>Horizontal</enum>
-                                    </property>
-                                    <property name="sizeType">
-                                        <enum>Fixed</enum>
-                                    </property>
-                                    <property name="sizeHint">
-                                        <size>
-                                            <width>16</width>
-                                            <height>21</height>
-                                        </size>
-                                    </property>
-                                </spacer>
-                                <widget class="QCheckBox">
-                                    <property name="name">
-                                        <cstring>kcfg_MakeMoodier</cstring>
-                                    </property>
-                                    <property name="enabled">
-                                        <bool>true</bool>
-                                    </property>
-                                    <property name="text">
-                                        <string>Make m&amp;oodier:</string>
-                                    </property>
-                                    <property name="toolTip" stdset="0">
-                                        <string>When enabled, the hue distribution is quantised and respread evenly, giving a prettier but less meaningful output.</string>
-                                    </property>
-                                    <property name="whatsThis" stdset="0">
-                                        <string>When enabled, the hue distribution is quantised and respread evenly, giving a prettier but less meaningful output.</string>
-                                    </property>
-                                </widget>
-                                <widget class="QComboBox">
-                                    <item>
-                                        <property name="text">
-                                            <string>Happy Like a Rainbow</string>
-                                        </property>
-                                    </item>
-                                    <item>
-                                        <property name="text">
-                                            <string>Angry as Hell</string>
-                                        </property>
-                                    </item>
-                                    <item>
-                                        <property name="text">
-                                            <string>Frozen in the Arctic</string>
-                                        </property>
-                                    </item>
-                                    <property name="name">
-                                        <cstring>kcfg_AlterMood</cstring>
-                                    </property>
-                                    <property name="enabled">
-                                        <bool>false</bool>
-                                    </property>
-                                </widget>
-                                <spacer>
-                                    <property name="name">
-                                        <cstring>spacer7_2_2_2</cstring>
-                                    </property>
-                                    <property name="orientation">
-                                        <enum>Horizontal</enum>
-                                    </property>
-                                    <property name="sizeType">
-                                        <enum>Expanding</enum>
-                                    </property>
-                                    <property name="sizeHint">
-                                        <size>
-                                            <width>130</width>
-                                            <height>20</height>
-                                        </size>
-                                    </property>
-                                </spacer>
-                            </hbox>
-                        </widget>
-                        <widget class="QLayoutWidget">
-                            <property name="name">
-                                <cstring>layout7_2_2</cstring>
-                            </property>
-                            <hbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <spacer>
-                                    <property name="name">
-                                        <cstring>spacerWithMusic</cstring>
-                                    </property>
-                                    <property name="orientation">
-                                        <enum>Horizontal</enum>
-                                    </property>
-                                    <property name="sizeType">
-                                        <enum>Fixed</enum>
-                                    </property>
-                                    <property name="sizeHint">
-                                        <size>
-                                            <width>16</width>
-                                            <height>21</height>
-                                        </size>
-                                    </property>
-                                </spacer>
-                                <widget class="QCheckBox">
-                                    <property name="name">
-                                        <cstring>kcfg_MoodsWithMusic</cstring>
-                                    </property>
-                                    <property name="enabled">
-                                        <bool>true</bool>
-                                    </property>
-                                    <property name="text">
-                                        <string>Stor&amp;e mood data files with music</string>
-                                    </property>
-                                    <property name="toolTip" stdset="0">
-                                        <string>Enabling this option stores Mood data files with the music files. Disabling stores them in your home folder.</string>
-                                    </property>
-                                    <property name="whatsThis" stdset="0">
-                                        <string>Enabling this option stores Mood data files with the music files. Namely, the mood file for /music/file.mp3 will be /music/file.mood.  Disabling stores them in your home folder.</string>
-                                    </property>
-                                </widget>
-                            </hbox>
-                        </widget>
-                    </vbox>
                 </widget>
             </vbox>
         </widget>
@@ -636,6 +438,8 @@
         </spacer>
     </vbox>
 </widget>
+<customwidgets>
+</customwidgets>
 <connections>
     <connection>
         <sender>kcfg_ShowTrayIcon</sender>
@@ -655,18 +459,6 @@
         <receiver>kLineEdit_customBrowser</receiver>
         <slot>setEnabled(bool)</slot>
     </connection>
-    <connection>
-        <sender>kcfg_ShowMoodbar</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>General</receiver>
-        <slot>slotUpdateMoodFrame()</slot>
-    </connection>
-    <connection>
-        <sender>kcfg_MakeMoodier</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>General</receiver>
-        <slot>slotUpdateMoodFrame()</slot>
-    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">Options1.ui.h</include>
@@ -681,6 +473,5 @@
 <includehints>
     <includehint>kcombobox.h</includehint>
     <includehint>klineedit.h</includehint>
-    <includehint>kactivelabel.h</includehint>
 </includehints>
 </UI>
