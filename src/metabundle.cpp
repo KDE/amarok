@@ -38,8 +38,10 @@
 #include <taglib/tag.h>
 #include <taglib/tstring.h>
 #include <taglib/tlist.h>
+#include <taglib/apetag.h>
 #include <taglib/id3v2tag.h>
 #include <taglib/id3v1tag.h>
+#include <taglib/mpcfile.h>
 #include <taglib/mpegfile.h>
 #include <taglib/oggfile.h>
 #include <taglib/oggflacfile.h>
@@ -498,7 +500,7 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
 
     if( !fileref.isNull() )
     {
-        setUniqueId( readUniqueId() );
+        setUniqueId( readUniqueId( &fileref ) );
 
         tag = fileref.tag();
 
@@ -1486,9 +1488,62 @@ void MetaBundle::setUniqueId( const QString &id )
     m_uniqueId = id;
 }
 
-QString
-MetaBundle::readUniqueId()
+const TagLib::ByteVector
+MetaBundle::readUniqueIdHelper( TagLib::FileRef fileref ) const
 {
+    if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
+    {
+        if( file->ID3v2Tag() )
+            return file->ID3v2Tag()->render();
+        else if( file->ID3v1Tag() )
+            return file->ID3v1Tag()->render();
+        else if( file->APETag() )
+            return file->APETag()->render();
+    }
+    else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
+    {
+        if( file->tag() )
+            return file->tag()->render();
+    }
+    else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
+    {
+        if( file->ID3v2Tag() )
+            return file->ID3v2Tag()->render();
+        else if( file->ID3v1Tag() )
+            return file->ID3v1Tag()->render();
+        else if( file->xiphComment() )
+            return file->xiphComment()->render();
+    }
+    else if ( TagLib::Ogg::FLAC::File *file = dynamic_cast<TagLib::Ogg::FLAC::File *>( fileref.file() ) )
+    {
+        if( file->tag() )
+            return file->tag()->render();
+    }
+    else if ( TagLib::MPC::File *file = dynamic_cast<TagLib::MPC::File *>( fileref.file() ) )
+    {
+        if( file->ID3v1Tag() )
+            return file->ID3v1Tag()->render();
+        else if( file->APETag() )
+            return file->APETag()->render();
+    }
+    TagLib::ByteVector bv;
+    return bv;
+}
+
+QString
+MetaBundle::readUniqueId( TagLib::FileRef* fileref )
+{
+    if( !fileref )
+    {
+        const QString path = url().path();
+        *fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
+    }
+
+    if( fileref->isNull() )
+        return QString::null;
+
+    TagLib::ByteVector bv = readUniqueIdHelper( *fileref );
+
     //get our unique id
     KMD5 md5( 0, 0 );
 
@@ -1498,6 +1553,8 @@ MetaBundle::readUniqueId()
     int readlen = 0;
     QCString size = 0;
     QString returnval;
+
+    md5.update( bv.data(), bv.size() );
 
     if( qfile.open( IO_Raw | IO_ReadOnly ) )
     {

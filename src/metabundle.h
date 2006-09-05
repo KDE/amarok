@@ -302,7 +302,8 @@ public: //modifiers
     void setLastFmBundle( const LastFm::Bundle &last );
     void setUniqueId(); //uses database for lookup
     void setUniqueId( const QString &id ); //SEE COMMENT in .CPP
-    QString readUniqueId();
+    const TagLib::ByteVector readUniqueIdHelper( TagLib::FileRef fileref ) const;
+    QString readUniqueId( TagLib::FileRef *fileref = 0  );
     void scannerAcknowledged() {}
 
     void detach(); // for being able to apply QDeepCopy<>
