@@ -28,20 +28,24 @@ class Proxy
 
     myputs( "running with port: #{port} and url: #{remote_url} and engine: #{engine}" )
 
-    #
-    # amarok is, well, Amarok
-    #
+    # Open the amarok-facing socket
+    # amarok: the server port on the localhost to which the engine will connect.
     amarok  = TCPServer.new( port )
     myputs( "startup" )
 
+    # amaroks: server socket for above.
     amaroks = amarok.accept
 
-    #
-    # serv is the lastfm stream server
-    #
+    # uri: from amarok, identifies the source of the music
     uri = URI.parse( remote_url )
     myputs("host " << uri.host << " ")
     myputs( port )
+
+    # Now we have the source of the music, determine the HTTP request that
+    # needs to be made to the remote server (or remote proxy).  It will
+    # be of the form "GET ... HTTP/1.x".  It will include the
+    # http://hostname/ part if, and only if, we're using a remote proxy.
+    get = get_request( uri, !proxy.nil? )
 
     #Check for proxy
     proxy_uri = URI.parse( proxy )
@@ -54,21 +58,22 @@ class Proxy
     serv.sync = true
     myputs( "running with port: #{uri.port} and host: #{uri.host}" )
 
-    # here we substitute the proxy GET
-    data = amaroks.readline
-    get = get_request( uri )
+    # Read the GET request from the engine
+    amaroks_get = amaroks.readline
+    myputs( amaroks_get.inspect )
 
-    myputs( data.inspect )
     myputs( get.inspect )
-    myputs( "#{data} but sending #{get}" )
+    myputs( "#{amaroks_get} but sending #{get}" )
     serv.puts( get )
 
-    # the client initiates everything - so copy it to the server
+    # Copy the HTTP REQUEST headers from the amarok engine to the
+    # remote server, and signal end of headers.
     myputs( "COPY from amarok -> serv" )
     cp_to_empty_outward( amaroks, serv )
-
     safe_write( serv, "\r\n\r\n" )
 
+    # Copy the HTTP RESPONSE headers from the server back to the
+    # amarok engine.
     myputs( "COPY from serv -> amarok" )
     cp_to_empty_inward( serv, amaroks )
 
@@ -87,7 +92,7 @@ class Proxy
       end
     end
 
-    # now copy from the server to amarok
+    # Now stream the music!
     myputs( "Before cp_all()" )
 
     cp_all_inward( serv, amaroks )
@@ -157,12 +162,18 @@ class LastFM < Proxy
 # Last.fm protocol:
 # Stream consists of pure MP3 files concatenated, with the string "SYNC" in between, which
 # marks a track change. The proxy notifies Amarok on track change.
-  def get_request( remote_uri )
-    get =  "GET #{remote_uri.path || '/'}?#{remote_uri.query} HTTP/1.1" + ENDL
-    get += "Host: #{remote_uri.host}:#{remote_uri.port}" + ENDL + ENDL
-    myputs( "\n\n\n\n" + get )
-    get
+
+  def get_request( remote_uri, via_proxy )
+    # remote_uri - the URI of the stream we want
+    # via_proxy - true iff we're going through another proxy
+    if via_proxy then
+      url = remote_uri.to_s
+    else
+      url = "#{remote_uri.path || '/'}?#{remote_uri.query}"
+    end
+    "GET #{url} HTTP/1.1" + ENDL + ENDL
   end
+
 end
 
 class DaapProxy < Proxy
@@ -172,7 +183,8 @@ class DaapProxy < Proxy
     super( port, remote_url, engine, proxy )
   end
 
-  def get_request( remote_uri )
+  def get_request( remote_uri, via_proxy )
+    # via_proxy ignored for now
     get = "GET #{remote_uri.path || '/'}?#{remote_uri.query} HTTP/1.1" + ENDL
     get +=  "Accept: */*" + ENDL
     get += "User-Agent: iTunes/4.6 (Windows; N)" + ENDL
