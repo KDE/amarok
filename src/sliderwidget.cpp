@@ -137,6 +137,7 @@ Amarok::PrettySlider::PrettySlider( Qt::Orientation orientation, SliderMode mode
                                     QWidget *parent, uint max )
     : Amarok::Slider( orientation, parent, max )
     , m_mode( mode )
+    , m_showingMoodbar( false )
 {
     if( m_mode == Pretty)
       {
@@ -166,7 +167,7 @@ Amarok::PrettySlider::mousePressEvent( QMouseEvent *e )
 void
 Amarok::PrettySlider::slideEvent( QMouseEvent *e )
 {
-    if( m_mode == Pretty )
+    if( m_mode == Pretty  ||  m_showingMoodbar )
       QSlider::setValue( orientation() == Horizontal
           ? QRangeControl::valueFromPosition( e->pos().x(), width()-2 )
           : QRangeControl::valueFromPosition( e->pos().y(), height()-2 ) );
@@ -188,11 +189,11 @@ Amarok::PrettySlider::paintEvent( QPaintEvent *e )
     const int pos = int( double( w-2 ) / maxValue() * Slider::value() );
     int h = THICKNESS;
 
-    bool doMoodbar = ( !m_bundle.url().isEmpty()       &&
-                       m_bundle.moodbar().dataExists() &&
-                       AmarokConfig::showMoodbar() );
+    m_showingMoodbar = ( !m_bundle.url().isEmpty()       &&
+                         m_bundle.moodbar().dataExists() &&
+                         AmarokConfig::showMoodbar() );
     QPixmap mood;
-    if( doMoodbar )
+    if( m_showingMoodbar )
       {
         if( m_mode == Normal )
           h = (orientation() == Qt::Vertical ? width() : height()) - 2*MARGIN;
@@ -217,7 +218,7 @@ Amarok::PrettySlider::paintEvent( QPaintEvent *e )
         p.rotate( -90 ); //90 degrees clockwise
     }
 
-    if( !doMoodbar )
+    if( !m_showingMoodbar )
       {
         p.translate( 0, MARGIN );
           p.setPen( Amarok::ColorScheme::Foreground );

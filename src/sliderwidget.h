@@ -111,6 +111,7 @@ namespace Amarok
 
             SliderMode m_mode;
             MetaBundle m_bundle;  // Has our moodbar data!
+            bool       m_showingMoodbar;
     };
 
     class VolumeSlider: public Slider
