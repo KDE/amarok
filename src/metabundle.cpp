@@ -1442,7 +1442,7 @@ bool MetaBundle::save( QTextStream &stream, const QStringList &attributes, int i
     {
         QDomElement tag = QDomSucksItNeedsADocument.createElement( exactColumnName( i ) );
         //debug() << "exactColumName(i) = " << exactColumnName( i ) << endl;
-        QDomText text = QDomSucksItNeedsADocument.createTextNode( exactText( i, true ) );
+        QDomText text = QDomSucksItNeedsADocument.createTextNode( exactText( i, true ).utf8() );
         //debug() << "exactText(i) = " << exactText( i ) << endl;
         tag.appendChild( text );
 
