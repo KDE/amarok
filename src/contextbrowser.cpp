@@ -1076,15 +1076,19 @@ void ContextBrowser::showCurrentTrack() //SLOT
     }
 
     // TODO: Show CurrentTrack or Lyric tab if they were selected
-    if ( m_emptyDB && CollectionDB::instance()->isValid() && !MountPointManager::instance()->collectionFolders().isEmpty() )
+    // If it's not a streaming, check for a collection
+    if ( !EngineController::engine()->isStream() )
     {
-        showScanning();
-        return;
-    }
-    else if ( CollectionDB::instance()->isEmpty() || !CollectionDB::instance()->isValid() )
-    {
-        showIntroduction();
-        return;
+        if ( m_emptyDB && CollectionDB::instance()->isValid() && !MountPointManager::instance()->collectionFolders().isEmpty() )
+        {
+            showScanning();
+            return;
+        }
+        else if ( CollectionDB::instance()->isEmpty() || !CollectionDB::instance()->isValid() )
+        {
+            showIntroduction();
+            return;
+        }
     }
     if( !m_dirtyCurrentTrackPage )
         return;
