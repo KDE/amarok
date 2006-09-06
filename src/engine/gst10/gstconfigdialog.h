@@ -11,7 +11,7 @@
 
 class GstEngine;
 
-class GstConfigDialog : public amaroK::PluginConfig
+class GstConfigDialog : public Amarok::PluginConfig
 {
     Q_OBJECT
 
