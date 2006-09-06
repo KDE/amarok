@@ -71,6 +71,7 @@ Proxy::Proxy(KURL stream, DaapClient* client, const char* name)
     *m_proxy << AmarokConfig::soundSystem();
     *m_proxy << hash;
     *m_proxy << QString::number( revisionId );
+    *m_proxy << Amarok::proxyForUrl( realStream.url() );
 
     if( !m_proxy->start( KProcIO::NotifyOnExit, true ) ) {
         error() << "Failed to start amarok_proxy.rb" << endl;

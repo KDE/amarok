@@ -19,6 +19,7 @@
 
 #include "metabundle.h"
 
+#include <qhttp.h>
 #include <qobject.h>
 #include <qserversocket.h>
 #include <qurl.h>
@@ -34,6 +35,37 @@ class QSocket;
 class QTimer;
 
 namespace KIO { class Job; }
+
+/* AmarokHttp is a hack written so that lastfm code could easily use something proxy aware.
+   DO NOT use this class for anything else, use KIO directly instead. */
+class AmarokHttp : public QObject
+{
+    Q_OBJECT
+
+    public:
+    AmarokHttp ( const QString & hostname, Q_UINT16 port = 80, QObject* parent = 0 );
+    int get ( const QString & path );
+    QHttp::State state() const;
+    QByteArray readAll ();
+    QHttp::Error error();
+
+    signals:
+    void requestFinished ( int id, bool error );
+
+    protected slots:
+    void slotData(KIO::Job*, const QByteArray& );
+    void slotResult(KIO::Job*);
+
+    protected:
+    QString m_hostname;
+    Q_UINT16 m_port;
+    QString  m_path;
+    QHttp::State m_state;
+    QHttp::Error m_error;
+    bool m_done;
+    QByteArray m_result;
+};
+
 
 namespace LastFm
 {

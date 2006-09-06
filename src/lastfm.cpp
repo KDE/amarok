@@ -46,6 +46,87 @@
 using namespace LastFm;
 
 ///////////////////////////////////////////////////////////////////////////////
+// CLASS AmarokHttp
+// AmarokHttp is a hack written so that lastfm code could easily use something proxy aware.
+// DO NOT use this class for anything else, use KIO directly instead.
+////////////////////////////////////////////////////////////////////////////////
+AmarokHttp::AmarokHttp ( const QString& hostname, Q_UINT16 port,
+                         QObject* parent )
+    : QObject( parent ),
+      m_hostname( hostname ),
+      m_port( port )
+{}
+
+int
+AmarokHttp::get ( const QString & path )
+{
+    QString uri = QString( "http://%1:%2/%3" )
+                  .arg( m_hostname )
+                  .arg( m_port )
+                  .arg( path );
+
+    m_done = false;
+    m_error = QHttp::NoError;
+    m_state = QHttp::Connecting;
+    KIO::TransferJob *job = KIO::get(uri, true, false);
+    connect(job,  SIGNAL(data(KIO::Job*, const QByteArray&)),
+            this, SLOT(slotData(KIO::Job*, const QByteArray&)));
+    connect(job,  SIGNAL(result(KIO::Job*)),
+            this, SLOT(slotResult(KIO::Job*)));
+
+    return 0;
+}
+
+QHttp::State
+AmarokHttp::state() const
+{
+    return m_state;
+}
+
+QByteArray
+AmarokHttp::readAll ()
+{
+    return m_result;
+}
+
+QHttp::Error
+AmarokHttp::error()
+{
+    return m_error;
+}
+
+void
+AmarokHttp::slotData(KIO::Job*, const QByteArray& data)
+{
+    if( data.size() == 0 ) {
+        return;
+    }
+    else if ( m_result.size() == 0 ) {
+        m_result = data;
+    }
+    else if ( m_result.resize( m_result.size() + data.size() ) ) {
+        memcpy( m_result.end(), data.data(),  data.size() );
+    }
+}
+
+void
+AmarokHttp::slotResult(KIO::Job* job)
+{
+    bool err = job->error();
+    if( err || m_error != QHttp::NoError ) {
+        m_error = QHttp::UnknownError;
+    }
+    else {
+        m_error = QHttp::NoError;
+    }
+    m_done = true;
+    m_state = QHttp::Unconnected;
+    emit( requestFinished( 0, err ) );
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////
 // CLASS Controller
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -312,7 +393,7 @@ WebService::handshake( const QString& username, const QString& password )
     m_username = username;
     m_password = password;
 
-    QHttp http( "ws.audioscrobbler.com", 80 );
+    AmarokHttp http( "ws.audioscrobbler.com", 80 );
 
     const QString path =
             QString( "/radio/handshake.php?version=%1&platform=%2&username=%3&passwordmd5=%4&debug=%5" )
@@ -362,6 +443,7 @@ WebService::handshake( const QString& username, const QString& password )
     *m_server << QString::number( port );
     *m_server << m_streamUrl.toString();
     *m_server << AmarokConfig::soundSystem();
+    *m_server << Amarok::proxyForUrl( m_streamUrl.toString() );
 
     if( !m_server->start( KProcIO::NotifyOnExit, true ) ) {
         error() << "Failed to start amarok_proxy.rb" << endl;
@@ -387,7 +469,7 @@ WebService::changeStation( QString url )
 {
     debug() << "Changing station:" << url << endl;
 
-    QHttp http( m_baseHost, 80 );
+    AmarokHttp http( m_baseHost, 80 );
 
     http.get( QString( m_basePath + "/adjust.php?session=%1&url=%2&debug=0" )
              .arg( m_session )
@@ -427,7 +509,7 @@ WebService::changeStation( QString url )
 void
 WebService::requestMetaData() //SLOT
 {
-    QHttp *http = new QHttp( m_baseHost, 80, this );
+    AmarokHttp *http = new AmarokHttp( m_baseHost, 80, this );
     connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( metaDataFinished( int, bool ) ) );
 
     http->get( QString( m_basePath + "/np.php?session=%1&debug=%2" )
@@ -441,7 +523,7 @@ WebService::metaDataFinished( int /*id*/, bool error ) //SLOT
 {
     DEBUG_BLOCK
 
-    QHttp* http = (QHttp*) sender();
+    AmarokHttp* http = (AmarokHttp*) sender();
     http->deleteLater();
     if( error ) return;
 
@@ -514,7 +596,7 @@ WebService::enableScrobbling( bool enabled ) //SLOT
     else
         debug() << "Disabling Scrobbling!" << endl;
 
-    QHttp *http = new QHttp( m_baseHost, 80, this );
+    AmarokHttp *http = new AmarokHttp( m_baseHost, 80, this );
     connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( enableScrobblingFinished( int, bool ) ) );
 
     http->get( QString( m_basePath + "/control.php?session=%1&command=%2&debug=%3" )
@@ -527,7 +609,7 @@ WebService::enableScrobbling( bool enabled ) //SLOT
 void
 WebService::enableScrobblingFinished( int /*id*/, bool error ) //SLOT
 {
-    QHttp* http = (QHttp*) sender();
+    AmarokHttp* http = (AmarokHttp*) sender();
     http->deleteLater();
     if ( error ) return;
 
@@ -538,7 +620,7 @@ WebService::enableScrobblingFinished( int /*id*/, bool error ) //SLOT
 void
 WebService::love() //SLOT
 {
-    QHttp *http = new QHttp( m_baseHost, 80, this );
+    AmarokHttp *http = new AmarokHttp( m_baseHost, 80, this );
     connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( loveFinished( int, bool ) ) );
 
     http->get( QString( m_basePath + "/control.php?session=%1&command=love&debug=%2" )
@@ -551,7 +633,7 @@ WebService::love() //SLOT
 void
 WebService::skip() //SLOT
 {
-    QHttp *http = new QHttp( m_baseHost, 80, this );
+    AmarokHttp *http = new AmarokHttp( m_baseHost, 80, this );
     connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( skipFinished( int, bool ) ) );
 
     http->get( QString( m_basePath + "/control.php?session=%1&command=skip&debug=%2" )
@@ -564,7 +646,7 @@ WebService::skip() //SLOT
 void
 WebService::ban() //SLOT
 {
-    QHttp *http = new QHttp( m_baseHost, 80, this );
+    AmarokHttp *http = new AmarokHttp( m_baseHost, 80, this );
     connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( banFinished( int, bool ) ) );
 
     http->get( QString( m_basePath + "/control.php?session=%1&command=ban&debug=%2" )
@@ -579,7 +661,7 @@ WebService::loveFinished( int /*id*/, bool error ) //SLOT
 {
     DEBUG_BLOCK
 
-    QHttp* http = (QHttp*) sender();
+    AmarokHttp* http = (AmarokHttp*) sender();
     http->deleteLater();
     if( error ) return;
 
@@ -592,7 +674,7 @@ WebService::skipFinished( int /*id*/, bool error ) //SLOT
 {
     DEBUG_BLOCK
 
-    QHttp* http = (QHttp*) sender();
+    AmarokHttp* http = (AmarokHttp*) sender();
     http->deleteLater();
     if( error ) return;
 
@@ -606,7 +688,7 @@ WebService::banFinished( int /*id*/, bool error ) //SLOT
 {
     DEBUG_BLOCK
 
-    QHttp* http = (QHttp*) sender();
+    AmarokHttp* http = (AmarokHttp*) sender();
     http->deleteLater();
     if( error ) return;
 
@@ -622,7 +704,7 @@ WebService::friends( QString username )
     if ( username.isEmpty() )
         username = m_username;
 
-    QHttp *http = new QHttp( m_baseHost, 80, this );
+    AmarokHttp *http = new AmarokHttp( m_baseHost, 80, this );
     connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( friendsFinished( bool ) ) );
 
     http->get( QString( "/1.0/user/%1/friends.xml" )
@@ -633,7 +715,7 @@ WebService::friends( QString username )
 void
 WebService::friendsFinished( int /*id*/, bool error ) //SLOT
 {
-    QHttp* http = (QHttp*) sender();
+    AmarokHttp* http = (AmarokHttp*) sender();
     http->deleteLater();
     if( error ) return;
 
@@ -664,7 +746,7 @@ WebService::neighbours( QString username )
     if ( username.isEmpty() )
         username = m_username;
 
-    QHttp *http = new QHttp( m_baseHost, 80, this );
+    AmarokHttp *http = new AmarokHttp( m_baseHost, 80, this );
     connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( neighboursFinished( bool ) ) );
 
     http->get( QString( "/1.0/user/%1/neighbours.xml" )
@@ -675,7 +757,7 @@ WebService::neighbours( QString username )
 void
 WebService::neighboursFinished( int /*id*/, bool error ) //SLOT
 {
-    QHttp* http = (QHttp*) sender();
+    AmarokHttp* http = (AmarokHttp*) sender();
     http->deleteLater();
     if( error )  return;
 
@@ -706,7 +788,7 @@ WebService::userTags( QString username )
     if ( username.isEmpty() )
         username = m_username;
 
-    QHttp *http = new QHttp( m_baseHost, 80, this );
+    AmarokHttp *http = new AmarokHttp( m_baseHost, 80, this );
     connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( userTagsFinished( bool ) ) );
 
     http->get( QString( "/1.0/user/%1/tags.xml?debug=%2" )
@@ -717,7 +799,7 @@ WebService::userTags( QString username )
 void
 WebService::userTagsFinished( int /*id*/, bool error ) //SLOT
 {
-    QHttp* http = (QHttp*) sender();
+    AmarokHttp* http = (AmarokHttp*) sender();
     http->deleteLater();
     if( error ) return;
 
@@ -748,7 +830,7 @@ WebService::recentTracks( QString username )
     if ( username.isEmpty() )
         username = m_username;
 
-    QHttp *http = new QHttp( m_baseHost, 80, this );
+    AmarokHttp *http = new AmarokHttp( m_baseHost, 80, this );
     connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( recentTracksFinished( bool ) ) );
 
     http->get( QString( "/1.0/user/%1/recenttracks.xml" )
@@ -759,7 +841,7 @@ WebService::recentTracks( QString username )
 void
 WebService::recentTracksFinished( int /*id*/, bool error ) //SLOT
 {
-    QHttp* http = (QHttp*) sender();
+    AmarokHttp* http = (AmarokHttp*) sender();
     http->deleteLater();
     if( error ) return;
 
@@ -834,7 +916,7 @@ WebService::recommend( int type, QString username, QString artist, QString token
 void
 WebService::recommendFinished( int /*id*/, bool /*error*/ ) //SLOT
 {
-    QHttp* http = (QHttp*) sender();
+    AmarokHttp* http = (AmarokHttp*) sender();
     http->deleteLater();
 
     debug() << "Recommendation:" << http->readAll() << endl;

@@ -7,6 +7,8 @@
 # (c) 2006 Mark Kretschmann <markey@web.de>
 # (c) 2006 Michael Fellinger <manveru@weez-int.com>
 # (c) 2006 Ian Monroe <ian@monroe.nu>
+# (c) 2006 Martin Ellis <martin.ellis@kdemail.net>
+# (c) 2006 Alexandre Oliveira <aleprj@gmail.net>
 #
 # License: GNU General Public License V2
 
@@ -21,7 +23,7 @@ $stdout.sync = true
 class Proxy
   ENDL = "\r\n"
 
-  def initialize( port, remote_url, engine )
+  def initialize( port, remote_url, engine, proxy )
     @engine = engine
 
     myputs( "running with port: #{port} and url: #{remote_url} and engine: #{engine}" )
@@ -40,7 +42,15 @@ class Proxy
     uri = URI.parse( remote_url )
     myputs("host " << uri.host << " ")
     myputs( port )
-    serv = TCPSocket.new( uri.host, uri.port )
+
+    #Check for proxy
+    proxy_uri = URI.parse( proxy )
+    if ( proxy_uri.class != URI::Generic )
+      serv = TCPSocket.new( proxy_uri.host, proxy_uri.port )
+    else
+      serv = TCPSocket.new( uri.host, uri.port )
+    end
+
     serv.sync = true
     myputs( "running with port: #{uri.port} and host: #{uri.host}" )
 
@@ -156,10 +166,10 @@ class LastFM < Proxy
 end
 
 class DaapProxy < Proxy
-  def initialize( port, remote_url, engine, hash, request_id )
+  def initialize( port, remote_url, engine, hash, request_id, proxy )
     @hash = hash
     @requestId = request_id
-    super( port, remote_url, engine )
+    super( port, remote_url, engine, proxy )
   end
 
   def get_request( remote_uri )
@@ -182,11 +192,11 @@ end
 begin
   myputs( ARGV )
   if( ARGV[0] == "--lastfm" ) then
-    option, port, remote_url, engine = ARGV
-    LastFM.new( port, remote_url, engine )
+    option, port, remote_url, engine, proxy = ARGV
+    LastFM.new( port, remote_url, engine, proxy )
   else
-    option, port, remote_url, engine, hash, request_id = ARGV
-    DaapProxy.new( port, remote_url, engine, hash, request_id )
+    option, port, remote_url, engine, hash, request_id, proxy = ARGV
+    DaapProxy.new( port, remote_url, engine, hash, request_id, proxy )
   end
 rescue
   myputs( $!.to_s )
