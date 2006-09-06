@@ -347,7 +347,7 @@ NjbMediaDevice::downloadSelectedItems()
     m_view->getSelectedLeaves( 0, &items );
     int result = 0;
 
-    for( MediaItem *it = items.first(); it; it = items.next() )
+    for( MediaItem *it = items.first(); it && !(m_canceled); it = items.next() )
     {
         path = destDir.path();
         if( it->type() == MediaItem::TRACK )
@@ -377,7 +377,7 @@ NjbMediaDevice::downloadToCollection()
     tempdir.setAutoDelete( true ); // We don't need it once the work is done.
     QString path = tempdir.name(), filepath;
     KURL::List urls;
-    for( MediaItem *it = items.first(); it; it = items.next() )
+    for( MediaItem *it = items.first(); it && !(m_canceled); it = items.next() )
     {
         if( (it->type() == MediaItem::TRACK) )
         {
@@ -411,6 +411,9 @@ MediaItem*
 NjbMediaDevice::copyTrackToDevice(const MetaBundle& bundle)
 {
     DEBUG_BLOCK
+
+    if( m_canceled )
+            return 0;
     trackValueList::const_iterator it_track = theTracks->findTrackByName( bundle.filename() );
     if( it_track != theTracks->end() )
     {
@@ -698,7 +701,7 @@ NjbMediaDevice::clearItems()
 
 /** Transfer musical info from the njb to local structures */
 int
-NjbMediaDevice::readJukeboxMusic( void)
+NjbMediaDevice::readJukeboxMusic( void )
 {
 //    DEBUG_BLOCK
     int result = NJB_SUCCESS;
@@ -739,7 +742,7 @@ NjbMediaDevice::readJukeboxMusic( void)
 }
 
 NjbMediaItem *
-NjbMediaDevice::addTrackToView(NjbTrack *track, NjbMediaItem *item)
+NjbMediaDevice::addTrackToView( NjbTrack *track, NjbMediaItem *item )
 {
     QString artistName = track->bundle()->artist();
 
