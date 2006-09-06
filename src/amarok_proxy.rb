@@ -171,7 +171,8 @@ class LastFM < Proxy
     else
       url = "#{remote_uri.path || '/'}?#{remote_uri.query}"
     end
-    "GET #{url} HTTP/1.1" + ENDL + ENDL
+    get = "GET #{url} HTTP/1.1" + ENDL
+    get += "Host: #{remote_uri.host}:#{remote_uri.port}" + ENDL + ENDL
   end
 
 end
