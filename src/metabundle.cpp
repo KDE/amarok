@@ -1539,7 +1539,7 @@ MetaBundle::readUniqueId( TagLib::FileRef* fileref )
         *fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
     }
 
-    if( fileref->isNull() )
+    if( !fileref || fileref->isNull() )
         return QString::null;
 
     TagLib::ByteVector bv = readUniqueIdHelper( *fileref );
