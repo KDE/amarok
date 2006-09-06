@@ -1536,7 +1536,9 @@ MetaBundle::readUniqueId( TagLib::FileRef* fileref )
     if( !fileref )
     {
         const QString path = url().path();
-        *fileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
+        //Make it get cleaned up at the end of the function automagically
+        TagLib::FileRef tmpfileref( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
+        fileref = &tmpfileref;
     }
 
     if( !fileref || fileref->isNull() )
