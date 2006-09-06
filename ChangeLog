@@ -11,6 +11,7 @@ VERSION 1.4.4
   CHANGES:
 
   BUGFIXES:
+    * Last.fm streams work with proxies. (BR 131137)
     * Don't try to read m4a tags from apparently invalid files. (BR 133288)
     * Some podcasts would insert line breaks in author/title information and
       cause graphical errors. (BR 133591)
@@ -43,7 +44,7 @@ VERSION 1.4.3:
     * Dequeuing tracks whilst in dynamic mode might not work. (BR 133449)
     * When marking podcast episodes as listened, update the channel icon if
       necessary. (BR 133497)
-    * Don't always mark podcast channel icon as "listened" on rescan if. 
+    * Don't always mark podcast channel icon as "listened" on rescan if.
       (BR 133495)
     * User added streams were not editable once saved. (BR 133483)
     * Cover images were not displayed in some cases. (BR 133174)
