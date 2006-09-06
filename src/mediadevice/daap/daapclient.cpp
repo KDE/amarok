@@ -134,8 +134,7 @@ DaapClient::openDevice(bool /* silent=false */)
              newHost( host, host, ip, port );
         }
     }
-    //for 1.4.3 release, comment it out. still doesn't work with iTunes.
-    //m_sharingServer = new DaapServer( this, "DaapServer" );
+    m_sharingServer = new DaapServer( this, "DaapServer" );
     return true;
 }
 
