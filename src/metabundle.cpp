@@ -1533,11 +1533,14 @@ MetaBundle::readUniqueIdHelper( TagLib::FileRef fileref ) const
 QString
 MetaBundle::readUniqueId( TagLib::FileRef* fileref )
 {
+    //This is used in case we don't get given a fileref
+    TagLib::FileRef tmpfileref;
+
     if( !fileref )
     {
         const QString path = url().path();
         //Make it get cleaned up at the end of the function automagically
-        TagLib::FileRef tmpfileref( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
+        tmpfileref = TagLib::FileRef( QFile::encodeName( path ), true, TagLib::AudioProperties::Fast );
         fileref = &tmpfileref;
     }
 
