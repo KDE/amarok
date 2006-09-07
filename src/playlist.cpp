@@ -3455,6 +3455,8 @@ Playlist::deleteSelectedFiles() //SLOT
     {
         CollectionDB::instance()->removeSongs( urls );
         removeSelectedItems();
+        foreachType( KURL::List, urls )
+          CollectionDB::instance()->emitFileDeleted( (*it).path() );
         QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
     }
 }

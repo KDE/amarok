@@ -1401,6 +1401,8 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                 KURL::List files = listSelected();
                 if ( DeleteDialog::showTrashDialog(this, files) )
                     CollectionDB::instance()->removeSongs( files );
+                foreachType( KURL::List, files )
+                  CollectionDB::instance()->emitFileDeleted( (*it).path() );
                 m_dirty = true;
                 QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
                 break;
