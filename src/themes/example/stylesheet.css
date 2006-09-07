@@ -127,6 +127,28 @@ a {
 .album-year {
   }
 
+.album-length { 
+    float:right; 
+    padding-right:4px; 
+    font-size: AMAROK_FONTSIZEpx; 
+    clear:right; 
+  }
+
+
+.disc-separator {  
+  }
+
+.disc-separator a { 
+    display: block; 
+    padding: 1px 2px; 
+    font-weight: normal; 
+    text-decoration: none; 
+  }
+
+.disc-separator a:hover { 
+    color: AMAROK_FGCOLOR;
+    background-color: AMAROK_BGCOLOR;
+  }
 
 .box {
     border: solid AMAROK_TEXTCOLOR 1px;
