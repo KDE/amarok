@@ -1691,6 +1691,7 @@ PodcastChannel::purge()
             urlsToDelete.append( item->localUrl() );
 
 //         CollectionDB::instance()->removePodcastEpisode( item->dBId() );
+        m_podcastDownloadQueue.remove( item );
     #undef  item
         delete item;
     }
