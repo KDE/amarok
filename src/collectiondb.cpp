@@ -2935,10 +2935,12 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
         return;
 
     MountPointManager *mpm = MountPointManager::instance();
-    int currdeviceid = mpm->getIdForUrl( bundle->url().path() );
+    //const to make sure one isn't later modified without the other being changed
+    const int deviceIdInt = mpm->getIdForUrl( bundle->url().path() );
+    const QString currdeviceid = QString::number( deviceIdInt );
     QString currid = escapeString( bundle->uniqueId() );
-    QString currurl = escapeString( mpm->getRelativePath( currdeviceid, bundle->url().path() ) );
-    QString currdir = escapeString( mpm->getRelativePath( currdeviceid, bundle->url().directory() ) );
+    QString currurl = escapeString( mpm->getRelativePath( deviceIdInt, bundle->url().path() ) );
+    QString currdir = escapeString( mpm->getRelativePath( deviceIdInt, bundle->url().directory() ) );
     //debug() << "Checking currid = " << currid << ", currdir = " << currdir << ", currurl = " << currurl << endl;
     //debug() << "tempTables = " << (tempTables?"true":"false") << endl;
 
@@ -2947,16 +2949,16 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
             "SELECT url, uniqueid "
             "FROM uniqueid%1 "
             "WHERE deviceid = %2 AND url = '%3';" )
-                .arg( tempTables ? "_temp" : "" )
-                .arg( currdeviceid )
-                .arg( currurl ) );
+                .arg( tempTables ? "_temp" : ""
+                 , currdeviceid 
+                 , currurl ) );
 
     QStringList uniqueids = query( QString(
             "SELECT url, uniqueid, deviceid "
             "FROM uniqueid%1 "
             "WHERE uniqueid = '%2';" )
-                .arg( tempTables ? "_temp" : "" )
-                .arg( currid ) );
+                .arg( tempTables ? "_temp" : ""
+                , currid ) );
 
     QStringList nonTempIDs = query( QString(
             "SELECT url, uniqueid, deviceid "
@@ -2968,8 +2970,8 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
             "SELECT url, uniqueid "
             "FROM uniqueid "
             "WHERE deviceid = %1 AND url = '%2';" )
-                .arg( currdeviceid )
-                .arg( currurl ) );
+                .arg( currdeviceid
+                , currurl ) );
 
     QStringList statUIDVal = query( QString(
             "SELECT url, uniqueid, deviceid "
@@ -2981,8 +2983,8 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
             "SELECT url, uniqueid "
             "FROM statistics "
             "WHERE deviceid = %1 AND url = '%2';" )
-                .arg( currdeviceid )
-                .arg( currurl ) );
+                .arg( currdeviceid
+                , currurl ) );
 
     bool tempTablesAndInPermanent = false;
     bool permanentFullMatch = false;
@@ -3003,30 +3005,33 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
     if( !tempTablesAndInPermanent && urls.empty() && uniqueids.empty() )
     {
         //debug() << "first case" << endl;
-        QString insertline = QString( "INSERT INTO uniqueid%1 (deviceid, url, uniqueid, dir) "
+        QString insertline = QStringx( "INSERT INTO uniqueid%1 (deviceid, url, uniqueid, dir) "
                                       "VALUES ( %2,'%3', '%4', '%5');" )
-                .arg( tempTables ? "_temp" : "" )
-                .arg( currdeviceid )
-                .arg( currurl , currid, currdir);
+                .args( QStringList() 
+                 << ( tempTables ? "_temp" : "" )
+                 << currdeviceid
+                 << currurl
+                 << currid
+                 << currdir );
         insert( insertline, NULL );
         if( !statUIDVal.empty() )
         {
             //debug() << "first stats case" << endl;
             query( QString( "UPDATE statistics SET deviceid = %1, url = '%4', deleted = %2 WHERE uniqueid = '%3';" )
-                                .arg( currdeviceid )
-                                .arg( boolF() )
-                                .arg( currid )
-                                .arg( currurl ) );
+                                .arg( currdeviceid 
+                                , boolF()
+                                , currid
+                                , currurl ) );
         }
         else if( !statURLVal.empty() )
         {
             //debug() << "second stats case" << endl;
             query( QString( "UPDATE statistics SET uniqueid = '%1', deleted = %2 "
                             "WHERE deviceid = %3 AND url = '%4';" )
-                                .arg( currid )
-                                .arg( boolF() )
-                                .arg( currdeviceid )
-                                .arg( currurl ) );
+                                .arg( currid
+                                , boolF()
+                                , currdeviceid
+                                , currurl ) );
         }
         //debug() << "First insert" << endl;
         return;
@@ -3048,12 +3053,13 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
             {
                 //debug() << "stat was NOT successful, updating tables with: " << endl;
                 //debug() << QString( "UPDATE uniqueid%1 SET url='%2', dir='%3' WHERE uniqueid='%4';" ).arg( ( tempTables ? "_temp" : "" ), currurl, currdir, currid ) << endl;
-                query( QString( "UPDATE uniqueid%1 SET deviceid = %2, url='%3', dir='%4' WHERE uniqueid='%5';" )
-                      .arg( tempTables ? "_temp" : "" )
-                      .arg( currdeviceid )
-                      .arg( currurl )
-                      .arg( currdir )
-                      .arg( currid ) );
+                query( QStringx( "UPDATE uniqueid%1 SET deviceid = %2, url='%3', dir='%4' WHERE uniqueid='%5';" )
+                      .args( QStringList() 
+                      << ( tempTables ? "_temp" : "" )
+                      << currdeviceid
+                      << currurl
+                      << currdir
+                      << currid ) );
                 emit fileMoved( absPath, bundle->url().path(), bundle->uniqueId() );
             }
         }
@@ -3065,10 +3071,10 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
         {
             //debug() << "file exists in same place as before, new uniqueid" << endl;
             query( QString( "UPDATE uniqueid%1 SET uniqueid='%2' WHERE deviceid = %3 AND url='%4';" )
-                    .arg( tempTables ? "_temp" : "" )
-                    .arg( currid )
-                    .arg( currdeviceid )
-                    .arg( currurl ) );
+                    .arg( tempTables ? "_temp" : ""
+                   , currid
+                   , currdeviceid
+                   , currurl ) );
             emit uniqueIdChanged( bundle->url().path(), urls[1], bundle->uniqueId() );
         }
         //else uniqueid and url match; nothing happened, so safely exit
@@ -3084,8 +3090,8 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
         {
             QString insertline = QString( "INSERT INTO uniqueid_temp (deviceid, url, uniqueid, dir) "
                                           "VALUES ( %1, '%2'" )
-                                            .arg( currdeviceid )
-                                            .arg( currurl );
+                                            .arg( currdeviceid
+                                            , currurl );
             insertline += QString( ", '%1', '%2');" ).arg( currid ).arg( currdir );
             //debug() << "running command: " << insertline << endl;
             insert( insertline, NULL );
@@ -3093,20 +3099,20 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
             {
                 //debug() << "third stats case" << endl;
                 query( QString( "UPDATE statistics SET deviceid = %1, url = '%2', deleted = %3 WHERE uniqueid = '%4';" )
-                                     .arg( currdeviceid )
-                                     .arg( currurl )
-                                     .arg( boolF() )
-                                     .arg( currid ) );
+                                     .arg( currdeviceid
+                                     , currurl 
+                                     , boolF() 
+                                     , currid ) );
             }
             else if( !statURLVal.empty() )
             {
                 //debug() << "fourth stats case" << endl;
                 query( QString( "UPDATE statistics SET uniqueid = '%1', deleted = %2 "
                                 "WHERE deviceid = %3 AND url = '%4';" )
-                                    .arg( currid )
-                                    .arg( boolF() )
-                                    .arg( currdeviceid )
-                                    .arg( currurl ) );
+                                    .arg( currid
+                                    , boolF()
+                                    , currdeviceid
+                                    , currurl ) );
             }
             return;
         }
@@ -3127,10 +3133,10 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
                       .arg( currid ) );
                 query( QString( "INSERT INTO uniqueid_temp (deviceid, url, uniqueid, dir) "
                                 "VALUES ( %1, '%2', '%3', '%4')" )
-                                .arg( currdeviceid )
-                                .arg( currurl )
-                                .arg( currid )
-                                .arg( currdir ) );
+                                .arg( currdeviceid
+                                , currurl
+                                , currid
+                                , currdir ) );
                 emit fileMoved( absPath, bundle->url().path(), bundle->uniqueId() );
             }
         }
@@ -3141,10 +3147,10 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
                       .arg( currdeviceid )
                       .arg( currurl ) );
             query( QString( "INSERT INTO uniqueid_temp (deviceid, url, uniqueid, dir) VALUES ( %1, '%2', '%3', '%4')" )
-                .arg( currdeviceid )
-                .arg( currurl )
-                .arg( currid )
-                .arg( currdir ) );
+                .arg( currdeviceid
+                , currurl
+                , currid
+                , currdir ) );
             emit uniqueIdChanged( bundle->url().path(), nonTempURLs[1], bundle->uniqueId() );
         }
         //else do nothing...really this case should never happen
