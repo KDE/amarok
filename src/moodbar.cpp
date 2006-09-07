@@ -262,6 +262,12 @@
 //   (private slot) slotMoodbarPrefs(): Called when the Amarok config changes.
 //       If the moodbar has been disabled completely, kill the current job
 //       (if any), clear the queue, and notify the interested Moodbar's.
+//
+//   (private slot) slotFileDeleted(): Called when a music file is deleted, so
+//       we can delete the associated moodbar
+//
+//   (private slot) slotFileMoved(): Called when a music file is moved, so
+//       we can move the associated moodbar
 
 // TODO: off-color single bars in dark areas -- do some interpolation when
 //       averaging.  Big jumps in hues when near black.
@@ -275,6 +281,7 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "app.h"
+#include "collectiondb.h"
 #include "debug.h"
 #include "metabundle.h"
 #include "mountpointmanager.h"
@@ -314,6 +321,18 @@ MoodServer::MoodServer( void )
 {
     connect( App::instance(), SIGNAL( moodbarPrefs( bool, bool, int, bool ) ),
              SLOT( slotMoodbarPrefs( bool, bool, int, bool ) ) );
+    connect( CollectionDB::instance(), 
+             SIGNAL( fileMoved( const QString &, const QString & ) ),
+             SLOT( slotFileMoved( const QString &, const QString & ) ) );
+    connect( CollectionDB::instance(), 
+             SIGNAL( fileMoved( const QString &, const QString &, const QString & ) ),
+             SLOT( slotFileMoved( const QString &, const QString & ) ) );
+    connect( CollectionDB::instance(),
+             SIGNAL( fileDeleted( const QString & ) ),
+             SLOT( slotFileDeleted( const QString & ) ) );
+    connect( CollectionDB::instance(),
+             SIGNAL( fileDeleted( const QString &, const QString & ) ),
+             SLOT( slotFileDeleted( const QString & ) ) );
 }
 
 
@@ -356,7 +375,7 @@ MoodServer::queueJob( MetaBundle *bundle )
 
     m_jobQueue.append( ProcData( bundle->url(),
                                  bundle->url().path(),
-                                 bundle->moodbar().moodFilename() ) );
+                                 bundle->moodbar().moodFilename( bundle->url() ) ) );
 
     debug() << "MoodServer::queueJob: Queued job for " << bundle->url().path()
             << ", " << m_jobQueue.size() << " jobs in queue." << endl;
@@ -589,6 +608,40 @@ MoodServer::slotMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic
 }
 
 
+// When a file is deleted, either manually using Organize Collection or
+// automatically detected using AFT, delete the corresponding mood file.
+void 
+MoodServer::slotFileDeleted( const QString &path )
+{
+    QString mood = Moodbar::moodFilename( KURL::fromPathOrURL( path ) );
+    if( mood.isEmpty()  ||  !QFile::exists( mood ) )
+      return;
+    
+    debug() << "MoodServer::slotFileDeleted: deleting " << mood << endl;
+    QFile::remove( mood );
+}
+
+
+// When a file is moved, either manually using Organize Collection or
+// automatically using AFT, move the corresponding mood file.
+void
+MoodServer::slotFileMoved( const QString &srcPath, const QString &dstPath )
+{
+    QString srcMood = Moodbar::moodFilename( KURL::fromPathOrURL( srcPath ) );
+    QString dstMood = Moodbar::moodFilename( KURL::fromPathOrURL( dstPath ) );
+    
+    if( srcMood.isEmpty()   ||  dstMood.isEmpty()  ||
+        srcMood == dstMood  ||  !QFile::exists( srcMood ) )
+      return;
+    
+    debug() << "MoodServer::slotFileMoved: moving " << srcMood << " to "
+            << dstMood << endl;
+    
+    Moodbar::copyFile( srcMood, dstMood );
+    QFile::remove( srcMood );
+}
+
+
 // This is called when we decide that the moodbar analyzer is
 // never going to work.  Disable further jobs, and let the user
 // know about it.  This should only be called when m_currentProcess == 0.
@@ -801,7 +854,7 @@ Moodbar::canHaveMood( void )
     if( !AmarokConfig::showMoodbar()   ||
         !m_bundle->url().isLocalFile() ||
         !m_bundle->length()            ||
-        moodFilename().isEmpty() )
+        moodFilename( m_bundle->url() ).isEmpty() )
       {
         m_state = CantLoad;
         return false;
@@ -895,7 +948,7 @@ Moodbar::slotJobEvent( KURL url, int newState )
 
     // If we get here it means the analyzer job went wrong, but
     // somehow the MoodServer didn't know about it
-    debug() << "WARNING: Failed to open file " << moodFilename()
+    debug() << "WARNING: Failed to open file " << moodFilename( m_bundle->url() )
             << " -- something is very wrong" << endl;
     m_state = JobFailed;
     m_mutex.unlock();
@@ -1019,7 +1072,7 @@ Moodbar::readFile( void )
     if( m_state == Loaded )
       return true;
 
-    QString path = moodFilename();
+    QString path = moodFilename( m_bundle->url() );
     if( path.isEmpty() )
       return false;
 
@@ -1035,7 +1088,8 @@ Moodbar::readFile( void )
         // in the other place, so we should check there before giving
         // up.
 
-        QString path2 = moodFilename( !AmarokConfig::moodsWithMusic() );
+        QString path2 = moodFilename( m_bundle->url(), 
+                                      !AmarokConfig::moodsWithMusic() );
         moodFile.setName( path2 );
 
         if( !QFile::exists( path2 )  ||
@@ -1045,15 +1099,10 @@ Moodbar::readFile( void )
         debug() << "Moodbar::readFile: Found a file at " << path2
                 << " instead, using that and copying." << endl;
 
-        QByteArray contents = moodFile.readAll();
         moodFile.close();
+        if( !copyFile( path2, path ) )
+          return false;
         moodFile.setName( path );
-        if( !moodFile.open( IO_WriteOnly ) )
-          return false;
-        bool res = ( uint( moodFile.writeBlock( contents ) ) == contents.size() );
-        moodFile.close();
-        if( !res )
-          return false;
         if( !moodFile.open( IO_ReadOnly ) )
           return false;
       }
@@ -1254,13 +1303,13 @@ Moodbar::readFile( void )
 // return QString::null.
 
 QString
-Moodbar::moodFilename( void )
+Moodbar::moodFilename( const KURL &url )
 {
-  return moodFilename( AmarokConfig::moodsWithMusic() );
+  return moodFilename( url, AmarokConfig::moodsWithMusic() );
 }
 
 QString
-Moodbar::moodFilename( bool withMusic )
+Moodbar::moodFilename( const KURL &url, bool withMusic )
 {
     // No need to lock the object
 
@@ -1268,7 +1317,7 @@ Moodbar::moodFilename( bool withMusic )
 
     if( withMusic )
       {
-        path = m_bundle->url().path();
+        path = url.path();
         path.truncate(path.findRev('.'));
 
         if (path.isEmpty())  // Weird...
@@ -1284,10 +1333,10 @@ Moodbar::moodFilename( bool withMusic )
     else
       {
         // The moodbar file is {device id},{relative path}.mood}
-        int deviceid = MountPointManager::instance()->getIdForUrl( m_bundle->url() );
+        int deviceid = MountPointManager::instance()->getIdForUrl( url );
         KURL relativePath;
         MountPointManager::instance()->getRelativePath( deviceid,
-            m_bundle->url(), relativePath );
+            url, relativePath );
         path = relativePath.path();
         path.truncate(path.findRev('.'));
 
@@ -1303,6 +1352,26 @@ Moodbar::moodFilename( bool withMusic )
 
     return path;
 }
+
+
+// Quick-n-dirty -->synchronous<-- file copy (the GUI needs its
+// moodbars immediately!)
+bool
+Moodbar::copyFile( const QString &srcPath, const QString &dstPath )
+{
+  QFile file( srcPath );
+  if( !file.open( IO_ReadOnly ) )
+    return false;
+  QByteArray contents = file.readAll();
+  file.close();
+  file.setName( dstPath );
+  if( !file.open( IO_WriteOnly | IO_Truncate ) )
+    return false;
+  bool res = ( uint( file.writeBlock( contents ) ) == contents.size() );
+  file.close();
+  return res;
+}
+
 
 
 // Can we find the moodbar program?

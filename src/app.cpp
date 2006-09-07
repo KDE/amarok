@@ -636,6 +636,9 @@ App::continueInit()
     bool restoreSession = args->count() == 0 || args->isSet( "append" ) || args->isSet( "enqueue" )
                                 || Amarok::config()->readBoolEntry( "AppendAsDefault", false );
 
+    // Make this instance so it can start receiving signals
+    MoodServer::instance();
+
     // Remember old folder setup, so we can detect changes after the wizard was used
     //const QStringList oldCollectionFolders = MountPointManager::instance()->collectionFolders();
 

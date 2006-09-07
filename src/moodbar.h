@@ -81,8 +81,9 @@ public:
   { return m_state; }
   
   // Where are we storing the .mood file?
-  QString moodFilename( void );
-  QString moodFilename( bool withMusic );
+  static QString moodFilename( const KURL &url );
+  static QString moodFilename( const KURL &url, bool withMusic );
+  static bool copyFile( const QString &srcPath, const QString &dstPath );
 
   static bool executableExists( void );
   
@@ -111,7 +112,7 @@ private:
 
 class KProcess;
 
-// For internal use only.
+// For internal use only (well, mostly)
 class MoodServer : public QObject
 {
   Q_OBJECT
@@ -132,6 +133,11 @@ private slots:
   void slotJobCompleted( KProcess *proc );
   void slotNewJob( void );
   void slotMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic );
+
+public slots:
+  // Moodbar file organization slots
+  void slotFileDeleted( const QString &absPath );
+  void slotFileMoved( const QString &srcPath, const QString &dstPath );
 
 private:
 

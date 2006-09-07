@@ -1027,8 +1027,11 @@ void Playlist::restoreLayout(KConfig *config, const QString &group)
 }
 
 void
-Playlist::updateEntriesUrl( const QString &/*oldUrl*/, const QString &newUrl, const QString &uniqueid )
+Playlist::updateEntriesUrl( const QString &oldUrl, const QString &newUrl, const QString &uniqueid )
 {
+    // Make sure the MoodServer gets this signal first!
+    MoodServer::instance()->slotFileMoved( oldUrl, newUrl );
+
     PlaylistItem *item;
     if( m_uniqueMap.contains( uniqueid ) )
     {
@@ -3674,6 +3677,9 @@ Playlist::ratingChanged( const QString &path, int rating )
 void
 Playlist::fileMoved( const QString &srcPath, const QString &dstPath )
 {
+    // Make sure the MoodServer gets this signal first!
+    MoodServer::instance()->slotFileMoved( srcPath, dstPath );
+
     for( MyIt it( this, MyIt::All ); *it; ++it )
     {
         PlaylistItem *item = static_cast<PlaylistItem*>( *it );
