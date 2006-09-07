@@ -38,7 +38,7 @@ protected:
     QPixmap barPixmap;
 };
 
-namespace amaroK
+namespace Amarok
 {
     namespace ColorScheme
     {

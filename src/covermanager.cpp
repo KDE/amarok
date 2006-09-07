@@ -106,7 +106,8 @@ CoverManager::CoverManager()
 
     QueryBuilder qb;
     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
-    qb.setOptions( QueryBuilder::optOnlyCompilations | QueryBuilder::optRemoveDuplicates );
+    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.setOptions( QueryBuilder::optOnlyCompilations );
     qb.setLimit( 0, 1 );
     if ( qb.run().count() ) {
         item = new KListViewItem( m_artistView, last, i18n( "Various Artists" ) );

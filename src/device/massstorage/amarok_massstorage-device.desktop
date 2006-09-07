@@ -44,7 +44,7 @@ Comment[sr]=Уређајски прикључак за Amarok
 Comment[sr@Latn]=Uređajski priključak za Amarok
 Comment[sv]=Enhetsinsticksprogram för Amarok
 Comment[zh_CN]=Amarok 的设备插件
-Comment[zh_TW]=amaroK 裝置插件
+Comment[zh_TW]=Amarok 裝置插件
 ServiceTypes=Amarok/Plugin
 
 X-KDE-Library=libamarok_massstorage-device

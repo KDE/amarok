@@ -13,7 +13,7 @@
         </rect>
     </property>
     <property name="caption">
-        <string>NMM Engine Configuration - amaroK</string>
+        <string>NMM Engine Configuration - Amarok</string>
     </property>
     <vbox>
         <property name="name">
@@ -94,7 +94,7 @@
                         <string>Localhost only</string>
                     </property>
                     <property name="whatsThis" stdset="0">
-                        <string>Plays audio and video on the machine running amaroK.</string>
+                        <string>Plays audio and video on the machine running Amarok.</string>
                     </property>
                 </widget>
                 <widget class="QRadioButton">

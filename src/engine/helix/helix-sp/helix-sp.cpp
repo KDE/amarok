@@ -1212,7 +1212,7 @@ void HelixSimplePlayer::closeAudioDevice()
 }
 
 // it seems the master volume only gets reset on track change when using ALSA
-// sheez, I thought amaroK wasnt supposed to be a mixer??
+// sheez, I thought Amarok wasnt supposed to be a mixer??
 // all this code is so that you can actually *use* a mixer and have it work
 // the way you expect...
 #ifdef USE_HELIX_ALSA

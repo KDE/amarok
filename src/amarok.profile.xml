@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE profile SYSTEM "profile.dtd">
 <profile id="amarok" servicename="amarok">
-    <name>amaroK</name>
+    <name>Amarok</name>
     <author>Dirk Ziegelmeier</author>
     <instances unique="1"/>
 

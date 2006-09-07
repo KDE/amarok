@@ -2,7 +2,7 @@
 <class>GstConfigDialogBase</class>
 <widget class="QWidget">
     <property name="name">
-        <cstring>amaroK_EngineDialog</cstring>
+        <cstring>Amarok_EngineDialog</cstring>
     </property>
     <property name="geometry">
         <rect>
@@ -13,7 +13,7 @@
         </rect>
     </property>
     <property name="caption">
-        <string>GStreamer Engine Configuration - amaroK</string>
+        <string>GStreamer Engine Configuration - Amarok</string>
     </property>
     <property name="toolTip" stdset="0">
         <string></string>

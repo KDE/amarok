@@ -126,7 +126,7 @@ StreamProvider::sendRequest() //SLOT
 
     const QString request = QString( "GET %1 HTTP/1.0\r\n"
                                      "Host: %2\r\n"
-                                     "User-Agent: amaroK/%3\r\n"
+                                     "User-Agent: Amarok/%3\r\n"
                                      "Accept: */*\r\n"
                                      "%4"
                                      "%5"
