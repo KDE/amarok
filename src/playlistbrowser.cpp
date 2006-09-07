@@ -2161,23 +2161,17 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
 
     QString message = i18n( "<p>You have selected:<ul>" );
 
-    if( playlistCount ) message += "<li>" + i18n( "1 playlist", "%n playlists", playlistCount )
-                                            .arg( playlistCount ) + "</li>";
+    if( playlistCount ) message += "<li>" + i18n( "1 playlist", "%n playlists", playlistCount )  + "</li>";
 
-    if( smartyCount   ) message += "<li>" + i18n( "1 smart playlist", "%n smart playlists", smartyCount )
-                                            .arg( smartyCount ) + "</li>";
+    if( smartyCount   ) message += "<li>" + i18n( "1 smart playlist", "%n smart playlists", smartyCount ) + "</li>";
 
-    if( dynamicCount  ) message += "<li>" + i18n( "1 dynamic playlist", "%n dynamic playlists", dynamicCount )
-                                            .arg( dynamicCount ) + "</li>";
+    if( dynamicCount  ) message += "<li>" + i18n( "1 dynamic playlist", "%n dynamic playlists", dynamicCount ) + "</li>";
 
-    if( streamCount   ) message += "<li>" + i18n( "1 stream", "%n streams", streamCount )
-                                            .arg( streamCount ) + "</li>";
+    if( streamCount   ) message += "<li>" + i18n( "1 stream", "%n streams", streamCount ) + "</li>";
 
-    if( podcastCount  ) message += "<li>" + i18n( "1 podcast", "%n podcasts", podcastCount )
-                                            .arg( podcastCount ) + "</li>";
+    if( podcastCount  ) message += "<li>" + i18n( "1 podcast", "%n podcasts", podcastCount ) + "</li>";
 
-    if( folderCount   ) message += "<li>" + i18n( "1 folder", "%n folders", folderCount )
-                                            .arg( folderCount ) + "</li>";
+    if( folderCount   ) message += "<li>" + i18n( "1 folder", "%n folders", folderCount ) + "</li>";
 
     message += "</ul><br>to be <b>irreversibly</b> deleted.</p>";
 
