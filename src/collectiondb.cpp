@@ -3158,6 +3158,19 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
     }
 }
 
+void 
+CollectionDB::emitFileDeleted( const QString &absPath, const QString &uniqueid )
+{ 
+  if( uniqueid.isEmpty() )
+    emit fileDeleted( absPath ); 
+  else
+    emit fileDeleted( absPath, uniqueid );
+
+  debug() << "fileDeleted emitted for " << absPath << " uniqueid: " 
+          << uniqueid << endl;
+}
+
+
 QString
 CollectionDB::urlFromUniqueId( const QString &id )
 {
@@ -4142,17 +4155,21 @@ CollectionDB::removeSongsInDir( QString path, QStringList *tagsRemoved )
     if( tagsRemoved )
       {
         QStringList result 
-          = query( QString( "SELECT deviceid, url FROM tags "
-                            "WHERE dir = '%2' AND deviceid = %1" )
+          = query( QString( "SELECT tags.deviceid, tags.url, uniqueid.uniqueid FROM tags "
+                            "LEFT JOIN uniqueid ON uniqueid.url      = tags.url "
+                            "                  AND uniqueid.deviceid = tags.deviceid "
+                            "WHERE tags.dir = '%2' AND tags.deviceid = %1" )
                    .arg( deviceid )
                    .arg( escapeString( rpath ) ) );
         QStringList::ConstIterator it = result.begin(), end = result.end();
         while( it != end )
           {
-            int deviceid2 = (*(it++)).toInt();
-            QString rpath2 = *(it++);
+            int deviceid2    = (*(it++)).toInt();
+            QString rpath2   =  *(it++);
+            QString uniqueid =  *(it++);
             *tagsRemoved << MountPointManager::instance()->getAbsolutePath(
                                 deviceid2, rpath2 );
+            *tagsRemoved << uniqueid;
           }
       }
 

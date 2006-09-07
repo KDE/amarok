@@ -131,9 +131,15 @@ ScanController::completeJob( void )
       {
         m_filesFoundMutex.lock();
 
-        foreach( m_filesDeleted )
-          if( !m_filesFound.contains( *it )  ||  m_filesFound[ *it ] == false )
-            CollectionDB::instance()->emitFileDeleted( *it );
+        QStringList::ConstIterator it = m_filesDeleted.begin(), 
+          end = m_filesDeleted.end();
+        while( it != end )
+          {
+            QString path     = *(it++);
+            QString uniqueid = *(it++);
+            if( !m_filesFound.contains( path )  ||  m_filesFound[ path ] == false )
+              CollectionDB::instance()->emitFileDeleted( path, uniqueid );
+          }
 
         m_filesFoundMutex.unlock();
       }
