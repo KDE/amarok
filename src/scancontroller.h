@@ -71,6 +71,8 @@ class ScanController : public ThreadWeaver::DependentJob, public QXmlDefaultHand
         ScanController( CollectionDB* parent, bool incremental, const QStringList& folders = QStringList() );
         ~ScanController();
         static ScanController* instance();
+        
+        virtual void completeJob( void );
 
         bool isIncremental() const { return m_incremental; }
         bool hasChanged() const { return m_hasChanged; }
@@ -86,6 +88,7 @@ class ScanController : public ThreadWeaver::DependentJob, public QXmlDefaultHand
         bool requestPause();
         bool requestUnpause();
         void requestAcknowledged();
+        void slotFileMoved( const QString &src, const QString &dest );
 
     private slots:
         void slotReadReady();
@@ -113,6 +116,15 @@ class ScanController : public ThreadWeaver::DependentJob, public QXmlDefaultHand
         QXmlSimpleReader* m_reader;
 
         QStringList m_crashedFiles;
+
+        // Every file that the collection scanner finds is marked
+        // here, as well as the source of all files that the AFT code
+        // detects as having been moved.  These are the files that
+        // have definitely not been deleted.  The key is the absolute
+        // path.
+        QMap<QString,bool> m_filesFound;
+        QStringList        m_filesDeleted;
+        QMutex             m_filesFoundMutex;
 
         static ScanController* currController;
 

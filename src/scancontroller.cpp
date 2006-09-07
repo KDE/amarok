@@ -123,6 +123,25 @@ ScanController::~ScanController()
 }
 
 
+// Cause the CollectionDB to emit fileDeleted() signals
+void
+ScanController::completeJob( void )
+{
+    if( m_incremental )
+      {
+        m_filesFoundMutex.lock();
+
+        foreach( m_filesDeleted )
+          if( !m_filesFound.contains( *it )  ||  m_filesFound[ *it ] == false )
+            CollectionDB::instance()->emitFileDeleted( *it );
+
+        m_filesFoundMutex.unlock();
+      }
+
+    ThreadWeaver::DependentJob::completeJob();
+}
+
+
 /**
  * The Incremental Scanner works as follows: Here we check the mtime of every directory in the "directories"
  * table and store all changed directories in m_folders.
@@ -136,6 +155,13 @@ void
 ScanController::initIncremental()
 {
     DEBUG_BLOCK
+
+    connect( CollectionDB::instance(), 
+             SIGNAL( fileMoved( const QString &, const QString & ) ),
+             SLOT( slotFileMoved( const QString &, const QString & ) ) );
+    connect( CollectionDB::instance(), 
+             SIGNAL( fileMoved( const QString &, const QString &, const QString & ) ),
+             SLOT( slotFileMoved( const QString &, const QString & ) ) );
 
     IdList list = MountPointManager::instance()->getMountedDeviceIds();
     QString deviceIds;
@@ -238,7 +264,9 @@ main_loop:
             if ( m_incremental ) {
                 m_foldersToRemove += m_folders;
                 foreach( m_foldersToRemove ) {
-                    CollectionDB::instance()->removeSongsInDir( *it );
+                    m_filesFoundMutex.lock();
+                    CollectionDB::instance()->removeSongsInDir( *it, &m_filesDeleted );
+                    m_filesFoundMutex.unlock();
                     CollectionDB::instance()->removeDirFromCollection( *it );
                 }
                 CollectionDB::instance()->removeOrphanedEmbeddedImages();
@@ -316,6 +344,17 @@ ScanController::requestAcknowledged()
 }
 
 void
+ScanController::slotFileMoved( const QString &src, const QString &/*dest*/)
+{
+    if( m_incremental ) // pedantry
+      {
+        m_filesFoundMutex.lock();
+        m_filesFound[ src ] = true;
+        m_filesFoundMutex.unlock();
+      }
+}
+
+void
 ScanController::notifyThisBundle( MetaBundle* bundle )
 {
     DEBUG_BLOCK
@@ -378,6 +417,12 @@ ScanController::startElement( const QString&, const QString& localName, const QS
         }
 
         CollectionDB::instance()->addSong( &bundle, m_incremental );
+        if( m_incremental )
+          {
+            m_filesFoundMutex.lock();
+            m_filesFound[ bundle.url().path() ] = true;
+            m_filesFoundMutex.unlock();
+          }
     }
 
     else if( localName == "folder" ) {

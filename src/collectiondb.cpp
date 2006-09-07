@@ -4131,12 +4131,30 @@ CollectionDB::updateDirStats( QString path, const long datetime, const bool temp
 
 
 void
-CollectionDB::removeSongsInDir( QString path )
+CollectionDB::removeSongsInDir( QString path, QStringList *tagsRemoved )
 {
     if ( path.endsWith( "/" ) )
         path = path.left( path.length() - 1 );
     int deviceid = MountPointManager::instance()->getIdForUrl( path );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, path );
+
+    // Pass back the list of tags we actually delete if requested.
+    if( tagsRemoved )
+      {
+        QStringList result 
+          = query( QString( "SELECT deviceid, url FROM tags "
+                            "WHERE dir = '%2' AND deviceid = %1" )
+                   .arg( deviceid )
+                   .arg( escapeString( rpath ) ) );
+        QStringList::ConstIterator it = result.begin(), end = result.end();
+        while( it != end )
+          {
+            int deviceid2 = (*(it++)).toInt();
+            QString rpath2 = *(it++);
+            *tagsRemoved << MountPointManager::instance()->getAbsolutePath(
+                                deviceid2, rpath2 );
+          }
+      }
 
     query( QString( "DELETE FROM tags WHERE dir = '%2' AND deviceid = %1;" )
               .arg( deviceid )
