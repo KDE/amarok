@@ -118,11 +118,12 @@ CollectionBrowser::CollectionBrowser( const char* name )
     // Allow the combobox to shrink so the iPod buttons are still visible
     m_timeFilter->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     m_timeFilter->insertItem( i18n( "Entire Collection" ) );
-    m_timeFilter->insertItem( i18n( "Added Within One Year" ) );
-    m_timeFilter->insertItem( i18n( "Added Within Three Months" ) );
-    m_timeFilter->insertItem( i18n( "Added Within One Month" ) );
-    m_timeFilter->insertItem( i18n( "Added Within One Week" ) );
     m_timeFilter->insertItem( i18n( "Added Today" ) );
+    m_timeFilter->insertItem( i18n( "Added Within One Week" ) );
+    m_timeFilter->insertItem( i18n( "Added Within One Month" ) );
+    m_timeFilter->insertItem( i18n( "Added Within Three Months" ) );
+    m_timeFilter->insertItem( i18n( "Added Within One Year" ) );
+
 
     // m_ipodToolbar just holds the forward and back buttons, which are
     // plugged below
@@ -3333,13 +3334,13 @@ uint CollectionView::translateTimeFilter( uint filterMode )
     switch ( filterMode )
     {
         case 1:
-            // added within one year
-            filterSecs = 60 * 60 * 24 * 365;
+            // added today
+            filterSecs = 60 * 60 * 24;
             break;
 
         case 2:
-            // added within three months
-            filterSecs = 60 * 60 * 24 * 91;
+            // added within one week
+            filterSecs = 60 * 60 * 24 * 7;
             break;
 
         case 3:
@@ -3348,13 +3349,13 @@ uint CollectionView::translateTimeFilter( uint filterMode )
             break;
 
         case 4:
-            // added within one week
-            filterSecs = 60 * 60 * 24 * 7;
+            // added within three months
+            filterSecs = 60 * 60 * 24 * 91;
             break;
 
         case 5:
-            // added today
-            filterSecs = 60 * 60 * 24;
+            // added within one year
+            filterSecs = 60 * 60 * 24 * 365;
             break;
     }
 
