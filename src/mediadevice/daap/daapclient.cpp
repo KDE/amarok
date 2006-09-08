@@ -23,6 +23,7 @@
 #include "playlist.h"
 #include "proxy.h"
 #include "statusbar/statusbar.h"
+#include "tagdialog.h"
 
 #include <qmetaobject.h>
 #include <qobjectlist.h>
@@ -200,7 +201,7 @@ DaapClient::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
 {
     DEBUG_BLOCK
 
-    enum Actions { APPEND, LOAD, QUEUE, CONNECT, REMOVE };
+    enum Actions { APPEND, LOAD, QUEUE, INFO, CONNECT, REMOVE };
 
     MediaItem *item = dynamic_cast<MediaItem *>(qitem);
     ServerItem* sitem = dynamic_cast<ServerItem *>(qitem);
@@ -232,6 +233,11 @@ DaapClient::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
             menu.insertItem( SmallIconSet( Amarok::icon( "playlist" ) ), i18n( "&Load" ), LOAD );
             menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
             menu.insertItem( SmallIconSet( Amarok::icon( "fastforward" ) ), i18n( "&Queue Tracks" ), QUEUE );
+            menu.insertSeparator();
+
+            // albums and artists dont have bundles, so they crash... :(
+            if( item->bundle() )
+                menu.insertItem( SmallIconSet( Amarok::icon( "info" ) ), i18n( "&Information" ), INFO );
             break;
     }
 
@@ -249,6 +255,13 @@ DaapClient::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
             break;
         case QUEUE:
             Playlist::instance()->insertMedia( urls, Playlist::Queue );
+            break;
+        case INFO:
+            {
+                // The tag dialog automatically disables the widgets if the file is not local, which it is not.
+                TagDialog *dialog = new TagDialog( *item->bundle(), 0 );
+                dialog->show();
+            }
             break;
         case REMOVE:
             if( sitem )

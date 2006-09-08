@@ -332,7 +332,7 @@ Reader::parse( QDataStream &raw, uint containerLength, bool first )
         Q_UINT32 tagLength = getTagAndLength( raw, tag );
         if( tagLength == 0 )
         {
-            debug() << "tag " << tag << " has 0 length." << endl;
+//             debug() << "tag " << tag << " has 0 length." << endl;
             index += 8;
             continue;
         }
