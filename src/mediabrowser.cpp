@@ -610,7 +610,7 @@ MediaBrowser::updateDevices()
         {
             name = i18n( "%1 at %2" ).arg( name, (*it)->deviceNode() );
         }
-        if( !(*it)->mountPoint().isEmpty() )
+        if( (*it)->hasMountPoint() && !(*it)->mountPoint().isEmpty() )
         {
             name += i18n( " (mounted at %1)" ).arg( (*it)->mountPoint() );
         }

@@ -1,7 +1,7 @@
 //
 // C++ Interface: deviceconfiguredialog.h
 //
-// Description: 
+// Description:
 //
 //
 // Author: Jeff Mitchell <kde-dev@emailgoeshere.com>, (C) 2006
@@ -24,7 +24,7 @@ class MediaBrowser;
 class Medium;
 
 /**
-	@author Jeff Mitchell <kde-dev@emailgoeshere.com>
+    @author Jeff Mitchell <kde-dev@emailgoeshere.com>
 */
 class DeviceConfigureDialog : public KDialogBase
 {

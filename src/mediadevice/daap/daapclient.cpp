@@ -65,20 +65,23 @@ DaapClient::DaapClient()
 DEBUG_BLOCK
     setName( "daapclient" );
     m_name = i18n( "Shared Music" );
-    m_hasMountPoint = false;
+    m_hasMountPoint      = false;
     m_autoDeletePodcasts = false;
-    m_syncStats = false;
-    m_transcode = false;
-    m_transcodeAlways = false;
-    m_transcodeRemove = false;
-    m_configure = false;
-    m_customButton = true;
-    m_transfer = false;
+    m_syncStats          = false;
+    m_transcode          = false;
+    m_transcodeAlways    = false;
+    m_transcodeRemove    = false;
+    m_configure          = false;
+    m_customButton       = true;
+    m_transfer           = false;
+
     KToolBarButton* customButton = MediaBrowser::instance()->getToolBar()->getButton( MediaBrowser::CUSTOM );
+
     customButton->setText( i18n("Add computer") );
+
     QToolTip::add( customButton, i18n( "List music from a remote host" ) );
+
     MediaBrowser::instance()->insertChild( this );
-    debug() << "lookatme " << (parent() ? parent()->name() : "no parent") << (parent() ? parent()->metaObject()->className() : " ") << endl;
 }
 
 DaapClient::~DaapClient()
@@ -143,7 +146,10 @@ DaapClient::openDevice(bool /* silent=false */)
     }
 
     if( m_broadcastServer )
+    {
+        debug() << "Starting DAAP server" << endl;
         m_sharingServer = new DaapServer( this, "DaapServer" );
+    }
     return true;
 }
 
