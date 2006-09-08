@@ -231,7 +231,7 @@ DaapClient::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
             menu.insertItem( SmallIconSet( "connect_creating" ), i18n( "&Connect" ), CONNECT );
             if( sitem && !m_serverItemMap.contains( sitem->key() ) )
             {
-                menu.insertItem( SmallIconSet( "delete" ), i18n("&Remove Computer"), REMOVE );
+                menu.insertItem( SmallIconSet( "remove" ), i18n("&Remove Computer"), REMOVE );
             }
             {
                 QStringList sl = m_serverItemMap.keys();
