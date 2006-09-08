@@ -147,6 +147,10 @@ void PodcastSettingsDialog::slotOk()       //slot
             (*it)->m_addToMediaDevice = m_ps->m_addToMediaDeviceCheck->isChecked();
             (*it)->m_purge            = m_ps->m_purgeCheck->isChecked();
             (*it)->m_purgeCount       = m_ps->m_purgeCountSpinBox->value();
+            if( m_ps->m_streamRadio->isChecked() )
+                (*it)->m_fetch = STREAM;
+            else
+                (*it)->m_fetch = AUTOMATIC;
         }
     }
     else
