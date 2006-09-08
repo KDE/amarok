@@ -49,6 +49,8 @@ public:
     static QString           engineProperty( const QString& key ) { return engine()->pluginProperty( key ); }
     static bool              hasEngineProperty( const QString& key ) { return engine()->hasPluginProperty( key ); }
 
+    uint                     trackPosition() const;
+
     EngineBase* loadEngine();
 
     uint trackLength() const { return m_bundle.length() * 1000; }
@@ -114,8 +116,6 @@ private:
     static ExtensionCache s_extensionCache;
 
     EngineBase* loadEngine( const QString &engineName );
-
-    uint            trackPosition() const;
 
     EngineBase*     m_engine;
     EngineBase*     m_voidEngine;

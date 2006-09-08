@@ -151,12 +151,12 @@ namespace Amarok
 
     int DcopPlayerHandler::trackCurrentTime()
     {
-        return EngineController::engine()->position() / 1000;
+        return EngineController::instance()->trackPosition() / 1000;
     }
 
     int DcopPlayerHandler::trackCurrentTimeMs()
     {
-        return EngineController::engine()->position();
+        return EngineController::instance()->trackPosition();
     }
 
     int DcopPlayerHandler::trackPlayCounter()
@@ -200,7 +200,7 @@ namespace Amarok
 
     QString DcopPlayerHandler::currentTime()
     {
-        return MetaBundle::prettyLength( EngineController::engine() ->position() / 1000 ,true );
+        return MetaBundle::prettyLength( EngineController::instance()->trackPosition() / 1000 ,true );
     }
 
     QString DcopPlayerHandler::encodedURL()
