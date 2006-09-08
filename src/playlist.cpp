@@ -4121,7 +4121,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
                 KURL url = i->url();
                 list << url;
             }
-            bool organize = CollectionDB::instance()->isDirInCollection( item->url().path() );
+            bool organize = CollectionDB::instance()->isDirInCollection( item->url().directory() );
             CollectionView::instance()->organizeFiles( list,
                     organize ? i18n( "Organize Files" ) : i18n( "Copy Tracks to Collection"),
                     !organize );
