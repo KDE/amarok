@@ -1382,7 +1382,7 @@ bool PlaylistBrowser::deleteSelectedPodcastItems( const bool removeItem, const b
     if( silent || button != KMessageBox::Continue )
         return false;
 
-    KIO::del( urls );
+    KIO::Job *job = KIO::del( urls );
 
     PodcastEpisode *item;
     for ( item = erasedItems.first(); item; item = erasedItems.next() )
@@ -1393,7 +1393,7 @@ bool PlaylistBrowser::deleteSelectedPodcastItems( const bool removeItem, const b
             delete item;
         }
         else
-            item->isOnDisk();
+            connect( job, SIGNAL( result( KIO::Job* ) ), item, SLOT( isOnDisk() ) );;
     }
     return true;
 }

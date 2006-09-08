@@ -256,7 +256,6 @@ class PodcastEpisode : public QObject, public PlaylistBrowserEntry
         PodcastEpisode( QListViewItem *parent, QListViewItem *after, PodcastEpisodeBundle &bundle );
 
         void  downloadMedia();
-        const bool isOnDisk();
         void setOnDisk( bool d = true );
         QListViewItem *itemChannel() { return m_parent; }
 
@@ -293,6 +292,9 @@ class PodcastEpisode : public QObject, public PlaylistBrowserEntry
     signals:
         void downloadFinished();
         void downloadAborted();
+
+    public slots:
+        const bool isOnDisk();
 
     private slots:
         void abortDownload();
