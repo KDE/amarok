@@ -314,9 +314,6 @@
                                                     <property name="text">
                                                         <string>&lt;p align="center"&gt;(help)&lt;/p&gt;</string>
                                                     </property>
-                                                    <property name="autoFormatting">
-                                                        <set>AutoAll</set>
-                                                    </property>
                                                 </widget>
                                             </hbox>
                                         </widget>
