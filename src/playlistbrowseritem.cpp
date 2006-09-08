@@ -1244,6 +1244,11 @@ PodcastChannel::setSettings( PodcastSettings *newSettings )
                 copyList << item->localUrl();
                 item->setLocalUrlBase( newSettings->saveLocation().prettyURL() );
             }
+            else
+            {
+                item->setLocalUrlBase( newSettings->saveLocation().prettyURL() );
+                item->isOnDisk();
+            }
             item = static_cast<PodcastEpisode*>( item->nextSibling() );
         }
             // move the items
@@ -1916,7 +1921,6 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
     int duration = 0;
     uint size = 0;
     KURL link;
-    QString mimetype;
 
     if( isAtom )
     {
@@ -1967,7 +1971,6 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
         guid     = xml.namedItem( "guid" ).toElement().text();
 
         const QString weblink = xml.namedItem( "enclosure" ).toElement().attribute( "url" );
-        mimetype = xml.namedItem( "enclosure" ).toElement().attribute( "type" );
 
         link     = KURL::fromPathOrURL( weblink );
     }
