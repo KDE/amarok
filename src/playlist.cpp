@@ -4709,8 +4709,8 @@ Playlist::showTagDialog( QPtrList<QListViewItem> items )
     if ( items.count() == 1 )
     {
         PlaylistItem *item = static_cast<PlaylistItem*>( items.first() );
-
-        if ( !item->url().isLocalFile() )
+        bool isDaap        = item->url().protocol() == "daap";
+        if ( !item->url().isLocalFile() && !isDaap )
         {
             StreamEditor dialog( this, item->title(), item->url().prettyURL(), true );
             if( item->url().protocol() == "cdda" )
@@ -4719,7 +4719,14 @@ Playlist::showTagDialog( QPtrList<QListViewItem> items )
                 dialog.setCaption( i18n( "Remote Media" ) );
             dialog.exec();
         }
-        else if ( checkFileStatus( item ) ) {
+        else if ( isDaap ) // don't check if exists
+        {
+            // The tag dialog automatically disables the widgets if the file is not local, which it is not.
+            TagDialog *dialog = new TagDialog( *item, item, instance() );
+            dialog->show();
+        }
+        else if ( checkFileStatus( item ) )
+        {
             TagDialog *dialog = new TagDialog( *item, item, instance() );
             dialog->show();
         }
