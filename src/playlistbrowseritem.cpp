@@ -1843,7 +1843,7 @@ void PodcastFetcher::slotProgress( int bytesDone, int bytesTotal )
 void PodcastFetcher::slotResponseReceived( const QHttpResponseHeader & resp )
 {
 //        debug() << m_http->currentId() << " RESPONCE, statuscode = " << resp.statusCode() << endl;
-    if( resp.statusCode() == 302 )
+    if( resp.statusCode() == 302 || resp.statusCode() == 301 )
     {
         if (resp.hasKey( "location" ) )
         {
