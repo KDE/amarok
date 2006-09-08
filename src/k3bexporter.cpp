@@ -99,6 +99,7 @@ void K3bExporter::exportArtist( const QString &artist, int openmode )
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
     qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, artistId );
     qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
 
     QStringList values( qb.run() );
