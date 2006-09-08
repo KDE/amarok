@@ -502,9 +502,16 @@ void TagDialog::init()
         checkBox_perTrack->hide();
 
         if( !m_playlistItem ) {
+            //We have already loaded the metadata (from the file) in the constructor
             pushButton_previous->hide();
             pushButton_next->hide();
         }
+        else
+        {
+            //Reload the metadata from the file, to be sure it's accurate
+            loadTags( m_playlistItem->url() );
+        }
+
         loadLyrics( m_bundle.url() );
         readTags();
     }
