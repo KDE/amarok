@@ -3309,6 +3309,9 @@ Playlist::disableDynamicMode() //SLOT
 void
 Playlist::repopulate() //SLOT
 {
+    if( !m_dynamicMode )
+        return;
+
     // Repopulate the upcoming tracks
     MyIt it( this, MyIt::All );
     QPtrList<QListViewItem> list;

@@ -11,6 +11,7 @@ VERSION 1.4.4
   CHANGES:
 
   BUGFIXES:
+    * Don't crash when calling repopulate dynamic mode from dcop. (BR 133716)
     * Last.fm streams work with proxies. (BR 131137)
     * Don't try to read m4a tags from apparently invalid files. (BR 133288)
     * Some podcasts would insert line breaks in author/title information and
