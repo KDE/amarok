@@ -341,7 +341,7 @@ CollectionDB::initDirOperations()
     if ( inotify_fd < 0 )
 #endif
     {
-        debug() << "INotify not available, using QTimer!" << endl;
+//         debug() << "INotify not available, using QTimer!" << endl;
         startTimer( MONITOR_INTERVAL * 1000 );
     }
 #ifdef HAVE_INOTIFY
@@ -2950,7 +2950,7 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
             "FROM uniqueid%1 "
             "WHERE deviceid = %2 AND url = '%3';" )
                 .arg( tempTables ? "_temp" : ""
-                 , currdeviceid 
+                 , currdeviceid
                  , currurl ) );
 
     QStringList uniqueids = query( QString(
@@ -3007,7 +3007,7 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
         //debug() << "first case" << endl;
         QString insertline = QStringx( "INSERT INTO uniqueid%1 (deviceid, url, uniqueid, dir) "
                                       "VALUES ( %2,'%3', '%4', '%5');" )
-                .args( QStringList() 
+                .args( QStringList()
                  << ( tempTables ? "_temp" : "" )
                  << currdeviceid
                  << currurl
@@ -3018,7 +3018,7 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
         {
             //debug() << "first stats case" << endl;
             query( QString( "UPDATE statistics SET deviceid = %1, url = '%4', deleted = %2 WHERE uniqueid = '%3';" )
-                                .arg( currdeviceid 
+                                .arg( currdeviceid
                                 , boolF()
                                 , currid
                                 , currurl ) );
@@ -3054,7 +3054,7 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
                 //debug() << "stat was NOT successful, updating tables with: " << endl;
                 //debug() << QString( "UPDATE uniqueid%1 SET url='%2', dir='%3' WHERE uniqueid='%4';" ).arg( ( tempTables ? "_temp" : "" ), currurl, currdir, currid ) << endl;
                 query( QStringx( "UPDATE uniqueid%1 SET deviceid = %2, url='%3', dir='%4' WHERE uniqueid='%5';" )
-                      .args( QStringList() 
+                      .args( QStringList()
                       << ( tempTables ? "_temp" : "" )
                       << currdeviceid
                       << currurl
@@ -3100,8 +3100,8 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
                 //debug() << "third stats case" << endl;
                 query( QString( "UPDATE statistics SET deviceid = %1, url = '%2', deleted = %3 WHERE uniqueid = '%4';" )
                                      .arg( currdeviceid
-                                     , currurl 
-                                     , boolF() 
+                                     , currurl
+                                     , boolF()
                                      , currid ) );
             }
             else if( !statURLVal.empty() )
@@ -3158,15 +3158,15 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
     }
 }
 
-void 
+void
 CollectionDB::emitFileDeleted( const QString &absPath, const QString &uniqueid )
-{ 
+{
   if( uniqueid.isEmpty() )
-    emit fileDeleted( absPath ); 
+    emit fileDeleted( absPath );
   else
     emit fileDeleted( absPath, uniqueid );
 
-  debug() << "fileDeleted emitted for " << absPath << " uniqueid: " 
+  debug() << "fileDeleted emitted for " << absPath << " uniqueid: "
           << uniqueid << endl;
 }
 
@@ -4154,7 +4154,7 @@ CollectionDB::removeSongsInDir( QString path, QStringList *tagsRemoved )
     // Pass back the list of tags we actually delete if requested.
     if( tagsRemoved )
       {
-        QStringList result 
+        QStringList result
           = query( QString( "SELECT tags.deviceid, tags.url, uniqueid.uniqueid FROM tags "
                             "LEFT JOIN uniqueid ON uniqueid.url      = tags.url "
                             "                  AND uniqueid.deviceid = tags.deviceid "
