@@ -17,7 +17,7 @@
 #include "playlistitem.h"
 #include "collectiondb.h"
 #include "k3bexporter.h"
-
+#include "amarok.h"
 
 #include <kprocess.h>
 #include <kmessagebox.h>
@@ -73,17 +73,19 @@ void K3bExporter::exportAlbum( const QString &album, int openmode )
 {
     QString albumId = QString::number( CollectionDB::instance()->albumID( album, false, false, true ) );
 
-    QStringList values =
-        CollectionDB::instance()->query(
-            "SELECT url FROM tags "
-            "WHERE album = " + albumId + " "
-            "ORDER BY track;" );
+    QueryBuilder qb;
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+    qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, albumId );
+    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
 
-    if( values.count() ) {
+    QStringList values( qb.run() );
+
+    if( !values.isEmpty() )
+    {
         KURL::List urls;
 
-        for( uint i=0; i < values.count(); i++ )
-            urls << KURL( values[i] );
+        foreach( values )
+            urls << KURL( *it );
 
         exportTracks( urls, openmode );
     }
@@ -93,17 +95,19 @@ void K3bExporter::exportArtist( const QString &artist, int openmode )
 {
     const QString artistId = QString::number( CollectionDB::instance()->artistID( artist, false, false, true ) );
 
-    QStringList values =
-        CollectionDB::instance()->query(
-            "SELECT url FROM tags "
-            "WHERE artist = " + artistId + " "
-            "ORDER BY title;" );
+    QueryBuilder qb;
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+    qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, artistId );
+    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTitle );
 
-    if( !values.isEmpty() ) {
+    QStringList values( qb.run() );
+
+    if( !values.isEmpty() )
+    {
         KURL::List urls;
 
-        for( uint i=0; i < values.count(); i++ )
-            urls << KURL( values[i] );
+        foreach( values )
+            urls << KURL( *it );
 
         exportTracks( urls, openmode );
     }
@@ -113,17 +117,19 @@ void K3bExporter::exportComposer( const QString &composer, int openmode )
 {
     const QString composerId = QString::number( CollectionDB::instance()->composerID( composer, false, false, true ) );
 
-    QStringList values =
-        CollectionDB::instance()->query(
-            "SELECT url FROM tags "
-            "WHERE composer = " + composerId + " "
-            "ORDER BY title;" );
+    QueryBuilder qb;
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+    qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valComposerID, composerId );
+    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTitle );
 
-    if( !values.isEmpty() ) {
+    QStringList values( qb.run() );
+
+    if( !values.isEmpty() )
+    {
         KURL::List urls;
 
-        for( uint i=0; i < values.count(); i++ )
-            urls << KURL( values[i] );
+        foreach( values )
+            urls << KURL( *it );
 
         exportTracks( urls, openmode );
     }
@@ -154,7 +160,7 @@ void K3bExporter::exportViaCmdLine( const KURL::List &urls, int openmode )
     KURL::List::ConstIterator it;
     KURL::List::ConstIterator end( urls.end() );
     for( it = urls.begin(); it != end; ++it )
-        *process << (*it).path();
+        *process << ( *it ).path();
 
     if( !process->start( KProcess::DontCare ) )
         KMessageBox::error( 0, i18n("Unable to start K3b.") );
