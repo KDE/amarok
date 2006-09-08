@@ -1,6 +1,7 @@
 /***************************************************************************
  * copyright            : (C) 2006 Ian Monroe <ian@monroe.nu>              *
- **************************************************************************/
+ *                        (C) 2006 Seb Ruiz <me@sebruiz.net>               *
+ ***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -25,6 +26,7 @@
 #include "statusbar/statusbar.h"
 #include "tagdialog.h"
 
+#include <qcheckbox.h>
 #include <qmetaobject.h>
 #include <qobjectlist.h>
 #include <qlabel.h>
@@ -57,6 +59,8 @@ DaapClient::DaapClient()
 #endif
     , m_connected( false )
     , m_sharingServer( 0 )
+    , m_broadcastServerCheckBox( 0 )
+    , m_broadcastServer( false ) // to abide by "all ports closed" policy, we default to not broadcasting music
 {
 DEBUG_BLOCK
     setName( "daapclient" );
@@ -118,8 +122,10 @@ DaapClient::openDevice(bool /* silent=false */)
     {
         m_browser = new DNSSD::ServiceBrowser("_daap._tcp");
         m_browser->setName("daapServiceBrowser");
-        connect( m_browser, SIGNAL( serviceAdded( DNSSD::RemoteService::Ptr ) ), this, SLOT( foundDaap( DNSSD::RemoteService::Ptr ) ) );
-        connect( m_browser, SIGNAL( serviceRemoved( DNSSD::RemoteService::Ptr ) ), this, SLOT( serverOffline( DNSSD::RemoteService::Ptr ) ) );
+        connect( m_browser, SIGNAL( serviceAdded( DNSSD::RemoteService::Ptr ) ),
+                      this,   SLOT( foundDaap   ( DNSSD::RemoteService::Ptr ) ) );
+        connect( m_browser, SIGNAL( serviceRemoved( DNSSD::RemoteService::Ptr ) ),
+                      this,   SLOT( serverOffline ( DNSSD::RemoteService::Ptr ) ) );
         m_browser->startBrowse();
     }
 #endif
@@ -135,7 +141,9 @@ DaapClient::openDevice(bool /* silent=false */)
              newHost( host, host, ip, port );
         }
     }
-    m_sharingServer = new DaapServer( this, "DaapServer" );
+
+    if( m_broadcastServer )
+        m_sharingServer = new DaapServer( this, "DaapServer" );
     return true;
 }
 
@@ -518,6 +526,43 @@ DaapClient::resolve( const QString& hostname )
         }
     }
     return "0"; //error condition
+}
+
+
+/// Configuration Dialog Extension
+
+void
+DaapClient::addConfigElements( QWidget * parent )
+{
+    m_broadcastServerCheckBox = new QCheckBox( "Broadcast my music", parent );
+    m_broadcastServerCheckBox->setChecked( m_broadcastServer );
+}
+
+
+void
+DaapClient::removeConfigElements( QWidget * /* parent */ )
+{
+    if( m_broadcastServerCheckBox != 0 )
+        delete m_broadcastServerCheckBox;
+
+    m_broadcastServerCheckBox = 0;
+}
+
+void
+DaapClient::loadConfig()
+{
+    MediaDevice::loadConfig();
+
+    m_broadcastServer = configBool( "broadcastServer", false );
+}
+
+void
+DaapClient::applyConfig()
+{
+    if( m_broadcastServerCheckBox )
+        m_broadcastServer = m_broadcastServerCheckBox->isChecked();
+
+    setConfigBool( "broadcastServer", m_broadcastServer );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -1,5 +1,6 @@
 /***************************************************************************
  * copyright            : (C) 2006 Ian Monroe <ian@monroe.nu>              *
+ *                        (C) 2006 Seb Ruiz <me@sebruiz.net>               *
  **************************************************************************/
 
 /***************************************************************************
@@ -39,6 +40,7 @@ class MediaItem;
 class ServerItem;
 class DaapServer;
 
+class QCheckBox;
 class QString;
 class QTimer;
 
@@ -56,6 +58,13 @@ class DaapClient : public MediaDevice
         DaapClient();
         virtual ~DaapClient();
         bool isConnected();
+
+        virtual bool needsManualConfig() { return true; }
+        virtual void addConfigElements   ( QWidget * /*parent*/ );
+        virtual void removeConfigElements( QWidget * /*parent*/ );
+        virtual void applyConfig();
+        virtual void loadConfig();
+
 
         int incRevision( const QString& host );
         int getSession( const QString& host );
@@ -91,11 +100,14 @@ class DaapClient : public MediaDevice
         QString serverKey( const DNSSD::RemoteService* service ) const;
         DNSSD::ServiceBrowser* m_browser;
 #endif
+
         bool    m_connected;
         QMap<QString, ServerInfo*> m_servers;
         QMap<QString, ServerItem*> m_serverItemMap;
 
-        DaapServer* m_sharingServer;
+        DaapServer *m_sharingServer;
+        QCheckBox  *m_broadcastServerCheckBox;
+        bool        m_broadcastServer;
 };
 
 class ServerItem : public QObject, public MediaItem
@@ -113,7 +125,7 @@ class ServerItem : public QObject, public MediaItem
 
         void startAnimation();
         void stopAnimation();
-        
+
         QString key() const { return key( m_host, m_port ); }
         static QString key( const QString& host, Q_UINT16 port ) { return host + ':' + QString::number( port ); }
     public slots:
