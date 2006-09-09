@@ -461,35 +461,19 @@ Playlist::mediumChange( int deviceid ) // SLOT
 void
 Playlist::insertMedia( KURL::List list, int options )
 {
-    if( list.isEmpty() ) return; // don't add empty items
-
-    bool directPlay = options & DirectPlay;
-
-    if( options & Unique ) {
-        //passing by value is quick for QValueLists, though it is slow
-        //if we change the list, but this is unlikely
-        KURL::List::Iterator jt;
-
-        for( MyIt it( this, MyIt::All ); *it; ++it ) {
-            jt = list.find( (*it)->url() );
-
-            if ( jt != list.end() ) {
-                if ( directPlay && jt == list.begin() ) {
-                    directPlay = false;
-                    activate( *it );
-                }
-
-                list.remove( jt );
-            }
-        }
+    if( list.isEmpty() ) {
+        Amarok::StatusBar::instance()->shortMessage( i18n("Attempted to insert nothing into playlist.") );
+        return; // don't add empty items
     }
 
-    PlaylistItem *after = 0;
+    bool directPlay = options & DirectPlay;
 
     if( options & Replace )
        clear();
 
-    else if( options & Queue )
+    PlaylistItem *after = 0;
+
+    if( options & Queue )
     {
         KURL::List addMe = list;
         KURL::List::Iterator jt;
@@ -526,6 +510,27 @@ Playlist::insertMedia( KURL::List list, int options )
         return;
 
     }
+    else if( options & Unique ) {
+        //passing by value is quick for QValueLists, though it is slow
+        //if we change the list, but this is unlikely
+        KURL::List::Iterator jt;
+        int alreadyOnPlaylist = 0;
+        for( MyIt it( this, MyIt::All ); *it; ++it ) {
+            jt = list.find( (*it)->url() );
+
+            if ( jt != list.end() ) {
+                if ( directPlay && jt == list.begin() ) {
+                    directPlay = false;
+                    activate( *it );
+                }
+
+                list.remove( jt );
+                alreadyOnPlaylist++;
+            }
+        }
+        if ( alreadyOnPlaylist )
+            Amarok::StatusBar::instance()->shortMessage( i18n("One track was already on playlist, so it wasn't added.", "%n tracks were already on playlist, so they weren't added.", alreadyOnPlaylist ) );
+    }
     else
         //we do this by default, even if we were passed some stupid flag combination
         after = lastItem();
@@ -546,8 +551,6 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
 
         ThreadWeaver::instance()->queueJob( new UrlLoader( list, after, directPlay ) );
     }
-    else
-        Amarok::StatusBar::instance()->shortMessage( i18n("Attempted to insert nothing into playlist.") );
 }
 
 void
