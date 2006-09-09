@@ -2254,7 +2254,7 @@ Playlist::clear() //SLOT
 void
 Playlist::safeClear()
 {
-#ifdef QT_VERSION 0x030305
+#if QT_VERSION == 0x030305
     bool block = signalsBlocked();
     blockSignals( true );
     clearSelection();
