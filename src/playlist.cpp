@@ -3771,7 +3771,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
             Amarok::actionCollection()->action("playlist_shuffle")->plug( &popup );
                 m = PlaylistBrowser::instance()->findDynamicModeByTitle( AmarokConfig::lastDynamicMode() );
                 if( m )
-                    popup.insertItem( SmallIconSet( Amarok::icon( "dynamic" ) ), i18n("L&oad %1").arg( m->title() ), ENABLEDYNAMIC);
+                    popup.insertItem( SmallIconSet( Amarok::icon( "dynamic" ) ), i18n("L&oad %1").arg( m->title().replace( '&', "&&" ) ), ENABLEDYNAMIC);
         }
         switch(popup.exec(p))
         {
