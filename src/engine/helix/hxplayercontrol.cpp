@@ -312,8 +312,7 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
                      break;
                   case DEVICE:
                   {
-                     char dev[ sz ];
-                     strcpy(dev, (const char *) buf);
+                     char* dev = strdup((const char*) buf);
                      if (m_inited)
                         if ((unsigned)sz == strlen(dev) + 1)
                         {
@@ -322,6 +321,7 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
                         }
                         else
                            cerr << "CHILD " << m_index << " sz not right in DEVICE, sz=" << sz << endl;
+                     free(dev);
                   }
                   break;
                   case SETFADE:
@@ -1181,11 +1181,13 @@ bool PlayerControl::sendmessage(int fd, msgid m, unsigned char *buf, int sz)
 bool PlayerControl::sendsetURL(int fd, const char *url, bool islocal)
 {
    int len = strlen(url);
-   unsigned char buf[ len + 2 ];
+   unsigned char* buf = new unsigned char[ len + 2 ];
 
    buf[0] = (unsigned char) islocal;
    memcpy((void *) &buf[1], (void *) url, len + 1);  // go ahead and send the null, what the hell
-   return sendmessage(fd, SETURL, (unsigned char *)buf, len + 2);
+   bool r = sendmessage(fd, SETURL, (unsigned char *)buf, len + 2);
+   delete [] buf;
+   return r;
 }
 
 bool PlayerControl::sendstart(int fd, bool fadin, unsigned long fadetime)

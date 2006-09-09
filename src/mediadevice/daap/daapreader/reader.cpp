@@ -365,8 +365,8 @@ Reader::parse( QDataStream &raw, uint containerLength, bool first )
                 }
                 break;
             case STRING: {
-                char stringData[tagLength];
-                raw.readRawBytes( stringData, tagLength ); DEBUGTAG( QString::fromUtf8( stringData, tagLength ) )
+                QByteArray stringData(tagLength);
+                raw.readRawBytes( stringData.data(), tagLength ); DEBUGTAG( QString::fromUtf8( stringData, tagLength ) )
                 addElement( childMap, tag, QVariant( QString::fromUtf8( stringData, tagLength ) ) );
                 }
                 break;
