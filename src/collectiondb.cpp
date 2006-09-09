@@ -2298,7 +2298,6 @@ CollectionDB::notAvailCover( const bool withShadow, int width )
 QStringList
 CollectionDB::artistList( bool withUnknowns, bool withCompilations )
 {
-    DEBUG_BLOCK
     QueryBuilder qb;
     qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
 

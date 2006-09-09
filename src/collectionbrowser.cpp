@@ -628,7 +628,7 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
     {
         // the collectionbrowser is intensive for sql, so we only renderView() if the tab
         // is currently active.  else, wait until user focuses it.
-        debug() << "current browser is not collection, aborting renderView()" << endl;
+//         debug() << "current browser is not collection, aborting renderView()" << endl;
         m_dirty = true;
         return;
     }

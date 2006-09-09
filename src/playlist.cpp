@@ -2247,13 +2247,14 @@ Playlist::clear() //SLOT
 }
 
 /**
- * Workaround for Qt bug in QListView::clear()
+ * Workaround for Qt 3.3.5 bug in QListView::clear()
  * @see http://lists.kde.org/?l=kde-devel&m=113113845120155&w=2
  * @see BUG 116004
  */
 void
 Playlist::safeClear()
 {
+#ifdef QT_VERSION 0x030305
     bool block = signalsBlocked();
     blockSignals( true );
     clearSelection();
@@ -2268,6 +2269,9 @@ Playlist::safeClear()
     }
     blockSignals( block );
     triggerUpdate();
+#else
+    KListView::clear();
+#endif
 }
 
 void

@@ -146,10 +146,8 @@ DaapClient::openDevice(bool /* silent=false */)
     }
 
     if( m_broadcastServer )
-    {
-        debug() << "Starting DAAP server" << endl;
         m_sharingServer = new DaapServer( this, "DaapServer" );
-    }
+
     return true;
 }
 
