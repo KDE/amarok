@@ -2222,6 +2222,10 @@ Playlist::clear() //SLOT
     m_prevTracks.clear();
     m_prevAlbums.clear();
 
+    if (m_stopAfterTrack) {
+        m_stopAfterTrack = 0;
+        setStopAfterMode( DoNotStop );
+    }
     const PLItemList prev = m_nextTracks;
     m_nextTracks.clear();
     emit queueChanged( PLItemList(), prev );
@@ -4377,8 +4381,10 @@ Playlist::removeItem( PlaylistItem *item, bool multi )
         }
     }
 
-    if( m_stopAfterTrack == item )
+    if( m_stopAfterTrack == item ) {
         m_stopAfterTrack = 0; //to be safe
+        setStopAfterMode( DoNotStop );
+    }
 
     //keep m_nextTracks queue synchronized
     if( m_nextTracks.removeRef( item ) && !multi )
