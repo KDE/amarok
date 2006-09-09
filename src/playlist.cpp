@@ -2255,24 +2255,25 @@ Playlist::clear() //SLOT
 void
 Playlist::safeClear()
 {
-#if QT_VERSION == 0x030305
-    bool block = signalsBlocked();
-    blockSignals( true );
-    clearSelection();
+    if ( qVersion() == "3.3.5" )
+    {
+        bool block = signalsBlocked();
+        blockSignals( true );
+        clearSelection();
 
-    QListViewItem *c = firstChild();
-    QListViewItem *n;
-    while( c ) {
-        n = c->nextSibling();
-        if ( !static_cast<PlaylistItem *>( c )->isEmpty() ) //avoid deleting markers
-            delete c;
-        c = n;
+        QListViewItem *c = firstChild();
+        QListViewItem *n;
+        while( c ) {
+            n = c->nextSibling();
+            if ( !static_cast<PlaylistItem *>( c )->isEmpty() ) //avoid deleting markers
+                delete c;
+            c = n;
+        }
+        blockSignals( block );
+        triggerUpdate();
     }
-    blockSignals( block );
-    triggerUpdate();
-#else
-    KListView::clear();
-#endif
+    else
+        KListView::clear();
 }
 
 void
