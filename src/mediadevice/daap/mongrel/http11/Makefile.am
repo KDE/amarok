@@ -7,8 +7,6 @@ amarokrubylib_DATA = http11.rb
 INCLUDES = \
     -I$(ruby_includes)
 
-CFLAGS = -Wall
-
 libhttp11_la_LDFLAGS = \
 	-shared \
     $(ruby_ldflags)
