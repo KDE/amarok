@@ -4,6 +4,7 @@ Amarok ChangeLog
 
 VERSION 1.4.4
   FEATURES:
+    * Undo/Redo functionality is now available over sessions. (BR 131072)
     * Allow the creation of empty playlists in the playlist browser. Available
       either from the Add button in the toolbar or the context menu of a
       playlist folder. (BR 133543)

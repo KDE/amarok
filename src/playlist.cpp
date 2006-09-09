@@ -371,7 +371,16 @@ Playlist::Playlist( QWidget *parent )
     connect( ac->action( "favor_tracks" ), SIGNAL( activated( int ) ), SLOT( generateInfo() ) );
     connect( ac->action( "random_mode" ), SIGNAL( activated( int ) ), SLOT( generateInfo() ) );
 
-    m_undoButton->setEnabled( false );
+
+    // undostates are written in chronological order, so this is a clever way to get them back in the correct order :)
+    QStringList undos = m_undoDir.entryList( QString("*.xml"), QDir::Files, QDir::Time );
+
+    foreach( undos )
+        m_undoList.append( m_undoDir.absPath() + "/" + (*it) );
+
+    m_undoCounter = m_undoList.count();
+
+    m_undoButton->setEnabled( !m_undoList.isEmpty() );
     m_redoButton->setEnabled( false );
 
     engineStateChanged( EngineController::engine()->state() ); //initialise state of UI
@@ -422,11 +431,6 @@ Playlist::~Playlist()
     saveLayout( KGlobal::config(), "PlaylistColumnsLayout" );
 
     if( AmarokConfig::savePlaylist() ) saveXML( defaultPlaylistPath() );
-
-    //clean undo directory
-    QStringList list = m_undoDir.entryList();
-    for( QStringList::ConstIterator it = list.constBegin(), end = list.constEnd(); it != end; ++it )
-        m_undoDir.remove( *it );
 
     //speed up quit a little
     safeClear();   //our implementation is slow
