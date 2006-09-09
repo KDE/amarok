@@ -92,6 +92,7 @@ class DaapClient : public MediaDevice
         void foundDaap( DNSSD::RemoteService::Ptr );
         void resolvedDaap( bool );
         void createTree( const QString& host, Daap::SongList bundles );
+        void broadcastButtonToggled();
 
    private:
         ServerItem* newHost( const QString& serviceName, const QString& host, const QString& ip, const Q_INT16 port );
@@ -108,6 +109,7 @@ class DaapClient : public MediaDevice
         DaapServer *m_sharingServer;
         QCheckBox  *m_broadcastServerCheckBox;
         bool        m_broadcastServer;
+        KToolBarButton *m_broadcastButton;
 };
 
 class ServerItem : public QObject, public MediaItem

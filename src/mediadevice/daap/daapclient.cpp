@@ -75,11 +75,20 @@ DEBUG_BLOCK
     m_customButton       = true;
     m_transfer           = false;
 
-    KToolBarButton* customButton = MediaBrowser::instance()->getToolBar()->getButton( MediaBrowser::CUSTOM );
-
+    KToolBar       *toolbar         = MediaBrowser::instance()->getToolBar();
+    KToolBarButton *customButton    = toolbar->getButton( MediaBrowser::CUSTOM );
     customButton->setText( i18n("Add computer") );
 
-    QToolTip::add( customButton, i18n( "List music from a remote host" ) );
+    toolbar->setIconText( KToolBar::IconTextRight, false );
+
+    m_broadcastButton = new KToolBarButton( "connect_creating", 0, toolbar, "broadcast_button",
+                                                          i18n("Share My Music") );
+    m_broadcastButton->setToggle( true );
+
+    QToolTip::add( customButton,      i18n( "List music from a remote host" ) );
+    QToolTip::add( m_broadcastButton, i18n( "If this button is checked, then your music will be exported to the network" ) );
+
+    connect( m_broadcastButton, SIGNAL( toggled(int) ), SLOT( broadcastButtonToggled() ) );
 
     MediaBrowser::instance()->insertChild( this );
 }
@@ -558,6 +567,11 @@ DaapClient::loadConfig()
     MediaDevice::loadConfig();
 
     m_broadcastServer = configBool( "broadcastServer", false );
+
+    // don't undo all the work we just did at startup
+    m_broadcastButton->blockSignals( true );
+    m_broadcastButton->setOn( m_broadcastServer );
+    m_broadcastButton->blockSignals( false );
 }
 
 void
@@ -567,6 +581,28 @@ DaapClient::applyConfig()
         m_broadcastServer = m_broadcastServerCheckBox->isChecked();
 
     setConfigBool( "broadcastServer", m_broadcastServer );
+}
+
+void
+DaapClient::broadcastButtonToggled()
+{
+DEBUG_BLOCK
+    debug() << "Chaging server from " << m_broadcastServer << " to " << !m_broadcastServer << endl;
+    m_broadcastServer = !m_broadcastServer;
+
+    switch( m_broadcastServer )
+    {
+        case false:
+            if( m_sharingServer )
+                delete m_sharingServer;
+            m_sharingServer = 0;
+            break;
+
+        case true:
+            if( !m_sharingServer )
+                m_sharingServer = new DaapServer( this, "DaapServer" );
+            break;
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
