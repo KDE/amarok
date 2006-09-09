@@ -2255,7 +2255,7 @@ Playlist::clear() //SLOT
 void
 Playlist::safeClear()
 {
-    if ( qVersion() == "3.3.5" )
+    if ( strcmp( qVersion(), "3.3.5" ) == 0 )
     {
         bool block = signalsBlocked();
         blockSignals( true );
