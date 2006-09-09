@@ -64,9 +64,6 @@ const int NJB_NOTHANDLED = 0;
 // This function has handled the request, so no further processing is needed.
 const int NJB_HANDLED = -1;
 
-
-trackValueList* theTracks = 0;
-
 NjbMediaDevice::NjbMediaDevice(): MediaDevice()
 {
 
@@ -75,7 +72,6 @@ NjbMediaDevice::NjbMediaDevice(): MediaDevice()
     m_njb = 0;
     m_connected = false;
     m_libcount = 0;
-    theTracks = &trackList;
     m_connected = false;
     m_customButton = true;
     m_td = 0;
@@ -414,8 +410,8 @@ NjbMediaDevice::copyTrackToDevice(const MetaBundle& bundle)
 
     if( m_canceled )
             return 0;
-    trackValueList::const_iterator it_track = theTracks->findTrackByName( bundle.filename() );
-    if( it_track != theTracks->end() )
+    trackValueList::const_iterator it_track = trackList.findTrackByName( bundle.filename() );
+    if( it_track != trackList.end() )
     {
         deleteFromDevice( (*it_track)->id() );
     }

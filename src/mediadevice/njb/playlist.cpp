@@ -179,7 +179,7 @@ int
 NjbPlaylist::addTrack( const QString& fileName)
 {
     debug() << __PRETTY_FUNCTION__ << " filename=" << fileName << endl;
-
+/*
     trackValueList::const_iterator it_track = theTracks->findTrackByName( fileName );
     if( it_track == theTracks->end() ) {
         // couldn't find this track, skip it
@@ -191,7 +191,7 @@ NjbPlaylist::addTrack( const QString& fileName)
         debug() << "putPlaylist: playlist_track_new failed\n";
         return ERR_COULD_NOT_WRITE;
     }
-    NJB_Playlist_Addtrack( m_playlist, pl_track, NJB_PL_END);
+    NJB_Playlist_Addtrack( m_playlist, pl_track, NJB_PL_END);*/
     return NJB_SUCCESS;
 }
 
@@ -244,7 +244,7 @@ QStringList
 NjbPlaylist::trackNames( void ) const
 {
     QStringList result;
-
+/*
     // find tracks in trackList by their ID
     MetaBundle bundle;
     NjbTrack track;
@@ -257,7 +257,7 @@ NjbPlaylist::trackNames( void ) const
 //            result += it_track.item().bundle()->title();
         }
         it_pltrack = it_pltrack->next;
-    }
+    }*/
 
     return result;
 }
