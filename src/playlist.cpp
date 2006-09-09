@@ -529,7 +529,7 @@ Playlist::insertMedia( KURL::List list, int options )
             }
         }
         if ( alreadyOnPlaylist )
-            Amarok::StatusBar::instance()->shortMessage( i18n("One track was already on playlist, so it wasn't added.", "%n tracks were already on playlist, so they weren't added.", alreadyOnPlaylist ) );
+            Amarok::StatusBar::instance()->shortMessage( i18n("One track was already in the playlist, so it wasn't added.", "%n tracks were already in the playlist, so they weren't added.", alreadyOnPlaylist ) );
     }
     else
         //we do this by default, even if we were passed some stupid flag combination
