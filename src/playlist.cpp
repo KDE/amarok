@@ -475,7 +475,7 @@ Playlist::insertMedia( KURL::List list, int options )
     if( options & Replace )
        clear();
 
-    PlaylistItem *after = 0;
+    PlaylistItem *after = lastItem();
 
     if( options & Queue )
     {
@@ -535,9 +535,6 @@ Playlist::insertMedia( KURL::List list, int options )
         if ( alreadyOnPlaylist )
             Amarok::StatusBar::instance()->shortMessage( i18n("One track was already in the playlist, so it wasn't added.", "%n tracks were already in the playlist, so they weren't added.", alreadyOnPlaylist ) );
     }
-    else
-        //we do this by default, even if we were passed some stupid flag combination
-        after = lastItem();
 
     insertMediaInternal( list, after, directPlay );
 }
