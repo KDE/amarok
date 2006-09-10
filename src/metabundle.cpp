@@ -1428,8 +1428,8 @@ MetaBundle::save( TagLib::FileRef* fileref )
 
 bool MetaBundle::save( QTextStream &stream, const QStringList &attributes, int indent ) const
 {
-    QDomDocument QDomSucksItNeedsADocument;
-    QDomElement item = QDomSucksItNeedsADocument.createElement( "item" );
+    QDomDocument qDomSucksItNeedsADocumentAndDoesntUseUnicodeWhenItShould;
+    QDomElement item = qDomSucksItNeedsADocumentAndDoesntUseUnicodeWhenItShould.createElement( "item" );
     item.setAttribute( "url", url().url() );
     item.setAttribute( "uniqueid", uniqueId() );
     if( m_isCompilation )
@@ -1440,16 +1440,16 @@ bool MetaBundle::save( QTextStream &stream, const QStringList &attributes, int i
 
     for( int i = 0; i < NUM_COLUMNS; ++i )
     {
-        QDomElement tag = QDomSucksItNeedsADocument.createElement( exactColumnName( i ) );
+        QDomElement tag = qDomSucksItNeedsADocumentAndDoesntUseUnicodeWhenItShould.createElement( exactColumnName( i ) );
         //debug() << "exactColumName(i) = " << exactColumnName( i ) << endl;
-        QDomText text = QDomSucksItNeedsADocument.createTextNode( exactText( i, true ) );
+        QDomText text = qDomSucksItNeedsADocumentAndDoesntUseUnicodeWhenItShould.createTextNode( exactText( i, true ) );
         //debug() << "exactText(i) = " << exactText( i ) << endl;
         tag.appendChild( text );
 
         item.appendChild( tag );
     }
-    QDomSucksItNeedsADocument.appendChild( item );
-    stream << QDomSucksItNeedsADocument.toCString();
+    qDomSucksItNeedsADocumentAndDoesntUseUnicodeWhenItShould.appendChild( item );
+    stream << qDomSucksItNeedsADocumentAndDoesntUseUnicodeWhenItShould.toCString();
     return true;
 }
 
