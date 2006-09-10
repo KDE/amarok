@@ -2255,7 +2255,11 @@ Playlist::clear() //SLOT
 void
 Playlist::safeClear()
 {
-    if ( strcmp( qVersion(), "3.3.5" ) == 0 )
+    /* 3.3.5 and 3.3.6 have bad KListView::clear() functions.
+       3.3.5 forgets to clear the pointer to the highlighted item.
+       3.3.6 forgets to clear the pointer to the last dragged item */
+    if ( strcmp( qVersion(), "3.3.5" ) == 0
+         || strcmp( qVersion(), "3.3.6" ) == 0 )
     {
         bool block = signalsBlocked();
         blockSignals( true );
