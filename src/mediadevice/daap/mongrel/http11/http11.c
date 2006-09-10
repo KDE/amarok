@@ -392,7 +392,7 @@ VALUE URIClassifier_init(VALUE self)
 {
   VALUE hash;
 
-  // we create an internal hash to protect stuff from the GC
+  /* we create an internal hash to protect stuff from the GC */
   hash = rb_hash_new();
   rb_ivar_set(self, id_handler_map, hash);
 
@@ -508,23 +508,24 @@ VALUE URIClassifier_resolve(VALUE self, VALUE uri)
 
   handler = tst_search(uri_str, tst, &pref_len);
 
-  // setup for multiple return values
+  /* setup for multiple return values */
   result = rb_ary_new();
 
   if(handler) {
     rb_ary_push(result, rb_str_substr (uri, 0, pref_len));
-    // compensate for a script_name="/" where we need to add the "/" to path_info to keep it consistent
+    /* compensate for a script_name="/" where we need to add the "/" to path_info to keep it
+     * consistent */
     if(pref_len == 1 && uri_str[0] == '/') {
-      // matches the root URI so we have to use the whole URI as the path_info
+      /* matches the root URI so we have to use the whole URI as the path_info */
       rb_ary_push(result, uri);
     } else {
-      // matches a script so process like normal
+      /* matches a script so process like normal */
       rb_ary_push(result, rb_str_substr(uri, pref_len, RSTRING(uri)->len));
     }
 
     rb_ary_push(result, (VALUE)handler);
   } else {
-    // not found so push back nothing
+    /* not found so push back nothing */
     rb_ary_push(result, Qnil);
     rb_ary_push(result, Qnil);
     rb_ary_push(result, Qnil);
