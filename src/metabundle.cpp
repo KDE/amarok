@@ -1448,8 +1448,8 @@ bool MetaBundle::save( QTextStream &stream, const QStringList &attributes, int i
 
         item.appendChild( tag );
     }
-
-    item.save( stream, indent );
+    QDomSucksItNeedsADocument.appendChild( item );
+    stream << QDomSucksItNeedsADocument.toCString();
     return true;
 }
 
