@@ -72,7 +72,7 @@ void http_field(void *data, const char *field, size_t flen, const char *value, s
 
   v = rb_str_new(value, vlen);
   f = rb_str_dup(global_http_prefix);
-  f = rb_str_buf_cat(f, field, flen); 
+  f = rb_str_buf_cat(f, field, flen);
 
   for(ch = RSTRING(f)->ptr, end = ch + RSTRING(f)->len; ch < end; ch++) {
     if(*ch == '-') {
@@ -157,12 +157,12 @@ void header_done(void *data, const char *at, size_t length)
 
   rb_hash_aset(req, global_gateway_interface, global_gateway_interface_value);
   if((temp = rb_hash_aref(req, global_http_host)) != Qnil) {
-    // ruby better close strings off with a '\0' dammit
+    /* ruby better close strings off with a '\0' dammit */
     colon = strchr(RSTRING(temp)->ptr, ':');
     if(colon != NULL) {
       rb_hash_aset(req, global_server_name, rb_str_substr(temp, 0, colon - RSTRING(temp)->ptr));
-      rb_hash_aset(req, global_server_port, 
-          rb_str_substr(temp, colon - RSTRING(temp)->ptr+1, 
+      rb_hash_aset(req, global_server_port,
+          rb_str_substr(temp, colon - RSTRING(temp)->ptr+1,
             RSTRING(temp)->len));
     } else {
       rb_hash_aset(req, global_server_name, temp);
@@ -170,7 +170,7 @@ void header_done(void *data, const char *at, size_t length)
     }
   }
 
-  // grab the initial body and stuff it into an ivar
+  /* grab the initial body and stuff it into an ivar */
   rb_ivar_set(req, id_http_body, rb_str_new(at, length));
   rb_hash_aset(req, global_server_protocol, global_server_protocol_value);
   rb_hash_aset(req, global_server_software, global_mongrel_version);
@@ -264,13 +264,13 @@ VALUE HttpParser_finish(VALUE self)
  * returning an Integer to indicate how much of the data has been read.  No matter
  * what the return value, you should call HttpParser#finished? and HttpParser#error?
  * to figure out if it's done parsing or there was an error.
- * 
- * This function now throws an exception when there is a parsing error.  This makes 
- * the logic for working with the parser much easier.  You can still test for an 
+ *
+ * This function now throws an exception when there is a parsing error.  This makes
+ * the logic for working with the parser much easier.  You can still test for an
  * error, but now you need to wrap the parser with an exception handling block.
  *
  * The third argument allows for parsing a partial request and then continuing
- * the parsing from that position.  It needs all of the original data as well 
+ * the parsing from that position.  It needs all of the original data as well
  * so you have to append to the data buffer as you read.
  */
 VALUE HttpParser_execute(VALUE self, VALUE req_hash, VALUE data, VALUE start)
@@ -350,7 +350,7 @@ VALUE HttpParser_nread(VALUE self)
 }
 
 
-void URIClassifier_free(void *data) 
+void URIClassifier_free(void *data)
 {
   TRACE();
 
@@ -410,7 +410,7 @@ VALUE URIClassifier_init(VALUE self)
  * return SomeHandler immediatly, with no additional searches, but it will
  * return path info with "/iwant".
  *
- * You actually can reuse this class to register nearly anything and 
+ * You actually can reuse this class to register nearly anything and
  * quickly resolve it.  This could be used for caching, fast mapping, etc.
  * The downside is it uses much more memory than a Hash, but it can be
  * a lot faster.  It's main advantage is that it works on prefixes, which
@@ -469,20 +469,20 @@ VALUE URIClassifier_unregister(VALUE self, VALUE uri)
  *    uc.resolve("/someuri/pathinfo") -> "/someuri", "/pathinfo", handler
  *    uc.resolve("/notfound/orhere") -> nil, nil, nil
  *    uc.resolve("/") -> "/", "/", handler  # if uc.register("/", handler)
- *    uc.resolve("/path/from/root") -> "/", "/path/from/root", handler  # if uc.register("/", handler) 
- * 
+ *    uc.resolve("/path/from/root") -> "/", "/path/from/root", handler  # if uc.register("/", handler)
+ *
  * Attempts to resolve either the whole URI or at the longest prefix, returning
  * the prefix (as script_info), path (as path_info), and registered handler
  * (usually an HttpHandler).  If it doesn't find a handler registered at the longest
  * match then it returns nil,nil,nil.
  *
  * Because the resolver uses a trie you are able to register a handler at *any* character
- * in the URI and it will be handled as long as it's the longest prefix.  So, if you 
+ * in the URI and it will be handled as long as it's the longest prefix.  So, if you
  * registered handler #1 at "/something/lik", and #2 at "/something/like/that", then a
  * a search for "/something/like" would give you #1.  A search for "/something/like/that/too"
  * would give you #2.
- * 
- * This is very powerful since it means you can also attach handlers to parts of the ; 
+ *
+ * This is very powerful since it means you can also attach handlers to parts of the ;
  * (semi-colon) separated path params, any part of the path, use off chars, anything really.
  * It also means that it's very efficient to do this only taking as long as the URI has
  * characters.
