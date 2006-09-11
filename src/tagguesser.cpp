@@ -26,12 +26,14 @@ FileNameScheme::FileNameScheme( const QString &s )
     , m_albumField( -1 )
     , m_trackField( -1 )
     , m_commentField( -1 )
+    , m_yearField( -1 )
 {
     int artist  = s.find( "%artist" );
     int title   = s.find( "%title" );
     int track   = s.find( "%track" );
     int album   = s.find( "%album" );
     int comment = s.find( "%comment" );
+    int year    = s.find( "%year" );
 
     int fieldNumber = 1;
     int i = s.find( '%' );
@@ -46,6 +48,8 @@ FileNameScheme::FileNameScheme( const QString &s )
             m_trackField = fieldNumber++;
         if ( comment == i )
             m_commentField = fieldNumber++;
+        if ( year == i )
+             m_yearField = fieldNumber++;
         i = s.find('%', i + 1);
     }
     m_regExp.setPattern( composeRegExp( s ) );
@@ -96,6 +100,13 @@ QString FileNameScheme::comment() const
     return m_regExp.capturedTexts()[ m_commentField ];
 }
 
+QString FileNameScheme::year() const
+{
+    if( m_yearField == -1 )
+        return QString::null;
+    return m_regExp.capturedTexts()[ m_yearField ];
+}
+
 QString FileNameScheme::composeRegExp( const QString &s ) const
 {
     QMap<QString, QString> substitutions;
@@ -107,6 +118,7 @@ QString FileNameScheme::composeRegExp( const QString &s ) const
     substitutions[ "album" ] = config.readEntry( "Album regexp", "([\\w\\s'&_,\\.]+)" );
     substitutions[ "track" ] = config.readEntry( "Track regexp", "(\\d+)" );
     substitutions[ "comment" ] = config.readEntry( "Comment regexp", "([\\w\\s_]+)" );
+    substitutions[ "year" ] = config.readEntry( "Year regexp", "(\\d+)" );
 
     QString regExp = QRegExp::escape( s.simplifyWhiteSpace() );
     regExp = ".*" + regExp;
@@ -187,7 +199,7 @@ void TagGuesser::loadSchemes()
 
 void TagGuesser::guess( const QString &absFileName )
 {
-    m_title = m_artist = m_album = m_track = m_comment = QString::null;
+    m_title = m_artist = m_album = m_track = m_comment = m_year = QString::null;
 
     FileNameScheme::List::ConstIterator it = m_schemes.begin();
     FileNameScheme::List::ConstIterator end = m_schemes.end();
@@ -200,6 +212,7 @@ void TagGuesser::guess( const QString &absFileName )
             m_album = capitalizeWords( schema.album().replace( '_', " " ) ).stripWhiteSpace();
             m_track = schema.track().stripWhiteSpace();
             m_comment = schema.comment().replace( '_', " " ).stripWhiteSpace();
+            m_year = schema.year().stripWhiteSpace();
             break;
         }
     }

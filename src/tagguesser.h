@@ -22,6 +22,7 @@ class FileNameScheme
         QString album() const;
         QString track() const;
         QString comment() const;
+        QString year() const;
 
         QString pattern() const { return m_cod; };
     private:
@@ -35,6 +36,7 @@ class FileNameScheme
         int m_albumField;
         int m_trackField;
         int m_commentField;
+        int m_yearField;
 };
 
 class TagGuesser
@@ -56,6 +58,7 @@ class TagGuesser
         QString album() const { return m_album; }
         QString track() const { return m_track; }
         QString comment() const { return m_comment; }
+        QString year() const { return m_year; }
 
     private:
         void loadSchemes();
@@ -67,6 +70,7 @@ class TagGuesser
         QString m_album;
         QString m_track;
         QString m_comment;
+        QString m_year;
 };
 
 #endif /* TAGGUESSER_H */

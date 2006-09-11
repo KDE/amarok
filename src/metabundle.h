@@ -169,7 +169,7 @@ public:
     bool save( TagLib::FileRef* fileref = 0 );
 
     /** Saves the MetaBundle's data as XML to a text stream. */
-    bool save( QTextStream &stream, const QStringList &attributes = QStringList(), int indent = 0 ) const;
+    bool save( QTextStream &stream, const QStringList &attributes = QStringList() ) const;
 
     bool isFile() const;
 
@@ -210,7 +210,7 @@ public:
 
     /** PlaylistItem reimplements this so it can be informed of moodbar
         data events without having to use signals */
-    virtual void moodbarJobEvent( int newState ) 
+    virtual void moodbarJobEvent( int newState )
         { (void) newState; }
 
 public:
@@ -431,18 +431,18 @@ inline int MetaBundle::sampleRate() const { return m_sampleRate == Undetermined 
 inline int MetaBundle::filesize()   const { return m_filesize == Undetermined ? 0 : m_filesize; }
 inline int MetaBundle::fileType()   const { return m_type; }
 
-inline Moodbar &MetaBundle::moodbar() 
+inline Moodbar &MetaBundle::moodbar()
 {
-  if( m_moodbar == 0 ) m_moodbar = new Moodbar( this ); 
-  return *m_moodbar; 
+  if( m_moodbar == 0 ) m_moodbar = new Moodbar( this );
+  return *m_moodbar;
 }
 inline const Moodbar &MetaBundle::moodbar_const() const
 {
   // Anyone know of a better way to do this?
-  if( m_moodbar == 0 ) 
-    const_cast<MetaBundle*>(this)->m_moodbar 
-      = new Moodbar( const_cast<MetaBundle*>(this) ); 
-  return *m_moodbar; 
+  if( m_moodbar == 0 )
+    const_cast<MetaBundle*>(this)->m_moodbar
+      = new Moodbar( const_cast<MetaBundle*>(this) );
+  return *m_moodbar;
 }
 
 inline KURL     MetaBundle::url()        const { return m_url; }
