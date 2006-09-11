@@ -5,6 +5,9 @@ TODO-list for Amarok
 
 
 SHORT-TERM (URGENT):
+ <sebr>    PlaylistBrowser::slotDoubleClicked() and PlaylistBrowser::addSelectedToPlaylist()
+           should be merged for better code reusage. They are practically the same.
+
  <markey>  I just deleted a tag by accident: Clicked on a file in the playlist, pressed
            delete to remove the track from the playlist. I had not noticed that it
            went into edit mode, though. So I clicked somewhere else, and BAM, the new
