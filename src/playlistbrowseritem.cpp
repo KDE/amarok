@@ -1781,18 +1781,18 @@ PodcastChannel::slotAnimation()
 
 PodcastFetcher::PodcastFetcher( QString url, const KURL &directory, int size ):
         m_url( QUrl( url )),
+        m_http( m_url.host() ),
         m_directory ( directory ),
         m_error( 0 ),
-        m_size( size)
+        m_size( size )
 {
 
-    m_http = new QHttp( m_url.host() );
     m_redirected = false;
-    connect(m_http, SIGNAL( responseHeaderReceived ( const QHttpResponseHeader & ) ), this,
+    connect( (&m_http), SIGNAL( responseHeaderReceived ( const QHttpResponseHeader & ) ), this,
                       SLOT( slotResponseReceived( const QHttpResponseHeader & ) ) );
-    connect(m_http, SIGNAL( done( bool ) ), this, SLOT( slotDone( bool ) ) );
+    connect( (&m_http), SIGNAL( done( bool ) ), this, SLOT( slotDone( bool ) ) );
    // connect( m_http, SIGNAL( dataTransferProgress ( int, int, QNetworkOperation * ) ), this, SLOT( slotProgress( int, int ) ) );
-    connect( m_http, SIGNAL(  dataReadProgress ( int, int ) ), this, SLOT( slotProgress( int, int ) ) );
+    connect( (&m_http), SIGNAL(  dataReadProgress ( int, int ) ), this, SLOT( slotProgress( int, int ) ) );
 
     fetch( );
 }
@@ -1802,10 +1802,10 @@ void PodcastFetcher::fetch()
     KURL filepath = m_directory;
 
     filepath.addPath( m_url.fileName() );
-    m_file = new QFile( filepath.path() );
-    if( m_file->exists() )
+    m_file.setName( filepath.path() );
+    if( m_file.exists() )
     {
-        QFileInfo file( *m_file );
+        QFileInfo file( m_file );
         const QString baseName = file.fileName();
         int i = 1;
         while( file.exists() )
@@ -1819,21 +1819,21 @@ void PodcastFetcher::fetch()
             file.setFile( file.dirPath( true ) + '/' + newName );
             i++;
         }
-        m_file->setName( file.filePath() );
+        m_file.setName( file.filePath() );
     }
-    m_http->get( m_url.encodedPathAndQuery(), m_file );
+    m_http.get( m_url.encodedPathAndQuery(), (&m_file) );
    // debug() << m_http->currentId() << " get( http://"<< m_url.host() << m_url.encodedPathAndQuery() << " )" << endl;
-    if( m_http->error() )
-        debug() <<  m_http->errorString() << endl;
+    if( m_http.error() )
+        debug() <<  m_http.errorString() << endl;
 }
 
 void PodcastFetcher::kill()
 {
-    m_http->abort();
-    m_http->clearPendingRequests();
-    m_http->closeConnection();
-    if( m_file && m_file->exists() )
-        m_file->remove();
+    m_http.abort();
+    m_http.clearPendingRequests();
+    m_http.closeConnection();
+    if( m_file.exists() )
+        m_file.remove();
 }
 
 void PodcastFetcher::slotProgress( int bytesDone, int bytesTotal )
@@ -1862,14 +1862,14 @@ void PodcastFetcher::slotResponseReceived( const QHttpResponseHeader & resp )
             }
   //          debug() << m_http->currentId() << " m_redirected to " << m_url.toString( ) <<endl;
             if( m_url.host() != oldHost )
-                m_http->setHost( m_url.host() );
+                m_http.setHost( m_url.host() );
             m_redirected = true;
         }
     } else if (resp.statusCode() == 200 )
     {
         //TODO: create file here, rename temp file later
         //debug() << resp.toString() << endl;
-        debug() << m_http->currentId() << " filename = " << m_url.fileName() << endl;
+        debug() << m_http.currentId() << " filename = " << m_url.fileName() << endl;
     }
 }
 
@@ -1878,7 +1878,7 @@ void PodcastFetcher::slotDone( bool error )
     if( error )
     {
      //       debug() << m_http->currentId() << " ERROR: " << " errorstring = " << m_http->errorString() << endl;
-            emit result( m_http->error() );
+            emit result( m_http.error() );
             return;
     }
     if( m_error )
@@ -1889,14 +1889,14 @@ void PodcastFetcher::slotDone( bool error )
     if ( m_redirected )
     {
         m_redirected = false;
-        if( m_file && m_file->exists() )
-            m_file->remove();
+        if( m_file.exists() )
+            m_file.remove();
         fetch();
     }
     else if ( !error )
     {
    //     debug() << m_http->currentId() << " downloaded to " << m_file->name() << endl;
-        emit result( m_http->error() ); //0
+        emit result( m_http.error() ); //0
     }
 }
 
@@ -1909,7 +1909,6 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
                                 const QDomElement &xml, const int feedType, const bool &isNew )
     : PlaylistBrowserEntry( parent, after )
       , m_parent( parent )
-      , m_localUrl( 0 )
       , m_fetching( false )
       , m_onDisk( false )
 {
@@ -2006,7 +2005,6 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after, Pod
     : PlaylistBrowserEntry( parent, after )
       , m_parent( parent )
       , m_bundle( bundle )
-      , m_localUrl( 0 )
       , m_fetching( false )
       , m_onDisk( false )
 {

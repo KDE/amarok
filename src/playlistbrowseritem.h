@@ -220,7 +220,7 @@ class PodcastFetcher : public QObject
         PodcastFetcher( QString url, const KURL &directory, int size );
 
         QString filename() { return m_url.fileName(); }
-        KURL localUrl() { return KURL( m_file->name() ); }
+        KURL localUrl() { return KURL( m_file.name() ); }
         void kill();
 
     signals:
@@ -235,9 +235,9 @@ class PodcastFetcher : public QObject
     private:
         void fetch();
 
-        QFile *m_file;
+        QFile m_file;
         QUrl m_url;
-        QHttp *m_http;
+        QHttp m_http;
         KURL m_directory;
         bool m_redirected;
         int m_error;
