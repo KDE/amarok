@@ -21,7 +21,12 @@
 #
 # NOTE: for description of beats see 'calc beats' in #amaork
 
+# Class for storing good values
 Stock = Struct.new( "Stock", :amount, :max, :beats, :deliverybeat, :version )
+
+# Class for storing costum replies
+Reply = Struct.new( "Reply", :reply, :version )
+
 
 class BARPlugin < Plugin
 
@@ -35,6 +40,12 @@ class BARPlugin < Plugin
     else
       @stock = Hash.new
     end
+
+    if @registry.has_key?(:reply)
+      @reply = @registry[:reply]
+    else
+      @reply = Hash.new
+    end
   end
 
   ####
@@ -42,7 +53,44 @@ class BARPlugin < Plugin
   ####
   def save
     @registry[:stock] = @stock
+    @registry[:reply] = @reply
   end
+
+  ####
+  # Get Delivery status
+  ####
+  def delivery( m, name )
+    beat_cur     = Time.new.strftime '%Y%j%H%M%S'
+    deliverybeat = @stock[name].deliverybeat
+
+    if beat_cur.to_f >= deliverybeat.to_f
+      @stock[name].amount       = @stock[name].max
+      @stock[name].deliverybeat = nil
+      @registry[:stock]         = @stock
+      @available                 = true
+      # if it's not available, set value according
+    else
+      @togo = (deliverybeat.to_f - beat_cur.to_f) / 100
+      @available = false
+    end
+
+    #     TODO: compare current beat with order beat and decied whether to increase
+    #           the amount to amount of order or not. If not, tell the user how long
+    #           to wait.
+  end
+
+  ####
+  # Check whether good is in database
+  ####
+  def status( name, reg )
+    @inreg = true
+
+    unless reg.has_key?( name )
+      @inreg = false
+    end
+  end
+
+################################################################################
 
   ####
   # Add new Good to Database
@@ -73,6 +121,34 @@ class BARPlugin < Plugin
     # current amount || maximal amount || beats for one good || deliverybeat (always 'nil' if not reordered) || tag version
     stock = Stock.new( amount, amount, beats, nil, version )
     @stock[name] = stock
+
+    m.reply( "done" )
+  end
+
+  ####
+  # Add reply for defined Good
+  ####
+  def handle_add( m, params )
+    # lame auth check
+    # TODO: need to get a look into new auth system
+    if m.sourcenick.to_s != "apachelogger"
+      m.reply( "sorry, not yet available for public use" )
+      return
+    end
+
+    name    = params[:name].downcase
+    reply   = params[:reply]
+    version = "1"  # !!!tag version!!!
+
+    # check whether good is in database
+    status( name, @stock )
+    if @inreg == false
+      m.reply( "#{name} does not exist." ); return
+    end
+
+    # Put data into database, should be understandable ^^
+    stock = Reply.new( reply, version )
+    @reply[name] = reply
 
     m.reply( "done" )
   end
@@ -110,6 +186,21 @@ class BARPlugin < Plugin
 
     cmd = @stock[name]
     m.reply( "Amount: #{cmd.amount} ||| Max: #{cmd.max} ||| 1 good per #{cmd.beats} beats ||| #{if @stock[name].deliverybeat != nil; @stock[name].deliverybeat; end } ||| Tag version: #{cmd.version}" )
+  end
+
+  ####
+  # Show costum reply
+  ####
+  def handle_show_reply( m, params )
+    name = params[:name].downcase
+
+    status( name, @reply )
+    if @inreg == false
+      m.reply( "#{name} does not exist." ); return
+    end
+
+    cmd = @reply[name]
+    m.reply( "Reply: #{cmd.reply} ||| Tag version: #{cmd.version}" )
   end
 
   ####
@@ -170,30 +261,6 @@ class BARPlugin < Plugin
 
     m.reply( "done" )
   end
-
-  ####
-  # Get Delivery status
-  ####
-  def delivery( m, name )
-    beat_cur     = Time.new.strftime '%Y%j%H%M%S'
-    deliverybeat = @stock[name].deliverybeat
-
-    if beat_cur.to_f >= deliverybeat.to_f
-      @stock[name].amount       = @stock[name].max
-      @stock[name].deliverybeat = nil
-      @registry[:stock]         = @stock
-      @available                 = true
-      # if it's not available, set value according
-    else
-      @togo = (deliverybeat.to_f - beat_cur.to_f) / 100
-      @available = false
-    end
-
-    #     TODO: compare current beat with order beat and decied whether to increase
-    #           the amount to amount of order or not. If not, tell the user how long
-    #           to wait.
-  end
-
 
   ####
   # Main Process, takes care of usual order cmd (check availability, delivery status, special order etc.)
@@ -320,5 +387,6 @@ plugin.map 'order-adm add :name :amount :beats', :action => 'handle_add',    :au
 plugin.map 'order-adm del :name',                :action => 'handle_del',    :auth => 'brain'
 plugin.map 'order-adm list',                     :action => 'handle_list'
 plugin.map 'order-adm show :name',               :action => 'handle_show'
+# plugin.map 'order-adm show-reply :name',         :action => 'handle_show_reply'
 plugin.map 'reorder :name',                      :action => 'handle_reorder'
 plugin.map 'reorder reset :name',                :action => 'handle_reorder_reset'
