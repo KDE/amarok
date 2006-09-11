@@ -12,6 +12,8 @@ VERSION 1.4.4
       playlist folder. (BR 133543)
 
   CHANGES:
+    * Dragging podcasts to to playlist will insert them in a chronological
+      order, so you can listen to the oldest first automatically!
     * Improve application startup times dramaticaly by lazy loading podcast
       episodes.
     * Transferring tracks to an MTP device now shows a progress bar for and

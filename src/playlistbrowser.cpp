@@ -3371,7 +3371,8 @@ void PlaylistBrowserView::startDrag()
 
     KURL::List urls;
     KURL::List itemList; // this is for CollectionDB::createDragPixmap()
-
+    KURL::List podList;  // used to add podcast episodes of the same channel in reverse order (usability)
+    PodcastEpisode *lastPodcastEpisode = 0; // keep track of the last podcastepisode we visited.
     KMultipleDrag *drag = new KMultipleDrag( this );
 
     QListViewItemIterator it( this, QListViewItemIterator::Selected );
@@ -3380,6 +3381,12 @@ void PlaylistBrowserView::startDrag()
 
     for( ; it.current(); ++it )
     {
+        if( !isPodcastEpisode( *it ) && !podList.isEmpty() )
+        {   // we left the podcast channel, so append those items we iterated over
+            urls += podList;
+            podList.clear();
+        }
+
         if( isPlaylist( *it ) )
         {
             urls     += static_cast<PlaylistEntry*>(*it)->url();
@@ -3403,18 +3410,24 @@ void PlaylistBrowserView::startDrag()
 
         else if( isPodcastEpisode( *it ) )
         {
+            if( (*it)->parent()->isSelected() ) continue;
+            if( !podList.isEmpty() && lastPodcastEpisode->QListViewItem::parent() != (*it)->parent() )
+            {   // we moved onto a new podcast channel
+                urls += podList;
+                podList.clear();
+            }
             #define item static_cast<PodcastEpisode *>(*it)
             if( item->isOnDisk() )
             {
-                urls     += item->localUrl();
+                podList.prepend( item->localUrl() );
                 itemList += item->url();
             }
             else
             {
-                urls     += item->url();
+                podList.prepend( item->url() );
                 itemList += item->url();
             }
-
+            lastPodcastEpisode = item;
             pixText = (*it)->text(0);
             #undef item
         }
@@ -3472,11 +3485,16 @@ void PlaylistBrowserView::startDrag()
 
         else if( isPlaylistTrackItem( *it ) )
         {
+            if( (*it)->parent()->isSelected() ) continue;
             urls     += static_cast<PlaylistTrackItem*>(*it)->url();
             itemList += static_cast<PlaylistTrackItem*>(*it)->url();
         }
         count++;
     }
+
+    if( !podList.isEmpty() )
+        urls += podList;
+
     if( count > 1 ) pixText = QString::null;
 
     drag->addDragObject( new KURLDrag( urls, viewport() ) );
