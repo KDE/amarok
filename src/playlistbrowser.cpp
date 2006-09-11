@@ -1023,6 +1023,7 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
 
 void PlaylistBrowser::loadPodcastsFromDatabase( PlaylistCategory *p )
 {
+DEBUG_BLOCK
     if( !p )   p = m_podcastCategory;
     m_podcastItemsToScan.clear();
 

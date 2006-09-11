@@ -1232,7 +1232,6 @@ PodcastChannel::setListened( const bool n /*true*/ )
 void
 PodcastChannel::setOpen( bool b )
 {
-DEBUG_BLOCK
     if( b == isOpen())
         return;
 
