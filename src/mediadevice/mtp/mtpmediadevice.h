@@ -134,7 +134,7 @@ class MtpMediaDevice : public MediaDevice
         virtual void            removeConfigElements( QWidget *parent );
         virtual void            applyConfig();
         virtual void            loadConfig();
-
+        static int              progressCallback( uint64_t const sent, uint64_t const total, void const * const data );
     public slots:
         void                    expandItem( QListViewItem *item );
 

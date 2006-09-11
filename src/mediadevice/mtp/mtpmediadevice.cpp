@@ -128,6 +128,29 @@ MtpMediaDevice::supportedFiletypes()
     return m_supportedFiles;
 }
 
+
+int
+MtpMediaDevice::progressCallback( uint64_t const sent, uint64_t const total, void const * const data )
+{
+    Q_UNUSED( data );
+
+    kapp->processEvents( 100 );
+
+    MtpMediaDevice *dev = (MtpMediaDevice*)(data);
+
+    if( dev->isCanceled() )
+    {
+        debug() << "Canceling transfer operation" << endl;
+        dev->setCanceled( true );
+        dev->setProgress( sent, total );
+        return 1;
+    }
+
+    dev->setProgress( sent, total );
+
+    return 0;
+}
+
 /**
  * Copy a track to the device
  */
@@ -304,7 +327,11 @@ MediaItem
     debug() << "Sending track... " << bundle.url().path().utf8() << endl;
     int ret = LIBMTP_Send_Track_From_File(
         m_device, bundle.url().path().utf8(), trackmeta,
+#if LIBMTP_CALLBACKS
+        progressCallback, this, parent_id  // callbacks only in libmtp >= 0.0.15
+#else
         0, 0, parent_id
+#endif
     );
     m_critical_mutex.unlock();
 
