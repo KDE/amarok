@@ -60,6 +60,7 @@ MtpMediaDevice::MtpMediaDevice() : MediaDevice()
     m_name = "MTP Device";
     m_device = 0;
     m_folders = 0;
+    m_playlistItem = 0;
     setDisconnected();
     m_hasMountPoint = false;
     m_syncStats = false;
@@ -341,7 +342,7 @@ MtpMediaDevice::checkFolderStructure( uint32_t parent_id, const LIBMTP_track_t *
     m_critical_mutex.lock();
     QStringList folders = QStringList::split( "/", m_folderStructure ); // use slash as a dir separator
     QString completePath;
-    for ( QStringList::Iterator it = folders.begin(); it != folders.end(); ++it )
+    for( QStringList::Iterator it = folders.begin(); it != folders.end(); ++it )
     {
         if( (*it).isEmpty() )
             continue;
@@ -361,7 +362,7 @@ MtpMediaDevice::checkFolderStructure( uint32_t parent_id, const LIBMTP_track_t *
             if( check_folder == 0 )
                 return 0;
         }
-        completePath += (*it).utf8() + "/";
+        completePath += (*it).utf8() + '/';
         // set new parent
         parent_id = check_folder;
     }
@@ -371,6 +372,9 @@ MtpMediaDevice::checkFolderStructure( uint32_t parent_id, const LIBMTP_track_t *
     return parent_id;
 }
 
+/**
+ * Create a new mtp folder
+ */
 uint32_t
 MtpMediaDevice::createFolder( const char *name, uint32_t parent_id )
 {
@@ -464,29 +468,167 @@ MediaItem
 
 /**
  * Create a new playlist
- * @note Playlists not implemented yet... :-)
  */
 MtpMediaItem
 *MtpMediaDevice::newPlaylist( const QString &name, MediaItem *parent, QPtrList<MediaItem> items )
 {
-    Q_UNUSED( name );
-    Q_UNUSED( parent );
-    Q_UNUSED( items );
-    return 0;
+    DEBUG_BLOCK
+    MtpMediaItem *item = new MtpMediaItem( parent, this );
+    item->setType( MediaItem::PLAYLIST );
+    item->setText( 0, name );
+    item->setPlaylist( new MtpPlaylist() );
+
+    addToPlaylist( item, 0, items );
+
+    m_view->rename( item, 0 );
+
+    return item;
 }
 
 /**
  * Add an item to a playlist
- * @note Playlists not implemented yet... :-)
  */
 void
 MtpMediaDevice::addToPlaylist( MediaItem *mlist, MediaItem *after, QPtrList<MediaItem> items )
 {
-    Q_UNUSED( mlist );
-    Q_UNUSED( after );
-    Q_UNUSED( items );
+    DEBUG_BLOCK
+    MtpMediaItem *list = dynamic_cast<MtpMediaItem *>( mlist );
+    if( !list )
+        return;
+
+    int order;
+    MtpMediaItem *it;
+    if( after )
+    {
+        order = after->m_order + 1;
+        it = dynamic_cast<MtpMediaItem*>(after->nextSibling());
+    }
+    else
+    {
+        order = 0;
+        it = dynamic_cast<MtpMediaItem*>( list->firstChild() );
+ }
+
+    for(  ; it; it = dynamic_cast<MtpMediaItem *>( it->nextSibling() ) )
+    {
+        it->m_order += items.count();
+    }
+
+    for( MtpMediaItem *it = dynamic_cast<MtpMediaItem *>(items.first() );
+            it;
+            it = dynamic_cast<MtpMediaItem *>( items.next() ) )
+    {
+        if( !it->track() )
+            continue;
+
+        MtpMediaItem *add;
+        if( it->parent() == list )
+        {
+            add = it;
+            if( after )
+            {
+                it->moveItem(after);
+            }
+            else
+            {
+                list->takeItem(it);
+                list->insertItem(it);
+            }
+        }
+        else
+        {
+            if( after )
+            {
+                add = new MtpMediaItem( list, after );
+            }
+            else
+            {
+                add = new MtpMediaItem( list, this );
+            }
+        }
+        after = add;
+
+        add->setType( MediaItem::PLAYLISTITEM );
+        add->setTrack( it->track() );
+        add->setBundle( new MetaBundle( *(it->bundle()) ) );
+        add->m_device = this;
+        add->setText( 0, it->bundle()->artist() + " - " + it->bundle()->title() );
+        add->m_order = order;
+        order++;
+    }
+
+    // make numbering consecutive
+    int i = 0;
+    for( MtpMediaItem *it = dynamic_cast<MtpMediaItem *>( list->firstChild() );
+            it;
+            it = dynamic_cast<MtpMediaItem *>( it->nextSibling() ) )
+    {
+        it->m_order = i;
+        i++;
+    }
+
+    playlistFromItem( list );
 }
 
+/**
+ * Save a playlist
+ */
+void
+MtpMediaDevice::playlistFromItem( MtpMediaItem *item )
+{
+    if( item->childCount() == 0 )
+        return;
+    m_critical_mutex.lock();
+    LIBMTP_playlist_t *metadata = LIBMTP_new_playlist_t();
+    metadata->name = qstrdup( item->text( 0 ).utf8() );
+    uint32_t *tracks = ( uint32_t* )malloc( sizeof( uint32_t ) * item->childCount() );
+    uint32_t i = 0;
+    for( MtpMediaItem *it = dynamic_cast<MtpMediaItem *>(item->firstChild());
+            it;
+            it = dynamic_cast<MtpMediaItem *>(it->nextSibling()) )
+    {
+        tracks[i] = it->track()->id();
+        i++;
+    }
+    metadata->tracks = tracks;
+    metadata->no_tracks = i;
+
+    QString genericError = i18n( "Could not save playlist." );
+
+    if( item->playlist()->id() == 0 )
+    {
+        debug() << "creating new playlist : " << metadata->name << endl;
+        int ret = LIBMTP_Create_New_Playlist( m_device, metadata, 0 );
+        if( ret == 0 )
+        {
+            item->playlist()->setId( metadata->playlist_id );
+            debug() << "playlist saved : " << metadata->playlist_id << endl;
+        }
+        else
+        {
+            Amarok::StatusBar::instance()->shortLongMessage(
+                genericError,
+                i18n( "Could not create new playlist on device." ),
+                KDE::StatusBar::Error
+            );
+        }
+    }
+    else
+    {
+        metadata->playlist_id = item->playlist()->id();
+        debug() << "updating playlist : " << metadata->name << endl;
+        int ret = LIBMTP_Update_Playlist( m_device, metadata );
+        if( ret != 0 )
+        {
+            Amarok::StatusBar::instance()->shortLongMessage(
+                genericError,
+                i18n( "Could not update playlist on device." ),
+                KDE::StatusBar::Error
+            );
+        }
+    }
+    m_critical_mutex.unlock();
+}
 
 /**
  * Recursively remove MediaItem from the tracklist and the device
@@ -509,7 +651,7 @@ MtpMediaDevice::deleteItemFromDevice(MediaItem* item, int flags )
                 break;
             if( item )
             {
-                int res = deleteTrack( dynamic_cast<MtpMediaItem *> (item) );
+                int res = deleteTrack( dynamic_cast<MtpMediaItem *> ( item ) );
                 if( res >=0 && result >= 0 )
                     result += res;
                 else
@@ -582,6 +724,9 @@ MtpMediaDevice::deleteTrack(MtpMediaItem *trackItem)
     return 1;
 }
 
+/**
+ * Update local cache of mtp folders
+ */
 void
 MtpMediaDevice::updateFolders( void )
 {
@@ -639,7 +784,7 @@ MtpMediaDevice::openDevice( bool silent )
     m_name = modelname;
     if(! ownername.isEmpty() )
     {
-        m_name += " (" + ownername + ")";
+        m_name += " (" + ownername + ')';
     }
 
     m_default_parent_folder = m_device->default_music_folder;
@@ -655,7 +800,7 @@ MtpMediaDevice::openDevice( bool silent )
     if( ret == 0 )
     {
         uint16_t i;
-        for ( i = 0; i < filetypes_len; i++ )
+        for( i = 0; i < filetypes_len; i++ )
         {
             m_supportedFiles << mtpFileTypes[ filetypes[ i ] ];
         }
@@ -664,6 +809,20 @@ MtpMediaDevice::openDevice( bool silent )
     m_critical_mutex.unlock();
 
     return true;
+}
+
+/**
+ * Start the view (add default folders such as for playlists)
+ */
+void
+MtpMediaDevice::initView()
+{
+    if( ! isConnected() )
+        return;
+    m_playlistItem = new MtpMediaItem( m_view, this );
+    m_playlistItem->setText( 0, i18n("Playlists") );
+    m_playlistItem->setType( MediaItem::PLAYLISTSROOT );
+    m_playlistItem->m_order = -1;
 }
 
 /**
@@ -765,18 +924,18 @@ MtpMediaDevice::customClicked()
                             m_trackList.size() );
         batteryLevel = i18n("Battery level: ")
             + QString::number( (int) ( (float) currbattlevel / (float) maxbattlevel * 100.0 ) )
-            + "%";
+            + '%';
         secureTime = i18n("Secure time: ") + sectime;
         storageInformation = i18n("Volume label: ")
-            + volume_label + "\n"
+            + volume_label + '\n'
             + i18n("Storage description: ") + storage_description;
         supportedFiles = i18n("Supported file types: ")
             + m_supportedFiles.join( ", " );
 
         Information = ( i18n( "Player Information for " )
-                        + m_name + "\n" + batteryLevel
-                        + "\n" + secureTime + "\n"
-                        + storageInformation + "\n" + supportedFiles );
+                        + m_name + '\n' + batteryLevel
+                        + '\n' + secureTime + '\n'
+                        + storageInformation + '\n' + supportedFiles );
         free(storage_description);
         free(volume_label);
         free(sectime);
@@ -815,19 +974,47 @@ void
 MtpMediaDevice::rmbPressed( QListViewItem *qitem, const QPoint &point, int )
 {
 
-    enum Actions {DELETE};
+    enum Actions {RENAME, DELETE, MAKE_PLAYLIST};
 
     MtpMediaItem *item = static_cast<MtpMediaItem *>( qitem );
     if( item )
     {
-        KPopupMenu menu( m_view);
+        KPopupMenu menu( m_view );
+        switch( item->type() )
+        {
+        case MediaItem::ARTIST:
+        case MediaItem::ALBUM:
+        case MediaItem::TRACK:
+            menu.insertItem( SmallIconSet( Amarok::icon( "playlist" ) ), i18n( "Make Media Device Playlist" ), MAKE_PLAYLIST );
+            break;
+        case MediaItem::PLAYLIST:
+            menu.insertItem( SmallIconSet( Amarok::icon( "edit" ) ), i18n( "Rename" ), RENAME );
+            break;
+        default:
+            break;
+        }
+
         menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n( "Delete from device" ), DELETE );
 
         int id =  menu.exec( point );
         switch( id )
         {
+        case MAKE_PLAYLIST:
+            {
+                QPtrList<MediaItem> items;
+                m_view->getSelectedLeaves( 0, &items );
+                QString name = i18n( "New Playlist" );
+                newPlaylist( name, m_playlistItem, items );
+            }
+            break;
         case DELETE:
             MediaDevice::deleteFromDevice();
+            break;
+        case RENAME:
+            if( item->type() == MediaItem::PLAYLIST )
+            {
+                m_view->rename( item, 0 );
+            }
             break;
         }
     }
@@ -864,7 +1051,9 @@ MtpMediaDevice::expandItem( QListViewItem *item )
     }
 }
 
-
+/**
+ * Add gui elements to the device configuration
+ */
 void
 MtpMediaDevice::addConfigElements( QWidget *parent )
 {
@@ -875,14 +1064,17 @@ MtpMediaDevice::addConfigElements( QWidget *parent )
     m_folderStructureBox = new QLineEdit( parent );
     m_folderStructureBox->setText( m_folderStructure );
     QToolTip::add( m_folderStructureBox,
-        i18n( "Files copied to the device will be placed in this folder." ) + "\n"
-        + i18n( "/ is used a folder separator." ) + "\n"
+        i18n( "Files copied to the device will be placed in this folder." ) + '\n'
+        + i18n( "/ is used a folder separator." ) + '\n'
         + i18n( "%a will be replaced with the artist name, ")
-        + i18n( "%b with the album name," ) + "\n"
-        + i18n( "%g with the genre.") + "\n"
+        + i18n( "%b with the album name," ) + '\n'
+        + i18n( "%g with the genre.") + '\n'
         + i18n( "An empty path means the files will placed unsorted in the default music folder." ) );
 }
 
+/**
+ * Remove gui elements from the device configuration
+ */
 void
 MtpMediaDevice::removeConfigElements( QWidget *parent)
 {
@@ -895,6 +1087,9 @@ MtpMediaDevice::removeConfigElements( QWidget *parent)
     m_folderLabel = 0;
 }
 
+/**
+ * Save changed config after dialog commit
+ */
 void
 MtpMediaDevice::applyConfig()
 {
@@ -902,6 +1097,9 @@ MtpMediaDevice::applyConfig()
     setConfigString( "FolderStructure", m_folderStructure );
 }
 
+/**
+ * Load config from the amarokrc file
+ */
 void
 MtpMediaDevice::loadConfig()
 {
@@ -990,6 +1188,7 @@ MtpMediaItem
             track->setBundle( (*it)->bundle() );
             track->setTrack( (*it) );
             track->m_device = this;
+            track->m_order = (*it)->bundle()->track();
         }
     }
     return item;
@@ -1036,7 +1235,50 @@ MtpMediaDevice::readMtpMusic()
             }
         }
     }
+
+    readPlaylists();
+
     return result;
+}
+
+/**
+ * Populate playlists
+ */
+void
+MtpMediaDevice::readPlaylists()
+{
+    m_critical_mutex.lock();
+    LIBMTP_playlist_t *playlists = LIBMTP_Get_Playlist_List( m_device );
+
+    if( playlists != 0 )
+    {
+        LIBMTP_playlist_t *tmp;
+        while( playlists != 0 )
+        {
+            MtpMediaItem *playlist = new MtpMediaItem( m_playlistItem, this );
+            playlist->setText( 0, playlists->name );
+            playlist->setType( MediaItem::PLAYLIST );
+            playlist->setPlaylist( new MtpPlaylist() );
+            playlist->playlist()->setId( playlists->playlist_id );
+            uint32_t i;
+            for( i = 0; i < playlists->no_tracks; i++ )
+            {
+                MtpTrack *track = *(m_trackList.findTrackById( playlists->tracks[i] ));
+                MtpMediaItem *item = new MtpMediaItem( playlist );
+                item->setText( 0, track->bundle()->artist() + " - " + track->bundle()->title() );
+                item->setType( MediaItem::PLAYLISTITEM );
+                item->setBundle( track->bundle() );
+                item->setTrack( track );
+                item->m_order = i;
+                item->m_device = this;
+            }
+            tmp = playlists;
+            playlists = playlists->next;
+            LIBMTP_destroy_playlist_t( tmp );
+        }
+        kapp->processEvents( 100 );
+    }
+    m_critical_mutex.unlock();
 }
 
 /**
@@ -1046,6 +1288,7 @@ void
 MtpMediaDevice::clearItems()
 {
     m_view->clear();
+    initView();
 }
 
 /**
@@ -1139,7 +1382,7 @@ trackValueList::readFromDevice( MtpMediaDevice *mtp )
 /**
  * MtpTrack Class
  */
-MtpTrack::MtpTrack ( LIBMTP_track_t *track )
+MtpTrack::MtpTrack( LIBMTP_track_t *track )
 {
     m_id = track->item_id;
 }

@@ -54,24 +54,52 @@ class MtpTrack {
         MetaBundle              m_bundle;
 };
 
+class MtpPlaylist {
+    friend class MediaItem;
+    public:
+        bool                    operator==( const MtpPlaylist& second ) const { return m_id == second.m_id; }
+
+    public:
+        u_int32_t               id() const { return m_id; }
+        void                    setId( int id ) { m_id = id; }
+
+    private:
+        u_int32_t               m_id;
+};
+
 
 class MtpMediaItem : public MediaItem
 {
     public:
-        MtpMediaItem( QListView *parent, QListViewItem *after = 0 ) : MediaItem( parent, after )
-        {}
-        MtpMediaItem( QListViewItem *parent, QListViewItem *after = 0 ) : MediaItem( parent, after )
-        {}
+        MtpMediaItem( QListView *parent, QListViewItem *after = 0 )
+            : MediaItem( parent, after ) {}
+        MtpMediaItem( QListViewItem *parent, QListViewItem *after = 0 )
+            : MediaItem( parent, after ) {}
+        MtpMediaItem( QListView *parent, MediaDevice *dev )
+            : MediaItem( parent ) { init( dev ); }
+        MtpMediaItem( QListViewItem *parent, MediaDevice *dev )
+            : MediaItem( parent ) { init( dev ); }
+
+        void init( MediaDevice *dev )
+        {
+            m_track  = 0;
+            m_playlist = 0;
+            m_device = dev;
+        }
+
         ~MtpMediaItem()
         {
             //m_track->removeItem(this);
         }
         void                setTrack( MtpTrack *track ) { m_track = track; }
         MtpTrack            *track() { return m_track; }
+        void                setPlaylist( MtpPlaylist *playlist ) { m_playlist = playlist; }
+        MtpPlaylist         *playlist() { return m_playlist; }
         QString             filename() { return m_track->bundle()->url().path(); }
 
     private:
         MtpTrack            *m_track;
+        MtpPlaylist         *m_playlist;
 };
 
 
@@ -140,6 +168,9 @@ class MtpMediaDevice : public MediaDevice
         uint32_t                folderNameToID( char *name, LIBMTP_folder_t *folderlist );
         uint32_t                subfolderNameToID( const char *name, LIBMTP_folder_t *folderlist, uint32_t parent_id );
         void                    updateFolders( void );
+        void                    initView( void );
+        void                    readPlaylists( void );
+        void                    playlistFromItem( MtpMediaItem *item);
         trackValueList          m_trackList;
         LIBMTP_mtpdevice_t      *m_device;
         QMutex                  m_mutex;
