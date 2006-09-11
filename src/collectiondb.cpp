@@ -1652,7 +1652,7 @@ CollectionDB::createDragPixmap( const KURL::List &urls, QString textOverRide )
 
             QString artist = mb.artist();
             if( mb.compilation() == MetaBundle::CompilationYes )
-                artist = "Various_AMAROK_Artists"; // magic key!
+                artist = QString( "Various_AMAROK_Artists" ); // magic key for the albumMap!
 
             if( !albumMap.contains( artist + album ) )
             {
