@@ -1032,7 +1032,6 @@ void PlaylistBrowser::loadPodcastsFromDatabase( PlaylistCategory *p )
     QMap<int,PlaylistCategory*> folderMap = loadPodcastFolders( p );
 
     QValueList<PodcastChannelBundle> channels;
-    QValueList<PodcastEpisodeBundle> episodes;
 
     channels = CollectionDB::instance()->getPodcastChannels();
 
@@ -1046,24 +1045,9 @@ void PlaylistBrowser::loadPodcastsFromDatabase( PlaylistCategory *p )
             parent = folderMap[parentId];
 
         channel  = new PodcastChannel( parent, channel, *it );
-        bool hasNew = false;
-        int episodeCount = (*it).hasPurge() ? (*it).purgeCount() : -1;
-        episodes = CollectionDB::instance()->getPodcastEpisodes( (*it).url(), false, episodeCount );
 
-        PodcastEpisodeBundle bundle;
+        bool hasNew = CollectionDB::instance()->getPodcastEpisodes( (*it).url(), true, 1 ).count() > 0;
 
-         // podcasts are hopefully retured chronologically, insert them in reverse
-        while( !episodes.isEmpty() )
-        {
-            bundle = episodes.first();
-            new PodcastEpisode( channel, 0, bundle );
-
-            if( bundle.isNew() )
-                hasNew = true;
-
-            episodes.pop_front();
-        }
-        channel->sortChildItems( 0, true );
         channel->setNew( hasNew );
 
         if( channel->autoscan() )

@@ -332,7 +332,8 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         Q_OBJECT
 
     public:
-        PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url, const QDomNode &channelSettings );
+        PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url,
+                        const QDomNode &channelSettings );
         PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url );
         PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url,
                         const QDomNode &channelSettings, const QDomDocument &xml );
@@ -347,6 +348,8 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         void checkAndSetNew();
 
         void setListened( const bool n = true ); // over rides each child so it has been listened
+
+        void setOpen( bool open ); // if !m_polished, load the children. Lazy loading to improve start times
 
         void  configure();
         void  fetch();
@@ -397,6 +400,10 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         void stopAnimation();
 
         PodcastChannelBundle m_bundle;
+
+        /// loading all of the podcast episodes during startup can be very inefficient.
+        /// When the user expands the podcast for the first time, we load up the episodes.
+        bool        m_polished;
 
         KURL        m_url;                         //remote xml url
         bool        m_fetching;

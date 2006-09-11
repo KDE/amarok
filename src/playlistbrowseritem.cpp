@@ -1080,6 +1080,7 @@ QDomElement DynamicEntry::xml()
 
 PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url )
     : PlaylistBrowserEntry( parent, after )
+        , m_polished( true ) // we get the items immediately if url is given
         , m_url( url )
         , m_fetching( false )
         , m_updating( false )
@@ -1097,8 +1098,10 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     fetch();
 }
 
-PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url, const QDomNode &channelSettings )
+PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url,
+                                const QDomNode &channelSettings )
     : PlaylistBrowserEntry( parent, after )
+    , m_polished( true ) // we get the items immediately if url is given
     , m_url( url )
     , m_fetching( false )
     , m_updating( false )
@@ -1119,8 +1122,10 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
 }
 
 PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
-                                const KURL &url, const QDomNode &channelSettings, const QDomDocument &xmlDefinition )
+                                const KURL &url, const QDomNode &channelSettings,
+                                const QDomDocument &xmlDefinition )
     : PlaylistBrowserEntry( parent, after )
+    , m_polished( true ) //automatically load the channel
     , m_url( url )
     , m_fetching( false )
     , m_updating( false )
@@ -1146,6 +1151,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after,
 PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, const PodcastChannelBundle &pcb )
     : PlaylistBrowserEntry( parent, after )
     , m_bundle( pcb )
+    , m_polished( false )
     , m_url( pcb.url() )
     , m_fetching( false )
     , m_updating( false )
@@ -1158,6 +1164,7 @@ PodcastChannel::PodcastChannel( QListViewItem *parent, QListViewItem *after, con
     setDragEnabled( true );
     setRenameEnabled( 0, false );
     setPixmap( 0, SmallIcon( Amarok::icon( "podcast" ) ) );
+    setExpandable( true );
 }
 
 void
@@ -1220,6 +1227,45 @@ PodcastChannel::setListened( const bool n /*true*/ )
     }
 
     setNew( !n );
+}
+
+void
+PodcastChannel::setOpen( bool b )
+{
+DEBUG_BLOCK
+    if( b == isOpen())
+        return;
+
+    if( m_polished )
+    {
+        QListViewItem::setOpen( b );
+        return;
+    }
+    // not polished
+    if( b ) // open it!
+    {
+        bool hasNew = m_new;
+        int episodeCount = hasPurge() ? purgeCount() : -1;
+        QValueList<PodcastEpisodeBundle> episodes;
+        episodes = CollectionDB::instance()->getPodcastEpisodes( url(), false, episodeCount );
+
+        PodcastEpisodeBundle bundle;
+
+         // podcasts are hopefully retured chronologically, insert them in reverse
+        while( !episodes.isEmpty() )
+        {
+            bundle = episodes.first();
+            new PodcastEpisode( this, 0, bundle );
+
+            if( bundle.isNew() )
+                hasNew = true;
+
+            episodes.pop_front();
+        }
+        sortChildItems( 0, true );
+        setNew( hasNew );
+    }
+    QListViewItem::setOpen( b );
 }
 
 void
