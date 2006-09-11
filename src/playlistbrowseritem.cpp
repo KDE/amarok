@@ -1758,9 +1758,8 @@ PodcastChannel::purge()
 void
 PodcastChannel::restorePurged()
 {
-DEBUG_BLOCK
     int restoreCount = purgeCount() - childCount();
-    debug() << "restoreCount: " << restoreCount << endl;
+
     if( restoreCount <= 0 ) return;
 
     QValueList<PodcastEpisodeBundle> episodes;
@@ -1769,31 +1768,40 @@ DEBUG_BLOCK
     QValueList<PodcastEpisodeBundle> possibleEntries;
 
     int i = 0;
-    foreachType( QValueList<PodcastEpisodeBundle>, episodes )
+
+    // qvaluelist has no reverse iterator :-(
+    for( ; !episodes.isEmpty(); )
     {
-        if ( i >= restoreCount )
-            break;
+        PodcastEpisodeBundle episode = episodes.last();
+        if ( i >= restoreCount ) break;
+
         PodcastEpisode *existingItem = static_cast<PodcastEpisode*>( firstChild() );
+        bool skip = false;
         while ( existingItem )
         {
-            if ( (*it).url()   == existingItem->url()   &&
-                 (*it).title() == existingItem->title() &&
-                 (*it).date()  == existingItem->date()  &&
-                 (*it).guid()  == existingItem->guid() )
+            if ( episode.url()   == existingItem->url()   &&
+                 episode.title() == existingItem->title() &&
+                 episode.date()  == existingItem->date()  &&
+                 episode.guid()  == existingItem->guid() ) {
+                skip = true;
                 break;
+            }
             existingItem = static_cast<PodcastEpisode*>( existingItem->nextSibling() );
         }
-        debug() << "Salvaged: " << (*it).title() << endl;
-        possibleEntries << *it;
-        i++;
+        if( !skip )
+        {
+            possibleEntries.append( episode );
+            i++;
+        }
+        episodes.pop_back();
     }
 
     // the sorting of the channels automatically means the new episodes gets placed at the end
     for( QValueList<PodcastEpisodeBundle>::Iterator it = possibleEntries.begin(), end = possibleEntries.end();
          it != end; ++it )
-    {
         new PodcastEpisode( this, 0, (*it) );
-    }
+
+    sortChildItems( 0, true );
 }
 
 void
