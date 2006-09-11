@@ -2317,11 +2317,7 @@ CollectionDB::artistList( bool withUnknowns, bool withCompilations )
     if ( !withCompilations )
         qb.setOptions( QueryBuilder::optNoCompilations );
 
-    qb.setOptions( QueryBuilder::optRemoveDuplicates );
-    //FIXME max: quick hack to improve the DB response time
-    //without it the query looks something like
-    //SELECT DISTINCT artist.name FROM artist,tags WHERE 1 AND tags.deviceid IN (1,2,3) ORDER BY LOWER (artist.name)
-    //---> very bad...has to be fixed for all CollectionDB::*List methods
+    qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valName );
     qb.setOptions( QueryBuilder::optShowAll );
     qb.sortBy( QueryBuilder::tabArtist, QueryBuilder::valName );
     return qb.run();
@@ -2340,11 +2336,7 @@ CollectionDB::composerList( bool withUnknowns, bool withCompilations )
     if ( !withCompilations )
         qb.setOptions( QueryBuilder::optNoCompilations );
 
-    qb.setOptions( QueryBuilder::optRemoveDuplicates );
-    //FIXME max: quick hack to improve the DB response time
-    //without it the query looks something like
-    //SELECT DISTINCT composer.name FROM composer,tags WHERE 1 AND tags.deviceid IN (1,2,3) ORDER BY LOWER (composer.name)
-    //---> very bad...has to be fixed for all CollectionDB::*List methods
+    qb.groupBy( QueryBuilder::tabComposer, QueryBuilder::valName );
     qb.setOptions( QueryBuilder::optShowAll );
     qb.sortBy( QueryBuilder::tabComposer, QueryBuilder::valName );
     return qb.run();
@@ -2362,7 +2354,7 @@ CollectionDB::albumList( bool withUnknowns, bool withCompilations )
     if ( !withCompilations )
         qb.setOptions( QueryBuilder::optNoCompilations );
 
-    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.setOptions( QueryBuilder::optShowAll );
     qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
     return qb.run();
@@ -2383,7 +2375,7 @@ CollectionDB::genreList( bool withUnknowns, bool withCompilations )
     if ( !withCompilations )
         qb.setOptions( QueryBuilder::optNoCompilations );
 
-    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    qb.groupBy( QueryBuilder::tabGenre, QueryBuilder::valName );
     qb.setOptions( QueryBuilder::optShowAll );
     qb.sortBy( QueryBuilder::tabGenre, QueryBuilder::valName );
     return qb.run();
@@ -2401,7 +2393,7 @@ CollectionDB::yearList( bool withUnknowns, bool withCompilations )
     if ( !withCompilations )
         qb.setOptions( QueryBuilder::optNoCompilations );
 
-    qb.setOptions( QueryBuilder::optRemoveDuplicates );
+    qb.groupBy( QueryBuilder::tabGenre, QueryBuilder::valName );
     qb.setOptions( QueryBuilder::optShowAll );
     qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName );
     return qb.run();
