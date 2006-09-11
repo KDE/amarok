@@ -122,8 +122,11 @@ Optional
     * libmtp 0.0.10
       (MTP media device support AKA PlaysForSure)
       http://libmtp.sourceforge.net/
-      
 
+    * libkarma 0.0.5 && OMFS 0.6.1
+      (Rio Karma support via USB)
+      http://freakysoft.de/html/libkarma/ && http://linux-karma.sf.net/
+      
 Please note, if compiling from source you must also install the devel versions
 of these packages.
 --------------------------------------------------------------------------------
@@ -207,6 +210,7 @@ splitting Amarok into the following packages:
    7. ifp media device
    8. njb media device
    9. mtp media device
+   10. rio karma media device
 
 Amarok is modular and will be fully functional as long as one of 2, 3, or 4 is
 also installed. Hence we suggest Amarok + one backend. Feel free to include the

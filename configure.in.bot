@@ -238,6 +238,10 @@ else
         echo " =   - MTP Device Support"
     fi
 
+    if test x$have_libkarma != xyes; then
+        echo " =   - Rio Karma Support"
+    fi
+
     echo " ="
     echo " = The following extra functionality will be included:"
 
@@ -312,6 +316,10 @@ else
 
     if test x$have_libmtp = xyes; then
         echo " =   + MTP Device Support"
+    fi
+    
+    if test x$have_libkarma = xyes; then
+        echo " =   + Rio Karma Support"
     fi
 
    echo " ="

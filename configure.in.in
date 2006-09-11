@@ -826,6 +826,35 @@ AM_CONDITIONAL(with_libmtp, [test x$have_libmtp = xyes])
 ###############################################################################
 
 ###############################################################################
+# BEGIN RIO KARMA CHECK
+###############################################################################
+### mediabrowser.cpp can use libkarma if available
+
+AC_ARG_WITH(libkarma,
+    AC_HELP_STRING([--with-libkarma],[build Amarok with Rio Karma support]),
+    [build_libkarma=$withval],
+    [build_libkarma=yes]
+)
+
+if test "$build_libkarma" != "no"; then
+    AC_CHECK_HEADERS([libkarma/lkarma.h], [have_libkarma=yes], [], [])
+    AC_CHECK_HEADERS([usb.h], [have_usb=yes], [], [])
+
+    if test "$have_libkarma" = "yes"; then
+        AC_DEFINE(HAVE_LIBKARMA, 1, [have libkarma])
+    else
+        AC_MSG_RESULT($have_libkarma)
+        have_libkarma=no
+    fi
+fi
+
+AM_CONDITIONAL(with_libkarma, [test x$have_libkarma = xyes])
+
+###############################################################################
+# END RIO KARMA CHECK
+###############################################################################
+
+###############################################################################
 # BEGIN IFP CHECK
 ###############################################################################
 ### mediabrowser.cpp can use libifp if available

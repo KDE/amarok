@@ -4,6 +4,7 @@ Amarok ChangeLog
 
 VERSION 1.4.4
   FEATURES:
+    * Added rudimentary support for the Rio Karma. (BR 132713)
     * Support creation and editing of playlists on MTP mediadevices.
     * Undo/Redo functionality is now available over sessions. (BR 131072)
     * Allow the creation of empty playlists in the playlist browser. Available

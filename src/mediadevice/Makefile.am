@@ -14,7 +14,11 @@ if with_libmtp
     MTP_SUBDIR = mtp
 endif
 
+if with_libkarma
+    KARMA_SUBDIR = riokarma
+endif    
+
 METASOURCES = AUTO
 
-SUBDIRS = generic daap $(IPOD_SUBDIR) $(IFP_SUBDIR) $(NJB_SUBDIR) $(MTP_SUBDIR)
+SUBDIRS = generic daap $(IPOD_SUBDIR) $(IFP_SUBDIR) $(NJB_SUBDIR) $(MTP_SUBDIR) $(KARMA_SUBDIR)
 
