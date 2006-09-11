@@ -1851,13 +1851,18 @@ void PlaylistBrowser::addSelectedToPlaylist( int options )
             if( !channel->isPolished() )
                  channel->load();
             #undef  channel
-            KURL::List list;
+            KURL::List _list;
             QListViewItem *child = item->firstChild();
             while( child )
             {
-                list << static_cast<PodcastEpisode*>( child )->url();
+                #define child static_cast<PodcastEpisode *>(child)
+                child->isOnDisk() ?
+                    _list.prepend( child->localUrl() ):
+                    _list.prepend( child->url()      );
+                #undef child
                 child = child->nextSibling();
             }
+            list += _list ;
         }
 
         else if ( isPodcastEpisode( item ) )
