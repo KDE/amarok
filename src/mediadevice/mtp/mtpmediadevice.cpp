@@ -327,7 +327,7 @@ MediaItem
     debug() << "Sending track... " << bundle.url().path().utf8() << endl;
     int ret = LIBMTP_Send_Track_From_File(
         m_device, bundle.url().path().utf8(), trackmeta,
-#if LIBMTP_CALLBACKS
+#ifdef LIBMTP_CALLBACKS
         progressCallback, this, parent_id  // callbacks only in libmtp >= 0.0.15
 #else
         0, 0, parent_id
