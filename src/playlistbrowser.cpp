@@ -1847,6 +1847,10 @@ void PlaylistBrowser::addSelectedToPlaylist( int options )
 
         else if ( isPodcastChannel( item ) )
         {
+            #define channel static_cast<PodcastChannel*>(item)
+            if( !channel->isPolished() )
+                 channel->load();
+            #undef  channel
             KURL::List list;
             QListViewItem *child = item->firstChild();
             while( child )
@@ -1890,6 +1894,8 @@ void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
     else if( isPodcastChannel( item ) )
     {
         #define item static_cast<PodcastChannel *>(item)
+        if( !item->isPolished() )
+             item->load();
         KURL::List list;
         QListViewItem *child = item->firstChild();
         while( child )
@@ -3410,6 +3416,9 @@ void PlaylistBrowserView::startDrag()
         else if( isPodcastChannel( *it ) )
         {
             #define item static_cast<PodcastChannel *>(*it)
+            if( !item->isPolished() )
+                 item->load();
+
             QListViewItem *child = item->firstChild();
             KURL::List tmp;
             // we add the podcasts in reverse, its much nicer to add them chronologically :)

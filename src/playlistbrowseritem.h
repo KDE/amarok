@@ -350,6 +350,8 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         void setListened( const bool n = true ); // over rides each child so it has been listened
 
         void setOpen( bool open ); // if !m_polished, load the children. Lazy loading to improve start times
+        void load();
+        const bool isPolished() const  { return m_polished; }
 
         void  configure();
         void  fetch();

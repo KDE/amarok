@@ -1241,30 +1241,35 @@ PodcastChannel::setOpen( bool b )
         return;
     }
     // not polished
-    if( b ) // open it!
-    {
-        bool hasNew = m_new;
-        int episodeCount = hasPurge() ? purgeCount() : -1;
-        QValueList<PodcastEpisodeBundle> episodes;
-        episodes = CollectionDB::instance()->getPodcastEpisodes( url(), false, episodeCount );
-
-        PodcastEpisodeBundle bundle;
-
-         // podcasts are hopefully retured chronologically, insert them in reverse
-        while( !episodes.isEmpty() )
-        {
-            bundle = episodes.first();
-            new PodcastEpisode( this, 0, bundle );
-
-            if( bundle.isNew() )
-                hasNew = true;
-
-            episodes.pop_front();
-        }
-        sortChildItems( 0, true );
-        setNew( hasNew );
-    }
+    if( b ) load();
     QListViewItem::setOpen( b );
+}
+
+void
+PodcastChannel::load()
+{
+    m_polished = true;
+
+    bool hasNew = m_new;
+    int episodeCount = hasPurge() ? purgeCount() : -1;
+    QValueList<PodcastEpisodeBundle> episodes;
+    episodes = CollectionDB::instance()->getPodcastEpisodes( url(), false, episodeCount );
+
+    PodcastEpisodeBundle bundle;
+
+        // podcasts are hopefully retured chronologically, insert them in reverse
+    while( !episodes.isEmpty() )
+    {
+        bundle = episodes.first();
+        new PodcastEpisode( this, 0, bundle );
+
+        if( bundle.isNew() )
+            hasNew = true;
+
+        episodes.pop_front();
+    }
+    sortChildItems( 0, true );
+    setNew( hasNew );
 }
 
 void
