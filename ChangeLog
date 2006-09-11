@@ -19,6 +19,8 @@ VERSION 1.4.4
     * Show a proper tag dialog when viewing information for DAAP music shares.
 
   BUGFIXES:
+    * Dragging compilation albums from the collection browser or the playlist
+      would show multiple cover images in the tooltip. (BR 133916)
     * Don't crash when calling repopulate dynamic mode from dcop. (BR 133716)
     * Last.fm streams work with proxies. (BR 131137)
     * Don't try to read m4a tags from apparently invalid files. (BR 133288)

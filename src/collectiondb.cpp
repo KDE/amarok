@@ -1650,10 +1650,14 @@ CollectionDB::createDragPixmap( const KURL::List &urls, QString textOverRide )
             song = mb.title();
             album = mb.album();
 
-            if( !albumMap.contains( mb.artist() + mb.album() ) )
+            QString artist = mb.artist();
+            if( mb.compilation() == MetaBundle::CompilationYes )
+                artist = "Various_AMAROK_Artists"; // magic key!
+
+            if( !albumMap.contains( artist + album ) )
             {
-                albumMap[ mb.artist() + mb.album() ] = 1;
-                QString coverName = CollectionDB::instance()->albumImage( mb.artist(), mb.album(), false, coverW );
+                albumMap[ artist + album ] = 1;
+                QString coverName = CollectionDB::instance()->albumImage( mb.artist(), album, false, coverW );
 
                 if ( !coverName.endsWith( "@nocover.png" ) )
                     coverPm[covers++].load( coverName );
