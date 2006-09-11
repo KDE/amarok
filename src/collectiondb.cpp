@@ -2082,24 +2082,35 @@ CollectionDB::findDirectoryImage( const QString& artist, const QString& album, u
     if ( album.isEmpty() )
         return QString::null;
 
+    IdList list = MountPointManager::instance()->getMountedDeviceIds();
+    QString deviceIds;
+    foreachType( IdList, list )
+    {
+        if ( !deviceIds.isEmpty() ) deviceIds += ",";
+        deviceIds += QString::number(*it);
+    }
+
     QStringList rs;
-    if ( artist == i18n( "Various Artists" ) )
+    if ( artist == i18n( "Various Artists" ) || artist.isEmpty() )
     {
          rs = query( QString(
             "SELECT images.deviceid,images.path FROM images, artist, tags "
             "WHERE images.artist = artist.name "
             "AND artist.id = tags.artist "
             "AND tags.sampler = %1 "
-            "AND images.album %2 " )
+            "AND images.album %2 "
+            "AND images.deviceid IN (%3) " )
                  .arg( boolT() )
-                 .arg( CollectionDB::likeCondition( album ) ) );
+                 .arg( CollectionDB::likeCondition( album ) )
+                 .arg( deviceIds ) );
     }
     else
     {
         rs = query( QString(
-            "SELECT images.deviceid,images.path FROM images WHERE artist %1 AND album %2 ORDER BY path;" )
-            .arg( CollectionDB::likeCondition( artist ),
-                  CollectionDB::likeCondition( album ) ) );
+            "SELECT images.deviceid,images.path FROM images WHERE artist %1 AND album %2 AND deviceid IN (%3) ORDER BY path;" )
+                    .arg( CollectionDB::likeCondition( artist ) )
+                    .arg( CollectionDB::likeCondition( album ) )
+                    .arg( deviceIds ) );
     }
     QStringList values = URLsFromQuery( rs );
     if ( !values.isEmpty() )
@@ -2143,7 +2154,7 @@ CollectionDB::findEmbeddedImage( const QString& artist, const QString& album, ui
     // lot of tagging software doesn't fill in that field, so we just get whatever the DB
     // happens to return for us
     QStringList rs;
-    if ( artist == i18n("Various Artists") ) {
+    if ( artist == i18n("Various Artists") || artist.isEmpty() ) {
         // VAs need special handling to not match on artist name but instead check for sampler flag
         rs = query( QString(
                 "SELECT embed.hash, embed.deviceid, embed.url FROM tags, embed, album "
