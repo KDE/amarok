@@ -3182,7 +3182,7 @@ Playlist::saveXML( const QString &path )
         if( m_stopAfterTrack == item )
             attributes << "stop_after" << "true";
 
-        item->save( stream, attributes, 1 );
+        item->save( stream, attributes );
     }
 
     stream << "</playlist>\n";

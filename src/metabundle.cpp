@@ -1426,7 +1426,7 @@ MetaBundle::save( TagLib::FileRef* fileref )
     return returnval;
 }
 
-bool MetaBundle::save( QTextStream &stream, const QStringList &attributes, int indent ) const
+bool MetaBundle::save( QTextStream &stream, const QStringList &attributes ) const
 {
     QDomDocument qDomSucksItNeedsADocumentAndDoesntUseUnicodeWhenItShould;
     QDomElement item = qDomSucksItNeedsADocumentAndDoesntUseUnicodeWhenItShould.createElement( "item" );
