@@ -792,10 +792,10 @@ GenericMediaDevice::listDir( const QString &dir )
 {
     m_dirListerComplete = false;
     if( m_mfm[dir]->getListed() )
-        m_dirLister->updateDirectory( KURL(dir) );
+        m_dirLister->updateDirectory( KURL::fromPathOrURL(dir) );
     else
     {
-        m_dirLister->openURL( KURL(dir), true, true );
+        m_dirLister->openURL( KURL::fromPathOrURL(dir), true, true );
         m_mfm[dir]->setListed( true );
     }
 }
@@ -804,7 +804,7 @@ void
 GenericMediaDevice::refreshDir( const QString &dir )
 {
     m_dirListerComplete = false;
-    m_dirLister->updateDirectory( KURL(dir) );
+    m_dirLister->updateDirectory( KURL::fromPathOrURL(dir) );
 }
 
 void
