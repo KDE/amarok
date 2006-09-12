@@ -146,7 +146,9 @@ class MtpMediaDevice : public MediaDevice
         bool                    lockDevice( bool tryLock=false ) { if( tryLock ) { return m_mutex.tryLock(); } else { m_mutex.lock(); return true; } }
         void                    unlockDevice() { m_mutex.unlock(); }
 
-        virtual MediaItem       *copyTrackToDevice( const MetaBundle &bundle );
+        MediaItem               *copyTrackToDevice( const MetaBundle &bundle );
+        void                    copyTrackFromDevice( MediaItem *item );
+        int                     downloadSelectedItems();
 
         void                    synchronizeDevice();
         int                     deleteItemFromDevice( MediaItem *mediaitem, int flags=DeleteTrack );

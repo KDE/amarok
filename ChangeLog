@@ -4,6 +4,7 @@ Amarok ChangeLog
 
 VERSION 1.4.4
   FEATURES:
+    * Support downloading of files from an MTP device.
     * Purged podcast episodes can be readded by increasing the purge
       number.
     * Added rudimentary support for the Rio Karma. (BR 132713)

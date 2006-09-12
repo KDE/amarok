@@ -41,6 +41,8 @@ AMAROK_EXPORT_PLUGIN( MtpMediaDevice )
 #include <kpopupmenu.h>
 #include <kmessagebox.h>
 #include <ktoolbarbutton.h>
+#include <kurlrequester.h>
+#include <kurlrequesterdlg.h>
 
 // Qt
 #include <qdir.h>
@@ -463,6 +465,72 @@ MtpMediaDevice::folderNameToID( char *name, LIBMTP_folder_t *folderlist )
     if( ( i = ( folderNameToID( name, folderlist->sibling ) ) ) )
         return i;
 
+    return 0;
+}
+
+/**
+ * Transfer items from the device to a local destination
+ */
+void
+MtpMediaDevice::copyTrackFromDevice( MediaItem *item )
+{
+    DEBUG_BLOCK
+    trackValueList::iterator it;
+    for( it = m_trackList.begin(); it != m_trackList.end(); it++ )
+        if( ( *( *it )->bundle() ) == *( item->bundle() ) )
+            break;
+
+    MtpTrack *track( (*it) );
+
+    int ret;
+    QString genericError = i18n( "Could not copy track from device." );
+    QString filename = item->bundle()->directory() + '/' + track->bundle()->filename();
+    debug() << "Get track " << track->id() << " to " << filename << endl;
+    ret = LIBMTP_Get_Track_To_File(
+            m_device, track->id(), filename.utf8(),
+#ifdef LIBMTP_CALLBACKS
+            progressCallback, this // callbacks only in libmtp >= 0.0.15
+#else
+            0, 0
+#endif
+          );
+    if( ret != 0 )
+    {
+        debug() << "Get Track failed: " << ret << endl;
+        Amarok::StatusBar::instance()->shortLongMessage(
+            genericError,
+            i18n( "Could not copy track from device." ),
+            KDE::StatusBar::Error
+        );
+    }
+}
+
+/**
+ * Request a download directory, get a list of selected items and add them
+ * to the transfer queue
+ */
+int
+MtpMediaDevice::downloadSelectedItems()
+{
+    KURLRequesterDlg dialog( QString::null, 0, 0 );
+    dialog.setCaption( kapp->makeStdCaption( i18n( "Choose a Download Directory" ) ) );
+    dialog.urlRequester()->setMode( KFile::Directory | KFile::ExistingOnly );
+    dialog.exec();
+
+    KURL destDir = dialog.selectedURL();
+    if( destDir.isEmpty() )
+	    return -1;
+
+    QPtrList<MediaItem> items;
+    m_view->getSelectedLeaves( 0, &items );
+
+    for( MediaItem *it = items.first(); it && !(m_canceled); it = items.next() )
+    {
+        if( it->type() == MediaItem::TRACK )
+        {
+            dynamic_cast<MediaBrowser *>( parent() )->queue()->addURL(destDir.path(), dynamic_cast<MediaItem *>(it) );
+        }
+    }
     return 0;
 }
 
@@ -1001,7 +1069,7 @@ void
 MtpMediaDevice::rmbPressed( QListViewItem *qitem, const QPoint &point, int )
 {
 
-    enum Actions {RENAME, DELETE, MAKE_PLAYLIST};
+    enum Actions {RENAME, DOWNLOAD, DELETE, MAKE_PLAYLIST};
 
     MtpMediaItem *item = static_cast<MtpMediaItem *>( qitem );
     if( item )
@@ -1012,6 +1080,7 @@ MtpMediaDevice::rmbPressed( QListViewItem *qitem, const QPoint &point, int )
         case MediaItem::ARTIST:
         case MediaItem::ALBUM:
         case MediaItem::TRACK:
+            menu.insertItem( SmallIconSet( Amarok::icon( "collection" ) ), i18n("Download file"), DOWNLOAD );
             menu.insertItem( SmallIconSet( Amarok::icon( "playlist" ) ), i18n( "Make Media Device Playlist" ), MAKE_PLAYLIST );
             break;
         case MediaItem::PLAYLIST:
@@ -1042,6 +1111,9 @@ MtpMediaDevice::rmbPressed( QListViewItem *qitem, const QPoint &point, int )
             {
                 m_view->rename( item, 0 );
             }
+            break;
+        case DOWNLOAD:
+            downloadSelectedItems();
             break;
         }
     }
@@ -1430,6 +1502,8 @@ MtpTrack::readMetaData( LIBMTP_track_t *track )
         bundle->setAlbum( AtomicString( qstrdup( track->album ) ) );
     if( track->title != 0 )
         bundle->setTitle( AtomicString( qstrdup( track->title ) ) );
+    if( track->filename != 0 )
+        bundle->setPath( AtomicString( qstrdup( track->filename ) ) );
 
     // translate codecs to file types
     if( track->filetype == LIBMTP_FILETYPE_MP3 )
