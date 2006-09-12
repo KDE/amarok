@@ -2267,8 +2267,10 @@ void PlaylistBrowser::renameSelectedItem() //SLOT
 
     if( isCategory( item ) && static_cast<PlaylistCategory*>(item)->isFolder() )
     {
-        if( item == m_coolStreams || item == m_smartDefaults )
+        #define item static_cast<PlaylistBrowserEntry*>(item)
+        if( !item->isKept() )
             return;
+        #undef  item
 
         item->setRenameEnabled( 0, true );
         m_listview->rename( item, 0 );
@@ -2280,8 +2282,10 @@ void PlaylistBrowser::renameSelectedItem() //SLOT
 
         while( parent )
         {
-            if( parent == m_coolStreams || parent == m_smartDefaults )
+            #define parent static_cast<PlaylistBrowserEntry*>(item)
+            if( !parent->isKept() )
                 return;
+            #undef  parent
 
             if( !parent->parent() )
                 break;
@@ -2849,7 +2853,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         while( parentCat->parent() )
             parentCat = parentCat->parent();
         bool isPodcastFolder = false;
-        if( item == m_coolStreams || item == m_smartDefaults ) return;
+        if( !item->isKept() ) return;
 
         if( item->isFolder() ) {
             menu.insertItem( SmallIconSet( Amarok::icon("edit") ), i18n( "&Rename" ), RENAME );
@@ -3265,9 +3269,10 @@ void PlaylistBrowserView::moveSelectedItems( QListViewItem *newParent )
          isSmartPlaylist( newParent ) || isPodcastEpisode( newParent ) )
         return;
 
-    if( newParent == PlaylistBrowser::instance()->m_coolStreams ||
-        newParent == PlaylistBrowser::instance()->m_smartDefaults )
+    #define newParent static_cast<PlaylistBrowserEntry*>(newParent)
+    if( !newParent->isKept() )
         return;
+    #undef  newParent
 
     QPtrList<QListViewItem> selected;
     QListViewItemIterator it( this, QListViewItemIterator::Selected );
