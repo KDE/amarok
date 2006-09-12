@@ -147,8 +147,7 @@ class MtpMediaDevice : public MediaDevice
         void                    unlockDevice() { m_mutex.unlock(); }
 
         MediaItem               *copyTrackToDevice( const MetaBundle &bundle );
-        void                    copyTrackFromDevice( MediaItem *item );
-        int                     downloadSelectedItems();
+        int                     downloadSelectedItemsToCollection();
 
         void                    synchronizeDevice();
         int                     deleteItemFromDevice( MediaItem *mediaitem, int flags=DeleteTrack );
