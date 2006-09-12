@@ -278,7 +278,7 @@ ScriptManager::specForScript( const QString& name )
     if( !m_scripts.contains( name ) )
         return QString::null;
     QFileInfo info( m_scripts[name].url.path() );
-    const QString specPath = info.dirPath() + "/" + info.baseName() + ".spec";
+    const QString specPath = info.dirPath() + '/' + info.baseName() + ".spec";
 
     return specPath;
 }
@@ -287,7 +287,7 @@ ScriptManager::specForScript( const QString& name )
 void
 ScriptManager::notifyFetchLyrics( const QString& artist, const QString& title )
 {
-    const QString args = KURL::encode_string( artist ) + " " + KURL::encode_string( title );
+    const QString args = KURL::encode_string( artist ) + ' ' + KURL::encode_string( title );
     notifyScripts( "fetchLyrics " + args );
 }
 
@@ -301,7 +301,7 @@ ScriptManager::notifyFetchLyricsByUrl( const QString& url )
 
 void ScriptManager::notifyTranscode( const QString& srcUrl, const QString& filetype )
 {
-    notifyScripts( "transcode " + srcUrl + " " + filetype );
+    notifyScripts( "transcode " + srcUrl + ' ' + filetype );
 }
 
 
@@ -451,7 +451,7 @@ ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QStrin
 
         if( archEntry->isDirectory() ) {
             const KArchiveDirectory* const dir = static_cast<const KArchiveDirectory*>( archEntry );
-            recurseInstall( dir, destination + entry + "/" );
+            recurseInstall( dir, destination + entry + '/' );
         }
         else {
             ::chmod( QFile::encodeName( destination + entry ), archEntry->permissions() );
@@ -842,7 +842,7 @@ ScriptManager::loadScript( const QString& path )
         // Read and parse .spec file, if exists
         QFileInfo info( path );
         KListViewItem* li = 0;
-        const QString specPath = info.dirPath() + "/" + info.baseName() + ".spec";
+        const QString specPath = info.dirPath() + '/' + info.baseName() + ".spec";
         if( QFile::exists( specPath ) ) {
             KConfig spec( specPath, true, false );
             if( spec.hasKey( "name" ) )

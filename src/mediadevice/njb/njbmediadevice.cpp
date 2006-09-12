@@ -213,7 +213,7 @@ NjbMediaDevice::openDevice(bool)
 
     QString deviceName = NJB_Get_Device_Name( m_njb, 1 );
     QString owner = NJB_Get_Owner_String( m_njb );
-    m_name = deviceName + " (Owned by " + owner + ")";
+    m_name = deviceName + " (Owned by " + owner + ')';
 
 
     if( NJB_Capture(m_njb) == -1)
@@ -882,7 +882,7 @@ NjbMediaDevice::customClicked()
         Information = ( i18n("Player Information for ") + m_name +"\n" +
                         i18n("Power status: ") + powerStatus + "\n" +
                         i18n("Battery status: ") + batteryLevel + " (" +
-                        batteryCharging + ")" );
+                        batteryCharging + ')' );
     }
     else
     {

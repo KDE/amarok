@@ -321,10 +321,10 @@ MoodServer::MoodServer( void )
 {
     connect( App::instance(), SIGNAL( moodbarPrefs( bool, bool, int, bool ) ),
              SLOT( slotMoodbarPrefs( bool, bool, int, bool ) ) );
-    connect( CollectionDB::instance(), 
+    connect( CollectionDB::instance(),
              SIGNAL( fileMoved( const QString &, const QString & ) ),
              SLOT( slotFileMoved( const QString &, const QString & ) ) );
-    connect( CollectionDB::instance(), 
+    connect( CollectionDB::instance(),
              SIGNAL( fileMoved( const QString &, const QString &, const QString & ) ),
              SLOT( slotFileMoved( const QString &, const QString & ) ) );
     connect( CollectionDB::instance(),
@@ -610,13 +610,13 @@ MoodServer::slotMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic
 
 // When a file is deleted, either manually using Organize Collection or
 // automatically detected using AFT, delete the corresponding mood file.
-void 
+void
 MoodServer::slotFileDeleted( const QString &path )
 {
     QString mood = Moodbar::moodFilename( KURL::fromPathOrURL( path ) );
     if( mood.isEmpty()  ||  !QFile::exists( mood ) )
       return;
-    
+
     debug() << "MoodServer::slotFileDeleted: deleting " << mood << endl;
     QFile::remove( mood );
 }
@@ -629,14 +629,14 @@ MoodServer::slotFileMoved( const QString &srcPath, const QString &dstPath )
 {
     QString srcMood = Moodbar::moodFilename( KURL::fromPathOrURL( srcPath ) );
     QString dstMood = Moodbar::moodFilename( KURL::fromPathOrURL( dstPath ) );
-    
+
     if( srcMood.isEmpty()   ||  dstMood.isEmpty()  ||
         srcMood == dstMood  ||  !QFile::exists( srcMood ) )
       return;
-    
+
     debug() << "MoodServer::slotFileMoved: moving " << srcMood << " to "
             << dstMood << endl;
-    
+
     Moodbar::copyFile( srcMood, dstMood );
     QFile::remove( srcMood );
 }
@@ -1088,7 +1088,7 @@ Moodbar::readFile( void )
         // in the other place, so we should check there before giving
         // up.
 
-        QString path2 = moodFilename( m_bundle->url(), 
+        QString path2 = moodFilename( m_bundle->url(),
                                       !AmarokConfig::moodsWithMusic() );
         moodFile.setName( path2 );
 
@@ -1327,7 +1327,7 @@ Moodbar::moodFilename( const KURL &url, bool withMusic )
         int slash = path.findRev('/') + 1;
         QString dir  = path.left(slash);
         QString file = path.right(path.length() - slash);
-        path = dir + "." + file;
+        path = dir + '.' + file;
       }
 
     else
@@ -1343,7 +1343,7 @@ Moodbar::moodFilename( const KURL &url, bool withMusic )
         if (path.isEmpty())  // Weird...
           return QString::null;
 
-        path = QString::number( deviceid ) + ","
+        path = QString::number( deviceid ) + ','
           + path.replace('/', ',') + ".mood";
 
         // Creates the path if necessary

@@ -34,9 +34,9 @@ NjbTrack::NjbTrack( njb_songid_t* song)
 {
 
     njb_songid_frame_t* frame;
-    
+
     m_id = song->trid;
-    
+
     MetaBundle *bundle = new MetaBundle();
     frame = NJB_Songid_Findframe( song, FR_SIZE );
     if ( frame->type == NJB_TYPE_UINT32 )
@@ -46,7 +46,7 @@ NjbTrack::NjbTrack( njb_songid_t* song)
         bundle->setFilesize( 0 );
     error() << " Unexpected frame type:" << frame->type << endl;
     }
-    
+
     frame = NJB_Songid_Findframe( song, FR_LENGTH );
     if ( frame->type == NJB_TYPE_UINT16 )
         bundle->setLength( frame->data.u_int16_val );
@@ -55,13 +55,13 @@ NjbTrack::NjbTrack( njb_songid_t* song)
         bundle->setLength( 0 );
     error() << " Unexpected frame type:" << frame->type << endl;
     }
-    
+
     frame = NJB_Songid_Findframe( song, FR_GENRE );
     if( frame )
     {
         bundle->setGenre( AtomicString( frame->data.strval ) );
     }
-    
+
     frame = NJB_Songid_Findframe( song, FR_ARTIST );
     if( frame )
     {
@@ -71,7 +71,7 @@ NjbTrack::NjbTrack( njb_songid_t* song)
     }
     else
         bundle->setArtist( i18n("Unknown artist") );
-    
+
     frame = NJB_Songid_Findframe( song, FR_ALBUM );
     if( frame)
     {
@@ -81,7 +81,7 @@ NjbTrack::NjbTrack( njb_songid_t* song)
     }
     else
         bundle->setAlbum( i18n("Unknown album") );
-    
+
     frame = NJB_Songid_Findframe( song, FR_TITLE);
     if( frame )
     {
@@ -91,7 +91,7 @@ NjbTrack::NjbTrack( njb_songid_t* song)
     }
     else
         bundle->setTitle( i18n("Unknown title") );
-    
+
     frame = NJB_Songid_Findframe( song, FR_TRACK );
     if( frame )
     {
@@ -110,7 +110,7 @@ NjbTrack::NjbTrack( njb_songid_t* song)
             bundle->setTrack( 0 );
         }
     }
-    
+
     QString codec;
     frame = NJB_Songid_Findframe( song, FR_CODEC);
     if( frame )
@@ -128,23 +128,23 @@ NjbTrack::NjbTrack( njb_songid_t* song)
         bundle->setFileType( MetaBundle::mp3 ); //Assumed...
         codec = "mp3"; // Used for the next frame as a fallback
     }
-    
+
     frame = NJB_Songid_Findframe( song, FR_FNAME );
     QString filename;
     if( frame )
     {
         //bundle->setUrl( KURL( frame->data.strval ) );
         filename = frame->data.strval;
-        
+
     }
     if( filename.isEmpty() )
     {
-        //bundle->setUrl( bundle->artist() + " - " + bundle->title() + "." + codec );
-        filename = bundle->artist() + " - " + bundle->title() + "." + codec;
-        
+        //bundle->setUrl( bundle->artist() + " - " + bundle->title() + '.' + codec );
+        filename = bundle->artist() + " - " + bundle->title() + '.' + codec;
+
     }
     bundle->setPath( filename );
-    
+
     frame = NJB_Songid_Findframe( song, FR_YEAR );
     if( frame )
     {
@@ -209,7 +209,7 @@ NjbTrack::setBundle( MetaBundle &bundle )
         bundle.setAlbum( i18n( "Unknown album" ) );
     if( bundle.genre().isEmpty() )
         bundle.setGenre( i18n( "Unknown genre" ) );
-    
+
     m_bundle = bundle;
 }
 
@@ -217,7 +217,7 @@ void
 NjbTrack::addItem( const NjbMediaItem *item )
 {
     ItemList.append( item );
-}        
+}
 
 bool
 NjbTrack::removeItem( const NjbMediaItem *item )
@@ -228,7 +228,7 @@ NjbTrack::removeItem( const NjbMediaItem *item )
 }
 
 /* ------------------------------------------------------------------------ */
-trackValueList::iterator 
+trackValueList::iterator
 trackValueList::findTrackByName( const QString& _filename )
 {
     trackValueList::iterator it;
@@ -239,7 +239,7 @@ trackValueList::findTrackByName( const QString& _filename )
 }
 
 /* ------------------------------------------------------------------------ */
-trackValueList::iterator 
+trackValueList::iterator
 trackValueList::findTrackById( unsigned _id )
 {
     trackValueList::iterator it;
@@ -250,7 +250,7 @@ trackValueList::findTrackById( unsigned _id )
 }
 
 /* ------------------------------------------------------------------------ */
-trackValueList::const_iterator 
+trackValueList::const_iterator
 trackValueList::findTrackById( unsigned _id ) const
 {
     trackValueList::const_iterator it;
@@ -266,9 +266,9 @@ int
 trackValueList::readFromDevice( void )
 {
     int i = 0;
-    
+
     // Don't get extended metadatas
-    
+
     NJB_Get_Extended_Tags(NjbMediaDevice::theNjb(), 0);
     NJB_Reset_Get_Track_Tag( NjbMediaDevice::theNjb());
     while( njb_songid_t* song = NJB_Get_Track_Tag( NjbMediaDevice::theNjb()))

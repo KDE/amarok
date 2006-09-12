@@ -3878,7 +3878,7 @@ CollectionView::renderIpodModeView( bool /*=false*/ )
 
                 QString headerStr = DividerItem::createGroup( actualStr, m_cat );
 
-                if ( !containedDivider[headerStr] && headerStr != "" )
+                if ( !containedDivider[headerStr] && !headerStr.isEmpty() )
                 {
                     containedDivider[headerStr] = true;
                     (void)new DividerItem( this, headerStr, m_cat );
@@ -4141,7 +4141,7 @@ DividerItem::createGroup(const QString& src, int cat)
     case IdYear: {
         ret = src;
         if (ret.length() == 2 || ret.length() == 4) {
-            ret = ret.left(ret.length() - 1) + "0";
+            ret = ret.left(ret.length() - 1) + '0';
         }
         break;
     }

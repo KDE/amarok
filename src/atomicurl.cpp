@@ -125,7 +125,7 @@ void AtomicURL::setPath( const QString &path )
 QString AtomicURL::path() const
 {
     if( !m_filename.isEmpty() && !m_directory->endsWith("/") )
-        return m_directory + "/" + m_filename;
+        return m_directory + '/' + m_filename;
     return m_directory + m_filename;
 }
 

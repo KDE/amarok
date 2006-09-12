@@ -139,7 +139,7 @@ INotify::doJob()
     QString deviceIds;
     foreachType( IdList, list )
     {
-        if ( !deviceIds.isEmpty() ) deviceIds += ",";
+        if ( !deviceIds.isEmpty() ) deviceIds += ',';
         deviceIds += QString::number(*it);
     }
     const QStringList values = m_parent->query( QString( "SELECT dir, deviceid FROM directories WHERE deviceid IN (%1);" )
@@ -431,7 +431,7 @@ CollectionDB::deviceidSelection( const bool showAll )
         QString deviceIds = "";
         foreachType( IdList, list )
         {
-            if ( it != list.begin() ) deviceIds += ",";
+            if ( it != list.begin() ) deviceIds += ',';
             deviceIds += QString::number(*it);
         }
         return " AND tags.deviceid IN (" + deviceIds + ")";
@@ -776,7 +776,7 @@ CollectionDB::clearTables( const bool temporary )
     QString deviceIds = "";
     foreachType( IdList, list )
     {
-        if ( it != list.begin() ) deviceIds += ",";
+        if ( it != list.begin() ) deviceIds += ',';
         deviceIds += QString::number(*it);
     }
 
@@ -813,7 +813,7 @@ CollectionDB::copyTempTables( )
     QString albumIds = "-1";
     foreach( albumIdList )
     {
-        albumIds += ",";
+        albumIds += ',';
         albumIds += *it;
     }
     insert( QString ( "INSERT INTO album SELECT * FROM album_temp WHERE album_temp.id NOT IN ( %1 );" ).arg( albumIds ), NULL );
@@ -822,7 +822,7 @@ CollectionDB::copyTempTables( )
     QString artistIds = "-1";
     foreach( artistIdList )
     {
-        artistIds += ",";
+        artistIds += ',';
         artistIds += *it;
     }
     insert( QString ( "INSERT INTO artist SELECT * FROM artist_temp WHERE artist_temp.id NOT IN ( %1 );" ).arg( artistIds ), NULL );
@@ -831,7 +831,7 @@ CollectionDB::copyTempTables( )
     QString composerIds = "-1";
     foreach( composerIdList )
     {
-        composerIds += ",";
+        composerIds += ',';
         composerIds += *it;
     }
     insert( QString ( "INSERT INTO composer SELECT * FROM composer_temp WHERE composer_temp.id NOT IN ( %1 );" ).arg( composerIds ), NULL );
@@ -840,7 +840,7 @@ CollectionDB::copyTempTables( )
     QString genreIds = "-1";
     foreach( genreIdList )
     {
-        genreIds += ",";
+        genreIds += ',';
         genreIds += *it;
     }
     insert( QString ( "INSERT INTO genre SELECT * FROM genre_temp WHERE genre_temp.id NOT IN ( %1 );" ).arg( genreIds ), NULL );
@@ -849,7 +849,7 @@ CollectionDB::copyTempTables( )
     QString yearIds = "-1";
     foreach( yearIdList )
     {
-        yearIds += ",";
+        yearIds += ',';
         yearIds += *it;
     }
     insert( QString ( "INSERT INTO year SELECT * FROM year_temp WHERE year_temp.id NOT IN ( %1 );" ).arg( yearIds ), NULL );
@@ -2090,7 +2090,7 @@ CollectionDB::findDirectoryImage( const QString& artist, const QString& album, u
     QString deviceIds;
     foreachType( IdList, list )
     {
-        if ( !deviceIds.isEmpty() ) deviceIds += ",";
+        if ( !deviceIds.isEmpty() ) deviceIds += ',';
         deviceIds += QString::number(*it);
     }
 
@@ -2475,17 +2475,17 @@ CollectionDB::addPodcastChannel( const PodcastChannelBundle &pcb, const bool &re
         title = pcb.url().prettyURL();
 
     command += "'" + escapeString( pcb.url().url() )  + "',";
-    command += ( title.isEmpty() ?       "NULL" : "'" + escapeString( title ) + "'" ) + ",";
-    command += ( link.isEmpty() ?        "NULL" : "'" + escapeString( link.url() ) + "'" ) + ",";
-    command += ( image.isEmpty() ?       "NULL" : "'" + escapeString( image.url() ) + "'" ) + ",";
-    command += ( description.isEmpty() ? "NULL" : "'" + escapeString( description ) + "'" ) + ",";
-    command += ( copyright.isEmpty() ?   "NULL" : "'" + escapeString( copyright ) + "'" ) + ",";
+    command += ( title.isEmpty() ?       "NULL" : "'" + escapeString( title ) + '\'' ) + ',';
+    command += ( link.isEmpty() ?        "NULL" : "'" + escapeString( link.url() ) + '\'' ) + ',';
+    command += ( image.isEmpty() ?       "NULL" : "'" + escapeString( image.url() ) + '\'' ) + ',';
+    command += ( description.isEmpty() ? "NULL" : "'" + escapeString( description ) + '\'' ) + ',';
+    command += ( copyright.isEmpty() ?   "NULL" : "'" + escapeString( copyright ) + '\'' ) + ',';
     command += QString::number( pcb.parentId() ) + ",'";
     command += escapeString( pcb.saveLocation().url() ) + "',";
-    command += pcb.autoscan() ? boolT() + "," : boolF() + ",";
-    command += QString::number( pcb.fetchType() ) + ",";
-    command += pcb.autotransfer() ? boolT() + "," : boolF() + ",";
-    command += pcb.hasPurge() ? boolT() + "," : boolF() + ",";
+    command += pcb.autoscan() ? boolT() + "," : boolF() + ',';
+    command += QString::number( pcb.fetchType() ) + ',';
+    command += pcb.autotransfer() ? boolT() + ',' : boolF() + ',';
+    command += pcb.hasPurge() ? boolT() + ',' : boolF() + ',';
     command += QString::number( pcb.purgeCount() ) + ");";
 
     //FIXME: currently there's no way to check if an INSERT query failed or not - always return true atm.
@@ -2524,20 +2524,20 @@ CollectionDB::addPodcastEpisode( const PodcastEpisodeBundle &episode, const int 
         title = episode.url().prettyURL();
 
     if( idToUpdate )
-        command += QString::number( idToUpdate ) + ",";
+        command += QString::number( idToUpdate ) + ',';
 
     command += "'" + escapeString( episode.url().url() )   + "',";
-    command += ( localurl.isEmpty()       ? "NULL" : "'" + escapeString( localurl )       + "'" ) + ",";
+    command += ( localurl.isEmpty()       ? "NULL" : "'" + escapeString( localurl )       + "'" ) + ',';
     command += "'" + escapeString( episode.parent().url()) + "',";
-    command += ( title.isEmpty()       ? "NULL" : "'" + escapeString( title )       + "'" ) + ",";
-    command += ( subtitle.isEmpty()    ? "NULL" : "'" + escapeString( subtitle )    + "'" ) + ",";
-    command += ( author.isEmpty()      ? "NULL" : "'" + escapeString( author )      + "'" ) + ",";
-    command += ( description.isEmpty() ? "NULL" : "'" + escapeString( description ) + "'" ) + ",";
-    command += ( type.isEmpty()        ? "NULL" : "'" + escapeString( type )        + "'" ) + ",";
-    command += ( date.isEmpty()        ? "NULL" : "'" + escapeString( date )        + "'" ) + ",";
-    command += ( guid.isEmpty()        ? "NULL" : "'" + escapeString( guid )        + "'" ) + ",";
-    command += QString::number( duration ) + ",";
-    command += QString::number( size ) + ",";
+    command += ( title.isEmpty()       ? "NULL" : "'" + escapeString( title )       + '\'' ) + ',';
+    command += ( subtitle.isEmpty()    ? "NULL" : "'" + escapeString( subtitle )    + '\'' ) + ',';
+    command += ( author.isEmpty()      ? "NULL" : "'" + escapeString( author )      + '\'' ) + ',';
+    command += ( description.isEmpty() ? "NULL" : "'" + escapeString( description ) + '\'' ) + ',';
+    command += ( type.isEmpty()        ? "NULL" : "'" + escapeString( type )        + '\'' ) + ',';
+    command += ( date.isEmpty()        ? "NULL" : "'" + escapeString( date )        + '\'' ) + ',';
+    command += ( guid.isEmpty()        ? "NULL" : "'" + escapeString( guid )        + '\'' ) + ',';
+    command += QString::number( duration ) + ',';
+    command += QString::number( size ) + ',';
     command += episode.isNew() ? boolT() + " );" : boolF() + " );";
 
     insert( command, NULL );
@@ -2724,7 +2724,7 @@ CollectionDB::addPodcastFolder( const QString &name, const int parent_id, const 
 {
     QString command = QString( "INSERT INTO podcastfolders ( name, parent, isOpen ) VALUES ('" );
     command += escapeString( name )   + "',";
-    command += QString::number( parent_id ) + ",";
+    command += QString::number( parent_id ) + ',';
     command += isOpen ? boolT() + ");" : boolF() + ");";
 
     insert( command, NULL );
@@ -2887,13 +2887,13 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
 
     command += escapeString( relativePath.path() ) + "','";
     command += escapeString( relativePath.directory() ) + "',";
-    command += QString::number( deviceId ) + ",";
-    command += QString::number( QFileInfo( bundle->url().path() ).created().toTime_t() ) + ",";
-    command += QString::number( QFileInfo( bundle->url().path() ).lastModified().toTime_t() ) + ",";
+    command += QString::number( deviceId ) + ',';
+    command += QString::number( QFileInfo( bundle->url().path() ).created().toTime_t() ) + ',';
+    command += QString::number( QFileInfo( bundle->url().path() ).lastModified().toTime_t() ) + ',';
 
-    command += escapeString( QString::number( albumID( bundle->album(),   true, !incremental, true ) ) ) + ",";
-    command += escapeString( QString::number( artistID( bundle->artist(), true, !incremental, true ) ) ) + ",";
-    command += escapeString( QString::number( composerID( bundle->composer(), true, !incremental, true ) ) ) + ",";
+    command += escapeString( QString::number( albumID( bundle->album(),   true, !incremental, true ) ) ) + ',';
+    command += escapeString( QString::number( artistID( bundle->artist(), true, !incremental, true ) ) ) + ',';
+    command += escapeString( QString::number( composerID( bundle->composer(), true, !incremental, true ) ) ) + ',';
     command += escapeString( QString::number( genreID( bundle->genre(),   true, !incremental, true ) ) ) + ",'";
     command += escapeString( QString::number( yearID( QString::number( bundle->year() ), true, !incremental, true ) ) ) + "','";
 
@@ -2915,14 +2915,14 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
         default:
             command += "NULL";
     }
-    command += ",";
+    command += ',';
 
     // NOTE any of these may be -1 or -2, this is what we want
     //      see MetaBundle::Undetermined
-    command += QString::number( bundle->length() ) + ",";
-    command += QString::number( bundle->bitrate() ) + ",";
-    command += QString::number( bundle->sampleRate() ) + ",";
-    command += QString::number( bundle->filesize() ) + ",";
+    command += QString::number( bundle->length() ) + ',';
+    command += QString::number( bundle->bitrate() ) + ',';
+    command += QString::number( bundle->sampleRate() ) + ',';
+    command += QString::number( bundle->filesize() ) + ',';
     command += QString::number( bundle->fileType() ) + ")";
 
     //FIXME: currently there's no way to check if an INSERT query failed or not - always return true atm.
@@ -3925,7 +3925,7 @@ CollectionDB::organizeFile( const KURL &src, const OrganizeCollectionDialog &dia
       int count = 0;
       do
       {
-         QString extension = src.url().section( ".", -1 );
+         QString extension = src.url().section( '.', -1 );
          tmp = QString( dialog.folderCombo->currentText() + "/amarok-tmp-%1." + extension ).arg( count );
          count++;
       } while( QFile::exists( tmp ) );
@@ -5224,7 +5224,7 @@ CollectionDB::updateStatsTables()
             if( getType() == DbConnection::sqlite && QFile::exists( Amarok::saveLocation()+"collection.db" ) )
             {
                 debug() << "Creating a backup of the database in "
-                        << Amarok::saveLocation()+"collection-backup.db" << "." << endl;
+                        << Amarok::saveLocation()+"collection-backup.db" << '.' << endl;
 
                 bool copied = KIO::NetAccess::file_copy( Amarok::saveLocation()+"collection.db",
                                                          Amarok::saveLocation()+"collection-backup.db",
@@ -6282,7 +6282,7 @@ QueryBuilder::linkTables( int tables )
             m_tables += " LEFT JOIN " + tableName( tabStats)
                                       + " ON statistics.url=tags.url AND statistics.deviceid = tags.deviceid";
             //if ( !m_url.isEmpty() ) {
-            //    QString url = QString( "." ) + m_url;
+            //    QString url = QString( '.' ) + m_url;
             //    m_tables += QString( " OR statistics.deviceid = -1 AND statistics.url = '%1'" )
             //                                    .arg( CollectionDB::instance()->escapeString( url ) );
             //}
@@ -6303,7 +6303,7 @@ QueryBuilder::addReturnValue( int table, Q_INT64 value, bool caseSensitive /* = 
 {
     caseSensitive |= value == valName || value == valTitle || value == valComment;
 
-    if ( !m_values.isEmpty() && m_values != "DISTINCT " ) m_values += ",";
+    if ( !m_values.isEmpty() && m_values != "DISTINCT " ) m_values += ',';
 
     if ( table & tabStats && value & valScore )
     {
@@ -6318,7 +6318,7 @@ QueryBuilder::addReturnValue( int table, Q_INT64 value, bool caseSensitive /* = 
     {
         if ( caseSensitive && CollectionDB::instance()->getType() == DbConnection::mysql )
             m_values += "BINARY ";
-        m_values += tableName( table ) + ".";
+        m_values += tableName( table ) + '.';
         m_values += valueName( value );
     }
 
@@ -6335,8 +6335,8 @@ QueryBuilder::addReturnValue( int table, Q_INT64 value, bool caseSensitive /* = 
     {
         // make handling of deviceid transparent to calling code
         m_deviceidPos = m_returnValues + 1;  //the return value after the url is the deviceid
-        m_values += ",";
-        m_values += tableName( table ) + ".";
+        m_values += ',';
+        m_values += tableName( table ) + '.';
         m_values += valueName( valDeviceId );
     }
 }
@@ -6348,11 +6348,11 @@ QueryBuilder::addReturnFunctionValue( int function, int table, Q_INT64 value)
     // First translate 0 to NULL via NULLIF, then NULL to default via COALESCE
     bool defaults = function == funcAvg && ( value & valPercentage || value & valRating );
 
-    if ( !m_values.isEmpty() && m_values != "DISTINCT " ) m_values += ",";
-    m_values += functionName( function ) + "(";
+    if ( !m_values.isEmpty() && m_values != "DISTINCT " ) m_values += ',';
+    m_values += functionName( function ) + '(';
     if ( defaults )
         m_values += "COALESCE(NULLIF(";
-    m_values += tableName( table ) + ".";
+    m_values += tableName( table ) + '.';
     m_values += valueName( value );
     if ( defaults )
     {
@@ -6382,7 +6382,7 @@ QueryBuilder::addURLFilters( const QStringList& filter )
 {
     if ( !filter.isEmpty() )
     {
-        m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
+        m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + ' ';
 
         for ( uint i = 0; i < filter.count(); i++ )
         {
@@ -6568,7 +6568,7 @@ QueryBuilder::addFilter( int tables, const QString& filter )
 {
     if ( !filter.isEmpty() )
     {
-        m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
+        m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + ' ';
 
         if ( tables & tabAlbum )
             m_where += "OR album.name " + CollectionDB::likeCondition( filter, true, true );
@@ -6611,7 +6611,7 @@ QueryBuilder::addFilter( int tables, Q_INT64 value, const QString& filter, int m
 {
     if ( !filter.isEmpty() )
     {
-        m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
+        m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + ' ';
 
         QString m, s;
         if (mode == modeLess || mode == modeGreater)
@@ -6640,11 +6640,11 @@ QueryBuilder::addFilters( int tables, const QStringList& filter )
 {
     if ( !filter.isEmpty() )
     {
-        m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolT() + " ";
+        m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolT() + ' ';
 
         for ( uint i = 0; i < filter.count(); i++ )
         {
-            m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
+            m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + ' ';
 
             if ( tables & tabAlbum )
                 m_where += "OR album.name " + CollectionDB::likeCondition( filter[i], true, true );
@@ -6690,7 +6690,7 @@ QueryBuilder::excludeFilter( int tables, const QString& filter )
 {
     if ( !filter.isEmpty() )
     {
-        m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolT() + " ";
+        m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolT() + ' ';
 
 
         if ( tables & tabAlbum )
@@ -6737,7 +6737,7 @@ QueryBuilder::excludeFilter( int tables, Q_INT64 value, const QString& filter, i
 {
     if ( !filter.isEmpty() )
     {
-        m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolT() + " ";
+        m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolT() + ' ';
 
         QString m, s;
         if (mode == modeLess || mode == modeGreater)
@@ -6747,7 +6747,7 @@ QueryBuilder::excludeFilter( int tables, Q_INT64 value, const QString& filter, i
             if (exact)
                 s = " <> '" + CollectionDB::instance()->escapeString( filter ) + "' ";
             else
-                s = "NOT " + CollectionDB::instance()->likeCondition( filter, false, false && mode != modeEndMatch ) + " ";
+                s = "NOT " + CollectionDB::instance()->likeCondition( filter, false, false && mode != modeEndMatch ) + ' ';
         }
 
         m_where += QString( "AND %1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
@@ -6766,7 +6766,7 @@ QueryBuilder::addMatch( int tables, const QString& match, bool interpretUnknown 
 {
     QString matchCondition = caseSensitive ? CollectionDB::exactCondition( match ) : CollectionDB::likeCondition( match );
 
-    m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
+    m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + ' ';
     if ( tables & tabAlbum )
         m_where += "OR album.name " + matchCondition;
     if ( tables & tabArtist )
@@ -6797,7 +6797,7 @@ QueryBuilder::addMatch( int tables, const QString& match, bool interpretUnknown 
 void
 QueryBuilder::addMatch( int tables, Q_INT64 value, const QString& match, bool interpretUnknown /* = true */, bool caseSensitive /* = true */  )
 {
-    m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
+    m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + ' ';
     if ( value & valURL )
         m_url = match;
     //FIXME max: doesn't work yet if we are querying for the mount point part of a directory
@@ -6816,7 +6816,7 @@ QueryBuilder::addMatch( int tables, Q_INT64 value, const QString& match, bool in
         if ( deviceid != -1 )
         {
             //handle corner case
-            QString rpath2 = ".";
+            QString rpath2( "." );
             rpath2 += match;
             m_where += QString( " OR %1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) );
             m_where += caseSensitive ? CollectionDB::exactCondition( rpath2 ) : CollectionDB::likeCondition( rpath2 );
@@ -6845,7 +6845,7 @@ QueryBuilder::addMatches( int tables, const QStringList& match, bool interpretUn
     for ( uint i = 0; i < match.count(); i++ )
         matchConditions << ( caseSensitive ? CollectionDB::exactCondition( match[i] ) : CollectionDB::likeCondition( match[i] ) );
 
-    m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + " ";
+    m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + ' ';
 
     for ( uint i = 0; i < match.count(); i++ )
     {
@@ -6882,7 +6882,7 @@ QueryBuilder::addMatches( int tables, const QStringList& match, bool interpretUn
 void
 QueryBuilder::excludeMatch( int tables, const QString& match )
 {
-    m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolT() + " ";
+    m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolT() + ' ';
     if ( tables & tabAlbum ) m_where += "AND album.name <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
     if ( tables & tabArtist ) m_where += "AND artist.name <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
     if ( tables & tabComposer ) m_where += "AND composer.name <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
@@ -6911,14 +6911,14 @@ QueryBuilder::exclusiveFilter( int tableMatching, int tableNotMatching, Q_INT64 
     m_join += tableName( tableNotMatching );
     m_join += " ON ";
 
-    m_join += tableName( tableMatching ) + ".";
+    m_join += tableName( tableMatching ) + '.';
     m_join += valueName( value );
     m_join+= " = ";
-    m_join += tableName( tableNotMatching ) + ".";
+    m_join += tableName( tableNotMatching ) + '.';
     m_join += valueName( value );
 
     m_where += " AND ";
-    m_where += tableName( tableNotMatching ) + ".";
+    m_where += tableName( tableNotMatching ) + '.';
     m_where += valueName( value );
     m_where += " IS null ";
 }
@@ -6937,8 +6937,8 @@ QueryBuilder::setOptions( int options )
     {
             m_values = "DISTINCT " + CollectionDB::instance()->randomFunc() + " AS __random "+ m_values;
             if ( !m_sort.isEmpty() )
-                m_sort += ",";
-            m_sort += CollectionDB::instance()->randomFunc() + " ";
+                m_sort += ',';
+            m_sort += CollectionDB::instance()->randomFunc() + ' ';
     }
     else
     {
@@ -6946,8 +6946,8 @@ QueryBuilder::setOptions( int options )
                 m_values = "DISTINCT " + m_values;
             if ( options & optRandomize )
             {
-                if ( !m_sort.isEmpty() ) m_sort += ",";
-                m_sort += CollectionDB::instance()->randomFunc() + " ";
+                if ( !m_sort.isEmpty() ) m_sort += ',';
+                m_sort += CollectionDB::instance()->randomFunc() + ' ';
             }
     }
 
@@ -6971,11 +6971,11 @@ QueryBuilder::sortBy( int table, Q_INT64 value, bool descending )
     if ( value & valScore || value & valRating || value & valPlayCounter || value & valPercentage || value & valAccessDate || value & valCreateDate )
 		c = true;
 
-    if ( !m_sort.isEmpty() ) m_sort += ",";
+    if ( !m_sort.isEmpty() ) m_sort += ',';
     if ( b ) m_sort += "LOWER( ";
     if ( c ) m_sort += "COALESCE( ";
 
-    m_sort += tableName( table ) + ".";
+    m_sort += tableName( table ) + '.';
     m_sort += valueName( value );
 
     if ( c ) m_sort += ", 0 )";
@@ -6985,9 +6985,9 @@ QueryBuilder::sortBy( int table, Q_INT64 value, bool descending )
 
     if (CollectionDB::instance()->getType() == DbConnection::postgresql)
     {
-        if (!m_values.isEmpty()) m_values += ",";
+        if (!m_values.isEmpty()) m_values += ',';
         if ( b ) m_values += "LOWER( ";
-        m_values += tableName( table ) + ".";
+        m_values += tableName( table ) + '.';
         m_values += valueName( value );
         if ( b ) m_values += ")";
         m_values += " as __discard ";
@@ -7018,8 +7018,8 @@ QueryBuilder::sortByFunction( int function, int table, Q_INT64 value, bool desce
     if ( !defaults && ( value & valScore || value & valRating || value & valPlayCounter || value & valPercentage|| value & valAccessDate || value & valCreateDate ) )
         c = true;
 
-    if ( !m_sort.isEmpty() ) m_sort += ",";
-    //m_sort += functionName( function ) + "(";
+    if ( !m_sort.isEmpty() ) m_sort += ',';
+    //m_sort += functionName( function ) + '(';
     if ( b ) m_sort += "LOWER( ";
     if ( c && CollectionDB::instance()->getType() != DbConnection::mysql) m_sort += "COALESCE( ";
 
@@ -7027,10 +7027,10 @@ QueryBuilder::sortByFunction( int function, int table, Q_INT64 value, bool desce
 
     if (CollectionDB::instance()->getType() == DbConnection::postgresql)
     {
-        columnName = functionName( function ) + "(";
+        columnName = functionName( function ) + '(';
         if ( defaults )
             columnName += "COALESCE(NULLIF(";
-        columnName += tableName( table )+"."+valueName( value );
+        columnName += tableName( table )+'.'+valueName( value );
         if ( defaults )
         {
             columnName += ", 0), ";
@@ -7057,9 +7057,9 @@ QueryBuilder::sortByFunction( int function, int table, Q_INT64 value, bool desce
     {
         if (m_values.find(columnName) == -1)
         {
-            if (!m_values.isEmpty()) m_values += ",";
+            if (!m_values.isEmpty()) m_values += ',';
             if ( b ) m_values += "LOWER( ";
-            m_values += tableName( table ) + ".";
+            m_values += tableName( table ) + '.';
             m_values += valueName( value );
             if ( b ) m_values += ")";
             m_values += " as __discard ";
@@ -7072,8 +7072,8 @@ QueryBuilder::sortByFunction( int function, int table, Q_INT64 value, bool desce
 void
 QueryBuilder::groupBy( int table, Q_INT64 value )
 {
-    if ( !m_group.isEmpty() ) m_group += ",";
-    m_group += tableName( table ) + ".";
+    if ( !m_group.isEmpty() ) m_group += ',';
+    m_group += tableName( table ) + '.';
     m_group += valueName( value );
 
     m_linkTables |= table;
@@ -7086,8 +7086,8 @@ QueryBuilder::having( int table, Q_INT64 value, int function, int mode, const QS
 
     QString fn = functionName( function );
     fn.isEmpty() ?
-        m_having += tableName( table ) + "." + valueName( value ) :
-        m_having += functionName( function )+"("+tableName( table )+"."+valueName( value )+")";
+        m_having += tableName( table ) + '.' + valueName( value ) :
+        m_having += functionName( function )+'('+tableName( table )+'.'+valueName( value )+")";
 
     switch( mode )
     {
@@ -7162,7 +7162,7 @@ QueryBuilder::buildQuery()
         {
             m_tables += ",tags";
         }
-        m_query = "SELECT " + m_values + " FROM " + m_tables + " " + m_join + " WHERE " + CollectionDB::instance()->boolT() + " " + m_where;
+        m_query = "SELECT " + m_values + " FROM " + m_tables + ' ' + m_join + " WHERE " + CollectionDB::instance()->boolT() + ' ' + m_where;
         if ( !m_showAll )
         {
             IdList list = MountPointManager::instance()->getMountedDeviceIds();
@@ -7170,7 +7170,7 @@ QueryBuilder::buildQuery()
             //debug() << "number of device ids " << list.count() << endl;
             foreachType( IdList, list )
             {
-                if ( it != list.begin() ) deviceIds += ",";
+                if ( it != list.begin() ) deviceIds += ',';
                 deviceIds += QString::number( *it );
             }
             m_query += " AND tags.deviceid IN (" + deviceIds + ")";

@@ -3617,7 +3617,7 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
     //first we convert all the links with protocol to external, as they should all be External Links.
     m_wiki.replace( QRegExp( "href= *\"http:" ), "href=\"externalurl:" );
     m_wiki.replace( QRegExp( "href= *\"/" ), "href=\"" +m_wikiBaseUrl );
-    m_wiki.replace( QRegExp( "href= *\"#" ), "href=\"" +m_wikiCurrentUrl + "#" );
+    m_wiki.replace( QRegExp( "href= *\"#" ), "href=\"" +m_wikiCurrentUrl + '#' );
 
     m_HTMLSource = "<html><body>\n";
     m_HTMLSource.append(
@@ -3674,7 +3674,7 @@ ContextBrowser::coverFetched( const QString &artist, const QString &album ) //SL
         return;
 
     if ( currentPage() == m_contextTab &&
-       ( currentTrack.artist().string() == artist || m_artist == artist || currentTrack.album().string() == album ) ) // this is for compilations or artist == ""
+       ( currentTrack.artist().string() == artist || m_artist == artist || currentTrack.album().string() == album ) ) // this is for compilations or when artist is empty
     {
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
@@ -3700,7 +3700,7 @@ ContextBrowser::coverRemoved( const QString &artist, const QString &album ) //SL
         return;
 
     if ( currentPage() == m_contextTab &&
-       ( currentTrack.artist().string() == artist || m_artist == artist || currentTrack.album().string() == album ) ) // this is for compilations or artist == ""
+       ( currentTrack.artist().string() == artist || m_artist == artist || currentTrack.album().string() == album ) ) // this is for compilations or when artist is empty
     {
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
@@ -3780,7 +3780,7 @@ void ContextBrowser::tagsChanged( const QString &oldArtist, const QString &oldAl
 
 void ContextBrowser::refreshCurrentTrackPage() //SLOT
 {
-    if ( currentPage() == m_contextTab ) // this is for compilations or artist == ""
+    if ( currentPage() == m_contextTab ) // this is for compilations or when artist is empty
     {
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();

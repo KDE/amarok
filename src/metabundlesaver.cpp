@@ -75,9 +75,9 @@ MetaBundleSaver::prepareToSave()
     QString pid;
     QString randomString = m_bundle->getRandomString( 8, true );
     m_tempSavePath = origPath.path() + ".amaroktemp.host-" + QString( hostbuf ) +
-                        ".pid-" + pid.setNum( getpid() ) + ".random-" + randomString + "." + m_bundle->type();
+                        ".pid-" + pid.setNum( getpid() ) + ".random-" + randomString + '.' + m_bundle->type();
     m_origRenamedSavePath = origPath.path() + ".amarokoriginal.host-" + QString( hostbuf ) +
-                        ".pid-" + pid.setNum( getpid() ) + ".random-" + randomString + "." + m_bundle->type();
+                        ".pid-" + pid.setNum( getpid() ) + ".random-" + randomString + '.' + m_bundle->type();
 
 
     //The next long step is to copy the file over.  We can't use KIO because it's not thread save,

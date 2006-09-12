@@ -376,7 +376,7 @@ Playlist::Playlist( QWidget *parent )
     QStringList undos = m_undoDir.entryList( QString("*.xml"), QDir::Files, QDir::Time );
 
     foreach( undos )
-        m_undoList.append( m_undoDir.absPath() + "/" + (*it) );
+        m_undoList.append( m_undoDir.absPath() + '/' + (*it) );
 
     m_undoCounter = m_undoList.count();
 
@@ -4476,7 +4476,7 @@ Playlist::saveState( QStringList &list )
       QString fileName;
       m_undoCounter %= AmarokConfig::undoLevels();
       fileName.setNum( m_undoCounter++ );
-      fileName.prepend( m_undoDir.absPath() + "/" );
+      fileName.prepend( m_undoDir.absPath() + '/' );
       fileName.append( ".xml" );
 
       if ( list.count() >= (uint)AmarokConfig::undoLevels() )
@@ -4750,7 +4750,7 @@ Playlist::showTagDialog( QPtrList<QListViewItem> items )
             dialog->show();
         }
         else
-            KMessageBox::sorry( this, i18n( "This file does not exist:" ) + " " + item->url().path() );
+            KMessageBox::sorry( this, i18n( "This file does not exist:" ) + ' ' + item->url().path() );
     }
     else {
         //edit multiple tracks in tag dialog

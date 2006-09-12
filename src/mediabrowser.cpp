@@ -420,7 +420,7 @@ MediaBrowser::tagsChanged( const MetaBundle &bundle )
                 text = item->bundle()->url().prettyURL();
             if( !item->m_playlistName.isNull() )
             {
-                text += " (" + item->m_playlistName + ")";
+                text += " (" + item->m_playlistName + ')';
             }
             item->setText( 0, text);
         }
@@ -1372,7 +1372,7 @@ MediaView::contentsDropEvent( QDropEvent *e )
             {
                 QString num;
                 num.setNum(i);
-                name = base + " " + num;
+                name = base + ' ' + num;
                 i++;
             }
             MediaItem *pl = m_device->newPlaylist(name, item, items);
@@ -2206,7 +2206,7 @@ MediaQueue::addURL( const KURL& url, MetaBundle *bundle, const QString &playlist
         text = item->bundle()->url().prettyURL();
     if( !item->m_playlistName.isNull() )
     {
-        text += " (" + item->m_playlistName + ")";
+        text += " (" + item->m_playlistName + ')';
     }
     item->setText( 0, text);
 
@@ -2236,7 +2236,7 @@ MediaQueue::addURL( const KURL &url, MediaItem *item )
         text = item->bundle()->url().prettyURL();
     if( item->m_playlistName != QString::null )
     {
-        text += " (" + item->m_playlistName + ")";
+        text += " (" + item->m_playlistName + ')';
     }
     newitem->setText( 0, text);
     newitem->setBundle( bundle );

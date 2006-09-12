@@ -264,10 +264,10 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         //sql helper methods
         QStringList query( const QString& statement );
         int insert( const QString& statement, const QString& table );
-        
+
         /**
          * TODO: write doc
-         * @param showAll 
+         * @param showAll
          * @return a string which can be appended to an existing sql where statement
          */
         QString deviceidSelection( const bool showAll = false );
@@ -315,7 +315,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         //song methods
         bool addSong( MetaBundle* bundle, const bool incremental = false );
         void doAFTStuff( MetaBundle *bundle, const bool tempTables = true );
-        void emitFileDeleted( const QString &absPath, 
+        void emitFileDeleted( const QString &absPath,
                               const QString &uniqueid = QString::null );
         bool newUniqueIdForFile( const QString &path );
         bool removeUniqueIdFromFile( const QString &path );
@@ -695,7 +695,7 @@ class QueryBuilder
         void beginOR(); //filters will be ORed instead of ANDed
         void endOR();   //don't forget to end it!
         void beginAND(); // These do the opposite; for recursive and/or
-        void endAND();   
+        void endAND();
 
         void setGoogleFilter( int defaultTables, QString query );
 
@@ -736,7 +736,7 @@ class QueryBuilder
         QString tableName( int table );
         QString valueName( Q_INT64 value );
         QString functionName( int functions );
-        
+
         QStringList cleanURL( QStringList result );
 
         void linkTables( int tables );
@@ -766,7 +766,7 @@ class QueryBuilder
 inline void QueryBuilder::beginOR()
 {
     m_OR = true;
-    m_where += "AND ( " + CollectionDB::instance()->boolF() + " ";
+    m_where += "AND ( " + CollectionDB::instance()->boolF() + ' ';
 }
 inline void QueryBuilder::endOR()
 {
@@ -776,7 +776,7 @@ inline void QueryBuilder::endOR()
 inline void QueryBuilder::beginAND()
 {
     m_OR = false;
-    m_where += "OR ( " + CollectionDB::instance()->boolT() + " ";
+    m_where += "OR ( " + CollectionDB::instance()->boolT() + ' ';
 }
 inline void QueryBuilder::endAND()
 {

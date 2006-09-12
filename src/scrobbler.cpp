@@ -621,7 +621,7 @@ void ScrobblerSubmitter::performSubmit()
                 }
             }
             else
-                data += "&";
+                data += '&';
 
             items[submitCounter] = itemFromQueue;
             QDateTime playStartTime = QDateTime();

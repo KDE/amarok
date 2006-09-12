@@ -296,7 +296,7 @@ GenericMediaDevice::fileName( const MetaBundle &bundle )
             result += " ";
     }
 
-    result += cleanPath( bundle.title() + "." + bundle.type() );
+    result += cleanPath( bundle.title() + '.' + bundle.type() );
 
     return result;
 }
@@ -523,7 +523,7 @@ GenericMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> it
     {
         GenericMediaItem *currItem = static_cast<GenericMediaItem *>(*it);
         QCString src  = m_mim[currItem]->getEncodedFullName();
-        QCString dst = dropDir->getEncodedFullName() + "/" + QFile::encodeName( currItem->text(0) );
+        QCString dst = dropDir->getEncodedFullName() + '/' + QFile::encodeName( currItem->text(0) );
         debug() << "Moving: " << src << " to: " << dst << endl;
 
         const KURL srcurl(src);

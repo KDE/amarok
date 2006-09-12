@@ -410,12 +410,12 @@ IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
     if( cleverFilename && !title.isEmpty() )
     {
         if( bundle.track() > 0 )
-            newFilename = cleanPath( QString::number(bundle.track()) + " - " + title ) + "." + bundle.type();
+            newFilename = cleanPath( QString::number(bundle.track()) + " - " + title ) + '.' + bundle.type();
         else
-            newFilename = cleanPath( title ) + "." + bundle.type();
+            newFilename = cleanPath( title ) + '.' + bundle.type();
     }
     else
-        newFilename = cleanPath( bundle.prettyTitle() ) + "." + bundle.type();
+        newFilename = cleanPath( bundle.prettyTitle() ) + '.' + bundle.type();
 
     const QCString dest = QFile::encodeName( cleanPath(directory + newFilename) );
 

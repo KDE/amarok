@@ -177,7 +177,7 @@ QString PodcastSettingsDialog::requesterSaveLocation()
     if( url.endsWith( "/" ) )
         return url;
     else
-        return url + "/";
+        return url + '/';
 }
 
 void PodcastSettingsDialog::setSettings( PodcastSettings *settings )

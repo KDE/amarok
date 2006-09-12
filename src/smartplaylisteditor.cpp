@@ -421,7 +421,7 @@ void SmartPlaylistEditor::buildQuery()
                 if( i ) //multiple conditions
                     str.prepend( " OR (");
 
-                criteriaListStr += str+")";
+                criteriaListStr += str+')';
             }
 
             criteriaListStr += " )"; // we want our ORs all in one bracket. :-)
@@ -445,14 +445,14 @@ void SmartPlaylistEditor::buildQuery()
                 if( i ) //multiple conditions
                     str.prepend( " AND (");
 
-                criteriaListStr += str+")";
+                criteriaListStr += str+')';
             }
             criteriaListStr += " )";
         }
 
         whereStr = " WHERE " + criteriaListStr;
     }
-   
+
     //only select from mounted devices
     whereStr = whereStr + " (*MountedDeviceSelection*) ";
 
@@ -495,7 +495,7 @@ void SmartPlaylistEditor::buildQuery()
 
     // album / artist / composer / genre / title / year / comment / track / bitrate / discnumber / length / samplerate / path / compilation / filetype / bpm
     m_query = "SELECT (*ListOfFields*) FROM "
-              + joins + whereStr + orderStr + limitStr + ";";
+              + joins + whereStr + orderStr + limitStr + ';';
 
     if( m_expandCheck->isChecked() ) { //We use "(*ExpandString*)" as a marker, if a artist/track/album has this bizarre name, it won't work.
         QString field = m_expandableDbFields[ m_expandCombo->currentItem() ];
@@ -508,7 +508,7 @@ void SmartPlaylistEditor::buildQuery()
         else
             whereStr = QString(" WHERE %1 = '(*ExpandString*)'").arg(field);
         m_expandQuery = "SELECT (*ListOfFields*) FROM "
-                        + joins + whereStr + orderStr + limitStr + ";";
+                        + joins + whereStr + orderStr + limitStr + ';';
     }
 }
 

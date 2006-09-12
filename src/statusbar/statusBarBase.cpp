@@ -639,7 +639,7 @@ StatusBar::writeLogFile( const QString &text )
             if( QFile::exists( log ) && file.size() <= maxSize )
                 break;
         }
-        if( c == 0 ) file.setName( logBase + "0" );
+        if( c == 0 ) file.setName( logBase + '0' );
         m_logCounter = c;
     }
     else

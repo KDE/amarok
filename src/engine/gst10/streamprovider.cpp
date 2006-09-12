@@ -116,7 +116,7 @@ StreamProvider::sendRequest() //SLOT
 
     const QCString username = m_url.user().utf8();
     const QCString password = m_url.pass().utf8();
-    const QString authString = KCodecs::base64Encode( username + ":" + password );
+    const QString authString = KCodecs::base64Encode( username + ':' + password );
     const bool auth = !( username.isEmpty() && password.isEmpty() );
 
     // Extract major+minor version number from APP_VERSION

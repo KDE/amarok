@@ -1156,12 +1156,12 @@ IpodMediaDevice::checkIntegrity()
         if(dir[i] == "." || dir[i] == "..")
             continue;
 
-        QString hashpath = musicpath + "/" + dir[i];
+        QString hashpath = musicpath + '/' + dir[i];
         QDir hashdir( hashpath, QString::null, QDir::Unsorted, QDir::Files );
         for(unsigned j=0; j<hashdir.count(); j++)
         {
-            QString filename = hashpath + "/" + hashdir[j];
-            QString ipodPath = itunesDir( "Music:" ) + dir[i] + ":" + hashdir[j];
+            QString filename = hashpath + '/' + hashdir[j];
+            QString ipodPath = itunesDir( "Music:" ) + dir[i] + ':' + hashdir[j];
             Itdb_Track *track = m_files[ipodPath.lower()];
             if(!track)
             {
@@ -2052,7 +2052,7 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                     {
                         QString num;
                         num.setNum(i);
-                        name = base + " " + num;
+                        name = base + ' ' + num;
                         i++;
                     }
                     MediaItem *pl = newPlaylist(name, m_playlistItem, items);
