@@ -1047,7 +1047,9 @@ DEBUG_BLOCK
 
         channel  = new PodcastChannel( parent, channel, *it );
 
-        bool hasNew = CollectionDB::instance()->getPodcastEpisodes( (*it).url(), true, 1 ).count() > 0;
+        bool hasNew = CollectionDB::instance()->query( QString("SELECT COUNT(parent) FROM podcastepisodes WHERE ( parent='%1' AND isNew=%2 ) LIMIT 1" )
+                        .arg( (*it).url().url(), CollectionDB::instance()->boolT() ) )
+                        .first().toInt() > 0;
 
         channel->setNew( hasNew );
 
@@ -1062,6 +1064,7 @@ DEBUG_BLOCK
 QMap<int,PlaylistCategory*>
 PlaylistBrowser::loadPodcastFolders( PlaylistCategory *p )
 {
+DEBUG_BLOCK
     QString sql = "SELECT * FROM podcastfolders ORDER BY parent ASC;";
     QStringList values = CollectionDB::instance()->query( sql );
 
