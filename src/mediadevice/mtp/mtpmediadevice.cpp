@@ -144,11 +144,8 @@ MtpMediaDevice::progressCallback( uint64_t const sent, uint64_t const total, voi
     {
         debug() << "Canceling transfer operation" << endl;
         dev->setCanceled( true );
-        dev->setProgress( sent, total );
         return 1;
     }
-
-    dev->setProgress( sent, total );
 
     return 0;
 }
