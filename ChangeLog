@@ -24,6 +24,7 @@ VERSION 1.4.4
     * Show a proper tag dialog when viewing information for DAAP music shares.
 
   BUGFIXES:
+    * Fixed playlist encoding problems. (BR 133613)
     * Cover images for compilation albums can now be displayed full size in 
       the context browser.
     * Dragging compilation albums from the collection browser or the playlist
