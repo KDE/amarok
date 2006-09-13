@@ -3188,6 +3188,7 @@ Playlist::saveXML( const QString &path )
     stream << "</playlist>\n";
 
     QTextStream fstream( &file );
+    fstream.setEncoding( QTextStream::UnicodeUTF8 );
     fstream << buffer;
 }
 
