@@ -1305,7 +1305,7 @@ CollectionDB::addSongPercentage( const QString &url, int percentage )
     }
     else
     {
-        // entry didnt exist yet, create a new one
+        // entry didn't exist yet, create a new one
         score = ( ( 50 + percentage ) / 2 );
 
         insert( QString( "INSERT INTO statistics ( url, createdate, accessdate, percentage, playcounter ) "

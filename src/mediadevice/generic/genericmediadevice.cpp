@@ -291,9 +291,9 @@ GenericMediaDevice::fileName( const MetaBundle &bundle )
         result.sprintf( "%02d", bundle.track() );
 
         if( m_spacesToUnderscores )
-            result += "_";
+            result += '_';
         else
-            result += " ";
+            result += ' ';
     }
 
     result += cleanPath( bundle.title() + '.' + bundle.type() );

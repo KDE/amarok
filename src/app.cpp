@@ -1288,7 +1288,7 @@ namespace Amarok
         {
             QString l = s.left(3).lower();
             if( l=="aux" || l=="con" || l=="nul" || l=="prn" )
-                s = "_" + s;
+                s = '_' + s;
         }
         else if( len == 4 || (len > 4 && s[4] == '.') )
         {
@@ -1297,7 +1297,7 @@ namespace Amarok
             if( (l=="com" || l=="lpt") &&
                     (d=="0" || d=="1" || d=="2" || d=="3" || d=="4" ||
                      d=="5" || d=="6" || d=="7" || d=="8" || d=="9") )
-                s = "_" + s;
+                s = '_' + s;
         }
 
         while( s.startsWith( "." ) )

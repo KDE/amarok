@@ -130,7 +130,7 @@ namespace Amarok
             #ifdef NDEBUG
             body += "NDEBUG:     true";
             #endif
-            body += "\n";
+            body += '\n';
 
             /// obtain the backtrace with gdb
 

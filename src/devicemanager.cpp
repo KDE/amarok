@@ -78,7 +78,7 @@ DeviceManager::~DeviceManager()
 }
 
 void
-DeviceManager::mediumAdded( QString name )
+DeviceManager::mediumAdded( const QString name )
 {
     DEBUG_BLOCK
     if ( !m_valid )
@@ -94,7 +94,7 @@ DeviceManager::mediumAdded( QString name )
 
 
 void
-DeviceManager::mediumRemoved( QString name )
+DeviceManager::mediumRemoved( const QString name )
 {
     DEBUG_BLOCK
     if ( !m_valid )
@@ -118,7 +118,7 @@ DeviceManager::mediumRemoved( QString name )
 
 
 void
-DeviceManager::mediumChanged( QString name )
+DeviceManager::mediumChanged( const QString name )
 {
     DEBUG_BLOCK
     if ( !m_valid )
@@ -192,12 +192,12 @@ DeviceManager::getDeviceStringList()
                 autodetect_insert = Medium::PROPERTIES_COUNT - 1;
         }
     }
-    
+
     return result;
 }
 
 Medium*
-DeviceManager::getDevice( QString name )
+DeviceManager::getDevice( const QString name )
 {
     DEBUG_BLOCK
     if ( !m_valid )

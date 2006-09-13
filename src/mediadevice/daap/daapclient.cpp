@@ -256,7 +256,7 @@ DaapClient::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
             menu.insertItem( SmallIconSet( Amarok::icon( "fastforward" ) ), i18n( "&Queue Tracks" ), QUEUE );
             menu.insertSeparator();
 
-            // albums and artists dont have bundles, so they crash... :(
+            // albums and artists don't have bundles, so they crash... :(
             if( item->bundle() )
                 menu.insertItem( SmallIconSet( Amarok::icon( "info" ) ), i18n( "&Information" ), INFO );
             break;

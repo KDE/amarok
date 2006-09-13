@@ -37,12 +37,12 @@ void MP4::ITunesDayBox::parse()
   TagLib::uint size;
   MP4::Fourcc  fourcc;
 
-  if(mp4file->readSizeAndType( size, fourcc ) == true)  
+  if(mp4file->readSizeAndType( size, fourcc ) == true)
   {
     // check for type - must be 'data'
     if( fourcc != MP4::Fourcc("data") )
     {
-      std::cerr << "bad atom in itunes tag - skipping it." << std::endl; 
+      std::cerr << "bad atom in itunes tag - skipping it." << std::endl;
       // jump over data tag
       mp4file->seek( size-8, TagLib::File::Current );
       return;
@@ -60,7 +60,7 @@ void MP4::ITunesDayBox::parse()
   mp4file->tagProxy()->registerBox( Mp4TagsProxy::year, d->dataBox );
 
 #if 0
-  // get data pointer - just for debuging...
+  // get data pointer - just for debugging...
   TagLib::String dataString( d->dataBox->data() );
   std::cout << "Content of day box: " << dataString.substr(0,4) << std::endl;
 #endif

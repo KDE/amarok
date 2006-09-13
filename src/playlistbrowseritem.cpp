@@ -1482,7 +1482,7 @@ PodcastChannel::setNew( bool n )
 }
 
 
-/// DONT TOUCH m_url!!!  The podcast has no mention to the location of the xml file, idiots.
+/// DON'T TOUCH m_url!!!  The podcast has no mention to the location of the xml file.
 void
 PodcastChannel::setXml( const QDomNode &xml, const int feedType )
 {
@@ -1872,7 +1872,7 @@ void PodcastFetcher::fetch()
             QString ext = file.extension();
             //Insert number right before the extension: podcast.mp3 > podcast_1.mp3
             int index = newName.findRev( ext, -1, true );
-            newName.insert( index-1, "_"+QString::number(i) );
+            newName.insert( index-1, '_'+QString::number(i) );
 
             file.setFile( file.dirPath( true ) + '/' + newName );
             i++;
@@ -2101,7 +2101,7 @@ PodcastEpisode::compare( QListViewItem* item, int col, bool ascending ) const
             return ret;
         }
 
-        // if one has a date, and the other doesnt, always keep non-dated at the bottom.
+        // if one has a date, and the other doesn't, always keep non-dated at the bottom.
         // hypothetically, this should never happen, but it might.
         ret = thisHasDate ? 1 : -1;
         if ( !ascending )  ret *= -1;

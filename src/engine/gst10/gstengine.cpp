@@ -1060,7 +1060,7 @@ GstEngine::createPipeline()
     // Let gst construct the output element from a string
     QCString output  = GstConfig::soundOutput().latin1();
     if ( GstConfig::useCustomOutputParams() ) {
-        output += " ";
+        output += ' ';
         output += GstConfig::outputParams().latin1();
     }
 

@@ -46,7 +46,7 @@ AtomicURL::AtomicURL( const KURL &url )
         host.prepend("@");
     }
     if( url.hasPass() )
-        s += ":" + url.pass();
+        s += ':' + url.pass();
     if( url.port() )
         host += QString(":") + QString::number( url.port() );
 

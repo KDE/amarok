@@ -1919,7 +1919,7 @@ MediaDevice::configString( const QString &name, const QString &defValue )
 {
     QString configName = "MediaDevice";
     if( !uniqueId().isEmpty() )
-        configName += "_" + uniqueId();
+        configName += '_' + uniqueId();
     KConfig *config = Amarok::config( configName );
     return config->readEntry( name, defValue );
 }
@@ -1929,7 +1929,7 @@ MediaDevice::setConfigString( const QString &name, const QString &value )
 {
     QString configName = "MediaDevice";
     if( !uniqueId().isEmpty() )
-        configName += "_" + uniqueId();
+        configName += '_' + uniqueId();
     KConfig *config = Amarok::config( configName );
     config->writeEntry( name, value );
 }
@@ -1939,7 +1939,7 @@ MediaDevice::configBool( const QString &name, bool defValue )
 {
     QString configName = "MediaDevice";
     if( !uniqueId().isEmpty() )
-        configName += "_" + uniqueId();
+        configName += '_' + uniqueId();
     KConfig *config = Amarok::config( configName );
     return config->readBoolEntry( name, defValue );
 }
@@ -1949,7 +1949,7 @@ MediaDevice::setConfigBool( const QString &name, bool value )
 {
     QString configName = "MediaDevice";
     if( !uniqueId().isEmpty() )
-        configName += "_" + uniqueId();
+        configName += '_' + uniqueId();
     KConfig *config = Amarok::config( configName );
     config->writeEntry( name, value );
 }

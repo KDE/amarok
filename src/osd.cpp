@@ -78,7 +78,7 @@ OSDWidget::show( const QString &text, QImage newImage )
 
 void OSDWidget::ratingChanged( const short rating )
 {
-    m_text = "\n" + i18n( "Rating changed" );
+    m_text = '\n' + i18n( "Rating changed" );
     setRating( rating );
 
     show();

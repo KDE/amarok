@@ -112,7 +112,7 @@ INotify::~INotify()
 
 
 bool
-INotify::watchDir( QString directory )
+INotify::watchDir( const QString directory )
 {
 #ifdef HAVE_INOTIFY
     int wd = inotify_add_watch( m_fd, directory.local8Bit(), IN_CLOSE_WRITE | IN_DELETE | IN_MOVE |
@@ -3627,7 +3627,7 @@ CollectionDB::addSongPercentage( const QString &url, int percentage,
                         "VALUES ( '%6', %5, %1, %2, 0, 1, 0, %3, %4 );" )
                         .arg( atime )
                         .arg( atime )
-                        .arg( ( getUniqueId( url ) == QString::null ? "NULL" : "'" + escapeString( getUniqueId( url ) ) + "'" ) )
+                        .arg( ( getUniqueId( url ).isNull() ? "NULL" : "'" + escapeString( getUniqueId( url ) ) + "'" ) )
                         .arg( boolF() )
                         .arg( statDevId )
                         .arg( escapeString( statRPath ) ), 0 );
@@ -3723,7 +3723,7 @@ CollectionDB::setSongPercentage( const QString &url , int percentage)
                         .arg( percentage )
                         .arg( QDateTime::currentDateTime().toTime_t() )
                         .arg( 0 )
-                        .arg( ( getUniqueId( url ) == QString::null ? "NULL" : "'" + escapeString( getUniqueId( url ) ) + "'" ) )
+                        .arg( ( getUniqueId( url ).isNull() ? "NULL" : "'" + escapeString( getUniqueId( url ) ) + "'" ) )
                         .arg( boolF() )
                         .arg( deviceid )
                         .arg( escapeString( rpath ) ),0 );
@@ -3788,7 +3788,7 @@ CollectionDB::setSongRating( const QString &url, int rating, bool toggleHalf )
                         .arg( rating )
                         .arg( QDateTime::currentDateTime().toTime_t() )
                         .arg( 0 )
-                        .arg( ( getUniqueId( url ) == QString::null ? "NULL" : "'" + escapeString( getUniqueId( url ) ) + "'" ) )
+                        .arg( ( getUniqueId( url ).isNull() ? "NULL" : "'" + escapeString( getUniqueId( url ) ) + "'" ) )
                         .arg( boolF() )
                         .arg( deviceid )
                         .arg( escapeString( rpath ) ), NULL );
@@ -6805,7 +6805,7 @@ QueryBuilder::addMatch( int tables, Q_INT64 value, const QString& match, bool in
     {
         int deviceid = MountPointManager::instance()->getIdForUrl( match );
         QString rpath = MountPointManager::instance()->getRelativePath( deviceid, match );
-        //we are querying for a specific path, so we dont' need the tags.deviceid IN (...) stuff
+        //we are querying for a specific path, so we don't need the tags.deviceid IN (...) stuff
         //which is automatially appended if m_showAll = false
         m_showAll = true;
         m_where += QString( "OR %1.%2 " )

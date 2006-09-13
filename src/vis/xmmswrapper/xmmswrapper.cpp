@@ -53,7 +53,7 @@ main( int argc, char** argv )
         DIR *dir = opendir( dirname.c_str() );
         string filename, extension, fullpath;
 
-        dirname += "/";
+        dirname += '/';
 
         while( (ent = readdir( dir )) )
         {
@@ -216,7 +216,7 @@ XmmsWrapper::XmmsWrapper( const string &plugin )
 
     string
     path = XMMS_PLUGIN_PATH;
-    path += "/";
+    path += '/';
     path += plugin;
 
     { //<load plugin>

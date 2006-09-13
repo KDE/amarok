@@ -776,7 +776,7 @@ QString CriteriaEditor::getSearchCriteria()
         if( field == "tags.url" )
         {
             if( value.startsWith( "/" ) )
-                value = "." + value;
+                value = '.' + value;
             if( !value.startsWith( "./" ) )
                 value = "./" + value;
         }

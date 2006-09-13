@@ -152,7 +152,7 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         void setColumns( QValueList<int> order, QValueList<int> visible );
 
         /** Call this to prevent items being removed from the playlist, it is mostly for internal use only
-         *  Dont forget to unlock() !! */
+         *  Don't forget to unlock() !! */
         void lock();
         void unlock();
 

@@ -348,13 +348,13 @@ Medium*
 ManualDeviceAdder::getMedium()
 {
     if( m_mdaMountPoint->isEnabled() == false &&
-            m_mdaName->text() == QString::null )
+            m_mdaName->text().isNull() )
         return NULL;
-    if( m_mdaMountPoint->text() == QString::null &&
-            m_mdaName->text() == QString::null )
+    if( m_mdaMountPoint->text().isNull() &&
+            m_mdaName->text().isNull() )
         return NULL;
     QString id = "manual|" + m_mdaName->text() + '|' +
-            ( m_mdaMountPoint->text() == QString::null ||
+            ( m_mdaMountPoint->text().isNull() ||
                 m_mdaMountPoint->isEnabled() == false ?
                 "(null)" : m_mdaMountPoint->text() );
     Medium* added = new Medium( id, m_mdaName->text() );

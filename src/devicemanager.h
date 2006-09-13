@@ -38,12 +38,12 @@ class DeviceManager : public QObject
         ~DeviceManager();
         static DeviceManager *instance();
 
-        void mediumAdded( QString name );
-        void mediumChanged( QString name);
-        void mediumRemoved( QString name);
+        void mediumAdded( const QString name );
+        void mediumChanged( const QString name);
+        void mediumRemoved( const QString name);
 
         MediumMap getMediumMap() { return m_mediumMap; }
-        Medium* getDevice( QString name );
+        Medium* getDevice( const QString name );
 
         bool isValid() { return m_valid; }
 
@@ -59,7 +59,7 @@ class DeviceManager : public QObject
         void mediumChanged( const Medium*, QString );
         void mediumRemoved( const Medium*, QString );
 
-    private: 
+    private:
 
         DCOPClient *m_dc;
         bool m_valid;

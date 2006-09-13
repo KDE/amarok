@@ -92,8 +92,8 @@ int HSPPreMixAudioHook::volumeize(unsigned char *data, unsigned char *outbuf, si
 }
 
 void HSPPreMixAudioHook::setFadeout(bool fadeout)
-{ 
-   m_fadeout = fadeout; 
+{
+   m_fadeout = fadeout;
    if (m_fadeout)
    {
       // the "time constant" (ms) is the time it takes to reach +6db of the target
@@ -144,7 +144,7 @@ STDMETHODIMP HSPPreMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioData
       {
          ibuf->SetSize(len);
          outbuf = ibuf->GetBuffer();
-         
+
          len = volumeize(data, outbuf, len);
 
          pAudioOutData->pData = ibuf;
@@ -339,7 +339,7 @@ STDMETHODIMP HSPPostProcessor::OnInit(HXAudioFormat *pFormat)
    switch(pFormat->ulSamplesPerSec)
    {
       case 8000:
-         //iir_cf = iir_cf10_8000;  <-- doesnt work
+         //iir_cf = iir_cf10_8000;  <-- doesn't work
          iir_cf = iir_cf10_11k_11025; // works
          break;
 
@@ -349,7 +349,7 @@ STDMETHODIMP HSPPostProcessor::OnInit(HXAudioFormat *pFormat)
          break;
 
       case 16000:
-         //iir_cf = iir_cf10_16000; <-- doesnt work
+         //iir_cf = iir_cf10_16000; <-- doesn't work
          iir_cf = iir_cf10_22k_22050; // works
          break;
 
@@ -554,7 +554,7 @@ int HSPPostProcessor::volumeize(unsigned char *data, unsigned char *outbuf, size
 }
 #endif
 
-HSPPostMixAudioHook::HSPPostMixAudioHook(HelixSimplePlayer *player, int playerIndex) :  
+HSPPostMixAudioHook::HSPPostMixAudioHook(HelixSimplePlayer *player, int playerIndex) :
    m_Player(player), m_index(playerIndex), m_lRefCount(0), m_processor(0)
 {
    AddRef();
@@ -622,7 +622,7 @@ STDMETHODIMP HSPPostMixAudioHook::OnBuffer(HXAudioData *pAudioInData, HXAudioDat
    // feed the visualizations, if this is a local file (otherwise do it in the FinalHook)
    if (m_Player->isLocal(m_index))
       m_processor->scopeify(pAudioInData->ulAudioTime, data, len);
-   
+
    return 0;
 }
 

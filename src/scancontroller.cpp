@@ -131,7 +131,7 @@ ScanController::completeJob( void )
       {
         m_filesFoundMutex.lock();
 
-        QStringList::ConstIterator it = m_filesDeleted.begin(), 
+        QStringList::ConstIterator it = m_filesDeleted.begin(),
           end = m_filesDeleted.end();
         while( it != end )
           {
@@ -162,10 +162,10 @@ ScanController::initIncremental()
 {
     DEBUG_BLOCK
 
-    connect( CollectionDB::instance(), 
+    connect( CollectionDB::instance(),
              SIGNAL( fileMoved( const QString &, const QString & ) ),
              SLOT( slotFileMoved( const QString &, const QString & ) ) );
-    connect( CollectionDB::instance(), 
+    connect( CollectionDB::instance(),
              SIGNAL( fileMoved( const QString &, const QString &, const QString & ) ),
              SLOT( slotFileMoved( const QString &, const QString & ) ) );
 
@@ -173,7 +173,7 @@ ScanController::initIncremental()
     QString deviceIds;
     foreachType( IdList, list )
     {
-        if ( !deviceIds.isEmpty() ) deviceIds += ",";
+        if ( !deviceIds.isEmpty() ) deviceIds += ',';
         deviceIds += QString::number(*it);
     }
 

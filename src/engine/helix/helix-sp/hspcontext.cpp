@@ -2,14 +2,14 @@
 /*
  *
  * This software is released under the provisions of the GPL version 2.
- * see file "COPYING".  If that file is not available, the full statement 
+ * see file "COPYING".  If that file is not available, the full statement
  * of the license can be found at
  *
  * http://www.fsf.org/licensing/licenses/gpl.txt
  *
  * Portions Copyright (c) 1995-2002 RealNetworks, Inc. All Rights Reserved.
  * Portions (c) Paul Cifarelli 2005
- * 
+ *
  *
  */
 #include "hxcomm.h"
@@ -43,7 +43,7 @@ HSPEngineContext::~HSPEngineContext()
 
 void HSPEngineContext::Close()
 {
-   // you dont own the common class factory, so dont even think about it...
+   // you don't own the common class factory, so dont even think about it...
 }
 
 // *** IUnknown methods ***
@@ -52,7 +52,7 @@ void HSPEngineContext::Close()
 //  Method:
 //	IUnknown::QueryInterface
 //  Purpose:
-//	Implement this to export the interfaces supported by your 
+//	Implement this to export the interfaces supported by your
 //	object.
 //
 STDMETHODIMP HSPEngineContext::QueryInterface(REFIID riid, void** ppvObj)
@@ -123,7 +123,7 @@ HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
     unsigned char *outbuf;
     IHXBuffer *ibuf;
 
-    
+
     m_splayer->print2stderr("in engine context, key is <%s>\n", pref_key);
     if (0 == (stricmp(pref_key, "OpenAudioDeviceOnPlayback")))
     {
@@ -133,7 +133,7 @@ HSPEngineContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
           ibuf->SetSize(2);
           outbuf = ibuf->GetBuffer();
           strcpy((char *)outbuf, "0");
-          buffer = ibuf;          
+          buffer = ibuf;
           //m_splayer->print2stderr("value = %d\n",atol((const char*) buffer->GetBuffer()));
        }
     }
@@ -290,7 +290,7 @@ void HSPClientContext::Init(IUnknown*	    pUnknown,
 {
    //char* pszCipher = NULL;
 
-	
+
     m_pClientSink	= new HSPClientAdviceSink(pUnknown, m_lClientIndex, m_splayer);
     m_pErrorSink	= new HSPErrorSink(pUnknown, m_splayer);
     m_pAuthMgr          = new HSPAuthenticationManager(m_splayer);
@@ -299,7 +299,7 @@ void HSPClientContext::Init(IUnknown*	    pUnknown,
     {
 	m_pClientSink->AddRef();
     }
-    
+
     if (m_pErrorSink)
     {
 	m_pErrorSink->AddRef();
@@ -345,7 +345,7 @@ void HSPClientContext::Close()
 //  Method:
 //	IUnknown::QueryInterface
 //  Purpose:
-//	Implement this to export the interfaces supported by your 
+//	Implement this to export the interfaces supported by your
 //	object.
 //
 STDMETHODIMP HSPClientContext::QueryInterface(REFIID riid, void** ppvObj)
@@ -362,12 +362,12 @@ STDMETHODIMP HSPClientContext::QueryInterface(REFIID riid, void** ppvObj)
 	*ppvObj = (IHXPreferences*)this;
 	return HXR_OK;
     }
-    else if (m_pClientSink && 
+    else if (m_pClientSink &&
 	     m_pClientSink->QueryInterface(riid, ppvObj) == HXR_OK)
     {
 	return HXR_OK;
     }
-    else if (m_pErrorSink && 
+    else if (m_pErrorSink &&
 	     m_pErrorSink->QueryInterface(riid, ppvObj) == HXR_OK)
     {
 	return HXR_OK;
@@ -425,11 +425,11 @@ HSPClientContext::ReadPref(const char* pref_key, IHXBuffer*& buffer)
 {
     HX_RESULT hResult	= HXR_OK;
     //char*     pszCipher = NULL;
-    
+
     if ((stricmp(pref_key, CLIENT_GUID_REGNAME) == 0) &&
 	(*m_pszGUID))
     {
-	// Create a Buffer 
+	// Create a Buffer
        //TODO: Implement an IHXBuffer
 
 //       buffer = new CHXBuffer();
@@ -463,7 +463,7 @@ HSPClientContext::WritePref(const char* pref_key, IHXBuffer* buffer)
     {
 	return m_pDefaultPrefs->WritePref(pref_key, buffer);
     }
-    else	
+    else
     {
 	return HXR_OK;
     }

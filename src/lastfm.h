@@ -184,9 +184,9 @@ namespace LastFm
 
             void        showError( int code, QString message = QString::null );
 
-            QString     parameter( QString keyName, QString data )      const;
-            QStringList parameterArray( QString keyName, QString data ) const;
-            QStringList parameterKeys( QString keyName, QString data )  const;
+            QString     parameter( const QString keyName, const QString data )      const;
+            QStringList parameterArray( const QString keyName, const QString data ) const;
+            QStringList parameterKeys( const QString keyName, const QString data )  const;
 
             QString m_username;     // login username
             QString m_password;     // login password

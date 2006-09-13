@@ -48,7 +48,7 @@ HostListItem::HostListItem( QListView *parent, QString hostname, bool audio, boo
     m_volume( volume ),
     m_status( status ),
     m_read_only( read_only )
-{  
+{
   setText( HostListItem::Hostname, hostname);
 
   setPixmap( HostListItem::Status, SmallIcon("info") );
@@ -200,11 +200,11 @@ void HostListItem::paintCell(QPainter * p, const QColorGroup & cg, int column, i
 
     // Calculate actual volume string from pixelposition
     vol = volumeAtPosition( vol );
-    QString vol_text; 
+    QString vol_text;
     if( vol > 0 )
       vol_text = "+";
     vol_text += QString::number( vol );
-    vol_text += "%";
+    vol_text += '%';
 
     // Draw relative volume number
     QPainter p_number(&buf);
@@ -226,17 +226,17 @@ void HostListItem::paintCell(QPainter * p, const QColorGroup & cg, int column, i
 
 QPixmap* HostListItem::pixmapVolume( int type )
 {
-  if( type == PixInset ) 
+  if( type == PixInset )
   {
     static QPixmap m_pixmapInset( locate( "data", "amarok/images/nmm-volume-inset.png" ) );
-    return &m_pixmapInset; 
+    return &m_pixmapInset;
   }
   else if( type == PixRight )
   {
     static QPixmap m_pixmapGradientRight = generateGradient( PixRight );
     return &m_pixmapGradientRight;
   }
-  else if ( type == PixLeft ) 
+  else if ( type == PixLeft )
   {
     static QPixmap m_pixmapGradientLeft = generateGradient( PixLeft );
     return &m_pixmapGradientLeft;
@@ -248,7 +248,7 @@ QPixmap* HostListItem::pixmapVolume( int type )
 QPixmap HostListItem::generateGradient( int type )
 {
   QPixmap temp;
-  
+
   if( type == PixRight )
     temp = QPixmap( locate( "data", "amarok/images/nmm-gradient-right.png" ) );
   else // PixLeft

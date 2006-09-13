@@ -924,7 +924,7 @@ WebService::recommendFinished( int /*id*/, bool /*error*/ ) //SLOT
 
 
 QString
-WebService::parameter( QString keyName, QString data ) const
+WebService::parameter( const QString keyName, const QString data ) const
 {
     QStringList list = QStringList::split( '\n', data );
 
@@ -943,7 +943,7 @@ WebService::parameter( QString keyName, QString data ) const
 
 
 QStringList
-WebService::parameterArray( QString keyName, QString data ) const
+WebService::parameterArray( const QString keyName, const QString data ) const
 {
     QStringList result;
     QStringList list = QStringList::split( '\n', data );
@@ -963,7 +963,7 @@ WebService::parameterArray( QString keyName, QString data ) const
 
 
 QStringList
-WebService::parameterKeys( QString keyName, QString data ) const
+WebService::parameterKeys( const QString keyName, const QString data ) const
 {
     QStringList result;
     QStringList list = QStringList::split( '\n', data );

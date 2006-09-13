@@ -183,13 +183,13 @@ PlaylistBrowser::polish()
 
     m_dynamicCategory = loadDynamics();
     m_randomDynamic   = new DynamicEntry( m_dynamicCategory, 0, i18n("Random Mix") );
-    m_randomDynamic->setKept( false ); //dont save it
+    m_randomDynamic->setKept( false ); //don't save it
     m_randomDynamic->setCycleTracks(   config->readBoolEntry( "Dynamic Random Remove Played", true ) );
     m_randomDynamic->setUpcomingCount( config->readNumEntry ( "Dynamic Random Upcoming Count", 15 ) );
     m_randomDynamic->setPreviousCount( config->readNumEntry ( "Dynamic Random Previous Count", 5 ) );
 
     m_suggestedDynamic = new DynamicEntry( m_dynamicCategory, m_randomDynamic, i18n("Suggested Songs" ) );
-    m_suggestedDynamic->setKept( false ); //dont save it
+    m_suggestedDynamic->setKept( false ); //don't save it
     m_suggestedDynamic->setAppendType( DynamicMode::SUGGESTION );
     m_suggestedDynamic->setCycleTracks(   config->readBoolEntry( "Dynamic Suggest Remove Played", true ) );
     m_suggestedDynamic->setUpcomingCount( config->readNumEntry ( "Dynamic Suggest Upcoming Count", 15 ) );
@@ -938,7 +938,7 @@ void PlaylistBrowser::loadDynamicItems()
             }
         }
     }
-    m_dynamicEntries.clear();  // Dont use remove(), since we do i++, which would cause skip overs!!!
+    m_dynamicEntries.clear();  // Don't use remove(), since we do i++, which would cause skip overs!!!
 
     // Mark appropriate items as used
     if( Amarok::dynamicMode() && Amarok::dynamicMode()->appendType()== DynamicMode::CUSTOM )

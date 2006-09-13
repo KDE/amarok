@@ -1439,7 +1439,7 @@ IpodMediaDevice::itunesDir(const QString &p) const
         base = ":iTunes:iTunes_Control";
 
     if( !p.startsWith( ":" ) )
-        base += ":";
+        base += ':';
     return base + p;
 }
 
@@ -2274,7 +2274,7 @@ IpodMediaDevice::pathExists( const QString &ipodPath, QString *realPath )
         {
             if( curDir[i].lower() == (*it).lower())
             {
-                curPath += "/" + curDir[i];
+                curPath += '/' + curDir[i];
                 curDir.cd( curPath );
                 found = true;
                 break;
@@ -2285,7 +2285,7 @@ IpodMediaDevice::pathExists( const QString &ipodPath, QString *realPath )
     }
 
     for( ; it != components.end(); ++it )
-        curPath += "/" + *it;
+        curPath += '/' + *it;
 
     //debug() << ipodPath << ( found ? "" : " not" ) << " found, actually " << curPath << endl;
 

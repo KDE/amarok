@@ -612,7 +612,7 @@ class INotify : public ThreadWeaver::DependentJob
 
         static INotify *instance() { return s_instance; }
 
-        bool watchDir( QString directory );
+        bool watchDir( const QString directory );
         int fd() { return m_fd; }
 
     private:

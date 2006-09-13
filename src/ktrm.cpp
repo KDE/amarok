@@ -167,13 +167,13 @@ protected:
             for(QStringList::ConstIterator it = noProxies.constBegin(); it != noProxies.constEnd(); ++it) {
                 QString normalizedHost = KNetwork::KResolver::normalizeDomain(*it);
                 if(normalizedHost == tunepimpHost ||
-                    tunepimpHost.endsWith("." + normalizedHost)) {
+                    tunepimpHost.endsWith('.' + normalizedHost)) {
                     useProxy = false;
                     break;
                 }
 
                 if(normalizedHost == tunepimpHostWithPort ||
-                    tunepimpHostWithPort.endsWith("." + normalizedHost)) {
+                    tunepimpHostWithPort.endsWith('.' + normalizedHost)) {
                     useProxy = false;
                     break;
                 }

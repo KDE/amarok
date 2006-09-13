@@ -186,7 +186,7 @@ StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
     if( length.length() > 1 ) {
         title += " (";
         title += length;
-        title += ")";
+        title += ')';
     }
 
     setMainText( i18n( "Playing: %1" ).arg( title ) );
