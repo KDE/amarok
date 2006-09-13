@@ -53,7 +53,6 @@
 #include <kiconloader.h>
 #include <kio/job.h>
 #include <kio/jobclasses.h>
-#include <klocale.h>
 #include <kmdcodec.h> // for data: URLs
 #include <kmessagebox.h>
 #include <kpopupmenu.h>
@@ -1352,7 +1351,6 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
 QStringList
 CurrentTrackJob::showHomeByAlbums()
 {
-    KLocale locale( "locale" );
     QueryBuilder qb;
 
     m_HTMLSource.append( "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr>\n" );
@@ -1396,7 +1394,7 @@ CurrentTrackJob::showHomeByAlbums()
                     QString date;
                     ep.dateTime().isNull() ?
                             date = ep.date() :
-                            date = locale.formatDateTime( ep.dateTime() );
+                            date = ep.dateTime().toString();
 
                     QString image = CollectionDB::instance()->podcastImage( pcb.imageURL().url(), true, 50 );
                     QString imageAttr = escapeHTMLAttr( i18n( "Click to go to podcast website: %1." ).arg( pcb.link().prettyURL() ) );
@@ -1774,7 +1772,6 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
     if( !currentTrack.podcastBundle() )
         return;
 
-    KLocale locale( "locale" );
     PodcastEpisodeBundle peb = *currentTrack.podcastBundle();
     PodcastChannelBundle pcb;
     bool channelInDB = true;
@@ -1872,7 +1869,7 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
 
         ep.dateTime().isNull() ?
                 date = ep.date() :
-                date = locale.formatDateTime( ep.dateTime() );
+                date = ep.dateTime().toString();
 
         m_HTMLSource.append( QStringx (
                     "<tr class='" + QString( (i % 2) ? "box-row-alt" : "box-row" ) + "'>\n"
