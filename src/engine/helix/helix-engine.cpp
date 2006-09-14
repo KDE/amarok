@@ -292,7 +292,7 @@ HelixEngine::load( const KURL &url, bool isStream )
    }
 
    debug() << "xfadeLength is " << m_xfadeLength << endl;
-   if( m_xfadeLength > 0 && m_state == Engine::Playing )
+   if( m_xfadeLength > 0 && m_state == Engine::Playing && !isStream )
    {
       int nextPlayer = m_current ? 0 : 1;
 
