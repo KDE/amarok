@@ -4,6 +4,8 @@ Amarok ChangeLog
 
 VERSION 1.4.4
   FEATURES:
+    * Fade-out for xine-engine when pressing Stop or Pause. Patch by 
+      Tuomas Nurmi <tnurmi@edu.kauhajoki.fi>. (BR 127316)
     * Support downloading of files from an MTP device.
     * Purged podcast episodes can be readded by increasing the purge
       number.

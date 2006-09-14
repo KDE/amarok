@@ -27,6 +27,7 @@ class XineEngine : public Engine::Base
     Q_OBJECT
 
     friend class Fader;
+    friend class OutFader;
 
    ~XineEngine();
 
@@ -51,6 +52,7 @@ class XineEngine : public Engine::Base
     virtual void setEqualizerEnabled( bool );
     virtual void setEqualizerParameters( int preamp, const QValueList<int>& );
     virtual void setVolumeSW( uint );
+    virtual void fadeOut();
 
     static  void XineEventListener( void*, const xine_event_t* );
     virtual void customEvent( QCustomEvent* );
@@ -73,6 +75,7 @@ class XineEngine : public Engine::Base
     float               m_preamp;
 
     bool                m_stopFader;
+    bool                m_fadeOutRunning;
 
     QString             m_currentAudioPlugin; //to see if audio plugin has been changed
     XineConfigDialog*   m_configDialog;
@@ -108,6 +111,18 @@ class Fader : public QObject, public QThread
 public:
     Fader( XineEngine *, uint fadeLengthMs );
    ~Fader();
+};
+
+class OutFader : public QObject, public QThread
+{
+    XineEngine         *m_engine;
+    bool               m_stop;
+    bool               m_force;
+
+    virtual void run();
+public:
+    OutFader( XineEngine *, bool stop, bool force = false );
+    ~OutFader();
 };
 
 #endif

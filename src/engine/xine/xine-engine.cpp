@@ -64,6 +64,7 @@ namespace Log
 //static inline QCString configPath() { return QFile::encodeName(KStandardDirs().localkdedir() + KStandardDirs::kde_default("data") + "amarok/xine-config"); }
 static inline QCString configPath() { return QFile::encodeName(locate( "data", "amarok/") + "xine-config" ); }
 static Fader *s_fader = 0;
+static OutFader *s_outfader = 0;
 
 
 XineEngine::XineEngine()
@@ -75,6 +76,7 @@ XineEngine::XineEngine()
         , m_post( 0 )
         , m_preamp( 1.0 )
         , m_stopFader( false )
+        , m_fadeOutRunning ( false )
         , m_equalizerEnabled( false )
 {
     addPluginProperty( "HasConfigure", "true" );
@@ -94,24 +96,12 @@ XineEngine::~XineEngine()
         s_fader->wait();
         delete s_fader;
     }
-
-    // NOTE The fadeout gets stuck when the EQ is active, so we skip it then
-    if( !m_equalizerEnabled && m_stream && state() == Engine::Playing )
-    {
-        const int volume = xine_get_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL );
-        const double D = 300000 * std::pow( (double)volume, -0.4951 );
-
-        debug() << "Sleeping: " << D << ", " << volume << endl;
-
-        for( int v = volume - 1; v >= 1; v-- ) {
-            xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, v );
-
-            const int sleep = int(D * (-log10( v + 1 ) + 2));
-
-            ::usleep( sleep );
-        }
-        xine_stop( m_stream );
+    if( s_outfader ) {
+        s_outfader->wait();
+        delete s_outfader;
     }
+
+    fadeOut();
 
     if( m_xine )       xine_config_save( m_xine, configPath() );
 
@@ -361,28 +351,29 @@ XineEngine::stop()
 {
     if ( !m_stream )
        return;
+    if( !m_fadeOutRunning || state() == Engine::Paused )
+    {
+        s_outfader = new OutFader( this, true, true );
+        s_outfader->start();
+        ::usleep( 100 ); //to be sure engine state won't be changed before it is checked in fadeOut()
+        m_url = KURL(); //to ensure we return Empty from state()
 
-    m_url = KURL(); //to ensure we return Empty from state()
+        std::fill( m_scope.begin(), m_scope.end(), 0 );
 
-    std::fill( m_scope.begin(), m_scope.end(), 0 );
-
-    xine_stop( m_stream );
-    xine_close( m_stream );
-    xine_set_param( m_stream, XINE_PARAM_AUDIO_CLOSE_DEVICE, 1);
-
-    emit stateChanged( Engine::Empty );
+        emit stateChanged( Engine::Empty );
+    }
 }
 
 void
 XineEngine::pause()
 {
-    if( xine_get_param( m_stream, XINE_PARAM_SPEED ) )
+    if( xine_get_param( m_stream, XINE_PARAM_SPEED ) && state() != Engine::Paused )
     {
-        xine_set_param( m_stream, XINE_PARAM_SPEED, XINE_SPEED_PAUSE );
-        xine_set_param( m_stream, XINE_PARAM_AUDIO_CLOSE_DEVICE, 1);
+        s_outfader = new OutFader( this, false );
+        s_outfader->start();
+        ::usleep( 100 ); //to be sure engine state won't be changed before it is checked in fadeOut()
         emit stateChanged( Engine::Paused );
-
-    } else {
+    } else if ( !m_fadeOutRunning ) {
 
         xine_set_param( m_stream, XINE_PARAM_SPEED, XINE_SPEED_NORMAL );
         emit stateChanged( Engine::Playing );
@@ -479,6 +470,44 @@ XineEngine::setVolumeSW( uint vol )
        return;
     if( !s_fader )
         xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, static_cast<uint>( vol * m_preamp ) );
+}
+
+void
+XineEngine::fadeOut()
+{
+    if( m_fadeOutRunning ) //Let us not start another fadeout...
+        return;
+    m_fadeOutRunning = !m_fadeOutRunning;
+    // NOTE The fadeout gets stuck when the EQ is active, so we skip it then
+    if( m_xfadeLength > 0 && !m_equalizerEnabled && m_stream && state() == Engine::Playing )
+    {
+        // fader-class doesn't work in this spot as is, so some parts need to be copied here... (ugly)
+        uint stepsCount = m_xfadeLength < 1000 ? m_xfadeLength / 10 : 100;
+        uint stepSizeUs = (int)( 1000.0 * (float)m_xfadeLength / (float)stepsCount );
+
+        ::usleep( stepSizeUs );
+        QTime t;
+        t.start();
+        float mix = 0.0;
+        while ( mix < 1.0 )
+        {
+            ::usleep( stepSizeUs );
+            float vol = Engine::Base::makeVolumeLogarithmic( m_volume ) * m_preamp;
+            float mix = (float)t.elapsed() / (float)m_xfadeLength;
+            if ( mix > 1.0 )
+            {
+                break;
+            }
+            if ( m_stream )
+            {
+                float v = 4.0 * (1.0 - mix) / 3.0;
+                xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, (uint)( v < 1.0 ? vol * v : vol ) );
+            }
+        }
+    }
+    if( m_fadeOutRunning )
+        xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, (uint)(m_volume * m_preamp) );
+    m_fadeOutRunning = !m_fadeOutRunning;
 }
 
 void
@@ -1040,6 +1069,51 @@ Fader::run()
 
     QThread::sleep( 5 );
 
+    deleteLater();
+}
+
+
+//////////////////
+/// class OutFader
+//////////////////
+
+OutFader::OutFader( XineEngine *engine, bool stop, bool force )
+   : QObject( engine )
+   , QThread()
+   , m_engine( engine )
+   , m_stop( stop )
+   , m_force( force )
+{
+}
+
+OutFader::~OutFader()
+{
+     wait();
+
+     DEBUG_FUNC_INFO
+
+     s_outfader = 0;
+}
+
+void
+OutFader::run()
+{
+    m_engine->fadeOut();
+    if( m_engine->m_fadeOutRunning == false || m_force )
+    {
+        if( m_stop )
+        {
+            xine_stop( m_engine->m_stream );
+            xine_close( m_engine->m_stream );
+            xine_set_param( m_engine->m_stream, XINE_PARAM_AUDIO_CLOSE_DEVICE, 1);
+        }
+        else
+        {
+            xine_set_param( m_engine->m_stream, XINE_PARAM_SPEED, XINE_SPEED_PAUSE );
+            xine_set_param( m_engine->m_stream, XINE_PARAM_AUDIO_CLOSE_DEVICE, 1);
+        }
+    }
+    QThread::sleep( 3 );
     deleteLater();
 }
 
