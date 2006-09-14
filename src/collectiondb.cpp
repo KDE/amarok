@@ -4380,12 +4380,24 @@ CollectionDB::IDfromExactValue( QString table, QString value, bool autocreate, b
     }
 }
 
-void CollectionDB::deleteRedundantName( const QString &table, QString ID )
+void
+CollectionDB::deleteRedundantName( const QString &table, const QString &id )
 {
-    QString querystr( QString( "SELECT %1 FROM tags WHERE tags.%1 = %2 LIMIT 1;" ).arg( table, ID ) );
+    QString querystr( QString( "SELECT %1 FROM tags WHERE tags.%1 = %2 LIMIT 1;" ).arg( table, id ) );
     QStringList result = query( querystr );
     if ( result.isEmpty() )
-        query( QString( "DELETE FROM %1 WHERE id = %2;" ).arg( table,ID ) );
+        query( QString( "DELETE FROM %1 WHERE id = %2;" ).arg( table,id ) );
+}
+
+void
+CollectionDB::deleteAllRedundant( const QString &table )
+{
+    //Apparently MySQL4 doesn't like subqueries inside an IN clause
+    QStringList validList( query( QString( "SELECT %1 FROM tags GROUP BY %2" ).arg( table, table ) ) );
+    QString validIds( "-1" );   //This is to stop an empty set creating an error
+    foreach ( validList )
+        validIds += "," + *it;
+    query( QString( "DELETE FROM %1 WHERE id NOT IN ( %2 )" ).arg( table, validIds ) );
 }
 
 

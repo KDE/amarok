@@ -354,7 +354,9 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         void addAudioproperties( const MetaBundle& bundle );
 
         //Helper function for updateTags
-        void deleteRedundantName( const QString &table, QString ID );
+        void deleteRedundantName( const QString &table, const QString &id );
+
+        void deleteAllRedundant( const QString &table );
 
         void updateTags( const QString &url, const MetaBundle &bundle, const bool updateView = true);
         void updateURL( const QString &url, const bool updateView = true );

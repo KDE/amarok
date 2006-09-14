@@ -233,7 +233,11 @@ ScanController::doJob()
 
     CollectionDB::instance()->createTables( true );
     m_tablesCreated = true;
+
+    //For a full rescan, we might not have cleared tags table (for devices not plugged
+    //in), so preserve the necessary other tables (eg artist)
     CollectionDB::instance()->prepareTempTables();
+
     CollectionDB::instance()->invalidateArtistAlbumCache();
     setProgressTotalSteps( 100 );
 
@@ -281,6 +285,13 @@ main_loop:
                 CollectionDB::instance()->clearTables( false ); // empty permanent tables
 
             CollectionDB::instance()->copyTempTables(); // copy temp into permanent tables
+
+            //Clean up unused entries in the main tables (eg artist, composer)
+            CollectionDB::instance()->deleteAllRedundant( "artist" );
+            CollectionDB::instance()->deleteAllRedundant( "composer" );
+            CollectionDB::instance()->deleteAllRedundant( "year" );
+            CollectionDB::instance()->deleteAllRedundant( "genre" );
+            CollectionDB::instance()->deleteAllRedundant( "album" );
         }
         else {
             if( m_crashedFiles.size() < MAX_RESTARTS ) {
