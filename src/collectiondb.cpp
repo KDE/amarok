@@ -7087,6 +7087,14 @@ void
 QueryBuilder::groupBy( int table, Q_INT64 value )
 {
     if ( !m_group.isEmpty() ) m_group += ',';
+
+    //Do case-sensitive comparisons for MySQL too. See also QueryBuilder::addReturnValue
+    if ( DbConnection::mysql == CollectionDB::instance()->getDbConnectionType() &&
+         ( value == valName || value == valTitle || value == valComment ) )
+    {
+        m_group += "BINARY ";
+    }
+
     m_group += tableName( table ) + '.';
     m_group += valueName( value );
 
