@@ -2210,7 +2210,7 @@ PodcastEpisode::downloadResult( int error ) //SLOT
     //gets called after PodcastFetcher::kill()
     if( error == QHttp::Aborted )
     {
-        delete m_podcastFetcher;
+        m_podcastFetcher->deleteLater();
         return;
     }
     emit downloadFinished();
@@ -2224,7 +2224,7 @@ PodcastEpisode::downloadResult( int error ) //SLOT
 
         setPixmap( 0, SmallIcon("cancel") );
 
-        delete m_podcastFetcher;
+        m_podcastFetcher->deleteLater();
         return;
     }
 
@@ -2242,7 +2242,7 @@ PodcastEpisode::downloadResult( int error ) //SLOT
     }
 
     updatePixmap();
-    delete m_podcastFetcher;
+    m_podcastFetcher->deleteLater();
 }
 
 void
