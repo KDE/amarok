@@ -26,6 +26,8 @@ VERSION 1.4.4
     * Show a proper tag dialog when viewing information for DAAP music shares.
 
   BUGFIXES:
+    * Changed tags of songs on iPods would not propagate to its database.
+      (BR 133842)
     * Fixed playlist encoding problems. (BR 133613)
     * Cover images for compilation albums can now be displayed full size in 
       the context browser.

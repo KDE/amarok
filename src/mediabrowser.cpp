@@ -402,10 +402,12 @@ void
 MediaBrowser::tagsChanged( const MetaBundle &bundle )
 {
     m_itemMapMutex.lock();
+    debug() << "tags changed for " << bundle.url().url() << endl;
     ItemMap::iterator it = m_itemMap.find( bundle.url().url() );
     if( it != m_itemMap.end() )
     {
         MediaItem *item = *it;
+        m_itemMapMutex.unlock();
         if( item->device() )
         {
             item->device()->tagsChanged( item, bundle );
@@ -425,7 +427,10 @@ MediaBrowser::tagsChanged( const MetaBundle &bundle )
             item->setText( 0, text);
         }
     }
-    m_itemMapMutex.unlock();
+    else
+    {
+        m_itemMapMutex.unlock();
+    }
 }
 
 bool

@@ -4429,82 +4429,90 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     QStringList values = qb.run();
 
-    if ( values.isEmpty() )
-        return;
-
     if ( values.count() > 17 )
     {
         error() << "Query returned more than 1 song. Aborting updating metadata" << endl;
         return;
     }
 
-    bool art=false, comp=false, alb=false, gen=false, year=false;
+    if ( !values.isEmpty() )
+    {
+        bool art=false, comp=false, alb=false, gen=false, year=false;
 
-    QString command = "UPDATE tags SET ";
-    if ( values[ 0 ] != bundle.title() )
-        command += "title = '" + escapeString( bundle.title() ) + "', ";
-    if ( values[ 1 ] != bundle.artist() )
-    {
-        art = true;
-        command += "artist = " + IDfromExactValue( "artist", bundle.artist() ) + ", ";
-    }
-    if ( values[ 2 ] != bundle.composer() )
-    {
-        comp = true;
-        command += "composer = " + IDfromExactValue( "composer", bundle.composer() ) + ", ";
-    }
-    if ( values[ 3 ] != bundle.album() )
-    {
-        alb = true;
-        command += "album = "  + IDfromExactValue( "album", bundle.album() ) + ", ";
-    }
-    if ( values[ 4 ] != bundle.genre() )
-    {
-        gen = true;
-        command += "genre = "  + IDfromExactValue( "genre", bundle.genre() ) + ", ";
-    }
-    if ( values[ 5 ] != QString::number( bundle.year() ) )
-    {
-        year = false;
-        command += "year = "   + IDfromExactValue( "year", QString::number( bundle.year() ) ) + ", ";
-    }
-    if ( values[ 6 ] != QString::number( bundle.track() ) )
-        command += "track = " + QString::number( bundle.track() ) + ", ";
-    if ( values[ 7 ] != bundle.comment() )
-        command += "comment = '" + escapeString( bundle.comment() ) + "', ";
-    if ( values[ 8 ] != QString::number( bundle.discNumber() ) )
-        command += "discnumber = '" + QString::number( bundle.discNumber() ) + "', ";
-    if ( values[ 9 ] != QString::number( bundle.filesize() ) )
-        command += "filesize = '" + QString::number( bundle.filesize() ) + "', ";
-    if ( values[ 10 ] != QString::number( bundle.fileType() ) )
-        command += "filetype = '" + QString::number( bundle.fileType() ) + "', ";
-    if ( values[ 11 ] != QString::number( bundle.bpm() ) )
-        command += "bpm = '" + QString::number( bundle.bpm() ) + "', ";
+        QString command = "UPDATE tags SET ";
+        if ( values[ 0 ] != bundle.title() )
+            command += "title = '" + escapeString( bundle.title() ) + "', ";
+        if ( values[ 1 ] != bundle.artist() )
+        {
+            art = true;
+            command += "artist = " + IDfromExactValue( "artist", bundle.artist() ) + ", ";
+        }
+        if ( values[ 2 ] != bundle.composer() )
+        {
+            comp = true;
+            command += "composer = " + IDfromExactValue( "composer", bundle.composer() ) + ", ";
+        }
+        if ( values[ 3 ] != bundle.album() )
+        {
+            alb = true;
+            command += "album = "  + IDfromExactValue( "album", bundle.album() ) + ", ";
+        }
+        if ( values[ 4 ] != bundle.genre() )
+        {
+            gen = true;
+            command += "genre = "  + IDfromExactValue( "genre", bundle.genre() ) + ", ";
+        }
+        if ( values[ 5 ] != QString::number( bundle.year() ) )
+        {
+            year = false;
+            command += "year = "   + IDfromExactValue( "year", QString::number( bundle.year() ) ) + ", ";
+        }
+        if ( values[ 6 ] != QString::number( bundle.track() ) )
+            command += "track = " + QString::number( bundle.track() ) + ", ";
+        if ( values[ 7 ] != bundle.comment() )
+            command += "comment = '" + escapeString( bundle.comment() ) + "', ";
+        if ( values[ 8 ] != QString::number( bundle.discNumber() ) )
+            command += "discnumber = '" + QString::number( bundle.discNumber() ) + "', ";
+        if ( values[ 9 ] != QString::number( bundle.filesize() ) )
+            command += "filesize = '" + QString::number( bundle.filesize() ) + "', ";
+        if ( values[ 10 ] != QString::number( bundle.fileType() ) )
+            command += "filetype = '" + QString::number( bundle.fileType() ) + "', ";
+        if ( values[ 11 ] != QString::number( bundle.bpm() ) )
+            command += "bpm = '" + QString::number( bundle.bpm() ) + "', ";
 
-    if ( "UPDATE tags SET " == command )
-    {
-        debug() << "No tags selected to be changed" << endl;
-    }
-    else
-    {
-        int deviceid = MountPointManager::instance()->getIdForUrl( url );
-        QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
-        //We have to remove the trailing comma from command
-        query( command.left( command.length() - 2 ) + " WHERE url = '" + escapeString( rpath ) +
-                                                      "' AND deviceid = " + QString::number( deviceid ) + ";" );
-    }
+        if ( "UPDATE tags SET " == command )
+        {
+            debug() << "No tags selected to be changed" << endl;
+        }
+        else
+        {
+            int deviceid = MountPointManager::instance()->getIdForUrl( url );
+            QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
+            //We have to remove the trailing comma from command
+            query( command.left( command.length() - 2 ) + " WHERE url = '" + escapeString( rpath ) +
+                    "' AND deviceid = " + QString::number( deviceid ) + ";" );
+        }
 
-    //Check to see if we use the entry anymore. If not, delete it
-    if ( art )
-        deleteRedundantName( "artist", values[ 12 ] );
-    if ( comp )
-        deleteRedundantName( "composer", values[ 13 ] );
-    if ( alb )
-        deleteRedundantName( "album", values[ 14 ] );
-    if ( gen )
-        deleteRedundantName( "genre", values[ 15 ] );
-    if ( year )
-        deleteRedundantName( "year", values[ 16 ] );
+        //Check to see if we use the entry anymore. If not, delete it
+        if ( art )
+            deleteRedundantName( "artist", values[ 12 ] );
+        if ( comp )
+            deleteRedundantName( "composer", values[ 13 ] );
+        if ( alb )
+            deleteRedundantName( "album", values[ 14 ] );
+        if ( gen )
+            deleteRedundantName( "genre", values[ 15 ] );
+        if ( year )
+            deleteRedundantName( "year", values[ 16 ] );
+
+        // Update the Collection-Browser view,
+        // using QTimer to make sure we don't manipulate the GUI from a thread
+        if ( updateView )
+            QTimer::singleShot( 0, CollectionView::instance(), SLOT( databaseChanged() ) );
+
+        if( art || alb )
+            emit tagsChanged( values[12], values[14] );
+    }
 
     if ( EngineController::instance()->bundle().url() == bundle.url() )
     {
@@ -4512,15 +4520,7 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
         EngineController::instance()->currentTrackMetaDataChanged( bundle );
     }
 
-    // Update the Collection-Browser view,
-    // using QTimer to make sure we don't manipulate the GUI from a thread
-    if ( updateView )
-        QTimer::singleShot( 0, CollectionView::instance(), SLOT( databaseChanged() ) );
-
     emit tagsChanged( bundle );
-
-    if( art || alb )
-        emit tagsChanged( values[12], values[14] );
 }
 
 
