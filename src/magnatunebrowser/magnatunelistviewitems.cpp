@@ -13,10 +13,10 @@
 
 
 MagnatuneListViewArtistItem::MagnatuneListViewArtistItem( MagnatuneArtist artist, QListView * parent )
-: QListViewItem(parent), MagnatuneArtist(artist)
+: QListViewItem( parent ), MagnatuneArtist( artist )
 {
-   QListViewItem::setText(0, artist.getName());
-   setDragEnabled (true);
+    QListViewItem::setText( 0, artist.getName() );
+    setDragEnabled ( true );
 }
 
 MagnatuneListViewArtistItem::~ MagnatuneListViewArtistItem( )
@@ -30,11 +30,11 @@ void MagnatuneListViewArtistItem::setOpen( bool o )
         listView()->setUpdatesEnabled( FALSE );
 
         MagnatuneAlbumList albums;
-        albums = MagnatuneDatabaseHandler::instance()->getAlbumsByArtistId(m_id, "");
+        albums = MagnatuneDatabaseHandler::instance()->getAlbumsByArtistId( m_id, "" );
 
         MagnatuneAlbumList::iterator it;
         for ( it = albums.begin(); it != albums.end(); ++it ) {
-           new MagnatuneListViewAlbumItem((*it), this);
+           new MagnatuneListViewAlbumItem( (*it), this );
         }
     }
     QListViewItem::setOpen( o );
@@ -63,10 +63,10 @@ void MagnatuneListViewArtistItem::setup()
 
 
 MagnatuneListViewAlbumItem::MagnatuneListViewAlbumItem( MagnatuneAlbum album, QListViewItem * parent )
-: QListViewItem(parent), MagnatuneAlbum(album)
+: QListViewItem( parent ), MagnatuneAlbum( album )
 {
-   QListViewItem::setText(0, album.getName());
-   setDragEnabled (true);
+    QListViewItem::setText( 0, album.getName() );
+    setDragEnabled( true );
 }
 
 MagnatuneListViewAlbumItem::~ MagnatuneListViewAlbumItem( )
@@ -81,17 +81,17 @@ void MagnatuneListViewAlbumItem::setOpen( bool o )
         listView()->setUpdatesEnabled( FALSE );
 
         MagnatuneTrackList tracks;
-        tracks = MagnatuneDatabaseHandler::instance()->getTracksByAlbumId(m_id);
+        tracks = MagnatuneDatabaseHandler::instance()->getTracksByAlbumId( m_id );
 
         MagnatuneTrackList::iterator it;
         for ( it = tracks.begin(); it != tracks.end(); ++it ) {
-           new MagnatuneListViewTrackItem((*it), this);
+            new MagnatuneListViewTrackItem( (*it), this );
         }
     }
 
     QListViewItem::setOpen( o );
     listView()->repaintContents();
-     listView()->setUpdatesEnabled( TRUE );
+    listView()->setUpdatesEnabled( TRUE );
 }
 
 void MagnatuneListViewAlbumItem::setup( )
@@ -113,10 +113,18 @@ void MagnatuneListViewAlbumItem::setup( )
 
 
 MagnatuneListViewTrackItem::MagnatuneListViewTrackItem( MagnatuneTrack track, QListViewItem * parent )
-: QListViewItem(parent), MagnatuneTrack(track)
+: QListViewItem( parent ), MagnatuneTrack( track )
 {
-   QListViewItem::setText(0, QString::number(track.getTrackNumber()) + " - " +  track.getName());
-   setDragEnabled (true);
+    
+    int trackNumber = track.getTrackNumber();
+    QString trackNumberString = QString::number( trackNumber );
+    if (trackNumber < 10)
+        trackNumberString = "0" + trackNumberString;
+    
+    
+    
+    QListViewItem::setText( 0, trackNumberString + " - " +  track.getName() );
+    setDragEnabled( true );
 }
 
 MagnatuneListViewTrackItem::~ MagnatuneListViewTrackItem( )
