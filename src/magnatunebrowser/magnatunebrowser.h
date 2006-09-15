@@ -6,25 +6,20 @@
 #define AMAROKMAGNATUNEBROWSER_H
 
 
-
-
 #include "magnatunelistview.h"
 #include "magnatunelistviewitems.h"
 #include "magnatunexmlparser.h"
-//#include "magnatunesax2parser.h"
 #include "magnatuneartistinfobox.h"
 #include "magnatunepurchasedialog.h"
 #include "magnatunepurchasehandler.h"
-
-//#include "collectionbrowser.h"
 #include "amarok.h"
 
 
-#include <qvbox.h>
-#include <qhbox.h>
 #include <kio/job.h>
 #include <kio/jobclasses.h>
-//#include <klistview.h>
+
+#include <qvbox.h>
+#include <qhbox.h>
 #include <qpopupmenu.h>
 #include <qpushbutton.h>
 #include <qcheckbox.h>
@@ -34,7 +29,7 @@
 
 
 /**
-A first attempt at making a browser that displays all the music avilable at magnatune.com
+A first attempt at making a browser that displays all the music available at magnatune.com
 
 @author Nikolaj Hald Nielsen
 */
@@ -54,7 +49,6 @@ protected:
     
     
     MagnatuneListView * m_listView;
-    //CollectionView * m_listView;
     MagnatuneArtistInfoBox * m_artistInfobox;
     QString m_currentInfoUrl;
     QPopupMenu * m_popupMenu;
@@ -67,11 +61,9 @@ protected:
 
     QComboBox * m_genreComboBox;
     bool isInfoShown;
-    
 
     KIO::TransferJob * m_listDownloadJob;
 
-   
     void initBottomPanel();
     void initTopPanel();
 

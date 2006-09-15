@@ -199,7 +199,7 @@ MagnatuneArtistList MagnatuneDatabaseHandler::getArtistsByGenre( QString genre )
 
   QString genreSql = "";
 
-  if (genre != "all") {
+  if (genre != "All") {
      genreSql = "magnatune_albums.genre='" + genre + "' AND ";
   }
 
