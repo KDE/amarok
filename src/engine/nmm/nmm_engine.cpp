@@ -123,12 +123,12 @@ void NmmEngine::checkSecurity()
   string optionvalue("");
 
   nmmconfig.getValue("allowedreadpaths", optionvalue);
-  if( !optionvalue.isEmpty() )
+  if( !optionvalue.empty() )
     readpaths_set = true;
 
   optionvalue = "";
   nmmconfig.getValue("allowedwritepaths", optionvalue);
-  if( !optionvalue.isEmpty() )
+  if( !optionvalue.empty() )
     writepaths_set = true;
 
   QString str;
