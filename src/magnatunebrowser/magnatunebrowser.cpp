@@ -22,12 +22,12 @@ MagnatuneBrowser::MagnatuneBrowser( const char *name )
     initTopPanel( );
 
     QSplitter *spliter = new QSplitter(Qt::Vertical, this );
- 
+
     debug() << "Magnatune browser starting..." << endl;
     m_listView = new MagnatuneListView(spliter);
 
 
-    m_listView->setRootIsDecorated(TRUE); 
+    m_listView->setRootIsDecorated(TRUE);
     m_listView->addColumn(i18n( "Artist/Album/Track" ) );
     //m_listView->addColumn("Genre");
 
@@ -37,7 +37,7 @@ MagnatuneBrowser::MagnatuneBrowser( const char *name )
     m_popupMenu = new QPopupMenu(spliter, "MagnatuneMenu");
 
     m_artistInfobox = new MagnatuneArtistInfoBox(spliter, "ArtistInfoBox");
-   
+
 
     initBottomPanel( );
 
@@ -69,13 +69,13 @@ void MagnatuneBrowser::itemExecuted( QListViewItem * item )
     debug() << "Magnatune item executed "  << endl;
     if (item->depth() == 2)	{
 
-        addTrackToPlaylist( (MagnatuneListViewTrackItem *) item );	
-	
+        addTrackToPlaylist( (MagnatuneListViewTrackItem *) item );
+
 
     } else if (item->depth() == 1)	{
 
         addAlbumToPlaylist( (MagnatuneListViewAlbumItem *) item );
-	
+
     } else if (item->depth() == 0)	{
 
         addArtistToPlaylist( (MagnatuneListViewArtistItem *) item );
@@ -93,15 +93,15 @@ void MagnatuneBrowser::addTrackToPlaylist(MagnatuneTrack * item )
 }
 
 void MagnatuneBrowser::addAlbumToPlaylist( MagnatuneAlbum * item )
-{	
+{
 
-    debug() << "Magnatune browser: adding album"  <<  endl;	
+    debug() << "Magnatune browser: adding album"  <<  endl;
 
     MagnatuneTrackList tracks =  MagnatuneDatabaseHandler::instance()->getTracksByAlbumId(item->getId());
-	
+
     MagnatuneTrackList::iterator it;
     for ( it = tracks.begin(); it != tracks.end(); ++it ) {
-        addTrackToPlaylist( &(*it) );	
+        addTrackToPlaylist( &(*it) );
     }
 }
 
@@ -110,10 +110,10 @@ void MagnatuneBrowser::addArtistToPlaylist( MagnatuneArtist * item )
     debug() << "Magnatune browser: adding artist"  <<  endl;
 
     MagnatuneAlbumList albums =  MagnatuneDatabaseHandler::instance()->getAlbumsByArtistId( item->getId(), "" );
-	
+
     MagnatuneAlbumList::iterator it;
     for ( it = albums.begin(); it != albums.end(); ++it ) {
-        addAlbumToPlaylist( &(*it) );	
+        addAlbumToPlaylist( &(*it) );
     }
 }
 
@@ -121,15 +121,15 @@ void MagnatuneBrowser::selectionChanged( QListViewItem * item )
 {
 
     debug() << "Selection changed..." << endl;
-    
-    if (item->depth() == 1)  
+
+    if (item->depth() == 1)
         m_purchaseAlbumButton->setEnabled( true );
-    else 
+    else
         m_purchaseAlbumButton->setEnabled( false );
 
-    
+
     if(m_isInfoShown) {
-    
+
         if (item->depth() == 0) {
             MagnatuneListViewArtistItem * artistItem = (MagnatuneListViewArtistItem *) item;
             if (m_currentInfoUrl != artistItem->getHomeURL()) {
@@ -142,11 +142,11 @@ void MagnatuneBrowser::selectionChanged( QListViewItem * item )
                 m_currentInfoUrl = albumItem->getCoverURL();
                 m_artistInfobox->displayAlbumInfo(albumItem);
             }
-        } 
+        }
     }
 }
 
-void MagnatuneBrowser::showPopupMenu( QListViewItem * item, const QPoint & pos, int column )
+void MagnatuneBrowser::showPopupMenu( QListViewItem * item, const QPoint & pos, int /*column*/ )
 {
     if ( item != 0 ) {
         m_popupMenu->exec(pos);
@@ -171,17 +171,17 @@ void MagnatuneBrowser::addSelectionToPlaylist( )
             addTrackToPlaylist( (MagnatuneListViewTrackItem *) selectedItem );
         break;
 }
- 
+
 }
 
 void MagnatuneBrowser::menuAboutToShow( )
 {
     m_popupMenu->clear();
-    
+
     QListViewItem * selectedItem = m_listView->selectedItem();
-        
+
     if (selectedItem != 0) {
-    
+
         switch (selectedItem->depth()) {
             case 0:
                 m_popupMenu->insertItem( i18n( "Add artist to playlist" ), this, SLOT( addSelectionToPlaylist() ) );
@@ -193,7 +193,7 @@ void MagnatuneBrowser::menuAboutToShow( )
             case 2:
                 m_popupMenu->insertItem( i18n( "Add track to playlist" ), this, SLOT( addSelectionToPlaylist() ) );
         }
-    } else 
+    } else
     {
     //m_popupMenu->insertItem("Nothing selected", this, SLOT(0));
     }
@@ -207,12 +207,12 @@ void MagnatuneBrowser::purchaseAlbum( )
         m_purchaseHandler = new MagnatunePurchaseHandler();
         m_purchaseHandler->setParent( this );
     }
-    
+
     MagnatuneListViewAlbumItem * selectedAlbum = (MagnatuneListViewAlbumItem *) m_listView->selectedItem();
-    
+
     m_purchaseHandler->purchaseAlbum(selectedAlbum);
-        
-        
+
+
 }
 
 
@@ -223,13 +223,13 @@ void MagnatuneBrowser::initTopPanel( )
     m_topPanel->setMaximumHeight( 24 );
     m_topPanel->setSpacing( 2 );
     m_topPanel->setMargin( 2 );
-    
+
     new QLabel ( i18n("Genre: "), m_topPanel, "genreLabel", 0 );
-    
+
     m_genreComboBox = new QComboBox ( false, m_topPanel, "genreComboBox" );
-    
+
     updateGenreBox();
-    
+
     connect( m_genreComboBox, SIGNAL( activated ( int ) ), this, SLOT( genreChanged() ) );
 
 
@@ -238,23 +238,23 @@ void MagnatuneBrowser::initTopPanel( )
 
 void MagnatuneBrowser::initBottomPanel( )
 {
-    
-    
+
+
 
     m_bottomPanel = new QVBox( this, "bottomPanel", 0 );
     m_bottomPanel->setMaximumHeight( 54 );
     m_bottomPanel->setSpacing( 2 );
     m_bottomPanel->setMargin( 2 );
-    
+
     QHBox *hBox = new QHBox( m_bottomPanel, "bottomHBox", 0 );
     hBox->setMaximumHeight( 24 );
     hBox->setSpacing( 2 );
     //hBox->setMargin( 2 );
-   
+
     m_purchaseAlbumButton = new QPushButton ( i18n( "Purchase Album" ), m_bottomPanel, "purchaseButton" );
     m_purchaseAlbumButton->setEnabled( false );
     m_purchaseAlbumButton->setMaximumHeight( 24 );
-    
+
     m_updateListButton = new QPushButton ( i18n( "Update" ), hBox, "updateButton" );
     m_showInfoCheckbox = new QCheckBox ( i18n( "Show Info" ) ,hBox, "showInfoCheckbox" );
     m_showInfoCheckbox->setChecked( true );
@@ -263,7 +263,7 @@ void MagnatuneBrowser::initBottomPanel( )
     connect( m_showInfoCheckbox, SIGNAL( toggled( bool ) ), this, SLOT( showInfoCheckBoxStateChanged() ) );
     connect( m_updateListButton, SIGNAL( clicked() ), this, SLOT( updateButtonClicked()) );
     connect( m_purchaseAlbumButton, SIGNAL( clicked() ) , this, SLOT(purchaseAlbum()));
-  
+
 }
 
 void MagnatuneBrowser::updateButtonClicked( )
@@ -279,7 +279,7 @@ bool MagnatuneBrowser::updateMagnatuneList( )
 
     m_listDownloadJob = KIO::storedGet( KURL( "http://magnatune.com/info/album_info.xml" ), false, false );
     Amarok::StatusBar::instance()->newProgressOperation( m_listDownloadJob ).setDescription( i18n( "Downloading new Magnatune.com Database" ) );
-   
+
     connect( m_listDownloadJob, SIGNAL( result( KIO::Job* ) ), SLOT( listDownloadComplete( KIO::Job* ) ) );
 
     return true;
@@ -296,24 +296,24 @@ void MagnatuneBrowser::listDownloadComplete( KIO::Job * downLoadJob )
     }
     if ( downLoadJob != m_listDownloadJob )
         return; //not the right job, so let's ignore it
-    
+
     KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( downLoadJob );
     QString list = QString( storedJob->data() );
-    
-    
+
+
     QFile file( "/tmp/album_info.xml" );
-    
+
     if (file.exists()) {
             file.remove();
     }
-    
+
     if ( file.open( IO_WriteOnly ) ) {
         QTextStream stream( &file );
         stream << list;
         file.close();
     }
 
-  
+
     MagnatuneXmlParser * parser = new MagnatuneXmlParser( "/tmp/album_info.xml" );
     connect( parser, SIGNAL( DoneParsing() ), SLOT( DoneParsing() ) );
 
@@ -324,15 +324,15 @@ void MagnatuneBrowser::listDownloadComplete( KIO::Job * downLoadJob )
 
 
 
-void MagnatuneBrowser::showInfoCheckBoxStateChanged() 
+void MagnatuneBrowser::showInfoCheckBoxStateChanged()
 {
 
-    if ( !m_showInfoCheckbox->isChecked() ) 
+    if ( !m_showInfoCheckbox->isChecked() )
     {
 
         m_artistInfobox->widget()->setMaximumHeight( 0 );
         m_isInfoShown = false;
-   } else 
+   } else
    {
        m_isInfoShown = true;
      m_artistInfobox->widget()->setMaximumHeight( 2000 );
@@ -350,7 +350,7 @@ void MagnatuneBrowser::updateList( )
 
     m_listView->clear();
     MagnatuneArtistList::iterator it;
-    for ( it = artists.begin(); it != artists.end(); ++it ) 
+    for ( it = artists.begin(); it != artists.end(); ++it )
     {
         new MagnatuneListViewArtistItem( (*it), m_listView );
     }
@@ -384,7 +384,7 @@ void MagnatuneBrowser::updateGenreBox( )
 {
 
    QStringList genres = MagnatuneDatabaseHandler::instance()->getAlbumGenres( );
-   
+
    m_genreComboBox->clear();
     m_genreComboBox->insertItem ( "All" , 0 ); // should not be i18n'ed as it is
     //used as a trigger in the code in the database handler.
