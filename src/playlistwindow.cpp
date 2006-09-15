@@ -38,6 +38,7 @@
 #include "statistics.h"
 #include "statusbar.h"
 #include "threadweaver.h"
+#include "magnatunebrowser/magnatunebrowser.h"
 
 #include <qevent.h>           //eventFilter()
 #include <qfont.h>
@@ -431,7 +432,11 @@ void PlaylistWindow::init()
         //DEBUG: Comment out the addBrowserMacro line and uncomment the m_browsers line (passing in a vfat device name) to see the "virtual root" functionality
 
         addBrowserMacro( FileBrowser, "FileBrowser", i18n( "Files" ), Amarok::icon( "files" ) )
+	//Add Magnatune browser
+	addBrowserMacro( MagnatuneBrowser, "MagnatuneBrowser", i18n( "Magnatune.com" ), "magnatune" )
+
         //m_browsers->addBrowser( new FileBrowser( "FileBrowser", MediaDeviceManager::instance()->getDevice( "hda5" ) ), i18n( "Files" ), "folder" );
+
 
         new MediaBrowser( "MediaBrowser" );
         if( MediaBrowser::isAvailable() )

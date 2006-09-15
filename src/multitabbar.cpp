@@ -168,14 +168,10 @@ void MultiTabBarInternal::contentsMousePressEvent( QMouseEvent *ev )
     ev->ignore();
 }
 
-void MultiTabBarInternal::mousePressEvent( QMouseEvent *ev )
-{
-    if ( ev->button() != QMouseEvent::RightButton ){
-        ev->ignore();
-        return;
-    }
 
-    // right button pressed
+void MultiTabBarInternal::showTabSelectionMenu(QPoint pos)
+{
+
     KPopupMenu popup;
     popup.insertTitle(  i18n("Browsers") , /*id*/ -1, /*index*/ 1 );
     popup.setCheckable( true );
@@ -185,9 +181,22 @@ void MultiTabBarInternal::mousePressEvent( QMouseEvent *ev )
         popup.setItemChecked(i, tab->visible() ? true : false);
     }
 
-    int col = popup.exec( static_cast<QMouseEvent *>(ev)->globalPos() );
+    int col = popup.exec(pos);
     if ( col >= 0 )
         setTabVisible( col, !popup.isItemChecked(col) );
+
+}
+
+void MultiTabBarInternal::mousePressEvent( QMouseEvent *ev )
+{
+    if ( ev->button() != QMouseEvent::RightButton ){
+        ev->ignore();
+        return;
+    }
+
+    // right button pressed
+    showTabSelectionMenu(ev->globalPos());
+    
 }
 
 
@@ -212,6 +221,7 @@ void MultiTabBarInternal::resizeEvent( QResizeEvent *ev )
     /*  kdDebug()<<"MultiTabBarInternal::resizeEvent"<<endl;
         kdDebug()<<"MultiTabBarInternal::resizeEvent - box geometry"<<box->geometry()<<endl;
         kdDebug()<<"MultiTabBarInternal::resizeEvent - geometry"<<geometry()<<endl;*/
+    
     if ( ev ) QScrollView::resizeEvent( ev );
 
     if ( ( m_style == MultiTabBar::KDEV3 ) ||
@@ -224,7 +234,7 @@ void MultiTabBarInternal::resizeEvent( QResizeEvent *ev )
         if ( ( m_position == MultiTabBar::Bottom ) || ( m_position == MultiTabBar::Top ) )
             space = width();
         else
-            space = height();
+            space = height(); // made space for tab managment button
 
         int cnt = 0;
         //CALCULATE LINES
@@ -545,7 +555,8 @@ MultiTabBarButton::MultiTabBarButton( const QString& text, QPopupMenu *popup,
 
 MultiTabBarButton::~MultiTabBarButton()
 {
-    delete d;
+    if ( d != 0 )
+        delete d;
 }
 
 int MultiTabBarButton::id() const
@@ -1283,4 +1294,9 @@ void MultiTabBar::fontChange( const QFont& /* oldFont */ )
 
 QPtrList<MultiTabBarTab>* MultiTabBar::tabs() { return m_internal->tabs();}
 QPtrList<MultiTabBarButton>* MultiTabBar::buttons() { return & m_buttons;}
+
+void MultiTabBar::showTabSelectionMenu(QPoint pos)
+{   
+    m_internal->showTabSelectionMenu(pos);
+}
 

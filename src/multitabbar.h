@@ -151,6 +151,8 @@ class MultiTabBar: public QWidget
         */
         uint sizePerTab();
 
+        void showTabSelectionMenu(QPoint pos);
+
     protected:
         friend class MultiTabBarButton;
         virtual void fontChange( const QFont& );

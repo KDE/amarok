@@ -23,6 +23,7 @@
 #include <qpainter.h>
 #include <qsignalmapper.h> //m_mapper
 #include <qstyle.h>        //Amarok::Splitter
+#include <qtooltip.h>
 
 
 // we emulate a qsplitter, mostly for historic reasons, but there are still a few advantages
@@ -63,12 +64,28 @@ BrowserBar::BrowserBar( QWidget *parent )
         : QWidget( parent, "BrowserBar" )
         , m_playlistBox( new QVBox( this ) )
         , m_divider( new Amarok::Splitter( this ) )
-        , m_tabBar( new MultiTabBar( MultiTabBar::Vertical, this ) )
         , m_browserBox( new QVBox( this ) )
         , m_currentIndex( -1 )
         , m_lastIndex( -1 )
         , m_mapper( new QSignalMapper( this ) )
 {
+
+ 
+
+    m_tabManagementButton = new QPushButton( SmallIconSet(Amarok::icon( "configure" )), 0, this, "tab_managment_button" );
+    connect (m_tabManagementButton, SIGNAL(clicked()), SLOT(showBrowserSelectionMenu()));
+    m_tabManagementButton->setIsMenuButton ( true ); //deprecated, but since I cannot add menu directly to button it is needed.
+
+    QToolTip::add (m_tabManagementButton, i18n("Manage tabs")); 
+
+
+    m_tabBar = new MultiTabBar( MultiTabBar::Vertical, this );
+
+
+    m_tabManagementButton->setFixedWidth(m_tabBar->sizeHint().width());
+    m_tabManagementButton->setFixedHeight(m_tabBar->sizeHint().width());
+
+
     s_instance = this;
     m_pos = m_tabBar->sizeHint().width() + 5; //5 = aesthetic spacing
 
@@ -76,7 +93,7 @@ BrowserBar::BrowserBar( QWidget *parent )
     m_tabBar->setPosition( MultiTabBar::Left );
     m_tabBar->showActiveTabTexts( true );
     m_tabBar->setFixedWidth( m_pos );
-//    m_tabBar->move( 0, 3 );
+    m_tabBar->move( 0, 25 );
 
     QVBoxLayout *layout = new QVBoxLayout( m_browserBox );
     layout->addSpacing( 3 ); // aesthetics
@@ -88,6 +105,13 @@ BrowserBar::BrowserBar( QWidget *parent )
     m_playlistBox->setSpacing( 1 );
 
     connect( m_mapper, SIGNAL(mapped( int )), SLOT(showHideBrowser( int )) );
+
+ 
+
+
+   
+    //m_tabBar->appendButton( Amarok::icon( "configure" ), 1, 0, QString::null );
+
 }
 
 BrowserBar::~BrowserBar()
@@ -349,6 +373,11 @@ BrowserBar::indexForName( const QString &name ) const
         if( name == m_browsers[x]->name() )
             return x;
     return -1;
+}
+
+void BrowserBar::showBrowserSelectionMenu()
+{
+      m_tabBar->showTabSelectionMenu(mapToGlobal(QPoint(m_tabManagementButton->pos().x(), m_tabManagementButton->pos().y() +m_tabManagementButton->height() )));
 }
 
 #include "browserbar.moc"

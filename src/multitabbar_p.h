@@ -42,6 +42,7 @@ public:
         QPtrList<MultiTabBarTab>* tabs(){return &m_tabs;}
         uint visibleTabCount();
         uint sizePerTab();
+        void showTabSelectionMenu(QPoint pos);
 
 private:
         friend class MultiTabBar;

@@ -13,6 +13,7 @@ lib_LTLIBRARIES = libamarok.la
 
 SUBDIRS = \
     amarokcore \
+    magnatunebrowser \
     $(SQLITE_SUBDIR) \
     analyzers \
     data \
@@ -152,6 +153,7 @@ libamarok_la_LIBADD = \
     $(top_builddir)/amarok/src/plugin/libplugin.la \
     $(top_builddir)/amarok/src/statusbar/libstatusbar.la \
     $(top_builddir)/amarok/src/metadata/libmetadata.la \
+    $(top_builddir)/amarok/src/magnatunebrowser/libmagnatunebrowser.la \
     $(LIB_KUTILS) $(LIB_KFILE) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_KHTML) $(LIB_KNEWSTUFF) \
     $(taglib_libs) $(gl_libs) $(LIB_SQLITE) $(LIB_SQLITE_LOCAL) \
     $(LIB_TUNEPIMP) \

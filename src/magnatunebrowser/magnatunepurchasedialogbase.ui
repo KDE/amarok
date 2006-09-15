@@ -1,0 +1,603 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>magnatunePurchaseDialogBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>magnatunePurchaseDialogBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>550</width>
+            <height>507</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Purchase Album from Magnatune.com</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QPushButton" row="2" column="0">
+            <property name="name">
+                <cstring>cancelButton</cstring>
+            </property>
+            <property name="text">
+                <string>Ca&amp;ncel</string>
+            </property>
+            <property name="accel">
+                <string>Alt+N</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="2" column="1">
+            <property name="name">
+                <cstring>purchaseButton</cstring>
+            </property>
+            <property name="text">
+                <string>P&amp;urchase</string>
+            </property>
+            <property name="accel">
+                <string>Alt+U</string>
+            </property>
+        </widget>
+        <widget class="QGroupBox" row="1" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>groupBox2</cstring>
+            </property>
+            <property name="title">
+                <string>Payment</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="0" column="0" rowspan="1" colspan="5">
+                    <property name="name">
+                        <cstring>textLabel2</cstring>
+                    </property>
+                    <property name="palette">
+                        <palette>
+                            <active>
+                                <color>
+                                    <red>0</red>
+                                    <green>0</green>
+                                    <blue>0</blue>
+                                </color>
+                                <color>
+                                    <red>221</red>
+                                    <green>223</green>
+                                    <blue>228</blue>
+                                </color>
+                                <color>
+                                    <red>255</red>
+                                    <green>255</green>
+                                    <blue>255</blue>
+                                </color>
+                                <color>
+                                    <red>255</red>
+                                    <green>255</green>
+                                    <blue>255</blue>
+                                </color>
+                                <color>
+                                    <red>85</red>
+                                    <green>85</green>
+                                    <blue>85</blue>
+                                </color>
+                                <color>
+                                    <red>199</red>
+                                    <green>199</green>
+                                    <blue>199</blue>
+                                </color>
+                                <color>
+                                    <red>0</red>
+                                    <green>0</green>
+                                    <blue>0</blue>
+                                </color>
+                                <color>
+                                    <red>255</red>
+                                    <green>255</green>
+                                    <blue>255</blue>
+                                </color>
+                                <color>
+                                    <red>0</red>
+                                    <green>0</green>
+                                    <blue>0</blue>
+                                </color>
+                                <color>
+                                    <red>255</red>
+                                    <green>255</green>
+                                    <blue>255</blue>
+                                </color>
+                                <color>
+                                    <red>239</red>
+                                    <green>239</green>
+                                    <blue>239</blue>
+                                </color>
+                                <color>
+                                    <red>0</red>
+                                    <green>0</green>
+                                    <blue>0</blue>
+                                </color>
+                                <color>
+                                    <red>103</red>
+                                    <green>141</green>
+                                    <blue>178</blue>
+                                </color>
+                                <color>
+                                    <red>255</red>
+                                    <green>255</green>
+                                    <blue>255</blue>
+                                </color>
+                                <color>
+                                    <red>0</red>
+                                    <green>0</green>
+                                    <blue>238</blue>
+                                </color>
+                                <color>
+                                    <red>82</red>
+                                    <green>24</green>
+                                    <blue>139</blue>
+                                </color>
+                            </active>
+                            <disabled>
+                                <color>
+                                    <red>128</red>
+                                    <green>128</green>
+                                    <blue>128</blue>
+                                </color>
+                                <color>
+                                    <red>221</red>
+                                    <green>223</green>
+                                    <blue>228</blue>
+                                </color>
+                                <color>
+                                    <red>255</red>
+                                    <green>255</green>
+                                    <blue>255</blue>
+                                </color>
+                                <color>
+                                    <red>255</red>
+                                    <green>255</green>
+                                    <blue>255</blue>
+                                </color>
+                                <color>
+                                    <red>85</red>
+                                    <green>85</green>
+                                    <blue>85</blue>
+                                </color>
+                                <color>
+                                    <red>199</red>
+                                    <green>199</green>
+                                    <blue>199</blue>
+                                </color>
+                                <color>
+                                    <red>199</red>
+                                    <green>199</green>
+                                    <blue>199</blue>
+                                </color>
+                                <color>
+                                    <red>255</red>
+                                    <green>255</green>
+                                    <blue>255</blue>
+                                </color>
+                                <color>
+                                    <red>128</red>
+                                    <green>128</green>
+                                    <blue>128</blue>
+                                </color>
+                                <color>
+                                    <red>255</red>
+                                    <green>255</green>
+                                    <blue>255</blue>
+                                </color>
+                                <color>
+                                    <red>239</red>
+                                    <green>239</green>
+                                    <blue>239</blue>
+                                </color>
+                                <color>
+                                    <red>0</red>
+                                    <green>0</green>
+                                    <blue>0</blue>
+                                </color>
+                                <color>
+                                    <red>86</red>
+                                    <green>117</green>
+                                    <blue>148</blue>
+                                </color>
+                                <color>
+                                    <red>255</red>
+                                    <green>255</green>
+                                    <blue>255</blue>
+                                </color>
+                                <color>
+                                    <red>0</red>
+                                    <green>0</green>
+                                    <blue>238</blue>
+                                </color>
+                                <color>
+                                    <red>82</red>
+                                    <green>24</green>
+                                    <blue>139</blue>
+                                </color>
+                            </disabled>
+                            <inactive>
+                                <color>
+                                    <red>0</red>
+                                    <green>0</green>
+                                    <blue>0</blue>
+                                </color>
+                                <color>
+                                    <red>221</red>
+                                    <green>223</green>
+                                    <blue>228</blue>
+                                </color>
+                                <color>
+                                    <red>255</red>
+                                    <green>255</green>
+                                    <blue>255</blue>
+                                </color>
+                                <color>
+                                    <red>255</red>
+                                    <green>255</green>
+                                    <blue>255</blue>
+                                </color>
+                                <color>
+                                    <red>85</red>
+                                    <green>85</green>
+                                    <blue>85</blue>
+                                </color>
+                                <color>
+                                    <red>199</red>
+                                    <green>199</green>
+                                    <blue>199</blue>
+                                </color>
+                                <color>
+                                    <red>0</red>
+                                    <green>0</green>
+                                    <blue>0</blue>
+                                </color>
+                                <color>
+                                    <red>255</red>
+                                    <green>255</green>
+                                    <blue>255</blue>
+                                </color>
+                                <color>
+                                    <red>0</red>
+                                    <green>0</green>
+                                    <blue>0</blue>
+                                </color>
+                                <color>
+                                    <red>255</red>
+                                    <green>255</green>
+                                    <blue>255</blue>
+                                </color>
+                                <color>
+                                    <red>239</red>
+                                    <green>239</green>
+                                    <blue>239</blue>
+                                </color>
+                                <color>
+                                    <red>0</red>
+                                    <green>0</green>
+                                    <blue>0</blue>
+                                </color>
+                                <color>
+                                    <red>103</red>
+                                    <green>141</green>
+                                    <blue>178</blue>
+                                </color>
+                                <color>
+                                    <red>255</red>
+                                    <green>255</green>
+                                    <blue>255</blue>
+                                </color>
+                                <color>
+                                    <red>0</red>
+                                    <green>0</green>
+                                    <blue>238</blue>
+                                </color>
+                                <color>
+                                    <red>82</red>
+                                    <green>24</green>
+                                    <blue>139</blue>
+                                </color>
+                            </inactive>
+                        </palette>
+                    </property>
+                    <property name="text">
+                        <string>IMPORTANT: This feature is higly experimental, use at your own risk!</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="4" column="0">
+                    <property name="name">
+                        <cstring>textLabel4</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Expiration date:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="5" column="0">
+                    <property name="name">
+                        <cstring>textLabel7</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Amount to pay (USD):</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>textLabel8</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Name:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>textLabel9</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Email:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="3" column="0">
+                    <property name="name">
+                        <cstring>textLabel3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Credit card number:</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="3" column="1" rowspan="1" colspan="4">
+                    <property name="name">
+                        <cstring>ccEdit</cstring>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="1" column="1" rowspan="1" colspan="4">
+                    <property name="name">
+                        <cstring>nameEdit</cstring>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="2" column="1" rowspan="1" colspan="4">
+                    <property name="name">
+                        <cstring>emailEdit</cstring>
+                    </property>
+                </widget>
+                <widget class="QComboBox" row="5" column="1" rowspan="1" colspan="2">
+                    <item>
+                        <property name="text">
+                            <string>5</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>6</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>7</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>8</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>9</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>10</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>11</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>12</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>13</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>14</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>15</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>16</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>17</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>18</string>
+                        </property>
+                    </item>
+                    <property name="name">
+                        <cstring>amountComboBox</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="6" column="0" rowspan="1" colspan="5">
+                    <property name="name">
+                        <cstring>textLabel17</cstring>
+                    </property>
+                    <property name="text">
+                        <string>The amount you choose to pay wil be split 50/50 between the artist and Magnatune.com</string>
+                    </property>
+                    <property name="alignment">
+                        <set>WordBreak|AlignVCenter</set>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="4" column="4">
+                    <property name="name">
+                        <cstring>expYearEdit</cstring>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="4" column="2">
+                    <property name="name">
+                        <cstring>expMonthEdit</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="4" column="1">
+                    <property name="name">
+                        <cstring>textLabel6</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Month (xx):</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="4" column="3">
+                    <property name="name">
+                        <cstring>textLabel5</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Year (xx):</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QGroupBox" row="0" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>groupBox1</cstring>
+            </property>
+            <property name="title">
+                <string>Info</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>infoLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>You have choosen to purchase the following album from Magnatune.com</string>
+                    </property>
+                    <property name="alignment">
+                        <set>WordBreak|AlignVCenter</set>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="1" column="1">
+                    <property name="name">
+                        <cstring>albumEdit</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>true</bool>
+                    </property>
+                    <property name="readOnly">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="2" column="1">
+                    <property name="name">
+                        <cstring>artistEdit</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>true</bool>
+                    </property>
+                    <property name="readOnly">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="3" column="1" rowspan="2" colspan="1">
+                    <property name="name">
+                        <cstring>genresEdit</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>true</bool>
+                    </property>
+                    <property name="readOnly">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="5" column="1">
+                    <property name="name">
+                        <cstring>launchDateEdit</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>true</bool>
+                    </property>
+                    <property name="readOnly">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="4" column="0" rowspan="2" colspan="1">
+                    <property name="name">
+                        <cstring>textLabel16</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Launch Year:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="3" column="0">
+                    <property name="name">
+                        <cstring>textLabel15</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Genre:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>textLabel14</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Artist:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>textLabel13</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Album:</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+    </grid>
+</widget>
+<connections>
+    <connection>
+        <sender>cancelButton</sender>
+        <signal>clicked()</signal>
+        <receiver>magnatunePurchaseDialogBase</receiver>
+        <slot>cancel()</slot>
+    </connection>
+    <connection>
+        <sender>purchaseButton</sender>
+        <signal>clicked()</signal>
+        <receiver>magnatunePurchaseDialogBase</receiver>
+        <slot>purchase()</slot>
+    </connection>
+</connections>
+<slots>
+    <slot>purchase()</slot>
+    <slot>cancel()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

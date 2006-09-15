@@ -15,6 +15,7 @@
 #include <qwidget.h>        //baseclass
 #include <qvaluevector.h>   //stack allocated
 #include <qmap.h>           //stack allocated
+#include <qpushbutton.h>
 
 typedef QValueVector<QWidget*> BrowserList;
 typedef QMap<QString,int> BrowserIdMap;
@@ -65,6 +66,7 @@ public slots:
     void showHideBrowser( int );
     void showHideVisibleBrowser( int );
     void closeCurrentBrowser() { showHideBrowser( m_currentIndex ); }
+    void showBrowserSelectionMenu();
 
 signals:
     void browserActivated( int );
@@ -86,6 +88,11 @@ private:
     int            m_currentIndex;
     int            m_lastIndex;
     QSignalMapper *m_mapper;      ///maps tab clicks to browsers
+
+    QPushButton   *m_tabManagementButton;
+
+
+    
 };
 
 #endif
