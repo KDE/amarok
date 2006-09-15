@@ -1741,7 +1741,7 @@ Playlist::activate( QListViewItem *item )
             if( item->isEnabled() )
             {
                 hasHistory ?
-                    this->moveItem( item, *it, 0 ) :
+                    this->moveItem( item, 0, *it ) :
                     this->moveItem( item, 0,   0 );
             }
             else // !item->isEnabled()
