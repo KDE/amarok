@@ -122,7 +122,13 @@ void MagnatuneBrowser::selectionChanged( QListViewItem * item )
 
     debug() << "Selection changed..." << endl;
     
-    if(isInfoShown) {
+    if (item->depth() == 1)  
+        m_purchaseAlbumButton->setEnabled( true );
+    else 
+        m_purchaseAlbumButton->setEnabled( false );
+
+    
+    if(m_isInfoShown) {
     
         if (item->depth() == 0) {
             MagnatuneListViewArtistItem * artistItem = (MagnatuneListViewArtistItem *) item;
@@ -143,7 +149,7 @@ void MagnatuneBrowser::selectionChanged( QListViewItem * item )
 void MagnatuneBrowser::showPopupMenu( QListViewItem * item, const QPoint & pos, int column )
 {
     if ( item != 0 ) {
-        m_popupMenu->exec( m_listView->mapToGlobal( m_listView->itemRect( item ).topLeft() ) );
+        m_popupMenu->exec(pos);
    }
 }
 
@@ -199,7 +205,7 @@ void MagnatuneBrowser::purchaseAlbum( )
 {
     if (m_purchaseHandler == 0) {
         m_purchaseHandler = new MagnatunePurchaseHandler();
-        m_purchaseHandler->setParent(this);
+        m_purchaseHandler->setParent( this );
     }
     
     MagnatuneListViewAlbumItem * selectedAlbum = (MagnatuneListViewAlbumItem *) m_listView->selectedItem();
@@ -220,7 +226,7 @@ void MagnatuneBrowser::initTopPanel( )
     
     new QLabel ( i18n("Genre: "), m_topPanel, "genreLabel", 0 );
     
-    m_genreComboBox = new QComboBox ( false, m_topPanel, "genreComboBox");
+    m_genreComboBox = new QComboBox ( false, m_topPanel, "genreComboBox" );
     
     updateGenreBox();
     
@@ -232,21 +238,32 @@ void MagnatuneBrowser::initTopPanel( )
 
 void MagnatuneBrowser::initBottomPanel( )
 {
+    
+    
 
-    m_bottomPanel = new QHBox(this, "bottomPanel", 0);
-    m_bottomPanel->setMaximumHeight(24);
-    m_bottomPanel->setSpacing(2);
-    m_bottomPanel->setMargin(2);
-    //m_bottomPanel->setMinimumHeight(24);
-    m_updateListButton = new QPushButton ( i18n( "Update" ), m_bottomPanel, "updateButton" );
-    m_showInfoCheckbox = new QCheckBox ( i18n( "Show Info" ) ,m_bottomPanel, "showInfoCheckbox" );
-    m_showInfoCheckbox->setChecked(true);
-    isInfoShown = true;
+    m_bottomPanel = new QVBox( this, "bottomPanel", 0 );
+    m_bottomPanel->setMaximumHeight( 54 );
+    m_bottomPanel->setSpacing( 2 );
+    m_bottomPanel->setMargin( 2 );
+    
+    QHBox *hBox = new QHBox( m_bottomPanel, "bottomHBox", 0 );
+    hBox->setMaximumHeight( 24 );
+    hBox->setSpacing( 2 );
+    //hBox->setMargin( 2 );
+   
+    m_purchaseAlbumButton = new QPushButton ( i18n( "Purchase Album" ), m_bottomPanel, "purchaseButton" );
+    m_purchaseAlbumButton->setEnabled( false );
+    m_purchaseAlbumButton->setMaximumHeight( 24 );
+    
+    m_updateListButton = new QPushButton ( i18n( "Update" ), hBox, "updateButton" );
+    m_showInfoCheckbox = new QCheckBox ( i18n( "Show Info" ) ,hBox, "showInfoCheckbox" );
+    m_showInfoCheckbox->setChecked( true );
+    m_isInfoShown = true;
 
-    connect( m_showInfoCheckbox, SIGNAL( toggled(bool) ), this, SLOT( showInfoCheckBoxStateChanged() ) );
+    connect( m_showInfoCheckbox, SIGNAL( toggled( bool ) ), this, SLOT( showInfoCheckBoxStateChanged() ) );
     connect( m_updateListButton, SIGNAL( clicked() ), this, SLOT( updateButtonClicked()) );
+    connect( m_purchaseAlbumButton, SIGNAL( clicked() ) , this, SLOT(purchaseAlbum()));
   
-
 }
 
 void MagnatuneBrowser::updateButtonClicked( )
@@ -314,10 +331,10 @@ void MagnatuneBrowser::showInfoCheckBoxStateChanged()
     {
 
         m_artistInfobox->widget()->setMaximumHeight( 0 );
-        isInfoShown = false;
+        m_isInfoShown = false;
    } else 
    {
-       isInfoShown = true;
+       m_isInfoShown = true;
      m_artistInfobox->widget()->setMaximumHeight( 2000 );
    }
 

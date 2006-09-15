@@ -46,8 +46,6 @@ public:
 
 protected:
 
-    
-    
     MagnatuneListView * m_listView;
     MagnatuneArtistInfoBox * m_artistInfobox;
     QString m_currentInfoUrl;
@@ -55,12 +53,13 @@ protected:
     MagnatunePurchaseHandler * m_purchaseHandler;
 
     QHBox * m_topPanel;
-    QHBox * m_bottomPanel;
+    QVBox * m_bottomPanel;
     QPushButton * m_updateListButton;
+    QPushButton * m_purchaseAlbumButton;
     QCheckBox * m_showInfoCheckbox;
 
     QComboBox * m_genreComboBox;
-    bool isInfoShown;
+    bool m_isInfoShown;
 
     KIO::TransferJob * m_listDownloadJob;
 
