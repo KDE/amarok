@@ -73,7 +73,6 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
         : QVBox( 0, name )
         , m_polished( false )
         , m_smartCategory( 0 )
-        , m_playlistImports( 0 )
         , m_coolStreams( 0 )
         , m_smartDefaults( 0 )
         , m_lastfmCategory( 0 )
@@ -1607,8 +1606,20 @@ void PlaylistBrowser::addPlaylist( const QString &path, QListViewItem *parent, b
         playlist->load(); //reload the playlist
 
     if( imported ) {
-        if ( !m_playlistImports ) m_playlistImports = new PlaylistCategory( m_playlistCategory, 0, i18n("Imported") );
-        parent = static_cast<QListViewItem*>( m_playlistImports );
+        QListViewItem *playlistImports = 0;
+        //First try and find the imported folder
+        for ( QListViewItem *it = m_playlistCategory->firstChild(); it; it = it->nextSibling() )
+        {
+            if ( dynamic_cast<PlaylistCategory*>( it ) && static_cast<PlaylistCategory*>( it )->isFolder() &&
+                 it->text( 0 ) == i18n( "Imported" ) )
+            {
+                playlistImports = it;
+                break;
+            }
+        }
+        if ( !playlistImports )   //We didn't find the Imported folder, so create it.
+            playlistImports = new PlaylistCategory( m_playlistCategory, 0, i18n("Imported") );
+        parent = playlistImports;
     }
     else if( !parent ) parent = static_cast<QListViewItem*>(m_playlistCategory);
 
