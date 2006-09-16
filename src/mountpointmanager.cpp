@@ -158,7 +158,7 @@ MountPointManager::isMounted ( const int deviceId ) const {
 }
 
 void
-MountPointManager::getMountPointForId( const int& id, KURL& url ) const
+MountPointManager::getMountPointForId( const int id, KURL& url ) const
 {
     if ( isMounted( id ) )
     {
@@ -172,7 +172,7 @@ MountPointManager::getMountPointForId( const int& id, KURL& url ) const
 }
 
 void
-MountPointManager::getAbsolutePath( const int& deviceId, const KURL& relativePath, KURL& absolutePath) const
+MountPointManager::getAbsolutePath( const int deviceId, const KURL& relativePath, KURL& absolutePath) const
 {
     //debug() << "id is " << deviceId << ", relative path is " << relativePath.path() << endl;
     if ( deviceId == -1 )
@@ -214,7 +214,7 @@ MountPointManager::getAbsolutePath( const int& deviceId, const KURL& relativePat
 }
 
 QString
-MountPointManager::getAbsolutePath( const int& deviceId, const QString& relativePath ) const
+MountPointManager::getAbsolutePath( const int deviceId, const QString& relativePath ) const
 {
     KURL rpath;
     rpath.setPath( relativePath );
@@ -224,7 +224,7 @@ MountPointManager::getAbsolutePath( const int& deviceId, const QString& relative
 }
 
 void
-MountPointManager::getRelativePath( const int& deviceId, const KURL& absolutePath, KURL& relativePath ) const
+MountPointManager::getRelativePath( const int deviceId, const KURL& absolutePath, KURL& relativePath ) const
 {
     m_handlerMapMutex.lock();
     if ( deviceId != -1 && m_handlerMap.contains( deviceId ) )
@@ -244,7 +244,7 @@ MountPointManager::getRelativePath( const int& deviceId, const KURL& absolutePat
 }
 
 QString
-MountPointManager::getRelativePath( const int& deviceId, const QString& absolutePath ) const
+MountPointManager::getRelativePath( const int deviceId, const QString& absolutePath ) const
 {
     KURL url;
     getRelativePath( deviceId, KURL::fromPathOrURL( absolutePath ), url );

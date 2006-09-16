@@ -167,7 +167,7 @@ public:
      * @param id
      * @return
      */
-    void getMountPointForId( const int& id, KURL& url ) const;
+    void getMountPointForId( const int id, KURL& url ) const;
     /**
      * builds the absolute path from the mount point of the medium and the given relative
      * path.
@@ -175,16 +175,16 @@ public:
      * @param relativePath relative path on the medium
      * @return the absolute path
      */
-    void getAbsolutePath( const int& deviceId, const KURL& relativePath, KURL& absolutePath ) const;
-    QString getAbsolutePath ( const int& deviceId, const QString& relativePath ) const;
+    void getAbsolutePath( const int deviceId, const KURL& relativePath, KURL& absolutePath ) const;
+    QString getAbsolutePath ( const int deviceId, const QString& relativePath ) const;
     /**
      * calculates a file's/directory's relative path on a given device.
      * @param deviceId the unique id which identifies the device the file/directory is supposed to be on
      * @param absolutePath the file's/directory's absolute path
      * @param relativePath the calculated relative path
      */
-    void getRelativePath( const int& deviceId, const KURL& absolutePath, KURL& relativePath ) const;
-    QString getRelativePath( const int& deviceId, const QString& absolutePath ) const;
+    void getRelativePath( const int deviceId, const KURL& absolutePath, KURL& relativePath ) const;
+    QString getRelativePath( const int deviceId, const QString& absolutePath ) const;
     /**
      * allows calling code to access the ids of all active devices
      * @return the ids of all devices which are currently mounted or otherwise accessible
