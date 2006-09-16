@@ -16,17 +16,14 @@
 
 MagnatuneArtistInfoBox::MagnatuneArtistInfoBox( QWidget *parentWidget, const char *widgetname)
         : KHTMLPart( parentWidget, widgetname )
-{
-}
+{}
 
 
 MagnatuneArtistInfoBox::~MagnatuneArtistInfoBox()
-{
-}
+{}
 
 bool MagnatuneArtistInfoBox::displayArtistInfo( KURL url )
 {
-
 	 debug() << "displayArtistInfo started" << endl;	
 
 	// first get the entire artist html page
@@ -39,37 +36,29 @@ bool MagnatuneArtistInfoBox::displayArtistInfo( KURL url )
 
 
 	return true;
-	
 }
-
-
 
 bool MagnatuneArtistInfoBox::displayAlbumInfo( MagnatuneAlbum * album )
 {
-	
+    const MagnatuneArtist artist = MagnatuneDatabaseHandler::instance()->getArtistById(album->getArtistId());
+    const QString artistName = artist.getName();
         
+    QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=iso-8859-1\"></HEAD><BODY>";
+    infoHtml += "<div align=\"center\"><strong>";
+    infoHtml += artistName;
+    infoHtml += "</strong><br><em>";
+    infoHtml += album->getName();
+    infoHtml += "</em><br><br>";
+    infoHtml += "<img src=\"" + album->getCoverURL() + "\" align=\"middle\" border=\"1\">";
+    infoHtml += "<br><br>From Magnatune.com</div>";
+    infoHtml += "</BODY></HTML>";
 
-        MagnatuneArtist artist= MagnatuneDatabaseHandler::instance()->getArtistById(album->getArtistId());
-        QString artistName = artist.getName();
- 
-        
-        QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=iso-8859-1\"></HEAD><BODY>";
-	infoHtml += "<div align=\"center\"><strong>";
-        infoHtml += artistName;
-        infoHtml += "</strong><br><em>";
-        infoHtml += album->getName();
-        infoHtml += "</em><br><br>";
-        infoHtml += "<img src=\"" + album->getCoverURL() + "\" align=\"middle\" border=\"1\">";
-	infoHtml += "<br><br>From Magnatune.com</div>";
-        infoHtml += "</BODY></HTML>";
+    begin();
+    write(infoHtml);
+    end();
+    show();
 
-	this->begin();
-	this->write(infoHtml);
-	this->end();
-	this->show();
-
-        return true;
-
+    return true;
 }
 
 void MagnatuneArtistInfoBox::infoDownloadComplete( KIO::Job * downLoadJob )
@@ -100,8 +89,6 @@ void MagnatuneArtistInfoBox::infoDownloadComplete( KIO::Job * downLoadJob )
 
 QString MagnatuneArtistInfoBox::extractArtistInfo( QString artistPage )
 {
-
-
         QString trimmedHtml;
 
 

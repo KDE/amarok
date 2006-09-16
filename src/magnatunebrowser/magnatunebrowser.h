@@ -26,8 +26,6 @@
 #include <qcombobox.h>
 
 
-
-
 /**
 A first attempt at making a browser that displays all the music available at magnatune.com
 
@@ -92,9 +90,6 @@ protected slots:
     void listDownloadComplete( KIO::Job* downLoadJob);
     void genreChanged();
     void  DoneParsing();
-
-
-
 };
 
 

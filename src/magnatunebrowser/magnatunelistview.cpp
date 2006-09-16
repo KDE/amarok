@@ -14,16 +14,13 @@
 
 MagnatuneListView::MagnatuneListView(QWidget * parent)
  : QListView(parent)
-{
-}
+{}
 
 MagnatuneListView::~MagnatuneListView()
-{
-}
+{}
 
 KURLDrag * MagnatuneListView::dragObject( )
 {
-
     KURL::List urls;
     int id;
     MagnatuneTrackList tracks;
@@ -53,8 +50,6 @@ KURLDrag * MagnatuneListView::dragObject( )
 
     KURLDrag* d = new KURLDrag( urls, this );
     return d;
-
-   
 }
 
 
