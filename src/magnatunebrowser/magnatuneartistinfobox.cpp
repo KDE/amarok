@@ -24,23 +24,23 @@ MagnatuneArtistInfoBox::~MagnatuneArtistInfoBox()
 
 bool MagnatuneArtistInfoBox::displayArtistInfo( KURL url )
 {
-	 debug() << "displayArtistInfo started" << endl;	
+    debug() << "displayArtistInfo started" << endl;	
 
-	// first get the entire artist html page
-	QString tempFile;
-	QString orgHtml;
+    // first get the entire artist html page
+    QString tempFile;
+    QString orgHtml;
 
-        m_infoDownloadJob = KIO::storedGet( url, false, false );
-        Amarok::StatusBar::instance()->newProgressOperation( m_infoDownloadJob ).setDescription( i18n( "Fetching Artist Info" ) );
-        connect( m_infoDownloadJob, SIGNAL( result( KIO::Job* ) ), SLOT( infoDownloadComplete( KIO::Job* ) ) );
+    m_infoDownloadJob = KIO::storedGet( url, false, false );
+    Amarok::StatusBar::instance()->newProgressOperation( m_infoDownloadJob ).setDescription( i18n( "Fetching Artist Info" ) );
+    connect( m_infoDownloadJob, SIGNAL( result( KIO::Job* ) ), SLOT( infoDownloadComplete( KIO::Job* ) ) );
 
 
-	return true;
+    return true;
 }
 
 bool MagnatuneArtistInfoBox::displayAlbumInfo( MagnatuneAlbum * album )
 {
-    const MagnatuneArtist artist = MagnatuneDatabaseHandler::instance()->getArtistById(album->getArtistId());
+    const MagnatuneArtist artist = MagnatuneDatabaseHandler::instance()->getArtistById( album->getArtistId() );
     const QString artistName = artist.getName();
         
     QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=iso-8859-1\"></HEAD><BODY>";
@@ -50,6 +50,9 @@ bool MagnatuneArtistInfoBox::displayAlbumInfo( MagnatuneAlbum * album )
     infoHtml += album->getName();
     infoHtml += "</em><br><br>";
     infoHtml += "<img src=\"" + album->getCoverURL() + "\" align=\"middle\" border=\"1\">";
+    
+    infoHtml += "<br><br>Genre: " + album->getMp3Genre();
+    infoHtml += "<br>Release Year: " + QString::number( album->getLaunchDate().year() );
     infoHtml += "<br><br>From Magnatune.com</div>";
     infoHtml += "</BODY></HTML>";
 
@@ -89,32 +92,32 @@ void MagnatuneArtistInfoBox::infoDownloadComplete( KIO::Job * downLoadJob )
 
 QString MagnatuneArtistInfoBox::extractArtistInfo( QString artistPage )
 {
-        QString trimmedHtml;
+    QString trimmedHtml;
 
 
-        int sectionStart = artistPage.find("<!-- ARTISTBODY -->");
-	int sectionEnd = artistPage.find("<!-- /ARTISTBODY -->", sectionStart);
+    int sectionStart = artistPage.find( "<!-- ARTISTBODY -->" );
+    int sectionEnd = artistPage.find( "<!-- /ARTISTBODY -->", sectionStart );
 
-	trimmedHtml = artistPage.mid(sectionStart, sectionEnd - sectionStart);   	
+    trimmedHtml = artistPage.mid( sectionStart, sectionEnd - sectionStart );   	
 
-	int buyStartIndex = trimmedHtml.find("<!-- PURCHASE -->");
-	int buyEndIndex;
+    int buyStartIndex = trimmedHtml.find( "<!-- PURCHASE -->" );
+    int buyEndIndex;
 
-	//we are going to integrate the buying of music (I hope) so remove these links
+    //we are going to integrate the buying of music (I hope) so remove these links
 
-	while ( buyStartIndex != -1) {
-		buyEndIndex = trimmedHtml.find("<!-- /PURCHASE -->", buyStartIndex) + 18;
-		trimmedHtml.remove(buyStartIndex,buyEndIndex- buyStartIndex);
-		buyStartIndex = trimmedHtml.find("<!-- PURCHASE -->", buyStartIndex);
-	}
-
-
-	QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=iso-8859-1\"></HEAD><BODY>";
-	infoHtml += trimmedHtml;
-	infoHtml += "</BODY></HTML>";
+    while ( buyStartIndex != -1) {
+        buyEndIndex = trimmedHtml.find( "<!-- /PURCHASE -->", buyStartIndex ) + 18;
+        trimmedHtml.remove( buyStartIndex,buyEndIndex- buyStartIndex );
+        buyStartIndex = trimmedHtml.find( "<!-- PURCHASE -->", buyStartIndex );
+    }
 
 
-        return infoHtml;
+    QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=iso-8859-1\"></HEAD><BODY>";
+    infoHtml += trimmedHtml;
+    infoHtml += "</BODY></HTML>";
+
+
+    return infoHtml;
 }
 
 #include "magnatuneartistinfobox.moc"
