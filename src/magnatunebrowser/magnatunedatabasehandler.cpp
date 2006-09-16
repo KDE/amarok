@@ -248,201 +248,250 @@ MagnatuneArtistList MagnatuneDatabaseHandler::getArtistsByGenre( QString genre )
 MagnatuneAlbumList MagnatuneDatabaseHandler::getAlbumsByArtistId( int id, QString genre )
 {
 
-   QString genreSqlString;
-
-   if (genre == "") {
-      genreSqlString = "";
-   } else {
-      genreSqlString = " AND magnatune_albums.genre='" + genre + "'";
-   }
-
-   CollectionDB* db = CollectionDB::instance();
-
-   QString queryString = "SELECT DISTINCT id, " 
-			 "name, year, "
-			 "artist_id, genre, "
-			 "album_code, cover_url "
-			 "FROM magnatune_albums "
-			 "WHERE artist_id = '" + QString::number(id) +"'";
-
+    QString genreSqlString;
+    
+    if ( genre == "" ) {
+        genreSqlString = "";
+    } else {
+        genreSqlString = " AND magnatune_albums.genre='" + genre + "'";
+    }
+    
+    CollectionDB* db = CollectionDB::instance();
+    
+    QString queryString = "SELECT DISTINCT id, " 
+                            "name, year, "
+                            "artist_id, genre, "
+                            "album_code, cover_url "
+                            "FROM magnatune_albums "
+                            "WHERE artist_id = '" + QString::number( id ) +"'";
+    
     queryString += genreSqlString;
     queryString += ";";
-			 
-
-   QStringList result = db->query(queryString);
-
-
-   MagnatuneAlbumList list;
-   debug() << "Looking for Albums..." << endl;
-   debug() << "Query string:" << queryString << endl;
-   
-   debug() << "  found: " << result << "!" << endl;
-
-   while (result.size() > 0) {
-      MagnatuneAlbum album;
-
-      album.setId(result.front().toInt());
-      result.pop_front();
-
-      album.setName(result.front());
-      result.pop_front();
-
-      album.setLaunchDate(QDate(result.front().toInt(), 1, 1));
-      result.pop_front();
-
-      album.setArtistId(result.front().toInt());
-      result.pop_front();
-
-      album.setMp3Genre(result.front());
-      result.pop_front();
-
-      album.setAlbumCode(result.front());
-      result.pop_front();
-
-      album.setCoverURL(result.front());
-      result.pop_front();
-
-      list.append(album);
-   }
-
-   return list;
+                            
+    
+    QStringList result = db->query( queryString );
+    
+    
+    MagnatuneAlbumList list;
+    debug() << "Looking for Albums..." << endl;
+    debug() << "Query string:" << queryString << endl;
+    
+    debug() << "  found: " << result << "!" << endl;
+    
+    while (result.size() > 0) {
+        MagnatuneAlbum album;
+    
+        album.setId(result.front().toInt());
+        result.pop_front();
+    
+        album.setName(result.front());
+        result.pop_front();
+    
+        album.setLaunchDate(QDate(result.front().toInt(), 1, 1));
+        result.pop_front();
+    
+        album.setArtistId(result.front().toInt());
+        result.pop_front();
+    
+        album.setMp3Genre(result.front());
+        result.pop_front();
+    
+        album.setAlbumCode(result.front());
+        result.pop_front();
+    
+        album.setCoverURL(result.front());
+        result.pop_front();
+    
+        list.append(album);
+    }
+    
+    return list;
 
 
 }
 
 MagnatuneTrackList MagnatuneDatabaseHandler::getTracksByAlbumId( int id )
 {
-
-   CollectionDB* db = CollectionDB::instance();
-
-   QString queryString = "SELECT DISTINCT id, " 
-			 "name, track_number, "
-			 "length, album_id, "
-			 "artist_id, preview_lofi, "
-			 "preview_hifi "
-			 "FROM magnatune_tracks "
-			 "WHERE album_id = '" + QString::number(id) +"';";
-
-   QStringList result = db->query(queryString);
-
-
-   MagnatuneTrackList list;
-
-   debug() << "Looking for tracks..." << endl;
-   debug() << "Query string:" << queryString << endl;
-   
-   debug() << "  found: " << result << "!" << endl;
-
-   while (result.size() > 0) {
-
-      debug() << "track start" << endl;
-      MagnatuneTrack track;
-
-      track.setId(result.front().toInt());
-      result.pop_front();
-
-      track.setName(result.front());
-      result.pop_front();
-
-      track.setTrackNumber(result.front().toInt());
-      result.pop_front();
-
-      track.setDuration(result.front().toInt());
-      result.pop_front();
-
-      track.setAlbumId(result.front().toInt());
-      result.pop_front();
-
-      track.setArtistId(result.front().toInt());
-      result.pop_front();
-
-      track.setLofiURL(result.front());
-      result.pop_front();
-
-      track.setHifiURL(result.front());
-      result.pop_front();
-
-      list.append(track);
-  debug() << "track end" << endl;
-   }
-
-   return list;
+    
+    CollectionDB* db = CollectionDB::instance();
+    
+    QString queryString = "SELECT DISTINCT id, " 
+                            "name, track_number, "
+                            "length, album_id, "
+                            "artist_id, preview_lofi, "
+                            "preview_hifi "
+                            "FROM magnatune_tracks "
+                            "WHERE album_id = '" + QString::number(id) +"';";
+    
+    QStringList result = db->query(queryString);
+    
+    
+    MagnatuneTrackList list;
+    
+    debug() << "Looking for tracks..." << endl;
+    debug() << "Query string:" << queryString << endl;
+    
+    debug() << "  found: " << result << "!" << endl;
+    
+    while (result.size() > 0) {
+    
+        debug() << "track start" << endl;
+        MagnatuneTrack track;
+    
+        track.setId(result.front().toInt());
+        result.pop_front();
+    
+        track.setName(result.front());
+        result.pop_front();
+    
+        track.setTrackNumber(result.front().toInt());
+        result.pop_front();
+    
+        track.setDuration(result.front().toInt());
+        result.pop_front();
+    
+        track.setAlbumId(result.front().toInt());
+        result.pop_front();
+    
+        track.setArtistId(result.front().toInt());
+        result.pop_front();
+    
+        track.setLofiURL(result.front());
+        result.pop_front();
+    
+        track.setHifiURL(result.front());
+        result.pop_front();
+    
+        list.append(track);
+        debug() << "track end" << endl;
+    }
+    
+    return list;
 
 }
 
 QStringList MagnatuneDatabaseHandler::getAlbumGenres( )
 {
 	
-   CollectionDB* db = CollectionDB::instance();
-
-   QString queryString = "SELECT DISTINCT genre " 
-			 "FROM magnatune_albums "
-			 "ORDER BY genre;";
-
-   return db->query(queryString);
+    CollectionDB* db = CollectionDB::instance();
+    
+    QString queryString = "SELECT DISTINCT genre " 
+                            "FROM magnatune_albums "
+                            "ORDER BY genre;";
+    
+    return db->query(queryString);
 }
 
 void MagnatuneDatabaseHandler::begin( )
 {
 	
-   CollectionDB* db = CollectionDB::instance();
-
-   QString queryString = "BEGIN;";
-
-   db->query(queryString);
+    CollectionDB* db = CollectionDB::instance();
+    
+    QString queryString = "BEGIN;";
+    
+    db->query(queryString);
 }
 
 void MagnatuneDatabaseHandler::commit( )
 {
-   CollectionDB* db = CollectionDB::instance();
-   QString queryString = "COMMIT;";
-
-   db->query(queryString);
+    CollectionDB* db = CollectionDB::instance();
+    QString queryString = "COMMIT;";
+    
+    db->query(queryString);
 
 }
 
 MagnatuneArtist MagnatuneDatabaseHandler::getArtistById( int id )
 {
 
-CollectionDB* db = CollectionDB::instance();
-
-   QString queryString = "SELECT id, " 
-			 "name, artist_page, "
-			 "description, photo_url "
-			 "FROM magnatune_artists "
-			 "WHERE id = '" + QString::number(id) + "';";
-
-   QStringList result = db->query(queryString);
-   
-   MagnatuneArtist artist;
-
-   if (result.size() == 5) {
-
-      artist.setId(result.front().toInt());
-      result.pop_front();
-
-      artist.setName(result.front());
-      result.pop_front();
-
-      artist.setHomeURL(result.front());
-      result.pop_front();
-
-      artist.setDescription(result.front());
-      result.pop_front();
-
-      artist.setPhotoURL(result.front());
-      result.pop_front();
-
-   }
+    CollectionDB* db = CollectionDB::instance();
+    
+    QString queryString = "SELECT id, " 
+                            "name, artist_page, "
+                            "description, photo_url "
+                            "FROM magnatune_artists "
+                            "WHERE id = '" + QString::number(id) + "';";
+    
+    QStringList result = db->query(queryString);
+    
+    MagnatuneArtist artist;
+    
+    if (result.size() == 5) {
+    
+        artist.setId(result.front().toInt());
+        result.pop_front();
+    
+        artist.setName(result.front());
+        result.pop_front();
+    
+        artist.setHomeURL(result.front());
+        result.pop_front();
+    
+        artist.setDescription( result.front() );
+        result.pop_front();
+    
+        artist.setPhotoURL( result.front() );
+        result.pop_front();
+    
+    }
    
 
    return artist;
 }
 
+MagnatuneAlbum MagnatuneDatabaseHandler::getAlbumById( int id )
+{
+
+    
+    CollectionDB* db = CollectionDB::instance();
+
+    QString queryString = "SELECT id, " 
+            "name, year, "
+            "artist_id, genre, "
+            "album_code, cover_url "
+            "FROM magnatune_albums "
+            "WHERE id = '" + QString::number(id) + "';";
+
+    QStringList result = db->query( queryString );
+
+    debug() << "  found: " << result << "!" << endl;
+    
+    MagnatuneAlbum album;
+
+    if ( result.size() == 7 ) {
+
+        album.setId( result.front().toInt() );
+        result.pop_front();
+
+        album.setName( result.front() );
+        result.pop_front();
+
+        album.setLaunchDate( QDate( result.front().toInt(), 1, 1 ) );
+        result.pop_front();
+
+        album.setArtistId( result.front().toInt() );
+        result.pop_front();
+
+        album.setMp3Genre( result.front() );
+        result.pop_front();
+        
+        album.setAlbumCode( result.front() );
+        result.pop_front();
+        
+        album.setCoverURL( result.front() );
+        result.pop_front();
+
+    }
+
+    return album;
+
+}
+
+
 MagnatuneTrackList MagnatuneDatabaseHandler::getTracksByArtistId( int id )
 {
 
-    MagnatuneAlbumList albums = getAlbumsByArtistId(id, "");
+    MagnatuneAlbumList albums = getAlbumsByArtistId( id, "" );
     MagnatuneAlbumList::iterator it;
     MagnatuneTrackList tracks;
       
@@ -450,13 +499,14 @@ MagnatuneTrackList MagnatuneDatabaseHandler::getTracksByArtistId( int id )
 
     for ( it = albums.begin(); it != albums.end(); ++it ) {
 
-      tracks += getTracksByAlbumId((*it).getId());
+      tracks += getTracksByAlbumId( (*it).getId() );
 
     }
 
     return tracks;
 
 }
+
 
 
 

@@ -134,6 +134,12 @@ void MagnatuneBrowser::selectionChanged( QListViewItem * item )
                 m_currentInfoUrl = albumItem->getCoverURL();
                 m_artistInfobox->displayAlbumInfo(albumItem);
             }
+        } else if (item->depth() == 2) {
+            // a track is selected, show the corrosponding album info!
+            MagnatuneListViewTrackItem * trackItem = (MagnatuneListViewTrackItem *) item;
+            int albumId = trackItem->getAlbumId();
+            MagnatuneAlbum album =  MagnatuneDatabaseHandler::instance()->getAlbumById(albumId);
+            m_artistInfobox->displayAlbumInfo(&album);
         }
     }
 }

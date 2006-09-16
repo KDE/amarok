@@ -47,6 +47,7 @@ public:
 
     MagnatuneArtistList getArtistsByGenre(QString genre);
     MagnatuneArtist 	getArtistById(int id);
+    MagnatuneAlbum 	getAlbumById(int id);
     MagnatuneAlbumList  getAlbumsByArtistId(int id, QString genre);
     MagnatuneTrackList  getTracksByAlbumId(int id);
     MagnatuneTrackList  getTracksByArtistId(int id);  //used for adding all tracks by a given artist to playlist
