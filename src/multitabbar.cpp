@@ -196,7 +196,7 @@ void MultiTabBarInternal::mousePressEvent( QMouseEvent *ev )
 
     // right button pressed
     showTabSelectionMenu(ev->globalPos());
-    
+
 }
 
 
@@ -221,7 +221,7 @@ void MultiTabBarInternal::resizeEvent( QResizeEvent *ev )
     /*  kdDebug()<<"MultiTabBarInternal::resizeEvent"<<endl;
         kdDebug()<<"MultiTabBarInternal::resizeEvent - box geometry"<<box->geometry()<<endl;
         kdDebug()<<"MultiTabBarInternal::resizeEvent - geometry"<<geometry()<<endl;*/
-    
+
     if ( ev ) QScrollView::resizeEvent( ev );
 
     if ( ( m_style == MultiTabBar::KDEV3 ) ||
@@ -496,9 +496,9 @@ uint MultiTabBarInternal::visibleTabCount()
 uint MultiTabBarInternal::sizePerTab()
 {
     uint size;
-
     if( m_position == MultiTabBar::Left || m_position == MultiTabBar::Right )
-        size = (height() - 3 ) / visibleTabCount();
+                        /* HACK: width() is the "Manage Tabs" button size :-( */
+        size = (height() - 3 - width() ) / visibleTabCount();
     else
         size = (width() - 3 ) / visibleTabCount();
 
@@ -555,8 +555,7 @@ MultiTabBarButton::MultiTabBarButton( const QString& text, QPopupMenu *popup,
 
 MultiTabBarButton::~MultiTabBarButton()
 {
-    if ( d != 0 )
-        delete d;
+    delete d;
 }
 
 int MultiTabBarButton::id() const
@@ -1296,7 +1295,7 @@ QPtrList<MultiTabBarTab>* MultiTabBar::tabs() { return m_internal->tabs();}
 QPtrList<MultiTabBarButton>* MultiTabBar::buttons() { return & m_buttons;}
 
 void MultiTabBar::showTabSelectionMenu(QPoint pos)
-{   
+{
     m_internal->showTabSelectionMenu(pos);
 }
 
