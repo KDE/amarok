@@ -445,7 +445,7 @@
                         <cstring>textLabel17</cstring>
                     </property>
                     <property name="text">
-                        <string>The amount you choose to pay wil be split 50/50 between the artist and Magnatune.com</string>
+                        <string>The amount you choose to pay will be split 50/50 between the artist and Magnatune.com</string>
                     </property>
                     <property name="alignment">
                         <set>WordBreak|AlignVCenter</set>
