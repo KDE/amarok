@@ -12,9 +12,16 @@
 #include "magnatunelistview.h"
 #include "magnatunedatabasehandler.h"
 
+#include <klocale.h>
+
 MagnatuneListView::MagnatuneListView(QWidget * parent)
  : QListView(parent)
-{}
+{
+
+    setRootIsDecorated(TRUE);
+    addColumn( i18n( "Artist/Album/Track" ) );
+    
+}
 
 MagnatuneListView::~MagnatuneListView()
 {}

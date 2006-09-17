@@ -11,6 +11,8 @@
 //
 #include "magnatunelistviewitems.h"
 
+#include <klocale.h>
+
 
 MagnatuneListViewArtistItem::MagnatuneListViewArtistItem( MagnatuneArtist artist, QListView * parent )
 : QListViewItem( parent ), MagnatuneArtist( artist )
@@ -37,9 +39,11 @@ void MagnatuneListViewArtistItem::setOpen( bool o )
            new MagnatuneListViewAlbumItem( (*it), this );
         }
     }
-    QListViewItem::setOpen( o );
     listView()->setUpdatesEnabled( TRUE );
+    QListViewItem::setOpen( o );
+    invalidateHeight();
     listView()->repaintContents();
+   
      
 }
 
@@ -89,9 +93,12 @@ void MagnatuneListViewAlbumItem::setOpen( bool o )
         }
     }
 
-    QListViewItem::setOpen( o );
-    listView()->repaintContents();
     listView()->setUpdatesEnabled( TRUE );
+    QListViewItem::setOpen( o );
+    invalidateHeight();
+    listView()->repaintContents();
+    
+    
 }
 
 void MagnatuneListViewAlbumItem::setup( )

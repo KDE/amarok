@@ -220,24 +220,24 @@ MagnatuneArtistList MagnatuneDatabaseHandler::getArtistsByGenre( QString genre )
    MagnatuneArtistList list;
 
    while (result.size() > 0) {
-      MagnatuneArtist artist;
+       MagnatuneArtist artist;
 
-      artist.setId(result.front().toInt());
-      result.pop_front();
+       artist.setId(result.front().toInt());
+       result.pop_front();
 
        artist.setName(result.front());
-      result.pop_front();
+       result.pop_front();
 
-      artist.setHomeURL(result.front());
-      result.pop_front();
+       artist.setHomeURL(result.front());
+       result.pop_front();
 
-      artist.setDescription(result.front());
-      result.pop_front();
+       artist.setDescription(result.front());
+       result.pop_front();
 
-      artist.setPhotoURL(result.front());
-      result.pop_front();
+       artist.setPhotoURL(result.front());
+       result.pop_front();
 
-      list.append(artist);
+       list.append(artist);
    }
 
    return list;

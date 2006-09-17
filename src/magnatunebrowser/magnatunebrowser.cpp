@@ -25,14 +25,6 @@ MagnatuneBrowser::MagnatuneBrowser( const char *name )
     debug() << "Magnatune browser starting..." << endl;
     m_listView = new MagnatuneListView(spliter);
 
-
-    m_listView->setRootIsDecorated(TRUE);
-    m_listView->addColumn(i18n( "Artist/Album/Track" ) );
-    //m_listView->addColumn("Genre");
-
-    //m_listView->setSortIndicator(0, Qt::Ascending);
-
-
     m_popupMenu = new QPopupMenu(spliter, "MagnatuneMenu");
 
     m_artistInfobox = new MagnatuneArtistInfoBox(spliter, "ArtistInfoBox");
