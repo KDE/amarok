@@ -54,7 +54,7 @@ protected:
     QVBox * m_bottomPanel;
     QPushButton * m_updateListButton;
     QPushButton * m_purchaseAlbumButton;
-    QCheckBox * m_showInfoCheckbox;
+    QPushButton * m_showInfoToggleButton;
 
     QComboBox * m_genreComboBox;
     bool m_isInfoShown;
@@ -86,7 +86,7 @@ protected slots:
     void selectionChanged(QListViewItem *);
     void showPopupMenu(QListViewItem * item, const QPoint & pos, int column);
     void updateButtonClicked();
-    void showInfoCheckBoxStateChanged();
+    void showInfo(bool show);
     void listDownloadComplete( KIO::Job* downLoadJob);
     void genreChanged();
     void  DoneParsing();

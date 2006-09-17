@@ -2,6 +2,7 @@
 //
 // Copyright: See COPYING file that comes with this distribution
 
+#include "amarok.h"
 #include "magnatunebrowser.h"
 #include "playlist.h"
 #include "magnatunedatabasehandler.h"
@@ -9,6 +10,7 @@
 
 #include <kstandarddirs.h> //locate()
 #include <kurl.h>
+#include <kiconloader.h>   //multiTabBar icons
 
 #include <qsplitter.h>
 #include <qdragobject.h>
@@ -224,16 +226,21 @@ void MagnatuneBrowser::initBottomPanel( )
     hBox->setSpacing( 2 );
     //hBox->setMargin( 2 );
 
-    m_purchaseAlbumButton = new QPushButton ( i18n( "Purchase Album" ), m_bottomPanel, "purchaseButton" );
+    m_purchaseAlbumButton = new QPushButton( i18n( "Purchase Album" ), m_bottomPanel, "purchaseButton" );
+    m_purchaseAlbumButton->setIconSet( SmallIconSet( Amarok::icon( "download" ) ) );
     m_purchaseAlbumButton->setEnabled( false );
     m_purchaseAlbumButton->setMaximumHeight( 24 );
 
-    m_updateListButton = new QPushButton ( i18n( "Update" ), hBox, "updateButton" );
-    m_showInfoCheckbox = new QCheckBox ( i18n( "Show Info" ) ,hBox, "showInfoCheckbox" );
-    m_showInfoCheckbox->setChecked( true );
+    m_updateListButton = new QPushButton( i18n( "Update" ), hBox, "updateButton" );
+    m_updateListButton->setIconSet( SmallIconSet( Amarok::icon( "rescan" ) ) );
+    m_showInfoToggleButton = new QPushButton( i18n( "Show Info" ) ,hBox, "showInfoCheckbox" );
+    m_showInfoToggleButton->setToggleButton( true );
+    m_showInfoToggleButton->setIconSet( SmallIconSet( Amarok::icon( "info" ) ) );
+    m_showInfoToggleButton->setOn( true );
+    
     m_isInfoShown = true;
 
-    connect( m_showInfoCheckbox, SIGNAL( toggled( bool ) ), this, SLOT( showInfoCheckBoxStateChanged() ) );
+    connect( m_showInfoToggleButton, SIGNAL( toggled( bool ) ), this, SLOT( showInfo(bool) ) );
     connect( m_updateListButton, SIGNAL( clicked() ), this, SLOT( updateButtonClicked()) );
     connect( m_purchaseAlbumButton, SIGNAL( clicked() ) , this, SLOT(purchaseAlbum()));
 }
@@ -289,17 +296,18 @@ void MagnatuneBrowser::listDownloadComplete( KIO::Job * downLoadJob )
     ThreadWeaver::instance()->queueJob(parser);
 }
 
-void MagnatuneBrowser::showInfoCheckBoxStateChanged()
+void MagnatuneBrowser::showInfo(bool show)
 {
-    if ( !m_showInfoCheckbox->isChecked() )
-    {
-        m_artistInfobox->widget()->setMaximumHeight( 0 );
-        m_isInfoShown = false;
-    } else
+    if ( show )
     {
         m_isInfoShown = true;
         m_artistInfobox->widget()->setMaximumHeight( 2000 );
-    }
+    } else
+    {
+        m_artistInfobox->widget()->setMaximumHeight( 0 );
+        m_isInfoShown = false;
+    } 
+    
 }
 
 void MagnatuneBrowser::updateList( )
