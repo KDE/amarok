@@ -148,7 +148,7 @@ const QString MetaBundle::prettyColumnName( int index ) //static
         case Score:      return i18n( "Score"       );
         case Rating:     return i18n( "Rating"      );
         case PlayCount:  return i18n( "Play Count"  );
-        case LastPlayed: return i18n( "Last Played" );
+        case LastPlayed: return i18n( "Column name", "Last Played" );
         case Filesize:   return i18n( "File Size"   );
         case Mood:       return i18n( "Mood"        );
     }
