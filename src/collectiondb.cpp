@@ -7176,12 +7176,8 @@ QueryBuilder::buildQuery()
     if ( m_query.isEmpty() )
     {
         linkTables( m_linkTables );
-        if ( !m_showAll && !m_tables.contains("tags") )
-        {
-            m_tables += ",tags";
-        }
         m_query = "SELECT " + m_values + " FROM " + m_tables + ' ' + m_join + " WHERE " + CollectionDB::instance()->boolT() + ' ' + m_where;
-        if ( !m_showAll )
+        if ( !m_showAll && ( m_linkTables & tabSong ) )     //Only for things on mounted devices, unless you use optShowAll
         {
             IdList list = MountPointManager::instance()->getMountedDeviceIds();
             QString deviceIds = "";
