@@ -3379,7 +3379,8 @@ CollectionDB::bundleForUrl( MetaBundle* bundle )
             "year.name, tags.comment, tags.discnumber, "
             "tags.track, tags.bitrate, tags.length, tags.samplerate, "
             "tags.filesize, tags.filetype, tags.bpm, tags.sampler, uniqueid.uniqueid "
-            "FROM tags LEFT OUTER JOIN uniqueid ON tags.url = uniqueid.url, album, artist, composer, genre, year "
+            "FROM tags LEFT OUTER JOIN uniqueid ON tags.url = uniqueid.url AND tags.deviceid = uniqueid.deviceid," 
+            "album, artist, composer, genre, year "
             "WHERE album.id = tags.album AND artist.id = tags.artist AND composer.id = tags.composer AND "
             "genre.id = tags.genre AND year.id = tags.year AND tags.url = '%2' AND tags.deviceid = %1;" )
                 .arg( deviceid )
