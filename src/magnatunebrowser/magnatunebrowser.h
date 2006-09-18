@@ -80,7 +80,9 @@ protected:
 protected slots:
 
     void menuAboutToShow();
-    void purchaseAlbum();
+    void purchaseButtonClicked();
+    void purchaseSelectedAlbum();
+    void purchaseAlbumContainingSelectedTrack();
     void addSelectionToPlaylist();
     void itemExecuted(QListViewItem *);
     void selectionChanged(QListViewItem *);

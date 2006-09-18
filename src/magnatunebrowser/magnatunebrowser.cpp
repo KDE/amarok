@@ -108,10 +108,10 @@ void MagnatuneBrowser::selectionChanged( QListViewItem * item )
 {
     debug() << "Selection changed..." << endl;
 
-    if (item->depth() == 1)
-        m_purchaseAlbumButton->setEnabled( true );
-    else
+    if (item->depth() == 0)
         m_purchaseAlbumButton->setEnabled( false );
+    else
+        m_purchaseAlbumButton->setEnabled( true );
 
 
     if(m_isInfoShown) {
@@ -175,10 +175,11 @@ void MagnatuneBrowser::menuAboutToShow( )
                 break;
             case 1:
                 m_popupMenu->insertItem( i18n( "Add album to playlist" ), this, SLOT( addSelectionToPlaylist() ) );
-                m_popupMenu->insertItem( i18n( "Purchase album" ), this, SLOT(purchaseAlbum()));
+                m_popupMenu->insertItem( i18n( "Purchase album" ), this, SLOT( purchaseSelectedAlbum() ) );
                 break;
             case 2:
                 m_popupMenu->insertItem( i18n( "Add track to playlist" ), this, SLOT( addSelectionToPlaylist() ) );
+                m_popupMenu->insertItem( i18n( "Purchase album" ), this, SLOT( purchaseAlbumContainingSelectedTrack() ) );
         }
     } else
     {
@@ -186,7 +187,16 @@ void MagnatuneBrowser::menuAboutToShow( )
     }
 }
 
-void MagnatuneBrowser::purchaseAlbum( )
+
+void MagnatuneBrowser::purchaseButtonClicked( )
+{
+    if (m_listView->selectedItem()->depth() == 1)
+        purchaseSelectedAlbum( );
+    else if (m_listView->selectedItem()->depth() == 2) 
+        purchaseAlbumContainingSelectedTrack( );
+}
+
+void MagnatuneBrowser::purchaseSelectedAlbum( )
 {
     if (m_purchaseHandler == 0) {
         m_purchaseHandler = new MagnatunePurchaseHandler();
@@ -196,6 +206,20 @@ void MagnatuneBrowser::purchaseAlbum( )
     MagnatuneListViewAlbumItem * selectedAlbum = (MagnatuneListViewAlbumItem *) m_listView->selectedItem();
 
     m_purchaseHandler->purchaseAlbum(selectedAlbum);
+}
+
+void MagnatuneBrowser::purchaseAlbumContainingSelectedTrack( )
+{
+    if (m_purchaseHandler == 0) {
+        m_purchaseHandler = new MagnatunePurchaseHandler();
+        m_purchaseHandler->setParent( this );
+    }
+
+    MagnatuneListViewTrackItem * selectedTrack = (MagnatuneListViewTrackItem *) m_listView->selectedItem();
+    
+    MagnatuneAlbum album = MagnatuneDatabaseHandler::instance()->getAlbumById(selectedTrack->getAlbumId());
+    
+    m_purchaseHandler->purchaseAlbum(&album);
 }
 
 void MagnatuneBrowser::initTopPanel( )
@@ -242,7 +266,7 @@ void MagnatuneBrowser::initBottomPanel( )
 
     connect( m_showInfoToggleButton, SIGNAL( toggled( bool ) ), this, SLOT( showInfo(bool) ) );
     connect( m_updateListButton, SIGNAL( clicked() ), this, SLOT( updateButtonClicked()) );
-    connect( m_purchaseAlbumButton, SIGNAL( clicked() ) , this, SLOT(purchaseAlbum()));
+    connect( m_purchaseAlbumButton, SIGNAL( clicked() ) , this, SLOT(purchaseButtonClicked()));
 }
 
 void MagnatuneBrowser::updateButtonClicked( )
@@ -359,6 +383,10 @@ void MagnatuneBrowser::updateGenreBox( )
         m_genreComboBox->insertItem( (*it), -1 );
     }
 }
+
+
+
+
 
 
 #include "magnatunebrowser.moc"
