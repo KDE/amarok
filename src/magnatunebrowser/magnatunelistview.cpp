@@ -20,6 +20,7 @@ MagnatuneListView::MagnatuneListView(QWidget * parent)
 
     setRootIsDecorated(TRUE);
     addColumn( i18n( "Artist/Album/Track" ) );
+    addColumn( i18n( "Duration" ) );
     
 }
 

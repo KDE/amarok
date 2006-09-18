@@ -10,8 +10,11 @@
 //
 //
 #include "magnatunelistviewitems.h"
+#include "debug.h"
 
 #include <klocale.h>
+
+#include <qdatetime.h>
 
 
 MagnatuneListViewArtistItem::MagnatuneListViewArtistItem( MagnatuneArtist artist, QListView * parent )
@@ -131,6 +134,17 @@ MagnatuneListViewTrackItem::MagnatuneListViewTrackItem( MagnatuneTrack track, QL
     
     
     QListViewItem::setText( 0, trackNumberString + " - " +  track.getName() );
+    
+    debug() << "track duration: " << QString::number( track.getDuration() ) <<  endl;
+    
+    QTime duration;
+    duration = duration.addSecs(track.getDuration());
+    
+    if (duration.hour() == 0)
+        QListViewItem::setText( 1, duration.toString( "m:ss" ) );
+    else
+        QListViewItem::setText( 1, duration.toString( "h:mm:ss" ) );
+    
     setDragEnabled( true );
 }
 
