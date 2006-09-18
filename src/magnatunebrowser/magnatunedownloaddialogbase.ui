@@ -26,9 +26,6 @@
             <property name="text">
                 <string>&amp;Download</string>
             </property>
-            <property name="accel">
-                <string>Alt+D</string>
-            </property>
         </widget>
         <widget class="QGroupBox" row="1" column="0">
             <property name="name">
