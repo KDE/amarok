@@ -218,7 +218,7 @@ class PodcastFetcher : public QObject
     Q_OBJECT
     public:
         PodcastFetcher( QString url, const KURL &directory, int size );
-
+        ~PodcastFetcher();
         QString filename() { return m_url.fileName(); }
         KURL localUrl() { return KURL( m_file.name() ); }
         void kill();
@@ -227,7 +227,7 @@ class PodcastFetcher : public QObject
         void result( int error );
         void progress( const QObject* thisObject, int steps );
 
-    public slots:
+    private slots:
         void slotResponseReceived( const QHttpResponseHeader & resp );
         void slotDone( bool error );
         void slotProgress( int bytesDone, int bytesTotal );
@@ -237,7 +237,7 @@ class PodcastFetcher : public QObject
 
         QFile m_file;
         QUrl m_url;
-        QHttp m_http;
+        QHttp* m_http;
         KURL m_directory;
         bool m_redirected;
         int m_error;
