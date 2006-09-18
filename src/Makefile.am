@@ -35,6 +35,7 @@ SUBDIRS = \
 
 INCLUDES = \
     -I$(top_builddir)/amarok/src/amarokcore \
+    -I$(top_builddir)/amarok/src/magnatunebrowser \
     -I$(top_srcdir)/amarok/src/amarokcore \
     -I$(top_srcdir)/amarok/src/analyzers \
     -I$(top_srcdir)/amarok/src/plugin \
