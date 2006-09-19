@@ -33,65 +33,66 @@ A first attempt at making a browser that displays all the music available at mag
 */
 class MagnatuneBrowser : public QVBox
 {
+    Q_OBJECT
 
-Q_OBJECT
 public:
+    ~MagnatuneBrowser() { }
+
+    static MagnatuneBrowser *instance() {
+        if(!s_instance)  s_instance = new MagnatuneBrowser("MagnatuneBrowser");
+        return s_instance;
+    }
+
+private slots:
+    void menuAboutToShow();
+    void purchaseButtonClicked();
+    void purchaseSelectedAlbum();
+    void purchaseAlbumContainingSelectedTrack();
+    void addSelectionToPlaylist();
+    void itemExecuted( QListViewItem * );
+    void selectionChanged( QListViewItem * );
+    void showPopupMenu( QListViewItem * item, const QPoint & pos, int column );
+    void updateButtonClicked();
+    void showInfo(bool show);
+    void listDownloadComplete( KIO::Job* downLoadJob);
+    void genreChanged();
+    void doneParsing();
+
+private:
     MagnatuneBrowser( const char *name );
-
-    ~MagnatuneBrowser();
-
-     
-
-protected:
-
-    MagnatuneListView * m_listView;
-    MagnatuneArtistInfoBox * m_artistInfobox;
-    QString m_currentInfoUrl;
-    QPopupMenu * m_popupMenu;
-    MagnatunePurchaseHandler * m_purchaseHandler;
-
-    QHBox * m_topPanel;
-    QVBox * m_bottomPanel;
-    QPushButton * m_updateListButton;
-    QPushButton * m_purchaseAlbumButton;
-    QPushButton * m_showInfoToggleButton;
-
-    QComboBox * m_genreComboBox;
-    bool m_isInfoShown;
-
-    KIO::TransferJob * m_listDownloadJob;
 
     void initBottomPanel();
     void initTopPanel();
 
     bool updateMagnatuneList();
 
-    void addTrackToPlaylist(MagnatuneTrack * item);
-    void addAlbumToPlaylist(MagnatuneAlbum * item);
-    void addArtistToPlaylist(MagnatuneArtist * item);
-
+    void addTrackToPlaylist ( MagnatuneTrack  *item );
+    void addAlbumToPlaylist ( MagnatuneAlbum  *item );
+    void addArtistToPlaylist( MagnatuneArtist *item );
 
     void updateList();
     void updateGenreBox();
 
     void startDrag();
 
+    static MagnatuneBrowser *s_instance;
 
-protected slots:
+    MagnatuneListView         *m_listView;
+    MagnatuneArtistInfoBox    *m_artistInfobox;
+    QString                    m_currentInfoUrl;
+    QPopupMenu                *m_popupMenu;
+    MagnatunePurchaseHandler  *m_purchaseHandler;
 
-    void menuAboutToShow();
-    void purchaseButtonClicked();
-    void purchaseSelectedAlbum();
-    void purchaseAlbumContainingSelectedTrack();
-    void addSelectionToPlaylist();
-    void itemExecuted(QListViewItem *);
-    void selectionChanged(QListViewItem *);
-    void showPopupMenu(QListViewItem * item, const QPoint & pos, int column);
-    void updateButtonClicked();
-    void showInfo(bool show);
-    void listDownloadComplete( KIO::Job* downLoadJob);
-    void genreChanged();
-    void  DoneParsing();
+    QHBox       *m_topPanel;
+    QVBox       *m_bottomPanel;
+    QPushButton *m_updateListButton;
+    QPushButton *m_purchaseAlbumButton;
+    QPushButton *m_showInfoToggleButton;
+
+    QComboBox   *m_genreComboBox;
+    bool         m_isInfoShown;
+
+    KIO::TransferJob * m_listDownloadJob;
 };
 
 

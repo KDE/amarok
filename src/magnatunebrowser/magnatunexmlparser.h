@@ -19,47 +19,48 @@
 /**
 @author Nikolaj Hald Nielsen
 */
-class MagnatuneXmlParser : public ThreadWeaver::Job {
-Q_OBJECT
-public:
+class MagnatuneXmlParser : public ThreadWeaver::Job
+{
+    Q_OBJECT
 
-    MagnatuneXmlParser(QString fileName);
+public:
+    MagnatuneXmlParser( QString fileName );
 
     bool doJob();
     void completeJob();
 
     ~MagnatuneXmlParser();
 
-    void ReadConfigFile( QString filename );
+    void readConfigFile( QString filename );
 
 signals:
 
-    void DoneParsing();
+    void doneParsing();
 
 private:
-  	
-	QString m_currentArtist;
-	QString m_currentArtistGenre;
 
-	void ParseElement( QDomElement e );
-	void ParseChildren( QDomElement e );	
-	void ParseAlbum( QDomElement e );
-	void ParseTrack( QDomElement e );
+    QString m_currentArtist;
+    QString m_currentArtistGenre;
 
-	//MagnatuneListViewArtistItem * m_currentArtistItem;
-	//MagnatuneListViewAlbumItem * m_currentAlbumItem;
+    void parseElement( QDomElement e );
+    void parseChildren( QDomElement e );
+    void parseAlbum( QDomElement e );
+    void parseTrack( QDomElement e );
 
-        MagnatuneAlbum * m_pCurrentAlbum;
-        MagnatuneArtist * m_pCurrentArtist;
-        MagnatuneTrackList m_currentAlbumTracksList;
+    //MagnatuneListViewArtistItem * m_currentArtistItem;
+    //MagnatuneListViewAlbumItem * m_currentAlbumItem;
 
-	QString m_sFileName;
+    MagnatuneAlbum      *m_pCurrentAlbum;
+    MagnatuneArtist     *m_pCurrentArtist;
+    MagnatuneTrackList   m_currentAlbumTracksList;
 
-	int m_nNumberOfTracks;
-	int m_nNumberOfAlbums;
-	int m_nNumberOfArtists;
+    QString m_sFileName;
 
-	//KListView * m_targetList;
+    int m_nNumberOfTracks;
+    int m_nNumberOfAlbums;
+    int m_nNumberOfArtists;
+
+    //KListView * m_targetList;
 
 };
 
