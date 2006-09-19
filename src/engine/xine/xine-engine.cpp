@@ -392,7 +392,7 @@ XineEngine::pause()
 Engine::State
 XineEngine::state() const
 {
-    if ( !m_stream )
+    if ( !m_stream || m_fadeOutRunning )
        return Engine::Empty;
 
     switch( xine_get_status( m_stream ) )
@@ -486,9 +486,12 @@ XineEngine::fadeOut()
 {
     if( m_fadeOutRunning ) //Let us not start another fadeout...
         return;
+
     m_fadeOutRunning = !m_fadeOutRunning;
+    const bool isPlaying = m_stream && ( xine_get_status( m_stream ) == XINE_STATUS_PLAY );
+
     // NOTE The fadeout gets stuck when the EQ is active, so we skip it then
-    if( m_xfadeLength > 0 && !m_equalizerEnabled && m_stream && state() == Engine::Playing )
+    if( m_xfadeLength > 0 && !m_equalizerEnabled && isPlaying )
     {
         // fader-class doesn't work in this spot as is, so some parts need to be copied here... (ugly)
         uint stepsCount = m_xfadeLength < 1000 ? m_xfadeLength / 10 : 100;
