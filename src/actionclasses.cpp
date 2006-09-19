@@ -588,7 +588,7 @@ StopAction::plug( QWidget *w, int index )
         button->setDelayedPopup( Amarok::StopMenu::instance() );
         button->setName( "toolbutton_stop_menu" );
         button->setIcon( Amarok::icon( "stop" ) );
-        button->setEnabled( false ); // Required, otherwise the button is always enabled at startup
+        button->setEnabled( EngineController::instance()->engine()->loaded() );  // Disable button at startup
 
         return containerCount() - 1;
     }
