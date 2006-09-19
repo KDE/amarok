@@ -1,6 +1,23 @@
-// Author: Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
+/*
+  Copyright (c) 2006  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Library General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Library General Public License for more details.
+
+  You should have received a copy of the GNU Library General Public License
+  along with this library; see the file COPYING.LIB.  If not, write to
+  the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+  Boston, MA 02110-1301, USA.
+*/
+
+
 
 #include "magnatunetypes.h"
 
@@ -15,18 +32,18 @@ MagnatuneArtist::~ MagnatuneArtist( )
 {
 }
 
-MagnatuneArtist::MagnatuneArtist(const MagnatuneArtist& artist)
+MagnatuneArtist::MagnatuneArtist( const MagnatuneArtist &artist )
 {
     m_id = artist.getId();
-   m_name = artist.getName();
-   m_description = artist.getDescription();
-   m_photoURL = artist.getPhotoURL();
-   m_homeURL = artist.getHomeURL();
+    m_name = artist.getName();
+    m_description = artist.getDescription();
+    m_photoURL = artist.getPhotoURL();
+    m_homeURL = artist.getHomeURL();
 }
 
 void MagnatuneArtist::setId( int id )
 {
-   m_id = id;
+    m_id = id;
 }
 
 int MagnatuneArtist::getId( ) const
@@ -36,12 +53,12 @@ int MagnatuneArtist::getId( ) const
 
 void MagnatuneArtist::setName( QString name )
 {
-   m_name = name;
+    m_name = name;
 }
 
 QString MagnatuneArtist::getName( ) const
 {
-   return m_name;
+    return m_name;
 }
 
 void MagnatuneArtist::setDescription( QString description )
@@ -51,12 +68,12 @@ void MagnatuneArtist::setDescription( QString description )
 
 QString MagnatuneArtist::getDescription( ) const
 { 
-   return m_description;
+    return m_description;
 }
 
 void MagnatuneArtist::setPhotoURL( QString photoURL )
 {
-   m_photoURL = photoURL;
+    m_photoURL = photoURL;
 }
 
 QString MagnatuneArtist::getPhotoURL( ) const
@@ -91,7 +108,7 @@ MagnatuneAlbum::~ MagnatuneAlbum( )
 {
 }
 
-MagnatuneAlbum::MagnatuneAlbum(const MagnatuneAlbum& album )
+MagnatuneAlbum::MagnatuneAlbum( const MagnatuneAlbum &album )
 {
     m_id = album.getId();
     m_name = album.getName();
@@ -105,7 +122,7 @@ MagnatuneAlbum::MagnatuneAlbum(const MagnatuneAlbum& album )
 
 void MagnatuneAlbum::setId( int id )
 {
-   m_id = id;
+    m_id = id;
 }
 
 int MagnatuneAlbum::getId( ) const
@@ -120,7 +137,7 @@ void MagnatuneAlbum::setArtistId( int artistId )
 
 int MagnatuneAlbum::getArtistId( ) const
 {
-   return m_artistId;
+    return m_artistId;
 }
 
 
@@ -131,7 +148,7 @@ void MagnatuneAlbum::setName( QString name )
 
 QString MagnatuneAlbum::getName( ) const
 {
-   return m_name;
+    return m_name;
 }
 
 void MagnatuneAlbum::setCoverURL( QString coverURL )
@@ -198,7 +215,7 @@ MagnatuneTrack::MagnatuneTrack( )
 {
 }
 
-MagnatuneTrack::MagnatuneTrack(const MagnatuneTrack& track)
+MagnatuneTrack::MagnatuneTrack( const MagnatuneTrack &track )
 {
     m_id = track.getId();
     m_name = track.getName();

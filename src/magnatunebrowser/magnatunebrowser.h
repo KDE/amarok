@@ -1,35 +1,50 @@
-// Author: Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
+/*
+  Copyright (c) 2006  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Library General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Library General Public License for more details.
+
+  You should have received a copy of the GNU Library General Public License
+  along with this library; see the file COPYING.LIB.  If not, write to
+  the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+  Boston, MA 02110-1301, USA.
+*/
 
 #ifndef AMAROKMAGNATUNEBROWSER_H
 #define AMAROKMAGNATUNEBROWSER_H
 
 
+#include "amarok.h"
+#include "magnatuneartistinfobox.h"
 #include "magnatunelistview.h"
 #include "magnatunelistviewitems.h"
-#include "magnatunexmlparser.h"
-#include "magnatuneartistinfobox.h"
 #include "magnatunepurchasedialog.h"
 #include "magnatunepurchasehandler.h"
-#include "amarok.h"
-
+#include "magnatunexmlparser.h"
 
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 
-#include <qvbox.h>
+#include <qcheckbox.h>
+#include <qcombobox.h>
 #include <qhbox.h>
 #include <qpopupmenu.h>
 #include <qpushbutton.h>
-#include <qcheckbox.h>
-#include <qcombobox.h>
+#include <qvbox.h>
+
 
 
 /**
-A first attempt at making a browser that displays all the music available at magnatune.com
+Amarok browser that displays all the music available at magnatune.com and makes it available for previewing and purchasing
 
-@author Nikolaj Hald Nielsen
+@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 class MagnatuneBrowser : public QVBox
 {
