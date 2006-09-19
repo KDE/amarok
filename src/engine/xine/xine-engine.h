@@ -105,12 +105,15 @@ class Fader : public QObject, public QThread
     xine_audio_port_t  *m_port;
     xine_post_t        *m_post;
     uint               m_fadeLength;
+    bool               m_paused;
 
     virtual void run();
 
 public:
     Fader( XineEngine *, uint fadeLengthMs );
    ~Fader();
+   void pause();
+   void resume();
 };
 
 class OutFader : public QObject, public QThread

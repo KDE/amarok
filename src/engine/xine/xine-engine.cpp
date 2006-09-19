@@ -35,7 +35,6 @@ AMAROK_EXPORT_PLUGIN( XineEngine )
 
 #include <qapplication.h>
 #include <qdir.h>
-#include <qtimer.h>
 
 extern "C"
 {
@@ -93,6 +92,7 @@ XineEngine::~XineEngine()
     // Wait until the fader thread is done
     if( s_fader ) {
         m_stopFader = true;
+        s_fader->resume(); // safety call if the engine is in the pause state
         s_fader->wait();
         delete s_fader;
     }
@@ -349,6 +349,9 @@ XineEngine::determineAndShowErrorMessage()
 void
 XineEngine::stop()
 {
+    if( s_fader && s_fader->running() )
+        s_fader->resume(); // safety call if the engine is in the pause state
+
     if ( !m_stream )
        return;
     if( !m_fadeOutRunning || state() == Engine::Paused )
@@ -367,13 +370,19 @@ XineEngine::stop()
 void
 XineEngine::pause()
 {
-    if( xine_get_param( m_stream, XINE_PARAM_SPEED ) )
+    if( xine_get_param( m_stream, XINE_PARAM_SPEED ) != XINE_SPEED_PAUSE )
     {
+        if( s_fader && s_fader->running() )
+            s_fader->pause();
+
         xine_set_param( m_stream, XINE_PARAM_SPEED, XINE_SPEED_PAUSE ); 
         xine_set_param( m_stream, XINE_PARAM_AUDIO_CLOSE_DEVICE, 1);
         emit stateChanged( Engine::Paused );
 
     } else {
+
+        if( s_fader && s_fader->running() )
+            s_fader->resume();
 
         xine_set_param( m_stream, XINE_PARAM_SPEED, XINE_SPEED_NORMAL );
         emit stateChanged( Engine::Playing );
@@ -388,7 +397,7 @@ XineEngine::state() const
 
     switch( xine_get_status( m_stream ) )
     {
-    case XINE_STATUS_PLAY: return xine_get_param( m_stream, XINE_PARAM_SPEED ) ? Engine::Playing : Engine::Paused;
+    case XINE_STATUS_PLAY: return xine_get_param( m_stream, XINE_PARAM_SPEED )  != XINE_SPEED_PAUSE ? Engine::Playing : Engine::Paused;
     case XINE_STATUS_IDLE: return Engine::Empty;
     case XINE_STATUS_STOP:
     default:               return m_url.isEmpty() ? Engine::Empty : Engine::Idle;
@@ -991,6 +1000,7 @@ Fader::Fader( XineEngine *engine, uint fadeMs )
    , m_port( engine->m_audioPort )
    , m_post( engine->m_post )
    , m_fadeLength( fadeMs )
+   , m_paused( false )
 {
     if( engine->makeNewStream() )
     {
@@ -1029,19 +1039,23 @@ Fader::run()
     uint stepsCount = m_fadeLength < 1000 ? m_fadeLength / 10 : 100;
     uint stepSizeUs = (int)( 1000.0 * (float)m_fadeLength / (float)stepsCount );
 
-    QTime t;
-    t.start();
     float mix = 0.0;
+    float elapsedUs = 0.0;
     while ( mix < 1.0 )
     {
         // sleep a constant amount of time
         QThread::usleep( stepSizeUs );
 
+        if ( m_paused )
+        	continue;
+
+        elapsedUs += stepSizeUs;
+
         // get volume (amarok main * equalizer preamp)
         float vol = Engine::Base::makeVolumeLogarithmic( m_engine->m_volume ) * m_engine->m_preamp;
 
         // compute the mix factor as the percentage of time spent since fade begun
-        float mix = (float)t.elapsed() / (float)m_fadeLength;
+        float mix = (elapsedUs / 1000.0) / (float)m_fadeLength;
         if ( mix > 1.0 )
         {
             if ( m_increase )
@@ -1117,6 +1131,17 @@ OutFader::run()
     deleteLater();
 }
 
+void
+Fader::pause()
+{
+	m_paused = true;
+}
+
+void
+Fader::resume()
+{
+	m_paused = false;
+}
 
 bool XineEngine::metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b)
 {
