@@ -367,13 +367,13 @@ XineEngine::stop()
 void
 XineEngine::pause()
 {
-    if( xine_get_param( m_stream, XINE_PARAM_SPEED ) && state() != Engine::Paused )
+    if( xine_get_param( m_stream, XINE_PARAM_SPEED ) )
     {
-        s_outfader = new OutFader( this, false );
-        s_outfader->start();
-        ::usleep( 100 ); //to be sure engine state won't be changed before it is checked in fadeOut()
+        xine_set_param( m_stream, XINE_PARAM_SPEED, XINE_SPEED_PAUSE ); 
+        xine_set_param( m_stream, XINE_PARAM_AUDIO_CLOSE_DEVICE, 1);
         emit stateChanged( Engine::Paused );
-    } else if ( !m_fadeOutRunning ) {
+
+    } else {
 
         xine_set_param( m_stream, XINE_PARAM_SPEED, XINE_SPEED_NORMAL );
         emit stateChanged( Engine::Playing );
