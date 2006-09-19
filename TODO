@@ -5,9 +5,6 @@ TODO-list for Amarok
 
 
 SHORT-TERM (URGENT):
- <markey>  With fade-out enabled (xine), context browser no longer switches back from 
-           current track view to idle view.
-
  <sebr>    PlaylistBrowser::slotDoubleClicked() and PlaylistBrowser::addSelectedToPlaylist()
            should be merged for better code reusage. They are practically the same.
 
