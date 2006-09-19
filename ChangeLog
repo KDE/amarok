@@ -26,6 +26,8 @@ VERSION 1.4.4
     * Show a proper tag dialog when viewing information for DAAP music shares.
 
   BUGFIXES:
+    * Configuring the toolbar would disable the stop button. Patch by 
+      Markus Kaufhold <M.Kaufhold@gmx.de>. (BR 132477)
     * Xine-engine: Pausing during crossfade would not work properly. Patch by
       Markus Kaufhold <M.Kaufhold@gmx.de>. (BR 122514)
     * Changed tags of songs on iPods would not propagate to its database.
