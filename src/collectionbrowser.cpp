@@ -1396,7 +1396,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                 setCompilation( trueItemText, false );
                 break;
             case ORGANIZE:
-                organizeFiles( listSelected(), i18n( "Organize Collection Files" ), false /* don't add to collection, just move */ );
+                organizeFiles( listSelected(), i18n( "Organize Collection Files" ), false /* do not add to collection, just move */ );
                 break;
             case DELETE:
                 KURL::List files = listSelected();

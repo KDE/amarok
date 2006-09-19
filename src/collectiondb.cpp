@@ -2052,7 +2052,7 @@ CollectionDB::findAmazonImage( const QString &artist, const QString &album, uint
     QCString widthKey = makeWidthKey( width );
 
     if ( artist.isEmpty() && album.isEmpty() )
-        return QString::null;
+        return QString();
 
     QCString key = md5sum( artist, album );
 
@@ -2075,7 +2075,7 @@ CollectionDB::findAmazonImage( const QString &artist, const QString &album, uint
             return imageDir.filePath( key );
     }
 
-    return QString::null;
+    return QString();
 }
 
 
@@ -2086,7 +2086,7 @@ CollectionDB::findDirectoryImage( const QString& artist, const QString& album, u
         width = AmarokConfig::coverPreviewSize();
     QCString widthKey = makeWidthKey( width );
     if ( album.isEmpty() )
-        return QString::null;
+        return QString();
 
     IdList list = MountPointManager::instance()->getMountedDeviceIds();
     QString deviceIds;
@@ -2148,7 +2148,7 @@ CollectionDB::findDirectoryImage( const QString& artist, const QString& album, u
         else //large image
             return image;
     }
-    return QString::null;
+    return QString();
 }
 
 
@@ -2203,7 +2203,7 @@ CollectionDB::findEmbeddedImage( const QString& artist, const QString& album, ui
         }
         return result;
     }
-    return QString::null;
+    return QString();
 }
 
 
@@ -2234,7 +2234,7 @@ CollectionDB::findMetaBundleImage( MetaBundle trackInformation, uint width )
         }
         return result;
     }
-    return QString::null;
+    return QString();
 }
 
 
@@ -3198,7 +3198,7 @@ CollectionDB::urlFromUniqueId( const QString &id )
                         .arg( id ) );
 
     if( urls.empty() )
-        return QString::null;
+        return QString();
 
     return MountPointManager::instance()->getAbsolutePath( urls[0].toInt(), urls[1] );
 }
@@ -3228,7 +3228,7 @@ CollectionDB::uniqueIdFromUrl( const KURL &url )
                     .arg( currurl ) );
 
     if( uid.empty() )
-        return QString::null;
+        return QString();
 
     return uid[0];
 }
@@ -3238,11 +3238,11 @@ CollectionDB::getURL( const MetaBundle &bundle )
 {
     uint artID = artistID( bundle.artist(), false );
     if( !artID )
-        return QString::null;
+        return QString();
 
     uint albID = albumID( bundle.album(), false );
     if( !albID )
-        return QString::null;
+        return QString();
 
     QString q = QString( "SELECT tags.deviceid, tags.url "
             "FROM tags "
@@ -3256,7 +3256,7 @@ CollectionDB::getURL( const MetaBundle &bundle )
     QStringList urls = URLsFromQuery( query( q ) );
 
     if( urls.empty() )
-        return QString::null;
+        return QString();
 
     if( urls.size() == 1 )
     {
@@ -4544,7 +4544,7 @@ CollectionDB::getUniqueId( const QString &url )
     if( !values.empty() )
         return values[0];
     else
-        return QString::null;
+        return QString();
 }
 
 void
@@ -5600,7 +5600,7 @@ CollectionDB::loadHashFile( const QCString& hash, uint width )
             }
         }
     }
-    return QString::null;
+    return QString();
 }
 
 
@@ -7329,7 +7329,7 @@ QueryBuilder::valueName( Q_INT64 value )
 QString
 QueryBuilder::functionName( int function )
 {
-    QString functions = QString::null;
+    QString functions;
 
     if ( function & funcCount )     functions += "Count";
     if ( function & funcMax )       functions += "Max";
