@@ -29,6 +29,8 @@ VERSION 1.4.4
     * Show a proper tag dialog when viewing information for DAAP music shares.
 
   BUGFIXES:
+    * The DAAP client would crash Amarok under certain conditions when 
+      kdelibs was compiled with asserts on. (BR 132851)
     * Configuring the toolbar would disable the stop button. Patch by 
       Markus Kaufhold <M.Kaufhold@gmx.de>. (BR 132477)
     * Xine-engine: Pausing during crossfade would not work properly. Patch by

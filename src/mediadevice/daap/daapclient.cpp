@@ -526,6 +526,7 @@ QString
 DaapClient::resolve( const QString& hostname )
 {
     KNetwork::KResolver resolver( hostname );
+    resolver.setFamily( KNetwork::KResolver::KnownFamily ); //A drudic incantation from Thiago. Works around a KResolver bug #132851
     resolver.start();
     if( resolver.wait( 5000 ) )
     {
