@@ -77,6 +77,10 @@ Optional
       (faster database support)
       http://www.mysql.com
 
+    * PostgreSQL 7.4
+      (faster database support)
+      http://www.postgresql.org
+
     * OpenGL accelerated X-Server
       (visualization rendering)
 
