@@ -17,6 +17,9 @@ VERSION 1.4.4
       playlist folder. (BR 133543)
 
   CHANGES:
+    * When tracks are removed from the collection (deleted on disk or moved
+      outside of a collection folder) any corresponding entry in the Playlist
+      will be disabled.
     * Dragging podcasts to to playlist will insert them in a chronological
       order, so you can listen to the oldest first automatically!
     * Improve application startup times dramaticaly by lazy loading podcast
