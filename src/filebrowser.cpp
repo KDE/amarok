@@ -239,7 +239,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
             a->plug( toolbar );
 
 
-        KAction *gotoCurrent = new KAction( i18n("Goto Current Track Folder"), Amarok::icon( "music" ), 0,
+        KAction *gotoCurrent = new KAction( i18n("Go To Current Track Folder"), Amarok::icon( "music" ), 0,
                                             this, SLOT( gotoCurrentFolder() ), actionCollection );
         gotoCurrent->plug( toolbar );
 
