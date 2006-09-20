@@ -241,6 +241,8 @@ Playlist::Playlist( QWidget *parent )
     connect( CollectionDB::instance(), SIGNAL(uniqueIdChanged(const QString&,
             const QString&, const QString&)), SLOT(updateEntriesUniqueId(const QString&,
             const QString&, const QString&)) );
+    connect( CollectionDB::instance(), SIGNAL(fileDeleted(const QString&,
+            const QString&)), SLOT(updateEntriesStatus(const QString&, const QString&)) );
 
     initStarPixmaps();
 
@@ -1056,6 +1058,18 @@ Playlist::updateEntriesUniqueId( const QString &/*url*/, const QString &oldid, c
         item->setUniqueId( newid );
         item->readTags();
         m_uniqueMap[newid] = item;
+    }
+}
+
+void
+Playlist::updateEntriesStatus( const QString &absPath, const QString &uniqueid )
+{
+    Q_UNUSED( absPath );
+    PlaylistItem *item;
+    if( m_uniqueMap.contains( uniqueid ) )
+    {
+        item = m_uniqueMap[uniqueid];
+        item->setEnabled( false );
     }
 }
 

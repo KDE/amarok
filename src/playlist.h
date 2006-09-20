@@ -234,6 +234,7 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         void adjustColumn( int n );
         void updateEntriesUrl( const QString &oldUrl, const QString &newUrl, const QString &uniqueid );
         void updateEntriesUniqueId( const QString &url, const QString &oldid, const QString &newid );
+        void updateEntriesStatus( const QString &absPath, const QString &uniqueid );
 
     protected:
         virtual void fontChange( const QFont &old );
