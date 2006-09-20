@@ -489,6 +489,7 @@ XineEngine::fadeOut()
 
     m_fadeOutRunning = !m_fadeOutRunning;
     const bool isPlaying = m_stream && ( xine_get_status( m_stream ) == XINE_STATUS_PLAY );
+    const float originalVol = Engine::Base::makeVolumeLogarithmic( m_volume ) * m_preamp;
 
     // NOTE The fadeout gets stuck when the EQ is active, so we skip it then
     if( m_xfadeLength > 0 && !m_equalizerEnabled && isPlaying )
@@ -518,7 +519,7 @@ XineEngine::fadeOut()
         }
     }
     if( m_fadeOutRunning )
-        xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, (uint)(m_volume * m_preamp) );
+        xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, (uint) originalVol );
     m_fadeOutRunning = !m_fadeOutRunning;
 }
 
