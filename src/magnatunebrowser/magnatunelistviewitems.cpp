@@ -41,7 +41,7 @@ void MagnatuneListViewArtistItem::setOpen( bool o )
 {
 
     if ( o && !childCount() ) {
-        listView()->setUpdatesEnabled( FALSE );
+        listView()->setUpdatesEnabled( false );
 
         MagnatuneAlbumList albums;
         albums = MagnatuneDatabaseHandler::instance()->getAlbumsByArtistId( m_id, "" );
@@ -51,7 +51,7 @@ void MagnatuneListViewArtistItem::setOpen( bool o )
            new MagnatuneListViewAlbumItem( (*it), this );
         }
     }
-    listView()->setUpdatesEnabled( TRUE );
+    listView()->setUpdatesEnabled( true );
     QListViewItem::setOpen( o );
     invalidateHeight();
     listView()->repaintContents();
@@ -62,7 +62,7 @@ void MagnatuneListViewArtistItem::setOpen( bool o )
 
 void MagnatuneListViewArtistItem::setup()
 {
-    setExpandable( TRUE );
+    setExpandable( true );
     QListViewItem::setup();
 }
 
@@ -94,7 +94,7 @@ void MagnatuneListViewAlbumItem::setOpen( bool o )
 {
 
     if ( o && !childCount() ) {
-        listView()->setUpdatesEnabled( FALSE );
+        listView()->setUpdatesEnabled( false );
 
         MagnatuneTrackList tracks;
         tracks = MagnatuneDatabaseHandler::instance()->getTracksByAlbumId( m_id );
@@ -105,7 +105,7 @@ void MagnatuneListViewAlbumItem::setOpen( bool o )
         }
     }
 
-    listView()->setUpdatesEnabled( TRUE );
+    listView()->setUpdatesEnabled( true );
     QListViewItem::setOpen( o );
     invalidateHeight();
     listView()->repaintContents();
@@ -115,7 +115,7 @@ void MagnatuneListViewAlbumItem::setOpen( bool o )
 
 void MagnatuneListViewAlbumItem::setup( )
 {
-    setExpandable( TRUE );
+    setExpandable( true );
     QListViewItem::setup();
 }
 
