@@ -282,9 +282,9 @@ inline QString
 CollectionDB::exactCondition( const QString &right )
 {
     if ( DbConnection::mysql == instance()->getDbConnectionType() )
-        return QString( "= BINARY '" + instance()->escapeString( right ) + "'" );
+        return QString( "= BINARY '" + instance()->escapeString( right ) + '\'' );
     else
-        return QString( "= '" + instance()->escapeString( right ) + "'" );
+        return QString( "= '" + instance()->escapeString( right ) + '\'' );
 }
 
 
@@ -301,13 +301,13 @@ CollectionDB::likeCondition( const QString &right, bool anyBegin, bool anyEnd )
     else
         ret = " LIKE ";
 
-    ret += "'";
+    ret += '\'';
     if ( anyBegin )
-            ret += "%";
+            ret += '%';
     ret += escaped;
     if ( anyEnd )
-            ret += "%";
-    ret += "'";
+            ret += '%';
+    ret += '\'';
 
     //Use / as the escape character
     ret += " ESCAPE '/' ";
@@ -428,7 +428,7 @@ CollectionDB::deviceidSelection( const bool showAll )
             if ( it != list.begin() ) deviceIds += ',';
             deviceIds += QString::number(*it);
         }
-        return " AND tags.deviceid IN (" + deviceIds + ")";
+        return " AND tags.deviceid IN (" + deviceIds + ')';
     }
     else return "";
 }
@@ -2233,7 +2233,7 @@ CollectionDB::findMetaBundleImage( MetaBundle trackInformation, uint width )
 QCString
 CollectionDB::makeWidthKey( uint width )
 {
-    return QString::number( width ).local8Bit() + "@";
+    return QString::number( width ).local8Bit() + '@';
 }
 
 
@@ -2242,10 +2242,10 @@ CollectionDB::removeAlbumImage( const QString &artist, const QString &album )
 {
     QCString widthKey = "*@";
     QCString key = md5sum( artist, album );
-    query( "DELETE FROM amazon WHERE filename='" + key + "'" );
+    query( "DELETE FROM amazon WHERE filename='" + key + '\'' );
 
     // remove scaled versions of images (and add the asterisk for the shadow-caches)
-    QStringList scaledList = cacheCoverDir().entryList( widthKey + key + "*" );
+    QStringList scaledList = cacheCoverDir().entryList( widthKey + key + '*' );
     if ( scaledList.count() > 0 )
         for ( uint i = 0; i < scaledList.count(); i++ )
             QFile::remove( cacheCoverDir().filePath( scaledList[ i ] ) );
@@ -2260,7 +2260,7 @@ CollectionDB::removeAlbumImage( const QString &artist, const QString &album )
     {
         int id = MountPointManager::instance()->getIdForUrl( hardImage );
         QString rpath = MountPointManager::instance()->getRelativePath( id, hardImage );
-        query( "DELETE FROM images WHERE path='" + escapeString( hardImage ) + "' AND deviceid = " + id + ";" );
+        query( "DELETE FROM images WHERE path='" + escapeString( hardImage ) + "' AND deviceid = " + id + ';' );
         deleted = true;
     }
 
@@ -2286,7 +2286,7 @@ CollectionDB::notAvailCover( const bool withShadow, int width )
 {
     if ( width <= 1 )
         width = AmarokConfig::coverPreviewSize();
-    QString widthKey = QString::number( width ) + "@";
+    QString widthKey = QString::number( width ) + '@';
     QString s;
 
     if( cacheCoverDir().exists( widthKey + "nocover.png" ) )
@@ -2468,15 +2468,15 @@ CollectionDB::addPodcastChannel( const PodcastChannelBundle &pcb, const bool &re
     if( title.isEmpty() )
         title = pcb.url().prettyURL();
 
-    command += "'" + escapeString( pcb.url().url() )  + "',";
-    command += ( title.isEmpty() ?       "NULL" : "'" + escapeString( title ) + '\'' ) + ',';
-    command += ( link.isEmpty() ?        "NULL" : "'" + escapeString( link.url() ) + '\'' ) + ',';
-    command += ( image.isEmpty() ?       "NULL" : "'" + escapeString( image.url() ) + '\'' ) + ',';
-    command += ( description.isEmpty() ? "NULL" : "'" + escapeString( description ) + '\'' ) + ',';
-    command += ( copyright.isEmpty() ?   "NULL" : "'" + escapeString( copyright ) + '\'' ) + ',';
+    command += '\'' + escapeString( pcb.url().url() )  + "',";
+    command += ( title.isEmpty() ?       "NULL" : '\'' + escapeString( title ) + '\'' ) + ',';
+    command += ( link.isEmpty() ?        "NULL" : '\'' + escapeString( link.url() ) + '\'' ) + ',';
+    command += ( image.isEmpty() ?       "NULL" : '\'' + escapeString( image.url() ) + '\'' ) + ',';
+    command += ( description.isEmpty() ? "NULL" : '\'' + escapeString( description ) + '\'' ) + ',';
+    command += ( copyright.isEmpty() ?   "NULL" : '\'' + escapeString( copyright ) + '\'' ) + ',';
     command += QString::number( pcb.parentId() ) + ",'";
     command += escapeString( pcb.saveLocation().url() ) + "',";
-    command += pcb.autoscan() ? boolT() + "," : boolF() + ',';
+    command += pcb.autoscan() ? boolT() + ',' : boolF() + ',';
     command += QString::number( pcb.fetchType() ) + ',';
     command += pcb.autotransfer() ? boolT() + ',' : boolF() + ',';
     command += pcb.hasPurge() ? boolT() + ',' : boolF() + ',';
@@ -2520,16 +2520,16 @@ CollectionDB::addPodcastEpisode( const PodcastEpisodeBundle &episode, const int 
     if( idToUpdate )
         command += QString::number( idToUpdate ) + ',';
 
-    command += "'" + escapeString( episode.url().url() )   + "',";
-    command += ( localurl.isEmpty()       ? "NULL" : "'" + escapeString( localurl )       + "'" ) + ',';
-    command += "'" + escapeString( episode.parent().url()) + "',";
-    command += ( title.isEmpty()       ? "NULL" : "'" + escapeString( title )       + '\'' ) + ',';
-    command += ( subtitle.isEmpty()    ? "NULL" : "'" + escapeString( subtitle )    + '\'' ) + ',';
-    command += ( author.isEmpty()      ? "NULL" : "'" + escapeString( author )      + '\'' ) + ',';
-    command += ( description.isEmpty() ? "NULL" : "'" + escapeString( description ) + '\'' ) + ',';
-    command += ( type.isEmpty()        ? "NULL" : "'" + escapeString( type )        + '\'' ) + ',';
-    command += ( date.isEmpty()        ? "NULL" : "'" + escapeString( date )        + '\'' ) + ',';
-    command += ( guid.isEmpty()        ? "NULL" : "'" + escapeString( guid )        + '\'' ) + ',';
+    command += '\'' + escapeString( episode.url().url() )   + "',";
+    command += ( localurl.isEmpty()       ? "NULL" : '\'' + escapeString( localurl )       + '\'' ) + ',';
+    command += '\'' + escapeString( episode.parent().url()) + "',";
+    command += ( title.isEmpty()       ? "NULL" : '\'' + escapeString( title )       + '\'' ) + ',';
+    command += ( subtitle.isEmpty()    ? "NULL" : '\'' + escapeString( subtitle )    + '\'' ) + ',';
+    command += ( author.isEmpty()      ? "NULL" : '\'' + escapeString( author )      + '\'' ) + ',';
+    command += ( description.isEmpty() ? "NULL" : '\'' + escapeString( description ) + '\'' ) + ',';
+    command += ( type.isEmpty()        ? "NULL" : '\'' + escapeString( type )        + '\'' ) + ',';
+    command += ( date.isEmpty()        ? "NULL" : '\'' + escapeString( date )        + '\'' ) + ',';
+    command += ( guid.isEmpty()        ? "NULL" : '\'' + escapeString( guid )        + '\'' ) + ',';
     command += QString::number( duration ) + ',';
     command += QString::number( size ) + ',';
     command += episode.isNew() ? boolT() + " );" : boolF() + " );";
@@ -2587,7 +2587,7 @@ CollectionDB::getPodcastEpisodes( const KURL &parent, bool onlyNew, int limit )
     command += " ) ORDER BY id";
     if( limit != -1 )
         command += QString( " DESC LIMIT %1 OFFSET 0" ).arg( limit );
-    command += ";";
+    command += ';';
 
     QStringList values = query( command );
     QValueList<PodcastEpisodeBundle> bundles;
@@ -2917,7 +2917,7 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
     command += QString::number( bundle->bitrate() ) + ',';
     command += QString::number( bundle->sampleRate() ) + ',';
     command += QString::number( bundle->filesize() ) + ',';
-    command += QString::number( bundle->fileType() ) + ")";
+    command += QString::number( bundle->fileType() ) + ')';
 
     //FIXME: currently there's no way to check if an INSERT query failed or not - always return true atm.
     // Now it might be possible as insert returns the rowid.
@@ -3239,7 +3239,7 @@ CollectionDB::getURL( const MetaBundle &bundle )
     QString q = QString( "SELECT tags.deviceid, tags.url "
             "FROM tags "
             "WHERE tags.album = '%1' AND tags.artist = '%2' AND tags.track = '%3' AND tags.title = '%4'" +
-            deviceidSelection() + ";" )
+            deviceidSelection() + ';' )
         .arg( albID )
         .arg( artID )
         .arg( bundle.track() )
@@ -3588,7 +3588,7 @@ CollectionDB::addSongPercentage( const QString &url, int percentage,
     //handle corner case: deviceid!=-1 but there is a statistics row for that song with deviceid -1
     if ( values.isEmpty() )
     {
-        QString rpath2 = QString( "." ) + url;
+        QString rpath2 = '.' + url;
         values = query( QString(
             "SELECT playcounter, createdate, percentage, rating FROM statistics "
             "WHERE url = '%1' AND deviceid = -1;" )
@@ -3622,7 +3622,7 @@ CollectionDB::addSongPercentage( const QString &url, int percentage,
                         "VALUES ( '%6', %5, %1, %2, 0, 1, 0, %3, %4 );" )
                         .arg( atime )
                         .arg( atime )
-                        .arg( ( getUniqueId( url ).isNull() ? "NULL" : "'" + escapeString( getUniqueId( url ) ) + "'" ) )
+                        .arg( ( getUniqueId( url ).isNull() ? "NULL" : '\'' + escapeString( getUniqueId( url ) ) + '\'' ) )
                         .arg( boolF() )
                         .arg( statDevId )
                         .arg( escapeString( statRPath ) ), 0 );
@@ -3689,7 +3689,7 @@ CollectionDB::setSongPercentage( const QString &url , int percentage)
     //handle corner case: deviceid!=-1 but there is a statistics row for that song with deviceid -1
     if ( values.isEmpty() )
     {
-        QString rpath2 = QString( "." ) + url;
+        QString rpath2 = '.' + url;
         values = query( QString(
             "SELECT playcounter, createdate, accessdate, rating FROM statistics "
             "WHERE url = '%1' AND deviceid = -1;" )
@@ -3718,7 +3718,7 @@ CollectionDB::setSongPercentage( const QString &url , int percentage)
                         .arg( percentage )
                         .arg( QDateTime::currentDateTime().toTime_t() )
                         .arg( 0 )
-                        .arg( ( getUniqueId( url ).isNull() ? "NULL" : "'" + escapeString( getUniqueId( url ) ) + "'" ) )
+                        .arg( ( getUniqueId( url ).isNull() ? "NULL" : '\'' + escapeString( getUniqueId( url ) ) + '\'' ) )
                         .arg( boolF() )
                         .arg( deviceid )
                         .arg( escapeString( rpath ) ),0 );
@@ -3741,7 +3741,7 @@ CollectionDB::setSongRating( const QString &url, int rating, bool toggleHalf )
     //handle corner case: deviceid!=-1 but there is a statistics row for that song with deviceid -1
     if ( values.isEmpty() )
     {
-        QString rpath2 = QString( "." ) + url;
+        QString rpath2 = '.' + url;
         values = query( QString(
             "SELECT playcounter, createdate, accessdate, percentage, rating FROM statistics "
             "WHERE url = '%1' AND deviceid = -1;" )
@@ -3783,7 +3783,7 @@ CollectionDB::setSongRating( const QString &url, int rating, bool toggleHalf )
                         .arg( rating )
                         .arg( QDateTime::currentDateTime().toTime_t() )
                         .arg( 0 )
-                        .arg( ( getUniqueId( url ).isNull() ? "NULL" : "'" + escapeString( getUniqueId( url ) ) + "'" ) )
+                        .arg( ( getUniqueId( url ).isNull() ? "NULL" : '\'' + escapeString( getUniqueId( url ) ) + '\'' ) )
                         .arg( boolF() )
                         .arg( deviceid )
                         .arg( escapeString( rpath ) ), NULL );
@@ -4212,11 +4212,11 @@ CollectionDB::isFileInCollection( const QString &url  )
                              .arg( escapeString( rpath ) );
     if ( deviceid == -1 )
     {
-        sql += ";";
+        sql += ';';
     }
     else
     {
-        QString rpath2 = QString( "." ) + url;
+        QString rpath2 = '.' + url;
         sql += QString( " OR url = '%1' AND deviceid = -1;" )
                       .arg( escapeString( rpath2 ) );
     }
@@ -4297,7 +4297,7 @@ CollectionDB::checkCompilations( const QString &path, const bool temporary )
 
         if ( artists.count() > dirs.count() )
         {
-            debug() << "Detected compilation: " << albums[ i ] << " - " << artists.count() << ":" << dirs.count() << endl;
+            debug() << "Detected compilation: " << albums[ i ] << " - " << artists.count() << ':' << dirs.count() << endl;
         }
         query( QString( "UPDATE tags_temp SET sampler = %1 WHERE album = '%2' AND sampler IS NULL;" )
                          .arg(artists.count() > dirs.count() ? boolT() : boolF()).arg( album_id ) );
@@ -4479,7 +4479,7 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
             QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
             //We have to remove the trailing comma from command
             query( command.left( command.length() - 2 ) + " WHERE url = '" + escapeString( rpath ) +
-                    "' AND deviceid = " + QString::number( deviceid ) + ";" );
+                    "' AND deviceid = " + QString::number( deviceid ) + ';' );
         }
 
         //Check to see if we use the entry anymore. If not, delete it
@@ -5273,7 +5273,7 @@ CollectionDB::updateStatsTables()
                 debug() << "Updating stats-database!" << endl;
                 query( "ALTER TABLE statistics ADD rating INTEGER DEFAULT 0;" );
                 query( "CREATE INDEX rating_stats ON statistics( rating );" );
-                query( "UPDATE statistics SET rating=0 WHERE " + boolT() + ";" );
+                query( "UPDATE statistics SET rating=0 WHERE " + boolT() + ';' );
             }
             if( prev < 5 )
             {
@@ -5391,22 +5391,22 @@ CollectionDB::updatePersistentTables()
         if ( PersistentVersion.toInt() < 5 )
         {
             debug() << "Updating podcast tables" << endl;
-            query( "ALTER TABLE podcastchannels ADD image " + textColumnType() + ";" );
-            query( "ALTER TABLE podcastepisodes ADD localurl " + textColumnType() + ";" );
-            query( "ALTER TABLE podcastepisodes ADD subtitle " + textColumnType() + ";" );
+            query( "ALTER TABLE podcastchannels ADD image " + textColumnType() + ';' );
+            query( "ALTER TABLE podcastepisodes ADD localurl " + textColumnType() + ';' );
+            query( "ALTER TABLE podcastepisodes ADD subtitle " + textColumnType() + ';' );
             query( "ALTER TABLE podcastepisodes ADD size INTEGER;" );
             query( "ALTER TABLE podcastepisodes DROP comment;" );
-            query( "ALTER TABLE podcastepisodes ADD comment " + longTextColumnType() + ";" );
+            query( "ALTER TABLE podcastepisodes ADD comment " + longTextColumnType() + ';' );
             query( "CREATE INDEX localurl_podepisode ON podcastepisodes( localurl );" );
         }
         if ( PersistentVersion.toInt() < 6 )
         {
             debug() << "Updating podcast tables" << endl;
-            query( "ALTER TABLE podcastchannels ADD image " + textColumnType() + ";" );
-            query( "ALTER TABLE podcastepisodes ADD subtitle " + textColumnType() + ";" );
+            query( "ALTER TABLE podcastchannels ADD image " + textColumnType() + ';' );
+            query( "ALTER TABLE podcastepisodes ADD subtitle " + textColumnType() + ';' );
             query( "ALTER TABLE podcastepisodes ADD size INTEGER;" );
             query( "ALTER TABLE podcastepisodes DROP comment;" );
-            query( "ALTER TABLE podcastepisodes ADD comment " + longTextColumnType() + ";" );
+            query( "ALTER TABLE podcastepisodes ADD comment " + longTextColumnType() + ';' );
         }
         if ( PersistentVersion.toInt() < 11 )
         {
@@ -6062,7 +6062,7 @@ PostgresqlConnection::PostgresqlConnection( const PostgresqlConfig* config )
       "' port=" + QString::number( config->port() ) +
       " dbname='" + config->database() +
       "' user='" + config->username() +
-      "' password='" + config->password() + "'";
+      "' password='" + config->password() + '\'';
 
     m_db = PQconnectdb( conninfo.utf8() );
 
@@ -6375,8 +6375,8 @@ QueryBuilder::addReturnFunctionValue( int function, int table, Q_INT64 value)
         if ( value & valPercentage )
             m_values += "50";
         else
-            m_values += "6";
-        m_values += ")";
+            m_values += '6';
+        m_values += ')';
     }
     m_values += ") AS ";
     m_values += functionName( function )+tableName( table )+valueName( value );
@@ -6831,8 +6831,7 @@ QueryBuilder::addMatch( int tables, Q_INT64 value, const QString& match, bool in
         if ( deviceid != -1 )
         {
             //handle corner case
-            QString rpath2( "." );
-            rpath2 += match;
+            QString rpath2( '.' + match );
             m_where += QString( " OR %1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) );
             m_where += caseSensitive ? CollectionDB::exactCondition( rpath2 ) : CollectionDB::likeCondition( rpath2 );
             m_where += QString( " AND %1.deviceid = -1 " ).arg( tableName( tables ) );
@@ -7004,7 +7003,7 @@ QueryBuilder::sortBy( int table, Q_INT64 value, bool descending )
         if ( b ) m_values += "LOWER( ";
         m_values += tableName( table ) + '.';
         m_values += valueName( value );
-        if ( b ) m_values += ")";
+        if ( b ) m_values += ')';
         m_values += " as __discard ";
     }
 
@@ -7052,10 +7051,10 @@ QueryBuilder::sortByFunction( int function, int table, Q_INT64 value, bool desce
             if ( value & valPercentage )
                 columnName += "50";
             else
-                columnName += "6";
-            columnName += ")";
+                columnName += '6';
+            columnName += ')';
         }
-        columnName += ")";
+        columnName += ')';
     }
     else
         columnName = functionName( function )+tableName( table )+valueName( value );
@@ -7076,7 +7075,7 @@ QueryBuilder::sortByFunction( int function, int table, Q_INT64 value, bool desce
             if ( b ) m_values += "LOWER( ";
             m_values += tableName( table ) + '.';
             m_values += valueName( value );
-            if ( b ) m_values += ")";
+            if ( b ) m_values += ')';
             m_values += " as __discard ";
         }
     }
@@ -7110,20 +7109,20 @@ QueryBuilder::having( int table, Q_INT64 value, int function, int mode, const QS
     QString fn = functionName( function );
     fn.isEmpty() ?
         m_having += tableName( table ) + '.' + valueName( value ) :
-        m_having += functionName( function )+'('+tableName( table )+'.'+valueName( value )+")";
+        m_having += functionName( function )+'('+tableName( table )+'.'+valueName( value )+')';
 
     switch( mode )
     {
         case modeNormal:
-            m_having += "=" + match;
+            m_having += '=' + match;
             break;
 
         case modeLess:
-            m_having += "<" + match;
+            m_having += '<' + match;
             break;
 
         case modeGreater:
-            m_having += ">" + match;
+            m_having += '>' + match;
 
         default:
             break;
@@ -7192,7 +7191,7 @@ QueryBuilder::buildQuery()
                 if ( it != list.begin() ) deviceIds += ',';
                 deviceIds += QString::number( *it );
             }
-            m_query += " AND tags.deviceid IN (" + deviceIds + ")";
+            m_query += " AND tags.deviceid IN (" + deviceIds + ')';
         }
         // GROUP BY must be before ORDER BY for sqlite
         // HAVING must be between GROUP BY and ORDER BY
@@ -7200,7 +7199,7 @@ QueryBuilder::buildQuery()
         if ( !m_having.isEmpty() ) m_query += " HAVING " + m_having;
         if ( !m_sort.isEmpty() )   m_query += " ORDER BY " + m_sort;
         m_query += m_limit;
-        m_query += ";";
+        m_query += ';';
     }
 }
 
