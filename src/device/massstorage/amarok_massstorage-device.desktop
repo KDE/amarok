@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Service
 Name=Mass Storage Device
+Name[af]=Massa Stoor Toestel
 Name[ar]=جهاز حفظ ذو الذاكرة الضخمة
 Name[bg]=Устройство за съхранение
 Name[cs]=Souborové mediální zařízení
@@ -24,6 +25,7 @@ Name[sv]=Masslagringsenhet
 Name[zh_CN]=大容量存储设备
 Name[zh_TW]=大型儲存裝置
 Comment=Device plugin for Amarok
+Comment[af]=Inprop module vir Amarok
 Comment[bg]=Приставка за устройство за Amarok
 Comment[cs]=Modul zařízení pro AmaroK
 Comment[da]=Enheds-plugin for Amarok

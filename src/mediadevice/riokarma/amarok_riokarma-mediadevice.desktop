@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Service
 Name=Rio Karma Media Device
+Name[af]=Rio Karma media toestel
 Name[bg]=Устройство Rio Karma
 Name[da]=Rio Karma-medieenhed
 Name[ga]=Gléas Meán Rio Karma
@@ -12,6 +13,7 @@ Name[pt]=Dispositivo Multimédia Rio Karma
 Name[pt_BR]=Dispositivo de Mídia Rio Karma
 X-KDE-Library=libamarok_riokarma-mediadevice
 Comment=Plugin for Amarok
+Comment[af]=Inprop module vir Amarok
 Comment[ar]= قابس ( برنامج مضاف الى) AmaroK
 Comment[bg]=Приставка за Amarok
 Comment[br]=Lugent evit Amarok

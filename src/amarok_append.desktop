@@ -10,6 +10,7 @@ X-KDE-Submenu[ru]=amaroK
 
 [Desktop Action appendToPlaylist]
 Name=Append to Playlist
+Name[af]=Voeg agter aan speel lys by
 Name[ar]=اضف الى لائحة القراءة
 Name[bg]=Добавяне към списъка с песни
 Name[bn]=সঙ্গীত-তালিকাতে সংযোজন করো
@@ -49,6 +50,7 @@ Exec=amarok -e %U
 
 [Desktop Action appendAndPlay]
 Name=Append & Play
+Name[af]=Voeg agter aan by & Speel
 Name[ar]=اضف و اقرأء
 Name[bg]=Добавяне и възпроизвеждане
 Name[bn]=সংযোজন করো এবং বাজাও
@@ -88,6 +90,7 @@ Exec=dcop amarok playlist playMedia %U
 
 [Desktop Action queueTrack]
 Name=Queue Track
+Name[af]=Plaas snit in wagtou
 Name[ar]= اضف المسار الى صفٌ الانتظار
 Name[bg]=Добавяне и възпроизвеждане
 Name[bn]=গান সারিবদ্ধ করো

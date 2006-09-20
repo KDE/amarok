@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Service
 Name=Music Sharing
+Name[af]=Musiek Deel
 Name[ar]=تبادل مشترك للموسيقة
 Name[bg]=Споделяне на музика
 Name[cs]=Sdílení hudby
@@ -27,6 +28,7 @@ Name[zh_CN]=音乐共享
 Name[zh_TW]=音樂分享
 X-KDE-Library=libamarok_daap-mediadevice
 Comment=Plugin for Amarok
+Comment[af]=Inprop module vir Amarok
 Comment[ar]= قابس ( برنامج مضاف الى) AmaroK
 Comment[bg]=Приставка за Amarok
 Comment[br]=Lugent evit Amarok

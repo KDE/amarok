@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Service
 Name=NFS Device
+Name[af]=NFS Toestel
 Name[ar]=جهاز  نظام الملفات على الشبكة NFS
 Name[bg]=NFS устройство
 Name[ca]=Dispositiu NFS
@@ -26,6 +27,7 @@ Name[sv]=NFS-enhet
 Name[zh_CN]=NFS 设备
 Name[zh_TW]=NFS 裝置
 Comment=Device plugin for Amarok which supports NFS
+Comment[af]=Toestel inprop module vir Amarok wat NFS ondersteuning bied
 Comment[bg]=Приставка за устройство за Amarok, поддържаща NFS
 Comment[cs]=Modul zařízení pro AmaroK, které podporuje NFS
 Comment[da]=Enhedsplugin for Amarok som understøtter NFS

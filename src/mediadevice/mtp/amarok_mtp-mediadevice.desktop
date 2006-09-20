@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Service
 Name=MTP Media Device
+Name[af]=MTP media toestel
 Name[bg]=MTP медийно устройство
 Name[cs]=Mediální zařízení MTP
 Name[da]=MTP-medieenhed
@@ -19,6 +20,7 @@ Name[pt_BR]=Dispositivo de Mídia MTP
 Name[sv]=MTP-mediaenhet
 X-KDE-Library=libamarok_mtp-mediadevice
 Comment=Plugin for Amarok
+Comment[af]=Inprop module vir Amarok
 Comment[ar]= قابس ( برنامج مضاف الى) AmaroK
 Comment[bg]=Приставка за Amarok
 Comment[br]=Lugent evit Amarok

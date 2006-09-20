@@ -45,6 +45,7 @@ Name[zh_CN]=<无引擎>
 Name[zh_TW]=<不使用解碼引擎>
 X-KDE-Library=libamarok_void-engine_plugin
 Comment=Plugin for Amarok
+Comment[af]=Inprop module vir Amarok
 Comment[ar]= قابس ( برنامج مضاف الى) AmaroK
 Comment[bg]=Приставка за Amarok
 Comment[br]=Lugent evit Amarok

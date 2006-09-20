@@ -47,6 +47,7 @@ Name[zh_CN]=NMM 引擎
 Name[zh_TW]=NMM 解碼引擎
 X-KDE-Library=libamarok_nmmengine_plugin
 Comment=Amarok plugin
+Comment[af]=Amarok inprop module
 Comment[ar]=قابس ( برنامج مضاف الى ) AmaroK
 Comment[bg]=Приставка за Amarok
 Comment[br]=Lugent Amarok

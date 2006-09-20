@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Service
 Name=GStreamer 0.10 Engine
+Name[af]=GStreamer 0.10 Enjin
 Name[ar]=محرك GStreamer 0.10
 Name[bg]=Система GStreamer 0.10
 Name[bn]=জিস্ট্রীমার ০.১০ ইঞ্জিন
@@ -36,6 +37,7 @@ Name[zh_CN]=GStreamer 0.10 引擎
 Name[zh_TW]=GStreamer 0.10 解碼引擎
 X-KDE-Library=libamarok_gst10engine_plugin
 Comment=Plugin for Amarok
+Comment[af]=Inprop module vir Amarok
 Comment[ar]= قابس ( برنامج مضاف الى) AmaroK
 Comment[bg]=Приставка за Amarok
 Comment[br]=Lugent evit Amarok

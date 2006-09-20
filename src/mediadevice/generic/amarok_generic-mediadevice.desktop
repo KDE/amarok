@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Service
 Name=Generic Audio Player
+Name[af]=Generiese Oudio Speler
 Name[ar]= قارئ صوتي عام
 Name[bg]=Основен аудио плеър
 Name[ca]=Reproductor d'àudio genèric
@@ -31,6 +32,7 @@ Name[zh_CN]=通用音频播放器
 Name[zh_TW]=通用音樂播放程式
 X-KDE-Library=libamarok_generic-mediadevice
 Comment=Plugin for Amarok
+Comment[af]=Inprop module vir Amarok
 Comment[ar]= قابس ( برنامج مضاف الى) AmaroK
 Comment[bg]=Приставка за Amarok
 Comment[br]=Lugent evit Amarok
