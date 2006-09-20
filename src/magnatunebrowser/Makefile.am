@@ -1,8 +1,6 @@
 INCLUDES = -I$(top_builddir)/amarok/src/amarokcore     -I$(top_srcdir)/amarok/src/amarokcore     -I$(top_srcdir)/amarok/src/analyzers     -I$(top_srcdir)/amarok/src/plugin     -I$(top_srcdir)/amarok/src/statusbar     -I$(top_srcdir)/amarok/src/mediadevice     -I$(top_srcdir)/amarok/src/device     -I$(top_srcdir)/amarok/src     -I$(kde_includes)/arts     $(taglib_includes)     $(sqlite_includes)     $(mysql_includes)     $(postgresql_includes)     $(EXSCALIBAR_CFLAGS)     $(all_includes)
 METASOURCES = AUTO
-include_HEADERS = magnatuneartistinfobox.h magnatunebrowser.h \
-	magnatunedownloaddialog.h magnatunepurchasedialog.h magnatunepurchasehandler.h magnatunetypes.h \
-	magnatunexmlparser.h magnatunelistviewitems.h
+
 
 noinst_LTLIBRARIES = libmagnatunebrowser.la
 libmagnatunebrowser_la_SOURCES = magnatuneartistinfobox.cpp \
@@ -11,4 +9,5 @@ libmagnatunebrowser_la_SOURCES = magnatuneartistinfobox.cpp \
 		magnatunetypes.cpp magnatunexmlparser.cpp magnatunedatabasehandler.cpp \
 		magnatunelistviewitems.cpp magnatunelistview.cpp
 noinst_HEADERS = magnatunedatabasehandler.h magnatunelistviewitems.h \
-	magnatunelistview.h
+		magnatunelistview.h magnatuneartistinfobox.h magnatunebrowser.h magnatunedownloaddialog.h \
+	magnatunepurchasedialog.h magnatunepurchasehandler.h magnatunetypes.h magnatunexmlparser.h
