@@ -467,6 +467,8 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
 
         void invalidateArtistAlbumCache() { m_validArtistCache=false; m_validComposerCache=false; m_validAlbumCache=false; };
 
+        void vacuum();
+
     protected:
         QCString md5sum( const QString& artist, const QString& album, const QString& file = QString::null );
         void engineTrackEnded( int finalPosition, int trackLength, const QString &reason );

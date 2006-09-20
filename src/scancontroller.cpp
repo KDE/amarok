@@ -292,6 +292,11 @@ main_loop:
             CollectionDB::instance()->deleteAllRedundant( "year" );
             CollectionDB::instance()->deleteAllRedundant( "genre" );
             CollectionDB::instance()->deleteAllRedundant( "album" );
+
+            //Remove free space and fragmentation in the DB. Used to run on shutdown, but
+            //that took too long, sometimes causing Amarok to be killed.
+            CollectionDB::instance()->vacuum();
+
         }
         else {
             if( m_crashedFiles.size() < MAX_RESTARTS ) {

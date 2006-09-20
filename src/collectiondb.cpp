@@ -274,14 +274,6 @@ CollectionDB::~CollectionDB()
         close( INotify::instance()->fd() );
 #endif
 
-// Disabled because VACUUM takes too long, which can lead to KDE killing Amarok
-// on shutdown.. which is really bad mojo. 
-//    if ( getDbConnectionType() == DbConnection::sqlite )
-//    {
-//        debug() << "Running VACUUM" << endl;
-//        query( "VACUUM;" );
-//    }
-
     destroy();
 }
 
@@ -5504,6 +5496,18 @@ CollectionDB::updatePodcastTables()
         exit( 1 );
         dropPodcastTables();
         createPodcastTables();
+    }
+}
+
+void
+CollectionDB::vacuum()
+{
+    if ( DbConnection::sqlite == getDbConnectionType() ||
+         DbConnection::postgresql == getDbConnectionType() )
+    {
+        //Clean up DB and free unused space.
+        debug() << "Running VACUUM" << endl;
+        query( "VACUUM;" );
     }
 }
 
