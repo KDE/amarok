@@ -26,7 +26,7 @@
 #include <kurldrag.h>
 
 /**
-A specialised QListView that provides drag and drop functionality
+A specialized QListView that provides drag and drop functionality
 
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 	

@@ -63,7 +63,7 @@ DEBUG_BLOCK
 
     updateList( );
 
-    m_currentInfoUrl = QString::null;
+    m_currentInfoUrl = "";
 
     m_artistInfobox->openURL( KURL(locate( "data", "amarok/data/magnatune_start_page.html" ) ) );
 

@@ -20,10 +20,9 @@
 #ifndef MAGNATUNEDATABASEHANDLER_H
 #define MAGNATUNEDATABASEHANDLER_H
 
-#include "magnatunetypes.h"
 #include "collectiondb.h"
+#include "magnatunetypes.h"
 
-#include <qstring.h>
 #include <qstringlist.h>
 
 
@@ -68,8 +67,8 @@ public:
 
 protected:
 
-   MagnatuneDatabaseHandler();
-   static MagnatuneDatabaseHandler * m_pInstance;
+    MagnatuneDatabaseHandler();
+    static MagnatuneDatabaseHandler * m_pInstance;
 
 };
 

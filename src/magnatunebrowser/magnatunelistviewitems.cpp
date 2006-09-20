@@ -138,7 +138,7 @@ MagnatuneListViewTrackItem::MagnatuneListViewTrackItem( MagnatuneTrack track, QL
     int trackNumber = track.getTrackNumber();
     QString trackNumberString = QString::number( trackNumber );
     if (trackNumber < 10)
-        trackNumberString = "0" + trackNumberString;
+        trackNumberString = '0' + trackNumberString;
     
     
     

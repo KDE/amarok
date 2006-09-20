@@ -27,7 +27,7 @@
 MagnatuneXmlParser::MagnatuneXmlParser(QString filename)
  : ThreadWeaver::Job( "MagnatuneXmlParser" )
 {
-    m_currentArtist = QString::null;
+    m_currentArtist = "";
     m_sFileName = filename;
 }
 

@@ -27,7 +27,7 @@
 #include <qlistview.h>
 
 /**
-A specialised QListViewItem that encapsulates a MagnatuneArtist
+A specialized QListViewItem that encapsulates a MagnatuneArtist
 
 @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
@@ -47,7 +47,7 @@ public:
 
 
 /**
-A specialised QListViewItem that encapsulates a MagnatuneAlbum
+A specialized QListViewItem that encapsulates a MagnatuneAlbum
 
 @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
  */
@@ -65,7 +65,7 @@ public:
 
 
 /**
-A specialised QListViewItem that encapsulates a MagnatuneTrack
+A specialized QListViewItem that encapsulates a MagnatuneTrack
 
 @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
  */
