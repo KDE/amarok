@@ -5,6 +5,9 @@ TODO-list for Amarok
 
 
 SHORT-TERM (URGENT):
+ <jeff>    When playing a stream from e.g. Ampache, even if an Artist is detected, Wikipedia
+           will pull up "Artist - Song" instead of just Artist.
+
  <jeff>    I should change MetaBundleSaver to the stack-code the parts that are in the normal MetaBundle use.
 
  <jeff>    Keep promises: implement http://mail.kde.org/pipermail/amarok/2006-August/000993.html,
