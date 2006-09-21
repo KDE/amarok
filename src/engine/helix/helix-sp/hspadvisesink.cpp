@@ -519,7 +519,7 @@ STDMETHODIMP HSPClientAdviceSink::OnPreSeek(	ULONG32	ulOldTime,
  *	    IHXClientAdviseSink::OnPostSeek
  *	Purpose:
  *	    Called by client engine to inform the client that a seek has
- *	    just occured. The render is informed the last time for the 
+ *	    just occurred. The render is informed the last time for the 
  *	    stream's time line before the seek, as well as the first new
  *	    time for the stream's time line after the seek.
  *
@@ -541,7 +541,7 @@ STDMETHODIMP HSPClientAdviceSink::OnPostSeek(	ULONG32	ulOldTime,
  *	    IHXClientAdviseSink::OnStop
  *	Purpose:
  *	    Called by client engine to inform the client that a stop has
- *	    just occured. 
+ *	    just occurred. 
  *
  */
 STDMETHODIMP HSPClientAdviceSink::OnStop(void)
@@ -576,7 +576,7 @@ STDMETHODIMP HSPClientAdviceSink::OnStop(void)
  *	    IHXClientAdviseSink::OnPause
  *	Purpose:
  *	    Called by client engine to inform the client that a pause has
- *	    just occured. The render is informed the last time for the 
+ *	    just occurred. The render is informed the last time for the 
  *	    stream's time line before the pause.
  *
  */
@@ -596,7 +596,7 @@ STDMETHODIMP HSPClientAdviceSink::OnPause(ULONG32 ulTime)
  *	    IHXClientAdviseSink::OnBegin
  *	Purpose:
  *	    Called by client engine to inform the client that a begin or
- *	    resume has just occured. The render is informed the first time 
+ *	    resume has just occurred. The render is informed the first time 
  *	    for the stream's time line after the resume.
  *
  */
@@ -630,7 +630,7 @@ STDMETHODIMP HSPClientAdviceSink::OnBegin(ULONG32 ulTime)
  *	Purpose:
  *	    Called by client engine to inform the client that buffering
  *	    of data is occuring. The render is informed of the reason for
- *	    the buffering (start-up of stream, seek has occured, network
+ *	    the buffering (start-up of stream, seek has occurred, network
  *	    congestion, etc.), as well as percentage complete of the 
  *	    buffering process.
  *

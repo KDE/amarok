@@ -718,7 +718,7 @@ EXTERN_C HX_RESULT QIFind(QInterfaceList* qiList, UINT32 ulqiListSize,
  *
  *  Putting the following macro in the definition of your class will overload
  *  new and delete for that object.  New will then take an IMalloc* from
- *  which to allocate memory from and store it in the begining of the
+ *  which to allocate memory from and store it in the beginning of the
  *  memory which it will return.  Delete will grab this IMalloc* from
  *  the beginning of the mem and use this pointer to deallocate the mem.
  *

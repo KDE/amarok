@@ -615,7 +615,7 @@ DECLARE_INTERFACE_(IHXSiteSupplier, IUnknown)
      *    IHXSiteSupplier::BeginChangeLayout
      *  Purpose:
      *    Called to inform the site supplier a layout change has beginning
-     *	  it can expect to recieve SitesNeeded() and SitesNotNeeded() calls
+     *	  it can expect to receive SitesNeeded() and SitesNotNeeded() calls
      *	  while a layout change is in progress,
      */
     STDMETHOD(BeginChangeLayout) (THIS) PURE;
@@ -676,7 +676,7 @@ DECLARE_INTERFACE_(IHXSiteManager, IUnknown)
      *	Method:
      *	    IHXSiteManager::AddSite
      *	Purpose:
-     *	  Called to inform the site manager of the existance of a site.
+     *	  Called to inform the site manager of the existence of a site.
      */
     STDMETHOD(AddSite)		(THIS_
 				IHXSite*		pSite) PURE;
@@ -1148,7 +1148,7 @@ DECLARE_INTERFACE_(IHXSiteTransition, IUnknown)
  *
  *  Purpose:
  *
- *  Iterface for managing HXRegions.
+ *  Interface for managing HXRegions.
  *
  *  IHXRegion:
  *
@@ -1189,7 +1189,7 @@ DECLARE_INTERFACE_(IHXRegion, IUnknown)
      *	Method:
      *	    IHXRegion::SetPoly
      *	Purpose:
-     *	    This function creates a region defined by an arbitary polygon.
+     *	    This function creates a region defined by an arbitrary polygon.
      *
      */
 

@@ -54,7 +54,7 @@ typedef enum _HXPropType
  *
  *  Purpose:
  *
- *	This inteface provides access to the "Registry" in the server and
+ *	This interface provides access to the "Registry" in the server and
  *	client.  The "Registry" is a hierarchical structure of Name/Value
  *	pairs (properties) which is capable of storing many different types
  *	of data including strings, buffers, and integers.  The registry
@@ -144,7 +144,7 @@ DECLARE_INTERFACE_(IHXRegistry, IUnknown)
      *  name "pName". If the Property is found, it will return HXR_OK, 
      *  otherwise it returns HXR_FAIL.
      *
-     *  pName - IN - name of the Property whose value is to be retreived
+     *  pName - IN - name of the Property whose value is to be retrieved
      *  nValue - OUT - parameter into which the value of the Property is 
      *                 going to be returned
      */
@@ -160,7 +160,7 @@ DECLARE_INTERFACE_(IHXRegistry, IUnknown)
      *  If the Property is found, it will return HXR_OK, otherwise it 
      *  returns HXR_FAIL.
      *
-     *  ulId - IN - unique id of the Property whose value is to be retreived
+     *  ulId - IN - unique id of the Property whose value is to be retrieved
      *  nValue - OUT - parameter into which the value of the Property is 
      *                 going to be returned
      */
@@ -222,7 +222,7 @@ DECLARE_INTERFACE_(IHXRegistry, IUnknown)
      *  name "pName". If the Property is found, it will return HXR_OK, 
      *  otherwise it returns HXR_FAIL.
      *
-     *  pName - IN - name of the Property whose value is to be retreived
+     *  pName - IN - name of the Property whose value is to be retrieved
      *  pValue - OUT - parameter into which the value of the Property is 
      *                 going to be returned
      */
@@ -238,7 +238,7 @@ DECLARE_INTERFACE_(IHXRegistry, IUnknown)
      *  If the Property is found, it will return HXR_OK, otherwise it 
      *  returns HXR_FAIL.
      *
-     *  ulId - IN - unique id of the Property whose value is to be retreived
+     *  ulId - IN - unique id of the Property whose value is to be retrieved
      *  pValue - OUT - parameter into which the value of the Property is 
      *                 going to be returned
      */
@@ -300,7 +300,7 @@ DECLARE_INTERFACE_(IHXRegistry, IUnknown)
      *  "pName". If the Property is found, it will return HXR_OK, otherwise 
      *  it returns HXR_FAIL.
      *
-     *  pName - IN - name of the Property whose value is to be retreived
+     *  pName - IN - name of the Property whose value is to be retrieved
      *  pValue - OUT - parameter into which the value of the Property is 
      *                 going to be returned
      */
@@ -316,7 +316,7 @@ DECLARE_INTERFACE_(IHXRegistry, IUnknown)
      *  Property is found, it will return HXR_OK, otherwise it returns 
      *  HXR_FAIL.
      *
-     *  ulId - IN - unique id of the Property whose value is to be retreived
+     *  ulId - IN - unique id of the Property whose value is to be retrieved
      *  pValue - OUT - parameter into which the value of the Property is 
      *                 going to be returned
      */
@@ -401,7 +401,7 @@ DECLARE_INTERFACE_(IHXRegistry, IUnknown)
      *  Purpose:
      *      Returns the datatype of the Property given its name "pName".
      *
-     *  pName - IN - name of the Property whose type is to be retreived
+     *  pName - IN - name of the Property whose type is to be retrieved
      */
     STDMETHOD_(HXPropType, GetTypeByName)	(THIS_
 						const char* pName) const PURE;
@@ -412,7 +412,7 @@ DECLARE_INTERFACE_(IHXRegistry, IUnknown)
      *  Purpose:
      *      Returns the datatype of the Property given its its id "ulId".
      *
-     *  ulId - IN - unique id of the Property whose type is to be retreived
+     *  ulId - IN - unique id of the Property whose type is to be retrieved
      */
     STDMETHOD_(HXPropType, GetTypeById)	(THIS_
 						const UINT32 ulId) const PURE;
@@ -426,7 +426,7 @@ DECLARE_INTERFACE_(IHXRegistry, IUnknown)
      *  returned.
      *
      *  pName - IN - name of the Property whose parent's unique id is to be
-     *               retreived
+     *               retrieved
      */
     STDMETHOD_(UINT32, FindParentIdByName)	(THIS_
 						const char* pName) const PURE;
@@ -439,7 +439,7 @@ DECLARE_INTERFACE_(IHXRegistry, IUnknown)
      *  id "ulId" has been passed in. If it fails, a ZERO value is returned.
      *
      *  ulId - IN - unique id of the Property whose parent's id is to be
-     *              retreived
+     *              retrieved
      */
     STDMETHOD_(UINT32, FindParentIdById)	(THIS_
 						const UINT32 ulId) const PURE;
@@ -451,7 +451,7 @@ DECLARE_INTERFACE_(IHXRegistry, IUnknown)
      *      Returns the Property name in the pName char buffer passed
      *  as a parameter, given the Property's id "ulId".
      *
-     *  ulId - IN - unique id of the Property whose name is to be retreived
+     *  ulId - IN - unique id of the Property whose name is to be retrieved
      *  pName - OUT - parameter into which the Property name is going to be
      *                returned
      */
@@ -466,7 +466,7 @@ DECLARE_INTERFACE_(IHXRegistry, IUnknown)
      *      Returns the Property's id given the Property name.
      *
      *  pName - IN - name of the Property whose unique id is to be 
-     *               retreived
+     *               retrieved
      */
     STDMETHOD_(UINT32, GetId)		(THIS_
 					const char* pName) const PURE;
@@ -492,7 +492,7 @@ DECLARE_INTERFACE_(IHXRegistry, IUnknown)
      *  name is passed in "pName".
      *
      *  pName - IN - name of the Property whose child property list is to be
-     *               retreived
+     *               retrieved
      *  pValues - OUT - list of property name and unique id under the 
      *                  Property whose name is in "pName"
      */
@@ -508,7 +508,7 @@ DECLARE_INTERFACE_(IHXRegistry, IUnknown)
      *  id is passed in "ulId".
      *
      *  ulId - IN - unique id of the Property whose child property list is 
-     *              to be retreived
+     *              to be retrieved
      *  pValues - OUT - list of property name and unique id under the 
      *                  Property whose is is in "ulId"
      */
@@ -532,7 +532,7 @@ DECLARE_INTERFACE_(IHXRegistry, IUnknown)
      *  whose name is specified in "pName".
      *
      *  pName - IN - name of the Property whose number of children is to be
-     *               retreived
+     *               retrieved
      */
     STDMETHOD_(INT32, GetNumPropsByName)	(THIS_
 						const char* pName) const PURE;
@@ -545,7 +545,7 @@ DECLARE_INTERFACE_(IHXRegistry, IUnknown)
      *  whose unique id is specified in "ulId".
      *
      *  ulId - IN - unique id of the Property whose number of children is 
-     *              to be retreived
+     *              to be retrieved
      */
     STDMETHOD_(INT32, GetNumPropsById)		(THIS_
 						const UINT32 ulId) const PURE;
@@ -872,7 +872,7 @@ DECLARE_INTERFACE_(IHXActiveRegistry, IUnknown)
  *
  *	An IHXActivePropUser can be set as the active user of a property in 
  *  an IHXActiveRegistry. This causes the IHXActivePropUser to be consulted 
- *  everytime someone wants to change a property. The difference between this 
+ *  every time someone wants to change a property. The difference between this 
  *  and a prop watch is that this is async, and can call a done method with 
  *  failure to cause the prop to not be set, and this get called instead of 
  *  calling into the IHXReg.
@@ -1203,7 +1203,7 @@ DECLARE_INTERFACE_(IHXRegistry2, IUnknown)
      *  name "pName". If the Property is found, it will return HXR_OK, 
      *  otherwise it returns HXR_FAIL.
      *
-     *  pName - IN - name of the Property whose value is to be retreived
+     *  pName - IN - name of the Property whose value is to be retrieved
      *  nValue - OUT - parameter into which the value of the Property is 
      *                 going to be returned
      */
@@ -1219,7 +1219,7 @@ DECLARE_INTERFACE_(IHXRegistry2, IUnknown)
      *  If the Property is found, it will return HXR_OK, otherwise it 
      *  returns HXR_FAIL.
      *
-     *  ulId - IN - unique id of the Property whose value is to be retreived
+     *  ulId - IN - unique id of the Property whose value is to be retrieved
      *  nValue - OUT - parameter into which the value of the Property is 
      *                 going to be returned
      */
@@ -1282,7 +1282,7 @@ DECLARE_INTERFACE_(IHXRegistry2, IUnknown)
      *  name "pName". If the Property is found, it will return HXR_OK, 
      *  otherwise it returns HXR_FAIL.
      *
-     *  pName - IN - name of the Property whose value is to be retreived
+     *  pName - IN - name of the Property whose value is to be retrieved
      *  pValue - OUT - parameter into which the value of the Property is 
      *                 going to be returned
      */
@@ -1298,7 +1298,7 @@ DECLARE_INTERFACE_(IHXRegistry2, IUnknown)
      *  If the Property is found, it will return HXR_OK, otherwise it 
      *  returns HXR_FAIL.
      *
-     *  ulId - IN - unique id of the Property whose value is to be retreived
+     *  ulId - IN - unique id of the Property whose value is to be retrieved
      *  pValue - OUT - parameter into which the value of the Property is 
      *                 going to be returned
      */
@@ -1361,7 +1361,7 @@ DECLARE_INTERFACE_(IHXRegistry2, IUnknown)
      *  "pName". If the Property is found, it will return HXR_OK, otherwise 
      *  it returns HXR_FAIL.
      *
-     *  pName - IN - name of the Property whose value is to be retreived
+     *  pName - IN - name of the Property whose value is to be retrieved
      *  pValue - OUT - parameter into which the value of the Property is 
      *                 going to be returned
      */
@@ -1377,7 +1377,7 @@ DECLARE_INTERFACE_(IHXRegistry2, IUnknown)
      *  Property is found, it will return HXR_OK, otherwise it returns 
      *  HXR_FAIL.
      *
-     *  ulId - IN - unique id of the Property whose value is to be retreived
+     *  ulId - IN - unique id of the Property whose value is to be retrieved
      *  pValue - OUT - parameter into which the value of the Property is 
      *                 going to be returned
      */
@@ -1463,7 +1463,7 @@ DECLARE_INTERFACE_(IHXRegistry2, IUnknown)
      *  Purpose:
      *      Returns the datatype of the Property given its name "pName".
      *
-     *  pName - IN - name of the Property whose type is to be retreived
+     *  pName - IN - name of the Property whose type is to be retrieved
      */
     STDMETHOD_(HXPropType, GetTypeByName)	(THIS_
 						const char* pName) const PURE;
@@ -1474,7 +1474,7 @@ DECLARE_INTERFACE_(IHXRegistry2, IUnknown)
      *  Purpose:
      *      Returns the datatype of the Property given its its id "ulId".
      *
-     *  ulId - IN - unique id of the Property whose type is to be retreived
+     *  ulId - IN - unique id of the Property whose type is to be retrieved
      */
     STDMETHOD_(HXPropType, GetTypeById)	(THIS_
 						const UINT32 ulId) const PURE;
@@ -1488,7 +1488,7 @@ DECLARE_INTERFACE_(IHXRegistry2, IUnknown)
      *  returned.
      *
      *  pName - IN - name of the Property whose parent's unique id is to be
-     *               retreived
+     *               retrieved
      */
     STDMETHOD_(UINT32, FindParentIdByName)	(THIS_
 						const char* pName) const PURE;
@@ -1501,7 +1501,7 @@ DECLARE_INTERFACE_(IHXRegistry2, IUnknown)
      *  id "ulId" has been passed in. If it fails, a ZERO value is returned.
      *
      *  ulId - IN - unique id of the Property whose parent's id is to be
-     *              retreived
+     *              retrieved
      */
     STDMETHOD_(UINT32, FindParentIdById)	(THIS_
 						const UINT32 ulId) const PURE;
@@ -1513,7 +1513,7 @@ DECLARE_INTERFACE_(IHXRegistry2, IUnknown)
      *      Returns the Property name in the pName char buffer passed
      *  as a parameter, given the Property's id "ulId".
      *
-     *  ulId - IN - unique id of the Property whose name is to be retreived
+     *  ulId - IN - unique id of the Property whose name is to be retrieved
      *  pName - OUT - parameter into which the Property name is going to be
      *                returned
      */
@@ -1528,7 +1528,7 @@ DECLARE_INTERFACE_(IHXRegistry2, IUnknown)
      *      Returns the Property's id given the Property name.
      *
      *  pName - IN - name of the Property whose unique id is to be 
-     *               retreived
+     *               retrieved
      */
     STDMETHOD_(UINT32, GetId)		(THIS_
 					const char* pName) const PURE;
@@ -1554,7 +1554,7 @@ DECLARE_INTERFACE_(IHXRegistry2, IUnknown)
      *  name is passed in "pName".
      *
      *  pName - IN - name of the Property whose child property list is to be
-     *               retreived
+     *               retrieved
      *  pValues - OUT - list of property name and unique id under the 
      *                  Property whose name is in "pName"
      */
@@ -1570,7 +1570,7 @@ DECLARE_INTERFACE_(IHXRegistry2, IUnknown)
      *  id is passed in "ulId".
      *
      *  ulId - IN - unique id of the Property whose child property list is 
-     *              to be retreived
+     *              to be retrieved
      *  pValues - OUT - list of property name and unique id under the 
      *                  Property whose is is in "ulId"
      */
@@ -1595,7 +1595,7 @@ DECLARE_INTERFACE_(IHXRegistry2, IUnknown)
      *  whose name is specified in "pName".
      *
      *  pName - IN - name of the Property whose number of children is to be
-     *               retreived
+     *               retrieved
      */
     STDMETHOD_(INT32, GetNumPropsByName)	(THIS_
 						const char* pName) const PURE;
@@ -1608,7 +1608,7 @@ DECLARE_INTERFACE_(IHXRegistry2, IUnknown)
      *  whose unique id is specified in "ulId".
      *
      *  ulId - IN - unique id of the Property whose number of children is 
-     *              to be retreived
+     *              to be retrieved
      */
     STDMETHOD_(INT32, GetNumPropsById)		(THIS_
 						const UINT32 ulId) const PURE;

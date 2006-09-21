@@ -108,7 +108,7 @@ DEFINE_GUID_ENUM(IID_IHXTimeStampSync,     0x00000402, 0xb4c8, 0x11d0, 0x99, 0x9
  * File:
  *    rtspif.h
  * Description:
- *    Interface for servicing synchronization accross transport streams
+ *    Interface for servicing synchronization across transport streams
  * Interfaces:
  *    IID_IHXTransportSyncServer: {16b420d0-f4d0-11d5-aac0-00102051b340}
  */

@@ -694,7 +694,7 @@ ServerItem::httpError( const QString& errorString )
 {
     stopAnimation();
     resetTitle();
-    Amarok::StatusBar::instance()->longMessage( i18n( "The following error occured while trying to connect to the remote server:<br>%1").arg( errorString ) );
+    Amarok::StatusBar::instance()->longMessage( i18n( "The following error occurred while trying to connect to the remote server:<br>%1").arg( errorString ) );
     m_reader->deleteLater();
     m_reader = 0;
     m_loaded = false;

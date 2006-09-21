@@ -811,7 +811,7 @@ extern "C" {
  *
  * The Alpha CPU provides instructions to load-lock a value,
  * modify it, and attempt to write it back.  If the value has
- * been modified by someone else since the load-lock occured,
+ * been modified by someone else since the load-lock occurred,
  * the write will fail and you can check the status code to
  * know whether you need to retry or not.
  *
@@ -943,7 +943,7 @@ HXAtomicSubRetUINT32(UINT32* pNum, UINT32 n)
  *
  * XXXDC: The xlc compiler is able to do inline asm for C but when I do
  * it for C++ it crashes, so for now I have resorted to putting
- * the asm in a seperate assembler routine.  The way you inline with
+ * the asm in a separate assembler routine.  The way you inline with
  * xlc/xlC is difficult to use, requiring the use of "#pragma mc_func".
  */
 #elif defined (_AIX)

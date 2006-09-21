@@ -407,7 +407,7 @@ VALUE URIClassifier_init(VALUE self)
  * Registers the SampleHandler (one for all requests) with the "/someuri".
  * When URIClassifier::resolve is called with "/someuri" it'll return
  * SampleHandler immediately.  When called with "/someuri/iwant" it'll also
- * return SomeHandler immediatly, with no additional searches, but it will
+ * return SomeHandler immediately, with no additional searches, but it will
  * return path info with "/iwant".
  *
  * You actually can reuse this class to register nearly anything and

@@ -234,7 +234,7 @@ void MultiTabBarInternal::resizeEvent( QResizeEvent *ev )
         if ( ( m_position == MultiTabBar::Bottom ) || ( m_position == MultiTabBar::Top ) )
             space = width();
         else
-            space = height(); // made space for tab managment button
+            space = height(); // made space for tab management button
 
         int cnt = 0;
         //CALCULATE LINES

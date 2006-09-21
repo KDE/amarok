@@ -247,7 +247,7 @@ typedef UINT32  u_Int32;
 
 /*
  * XXXGo
- * depricated...now that we need UFIXED and FIXED, this name is confusing...
+ * deprecated...now that we need UFIXED and FIXED, this name is confusing...
  * use the ones below.
  */
 typedef ULONG32                 UFIXED32;           /* FIXED point value  */

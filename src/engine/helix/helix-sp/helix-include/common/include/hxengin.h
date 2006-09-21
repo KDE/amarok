@@ -56,9 +56,9 @@ typedef _INTERFACE      IHXAutoBWCalibrationAdviseSink  IHXAutoBWCalibrationAdvi
 typedef _INTERFACE	IHXPreferredTransport		IHXPreferredTransport;
 
 /*
- * Address flags starting with PNR are depricated.
+ * Address flags starting with PNR are deprecated.
  */
-#define HXR_INADDR_ANY	(UINT32)0x00000000  //THIS FLAG IS DEPRICATED
+#define HXR_INADDR_ANY	(UINT32)0x00000000  //THIS FLAG IS DEPRECATED
 #define HX_INADDR_ANY	(UINT32)0x00000000
 
 /*
@@ -67,7 +67,7 @@ typedef _INTERFACE	IHXPreferredTransport		IHXPreferredTransport;
  * Bind to all ports in IPBindings list from
  * server config.
  */
-#define HXR_INADDR_IPBINDINGS (UINT32)0xfffffffe    //THIS FLAG IS DEPRICATED
+#define HXR_INADDR_IPBINDINGS (UINT32)0xfffffffe    //THIS FLAG IS DEPRECATED
 #define HX_INADDR_IPBINDINGS (UINT32)0xfffffffe
 
 
@@ -1563,7 +1563,7 @@ DECLARE_INTERFACE_(IHXLoadBalancedListen, IUnknown)
  *	a plugin to override any default services provided by the G2 system.
  *	Currently, it is supported only on the client side. 
  *	You may currently override IHXNetworkServices using this interface
- *	You can use the same interface to later restore back the overriden services.
+ *	You can use the same interface to later restore back the overridden services.
  *	This is done by calling the same OverrideServices() function with the 
  *	original service QIed before the initial override.
  * 

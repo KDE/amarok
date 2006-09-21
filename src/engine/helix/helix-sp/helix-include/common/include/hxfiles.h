@@ -2099,7 +2099,7 @@ DECLARE_INTERFACE_(IHXHTTPPostObject, IUnknown)
      *  Method:
      *      IHXHTTPPostObject::GetResponse
      *  Purpose:
-     *      Tells the object to retreive any response data from the POST.
+     *      Tells the object to retrieve any response data from the POST.
      *      Calls IHXHTTPPostResponse with ResponseReady(IHXValues*).
      */
     STDMETHOD(GetResponse)      (THIS) PURE;

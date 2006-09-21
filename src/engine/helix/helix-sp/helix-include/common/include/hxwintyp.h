@@ -152,7 +152,7 @@ inline void HXxRect_Intersection( const HXxRect& r1, const HXxRect& r2, HXxRect*
  *
  *	Cross Platform definition of a window. This struct is sufficiently
  *	wide to describe parent or child windows in Windows, MacOS, and
- *	various flavours of X-Windows.
+ *	various flavors of X-Windows.
  *
  *  Data Members:
  *
@@ -198,7 +198,7 @@ typedef void* HXxWindowID;
  *  Purpose:
  *
  *	Cross Platform definition of a event. This struct is sufficiently
- *	wide to describe an event in Windows, MacOS, and various flavours of 
+ *	wide to describe an event in Windows, MacOS, and various flavors of 
  *	X-Windows.
  *
  *  Data Members:
@@ -244,7 +244,7 @@ typedef struct HXEXPORT_CLASS _HXxEvent
  *
  *	Cross Platform definition of a region. This typedef is redefined as
  *	appropriate to describe a region in Windows, MacOS, and various 
- *	flavours of X-Windows.
+ *	flavors of X-Windows.
  *
  */
 typedef void* HXxRegion;
@@ -259,7 +259,7 @@ typedef void* HXxRegion;
  *
  *	Cross Platform definition of a device context. This typedef is redefined as
  *	appropriate to describe a device context in Windows, MacOS, and various 
- *	flavours of X-Windows.
+ *	flavors of X-Windows.
  *
  */
 typedef void* HXxDC;
@@ -274,7 +274,7 @@ typedef void* HXxDC;
  *
  *	Cross Platform definition of a font. This typedef is redefined as
  *	appropriate to describe a font in Windows, MacOS, and various 
- *	flavours of X-Windows.
+ *	flavors of X-Windows.
  *
  */
 typedef void* HXxFont;
@@ -289,7 +289,7 @@ typedef void* HXxFont;
  *
  *	Cross Platform definition of a color. This typedef is redefined as
  *	appropriate to describe a font in Windows, MacOS, and various 
- *	flavours of X-Windows.
+ *	flavors of X-Windows.
  *
  */
 typedef ULONG32 HXxColor;
@@ -304,7 +304,7 @@ typedef ULONG32 HXxColor;
  *
  *	Cross Platform definition of a icon. This typedef is redefined as
  *	appropriate to describe a font in Windows, MacOS, and various 
- *	flavours of X-Windows.
+ *	flavors of X-Windows.
  *
  */
 typedef void* HXxIcon;
@@ -319,7 +319,7 @@ typedef void* HXxIcon;
  *
  *	Cross Platform definition of a menu. This typedef is redefined as
  *	appropriate to describe a font in Windows, MacOS, and various 
- *	flavours of X-Windows.
+ *	flavors of X-Windows.
  *
  */
 typedef void* HXxMenu;
@@ -334,7 +334,7 @@ typedef void* HXxMenu;
  *
  *	Cross Platform definition of a cursor. This typedef is redefined as
  *	appropriate to describe a cursor in Windows, MacOS, and various 
- *	flavours of X-Windows.
+ *	flavors of X-Windows.
  *
  */
 typedef void* HXxCursor;

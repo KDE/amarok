@@ -27,7 +27,7 @@ public:
   MP4::Tag                    mp4tag;
   //! container for the audio properties returned by properties() function
   MP4::AudioProperties        mp4audioproperties;
-  //! is set to valid after successfull parsing
+  //! is set to valid after successfully parsing
   bool                        isValid;
 };
 

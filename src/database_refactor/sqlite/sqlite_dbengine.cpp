@@ -130,7 +130,7 @@ QStringList SqliteDbEngine::query( const QString& statement )
                 values << QString::fromUtf8( (const char*) sqlite3_column_text( stmt, i ) );
             }
         }
-        //deallocate vm ressources
+        //deallocate vm resources
         sqlite3_finalize( stmt );
 
         if ( error != SQLITE_DONE )
@@ -183,7 +183,7 @@ int SqliteDbEngine::insert( const QString& statement, const QString& /* table */
             if ( error == SQLITE_DONE || error == SQLITE_ERROR )
                 break;
         }
-        //deallocate vm ressources
+        //deallocate vm resources
         sqlite3_finalize( stmt );
 
         if ( error != SQLITE_DONE )

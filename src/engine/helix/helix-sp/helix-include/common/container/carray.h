@@ -65,9 +65,9 @@ public:
 
                                 // search for value in array
     inline HXBOOL Find(void* value, int* index=NULL);
-                                // search for and remove first occurence
+                                // search for and remove first occurrence
     HXBOOL FindAndRemoveOne(void* value);
-                                // search for and remove all occurences
+                                // search for and remove all occurrences
     HXBOOL FindAndRemoveAll(void* value);
 
     class Iterator 
@@ -258,7 +258,7 @@ CHXPtrArray::Find(void* value, int* index)
 ///
 /// FindAndRemoveOne(void* value)
 ///
-/// search for and remove first occurence
+/// search for and remove first occurrence
 ///
 inline HXBOOL
 CHXPtrArray::FindAndRemoveOne(void* value)
@@ -275,7 +275,7 @@ CHXPtrArray::FindAndRemoveOne(void* value)
 ///
 /// FindAndRemoveAll(void* value)
 ///
-/// search for and remove all occurences
+/// search for and remove all occurrences
 ///
 inline HXBOOL
 CHXPtrArray::FindAndRemoveAll(void* value)

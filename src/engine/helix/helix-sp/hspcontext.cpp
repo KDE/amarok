@@ -43,7 +43,7 @@ HSPEngineContext::~HSPEngineContext()
 
 void HSPEngineContext::Close()
 {
-   // you don't own the common class factory, so dont even think about it...
+   // you don't own the common class factory, so don't even think about it...
 }
 
 // *** IUnknown methods ***

@@ -5792,7 +5792,7 @@ QStringList SqliteConnection::query( const QString& statement )
             if ( rc == SQLITE_SCHEMA )
             {
                 retryCnt++;
-                debug() << "SQLITE_SCHEMA error occured on query: " << statement << endl;
+                debug() << "SQLITE_SCHEMA error occurred on query: " << statement << endl;
                 if ( retryCnt < 10 )
                     debug() << "Retrying now." << endl;
                 else
@@ -5874,7 +5874,7 @@ int SqliteConnection::insert( const QString& statement, const QString& /* table 
             if ( rc == SQLITE_SCHEMA )
             {
                 retryCnt++;
-                debug() << "SQLITE_SCHEMA error occured on insert: " << statement << endl;
+                debug() << "SQLITE_SCHEMA error occurred on insert: " << statement << endl;
                 if ( retryCnt < 10 )
                     debug() << "Retrying now." << endl;
                 else

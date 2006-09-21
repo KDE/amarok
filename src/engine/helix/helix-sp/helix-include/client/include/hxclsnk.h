@@ -164,7 +164,7 @@ DECLARE_INTERFACE_(IHXClientAdviseSink, IUnknown)
      *	    IHXClientAdviseSink::OnBuffering
      *	Purpose:
      *	    Called by client engine to inform the client that buffering
-     *	    of data is occuring. The render is informed of the reason for
+     *	    of data is occurring. The render is informed of the reason for
      *	    the buffering (start-up of stream, seek has occurred, network
      *	    congestion, etc.), as well as percentage complete of the 
      *	    buffering process.

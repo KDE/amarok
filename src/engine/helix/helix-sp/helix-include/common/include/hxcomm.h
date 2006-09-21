@@ -209,7 +209,7 @@ DECLARE_INTERFACE_(IHXServerFork, IUnknown)
  *
  *  Purpose:
  *
- *	This inteface provides access to the RealMedia server's controls
+ *	This interface provides access to the RealMedia server's controls
  *      for shutting down (for now).
  *
  *	Note:  This registry is not related to the Windows system registry.
