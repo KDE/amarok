@@ -398,12 +398,6 @@ void MagnatuneBrowser::genreChanged()
     updateList( );
 }
 
-void MagnatuneBrowser::startDrag()
-{
-   // QDragObject *d = new QTextDrag( "Hello there!! :-)", this );
-    //d->dragCopy();
-    // do NOT delete d!
-}
 
 void MagnatuneBrowser::doneParsing()
 {
