@@ -220,7 +220,7 @@ void MagnatuneBrowser::menuAboutToShow( )
             break;
         case 1:
             m_popupMenu->insertItem( i18n( "Add album to playlist" ), this, SLOT( addSelectionToPlaylist() ) );
-            m_popupMenu->insertItem( i18n( "Purchase album" ),        this, SLOT( purchaseAlbum()) );
+            m_popupMenu->insertItem( i18n( "Purchase album" ),        this, SLOT( purchaseSelectedAlbum()) );
             break;
         case 2:
             m_popupMenu->insertItem( i18n( "Add track to playlist" ), this, SLOT( addSelectionToPlaylist() ) );
