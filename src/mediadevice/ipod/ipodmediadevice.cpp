@@ -895,32 +895,31 @@ IpodMediaDevice::openDevice( bool silent )
         QString devicenode = (*mountiter)->mountedFrom();
         QString mountpoint = (*mountiter)->mountPoint();
 
-        if( !mountPoint().isEmpty() )
+        if( !mountPoint().isEmpty() &&
+             mountpoint != mountPoint() )
+            continue;
+
+        else if( mountpoint.startsWith( "/proc" ) ||
+            mountpoint.startsWith( "/sys" )  ||
+            mountpoint.startsWith( "/dev" )  ||
+            mountpoint.startsWith( "/boot" ) )
+            continue;
+
+        else if( !deviceNode().isEmpty() &&
+             devicenode != deviceNode() )
+            continue;
+
+        GError *err = 0;
+        m_itdb = itdb_parse(QFile::encodeName(mountpoint), &err);
+        if( err )
         {
-            if( mountPoint() != mountpoint )
-                continue;
-        }
-        else if( !deviceNode().isEmpty() )
-        {
-            if( devicenode != deviceNode() )
-                continue;
-        }
-        else
-        {
-            GError *err = 0;
-            m_itdb = itdb_parse(QFile::encodeName(mountpoint), &err);
-            if(err)
+            g_error_free(err);
+            if( m_itdb )
             {
-                g_error_free(err);
-                if( m_itdb )
-                {
-                    itdb_free( m_itdb );
-                    m_itdb = 0;
-                }
-                continue;
+                itdb_free( m_itdb );
+                m_itdb = 0;
             }
-            itdb_free( m_itdb );
-            m_itdb = 0;
+            continue;
         }
 
         if( mountPoint().isEmpty() )
@@ -938,18 +937,6 @@ IpodMediaDevice::openDevice( bool silent )
                     KDE::StatusBar::Sorry );
         }
         return false;
-    }
-
-    GError *err = 0;
-    m_itdb = itdb_parse( QFile::encodeName(mountPoint()), &err );
-    if( err )
-    {
-        g_error_free( err );
-        if( m_itdb )
-        {
-            itdb_free( m_itdb );
-            m_itdb = 0;
-        }
     }
 
     if( !m_itdb )
