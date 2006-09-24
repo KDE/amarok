@@ -435,6 +435,7 @@ void PlaylistWindow::init()
         //Add Magnatune browser
         addInstBrowserMacro( MagnatuneBrowser, "MagnatuneBrowser", i18n( "Magnatune.com" ), "magnatune" )
 
+
         //m_browsers->addBrowser( new FileBrowser( "FileBrowser", MediaDeviceManager::instance()->getDevice( "hda5" ) ), i18n( "Files" ), "folder" );
 
 
