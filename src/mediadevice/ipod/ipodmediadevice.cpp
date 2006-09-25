@@ -895,19 +895,23 @@ IpodMediaDevice::openDevice( bool silent )
         QString devicenode = (*mountiter)->mountedFrom();
         QString mountpoint = (*mountiter)->mountPoint();
 
-        if( !mountPoint().isEmpty() &&
-             mountpoint != mountPoint() )
-            continue;
-
-        else if( mountpoint.startsWith( "/proc" ) ||
+        if( mountpoint.startsWith( "/proc" ) ||
             mountpoint.startsWith( "/sys" )  ||
             mountpoint.startsWith( "/dev" )  ||
             mountpoint.startsWith( "/boot" ) )
             continue;
 
-        else if( !deviceNode().isEmpty() &&
-             devicenode != deviceNode() )
-            continue;
+        if( !mountPoint().isEmpty() )
+        {
+            if( mountpoint != mountPoint() )
+                continue;
+        }
+
+        else if( !deviceNode().isEmpty() )
+        {
+            if( devicenode != deviceNode() )
+                continue;
+        }
 
         GError *err = 0;
         m_itdb = itdb_parse(QFile::encodeName(mountpoint), &err);
