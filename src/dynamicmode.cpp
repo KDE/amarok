@@ -36,6 +36,8 @@ DynamicMode::DynamicMode( const QString &name )
 
 DynamicMode::~DynamicMode()
 {
+    if( this == Playlist::instance()->dynamicMode() )
+        Playlist::instance()->disableDynamicMode();
 }
 
 void
