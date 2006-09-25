@@ -186,6 +186,7 @@ class MediaBrowser : public QVBox
         QString getDisplayPluginName ( const QString string ) { return m_pluginAmarokName[string]; }
         const KTrader::OfferList &getPlugins() { return m_plugins; }
         void transcodingFinished( const QString &src, const QString &dst );
+        bool isTranscoding() const { return m_waitForTranscode; }
         void updateStats();
         void updateButtons();
         void updateDevices();

@@ -4829,8 +4829,9 @@ CollectionDB::fetchCover( QWidget* parent, const QString& artist, const QString&
 void
 CollectionDB::scanMonitor()  //SLOT
 {
-    if ( AmarokConfig::monitorChanges() &&
-         ( !CollectionView::instance() || !CollectionView::instance()->isOrganizingFiles() ) )
+    if ( AmarokConfig::monitorChanges()
+            && ( !CollectionView::instance() || !CollectionView::instance()->isOrganizingFiles() )
+            && ( !MediaBrowser::instance() || !MediaBrowser::instance()->isTranscoding() ) )
         scanModifiedDirs();
 }
 
