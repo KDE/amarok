@@ -5342,7 +5342,7 @@ CollectionDB::updateStatsTables()
                 query( "INSERT INTO statistics SELECT * FROM statistics_fix_ten;" );
                 query( "UPDATE statistics SET uniqueid=NULL;" );
             }
-            else
+            else if( prev > DATABASE_STATS_VERSION )
             {
                 error() << "Database statistics version too new for this version of Amarok. Quitting..." << endl;
                 exit( 1 );
