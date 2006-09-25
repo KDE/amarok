@@ -47,6 +47,7 @@ class DynamicMode
         enum Type { RANDOM=0, SUGGESTION=1, CUSTOM=2 };
 
         void edit();
+        void deleting();
         void setDynamicItems(const QPtrList<QListViewItem>& newList);
 
     public: //accessors

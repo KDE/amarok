@@ -2199,6 +2199,8 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
             static_cast<PlaylistEntry*>( (*it)->parent() )->removeTrack( (*it) );
             continue;
         }
+        if ( isDynamic( *it ) )
+            static_cast<DynamicEntry*>( *it )->deleting();
         delete (*it);
     }
 
