@@ -105,10 +105,9 @@ Optional
       (CD burning support)
       http://www.k3b.org
 
-    * libgpod 0.3.2 or newer
+    * libgpod 0.4.0 or newer
       (iPod support)
       http://www.gtkpod.org/libgpod.html
-      (libgpod from CVS is recommended because of many bug fixes)
 
     * libifp 1.0.0.2
       (iRiver iFP support)
