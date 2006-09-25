@@ -29,6 +29,7 @@ VERSION 1.4.4
     * Show a proper tag dialog when viewing information for DAAP music shares.
 
   BUGFIXES:
+    * Don't try to copy to collection from urls without kio slaves.
     * Don't quit immediately if amarokrc was removed. (BR 134439)
     * The DAAP client would crash Amarok under certain conditions when 
       kdelibs was compiled with asserts on. (BR 132851)

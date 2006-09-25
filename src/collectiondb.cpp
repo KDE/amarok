@@ -3911,6 +3911,9 @@ CollectionDB::fileOperationResult( KIO::Job *job ) // slot
 bool
 CollectionDB::organizeFile( const KURL &src, const OrganizeCollectionDialog &dialog, bool copy )
 {
+   if( !MetaBundle::isKioUrl( src ) )
+       return false;
+
    bool overwrite = dialog.overwriteCheck->isChecked();
    bool localFile = src.isLocalFile();
    KURL tmpSrc = src;

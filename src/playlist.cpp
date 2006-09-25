@@ -3961,7 +3961,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     popup.setItemEnabled( BURN_MENU, item->url().isLocalFile() && K3bExporter::isAvailable() );
     popup.setItemEnabled( REMOVE, !isLocked() ); // can't remove things when playlist is locked,
     popup.setItemEnabled( DELETE, !isLocked() && item->url().isLocalFile() );
-    popup.setItemEnabled( ORGANIZE, !isLocked() && !isLastFm );
+    popup.setItemEnabled( ORGANIZE, !isLocked() && item->isKioUrl() );
     popup.setItemEnabled( VIEW, item->url().isLocalFile() || itemCount == 1 ); // disable for CDAudio multiselection
 
     if( m_customSubmenuItem.count() > 0 )

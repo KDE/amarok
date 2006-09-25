@@ -171,7 +171,14 @@ public:
     /** Saves the MetaBundle's data as XML to a text stream. */
     bool save( QTextStream &stream, const QStringList &attributes = QStringList() ) const;
 
+    /** Returns whether the url referred to is a local file */
     bool isFile() const;
+
+    /** Returns whether the url referred to can be accessed via kio slaves */
+    bool isKioUrl() const;
+
+    /** Returns whether url can be accessed via kio slaves */
+    static bool isKioUrl( const KURL &url );
 
     /** Returns whether composer, disc number and bpm fields are available. */
     bool hasExtendedMetaInformation() const;
@@ -422,6 +429,8 @@ inline void MetaBundle::reactToChange( int column ) { reactToChanges( QValueList
 inline bool MetaBundle::exists() const { return m_exists; }
 
 inline bool MetaBundle::isFile() const { return url().isLocalFile(); }
+inline bool MetaBundle::isKioUrl() const { return isKioUrl( url() ); }
+inline bool MetaBundle::isKioUrl( const KURL &url ) { return url.protocol() != "daap" && url.protocol() != "cdda" && url.protocol() != "lastfm"; }
 
 inline int MetaBundle::track()      const { return m_track == Undetermined ? 0 : m_track; }
 inline int MetaBundle::year()       const { return m_year  == Undetermined ? 0 : m_year; }
