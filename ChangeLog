@@ -29,6 +29,7 @@ VERSION 1.4.4
     * Show a proper tag dialog when viewing information for DAAP music shares.
 
   BUGFIXES:
+    * Correctly handle horizontal wheel events in position slider. (BR 119254)
     * Don't rescan collection while transcoding. (BR 133423)
     * Don't try to copy to collection from urls without kio slaves.
     * Don't quit immediately if amarokrc was removed. (BR 134439)

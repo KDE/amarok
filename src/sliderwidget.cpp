@@ -53,12 +53,13 @@ Amarok::Slider::Slider( Qt::Orientation orientation, QWidget *parent, uint max )
 void
 Amarok::Slider::wheelEvent( QWheelEvent *e )
 {
-    uint step = e->delta() / 18;
-    // Volume Slider
-    if( orientation() == Vertical ) step = -step;
     // Position Slider
-    else step = step * 1500;
-    QSlider::setValue( QSlider::value() + step );
+    int step = e->delta() * 1500 / 18;
+    int nval = QSlider::value() - step;
+    nval = QMAX(nval, minValue());
+    nval = QMIN(nval, maxValue());
+    
+    QSlider::setValue( nval );
 
     emit sliderReleased( value() );
 }
