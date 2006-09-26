@@ -79,11 +79,11 @@ good for others reading your code, and ultimately it's good for you too.
 Comments are essential when adding a strange hack, like the following example:
 
  | /** Due to xine-lib, we have to make KProcess close all fds, otherwise we get "device is busy" messages
- |   * Used by AmaroKProcIO and AmaroKProcess, exploiting commSetupDoneC(), a virtual method that
+ |   * Used by AmarokProcIO and AmarokProcess, exploiting commSetupDoneC(), a virtual method that
  |   * happens to be called in the forked process
  |   * See bug #103750 for more information.
  |   */
- | class AmaroKProcIO : public KProcIO 
+ | class AmarokProcIO : public KProcIO 
  | {
  |     public:
  |     virtual int commSetupDoneC() {
