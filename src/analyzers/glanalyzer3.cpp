@@ -27,6 +27,13 @@
 #include <qimage.h>
 #include <sys/time.h>
 
+#ifndef HAVE_FABSF
+inline float fabsf(float x)
+{
+    return f < 0.f ? -f : f;
+}
+#endif
+
 
 class Ball
 {

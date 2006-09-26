@@ -17,7 +17,10 @@
   Boston, MA 02110-1301, USA.
 */
 
+#include <config.h>
+#ifdef HAVE_STDINT_H
 #include <stdint.h>
+#endif
 #include <qdeepcopy.h>
 #include <qstring.h>
 
