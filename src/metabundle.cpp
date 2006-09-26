@@ -1536,7 +1536,7 @@ MetaBundle::readUniqueId( TagLib::FileRef* fileref )
     //This is used in case we don't get given a fileref
     TagLib::FileRef tmpfileref;
 
-    if( !fileref )
+    if( !fileref && isFile() )
     {
         const QString path = url().path();
         //Make it get cleaned up at the end of the function automagically
