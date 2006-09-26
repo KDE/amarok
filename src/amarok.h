@@ -153,7 +153,7 @@ namespace Amarok
         return fileName.section( '/', 0, -2 );
     }
   /** Due to xine-lib, we have to make KProcess close all fds, otherwise we get "device is busy" messages
-  * Used by AmaroKProcIO and AmaroKProcess, exploiting commSetupDoneC(), a virtual method that
+  * Used by Amarok::ProcIO and Amarok::Process, exploiting commSetupDoneC(), a virtual method that
   * happens to be called in the forked process
   * See bug #103750 for more information.
   */
@@ -241,7 +241,7 @@ namespace Amarok
     ////////////////////////////////////////////////////////////////////////////////
     /**
     * Due to xine-lib, we have to make KProcess close all fds, otherwise we get "device is busy" messages
-    * Used by Amarok::ProcIO and AmaroKProcess, exploiting commSetupDoneC(), a virtual method that
+    * Used by Amarok::ProcIO and AmarokProcess, exploiting commSetupDoneC(), a virtual method that
     * happens to be called in the forked process
     * See bug #103750 for more information.
     */
@@ -256,10 +256,10 @@ namespace Amarok
     };
 
     ////////////////////////////////////////////////////////////////////////////////
-    // class AmaroKProcess
+    // class Amarok::Process
     ////////////////////////////////////////////////////////////////////////////////
     /** Due to xine-lib, we have to make KProcess close all fds, otherwise we get "device is busy" messages
-     * Used by AmaroKProcIO and AmaroKProcess, exploiting commSetupDoneC(), a virtual method that
+     * Used by Amarok::ProcIO and Amarok::Process, exploiting commSetupDoneC(), a virtual method that
      * happens to be called in the forked process
      * See bug #103750 for more information.
      */
