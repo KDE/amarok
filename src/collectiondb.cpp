@@ -4554,7 +4554,7 @@ CollectionDB::setLyrics( const QString &url, const QString &lyrics )
     {
         if ( !lyrics.isEmpty() )
             query( QString( "UPDATE lyrics SET lyrics = '%1' WHERE url = '%3' AND deviceid = %2;" )
-                    .arg( escapeString( lyrics) ).arg( deviceid ).arg( escapeString( rpath ) ) );
+                    .arg( escapeString( lyrics), QString::number(deviceid), escapeString( rpath ) ) );
         else
             query( QString( "DELETE FROM lyrics WHERE url = '%2' AND deviceid = %1;" )
                     .arg( deviceid).arg( escapeString( rpath ) ) );
@@ -4562,7 +4562,7 @@ CollectionDB::setLyrics( const QString &url, const QString &lyrics )
     else
     {
         insert( QString( "INSERT INTO lyrics (deviceid, url, lyrics) values ( %1, '%2', '%3' );" )
-                .arg( deviceid ).arg( escapeString( rpath ) ).arg( escapeString( lyrics ) ), NULL);
+                .arg( QString::number(deviceid), escapeString( rpath ), escapeString( lyrics ) ), NULL);
     }
 }
 
