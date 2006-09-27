@@ -28,7 +28,7 @@
 #include <sys/time.h>
 
 #ifndef HAVE_FABSF
-inline float fabsf(float x)
+inline float fabsf(float f)
 {
     return f < 0.f ? -f : f;
 }
