@@ -162,9 +162,8 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
 
         //ATF-related functions
         bool checkFileStatus( PlaylistItem * item );
-        void addToUniqueMap( const QString uniqueid, PlaylistItem * item ) { m_uniqueMap[uniqueid] = item; }
-        void removeFromUniqueMap( const QString uniqueid )
-            { if( m_uniqueMap.contains( uniqueid ) ) m_uniqueMap.remove( uniqueid ); }
+        void addToUniqueMap( const QString uniqueid, PlaylistItem* item );
+        void removeFromUniqueMap( const QString uniqueid, PlaylistItem* item );
 
         enum RequestType { Prev = -1, Current = 0, Next = 1 };
         enum StopAfterMode { DoNotStop, StopAfterCurrent, StopAfterQueue, StopAfterOther };
@@ -234,7 +233,8 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         void adjustColumn( int n );
         void updateEntriesUrl( const QString &oldUrl, const QString &newUrl, const QString &uniqueid );
         void updateEntriesUniqueId( const QString &url, const QString &oldid, const QString &newid );
-        void updateEntriesStatus( const QString &absPath, const QString &uniqueid );
+        void updateEntriesStatusDeleted( const QString &absPath, const QString &uniqueid );
+        void updateEntriesStatusAdded( const QString &absPath, const QString &uniqueid );
 
     protected:
         virtual void fontChange( const QFont &old );
@@ -402,7 +402,7 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
 
         std::vector<double> m_columnFraction;
 
-        QMap<QString,PlaylistItem*> m_uniqueMap;
+        QMap<QString,QPtrList<PlaylistItem>*> m_uniqueMap;
         int m_oldRandom;
         int m_oldRepeat;
 };

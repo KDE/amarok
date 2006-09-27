@@ -17,6 +17,8 @@ VERSION 1.4.4
       playlist folder. (BR 133543)
 
   CHANGES:
+    * When file tracking is updating playlist entries, multiple entries of the
+      same song will now all be updated, instead of just one.
     * When tracks are removed from the collection (deleted on disk or moved
       outside of a collection folder) any corresponding entry in the Playlist
       will be disabled.

@@ -242,7 +242,7 @@ Playlist::Playlist( QWidget *parent )
             const QString&, const QString&)), SLOT(updateEntriesUniqueId(const QString&,
             const QString&, const QString&)) );
     connect( CollectionDB::instance(), SIGNAL(fileDeleted(const QString&,
-            const QString&)), SLOT(updateEntriesStatus(const QString&, const QString&)) );
+            const QString&)), SLOT(updateEntriesStatusDeleted(const QString&, const QString&)) );
 
     initStarPixmaps();
 
@@ -1033,46 +1033,106 @@ void Playlist::restoreLayout(KConfig *config, const QString &group)
 }
 
 void
+Playlist::addToUniqueMap( const QString uniqueid, PlaylistItem* item )
+{
+    QPtrList<PlaylistItem> *list;
+    if( m_uniqueMap.contains( uniqueid ) )
+        list = m_uniqueMap[uniqueid];
+    else
+        list = new QPtrList<PlaylistItem>();
+    list->append( item );
+    if( !m_uniqueMap.contains( uniqueid ) )
+        m_uniqueMap[uniqueid] = list;
+}
+
+void
+Playlist::removeFromUniqueMap( const QString uniqueid, PlaylistItem* item )
+{
+    if( !m_uniqueMap.contains( uniqueid ) )
+        return;
+
+    QPtrList<PlaylistItem> *list;
+    list = m_uniqueMap[uniqueid];
+
+    list->remove( item ); //don't care about return value
+
+    if( list->isEmpty() )
+    {
+        delete list;
+        m_uniqueMap.remove( uniqueid );
+    }
+}
+
+void
 Playlist::updateEntriesUrl( const QString &oldUrl, const QString &newUrl, const QString &uniqueid )
 {
     // Make sure the MoodServer gets this signal first!
     MoodServer::instance()->slotFileMoved( oldUrl, newUrl );
 
-    PlaylistItem *item;
+    QPtrList<PlaylistItem> *list;
     if( m_uniqueMap.contains( uniqueid ) )
     {
-        item = m_uniqueMap[uniqueid];
-        item->setUrl( KURL( newUrl ) );
-        item->setEnabled( item->checkExists() );
+        list = m_uniqueMap[uniqueid];
+        PlaylistItem *item;
+        for( item = list->first(); item; item = list->next() )
+        {
+            item->setUrl( KURL( newUrl ) );
+            item->setEnabled( item->checkExists() );
+        }
     }
 }
 
 void
 Playlist::updateEntriesUniqueId( const QString &/*url*/, const QString &oldid, const QString &newid )
 {
-    PlaylistItem *item;
+    QPtrList<PlaylistItem> *list, *oldlist;
     if( m_uniqueMap.contains( oldid ) )
     {
-        item = m_uniqueMap[oldid];
+        list = m_uniqueMap[oldid];
         m_uniqueMap.remove( oldid );
-        item->setUniqueId( newid );
-        item->readTags();
-        m_uniqueMap[newid] = item;
+        PlaylistItem *item;
+        for( item = list->first(); item; item = list->next() )
+        {
+            item->setUniqueId( newid );
+            item->readTags();
+        }
+        if( !m_uniqueMap.contains( newid ) )
+            m_uniqueMap[newid] = list;
+        else
+        {
+            oldlist = m_uniqueMap[newid];
+            for( item = list->first(); item; item = list->next() )
+                oldlist->append( item );
+            delete list;
+        }
     }
 }
 
 void
-Playlist::updateEntriesStatus( const QString &absPath, const QString &uniqueid )
+Playlist::updateEntriesStatusDeleted( const QString &/*absPath*/, const QString &uniqueid )
 {
-    Q_UNUSED( absPath );
-    PlaylistItem *item;
+    QPtrList<PlaylistItem> *list;
     if( m_uniqueMap.contains( uniqueid ) )
     {
-        item = m_uniqueMap[uniqueid];
-        item->setEnabled( false );
+        list = m_uniqueMap[uniqueid];
+        PlaylistItem *item;
+        for( item = list->first(); item; item = list->next() )
+            item->setEnabled( false );
     }
 }
 
+void
+Playlist::updateEntriesStatusAdded( const QString &/*absPath*/, const QString &uniqueid )
+{
+    QPtrList<PlaylistItem> *list;
+    if( m_uniqueMap.contains( uniqueid ) )
+    {
+        list = m_uniqueMap[uniqueid];
+        PlaylistItem *item;
+        for( item = list->first(); item; item = list->next() )
+            item->setEnabled( true );
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 /// Current Track Handling

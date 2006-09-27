@@ -117,7 +117,7 @@ PlaylistItem::~PlaylistItem()
     if( listView()->m_hoveredRating == this )
         listView()->m_hoveredRating = 0;
 
-    Playlist::instance()->removeFromUniqueMap( uniqueId() );
+    Playlist::instance()->removeFromUniqueMap( uniqueId(), this );
 }
 
 
