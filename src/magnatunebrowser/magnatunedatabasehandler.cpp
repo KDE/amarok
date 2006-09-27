@@ -121,15 +121,15 @@ void
 MagnatuneDatabaseHandler::destroyDatabase( )
 {
     CollectionDB *db = CollectionDB::instance();
-    QStringList result = db->query( "DROP TABLE IF EXISTS magnatune_tracks;" );
-    result = db->query( "DROP TABLE IF EXISTS magnatune_albums;" );
-    result = db->query( "DROP TABLE IF EXISTS magnatune_artists;" );
+    QStringList result = db->query( "DROP TABLE magnatune_tracks;" );
+    result = db->query( "DROP TABLE magnatune_albums;" );
+    result = db->query( "DROP TABLE magnatune_artists;" );
 
     if ( db->getDbConnectionType() == DbConnection::postgresql )
     {
-        db->query( QString( "DROP SEQUENCE IF EXISTS magnatune_track_seq;" ) );
-        db->query( QString( "DROP SEQUENCE IF EXISTS magnatune_album_seq;" ) );
-        db->query( QString( "DROP SEQUENCE IF EXISTS magnatune_artist_seq;" ) );
+        db->query( QString( "DROP SEQUENCE magnatune_track_seq;" ) );
+        db->query( QString( "DROP SEQUENCE magnatune_album_seq;" ) );
+        db->query( QString( "DROP SEQUENCE magnatune_artist_seq;" ) );
     }
 }
 
@@ -199,17 +199,38 @@ MagnatuneDatabaseHandler::getArtistIdByExactName( QString name )
 {
     CollectionDB *db = CollectionDB::instance();
 
-    QString queryString = "SELECT id from magnatune_artists WHERE name='" + name + "';";
-
+    QString queryString = "SELECT id from magnatune_artists WHERE name='" + db->escapeString( name ) + "';";
     QStringList result = db->query( queryString );
 
-    debug() << "Looking for id of artist " << name << ":" << endl;
+    //debug() << "Looking for id of artist " << name << ":" << endl;
 
     if ( result.size() < 1 ) return -1;
-
-    return result.first().toInt();
+    int artistId = result.first().toInt();
+    
+    //debug() << "    Found: " << QString::number( artistId ) << ":" << endl;
+    
+    return artistId;
 
 }
+
+int MagnatuneDatabaseHandler::getAlbumIdByAlbumCode( QString albumcode )
+{
+
+    CollectionDB *db = CollectionDB::instance();
+
+    QString queryString = "SELECT id from magnatune_albums WHERE album_code='" + db->escapeString( albumcode ) + "';";
+    QStringList result = db->query( queryString );
+
+    //debug() << "Looking for id of album " << albumcode << ":" << endl;
+
+    if ( result.size() < 1 ) return -1;
+    int albumId = result.first().toInt();
+    
+    //debug() << "  Found: " << QString::number( albumId ) << ":" << endl;
+    
+    return albumId;
+}
+
 
 MagnatuneArtistList 
 MagnatuneDatabaseHandler::getArtistsByGenre( QString genre )
@@ -543,6 +564,7 @@ MagnatuneDatabaseHandler::getTracksByArtistId( int id )
     return tracks;
 
 }
+
 
 
 

@@ -189,12 +189,25 @@ MagnatuneXmlParser::parseAlbum( QDomElement e )
 
     if ( artistId == -1 )
     {
-        //does not exist, lets create it
-        artistId = MagnatuneDatabaseHandler::instance() ->insertArtist( m_pCurrentArtist );
+        //does not exist, lets create it...
+
+        //this is tricky in postgresql, returns id as 0 (we are within a transaction, might be the cause...)
+        artistId = MagnatuneDatabaseHandler::instance()->insertArtist( m_pCurrentArtist );
         m_nNumberOfArtists++;
+
+        if ( artistId == 0 )
+        {
+            artistId = MagnatuneDatabaseHandler::instance() ->getArtistIdByExactName( m_pCurrentArtist->getName() );
+        }
     }
 
-    int albumId = MagnatuneDatabaseHandler::instance() ->insertAlbum( m_pCurrentAlbum, artistId );
+
+    int albumId = MagnatuneDatabaseHandler::instance()->insertAlbum( m_pCurrentAlbum, artistId );
+    if ( albumId == 0 ) // again, postgres can play tricks on us...
+    {
+            albumId = MagnatuneDatabaseHandler::instance()->getAlbumIdByAlbumCode( m_pCurrentAlbum->getAlbumCode() );
+    }
+
     m_nNumberOfAlbums++;
 
     MagnatuneTrackList::iterator it;

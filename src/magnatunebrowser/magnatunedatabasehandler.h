@@ -86,6 +86,14 @@ public:
      */
     int getArtistIdByExactName(QString name);
 
+
+    /**
+     * Retrieves the id of an album based on its unique album code.
+     * @param albumcode The album code.
+     * @return The id of the album, -1 if not foud.
+     */
+    int getAlbumIdByAlbumCode( QString albumcode );
+
     /**
      * Returns all artist that has albums in a given genre. If an artist has both a Rock
      * and a Techno album, he will be included when searching for either
