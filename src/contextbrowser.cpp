@@ -2280,7 +2280,10 @@ void CurrentTrackJob::showArtistsFaves( const QString &artist, uint artist_id )
     qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
     qb.excludeFilter( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, "1", QueryBuilder::modeLess );
     qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
-    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPercentage, true );
+    if( AmarokConfig::useScores() )
+        qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valScore, true );
+    if( AmarokConfig::useRatings() )
+        qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valRating, true );
     qb.setLimit( 0, 10 );
     values = qb.run();
     usleep( 10000 );
