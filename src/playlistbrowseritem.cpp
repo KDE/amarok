@@ -1294,17 +1294,17 @@ PodcastChannel::setSettings( PodcastSettings *newSettings )
                 copyList << item->localUrl();
                 item->setLocalUrlBase( newSettings->saveLocation().prettyURL() );
             }
-            else
-            {
-                item->setLocalUrlBase( newSettings->saveLocation().prettyURL() );
-                item->isOnDisk();
-            }
+//             else
+//             {
+//                 item->setLocalUrlBase( newSettings->saveLocation().prettyURL() );
+//                 item->isOnDisk();
+//             }
             item = static_cast<PodcastEpisode*>( item->nextSibling() );
         }
             // move the items
         if( !copyList.isEmpty() )
         {
-                //create the local directory first
+            //create the local directory first
             PodcastEpisode::createLocalDir( newSettings->saveLocation().path() );
             KIO::CopyJob* m_podcastMoveJob = KIO::move( copyList, newSettings->saveLocation(), false );
             Amarok::StatusBar::instance()->newProgressOperation( m_podcastMoveJob )
@@ -1538,7 +1538,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     }
     else
     {
-        debug() << "Updating podcast in database" << endl;
+        debug() << "Updating podcast in database: " << endl;
         CollectionDB::instance()->updatePodcastChannel( m_bundle );
     }
 
@@ -1586,9 +1586,11 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     {
         if( !m_updating || ( ( i++ >= eList.count() ) && !episodeExists( (**it), feedType ) ) )
         {
+            this->setOpen( true );
             PodcastEpisode *ep = new PodcastEpisode( this, 0, (**it), feedType, m_updating/*new*/ );
             if( m_updating )
             {
+                debug() << "adding podcast to playlistbrowser title = " << ep->title() << endl;
                 ep->setNew( true );
                 hasNew = true;
             }
@@ -1613,6 +1615,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
 const bool
 PodcastChannel::episodeExists( const QDomNode &xml, const int feedType )
 {
+    DEBUG_BLOCK
     QString command;
     if( feedType == RSS )
     {
@@ -1758,6 +1761,7 @@ PodcastChannel::purge()
 void
 PodcastChannel::restorePurged()
 {
+    DEBUG_BLOCK
     int restoreCount = purgeCount() - childCount();
 
     if( restoreCount <= 0 ) return;
@@ -2061,6 +2065,8 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
     m_bundle.setGuid( guid );
     m_bundle.setNew( isNew );
 
+    debug() << "new podcastepisode from xml: " << title << endl;
+
     int id = CollectionDB::instance()->addPodcastEpisode( m_bundle );
     m_bundle.setDBId( id );
 
@@ -2079,6 +2085,7 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after, Pod
 {
     m_localUrl    =  m_bundle.localUrl();
     isOnDisk();
+    debug() << "new podcastepisode from bundle: " << title() << endl;
 
     setText( 0, bundle.title() );
     updatePixmap();
