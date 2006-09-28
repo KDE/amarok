@@ -17,10 +17,14 @@
   Boston, MA 02110-1301, USA.
 */
 
-#include "magnatunepurchasehandler.h"
-#include "debug.h"
 #include "amarok.h"
+#include "debug.h"
+#include "magnatunedatabasehandler.h"
+#include "magnatunepurchasehandler.h"
 #include "statusbar.h"
+
+#include <qdir.h>
+#include <qfile.h>
 #include <qmessagebox.h>
 
 MagnatunePurchaseHandler::MagnatunePurchaseHandler()
@@ -29,6 +33,7 @@ MagnatunePurchaseHandler::MagnatunePurchaseHandler()
 
    m_downloadDialog = 0;
    m_purchaseDialog = 0;
+   m_currentAlbum = 0;
 }
 
 
@@ -39,7 +44,7 @@ MagnatunePurchaseHandler::~MagnatunePurchaseHandler()
 
 void MagnatunePurchaseHandler::purchaseAlbum(MagnatuneAlbum * album )
 {
-
+    m_currentAlbum = album;
 
    if (m_purchaseDialog == 0) {
       m_purchaseDialog = new MagnatunePurchaseDialog(m_parent, "PurchaseDialog", true, 0);
@@ -71,10 +76,6 @@ void MagnatunePurchaseHandler::processPayment( QString ccNumber, QString expYear
    connect( m_resultDownloadJob, SIGNAL( result( KIO::Job* ) ), SLOT( xmlDownloadComplete( KIO::Job* ) ) );
 
 
-   
-
-
-
 }
 
 void MagnatunePurchaseHandler::xmlDownloadComplete( KIO::Job * downloadJob )
@@ -94,6 +95,8 @@ void MagnatunePurchaseHandler::xmlDownloadComplete( KIO::Job * downloadJob )
     QString resultXml = QString( storedJob->data() );
 
     debug() << endl << endl << "result: " << resultXml << endl << endl;	
+
+    saveDownloadInfo( resultXml );
  
     
    if (m_downloadDialog == 0) {
@@ -270,10 +273,46 @@ void MagnatunePurchaseHandler::downloadAlbum( QString url, QString downloadLocat
 
 }
 
+
+
+
+void MagnatunePurchaseHandler::saveDownloadInfo( QString infoXml )
+{
+
+    QDir purchaseDir( Amarok::saveLocation( "magnatune.com/purchases/" ) );
+   
+    debug() << "magnatune save location" << purchaseDir.absPath() << endl;
+
+    //if directory does not exist, create it
+    if (! purchaseDir.exists () )  {
+        purchaseDir.mkdir( ".", false );
+    }
+
+    //Create file name
+    MagnatuneArtist artist = MagnatuneDatabaseHandler::instance()->getArtistById( m_currentAlbum->getArtistId() );
+    QString artistName = artist.getName();
+    QString fileName = artistName + " - " + m_currentAlbum->getName();
+
+    QFile file( purchaseDir.absPath() + "/" + fileName );
+
+    //Skip if file already exists
+    if ( file.exists () )
+        return;
+
+    //write info
+    if ( file.open( IO_WriteOnly ) ) {
+        QTextStream stream( &file );
+            stream << infoXml << "\n";
+        file.close();
+    }
+}
+
+
+
 void MagnatunePurchaseHandler::albumDownloadComplete( KIO::Job * downloadJob )
 {
 
-     debug() << "album download complete" << endl;
+    debug() << "album download complete" << endl;
 
     if ( !downloadJob->error() == 0 )
     {
@@ -287,7 +326,7 @@ void MagnatunePurchaseHandler::albumDownloadComplete( KIO::Job * downloadJob )
 
    QString unzipString = "unzip \"/tmp/" + m_currentAlbumFileName +"\" -d \"" + m_currentAlbumUnpackLocation + "\" &";
 
-    debug() << "unpacking: " << unzipString << endl;
+   debug() << "unpacking: " << unzipString << endl;
 
    system(unzipString.ascii());
 

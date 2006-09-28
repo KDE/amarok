@@ -57,10 +57,25 @@ protected:
     QString m_currentDlUsername;
     QString m_currentDlPassword;
     
+    MagnatuneAlbum * m_currentAlbum;
+
     QString m_currentAlbumUnpackLocation;
     QString m_currentAlbumFileName;
     
     bool parseDownloadXml( QString xml );
+
+    
+ 
+    /**
+     * This function saves the xml download info recieved from Magnatune.com after a 
+     * successful payment. This information can be used to later redownload a lost album,
+     * or aquire an album in a different file format. Note that no personal information
+     * or credit card number is stored. The information is saved to the amarok config 
+     * directory in the sub folder magnatune.com/purchases. The name of each info file 
+     * is genereated from the artist and album names.
+     * @param infoXml The info to store.
+     */
+    void saveDownloadInfo(QString infoXml);
 
 
 protected slots:
