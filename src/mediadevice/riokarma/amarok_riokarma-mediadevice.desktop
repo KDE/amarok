@@ -12,6 +12,7 @@ Name[nl]=Rio Karma media-apparaat
 Name[pl]=Urządzenie mediów Rio Karma
 Name[pt]=Dispositivo Multimédia Rio Karma
 Name[pt_BR]=Dispositivo de Mídia Rio Karma
+Name[sv]=Rio Karma-mediaenhet
 X-KDE-Library=libamarok_riokarma-mediadevice
 Comment=Plugin for Amarok
 Comment[af]=Inprop module vir Amarok
