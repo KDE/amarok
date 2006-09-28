@@ -31,7 +31,7 @@ VERSION 1.4.4
     * Improve application startup times dramaticaly by lazy loading podcast
       episodes.
     * Transferring tracks to an MTP device now shows a progress bar for and
-    doesn't hang the rest of the UI. (only available for libmtp >= 0.0.15)
+      doesn't hang the rest of the UI. (only available for libmtp >= 0.0.15)
     * Show a proper tag dialog when viewing information for DAAP music shares.
 
   BUGFIXES:
