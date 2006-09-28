@@ -1143,7 +1143,7 @@ MtpMediaDevice::addConfigElements( QWidget *parent )
     m_folderStructureBox->setText( m_folderStructure );
     QToolTip::add( m_folderStructureBox,
         i18n( "Files copied to the device will be placed in this folder." ) + '\n'
-        + i18n( "/ is used a folder separator." ) + '\n'
+        + i18n( "/ is used as folder separator." ) + '\n'
         + i18n( "%a will be replaced with the artist name, ")
         + i18n( "%b with the album name," ) + '\n'
         + i18n( "%g with the genre.") + '\n'

@@ -42,7 +42,7 @@ namespace Amarok {
         menu.insertTitle( i18n( "Cover Image" ) );
 
         menu.insertItem( SmallIconSet( Amarok::icon( "zoom" ) ), i18n( "&Show Fullsize" ), SHOW );
-        menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n( "&Fetch From amazon.%1" ).arg(CoverManager::amazonTld()), FETCH );
+        menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n( "&Fetch From Amazon.%1" ).arg(CoverManager::amazonTld()), FETCH );
         menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "Set &Custom Cover" ), CUSTOM );
         menu.insertSeparator();
 

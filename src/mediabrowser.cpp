@@ -1593,7 +1593,7 @@ MediaBrowser::mediumRemoved( const Medium *medium, QString name )
                         removeDevice( *it );
                     Amarok::StatusBar::instance()->longMessage(
                             i18n( "The device %1 was removed before it was disconnected. "
-                                "In order to avoid possible data loss, press the \"Disconnect\""
+                                "In order to avoid possible data loss, press the \"Disconnect\" "
                                 "button before disconnecting the device." ).arg( name ),
                             KDE::StatusBar::Warning );
                 }
