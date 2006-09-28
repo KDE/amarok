@@ -64,7 +64,12 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
         int queuePosition() const;
 
         bool isEnabled() const { return m_enabled; }
-        void setEnabled( bool enable );
+        bool isDynamicEnabled() const { return m_dynamicEnabled; }
+        bool isFilestatusEnabled() const { return m_filestatusEnabled; }
+        void setEnabled();
+        void setDynamicEnabled( bool enabled );
+        void setFilestatusEnabled( bool enabled );
+        void setAllCriteriaEnabled( bool enabled );
 
         void setSelected( bool selected );
         void setVisible( bool visible );
@@ -148,6 +153,8 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
 
         PlaylistAlbum *m_album;
         bool m_enabled;
+        bool m_dynamicEnabled;
+        bool m_filestatusEnabled;
         bool m_deleteAfterEdit;
         bool m_isBeingRenamed;
 

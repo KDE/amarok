@@ -50,8 +50,9 @@ struct XMLData
     MetaBundle bundle;
     int queue;
     bool stopafter;
-    bool disabled;
-    XMLData(): queue(-1), stopafter(false), disabled(false) { }
+    bool dynamicdisabled;
+    bool filestatusdisabled;
+    XMLData(): queue(-1), stopafter(false), dynamicdisabled(false), filestatusdisabled(false) { }
 };
 
 class TagsEvent : public QCustomEvent {
@@ -274,8 +275,10 @@ UrlLoader::customEvent( QCustomEvent *e)
             if( (*it).stopafter )
                 Playlist::instance()->m_stopAfterTrack = item;
 
-            if( (*it).disabled || !( (*it).bundle.exists() ) )
-                item->setEnabled( false );
+            if( (*it).filestatusdisabled || !( (*it).bundle.exists() ) )
+                item->setFilestatusEnabled( false );
+            if( (*it).dynamicdisabled )
+                item->setDynamicEnabled( false );
         }
         break;
     }
@@ -477,8 +480,10 @@ void UrlLoader::slotNewBundle( const MetaBundle &bundle, const XmlAttributeList 
         }
         else if( atts[i].first == "stop_after" )
             data.stopafter = true;
-        else if( atts[i].first == "disabled" )
-            data.disabled = true;
+        else if( atts[i].first == "dynamicdisabled" )
+            data.dynamicdisabled = true;
+        else if( atts[i].first == "filestatusdisabled" )
+            data.filestatusdisabled = true;
     }
     data.bundle.checkExists();
     m_xml.append( data );

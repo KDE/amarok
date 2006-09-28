@@ -3165,9 +3165,6 @@ CollectionDB::emitFileDeleted( const QString &absPath, const QString &uniqueid )
       emit fileDeleted( absPath );
   else
       emit fileDeleted( absPath, uniqueid );
-
-  debug() << "fileDeleted emitted for " << absPath << " uniqueid: "
-          << uniqueid << endl;
 }
 
 void
@@ -3177,16 +3174,6 @@ CollectionDB::emitFileAdded( const QString &absPath, const QString &uniqueid )
         emit fileAdded( absPath );
     else
         emit fileAdded( absPath, uniqueid );
-
-    debug() << "fileAdded emitted for " << absPath << " uniqueid: "
-          << uniqueid << endl;
-}
-
-void
-CollectionDB::emitFilesAdded( const QMap<QString,QString> &map )
-{
-    emit filesAdded( map );
-    debug() << "fileAdded emitted for map" << endl;
 }
 
 QString

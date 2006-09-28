@@ -320,7 +320,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         void doAFTStuff( MetaBundle *bundle, const bool tempTables = true );
         void emitFileAdded( const QString &absPath,
                             const QString &uniqueid = QString::null );
-        void emitFilesAdded( const QMap<QString,QString> &map );
+        void emitFilesAdded( const QMap<QString,QString> &map ) { emit filesAdded( map ); }
         void emitFileDeleted( const QString &absPath,
                               const QString &uniqueid = QString::null );
         bool newUniqueIdForFile( const QString &path );

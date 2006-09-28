@@ -590,7 +590,7 @@ Playlist::addSpecialTracks( uint songCount, const int type )
     {
         if( m_currentTrack && *it == m_currentTrack )
             break;
-        else if( !m_currentTrack && (*it)->isEnabled() )
+        else if( !m_currentTrack && (*it)->isDynamicEnabled() )
             break;
 
         ++currentPos;
@@ -811,7 +811,7 @@ Playlist::adjustDynamicUpcoming( bool saveUndo, const int type )
     {
         if( m_currentTrack && *it == m_currentTrack )
             break;
-        else if( !m_currentTrack && (*it)->isEnabled() )
+        else if( !m_currentTrack && (*it)->isDynamicEnabled() )
             break;
     }
     //Skip current
@@ -887,9 +887,9 @@ Playlist::setDynamicHistory( bool enable /*false*/ )
         if( *it == m_currentTrack )          break;
 
         //avoid repainting if we can.
-        if( (*it)->isEnabled() != !enable )
+        if( (*it)->isDynamicEnabled() == enable )
         {
-            (*it)->setEnabled( !enable );
+            (*it)->setDynamicEnabled( !enable );
             (*it)->update();
         }
     }
@@ -1082,7 +1082,7 @@ Playlist::updateEntriesUrl( const QString &oldUrl, const QString &newUrl, const 
         for( item = list->first(); item; item = list->next() )
         {
             item->setUrl( KURL( newUrl ) );
-            item->setEnabled( item->checkExists() );
+            item->setFilestatusEnabled( item->checkExists() );
         }
     }
 }
@@ -1122,7 +1122,7 @@ Playlist::updateEntriesStatusDeleted( const QString &/*absPath*/, const QString 
         list = m_uniqueMap[uniqueid];
         PlaylistItem *item;
         for( item = list->first(); item; item = list->next() )
-            item->setEnabled( false );
+            item->setFilestatusEnabled( false );
     }
 }
 
@@ -1138,7 +1138,7 @@ Playlist::updateEntriesStatusAdded( const QString &absPath, const QString &uniqu
         {
             if( absPath != item->url().path() )
                 item->setPath( absPath ); //in case the UID was the same, but the path has changed
-            item->setEnabled( true );
+            item->setFilestatusEnabled( true );
         }
     }
 }
@@ -1146,9 +1146,20 @@ Playlist::updateEntriesStatusAdded( const QString &absPath, const QString &uniqu
 void
 Playlist::updateEntriesStatusAdded( const QMap<QString,QString> &map )
 {
-    QMap<QString,QString>::ConstIterator it;
-    for( it = map.begin(); it != map.end(); ++it )
-           updateEntriesStatusAdded( it.data(), it.key() );
+    QMap<QString,QPtrList<PlaylistItem>*> uniquecopy( m_uniqueMap );
+
+    QMap<QString,QPtrList<PlaylistItem>*>::Iterator it;
+    for( it = uniquecopy.begin(); it != uniquecopy.end(); ++it )
+    {
+        if( map.contains( it.key()  ))
+        {
+            updateEntriesStatusAdded( map[it.key()], it.key() );
+            uniquecopy.remove( it );
+        }
+    }
+
+    for( it = uniquecopy.begin(); it != uniquecopy.end(); ++it )
+        updateEntriesStatusDeleted( QString::null, it.key() );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1164,7 +1175,7 @@ Playlist::playNextTrack( bool forceNext )
     {
         if( dynamicMode() && m_visCount )
         {
-            item->setEnabled( false );
+            item->setDynamicEnabled( false );
             advanceDynamicTrack( item );
             m_dynamicDirt = false;
         }
@@ -1360,7 +1371,7 @@ Playlist::playNextTrack( bool forceNext )
         if ( dynamicMode() && item != firstChild() )
         {
             if( currentTrack() )
-                currentTrack()->setEnabled( false );
+                currentTrack()->setDynamicEnabled( false );
             advanceDynamicTrack();
         }
 
@@ -1572,15 +1583,15 @@ Playlist::queue( QListViewItem *item, bool multi )
         if( !after )
         {
             after = firstChild();
-            while( after && !after->isEnabled() )
+            while( after && !after->isDynamicEnabled() )
             {
-                if( after->nextSibling()->isEnabled() )
+                if( after->nextSibling()->isDynamicEnabled() )
                     break;
                 after = after->nextSibling();
             }
         }
 
-        if( item->isEnabled() && item != m_currentTrack )
+        if( item->isDynamicEnabled() && item != m_currentTrack )
         {
             this->moveItem( item, 0, after );
             m_nextTracks.append( item );
@@ -1748,10 +1759,6 @@ Playlist::slotCountChanged()
 bool
 Playlist::checkFileStatus( PlaylistItem * item )
 {
-    bool hiddenForDynamic = false;
-    if( dynamicMode() && !item->isEnabled() )
-        hiddenForDynamic = true;
-
     //DEBUG_BLOCK
     //debug() << "uniqueid of item = " << item->uniqueId() << ", url = " << item->url().path() << endl;
     if( !item->checkExists() )
@@ -1774,20 +1781,17 @@ Playlist::checkFileStatus( PlaylistItem * item )
         {
             item->setUrl( KURL( path ) );
             if( item->checkExists() )
-                item->setEnabled( true );
+                item->setFilestatusEnabled( true );
             else
-                item->setEnabled( false );
+                item->setFilestatusEnabled( false );
         }
         else
-            item->setEnabled( false );
+            item->setFilestatusEnabled( false );
     }
-    else if( !item->isEnabled() )
-        item->setEnabled( true );
+    else if( !item->isFilestatusEnabled() )
+        item->setFilestatusEnabled( true );
 
-    bool returnValue = item->isEnabled();
-
-    if( hiddenForDynamic )
-        item->setEnabled( false );
+    bool returnValue = item->isFilestatusEnabled();
 
     return returnValue;
 }
@@ -1817,25 +1821,25 @@ Playlist::activate( QListViewItem *item )
 
     if( dynamicMode() && !m_dynamicDirt && !Amarok::repeatTrack() )
     {
-        if( m_currentTrack && item->isEnabled() )
+        if( m_currentTrack && item->isDynamicEnabled() )
             this->moveItem( item, 0, m_currentTrack );
         else
         {
             MyIt it( this, MyIt::Visible );
             bool hasHistory = false;
-            if ( *it && !(*it)->isEnabled() )
+            if ( *it && !(*it)->isDynamicEnabled() )
             {
                 hasHistory = true;
-                for(  ; *it && !(*it)->isEnabled() ; ++it );
+                for(  ; *it && !(*it)->isDynamicEnabled() ; ++it );
             }
 
-            if( item->isEnabled() )
+            if( item->isDynamicEnabled() )
             {
                 hasHistory ?
                     this->moveItem( item, 0, *it ) :
                     this->moveItem( item, 0,   0 );
             }
-            else // !item->isEnabled()
+            else // !item->isDynamicEnabled()
             {
                 hasHistory ?
                     insertMediaInternal( item->url(), *it ):
@@ -1846,11 +1850,11 @@ Playlist::activate( QListViewItem *item )
 
         }
         if( m_currentTrack && m_currentTrack != item )
-            m_currentTrack->setEnabled( false );
+            m_currentTrack->setDynamicEnabled( false );
         advanceDynamicTrack();
     }
 
-    if( !item->isEnabled() )
+    if( !item->isFilestatusEnabled() )
     {
         Amarok::StatusBar::instance()->shortMessage( i18n("Local file does not exist.") );
         return;
@@ -2438,7 +2442,7 @@ Playlist::rename( QListViewItem *item, int column ) //SLOT
 void
 Playlist::writeTag( QListViewItem *qitem, const QString &, int column ) //SLOT
 {
-    const bool enabled = static_cast<PlaylistItem*>(qitem)->isEnabled();
+    const bool enabled = static_cast<PlaylistItem*>(qitem)->isFilestatusEnabled();
 
     if( m_itemsToChangeTagsFor.isEmpty() )
         m_itemsToChangeTagsFor.append( static_cast<PlaylistItem*>( qitem ) );
@@ -2467,7 +2471,7 @@ Playlist::writeTag( QListViewItem *qitem, const QString &, int column ) //SLOT
     }
 
     if( dynamicMode() )
-        static_cast<PlaylistItem*>(qitem)->setEnabled( enabled );
+        static_cast<PlaylistItem*>(qitem)->setDynamicEnabled( enabled );
 
     m_itemsToChangeTagsFor.clear();
     m_editOldTag = QString::null;
@@ -2599,7 +2603,7 @@ Playlist::contentsDropEvent( QDropEvent *e )
     QListViewItem *parent = 0;
     QListViewItem *after  = m_marker;
 
-    if( m_marker && !( static_cast<PlaylistItem *>(m_marker)->isEnabled() ) && dynamicMode() )
+    if( m_marker && !( static_cast<PlaylistItem *>(m_marker)->isDynamicEnabled() ) && dynamicMode() )
     {
         slotEraseMarker();
         return;
@@ -3161,7 +3165,7 @@ Playlist::customEvent( QCustomEvent *e )
             if( !after )
             {
                 after = firstChild();
-                while( after && !after->isEnabled() )
+                while( after && !after->isDynamicEnabled() )
                     after = after->nextSibling();
             }
             else
@@ -3171,7 +3175,7 @@ Playlist::customEvent( QCustomEvent *e )
             {
                 PlaylistItem *prev = static_cast<PlaylistItem *>( after->itemAbove() );
                 if( prev && dynamicMode() )
-                    prev->setEnabled( false );
+                    prev->setDynamicEnabled( false );
 
                 activate( after );
                 if ( dynamicMode() && dynamicMode()->cycleTracks() )
@@ -3190,7 +3194,7 @@ Playlist::customEvent( QCustomEvent *e )
             if( !after )
             {
                 after = firstChild();
-                while( after && !after->isEnabled() )
+                while( after && !after->isDynamicEnabled() )
                     after = after->nextSibling();
             }
             else
@@ -3267,8 +3271,10 @@ Playlist::saveXML( const QString &path )
         else if ( item == currentTrack() )
             attributes << "queue_index" << QString::number( 0 );
 
-        if( !item->isEnabled() )
-            attributes << "disabled" << "true";
+        if( !item->isFilestatusEnabled() )
+            attributes << "filestatusdisabled" << "true";
+        if( !item->isDynamicEnabled() )
+            attributes << "dynamicdisabled" << "true";
 
         if( m_stopAfterTrack == item )
             attributes << "stop_after" << "true";
@@ -3433,7 +3439,7 @@ Playlist::repopulate() //SLOT
         bool    isMarker   = item->isEmpty();
         // markers are used by playlistloader, and removing them is not good
 
-        if( !item->isEnabled() || item == m_currentTrack || isQueued || isMarker )
+        if( !item->isDynamicEnabled() || item == m_currentTrack || isQueued || isMarker )
             continue;
 
         list.prepend( *it );
@@ -3496,7 +3502,7 @@ Playlist::removeSelectedItems() //SLOT
 
     for( MyIterator it( this, MyIt::Selected ); *it; ++it )
     {
-        if( !(*it)->isEnabled() )
+        if( !(*it)->isDynamicEnabled() )
             dontReplaceDynamic++;
         ( m_nextTracks.contains( *it ) ? queued : list ).prepend( *it );
     }

@@ -88,7 +88,7 @@ PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi, bool e
     filter( listView()->m_filter );
 
     listView()->countChanged();
-    setEnabled( enabled );
+    setAllCriteriaEnabled( enabled );
 }
 
 PlaylistItem::~PlaylistItem()
@@ -213,12 +213,31 @@ int PlaylistItem::queuePosition() const
     return listView()->m_nextTracks.findRef( this );
 }
 
-void PlaylistItem::setEnabled( bool enabled )
+void PlaylistItem::setEnabled()
 {
-    m_enabled = enabled;
-    setDropEnabled( enabled ); // this forbids items to be dropped into a history queue.
+    m_enabled = m_filestatusEnabled && m_dynamicEnabled;
+    setDropEnabled( m_enabled ); // this forbids items to be dropped into a history queue.
 
     update();
+}
+
+void PlaylistItem::setDynamicEnabled( bool enabled )
+{
+    m_dynamicEnabled = enabled;
+    setEnabled();
+}
+
+void PlaylistItem::setFilestatusEnabled( bool enabled )
+{
+    m_filestatusEnabled = enabled;
+    setEnabled();
+}
+
+void PlaylistItem::setAllCriteriaEnabled( bool enabled )
+{
+    m_filestatusEnabled = enabled;
+    m_dynamicEnabled = enabled;
+    setEnabled();
 }
 
 void PlaylistItem::setSelected( bool selected )
