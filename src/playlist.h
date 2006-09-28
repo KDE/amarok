@@ -235,6 +235,7 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         void updateEntriesUniqueId( const QString &url, const QString &oldid, const QString &newid );
         void updateEntriesStatusDeleted( const QString &absPath, const QString &uniqueid );
         void updateEntriesStatusAdded( const QString &absPath, const QString &uniqueid );
+        void updateEntriesStatusAdded( const QMap<QString,QString> &map );
 
     protected:
         virtual void fontChange( const QFont &old );

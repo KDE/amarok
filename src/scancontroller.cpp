@@ -127,22 +127,27 @@ ScanController::~ScanController()
 void
 ScanController::completeJob( void )
 {
-    if( m_incremental )
-      {
-        m_filesFoundMutex.lock();
+    m_fileMapsMutex.lock();
 
-        QStringList::ConstIterator it = m_filesDeleted.begin(),
-          end = m_filesDeleted.end();
-        while( it != end )
-          {
-            QString path     = *(it++);
-            QString uniqueid = *(it++);
-            if( !m_filesFound.contains( path )  ||  m_filesFound[ path ] == false )
-              CollectionDB::instance()->emitFileDeleted( path, uniqueid );
-          }
+    QMap<QString,QString>::Iterator it;
+    if( !m_incremental )
+    {
+        CollectionDB::instance()->emitFilesAdded( m_filesAdded );
+    }
+    else
+    {
+        for( it = m_filesAdded.begin(); it != m_filesAdded.end(); ++it )
+        {
+            if( m_filesDeleted.contains( it.key() ) )
+                m_filesDeleted.remove( it.key() );
+        }
+        for( it = m_filesAdded.begin(); it != m_filesAdded.end(); ++it )
+            CollectionDB::instance()->emitFileAdded( it.data(), it.key() );
+        for( it = m_filesDeleted.begin(); it != m_filesDeleted.end(); ++it )
+            CollectionDB::instance()->emitFileDeleted( it.data(), it.key() );
+    }
 
-        m_filesFoundMutex.unlock();
-      }
+    m_fileMapsMutex.unlock();
 
     ThreadWeaver::DependentJob::completeJob();
 }
@@ -274,9 +279,9 @@ main_loop:
             if ( m_incremental ) {
                 m_foldersToRemove += m_folders;
                 foreach( m_foldersToRemove ) {
-                    m_filesFoundMutex.lock();
+                    m_fileMapsMutex.lock();
                     CollectionDB::instance()->removeSongsInDir( *it, &m_filesDeleted );
-                    m_filesFoundMutex.unlock();
+                    m_fileMapsMutex.unlock();
                     CollectionDB::instance()->removeDirFromCollection( *it );
                 }
                 CollectionDB::instance()->removeOrphanedEmbeddedImages();
@@ -368,12 +373,15 @@ ScanController::requestAcknowledged()
 void
 ScanController::slotFileMoved( const QString &src, const QString &/*dest*/)
 {
+    //why is this needed?  QBob, take a look at this
+    /*
     if( m_incremental ) // pedantry
       {
-        m_filesFoundMutex.lock();
+        m_fileMapsMutex.lock();
         m_filesFound[ src ] = true;
-        m_filesFoundMutex.unlock();
+        m_fileMapsMutex.unlock();
       }
+    */
 }
 
 void
@@ -439,12 +447,12 @@ ScanController::startElement( const QString&, const QString& localName, const QS
         }
 
         CollectionDB::instance()->addSong( &bundle, m_incremental );
-        if( m_incremental )
-          {
-            m_filesFoundMutex.lock();
-            m_filesFound[ bundle.url().path() ] = true;
-            m_filesFoundMutex.unlock();
-          }
+        if( !bundle.uniqueId().isEmpty() )
+        {
+            m_fileMapsMutex.lock();
+            m_filesAdded[bundle.uniqueId()] = bundle.url().path();
+            m_fileMapsMutex.unlock();
+        }
     }
 
     else if( localName == "folder" ) {

@@ -208,6 +208,9 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         void fileMoved( const QString &srcUrl, const QString &dstUrl, const QString &uniqueid );
         void fileDeleted( const QString &absPath );
         void fileDeleted( const QString &absPath, const QString &uniqueid );
+        void fileAdded( const QString &absPath );
+        void fileAdded( const QString &absPath, const QString &uniqueid );
+        void filesAdded( const QMap<QString,QString> &map );
         void uniqueIdChanged( const QString &url, const QString &originalid, const QString &newid );
         void coverChanged( const QString &artist, const QString &album ); //whenever a cover changes
         void coverFetched( const QString &artist, const QString &album ); //only when fetching from amazon
@@ -308,13 +311,16 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         bool isFileInCollection( const QString &url );
         QString getURL( const MetaBundle &bundle );
         void removeDirFromCollection( QString path );
-        void removeSongsInDir( QString path, QStringList *tagsRemoved = 0 );
+        void removeSongsInDir( QString path, QMap<QString,QString> *tagsRemoved = 0 );
         void removeSongs( const KURL::List& urls );
         void updateDirStats( QString path, const long datetime, const bool temporary = false );
 
         //song methods
         bool addSong( MetaBundle* bundle, const bool incremental = false );
         void doAFTStuff( MetaBundle *bundle, const bool tempTables = true );
+        void emitFileAdded( const QString &absPath,
+                            const QString &uniqueid = QString::null );
+        void emitFilesAdded( const QMap<QString,QString> &map );
         void emitFileDeleted( const QString &absPath,
                               const QString &uniqueid = QString::null );
         bool newUniqueIdForFile( const QString &path );

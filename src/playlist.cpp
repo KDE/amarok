@@ -243,6 +243,11 @@ Playlist::Playlist( QWidget *parent )
             const QString&, const QString&)) );
     connect( CollectionDB::instance(), SIGNAL(fileDeleted(const QString&,
             const QString&)), SLOT(updateEntriesStatusDeleted(const QString&, const QString&)) );
+    connect( CollectionDB::instance(), SIGNAL(fileAdded(const QString&,
+            const QString&)), SLOT(updateEntriesStatusAdded(const QString&, const QString&)) );
+    connect( CollectionDB::instance(), SIGNAL(filesAdded(const QMap<QString,QString>&)),
+            SLOT(updateEntriesStatusAdded(const QMap<QString,QString>&)) );
+
 
     initStarPixmaps();
 
@@ -1122,7 +1127,7 @@ Playlist::updateEntriesStatusDeleted( const QString &/*absPath*/, const QString 
 }
 
 void
-Playlist::updateEntriesStatusAdded( const QString &/*absPath*/, const QString &uniqueid )
+Playlist::updateEntriesStatusAdded( const QString &absPath, const QString &uniqueid )
 {
     QPtrList<PlaylistItem> *list;
     if( m_uniqueMap.contains( uniqueid ) )
@@ -1130,8 +1135,20 @@ Playlist::updateEntriesStatusAdded( const QString &/*absPath*/, const QString &u
         list = m_uniqueMap[uniqueid];
         PlaylistItem *item;
         for( item = list->first(); item; item = list->next() )
+        {
+            if( absPath != item->url().path() )
+                item->setPath( absPath ); //in case the UID was the same, but the path has changed
             item->setEnabled( true );
+        }
     }
+}
+
+void
+Playlist::updateEntriesStatusAdded( const QMap<QString,QString> &map )
+{
+    QMap<QString,QString>::ConstIterator it;
+    for( it = map.begin(); it != map.end(); ++it )
+           updateEntriesStatusAdded( it.data(), it.key() );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

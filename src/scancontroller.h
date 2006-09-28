@@ -122,9 +122,9 @@ class ScanController : public ThreadWeaver::DependentJob, public QXmlDefaultHand
         // detects as having been moved.  These are the files that
         // have definitely not been deleted.  The key is the absolute
         // path.
-        QMap<QString,bool> m_filesFound;
-        QStringList        m_filesDeleted;
-        QMutex             m_filesFoundMutex;
+        QMap<QString,QString> m_filesAdded;
+        QMap<QString,QString> m_filesDeleted;
+        QMutex             m_fileMapsMutex;
 
         static ScanController* currController;
 

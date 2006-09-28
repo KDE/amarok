@@ -3162,14 +3162,32 @@ void
 CollectionDB::emitFileDeleted( const QString &absPath, const QString &uniqueid )
 {
   if( uniqueid.isEmpty() )
-    emit fileDeleted( absPath );
+      emit fileDeleted( absPath );
   else
-    emit fileDeleted( absPath, uniqueid );
+      emit fileDeleted( absPath, uniqueid );
 
   debug() << "fileDeleted emitted for " << absPath << " uniqueid: "
           << uniqueid << endl;
 }
 
+void
+CollectionDB::emitFileAdded( const QString &absPath, const QString &uniqueid )
+{
+    if( uniqueid.isEmpty() )
+        emit fileAdded( absPath );
+    else
+        emit fileAdded( absPath, uniqueid );
+
+    debug() << "fileAdded emitted for " << absPath << " uniqueid: "
+          << uniqueid << endl;
+}
+
+void
+CollectionDB::emitFilesAdded( const QMap<QString,QString> &map )
+{
+    emit filesAdded( map );
+    debug() << "fileAdded emitted for map" << endl;
+}
 
 QString
 CollectionDB::urlFromUniqueId( const QString &id )
@@ -4148,7 +4166,7 @@ CollectionDB::updateDirStats( QString path, const long datetime, const bool temp
 
 
 void
-CollectionDB::removeSongsInDir( QString path, QStringList *tagsRemoved )
+CollectionDB::removeSongsInDir( QString path, QMap<QString,QString> *tagsRemoved )
 {
     if ( path.endsWith( "/" ) )
         path = path.left( path.length() - 1 );
@@ -4157,7 +4175,7 @@ CollectionDB::removeSongsInDir( QString path, QStringList *tagsRemoved )
 
     // Pass back the list of tags we actually delete if requested.
     if( tagsRemoved )
-      {
+    {
         QStringList result
           = query( QString( "SELECT tags.deviceid, tags.url, uniqueid.uniqueid FROM tags "
                             "LEFT JOIN uniqueid ON uniqueid.url      = tags.url "
@@ -4167,15 +4185,14 @@ CollectionDB::removeSongsInDir( QString path, QStringList *tagsRemoved )
                    .arg( escapeString( rpath ) ) );
         QStringList::ConstIterator it = result.begin(), end = result.end();
         while( it != end )
-          {
+        {
             int deviceid2    = (*(it++)).toInt();
             QString rpath2   =  *(it++);
             QString uniqueid =  *(it++);
-            *tagsRemoved << MountPointManager::instance()->getAbsolutePath(
+            (*tagsRemoved)[uniqueid] = MountPointManager::instance()->getAbsolutePath( 
                                 deviceid2, rpath2 );
-            *tagsRemoved << uniqueid;
-          }
-      }
+        }
+    }
 
     query( QString( "DELETE FROM tags WHERE dir = '%2' AND deviceid = %1;" )
               .arg( deviceid )
