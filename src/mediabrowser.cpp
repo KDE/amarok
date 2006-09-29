@@ -532,12 +532,14 @@ MediaBrowser::activateDevice( int index, bool skipDummy )
 
     if( m_currentDevice == m_devices.at( index ) )
     {
-        currentDevice()->view()->show();
+        if( currentDevice() )
+            currentDevice()->view()->show();
         return;
     }
 
     m_currentDevice = m_devices.at( index );
-    currentDevice()->view()->show();
+    if( currentDevice() )
+        currentDevice()->view()->show();
     m_deviceCombo->setCurrentItem( index-1 );
 
     updateButtons();
@@ -2151,8 +2153,10 @@ MediaDevice::isOnPlaylist( const MediaItem &playlist, const MetaBundle &bundle )
 }
 
 void
-MediaQueue::addURL( const KURL& url, MetaBundle *bundle, const QString &playlistName )
+MediaQueue::addURL( const KURL& url2, MetaBundle *bundle, const QString &playlistName )
 {
+    KURL url = Amarok::mostLocalURL( url2 );
+
     if( PlaylistFile::isPlaylistFile( url ) )
     {
         QString name = url.path().section( "/", -1 ).section( ".", 0, -2 ).replace( "_", " " );
@@ -2548,6 +2552,7 @@ MediaDevice::connectDevice( bool silent )
 
     if( isConnected()
             && MediaBrowser::instance()->currentDevice() != this
+            && MediaBrowser::instance()->currentDevice()
             && !MediaBrowser::instance()->currentDevice()->isConnected() )
     {
         MediaBrowser::instance()->activateDevice( this );
