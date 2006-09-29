@@ -1416,12 +1416,13 @@ MetaBundle::save( TagLib::FileRef* fileref )
                     setUniqueId( readUniqueId() );
                     CollectionDB::instance()->doAFTStuff( this, false );
                 }
-                return returnval;
             }
             else
-                return returnval = true;
+                returnval = true;
         }
     }
+    if ( !passedin )
+        delete f;
 
     return returnval;
 }
