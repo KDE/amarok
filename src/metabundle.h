@@ -17,7 +17,6 @@
 #include <taglib/audioproperties.h>
 #include "expression.h"
 #include "atomicstring.h"
-#include "atomicurl.h"
 #include "moodbar.h"
 
 #include "amarok_export.h"
@@ -345,7 +344,6 @@ protected:
     void reactToChange( int column );
 
     KURL m_url;
-//     AtomicURL m_url;
     QString m_title;
     AtomicString m_artist;
     AtomicString m_composer;
