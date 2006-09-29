@@ -1332,12 +1332,12 @@ bool
 MetaBundle::safeSave()
 {
     bool noproblem;
-    MetaBundleSaver* mbs = new MetaBundleSaver( this );
-    TagLib::FileRef* fileref = mbs->prepareToSave();
+    MetaBundleSaver mbs( this );
+    TagLib::FileRef* fileref = mbs.prepareToSave();
     if( !fileref )
     {
         debug() << "Could not get a fileref!" << endl;
-        mbs->cleanupSave();
+        mbs.cleanupSave();
         return false;
     }
 
@@ -1346,25 +1346,24 @@ MetaBundle::safeSave()
     if( !noproblem )
     {
         debug() << "MetaBundle::save() didn't work!" << endl;
-        mbs->cleanupSave();
+        mbs.cleanupSave();
         return false;
     }
 
-    noproblem = mbs->doSave();
+    noproblem = mbs.doSave();
 
     if( !noproblem )
     {
         debug() << "Something failed during the save, cleaning up and exiting!" << endl;
-        mbs->cleanupSave();
+        mbs.cleanupSave();
         return false;
     }
 
     setUniqueId( readUniqueId() );
     CollectionDB::instance()->doAFTStuff( this, false );
 
-    noproblem = mbs->cleanupSave();
+    noproblem = mbs.cleanupSave();
 
-    delete mbs;
     return noproblem;
 }
 
