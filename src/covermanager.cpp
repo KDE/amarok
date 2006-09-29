@@ -483,7 +483,7 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
         menu.insertItem( SmallIconSet( Amarok::icon( "search" ) ), i18n("&Show Fullsize"), SHOW );
 
         #ifdef AMAZON_SUPPORT
-        menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n("&Fetch From Amazon.%1").arg( CoverManager::amazonTld() ), FETCH );
+        menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n("&Fetch From amazon.%1").arg( CoverManager::amazonTld() ), FETCH );
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n("Set &Custom Image"), CUSTOM );
         #else

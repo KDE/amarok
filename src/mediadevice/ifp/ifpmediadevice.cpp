@@ -178,7 +178,7 @@ IfpMediaDevice::openDevice( bool /*silent*/ )
     {
         error() << "Could not get usb_device()" << endl;
         Amarok::StatusBar::instance()->shortLongMessage( genericError,
-                                        i18n("iFP: Could not get a USB device handle"), KDE::StatusBar::Error );
+                                        i18n("iFP: Could not get a usb device handle"), KDE::StatusBar::Error );
         if( ifp_release_device( m_dh ) )
             error() << "warning: release_device failed." << endl;
         return false;

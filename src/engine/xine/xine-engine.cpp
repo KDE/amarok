@@ -303,7 +303,7 @@ XineEngine::determineAndShowErrorMessage()
     debug() << "xine_get_error()\n";
     switch (xine_get_error( m_stream )) {
         case XINE_ERROR_NO_INPUT_PLUGIN:
-            body = i18n("No suitable input plugin. This often means that the URL's protocol is not supported. Network failures are other possible causes.");
+            body = i18n("No suitable input plugin. This often means that the url's protocol is not supported. Network failures are other possible causes.");
         break;
 
         case XINE_ERROR_NO_DEMUX_PLUGIN:
