@@ -17,6 +17,7 @@ VERSION 1.4.4
       playlist folder. (BR 133543)
 
   CHANGES:
+    * Correctly translate media:, home:, ... style urls on KDE 3.5 and newer. 
     * When tracks are added to the collection and Playlist entries already
       exist (as determined by the file tracking code), the corresponding
       Playlist entries are updated to the new location and enabled if they

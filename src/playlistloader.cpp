@@ -98,7 +98,7 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, bool playFir
             .setTotalSteps( 100 );
 
     foreachType( KURL::List, urls ) {
-        const KURL &url = *it;
+        const KURL url = Amarok::mostLocalURL( *it );
         // FIXME: url needs detach()ing
         const QString protocol = url.protocol();
 
