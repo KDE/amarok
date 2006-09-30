@@ -371,7 +371,7 @@ ScanController::requestAcknowledged()
 }
 
 void
-ScanController::slotFileMoved( const QString &src, const QString &/*dest*/)
+ScanController::slotFileMoved( const QString &/*src*/, const QString &/*dest*/)
 {
     //why is this needed?  QBob, take a look at this
     /*

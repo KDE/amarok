@@ -924,18 +924,7 @@ void PlaylistBrowser::loadDynamicItems()
         QListViewItem *it = m_dynamicEntries.at( i );
 
         if( it )
-        {
-            if( isPlaylist( it ) )
-            {
-                PlaylistEntry *item = static_cast<PlaylistEntry*>(it);
-                item->setDynamic( false );
-            }
-            else if( isSmartPlaylist( it ) )
-            {
-                SmartPlaylist *item = static_cast<SmartPlaylist*>(it);
-                item->setDynamic( false );
-            }
-        }
+            static_cast<PlaylistBrowserEntry*>(it)->setDynamic( false );
     }
     m_dynamicEntries.clear();  // Don't use remove(), since we do i++, which would cause skip overs!!!
 
@@ -950,16 +939,7 @@ void PlaylistBrowser::loadDynamicItems()
             if( it )
             {
                 m_dynamicEntries.append( it );
-                if( isPlaylist( it ) )
-                {
-                    PlaylistEntry *item = static_cast<PlaylistEntry*>(it);
-                    item->setDynamic( true );
-                }
-                else if( isSmartPlaylist( it ) )
-                {
-                    SmartPlaylist *item = static_cast<SmartPlaylist*>(it);
-                    item->setDynamic( true );
-                }
+                static_cast<PlaylistBrowserEntry*>(it)->setDynamic( true );
             }
         }
     }
@@ -1901,81 +1881,9 @@ void PlaylistBrowser::addSelectedToPlaylist( int options )
 void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
 {
     if( !item ) return;
-
-    if( isPlaylist( item ) ) {
-        // open the playlist
-        #define item static_cast<PlaylistEntry *>(item)
-        //don't replace, it generally makes people think Amarok behaves like JuK
-        //and we don't so they then get really confused about things
-        Playlist::instance()->insertMedia( item->url(), Playlist::Replace );
-        #undef  item
-    }
-    else if( isPodcastChannel( item ) )
-    {
-        #define item static_cast<PodcastChannel *>(item)
-        if( !item->isPolished() )
-             item->load();
-        KURL::List list;
-        QListViewItem *child = item->firstChild();
-        while( child )
-        {
-            #define child static_cast<PodcastEpisode *>(child)
-
-            child->isOnDisk() ?
-                list.prepend( child->localUrl() ):
-                list.prepend( child->url()      );
-
-            #undef child
-            child = child->nextSibling();
-        }
-
-        Playlist::instance()->insertMedia( list, Playlist::Replace );
-        item->setNew( false );
-
-        #undef item
-    }
-    else if( isPodcastEpisode( item ) )
-    {
-        #define item static_cast<PodcastEpisode *>(item)
-        KURL::List list;
-
-        item->isOnDisk() ?
-            list.append( item->localUrl() ):
-            list.append( item->url()      );
-
-        Playlist::instance()->insertMedia( list, Playlist::DirectPlay );
-        item->setListened();
-
-        #undef item
-    }
-    else if( isLastFm( item ) )
-    {
-        Playlist::instance()->insertMedia( static_cast<LastFmEntry*>(item)->url(), Playlist::Replace );
-    }
-    else if( isStream( item ) )
-    {
-        Playlist::instance()->insertMedia( static_cast<StreamEntry *>(item)->url(), Playlist::Replace );
-    }
-    else if( isSmartPlaylist( item ) )
-    {
-        #define item static_cast<SmartPlaylist *>(item)
-        if( !item->query().isEmpty() )
-            Playlist::instance()->insertMediaSql( item->query(), Playlist::Clear );
-        #undef  item
-    }
-    else if( isCategory( item ) )
-    {
-        item->setOpen( !item->isOpen() );
-    }
-    else if( isPlaylistTrackItem( item ) )
-    {
-        KURL::List list( static_cast<PlaylistTrackItem *>(item)->url() );
-        Playlist::instance()->insertMedia( list, Playlist::DirectPlay );
-    }
-    else if( isDynamic( item ) )
-        Playlist::instance()->loadDynamicMode( static_cast<DynamicEntry *>(item) );
-    else
-        warning() << "No functionality for item double click implemented" << endl;
+    PlaylistBrowserEntry *entry = dynamic_cast<PlaylistBrowserEntry*>(item);
+    if ( entry )
+        entry->slotDoubleClicked();
 }
 
 void PlaylistBrowser::collectionScanDone()
@@ -2001,16 +1909,8 @@ void PlaylistBrowser::addToDynamic()
         if( m_dynamicEntries.find( *it ) < 0 ) // check that it is not there
         {
             m_dynamicEntries.append( *it );
-            if( isPlaylist( *it ) )
-            {
-                PlaylistEntry *item = static_cast<PlaylistEntry*>(*it);
-                item->setDynamic( true );
-            }
-            else if( isSmartPlaylist( *it ) )
-            {
-                SmartPlaylist *item = static_cast<SmartPlaylist*>(*it);
-                item->setDynamic( true );
-            }
+            PlaylistBrowserEntry *entry = dynamic_cast<PlaylistBrowserEntry*>( *it );
+            entry->setDynamic( true );
         }
     }
 
@@ -2028,16 +1928,8 @@ void PlaylistBrowser::subFromDynamic()
         if( m_dynamicEntries.find( *it ) >= 0 ) // check if it is already present
         {
             m_dynamicEntries.remove( *it );
-            if( isPlaylist( *it ) )
-            {
-                PlaylistEntry *item = static_cast<PlaylistEntry*>(*it);
-                item->setDynamic( false );
-            }
-            else if( isSmartPlaylist( *it ) )
-            {
-                SmartPlaylist *item = static_cast<SmartPlaylist*>(*it);
-                item->setDynamic( false );
-            }
+            PlaylistBrowserEntry *entry = dynamic_cast<PlaylistBrowserEntry*>( *it );
+            entry->setDynamic( false );
         }
     }
 
@@ -2281,63 +2173,17 @@ void PlaylistBrowser::renameSelectedItem() //SLOT
     if( item == m_randomDynamic || item == m_suggestedDynamic )
         return;
 
-    if( isCategory( item ) && static_cast<PlaylistCategory*>(item)->isFolder() )
-    {
-        #define item static_cast<PlaylistBrowserEntry*>(item)
-        if( !item->isKept() )
-            return;
-        #undef  item
-
-        item->setRenameEnabled( 0, true );
-        m_listview->rename( item, 0 );
-    }
-
-    else if( isPlaylist( item ) || isStream( item ) || isSmartPlaylist( item ) || isDynamic( item ) )
-    {
-        QListViewItem *parent = item->parent();
-
-        while( parent )
-        {
-            #define parent static_cast<PlaylistBrowserEntry*>(item)
-            if( !parent->isKept() )
-                return;
-            #undef  parent
-
-            if( !parent->parent() )
-                break;
-
-            parent = parent->parent();
-        }
-
-        item->setRenameEnabled( 0, true );
-        m_listview->rename( item, 0 );
-    }
+    PlaylistBrowserEntry *entry = dynamic_cast<PlaylistBrowserEntry*>( item );
+    if ( entry )
+        entry->slotRenameItem();
 }
 
 
 void PlaylistBrowser::renamePlaylist( QListViewItem* item, const QString& newName, int ) //SLOT
 {
-    if( isPlaylist( item ) )
-    {
-        #define item static_cast<PlaylistEntry*>(item)
-
-        QString oldPath = item->url().path();
-        QString newPath = fileDirPath( oldPath ) + newName + '.' + fileExtension( oldPath );
-
-        if ( std::rename( QFile::encodeName( oldPath ), QFile::encodeName( newPath ) ) == -1 )
-            KMessageBox::error( this, i18n("Error renaming the file.") );
-        else
-            item->setUrl( newPath );
-
-        #undef item
-    }
-    else if( isSmartPlaylist( item ) )
-    {
-        QDomElement xml = static_cast<SmartPlaylist*>(item)->xml();
-        xml.setAttribute( "name", newName );
-    }
-
-    item->setRenameEnabled( 0, false );
+    PlaylistBrowserEntry *entry = dynamic_cast<PlaylistBrowserEntry*>( item );
+    if ( entry )
+        entry->slotPostRenameItem( newName );
 }
 
 

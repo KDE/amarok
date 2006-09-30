@@ -44,8 +44,9 @@ namespace KIO { class Job; class TransferJob; class CopyJob; } //podcast downloa
 
 
 /* A base class to be able to use polymorphism and avoid tons of casts */
-class PlaylistBrowserEntry : public KListViewItem
+class PlaylistBrowserEntry :  public QObject, public KListViewItem
 {
+    Q_OBJECT
     public:
         PlaylistBrowserEntry( QListViewItem *parent, QListViewItem *after )
             : KListViewItem( parent, after) { m_kept = true; }
@@ -55,10 +56,18 @@ class PlaylistBrowserEntry : public KListViewItem
             : KListViewItem( parent, after, name) { m_kept = true; }
 
         virtual QDomElement xml() { return QDomElement(); }
+        QListViewItem* parent() const { return KListViewItem::parent(); }
+
         bool    isKept() const { return m_kept; }           // if kept == true, then it will be saved
         void    setKept( const bool k ) { m_kept = k; }     // to the cache files.
 
         virtual void updateInfo();
+        virtual void setDynamic( bool ) {};
+
+    public slots:
+        virtual void slotDoubleClicked();
+        virtual void slotRenameItem();
+        virtual void slotPostRenameItem( const QString newName );
 
     protected:
         virtual int compare( QListViewItem*, int, bool ) const; //reimplemented
@@ -72,6 +81,7 @@ class PlaylistBrowserEntry : public KListViewItem
 
 class DynamicEntry : public PlaylistBrowserEntry, public DynamicMode
 {
+    Q_OBJECT
     public:
         DynamicEntry( QListViewItem *parent, QListViewItem *after, const QString &title );
         DynamicEntry( QListViewItem *parent, QListViewItem *after, const QDomElement &xmlDefinition );
@@ -83,10 +93,14 @@ class DynamicEntry : public PlaylistBrowserEntry, public DynamicMode
 
         static const int RTTI = 1005;
         int rtti() const { return RTTI; }
+
+    public slots:
+        virtual void slotDoubleClicked();
 };
 
 class PlaylistCategory : public PlaylistBrowserEntry
 {
+    Q_OBJECT
     public:
         PlaylistCategory( QListView *parent, QListViewItem *after, const QString &, bool isFolder=false );
         PlaylistCategory( PlaylistCategory *parent, QListViewItem *after, const QString &, bool isFolder=true );
@@ -109,6 +123,10 @@ class PlaylistCategory : public PlaylistBrowserEntry
         int   rtti() const { return RTTI; }
         static const int RTTI = 1000;    //category item
 
+    public slots:
+        virtual void slotDoubleClicked();
+        virtual void slotRenameItem();
+
     protected:
         void  okRename( int col );
 
@@ -122,9 +140,9 @@ class PlaylistCategory : public PlaylistBrowserEntry
 };
 
 
-class PlaylistEntry :  public QObject, public PlaylistBrowserEntry
+class PlaylistEntry :  public PlaylistBrowserEntry
 {
-        Q_OBJECT
+    Q_OBJECT
 
     friend class PlaylistTrackItem;
     friend class TrackItemInfo;
@@ -165,11 +183,15 @@ class PlaylistEntry :  public QObject, public PlaylistBrowserEntry
 
         QDomElement xml();
 
-        void  updateInfo();
+        virtual void  updateInfo();
 
         //rtti is used to distinguish different kinds of list view items
         int   rtti() const { return RTTI; }
         static const int RTTI = 1001;    //playlist item
+
+    public slots:
+        virtual void slotDoubleClicked();
+        virtual void slotPostRenameItem( const QString newName );
 
     signals:
         void startingLoading();
@@ -199,6 +221,7 @@ class PlaylistEntry :  public QObject, public PlaylistBrowserEntry
 
 class PlaylistTrackItem : public PlaylistBrowserEntry
 {
+    Q_OBJECT
     friend class TrackItemInfo;
 
     public:
@@ -208,6 +231,10 @@ class PlaylistTrackItem : public PlaylistBrowserEntry
 
         int rtti() const { return RTTI; }
         static const int RTTI = 1002;    //track item
+
+    public slots:
+        virtual void slotDoubleClicked();
+        virtual void slotRenameItem() { /* Do nothing */ };
 
     private:
         TrackItemInfo *m_trackInfo;
@@ -246,7 +273,7 @@ class PodcastFetcher : public QObject
 };
 
 /// Stored in the database
-class PodcastEpisode : public QObject, public PlaylistBrowserEntry
+class PodcastEpisode : public PlaylistBrowserEntry
 {
         Q_OBJECT
 
@@ -281,7 +308,7 @@ class PodcastEpisode : public QObject, public PlaylistBrowserEntry
         void  setup();
         void  paintCell( QPainter*, const QColorGroup&, int, int, int );
 
-        void  updateInfo();
+        virtual void  updateInfo();
 
         void addToMediaDevice();
 
@@ -295,6 +322,8 @@ class PodcastEpisode : public QObject, public PlaylistBrowserEntry
 
     public slots:
         const bool isOnDisk();
+        virtual void slotDoubleClicked();
+        virtual void slotRenameItem() { /* Do nothing */ };
 
     private slots:
         void abortDownload();
@@ -327,7 +356,7 @@ class PodcastEpisode : public QObject, public PlaylistBrowserEntry
 };
 
 /// Stored in the database
-class PodcastChannel : public QObject, public PlaylistBrowserEntry
+class PodcastChannel : public PlaylistBrowserEntry
 {
         Q_OBJECT
 
@@ -376,10 +405,14 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
         void  setParent( PlaylistCategory *newParent );
         void setSettings( PodcastSettings *settings );
 
-        void  updateInfo();
+        virtual void  updateInfo();
 
         int rtti() const { return RTTI; }
         static const int RTTI = 1006;              //podcastchannel
+
+    public slots:
+        virtual void slotDoubleClicked();
+        virtual void slotRenameItem() { /* Do nothing */ };
 
     private slots:
         void abortFetch();
@@ -424,6 +457,7 @@ class PodcastChannel : public QObject, public PlaylistBrowserEntry
 
 class StreamEntry : public PlaylistBrowserEntry
 {
+    Q_OBJECT
     public:
         StreamEntry( QListViewItem *parent, QListViewItem *after, const KURL &, const QString &t );
         StreamEntry( QListViewItem *parent, QListViewItem *after, const QDomElement &xmlDefinition );
@@ -445,6 +479,9 @@ class StreamEntry : public PlaylistBrowserEntry
         int   rtti() const { return RTTI; }
         static const int RTTI = 1003;    //stream item
 
+    public slots:
+        virtual void slotDoubleClicked();
+
     protected:
         QString m_title;
         KURL    m_url;
@@ -452,6 +489,7 @@ class StreamEntry : public PlaylistBrowserEntry
 
 class LastFmEntry : public StreamEntry
 {
+    Q_OBJECT
     public:
         LastFmEntry( QListViewItem *parent, QListViewItem *after, const KURL &u, const QString &t )
             : StreamEntry( parent, after, u, t ) { }
@@ -459,6 +497,9 @@ class LastFmEntry : public StreamEntry
             : StreamEntry( parent, after, xmlDefinition ) { }
         virtual QDomElement xml();
 //         virtual void  updateInfo();
+    public slots:
+//        virtual void slotDoubleClicked();
+        virtual void slotRenameItem() { /* Do nothing */ }
 
         int   rtti() const { return RTTI; }
         static const int RTTI = 1008;    //lastfm item
@@ -480,6 +521,7 @@ class StreamEditor : public KDialogBase
 
 class SmartPlaylist : public PlaylistBrowserEntry
 {
+    Q_OBJECT
     public:
         SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QString &name, const QString &query );
         SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QString &name,
@@ -499,6 +541,10 @@ class SmartPlaylist : public PlaylistBrowserEntry
 
         int   rtti() const { return RTTI; }
         static const int RTTI = 1004;    //smart playlist item
+
+    public slots:
+        virtual void slotDoubleClicked();
+        virtual void slotPostRenameItem( const QString newName );
 
     private:
         QString m_sqlForTags;

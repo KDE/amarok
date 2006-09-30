@@ -12,6 +12,7 @@
 #include "collectiondb.h"
 #include "debug.h"
 #include "dynamicmode.h"
+#include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h"
 #include "playlistloader.h"    //load()
@@ -114,12 +115,42 @@ PlaylistBrowserEntry::compare( QListViewItem* item, int col, bool ascending ) co
     return KListViewItem::compare(item, col, ascending);
 }
 
-void PlaylistBrowserEntry::updateInfo()
+void
+PlaylistBrowserEntry::updateInfo()
 {
     PlaylistBrowser::instance()->setInfo( QString::null, QString::null );
     return;
 }
 
+void
+PlaylistBrowserEntry::slotDoubleClicked()
+{
+    warning() << "No functionality for item double click implemented" << endl;
+}
+
+void
+PlaylistBrowserEntry::slotRenameItem()
+{
+    QListViewItem *parent = KListViewItem::parent();
+
+    while( parent )
+    {
+        if( !static_cast<PlaylistBrowserEntry*>( parent )->isKept() )
+            return;
+        if( !parent->parent() )
+            break;
+        parent = parent->parent();
+    }
+
+    setRenameEnabled( 0, true );
+    static_cast<PlaylistBrowserView*>( listView() )->rename( this, 0 );
+}
+
+void
+PlaylistBrowserEntry::slotPostRenameItem( const QString /*newName*/ )
+{
+    setRenameEnabled( 0, false );
+}
 
 /////////////////////////////////////////////////////////////////////////////
 ///    CLASS PlaylistCategory
@@ -315,6 +346,21 @@ QDomElement PlaylistCategory::xml()
                 i.appendChild( d.importNode( it->xml(), true ) );
         }
         return i;
+}
+
+void
+PlaylistCategory::slotDoubleClicked()
+{
+    setOpen( !isOpen() );
+}
+
+void
+PlaylistCategory::slotRenameItem()
+{
+    if ( isKept() ) {
+        setRenameEnabled( 0, true );
+        static_cast<PlaylistBrowserView*>( listView() )->rename( this, 0 );
+    }
 }
 
 void
@@ -646,6 +692,23 @@ void PlaylistEntry::updateInfo()
     PlaylistBrowser::instance()->setInfo( text(0), str );
 }
 
+void PlaylistEntry::slotDoubleClicked()
+{
+    Playlist::instance()->insertMedia( url(), Playlist::Replace );
+}
+
+
+void PlaylistEntry::slotPostRenameItem( const QString newName )
+{
+    QString oldPath = url().path();
+    QString newPath = fileDirPath( oldPath ) + newName + '.' + Amarok::extension( oldPath );
+
+    if ( std::rename( QFile::encodeName( oldPath ), QFile::encodeName( newPath ) ) == -1 )
+        KMessageBox::error( listView(), i18n("Error renaming the file.") );
+    else
+        setUrl( newPath );
+}
+
 void PlaylistEntry::setDynamic( bool enable )
 {
     if( enable != m_dynamic )
@@ -777,6 +840,12 @@ const KURL &PlaylistTrackItem::url()
     return m_trackInfo->url();
 }
 
+void PlaylistTrackItem::slotDoubleClicked()
+{
+    KURL::List list( url() );
+    Playlist::instance()->insertMedia( list, Playlist::DirectPlay );
+}
+
 
 //////////////////////////////////////////////////////////////////////////////////
 ///    CLASS TrackItemInfo
@@ -870,6 +939,11 @@ void StreamEntry::updateInfo()
     str += "</table></body></html>";
 
     PlaylistBrowser::instance()->setInfo( text(0), str );
+}
+
+void StreamEntry::slotDoubleClicked()
+{
+    Playlist::instance()->insertMedia( url(), Playlist::Replace );
 }
 
 void StreamEntry::setup()
@@ -1071,6 +1145,12 @@ QDomElement DynamicEntry::xml()
     attr.appendChild( t );
     i.appendChild( attr );
     return i;
+}
+
+void
+DynamicEntry::slotDoubleClicked()
+{
+    Playlist::instance()->loadDynamicMode( this );
 }
 
 
@@ -1714,6 +1794,27 @@ PodcastChannel::updateInfo()
     str += "</ul></body></html>";
 
     PlaylistBrowser::instance()->setInfo( text(0), str );
+}
+
+void
+PodcastChannel::slotDoubleClicked()
+{
+    if( !isPolished() )
+            load();
+    KURL::List list;
+    QListViewItem *child = firstChild();
+    while( child )
+    {
+        #define child static_cast<PodcastEpisode *>(child)
+        child->isOnDisk() ?
+            list.prepend( child->localUrl() ):
+            list.prepend( child->url()      );
+        #undef child
+        child = child->nextSibling();
+    }
+
+    Playlist::instance()->insertMedia( list, Playlist::Replace );
+    setNew( false );
 }
 
 //maintain max items property
@@ -2415,6 +2516,19 @@ PodcastEpisode::updateInfo()
 }
 
 
+void
+PodcastEpisode::slotDoubleClicked()
+{
+    KURL::List list;
+
+    isOnDisk() ?
+        list.append( localUrl() ):
+        list.append( url()      );
+
+    Playlist::instance()->insertMedia( list, Playlist::DirectPlay );
+    setListened();
+}
+
 /////////////////////////////////////////////////////////////////////////////
 ///    CLASS SmartPlaylist
 ////////////////////////////////////////////////////////////////////////////
@@ -2547,5 +2661,16 @@ void SmartPlaylist::setDynamic( bool enable )
     }
 }
 
+
+void SmartPlaylist::slotDoubleClicked()
+{
+    if( !query().isEmpty() )
+        Playlist::instance()->insertMediaSql( query(), Playlist::Clear );
+}
+
+void SmartPlaylist::slotPostRenameItem( const QString newName )
+{
+    xml().setAttribute( "name", newName );
+}
 
 #include "playlistbrowseritem.moc"
