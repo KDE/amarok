@@ -673,7 +673,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
         }
     else
     {
-        const QColorGroup _cg = ( !isEnabled() )
+        const QColorGroup _cg = ( !exists() || !isEnabled() )
                                 ? listView()->palette().disabled()
                                 : listView()->palette().active();
 
