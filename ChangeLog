@@ -39,6 +39,8 @@ VERSION 1.4.4
     * Show a proper tag dialog when viewing information for DAAP music shares.
 
   BUGFIXES:
+    * Files that were detected as being added back to the collection would not
+      always be re-enabled in the Playlist. (BR 130359)
     * Fix some spelling and layout issues. Part of a patch by Malcolm Parsons
       <malcolm.parsons@gmail.com>.
     * Correctly handle horizontal wheel events in position slider. (BR 119254)

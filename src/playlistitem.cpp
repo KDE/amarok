@@ -230,6 +230,7 @@ void PlaylistItem::setDynamicEnabled( bool enabled )
 void PlaylistItem::setFilestatusEnabled( bool enabled )
 {
     m_filestatusEnabled = enabled;
+    checkExists();
     setEnabled();
 }
 
@@ -672,7 +673,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
         }
     else
     {
-        const QColorGroup _cg = ( !exists() || !isEnabled() )
+        const QColorGroup _cg = ( !isEnabled() )
                                 ? listView()->palette().disabled()
                                 : listView()->palette().active();
 
