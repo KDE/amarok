@@ -230,7 +230,7 @@ UrlLoader::customEvent( QCustomEvent *e)
             {
                 //Since ATF's read-only functions will now always be on, always use the ATF
                 //behavior...add anyways, but disable, we expect to find with an update
-                /*PlaylistItem *item = */ new PlaylistItem( *it, m_markerListViewItem, false );
+                new PlaylistItem( *it, m_markerListViewItem, false );
             }
             else
             {
