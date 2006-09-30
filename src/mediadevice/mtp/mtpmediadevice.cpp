@@ -134,7 +134,8 @@ MtpMediaDevice::supportedFiletypes()
 int
 MtpMediaDevice::progressCallback( uint64_t const sent, uint64_t const total, void const * const data )
 {
-    Q_UNUSED( data );
+    Q_UNUSED( sent );
+    Q_UNUSED( total );
 
     kapp->processEvents( 100 );
 
