@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 1.4.4
   FEATURES:
+    * Added integrated Magnatune.com music store. Includes artist and album
+      info and full previews of all tracks.
     * Fade-out for xine-engine when pressing Stop. Patch by Tuomas Nurmi
       <tnurmi@edu.kauhajoki.fi>. (BR 127316)
     * Support downloading of files from an MTP device.
@@ -15,8 +17,7 @@ VERSION 1.4.4
     * Allow the creation of empty playlists in the playlist browser. Available
       either from the Add button in the toolbar or the context menu of a
       playlist folder. (BR 133543)
-    * Added integrated Magnatune.com music store. Includes artist and album
-      info and full previews of all tracks.
+
 
   CHANGES:
     * Correctly translate media:, home:, ... style urls on KDE 3.5 and newer. 
