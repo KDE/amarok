@@ -497,10 +497,12 @@ class LastFmEntry : public StreamEntry
             : StreamEntry( parent, after, xmlDefinition ) { }
         virtual QDomElement xml();
 //         virtual void  updateInfo();
+
     public slots:
 //        virtual void slotDoubleClicked();
         virtual void slotRenameItem() { /* Do nothing */ }
 
+    public:
         int   rtti() const { return RTTI; }
         static const int RTTI = 1008;    //lastfm item
 };
