@@ -144,7 +144,7 @@ MountPointManager::getIdForUrl( KURL url )
 }
 
 int
-MountPointManager::getIdForUrl( QString url )
+MountPointManager::getIdForUrl( const QString &url )
 {
     return getIdForUrl( KURL::fromPathOrURL( url ) );
 }
@@ -401,7 +401,7 @@ MountPointManager::collectionFolders( )
 }
 
 void
-MountPointManager::setCollectionFolders( QStringList folders )
+MountPointManager::setCollectionFolders( const QStringList &folders )
 {
     //TODO max: cache data
     typedef QMap<int, QStringList> FolderMap;
@@ -416,7 +416,7 @@ MountPointManager::setCollectionFolders( QStringList folders )
         else
             folderMap[id] = QStringList( rpath );
     }
-    //make sure that collection folders on devices whicha re not in foldermap are deleted
+    //make sure that collection folders on devices which are not in foldermap are deleted
     IdList ids = getMountedDeviceIds();
     foreachType( IdList, ids )
     {

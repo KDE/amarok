@@ -161,7 +161,7 @@ public:
      * @return
      */
     int getIdForUrl( KURL url );
-    int getIdForUrl( QString url );
+    int getIdForUrl( const QString &url );
     /**
      *
      * @param id
@@ -192,7 +192,7 @@ public:
     IdList getMountedDeviceIds() const;
 
     QStringList collectionFolders();
-    void setCollectionFolders( QStringList folders );
+    void setCollectionFolders( const QStringList &folders );
 
 public slots:
     void mediumAdded( const Medium *m );
