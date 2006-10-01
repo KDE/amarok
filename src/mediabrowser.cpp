@@ -2940,6 +2940,8 @@ MediaDevice::transferFiles()
             setProgress( progress() + 1 );
         }
 
+        transferredItem->m_flags &= ~MediaItem::Transferring;
+
         if( isCanceled() )
             break;
 
