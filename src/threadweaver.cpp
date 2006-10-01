@@ -294,10 +294,11 @@ ThreadWeaver::Thread::run()
     pthread_once( &current_thread_key_once, create_current_thread_key );
     pthread_setspecific( current_thread_key, this );
 
-    m_job->m_aborted |= !m_job->doJob();
-
     if( m_job )
+    {
+        m_job->m_aborted |= !m_job->doJob();
         QApplication::postEvent( ThreadWeaver::instance(), m_job );
+    }
 
     // almost always the thread doesn't finish until after the
     // above event is already finished processing

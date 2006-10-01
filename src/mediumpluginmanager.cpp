@@ -230,7 +230,7 @@ MediumPluginManager::newDevice()
     ManualDeviceAdder* mda = new ManualDeviceAdder( this );
     if( mda->exec() == QDialog::Accepted && mda->successful() && mda->getMedium() != 0 )
     {
-        if( Amarok::config( "MediaBrowser" )->readEntry( mda->getMedium()->id() ) != QString::null )
+        if( !Amarok::config( "MediaBrowser" )->readEntry( mda->getMedium()->id() ).isNull() )
         {
             //abort!  Can't have the same device defined twice...should never
             //happen due to name checking earlier...right?

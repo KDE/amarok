@@ -1254,6 +1254,9 @@ PodcastEpisode *
 PlaylistBrowser::findPodcastEpisode( const KURL &episode, const KURL &feed ) const
 {
     PodcastChannel *channel = findPodcastChannel( feed );
+    if( !channel )
+        return 0;
+
     QListViewItem *child = channel->firstChild();
     while( child )
     {
@@ -1976,7 +1979,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
         if( parent && parent->isSelected() ) //parent will remove children
             continue;
 
-        while( parent->parent() && static_cast<PlaylistBrowserEntry*>(parent)->isKept() )
+        while( parent && parent->parent() && static_cast<PlaylistBrowserEntry*>(parent)->isKept() )
             parent = parent->parent();
 
         if( !static_cast<PlaylistBrowserEntry*>(parent)->isKept() )
@@ -3278,7 +3281,7 @@ void PlaylistBrowserView::startDrag()
         else if( isPodcastEpisode( *it ) )
         {
             if( (*it)->parent()->isSelected() ) continue;
-            if( !podList.isEmpty() && lastPodcastEpisode->QListViewItem::parent() != (*it)->parent() )
+            if( !podList.isEmpty() && lastPodcastEpisode && lastPodcastEpisode->QListViewItem::parent() != (*it)->parent() )
             {   // we moved onto a new podcast channel
                 urls += podList;
                 podList.clear();

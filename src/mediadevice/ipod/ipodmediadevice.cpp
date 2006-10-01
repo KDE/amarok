@@ -2094,7 +2094,7 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
 
                             i->parent()->takeItem(i);
                             insertTrackIntoDB(i->url().path(), *i->bundle(), 0);
-                            delete it;
+                            delete i;
                         }
                     }
 
