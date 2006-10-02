@@ -3048,7 +3048,7 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
             //debug() << "At doAFTStuff, stat-ing file " << absPath << endl;
             bool statSuccessful = QFile::exists( absPath );
             if( statSuccessful ) //if true, new one is a copy
-                error() << "Already-scanned file at " << absPath << " has same UID as new file at " << currurl << endl;
+                error() << "Already-scanned file at " << absPath << " has same UID as new file at " << bundle->url().path() << endl;
             else  //it's a move, not a copy, or a copy and then both files were moved...can't detect that
             {
                 //debug() << "stat was NOT successful, updating tables with: " << endl;
