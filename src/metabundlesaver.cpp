@@ -62,7 +62,7 @@ MetaBundleSaver::prepareToSave()
     DEBUG_BLOCK
 
     m_cleanupNeeded = true;
-    KMD5* md5sum;
+    KMD5 md5sum( 0, 0 );
     const KURL origPath = m_bundle->url();
     char hostbuf[32];
     int hostname = gethostname( hostbuf, 32 );
@@ -92,21 +92,17 @@ MetaBundleSaver::prepareToSave()
         return 0;
     }
 
-    md5sum = new KMD5( 0, 0 );
+    QFile orig( m_bundle->url().path() );
+    QFile copy( m_tempSavePath );
 
-    QFile *orig = new QFile( m_bundle->url().path() );
-    QFile *copy = new QFile( m_tempSavePath );
-
-    if( !md5sum || !orig->open( IO_Raw | IO_ReadOnly ) )
+    if( !orig.open( IO_Raw | IO_ReadOnly ) )
     {
-        debug() << "Could not open original file or could not insantiate KMD5 object!" << endl;
-        if( md5sum )
-            delete md5sum;
+        debug() << "Could not open original file!" << endl;
         return 0;
     }
 
     //Do this separately so as not to create a zero-length file if you can't read from input
-    if( !copy->open( IO_Raw | IO_WriteOnly | IO_Truncate ) )
+    if( !copy.open( IO_Raw | IO_WriteOnly | IO_Truncate ) )
     {
         debug() << "Could not create file copy" << endl;
         return 0;
@@ -114,31 +110,23 @@ MetaBundleSaver::prepareToSave()
 
     Q_LONG actualreadlen, actualwritelen;
 
-    while( ( actualreadlen = orig->readBlock( m_databuf, m_maxlen ) ) > 0 )
+    while( ( actualreadlen = orig.readBlock( m_databuf, m_maxlen ) ) > 0 )
     {
-        md5sum->update( m_databuf, actualreadlen );
-        if( ( actualwritelen = copy->writeBlock( m_databuf, actualreadlen ) ) != actualreadlen )
+        md5sum.update( m_databuf, actualreadlen );
+        if( ( actualwritelen = copy.writeBlock( m_databuf, actualreadlen ) ) != actualreadlen )
         {
             debug() << "Error during copying of original file data to copy!" << endl;
-            delete orig;
-            delete copy;
-            delete md5sum;
             return 0;
         }
     }
 
     if( actualreadlen == -1 )
     {
-        delete orig;
-        delete copy;
         debug() << "Error during reading original file!" << endl;
         return 0;
     }
 
-    m_tempSaveDigest = md5sum->hexDigest();
-    delete md5sum;
-    delete orig;
-    delete copy;
+    m_tempSaveDigest = md5sum.hexDigest();
 
     //By this point, we have the following:
     //The original file is copied at path m_tempSavePath
@@ -171,8 +159,8 @@ MetaBundleSaver::doSave()
     m_cleanupNeeded = true;
     bool revert = false;
 
-    QFile* origRenamedFile;
-    KMD5* md5sum;
+    QFile origRenamedFile( m_origRenamedSavePath );
+    KMD5 md5sum( 0, 0 );
     Q_LONG actualreadlen;
 
     int errcode;
@@ -209,31 +197,22 @@ MetaBundleSaver::doSave()
 
     debug() << "Calculating MD5 of " << m_origRenamedSavePath << endl;
 
-    md5sum = new KMD5( 0, 0 );
-    origRenamedFile = new QFile( m_origRenamedSavePath );
-
-    if( !md5sum || !origRenamedFile->open( IO_Raw | IO_ReadOnly ) )
+    if( !origRenamedFile.open( IO_Raw | IO_ReadOnly ) )
     {
-        debug() << "Could not calculate MD5 of temporary file!" << endl;
-        if( md5sum )
-            delete md5sum;
+        debug() << "Could not open temporary file!" << endl;
         goto fail_remove_copy;
     }
 
-    while( ( actualreadlen = origRenamedFile->readBlock( m_databuf, m_maxlen ) ) > 0 )
-        md5sum->update( m_databuf, actualreadlen );
+    while( ( actualreadlen = origRenamedFile.readBlock( m_databuf, m_maxlen ) ) > 0 )
+        md5sum.update( m_databuf, actualreadlen );
 
     if( actualreadlen == -1 )
     {
-        delete md5sum;
-        delete origRenamedFile;
         debug() << "Error during checksumming temp file!" << endl;
         goto fail_remove_copy;
     }
 
-    origRenamedDigest = md5sum->hexDigest();
-    delete origRenamedFile;
-    delete md5sum;
+    origRenamedDigest = md5sum.hexDigest();
 
     debug() << "md5sum of original file: " << origRenamedDigest.data() << endl;
 
