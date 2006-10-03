@@ -481,6 +481,11 @@ MtpMediaDevice::downloadSelectedItemsToCollection()
     KURL::List urls;
     QString genericError = i18n( "Could not copy track from device." );
 
+    int total,progress;
+    total = items.count();
+    progress = 0;
+    
+    setProgress( progress, total );
     for( MtpMediaItem *it = dynamic_cast<MtpMediaItem*>(items.first()); it && !(m_canceled); it = dynamic_cast<MtpMediaItem*>(items.next()) )
     {
         if( it->type() == MediaItem::TRACK )
@@ -506,7 +511,14 @@ MtpMediaDevice::downloadSelectedItemsToCollection()
             else
             {
                 urls << filename;
+                progress++;
+                setProgress( progress );
             }
+        }
+        else 
+        {
+            total--;
+            setProgress( progress, total );
         }
     }
     hideProgress();
