@@ -128,6 +128,21 @@ class IpodMediaItem : public MediaItem
             bundle->setPath      ( path );
             bundle->setFilesize  ( track->size );
 
+            QString rss( track->podcastrss );
+            QString url( track->podcasturl );
+            QString desc( track->description );
+            QString subtitle( track->subtitle );
+            QDateTime date;
+            date.setTime_t( itdb_time_mac_to_host( track->time_released) );
+
+            if( !rss.isEmpty() || !url.isEmpty() )
+            {
+                PodcastEpisodeBundle peb( KURL::fromPathOrURL(url), KURL::fromPathOrURL(rss),
+                        track->title, track->artist, desc, date.toString(Qt::ISODate), QString::null /*type*/,
+                        bundle->length(), QString::null /*guid*/, track->playcount<=0 );
+                bundle->setPodcastBundle( peb );
+            }
+
             setBundle( bundle );
         }
 
@@ -887,11 +902,13 @@ IpodMediaDevice::openDevice( bool silent )
 
     // try to find a mounted ipod
     bool ipodFound = false;
+    bool canInitialize = false;
     KMountPoint::List currentmountpoints = KMountPoint::currentMountPoints();
     for( KMountPoint::List::Iterator mountiter = currentmountpoints.begin();
         mountiter != currentmountpoints.end();
         ++mountiter )
     {
+        canInitialize = false;
         QString devicenode = (*mountiter)->mountedFrom();
         QString mountpoint = (*mountiter)->mountPoint();
 
@@ -905,12 +922,14 @@ IpodMediaDevice::openDevice( bool silent )
         {
             if( mountpoint != mountPoint() )
                 continue;
+            canInitialize = true;
         }
 
         else if( !deviceNode().isEmpty() )
         {
             if( devicenode != deviceNode() )
                 continue;
+            canInitialize = true;
         }
 
         GError *err = 0;
@@ -923,7 +942,9 @@ IpodMediaDevice::openDevice( bool silent )
                 itdb_free( m_itdb );
                 m_itdb = 0;
             }
-            continue;
+
+            if( !canInitialize )
+                continue;
         }
 
         if( mountPoint().isEmpty() )
@@ -932,7 +953,7 @@ IpodMediaDevice::openDevice( bool silent )
         break;
     }
 
-    if( !ipodFound )
+    if( !ipodFound && !canInitialize )
     {
         if( !silent )
         {
@@ -943,7 +964,7 @@ IpodMediaDevice::openDevice( bool silent )
         return false;
     }
 
-    if( !m_itdb )
+    if( !m_itdb && canInitialize )
     {
         QString msg = i18n( "Media Device: could not find iTunesDB on device mounted at %1. "
                 "Should I try to initialize your iPod?" ).arg( mountPoint() );
@@ -1348,6 +1369,8 @@ IpodMediaDevice::addTrackToView(Itdb_Track *track, IpodMediaItem *item, bool che
         {
            channel->m_podcastInfo->rss = info->rss;
         }
+
+    
     }
 
     if( !stale && !visible )
