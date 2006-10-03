@@ -545,7 +545,7 @@ GenericMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> it
 QString
 GenericMediaDevice::buildDestination( const QString &format, const MetaBundle &mb )
 {
-    bool isCompilation = mb.compilation() > 0;
+    bool isCompilation = mb.compilation() == MetaBundle::CompilationYes;
     QMap<QString, QString> args;
     QString artist = mb.artist();
     QString albumartist = artist;
