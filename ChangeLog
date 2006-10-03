@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 1.4.4
   FEATURES:
+    * Action menu entry for adding podcasts to Amarok. Based on .desktop files
+      by Harald Sitter and Fabio Bacigalupo <kde-apps.org@open-haus.de>.
     * Open podcast items with external application from right-click menu.
     * Synchronize listened flag for podcast between Amarok and iPods.
     * Added integrated Magnatune.com music store. Includes artist and album

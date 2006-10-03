@@ -223,6 +223,7 @@ servicemenudir = \
     $(kde_datadir)/konqueror/servicemenus
 
 servicemenu_DATA = \
+    amarok_addaspodcast.desktop \
     amarok_append.desktop
 
 
