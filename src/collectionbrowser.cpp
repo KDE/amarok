@@ -75,6 +75,7 @@ using namespace CollectionBrowserIds;
 
 namespace Amarok { extern KConfig *config( const QString& ); }
 
+CollectionBrowser *CollectionBrowser::s_instance = 0;
 
 CollectionBrowser::CollectionBrowser( const char* name )
     : QVBox( 0, name )
@@ -84,6 +85,8 @@ CollectionBrowser::CollectionBrowser( const char* name )
     , m_timer( new QTimer( this ) )
     , m_returnPressed( false )
 {
+    s_instance = this;
+
     setSpacing( 4 );
 
     m_toolbar = new Browser::ToolBar( this );

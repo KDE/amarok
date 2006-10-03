@@ -35,6 +35,7 @@ class KComboBox;
 class KPopupMenu;
 class KRadioAction;
 class KTabBar;
+class KToolBar;
 class KToggleAction;
 
 class CollectionView;
@@ -61,6 +62,8 @@ class CollectionBrowser: public QVBox
     public:
         CollectionBrowser( const char* name );
         virtual bool eventFilter( QObject*, QEvent* );
+        KToolBar* getToolBar() const { return m_toolbar; }
+        static CollectionBrowser *instance() { return s_instance; }
 
     public slots:
         void setupDirs();
@@ -101,6 +104,8 @@ class CollectionBrowser: public QVBox
         QTimer*     m_timer;
 
         bool m_returnPressed;
+
+        static CollectionBrowser *s_instance;
 
     // for CatMenuId
     friend class CollectionItem;

@@ -16,6 +16,7 @@
 #define AMAROK_DAAPCLIENT_CPP
 
 #include "addhostbase.h"
+#include "collectionbrowser.h"
 #include "daapreader/reader.h"
 #include "daapclient.h"
 #include "daapserver.h"
@@ -79,8 +80,8 @@ DEBUG_BLOCK
     KToolBarButton *customButton    = toolbar->getButton( MediaBrowser::CUSTOM );
     customButton->setText( i18n("Add computer") );
 
+    toolbar = CollectionBrowser::instance()->getToolBar();
     toolbar->setIconText( KToolBar::IconTextRight, false );
-
     m_broadcastButton = new KToolBarButton( "connect_creating", 0, toolbar, "broadcast_button",
                                                           i18n("Share My Music") );
     m_broadcastButton->setToggle( true );
