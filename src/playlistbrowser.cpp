@@ -256,6 +256,8 @@ PlaylistBrowser::~PlaylistBrowser()
 {
     DEBUG_BLOCK
 
+    s_instance = 0;
+
     if( m_polished )
     {
         // <markey> Not sure if these calls are still needed, now that we're saving
@@ -1263,6 +1265,9 @@ PlaylistBrowser::findPodcastEpisode( const KURL &episode, const KURL &feed ) con
     PodcastChannel *channel = findPodcastChannel( feed );
     if( !channel )
         return 0;
+
+    if( !channel->isPolished() )
+        channel->load();
 
     QListViewItem *child = channel->firstChild();
     while( child )

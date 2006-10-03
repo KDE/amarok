@@ -28,6 +28,7 @@
 #include "metabundle.h"
 #include "mountpointmanager.h"
 #include "playlist.h"
+#include "playlistbrowser.h"
 #include "playlistbrowseritem.h"
 #include "playlistloader.h"
 #include "pluginmanager.h"
@@ -2717,6 +2718,27 @@ MediaDevice::syncStatsFromDevice( MediaItem *root )
                 }
             }
             break;
+        case MediaItem::PODCASTITEM:
+            if( !it->parent() || static_cast<MediaItem *>( it->parent() )->type() != MediaItem::PLAYLIST )
+            {
+                const MetaBundle *bundle = it->bundle();
+                if( it->played() || it->recentlyPlayed() )
+                {
+                    if( PodcastEpisodeBundle *peb = bundle->podcastBundle() )
+                    {
+                        debug() << "marking podcast episode as played: " << peb->url() << endl;
+                        if( PlaylistBrowser::instance() )
+                        {
+                            PodcastEpisode *p = PlaylistBrowser::instance()->findPodcastEpisode( peb->url(), peb->parent() );
+                            if ( p )
+                                p->setListened();
+                            else
+                                debug() << "did not find podcast episode: " << peb->url() << " from " << peb->parent() << endl;
+                        }
+                    }
+                }
+            }
+            break;
 
         default:
             syncStatsFromDevice( it );
@@ -2749,6 +2771,22 @@ MediaDevice::syncStatsToDevice( MediaItem *root )
                     // copy Amarok rating to device
                     int rating = CollectionDB::instance()->getSongRating( url )*10;
                     it->setRating( rating );
+                }
+            }
+            break;
+
+        case MediaItem::PODCASTITEM:
+            if( !it->parent() || static_cast<MediaItem *>( it->parent() )->type() != MediaItem::PLAYLIST )
+            {
+                const MetaBundle *bundle = it->bundle();
+                if( PodcastEpisodeBundle *peb = bundle->podcastBundle() )
+                {
+                    if( PlaylistBrowser::instance() )
+                    {
+                        PodcastEpisode *p = PlaylistBrowser::instance()->findPodcastEpisode( peb->url(), peb->parent() );
+                        if( p )
+                            it->setListened( !p->isNew() );
+                    }
                 }
             }
             break;

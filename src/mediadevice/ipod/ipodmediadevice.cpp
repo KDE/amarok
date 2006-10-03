@@ -64,9 +64,12 @@ struct PodcastInfo
     QString description;
     QDateTime date;
     QString author;
+    bool listened;
 
     // per channel
     QString rss;
+
+    PodcastInfo() { listened = false; }
 };
 
 class TrackList : public QPtrList<Itdb_Track>
@@ -162,6 +165,18 @@ class IpodMediaItem : public MediaItem
         }
 
         bool ratingChanged() const { return m_track ? m_track->rating != m_track->app_rating : false; }
+
+        void setListened( bool l )
+        {
+            MediaItem::setListened( l );
+            if( type() == PODCASTITEM )
+            {
+                if( m_podcastInfo )
+                    m_podcastInfo->listened = listened();
+                if( m_track )
+                    m_track->mark_unplayed = listened() ? 0x01 : 0x02;
+            }
+        }
 
         QDateTime playTime() const
         {
@@ -349,7 +364,7 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
 #ifdef HAVE_ITDB_SKIP_SHUFFLE_FLAG
         track->skip_when_shuffling = 0x01; // skip  when shuffling
         track->remember_playback_position = 0x01; // remember playback position
-        track->mark_unplayed = 0x02; // for podcasts
+        track->mark_unplayed = podcastInfo->listened ? 0x01 : 0x02;
 #else
         track->flag2 = 0x01; // skip  when shuffling
         track->flag3 = 0x01; // remember playback position
@@ -500,6 +515,7 @@ IpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle)
         podcastInfo->author = peb->author();
         podcastInfo->rss = peb->parent().url();
         podcastInfo->date = peb->dateTime();
+        podcastInfo->listened = !peb->isNew();
     }
 
     MetaBundle *newBundle = 0;
@@ -1369,8 +1385,6 @@ IpodMediaDevice::addTrackToView(Itdb_Track *track, IpodMediaItem *item, bool che
         {
            channel->m_podcastInfo->rss = info->rss;
         }
-
-    
     }
 
     if( !stale && !visible )
@@ -1941,7 +1955,8 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
 
             if( item->type() == MediaItem::ARTIST ||
                     item->type() == MediaItem::ALBUM ||
-                    item->type() == MediaItem::TRACK )
+                    item->type() == MediaItem::TRACK ||
+                    item->type() == MediaItem::ORPHANED )
             {
                 menu.insertItem( SmallIconSet( Amarok::icon( "edit" ) ),
                         i18n( "Edit &Information...", "Edit &Information for %n Tracks...", urls.count()),

@@ -81,6 +81,8 @@ class LIBAMAROK_EXPORT MediaItem : public KListViewItem
         virtual bool ratingChanged()  const { return false; }
         virtual long size()           const;
         virtual MediaDevice *device() const { return m_device; }
+        virtual bool listened()       const { return m_listened; }
+        virtual void setListened( bool listened=true ) { m_listened = listened; }
 
         int compare( QListViewItem *i, int col, bool ascending ) const;
         int flags() const { return m_flags; }
@@ -94,6 +96,7 @@ class LIBAMAROK_EXPORT MediaItem : public KListViewItem
         QString         m_data;
         MediaDevice    *m_device;
         int             m_flags;
+        bool            m_listened;
 
         static QPixmap *s_pixUnknown;
         static QPixmap *s_pixRootItem;
