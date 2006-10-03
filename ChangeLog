@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 1.4.4
   FEATURES:
+    * Open podcast items with external application from right-click menu.
     * Synchronize listened flag for podcast between Amarok and iPods.
     * Added integrated Magnatune.com music store. Includes artist and album
       info and full previews of all tracks.

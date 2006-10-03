@@ -50,10 +50,13 @@
 #include <klineedit.h>         //rename()
 #include <klocale.h>
 #include <kmessagebox.h>       //renamePlaylist(), deleteSelectedPlaylist()
+#include <kmimetype.h>
 #include <kmultipledrag.h>     //dragObject()
 #include <kpopupmenu.h>
 #include <kpushbutton.h>
+#include <krun.h>
 #include <kstandarddirs.h>     //KGlobal::dirs()
+#include <ktrader.h>
 #include <kurldrag.h>          //dragObject()
 
 #include <cstdio>              //rename() in renamePlaylist()
@@ -2649,9 +2652,37 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     else if( isPodcastEpisode( item ) )
     {
         #define item static_cast<PodcastEpisode*>(item)
-        enum Actions { LOAD, ADD, GET, DELETE, MEDIA_DEVICE, LISTENED };
+        enum Actions { LOAD, ADD, GET, DELETE, MEDIA_DEVICE, LISTENED, OPEN_WITH /* has to be last */ };
         menu.insertItem( SmallIconSet( Amarok::icon( "play" ) ), i18n( "&Play" ), LOAD );
         menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), ADD );
+
+        int accuracy = 0;
+        KMimeType::Ptr mimetype;
+        if( item->isOnDisk() )
+            mimetype = KMimeType::findByFileContent( item->localUrl().path(), &accuracy );
+        if( accuracy <= 0 )
+            mimetype = KMimeType::findByURL( item->url() );
+        KTrader::OfferList offers = KTrader::self()->query( mimetype->name(), "Type == 'Application'" );
+        if( offers.empty() )
+        {
+            menu.insertItem( SmallIconSet( Amarok::icon( "run" ) ), i18n( "&Open With..."), OPEN_WITH );
+        }
+        else
+        {
+            int i = 1;
+            KPopupMenu *openMenu = new KPopupMenu;
+            for( KTrader::OfferList::iterator it = offers.begin();
+                    it != offers.end();
+                    ++it )
+            {
+                if( (*it)->name() != "Amarok" )
+                    openMenu->insertItem( SmallIconSet( (*it)->icon() ), (*it)->name(), OPEN_WITH+i );
+                ++i;
+            }
+            openMenu->insertSeparator();
+            openMenu->insertItem( SmallIconSet( Amarok::icon( "run" ) ), i18n( "&Other..."), OPEN_WITH );
+            menu.insertItem( SmallIconSet( Amarok::icon( "run" ) ), i18n("&Open With"), openMenu, OPEN_WITH );
+        }
 
         if( MediaBrowser::isAvailable() )
         {
@@ -2671,7 +2702,8 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
         menu.setItemEnabled( DELETE, item->isOnDisk() );
         menu.setItemEnabled( LISTENED, item->isNew() );
 
-        switch( menu.exec( p ) )
+        uint id = menu.exec( p );
+        switch( id )
         {
             case LOAD:
                 slotDoubleClicked( item );
@@ -2715,6 +2747,32 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                     static_cast<PodcastEpisode*>(item)->addToMediaDevice();
 
                 MediaBrowser::queue()->URLsAdded();
+                break;
+
+            case OPEN_WITH:
+                {
+                    KURL::List urlList;
+                    urlList.append( item->isOnDisk() ? item->localUrl() : item->url() );
+                    KRun::displayOpenWithDialog( urlList );
+                }
+                break;
+
+            default:
+                if( id >= OPEN_WITH+1 && id <= OPEN_WITH+offers.size() )
+                {
+                    KTrader::OfferList::iterator it = offers.begin();
+                    for(uint i = OPEN_WITH+1; i < id && i < OPEN_WITH+offers.size(); ++i )
+                    {
+                        ++it;
+                    }
+                    KService::Ptr ptr = offers.first();
+                    KURL::List urlList;
+                    urlList.append( item->isOnDisk() ? item->localUrl() : item->url() );
+                    if( it != offers.end() )
+                    {
+                        KRun::run(**it, urlList);
+                    }
+                }
                 break;
         }
         #undef item
