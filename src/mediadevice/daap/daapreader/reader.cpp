@@ -257,7 +257,7 @@ Reader::databaseIdFinished( int /*id*/, bool error )
     Map dbIdResults = parse( http->results(), 0, true );
     m_databaseId = QString::number( dbIdResults["avdb"].asList()[0].asMap()["mlcl"].asList()[0].asMap()["mlit"].asList()[0].asMap()["miid"].asList()[0].asInt() );
     connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( songListFinished( int, bool ) ) );
-    http->getDaap( QString("/databases/%1/items?type=music&meta=dmap.itemid,dmap.itemname,daap.songformat,daap.songartist,daap.songalbum,daap.songtime,daap.songtracknumber,daap.songcomment&%2")
+    http->getDaap( QString("/databases/%1/items?type=music&meta=dmap.itemid,dmap.itemname,daap.songformat,daap.songartist,daap.songalbum,daap.songtime,daap.songtracknumber,daap.songcomment,daap.songyear,daap.songgenre&%2")
                 .arg( m_databaseId, m_loginString ) );
 
 }
@@ -300,6 +300,10 @@ Reader::songListFinished( int /*id*/, bool error )
         QString artist = (*it).asMap()["asar"].asList()[0].toString();
         bundle->setArtist( artist );
         result[ artist.lower() ][ album.lower() ].append(bundle);
+
+        bundle->setYear( (*it).asMap()["asyr"].asList()[0].toInt() );
+
+        bundle->setGenre( (*it).asMap()["asgn"].asList()[0].toString() );
     }
     emit daapBundles( m_host , result );
     http->deleteLater();
