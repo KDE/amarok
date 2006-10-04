@@ -125,10 +125,12 @@ class DatabaseServlet < Mongrel::HttpHandler
           artists = Hash.new
           albums = Hash.new
           genre = Hash.new
+          year = Hash.new
           device_paths = Hash.new
           indexes = [  { :dbresult=> query( 'select * from album' ),  :indexed => albums }, 
           { :dbresult=> query( 'select * from artist' ), :indexed => artists },
           { :dbresult=> query( 'select * from genre' )  , :indexed => genre },
+          { :dbresult=> query( 'select * from year' )  , :indexed => year },
           { :dbresult=> query( 'select id, lastmountpoint from devices' ), :indexed => device_paths } ]
           indexes.each { |h|
               0.step( h[ :dbresult ].size, 2 ) { |i|
@@ -136,9 +138,9 @@ class DatabaseServlet < Mongrel::HttpHandler
               }
           }
 
-          columns =     [ "album, ", "artist, ", "genre, ", "track, ", "title, ", "year, ", "length, ", "samplerate, ", "url, ", "deviceid" ]
+          columns =     [ "album, ", "artist, ", "genre, ", "year, ", "track, ", "title, ", "length, ", "samplerate, ", "url, ", "deviceid" ]
           puts "SQL QUERY: SELECT #{columns.to_s} FROM tags"
-          @column_keys = [ :songalbum, :songartist, :songgenre,  :songtracknumber, :itemname, :songyear, :songtime, :songsamplerate, :url,  :deviceid ]
+          @column_keys = [ :songalbum, :songartist, :songgenre, :songyear, :songtracknumber, :itemname, :songtime, :songsamplerate, :url,  :deviceid ]
           #TODO composer :songcomposer
           @music = Array.new
           @items = Element.new( 'mlcl' )
@@ -149,9 +151,9 @@ class DatabaseServlet < Mongrel::HttpHandler
           while ( line = $stdin.gets ) && ( line.chop! != '**** END SQL ****' )
               puts "#{columnIt} - #{line}" if id < 10
               case columnIt
-              when 0..2
+              when 0..3
                   track << Element.new( METAS[ @column_keys[columnIt] ][ :code ], indexes[columnIt][ :indexed ][ line.to_i ] )
-              when (3 ..( @column_keys.size-3 ) )
+              when (4 ..( @column_keys.size-3 ) )
                   track << Element.new( METAS[ @column_keys[columnIt] ][ :code ], line )
               when columns.size - 2
                   url = line.reverse.chop.reverse
