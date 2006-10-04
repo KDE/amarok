@@ -44,10 +44,17 @@ class PlaylistBrowser : public QVBox
         Q_OBJECT
     friend class DynamicMode;
     friend class PlaylistBrowserView;
+
     friend class PlaylistBrowserEntry;
     friend class PlaylistCategory;
     friend class PlaylistEntry;
+    friend class PlaylistTrackItem;
     friend class PodcastChannel;  //for changing podcast timer list
+    friend class PodcastEpisode;
+    friend class DynamicEntry;
+    friend class StreamEntry;
+    friend class SmartPlaylist;
+
 
     public:
         enum AddMode  { PLAYLIST, PLAYLIST_IMPORT, STREAM, SMARTPLAYLIST, PODCAST, ADDDYNAMIC };
@@ -120,7 +127,6 @@ class PlaylistBrowser : public QVBox
         void renameSelectedItem();
         void slotDoubleClicked( QListViewItem *item );
         void subFromDynamic();
-        void associatePodcastWithLocalFile( PodcastEpisode *item );
 
         void slotAddMenu( int id );
         void slotSave();

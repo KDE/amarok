@@ -68,6 +68,7 @@ class PlaylistBrowserEntry :  public QObject, public KListViewItem
         virtual void slotDoubleClicked();
         virtual void slotRenameItem();
         virtual void slotPostRenameItem( const QString newName );
+        virtual void showContextMenu( const QPoint & ) {};
 
     protected:
         virtual int compare( QListViewItem*, int, bool ) const; //reimplemented
@@ -96,6 +97,7 @@ class DynamicEntry : public PlaylistBrowserEntry, public DynamicMode
 
     public slots:
         virtual void slotDoubleClicked();
+        virtual void showContextMenu( const QPoint & );
 };
 
 class PlaylistCategory : public PlaylistBrowserEntry
@@ -126,6 +128,7 @@ class PlaylistCategory : public PlaylistBrowserEntry
     public slots:
         virtual void slotDoubleClicked();
         virtual void slotRenameItem();
+        virtual void showContextMenu( const QPoint & );
 
     protected:
         void  okRename( int col );
@@ -192,6 +195,7 @@ class PlaylistEntry :  public PlaylistBrowserEntry
     public slots:
         virtual void slotDoubleClicked();
         virtual void slotPostRenameItem( const QString newName );
+        virtual void showContextMenu( const QPoint & );
 
     signals:
         void startingLoading();
@@ -235,6 +239,7 @@ class PlaylistTrackItem : public PlaylistBrowserEntry
     public slots:
         virtual void slotDoubleClicked();
         virtual void slotRenameItem() { /* Do nothing */ };
+        virtual void showContextMenu( const QPoint & );
 
     private:
         TrackItemInfo *m_trackInfo;
@@ -325,6 +330,7 @@ class PodcastEpisode : public PlaylistBrowserEntry
         const bool isOnDisk();
         virtual void slotDoubleClicked();
         virtual void slotRenameItem() { /* Do nothing */ };
+        virtual void showContextMenu( const QPoint & );
 
     private slots:
         void abortDownload();
@@ -335,6 +341,8 @@ class PodcastEpisode : public PlaylistBrowserEntry
         enum FeedType{ RSS=0, ATOM=1 };
 
         virtual int compare( QListViewItem*, int, bool ) const; //reimplemented
+
+        void associateWithLocalFile();
 
         void startAnimation();
         void stopAnimation();
@@ -414,6 +422,7 @@ class PodcastChannel : public PlaylistBrowserEntry
     public slots:
         virtual void slotDoubleClicked();
         virtual void slotRenameItem() { /* Do nothing */ };
+        virtual void showContextMenu( const QPoint & );
 
     private slots:
         void abortFetch();
@@ -482,6 +491,7 @@ class StreamEntry : public PlaylistBrowserEntry
 
     public slots:
         virtual void slotDoubleClicked();
+        virtual void showContextMenu( const QPoint & );
 
     protected:
         QString m_title;
@@ -548,6 +558,7 @@ class SmartPlaylist : public PlaylistBrowserEntry
     public slots:
         virtual void slotDoubleClicked();
         virtual void slotPostRenameItem( const QString newName );
+        virtual void showContextMenu( const QPoint & );
 
     private:
         QString m_sqlForTags;
