@@ -29,25 +29,28 @@ namespace QHttp {
     class Error;
 }
 
-namespace Daap {
-typedef QMap<QString, QVariant> Map;
+namespace Daap
+{
+    typedef QMap<QString, QVariant>    Map;
 
-typedef QPtrList< MetaBundle > TrackList;
-typedef QMap< QString, TrackList > AlbumList;
-typedef QMap< QString, AlbumList > SongList;
+    typedef QPtrList< MetaBundle >     TrackList;
+    typedef QMap< QString, TrackList > AlbumList;
+    typedef QMap< QString, AlbumList > SongList;
 
 //typedef QMap<QString, QMap<QString, QPtrList<MetaBundle> > > SongList;
 
-    enum ContentTypes { INVALID = 0, CHAR = 1, SHORT = 2, LONG = 5, LONGLONG = 7, STRING = 9, DATE = 10, DVERSION = 11, CONTAINER = 12 };
-    struct Code {
+    enum ContentTypes { INVALID = 0, CHAR = 1, SHORT = 2, LONG = 5, LONGLONG = 7,
+                        STRING = 9, DATE = 10, DVERSION = 11, CONTAINER = 12 };
+    struct Code
+    {
         Code() : type(INVALID) { }
-        Code(const QString& nName, ContentTypes nType) : name(nName), type(nType) { }
+        Code( const QString& nName, ContentTypes nType ) : name( nName ), type( nType ) { }
         ~Code() { }
         QString name;
         ContentTypes type;
     };
 
-    
+
 
     /**
         The nucleus of the DAAP client; composes queries and parses responses.
@@ -56,9 +59,10 @@ typedef QMap< QString, AlbumList > SongList;
     class Reader : public QObject
     {
         Q_OBJECT
-        
+
         public:
-            Reader(const QString& host, Q_UINT16 port, ServerItem* root, const QString& password, QObject* parent, const char* name);
+            Reader( const QString& host, Q_UINT16 port, ServerItem* root,
+                    const QString& password, QObject* parent, const char* name );
            ~Reader();
 
             //QPtrList<MetaBundle> getSongList();
@@ -70,7 +74,7 @@ typedef QMap< QString, AlbumList > SongList;
             int sessionId() const { return m_sessionId; }
             QString host() const { return m_host; }
             Q_UINT16 port() const { return m_port; }
-        public slots: 
+        public slots:
             void logoutRequest(int, bool );
             void loginHeaderReceived( const QHttpResponseHeader& resp );
             void loginFinished( int id , bool error );

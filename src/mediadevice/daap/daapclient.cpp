@@ -16,6 +16,7 @@
 #define AMAROK_DAAPCLIENT_CPP
 
 #include "addhostbase.h"
+#include "collectiondb.h"
 #include "collectionbrowser.h"
 #include "daapreader/reader.h"
 #include "daapclient.h"
@@ -396,13 +397,19 @@ DaapClient::createTree( const QString& /*host*/, Daap::SongList bundles )
 
             for( track = trackList.first(); track; track = trackList.next() )
             {
+                if( m_removeDuplicates && trackExistsInCollection( track ) )
+                    continue;
                 MediaItem* childTrack = new MediaItem( parentAlbum );
                 childTrack->setText( 0, track->title() );
                 childTrack->setType( MediaItem::TRACK );
                 childTrack->setBundle( track );
                 childTrack->m_order = track->track();
             }
+            if( !parentAlbum->childCount() )
+                delete parentAlbum;
         }
+        if( !parentArtist->childCount() )
+            delete parentArtist;
     }
     root->resetTitle();
     root->stopAnimation();
@@ -544,6 +551,22 @@ DaapClient::resolve( const QString& hostname )
     return "0"; //error condition
 }
 
+const bool
+DaapClient::trackExistsInCollection( MetaBundle *bundle )
+{
+    /// FIXME slow.
+    QueryBuilder qb;
+    qb.addMatch( QueryBuilder::tabSong  , QueryBuilder::valTitle, bundle->title() , true, false );
+    qb.addMatch( QueryBuilder::tabArtist, QueryBuilder::valName , bundle->artist(), true, false );
+    qb.addMatch( QueryBuilder::tabAlbum , QueryBuilder::valName , bundle->album() , true, false );
+
+    qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabSong, QueryBuilder::valURL );
+
+    QStringList values = qb.run();
+
+    return ( values[0].toInt() > 0 );
+}
+
 
 /// Configuration Dialog Extension
 
@@ -552,6 +575,11 @@ DaapClient::addConfigElements( QWidget * parent )
 {
     m_broadcastServerCheckBox = new QCheckBox( "Broadcast my music", parent );
     m_broadcastServerCheckBox->setChecked( m_broadcastServer );
+
+    m_removeDuplicatesCheckBox = new QCheckBox( "Hide songs in my collection", parent );
+    m_removeDuplicatesCheckBox->setChecked( m_removeDuplicates );
+
+    QToolTip::add( m_removeDuplicatesCheckBox, i18n( "Enabling this may reduce connection times" ) );
 }
 
 
@@ -561,7 +589,11 @@ DaapClient::removeConfigElements( QWidget * /* parent */ )
     if( m_broadcastServerCheckBox != 0 )
         delete m_broadcastServerCheckBox;
 
-    m_broadcastServerCheckBox = 0;
+    if( m_removeDuplicatesCheckBox != 0 )
+        delete m_removeDuplicatesCheckBox;
+
+    m_broadcastServerCheckBox  = 0;
+    m_removeDuplicatesCheckBox = 0;
 }
 
 void
@@ -569,7 +601,8 @@ DaapClient::loadConfig()
 {
     MediaDevice::loadConfig();
 
-    m_broadcastServer = configBool( "broadcastServer", false );
+    m_broadcastServer  = configBool( "broadcastServer", false );
+    m_removeDuplicates = configBool( "removeDuplicates", false );
 
     // don't undo all the work we just did at startup
     m_broadcastButton->blockSignals( true );
@@ -583,7 +616,11 @@ DaapClient::applyConfig()
     if( m_broadcastServerCheckBox )
         m_broadcastServer = m_broadcastServerCheckBox->isChecked();
 
-    setConfigBool( "broadcastServer", m_broadcastServer );
+    if( m_removeDuplicatesCheckBox )
+        m_removeDuplicates = m_removeDuplicatesCheckBox->isChecked();
+
+    setConfigBool( "broadcastServer" , m_broadcastServer );
+    setConfigBool( "removeDuplicates", m_removeDuplicates );
 }
 
 void

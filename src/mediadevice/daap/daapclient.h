@@ -101,6 +101,8 @@ class DaapClient : public MediaDevice
         QString serverKey( const DNSSD::RemoteService* service ) const;
         DNSSD::ServiceBrowser* m_browser;
 #endif
+        /// @return true if track is already in the local collection
+        const bool trackExistsInCollection( MetaBundle *bundle );
 
         bool    m_connected;
         QMap<QString, ServerInfo*> m_servers;
@@ -108,8 +110,13 @@ class DaapClient : public MediaDevice
 
         DaapServer *m_sharingServer;
         QCheckBox  *m_broadcastServerCheckBox;
+        QCheckBox  *m_removeDuplicatesCheckBox;
         bool        m_broadcastServer;
+        bool        m_removeDuplicates;
         KToolBarButton *m_broadcastButton;
+
+        // if set to true, we don't display items that the user already has in the collection
+        bool        m_hideMusicOwned;
 };
 
 class ServerItem : public QObject, public MediaItem
