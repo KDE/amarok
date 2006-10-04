@@ -2926,7 +2926,7 @@ PodcastEpisode::showContextMenu( const QPoint &position )
     if( accuracy <= 0 )
         mimetype = KMimeType::findByURL( url() );
     KTrader::OfferList offers = KTrader::self()->query( mimetype->name(), "Type == 'Application'" );
-    if( offers.empty() )
+    if( offers.empty() || (offers.size()==1 && offers.first()->name()=="Amarok") )
     {
         menu.insertItem( SmallIconSet( Amarok::icon( "run" ) ), i18n( "&Open With..."), OPEN_WITH );
     }
