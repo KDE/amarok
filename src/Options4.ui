@@ -20,9 +20,6 @@
             <verstretch>0</verstretch>
         </sizepolicy>
     </property>
-    <property name="caption">
-        <string>Options4</string>
-    </property>
     <widget class="QCheckBox">
         <property name="name">
             <cstring>kcfg_ResumePlayback</cstring>
@@ -37,9 +34,6 @@
         </property>
         <property name="text">
             <string>&amp;Resume playback on start</string>
-        </property>
-        <property name="accel">
-            <string>Alt+R</string>
         </property>
         <property name="toolTip" stdset="0">
             <string>If checked, Amarok will&lt;br&gt;resume playback from where you left it the previous session -- just like a tape-player.</string>
@@ -109,9 +103,6 @@
             </property>
             <property name="text">
                 <string>&amp;No crossfading</string>
-            </property>
-            <property name="accel">
-                <string>Alt+N</string>
             </property>
             <property name="checked">
                 <bool>true</bool>
@@ -234,9 +225,6 @@
             </property>
             <property name="text">
                 <string>&amp;Crossfading</string>
-            </property>
-            <property name="accel">
-                <string>Alt+C</string>
             </property>
             <property name="checked">
                 <bool>false</bool>
