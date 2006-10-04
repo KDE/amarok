@@ -120,6 +120,7 @@ class PlaylistBrowser : public QVBox
         void renameSelectedItem();
         void slotDoubleClicked( QListViewItem *item );
         void subFromDynamic();
+        void associatePodcastWithLocalFile( PodcastEpisode *item );
 
         void slotAddMenu( int id );
         void slotSave();

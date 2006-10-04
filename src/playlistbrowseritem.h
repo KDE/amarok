@@ -304,6 +304,7 @@ class PodcastEpisode : public PlaylistBrowserEntry
         const int     duration()    { return m_bundle.duration(); }
         const KURL    &localUrl()   { return m_localUrl; }
         void  setLocalUrlBase( const QString &s );
+        void setLocalUrl( const KURL &localUrl );
 
         void  setup();
         void  paintCell( QPainter*, const QColorGroup&, int, int, int );

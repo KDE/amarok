@@ -2351,9 +2351,7 @@ PodcastEpisode::downloadResult( int error ) //SLOT
 
     m_onDisk = true;
 
-    m_localUrl = m_podcastFetcher->localUrl();
-    m_bundle.setLocalURL( m_localUrl );
-    CollectionDB::instance()->updatePodcastEpisode( dBId(), m_bundle );
+    setLocalUrl( m_podcastFetcher->localUrl() );
 
     PodcastChannel *channel = dynamic_cast<PodcastChannel *>( m_parent );
     if( channel && channel->autotransfer() && MediaBrowser::isAvailable() )
@@ -2365,6 +2363,15 @@ PodcastEpisode::downloadResult( int error ) //SLOT
     updatePixmap();
     m_podcastFetcher->deleteLater();
     m_podcastFetcher = 0;
+}
+
+void
+PodcastEpisode::setLocalUrl( const KURL &localUrl )
+{
+    m_localUrl = localUrl;
+    m_bundle.setLocalURL( m_localUrl );
+    CollectionDB::instance()->updatePodcastEpisode( dBId(), m_bundle );
+    isOnDisk();
 }
 
 void

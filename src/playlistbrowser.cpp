@@ -58,6 +58,7 @@
 #include <kstandarddirs.h>     //KGlobal::dirs()
 #include <ktrader.h>
 #include <kurldrag.h>          //dragObject()
+#include <kurlrequester.h>
 
 #include <cstdio>              //rename() in renamePlaylist()
 
@@ -2652,7 +2653,7 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
     else if( isPodcastEpisode( item ) )
     {
         #define item static_cast<PodcastEpisode*>(item)
-        enum Actions { LOAD, ADD, GET, DELETE, MEDIA_DEVICE, LISTENED, OPEN_WITH /* has to be last */ };
+        enum Actions { LOAD, ADD, GET, ASSOCIATE, DELETE, MEDIA_DEVICE, LISTENED, OPEN_WITH /* has to be last */ };
         menu.insertItem( SmallIconSet( Amarok::icon( "play" ) ), i18n( "&Play" ), LOAD );
         menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), ADD );
 
@@ -2694,11 +2695,13 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n( "&Download Media" ), GET );
+        menu.insertItem( SmallIconSet( Amarok::icon( "attach" ) ), i18n( "&Associate with Local File" ), ASSOCIATE );
         menu.insertItem( SmallIconSet( Amarok::icon( "artist" ) ),   i18n( "Mark as &Listened" ),  LISTENED );
         menu.insertItem( SmallIconSet( Amarok::icon("remove_from_playlist") ),
                          i18n( "De&lete Downloaded Podcast" ), DELETE );
 
         menu.setItemEnabled( GET, !item->isOnDisk() );
+        menu.setItemEnabled( ASSOCIATE, !item->isOnDisk() );
         menu.setItemEnabled( DELETE, item->isOnDisk() );
         menu.setItemEnabled( LISTENED, item->isNew() );
 
@@ -2715,6 +2718,10 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
 
             case GET:
                 downloadSelectedPodcasts();
+                break;
+
+            case ASSOCIATE:
+                associatePodcastWithLocalFile( item );
                 break;
 
             case DELETE:
@@ -2962,6 +2969,34 @@ void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int
                 else KMessageBox::sorry( this, i18n( "This file does not exist: %1" ).arg( item->url().path() ) );
         }
         #undef item
+    }
+}
+
+class AssociatePodcastDialog : public KDialogBase
+{
+    KURLRequester *m_urlRequester;
+
+    public:
+    AssociatePodcastDialog( PodcastEpisode *item )
+        : KDialogBase( Amarok::mainWindow(), "associatepodcastdialog", true, QString("Select Local File for ") + item->title(), Ok|Cancel, Ok, false )
+    {
+        QVBox* vbox = makeVBoxMainWidget();
+        vbox->setSpacing( KDialog::spacingHint() );
+
+        m_urlRequester = new KURLRequester( vbox );
+        if( dynamic_cast<PodcastChannel *>(item->parent()) )
+        m_urlRequester->setURL( static_cast<PodcastChannel *>(item->parent())->saveLocation().prettyURL() );
+    }
+    KURL url() const { return m_urlRequester->url(); }
+};
+
+void
+PlaylistBrowser::associatePodcastWithLocalFile( PodcastEpisode *item )
+{
+    AssociatePodcastDialog d( item );
+    if( d.exec() == KDialogBase::Accepted )
+    {
+        item->setLocalUrl( d.url() );
     }
 }
 

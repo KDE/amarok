@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 1.4.4
   FEATURES:
+    * Manually specify local file for podcast episodes via right-click menu.
     * Action menu entry for adding podcasts to Amarok. Based on .desktop files
       by Harald Sitter and Fabio Bacigalupo <kde-apps.org@open-haus.de>.
     * Open podcast items with external application from right-click menu.
