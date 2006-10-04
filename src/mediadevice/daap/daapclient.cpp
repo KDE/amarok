@@ -400,6 +400,7 @@ DaapClient::createTree( const QString& /*host*/, Daap::SongList bundles )
                 childTrack->setText( 0, track->title() );
                 childTrack->setType( MediaItem::TRACK );
                 childTrack->setBundle( track );
+                childTrack->m_order = track->track();
             }
         }
     }
