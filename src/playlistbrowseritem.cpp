@@ -1996,7 +1996,6 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
             PodcastEpisode *ep = new PodcastEpisode( this, 0, (**it), feedType, m_updating/*new*/ );
             if( m_updating )
             {
-                debug() << "adding podcast to playlistbrowser title = " << ep->title() << endl;
                 ep->setNew( true );
                 hasNew = true;
             }
@@ -2416,7 +2415,6 @@ void PodcastFetcher::slotResponseReceived( const QHttpResponseHeader & resp )
     {
         //TODO: create file here, rename temp file later
         //debug() << resp.toString() << endl;
-        debug() << m_http->currentId() << " filename = " << m_url.fileName() << endl;
     }
 }
 
@@ -2539,8 +2537,6 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after,
     m_bundle.setGuid( guid );
     m_bundle.setNew( isNew );
 
-    debug() << "new podcastepisode from xml: " << title << endl;
-
     int id = CollectionDB::instance()->addPodcastEpisode( m_bundle );
     m_bundle.setDBId( id );
 
@@ -2559,7 +2555,6 @@ PodcastEpisode::PodcastEpisode( QListViewItem *parent, QListViewItem *after, Pod
 {
     m_localUrl    =  m_bundle.localUrl();
     isOnDisk();
-    debug() << "new podcastepisode from bundle: " << title() << endl;
 
     setText( 0, bundle.title() );
     updatePixmap();
