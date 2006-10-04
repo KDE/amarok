@@ -26,7 +26,7 @@
 
 
 /**
-    Dialog for chosing download format and location. Also displays additional info from Magnatune.com.
+    Dialog for choosing download format and location. Also displays additional info from Magnatune.com.
  
     @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */

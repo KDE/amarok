@@ -49,7 +49,7 @@ public:
 
     /**
      * The function that starts the actual work. Inherited fromThreadWeaver::Job 
-     * Note the work is performed in a seperate thread
+     * Note the work is performed in a separate thread
      * @return Returns true on success and false on failure
      */
     bool doJob();
