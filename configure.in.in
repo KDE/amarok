@@ -966,6 +966,11 @@ if test "$build_libgpod" != "no"; then
                   ,
                   [#include <gpod/itdb.h>])
 
+            AC_CHECK_MEMBER(struct _Itdb_Track.mark_unplayed,
+                  [AC_DEFINE(HAVE_ITDB_MARK_UNPLAYED, 1, [have libgpod mark played flag])],
+                  ,
+                  [#include <gpod/itdb.h>])
+
             CPPFLAGS=$ac_cppflags_save
             CFLAGS=$ac_cflags_save
             LDFLAGS=$ac_ldflags_save

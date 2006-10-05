@@ -173,8 +173,10 @@ class IpodMediaItem : public MediaItem
             {
                 if( m_podcastInfo )
                     m_podcastInfo->listened = listened();
+#ifdef HAVE_ITDB_MARK_UNPLAYED
                 if( m_track )
                     m_track->mark_unplayed = listened() ? 0x01 : 0x02;
+#endif
             }
         }
 
@@ -364,11 +366,13 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
 #ifdef HAVE_ITDB_SKIP_SHUFFLE_FLAG
         track->skip_when_shuffling = 0x01; // skip  when shuffling
         track->remember_playback_position = 0x01; // remember playback position
-        track->mark_unplayed = podcastInfo->listened ? 0x01 : 0x02;
 #else
         track->flag2 = 0x01; // skip  when shuffling
         track->flag3 = 0x01; // remember playback position
         // FIXME: track->unk176 = 0x00020000; // for podcasts
+#endif
+#ifdef HAVE_ITDB_MARK_UNPLAYED
+        track->mark_unplayed = podcastInfo->listened ? 0x01 : 0x02;
 #endif
         track->flag4 = 0x01; // also show description on iPod
         QString plaindesc = podcastInfo->description;
