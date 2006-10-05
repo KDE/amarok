@@ -1391,17 +1391,17 @@ MetaBundle::save( TagLib::FileRef* fileref )
     {
         TagLib::Tag * t = f->tag();
         if ( t ) { // f.tag() can return null if the file couldn't be opened for writing
-            t->setTitle( QStringToTString( title() ) );
-            t->setArtist( QStringToTString( artist().string() ) );
-            t->setAlbum( QStringToTString( album().string() ) );
+            t->setTitle( QStringToTString( title().stripWhiteSpace() ) );
+            t->setArtist( QStringToTString( artist().string().stripWhiteSpace() ) );
+            t->setAlbum( QStringToTString( album().string().stripWhiteSpace() ) );
             t->setTrack( track() );
             t->setYear( year() );
-            t->setComment( QStringToTString( comment().string() ) );
-            t->setGenre( QStringToTString( genre().string() ) );
+            t->setComment( QStringToTString( comment().string().stripWhiteSpace() ) );
+            t->setGenre( QStringToTString( genre().string().stripWhiteSpace() ) );
 
             if ( hasExtendedMetaInformation() )
             {
-                setExtendedTag( f->file(), composerTag, composer() );
+                setExtendedTag( f->file(), composerTag, composer().string().stripWhiteSpace() );
                 setExtendedTag( f->file(), discNumberTag, discNumber() ? QString::number( discNumber() ) : QString() );
                 setExtendedTag( f->file(), bpmTag, bpm() ? QString::number( bpm() ) : QString() );
                 if ( compilation() != CompilationUnknown )
