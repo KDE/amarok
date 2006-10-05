@@ -147,6 +147,7 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
 
         int  numVisibleColumns() const;
         QValueList<int> visibleColumns() const;
+        MetaBundle::ColumnMask getVisibleColumnMask() const;
         int  mapToLogicalColumn( int physical ) const; // Converts physical PlaylistItem column position to logical
         QString columnText( int c ) const { return KListView::columnText( c ); };
         void setColumns( QValueList<int> order, QValueList<int> visible );

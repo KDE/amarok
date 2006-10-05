@@ -2386,6 +2386,7 @@ Playlist::setSorting( int col, bool b )
 void
 Playlist::setColumnWidth( int col, int width )
 {
+
     KListView::setColumnWidth( col, width );
 
     //FIXME this is because Qt doesn't by default disable resizing width 0 columns. GRRR!
@@ -3742,17 +3743,22 @@ Playlist::setFilter( const QString &query ) //SLOT
                    ? MyIt::Visible
                    : MyIt::All );
 
-    QValueList<int> visible = visibleColumns();
 
     if( advanced )
     {
         ParsedExpression parsed = ExpressionParser::parse( query );
+        QValueList<int> visible = visibleColumns();
         for(; *it; ++it )
             (*it)->setVisible( (*it)->matchesParsedExpression( parsed, visible ) );
     }
-    else
-        for(; *it; ++it )
-            (*it)->setVisible( (*it)->matchesSimpleExpression( query, visible ) );
+    else {
+        // optimized path
+        const QStringList terms = QStringList::split( ' ', query.lower() );
+        const MetaBundle::ColumnMask visible = getVisibleColumnMask();
+        for(; *it; ++it ) {
+            (*it)->setVisible( (*it)->matchesFast(terms, visible));
+        }
+    }
 
     if( m_filter != query )
     {
@@ -4411,6 +4417,14 @@ QValueList<int> Playlist::visibleColumns() const
             r.append( i );
     return r;
 }
+
+MetaBundle::ColumnMask Playlist::getVisibleColumnMask() const {
+    MetaBundle::ColumnMask mask = 0;
+    for( int i = 0, n = columns(); i < n; ++i)
+        if( columnWidth( i ) ) mask = mask | (1 << i);
+    return mask;
+}
+
 
 int
 Playlist::mapToLogicalColumn( int physical ) const

@@ -95,34 +95,19 @@ bool MetaBundle::EmbeddedImage::save( const QDir& dir ) const
 }
 
 /// These are untranslated and used for storing/retrieving XML playlist
-const QString MetaBundle::exactColumnName( int c ) //static
+const QString &MetaBundle::exactColumnName( int c ) //static
 {
-    switch( c )
-    {
-        case Filename:   return "Filename";
-        case Title:      return "Title";
-        case Artist:     return "Artist";
-        case Composer:   return "Composer";
-        case Year:       return "Year";
-        case Album:      return "Album";
-        case DiscNumber: return "DiscNumber";
-        case Track:      return "Track";
-        case Bpm:        return "BPM";
-        case Genre:      return "Genre";
-        case Comment:    return "Comment";
-        case Directory:  return "Directory";
-        case Type:       return "Type";
-        case Length:     return "Length";
-        case Bitrate:    return "Bitrate";
-        case SampleRate: return "SampleRate";
-        case Score:      return "Score";
-        case Rating:     return "Rating";
-        case PlayCount:  return "PlayCount";
-        case LastPlayed: return "LastPlayed";
-        case Filesize:   return "Filesize";
-        case Mood:       return "Mood";
-    }
-    return "<ERROR>";
+    // construct static qstrings to avoid constructing them all the time
+    static QString columns[] = {
+        "Filename", "Title", "Artist", "Composer", "Year", "Album", "DiscNumber", "Track", "BPM", "Genre", "Comment",
+        "Directory", "Type", "Length", "Bitrate", "SampleRate", "Score", "Rating", "PlayCount", "LastPlayed",
+        "Filesize", "Mood" };
+    static QString error( "ERROR" );
+
+    if ( c >= 0 && c < NUM_COLUMNS )
+        return columns[c];
+    else
+        return error;
 }
 
 const QString MetaBundle::prettyColumnName( int index ) //static
@@ -191,6 +176,7 @@ MetaBundle::MetaBundle()
         , m_saveFileref( 0 )
         , m_podcastBundle( 0 )
         , m_lastFmBundle( 0 )
+		, m_isSearchDirty(true)
 {
     init();
 }
@@ -224,6 +210,7 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
     , m_saveFileref( 0 )
     , m_podcastBundle( 0 )
     , m_lastFmBundle( 0 )
+	, m_isSearchDirty(true)
 {
     if ( exists() )
     {
@@ -279,6 +266,7 @@ MetaBundle::MetaBundle( const QString& title,
         , m_saveFileref( 0 )
         , m_podcastBundle( 0 )
         , m_lastFmBundle( 0 )
+		, m_isSearchDirty(true)
 {
     if( title.contains( '-' ) )
     {
@@ -370,6 +358,7 @@ MetaBundle::operator=( const MetaBundle& bundle )
     if( bundle.m_lastFmBundle )
         setLastFmBundle( *bundle.m_lastFmBundle );
 
+	m_isSearchDirty = true;
     return *this;
 }
 
@@ -840,6 +829,53 @@ bool MetaBundle::matchesSimpleExpression( const QString &expression, const QValu
 
     return matches;
 }
+
+void MetaBundle::reactToChanges( const QValueList<int>& columns)
+{
+    // mark search dirty if we need to
+    for (uint i = 0; !m_isSearchDirty && i < columns.count(); i++)
+        if ((m_searchColumns & (1 << columns[i])) > 0)
+            m_isSearchDirty = true;
+}
+
+bool MetaBundle::matchesFast(const QStringList &terms, ColumnMask columnMask) const
+{
+    // simple search for rating, last played, etc. makes no sense and it hurts us a
+    // lot if we have to fetch it from the db. so zero them out
+    columnMask &= ~( 1<<Score | 1<<Rating | 1<<PlayCount | 1<<LastPlayed | 1<<Mood );
+
+    if (m_isSearchDirty || m_searchColumns != columnMask) {
+        // assert the size of ColumnMask is large enough. In the absence of
+        // a compile assert mechanism, this is pretty much as good for
+        // optimized code (ie, free)
+
+        if ( sizeof(ColumnMask) < (NUM_COLUMNS / 8) ) {
+            qWarning("ColumnMask is not big enough!");
+        }
+
+        // recompute search text
+        // There is potential for mishap here if matchesFast gets called from multiple
+        // threads, but it's *highly* unlikely that something bad will happen
+        m_isSearchDirty = false;
+        m_searchColumns = columnMask;
+        m_searchStr.setLength(0);
+
+        for (int i = 0; i < NUM_COLUMNS; i++) {
+            if ((columnMask & (1 << i)) > 0) {
+                if (m_searchStr.isEmpty()) m_searchStr += ' ';
+                m_searchStr += prettyText(i).lower();
+            }
+        }
+    }
+
+    // now search
+    for (uint i = 0; i < terms.count(); i++) {
+        if (!m_searchStr.contains(terms[i])) return false;
+    }
+
+    return true;
+}
+
 
 bool MetaBundle::matchesExpression( const QString &expression, const QValueList<int> &defaultColumns ) const
 {

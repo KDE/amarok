@@ -96,12 +96,17 @@ public:
         QByteArray m_data;
         QString m_description;
         mutable QCString m_hash;
-    };
+   };
 
     typedef QValueList<EmbeddedImage> EmbeddedImageList;
 
+    /** This is a bit vector for selecting columns. It's very fast to compare
+        in matchFast. It might be a good idea to replace the QValue<int>
+        column masks with this eventually. */
+    typedef Q_UINT32 ColumnMask;
+
     /** Returns the name of the column at \p index as a string -- not i18ned, for internal purposes. */
-    static const QString exactColumnName( int index );
+    static const QString &exactColumnName( int index );
     /** Returns the name of the column at \p index as a string -- i18ned, for display purposes. */
     static const QString prettyColumnName( int index );
     /** Returns the index of the column with the not i18ned name \p name. */
@@ -204,6 +209,15 @@ public:
         @see ExpressionParser::isAdvancedExpression() */
     bool matchesSimpleExpression( const QString &expression, const QValueList<int> &columns ) const;
 
+    /** A faster version of the above, that pre-caches all the data to be
+        searched in a single string, to avoid re-building integer and lower
+        case strings over and over. It is designed to be called from a
+        playlist search *only* -- it is not entirely thread-safe for efficiency,
+        although it's highly unlikely to crash. Consider this the beginning
+        of a real super-efficient index (e.g. suffix tree).
+        \p terms is a list of lower-case words. */
+    bool matchesFast(const QStringList &terms, ColumnMask columns) const;
+
     /** Returns whether the bundle matches \p expression.
         This takes advanced syntax into account, and is slightly slower than matchesSimpleExpression().
         The tags in \p defaultColumns are checked for matches where the expression doesn't specify any manually. */
@@ -227,7 +241,7 @@ public:
     class XmlLoader;
 
 public: //accessors
-    KURL url()               const;
+    const KURL &url()               const;
     QString      title()     const;
     AtomicString artist()    const;
     AtomicString composer()  const;
@@ -386,6 +400,18 @@ protected:
     PodcastEpisodeBundle *m_podcastBundle;
     LastFm::Bundle *m_lastFmBundle;
 
+    // The vars below are used to optimize search by storing
+    // the full text to be searched. They are mutable, as they
+    // act like a sort of cache for the const method matchesFast
+
+    // whether the search text should be rebuilt
+    volatile mutable bool m_isSearchDirty;
+    // which columns the search string contains
+    mutable ColumnMask m_searchColumns;
+    // the search string: textualized columns separated by space
+    // note that matchFast searches by words, hence a word cannot span
+    // space-separated columns
+    mutable QString m_searchStr;
 private:
 
     static inline QString prettyGeneric( const QString &s, const int i )
@@ -421,7 +447,6 @@ inline bool MetaBundle::audioPropertiesUndetermined() const
 
 inline void MetaBundle::aboutToChange( const QValueList<int>& ) { }
 inline void MetaBundle::aboutToChange( int column ) { aboutToChange( QValueList<int>() << column ); }
-inline void MetaBundle::reactToChanges( const QValueList<int>& ) { }
 inline void MetaBundle::reactToChange( int column ) { reactToChanges( QValueList<int>() << column ); }
 
 inline bool MetaBundle::exists() const { return m_exists; }
@@ -452,7 +477,7 @@ inline const Moodbar &MetaBundle::moodbar_const() const
   return *m_moodbar;
 }
 
-inline KURL     MetaBundle::url()        const { return m_url; }
+inline const KURL&     MetaBundle::url()        const { return m_url; }
 inline QString  MetaBundle::filename()   const { return url().fileName(); }
 inline QString  MetaBundle::directory()  const
 {

@@ -26,6 +26,8 @@ VERSION 1.4.4
 
 
   CHANGES:
+    * Faster searching on playlist and startup, due to some optimizing in
+      string usage. Patch by Ovidiu Gheorghioiu <ovidiug@gmail.com>.
     * Correctly translate media:, home:, ... style urls on KDE 3.5 and newer.
     * When tracks are added to the collection and Playlist entries already
       exist (as determined by the file tracking code), the corresponding

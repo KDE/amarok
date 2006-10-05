@@ -3376,7 +3376,7 @@ CollectionDB::bundleForUrl( MetaBundle* bundle )
             "year.name, tags.comment, tags.discnumber, "
             "tags.track, tags.bitrate, tags.length, tags.samplerate, "
             "tags.filesize, tags.filetype, tags.bpm, tags.sampler, uniqueid.uniqueid "
-            "FROM tags LEFT OUTER JOIN uniqueid ON tags.url = uniqueid.url AND tags.deviceid = uniqueid.deviceid," 
+            "FROM tags LEFT OUTER JOIN uniqueid ON tags.url = uniqueid.url AND tags.deviceid = uniqueid.deviceid,"
             "album, artist, composer, genre, year "
             "WHERE album.id = tags.album AND artist.id = tags.artist AND composer.id = tags.composer AND "
             "genre.id = tags.genre AND year.id = tags.year AND tags.url = '%2' AND tags.deviceid = %1;" )
@@ -4176,7 +4176,7 @@ CollectionDB::removeSongsInDir( QString path, QMap<QString,QString> *tagsRemoved
             int deviceid2    = (*(it++)).toInt();
             QString rpath2   =  *(it++);
             QString uniqueid =  *(it++);
-            (*tagsRemoved)[uniqueid] = MountPointManager::instance()->getAbsolutePath( 
+            (*tagsRemoved)[uniqueid] = MountPointManager::instance()->getAbsolutePath(
                                 deviceid2, rpath2 );
         }
     }
@@ -6269,41 +6269,48 @@ QueryBuilder::QueryBuilder()
     : m_OR( false )
 {
     clear();
+    // there are a few string members with a large number of appends. to avoid reallocations,
+    // pre-reserve 1024 bytes and try never to assign it, instead doing setLength(0) and
+    // appends
+    m_query.reserve(1024);
+    m_values.reserve(1024);
+    m_tables.reserve(1024);
 }
 
 
 void
 QueryBuilder::linkTables( int tables )
 {
-
-    m_tables = tableName( tabSong );
+    m_tables.setLength(0);
+    m_tables += tableName( tabSong );
 
     if ( !(tables & tabSong ) )
     {
         // check if only one table is selected (does somebody know a better way to check that?)
-        if (tables == tabAlbum || tables==tabArtist || tables==tabGenre || tables == tabYear || tables == tabStats || tables == tabPodcastEpisodes || tables == tabPodcastFolders || tables == tabPodcastChannels)
-            m_tables = tableName(tables);
+        if (tables == tabAlbum || tables==tabArtist || tables==tabGenre || tables == tabYear || tables == tabStats || tables == tabPodcastEpisodes || tables == tabPodcastFolders || tables == tabPodcastChannels) {
+        m_tables.setLength(0);
+            m_tables += tableName(tables);
+    }
         else
             tables |= tabSong;
     }
 
-
     if ( tables & tabSong )
     {
         if ( tables & tabAlbum )
-            m_tables += " LEFT JOIN " + tableName( tabAlbum) + " ON album.id=tags.album";
+            ((m_tables += " LEFT JOIN ") += tableName( tabAlbum)) += " ON album.id=tags.album";
         if ( tables & tabArtist )
-            m_tables += " LEFT JOIN " + tableName( tabArtist) + " ON artist.id=tags.artist";
+            ((m_tables += " LEFT JOIN ") += tableName( tabArtist)) += " ON artist.id=tags.artist";
         if ( tables & tabComposer )
-            m_tables += " LEFT JOIN " + tableName( tabComposer) + " ON composer.id=tags.composer";
+            ((m_tables += " LEFT JOIN ") += tableName( tabComposer)) += " ON composer.id=tags.composer";
         if ( tables & tabGenre )
-            m_tables += " LEFT JOIN " + tableName( tabGenre) + " ON genre.id=tags.genre";
+            ((m_tables += " LEFT JOIN ") += tableName( tabGenre)) += " ON genre.id=tags.genre";
         if ( tables & tabYear )
-            m_tables += " LEFT JOIN " + tableName( tabYear) + " ON year.id=tags.year";
+            ((m_tables += " LEFT JOIN ") += tableName( tabYear)) += " ON year.id=tags.year";
         if ( tables & tabStats )
         {
-            m_tables += " LEFT JOIN " + tableName( tabStats)
-                                      + " ON statistics.url=tags.url AND statistics.deviceid = tags.deviceid";
+            ((m_tables += " LEFT JOIN ") += tableName( tabStats))
+                                      += " ON statistics.url=tags.url AND statistics.deviceid = tags.deviceid";
             //if ( !m_url.isEmpty() ) {
             //    QString url = QString( '.' ) + m_url;
             //    m_tables += QString( " OR statistics.deviceid = -1 AND statistics.url = '%1'" )
@@ -6311,11 +6318,11 @@ QueryBuilder::linkTables( int tables )
             //}
         }
         if ( tables & tabLyrics )
-            m_tables += " LEFT JOIN " + tableName( tabLyrics)
-                                      + " ON lyrics.url=tags.url AND lyrics.deviceid = tags.deviceid";
+            ((m_tables += " LEFT JOIN ") += tableName( tabLyrics))
+                                      += " ON lyrics.url=tags.url AND lyrics.deviceid = tags.deviceid";
 
         if ( tables & tabDevices )
-            m_tables += " LEFT JOIN " + tableName( tabDevices ) + " ON tags.deviceid = devices.id";
+            ((m_tables += " LEFT JOIN ") += tableName( tabDevices )) += " ON tags.deviceid = devices.id";
 
     }
 }
@@ -6359,7 +6366,8 @@ QueryBuilder::addReturnValue( int table, Q_INT64 value, bool caseSensitive /* = 
         // make handling of deviceid transparent to calling code
         m_deviceidPos = m_returnValues + 1;  //the return value after the url is the deviceid
         m_values += ',';
-        m_values += tableName( table ) + '.';
+        m_values += tableName( table );
+        m_values += '.';
         m_values += valueName( valDeviceId );
     }
 }
@@ -6789,21 +6797,23 @@ QueryBuilder::addMatch( int tables, const QString& match, bool interpretUnknown 
 {
     QString matchCondition = caseSensitive ? CollectionDB::exactCondition( match ) : CollectionDB::likeCondition( match );
 
-    m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + ' ';
+    (((m_where += ANDslashOR()) += " ( ") += CollectionDB::instance()->boolF()) += ' ';
     if ( tables & tabAlbum )
-        m_where += "OR album.name " + matchCondition;
+        (m_where += "OR album.name ") += matchCondition;
     if ( tables & tabArtist )
-        m_where += "OR artist.name " + matchCondition;
+        (m_where += "OR artist.name ") += matchCondition;
     if ( tables & tabComposer )
-        m_where += "OR composer.name " + matchCondition;
+        (m_where += "OR composer.name ") += matchCondition;
     if ( tables & tabGenre )
-        m_where += "OR genre.name " + matchCondition;
+        (m_where += "OR genre.name ") += matchCondition;
     if ( tables & tabYear )
-        m_where += "OR year.name " + matchCondition;
+        (m_where += "OR year.name ") += matchCondition;
     if ( tables & tabSong )
-        m_where += "OR tags.title " + matchCondition;
+        (m_where += "OR tags.title ") += matchCondition;
 
-    if ( interpretUnknown && match == i18n( "Unknown" ) )
+    static QString i18nUnknown = i18n("Unknown");
+
+    if ( interpretUnknown && match == i18nUnknown )
     {
         if ( tables & tabAlbum ) m_where += "OR album.name = '' ";
         if ( tables & tabArtist ) m_where += "OR artist.name = '' ";
@@ -7188,24 +7198,33 @@ QueryBuilder::buildQuery()
     if ( m_query.isEmpty() )
     {
         linkTables( m_linkTables );
-        m_query = "SELECT " + m_values + " FROM " + m_tables + ' ' + m_join + " WHERE " + CollectionDB::instance()->boolT() + ' ' + m_where;
+        m_query += "SELECT ";
+        m_query += m_values;
+        m_query += " FROM ";
+        m_query += m_tables;
+        m_query += ' ';
+        m_query += m_join;
+        m_query += " WHERE ";
+        m_query += CollectionDB::instance()->boolT();
+        m_query += ' ';
+        m_query += m_where;
         if ( !m_showAll && ( m_linkTables & tabSong ) )     //Only for things on mounted devices, unless you use optShowAll
         {
             IdList list = MountPointManager::instance()->getMountedDeviceIds();
-            QString deviceIds = "";
             //debug() << "number of device ids " << list.count() << endl;
+        m_query += " AND tags.deviceid IN (";
             foreachType( IdList, list )
             {
-                if ( it != list.begin() ) deviceIds += ',';
-                deviceIds += QString::number( *it );
+                if ( it != list.begin() ) m_query += ',';
+                m_query += QString::number( *it );
             }
-            m_query += " AND tags.deviceid IN (" + deviceIds + ')';
+            m_query += ')';
         }
         // GROUP BY must be before ORDER BY for sqlite
         // HAVING must be between GROUP BY and ORDER BY
-        if ( !m_group.isEmpty() )  m_query += " GROUP BY " + m_group;
-        if ( !m_having.isEmpty() ) m_query += " HAVING " + m_having;
-        if ( !m_sort.isEmpty() )   m_query += " ORDER BY " + m_sort;
+        if ( !m_group.isEmpty() )  { m_query += " GROUP BY "; m_query += m_group; }
+        if ( !m_having.isEmpty() ) { m_query += " HAVING "; m_query += m_having; }
+        if ( !m_sort.isEmpty() )   { m_query += " ORDER BY "; m_query += m_sort; }
         m_query += m_limit;
         m_query += ';';
     }
@@ -7239,15 +7258,15 @@ QueryBuilder::run()
 void
 QueryBuilder::clear()
 {
-    m_query = "";
-    m_values = "";
-    m_tables = "";
-    m_join = "";
-    m_where = "";
-    m_sort = "";
-    m_group = "";
-    m_limit = "";
-    m_having = "";
+    m_query.setLength(0);
+    m_values.setLength(0);
+    m_tables.setLength(0);
+    m_join.setLength(0);
+    m_where.setLength(0);
+    m_sort.setLength(0);
+    m_group.setLength(0);
+    m_limit.setLength(0);
+    m_having.setLength(0);
 
     m_linkTables = 0;
     m_returnValues = 0;
@@ -7261,6 +7280,7 @@ QString
 QueryBuilder::tableName( int table )
 {
     QString tables;
+    tables.reserve(256);
 
     if ( CollectionDB::instance()->getType() != DbConnection::postgresql )
     {
@@ -7291,6 +7311,7 @@ QString
 QueryBuilder::valueName( Q_INT64 value )
 {
     QString values;
+    values.reserve(256);
 
     if ( value & valID )          values += "id";
     if ( value & valName )        values += "name";

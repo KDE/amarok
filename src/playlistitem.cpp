@@ -175,6 +175,7 @@ void PlaylistItem::aboutToChange( const QValueList<int> &columns )
 
 void PlaylistItem::reactToChanges( const QValueList<int> &columns )
 {
+    MetaBundle::reactToChanges(columns);
     bool totals = false, ref = false;
     for( int i = 0, n = columns.count(); i < n; ++i )
       {
