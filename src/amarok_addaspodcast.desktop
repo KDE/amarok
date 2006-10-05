@@ -3,5 +3,10 @@ ServiceTypes=text/html,text/xml,application/xml,text/rss,text/rdf
 Actions=addAsPodcast
 [Desktop Action addAsPodcast]
 Name=Add as Podcast to Amarok
+Name[bg]=Добавяне като подкаст към Amarok
+Name[da]=Tilføj som podradioudsendelse i Amarok
+Name[pt]=Adicionar como 'Podcast' ao Amarok
+Name[pt_BR]=Adicionar como Podcast no Amarok
+Name[sv]=Lägg till som podradiosändning i Amarok
 Icon=amarok
 Exec=dcop amarok playlistbrowser addPodcast %u
