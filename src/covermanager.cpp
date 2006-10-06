@@ -100,7 +100,7 @@ CoverManager::CoverManager()
     m_artistView->sort();
 
     m_artistView->setSorting( -1 );
-    KListViewItem *last = item;
+    KListViewItem *last = (KListViewItem *)m_artistView->lastItem();
     item = new KListViewItem( m_artistView, 0, i18n( "All Albums" ) );
     item->setPixmap( 0, SmallIcon( Amarok::icon( "album" ) ) );
 
