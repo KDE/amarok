@@ -850,7 +850,7 @@ bool MetaBundle::matchesFast(const QStringList &terms, ColumnMask columnMask) co
         // optimized code (ie, free)
 
         if ( sizeof(ColumnMask) < (NUM_COLUMNS / 8) ) {
-            qWarning("ColumnMask is not big enough!");
+            warning() << "ColumnMask is not big enough!\n";
         }
 
         // recompute search text
