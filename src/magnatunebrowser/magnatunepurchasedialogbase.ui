@@ -301,7 +301,7 @@
                         </palette>
                     </property>
                     <property name="text">
-                        <string>IMPORTANT: This feature is higly experimental, use at your own risk!</string>
+                        <string>VISA and Mastercard accepted. Use at your own risk.</string>
                     </property>
                 </widget>
                 <widget class="QLabel" row="4" column="0">
