@@ -744,7 +744,7 @@ class QueryBuilder
 
     private:
         QString tableName( int table );
-        QString valueName( Q_INT64 value );
+        const QString &valueName( Q_INT64 value );
         QString functionName( int functions );
 
         QStringList cleanURL( QStringList result );

@@ -6269,12 +6269,15 @@ QueryBuilder::QueryBuilder()
     : m_OR( false )
 {
     clear();
-    // there are a few string members with a large number of appends. to avoid reallocations,
-    // pre-reserve 1024 bytes and try never to assign it, instead doing setLength(0) and
-    // appends
-    m_query.reserve(1024);
-    m_values.reserve(1024);
-    m_tables.reserve(1024);
+    // there are a few string members with a large number of appends. to
+    // avoid reallocations, pre-reserve 1024 bytes and try never to assign
+    // it, instead doing setLength(0) and appends
+    // Note: unfortunately, QT3's setLength(), which is also called from append,
+    // squeezes the string if it's less than 4x the length. So this is useless.
+    // Uncomment after porting to QT4 if it's smarter about this, as the docs say.
+//     m_query.reserve(1024);
+//     m_values.reserve(1024);
+//     m_tables.reserve(1024);
 }
 
 
@@ -6288,8 +6291,8 @@ QueryBuilder::linkTables( int tables )
     {
         // check if only one table is selected (does somebody know a better way to check that?)
         if (tables == tabAlbum || tables==tabArtist || tables==tabGenre || tables == tabYear || tables == tabStats || tables == tabPodcastEpisodes || tables == tabPodcastFolders || tables == tabPodcastChannels) {
-        m_tables.setLength(0);
-            m_tables += tableName(tables);
+        m_tables.setLength( 0 );
+        m_tables += tableName(tables);
     }
         else
             tables |= tabSong;
@@ -7212,7 +7215,7 @@ QueryBuilder::buildQuery()
         {
             IdList list = MountPointManager::instance()->getMountedDeviceIds();
             //debug() << "number of device ids " << list.count() << endl;
-        m_query += " AND tags.deviceid IN (";
+            m_query += " AND tags.deviceid IN (";
             foreachType( IdList, list )
             {
                 if ( it != list.begin() ) m_query += ',';
@@ -7275,12 +7278,51 @@ QueryBuilder::clear()
     m_deviceidPos = 0;
 }
 
+// Helper method -- given a value, returns the index of the bit that is
+// set, if only one, otherwise returns -1
+// Binsearch seems appropriate since the values enum has 40 members
+template<class ValueType>
+static inline int
+searchBit( ValueType value, int numBits ) {
+   int low = 0, high = numBits - 1;
+   while( low <= high ) {
+       int mid = (low + high) / 2;
+       ValueType compare = static_cast<ValueType>( 1 ) << mid;
+       if ( value == compare ) return mid;
+       else if ( value < compare ) high = mid - 1;
+       else low = mid + 1;
+   }
+
+   return -1;
+}    
+    
 
 QString
 QueryBuilder::tableName( int table )
 {
+    // optimize for 1 table which is by far the most frequent case
+    static const QString tabNames[] = {
+        "album",
+        "artist",
+        "composer",
+        "genre",
+        "year",
+        "<unused>",             // 32 is missing from the enum
+        "tags",
+        "statistics",
+        "lyrics",
+        "podcastchannels",
+        "podcastepisodes",
+        "podcasttables",
+        "devices"
+    };
+
+    int oneBit = searchBit( table, sizeof( tabNames ) / sizeof( QString ) );
+    if ( oneBit >= 0 ) return tabNames[oneBit];
+
+    // slow path: multiple tables. This seems to be unneeded at the moment,
+    // but leaving it here since it appears to be intended usage
     QString tables;
-    tables.reserve(256);
 
     if ( CollectionDB::instance()->getType() != DbConnection::postgresql )
     {
@@ -7300,62 +7342,64 @@ QueryBuilder::tableName( int table )
     {
         if ( table & tabSong )   tables += ",tags";
     }
+    
     if ( table & tabDevices ) tables += ", devices";
-
     // when there are multiple tables involved, we always need table tags for linking them
     return tables.mid( 1 );
 }
 
 
-QString
+const QString &
 QueryBuilder::valueName( Q_INT64 value )
 {
-    QString values;
-    values.reserve(256);
-
-    if ( value & valID )          values += "id";
-    if ( value & valName )        values += "name";
-    if ( value & valURL )         values += "url";
-    if ( value & valDirectory )   values += "dir";
-    if ( value & valTitle )       values += "title";
-    if ( value & valTrack )       values += "track";
-    if ( value & valDiscNumber )  values += "discnumber";
-    if ( value & valScore )       values += "percentage";
-    if ( value & valRating )      values += "rating";
-    if ( value & valComment )     values += "comment";
-    if ( value & valLyrics )      values += "lyrics";
-    if ( value & valBitrate )     values += "bitrate";
-    if ( value & valLength )      values += "length";
-    if ( value & valSamplerate )  values += "samplerate";
-    if ( value & valPlayCounter ) values += "playcounter";
-    if ( value & valAccessDate )  values += "accessdate";
-    if ( value & valCreateDate )  values += "createdate";
-    if ( value & valPercentage )  values += "percentage";
-    if ( value & valArtistID )    values += "artist";
-    if ( value & valComposerID )  values += "composer";
-    if ( value & valAlbumID )     values += "album";
-    if ( value & valGenreID )     values += "genre";
-    if ( value & valYearID )      values += "year";
-    if ( value & valFilesize )    values += "filesize";
-    if ( value & valFileType )    values += "filetype";
-    if ( value & valIsCompilation) values += "sampler";
-    if ( value & valBPM )         values += "bpm";
-
-    if ( value & valCopyright )   values += "copyright";
-    if ( value & valParent )      values += "parent";
-    if ( value & valWeblink )     values += "weblink";
-    if ( value & valAutoscan )    values += "autoscan";
-    if ( value & valFetchtype )   values += "fetchtype";
-    if ( value & valAutotransfer ) values += "autotransfer";
-    if ( value & valPurge )       values += "haspurge";
-    if ( value & valPurgeCount )  values += "purgeCount";
-    if ( value & valIsNew )       values += "isNew";
-    if ( value & valDeviceId )    values += "deviceid";
-    if ( value & valRelativePath ) values += "url";
-    if ( value & valDeviceLabel ) values += "label";
-    if ( value & valMountPoint )  values += "lastmountpoint";
-
-    return values;
+   static const QString values[] = { 
+       "id",
+       "name",
+       "url",
+       "title",
+       "track",
+       "percentage",
+       "comment",
+       "bitrate",
+       "length",
+       "samplerate",
+       "playcounter",
+       "createdate",
+       "accessdate",
+       "percentage",
+       "artist",
+       "album",
+       "year",
+       "genre",
+       "dir",
+       "lyrics",
+       "rating",
+       "composer",
+       "discnumber",
+       "filesize",
+       "filetype",
+       "sampler",
+       "bpm",
+       "copyright",
+       "parent",
+       "weblink",
+       "autoscan",
+       "fetchtype",
+       "autotransfer",
+       "haspurge",
+       "purgeCount",
+       "isNew",
+       "deviceid",
+       "url",
+       "label",
+       "lastmountpoint"
+   };
+   
+   int oneBit = searchBit( value, sizeof( values ) / sizeof( QString ) );
+   if ( oneBit >= 0 ) return values[oneBit];
+   
+   static const QString error( "<ERROR valueName>" );
+   return error;
 }
 
 QString
