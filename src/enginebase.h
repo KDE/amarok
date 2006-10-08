@@ -177,6 +177,12 @@ namespace Engine
         /** Set new crossfade length (msec) */
         void setXfadeLength( int value ) { m_xfadeLength = value; }
 
+        /** Set whether to crossfade the next track
+          * Used when the engine is switching tracks automatically
+          * instead of manually.
+          */
+        void setXFadeNextTrack( bool enable ) { m_xfadeNextTrack = enable; }
+
         /** Set whether equalizer is enabled
           * You don't need to cache the parameters, setEqualizerParameters is called straight after this
           * function, _always_.
@@ -231,6 +237,7 @@ namespace Engine
         const Base &operator=( const Base& ); //disable copy constructor
 
         int           m_xfadeLength;
+        bool          m_xfadeNextTrack;
 
     protected:
         static const int SCOPESIZE = 1024;

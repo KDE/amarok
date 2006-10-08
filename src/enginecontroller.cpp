@@ -434,13 +434,8 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
             const uint trackLength = m_engine->length() / 1000;
             if ( trackLength ) m_bundle.setLength( trackLength );
 
-            m_xFadeThisTrack = AmarokConfig::crossfade() &&
-                               m_engine->hasPluginProperty( "HasCrossfade" ) &&
-                               ( (uint) AmarokConfig::crossfadeType() == 0 ||    //Always or...
-                                 (uint) AmarokConfig::crossfadeType() == 2 ) &&  //...manual track change only
-                              !m_engine->isStream() &&
-                              !(url.protocol() == "cdda") &&
-                               m_bundle.length()*1000 - offset - AmarokConfig::crossfadeLength()*2 > 0;
+            m_xFadeThisTrack = !m_engine->isStream() && !(url.protocol() == "cdda") &&
+                    m_bundle.length()*1000 - offset - AmarokConfig::crossfadeLength()*2 > 0;
 
             newMetaDataNotify( m_bundle, true /* track change */ );
             return;
@@ -681,13 +676,15 @@ void EngineController::slotMainTimer() //SLOT
 
     // Crossfading
     if ( m_engine->state() == Engine::Playing &&
-         m_xFadeThisTrack &&
+         AmarokConfig::crossfade() && m_xFadeThisTrack &&
+         m_engine->hasPluginProperty( "HasCrossfade" ) &&
          ( (uint) AmarokConfig::crossfadeType() == 0 ||    //Always or...
            (uint) AmarokConfig::crossfadeType() == 1 ) &&  //...automatic track change only
          Playlist::instance()->isTrackAfter() &&
          m_bundle.length()*1000 - position < (uint) AmarokConfig::crossfadeLength() )
     {
         debug() << "Crossfading to next track...\n";
+        m_engine->setXFadeNextTrack( true );
         trackFinished();
     }
 }

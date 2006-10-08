@@ -216,8 +216,12 @@ XineEngine::load( const KURL &url, bool isStream )
 
     Engine::Base::load( url, isStream );
 
-    if( m_xfadeLength > 0 && xine_get_status( m_stream ) == XINE_STATUS_PLAY )
+    if( m_xfadeLength > 0 && xine_get_status( m_stream ) == XINE_STATUS_PLAY &&
+        ( m_xfadeNextTrack || //set by engine controller when switching tracks automatically
+         (uint) AmarokConfig::crossfadeType() == 0 ||  //crossfade always
+         (uint) AmarokConfig::crossfadeType() == 2 ) ) //crossfade when switching tracks manually
     {
+       m_xfadeNextTrack = false;
        s_fader = new Fader( this, m_xfadeLength );
        setEqualizerParameters( m_intPreamp, m_equalizerGains );
     }

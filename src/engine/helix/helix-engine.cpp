@@ -35,6 +35,7 @@
 #include "helix-errors.h"
 #include "helix-sp.h"
 #include "hxplayercontrol.h"
+#include "amarokconfig.h"
 
 AMAROK_EXPORT_PLUGIN( HelixEngine )
 
@@ -292,8 +293,13 @@ HelixEngine::load( const KURL &url, bool isStream )
    }
 
    debug() << "xfadeLength is " << m_xfadeLength << endl;
-   if( m_xfadeLength > 0 && m_state == Engine::Playing && !isStream )
+   if( m_xfadeLength > 0 && m_state == Engine::Playing && !isStream &&
+        ( m_xfadeNextTrack || //set by engine controller when switching tracks automatically
+         (uint) AmarokConfig::crossfadeType() == 0 ||  //crossfade always
+         (uint) AmarokConfig::crossfadeType() == 2 ) ) //crossfade when switching tracks manually)
    {
+      //set m_xfadeNextTrack true here regardless to play() will work correctly; disable in there
+      m_xfadeNextTrack = true;
       int nextPlayer = m_current ? 0 : 1;
 
       // prepare the next player
@@ -355,8 +361,11 @@ HelixEngine::play( uint offset )
 
    nextPlayer = m_current ? 0 : 1;
 
-   if (m_xfadeLength && !offset && isPlaying(m_current))
+   if (m_xfadeLength && m_xfadeNextTrack && !offset && isPlaying(m_current))
+   {
+      m_xfadeNextTrack = false;
       PlayerControl::start(nextPlayer, true, m_xfadeLength);
+   }
    else
       PlayerControl::start(nextPlayer);
 

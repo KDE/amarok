@@ -10,6 +10,7 @@
 Engine::Base::Base()
         : Amarok::Plugin()
         , m_xfadeLength( 0 )
+        , m_xfadeNextTrack( false )
         , m_volume( 50 )
         , m_scope( SCOPESIZE )
         , m_isStream( false )
