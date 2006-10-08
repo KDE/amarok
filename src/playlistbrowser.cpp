@@ -710,13 +710,15 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     item = new SmartPlaylist( m_smartDefaults, item, i18n( "Favorite Tracks" ), qb.query() );
     item->setKept( false );
     last = 0;
-    foreach( artists ) {
-        qb.initSQLDrag();
-        qb.addMatch( QueryBuilder::tabArtist, *it );
-        qb.sortBy( QueryBuilder::tabStats, favSortBy, true );
-        qb.setLimit( 0, 15 );
 
-        last = new SmartPlaylist( item, last, i18n( "By %1" ).arg( *it ), qb.query() );
+    qb.initSQLDrag();
+    qb.sortBy( QueryBuilder::tabStats, favSortBy, true );
+    qb.setLimit( 0, 15 );
+    foreach( artists ) {
+        QueryBuilder qbTemp( qb );
+        qbTemp.addMatch( QueryBuilder::tabArtist, *it );
+
+        last = new SmartPlaylist( item, last, i18n( "By %1" ).arg( *it ), qbTemp.query() );
         last->setKept( false );
     }
 
@@ -728,13 +730,15 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     item = new SmartPlaylist( m_smartDefaults, item, i18n( "Most Played" ), qb.query() );
     item->setKept( false );
     last = 0;
-    foreach( artists ) {
-        qb.initSQLDrag();
-        qb.addMatch( QueryBuilder::tabArtist, *it );
-        qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, true );
-        qb.setLimit( 0, 15 );
 
-        last = new SmartPlaylist( item, last, i18n( "By %1" ).arg( *it ), qb.query() );
+    qb.initSQLDrag();
+    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, true );
+    qb.setLimit( 0, 15 );
+    foreach( artists ) {
+        QueryBuilder qbTemp( qb );
+        qbTemp.addMatch( QueryBuilder::tabArtist, *it );
+
+        last = new SmartPlaylist( item, last, i18n( "By %1" ).arg( *it ), qbTemp.query() );
         last->setKept( false );
     }
 
@@ -746,13 +750,15 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     item = new SmartPlaylist( m_smartDefaults, item, i18n( "Newest Tracks" ), qb.query() );
     item->setKept( false );
     last = 0;
-    foreach( artists ) {
-        qb.initSQLDrag();
-        qb.addMatch( QueryBuilder::tabArtist, *it );
-        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
-        qb.setLimit( 0, 15 );
 
-        last = new SmartPlaylist( item, last, i18n( "By %1" ).arg( *it ), qb.query() );
+    qb.initSQLDrag();
+    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
+    qb.setLimit( 0, 15 );
+    foreach( artists ) {
+        QueryBuilder qbTemp( qb );
+        qbTemp.addMatch( QueryBuilder::tabArtist, *it );
+
+        last = new SmartPlaylist( item, last, i18n( "By %1" ).arg( *it ), qbTemp.query() );
         last->setKept( false );
     }
 
@@ -789,14 +795,16 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     item = new SmartPlaylist( m_smartDefaults, item, i18n( "Genres" ), QString() );
     item->setKept( false );
     last = 0;
-    foreach( genres ) {
-        qb.initSQLDrag();
-        qb.addMatch( QueryBuilder::tabGenre, *it );
-        qb.sortBy( QueryBuilder::tabArtist, QueryBuilder::valName );
-        qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
-        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
 
-        last = new SmartPlaylist( item, last, i18n( "%1" ).arg( *it ), qb.query() );
+    qb.initSQLDrag();
+    qb.sortBy( QueryBuilder::tabArtist, QueryBuilder::valName );
+    qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
+    foreach( genres ) {
+        QueryBuilder qbTemp( qb );
+        qbTemp.addMatch( QueryBuilder::tabGenre, *it );
+
+        last = new SmartPlaylist( item, last, i18n( "%1" ).arg( *it ), qbTemp.query() );
         last->setKept( false );
     }
 
