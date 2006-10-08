@@ -176,7 +176,7 @@ MetaBundle::MetaBundle()
         , m_saveFileref( 0 )
         , m_podcastBundle( 0 )
         , m_lastFmBundle( 0 )
-		, m_isSearchDirty(true)
+        , m_isSearchDirty(true)
 {
     init();
 }
@@ -210,7 +210,7 @@ MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::
     , m_saveFileref( 0 )
     , m_podcastBundle( 0 )
     , m_lastFmBundle( 0 )
-	, m_isSearchDirty(true)
+    , m_isSearchDirty(true)
 {
     if ( exists() )
     {
@@ -266,7 +266,7 @@ MetaBundle::MetaBundle( const QString& title,
         , m_saveFileref( 0 )
         , m_podcastBundle( 0 )
         , m_lastFmBundle( 0 )
-		, m_isSearchDirty(true)
+	, m_isSearchDirty(true)
 {
     if( title.contains( '-' ) )
     {
@@ -862,7 +862,7 @@ bool MetaBundle::matchesFast(const QStringList &terms, ColumnMask columnMask) co
 
         for (int i = 0; i < NUM_COLUMNS; i++) {
             if ((columnMask & (1 << i)) > 0) {
-                if (m_searchStr.isEmpty()) m_searchStr += ' ';
+                if (!m_searchStr.isEmpty()) m_searchStr += ' ';
                 m_searchStr += prettyText(i).lower();
             }
         }

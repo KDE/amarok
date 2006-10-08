@@ -98,9 +98,12 @@ public:
 
 AtomicString::AtomicString(): m_string( 0 ) { }
 
-AtomicString::AtomicString( const AtomicString &other ): m_string( other.m_string )
+AtomicString::AtomicString( const AtomicString &other )
 {
+    storeMutex.lock();
+    m_string = other.m_string;
     ref( m_string );
+    storeMutex.unlock();
 }
 
 AtomicString::AtomicString( const QString &string ): m_string( 0 )
@@ -108,36 +111,36 @@ AtomicString::AtomicString( const QString &string ): m_string( 0 )
     if( string.isEmpty() )
         return;
 
-    Data *s = new Data( string );
+    Data *s = new Data( string );  // note: s is a shallow copy
     storeMutex.lock();
     m_string = static_cast<Data*>( *( s_store.insert( s ).first ) );
-    storeMutex.unlock();
     ref( m_string );
-    if( !s->refcount )
-        delete s;
+    uint rc = s->refcount;
+    if( rc ) {
+	// Inserted -- we need to make s a deep copy, as this copy
+	// may be refcounted by the caller thread outside our locks
+	// Hand hold C++ as to which operator= to use
+	(QString &) (*s) = QDeepCopy<QString>(string);
+    }
+    storeMutex.unlock();
+    if ( !rc ) delete( s );	// already present
 }
 
 AtomicString::~AtomicString()
 {
+    storeMutex.lock();
     deref( m_string );
-}
-
-QString AtomicString::string() const
-{
-    if( m_string )
-        return *m_string;
-    return QString::null;
-}
-
-const QString *AtomicString::operator->() const
-{
-    return ptr();
+    storeMutex.unlock();
 }
 
 QString AtomicString::deepCopy() const
 {
-    if( m_string )
-        return QDeepCopy<QString>( *m_string );
+    if (m_string) {
+	storeMutex.lock();
+	QDeepCopy<QString> copy( *m_string );
+	storeMutex.unlock();
+	return copy;
+    }
     return QString::null;
 }
 
@@ -155,8 +158,12 @@ const QString *AtomicString::ptr() const
 
 uint AtomicString::refcount() const
 {
-    if( m_string )
-        return m_string->refcount;
+    if ( m_string ) {
+	storeMutex.lock();
+	uint rc = m_string->refcount;
+	storeMutex.unlock();
+	return rc;
+    } 
     return 0;
 }
 
@@ -164,9 +171,11 @@ AtomicString &AtomicString::operator=( const AtomicString &other )
 {
     if( m_string == other.m_string )
         return *this;
+    storeMutex.lock();
     deref( m_string );
     m_string = other.m_string;
     ref( m_string );
+    storeMutex.unlock();
     return *this;
 }
 
@@ -175,23 +184,24 @@ bool AtomicString::operator==( const AtomicString &other ) const
     return m_string == other.m_string;
 }
 
-void AtomicString::deref( Data *s )
+// needs to be called holding the lock
+inline void AtomicString::deref( Data *s )
 {
     if( !s )
         return;
     if( !( --s->refcount ) )
     {
-        storeMutex.lock();
         s_store.erase( s );
-        storeMutex.unlock();
         delete s;
     }
 }
 
-void AtomicString::ref( Data *s )
+// needs to be called holding the lock
+inline void AtomicString::ref( Data *s )
 {
     if( s )
         s->refcount++;
 }
 
 AtomicString::set_type AtomicString::s_store;
+QMutex AtomicString::storeMutex;

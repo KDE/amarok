@@ -85,21 +85,17 @@ public:
     bool operator==( const AtomicString &other ) const;
 
     /**
-     * @return the string
+     * Identical to deepCopy() because of QString's thread unsafety
+     * 
+     * @return the string. 
      */
-    QString string() const;
+    inline QString string() const { return deepCopy(); }
 
     /**
      * Implicitly casts to a QString.
      * @return the string
      */
     inline operator QString() const { return string(); }
-
-    /**
-     * For convenience, so you can do atomicstring->QStringfunction(),
-     * instead of atomicstring.string().QStringfunction().
-     */
-    const QString *operator->() const;
 
     /**
      * Useful for threading.
@@ -126,9 +122,19 @@ public:
      * Guaranteed to be equivalent for equivalent strings, and different for
      * different ones. This can be useful for certain kinds of hacks, but
      * shouldn't normally be used.
+     *
+     * Note: DO NOT COPY this pointer with QString() or QString=. It is not
+     * thread safe to do it (QString internal refcount)
      * @return the internal pointer to the string
      */
     const QString *ptr() const;
+
+    /**
+     * For convenience, so you can do atomicstring->QStringfunction(),
+     * instead of atomicstring.string().QStringfunction(). The same warning
+     * applies as for the above ptr() function.
+     */
+    inline const QString *operator->() const { return ptr(); }
 
     /**
      * For debugging purposes.
@@ -160,7 +166,7 @@ private:
 
     Data *m_string;
 
-    QMutex storeMutex;
+    static QMutex storeMutex;
 };
 
 #endif
