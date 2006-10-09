@@ -101,7 +101,7 @@ const QString &MetaBundle::exactColumnName( int c ) //static
     static QString columns[] = {
         "Filename", "Title", "Artist", "Composer", "Year", "Album", "DiscNumber", "Track", "BPM", "Genre", "Comment",
         "Directory", "Type", "Length", "Bitrate", "SampleRate", "Score", "Rating", "PlayCount", "LastPlayed",
-        "Filesize", "Mood" };
+        "Mood", "Filesize" };
     static QString error( "ERROR" );
 
     if ( c >= 0 && c < NUM_COLUMNS )
@@ -134,8 +134,8 @@ const QString MetaBundle::prettyColumnName( int index ) //static
         case Rating:     return i18n( "Rating"      );
         case PlayCount:  return i18n( "Play Count"  );
         case LastPlayed: return i18n( "Column name", "Last Played" );
-        case Filesize:   return i18n( "File Size"   );
         case Mood:       return i18n( "Mood"        );
+        case Filesize:   return i18n( "File Size"   );
     }
     return "This is a bug.";
 }
