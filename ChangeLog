@@ -5,6 +5,9 @@ Amarok ChangeLog
 
 VERSION 1.4.4
   FEATURES:
+    * Xine and Helix engines now support three different crossfading modes:
+      always, on manual track changes only, or on automatic track changes
+      only.
     * Open Podcastchannel if it has new items after a fetch.
     * Manually specify local file for podcast episodes via right-click menu.
     * Action menu entry for adding podcasts to Amarok. Based on .desktop files
