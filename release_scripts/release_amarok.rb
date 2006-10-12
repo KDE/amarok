@@ -165,7 +165,6 @@ end
 Dir.chdir( "amarok" )
 
 # Move some important files to the root folder
-`mv amarok.lsm ..`
 `mv AUTHORS ..`
 `mv ChangeLog ..`
 `mv COPYING ..`
