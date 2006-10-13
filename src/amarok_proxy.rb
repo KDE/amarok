@@ -9,6 +9,7 @@
 # (c) 2006 Ian Monroe <ian@monroe.nu>
 # (c) 2006 Martin Ellis <martin.ellis@kdemail.net>
 # (c) 2006 Alexandre Oliveira <aleprj@gmail.net>
+# (c) 2006 Tom Kaitchuck <tkaitchuck@comcast.net>
 #
 # License: GNU General Public License V2
 
@@ -30,7 +31,7 @@ class Proxy
 
     # Open the amarok-facing socket
     # amarok: the server port on the localhost to which the engine will connect.
-    amarok  = TCPServer.new( port )
+    amarok = TCPServer.new( port )
     myputs( "startup" )
 
     # amaroks: server socket for above.
@@ -48,10 +49,10 @@ class Proxy
     get = get_request( uri, !proxy.nil? )
 
     #Check for proxy
-    proxy_uri = URI.parse( proxy )
-    if ( proxy_uri.class != URI::Generic )
+    begin
+      proxy_uri = URI.parse( proxy )
       serv = TCPSocket.new( proxy_uri.host, proxy_uri.port )
-    else
+    rescue
       serv = TCPSocket.new( uri.host, uri.port )
     end
 
@@ -94,7 +95,6 @@ class Proxy
 
     # Now stream the music!
     myputs( "Before cp_all()" )
-
     cp_all_inward( serv, amaroks )
 
     if @engine == 'helix-engine' && amaroks.eof
@@ -106,7 +106,7 @@ class Proxy
 
   def safe_write( output, data )
     begin
-      output.write data
+        output.write data
     rescue
       myputs( "error from output.write, #{$!}" )
       myputs( $!.backtrace.inspect )
@@ -120,8 +120,15 @@ class Proxy
       myputs( data )
       data.chomp!
       safe_write( output, data )
+      myputs( "data sent.")
       return if data.empty?
     end
+  end
+
+  def desync (data)
+      if data.gsub!( "SYNC", "" )
+        myputs( "SYNC" )
+      end
   end
 
   def cp_to_empty_inward( income, output )
@@ -140,20 +147,30 @@ class Proxy
       filler = Array.new( 4096, 0 )
       safe_write( output, filler ) # HACK: Fill xine's buffer so that xine_open() won't block
     end
+    data = income.read( 4 )
+    desync( data )
+    holdover = ""
     loop do
-      data = income.read( 1024 )
-      break if data == nil
-      # Detect and remove SYNCs. Removal is not strictly necessary.
-      if data.include?( "SYNC" ) # FIXME won't detect the SYNC if it spreads over fragment boundary
-        data.gsub!( "SYNC", "" )
-        myputs( "SYNC" )
-      end
-      begin
-        safe_write( output, data )
-      rescue
-        myputs( "error from o.write, #{$!}" )
-        break
-      end
+      GC.disable
+      write_thread = Thread.new() {
+        begin
+          safe_write( output, data )
+        rescue
+          myputs( "error from o.write, #{$!}" )
+          break
+        end
+      }
+      newdata = income.read( 4096 )
+
+      data = holdover + newdata[0..-5]
+      holdover = newdata[-4..-1]
+      desync( data )
+
+      write_thread.join
+      break if newdata == nil
+
+      GC.enable
+      GC.start
     end
   end
 end
@@ -187,7 +204,7 @@ class DaapProxy < Proxy
   def get_request( remote_uri, via_proxy )
     # via_proxy ignored for now
     get = "GET #{remote_uri.path || '/'}?#{remote_uri.query} HTTP/1.1" + ENDL
-    get +=  "Accept: */*" + ENDL
+    get += "Accept: */*" + ENDL
     get += "User-Agent: iTunes/4.6 (Windows; N)" + ENDL
     get += "Client-DAAP-Version: 3.0" + ENDL
     get += "Client-DAAP-Validation: #{@hash}" + ENDL
@@ -199,7 +216,7 @@ class DaapProxy < Proxy
 end
 
 def myputs( string )
-  $stdout.puts( "AMAROK_PROXY: #{string}" )
+   $stdout.puts( "AMAROK_PROXY: #{string}" )
 end
 
 begin

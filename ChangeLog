@@ -51,6 +51,8 @@ VERSION 1.4.4
     * Show a proper tag dialog when viewing information for DAAP music shares.
 
   BUGFIXES:
+    * While playing Last.fm Streams, sometimes metadata wouldn't be updated
+      on track changes. Patch by Tom Kaitchuck <tkaitchuck@comcast.net>.
     * Speed patch to load playlist columns from statistic tables on population
       of the playlist, makes adding to the playlist and starting up faster.
       Thanks Ovy <ovy@alum.mit.edu>! (BR 135324)
