@@ -746,17 +746,17 @@ MtpMediaDevice::deleteItemFromDevice(MediaItem* item, int flags )
 
     switch( item->type() )
     {
+        case MediaItem::PLAYLIST:
         case MediaItem::TRACK:
             if( isCanceled() )
                 break;
             if( item )
             {
-                int res = deleteTrack( dynamic_cast<MtpMediaItem *> ( item ) );
+                int res = deleteObject( dynamic_cast<MtpMediaItem *> ( item ) );
                 if( res >=0 && result >= 0 )
                     result += res;
                 else
                     result = -1;
-
             }
             break;
         case MediaItem::ALBUM:
@@ -787,37 +787,41 @@ MtpMediaDevice::deleteItemFromDevice(MediaItem* item, int flags )
 }
 
 /**
- * Actually delete a track
+ * Actually delete a track or playlist
  */
 int
-MtpMediaDevice::deleteTrack(MtpMediaItem *trackItem)
+MtpMediaDevice::deleteObject( MtpMediaItem *deleteItem )
 {
     DEBUG_BLOCK
 
-    u_int32_t track_id = trackItem->track()->id();
+    u_int32_t object_id;
+    if( deleteItem->type() == MediaItem::PLAYLIST )
+        object_id = deleteItem->playlist()->id();
+    else
+        object_id = deleteItem->track()->id();
 
-    QString genericError = i18n( "Could not delete track" );
+    QString genericError = i18n( "Could not delete item" );
 
-    debug() << "delete this id : " << track_id << endl;
+    debug() << "delete this id : " << object_id << endl;
 
     m_critical_mutex.lock();
-    int status = LIBMTP_Delete_Object( m_device, track_id );
+    int status = LIBMTP_Delete_Object( m_device, object_id );
     m_critical_mutex.unlock();
 
     if( status != 0 )
     {
-        debug() << "delete track failed" << endl;
+        debug() << "delete object failed" << endl;
         Amarok::StatusBar::instance()->shortLongMessage(
             genericError,
-            i18n( "Delete file failed" ),
+            i18n( "Delete failed" ),
             KDE::StatusBar::Error
         );
         return -1;
     }
-    debug() << "track deleted" << endl;
+    debug() << "object deleted" << endl;
 
     // remove from the media view
-    delete trackItem;
+    delete deleteItem;
     kapp->processEvents( 100 );
 
     return 1;

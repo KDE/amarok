@@ -150,7 +150,7 @@ class MtpMediaDevice : public MediaDevice
         MtpMediaItem            *addTrackToView(MtpTrack *track, MtpMediaItem *item=0 );
         int                     readMtpMusic( void );
         void                    clearItems();
-        int                     deleteTrack(MtpMediaItem *trackItem);
+        int                     deleteObject( MtpMediaItem *deleteItem );
         uint32_t                checkFolderStructure( uint32_t parent_id, const LIBMTP_track_t *trackmeta, const MetaBundle &bundle );
         uint32_t                createFolder( const char *name, uint32_t parent_id );
         uint32_t                folderNameToID( char *name, LIBMTP_folder_t *folderlist );
