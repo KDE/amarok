@@ -143,6 +143,9 @@ class MtpMediaDevice : public MediaDevice
         bool                    getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
         virtual void            updateRootItems() {};
 
+    private slots:
+        void                    playlistRenamed( QListViewItem *item, const QString &, int );
+
     private:
         MtpMediaItem            *addTrackToView(MtpTrack *track, MtpMediaItem *item=0 );
         int                     readMtpMusic( void );

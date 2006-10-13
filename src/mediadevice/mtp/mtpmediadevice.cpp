@@ -659,6 +659,18 @@ MtpMediaDevice::addToPlaylist( MediaItem *mlist, MediaItem *after, QPtrList<Medi
 }
 
 /**
+ * When a playlist has been renamed, we must save it
+ */
+void
+MtpMediaDevice::playlistRenamed( QListViewItem *item, const QString &, int ) // SLOT
+{
+    DEBUG_BLOCK
+    MtpMediaItem *playlist = static_cast<MtpMediaItem*>( item );
+    if( playlist->type() == MediaItem::PLAYLIST )
+        playlistFromItem( playlist );
+}
+
+/**
  * Save a playlist
  */
 void
@@ -861,6 +873,11 @@ MtpMediaDevice::openDevice( bool silent )
         setDisconnected();
         return false;
 	}
+
+    connect(
+        m_view, SIGNAL( itemRenamed( QListViewItem*, const QString&, int ) ),
+        this,   SLOT( playlistRenamed( QListViewItem*, const QString&, int ) )
+    );
 
     QString modelname = QString( LIBMTP_Get_Modelname( m_device ) );
 #if LIBMTP_FRIENDLY_NAME

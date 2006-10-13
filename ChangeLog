@@ -51,6 +51,7 @@ VERSION 1.4.4
     * Show a proper tag dialog when viewing information for DAAP music shares.
 
   BUGFIXES:
+    * Save MTP playlists when they are renamed so we don't lose changes.
     * Prevent new podcastepisodes from showing up in the playlistbrowser twice
       by opening it's parent before adding. (BR 134108)
     * New iPods would not get initialized.
