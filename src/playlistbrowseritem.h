@@ -561,12 +561,17 @@ class SmartPlaylist : public PlaylistBrowserEntry
         virtual void showContextMenu( const QPoint & );
 
     private:
+        // for xml playlists, this member is computed on demand
         QString m_sqlForTags;
 
         QString m_title;
         QDomElement m_xml;
         QListViewItem *m_after;
         bool m_dynamic;
+
+        // Build the query for a given xml object. If \p for expand is true,
+        // insert (*ExpandString*) as placeholders for childrens' filters
+        static QString xmlToQuery(const QDomElement &xml, bool forExpand = false);
 };
 
 //this class is used to store information (url, title and length) of a playlist track

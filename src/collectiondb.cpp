@@ -3323,6 +3323,11 @@ CollectionDB::bundleFromQuery( QStringList::const_iterator *iter )
     b.setFileType( (*++it).toInt() );
     b.setBpm       ( (*++it).toFloat() );
 
+    b.setScore     ( static_cast<int>( (*++it).toFloat() ) );
+    b.setRating    ( (*++it).toInt() );
+    b.setPlayCount ( (*++it).toInt() );
+    b.setLastPlay  ( (*++it).toInt() );
+
     if( false && b.length() <= 0 ) {
         // we try to read the tags, despite the slow-down
         debug() << "Audioproperties not known for: " << b.url().fileName() << endl;
@@ -6266,8 +6271,8 @@ PostgresqlConfig::PostgresqlConfig(
 //////////////////////////////////////////////////////////////////////////////////////////
 
 QueryBuilder::QueryBuilder()
-    : m_OR( false )
 {
+    m_OR.push(false);
     clear();
     // there are a few string members with a large number of appends. to
     // avoid reallocations, pre-reserve 1024 bytes and try never to assign
@@ -6645,7 +6650,7 @@ QueryBuilder::addFilter( int tables, Q_INT64 value, const QString& filter, int m
 {
     if ( !filter.isEmpty() )
     {
-        m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + ' ';
+        m_where += ANDslashOR() + " ( ";
 
         QString m, s;
         if (mode == modeLess || mode == modeGreater)
@@ -6655,10 +6660,10 @@ QueryBuilder::addFilter( int tables, Q_INT64 value, const QString& filter, int m
             if (exact)
                 s = " = '" + CollectionDB::instance()->escapeString( filter ) + "' ";
             else
-                s = CollectionDB::likeCondition( filter, true, mode != modeEndMatch );
+                s = CollectionDB::likeCondition( filter, mode != modeBeginMatch, mode != modeEndMatch );
         }
 
-        m_where += QString( "OR %1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
+        m_where += QString( "%1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
 
         if ( !exact && (value & valName) && mode == modeNormal && i18n( "Unknown").contains( filter, false ) )
             m_where += QString( "OR %1.%2 = '' " ).arg( tableName( tables ) ).arg( valueName( value ) );
@@ -6771,7 +6776,7 @@ QueryBuilder::excludeFilter( int tables, Q_INT64 value, const QString& filter, i
 {
     if ( !filter.isEmpty() )
     {
-        m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolT() + ' ';
+        m_where += ANDslashOR() + " ( ";
 
         QString m, s;
         if (mode == modeLess || mode == modeGreater)
@@ -6781,10 +6786,10 @@ QueryBuilder::excludeFilter( int tables, Q_INT64 value, const QString& filter, i
             if (exact)
                 s = " <> '" + CollectionDB::instance()->escapeString( filter ) + "' ";
             else
-                s = "NOT " + CollectionDB::instance()->likeCondition( filter, false, false && mode != modeEndMatch ) + ' ';
+                s = "NOT " + CollectionDB::instance()->likeCondition( filter, mode != modeBeginMatch, mode != modeEndMatch ) + ' ';
         }
 
-        m_where += QString( "AND %1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
+        m_where += QString( "%1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
 
         if ( !exact && (value & valName) && mode == modeNormal && i18n( "Unknown").contains( filter, false ) )
             m_where += QString( "AND %1.%2 <> '' " ).arg( tableName( tables ) ).arg( valueName( value ) );
@@ -6958,6 +6963,41 @@ QueryBuilder::exclusiveFilter( int tableMatching, int tableNotMatching, Q_INT64 
     m_where += " IS null ";
 }
 
+
+void
+QueryBuilder::addNumericFilter(int tables, Q_INT64 value, const QString &n,
+                               int mode /* = modeNormal */,
+                               const QString &endRange /* = QString::null */ )
+{
+    m_where.append( ANDslashOR() ).append( " ( " );
+
+    m_where.append( tableName( tables ) ).append( '.' ).append( valueName( value ) );
+
+    switch (mode) {
+    case modeNormal:
+        m_where.append( " = " ); break;
+    case modeLess:
+        m_where.append( " < " ); break;
+    case modeGreater:
+        m_where.append( " > " ); break;
+    case modeBetween:
+        m_where.append( " BETWEEN " ); break;
+    case modeNotBetween:
+        m_where.append(" NOT BETWEEN "); break;
+    default:
+        qWarning( "Unhandled mode in addNumericFilter, using equals: %d", mode );
+        m_where.append( " = " );
+    }
+
+    m_where.append( n );
+    if ( mode == modeBetween || mode == modeNotBetween )
+        m_where.append( " AND " ).append( endRange );
+
+    m_where.append( " ) " );
+    m_linkTables |= tables;
+}
+    
+    
 
 void
 QueryBuilder::setOptions( int options )
@@ -7156,19 +7196,55 @@ QueryBuilder::setLimit( int startPos, int length )
     m_limit = QString( " LIMIT %2 OFFSET %1 " ).arg( startPos ).arg( length );
 }
 
+void
+QueryBuilder::shuffle( int table, Q_INT64 value )
+{
+    if ( !m_sort.isEmpty() ) m_sort += " ,  ";
+    if ( table == 0 || value == 0 ) {
+        // simple random
+        m_sort += "RAND()";
+    } else {
+        // This is the score weighted random order.
+
+        // The RAND() function returns random values equally distributed between 0.0
+        // (inclusive) and 1.0 (exclusive).  The obvious way to get this order is to
+        // put every track <score> times into a list, sort the list by RAND()
+        // (i.e. shuffle it) and discard every occurrence of every track but the very
+        // first of each.  By putting every track into the list only once but applying
+        // a transfer function T_s(x) := 1-(1-x)^(1/s) where s is the score, to RAND()
+        // before sorting the list, exactly the same distribution of tracks can be
+        // achieved (for a proof write to Stefan Siegel <kde@sdas.de>)
+
+        // In the query below a simplified function is used: The score is incremented
+        // by one to prevent division by zero, RAND() is used instead of 1-RAND()
+        // because it doesn't matter if it becomes zero (the exponent is always
+        // non-zero), and finally POWER(...) is used instead of 1-POWER(...) because it
+        // only changes the order type.
+        m_sort += QString("POWER( %1, 1.0 / (%2.%3 + 1) ) DESC")
+            .arg( CollectionDB::instance()->randomFunc() )
+            .arg( tableName( table ) )
+            .arg( valueName( value ) );
+
+        m_linkTables |= table;
+    }
+}    
+
 
 /* NOTE: It's important to keep these two functions and the const in sync! */
 /* NOTE: It's just as important to keep tags.url first! */
 const int
-QueryBuilder::dragFieldCount = 17;
+QueryBuilder::dragFieldCount = 21;
 
 QString
 QueryBuilder::dragSQLFields()
 {
-    return "tags.url, tags.deviceid, album.name, artist.name, composer.name, genre.name, tags.title, year.name, "
+    return "tags.url, tags.deviceid, album.name, artist.name, composer.name, "
+           "genre.name, tags.title, year.name, "
            "tags.comment, tags.track, tags.bitrate, tags.discnumber, "
            "tags.length, tags.samplerate, tags.filesize, "
-           "tags.sampler, tags.filetype, tags.bpm";
+           "tags.sampler, tags.filetype, tags.bpm, "
+           "statistics.percentage, statistics.rating, statistics.playcounter, "
+           "statistics.accessdate";
 }
 
 void
@@ -7192,6 +7268,10 @@ QueryBuilder::initSQLDrag()
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valIsCompilation );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFileType );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valBPM );
+    addReturnValue( QueryBuilder::tabStats, QueryBuilder::valPercentage );
+    addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
+    addReturnValue( QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
+    addReturnValue( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
 }
 
 
@@ -7415,6 +7495,49 @@ QueryBuilder::functionName( int function )
 
     return functions;
 }
+
+// FIXME: the two functions below are inefficient, but this patch is getting too
+// big already. They are not on any critical path right now. Ovy
+int
+QueryBuilder::getTableByName(const QString &name)
+{
+    for ( int i = 1; i <= tabDevices; i <<= 1 )
+    {
+        if (tableName(i) == name) return i;
+    }
+    return -1;
+}
+        
+Q_INT64
+QueryBuilder::getValueByName(const QString &name)
+{
+    for ( Q_INT64 i = 1; i <= valMountPoint; i <<= 1 ) {
+        if (valueName(i) == name) return i;
+    }
+
+    return -1;
+}
+
+bool
+QueryBuilder::getField(const QString &tableValue, int *table, Q_INT64 *value)
+{
+    int dotIndex = tableValue.find( '.' ) ;
+    if ( dotIndex < 0 ) return false;
+    int tmpTable = getTableByName( tableValue.left(dotIndex) );
+    Q_UINT64 tmpValue = getValueByName( tableValue.mid( dotIndex + 1 ) );
+    if ( tmpTable >= 0 && value >= 0 ) {
+        *table = tmpTable;
+        *value = tmpValue;
+        return true;
+    }
+    else
+    {
+        qFatal("invalid table.value: %s", tableValue.ascii());
+        return false;
+    }
+}
+
+
 
 QStringList
 QueryBuilder::cleanURL( QStringList result )

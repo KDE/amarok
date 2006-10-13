@@ -1005,7 +1005,11 @@ RemotePlaylistFetcher::result( KIO::Job *job )
 SqlLoader::SqlLoader( const QString &sql, QListViewItem *after )
         : UrlLoader( KURL::List(), after, false )
         , m_sql( QDeepCopy<QString>( sql ) )
-{}
+{
+    // Ovy: just until we make sure every SQL query from dynamic playlists is handled
+    // correctly
+    debug() << "Sql loader: query is: " << sql << "\n";
+}
 
 bool
 SqlLoader::doJob()

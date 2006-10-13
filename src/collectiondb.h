@@ -28,6 +28,7 @@
 #include <qstringlist.h>     //stack allocated
 #include <qptrvector.h>
 #include <qthread.h>
+#include <qvaluestack.h>
 
 namespace KIO { class Job; }
 
@@ -694,7 +695,9 @@ class QueryBuilder
 
         enum qBuilderFunctions  { funcNone = 0, funcCount = 1, funcMax = 2, funcMin = 4, funcAvg = 8, funcSum = 16 };
 
-        enum qBuilderFilter  { modeNormal = 0, modeLess = 1, modeGreater = 2, modeEndMatch = 3 };
+        // Note: modes beginMatch, endMatch are only supported for string filters
+        // Likewise, modes between and notBetween are only supported for numeric filters
+        enum qBuilderFilter  { modeNormal = 0, modeLess = 1, modeGreater = 2, modeEndMatch = 3, modeBeginMatch = 4, modeBetween = 5, modeNotBetween = 6};
 
         QueryBuilder();
 
@@ -702,6 +705,7 @@ class QueryBuilder
         void addReturnFunctionValue( int function, int table, Q_INT64 value);
         uint countReturnValues();
 
+        // Note: the filter chain begins in AND mode
         void beginOR(); //filters will be ORed instead of ANDed
         void endOR();   //don't forget to end it!
         void beginAND(); // These do the opposite; for recursive and/or
@@ -725,11 +729,25 @@ class QueryBuilder
 
         void exclusiveFilter( int tableMatching, int tableNotMatching, Q_INT64 value );
 
+        // For numeric filters:
+        // modeNormal means strict equality; modeBeginMatch and modeEndMatch are not
+        // allowed; modeBetween needs a second value endRange
+        void addNumericFilter(int tables, Q_INT64 value, const QString &n,
+                              int mode = modeNormal,
+                              const QString &endRange = QString::null);
+
         void setOptions( int options );
         void sortBy( int table, Q_INT64 value, bool descending = false );
         void sortByFunction( int function, int table, Q_INT64 value, bool descending = false );
         void groupBy( int table, Q_INT64 value );
         void setLimit( int startPos, int length );
+
+        // Returns the results in random order.
+        // If a \p table and \p value are specified, uses weighted random order on
+        // that field.
+        // The shuffle is cumulative with other sorts, but any sorts after this are
+        // pointless because of the precision of the random function.
+        void shuffle( int table = 0, Q_INT64 value = 0 );
 
         static const int dragFieldCount;
         static QString dragSQLFields();
@@ -741,17 +759,24 @@ class QueryBuilder
         void clear();
 
         QStringList run();
+    
+        // Transform a string table.value "field" into enum values
+        // @return true if we succeded
+        bool getField(const QString &tableValue, int *table, Q_INT64 *value);
 
     private:
         QString tableName( int table );
         const QString &valueName( Q_INT64 value );
         QString functionName( int functions );
 
+        int getTableByName(const QString &name);
+        Q_INT64 getValueByName(const QString &field);
+
         QStringList cleanURL( QStringList result );
 
         void linkTables( int tables );
 
-        bool m_OR;
+        QValueStack<bool> m_OR;
         bool m_showAll;
         uint m_deviceidPos;
 
@@ -775,25 +800,25 @@ class QueryBuilder
 
 inline void QueryBuilder::beginOR()
 {
-    m_OR = true;
-    m_where += "AND ( " + CollectionDB::instance()->boolF() + ' ';
+    m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + ' ';
+    m_OR.push(true);
 }
 inline void QueryBuilder::endOR()
 {
-    m_OR = false;
     m_where += " ) ";
+    m_OR.pop();
 }
 inline void QueryBuilder::beginAND()
 {
-    m_OR = false;
-    m_where += "OR ( " + CollectionDB::instance()->boolT() + ' ';
+    m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolT() + ' ';
+    m_OR.push(false);
 }
 inline void QueryBuilder::endAND()
 {
-    m_OR = true;
     m_where += " ) ";
+    m_OR.pop();
 }
-inline QString QueryBuilder::ANDslashOR() const { return m_OR ? "OR" : "AND"; }
+inline QString QueryBuilder::ANDslashOR() const { return m_OR.top() ? "OR" : "AND"; }
 
 
 #endif /* AMAROK_COLLECTIONDB_H */

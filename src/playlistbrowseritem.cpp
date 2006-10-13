@@ -3106,7 +3106,7 @@ SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const
 {
     setPixmap( 0, SmallIcon( Amarok::icon( "playlist" ) ) );
     setXml( xmlDefinition );
-    setDragEnabled( !m_sqlForTags.isEmpty() );
+    setDragEnabled( true );
 }
 
 void SmartPlaylist::setXml( const QDomElement &xml )
@@ -3114,7 +3114,9 @@ void SmartPlaylist::setXml( const QDomElement &xml )
     m_xml = xml;
     m_title = xml.attribute( "name" );
     setText( 0, m_title );
-    m_sqlForTags = xml.namedItem( "sqlquery" ).toElement().text();
+    // ignore query, we now compute it when needed
+    //m_sqlForTags = xml.namedItem( "sqlquery" ).toElement().text();
+    m_sqlForTags = "";
     static QStringList genres;
     static QStringList artists;
     static QStringList composers;
@@ -3133,8 +3135,10 @@ void SmartPlaylist::setXml( const QDomElement &xml )
 
     QDomNode expandN = xml.namedItem( "expandby" );
     if ( !expandN.isNull() ) {
-        QDomElement expand = expandN.toElement();
+        // precompute query
+        QString queryChildren = xmlToQuery( m_xml, true );
 
+        QDomElement expand = expandN.toElement();
         QString field = expand.attribute( "field" );
         SmartPlaylist *item = this;
         if ( field == i18n("Genre") ) {
@@ -3142,7 +3146,9 @@ void SmartPlaylist::setXml( const QDomElement &xml )
                 genres = CollectionDB::instance()->genreList();
             }
             foreach( genres ) {
-                m_after = new SmartPlaylist( item, m_after, i18n( "%1" ).arg( *it ), expand.text().replace("(*ExpandString*)", *it)  );
+                m_after = new SmartPlaylist( item, m_after, i18n( "%1" ).arg( *it ),
+                                             QString(queryChildren).replace(
+                                                 "(*ExpandString*)", *it)  );
             }
         }
         if ( field == i18n("Artist") ) {
@@ -3150,7 +3156,9 @@ void SmartPlaylist::setXml( const QDomElement &xml )
                 artists = CollectionDB::instance()->artistList();
             }
             foreach( artists ) {
-                m_after = new SmartPlaylist( item, m_after, i18n( "By %1" ).arg( *it ), expand.text().replace("(*ExpandString*)", *it)  );
+                m_after = new SmartPlaylist( item, m_after, i18n( "By %1" ).arg( *it ),
+                                             QString(queryChildren).replace(
+                                                 "(*ExpandString*)", *it)  );
             }
         }
         if ( field == i18n("Composer") ) {
@@ -3158,7 +3166,9 @@ void SmartPlaylist::setXml( const QDomElement &xml )
                 composers = CollectionDB::instance()->composerList();
             }
             foreach( composers ) {
-                m_after = new SmartPlaylist( item, m_after, i18n( "By %1" ).arg( *it ), expand.text().replace("(*ExpandString*)", *it)  );
+                m_after = new SmartPlaylist( item, m_after, i18n( "By %1" ).arg( *it ),
+                                             QString(queryChildren).replace(
+                                                 "(*ExpandString*)", *it)  );
             }
         }
         if ( field == i18n("Album") ) {
@@ -3166,7 +3176,9 @@ void SmartPlaylist::setXml( const QDomElement &xml )
                 albums = CollectionDB::instance()->albumList();
             }
             foreach( albums ) {
-                m_after = new SmartPlaylist( item, m_after, i18n( "%1" ).arg( *it ), expand.text().replace("(*ExpandString*)", *it)  );
+                m_after = new SmartPlaylist( item, m_after, i18n( "%1" ).arg( *it ),
+                                             QString(queryChildren).replace(
+                                                 "(*ExpandString*)", *it)  );
             }
         }
         if ( field == i18n("Year") ) {
@@ -3174,20 +3186,193 @@ void SmartPlaylist::setXml( const QDomElement &xml )
                 years = CollectionDB::instance()->yearList();
             }
             foreach( years ) {
-                m_after = new SmartPlaylist( item, m_after, i18n( "%1" ).arg( *it ), expand.text().replace("(*ExpandString*)", *it)  );
+                m_after = new SmartPlaylist( item, m_after, i18n( "%1" ).arg( *it ),
+                                             QString(queryChildren).replace(
+                                                 "(*ExpandString*)", *it)  );
             }
         }
     }
 
 }
 
-
 QString SmartPlaylist::query()
 {
-    return QString( m_sqlForTags )
-           .replace( "(*CurrentTimeT*)" , QString::number(QDateTime::currentDateTime().toTime_t()) )
+    if (m_sqlForTags.isEmpty()) m_sqlForTags = xmlToQuery(m_xml);
+    return m_sqlForTags
+           .replace( "(*CurrentTimeT*)" ,
+                     QString::number(QDateTime::currentDateTime().toTime_t()) )
            .replace( "(*ListOfFields*)" , QueryBuilder::dragSQLFields() )
-           .replace( "(*MountedDeviceSelection*)" , CollectionDB::instance()->deviceidSelection() );
+           .replace( "(*MountedDeviceSelection*)" ,
+                     CollectionDB::instance()->deviceidSelection() );
+}
+
+// static
+QString
+SmartPlaylist::xmlToQuery(const QDomElement &xml, bool forExpand /* = false */) {
+    QueryBuilder qb;
+
+    qb.initSQLDrag();
+    // This code is partly copied from SmartPlaylistEditor -- but refactoring
+    // to have it common would involve adding an internal data structure for smart
+    // playlist queries. I think having the XML be that data structure is almost as good,
+    // it's just a little more verbose when iterating.
+
+    // Add filters
+    QDomNodeList matchesList = xml.elementsByTagName( "matches" );
+    for ( uint i = 0; i < matchesList.count(); i++ ) {
+        QDomElement matches = matchesList.item( i ).toElement();
+        QDomNodeList criteriaList = matches.elementsByTagName( "criteria" );
+
+        if ( matches.attribute( "glue" ) == "OR" )
+            qb.beginOR();
+        else
+            qb.beginAND();
+
+        for ( uint j = 0; j < criteriaList.count(); j++ ) {
+            QDomElement criteria = criteriaList.item( j ).toElement();
+            QString field = criteria.attribute( "field" );
+            int table;
+            Q_INT64 value;
+            if ( !qb.getField( field, &table, &value ) ) continue;
+
+            QStringList filters;
+            // name conflict :) XML "value" -> QueryBuilder "filter"
+            QDomNodeList domFilterList = criteria.elementsByTagName( "value" );
+            for ( uint k = 0 ; k < domFilterList.count(); k++ ) {
+                filters << domFilterList.item(k).toElement().text();
+            }
+
+            QString condition = criteria.attribute( "condition" );
+
+            // Interpret dates
+            bool isDate = (value & (QueryBuilder::valCreateDate
+                                    | QueryBuilder::valAccessDate)) > 0;
+
+            if ( isDate ) {
+                QDateTime dt1, dt2;
+                if ( condition == i18n( "is in the last" )
+                     || condition == i18n( "is not in the last" ) ) {
+                         QString period = criteria.attribute( "period" );
+                         uint time = filters[0].toInt();
+                         if ( period == "days" ) time *= 86400;
+                         else if ( period == "months" ) time *= 86400 * 30;
+                         else if ( period == "years" ) time *= 86400 * 365;
+                         filters[0] = "(*CurrentTimeT*) - "  + QString::number( time );
+                         if ( filters.count() == 1 ) filters.push_back( "" );
+                         filters[1] = "(*CurrentTimeT*)";
+
+                     }
+                else {
+                    dt1.setTime_t( filters[0].toInt() );
+                    // truncate to midnight
+                    if ( condition == i18n( "is greater than" ) ) 
+                        dt1.setTime( QTime().addSecs(-1) );  // 11:59:59 pm
+                    else
+                        dt1.setTime( QTime() );
+                    if ( filters.count() > 1 ) {
+                        dt2.setTime_t( filters[1].toInt() );
+                        // this is a "between", so always go till right before midnight
+                        dt2.setTime( QTime().addSecs( -1 ) );
+                    }
+                }
+            }
+                
+
+            if ( condition == i18n( "contains" ) )
+                qb.addFilter( table, value, filters[0] );
+            else if ( condition == i18n( "does not contain" ) )
+                qb.excludeFilter( table, value, filters[0]) ;
+            else if ( condition == i18n( "is") )
+                qb.addFilter( table, value, filters[0], QueryBuilder::modeNormal, true);
+            else if ( condition == i18n( "is not" ) )
+                qb.excludeFilter( table, value, filters[0], QueryBuilder::modeNormal,
+                                  true);
+            else if ( condition == i18n( "starts with" ) )
+            {
+                // need to take care of absolute paths
+                if ( field == "tags.url" )
+                    if ( filters[0].startsWith( "/" ) )
+                        filters[0].prepend( '.' );
+                    else if ( !filters[0].startsWith( "./" ) )
+                        filters[0].prepend( "./" );
+                qb.addFilter( table, value, filters[0], QueryBuilder::modeBeginMatch );
+            }
+            else if ( condition == i18n( "ends with" ) )
+                qb.addFilter( table, value, filters[0], QueryBuilder::modeEndMatch );
+            else if ( condition == i18n( "is greater than") )
+                qb.addNumericFilter( table, value, filters[0], QueryBuilder::modeGreater );
+            else if ( condition == i18n( "is smaller than") )
+                qb.addNumericFilter( table, value, filters[0], QueryBuilder::modeLess );
+            else if ( condition == i18n( "is between" )
+                      || condition == i18n( "is in the last" ) )
+                qb.addNumericFilter( table, value, filters[0], QueryBuilder::modeBetween,
+                                     filters[1] );
+            else if ( condition == i18n( "is not between" )
+                      || condition == i18n( "is not in the last" ) )
+                qb.addNumericFilter( table, value, filters[0],
+                                     QueryBuilder::modeNotBetween, filters[1] );
+        }
+
+        if ( matches.attribute( "glue" ) == "OR" )
+            qb.endOR();
+        else
+            qb.endAND();
+
+    }
+
+    // order by
+    QDomNodeList orderbyList =  xml.elementsByTagName( "orderby" );
+    for ( uint i = 0; i < orderbyList.count(); i++ ) {
+        QDomElement orderby = orderbyList.item( i ).toElement();
+        QString field = orderby.attribute( "field" );
+        if ( field == "random" )
+        {
+            // shuffle
+            if ( orderby.attribute("order" ) == "weighted" )
+                qb.shuffle( QueryBuilder::tabStats, QueryBuilder::valPercentage );
+            else
+                qb.shuffle();
+        } else {
+            // normal sort
+            int table;
+            Q_INT64 value;
+            if ( !qb.getField( field, &table, &value ) ) continue;
+            qb.sortBy( table, value, orderby.attribute( "order" ) == "ASC" );
+        }
+    }
+    
+    if ( xml.hasAttribute( "maxresults" ) ) 
+        qb.setLimit(0, xml.attribute( "maxresults" ).toInt() );
+
+    // expand by, if needed
+    if ( forExpand ) {
+        // TODO: The most efficient way would be to pass the children the XML
+        // and what to expand by, then have the children compute the query as needed.
+        // This could save a few megs of RAM for queries, but this patch is getting
+        // too big already, right now. Ovy
+        QDomNodeList expandbyList = xml.elementsByTagName( "expandby" );
+        for ( uint i = 0; i < expandbyList.count(); i++ ) {
+            QDomElement expandby = expandbyList.item( i ).toElement();
+            QString field = expandby.attribute( "field" );
+            int table = QueryBuilder::tabGenre;  // make compiler happy
+            if ( field == i18n( "Genre" ) )
+                table = QueryBuilder::tabGenre;
+            else if ( field == i18n( "Artist" ) )
+                table = QueryBuilder::tabArtist;
+            else if ( field == i18n( "Composer" ) )
+                table = QueryBuilder::tabComposer;
+            else if ( field == i18n( "Album" ) )
+                table = QueryBuilder::tabAlbum;
+            else if ( field == i18n( "Year" ) )
+                table = QueryBuilder::tabYear;
+
+            qb.addFilter( table, QueryBuilder::valName,
+                          "(*ExpandString*)",
+                          QueryBuilder::modeNormal, true);
+        }
+    }
+
+    return qb.query();
 }
 
 

@@ -373,7 +373,10 @@ QDomElement SmartPlaylistEditor::result() {
 
         smartplaylist.appendChild( orderby );
     }
+    
     QDomElement Sql = doc.createElement("sqlquery");
+    Sql.appendChild( doc.createComment( "this element is deprecated, "
+                                        "and it is ignored" ) );
     buildQuery();
     Sql.appendChild( doc.createTextNode( m_query ) );
     smartplaylist.appendChild( Sql );
@@ -381,6 +384,9 @@ QDomElement SmartPlaylistEditor::result() {
     if( m_expandCheck->isChecked() ) {
         QDomElement expandBy = doc.createElement("expandby");
         expandBy.setAttribute( "field", m_expandableFields[ m_expandCombo->currentItem() ] );
+        expandBy.appendChild(
+            doc.createComment( "the SQL query in this element is deprecated, "
+                               "and it is ignored" ) );
         QDomText t = doc.createTextNode( m_expandQuery );
         expandBy.appendChild( t );
         smartplaylist.appendChild( expandBy );
@@ -394,6 +400,11 @@ void SmartPlaylistEditor::buildQuery()
     DEBUG_BLOCK
     //FIXME max: make sure sql queries are correct
 
+    // Note: the query built here is deprecated and kept only for forward compatibility
+    // with older amarok. Now the query is built at runtime in playlistbrowseritem.cpp
+    // This query no longer matches the field selection from collectiondb.cpp, but
+    // it does match the older versions, so an old Amarok will be able to read a
+    // smart playlist built by the newer version.
     QString joins = "tags LEFT JOIN year ON year.id=tags.year LEFT JOIN genre ON genre.id=tags.genre"
                     " LEFT JOIN artist ON artist.id=tags.artist LEFT JOIN album ON album.id=tags.album"
                     " LEFT JOIN composer ON composer.id=tags.composer";
