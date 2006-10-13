@@ -161,8 +161,7 @@ MediaItem
 
     QString genericError = i18n( "Could not send track" );
 
-    trackValueList::const_iterator it_track = m_trackList.findTrackByName( bundle.filename() );
-    if( it_track != m_trackList.end() )
+    if( m_fileNameToItem[ bundle.filename() ] != 0 )
     {
         // track already exists. don't do anything (for now).
         debug() << "Track already exists on device." << endl;
@@ -355,7 +354,6 @@ MediaItem
     kapp->processEvents( 100 );
 
     // cache the track
-    m_trackList.append( taggedTrack );
     return addTrackToView( taggedTrack );
 }
 
@@ -484,7 +482,10 @@ MtpMediaDevice::downloadSelectedItemsToCollection()
     int total,progress;
     total = items.count();
     progress = 0;
-    
+
+    if( total == 0 )
+        return 0;
+
     setProgress( progress, total );
     for( MtpMediaItem *it = dynamic_cast<MtpMediaItem*>(items.first()); it && !(m_canceled); it = dynamic_cast<MtpMediaItem*>(items.next()) )
     {
@@ -515,7 +516,7 @@ MtpMediaDevice::downloadSelectedItemsToCollection()
                 setProgress( progress );
             }
         }
-        else 
+        else
         {
             total--;
             setProgress( progress, total );
@@ -718,7 +719,7 @@ MtpMediaDevice::playlistFromItem( MtpMediaItem *item )
 }
 
 /**
- * Recursively remove MediaItem from the tracklist and the device
+ * Recursively remove MediaItem from the device and media view
  */
 int
 MtpMediaDevice::deleteItemFromDevice(MediaItem* item, int flags )
@@ -803,8 +804,7 @@ MtpMediaDevice::deleteTrack(MtpMediaItem *trackItem)
     }
     debug() << "track deleted" << endl;
 
-    // remove from the listview/tracklist
-    m_trackList.remove( trackItem->track() );
+    // remove from the media view
     delete trackItem;
     kapp->processEvents( 100 );
 
@@ -985,7 +985,6 @@ MtpMediaDevice::customClicked()
     QString Information;
     if( isConnected() )
     {
-        QString tracksFound;
         QString batteryLevel;
         QString secureTime;
         QString storageInformation;
@@ -1006,9 +1005,6 @@ MtpMediaDevice::customClicked()
         LIBMTP_Get_Secure_Time( m_device, &sectime );
         m_critical_mutex.unlock();
 
-        tracksFound = i18n( "1 track found on device",
-                            "%n tracks found on device ",
-                            m_trackList.size() );
         batteryLevel = i18n("Battery level: ")
             + QString::number( (int) ( (float) currbattlevel / (float) maxbattlevel * 100.0 ) )
             + '%';
@@ -1113,36 +1109,6 @@ MtpMediaDevice::rmbPressed( QListViewItem *qitem, const QPoint &point, int )
 }
 
 /**
- * Handle expanding a media item (show sub-items)
- */
-void
-MtpMediaDevice::expandItem( QListViewItem *item )
-{
-    if( item == 0 || !item->isExpandable() || m_transferring )
-        return;
-
-    // First clear the item's children to repopulate.
-    while( item->firstChild() )
-        delete item->firstChild();
-
-    MtpMediaItem *it = dynamic_cast<MtpMediaItem *>( item );
-
-    switch( it->type() )
-    {
-        case MediaItem::ARTIST:
-            if( it->childCount() == 0 ) // Just to be sure
-                addAlbums( item->text( 0 ), it );
-            break;
-        case MediaItem::ALBUM:
-            if( it->childCount() == 0 )
-                addTracks( it->bundle()->artist(), item->text( 0 ), it );
-            break;
-        default:
-            break;
-    }
-}
-
-/**
  * Add gui elements to the device configuration
  */
 void
@@ -1232,55 +1198,13 @@ MtpMediaItem
         item->m_device = this;
         QString titleName = track->bundle()->title();
         item->setTrack( track );
-
+        item->m_order = track->bundle()->track();
         item->setText( 0, titleName );
         item->setType( MediaItem::TRACK );
         item->setBundle( track->bundle() );
         item->track()->setId( track->id() );
-    }
-    return item;
-}
-
-/**
- * Add new albums to the tracklist
- */
-MtpMediaItem
-*MtpMediaDevice::addAlbums( const QString &artist, MtpMediaItem *item )
-{
-    for( trackValueList::iterator it = m_trackList.begin(); it != m_trackList.end(); it++ )
-    {
-        if( item->findItem( (*it)->bundle()->album() ) == 0 && ( (*it)->bundle()->artist().string() == artist ) )
-        {
-            MtpMediaItem *album = new MtpMediaItem( item );
-            album->setText( 0, (*it)->bundle()->album() );
-            album->setType( MediaItem::ALBUM );
-            album->setExpandable( true );
-            album->setBundle( (*it)->bundle() );
-            album->m_device = this;
-            expandItem( album );
-        }
-    }
-    return item;
-}
-
-/**
- * Add new tracks to the tracklist
- */
-MtpMediaItem
-*MtpMediaDevice::addTracks(const QString &artist, const QString &album, MtpMediaItem *item)
-{
-    for( trackValueList::iterator it = m_trackList.begin(); it != m_trackList.end(); it++ )
-    {
-        if( ( (*it)->bundle()->album().string() == album ) && ( (*it)->bundle()->artist().string() == artist ))
-        {
-            MtpMediaItem *track = new MtpMediaItem( item );
-            track->setText( 0, (*it)->bundle()->title() );
-            track->setType( MediaItem::TRACK );
-            track->setBundle( (*it)->bundle() );
-            track->setTrack( (*it) );
-            track->m_device = this;
-            track->m_order = (*it)->bundle()->track();
-        }
+        m_fileNameToItem[ track->bundle()->filename() ] = item;
+        m_idToTrack[track->id()] = track;
     }
     return item;
 }
@@ -1294,42 +1218,53 @@ MtpMediaDevice::readMtpMusic()
 
     DEBUG_BLOCK
 
-    int result = 0;
-
-    if( m_trackList.isEmpty() )
-    {
-        m_critical_mutex.lock();
-        result = m_trackList.readFromDevice( this );
-        m_critical_mutex.unlock();
-    }
-
-    debug()<< "Result : " << result << endl;
-
     clearItems();
 
-    if( result == 0 )
+    m_critical_mutex.lock();
+
+    QString genericError = i18n( "Could not get music from MTP Device" );
+
+    setProgress( 0, 100 ); // we don't know how many tracks. fake progress bar.
+
+    kapp->processEvents( 100 );
+
+    LIBMTP_track_t *tracks = LIBMTP_Get_Tracklisting( m_device );
+
+    debug() << "Got tracks from device" << endl;
+
+    if( tracks == 0 )
     {
-        kapp->processEvents( 100 );
-
-        for( trackValueList::iterator it = m_trackList.begin(); it != m_trackList.end(); it++ )
+        debug()<< "Error reading tracks. 0 returned." << endl;
+        Amarok::StatusBar::instance()->shortLongMessage(
+            genericError,
+            i18n( "Could not read MTP Device tracks" ),
+            KDE::StatusBar::Error
+        );
+        hideProgress();
+        return -1;
+    }
+    else
+    {
+        LIBMTP_track_t *tmp;
+        while( tracks != 0 )
         {
-            if( m_view->findItem( ((*it)->bundle()->artist().string()), 0 ) == 0 )
-            {
-                MtpMediaItem *artist = new MtpMediaItem( m_view );
-                artist->setText( 0, (*it)->bundle()->artist() );
-                artist->setType( MediaItem::ARTIST );
-                artist->setExpandable( true );
-                artist->setBundle( (*it)->bundle() );
-                artist->m_device = this;
-
-                expandItem( artist );
-            }
+            MtpTrack *mtp_track = new MtpTrack( tracks );
+            mtp_track->readMetaData( tracks );
+            addTrackToView( mtp_track );
+            tmp = tracks;
+            tracks = tracks->next;
+            LIBMTP_destroy_track_t( tmp );
+            kapp->processEvents( 100 );
         }
     }
+    setProgress( 100 );
+    hideProgress();
+
+    m_critical_mutex.unlock();
 
     readPlaylists();
 
-    return result;
+    return 0;
 }
 
 /**
@@ -1354,7 +1289,7 @@ MtpMediaDevice::readPlaylists()
             uint32_t i;
             for( i = 0; i < playlists->no_tracks; i++ )
             {
-                MtpTrack *track = *(m_trackList.findTrackById( playlists->tracks[i] ));
+                MtpTrack *track = m_idToTrack[ playlists->tracks[i] ];
                 MtpMediaItem *item = new MtpMediaItem( playlist );
                 item->setText( 0, track->bundle()->artist() + " - " + track->bundle()->title() );
                 item->setType( MediaItem::PLAYLISTITEM );
@@ -1380,94 +1315,6 @@ MtpMediaDevice::clearItems()
 {
     m_view->clear();
     initView();
-}
-
-/**
- * trackValueList Class
- */
-
-/**
- * Find a track by its id
- */
-trackValueList::iterator
-trackValueList::findTrackById( unsigned _id )
-{
-    trackValueList::iterator it;
-    for( it = begin(); it != end(); it++ )
-        if( (*it)->id() == _id )
-            break;
-    return it;
-}
-
-/**
- * Find a track by its id
- */
-trackValueList::const_iterator
-trackValueList::findTrackById( unsigned _id ) const
-{
-    trackValueList::const_iterator it;
-    for( it = begin(); it != end(); it++ )
-        if( (*it)->id() == _id )
-            break;
-    return it;
-}
-
-/**
- * Find a track by its name
- */
-trackValueList::iterator
-trackValueList::findTrackByName( const QString &_filename )
-{
-    trackValueList::iterator it;
-    for( it = begin(); it != end(); it++ )
-        if( (*it)->bundle()->url().path() == _filename )
-            break;
-    return it;
-}
-
-/**
- * Transfer info from the device to local structures
- */
-int
-trackValueList::readFromDevice( MtpMediaDevice *mtp )
-{
-
-    DEBUG_BLOCK
-
-    LIBMTP_mtpdevice_t *device = mtp->current_device();
-
-    QString genericError = i18n( "Could not get music from MTP Device" );
-
-    LIBMTP_track_t *tracks = LIBMTP_Get_Tracklisting( device );
-
-    debug() << "Got tracks from device" << endl;
-
-    if( tracks == 0 )
-    {
-        debug()<< "Error reading tracks. 0 returned." << endl;
-        Amarok::StatusBar::instance()->shortLongMessage(
-            genericError,
-            i18n( "Could not read MTP Device tracks" ),
-            KDE::StatusBar::Error
-        );
-        return -1;
-    }
-    else
-    {
-        LIBMTP_track_t *tmp;
-        while( tracks != 0 )
-        {
-            MtpTrack *mtp_track = new MtpTrack( tracks );
-            mtp_track->readMetaData( tracks );
-            append( mtp_track );
-            tmp = tracks;
-            tracks = tracks->next;
-            LIBMTP_destroy_track_t( tmp );
-        }
-        kapp->processEvents( 100 );
-    }
-
-    return 0;
 }
 
 /**

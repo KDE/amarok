@@ -102,17 +102,6 @@ class MtpMediaItem : public MediaItem
         MtpPlaylist         *m_playlist;
 };
 
-
-class trackValueList: public QValueList<MtpTrack *>
-{
-    public:
-        trackValueList::iterator        findTrackById( unsigned );
-        trackValueList::const_iterator  findTrackById( unsigned ) const;
-        trackValueList::iterator        findTrackByName( const QString& );
-        int                             readFromDevice( MtpMediaDevice *mtp );
-};
-
-
 class MtpMediaDevice : public MediaDevice
 {
     Q_OBJECT
@@ -135,8 +124,6 @@ class MtpMediaDevice : public MediaDevice
         virtual void            applyConfig();
         virtual void            loadConfig();
         static int              progressCallback( uint64_t const sent, uint64_t const total, void const * const data );
-    public slots:
-        void                    expandItem( QListViewItem *item );
 
     protected:
         MediaItem*              trackExists( const MetaBundle &bundle );
@@ -157,9 +144,6 @@ class MtpMediaDevice : public MediaDevice
         virtual void            updateRootItems() {};
 
     private:
-        MtpMediaItem            *addAlbums( const QString &artist, MtpMediaItem *item );
-        MtpMediaItem            *addTracks( const QString &artist, const QString &track, MtpMediaItem *item );
-        MtpMediaItem            *addArtist( MtpTrack *track );
         MtpMediaItem            *addTrackToView(MtpTrack *track, MtpMediaItem *item=0 );
         int                     readMtpMusic( void );
         void                    clearItems();
@@ -172,7 +156,6 @@ class MtpMediaDevice : public MediaDevice
         void                    initView( void );
         void                    readPlaylists( void );
         void                    playlistFromItem( MtpMediaItem *item);
-        trackValueList          m_trackList;
         LIBMTP_mtpdevice_t      *m_device;
         QMutex                  m_mutex;
         QMutex                  m_critical_mutex;
@@ -183,6 +166,8 @@ class MtpMediaDevice : public MediaDevice
         QLabel                  *m_folderLabel;
         QStringList             m_supportedFiles;
         QMap<int,QString>       mtpFileTypes;
+        QMap<uint32_t,MtpTrack*> m_idToTrack;
+        QMap<QString,MtpMediaItem*> m_fileNameToItem;
 };
 
 #endif

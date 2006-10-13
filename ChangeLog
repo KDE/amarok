@@ -29,6 +29,7 @@ VERSION 1.4.4
 
 
   CHANGES:
+    * Reduced memory usage for MTP media devices. (BR 134663)
     * Faster searching on playlist and startup, due to some optimizing in
       string usage. Patch by Ovidiu Gheorghioiu <ovidiug@gmail.com>.
     * Correctly translate media:, home:, ... style urls on KDE 3.5 and newer.
