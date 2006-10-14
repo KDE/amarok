@@ -97,7 +97,9 @@ namespace Amarok {
     QString
     proxyForProtocol(const QString& protocol)
     {
-        return KProtocolManager::proxyFor ( protocol );
+        if ( KProtocolManager::useProxy() )
+            return KProtocolManager::proxyFor( protocol );
+        return QString::null;
     }
 
 
