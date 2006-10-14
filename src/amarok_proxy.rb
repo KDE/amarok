@@ -151,26 +151,19 @@ class Proxy
     desync( data )
     holdover = ""
     loop do
-      GC.disable
-      write_thread = Thread.new() {
-        begin
-          safe_write( output, data )
-        rescue
-          myputs( "error from o.write, #{$!}" )
-          break
-        end
-      }
+      begin
+        safe_write( output, data )
+      rescue
+        myputs( "error from o.write, #{$!}" )
+        break
+      end
       newdata = income.read( 4096 )
 
       data = holdover + newdata[0..-5]
       holdover = newdata[-4..-1]
       desync( data )
 
-      write_thread.join
       break if newdata == nil
-
-      GC.enable
-      GC.start
     end
   end
 end
