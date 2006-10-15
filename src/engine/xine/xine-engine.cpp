@@ -559,6 +559,9 @@ XineEngine::setEqualizerEnabled( bool enable )
 void
 XineEngine::setEqualizerParameters( int preamp, const QValueList<int> &gains )
 {
+    if ( !m_stream )
+        return;
+
     m_equalizerGains = gains;
     m_intPreamp = preamp;
     QValueList<int>::ConstIterator it = gains.begin();
