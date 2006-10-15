@@ -70,17 +70,6 @@ class RioKarmaMediaItem : public MediaItem
         RioKarmaTrack               *m_track;
 };
 
-
-class trackValueList: public QValueList<RioKarmaTrack *>
-{
-    public:
-        trackValueList::iterator        findTrackById( unsigned );
-        trackValueList::const_iterator  findTrackById( unsigned ) const;
-        trackValueList::iterator        findTrackByName( const QString& );
-        int                             readFromDevice( RioKarmaMediaDevice* rio );
-};
-
-
 class RioKarmaMediaDevice : public MediaDevice
 {
     Q_OBJECT
@@ -95,11 +84,6 @@ class RioKarmaMediaDevice : public MediaDevice
         virtual void                rmbPressed( QListViewItem *qitem, const QPoint &point, int arg1 );
         virtual void                init( MediaBrowser *parent );
         virtual QStringList         supportedFiletypes();
-
-    public slots:
-        void                        expandItem( QListViewItem *item );
-
-
 
     protected:
         MediaItem*                  trackExists( const MetaBundle &bundle );
@@ -119,16 +103,13 @@ class RioKarmaMediaDevice : public MediaDevice
         virtual void                updateRootItems() {};
 
     private:
-        RioKarmaMediaItem           *addAlbums( const QString &artist, RioKarmaMediaItem *item );
-        RioKarmaMediaItem           *addTracks( const QString &artist, const QString &track, RioKarmaMediaItem *item );
-        RioKarmaMediaItem           *addArtist( RioKarmaTrack *track );
         RioKarmaMediaItem           *addTrackToView( RioKarmaTrack *track, RioKarmaMediaItem *item=0 );
         int                         readKarmaMusic( void );
         void                        clearItems();
         int                         deleteRioTrack( RioKarmaMediaItem *trackItem );
-        trackValueList              m_trackList;
         int                         m_rio;
         QMutex                      m_mutex;
+        QMap<QString,RioKarmaMediaItem *> m_fileNameToItem;
 
 };
 

@@ -38,6 +38,7 @@ AMAROK_EXPORT_PLUGIN( RioKarmaMediaDevice )
 // Qt
 #include <qdir.h>
 #include <qlistview.h>
+#include <qmap.h>
 
 
 /**
@@ -92,11 +93,17 @@ MediaItem
 {
     DEBUG_BLOCK
 
-    trackValueList::const_iterator it_track = m_trackList.findTrackByName( bundle.filename() );
-    if( it_track != m_trackList.end() )
+    QString genericError = i18n( "Could not send track" );
+
+    if( m_fileNameToItem[ bundle.filename() ] != 0 )
     {
         // track already exists. don't do anything (for now).
         debug() << "Track already exists on device." << endl;
+        Amarok::StatusBar::instance()->shortLongMessage(
+            genericError,
+            i18n( "Track already exists on device" ),
+            KDE::StatusBar::Error
+        );
         return 0;
     }
 
@@ -113,7 +120,6 @@ MediaItem
     taggedTrack->setBundle( temp );
 
     // cache the track
-    m_trackList.append( taggedTrack );
     updateRootItems();
     return addTrackToView( taggedTrack );
 }
@@ -175,33 +181,40 @@ RioKarmaMediaDevice::addToPlaylist( MediaItem *mlist, MediaItem *after, QPtrList
 }
 
 /**
- * Recursively remove MediaItem from the tracklist and the device
+ * Recursively remove MediaItem from the device
  */
 int
 RioKarmaMediaDevice::deleteItemFromDevice(MediaItem* item, int flags )
 {
 
     int result = 0;
+    if( isCanceled() )
+    {
+        return -1;
+    }
     MediaItem *next = 0;
 
     switch( item->type() )
     {
         case MediaItem::TRACK:
+            if( isCanceled() )
+                break;
             if( item )
             {
-                int res = deleteRioTrack( dynamic_cast<RioKarmaMediaItem *> (item) );
+                int res = deleteRioTrack( dynamic_cast<RioKarmaMediaItem *> ( item ) );
                 if( res >=0 && result >= 0 )
                     result += res;
                 else
                     result = -1;
-
             }
             break;
-        case MediaItem::ARTIST:
-            expandItem( item );
         case MediaItem::ALBUM:
+        case MediaItem::ARTIST:
             // Recurse through the lists
             next = 0;
+
+            if( isCanceled() )
+                break;
 
             for( MediaItem *it = dynamic_cast<MediaItem *>( item->firstChild() ); it ; it = next )
             {
@@ -249,8 +262,7 @@ RioKarmaMediaDevice::deleteRioTrack( RioKarmaMediaItem *trackItem )
     }
     debug() << "property deleted" << endl;
 
-    // remove from the listview/tracklist
-    m_trackList.remove( m_trackList.findTrackById( trackItem->track()->id() ) );
+    // remove from the listview
     delete trackItem;
     kapp->processEvents( 100 );
 
@@ -379,42 +391,11 @@ RioKarmaMediaDevice::rmbPressed( QListViewItem *qitem, const QPoint &point, int 
         {
         case DELETE:
             MediaDevice::deleteFromDevice();
-            readKarmaMusic();
             break;
         }
         return;
     }
 
-}
-
-/**
- * Handle expanding a media item (show sub-items)
- */
-void
-RioKarmaMediaDevice::expandItem( QListViewItem *item )
-{
-    if( item == 0 || !item->isExpandable() || m_transferring )
-        return;
-
-    // First clear the item's children to repopulate.
-    while( item->firstChild() )
-        delete item->firstChild();
-
-    RioKarmaMediaItem *it = dynamic_cast<RioKarmaMediaItem *>( item );
-
-    switch( it->type() )
-    {
-        case MediaItem::ARTIST:
-            if( it->childCount() == 0 ) // Just to be sure
-                addAlbums( item->text( 0 ), it );
-            break;
-        case MediaItem::ALBUM:
-            if( it->childCount() == 0 )
-                addTracks( it->bundle()->artist(), item->text( 0 ), it );
-            break;
-        default:
-            break;
-    }
 }
 
 /**
@@ -452,54 +433,12 @@ RioKarmaMediaItem
         item->m_device = this;
         QString titleName = track->bundle()->title();
         item->setTrack( track );
-
+        item->m_order = track->bundle()->track();
         item->setText( 0, titleName );
         item->setType( MediaItem::TRACK );
         item->setBundle( track->bundle() );
         item->track()->setId( track->id() );
-    }
-    return item;
-}
-
-/**
- * Add new albums to the tracklist
- */
-RioKarmaMediaItem
-*RioKarmaMediaDevice::addAlbums( const QString &artist, RioKarmaMediaItem *item )
-{
-    for( trackValueList::iterator it = m_trackList.begin(); it != m_trackList.end(); it++ )
-    {
-        if( item->findItem( ( *it )->bundle()->album() ) == 0 && ( ( *it )->bundle()->artist().string() == artist ) )
-        {
-            RioKarmaMediaItem *album = new RioKarmaMediaItem( item );
-            album->setText( 0, ( *it )->bundle()->album() );
-            album->setType( MediaItem::ALBUM );
-            album->setExpandable( true );
-            album->setBundle( ( *it )->bundle() );
-            album->m_device = this;
-            expandItem( album );
-        }
-    }
-    return item;
-}
-
-/**
- * Add new tracks to the tracklist
- */
-RioKarmaMediaItem
-*RioKarmaMediaDevice::addTracks( const QString &artist, const QString &album, RioKarmaMediaItem *item )
-{
-    for( trackValueList::iterator it = m_trackList.begin(); it != m_trackList.end(); it++ )
-    {
-        if( ( ( *it )->bundle()->album().string() == album ) && ( ( *it )->bundle()->artist().string() == artist ))
-        {
-            RioKarmaMediaItem *track = new RioKarmaMediaItem( item );
-            track->setText( 0, ( *it )->bundle()->title() );
-            track->setType( MediaItem::TRACK );
-            track->setBundle( ( *it )->bundle() );
-            track->setTrack( ( *it ) );
-            track->m_device = this;
-        }
+        m_fileNameToItem[ track->bundle()->filename() ] = item;
     }
     return item;
 }
@@ -513,103 +452,16 @@ RioKarmaMediaDevice::readKarmaMusic()
 
     DEBUG_BLOCK
 
-    int result = 0;
+    clearItems();
 
-    if( m_trackList.isEmpty() )
-    {
-        result = m_trackList.readFromDevice( this );
-    }
-
-    debug()<< "Result : " << result << endl;
-
-    if( result == 0 )
-    {
-        kapp->processEvents( 100 );
-
-        for( trackValueList::iterator it = m_trackList.begin(); it != m_trackList.end(); it++ )
-        {
-            if( m_view->findItem( ( ( *it )->bundle()->artist().string() ), 0 ) == 0 )
-            {
-                RioKarmaMediaItem *artist = new RioKarmaMediaItem( m_view );
-                artist->setText( 0, ( *it )->bundle()->artist() );
-                artist->setType( MediaItem::ARTIST );
-                artist->setExpandable( true );
-                artist->setBundle( ( *it )->bundle() );
-                artist->m_device = this;
-                //expandItem( artist );
-            }
-        }
-    }
-    return result;
-}
-
-/**
- * Clear the current listview
- */
-void
-RioKarmaMediaDevice::clearItems()
-{
-    m_view->clear();
-}
-
-
-/**
- * trackValueList Class
- */
-
-/**
- * Find a track by its Fid
- */
-trackValueList::iterator
-trackValueList::findTrackById( unsigned _id )
-{
-    trackValueList::iterator it;
-    for( it = begin(); it != end(); it++)
-        if( ( *it )->id() == _id )
-            break;
-    return it;
-}
-
-/**
- * Find a track by its Fid
- */
-trackValueList::const_iterator
-trackValueList::findTrackById( unsigned _id ) const
-{
-    trackValueList::const_iterator it;
-    for( it = begin(); it != end(); it++)
-        if( ( *it )->id() == _id )
-            break;
-    return it;
-}
-
-/**
- * Find a track by its name
- */
-trackValueList::iterator
-trackValueList::findTrackByName( const QString &_filename )
-{
-    trackValueList::iterator it;
-    for( it = begin(); it != end(); it++)
-        if( ( *it )->bundle()->url().path() == _filename )
-            break;
-    return it;
-}
-
-/**
- * Transfer info from the karma to local structures
- */
-int
-trackValueList::readFromDevice( RioKarmaMediaDevice *rio )
-{
-
-    DEBUG_BLOCK
-
-    int rio_id = rio->current_id();
 
     QString genericError = i18n( "Could not get music from Rio Karma" );
 
-    lk_karma_load_database( rio_id );
+    setProgress( 0, 100 ); // we don't know how many tracks. fake progress bar.
+
+    kapp->processEvents( 100 );
+
+    lk_karma_load_database( m_rio );
 
     int i;
     uint32_t *ret;
@@ -622,7 +474,7 @@ trackValueList::readFromDevice( RioKarmaMediaDevice *rio )
     {
         debug()<< "Error reading tracks. NULL returned." << endl;
         Amarok::StatusBar::instance()->shortLongMessage( genericError, i18n( "Could not read Rio Karma tracks" ), KDE::StatusBar::Error );
-        rio->setDisconnected();
+        setDisconnected();
         return -1;
     }
 
@@ -638,12 +490,23 @@ trackValueList::readFromDevice( RioKarmaMediaDevice *rio )
         {
             RioKarmaTrack *track = new RioKarmaTrack( ret[i] );
             track->readMetaData();
-            append( track );
+            addTrackToView( track );
         }
         kapp->processEvents( 100 );
     }
+    setProgress( 100 );
+    hideProgress();
 
     return 0;
+}
+
+/**
+ * Clear the current listview
+ */
+void
+RioKarmaMediaDevice::clearItems()
+{
+    m_view->clear();
 }
 
 /**
