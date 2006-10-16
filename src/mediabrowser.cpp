@@ -1563,8 +1563,11 @@ MediaBrowser::mediumChanged( const Medium *medium, QString /*name*/ )
         {
             if( (*it)->uniqueId() == medium->id() )
             {
+                (*it)->m_medium = const_cast<Medium *>(medium);
+                if( !(*it)->isConnected() && medium->isMounted() )
+                    (*it)->connectDevice();
 #if 0
-                if( (*it)->isConnected() && !medium->isMounted() )
+                else if( (*it)->isConnected() && !medium->isMounted() )
                 {
                     Amarok::StatusBar::instance()->longMessage(
                             i18n( "The device %1 was unmounted before it was synchronized. "
