@@ -3122,6 +3122,7 @@ void SmartPlaylist::setXml( const QDomElement &xml )
     static QStringList composers;
     static QStringList albums;
     static QStringList years;
+    static QStringList labels;
 
     //Delete all children before
     QListViewItem *child, *next;
@@ -3189,6 +3190,14 @@ void SmartPlaylist::setXml( const QDomElement &xml )
                 m_after = new SmartPlaylist( item, m_after, i18n( "%1" ).arg( *it ),
                                              QString(queryChildren).replace(
                                                  "(*ExpandString*)", *it)  );
+            }
+        }
+        if ( field == i18n("Label") ) {
+            if (labels.isEmpty() ) {
+                labels = CollectionDB::instance()->labelList();
+            }
+            foreach( labels ) {
+                m_after = new SmartPlaylist( item, m_after, i18n( "%1" ).arg( *it ), expand.text().replace("(*ExpandString*)", *it)  );
             }
         }
     }
@@ -3265,7 +3274,7 @@ SmartPlaylist::xmlToQuery(const QDomElement &xml, bool forExpand /* = false */) 
                 else {
                     dt1.setTime_t( filters[0].toInt() );
                     // truncate to midnight
-                    if ( condition == i18n( "is greater than" ) ) 
+                    if ( condition == i18n( "is after" ) ) 
                         dt1.setTime( QTime().addSecs(-1) );  // 11:59:59 pm
                     else
                         dt1.setTime( QTime() );
@@ -3299,9 +3308,9 @@ SmartPlaylist::xmlToQuery(const QDomElement &xml, bool forExpand /* = false */) 
             }
             else if ( condition == i18n( "ends with" ) )
                 qb.addFilter( table, value, filters[0], QueryBuilder::modeEndMatch );
-            else if ( condition == i18n( "is greater than") )
+            else if ( condition == i18n( "is greater than") || condition == i18n( "is after" ) )
                 qb.addNumericFilter( table, value, filters[0], QueryBuilder::modeGreater );
-            else if ( condition == i18n( "is smaller than") )
+            else if ( condition == i18n( "is smaller than") || condition == i18n( "is before" ) )
                 qb.addNumericFilter( table, value, filters[0], QueryBuilder::modeLess );
             else if ( condition == i18n( "is between" )
                       || condition == i18n( "is in the last" ) )
