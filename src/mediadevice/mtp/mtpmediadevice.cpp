@@ -1245,7 +1245,9 @@ MtpMediaDevice::readMtpMusic()
 
     QString genericError = i18n( "Could not get music from MTP Device" );
 
-    setProgress( 0, 100 ); // we don't know how many tracks. fake progress bar.
+    int total = 100;
+    int progress = 0;
+    setProgress( progress, total ); // we don't know how many tracks. fake progress bar.
 
     kapp->processEvents( 100 );
 
@@ -1266,7 +1268,17 @@ MtpMediaDevice::readMtpMusic()
     }
     else
     {
-        LIBMTP_track_t *tmp;
+        LIBMTP_track_t *tmp = tracks;
+        total = 0;
+        // spin through once to determine size of the list
+        while( tracks != 0 )
+        {
+            tracks = tracks->next;
+            total++;
+        }
+        setProgress( progress, total );
+        tracks = tmp;
+        // now process the tracks
         while( tracks != 0 )
         {
             MtpTrack *mtp_track = new MtpTrack( tracks );
@@ -1275,10 +1287,13 @@ MtpMediaDevice::readMtpMusic()
             tmp = tracks;
             tracks = tracks->next;
             LIBMTP_destroy_track_t( tmp );
-            kapp->processEvents( 100 );
+            progress++;
+            setProgress( progress );
+            if( progress % 50 == 0 )
+                kapp->processEvents( 100 );
         }
     }
-    setProgress( 100 );
+    setProgress( total );
     hideProgress();
 
     m_critical_mutex.unlock();
