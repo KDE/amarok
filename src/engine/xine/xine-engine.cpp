@@ -374,6 +374,9 @@ XineEngine::stop()
 void
 XineEngine::pause()
 {
+    if ( !m_stream )
+        return;
+
     if( xine_get_param( m_stream, XINE_PARAM_SPEED ) != XINE_SPEED_PAUSE )
     {
         if( s_fader && s_fader->running() )
@@ -522,7 +525,7 @@ XineEngine::fadeOut()
             }
         }
     }
-    if( m_fadeOutRunning )
+    if( m_fadeOutRunning && m_stream )
         xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, (uint) originalVol );
     m_fadeOutRunning = !m_fadeOutRunning;
 }
@@ -804,7 +807,7 @@ void XineEngine::configChanged()
         init();
         setEqualizerEnabled( m_equalizerEnabled );
         if( m_equalizerEnabled )
-                           setEqualizerParameters( m_intPreamp, m_equalizerGains );
+            setEqualizerParameters( m_intPreamp, m_equalizerGains );
         emit resetConfig(m_xine);
     }
 }
