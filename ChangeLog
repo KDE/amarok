@@ -51,6 +51,8 @@ VERSION 1.4.4
     * Show a proper tag dialog when viewing information for DAAP music shares.
 
   BUGFIXES:
+    * Editing metadata in the playlist itself now matches possible alternatives
+      case-insensitively. (BR 135683)
     * Fix loading directory in external browser in the tag editor when the path
       contains parentheses. (BR 132961)
     * Stop scripts using a proxy when it's disabled in KDE. Patch by Felix Geyer

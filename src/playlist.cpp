@@ -2421,6 +2421,7 @@ Playlist::rename( QListViewItem *item, int column ) //SLOT
     }
 
     renameLineEdit()->completionObject()->setCompletionMode( KGlobalSettings::CompletionPopupAuto );
+    renameLineEdit()->completionObject()->setIgnoreCase( true );
 
     m_editOldTag = static_cast<PlaylistItem *>(item)->exactText( column );
 
