@@ -54,7 +54,7 @@ class LIBAMAROK_EXPORT MediaItem : public KListViewItem
 
         MediaItem *lastChild() const;
 
-        KURL url() const;
+        virtual KURL url() const;
         const MetaBundle *bundle() const;
         void setBundle( MetaBundle *bundle );
 
@@ -127,6 +127,10 @@ class MediaQueue : public KListView, public DropProxyTarget
         MediaItem *findPath( QString path );
 
         KIO::filesize_t totalSize() const; // total size of items to transfer in KB
+        void computeSize() const; // compute total size of items to transfer in KB
+        void addItemToSize( const MediaItem *item ) const;
+        void subtractItemFromSize( const MediaItem *item, bool unconditonally=false ) const;
+
         void removeSelected();
         void clearItems();
 
@@ -155,8 +159,8 @@ class MediaQueue : public KListView, public DropProxyTarget
 
     private:
         void keyPressEvent( QKeyEvent *e );
-
         MediaBrowser *m_parent;
+        mutable KIO::filesize_t m_totalSize;
 };
 
 

@@ -325,6 +325,7 @@ MediaBrowser::MediaBrowser( const char *name )
     addDevice( dev );
     activateDevice( 0, false );
     queue()->load( Amarok::saveLocation() + "transferlist.xml" );
+    queue()->computeSize();
 
     setFocusProxy( m_queue );
 
@@ -544,6 +545,7 @@ MediaBrowser::activateDevice( int index, bool skipDummy )
     m_deviceCombo->setCurrentItem( index-1 );
 
     updateButtons();
+    queue()->computeSize();
     updateStats();
 }
 
@@ -1561,7 +1563,6 @@ MediaBrowser::mediumChanged( const Medium *medium, QString /*name*/ )
         {
             if( (*it)->uniqueId() == medium->id() )
             {
-                (*it)->m_medium = const_cast<Medium *>(medium);
 #if 0
                 if( (*it)->isConnected() && !medium->isMounted() )
                 {
@@ -1773,10 +1774,12 @@ MediaBrowser::updateStats()
     if( !m_stats )
         return;
 
+    KIO::filesize_t queued = m_queue->totalSize();
+
     QString text = i18n( "1 track in queue", "%n tracks in queue", m_queue->childCount() );
     if(m_queue->childCount() > 0)
     {
-        text += i18n(" (%1)").arg( KIO::convertSize( m_queue->totalSize() ) );
+        text += i18n(" (%1)").arg( KIO::convertSize( queued ) );
     }
 
     KIO::filesize_t total, avail;
@@ -1786,13 +1789,13 @@ MediaBrowser::updateStats()
 
         m_stats->m_used = total-avail;
         m_stats->m_total = total;
-        m_stats->m_scheduled = m_queue->totalSize();
+        m_stats->m_scheduled = queued;
     }
     else
     {
         m_stats->m_used = 0;
         m_stats->m_total = 0;
-        m_stats->m_scheduled = m_queue->totalSize();
+        m_stats->m_scheduled = queued;
     }
 
     m_stats->setText(text);
@@ -2222,6 +2225,7 @@ MediaQueue::addURL( const KURL& url2, MetaBundle *bundle, const QString &playlis
 
     m_parent->updateButtons();
     m_parent->m_progress->setTotalSteps( m_parent->m_progress->totalSteps() + 1 );
+    addItemToSize( item );
     itemCountChanged();
 }
 
@@ -2252,6 +2256,7 @@ MediaQueue::addURL( const KURL &url, MediaItem *item )
     newitem->setBundle( bundle );
     m_parent->updateButtons();
     m_parent->m_progress->setTotalSteps( m_parent->m_progress->totalSteps() + 1 );
+    addItemToSize( item );
     itemCountChanged();
 
 }
@@ -2431,9 +2436,6 @@ MediaDevice::fileTransferred( KIO::Job *job )  //SLOT
     else
     {
         m_copyFailed = false;
-
-        // the track just transferred has not yet been removed from the queue
-        m_parent->updateStats();
     }
 
     m_wait = false;
@@ -2605,6 +2607,7 @@ MediaDevice::connectDevice( bool silent )
             synchronizeDevice();
 
             QTimer::singleShot( 1500, m_parent->m_progressBox, SLOT(hide()) );
+            m_parent->queue()->computeSize();
             m_parent->updateStats();
         }
     }
@@ -2619,6 +2622,8 @@ MediaDevice::connectDevice( bool silent )
     }
 
     Amarok::StatusBar::instance()->shortMessage( i18n( "Device successfully connected" ) );
+
+    m_parent->updateDevices();
 
     return true;
 }
@@ -2661,6 +2666,8 @@ MediaDevice::disconnectDevice( bool postDisconnectHook )
     }
     else
         Amarok::StatusBar::instance()->shortMessage( i18n( "Device successfully disconnected" ) );
+
+    m_parent->updateDevices();
 
     return result;
 }
@@ -2829,6 +2836,7 @@ MediaDevice::transferFiles()
         if( transferredItem->device() )
         {
             transferredItem->device()->copyTrackFromDevice( transferredItem );
+            m_parent->m_queue->subtractItemFromSize( transferredItem, true );
             delete transferredItem;
             setProgress( progress() + 1 );
             m_parent->m_queue->itemCountChanged();
@@ -2850,6 +2858,7 @@ MediaDevice::transferFiles()
         {
             // this should not happen
             debug() << "invalid item in transfer queue" << endl;
+            m_parent->m_queue->subtractItemFromSize( transferredItem, true );
             delete transferredItem;
             m_parent->m_queue->itemCountChanged();
             continue;
@@ -2981,11 +2990,18 @@ MediaDevice::transferFiles()
         transferredItem->m_flags &= ~MediaItem::Transferring;
 
         if( isCanceled() )
+        {
+            m_parent->updateStats();
             break;
+        }
 
         if( !(transferredItem->flags() & MediaItem::Failed) )
+        {
+            m_parent->m_queue->subtractItemFromSize( transferredItem, true );
             delete transferredItem;
-        m_parent->m_queue->itemCountChanged();
+            m_parent->m_queue->itemCountChanged();
+        }
+        m_parent->updateStats();
 
         kapp->processEvents( 100 );
     }
@@ -3079,7 +3095,7 @@ MediaDevice::fileTransferFinished()  //SLOT
 {
     m_parent->updateStats();
     m_parent->m_progressBox->hide();
-    m_parent->m_toolbar->getButton(MediaBrowser::TRANSFER)->setEnabled( false );
+    m_parent->m_toolbar->getButton(MediaBrowser::TRANSFER)->setEnabled( isConnected() && m_parent->queue()->childCount() > 0 );
     m_wait = false;
 }
 
@@ -3116,6 +3132,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, int flags )
 
             if ( button != KMessageBox::Continue )
             {
+                m_parent->queue()->computeSize();
                 m_parent->updateStats();
                 m_deleting = false;
                 unlockDevice();
@@ -3191,6 +3208,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, int flags )
             disconnectDevice( m_runDisconnectHook );
         }
     }
+    m_parent->queue()->computeSize();
     m_parent->updateStats();
 
     return count;
@@ -3540,10 +3558,10 @@ MediaQueue::findPath( QString path )
     return 0;
 }
 
-KIO::filesize_t
-MediaQueue::totalSize() const
+void
+MediaQueue::computeSize() const
 {
-    KIO::filesize_t total = 0;
+    m_totalSize = 0;
     for( QListViewItem *it = firstChild();
             it;
             it = it->nextSibling())
@@ -3554,10 +3572,34 @@ MediaQueue::totalSize() const
                 ( !m_parent->currentDevice()
                   || !m_parent->currentDevice()->isConnected()
                   || !m_parent->currentDevice()->trackExists(*item->bundle()) ) )
-            total += ((item->size()+1023)/1024)*1024;
+            m_totalSize += ((item->size()+1023)/1024)*1024;
     }
+}
 
-    return total;
+KIO::filesize_t
+MediaQueue::totalSize() const
+{
+    return m_totalSize;
+}
+
+void
+MediaQueue::addItemToSize( const MediaItem *item ) const
+{
+    if( item && item->bundle() &&
+            ( !m_parent->currentDevice()
+              || !m_parent->currentDevice()->isConnected()
+              || !m_parent->currentDevice()->trackExists(*item->bundle()) ) )
+        m_totalSize += ((item->size()+1023)/1024)*1024;
+}
+
+void
+MediaQueue::subtractItemFromSize( const MediaItem *item, bool unconditionally ) const
+{
+    if( item && item->bundle() &&
+            ( !m_parent->currentDevice()
+              || !m_parent->currentDevice()->isConnected()
+              || (unconditionally || !m_parent->currentDevice()->trackExists(*item->bundle())) ) )
+        m_totalSize -= ((item->size()+1023)/1024)*1024;
 }
 
 void
@@ -3569,6 +3611,7 @@ MediaQueue::removeSelected()
     {
         if( !(static_cast<MediaItem *>(item)->flags() & MediaItem::Transferring) )
         {
+            subtractItemFromSize( static_cast<MediaItem *>(item) );
             delete item;
             if( m_parent->currentDevice() && m_parent->currentDevice()->isTransferring() )
             {
@@ -3640,6 +3683,7 @@ MediaQueue::clearItems()
     itemCountChanged();
     if(m_parent)
     {
+        computeSize();
         m_parent->updateStats();
         m_parent->updateButtons();
     }
