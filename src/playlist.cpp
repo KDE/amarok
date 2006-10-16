@@ -2607,13 +2607,18 @@ Playlist::contentsDropEvent( QDropEvent *e )
 
     if( m_marker && !( static_cast<PlaylistItem *>(m_marker)->isDynamicEnabled() ) && dynamicMode() )
     {
-        slotEraseMarker();
-        return;
+        // If marker is disabled, and there is a current track, or marker is not the last enabled track
+        // don't allow inserting
+        if ( m_currentTrack
+            || ( m_marker->itemBelow() && !( static_cast<PlaylistItem *>(m_marker->itemBelow())->isDynamicEnabled() ) ) ) {
+            slotEraseMarker();
+            return;
+        }
     }
 
     if( !after ) findDrop( e->pos(), parent, after ); //shouldn't happen, but you never know!
 
-    slotEraseMarker();
+        slotEraseMarker();
 
     if ( e->source() == viewport() ) {
         setSorting( NO_SORT ); //disableSorting and saveState()
