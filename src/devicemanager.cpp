@@ -208,7 +208,6 @@ DeviceManager::getDevice( const QString name )
     MediumList currMediumList = getDeviceList();
 
     Medium::List::iterator it;
-    QString mountwhere, halid;
     for ( it = currMediumList.begin(); it != currMediumList.end(); it++ )
     {
         if ( (*it).name() == name )
