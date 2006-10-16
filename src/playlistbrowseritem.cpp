@@ -1641,7 +1641,7 @@ PodcastChannel::setOpen( bool b )
     if( b == isOpen())
         return;
 
-    if( m_polished )
+    if( isPolished() )
     {
         QListViewItem::setOpen( b );
         return;
@@ -1663,7 +1663,7 @@ PodcastChannel::load()
 
     PodcastEpisodeBundle bundle;
 
-        // podcasts are hopefully retured chronologically, insert them in reverse
+    // podcasts are hopefully returned chronologically, insert them in reverse
     while( !episodes.isEmpty() )
     {
         bundle = episodes.first();
@@ -1992,7 +1992,8 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     {
         if( !m_updating || ( ( i++ >= eList.count() ) && !episodeExists( (**it), feedType ) ) )
         {
-            this->setOpen( true );
+            if( !isPolished() )
+                load();
             PodcastEpisode *ep = new PodcastEpisode( this, 0, (**it), feedType, m_updating/*new*/ );
             if( m_updating )
             {
