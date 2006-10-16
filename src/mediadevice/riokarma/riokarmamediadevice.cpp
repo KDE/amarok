@@ -457,7 +457,9 @@ RioKarmaMediaDevice::readKarmaMusic()
 
     QString genericError = i18n( "Could not get music from Rio Karma" );
 
-    setProgress( 0, 100 ); // we don't know how many tracks. fake progress bar.
+    int total = 100;
+    int progress = 0;
+    setProgress( progress, total ); // we don't know how many tracks. fake progress bar.
 
     kapp->processEvents( 100 );
 
@@ -475,9 +477,18 @@ RioKarmaMediaDevice::readKarmaMusic()
         debug()<< "Error reading tracks. NULL returned." << endl;
         Amarok::StatusBar::instance()->shortLongMessage( genericError, i18n( "Could not read Rio Karma tracks" ), KDE::StatusBar::Error );
         setDisconnected();
+        hideProgress();
         return -1;
     }
 
+    total = 0;
+    // spin through once to determine size of the list
+    for( i=0; ret[i] != 0; i++ )
+    {
+        total++;
+    }
+    setProgress( progress, total );
+    // now process the tracks
     for( i=0; ret[i] != 0; i++ )
     {
         // check playlist
@@ -492,9 +503,12 @@ RioKarmaMediaDevice::readKarmaMusic()
             track->readMetaData();
             addTrackToView( track );
         }
-        kapp->processEvents( 100 );
+        progress++;
+        setProgress( progress );
+        if( progress % 50 == 0 )
+            kapp->processEvents( 100 );
     }
-    setProgress( 100 );
+    setProgress( total );
     hideProgress();
 
     return 0;
