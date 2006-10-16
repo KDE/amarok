@@ -3122,7 +3122,7 @@ void SmartPlaylist::setXml( const QDomElement &xml )
     static QStringList composers;
     static QStringList albums;
     static QStringList years;
-    static QStringList labels;
+    //static QStringList labels;
 
     //Delete all children before
     QListViewItem *child, *next;
@@ -3192,14 +3192,14 @@ void SmartPlaylist::setXml( const QDomElement &xml )
                                                  "(*ExpandString*)", *it)  );
             }
         }
-        if ( field == i18n("Label") ) {
+        /*if ( field == i18n("Label") ) {
             if (labels.isEmpty() ) {
                 labels = CollectionDB::instance()->labelList();
             }
             foreach( labels ) {
                 m_after = new SmartPlaylist( item, m_after, i18n( "%1" ).arg( *it ), expand.text().replace("(*ExpandString*)", *it)  );
             }
-        }
+        }*/
     }
 
 }
