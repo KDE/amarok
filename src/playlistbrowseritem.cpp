@@ -3206,8 +3206,9 @@ void SmartPlaylist::setXml( const QDomElement &xml )
 
 QString SmartPlaylist::query()
 {
-    if (m_sqlForTags.isEmpty()) m_sqlForTags = xmlToQuery(m_xml);
-    return m_sqlForTags
+    if ( m_sqlForTags.isEmpty() ) m_sqlForTags = xmlToQuery( m_xml );
+    QString sqlForTags = QDeepCopy<QString>( m_sqlForTags );
+    return  sqlForTags
            .replace( "(*CurrentTimeT*)" ,
                      QString::number(QDateTime::currentDateTime().toTime_t()) )
            .replace( "(*ListOfFields*)" , QueryBuilder::dragSQLFields() )
@@ -3274,7 +3275,7 @@ SmartPlaylist::xmlToQuery(const QDomElement &xml, bool forExpand /* = false */) 
                 else {
                     dt1.setTime_t( filters[0].toInt() );
                     // truncate to midnight
-                    if ( condition == i18n( "is after" ) ) 
+                    if ( condition == i18n( "is after" ) )
                         dt1.setTime( QTime().addSecs(-1) );  // 11:59:59 pm
                     else
                         dt1.setTime( QTime() );
@@ -3285,7 +3286,7 @@ SmartPlaylist::xmlToQuery(const QDomElement &xml, bool forExpand /* = false */) 
                     }
                 }
             }
-                
+
 
             if ( condition == i18n( "contains" ) )
                 qb.addFilter( table, value, filters[0] );
@@ -3349,8 +3350,8 @@ SmartPlaylist::xmlToQuery(const QDomElement &xml, bool forExpand /* = false */) 
             qb.sortBy( table, value, orderby.attribute( "order" ) == "ASC" );
         }
     }
-    
-    if ( xml.hasAttribute( "maxresults" ) ) 
+
+    if ( xml.hasAttribute( "maxresults" ) )
         qb.setLimit(0, xml.attribute( "maxresults" ).toInt() );
 
     // expand by, if needed
