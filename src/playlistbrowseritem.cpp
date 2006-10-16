@@ -3208,8 +3208,7 @@ void SmartPlaylist::setXml( const QDomElement &xml )
 QString SmartPlaylist::query()
 {
     if ( m_sqlForTags.isEmpty() ) m_sqlForTags = xmlToQuery( m_xml );
-    QString sqlForTags = QDeepCopy<QString>( m_sqlForTags );
-    return  sqlForTags
+    return  QString( m_sqlForTags.unicode(), m_sqlForTags.length() )
            .replace( "(*CurrentTimeT*)" ,
                      QString::number(QDateTime::currentDateTime().toTime_t()) )
            .replace( "(*ListOfFields*)" , QueryBuilder::dragSQLFields() )
