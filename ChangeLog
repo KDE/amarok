@@ -51,6 +51,8 @@ VERSION 1.4.4
     * Show a proper tag dialog when viewing information for DAAP music shares.
 
   BUGFIXES:
+    * Fix loading directory in external browser in the tag editor when the path
+      contains parentheses. (BR 132961)
     * Stop scripts using a proxy when it's disabled in KDE. Patch by Felix Geyer
       <sniperbeamer_disc1@fobos.de>.
     * While playing Last.fm Streams, sometimes metadata wouldn't be updated
