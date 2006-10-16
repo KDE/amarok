@@ -303,7 +303,7 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
     {
         track->filetype = g_strdup( "mpeg" );
     }
-    else if(type=="mp4" || type=="aac" || type=="m4a" || type=="m4p")
+    else if(type=="aac" || type=="m4a" || (!m_supportsVideo && type=="mp4"))
     {
         track->filetype = g_strdup( "mp4" );
     }
@@ -315,8 +315,9 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
 #else
         track->flag3 |= 0x01; // remember current position in track
 #endif
+        track->unk208 = 0x08; // for audiobooks
     }
-    else if(type=="m4v" || type=="mp4v" || type=="mov" || type=="mpg")
+    else if(type=="m4v" || type=="mp4v" || type=="mov" || type=="mpg" || type=="mp4")
     {
         track->filetype = g_strdup( "m4v video" );
 #ifdef HAVE_ITDB_SKIP_SHUFFLE_FLAG
@@ -332,6 +333,7 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
 #else
         track->flag3 |= 0x01; // remember current position in track
 #endif
+        track->unk208 = 0x08; // for audiobooks
 
         TagLib::Audible::File f( QFile::encodeName( bundle.url().path() ) );
         TagLib::Audible::Tag *t = f.getAudibleTag();
@@ -374,6 +376,7 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
 #ifdef HAVE_ITDB_MARK_UNPLAYED
         track->mark_unplayed = podcastInfo->listened ? 0x01 : 0x02;
 #endif
+        track->unk208 = track->unk208==0x02 ? 0x06 : 0x04; // video or audio podcast
         track->flag4 = 0x01; // also show description on iPod
         QString plaindesc = podcastInfo->description;
         plaindesc.replace( QRegExp("<[^>]*>"), "" );
@@ -2230,7 +2233,6 @@ IpodMediaDevice::supportedFiletypes()
     QStringList list;
     list << "m4a";
     list << "m4b";
-    list << "m4p";
     list << "mp3";
     list << "wav";
     list << "mp4";
