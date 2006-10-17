@@ -30,6 +30,7 @@ Name[zh_TW]=MSB 裝置
 Comment=Device plugin for Amarok which supports SMBFS
 Comment[af]=Toestel inprop module vir Amarok wat SMBFS ondersteuning bied
 Comment[bg]=Приставка за устройство за Amarok, поддържаща SMBFS
+Comment[ca]=Connector de dispositiu per a l'Amarok que suporta SMBFS
 Comment[cs]=Modul zařízení pro AmaroK, které podporuje SMBFS
 Comment[da]=Enhedsplugin for Amarok som understøtter SMBFS
 Comment[de]=Geräte-Modul für Amarok mit Unterstützung für SMB-Dateisystem

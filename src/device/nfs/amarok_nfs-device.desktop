@@ -30,6 +30,7 @@ Name[zh_TW]=NFS 裝置
 Comment=Device plugin for Amarok which supports NFS
 Comment[af]=Toestel inprop module vir Amarok wat NFS ondersteuning bied
 Comment[bg]=Приставка за устройство за Amarok, поддържаща NFS
+Comment[ca]=Connector de dispositiu per a l'Amarok que suporta NFS
 Comment[cs]=Modul zařízení pro AmaroK, které podporuje NFS
 Comment[da]=Enhedsplugin for Amarok som understøtter NFS
 Comment[de]=Geräte-Modul für Amarok mit Unterstützung für NFS

@@ -4,6 +4,7 @@ Actions=addAsPodcast
 [Desktop Action addAsPodcast]
 Name=Add as Podcast to Amarok
 Name[bg]=Добавяне като подкаст към Amarok
+Name[ca]=Afegeix com a Podcast a l'Amarok
 Name[da]=Tilføj som podradioudsendelse i Amarok
 Name[de]=Als Podcast zu Amarok hinzufügen
 Name[el]=Προσθήκη ως εκπομπή Pod στο Amarok
