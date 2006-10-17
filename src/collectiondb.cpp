@@ -6663,7 +6663,10 @@ QueryBuilder::addFilter( int tables, Q_INT64 value, const QString& filter, int m
                 s = CollectionDB::likeCondition( filter, mode != modeBeginMatch, mode != modeEndMatch );
         }
 
-        m_where += QString( "%1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
+        if( coalesceField( tables, value ) )
+            m_where += QString( "COALESCE(%1.%2,0) " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
+        else
+            m_where += QString( "%1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
 
         if ( !exact && (value & valName) && mode == modeNormal && i18n( "Unknown").contains( filter, false ) )
             m_where += QString( "OR %1.%2 = '' " ).arg( tableName( tables ) ).arg( valueName( value ) );
@@ -6789,7 +6792,10 @@ QueryBuilder::excludeFilter( int tables, Q_INT64 value, const QString& filter, i
                 s = "NOT " + CollectionDB::instance()->likeCondition( filter, mode != modeBeginMatch, mode != modeEndMatch ) + ' ';
         }
 
-        m_where += QString( "%1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
+        if( coalesceField( tables, value ) )
+            m_where += QString( "COALESCE(%1.%2,0) " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
+        else
+            m_where += QString( "%1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
 
         if ( !exact && (value & valName) && mode == modeNormal && i18n( "Unknown").contains( filter, false ) )
             m_where += QString( "AND %1.%2 <> '' " ).arg( tableName( tables ) ).arg( valueName( value ) );
@@ -6971,7 +6977,7 @@ QueryBuilder::addNumericFilter(int tables, Q_INT64 value, const QString &n,
 {
     m_where.append( ANDslashOR() ).append( " ( " );
 
-    m_where.append( tableName( tables ) ).append( '.' ).append( valueName( value ) );
+    m_where.append("COALESCE(").append( tableName( tables ) ).append( '.' ).append( valueName( value ) ).append(",0)");
 
     switch (mode) {
     case modeNormal:
@@ -7202,7 +7208,7 @@ QueryBuilder::shuffle( int table, Q_INT64 value )
     if ( !m_sort.isEmpty() ) m_sort += " ,  ";
     if ( table == 0 || value == 0 ) {
         // simple random
-        m_sort += "RAND()";
+        m_sort += CollectionDB::instance()->randomFunc();
     } else {
         // This is the score weighted random order.
 
@@ -7480,6 +7486,25 @@ QueryBuilder::valueName( Q_INT64 value )
    
    static const QString error( "<ERROR valueName>" );
    return error;
+}
+
+/*
+ * Return true if we should call COALESCE(..,0) for this DB field
+ * (field names sourced from the old smartplaylistbrowser.cpp code)
+ */
+bool
+QueryBuilder::coalesceField( int table, Q_INT64 value )
+{
+    if( tableName( table ) == "statistics" &&
+        ( valueName( value ) == "playcounter" ||
+          valueName( value ) == "rating" ||
+          valueName( value ) == "percentage" ||
+          valueName( value ) == "accessdate" ||
+          valueName( value ) == "createdate"
+        ) 
+    )
+       return true;
+   return false;
 }
 
 QString

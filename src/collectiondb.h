@@ -768,6 +768,7 @@ class QueryBuilder
         QString tableName( int table );
         const QString &valueName( Q_INT64 value );
         QString functionName( int functions );
+        bool coalesceField( int table, Q_INT64 value );
 
         int getTableByName(const QString &name);
         Q_INT64 getValueByName(const QString &field);
