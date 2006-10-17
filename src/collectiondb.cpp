@@ -6953,20 +6953,13 @@ QueryBuilder::excludeMatch( int tables, const QString& match )
 void
 QueryBuilder::exclusiveFilter( int tableMatching, int tableNotMatching, Q_INT64 value )
 {
-    m_join += " LEFT JOIN ";
-    m_join += tableName( tableNotMatching );
-    m_join += " ON ";
-
-    m_join += tableName( tableMatching ) + '.';
-    m_join += valueName( value );
-    m_join+= " = ";
-    m_join += tableName( tableNotMatching ) + '.';
-    m_join += valueName( value );
-
-    m_where += " AND ";
-    m_where += tableName( tableNotMatching ) + '.';
-    m_where += valueName( value );
-    m_where += " IS null ";
+    m_where += " AND "; 
+    m_where += tableName( tableNotMatching ) + '.'; 
+    m_where += valueName( value ); 
+    m_where += " IS null "; 
+ 
+    m_linkTables |= tableMatching; 
+    m_linkTables |= tableNotMatching; 
 }
 
 
