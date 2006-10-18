@@ -252,7 +252,7 @@ class PodcastFetcher : public QObject
         PodcastFetcher( QString url, const KURL &directory, int size );
         ~PodcastFetcher();
         QString filename() { return m_url.fileName(); }
-        KURL localUrl() { return KURL( m_file.name() ); }
+        KURL localUrl() { return KURL::fromPathOrURL( m_file.name() ); }
         void kill();
 
     signals:

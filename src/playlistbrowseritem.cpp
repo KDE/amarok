@@ -2021,7 +2021,6 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
 const bool
 PodcastChannel::episodeExists( const QDomNode &xml, const int feedType )
 {
-    DEBUG_BLOCK
     QString command;
     if( feedType == RSS )
     {
@@ -2423,12 +2422,13 @@ void PodcastFetcher::slotDone( bool error )
 {
     if( error )
     {
-     //       debug() << m_http->currentId() << " ERROR: " << " errorstring = " << m_http->errorString() << endl;
+            //debug() << m_http->currentId() << " ERROR: " << " errorstring = " << m_http->errorString() << endl;
             emit result( m_http->error() );
             return;
     }
     if( m_error )
     {
+        //debug() << m_http->currentId() << " ERROR: m_error = " << m_error << endl;
         emit result( m_error );
         return;
     }
@@ -2441,7 +2441,7 @@ void PodcastFetcher::slotDone( bool error )
     }
     else if ( !error )
     {
-   //     debug() << m_http->currentId() << " downloaded to " << m_file->name() << endl;
+        //debug() << m_http->currentId() << " downloaded to " << m_file.name() << endl;
         emit result( m_http->error() ); //0
     }
 }
@@ -3057,7 +3057,7 @@ class AssociatePodcastDialog : public KDialogBase
         if( dynamic_cast<PodcastChannel *>(item->parent()) )
         m_urlRequester->setURL( static_cast<PodcastChannel *>(item->parent())->saveLocation().prettyURL() );
     }
-    KURL url() const { return m_urlRequester->url(); }
+    KURL url() const { return KURL::fromPathOrURL( m_urlRequester->url() ); }
 };
 
 void
