@@ -3208,6 +3208,7 @@ void SmartPlaylist::setXml( const QDomElement &xml )
 QString SmartPlaylist::query()
 {
     if ( m_sqlForTags.isEmpty() ) m_sqlForTags = xmlToQuery( m_xml );
+    // duplicate string, thread-safely (QDeepCopy is not thread-safe)
     return  QString( m_sqlForTags.unicode(), m_sqlForTags.length() )
            .replace( "(*CurrentTimeT*)" ,
                      QString::number(QDateTime::currentDateTime().toTime_t()) )
@@ -3347,7 +3348,7 @@ SmartPlaylist::xmlToQuery(const QDomElement &xml, bool forExpand /* = false */) 
             int table;
             Q_INT64 value;
             if ( !qb.getField( field, &table, &value ) ) continue;
-            qb.sortBy( table, value, orderby.attribute( "order" ) == "ASC" );
+            qb.sortBy( table, value, orderby.attribute( "order" ) == "DESC" );
         }
     }
 

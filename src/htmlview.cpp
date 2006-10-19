@@ -256,9 +256,8 @@ void HTMLView::openURLRequest( const KURL &url )
         Playlist::instance()->insertMedia( url, Playlist::DirectPlay | Playlist::Unique );
 }
 
-#if 0
+
 #include "qpixmap.h"
-#include "qdragobject.h"
 #include "kurldrag.h"
 #include "collectiondb.h"
 
@@ -267,6 +266,9 @@ void HTMLView::khtmlMouseMoveEvent( khtml::MouseMoveEvent *event )
     QMouseEvent *mouse = event->qmouseEvent();
 
     QString url = event->url().string();
+
+    if( mouse->state() & LeftButton && url.isEmpty() )
+        return;  // don't let khtmlPart drag empty crap.
 
     if( mouse->state() & LeftButton && !url.isEmpty() && url.startsWith("fetchcover") ) // clicking
     {
@@ -291,6 +293,25 @@ void HTMLView::khtmlMouseMoveEvent( khtml::MouseMoveEvent *event )
     // let KHTMLPart terminate
     KHTMLPart::khtmlMouseMoveEvent( event );
 }
-#endif
+
+void HTMLView::khtmlMousePressEvent( khtml::MousePressEvent *event )
+{
+    QMouseEvent *mouse = event->qmouseEvent();
+    QString url = event->url().string();
+    if( mouse->state() & LeftButton && !url.isEmpty() && url.startsWith("fetchcover") )
+        return;
+
+    KHTMLPart::khtmlMousePressEvent( event );
+}
+
+void HTMLView::khtmlMouseReleaseEvent( khtml::MouseReleaseEvent *event )
+{
+    QMouseEvent *mouse = event->qmouseEvent();
+    QString url = event->url().string();
+    if( mouse->state() & LeftButton && !url.isEmpty() && url.startsWith("fetchcover") )
+        return;
+
+    KHTMLPart::khtmlMouseReleaseEvent( event );
+}
 
 #include "htmlview.moc"
