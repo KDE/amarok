@@ -512,7 +512,10 @@ Playlist::insertMedia( KURL::List list, int options )
             }
         } else {
             // We add the track after the last track on queue, or after current if the queue is empty
-            after =  m_nextTracks.isEmpty() ? currentTrack() : m_nextTracks.getLast();
+            after = m_nextTracks.isEmpty() ? currentTrack() : m_nextTracks.getLast();
+            // If there's no tracks on the queue, and there's no current track, fall back to the last item
+            if ( !after )
+                after = lastItem();
 
             // wait until Playlist loader has finished its process, then go to customEvent() to start the queue process.
             m_queueList = list;
@@ -2616,9 +2619,10 @@ Playlist::contentsDropEvent( QDropEvent *e )
         }
     }
 
-    if( !after ) findDrop( e->pos(), parent, after ); //shouldn't happen, but you never know!
+    if( !after )
+        findDrop( e->pos(), parent, after ); //shouldn't happen, but you never know!
 
-        slotEraseMarker();
+    slotEraseMarker();
 
     if ( e->source() == viewport() ) {
         setSorting( NO_SORT ); //disableSorting and saveState()
