@@ -4170,8 +4170,8 @@ CollectionDB::removeSongsInDir( QString path, QMap<QString,QString> *tagsRemoved
     {
         QStringList result
           = query( QString( "SELECT tags.deviceid, tags.url, uniqueid.uniqueid FROM tags "
-                            "LEFT JOIN uniqueid ON uniqueid.url      = tags.url "
-                            "                  AND uniqueid.deviceid = tags.deviceid "
+                            "LEFT JOIN uniqueid ON uniqueid.url = tags.url "
+                            "AND uniqueid.deviceid = tags.deviceid "
                             "WHERE tags.dir = '%2' AND tags.deviceid = %1" )
                    .arg( deviceid )
                    .arg( escapeString( rpath ) ) );
