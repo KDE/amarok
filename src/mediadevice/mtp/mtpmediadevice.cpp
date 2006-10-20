@@ -568,7 +568,8 @@ MtpMediaItem
 
     addToPlaylist( item, 0, items );
 
-    m_view->rename( item, 0 );
+    if( ! isTransferring() )
+        m_view->rename( item, 0 );
 
     return item;
 }
@@ -1116,7 +1117,7 @@ MtpMediaDevice::rmbPressed( QListViewItem *qitem, const QPoint &point, int )
             MediaDevice::deleteFromDevice();
             break;
         case RENAME:
-            if( item->type() == MediaItem::PLAYLIST )
+            if( item->type() == MediaItem::PLAYLIST && ! isTransferring() )
             {
                 m_view->rename( item, 0 );
             }
