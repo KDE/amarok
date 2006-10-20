@@ -492,7 +492,7 @@ RioKarmaMediaDevice::readKarmaMusic()
     for( i=0; ret[i] != 0; i++ )
     {
         // check playlist
-        if( strcmp( "playlist", lk_properties_get_property( ret[i], "type" ) ) == 0 )
+        if( qstrcmp( "playlist", lk_properties_get_property( ret[i], "type" ) ) == 0 )
         {
             // nothing for now...
             debug() << "Found a playlist at fid " << ret[i] << ". Skipping." << endl;
