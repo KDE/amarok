@@ -1433,8 +1433,7 @@ IpodMediaDevice::addPlaylistToView( Itdb_Playlist *pl )
 
     if( pl->is_spl )
     {
-        debug() << "playlist " << pl->name << " is a smart playlist, ignored" << endl;
-        return;
+        debug() << "playlist " << pl->name << " is a smart playlist" << endl;
     }
 
     QString name( QString::fromUtf8(pl->name) );
