@@ -1165,7 +1165,7 @@ MediaView::MediaView( QWidget* parent, MediaDevice *device )
              this,   SLOT( invokeItem( QListViewItem* ) ) );
 
     connect( this, SIGNAL( doubleClicked( QListViewItem*, const QPoint&, int ) ),
-             this,   SLOT( invokeItem( QListViewItem* ) ) );
+             this,   SLOT( invokeItem( QListViewItem*, const QPoint &, int ) ) );
 
     m_toolTip = new MediaItemTip( this );
 }
@@ -1178,6 +1178,19 @@ MediaView::keyPressEvent( QKeyEvent *e )
     else
         KListView::keyPressEvent( e );
 }
+
+void
+MediaView::invokeItem( QListViewItem* i, const QPoint& point, int column ) //SLOT
+{
+    if( column == -1 )
+        return;
+
+    QPoint p = mapFromGlobal( point );
+    if ( p.x() > header()->sectionPos( header()->mapToIndex( 0 ) ) + treeStepSize() * ( i->depth() + ( rootIsDecorated() ? 1 : 0) ) + itemMargin()
+            || p.x() < header()->sectionPos( header()->mapToIndex( 0 ) ) )
+        invokeItem( i );
+}
+
 
 void
 MediaView::invokeItem( QListViewItem *i )

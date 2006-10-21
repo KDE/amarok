@@ -295,6 +295,7 @@ class MediaView : public KListView
         void renameItem( QListViewItem *item );
         void slotExpand( QListViewItem* );
         void selectAll() { QListView::selectAll(true); }
+        void invokeItem( QListViewItem*, const QPoint &, int column );
         void invokeItem( QListViewItem* );
 
     private:

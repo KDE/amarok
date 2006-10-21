@@ -131,8 +131,8 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     // signals and slots connections
     connect( m_listview, SIGNAL( rightButtonPressed( QListViewItem *, const QPoint &, int ) ),
              this,         SLOT( showContextMenu( QListViewItem *, const QPoint &, int ) ) );
-    connect( m_listview, SIGNAL( doubleClicked( QListViewItem *) ),
-             this,         SLOT( slotDoubleClicked( QListViewItem * ) ) );
+    connect( m_listview, SIGNAL( doubleClicked( QListViewItem *, const QPoint &, int ) ),
+             this,         SLOT( invokeItem( QListViewItem *, const QPoint &, int ) ) );
     connect( m_listview, SIGNAL( itemRenamed( QListViewItem*, const QString&, int ) ),
              this,         SLOT( renamePlaylist( QListViewItem*, const QString&, int ) ) );
     connect( m_listview, SIGNAL( currentChanged( QListViewItem * ) ),
@@ -1897,6 +1897,20 @@ void PlaylistBrowser::addSelectedToPlaylist( int options )
 
     if( !list.isEmpty() )
         Playlist::instance()->insertMedia( list, options );
+}
+
+void
+PlaylistBrowser::invokeItem( QListViewItem* i, const QPoint& point, int column ) //SLOT
+{
+    if( column == -1 )
+        return;
+
+    PlaylistBrowserView *view = getListView();
+
+    QPoint p = mapFromGlobal( point );
+    if ( p.x() > view->header()->sectionPos( view->header()->mapToIndex( 0 ) ) + view->treeStepSize() * ( i->depth() + ( view->rootIsDecorated() ? 1 : 0) ) + view->itemMargin()
+            || p.x() < view->header()->sectionPos( view->header()->mapToIndex( 0 ) ) )
+        slotDoubleClicked( i );
 }
 
 void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT

@@ -125,6 +125,7 @@ class PlaylistBrowser : public QVBox
         void removeSelectedItems();
         void renamePlaylist( QListViewItem*, const QString&, int );
         void renameSelectedItem();
+        void invokeItem( QListViewItem*, const QPoint &, int column );
         void slotDoubleClicked( QListViewItem *item );
         void subFromDynamic();
 

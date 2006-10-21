@@ -479,7 +479,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     connect( this,           SIGNAL( returnPressed( QListViewItem* ) ),
              this,             SLOT( invokeItem( QListViewItem* ) ) );
     connect( this,           SIGNAL( doubleClicked( QListViewItem*, const QPoint&, int ) ),
-             this,             SLOT( invokeItem( QListViewItem* ) ) );
+             this,             SLOT( invokeItem( QListViewItem*, const QPoint&, int ) ) );
     connect( this,           SIGNAL( clicked( QListViewItem*, const QPoint&, int ) ),
              this,             SLOT( ipodItemClicked( QListViewItem*, const QPoint&, int ) ) );
     connect( this,           SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
@@ -1213,6 +1213,18 @@ CollectionView::enableCat3Menu( bool enable )
     updateTrackDepth();
 }
 
+
+void
+CollectionView::invokeItem( QListViewItem* i, const QPoint& point, int column ) //SLOT
+{
+    if( column == -1 )
+        return;
+
+    QPoint p = mapFromGlobal( point );
+    if ( p.x() > header()->sectionPos( header()->mapToIndex( 0 ) ) + treeStepSize() * ( i->depth() + ( rootIsDecorated() ? 1 : 0) ) + itemMargin()
+            || p.x() < header()->sectionPos( header()->mapToIndex( 0 ) ) )
+        invokeItem( i );
+}
 
 void
 CollectionView::invokeItem( QListViewItem* item ) //SLOT

@@ -242,6 +242,7 @@ class CollectionView : public KListView, public DropProxyTarget
         void slotExpand( QListViewItem* );
         void slotCollapse( QListViewItem* );
         void enableCat3Menu( bool );
+        void invokeItem( QListViewItem*, const QPoint &, int column );
         void invokeItem( QListViewItem* );
 
         // ipod-style navigation slots
