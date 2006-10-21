@@ -47,7 +47,7 @@ public:
     int count() const { return m_browsers.count(); }
     int visibleCount() const;
 
-    void addBrowser( QWidget*, const QString&, const QString& );
+    void addBrowser( const QString &identifier, QWidget*, const QString&, const QString& );
     void removeMediaBrowser( QWidget *widget );
     int indexForName( const QString& ) const;
     int restoreWidth();

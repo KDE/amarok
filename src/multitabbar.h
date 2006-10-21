@@ -94,8 +94,9 @@ class MultiTabBar: public QWidget
         * @param pic a bitmap for the tab
         * @param id an arbitrary ID which can be used later on to identify the tab
         * @param text if a mode with text is used it will be the tab text, otherwise a mouse over hint
+        * @param identifier for storing visibility to config file
         */
-        int appendTab( const QPixmap &pic, int id = -1, const QString& text = QString::null );
+        int appendTab( const QPixmap &pic, int id = -1, const QString& text = QString::null, const QString& identifier = QString::null );
         /**
         * remove a tab with a given ID
         */
@@ -265,10 +266,13 @@ class MultiTabBarTab: public MultiTabBarButton
         void resize() { setSize( neededSize() ); }
         bool visible() { return m_visible; };
         void setVisible( bool visible) { m_visible = visible; };
+        void setIdentifier( const QString &id ) { m_identifier = id; }
+        const QString &identifier() const { return m_identifier; }
     private:
         bool m_visible;
         bool m_showActiveTabText;
         int m_expandedSize;
+        QString m_identifier;
         MultiTabBarTabPrivate *d;
     protected:
         friend class MultiTabBarInternal;

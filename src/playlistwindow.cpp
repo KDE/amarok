@@ -419,31 +419,27 @@ void PlaylistWindow::init()
 
         #define addBrowserMacro( Type, name, text, icon ) { \
             Debug::Block block( name ); \
-            m_browsers->addBrowser( new Type( name ), text, icon ); }
+            m_browsers->addBrowser( name, new Type( name ), text, icon ); }
 
         #define addInstBrowserMacro( Type, name, text, icon ) { \
             Debug::Block block( name ); \
-            m_browsers->addBrowser( Type::instance(), text, icon ); }
+            m_browsers->addBrowser( name, Type::instance(), text, icon ); }
 
-        addBrowserMacro( ContextBrowser, "ContextBrowser", i18n( "Context" ), Amarok::icon( "info" ) )
-        addBrowserMacro( CollectionBrowser, "CollectionBrowser", i18n( "Collection" ), Amarok::icon( "collection" ) )
+        addBrowserMacro( ContextBrowser, "ContextBrowser", i18n("Context"), Amarok::icon( "info" ) )
+        addBrowserMacro( CollectionBrowser, "CollectionBrowser", i18n("Collection"), Amarok::icon( "collection" ) )
         m_browsers->makeDropProxy( "CollectionBrowser", CollectionView::instance() );
-        addInstBrowserMacro( PlaylistBrowser, "PlaylistBrowser", i18n( "Playlists" ), Amarok::icon( "playlist" ) )
+        addInstBrowserMacro( PlaylistBrowser, "PlaylistBrowser", i18n("Playlists"), Amarok::icon( "playlist" ) )
 
         //DEBUG: Comment out the addBrowserMacro line and uncomment the m_browsers line (passing in a vfat device name) to see the "virtual root" functionality
 
-        addBrowserMacro( FileBrowser, "FileBrowser", i18n( "Files" ), Amarok::icon( "files" ) )
+        addBrowserMacro( FileBrowser, "FileBrowser", i18n("Files"), Amarok::icon( "files" ) )
         //Add Magnatune browser
-        addInstBrowserMacro( MagnatuneBrowser, "MagnatuneBrowser", i18n( "Magnatune.com" ), "magnatune" )
-
-
-        //m_browsers->addBrowser( new FileBrowser( "FileBrowser", MediaDeviceManager::instance()->getDevice( "hda5" ) ), i18n( "Files" ), "folder" );
-
+        addInstBrowserMacro( MagnatuneBrowser, "MagnatuneBrowser", i18n("Magnatune.com"), "magnatune" )
 
         new MediaBrowser( "MediaBrowser" );
         if( MediaBrowser::isAvailable() )
         {
-            addInstBrowserMacro( MediaBrowser, "MediaBrowser", i18n( "Media Device" ), Amarok::icon( "device" ) )
+            addInstBrowserMacro( MediaBrowser, "MediaBrowser", i18n("Media Device"), Amarok::icon( "device" ) )
             //to re-enable mediabrowser hiding, uncomment this:
             //connect( MediaBrowser::instance(), SIGNAL( availabilityChanged( bool ) ),
             //         this, SLOT( mbAvailabilityChanged( bool ) ) );
@@ -472,7 +468,7 @@ void PlaylistWindow::init()
 void PlaylistWindow::addBrowser( const QString &name, QWidget *browser, const QString &text, const QString &icon )
 {
     if( !m_browsers->browser( name ) )
-        m_browsers->addBrowser( browser, text, icon );
+        m_browsers->addBrowser( name, browser, text, icon );
     if( name == "MediaBrowser" )
     {
         m_browsers->makeDropProxy( "MediaBrowser", MediaBrowser::queue() );
@@ -1098,7 +1094,7 @@ PlaylistWindow::mbAvailabilityChanged( bool isAvailable ) //SLOT
     if( isAvailable )
     {
         if( m_browsers->indexForName( "MediaBrowser" ) == -1 )
-            m_browsers->addBrowser( MediaBrowser::instance(), i18n( "Media Device" ), Amarok::icon( "device" ) );
+            m_browsers->addBrowser( "MediaBrowser", MediaBrowser::instance(), i18n( "Media Device" ), Amarok::icon( "device" ) );
     }
     else
     {

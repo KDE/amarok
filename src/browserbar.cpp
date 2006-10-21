@@ -242,7 +242,7 @@ BrowserBar::event( QEvent *e )
 }
 
 void
-BrowserBar::addBrowser( QWidget *widget, const QString &title, const QString& icon )
+BrowserBar::addBrowser( const QString &identifier, QWidget *widget, const QString &title, const QString& icon )
 {
     const int id = m_tabBar->tabs()->count(); // the next available id
     const QString name( widget->name() );
@@ -252,7 +252,7 @@ BrowserBar::addBrowser( QWidget *widget, const QString &title, const QString& ic
     widget->reparent( m_browserBox, QPoint() );
     widget->hide();
 
-    m_tabBar->appendTab( SmallIcon( icon ), id, title );
+    m_tabBar->appendTab( SmallIcon( icon ), id, title, identifier );
     tab = m_tabBar->tab( id );
     tab->setFocusPolicy( QWidget::NoFocus ); //FIXME you can focus on the tab, but they respond to no input!
 

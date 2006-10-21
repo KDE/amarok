@@ -32,7 +32,7 @@ class MultiTabBarInternal: public QScrollView
         Q_OBJECT
 public:
         MultiTabBarInternal(QWidget *parent,MultiTabBar::MultiTabBarMode bm);
-        int appendTab(const QPixmap &,int=-1,const QString& =QString::null);
+        int appendTab(const QPixmap &,int=-1,const QString& =QString::null, const QString&identifier=QString::null);
         MultiTabBarTab *tab(int) const;
         void removeTab(int);
         void setTabVisible(int id, bool visible);

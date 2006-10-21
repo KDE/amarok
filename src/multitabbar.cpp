@@ -410,13 +410,14 @@ bool MultiTabBarInternal::eventFilter( QObject *, QEvent *e )
     return false;
 }
 
-int MultiTabBarInternal::appendTab( const QPixmap &pic , int id, const QString& text )
+int MultiTabBarInternal::appendTab( const QPixmap &pic , int id, const QString& text, const QString& identifier )
 {
     MultiTabBarTab * tab;
     m_tabs.append( tab = new MultiTabBarTab( pic, text, id, box, m_position, m_style ) );
+    tab->setIdentifier( identifier );
     tab->installEventFilter( this );
     tab->showActiveTabText( m_showActiveTabTexts );
-    tab->setVisible( Amarok::config( "BrowserBar" )->readBoolEntry( text, true ) );
+    tab->setVisible( Amarok::config( "BrowserBar" )->readBoolEntry( identifier, true ) );
 
     if ( m_style == MultiTabBar::KONQSBC ) {
         if ( m_expandedTabSize < tab->neededSize() ) {
@@ -453,7 +454,7 @@ void MultiTabBarInternal::setTabVisible( int id, bool visible )
             MultiTabBarTab* tab = m_tabs.at( pos );
 
             tab->setVisible( visible );
-            Amarok::config( "BrowserBar" )->writeEntry( tab->text(), tab->visible() );
+            Amarok::config( "BrowserBar" )->writeEntry( tab->identifier(), tab->visible() );
 
             if ( tab->visible() )
                 tab->show();
@@ -727,6 +728,7 @@ MultiTabBarTab::MultiTabBarTab( const QPixmap& pic, const QString& text,
 {
     d = new MultiTabBarTabPrivate();
     setIcon( pic );
+    setIdentifier( text );
     m_expandedSize = 24;
     setToggleButton( true );
 
@@ -1199,9 +1201,9 @@ void MultiTabBar::updateSeparator()
 
 }
 
-int MultiTabBar::appendTab( const QPixmap &pic , int id , const QString& text )
+int MultiTabBar::appendTab( const QPixmap &pic , int id , const QString& text, const QString& identifier )
 {
-    m_internal->appendTab( pic, id, text );
+    m_internal->appendTab( pic, id, text, identifier );
     return 0;
 }
 
