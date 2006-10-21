@@ -1090,7 +1090,7 @@ void PlaylistWindow::activate()
     if( KWinModule( NULL, KWinModule::INFO_DESKTOP ).activeWindow() != winId())
         setShown( true );
     else if( !info.isMinimized() )
-        setShown( !isShown() );
+        setShown( true );
     if( isShown() )
         KWin::activateWindow( winId() );
 }

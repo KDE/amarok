@@ -85,10 +85,6 @@ main( int argc, char *argv[] )
         // there is no amarokapp running, we'll start a new
         // instance and the above checks were not necessary
     }
-    else if( isRunning )
-        // we are running, but no arguments were passed
-        // show and raise amarok
-        args = "--toggle-playlist-window";
 
     if ( isRunning ) {
         QStringList dcop_args;
