@@ -136,6 +136,7 @@ class ServerItem : public QObject, public MediaItem
         void stopAnimation();
 
         QString key() const { return key( m_host, m_port ); }
+        void reset();
         static QString key( const QString& host, Q_UINT16 port ) { return host + ':' + QString::number( port ); }
     public slots:
         void httpError( const QString& );

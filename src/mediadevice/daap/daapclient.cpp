@@ -268,6 +268,10 @@ DaapClient::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
     switch( id )
     {
         case CONNECT:
+            if( ServerItem *s = dynamic_cast<ServerItem *>(item) )
+            {
+                s->reset();
+            }
             item->setOpen( true );
             break;
         case LOAD:
@@ -669,6 +673,23 @@ ServerItem::~ServerItem()
 {
     delete m_reader;
     m_reader = 0;
+}
+
+void
+ServerItem::reset()
+{
+    delete m_reader;
+    m_reader = 0;
+
+    m_loaded = 0;
+
+    QListViewItem *c = firstChild();
+    QListViewItem *n;
+    while( c ) {
+        n = c->nextSibling();
+        delete c;
+        c = n;
+    }
 }
 
 void
