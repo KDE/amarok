@@ -30,7 +30,7 @@ VERSION 1.4.4
 
   CHANGES:
     * Bring Amarok main window to front when starting amarok again without
-      arguments. (BR 135316)
+      arguments. (BR 135396)
     * Don't switch to playlist browser after saving a playlist from files tab.
       (BR 130189)
     * Add .ape and .mpc to possible file types supported by a generic media
