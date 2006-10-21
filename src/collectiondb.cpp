@@ -1252,7 +1252,7 @@ CollectionDB::artistID( QString value, bool autocreate, const bool temporary, bo
 
     uint id;
     if ( exact )
-        id = IDfromExactValue( "artist", value, autocreate, temporary ).toUInt();
+        id = IDFromExactValue( "artist", value, autocreate, temporary ).toUInt();
     else
         id = IDFromValue( "artist", value, autocreate, temporary );
 
@@ -1291,7 +1291,7 @@ CollectionDB::composerID( QString value, bool autocreate, const bool temporary, 
 
     uint id;
     if ( exact )
-        id = IDfromExactValue( "composer", value, autocreate, temporary ).toUInt();
+        id = IDFromExactValue( "composer", value, autocreate, temporary ).toUInt();
     else
         id = IDFromValue( "composer", value, autocreate, temporary );
 
@@ -1330,7 +1330,7 @@ CollectionDB::albumID( QString value, bool autocreate, const bool temporary, boo
 
     uint id;
     if ( exact )
-        id = IDfromExactValue( "album", value, autocreate, temporary ).toUInt();
+        id = IDFromExactValue( "album", value, autocreate, temporary ).toUInt();
     else
         id = IDFromValue( "album", value, autocreate, temporary );
 
@@ -1362,7 +1362,7 @@ uint
 CollectionDB::genreID( QString value, bool autocreate, const bool temporary, bool exact /* = true */ )
 {
     return exact ?
-        IDfromExactValue( "genre", value, autocreate, temporary ).toUInt() :
+        IDFromExactValue( "genre", value, autocreate, temporary ).toUInt() :
         IDFromValue( "genre", value, autocreate, temporary );
 }
 
@@ -1377,7 +1377,7 @@ uint
 CollectionDB::yearID( QString value, bool autocreate, const bool temporary, bool exact /* = true */ )
 {
     return exact ?
-        IDfromExactValue( "year", value, autocreate, temporary ).toUInt() :
+        IDFromExactValue( "year", value, autocreate, temporary ).toUInt() :
         IDFromValue( "year", value, autocreate, temporary );
 }
 
@@ -4358,7 +4358,7 @@ CollectionDB::removeDirFromCollection( QString path )
 
 
 QString
-CollectionDB::IDfromExactValue( QString table, QString value, bool autocreate, bool temporary /* = false */ )
+CollectionDB::IDFromExactValue( QString table, QString value, bool autocreate, bool temporary /* = false */ )
 {
     if ( temporary )
     {
@@ -4446,27 +4446,27 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
         if ( values[ 1 ] != bundle.artist() )
         {
             art = true;
-            command += "artist = " + IDfromExactValue( "artist", bundle.artist() ) + ", ";
+            command += "artist = " + IDFromExactValue( "artist", bundle.artist() ) + ", ";
         }
         if ( values[ 2 ] != bundle.composer() )
         {
             comp = true;
-            command += "composer = " + IDfromExactValue( "composer", bundle.composer() ) + ", ";
+            command += "composer = " + IDFromExactValue( "composer", bundle.composer() ) + ", ";
         }
         if ( values[ 3 ] != bundle.album() )
         {
             alb = true;
-            command += "album = "  + IDfromExactValue( "album", bundle.album() ) + ", ";
+            command += "album = "  + IDFromExactValue( "album", bundle.album() ) + ", ";
         }
         if ( values[ 4 ] != bundle.genre() )
         {
             gen = true;
-            command += "genre = "  + IDfromExactValue( "genre", bundle.genre() ) + ", ";
+            command += "genre = "  + IDFromExactValue( "genre", bundle.genre() ) + ", ";
         }
         if ( values[ 5 ] != QString::number( bundle.year() ) )
         {
             year = false;
-            command += "year = "   + IDfromExactValue( "year", QString::number( bundle.year() ) ) + ", ";
+            command += "year = "   + IDFromExactValue( "year", QString::number( bundle.year() ) ) + ", ";
         }
         if ( values[ 6 ] != QString::number( bundle.track() ) )
             command += "track = " + QString::number( bundle.track() ) + ", ";

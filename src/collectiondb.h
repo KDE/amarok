@@ -575,7 +575,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         //Use the Exact version where possible (faster and safer).
         //To convert output from Exact version from QString to uint, use .toUInt()
         uint IDFromValue( QString name, QString value, bool autocreate = true, const bool temporary = false );
-        QString IDfromExactValue(  QString table, QString value, bool autocreate = true, bool temporary = false );
+        QString IDFromExactValue(  QString table, QString value, bool autocreate = true, bool temporary = false );
         QString valueFromID( QString table, uint id );
 
         //member variables
