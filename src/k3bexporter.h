@@ -64,6 +64,13 @@ public:
     void exportAlbum( const QString &album, int openmode=-1 );
 
     /**
+    * Exports the album @p album by artist @ artist to K3B. The mode @p openmode will be used
+    * @param openmode The mode of the album
+    * @param album The album to export
+    */
+    void exportAlbum( const QString &artist, const QString &album, int openmode=-1 );
+
+    /**
     * Exports all tracks of the artist @p artist to K3B. The mode @p openmode will be used
     * @param openmode The mode of the album
     * @param artist The artists which tracks to export

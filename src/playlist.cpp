@@ -4225,7 +4225,10 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         break;
 
     case BURN_ALBUM:
-        K3bExporter::instance()->exportAlbum( item->album() );
+        if( item->compilation() == MetaBundle::CompilationYes )
+            K3bExporter::instance()->exportAlbum( item->album() );
+        else
+            K3bExporter::instance()->exportAlbum( item->artist(), item->album() );
         break;
 
     case BURN_ARTIST:

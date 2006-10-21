@@ -1263,6 +1263,8 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 {
     if ( dynamic_cast<DividerItem*>( item ) ) return;
 
+    int artistLevel = -1;
+
     if ( item ) {
         KPopupMenu menu( this );
 
@@ -1274,9 +1276,15 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                     cat = m_cat1;
                     break;
                 case 1:
+                    if( m_cat1 == IdArtist )
+                        artistLevel = 0;
                     cat = m_cat2;
                     break;
                 case 2:
+                    if( m_cat1 == IdArtist )
+                        artistLevel = 0;
+                    else if( m_cat2 == IdArtist )
+                        artistLevel = 1;
                     cat = m_cat3;
                     break;
             }
@@ -1399,7 +1407,21 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                 K3bExporter::instance()->exportArtist( trueItemText );
                 break;
             case BURN_ALBUM:
-                K3bExporter::instance()->exportAlbum( trueItemText );
+                if( artistLevel == -1 || static_cast<CollectionItem *>(item)->isSampler() )
+                {
+                    K3bExporter::instance()->exportAlbum( trueItemText );
+                }
+                else
+                {
+                    QString artist;
+                    if( item->depth() - artistLevel == 1 )
+                        artist = item->parent()->text( 0 );
+                    else if( item->depth() - artistLevel == 2 )
+                        artist = item->parent()->parent()->text( 0 );
+                    else if( item->depth() - artistLevel == 3 )
+                        artist = item->parent()->parent()->parent()->text( 0 );
+                    K3bExporter::instance()->exportAlbum( artist, trueItemText );
+                }
                 break;
             case BURN_CD:
                 K3bExporter::instance()->exportTracks( selection );

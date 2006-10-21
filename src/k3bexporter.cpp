@@ -71,11 +71,21 @@ void K3bExporter::exportSelectedTracks( int openmode )
 
 void K3bExporter::exportAlbum( const QString &album, int openmode )
 {
+    exportAlbum( QString::null, album, openmode );
+}
+
+void K3bExporter::exportAlbum( const QString &artist, const QString &album, int openmode )
+{
     QString albumId = QString::number( CollectionDB::instance()->albumID( album, false, false, true ) );
+    QString artistId;      
+    if( !artist.isNull() )
+        artistId = QString::number( CollectionDB::instance()->artistID( artist, false, false, true ) );
 
     QueryBuilder qb;
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
     qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, albumId );
+    if( !artist.isNull() )
+        qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, artistId );
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
 
