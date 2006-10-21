@@ -55,6 +55,8 @@ VERSION 1.4.4
     * Show a proper tag dialog when viewing information for DAAP music shares.
 
   BUGFIXES:
+    * Check for some integral data types for improved DAAP portability.
+      (BR 132939)
     * Take disc number into account when checking if a song is already on an
       iPod. (BR 135643)
     * Editing metadata in the playlist itself now matches possible alternatives
