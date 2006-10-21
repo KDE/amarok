@@ -21,7 +21,7 @@ VERSION 1.4.4
     * Support downloading of files from an MTP device.
     * Purged podcast episodes can be readded by increasing the purge number.
     * Added rudimentary support for the Rio Karma. (BR 132713)
-    * Support creation and editing of playlists on MTP mediadevices.
+    * Support creation and editing of playlists on MTP media devices.
     * Undo/Redo functionality is now available over sessions. (BR 131072)
     * Allow the creation of empty playlists in the playlist browser. Available
       either from the Add button in the toolbar or the context menu of a
@@ -131,7 +131,7 @@ VERSION 1.4.3:
       in rare circumstances using SQLite. (BR 133072)
     * Collection scanner would only restart a maximum of 2 times instead of
       20. (fixed in SVN revision 578922)
-    * MTP mediadevice support would not compile against libmtp versions >=
+    * MTP media device support would not compile against libmtp versions >=
       0.0.12. (fixed in SVN revision 576121)
     * AudioCD playback would stutter and sometimes freeze Amarok. (BR 133015)
     * Dynamic Collection broke flat collection view when the Filename column
@@ -184,7 +184,7 @@ VERSION 1.4.2:
     * libtunepimp 0.5.0 actually compiles successfully now.
     * Lift size limit on pathnames and comments in collection databases not
       managed by MySQL. (BR 130585)
-    * Generic mediadevice plugin is improved. Users can configure supported
+    * Generic media device plugin is improved. Users can configure supported
       filetypes and get more control over the location of songs and podcasts
       on disk (Patch by eute).
     * Move composer tag to its own database table.
@@ -414,7 +414,7 @@ VERSION 1.4.0:
     * Composer, Disc Number and File Size columns in flat collection view.
     * 'k' or 'm' suffixes for matching filesize in kibi or respectively mebi
       bytes.
-    * Groupings when transferring files to mediadevices are now persistent.
+    * Groupings when transferring files to media devices are now persistent.
       (BR 127158)
     * Transfer contents of smart playlists to media device without adding
       them to a playlist. (BR 126997)
