@@ -46,7 +46,10 @@ ThreadWeaver::~ThreadWeaver()
         }
 #endif
 
-        debug() << "Waiting on thread...\n";
+        if( (*it)->job() && (*it)->job()->name() )
+            debug() << "Waiting on thread " << (*it)->job()->name() << "...\n";
+        else
+            debug() << "Waiting on thread...\n";
         (*it)->wait();
     }
 }
