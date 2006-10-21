@@ -29,6 +29,8 @@ VERSION 1.4.4
 
 
   CHANGES:
+    * Don't switch to playlist browser after saving a playlist from files tab.
+      (BR 130189)
     * Add .ape and .mpc to possible file types supported by a generic media
       device. (BR 133491)
     * Move button for saving current playlist from playlist browser toolbar to

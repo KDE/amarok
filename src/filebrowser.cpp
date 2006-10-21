@@ -51,6 +51,7 @@
 #include "playlistloader.h"
 #include "playlistwindow.h"
 #include "collectionbrowser.h"
+#include "statusbar.h"
 #include "tagdialog.h"
 
 #include <qdir.h>
@@ -325,7 +326,10 @@ void FileBrowser::playlistFromURLs( const KURL::List &urls )
         return;
 
     if( PlaylistBrowser::savePlaylist( path, urls ) )
-        PlaylistWindow::self()->showBrowser( "PlaylistBrowser" );
+    {
+        //FIXME: uncomment after string freeze
+        //Amarok::StatusBar::instance()->shortMessage( "Playlist saved to playlist browser" );
+    }
 }
 
 
