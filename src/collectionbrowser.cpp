@@ -1317,7 +1317,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         else if( cat == IdComposer )
         {
             menu.insertItem( SmallIconSet( Amarok::icon( "burn" ) ), i18n("Burn All Tracks by This Composer"), BURN_COMPOSER );
-            menu.setItemEnabled( BURN_ARTIST, K3bExporter::isAvailable() );
+            menu.setItemEnabled( BURN_COMPOSER, K3bExporter::isAvailable() );
         }
         else if( cat == IdAlbum || cat == IdVisYearAlbum )
         {
