@@ -1184,6 +1184,8 @@ bool XineEngine::metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b)
                 b.tracknr =
                     QString::fromUtf8(
                         xine_get_meta_info(tmpstream, XINE_META_INFO_TRACK_NUMBER));
+                if( b.tracknr.isEmpty() )
+                    b.tracknr = url.filename();
             } else {
                 b.title = QString(i18n("Track %1")).arg(url.filename());
                 b.album = i18n("AudioCD");
