@@ -1045,6 +1045,7 @@ void PlaylistWindow::toolsMenuAboutToShow() //SLOT
 
 
 #include <kwin.h>
+#include <kwinmodule.h>
 /**
  * Show/hide playlist global shortcut and PlayerWindow PlaylistButton connect to this slot
  * RULES:
@@ -1080,6 +1081,18 @@ void PlaylistWindow::showHide() //SLOT
     else if( !info.isMinimized() && !isShaded ) setShown( !isShown() );
 
     if( isShown() ) KWin::deIconifyWindow( winId() );
+}
+
+void PlaylistWindow::activate()
+{
+    const KWin::WindowInfo info = KWin::windowInfo( winId() );
+
+    if( KWinModule( NULL, KWinModule::INFO_DESKTOP ).activeWindow() != winId())
+        setShown( true );
+    else if( !info.isMinimized() )
+        setShown( !isShown() );
+    if( isShown() )
+        KWin::activateWindow( winId() );
 }
 
 bool PlaylistWindow::isReallyShown() const

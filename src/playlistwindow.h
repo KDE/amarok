@@ -64,6 +64,8 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         //instance is declared in KXMLGUI
         static PlaylistWindow *self() { return s_instance; }
 
+        void activate();
+
     public slots:
         void showHide();
         void mbAvailabilityChanged( bool isAvailable );

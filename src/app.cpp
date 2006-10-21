@@ -208,8 +208,11 @@ void App::handleCliArgs() //static
         KCmdLineArgs::setCwd( cwd );
     }
 
+    bool haveArgs = false;
     if ( args->count() > 0 )
     {
+        haveArgs = true;
+
         KURL::List list;
         for( int i = 0; i < args->count(); i++ )
         {
@@ -241,18 +244,38 @@ void App::handleCliArgs() //static
     //then the others seemed sensible. Feel free to modify this order, but please leave justification in the cvs log
     //I considered doing some sanity checks (eg only stop if paused or playing), but decided it wasn't worth it
     else if ( args->isSet( "pause" ) )
+    {
+        haveArgs = true;
         EngineController::instance()->pause();
+    }
     else if ( args->isSet( "stop" ) )
+    {
+        haveArgs = true;
         EngineController::instance()->stop();
+    }
     else if ( args->isSet( "play-pause" ) )
+    {
+        haveArgs = true;
         EngineController::instance()->playPause();
+    }
     else if ( args->isSet( "play" ) ) //will restart if we are playing
+    {
+        haveArgs = true;
         EngineController::instance()->play();
+    }
     else if ( args->isSet( "next" ) )
+    {
+        haveArgs = true;
         EngineController::instance()->next();
+    }
     else if ( args->isSet( "previous" ) )
+    {
+        haveArgs = true;
         EngineController::instance()->previous();
-    else if (args->isSet("cdplay")) {
+    }
+    else if (args->isSet("cdplay"))
+    {
+        haveArgs = true;
         QString device = args->getOption("cdplay");
         KURL::List urls;
         if (EngineController::engine()->getAudioCDContents(device, urls)) {
@@ -266,7 +289,13 @@ void App::handleCliArgs() //static
     }
 
     if ( args->isSet( "toggle-playlist-window" ) )
+    {
+        haveArgs = true;
         pApp->m_pPlaylistWindow->showHide();
+    }
+
+    if( !haveArgs )
+        pApp->m_pPlaylistWindow->activate();
 
     args->clear();    //free up memory
 }
