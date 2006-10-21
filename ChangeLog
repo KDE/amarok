@@ -29,6 +29,7 @@ VERSION 1.4.4
 
 
   CHANGES:
+    * Enable playing audio CDs on CD insert. (BR 136106)
     * Bring Amarok main window to front when starting amarok again without
       arguments. (BR 135396)
     * Don't switch to playlist browser after saving a playlist from files tab.

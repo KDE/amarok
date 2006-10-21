@@ -54,6 +54,12 @@ class DeviceManager : public QObject
         //warning about getDeviceList()
         QStringList getDeviceStringList();
 
+        // Converts a media://media/hdc URL as provided by the KDE media
+        // manager on CD insert to /dev/hdc so amarok can play it.
+        // This method is safe to call with a device path, it returns it
+        // unchanged.
+        QString convertMediaUrlToDevice( QString url );
+
     signals:
         void mediumAdded( const Medium*, QString );
         void mediumChanged( const Medium*, QString );

@@ -25,6 +25,7 @@ email                : markey@web.de
 #include "collectionbrowser.h"
 #include "dbsetup.h"             //firstRunWizard()
 #include "debug.h"
+#include "devicemanager.h"
 #include "mediadevicemanager.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
@@ -277,6 +278,7 @@ void App::handleCliArgs() //static
     {
         haveArgs = true;
         QString device = args->getOption("cdplay");
+        device = DeviceManager::instance()->convertMediaUrlToDevice( device );
         KURL::List urls;
         if (EngineController::engine()->getAudioCDContents(device, urls)) {
             Playlist::instance()->insertMedia(
@@ -335,6 +337,7 @@ void App::initCliArgs( int argc, char *argv[] ) //static
             { "engine <name>", I18N_NOOP( "Use the <name> engine" ), 0 },
             { "cwd <directory>", I18N_NOOP( "Base for relative filenames/URLs" ), 0 },
             { "cdplay <device>", I18N_NOOP("Play an AudioCD from <device>"), 0 },
+            //FIXME: after string freeze { "cdplay <device>", I18N_NOOP("Play an AudioCD from <device> or system:/media/<device>"), 0 },
             { 0, 0, 0 }
         };
 

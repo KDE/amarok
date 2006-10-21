@@ -224,7 +224,8 @@ servicemenudir = \
 
 servicemenu_DATA = \
     amarok_addaspodcast.desktop \
-    amarok_append.desktop
+    amarok_append.desktop \
+    amarok_play_audiocd.desktop
 
 
 profiledatadir = \

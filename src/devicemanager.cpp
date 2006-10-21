@@ -24,6 +24,7 @@
 
 #include <dcopclient.h>
 #include <dcopobject.h>
+#include <dcopref.h>
 #include <kapplication.h>
 
 typedef Medium::List MediumList;
@@ -224,6 +225,27 @@ DeviceManager::getDevice( const QString name )
     }
 
     return returnedMedium;
+}
+
+QString DeviceManager::convertMediaUrlToDevice( QString url )
+{
+    QString device;
+    if ( url.startsWith( "media:" ) || url.startsWith( "system:" ) )
+    {
+        KURL devicePath( url );
+        DCOPRef mediamanager( "kded", "mediamanager" );
+        DCOPReply reply = mediamanager.call( "properties(QString)", devicePath.fileName() );
+        if ( reply.isValid() ) {
+            QStringList properties = reply;
+            device = properties[ 5 ];
+            //kdDebug() << "DeviceManager::convertMediaUrlToDevice() munged to: " << device << "\n";
+        } else
+            device = QString();
+    }
+    else
+        device = url;
+
+    return device;
 }
 
 #include "devicemanager.moc"
