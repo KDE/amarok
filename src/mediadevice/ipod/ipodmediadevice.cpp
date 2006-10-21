@@ -553,6 +553,7 @@ IpodMediaDevice::trackExists( const MetaBundle& bundle )
     IpodMediaItem *item = getTrack( bundle.artist(),
             bundle.album(),
             bundle.title(),
+            bundle.discNumber(),
             bundle.track() );
 
     return item;
@@ -1677,7 +1678,7 @@ IpodMediaDevice::getAlbum(const QString &artist, const QString &album)
 }
 
 IpodMediaItem *
-IpodMediaDevice::getTrack(const QString &artist, const QString &album, const QString &title, int trackNumber)
+IpodMediaDevice::getTrack(const QString &artist, const QString &album, const QString &title, int discNumber, int trackNumber)
 {
     IpodMediaItem *item = getAlbum(artist, album);
     if(item)
@@ -1686,7 +1687,8 @@ IpodMediaDevice::getTrack(const QString &artist, const QString &album, const QSt
                 track;
                 track = dynamic_cast<IpodMediaItem *>(item->findItem(title, track)) )
         {
-            if( trackNumber==-1 || track->bundle()->track() == trackNumber )
+            if( ( discNumber==-1 || track->bundle()->discNumber()==discNumber )
+                    && ( trackNumber==-1 || track->bundle()->track()==trackNumber ) )
                 return track;
         }
     }
@@ -1699,7 +1701,8 @@ IpodMediaDevice::getTrack(const QString &artist, const QString &album, const QSt
                 track;
                 track = dynamic_cast<IpodMediaItem *>(item->findItem(t, track)) )
         {
-            if( trackNumber==-1 || track->bundle()->track() == trackNumber )
+            if( ( discNumber==-1 || track->bundle()->discNumber()==discNumber )
+                    && ( trackNumber==-1 || track->bundle()->track()==trackNumber ) )
                 return track;
         }
     }
@@ -1713,7 +1716,8 @@ IpodMediaDevice::getTrack(const QString &artist, const QString &album, const QSt
                     track;
                     track = dynamic_cast<IpodMediaItem *>(item->findItem(title, track)) )
             {
-                if( trackNumber==-1 || track->bundle()->track() == trackNumber )
+                if( ( discNumber==-1 || track->bundle()->discNumber()==discNumber )
+                        && ( trackNumber==-1 || track->bundle()->track()==trackNumber ) )
                     return track;
             }
         }
