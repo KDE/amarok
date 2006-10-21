@@ -1794,7 +1794,7 @@ IpodMediaDevice::determineURLOnDevice(const MetaBundle &bundle)
     do
     {
         int num = std::rand() % 1000000;
-        int music_dirs = itdb_musicdirs_number(m_itdb) > 0 ? itdb_musicdirs_number(m_itdb) : 20;
+        int music_dirs = itdb_musicdirs_number(m_itdb) > 1 ? itdb_musicdirs_number(m_itdb) : 20;
         int dir = num % music_dirs;
         QString dirname;
         dirname.sprintf( "%s:Music:f%02d", itunesDir().latin1(), dir );
