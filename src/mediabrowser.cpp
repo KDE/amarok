@@ -1939,7 +1939,7 @@ MediaDevice::loadConfig()
     m_postdisconnectcmd = configString( "PostDisconnectCommand" );
     if( m_postdisconnectcmd.isEmpty() )
         m_postdisconnectcmd = configString( "UmountCommand" );
-    if( m_postdisconnectcmd.isEmpty() )
+    if( m_requireMount && m_postdisconnectcmd.isEmpty() )
         m_postdisconnectcmd = "kdeeject -q %d";
 }
 
