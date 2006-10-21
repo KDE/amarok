@@ -101,15 +101,12 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     addMenu->insertItem( i18n("Podcast..."), PODCAST );
     connect( addMenu, SIGNAL( activated(int) ), SLOT( slotAddMenu(int) ) );
 
-    KAction *saveButton = new KAction( i18n("Save"), Amarok::icon( "save" ), 0, this, SLOT( slotSave() ), m_ac );
-
     renameButton   = new KAction( i18n("Rename"), "editclear", 0, this, SLOT( renameSelectedItem() ), m_ac );
     removeButton   = new KAction( i18n("Delete"), Amarok::icon( "remove" ), 0, this, SLOT( removeSelectedItems() ), m_ac );
 
     m_toolbar = new Browser::ToolBar( browserBox );
     m_toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the open button to have text on right
     addMenuButton->plug( m_toolbar );
-    saveButton->plug( m_toolbar );
 
     m_toolbar->setIconText( KToolBar::IconOnly, false );      //default appearance
     m_toolbar->insertLineSeparator();
@@ -2405,11 +2402,6 @@ void PlaylistBrowser::slotAddMenu( int id ) //SLOT
     }
 }
 
-
-void PlaylistBrowser::slotSave() // SLOT
-{
-    createPlaylist();
-}
 
 /**
  ************************

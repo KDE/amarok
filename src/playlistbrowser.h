@@ -129,7 +129,6 @@ class PlaylistBrowser : public QVBox
         void subFromDynamic();
 
         void slotAddMenu( int id );
-        void slotSave();
         void showContextMenu( QListViewItem*, const QPoint&, int );
 
         void loadDynamicItems();

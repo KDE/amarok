@@ -251,6 +251,7 @@ void PlaylistWindow::init()
 
         playlist = new Playlist( m_browsers->container() );
         actionCollection()->action( "playlist_clear")->plug( bar );
+        actionCollection()->action( "playlist_save")->plug( bar );
         bar->addSeparator();
         actionCollection()->action( "playlist_undo")->plug( bar );
         actionCollection()->action( "playlist_redo")->plug( bar );
