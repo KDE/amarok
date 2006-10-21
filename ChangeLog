@@ -29,6 +29,8 @@ VERSION 1.4.4
 
 
   CHANGES:
+    * Add .ape and .mpc to possible file types supported by a generic media
+      device. (BR 133491)
     * Move button for saving current playlist from playlist browser toolbar to
       playlist toolbar. (BR 129300)
     * Run 'kdeeject -q devicenode' when no post-disconnect command has been

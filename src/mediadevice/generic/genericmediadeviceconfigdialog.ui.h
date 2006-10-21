@@ -120,7 +120,7 @@ GenericMediaDeviceConfigDialog::updateConfigDialogLists( const QStringList & sup
     QStringList allTypes;
     allTypes << "mp3" << "ogg" << "wma" << "mp4" << "aac" << "m4a" << "ac3";
     allTypes << "wav" << "flac" << "asf" << "asx" << "mpg" << "mp4v" << "mpeg";
-    allTypes << "aa" << "3gp" << "mp2";
+    allTypes << "aa" << "3gp" << "mp2" << "ape" << "mpc";
 
     QStringList unsupported;
     QComboBox *convert      = m_convertComboBox;
