@@ -29,6 +29,8 @@ VERSION 1.4.4
 
 
   CHANGES:
+    * Run 'kdeeject -q devicenode' when no post-disconnect command has been
+      configured for media devices.
     * Reduced memory usage for MTP media devices. (BR 134663)
     * Faster searching on playlist and startup, due to some optimizing in
       string usage. Patch by Ovidiu Gheorghioiu <ovidiug@gmail.com>.
