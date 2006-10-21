@@ -76,6 +76,7 @@ void K3bExporter::exportAlbum( const QString &album, int openmode )
     QueryBuilder qb;
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
     qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, albumId );
+    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
 
     QStringList values( qb.run() );
@@ -122,7 +123,9 @@ void K3bExporter::exportComposer( const QString &composer, int openmode )
     QueryBuilder qb;
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
     qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valComposerID, composerId );
-    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTitle );
+    qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
+    qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
 
     QStringList values( qb.run() );
 
