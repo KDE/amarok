@@ -125,7 +125,7 @@
                         <cstring>kLineEdit_location</cstring>
                     </property>
                     <property name="focusPolicy">
-                        <enum>TabFocus</enum>
+                        <enum>StrongFocus</enum>
                     </property>
                     <property name="readOnly">
                         <bool>true</bool>
