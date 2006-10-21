@@ -294,8 +294,10 @@ void App::handleCliArgs() //static
         pApp->m_pPlaylistWindow->showHide();
     }
 
-    if( !haveArgs )
+    static bool firstTime = true;
+    if( !firstTime && !haveArgs )
         pApp->m_pPlaylistWindow->activate();
+    firstTime = false;
 
     args->clear();    //free up memory
 }
