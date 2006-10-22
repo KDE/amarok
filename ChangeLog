@@ -63,6 +63,7 @@ VERSION 1.4.4
     * Show a proper tag dialog when viewing information for DAAP music shares.
 
   BUGFIXES:
+    * Honor setting to show Amarok's menu in main toolbar.
     * "Burn this album" would burn all albums of the same name. (BR 121963)
     * Ignore double-clicks on tree item openers. (BR 125121)
     * Visibility of sidebar tabs would depend on the current locale. (BR 135316)

@@ -546,11 +546,6 @@ void PlaylistWindow::createGUI()
         }
     }
 
-    if ( AmarokConfig::showMenuBar() ) {
-        if ( actionCollection()->action( "amarok_menu" )->isPlugged() )
-            actionCollection()->action( "amarok_menu" )->unplugAll();
-    }
-
     m_toolbar->setIconText( KToolBar::IconOnly, false ); //default appearance
     conserveMemory();
     setUpdatesEnabled( true );
@@ -998,16 +993,13 @@ void PlaylistWindow::slotToggleMenu() //SLOT
     if( static_cast<KToggleAction *>(actionCollection()->action(KStdAction::name(KStdAction::ShowMenubar)))->isChecked() ) {
         AmarokConfig::setShowMenuBar( true );
         m_menubar->setShown( true );
-
-        if( Amarok::actionCollection()->action( "amarok_menu" )->isPlugged() )
-            Amarok::actionCollection()->action( "amarok_menu" )->unplugAll();
     }
     else
     {
         AmarokConfig::setShowMenuBar( false );
         m_menubar->setShown( false );
-        recreateGUI();
     }
+    recreateGUI();
 }
 
 void PlaylistWindow::slotMenuActivated( int index ) //SLOT
