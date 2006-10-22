@@ -494,6 +494,8 @@ void PlaylistWindow::createGUI()
 {
     setUpdatesEnabled( false );
 
+    LastFm::Controller::instance(); // create love/ban/skip actions
+
     m_toolbar->clear();
 
     //KActions don't unplug themselves when the widget that is plugged is deleted!
