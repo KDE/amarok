@@ -785,6 +785,8 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     }
     else if( url.protocol() == "stream" )
     {
+        url = KURL::fromPathOrURL( url.url().replace( QRegExp( "^stream:" ), "http:" ) );
+        urls = KURL::List( url );
         menu.insertTitle( i18n("Podcast"), TITLE );
         menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), MAKE );
         menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
