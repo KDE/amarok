@@ -90,7 +90,7 @@ class PlaylistBrowser : public QVBox
         QListViewItem *findItemInTree( const QString &searchstring, int c ) const;
         PodcastEpisode *findPodcastEpisode( const KURL &episode, const KURL &feed ) const;
 
-        QPtrList<QListViewItem> dynamicEntries() const { return m_dynamicEntries; }
+        QPtrList<PlaylistBrowserEntry> dynamicEntries() const { return m_dynamicEntries; }
         DynamicMode *findDynamicModeByTitle( const QString &title );
         QListViewItem *podcastCategory() const { return m_podcastCategory; }
 
@@ -116,7 +116,8 @@ class PlaylistBrowser : public QVBox
 
     private slots:
         void abortPodcastQueue();
-        void addToDynamic();
+        void addSelectedToDynamic();
+        void addToDynamic( QListViewItem *item );
         void addSelectedToPlaylist( int options = -1 );
         void collectionScanDone();
         void currentItemChanged( QListViewItem * );
@@ -127,7 +128,8 @@ class PlaylistBrowser : public QVBox
         void renameSelectedItem();
         void invokeItem( QListViewItem*, const QPoint &, int column );
         void slotDoubleClicked( QListViewItem *item );
-        void subFromDynamic();
+        void subSelectedFromDynamic();
+        void subFromDynamic( QListViewItem *item );
 
         void slotAddMenu( int id );
         void showContextMenu( QListViewItem*, const QPoint&, int );
@@ -172,6 +174,9 @@ class PlaylistBrowser : public QVBox
         void savePodcastFolderStates( PlaylistCategory *folder );
         PodcastChannel *findPodcastChannel( const KURL &feed, QListViewItem *parent=0 ) const;
 
+        void markDynamicEntries();
+        PlaylistBrowserEntry* findByName( QString name );
+
         PlaylistCategory* loadPlaylists();
         void savePlaylists();
         void savePlaylist( PlaylistEntry * );
@@ -215,7 +220,7 @@ class PlaylistBrowser : public QVBox
         QValueList<int>      m_dynamicSizeSave;
 
         QDict<PodcastSettings>   m_podcastSettings;
-        QPtrList<QListViewItem>  m_dynamicEntries;
+        QPtrList<PlaylistBrowserEntry>  m_dynamicEntries;
 
         QTimer                  *m_podcastTimer;
         int                      m_podcastTimerInterval;        //in ms

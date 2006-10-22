@@ -159,6 +159,18 @@ PlaylistBrowserEntry::slotPostRenameItem( const QString /*newName*/ )
     setRenameEnabled( 0, false );
 }
 
+QString
+PlaylistBrowserEntry::name() const
+{
+    QString fullName = text(0);
+    QListViewItem *p = parent();
+    while ( p ) {
+        fullName.prepend( p->text(0) + '/' );
+        p = p->parent();
+    }
+    return fullName;
+}
+
 /////////////////////////////////////////////////////////////////////////////
 ///    CLASS PlaylistCategory
 ////////////////////////////////////////////////////////////////////////////
@@ -891,10 +903,10 @@ void PlaylistEntry::showContextMenu( const QPoint &position )
             PlaylistBrowser::instance()->addSelectedToPlaylist();
             break;
         case DYNADD:
-            PlaylistBrowser::instance()->addToDynamic();
+            PlaylistBrowser::instance()->addSelectedToDynamic();
             break;
         case DYNSUB:
-            PlaylistBrowser::instance()->subFromDynamic();
+            PlaylistBrowser::instance()->subSelectedFromDynamic();
             break;
         case RENAME:
             PlaylistBrowser::instance()->renameSelectedItem();
@@ -3389,13 +3401,10 @@ SmartPlaylist::xmlToQuery(const QDomElement &xml, bool forExpand /* = false */) 
 
 void SmartPlaylist::setDynamic( bool enable )
 {
-    if( enable != m_dynamic )
-    {
-        enable ?
-            setPixmap( 0, SmallIcon( "favorites" ) ) :
-            setPixmap( 0, SmallIcon( Amarok::icon( "playlist" ) ) );
-        m_dynamic = enable;
-    }
+    enable ?
+        setPixmap( 0, SmallIcon( "favorites" ) ) :
+        setPixmap( 0, SmallIcon( Amarok::icon( "playlist" ) ) );
+    m_dynamic = enable;
 }
 
 
@@ -3450,10 +3459,10 @@ void SmartPlaylist::showContextMenu( const QPoint &position )
             Playlist::instance()->insertMediaSql( query(), Playlist::Append );
             break;
         case DYNADD:
-            PlaylistBrowser::instance()->addToDynamic();
+            PlaylistBrowser::instance()->addSelectedToDynamic();
             break;
         case DYNSUB:
-            PlaylistBrowser::instance()->subFromDynamic();
+            PlaylistBrowser::instance()->subSelectedFromDynamic();
             break;
         case EDIT:
             PlaylistBrowser::instance()->editSmartPlaylist( this );

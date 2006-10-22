@@ -114,7 +114,8 @@ namespace ConfigDynamic
             QStringList items = mode->items();
             foreach( items )
             {
-                QCheckListItem* current = static_cast<QCheckListItem*>( nd->selectPlaylist->findItem((*it),0) );
+                QCheckListItem* current = dynamic_cast<QCheckListItem*>(
+                                            Amarok::findItemByPath(nd->selectPlaylist, (*it)) );
                 if( current )
                     current->setOn(true);
             }
@@ -161,7 +162,8 @@ namespace ConfigDynamic
 
         while( it.current() )
         {
-            list.append( it.current()->text(0) );
+            SelectionListItem *item = static_cast<SelectionListItem*>(it.current());
+            list.append( item->name() );
             ++it;
         }
         saveMe->setItems( list );
@@ -204,4 +206,17 @@ void SelectionListItem::stateChange( bool b )
         it = it->nextSibling();
     }
 }
+
+QString
+SelectionListItem::name() const
+{
+    QString fullName = text(0);
+    QListViewItem *p = parent();
+    while ( p ) {
+        fullName.prepend( p->text(0) + "/" );
+        p = p->parent();
+    }
+    return fullName;
+}
+
 #include "playlistselection.moc"

@@ -47,6 +47,8 @@ class SelectionListItem : public QCheckListItem
         SelectionListItem( QListViewItem  * parent, const QString& text, QListViewItem* browserEquivalent );
         SelectionListItem( QCheckListItem * parent, const QString& text, QListViewItem* browserEquivalent );
 
+        virtual QString name() const;
+
     protected:
         virtual void stateChange( bool );
 

@@ -60,12 +60,41 @@
 #include <cstdio>              //rename() in renamePlaylist()
 
 
+
+namespace Amarok {
+    QListViewItem*
+    findItemByPath( QListView *view, QString name )
+    {
+        debug() << "Searching " << name << endl;
+        QStringList path = QStringList::split( '/' , name );
+
+        QListViewItem *prox = view->firstChild();
+        QListViewItem *item = 0;
+
+        foreach( path ) {
+            item = prox;
+            QString text( *it );
+
+            for ( ; item; item = item->nextSibling() ) {
+                if ( text == item->text(0) ) {
+                    break;
+                }
+            }
+
+            if ( !item )
+                return 0;
+            prox = item->firstChild();
+        }
+        return item;
+    }
+}
+
+
 inline QString
 fileExtension( const QString &fileName )
 {
     return Amarok::extension( fileName );
 }
-
 
 PlaylistBrowser *PlaylistBrowser::s_instance = 0;
 
@@ -202,23 +231,7 @@ PlaylistBrowser::polish()
         loadLastfmStreams( subscriber );
     }
 
-    if( Amarok::dynamicMode() )
-    {
-        QStringList playlists = Amarok::dynamicMode()->items();
-
-        for( uint i=0; i < playlists.count(); i++ )
-        {
-            QListViewItem *item = m_listview->findItem( playlists[i], 0, Qt::ExactMatch );
-            if( item )
-            {
-                m_dynamicEntries.append( item );
-                if( item->rtti() == PlaylistEntry::RTTI )
-                     static_cast<PlaylistEntry*>( item )->setDynamic( true );
-                if( item->rtti() == SmartPlaylist::RTTI )
-                     static_cast<SmartPlaylist*>( item )->setDynamic( true );
-            }
-        }
-    }
+    markDynamicEntries();
 
     // ListView item state restoration:
     // First we check if the number of items in the listview is the same as it was on last
@@ -295,6 +308,29 @@ PlaylistBrowser::resizeEvent( QResizeEvent * )
         m_infoPane->setMaximumHeight( ( int )( m_splitter->height() / 1.5 ) );
 }
 
+
+void
+PlaylistBrowser::markDynamicEntries()
+{
+    if( Amarok::dynamicMode() )
+    {
+        QStringList playlists = Amarok::dynamicMode()->items();
+
+        for( uint i=0; i < playlists.count(); i++ )
+        {
+            PlaylistBrowserEntry *item = dynamic_cast<PlaylistBrowserEntry*>( Amarok::findItemByPath( m_listview, playlists[i]  ) );
+
+            if( item )
+            {
+                m_dynamicEntries.append( item );
+                if( item->rtti() == PlaylistEntry::RTTI )
+                     static_cast<PlaylistEntry*>( item )->setDynamic( true );
+                if( item->rtti() == SmartPlaylist::RTTI )
+                     static_cast<SmartPlaylist*>( item )->setDynamic( true );
+            }
+        }
+    }
+}
 
 /**
  *************************************************************************
@@ -883,8 +919,16 @@ PlaylistCategory* PlaylistBrowser::loadDynamics()
     }
     else {
         e = d.namedItem( "category" ).toElement();
-        if ( e.attribute("formatversion") =="1.1" ) {
+        QString version = e.attribute("formatversion");
+        if ( version == "1.2" ) {
             PlaylistCategory* p = new PlaylistCategory( m_listview, after , e );
+            p->setText( 0, i18n("Dynamic Playlists") );
+            return p;
+        }
+        else if ( version == "1.1" ) {
+            // In 1.1, playlists would be refered only by its name.
+            // TODO: We can *try* to convert by using findItem
+            PlaylistCategory* p = new PlaylistCategory( m_listview, after , QDomElement() );
             p->setText( 0, i18n("Dynamic Playlists") );
             return p;
         }
@@ -917,7 +961,7 @@ void PlaylistBrowser::saveDynamics()
     QDomElement dynamicB = m_dynamicCategory->xml();
     dynamicB.setAttribute( "product", "Amarok" );
     dynamicB.setAttribute( "version", APP_VERSION );
-    dynamicB.setAttribute( "formatversion", "1.1" );
+    dynamicB.setAttribute( "formatversion", "1.2" );
     QDomNode dynamicsNode = doc.importNode( dynamicB, true );
     doc.appendChild( dynamicsNode );
 
@@ -944,20 +988,7 @@ void PlaylistBrowser::loadDynamicItems()
     m_dynamicEntries.clear();  // Don't use remove(), since we do i++, which would cause skip overs!!!
 
     // Mark appropriate items as used
-    if( Amarok::dynamicMode() && Amarok::dynamicMode()->appendType()== DynamicMode::CUSTOM )
-    {
-        QStringList playlists = Amarok::dynamicMode()->items();
-        for( uint i=0; i < playlists.count(); i++ )
-        {
-            QListViewItem *it = findItem( playlists[i], 0 );
-
-            if( it )
-            {
-                m_dynamicEntries.append( it );
-                static_cast<PlaylistBrowserEntry*>(it)->setDynamic( true );
-            }
-        }
-    }
+    markDynamicEntries();
 }
 
 /**
@@ -1935,38 +1966,59 @@ void PlaylistBrowser::collectionScanDone()
     }
 }
 
-void PlaylistBrowser::addToDynamic()
+
+void PlaylistBrowser::addToDynamic( QListViewItem *item )
+{
+    PlaylistBrowserEntry *entry = dynamic_cast<PlaylistBrowserEntry*>( item );
+
+    if( m_dynamicEntries.find( entry ) < 0 ) // check that it is not there
+        m_dynamicEntries.append( entry );
+
+    entry->setDynamic( true );
+    // add all children as well
+    QListViewItem *it = item->firstChild();
+    while ( it ) {
+        addToDynamic( it );
+        it = it->nextSibling();
+    }
+}
+
+
+void PlaylistBrowser::addSelectedToDynamic()
 {
     QListViewItemIterator it( m_listview, QListViewItemIterator::Selected );
 
     for( ; it.current(); ++it )
-    {
-        if( m_dynamicEntries.find( *it ) < 0 ) // check that it is not there
-        {
-            m_dynamicEntries.append( *it );
-            PlaylistBrowserEntry *entry = dynamic_cast<PlaylistBrowserEntry*>( *it );
-            entry->setDynamic( true );
-        }
-    }
+        addToDynamic( *it );
 
     DynamicMode *m = Playlist::instance()->modifyDynamicMode();
     m->setDynamicItems(m_dynamicEntries);
     Playlist::instance()->finishedModifying( m );
 }
 
-void PlaylistBrowser::subFromDynamic()
+
+void PlaylistBrowser::subFromDynamic( QListViewItem *item )
+{
+    PlaylistBrowserEntry *entry = dynamic_cast<PlaylistBrowserEntry*>( item );
+
+    if( m_dynamicEntries.find( entry ) >= 0 ) // check if it is already present
+        m_dynamicEntries.remove( entry );
+
+    entry->setDynamic( false );
+    // remove all children as well
+    QListViewItem *it = item->firstChild();
+    while ( it ) {
+        subFromDynamic( it );
+        it = it->nextSibling();
+    }
+}
+
+void PlaylistBrowser::subSelectedFromDynamic()
 {
     QListViewItemIterator it( m_listview, QListViewItemIterator::Selected );
 
     for( ; it.current(); ++it )
-    {
-        if( m_dynamicEntries.find( *it ) >= 0 ) // check if it is already present
-        {
-            m_dynamicEntries.remove( *it );
-            PlaylistBrowserEntry *entry = dynamic_cast<PlaylistBrowserEntry*>( *it );
-            entry->setDynamic( false );
-        }
-    }
+        subFromDynamic( *it );
 
     DynamicMode *m = Playlist::instance()->modifyDynamicMode();
     m->setDynamicItems( m_dynamicEntries );

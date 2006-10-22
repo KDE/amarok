@@ -68,16 +68,16 @@ void  DynamicMode::setPreviousCount( int c ) { m_previous = c; }
 void  DynamicMode::setAppendType( int type ) { m_appendType = type; }
 void  DynamicMode::setTitle( const QString& title ) { m_title = title; }
 
-void DynamicMode::setDynamicItems(const QPtrList<QListViewItem>& newList)
+void DynamicMode::setDynamicItems(const QPtrList<PlaylistBrowserEntry>& newList)
 {
     QStringList strListEntries;
-    QListViewItem* entry;
-    QPtrListIterator<QListViewItem> it( newList );
+    PlaylistBrowserEntry* entry;
+    QPtrListIterator<PlaylistBrowserEntry> it( newList );
 
     while( (entry = it.current()) != 0 )
     {
         ++it;
-        strListEntries << entry->text(0);
+        strListEntries << entry->name();
     }
 
     setItems(strListEntries);

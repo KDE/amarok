@@ -37,7 +37,7 @@
 class QString;
 class QStringList;
 template<class T> class QPtrList;
-class QListViewItem;
+class PlaylistBrowserEntry;
 
 class DynamicMode
 {
@@ -48,7 +48,7 @@ class DynamicMode
 
         void edit();
         void deleting();
-        void setDynamicItems(const QPtrList<QListViewItem>& newList);
+        void setDynamicItems(const QPtrList<PlaylistBrowserEntry>& newList);
 
     public: //accessors
         QString title() const;

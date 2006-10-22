@@ -646,7 +646,7 @@ Playlist::addSpecialCustomTracks( uint songCount )
     PlaylistBrowser *pb = PlaylistBrowser::instance();
     QListViewItem *item = 0;
 
-    QPtrList<QListViewItem> dynamicEntries = pb->dynamicEntries();
+    QPtrList<PlaylistBrowserEntry> dynamicEntries = pb->dynamicEntries();
 
     //FIXME: What if the randomiser grabs the same playlist again and again?  Lets remove the playlist from the list.
     for( uint y=0; y < dynamicEntries.count(); y++ )

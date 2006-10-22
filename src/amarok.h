@@ -22,6 +22,8 @@ class QMutex;
 class QPixmap;
 class QWidget;
 class DynamicMode;
+class QListView;
+class QListViewItem;
 namespace KIO { class Job; }
 
 namespace Amarok
@@ -196,6 +198,8 @@ namespace Amarok
     bool entireAlbums(); //repeatAlbum() || randomAlbums()
 
     const DynamicMode *dynamicMode(); //defined in playlist.cpp
+
+    QListViewItem* findItemByPath( QListView *view, QString path ); //defined in playlistbrowser.cpp
 
     /**
      * Maps the icon name to a system icon or custom Amarok icon, depending on the settings.
