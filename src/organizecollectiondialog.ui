@@ -10,7 +10,7 @@
             <x>0</x>
             <y>0</y>
             <width>476</width>
-            <height>561</height>
+            <height>549</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -79,25 +79,52 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QCheckBox">
+        <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>coverCheck</cstring>
+                <cstring>layout5</cstring>
             </property>
-            <property name="text">
-                <string>&amp;Use Cover Art for Folder Icons</string>
-            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>coverCheck</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Use Cover Art for Folder Icons</string>
+                    </property>
+                </widget>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>ignoreTheCheck</cstring>
+                    </property>
+                    <property name="text">
+                        <string>I&amp;gnore 'The' in Artist Names</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>If checked, postfix artists' names starting with 'The' with ', The'.</string>
+                    </property>
+                </widget>
+            </vbox>
         </widget>
-        <widget class="QCheckBox">
+        <spacer>
             <property name="name">
-                <cstring>ignoreTheCheck</cstring>
+                <cstring>spacer2_5</cstring>
             </property>
-            <property name="text">
-                <string>I&amp;gnore 'The' in Artist Names</string>
+            <property name="orientation">
+                <enum>Vertical</enum>
             </property>
-            <property name="toolTip" stdset="0">
-                <string>If checked, postfix artists' names starting with 'The' with ', The'.</string>
+            <property name="sizeType">
+                <enum>Expanding</enum>
             </property>
-        </widget>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>16</height>
+                </size>
+            </property>
+        </spacer>
         <widget class="QGroupBox">
             <property name="name">
                 <cstring>groupingGroup</cstring>
@@ -201,6 +228,23 @@
                 </widget>
             </vbox>
         </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer2_4</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>16</height>
+                </size>
+            </property>
+        </spacer>
         <widget class="QGroupBox">
             <property name="name">
                 <cstring>replacementGroup</cstring>
@@ -303,6 +347,23 @@
                 </widget>
             </vbox>
         </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>16</height>
+                </size>
+            </property>
+        </spacer>
         <widget class="QGroupBox">
             <property name="name">
                 <cstring>previewBox</cstring>
@@ -343,14 +404,11 @@
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>overwriteLayout</cstring>
+                <cstring>layout7</cstring>
             </property>
             <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>5</number>
                 </property>
                 <spacer>
                     <property name="name">
@@ -364,7 +422,7 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>40</width>
+                            <width>347</width>
                             <height>20</height>
                         </size>
                     </property>
@@ -382,6 +440,23 @@
                 </widget>
             </hbox>
         </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer2_3</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>16</height>
+                </size>
+            </property>
+        </spacer>
     </vbox>
 </widget>
 <customwidgets>
