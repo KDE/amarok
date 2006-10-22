@@ -68,6 +68,8 @@ Amarok::icon( const QString& name ) //declared in amarok.h
         iconMap["playlist_clear"]       = "view_remove";
         iconMap["playlist_refresh"]     = "rebuild";
         iconMap["queue"]                = "goto";
+        iconMap["queue_track"]          = "2rightarrow";
+        iconMap["dequeue_track"]        = "2leftarrow";
         iconMap["random"]               = "random";
         iconMap["random_album"]         = "cd";
         iconMap["random_no"]            = "forward";
@@ -99,11 +101,20 @@ Amarok::icon( const QString& name ) //declared in amarok.h
         iconMap["zoom"]                 = "find";
     }
 
+    static QMap<QString, QString> amarokMap;
+    if( amarokMap.empty() ) {
+        amarokMap["queue_track"]          = "fastforward";
+        amarokMap["dequeue_track"]        = "rewind";
+    }
 
     if( iconMap.contains( name ) )
     {
         if( AmarokConfig::useCustomIconTheme() )
+        {
+            if( amarokMap.contains( name ) )
+                return QString( "amarok_" ) + amarokMap[name];
             return QString( "amarok_" ) + name;
+        }
         else
             return iconMap[name];
     }

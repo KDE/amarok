@@ -63,6 +63,8 @@ VERSION 1.4.4
     * Show a proper tag dialog when viewing information for DAAP music shares.
 
   BUGFIXES:
+    * In some cases, the Removal and Enqueue buttons in the queue manager would
+      have no icons. (BR 115895)
     * Don't change length of position slider when navigation within a track.
       (BR 122569)
     * Direct copying of non-local items would result in wrong properties on

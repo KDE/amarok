@@ -360,7 +360,7 @@ Playlist::Playlist( QWidget *parent )
     new KAction( i18n( "S&huffle" ), "rebuild", CTRL+Key_H, this, SLOT( shuffle() ), ac, "playlist_shuffle" );
     new KAction( i18n( "&Go To Current Track" ), Amarok::icon( "music" ), CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
     new KAction( i18n( "&Remove Duplicate && Dead Entries" ), 0, this, SLOT( removeDuplicates() ), ac, "playlist_remove_duplicates" );
-    new KAction( i18n( "&Queue Selected Tracks" ), Amarok::icon( "fastforward" ), CTRL+Key_D, this, SLOT( queueSelected() ), ac, "queue_selected" );
+    new KAction( i18n( "&Queue Selected Tracks" ), Amarok::icon( "queue_track" ), CTRL+Key_D, this, SLOT( queueSelected() ), ac, "queue_selected" );
     KToggleAction *stopafter = new KToggleAction( i18n( "&Stop Playing After Track" ), Amarok::icon( "stop" ), CTRL+ALT+Key_V,
                             this, SLOT( toggleStopAfterCurrentItem() ), ac, "stop_after" );
 
@@ -3271,8 +3271,9 @@ Playlist::saveXML( const QString &path )
     stream << QString( "<playlist product=\"%1\" version=\"%2\"%3>\n" )
               .arg( "Amarok" ).arg( Amarok::xmlVersion() ).arg( dynamic );
 
-    for( const PlaylistItem *item = firstChild(); item; item = item->nextSibling() )
+    for( MyIt it( this, MyIt::All ); *it; ++it )
     {
+        const PlaylistItem *item = *it;
         if( item->isEmpty() ) continue;  // Skip marker items and such
 
         QStringList attributes;
@@ -3941,7 +3942,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
             : i18n( "&Play" ), PLAY );
 
     // Begin queue entry logic
-    popup.insertItem( SmallIconSet( Amarok::icon( "fastforward" ) ), i18n("&Queue Selected Tracks"), PLAY_NEXT );
+    popup.insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), i18n("&Queue Selected Tracks"), PLAY_NEXT );
 
     bool queueToggle = false;
     MyIt it( this, MyIt::Selected );
@@ -3958,7 +3959,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         if ( !firstQueued )
             popup.changeItem( PLAY_NEXT, i18n( "&Queue Track" ) );
         else
-            popup.changeItem( PLAY_NEXT, SmallIconSet( Amarok::icon( "rewind" ) ), i18n("&Dequeue Track") );
+            popup.changeItem( PLAY_NEXT, SmallIconSet( Amarok::icon( "dequeue_track" ) ), i18n("&Dequeue Track") );
     } else {
         if ( queueToggle )
             popup.changeItem( PLAY_NEXT, i18n( "Toggle &Queue Status (1 track)", "Toggle &Queue Status (%n tracks)", itemCount ) );
@@ -3968,7 +3969,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
             if ( !firstQueued )
                 popup.changeItem( PLAY_NEXT, i18n( "&Queue Selected Tracks" ) );
             else
-                popup.changeItem( PLAY_NEXT, SmallIconSet( Amarok::icon( "rewind" ) ), i18n("&Dequeue Selected Tracks") );
+                popup.changeItem( PLAY_NEXT, SmallIconSet( Amarok::icon( "dequeue_track" ) ), i18n("&Dequeue Selected Tracks") );
     }
     // End queue entry logic
 

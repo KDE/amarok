@@ -1079,7 +1079,7 @@ void PlaylistTrackItem::showContextMenu( const QPoint &position )
     enum Actions { MAKE, APPEND, QUEUE, BURN, REMOVE, INFO };
 
     menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
-    menu.insertItem( SmallIconSet( Amarok::icon( "fastforward" ) ), i18n( "&Queue Track" ), QUEUE );
+    menu.insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), i18n( "&Queue Track" ), QUEUE );
     menu.insertItem( SmallIconSet( Amarok::icon( "playlist" ) ), i18n( "&Make Playlist" ), MAKE );
 
 

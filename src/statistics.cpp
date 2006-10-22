@@ -649,7 +649,7 @@ StatisticsList::showContextMenu( QListViewItem *item, const QPoint &p, int )  //
     enum Actions { APPEND, QUEUE, INFO };
 
     menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
-    menu.insertItem( SmallIconSet( Amarok::icon( "fastforward" ) ), i18n( "&Queue Track" ), QUEUE );
+    menu.insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), i18n( "&Queue Track" ), QUEUE );
 
     menu.insertSeparator();
 

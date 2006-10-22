@@ -788,7 +788,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         menu.insertTitle( i18n("Podcast"), TITLE );
         menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), MAKE );
         menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
-        menu.insertItem( SmallIconSet( Amarok::icon( "fastforward" ) ), i18n( "&Queue Podcast" ), ASNEXT );
+        menu.insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), i18n( "&Queue Podcast" ), ASNEXT );
         //menu.insertSeparator();
         //menu.insertItem( SmallIconSet( "down" ), i18n( "&Download" ), DOWNLOAD );
     }
@@ -799,7 +799,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         menu.insertTitle( i18n("Track"), TITLE );
         menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), MAKE );
         menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
-        menu.insertItem( SmallIconSet( Amarok::icon( "fastforward" ) ), i18n( "&Queue Track" ), ASNEXT );
+        menu.insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), i18n( "&Queue Track" ), ASNEXT );
         if( MediaBrowser::isAvailable() )
             menu.insertItem( SmallIconSet( Amarok::icon( "device" ) ), i18n( "&Transfer to Media Device" ), MEDIA_DEVICE );
 
