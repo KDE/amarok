@@ -1637,6 +1637,9 @@ PodcastChannel::checkAndSetNew()
 void
 PodcastChannel::setListened( const bool n /*true*/ )
 {
+    if( !isPolished() )
+        load();
+
     QListViewItem *child = firstChild();
     while( child )
     {
