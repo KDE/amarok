@@ -262,14 +262,17 @@ IpodMediaDevice::isConnected()
 }
 
 MediaItem *
-IpodMediaDevice::insertTrackIntoDB( const QString &pathname, const MetaBundle &bundle, const PodcastInfo *podcastInfo )
+IpodMediaDevice::insertTrackIntoDB( const QString &pathname,
+        const MetaBundle &metaBundle, const MetaBundle &propertiesBundle,
+        const PodcastInfo *podcastInfo )
 {
-    return updateTrackInDB( 0, pathname, bundle, podcastInfo );
+    return updateTrackInDB( 0, pathname, metaBundle, propertiesBundle, podcastInfo );
 }
 
 MediaItem *
 IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
-                                  const MetaBundle &bundle, const PodcastInfo *podcastInfo )
+                                  const MetaBundle &metaBundle, const MetaBundle &propertiesBundle,
+                                  const PodcastInfo *podcastInfo )
 {
     if( !m_itdb )
         return 0;
@@ -290,10 +293,10 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
     track->ipod_path = g_strdup( ipodPath(pathname).latin1() );
     debug() << "on iPod: " << track->ipod_path << ", podcast=" << podcastInfo << endl;
 
-    track->title = g_strdup( bundle.title().utf8() );
-    track->album = g_strdup( bundle.album()->utf8() );
-    track->artist = g_strdup( bundle.artist()->utf8() );
-    track->genre = g_strdup( bundle.genre()->utf8() );
+    track->title = g_strdup( metaBundle.title().utf8() );
+    track->album = g_strdup( metaBundle.album()->utf8() );
+    track->artist = g_strdup( metaBundle.artist()->utf8() );
+    track->genre = g_strdup( metaBundle.genre()->utf8() );
     track->unk208 = 0x01; // for audio
     if(type=="wav")
     {
@@ -335,7 +338,7 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
 #endif
         track->unk208 = 0x08; // for audiobooks
 
-        TagLib::Audible::File f( QFile::encodeName( bundle.url().path() ) );
+        TagLib::Audible::File f( QFile::encodeName( propertiesBundle.url().path() ) );
         TagLib::Audible::Tag *t = f.getAudibleTag();
         if( t )
             track->drm_userid = t->userID();
@@ -348,20 +351,20 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
         track->filetype = g_strdup( type.utf8() );
     }
 
-    track->composer = g_strdup( bundle.composer()->utf8() );
-    track->comment = g_strdup( bundle.comment()->utf8() );
-    track->track_nr = bundle.track();
-    track->cd_nr = bundle.discNumber();
-    track->BPM = static_cast<int>( bundle.bpm() );
-    track->year = bundle.year();
-    track->size = bundle.filesize();
+    track->composer = g_strdup( metaBundle.composer()->utf8() );
+    track->comment = g_strdup( metaBundle.comment()->utf8() );
+    track->track_nr = metaBundle.track();
+    track->cd_nr = metaBundle.discNumber();
+    track->BPM = static_cast<int>( metaBundle.bpm() );
+    track->year = metaBundle.year();
+    track->size = propertiesBundle.filesize();
     if( track->size == 0 )
     {
         debug() << "filesize is zero for " << track->ipod_path << ", expect strange problems with your ipod" << endl;
     }
-    track->bitrate = bundle.bitrate();
-    track->samplerate = bundle.sampleRate();
-    track->tracklen = bundle.length()*1000;
+    track->bitrate = propertiesBundle.bitrate();
+    track->samplerate = propertiesBundle.sampleRate();
+    track->tracklen = propertiesBundle.length()*1000;
 
     if(podcastInfo)
     {
@@ -392,7 +395,7 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
     {
         // FIXME: track->unk176 = 0x00010000; // for non-podcasts
 
-        if( bundle.compilation() == MetaBundle::CompilationYes )
+        if( metaBundle.compilation() == MetaBundle::CompilationYes )
         {
             track->compilation = 0x01;
         }
@@ -408,17 +411,17 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
     if( m_supportsArtwork )
     {
         QString image;
-        if( bundle.podcastBundle() )
+        if( metaBundle.podcastBundle() )
         {
             PodcastChannelBundle pcb;
-            if( CollectionDB::instance()->getPodcastChannelBundle( bundle.podcastBundle()->parent(), &pcb ) )
+            if( CollectionDB::instance()->getPodcastChannelBundle( metaBundle.podcastBundle()->parent(), &pcb ) )
                 image = CollectionDB::instance()->podcastImage( pcb.imageURL().url(), 0 );
         }
         if( image.isEmpty() )
-            image  = CollectionDB::instance()->albumImage(bundle.artist(), bundle.album(), false, 0);
+            image  = CollectionDB::instance()->albumImage(metaBundle.artist(), metaBundle.album(), false, 0);
         if( !image.endsWith( "@nocover.png" ) )
         {
-            debug() << "adding image " << image << " to " << bundle.artist() << ":" << bundle.album() << endl;
+            debug() << "adding image " << image << " to " << metaBundle.artist() << ":" << metaBundle.album() << endl;
             itdb_track_set_thumbnails( track, g_strdup( QFile::encodeName(image) ) );
         }
     }
@@ -525,11 +528,8 @@ IpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle)
         podcastInfo->listened = !peb->isNew();
     }
 
-    MetaBundle *newBundle = 0;
-    if( bundle.url().isLocalFile() && !bundle.isValidMedia() )
-        newBundle = new MetaBundle( url );
-
-    MediaItem *ret = insertTrackIntoDB( url.path(), newBundle ? *newBundle : bundle, podcastInfo );
+    MetaBundle propertiesBundle( url );
+    MediaItem *ret = insertTrackIntoDB( url.path(), bundle, propertiesBundle, podcastInfo );
     delete podcastInfo;
     return ret;
 }
@@ -537,7 +537,7 @@ IpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle)
 MediaItem *
 IpodMediaDevice::tagsChanged( MediaItem *item, const MetaBundle &bundle )
 {
-    return updateTrackInDB( dynamic_cast<IpodMediaItem *>(item), item->url().path(), bundle, NULL );
+    return updateTrackInDB( dynamic_cast<IpodMediaItem *>(item), item->url().path(), bundle, bundle, NULL );
 }
 
 void
@@ -2118,7 +2118,7 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                             }
 
                             item->takeItem(it);
-                            insertTrackIntoDB(it->url().path(), *it->bundle(), 0);
+                            insertTrackIntoDB(it->url().path(), *it->bundle(), *it->bundle(), 0);
                             delete it;
                         }
                     }
@@ -2141,7 +2141,7 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                             }
 
                             i->parent()->takeItem(i);
-                            insertTrackIntoDB(i->url().path(), *i->bundle(), 0);
+                            insertTrackIntoDB(i->url().path(), *i->bundle(), *i->bundle(), 0);
                             delete i;
                         }
                     }

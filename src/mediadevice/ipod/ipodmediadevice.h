@@ -56,7 +56,7 @@ class IpodMediaDevice : public MediaDevice
         void              unlockDevice() { m_mutex.unlock(); }
         void              initView();
 
-        virtual MediaItem*copyTrackToDevice( const MetaBundle& bundle );
+        virtual MediaItem *copyTrackToDevice( const MetaBundle& bundle );
         /**
          * Insert track already located on media device into the device's database
          * @param pathname Location of file on the device to add to the database
@@ -64,12 +64,13 @@ class IpodMediaDevice : public MediaDevice
          * @param podcastInfo PodcastInfo of track if it is a podcast, 0 otherwise
          * @return If successful, the created MediaItem in the media device view, else 0
          */
-        virtual MediaItem *insertTrackIntoDB( const QString& pathname, const MetaBundle& bundle,
-                                              const PodcastInfo *podcastInfo );
+        virtual MediaItem *insertTrackIntoDB( const QString &pathname,
+                const MetaBundle &metaBundle, const MetaBundle &propertiesBundle,
+                const PodcastInfo *podcastInfo );
 
-        virtual MediaItem * updateTrackInDB( IpodMediaItem *item, const QString &pathname,
-                                             const MetaBundle &bundle, const PodcastInfo *podcastInfo );
-
+        virtual MediaItem *updateTrackInDB( IpodMediaItem *item, const QString &pathname,
+                const MetaBundle &metaBundle, const MetaBundle &propertiesBundle,
+                const PodcastInfo *podcastInfo );
 
         /**
          * Determine the url for which a track should be uploaded to on the device

@@ -63,6 +63,8 @@ VERSION 1.4.4
     * Show a proper tag dialog when viewing information for DAAP music shares.
 
   BUGFIXES:
+    * Direct copying of non-local items would result in wrong properties on
+      iPods. (BR 135681)
     * Honor setting to show Amarok's menu in main toolbar.
     * "Burn this album" would burn all albums of the same name. (BR 121963)
     * Ignore double-clicks on tree item openers. (BR 125121)
