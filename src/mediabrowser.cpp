@@ -3678,7 +3678,8 @@ MediaQueue::slotShowContextMenu( QListViewItem* item, const QPoint& point, int )
     menu.insertItem( SmallIconSet( Amarok::icon( "playlist_refresh" ) ), i18n( "&Start Transfer" ), START_TRANSFER );
     menu.setItemEnabled( START_TRANSFER,
             MediaBrowser::instance()->currentDevice() &&
-            MediaBrowser::instance()->currentDevice()->isConnected() );
+            MediaBrowser::instance()->currentDevice()->isConnected() &&
+            MediaBrowser::instance()->currentDevice()->m_transfer );
 
     switch( menu.exec( point ) )
     {
