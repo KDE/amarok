@@ -59,6 +59,7 @@ Amarok::icon( const QString& name ) //declared in amarok.h
         iconMap["files2"]               = "folder_red";
         iconMap["info"]                 = "info";
         iconMap["lyrics"]               = "document";
+        iconMap["magnatune"]            = "cd";
         iconMap["mostplayed"]           = "favorites";
         iconMap["music"]                = "today";
         iconMap["next"]                 = "player_end";
