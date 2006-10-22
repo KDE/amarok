@@ -2423,7 +2423,7 @@ MediaDevice::kioCopyTrack( const KURL &src, const KURL &dst )
         else
         {
             MetaBundle bundle2(dst);
-            if(!bundle2.isValidMedia())
+            if(!bundle2.isValidMedia() && bundle2.filesize()==MetaBundle::Undetermined)
             {
                 tryToRemove = true;
                 // probably s.th. went wrong

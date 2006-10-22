@@ -293,10 +293,15 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
     track->ipod_path = g_strdup( ipodPath(pathname).latin1() );
     debug() << "on iPod: " << track->ipod_path << ", podcast=" << podcastInfo << endl;
 
-    track->title = g_strdup( metaBundle.title().utf8() );
+    if( metaBundle.isValidMedia() || !metaBundle.title().isEmpty() )
+        track->title = g_strdup( metaBundle.title().utf8() );
+    else
+        track->title = g_strdup( metaBundle.url().filename().utf8() );
     track->album = g_strdup( metaBundle.album()->utf8() );
     track->artist = g_strdup( metaBundle.artist()->utf8() );
     track->genre = g_strdup( metaBundle.genre()->utf8() );
+
+
     track->unk208 = 0x01; // for audio
     if(type=="wav")
     {

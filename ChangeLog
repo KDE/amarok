@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 1.4.4
   FEATURES:
+    * Transfer .wav-files to iPods. (BR 131130)
     * Xine and Helix engines now support three different crossfading modes:
       always, on manual track changes only, or on automatic track changes
       only.
