@@ -62,6 +62,7 @@ namespace Amarok
 
     private:
         QLabel *m_timeLabel;
+        int m_timeLength;
         QLabel *m_itemCountLabel;
         QueueLabel *m_queueLabel;
         Amarok::PrettySlider *m_slider;

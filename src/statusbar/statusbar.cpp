@@ -58,6 +58,7 @@ StatusBar* StatusBar::s_instance = 0;
 StatusBar::StatusBar( QWidget *parent, const char *name )
         : KDE::StatusBar( parent, name )
         , EngineObserver( EngineController::instance() )
+        , m_timeLength( 9 )
         , m_pauseTimer( new QTimer( this ) )
 {
     s_instance = this; //static member
@@ -191,10 +192,8 @@ StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 
     setMainText( i18n( "Playing: %1" ).arg( title ) );
 
-    m_slider->setMinValue( 0 );
-    m_slider->setMaxValue( bundle.length() * 1000 );
-    m_slider->setEnabled( bundle.length() > 0 );
     m_slider->newBundle( bundle );
+    engineTrackLengthChanged( bundle.length() );
 }
 
 void
@@ -242,7 +241,10 @@ StatusBar::engineTrackPositionChanged( long position, bool /*userSeek*/ )
 void
 StatusBar::engineTrackLengthChanged( long length )
 {
+    m_slider->setMinValue( 0 );
     m_slider->setMaxValue( length * 1000 );
+    m_slider->setEnabled( length > 0 );
+    m_timeLength = MetaBundle::prettyTime( length ).length()+1; // account for - in remaining time
 }
 
 void
@@ -251,14 +253,18 @@ StatusBar::drawTimeDisplay( int ms )  //SLOT
     int seconds = ms / 1000;
     const uint trackLength = EngineController::instance()->bundle().length();
 
-    QString s( " " );
-
     if( AmarokConfig::timeDisplayRemaining() && trackLength > 0 ) {
         seconds = trackLength - seconds;
-        s += '-';
     }
 
-    s += MetaBundle::prettyTime( seconds );
+    QString s = MetaBundle::prettyTime( seconds );
+
+    if( AmarokConfig::timeDisplayRemaining() && trackLength > 0 ) {
+        s.prepend( '-' );
+    }
+
+    while( s.length() < m_timeLength )
+        s.prepend( ' ' );
     s += ' ';
 
     m_timeLabel->setText( s );

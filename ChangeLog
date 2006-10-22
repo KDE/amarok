@@ -63,6 +63,8 @@ VERSION 1.4.4
     * Show a proper tag dialog when viewing information for DAAP music shares.
 
   BUGFIXES:
+    * Don't change length of position slider when navigation within a track.
+      (BR 122569)
     * Direct copying of non-local items would result in wrong properties on
       iPods. (BR 135681)
     * Honor setting to show Amarok's menu in main toolbar.
