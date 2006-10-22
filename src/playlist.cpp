@@ -506,7 +506,7 @@ Playlist::insertMedia( KURL::List list, int options )
 
                 if ( jt != list.end() )
                 {
-                    queue( *it );
+                    queue( *it, false, false );
                     list.remove( jt );
                 }
             }
@@ -1553,7 +1553,7 @@ Playlist::queueSelected()
 }
 
 void
-Playlist::queue( QListViewItem *item, bool multi )
+Playlist::queue( QListViewItem *item, bool multi, bool invertQueue )
 {
     #define item static_cast<PlaylistItem*>(item)
 
@@ -1562,15 +1562,18 @@ Playlist::queue( QListViewItem *item, bool multi )
 
     if( isQueued )
     {
-        //remove the item, this is better way than remove( item )
-        m_nextTracks.remove( queueIndex ); //sets current() to next item
-
-        if( dynamicMode() ) // we move the item after the last queued item to preserve the ordered 'queue'.
+        if( invertQueue )
         {
-            PlaylistItem *after = m_nextTracks.last();
+            //remove the item, this is better way than remove( item )
+            m_nextTracks.remove( queueIndex ); //sets current() to next item
 
-            if( after )
-                moveItem( item, 0, after );
+            if( dynamicMode() ) // we move the item after the last queued item to preserve the ordered 'queue'.
+            {
+                PlaylistItem *after = m_nextTracks.last();
+
+                if( after )
+                    moveItem( item, 0, after );
+            }
         }
     }
     else if( !dynamicMode() )
@@ -1610,7 +1613,10 @@ Playlist::queue( QListViewItem *item, bool multi )
     if( !multi )
     {
         if( isQueued ) //no longer
-            emit queueChanged( PLItemList(), PLItemList( item ) );
+        {
+            if( invertQueue )
+                emit queueChanged( PLItemList(), PLItemList( item ) );
+        }
         else
             emit queueChanged( PLItemList( item ), PLItemList() );
     }

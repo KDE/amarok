@@ -257,9 +257,10 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
 
         void generateInfo(); //generates info for Random Albums
 
-        void queue( QListViewItem*, bool multi = false );
-           /* the only difference multi makes is whether it emits queueChanged(). (if multi, then no)
-              if you're queue()ing many items, consider passing true and emitting queueChanged() yourself. */
+        /* the only difference multi makes is whether it emits queueChanged(). (if multi, then no)
+           if you're queue()ing many items, consider passing true and emitting queueChanged() yourself. */
+        /* if invertQueue then queueing an already queued song dequeues it */
+        void queue( QListViewItem*, bool multi = false, bool invertQueue = true );
 
         void saveUndoState();
         void setDelayedFilter();                                           //after the delay is over
