@@ -6,7 +6,7 @@ MP4_SUBDIR = m4a
 MP4_LDADD = m4a/libtagm4a.la
 endif
 
-SUBDIRS = wma audible rmff $(MP4_SUBDIR) aac
+SUBDIRS = wma audible rmff $(MP4_SUBDIR) aac wav
 
 
 INCLUDES           = -I$(top_srcdir)/amarok/src $(all_includes) $(taglib_includes)
@@ -22,6 +22,7 @@ noinst_HEADERS = \
 
 libmetadata_la_LIBADD = \
                      wma/libtagwma.la \
+                     wav/libtagwav.la \
                      rmff/libtagrealmedia.la \
                      $(MP4_LDADD) \
                      aac/libtagaac.la \

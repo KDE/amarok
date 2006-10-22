@@ -24,6 +24,8 @@
 #include "rmff/taglib_realmediafile.h"
 #include "audible/taglib_audiblefiletyperesolver.h"
 #include "audible/taglib_audiblefile.h"
+#include "wav/wavfiletyperesolver.h"
+#include "wav/wavfile.h"
 #include "aac/aacfiletyperesolver.h"
 
 #include <taglib/mpegfile.h>
@@ -108,4 +110,5 @@ void registerTaglibPlugins()
     TagLib::FileRef::addFileTypeResolver(new RealMediaFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new AudibleFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new AACFileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new WavFileTypeResolver);
 }
