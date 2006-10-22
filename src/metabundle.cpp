@@ -490,9 +490,9 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
     if( !fileref.isNull() )
     {
         setUniqueId( readUniqueId( &fileref ) );
+        m_filesize = QFile( path ).size();
 
         tag = fileref.tag();
-
         if ( tag )
         {
             #define strip( x ) TStringToQString( x ).stripWhiteSpace()
@@ -506,8 +506,6 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
             #undef strip
 
             m_isValidMedia = true;
-
-            m_filesize = QFile( path ).size();
         }
 
 
