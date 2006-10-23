@@ -1,4 +1,4 @@
-amarokrubylibdir = $(kde_datadir)/amarok/ruby_lib
+amarokrubylibdir = $(libexecdir)/ruby_lib
 
 amarokrubylib_LTLIBRARIES = libhttp11.la
 
