@@ -456,11 +456,7 @@ MediaBrowser::getProxyUrl( const KURL& daapUrl ) const
     KURL url;
     MediaDevice* dc = dynamic_cast<MediaDevice*>( queryList( "DaapClient" )->getFirst() );
     if( dc )
-    {
         url = dc->getProxyUrl( daapUrl );
-        debug() << "found" << endl;
-    }
-    debug() << "not found" << endl;
     return url;
 }
 

@@ -87,7 +87,8 @@ namespace Amarok {
 
         QString proxy;
 
-        if ( KProtocolManager::useProxy() ) {
+        if ( KProtocolManager::proxyForURL( kurl ) != 
+                QString::fromLatin1( "DIRECT" ) ) {
             KProtocolManager::slaveProtocol ( kurl, proxy );
         }
 
@@ -97,9 +98,7 @@ namespace Amarok {
     QString
     proxyForProtocol(const QString& protocol)
     {
-        if ( KProtocolManager::useProxy() )
-            return KProtocolManager::proxyFor( protocol );
-        return QString::null;
+        return KProtocolManager::proxyFor( protocol );
     }
 
 
