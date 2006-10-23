@@ -15,6 +15,7 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
+#include "app.h"
 #include "debug.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
@@ -68,6 +69,7 @@ EngineController::EngineController()
     m_voidEngine = m_engine = static_cast<EngineBase*>( loadEngine( "void-engine" ) );
 
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotMainTimer() ) );
+    connect( pApp, SIGNAL( prepareToQuit() ), SLOT( stop() ) );
 }
 
 EngineController::~EngineController()
