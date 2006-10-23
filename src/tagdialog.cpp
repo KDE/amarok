@@ -1032,7 +1032,7 @@ TagDialog::bundleForURL( const KURL &url )
     if( storedTags.find( url.path() ) != storedTags.end() )
         return storedTags[ url.path() ];
 
-    return MetaBundle( url, true );
+    return MetaBundle( url, url.isLocalFile() );
 }
 
 int

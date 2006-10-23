@@ -3395,6 +3395,10 @@ CollectionDB::bundleForUrl( MetaBundle* bundle )
         fillInBundle( values, *bundle );
         valid = true;
     }
+    else if( MediaBrowser::instance()->getBundle( bundle->url(), bundle ) )
+    {
+        valid = true;
+    }
     else
     {
         // check if it's a podcast
