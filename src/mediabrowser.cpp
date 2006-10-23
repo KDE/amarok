@@ -1857,7 +1857,26 @@ MediaView::setFilter( const QString &filter, MediaItem *parent )
             {
                 visible = true;
             }
+            else if(it->type()==MediaItem::DIRECTORY)
+            {
+                bool match = true;
+                QStringList list = QStringList::split( " ", filter );
+                for( QStringList::iterator i = list.begin();
+                        i != list.end();
+                        ++i )
+                {
+                    if( !(*it).text(0).contains( *i ) )
+                    {
+                        match = false;
+                        break;
+                    }
+                }
+                if( match )
+                    visible = true;
+            }
         }
+        if( filter.isEmpty() )
+            visible = true;
         it->setVisible( visible );
         if(visible)
             childrenVisible = true;
