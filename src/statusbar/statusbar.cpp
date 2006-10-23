@@ -263,7 +263,7 @@ StatusBar::drawTimeDisplay( int ms )  //SLOT
         s.prepend( '-' );
     }
 
-    while( s.length() < m_timeLength )
+    while( (int)s.length() < m_timeLength )
         s.prepend( ' ' );
     s += ' ';
 
