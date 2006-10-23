@@ -1101,9 +1101,19 @@ Fader::run()
     //stop using cpu!
     xine_stop( m_decrease );
 
-    QThread::sleep( 5 );
-
     deleteLater();
+}
+
+void
+Fader::pause()
+{
+	m_paused = true;
+}
+
+void
+Fader::resume()
+{
+	m_paused = false;
 }
 
 
@@ -1149,18 +1159,6 @@ OutFader::run()
     }
     QThread::sleep( 3 );
     deleteLater();
-}
-
-void
-Fader::pause()
-{
-	m_paused = true;
-}
-
-void
-Fader::resume()
-{
-	m_paused = false;
 }
 
 bool XineEngine::metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b)
