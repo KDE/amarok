@@ -692,6 +692,19 @@ void TagDialog::readTags()
     kIntSpinBox_score->setEnabled( local );
     kTextEdit_comment->setEnabled( local );
 
+    if( local )
+    {
+       pushButton_musicbrainz->show();
+       pushButton_guessTags->show();
+       pushButton_setFilenameSchemes->show();
+    }
+    else
+    {
+       pushButton_musicbrainz->hide();
+       pushButton_guessTags->hide();
+       pushButton_setFilenameSchemes->hide();
+    }
+
     // If it's a local file, write the directory to m_path, else disable the "open in konqui" button
     if ( local )
         m_path = m_bundle.url().directory();
