@@ -64,6 +64,8 @@ VERSION 1.4.4
     * Show a proper tag dialog when viewing information for DAAP music shares.
 
   BUGFIXES:
+    * Generic media devices would not accept files with an extension that only
+      differs in case from a supported extension. (BR 135261)
     * Xine-engine: Pausing during crossfade would not work properly. Patches by
       Markus Kaufhold <M.Kaufhold@gmx.de>. (BR 122514 & 135285)
     * Stop a running cross-fading operation before starting another one. Patch

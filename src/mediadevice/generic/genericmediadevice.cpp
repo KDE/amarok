@@ -1065,7 +1065,7 @@ bool GenericMediaDevice::isPlayable( const MetaBundle& bundle )
 {
     for( QStringList::Iterator it = m_supportedFileTypes.begin(); it != m_supportedFileTypes.end() ; it++ )
     {
-        if( bundle.type() == *it )
+        if( bundle.type().lower() == (*it).lower() )
             return true;
     }
 
@@ -1075,7 +1075,7 @@ bool GenericMediaDevice::isPlayable( const MetaBundle& bundle )
 
 bool GenericMediaDevice::isPreferredFormat( const MetaBundle &bundle )
 {
-    return m_supportedFileTypes.first() == bundle.type();
+    return m_supportedFileTypes.first().lower() == bundle.type().lower();
 }
 
 /// Configuration Dialog Extension
