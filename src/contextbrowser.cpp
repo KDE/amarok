@@ -3096,6 +3096,8 @@ ContextBrowser::lyricsResult( QCString cXmlDoc, bool cached ) //SLOT
 
 
     m_lyricsPage->set( m_HTMLSource );
+    //Reset scroll
+    m_lyricsPage->view()->setContentsPos(0, 0);
     saveHtmlData(); // Send html code to file
 
     m_lyricsToolBar->getButton( LYRICS_BROWSER )->setEnabled( !m_lyricCurrentUrl.isEmpty() );
