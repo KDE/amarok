@@ -222,6 +222,12 @@ XineEngine::load( const KURL &url, bool isStream )
          (uint) AmarokConfig::crossfadeType() == 2 ) ) //crossfade when switching tracks manually
     {
        m_xfadeNextTrack = false;
+       // Stop a probably running fader
+       if( s_fader ) {
+           m_stopFader = true;
+           s_fader->terminate(); // kills a running fader
+           delete s_fader;
+       }
        s_fader = new Fader( this, m_xfadeLength );
        setEqualizerParameters( m_intPreamp, m_equalizerGains );
     }
