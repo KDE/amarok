@@ -5,10 +5,12 @@
 # License: GNU General Public License V2
 $LOAD_PATH.push(ARGV[0])
 puts "here it is: #{ARGV[0]}"
+$LOAD_PATH.push(ARGV[1])
+puts "here it is: #{ARGV[1]}"
 
 require "codes.rb"
 require 'mongrel'
-require "#{ARGV[1]}" #debug.rb
+require "#{ARGV[2]}" #debug.rb
 
 require 'uri'
 require 'pp'
@@ -20,11 +22,11 @@ $debug_prefix = "Server"
 class Element
     attr_accessor :name
 
-    public 
+    public
         def initialize(name, value = Array.new)
             @name, @value = name, value
         end
-        
+
         def to_s( codes = nil )
             if @value.nil? then
                 log @name + ' is null'
@@ -34,11 +36,11 @@ class Element
                 @name + Element.long_convert(content.length) + content
             end
         end
-        
+
         def collection?
             @value.class == Array
         end
-        
+
         def <<( child )
             @value << child
         end
@@ -47,7 +49,7 @@ class Element
             @value.size
         end
 
-        def Element.char_convert( v ) 
+        def Element.char_convert( v )
             packing( v, 'c' )
         end
 
@@ -67,13 +69,13 @@ class Element
             b[0] = v & 0xffffffff
             a.pack('N') + b.pack('N')
         end
- 
+
     protected
         def valueToString( codes )
             case CODE_TYPE[@name]
                 when :string then
                     @value
-                when :long then 
+                when :long then
                     Element.long_convert( @value )
                 when :container then
                     values = String.new
@@ -127,7 +129,7 @@ class DatabaseServlet < Mongrel::HttpHandler
           genre = Hash.new
           year = Hash.new
           device_paths = Hash.new
-          indexes = [  { :dbresult=> query( 'select * from album' ),  :indexed => albums }, 
+          indexes = [  { :dbresult=> query( 'select * from album' ),  :indexed => albums },
           { :dbresult=> query( 'select * from artist' ), :indexed => artists },
           { :dbresult=> query( 'select * from genre' )  , :indexed => genre },
           { :dbresult=> query( 'select * from year' )  , :indexed => year },
@@ -363,7 +365,7 @@ class DatabaseServlet < Mongrel::HttpHandler
           out
       end
       debugMethod(:query)
-      
+
       def write_resp( response, value )
           response.start do | head, out |
               head['DAAP-Server'] = 'amarok-kaylee'
@@ -384,7 +386,7 @@ class Controller
     def initialize
         port = 3689
         no_server = true
-        while no_server 
+        while no_server
             begin
                 server = Mongrel::HttpServer.new('0.0.0.0', port)
                 no_server = false

@@ -1,4 +1,4 @@
-amarokrubylibdir = $(libexecdir)/ruby_lib
+amarokrubylibdir = $(libdir)/ruby_lib
 
 amarokrubylib_LTLIBRARIES = libhttp11.la
 
