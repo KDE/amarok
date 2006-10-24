@@ -3736,12 +3736,19 @@ CollectionView::renderTreeModeView( bool /*=false*/ )
         item = item->firstChild();
     }
 
+    removeDuplicatedHeaders();
+}
+
+void
+CollectionView::removeDuplicatedHeaders()
+{
     /* Following code depends on the order! */
     sort();
 
     QValueList<DividerItem *> toDelete;
     DividerItem *current=0, *last=0;
     bool empty;
+    QListViewItem *item;
     /* If we have two consecutive headers, one of them is useless, and should be removed */
     for( item = firstChild(),empty=false; item; item=item->nextSibling() )
     {
@@ -3770,6 +3777,7 @@ CollectionView::renderTreeModeView( bool /*=false*/ )
     for ( QValueList<DividerItem *>::iterator it = toDelete.begin(); it != toDelete.end(); ++it )
         delete *it;
 }
+
 
 // MODE IPODVIEW This is the heart of the iPod view mode code.  It
 // applies the current filters (as defined by previous "move
@@ -3960,6 +3968,8 @@ CollectionView::renderIpodModeView( bool /*=false*/ )
         QResizeEvent rev( size(), QSize() );
         viewportResizeEvent( &rev );
     }
+
+    removeDuplicatedHeaders();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

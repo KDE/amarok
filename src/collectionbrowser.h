@@ -211,7 +211,7 @@ class CollectionView : public KListView, public DropProxyTarget
     protected:
         // Reimplemented for iPod-style navigation, etc.
         virtual void keyPressEvent( QKeyEvent *e );
- 
+
 
     public slots:
         /** Rebuilds and displays the treeview by querying the database. */
@@ -263,9 +263,11 @@ class CollectionView : public KListView, public DropProxyTarget
             Bitrate, Filesize, BPM, NUM_TAGS };
 
         void setViewMode( int mode, bool rerender = true );
+        void removeDuplicatedHeaders();
+
         void startDrag();
         KURL::List listSelected();
-  
+
         void playlistFromURLs( const KURL::List &urls );
         QPixmap iconForCategory( const int cat ) const;
         QString captionForCategory( const int cat ) const;
@@ -278,7 +280,7 @@ class CollectionView : public KListView, public DropProxyTarget
         void selectIpodItems ( void );
         QPixmap ipodIncrementIcon ( void );
         QPixmap ipodDecrementIcon ( void );
-  
+
         void setCompilation( const QString &album, bool compilation );
 
         /** Rebuild selections, viewport and expanded items after reloads */
@@ -326,8 +328,8 @@ class CollectionView : public KListView, public DropProxyTarget
         // For auto-selection
         int         m_ipodIncremented; // 0 = nothing, 1 = just incremented, 2 = just decremented
         QStringList m_ipodSelected[3]; // Saved selections at lower levels
-        QString     m_ipodCurrent[3];  // Saved current selections 
-        QString     m_ipodTopItem[3];  // Saved viewport positions 
+        QString     m_ipodCurrent[3];  // Saved current selections
+        QString     m_ipodTopItem[3];  // Saved viewport positions
 
         bool m_dirty; // we use this to avoid re-rendering the view when unnecessary (eg, browser is not visible)
 
