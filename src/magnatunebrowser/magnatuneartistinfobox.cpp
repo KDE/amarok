@@ -21,6 +21,8 @@
 #include "magnatuneartistinfobox.h"
 #include "magnatunedatabasehandler.h"
 
+#include <khtmlview.h>
+
 #include <qfile.h>
 
 MagnatuneArtistInfoBox::MagnatuneArtistInfoBox( QWidget *parentWidget, const char *widgetname )
@@ -70,6 +72,7 @@ MagnatuneArtistInfoBox::displayAlbumInfo( MagnatuneAlbum *album )
     infoHtml += "<br><br>From Magnatune.com</div>";
     infoHtml += "</BODY></HTML>";
 
+    resetScrollBars();
     begin();
     write( infoHtml );
     end();
@@ -97,6 +100,7 @@ MagnatuneArtistInfoBox::infoDownloadComplete( KIO::Job * downLoadJob )
 
     //debug() << "html: " << trimmedInfo << endl;
 
+    resetScrollBars();
     this->begin();
     this->write( trimmedInfo );
     this->end();
@@ -138,6 +142,14 @@ MagnatuneArtistInfoBox::extractArtistInfo( QString artistPage )
 
     return infoHtml;
 }
+
+void MagnatuneArtistInfoBox::resetScrollBars( )
+{
+    //note: the scrollbar methods never return 0 
+    view()->horizontalScrollBar()->setValue(0);
+    view()->verticalScrollBar()->setValue(0);
+}
+
 
 #include "magnatuneartistinfobox.moc"
 

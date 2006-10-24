@@ -80,6 +80,12 @@ protected:
      */
     QString extractArtistInfo( QString artistPage );
 
+    /**
+     * Helper method to reset the scrollbars when loading a new album
+     * or artist info page.
+     */
+    void resetScrollBars();
+
 
 protected slots:
 
