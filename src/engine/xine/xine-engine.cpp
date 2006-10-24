@@ -101,6 +101,8 @@ XineEngine::~XineEngine()
         delete s_outfader;
     }
 
+    fadeOut();
+
     if( m_xine )       xine_config_save( m_xine, configPath() );
 
     if( m_stream )     xine_close( m_stream );
