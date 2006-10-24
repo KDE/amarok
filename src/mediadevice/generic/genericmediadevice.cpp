@@ -767,6 +767,8 @@ GenericMediaDevice::deleteItemFromDevice( MediaItem *item, int /*flags*/ )
     }
     refreshDir( path );
 
+    setProgress( progress() + 1 );
+
     #undef item
     return 1;
 }

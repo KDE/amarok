@@ -3176,7 +3176,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, int flags )
 
             if(!isTransferring())
             {
-                setProgress( 0, numFiles + 1 /* sync is one step */ );
+                setProgress( 0, numFiles );
             }
 
         }

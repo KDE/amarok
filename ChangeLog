@@ -66,6 +66,8 @@ VERSION 1.4.4
     * Show a proper tag dialog when viewing information for DAAP music shares.
 
   BUGFIXES:
+    * Deleting files from generic media devices would not update the progress
+      bar, resulting in the progress staying at 0%. (BR 130009)
     * If nothing at all existed on a Generic device, the first item
       transferred would incorrectly show that an error had occured during
       transfer. (BR 133528)
