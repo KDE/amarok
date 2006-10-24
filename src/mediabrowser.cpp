@@ -1052,6 +1052,17 @@ MediaItem::compare( QListViewItem *i, int col, bool ascending ) const
     MediaItem *item = dynamic_cast<MediaItem *>(i);
     if(item && col==0 && item->m_order != m_order)
         return m_order-item->m_order;
+    else if( item->type() == MediaItem::ARTIST )
+    {
+        QString key1 = key( col, ascending );
+        if( key1.startsWith( "the ", false ) )
+            key1 = key1.mid( 4 );
+        QString key2 = i->key( col, ascending );
+        if( key2.startsWith( "the ", false ) )
+            key2 = key2.mid( 4 );
+
+       return key1.localeAwareCompare( key2 );
+    }
 
     return KListViewItem::compare(i, col, ascending);
 }

@@ -30,6 +30,7 @@ VERSION 1.4.4
 
 
   CHANGES:
+    * Ignore leading "The " when sorting artists on media devices. (BR 136233)
     * Improved handling of VFAT/ASCII files and paths when organizing the
       collection and using the Generic media device.
     * Enable playing audio CDs on CD insert. Patch by Will Stephenson
