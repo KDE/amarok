@@ -66,6 +66,9 @@ VERSION 1.4.4
     * Show a proper tag dialog when viewing information for DAAP music shares.
 
   BUGFIXES:
+    * If nothing at all existed on a Generic device, the first item
+      transferred would incorrectly show that an error had occured during
+      transfer. (BR 133528)
     * Synchronising a smart playlist to a device when it didn't exist before 
       would crash Amarok. (BR 135956)
     * Proxies would not take into account certain settings in KDE's Proxy
