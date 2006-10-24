@@ -2098,6 +2098,8 @@ MediaDevice::bundlesToSync( const QString &name, const QString &query )
 void
 MediaDevice::preparePlaylistForSync( const QString &name, const BundleList &bundles )
 {
+    if( ! m_playlistItem ) // might be syncing a new playlist from the playlist browser
+        return;
     MediaItem *pl = m_playlistItem->findItem( name );
     if( pl )
     {

@@ -64,6 +64,8 @@ VERSION 1.4.4
     * Show a proper tag dialog when viewing information for DAAP music shares.
 
   BUGFIXES:
+    * Synchronising a smart playlist to a device when it didn't exist before 
+      would crash Amarok. (BR 135956)
     * Proxies would not take into account certain settings in KDE's Proxy
       control center modules.for PAC files and more. (BR 123021)
     * Generic media devices would not accept files with an extension that only
