@@ -697,7 +697,7 @@ IfpMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
 
 QString IfpMediaDevice::cleanPath( const QString &component )
 {
-    QString result = Amarok::cleanPath( component, true );
+    QString result = Amarok::asciiPath( component );
 
     result.simplifyWhiteSpace();
 

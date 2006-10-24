@@ -640,9 +640,9 @@ GenericMediaDevice::buildPodcastDestination( const PodcastEpisodeBundle *bundle 
         values = CollectionDB::instance()->query( sql.arg( parent ) );
         name    =    values.first();
         parent  =   values.last().toInt();
-        location += Amarok::vfatPath( name ) + '/';
+        location += cleanPath( name ) + '/';
     }
-    location += Amarok::vfatPath( channelTitle ) + '/' + bundle->localUrl().filename();
+    location += cleanPath( channelTitle ) + '/' + cleanPath( bundle->localUrl().filename() );
     return location;
 }
 
@@ -1041,12 +1041,10 @@ GenericMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
 
 QString GenericMediaDevice::cleanPath( const QString &component )
 {
-    QString result = component;
+    QString result = Amarok::cleanPath( component );
 
-    if( m_actuallyVfat )
-    {
-        result = Amarok::cleanPath( result, true /* replaces weird stuff by '_' */);
-    }
+    if( m_asciiTextOnly )
+        result = Amarok::asciiPath( result );
 
     result.simplifyWhiteSpace();
     if( m_spacesToUnderscores )

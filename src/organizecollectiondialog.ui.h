@@ -133,12 +133,10 @@ void OrganizeCollectionDialog::preview( const QString &format )
 
 QString OrganizeCollectionDialog::cleanPath( const QString &component ) const
 {
-    QString result = component;
+    QString result = Amarok::cleanPath( component );
 
     if( asciiCheck->isChecked() )
-    {
-        result = Amarok::cleanPath(result, true /* replaces weird stuff by '_' */);
-    }
+        result = Amarok::asciiPath( result );
 
     if( !regexpEdit->text().isEmpty() )
         result.replace( QRegExp( regexpEdit->text() ), replaceEdit->text() );

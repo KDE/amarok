@@ -209,10 +209,16 @@ namespace Amarok
     /**
      * Removes accents from the string
      * @param path The original path.
-     * @param onlyASCII If set, non-ascii chars will be replaced by '_'.
      * @return The cleaned up path.
      */
-    LIBAMAROK_EXPORT QString cleanPath( const QString &path, bool onlyASCII = false ); //defined in app.cpp
+    LIBAMAROK_EXPORT QString cleanPath( const QString &path ); //defined in app.cpp
+
+    /**
+     * Replaces all non-ASCII characters with '_'.
+     * @param path The original path.
+     * @return The ASCIIfied path.
+     */
+    LIBAMAROK_EXPORT QString asciiPath( const QString &path ); //defined in app.cpp
 
     /**
      * Transform path into one valid on VFAT file systems

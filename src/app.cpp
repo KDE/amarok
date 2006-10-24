@@ -1249,7 +1249,7 @@ namespace Amarok
         return result;
     }
 
-    QString cleanPath( const QString &path, bool onlyASCII )
+    QString cleanPath( const QString &path )
     {
         QString result = path;
         // german umlauts
@@ -1290,14 +1290,25 @@ namespace Amarok
                     }
                 }
             }
-            if( onlyASCII && ( c > QChar(0x7f) || c == QChar(0) ) )
+            result.ref( i ) = c;
+        }
+        return result;
+    }
+
+    QString asciiPath( const QString &path )
+    {
+        QString result = path;
+        for( uint i = 0; i < result.length(); i++ )
+        {
+            QChar c = result.ref( i );
+            if( c > QChar(0x7f) || c == QChar(0) )
             {
                 c = '_';
             }
             result.ref( i ) = c;
         }
         return result;
-    }
+    } 
 
     QString vfatPath( const QString &path )
     {

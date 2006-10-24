@@ -196,12 +196,10 @@ GenericMediaDeviceConfigDialog::buildDestination( const QString &format, const M
 
 QString GenericMediaDeviceConfigDialog::cleanPath( const QString &component ) const
 {
-    QString result = component;
+    QString result = Amarok::cleanPath( component );
 
     if( m_asciiCheck->isChecked() )
-    {
-        result = Amarok::cleanPath(result, true /* replaces weird stuff by '_' */);
-    }
+        result = Amarok::asciiPath( result );
 
     result.simplifyWhiteSpace();
     if( m_spaceCheck->isChecked() )
