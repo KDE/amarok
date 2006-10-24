@@ -675,11 +675,11 @@ GenericMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
 
     refreshDir( m_transferDir );
 
-    while( !m_dirListerComplete )
-        kapp->processEvents( 100 );
-
     //the return value just can't be null, as nothing is done with it
     //other than to see if it is NULL or not
+    //if we're here the transfer shouldn't have failed, so we shouldn't get into a loop by waiting...
+    while( !m_view->firstChild() )
+        kapp->processEvents( 100 );
     return static_cast<MediaItem*>(m_view->firstChild());
 }
 
