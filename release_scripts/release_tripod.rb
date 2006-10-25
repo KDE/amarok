@@ -15,25 +15,26 @@ tag = ""
 useStableBranch=false
 
 # Ask whether using branch or trunk
-location = `kdialog --combobox "Select checkout's place:" "Tag" "Trunk" "Branch"`.chomp()
-if location == "Tag"
-    tag = `kdialog --inputbox "Enter tag name: "`.chomp()
-elsif location == "Branch"
-    useStableBranch=true
-end
+#location = `kdialog --combobox "Select checkout's place:" "Tag" "Trunk" "Branch"`.chomp()
+location = "Trunk"
+#if location == "Tag"
+#    tag = `kdialog --inputbox "Enter tag name: "`.chomp()
+#elsif location == "Branch"
+#    useStableBranch=true
+#end
 
 # Ask user for targeted application version
-if not tag.empty?()
-    version = tag
-else
-    version  = `kdialog --inputbox "Enter Amarok version: "`.chomp()
-end
-user = `kdialog --inputbox "Your SVN user:"`.chomp()
-protocol = `kdialog --radiolist "Do you use https or svn+ssh?" https https 0 "svn+ssh" "svn+ssh" 1`.chomp()
+#if not tag.empty?()
+#    version = tag
+#else
+    version  = `kdialog --inputbox "Enter Tripod version: "`.chomp()
+#end
+user = "seb" #`kdialog --inputbox "Your SVN user:"`.chomp()
+protocol = "https" #`kdialog --radiolist "Do you use https or svn+ssh?" https https 0 "svn+ssh" "svn+ssh" 1`.chomp()
 
-name     = "amarok"
-folder   = "amarok-#{version}"
-do_l10n  = "yes"
+name     = "tripod"
+folder   = "#{name}-#{version}"
+do_l10n  = "no"
 
 
 # Prevent using unsermake
@@ -50,19 +51,19 @@ branch="trunk"
 
 if useStableBranch
     branch="branches/stable/"
-    `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/#{branch}/extragear/multimedia/`
+    `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/#{branch}/playground/multimedia/`
     Dir.chdir( "multimedia" )
 elsif not tag.empty?()
-    `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/trunk/extragear/multimedia`
+    `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/trunk/playground/multimedia`
     Dir.chdir( "multimedia" )
 else
-    `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/trunk/extragear/multimedia`
+    `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/trunk/playground/multimedia`
      Dir.chdir( "multimedia" )
 end
 
-`svn up amarok`
-`svn up -N doc`
-`svn up doc/amarok`
+`svn up tripod`
+#`svn up -N doc`
+#`svn up doc/tripod`
 `svn co #{protocol}://#{user}@svn.kde.org/home/kde/branches/KDE/3.5/kde-common/admin`
 
 
@@ -157,12 +158,12 @@ puts "\n"
 `find -name ".svn" | xargs rm -rf`
 
 if useStableBranch
-    `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/trunk/extragear/multimedia`
+    `svn co -N #{protocol}://#{user}@svn.kde.org/home/kde/trunk/playground/multimedia`
     `mv multimedia/* .`
     `rmdir multimedia`
 end
 
-Dir.chdir( "amarok" )
+Dir.chdir( "tripod" )
 
 # Move some important files to the root folder
 `mv AUTHORS ..`
@@ -173,23 +174,21 @@ Dir.chdir( "amarok" )
 `mv TODO ..`
 
 # This stuff doesn't belong in the tarball
-`rm -rf src/scripts/rbot`
 `rm -rf release_scripts`
-`rm -rf src/engine/gst10` #Removed for now
 
 Dir.chdir( "src" )
 
 # Exchange APP_VERSION string with targeted version
-file = File.new( "amarok.h", File::RDWR )
-str = file.read()
-file.rewind()
-file.truncate( 0 )
-str.sub!( /APP_VERSION \".*\"/, "APP_VERSION \"#{version}\"" )
-file << str
-file.close()
+#file = File.new( "amarok.h", File::RDWR )
+#str = file.read()
+#file.rewind()
+#file.truncate( 0 )
+#str.sub!( /APP_VERSION \".*\"/, "APP_VERSION \"#{version}\"" )
+#file << str
+#file.close()
 
 
-Dir.chdir( ".." ) # amarok
+Dir.chdir( ".." ) # tripod
 Dir.chdir( ".." ) # multimedia
 puts( "\n" )
 
@@ -204,7 +203,7 @@ puts "done.\n"
 
 puts "**** Compressing..  "
 `mv * ..`
-Dir.chdir( ".." ) # Amarok-foo
+Dir.chdir( ".." ) # Tripod-foo
 `rm -rf multimedia`
 Dir.chdir( ".." ) # root folder
 `tar -cf #{folder}.tar #{folder}`
@@ -218,11 +217,7 @@ ENV["UNSERMAKE"] = oldmake
 
 puts "\n"
 puts "====================================================="
-puts "Congratulations :) Amarok #{version} tarball generated.\n"
-puts "Now follow the steps in the RELEASE_HOWTO, from\n"
-puts "SECTION 3 onwards.\n"
-puts "\n"
-puts "Then drink a few pints and have some fun on #amarok\n"
+puts "Congratulations :) Tripod #{version} tarball generated.\n"
 puts "\n"
 puts "MD5 checksum: " + `md5sum #{folder}.tar.bz2`
 puts "\n"
