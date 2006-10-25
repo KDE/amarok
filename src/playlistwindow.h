@@ -72,6 +72,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
 
     private slots:
         void savePlaylist() const;
+        void slotBurnPlaylist() const;
         void slotPlayMedia();
         void slotAddLocation( bool directPlay = false );
         void slotAddStream();

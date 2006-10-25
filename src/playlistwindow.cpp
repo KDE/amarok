@@ -140,6 +140,9 @@ PlaylistWindow::PlaylistWindow()
     ac->action( "playlist_save" )->setIcon( Amarok::icon( "save" ) );
     KStdAction::showMenubar( this, SLOT(slotToggleMenu()), ac );
 
+    //FIXME: after string freeze rename to "Burn Current Playlist"?
+    new KAction( i18n("Burn to CD"), Amarok::icon( "burn" ), 0, this, SLOT(slotBurnPlaylist()), ac, "playlist_burn" );
+    actionCollection()->action("playlist_burn")->setEnabled( K3bExporter::isAvailable() );
     new KAction( i18n("Play Media..."), Amarok::icon( "files" ), 0, this, SLOT(slotPlayMedia()), ac, "playlist_playmedia" );
     new KAction( i18n("Play Audio CD"), Amarok::icon( "album" ), 0, this, SLOT(playAudioCD()), ac, "play_audiocd" );
     new KAction( i18n("Script Manager"), Amarok::icon( "scripts" ), 0, this, SLOT(showScriptSelector()), ac, "script_manager" );
@@ -315,6 +318,7 @@ void PlaylistWindow::init()
     actionCollection()->action("stream_add")->plug( playlistMenu );
     actionCollection()->action("lastfm_add")->plug( playlistMenu );
     actionCollection()->action("playlist_save")->plug( playlistMenu );
+    actionCollection()->action("playlist_burn")->plug( playlistMenu );
     playlistMenu->insertSeparator();
     actionCollection()->action("playlist_undo")->plug( playlistMenu );
     actionCollection()->action("playlist_redo")->plug( playlistMenu );
@@ -813,6 +817,12 @@ void PlaylistWindow::savePlaylist() const //SLOT
 
     if( !path.isEmpty() && Playlist::instance()->saveM3U( path ) )
         PlaylistWindow::self()->showBrowser( "PlaylistBrowser" );
+}
+
+
+void PlaylistWindow::slotBurnPlaylist() const //SLOT
+{
+    K3bExporter::instance()->exportCurrentPlaylist();
 }
 
 
