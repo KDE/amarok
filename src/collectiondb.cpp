@@ -6957,13 +6957,13 @@ QueryBuilder::excludeMatch( int tables, const QString& match )
 void
 QueryBuilder::exclusiveFilter( int tableMatching, int tableNotMatching, Q_INT64 value )
 {
-    m_where += " AND "; 
-    m_where += tableName( tableNotMatching ) + '.'; 
-    m_where += valueName( value ); 
-    m_where += " IS null "; 
- 
-    m_linkTables |= tableMatching; 
-    m_linkTables |= tableNotMatching; 
+    m_where += " AND ";
+    m_where += tableName( tableNotMatching ) + '.';
+    m_where += valueName( value );
+    m_where += " IS null ";
+
+    m_linkTables |= tableMatching;
+    m_linkTables |= tableNotMatching;
 }
 
 
@@ -6999,8 +6999,8 @@ QueryBuilder::addNumericFilter(int tables, Q_INT64 value, const QString &n,
     m_where.append( " ) " );
     m_linkTables |= tables;
 }
-    
-    
+
+
 
 void
 QueryBuilder::setOptions( int options )
@@ -7230,7 +7230,7 @@ QueryBuilder::shuffle( int table, Q_INT64 value )
 
         m_linkTables |= table;
     }
-}    
+}
 
 
 /* NOTE: It's important to keep these two functions and the const in sync! */
@@ -7361,6 +7361,18 @@ QueryBuilder::clear()
     m_deviceidPos = 0;
 }
 
+
+Q_INT64
+QueryBuilder::valForFavoriteSorting() {
+    Q_INT64 favSortBy = valPercentage;
+    if ( !AmarokConfig::useScores() && !AmarokConfig::useRatings() )
+        favSortBy = valPlayCounter;
+    else if( !AmarokConfig::useScores() )
+        favSortBy = valRating;
+    return favSortBy;
+}
+
+
 // Helper method -- given a value, returns the index of the bit that is
 // set, if only one, otherwise returns -1
 // Binsearch seems appropriate since the values enum has 40 members
@@ -7377,8 +7389,8 @@ searchBit( ValueType value, int numBits ) {
    }
 
    return -1;
-}    
-    
+}
+
 
 QString
 QueryBuilder::tableName( int table )
@@ -7425,7 +7437,7 @@ QueryBuilder::tableName( int table )
     {
         if ( table & tabSong )   tables += ",tags";
     }
-    
+
     if ( table & tabDevices ) tables += ", devices";
     // when there are multiple tables involved, we always need table tags for linking them
     return tables.mid( 1 );
@@ -7435,7 +7447,7 @@ QueryBuilder::tableName( int table )
 const QString &
 QueryBuilder::valueName( Q_INT64 value )
 {
-   static const QString values[] = { 
+   static const QString values[] = {
        "id",
        "name",
        "url",
@@ -7477,10 +7489,10 @@ QueryBuilder::valueName( Q_INT64 value )
        "label",
        "lastmountpoint"
    };
-   
+
    int oneBit = searchBit( value, sizeof( values ) / sizeof( QString ) );
    if ( oneBit >= 0 ) return values[oneBit];
-   
+
    static const QString error( "<ERROR valueName>" );
    return error;
 }
@@ -7498,7 +7510,7 @@ QueryBuilder::coalesceField( int table, Q_INT64 value )
           valueName( value ) == "percentage" ||
           valueName( value ) == "accessdate" ||
           valueName( value ) == "createdate"
-        ) 
+        )
     )
        return true;
    return false;
@@ -7529,7 +7541,7 @@ QueryBuilder::getTableByName(const QString &name)
     }
     return -1;
 }
-        
+
 Q_INT64
 QueryBuilder::getValueByName(const QString &name)
 {

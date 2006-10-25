@@ -693,6 +693,8 @@ class QueryBuilder
         static const Q_INT64 valDeviceLabel   = 1LL << 38;
         static const Q_INT64 valMountPoint    = 1LL << 39;
 
+        static Q_INT64 valForFavoriteSorting();
+
         enum qBuilderFunctions  { funcNone = 0, funcCount = 1, funcMax = 2, funcMin = 4, funcAvg = 8, funcSum = 16 };
 
         // Note: modes beginMatch, endMatch are only supported for string filters
@@ -759,7 +761,7 @@ class QueryBuilder
         void clear();
 
         QStringList run();
-    
+
         // Transform a string table.value "field" into enum values
         // @return true if we succeded
         bool getField(const QString &tableValue, int *table, Q_INT64 *value);

@@ -1506,23 +1506,16 @@ CurrentTrackJob::showHomeByAlbums()
     // <Favorite Albums Information>
     if( ContextBrowser::instance()->m_showFavoriteAlbums )
     {
-        int sortBy = QueryBuilder::valPercentage;
-
-        if ( !AmarokConfig::useScores() && !AmarokConfig::useRatings() )
-            sortBy = QueryBuilder::valPlayCounter;
-        else if( !AmarokConfig::useScores() )
-            sortBy = QueryBuilder::valRating;
-
         qb.clear();
         qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
         qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
-        qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, sortBy );
+        qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valForFavoriteSorting() );
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valID );
         // only albums with more than 3 tracks
         qb.having( QueryBuilder::tabAlbum, QueryBuilder::valID, QueryBuilder::funcCount, QueryBuilder::modeGreater, "3" );
         // only albums which have been played/rated
-        qb.having( QueryBuilder::tabStats, sortBy, QueryBuilder::funcAvg, QueryBuilder::modeGreater, "0" );
-        qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, sortBy, true );
+        qb.having( QueryBuilder::tabStats, QueryBuilder::valForFavoriteSorting(), QueryBuilder::funcAvg, QueryBuilder::modeGreater, "0" );
+        qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valForFavoriteSorting(), true );
         qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
         qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID );
         qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valID );
@@ -1553,7 +1546,7 @@ CurrentTrackJob::showHomeByAlbums()
         {
             m_HTMLSource.append(
                     "<div id='favorites_box-body' class='box-body'><p>\n" +
-                    (sortBy == QueryBuilder::valRating
+                    (QueryBuilder::valForFavoriteSorting() == QueryBuilder::valRating
                         ? i18n( "A list of your favorite albums will appear here, once you have rated a few of your songs." )
                         : i18n( "A list of your favorite albums will appear here, once you have played a few of your songs." ) ) +
                     "</p></div>\n" );
@@ -2275,12 +2268,6 @@ void CurrentTrackJob::showArtistsFaves( const QString &artist, uint artist_id )
     QueryBuilder qb;
     QStringList values;
 
-    int favSortBy = QueryBuilder::valPercentage;
-    if ( !AmarokConfig::useScores() && !AmarokConfig::useRatings() )
-        favSortBy = QueryBuilder::valPlayCounter;
-    else if( !AmarokConfig::useScores() )
-        favSortBy = QueryBuilder::valRating;
-
     qb.clear();
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
@@ -2288,7 +2275,7 @@ void CurrentTrackJob::showArtistsFaves( const QString &artist, uint artist_id )
     qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
     qb.excludeFilter( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, "1", QueryBuilder::modeLess );
     qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
-    qb.sortBy( QueryBuilder::tabStats, favSortBy, true );
+    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valForFavoriteSorting(), true );
     qb.setLimit( 0, 10 );
     values = qb.run();
     usleep( 10000 );

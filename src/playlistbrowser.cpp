@@ -712,12 +712,6 @@ void PlaylistBrowser::updateSmartPlaylistElement( QDomElement& query )
 void PlaylistBrowser::loadDefaultSmartPlaylists()
 {
     DEBUG_BLOCK
-    int favSortBy = QueryBuilder::valPercentage;
-
-    if ( !AmarokConfig::useScores() && !AmarokConfig::useRatings() )
-        favSortBy = QueryBuilder::valPlayCounter;
-    else if( !AmarokConfig::useScores() )
-        favSortBy = QueryBuilder::valRating;
 
     const QStringList genres  = CollectionDB::instance()->query( "SELECT DISTINCT name FROM genre;" );
     const QStringList artists = CollectionDB::instance()->artistList();
@@ -738,14 +732,14 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     item->setKept( false );
     /********** Favorite Tracks **************/
     qb.initSQLDrag();
-    qb.sortBy( QueryBuilder::tabStats, favSortBy, true );
+    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valForFavoriteSorting(), true );
     qb.setLimit( 0, 15 );
     item = new SmartPlaylist( m_smartDefaults, item, i18n( "Favorite Tracks" ), qb.query() );
     item->setKept( false );
     last = 0;
 
     qb.initSQLDrag();
-    qb.sortBy( QueryBuilder::tabStats, favSortBy, true );
+    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valForFavoriteSorting(), true );
     qb.setLimit( 0, 15 );
     foreach( artists ) {
         QueryBuilder qbTemp( qb );

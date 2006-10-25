@@ -3355,7 +3355,7 @@ SmartPlaylist::xmlToQuery(const QDomElement &xml, bool forExpand /* = false */) 
         {
             // shuffle
             if ( orderby.attribute("order" ) == "weighted" )
-                qb.shuffle( QueryBuilder::tabStats, QueryBuilder::valPercentage );
+                qb.shuffle( QueryBuilder::tabStats, QueryBuilder::valForFavoriteSorting() );
             else
                 qb.shuffle();
         } else {
