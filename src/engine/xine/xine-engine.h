@@ -52,7 +52,7 @@ class XineEngine : public Engine::Base
     virtual void setEqualizerEnabled( bool );
     virtual void setEqualizerParameters( int preamp, const QValueList<int>& );
     virtual void setVolumeSW( uint );
-    virtual void fadeOut();
+    virtual void fadeOut( bool exiting = false );
 
     static  void XineEventListener( void*, const xine_event_t* );
     virtual void customEvent( QCustomEvent* );

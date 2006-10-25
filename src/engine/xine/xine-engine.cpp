@@ -101,7 +101,7 @@ XineEngine::~XineEngine()
         delete s_outfader;
     }
 
-    fadeOut();
+    fadeOut( true ); // true == exiting
 
     if( m_xine )       xine_config_save( m_xine, configPath() );
 
@@ -495,7 +495,7 @@ XineEngine::setVolumeSW( uint vol )
 }
 
 void
-XineEngine::fadeOut()
+XineEngine::fadeOut( bool exiting )
 {
     if( m_fadeOutRunning ) //Let us not start another fadeout...
         return;
@@ -504,12 +504,15 @@ XineEngine::fadeOut()
     const bool isPlaying = m_stream && ( xine_get_status( m_stream ) == XINE_STATUS_PLAY );
     const float originalVol = Engine::Base::makeVolumeLogarithmic( m_volume ) * m_preamp;
 
+    // On shutdown, limit fadeout to 3 secs max, so that we don't risk getting killed
+    const int length = exiting ? QMIN( m_xfadeLength, 3000 ) : m_xfadeLength;
+
     // NOTE The fadeout gets stuck when the EQ is active, so we skip it then
-    if( m_xfadeLength > 0 && !m_equalizerEnabled && isPlaying )
+    if( length > 0 && !m_equalizerEnabled && isPlaying )
     {
         // fader-class doesn't work in this spot as is, so some parts need to be copied here... (ugly)
-        uint stepsCount = m_xfadeLength < 1000 ? m_xfadeLength / 10 : 100;
-        uint stepSizeUs = (int)( 1000.0 * (float)m_xfadeLength / (float)stepsCount );
+        uint stepsCount = length < 1000 ? length / 10 : 100;
+        uint stepSizeUs = (int)( 1000.0 * (float)length / (float)stepsCount );
 
         ::usleep( stepSizeUs );
         QTime t;
@@ -519,7 +522,7 @@ XineEngine::fadeOut()
         {
             ::usleep( stepSizeUs );
             float vol = Engine::Base::makeVolumeLogarithmic( m_volume ) * m_preamp;
-            float mix = (float)t.elapsed() / (float)m_xfadeLength;
+            float mix = (float)t.elapsed() / (float)length;
             if ( mix > 1.0 )
             {
                 break;
