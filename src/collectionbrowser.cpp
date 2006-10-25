@@ -1344,8 +1344,8 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         menu.insertSeparator();
 
         #ifdef AMAZON_SUPPORT
-        menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n( "&Fetch Cover Image" ), this, SLOT( fetchCover() ), 0, COVER );
-        menu.setItemEnabled(COVER, cat == IdAlbum || cat == IdVisYearAlbum );
+        if( cat == IdAlbum || cat == IdVisYearAlbum )
+            menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n( "&Fetch Cover Image" ), this, SLOT( fetchCover() ), 0, COVER );
         #endif
 
         menu.insertItem( SmallIconSet( Amarok::icon( "info" ) )
