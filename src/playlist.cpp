@@ -3947,7 +3947,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         popup.insertItem( SmallIconSet( Amarok::icon( "play" ) ), isCurrent && isPlaying
                 ? i18n( "&Restart" )
                 : i18n( "&Play" ), PLAY );
-    if( isCurrent && !isLastFm )
+    if( isCurrent && !isLastFm && isPlaying )
         Amarok::actionCollection()->action( "pause" )->plug( &popup );
 
     // Begin queue entry logic
@@ -3991,13 +3991,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
                 break;
             }
 
-    if( itemCount == 1 && ( item->isCurrent() || item->isQueued() || m_stopAfterTrack == item ||
-                            ( !AmarokConfig::randomMode() && ( Amarok::repeatPlaylist() || afterCurrent ) ) ||
-                            ( Amarok::entireAlbums() && m_currentTrack &&
-                              item->m_album == m_currentTrack->m_album &&
-                              ( Amarok::repeatAlbum() || ( ( !item->track() && afterCurrent ) ||
-                                                             item->track() > m_currentTrack->track() ) ) ) ) )
-                                                                                     //looks like fucking LISP
+    if( itemCount == 1 )
     {
         Amarok::actionCollection()->action( "stop_after" )->plug( &popup );
         dynamic_cast<KToggleAction *>( Amarok::actionCollection()->action( "stop_after" ) )->setChecked( m_stopAfterTrack == item );
