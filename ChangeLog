@@ -75,7 +75,7 @@ VERSION 1.4.4
     * Synchronising a smart playlist to a device when it didn't exist before 
       would crash Amarok. (BR 135956)
     * Proxies would not take into account certain settings in KDE's Proxy
-      control center modules.for PAC files and more. (BR 123021)
+      control center modules for PAC files and more. (BR 123021)
     * Generic media devices would not accept files with an extension that only
       differs in case from a supported extension. (BR 135261)
     * Xine-engine: Pausing during crossfade would not work properly. Patches by
