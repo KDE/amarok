@@ -3913,7 +3913,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     enum {
         PLAY, PLAY_NEXT, STOP_DONE, VIEW, EDIT, FILL_DOWN, COPY, CROP_PLAYLIST, SAVE_PLAYLIST, REMOVE, FILE_MENU, ORGANIZE, DELETE,
-        TRASH, BURN_MENU, BURN_SELECTION, BURN_ALBUM, BURN_ARTIST, REPEAT, LAST }; //keep LAST last
+        TRASH, REPEAT, LAST }; //keep LAST last
 
     const bool canRename   = isRenameable( col ) && item->url().isLocalFile();
     const bool isCurrent   = (item == m_currentTrack);
@@ -4023,16 +4023,6 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     if( itemCount == 1 )
         popup.insertItem( SmallIconSet( Amarok::icon( "editcopy" ) ), i18n( "&Copy Tags to Clipboard" ), COPY );
-
-    popup.insertSeparator();
-
-    KPopupMenu burnMenu;
-    burnMenu.insertItem( SmallIconSet( Amarok::icon( "burn" ) ), ( itemCount > 1 ) ? i18n( "Selected Tracks" ) : i18n("This Track" ), BURN_SELECTION );
-    if ( !item->album().isEmpty() )
-        burnMenu.insertItem( SmallIconSet( Amarok::icon( "burn" ) ), i18n("This Album: %1").arg( item->album().string().replace( "&", "&&" ) ), BURN_ALBUM );
-    if ( !item->artist().isEmpty() )
-        burnMenu.insertItem( SmallIconSet( Amarok::icon( "burn" ) ), i18n("All Tracks by %1").arg( item->artist().string().replace( "&", "&&" ) ), BURN_ARTIST );
-    popup.insertItem( SmallIconSet( Amarok::icon( "burn" ) ), i18n("Burn"), &burnMenu, BURN_MENU );
     popup.insertSeparator();
 
     if( itemCount > 1 )
@@ -4064,7 +4054,6 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     popup.setItemEnabled( EDIT, canRename ); //only enable for columns that have editable tags
     popup.setItemEnabled( FILL_DOWN, canRename );
-    popup.setItemEnabled( BURN_MENU, item->url().isLocalFile() && K3bExporter::isAvailable() );
     popup.setItemEnabled( REMOVE, !isLocked() ); // can't remove things when playlist is locked,
     popup.setItemEnabled( DELETE, !isLocked() && item->url().isLocalFile() );
     popup.setItemEnabled( ORGANIZE, !isLocked() && item->isKioUrl() );
@@ -4225,21 +4214,6 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     case SAVE_PLAYLIST:
         saveSelectedAsPlaylist();
-        break;
-
-    case BURN_SELECTION:
-        burnSelectedTracks();
-        break;
-
-    case BURN_ALBUM:
-        if( item->compilation() == MetaBundle::CompilationYes )
-            K3bExporter::instance()->exportAlbum( item->album() );
-        else
-            K3bExporter::instance()->exportAlbum( item->artist(), item->album() );
-        break;
-
-    case BURN_ARTIST:
-        K3bExporter::instance()->exportArtist( item->artist() );
         break;
 
     case REPEAT:
