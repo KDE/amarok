@@ -3943,9 +3943,12 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         popup.insertSeparator();
     }
 
-    popup.insertItem( SmallIconSet( Amarok::icon( "play" ) ), isCurrent && isPlaying
-            ? i18n( "&Restart" )
-            : i18n( "&Play" ), PLAY );
+    if( !isCurrent || !isPlaying )
+        popup.insertItem( SmallIconSet( Amarok::icon( "play" ) ), isCurrent && isPlaying
+                ? i18n( "&Restart" )
+                : i18n( "&Play" ), PLAY );
+    if( isCurrent && !isLastFm )
+        Amarok::actionCollection()->action( "pause" )->plug( &popup );
 
     // Begin queue entry logic
     popup.insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), i18n("&Queue Selected Tracks"), PLAY_NEXT );
@@ -3979,9 +3982,6 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
     }
     // End queue entry logic
 
-    if( isCurrent && !isLastFm )
-        Amarok::actionCollection()->action( "pause" )->plug( &popup );
-
     bool afterCurrent = false;
     if(  !m_nextTracks.isEmpty() ? m_nextTracks.getLast() : m_currentTrack  )
         for( MyIt it( !m_nextTracks.isEmpty() ? m_nextTracks.getLast() : m_currentTrack, MyIt::Visible ); *it; ++it )
@@ -4011,36 +4011,15 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     popup.insertSeparator();
 
-    popup.insertItem( SmallIconSet( Amarok::icon( "edit" ) ), (itemCount == 1
-            ? i18n( "&Edit Tag '%1'" )
-            : i18n( "&Edit '%1' Tag for Selected Tracks" )).arg( tagName ), EDIT );
-
-    if( itemCount > 1 )
-        popup.insertItem( trackColumn
-                        ? i18n("&Iteratively Assign Track Numbers")
-                        : i18n("Write '%1' for Selected Tracks")
-                        .arg( KStringHandler::rsqueeze( tag, 30 ).replace( "&", "&&" ) ), FILL_DOWN );
-
-    if( itemCount == 1 )
-        popup.insertItem( SmallIconSet( Amarok::icon( "editcopy" ) ), i18n( "&Copy Tags to Clipboard" ), COPY );
-    popup.insertSeparator();
-
     if( itemCount > 1 )
     {
         popup.insertItem( SmallIconSet( Amarok::icon( "playlist" ) ), i18n("Set as Playlist (Crop)"), CROP_PLAYLIST );
         popup.insertItem( SmallIconSet( Amarok::icon( "save" ) ), i18n("Save as Playlist..."), SAVE_PLAYLIST );
-        popup.insertSeparator();
     }
 
     popup.insertItem( SmallIconSet( Amarok::icon( "remove_from_playlist" ) ), i18n( "&Remove From Playlist" ), this, SLOT( removeSelectedItems() ), Key_Delete, REMOVE );
 
     popup.insertSeparator();
-
-    popup.insertItem( SmallIconSet( Amarok::icon( "info" ) )
-        , item->url().isLocalFile() ?
-              i18n( "Edit Track &Information...",  "Edit &Information for %n Tracks...", itemCount):
-              i18n( "Track &Information...",  "&Information for %n Tracks...", itemCount)
-        , VIEW );
 
     KPopupMenu fileMenu;
     fileMenu.insertItem( SmallIconSet( "filesaveas" ),
@@ -4049,8 +4028,26 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
                 : i18n("Copy Track to Collection...", "Copy %n Tracks to Collection...", itemCount),
             ORGANIZE );
     fileMenu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n("Delete File...", "Delete %n Selected Files...", itemCount ), this, SLOT( deleteSelectedFiles() ), SHIFT+Key_Delete, DELETE );
-
     popup.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n("Manage Files"), &fileMenu, FILE_MENU );
+
+    if( itemCount == 1 )
+        popup.insertItem( SmallIconSet( Amarok::icon( "editcopy" ) ), i18n( "&Copy Tags to Clipboard" ), COPY );
+
+    if( itemCount > 1 )
+        popup.insertItem( trackColumn
+                        ? i18n("&Iteratively Assign Track Numbers")
+                        : i18n("Write '%1' for Selected Tracks")
+                        .arg( KStringHandler::rsqueeze( tag, 30 ).replace( "&", "&&" ) ), FILL_DOWN );
+
+    popup.insertItem( SmallIconSet( Amarok::icon( "edit" ) ), (itemCount == 1
+            ? i18n( "&Edit Tag '%1'" )
+            : i18n( "&Edit '%1' Tag for Selected Tracks" )).arg( tagName ), EDIT );
+
+    popup.insertItem( SmallIconSet( Amarok::icon( "info" ) )
+        , item->url().isLocalFile() ?
+              i18n( "Edit Track &Information...",  "Edit &Information for %n Tracks...", itemCount):
+              i18n( "Track &Information...",  "&Information for %n Tracks...", itemCount)
+        , VIEW );
 
     popup.setItemEnabled( EDIT, canRename ); //only enable for columns that have editable tags
     popup.setItemEnabled( FILL_DOWN, canRename );
