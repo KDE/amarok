@@ -2275,6 +2275,12 @@ void CurrentTrackJob::showArtistsFaves( const QString &artist, uint artist_id )
     QueryBuilder qb;
     QStringList values;
 
+    int favSortBy = QueryBuilder::valPercentage;
+    if ( !AmarokConfig::useScores() && !AmarokConfig::useRatings() )
+        favSortBy = QueryBuilder::valPlayCounter;
+    else if( !AmarokConfig::useScores() )
+        favSortBy = QueryBuilder::valRating;
+
     qb.clear();
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
@@ -2282,10 +2288,7 @@ void CurrentTrackJob::showArtistsFaves( const QString &artist, uint artist_id )
     qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
     qb.excludeFilter( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, "1", QueryBuilder::modeLess );
     qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
-    if( AmarokConfig::useScores() )
-        qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valScore, true );
-    if( AmarokConfig::useRatings() )
-        qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valRating, true );
+    qb.sortBy( QueryBuilder::tabStats, favSortBy, true );
     qb.setLimit( 0, 10 );
     values = qb.run();
     usleep( 10000 );
