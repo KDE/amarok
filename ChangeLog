@@ -85,7 +85,7 @@ VERSION 1.4.4
     * Queuing again would dequeue. (BR 121206)
     * In some cases, the Removal and Enqueue buttons in the queue manager would
       have no icons. (BR 115895)
-    * Don't change length of position slider when navigation within a track.
+    * Don't change length of position slider when navigating within a track.
       (BR 122569)
     * Direct copying of non-local items would result in wrong properties on
       iPods. (BR 135681)
