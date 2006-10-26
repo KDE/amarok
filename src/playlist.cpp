@@ -5077,6 +5077,7 @@ TagWriter::completeJob()
 
     }
     m_item->setIsBeingRenamed( false );
+    m_item->filter( Playlist::instance()->m_filter );
     if( m_item->deleteAfterEditing() )
     {
         Playlist::instance()->removeItem( m_item );
