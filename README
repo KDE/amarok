@@ -24,15 +24,15 @@ interface that really makes playlist handling easy.
     * Learn about your music with integrated Wikipedia
     * Full last.fm support
     * Visualisations with libvisual
-    * Streaming from any KIO source
     * Crossfading and gapless playback
     * Fully configurable OSD for track changes
     * K3B (CD-burning) integration
     * Podcast support
-    * Access to iPod, iRiver IFP, and USB Mass Storage devices
+    * Access to iPod, iRiver IFP, USB Mass Storage and many other devices
     * Powerful scripting interface
     * Complete DCOP Access
     * KDE integration
+    * Preview and buy albums from the Magnatune.com music store
 --------------------------------------------------------------------------------
 
 
@@ -64,10 +64,6 @@ Optional
       (multimedia framework)
       http://www.real.com
       (Note: only HelixPlayer is exactly RealPlayer without MP3 support)
-
-    * NMM 0.7.0
-      (multimedia framework)
-      http://www.networkmultimedia.org
 
     * KDE-Base 3.3
       (needed for Konqueror Sidebar)
@@ -101,7 +97,7 @@ Optional
       (visualization plugins)
       http://xmms.org
 
-    * K3B 0.11
+    * K3B 0.11 or newer
       (CD burning support)
       http://www.k3b.org
 
@@ -113,7 +109,7 @@ Optional
       (iRiver iFP support)
       http://ifp-driver.sourceforge.net/libifp/
 
-    * libmp4v2 (mpeg4ip 1.3 is recommended, faad2 is less reliable)
+    * libmp4v2 (mpeg4ip 1.5 is recommended, faad2 is less reliable)
       (MP4/AAC tag reading & writing)
       http://www.sf.net/projects/mpeg4ip
       http://www.audiocoding.com
@@ -122,7 +118,7 @@ Optional
       (NJB mediadevice (Creative Nomad/Zen family, Dell DJ devices)
       http://www.sf.net/projects/libnjb
 
-    * libmtp 0.0.10
+    * libmtp 0.0.10 or newer
       (MTP media device support AKA PlaysForSure)
       http://libmtp.sourceforge.net/
 
