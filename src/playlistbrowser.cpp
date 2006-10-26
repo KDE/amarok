@@ -915,15 +915,16 @@ PlaylistCategory* PlaylistBrowser::loadDynamics()
         e = d.namedItem( "category" ).toElement();
         QString version = e.attribute("formatversion");
         if ( version == "1.2" ) {
-            PlaylistCategory* p = new PlaylistCategory( m_listview, after , e );
+            PlaylistCategory* p = new PlaylistCategory( m_listview, after, e );
             p->setText( 0, i18n("Dynamic Playlists") );
             return p;
         }
         else if ( version == "1.1" ) {
             // In 1.1, playlists would be refered only by its name.
             // TODO: We can *try* to convert by using findItem
-            PlaylistCategory* p = new PlaylistCategory( m_listview, after , QDomElement() );
+            PlaylistCategory* p = new PlaylistCategory( m_listview, after, e );
             p->setText( 0, i18n("Dynamic Playlists") );
+            fixDynamicPlaylistPath( p );
             return p;
         }
         else { // Old unversioned format
@@ -936,6 +937,40 @@ PlaylistCategory* PlaylistBrowser::loadDynamics()
             return p;
         }
     }
+}
+
+
+void
+PlaylistBrowser::fixDynamicPlaylistPath( QListViewItem *item )
+{
+    DynamicEntry *entry = dynamic_cast<DynamicEntry*>( item );
+    if ( entry ) {
+        QStringList names = entry->items();
+        QStringList paths;
+        foreach( names ) {
+            QString path = guessPathFromPlaylistName( *it );
+            if ( !path.isNull() )
+                paths+=path;
+        }
+        entry->setItems( paths );
+    }
+    PlaylistCategory *cat = dynamic_cast<PlaylistCategory*>( item );
+    if ( cat ) {
+        QListViewItem *it = cat->firstChild();
+        for( ; it; it = it->nextSibling() ) {
+            fixDynamicPlaylistPath( it );
+        }
+    }
+}
+
+QString
+PlaylistBrowser::guessPathFromPlaylistName( QString name )
+{
+    QListViewItem *item = m_listview->findItem( name, 0, Qt::ExactMatch );
+    PlaylistBrowserEntry *entry = dynamic_cast<PlaylistBrowserEntry*>( item );
+    if ( entry )
+        return entry->name();
+    return QString();
 }
 
 void PlaylistBrowser::saveDynamics()

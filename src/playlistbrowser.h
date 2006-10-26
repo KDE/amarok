@@ -159,6 +159,8 @@ class PlaylistBrowser : public QVBox
         void updateSmartPlaylistElement( QDomElement& query );
 
         PlaylistCategory* loadDynamics();
+        void fixDynamicPlaylistPath( QListViewItem *item );
+        QString guessPathFromPlaylistName( QString name );
 
         PlaylistCategory* loadPodcasts();
         QMap<int,PlaylistCategory*> loadPodcastFolders( PlaylistCategory *p );
