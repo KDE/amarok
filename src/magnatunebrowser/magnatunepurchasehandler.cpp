@@ -66,7 +66,7 @@ void MagnatunePurchaseHandler::processPayment( QString ccNumber, QString expYear
    QString amountString;
    amountString.setNum(amount, 10);
 
-   QString purchaseURL = "https://magnatune.com/buy/buy_dl_cc_xml?cc=" + ccNumber + "&mm=" + expMonth + "&yy="+ expYear + "&sku=" + albumCode + "&name=" + name + "&email=" + email + "&id=nikolaj&amount=" + amountString;
+   QString purchaseURL = "https://magnatune.com/buy/buy_dl_cc_xml?cc=" + ccNumber + "&mm=" + expMonth + "&yy="+ expYear + "&sku=" + albumCode + "&name=" + name + "&email=" + email + "&id=amarok&amount=" + amountString;
 
    debug() << "purchase url : " << purchaseURL << endl;	
 
