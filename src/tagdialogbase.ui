@@ -34,9 +34,6 @@
                     <property name="text">
                         <string>&amp;Previous</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+P</string>
-                    </property>
                 </widget>
                 <widget class="QPushButton">
                     <property name="name">
@@ -94,9 +91,6 @@
                     </property>
                     <property name="text">
                         <string>&amp;Cancel</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+C</string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>
@@ -313,9 +307,6 @@
                                 <property name="text">
                                     <string>Filename &amp;Schemes</string>
                                 </property>
-                                <property name="accel">
-                                    <string>Alt+S</string>
-                                </property>
                                 <property name="autoDefault">
                                     <bool>false</bool>
                                 </property>
@@ -342,9 +333,6 @@
                         </property>
                         <property name="text">
                             <string>Fill-In Tags Using MusicBrain&amp;z</string>
-                        </property>
-                        <property name="accel">
-                            <string>Alt+Z</string>
                         </property>
                     </widget>
                     <widget class="QLabel" row="4" column="0">
@@ -820,11 +808,6 @@
         <header location="local">coverfetcher.h</header>
     </customwidget>
 </customwidgets>
-<images>
-    <image name="image0">
-        <data format="XBM.GZ" length="79">789c534e494dcbcc4b554829cdcdad8c2fcf4c29c95030e0524611cd48cd4ccf28010a1797249664262b2467241641a592324b8aa363156c15aab914146aadb90067111b1f</data>
-    </image>
-</images>
 <tabstops>
     <tabstop>kTabWidget</tabstop>
     <tabstop>kLineEdit_title</tabstop>
@@ -855,7 +838,6 @@
 <includehints>
     <includehint>klineedit.h</includehint>
     <includehint>ktabwidget.h</includehint>
-    <includehint>coverlabel.h</includehint>
     <includehint>kcombobox.h</includehint>
     <includehint>knuminput.h</includehint>
     <includehint>ktextedit.h</includehint>
