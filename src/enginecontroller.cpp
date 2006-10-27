@@ -272,7 +272,7 @@ bool EngineController::installDistroCodec( const QString& engine /*Filetype type
             , i18n( "No MP3 Support" )
             , installButton
             , KStdGuiItem::no()
-            , "codecInstallWarning" )  )
+            , "codecInstallWarning" ) == KMessageBox::Yes )
             {
                     KRun::runCommand(installScript);
                     return true;

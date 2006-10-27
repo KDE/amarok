@@ -9,6 +9,8 @@ VERSION 1.5.0
   CHANGES:
 
   BUGFIXES:
+    * The Install MP3 support script would be run regardless of what the
+      user answered to the shown dialog. (BR 136294)
     * OSD wouldn't always show up-to-date ratings. Patch by Tuomas Nurmi
       <tnurmi@edu.kauhajoki.fi>. (BR 125612)
 
