@@ -51,7 +51,9 @@ namespace CollectionBrowserIds
     IdGenre = QueryBuilder::tabGenre,
     IdYear = QueryBuilder::tabYear ,
     IdScan = 32, IdNone = 64,
-    IdArtistAlbum = 128, IdGenreArtist = 256, IdGenreArtistAlbum = 512, IdVisYearAlbum = 1024, IdArtistVisYearAlbum = 2048 };
+    IdArtistAlbum = 128, IdGenreArtist = 256, IdGenreArtistAlbum = 512, IdVisYearAlbum = 1024, IdArtistVisYearAlbum = 2048,
+    IdLabel = QueryBuilder::tabLabels //=8192
+    };
 }
 
 class CollectionBrowser: public QVBox

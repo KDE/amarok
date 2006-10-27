@@ -235,6 +235,8 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
          */
         void initDirOperations();
 
+        enum labelTypes { typeUser = 1 };           //add new types add the end!
+
         QString escapeString(QString string ) const
         {
             return
@@ -393,12 +395,23 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         bool albumIsCompilation( const QString &album_id );
         void sanitizeCompilations();
 
+        //label methods
+        QStringList getLabels( const QString &url, const uint type );
+        void removeLabels( const QString &url, const QStringList &labels, const uint type );
+        void addLabel( const QString &url, const QString &label, const uint type );
+        void setLabels( const QString &url, const QStringList &labels, const uint type );
+
+        void cleanLabels();
+
+        QStringList favouriteLabels( int type = CollectionDB::typeUser, int count = 10 );
+
         //list methods
         QStringList artistList( bool withUnknowns = true, bool withCompilations = true );
         QStringList composerList( bool withUnknowns = true, bool withCompilations = true );
         QStringList albumList( bool withUnknowns = true, bool withCompilations = true );
         QStringList genreList( bool withUnknowns = true, bool withCompilations = true );
         QStringList yearList( bool withUnknowns = true, bool withCompilations = true );
+        QStringList labelList();
 
         QStringList albumListOfArtist( const QString &artist, bool withUnknown = true, bool withCompilations = true );
         QStringList artistAlbumList( bool withUnknown = true, bool withCompilations = true );
@@ -507,7 +520,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         static const int DATABASE_VERSION = 35;
         // Persistent Tables hold data that is somehow valuable to the user, and can't be erased when rescaning.
         // When bumping this, write code to convert the data!
-        static const int DATABASE_PERSISTENT_TABLES_VERSION = 15;
+        static const int DATABASE_PERSISTENT_TABLES_VERSION = 16;
         // Bumping this erases stats table. If you ever need to, write code to convert the data!
         static const int DATABASE_STATS_VERSION = 12;
         // When bumping this, you should provide code to convert the data.
@@ -643,7 +656,7 @@ class QueryBuilder
         enum qBuilderTables  { tabAlbum = 1, tabArtist = 2, tabComposer = 4, tabGenre = 8, tabYear = 16, tabSong = 64,
                                tabStats = 128, tabLyrics = 256, tabPodcastChannels = 512,
                                tabPodcastEpisodes = 1024, tabPodcastFolders = 2048,
-                               tabDevices = 4096
+                               tabDevices = 4096, tabLabels = 8192
                                /* dummy table for filtering */, tabDummy = 0 };
         enum qBuilderOptions { optNoCompilations = 1, optOnlyCompilations = 2, optRemoveDuplicates = 4,
                                optRandomize = 8,
@@ -692,6 +705,8 @@ class QueryBuilder
         static const Q_INT64 valRelativePath  = 1LL << 37;
         static const Q_INT64 valDeviceLabel   = 1LL << 38;
         static const Q_INT64 valMountPoint    = 1LL << 39;
+        //label relevant
+        static const Q_INT64 valType         = 1LL << 40;
 
         static Q_INT64 valForFavoriteSorting();
 

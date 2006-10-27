@@ -1001,9 +1001,36 @@ CollectionDB::createPersistentTables()
             "url " + exactTextColumnType() + ", "
             "tracknum INTEGER );" ) );
 
+    QString labelsAutoIncrement = "";
+    if ( getDbConnectionType() == DbConnection::postgresql )
+    {
+        query( QString( "CREATE SEQUENCE labels_seq;" ) );
+
+        labelsAutoIncrement = QString("DEFAULT nextval('labels_seq')");
+    }
+    else if ( getDbConnectionType() == DbConnection::mysql )
+    {
+        labelsAutoIncrement = "AUTO_INCREMENT";
+    }
+
+    //create labels tables
+    query( QString( "CREATE TABLE labels ("
+                    "id INTEGER PRIMARY KEY " + labelsAutoIncrement + ", "
+                    "name " + textColumnType() + ", "
+                    "type INTEGER);" ) );
+
+    query( QString( "CREATE TABLE tags_labels ("
+                    "deviceid INTEGER,"
+                    "url " + exactTextColumnType() + ", "
+                    "uniqueid " + textColumnType(8) + ", "      //m:n relationship, DO NOT MAKE UNIQUE!
+                    "labelid INTEGER REFERENCES labels( id ) ON DELETE CASCADE );" ) );
+
     query( "CREATE UNIQUE INDEX lyrics_url ON lyrics( url, deviceid );" );
     query( "CREATE INDEX playlist_playlists ON playlists( playlist );" );
     query( "CREATE INDEX url_playlists ON playlists( url );" );
+    query( "CREATE UNIQUE INDEX labels_name ON labels( name, type );" );
+    query( "CREATE INDEX tags_labels_uniqueid ON tags_labels( uniqueid );" ); //m:n relationship, DO NOT MAKE UNIQUE!
+    query( "CREATE INDEX tags_labels_url ON tags_labels( url, deviceid );" ); //m:n relationship, DO NOT MAKE UNIQUE!
 }
 
 void
@@ -1210,6 +1237,8 @@ CollectionDB::dropPersistentTables()
     query( "DROP TABLE amazon;" );
     query( "DROP TABLE lyrics;" );
     query( "DROP TABLE playlists;" );
+    query( "DROP TABLE tags_labels;" );
+    query( "DROP TABLE labels;" );
 }
 
 void
@@ -2391,12 +2420,22 @@ CollectionDB::yearList( bool withUnknowns, bool withCompilations )
     if ( !withCompilations )
         qb.setOptions( QueryBuilder::optNoCompilations );
 
-    qb.groupBy( QueryBuilder::tabGenre, QueryBuilder::valName );
+    qb.groupBy( QueryBuilder::tabYear, QueryBuilder::valName );
     qb.setOptions( QueryBuilder::optShowAll );
     qb.sortBy( QueryBuilder::tabYear, QueryBuilder::valName );
     return qb.run();
 }
 
+QStringList
+CollectionDB::labelList()
+{
+    QueryBuilder qb;
+    qb.addReturnValue( QueryBuilder::tabLabels, QueryBuilder::valName );
+    qb.groupBy( QueryBuilder::tabLabels, QueryBuilder::valName );
+    qb.setOptions( QueryBuilder::optShowAll );
+    qb.sortBy( QueryBuilder::tabLabels, QueryBuilder::valName );
+    return qb.run();
+}
 
 QStringList
 CollectionDB::albumListOfArtist( const QString &artist, bool withUnknown, bool withCompilations )
@@ -5466,9 +5505,41 @@ CollectionDB::updatePersistentTables()
             query( "INSERT INTO lyrics SELECT * FROM lyrics_fix;" );
             query( "INSERT INTO playlists SELECT * FROM playlists_fix;" );
         }
+        if ( PersistentVersion.toInt() < 16 )
+        {
+            //drop old label table, it was never used anyway and just confuses things
+            query( "DROP TABLE label;" );
+            //update for label support
+            QString labelsAutoIncrement = "";
+            if ( getDbConnectionType() == DbConnection::postgresql )
+            {
+                query( QString( "CREATE SEQUENCE labels_seq;" ) );
+
+                labelsAutoIncrement = QString("DEFAULT nextval('labels_seq')");
+            }
+            else if ( getDbConnectionType() == DbConnection::mysql )
+            {
+                labelsAutoIncrement = "AUTO_INCREMENT";
+            }
+
+            query( QString( "CREATE TABLE labels ("
+                            "id INTEGER PRIMARY KEY " + labelsAutoIncrement + ", "
+                            "name " + textColumnType() + ", "
+                            "type INTEGER);" ) );
+
+            query( QString( "CREATE TABLE tags_labels ("
+                            "deviceid INTEGER,"
+                            "url " + exactTextColumnType() + ", "
+                            "uniqueid " + textColumnType(8) + ", "      //m:n relationship, DO NOT MAKE UNIQUE!
+                            "labelid INTEGER REFERENCES labels( id ) ON DELETE CASCADE );" ) );
+
+            query( "CREATE UNIQUE INDEX labels_name ON labels( name, type );" );
+            query( "CREATE INDEX tags_labels_uniqueid ON tags_labels( uniqueid );" ); //m:n relationship, DO NOT MAKE UNIQUE!
+            query( "CREATE INDEX tags_labels_url ON tags_labels( url, deviceid );" ); //m:n relationship, DO NOT MAKE UNIQUE!
+        }
 
         //Up to date. Keep this number   \/   in sync!
-        if ( PersistentVersion.toInt() > 15 || PersistentVersion.toInt() < 0 )
+        if ( PersistentVersion.toInt() > 16 || PersistentVersion.toInt() < 0 )
         {
             //Something is horribly wrong
             if ( adminValue( "Database Persistent Tables Version" ).toInt() != DATABASE_PERSISTENT_TABLES_VERSION )
@@ -5642,6 +5713,123 @@ CollectionDB::extractEmbeddedImage( MetaBundle &trackInformation, QCString& hash
         }
     }
     return false;
+}
+
+QStringList
+CollectionDB::getLabels( const QString &url, const uint type )
+{
+    int deviceid = MountPointManager::instance()->getIdForUrl( url );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
+    return query( QString( "SELECT labels.name FROM labels "
+                           "LEFT JOIN tags_labels ON labels.id = tags_labels.labelid "
+                           "WHERE labels.type = %1 AND tags_labels.deviceid = %2 AND tags_labels.url = '%3';" )
+                         .arg( type ).arg( deviceid ).arg( escapeString( rpath ) ) );
+}
+
+void
+CollectionDB::cleanLabels()
+{
+    DEBUG_BLOCK
+    QStringList labelIds = query( "select labels.id "
+                                  "from labels left join tags_labels on labels.id = tags_labels.labelid "
+                                  "where tags_labels.labelid is null;" );
+    QString ids;
+    foreach( labelIds )
+    {
+        if ( !ids.isEmpty() )
+            ids += ',';
+        ids += *it;
+    }
+    query( QString( "DELETE FROM labels "
+                    "WHERE labels.id IN ( %1 );" )
+                    .arg( ids ) );
+}
+
+void
+CollectionDB::setLabels( const QString &url, const QStringList &labels, const uint type )
+{
+    DEBUG_BLOCK
+    int deviceid = MountPointManager::instance()->getIdForUrl( url );
+    QString rpath = escapeString( MountPointManager::instance()->getRelativePath( deviceid, url ) );
+    QStringList labelIds = query( QString( "SELECT id FROM labels WHERE type = %1;" ).arg( type ) );
+    QString ids;
+    foreach( labelIds )
+    {
+        if ( !ids.isEmpty() )
+            ids += ',';
+        ids += *it;
+    }
+    //TODO: max: add uniqueid handling
+    query( QString( "DELETE FROM tags_labels "
+                    "WHERE tags_labels.labelid IN (%1) AND tags_labels.deviceid = %2 AND tags_labels.url = '%3';" )
+                    .arg( ids ).arg( deviceid ).arg( rpath ) );
+    foreach( labels )
+    {
+        int id = query( QString( "SELECT id FROM labels WHERE type = %1 AND name = '%2';" )
+                                         .arg( type ).arg( escapeString( *it ) ) ).first().toInt();
+        if ( !id )
+        {
+            id = insert( QString( "INSERT INTO labels( name, type ) VALUES ( '%2', %1 );" )
+                                  .arg( type ).arg( escapeString( *it ) ), "labels" );
+        }
+        insert( QString( "INSERT INTO tags_labels( labelid, deviceid, url ) VALUES ( %1, %2, '%3' );" )
+                         .arg( id ).arg( deviceid ).arg( rpath ), 0 ); 
+    }
+}
+
+void
+CollectionDB::removeLabels( const QString &url, const QStringList &labels, const uint type )
+{
+    DEBUG_BLOCK
+    int deviceid = MountPointManager::instance()->getIdForUrl( url );
+    QString rpath = escapeString( MountPointManager::instance()->getRelativePath( deviceid, url ) );
+    QString sql = QString( "DELETE FROM tags_labels "
+                             "FROM tags_labels AS t LEFT JOIN labels AS l ON t.labelid = l.id "
+                             "WHERE l.type = %1 AND t.deviceid = %2 AND t.url = '%3' AND ( 0" )
+                             .arg( type ).arg( deviceid ).arg( rpath );
+    foreach( labels )
+    {
+        sql += QString( " OR l.name = '%1'" ).arg( escapeString( *it ) );
+    }
+    sql += ");";
+    query( sql );
+}
+
+void
+CollectionDB::addLabel( const QString &url, const QString &label, const uint type )
+{
+    DEBUG_BLOCK
+    int deviceid = MountPointManager::instance()->getIdForUrl( url );
+    QString rpath = escapeString( MountPointManager::instance()->getRelativePath( deviceid, url ) );
+
+    int id = query( QString( "SELECT id FROM labels WHERE type = %1 AND name = '%2';" )
+                             .arg( type ).arg( escapeString( label ) ) ).first().toInt();
+    bool labelAlreadyExists = id > 0;
+    if ( !id )
+    {
+        id = insert( QString( "INSERT INTO labels( name, type ) VALUES ( '%2', %1 );" )
+                              .arg( type ).arg( escapeString( label ) ), "labels" );
+    }
+    if ( labelAlreadyExists )
+    {
+        //we can return if the link between the tags row and the labels row already exists
+        int count = query( QString( "SELECT COUNT(*) FROM tags_labels WHERE labelid = %1 AND deviceid = %2 AND url = '%3';" )
+                                    .arg( id ).arg( deviceid ).arg( rpath ) ).first().toInt();
+        if ( count )
+            return;
+    }
+    insert( QString( "INSERT INTO tags_labels( labelid, deviceid, url ) VALUES ( %1, %2, '%3' );" )
+                     .arg( id ).arg( deviceid ).arg( rpath ), "tags_labels" );
+}
+
+QStringList
+CollectionDB::favouriteLabels( int type, int count )
+{
+    return query( QString( "SELECT labels.name, count( tags_labels.labelid ) "
+                           "FROM labels LEFT JOIN tags_labels ON labels.id = tags_labels.labelid "
+                           "WHERE labels.type = %1 GROUP BY tags_labels.labelid " )
+                           .arg( QString::number( type ), QString::number( count ) ) );
+                            //"ORDER BY COUNT( tags_labels.labelid ) DESC, labels.name ASC LIMIT %2;" )
 }
 
 QDir
@@ -6299,7 +6487,7 @@ QueryBuilder::linkTables( int tables )
     if ( !(tables & tabSong ) )
     {
         // check if only one table is selected (does somebody know a better way to check that?)
-        if (tables == tabAlbum || tables==tabArtist || tables==tabGenre || tables == tabYear || tables == tabStats || tables == tabPodcastEpisodes || tables == tabPodcastFolders || tables == tabPodcastChannels) {
+        if (tables == tabAlbum || tables==tabArtist || tables==tabGenre || tables == tabYear || tables == tabStats || tables == tabPodcastEpisodes || tables == tabPodcastFolders || tables == tabPodcastChannels || tables == tabLabels) {
         m_tables.setLength( 0 );
         m_tables += tableName(tables);
     }
@@ -6335,7 +6523,9 @@ QueryBuilder::linkTables( int tables )
 
         if ( tables & tabDevices )
             ((m_tables += " LEFT JOIN ") += tableName( tabDevices )) += " ON tags.deviceid = devices.id";
-
+        if ( tables & tabLabels )
+            ( m_tables += " LEFT JOIN tags_labels ON tags.url = tags_labels.url AND tags.deviceid = tags_labels.deviceid" )
+                += " LEFT JOIN labels ON tags_labels.labelid = labels.id";
     }
 }
 
@@ -6586,6 +6776,11 @@ QueryBuilder::setGoogleFilter( int defaultTables, QString query )
                 table = tabDevices;
                 value = valMountPoint;
             }
+            else if( e.field == "label" )
+            {
+                table = tabLabels;
+                value = valName;
+            }
 
             if( e.negate )
             {
@@ -6625,6 +6820,8 @@ QueryBuilder::addFilter( int tables, const QString& filter )
             m_where += "OR year.name " + CollectionDB::likeCondition( filter, false, false );
         if ( tables & tabSong )
             m_where += "OR tags.title " + CollectionDB::likeCondition( filter, true, true );
+        if ( tables & tabLabels )
+            m_where += "OR labels.name " + CollectionDB::likeCondition( filter, true, true );
 
         if ( i18n( "Unknown" ).contains( filter, false ) )
         {
@@ -6704,6 +6901,8 @@ QueryBuilder::addFilters( int tables, const QStringList& filter )
                 m_where += "OR year.name " + CollectionDB::likeCondition( filter[i], false, false );
             if ( tables & tabSong )
                 m_where += "OR tags.title " + CollectionDB::likeCondition( filter[i], true, true );
+            if ( tables & tabLabels )
+                m_where += "OR labels.name " + CollectionDB::likeCondition( filter[i], true, true );
 
             if ( i18n( "Unknown" ).contains( filter[i], false ) )
             {
@@ -6751,6 +6950,8 @@ QueryBuilder::excludeFilter( int tables, const QString& filter )
             m_where += "AND year.name NOT " + CollectionDB::likeCondition( filter, false, false );
         if ( tables & tabSong )
             m_where += "AND tags.title NOT " + CollectionDB::likeCondition( filter, true, true );
+        if ( tables & tabLabels )
+            m_where += "AND labels.name NOT " + CollectionDB::likeCondition( filter, true, true );
 
         if ( i18n( "Unknown" ).contains( filter, false ) )
         {
@@ -6828,6 +7029,8 @@ QueryBuilder::addMatch( int tables, const QString& match, bool interpretUnknown 
         (m_where += "OR year.name ") += matchCondition;
     if ( tables & tabSong )
         (m_where += "OR tags.title ") += matchCondition;
+    if ( tables & tabLabels )
+        (m_where += "OR labels.name ") += matchCondition;
 
     static QString i18nUnknown = i18n("Unknown");
 
@@ -6839,6 +7042,8 @@ QueryBuilder::addMatch( int tables, const QString& match, bool interpretUnknown 
         if ( tables & tabGenre ) m_where += "OR genre.name = '' ";
         if ( tables & tabYear ) m_where += "OR year.name = '' ";
     }
+    if ( tables & tabLabels && match.isEmpty() )
+        m_where += " OR labels.name IS NULL ";
     m_where += " ) ";
 
     m_linkTables |= tables;
@@ -6913,6 +7118,8 @@ QueryBuilder::addMatches( int tables, const QStringList& match, bool interpretUn
             m_where += "OR tags.title " + matchConditions[ i ];
         if ( tables & tabStats )
             m_where += "OR statistics.url " + matchConditions[ i ];
+        if ( tables & tabLabels )
+            (m_where += "OR labels.name ") += matchConditions[ i ];
 
 
         if ( interpretUnknown && match[i] == i18n( "Unknown" ) )
@@ -6923,6 +7130,8 @@ QueryBuilder::addMatches( int tables, const QStringList& match, bool interpretUn
             if ( tables & tabGenre ) m_where += "OR genre.name = '' ";
             if ( tables & tabYear ) m_where += "OR year.name = '' ";
         }
+        if ( tables & tabLabels && match[i].isEmpty() )
+            m_where += " OR labels.name IS NULL ";
     }
 
     m_where += " ) ";
@@ -6939,6 +7148,7 @@ QueryBuilder::excludeMatch( int tables, const QString& match )
     if ( tables & tabGenre ) m_where += "AND genre.name <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
     if ( tables & tabYear ) m_where += "AND year.name <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
     if ( tables & tabSong ) m_where += "AND tags.title <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
+    if ( tables & tabLabels ) m_where += "AND labels.name <> '" + CollectionDB::instance()->escapeString( match ) + "' ";
 
     if ( match == i18n( "Unknown" ) )
     {
@@ -7409,7 +7619,8 @@ QueryBuilder::tableName( int table )
         "podcastchannels",
         "podcastepisodes",
         "podcasttables",
-        "devices"
+        "devices",
+        "labels"
     };
 
     int oneBit = searchBit( table, sizeof( tabNames ) / sizeof( QString ) );
@@ -7438,7 +7649,8 @@ QueryBuilder::tableName( int table )
         if ( table & tabSong )   tables += ",tags";
     }
 
-    if ( table & tabDevices ) tables += ", devices";
+    if ( table & tabDevices ) tables += ",devices";
+    if ( table & tabLabels ) tables += ",labels";
     // when there are multiple tables involved, we always need table tags for linking them
     return tables.mid( 1 );
 }
@@ -7486,8 +7698,8 @@ QueryBuilder::valueName( Q_INT64 value )
        "isNew",
        "deviceid",
        "url",
-       "label",
-       "lastmountpoint"
+       "lastmountpoint",
+       "type"
    };
 
    int oneBit = searchBit( value, sizeof( values ) / sizeof( QString ) );
@@ -7535,7 +7747,7 @@ QueryBuilder::functionName( int function )
 int
 QueryBuilder::getTableByName(const QString &name)
 {
-    for ( int i = 1; i <= tabDevices; i <<= 1 )
+    for ( int i = 1; i <= tabLabels; i <<= 1 )
     {
         if (tableName(i) == name) return i;
     }
@@ -7545,7 +7757,7 @@ QueryBuilder::getTableByName(const QString &name)
 Q_INT64
 QueryBuilder::getValueByName(const QString &name)
 {
-    for ( Q_INT64 i = 1; i <= valMountPoint; i <<= 1 ) {
+    for ( Q_INT64 i = 1; i <= valType; i <<= 1 ) {
         if (valueName(i) == name) return i;
     }
 

@@ -50,7 +50,8 @@ enum Fields
     FFilePath,
     FBPM,
     FMountPoint,
-    FBitRate
+    FBitRate,
+    FLabel
 };
 
 
@@ -156,20 +157,20 @@ void SmartPlaylistEditor::init(QString defaultName)
              << i18n("Track #") << i18n("Year") << i18n("Comment") << i18n("Play Counter")
              << i18n("Score") << i18n( "Rating" ) << i18n("First Play")
              << i18n("Last Play") << i18n("Modified Date") << i18n("File Path")
-             << i18n("BPM") << i18n("Mount Point") << i18n( "Bitrate" );
+             << i18n("BPM") << i18n("Mount Point") << i18n( "Bitrate" ) << i18n( "Label" );
 
     m_dbFields.clear();
     m_dbFields << "artist.name" << "composer.name" << "album.name" << "genre.name" << "tags.title" << "tags.length"
                << "tags.track" << "year.name" << "tags.comment" << "statistics.playcounter"
                << "statistics.percentage" << "statistics.rating" << "statistics.createdate"
                << "statistics.accessdate" << "tags.createdate" << "tags.url"
-               << "tags.bpm" << "devices.lastmountpoint" << "tags.bitrate";
+               << "tags.bpm" << "devices.lastmountpoint" << "tags.bitrate" << "labels.name";
 
     m_expandableFields.clear();
-    m_expandableFields << i18n("Artist") << i18n("Composer") << i18n("Album") << i18n("Genre") <<  i18n("Year");
+    m_expandableFields << i18n("Artist") << i18n("Composer") << i18n("Album") << i18n("Genre") <<  i18n("Year") << i18n( "Label" );
 
     m_expandableDbFields.clear();
-    m_expandableDbFields << "artist.name" << "composer.name" << "album.name" << "genre.name" << "year.name";
+    m_expandableDbFields << "artist.name" << "composer.name" << "album.name" << "genre.name" << "year.name" << "labels.name";
 
     QHBox *hbox = new QHBox( mainWidget() );
     hbox->setSpacing( 5 );
@@ -428,6 +429,11 @@ void SmartPlaylistEditor::buildQuery()
                     joins += " LEFT JOIN statistics ON statistics.url=tags.url AND statistics.deviceid=tags.deviceid";
                 if( str.contains( "devices." ) && !joins.contains( "devices" ) )
                     joins += " LEFT JOIN devices ON tags.deviceid=devices.id";
+                if( str.contains( "labels." ) && !joins.contains( "labels" ) )
+                {
+                    joins += " LEFT JOIN tags_labels ON tags.url = tags_labels.url AND tags.deviceid = tags_labels.deviceid";
+                    joins += " LEFT JOIN labels ON tags_labels.labelid = labels.id";
+                }
 
                 if( i ) //multiple conditions
                     str.prepend( " OR (");
@@ -452,6 +458,11 @@ void SmartPlaylistEditor::buildQuery()
                     joins += " LEFT JOIN statistics ON statistics.url=tags.url AND statistics.deviceid=tags.deviceid";
                 if( str.contains( "devices." ) && !joins.contains( "devices" ) )
                     joins += " LEFT JOIN devices ON tags.deviceid=devices.id";
+                if( str.contains( "labels." ) && !joins.contains( "labels" ) )
+                {
+                    joins += " LEFT JOIN tags_labels ON tags.url = tags_labels.url AND tags.deviceid = tags_labels.deviceid";
+                    joins += " LEFT JOIN labels ON tags_labels.labelid = labels.id";
+                }
 
                 if( i ) //multiple conditions
                     str.prepend( " AND (");
@@ -473,6 +484,13 @@ void SmartPlaylistEditor::buildQuery()
             QString field = m_dbFields[ m_orderCombo->currentItem() ];
             if( field.contains( "statistics." ) && !joins.contains( "statistics" ) )
                 joins += " LEFT JOIN statistics ON statistics.url=tags.url AND statistics.deviceid=tags.deviceid";
+            if( field.contains( "devices." ) && !joins.contains( "devices" ) )
+                joins += " LEFT JOIN devices ON tags.deviceid=devices.id";
+            if( field.contains( "labels." ) && !joins.contains( "labels" ) )
+            {
+                joins += " LEFT JOIN tags_labels ON tags.url = tags_labels.url AND tags.deviceid = tags_labels.deviceid";
+                joins += " LEFT JOIN labels ON tags_labels.labelid = labels.id";
+            }
 
             QString orderType = m_orderTypeCombo->currentItem() == 1 ? " DESC" : " ASC";
             orderStr = " ORDER BY " +  field + orderType;
@@ -508,11 +526,16 @@ void SmartPlaylistEditor::buildQuery()
     m_query = "SELECT (*ListOfFields*) FROM "
               + joins + whereStr + orderStr + limitStr + ';';
 
-    if( m_expandCheck->isChecked() ) { //We use "(*ExpandString*)" as a marker, if a artist/track/album has this bizarre name, it won't work.
+    if( m_expandCheck->isChecked() ) { //We use "(*ExpandString*)" as a marker, if a artist/track/album/label has this bizarre name, it won't work.
         QString field = m_expandableDbFields[ m_expandCombo->currentItem() ];
         QString table = field.left( field.find('.') );
-        if( !joins.contains( table ) ) {
+        if( table == "statistics" && !joins.contains( table ) ) {
             joins += " LEFT JOIN statistics ON statistics.url=tags.url AND statistics.deviceid=tags.deviceid";
+        }
+        if( table == "labels" && !joins.contains( "labels" ) )
+        {
+            joins += " LEFT JOIN tags_labels ON tags.url = tags_labels.url AND tags.deviceid = tags_labels.deviceid";
+            joins += " LEFT JOIN labels ON tags_labels.labelid = labels.id";
         }
         if ( !criteriaListStr.isEmpty() )
             whereStr = QString(" WHERE (%1) AND %2 = '(*ExpandString*)'").arg(criteriaListStr).arg(field);
@@ -860,6 +883,8 @@ void CriteriaEditor::slotFieldSelected( int field )
            items = CollectionDB::instance()->composerList();
         else if( currentField == FAlbum ) //album
            items = CollectionDB::instance()->albumList();
+        else if (currentField == FLabel ) //label
+            items = CollectionDB::instance()->labelList();
         else  //genre
            items = CollectionDB::instance()->genreList();
 
@@ -904,7 +929,7 @@ void CriteriaEditor::loadEditWidgets()
             break;
         }
 
-        case AutoCompletionString:    //artist, composer, album, genre
+        case AutoCompletionString:    //artist, composer, album, genre, label
         {
             m_comboBox = new KComboBox( true, m_editBox );
             m_lineEdit = static_cast<KLineEdit*>( m_comboBox->lineEdit() );
@@ -1045,6 +1070,7 @@ int CriteriaEditor::getValueType( int index )
         case FComposer:
         case FAlbum:
         case FGenre:
+        case FLabel:
             valueType = AutoCompletionString;
             break;
         case FTitle:

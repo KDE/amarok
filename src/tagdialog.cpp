@@ -22,15 +22,19 @@
 
 #include <qdom.h>
 #include <qfile.h>
+#include <qheader.h>
 #include <qlabel.h>
+#include <qlayout.h>
 #include <qpushbutton.h>
 #include <qtooltip.h>
+#include <qvbox.h>
 #include <qcheckbox.h>
 
 #include <kapplication.h>
 #include <kcombobox.h>
 #include <kcursor.h>
 #include <kglobal.h>
+#include <khtmlview.h>
 #include <kiconloader.h>
 #include <ktabwidget.h>
 #include <ktextedit.h>
@@ -227,7 +231,7 @@ inline void
 TagDialog::checkModified() //SLOT
 {
     pushButton_ok->setEnabled( hasChanged() || storedTags.count() > 0 || storedScores.count() > 0
-                               || storedLyrics.count() > 0 || storedRatings.count() > 0 );
+                               || storedLyrics.count() > 0 || storedRatings.count() > 0 || newLabels.count() > 0 );
 }
 
 void
@@ -378,6 +382,7 @@ void TagDialog::init()
     kTabWidget->addTab( tagsTab, i18n( "Tags" ) );
     kTabWidget->addTab( lyricsTab, i18n( "Lyrics" ) );
     kTabWidget->addTab( statisticsTab, i18n( "Statistics" ) );
+    kTabWidget->addTab( labelsTab, i18n( "Labels" ) );
     kTabWidget->setCurrentPage( config->readNumEntry( "CurrentTab", 0 ) );
 
     const QStringList artists = CollectionDB::instance()->artistList();
@@ -405,6 +410,27 @@ void TagDialog::init()
     kComboBox_genre->insertStringList( genres );
     kComboBox_genre->completionObject()->insertItems( genres );
     kComboBox_genre->completionObject()->setIgnoreCase( true );
+
+    const QStringList labels = CollectionDB::instance()->labelList();
+    //TODO: figure out a way to add auto-completion support to kTestEdit_selectedLabels
+
+    //m_labelCloud = new KHTMLPart( labels_favouriteLabelsFrame );
+    m_labelCloud = new HTMLView( labels_favouriteLabelsFrame );
+    m_labelCloud->view()->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored, false );
+    m_labelCloud->view()->setVScrollBarMode( QScrollView::AlwaysOff );
+    m_labelCloud->view()->setHScrollBarMode( QScrollView::AlwaysOff );
+
+    new QVBoxLayout( labels_favouriteLabelsFrame );
+    labels_favouriteLabelsFrame->layout()->add( m_labelCloud->view() );
+    const QStringList favouriteLabels = CollectionDB::instance()->favouriteLabels();
+    QString html = generateHTML( favouriteLabels );
+    //m_labelCloud->begin();
+    //m_labelCloud->write( html );
+    //m_labelCloud->end();
+    //m_labelCloud->setDNDEnabled( false );       //no drag-n-drop
+    m_labelCloud->set( html );
+    connect( m_labelCloud->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
+             this,                             SLOT( openURLRequest( const KURL & ) ) );
 
     // looks better to have a blank label than 0, we can't do this in
     // the UI file due to bug in Designer
@@ -449,6 +475,7 @@ void TagDialog::init()
     connect( kIntSpinBox_score, SIGNAL(valueChanged( int )),            SLOT(checkModified()) );
     connect( kTextEdit_comment, SIGNAL(textChanged()),                  SLOT(checkModified()) );
     connect( kTextEdit_lyrics,  SIGNAL(textChanged()),                  SLOT(checkModified()) );
+    connect( kTextEdit_selectedLabels, SIGNAL(textChanged()),           SLOT(checkModified()) );
 
     // Remember original button text
     m_buttonMbText = pushButton_musicbrainz->text();
@@ -519,6 +546,7 @@ void TagDialog::init()
         }
 
         loadLyrics( m_bundle.url() );
+        loadLabels(  m_bundle.url() );
         readTags();
     }
 
@@ -695,6 +723,8 @@ void TagDialog::readTags()
     kIntSpinBox_year->setEnabled( local );
     kIntSpinBox_score->setEnabled( local );
     kTextEdit_comment->setEnabled( local );
+    kTextEdit_selectedLabels->setEnabled( local );
+    m_labelCloud->view()->setEnabled( local );
 
     if( local )
     {
@@ -716,7 +746,8 @@ void TagDialog::readTags()
         pushButton_open->setEnabled( false );
 
     pushButton_ok->setEnabled( storedTags.count() > 0 || storedScores.count() > 0
-                              || storedLyrics.count() > 0 || storedRatings.count() > 0 );
+                              || storedLyrics.count() > 0 || storedRatings.count() > 0
+                              || newLabels.count() > 0 );
 
 #if HAVE_TUNEPIMP
     // Don't enable button if a query is in progress already (or if the file isn't local)
@@ -902,8 +933,48 @@ TagDialog::readMultipleTracks()
 
     statisticsLabel->setText( statisticsText );
 
+    QStringList commonLabels = getCommonLabels();
+    QString text;
+    foreach ( commonLabels )
+    {
+        if ( !text.isEmpty() )
+            text.append( ", " );
+        text.append( *it );
+    }
+    kTextEdit_selectedLabels->setText( text );
+    m_commaSeparatedLabels = text;
+
     // This will reset a wrongly enabled Ok button
     checkModified();
+}
+
+QStringList
+TagDialog::getCommonLabels()
+{
+    DEBUG_BLOCK
+    QMap<QString, int> counterMap;
+    const KURL::List::ConstIterator end = m_urlList.end();
+    KURL::List::ConstIterator iter = m_urlList.begin();
+    for(; iter != end; ++iter )
+    {
+        QStringList labels = labelsForURL( *iter );
+        foreach( labels )
+        {
+            if ( counterMap.contains( *it ) )
+                counterMap[ *it ] = counterMap[ *it ] +1;
+            else
+                counterMap[ *it ] = 1;
+        }
+    }
+    int n = m_urlList.count();
+    QStringList result;
+    QMap<QString, int>::ConstIterator counterEnd( counterMap.end() );
+    for(QMap<QString, int>::ConstIterator it = counterMap.begin(); it != counterEnd; ++it )
+    {
+        if ( it.data() == n )
+            result.append( it.key() );
+    }
+    return result;
 }
 
 inline bool
@@ -948,6 +1019,10 @@ TagDialog::changes()
         if ( !equalString( kTextEdit_lyrics->text(), m_lyrics ) )
             result |= TagDialog::LYRICSCHANGED;
     }
+
+    if ( !equalString( kTextEdit_selectedLabels->text(), m_commaSeparatedLabels ) )
+        result |= TagDialog::LABELSCHANGED;
+
     return result;
 }
 
@@ -997,6 +1072,25 @@ TagDialog::storeTags( const KURL &kurl )
             storedLyrics.replace( url, doc.toString() );
         }
     }
+    if( result & TagDialog::LABELSCHANGED ) {
+        generateDeltaForLabelList( labelListFromText( kTextEdit_selectedLabels->text() ) );
+        QStringList tmpLabels;
+        if ( newLabels.find( url ) != newLabels.end() )
+            tmpLabels = newLabels[ url ];
+        else
+            tmpLabels = originalLabels[ url ];
+        //apply delta
+        foreach( m_removedLabels )
+        {
+            tmpLabels.remove( *it );
+        }
+        foreach( m_addedLabels )
+        {
+            if( tmpLabels.find( *it ) == tmpLabels.end() )
+                tmpLabels.append( *it );
+        }
+        newLabels.replace( url, tmpLabels );
+    }
 }
 
 void
@@ -1010,12 +1104,19 @@ TagDialog::storeTags( const KURL &url, int changes, const MetaBundle &mb )
         storedRatings.replace( url.path(), mb.rating() );
 }
 
+void
+TagDialog::storeLabels( const KURL &url, const QStringList &labels )
+{
+    newLabels.replace( url.path(), labels );
+}
+
 
 void
 TagDialog::loadTags( const KURL &url )
 {
     m_bundle = bundleForURL( url );
     loadLyrics( url );
+    loadLabels( url );
 }
 
 void
@@ -1028,6 +1129,23 @@ TagDialog::loadLyrics( const KURL &url )
         m_lyrics = doc.documentElement().text();
     else
         m_lyrics = QString::null;
+}
+
+void
+TagDialog::loadLabels( const KURL &url )
+{
+    DEBUG_BLOCK
+    m_labels = labelsForURL( url );
+    originalLabels[ url.path() ] = m_labels;
+    QString text;
+    foreach( m_labels )
+    {
+        if ( !text.isEmpty() )
+            text.append( ", " );
+        text.append( *it );
+    }
+    kTextEdit_selectedLabels->setText( text );
+    m_commaSeparatedLabels = text;
 }
 
 MetaBundle
@@ -1066,6 +1184,18 @@ TagDialog::lyricsForURL( const KURL &url )
     return CollectionDB::instance()->getLyrics( url.path() );
 }
 
+QStringList
+TagDialog::labelsForURL( const KURL &url )
+{
+    if( newLabels.find( url.path() ) != newLabels.end() )
+        return newLabels[ url.path() ];
+    if( originalLabels.find( url.path() ) != originalLabels.end() )
+        return originalLabels[ url.path() ];
+    QStringList tmp = CollectionDB::instance()->getLabels( url.path(), CollectionDB::typeUser );
+    originalLabels[ url.path() ] = tmp;
+    return tmp;
+}
+
 void
 TagDialog::saveTags()
 {
@@ -1091,15 +1221,21 @@ TagDialog::saveTags()
         CollectionDB::instance()->setLyrics( it.key(), it.data() );
         emit lyricsChanged( it.key() );
     }
+    QMap<QString, QStringList>::ConstIterator endLabels( newLabels.end() );
+    for(QMap<QString, QStringList>::ConstIterator it = newLabels.begin(); it != endLabels; ++it ) {
+        CollectionDB::instance()->setLabels( it.key(), it.data(), CollectionDB::typeUser );
+    }
+    CollectionDB::instance()->cleanLabels();
 
     ThreadWeaver::instance()->queueJob( new TagDialogWriter( storedTags ) );
 
 }
 
-
 void
 TagDialog::applyToAllTracks()
 {
+    generateDeltaForLabelList( labelListFromText( kTextEdit_selectedLabels->text() ) );
+
     const KURL::List::ConstIterator end = m_urlList.end();
     for ( KURL::List::ConstIterator it = m_urlList.begin(); it != end; ++it ) {
 
@@ -1169,9 +1305,105 @@ TagDialog::applyToAllTracks()
             changed |= TagDialog::RATINGCHANGED;
         }
         storeTags( *it, changed, mb );
+
+        QStringList tmpLabels = labelsForURL( *it );
+        //apply delta
+        for( QStringList::Iterator iter = m_removedLabels.begin(); iter != m_removedLabels.end(); ++iter )
+        {
+            tmpLabels.remove( *iter );
+        }
+        for( QStringList::Iterator iter = m_addedLabels.begin(); iter != m_addedLabels.end(); ++iter )
+        {
+            if( tmpLabels.find( *iter ) == tmpLabels.end() )
+                tmpLabels.append( *iter );
+        }
+        storeLabels( *it, tmpLabels );
     }
 }
 
+QStringList
+TagDialog::labelListFromText( const QString &text )
+{
+    QStringList tmp = QStringList::split( ',', text );
+    //insert each string into a map to remove duplicates
+    QMap<QString, int> map;
+    foreach( tmp )
+    {
+        QString tmpString = (*it).stripWhiteSpace();
+        if ( !tmpString.isEmpty() )
+            map.replace( tmpString, 0 );
+    }
+    QStringList result;
+    QMap<QString, int>::ConstIterator endMap( map.end() );
+    for(QMap<QString, int>::ConstIterator it = map.begin(); it != endMap; ++it ) {
+        result.append( it.key() );
+    }
+    return result;
+}
+
+void
+TagDialog::generateDeltaForLabelList( const QStringList &list )
+{
+    m_addedLabels.clear();
+    m_removedLabels.clear();
+    foreach( list )
+    {
+        if ( !m_labels.contains( *it ) )
+            m_addedLabels.append( *it );
+    }
+    foreach( m_labels )
+    {
+        if ( !list.contains( *it ) )
+            m_removedLabels.append( *it );
+    }
+}
+
+QString
+TagDialog::generateHTML( const QStringList &labels )
+{
+    //the first column of each row is the label name, the second the number of assigned songs
+    //loop through it to find the highest number of songs, can be removed if somebody figures out a better sql query
+    int max = 1;
+    foreach( labels )
+    {
+        ++it;
+        if ( ( *it ).toInt() > max )
+            max = ( *it ).toInt();
+    }
+    QString html = "<html><body>";
+    foreach( labels )
+    {
+        QString text = *it;
+        ++it;
+        //generate a number in the range 1..10 based on  how much the label is used
+        int labelUse = ( ( *it ).toInt() *10 ) / max;
+        if ( labelUse == 0 )
+            labelUse = 1;
+        html.append( QString( "<span class='label size%1'><a href=\"label:%2\">%3</a></span> " )
+                              .arg( QString::number( labelUse ), text, text ) );
+    }
+    html.append( "</html></body>" );
+    debug() << "Dumping HTML for label cloud: " << html << endl;
+    return html;
+}
+
+void
+TagDialog::openURLRequest(const KURL &url )         //SLOT
+{
+    DEBUG_BLOCK
+    debug() << url.protocol() << " " << url.path() << endl;
+    if ( url.protocol() == "label" )
+    {
+        QString text = kTextEdit_selectedLabels->text();
+        QStringList currentLabels = labelListFromText( text );
+        if ( currentLabels.contains( url.path() ) )
+            return;
+        if ( !text.isEmpty() )
+            text.append( ", " );
+        text.append( url.path() );
+        kTextEdit_selectedLabels->setText( text );
+    }
+}
 
 bool
 TagDialog::writeTag( MetaBundle mb, bool updateCB )
@@ -1254,5 +1486,6 @@ TagDialogWriter::completeJob()
         Amarok::StatusBar::instance()->longMessage( i18n(
                         "Sorry, the tag for the following files could not be changed:\n" ).arg( m_failedURLs.join( ";\n" ) ), KDE::StatusBar::Error );
 }
+
 
 #include "tagdialog.moc"

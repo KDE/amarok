@@ -8,6 +8,7 @@
 
 #include "config.h"
 
+#include "htmlview.h"
 #include "ktrm.h"
 #include "metabundle.h"       //stack alloc
 #include "tagdialogbase.h"    //baseclass
@@ -15,7 +16,11 @@
 
 #include <kurl.h>             //stack alloc
 #include <qdatetime.h>
+#include <qlabel.h>
 #include <qmap.h>
+#include <qptrlist.h>
+
+#include <khtml_part.h>
 
 
 class PlaylistItem;
@@ -31,8 +36,8 @@ class TagDialog : public TagDialogBase
 
     public:
 
-        enum Changes { NOCHANGE=0, SCORECHANGED=1, TAGSCHANGED=2, LYRICSCHANGED=4, RATINGCHANGED=8 };
-        enum Tabs { SUMMARYTAB, TAGSTAB, LYRICSTAB, STATSTAB };
+        enum Changes { NOCHANGE=0, SCORECHANGED=1, TAGSCHANGED=2, LYRICSCHANGED=4, RATINGCHANGED=8, LABELSCHANGED=16 };
+        enum Tabs { SUMMARYTAB, TAGSTAB, LYRICSTAB, STATSTAB, LABELSTAB };
 
         TagDialog( const KURL& url, QWidget* parent = 0 );
         TagDialog( const KURL::List list, QWidget* parent = 0 );
@@ -46,6 +51,8 @@ class TagDialog : public TagDialogBase
     signals:
         void lyricsChanged( const QString& );
 
+    public slots:
+        void openURLRequest(const KURL &url );
 
     private slots:
         void accept();
@@ -77,12 +84,16 @@ class TagDialog : public TagDialogBase
         void storeTags();
         void storeTags( const KURL& url );
         void storeTags( const KURL& url, int changes, const MetaBundle &mb );
+        void storeLabels( const KURL &url, const QStringList &labels );
         void loadTags( const KURL& url );
         void loadLyrics( const KURL& url );
+        void loadLabels( const KURL &url );
         MetaBundle bundleForURL( const KURL &url );
         int scoreForURL( const KURL &url );
         int ratingForURL( const KURL &url );
         QString lyricsForURL( const KURL &url );
+        QStringList labelsForURL( const KURL &url );
+        QStringList getCommonLabels();
         void saveTags();
         bool writeTag( MetaBundle mb, bool updateCB=true );
         const QString unknownSafe( QString );
@@ -90,6 +101,10 @@ class TagDialog : public TagDialogBase
         void applyToAllTracks();
 
         const QStringList filenameSchemes();
+
+        QStringList labelListFromText( const QString &text );
+        void generateDeltaForLabelList( const QStringList &list );
+        QString generateHTML( const QStringList &labels );
 
         MetaBundle m_bundle;
         KURL::List::iterator m_currentURL;
@@ -100,11 +115,19 @@ class TagDialog : public TagDialogBase
         QMap<QString, int> storedScores;
         QMap<QString, int> storedRatings;
         QMap<QString, QString> storedLyrics;
+        QMap<QString, QStringList> newLabels;
+        QMap<QString, QStringList> originalLabels;
         KURL::List m_urlList;
         QString m_buttonMbText;
         QString m_path;
         QString m_currentCover;
+        QStringList m_labels;
+        QStringList m_addedLabels;
+        QStringList m_removedLabels;
         KURL m_mbTrack;
+        QString m_commaSeparatedLabels;
+        //KHTMLPart *m_labelCloud;
+        HTMLView *m_labelCloud;
 };
 
 

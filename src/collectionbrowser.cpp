@@ -212,6 +212,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_cat1Menu ->insertItem( i18n( "&Composer"), m_view, SLOT( cat1Menu( int ) ), 0, IdComposer );
     m_cat1Menu ->insertItem( i18n( "&Genre" ), m_view, SLOT( cat1Menu( int ) ), 0, IdGenre );
     m_cat1Menu ->insertItem( i18n( "&Year" ), m_view, SLOT( cat1Menu( int ) ), 0, IdYear );
+    m_cat1Menu ->insertItem( i18n( "&Label" ), m_view, SLOT( cat1Menu( int ) ), 0, IdLabel );
 
     m_cat2Menu ->insertItem( i18n( "&None" ), m_view, SLOT( cat2Menu( int ) ), 0, IdNone );
     m_cat2Menu ->insertSeparator();
@@ -221,6 +222,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_cat2Menu ->insertItem( i18n( "&Composer"), m_view, SLOT( cat2Menu( int ) ), 0, IdComposer );
     m_cat2Menu ->insertItem( i18n( "&Genre" ), m_view, SLOT( cat2Menu( int ) ), 0, IdGenre );
     m_cat2Menu ->insertItem( i18n( "&Year" ), m_view, SLOT( cat2Menu( int ) ), 0, IdYear );
+    m_cat2Menu ->insertItem( i18n( "&Label" ), m_view, SLOT( cat2Menu( int ) ), 0, IdLabel );
 
     m_cat3Menu ->insertItem( i18n( "&None" ), m_view, SLOT( cat3Menu( int ) ), 0, IdNone );
     m_cat3Menu ->insertSeparator();
@@ -230,6 +232,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_cat3Menu ->insertItem( i18n( "&Composer"), m_view, SLOT( cat3Menu( int ) ), 0, IdComposer );
     m_cat3Menu ->insertItem( i18n( "&Genre" ), m_view, SLOT( cat3Menu( int ) ), 0, IdGenre );
     m_cat3Menu ->insertItem( i18n( "&Year" ), m_view, SLOT( cat3Menu( int ) ), 0, IdYear );
+    m_cat3Menu ->insertItem( i18n( "&Label" ), m_view, SLOT( cat3Menu( int ) ), 0, IdLabel );
 
     m_view->cat1Menu( m_view->m_cat1, false );
     m_view->cat2Menu( m_view->m_cat2, false );
@@ -744,6 +747,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
     // initialization for year - album mode
     QString tmptext;
     int VisYearAlbum = -1;
+    int VisLabel = -1;
     int q_cat1=m_cat1;
     int q_cat2=m_cat2;
     int q_cat3=m_cat3;
@@ -767,6 +771,17 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
             VisYearAlbum = 3;
             q_cat3 = IdAlbum;
         }
+    }
+    if( m_cat1 == IdLabel ||
+        m_cat2 == IdLabel ||
+        m_cat3 == IdLabel )
+    {
+        if( m_cat1 == IdLabel )
+            VisLabel = 1;
+        if( m_cat2 == IdLabel )
+            VisLabel = 2;
+        if ( m_cat3 == IdLabel )
+            VisLabel = 3;
     }
 
     if ( translateTimeFilter( timeFilter() ) > 0 )
@@ -1037,7 +1052,10 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 
         if ( values[ i ].stripWhiteSpace().isEmpty() )
         {
-            text +=  i18n( "Unknown" );
+            if ( category == IdLabel )
+                text += i18n( "No Label" );
+            else
+                text +=  i18n( "Unknown" );
             unknown = true;
         }
         else
@@ -1204,6 +1222,7 @@ CollectionView::enableCat3Menu( bool enable )
     m_parent->m_cat3Menu->setItemEnabled( IdComposer, enable );
     m_parent->m_cat3Menu->setItemEnabled( IdGenre, enable );
     m_parent->m_cat3Menu->setItemEnabled( IdYear, enable );
+    m_parent->m_cat3Menu->setItemEnabled( IdLabel, enable );
 
     if( !enable ) {
         m_parent->m_cat3Menu->setItemChecked( m_cat3, false );
@@ -2497,6 +2516,9 @@ CollectionView::captionForCategory( const int cat ) const
         case IdYear:
             return i18n( "Year" );
             break;
+        case IdLabel:
+            return i18n( "Label" );
+            break;
     }
 
     return QString::null;
@@ -2645,6 +2667,9 @@ CollectionView::allForCategory( const int cat, const int num ) const
             break;
         case IdYear:
             return i18n( "Year", "All %n Years", num );
+            break;
+        case IdLabel:
+            return i18n( "Label", "All %n Labels", num );
             break;
     }
 
@@ -3583,6 +3608,7 @@ CollectionView::renderTreeModeView( bool /*=false*/ )
 
     setSorting( 0 );
     int VisYearAlbum = -1;
+    int VisLabel = -1;
     int q_cat1=m_cat1;
     int q_cat2=m_cat2;
     int q_cat3=m_cat3;
@@ -3605,6 +3631,17 @@ CollectionView::renderTreeModeView( bool /*=false*/ )
             VisYearAlbum = 3;
             q_cat3 = IdAlbum;
         }
+    }
+    if ( m_cat1 == IdLabel ||
+            m_cat2 == IdLabel ||
+            m_cat3 == IdLabel )
+    {
+        if ( m_cat1 == IdLabel )
+            VisLabel = 1;
+        else if ( m_cat2 == IdLabel )
+            VisLabel = 2;
+        else
+            VisLabel = 3;
     }
     QPixmap pixmap = iconForCategory( m_cat1 );
 
@@ -3658,7 +3695,10 @@ CollectionView::renderTreeModeView( bool /*=false*/ )
 
             if ( (*it).stripWhiteSpace().isEmpty() )
             {
-                (*it) = i18n( "Unknown" );
+                if ( VisLabel == 1 )
+                    (*it) = i18n( "No Label" );
+                else
+                    (*it) = i18n( "Unknown" );
                 unknown = true;
             }
             else if (m_showDivider)
@@ -3815,12 +3855,16 @@ CollectionView::renderIpodModeView( bool /*=false*/ )
     // This is set to true if the current category is IdVisYearAlbum
     // It is only used when stillFiltering == true.
     bool VisYearAlbum = false;
+    //This is set to true if the current category is IdLabel
+    bool VisLabel = false;
 
     if( q_cat == IdVisYearAlbum && stillFiltering )
     {
         VisYearAlbum = true;
         q_cat = IdAlbum;
     }
+    if ( q_cat == IdLabel && stillFiltering )
+        VisLabel = true;
 
     // If we're viewing tracks, we don't want them to be sorted
     // alphabetically, since we take great pains in
@@ -3888,7 +3932,10 @@ CollectionView::renderIpodModeView( bool /*=false*/ )
             if( (*it).isEmpty() )
             {
                 unknown = true;
-                *it = i18n( "Unknown" );
+                if ( VisLabel )
+                    *it = i18n( "No Label" );
+                else
+                    *it = i18n( "Unknown" );
             }
 
             item = new CollectionItem( this, m_cat, unknown );

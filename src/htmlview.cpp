@@ -232,6 +232,19 @@ HTMLView::loadStyleSheet()
 
         styleSheet += QString( "#wiki_box-body a { color: %1; }" ).arg( link );
         styleSheet += QString( "#wiki_box-body a:hover { text-decoration: underline; }" );
+
+        //labels in tag dialog
+        styleSheet += ".label a:hover { font-weight: bold; }";
+        styleSheet += QString( ".label.size1 { font-size: %1px; }" ).arg( pxSize );
+        styleSheet += QString( ".label.size2 { font-size: %1px; }" ).arg( pxSize + 1 );
+        styleSheet += QString( ".label.size3 { font-size: %1px; }" ).arg( pxSize + 2 );
+        styleSheet += QString( ".label.size4 { font-size: %1px; }" ).arg( pxSize + 3 );
+        styleSheet += QString( ".label.size5 { font-size: %1px; }" ).arg( pxSize + 4);
+        styleSheet += QString( ".label.size6 { font-size: %1px; }" ).arg( pxSize + 5 );
+        styleSheet += QString( ".label.size7 { font-size: %1px; }" ).arg( pxSize + 6 );
+        styleSheet += QString( ".label.size8 { font-size: %1px; }" ).arg( pxSize + 7 );
+        styleSheet += QString( ".label.size9 { font-size: %1px; }" ).arg( pxSize + 8 );
+        styleSheet += QString( ".label.size10 { font-size: %1px; }" ).arg( pxSize + 9 );
     }
 
     return styleSheet;
