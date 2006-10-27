@@ -3049,6 +3049,8 @@ ContextBrowser::lyricsResult( QCString cXmlDoc, bool cached ) //SLOT
                 lyrics += "</a><br/>\n";
             }
         }
+        lyrics += i18n( "<p>You can <a href=\"%1\">search for the lyrics</a> on the Web.</p>" )
+                  .arg( QString( m_lyricSearchUrl ).replace( QRegExp( "^http:" ), "externalurl:" ) );
     }
     else {
         lyrics = el.text();
