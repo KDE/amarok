@@ -60,6 +60,8 @@ public:
     void restoreSession();
     void endSession();
 
+    void updateBundleRating( const int rating ) { m_bundle.setRating(rating); } //Can't update metabundle rating from bundle(), d'oh
+
     //xx000, xx100, xx200, so at most will be 200ms delay before time displays are updated
     static const int MAIN_TIMER = 300;
 

@@ -9,6 +9,8 @@ VERSION 1.5.0
   CHANGES:
 
   BUGFIXES:
+    * OSD wouldn't always show up-to-date ratings. Patch by Tuomas Nurmi
+      <tnurmi@edu.kauhajoki.fi>. (BR 125612)
 
 VERSION 1.4.4
   FEATURES:

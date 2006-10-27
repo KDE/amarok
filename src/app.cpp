@@ -1165,6 +1165,7 @@ void App::setRating( int n )
         const QString path = EngineController::instance()->playingURL().path();
         CollectionDB::instance()->setSongRating( path, n, true );
         const int rating = CollectionDB::instance()->getSongRating( path );
+        EngineController::instance()->updateBundleRating( rating );
         Amarok::OSD::instance()->OSDWidget::ratingChanged( rating );
     }
     else if( PlaylistWindow::self()->isReallyShown() && Playlist::instance()->qscrollview()->hasFocus() )
