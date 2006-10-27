@@ -23,8 +23,11 @@ class FileNameScheme
         QString track() const;
         QString comment() const;
         QString year() const;
+        QString composer() const;
+        QString genre() const;
 
         QString pattern() const { return m_cod; };
+
     private:
         QString composeRegExp( const QString &s ) const;
         QString m_cod;
@@ -37,6 +40,8 @@ class FileNameScheme
         int m_trackField;
         int m_commentField;
         int m_yearField;
+        int m_composerField;
+        int m_genreField;
 };
 
 class TagGuesser
@@ -59,6 +64,8 @@ class TagGuesser
         QString track() const { return m_track; }
         QString comment() const { return m_comment; }
         QString year() const { return m_year; }
+        QString composer() const { return m_composer; }
+        QString genre() const { return m_genre; }
 
     private:
         void loadSchemes();
@@ -71,6 +78,8 @@ class TagGuesser
         QString m_track;
         QString m_comment;
         QString m_year;
+        QString m_composer;
+        QString m_genre;
 };
 
 #endif /* TAGGUESSER_H */

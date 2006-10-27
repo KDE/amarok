@@ -27,6 +27,8 @@ FileNameScheme::FileNameScheme( const QString &s )
     , m_trackField( -1 )
     , m_commentField( -1 )
     , m_yearField( -1 )
+    , m_composerField( -1 )
+    , m_genreField( -1 )
 {
     int artist  = s.find( "%artist" );
     int title   = s.find( "%title" );
@@ -34,6 +36,8 @@ FileNameScheme::FileNameScheme( const QString &s )
     int album   = s.find( "%album" );
     int comment = s.find( "%comment" );
     int year    = s.find( "%year" );
+    int composer = s.find( "%composer" );
+    int genre   = s.find( "%genre" );
 
     int fieldNumber = 1;
     int i = s.find( '%' );
@@ -49,7 +53,12 @@ FileNameScheme::FileNameScheme( const QString &s )
         if ( comment == i )
             m_commentField = fieldNumber++;
         if ( year == i )
-             m_yearField = fieldNumber++;
+            m_yearField = fieldNumber++;
+        if ( composer == i )
+            m_composerField = fieldNumber++;
+        if ( genre == i )
+            m_genreField = fieldNumber++;
+
         i = s.find('%', i + 1);
     }
     m_regExp.setPattern( composeRegExp( s ) );
@@ -107,6 +116,20 @@ QString FileNameScheme::year() const
     return m_regExp.capturedTexts()[ m_yearField ];
 }
 
+QString FileNameScheme::composer() const
+{
+    if( m_composerField == -1 )
+        return QString::null;
+    return m_regExp.capturedTexts()[ m_composerField ];
+}
+
+QString FileNameScheme::genre() const
+{
+    if( m_genreField == -1 )
+        return QString::null;
+    return m_regExp.capturedTexts()[ m_genreField ];
+}
+
 QString FileNameScheme::composeRegExp( const QString &s ) const
 {
     QMap<QString, QString> substitutions;
@@ -119,6 +142,9 @@ QString FileNameScheme::composeRegExp( const QString &s ) const
     substitutions[ "track" ] = config.readEntry( "Track regexp", "(\\d+)" );
     substitutions[ "comment" ] = config.readEntry( "Comment regexp", "([\\w\\s_]+)" );
     substitutions[ "year" ] = config.readEntry( "Year regexp", "(\\d+)" );
+    substitutions[ "composer" ] = config.readEntry( "Composer regexp", "([\\w\\s'&_,\\.]+)" );
+    substitutions[ "genre" ] = config.readEntry( "Genre regexp", "([\\w\\s'&_,\\.]+)" );
+
 
     QString regExp = QRegExp::escape( s.simplifyWhiteSpace() );
     regExp = ".*" + regExp;
@@ -199,7 +225,7 @@ void TagGuesser::loadSchemes()
 
 void TagGuesser::guess( const QString &absFileName )
 {
-    m_title = m_artist = m_album = m_track = m_comment = m_year = QString::null;
+    m_title = m_artist = m_album = m_track = m_comment = m_year = m_composer = m_genre = QString::null;
 
     FileNameScheme::List::ConstIterator it = m_schemes.begin();
     FileNameScheme::List::ConstIterator end = m_schemes.end();
@@ -213,6 +239,8 @@ void TagGuesser::guess( const QString &absFileName )
             m_track = schema.track().stripWhiteSpace();
             m_comment = schema.comment().replace( '_', " " ).stripWhiteSpace();
             m_year = schema.year().stripWhiteSpace();
+            m_composer = capitalizeWords( schema.composer().replace( '_', " " ) ).stripWhiteSpace();
+            m_genre = capitalizeWords( schema.genre().replace( '_', " " ) ).stripWhiteSpace();
             break;
         }
     }

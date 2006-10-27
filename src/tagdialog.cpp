@@ -275,6 +275,10 @@ TagDialog::guessFromFilename() //SLOT
         kTextEdit_comment->setText( guesser.comment() );
     if( !guesser.year().isNull() )
         kIntSpinBox_year->setValue( guesser.year().toInt() );
+    if( !guesser.composer().isNull() )
+        kComboBox_composer->setCurrentText( guesser.composer() );
+    if( !guesser.genre().isNull() )
+        kComboBox_genre->setCurrentText( guesser.genre() );
 }
 
 void
