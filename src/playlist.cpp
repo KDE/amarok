@@ -611,6 +611,13 @@ Playlist::addSpecialTracks( uint songCount, const int type )
         if( !m_currentTrack ) return;
         QStringList suggestions = CollectionDB::instance()->similarArtists( currentTrack()->artist(), 16 );
         qb.addMatches( QueryBuilder::tabArtist, suggestions );
+        if ( !AmarokConfig::retrieveSimilarArtists() )
+            Amarok::StatusBar::instance()->longMessage( i18n(
+                "<div align=\"center\"><b>Warning</b></div>"
+                "In order to use the Suggested Songs dynamic playlist, "
+                "you need to have the \"Retrieve similar artists\" option enabled."
+                "<br><br>"
+                "You can find this option in the last.fm section under Settings->Configure Amarok" ) );
     }
     else if( type != DynamicMode::RANDOM ) //we have playlists to choose from.
     {
