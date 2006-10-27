@@ -209,10 +209,8 @@ ContextBrowser::ContextBrowser( const char *name )
     m_lyricsToolBar->setIconText( KToolBar::IconTextRight, false );
     m_lyricsToolBar->insertButton( Amarok::icon( "refresh" ), LYRICS_REFRESH, true, i18n("Refresh") );
     m_lyricsToolBar->insertButton( Amarok::icon( "add_lyrics" ), LYRICS_ADD, true, i18n("Add") );
-    m_lyricsToolBar->insertLineSeparator();
     m_lyricsToolBar->insertButton( Amarok::icon( "edit" ), LYRICS_EDIT, true, i18n("Edit") );
     m_lyricsToolBar->setToggle( LYRICS_EDIT, true );
-    m_lyricsToolBar->insertLineSeparator();
     m_lyricsToolBar->insertButton( Amarok::icon( "search" ), LYRICS_SEARCH, true, i18n("Search") );
     m_lyricsToolBar->setIconText( KToolBar::IconOnly, false );
     m_lyricsToolBar->insertButton( Amarok::icon( "external" ), LYRICS_BROWSER, true, i18n("Open in external browser") );
@@ -2212,7 +2210,7 @@ void CurrentTrackJob::showSuggestedSongs( const QStringList &relArtists )
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
         qb.addMatches( QueryBuilder::tabArtist, relArtists );
         qb.setOptions( QueryBuilder::optRandomize );
-        qb.setLimit( 0, 10 - values.count() / 5 ); // previous query had 5 return values, so count()/5 is the number of rows 
+        qb.setLimit( 0, 10 - values.count() / 5 ); // previous query had 5 return values, so count()/5 is the number of rows
 
         QStringList sl;
         sl = qb.run();
