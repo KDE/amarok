@@ -2,6 +2,13 @@ Amarok ChangeLog
 ================
 (C) 2002-2006 the Amarok authors.
 
+VERSION 1.5.0
+  FEATURES:
+    * Support for %composer and %genre when guessing tags from filenames.
+
+  CHANGES:
+
+  BUGFIXES:
 
 VERSION 1.4.4
   FEATURES:
