@@ -742,7 +742,7 @@
                             </rect>
                         </property>
                         <property name="text">
-                            <string>Favourite Labels</string>
+                            <string>Favorite Labels</string>
                         </property>
                     </widget>
                     <widget class="QWidget">
