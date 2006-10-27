@@ -5824,13 +5824,12 @@ CollectionDB::addLabel( const QString &url, const QString &label, const uint typ
 }
 
 QStringList
-CollectionDB::favouriteLabels( int type, int count )
+CollectionDB::favoriteLabels( int type, int count )
 {
     return query( QString( "SELECT labels.name, count( tags_labels.labelid ) "
                            "FROM labels LEFT JOIN tags_labels ON labels.id = tags_labels.labelid "
-                           "WHERE labels.type = %1 GROUP BY tags_labels.labelid " )
+                           "WHERE labels.type = %1 GROUP BY tags_labels.labelid LIMIT %2" )
                            .arg( QString::number( type ), QString::number( count ) ) );
-                            //"ORDER BY COUNT( tags_labels.labelid ) DESC, labels.name ASC LIMIT %2;" )
 }
 
 QDir

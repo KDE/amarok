@@ -422,8 +422,8 @@ void TagDialog::init()
 
     new QVBoxLayout( labels_favouriteLabelsFrame );
     labels_favouriteLabelsFrame->layout()->add( m_labelCloud->view() );
-    const QStringList favouriteLabels = CollectionDB::instance()->favouriteLabels();
-    QString html = generateHTML( favouriteLabels );
+    const QStringList favoriteLabels = CollectionDB::instance()->favoriteLabels();
+    QString html = generateHTML( favoriteLabels );
     //m_labelCloud->begin();
     //m_labelCloud->write( html );
     //m_labelCloud->end();
@@ -1356,6 +1356,7 @@ TagDialog::generateDeltaForLabelList( const QStringList &list )
         if ( !list.contains( *it ) )
             m_removedLabels.append( *it );
     }
+    m_labels = list;
 }
 
 QString
@@ -1391,7 +1392,6 @@ void
 TagDialog::openURLRequest(const KURL &url )         //SLOT
 {
     DEBUG_BLOCK
-    debug() << url.protocol() << " " << url.path() << endl;
     if ( url.protocol() == "label" )
     {
         QString text = kTextEdit_selectedLabels->text();

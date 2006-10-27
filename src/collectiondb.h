@@ -403,7 +403,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
 
         void cleanLabels();
 
-        QStringList favouriteLabels( int type = CollectionDB::typeUser, int count = 10 );
+        QStringList favoriteLabels( int type = CollectionDB::typeUser, int count = 10 );
 
         //list methods
         QStringList artistList( bool withUnknowns = true, bool withCompilations = true );
