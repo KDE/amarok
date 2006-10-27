@@ -5507,8 +5507,9 @@ CollectionDB::updatePersistentTables()
         }
         if ( PersistentVersion.toInt() < 16 )
         {
-            //drop old label table, it was never used anyway and just confuses things
+            //drop old labels and label tables, they were never used anyway and just confuse things
             query( "DROP TABLE label;" );
+            query( "DROP TABLE labels;" );
             //update for label support
             QString labelsAutoIncrement = "";
             if ( getDbConnectionType() == DbConnection::postgresql )
@@ -5773,7 +5774,7 @@ CollectionDB::setLabels( const QString &url, const QStringList &labels, const ui
                                   .arg( type ).arg( escapeString( *it ) ), "labels" );
         }
         insert( QString( "INSERT INTO tags_labels( labelid, deviceid, url ) VALUES ( %1, %2, '%3' );" )
-                         .arg( id ).arg( deviceid ).arg( rpath ), 0 ); 
+                         .arg( id ).arg( deviceid ).arg( rpath ), 0 );
     }
 }
 
