@@ -176,6 +176,13 @@ KDE_ICON = \
 bin_SCRIPTS = amarok_proxy.rb
 
 bin_PROGRAMS = amarokapp
+# atomicstring_unittest is excluded from the build by default to avoid compile slowdowns.
+# If you intend to do work in this area and want to build it, comment the line above and
+# uncomment the lines below:
+#bin_PROGRAMS = amarokapp atomicstring_unittest
+#atomicstring_unittest_SOURCES = atomicstring_unittest.cpp atomicstring.h
+#atomicstring_unittest_LDADD = atomicstring.$(OBJEXT) $(LIB_KDECORE)
+
 
 amarokapp_SOURCES = \
     main.cpp

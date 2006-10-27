@@ -27,6 +27,17 @@
  * can hash 5 million 256 byte strings in 1.34s on a 1.62GHz Athlon XP.) For
  * other use, the overhead compared to a plain QString should be minimal.
  *
+ * Added note: due to QString's thread unsafe refcounting, special precautions have to be
+ * taken to avoid memory corruption, while still maintaining some level of efficiency.
+ * We deepCopy strings, unless we are in the same thread that *first* used
+ * AtomicStrings. Also, deletions from other threads are delayed until that first thread
+ * calls AtomicString again. Thus, we would appear to leak memory if many AtomicStrings
+ * are deleted in a different thread than the main thread, and the main thread would
+ * never call AtomicString again. But this is unlikely since the GUI thread is the one
+ * manipulating AtomicStrings mostly. You can call the static method
+ * AtomicString::isMainString first thing in the app to make sure the GUI thread is
+ * identified correctly. This workaround can be removed with QT4.
+ *
  * @author Gábor Lehel <illissius@gmail.com>
  */
 
@@ -42,6 +53,7 @@
 #include "amarok_export.h"
 
 #include <qstring.h>
+#include <qptrlist.h>
 #include <qmutex.h>
 
 class LIBAMAROK_EXPORT AtomicString
@@ -85,11 +97,11 @@ public:
     bool operator==( const AtomicString &other ) const;
 
     /**
-     * Identical to deepCopy() because of QString's thread unsafety
-     * 
-     * @return the string. 
+     * Returns a reference to this string, avoiding copies if possible.
+     *
+     * @return the string.
      */
-    inline QString string() const { return deepCopy(); }
+    QString string() const;
 
     /**
      * Implicitly casts to a QString.
@@ -142,6 +154,14 @@ public:
      */
     uint refcount() const;
 
+    /**
+     * If called first thing in the app, this makes sure that AtomicString optimizes
+     * string usage for the main thread.
+     * @return true if this thread is considered the "main thread".
+     */
+    static bool isMainThread();
+
+
 private:
     #if __GNUC__ >= 3
         struct SuperFastHash;
@@ -162,11 +182,15 @@ private:
     void ref( Data* );
     void deref( Data* );
 
-    static set_type s_store;
+    static void checkLazyDeletes();
 
     Data *m_string;
 
-    static QMutex storeMutex;
+    // static data
+    static set_type s_store;    // main string store
+    static QPtrList<QString> s_lazyDeletes;  // strings scheduled for deletion
+                                             // by main thread
+    static QMutex s_storeMutex;  // protects the static data above
 };
 
 #endif

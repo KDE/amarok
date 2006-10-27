@@ -19,6 +19,7 @@ email                : markey@web.de
 #include "amarokconfig.h"
 #include "amarokdcophandler.h"
 #include "app.h"
+#include "atomicstring.h"
 #include "config.h"
 #include "configdialog.h"
 #include "contextbrowser.h"
@@ -116,6 +117,10 @@ App::App()
     new Amarok::DcopDevicesHandler();
 
     fixHyperThreading();
+    // tell AtomicString that this is the GUI thread
+    if ( !AtomicString::isMainThread() )
+        qWarning("AtomicString was initialized from a thread other than the GUI "
+                 "thread. This could lead to memory leaks.");
 
     QTimer::singleShot( 0, this, SLOT( continueInit() ) );
 
