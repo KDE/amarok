@@ -204,7 +204,7 @@
     <entry key="Relative Playlist" type="Bool">
         <label>Whether playlists store relative path</label>
         <whatsthis>If set, Amarok manually saved playlists will contain a relative path to the tracks, not absolute.</whatsthis>
-        <default>false</default>
+        <default>true</default>
     </entry>
     <entry key="Overwrite Files" type="Bool">
         <label>Whether organize files will overwrite existing files.</label>

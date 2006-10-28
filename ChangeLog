@@ -7,6 +7,7 @@ VERSION 1.5.0
     * Support for %composer and %genre when guessing tags from filenames.
 
   CHANGES:
+    * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
     * The Install MP3 support script would be run regardless of what the
