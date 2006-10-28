@@ -438,12 +438,12 @@ void PlaylistWindow::init()
 
         addBrowserMacro( FileBrowser, "FileBrowser", i18n("Files"), Amarok::icon( "files" ) )
         //Add Magnatune browser
-        addInstBrowserMacro( MagnatuneBrowser, "MagnatuneBrowser", i18n("Magnatune.com"), Amarok::icon( "magnatune" ) )
+        addInstBrowserMacro( MagnatuneBrowser, "MagnatuneBrowser", i18n("Magnatune"), Amarok::icon( "magnatune" ) )
 
         new MediaBrowser( "MediaBrowser" );
         if( MediaBrowser::isAvailable() )
         {
-            addInstBrowserMacro( MediaBrowser, "MediaBrowser", i18n("Media Device"), Amarok::icon( "device" ) )
+            addInstBrowserMacro( MediaBrowser, "MediaBrowser", i18n("Devices"), Amarok::icon( "device" ) )
             //to re-enable mediabrowser hiding, uncomment this:
             //connect( MediaBrowser::instance(), SIGNAL( availabilityChanged( bool ) ),
             //         this, SLOT( mbAvailabilityChanged( bool ) ) );
