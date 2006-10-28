@@ -217,6 +217,7 @@ XineEngine::load( const KURL &url, bool isStream )
     Engine::Base::load( url, isStream );
 
     if( m_xfadeLength > 0 && xine_get_status( m_stream ) == XINE_STATUS_PLAY &&
+         xine_get_param( m_stream, XINE_PARAM_SPEED ) != XINE_SPEED_PAUSE &&
         ( m_xfadeNextTrack || //set by engine controller when switching tracks automatically
          (uint) AmarokConfig::crossfadeType() == 0 ||  //crossfade always
          (uint) AmarokConfig::crossfadeType() == 2 ) ) //crossfade when switching tracks manually
