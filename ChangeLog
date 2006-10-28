@@ -8,7 +8,8 @@ VERSION 1.5.0
 
   CHANGES:
     * Amarok won't crossfade if it was paused, and user started another
-      track. (BR 136428)
+      track. Patch by Tuomas Nurmi <tnurmi@edu.kauhajoki.fi>.
+      (BR 136428)
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
