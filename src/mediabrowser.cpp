@@ -805,18 +805,20 @@ MediaItem::setBundle( MetaBundle *bundle )
     MediaBrowser::instance()->m_itemMapMutex.lock();
     if( m_bundle )
     {
-        MediaBrowser::ItemMap::iterator it = MediaBrowser::instance()->m_itemMap.find( url().url() );
+	QString itemUrl = url().url();
+        MediaBrowser::ItemMap::iterator it = MediaBrowser::instance()->m_itemMap.find( itemUrl );
         if( it != MediaBrowser::instance()->m_itemMap.end() && *it == this )
-            MediaBrowser::instance()->m_itemMap.remove(url().url());
+            MediaBrowser::instance()->m_itemMap.remove( itemUrl );
     }
     delete m_bundle;
     m_bundle = bundle;
 
     if( m_bundle )
     {
-        MediaBrowser::ItemMap::iterator it = MediaBrowser::instance()->m_itemMap.find( url().url() );
+	QString itemUrl = url().url();
+        MediaBrowser::ItemMap::iterator it = MediaBrowser::instance()->m_itemMap.find( itemUrl );
         if( it == MediaBrowser::instance()->m_itemMap.end() )
-            MediaBrowser::instance()->m_itemMap[url().url()] = this;
+            MediaBrowser::instance()->m_itemMap[itemUrl] = this;
     }
     MediaBrowser::instance()->m_itemMapMutex.unlock();
 }
