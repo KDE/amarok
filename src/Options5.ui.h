@@ -85,7 +85,7 @@ void Options5::init()
     QToolTip::add( kcfg_OsdText, text.args( QStringList()
             // we don't translate these, it is not sensible to do so
             << "%title" << "%album"   << "%artist" << "%genre"     << "%bitrate"
-            << "%year " << "%length"  << "%track"  << "%file"      << "%directory"
+            << "%year " << "%length"  << "%track"  << "%filename"  << "%directory"
             << "%type"  << "%comment" << "%score"  << "%playcount" << "%discnumber"
             << "%rating" << "%moodbar"
             << "%title {Score: %score}" ) );
