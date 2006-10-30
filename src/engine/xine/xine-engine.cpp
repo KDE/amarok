@@ -226,7 +226,7 @@ XineEngine::load( const KURL &url, bool isStream )
        // Stop a probably running fader
        if( s_fader ) {
            m_stopFader = true;
-           s_fader->terminate(); // kills a running fader
+           s_fader->finish(); // makes the fader stop abruptly
            delete s_fader;
        }
        s_fader = new Fader( this, m_xfadeLength );
@@ -389,7 +389,7 @@ XineEngine::pause()
         if( s_fader && s_fader->running() )
             s_fader->pause();
 
-        xine_set_param( m_stream, XINE_PARAM_SPEED, XINE_SPEED_PAUSE ); 
+        xine_set_param( m_stream, XINE_PARAM_SPEED, XINE_SPEED_PAUSE );
         xine_set_param( m_stream, XINE_PARAM_AUDIO_CLOSE_DEVICE, 1);
         emit stateChanged( Engine::Paused );
 
@@ -1025,6 +1025,7 @@ Fader::Fader( XineEngine *engine, uint fadeMs )
    , m_post( engine->m_post )
    , m_fadeLength( fadeMs )
    , m_paused( false )
+   , m_terminated( false )
 {
     if( engine->makeNewStream() )
     {
@@ -1067,6 +1068,8 @@ Fader::run()
     float elapsedUs = 0.0;
     while ( mix < 1.0 )
     {
+        if ( m_terminated )
+            break;
         // sleep a constant amount of time
         QThread::usleep( stepSizeUs );
 
@@ -1120,6 +1123,13 @@ Fader::resume()
 	m_paused = false;
 }
 
+
+void
+Fader::finish()
+{
+    DEBUG_BLOCK
+	m_terminated = true;
+}
 
 //////////////////
 /// class OutFader

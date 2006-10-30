@@ -106,6 +106,7 @@ class Fader : public QObject, public QThread
     xine_post_t        *m_post;
     uint               m_fadeLength;
     bool               m_paused;
+    bool               m_terminated;
 
     virtual void run();
 
@@ -114,6 +115,7 @@ public:
    ~Fader();
    void pause();
    void resume();
+   void finish();
 };
 
 class OutFader : public QObject, public QThread
