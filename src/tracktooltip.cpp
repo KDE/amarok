@@ -224,10 +224,10 @@ void TrackToolTip::setTrack( const MetaBundle &tags, bool force )
         m_tooltip += "<center><b>Amarok</b></center><table cellpadding='2' cellspacing='2' align='center'><tr>";
 
         m_tooltip += "%1"; //the cover gets substituted in, in tooltip()
-        m_cover = CollectionDB::instance()->podcastImage( tags );
+        m_cover = CollectionDB::instance()->podcastImage( tags, true );
         if( m_cover.isEmpty() || m_cover.contains( "nocover" ) != -1 )
         {
-            m_cover = CollectionDB::instance()->albumImage( tags );
+            m_cover = CollectionDB::instance()->albumImage( tags, true );
             if ( m_cover == CollectionDB::instance()->notAvailCover() )
                 m_cover = QString::null;
         }
