@@ -7,6 +7,7 @@ VERSION 1.5.0
     * Support for %composer and %genre when guessing tags from filenames.
 
   CHANGES:
+    * Show shadowed cover images in the system tray tooltip. (BR 136589)
     * Amarok won't crossfade if it was paused, and user started another
       track. Patch by Tuomas Nurmi <tnurmi@edu.kauhajoki.fi>.
       (BR 136428)
