@@ -1327,6 +1327,8 @@ MtpMediaDevice::readPlaylists()
             for( i = 0; i < playlists->no_tracks; i++ )
             {
                 MtpTrack *track = m_idToTrack[ playlists->tracks[i] ];
+                if( track == 0 ) // skip invalid playlist entries
+                    continue;
                 MtpMediaItem *item = new MtpMediaItem( playlist );
                 item->setText( 0, track->bundle()->artist() + " - " + track->bundle()->title() );
                 item->setType( MediaItem::PLAYLISTITEM );
