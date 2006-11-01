@@ -51,6 +51,11 @@ public:
      */
     void setAlbum( MagnatuneAlbum * album );
 
+    /**
+     * re-enables the purchase and cancel button
+     */
+    void reenableButtons();
+
 
 signals:
 

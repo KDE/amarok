@@ -24,6 +24,7 @@
 #include <qcombobox.h>
 #include <qlineedit.h>
 #include <qmessagebox.h>
+#include <qpushbutton.h>
 #include <qregexp.h>
 
 
@@ -55,6 +56,7 @@ void MagnatunePurchaseDialog::purchase( )
     if ( verifyEntries( ) )
     {
 
+	setEnabled( false ); //to prevent accidental double purchases
         emit( makePurchase( ccEdit->text(), expYearEdit->text(), expMonthEdit->text(), nameEdit->text(), emailEdit->text(), m_albumCode, amountComboBox->currentText().toInt() ) );
 
         //close();
@@ -126,6 +128,12 @@ bool MagnatunePurchaseDialog::verifyEntries( )
 
     return true;
 
+}
+
+void MagnatunePurchaseDialog::reenableButtons( )
+{
+    purchaseButton->setEnabled( true );
+    cancelButton->setEnabled( true );
 }
 
 

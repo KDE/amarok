@@ -4,12 +4,15 @@
     <property name="name">
         <cstring>magnatunePurchaseDialogBase</cstring>
     </property>
+    <property name="enabled">
+        <bool>true</bool>
+    </property>
     <property name="geometry">
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>550</width>
-            <height>507</height>
+            <width>551</width>
+            <height>591</height>
         </rect>
     </property>
     <property name="caption">

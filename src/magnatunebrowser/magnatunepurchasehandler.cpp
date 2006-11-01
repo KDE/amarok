@@ -118,6 +118,7 @@ void MagnatunePurchaseHandler::xmlDownloadComplete( KIO::Job * downloadJob )
       "There seems to be an error in the information entered (check the credit card number), please try again\n");
 
       //m_purchaseDialog->show();
+      m_purchaseDialog->setEnabled( true );
 
       
    }
