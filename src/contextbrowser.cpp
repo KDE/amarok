@@ -2890,6 +2890,11 @@ void ContextBrowser::showLyrics( const QString &url )
     const bool cached = !lyrics.isEmpty() && !EngineController::engine()->isStream();
     QString title  = EngineController::instance()->bundle().title();
     QString artist = EngineController::instance()->bundle().artist();
+    
+    if( title.contains("PREVIEW: buy it at www.magnatune.com", true) >= 1 )
+        title = title.remove(" (PREVIEW: buy it at www.magnatune.com)");
+    if( artist.contains("PREVIEW: buy it at www.magnatune.com", true) >= 1 )
+        artist = artist.remove(" (PREVIEW: buy it at www.magnatune.com)");
 
     if ( title.isEmpty() ) {
         /* If title is empty, try to use pretty title.
@@ -2900,8 +2905,14 @@ void ContextBrowser::showLyrics( const QString &url )
         if ( h != -1 )
         {
             title = prettyTitle.mid( h+1 ).stripWhiteSpace();
-            if ( artist.isEmpty() )
+            if( title.contains("PREVIEW: buy it at www.magnatune.com", true) >= 1 )
+                title = title.remove(" (PREVIEW: buy it at www.magnatune.com)");
+            if ( artist.isEmpty() ) {
                 artist = prettyTitle.mid( 0, h ).stripWhiteSpace();
+                if( artist.contains("PREVIEW: buy it at www.magnatune.com", true) >= 1 )
+                    artist = artist.remove(" (PREVIEW: buy it at www.magnatune.com)");
+            }
+
         }
     }
 
@@ -3360,6 +3371,16 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
         else
         {
             tmpWikiStr = EngineController::instance()->bundle().prettyTitle();
+        }
+        
+        //Hack to make wiki searches work with magnatune preview tracks
+        if (tmpWikiStr.contains( "PREVIEW: buy it at www.magnatune.com" ) >= 1 ) {
+            tmpWikiStr = tmpWikiStr.remove(" (PREVIEW: buy it at www.magnatune.com)" );
+            int index = tmpWikiStr.find( '-' );
+            if ( index != -1 ) {
+                tmpWikiStr = tmpWikiStr.left (index - 1);
+            }
+
         }
         m_wikiCurrentEntry = tmpWikiStr;
 
