@@ -104,7 +104,9 @@ SmbDeviceHandlerFactory::canCreateFromConfig( ) const
 bool
 SmbDeviceHandlerFactory::canHandle( const Medium * m ) const
 {
-    return m && m->fsType().find( "smb" ) != -1 && m->isMounted();
+    return m && ( m->fsType().find( "smb" ) != -1 ||
+                  m->fsType().find( "cifs" ) != -1 ) 
+		&& m->isMounted();
 }
 
 SmbDeviceHandlerFactory::SmbDeviceHandlerFactory( )
