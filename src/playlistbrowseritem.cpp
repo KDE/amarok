@@ -2331,13 +2331,21 @@ PodcastChannel::showContextMenu( const QPoint &position )
 
 PodcastFetcher::PodcastFetcher( QString url, const KURL &directory, int size ):
         m_url( QUrl( url )),
-        m_http( new QHttp( m_url.host() ) ),
         m_directory ( directory ),
         m_error( 0 ),
         m_size( size )
 {
 
     m_redirected = false;
+
+    QString proxy = Amarok::proxyForUrl( m_url );
+    if ( proxy.isNull() )
+        m_http = new QHttp( m_url.host() );
+    else {
+        QUrl proxyUrl( proxy );
+        m_http = new QHttp( proxyUrl.host(), proxyUrl.port() );
+    }
+
     connect( (m_http), SIGNAL( responseHeaderReceived ( const QHttpResponseHeader & ) ), this,
                       SLOT( slotResponseReceived( const QHttpResponseHeader & ) ) );
     connect( (m_http), SIGNAL( done( bool ) ), this, SLOT( slotDone( bool ) ) );
@@ -2379,8 +2387,14 @@ void PodcastFetcher::fetch()
         }
         m_file.setName( file.filePath() );
     }
-    m_http->get( m_url.encodedPathAndQuery(), (&m_file) );
-   // debug() << m_http->currentId() << " get( http://"<< m_url.host() << m_url.encodedPathAndQuery() << " )" << endl;
+
+    // Qhttp::get() "conviniently" "corrects" the path in a way that wouldn't let it work
+    // work with proxies. So let's create the request manually.
+    QHttpRequestHeader request( "GET", m_url );
+    request.setValue( "Host", m_url.host() + ":" + m_url.port() );
+    request.setValue( "Connection", "Keep-Alive" );
+    m_http->request( request, 0, (&m_file) );
+
     if( m_http->error() )
         debug() <<  m_http->errorString() << endl;
 }
@@ -2408,7 +2422,7 @@ void PodcastFetcher::slotProgress( int bytesDone, int bytesTotal )
 
 void PodcastFetcher::slotResponseReceived( const QHttpResponseHeader & resp )
 {
-//        debug() << m_http->currentId() << " RESPONCE, statuscode = " << resp.statusCode() << endl;
+//    debug() << m_http->currentId() << " RESPONCE, statuscode = " << resp.statusCode() << endl;
     if( resp.statusCode() == 302 || resp.statusCode() == 301 )
     {
         if (resp.hasKey( "location" ) )
