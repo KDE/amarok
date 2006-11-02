@@ -14,6 +14,8 @@ VERSION 1.5.0
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
+    * Volume slider in the player window would not react correctly to
+      the mouse wheel. (BR 136714)
     * When using a proxy set by script, context browser wouldn't work
       properly, and the application would crash when closing. (BR 112437)
     * Proxy settings wouldn't be respected when downloading podcast
