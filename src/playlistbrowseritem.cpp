@@ -434,7 +434,7 @@ PlaylistCategory::showContextMenu( const QPoint &position )
         menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n("Add Podcast..."), PODCAST );
         menu.insertItem( SmallIconSet( Amarok::icon( "refresh" ) ), i18n("Refresh All Podcasts"), REFRESH );
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet( Amarok::icon( "configure" ) ), i18n( "&Configure Children..." ), CONFIG );
+        menu.insertItem( SmallIconSet( Amarok::icon( "configure" ) ), i18n( "&Configure Podcasts..." ), CONFIG );
         if( parentCat == this )
             menu.insertItem( SmallIconSet( Amarok::icon( "configure" ) ), i18n("Scan Interval..."), INTERVAL );
     }
