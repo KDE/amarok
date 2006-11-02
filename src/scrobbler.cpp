@@ -19,6 +19,7 @@
 #include <unistd.h>
 
 #include <qdatetime.h>
+#include <qdeepcopy.h>
 
 #include <kapplication.h>
 #include <kio/job.h>
@@ -65,6 +66,7 @@ Scrobbler::~Scrobbler()
  */
 void Scrobbler::similarArtists( const QString & artist )
 {
+    QString safeArtist = QDeepCopy<QString>( artist );
     if ( AmarokConfig::retrieveSimilarArtists() )
     {
 //         Request looks like this:
@@ -97,7 +99,7 @@ void Scrobbler::similarArtists( const QString & artist )
         QDomElement param1 = reqdoc.createElement( "param" );
         QDomElement value1 = reqdoc.createElement( "value" );
         QDomElement type1 = reqdoc.createElement( "string" );
-        QDomText param1Value = reqdoc.createTextNode( artist );
+        QDomText param1Value = reqdoc.createTextNode( safeArtist );
         type1.appendChild( param1Value );
         value1.appendChild( type1 );
         param1.appendChild( value1 );
