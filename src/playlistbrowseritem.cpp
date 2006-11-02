@@ -2051,10 +2051,10 @@ PodcastChannel::episodeExists( const QDomNode &xml, const int feedType )
         }
 
         QString episodeTitle = xml.namedItem( "title" ).toElement().text();
-        QString episodeURL   = xml.namedItem( "enclosure" ).toElement().attribute( "url" );
+        KURL episodeURL      = xml.namedItem( "enclosure" ).toElement().attribute( "url" );
         command = QString("SELECT id FROM podcastepisodes WHERE parent='%1' AND url='%2' AND title='%3';")
                           .arg( CollectionDB::instance()->escapeString( url().url() ),
-                                CollectionDB::instance()->escapeString( episodeURL ),
+                                CollectionDB::instance()->escapeString( episodeURL.url() ),
                                 CollectionDB::instance()->escapeString( episodeTitle ) );
         QStringList values = CollectionDB::instance()->query( command );
         return !values.isEmpty();
