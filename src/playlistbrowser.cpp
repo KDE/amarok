@@ -4,6 +4,7 @@
  *                        (c) 2005-2006 Seb Ruiz <me@sebruiz.net>          *
  *                        (c) 2005 Gábor Lehel <illissius@gmail.com>       *
  *                        (c) 2005 Christian Muehlhaeuser <chris@chris.de> *
+ *                        (c) 2006 Alexandre Oliveira <aleprj@gmail.com>   *
  * See COPYING file for licensing information                              *
  ***************************************************************************/
 

@@ -5,6 +5,7 @@
  *                        (c) 2005 Christian Muehlhaeuser <chris@chris.de> *
  *                        (c) 2006 Bart Cerneels <bart.cerneels@gmail.com> *
  *                        (c) 2006 Ian Monroe <ian@monroe.nu>              *
+ *                        (c) 2006 Alexandre Oliveira <aleprj@gmail.com>   *
  * See COPYING file for licensing information                              *
  ***************************************************************************/
 

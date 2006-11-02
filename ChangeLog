@@ -14,7 +14,13 @@ VERSION 1.5.0
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
-    * Fix crash when an MTP media device returned a playlist with an 
+    * When using a proxy set by script, context browser wouldn't work
+      properly, and the application would crash when closing. (BR 112437)
+    * Proxy settings wouldn't be respected when downloading podcast
+      episodes. (BR 134028)
+    * Xine engine could hang when skipping through tracks quickly with
+      crossfade on.
+    * Fix crash when an MTP media device returned a playlist with an
       invalid track ID. (BR 136552)
     * The Install MP3 support script would be run regardless of what the
       user answered to the shown dialog. (BR 136294)

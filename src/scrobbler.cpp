@@ -2,6 +2,7 @@
 // (c) 2004 Sami Nieminen <sami.nieminen@iki.fi>
 // (c) 2006 Shane King <kde@dontletsstart.com>
 // (c) 2006 Iain Benson <iain@arctos.me.uk>
+// (c) 2006 Alexandre Oliveira <aleprj@gmail.com>
 // See COPYING file for licensing information.
 
 #define DEBUG_PREFIX "Scrobbler"

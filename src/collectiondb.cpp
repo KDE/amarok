@@ -4,7 +4,7 @@
 // (c) 2005 Ian Monroe <ian@monroe.nu>
 // (c) 2005 Jeff Mitchell <kde-dev@emailgoeshere.com>
 // (c) 2005 Isaiah Damron <xepo@trifault.net>
-// (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>
+// (c) 2005-2006 Alexandre Pereira de Oliveira <aleprj@gmail.com>
 // (c) 2006 Jonas Hurrelmann <j@outpo.st>
 // (c) 2006 Shane King <kde@dontletsstart.com>
 // (c) 2006 Peter C. Ndikuwera <pndiku@gmail.com>
