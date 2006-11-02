@@ -7,6 +7,7 @@ X-KDE-Priority=TopLevel
 [Desktop Action Play]
 Name=Play Audio CD with Amarok
 Name[bg]=Изпълнение на аудио CD с Amarok
+Name[cs]=Přehrát audio CD
 Name[da]=Afspil lyd-cd med Amarok
 Name[de]=Audio-CD mit Amarok wiedergeben
 Name[ga]=Seinn Dlúthdhiosca Fuaime le Amarok
