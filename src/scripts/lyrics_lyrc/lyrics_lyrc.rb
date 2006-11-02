@@ -111,7 +111,7 @@ def fetchLyrics( artist, title, url )
     proxy_host = nil
     proxy_port = nil
     if ( @proxy == nil )
-        @proxy = `dcop amarok script proxyForProtocol http`
+        @proxy = `dcop amarok script proxyForUrl "#{@page_url}"`
     end
     proxy_uri = URI.parse( @proxy )
     if ( proxy_uri.class != URI::Generic )
@@ -134,7 +134,7 @@ def fetchLyrics( artist, title, url )
 
     lyrics.gsub!( "\n", "" ) # No need for LF, just complicates our RegExps
     lyrics.gsub!( "\r", "" ) # No need for CR, just complicates our RegExps
-#     lyrics.gsub!( '´', "'" ) # Lyrc has weird encodings
+#     lyrics.gsub!( '', "'" ) # Lyrc has weird encodings
 
     # Remove images, links, scripts, styles and fonts
     lyrics.gsub!( /<[iI][mM][gG][^>]*>/, "" )
