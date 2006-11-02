@@ -466,7 +466,9 @@ XineEngine::length() const
         int length = 0;
 
         xine_get_pos_length( m_stream, &pos, &time, &length );
-
+        if( length < 0 )
+            length=0;
+	    	
         return length;
     }
 }
