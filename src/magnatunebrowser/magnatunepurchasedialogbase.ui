@@ -22,22 +22,6 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QPushButton" row="2" column="0">
-            <property name="name">
-                <cstring>cancelButton</cstring>
-            </property>
-            <property name="text">
-                <string>Ca&amp;ncel</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="2" column="1">
-            <property name="name">
-                <cstring>purchaseButton</cstring>
-            </property>
-            <property name="text">
-                <string>P&amp;urchase</string>
-            </property>
-        </widget>
         <widget class="QGroupBox" row="1" column="0" rowspan="1" colspan="2">
             <property name="name">
                 <cstring>groupBox2</cstring>
@@ -576,6 +560,22 @@
                 </widget>
             </grid>
         </widget>
+        <widget class="QPushButton" row="2" column="0">
+            <property name="name">
+                <cstring>purchaseButton</cstring>
+            </property>
+            <property name="text">
+                <string>P&amp;urchase</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="2" column="1">
+            <property name="name">
+                <cstring>cancelButton</cstring>
+            </property>
+            <property name="text">
+                <string>Ca&amp;ncel</string>
+            </property>
+        </widget>
     </grid>
 </widget>
 <connections>
@@ -592,6 +592,20 @@
         <slot>purchase()</slot>
     </connection>
 </connections>
+<tabstops>
+    <tabstop>albumEdit</tabstop>
+    <tabstop>artistEdit</tabstop>
+    <tabstop>genresEdit</tabstop>
+    <tabstop>launchDateEdit</tabstop>
+    <tabstop>nameEdit</tabstop>
+    <tabstop>emailEdit</tabstop>
+    <tabstop>ccEdit</tabstop>
+    <tabstop>expMonthEdit</tabstop>
+    <tabstop>expYearEdit</tabstop>
+    <tabstop>amountComboBox</tabstop>
+    <tabstop>purchaseButton</tabstop>
+    <tabstop>cancelButton</tabstop>
+</tabstops>
 <slots>
     <slot>purchase()</slot>
     <slot>cancel()</slot>
