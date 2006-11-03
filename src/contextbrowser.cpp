@@ -2272,7 +2272,7 @@ void CurrentTrackJob::showArtistsFaves( const QString &artist, uint artist_id )
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
     qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
     qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
-    qb.excludeFilter( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, "1", QueryBuilder::modeLess );
+    qb.addNumericFilter( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, "0", QueryBuilder::modeGreater );
     qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valForFavoriteSorting(), true );
     qb.setLimit( 0, 10 );
@@ -2890,7 +2890,7 @@ void ContextBrowser::showLyrics( const QString &url )
     const bool cached = !lyrics.isEmpty() && !EngineController::engine()->isStream();
     QString title  = EngineController::instance()->bundle().title();
     QString artist = EngineController::instance()->bundle().artist();
-    
+
     if( title.contains("PREVIEW: buy it at www.magnatune.com", true) >= 1 )
         title = title.remove(" (PREVIEW: buy it at www.magnatune.com)");
     if( artist.contains("PREVIEW: buy it at www.magnatune.com", true) >= 1 )
@@ -3372,7 +3372,7 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
         {
             tmpWikiStr = EngineController::instance()->bundle().prettyTitle();
         }
-        
+
         //Hack to make wiki searches work with magnatune preview tracks
         if (tmpWikiStr.contains( "PREVIEW: buy it at www.magnatune.com" ) >= 1 ) {
             tmpWikiStr = tmpWikiStr.remove(" (PREVIEW: buy it at www.magnatune.com)" );

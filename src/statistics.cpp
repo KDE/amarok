@@ -336,7 +336,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
         qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
         qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
-        qb.excludeFilter( QueryBuilder::tabStats, QueryBuilder::valForFavoriteSorting(), "1", QueryBuilder::modeLess );
+        qb.addNumericFilter( QueryBuilder::tabStats, QueryBuilder::valForFavoriteSorting(), "0", QueryBuilder::modeGreater );
         qb.setGoogleFilter( QueryBuilder::tabSong | QueryBuilder::tabArtist, m_filter );
         qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valForFavoriteSorting(), true );
         qb.setLimit( 0, 50 );
@@ -370,7 +370,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
         qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
-        qb.excludeFilter( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, "1", QueryBuilder::modeLess );
+        qb.addNumericFilter( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, "0", QueryBuilder::modeGreater );
         qb.setGoogleFilter( QueryBuilder::tabSong | QueryBuilder::tabArtist, m_filter );
         qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, true );
         qb.setLimit( 0, 50 );
