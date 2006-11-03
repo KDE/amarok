@@ -732,15 +732,16 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     enum { APPEND, ASNEXT, MAKE, MEDIA_DEVICE, INFO, TITLE, RELATED, SUGGEST, FAVES, FRESHPODCASTS, NEWALBUMS, FAVALBUMS };
     debug() << "url string: " << urlString << endl;
 
-    if( urlString.startsWith( "musicbrainz" ) ||
-        urlString.startsWith( "externalurl" ) ||
+    if( urlString.startsWith( "musicbrainz"  ) ||
+        urlString.startsWith( "externalurl"  ) ||
         urlString.startsWith( "show:suggest" ) ||
-        urlString.startsWith( "http" ) ||
-        urlString.startsWith( "wikipedia" ) ||
-        urlString.startsWith( "seek" ) ||
-        urlString.startsWith( "ggartist" ) ||
-        urlString.startsWith( "artistback" ) ||
-        urlString.startsWith( "current" ) ||
+        urlString.startsWith( "http"         ) ||
+        urlString.startsWith( "wikipedia"    ) ||
+        urlString.startsWith( "seek"         ) ||
+        urlString.startsWith( "ggartist"     ) ||
+        urlString.startsWith( "artistback"   ) ||
+        urlString.startsWith( "current"      ) ||
+        urlString.startsWith( "lastfm"       ) ||
         currentPage() != m_contextTab  )
         return;
 
