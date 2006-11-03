@@ -2,7 +2,7 @@ Amarok ChangeLog
 ================
 (C) 2002-2006 the Amarok authors.
 
-VERSION 1.5.0
+VERSION 1.4.5
   FEATURES:
     * Support for %composer and %genre when guessing tags from filenames.
 
@@ -14,6 +14,8 @@ VERSION 1.5.0
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
+    * Favorite Tracks wouldn't be shown on Context Browser, and
+      Statistics Panel would be empty for SQLite users. (BR 136791)
     * Volume slider in the player window would not react correctly to
       the mouse wheel. (BR 136714)
     * When using a proxy set by script, context browser wouldn't work
