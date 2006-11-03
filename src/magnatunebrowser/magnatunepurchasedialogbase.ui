@@ -22,6 +22,9 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
+        <property name="resizeMode">
+            <enum>Minimum</enum>
+        </property>
         <widget class="QGroupBox" row="1" column="0" rowspan="1" colspan="2">
             <property name="name">
                 <cstring>groupBox2</cstring>
