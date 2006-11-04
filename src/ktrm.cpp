@@ -326,8 +326,7 @@ static void TRMNotifyCallback(tunepimp_t pimp, void */*data*/, TPCallbackEnum ty
     track_t track = tp_GetTrack(pimp, fileId);
     TPFileStatus status = tr_GetStatus(track);
 #endif
-
-    debug() << "Status is: " << status << endl;
+    //debug() << "Status is: " << status << endl;
 
     switch(status) {
     case eRecognized:
