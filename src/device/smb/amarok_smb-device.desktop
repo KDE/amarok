@@ -49,6 +49,7 @@ Comment[pt_BR]=Plugin de dispositivo para o Amarok, que suporta SMBFS
 Comment[sr]=Уређајски прикључак за Amarok који подржава SMBFS
 Comment[sr@Latn]=Uređajski priključak za Amarok koji podržava SMBFS
 Comment[sv]=Enhetsinsticksprogram för Amarok som stöder SMBFS
+Comment[th]=โปรแกรมเสริมจัดการอุปกรณ์สำหรับ Amarok ที่รองรับการใช้งาน SMBFS
 Comment[zh_CN]=Amarok 支持 SMBFS 的设备插件
 Comment[zh_TW]=支援 SMBFS 的 amaroK 裝置插件
 ServiceTypes=Amarok/Plugin

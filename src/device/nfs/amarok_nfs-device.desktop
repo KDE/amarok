@@ -49,6 +49,7 @@ Comment[pt_BR]=Plugin de dispositivo para o Amarok, que suporta NFS
 Comment[sr]=Уређајски прикључак за Amarok који подржава NFS
 Comment[sr@Latn]=Uređajski priključak za Amarok koji podržava NFS
 Comment[sv]=Enhetsinsticksprogram för Amarok som stöder NFS
+Comment[th]=โปรแกรมเสริมจัดการอุปกรณ์สำหรับ Amarok ที่รองรับการใช้งาน NFS
 Comment[zh_CN]=Amarok 支持 NFS 的设备插件
 Comment[zh_TW]=支援 NFS 的 amaroK 裝置插件
 ServiceTypes=Amarok/Plugin
