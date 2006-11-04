@@ -11,21 +11,121 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>551</width>
-            <height>591</height>
+            <width>503</width>
+            <height>503</height>
         </rect>
     </property>
     <property name="caption">
         <string>Purchase Album from Magnatune.com</string>
     </property>
-    <grid>
+    <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
         <property name="resizeMode">
             <enum>Minimum</enum>
         </property>
-        <widget class="QGroupBox" row="1" column="0" rowspan="1" colspan="2">
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>groupBox1</cstring>
+            </property>
+            <property name="title">
+                <string>Info</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>infoLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>You have choosen to purchase the following album from Magnatune.com</string>
+                    </property>
+                    <property name="alignment">
+                        <set>WordBreak|AlignVCenter</set>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="1" column="1">
+                    <property name="name">
+                        <cstring>albumEdit</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>true</bool>
+                    </property>
+                    <property name="readOnly">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="2" column="1">
+                    <property name="name">
+                        <cstring>artistEdit</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>true</bool>
+                    </property>
+                    <property name="readOnly">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="3" column="1" rowspan="2" colspan="1">
+                    <property name="name">
+                        <cstring>genresEdit</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>true</bool>
+                    </property>
+                    <property name="readOnly">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="5" column="1">
+                    <property name="name">
+                        <cstring>launchDateEdit</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>true</bool>
+                    </property>
+                    <property name="readOnly">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="4" column="0" rowspan="2" colspan="1">
+                    <property name="name">
+                        <cstring>textLabel16</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Launch Year:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="3" column="0">
+                    <property name="name">
+                        <cstring>textLabel15</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Genre:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>textLabel14</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Artist:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>textLabel13</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Album:</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QGroupBox">
             <property name="name">
                 <cstring>groupBox2</cstring>
             </property>
@@ -463,123 +563,79 @@
                 </widget>
             </grid>
         </widget>
-        <widget class="QGroupBox" row="0" column="0" rowspan="1" colspan="2">
+        <spacer>
             <property name="name">
-                <cstring>groupBox1</cstring>
+                <cstring>spacer1</cstring>
             </property>
-            <property name="title">
-                <string>Info</string>
+            <property name="orientation">
+                <enum>Vertical</enum>
             </property>
-            <grid>
+            <property name="sizeType">
+                <enum>Minimum</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>15</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout2</cstring>
+            </property>
+            <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>5</number>
+                </property>
+                <spacer>
                     <property name="name">
-                        <cstring>infoLabel</cstring>
+                        <cstring>spacer3</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>41</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>purchaseButton</cstring>
                     </property>
                     <property name="text">
-                        <string>You have choosen to purchase the following album from Magnatune.com</string>
+                        <string>P&amp;urchase</string>
                     </property>
-                    <property name="alignment">
-                        <set>WordBreak|AlignVCenter</set>
-                    </property>
-                </widget>
-                <widget class="QLineEdit" row="1" column="1">
-                    <property name="name">
-                        <cstring>albumEdit</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>true</bool>
-                    </property>
-                    <property name="readOnly">
-                        <bool>true</bool>
+                    <property name="accel">
+                        <string>Alt+U</string>
                     </property>
                 </widget>
-                <widget class="QLineEdit" row="2" column="1">
+                <widget class="QPushButton">
                     <property name="name">
-                        <cstring>artistEdit</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>true</bool>
-                    </property>
-                    <property name="readOnly">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QLineEdit" row="3" column="1" rowspan="2" colspan="1">
-                    <property name="name">
-                        <cstring>genresEdit</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>true</bool>
-                    </property>
-                    <property name="readOnly">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QLineEdit" row="5" column="1">
-                    <property name="name">
-                        <cstring>launchDateEdit</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>true</bool>
-                    </property>
-                    <property name="readOnly">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="4" column="0" rowspan="2" colspan="1">
-                    <property name="name">
-                        <cstring>textLabel16</cstring>
+                        <cstring>cancelButton</cstring>
                     </property>
                     <property name="text">
-                        <string>Launch Year:</string>
+                        <string>Ca&amp;ncel</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+N</string>
                     </property>
                 </widget>
-                <widget class="QLabel" row="3" column="0">
-                    <property name="name">
-                        <cstring>textLabel15</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Genre:</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="2" column="0">
-                    <property name="name">
-                        <cstring>textLabel14</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Artist:</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="1" column="0">
-                    <property name="name">
-                        <cstring>textLabel13</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Album:</string>
-                    </property>
-                </widget>
-            </grid>
+            </hbox>
         </widget>
-        <widget class="QPushButton" row="2" column="0">
-            <property name="name">
-                <cstring>purchaseButton</cstring>
-            </property>
-            <property name="text">
-                <string>P&amp;urchase</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="2" column="1">
-            <property name="name">
-                <cstring>cancelButton</cstring>
-            </property>
-            <property name="text">
-                <string>Ca&amp;ncel</string>
-            </property>
-        </widget>
-    </grid>
+    </vbox>
 </widget>
 <connections>
     <connection>
