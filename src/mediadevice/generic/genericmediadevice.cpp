@@ -415,7 +415,13 @@ GenericMediaDevice::openDevice( bool /*silent*/ )
         if( m_medium.mountPoint() == (*mountiter)->mountPoint() )
             m_medium.setFsType( (*mountiter)->mountType() );
     }
-    m_actuallyVfat = m_medium.fsType() == "vfat" ? true : false;
+    m_actuallyVfat = m_medium.fsType() == 
+#ifdef __FreeBSD__
+        "msdosfs"
+#else
+        "vfat" 
+#endif
+        ? true : false;
     m_connected = true;
     m_transferDir = m_medium.mountPoint();
     m_initialFile = new GenericMediaFile( 0, m_medium.mountPoint(), this );
