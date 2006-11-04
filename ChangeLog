@@ -14,6 +14,8 @@ VERSION 1.4.5
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
+    * Detect vfat partitioned devices on FreeBSD. Patch by Daniel
+      O'Connor <doconnor@gsoft.com.au>.
     * Favorite Tracks wouldn't be shown on Context Browser, and
       Statistics Panel would be empty for SQLite users. (BR 136791)
     * Volume slider in the player window would not react correctly to
