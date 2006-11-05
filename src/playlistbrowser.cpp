@@ -733,14 +733,14 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     item->setKept( false );
     /********** Favorite Tracks **************/
     qb.initSQLDrag();
-    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valForFavoriteSorting(), true );
+    qb.sortByFavorite();
     qb.setLimit( 0, 15 );
     item = new SmartPlaylist( m_smartDefaults, item, i18n( "Favorite Tracks" ), qb.query() );
     item->setKept( false );
     last = 0;
 
     qb.initSQLDrag();
-    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valForFavoriteSorting(), true );
+    qb.sortByFavorite();
     qb.setLimit( 0, 15 );
     foreach( artists ) {
         QueryBuilder qbTemp( qb );

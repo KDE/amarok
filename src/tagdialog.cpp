@@ -598,7 +598,7 @@ const QStringList TagDialog::statisticsData() {
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
         qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
         qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
-        qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valForFavoriteSorting(), true );
+        qb.sortByFavorite();
         qb.setLimit( 0, 1 );
         values = qb.run();
         data += i18n( "Favorite by this Artist" );
@@ -610,7 +610,7 @@ const QStringList TagDialog::statisticsData() {
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
             qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
             qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, QString::number( album_id ) );
-            qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valForFavoriteSorting(), true );
+            qb.sortByFavorite();
             qb.setLimit( 0, 1 );
             values = qb.run();
             data += i18n( "Favorite on this Album" );

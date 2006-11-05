@@ -7331,7 +7331,7 @@ QueryBuilder::sortByFunction( int function, int table, Q_INT64 value, bool desce
         columnName += ')';
     }
     else
-        columnName = functionName( function )+tableName( table )+valueName( value );
+        columnName = functionName( function )+'('+tableName( table )+'.'+valueName( value )+')';
 
     m_sort += columnName;
 
@@ -7340,19 +7340,6 @@ QueryBuilder::sortByFunction( int function, int table, Q_INT64 value, bool desce
     if ( b ) m_sort += " ) ";
     //m_sort += " ) ";
     if ( descending ) m_sort += " DESC ";
-
-    if (CollectionDB::instance()->getType() == DbConnection::postgresql)
-    {
-        if (m_values.find(columnName) == -1)
-        {
-            if (!m_values.isEmpty()) m_values += ',';
-            if ( b ) m_values += "LOWER( ";
-            m_values += tableName( table ) + '.';
-            m_values += valueName( value );
-            if ( b ) m_values += ')';
-            m_values += " as __discard ";
-        }
-    }
 
     m_linkTables |= table;
 }
@@ -7574,14 +7561,43 @@ QueryBuilder::clear()
 
 Q_INT64
 QueryBuilder::valForFavoriteSorting() {
-    Q_INT64 favSortBy = valPercentage;
+    Q_INT64 favSortBy = valRating;
     if ( !AmarokConfig::useScores() && !AmarokConfig::useRatings() )
         favSortBy = valPlayCounter;
     else if( !AmarokConfig::useScores() )
-        favSortBy = valRating;
+        favSortBy = valPercentage;
     return favSortBy;
 }
 
+void
+QueryBuilder::sortByFavorite() {
+    if ( AmarokConfig::useRatings() )
+        sortBy(tabStats, valRating, true );
+    if ( AmarokConfig::useScores() )
+        sortBy(tabStats, valPercentage, true );
+    sortBy(tabStats, valPlayCounter, true );
+
+}
+
+void
+QueryBuilder::sortByFavoriteAvg() {
+    if ( AmarokConfig::useRatings() )
+        sortByFunction(funcAvg, tabStats, valRating, true );
+    if ( AmarokConfig::useScores() )
+        sortByFunction(funcAvg, tabStats, valPercentage, true );
+    sortByFunction(funcAvg, tabStats, valPlayCounter, true );
+
+    //exclude unrated and unplayed
+    if( !m_having.isEmpty() )
+        m_having += " AND ";
+    m_having += " (";
+    if (AmarokConfig::useRatings() )
+        m_having += QString("%1(%2.%3) > 0 OR ")
+                   .arg( functionName( funcAvg ), tableName(tabStats), valueName(valRating) );
+    m_having += QString("%1(%2.%3) > 0")
+                   .arg( functionName( funcAvg ), tableName(tabStats), valueName(valPlayCounter) );
+    m_having += ")";
+}
 
 // Helper method -- given a value, returns the index of the bit that is
 // set, if only one, otherwise returns -1
@@ -7600,7 +7616,6 @@ searchBit( ValueType value, int numBits ) {
 
    return -1;
 }
-
 
 QString
 QueryBuilder::tableName( int table )

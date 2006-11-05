@@ -709,6 +709,8 @@ class QueryBuilder
         static const Q_INT64 valType         = 1LL << 40;
 
         static Q_INT64 valForFavoriteSorting();
+        void sortByFavorite();
+        void sortByFavoriteAvg();
 
         enum qBuilderFunctions  { funcNone = 0, funcCount = 1, funcMax = 2, funcMin = 4, funcAvg = 8, funcSum = 16 };
 

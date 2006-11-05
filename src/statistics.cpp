@@ -338,7 +338,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
         qb.addNumericFilter( QueryBuilder::tabStats, QueryBuilder::valForFavoriteSorting(), "0", QueryBuilder::modeGreater );
         qb.setGoogleFilter( QueryBuilder::tabSong | QueryBuilder::tabArtist, m_filter );
-        qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valForFavoriteSorting(), true );
+        qb.sortByFavorite();
         qb.setLimit( 0, 50 );
         QStringList fave = qb.run();
 
@@ -403,11 +403,9 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
         qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage );
         qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valRating );
-        qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valForFavoriteSorting(), true );
+        qb.sortByFavoriteAvg();
         // only artists with more than 3 tracks
         qb.having( QueryBuilder::tabArtist, QueryBuilder::valID, QueryBuilder::funcCount, QueryBuilder::modeGreater, "3" );
-        // only artists which have been played/rated
-        qb.having( QueryBuilder::tabStats, QueryBuilder::valForFavoriteSorting(), QueryBuilder::funcAvg, QueryBuilder::modeGreater, "0" );
         qb.setGoogleFilter( QueryBuilder::tabArtist, m_filter );
         qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valName);
         qb.setLimit( 0, 50 );
@@ -446,9 +444,8 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valIsCompilation );
         // only albums with more than 3 tracks
         qb.having( QueryBuilder::tabAlbum, QueryBuilder::valID, QueryBuilder::funcCount, QueryBuilder::modeGreater, "3" );
-        qb.having( QueryBuilder::tabStats, QueryBuilder::valForFavoriteSorting(), QueryBuilder::funcAvg, QueryBuilder::modeGreater, "0" );
         qb.setGoogleFilter( QueryBuilder::tabAlbum | QueryBuilder::tabArtist, m_filter );
-        qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valForFavoriteSorting(), true );
+        qb.sortByFavoriteAvg();
         qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
         qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID );
         qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
@@ -494,9 +491,8 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         // only genres with more than 3 tracks
         qb.having( QueryBuilder::tabGenre, QueryBuilder::valID, QueryBuilder::funcCount, QueryBuilder::modeGreater, "3" );
         // only genres which have been played/rated
-        qb.having( QueryBuilder::tabStats, QueryBuilder::valForFavoriteSorting(), QueryBuilder::funcAvg, QueryBuilder::modeGreater, "0" );
         qb.setGoogleFilter( QueryBuilder::tabGenre, m_filter );
-        qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valForFavoriteSorting(), true );
+        qb.sortByFavoriteAvg();
         qb.groupBy( QueryBuilder::tabGenre, QueryBuilder::valName);
         qb.setLimit( 0, 50 );
         QStringList fave = qb.run();

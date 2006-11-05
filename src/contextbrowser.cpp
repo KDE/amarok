@@ -1512,9 +1512,7 @@ CurrentTrackJob::showHomeByAlbums()
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valID );
         // only albums with more than 3 tracks
         qb.having( QueryBuilder::tabAlbum, QueryBuilder::valID, QueryBuilder::funcCount, QueryBuilder::modeGreater, "3" );
-        // only albums which have been played/rated
-        qb.having( QueryBuilder::tabStats, QueryBuilder::valForFavoriteSorting(), QueryBuilder::funcAvg, QueryBuilder::modeGreater, "0" );
-        qb.sortByFunction( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valForFavoriteSorting(), true );
+        qb.sortByFavoriteAvg();
         qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
         qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID );
         qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valID );
@@ -2275,7 +2273,7 @@ void CurrentTrackJob::showArtistsFaves( const QString &artist, uint artist_id )
     qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
     qb.addNumericFilter( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, "0", QueryBuilder::modeGreater );
     qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
-    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valForFavoriteSorting(), true );
+    qb.sortByFavorite();
     qb.setLimit( 0, 10 );
     values = qb.run();
     usleep( 10000 );
