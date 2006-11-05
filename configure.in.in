@@ -559,53 +559,6 @@ AC_SUBST(postgresql_libs)
 
 
 ###############################################################################
-# BEGIN XMMS CHECK
-###############################################################################
-
-AC_ARG_WITH(xmms,
-    AC_HELP_STRING([--without-xmms],[build Amarok without xmms visualization support]),
-    [with_xmms=$withval],
-    [with_xmms=yes]
-)
-
-if test "$with_xmms" = "yes"; then
-    AC_CHECK_PROG(XMMS_CONFIG, xmms-config, yes)
-
-    if test x$XMMS_CONFIG = xyes; then
-        xmms_plugin_path=`xmms-config --visualization-plugin-dir`
-        xmms_cflags=`xmms-config --cflags`
-        xmms_libs=`xmms-config --libs`
-    fi
-
-    AC_DEFINE_UNQUOTED(XMMS_PLUGIN_PATH, "$xmms_plugin_path", [Define the path to XMMS plugins])
-    AC_SUBST(xmms_cflags)
-    AC_SUBST(xmms_libs)
-
-    ## XMMSwrapper depends on gtk/gdk headers
-    AC_CHECK_PROG(GTK_CONFIG, gtk-config, yes)
-
-    if test x$XMMS_CONFIG = xyes -a x$GTK_CONFIG = xyes; then
-        gtk_cflags=`gtk-config --cflags`
-        gtk_libs=`gtk-config --libs`
-        build_xmmswrapper=yes
-        AC_DEFINE(HAVE_XMMS, 1, [have XMMS])
-    else
-        build_xmmswrapper=no
-    fi
-
-    AC_SUBST(gtk_cflags)
-    AC_SUBST(gtk_libs)
-fi
-
-AM_CONDITIONAL(with_xmmswrapper, test x$build_xmmswrapper = xyes )
-
-###############################################################################
-# END XMMS CHECK
-###############################################################################
-
-
-
-###############################################################################
 # BEGIN LIBVISUAL CHECK
 ###############################################################################
 

@@ -198,10 +198,6 @@ else
         echo " =   - libvisual Support"
     fi
 
-    if test x$build_xmmswrapper != xyes; then
-        echo " =   - XMMS Visualization Wrapper"
-    fi
-
     if test x$enable_mysql != xyes; then
         echo " =   - MySql Support"
     fi
@@ -272,10 +268,6 @@ else
 
     if test x$build_libvisual = xyes; then
         echo " =   + libvisual Support"
-    fi
-
-    if test x$build_xmmswrapper = xyes; then
-        echo " =   + XMMS Visualization Wrapper"
     fi
 
     if test x$enable_mysql = xyes; then
