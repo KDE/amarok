@@ -64,6 +64,23 @@
 #include "metabundle.h"
 #include "podcastbundle.h"
 
+
+namespace Amarok {
+    KURL detachedKURL( const KURL &url ) {
+        KURL newUrl;
+
+        newUrl.setProtocol( QDeepCopy<QString>( url.protocol() ) );
+        newUrl.setHost( QDeepCopy<QString>( url.host() ) );
+        newUrl.setPort( url.port() );
+        newUrl.setUser( QDeepCopy<QString>( url.user() ) );
+        newUrl.setPass( QDeepCopy<QString>( url.pass() ) );
+        newUrl.setEncodedPathAndQuery( QDeepCopy<QString>( url.encodedPathAndQuery() ) );
+
+        return newUrl;
+    }
+}
+
+
 MetaBundle::EmbeddedImage::EmbeddedImage( const TagLib::ByteVector& data, const TagLib::String& description )
     : m_description( TStringToQString( description ) )
 {
@@ -1751,6 +1768,7 @@ void MetaBundle::detach()
 {
     // FIXME: we'd do that, but unfortunately it does not exist
     //m_url.detach();
+    m_url = Amarok::detachedKURL( m_url );
 
     m_title = QDeepCopy<QString>(m_title);
     m_artist = m_artist.deepCopy();
@@ -1775,7 +1793,9 @@ void MetaBundle::detach()
 
 void PodcastEpisodeBundle::detach()
 {
-    // FIXME: m_url, m_localUrl and m_parent also need detach()ing
+    m_url = Amarok::detachedKURL( m_url );
+    m_localUrl = Amarok::detachedKURL( m_localUrl );
+    m_parent = Amarok::detachedKURL( m_parent );
 
     m_author = QDeepCopy<QString>(m_author);
     m_title = QDeepCopy<QString>(m_title);

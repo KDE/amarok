@@ -202,6 +202,11 @@ namespace Amarok
     QListViewItem* findItemByPath( QListView *view, QString path ); //defined in playlistbrowser.cpp
 
     /**
+     * Creates a copy of of the KURL instance, that doesn't have any QStrings sharing memory.
+    **/
+    KURL detachedKURL( const KURL &url ); //defined in metabundle.cpp
+
+    /**
      * Maps the icon name to a system icon or custom Amarok icon, depending on the settings.
      */
     LIBAMAROK_EXPORT QString icon( const QString& name ); //defined in iconloader.cpp
