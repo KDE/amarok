@@ -160,18 +160,6 @@ PlaylistBrowserEntry::slotPostRenameItem( const QString /*newName*/ )
     setRenameEnabled( 0, false );
 }
 
-QString
-PlaylistBrowserEntry::name() const
-{
-    QString fullName = text(0);
-    QListViewItem *p = parent();
-    while ( p ) {
-        fullName.prepend( p->text(0) + '/' );
-        p = p->parent();
-    }
-    return fullName;
-}
-
 /////////////////////////////////////////////////////////////////////////////
 ///    CLASS PlaylistCategory
 ////////////////////////////////////////////////////////////////////////////

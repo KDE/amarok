@@ -210,10 +210,10 @@ void SelectionListItem::stateChange( bool b )
 QString
 SelectionListItem::name() const
 {
-    QString fullName = text(0);
+    QString fullName = text(0).replace('/', "\\/");
     QListViewItem *p = parent();
     while ( p ) {
-        fullName.prepend( p->text(0) + "/" );
+        fullName.prepend( p->text(0).replace('/', "\\/") + "/" );
         p = p->parent();
     }
     return fullName;

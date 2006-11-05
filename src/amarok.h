@@ -200,6 +200,7 @@ namespace Amarok
     const DynamicMode *dynamicMode(); //defined in playlist.cpp
 
     QListViewItem* findItemByPath( QListView *view, QString path ); //defined in playlistbrowser.cpp
+    QStringList splitPath( QString path ); //defined in playlistbrowser.cpp
 
     /**
      * Creates a copy of of the KURL instance, that doesn't have any QStrings sharing memory.

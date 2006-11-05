@@ -66,8 +66,11 @@ namespace Amarok {
     QListViewItem*
     findItemByPath( QListView *view, QString name )
     {
+        const static QString escaped( "\\/" );
+        const static QChar sep( '/' );
+
         debug() << "Searching " << name << endl;
-        QStringList path = QStringList::split( '/' , name );
+        QStringList path = splitPath( name );
 
         QListViewItem *prox = view->firstChild();
         QListViewItem *item = 0;
@@ -75,6 +78,7 @@ namespace Amarok {
         foreach( path ) {
             item = prox;
             QString text( *it );
+            text.replace( escaped, sep );
 
             for ( ; item; item = item->nextSibling() ) {
                 if ( text == item->text(0) ) {
@@ -87,6 +91,33 @@ namespace Amarok {
             prox = item->firstChild();
         }
         return item;
+    }
+
+    QStringList
+    splitPath( QString path ) {
+        QStringList list;
+
+        const static QChar sep( '/' );
+        int bOffset = 0, sOffset = 0;
+
+        int pos = path.find( sep, bOffset );
+
+        while ( pos != -1 ) {
+            if ( pos > sOffset && pos <= (int)path.length() ) {
+                if ( pos > 0 && path[pos-1] != '\\' ) {
+                    list << path.mid( sOffset, pos - sOffset );
+                    sOffset = pos + 1;
+                }
+            }
+            bOffset = pos + 1;
+            pos = path.find( sep, bOffset );
+        }
+
+        int length = path.length() - 1;
+        if ( path.mid( sOffset, length - sOffset + 1 ).length() > 0 )
+            list << path.mid( sOffset, length - sOffset + 1 );
+
+        return list;
     }
 }
 

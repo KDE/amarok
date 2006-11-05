@@ -64,8 +64,6 @@ class PlaylistBrowserEntry :  public QObject, public KListViewItem
         virtual void updateInfo();
         virtual void setDynamic( bool ) {};
 
-        virtual QString name() const;
-
     public slots:
         virtual void slotDoubleClicked();
         virtual void slotRenameItem();
