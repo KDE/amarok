@@ -2198,31 +2198,6 @@ void CurrentTrackJob::showSuggestedSongs( const QStringList &relArtists )
     qb.setLimit( 0, 10 );
     values = qb.run();
 
-    // not enough items returned, let's fill the list with score-less tracks
-    if ( values.count() < 10 * qb.countReturnValues()
-         && !CollectionDB::instance()->getDbConnectionType() == DbConnection::mysql )
-    {
-        qb.clear();
-        qb.exclusiveFilter( QueryBuilder::tabSong, QueryBuilder::tabStats, QueryBuilder::valURL );
-        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
-        qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-        qb.addMatches( QueryBuilder::tabArtist, relArtists );
-        qb.setOptions( QueryBuilder::optRandomize );
-        qb.setLimit( 0, 10 - values.count() / 5 ); // previous query had 5 return values, so count()/5 is the number of rows
-
-        QStringList sl;
-        sl = qb.run();
-        for ( uint i = 0; i < sl.count(); i += qb.countReturnValues() )
-        {
-            values << sl[i];
-            values << sl[i + 1];
-            values << sl[i + 2];
-            values << "0";
-            values << "0";
-        }
-    }
-
     // <Suggested Songs>
     if ( !values.isEmpty() )
     {
