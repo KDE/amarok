@@ -93,10 +93,6 @@ Optional
       (automatic tagging support)
       http://www.musicbrainz.org/
 
-    * XMMS 1.2 + XMMS visualization plugins
-      (visualization plugins)
-      http://xmms.org
-
     * K3B 0.11 or newer
       (CD burning support)
       http://www.k3b.org
@@ -204,7 +200,7 @@ splitting Amarok into the following packages:
    2. GStreamer-engine
    3. xine-engine
    4. Helix-engine
-   5. amarok_xmmswrapper + amarok_libvisual
+   5. amarok_libvisual
    6. ipod media device
    7. ifp media device
    8. njb media device
