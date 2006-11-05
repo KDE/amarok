@@ -7,6 +7,8 @@ VERSION 1.4.5
     * Support for %composer and %genre when guessing tags from filenames.
 
   CHANGES:
+    * It is now possible to select the time unit for length-based smart
+      playlists (BR 136841)
     * Show shadowed cover images in the system tray tooltip. (BR 136589)
     * Amarok won't crossfade if it was paused, and user started another
       track. Patch by Tuomas Nurmi <tnurmi@edu.kauhajoki.fi>.
@@ -14,6 +16,8 @@ VERSION 1.4.5
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
+    * The same track would sometimes be shown twice in suggested songs
+      (BR 129395)
     * Detect vfat partitioned devices on FreeBSD. Patch by Daniel
       O'Connor <doconnor@gsoft.com.au>.
     * Favorite Tracks wouldn't be shown on Context Browser, and
