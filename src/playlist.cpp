@@ -2224,11 +2224,12 @@ Playlist::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
     {
         if ( m_currentTrack && !trackChanged ) {
             //if the track hasn't changed then this is a meta-data update
-
+            if( stopAfterMode() == StopAfterCurrent )
+                Playlist::instance()->playNextTrack( true );
             //this is a hack, I repeat a hack! FIXME FIXME
             //we do it because often the stream title is from the pls file and is informative
             //we don't want to lose it when we get the meta data
-            if ( m_currentTrack->artist().isEmpty() ) {
+            else if ( m_currentTrack->artist().isEmpty() ) {
                 QString comment = m_currentTrack->title();
                 m_currentTrack->copyFrom( bundle );
                 m_currentTrack->setComment( comment );
