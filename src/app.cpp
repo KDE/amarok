@@ -1225,7 +1225,8 @@ namespace Amarok
     bool invokeBrowser( const QString& url )
     {
         //URL can be in whatever forms KURL::fromPathOrURL understands - ie most.
-        return KRun::run( AmarokConfig::externalBrowser(), KURL::List( KURL::fromPathOrURL( url ) ) ) > 0;
+        const QString cmd = "%1 \"%2\"";
+        return KRun::runCommand( cmd.arg( AmarokConfig::externalBrowser(), KURL::fromPathOrURL( url ).url() ) ) > 0;
     }
 
     namespace ColorScheme
@@ -1314,7 +1315,7 @@ namespace Amarok
             result.ref( i ) = c;
         }
         return result;
-    } 
+    }
 
     QString vfatPath( const QString &path )
     {
