@@ -1,0 +1,95 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>magnatuneReDownloadDialogBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>magnatuneReDownloadDialogBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>466</width>
+            <height>431</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Redownload manager</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
+            <property name="name">
+                <cstring>textLabel1</cstring>
+            </property>
+            <property name="text">
+                <string>These are the albums that you have previously downloaded:</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="2" column="0">
+            <property name="name">
+                <cstring>cancelButton</cstring>
+            </property>
+            <property name="text">
+                <string>&amp;Cancel</string>
+            </property>
+            <property name="accel">
+                <string>Alt+C</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="2" column="1">
+            <property name="name">
+                <cstring>redownloadButton</cstring>
+            </property>
+            <property name="text">
+                <string>Re&amp;download</string>
+            </property>
+            <property name="accel">
+                <string>Alt+D</string>
+            </property>
+        </widget>
+        <widget class="QListView" row="1" column="0" rowspan="1" colspan="2">
+            <column>
+                <property name="text">
+                    <string>Artist - Album</string>
+                </property>
+                <property name="clickable">
+                    <bool>true</bool>
+                </property>
+                <property name="resizable">
+                    <bool>true</bool>
+                </property>
+            </column>
+            <property name="name">
+                <cstring>redownloadListView</cstring>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<connections>
+    <connection>
+        <sender>redownloadButton</sender>
+        <signal>clicked()</signal>
+        <receiver>magnatuneReDownloadDialogBase</receiver>
+        <slot>redownload()</slot>
+    </connection>
+    <connection>
+        <sender>cancelButton</sender>
+        <signal>clicked()</signal>
+        <receiver>magnatuneReDownloadDialogBase</receiver>
+        <slot>reject()</slot>
+    </connection>
+    <connection>
+        <sender>redownloadListView</sender>
+        <signal>selectionChanged(QListViewItem*)</signal>
+        <receiver>magnatuneReDownloadDialogBase</receiver>
+        <slot>selectionChanged()</slot>
+    </connection>
+</connections>
+<slots>
+    <slot access="protected">redownload()</slot>
+    <slot access="protected">selectionChanged()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

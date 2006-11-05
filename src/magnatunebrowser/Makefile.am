@@ -4,10 +4,13 @@ METASOURCES = AUTO
 
 noinst_LTLIBRARIES = libmagnatunebrowser.la
 libmagnatunebrowser_la_SOURCES = magnatuneartistinfobox.cpp \
-		magnatunebrowser.cpp magnatunedownloaddialogbase.ui magnatunedownloaddialog.cpp \
-		magnatunepurchasedialogbase.ui magnatunepurchasedialog.cpp magnatunepurchasehandler.cpp \
-		magnatunetypes.cpp magnatunexmlparser.cpp magnatunedatabasehandler.cpp \
-		magnatunelistviewitems.cpp magnatunelistview.cpp
+	magnatunebrowser.cpp magnatunedownloaddialogbase.ui magnatunedownloaddialog.cpp \
+	magnatunepurchasedialogbase.ui magnatunepurchasedialog.cpp magnatunepurchasehandler.cpp \
+	magnatunetypes.cpp magnatunexmlparser.cpp magnatunedatabasehandler.cpp \
+	magnatunelistviewitems.cpp magnatunelistview.cpp magnatuneredownloaddialog.cpp \
+	magnatuneredownloadhandler.cpp magnatunedownloadinfo.cpp magnatunealbumdownloader.cpp \
+	magnatuneredownloaddialogbase.ui
 noinst_HEADERS = magnatunedatabasehandler.h magnatunelistviewitems.h \
-		magnatunelistview.h magnatuneartistinfobox.h magnatunebrowser.h magnatunedownloaddialog.h \
-	magnatunepurchasedialog.h magnatunepurchasehandler.h magnatunetypes.h magnatunexmlparser.h
+	magnatunelistview.h magnatuneartistinfobox.h magnatunebrowser.h magnatunedownloaddialog.h \
+	magnatunepurchasedialog.h magnatunepurchasehandler.h magnatunetypes.h magnatunexmlparser.h \
+	magnatunedownloadinfo.h magnatunealbumdownloader.h

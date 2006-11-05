@@ -24,9 +24,10 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 
-#include "magnatunetypes.h"
+#include "magnatunealbumdownloader.h"
 #include "magnatunedownloaddialog.h"
 #include "magnatunepurchasedialog.h"
+#include "magnatunetypes.h"
 
 
 /**
@@ -47,25 +48,18 @@ public:
 protected:
    
     KIO::TransferJob * m_resultDownloadJob;
-    KIO::FileCopyJob * m_albumDownloadJob;
+
         
-    //need a parent to passe to any dialogs we spawn
+    //need a parent to pass to any dialogs we spawn
     QWidget * m_parent;
     MagnatunePurchaseDialog * m_purchaseDialog;
     MagnatuneDownloadDialog * m_downloadDialog;
-    
-    QString m_currentDlUsername;
-    QString m_currentDlPassword;
-    
+    MagnatuneAlbumDownloader * m_albumDownloader;
+
     MagnatuneAlbum * m_currentAlbum;
 
-    QString m_currentAlbumUnpackLocation;
-    QString m_currentAlbumFileName;
-    
     bool parseDownloadXml( QString xml );
 
-    
- 
     /**
      * This function saves the xml download info received from Magnatune.com after a
      * successful payment. This information can be used to later redownload a lost album,
@@ -81,13 +75,12 @@ protected:
 protected slots:
 
     void xmlDownloadComplete( KIO::Job* downLoadJob );
-    void albumDownloadComplete( KIO::Job* downLoadJob );
-    void albumDownloadAborted();
+    void albumDownloadComplete(bool success);
 
 public slots:
 
     void processPayment( QString ccNumber, QString expYear, QString expMonth, QString name, QString email, QString albumCode, int amount );
-    void downloadAlbum( QString url, QString downloadLocation );
+
     
 
 };

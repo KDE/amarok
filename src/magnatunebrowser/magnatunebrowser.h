@@ -27,6 +27,7 @@
 #include "magnatunelistviewitems.h"
 #include "magnatunepurchasedialog.h"
 #include "magnatunepurchasehandler.h"
+#include "magnatuneredownloadhandler.h"
 #include "magnatunexmlparser.h"
 
 #include <kio/job.h>
@@ -150,6 +151,11 @@ private slots:
      */
     void doneParsing();
 
+    /**
+     * Starts the process of redownloading a previously bought album
+     */
+    void processRedownload();
+
 private:
 
     MagnatuneBrowser( const char *name );
@@ -207,9 +213,11 @@ private:
     QString                    m_currentInfoUrl;
     QPopupMenu                *m_popupMenu;
     MagnatunePurchaseHandler  *m_purchaseHandler;
+    MagnatuneRedownloadHandler *m_redownloadHandler;
 
     QHBox       *m_topPanel;
     QVBox       *m_bottomPanel;
+    QPushButton *m_advancedFeaturesButton;
     QPushButton *m_updateListButton;
     QPushButton *m_purchaseAlbumButton;
     QPushButton *m_showInfoToggleButton;

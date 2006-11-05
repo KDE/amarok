@@ -21,7 +21,7 @@
     <general>
       <mainprogram>amarok</mainprogram>
       <useconfiguration>default</useconfiguration>
-      <activetarget>src/konquisidebar/konqsidebar_universalamarok.la</activetarget>
+      <activetarget>src/magnatunebrowser/libmagnatunebrowser.la</activetarget>
       <useactivetarget>true</useactivetarget>
     </general>
     <configure>
@@ -74,6 +74,9 @@
         <envvars/>
       </default>
     </configurations>
+    <subclassing>
+      <subclass uifile="/src/magnatunebrowser/magnatuneredownloaddialogbase.ui" sourcefile="/src/magnatunebrowser/magnatuneredownloaddialog.h" />
+    </subclassing>
   </kdevautoproject>
   <kdevfileview>
     <groups>

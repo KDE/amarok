@@ -68,6 +68,7 @@ DEBUG_BLOCK
     m_artistInfobox->openURL( KURL(locate( "data", "amarok/data/magnatune_start_page.html" ) ) );
 
     m_purchaseHandler = 0;
+    m_redownloadHandler = 0;
 }
 
 void MagnatuneBrowser::itemExecuted( QListViewItem * item )
@@ -277,6 +278,9 @@ void MagnatuneBrowser::initTopPanel( )
 
     updateGenreBox();
 
+    m_advancedFeaturesButton = new QPushButton( i18n( "Advanced" ), m_topPanel, "advancedButton" );
+    connect( m_advancedFeaturesButton, SIGNAL( clicked() ), this, SLOT( processRedownload() ) );
+
     connect( m_genreComboBox, SIGNAL( activated ( int ) ), this, SLOT( genreChanged() ) );
 }
 
@@ -416,6 +420,14 @@ void MagnatuneBrowser::updateGenreBox()
 
     foreach( genres )
         m_genreComboBox->insertItem( (*it), -1 );
+}
+
+void MagnatuneBrowser::processRedownload( )
+{
+    if (m_redownloadHandler == 0) {
+        m_redownloadHandler = new MagnatuneRedownloadHandler(this);
+    }
+    m_redownloadHandler->showRedownloadDialog();
 }
 
 #include "magnatunebrowser.moc"

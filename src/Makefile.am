@@ -184,8 +184,7 @@ bin_PROGRAMS = amarokapp
 #atomicstring_unittest_LDADD = atomicstring.$(OBJEXT) $(LIB_KDECORE)
 
 
-amarokapp_SOURCES = \
-    main.cpp
+amarokapp_SOURCES = main.cpp
 
 amarokapp_LDADD = \
     $(top_builddir)/amarok/src/amarokcore/libamarokcore.la \
@@ -268,5 +267,6 @@ install-exec-hook:
 	@echo "=  if the problems continue join us on #amarok."
 	@echo "="
 	@echo "======================================================="
+
 
 

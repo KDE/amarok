@@ -21,6 +21,7 @@
 #define MAGNATUNEDOWNLOADDIALOG_H
 
 #include "magnatunedownloaddialogbase.h"
+#include "magnatunedownloadinfo.h"
 
 #include <qmap.h>
 
@@ -51,35 +52,27 @@ public:
     /*$PUBLIC_FUNCTIONS$*/
 
     /**
-     * Sets the message to display in the message box
-     * @param message The message string.
+     * Sets the current download info 
+     * @param  the MagnatuneDownloadInfo class containing the information abut the 
+     * download to display
      */
-    void setMessage( QString message );
-
-    /**
-     * Add a format option to the format selection combo box.
-     * @param name The name of the format
-     * @param link The download url
-     */
-    void addFormat( QString name, QString link );
+    void setDownloadInfo( MagnatuneDownloadInfo * info );
 
 signals:
 
     /**
      * Signal emitted when all needed info has been gathered and handler 
      * should start album download.
-     * @param url The url of the labum to download.
-     * @param downloadLocation The location where the album should be downloaded to.
+     * @param completedInfo A DownloadInfo object containing all needed information
      */
-    void downloadAlbum( QString url, QString downloadLocation );
+    void downloadAlbum(MagnatuneDownloadInfo * completedInfo);
 
 public slots:
     /*$PUBLIC_SLOTS$*/
 
 protected:
     /*$PROTECTED_FUNCTIONS$*/
-    typedef QMap<QString, QString> DownloadUrlMap;
-    DownloadUrlMap m_map;
+    MagnatuneDownloadInfo * m_currentDownloadInfo;
 
 protected slots:
     /*$PROTECTED_SLOTS$*/
