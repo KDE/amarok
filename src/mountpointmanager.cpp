@@ -394,7 +394,9 @@ MountPointManager::collectionFolders( )
         QStringList rpaths = folders->readListEntry( QString::number( *it ) );
         for( QStringList::ConstIterator strIt = rpaths.begin(), end = rpaths.end(); strIt != end; ++strIt )
         {
-            result.append( getAbsolutePath( *it, *strIt ) );
+            QString absPath = getAbsolutePath( *it, *strIt );
+            if ( !result.contains( absPath ) )
+                result.append( absPath );
         }
     }
     return result;
@@ -411,8 +413,10 @@ MountPointManager::setCollectionFolders( const QStringList &folders )
     {
         int id = getIdForUrl( *it );
         QString rpath = getRelativePath( id, *it );
-        if ( folderMap.contains( id ) )
-            folderMap[id].append( rpath );
+        if ( folderMap.contains( id ) ) {
+            if ( !folderMap[id].contains( rpath ) )
+                folderMap[id].append( rpath );
+        }
         else
             folderMap[id] = QStringList( rpath );
     }
