@@ -633,7 +633,7 @@ CriteriaEditor::CriteriaEditor( SmartPlaylistEditor *editor, QWidget *parent, in
                 if( condition == i18n("is in the last") || condition == i18n("is not in the last") ) {
                     m_intSpinBox1->setValue( values.first().toInt() );
                     QString period = criteria.attribute("period");
-                    if (period=="days")
+                    if (period=="days" || period.isEmpty() )
                         m_dateCombo->setCurrentItem(0);
                     else if (period=="months")
                         m_dateCombo->setCurrentItem(1);
@@ -649,6 +649,20 @@ CriteriaEditor::CriteriaEditor( SmartPlaylistEditor *editor, QWidget *parent, in
                         m_dateEdit2->setDate( dt.date() );
                     }
                 }
+                break;
+            }
+            case Length:
+            {
+                m_intSpinBox1->setValue( values.first().toInt() );
+                if( condition == i18n("is between") )
+                    m_intSpinBox2->setValue( values.last().toInt() );
+                QString period = criteria.attribute( "period" );
+                if ( period == "seconds" || period.isEmpty() ) //for compatibility
+                    m_lengthCombo->setCurrentItem( 0 );
+                else if ( period == "minutes" )
+                    m_lengthCombo->setCurrentItem( 1 );
+                else
+                    m_lengthCombo->setCurrentItem( 2 );
                 break;
             }
             default: ;
@@ -707,6 +721,16 @@ QDomElement CriteriaEditor::getDomSearchCriteria( QDomDocument &doc )
                 if( condition == i18n("is between")  ) {
                     values << QString::number( QDateTime( m_dateEdit2->date() ).toTime_t() );
                }
+            }
+            break;
+         }
+         case Length:
+         {
+            values << QString::number( m_intSpinBox1->value() );
+            // 0 = seconds, 1=minutes, 2=hours
+            criteria.setAttribute( "period", !m_lengthCombo->currentItem() ? "seconds" : (m_lengthCombo->currentItem() == 1 ? "minutes" : "hours") );
+            if( condition == i18n( "is between" ) ) {
+                values << QString::number( m_intSpinBox2->value() );
             }
             break;
          }
@@ -776,6 +800,30 @@ QString CriteriaEditor::getSearchCriteria()
                 }
                 else
                     value += " AND " + QString::number( datetime1.addDays( 1 ).toTime_t() );
+            }
+            break;
+        }
+        case Length:
+        {
+            int n = m_intSpinBox1->value();
+            int time;
+            if( m_lengthCombo->currentItem() == 0 ) //seconds
+                time = n;
+            else if( m_lengthCombo->currentItem() == 1 ) //minutes
+                time = 60*n;
+            else
+                time = 3600*n; //hours
+            value = QString::number( time );
+            if( criteria == i18n("is between")  ) {
+                int n2 = m_intSpinBox2->value();
+                int time2;
+                if( m_lengthCombo->currentItem() == 0 ) //seconds
+                    time2 = n2;
+                else if( m_lengthCombo->currentItem() == 1 ) //minutes
+                    time2 = 60*n2;
+                else
+                    time2 = 3600*n2; //hours
+                value += " AND " + QString::number( time2 );
             }
             break;
         }
@@ -1016,6 +1064,28 @@ void CriteriaEditor::loadEditWidgets()
             break;
         }
 
+        case Length:
+        {
+            m_intSpinBox1 = new KIntSpinBox( m_editBox );
+            int maxValue = 1000;
+            m_intSpinBox1->setMaxValue( maxValue );
+            m_intSpinBox1->setFocus();
+            m_intSpinBox1->show();
+            if( m_criteriaCombo->currentText() == i18n("is between") ) {
+                m_rangeLabel = new QLabel( i18n("and"), m_editBox );
+                m_rangeLabel->setAlignment( AlignCenter );
+                m_rangeLabel->show();
+                m_intSpinBox2 = new KIntSpinBox( m_editBox );
+                m_intSpinBox2->setMaxValue( maxValue );
+                m_intSpinBox2->show();
+            }
+            m_lengthCombo = new KComboBox( m_editBox );
+            m_lengthCombo->insertItem( i18n( "Seconds" ) );
+            m_lengthCombo->insertItem( i18n( "Minutes" ) );
+            m_lengthCombo->insertItem( i18n( "Hours" ) );
+            m_lengthCombo->show();
+        }
+
         default: ;
     };
 
@@ -1037,6 +1107,7 @@ void CriteriaEditor::loadCriteriaList( int valueType, QString condition )
             break;
 
         case Rating:
+        case Length:
         case Number:
             items << i18n( "is" ) << i18n( "is not" ) << i18n( "is greater than" ) << i18n( "is smaller than" )
                   << i18n( "is between" );
@@ -1080,6 +1151,8 @@ int CriteriaEditor::getValueType( int index )
             valueType = String;
             break;
         case FLength:
+            valueType = Length;
+            break;
         case FTrack:
         case FScore:
         case FPlayCounter:

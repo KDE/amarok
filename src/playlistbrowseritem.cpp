@@ -3306,6 +3306,25 @@ SmartPlaylist::xmlToQuery(const QDomElement &xml, bool forExpand /* = false */) 
                 }
             }
 
+            if ( value & QueryBuilder::valLength ) {
+                QString period = criteria.attribute( "period" );
+                uint time1 = filters[0].toInt();
+                if ( period == "minutes" )
+                    time1 *= 60;
+                else if ( period == "hours" )
+                    time1 *= 3600;
+                filters[0] = QString::number( time1 );
+                if ( condition == i18n( "is between" ) )
+                {
+                    uint time2 = filters[1].toInt();
+                    if ( period == "minutes" )
+                        time2 *= 60;
+                    else if ( period == "hours" )
+                        time2 *= 3600;
+                    filters[1] = QString::number( time2 );
+                }
+            }
+
 
             if ( condition == i18n( "contains" ) )
                 qb.addFilter( table, value, filters[0] );

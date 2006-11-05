@@ -106,7 +106,7 @@ Q_OBJECT
         void loadEditWidgets();
 
     private:
-        enum ValueType { String, AutoCompletionString, Number, Year, Date, Rating };
+        enum ValueType { String, AutoCompletionString, Number, Year, Date, Rating, Length };
 
         void loadCriteriaList( int valueType, QString condition = QString::null );
         int getValueType( int fieldIndex );
@@ -133,6 +133,7 @@ Q_OBJECT
         QDateEdit *m_dateEdit2;
         KComboBox *m_dateCombo;
         QLabel *m_rangeLabel;
+	KComboBox *m_lengthCombo;
 };
 
 inline int
