@@ -2263,7 +2263,7 @@ Playlist::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
         break;
 
     case Engine::Paused:
-        Amarok::actionCollection()->action( "pause" )->setEnabled( true );
+        Amarok::actionCollection()->action( "pause" )->setEnabled( false );
         Amarok::actionCollection()->action( "stop" )->setEnabled( true );
 
         Glow::reset();

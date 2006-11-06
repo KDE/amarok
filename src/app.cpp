@@ -360,9 +360,9 @@ void App::initGlobalShortcuts()
 
     m_pGlobalAccel->insert( "play", i18n( "Play" ), 0, KKey("WIN+x"), 0,
                             ec, SLOT( play() ), true, true );
-    m_pGlobalAccel->insert( "pause", i18n( "Pause" ), 0, KKey("WIN+c"), 0,
+    m_pGlobalAccel->insert( "pause", i18n( "Pause" ), 0, 0, 0,
                             ec, SLOT( pause() ), true, true );
-    m_pGlobalAccel->insert( "play_pause", i18n( "Play/Pause" ), 0, 0, 0,
+    m_pGlobalAccel->insert( "play_pause", i18n( "Play/Pause" ), 0, KKey("WIN+c"), 0,
                             ec, SLOT( playPause() ), true, true );
     m_pGlobalAccel->insert( "stop", i18n( "Stop" ), 0, KKey("WIN+v"), 0,
                             ec, SLOT( stop() ), true, true );

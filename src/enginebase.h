@@ -136,7 +136,10 @@ namespace Engine
         /** Pauses playback */
         virtual void pause() = 0;
 
-        /**
+        /** Resumes playback if paused */
+        virtual void unpause() = 0;
+
+         /**
          * Get current engine status.
          * @return the correct State as described at the enum
          */

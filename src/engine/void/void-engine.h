@@ -28,6 +28,7 @@ class VoidEngine : public Engine::Base
     virtual bool play( uint ) { return false; }
     virtual void stop() {}
     virtual void pause() {}
+    virtual void unpause() {}
     virtual void setVolumeSW( uint ) {}
     virtual void seek( uint ) {}
 

@@ -329,7 +329,7 @@ void EngineController::play() //SLOT
 {
     if ( m_engine->state() == Engine::Paused )
     {
-        m_engine->pause();
+        m_engine->unpause();
     }
     else emit orderCurrent();
 }
@@ -521,7 +521,13 @@ void EngineController::playPause() //SLOT
     {
         pause();
     }
-    else play();
+    else if( m_engine->state() == Engine::Paused )
+    {
+        if ( m_engine->loaded() )
+            m_engine->unpause();
+    }
+    else
+        play();
 }
 
 

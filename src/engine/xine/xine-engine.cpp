@@ -393,8 +393,17 @@ XineEngine::pause()
         xine_set_param( m_stream, XINE_PARAM_AUDIO_CLOSE_DEVICE, 1);
         emit stateChanged( Engine::Paused );
 
-    } else {
+    }
+}
 
+void
+XineEngine::unpause()
+{
+    if ( !m_stream )
+        return;
+    
+    if( xine_get_param( m_stream, XINE_PARAM_SPEED ) == XINE_SPEED_PAUSE )
+    {
         if( s_fader && s_fader->running() )
             s_fader->resume();
 

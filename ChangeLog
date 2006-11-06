@@ -16,6 +16,7 @@ VERSION 1.4.5
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
+    * Pause would act as Play/Pause. (BR 116101)
     * The same track would sometimes be shown twice in suggested songs
       (BR 129395)
     * Detect vfat partitioned devices on FreeBSD. Patch by Daniel

@@ -450,7 +450,17 @@ HelixEngine::pause()
       m_state = Engine::Paused;
       emit stateChanged( Engine::Paused );
    }
-   else if ( m_state == Engine::Paused )
+}
+
+void
+HelixEngine::unpause()
+{
+   if (!m_inited)
+      return;
+
+   // TODO: PAUSE in XFADE
+   debug() << "In unpause\n";
+   if ( m_state == Engine::Paused )
    {
       PlayerControl::resume(m_current);
       m_state = Engine::Playing;

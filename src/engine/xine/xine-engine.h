@@ -37,6 +37,7 @@ class XineEngine : public Engine::Base
     virtual bool play( uint = 0 );
     virtual void stop();
     virtual void pause();
+    virtual void unpause();
     virtual uint position() const;
     virtual uint length() const;
     virtual void seek( uint );

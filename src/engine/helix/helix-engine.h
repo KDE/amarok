@@ -48,6 +48,7 @@ public slots:
    virtual bool play( uint = 0 );
    virtual void stop();
    virtual void pause();
+   virtual void unpause();
    virtual void seek( uint );
 
    virtual void setEqualizerEnabled( bool );
