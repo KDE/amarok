@@ -40,6 +40,7 @@ VERSION 1.4.5
     * OSD wouldn't always show up-to-date ratings. Patch by Tuomas Nurmi
       <tnurmi@edu.kauhajoki.fi>. (BR 125612)
 
+
 VERSION 1.4.4
   FEATURES:
     * Transfer .wav-files to iPods. (BR 131130)
@@ -63,7 +64,6 @@ VERSION 1.4.4
     * Allow the creation of empty playlists in the playlist browser. Available
       either from the Add button in the toolbar or the context menu of a
       playlist folder. (BR 133543)
-
 
   CHANGES:
     * Ignore leading "The " when sorting artists on media devices. (BR 136233)
