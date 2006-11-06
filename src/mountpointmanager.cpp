@@ -464,7 +464,7 @@ MountPointManager::updateStatisticsURLs()
 void
 MountPointManager::startStatisticsUpdateJob()
 {
-    ThreadWeaver::instance()->queueJob( new StatisticsUpdateJob( this ) );
+    ThreadWeaver::instance()->queueJob( new UrlUpdateJob( this ) );
 }
 
 void
@@ -483,10 +483,18 @@ MountPointManager::checkDeviceAvailability()
     //method is not actually called yet
 }
 
-bool StatisticsUpdateJob::doJob( )
+bool UrlUpdateJob::doJob( )
 {
     DEBUG_BLOCK
+    updateStatistics();
+    updateLabels();
+    return true;
+}
+
+void UrlUpdateJob::updateStatistics( )
+{
     CollectionDB *collDB = CollectionDB::instance();
+    MountPointManager *mpm = MountPointManager::instance();
     QStringList urls = collDB->query( "SELECT s.deviceid,s.url "
                                       "FROM statistics AS s LEFT JOIN tags AS t ON s.deviceid = t.deviceid AND s.url = t.url "
                                       "WHERE t.url IS NULL AND s.deviceid != -2;" );
@@ -495,13 +503,13 @@ bool StatisticsUpdateJob::doJob( )
     {
         int deviceid = (*it).toInt();
         QString rpath = *++it;
-        QString realURL = MountPointManager::instance()->getAbsolutePath( deviceid, rpath );
+        QString realURL = mpm->getAbsolutePath( deviceid, rpath );
         if( QFile::exists( realURL ) )
         {
-            int newDeviceid = MountPointManager::instance()->getIdForUrl( realURL );
+            int newDeviceid = mpm->getIdForUrl( realURL );
             if( newDeviceid == deviceid )
                 continue;
-            QString newRpath = MountPointManager::instance()->getRelativePath( newDeviceid, realURL );
+            QString newRpath = mpm->getRelativePath( newDeviceid, realURL );
 
             int statCount = collDB->query(
                             QString( "SELECT COUNT( url ) FROM statistics WHERE deviceid = %1 AND url = '%2';" )
@@ -517,7 +525,54 @@ bool StatisticsUpdateJob::doJob( )
             collDB->query( sql );
         }
     }
-    return true;
+}
+
+void UrlUpdateJob::updateLabels( )
+{
+    CollectionDB *collDB = CollectionDB::instance();
+    MountPointManager *mpm = MountPointManager::instance();
+    QStringList labels = collDB->query( "SELECT l.deviceid,l.url "
+                                        "FROM tags_labels AS l LEFT JOIN tags as t ON l.deviceid = t.deviceid AND l.url = t.url "
+                                        "WHERE t.url IS NULL;" );
+    debug() << "Trying to update " << labels.count() / 2 << " tags_labels rows" << endl;
+    foreach( labels )
+    {
+        int deviceid = (*it).toInt();
+        QString rpath = *++it;
+        QString realUrl = mpm->getAbsolutePath( deviceid, rpath );
+        if( QFile::exists( realUrl ) )
+        {
+            int newDeviceid = mpm->getIdForUrl( realUrl );
+            if( newDeviceid == deviceid )
+                continue;
+            QString newRpath = mpm->getRelativePath( newDeviceid, realUrl );
+
+            //only update rows if there is not already a row with the new deviceid/rpath and the same labelid
+            QStringList labelids = collDB->query( 
+                                        QString( "SELECT labelid FROM tags_labels WHERE deviceid = %1 AND url = '%2';" )
+                                                 .arg( QString::number( newDeviceid ), collDB->escapeString( newRpath ) ) );
+            QString existingLabelids;
+            if( !labelids.isEmpty() )
+            {
+                existingLabelids = " AND labelid NOT IN (";
+                foreach( labelids )
+                {
+                    if( it != labelids.begin() )
+                        existingLabelids += ',';
+                    existingLabelids += *it;
+                }
+                existingLabelids += ')';
+            }
+            QString sql = QString( "UPDATE tags_labels SET deviceid = %1, url = '%2' "
+                                    "WHERE deviceid = %3 AND url = '%4'%5;" )
+                                    .arg( newDeviceid )
+                                    .arg( collDB->escapeString( newRpath ),
+                                          QString::number( deviceid ),
+                                          collDB->escapeString( rpath ),
+                                          existingLabelids );
+            collDB->query( sql );
+        }
+    }
 }
 
 #include "mountpointmanager.moc"

@@ -235,14 +235,18 @@ private:
 
 };
 
-class StatisticsUpdateJob : public ThreadWeaver::DependentJob
+class UrlUpdateJob : public ThreadWeaver::DependentJob
 {
 public:
-    StatisticsUpdateJob( QObject *dependent ) : DependentJob( dependent, "StatisticsUpdateJob" ) {}
+    UrlUpdateJob( QObject *dependent ) : DependentJob( dependent, "UrlUpdateJob" ) {}
 
     virtual bool doJob();
 
     virtual void completeJob() {}
+
+private:
+    void updateStatistics();
+    void updateLabels();
 };
 
 #endif
