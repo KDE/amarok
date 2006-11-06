@@ -8,7 +8,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "engine/enginebase.h"
+#include "enginebase.h"
 #include "akode-scope.h"
 
 namespace aKode { class Player; }

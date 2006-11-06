@@ -22,7 +22,7 @@
 #define _AKODE_SCOPE_H
 
 #include <akode/player.h>
-#include "engine/enginebase.h"
+#include "enginebase.h"
 
 namespace aKode {
 class AudioFrame;
