@@ -43,6 +43,10 @@ public:
     ~MagnatunePurchaseHandler();
     
    void setParent( QWidget * parent );
+   /**
+    * Starts a purchase operation
+    * @param album The album to purchase
+    */
    void purchaseAlbum( MagnatuneAlbum * album );
 
 protected:
@@ -55,8 +59,8 @@ protected:
     MagnatunePurchaseDialog * m_purchaseDialog;
     MagnatuneDownloadDialog * m_downloadDialog;
     MagnatuneAlbumDownloader * m_albumDownloader;
-
     MagnatuneAlbum * m_currentAlbum;
+    QString m_currentAlbumCoverName;
 
     bool parseDownloadXml( QString xml );
 
@@ -74,6 +78,7 @@ protected:
 
 protected slots:
 
+    void showPurchaseDialog(bool useCover);
     void xmlDownloadComplete( KIO::Job* downLoadJob );
     void albumDownloadComplete(bool success);
 

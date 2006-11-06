@@ -40,6 +40,8 @@ public:
 
     ~MagnatuneAlbumDownloader();
 
+     void downloadCover( QString albumCoverUrlString, QString fileName );
+
 signals:
 
     /**
@@ -66,9 +68,11 @@ protected slots:
      * Unzip the downloaded album
      * @param downLoadJob 
      */
-    void albumDownloadComplete( KIO::Job* downLoadJob );
-
+    void albumDownloadComplete( KIO::Job* downloadJob );
     void albumDownloadAborted();
+
+    void coverDownloadComplete( KIO::Job* downloadJob );
+    void coverDownloadAborted();
 
 };
 

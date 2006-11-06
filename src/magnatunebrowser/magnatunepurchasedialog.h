@@ -52,6 +52,12 @@ public:
     void setAlbum( MagnatuneAlbum * album );
 
     /**
+     * Loads image into the cover label.
+     * @param coverFile image file to load.
+     */
+    void setCover( QString coverFile );
+
+    /**
      * re-enables the purchase and cancel button
      */
     void reenableButtons();

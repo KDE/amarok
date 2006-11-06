@@ -50,6 +50,21 @@ void MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo * info )
     .setAbortSlot( this, SLOT( albumDownloadAborted() ) );
 }
 
+void MagnatuneAlbumDownloader::downloadCover( QString albumCoverUrlString, QString fileName )
+{
+    KURL downloadUrl( albumCoverUrlString );
+
+    debug() << "Download Cover: " << downloadUrl.url() << " to: /tmp/" << fileName << endl;
+
+    m_albumDownloadJob = KIO::file_copy( downloadUrl, KURL( "/tmp/" + fileName ), -1, true, false, false );
+
+    connect( m_albumDownloadJob, SIGNAL( result( KIO::Job* ) ), SLOT( coverDownloadComplete( KIO::Job* ) ) );
+
+    Amarok::StatusBar::instance() ->newProgressOperation( m_albumDownloadJob )
+    .setDescription( i18n( "Downloading album cover" ) )
+    .setAbortSlot( this, SLOT( albumDownloadAborted() ) );
+}
+
 
 
 void MagnatuneAlbumDownloader::albumDownloadComplete( KIO::Job * downloadJob )
@@ -79,6 +94,25 @@ void MagnatuneAlbumDownloader::albumDownloadComplete( KIO::Job * downloadJob )
 
 }
 
+void MagnatuneAlbumDownloader::coverDownloadComplete( KIO::Job * downloadJob )
+{
+  debug() << "cover download complete" << endl;
+
+    if ( !downloadJob->error() == 0 )
+    {
+        //TODO: error handling here
+        return ;
+    }
+    if ( downloadJob != m_albumDownloadJob )
+        return ; //not the right job, so let's ignore it
+
+    emit( downloadComplete( true ) );
+}
+
+
+
+
+
 void MagnatuneAlbumDownloader::albumDownloadAborted( )
 {
     Amarok::StatusBar::instance()->endProgressOperation( m_albumDownloadJob );
@@ -90,5 +124,21 @@ void MagnatuneAlbumDownloader::albumDownloadAborted( )
     emit( downloadComplete( false ) );
 
 }
+
+void MagnatuneAlbumDownloader::coverDownloadAborted( )
+{
+    Amarok::StatusBar::instance()->endProgressOperation( m_albumDownloadJob );
+    m_albumDownloadJob->kill( true );
+    delete m_albumDownloadJob;
+    m_albumDownloadJob = 0;
+    debug() << "Cover album download" << endl;
+
+    emit( downloadComplete( false ) );
+}
+
+
+
+
+
 
 

@@ -44,7 +44,30 @@ MagnatunePurchaseHandler::~MagnatunePurchaseHandler()
 
 void MagnatunePurchaseHandler::purchaseAlbum( MagnatuneAlbum * album )
 {
+
     m_currentAlbum = album;
+
+    //first lets get the album cover for the album we are about to purchase. 
+    //Then we can show it on the purchase dialog as well as put it in the 
+    //same directory as the album.
+
+    QString albumCoverUrlString = album->getCoverURL();
+
+     if ( m_albumDownloader == 0 )
+    {
+        m_albumDownloader = new MagnatuneAlbumDownloader();
+    }
+
+    m_currentAlbumCoverName =  album->getName() +  " - cover.jpg";
+
+
+    connect( m_albumDownloader, SIGNAL( downloadComplete( bool ) ), this, SLOT( showPurchaseDialog( bool ) ));
+    m_albumDownloader->downloadCover( albumCoverUrlString, m_currentAlbumCoverName );
+
+}
+
+void MagnatunePurchaseHandler::showPurchaseDialog( bool useCover )
+{
 
     if ( m_purchaseDialog == 0 )
     {
@@ -55,12 +78,12 @@ void MagnatunePurchaseHandler::purchaseAlbum( MagnatuneAlbum * album )
     connect( m_purchaseDialog, SIGNAL( makePurchase( QString, QString, QString, QString, QString, QString, int ) ), this, SLOT( processPayment( QString, QString, QString, QString, QString, QString, int ) ) );
 
 
-    if ( album != 0 )
+    if ( m_currentAlbum != 0 )
     {
-        m_purchaseDialog->setAlbum( album );
+        m_purchaseDialog->setAlbum( m_currentAlbum );
+        m_purchaseDialog->setCover( "/tmp/" + m_currentAlbumCoverName );
         m_purchaseDialog->show();
     }
-
 }
 
 void MagnatunePurchaseHandler::processPayment( QString ccNumber, QString expYear, QString expMonth, QString name, QString email, QString albumCode, int amount )
@@ -180,6 +203,8 @@ void MagnatunePurchaseHandler::albumDownloadComplete( bool success )
     m_downloadDialog = 0;
 
 }
+
+
 
 
 

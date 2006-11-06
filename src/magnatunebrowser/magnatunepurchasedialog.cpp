@@ -26,6 +26,7 @@
 #include <qmessagebox.h>
 #include <qpushbutton.h>
 #include <qregexp.h>
+#include <qlabel.h>
 
 
 MagnatunePurchaseDialog::MagnatunePurchaseDialog( QWidget* parent, const char* name, bool modal, WFlags fl )
@@ -134,6 +135,11 @@ void MagnatunePurchaseDialog::reenableButtons( )
 {
     purchaseButton->setEnabled( true );
     cancelButton->setEnabled( true );
+}
+
+void MagnatunePurchaseDialog::setCover( QString coverFile )
+{
+    coverPixmapLabel->setPixmap( QPixmap( coverFile ) );
 }
 
 
