@@ -576,6 +576,10 @@ PlaylistFile::loadM3u( QTextStream &stream )
                 b.setUrl( KURL::fromPathOrURL( line ) );
             }
 
+            // Ensure that we always have a title: use the URL fallback
+            if( b.title().isEmpty() )
+                b.setTitle( url );
+
             m_bundles += b;
             b = MetaBundle();
         }
@@ -666,6 +670,8 @@ PlaylistFile::loadPls( QTextStream &stream )
                 continue;
             tmp = (*i).section('=', 1).stripWhiteSpace();
             m_bundles[index - 1].setUrl(KURL::fromPathOrURL(tmp));
+            // Ensure that if the entry has no title, we show at least the URL as title
+            m_bundles[index - 1].setTitle(tmp);
             continue;
         }
         if ((*i).contains(regExp_Title)) {
