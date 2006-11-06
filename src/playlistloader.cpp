@@ -576,7 +576,7 @@ PlaylistFile::loadM3u( QTextStream &stream )
                 b.setUrl( KURL::fromPathOrURL( line ) );
             }
 
-            // Ensure that we always have a title: use the URL fallback
+            // Ensure that we always have a title: use the URL as fallback
             if( b.title().isEmpty() )
                 b.setTitle( url );
 
