@@ -141,6 +141,11 @@ private slots:
     void listDownloadComplete( KIO::Job* downLoadJob);
 
     /**
+     * Slot for catching cancelled list downloads
+     */
+    void listDownloadCancelled();
+
+    /**
      * Slot called when the genre combo box selection changes. Triggers an update of the list view.
      */
     void genreChanged();

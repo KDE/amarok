@@ -317,6 +317,7 @@ void MagnatuneBrowser::initBottomPanel()
 
 void MagnatuneBrowser::updateButtonClicked()
 {
+    m_updateListButton->setEnabled( false );
     updateMagnatuneList();
 }
 
@@ -326,7 +327,8 @@ bool MagnatuneBrowser::updateMagnatuneList()
 
     m_listDownloadJob = KIO::storedGet( KURL( "http://magnatune.com/info/album_info.xml" ), false, false );
     Amarok::StatusBar::instance()->newProgressOperation( m_listDownloadJob )
-                                   .setDescription( i18n( "Downloading Magnatune.com Database" ) );
+                                   .setDescription( i18n( "Downloading Magnatune.com Database" ) )
+                                   .setAbortSlot( this, SLOT( listDownloadCancelled() ) );
 
     connect( m_listDownloadJob, SIGNAL( result( KIO::Job* ) ), SLOT( listDownloadComplete( KIO::Job* ) ) );
 
@@ -336,13 +338,17 @@ bool MagnatuneBrowser::updateMagnatuneList()
 
 void MagnatuneBrowser::listDownloadComplete( KIO::Job * downLoadJob )
 {
+
+    if ( downLoadJob != m_listDownloadJob )
+        return; //not the right job, so let's ignore it
+
+    m_updateListButton->setEnabled( true );
     if ( !downLoadJob->error() == 0 )
     {
         //TODO: error handling here
         return;
     }
-    if ( downLoadJob != m_listDownloadJob )
-        return; //not the right job, so let's ignore it
+
 
     KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( downLoadJob );
     QString list = QString( storedJob->data() );
@@ -365,6 +371,19 @@ void MagnatuneBrowser::listDownloadComplete( KIO::Job * downLoadJob )
     connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
 
     ThreadWeaver::instance()->queueJob(parser);
+}
+
+void MagnatuneBrowser::listDownloadCancelled( )
+{
+   
+
+    Amarok::StatusBar::instance()->endProgressOperation( m_listDownloadJob );
+    m_listDownloadJob->kill( true );
+    delete m_listDownloadJob;
+    m_listDownloadJob = 0;
+    debug() << "Aborted xml download" << endl;
+
+    m_updateListButton->setEnabled( true );
 }
 
 void MagnatuneBrowser::showInfo( bool show )
@@ -429,5 +448,7 @@ void MagnatuneBrowser::processRedownload( )
     }
     m_redownloadHandler->showRedownloadDialog();
 }
+
+
 
 #include "magnatunebrowser.moc"
