@@ -1206,7 +1206,7 @@ IpodMediaDevice::checkIntegrity()
             Itdb_Track *track = m_files[ipodPath.lower()];
             if(!track)
             {
-                debug() << "file: " << filename << " is orphaned" << endl;
+                // debug() << "file: " << filename << " is orphaned" << endl;
                 IpodMediaItem *item = new IpodMediaItem(m_orphanedItem, this);
                 item->setType(MediaItem::ORPHANED);
                 KURL url = KURL::fromPathOrURL(filename);
