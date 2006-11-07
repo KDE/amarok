@@ -5734,16 +5734,19 @@ CollectionDB::cleanLabels()
     QStringList labelIds = query( "select labels.id "
                                   "from labels left join tags_labels on labels.id = tags_labels.labelid "
                                   "where tags_labels.labelid is null;" );
-    QString ids;
-    foreach( labelIds )
+    if ( !labelIds.isEmpty() )
     {
-        if ( !ids.isEmpty() )
-            ids += ',';
-        ids += *it;
+        QString ids;
+        foreach( labelIds )
+        {
+            if ( !ids.isEmpty() )
+                ids += ',';
+            ids += *it;
+        }
+        query( QString( "DELETE FROM labels "
+                        "WHERE labels.id IN ( %1 );" )
+                        .arg( ids ) );
     }
-    query( QString( "DELETE FROM labels "
-                    "WHERE labels.id IN (-1, %1 );" )
-                    .arg( ids ) );
 }
 
 void
