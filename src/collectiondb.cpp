@@ -5742,7 +5742,7 @@ CollectionDB::cleanLabels()
         ids += *it;
     }
     query( QString( "DELETE FROM labels "
-                    "WHERE labels.id IN ( %1 );" )
+                    "WHERE labels.id IN (-1, %1 );" )
                     .arg( ids ) );
 }
 
@@ -5828,7 +5828,7 @@ CollectionDB::favoriteLabels( int type, int count )
 {
     return query( QString( "SELECT labels.name, count( tags_labels.labelid ) "
                            "FROM labels LEFT JOIN tags_labels ON labels.id = tags_labels.labelid "
-                           "WHERE labels.type = %1 GROUP BY tags_labels.labelid LIMIT %2" )
+                           "WHERE labels.type = %1 GROUP BY labels.name LIMIT %2" )
                            .arg( QString::number( type ), QString::number( count ) ) );
 }
 
