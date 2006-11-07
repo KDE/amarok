@@ -1319,7 +1319,7 @@ MtpMediaDevice::readPlaylists()
         while( playlists != 0 )
         {
             MtpMediaItem *playlist = new MtpMediaItem( m_playlistItem, this );
-            playlist->setText( 0, playlists->name );
+            playlist->setText( 0, QString::fromUtf8( playlists->name ) );
             playlist->setType( MediaItem::PLAYLIST );
             playlist->setPlaylist( new MtpPlaylist() );
             playlist->playlist()->setId( playlists->playlist_id );
@@ -1373,15 +1373,15 @@ MtpTrack::readMetaData( LIBMTP_track_t *track )
     MetaBundle *bundle = new MetaBundle();
 
     if( track->genre != 0 )
-        bundle->setGenre( AtomicString( qstrdup( track->genre ) ) );
+        bundle->setGenre( AtomicString( QString::fromUtf8( track->genre ) ) );
     if( track->artist != 0 )
-        bundle->setArtist( AtomicString( qstrdup( track->artist ) ) );
+        bundle->setArtist( AtomicString( QString::fromUtf8( track->artist ) ) );
     if( track->album != 0 )
-        bundle->setAlbum( AtomicString( qstrdup( track->album ) ) );
+        bundle->setAlbum( AtomicString( QString::fromUtf8( track->album ) ) );
     if( track->title != 0 )
-        bundle->setTitle( AtomicString( qstrdup( track->title ) ) );
+        bundle->setTitle( AtomicString( QString::fromUtf8( track->title ) ) );
     if( track->filename != 0 )
-        bundle->setPath( AtomicString( qstrdup( track->filename ) ) );
+        bundle->setPath( AtomicString( QString::fromUtf8( track->filename ) ) );
 
     // translate codecs to file types
     if( track->filetype == LIBMTP_FILETYPE_MP3 )
@@ -1394,7 +1394,7 @@ MtpTrack::readMetaData( LIBMTP_track_t *track )
         bundle->setFileType( MetaBundle::other );
 
     if( track->date != 0 )
-        bundle->setYear( QString( qstrdup( track->date ) ).mid( 0, 4 ).toUInt() );
+        bundle->setYear( QString( QString::fromUtf8( track->date ) ).mid( 0, 4 ).toUInt() );
     if( track->tracknumber > 0 )
         bundle->setTrack( track->tracknumber );
     if( track->duration > 0 )

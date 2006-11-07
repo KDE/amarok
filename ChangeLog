@@ -17,7 +17,8 @@ VERSION 1.4.5
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
-	* Some shoutcast streams would show an empty title. (BR 127741)
+    * Read metadata from MTP media devices as UTF-8.
+    * Some shoutcast streams would show an empty title. (BR 127741)
     * Pause would act as Play/Pause. (BR 116101)
     * The same track would sometimes be shown twice in suggested songs
       (BR 129395)
