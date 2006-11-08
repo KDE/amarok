@@ -4,7 +4,7 @@ amarokrubylib_LTLIBRARIES = libhttp11.la
 
 amarokrubylib_DATA = http11.rb
 
-INCLUDES = -I$(ruby_includes) -Dinline=__inline__
+INCLUDES = -I$(ruby_includes) -Dinline=__inline__ -Dasm=__asm__
 
 libhttp11_la_LDFLAGS = \
 	-shared \
