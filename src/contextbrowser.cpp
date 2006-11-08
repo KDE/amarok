@@ -215,7 +215,7 @@ ContextBrowser::ContextBrowser( const char *name )
     m_lyricsToolBar->setIconText( KToolBar::IconOnly, false );
     m_lyricsToolBar->insertButton( Amarok::icon( "external" ), LYRICS_BROWSER, true, i18n("Open in external browser") );
 
-    m_lyricsPage = new HTMLView( m_lyricsTab, "lyrics_page", true /* DNDEnabled */, true /* JScriptEnabled */ );
+    m_lyricsPage = new HTMLView( m_lyricsTab, "lyrics_page", true /* DNDEnabled */, false /* No JScript */ );
     m_lyricsTextEdit = new KTextEdit ( m_lyricsTab, "lyrics_text_edit");
     m_lyricsTextEdit->hide();
 
@@ -3097,21 +3097,24 @@ ContextBrowser::lyricsAdd() //SLOT
 void
 ContextBrowser::lyricsEditToggle() //SLOT
 {
-    if ( m_lyricsToolBar->getButton( LYRICS_EDIT )->isOn() ) {
-        m_lyricsBeingEditedUrl = EngineController::instance()->bundle().url().path();
+    if ( m_lyricsToolBar->getButton( LYRICS_EDIT )->isOn() )
+    {
+        m_lyricsBeingEditedUrl    = EngineController::instance()->bundle().url().path();
         m_lyricsBeingEditedArtist = EngineController::instance()->bundle().artist();
-        m_lyricsBeingEditedTitle = EngineController::instance()->bundle().title();
+        m_lyricsBeingEditedTitle  = EngineController::instance()->bundle().title();
         QString xml = CollectionDB::instance()->getLyrics( m_lyricsBeingEditedUrl ), lyrics;
         QDomDocument doc;
         if( doc.setContent( xml ) )
             lyrics = doc.documentElement().text();
         else
             lyrics = QString::null;
+        lyrics.replace( "\n", "<br>" );
         m_lyricsTextEdit->setText( lyrics );
         m_lyricsPage->hide();
         m_lyricsTextEdit->show();
     }
-    else {
+    else
+    {
         m_lyricsTextEdit->hide();
 
         QDomDocument doc;

@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 #
-# amaroK Script for fetching song lyrics from http://lyrc.com.ar.
-# Ported from amaroK's contextbrowser.cpp.
+# Amarok Script for fetching song lyrics from http://lyrc.com.ar.
+# Ported from Amarok's contextbrowser.cpp.
 #
 # (c) 2006 Mark Kretschmann <markey@web.de>
 # (c) 2004 Christian Muehlhaeuser <chris@chris.de>
@@ -136,11 +136,13 @@ def fetchLyrics( artist, title, url )
     lyrics.gsub!( "\r", "" ) # No need for CR, just complicates our RegExps
 #     lyrics.gsub!( '', "'" ) # Lyrc has weird encodings
 
-    # Remove images, links, scripts, styles and fonts
+    # Remove images, links, scripts, styles, fonts and tables
     lyrics.gsub!( /<[iI][mM][gG][^>]*>/, "" )
     lyrics.gsub!( /<[aA][^>]*>[^<]*<\/[aA]>/, "" )
     lyrics.gsub!( /<[sS][cC][rR][iI][pP][tT][^>]*>[^<]*(<!--[^>]*>)*[^<]*<\/[sS][cC][rR][iI][pP][tT]>/, "" )
     lyrics.gsub!( /<[sS][tT][yY][lL][eE][^>]*>[^<]*(<!--[^>]*>)*[^<]*<\/[sS][tT][yY][lL][eE]>/, "" )
+    # remove the leftover from the above subs.
+    lyrics.gsub!( "<table align=\"left\"><tr><td></td></tr></table>", "" )
 
     lyricsPos = lyrics.index( /<[fF][oO][nN][tT][ ]*[sS][iI][zZ][eE][ ]*='2'[ ]*>/ )
 
