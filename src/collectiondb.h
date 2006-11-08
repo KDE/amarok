@@ -320,6 +320,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
 
         //song methods
         bool addSong( MetaBundle* bundle, const bool incremental = false );
+        void aftCheckPermanentTables( const QString &currdeviceid, const QString &currid, const QString &currurl );
         void doAFTStuff( MetaBundle *bundle, const bool tempTables = true );
         void emitFileAdded( const QString &absPath,
                             const QString &uniqueid = QString::null );
@@ -511,8 +512,8 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         void similarArtistsFetched( const QString& artist, const QStringList& suggestions );
         void fileOperationResult( KIO::Job *job ); // moveFile depends on it
         void podcastImageResult( KIO::Job *job ); //for fetching remote podcast images
-        void aftMigrateStatisticsUrl( const QString& oldUrl, const QString& newUrl, const QString& uniqueid ); //AFT-enable stats
-        void aftMigrateStatisticsUniqueId( const QString& url, const QString& oldid, const QString& newid );
+        void aftMigratePermanentTablesUrl( const QString& oldUrl, const QString& newUrl, const QString& uniqueid ); //AFT-enable stats
+        void aftMigratePermanentTablesUniqueId( const QString& url, const QString& oldid, const QString& newid );
 
     private:
         //bump DATABASE_VERSION whenever changes to the table structure are made.

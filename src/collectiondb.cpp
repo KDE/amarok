@@ -3012,19 +3012,6 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
                 .arg( currdeviceid
                 , currurl ) );
 
-    QStringList statUIDVal = query( QString(
-            "SELECT url, uniqueid, deviceid "
-            "FROM statistics "
-            "WHERE uniqueid = '%1';" )
-                .arg( currid ) );
-
-    QStringList statURLVal = query( QString(
-            "SELECT url, uniqueid "
-            "FROM statistics "
-            "WHERE deviceid = %1 AND url = '%2';" )
-                .arg( currdeviceid
-                , currurl ) );
-
     bool tempTablesAndInPermanent = false;
     bool permanentFullMatch = false;
 
@@ -3053,26 +3040,7 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
                  << currid
                  << currdir );
         insert( insertline, NULL );
-        if( !statUIDVal.empty() )
-        {
-            //debug() << "first stats case" << endl;
-            query( QString( "UPDATE statistics SET deviceid = %1, url = '%4', deleted = %2 WHERE uniqueid = '%3';" )
-                                .arg( currdeviceid
-                                , boolF()
-                                , currid
-                                , currurl ) );
-        }
-        else if( !statURLVal.empty() )
-        {
-            //debug() << "second stats case" << endl;
-            query( QString( "UPDATE statistics SET uniqueid = '%1', deleted = %2 "
-                            "WHERE deviceid = %3 AND url = '%4';" )
-                                .arg( currid
-                                , boolF()
-                                , currdeviceid
-                                , currurl ) );
-        }
-        //debug() << "First insert" << endl;
+        aftCheckPermanentTables( currdeviceid, currid, currurl );
         return;
     }
 
@@ -3134,25 +3102,7 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
             insertline += QString( ", '%1', '%2');" ).arg( currid ).arg( currdir );
             //debug() << "running command: " << insertline << endl;
             insert( insertline, NULL );
-            if( !statUIDVal.empty() )
-            {
-                //debug() << "third stats case" << endl;
-                query( QString( "UPDATE statistics SET deviceid = %1, url = '%2', deleted = %3 WHERE uniqueid = '%4';" )
-                                     .arg( currdeviceid
-                                     , currurl
-                                     , boolF()
-                                     , currid ) );
-            }
-            else if( !statURLVal.empty() )
-            {
-                //debug() << "fourth stats case" << endl;
-                query( QString( "UPDATE statistics SET uniqueid = '%1', deleted = %2 "
-                                "WHERE deviceid = %3 AND url = '%4';" )
-                                    .arg( currid
-                                    , boolF()
-                                    , currdeviceid
-                                    , currurl ) );
-            }
+            aftCheckPermanentTables( currdeviceid, currid, currurl );
             return;
         }
 
@@ -4985,29 +4935,92 @@ CollectionDB::similarArtistsFetched( const QString& artist, const QStringList& s
 }
 
 void
-CollectionDB::aftMigrateStatisticsUrl( const QString& /*oldUrl*/, const QString& newUrl, const QString& uniqueid )
+CollectionDB::aftCheckPermanentTables( const QString &currdeviceid, const QString &currid, const QString &currurl )
 {
-    int deviceid = MountPointManager::instance()->getIdForUrl( newUrl );
-    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, newUrl );
-    query( QString( "DELETE FROM statistics WHERE deviceid = %1 AND url = '%2';" )
-                            .arg( deviceid )
-                            .arg( escapeString( rpath ) ) );
-    query( QString( "UPDATE statistics SET deviceid = %1, url = '%4', deleted = %2 WHERE uniqueid = '%3';" )
-                            .arg( deviceid )
-                            .arg( boolF() )
-                            .arg( escapeString( uniqueid ) )
-                            .arg( escapeString( rpath ) ) );
+    QStringList tables;
+    tables << "statistics";
+    tables << "tags_labels";
+
+    QStringList check1, check2;
+
+    foreach( tables )
+    {
+        check1 = query( QString(
+                "SELECT url, uniqueid, deviceid "
+                "FROM %1 "
+                "WHERE uniqueid = '%2';" )
+                    .arg( escapeString( *it ) )
+                    .arg( currid ) );
+
+        check2 = query( QString(
+                "SELECT url, uniqueid "
+                "FROM %1 "
+                "WHERE deviceid = %2 AND url = '%3';" )
+                    .arg( escapeString( *it ) )
+                    .arg( currdeviceid
+                    , currurl ) );
+
+        if( !check1.empty() )
+        {
+            query( QString( "UPDATE %1 SET deviceid = %2, url = '%4' WHERE uniqueid = '%3';" )
+                                .arg( escapeString( *it ) )
+                                .arg( currdeviceid
+                                , currid
+                                , currurl ) );
+        }
+        else if( !check2.empty() )
+        {
+            query( QString( "UPDATE %1 SET uniqueid = '%2' WHERE deviceid = %3 AND url = '%4';" )
+                                .arg( escapeString( *it ) )
+                                .arg( currid
+                                , currdeviceid
+                                , currurl ) );
+        }
+    }
 }
 
 void
-CollectionDB::aftMigrateStatisticsUniqueId( const QString& /*url*/, const QString& oldid, const QString& newid )
+CollectionDB::aftMigratePermanentTablesUrl( const QString& /*oldUrl*/, const QString& newUrl, const QString& uniqueid )
 {
-    query( QString( "DELETE FROM statistics WHERE uniqueid = '%1';" )
-                            .arg( escapeString( newid ) ) );
-    query( QString( "UPDATE statistics SET uniqueid = '%1', deleted = %2 WHERE uniqueid = '%3';" )
-                            .arg( escapeString( newid ) )
-                            .arg( boolF() )
-                            .arg( escapeString( oldid ) ) );
+    QStringList tables;
+    tables << "statistics";
+    tables << "tags_labels";
+    int deviceid = MountPointManager::instance()->getIdForUrl( newUrl );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, newUrl );
+    //NOTE: if ever do anything with "deleted" in the statistics table, set deleted to false in query
+    //below; will need special case.
+    foreach( tables )
+    {
+        query( QString( "DELETE FROM %1 WHERE deviceid = %2 AND url = '%3';" )
+                                .arg( escapeString( *it ) )
+                                .arg( deviceid )
+                                .arg( escapeString( rpath ) ) );
+        query( QString( "UPDATE %1 SET deviceid = %2, url = '%4' WHERE uniqueid = '%3';" )
+                                .arg( escapeString( *it ) )
+                                .arg( deviceid )
+                                .arg( escapeString( uniqueid ) )
+                                .arg( escapeString( rpath ) ) );
+    }
+}
+
+void
+CollectionDB::aftMigratePermanentTablesUniqueId( const QString& /*url*/, const QString& oldid, const QString& newid )
+{
+    QStringList tables;
+    tables << "statistics";
+    tables << "tags_labels";
+    //NOTE: if ever do anything with "deleted" in the statistics table, set deleted to false in query
+    //below; will need special case.
+    foreach( tables )
+    {
+        query( QString( "DELETE FROM %1 WHERE uniqueid = '%2';" )
+                                .arg( escapeString( *it ) )
+                                .arg( escapeString( newid ) ) );
+        query( QString( "UPDATE %1 SET uniqueid = '%1' WHERE uniqueid = '%2';" )
+                                .arg( escapeString( *it ) )
+                                .arg( escapeString( newid ) )
+                                .arg( escapeString( oldid ) ) );
+    }
 }
 
 
