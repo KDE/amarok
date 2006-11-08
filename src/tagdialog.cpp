@@ -1223,7 +1223,7 @@ TagDialog::saveTags()
     }
     QMap<QString, QStringList>::ConstIterator endLabels( newLabels.end() );
     for(QMap<QString, QStringList>::ConstIterator it = newLabels.begin(); it != endLabels; ++it ) {
-        CollectionDB::instance()->setLabels( it.key(), it.data(), CollectionDB::typeUser );
+        CollectionDB::instance()->setLabels( it.key(), it.data(), m_playlistItem->uniqueId(), CollectionDB::typeUser );
     }
     CollectionDB::instance()->cleanLabels();
 

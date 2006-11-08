@@ -1022,7 +1022,7 @@ CollectionDB::createPersistentTables()
     query( QString( "CREATE TABLE tags_labels ("
                     "deviceid INTEGER,"
                     "url " + exactTextColumnType() + ", "
-                    "uniqueid " + textColumnType(8) + ", "      //m:n relationship, DO NOT MAKE UNIQUE!
+                    "uniqueid " + exactTextColumnType(32) + ", "      //m:n relationship, DO NOT MAKE UNIQUE!
                     "labelid INTEGER REFERENCES labels( id ) ON DELETE CASCADE );" ) );
 
     query( "CREATE UNIQUE INDEX lyrics_url ON lyrics( url, deviceid );" );
@@ -5518,11 +5518,12 @@ CollectionDB::updatePersistentTables()
             query( "INSERT INTO lyrics SELECT * FROM lyrics_fix;" );
             query( "INSERT INTO playlists SELECT * FROM playlists_fix;" );
         }
-        if ( PersistentVersion.toInt() < 16 )
+        if ( PersistentVersion.toInt() < 17 )
         {
             //drop old labels and label tables, they were never used anyway and just confuse things
             query( "DROP TABLE label;" );
             query( "DROP TABLE labels;" );
+            query( "DROP TABLE tags_labels;" );
             //update for label support
             QString labelsAutoIncrement = "";
             if ( getDbConnectionType() == DbConnection::postgresql )
@@ -5544,7 +5545,7 @@ CollectionDB::updatePersistentTables()
             query( QString( "CREATE TABLE tags_labels ("
                             "deviceid INTEGER,"
                             "url " + exactTextColumnType() + ", "
-                            "uniqueid " + textColumnType(8) + ", "      //m:n relationship, DO NOT MAKE UNIQUE!
+                            "uniqueid " + exactTextColumnType(32) + ", "      //m:n relationship, DO NOT MAKE UNIQUE!
                             "labelid INTEGER REFERENCES labels( id ) ON DELETE CASCADE );" ) );
 
             query( "CREATE UNIQUE INDEX labels_name ON labels( name, type );" );
@@ -5553,7 +5554,7 @@ CollectionDB::updatePersistentTables()
         }
 
         //Up to date. Keep this number   \/   in sync!
-        if ( PersistentVersion.toInt() > 16 || PersistentVersion.toInt() < 0 )
+        if ( PersistentVersion.toInt() > 17 || PersistentVersion.toInt() < 0 )
         {
             //Something is horribly wrong
             if ( adminValue( "Database Persistent Tables Version" ).toInt() != DATABASE_PERSISTENT_TABLES_VERSION )
@@ -5763,7 +5764,7 @@ CollectionDB::cleanLabels()
 }
 
 void
-CollectionDB::setLabels( const QString &url, const QStringList &labels, const uint type )
+CollectionDB::setLabels( const QString &url, const QStringList &labels, const QString &uid, const uint type )
 {
     DEBUG_BLOCK
     int deviceid = MountPointManager::instance()->getIdForUrl( url );
@@ -5789,8 +5790,8 @@ CollectionDB::setLabels( const QString &url, const QStringList &labels, const ui
             id = insert( QString( "INSERT INTO labels( name, type ) VALUES ( '%2', %1 );" )
                                   .arg( type ).arg( escapeString( *it ) ), "labels" );
         }
-        insert( QString( "INSERT INTO tags_labels( labelid, deviceid, url ) VALUES ( %1, %2, '%3' );" )
-                         .arg( id ).arg( deviceid ).arg( rpath ), 0 );
+        insert( QString( "INSERT INTO tags_labels( labelid, deviceid, url, uniqueid ) VALUES ( %1, %2, '%3', '%4' );" )
+                         .arg( id ).arg( deviceid ).arg( rpath ).arg( escapeString( uid ) ), 0 );
     }
 }
 
@@ -5813,7 +5814,7 @@ CollectionDB::removeLabels( const QString &url, const QStringList &labels, const
 }
 
 void
-CollectionDB::addLabel( const QString &url, const QString &label, const uint type )
+CollectionDB::addLabel( const QString &url, const QString &label, const QString &uid, const uint type )
 {
     DEBUG_BLOCK
     int deviceid = MountPointManager::instance()->getIdForUrl( url );
@@ -5835,8 +5836,8 @@ CollectionDB::addLabel( const QString &url, const QString &label, const uint typ
         if ( count )
             return;
     }
-    insert( QString( "INSERT INTO tags_labels( labelid, deviceid, url ) VALUES ( %1, %2, '%3' );" )
-                     .arg( id ).arg( deviceid ).arg( rpath ), "tags_labels" );
+    insert( QString( "INSERT INTO tags_labels( labelid, deviceid, url, uniqueid ) VALUES ( %1, %2, '%3', '%4' );" )
+                     .arg( id ).arg( deviceid ).arg( rpath ).arg( escapeString( uid ) ), "tags_labels" );
 }
 
 QStringList
