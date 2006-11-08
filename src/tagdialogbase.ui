@@ -760,7 +760,7 @@
                             </font>
                         </property>
                         <property name="text">
-                            <string> Edit the assigned labels below (multiple labels are separated by a comma), or  select a label to assign above</string>
+                            <string> Edit the assigned labels below (multiple labels are separated by a comma), or select a label to assign above</string>
                         </property>
                     </widget>
                     <widget class="KTextEdit">
