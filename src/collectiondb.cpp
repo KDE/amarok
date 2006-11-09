@@ -247,9 +247,9 @@ CollectionDB::CollectionDB()
 
 
     connect( this, SIGNAL(fileMoved(const QString&, const QString&, const QString&)),
-             this, SLOT(aftMigrateStatisticsUrl(const QString&, const QString&, const QString&)) );
+             this, SLOT(aftMigratePermanentTablesUrl(const QString&, const QString&, const QString&)) );
     connect( this, SIGNAL(uniqueIdChanged(const QString&, const QString&, const QString&)),
-             this, SLOT(aftMigrateStatisticsUniqueId(const QString&, const QString&, const QString&)) );
+             this, SLOT(aftMigratePermanentTablesUniqueId(const QString&, const QString&, const QString&)) );
 
     connect( qApp, SIGNAL( aboutToQuit() ), this, SLOT( disableAutoScoring() ) );
 
@@ -3040,6 +3040,7 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
                  << currid
                  << currdir );
         insert( insertline, NULL );
+        debug() << "aftCheckPermanentTables #1" << endl;
         aftCheckPermanentTables( currdeviceid, currid, currurl );
         return;
     }
@@ -3102,6 +3103,7 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
             insertline += QString( ", '%1', '%2');" ).arg( currid ).arg( currdir );
             //debug() << "running command: " << insertline << endl;
             insert( insertline, NULL );
+            debug() << "aftCheckPermanentTables #2" << endl;
             aftCheckPermanentTables( currdeviceid, currid, currurl );
             return;
         }
@@ -4937,14 +4939,18 @@ CollectionDB::similarArtistsFetched( const QString& artist, const QStringList& s
 void
 CollectionDB::aftCheckPermanentTables( const QString &currdeviceid, const QString &currid, const QString &currurl )
 {
+    DEBUG_BLOCK
     QStringList tables;
     tables << "statistics";
     tables << "tags_labels";
+
+    debug() << "deviceid = " << currdeviceid << endl << "url = " << currurl << endl << "uid = " << currid << endl; 
 
     QStringList check1, check2;
 
     foreach( tables )
     {
+        debug() << "Checking " << (*it) << endl;;
         check1 = query( QString(
                 "SELECT url, uniqueid, deviceid "
                 "FROM %1 "
@@ -4962,6 +4968,7 @@ CollectionDB::aftCheckPermanentTables( const QString &currdeviceid, const QStrin
 
         if( !check1.empty() )
         {
+            debug() << "uniqueid found, updating url" << endl;
             query( QString( "UPDATE %1 SET deviceid = %2, url = '%4' WHERE uniqueid = '%3';" )
                                 .arg( escapeString( *it ) )
                                 .arg( currdeviceid
@@ -4970,6 +4977,7 @@ CollectionDB::aftCheckPermanentTables( const QString &currdeviceid, const QStrin
         }
         else if( !check2.empty() )
         {
+            debug() << "url found, updating uniqueid" << endl;
             query( QString( "UPDATE %1 SET uniqueid = '%2' WHERE deviceid = %3 AND url = '%4';" )
                                 .arg( escapeString( *it ) )
                                 .arg( currid
@@ -4982,6 +4990,7 @@ CollectionDB::aftCheckPermanentTables( const QString &currdeviceid, const QStrin
 void
 CollectionDB::aftMigratePermanentTablesUrl( const QString& /*oldUrl*/, const QString& newUrl, const QString& uniqueid )
 {
+    DEBUG_BLOCK
     QStringList tables;
     tables << "statistics";
     tables << "tags_labels";
@@ -4989,6 +4998,7 @@ CollectionDB::aftMigratePermanentTablesUrl( const QString& /*oldUrl*/, const QSt
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, newUrl );
     //NOTE: if ever do anything with "deleted" in the statistics table, set deleted to false in query
     //below; will need special case.
+    debug() << "deviceid = " << deviceid << endl << "newurl = " << newUrl << endl << "uid = " << uniqueid << endl; 
     foreach( tables )
     {
         query( QString( "DELETE FROM %1 WHERE deviceid = %2 AND url = '%3';" )
@@ -5006,9 +5016,11 @@ CollectionDB::aftMigratePermanentTablesUrl( const QString& /*oldUrl*/, const QSt
 void
 CollectionDB::aftMigratePermanentTablesUniqueId( const QString& /*url*/, const QString& oldid, const QString& newid )
 {
+    DEBUG_BLOCK
     QStringList tables;
     tables << "statistics";
     tables << "tags_labels";
+    debug() << "oldid = " << oldid << endl << "newid = " << newid << endl; 
     //NOTE: if ever do anything with "deleted" in the statistics table, set deleted to false in query
     //below; will need special case.
     foreach( tables )
