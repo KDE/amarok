@@ -3883,15 +3883,6 @@ CollectionDB::migrateFile( const QString &oldURL, const QString &newURL )
 
     query( QString( "UPDATE tags_labels SET url = '%2', deviceid = %1 WHERE deviceid = %3 AND url = '%4';" )
             .arg( QString::number( newMediaid ), escapeString( newRpath ), QString::number( oldMediaid ), escapeString( oldRpath ) ) );
-    //  Clean up.
-    query( QString( "DELETE FROM tags WHERE url = '%2' AND deviceid = %1;" )
-        .arg( oldMediaid ).arg( escapeString( oldURL ) ) );
-
-    query( QString( "DELETE FROM statistics WHERE url = '%2' AND deviceid = %1;" )
-        .arg( oldMediaid ).arg( escapeString( oldRpath ) ) );
-
-    query( QString( "DELETE FROM lyrics WHERE url = '%2' AND deviceid = %1;" )
-        .arg( oldMediaid ).arg( escapeString( oldRpath ) ) );
 
     query( QString( "UPDATE uniqueid SET url = '%1', deviceid = %2 WHERE url = '%3' AND deviceid = %4;" )
         .arg( escapeString( newRpath ), QString::number( newMediaid ),
