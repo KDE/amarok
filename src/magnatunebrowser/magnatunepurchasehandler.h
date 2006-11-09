@@ -49,6 +49,10 @@ public:
     */
    void purchaseAlbum( MagnatuneAlbum * album );
 
+signals:
+
+    void purchaseCompleted( bool success );
+
 protected:
    
     KIO::TransferJob * m_resultDownloadJob;
@@ -81,6 +85,7 @@ protected slots:
     void showPurchaseDialog(bool useCover);
     void xmlDownloadComplete( KIO::Job* downLoadJob );
     void albumDownloadComplete(bool success);
+    void albumPurchaseCancelled();
 
 public slots:
 

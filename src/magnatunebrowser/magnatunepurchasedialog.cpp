@@ -68,7 +68,9 @@ void MagnatunePurchaseDialog::purchase( )
 
 void MagnatunePurchaseDialog::cancel( )
 {
-    close();
+    hide();
+    emit ( cancelled() );
+
 }
 
 bool MagnatunePurchaseDialog::verifyEntries( )
@@ -131,11 +133,6 @@ bool MagnatunePurchaseDialog::verifyEntries( )
 
 }
 
-void MagnatunePurchaseDialog::reenableButtons( )
-{
-    purchaseButton->setEnabled( true );
-    cancelButton->setEnabled( true );
-}
 
 void MagnatunePurchaseDialog::setCover( QString coverFile )
 {

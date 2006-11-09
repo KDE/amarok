@@ -62,7 +62,7 @@ void MagnatuneAlbumDownloader::downloadCover( QString albumCoverUrlString, QStri
 
     Amarok::StatusBar::instance() ->newProgressOperation( m_albumDownloadJob )
     .setDescription( i18n( "Downloading album cover" ) )
-    .setAbortSlot( this, SLOT( albumDownloadAborted() ) );
+    .setAbortSlot( this, SLOT( coverDownloadAborted() ) );
 }
 
 
@@ -106,11 +106,8 @@ void MagnatuneAlbumDownloader::coverDownloadComplete( KIO::Job * downloadJob )
     if ( downloadJob != m_albumDownloadJob )
         return ; //not the right job, so let's ignore it
 
-    emit( downloadComplete( true ) );
+    emit( coverDownloadCompleted( true ) );
 }
-
-
-
 
 
 void MagnatuneAlbumDownloader::albumDownloadAborted( )
@@ -131,9 +128,9 @@ void MagnatuneAlbumDownloader::coverDownloadAborted( )
     m_albumDownloadJob->kill( true );
     delete m_albumDownloadJob;
     m_albumDownloadJob = 0;
-    debug() << "Cover album download" << endl;
+    debug() << "Aborted cover download" << endl;
 
-    emit( downloadComplete( false ) );
+    emit( coverDownloadComplete( false ) );
 }
 
 

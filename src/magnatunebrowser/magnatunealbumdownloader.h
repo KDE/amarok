@@ -49,6 +49,7 @@ signals:
      * @param success true is download completed, false if download was cancelled.
      */
     void downloadComplete(bool success);
+    void coverDownloadCompleted(bool success);
 
 public slots:
     /**

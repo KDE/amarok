@@ -57,11 +57,6 @@ public:
      */
     void setCover( QString coverFile );
 
-    /**
-     * re-enables the purchase and cancel button
-     */
-    void reenableButtons();
-
 
 signals:
 
@@ -77,6 +72,11 @@ signals:
      * @param amount The amount to pay (in us $)
      */
     void makePurchase( QString ccNumber, QString expYear, QString expMonth, QString name, QString email, QString albumCode, int amount );
+
+    /**
+     * Signal emited if purchase operation is cancelled
+     */
+    void cancelled();
 
 public slots:
     /*$PUBLIC_SLOTS$*/

@@ -39,7 +39,12 @@ MagnatunePurchaseHandler::MagnatunePurchaseHandler()
 
 
 MagnatunePurchaseHandler::~MagnatunePurchaseHandler()
-{}
+{
+    if (m_downloadDialog != 0) delete m_downloadDialog;
+    if (m_purchaseDialog != 0) delete m_purchaseDialog;
+    if (m_albumDownloader != 0) delete m_albumDownloader;
+
+}
 
 
 void MagnatunePurchaseHandler::purchaseAlbum( MagnatuneAlbum * album )
@@ -56,12 +61,12 @@ void MagnatunePurchaseHandler::purchaseAlbum( MagnatuneAlbum * album )
      if ( m_albumDownloader == 0 )
     {
         m_albumDownloader = new MagnatuneAlbumDownloader();
+        connect( m_albumDownloader, SIGNAL( coverDownloadCompleted( bool ) ), this, SLOT( showPurchaseDialog( bool ) ));
     }
 
     m_currentAlbumCoverName =  album->getName() +  " - cover.jpg";
 
 
-    connect( m_albumDownloader, SIGNAL( downloadComplete( bool ) ), this, SLOT( showPurchaseDialog( bool ) ));
     m_albumDownloader->downloadCover( albumCoverUrlString, m_currentAlbumCoverName );
 
 }
@@ -69,13 +74,22 @@ void MagnatunePurchaseHandler::purchaseAlbum( MagnatuneAlbum * album )
 void MagnatunePurchaseHandler::showPurchaseDialog( bool useCover )
 {
 
+    if ( m_albumDownloader != 0 )
+    {
+        delete m_albumDownloader;
+        m_albumDownloader = 0;
+    }
+
     if ( m_purchaseDialog == 0 )
     {
         m_purchaseDialog = new MagnatunePurchaseDialog( m_parent, "PurchaseDialog", true, 0 );
+        
+        connect( m_purchaseDialog, SIGNAL( makePurchase( QString, QString, QString, QString, QString, QString, int ) ), this, SLOT( processPayment( QString, QString, QString, QString, QString, QString, int ) ) );
+        connect ( m_purchaseDialog, SIGNAL( cancelled() ), this, SLOT( albumPurchaseCancelled() ) );
     }
 
 
-    connect( m_purchaseDialog, SIGNAL( makePurchase( QString, QString, QString, QString, QString, QString, int ) ), this, SLOT( processPayment( QString, QString, QString, QString, QString, QString, int ) ) );
+
 
 
     if ( m_currentAlbum != 0 )
@@ -123,19 +137,22 @@ void MagnatunePurchaseHandler::xmlDownloadComplete( KIO::Job * downloadJob )
 
     saveDownloadInfo( resultXml );
 
-    if ( m_downloadDialog == 0 )
-    {
-        m_downloadDialog = new MagnatuneDownloadDialog( m_parent, "downloaddialog", true, 0 );
-
-    }
-
+  
     if ( m_albumDownloader == 0 )
     {
         m_albumDownloader = new MagnatuneAlbumDownloader();
+        connect( m_albumDownloader, SIGNAL( downloadComplete( bool ) ), this, SLOT( albumDownloadComplete( bool ) ) );
     }
 
-    connect( m_downloadDialog, SIGNAL( downloadAlbum( MagnatuneDownloadInfo *  ) ), m_albumDownloader, SLOT( downloadAlbum( MagnatuneDownloadInfo * ) ) );
-    connect( m_albumDownloader, SIGNAL( downloadComplete( bool ) ), this, SLOT( albumDownloadComplete( bool ) ) );
+    if ( m_downloadDialog == 0 )
+    {
+        m_downloadDialog = new MagnatuneDownloadDialog( m_parent, "downloaddialog", true, 0 );
+        connect( m_downloadDialog, SIGNAL( downloadAlbum( MagnatuneDownloadInfo *  ) ), m_albumDownloader, SLOT( downloadAlbum( MagnatuneDownloadInfo * ) ) );
+
+    }
+
+
+
 
     MagnatuneDownloadInfo * downloadInfo = new MagnatuneDownloadInfo();
     if ( downloadInfo->initFromString( resultXml ) )
@@ -151,7 +168,7 @@ void MagnatunePurchaseHandler::xmlDownloadComplete( KIO::Job * downloadJob )
 
         QMessageBox::information( m_parent, "Could not process payment",
                                   "There seems to be an error in the information entered (check the credit card number), please try again\n" );
-
+        m_purchaseDialog->setEnabled( true );
     }
 }
 
@@ -199,9 +216,24 @@ void MagnatunePurchaseHandler::albumDownloadComplete( bool success )
 {
     //cleanup time!
 
+     debug() << "MagnatunePurchaseHandler::albumDownloadComplete" << endl;
+
     delete m_downloadDialog;
     m_downloadDialog = 0;
 
+    emit( purchaseCompleted( success ) );
+
+}
+
+void MagnatunePurchaseHandler::albumPurchaseCancelled( )
+{
+    debug() << "Purchased dialog cancelled, deleting..." << endl;
+
+    delete m_purchaseDialog;
+    m_purchaseDialog = 0;
+
+
+    emit( purchaseCompleted( false) );
 }
 
 

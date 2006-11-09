@@ -161,6 +161,12 @@ private slots:
      */
     void processRedownload();
 
+    /**
+     * Slot for recieving notifications of completed purchase operations
+     * @param success Was the operation a success?
+     */
+    void purchaseCompleted( bool success );
+
 private:
 
     MagnatuneBrowser( const char *name );
@@ -229,6 +235,7 @@ private:
 
     QComboBox   *m_genreComboBox;
     bool         m_isInfoShown;
+    bool         m_purchaseInProgress;
 
     KIO::TransferJob * m_listDownloadJob;
 };
