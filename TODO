@@ -5,6 +5,8 @@ TODO-list for Amarok
 
 
 SHORT-TERM (URGENT):
+ <sebr>    Taglib pretends it can't read metadata from media:/ urls, so we need to change the urls
+
  <jeff>    When playing a stream from e.g. Ampache, even if an Artist is detected, Wikipedia
            will pull up "Artist - Song" instead of just Artist.
 
