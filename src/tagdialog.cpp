@@ -424,10 +424,6 @@ void TagDialog::init()
     labels_favouriteLabelsFrame->layout()->add( m_labelCloud->view() );
     const QStringList favoriteLabels = CollectionDB::instance()->favoriteLabels();
     QString html = generateHTML( favoriteLabels );
-    //m_labelCloud->begin();
-    //m_labelCloud->write( html );
-    //m_labelCloud->end();
-    //m_labelCloud->setDNDEnabled( false );       //no drag-n-drop
     m_labelCloud->set( html );
     connect( m_labelCloud->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
              this,                             SLOT( openURLRequest( const KURL & ) ) );
@@ -1223,7 +1219,8 @@ TagDialog::saveTags()
     }
     QMap<QString, QStringList>::ConstIterator endLabels( newLabels.end() );
     for(QMap<QString, QStringList>::ConstIterator it = newLabels.begin(); it != endLabels; ++it ) {
-        CollectionDB::instance()->setLabels( it.key(), it.data(), m_playlistItem->uniqueId(), CollectionDB::typeUser );
+        KURL url( it.key() );
+        CollectionDB::instance()->setLabels( it.key(), it.data(), bundleForURL( url ).uniqueId(), CollectionDB::typeUser );
     }
     CollectionDB::instance()->cleanLabels();
 
