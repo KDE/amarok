@@ -7360,7 +7360,7 @@ QueryBuilder::sortByFunction( int function, int table, Q_INT64 value, bool desce
         columnName += ')';
     }
     else
-        columnName = functionName( function )+'('+tableName( table )+'.'+valueName( value )+')';
+        columnName = functionName( function )+tableName( table )+valueName( value );
 
     m_sort += columnName;
 
@@ -7593,7 +7593,7 @@ QueryBuilder::valForFavoriteSorting() {
     Q_INT64 favSortBy = valRating;
     if ( !AmarokConfig::useScores() && !AmarokConfig::useRatings() )
         favSortBy = valPlayCounter;
-    else if( !AmarokConfig::useScores() )
+    else if( !AmarokConfig::useRatings() )
         favSortBy = valPercentage;
     return favSortBy;
 }
@@ -7610,11 +7610,18 @@ QueryBuilder::sortByFavorite() {
 
 void
 QueryBuilder::sortByFavoriteAvg() {
-    if ( AmarokConfig::useRatings() )
+    // Due to MySQL4 weirdness, we need to add the function we're using to sort
+    // as return values as well.
+    if ( AmarokConfig::useRatings() ) {
         sortByFunction(funcAvg, tabStats, valRating, true );
-    if ( AmarokConfig::useScores() )
+        addReturnFunctionValue( funcAvg, tabStats, valRating );
+    }
+    if ( AmarokConfig::useScores() ) {
         sortByFunction(funcAvg, tabStats, valPercentage, true );
+        addReturnFunctionValue( funcAvg, tabStats, valPercentage );
+    }
     sortByFunction(funcAvg, tabStats, valPlayCounter, true );
+    addReturnFunctionValue( funcAvg, tabStats, valPlayCounter );
 
     //exclude unrated and unplayed
     if( !m_having.isEmpty() )

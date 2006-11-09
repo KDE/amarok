@@ -711,6 +711,9 @@ class QueryBuilder
 
         static Q_INT64 valForFavoriteSorting();
         void sortByFavorite();
+
+        // sortByFavoriteAvg() add the average rating, if enabled, the average score, if enabled,
+        // and the average playcounter as return values!
         void sortByFavoriteAvg();
 
         enum qBuilderFunctions  { funcNone = 0, funcCount = 1, funcMax = 2, funcMin = 4, funcAvg = 8, funcSum = 16 };

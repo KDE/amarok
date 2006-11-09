@@ -1508,11 +1508,10 @@ CurrentTrackJob::showHomeByAlbums()
         qb.clear();
         qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
         qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
-        qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valForFavoriteSorting() );
+        qb.sortByFavoriteAvg(); // this function adds return values!
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valID );
         // only albums with more than 3 tracks
         qb.having( QueryBuilder::tabAlbum, QueryBuilder::valID, QueryBuilder::funcCount, QueryBuilder::modeGreater, "3" );
-        qb.sortByFavoriteAvg();
         qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
         qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valID );
         qb.groupBy( QueryBuilder::tabArtist, QueryBuilder::valID );
@@ -1520,13 +1519,23 @@ CurrentTrackJob::showHomeByAlbums()
         qb.setOptions( QueryBuilder::optNoCompilations ); // samplers __need__ to be handled differently
         qb.setLimit( 0, 5 );
         QStringList faveAlbums = qb.run();
+        QStringList faveResults;
 
-        foreach( faveAlbums )
-        {
+        bool ratings = AmarokConfig::useRatings();
+        bool scores = AmarokConfig::useScores();
+
+        foreach( faveAlbums ) {
             albums += *it;
-            it++;
-            it++;
-            it++;
+            faveResults += *(it++);
+            faveResults += *(it++);
+            faveResults += *(it++);
+            // sortByFavoriteAvg add some return values, and constructHTMLAlbums expects
+            // a specific set of return values, so we might need to skip some values
+            if ( ratings )
+                it++;
+            if ( scores )
+                it++;
+            faveResults += *(it);
         }
 
         m_HTMLSource.append(
@@ -1550,7 +1559,7 @@ CurrentTrackJob::showHomeByAlbums()
         }
         else
         {
-            constructHTMLAlbums( faveAlbums, m_HTMLSource, "2" );
+            constructHTMLAlbums( faveResults, m_HTMLSource, "2" );
         }
 
         m_HTMLSource.append(
