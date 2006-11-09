@@ -40,10 +40,10 @@ interface that really makes playlist handling easy.
 ==============
 
 Required
-    * KDE-Libs 3.3
+    * KDE-Libs 3.3 (or newer)
       http://www.kde.org
 
-    * TagLib 1.4
+    * TagLib 1.4 (or newer)
       (metadata tagging library)
       http://freshmeat.net/projects/taglib
 
@@ -54,7 +54,7 @@ Required
     * One of the multimedia frameworks listed below:
 
 Recommended
-    * xine-lib 1.0.2
+    * xine-lib 1.0.2 (or newer)
       Note: xine-lib 1.1.1 is required for gapless playback.
       (multimedia framework)
       http://xinehq.de/
@@ -65,7 +65,7 @@ Optional
       http://www.real.com
       (Note: only HelixPlayer is exactly RealPlayer without MP3 support)
 
-    * KDE-Base 3.3
+    * KDE-Base 3.3 (or newer)
       (needed for Konqueror Sidebar)
       http://www.kde.org
 
@@ -85,7 +85,7 @@ Optional
       http://localhost.nl/~synap/libvisual/
       http://www.libsdl.org
 
-    * ProjectM 0.96
+    * ProjectM 0.96 (or newer)
       (visualization plugins for Libvisual or XMMS)
       http://xmms-projectm.sourceforge.net/
 
@@ -93,11 +93,11 @@ Optional
       (automatic tagging support)
       http://www.musicbrainz.org/
 
-    * K3B 0.11 or newer
+    * K3B 0.11 (or newer)
       (CD burning support)
       http://www.k3b.org
 
-    * libgpod 0.4.0 or newer
+    * libgpod 0.4.0 (or newer)
       (iPod support)
       http://www.gtkpod.org/libgpod.html
 
@@ -114,7 +114,7 @@ Optional
       (NJB mediadevice (Creative Nomad/Zen family, Dell DJ devices)
       http://www.sf.net/projects/libnjb
 
-    * libmtp 0.0.10 or newer
+    * libmtp 0.0.10 (or newer)
       (MTP media device support AKA PlaysForSure)
       http://libmtp.sourceforge.net/
 
