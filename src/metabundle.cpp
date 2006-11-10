@@ -1410,8 +1410,11 @@ MetaBundle::safeSave()
         return false;
     }
 
-    setUniqueId( readUniqueId() );
-    CollectionDB::instance()->doAFTStuff( this, false );
+    if( CollectionDB::instance()->isFileInCollection( url().path() ) )
+    {
+        setUniqueId( readUniqueId() );
+        CollectionDB::instance()->doAFTStuff( this, false );
+    }
 
     noproblem = mbs.cleanupSave();
 
@@ -1461,7 +1464,7 @@ MetaBundle::save( TagLib::FileRef* fileref )
             if( !passedin )
             {
                 returnval = f->save();
-                if( returnval )
+                if( returnval && CollectionDB::instance()->isFileInCollection( url().path() ) )
                 {
                     setUniqueId( readUniqueId() );
                     CollectionDB::instance()->doAFTStuff( this, false );
