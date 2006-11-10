@@ -494,10 +494,10 @@ GenericMediaDevice::newDirectory( const QString &name, MediaItem *parent )
     #define parent static_cast<GenericMediaItem*>(parent)
 
     QString fullName = m_mim[parent]->getFullName();
-    QString cleanedName = cleanPath(name);
+    QString cleanedName = cleanPath( name );
     QString fullPath = fullName + '/' + cleanedName;
     QCString dirPath = QFile::encodeName( fullPath );
-    debug() << "Creating directory: " << dirPath << endl;
+    debug() << "Creating directory: " << dirPath << endl;    
     const KURL url( dirPath );
 
     if( !KIO::NetAccess::mkdir( url, m_parent ) ) //failed
@@ -611,12 +611,13 @@ GenericMediaDevice::checkAndBuildLocation( const QString& location )
          i++ )
     {
 
-        QString path = location.section( '/', 0, i );
-        KURL url( path );
+        QString firstpart = location.section( '/', 0, i-1 );
+        QString secondpart = cleanPath( location.section( '/', i, i ) );
+        KURL url = KURL::fromPathOrURL( QFile::encodeName( firstpart + '/' + secondpart ) );
 
         if( !KIO::NetAccess::exists( url, false, m_parent ) )
         {
-            debug() << "directory does not exist, creating..." << endl;
+            debug() << "directory does not exist, creating..." << url << endl;            
             if( !KIO::NetAccess::mkdir(url, m_view ) ) //failed
             {
                 debug() << "Failed to create directory " << url << endl;
