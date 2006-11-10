@@ -3059,7 +3059,7 @@ ContextBrowser::lyricsResult( QCString cXmlDoc, bool cached ) //SLOT
 
         if( !cached ) {
             lyrics.append( "<br/><br/><i>\n" + i18n( "Powered by %1 (%2)" ).arg( site, site_url ) + "</i>\n" );
-            CollectionDB::instance()->setLyrics( EngineController::instance()->bundle().url().path(), xmldoc );
+            CollectionDB::instance()->setLyrics( EngineController::instance()->bundle().url().path(), xmldoc, EngineController::instance()->bundle().uniqueId() );
         }
     }
 
@@ -3133,7 +3133,7 @@ ContextBrowser::lyricsEditToggle() //SLOT
         QDomText t = doc.createTextNode( m_lyricsTextEdit->text() );
         e.appendChild( t );
         doc.appendChild( e );
-        CollectionDB::instance()->setLyrics( m_lyricsBeingEditedUrl, doc.toString() );
+        CollectionDB::instance()->setLyrics( m_lyricsBeingEditedUrl, doc.toString(), CollectionDB::instance()->uniqueIdFromUrl( KURL( m_lyricsBeingEditedUrl) ) );
         m_lyricsPage->show();
         lyricsChanged( m_lyricsBeingEditedUrl );
     }

@@ -216,6 +216,7 @@ CollectionDB::CollectionDB()
         , m_noCover( locate( "data", "amarok/images/nocover.png" ) )
         , m_scanInProgress( false )
         , m_rescanRequired( false )
+        , m_aftEnabledPersistentTables()
 {
     DEBUG_BLOCK
 
@@ -262,6 +263,7 @@ CollectionDB::CollectionDB()
     // on startup, since inotify can't inform us about old events
 //     QTimer::singleShot( 0, this, SLOT( scanMonitor() ) )
     initDirOperations();
+    m_aftEnabledPersistentTables << "lyrics" << "statistics" << "tags_labels";
 }
 
 
@@ -994,7 +996,8 @@ CollectionDB::createPersistentTables()
     query( QString( "CREATE TABLE lyrics ("
             "url " + exactTextColumnType() + ", "
             "deviceid INTEGER,"
-            "lyrics " + longTextColumnType() + ");" ) );
+            "lyrics " + longTextColumnType() + ", "
+            "uniqueid " + exactTextColumnType(32) + ");" ) );
 
     query( QString( "CREATE TABLE playlists ("
             "playlist " + textColumnType() + ", "
@@ -1026,6 +1029,7 @@ CollectionDB::createPersistentTables()
                     "labelid INTEGER REFERENCES labels( id ) ON DELETE CASCADE );" ) );
 
     query( "CREATE UNIQUE INDEX lyrics_url ON lyrics( url, deviceid );" );
+    query( "CREATE INDEX lyrics_uniqueid ON lyrics( uniqueid );" );
     query( "CREATE INDEX playlist_playlists ON playlists( playlist );" );
     query( "CREATE INDEX url_playlists ON playlists( url );" );
     query( "CREATE UNIQUE INDEX labels_name ON labels( name, type );" );
@@ -4539,7 +4543,7 @@ CollectionDB::getUniqueId( const QString &url )
 }
 
 void
-CollectionDB::setLyrics( const QString &url, const QString &lyrics )
+CollectionDB::setLyrics( const QString &url, const QString &lyrics, const QString &uniqueid )
 {
     int deviceid = MountPointManager::instance()->getIdForUrl( url );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
@@ -4557,8 +4561,8 @@ CollectionDB::setLyrics( const QString &url, const QString &lyrics )
     }
     else
     {
-        insert( QString( "INSERT INTO lyrics (deviceid, url, lyrics) values ( %1, '%2', '%3' );" )
-                .arg( QString::number(deviceid), escapeString( rpath ), escapeString( lyrics ) ), NULL);
+        insert( QString( "INSERT INTO lyrics (deviceid, url, lyrics, uniqueid) values ( %1, '%2', '%3', '%4' );" )
+                .arg( QString::number(deviceid), escapeString( rpath ), escapeString( lyrics ), escapeString( uniqueid ) ), NULL);
     }
 }
 
@@ -4932,19 +4936,15 @@ void
 CollectionDB::aftCheckPermanentTables( const QString &currdeviceid, const QString &currid, const QString &currurl )
 {
     //DEBUG_BLOCK
-    QStringList tables;
-    tables << "statistics";
-    tables << "tags_labels";
-
     //debug() << "deviceid = " << currdeviceid << endl << "url = " << currurl << endl << "uid = " << currid << endl; 
 
     QStringList check1, check2;
 
-    foreach( tables )
+    foreach( m_aftEnabledPersistentTables )
     {
         //debug() << "Checking " << (*it) << endl;;
         check1 = query( QString(
-                "SELECT url, uniqueid, deviceid "
+                "SELECT url, deviceid "
                 "FROM %1 "
                 "WHERE uniqueid = '%2';" )
                     .arg( escapeString( *it ) )
@@ -4983,15 +4983,12 @@ void
 CollectionDB::aftMigratePermanentTablesUrl( const QString& /*oldUrl*/, const QString& newUrl, const QString& uniqueid )
 {
     //DEBUG_BLOCK
-    QStringList tables;
-    tables << "statistics";
-    tables << "tags_labels";
     int deviceid = MountPointManager::instance()->getIdForUrl( newUrl );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, newUrl );
     //NOTE: if ever do anything with "deleted" in the statistics table, set deleted to false in query
     //below; will need special case.
     //debug() << "deviceid = " << deviceid << endl << "newurl = " << newUrl << endl << "uid = " << uniqueid << endl; 
-    foreach( tables )
+    foreach( m_aftEnabledPersistentTables )
     {
         query( QString( "DELETE FROM %1 WHERE deviceid = %2 AND url = '%3';" )
                                 .arg( escapeString( *it ) )
@@ -5009,13 +5006,10 @@ void
 CollectionDB::aftMigratePermanentTablesUniqueId( const QString& /*url*/, const QString& oldid, const QString& newid )
 {
     //DEBUG_BLOCK
-    QStringList tables;
-    tables << "statistics";
-    tables << "tags_labels";
     //debug() << "oldid = " << oldid << endl << "newid = " << newid << endl; 
     //NOTE: if ever do anything with "deleted" in the statistics table, set deleted to false in query
     //below; will need special case.
-    foreach( tables )
+    foreach( m_aftEnabledPersistentTables )
     {
         query( QString( "DELETE FROM %1 WHERE uniqueid = '%2';" )
                                 .arg( escapeString( *it ) )
@@ -5556,9 +5550,13 @@ CollectionDB::updatePersistentTables()
             query( "CREATE INDEX tags_labels_uniqueid ON tags_labels( uniqueid );" ); //m:n relationship, DO NOT MAKE UNIQUE!
             query( "CREATE INDEX tags_labels_url ON tags_labels( url, deviceid );" ); //m:n relationship, DO NOT MAKE UNIQUE!
         }
-
+        if ( PersistentVersion.toInt() < 18 )
+        {
+            query( "ALTER TABLE lyrics ADD uniqueid " + exactTextColumnType(32) + ';' );
+            query( "CREATE INDEX lyrics_uniqueid ON lyrics( uniqueid );" );
+        }
         //Up to date. Keep this number   \/   in sync!
-        if ( PersistentVersion.toInt() > 17 || PersistentVersion.toInt() < 0 )
+        if ( PersistentVersion.toInt() > 18 || PersistentVersion.toInt() < 0 )
         {
             //Something is horribly wrong
             if ( adminValue( "Database Persistent Tables Version" ).toInt() != DATABASE_PERSISTENT_TABLES_VERSION )

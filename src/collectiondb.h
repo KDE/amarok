@@ -474,7 +474,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
 
         void applySettings();
 
-        void setLyrics( const QString& url, const QString& lyrics );
+        void setLyrics( const QString& url, const QString& lyrics, const QString &uniqueid = QString::null );
         QString getLyrics( const QString& url );
 
         /** Remove from the amazon table the item with the specified md5sum **/
@@ -521,7 +521,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         static const int DATABASE_VERSION = 35;
         // Persistent Tables hold data that is somehow valuable to the user, and can't be erased when rescaning.
         // When bumping this, write code to convert the data!
-        static const int DATABASE_PERSISTENT_TABLES_VERSION = 17;
+        static const int DATABASE_PERSISTENT_TABLES_VERSION = 18;
         // Bumping this erases stats table. If you ever need to, write code to convert the data!
         static const int DATABASE_STATS_VERSION = 12;
         // When bumping this, you should provide code to convert the data.
@@ -619,6 +619,8 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         bool m_fileOperationFailed;
         bool m_scanInProgress;
         bool m_rescanRequired;
+ 
+        QStringList m_aftEnabledPersistentTables;
 
         // for handling podcast image url redirects
         QMap<KIO::Job *, QString> m_podcastImageJobs;

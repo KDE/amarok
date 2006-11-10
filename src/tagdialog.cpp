@@ -1214,13 +1214,14 @@ TagDialog::saveTags()
     }
     QMap<QString, QString>::ConstIterator endLyrics( storedLyrics.end() );
     for(QMap<QString, QString>::ConstIterator it = storedLyrics.begin(); it != endLyrics; ++it ) {
-        CollectionDB::instance()->setLyrics( it.key(), it.data() );
+        CollectionDB::instance()->setLyrics( it.key(), it.data(),
+               CollectionDB::instance()->uniqueIdFromUrl( KURL( it.key() ) ) );
         emit lyricsChanged( it.key() );
     }
     QMap<QString, QStringList>::ConstIterator endLabels( newLabels.end() );
     for(QMap<QString, QStringList>::ConstIterator it = newLabels.begin(); it != endLabels; ++it ) {
-        KURL url( it.key() );
-        CollectionDB::instance()->setLabels( it.key(), it.data(), bundleForURL( url ).uniqueId(), CollectionDB::typeUser );
+        CollectionDB::instance()->setLabels( it.key(), it.data(),
+                CollectionDB::instance()->uniqueIdFromUrl( KURL( it.key() ) ), CollectionDB::typeUser );
     }
     CollectionDB::instance()->cleanLabels();
 
