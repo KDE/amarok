@@ -135,8 +135,6 @@ void MagnatunePurchaseHandler::xmlDownloadComplete( KIO::Job * downloadJob )
 
     debug() << endl << endl << "result: " << resultXml << endl << endl;
 
-    saveDownloadInfo( resultXml );
-
   
     if ( m_albumDownloader == 0 )
     {
@@ -157,6 +155,8 @@ void MagnatunePurchaseHandler::xmlDownloadComplete( KIO::Job * downloadJob )
     MagnatuneDownloadInfo * downloadInfo = new MagnatuneDownloadInfo();
     if ( downloadInfo->initFromString( resultXml ) )
     {
+
+        saveDownloadInfo( resultXml );
         m_downloadDialog->setDownloadInfo( downloadInfo );
         m_purchaseDialog->close();
         delete m_purchaseDialog;
@@ -201,7 +201,7 @@ void MagnatunePurchaseHandler::saveDownloadInfo( QString infoXml )
 
     //Skip if file already exists
     if ( file.exists () )
-        return ;
+        return;
 
     //write info
     if ( file.open( IO_WriteOnly ) )
