@@ -45,6 +45,10 @@ public:
      */
     void showRedownloadDialog();
 
+signals:
+
+    void reDownloadCompleted( bool success );
+
 protected:
 
     QWidget * m_parent;

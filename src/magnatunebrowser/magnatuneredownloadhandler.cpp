@@ -55,14 +55,15 @@ void MagnatuneRedownloadHandler::showRedownloadDialog( )
         return;
     }
 
-    if (m_redownloadDialog == 0)
+    if (m_redownloadDialog == 0) {
         m_redownloadDialog = new MagnatuneRedownloadDialog( m_parent );
+        connect( m_redownloadDialog, SIGNAL( redownload( QString) ), this, SLOT( redownload( QString ) ) );
+        connect( m_redownloadDialog, SIGNAL(cancelled() ), this, SLOT( selectionDialogCancelled() ));
+    }
 
 
     m_redownloadDialog->setRedownloadItems( previousDownloads );
 
-    connect( m_redownloadDialog, SIGNAL( redownload( QString) ), this, SLOT( redownload( QString ) ) );
-    connect( m_redownloadDialog, SIGNAL(cancelled() ), this, SLOT( selectionDialogCancelled() ));
     m_redownloadDialog->show();
 
 }
@@ -97,22 +98,18 @@ void MagnatuneRedownloadHandler::redownload( QString storedInfoFileName )
 
    debug() << "Redownload file: " << absFileName << endl;
 
-    if (m_downloadDialog == 0)
-        m_downloadDialog = new MagnatuneDownloadDialog(m_parent);
-
-    
-
     if ( m_albumDownloader == 0 )
     {
         m_albumDownloader = new MagnatuneAlbumDownloader();
+        connect( m_albumDownloader, SIGNAL( downloadComplete( bool ) ), this, SLOT( albumDownloadComplete( bool ) ) );
     }
 
 
-    debug() << "Setting up connections" << endl;
-    connect( m_downloadDialog, SIGNAL( downloadAlbum( MagnatuneDownloadInfo *  ) ), m_albumDownloader, SLOT( downloadAlbum( MagnatuneDownloadInfo * ) ) );
-   
-    connect( m_albumDownloader, SIGNAL( downloadComplete( bool ) ), this, SLOT( albumDownloadComplete( bool ) ) );
-    debug() << "Done setting up connections" << endl;
+    if (m_downloadDialog == 0) {
+        m_downloadDialog = new MagnatuneDownloadDialog(m_parent);
+         connect( m_downloadDialog, SIGNAL( downloadAlbum( MagnatuneDownloadInfo *  ) ), m_albumDownloader, SLOT( downloadAlbum( MagnatuneDownloadInfo * ) ) );
+    }
+
 
     MagnatuneDownloadInfo * downloadInfo = new MagnatuneDownloadInfo();
     if ( downloadInfo->initFromFile( absFileName ) )

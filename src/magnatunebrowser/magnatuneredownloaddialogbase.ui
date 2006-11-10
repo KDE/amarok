@@ -19,7 +19,7 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
+        <widget class="QLabel" row="0" column="0" rowspan="1" colspan="3">
             <property name="name">
                 <cstring>textLabel1</cstring>
             </property>
@@ -27,29 +27,7 @@
                 <string>These are the albums that you have previously downloaded:</string>
             </property>
         </widget>
-        <widget class="QPushButton" row="2" column="0">
-            <property name="name">
-                <cstring>cancelButton</cstring>
-            </property>
-            <property name="text">
-                <string>&amp;Cancel</string>
-            </property>
-            <property name="accel">
-                <string>Alt+C</string>
-            </property>
-        </widget>
-        <widget class="QPushButton" row="2" column="1">
-            <property name="name">
-                <cstring>redownloadButton</cstring>
-            </property>
-            <property name="text">
-                <string>Re&amp;download</string>
-            </property>
-            <property name="accel">
-                <string>Alt+D</string>
-            </property>
-        </widget>
-        <widget class="QListView" row="1" column="0" rowspan="1" colspan="2">
+        <widget class="QListView" row="1" column="0" rowspan="1" colspan="3">
             <column>
                 <property name="text">
                     <string>Artist - Album</string>
@@ -65,6 +43,45 @@
                 <cstring>redownloadListView</cstring>
             </property>
         </widget>
+        <widget class="QPushButton" row="2" column="1">
+            <property name="name">
+                <cstring>redownloadButton</cstring>
+            </property>
+            <property name="text">
+                <string>Re&amp;download</string>
+            </property>
+            <property name="accel">
+                <string>Alt+D</string>
+            </property>
+        </widget>
+        <widget class="QPushButton" row="2" column="2">
+            <property name="name">
+                <cstring>cancelButton</cstring>
+            </property>
+            <property name="text">
+                <string>&amp;Cancel</string>
+            </property>
+            <property name="accel">
+                <string>Alt+C</string>
+            </property>
+        </widget>
+        <spacer row="2" column="0">
+            <property name="name">
+                <cstring>spacer1</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>170</width>
+                    <height>20</height>
+                </size>
+            </property>
+        </spacer>
     </grid>
 </widget>
 <connections>
