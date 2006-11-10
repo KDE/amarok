@@ -2701,7 +2701,8 @@ void
 PodcastEpisode::abortDownload() //SLOT
 {
     emit downloadAborted();
-    m_podcastFetcher->kill();
+    if ( m_podcastFetcher )
+        m_podcastFetcher->kill();
 
     //don't delete m_podcastFetcher yet, kill() is async
     stopAnimation();
