@@ -6,6 +6,8 @@ Amarok ChangeLog
 VERSION 1.4.5
   FEATURES:
     * Support for %composer and %genre when guessing tags from filenames.
+    * Cached lyrics are now AFT-enabled, and will follow your files around as
+      you move and rename them.
 
   CHANGES:
     * The XMMS visualization interface has been removed. LibVisual supersedes
@@ -19,6 +21,9 @@ VERSION 1.4.5
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
+    * WHen transferring files to a Generic media device, having certain
+      characters (such as '#') in a tag field could cause a directory based on
+      that field to not be created.
     * Editing lyrics from within the context browser no longer removes all
       linebreaks.
     * Read metadata from MTP media devices as UTF-8.
