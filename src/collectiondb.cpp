@@ -2811,7 +2811,7 @@ CollectionDB::updatePodcastEpisode( const int id, const PodcastEpisodeBundle &b 
                  "filetype='%8', createdate='%9', guid='%10', length=%11, size=%12, isNew=%13 WHERE id=%14;" )
               .args( QStringList()
                   << escapeString( b.url().url() )
-                  << ( b.localUrl().isValid() ? escapeString( b.url().url() ) : "NULL" )
+                  << ( b.localUrl().isValid() ? escapeString( b.localUrl().url() ) : "NULL" )
                   << escapeString( b.parent().url() )
                   << escapeString( b.title() )
                   << escapeString( b.subtitle() )
