@@ -66,6 +66,12 @@ void MagnatunePurchaseDialog::purchase( )
     }
 }
 
+void MagnatunePurchaseDialog::reject( )
+{
+    cancel();
+}
+
+
 void MagnatunePurchaseDialog::cancel( )
 {
     hide();
@@ -138,6 +144,7 @@ void MagnatunePurchaseDialog::setCover( QString coverFile )
 {
     coverPixmapLabel->setPixmap( QPixmap( coverFile ) );
 }
+
 
 
 /*$SPECIALIZATION$*/

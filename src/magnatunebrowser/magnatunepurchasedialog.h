@@ -105,6 +105,11 @@ protected slots:
      */
     void cancel();
 
+    /**
+     * Slot called when the dialog is closed without pressing cancel.
+     */
+    void reject ();
+
 };
 
 #endif
