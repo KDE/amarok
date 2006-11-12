@@ -22,6 +22,7 @@ class AkodeEngine : public Engine::Base
     virtual bool play( uint );
     virtual void stop();
     virtual void pause();
+    virtual void unpause();
     virtual void setVolumeSW( uint );
     virtual void seek( uint );
 

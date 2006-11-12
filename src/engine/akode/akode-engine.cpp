@@ -87,6 +87,12 @@ AkodeEngine::play( uint /*offset*/ )
     return true;
 }
 
+void
+AkodeEngine::unpause()
+{
+    m_player->play();
+}
+
 bool
 AkodeEngine::canDecode( const KURL &url ) const
 {
