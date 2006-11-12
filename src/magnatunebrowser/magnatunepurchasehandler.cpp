@@ -1,20 +1,20 @@
 /*
- Copyright (c) 2006  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+Copyright (c) 2006  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 
- This library is free software; you can redistribute it and/or
- modify it under the terms of the GNU Library General Public
- License as published by the Free Software Foundation; either
- version 2 of the License, or (at your option) any later version.
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Library General Public
+License as published by the Free Software Foundation; either
+version 2 of the License, or (at your option) any later version.
 
- This library is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Library General Public License for more details.
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Library General Public License for more details.
 
- You should have received a copy of the GNU Library General Public License
- along with this library; see the file COPYING.LIB.  If not, write to
- the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- Boston, MA 02110-1301, USA.
+You should have received a copy of the GNU Library General Public License
+along with this library; see the file COPYING.LIB.  If not, write to
+the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+Boston, MA 02110-1301, USA.
 */
 
 #include "amarok.h"
@@ -40,9 +40,9 @@ MagnatunePurchaseHandler::MagnatunePurchaseHandler()
 
 MagnatunePurchaseHandler::~MagnatunePurchaseHandler()
 {
-    if (m_downloadDialog != 0) delete m_downloadDialog;
-    if (m_purchaseDialog != 0) delete m_purchaseDialog;
-    if (m_albumDownloader != 0) delete m_albumDownloader;
+    if ( m_downloadDialog != 0 ) delete m_downloadDialog;
+    if ( m_purchaseDialog != 0 ) delete m_purchaseDialog;
+    if ( m_albumDownloader != 0 ) delete m_albumDownloader;
 
 }
 
@@ -52,19 +52,19 @@ void MagnatunePurchaseHandler::purchaseAlbum( MagnatuneAlbum * album )
 
     m_currentAlbum = album;
 
-    //first lets get the album cover for the album we are about to purchase. 
-    //Then we can show it on the purchase dialog as well as put it in the 
+    //first lets get the album cover for the album we are about to purchase.
+    //Then we can show it on the purchase dialog as well as put it in the
     //same directory as the album.
 
     QString albumCoverUrlString = album->getCoverURL();
 
-     if ( m_albumDownloader == 0 )
+    if ( m_albumDownloader == 0 )
     {
         m_albumDownloader = new MagnatuneAlbumDownloader();
-        connect( m_albumDownloader, SIGNAL( coverDownloadCompleted( bool ) ), this, SLOT( showPurchaseDialog( bool ) ));
+        connect( m_albumDownloader, SIGNAL( coverDownloadCompleted( bool ) ), this, SLOT( showPurchaseDialog( bool ) ) );
     }
 
-    m_currentAlbumCoverName =  album->getName() +  " - cover.jpg";
+    m_currentAlbumCoverName = album->getName() + " - cover.jpg";
 
 
     m_albumDownloader->downloadCover( albumCoverUrlString, m_currentAlbumCoverName );
@@ -83,7 +83,7 @@ void MagnatunePurchaseHandler::showPurchaseDialog( bool useCover )
     if ( m_purchaseDialog == 0 )
     {
         m_purchaseDialog = new MagnatunePurchaseDialog( m_parent, "PurchaseDialog", true, 0 );
-        
+
         connect( m_purchaseDialog, SIGNAL( makePurchase( QString, QString, QString, QString, QString, QString, int ) ), this, SLOT( processPayment( QString, QString, QString, QString, QString, QString, int ) ) );
         connect ( m_purchaseDialog, SIGNAL( cancelled() ), this, SLOT( albumPurchaseCancelled() ) );
     }
@@ -107,7 +107,8 @@ void MagnatunePurchaseHandler::processPayment( QString ccNumber, QString expYear
 
     QString purchaseURL = "https://magnatune.com/buy/buy_dl_cc_xml?cc=" + ccNumber + "&mm=" + expMonth + "&yy=" + expYear + "&sku=" + albumCode + "&name=" + name + "&email=" + email + "&id=amarok&amount=" + amountString;
 
-    debug() << "purchase url : " << purchaseURL << endl;
+    QString debugPurchaseURL = "https://magnatune.com/buy/buy_dl_cc_xml?cc=**********&mm=**&yy=**&sku=" + albumCode + "&name=" + name + "&email=********&id=amarok&amount=" + amountString;
+    debug() << "purchase url : " << debugPurchaseURL << endl;
 
     m_resultDownloadJob = KIO::storedGet( KURL( purchaseURL ), false, false );
     Amarok::StatusBar::instance() ->newProgressOperation( m_resultDownloadJob ).setDescription( i18n( "Processing Payment" ) );
@@ -135,7 +136,7 @@ void MagnatunePurchaseHandler::xmlDownloadComplete( KIO::Job * downloadJob )
 
     debug() << endl << endl << "result: " << resultXml << endl << endl;
 
-  
+
     if ( m_albumDownloader == 0 )
     {
         m_albumDownloader = new MagnatuneAlbumDownloader();
@@ -145,7 +146,7 @@ void MagnatunePurchaseHandler::xmlDownloadComplete( KIO::Job * downloadJob )
     if ( m_downloadDialog == 0 )
     {
         m_downloadDialog = new MagnatuneDownloadDialog( m_parent, "downloaddialog", true, 0 );
-        connect( m_downloadDialog, SIGNAL( downloadAlbum( MagnatuneDownloadInfo *  ) ), m_albumDownloader, SLOT( downloadAlbum( MagnatuneDownloadInfo * ) ) );
+        connect( m_downloadDialog, SIGNAL( downloadAlbum( MagnatuneDownloadInfo * ) ), m_albumDownloader, SLOT( downloadAlbum( MagnatuneDownloadInfo * ) ) );
 
     }
 
@@ -201,7 +202,7 @@ void MagnatunePurchaseHandler::saveDownloadInfo( QString infoXml )
 
     //Skip if file already exists
     if ( file.exists () )
-        return;
+        return ;
 
     //write info
     if ( file.open( IO_WriteOnly ) )
@@ -216,7 +217,7 @@ void MagnatunePurchaseHandler::albumDownloadComplete( bool success )
 {
     //cleanup time!
 
-     debug() << "MagnatunePurchaseHandler::albumDownloadComplete" << endl;
+    debug() << "MagnatunePurchaseHandler::albumDownloadComplete" << endl;
 
     delete m_downloadDialog;
     m_downloadDialog = 0;
@@ -233,7 +234,7 @@ void MagnatunePurchaseHandler::albumPurchaseCancelled( )
     m_purchaseDialog = 0;
 
 
-    emit( purchaseCompleted( false) );
+    emit( purchaseCompleted( false ) );
 }
 
 
