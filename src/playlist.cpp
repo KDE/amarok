@@ -3281,7 +3281,12 @@ Playlist::saveXML( const QString &path )
 
     QString dynamic;
     if( dynamicMode() )
-        dynamic = QString(" dynamicMode=\"%1\"").arg( dynamicMode()->title() );
+    {
+        const QString title = ( dynamicMode()->title() ).replace( "&", "&amp;" )
+                                                        .replace( "<", "&lt;"  )
+                                                        .replace( ">", "&gt;"  );
+        dynamic = QString(" dynamicMode=\"%1\"").arg( title );
+    }
     stream << QString( "<playlist product=\"%1\" version=\"%2\"%3>\n" )
               .arg( "Amarok" ).arg( Amarok::xmlVersion() ).arg( dynamic );
 
