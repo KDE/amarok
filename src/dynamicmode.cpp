@@ -14,7 +14,7 @@
 
 #define DEBUG_PREFIX "DynamicMode"
 
-#include "collectiondb.h" // querybuilder
+#include "collectiondb.h" // querybuilder, similar artists
 #include "debug.h"
 #include "enginecontroller.h" // HACK to get current artist for suggestion retrieval
 #include "mountpointmanager.h" // device ids
@@ -113,7 +113,35 @@ DEBUG_BLOCK
         {
             // TODO some clever stuff here for spanning across artists
             QString artist = EngineController::instance()->bundle().artist();
+
             QStringList suggestions = CollectionDB::instance()->similarArtists( artist, 16 );
+            // for this artist, choose 4 suggested artists at random, to get further suggestions from
+            for( uint suggestCount = 0; suggestCount < 4; ++suggestCount )
+            {
+                if( suggestions.isEmpty() )
+                    break;
+
+                QString chosen = suggestions[ KApplication::random() % suggestions.count() ];
+
+                bool isInCollection = !CollectionDB::instance()->albumListOfArtist( chosen ).isEmpty();
+                if( !isInCollection )
+                {
+                    --suggestCount;
+                    continue;
+                }
+
+                QStringList newSuggestions = CollectionDB::instance()->similarArtists( chosen, 10 );
+                QStringList newChosen;
+                for( uint c = 0; c < 4; ++c ) // choose another 4 artists
+                {
+                    QString s = newSuggestions[ KApplication::random() % newSuggestions.count() ];
+                    newChosen += s;
+                    newSuggestions.remove( s );
+                }
+
+                qb.addMatches( QueryBuilder::tabArtist, newChosen );
+                suggestions.remove( chosen );
+            }
             qb.addMatches( QueryBuilder::tabArtist, suggestions );
         }
 
