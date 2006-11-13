@@ -21,7 +21,10 @@ VERSION 1.4.5
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
-    * WHen transferring files to a Generic media device, having certain
+    * Dynamic mode can still be used after a collection rescan. (BR 133269)
+    * Dynamic mode will repopulate from all available sources. (BR 137212)
+    * Dynamic mode no longer repeats songs often. (BR 107693)
+    * When transferring files to a Generic media device, having certain
       characters (such as '#') in a tag field could cause a directory based on
       that field to not be created.
     * Editing lyrics from within the context browser no longer removes all
