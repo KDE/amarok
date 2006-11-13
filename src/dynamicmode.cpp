@@ -140,8 +140,8 @@ DEBUG_BLOCK
                     newChosen += s;
                     newSuggestions.remove( s );
                 }
-
-                qb.addMatches( QueryBuilder::tabArtist, newChosen );
+                if ( !newChosen.isEmpty() )
+                    qb.addMatches( QueryBuilder::tabArtist, newChosen );
                 suggestions.remove( chosen );
             }
             qb.addMatches( QueryBuilder::tabArtist, suggestions );
@@ -327,6 +327,8 @@ DEBUG_BLOCK
 
     for( uint i=0; i < trackCount; i++ )
     {
+        if( m_cachedItemSet.isEmpty() )
+            break;
         const int pos = KApplication::random() % m_cachedItemSet.count();
         KURL::List::iterator newItem = m_cachedItemSet.at( pos );
         retrieval << (*newItem);
