@@ -114,6 +114,8 @@ DEBUG_BLOCK
             // TODO some clever stuff here for spanning across artists
             QString artist = EngineController::instance()->bundle().artist();
 
+            debug() << "seeding from: " << artist << endl;
+
             QStringList suggestions = CollectionDB::instance()->similarArtists( artist, 16 );
             // for this artist, choose 4 suggested artists at random, to get further suggestions from
             for( uint suggestCount = 0; suggestCount < 4; ++suggestCount )
@@ -123,18 +125,18 @@ DEBUG_BLOCK
 
                 QString chosen = suggestions[ KApplication::random() % suggestions.count() ];
 
-                bool isInCollection = !CollectionDB::instance()->albumListOfArtist( chosen ).isEmpty();
-                if( !isInCollection )
-                {
-                    --suggestCount;
-                    continue;
-                }
+                debug() << "found similar artist: " << chosen << endl;
 
                 QStringList newSuggestions = CollectionDB::instance()->similarArtists( chosen, 10 );
                 QStringList newChosen;
                 for( uint c = 0; c < 4; ++c ) // choose another 4 artists
                 {
+                    if( newSuggestions.isEmpty() )
+                        break;
+
                     QString s = newSuggestions[ KApplication::random() % newSuggestions.count() ];
+
+                    debug() << "found extended similar artist: " << s << endl;
                     newChosen += s;
                     newSuggestions.remove( s );
                 }
@@ -146,9 +148,11 @@ DEBUG_BLOCK
         }
 
         qb.setLimit( 0, CACHE_SIZE );
-        QStringList url = qb.run();
+        debug() << "Using SQL: " << qb.query() << endl;
 
-        foreach( url ) //we have to run setPath on all raw paths
+        QStringList urls = qb.run();
+
+        foreach( urls ) //we have to run setPath on all raw paths
         {
             KURL current;
             current.setPath( *it );
