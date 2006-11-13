@@ -153,9 +153,13 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     addMenuButton  = new KActionMenu( i18n("Add"), Amarok::icon( "add_playlist" ), m_ac );
     addMenuButton->setDelayed( false );
 
+    KPopupMenu *playlistMenu = new KPopupMenu( this );
+    playlistMenu->insertItem( i18n("New..."), PLAYLIST );
+    playlistMenu->insertItem( i18n("Import Existing..."), PLAYLIST_IMPORT );
+    connect( playlistMenu, SIGNAL( activated(int) ), SLOT( slotAddPlaylistMenu(int) ) );
+
     KPopupMenu *addMenu  = addMenuButton->popupMenu();
-    addMenu->insertItem( i18n("Playlist..."), PLAYLIST );
-    addMenu->insertItem( i18n("Playlist (Import)..."), PLAYLIST_IMPORT );
+    addMenu->insertItem( i18n("Playlist"), playlistMenu );
     addMenu->insertItem( i18n("Smart Playlist..."), SMARTPLAYLIST );
     addMenu->insertItem( i18n("Dynamic Playlist..."), ADDDYNAMIC);
     addMenu->insertItem( i18n("Radio Stream..."), STREAM );
@@ -2502,14 +2506,6 @@ void PlaylistBrowser::slotAddMenu( int id ) //SLOT
 {
     switch( id )
     {
-        case PLAYLIST:
-            createPlaylist( 0/*base cat*/, false/*make empty*/ );
-            break;
-
-        case PLAYLIST_IMPORT:
-            openPlaylist();
-            break;
-
         case STREAM:
             addStream();
             break;
@@ -2521,10 +2517,24 @@ void PlaylistBrowser::slotAddMenu( int id ) //SLOT
         case PODCAST:
             addPodcast();
             break;
+        
         case ADDDYNAMIC:
             ConfigDynamic::dynamicDialog(this);
             break;
-        default:
+    }
+}
+
+
+void PlaylistBrowser::slotAddPlaylistMenu( int id ) //SLOT
+{
+    switch( id )
+    {
+        case PLAYLIST:
+            createPlaylist( 0/*base cat*/, false/*make empty*/ );
+            break;
+
+        case PLAYLIST_IMPORT:
+            openPlaylist();
             break;
     }
 }
