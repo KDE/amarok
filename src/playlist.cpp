@@ -617,8 +617,6 @@ Playlist::addDynamicModeTracks( uint songCount )
 void
 Playlist::adjustDynamicUpcoming( bool saveUndo )
 {
-    int  x = 0;
-
     /**
      *  If m_currentTrack exists, we iterate until we find it
      *  Else, we iterate until we find an item which is enabled
@@ -636,36 +634,16 @@ Playlist::adjustDynamicUpcoming( bool saveUndo )
     if( m_currentTrack )
         ++it;
 
-
+    int  x = 0;
     for ( ; *it && x < dynamicMode()->upcomingCount() ; ++it, ++x );
 
     if ( x < dynamicMode()->upcomingCount() )
     {
         addDynamicModeTracks( dynamicMode()->upcomingCount() - x );
     }
-    else
-    {
-        if( isLocked() ) return;
 
-        //assemble a list of what needs removing
-        //calling removeItem() iteratively is more efficient if they are in _reverse_ order, hence the prepend()
-        QPtrList<QListViewItem> list;
-        for ( ; *it ; ++it ) {
-            list.append( it.current() );
-        }
-
-        if( list.isEmpty() ) return;
-        if( saveUndo )
-            saveUndoState();
-
-        //remove the items
-        for( QListViewItem *item = list.last(); item; item = list.prev() )
-        {
-            removeItem( static_cast<PlaylistItem*>( item ) );
-            delete item;
-        }
-        //NOTE no need to emit childCountChanged(), removeItem() does that for us
-    }
+    if( saveUndo )
+        saveUndoState();
 }
 
 /**
@@ -1212,13 +1190,15 @@ Playlist::advanceDynamicTrack( PlaylistItem *item )
     MyIterator it( this, MyIterator::Visible );
     if( !item ) item = currentTrack();
 
-    for( int x=0 ; *it; ++it, x++ )
+    int x = 0;
+    for( ; *it; ++it, x++ )
     {
         if( *it == item )
         {
             for ( PlaylistItem *first = firstChild();
                   dynamicMode()->cycleTracks() && x >= dynamicMode()->previousCount() && first;
-                  first = firstChild(), x-- ) {
+                  first = firstChild(), x-- )
+            {
                 removeItem( first ); //first visible item
                 delete first;
             }
@@ -1226,8 +1206,12 @@ Playlist::advanceDynamicTrack( PlaylistItem *item )
         }
     }
 
-    //Just starting to play from stopped, don't append something needlessely
-    bool dontAppend = EngineController::instance()->engine()->state() == Engine::Empty;
+    const int upcomingTracks = childCount() - x;
+
+    // Just starting to play from stopped, don't append something needlessely
+    // or, we have more than enough items in the queue.
+    bool dontAppend = ( EngineController::instance()->engine()->state() == Engine::Empty ) ||
+                        upcomingTracks >= dynamicMode()->upcomingCount();
 
     //keep upcomingTracks requirement, this seems to break StopAfterCurrent
     if( !dontAppend && m_stopAfterTrack != m_currentTrack )
