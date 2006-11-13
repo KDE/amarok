@@ -100,10 +100,9 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         LIBAMAROK_EXPORT void insertMedia( KURL::List, int options = Append );
         void insertMediaSql( const QString& sql, int options = Append );
 
-        /// Dynamic mode functions
-        void addSpecialTracks( uint songCount, const int type = DynamicMode::RANDOM );
-        void addSpecialCustomTracks( uint songCount );
-        void adjustDynamicUpcoming( bool saveUndo = false, const int type = DynamicMode::RANDOM );
+        // Dynamic mode functions
+        void addDynamicModeTracks( uint songCount );
+        void adjustDynamicUpcoming( bool saveUndo = false );
         void adjustDynamicPrevious( uint songCount, bool saveUndo = false );
         void advanceDynamicTrack( PlaylistItem *item = 0 );
         void setDynamicHistory( bool enable = true );

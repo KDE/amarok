@@ -2053,7 +2053,7 @@ void PlaylistBrowser::addSelectedToDynamic()
         addToDynamic( *it );
 
     DynamicMode *m = Playlist::instance()->modifyDynamicMode();
-    m->setDynamicItems(m_dynamicEntries);
+    m->setDynamicItems( m_dynamicEntries ); // cache is rebuilt here
     Playlist::instance()->finishedModifying( m );
 }
 

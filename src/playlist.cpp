@@ -580,13 +580,9 @@ Playlist::insertMediaSql( const QString& sql, int options )
 }
 
 void
-Playlist::addSpecialTracks( uint songCount, const int type )
+Playlist::addDynamicModeTracks( uint songCount )
 {
     if( songCount < 1 ) return;
-
-    QueryBuilder qb;
-    qb.setOptions( QueryBuilder::optRandomize | QueryBuilder::optRemoveDuplicates );
-    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
 
     int  currentPos = 0;
     for( MyIt it( this, MyIt::Visible ); *it; ++it )
@@ -606,208 +602,20 @@ Playlist::addSpecialTracks( uint songCount, const int type )
     if( required > remainder )
         songCount = required - remainder;
 
-    if( type == DynamicMode::SUGGESTION )
-    {
-        if( !m_currentTrack ) return;
-        QStringList suggestions = CollectionDB::instance()->similarArtists( currentTrack()->artist(), 16 );
-        qb.addMatches( QueryBuilder::tabArtist, suggestions );
-        if ( !AmarokConfig::retrieveSimilarArtists() )
-            Amarok::StatusBar::instance()->longMessage( i18n(
-                "<div align=\"center\"><b>Warning</b></div>"
-                "In order to use the Suggested Songs dynamic playlist, "
-                "you need to have the \"Retrieve similar artists\" option enabled."
-                "<br><br>"
-                "You can find this option in the last.fm section under Settings->Configure Amarok" ) );
-    }
-    else if( type != DynamicMode::RANDOM ) //we have playlists to choose from.
-    {
-        addSpecialCustomTracks( songCount );
-        return;
-    }
+    DynamicMode *m = modifyDynamicMode();
+    KURL::List tracksToInsert = m->retrieveTracks( songCount );
+    Playlist::instance()->finishedModifying( m );
 
-    qb.setLimit( 0, songCount );
-    QStringList url = qb.run();
-    //FIXME: No items to add or if user wants non-unique entries!
-    if( url.isEmpty() )
-    {
-        Amarok::StatusBar::instance()->shortMessage( i18n("No tracks were returned to be inserted.") );
-        return;
-    }
-    //QStringList list;
-    KURL::List escapedPaths;
-    foreach(url) //we have to run setPath on all raw paths
-    {
-        KURL tmp;
-        tmp.setPath( *it );
-        escapedPaths << tmp;
-    }
-    insertMedia( escapedPaths, Playlist::Unique );
+    insertMedia( tracksToInsert, Playlist::Unique );
 }
 
-void
-Playlist::addSpecialCustomTracks( uint songCount )
-{
-    if( !songCount )
-        return;
-
-    PlaylistBrowser *pb = PlaylistBrowser::instance();
-    QListViewItem *item = 0;
-
-    QPtrList<PlaylistBrowserEntry> dynamicEntries = pb->dynamicEntries();
-
-    //FIXME: What if the randomiser grabs the same playlist again and again?  Lets remove the playlist from the list.
-    for( uint y=0; y < dynamicEntries.count(); y++ )
-    {
-        int x = KApplication::random() % dynamicEntries.count();
-
-        item = dynamicEntries.at( x );
-
-        if( item )
-            break;
-    }
-
-    if ( !item ) {
-        debug() << "[DYNAMIC]: No valid source found." << endl;
-        Amarok::StatusBar::instance()->shortMessage( i18n("No valid sources set for this Dynamic Playlist.") );
-        return;
-    }
-
-    if( item->rtti() == PlaylistEntry::RTTI )
-    {
-        #define item static_cast<PlaylistEntry *>(item)
-
-        KURL::List urls;
-        KURL::List trackList;
-        trackList = item->tracksURL();
-
-        for( uint i=0; i < songCount; i++ )
-        {
-            if( trackList.isEmpty() )
-                break;
-            KURL::List::Iterator it = trackList.at( KApplication::random() % trackList.count() );
-            if( (*it).isValid())
-                urls << (*it).path();
-            trackList.remove(it);
-        }
-
-        if( urls.isEmpty() )
-            Amarok::StatusBar::instance()->longMessage( i18n(
-                "<div align=\"center\"><b>Warning</b></div>"
-                "The playlist titled <i>%1</i> contains no tracks."
-                "<br><br>"
-                "Please modify your playlist or choose a different source." ).arg( item->text(0) ), KDE::StatusBar::Warning );
-        else
-            insertMedia( urls );
-
-        #undef item
-    }
-    else if( item->rtti() == SmartPlaylist::RTTI  )
-    {
-        #define sp static_cast<SmartPlaylist *>(item)
-        bool useDirect = true;
-        QString sql = sp->query();
-
-        // FIXME: All this SQL magic out of collectiondb is not a good thing
-        // Many smart playlists require a special ordering in order to be effective (eg, last played).
-        // We respect this, so if there is no order by statement, we add a random ordering and use the result
-        // without further processing
-        if ( sql.find( QString("ORDER BY"), false ) == -1 )
-        {
-            QRegExp limit( "(LIMIT.*)?;$" );
-            sql.replace( limit, QString(" ORDER BY %1 LIMIT %2 OFFSET 0;").arg( CollectionDB::instance()->randomFunc()).arg( songCount ) );
-        }
-        else {
-            // if we do not limit the sql, it takes a long time to populate for large collections
-            // we also don't want stupid limits such as LIMIT 5 OFFSET 0 which would return the same results always
-            uint first=0, limit=0;
-            QRegExp limitSearch( "LIMIT.*(\\d+).*OFFSET.*(\\d+)" );
-            int findLocation = sql.find( limitSearch, false );
-            if( findLocation == -1 ) //not found, let's find out the higher limit the hard way
-            {
-                QString counting ( sql );
-                counting.replace( QRegExp( "SELECT.*FROM" ), "SELECT COUNT(*) FROM" );
-                // Postgres' grouping rule doesn't like the following clause
-                counting.replace( QRegExp( "ORDER BY.*" ), "" );
-                QStringList countingResult = CollectionDB::instance()->query( counting );
-                limit = countingResult[0].toInt();
-            }
-            else
-            {   // There's a Limit, so we've got to respect it.
-                limitSearch.search( sql );
-                // capturedTexts() gives us the strings that were matched by each subexpression
-                first = limitSearch.capturedTexts()[2].toInt();
-                limit = limitSearch.capturedTexts()[1].toInt();
-            }
-            if ( limit <= songCount )
-                // The list is even smaller than the number of songs we want :-(
-                songCount = limit;
-            else
-                // Let's get a random limit, repecting the original one.
-                first += KApplication::random() % (limit - songCount);
-
-            if( findLocation == -1 )
-            {
-                QRegExp limit( ";$" );
-                sql.replace( limit, QString(" LIMIT %1 OFFSET %2;" ).arg( songCount*35 ).arg( first ) );
-                useDirect = false;
-            }
-            else
-                sql.replace( limitSearch, QString(" LIMIT %1 OFFSET %2;" ).arg( songCount ).arg( first ) );
-
-        }
-        sql.replace( QRegExp( "SELECT.*FROM" ), "SELECT tags.url, tags.deviceid FROM" );
-        QStringList queryResult = CollectionDB::instance()->query( sql );
-        QStringList items;
-        debug() << "Playlist: adding urls from query: " << sql << endl;
-        if ( !sp->query().isEmpty() ) {
-            //We have to filter all the un-needed results from query( sql )
-            for (uint x=0; x < queryResult.count() ; x += 2)
-                items << MountPointManager::instance()->getAbsolutePath( queryResult[x+1].toInt(), queryResult[x] );
-        } else {
-            items = queryResult;
-        }
-
-        KURL::List urls;
-        foreach(items) //we have to run setPath on all raw paths
-        {
-            KURL tmp;
-            tmp.setPath( *it );
-            urls << tmp;
-        }
-        KURL::List addMe;
-
-        if( urls.isEmpty() ) {
-            Amarok::StatusBar::instance()->longMessage( i18n(
-                "<div align=\"center\"><b>Warning</b></div>"
-                "The smart-playlist titled <i>%1</i> contains no tracks."
-                "<br><br>"
-                "Please modify your smart-playlist or choose a different source." ).arg( item->text(0) ), KDE::StatusBar::Warning );
-            return;
-        }
-
-        // we have to randomly select tracks from the returned query since we can't have
-        // ORDER BY RAND() for some statements
-        if(!useDirect)
-            for( uint i=0; i < songCount && urls.count(); i++ )
-            {
-                KURL::List::iterator newItem = urls.at(KApplication::random() % urls.count());
-                addMe << (*newItem);
-                urls.remove(newItem);
-            }
-
-        insertMedia( useDirect ? urls : addMe );
-
-        #undef sp
-    }
-}
 
 /**
  *  @param songCount : Number of tracks to be shown after the current track
- *  @param type      : Type of tracks to append if required (Random/Suggestion/Custom)
  */
 
 void
-Playlist::adjustDynamicUpcoming( bool saveUndo, const int type )
+Playlist::adjustDynamicUpcoming( bool saveUndo )
 {
     int  x = 0;
 
@@ -833,7 +641,7 @@ Playlist::adjustDynamicUpcoming( bool saveUndo, const int type )
 
     if ( x < dynamicMode()->upcomingCount() )
     {
-        addSpecialTracks( dynamicMode()->upcomingCount() - x, type );
+        addDynamicModeTracks( dynamicMode()->upcomingCount() - x );
     }
     else
     {
@@ -847,7 +655,7 @@ Playlist::adjustDynamicUpcoming( bool saveUndo, const int type )
         }
 
         if( list.isEmpty() ) return;
-        if ( saveUndo )
+        if( saveUndo )
             saveUndoState();
 
         //remove the items
@@ -1424,7 +1232,7 @@ Playlist::advanceDynamicTrack( PlaylistItem *item )
     //keep upcomingTracks requirement, this seems to break StopAfterCurrent
     if( !dontAppend && m_stopAfterTrack != m_currentTrack )
     {
-        addSpecialTracks( 1, dynamicMode()->appendType() );
+        addDynamicModeTracks( 1 );
     }
     m_dynamicDirt = true;
 }
@@ -3412,7 +3220,7 @@ Playlist::setDynamicMode( DynamicMode *mode ) //SLOT
         if( prev->previousCount() != mode->previousCount() )
             adjustDynamicPrevious( mode->previousCount(), true );
         if( prev->upcomingCount() != mode->upcomingCount() )
-            adjustDynamicUpcoming( true, mode->appendType() );
+            adjustDynamicUpcoming( true );
     }
     else if( !prev )
         setDynamicHistory( true ); // disable items!
@@ -3488,7 +3296,7 @@ Playlist::repopulate() //SLOT
     //calling advanceDynamicTrack will remove an item too, which is undesirable
     //block signals to avoid saveUndoState being called
     blockSignals( true );
-    addSpecialTracks( dynamicMode()->upcomingCount(), dynamicMode()->appendType() );
+    addDynamicModeTracks( dynamicMode()->upcomingCount() );
     blockSignals( false );
 }
 
@@ -3563,7 +3371,7 @@ Playlist::removeSelectedItems() //SLOT
 
         if( difference < 0 )
         {
-            addSpecialTracks( -difference, dynamicMode()->appendType() );
+            addDynamicModeTracks( -difference );
         }
     }
 

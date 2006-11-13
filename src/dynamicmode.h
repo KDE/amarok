@@ -34,10 +34,14 @@
 #ifndef AMAROK_DYNAMIC_H
 #define AMAROK_DYNAMIC_H
 
+#include <kurl.h>  //KURL::List
+
 class QString;
 class QStringList;
 template<class T> class QPtrList;
 class PlaylistBrowserEntry;
+class PlaylistEntry;
+class SmartPlaylist;
 
 class DynamicMode
 {
@@ -48,9 +52,20 @@ class DynamicMode
 
         void edit();
         void deleting();
-        void setDynamicItems(const QPtrList<PlaylistBrowserEntry>& newList);
+        void setDynamicItems( QPtrList<PlaylistBrowserEntry>& newList );
 
-    public: //accessors
+        /**
+         * Retrieves \p tracks from the cache, \p m_cachedItemSet
+         */
+        KURL::List retrieveTracks( const uint trackCount );
+
+        /**
+         * Creates a list of \p CACHE_SIZE urls, stored in \p m_cachedItemSet in order
+         * to increase efficiency of dynamic mode population. This should be called
+         * when the dynamic sources are changed, or the cache runs out of items
+         */
+        void rebuildCachedItemSet();
+
         QString title() const;
         QStringList items() const;
         bool  cycleTracks() const;
@@ -58,15 +73,45 @@ class DynamicMode
         int   previousCount() const;
         int   appendType() const;
 
-    public: //setters
-        void  setTitle( const QString& title );
-        void  setItems( const QStringList &list );
+        void  setAppendType( int type );
         void  setCycleTracks( bool cycle );
+        void  setItems( const QStringList &list );
         void  setUpcomingCount( int count );
         void  setPreviousCount( int count );
-        void  setAppendType( int type );
+        void  setTitle( const QString& title );
 
     private:
+        static const int CACHE_SIZE = 200; ///< the number of items to store in the cached set
+
+        /**
+         * Returns a list of \p songCount urls from \p item - to be stored as part of
+         * the dynamic element cache, \p m_cachedItemSet
+         *
+         * This function will alter the sql statement of the item in order to return an
+         * adequate subset of data after execution. Limits and ordering attributes
+         * within the statement will be respected (to a certain extent).
+         */
+        KURL::List tracksFromSmartPlaylist( SmartPlaylist *item, uint songCount );
+
+        /**
+         * Returns a list of \p songCount urls from \p item - to be stored as part of
+         * the dynamic element cache, \p m_cachedItemSet
+         *
+         * This function will return a random selection of elements from within the
+         * playlist given, in order to give some diversity when rebuilding the cache.
+         */
+        KURL::List tracksFromStaticPlaylist( PlaylistEntry *item, uint songCount );
+
+        /**
+         * A list of urls which satisfy at least one of the dynamic mode sources. As tracks
+         * are added to the playlist, they are removed from the cache. When the cache expires,
+         * it should be rebuilt.
+         *
+         * The cache is used to reduce the number of database queries required when adding and
+         * removing tracks from the playlist when using dynamic mode.
+         */
+        KURL::List  m_cachedItemSet;
+
         QStringList m_items;
 
         QString m_title;
