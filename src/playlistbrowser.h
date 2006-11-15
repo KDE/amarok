@@ -116,8 +116,6 @@ class PlaylistBrowser : public QVBox
 
     private slots:
         void abortPodcastQueue();
-        void addSelectedToDynamic();
-        void addToDynamic( QListViewItem *item );
         void addSelectedToPlaylist( int options = -1 );
         void collectionScanDone();
         void currentItemChanged( QListViewItem * );
@@ -128,8 +126,6 @@ class PlaylistBrowser : public QVBox
         void renameSelectedItem();
         void invokeItem( QListViewItem*, const QPoint &, int column );
         void slotDoubleClicked( QListViewItem *item );
-        void subSelectedFromDynamic();
-        void subFromDynamic( QListViewItem *item );
 
         void slotAddMenu( int id );
         void slotAddPlaylistMenu( int id );

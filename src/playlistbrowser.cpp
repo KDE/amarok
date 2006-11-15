@@ -2031,65 +2031,6 @@ void PlaylistBrowser::collectionScanDone()
     }
 }
 
-
-void PlaylistBrowser::addToDynamic( QListViewItem *item )
-{
-    PlaylistBrowserEntry *entry = dynamic_cast<PlaylistBrowserEntry*>( item );
-
-    if( m_dynamicEntries.find( entry ) < 0 ) // check that it is not there
-        m_dynamicEntries.append( entry );
-
-    entry->setDynamic( true );
-    // add all children as well
-    QListViewItem *it = item->firstChild();
-    while ( it ) {
-        addToDynamic( it );
-        it = it->nextSibling();
-    }
-}
-
-
-void PlaylistBrowser::addSelectedToDynamic()
-{
-    QListViewItemIterator it( m_listview, QListViewItemIterator::Selected );
-
-    for( ; it.current(); ++it )
-        addToDynamic( *it );
-
-    DynamicMode *m = Playlist::instance()->modifyDynamicMode();
-    m->setDynamicItems( m_dynamicEntries ); // cache is rebuilt here
-    Playlist::instance()->finishedModifying( m );
-}
-
-
-void PlaylistBrowser::subFromDynamic( QListViewItem *item )
-{
-    PlaylistBrowserEntry *entry = dynamic_cast<PlaylistBrowserEntry*>( item );
-
-    if( m_dynamicEntries.find( entry ) >= 0 ) // check if it is already present
-        m_dynamicEntries.remove( entry );
-
-    entry->setDynamic( false );
-    // remove all children as well
-    QListViewItem *it = item->firstChild();
-    while ( it ) {
-        subFromDynamic( it );
-        it = it->nextSibling();
-    }
-}
-
-void PlaylistBrowser::subSelectedFromDynamic()
-{
-    QListViewItemIterator it( m_listview, QListViewItemIterator::Selected );
-
-    for( ; it.current(); ++it )
-        subFromDynamic( *it );
-
-    DynamicMode *m = Playlist::instance()->modifyDynamicMode();
-    m->setDynamicItems( m_dynamicEntries );
-    Playlist::instance()->finishedModifying( m );
-}
-
 void PlaylistBrowser::removeSelectedItems() //SLOT
 {
     // this function remove selected playlists and tracks
@@ -2517,7 +2458,7 @@ void PlaylistBrowser::slotAddMenu( int id ) //SLOT
         case PODCAST:
             addPodcast();
             break;
-        
+
         case ADDDYNAMIC:
             ConfigDynamic::dynamicDialog(this);
             break;

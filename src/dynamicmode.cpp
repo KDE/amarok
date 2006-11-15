@@ -88,7 +88,7 @@ DEBUG_BLOCK
     while( (entry = it.current()) != 0 )
     {
         ++it;
-        strListEntries << entry->name();
+        strListEntries << entry->text(0);
     }
 
     setItems( strListEntries );
@@ -224,7 +224,7 @@ DEBUG_BLOCK
 
     bool useDirect = true;
     const bool hasTimeOrder = item->isTimeOrdered();
-    debug() << "The smart playlist: " << item->name() << ", time order? " << hasTimeOrder << endl;
+    debug() << "The smart playlist: " << item->text(0) << ", time order? " << hasTimeOrder << endl;
 
     QString sql = item->query();
 

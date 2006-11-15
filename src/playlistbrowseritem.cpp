@@ -854,18 +854,10 @@ void PlaylistEntry::showContextMenu( const QPoint &position )
 {
     KPopupMenu menu( listView() );
 
-    enum Id { LOAD, ADD, DYNADD, DYNSUB, RENAME, DELETE, MEDIADEVICE_COPY, MEDIADEVICE_SYNC };
+    enum Id { LOAD, ADD, RENAME, DELETE, MEDIADEVICE_COPY, MEDIADEVICE_SYNC };
 
     menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), LOAD );
     menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), ADD );
-
-    if( Amarok::dynamicMode() && Amarok::dynamicMode()->appendType()== DynamicMode::CUSTOM )
-    {
-        if( isDynamic() )
-            menu.insertItem( SmallIconSet( Amarok::icon( "remove_from_playlist" ) ), i18n( "Remove From %1" ).arg(Amarok::dynamicMode()->title()), DYNSUB );
-        else
-            menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "Add to the %1 Entries" ).arg(Amarok::dynamicMode()->title()), DYNADD );
-    }
 
     if( MediaBrowser::isAvailable() )
     {
@@ -890,12 +882,6 @@ void PlaylistEntry::showContextMenu( const QPoint &position )
             break;
         case ADD:
             PlaylistBrowser::instance()->addSelectedToPlaylist();
-            break;
-        case DYNADD:
-            PlaylistBrowser::instance()->addSelectedToDynamic();
-            break;
-        case DYNSUB:
-            PlaylistBrowser::instance()->subSelectedFromDynamic();
             break;
         case RENAME:
             PlaylistBrowser::instance()->renameSelectedItem();
@@ -3450,7 +3436,7 @@ void SmartPlaylist::showContextMenu( const QPoint &position )
 {
     KPopupMenu menu( listView() );
 
-    enum Actions { LOAD, ADD, DYNADD, DYNSUB, EDIT, REMOVE, MEDIADEVICE_COPY, MEDIADEVICE_SYNC };
+    enum Actions { LOAD, ADD, EDIT, REMOVE, MEDIADEVICE_COPY, MEDIADEVICE_SYNC };
 
     menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), LOAD );
     menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), ADD );
@@ -3461,16 +3447,6 @@ void SmartPlaylist::showContextMenu( const QPoint &position )
                 i18n( "&Transfer to Media Device" ), MEDIADEVICE_COPY );
         menu.insertItem( SmallIconSet( Amarok::icon( "device" ) ),
                 i18n( "&Synchronize to Media Device" ), MEDIADEVICE_SYNC );
-    }
-
-    if( Amarok::dynamicMode() && Amarok::dynamicMode()->appendType()== DynamicMode::CUSTOM )
-    {
-        if( isDynamic() )
-            menu.insertItem( SmallIconSet( Amarok::icon( "remove_from_playlist" ) ),
-                                i18n( "Remove From %1" ).arg(Amarok::dynamicMode()->title()), DYNSUB );
-        else
-            menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ),
-                                i18n( "Add to the %1 Entries" ).arg(Amarok::dynamicMode()->title()), DYNADD );
     }
 
     // Forbid removal of Collection
@@ -3489,12 +3465,6 @@ void SmartPlaylist::showContextMenu( const QPoint &position )
             break;
         case ADD:
             Playlist::instance()->insertMediaSql( query(), Playlist::Append );
-            break;
-        case DYNADD:
-            PlaylistBrowser::instance()->addSelectedToDynamic();
-            break;
-        case DYNSUB:
-            PlaylistBrowser::instance()->subSelectedFromDynamic();
             break;
         case EDIT:
             PlaylistBrowser::instance()->editSmartPlaylist( this );
