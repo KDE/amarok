@@ -972,7 +972,7 @@ Playlist::playNextTrack( bool forceNext )
         if( dynamicMode() && m_visCount )
         {
             item->setDynamicEnabled( false );
-            advanceDynamicTrack( item );
+            advanceDynamicTrack();
             m_dynamicDirt = false;
         }
 
@@ -1184,12 +1184,8 @@ Playlist::playNextTrack( bool forceNext )
 
 //This is called before setCurrentItem( item );
 void
-Playlist::advanceDynamicTrack( PlaylistItem *item )
+Playlist::advanceDynamicTrack()
 {
-    DEBUG_BLOCK
-    MyIterator it( this, MyIterator::Visible );
-    if( !item ) item = currentTrack();
-
     int x = currentTrackIndex();
     if( dynamicMode()->cycleTracks() )
     {

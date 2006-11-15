@@ -104,7 +104,7 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         void addDynamicModeTracks( uint songCount );
         void adjustDynamicUpcoming( bool saveUndo = false );
         void adjustDynamicPrevious( uint songCount, bool saveUndo = false );
-        void advanceDynamicTrack( PlaylistItem *item = 0 );
+        void advanceDynamicTrack();
         void setDynamicHistory( bool enable = true );
 
         void burnPlaylist      ( int projectType = -1 );
