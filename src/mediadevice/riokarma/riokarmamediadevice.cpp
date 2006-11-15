@@ -549,10 +549,10 @@ RioKarmaTrack::readMetaData()
 {
     MetaBundle *bundle = new MetaBundle();
 
-    bundle->setGenre( AtomicString( lk_properties_get_property( m_id, "genre" ) ) );
-    bundle->setArtist( AtomicString( lk_properties_get_property( m_id, "artist" ) ) );
-    bundle->setAlbum( AtomicString( lk_properties_get_property( m_id, "source" ) ) );
-    bundle->setTitle( AtomicString( lk_properties_get_property( m_id, "title" ) ) );
+    bundle->setGenre( AtomicString( QString::fromUtf8( lk_properties_get_property( m_id, "genre" ) ) ) );
+    bundle->setArtist( AtomicString( QString::fromUtf8( lk_properties_get_property( m_id, "artist" ) ) ) );
+    bundle->setAlbum( AtomicString( QString::fromUtf8( lk_properties_get_property( m_id, "source" ) ) ) );
+    bundle->setTitle( AtomicString( QString::fromUtf8( lk_properties_get_property( m_id, "title" ) ) ) );
 
     // translate codecs to file types
     QString codec = QCString( lk_properties_get_property( m_id, "codec" ) );
