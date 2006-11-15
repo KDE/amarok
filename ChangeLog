@@ -21,6 +21,8 @@ VERSION 1.4.5
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
+    * Last.fm streams could be paused with DCOP or global shortcuts.
+      (BR 133013)
     * Dynamic mode can still be used after a collection rescan. (BR 133269)
     * Dynamic mode will repopulate from all available sources. (BR 137212)
     * Dynamic mode no longer repeats songs often. (BR 107693)
