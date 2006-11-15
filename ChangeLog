@@ -10,6 +10,9 @@ VERSION 1.4.5
       you move and rename them.
 
   CHANGES:
+    * Magnatune store is lazy loaded to improve startup times.
+    * Dynamic mode logic has been rethought to provide a faster and better
+      user experience.
     * When checking for duplicate files on a Rio Karma media device, use
       track number in addition to artist, album & title. (BR 137152)
     * The XMMS visualization interface has been removed. LibVisual supersedes
