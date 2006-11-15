@@ -149,7 +149,13 @@ MediaItem
         MediaItem *album = dynamic_cast<MediaItem *>( artist->findItem( bundle.album() ) );
         if( album )
         {
-            return dynamic_cast<MediaItem *>( album->findItem( bundle.title() ) );
+            MediaItem *track =  dynamic_cast<MediaItem *>( album->findItem( bundle.title() ) );
+            if( track )
+            {
+                debug() << "track bundle " << track->bundle()->track() << " matches " << bundle.track() << " ?" << endl;
+                if( track->bundle()->track() == bundle.track() )
+                    return track;
+            }
         }
     }
     return 0;
@@ -307,6 +313,8 @@ RioKarmaMediaDevice::openDevice( bool silent )
     }
 
     lk_karma_use_smalldb();
+
+    lk_karma_write_dupes( 1 );
 
     RioKarmaMediaDevice::readKarmaMusic();
 
