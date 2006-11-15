@@ -307,13 +307,6 @@ PlaylistBrowser::~PlaylistBrowser()
 
     if( m_polished )
     {
-        // <markey> Not sure if these calls are still needed, now that we're saving
-        //          the state after each change.
-        savePlaylists();
-        saveStreams();
-        saveLastFm();
-        saveSmartPlaylists();
-        saveDynamics();
         savePodcastFolderStates( m_podcastCategory );
 
         QStringList list;
