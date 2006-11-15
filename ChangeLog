@@ -23,6 +23,7 @@ VERSION 1.4.5
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
+    * Wikipedia links to edit sections are no longer shown.
     * Metadata is read Rio Karma media devices as UTF-8.
     * Last.fm streams could be paused with DCOP or global shortcuts.
       (BR 133013)
