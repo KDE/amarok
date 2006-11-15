@@ -255,7 +255,7 @@ MagnatuneDatabaseHandler::getArtistsByGenre( QString genre )
 
     QStringList result = db->query( queryString );
 
-    debug() << "Looking for artist in genre Rock..." << endl;
+    debug() << "Looking for artist in genre: " <<  genre << endl;
 
     MagnatuneArtistList list;
 

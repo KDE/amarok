@@ -167,6 +167,12 @@ private slots:
      */
     void purchaseCompleted( bool success );
 
+    
+    /**
+     * Don not do expensive initializations before we are actually shown
+     */
+    void polish();
+
 private:
 
     MagnatuneBrowser( const char *name );
@@ -236,6 +242,7 @@ private:
     QComboBox   *m_genreComboBox;
     bool         m_isInfoShown;
     bool         m_purchaseInProgress;
+    bool         m_polished;
 
     KIO::TransferJob * m_listDownloadJob;
 };

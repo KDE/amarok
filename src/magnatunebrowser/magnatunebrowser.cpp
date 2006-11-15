@@ -1,20 +1,20 @@
 /*
- Copyright (c) 2006  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+Copyright (c) 2006  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 
- This library is free software; you can redistribute it and/or
- modify it under the terms of the GNU Library General Public
- License as published by the Free Software Foundation; either
- version 2 of the License, or (at your option) any later version.
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Library General Public
+License as published by the Free Software Foundation; either
+version 2 of the License, or (at your option) any later version.
 
- This library is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Library General Public License for more details.
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Library General Public License for more details.
 
- You should have received a copy of the GNU Library General Public License
- along with this library; see the file COPYING.LIB.  If not, write to
- the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- Boston, MA 02110-1301, USA.
+You should have received a copy of the GNU Library General Public License
+along with this library; see the file COPYING.LIB.  If not, write to
+the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+Boston, MA 02110-1301, USA.
 */
 
 
@@ -61,16 +61,15 @@ MagnatuneBrowser::MagnatuneBrowser( const char *name )
     connect( m_popupMenu, SIGNAL( aboutToShow() ),
              this, SLOT( menuAboutToShow() ) );
 
-    updateList( );
-
     m_currentInfoUrl = "";
-
-    m_artistInfobox->openURL( KURL( locate( "data", "amarok/data/magnatune_start_page.html" ) ) );
 
     m_purchaseHandler = 0;
     m_redownloadHandler = 0;
 
     m_purchaseInProgress = 0;
+
+    m_polished = false; 
+
 }
 
 void MagnatuneBrowser::itemExecuted( QListViewItem * item )
@@ -136,7 +135,7 @@ void MagnatuneBrowser::selectionChanged( QListViewItem *item )
 
     debug() << "Selection changed..." << endl;
 
-    
+
     if ( item->depth() == 0 )
         m_purchaseAlbumButton->setEnabled( false );
     else
@@ -235,8 +234,9 @@ void MagnatuneBrowser::menuAboutToShow( )
 
 void MagnatuneBrowser::purchaseButtonClicked( )
 {
-    
-    if (!m_purchaseInProgress) {
+
+    if ( !m_purchaseInProgress )
+    {
         m_purchaseInProgress = true;
         m_purchaseAlbumButton->setEnabled( false );
 
@@ -272,7 +272,7 @@ void MagnatuneBrowser::purchaseAlbumContainingSelectedTrack( )
 
     MagnatuneListViewTrackItem *selectedTrack = dynamic_cast<MagnatuneListViewTrackItem *>( m_listView->selectedItem() );
 
-    MagnatuneAlbum *album = new MagnatuneAlbum(MagnatuneDatabaseHandler::instance()->getAlbumById( selectedTrack->getAlbumId() ) );
+    MagnatuneAlbum *album = new MagnatuneAlbum( MagnatuneDatabaseHandler::instance() ->getAlbumById( selectedTrack->getAlbumId() ) );
 
     m_purchaseHandler->purchaseAlbum( album );
 }
@@ -414,6 +414,8 @@ void MagnatuneBrowser::showInfo( bool show )
 
 void MagnatuneBrowser::updateList()
 {
+
+    DEBUG_BLOCK
     const QString genre = m_genreComboBox->currentText();
 
     MagnatuneArtistList artists;
@@ -465,7 +467,8 @@ void MagnatuneBrowser::processRedownload( )
 void MagnatuneBrowser::purchaseCompleted( bool success )
 {
 
-    if (m_purchaseHandler != 0) {
+    if ( m_purchaseHandler != 0 )
+    {
         delete m_purchaseHandler;
         m_purchaseHandler = 0;
     }
@@ -477,6 +480,20 @@ void MagnatuneBrowser::purchaseCompleted( bool success )
 
     //TODO: display some kind of success dialog here?
 
+
+}
+
+void MagnatuneBrowser::polish( )
+{
+
+    DEBUG_BLOCK
+
+
+    if (!m_polished) {
+        m_polished = true;
+        updateList( );
+        m_artistInfobox->openURL( KURL( locate( "data", "amarok/data/magnatune_start_page.html" ) ) );
+    }
 
 }
 
