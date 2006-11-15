@@ -7,7 +7,7 @@ SUBDIRS = \
 
 INCLUDES = \
     -I$(top_srcdir)/amarok/src \
-    -I$(top_srcdir)/amarok/src/amarokcore \
+    -I$(top_builddir)/amarok/src/amarokcore \
     $(all_includes)
 
 AM_CPPFLAGS = \
