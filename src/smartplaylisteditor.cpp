@@ -321,7 +321,8 @@ void SmartPlaylistEditor::updateOrderTypes( int index )
     m_orderTypeCombo->updateGeometry();
 }
 
-QDomElement SmartPlaylistEditor::result() {
+QDomElement SmartPlaylistEditor::result()
+{
     QDomDocument doc;
     QDomNode node = doc.namedItem( "smartplaylists" );
     QDomElement nodeE;
@@ -337,26 +338,28 @@ QDomElement SmartPlaylistEditor::result() {
 
     nodeE.appendChild( smartplaylist );
     // Matches
-    if( m_matchAnyCheck->isChecked() ) {
+    if( m_matchAnyCheck->isChecked() )
+    {
         QDomElement matches = doc.createElement("matches");
         smartplaylist.appendChild( matches );
         // Iterate through all criteria list
         CriteriaEditor *criteriaeditor = m_criteriaEditorAnyList.first();
-        for( int i=0; criteriaeditor; criteriaeditor = m_criteriaEditorAnyList.next(), ++i ) {
+        for( int i=0; criteriaeditor; criteriaeditor = m_criteriaEditorAnyList.next(), ++i )
             matches.appendChild( doc.importNode( criteriaeditor->getDomSearchCriteria( doc ), true ) );
-        }
+
         matches.setAttribute( "glue",  "OR" );
         smartplaylist.appendChild( matches );
     }
 
-    if( m_matchAllCheck->isChecked() ) {
+    if( m_matchAllCheck->isChecked() )
+    {
         QDomElement matches = doc.createElement("matches");
         smartplaylist.appendChild( matches );
         // Iterate through all criteria list
         CriteriaEditor *criteriaeditor = m_criteriaEditorAllList.first();
-        for( int i=0; criteriaeditor; criteriaeditor = m_criteriaEditorAllList.next(), ++i ) {
+        for( int i=0; criteriaeditor; criteriaeditor = m_criteriaEditorAllList.next(), ++i )
             matches.appendChild( doc.importNode( criteriaeditor->getDomSearchCriteria( doc ), true ) );
-        }
+
         matches.setAttribute( "glue",  "AND" );
         smartplaylist.appendChild( matches );
     }
@@ -374,178 +377,15 @@ QDomElement SmartPlaylistEditor::result() {
 
         smartplaylist.appendChild( orderby );
     }
-    
-    QDomElement Sql = doc.createElement("sqlquery");
-    Sql.appendChild( doc.createComment( "this element is deprecated, "
-                                        "and it is ignored" ) );
-    buildQuery();
-    Sql.appendChild( doc.createTextNode( m_query ) );
-    smartplaylist.appendChild( Sql );
 
     if( m_expandCheck->isChecked() ) {
         QDomElement expandBy = doc.createElement("expandby");
         expandBy.setAttribute( "field", m_expandableFields[ m_expandCombo->currentItem() ] );
-        expandBy.appendChild(
-            doc.createComment( "the SQL query in this element is deprecated, "
-                               "and it is ignored" ) );
-        QDomText t = doc.createTextNode( m_expandQuery );
-        expandBy.appendChild( t );
         smartplaylist.appendChild( expandBy );
     }
+
     return (smartplaylist);
 }
-
-
-void SmartPlaylistEditor::buildQuery()
-{
-    DEBUG_BLOCK
-    //FIXME max: make sure sql queries are correct
-
-    // Note: the query built here is deprecated and kept only for forward compatibility
-    // with older amarok. Now the query is built at runtime in playlistbrowseritem.cpp
-    // This query no longer matches the field selection from collectiondb.cpp, but
-    // it does match the older versions, so an old Amarok will be able to read a
-    // smart playlist built by the newer version.
-    QString joins = "tags LEFT JOIN year ON year.id=tags.year LEFT JOIN genre ON genre.id=tags.genre"
-                    " LEFT JOIN artist ON artist.id=tags.artist LEFT JOIN album ON album.id=tags.album"
-                    " LEFT JOIN composer ON composer.id=tags.composer";
-    QString whereStr;
-    QString criteriaListStr;
-    QString orderStr;
-    QString limitStr;
-
-    //where expression
-    if( m_matchAnyCheck->isChecked() || m_matchAllCheck->isChecked() ) {
-        int i = 0;
-
-        if( m_matchAnyCheck->isChecked() ) {
-            criteriaListStr += "( (";
-
-            CriteriaEditor *criteria = m_criteriaEditorAnyList.first();
-            for( i=0; criteria; criteria = m_criteriaEditorAnyList.next(), i++ ) {
-
-                QString str = criteria->getSearchCriteria();
-                if( str.contains( "statistics." ) && !joins.contains( "statistics" ) )
-                    joins += " LEFT JOIN statistics ON statistics.url=tags.url AND statistics.deviceid=tags.deviceid";
-                if( str.contains( "devices." ) && !joins.contains( "devices" ) )
-                    joins += " LEFT JOIN devices ON tags.deviceid=devices.id";
-                if( str.contains( "labels." ) && !joins.contains( "labels" ) )
-                {
-                    joins += " LEFT JOIN tags_labels ON tags.url = tags_labels.url AND tags.deviceid = tags_labels.deviceid";
-                    joins += " LEFT JOIN labels ON tags_labels.labelid = labels.id";
-                }
-
-                if( i ) //multiple conditions
-                    str.prepend( " OR (");
-
-                criteriaListStr += str+')';
-            }
-
-            criteriaListStr += " )"; // we want our ORs all in one bracket. :-)
-        }
-
-        if( m_matchAllCheck->isChecked() ) {
-            if ( i ) // conditions exist from above
-                criteriaListStr += " AND ";
-
-            criteriaListStr += "( (";
-
-            CriteriaEditor *criteria2 = m_criteriaEditorAllList.first();
-            for( i=0; criteria2; criteria2 = m_criteriaEditorAllList.next(), i++ ) {
-
-                QString str = criteria2->getSearchCriteria();
-                if( str.contains( "statistics." ) && !joins.contains( "statistics" ) )
-                    joins += " LEFT JOIN statistics ON statistics.url=tags.url AND statistics.deviceid=tags.deviceid";
-                if( str.contains( "devices." ) && !joins.contains( "devices" ) )
-                    joins += " LEFT JOIN devices ON tags.deviceid=devices.id";
-                if( str.contains( "labels." ) && !joins.contains( "labels" ) )
-                {
-                    joins += " LEFT JOIN tags_labels ON tags.url = tags_labels.url AND tags.deviceid = tags_labels.deviceid";
-                    joins += " LEFT JOIN labels ON tags_labels.labelid = labels.id";
-                }
-
-                if( i ) //multiple conditions
-                    str.prepend( " AND (");
-
-                criteriaListStr += str+')';
-            }
-            criteriaListStr += " )";
-        }
-
-        whereStr = " WHERE " + criteriaListStr;
-    }
-
-    //only select from mounted devices
-    whereStr = whereStr + " (*MountedDeviceSelection*) ";
-
-    //order by expression
-    if( m_orderCheck->isChecked() ) {
-        if( m_orderCombo->currentItem() != m_orderCombo->count()-1 ) {
-            QString field = m_dbFields[ m_orderCombo->currentItem() ];
-            if( field.contains( "statistics." ) && !joins.contains( "statistics" ) )
-                joins += " LEFT JOIN statistics ON statistics.url=tags.url AND statistics.deviceid=tags.deviceid";
-            if( field.contains( "devices." ) && !joins.contains( "devices" ) )
-                joins += " LEFT JOIN devices ON tags.deviceid=devices.id";
-            if( field.contains( "labels." ) && !joins.contains( "labels" ) )
-            {
-                joins += " LEFT JOIN tags_labels ON tags.url = tags_labels.url AND tags.deviceid = tags_labels.deviceid";
-                joins += " LEFT JOIN labels ON tags_labels.labelid = labels.id";
-            }
-
-            QString orderType = m_orderTypeCombo->currentItem() == 1 ? " DESC" : " ASC";
-            orderStr = " ORDER BY " +  field + orderType;
-        }
-        else if( m_orderTypeCombo->currentItem() == 0 ) { // completely random
-            orderStr = " ORDER BY " + CollectionDB::instance()->randomFunc();
-        }
-        else {
-            /*
-            This is the score weighted random order.
-            The RAND() function returns random values equally distributed between 0.0 (inclusive) and 1.0 (exclusive).
-            The obvious way to get this order is to put every track <score> times into a list, sort the list by RAND()
-            (i.e. shuffle it) and discard every occurrence of every track but the very first of each.
-            By putting every track into the list only once but applying a transfer function
-            T_s(x) := 1-(1-x)^(1/s) where s is the score, to RAND() before sorting the list, exactly the same
-            distribution of tracks can be achieved (for a proof write to Stefan Siegel <kde@sdas.de>)
-            In the query below a simplified function is used: The score is incremented by one to prevent division by
-            zero, RAND() is used instead of 1-RAND() because it doesn't matter if it becomes zero (the exponent is
-            always non-zero), and finally POWER(...) is used instead of 1-POWER(...) because it only changes the order type.
-            */
-           orderStr = " ORDER BY POWER(" + CollectionDB::instance()->randomFunc() + ",1.0/(statistics.percentage+1)) DESC";
-            if( !joins.contains( "statistics" ) ) {
-                joins += " LEFT JOIN statistics ON statistics.url=tags.url";
-            }
-        }
-    }
-
-    if( m_limitCheck->isChecked() )
-        limitStr = " LIMIT " + QString::number( m_limitSpin->value() )+" OFFSET 0 ";
-
-
-    // album / artist / composer / genre / title / year / comment / track / bitrate / discnumber / length / samplerate / path / compilation / filetype / bpm
-    m_query = "SELECT (*ListOfFields*) FROM "
-              + joins + whereStr + orderStr + limitStr + ';';
-
-    if( m_expandCheck->isChecked() ) { //We use "(*ExpandString*)" as a marker, if a artist/track/album/label has this bizarre name, it won't work.
-        QString field = m_expandableDbFields[ m_expandCombo->currentItem() ];
-        QString table = field.left( field.find('.') );
-        if( table == "statistics" && !joins.contains( table ) ) {
-            joins += " LEFT JOIN statistics ON statistics.url=tags.url AND statistics.deviceid=tags.deviceid";
-        }
-        if( table == "labels" && !joins.contains( "labels" ) )
-        {
-            joins += " LEFT JOIN tags_labels ON tags.url = tags_labels.url AND tags.deviceid = tags_labels.deviceid";
-            joins += " LEFT JOIN labels ON tags_labels.labelid = labels.id";
-        }
-        if ( !criteriaListStr.isEmpty() )
-            whereStr = QString(" WHERE (%1) AND %2 = '(*ExpandString*)'").arg(criteriaListStr).arg(field);
-        else
-            whereStr = QString(" WHERE %1 = '(*ExpandString*)'").arg(field);
-        m_expandQuery = "SELECT (*ListOfFields*) FROM "
-                        + joins + whereStr + orderStr + limitStr + ';';
-    }
-}
-
 
 /////////////////////////////////////////////////////////////////////////////
 //    CLASS CriteriaEditor

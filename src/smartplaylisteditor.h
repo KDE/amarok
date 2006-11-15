@@ -35,8 +35,6 @@ Q_OBJECT
         QDomElement result();
 
         QString name() const { return m_nameLineEdit->text().replace( "\n", " " ); }
-        QString query() const { return m_query; }
-        QString expandableQuery() const { return m_expandQuery; }
 
         enum CriteriaType { criteriaAll = 0, criteriaAny = 1 };
 
@@ -51,7 +49,6 @@ Q_OBJECT
 
     private slots:
         void updateOrderTypes( int index );
-        void buildQuery();
 
     private:
         void init(QString defaultName);
@@ -76,9 +73,6 @@ Q_OBJECT
         //expand by
         QCheckBox *m_expandCheck;
         KComboBox *m_expandCombo;
-
-        QString m_query;
-        QString m_expandQuery;
 
         QPtrList<CriteriaEditor> m_criteriaEditorAnyList;
         QPtrList<CriteriaEditor> m_criteriaEditorAllList;
