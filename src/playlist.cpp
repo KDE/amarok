@@ -1190,28 +1190,23 @@ Playlist::advanceDynamicTrack( PlaylistItem *item )
     MyIterator it( this, MyIterator::Visible );
     if( !item ) item = currentTrack();
 
-    int x = 0;
-    for( ; *it; ++it, x++ )
+    int x = currentTrackIndex();
+    if( dynamicMode()->cycleTracks() )
     {
-        if( *it == item )
+        if( x >= dynamicMode()->previousCount() )
         {
-            for ( PlaylistItem *first = firstChild();
-                  dynamicMode()->cycleTracks() && x >= dynamicMode()->previousCount() && first;
-                  first = firstChild(), x-- )
-            {
-                removeItem( first ); //first visible item
-                delete first;
-            }
-            break;
+            PlaylistItem *first = firstChild();
+            removeItem( first );
+            delete first;
         }
     }
 
-    const int upcomingTracks = childCount() - x;
+    const int upcomingTracks = childCount() - x - 1;
 
     // Just starting to play from stopped, don't append something needlessely
     // or, we have more than enough items in the queue.
     bool dontAppend = ( EngineController::instance()->engine()->state() == Engine::Empty ) ||
-                        upcomingTracks >= dynamicMode()->upcomingCount();
+                        upcomingTracks > dynamicMode()->upcomingCount();
 
     //keep upcomingTracks requirement, this seems to break StopAfterCurrent
     if( !dontAppend && m_stopAfterTrack != m_currentTrack )
