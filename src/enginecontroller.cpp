@@ -493,7 +493,7 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
 
 void EngineController::pause() //SLOT
 {
-    if ( m_engine->loaded() )
+    if ( m_engine->loaded() && !LastFm::Controller::instance()->isPlaying() )
         m_engine->pause();
 }
 
