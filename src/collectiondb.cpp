@@ -7202,8 +7202,14 @@ QueryBuilder::addNumericFilter(int tables, Q_INT64 value, const QString &n,
                                const QString &endRange /* = QString::null */ )
 {
     m_where.append( ANDslashOR() ).append( " ( " );
+    
+    if ( coalesceField( tables, value) )
+        m_where.append("COALESCE(");
+    
+    m_where.append( tableName( tables ) ).append( '.' ).append( valueName( value ) );
 
-    m_where.append("COALESCE(").append( tableName( tables ) ).append( '.' ).append( valueName( value ) ).append(",0)");
+    if ( coalesceField( tables, value) )
+        m_where.append(",0)");
 
     switch (mode) {
     case modeNormal:
