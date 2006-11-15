@@ -152,7 +152,6 @@ MediaItem
             MediaItem *track =  dynamic_cast<MediaItem *>( album->findItem( bundle.title() ) );
             if( track )
             {
-                debug() << "track bundle " << track->bundle()->track() << " matches " << bundle.track() << " ?" << endl;
                 if( track->bundle()->track() == bundle.track() )
                     return track;
             }
