@@ -160,12 +160,12 @@ class PlaylistEntry :  public PlaylistBrowserEntry
 
         void load();
 
-        const KURL &url() const                   { return m_url; }
-        void        setUrl( const QString &u )    { m_url.setPath( u ); }
-        int         trackCount()                  { return m_trackCount; }
-        int         length()                      { return m_length; }
-        bool        isDynamic()                   { return m_dynamic; }
-        bool        isLoaded()                    { return m_loaded; }
+        const KURL &url()                      const { return m_url; }
+        void        setUrl( const QString &u )       { m_url.setPath( u ); }
+        int         trackCount()               const { return m_trackCount; }
+        int         length()                   const { return m_length; }
+        bool        isDynamic()                const { return m_dynamic; }
+        bool        isLoaded()                 const { return m_loaded; }
 
         void        setDynamic( bool );
 
@@ -177,8 +177,9 @@ class PlaylistEntry :  public PlaylistBrowserEntry
         // when removing a list of tracks from the playlist
         void        removeTrack( QListViewItem *item, bool isLast = true );
 
-        QPtrList<TrackItemInfo> trackList()       { return m_trackList; }    //returns the list of tracks information
-        QPtrList<TrackItemInfo> droppedTracks()   { return tmp_droppedTracks; }
+        //returns a list of track information
+        QPtrList<TrackItemInfo> trackList()     const { return m_trackList; }
+        QPtrList<TrackItemInfo> droppedTracks() const { return tmp_droppedTracks; }
 
         void  setOpen( bool );
         void  setup();
@@ -230,8 +231,9 @@ class PlaylistTrackItem : public PlaylistBrowserEntry
 
     public:
         PlaylistTrackItem( QListViewItem *parent, QListViewItem *after, TrackItemInfo *info );
-        const KURL &url();
-        TrackItemInfo *trackInfo() { return m_trackInfo; }
+
+        const KURL    &url();
+        TrackItemInfo *trackInfo() const { return m_trackInfo; }
 
         int rtti() const { return RTTI; }
         static const int RTTI = 1002;    //track item
@@ -251,9 +253,9 @@ class PodcastFetcher : public QObject
     public:
         PodcastFetcher( QString url, const KURL &directory, int size );
         ~PodcastFetcher();
-        QString filename() { return m_url.fileName(); }
-        KURL localUrl() { return KURL::fromPathOrURL( m_file.name() ); }
-        void kill();
+        QString filename() const { return m_url.fileName(); }
+        KURL    localUrl() const { return KURL::fromPathOrURL( m_file.name() ); }
+        void    kill();
 
     signals:
         void result( int error );
@@ -265,15 +267,15 @@ class PodcastFetcher : public QObject
         void slotProgress( int bytesDone, int bytesTotal );
 
     private:
-        void fetch();
+        void    fetch();
 
-        QFile m_file;
-        QUrl m_url;
-        QHttp* m_http;
-        KURL m_directory;
-        bool m_redirected;
-        int m_error;
-        int m_size;
+        QFile   m_file;
+        QUrl    m_url;
+        QHttp  *m_http;
+        KURL    m_directory;
+        bool    m_redirected;
+        int     m_error;
+        int     m_size;
 
 };
 
@@ -292,22 +294,22 @@ class PodcastEpisode : public PlaylistBrowserEntry
         QListViewItem *itemChannel() { return m_parent; }
 
 
-        const bool isNew()         const { return m_bundle.isNew(); }
+        const bool isNew() const { return m_bundle.isNew(); }
 
         void setNew( const bool &n = true );
         void setListened( const bool &n = true ) { setNew( !n ); }
 
         // for convenience
-        const int     dBId()        { return m_bundle.dBId(); }
-        const KURL    url()         { return m_bundle.url(); }
-        const QString title()       { return m_bundle.title(); }
-        const QString author()      { return m_bundle.author(); }
-        const QString date()        { return m_bundle.date(); }
-        const QString type()        { return m_bundle.type(); }
-        const QString description() { return m_bundle.description(); }
-        const QString guid()        { return m_bundle.guid(); }
-        const int     duration()    { return m_bundle.duration(); }
-        const KURL    &localUrl()   { return m_localUrl; }
+        const int     dBId()        const { return m_bundle.dBId(); }
+        const KURL    url()         const { return m_bundle.url(); }
+        const QString title()       const { return m_bundle.title(); }
+        const QString author()      const { return m_bundle.author(); }
+        const QString date()        const { return m_bundle.date(); }
+        const QString type()        const { return m_bundle.type(); }
+        const QString description() const { return m_bundle.description(); }
+        const QString guid()        const { return m_bundle.guid(); }
+        const int     duration()    const { return m_bundle.duration(); }
+        const KURL   &localUrl()    const { return m_localUrl; }
         void  setLocalUrlBase( const QString &s );
         void setLocalUrl( const KURL &localUrl );
 
@@ -318,7 +320,7 @@ class PodcastEpisode : public PlaylistBrowserEntry
 
         void addToMediaDevice();
 
-        int rtti() const { return RTTI; }
+        int    rtti() const { return RTTI; }
         static const int RTTI = 1007;              //PodcastEpisode
         static void createLocalDir( const KURL &localDir );
 
@@ -347,7 +349,6 @@ class PodcastEpisode : public PlaylistBrowserEntry
         void startAnimation();
         void stopAnimation();
         void updatePixmap();
-//         KURL saveURL( const KURL &base, const QString &filetype, const KURL &link );
 
         QListViewItem *m_parent;           //podcast channel it belongs to
         PodcastEpisodeBundle m_bundle;
@@ -357,7 +358,6 @@ class PodcastEpisode : public PlaylistBrowserEntry
         QTimer      m_animationTimer;
         uint        m_iconCounter;
 
-//         KIO::CopyJob* m_podcastEpisodeJob;
         PodcastFetcher  *m_podcastFetcher;
 
         bool        m_downloaded;       //marked as downloaded in cached xml
@@ -379,40 +379,44 @@ class PodcastChannel : public PlaylistBrowserEntry
 
         enum MediaFetch{ STREAM=0, AUTOMATIC=1 };
 
-        void setNew( const bool n = true );
-        bool hasNew() { return m_new; }
+        void  setNew( const bool n = true );
+        bool  hasNew() const { return m_new; }
         // iterate over all children and explicitly check if there are any episodes which have not been listened
         // to.  Mark the channel as new/listened after doing this.
-        void checkAndSetNew();
+        void  checkAndSetNew();
 
-        void setListened( const bool n = true ); // over rides each child so it has been listened
+        void  setListened( const bool n = true ); // over rides each child so it has been listened
 
-        void setOpen( bool open ); // if !m_polished, load the children. Lazy loading to improve start times
-        void load();
-        const bool isPolished() const  { return m_polished; }
+        void  setOpen( bool open ); // if !m_polished, load the children. Lazy loading to improve start times
+        void  load();
+        const bool isPolished() const { return m_polished; }
 
         void  configure();
         void  fetch();
         void  rescan();
 
-        const KURL     url()         { return m_url; }
-        const KURL     link()        { return m_bundle.link(); }
-        const QString  title()       { return m_bundle.title(); }
-        const QString  description() { return m_bundle.description(); }
-        const QString  copyright()   { return m_bundle.copyright(); }
+        const KURL   &url()         const { return m_url; }
+        const KURL    link()        const { return m_bundle.link(); }
+        const QString title()       const { return m_bundle.title(); }
+        const QString description() const { return m_bundle.description(); }
+        const QString copyright()   const { return m_bundle.copyright(); }
 
-        const int  fetchType()      { return m_bundle.fetchType(); }
-        const bool autoscan()       { return m_bundle.autoscan(); }
-        const bool autotransfer()   { return m_bundle.autotransfer(); }
-        const bool hasPurge()       { return m_bundle.hasPurge(); }
-        const int  purgeCount()     { return m_bundle.purgeCount(); }
-        const KURL saveLocation()   { return m_bundle.saveLocation(); }
-        PodcastSettings *getSettings() { return new PodcastSettings( title(), saveLocation().path(),
-            autoscan(), fetchType(), autotransfer(), hasPurge(), purgeCount() ); }
+        const bool autoscan()     const { return m_bundle.autoscan(); }
+        const bool autotransfer() const { return m_bundle.autotransfer(); }
+        const int  fetchType()    const { return m_bundle.fetchType(); }
+        const bool hasPurge()     const { return m_bundle.hasPurge(); }
+        const int  purgeCount()   const { return m_bundle.purgeCount(); }
+        const KURL saveLocation() const { return m_bundle.saveLocation(); }
+        PodcastSettings *getSettings() const
+        {
+            return new PodcastSettings( title(), saveLocation().path(),
+                                        autoscan(), fetchType(), autotransfer(),
+                                        hasPurge(), purgeCount() );
+        }
 
-        void  setXml( const QDomNode &xml, const int feedType );
-        void  setParent( PlaylistCategory *newParent );
+        void setParent( PlaylistCategory *newParent );
         void setSettings( PodcastSettings *settings );
+        void setXml( const QDomNode &xml, const int feedType );
 
         virtual void  updateInfo();
 
@@ -444,25 +448,25 @@ class PodcastChannel : public PlaylistBrowserEntry
         void startAnimation();
         void stopAnimation();
 
-        PodcastChannelBundle m_bundle;
+        PodcastChannelBundle     m_bundle;
 
         /// loading all of the podcast episodes during startup can be very inefficient.
         /// When the user expands the podcast for the first time, we load up the episodes.
-        bool        m_polished;
+        bool                     m_polished;
 
-        KURL        m_url;                         //remote xml url
-        bool        m_fetching;
-        bool        m_updating;
-        QTimer      m_animationTimer;
-        uint        m_iconCounter;
-        bool        m_new;
-        bool        m_hasProblem;
+        KURL                     m_url;            //remote xml url
+        bool                     m_fetching;
+        bool                     m_updating;
+        QTimer                   m_animationTimer;
+        uint                     m_iconCounter;
+        bool                     m_new;
+        bool                     m_hasProblem;
 
         KIO::TransferJob        *m_podcastJob;
-        PlaylistCategory        *m_parent; // category it belongs to
+        PlaylistCategory        *m_parent;        // category it belongs to
         QString                  m_podcastCurrentUrl;
         QPtrList<PodcastEpisode> m_podcastDownloadQueue;
-        bool        m_settingsValid;
+        bool                     m_settingsValid;
 };
 
 class StreamEntry : public PlaylistBrowserEntry
@@ -479,14 +483,14 @@ class StreamEntry : public PlaylistBrowserEntry
         void  setup();
         void  paintCell( QPainter*, const QColorGroup&, int, int, int );
 
-        const KURL &url()      { return m_url; }
-        const QString &title() { return m_title; }
+        const KURL    &url()   const { return m_url; }
+        const QString &title() const { return m_title; }
 
         virtual QDomElement xml();
 
-        virtual void  updateInfo();
+        virtual void updateInfo();
 
-        int   rtti() const { return RTTI; }
+        int    rtti() const { return RTTI; }
         static const int RTTI = 1003;    //stream item
 
     public slots:
@@ -507,14 +511,12 @@ class LastFmEntry : public StreamEntry
         LastFmEntry( QListViewItem *parent, QListViewItem *after, const QDomElement &xmlDefinition )
             : StreamEntry( parent, after, xmlDefinition ) { }
         virtual QDomElement xml();
-//         virtual void  updateInfo();
 
     public slots:
-//        virtual void slotDoubleClicked();
         virtual void slotRenameItem() { /* Do nothing */ }
 
     public:
-        int   rtti() const { return RTTI; }
+        int    rtti() const { return RTTI; }
         static const int RTTI = 1008;    //lastfm item
 };
 
@@ -538,19 +540,17 @@ class SmartPlaylist : public PlaylistBrowserEntry
     public:
         SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QString &name, const QString &query );
         SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QString &name,
-                                                        const QString &urls, const QString &tags );
+                         const QString &urls, const QString &tags );
         SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QDomElement &xmlDefinition );
 
-        bool isEditable() const { return !m_xml.isNull(); }
+        bool        isDynamic()  const { return m_dynamic; }
+        bool        isEditable() const { return !m_xml.isNull(); }
+        QString     query();
+        QString     title()      const { return m_title; }
+        QDomElement xml()        const { return m_xml;   }
 
-        QString query();
-        QString title() { return m_title; }
-
-        QDomElement xml() { return m_xml; }
-        void setXml( const QDomElement &xml );
-
-        bool  isDynamic() { return m_dynamic; }
         void  setDynamic( bool );
+        void  setXml( const QDomElement &xml );
 
         int   rtti() const { return RTTI; }
         static const int RTTI = 1004;    //smart playlist item
@@ -562,16 +562,16 @@ class SmartPlaylist : public PlaylistBrowserEntry
 
     private:
         // for xml playlists, this member is computed on demand
-        QString m_sqlForTags;
+        QString         m_sqlForTags;
 
-        QString m_title;
-        QDomElement m_xml;
-        QListViewItem *m_after;
-        bool m_dynamic;
+        QString         m_title;
+        QDomElement     m_xml;
+        QListViewItem  *m_after;
+        bool            m_dynamic;
 
         // Build the query for a given xml object. If \p for expand is true,
         // insert (*ExpandString*) as placeholders for childrens' filters
-        static QString xmlToQuery(const QDomElement &xml, bool forExpand = false);
+        static QString xmlToQuery( const QDomElement &xml, bool forExpand = false );
 };
 
 //this class is used to store information (url, title and length) of a playlist track
@@ -580,9 +580,9 @@ class TrackItemInfo
     public:
         TrackItemInfo( const KURL &u, const QString &t, const int l );
         ~TrackItemInfo() {}
-        const KURL &url() { return m_url; }
-        const QString &title() { return m_title; }
-        const int length() { return m_length; }
+        const KURL    &url()   const { return m_url;    }
+        const QString &title() const { return m_title;  }
+        const int     length() const { return m_length; }
 
     private:
         KURL m_url;
