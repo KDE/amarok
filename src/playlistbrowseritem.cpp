@@ -3145,14 +3145,8 @@ void SmartPlaylist::setXml( const QDomElement &xml )
     static QStringList labels;
 
     //Delete all children before
-    QListViewItem *child, *next;
-    if ( (child = firstChild()) ) {
-        while ( (next = child->nextSibling()) ) {
-            delete child;
-            child=next;
-        }
-        delete child;
-    }
+    while( firstChild() )
+        delete firstChild();
 
     QDomNode expandN = xml.namedItem( "expandby" );
     if ( !expandN.isNull() ) {
