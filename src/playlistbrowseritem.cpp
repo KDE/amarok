@@ -3427,6 +3427,18 @@ void SmartPlaylist::setDynamic( bool enable )
     m_dynamic = enable;
 }
 
+bool SmartPlaylist::isTimeOrdered()
+{
+    // matches statistics.createdate (firstplayed) and tags.createdate (modified date)
+    QRegExp createDate( "ORDER BY.*createdate" );
+    // matches last played
+    QRegExp accessDate( "ORDER BY.*accessdate" );
+
+    const QString sql = query();
+
+    return ! ( ( sql.find( createDate, false ) == -1 ) /*not create ordered*/ &&
+               ( sql.find( accessDate, false ) == -1 ) /*not access ordered*/ );
+}
 
 void SmartPlaylist::slotDoubleClicked()
 {

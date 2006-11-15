@@ -223,21 +223,25 @@ DEBUG_BLOCK
         return KURL::List();
 
     bool useDirect = true;
+    const bool hasTimeOrder = item->isTimeOrdered();
+    debug() << "The smart playlist: " << item->name() << ", time order? " << hasTimeOrder << endl;
+
     QString sql = item->query();
 
     // FIXME: All this SQL magic out of collectiondb is not a good thing
-    // Many smart playlists require a special ordering in order to be effective (eg, last played).
-    // We respect this, so if there is no order by statement, we add a random ordering and use the result
-    // without further processing
+
+    // if there is no ordering, add random ordering
     if ( sql.find( QString("ORDER BY"), false ) == -1 )
     {
         QRegExp limit( "(LIMIT.*)?;$" );
-        sql.replace( limit, QString(" ORDER BY %1 LIMIT %2 OFFSET 0;").arg( CollectionDB::instance()->randomFunc() ).arg( songCount ) );
+        sql.replace( limit, QString(" ORDER BY %1 LIMIT %2 OFFSET 0;")
+                            .arg( CollectionDB::instance()->randomFunc() )
+                            .arg( songCount ) );
     }
     else
     {
-        // we don't want stupid limits such as LIMIT 5 OFFSET 0 which would return the same results always
-        uint first=0, limit=0;
+        uint limit=0, offset=0;
+
         QRegExp limitSearch( "LIMIT.*(\\d+).*OFFSET.*(\\d+)" );
         int findLocation = sql.find( limitSearch, false );
         if( findLocation == -1 ) //not found, let's find out the higher limit the hard way
@@ -253,25 +257,41 @@ DEBUG_BLOCK
         {   // There's a Limit, so we've got to respect it.
             limitSearch.search( sql );
             // capturedTexts() gives us the strings that were matched by each subexpression
-            first = limitSearch.capturedTexts()[2].toInt();
-            limit = limitSearch.capturedTexts()[1].toInt();
+            offset = limitSearch.capturedTexts()[2].toInt();
+            limit  = limitSearch.capturedTexts()[1].toInt();
         }
-        if ( limit <= songCount )
-            // The list is even smaller than the number of songs we want :-(
-            songCount = limit;
-        else
-            // Let's get a random limit, repecting the original one.
-            first += KApplication::random() % (limit - songCount);
 
-        if( findLocation == -1 ) // there is no limit
+        // we must be ordering by some other arbitrary query.
+        // we can scrap it, since it won't affect our result
+        if( !hasTimeOrder )
         {
-            QRegExp limit( ";$" );
-            sql.replace( limit, QString(" LIMIT %1 OFFSET %2;" ).arg( songCount*5 ).arg( first ) );
-            useDirect = false;
-        }
-        else
-            sql.replace( limitSearch, QString(" LIMIT %1 OFFSET %2;" ).arg( songCount ).arg( first ) );
+            // We can mess with the limits if the smart playlist is not orderd by a time criteria
+            // Why? We can have a smart playlist which is ordered by name or by some other quality which
+            // is meaningless in dynamic mode
+            QRegExp orderLimit( "(ORDER BY.*)?;$" );
 
+            sql.replace( orderLimit, QString(" ORDER BY %1 LIMIT %2 OFFSET 0;")
+                                        .arg( CollectionDB::instance()->randomFunc() )
+                                        .arg( songCount ) );
+        }
+        else // time ordered criteria, only mess with the limits
+        {
+            debug() << "time based criteria used!" << endl;
+            if ( limit <= songCount ) // The list is even smaller than the number of songs we want :-(
+                songCount = limit;
+            else
+                // Let's get a random limit, repecting the original one.
+                offset += KApplication::random() % (limit - songCount);
+
+            if( findLocation == -1 ) // there is no limit
+            {
+                QRegExp queryEnd( ";$" ); // find the end of the query an add a limit
+                sql.replace( queryEnd, QString(" LIMIT %1 OFFSET %2;" ).arg( songCount*5 ).arg( offset ) );
+                useDirect = false;
+            }
+            else // there is a limit, so find it and replace it
+                sql.replace( limitSearch, QString(" LIMIT %1 OFFSET %2;" ).arg( songCount ).arg( offset ) );
+        }
     }
 
     // only return the fields that we need

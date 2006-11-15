@@ -543,11 +543,12 @@ class SmartPlaylist : public PlaylistBrowserEntry
                          const QString &urls, const QString &tags );
         SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QDomElement &xmlDefinition );
 
-        bool        isDynamic()  const { return m_dynamic; }
-        bool        isEditable() const { return !m_xml.isNull(); }
+        bool        isDynamic()     const { return m_dynamic; }
+        bool        isEditable()    const { return !m_xml.isNull(); }
+        bool        isTimeOrdered(); //returns yes if the ordering is based on a time attribute
         QString     query();
-        QString     title()      const { return m_title; }
-        QDomElement xml()        const { return m_xml;   }
+        QString     title()         const { return m_title; }
+        QDomElement xml()           const { return m_xml;   }
 
         void  setDynamic( bool );
         void  setXml( const QDomElement &xml );
