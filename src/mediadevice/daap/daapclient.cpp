@@ -546,7 +546,9 @@ DaapClient::resolve( const QString& hostname )
     if( resolver.wait( 5000 ) )
     {
         KNetwork::KResolverResults results = resolver.results();
-        debug() << "Resolver error code (0 is no error): " << resolver.errorString( results.error() ) << ' ' << hostname << endl;
+        if( results.error() )
+            debug() << "Error resolving "  << hostname << ": ("
+                    << resolver.errorString( results.error() ) << ")" << endl;
         if( !results.empty() )
         {
             QString ip = results[0].address().asInet().ipAddress().toString();
@@ -633,18 +635,19 @@ void
 DaapClient::broadcastButtonToggled()
 {
 DEBUG_BLOCK
-    debug() << "Chaging server from " << m_broadcastServer << " to " << !m_broadcastServer << endl;
     m_broadcastServer = !m_broadcastServer;
 
     switch( m_broadcastServer )
     {
         case false:
+            debug() << "turning daap server off" << endl;
             if( m_sharingServer )
                 delete m_sharingServer;
             m_sharingServer = 0;
             break;
 
         case true:
+            debug() << "turning daap server on" << endl;
             if( !m_sharingServer )
                 m_sharingServer = new DaapServer( this, "DaapServer" );
             break;

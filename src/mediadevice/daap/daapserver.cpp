@@ -76,8 +76,6 @@ DaapServer::readSql()
                 m_service->publishAsync();
             #endif
         }
-        else
-            debug() << "not sql:  " << line << endl;
    }
    //m_server->ackRead();
    //m_server->enableReadSignals(true);
