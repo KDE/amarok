@@ -760,6 +760,18 @@ MtpMediaDevice::deleteItemFromDevice(MediaItem* item, int flags )
                     result = -1;
             }
             break;
+        case MediaItem::PLAYLISTITEM:
+            if( isCanceled() )
+                break;
+            if( item )
+            {
+                MtpMediaItem *parent = dynamic_cast<MtpMediaItem *> ( item->parent() );
+                if( parent->type() == MediaItem::PLAYLIST ) {
+                    delete( item );
+                    playlistFromItem( parent );
+                }
+            }
+            break;
         case MediaItem::ALBUM:
         case MediaItem::ARTIST:
             // Recurse through the lists

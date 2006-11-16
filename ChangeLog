@@ -10,6 +10,8 @@ VERSION 1.4.5
       you move and rename them.
 
   CHANGES:
+    * Deleting a playlist item on an MTP media device now results in it being
+      removed from the playlist.
     * Magnatune store is lazy loaded to improve startup times.
     * Dynamic mode logic has been rethought to provide a faster and better
       user experience.
