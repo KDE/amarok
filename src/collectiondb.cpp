@@ -90,7 +90,7 @@
 
 using Amarok::QStringx;
 
-#define DEBUG 0
+#define DEBUG 1
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS INotify
@@ -6870,15 +6870,27 @@ QueryBuilder::addFilter( int tables, Q_INT64 value, const QString& filter, int m
 {
     if ( !filter.isEmpty() )
     {
+        //true for INTEGER fields (see comment of coalesceField(int, Q_INT64)
+        bool useCoalesce = coalesceField( tables, value );
         m_where += ANDslashOR() + " ( ";
 
         QString m, s;
         if (mode == modeLess || mode == modeGreater)
-            s = ( mode == modeLess ? "< '" : "> '" ) + CollectionDB::instance()->escapeString( filter ) + "' ";
+        {
+            QString escapedFilter;
+            if (useCoalesce && DbConnection::sqlite == CollectionDB::instance()->getDbConnectionType())
+                escapedFilter = CollectionDB::instance()->escapeString( filter );
+            else
+                escapedFilter = "'" + CollectionDB::instance()->escapeString( filter ) + "' ";
+            s = ( mode == modeLess ? "< " : "> " ) + escapedFilter;
+        }
         else
         {
             if (exact)
-                s = " = '" + CollectionDB::instance()->escapeString( filter ) + "' ";
+                if (useCoalesce && DbConnection::sqlite == CollectionDB::instance()->getDbConnectionType())
+                    s = " = " +CollectionDB::instance()->escapeString( filter ) + ' ';
+                else
+                    s = " = '" + CollectionDB::instance()->escapeString( filter ) + "' ";
             else
                 s = CollectionDB::likeCondition( filter, mode != modeBeginMatch, mode != modeEndMatch );
         }
@@ -7759,6 +7771,9 @@ QueryBuilder::valueName( Q_INT64 value )
 /*
  * Return true if we should call COALESCE(..,0) for this DB field
  * (field names sourced from the old smartplaylistbrowser.cpp code)
+ * Warning: addFilter( int, Q_INT64, const QString&, int bool )
+ * expects this method to return true for all statistics table clomuns of type INTEGER
+ * Sqlite doesn't like comparing strings to an INTEGER column.
  */
 bool
 QueryBuilder::coalesceField( int table, Q_INT64 value )
