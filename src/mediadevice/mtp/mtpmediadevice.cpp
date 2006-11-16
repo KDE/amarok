@@ -326,11 +326,7 @@ MediaItem
     debug() << "Sending track... " << bundle.url().path().utf8() << endl;
     int ret = LIBMTP_Send_Track_From_File(
         m_device, bundle.url().path().utf8(), trackmeta,
-#ifdef LIBMTP_CALLBACKS
         progressCallback, this, parent_id  // callbacks only in libmtp >= 0.0.15
-#else
-        0, 0, parent_id
-#endif
     );
     m_critical_mutex.unlock();
 
@@ -494,11 +490,7 @@ MtpMediaDevice::downloadSelectedItemsToCollection()
             QString filename = tempdir.name() + it->bundle()->filename();
             int ret = LIBMTP_Get_Track_To_File(
                     m_device, it->track()->id(), filename.utf8(),
-#ifdef LIBMTP_CALLBACKS
                     progressCallback, this // callbacks only in libmtp >= 0.0.15
-#else
-                    0, 0
-#endif
                   );
             if( ret != 0 )
             {
@@ -897,11 +889,7 @@ MtpMediaDevice::openDevice( bool silent )
     );
 
     QString modelname = QString( LIBMTP_Get_Modelname( m_device ) );
-#if LIBMTP_FRIENDLY_NAME
     QString ownername = QString( LIBMTP_Get_Friendlyname( m_device ) );
-#else
-    QString ownername = QString( LIBMTP_Get_Ownername( m_device ) );
-#endif
     m_name = modelname;
     if(! ownername.isEmpty() )
     {

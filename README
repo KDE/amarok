@@ -114,7 +114,7 @@ Optional
       (NJB mediadevice (Creative Nomad/Zen family, Dell DJ devices)
       http://www.sf.net/projects/libnjb
 
-    * libmtp 0.0.10 (or newer)
+    * libmtp 0.0.15 (or newer)
       (MTP media device support AKA PlaysForSure)
       http://libmtp.sourceforge.net/
 
