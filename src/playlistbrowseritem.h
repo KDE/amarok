@@ -55,7 +55,7 @@ class PlaylistBrowserEntry :  public QObject, public KListViewItem
         PlaylistBrowserEntry( QListViewItem *parent, QListViewItem *after, const QString &name )
             : KListViewItem( parent, after, name) { m_kept = true; }
 
-        virtual QDomElement xml() { return QDomElement(); }
+        virtual QDomElement xml() const { return QDomElement(); }
         QListViewItem* parent() const { return KListViewItem::parent(); }
 
         bool    isKept() const { return m_kept; }           // if kept == true, then it will be saved
@@ -90,7 +90,7 @@ class DynamicEntry : public PlaylistBrowserEntry, public DynamicMode
 
         virtual QString text( int column ) const;
 
-        QDomElement xml();
+        virtual QDomElement xml() const;
 
         static const int RTTI = 1005;
         int rtti() const { return RTTI; }
@@ -120,7 +120,7 @@ class PlaylistCategory : public PlaylistBrowserEntry
         void  setId( const int id ) { m_id = id; }
         const int id() const { return m_id; }
 
-        QDomElement xml();
+        virtual QDomElement xml() const;
 
         int   rtti() const { return RTTI; }
         static const int RTTI = 1000;    //category item
@@ -185,7 +185,7 @@ class PlaylistEntry :  public PlaylistBrowserEntry
         void  setup();
         void  paintCell( QPainter*, const QColorGroup&, int, int, int );
 
-        QDomElement xml();
+        virtual QDomElement xml() const;
 
         virtual void  updateInfo();
 
@@ -486,7 +486,7 @@ class StreamEntry : public PlaylistBrowserEntry
         const KURL    &url()   const { return m_url; }
         const QString &title() const { return m_title; }
 
-        virtual QDomElement xml();
+        virtual QDomElement xml() const;
 
         virtual void updateInfo();
 
@@ -510,7 +510,7 @@ class LastFmEntry : public StreamEntry
             : StreamEntry( parent, after, u, t ) { }
         LastFmEntry( QListViewItem *parent, QListViewItem *after, const QDomElement &xmlDefinition )
             : StreamEntry( parent, after, xmlDefinition ) { }
-        virtual QDomElement xml();
+        virtual QDomElement xml() const;
 
     public slots:
         virtual void slotRenameItem() { /* Do nothing */ }
@@ -548,7 +548,7 @@ class SmartPlaylist : public PlaylistBrowserEntry
         bool        isTimeOrdered(); //returns yes if the ordering is based on a time attribute
         QString     query();
         QString     title()         const { return m_title; }
-        QDomElement xml()           const { return m_xml;   }
+        virtual QDomElement xml()   const { return m_xml;   }
 
         void  setDynamic( bool );
         void  setXml( const QDomElement &xml );

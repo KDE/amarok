@@ -313,7 +313,7 @@ void PlaylistCategory::setXml( const QDomElement &xml )
 }
 
 
-QDomElement PlaylistCategory::xml()
+QDomElement PlaylistCategory::xml() const
 {
         QDomDocument d;
         QDomElement i = d.createElement("category");
@@ -994,7 +994,7 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
 }
 
 
-QDomElement PlaylistEntry::xml()
+QDomElement PlaylistEntry::xml() const
 {
         QDomDocument doc;
         QDomElement i = doc.createElement("playlist");
@@ -1164,7 +1164,7 @@ StreamEntry::StreamEntry( QListViewItem *parent, QListViewItem *after, const QDo
 }
 
 
-QDomElement StreamEntry::xml()
+QDomElement StreamEntry::xml() const
 {
     QDomDocument doc;
     QDomElement i = doc.createElement("stream");
@@ -1298,7 +1298,7 @@ StreamEntry::showContextMenu( const QPoint &position )
 ///    CLASS LastFmEntry
 ////////////////////////////////////////////////////////////////////////////
 
-QDomElement LastFmEntry::xml()
+QDomElement LastFmEntry::xml() const
 {
     QDomDocument doc;
     QDomElement i = doc.createElement("lastfm");
@@ -1383,7 +1383,7 @@ QString DynamicEntry::text( int column ) const
     return PlaylistBrowserEntry::text( column );
 }
 
-QDomElement DynamicEntry::xml()
+QDomElement DynamicEntry::xml() const
 {
     QDomDocument doc;
     QDomElement i;
