@@ -2,6 +2,7 @@
  * copyright            : (c) 2004 Pierpaolo Di Panfilo                    *
  *                        (c) 2005-2006 Seb Ruiz <me@sebruiz.net>          *
  *                        (c) 2006 Bart Cerneels <bart.cerneels@gmail.com> *
+ *                        (c) 2006 Adam Pigg <adam@piggz.co.uk>            *
  * See COPYING file for licensing information                              *
  ***************************************************************************/
 
@@ -589,6 +590,58 @@ class TrackItemInfo
         KURL m_url;
         QString m_title;
         int m_length;
+};
+
+/*!
+@brief Implement a shoutcast playlist category
+
+On double click, download the shoutcast genre XML file.
+
+Process the file and add each genre as a ShoutcastGenre
+style PlaylistCategory
+*/
+class ShoutcastBrowser : public PlaylistCategory
+{
+    Q_OBJECT
+public:
+    ShoutcastBrowser( QListView* );
+
+private:
+    bool m_downloading;
+    KIO::CopyJob *m_cj;
+
+public slots:
+    virtual void slotDoubleClicked();
+
+private slots:
+    void doneGenreDownload( KIO::Job *job, const KURL &from, const KURL &to, bool   directory, bool renamed );
+    void jobFinished( KIO::Job *job );
+};
+
+/*!
+@brief Implement a shoutcast genre category
+
+On double click, download the shoutcast station list XML file.
+
+Process the file and add each station as a StreamEntry
+*/
+class ShoutcastGenre : public PlaylistCategory
+{
+    Q_OBJECT
+public:
+    ShoutcastGenre( ShoutcastBrowser*,  const QString& );
+
+private:
+    bool m_downloading;
+    KIO::CopyJob *m_cj;
+    QString genre;
+
+public slots:
+    virtual void slotDoubleClicked();
+
+private slots:
+    void doneListDownload( KIO::Job *job, const KURL &from, const KURL &to, bool   directory, bool renamed );
+    void jobFinished( KIO::Job *job );
 };
 
 #endif

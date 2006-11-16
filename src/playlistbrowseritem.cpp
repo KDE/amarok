@@ -6,6 +6,7 @@
  *                        (c) 2006 Bart Cerneels <bart.cerneels@gmail.com> *
  *                        (c) 2006 Ian Monroe <ian@monroe.nu>              *
  *                        (c) 2006 Alexandre Oliveira <aleprj@gmail.com>   *
+ *                        (c) 2006 Adam Pigg <adam@piggz.co.uk>            *
  * See COPYING file for licensing information                              *
  ***************************************************************************/
 
@@ -35,6 +36,7 @@
 #include <qpixmap.h>           //paintCell()
 #include <qregexp.h>
 
+#include <kapplication.h>      //Used for Shoutcast random name generation
 #include <kdeversion.h>        //KDE_VERSION ifndefs.  Remove this once we reach a kde 4 dep
 #include <kiconloader.h>       //smallIcon
 #include <kio/jobclasses.h>    //podcast retrieval
@@ -48,6 +50,7 @@
 #include <kstringhandler.h>
 #include <ktrader.h>
 #include <kurlrequester.h>
+
 
 /////////////////////////////////////////////////////////////////////////////
 ///    CLASS PlaylistReader
@@ -3488,6 +3491,170 @@ void SmartPlaylist::showContextMenu( const QPoint &position )
 void SmartPlaylist::slotPostRenameItem( const QString newName )
 {
     xml().setAttribute( "name", newName );
+}
+
+ShoutcastBrowser::ShoutcastBrowser( QListView *lv ):PlaylistCategory( lv, 0, i18n( "Shoutcast Streams" ))
+{
+    m_downloading = false;
+}
+
+void ShoutcastBrowser::slotDoubleClicked()
+{
+    debug() << "Downloading Genres" << endl;
+
+    if ( firstChild() )
+        return;
+
+    QStringList tmpdirs = KGlobal::dirs()->resourceDirs( "tmp" );
+    QString tmpfile = tmpdirs[0];
+    tmpfile += "/amarok-genres-" + KApplication::randomString(10) + ".xml-";
+
+    //get the genre list
+    if ( !m_downloading )
+    {
+        m_downloading = true;
+        m_cj = KIO::copy( "http://www.shoutcast.com/sbin/newxml.phtml", tmpfile, false );
+        connect( m_cj, SIGNAL( copyingDone( KIO::Job*, const KURL&, const KURL&, bool, bool))
+                , this, SLOT(doneGenreDownload(KIO::Job*, const KURL&, const KURL&, bool, bool )));
+        connect( m_cj, SIGNAL( result( KIO::Job* )), this, SLOT( jobFinished( KIO::Job* )));
+    }
+    else
+    {
+        debug() << "BUSY DOWNLOADING SOMETHING!!!!" << endl;
+    }
+
+}
+
+void ShoutcastBrowser::doneGenreDownload( KIO::Job *job, const KURL &from, const KURL &to, bool   directory, bool renamed )
+{
+    QDomDocument doc( "genres" );
+    QFile file( to.path() );
+    if ( !file.open( IO_ReadOnly ) )
+    {
+        debug() << "**************UNABLE TO OPEN GENRELIST XML FILE************" << endl;
+        m_downloading = false;
+        return;
+    }
+    if ( !doc.setContent( &file ) )
+    {
+        debug() << "**************UNABLE TO SET GENRELIST XML FILE*************" << endl;
+        file.close();
+        m_downloading = false;
+        return;
+    }
+
+    file.close();
+
+    KIO::del( to, false, false );
+    m_downloading = false;
+
+    QDomElement docElem = doc.documentElement();
+
+    QDomNode n = docElem.firstChild();
+    while( !n.isNull() )
+    {
+        QDomElement e = n.toElement(); // try to convert the node to an element.
+        if( !e.attribute( "name" ).isNull() )
+        {
+            new ShoutcastGenre( this, e.attribute( "name" ));
+        }
+        n = n.nextSibling();
+    }
+    setOpen( true );
+}
+
+void ShoutcastBrowser::jobFinished( KIO::Job *job )
+{
+    m_downloading = false;
+
+    if ( job->error() )
+        job->showErrorDialog( 0 );
+}
+
+ShoutcastGenre::ShoutcastGenre( ShoutcastBrowser *browser, const QString &g ) : PlaylistCategory(  browser, 0, g )
+{
+    genre = g;
+    m_downloading = false;
+}
+
+void ShoutcastGenre::slotDoubleClicked()
+{
+
+    QStringList tmpdirs = KGlobal::dirs()->resourceDirs( "tmp" );
+    QString tmpfile = tmpdirs[0];
+    tmpfile += "/amarok-list-" + genre + "-" + KApplication::randomString( 10) + ".xml";
+
+    //get the genre list from shoutcast async, and when its done call the finish up functions to process
+    if (!m_downloading)
+    {
+        m_downloading = true;
+        m_cj = KIO::copy( "http://www.shoutcast.com/sbin/newxml.phtml?genre=" + genre, tmpfile, false );
+        debug() << "DOWNLOADING" << endl;
+        connect( m_cj, SIGNAL( copyingDone( KIO::Job*, const KURL&, const KURL&, bool, bool ))
+                , this, SLOT( doneListDownload( KIO::Job*, const KURL&, const KURL&, bool, bool )));
+        connect( m_cj, SIGNAL( result( KIO::Job* )), this, SLOT( jobFinished( KIO::Job* ) ));
+    }
+    else
+    {
+        debug() << "BUSY DOWNLOADING SOMETHING!!!!" << endl;
+    }
+}
+
+void ShoutcastGenre::doneListDownload( KIO::Job *job, const KURL &from, const KURL &to, bool directory, bool renamed )
+{
+
+    QDomDocument doc( "list" );
+    QFile file( to.path() );
+    if ( !file.open( IO_ReadOnly ) )
+    {
+        debug() << "**************UNABLE TO OPEN PLAYLIST XML FILE**********" << endl;
+        m_downloading = false;
+        return;
+    }
+    if ( !doc.setContent( &file ) )
+    {
+        debug() << "**************UNABLE TO SET PLAYLIST XML FILE***********" << endl;
+        file.close();
+        m_downloading = false;
+        return;
+    }
+
+    file.close();
+
+    KIO::del(to, false, false);
+
+    //Clear any children
+    while (firstChild())
+        delete firstChild();
+
+    //Go through the XML file and add all the stations
+    QDomElement docElem = doc.documentElement();
+    QDomNode n = docElem.firstChild();
+    while( !n.isNull() )
+    {
+        QDomElement e = n.toElement(); // try to convert the node to an element.
+        if( e.hasAttribute( "name" ) )
+        {
+            if( !e.attribute( "name" ).isNull())
+            {
+                new StreamEntry( this, this, 
+                    "http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=" 
+                    + e.attribute( "id" ) + "&file=filename.pls", e.attribute( "name" ));
+            }
+        }
+        n = n.nextSibling();
+    }
+    setOpen( true );
+    m_downloading = false;
+
+}
+
+void ShoutcastGenre::jobFinished( KIO::Job *job )
+{
+    m_downloading = false;
+
+    if (job->error())
+        job->showErrorDialog( 0 );
 }
 
 #include "playlistbrowseritem.moc"

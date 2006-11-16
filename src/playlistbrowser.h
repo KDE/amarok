@@ -3,6 +3,7 @@
  *                        (c) 2004 Mark Kretschmann <markey@web.de>        *
  *                        (c) 2005-2006 Seb Ruiz <me@sebruiz.net>          *
  *                        (c) 2005 Gábor Lehel <illissius@gmail.com>       *
+ *                        (c) 2006 Adam Pigg <adam@piggz.co.uk>           *
  * See COPYING file for licensing information                              *
  ***************************************************************************/
 
@@ -200,6 +201,7 @@ class PlaylistBrowser : public QVBox
         PlaylistCategory    *m_coolStreams;
         PlaylistCategory    *m_smartDefaults;
         PlaylistCategory    *m_lastfmCategory;
+        ShoutcastBrowser    *m_shoutcastCategory;
         PlaylistEntry       *m_lastPlaylist;
 
         DynamicEntry        *m_randomDynamic;

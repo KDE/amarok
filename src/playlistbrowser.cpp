@@ -5,6 +5,7 @@
  *                        (c) 2005 Gábor Lehel <illissius@gmail.com>       *
  *                        (c) 2005 Christian Muehlhaeuser <chris@chris.de> *
  *                        (c) 2006 Alexandre Oliveira <aleprj@gmail.com>   *
+ *                        (c) 2006 Adam Pigg <adam@piggz.co.uk>            *
  * See COPYING file for licensing information                              *
  ***************************************************************************/
 
@@ -143,6 +144,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
         , m_lastfmOpen( false )
         , m_ac( new KActionCollection( this ) )
         , m_podcastTimer( new QTimer( this ) )
+
 {
     s_instance = this;
 
@@ -258,6 +260,8 @@ PlaylistBrowser::polish()
     m_suggestedDynamic->setPreviousCount( config->readNumEntry ( "Dynamic Suggest Previous Count", 5 ) );
 
 #undef config
+
+    m_shoutcastCategory = new ShoutcastBrowser(m_listview);
 
     m_streamsCategory  = loadStreams();
     loadCoolStreams();
