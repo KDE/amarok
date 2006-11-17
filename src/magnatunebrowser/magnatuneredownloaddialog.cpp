@@ -21,7 +21,7 @@
 #include "magnatuneredownloaddialog.h"
 
 #include <qpushbutton.h>
-#include <qlistview.h>
+#include <klistview.h>
 
 MagnatuneRedownloadDialog::MagnatuneRedownloadDialog(QWidget* parent, const char* name, bool modal, WFlags fl)
 : magnatuneReDownloadDialogBase(parent,name, modal,fl)
@@ -37,7 +37,7 @@ void MagnatuneRedownloadDialog::setRedownloadItems( QStringList items )
 {
 
     for ( QStringList::Iterator it = items.begin(); it != items.end(); ++it ) {
-       new QListViewItem(redownloadListView, (*it));
+       new KListViewItem(redownloadListView, (*it));
     }
 
 }

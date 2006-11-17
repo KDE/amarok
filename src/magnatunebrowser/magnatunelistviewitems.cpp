@@ -20,16 +20,22 @@
 #include "debug.h"
 #include "magnatunelistviewitems.h"
 
-
+#include <kglobal.h>
+#include <kiconloader.h> 
 #include <klocale.h>
 
 #include <qdatetime.h>
 
 
-MagnatuneListViewArtistItem::MagnatuneListViewArtistItem( MagnatuneArtist artist, QListView * parent )
-: QListViewItem( parent ), MagnatuneArtist( artist )
+
+
+MagnatuneListViewArtistItem::MagnatuneListViewArtistItem( MagnatuneArtist artist, KListView * parent )
+: KListViewItem( parent ), MagnatuneArtist( artist )
 {
-    QListViewItem::setText( 0, artist.getName() );
+    KListViewItem::setText( 0, artist.getName() );
+
+    setPixmap(0, KGlobal::iconLoader()->loadIcon( "personal", KIcon::Toolbar, KIcon::SizeSmall ) );
+
     setDragEnabled ( true );
 }
 
@@ -52,7 +58,7 @@ void MagnatuneListViewArtistItem::setOpen( bool o )
         }
     }
     listView()->setUpdatesEnabled( true );
-    QListViewItem::setOpen( o );
+    KListViewItem::setOpen( o );
     invalidateHeight();
     listView()->repaintContents();
    
@@ -63,7 +69,7 @@ void MagnatuneListViewArtistItem::setOpen( bool o )
 void MagnatuneListViewArtistItem::setup()
 {
     setExpandable( true );
-    QListViewItem::setup();
+    KListViewItem::setup();
 }
 
 
@@ -78,11 +84,13 @@ void MagnatuneListViewArtistItem::setup()
 
 
 
-MagnatuneListViewAlbumItem::MagnatuneListViewAlbumItem( MagnatuneAlbum album, QListViewItem * parent )
-: QListViewItem( parent ), MagnatuneAlbum( album )
+MagnatuneListViewAlbumItem::MagnatuneListViewAlbumItem( MagnatuneAlbum album, KListViewItem * parent )
+: KListViewItem( parent ), MagnatuneAlbum( album )
 {
-    QListViewItem::setText( 0, album.getName() );
+    KListViewItem::setText( 0, album.getName() );
     setDragEnabled( true );
+
+    setPixmap(0, KGlobal::iconLoader()->loadIcon( "cdrom_unmount", KIcon::Toolbar, KIcon::SizeSmall ) );
 }
 
 MagnatuneListViewAlbumItem::~ MagnatuneListViewAlbumItem( )
@@ -106,7 +114,7 @@ void MagnatuneListViewAlbumItem::setOpen( bool o )
     }
 
     listView()->setUpdatesEnabled( true );
-    QListViewItem::setOpen( o );
+    KListViewItem::setOpen( o );
     invalidateHeight();
     listView()->repaintContents();
     
@@ -116,7 +124,7 @@ void MagnatuneListViewAlbumItem::setOpen( bool o )
 void MagnatuneListViewAlbumItem::setup( )
 {
     setExpandable( true );
-    QListViewItem::setup();
+    KListViewItem::setup();
 }
 
 
@@ -131,8 +139,8 @@ void MagnatuneListViewAlbumItem::setup( )
 
 
 
-MagnatuneListViewTrackItem::MagnatuneListViewTrackItem( MagnatuneTrack track, QListViewItem * parent )
-: QListViewItem( parent ), MagnatuneTrack( track )
+MagnatuneListViewTrackItem::MagnatuneListViewTrackItem( MagnatuneTrack track, KListViewItem * parent )
+: KListViewItem( parent ), MagnatuneTrack( track )
 {
     
     int trackNumber = track.getTrackNumber();
@@ -142,7 +150,7 @@ MagnatuneListViewTrackItem::MagnatuneListViewTrackItem( MagnatuneTrack track, QL
     
     
     
-    QListViewItem::setText( 0, trackNumberString + " - " +  track.getName() );
+    KListViewItem::setText( 0, trackNumberString + " - " +  track.getName() );
     
     debug() << "track duration: " << QString::number( track.getDuration() ) <<  endl;
     
@@ -150,11 +158,13 @@ MagnatuneListViewTrackItem::MagnatuneListViewTrackItem( MagnatuneTrack track, QL
     duration = duration.addSecs(track.getDuration());
     
     if (duration.hour() == 0)
-        QListViewItem::setText( 1, duration.toString( "m:ss" ) );
+        KListViewItem::setText( 1, duration.toString( "m:ss" ) );
     else
-        QListViewItem::setText( 1, duration.toString( "h:mm:ss" ) );
+        KListViewItem::setText( 1, duration.toString( "h:mm:ss" ) );
     
     setDragEnabled( true );
+
+     //setPixmap(0, KGlobal::iconLoader()->loadIcon( "track", KIcon::Toolbar, KIcon::SizeSmall ) );
 }
 
 MagnatuneListViewTrackItem::~ MagnatuneListViewTrackItem( )

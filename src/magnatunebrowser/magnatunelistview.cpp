@@ -22,13 +22,18 @@
 
 #include <klocale.h>
 
+#include <qcolor.h>
+
 MagnatuneListView::MagnatuneListView( QWidget * parent )
-        : QListView( parent )
+        : KListView( parent )
 {
 
     setRootIsDecorated( true );
     addColumn( i18n( "Artist/Album/Track" ) );
     addColumn( i18n( "Duration" ) );
+
+    //setBackgroundColor ( QColor( 255, 255, 255  ) );
+    //setAlternateBackground(QColor( 255, 255, 255  ) );
 
 }
 
@@ -42,7 +47,7 @@ KURLDrag * MagnatuneListView::dragObject( )
     MagnatuneTrackList tracks;
     MagnatuneTrackList::iterator it;
 
-    QListViewItem * pSelectedItem = selectedItem();
+    KListViewItem * pSelectedItem = dynamic_cast<KListViewItem *>( selectedItem() );
 
     switch ( pSelectedItem->depth() )
     {

@@ -51,7 +51,7 @@ MagnatuneBrowser::MagnatuneBrowser( const char *name )
 
     initBottomPanel();
 
-    //connect (m_listView, SIGNAL(executed(QListViewItem *)), this, SLOT(itemExecuted(QListViewItem *)));
+    //connect (m_listView, SIGNAL(executed(KListViewItem *)), this, SLOT(itemExecuted(KListViewItem *)));
     connect( m_listView, SIGNAL( doubleClicked( QListViewItem * ) ),
              this, SLOT( itemExecuted( QListViewItem * ) ) );
     connect( m_listView, SIGNAL( selectionChanged( QListViewItem * ) ),
@@ -194,7 +194,7 @@ void MagnatuneBrowser::showPopupMenu( QListViewItem * item, const QPoint & pos, 
 
 void MagnatuneBrowser::addSelectionToPlaylist( )
 {
-    QListViewItem * selectedItem = m_listView->selectedItem();
+    QListViewItem * selectedItem = dynamic_cast<QListViewItem *>( m_listView->selectedItem() );
 
     switch ( selectedItem->depth() )
     {
@@ -213,7 +213,7 @@ void MagnatuneBrowser::menuAboutToShow( )
 {
     m_popupMenu->clear();
 
-    QListViewItem *selectedItem = m_listView->selectedItem();
+    QListViewItem *selectedItem = dynamic_cast<QListViewItem *>( m_listView->selectedItem() );
 
     if ( !selectedItem ) return ;
 
