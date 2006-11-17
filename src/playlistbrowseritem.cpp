@@ -3498,6 +3498,7 @@ ShoutcastBrowser::ShoutcastBrowser( PlaylistCategory *parent )
 {
     m_downloading = false;
     setExpandable( true );
+    setKept( false );
 }
 
 void ShoutcastBrowser::slotDoubleClicked()
@@ -3588,6 +3589,7 @@ ShoutcastGenre::ShoutcastGenre( ShoutcastBrowser *browser, QListViewItem *after,
     , m_genre( genre )
 {
     setExpandable( true );
+    setKept( false );
 }
 
 void ShoutcastGenre::slotDoubleClicked()
@@ -3660,16 +3662,17 @@ void ShoutcastGenre::doneListDownload( KIO::Job *job, const KURL &from, const KU
         {
             if( !e.attribute( "name" ).isNull())
             {
-                new StreamEntry( this, this,
+                StreamEntry* entry = new StreamEntry( this, this,
                     "http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn="
                     + e.attribute( "id" ) + "&file=filename.pls", e.attribute( "name" ));
+
+                entry->setKept( false );
             }
         }
         n = n.nextSibling();
     }
     setOpen( true );
     m_downloading = false;
-
 }
 
 void ShoutcastGenre::jobFinished( KIO::Job *job )
