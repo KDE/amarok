@@ -554,7 +554,7 @@ PlaylistEntry::PlaylistEntry( QListViewItem *parent, QListViewItem *after, const
 
     setDragEnabled( true );
     setRenameEnabled( 0, false );
-    setExpandable(true);
+    setExpandable( true );
 
     setPixmap( 0, SmallIcon( Amarok::icon( "playlist" ) ) );
 
@@ -593,7 +593,7 @@ PlaylistEntry::PlaylistEntry( QListViewItem *parent, QListViewItem *after, const
 
     setDragEnabled( true );
     setRenameEnabled( 0, false );
-    setExpandable(true);
+    setExpandable( true );
 
     setPixmap( 0, SmallIcon( Amarok::icon( "playlist" ) ) );
 
@@ -3493,17 +3493,28 @@ void SmartPlaylist::slotPostRenameItem( const QString newName )
     xml().setAttribute( "name", newName );
 }
 
-ShoutcastBrowser::ShoutcastBrowser( QListView *lv ):PlaylistCategory( lv, 0, i18n( "Shoutcast Streams" ))
+ShoutcastBrowser::ShoutcastBrowser( QListView *lv )
+    : PlaylistCategory( lv, 0, i18n( "Shoutcast Streams" ))
 {
     m_downloading = false;
+    setExpandable( true );
 }
 
 void ShoutcastBrowser::slotDoubleClicked()
 {
-    debug() << "Downloading Genres" << endl;
+    setOpen( !isOpen() );
+}
 
-    if ( firstChild() )
+void ShoutcastBrowser::setOpen( bool open )
+{
+    if( open == isOpen())
         return;
+
+    if ( firstChild() ) // don't redownload everything
+    {
+        QListViewItem::setOpen( open );
+        return;
+    }
 
     QStringList tmpdirs = KGlobal::dirs()->resourceDirs( "tmp" );
     QString tmpfile = tmpdirs[0];
@@ -3518,26 +3529,25 @@ void ShoutcastBrowser::slotDoubleClicked()
                 , this, SLOT(doneGenreDownload(KIO::Job*, const KURL&, const KURL&, bool, bool )));
         connect( m_cj, SIGNAL( result( KIO::Job* )), this, SLOT( jobFinished( KIO::Job* )));
     }
-    else
-    {
-        debug() << "BUSY DOWNLOADING SOMETHING!!!!" << endl;
-    }
 
+    QListViewItem::setOpen( open );
 }
 
-void ShoutcastBrowser::doneGenreDownload( KIO::Job *job, const KURL &from, const KURL &to, bool   directory, bool renamed )
+void ShoutcastBrowser::doneGenreDownload( KIO::Job *job, const KURL &from, const KURL &to, bool directory, bool renamed )
 {
+    Q_UNUSED( job ); Q_UNUSED( from ); Q_UNUSED( directory ); Q_UNUSED( renamed );
+
     QDomDocument doc( "genres" );
     QFile file( to.path() );
     if ( !file.open( IO_ReadOnly ) )
     {
-        debug() << "**************UNABLE TO OPEN GENRELIST XML FILE************" << endl;
+        warning() << "Cannot open shoutcast genre xml" << endl;
         m_downloading = false;
         return;
     }
     if ( !doc.setContent( &file ) )
     {
-        debug() << "**************UNABLE TO SET GENRELIST XML FILE*************" << endl;
+        warning() << "Cannot set shoutcast genre xml" << endl;
         file.close();
         m_downloading = false;
         return;
@@ -3551,12 +3561,13 @@ void ShoutcastBrowser::doneGenreDownload( KIO::Job *job, const KURL &from, const
     QDomElement docElem = doc.documentElement();
 
     QDomNode n = docElem.firstChild();
+    QListViewItem *last = 0;
     while( !n.isNull() )
     {
         QDomElement e = n.toElement(); // try to convert the node to an element.
         if( !e.attribute( "name" ).isNull() )
         {
-            new ShoutcastGenre( this, e.attribute( "name" ));
+            last = new ShoutcastGenre( this, last, e.attribute( "name" ));
         }
         n = n.nextSibling();
     }
@@ -3571,49 +3582,61 @@ void ShoutcastBrowser::jobFinished( KIO::Job *job )
         job->showErrorDialog( 0 );
 }
 
-ShoutcastGenre::ShoutcastGenre( ShoutcastBrowser *browser, const QString &g ) : PlaylistCategory(  browser, 0, g )
+ShoutcastGenre::ShoutcastGenre( ShoutcastBrowser *browser, QListViewItem *after, const QString &genre )
+    : PlaylistCategory( browser, after, genre )
+    , m_downloading( false )
+    , m_genre( genre )
 {
-    genre = g;
-    m_downloading = false;
+    setExpandable( true );
 }
 
 void ShoutcastGenre::slotDoubleClicked()
 {
+    setOpen( !isOpen() );
+}
+
+void ShoutcastGenre::setOpen( bool open )
+{
+    if( open == isOpen())
+        return;
+
+    if( firstChild() ) // don't redownload everything
+    {
+        QListViewItem::setOpen( open );
+        return;
+    }
 
     QStringList tmpdirs = KGlobal::dirs()->resourceDirs( "tmp" );
     QString tmpfile = tmpdirs[0];
-    tmpfile += "/amarok-list-" + genre + "-" + KApplication::randomString( 10) + ".xml";
+    tmpfile += "/amarok-list-" + m_genre + "-" + KApplication::randomString(10) + ".xml";
 
     //get the genre list from shoutcast async, and when its done call the finish up functions to process
-    if (!m_downloading)
+    if( !m_downloading)
     {
         m_downloading = true;
-        m_cj = KIO::copy( "http://www.shoutcast.com/sbin/newxml.phtml?genre=" + genre, tmpfile, false );
-        debug() << "DOWNLOADING" << endl;
-        connect( m_cj, SIGNAL( copyingDone( KIO::Job*, const KURL&, const KURL&, bool, bool ))
-                , this, SLOT( doneListDownload( KIO::Job*, const KURL&, const KURL&, bool, bool )));
-        connect( m_cj, SIGNAL( result( KIO::Job* )), this, SLOT( jobFinished( KIO::Job* ) ));
-    }
-    else
-    {
-        debug() << "BUSY DOWNLOADING SOMETHING!!!!" << endl;
+        m_cj = KIO::copy( "http://www.shoutcast.com/sbin/newxml.phtml?genre=" + m_genre, tmpfile, false );
+        connect( m_cj, SIGNAL( copyingDone     ( KIO::Job*, const KURL&, const KURL&, bool, bool ) ),
+                 this,   SLOT( doneListDownload( KIO::Job*, const KURL&, const KURL&, bool, bool ) ) );
+        connect( m_cj, SIGNAL( result     ( KIO::Job* ) ),
+                 this,   SLOT( jobFinished( KIO::Job* ) ) );
     }
 }
 
 void ShoutcastGenre::doneListDownload( KIO::Job *job, const KURL &from, const KURL &to, bool directory, bool renamed )
 {
+    Q_UNUSED( job ); Q_UNUSED( from ); Q_UNUSED( directory ); Q_UNUSED( renamed );
 
     QDomDocument doc( "list" );
     QFile file( to.path() );
     if ( !file.open( IO_ReadOnly ) )
     {
-        debug() << "**************UNABLE TO OPEN PLAYLIST XML FILE**********" << endl;
+        warning() << "Cannot open shoutcast playlist xml" << endl;
         m_downloading = false;
         return;
     }
     if ( !doc.setContent( &file ) )
     {
-        debug() << "**************UNABLE TO SET PLAYLIST XML FILE***********" << endl;
+        warning() << "Cannot set shoutcast playlist xml" << endl;
         file.close();
         m_downloading = false;
         return;
@@ -3637,8 +3660,8 @@ void ShoutcastGenre::doneListDownload( KIO::Job *job, const KURL &from, const KU
         {
             if( !e.attribute( "name" ).isNull())
             {
-                new StreamEntry( this, this, 
-                    "http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=" 
+                new StreamEntry( this, this,
+                    "http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn="
                     + e.attribute( "id" ) + "&file=filename.pls", e.attribute( "name" ));
             }
         }
@@ -3653,7 +3676,7 @@ void ShoutcastGenre::jobFinished( KIO::Job *job )
 {
     m_downloading = false;
 
-    if (job->error())
+    if( job->error() )
         job->showErrorDialog( 0 );
 }
 

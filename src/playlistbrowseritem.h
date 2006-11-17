@@ -593,55 +593,57 @@ class TrackItemInfo
 };
 
 /*!
-@brief Implement a shoutcast playlist category
+    @brief Implement a shoutcast playlist category
 
-On double click, download the shoutcast genre XML file.
+    On open, download the shoutcast genre XML file.
 
-Process the file and add each genre as a ShoutcastGenre
-style PlaylistCategory
+    Process the file and add each genre as a ShoutcastGenre
+    style PlaylistCategory
 */
 class ShoutcastBrowser : public PlaylistCategory
 {
-    Q_OBJECT
-public:
-    ShoutcastBrowser( QListView* );
+        Q_OBJECT
+    public:
+        ShoutcastBrowser( QListView* );
+        void setOpen( bool open );
 
-private:
-    bool m_downloading;
-    KIO::CopyJob *m_cj;
+    private:
+        bool m_downloading;
+        KIO::CopyJob *m_cj;
 
-public slots:
-    virtual void slotDoubleClicked();
+    public slots:
+        virtual void slotDoubleClicked();
 
-private slots:
-    void doneGenreDownload( KIO::Job *job, const KURL &from, const KURL &to, bool   directory, bool renamed );
-    void jobFinished( KIO::Job *job );
+    private slots:
+        void doneGenreDownload( KIO::Job *job, const KURL &from, const KURL &to, bool directory, bool renamed );
+        void jobFinished( KIO::Job *job );
 };
 
 /*!
-@brief Implement a shoutcast genre category
+    @brief Implement a shoutcast genre category
 
-On double click, download the shoutcast station list XML file.
+    On open, download the shoutcast station list XML file.
 
-Process the file and add each station as a StreamEntry
+    Process the file and add each station as a StreamEntry
 */
 class ShoutcastGenre : public PlaylistCategory
 {
-    Q_OBJECT
-public:
-    ShoutcastGenre( ShoutcastBrowser*,  const QString& );
+        Q_OBJECT
+    public:
+        ShoutcastGenre( ShoutcastBrowser *browser, QListViewItem *after, const QString &genre );
+        void setOpen( bool open );
 
-private:
-    bool m_downloading;
-    KIO::CopyJob *m_cj;
-    QString genre;
+    private:
+        bool          m_downloading;
+        KIO::CopyJob *m_cj;
+        QString       m_genre;
 
-public slots:
-    virtual void slotDoubleClicked();
+    public slots:
+        virtual void slotDoubleClicked();
 
-private slots:
-    void doneListDownload( KIO::Job *job, const KURL &from, const KURL &to, bool   directory, bool renamed );
-    void jobFinished( KIO::Job *job );
+    private slots:
+        void doneListDownload( KIO::Job *job, const KURL &from, const KURL &to, bool directory, bool renamed );
+        void jobFinished( KIO::Job *job );
 };
 
 #endif
