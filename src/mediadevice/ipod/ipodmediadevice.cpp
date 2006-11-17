@@ -302,7 +302,11 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
     track->genre = g_strdup( metaBundle.genre()->utf8() );
 
 
+#ifdef HAVE_ITDB_MEDIATYPE
+    track->mediatype = 0x01; // for audio
+#else
     track->unk208 = 0x01; // for audio
+#endif
     if(type=="wav")
     {
         track->filetype = g_strdup( "wav" );
@@ -323,7 +327,11 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
 #else
         track->flag3 |= 0x01; // remember current position in track
 #endif
+#ifdef HAVE_ITDB_MEDIATYPE
+        track->mediatype = 0x08; // for audiobooks
+#else
         track->unk208 = 0x08; // for audiobooks
+#endif
     }
     else if(type=="m4v" || type=="mp4v" || type=="mov" || type=="mpg" || type=="mp4")
     {
@@ -331,7 +339,11 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
 #ifdef HAVE_ITDB_SKIP_SHUFFLE_FLAG
         track->movie_flag = 0x01; // for videos
 #endif
+#ifdef HAVE_ITDB_MEDIATYPE
+        track->mediatype = 0x02; // for videos
+#else
         track->unk208 = 0x02; // for videos
+#endif
     }
     else if(type=="aa")
     {
@@ -341,7 +353,11 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
 #else
         track->flag3 |= 0x01; // remember current position in track
 #endif
+#ifdef HAVE_ITDB_MEDIATYPE
+        track->mediatype = 0x08; // for audiobooks
+#else
         track->unk208 = 0x08; // for audiobooks
+#endif
 
         TagLib::Audible::File f( QFile::encodeName( propertiesBundle.url().path() ) );
         TagLib::Audible::Tag *t = f.getAudibleTag();
@@ -384,7 +400,11 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
 #ifdef HAVE_ITDB_MARK_UNPLAYED
         track->mark_unplayed = podcastInfo->listened ? 0x01 : 0x02;
 #endif
+#ifdef HAVE_ITDB_MEDIATYPE
+        track->mediatype = track->mediatype==0x02 ? 0x06 : 0x04; // video or audio podcast
+#else
         track->unk208 = track->unk208==0x02 ? 0x06 : 0x04; // video or audio podcast
+#endif
         track->flag4 = 0x01; // also show description on iPod
         QString plaindesc = podcastInfo->description;
         plaindesc.replace( QRegExp("<[^>]*>"), "" );
