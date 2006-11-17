@@ -3493,8 +3493,8 @@ void SmartPlaylist::slotPostRenameItem( const QString newName )
     xml().setAttribute( "name", newName );
 }
 
-ShoutcastBrowser::ShoutcastBrowser( QListView *lv )
-    : PlaylistCategory( lv, 0, i18n( "Shoutcast Streams" ))
+ShoutcastBrowser::ShoutcastBrowser( PlaylistCategory *parent )
+    : PlaylistCategory( parent, 0, i18n( "Shoutcast Streams" ))
 {
     m_downloading = false;
     setExpandable( true );

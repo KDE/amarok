@@ -604,7 +604,7 @@ class ShoutcastBrowser : public PlaylistCategory
 {
         Q_OBJECT
     public:
-        ShoutcastBrowser( QListView* );
+        ShoutcastBrowser( PlaylistCategory* parent );
         void setOpen( bool open );
 
     private:

@@ -261,10 +261,10 @@ PlaylistBrowser::polish()
 
 #undef config
 
-    m_shoutcastCategory = new ShoutcastBrowser(m_listview);
-
     m_streamsCategory  = loadStreams();
     loadCoolStreams();
+    m_shoutcastCategory = new ShoutcastBrowser( m_streamsCategory );
+
     if( !AmarokConfig::scrobblerUsername().isEmpty() )
     {
         const bool subscriber = Amarok::config( "Scrobbler" )->readBoolEntry( "Subscriber", false );
