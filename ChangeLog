@@ -31,8 +31,10 @@ VERSION 1.4.5
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
+    * It's now possible to delete a file from an MTP media device and
+      re-upload it without having to reconnect the device.
     * Wikipedia links to edit sections are no longer shown.
-    * Metadata is read Rio Karma media devices as UTF-8.
+    * Metadata is read from Rio Karma media devices as UTF-8.
     * Last.fm streams could be paused with DCOP or global shortcuts.
       (BR 133013)
     * Dynamic mode can still be used after a collection rescan. (BR 133269)

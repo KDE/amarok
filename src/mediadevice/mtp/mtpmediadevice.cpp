@@ -825,6 +825,8 @@ MtpMediaDevice::deleteObject( MtpMediaItem *deleteItem )
     }
     debug() << "object deleted" << endl;
 
+    // clear cached filename
+    m_fileNameToItem.remove( deleteItem->bundle()->filename() );
     // remove from the media view
     delete deleteItem;
     kapp->processEvents( 100 );
