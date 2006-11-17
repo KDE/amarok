@@ -5267,6 +5267,9 @@ CollectionDB::updateGroupBy()
     //This ugly bit of code makes sure the Group BY setting is preserved, after the
     //meanings of the values were changed due to the addition of the Composer table.
     int version = adminValue( "Database Version" ).toInt();
+    if (!version) // an even older update
+       version = Amarok::config( "Collection Browser" )->readNumEntry( "Database Version", 0 );
+
     if ( version && version < 32 )
     {
         KConfig* config = Amarok::config( "Collection Browser" );
