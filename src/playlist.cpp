@@ -1931,7 +1931,7 @@ Playlist::restoreCurrentTrack()
         PlaylistItem* item;
 
         for( item = firstChild();
-             item && item->url() != url;
+             item && item->url().url() != url.url();
              item = item->nextSibling() )
         {}
 
