@@ -27,22 +27,6 @@
                 <string>These are the albums that you have previously downloaded:</string>
             </property>
         </widget>
-        <widget class="QListView" row="1" column="0" rowspan="1" colspan="3">
-            <column>
-                <property name="text">
-                    <string>Artist - Album</string>
-                </property>
-                <property name="clickable">
-                    <bool>true</bool>
-                </property>
-                <property name="resizable">
-                    <bool>true</bool>
-                </property>
-            </column>
-            <property name="name">
-                <cstring>redownloadListView</cstring>
-            </property>
-        </widget>
         <widget class="QPushButton" row="2" column="1">
             <property name="name">
                 <cstring>redownloadButton</cstring>
@@ -82,6 +66,25 @@
                 </size>
             </property>
         </spacer>
+        <widget class="KListView" row="1" column="0" rowspan="1" colspan="3">
+            <column>
+                <property name="text">
+                    <string>Artist - Album</string>
+                </property>
+                <property name="clickable">
+                    <bool>true</bool>
+                </property>
+                <property name="resizable">
+                    <bool>true</bool>
+                </property>
+            </column>
+            <property name="name">
+                <cstring>redownloadListView</cstring>
+            </property>
+            <property name="shadeSortColumn">
+                <bool>false</bool>
+            </property>
+        </widget>
     </grid>
 </widget>
 <connections>
@@ -99,7 +102,7 @@
     </connection>
     <connection>
         <sender>redownloadListView</sender>
-        <signal>selectionChanged(QListViewItem*)</signal>
+        <signal>selectionChanged()</signal>
         <receiver>magnatuneReDownloadDialogBase</receiver>
         <slot>selectionChanged()</slot>
     </connection>
@@ -109,4 +112,7 @@
     <slot access="protected">selectionChanged()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>klistview.h</includehint>
+</includehints>
 </UI>
