@@ -2370,8 +2370,13 @@ void PodcastFetcher::fetch()
     // Qhttp::get() "conviniently" "corrects" the path in a way that wouldn't let it work
     // work with proxies. So let's create the request manually.
     QHttpRequestHeader request( "GET", m_url );
-    request.setValue( "Host", m_url.host() + ":" + m_url.port() );
+    QString host = m_url.host();
+    if ( m_url.port() > 0 ) {
+        host += ':' + QString::number( m_url.port() );
+    }
+    request.setValue( "Host", host );
     request.setValue( "Connection", "Keep-Alive" );
+    //debug() << request.toString() << endl;
     m_http->request( request, 0, (&m_file) );
 
     if( m_http->error() )
@@ -2401,7 +2406,8 @@ void PodcastFetcher::slotProgress( int bytesDone, int bytesTotal )
 
 void PodcastFetcher::slotResponseReceived( const QHttpResponseHeader & resp )
 {
-//    debug() << m_http->currentId() << " RESPONCE, statuscode = " << resp.statusCode() << endl;
+    //debug() << m_http->currentId() << " RESPONCE, statuscode = " << resp.statusCode() << endl;
+    //debug() << resp.toString() << endl;
     if( resp.statusCode() == 302 || resp.statusCode() == 301 )
     {
         if (resp.hasKey( "location" ) )
@@ -2414,7 +2420,7 @@ void PodcastFetcher::slotResponseReceived( const QHttpResponseHeader & resp )
                 m_error = QHttp::InvalidResponseHeader;
                 return;
             }
-  //          debug() << m_http->currentId() << " m_redirected to " << m_url.toString( ) <<endl;
+            //debug() << m_http->currentId() << " m_redirected to " << m_url.toString( ) <<endl;
             if( m_http && (m_url.host() != oldHost) )
                 m_http->setHost( m_url.host() );
             m_redirected = true;
