@@ -17,9 +17,11 @@
  Boston, MA 02110-1301, USA.
 */
 
+
 #include "magnatunedatabasehandler.h"
 #include "magnatunelistview.h"
 
+#include <kdeversion.h>  
 #include <klocale.h>
 
 #include <qcolor.h>
@@ -32,8 +34,11 @@ MagnatuneListView::MagnatuneListView( QWidget * parent )
     addColumn( i18n( "Artist/Album/Track" ) );
     addColumn( i18n( "Duration" ) );
 
-    //setBackgroundColor ( QColor( 255, 255, 255  ) );
-    //setAlternateBackground(QColor( 255, 255, 255  ) );
+    setShowSortIndicator ( true );
+
+    #if KDE_VERSION >= KDE_MAKE_VERSION(3,4,0)
+    setShadeSortColumn( false );
+    #endif
 
 }
 
