@@ -630,7 +630,7 @@ class ShoutcastGenre : public PlaylistCategory
 {
         Q_OBJECT
     public:
-        ShoutcastGenre( ShoutcastBrowser *browser, QListViewItem *after, const QString &genre );
+        ShoutcastGenre( ShoutcastBrowser *browser, QListViewItem *after, QString genre );
         void setOpen( bool open );
 
     private:

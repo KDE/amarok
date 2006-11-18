@@ -35,7 +35,8 @@
 #include <qpainter.h>          //paintCell()
 #include <qpixmap.h>           //paintCell()
 #include <qregexp.h>
-
+#include <qcursor.h>           //While downloading shoutcast stream lists
+        
 #include <kapplication.h>      //Used for Shoutcast random name generation
 #include <kdeversion.h>        //KDE_VERSION ifndefs.  Remove this once we reach a kde 4 dep
 #include <kiconloader.h>       //smallIcon
@@ -3517,6 +3518,7 @@ void ShoutcastBrowser::setOpen( bool open )
         return;
     }
 
+    KApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
     QStringList tmpdirs = KGlobal::dirs()->resourceDirs( "tmp" );
     QString tmpfile = tmpdirs[0];
     tmpfile += "/amarok-genres-" + KApplication::randomString(10) + ".xml-";
@@ -3557,7 +3559,7 @@ void ShoutcastBrowser::doneGenreDownload( KIO::Job *job, const KURL &from, const
     file.close();
 
     KIO::del( to, false, false );
-    m_downloading = false;
+    
 
     QDomElement docElem = doc.documentElement();
 
@@ -3572,24 +3574,26 @@ void ShoutcastBrowser::doneGenreDownload( KIO::Job *job, const KURL &from, const
         }
         n = n.nextSibling();
     }
+    m_downloading = false;
+    KApplication::restoreOverrideCursor();
     setOpen( true );
 }
 
 void ShoutcastBrowser::jobFinished( KIO::Job *job )
 {
     m_downloading = false;
-
+    KApplication::restoreOverrideCursor();
     if ( job->error() )
         job->showErrorDialog( 0 );
 }
 
-ShoutcastGenre::ShoutcastGenre( ShoutcastBrowser *browser, QListViewItem *after, const QString &genre )
+ShoutcastGenre::ShoutcastGenre( ShoutcastBrowser *browser, QListViewItem *after, QString genre )
     : PlaylistCategory( browser, after, genre )
     , m_downloading( false )
-    , m_genre( genre )
 {
     setExpandable( true );
     setKept( false );
+    m_genre = genre.replace( "&", "%26" ); //fix &
 }
 
 void ShoutcastGenre::slotDoubleClicked()
@@ -3608,6 +3612,7 @@ void ShoutcastGenre::setOpen( bool open )
         return;
     }
 
+    KApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
     QStringList tmpdirs = KGlobal::dirs()->resourceDirs( "tmp" );
     QString tmpfile = tmpdirs[0];
     tmpfile += "/amarok-list-" + m_genre + "-" + KApplication::randomString(10) + ".xml";
@@ -3673,12 +3678,13 @@ void ShoutcastGenre::doneListDownload( KIO::Job *job, const KURL &from, const KU
     }
     setOpen( true );
     m_downloading = false;
+    KApplication::restoreOverrideCursor();
 }
 
 void ShoutcastGenre::jobFinished( KIO::Job *job )
 {
     m_downloading = false;
-
+    KApplication::restoreOverrideCursor();
     if( job->error() )
         job->showErrorDialog( 0 );
 }
