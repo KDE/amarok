@@ -23,6 +23,7 @@
 #include "playlistbrowseritem.h"
 #include "playlistselection.h"
 #include "playlistwindow.h"
+#include "statusbar.h"
 
 #include "dynamicmode.h"
 
@@ -164,6 +165,12 @@ DEBUG_BLOCK
     {
         PlaylistBrowser *pb = PlaylistBrowser::instance();
         QPtrList<PlaylistBrowserEntry> dynamicEntries = pb->dynamicEntries();
+        if( !dynamicEntries.count() )
+        {
+            Amarok::StatusBar::instance()->longMessage( i18n( "This dynamic playlist has no sources set." ),
+                                                        KDE::StatusBar::Sorry );
+            return;
+        }
 
         PlaylistBrowserEntry* entry;
         QPtrListIterator<PlaylistBrowserEntry> it( dynamicEntries );
