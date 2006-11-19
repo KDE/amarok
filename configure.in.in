@@ -886,10 +886,10 @@ if test "$build_libgpod" != "no"; then
         if test "x$have_libgpod" = "xyes"; then
             ac_cppflags_save=$CPPFLAGS
             ac_cflags_save=$CFLAGS
-            ac_ldflags_save=$LDFLAGS
+            ac_libs_save=$LIBS
             CPPFLAGS="$CPPFLAGS $LIBGPOD_INCLUDES"
             CFLAGS="$CFLAGS $LIBGPOD_CFLAGS"
-            LDFLAGS="$LDFLAGS $LIBGPOD_LIBS"
+            LIBS="$LIBS $LIBGPOD_LIBS"
 
             AC_CHECK_FUNCS(itdb_track_set_thumbnails, have_libgpod_artwork=yes)
             AC_CHECK_FUNCS(itdb_get_mountpoint)
@@ -917,7 +917,7 @@ if test "$build_libgpod" != "no"; then
 
             CPPFLAGS=$ac_cppflags_save
             CFLAGS=$ac_cflags_save
-            LDFLAGS=$ac_ldflags_save
+            LIBS=$ac_libs_save
         fi
     fi
 fi
