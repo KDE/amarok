@@ -3138,7 +3138,7 @@ Playlist::burnSelectedTracks( int projectType )
 void
 Playlist::addCustomMenuItem( const QString &submenu, const QString &itemTitle )  //for dcop
 {
-        m_customSubmenuItem[submenu] << itemTitle;
+    m_customSubmenuItem[submenu] << itemTitle;
 }
 
 bool

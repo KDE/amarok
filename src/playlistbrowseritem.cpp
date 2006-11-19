@@ -36,7 +36,7 @@
 #include <qpixmap.h>           //paintCell()
 #include <qregexp.h>
 #include <qcursor.h>           //While downloading shoutcast stream lists
-        
+
 #include <kapplication.h>      //Used for Shoutcast random name generation
 #include <kdeversion.h>        //KDE_VERSION ifndefs.  Remove this once we reach a kde 4 dep
 #include <kiconloader.h>       //smallIcon
@@ -1290,6 +1290,7 @@ StreamEntry::showContextMenu( const QPoint &position )
             break;
         case EDIT:
             PlaylistBrowser::instance()->editStreamURL( this, !isKept() ); //only editable if we keep it
+            PlaylistBrowser::instance()->saveStreams();
             break;
         case REMOVE:
             PlaylistBrowser::instance()->removeSelectedItems();
@@ -3478,6 +3479,7 @@ void SmartPlaylist::showContextMenu( const QPoint &position )
             break;
         case EDIT:
             PlaylistBrowser::instance()->editSmartPlaylist( this );
+            PlaylistBrowser::instance()->saveSmartPlaylists();
             break;
         case REMOVE:
             PlaylistBrowser::instance()->removeSelectedItems();
@@ -3565,7 +3567,7 @@ void ShoutcastBrowser::doneGenreDownload( KIO::Job *job, const KURL &from, const
     file.close();
 
     KIO::del( to, false, false );
-    
+
 
     QDomElement docElem = doc.documentElement();
 
