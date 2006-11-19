@@ -30,6 +30,7 @@ Name[zh_CN]=大容量存储设备
 Name[zh_TW]=大型儲存裝置
 Comment=Device plugin for Amarok
 Comment[af]=Inprop module vir Amarok
+Comment[ar]= قابس ( برنامج مضاف الى) AmaroK
 Comment[bg]=Приставка за устройство за Amarok
 Comment[ca]=Connector de dispositiu per a l'Amarok
 Comment[cs]=Modul zařízení pro AmaroK
