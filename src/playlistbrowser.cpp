@@ -2165,7 +2165,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
 
     if( folderCount   ) message += "<li>" + i18n( "1 folder", "%n folders", folderCount ) + "</li>";
 
-    message += "</ul><br>to be <b>irreversibly</b> deleted.</p>";
+    message += i18n( "</ul><br>to be <b>irreversibly</b> deleted.</p>" );
 
     if( totalCount > 0 )
     {
