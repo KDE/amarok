@@ -401,7 +401,7 @@ void PlayerWidget::timeDisplay( int ms )
 {
     int seconds = ms / 1000;
     const int songLength = EngineController::instance()->bundle().length();
-    const bool showRemaining = AmarokConfig::timeDisplayRemaining() && songLength > 0;
+    const bool showRemaining = AmarokConfig::leftTimeDisplayRemaining() && songLength > 0;
 
     if( showRemaining ) seconds = songLength - seconds;
 
@@ -771,7 +771,7 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
 
         if ( rect.contains( e->pos() ) )
         {
-            AmarokConfig::setTimeDisplayRemaining( !AmarokConfig::timeDisplayRemaining() );
+            AmarokConfig::setLeftTimeDisplayRemaining( !AmarokConfig::leftTimeDisplayRemaining() );
             timeDisplay( EngineController::engine()->position() );
         }
         else m_startDragPos = e->pos();

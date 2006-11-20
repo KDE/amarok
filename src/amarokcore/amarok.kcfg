@@ -41,8 +41,8 @@
         <whatsthis>If set, amarok follows symlinks when adding files or directories to the playlist.</whatsthis>
         <default>true</default>
     </entry>
-    <entry key="Time Display Remaining" type="Bool">
-        <label>Whether to display remaining track time</label>
+    <entry key="Left Time Display Remaining" type="Bool">
+        <label>Whether to display remaining track time in the left time label.</label>
         <whatsthis>Set this to display remaining track time instead of past track time in the player window.</whatsthis>
         <default>false</default>
     </entry>

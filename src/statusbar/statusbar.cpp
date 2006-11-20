@@ -74,8 +74,15 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 
     m_slider = new Amarok::PrettySlider( Qt::Horizontal, Amarok::PrettySlider::Normal,
 					 positionBox );
+
+    // the two time labels. m_timeLable is the left one,
+    // m_timeLabel2 the right one.
     m_timeLabel = new TimeLabel( positionBox );
     m_slider->setMinimumWidth( m_timeLabel->width() );
+
+    m_timeLabel2 = new TimeLabel( positionBox );
+    m_slider->setMinimumWidth( m_timeLabel2->width() );
+
 
     // TODO Both labels need tooltips (string freeze?)
     QWidget *hbox = new QWidget( this );
@@ -92,8 +99,9 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     addWidget( positionBox );
 
     box->addSpacing( 3 );
-    box->addWidget( m_slider );
     box->addWidget( m_timeLabel );
+    box->addWidget( m_slider );
+    box->addWidget( m_timeLabel2 );
 
     connect( m_slider, SIGNAL(sliderReleased( int )), EngineController::instance(), SLOT(seek( int )) );
     connect( m_slider, SIGNAL(valueChanged( int )), SLOT(drawTimeDisplay( int )) );
@@ -126,6 +134,7 @@ StatusBar::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
         m_slider->setMaxValue( 0 );
 	m_slider->newBundle( MetaBundle() ); // Set an empty bundle
         m_timeLabel->setEnabled( false ); //must be done after the setValue() above, due to a signal connection
+        m_timeLabel2->setEnabled( false );
         setMainText( QString::null );
         break;
 
@@ -138,6 +147,7 @@ StatusBar::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
         DEBUG_LINE_INFO
         resetMainText(); // if we were paused, this is necessary
         m_timeLabel->setEnabled( true );
+        m_timeLabel2->setEnabled( true );
         break;
 
     case Engine::Idle:
@@ -251,23 +261,38 @@ void
 StatusBar::drawTimeDisplay( int ms )  //SLOT
 {
     int seconds = ms / 1000;
+    int seconds2 = seconds; // for the second label.
     const uint trackLength = EngineController::instance()->bundle().length();
 
-    if( AmarokConfig::timeDisplayRemaining() && trackLength > 0 ) {
+    if( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 ) {
+        seconds2 = seconds;
         seconds = trackLength - seconds;
+    } else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
+    {
+        seconds2 = trackLength - seconds;
     }
 
-    QString s = MetaBundle::prettyTime( seconds );
+    QString s1 = MetaBundle::prettyTime( seconds );
+    QString s2 = MetaBundle::prettyTime( seconds2 );
 
-    if( AmarokConfig::timeDisplayRemaining() && trackLength > 0 ) {
-        s.prepend( '-' );
+    if( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 ) {
+        s1.prepend( '-' );
+    } else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
+    {
+        s2.prepend( '-' );
     }
 
-    while( (int)s.length() < m_timeLength )
-        s.prepend( ' ' );
-    s += ' ';
+    while( (int)s1.length() < m_timeLength )
+        s1.prepend( ' ' );
 
-    m_timeLabel->setText( s );
+    while( (int)s2.length() < m_timeLength )
+        s2.prepend( ' ' );
+
+    s1 += ' ';
+    s2 += ' ';
+
+    m_timeLabel->setText( s1 );
+    m_timeLabel2->setText( s2 );
 }
 
 void
@@ -276,9 +301,14 @@ StatusBar::slotPauseTimer()  //slot
     static uint counter = 0;
 
     if ( counter == 0 )
+    {
         m_timeLabel->erase();
-    else
+        m_timeLabel2->erase();
+    } else
+    {
         m_timeLabel->update();
+        m_timeLabel2->update();
+    }
 
     ++counter &= 3;
 }

@@ -33,7 +33,7 @@ public:
 
     virtual void mousePressEvent( QMouseEvent * )
     {
-        AmarokConfig::setTimeDisplayRemaining( !AmarokConfig::timeDisplayRemaining() );
+        AmarokConfig::setLeftTimeDisplayRemaining( !AmarokConfig::leftTimeDisplayRemaining() );
 
         Amarok::StatusBar::instance()->drawTimeDisplay( EngineController::engine()->position() );
     }
