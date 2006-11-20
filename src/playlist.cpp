@@ -3220,6 +3220,7 @@ Playlist::editActiveDynamicMode() //SLOT
 
     DynamicMode *m = modifyDynamicMode();
     ConfigDynamic::editDynamicPlaylist( PlaylistWindow::self(), m );
+    m->rebuildCachedItemSet();
     finishedModifying( m );
 }
 
