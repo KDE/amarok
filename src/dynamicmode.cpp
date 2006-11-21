@@ -115,10 +115,18 @@ DEBUG_BLOCK
             // TODO some clever stuff here for spanning across artists
             QString artist = EngineController::instance()->bundle().artist();
 
+            if( artist.isEmpty() )
+            {
+                PlaylistItem *currentItem = Playlist::instance()->currentItem();
+                if( currentItem != 0 )
+                    artist = currentItem->artist();
+            }
+
             debug() << "seeding from: " << artist << endl;
 
             QStringList suggestions = CollectionDB::instance()->similarArtists( artist, 16 );
             // for this artist, choose 4 suggested artists at random, to get further suggestions from
+            QStringList newChosen;
             for( uint suggestCount = 0; suggestCount < 4; ++suggestCount )
             {
                 if( suggestions.isEmpty() )
@@ -129,7 +137,6 @@ DEBUG_BLOCK
                 debug() << "found similar artist: " << chosen << endl;
 
                 QStringList newSuggestions = CollectionDB::instance()->similarArtists( chosen, 10 );
-                QStringList newChosen;
                 for( uint c = 0; c < 4; ++c ) // choose another 4 artists
                 {
                     if( newSuggestions.isEmpty() )
@@ -141,10 +148,10 @@ DEBUG_BLOCK
                     newChosen += s;
                     newSuggestions.remove( s );
                 }
-                if ( !newChosen.isEmpty() )
-                    qb.addMatches( QueryBuilder::tabArtist, newChosen );
                 suggestions.remove( chosen );
             }
+            if ( !newChosen.isEmpty() )
+                suggestions += newChosen;
             qb.addMatches( QueryBuilder::tabArtist, suggestions );
         }
 
