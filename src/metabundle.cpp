@@ -67,23 +67,10 @@
 
 namespace Amarok {
     KURL detachedKURL( const KURL &url ) {
-        KURL newUrl;
-
-        if ( !url.protocol().isNull() )
-            newUrl.setProtocol( QDeepCopy<QString>( url.protocol() ) );
-        if ( !url.host().isNull() )
-            newUrl.setHost( QDeepCopy<QString>( url.host() ) );
-
-        newUrl.setPort( url.port() );
-
-        if ( !url.user().isNull() )
-            newUrl.setUser( QDeepCopy<QString>( url.user() ) );
-        if ( !url.pass().isNull() )
-            newUrl.setPass( QDeepCopy<QString>( url.pass() ) );
-        if ( !url.encodedPathAndQuery().isNull() )
-            newUrl.setEncodedPathAndQuery( QDeepCopy<QString>( url.encodedPathAndQuery() ) );
-
-        return newUrl;
+        KURL urlCopy;
+        if (!url.isEmpty())
+            urlCopy = KURL(url.url());
+        return urlCopy;
     }
 }
 
