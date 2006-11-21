@@ -126,7 +126,7 @@ void Scrobbler::audioScrobblerSimilarArtistsResult( KIO::Job* job ) //SLOT
         .item( 0 ).childNodes();
 
     QStringList suggestions;
-    for ( uint i = 0; i < values.count() && i < 10; i++ ) // limit to top 10 artists
+    for ( uint i = 0; i < values.count() && i < 30; i++ ) // limit to top 30 artists
         suggestions << values.item( i ).namedItem( "name" ).toElement().text();
 
     debug() << "Suggestions retrieved (" << suggestions.count() << ")" << endl;
