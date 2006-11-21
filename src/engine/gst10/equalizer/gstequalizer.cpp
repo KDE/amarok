@@ -251,8 +251,9 @@ gst_equalizer_transform_ip (GstBaseTransform * base, GstBuffer * outbuf)
     static gint i = 0, j = 2, k = 1;
 
     gint index, band, channel;
-    gint tempgint, halflength;
+    gint halflength;
     float out[EQ_CHANNELS], pcm[EQ_CHANNELS];
+    float tempfloat;
 
     /**
      * IIR filter equation is
@@ -309,16 +310,11 @@ gst_equalizer_transform_ip (GstBaseTransform * base, GstBuffer * outbuf)
                */
             out[channel] += pcm[channel]*0.25;
 
-            /* Round and convert to integer */
-            tempgint = lrintf(out[channel]);
+            /* Round and convert to integer and limit the output */
+            tempfloat = out[channel] < -32768.0 ? -32768.0 : out[channel];
+            tempfloat = tempfloat > 32767.0 ? 32767.0 : tempfloat;
+            data[index+channel] = (gint)rintf(tempfloat); 
 
-            /* Limit the output */
-            if (tempgint < -32768)
-                data[index+channel] = -32768;
-            else if (tempgint > 32767)
-                data[index+channel] = 32767;
-            else
-                data[index+channel] = tempgint;
         } /* For each channel */
 
         i++; j++; k++;
