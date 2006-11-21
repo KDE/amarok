@@ -61,10 +61,10 @@ Amarok::Slider::wheelEvent( QWheelEvent *e )
 
     // Position Slider (horizontal)
     int step = e->delta() * 1500 / 18;
-    int nval = QSlider::value() - step;
+    int nval = QSlider::value() + step;
     nval = QMAX(nval, minValue());
     nval = QMIN(nval, maxValue());
-    
+
     QSlider::setValue( nval );
 
     emit sliderReleased( value() );
