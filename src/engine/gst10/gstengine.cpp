@@ -774,9 +774,20 @@ GstEngine::stop()  //SLOT
     emit stateChanged( Engine::Empty );
 }
 
-
 void
 GstEngine::pause()  //SLOT
+{
+   DEBUG_BLOCK
+   RETURN_IF_PIPELINE_EMPTY
+
+   if ( GST_STATE( m_gst_pipeline ) == GST_STATE_PLAYING ) {
+      gst_element_set_state( m_gst_pipeline, GST_STATE_PAUSED );
+      emit stateChanged( Engine::Paused );
+   }
+}
+
+void
+GstEngine::unpause()  //SLOT
 {
     DEBUG_BLOCK
     RETURN_IF_PIPELINE_EMPTY
@@ -784,10 +795,6 @@ GstEngine::pause()  //SLOT
     if ( GST_STATE( m_gst_pipeline ) == GST_STATE_PAUSED ) {
         gst_element_set_state( m_gst_pipeline, GST_STATE_PLAYING );
         emit stateChanged( Engine::Playing );
-    }
-    else {
-        gst_element_set_state( m_gst_pipeline, GST_STATE_PAUSED );
-        emit stateChanged( Engine::Paused );
     }
 }
 

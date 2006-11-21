@@ -77,6 +77,7 @@ class GstEngine : public Engine::Base
         bool play( uint offset );
         void stop();
         void pause();
+        void unpause();
         void seek( uint ms );
 
         /** Copies incoming radio stream data from StreamProvider into StreamSrc's buffer */
