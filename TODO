@@ -5,8 +5,6 @@ TODO-list for Amarok
 
 
 SHORT-TERM (URGENT):
- <markey>  Fade-out on Stop is no longer working in trunk.
-
  <sebr>    SQLite - smart playlist with criteria playcount = 1 doesn't work. And probably more too.
            SQLite - favorite tracks expanded section in statistics tool expands to nothing. :(
 
