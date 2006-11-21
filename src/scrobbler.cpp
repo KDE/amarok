@@ -3,6 +3,7 @@
 // (c) 2006 Shane King <kde@dontletsstart.com>
 // (c) 2006 Iain Benson <iain@arctos.me.uk>
 // (c) 2006 Alexandre Oliveira <aleprj@gmail.com>
+// (c) 2006 Andy Kelk <andy@mopoke.co.uk>
 // See COPYING file for licensing information.
 
 #define DEBUG_PREFIX "Scrobbler"
@@ -71,64 +72,12 @@ void Scrobbler::similarArtists( const QString & artist )
     if ( AmarokConfig::retrieveSimilarArtists() )
     {
 //         Request looks like this:
-//         <?xml version="1.0"?>
-//         <methodCall>
-//             <methodName>getSimilarArtists</methodName>
-//             <params>
-//                 <param>
-//                     <value>
-//                         <string>Pearl Jam</string>
-//                     </value>
-//                 </param>
-//                 <param>
-//                     <value>
-//                         <int>30</int>
-//                     </value>
-//                 </param>
-//             </params>
-//         </methodCall>
-
-        QDomDocument reqdoc;
-
-        QDomElement methodCall = reqdoc.createElement( "methodCall" );
-        QDomElement methodName = reqdoc.createElement( "methodName" );
-        QDomText methodNameValue = reqdoc.createTextNode( "getSimilarArtists" );
-        methodName.appendChild( methodNameValue );
-        methodCall.appendChild( methodName );
-
-        QDomElement params = reqdoc.createElement( "params" );
-        QDomElement param1 = reqdoc.createElement( "param" );
-        QDomElement value1 = reqdoc.createElement( "value" );
-        QDomElement type1 = reqdoc.createElement( "string" );
-        QDomText param1Value = reqdoc.createTextNode( safeArtist );
-        type1.appendChild( param1Value );
-        value1.appendChild( type1 );
-        param1.appendChild( value1 );
-        params.appendChild( param1 );
-
-        QDomElement param2 = reqdoc.createElement( "param" );
-        QDomElement value2 = reqdoc.createElement( "value" );
-        QDomElement type2 = reqdoc.createElement( "int" );
-        QDomText param2Value = reqdoc.createTextNode( "30" );
-        type2.appendChild( param2Value );
-        value2.appendChild( type2 );
-        param2.appendChild( value2 );
-        params.appendChild( param2 );
-
-        methodCall.appendChild( params );
-        reqdoc.appendChild( methodCall );
-
-        const QString xmlRequest = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + reqdoc.toString();
-
-        QByteArray postData;
-        QDataStream stream( postData, IO_WriteOnly );
-        stream.writeRawBytes( xmlRequest.utf8(), xmlRequest.utf8().length() );
+//         http://ws.audioscrobbler.com/1.0/artist/Metallica/similar.xml
 
         m_similarArtistsBuffer = QByteArray();
         m_artist = artist;
 
-        m_similarArtistsJob = KIO::http_post( "http://ws.audioscrobbler.com/xmlrpc", postData, false );
-        m_similarArtistsJob->addMetaData( "content-type", "Content-Type: text/xml" );
+        m_similarArtistsJob = KIO::get( "http://ws.audioscrobbler.com/1.0/artist/" + safeArtist + "/similar.xml", false, false );
 
         connect( m_similarArtistsJob, SIGNAL( result( KIO::Job* ) ),
                  this,                  SLOT( audioScrobblerSimilarArtistsResult( KIO::Job* ) ) );
@@ -153,26 +102,18 @@ void Scrobbler::audioScrobblerSimilarArtistsResult( KIO::Job* job ) //SLOT
     }
 
 //     Result looks like this:
-//     <?xml version="1.0" encoding="UTF-8"?>
-//     <methodResponse>
-//         <params>
-//             <param>
-//                 <value><array>
-//                     <data>
-//                         <value><string>Barenaked Ladies</string></value>
-//                         <value><string>Talking Heads</string></value>
-//                         <value><string>Bob Marley &amp; The Wailers</string></value>
-//                         <value><string>Sting</string></value>
-//                         <value><string>???</string></value>
-//                         <value><string>Massive Attack</string></value>
-//                         <value><string>Alt for Egil</string></value>
-//                         <value><string>Paul Simon</string></value>
-//                         <value><string>Joe Firstman</string></value>
-//                     </data>
-//                 </array></value>
-//             </param>
-//         </params>
-//     </methodResponse>
+//        <?xml version="1.0" encoding="UTF-8"?>
+//        <similarartists artist="Metallica" streamable="1" picture="http://static.last.fm/proposedimages/sidebar/6/1000024/288059.jpg" mbid="">
+//          <artist>
+//            <name>Iron Maiden</name>
+//            <mbid></mbid>
+//            <match>100</match>
+//            <url>http://www.last.fm/music/Iron+Maiden</url>
+//            <image_small>http://static.last.fm/proposedimages/thumbnail/6/1000107/264195.jpg</image_small>
+//            <image>http://static.last.fm/proposedimages/sidebar/6/1000107/264195.jpg</image>
+//            <streamable>1</streamable>
+//          </artist>
+//        </similarartists>
 
     QDomDocument document;
     if ( !document.setContent( m_similarArtistsBuffer ) )
@@ -181,19 +122,12 @@ void Scrobbler::audioScrobblerSimilarArtistsResult( KIO::Job* job ) //SLOT
         return;
     }
 
-    QDomNodeList values =
-        document.elementsByTagName( "methodResponse" ).item( 0 )
-            .namedItem( "params" ).namedItem( "param" ).namedItem( "value" )
-            .namedItem( "array" ).namedItem( "data" ).childNodes();
+    QDomNodeList values = document.elementsByTagName( "similarartists" )
+        .item( 0 ).childNodes();
 
     QStringList suggestions;
-    for ( uint i = 0; i < values.count(); i++ )
-    {
-        QDomNode item = values.item( i );
-        QString artist = item.namedItem( "string" ).toElement().text();
-        //debug() << "Suggestion: " << artist << endl;
-        suggestions << artist;
-    }
+    for ( uint i = 0; i < values.count() && i < 10; i++ ) // limit to top 10 artists
+        suggestions << values.item( i ).namedItem( "name" ).toElement().text();
 
     debug() << "Suggestions retrieved (" << suggestions.count() << ")" << endl;
     if ( !suggestions.isEmpty() )
