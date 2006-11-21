@@ -3060,7 +3060,7 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
             //debug() << "At doAFTStuff, stat-ing file " << absPath << endl;
             bool statSuccessful = QFile::exists( absPath );
             if( statSuccessful ) //if true, new one is a copy
-                error() << "Already-scanned file at " << absPath << " has same UID as new file at " << bundle->url().path() << endl;
+                warning() << "Already-scanned file at " << absPath << " has same UID as new file at " << bundle->url().path() << endl;
             else  //it's a move, not a copy, or a copy and then both files were moved...can't detect that
             {
                 //debug() << "stat was NOT successful, updating tables with: " << endl;
@@ -3120,7 +3120,7 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
             //debug() << "At doAFTStuff part 2, stat-ing file " << absPath << endl;
             bool statSuccessful = QFile::exists( absPath );
             if( statSuccessful ) //if true, new one is a copy
-                error() << "Already-scanned file at " << absPath << " has same UID as new file at " << currurl << endl;
+                warning() << "Already-scanned file at " << absPath << " has same UID as new file at " << currurl << endl;
             else  //it's a move, not a copy, or a copy and then both files were moved...can't detect that
             {
                 //debug() << "stat part 2 was NOT successful, updating tables with: " << endl;
@@ -4936,7 +4936,7 @@ void
 CollectionDB::aftCheckPermanentTables( const QString &currdeviceid, const QString &currid, const QString &currurl )
 {
     //DEBUG_BLOCK
-    //debug() << "deviceid = " << currdeviceid << endl << "url = " << currurl << endl << "uid = " << currid << endl; 
+    //debug() << "deviceid = " << currdeviceid << endl << "url = " << currurl << endl << "uid = " << currid << endl;
 
     QStringList check1, check2;
 
@@ -4987,7 +4987,7 @@ CollectionDB::aftMigratePermanentTablesUrl( const QString& /*oldUrl*/, const QSt
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, newUrl );
     //NOTE: if ever do anything with "deleted" in the statistics table, set deleted to false in query
     //below; will need special case.
-    //debug() << "deviceid = " << deviceid << endl << "newurl = " << newUrl << endl << "uid = " << uniqueid << endl; 
+    //debug() << "deviceid = " << deviceid << endl << "newurl = " << newUrl << endl << "uid = " << uniqueid << endl;
     foreach( m_aftEnabledPersistentTables )
     {
         query( QString( "DELETE FROM %1 WHERE deviceid = %2 AND url = '%3';" )
@@ -5006,7 +5006,7 @@ void
 CollectionDB::aftMigratePermanentTablesUniqueId( const QString& /*url*/, const QString& oldid, const QString& newid )
 {
     //DEBUG_BLOCK
-    //debug() << "oldid = " << oldid << endl << "newid = " << newid << endl; 
+    //debug() << "oldid = " << oldid << endl << "newid = " << newid << endl;
     //NOTE: if ever do anything with "deleted" in the statistics table, set deleted to false in query
     //below; will need special case.
     foreach( m_aftEnabledPersistentTables )
@@ -7217,10 +7217,10 @@ QueryBuilder::addNumericFilter(int tables, Q_INT64 value, const QString &n,
                                const QString &endRange /* = QString::null */ )
 {
     m_where.append( ANDslashOR() ).append( " ( " );
-    
+
     if ( coalesceField( tables, value) )
         m_where.append("COALESCE(");
-    
+
     m_where.append( tableName( tables ) ).append( '.' ).append( valueName( value ) );
 
     if ( coalesceField( tables, value) )
