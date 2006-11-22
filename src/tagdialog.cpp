@@ -18,8 +18,6 @@
 #include "tagguesserconfigdialog.h"
 #include "trackpickerdialog.h"
 
-#include <stdlib.h>
-
 #include <taglib/tfile.h> //TagLib::File::isWritable
 
 #include <qdom.h>
@@ -27,6 +25,7 @@
 #include <qheader.h>
 #include <qlabel.h>
 #include <qlayout.h>
+#include <qpair.h>
 #include <qpushbutton.h>
 #include <qtooltip.h>
 #include <qvbox.h>
@@ -1364,31 +1363,31 @@ TagDialog::generateHTML( const QStringList &labels )
 {
     //the first column of each row is the label name, the second the number of assigned songs
     //loop through it to find the highest number of songs, can be removed if somebody figures out a better sql query
+    QMap<QString, QPair<QString, int> > mapping;
+    QStringList sortedLabels;
     int max = 1;
     foreach( labels )
     {
+        QString label = *it;
+        sortedLabels << label.lower();
         ++it;
-        if ( ( *it ).toInt() > max )
-            max = ( *it ).toInt();
+        int value = ( *it ).toInt();
+        if ( value > max )
+            max = value;
+        mapping[label.lower()] = QPair<QString, int>( label, value );
     }
-    QString html;
-    srand( time( 0 ) );
-    foreach( labels )
+    sortedLabels.sort();
+    QString html = "<html><body>";
+    foreach( sortedLabels )
     {
-        QString text = *it;
-        ++it;
+        QString key = *it;
         //generate a number in the range 1..10 based on  how much the label is used
-        int labelUse = ( ( *it ).toInt() *10 ) / max;
+        int labelUse = ( mapping[key].second * 10 ) / max;
         if ( labelUse == 0 )
             labelUse = 1;
-        QString moreHtml = QString( "<span class='label size%1'><a href=\"label:%2\">%3</a></span> " )
-                              .arg( QString::number( labelUse ), text, text );
-        if ( ( static_cast<double>(rand())/static_cast<double>(RAND_MAX) ) > 0.5 )
-            html.append( moreHtml );
-        else
-            html.prepend( moreHtml );
+        html.append( QString( "<span class='label size%1'><a href=\"label:%2\">%3</a></span> " )
+                              .arg( QString::number( labelUse ), mapping[key].first, mapping[key].first ) );
     }
-    html.prepend( "<html><body>" );
     html.append( "</html></body>" );
     debug() << "Dumping HTML for label cloud: " << html << endl;
     return html;
