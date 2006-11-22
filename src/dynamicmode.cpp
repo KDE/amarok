@@ -182,7 +182,7 @@ DEBUG_BLOCK
         PlaylistBrowserEntry* entry;
         QPtrListIterator<PlaylistBrowserEntry> it( dynamicEntries );
 
-        const int itemsPerSource = CACHE_SIZE / dynamicEntries.count();
+        const int itemsPerSource = CACHE_SIZE / dynamicEntries.count() != 0 ? CACHE_SIZE / dynamicEntries.count() : 1;
         debug() << "each source will return " << itemsPerSource << " entries" << endl;
 
         while( (entry = it.current()) != 0 )
