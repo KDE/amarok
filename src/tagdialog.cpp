@@ -18,6 +18,8 @@
 #include "tagguesserconfigdialog.h"
 #include "trackpickerdialog.h"
 
+#include <stdlib.h>
+
 #include <taglib/tfile.h> //TagLib::File::isWritable
 
 #include <qdom.h>
@@ -1369,7 +1371,8 @@ TagDialog::generateHTML( const QStringList &labels )
         if ( ( *it ).toInt() > max )
             max = ( *it ).toInt();
     }
-    QString html = "<html><body>";
+    QString html;
+    srand( time( 0 ) );
     foreach( labels )
     {
         QString text = *it;
@@ -1378,9 +1381,14 @@ TagDialog::generateHTML( const QStringList &labels )
         int labelUse = ( ( *it ).toInt() *10 ) / max;
         if ( labelUse == 0 )
             labelUse = 1;
-        html.append( QString( "<span class='label size%1'><a href=\"label:%2\">%3</a></span> " )
-                              .arg( QString::number( labelUse ), text, text ) );
+        QString moreHtml = QString( "<span class='label size%1'><a href=\"label:%2\">%3</a></span> " )
+                              .arg( QString::number( labelUse ), text, text );
+        if ( ( static_cast<double>(rand())/static_cast<double>(RAND_MAX) ) > 0.5 )
+            html.append( moreHtml );
+        else
+            html.prepend( moreHtml );
     }
+    html.prepend( "<html><body>" );
     html.append( "</html></body>" );
     debug() << "Dumping HTML for label cloud: " << html << endl;
     return html;
