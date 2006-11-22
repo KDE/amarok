@@ -2167,6 +2167,9 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
 
     message += i18n( "</ul><br>to be <b>irreversibly</b> deleted.</p>" );
 
+    if( podcastCount )
+        message += i18n( "<br><p>All downloaded podcast episodes will also be deleted.</p>" );
+
     if( totalCount > 0 )
     {
         int button = KMessageBox::warningContinueCancel( this, message, QString::null, KStdGuiItem::del() );
