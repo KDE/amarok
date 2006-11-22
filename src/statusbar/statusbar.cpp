@@ -264,19 +264,33 @@ StatusBar::drawTimeDisplay( int ms )  //SLOT
     int seconds2 = seconds; // for the second label.
     const uint trackLength = EngineController::instance()->bundle().length();
 
-    if( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 ) {
+    // when the left label shows the remaining time and it's not a stream
+    if( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
+    {
         seconds2 = seconds;
         seconds = trackLength - seconds;
+    // when the left label shows the remaining time and it's a stream
+    } else if( AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
+    {
+        seconds2 = seconds;
+        seconds = 0; // for streams
+    // when the right label shows the remaining time and it's not a stream
     } else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
     {
         seconds2 = trackLength - seconds;
+    // when the right label shows the remaining time and it's a stream
+    } else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
+    {
+        seconds2 = 0;
     }
 
     QString s1 = MetaBundle::prettyTime( seconds );
     QString s2 = MetaBundle::prettyTime( seconds2 );
 
+    // when the left label shows the remaining time and it's not a stream
     if( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 ) {
         s1.prepend( '-' );
+    // when the right label shows the remaining time and it's not a stream
     } else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
     {
         s2.prepend( '-' );
@@ -293,6 +307,20 @@ StatusBar::drawTimeDisplay( int ms )  //SLOT
 
     m_timeLabel->setText( s1 );
     m_timeLabel2->setText( s2 );
+
+    if( AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
+    {
+        m_timeLabel->setEnabled( false );
+        m_timeLabel2->setEnabled( true );
+    } else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
+    {
+        m_timeLabel->setEnabled( true );
+        m_timeLabel2->setEnabled( false );
+    } else
+    {
+        m_timeLabel->setEnabled( true );
+        m_timeLabel2->setEnabled( true );
+    }
 }
 
 void
