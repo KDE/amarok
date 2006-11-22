@@ -519,8 +519,7 @@ XineEngine::fadeOut( bool exiting )
     // On shutdown, limit fadeout to 3 secs max, so that we don't risk getting killed
     const int length = exiting ? QMIN( m_xfadeLength, 3000 ) : m_xfadeLength;
 
-    // NOTE The fadeout gets stuck when the EQ is active, so we skip it then
-    if( length > 0 && !m_equalizerEnabled && isPlaying )
+    if( length > 0 && isPlaying )
     {
         // fader-class doesn't work in this spot as is, so some parts need to be copied here... (ugly)
         uint stepsCount = length < 1000 ? length / 10 : 100;
