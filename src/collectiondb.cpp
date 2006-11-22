@@ -5850,8 +5850,8 @@ CollectionDB::favoriteLabels( int type, int count )
 {
     return query( QString( "SELECT labels.name, count( tags_labels.labelid ) "
                            "FROM labels LEFT JOIN tags_labels ON labels.id = tags_labels.labelid "
-                           "WHERE labels.type = %1 ORDER BY count(tags_labels.labelid) "
-                           "GROUP BY labels.name LIMIT %2" )
+                           "WHERE labels.type = %1 GROUP BY labels.name "
+                           "ORDER BY count(tags_labels.labelid) DESC LIMIT %2;" )
                            .arg( QString::number( type ), QString::number( count ) ) );
 }
 
