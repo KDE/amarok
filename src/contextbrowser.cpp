@@ -190,6 +190,7 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_relatedOpen( true )
         , m_suggestionsOpen( true )
         , m_favoritesOpen( true )
+        , m_labelsOpen( true )
         , m_showFreshPodcasts( true )
         , m_showFavoriteAlbums( true )
         , m_showNewestAlbums( true )
@@ -253,6 +254,7 @@ ContextBrowser::ContextBrowser( const char *name )
     m_showRelated   = Amarok::config( "ContextBrowser" )->readBoolEntry( "ShowRelated", true );
     m_showSuggested = Amarok::config( "ContextBrowser" )->readBoolEntry( "ShowSuggested", true );
     m_showFaves     = Amarok::config( "ContextBrowser" )->readBoolEntry( "ShowFaves", true );
+    m_showLabels    = Amarok::config( "ContextBrowser" )->readBoolEntry( "ShowLabels", true );
 
     m_showFreshPodcasts  = Amarok::config( "ContextBrowser" )->readBoolEntry( "ShowFreshPodcasts", true );
     m_showNewestAlbums   = Amarok::config( "ContextBrowser" )->readBoolEntry( "ShowNewestAlbums", true );
@@ -458,6 +460,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
         if      ( url.path() == "ra" ) m_relatedOpen     ^= true;
         else if ( url.path() == "ss" ) m_suggestionsOpen ^= true;
         else if ( url.path() == "ft" ) m_favoritesOpen  ^= true;
+        else if ( url.path() == "sl" ) m_labelsOpen ^= true;
     }
 
     else if ( url.protocol() == "seek" )
@@ -729,7 +732,7 @@ DEBUG_FUNC_INFO
 
 void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& point )
 {
-    enum { APPEND, ASNEXT, MAKE, MEDIA_DEVICE, INFO, TITLE, RELATED, SUGGEST, FAVES, FRESHPODCASTS, NEWALBUMS, FAVALBUMS };
+    enum { APPEND, ASNEXT, MAKE, MEDIA_DEVICE, INFO, TITLE, RELATED, SUGGEST, FAVES, FRESHPODCASTS, NEWALBUMS, FAVALBUMS, LABELS };
     debug() << "url string: " << urlString << endl;
 
     if( urlString.startsWith( "musicbrainz"  ) ||
@@ -761,10 +764,12 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
             menu.insertItem( i18n("Show Related Artists"), RELATED );
             menu.insertItem( i18n("Show Suggested Songs"), SUGGEST );
             menu.insertItem( i18n("Show Favorite Tracks"), FAVES );
+            menu.insertItem( i18n("Show Labels"), LABELS );
 
             menu.setItemChecked( RELATED, m_showRelated );
             menu.setItemChecked( SUGGEST, m_showSuggested );
             menu.setItemChecked( FAVES,   m_showFaves );
+            menu.setItemChecked( LABELS, m_showLabels );
         } else {
             // the home info page
             menu.setCheckable( true );
@@ -883,6 +888,13 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         showCurrentTrack();
         break;
 
+   case LABELS:
+        m_showLabels = !menu.isItemChecked( LABELS );
+        Amarok::config( "ContextBrowser" )->writeEntry( "ShowLabels", m_showLabels );
+        m_dirtyCurrentTrackPage = true;
+        showCurrentTrack();
+        break; 
+
    case FRESHPODCASTS:
         m_showFreshPodcasts = !menu.isItemChecked( FRESHPODCASTS );
         Amarok::config( "ContextBrowser" )->writeEntry( "ShowFreshPodcasts", m_showFreshPodcasts );
@@ -976,6 +988,7 @@ private:
     void showArtistsAlbums( const QString &artist, uint artist_id, uint album_id );
     void showArtistsCompilations( const QString &artist, uint artist_id, uint album_id );
     void showHome();
+    void showUserLabels( const MetaBundle &currentTrack );
     QString fetchLastfmImage( const QString& url );
     QStringList showHomeByAlbums();
     void constructHTMLAlbums( const QStringList &albums, QString &htmlCode, const QString &idPrefix );
@@ -2244,6 +2257,52 @@ void CurrentTrackJob::showSuggestedSongs( const QStringList &relArtists )
     // </Suggested Songs>
 }
 
+void
+CurrentTrackJob::showUserLabels( const MetaBundle &currentTrack )
+{
+    QueryBuilder qb;
+    qb.addReturnValue( QueryBuilder::tabLabels, QueryBuilder::valName, true );
+    qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valURL, currentTrack.url().path() );
+    qb.addMatch( QueryBuilder::tabLabels, QueryBuilder::valType, QString::number( CollectionDB::typeUser ) );
+    qb.setLimit( 0, 10 );
+    qb.sortBy( QueryBuilder::tabLabels, QueryBuilder::valName, false );
+    qb.buildQuery();
+    QStringList values = qb.run();
+
+    QString title;
+    if ( currentTrack.title().isEmpty() )
+        title = currentTrack.veryNiceTitle();
+    else
+        title = currentTrack.title();
+
+     m_HTMLSource.append(
+                "<div id='songlabels_box' class='box'>\n"
+                "<div id='songlabels-header' class='box-header' onCLick=\"toggleBlock('T_SL');window.location.href='togglebox:sl';\" style='cursor: pointer;'>\n"
+                "<span id='songlabels_box-header-title' class='box-header-title'>\n"
+                + i18n( " Labels for %1 " ).arg( escapeHTML( title ) ) +
+                "</span>\n"
+                "</div>\n"
+                "<table class='box-body' id='T_SL' width='100%' border='0' cellspacing='0' cellpadding='1'>\n" );
+    m_HTMLSource.append( "<tr><td>\n" );
+    if ( !values.isEmpty() )
+    {
+        foreach( values )
+        {
+            if( it != values.begin() )
+                m_HTMLSource.append( ", \n" );
+            m_HTMLSource.append( "<a href='showlabel:" + escapeHTMLAttr( *it ) + "'>" + escapeHTML( *it ) + "</a>" );
+        }
+    }
+    m_HTMLSource.append( "</td></tr>\n" );
+    m_HTMLSource.append( "<tr><td>" + i18n( "Add labels to %1" ).arg( escapeHTML( title ) ) + "</td></tr>\n" );
+    m_HTMLSource.append(
+            "</table>\n"
+            "</div>\n" );
+
+    if ( !b->m_labelsOpen )
+        m_HTMLSource.append( "<script language='JavaScript'>toggleBlock('T_SL');</script>\n" );
+}
+
 void CurrentTrackJob::showArtistsFaves( const QString &artist, uint artist_id )
 {
     QString artistName = artist.isEmpty() ? escapeHTML( i18n( "This Artist" ) ) : escapeHTML( artist );
@@ -2746,6 +2805,9 @@ bool CurrentTrackJob::doJob()
     else
         showCurrentArtistHeader( m_currentTrack );
 
+    if ( ContextBrowser::instance()->m_showLabels && !b->m_browseArtists )
+        showUserLabels( m_currentTrack );
+
     if( ContextBrowser::instance()->m_showRelated || ContextBrowser::instance()->m_showSuggested )
     {
         QStringList relArtists = CollectionDB::instance()->similarArtists( artist, 10 );
@@ -2758,6 +2820,7 @@ bool CurrentTrackJob::doJob()
                 showSuggestedSongs( relArtists );
         }
     }
+
     QString artistName = artist.isEmpty() ? i18n( "This Artist" ) : artist ;
     if ( !artist.isEmpty() )
     {
