@@ -7761,6 +7761,7 @@ QueryBuilder::valueName( Q_INT64 value )
        "isNew",
        "deviceid",
        "url",
+       "label",
        "lastmountpoint",
        "type"
    };
