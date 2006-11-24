@@ -3580,7 +3580,8 @@ void ShoutcastBrowser::doneGenreDownload( KIO::Job *job, const KURL &from, const
     bannedGenres << "auto" << "alternativo" << "best" << "clasicos" << "der" << "desi" << "die" << "emisora";
     bannedGenres << "voor" << "post" << "playlist" << "ned" << "gramy" << "deportes" << "bhangra" << "exitos";
     bannedGenres << "doowop" << "radio" << "radyo" << "railroad" << "program" << "mostly" << "hot";
-    bannedGenres << "deejay" << "cool" << "big" << "exitos";
+    bannedGenres << "deejay" << "cool" << "big" << "exitos" << "mp3" << "muzyczne" << "nederlandstalig";
+    bannedGenres << "max" << "informaci" << "halk" << "dobra";
 
     QDomElement docElem = doc.documentElement();
     QDomNode n = docElem.firstChild();
