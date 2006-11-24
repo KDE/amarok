@@ -761,10 +761,10 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         if( EngineController::engine()->loaded() )
         {
             menu.setCheckable( true );
+            menu.insertItem( i18n("Show Labels"), LABELS );
             menu.insertItem( i18n("Show Related Artists"), RELATED );
             menu.insertItem( i18n("Show Suggested Songs"), SUGGEST );
             menu.insertItem( i18n("Show Favorite Tracks"), FAVES );
-            menu.insertItem( i18n("Show Labels"), LABELS );
 
             menu.setItemChecked( RELATED, m_showRelated );
             menu.setItemChecked( SUGGEST, m_showSuggested );
