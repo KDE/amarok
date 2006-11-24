@@ -832,7 +832,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
 
     /********** Never Played **************/
     qb.initSQLDrag();
-    qb.exclusiveFilter( QueryBuilder::tabSong, QueryBuilder::tabStats, QueryBuilder::valURL );
+    qb.addNumericFilter( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, "0" );
     qb.sortBy( QueryBuilder::tabArtist, QueryBuilder::valName );
     qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
