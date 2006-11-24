@@ -3576,10 +3576,11 @@ void ShoutcastBrowser::doneGenreDownload( KIO::Job *job, const KURL &from, const
     bannedGenres << "good" << "super" << "wusf" << "www" << "zabavna" << "zouk" << "whatever" << "varios";
     bannedGenres << "varius" << "video" << "opm" << "non" << "narodna" << "muzyka" << "muzica" << "muzika";
     bannedGenres << "musique" << "music" << "multi" << "online" << "mpb" << "musica" << "musik" << "manele";
-    bannedGenres << "paranormal" << "todos" << "soca" << "the" << "toda" << "turkce" << "trova" << "italo";
+    bannedGenres << "paranormal" << "todos" << "soca" << "the" << "toda" << "trova" << "italo";
     bannedGenres << "auto" << "alternativo" << "best" << "clasicos" << "der" << "desi" << "die" << "emisora";
     bannedGenres << "voor" << "post" << "playlist" << "ned" << "gramy" << "deportes" << "bhangra" << "exitos";
-    bannedGenres << "doowop";
+    bannedGenres << "doowop" << "radio" << "radyo" << "railroad" << "program" << "mostly" << "hot";
+    bannedGenres << "deejay" << "cool" << "big" << "exitos";
 
     QDomElement docElem = doc.documentElement();
     QDomNode n = docElem.firstChild();
@@ -3677,6 +3678,8 @@ void ShoutcastGenre::doneListDownload( KIO::Job *job, const KURL &from, const KU
     while (firstChild())
         delete firstChild();
 
+    QStringList stations;
+
     //Go through the XML file and add all the stations
     QDomElement docElem = doc.documentElement();
     QDomNode n = docElem.firstChild();
@@ -3685,8 +3688,9 @@ void ShoutcastGenre::doneListDownload( KIO::Job *job, const KURL &from, const KU
         QDomElement e = n.toElement(); // try to convert the node to an element.
         if( e.hasAttribute( "name" ) )
         {
-            if( !e.attribute( "name" ).isNull())
+            if( !e.attribute( "name" ).isNull() && ! stations.contains( e.attribute( "name" ) ) )
             {
+                stations << e.attribute( "name" );
                 StreamEntry* entry = new StreamEntry( this, this,
                     "http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn="
                     + e.attribute( "id" ) + "&file=filename.pls", e.attribute( "name" ));
