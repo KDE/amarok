@@ -3568,17 +3568,26 @@ void ShoutcastBrowser::doneGenreDownload( KIO::Job *job, const KURL &from, const
 
     KIO::del( to, false, false );
 
+    // We use this list to filter out some obscure genres
+    QStringList bannedGenres;
+    bannedGenres << "alles" << "any" << "anything" << "autopilot" << "backup" << "bandas" << "beer";
+    bannedGenres << "catholic" << "chr" << "das" << "domaca" << "everything" << "fire" << "her" << "hollands";
+    bannedGenres << "http" << "just" << "lokale" << "middle" << "noticias" << "only" << "scanner" << "shqip";
+    bannedGenres << "good" << "super" << "wusf" << "www" << "zabavna" << "zouk" << "whatever" << "varios";
+    bannedGenres << "varius" << "video" << "opm" << "non" << "narodna" << "muzyka" << "muzica" << "muzika";
+    bannedGenres << "musique" << "music" << "multi" << "online" << "mpb" << "musica" << "musik" << "manele";
+    bannedGenres << "paranormal" << "todos";
 
     QDomElement docElem = doc.documentElement();
-
     QDomNode n = docElem.firstChild();
     QListViewItem *last = 0;
     while( !n.isNull() )
     {
         QDomElement e = n.toElement(); // try to convert the node to an element.
-        if( !e.attribute( "name" ).isNull() )
+        const QString name = e.attribute( "name" );
+        if( !name.isNull() && !bannedGenres.contains( name.lower() ) )
         {
-            last = new ShoutcastGenre( this, last, e.attribute( "name" ));
+            last = new ShoutcastGenre( this, last, name );
         }
         n = n.nextSibling();
     }
