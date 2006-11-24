@@ -5776,16 +5776,20 @@ CollectionDB::setLabels( const QString &url, const QStringList &labels, const QS
     QString rpath = escapeString( MountPointManager::instance()->getRelativePath( deviceid, url ) );
     QStringList labelIds = query( QString( "SELECT id FROM labels WHERE type = %1;" ).arg( type ) );
     QString ids;
-    foreach( labelIds )
+    if ( !labelIds.isEmpty() ) 
     {
-        if ( !ids.isEmpty() )
-            ids += ',';
-        ids += *it;
+        foreach( labelIds )
+        {
+            if ( !ids.isEmpty() )
+                ids += ',';
+            ids += *it;
+        }
+        //TODO: max: add uniqueid handling
+        query( QString( "DELETE FROM tags_labels "
+                        "WHERE tags_labels.labelid IN (%1) AND tags_labels.deviceid = %2 AND tags_labels.url = '%3';" )
+                        .arg( ids ).arg( deviceid ).arg( rpath ) );
     }
-    //TODO: max: add uniqueid handling
-    query( QString( "DELETE FROM tags_labels "
-                    "WHERE tags_labels.labelid IN (%1) AND tags_labels.deviceid = %2 AND tags_labels.url = '%3';" )
-                    .arg( ids ).arg( deviceid ).arg( rpath ) );
+
     foreach( labels )
     {
         int id = query( QString( "SELECT id FROM labels WHERE type = %1 AND name = '%2';" )
