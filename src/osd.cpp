@@ -52,6 +52,7 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
         , m_drawShadow( false )
         , m_translucency( false )
         , m_rating( 0 )
+        , m_volume ( false )
 {
     setFocusPolicy( NoFocus );
     setBackgroundMode( NoBackground );
@@ -84,10 +85,18 @@ void OSDWidget::ratingChanged( const short rating )
     show();
 }
 
+void OSDWidget::volChanged( unsigned char volume )
+{
+    m_volume = true;
+    m_text = "";
+    m_newvolume = volume;
+    show();
+}
+
 void
 OSDWidget::show() //virtual
 {
-    if ( !isEnabled() || m_text.isEmpty() )
+    if ( !isEnabled() || ( m_text.isEmpty() && !m_volume ) )
         return;
 
     const uint M = fontMetrics().width( 'x' );
@@ -150,6 +159,14 @@ OSDWidget::determineMetrics( const uint M )
     QRect rect = fontMetrics().boundingRect( 0, 0,
             max.width() - image.width(), max.height(),
             AlignCenter | WordBreak, m_text );
+
+    if( m_volume ){
+        KPixmap vol;
+        vol.load( locate( "data", "amarok/images/osdvolumeslider-inset.png" ) );
+        if( rect.width() <  vol.width() )
+            rect.setWidth( vol.width() );
+        rect.setHeight( vol.height() + M );
+    }
 
     if( m_rating )
     {
@@ -304,6 +321,53 @@ OSDWidget::render( const uint M, const QSize &size )
         p.drawPixmap( r.topLeft(), m_scaledCover );
 
         rect.rLeft() += m_scaledCover.width() + M;
+    }
+
+    if( m_volume ){
+        KPixmap vol;
+        vol.load( locate( "data", "amarok/images/osdvolumeslider-inset.png" ) );
+        QRect r( rect );
+        r.setLeft(( rect.left() + rect.width() / 2 ) - vol.width() / 2  );
+        r.setTop( rect.bottom()  - vol.height() - M / 2 );
+
+        const QPixmap temp( locate( "data", "amarok/images/osdvolumeslider-gradient.png" ) );
+        const QBitmap mask( temp.createHeuristicMask() );
+
+        KPixmap m_pixmapGradient;
+        m_pixmapGradient = QPixmap( vol.size() );
+        KPixmapEffect::gradient( m_pixmapGradient, colorGroup().background(), colorGroup().highlight(),
+                 KPixmapEffect::EllipticGradient );
+        m_pixmapGradient.setMask( mask );
+
+        QPixmap buf( vol.size() );
+
+        if( m_translucency ) {
+            KPixmap background( m_screenshot );
+            KPixmapEffect::fade( background, 0.80, backgroundColor() );
+            bitBlt( &buf, -r.left(), -r.top(), &background );
+        }
+        else
+            buf.fill( backgroundColor() );
+
+        const int offset = int( double( vol.width() * m_newvolume ) / 100 );
+
+        bitBlt( &buf, 0, 0, &m_pixmapGradient, 0, 0, offset );
+        bitBlt( &buf, 0, 0, &vol );  // bg
+
+        { // label
+            QPainter p2( &buf );
+            p2.setPen( Qt::white  );
+            QFont font2;
+            font2.setPixelSize( 14 );
+            p2.setFont( font2 );
+            const QRect rect2( 0, 0, vol.width(), vol.height() );
+            p2.drawText( rect2, Qt::AlignCenter | Qt::AlignVCenter,
+                m_newvolume ? i18n("Volume: %1%").arg( m_newvolume ) : i18n("Mute") );
+            p2.end();
+        }
+
+        p.drawPixmap( r.left(), r.top(), buf );
+        m_volume = false;
     }
 
     KPixmap star;

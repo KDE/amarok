@@ -1033,7 +1033,7 @@ void App::engineTrackPositionChanged( long position, bool /*userSeek*/ )
 
 void App::engineVolumeChanged( int newVolume )
 {
-    Amarok::OSD::instance()->OSDWidget::show( newVolume ? i18n("Volume: %1%").arg( newVolume ) : i18n("Mute") );
+    Amarok::OSD::instance()->OSDWidget::volChanged( newVolume );
 }
 
 void App::slotConfigEqualizer() //SLOT

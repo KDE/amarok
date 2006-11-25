@@ -39,6 +39,7 @@ class OSDWidget : public QWidget
         /** calls setText() then show(), after setting image if needed */
         void show( const QString &text, QImage newImage = QImage::QImage() );
         void ratingChanged( const short rating );
+        void volChanged( unsigned char volume );
 
         /** reimplemented, shows the OSD */
         virtual void show();
@@ -89,6 +90,8 @@ class OSDWidget : public QWidget
         bool        m_drawShadow;
         bool        m_translucency;
         short       m_rating;
+        unsigned char m_newvolume;
+        bool        m_volume;
         QString     m_text;
         QImage      m_cover;
         // need a whole MetaBundle to draw the moodbar on the fly

@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 1.4.5
   FEATURES:
+	* Fancy graphical volume slider for the OSD. Patch by Alexander Bechikov
+      <goo@t72.ru>
     * Shoutcast stream directory. Contributed by Adam Pigg <adam@piggz.co.uk>.
     * Support for %composer and %genre when guessing tags from filenames.
     * Cached lyrics are now AFT-enabled, and will follow your files around as
