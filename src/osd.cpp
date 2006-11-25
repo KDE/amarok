@@ -52,7 +52,7 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
         , m_drawShadow( false )
         , m_translucency( false )
         , m_rating( 0 )
-        , m_volume ( false )
+        , m_volume( false )
 {
     setFocusPolicy( NoFocus );
     setBackgroundMode( NoBackground );
@@ -68,7 +68,8 @@ void
 OSDWidget::show( const QString &text, QImage newImage )
 {
     m_text = text;
-    if ( !newImage.isNull() ) {
+    if ( !newImage.isNull() )
+    {
         m_cover = newImage;
         int w = m_scaledCover.width();
         int h = m_scaledCover.height();
@@ -88,7 +89,7 @@ void OSDWidget::ratingChanged( const short rating )
 void OSDWidget::volChanged( unsigned char volume )
 {
     m_volume = true;
-    m_text = "";
+    m_text = QString::null;
     m_newvolume = volume;
     show();
 }
@@ -111,7 +112,8 @@ OSDWidget::show() //virtual
                 newGeometry.width(), newGeometry.height() );
 
 
-    else if( m_translucency ) {
+    else if( m_translucency )
+    {
         const QRect unite = oldGeometry.unite( newGeometry );
         KPixmap pix = QPixmap::grabWindow( qt_xrootwin(), unite.x(), unite.y(), unite.width(), unite.height() );
 
@@ -160,7 +162,8 @@ OSDWidget::determineMetrics( const uint M )
             max.width() - image.width(), max.height(),
             AlignCenter | WordBreak, m_text );
 
-    if( m_volume ){
+    if( m_volume )
+    {
         KPixmap vol;
         vol.load( locate( "data", "amarok/images/osdvolumeslider-inset.png" ) );
         if( rect.width() <  vol.width() )
@@ -274,7 +277,8 @@ OSDWidget::render( const uint M, const QSize &size )
     m_buffer.resize( rect.size() );
     QPainter p( &m_buffer );
 
-    if( m_translucency ) {
+    if( m_translucency )
+    {
         KPixmap background( m_screenshot );
         KPixmapEffect::fade( background, 0.80, backgroundColor() );
         p.drawPixmap( 0, 0, background );
@@ -323,7 +327,8 @@ OSDWidget::render( const uint M, const QSize &size )
         rect.rLeft() += m_scaledCover.width() + M;
     }
 
-    if( m_volume ){
+    if( m_volume )
+    {
         KPixmap vol;
         vol.load( locate( "data", "amarok/images/osdvolumeslider-inset.png" ) );
         QRect r( rect );
@@ -341,7 +346,8 @@ OSDWidget::render( const uint M, const QSize &size )
 
         QPixmap buf( vol.size() );
 
-        if( m_translucency ) {
+        if( m_translucency ) 
+        {
             KPixmap background( m_screenshot );
             KPixmapEffect::fade( background, 0.80, backgroundColor() );
             bitBlt( &buf, -r.left(), -r.top(), &background );
