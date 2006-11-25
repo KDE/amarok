@@ -879,9 +879,14 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
 void PlaylistBrowser::editSmartPlaylist( SmartPlaylist* item )
 {
     SmartPlaylistEditor dialog( this, item->xml() );
-    if( dialog.exec() == QDialog::Accepted ) {
-        item->setXml( dialog.result() );
-        item->setText(0, dialog.name());
+
+    if( dialog.exec() == QDialog::Accepted )
+    {
+        item->setXml ( dialog.result()  );
+        item->setText( 0, dialog.name() );
+
+        if( item->isDynamic() ) // rebuild the cache if the smart playlist has changed
+            Playlist::instance()->rebuildDynamicModeCache();
     }
 }
 

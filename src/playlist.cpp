@@ -3222,7 +3222,7 @@ Playlist::loadDynamicMode( DynamicMode *mode ) //SLOT
 void
 Playlist::editActiveDynamicMode() //SLOT
 {
-    if( !dynamicMode() )
+    if( !m_dynamicMode )
         return;
 
     DynamicMode *m = modifyDynamicMode();
@@ -3234,13 +3234,24 @@ Playlist::editActiveDynamicMode() //SLOT
 void
 Playlist::disableDynamicMode() //SLOT
 {
-    if ( !m_dynamicMode )
+    if( !m_dynamicMode )
         return;
     setDynamicMode( 0 );
     AmarokConfig::setRandomMode( m_oldRandom );
     AmarokConfig::setRepeat( m_oldRepeat );
     static_cast<KSelectAction*>(Amarok::actionCollection()->action( "random_mode" ))->setCurrentItem( m_oldRandom );
     static_cast<KSelectAction*>(Amarok::actionCollection()->action( "repeat" ))->setCurrentItem( m_oldRepeat );
+}
+
+void
+Playlist::rebuildDynamicModeCache() //SLOT
+{
+    if( !m_dynamicMode )
+        return;
+
+    DynamicMode *m = modifyDynamicMode();
+    m->rebuildCachedItemSet();
+    finishedModifying( m );
 }
 
 void

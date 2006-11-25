@@ -213,6 +213,7 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         void loadDynamicMode( DynamicMode *mode ); //saveUndoState() + setDynamicMode()
         void disableDynamicMode();
         void editActiveDynamicMode();
+        void rebuildDynamicModeCache();
         void repopulate();
         void safeClear();
         void scoreChanged( const QString &path, int score );
