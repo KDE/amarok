@@ -335,18 +335,18 @@ OSDWidget::render( const uint M, const QSize &size )
         r.setLeft(( rect.left() + rect.width() / 2 ) - vol.width() / 2  );
         r.setTop( rect.bottom()  - vol.height() - M / 2 );
 
-        const QPixmap temp( locate( "data", "amarok/images/osdvolumeslider-gradient.png" ) );
-        const QBitmap mask( temp.createHeuristicMask() );
+        static const QPixmap temp( locate( "data", "amarok/images/osdvolumeslider-gradient.png" ) );
+        static const QBitmap mask( temp.createHeuristicMask() );
 
-        KPixmap m_pixmapGradient;
-        m_pixmapGradient = QPixmap( vol.size() );
-        KPixmapEffect::gradient( m_pixmapGradient, colorGroup().background(), colorGroup().highlight(),
+        static KPixmap s_pixmapGradient;
+        s_pixmapGradient = QPixmap( vol.size() );
+        KPixmapEffect::gradient( s_pixmapGradient, colorGroup().background(), colorGroup().highlight(),
                  KPixmapEffect::EllipticGradient );
-        m_pixmapGradient.setMask( mask );
+        s_pixmapGradient.setMask( mask );
 
         QPixmap buf( vol.size() );
 
-        if( m_translucency ) 
+        if( m_translucency )
         {
             KPixmap background( m_screenshot );
             KPixmapEffect::fade( background, 0.80, backgroundColor() );
@@ -357,15 +357,13 @@ OSDWidget::render( const uint M, const QSize &size )
 
         const int offset = int( double( vol.width() * m_newvolume ) / 100 );
 
-        bitBlt( &buf, 0, 0, &m_pixmapGradient, 0, 0, offset );
+        bitBlt( &buf, 0, 0, &s_pixmapGradient, 0, 0, offset );
         bitBlt( &buf, 0, 0, &vol );  // bg
 
         { // label
             QPainter p2( &buf );
-            p2.setPen( Qt::white  );
-            QFont font2;
-            font2.setPixelSize( 14 );
-            p2.setFont( font2 );
+            p2.setPen( foregroundColor() );
+            p2.setFont( font() );
             const QRect rect2( 0, 0, vol.width(), vol.height() );
             p2.drawText( rect2, Qt::AlignCenter | Qt::AlignVCenter,
                 m_newvolume ? i18n("Volume: %1%").arg( m_newvolume ) : i18n("Mute") );
