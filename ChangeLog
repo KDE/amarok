@@ -33,7 +33,7 @@ VERSION 1.4.5
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
-    * The xine equalizer no longer reduced the volume. Patch by Tobias Knieper
+    * The xine equalizer no longer reduces the volume. Patch by Tobias Knieper
 	  <tobias.knieper@micekiller.de>. (BR 127307)
     * It's now possible to delete a file from an MTP media device and
       re-upload it without having to reconnect the device.
