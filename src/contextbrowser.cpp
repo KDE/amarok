@@ -2613,11 +2613,14 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
                     if( albumValues[j + 4] != "0" )
                         length = "<span class='album-song-time'>(" + MetaBundle::prettyTime( QString(albumValues[j + 4]).toInt(), true ) + ")</span>\n";
 
+                    bool current = false;
+                    if( i==vectorPlace && albumValues[j + 2].toInt() == m_currentTrack.track() && discNumber.toInt() == m_currentTrack.discNumber() )
+                        current = true;
                     m_HTMLSource.append(
                             "<div class='album-song'>\n"
                             "<a href=\"file:" + escapeHTMLAttr ( albumValues[j + 1] ) + "\">\n"
                             + track +
-                            "<span class='album-song-title'>\n" + escapeHTML( albumValues[j] ) + "</span>&nbsp;"
+                            "<span class='album-song-title'>\n" + (current?"<i>":"") + escapeHTML( albumValues[j] ) + (current?"</i>":"") + "</span>&nbsp;"
                             + length +
                             "</a>\n"
                             "</div>\n" );
@@ -2775,10 +2778,15 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
                     QString tracktitle;
                     tracktitle = escapeHTML( i18n("%1 - %2").arg( albumValues[j + 5], albumValues[j] ) );
                     tracktitle_formated = "<span class='album-song-title'>\n";
+                    if( i==vectorPlace && albumValues[j + 2].toInt() == m_currentTrack.track() && discNumber.toInt() == m_currentTrack.discNumber() )
+                        tracktitle_formated += "<i>\n";
                     if ( artist == albumValues[j + 5] )
-                        tracktitle_formated += "<b>\n" + tracktitle + "</b>\n";
-                    else
-                        tracktitle_formated += tracktitle;
+                        tracktitle_formated += "<b>\n";
+                    tracktitle_formated += tracktitle;
+                    if ( artist == albumValues[j + 5] )
+                        tracktitle_formated += "</b>\n";
+                    if( i==vectorPlace && track.toInt() == m_currentTrack.track() && discNumber.toInt() == m_currentTrack.discNumber() )
+                        tracktitle_formated += "</i>\n";
                     tracktitle_formated += "</span>&nbsp;";
                     m_HTMLSource.append(
                             "<div class='album-song'>\n"
