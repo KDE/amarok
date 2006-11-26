@@ -3205,7 +3205,12 @@ Playlist::setDynamicMode( DynamicMode *mode ) //SLOT
             adjustDynamicUpcoming( true );
     }
     else if( !prev )
+    {
+        if( mode )
+            adjustDynamicPrevious( mode->previousCount(), true );
         setDynamicHistory( true ); // disable items!
+    }
+
     else if( !mode ) // enable items again, dynamic mode is no more
         setDynamicHistory( false );
 }
