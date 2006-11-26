@@ -763,29 +763,22 @@ void
 CollectionDB::clearTables( const bool temporary )
 {
     QString clearCommand = "DELETE FROM";
-    //if ( getDbConnectionType() == DbConnection::mysql || getDbConnectionType() == DbConnection::postgresql)
-    //{
-        // TRUNCATE TABLE is faster than DELETE FROM TABLE, so use it when supported.
-    //    clearCommand = "TRUNCATE TABLE";
-    //}
-    IdList list = MountPointManager::instance()->getMountedDeviceIds();
-    QString deviceIds = "";
-    foreachType( IdList, list )
+    if ( getDbConnectionType() == DbConnection::mysql || getDbConnectionType() == DbConnection::postgresql)
     {
-        if ( it != list.begin() ) deviceIds += ',';
-        deviceIds += QString::number(*it);
+        // TRUNCATE TABLE is faster than DELETE FROM TABLE, so use it when supported.
+        clearCommand = "TRUNCATE TABLE";
     }
 
-    query( QString( "%1 tags%2 WHERE deviceid IN (%3);" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ).arg( deviceIds ) );
-    //query( QString( "%1 album%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
-    //query( QString( "%1 artist%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
-    //query( QString( "%1 composer%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
-    //query( QString( "%1 genre%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
-    //query( QString( "%1 year%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
-    query( QString( "%1 images%2 WHERE deviceid IN (%3);" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ).arg( deviceIds ) );
-    query( QString( "%1 embed%2 WHERE deviceid IN (%3);" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ).arg( deviceIds ) );
-    query( QString( "%1 directories%2 WHERE deviceid IN (%3);" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ).arg( deviceIds ) );
-    query( QString( "%1 uniqueid%2 WHERE deviceid IN (%3);" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ).arg( deviceIds ) );
+    query( QString( "%1 tags%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "%1 album%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "%1 artist%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "%1 composer%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "%1 genre%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "%1 year%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "%1 images%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "%1 embed%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "%1 directories%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
+    query( QString( "%1 uniqueid%2;" ).arg( clearCommand ).arg( temporary ? "_temp" : "" ) );
     if ( !temporary )
     {
         query( QString( "%1 related_artists;" ).arg( clearCommand ) );
