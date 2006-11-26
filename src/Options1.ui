@@ -163,7 +163,7 @@
                                 <string>px</string>
                             </property>
                             <property name="maxValue">
-                                <number>150</number>
+                                <number>300</number>
                             </property>
                             <property name="minValue">
                                 <number>50</number>
