@@ -5,7 +5,9 @@ Amarok ChangeLog
 
 VERSION 1.4.5
   FEATURES:
-	* Fancy graphical volume slider for the OSD. Patch by Alexander Bechikov
+    * Greatly improved sound quality for the xine equalizer. Patch by Tobias
+      Knieper <tobias.knieper@micekiller.de>. (BR 127307)
+    * Fancy graphical volume slider for the OSD. Patch by Alexander Bechikov
       <goo@t72.ru>
     * Shoutcast stream directory. Contributed by Adam Pigg <adam@piggz.co.uk>.
     * Support for %composer and %genre when guessing tags from filenames.
@@ -33,8 +35,6 @@ VERSION 1.4.5
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
-    * The xine equalizer no longer reduces the volume. Patch by Tobias Knieper
-	  <tobias.knieper@micekiller.de>. (BR 127307)
     * It's now possible to delete a file from an MTP media device and
       re-upload it without having to reconnect the device.
     * Wikipedia links to edit sections are no longer shown.
