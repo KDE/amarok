@@ -115,7 +115,7 @@ EqualizerSetup::EqualizerSetup()
     // END
 
     // BEGIN Band Sliders
-    const char *bandLabels[] = { "60", "170", "310", "600", "1k", "3k", "6k", "12k", "14k", "16k" };
+    const char *bandLabels[] = { "30", "60", "125", "250", "500", "1k", "2k", "4k", "8k", "16k" };
 
     int minWidth = 0;
     QFontMetrics fm = fontMetrics(); //apparently it's an expensive call
