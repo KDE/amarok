@@ -195,6 +195,7 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_showFavoriteAlbums( true )
         , m_showNewestAlbums( true )
         , m_browseArtists( false )
+        , m_browseLabels( false )
         , m_cuefile( NULL )
 {
     s_instance = this;
@@ -469,7 +470,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
     }
 
     // browse albums of a related artist.  Don't do this if we are viewing Home tab
-    else if ( url.protocol() == "artist" || url.protocol() == "current" )
+    else if ( url.protocol() == "artist" || url.protocol() == "current" || url.protocol() == "showlabel")
     {
         if( EngineController::engine()->loaded() ) // song must be active
             showContext( url );
@@ -981,9 +982,11 @@ private:
     void showStream( const MetaBundle &currentTrack );
     void showPodcast( const MetaBundle &currentTrack );
     void showBrowseArtistHeader( const QString &artist );
+    void showBrowseLabelHeader( const QString &label );
     void showCurrentArtistHeader( const MetaBundle &currentTrack );
     void showRelatedArtists( const QString &artist, const QStringList &relArtists );
     void showSuggestedSongs( const QStringList &relArtists );
+    void showSongsWithLabel( const QString &label );
     void showArtistsFaves( const QString &artistName, uint artist_id );
     void showArtistsAlbums( const QString &artist, uint artist_id, uint album_id );
     void showArtistsCompilations( const QString &artist, uint artist_id, uint album_id );
@@ -1035,6 +1038,8 @@ ContextBrowser::showContext( const KURL &url, bool fromHistory )
     if( url.protocol() == "current" )
     {
         m_browseArtists = false;
+        m_browseLabels = false;
+        m_label = QString::null;
         m_artist = QString::null;
         m_contextBackHistory.clear();
         m_contextBackHistory.push_back( "current://track" );
@@ -1042,7 +1047,16 @@ ContextBrowser::showContext( const KURL &url, bool fromHistory )
     else if( url.protocol() == "artist" )
     {
         m_browseArtists = true;
+        m_browseLabels = false;
+        m_label = QString::null;
         m_artist = unescapeHTMLAttr( url.path() );
+    }
+    else if( url.protocol() == "showlabel" )
+    {
+        m_browseLabels = true;
+        m_browseArtists = false;
+        m_artist = QString::null;
+        m_label = unescapeHTMLAttr( url.path() );
     }
 
     // Append new URL to history
@@ -1992,6 +2006,60 @@ void CurrentTrackJob::showBrowseArtistHeader( const QString &artist )
     // </Artist>
 }
 
+void
+CurrentTrackJob::showBrowseLabelHeader( const QString &label )
+{
+    bool linkback = ( b->m_contextBackHistory.size() > 0 );
+    QString back = ( linkback
+            ? "<a id='artist-back-a' href='artistback://back'>\n"
+            + escapeHTML( i18n( "<- Back" ) )
+            + "</a>\n"
+            : QString( "" )
+            );
+    m_HTMLSource.append(
+            QString(
+                "<div id='current_box' class='box'>\n"
+                "<div id='current_box-header' class='box-header'>\n"
+                "<span id='current_box-header-artist' class='box-header-title'>%1</span>\n"
+                "<br />\n"
+                "<table width='100%' cellpadding='0' cellspacing='0'><tr>\n"
+                "<td><span id='current_box-header-album' class='box-header-title'>%2</span></td>\n"
+                "<td><div id='current_box-header-nav' class='box-header-nav'>%3</div></td>\n"
+                "</tr></table>\n"
+                "</div>\n" )
+            .arg( escapeHTML( label ) )
+            .arg( escapeHTML( i18n( "Browse Label" ) ) )
+            .arg( back ) );
+    m_HTMLSource.append(
+            "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>\n"
+            );
+
+    m_HTMLSource.append(
+            "<tr>\n"
+            "<td id='context'>\n"
+            + QString( "<a id='context-a=' href='current://track'>\n" )
+            + i18n( "Information for Current Track" )
+            + "</a>\n"
+            "</td>\n"
+            "</tr>\n"
+            );
+
+    m_HTMLSource.append(
+            "<tr>\n"
+            "<td id='label-lastfm'>\n"
+            + QString( "<a id='label-lastfm-a' href='externalurl://www.last.fm/tag/%1'>\n" ).arg( escapeHTMLAttr( label ) )
+            + i18n( "Last.fm Information for %1" ).arg( escapeHTML( label ) ) +
+            "</a>\n"
+            "</td>\n"
+            "</tr>\n");
+
+    m_HTMLSource.append(
+            "</td>\n"
+            "</tr>\n"
+            "</table>\n"
+            "</div>\n" );
+}
+
 void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
 {
     QueryBuilder qb;
@@ -2255,6 +2323,54 @@ void CurrentTrackJob::showSuggestedSongs( const QStringList &relArtists )
             m_HTMLSource.append( "<script language='JavaScript'>toggleBlock('T_SS');</script>\n" );
     }
     // </Suggested Songs>
+}
+
+void
+CurrentTrackJob::showSongsWithLabel( const QString &label )
+{
+    QueryBuilder qb;
+    QStringList values;
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
+    qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
+    qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
+    qb.addMatch( QueryBuilder::tabLabels, QueryBuilder::valType, QString::number( CollectionDB::typeUser ) );
+    qb.addMatch( QueryBuilder::tabLabels, QueryBuilder::valName, label );
+    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valScore, true );
+    qb.setLimit( 0, 10 );
+    values = qb.run();
+
+    if ( !values.isEmpty() )
+    {
+        m_HTMLSource.append(
+                "<div id='suggested_box' class='box'>\n"
+                "<div id='suggested_box-header' class='box-header' onClick=\"toggleBlock('T_SS'); window.location.href='togglebox:ss';\" style='cursor: pointer;'>\n"
+                "<span id='suggested_box-header-title' class='box-header-title'>\n"
+                + i18n( "Songs with label %1" ).arg( label ) +
+                "</span>\n"
+                "</div>\n"
+                "<table class='box-body' id='T_' width='100%' border='0' cellspacing='0' cellpadding='0'>\n" );
+
+        for ( uint i = 0; i < values.count(); i += 5 )
+            m_HTMLSource.append(
+                    "<tr class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>\n"
+                    "<td class='song'>\n"
+                    "<a href=\"file:" + escapeHTMLAttr ( values[i] ) + "\">\n"
+                    "<span class='album-song-title'>\n"+ escapeHTML( values[i + 2] ) + "</span>\n"
+                    "<span class='song-separator'>\n"
+                    + i18n("&#xa0;&#8211; ") +
+                    "</span><span class='album-song-title'>\n" + escapeHTML( values[i + 1] ) + "</span>\n"
+                    "</a>\n"
+                    "</td>\n"
+                    "<td>\n" + statsHTML( values[i + 3].toInt(), values[i + 4].toInt() ) + "</td>\n"
+                    "<td width='1'></td>\n"
+                    "</tr>\n" );
+
+        m_HTMLSource.append(
+                "</table>\n"
+                "</div>\n" );
+    }
 }
 
 void
@@ -2802,6 +2918,14 @@ bool CurrentTrackJob::doJob()
     QStringList values;
     if( b->m_browseArtists )
         showBrowseArtistHeader( artist );
+    else if( b->m_browseLabels )
+    {
+        showBrowseLabelHeader( b->m_label );
+        showSongsWithLabel( b->m_label );
+        m_HTMLSource.append( "</body></html>\n" );
+
+        return true;
+    }
     else
         showCurrentArtistHeader( m_currentTrack );
 
