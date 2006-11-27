@@ -35,6 +35,8 @@ VERSION 1.4.5
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
+    * Sending filenames to MTP media devices as UTF-8 caused problems, use
+      Latin-1 instead.
     * It's now possible to delete a file from an MTP media device and
       re-upload it without having to reconnect the device.
     * Wikipedia links to edit sections are no longer shown.
