@@ -34,9 +34,6 @@
             <property name="text">
                 <string>Re&amp;download</string>
             </property>
-            <property name="accel">
-                <string>Alt+D</string>
-            </property>
         </widget>
         <widget class="QPushButton" row="2" column="2">
             <property name="name">
@@ -44,9 +41,6 @@
             </property>
             <property name="text">
                 <string>&amp;Cancel</string>
-            </property>
-            <property name="accel">
-                <string>Alt+C</string>
             </property>
         </widget>
         <spacer row="2" column="0">
