@@ -7,6 +7,7 @@
  *                        (c) 2006 Ian Monroe <ian@monroe.nu>              *
  *                        (c) 2006 Alexandre Oliveira <aleprj@gmail.com>   *
  *                        (c) 2006 Adam Pigg <adam@piggz.co.uk>            *
+ *                        (c) 2006 Bonne Eggleston <b.eggleston@gmail.com> *
  * See COPYING file for licensing information                              *
  ***************************************************************************/
 
@@ -3121,6 +3122,17 @@ SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const
     setPixmap( 0, SmallIcon( Amarok::icon( "playlist" ) ) );
     setXml( xmlDefinition );
     setDragEnabled( true );
+}
+
+int SmartPlaylist::length()
+{
+  QString sql = m_sqlForTags;
+  sql.replace(QRegExp("SELECT.*FROM"), "SELECT COUNT(*) FROM");
+  QStringList result = CollectionDB::instance()->query(sql);
+
+  if (! result.isEmpty())
+    return result.first().toInt();
+  else return 0;
 }
 
 void SmartPlaylist::setXml( const QDomElement &xml )

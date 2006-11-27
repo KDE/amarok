@@ -1,6 +1,7 @@
 /***************************************************************************
  * copyright            : (C) 2005 Seb Ruiz <me@sebruiz.net>               *
  * copyright            : (C) 2006 Gábor Lehel <illissius@gmail.com>       *
+ * copyright            : (C) 2006 Bonne Eggleston <b.eggleston@gmail.com  *
  **************************************************************************/
 
 /***************************************************************************
@@ -178,28 +179,54 @@ DEBUG_BLOCK
                                                         KDE::StatusBar::Sorry );
             return;
         }
+        // Create an array of the sizes of each of the playlists
+        int trackCount[dynamicEntries.count()] ;
+        int trackCountTotal = 0;
+
+        QListViewItem *item = 0;
+
+        for( uint i=0; i < dynamicEntries.count(); i++ ){
+          trackCount[i] = 0;
+
+          item = dynamicEntries.at( i );
+
+          if (item){
+            if( item->rtti() == PlaylistEntry::RTTI )
+              trackCount[i] = static_cast<PlaylistEntry *>(item)->tracksURL().count();
+            else if( item->rtti() == SmartPlaylist::RTTI  )
+              trackCount[i] = static_cast<SmartPlaylist *>(item)->length();
+
+            trackCountTotal += trackCount[i];
+          }
+        }
+
 
         PlaylistBrowserEntry* entry;
         QPtrListIterator<PlaylistBrowserEntry> it( dynamicEntries );
 
-        const int itemsPerSource = CACHE_SIZE / dynamicEntries.count() != 0 ? CACHE_SIZE / dynamicEntries.count() : 1;
-        debug() << "each source will return " << itemsPerSource << " entries" << endl;
+        //const int itemsPerSource = CACHE_SIZE / dynamicEntries.count() != 0 ? CACHE_SIZE / dynamicEntries.count() : 1;
 
+        int i = 0;
         while( (entry = it.current()) != 0 )
         {
             ++it;
+            int itemsForThisSource = CACHE_SIZE * trackCount[i] / trackCountTotal ;
+            if (itemsForThisSource == 0)
+              itemsForThisSource = 1; 
+            debug() << "this source will return " << itemsForThisSource << " entries" << endl;
 
             if( entry->rtti() == PlaylistEntry::RTTI )
             {
-                KURL::List t = tracksFromStaticPlaylist( static_cast<PlaylistEntry*>(entry), itemsPerSource );
+                KURL::List t = tracksFromStaticPlaylist( static_cast<PlaylistEntry*>(entry), itemsForThisSource);
                 m_cachedItemSet += t;
             }
 
             else if( entry->rtti() == SmartPlaylist::RTTI )
             {
-                KURL::List t = tracksFromSmartPlaylist( static_cast<SmartPlaylist*>(entry), itemsPerSource );
+                KURL::List t = tracksFromSmartPlaylist( static_cast<SmartPlaylist*>(entry), itemsForThisSource);
                 m_cachedItemSet += t;
             }
+            i++;
         }
     }
 }

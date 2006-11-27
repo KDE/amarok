@@ -3,6 +3,7 @@
  *                        (c) 2005-2006 Seb Ruiz <me@sebruiz.net>          *
  *                        (c) 2006 Bart Cerneels <bart.cerneels@gmail.com> *
  *                        (c) 2006 Adam Pigg <adam@piggz.co.uk>            *
+ *                        (c) 2006 Bonne Eggleston <b.eggleston@gmail.com> *
  * See COPYING file for licensing information                              *
  ***************************************************************************/
 
@@ -551,6 +552,7 @@ class SmartPlaylist : public PlaylistBrowserEntry
         QString     title()         const { return m_title; }
         virtual QDomElement xml()   const { return m_xml;   }
 
+        int   length();
         void  setDynamic( bool );
         void  setXml( const QDomElement &xml );
 
