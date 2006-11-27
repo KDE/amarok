@@ -590,6 +590,7 @@ void PlaylistBrowser::addLastFmCustomRadio( QListViewItem *parent )
     const KURL url( text );
     const QString name = LastFm::Controller::stationDescription( text );
     new LastFmEntry( parent, 0, url, name );
+    saveLastFm();
 }
 
 void PlaylistBrowser::saveLastFm()
