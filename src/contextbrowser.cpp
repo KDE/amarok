@@ -4035,6 +4035,7 @@ ContextBrowser::expandURL( const KURL &url )
         QueryBuilder qb;
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
         qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, url.path() );
+        qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
         qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
         qb.setOptions( QueryBuilder::optOnlyCompilations );
         QStringList values = qb.run();
