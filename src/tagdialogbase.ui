@@ -159,7 +159,7 @@
                     <cstring>summaryTab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>S&amp;ummary</string>
+                    <string>S&amp;&amp;ummary</string>
                 </attribute>
                 <grid>
                     <property name="name">
@@ -242,7 +242,7 @@
                     <cstring>tagsTab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>Ta&amp;gs</string>
+                    <string>Ta&amp;&amp;gs</string>
                 </attribute>
                 <grid>
                     <property name="name">
@@ -587,7 +587,7 @@
                     <cstring>lyricsTab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>L&amp;yrics</string>
+                    <string>L&amp;&amp;yrics</string>
                 </attribute>
                 <hbox>
                     <property name="name">
@@ -614,7 +614,7 @@
                     <cstring>statisticsTab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>St&amp;atistics</string>
+                    <string>St&amp;&amp;atistics</string>
                 </attribute>
                 <grid>
                     <property name="name">
@@ -726,7 +726,7 @@
                     <cstring>labelsTab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>La&amp;bels</string>
+                    <string>La&amp;&amp;bels</string>
                 </attribute>
                 <vbox>
                     <property name="name">
@@ -737,7 +737,7 @@
                             <cstring>labels_favouriteLabels</cstring>
                         </property>
                         <property name="text">
-                            <string>Favorite Labels</string>
+                            <string>Your favorite labels:</string>
                         </property>
                     </widget>
                     <widget class="QWidget">
@@ -760,7 +760,7 @@
                             </font>
                         </property>
                         <property name="text">
-                            <string> Edit the assigned labels below (multiple labels are separated by a comma), or select a label to assign above</string>
+                            <string>Edit the assigned labels below (multiple labels are separated by commas), or select a label from above.</string>
                         </property>
                     </widget>
                     <widget class="KTextEdit">
@@ -791,6 +791,11 @@
         <pixmap>image0</pixmap>
     </customwidget>
 </customwidgets>
+<images>
+    <image name="image0">
+        <data format="XBM.GZ" length="79">789c534e494dcbcc4b554829cdcdad8c2fcf4c29c95030e0524611cd48cd4ccf28010a1797249664262b2467241641a592324b8aa363156c15aab914146aadb90067111b1f</data>
+    </image>
+</images>
 <tabstops>
     <tabstop>kTabWidget</tabstop>
     <tabstop>kLineEdit_title</tabstop>
@@ -821,8 +826,23 @@
 <includehints>
     <includehint>klineedit.h</includehint>
     <includehint>ktabwidget.h</includehint>
+    <includehint>coverfetcher.h</includehint>
     <includehint>kcombobox.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>klineedit.h</includehint>
     <includehint>knuminput.h</includehint>
+    <includehint>knuminput.h</includehint>
+    <includehint>ktextedit.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>knuminput.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>klineedit.h</includehint>
+    <includehint>ktextedit.h</includehint>
+    <includehint>knuminput.h</includehint>
+    <includehint>kcombobox.h</includehint>
     <includehint>ktextedit.h</includehint>
 </includehints>
 </UI>
