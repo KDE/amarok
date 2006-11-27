@@ -3062,7 +3062,7 @@ class AssociatePodcastDialog : public KDialogBase
 
     public:
     AssociatePodcastDialog( PodcastEpisode *item )
-        : KDialogBase( Amarok::mainWindow(), "associatepodcastdialog", true, QString("Select Local File for ") + item->title(), Ok|Cancel, Ok, false )
+        : KDialogBase( Amarok::mainWindow(), "associatepodcastdialog", true, i18n("Select Local File for %1").arg(item->title()), Ok|Cancel, Ok, false )
     {
         QVBox* vbox = makeVBoxMainWidget();
         vbox->setSpacing( KDialog::spacingHint() );
