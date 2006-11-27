@@ -611,16 +611,19 @@ class ShoutcastBrowser : public PlaylistCategory
         ShoutcastBrowser( PlaylistCategory* parent );
         void setOpen( bool open );
 
-    private:
-        bool m_downloading;
-        KIO::CopyJob *m_cj;
-
     public slots:
         virtual void slotDoubleClicked();
 
     private slots:
         void doneGenreDownload( KIO::Job *job, const KURL &from, const KURL &to, bool directory, bool renamed );
         void jobFinished( KIO::Job *job );
+        void slotAnimation();
+
+    private:
+        bool          m_downloading;
+        KIO::CopyJob *m_cj;
+        QPixmap      *m_loading1, *m_loading2;    //icons for loading animation
+        QTimer        m_animationTimer;
 };
 
 /*!
@@ -637,17 +640,20 @@ class ShoutcastGenre : public PlaylistCategory
         ShoutcastGenre( ShoutcastBrowser *browser, QListViewItem *after, QString genre );
         void setOpen( bool open );
 
-    private:
-        bool          m_downloading;
-        KIO::CopyJob *m_cj;
-        QString       m_genre;
-
     public slots:
         virtual void slotDoubleClicked();
 
     private slots:
         void doneListDownload( KIO::Job *job, const KURL &from, const KURL &to, bool directory, bool renamed );
         void jobFinished( KIO::Job *job );
+        void slotAnimation();
+
+    private:
+        bool          m_downloading;
+        KIO::CopyJob *m_cj;
+        QString       m_genre;
+        QPixmap      *m_loading1, *m_loading2;    //icons for loading animation
+        QTimer        m_animationTimer;
 };
 
 #endif

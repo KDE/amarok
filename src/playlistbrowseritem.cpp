@@ -35,7 +35,6 @@
 #include <qpainter.h>          //paintCell()
 #include <qpixmap.h>           //paintCell()
 #include <qregexp.h>
-#include <qcursor.h>           //While downloading shoutcast stream lists
 
 #include <kapplication.h>      //Used for Shoutcast random name generation
 #include <kdeversion.h>        //KDE_VERSION ifndefs.  Remove this once we reach a kde 4 dep
@@ -3501,9 +3500,12 @@ void SmartPlaylist::slotPostRenameItem( const QString newName )
 }
 
 ShoutcastBrowser::ShoutcastBrowser( PlaylistCategory *parent )
-    : PlaylistCategory( parent, 0, i18n( "Shoutcast Streams" ))
+    : PlaylistCategory( parent, 0, i18n( "Shoutcast Streams" ) )
+    , m_downloading( false )
+    , m_cj( 0 )
+    , m_loading1( new QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
+    , m_loading2( new QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
 {
-    m_downloading = false;
     setExpandable( true );
     setKept( false );
 }
@@ -3524,7 +3526,10 @@ void ShoutcastBrowser::setOpen( bool open )
         return;
     }
 
-    KApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
+    if( !m_animationTimer.isActive() )
+        m_animationTimer.start( ANIMATION_INTERVAL );
+    connect( &m_animationTimer, SIGNAL(timeout()), this, SLOT(slotAnimation()) );
+
     QStringList tmpdirs = KGlobal::dirs()->resourceDirs( "tmp" );
     QString tmpfile = tmpdirs[0];
     tmpfile += "/amarok-genres-" + KApplication::randomString(10) + ".xml-";
@@ -3540,6 +3545,16 @@ void ShoutcastBrowser::setOpen( bool open )
     }
 
     QListViewItem::setOpen( open );
+}
+
+void ShoutcastBrowser::slotAnimation()
+{
+    static int s_iconCounter = 0;
+    s_iconCounter % 2 ?
+        setPixmap( 0, *m_loading1 ):
+        setPixmap( 0, *m_loading2 );
+
+    s_iconCounter++;
 }
 
 void ShoutcastBrowser::doneGenreDownload( KIO::Job *job, const KURL &from, const KURL &to, bool directory, bool renamed )
@@ -3595,14 +3610,17 @@ void ShoutcastBrowser::doneGenreDownload( KIO::Job *job, const KURL &from, const
         n = n.nextSibling();
     }
     m_downloading = false;
-    KApplication::restoreOverrideCursor();
+    m_animationTimer.stop();
+    setPixmap( 0, SmallIcon( Amarok::icon( "files" ) ) );
     setOpen( true );
 }
 
 void ShoutcastBrowser::jobFinished( KIO::Job *job )
 {
     m_downloading = false;
-    KApplication::restoreOverrideCursor();
+    m_animationTimer.stop();
+    setPixmap( 0, SmallIcon( Amarok::icon( "files" ) ) );
+
     if ( job->error() )
         job->showErrorDialog( 0 );
 }
@@ -3610,6 +3628,9 @@ void ShoutcastBrowser::jobFinished( KIO::Job *job )
 ShoutcastGenre::ShoutcastGenre( ShoutcastBrowser *browser, QListViewItem *after, QString genre )
     : PlaylistCategory( browser, after, genre )
     , m_downloading( false )
+    , m_cj( 0 )
+    , m_loading1( new QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
+    , m_loading2( new QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
 {
     setExpandable( true );
     setKept( false );
@@ -3632,7 +3653,10 @@ void ShoutcastGenre::setOpen( bool open )
         return;
     }
 
-    KApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
+    if( !m_animationTimer.isActive() )
+        m_animationTimer.start( ANIMATION_INTERVAL );
+    connect( &m_animationTimer, SIGNAL(timeout()), this, SLOT(slotAnimation()) );
+
     QStringList tmpdirs = KGlobal::dirs()->resourceDirs( "tmp" );
     QString tmpfile = tmpdirs[0];
     tmpfile += "/amarok-list-" + m_genre + "-" + KApplication::randomString(10) + ".xml";
@@ -3647,6 +3671,16 @@ void ShoutcastGenre::setOpen( bool open )
         connect( m_cj, SIGNAL( result     ( KIO::Job* ) ),
                  this,   SLOT( jobFinished( KIO::Job* ) ) );
     }
+}
+
+void ShoutcastGenre::slotAnimation()
+{
+    static int s_iconCounter = 0;
+    s_iconCounter % 2 ?
+        setPixmap( 0, *m_loading1 ):
+        setPixmap( 0, *m_loading2 );
+
+    s_iconCounter++;
 }
 
 void ShoutcastGenre::doneListDownload( KIO::Job *job, const KURL &from, const KURL &to, bool directory, bool renamed )
@@ -3701,13 +3735,16 @@ void ShoutcastGenre::doneListDownload( KIO::Job *job, const KURL &from, const KU
     }
     setOpen( true );
     m_downloading = false;
-    KApplication::restoreOverrideCursor();
+    m_animationTimer.stop();
+    setPixmap( 0, SmallIcon( Amarok::icon( "files" ) ) );
 }
 
 void ShoutcastGenre::jobFinished( KIO::Job *job )
 {
     m_downloading = false;
-    KApplication::restoreOverrideCursor();
+    m_animationTimer.stop();
+    setPixmap( 0, SmallIcon( Amarok::icon( "files" ) ) );
+
     if( job->error() )
         job->showErrorDialog( 0 );
 }
