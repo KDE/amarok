@@ -576,20 +576,24 @@ class SmartPlaylist : public PlaylistBrowserEntry
         static QString xmlToQuery( const QDomElement &xml, bool forExpand = false );
 };
 
-//this class is used to store information (url, title and length) of a playlist track
+//this class is used to store information of a playlist track
 class TrackItemInfo
 {
     public:
-        TrackItemInfo( const KURL &u, const QString &t, const int l );
+        TrackItemInfo( const MetaBundle &mb );
         ~TrackItemInfo() {}
-        const KURL    &url()   const { return m_url;    }
-        const QString &title() const { return m_title;  }
-        const int     length() const { return m_length; }
+        const KURL    &url()    const { return m_url;    }
+        const QString &album()  const { return m_artist; }
+        const QString &artist() const { return m_album;  }
+        const QString &title()  const { return m_title;  }
+        const int     length()  const { return m_length; }
 
     private:
-        KURL m_url;
+        KURL    m_url;
+        QString m_artist;
+        QString m_album;
         QString m_title;
-        int m_length;
+        int     m_length;
 };
 
 /*!

@@ -680,7 +680,7 @@ void PlaylistEntry::insertTracks( QListViewItem *after, QValueList<MetaBundle> b
     uint k = 0;
     foreachType( QValueList<MetaBundle>, bundles )
     {
-        TrackItemInfo *newInfo = new TrackItemInfo( (*it).url(), (*it).title(), (*it).length() );
+        TrackItemInfo *newInfo = new TrackItemInfo( *it );
         m_length += newInfo->length();
         m_trackCount++;
 
@@ -747,7 +747,7 @@ void PlaylistEntry::customEvent( QCustomEvent *e )
     foreachType( BundleList, playlist->bundles )
     {
         const MetaBundle &b = *it;
-        TrackItemInfo *info = new TrackItemInfo( b.url(), b.title(), b.length() );
+        TrackItemInfo *info = new TrackItemInfo( b );
         m_trackList.append( info );
         m_length += info->length();
         if( isOpen() )
@@ -1103,24 +1103,19 @@ void PlaylistTrackItem::showContextMenu( const QPoint &position )
 ///    CLASS TrackItemInfo
 ////////////////////////////////////////////////////////////////////////////////
 
-TrackItemInfo::TrackItemInfo( const KURL &u, const QString &t, const int l )
-        : m_url( u )
-        , m_title( t )
-        , m_length( l )
+TrackItemInfo::TrackItemInfo( const MetaBundle &mb )
 {
-    if( title().isEmpty() )
+    m_url = mb.url();
+
+    if( mb.isValidMedia() )
     {
-        MetaBundle *mb = new MetaBundle( u );
-        if( mb->isValidMedia() )
-        {
-            m_title  = mb->prettyTitle();
-            m_length = mb->length();
-        }
-        else
-        {
-            m_title = MetaBundle::prettyTitle( fileBaseName( m_url.path() ) );
-        }
+        m_title  = mb.title();
+        m_artist = mb.artist();
+        m_album  = mb.album();
+        m_length = mb.length();
     }
+    else
+        m_title = MetaBundle::prettyTitle( fileBaseName( m_url.path() ) );
 
     if( m_length < 0 )
         m_length = 0;
@@ -1290,7 +1285,10 @@ StreamEntry::showContextMenu( const QPoint &position )
             break;
         case EDIT:
             PlaylistBrowser::instance()->editStreamURL( this, !isKept() ); //only editable if we keep it
-            PlaylistBrowser::instance()->saveStreams();
+            if( dynamic_cast<LastFmEntry*>(this) )
+                PlaylistBrowser::instance()->saveLastFm();
+            else
+                PlaylistBrowser::instance()->saveStreams();
             break;
         case REMOVE:
             PlaylistBrowser::instance()->removeSelectedItems();

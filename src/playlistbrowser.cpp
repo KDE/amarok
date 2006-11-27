@@ -2045,6 +2045,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
     int dynamicCount  = 0;
     int podcastCount  = 0;
     int folderCount   = 0;
+    int lastfmCount   = 0;
 
     QPtrList<PlaylistEntry>    playlistsToDelete;
     QPtrList<PodcastChannel>   podcastsToDelete;
@@ -2087,6 +2088,10 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
 
             case PlaylistTrackItem::RTTI:
                 trackCount++;
+                break;
+
+            case LastFmEntry::RTTI:
+                lastfmCount++;
                 break;
 
             case StreamEntry::RTTI:
@@ -2153,7 +2158,8 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
         selected.append( it.current() );
     }
 
-    int totalCount = playlistCount + smartyCount + dynamicCount + streamCount + podcastCount + folderCount;
+    int totalCount = playlistCount + smartyCount  + dynamicCount +
+                     streamCount   + podcastCount + folderCount  + lastfmCount;
 
     if( selected.isEmpty() && !totalCount ) return;
 
@@ -2170,6 +2176,8 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
     if( podcastCount  ) message += "<li>" + i18n( "1 podcast", "%n podcasts", podcastCount ) + "</li>";
 
     if( folderCount   ) message += "<li>" + i18n( "1 folder", "%n folders", folderCount ) + "</li>";
+
+    if( lastfmCount   ) message += "<li>" + i18n( "1 last.fm stream", "%n last.fm streams", lastfmCount ) + "</li>";
 
     message += i18n( "</ul><br>to be <b>irreversibly</b> deleted.</p>" );
 
@@ -2198,6 +2206,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
     if( streamCount )        saveStreams();
     if( smartyCount ) saveSmartPlaylists();
     if( dynamicCount )      saveDynamics();
+    if( lastfmCount )         saveLastFm();
 
     // used for deleting playlists first, then folders.
     if( playlistCount )
