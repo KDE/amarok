@@ -335,14 +335,14 @@ OSDWidget::render( const uint M, const QSize &size )
         r.setLeft(( rect.left() + rect.width() / 2 ) - vol.width() / 2  );
         r.setTop( rect.bottom()  - vol.height() - M / 2 );
 
-        static const QPixmap temp( locate( "data", "amarok/images/osdvolumeslider-gradient.png" ) );
-        static const QBitmap mask( temp.createHeuristicMask() );
+        const QPixmap temp( locate( "data", "amarok/images/osdvolumeslider-gradient.png" ) );
+        const QBitmap mask( temp.createHeuristicMask() );
 
-        static KPixmap s_pixmapGradient;
-        s_pixmapGradient = QPixmap( vol.size() );
-        KPixmapEffect::gradient( s_pixmapGradient, colorGroup().background(), colorGroup().highlight(),
+        KPixmap pixmapGradient;
+        pixmapGradient = QPixmap( vol.size() );
+        KPixmapEffect::gradient( pixmapGradient, colorGroup().background(), colorGroup().highlight(),
                  KPixmapEffect::EllipticGradient );
-        s_pixmapGradient.setMask( mask );
+        pixmapGradient.setMask( mask );
 
         QPixmap buf( vol.size() );
 
@@ -357,7 +357,7 @@ OSDWidget::render( const uint M, const QSize &size )
 
         const int offset = int( double( vol.width() * m_newvolume ) / 100 );
 
-        bitBlt( &buf, 0, 0, &s_pixmapGradient, 0, 0, offset );
+        bitBlt( &buf, 0, 0, &pixmapGradient, 0, 0, offset );
         bitBlt( &buf, 0, 0, &vol );  // bg
 
         { // label
