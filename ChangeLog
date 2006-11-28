@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 1.4.5
   FEATURES:
+    * Synchronize play count, last played time and date of modification to
+      iPods. Patch by Michael <michael003@gmail.com>. (BR 136759)
     * Propose list of composers in collection when editing the composer tag
       from the playlist. (BR 137775)
     * Greatly improved sound quality for the xine equalizer. Patch by Tobias

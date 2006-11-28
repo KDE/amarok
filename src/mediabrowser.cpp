@@ -2823,9 +2823,11 @@ MediaDevice::syncStatsToDevice( MediaItem *root )
 
                 if( url != QString::null )
                 {
-                    // copy Amarok rating to device
+                    // copy Amarok rating, play count and last played time to device
                     int rating = CollectionDB::instance()->getSongRating( url )*10;
                     it->setRating( rating );
+                    it->setPlayCount( CollectionDB::instance()->getPlayCount( url ) );
+                    it->setLastPlayed( CollectionDB::instance()->getLastPlay( url ).toTime_t() );
                 }
             }
             break;

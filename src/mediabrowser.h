@@ -76,9 +76,11 @@ class LIBAMAROK_EXPORT MediaItem : public KListViewItem
         virtual QDateTime playTime()  const { return QDateTime(); }
         virtual int  played()         const { return 0; }
         virtual int  recentlyPlayed() const { return 0; } // no of times played on device since last sync
+        virtual void setPlayCount( int ) {}
         virtual int  rating()         const { return 0; } // rating on device, normalized to 100
         virtual void setRating( int /*rating*/ ) {}
         virtual bool ratingChanged()  const { return false; }
+        virtual void setLastPlayed( uint ) {}
         virtual long size()           const;
         virtual MediaDevice *device() const { return m_device; }
         virtual bool listened()       const { return m_listened; }

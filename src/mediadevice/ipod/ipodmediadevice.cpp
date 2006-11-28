@@ -164,6 +164,22 @@ class IpodMediaItem : public MediaItem
                 static_cast<IpodMediaDevice *>(device())->m_dbChanged = true;
         }
 
+        void setPlayCount( int playcount )
+        {
+            if ( m_track )
+                m_track->playcount = playcount;
+            if( dynamic_cast<IpodMediaDevice *>(device()) )
+                static_cast<IpodMediaDevice *>(device())->m_dbChanged = true;
+        }
+
+        void setLastPlayed( uint lastplay )
+        {
+            if ( m_track )
+                m_track->time_played = itdb_time_host_to_mac( lastplay );
+            if( dynamic_cast<IpodMediaDevice *>(device()) )
+                static_cast<IpodMediaDevice *>(device())->m_dbChanged = true;
+        }
+
         bool ratingChanged() const { return m_track ? m_track->rating != m_track->app_rating : false; }
 
         void setListened( bool l )
@@ -386,6 +402,19 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
     track->bitrate = propertiesBundle.bitrate();
     track->samplerate = propertiesBundle.sampleRate();
     track->tracklen = propertiesBundle.length()*1000;
+
+    //Get the createdate from database
+    QueryBuilder qb;
+    qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valCreateDate );
+    qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valURL, metaBundle.url().path() );
+    QStringList values = qb.run();
+
+    //Add to track info if present
+    if ( values.count() ) {
+        uint createdate = values.first().toUInt();
+        track->time_added = itdb_time_host_to_mac( createdate );
+        track->time_modified = itdb_time_host_to_mac( createdate );
+    }
 
     if(podcastInfo)
     {
