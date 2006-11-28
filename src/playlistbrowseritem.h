@@ -641,6 +641,7 @@ class ShoutcastGenre : public PlaylistCategory
     public:
         ShoutcastGenre( ShoutcastBrowser *browser, QListViewItem *after, QString genre );
         void setOpen( bool open );
+        void appendAlternateGenre( QString alternateGenre ) { m_alternateGenres << alternateGenre; }
 
     public slots:
         virtual void slotDoubleClicked();
@@ -651,12 +652,15 @@ class ShoutcastGenre : public PlaylistCategory
         void slotAnimation();
 
     private:
+        void          startGenreDownload( QString genre, QString tmppath );
         bool          m_downloading;
-        KIO::CopyJob *m_cj;
         QString       m_genre;
         QPixmap      *m_loading1, *m_loading2;    //icons for loading animation
         QTimer        m_animationTimer;
+        QStringList   m_alternateGenres;
+        QStringList   m_stations;
+        int           m_totalJobs;
+        int           m_completedJobs;
 };
 
 #endif
-

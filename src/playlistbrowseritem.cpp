@@ -3606,20 +3606,39 @@ void ShoutcastBrowser::doneGenreDownload( KIO::Job *job, const KURL &from, const
     bannedGenres << "voor" << "post" << "playlist" << "ned" << "gramy" << "deportes" << "bhangra" << "exitos";
     bannedGenres << "doowop" << "radio" << "radyo" << "railroad" << "program" << "mostly" << "hot";
     bannedGenres << "deejay" << "cool" << "big" << "exitos" << "mp3" << "muzyczne" << "nederlandstalig";
-    bannedGenres << "max" << "informaci" << "halk" << "dobra";
+    bannedGenres << "max" << "informaci" << "halk" << "dobra" << "welcome" << "genre";
+
+    // This maps genres that should be combined together
+    QMap<QString, QString> genreMapping;
+    genreMapping["Romania"] = "Romanian";
+    genreMapping["Turk"] = "Turkish";
+    genreMapping["Turkce"] = "Turkish";
+    genreMapping["Polskie"] = "Polska";
+    genreMapping["Greece"] = "Greek";
+    genreMapping["Dnb"] = "Drum&bass";
 
     QDomElement docElem = doc.documentElement();
     QDomNode n = docElem.firstChild();
     QListViewItem *last = 0;
+    QMap<QString, QListViewItem *> genreCache; // maps names to the listview item
     while( !n.isNull() )
     {
         QDomElement e = n.toElement(); // try to convert the node to an element.
         const QString name = e.attribute( "name" );
-        if( !name.isNull() && !bannedGenres.contains( name.lower() ) )
+        if( !name.isNull() && !bannedGenres.contains( name.lower() ) && !genreMapping.contains( name ) )
         {
             last = new ShoutcastGenre( this, last, name );
+            genreCache[ name ] = last; // so we can append genres later if needed
         }
         n = n.nextSibling();
+    }
+    // Process the mapped (alternate) genres
+    for( QMap<QString, QString>::iterator it = genreMapping.begin(); it != genreMapping.end(); ++it )
+    {
+        // Find the target genre
+        ShoutcastGenre *existingGenre = dynamic_cast<ShoutcastGenre *> ( genreCache[ it.data() ] );
+        if( existingGenre != 0 )
+            existingGenre->appendAlternateGenre( it.key() );
     }
     m_downloading = false;
     m_animationTimer.stop();
@@ -3640,7 +3659,6 @@ void ShoutcastBrowser::jobFinished( KIO::Job *job )
 ShoutcastGenre::ShoutcastGenre( ShoutcastBrowser *browser, QListViewItem *after, QString genre )
     : PlaylistCategory( browser, after, genre )
     , m_downloading( false )
-    , m_cj( 0 )
     , m_loading1( new QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
     , m_loading2( new QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
 {
@@ -3670,19 +3688,28 @@ void ShoutcastGenre::setOpen( bool open )
     connect( &m_animationTimer, SIGNAL(timeout()), this, SLOT(slotAnimation()) );
 
     QStringList tmpdirs = KGlobal::dirs()->resourceDirs( "tmp" );
-    QString tmpfile = tmpdirs[0];
-    tmpfile += "/amarok-list-" + m_genre + "-" + KApplication::randomString(10) + ".xml";
 
     //get the genre list from shoutcast async, and when its done call the finish up functions to process
     if( !m_downloading)
     {
         m_downloading = true;
-        m_cj = KIO::copy( "http://www.shoutcast.com/sbin/newxml.phtml?genre=" + m_genre, tmpfile, false );
-        connect( m_cj, SIGNAL( copyingDone     ( KIO::Job*, const KURL&, const KURL&, bool, bool ) ),
-                 this,   SLOT( doneListDownload( KIO::Job*, const KURL&, const KURL&, bool, bool ) ) );
-        connect( m_cj, SIGNAL( result     ( KIO::Job* ) ),
-                 this,   SLOT( jobFinished( KIO::Job* ) ) );
+        m_totalJobs = 0;
+        m_completedJobs = 0;
+        startGenreDownload(  m_genre, tmpdirs[0] );
+        for( QStringList::iterator it = m_alternateGenres.begin(); it != m_alternateGenres.end(); ++it )
+            startGenreDownload( *it, tmpdirs[0] );
     }
+}
+
+void ShoutcastGenre::startGenreDownload( QString genre, QString tmppath )
+{
+    QString tmpfile = tmppath + "/amarok-list-" + genre + "-" + KApplication::randomString(10) + ".xml";
+    KIO::CopyJob *cj = KIO::copy( "http://www.shoutcast.com/sbin/newxml.phtml?genre=" + genre, tmpfile, false );
+    connect( cj, SIGNAL( copyingDone     ( KIO::Job*, const KURL&, const KURL&, bool, bool ) ),
+             this,   SLOT( doneListDownload( KIO::Job*, const KURL&, const KURL&, bool, bool ) ) );
+    connect( cj, SIGNAL( result     ( KIO::Job* ) ),
+             this,   SLOT( jobFinished( KIO::Job* ) ) );
+    m_totalJobs++;
 }
 
 void ShoutcastGenre::slotAnimation()
@@ -3698,6 +3725,8 @@ void ShoutcastGenre::slotAnimation()
 void ShoutcastGenre::doneListDownload( KIO::Job *job, const KURL &from, const KURL &to, bool directory, bool renamed )
 {
     Q_UNUSED( job ); Q_UNUSED( from ); Q_UNUSED( directory ); Q_UNUSED( renamed );
+
+    m_completedJobs++;
 
     QDomDocument doc( "list" );
     QFile file( to.path() );
@@ -3719,12 +3748,6 @@ void ShoutcastGenre::doneListDownload( KIO::Job *job, const KURL &from, const KU
 
     KIO::del(to, false, false);
 
-    //Clear any children
-    while (firstChild())
-        delete firstChild();
-
-    QStringList stations;
-
     //Go through the XML file and add all the stations
     QDomElement docElem = doc.documentElement();
     QDomNode n = docElem.firstChild();
@@ -3733,9 +3756,9 @@ void ShoutcastGenre::doneListDownload( KIO::Job *job, const KURL &from, const KU
         QDomElement e = n.toElement(); // try to convert the node to an element.
         if( e.hasAttribute( "name" ) )
         {
-            if( !e.attribute( "name" ).isNull() && ! stations.contains( e.attribute( "name" ) ) )
+            if( !e.attribute( "name" ).isNull() && ! m_stations.contains( e.attribute( "name" ) ) )
             {
-                stations << e.attribute( "name" );
+                m_stations << e.attribute( "name" );
                 StreamEntry* entry = new StreamEntry( this, this,
                     "http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn="
                     + e.attribute( "id" ) + "&file=filename.pls", e.attribute( "name" ));
@@ -3745,10 +3768,13 @@ void ShoutcastGenre::doneListDownload( KIO::Job *job, const KURL &from, const KU
         }
         n = n.nextSibling();
     }
-    setOpen( true );
-    m_downloading = false;
-    m_animationTimer.stop();
-    setPixmap( 0, SmallIcon( Amarok::icon( "files" ) ) );
+    if( m_completedJobs == m_totalJobs )
+    {
+        setOpen( true );
+        m_downloading = false;
+        m_animationTimer.stop();
+        setPixmap( 0, SmallIcon( Amarok::icon( "files" ) ) );
+    }
 }
 
 void ShoutcastGenre::jobFinished( KIO::Job *job )
