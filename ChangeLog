@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 1.4.5
   FEATURES:
+    * Propose list of composers in collection when editing the composer tag
+      from the playlist. (BR 137775)
     * Greatly improved sound quality for the xine equalizer. Patch by Tobias
       Knieper <tobias.knieper@micekiller.de>. (BR 127307)
     * Fancy graphical volume slider for the OSD. Patch by Alexander Bechikov

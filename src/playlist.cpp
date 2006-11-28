@@ -2215,6 +2215,10 @@ Playlist::rename( QListViewItem *item, int column ) //SLOT
             renameLineEdit()->completionObject()->setItems( CollectionDB::instance()->genreList() );
             break;
 
+        case PlaylistItem::Composer:
+            renameLineEdit()->completionObject()->setItems( CollectionDB::instance()->composerList() );
+            break;
+
         default:
             renameLineEdit()->completionObject()->clear();
             break;
