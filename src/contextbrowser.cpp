@@ -43,6 +43,7 @@
 #include <qvbox.h> //wiki tab
 #include <qhbox.h>
 #include <qlineedit.h>
+#include <qtimer.h>
 #include <qtooltip.h>
 
 #include <kapplication.h> //kapp
@@ -3481,13 +3482,20 @@ ContextBrowser::wikiURL( const QString &item )
 }
 
 void
-ContextBrowser::showWikipediaEntry( const QString &entry )
+ContextBrowser::reloadWikipedia()
 {
-    m_wikiCurrentEntry = entry;
-    showWikipedia( wikiURL( entry ) );
+    m_wikiJob = NULL;
+    showWikipediaEntry( m_wikiCurrentEntry, true );
 }
 
-void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
+void
+ContextBrowser::showWikipediaEntry( const QString &entry, bool replaceHistory )
+{
+    m_wikiCurrentEntry = entry;
+    showWikipedia( wikiURL( entry ), replaceHistory );
+}
+
+void ContextBrowser::showWikipedia( const QString &url, bool fromHistory, bool replaceHistory )
 {
     #if 0
     if( BrowserBar::instance()->currentBrowser() != this )
@@ -3539,6 +3547,7 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
             if ( !EngineController::instance()->bundle().artist().isEmpty() )
             {
                 tmpWikiStr = EngineController::instance()->bundle().artist();
+                tmpWikiStr += " (band)";
             }
             else if ( !EngineController::instance()->bundle().title().isEmpty() )
             {
@@ -3573,7 +3582,11 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory )
     }
 
     // Append new URL to history
-    if ( !fromHistory ) {
+    if ( replaceHistory )
+    {
+        m_wikiBackHistory.back() = m_wikiCurrentUrl;
+    }
+    else if ( !fromHistory ) {
         m_wikiBackHistory += m_wikiCurrentUrl;
         m_wikiForwardHistory.clear();
     }
@@ -3693,7 +3706,7 @@ void
 ContextBrowser::wikiAlbumPage() //SLOT
 {
     m_dirtyWikiPage = true;
-    showWikipediaEntry( EngineController::instance()->bundle().album() );
+    showWikipediaEntry( EngineController::instance()->bundle().album() + " (album)" );
 }
 
 
@@ -3701,7 +3714,7 @@ void
 ContextBrowser::wikiTitlePage() //SLOT
 {
     m_dirtyWikiPage = true;
-    showWikipediaEntry( EngineController::instance()->bundle().title() );
+    showWikipediaEntry( EngineController::instance()->bundle().title() + " (song)" );
 }
 
 
@@ -3755,12 +3768,29 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
          m_wiki = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
     }
 
+    if( m_wiki.find( "var wgArticleId = 0" ) != -1 )
+    {
+        // article was not found
+        if( m_wikiCurrentEntry.endsWith( " (band)" ) || m_wikiCurrentEntry.endsWith( " (song)" ) )
+        {
+            m_wikiCurrentEntry = m_wikiCurrentEntry.left( m_wikiCurrentEntry.length() - 7 );
+            reloadWikipedia();
+            return;
+        }
+        else if( m_wikiCurrentEntry.endsWith( " (album)" ) )
+        {
+            m_wikiCurrentEntry = m_wikiCurrentEntry.left( m_wikiCurrentEntry.length() - 8 );
+            reloadWikipedia();
+            return;
+        }
+    }
+
     //remove the new-lines and tabs(replace with spaces IS needed).
     m_wiki.replace( "\n", " " );
     m_wiki.replace( "\t", " " );
 
     m_wikiLanguages = QString::null;
-    // Get the avivable language list
+    // Get the available language list
     if ( m_wiki.find("<div id=\"p-lang\" class=\"portlet\">") != -1 )
     {
         m_wikiLanguages = m_wiki.mid( m_wiki.find("<div id=\"p-lang\" class=\"portlet\">") );
