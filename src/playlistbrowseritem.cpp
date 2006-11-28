@@ -851,6 +851,7 @@ void PlaylistEntry::updateInfo()
 void PlaylistEntry::slotDoubleClicked()
 {
     Playlist::instance()->insertMedia( url(), Playlist::Replace );
+    Playlist::instance()->setPlaylistName( text(0), true );
 }
 
 
@@ -1190,7 +1191,7 @@ void StreamEntry::updateInfo()
 
 void StreamEntry::slotDoubleClicked()
 {
-    Playlist::instance()->insertMedia( url(), Playlist::Replace );
+    Playlist::instance()->insertMedia( url(), Playlist::DirectPlay );
 }
 
 void StreamEntry::setup()
@@ -1439,6 +1440,7 @@ void
 DynamicEntry::slotDoubleClicked()
 {
     Playlist::instance()->loadDynamicMode( this );
+    Playlist::instance()->setPlaylistName( text(0) );
 }
 
 
@@ -2132,6 +2134,7 @@ PodcastChannel::slotDoubleClicked()
     }
 
     Playlist::instance()->insertMedia( list, Playlist::Replace );
+    Playlist::instance()->setPlaylistName( text(0) );
     setNew( false );
 }
 
@@ -3449,7 +3452,10 @@ bool SmartPlaylist::isTimeOrdered()
 void SmartPlaylist::slotDoubleClicked()
 {
     if( !query().isEmpty() )
-        Playlist::instance()->insertMediaSql( query(), Playlist::Clear );
+    {
+        Playlist::instance()->insertMediaSql( query(), Playlist::Replace );
+        Playlist::instance()->setPlaylistName( text(0) );
+    }
 }
 
 void SmartPlaylist::showContextMenu( const QPoint &position )

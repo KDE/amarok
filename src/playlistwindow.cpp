@@ -783,9 +783,9 @@ void PlaylistWindow::savePlaylist() const //SLOT
     if( item && !item->isVisible() )
         item = static_cast<PlaylistItem*>( item->itemBelow() );
 
-    QString title = i18n( "Untitled" );
+    QString title = pl->playlistName();
 
-    if( item )
+    if( item && title == i18n( "Untitled" ) )
     {
         QString artist = item->artist();
         QString album  = item->album();
@@ -813,7 +813,7 @@ void PlaylistWindow::savePlaylist() const //SLOT
             title = album;
     }
 
-    QString path = PlaylistDialog::getSaveFileName( title );
+    QString path = PlaylistDialog::getSaveFileName( title, pl->proposeOverwriteOnSave() );
 
     if( !path.isEmpty() && Playlist::instance()->saveM3U( path ) )
         PlaylistWindow::self()->showBrowser( "PlaylistBrowser" );

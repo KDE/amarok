@@ -19,6 +19,7 @@ VERSION 1.4.5
       you move and rename them.
 
   CHANGES:
+    * Propose name of currently loaded playlist when saving current one.
     * Remove support for older libmtp versions. We now require 0.0.15 or
       newer. 
     * Deleting a playlist item on an MTP media device now results in it being

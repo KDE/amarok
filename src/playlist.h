@@ -114,6 +114,9 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         LIBAMAROK_EXPORT bool isTrackBefore() const;
         LIBAMAROK_EXPORT bool isTrackAfter()  const;
         void restoreSession();          // called during initialisation
+        void setPlaylistName( const QString &name, bool proposeOverwriting = false ) { m_playlistName = name; m_proposeOverwriting = proposeOverwriting; }
+        const QString &playlistName() const { return m_playlistName; }
+        bool proposeOverwriteOnSave() const { return m_proposeOverwriting; }
         bool saveM3U( const QString&, bool relative = AmarokConfig::relativePlaylist() ) const;
         void saveXML( const QString& );
         int  totalTrackCount() const;
@@ -408,6 +411,9 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         QMap<QString,QPtrList<PlaylistItem>*> m_uniqueMap;
         int m_oldRandom;
         int m_oldRepeat;
+
+        QString m_playlistName;
+        bool m_proposeOverwriting;
 };
 
 class MyAtomicString: public AtomicString

@@ -232,6 +232,8 @@ Playlist::Playlist( QWidget *parent )
         , m_columnFraction( PlaylistItem::NUM_COLUMNS, 0 )
         , m_oldRandom( 0 )
         , m_oldRepeat( 0 )
+        , m_playlistName( i18n( "Untitled" ) )
+        , m_proposeOverwriting( false )
 {
     s_instance = this;
 
@@ -2140,6 +2142,8 @@ Playlist::clear() //SLOT
     safeClear();
     m_total = 0;
     m_albums.clear();
+
+    setPlaylistName( i18n( "Untitled" ) );
 }
 
 /**
