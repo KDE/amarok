@@ -259,6 +259,11 @@ class CollectionView : public KListView, public DropProxyTarget
         /** Shows dialog with information on selected track */
         void showTrackInfo();
 
+        /**
+        * Cancel Organizing files
+        */
+        void cancelOrganizingFiles();
+
     private:
         enum Tag { Title = 0, Artist, Composer, Album, Genre, Length, DiscNumber, Track, Year,
             Comment, Playcount, Score, Rating, Filename, Firstplay, Lastplay, Modified,
@@ -340,6 +345,8 @@ class CollectionView : public KListView, public DropProxyTarget
         QString                 m_cacheCurrentItem;
         KURL::List              m_organizeURLs;
         bool                    m_organizeCopyMode;
+
+        bool                    m_organizingFileCancelled;
 
         bool m_showDivider;
         QValueList<int>         m_flatColumnWidths;

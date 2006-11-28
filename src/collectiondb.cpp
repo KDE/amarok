@@ -217,6 +217,7 @@ CollectionDB::CollectionDB()
         , m_scanInProgress( false )
         , m_rescanRequired( false )
         , m_aftEnabledPersistentTables()
+        , m_moveFileJobCancelled( false )
 {
     DEBUG_BLOCK
 
@@ -3906,6 +3907,10 @@ CollectionDB::fileOperationResult( KIO::Job *job ) // slot
     m_waitForFileOperation = false;
 }
 
+void CollectionDB::cancelMovingFileJob()
+{
+    m_moveFileJobCancelled = true;
+}
 
 bool
 CollectionDB::organizeFile( const KURL &src, const OrganizeCollectionDialog &dialog, bool copy )
@@ -3919,16 +3924,18 @@ CollectionDB::organizeFile( const KURL &src, const OrganizeCollectionDialog &dia
    if( !localFile )
    {
       QString tmp;
+      QString extension = src.url().section( '.', -1 );
+      extension = extension.section("?", 0, 0);  // remove trailling stuff lead by ?, if any
+
       int count = 0;
       do
       {
-         QString extension = src.url().section( '.', -1 );
          tmp = QString( dialog.folderCombo->currentText() + "/amarok-tmp-%1." + extension ).arg( count );
          count++;
       } while( QFile::exists( tmp ) );
       tmpSrc = KURL::fromPathOrURL( tmp );
 
-      KIO::Job *job = 0;
+      KIO::FileCopyJob *job = 0;
       if( copy )
       {
          job = KIO::file_copy( src, tmpSrc, -1, false, false, false );
@@ -3941,6 +3948,20 @@ CollectionDB::organizeFile( const KURL &src, const OrganizeCollectionDialog &dia
       m_waitForFileOperation = true;
       while( m_waitForFileOperation )
       {
+        if( m_moveFileJobCancelled )
+        {
+            disconnect( job, SIGNAL(result( KIO::Job * )), this, SLOT(fileOperationResult( KIO::Job * )) );
+            
+            QString partFile = QString( "%1.part" ).arg( (job->destURL()).path() );
+            job->kill();
+            QFile file( partFile );
+            if( file.exists() ) file.remove();
+            
+            m_waitForFileOperation = false;
+            m_fileOperationFailed = true;
+            continue;
+        }
+         
          usleep( 10000 );
          kapp->processEvents( 100 );
       }
@@ -3948,6 +3969,8 @@ CollectionDB::organizeFile( const KURL &src, const OrganizeCollectionDialog &dia
       if( m_fileOperationFailed )
       {
          debug() << "failed to transfer " << src.url() << " to " << tmpSrc << endl;
+
+         m_moveFileJobCancelled = false;
          return false;
       }
    }
@@ -3958,18 +3981,20 @@ CollectionDB::organizeFile( const KURL &src, const OrganizeCollectionDialog &dia
 
    debug() << "Destination: " << dest << endl;
 
-   if( tmpSrc.path() != dest ) //suppress error warning that file couldn't be moved
+   if( !m_moveFileJobCancelled && tmpSrc.path() != dest ) //suppress error warning that file couldn't be moved
    {
       if( !CollectionDB::instance()->moveFile( tmpSrc.url(), dest, overwrite, copy && localFile ) )
       {
          if( !localFile )
             QFile::remove( tmpSrc.path() );
+
+         m_moveFileJobCancelled = false;
          return false;
       }
    }
 
    //Use cover image for folder icon
-   if( dialog.coverCheck->isChecked() && !mb.artist().isEmpty() && !mb.album().isEmpty() )
+   if( !m_moveFileJobCancelled && dialog.coverCheck->isChecked() && !mb.artist().isEmpty() && !mb.album().isEmpty() )
    {
       KURL dstURL = KURL::fromPathOrURL( dest );
       dstURL.cleanPath();
@@ -4002,6 +4027,8 @@ CollectionDB::organizeFile( const KURL &src, const OrganizeCollectionDialog &dia
    {
       debug() << "removed: " << src.directory() << endl;
    }
+
+   m_moveFileJobCancelled = false;
 
    return true;
 }
@@ -4037,9 +4064,8 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
             debug() << "Unable to create directory " << dir.path() << endl;
         }
 
-    m_waitForFileOperation = false;
-
-    KIO::Job *job = 0;
+    m_fileOperationFailed = false;
+    KIO::FileCopyJob *job = 0;
     if( copy )
     {
         job = KIO::file_copy( srcURL, dstURL, -1, overwrite, false, false );
@@ -4052,6 +4078,20 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
     m_waitForFileOperation = true;
     while( m_waitForFileOperation )
     {
+        if( m_moveFileJobCancelled )
+        {
+            disconnect( job, SIGNAL(result( KIO::Job * )), this, SLOT(fileOperationResult( KIO::Job * )) );
+            
+            QString partFile = QString( "%1.part" ).arg( (job->destURL()).path() );
+            job->kill();
+            QFile file( partFile );
+            if( file.exists() ) file.remove();
+            
+            m_waitForFileOperation = false;
+            m_fileOperationFailed = true;
+            continue;
+        }
+
         usleep( 10000 );
         kapp->processEvents( 100 );
     }

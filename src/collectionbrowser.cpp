@@ -420,6 +420,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         , m_currentDepth( 0 )
         , m_ipodIncremented ( 1 )
         , m_dirty( true )
+        , m_organizingFileCancelled( false )
 {
     DEBUG_FUNC_INFO
     m_instance = this;
@@ -1580,10 +1581,25 @@ CollectionView::isOrganizingFiles() const
     return m_organizeURLs.count() > 0;
 }
 
+void CollectionView::cancelOrganizingFiles()
+{
+    // Set the indicator
+    m_organizingFileCancelled = true;
+    
+    // Cancel the current underlying CollectionDB::instance()->moveFile operation
+    CollectionDB::instance()->cancelMovingFileJob();
+}
 
 void
 CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, bool copy )  //SLOT
 {
+    if( m_organizingFileCancelled )
+    {
+        QString shortMsg = i18n( "Cannot start organize operation until jobs are aborted." );
+        Amarok::StatusBar::instance()->shortMessage( shortMsg, KDE::StatusBar::Sorry );
+        return;
+    }
+
     if( m_organizeURLs.count() )
     {
         if( copy != m_organizeCopyMode )
@@ -1662,9 +1678,10 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
         CollectionDB::instance()->createTables( true ); // create temp tables
         Amarok::StatusBar::instance()->newProgressOperation( this )
             .setDescription( caption )
+            .setAbortSlot( this, SLOT( cancelOrganizingFiles() ) )
             .setTotalSteps( m_organizeURLs.count() );
 
-        while( !m_organizeURLs.empty() )
+        while( !m_organizeURLs.empty() && !m_organizingFileCancelled )
         {
             KURL &src = m_organizeURLs.first();
 
@@ -1675,6 +1692,8 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
 
             m_organizeURLs.pop_front();
             Amarok::StatusBar::instance()->incrementProgress( this );
+
+            if( m_organizingFileCancelled ) m_organizeURLs.clear();
         }
 
         CollectionDB::instance()->sanitizeCompilations(); //queryBuilder doesn't handle unknownCompilations
@@ -1684,7 +1703,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
         // and now do an incremental scan since this was disabled while organizing files
         QTimer::singleShot( 0, CollectionDB::instance(), SLOT( scanMonitor() ) );
 
-        if( skipped.count() > 0 )
+        if( !m_organizingFileCancelled && skipped.count() > 0 )
         {
             QString longMsg = i18n( "The following file could not be organized: ",
                     "The following %n files could not be organized: ", skipped.count() );
@@ -1705,6 +1724,12 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
                     "Sorry, %n files could not be organized.", skipped.count() );
             Amarok::StatusBar::instance()->shortLongMessage( shortMsg, longMsg, KDE::StatusBar::Sorry );
         }
+        else if ( m_organizingFileCancelled )
+        {
+            Amarok::StatusBar::instance()->shortMessage( i18n( "Aborting jobs..." ) );
+            m_organizingFileCancelled = false;
+        }
+
         m_dirty = true;
         QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
         Amarok::StatusBar::instance()->endProgressOperation( this );

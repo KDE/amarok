@@ -490,6 +490,11 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
 
         void vacuum();
 
+        /**
+        * Cancel the underlying move/copy file action
+        */
+        void cancelMovingFileJob();
+
     protected:
         QCString md5sum( const QString& artist, const QString& album, const QString& file = QString::null );
         void engineTrackEnded( int finalPosition, int trackLength, const QString &reason );
@@ -621,6 +626,9 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         bool m_rescanRequired;
  
         QStringList m_aftEnabledPersistentTables;
+
+        // Cancel move/copy job
+        bool m_moveFileJobCancelled;
 
         // for handling podcast image url redirects
         QMap<KIO::Job *, QString> m_podcastImageJobs;

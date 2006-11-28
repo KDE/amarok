@@ -433,7 +433,10 @@ StatusBar::endProgressOperation( QObject *owner )
     //things, we just call setDone().
 
     if ( !m_progressMap.contains( owner ) )
+    {
+        SingleShotPool::startTimer( 2000, this, SLOT(hideMainProgressBar()) );
         return ;
+    }
 
     m_progressMap[owner]->setDone();
 
