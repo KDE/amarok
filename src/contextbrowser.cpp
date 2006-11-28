@@ -3499,7 +3499,7 @@ void
 ContextBrowser::showWikipediaEntry( const QString &entry, bool replaceHistory )
 {
     m_wikiCurrentEntry = entry;
-    showWikipedia( wikiURL( entry ), replaceHistory );
+    showWikipedia( wikiURL( entry ), false, replaceHistory );
 }
 
 void
