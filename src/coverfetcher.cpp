@@ -308,8 +308,8 @@ CoverFetcher::finishedXmlFetch( KIO::Job *job ) //SLOT
         QString name = node.namedItem( "ProductName" ).firstChild().toText().nodeValue();
 
     const QDomNode  artists = node.namedItem("Artists");
-    // in most cases Amazon only sends one Artit in Artits
-    QString artist="";
+    // in most cases, Amazon only sends one Artist in Artists
+    QString artist = "";
     if (!artists.isNull()) artist = artists.namedItem( "Artist" ).firstChild().toText().nodeValue();
 
         debug() << "name:" << name << " artist:" << artist << " url:" << coverUrl << endl;
