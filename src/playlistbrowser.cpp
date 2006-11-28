@@ -2993,13 +2993,13 @@ void PlaylistBrowserView::startDrag()
 //    CLASS PlaylistDialog
 ////////////////////////////////////////////////////////////////////////////
 
-QString PlaylistDialog::getSaveFileName( const QString &suggestion ) //static
+QString PlaylistDialog::getSaveFileName( const QString &suggestion, bool proposeOverwriting ) //static
 {
     PlaylistDialog dialog;
     if( !suggestion.isEmpty() )
     {
         QString path = Amarok::saveLocation("playlists/") + "%1" + ".m3u";
-        if( QFileInfo( path.arg( suggestion ) ).exists() )
+        if( QFileInfo( path.arg( suggestion ) ).exists() && !proposeOverwriting )
         {
             int n = 2;
             while( QFileInfo( path.arg( i18n( "%1 (%2)" ).arg( suggestion, QString::number( n ) ) ) ).exists() )
