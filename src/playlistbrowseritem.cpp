@@ -3616,6 +3616,14 @@ void ShoutcastBrowser::doneGenreDownload( KIO::Job *job, const KURL &from, const
     genreMapping["Polskie"] = "Polska";
     genreMapping["Greece"] = "Greek";
     genreMapping["Dnb"] = "Drum&bass";
+    genreMapping["Classic"] = "Classical";
+    genreMapping["Goth"] = "Gothic";
+    genreMapping["Alt"] = "Alternative";
+    genreMapping["Italiana"] = "Italian";
+    genreMapping["Japan"] = "Japanese";
+    genreMapping["Oldie"] = "Oldies";
+    genreMapping["Nederlands"] = "Dutch";
+    genreMapping["Variety"] = "Various";
 
     QDomElement docElem = doc.documentElement();
     QDomNode n = docElem.firstChild();
