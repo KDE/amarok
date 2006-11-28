@@ -79,6 +79,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         void showWikipedia( const QString& url = QString::null, bool fromHistory = false, bool replaceHistory = false );
         void showWikipediaEntry( const QString& entry, bool replaceHistory = false );
         void reloadWikipedia();
+        void showLabelsDialog();
 
         void coverFetched( const QString &artist, const QString &album );
         void coverRemoved( const QString &artist, const QString &album );

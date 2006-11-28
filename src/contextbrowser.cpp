@@ -42,13 +42,16 @@
 #include <qtextstream.h>  // External CSS reading
 #include <qvbox.h> //wiki tab
 #include <qhbox.h>
+#include <qlayout.h>
 #include <qlineedit.h>
+#include <qlistview.h>
 #include <qtimer.h>
 #include <qtooltip.h>
 
 #include <kapplication.h> //kapp
 #include <kcalendarsystem.h>  // for Amarok::verboseTimeSince()
 #include <kconfig.h> // suggested/related/favorite box visibility
+#include <kdialog.h>
 #include <kfiledialog.h>
 #include <kglobal.h>
 #include <kiconloader.h>
@@ -407,6 +410,10 @@ void ContextBrowser::openURLRequest( const KURL &url )
         {
             ScriptManager::instance()->show();
             ScriptManager::instance()->raise();
+        }
+        else if ( url.path() == "editLabels" )
+        {
+            showLabelsDialog();
         }
         // Konqueror sidebar needs these
         if (url.path() == "context") { m_dirtyCurrentTrackPage=true; showContext( KURL( "current://track" ) ); saveHtmlData(); }
@@ -2411,7 +2418,7 @@ CurrentTrackJob::showUserLabels( const MetaBundle &currentTrack )
         }
     }
     m_HTMLSource.append( "</td></tr>\n" );
-    m_HTMLSource.append( "<tr><td>" + i18n( "Add labels to %1" ).arg( escapeHTML( title ) ) + "</td></tr>\n" );
+    m_HTMLSource.append( "<tr><td><a id='songlabels_box_addlabel' href='show:editLabels'>" + i18n( "Add labels to %1" ).arg( escapeHTML( title ) ) + "</a></td></tr>\n" );
     m_HTMLSource.append(
             "</table>\n"
             "</div>\n" );
@@ -3493,6 +3500,48 @@ ContextBrowser::showWikipediaEntry( const QString &entry, bool replaceHistory )
 {
     m_wikiCurrentEntry = entry;
     showWikipedia( wikiURL( entry ), replaceHistory );
+}
+
+void
+ContextBrowser::showLabelsDialog()
+{
+    DEBUG_BLOCK
+    KURL currentUrl = EngineController::instance()->bundle().url();
+    QStringList allLabels = CollectionDB::instance()->labelList();
+    QStringList trackLabels = CollectionDB::instance()->getLabels( currentUrl.path(), CollectionDB::typeUser );
+    debug() << "Showing add label dialog" << endl;
+    KDialogBase *dialog = new KDialogBase( this, 0, false, QString::null, KDialogBase::Ok|KDialogBase::Cancel );
+    dialog->makeVBoxMainWidget();
+    QListView *view = new QListView( dialog->mainWidget() );
+    view->addColumn( i18n( "Label" ) );
+    view->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    foreach( allLabels )
+    {
+        QCheckListItem *item = new QCheckListItem( view, *it, QCheckListItem::CheckBox );
+        item->setOn( trackLabels.contains( *it ) ); 
+    }
+    if( dialog->exec() == QDialog::Accepted )
+    {
+        debug() << "Dialog closed, updating labels" << endl;
+        QStringList newTrackLabels;
+        QListViewItemIterator iter( view );
+        while( iter.current() )
+        {
+            QCheckListItem *item = static_cast<QCheckListItem*>( iter.current() );
+            if( item->isOn() )
+                newTrackLabels.append( item->text() );
+            iter++;
+        }
+        CollectionDB::instance()->setLabels( currentUrl.path(),
+                                             newTrackLabels,
+                                             CollectionDB::instance()->uniqueIdFromUrl( currentUrl ),
+                                             CollectionDB::typeUser );
+        if( newTrackLabels != trackLabels )
+        {
+            m_dirtyCurrentTrackPage = true;
+            showCurrentTrack();
+        }
+    }
 }
 
 void ContextBrowser::showWikipedia( const QString &url, bool fromHistory, bool replaceHistory )
