@@ -149,6 +149,11 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
         void decrementTotals();
         void incrementTotals();
 
+        void incrementCounts();
+        void decrementCounts();
+        void incrementLengths();
+        void decrementLengths();
+
         int totalIncrementAmount() const;
 
         PlaylistAlbum *m_album;

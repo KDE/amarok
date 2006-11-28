@@ -71,19 +71,8 @@ PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi, bool e
 
     refAlbum();
 
-    listView()->m_totalCount++;
-    listView()->m_totalLength += length();
-    if( isSelected() )
-    {
-        listView()->m_selCount++;
-        listView()->m_selLength += length();
-    }
-    if( isVisible() )
-    {
-        listView()->m_visCount++;
-        listView()->m_visLength += length();
-        incrementTotals();
-    }
+    incrementCounts();
+    incrementLengths();
 
     filter( listView()->m_filter );
 
@@ -96,19 +85,8 @@ PlaylistItem::~PlaylistItem()
     if( isEmpty() ) //constructed with the generic constructor, for PlaylistLoader's marker item
         return;
 
-    listView()->m_totalCount--;
-    listView()->m_totalLength -= length();
-    if( isSelected() )
-    {
-        listView()->m_selCount--;
-        listView()->m_selLength -= length();
-    }
-    if( isVisible() )
-    {
-        listView()->m_visCount--;
-        listView()->m_visLength -= length();
-        decrementTotals();
-    }
+    decrementCounts();
+    decrementLengths();
 
     derefAlbum();
 
@@ -160,13 +138,16 @@ QString PlaylistItem::text( int column ) const
 
 void PlaylistItem::aboutToChange( const QValueList<int> &columns )
 {
-    bool totals = false, ref = false;
+    bool totals = false, ref = false, length = false;
     for( int i = 0, n = columns.count(); i < n; ++i )
         switch( columns[i] )
         {
+	    case Length: length = true; break;
             case Artist: case Album: ref = true; //note, no breaks
             case Track: case Rating: case Score: case LastPlayed: totals = true;
         }
+    if ( length )
+        decrementLengths();
     if( totals )
         decrementTotals();
     if( ref )
@@ -176,11 +157,16 @@ void PlaylistItem::aboutToChange( const QValueList<int> &columns )
 void PlaylistItem::reactToChanges( const QValueList<int> &columns )
 {
     MetaBundle::reactToChanges(columns);
-    bool totals = false, ref = false;
+    bool totals = false, ref = false, length = false;
     for( int i = 0, n = columns.count(); i < n; ++i )
       {
         if( columns[i] == Mood )
           moodbar().reset();
+	if ( !length && columns[i] == Length ) {
+	    length = true;
+	    incrementLengths();
+	    listView()->countChanged();
+	}
         switch( columns[i] )
         {
             case Artist: case Album: ref = true; //note, no breaks
@@ -1066,6 +1052,60 @@ int PlaylistItem::totalIncrementAmount() const
                 return listView()->m_startupTime_t - 1058652000; //july 20, 2003, when Amarok was first released.
         }
         default: return 0;
+    }
+}
+
+void PlaylistItem::incrementCounts()
+{
+    listView()->m_totalCount++;
+    if( isSelected() )
+    {
+        listView()->m_selCount++;
+    }
+    if( isVisible() )
+    {
+        listView()->m_visCount++;
+        incrementTotals();
+    }
+}
+
+void PlaylistItem::decrementCounts()
+{
+    listView()->m_totalCount--;
+    if( isSelected() )
+    {
+        listView()->m_selCount--;
+    }
+    if( isVisible() )
+    {
+        listView()->m_visCount--;
+        decrementTotals();
+    }
+}
+
+void PlaylistItem::incrementLengths()
+{
+    listView()->m_totalLength += length();
+    if( isSelected() )
+    {
+        listView()->m_selLength += length();
+    }
+    if( isVisible() )
+    {
+        listView()->m_visLength += length();
+    }
+}
+
+void PlaylistItem::decrementLengths()
+{
+    listView()->m_totalLength -= length();
+    if( isSelected() )
+    {
+        listView()->m_selLength -= length();
+    }
+    if( isVisible() )
+    {
+        listView()->m_visLength -= length();
     }
 }
 
