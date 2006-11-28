@@ -227,7 +227,7 @@ void TrackToolTip::setTrack( const MetaBundle &tags, bool force )
         m_cover = CollectionDB::instance()->podcastImage( tags, true );
         if( m_cover.isEmpty() || m_cover.contains( "nocover" ) != -1 )
         {
-            m_cover = CollectionDB::instance()->albumImage( tags, true );
+            m_cover = CollectionDB::instance()->albumImage( tags, true, 150 );
             if ( m_cover == CollectionDB::instance()->notAvailCover() )
                 m_cover = QString::null;
         }
@@ -279,7 +279,7 @@ void TrackToolTip::slotCoverChanged( const QString &artist, const QString &album
 {
     if( artist == m_tags.artist() && album == m_tags.album() )
     {
-        m_cover = CollectionDB::instance()->albumImage( m_tags );
+        m_cover = CollectionDB::instance()->albumImage( m_tags, true, 150 );
         if( m_cover == CollectionDB::instance()->notAvailCover() )
             m_cover = QString::null;
 
