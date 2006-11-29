@@ -295,6 +295,7 @@ TagDialog::musicbrainzQuery() //SLOT
     m_mbTrack = m_bundle.url();
     KTRMLookup* ktrm = new KTRMLookup( m_mbTrack.path(), true );
     connect( ktrm, SIGNAL( sigResult( KTRMResultList, QString ) ), SLOT( queryDone( KTRMResultList, QString ) ) );
+    connect( pushButton_cancel, SIGNAL( clicked() ), ktrm, SLOT( deleteLater() ) );
 
     pushButton_musicbrainz->setEnabled( false );
     pushButton_musicbrainz->setText( i18n( "Generating audio fingerprint..." ) );
