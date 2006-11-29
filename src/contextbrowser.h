@@ -126,6 +126,9 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         static QString wikiLocale();
         static void setWikiLocale( const QString &locale );
         static QString wikiURL( const QString &item );
+        QString wikiArtistPostfix() const;
+        QString wikiAlbumPostfix() const;
+        QString wikiTrackPostfix() const;
 
         HTMLView    *m_currentTrackPage;
         HTMLView    *m_lyricsPage;

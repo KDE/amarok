@@ -1991,7 +1991,7 @@ void CurrentTrackJob::showBrowseArtistHeader( const QString &artist )
     m_HTMLSource.append(
             "<tr>\n"
             "<td id='artist-wikipedia'>\n"
-            + QString( "<a id='artist-wikipedia-a' href='wikipedia:%1'>\n" ).arg( escapeHTMLAttr( artist ) )
+            + QString( "<a id='artist-wikipedia-a' href='wikipedia:%1'>\n" ).arg( escapeHTMLAttr( artist + b->wikiArtistPostfix() ) )
             + i18n( "Wikipedia Information for %1" ).arg( escapeHTML( artist ) ) +
             "</a>\n"
             "</td>\n"
@@ -3361,6 +3361,35 @@ ContextBrowser::lyricsRefresh() //SLOT
 // Wikipedia-Tab
 //////////////////////////////////////////////////////////////////////////////////////////
 
+QString
+ContextBrowser::wikiArtistPostfix() const
+{
+    if( wikiLocale() == "en" )
+        return " (band)";
+    else if( wikiLocale() == "de" )
+        return " (Band)";
+    else
+        return "";
+}
+
+QString
+ContextBrowser::wikiAlbumPostfix() const
+{
+    if( wikiLocale() == "en" )
+        return " (album)";
+    else
+        return "";
+}
+
+QString
+ContextBrowser::wikiTrackPostfix() const
+{
+    if( wikiLocale() == "en" )
+        return " (song)";
+    else
+        return "";
+}
+
 void
 ContextBrowser::wikiConfigChanged( int /*activeItem*/ ) // SLOT
 {
@@ -3596,7 +3625,7 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory, bool r
             if ( !EngineController::instance()->bundle().artist().isEmpty() )
             {
                 tmpWikiStr = EngineController::instance()->bundle().artist();
-                tmpWikiStr += " (band)";
+                tmpWikiStr += wikiArtistPostfix();
             }
             else if ( !EngineController::instance()->bundle().title().isEmpty() )
             {
@@ -3755,7 +3784,7 @@ void
 ContextBrowser::wikiAlbumPage() //SLOT
 {
     m_dirtyWikiPage = true;
-    showWikipediaEntry( EngineController::instance()->bundle().album() + " (album)" );
+    showWikipediaEntry( EngineController::instance()->bundle().album() + wikiAlbumPostfix() );
 }
 
 
@@ -3763,7 +3792,7 @@ void
 ContextBrowser::wikiTitlePage() //SLOT
 {
     m_dirtyWikiPage = true;
-    showWikipediaEntry( EngineController::instance()->bundle().title() + " (song)" );
+    showWikipediaEntry( EngineController::instance()->bundle().title() + wikiTrackPostfix() );
 }
 
 
@@ -3820,15 +3849,21 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
     if( m_wiki.find( "var wgArticleId = 0" ) != -1 )
     {
         // article was not found
-        if( m_wikiCurrentEntry.endsWith( " (band)" ) || m_wikiCurrentEntry.endsWith( " (song)" ) )
+        if( m_wikiCurrentEntry.endsWith( wikiArtistPostfix() ) )
         {
-            m_wikiCurrentEntry = m_wikiCurrentEntry.left( m_wikiCurrentEntry.length() - 7 );
+            m_wikiCurrentEntry = m_wikiCurrentEntry.left( m_wikiCurrentEntry.length() - wikiArtistPostfix().length() );
             reloadWikipedia();
             return;
         }
-        else if( m_wikiCurrentEntry.endsWith( " (album)" ) )
+        else if( m_wikiCurrentEntry.endsWith( wikiAlbumPostfix() ) )
         {
-            m_wikiCurrentEntry = m_wikiCurrentEntry.left( m_wikiCurrentEntry.length() - 8 );
+            m_wikiCurrentEntry = m_wikiCurrentEntry.left( m_wikiCurrentEntry.length() - wikiAlbumPostfix().length() );
+            reloadWikipedia();
+            return;
+        }
+        else if( m_wikiCurrentEntry.endsWith( wikiTrackPostfix() ) )
+        {
+            m_wikiCurrentEntry = m_wikiCurrentEntry.left( m_wikiCurrentEntry.length() - wikiTrackPostfix().length() );
             reloadWikipedia();
             return;
         }
