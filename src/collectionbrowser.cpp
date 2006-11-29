@@ -1776,10 +1776,13 @@ CollectionView::contentsDropEvent( QDropEvent *e )
                 it != expandedList.end();
                 ++it )
         {
-            if( !(*it).isLocalFile() || !CollectionDB::instance()->isFileInCollection( (*it).path() ) )
-                cleanList += *it;
-            else
+            QString proto = (*it).protocol();
+            if( !MetaBundle::isKioUrl( *it ) )
+                invalid++;
+            else if( (*it).isLocalFile() && CollectionDB::instance()->isFileInCollection( (*it).path() ) )
                 dropped++;
+            else
+                cleanList += *it;
         }
 
         QString msg;
