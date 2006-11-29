@@ -73,7 +73,7 @@
                         <cstring>pushButton_ok</cstring>
                     </property>
                     <property name="text">
-                        <string>Sa&amp;ve &amp;&amp; Close</string>
+                        <string>Sa&amp;ve &amp; Close</string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>
@@ -159,7 +159,7 @@
                     <cstring>summaryTab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>S&amp;&amp;ummary</string>
+                    <string>S&amp;ummary</string>
                 </attribute>
                 <grid>
                     <property name="name">
@@ -242,7 +242,7 @@
                     <cstring>tagsTab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>Ta&amp;&amp;gs</string>
+                    <string>Ta&amp;gs</string>
                 </attribute>
                 <grid>
                     <property name="name">
@@ -587,7 +587,7 @@
                     <cstring>lyricsTab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>L&amp;&amp;yrics</string>
+                    <string>L&amp;yrics</string>
                 </attribute>
                 <hbox>
                     <property name="name">
@@ -614,7 +614,7 @@
                     <cstring>statisticsTab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>St&amp;&amp;atistics</string>
+                    <string>St&amp;atistics</string>
                 </attribute>
                 <grid>
                     <property name="name">
@@ -726,7 +726,7 @@
                     <cstring>labelsTab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>La&amp;&amp;bels</string>
+                    <string>La&amp;bels</string>
                 </attribute>
                 <vbox>
                     <property name="name">
