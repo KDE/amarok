@@ -98,7 +98,7 @@ void MagnatuneAlbumDownloader::coverDownloadComplete( KIO::Job * downloadJob )
 {
   debug() << "cover download complete" << endl;
 
-    if ( !downloadJob->error() == 0 )
+    if ( !downloadJob || !downloadJob->error() == 0 )
     {
         //TODO: error handling here
         return ;
