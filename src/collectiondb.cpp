@@ -1582,7 +1582,7 @@ void
 CollectionDB::addEmbeddedImage( const QString& path, const QString& hash, const QString& description )
 {
 //     debug() << "Added embedded image hash " << hash << " for file " << path << endl;
-    //TODO: figure out what this embedded table does and then add the encessary code
+    //TODO: figure out what this embedded table does and then add the necessary code
     //what are embedded images anyway?
     int deviceid = MountPointManager::instance()->getIdForUrl( path );
     QString rpath = MountPointManager::instance()->getRelativePath(deviceid, path );
