@@ -32,8 +32,6 @@ images_DATA = \
     more_albums.png \
     musicbrainz.png \
     nocover.png \
-	osdvolumeslider-gradient.png \
-	osdvolumeslider-inset.png \
     pl_active2.png \
     pl_inactive2.png \
     shadow_albumcover.png \

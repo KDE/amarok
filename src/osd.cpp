@@ -89,15 +89,15 @@ void OSDWidget::ratingChanged( const short rating )
 void OSDWidget::volChanged( unsigned char volume )
 {
     m_volume = true;
-    m_text = QString::null;
     m_newvolume = volume;
+    m_text = m_newvolume ? i18n("Volume: %1%").arg( m_newvolume ) : i18n("Mute");
     show();
 }
 
 void
 OSDWidget::show() //virtual
 {
-    if ( !isEnabled() || ( m_text.isEmpty() && !m_volume ) )
+    if ( !isEnabled() || m_text.isEmpty() )
         return;
 
     const uint M = fontMetrics().width( 'x' );
@@ -163,12 +163,17 @@ OSDWidget::determineMetrics( const uint M )
             AlignCenter | WordBreak, m_text );
 
     if( m_volume )
-    {
-        KPixmap vol;
-        vol.load( locate( "data", "amarok/images/osdvolumeslider-inset.png" ) );
-        if( rect.width() <  vol.width() )
-            rect.setWidth( vol.width() );
-        rect.setHeight( vol.height() + M );
+    {	
+        static const QString tmp = QString ("******").insert( 3,
+            ( i18n("Volume: 100%").length() >= i18n("Mute").length() )?
+            i18n("Volume: 100%"):i18n("Mute") );
+
+        QRect tmpRect = fontMetrics().boundingRect( 0, 0,
+            max.width() - image.width(), max.height() - fontMetrics().height(),
+            AlignCenter | WordBreak, tmp );
+        tmpRect.setHeight( tmpRect.height() + fontMetrics().height() / 2 );
+
+        rect = tmpRect;
     }
 
     if( m_rating )
@@ -329,46 +334,62 @@ OSDWidget::render( const uint M, const QSize &size )
 
     if( m_volume )
     {
-        KPixmap vol;
-        vol.load( locate( "data", "amarok/images/osdvolumeslider-inset.png" ) );
-        QRect r( rect );
-        r.setLeft(( rect.left() + rect.width() / 2 ) - vol.width() / 2  );
-        r.setTop( rect.bottom()  - vol.height() - M / 2 );
-
-        const QPixmap temp( locate( "data", "amarok/images/osdvolumeslider-gradient.png" ) );
-        const QBitmap mask( temp.createHeuristicMask() );
-
-        KPixmap pixmapGradient;
-        pixmapGradient = QPixmap( vol.size() );
-        KPixmapEffect::gradient( pixmapGradient, colorGroup().background(), colorGroup().highlight(),
-                 KPixmapEffect::EllipticGradient );
-        pixmapGradient.setMask( mask );
+        QPixmap vol;
+        vol = QPixmap( rect.width(), rect.height() + fontMetrics().height() / 4 );
 
         QPixmap buf( vol.size() );
+        QRect r( rect );
+        r.setLeft( rect.left() + rect.width() / 2 - vol.width() / 2 );
+        r.setTop( size.height() / 2 - vol.height() / 2);
+
+        KPixmap pixmapGradient;
+        { // gradient
+            QBitmap mask;
+            mask.resize( vol.size() );
+            mask.fill( Qt::black );
+
+            QPainter p( &mask );
+            p.setBrush( Qt::white );
+            p.drawRoundRect ( 3, 3, vol.width() - 6, vol.height() - 6,
+                M * 300 / vol.width(), 99 );
+            p.end();
+
+            pixmapGradient = QPixmap( vol.size() );
+            KPixmapEffect::gradient( pixmapGradient, colorGroup().background(),
+                colorGroup().highlight(), KPixmapEffect::EllipticGradient );
+            pixmapGradient.setMask( mask );
+        }
 
         if( m_translucency )
         {
             KPixmap background( m_screenshot );
             KPixmapEffect::fade( background, 0.80, backgroundColor() );
-            bitBlt( &buf, -r.left(), -r.top(), &background );
+            bitBlt( &vol, -r.left(), -r.top(), &background );
         }
         else
-            buf.fill( backgroundColor() );
+            vol.fill( backgroundColor() );
+
+        { // vol ( bg-alpha )
+            static QBitmap mask;
+            mask.resize( vol.size() );
+            mask.fill( Qt::white );
+
+            QPainter p( &mask );
+            p.setBrush( Qt::black );
+            p.drawRoundRect ( 1, 1, rect.width()-2, rect.height() + fontMetrics().height() / 4 - 2,
+                M * 300 / vol.width(), 99 );
+            p.setBrush( Qt::white );
+            p.drawRoundRect ( 3, 3, vol.width() - 6, vol.height() - 6,
+                M * 300 / vol.width(), 99 );
+            p.end();
+            vol.setMask( mask );
+        }
+        buf.fill( backgroundColor().dark() );
 
         const int offset = int( double( vol.width() * m_newvolume ) / 100 );
 
+        bitBlt( &buf, 0, 0, &vol ); // bg
         bitBlt( &buf, 0, 0, &pixmapGradient, 0, 0, offset );
-        bitBlt( &buf, 0, 0, &vol );  // bg
-
-        { // label
-            QPainter p2( &buf );
-            p2.setPen( foregroundColor() );
-            p2.setFont( font() );
-            const QRect rect2( 0, 0, vol.width(), vol.height() );
-            p2.drawText( rect2, Qt::AlignCenter | Qt::AlignVCenter,
-                m_newvolume ? i18n("Volume: %1%").arg( m_newvolume ) : i18n("Mute") );
-            p2.end();
-        }
 
         p.drawPixmap( r.left(), r.top(), buf );
         m_volume = false;
