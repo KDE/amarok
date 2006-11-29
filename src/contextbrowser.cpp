@@ -223,6 +223,7 @@ ContextBrowser::ContextBrowser( const char *name )
 
     m_lyricsPage = new HTMLView( m_lyricsTab, "lyrics_page", true /* DNDEnabled */, false /* No JScript */ );
     m_lyricsTextEdit = new KTextEdit ( m_lyricsTab, "lyrics_text_edit");
+    m_lyricsTextEdit->setTextFormat( Qt::PlainText );
     m_lyricsTextEdit->hide();
 
     m_wikiTab = new QVBox(this, "wiki_tab");
@@ -902,7 +903,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         Amarok::config( "ContextBrowser" )->writeEntry( "ShowLabels", m_showLabels );
         m_dirtyCurrentTrackPage = true;
         showCurrentTrack();
-        break; 
+        break;
 
    case FRESHPODCASTS:
         m_showFreshPodcasts = !menu.isItemChecked( FRESHPODCASTS );
@@ -3320,7 +3321,6 @@ ContextBrowser::lyricsEditToggle() //SLOT
             lyrics = doc.documentElement().text();
         else
             lyrics = QString::null;
-        lyrics.replace( "\n", "<br>" );
         m_lyricsTextEdit->setText( lyrics );
         m_lyricsPage->hide();
         m_lyricsTextEdit->show();
@@ -3547,7 +3547,7 @@ ContextBrowser::showLabelsDialog()
     foreach( allLabels )
     {
         QCheckListItem *item = new QCheckListItem( view, *it, QCheckListItem::CheckBox );
-        item->setOn( trackLabels.contains( *it ) ); 
+        item->setOn( trackLabels.contains( *it ) );
     }
     if( dialog->exec() == QDialog::Accepted )
     {
