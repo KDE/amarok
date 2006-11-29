@@ -542,6 +542,7 @@ XineEngine::fadeOut( bool exiting )
             {
                 float v = 4.0 * (1.0 - mix) / 3.0;
                 xine_set_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL, (uint)( v < 1.0 ? vol * v : vol ) );
+                debug() << "VOL: " << xine_get_param( m_stream, XINE_PARAM_AUDIO_AMP_LEVEL ) << endl;
             }
         }
     }
