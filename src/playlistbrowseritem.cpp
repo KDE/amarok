@@ -3083,7 +3083,10 @@ PodcastEpisode::associateWithLocalFile()
     AssociatePodcastDialog d( this );
     if( d.exec() == KDialogBase::Accepted )
     {
-        setLocalUrl( d.url() );
+        if( !d.url().isLocalFile() || !QFileInfo( d.url().path() ).isFile() )
+            Amarok::StatusBar::instance()->shortMessage( i18n( "Invalid local podcast URL." ) );
+        else
+            setLocalUrl( d.url() );
     }
 }
 
