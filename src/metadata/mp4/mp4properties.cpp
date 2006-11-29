@@ -31,6 +31,10 @@ email                : andrew.leadbetter@gmail.com
 
 #include <stdint.h>
 
+#ifndef UINT64_TO_DOUBLE
+#define UINT64_TO_DOUBLE(a) ((double)((int64_t)(a)))
+#endif
+
 using namespace TagLib;
 
 
