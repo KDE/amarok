@@ -166,7 +166,16 @@ class CollectionItem : public KListViewItem {
         inline bool isUnknown() {return m_isUnknown;}
         inline bool isSampler() {return m_isSampler;}
 
+        static QPixmap *star();
+        static QPixmap *smallStar();
+
+        /// convenience functions
+        CollectionView *listView() const { return reinterpret_cast<CollectionView*>( KListViewItem::listView() ); }
+
     private:
+        friend class CollectionView;
+        virtual void paintCell ( QPainter * painter, const QColorGroup & cg, int column, int width, int align );
+
         //for sorting
         virtual int compare( QListViewItem*, int, bool ) const; //reimplemented
 
@@ -175,6 +184,9 @@ class CollectionItem : public KListViewItem {
         int m_cat;
         bool m_isUnknown;
         bool m_isSampler;
+
+        static QPixmap *s_star;
+        static QPixmap *s_smallStar;
 };
 
 
@@ -370,6 +382,8 @@ class OrganizeCollectionDialogBase : public KDialogBase
         void slotDetails() { KDialogBase::slotDetails(); emit detailsClicked(); adjustSize(); }
 };
 
+inline QPixmap *CollectionItem::star() { return s_star; }
+inline QPixmap *CollectionItem::smallStar() { return s_smallStar; }
 
 
 

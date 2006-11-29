@@ -60,6 +60,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kpopupmenu.h>
+#include <kstandarddirs.h>   //KGlobal::dirs()
 #include <ktoolbarbutton.h> //ctor
 #include <kurldrag.h>       //dragObject()
 #include <kio/job.h>
@@ -495,6 +496,13 @@ CollectionView::CollectionView( CollectionBrowser* parent )
              this,                            SLOT( databaseChanged() ) );
     connect( MountPointManager::instance(), SIGNAL( mediumRemoved( int ) ),
              this,                            SLOT( databaseChanged() ) );
+
+    const int h = fontMetrics().height() + itemMargin() * 2 - 4 + ( ( fontMetrics().height() % 2 ) ? 1 : 0 );
+    QImage img = QImage( locate( "data", "amarok/images/star.png" ) ).smoothScale( h, h, QImage::ScaleMin );
+    CollectionItem::s_star = new QPixmap( img );
+
+    QImage small = QImage( locate( "data", "amarok/images/smallstar.png" ) );
+    CollectionItem::s_smallStar = new QPixmap( small.smoothScale( h, h, QImage::ScaleMin ) );
 }
 
 
@@ -4050,6 +4058,66 @@ CollectionView::renderIpodModeView( bool /*=false*/ )
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS CollectionItem
 //////////////////////////////////////////////////////////////////////////////////////////
+void
+CollectionItem::paintCell ( QPainter * painter, const QColorGroup & cg,
+                         int column, int width, int align )
+{
+    if( static_cast<CollectionView::Tag>(column) == CollectionView::Rating )
+    {
+        QPixmap buf( width, height() );
+        QPainter p( &buf, true );
+
+        const QColorGroup _cg = listView()->palette().active();
+
+        QColor bg = isSelected()  ? _cg.highlight()
+            : isAlternate() ? listView()->alternateBackground()
+            : listView()->viewport()->backgroundColor();
+#if KDE_IS_VERSION( 3, 3, 91 )
+        if( listView()->shadeSortColumn() && !isSelected() && listView()->columnSorted() == column )
+        {
+            /* from klistview.cpp
+               Copyright (C) 2000 Reginald Stadlbauer <reggie@kde.org>
+               Copyright (C) 2000,2003 Charles Samuels <charles@kde.org>
+               Copyright (C) 2000 Peter Putzer */
+            if ( bg == Qt::black )
+                bg = QColor(55, 55, 55);  // dark gray
+            else
+            {
+                int h,s,v;
+                bg.hsv(&h, &s, &v);
+                if ( v > 175 )
+                    bg = bg.dark(104);
+                else
+                    bg = bg.light(120);
+            }
+        }
+#endif
+
+        buf.fill( bg );
+
+        int rating = text(column).toInt();
+        int i = 1, x = 1;
+        const int y = height() / 2 - star()->height() / 2;
+        for(; i <= rating/2; ++i )
+        {
+            bitBlt( p.device(), x, y, star() );
+            x += star()->width() + listView()->itemMargin();
+        }
+        if( rating%2 )
+        {
+            bitBlt( p.device(), x, y, smallStar() );
+            x += star()->width() + listView()->itemMargin();
+        }
+
+        p.end();
+        painter->drawPixmap( 0, 0, buf );
+    }
+    else
+    {
+        KListViewItem::paintCell( painter, cg, column, width, align );
+    }
+}
+
 int
 CollectionItem::compare( QListViewItem* i, int col, bool ascending ) const
 {
@@ -4343,5 +4411,8 @@ DividerItem::shareTheSameGroup(const QString& itemStr, const QString& divStr, in
 
     return inGroup;
 }
+
+QPixmap *CollectionItem::s_star = 0;
+QPixmap *CollectionItem::s_smallStar = 0;
 
 #include "collectionbrowser.moc"
