@@ -21,6 +21,7 @@ VERSION 1.4.5
       you move and rename them.
 
   CHANGES:
+    * "Scan Changes" button was replaced with "Update Collection" menu entry.
     * Consistent double-click behavior in sidebar. (BR 138125)
     * Propose name of currently loaded playlist when saving current one.
     * Remove support for older libmtp versions. We now require 0.0.15 or
