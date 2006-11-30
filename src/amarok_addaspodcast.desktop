@@ -3,6 +3,7 @@ ServiceTypes=text/html,text/xml,application/xml,text/rss,text/rdf
 Actions=addAsPodcast
 [Desktop Action addAsPodcast]
 Name=Add as Podcast to Amarok
+Name[af]=Voeg as Podcast by Amarok by
 Name[bg]=Добавяне като подкаст към Amarok
 Name[ca]=Afegeix com a Podcast a l'Amarok
 Name[cs]=Přidat podcast
