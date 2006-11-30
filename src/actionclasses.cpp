@@ -126,6 +126,8 @@ Menu::Menu()
 
     insertSeparator();
 
+
+    safePlug( ac, "update_collection", this );
     insertItem( SmallIconSet( Amarok::icon( "rescan" ) ), i18n("&Rescan Collection"), ID_RESCAN_COLLECTION );
     setItemEnabled( ID_RESCAN_COLLECTION, !ThreadWeaver::instance()->isJobPending( "CollectionScanner" ) );
 

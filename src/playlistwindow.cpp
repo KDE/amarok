@@ -148,6 +148,8 @@ PlaylistWindow::PlaylistWindow()
     new KAction( i18n("Script Manager"), Amarok::icon( "scripts" ), 0, this, SLOT(showScriptSelector()), ac, "script_manager" );
     new KAction( i18n("Queue Manager"), Amarok::icon( "queue" ), 0, this, SLOT(showQueueManager()), ac, "queue_manager" );
     new KAction( i18n("Statistics"), Amarok::icon( "info" ), 0, this, SLOT(showStatistics()), ac, "statistics" );
+    new KAction( i18n("Update Collection"), Amarok::icon( "refresh" ), 0, CollectionDB::instance(), SLOT( scanModifiedDirs() ), actionCollection(), "update_collection" );
+
 
     m_lastfmTags << "Alternative" << "Ambient" << "Chill Out" << "Classical" << "Dance"
                  << "Electronica" << "Favorites" << "Heavy Metal" << "Hip Hop" << "Indie Rock"
@@ -351,6 +353,7 @@ void PlaylistWindow::init()
     actionCollection()->action("script_manager")->plug( m_toolsMenu );
     actionCollection()->action("statistics")->plug( m_toolsMenu );
     m_toolsMenu->insertSeparator();
+    actionCollection()->action("update_collection")->plug( m_toolsMenu );
     m_toolsMenu->insertItem( SmallIconSet( Amarok::icon( "rescan" ) ), i18n("&Rescan Collection"), Amarok::Menu::ID_RESCAN_COLLECTION );
 
     #if defined HAVE_XMMS || defined HAVE_LIBVISUAL

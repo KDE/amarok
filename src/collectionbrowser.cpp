@@ -137,9 +137,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
 
     KActionCollection* ac = new KActionCollection( this );
-    m_scanAction = new KAction( i18n( "Scan Changes" ), Amarok::icon( "refresh" ), 0, CollectionDB::instance(), SLOT( scanModifiedDirs() ), ac, "Start Scan" );
 
-    // we need m_scanAction to be initialized before CollectionView's CTOR
     m_view = new CollectionView( this );
     m_view->installEventFilter( this );
 
@@ -379,13 +377,6 @@ CollectionBrowser::layoutToolbar()
     m_toolbar->insertLineSeparator();
 
     m_showDividerAction->plug( m_toolbar );
-
-    if ( !AmarokConfig::monitorChanges() ) {
-        m_toolbar->setIconText( KToolBar::IconTextRight, false );
-        m_scanAction->plug( m_toolbar );
-        m_toolbar->setIconText( KToolBar::IconOnly, false );
-    }
-
     m_configureAction->plug( m_toolbar );
 
     //This would break things if the toolbar is too big, see bug #121915
@@ -709,9 +700,6 @@ CollectionView::setupDirs()  //SLOT
 
         if ( rescan )
             CollectionDB::instance()->startScan();
-
-        m_parent->m_scanAction->setEnabled( !AmarokConfig::monitorChanges() );
-        m_parent->layoutToolbar();
     }
 }
 
@@ -719,7 +707,7 @@ CollectionView::setupDirs()  //SLOT
 void
 CollectionView::scanStarted() // SLOT
 {
-    m_parent->m_scanAction->setEnabled( false );
+    Amarok::actionCollection()->action("update_collection")->setEnabled( false );
 }
 
 
@@ -731,7 +719,7 @@ CollectionView::scanDone( bool changed ) //SLOT
         renderView(true);
     }
 
-    m_parent->m_scanAction->setEnabled( !AmarokConfig::monitorChanges() );
+    Amarok::actionCollection()->action("update_collection")->setEnabled( true );
 }
 
 

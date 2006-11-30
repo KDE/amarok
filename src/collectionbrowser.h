@@ -84,7 +84,6 @@ class CollectionBrowser: public QVBox
         KTabBar* m_tabs; //tree-view, flat-view tabs
         class KToolBar    *m_toolbar;
         KAction           *m_configureAction;
-        KAction           *m_scanAction;
         // For iPod-style browsing
         KAction           *m_ipodIncrement, *m_ipodDecrement;
         class KToolBar    *m_ipodToolbar;
