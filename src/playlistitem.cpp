@@ -727,7 +727,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
             }
             p.setFont( font );
             if( m_isNew )
-                p.setPen( Qt::red );
+                p.setPen( Qt::blue );
             else
                 p.setPen( textc );
             
