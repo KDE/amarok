@@ -570,6 +570,9 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
 void
 Playlist::insertMediaSql( const QString& sql, int options )
 {
+    const bool isPlaying   = EngineController::engine()->state() == Engine::Playing;
+    bool directPlay = (options & DirectPlay) || ((options & StartPlay) && !isPlaying);
+
     // TODO Implement more options
     PlaylistItem *after = 0;
 
@@ -579,7 +582,7 @@ Playlist::insertMediaSql( const QString& sql, int options )
         after = lastItem();
 
     setSorting( NO_SORT );
-    ThreadWeaver::instance()->queueJob( new SqlLoader( sql, after ) );
+    ThreadWeaver::instance()->queueJob( new SqlLoader( sql, after, directPlay ) );
 }
 
 void

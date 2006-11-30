@@ -158,7 +158,7 @@ class SqlLoader : public UrlLoader
     const QString m_sql;
 
 public:
-    SqlLoader( const QString &sql, QListViewItem *after );
+    SqlLoader( const QString &sql, QListViewItem *after, bool playFirstUrl = false );
 
     virtual bool doJob();
 };
