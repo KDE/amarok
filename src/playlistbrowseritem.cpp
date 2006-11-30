@@ -395,7 +395,7 @@ PlaylistCategory::showContextMenu( const QPoint &position )
 
     if( isFolder() ) {
         menu.insertItem( SmallIconSet( Amarok::icon("edit") ), i18n( "&Rename" ), RENAME );
-        menu.insertItem( SmallIconSet( Amarok::icon("remove_from_playlist") ), i18n( "&Delete" ), REMOVE );
+        menu.insertItem( SmallIconSet( Amarok::icon("remove") ), i18n( "&Delete" ), REMOVE );
         menu.insertSeparator();
     }
 
@@ -859,10 +859,11 @@ void PlaylistEntry::showContextMenu( const QPoint &position )
 {
     KPopupMenu menu( listView() );
 
-    enum Id { LOAD, ADD, RENAME, DELETE, MEDIADEVICE_COPY, MEDIADEVICE_SYNC };
+    enum Id { LOAD, APPEND, QUEUE, RENAME, DELETE, MEDIADEVICE_COPY, MEDIADEVICE_SYNC };
 
     menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), LOAD );
-    menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), ADD );
+    menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
+    //menu.insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), i18n( "&Queue Track" ), QUEUE );
 
     if( MediaBrowser::isAvailable() )
     {
@@ -883,12 +884,16 @@ void PlaylistEntry::showContextMenu( const QPoint &position )
     switch( menu.exec( position ) )
     {
         case LOAD:
-            slotDoubleClicked();
+            Playlist::instance()->clear();
+            Playlist::instance()->setPlaylistName( text(0), true );
+            //FALL THROUGH
+        case APPEND:
+            PlaylistBrowser::instance()->addSelectedToPlaylist( Playlist::Append );
             break;
-        case ADD:
-            PlaylistBrowser::instance()->addSelectedToPlaylist();
+        case QUEUE:
+            PlaylistBrowser::instance()->addSelectedToPlaylist( Playlist::Queue );
             break;
-        case RENAME:
+         case RENAME:
             PlaylistBrowser::instance()->renameSelectedItem();
             break;
         case DELETE:
@@ -1056,11 +1061,11 @@ void PlaylistTrackItem::slotDoubleClicked()
 void PlaylistTrackItem::showContextMenu( const QPoint &position )
 {
     KPopupMenu menu( listView() );
-    enum Actions { MAKE, APPEND, QUEUE, BURN, REMOVE, INFO };
+    enum Actions { LOAD, APPEND, QUEUE, BURN, REMOVE, INFO };
 
+    menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), LOAD );
     menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
     menu.insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), i18n( "&Queue Track" ), QUEUE );
-    menu.insertItem( SmallIconSet( Amarok::icon( "playlist" ) ), i18n( "&Make Playlist" ), MAKE );
 
 
     menu.insertSeparator();
@@ -1074,10 +1079,10 @@ void PlaylistTrackItem::showContextMenu( const QPoint &position )
     menu.insertItem( SmallIconSet( Amarok::icon( "info" ) ), i18n( "Edit Track &Information..." ), INFO );
 
     switch( menu.exec( position ) ) {
-        case MAKE:
+        case LOAD:
             Playlist::instance()->clear(); //FALL THROUGH
         case APPEND:
-            PlaylistBrowser::instance()->addSelectedToPlaylist();
+            PlaylistBrowser::instance()->addSelectedToPlaylist( Playlist::Append );
             break;
         case QUEUE:
             PlaylistBrowser::instance()->addSelectedToPlaylist( Playlist::Queue );
@@ -1261,10 +1266,12 @@ void
 StreamEntry::showContextMenu( const QPoint &position )
 {
     KPopupMenu menu( listView() );
-    enum Actions { LOAD, ADD, EDIT, REMOVE };
+    enum Actions { LOAD, APPEND, QUEUE, EDIT, REMOVE };
 
     menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), LOAD );
-    menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), ADD );
+    menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
+    if( dynamic_cast<LastFmEntry*>(this) )
+        menu.insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), i18n( "&Queue Track" ), QUEUE );
     menu.insertSeparator();
 
     // Forbid editing non removable items
@@ -1279,10 +1286,14 @@ StreamEntry::showContextMenu( const QPoint &position )
     switch( menu.exec( position ) )
     {
         case LOAD:
-            slotDoubleClicked();
+            Playlist::instance()->clear();
+            Playlist::instance()->setPlaylistName( text(0) );
+            //FALL THROUGH
+        case APPEND:
+            PlaylistBrowser::instance()->addSelectedToPlaylist( Playlist::Append );
             break;
-        case ADD:
-            PlaylistBrowser::instance()->addSelectedToPlaylist();
+        case QUEUE:
+            PlaylistBrowser::instance()->addSelectedToPlaylist( Playlist::Queue );
             break;
         case EDIT:
             PlaylistBrowser::instance()->editStreamURL( this, !isKept() ); //only editable if we keep it
@@ -2263,25 +2274,30 @@ PodcastChannel::showContextMenu( const QPoint &position )
 {
     KPopupMenu menu( listView() );
 
-    enum Actions { LOAD, ADD, DELETE, RESCAN, LISTENED, CONFIG };
+    enum Actions { LOAD, APPEND, QUEUE, DELETE, RESCAN, LISTENED, CONFIG };
 
-    menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ),                i18n( "&Load" ), LOAD );
-    menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ),         i18n( "&Append to Playlist" ), ADD );
-    menu.insertItem( SmallIconSet( Amarok::icon( "remove_from_playlist" ) ), i18n( "&Delete" ), DELETE );
+    menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), LOAD );
+    menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
+    menu.insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), i18n( "&Queue Tracks" ), QUEUE );
     menu.insertSeparator();
-    menu.insertItem( SmallIconSet( Amarok::icon( "refresh" ) ),   i18n( "&Check for Updates" ), RESCAN );
-    menu.insertItem( SmallIconSet( Amarok::icon( "artist" ) ),    i18n( "Mark as &Listened" ),  LISTENED );
-    menu.insertItem( SmallIconSet( Amarok::icon( "configure" ) ), i18n( "&Configure..." ),      CONFIG );
+    menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n( "&Delete" ), DELETE );
+    menu.insertItem( SmallIconSet( Amarok::icon( "refresh" ) ), i18n( "&Check for Updates" ), RESCAN );
+    menu.insertItem( SmallIconSet( Amarok::icon( "artist" ) ), i18n( "Mark as &Listened" ), LISTENED );
+    menu.insertItem( SmallIconSet( Amarok::icon( "configure" ) ), i18n( "&Configure..." ), CONFIG );
     menu.setItemEnabled( LISTENED, hasNew() );
 
     switch( menu.exec( position ) )
     {
         case LOAD:
-            slotDoubleClicked();
+            Playlist::instance()->clear();
+            Playlist::instance()->setPlaylistName( text(0) );
+            //FALL THROUGH
+        case APPEND:
+            PlaylistBrowser::instance()->addSelectedToPlaylist( Playlist::Append );
             break;
 
-        case ADD:
-            PlaylistBrowser::instance()->addSelectedToPlaylist();
+        case QUEUE:
+            PlaylistBrowser::instance()->addSelectedToPlaylist( Playlist::Queue );
             break;
 
         case RESCAN:
@@ -2928,9 +2944,10 @@ PodcastEpisode::showContextMenu( const QPoint &position )
 {
     KPopupMenu menu( listView() );
 
-    enum Actions { LOAD, ADD, GET, ASSOCIATE, DELETE, MEDIA_DEVICE, LISTENED, OPEN_WITH /* has to be last */ };
-    menu.insertItem( SmallIconSet( Amarok::icon( "play" ) ), i18n( "&Play" ), LOAD );
-    menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), ADD );
+    enum Actions { LOAD, APPEND, QUEUE, GET, ASSOCIATE, DELETE, MEDIA_DEVICE, LISTENED, OPEN_WITH /* has to be last */ };
+    menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), LOAD );
+    menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
+    menu.insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), i18n( "&Queue Track" ), QUEUE );
 
     int accuracy = 0;
     KMimeType::Ptr mimetype;
@@ -2972,8 +2989,7 @@ PodcastEpisode::showContextMenu( const QPoint &position )
     menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n( "&Download Media" ), GET );
     menu.insertItem( SmallIconSet( Amarok::icon( "attach" ) ), i18n( "&Associate with Local File" ), ASSOCIATE );
     menu.insertItem( SmallIconSet( Amarok::icon( "artist" ) ),   i18n( "Mark as &Listened" ),  LISTENED );
-    menu.insertItem( SmallIconSet( Amarok::icon("remove_from_playlist") ),
-                        i18n( "De&lete Downloaded Podcast" ), DELETE );
+    menu.insertItem( SmallIconSet( Amarok::icon("remove") ), i18n( "De&lete Downloaded Podcast" ), DELETE );
 
     menu.setItemEnabled( GET, !isOnDisk() );
     menu.setItemEnabled( ASSOCIATE, !isOnDisk() );
@@ -2984,14 +3000,18 @@ PodcastEpisode::showContextMenu( const QPoint &position )
     switch( id )
     {
         case LOAD:
-            slotDoubleClicked();
+            Playlist::instance()->clear();
+            Playlist::instance()->setPlaylistName( text(0) );
+            //FALL THROUGH
+        case APPEND:
+            PlaylistBrowser::instance()->addSelectedToPlaylist( Playlist::Append );
             break;
 
-        case ADD:
-            PlaylistBrowser::instance()->addSelectedToPlaylist();
+        case QUEUE:
+            PlaylistBrowser::instance()->addSelectedToPlaylist( Playlist::Queue );
             break;
 
-        case GET:
+         case GET:
             PlaylistBrowser::instance()->downloadSelectedPodcasts();
             break;
 
