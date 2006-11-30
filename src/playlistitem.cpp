@@ -63,6 +63,7 @@ PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi, bool e
         , m_album( 0 )
         , m_deleteAfterEdit( false )
         , m_isBeingRenamed( false )
+        , m_isNew( true )
 {
     setDragEnabled( true );
 
@@ -688,8 +689,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
         }
         #endif
 
-        const QColor textc = isSelected() ? _cg.highlightedText()
-                            : _cg.text();
+        const QColor textc = isSelected() ? _cg.highlightedText() : _cg.text();
 
         buf.fill( bg );
 
@@ -726,7 +726,11 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                                 + painter->fontMetrics().minRightBearing();
             }
             p.setFont( font );
-            p.setPen( textc );
+            if( m_isNew )
+                p.setPen( Qt::red );
+            else
+                p.setPen( textc );
+            
             const int _width = width - leftMargin - margin + minbearing - 1; // -1 seems to be necessary
             const QString _text = KStringHandler::rPixelSqueeze( colText, painter->fontMetrics(), _width );
             p.drawText( leftMargin, 0, _width, height(), align, _text );

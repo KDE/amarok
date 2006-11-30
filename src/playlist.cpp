@@ -4426,6 +4426,14 @@ Playlist::saveState( QStringList &list )
       saveXML( fileName );
       list.append( fileName );
 
+      // Reset isNew state of all items in the playlist (determines font coloring)
+      PlaylistItem* item = static_cast<PlaylistItem*>( firstChild() ); 
+      while( item ) {
+         item->setIsNew( false );
+         item = item->nextSibling();
+      }
+      triggerUpdate();
+
       return true;
    }
 

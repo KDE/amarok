@@ -81,6 +81,7 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
         bool isBeingRenamed() const { return m_isBeingRenamed; }
         void setDeleteAfterEditing( bool dae ) { m_deleteAfterEdit = dae; }
         bool deleteAfterEditing() const { return m_deleteAfterEdit; }
+        void setIsNew( bool is ) { m_isNew = is; }
 
         /// convenience functions
         Playlist *listView() const { return reinterpret_cast<Playlist*>( KListViewItem::listView() ); }
@@ -162,6 +163,7 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
         bool m_filestatusEnabled;
         bool m_deleteAfterEdit;
         bool m_isBeingRenamed;
+        bool m_isNew;
 
         static bool s_pixmapChanged;
         static const QString &editingText();
