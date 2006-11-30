@@ -5,8 +5,8 @@ Amarok ChangeLog
 
 VERSION 1.4.5
   FEATURES:
-    * Show rating as star in flat collection view. Patch by Daniel Faust
-      <hessijames@gmail.com>.
+    * Show rating as stars in flat collection view. Patch by Daniel Faust
+      <hessijames@gmail.com>. (BR 133797)
     * Synchronize play count, last played time and date of modification to
       iPods. Patch by Michael <michael003@gmail.com>. (BR 136759)
     * Propose list of composers in collection when editing the composer tag
@@ -21,6 +21,9 @@ VERSION 1.4.5
       you move and rename them.
 
   CHANGES:
+    * Double-clicked items in sidebar and urls passed on the command line
+      are treated equally: append them to playlist if not yet there and start
+      playing the first if nothing is playing.
     * "Scan Changes" button was replaced with "Update Collection" menu entry.
     * Consistent double-click behavior in sidebar. (BR 138125)
     * Propose name of currently loaded playlist when saving current one.

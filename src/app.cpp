@@ -229,17 +229,16 @@ void App::handleCliArgs() //static
                 list << url;
         }
 
-        int options;
-        bool appendAsDefault = Amarok::config()->readBoolEntry( "AppendAsDefault", false );
+        int options = Playlist::DefaultOptions;
         if( args->isSet( "queue" ) )
            options = Playlist::Queue;
-        else if( args->isSet( "append" ) || args->isSet( "enqueue" ) || appendAsDefault ) {
+        else if( args->isSet( "append" ) || args->isSet( "enqueue" ) )
            options = Playlist::Append;
-           if( args->isSet( "play" ) )
-              options |= Playlist::DirectPlay;
-        }
-        else
-           options = Playlist::Replace | Playlist::DirectPlay;
+        else if( args->isSet( "load" ) )
+            options = Playlist::Replace;
+
+        if( args->isSet( "play" ) )
+            options |= Playlist::DirectPlay;
 
         Playlist::instance()->insertMedia( list, options );
     }
@@ -336,6 +335,8 @@ void App::initCliArgs( int argc, char *argv[] ) //static
             { "e", 0, 0 },
             { "enqueue", I18N_NOOP("See append, available for backwards compatability"), 0 },
             { "queue", I18N_NOOP("Queue URLs after the currently playing track"), 0 },
+            { "l", 0, 0 },
+            { "load", I18N_NOOP("Load URLs, replacing current playlist"), 0 },
             { "m", 0, 0 },
             { "toggle-playlist-window", I18N_NOOP("Toggle the Playlist-window"), 0 },
             { "wizard", I18N_NOOP( "Run first-run wizard" ), 0 },
