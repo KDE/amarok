@@ -3506,8 +3506,9 @@ void SmartPlaylist::showContextMenu( const QPoint &position )
     switch( menu.exec( position ) )
     {
         case LOAD:
-            slotDoubleClicked();
-            break;
+            Playlist::instance()->clear();
+            Playlist::instance()->setPlaylistName( text(0) );
+            //FALL THROUGH
         case ADD:
             Playlist::instance()->insertMediaSql( query(), Playlist::Append );
             break;
