@@ -185,11 +185,11 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
     m_pPlaylistButton->setOn( parent->isShown() || enablePlaylist );
 
 
-    m_pDescription = createWidget<QLabel>( QRect(4,6, 130,10), this );
+    m_pDescription = createWidget<QLabel>( QRect(4,6, 250,10), this );
     m_pTimeSign    = createWidget<QLabel>( QRect(6,40, 10,10), this, 0, Qt::WRepaintNoErase );
     m_pVolSign     = createWidget<QLabel>( QRect(295,7, 9,8),  this );
 
-    m_pDescription->setPixmap( getPNG( "description" ) );
+    m_pDescription->setText( i18n( "Title-Artist|Album|Length" ) );
     m_pVolSign    ->setPixmap( getPNG( "vol_speaker" ) );
 
 
