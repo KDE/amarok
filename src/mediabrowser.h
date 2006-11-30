@@ -81,6 +81,7 @@ class LIBAMAROK_EXPORT MediaItem : public KListViewItem
         virtual void setRating( int /*rating*/ ) {}
         virtual bool ratingChanged()  const { return false; }
         virtual void setLastPlayed( uint ) {}
+        virtual void syncStatsFromPath( const QString &path );
         virtual long size()           const;
         virtual MediaDevice *device() const { return m_device; }
         virtual bool listened()       const { return m_listened; }

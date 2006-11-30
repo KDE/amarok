@@ -2803,6 +2803,24 @@ MediaDevice::syncStatsFromDevice( MediaItem *root )
 }
 
 void
+MediaItem::syncStatsFromPath( const QString &url )
+{
+    if( url.isEmpty() )
+        return;
+
+    // copy Amarok rating, play count and last played time to device
+    int rating = CollectionDB::instance()->getSongRating( url )*10;
+    if( rating )
+        setRating( rating );
+    int playcount = CollectionDB::instance()->getPlayCount( url );
+    if( playcount > played() )
+        setPlayCount( playcount );
+    QDateTime lastplay = CollectionDB::instance()->getLastPlay( url );
+    if( lastplay > playTime() )
+        setLastPlayed( lastplay.toTime_t() );
+}
+
+void
 MediaDevice::syncStatsToDevice( MediaItem *root )
 {
     MediaItem *it = static_cast<MediaItem *>( m_view->firstChild() );
@@ -2820,15 +2838,7 @@ MediaDevice::syncStatsToDevice( MediaItem *root )
             {
                 const MetaBundle *bundle = it->bundle();
                 QString url = CollectionDB::instance()->getURL( *bundle );
-
-                if( url != QString::null )
-                {
-                    // copy Amarok rating, play count and last played time to device
-                    int rating = CollectionDB::instance()->getSongRating( url )*10;
-                    it->setRating( rating );
-                    it->setPlayCount( CollectionDB::instance()->getPlayCount( url ) );
-                    it->setLastPlayed( CollectionDB::instance()->getLastPlay( url ).toTime_t() );
-                }
+                it->syncStatsFromPath( url );
             }
             break;
 
@@ -3015,8 +3025,7 @@ MediaDevice::transferFiles()
             if( !item )
                 continue;
 
-            int rating = CollectionDB::instance()->getSongRating( (*it).url().path() ) * 10;
-            item->setRating( rating );
+            item->syncStatsFromPath( (*it).url().path() );
 
             if( m_playlistItem && !playlist.isEmpty() )
             {

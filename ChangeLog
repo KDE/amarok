@@ -47,6 +47,7 @@ VERSION 1.4.5
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
+    * Only synchronize already set values to media devices. (BR 138150)
     * Correctly update total playlist play time when removing last.fm
       streams. Patch by Modestas Vainius <geromanas@mailas.com>. (BR 134333)
     * File organization jobs could not be canceled. Patch by Wenli Liu
