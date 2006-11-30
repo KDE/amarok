@@ -1209,7 +1209,7 @@ MediaView::invokeItem( QListViewItem *i )
         return;
 
     KURL::List urls = nodeBuildDragList( item );
-    Playlist::instance()->insertMedia( urls, Playlist::Unique | Playlist::Append );
+    Playlist::instance()->insertMedia( urls, Playlist::Unique | Playlist::Append | Playlist::StartPlay );
 }
 
 void

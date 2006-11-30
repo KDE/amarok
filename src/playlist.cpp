@@ -479,7 +479,8 @@ Playlist::insertMedia( KURL::List list, int options )
         return; // don't add empty items
     }
 
-    bool directPlay = options & DirectPlay;
+    const bool isPlaying   = EngineController::engine()->state() == Engine::Playing;
+    bool directPlay = (options & DirectPlay) || ((options & StartPlay) && !isPlaying);
 
     if( options & Replace )
        clear();

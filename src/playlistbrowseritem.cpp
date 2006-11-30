@@ -850,8 +850,7 @@ void PlaylistEntry::updateInfo()
 
 void PlaylistEntry::slotDoubleClicked()
 {
-    Playlist::instance()->insertMedia( url(), Playlist::Replace );
-    Playlist::instance()->setPlaylistName( text(0), true );
+    Playlist::instance()->insertMedia( url(), Playlist::Append | Playlist::Unique | Playlist::StartPlay );
 }
 
 
@@ -1053,8 +1052,7 @@ const KURL &PlaylistTrackItem::url()
 
 void PlaylistTrackItem::slotDoubleClicked()
 {
-    KURL::List list( url() );
-    Playlist::instance()->insertMedia( list, Playlist::DirectPlay );
+    Playlist::instance()->insertMedia( url(), Playlist::Append | Playlist::Unique | Playlist::StartPlay );
 }
 
 
@@ -1196,7 +1194,7 @@ void StreamEntry::updateInfo()
 
 void StreamEntry::slotDoubleClicked()
 {
-    Playlist::instance()->insertMedia( url(), Playlist::DirectPlay );
+    Playlist::instance()->insertMedia( url(), Playlist::Append | Playlist::Unique | Playlist::StartPlay );
 }
 
 void StreamEntry::setup()
@@ -2144,8 +2142,7 @@ PodcastChannel::slotDoubleClicked()
         child = child->nextSibling();
     }
 
-    Playlist::instance()->insertMedia( list, Playlist::Replace );
-    Playlist::instance()->setPlaylistName( text(0) );
+    Playlist::instance()->insertMedia( list, Playlist::Append | Playlist::Unique | Playlist::StartPlay );
     setNew( false );
 }
 
@@ -2934,7 +2931,7 @@ PodcastEpisode::slotDoubleClicked()
         list.append( localUrl() ):
         list.append( url()      );
 
-    Playlist::instance()->insertMedia( list, Playlist::DirectPlay );
+    Playlist::instance()->insertMedia( list, Playlist::Append | Playlist::Unique | Playlist::StartPlay );
     setListened();
 }
 
@@ -3476,8 +3473,7 @@ void SmartPlaylist::slotDoubleClicked()
 {
     if( !query().isEmpty() )
     {
-        Playlist::instance()->insertMediaSql( query(), Playlist::Replace );
-        Playlist::instance()->setPlaylistName( text(0) );
+        Playlist::instance()->insertMediaSql( query(), Playlist::Append | Playlist::Unique | Playlist::StartPlay );
     }
 }
 

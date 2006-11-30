@@ -87,6 +87,7 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         static const int Replace    = Clear;
         static const int DirectPlay = 8;     /// start playback of the first item in the list
         static const int Unique     = 16;    /// don't insert anything already in the playlist
+        static const int StartPlay  = 32;    /// start playback of the first item in the list if nothing else playing
 
         // it's really just the *ListView parts we want to hide...
         QScrollView *qscrollview() const

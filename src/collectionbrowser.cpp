@@ -1264,9 +1264,9 @@ CollectionView::invokeItem( QListViewItem* item ) //SLOT
     setCurrentItem( item );
     //append and prevent doubles in playlist
     if( item->isExpandable()  ||  m_viewMode == modeIpodView )
-        Playlist::instance()->insertMedia( listSelected(), Playlist::Unique | Playlist::Append );
+        Playlist::instance()->insertMedia( listSelected(), Playlist::Unique | Playlist::Append | Playlist::StartPlay );
     else
-        Playlist::instance()->insertMedia( static_cast<CollectionItem*>( item )->url(), Playlist::Unique | Playlist::Append );
+        Playlist::instance()->insertMedia( static_cast<CollectionItem*>( item )->url(), Playlist::Unique | Playlist::Append | Playlist::StartPlay );
 
 }
 
