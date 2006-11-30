@@ -110,7 +110,7 @@ const QString &MetaBundle::exactColumnName( int c ) //static
 {
     // construct static qstrings to avoid constructing them all the time
     static QString columns[] = {
-        "Filename", "Title", "Artist", "Composer", "Year", "Album", "DiscNumber", "Track", "BPM", "Genre", "Comment",
+        "Filename", "Title", "Artist", "AlbumArtist", "Composer", "Year", "Album", "DiscNumber", "Track", "BPM", "Genre", "Comment",
         "Directory", "Type", "Length", "Bitrate", "SampleRate", "Score", "Rating", "PlayCount", "LastPlayed",
         "Mood", "Filesize" };
     static QString error( "ERROR" );
@@ -128,6 +128,7 @@ const QString MetaBundle::prettyColumnName( int index ) //static
         case Filename:   return i18n( "Filename"    );
         case Title:      return i18n( "Title"       );
         case Artist:     return i18n( "Artist"      );
+        case AlbumArtist:return i18n( "Album Artist");
         case Composer:   return i18n( "Composer"    );
         case Year:       return i18n( "Year"        );
         case Album:      return i18n( "Album"       );
@@ -312,6 +313,7 @@ MetaBundle::operator=( const MetaBundle& bundle )
     m_url = bundle.m_url;
     m_title = bundle.m_title;
     m_artist = bundle.m_artist;
+    m_albumArtist = bundle.m_albumArtist;
     m_composer = bundle.m_composer;
     m_album = bundle.m_album;
     m_comment = bundle.m_comment;
@@ -387,6 +389,7 @@ MetaBundle::operator==( const MetaBundle& bundle ) const
 {
     return uniqueId()   == bundle.uniqueId() && //first, since if using IDs will return faster
            artist()     == bundle.artist() &&
+           albumArtist() == bundle.albumArtist() &&
            title()      == bundle.title() &&
            composer()   == bundle.composer() &&
            album()      == bundle.album() &&
@@ -539,9 +542,12 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
                 if ( !file->ID3v2Tag()->frameListMap()["TCOM"].isEmpty() )
                     setComposer( TStringToQString( file->ID3v2Tag()->frameListMap()["TCOM"].front()->toString() ).stripWhiteSpace() );
 
+                if ( !file->ID3v2Tag()->frameListMap()["TPE2"].isEmpty() ) // non-standard: Apple, Microsoft
+                    setAlbumArtist( TStringToQString( file->ID3v2Tag()->frameListMap()["TPE2"].front()->toString() ).stripWhiteSpace() );
+                    
                 if ( !file->ID3v2Tag()->frameListMap()["TCMP"].isEmpty() )
                     compilation = TStringToQString( file->ID3v2Tag()->frameListMap()["TCMP"].front()->toString() ).stripWhiteSpace();
-
+                    
                 if(images) {
                     loadImagesFromTag( *file->ID3v2Tag(), *images );
                 }
@@ -679,6 +685,7 @@ void MetaBundle::copyFrom( const MetaBundle &bundle )
 {
     setTitle( bundle.title() );
     setArtist( bundle.artist() );
+    setAlbumArtist( bundle.albumArtist() );
     setComposer( bundle.composer() );
     setAlbum( bundle.album() );
     setYear( bundle.year() );
@@ -733,6 +740,7 @@ void MetaBundle::setExactText( int column, const QString &newText )
     {
         case Title:      setTitle(      newText );           break;
         case Artist:     setArtist(     newText );           break;
+        case AlbumArtist: setAlbumArtist( newText );         break;
         case Composer:   setComposer(   newText );           break;
         case Year:       setYear(       newText.toInt() );   break;
         case Album:      setAlbum(      newText );           break;
@@ -761,6 +769,7 @@ QString MetaBundle::exactText( int column, bool ensureCached ) const
         case Filename:   return filename();
         case Title:      return title();
         case Artist:     return artist();
+        case AlbumArtist: return albumArtist();
         case Composer:   return composer();
         case Year:       return QString::number( year() );
         case Album:      return album();
@@ -794,6 +803,7 @@ QString MetaBundle::prettyText( int column ) const
         case Filename:   text = isFile() ? MetaBundle::prettyTitle(filename()) : url().prettyURL();  break;
         case Title:      text = title().isEmpty() ? MetaBundle::prettyTitle( filename() ) : title(); break;
         case Artist:     text = artist();                                                            break;
+        case AlbumArtist: text = albumArtist();                                                      break;
         case Composer:   text = composer();                                                          break;
         case Year:       text = year() ? QString::number( year() ) : QString::null;                  break;
         case Album:      text = album();                                                             break;
@@ -1271,7 +1281,9 @@ MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value )
             case ( discNumberTag ): id = "TPOS"; break;
             case ( bpmTag ): id = "TBPM"; break;
             case ( compilationTag ): id = "TCMP"; break;
+            case ( albumArtistTag ): id = "TPE2"; break; // non-standard: Apple, Microsoft
         }
+        fprintf(stderr, "Setting extended tag %s to %s\n", id, value.utf8().data());
         TagLib::MPEG::File *mpegFile = dynamic_cast<TagLib::MPEG::File *>( file );
         if ( mpegFile && mpegFile->ID3v2Tag() )
         {
@@ -1298,6 +1310,7 @@ MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value )
             case ( discNumberTag ): id = "DISCNUMBER"; break;
             case ( bpmTag ): id = "BPM"; break;
             case ( compilationTag ): id = "COMPILATION"; break;
+            case ( albumArtistTag ): id = "ALBUMARTIST"; break; // non-standard: Amarok
         }
         TagLib::Ogg::Vorbis::File *oggFile = dynamic_cast<TagLib::Ogg::Vorbis::File *>( file );
         if ( oggFile && oggFile->tag() )
@@ -1315,6 +1328,7 @@ MetaBundle::setExtendedTag( TagLib::File *file, int tag, const QString value )
             case ( discNumberTag ): id = "DISCNUMBER"; break;
             case ( bpmTag ): id = "BPM"; break;
             case ( compilationTag ): id = "COMPILATION"; break;
+            case ( albumArtistTag ): id = "ALBUMARTIST"; break; // non-standard: Amarok
         }
         TagLib::FLAC::File *flacFile = dynamic_cast<TagLib::FLAC::File *>( file );
         if ( flacFile && flacFile->xiphComment() )
@@ -1447,6 +1461,7 @@ MetaBundle::save( TagLib::FileRef* fileref )
 
             if ( hasExtendedMetaInformation() )
             {
+                setExtendedTag( f->file(), albumArtistTag, albumArtist() );
                 setExtendedTag( f->file(), composerTag, composer().string().stripWhiteSpace() );
                 setExtendedTag( f->file(), discNumberTag, discNumber() ? QString::number( discNumber() ) : QString() );
                 setExtendedTag( f->file(), bpmTag, bpm() ? QString::number( bpm() ) : QString() );
@@ -1740,6 +1755,9 @@ void MetaBundle::setBpm( float bpm )
 void MetaBundle::setComposer( const AtomicString &composer )
 { aboutToChange( Composer ); m_composer = composer; reactToChange( Composer ); }
 
+void MetaBundle::setAlbumArtist( const AtomicString &albumArtist )
+{ aboutToChange( AlbumArtist ); m_albumArtist = albumArtist; reactToChange( AlbumArtist ); }
+
 void MetaBundle::setPlayCount( int playcount )
 { aboutToChange( PlayCount ); m_playCount = playcount; reactToChange( PlayCount ); }
 
@@ -1765,6 +1783,7 @@ void MetaBundle::detach()
 
     m_title = QDeepCopy<QString>(m_title);
     m_artist = m_artist.deepCopy();
+    m_albumArtist = m_albumArtist.deepCopy();
     m_album = m_album.deepCopy();
     m_comment = m_comment.deepCopy();
     m_composer = m_composer.deepCopy();

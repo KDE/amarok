@@ -80,6 +80,7 @@ void MetaBundle::XmlLoader::newTag( const QString &name, const QString &value )
             {
                 case Artist:
                 case Composer:
+                case AlbumArtist:
                 case Year:
                 case Album:
                 case DiscNumber:
@@ -109,6 +110,7 @@ void MetaBundle::XmlLoader::newTag( const QString &name, const QString &value )
             {
                 case Artist:
                 case Composer:
+                case AlbumArtist:
                 case Year:
                 case Album:
                 case DiscNumber:

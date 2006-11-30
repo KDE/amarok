@@ -61,6 +61,7 @@ public:
         Filename = 0,
         Title,
         Artist,
+        AlbumArtist,
         Composer,
         Year,
         Album,
@@ -244,6 +245,7 @@ public: //accessors
     const KURL &url()               const;
     QString      title()     const;
     AtomicString artist()    const;
+    AtomicString albumArtist() const;
     AtomicString composer()  const;
     AtomicString album()     const;
     AtomicString genre()     const;
@@ -295,6 +297,7 @@ public: //modifiers
     void setPath( const QString &path );
     void setTitle( const QString &title );
     void setArtist( const AtomicString &artist );
+    void setAlbumArtist( const AtomicString &albumArtist );
     void setComposer( const AtomicString &composer );
     void setAlbum( const AtomicString &album );
     void setGenre( const AtomicString &genre );
@@ -343,7 +346,7 @@ public: //static helper functions
     static QStringList genreList();
 
 protected:
-    enum ExtendedTags { composerTag,  discNumberTag, bpmTag, compilationTag };
+    enum ExtendedTags { composerTag, albumArtistTag, discNumberTag, bpmTag, compilationTag };
 
     /** Called before the tags in \p columns are changed. */
     virtual void aboutToChange( const QValueList<int> &columns );
@@ -360,6 +363,7 @@ protected:
     KURL m_url;
     QString m_title;
     AtomicString m_artist;
+    AtomicString m_albumArtist;
     AtomicString m_composer;
     AtomicString m_album;
     AtomicString m_comment;
@@ -483,11 +487,13 @@ inline QString  MetaBundle::directory()  const
 {
     return url().isLocalFile() ? url().directory() : url().upURL().prettyURL();
 }
-inline QString MetaBundle::title()      const { return m_title; }
-inline AtomicString MetaBundle::artist()     const { return m_artist; }
-inline AtomicString MetaBundle::album()      const { return m_album; }
-inline AtomicString MetaBundle::comment()    const { return m_comment; }
-inline AtomicString MetaBundle::genre()      const { return m_genre; }
+inline QString MetaBundle::title()            const { return m_title; }
+inline AtomicString MetaBundle::artist()      const { return m_artist; }
+inline AtomicString MetaBundle::album()       const { return m_album; }
+inline AtomicString MetaBundle::comment()     const { return m_comment; }
+inline AtomicString MetaBundle::genre()       const { return m_genre; }
+inline AtomicString MetaBundle::composer()    const { return m_composer; }
+inline AtomicString MetaBundle::albumArtist() const { return m_albumArtist; }
 inline QString MetaBundle::streamName() const { return m_streamName; }
 inline QString MetaBundle::streamUrl()  const { return m_streamUrl; }
 inline QString MetaBundle::uniqueId()   const { return m_uniqueId; }
@@ -504,7 +510,6 @@ inline int MetaBundle::compilation() const
         return CompilationUnknown;
 }
 
-inline AtomicString MetaBundle::composer() const { return m_composer; }
 
 inline QString MetaBundle::type() const
 {
