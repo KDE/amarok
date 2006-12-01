@@ -105,7 +105,7 @@ class UrlLoader : public ThreadWeaver::DependentJob
 Q_OBJECT
 
 public:
-    UrlLoader( const KURL::List&, QListViewItem*, bool playFirstUrl = false );
+    UrlLoader( const KURL::List&, QListViewItem*, bool playFirstUrl = false, bool coloring = true );
    ~UrlLoader();
 
     static const uint OPTIMUM_BUNDLE_COUNT = 50;
@@ -133,6 +133,7 @@ private:
     KURL::List    m_URLs;
     PlaylistItem *m_markerListViewItem;
     bool          m_playFirstUrl;
+    bool          m_coloring;
     Debug::Block  m_block;
     QPtrList<PlaylistItem> m_oldQueue;
     QXmlInputSource  *m_xmlSource;

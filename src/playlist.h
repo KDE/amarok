@@ -295,7 +295,7 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         PlaylistItem *currentTrack() const { return m_currentTrack; }
         PlaylistItem *restoreCurrentTrack();
 
-        void insertMediaInternal( const KURL::List&, PlaylistItem*, bool directPlay = false );
+        void insertMediaInternal( const KURL::List&, PlaylistItem*, bool directPlay = false, bool coloring = false );
         bool isAdvancedQuery( const QString &query );
         void refreshNextTracks( int = -1 );
         void removeItem( PlaylistItem*, bool = false );

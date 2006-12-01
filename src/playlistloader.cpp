@@ -73,10 +73,11 @@ public:
 };
 
 
-UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, bool playFirstUrl )
+UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, bool playFirstUrl, bool coloring )
         : ThreadWeaver::DependentJob( Playlist::instance(), "UrlLoader" )
         , m_markerListViewItem( new PlaylistItem( Playlist::instance(), after ) )
         , m_playFirstUrl( playFirstUrl )
+        , m_coloring( coloring )
         , m_block( "UrlLoader" )
         , m_oldQueue( Playlist::instance()->m_nextTracks )
         , m_xmlSource( 0 )
@@ -252,6 +253,7 @@ UrlLoader::customEvent( QCustomEvent *e)
                 continue;
 
             PlaylistItem* const item = new PlaylistItem( (*it).bundle, m_markerListViewItem );
+            item->setIsNew( m_coloring );
 
             //TODO scrollbar position
             //TODO previous tracks queue

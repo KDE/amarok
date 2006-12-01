@@ -163,7 +163,7 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
         bool m_filestatusEnabled;
         bool m_deleteAfterEdit;
         bool m_isBeingRenamed;
-        bool m_isNew;
+        bool m_isNew; //New items will be assigned a different color
 
         static bool s_pixmapChanged;
         static const QString &editingText();

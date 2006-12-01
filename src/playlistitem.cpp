@@ -726,10 +726,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                                 + painter->fontMetrics().minRightBearing();
             }
             p.setFont( font );
-            if( m_isNew )
-                p.setPen( Qt::blue );
-            else
-                p.setPen( textc );
+            p.setPen( m_isNew ? Qt::blue : textc ); // FIXME Don't hardcode the blue color?
             
             const int _width = width - leftMargin - margin + minbearing - 1; // -1 seems to be necessary
             const QString _text = KStringHandler::rPixelSqueeze( colText, painter->fontMetrics(), _width );

@@ -553,7 +553,7 @@ Playlist::insertMedia( KURL::List list, int options )
 }
 
 void
-Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool directPlay )
+Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool directPlay, bool coloring )
 {
     if ( !list.isEmpty() ) {
         setSorting( NO_SORT );
@@ -563,7 +563,7 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
         while( after && after->url().isEmpty() )
             after = static_cast<PlaylistItem*>( after->itemAbove() );
 
-        ThreadWeaver::instance()->queueJob( new UrlLoader( list, after, directPlay ) );
+        ThreadWeaver::instance()->queueJob( new UrlLoader( list, after, directPlay, coloring ) );
     }
 }
 
@@ -721,7 +721,7 @@ Playlist::restoreSession()
     // first ever-run
     if( QFile::exists( url.path() ) )
     {
-        ThreadWeaver::instance()->queueJob( new UrlLoader( url, 0 ) );
+        ThreadWeaver::instance()->queueJob( new UrlLoader( url, 0, false, /*item coloring*/ false ) );
     }
 }
 
@@ -4465,7 +4465,7 @@ Playlist::switchState( QStringList &loadFromMe, QStringList &saveToMe )
     m_total = 0;
     m_albums.clear();
 
-    insertMediaInternal( url, 0 ); //because the listview is empty, undoState won't be forced
+    insertMediaInternal( url, 0, false, /*item coloring*/ false ); //because the listview is empty, undoState won't be forced
 
     m_undoButton->setEnabled( !m_undoList.isEmpty() );
     m_redoButton->setEnabled( !m_redoList.isEmpty() );
