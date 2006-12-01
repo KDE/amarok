@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 1.4.5
   FEATURES:
+    * New items in the playlist are colorized, as a visual clue.
     * Show rating as stars in flat collection view. Patch by Daniel Faust
       <hessijames@gmail.com>. (BR 133797)
     * Synchronize play count, last played time and date of modification to
