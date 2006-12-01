@@ -480,10 +480,14 @@ Playlist::insertMedia( KURL::List list, int options )
     }
 
     const bool isPlaying   = EngineController::engine()->state() == Engine::Playing;
-    bool directPlay = (options & DirectPlay) || ((options & StartPlay) && !isPlaying);
+    if( isPlaying )
+        options &= ~Playlist::StartPlay;
+    bool directPlay = options & (Playlist::DirectPlay | Playlist::StartPlay);
 
     if( options & Replace )
        clear();
+    else
+        options |= Playlist::Colorize;
 
     PlaylistItem *after = lastItem();
 
@@ -522,7 +526,7 @@ Playlist::insertMedia( KURL::List list, int options )
 
             // wait until Playlist loader has finished its process, then go to customEvent() to start the queue process.
             m_queueList = list;
-            insertMediaInternal( addMe, after, directPlay );
+            insertMediaInternal( addMe, after, options );
         }
         return;
 
@@ -549,11 +553,11 @@ Playlist::insertMedia( KURL::List list, int options )
             Amarok::StatusBar::instance()->shortMessage( i18n("One track was already in the playlist, so it wasn't added.", "%n tracks were already in the playlist, so they weren't added.", alreadyOnPlaylist ) );
     }
 
-    insertMediaInternal( list, after, directPlay );
+    insertMediaInternal( list, after, options );
 }
 
 void
-Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool directPlay, bool coloring )
+Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, int options )
 {
     if ( !list.isEmpty() ) {
         setSorting( NO_SORT );
@@ -563,7 +567,7 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, bool
         while( after && after->url().isEmpty() )
             after = static_cast<PlaylistItem*>( after->itemAbove() );
 
-        ThreadWeaver::instance()->queueJob( new UrlLoader( list, after, directPlay, coloring ) );
+        ThreadWeaver::instance()->queueJob( new UrlLoader( list, after, options ) );
     }
 }
 
@@ -571,7 +575,8 @@ void
 Playlist::insertMediaSql( const QString& sql, int options )
 {
     const bool isPlaying   = EngineController::engine()->state() == Engine::Playing;
-    bool directPlay = (options & DirectPlay) || ((options & StartPlay) && !isPlaying);
+    if( isPlaying )
+        options &= ~Playlist::StartPlay;
 
     // TODO Implement more options
     PlaylistItem *after = 0;
@@ -582,7 +587,7 @@ Playlist::insertMediaSql( const QString& sql, int options )
         after = lastItem();
 
     setSorting( NO_SORT );
-    ThreadWeaver::instance()->queueJob( new SqlLoader( sql, after, directPlay ) );
+    ThreadWeaver::instance()->queueJob( new SqlLoader( sql, after, options ) );
 }
 
 void
@@ -721,7 +726,7 @@ Playlist::restoreSession()
     // first ever-run
     if( QFile::exists( url.path() ) )
     {
-        ThreadWeaver::instance()->queueJob( new UrlLoader( url, 0, false, /*item coloring*/ false ) );
+        ThreadWeaver::instance()->queueJob( new UrlLoader( url, 0, 0 ) );
     }
 }
 
@@ -4465,7 +4470,7 @@ Playlist::switchState( QStringList &loadFromMe, QStringList &saveToMe )
     m_total = 0;
     m_albums.clear();
 
-    insertMediaInternal( url, 0, false, /*item coloring*/ false ); //because the listview is empty, undoState won't be forced
+    insertMediaInternal( url, 0, 0 ); //because the listview is empty, undoState won't be forced
 
     m_undoButton->setEnabled( !m_undoList.isEmpty() );
     m_redoButton->setEnabled( !m_redoList.isEmpty() );

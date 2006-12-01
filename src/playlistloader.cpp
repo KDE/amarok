@@ -73,11 +73,11 @@ public:
 };
 
 
-UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, bool playFirstUrl, bool coloring )
+UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, int options )
         : ThreadWeaver::DependentJob( Playlist::instance(), "UrlLoader" )
         , m_markerListViewItem( new PlaylistItem( Playlist::instance(), after ) )
-        , m_playFirstUrl( playFirstUrl )
-        , m_coloring( coloring )
+        , m_playFirstUrl( options & (Playlist::StartPlay | Playlist::DirectPlay) )
+        , m_coloring( options & Playlist::Colorize )
         , m_block( "UrlLoader" )
         , m_oldQueue( Playlist::instance()->m_nextTracks )
         , m_xmlSource( 0 )
@@ -951,11 +951,11 @@ PlaylistFile::loadSMIL( QTextStream &stream )
 #include <kio/job.h>
 #include <klocale.h>
 
-RemotePlaylistFetcher::RemotePlaylistFetcher( const KURL &source, QListViewItem *after, bool playFirstUrl )
+RemotePlaylistFetcher::RemotePlaylistFetcher( const KURL &source, QListViewItem *after, int options )
         : QObject( Playlist::instance()->qscrollview() )
         , m_source( source )
         , m_after( after )
-        , m_playFirstUrl( playFirstUrl )
+        , m_playFirstUrl( options & (Playlist::StartPlay | Playlist::DirectPlay) )
 {
     //We keep the extension so the UrlLoader knows what file type it is
     const QString path = source.path();
@@ -1010,8 +1010,8 @@ RemotePlaylistFetcher::result( KIO::Job *job )
 
 /// @class SqlLoader
 
-SqlLoader::SqlLoader( const QString &sql, QListViewItem *after, bool playFirstUrl )
-        : UrlLoader( KURL::List(), after, playFirstUrl )
+SqlLoader::SqlLoader( const QString &sql, QListViewItem *after, int options )
+        : UrlLoader( KURL::List(), after, options )
         , m_sql( QDeepCopy<QString>( sql ) )
 {
     // Ovy: just until we make sure every SQL query from dynamic playlists is handled

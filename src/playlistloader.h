@@ -105,7 +105,7 @@ class UrlLoader : public ThreadWeaver::DependentJob
 Q_OBJECT
 
 public:
-    UrlLoader( const KURL::List&, QListViewItem*, bool playFirstUrl = false, bool coloring = true );
+    UrlLoader( const KURL::List&, QListViewItem*, int options = 0 );
    ~UrlLoader();
 
     static const uint OPTIMUM_BUNDLE_COUNT = 50;
@@ -159,7 +159,7 @@ class SqlLoader : public UrlLoader
     const QString m_sql;
 
 public:
-    SqlLoader( const QString &sql, QListViewItem *after, bool playFirstUrl = false );
+    SqlLoader( const QString &sql, QListViewItem *after, int options = 0 );
 
     virtual bool doJob();
 };
@@ -181,7 +181,7 @@ class RemotePlaylistFetcher : public QObject
     class KTempFile *m_temp;
 
 public:
-    RemotePlaylistFetcher( const KURL &source, QListViewItem *after, bool playFirstUrl );
+    RemotePlaylistFetcher( const KURL &source, QListViewItem *after, int options = 0 );
    ~RemotePlaylistFetcher();
 
 private slots:

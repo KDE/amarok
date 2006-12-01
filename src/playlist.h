@@ -88,6 +88,7 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         static const int DirectPlay = 8;     /// start playback of the first item in the list
         static const int Unique     = 16;    /// don't insert anything already in the playlist
         static const int StartPlay  = 32;    /// start playback of the first item in the list if nothing else playing
+        static const int Colorize   = 64;    /// colorize newly added items
         static const int DefaultOptions = Append | Unique | StartPlay;
 
         // it's really just the *ListView parts we want to hide...
@@ -295,7 +296,7 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         PlaylistItem *currentTrack() const { return m_currentTrack; }
         PlaylistItem *restoreCurrentTrack();
 
-        void insertMediaInternal( const KURL::List&, PlaylistItem*, bool directPlay = false, bool coloring = false );
+        void insertMediaInternal( const KURL::List&, PlaylistItem*, int options = 0 );
         bool isAdvancedQuery( const QString &query );
         void refreshNextTracks( int = -1 );
         void removeItem( PlaylistItem*, bool = false );
