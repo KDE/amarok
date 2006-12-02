@@ -210,7 +210,8 @@ DEBUG_BLOCK
         while( (entry = it.current()) != 0 )
         {
             ++it;
-            int itemsForThisSource = CACHE_SIZE * trackCount[i] / trackCountTotal ;
+            //trackCountTotal might be 0
+            int itemsForThisSource = trackCountTotal ? CACHE_SIZE * trackCount[i] / trackCountTotal : 1;
             if (itemsForThisSource == 0)
               itemsForThisSource = 1; 
             debug() << "this source will return " << itemsForThisSource << " entries" << endl;
