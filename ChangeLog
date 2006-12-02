@@ -22,6 +22,8 @@ VERSION 1.4.5
       you move and rename them.
 
   CHANGES:
+    * Generic media device now has an option to force VFAT-safe filenames even
+      on non-VFAT filesystems.
     * Double-clicked items in sidebar and urls passed on the command line
       are treated equally: append them to playlist if not yet there and start
       playing the first if nothing is playing.
