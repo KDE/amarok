@@ -141,6 +141,7 @@ class GenericMediaDevice : public MediaDevice
         QString           m_songLocation;
         QString           m_podcastLocation;
         bool              m_asciiTextOnly;
+        bool              m_vfatTextOnly;
         bool              m_ignoreThePrefix;
 
         GenericMediaDeviceConfigDialog *m_configDialog;

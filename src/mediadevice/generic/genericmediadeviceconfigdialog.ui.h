@@ -204,7 +204,7 @@ QString GenericMediaDeviceConfigDialog::cleanPath( const QString &component ) co
     result.simplifyWhiteSpace();
     if( m_spaceCheck->isChecked() )
         result.replace( QRegExp( "\\s" ), "_" );
-    if( m_device->m_actuallyVfat )
+    if( m_device->m_actuallyVfat || m_vfatCheck->isChecked() )
         result = Amarok::vfatPath( result );
 
     result.replace( "/", "-" );
@@ -236,6 +236,7 @@ GenericMediaDeviceConfigDialog::setDevice( GenericMediaDevice* device )
 
     updateConfigDialogLists( m_device->m_supportedFileTypes );
     m_asciiCheck->setChecked( m_device->m_asciiTextOnly );
+    m_vfatCheck->setChecked( m_device->m_vfatTextOnly );
     m_spaceCheck->setChecked( m_device->m_spacesToUnderscores );
     m_ignoreTheCheck->setChecked( m_device->m_ignoreThePrefix );
 }

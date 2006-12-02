@@ -235,7 +235,7 @@
                                         <property name="name">
                                             <cstring>unnamed</cstring>
                                         </property>
-                                        <widget class="QCheckBox" row="0" column="2">
+                                        <widget class="QCheckBox" row="1" column="1">
                                             <property name="name">
                                                 <cstring>m_ignoreTheCheck</cstring>
                                             </property>
@@ -243,7 +243,7 @@
                                                 <string>Ig&amp;nore "The"</string>
                                             </property>
                                         </widget>
-                                        <widget class="QCheckBox" row="0" column="1">
+                                        <widget class="QCheckBox" row="1" column="0">
                                             <property name="name">
                                                 <cstring>m_spaceCheck</cstring>
                                             </property>
@@ -260,6 +260,17 @@
                                             </property>
                                             <property name="text">
                                                 <string>ASCII te&amp;xt</string>
+                                            </property>
+                                        </widget>
+                                        <widget class="QCheckBox" row="0" column="1">
+                                            <property name="name">
+                                                <cstring>m_vfatCheck</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Always use &amp;VFAT-safe names</string>
+                                            </property>
+                                            <property name="toolTip" stdset="0">
+                                                 <string>Always use VFAT-safe names even on devices with non-VFAT filesystems.</string>
                                             </property>
                                         </widget>
                                     </grid>

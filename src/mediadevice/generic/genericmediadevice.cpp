@@ -365,6 +365,7 @@ GenericMediaDevice::applyConfig()
 
         m_spacesToUnderscores = m_configDialog->m_spaceCheck->isChecked();
         m_asciiTextOnly = m_configDialog->m_asciiCheck->isChecked();
+        m_vfatTextOnly = m_configDialog->m_vfatCheck->isChecked();
         m_ignoreThePrefix = m_configDialog->m_ignoreTheCheck->isChecked();
 
         m_songLocation = m_configDialog->m_songLocationBox->text();
@@ -377,6 +378,7 @@ GenericMediaDevice::applyConfig()
     setConfigBool(   "spacesToUnderscores", m_spacesToUnderscores );
     setConfigBool(   "ignoreThePrefix"    , m_ignoreThePrefix );
     setConfigBool(   "asciiTextOnly"      , m_asciiTextOnly );
+    setConfigBool(   "vfatTextOnly"       , m_vfatTextOnly );
     setConfigString( "supportedFiletypes" , m_supportedFileTypes.join( ", " ) );
 }
 
@@ -389,6 +391,7 @@ GenericMediaDevice::loadConfig()
     m_spacesToUnderscores = configBool( "spacesToUnderscores", false );
     m_ignoreThePrefix = configBool( "ignoreThePrefix", false);
     m_asciiTextOnly = configBool( "asciiTextOnly", false );
+    m_vfatTextOnly = configBool( "vfatTextOnly", false );
 
     m_songLocation = configString( "songLocation", "/%artist/%album/%title.%filetype" );
     m_podcastLocation = configString( "podcastLocation", "/podcasts/" );
@@ -1061,7 +1064,7 @@ QString GenericMediaDevice::cleanPath( const QString &component )
     result.simplifyWhiteSpace();
     if( m_spacesToUnderscores )
         result.replace( QRegExp( "\\s" ), "_" );
-    if( m_actuallyVfat )
+    if( m_actuallyVfat || m_vfatTextOnly )
         result = Amarok::vfatPath( result );
 
     result.replace( "/", "-" );
