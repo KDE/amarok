@@ -3052,7 +3052,10 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
             //stat the original URL
             QString absPath = mpm->getAbsolutePath( uniqueids[2].toInt(), uniqueids[0] );
             //debug() << "At doAFTStuff, stat-ing file " << absPath << endl;
-            bool statSuccessful = QFile::exists( absPath );
+            bool statSuccessful = false;
+            bool pathsSame = absPath == bundle->url().path();
+            if( !pathsSame )
+                statSuccessful = QFile::exists( absPath );
             if( statSuccessful ) //if true, new one is a copy
                 warning() << "Already-scanned file at " << absPath << " has same UID as new file at " << bundle->url().path() << endl;
             else  //it's a move, not a copy, or a copy and then both files were moved...can't detect that
@@ -3066,7 +3069,8 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
                       << currurl
                       << currdir
                       << currid ) );
-                emit fileMoved( absPath, bundle->url().path(), bundle->uniqueId() );
+                if( !pathsSame )
+                    emit fileMoved( absPath, bundle->url().path(), bundle->uniqueId() );
             }
         }
         //okay then, url already found in temporary table but different uniqueid
@@ -3112,7 +3116,10 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
             //stat the original URL
             QString absPath = mpm->getAbsolutePath( nonTempIDs[2].toInt(), nonTempIDs[0] );
             //debug() << "At doAFTStuff part 2, stat-ing file " << absPath << endl;
-            bool statSuccessful = QFile::exists( absPath );
+            bool statSuccessful = false;
+            bool pathsSame = absPath == bundle->url().path();
+            if( !pathsSame )
+                statSuccessful = QFile::exists( absPath );
             if( statSuccessful ) //if true, new one is a copy
                 warning() << "Already-scanned file at " << absPath << " has same UID as new file at " << currurl << endl;
             else  //it's a move, not a copy, or a copy and then both files were moved...can't detect that
@@ -3126,7 +3133,8 @@ CollectionDB::doAFTStuff( MetaBundle* bundle, const bool tempTables )
                                 , currurl
                                 , currid
                                 , currdir ) );
-                emit fileMoved( absPath, bundle->url().path(), bundle->uniqueId() );
+                if( !pathsSame )
+                    emit fileMoved( absPath, bundle->url().path(), bundle->uniqueId() );
             }
         }
         else if( nonTempIDs.empty() )
