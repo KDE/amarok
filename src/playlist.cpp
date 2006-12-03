@@ -4105,7 +4105,11 @@ Playlist::fontChange( const QFont &old )
     delete PlaylistItem::s_twoStar;
     delete PlaylistItem::s_threeStar;
     delete PlaylistItem::s_fourStar;
-    delete PlaylistItem::s_fiveStar;
+    /* FIXME skip to delete PlaylistItem::s_fiveStar, because it's 
+     * equal to PlaylistItem::s_star, which is already deleted
+     * see alse method initStarPixmaps()
+     */
+    //delete PlaylistItem::s_fiveStar;
     initStarPixmaps();
     triggerUpdate();
 }
