@@ -4101,6 +4101,11 @@ Playlist::fontChange( const QFont &old )
     delete PlaylistItem::s_star;
     delete PlaylistItem::s_smallStar;
     delete PlaylistItem::s_grayedStar;
+    delete PlaylistItem::s_oneStar;
+    delete PlaylistItem::s_twoStar;
+    delete PlaylistItem::s_threeStar;
+    delete PlaylistItem::s_fourStar;
+    delete PlaylistItem::s_fiveStar;
     initStarPixmaps();
     triggerUpdate();
 }
@@ -4531,6 +4536,24 @@ void Playlist::initStarPixmaps()
     PlaylistItem::s_grayedStar = new QPixmap;
     KIconEffect::toGray( img, 1.0 );
     PlaylistItem::s_grayedStar->convertFromImage( img );
+
+    PlaylistItem::s_oneStar = new QPixmap;
+    KIconEffect::colorize( img, QColor( 0, 250, 0 ), 1.0 );
+    PlaylistItem::s_oneStar->convertFromImage( img );
+
+    PlaylistItem::s_twoStar = new QPixmap;
+    KIconEffect::colorize( img, QColor( 168, 0, 172 ), 1.0 );
+    PlaylistItem::s_twoStar->convertFromImage( img );
+
+    PlaylistItem::s_threeStar = new QPixmap;
+    KIconEffect::colorize( img, QColor( 255, 0, 0 ), 1.0 );
+    PlaylistItem::s_threeStar->convertFromImage( img );
+
+    PlaylistItem::s_fourStar = new QPixmap;
+    KIconEffect::colorize( img, QColor( 0, 0, 255 ), 1.0 );
+    PlaylistItem::s_fourStar->convertFromImage( img );
+
+    PlaylistItem::s_fiveStar = PlaylistItem::s_star; //alias just to make things easier to understand
 }
 
 void

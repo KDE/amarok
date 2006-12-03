@@ -89,6 +89,11 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
 
         static QPixmap *star();
         static QPixmap *grayedStar();
+        static QPixmap *oneStar();
+        static QPixmap *twoStar();
+        static QPixmap *threeStar();
+        static QPixmap *fourStar();
+        static QPixmap *fiveStar();
         static QPixmap *smallStar();
         static int ratingAtPoint( int x );
         static int ratingColumnWidth();
@@ -169,6 +174,11 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
         static const QString &editingText();
         static QPixmap *s_star;
         static QPixmap *s_grayedStar;
+        static QPixmap *s_oneStar;
+        static QPixmap *s_twoStar;
+        static QPixmap *s_threeStar;
+        static QPixmap *s_fourStar;
+        static QPixmap *s_fiveStar;
         static QPixmap *s_smallStar;
 };
 
@@ -185,6 +195,11 @@ class PLItemList: public QPtrList<PlaylistItem>
 
 inline QPixmap *PlaylistItem::star() { return s_star; }
 inline QPixmap *PlaylistItem::grayedStar() { return s_grayedStar; }
+inline QPixmap *PlaylistItem::oneStar() { return s_oneStar; }
+inline QPixmap *PlaylistItem::twoStar() { return s_twoStar; }
+inline QPixmap *PlaylistItem::threeStar() { return s_threeStar; }
+inline QPixmap *PlaylistItem::fourStar() { return s_fourStar; }
+inline QPixmap *PlaylistItem::fiveStar() { return s_fiveStar; }
 inline QPixmap *PlaylistItem::smallStar() { return s_smallStar; }
 
 #endif

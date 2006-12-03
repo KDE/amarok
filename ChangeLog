@@ -5,6 +5,9 @@ Amarok ChangeLog
 
 VERSION 1.4.5
   FEATURES:
+    * Star ratings now have different colors for different ratings, to easily
+      identify songs with a particular rating. Thanks to Tristan Olive for the
+      idea.
     * New items in the playlist are colorized, as a visual cue.
     * Show rating as stars in flat collection view. Patch by Daniel Faust
       <hessijames@gmail.com>. (BR 133797)
