@@ -15,6 +15,7 @@
 #include "podcastsettings.h"
 
 #include <kdialogbase.h> // StreamEditor baseclass
+#include <kio/job.h>
 #include <klineedit.h>
 #include <klistview.h>
 #include <kurl.h>
@@ -249,38 +250,6 @@ class PlaylistTrackItem : public PlaylistBrowserEntry
         TrackItemInfo *m_trackInfo;
 };
 
-class PodcastFetcher : public QObject
-{
-    Q_OBJECT
-    public:
-        PodcastFetcher( QString url, const KURL &directory, int size );
-        ~PodcastFetcher();
-        QString filename() const { return m_url.fileName(); }
-        KURL    localUrl() const { return KURL::fromPathOrURL( m_file.name() ); }
-        void    kill();
-
-    signals:
-        void result( int error );
-        void progress( const QObject* thisObject, int steps );
-
-    private slots:
-        void slotResponseReceived( const QHttpResponseHeader & resp );
-        void slotDone( bool error );
-        void slotProgress( int bytesDone, int bytesTotal );
-
-    private:
-        void    fetch();
-
-        QFile   m_file;
-        QUrl    m_url;
-        QHttp  *m_http;
-        KURL    m_directory;
-        bool    m_redirected;
-        int     m_error;
-        int     m_size;
-
-};
-
 /// Stored in the database
 class PodcastEpisode : public PlaylistBrowserEntry
 {
@@ -338,8 +307,9 @@ class PodcastEpisode : public PlaylistBrowserEntry
 
     private slots:
         void abortDownload();
-        void downloadResult( int error );
+        void downloadResult( KIO::Job * transferJob );
         void slotAnimation();
+        void redirected( KIO::Job * job,const KURL & redirectedUrl );
 
     private:
         enum FeedType{ RSS=0, ATOM=1 };
@@ -360,7 +330,8 @@ class PodcastEpisode : public PlaylistBrowserEntry
         QTimer      m_animationTimer;
         uint        m_iconCounter;
 
-        PodcastFetcher  *m_podcastFetcher;
+        KIO::StoredTransferJob* m_podcastEpisodeJob;
+        QString m_filename;
 
         bool        m_downloaded;       //marked as downloaded in cached xml
         bool        m_onDisk;

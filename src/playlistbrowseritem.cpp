@@ -2317,164 +2317,6 @@ PodcastChannel::showContextMenu( const QPoint &position )
     }
 }
 
-
-/////////////////////////////////////////////////////////////////////////////
-///    CLASS PodcastFetcher
-///    @note Allows us to download podcasts from any enclosure, even the weird ones, with decent filenames..
-////////////////////////////////////////////////////////////////////////////
-
-PodcastFetcher::PodcastFetcher( QString url, const KURL &directory, int size ):
-        m_url( QUrl( url )),
-        m_directory ( directory ),
-        m_error( 0 ),
-        m_size( size )
-{
-
-    m_redirected = false;
-
-    QString proxy = Amarok::proxyForUrl( m_url );
-    if ( proxy.isNull() )
-        m_http = new QHttp( m_url.host() );
-    else {
-        QUrl proxyUrl( proxy );
-        m_http = new QHttp( proxyUrl.host(), proxyUrl.port() );
-    }
-
-    connect( (m_http), SIGNAL( responseHeaderReceived ( const QHttpResponseHeader & ) ), this,
-                      SLOT( slotResponseReceived( const QHttpResponseHeader & ) ) );
-    connect( (m_http), SIGNAL( done( bool ) ), this, SLOT( slotDone( bool ) ) );
-   // connect( m_http, SIGNAL( dataTransferProgress ( int, int, QNetworkOperation * ) ), this, SLOT( slotProgress( int, int ) ) );
-    connect( (m_http), SIGNAL(  dataReadProgress ( int, int ) ), this, SLOT( slotProgress( int, int ) ) );
-
-    fetch( );
-}
-
-PodcastFetcher::~PodcastFetcher()
-{
-    delete m_http;
-    m_http = 0;
-}
-
-void PodcastFetcher::fetch()
-{
-    if( !m_http )
-        return;
-    KURL filepath = m_directory;
-
-    filepath.addPath( m_url.fileName() );
-    m_file.setName( filepath.path() );
-    if( m_file.exists() )
-    {
-        QFileInfo file( m_file );
-        const QString baseName = file.fileName();
-        int i = 1;
-        while( file.exists() )
-        {
-            QString newName = baseName;
-            QString ext = file.extension();
-            //Insert number right before the extension: podcast.mp3 > podcast_1.mp3
-            int index = newName.findRev( ext, -1, true );
-            newName.insert( index-1, '_'+QString::number(i) );
-
-            file.setFile( file.dirPath( true ) + '/' + newName );
-            i++;
-        }
-        m_file.setName( file.filePath() );
-    }
-
-    // Qhttp::get() "conviniently" "corrects" the path in a way that wouldn't let it work
-    // work with proxies. So let's create the request manually.
-    QHttpRequestHeader request( "GET", m_url );
-    QString host = m_url.host();
-    if ( m_url.port() > 0 ) {
-        host += ':' + QString::number( m_url.port() );
-    }
-    request.setValue( "Host", host );
-    request.setValue( "Connection", "Keep-Alive" );
-    //debug() << request.toString() << endl;
-    m_http->request( request, 0, (&m_file) );
-
-    if( m_http->error() )
-        debug() <<  m_http->errorString() << endl;
-}
-
-void PodcastFetcher::kill()
-{
-    if ( m_http )
-    {
-        m_http->abort();
-        m_http->clearPendingRequests();
-        m_http->closeConnection();
-        if( m_file.exists() )
-            m_file.remove();
-    }
-}
-
-void PodcastFetcher::slotProgress( int bytesDone, int bytesTotal )
-{
-    int percent = 0;
-    if( bytesTotal != 0 )
-        percent = (bytesDone * 100) / bytesTotal;
-    //debug() << "Progress: " << percent << " bytesTotal: " << bytesTotal << endl;
-    emit progress( this, percent );
-}
-
-void PodcastFetcher::slotResponseReceived( const QHttpResponseHeader & resp )
-{
-    //debug() << m_http->currentId() << " RESPONCE, statuscode = " << resp.statusCode() << endl;
-    //debug() << resp.toString() << endl;
-    if( resp.statusCode() == 302 || resp.statusCode() == 301 )
-    {
-        if (resp.hasKey( "location" ) )
-        {
-            QString oldHost = m_url.host();
-            m_url = QUrl( resp.value( "location" ) );
-            //prevent crashing when redirected to host-only url (like www.michaelandevo.com)
-            if( m_url.fileName().isNull() )
-            {
-                m_error = QHttp::InvalidResponseHeader;
-                return;
-            }
-            //debug() << m_http->currentId() << " m_redirected to " << m_url.toString( ) <<endl;
-            if( m_http && (m_url.host() != oldHost) )
-                m_http->setHost( m_url.host() );
-            m_redirected = true;
-        }
-    } else if (resp.statusCode() == 200 )
-    {
-        //TODO: create file here, rename temp file later
-        //debug() << resp.toString() << endl;
-    }
-}
-
-void PodcastFetcher::slotDone( bool error )
-{
-    if( error )
-    {
-            //debug() << m_http->currentId() << " ERROR: " << " errorstring = " << m_http->errorString() << endl;
-            emit result( m_http->error() );
-            return;
-    }
-    if( m_error )
-    {
-        //debug() << m_http->currentId() << " ERROR: m_error = " << m_error << endl;
-        emit result( m_error );
-        return;
-    }
-    if ( m_redirected )
-    {
-        m_redirected = false;
-        if( m_file.exists() )
-            m_file.remove();
-        fetch();
-    }
-    else if ( !error )
-    {
-        //debug() << m_http->currentId() << " downloaded to " << m_file.name() << endl;
-        emit result( m_http->error() ); //0
-    }
-}
-
 /////////////////////////////////////////////////////////////////////////////
 ///    CLASS PodcastEpisode
 ///    @note we fucking hate itunes for taking over podcasts and inserting
@@ -2681,17 +2523,28 @@ PodcastEpisode::downloadMedia()
             m_localDir = PodcastSettings("Podcasts").saveLocation();
     createLocalDir( m_localDir );
 
-    m_podcastFetcher = new PodcastFetcher( url().url() , m_localDir, m_bundle.size() );
+    //filename might get changed by redirects later.
+    m_filename = url().fileName();
+    m_localUrl = m_localDir;
+    m_podcastEpisodeJob = KIO::storedGet( url().url(), false, false);
 
-    //TODO: make this work with PodcastFetcher
-    Amarok::StatusBar::instance()->newProgressOperation( m_podcastFetcher )
+    Amarok::StatusBar::instance()->newProgressOperation( m_podcastEpisodeJob )
             .setDescription( title().isEmpty()
                     ? i18n( "Downloading Podcast Media" )
                     : i18n( "Downloading Podcast \"%1\"" ).arg( title() ) )
             .setAbortSlot( this, SLOT( abortDownload()) )
-            .setProgressSignal( m_podcastFetcher, SIGNAL( progress( const QObject*, int ) ) );
+            .setProgressSignal( m_podcastEpisodeJob, SIGNAL( percent( KIO::Job *, unsigned long ) ) );
 
-    connect( m_podcastFetcher, SIGNAL( result( int ) ), SLOT( downloadResult( int ) ) );
+    connect( m_podcastEpisodeJob, SIGNAL(  result( KIO::Job * ) ), SLOT( downloadResult( KIO::Job * ) ) );
+    connect( m_podcastEpisodeJob, SIGNAL( redirection( KIO::Job *,const KURL& ) ), SLOT( redirected( KIO::Job *,const KURL& ) ) );
+}
+
+/* change the localurl if redirected, allows us to use the original filename to transfer to mediadevices*/
+void PodcastEpisode::redirected( KIO::Job * job, const KURL & redirectedUrl )
+{
+    DEBUG_BLOCK
+    debug() << "redirecting to " << redirectedUrl << ". filename: " << redirectedUrl.fileName() << endl;
+    m_filename = redirectedUrl.fileName();
 }
 
 void PodcastEpisode::createLocalDir( const KURL &localDir )
@@ -2712,8 +2565,8 @@ void
 PodcastEpisode::abortDownload() //SLOT
 {
     emit downloadAborted();
-    if ( m_podcastFetcher )
-        m_podcastFetcher->kill();
+    if( m_podcastEpisodeJob )
+        m_podcastEpisodeJob->kill( false );
 
     //don't delete m_podcastFetcher yet, kill() is async
     stopAnimation();
@@ -2722,36 +2575,32 @@ PodcastEpisode::abortDownload() //SLOT
     updatePixmap();
 }
 
-void
-PodcastEpisode::downloadResult( int error ) //SLOT
+void PodcastEpisode::downloadResult( KIO::Job * transferJob )
 {
-    //gets called after PodcastFetcher::kill()
-    if( error == QHttp::Aborted )
-    {
-        m_podcastFetcher->deleteLater();
-        m_podcastFetcher = 0;
-        return;
-    }
+    DEBUG_BLOCK
     emit downloadFinished();
-
     stopAnimation();
     setText( 0, title() );
 
-    if ( error != 0 ) {
+    if( transferJob->error() )
+    {
         Amarok::StatusBar::instance()->shortMessage( i18n( "Media download aborted, unable to connect to server." ) );
-        debug() << "Unable to retrieve podcast media. KIO Error: " << error << endl;
+        debug() << "Unable to retrieve podcast media. KIO Error: " << transferJob->error() << endl;
 
         setPixmap( 0, SmallIcon("cancel") );
-
-        m_podcastFetcher->deleteLater();
-        m_podcastFetcher = 0;
         return;
     }
 
+    m_localUrl.addPath( m_filename );
+    debug() << "filename: " << m_localUrl.path() << endl;
+    QFile *localFile = new QFile( m_localUrl.path() );
+    localFile->open( IO_WriteOnly );
+    localFile->writeBlock( m_podcastEpisodeJob->data() );
+    localFile->close();
+
+    m_bundle.setLocalURL( m_localUrl );
+    CollectionDB::instance()->updatePodcastEpisode( dBId(), m_bundle );
     m_onDisk = true;
-
-    setLocalUrl( m_podcastFetcher->localUrl() );
-
     PodcastChannel *channel = dynamic_cast<PodcastChannel *>( m_parent );
     if( channel && channel->autotransfer() && MediaBrowser::isAvailable() )
     {
@@ -2760,10 +2609,7 @@ PodcastEpisode::downloadResult( int error ) //SLOT
     }
 
     updatePixmap();
-    m_podcastFetcher->deleteLater();
-    m_podcastFetcher = 0;
 }
-
 void
 PodcastEpisode::setLocalUrl( const KURL &localUrl )
 {
