@@ -854,13 +854,16 @@ void PlaylistItem::drawRating( QPainter *p )
 
 void PlaylistItem::drawRating( QPainter *p, int stars, int graystars, bool half )
 {
-    int i = 1, x = 1;
+    int i = 1, x = 1, starchoice = stars;
     const int y = height() / 2 - star()->height() / 2;
     //We use multiple pre-colored stars instead of coloring here to keep things speedy
     QPixmap *whichStar;
     if( half )
+    {
         i++;
-    switch( stars )
+        starchoice--;
+    }
+    switch( starchoice )
     {
         case 1:
             whichStar = oneStar();

@@ -4529,30 +4529,33 @@ void Playlist::initStarPixmaps()
     QImage img = QImage( locate( "data", "amarok/images/star.png" ) ).smoothScale( h, h, QImage::ScaleMin );
     PlaylistItem::s_star = new QPixmap( img );
 
-    QImage small = QImage( locate( "data", "amarok/images/smallstar.png" ) );
-    PlaylistItem::s_smallStar = new QPixmap( small.smoothScale( h, h, QImage::ScaleMin ) );
+    //first, since it uses default color, and otherwise will inherit other changes
+    PlaylistItem::s_threeStar = new QPixmap;
+    PlaylistItem::s_threeStar->convertFromImage( img );
 
     PlaylistItem::s_grayedStar = new QPixmap;
     KIconEffect::toGray( img, 1.0 );
     PlaylistItem::s_grayedStar->convertFromImage( img );
 
     PlaylistItem::s_oneStar = new QPixmap;
-    KIconEffect::colorize( img, QColor( 0, 250, 0 ), 1.0 );
+    KIconEffect::colorize( img, QColor( 250, 0, 0 ), 1.0 );
     PlaylistItem::s_oneStar->convertFromImage( img );
 
     PlaylistItem::s_twoStar = new QPixmap;
-    KIconEffect::colorize( img, QColor( 168, 0, 172 ), 1.0 );
+    KIconEffect::colorize( img, QColor( 255, 128, 0 ), 1.0 );
     PlaylistItem::s_twoStar->convertFromImage( img );
-
-    PlaylistItem::s_threeStar = new QPixmap;
-    KIconEffect::colorize( img, QColor( 255, 0, 0 ), 1.0 );
-    PlaylistItem::s_threeStar->convertFromImage( img );
 
     PlaylistItem::s_fourStar = new QPixmap;
     KIconEffect::colorize( img, QColor( 0, 0, 255 ), 1.0 );
     PlaylistItem::s_fourStar->convertFromImage( img );
 
-    PlaylistItem::s_fiveStar = PlaylistItem::s_star; //alias just to make things easier to understand
+    PlaylistItem::s_fiveStar = new QPixmap;
+    KIconEffect::colorize( img, QColor( 0, 255, 0 ), 1.0 );
+    PlaylistItem::s_fiveStar->convertFromImage( img );
+
+    QImage small = QImage( locate( "data", "amarok/images/smallstar.png" ) );
+    KIconEffect::colorize( small, QColor( 168, 0, 172 ), 1.0 );
+    PlaylistItem::s_smallStar = new QPixmap( small.smoothScale( h, h, QImage::ScaleMin ) );
 }
 
 void
