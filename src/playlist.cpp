@@ -1830,6 +1830,8 @@ Playlist::setCurrentTrack( PlaylistItem *item )
     }
 
     m_currentTrack = item;
+    if ( m_currentTrack )
+        m_currentTrack->setIsNew(false);
 
     if ( prev ) {
         //reset to normal height
@@ -4436,7 +4438,7 @@ Playlist::saveState( QStringList &list )
       list.append( fileName );
 
       // Reset isNew state of all items in the playlist (determines font coloring)
-      PlaylistItem* item = static_cast<PlaylistItem*>( firstChild() ); 
+      PlaylistItem* item = static_cast<PlaylistItem*>( firstChild() );
       while( item ) {
          item->setIsNew( false );
          item = item->nextSibling();
@@ -4534,27 +4536,30 @@ void Playlist::initStarPixmaps()
     PlaylistItem::s_threeStar->convertFromImage( img );
 
     PlaylistItem::s_grayedStar = new QPixmap;
-    KIconEffect::toGray( img, 1.0 );
+    QImage imgGray (img);
+    KIconEffect::toGray( imgGray, 1.0 );
     PlaylistItem::s_grayedStar->convertFromImage( img );
 
-    PlaylistItem::s_oneStar = new QPixmap;
-    KIconEffect::colorize( img, QColor( 250, 0, 0 ), 1.0 );
-    PlaylistItem::s_oneStar->convertFromImage( img );
+    QImage img2 (img);
 
     PlaylistItem::s_twoStar = new QPixmap;
-    KIconEffect::colorize( img, QColor( 255, 128, 0 ), 1.0 );
+    KIconEffect::colorize( img, QColor( 255, 0, 0 ), 0.3 );
     PlaylistItem::s_twoStar->convertFromImage( img );
 
+    PlaylistItem::s_oneStar = new QPixmap;
+    KIconEffect::colorize( img, QColor( 250, 0, 0 ), 0.3 );
+    PlaylistItem::s_oneStar->convertFromImage( img );
+
     PlaylistItem::s_fourStar = new QPixmap;
-    KIconEffect::colorize( img, QColor( 0, 0, 255 ), 1.0 );
+    KIconEffect::colorize( img2, QColor( 0, 255, 0  ), 0.4 );
     PlaylistItem::s_fourStar->convertFromImage( img );
 
     PlaylistItem::s_fiveStar = new QPixmap;
-    KIconEffect::colorize( img, QColor( 0, 255, 0 ), 1.0 );
+    KIconEffect::colorize( img2, QColor( 0, 255, 0 ), 0.3 );
     PlaylistItem::s_fiveStar->convertFromImage( img );
 
     QImage small = QImage( locate( "data", "amarok/images/smallstar.png" ) );
-    KIconEffect::colorize( small, QColor( 168, 0, 172 ), 1.0 );
+    KIconEffect::colorize( small, QColor( 168, 0, 172 ), 0.5 );
     PlaylistItem::s_smallStar = new QPixmap( small.smoothScale( h, h, QImage::ScaleMin ) );
 }
 
