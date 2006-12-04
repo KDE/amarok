@@ -31,6 +31,7 @@
 #include <kapplication.h> // random func
 
 #include <qregexp.h>
+#include <qvaluevector.h>
 
 /////////////////////////////////////////////////////////////////////////////
 ///    CLASS DynamicMode
@@ -180,17 +181,13 @@ DEBUG_BLOCK
             return;
         }
         // Create an array of the sizes of each of the playlists
-        int trackCount[dynamicEntries.count()] ;
+        QValueVector<int> trackCount(dynamicEntries.count()) ;
         int trackCountTotal = 0;
-
-        QListViewItem *item = 0;
 
         for( uint i=0; i < dynamicEntries.count(); i++ ){
           trackCount[i] = 0;
 
-          item = dynamicEntries.at( i );
-
-          if (item){
+          if ( QListViewItem *item = dynamicEntries.at( i ) ){
             if( item->rtti() == PlaylistEntry::RTTI )
               trackCount[i] = static_cast<PlaylistEntry *>(item)->tracksURL().count();
             else if( item->rtti() == SmartPlaylist::RTTI  )
