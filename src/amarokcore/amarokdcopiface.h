@@ -52,6 +52,7 @@ k_dcop:
    virtual int  trackCurrentTimeMs() = 0;                     ///< Return current play position in milliseconds.
    virtual int  trackPlayCounter() = 0;                     ///< Return play counter for current song.
    virtual int  trackTotalTime() = 0;                       ///< Return track length in seconds.
+   virtual QStringList labels() = 0;                        ///< Return the labels of the currently playing track
 
 
    /* New player API */
@@ -191,6 +192,8 @@ k_dcop:
    virtual void scanPause() = 0;                           ///< Pause collection scanner.
    virtual void scanUnpause() = 0;                         ///< Unpause collection scanner.
    virtual void scannerAcknowledged() = 0;                 ///< Called by the scanner to acknowledge the request.
+   virtual void addLabels( const QString &url, const QStringList &labels ) = 0; ///< Add user-defined labels to the song with the given url.
+   virtual void removeLabels( const QString &url, const QStringList &oldLabels ) = 0; ///< Remove user-defined labels from the song with the given url.
 };
 
 

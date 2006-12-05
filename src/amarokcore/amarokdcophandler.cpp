@@ -171,6 +171,12 @@ namespace Amarok
         return EngineController::instance()->bundle().length();
     }
 
+    QStringList DcopPlayerHandler::labels()
+    {
+        const MetaBundle &bundle = EngineController::instance()->bundle();
+        return CollectionDB::instance()->getLabels( bundle.url().path(), CollectionDB::typeUser );
+    }
+
     QString DcopPlayerHandler::album()
     {
         return EngineController::instance()->bundle().album();
@@ -847,6 +853,21 @@ namespace Amarok
             ScanController::instance()->requestAcknowledged();
         else
             debug() << "No ScanController instance available" << endl;
+    }
+
+    void DcopCollectionHandler::addLabels( const QString &url, const QStringList &labels )
+    {
+        CollectionDB *db = CollectionDB::instance();
+        QString uid = db->getUniqueId( url );
+        foreach( labels )
+        {
+            db->addLabel( url, *it, uid , CollectionDB::typeUser );
+        }
+    }
+
+    void DcopCollectionHandler::removeLabels( const QString &url, const QStringList &oldLabels )
+    {
+        CollectionDB::instance()->removeLabels( url, oldLabels, CollectionDB::typeUser );
     }
 
     void DcopCollectionHandler::disableAutoScoring( bool disable )
