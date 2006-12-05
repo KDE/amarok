@@ -159,7 +159,7 @@ void MagnatunePurchaseHandler::xmlDownloadComplete( KIO::Job * downloadJob )
 
         saveDownloadInfo( resultXml );
         m_downloadDialog->setDownloadInfo( downloadInfo );
-        m_purchaseDialog->close();
+        //m_purchaseDialog->close();
         delete m_purchaseDialog;
         m_purchaseDialog = 0;
         m_downloadDialog->show();
