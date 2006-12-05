@@ -167,7 +167,7 @@ public:
      * @param id
      * @return
      */
-    void getMountPointForId( const int id, KURL& url ) const;
+    QString getMountPointForId( const int id ) const;
     /**
      * builds the absolute path from the mount point of the medium and the given relative
      * path.

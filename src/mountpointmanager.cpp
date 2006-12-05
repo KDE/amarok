@@ -157,18 +157,20 @@ MountPointManager::isMounted ( const int deviceId ) const {
     return result;
 }
 
-void
-MountPointManager::getMountPointForId( const int id, KURL& url ) const
+QString
+MountPointManager::getMountPointForId( const int id ) const
 {
+    QString mountPoint;
     if ( isMounted( id ) )
     {
         m_handlerMapMutex.lock();
-        url = KURL( m_handlerMap[id]->getDevicePath() );
+        mountPoint = m_handlerMap[id]->getDevicePath();
         m_handlerMapMutex.unlock();
     }
     else
         //TODO better error handling
-        url = KURL::fromPathOrURL( "/" );
+        mountPoint = "/";
+    return mountPoint;
 }
 
 void
@@ -394,7 +396,15 @@ MountPointManager::collectionFolders( )
         QStringList rpaths = folders->readListEntry( QString::number( *it ) );
         for( QStringList::ConstIterator strIt = rpaths.begin(), end = rpaths.end(); strIt != end; ++strIt )
         {
-            QString absPath = getAbsolutePath( *it, *strIt );
+            QString absPath;
+            if ( *strIt == "./" )
+            {
+                absPath = getMountPointForId( *it );
+            }
+            else
+            {
+                absPath = getAbsolutePath( *it, *strIt );
+            }
             if ( !result.contains( absPath ) )
                 result.append( absPath );
         }
