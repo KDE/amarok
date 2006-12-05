@@ -34,6 +34,9 @@ MagnatuneListView::MagnatuneListView( QWidget * parent )
     addColumn( i18n( "Artist/Album/Track" ) );
     addColumn( i18n( "Duration" ) );
 
+    setColumnWidthMode( 0, QListView::Maximum );
+    setResizeMode( QListView::LastColumn );
+
     setShowSortIndicator ( true );
 
     #if KDE_VERSION >= KDE_MAKE_VERSION(3,4,0)

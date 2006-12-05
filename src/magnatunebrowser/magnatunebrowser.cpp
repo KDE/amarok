@@ -74,7 +74,7 @@ MagnatuneBrowser::MagnatuneBrowser( const char *name )
 
 void MagnatuneBrowser::itemExecuted( QListViewItem * item )
 {
-    DEBUG_BLOCK
+    DEBUG_BLOCK;
     switch ( item->depth() )
     {
     case 2:
@@ -486,7 +486,7 @@ void MagnatuneBrowser::purchaseCompleted( bool success )
 void MagnatuneBrowser::polish( )
 {
 
-    DEBUG_BLOCK
+    DEBUG_BLOCK;
 
 
     if (!m_polished) {
