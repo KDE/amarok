@@ -5137,7 +5137,9 @@ CollectionDB::initialize()
     else
 #endif
     {
-        m_dbConfig = new SqliteConfig( "collection.db" );
+        m_dbConfig = new SqliteConfig( 
+                        Amarok::config( "Sqlite" )->readPathEntry( "location", 
+                                        Amarok::saveLocation() + "collection.db" ) );
     }
 
     DbConnection *dbConn = getMyConnection();
@@ -5934,13 +5936,13 @@ DbConnection::DbConnection()
 // CLASS SqliteConnection
 //////////////////////////////////////////////////////////////////////////////////////////
 
-SqliteConnection::SqliteConnection( const SqliteConfig* /*config*/ )
+SqliteConnection::SqliteConnection( const SqliteConfig* config )
     : DbConnection()
 {
 
     DEBUG_BLOCK
 
-    const QCString path = QFile::encodeName( Amarok::saveLocation() + "collection.db" );
+    const QCString path = QFile::encodeName( config->dbFile() );
 
     // Open database file and check for correctness
     QFile file( path );
