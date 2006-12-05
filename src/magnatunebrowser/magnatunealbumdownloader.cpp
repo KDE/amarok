@@ -40,8 +40,9 @@ void MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo * info )
 
 
     debug() << "Download: " << downloadUrl.url() << " to: " << m_currentAlbumUnpackLocation << endl;
+    debug() << "Using temporary location: " << m_tempDir.name() + m_currentAlbumFileName << endl;
 
-    m_albumDownloadJob = KIO::file_copy( downloadUrl, KURL( "/tmp/" + m_currentAlbumFileName ), -1, true, false, false );
+    m_albumDownloadJob = KIO::file_copy( downloadUrl, KURL( m_tempDir.name() + m_currentAlbumFileName ), -1, true, false, false );
 
     connect( m_albumDownloadJob, SIGNAL( result( KIO::Job* ) ), SLOT( albumDownloadComplete( KIO::Job* ) ) );
 
@@ -54,9 +55,9 @@ void MagnatuneAlbumDownloader::downloadCover( QString albumCoverUrlString, QStri
 {
     KURL downloadUrl( albumCoverUrlString );
 
-    debug() << "Download Cover: " << downloadUrl.url() << " to: /tmp/" << fileName << endl;
+    debug() << "Download Cover: " << downloadUrl.url() << " to: " << m_tempDir.name() << fileName << endl;
 
-    m_albumDownloadJob = KIO::file_copy( downloadUrl, KURL( "/tmp/" + fileName ), -1, true, false, false );
+    m_albumDownloadJob = KIO::file_copy( downloadUrl, KURL( m_tempDir.name() + fileName ), -1, true, false, false );
 
     connect( m_albumDownloadJob, SIGNAL( result( KIO::Job* ) ), SLOT( coverDownloadComplete( KIO::Job* ) ) );
 
@@ -82,7 +83,7 @@ void MagnatuneAlbumDownloader::albumDownloadComplete( KIO::Job * downloadJob )
 
     //ok, now we have the .zip file downloaded. All we need is to unpack it to the desired location and add it to the collection.
 
-    QString unzipString = "unzip \"/tmp/" + m_currentAlbumFileName + "\" -d \"" + m_currentAlbumUnpackLocation + "\" &";
+    QString unzipString = "unzip \""+m_tempDir.name() + m_currentAlbumFileName + "\" -d \"" + m_currentAlbumUnpackLocation + "\" &";
 
     debug() << "unpacking: " << unzipString << endl;
 
@@ -106,7 +107,7 @@ void MagnatuneAlbumDownloader::coverDownloadComplete( KIO::Job * downloadJob )
     if ( downloadJob != m_albumDownloadJob )
         return ; //not the right job, so let's ignore it
 
-    emit( coverDownloadCompleted( true ) );
+    emit( coverDownloadCompleted(  m_tempDir.name() ) );
 }
 
 

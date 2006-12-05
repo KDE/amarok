@@ -23,6 +23,8 @@ Boston, MA 02110-1301, USA.
 #include "magnatunepurchasehandler.h"
 #include "statusbar.h"
 
+#include <ktempdir.h>
+
 #include <qdir.h>
 #include <qfile.h>
 #include <qmessagebox.h>
@@ -61,7 +63,7 @@ void MagnatunePurchaseHandler::purchaseAlbum( MagnatuneAlbum * album )
     if ( m_albumDownloader == 0 )
     {
         m_albumDownloader = new MagnatuneAlbumDownloader();
-        connect( m_albumDownloader, SIGNAL( coverDownloadCompleted( bool ) ), this, SLOT( showPurchaseDialog( bool ) ) );
+        connect( m_albumDownloader, SIGNAL( coverDownloadCompleted( QString ) ), this, SLOT( showPurchaseDialog( QString ) ) );
     }
 
     m_currentAlbumCoverName = album->getName() + " - cover.jpg";
@@ -71,7 +73,7 @@ void MagnatunePurchaseHandler::purchaseAlbum( MagnatuneAlbum * album )
 
 }
 
-void MagnatunePurchaseHandler::showPurchaseDialog( bool useCover )
+void MagnatunePurchaseHandler::showPurchaseDialog(  QString coverTempLocation )
 {
 
     if ( m_albumDownloader != 0 )
@@ -94,8 +96,10 @@ void MagnatunePurchaseHandler::showPurchaseDialog( bool useCover )
 
     if ( m_currentAlbum != 0 )
     {
+
+        KTempDir tempDir;
         m_purchaseDialog->setAlbum( m_currentAlbum );
-        m_purchaseDialog->setCover( "/tmp/" + m_currentAlbumCoverName );
+        m_purchaseDialog->setCover( coverTempLocation + m_currentAlbumCoverName );
         m_purchaseDialog->show();
     }
 }

@@ -82,7 +82,7 @@ protected:
 
 protected slots:
 
-    void showPurchaseDialog(bool useCover);
+    void showPurchaseDialog( QString coverTempLocation );
     void xmlDownloadComplete( KIO::Job* downLoadJob );
     void albumDownloadComplete(bool success);
     void albumPurchaseCancelled();

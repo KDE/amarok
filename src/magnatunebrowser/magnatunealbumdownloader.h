@@ -27,6 +27,7 @@
 
 #include <qobject.h>
 
+#include <ktempdir.h>
 /**
 This class encapsulates the downloading of an album once all required information has been retrieved
 
@@ -49,7 +50,7 @@ signals:
      * @param success true is download completed, false if download was cancelled.
      */
     void downloadComplete(bool success);
-    void coverDownloadCompleted(bool success);
+    void coverDownloadCompleted(QString coverFileName);
 
 public slots:
     /**
@@ -63,6 +64,7 @@ protected:
     KIO::FileCopyJob * m_albumDownloadJob;
     QString m_currentAlbumUnpackLocation;
     QString m_currentAlbumFileName;
+    KTempDir m_tempDir;
 
 protected slots:
     /**
