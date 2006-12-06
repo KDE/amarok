@@ -355,13 +355,16 @@ if test "$build_yauap" != "no"; then
         PKG_CHECK_MODULES(DBUSGLIB, dbus-glib-1,
             have_yauap=yes,have_yauap=no)
 
+
         dnl Give error if we don't have gstreamer
         if test "x$have_yauap" = "xno"; then
             LIB_YAUAP=""
             CFLAGS_YAUAP=""
         else
-            LIB_YAUAP="$DBUSGLIB_LIBS -ldbus-qt-1"
-            CFLAGS_YAUAP=$DBUSGLIB_CFLAGS
+            PKG_CHECK_MODULES(GOBJECT, gobject-2.0,
+                have_yauap=yes,have_yauap=no)
+            LIB_YAUAP="$DBUSGLIB_LIBS -ldbus-qt-1 $GOBJECT_LIBS"
+            CFLAGS_YAUAP="$DBUSGLIB_CFLAGS $GOBJECT_CFLAGS"
             AC_SUBST(LIB_YAUAP)
             AC_SUBST(CFLAGS_YAUAP)
             AC_DEFINE(HAVE_YAUAP, 1, [have yauap])
