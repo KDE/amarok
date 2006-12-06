@@ -5865,7 +5865,7 @@ CollectionDB::removeLabels( const QString &url, const QStringList &labels, const
     query( sql );
 }
 
-void
+bool
 CollectionDB::addLabel( const QString &url, const QString &label, const QString &uid, const uint type )
 {
     DEBUG_BLOCK
@@ -5886,10 +5886,11 @@ CollectionDB::addLabel( const QString &url, const QString &label, const QString 
         int count = query( QString( "SELECT COUNT(*) FROM tags_labels WHERE labelid = %1 AND deviceid = %2 AND url = '%3';" )
                                     .arg( id ).arg( deviceid ).arg( rpath ) ).first().toInt();
         if ( count )
-            return;
+            return false;
     }
     insert( QString( "INSERT INTO tags_labels( labelid, deviceid, url, uniqueid ) VALUES ( %1, %2, '%3', '%4' );" )
                      .arg( id ).arg( deviceid ).arg( rpath ).arg( escapeString( uid ) ), "tags_labels" );
+    return true;
 }
 
 QStringList

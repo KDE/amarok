@@ -192,7 +192,7 @@ k_dcop:
    virtual void scanPause() = 0;                           ///< Pause collection scanner.
    virtual void scanUnpause() = 0;                         ///< Unpause collection scanner.
    virtual void scannerAcknowledged() = 0;                 ///< Called by the scanner to acknowledge the request.
-   virtual void addLabels( const QString &url, const QStringList &labels ) = 0; ///< Add user-defined labels to the song with the given url.
+   virtual int addLabels( const QString &url, const QStringList &labels ) = 0; ///< Add user-defined labels to the song with the given url. Returns the number of labels which were not already assigned to the track.
    virtual void removeLabels( const QString &url, const QStringList &oldLabels ) = 0; ///< Remove user-defined labels from the song with the given url.
 };
 

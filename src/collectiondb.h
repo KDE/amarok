@@ -399,7 +399,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         //label methods
         QStringList getLabels( const QString &url, const uint type );
         void removeLabels( const QString &url, const QStringList &labels, const uint type );
-        void addLabel( const QString &url, const QString &label, const QString &uid, const uint type );
+        bool addLabel( const QString &url, const QString &label, const QString &uid, const uint type );
         void setLabels( const QString &url, const QStringList &labels, const QString &uid, const uint type );
 
         void cleanLabels();

@@ -855,14 +855,17 @@ namespace Amarok
             debug() << "No ScanController instance available" << endl;
     }
 
-    void DcopCollectionHandler::addLabels( const QString &url, const QStringList &labels )
+    int DcopCollectionHandler::addLabels( const QString &url, const QStringList &labels )
     {
         CollectionDB *db = CollectionDB::instance();
         QString uid = db->getUniqueId( url );
+        int count = 0;
         foreach( labels )
         {
-            db->addLabel( url, *it, uid , CollectionDB::typeUser );
+            if( db->addLabel( url, *it, uid , CollectionDB::typeUser ) )
+                count++;
         }
+        return count;
     }
 
     void DcopCollectionHandler::removeLabels( const QString &url, const QStringList &oldLabels )
