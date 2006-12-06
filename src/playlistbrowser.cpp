@@ -819,7 +819,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
         QueryBuilder qbTemp( qb );
         qbTemp.addMatch( QueryBuilder::tabArtist, *it );
 
-        last = new SmartPlaylist( item, last, i18n( "By %1" ).arg( *it ), qbTemp.query() );
+        last = new SmartPlaylist( item, last, i18n( "By %1" ).arg( *it ), qbTemp.query( true ) );
         last->setKept( false );
     }
 
@@ -828,7 +828,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valAccessDate, true );
     qb.setLimit( 0, 15 );
 
-    item = new SmartPlaylist( m_smartDefaults, item, i18n( "Last Played" ), qb.query() );
+    item = new SmartPlaylist( m_smartDefaults, item, i18n( "Last Played" ), qb.query( true ) );
     item->setKept( false );
 
     /********** Never Played **************/
@@ -838,7 +838,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
 
-    item = new SmartPlaylist( m_smartDefaults, item, i18n( "Never Played" ), qb.query() );
+    item = new SmartPlaylist( m_smartDefaults, item, i18n( "Never Played" ), qb.query( true ) );
     item->setKept( false );
 
     /********** Ever Played **************/
@@ -849,7 +849,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valScore );
 
-    item = new SmartPlaylist( m_smartDefaults, item, i18n( "Ever Played" ), qb.query() );
+    item = new SmartPlaylist( m_smartDefaults, item, i18n( "Ever Played" ), qb.query( true ) );
     item->setKept( false );
 
     /********** Genres **************/
@@ -865,7 +865,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
         QueryBuilder qbTemp( qb );
         qbTemp.addMatch( QueryBuilder::tabGenre, *it );
 
-        last = new SmartPlaylist( item, last, i18n( "%1" ).arg( *it ), qbTemp.query() );
+        last = new SmartPlaylist( item, last, i18n( "%1" ).arg( *it ), qbTemp.query( true ) );
         last->setKept( false );
     }
 
@@ -873,7 +873,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     qb.initSQLDrag();
     qb.setOptions( QueryBuilder::optRandomize );
     qb.setLimit( 0, 50 );
-    item = new SmartPlaylist( m_smartDefaults, item, i18n( "50 Random Tracks" ), qb.query() );
+    item = new SmartPlaylist( m_smartDefaults, item, i18n( "50 Random Tracks" ), qb.query( true ) );
     item->setKept( false );
 }
 

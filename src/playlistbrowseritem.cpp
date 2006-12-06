@@ -2999,7 +2999,8 @@ int SmartPlaylist::length()
 {
   QString sql = m_sqlForTags;
   sql.replace(QRegExp("SELECT.*FROM"), "SELECT COUNT(*) FROM");
-  QStringList result = CollectionDB::instance()->query(sql);
+  CollectionDB *db = CollectionDB::instance();
+  QStringList result = db->query( sql.replace( "(*MountedDeviceSelection*)" , db->deviceidSelection() ) );
 
   if (! result.isEmpty())
     return result.first().toInt();
@@ -3088,7 +3089,7 @@ void SmartPlaylist::setXml( const QDomElement &xml )
                 labels = CollectionDB::instance()->labelList();
             }
             foreach( labels ) {
-                m_after = new SmartPlaylist( item, m_after, i18n( "%1" ).arg( *it ), expand.text().replace("(*ExpandString*)", *it)  );
+                m_after = new SmartPlaylist( item, m_after, i18n( "%1" ).arg( *it ), QString(queryChildren).replace("(*ExpandString*)", *it)  );
             }
         }
     }
@@ -3285,6 +3286,8 @@ SmartPlaylist::xmlToQuery(const QDomElement &xml, bool forExpand /* = false */) 
                 table = QueryBuilder::tabAlbum;
             else if ( field == i18n( "Year" ) )
                 table = QueryBuilder::tabYear;
+            else if ( field == i18n( "Label" ) )
+                table = QueryBuilder::tabLabels;
 
             qb.addFilter( table, QueryBuilder::valName,
                           "(*ExpandString*)",
@@ -3292,7 +3295,7 @@ SmartPlaylist::xmlToQuery(const QDomElement &xml, bool forExpand /* = false */) 
         }
     }
 
-    return qb.query();
+    return qb.query( true );
 }
 
 

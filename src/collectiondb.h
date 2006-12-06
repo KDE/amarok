@@ -786,9 +786,11 @@ class QueryBuilder
         static QString dragSQLFields();
         void initSQLDrag();
 
-        void buildQuery();
+        void buildQuery( bool withDeviceidPlaceholder = false );
         QString getQuery();
-        QString query() { buildQuery(); return m_query; };
+        //use withDeviceidPlaceholder = false if the query isn't run immediately (*CurrentTimeT*)
+        //and replace (*MountedDeviceSelection*) with CollectionDB::instance()->deviceIdSelection()
+        QString query( bool withDeviceidPlaceholder = false ) { buildQuery( withDeviceidPlaceholder ); return m_query; };
         void clear();
 
         QStringList run();

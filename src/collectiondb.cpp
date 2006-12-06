@@ -7565,7 +7565,7 @@ QueryBuilder::initSQLDrag()
 
 
 void
-QueryBuilder::buildQuery()
+QueryBuilder::buildQuery( bool withDeviceidPlaceholder )
 {
     if ( m_query.isEmpty() )
     {
@@ -7582,15 +7582,20 @@ QueryBuilder::buildQuery()
         m_query += m_where;
         if ( !m_showAll && ( m_linkTables & tabSong ) )     //Only for things on mounted devices, unless you use optShowAll
         {
-            IdList list = MountPointManager::instance()->getMountedDeviceIds();
-            //debug() << "number of device ids " << list.count() << endl;
-            m_query += " AND tags.deviceid IN (";
-            foreachType( IdList, list )
+            if ( withDeviceidPlaceholder )
+                m_query += "(*MountedDeviceSelection*)";
+            else
             {
-                if ( it != list.begin() ) m_query += ',';
-                m_query += QString::number( *it );
+                IdList list = MountPointManager::instance()->getMountedDeviceIds();
+                //debug() << "number of device ids " << list.count() << endl;
+                m_query += " AND tags.deviceid IN (";
+                foreachType( IdList, list )
+                {
+                    if ( it != list.begin() ) m_query += ',';
+                    m_query += QString::number( *it );
+                }
+                m_query += ')';
             }
-            m_query += ')';
         }
         // GROUP BY must be before ORDER BY for sqlite
         // HAVING must be between GROUP BY and ORDER BY
