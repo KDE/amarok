@@ -284,6 +284,8 @@ class CollectionView : public KListView, public DropProxyTarget
         void removeDuplicatedHeaders();
 
         void startDrag();
+        QString getTrueItemText( int, QListViewItem* ) const;
+        QStringList listSelectedSiblingsOf( int, QListViewItem* );
         KURL::List listSelected();
 
         void playlistFromURLs( const KURL::List &urls );

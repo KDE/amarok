@@ -1320,6 +1320,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                        COMPILATION_SET, COMPILATION_UNSET, ORGANIZE, DELETE, TRASH, FILE_MENU  };
         #endif
         KURL::List selection = listSelected();
+        QStringList siblingSelection = listSelectedSiblingsOf( cat, item );
         menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), MAKE );
         menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), selection.count() == 1 ? i18n( "&Queue Track" )
@@ -1336,17 +1337,17 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         if( cat == IdArtist )
         {
             menu.insertItem( SmallIconSet( Amarok::icon( "burn" ) ), i18n("Burn All Tracks by This Artist"), BURN_ARTIST );
-            menu.setItemEnabled( BURN_ARTIST, K3bExporter::isAvailable() );
+            menu.setItemEnabled( BURN_ARTIST, K3bExporter::isAvailable() && siblingSelection.count() == 1 );
         }
         else if( cat == IdComposer )
         {
             menu.insertItem( SmallIconSet( Amarok::icon( "burn" ) ), i18n("Burn All Tracks by This Composer"), BURN_COMPOSER );
-            menu.setItemEnabled( BURN_COMPOSER, K3bExporter::isAvailable() );
+            menu.setItemEnabled( BURN_COMPOSER, K3bExporter::isAvailable() && siblingSelection.count() == 1 );
         }
-        else if( cat == IdAlbum || cat == IdVisYearAlbum )
+        else if( (cat == IdAlbum || cat == IdVisYearAlbum) )
         {
             menu.insertItem( SmallIconSet( Amarok::icon( "burn" ) ), i18n("Burn This Album"), BURN_ALBUM );
-            menu.setItemEnabled( BURN_ALBUM, K3bExporter::isAvailable() );
+            menu.setItemEnabled( BURN_ALBUM, K3bExporter::isAvailable() && siblingSelection.count() == 1 );
         }
         // !item->isExpandable() in tree mode corresponds to
         // showing tracks in iPod mode
@@ -1377,27 +1378,13 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
         menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n("Manage Files"), &fileMenu, FILE_MENU );
 
-        if ( cat == IdAlbum || cat == IdVisYearAlbum ) {
+        if ( (cat == IdAlbum || cat == IdVisYearAlbum) && siblingSelection.count() > 0 ) {
             menu.insertSeparator();
             menu.insertItem( SmallIconSet( "ok" ), i18n( "Show under &Various Artists" ), COMPILATION_SET );
             menu.insertItem( SmallIconSet( "cancel" ), i18n( "&Do not Show under Various Artists" ), COMPILATION_UNSET );
         }
 
-        QString trueItemText;
-
-        //Work out the true name of the album ( where Unknown is "" ) , and the
-        if ( dynamic_cast<CollectionItem*>( item ) )
-        {
-            CollectionItem* collectItem = static_cast<CollectionItem*>( item );
-            trueItemText = collectItem->getSQLText( 0 );
-            if ( cat == IdVisYearAlbum && !collectItem->isUnknown() )
-                trueItemText = trueItemText.right( trueItemText.length() - trueItemText.find( i18n( " - " ) ) - i18n( " - " ).length() );
-        }
-        else
-        {
-            trueItemText = item->text( 0 );
-            warning() << "RMB pressed for non-CollectionItem with text '" << trueItemText << '\'' << endl;
-        }
+        QString trueItemText = getTrueItemText( cat, item );
 
         switch( menu.exec( point ) )
         {
@@ -1443,20 +1430,23 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                 K3bExporter::instance()->exportTracks( selection );
                 break;
             case COMPILATION_SET:
-                setCompilation( trueItemText, true );
+                for ( QStringList::Iterator it = siblingSelection.begin(); it != siblingSelection.end(); ++it ) {
+                    setCompilation( *it, true );
+                }
                 break;
             case COMPILATION_UNSET:
-                setCompilation( trueItemText, false );
+                for ( QStringList::Iterator it = siblingSelection.begin(); it != siblingSelection.end(); ++it ) {
+                    setCompilation( *it, false );
+                }
                 break;
             case ORGANIZE:
-                organizeFiles( listSelected(), i18n( "Organize Collection Files" ), false /* do not add to collection, just move */ );
+                organizeFiles( selection, i18n( "Organize Collection Files" ), false /* do not add to collection, just move */ );
                 break;
             case DELETE:
-                KURL::List files = listSelected();
-                if ( DeleteDialog::showTrashDialog(this, files) )
+                if ( DeleteDialog::showTrashDialog(this, selection) )
                   {
-                    CollectionDB::instance()->removeSongs( files );
-                    foreachType( KURL::List, files )
+                    CollectionDB::instance()->removeSongs( selection );
+                    foreachType( KURL::List, selection )
                       CollectionDB::instance()->emitFileDeleted( (*it).path() );
                   }
                 m_dirty = true;
@@ -2001,6 +1991,60 @@ CollectionView::startDrag()
     d->dragCopy();
 }
 
+QString
+CollectionView::getTrueItemText( int cat, QListViewItem* item ) const
+{
+    //Work out the true name of the album ( where Unknown is "" ) , and the
+    QString trueItemText;
+    if ( item == 0 )
+    {
+        warning() << "getTrueItemText() called for empty CollectionItem" << endl;
+        return QString::null;
+    }
+    if ( dynamic_cast<CollectionItem*>( item ) )
+    {
+        CollectionItem* collectItem = static_cast<CollectionItem*>( item );
+        trueItemText = collectItem->getSQLText( 0 );
+        if ( cat == IdVisYearAlbum && !collectItem->isUnknown() )
+            trueItemText = trueItemText.right( trueItemText.length() - trueItemText.find( i18n( " - " ) ) - i18n( " - " ).length() );
+    }
+    else
+    {
+        trueItemText = item->text( 0 );
+        warning() << "getTrueItemText() called for non-CollectionItem with text '" << trueItemText << '\'' << endl;
+    }
+    return trueItemText;
+}
+
+QStringList
+CollectionView::listSelectedSiblingsOf( int cat, QListViewItem* item )
+{
+    // notice that using the nextSibling()-axis does not work in this case as this
+    // would only select items below the specified item.
+    QStringList list;
+    QString trueItemText;
+    int depth = item->depth();
+
+    // go to top most item
+    while( item && item->itemAbove() )
+    {
+        item = item->itemAbove();
+        //debug() << "walked up to item: " << getTrueItemText( cat, item ) << endl;
+    }
+    // walk down to get all selected items in same depth
+    while( item )
+    {
+        if ( item->isSelected() && item->depth() == depth )
+        {
+            trueItemText = getTrueItemText( cat, item );
+            //debug() << "selected item: " << trueItemText << endl;
+            if( !trueItemText.isEmpty() ) // filter out "Unknown"
+                list << trueItemText;
+        }
+        item = item->itemBelow();
+    }
+    return list;
+}
 
 KURL::List
 CollectionView::listSelected()
