@@ -850,6 +850,7 @@ void PlaylistEntry::updateInfo()
 
 void PlaylistEntry::slotDoubleClicked()
 {
+    Playlist::instance()->proposePlaylistName( text(0), true );
     Playlist::instance()->insertMedia( url(), Playlist::DefaultOptions );
 }
 
@@ -1194,6 +1195,7 @@ void StreamEntry::updateInfo()
 
 void StreamEntry::slotDoubleClicked()
 {
+    Playlist::instance()->proposePlaylistName( text(0) );
     Playlist::instance()->insertMedia( url(), Playlist::DefaultOptions );
 }
 
@@ -2141,6 +2143,7 @@ PodcastChannel::slotDoubleClicked()
         child = child->nextSibling();
     }
 
+    Playlist::instance()->proposePlaylistName( text(0) );
     Playlist::instance()->insertMedia( list, Playlist::DefaultOptions );
     setNew( false );
 }
@@ -3318,6 +3321,7 @@ void SmartPlaylist::slotDoubleClicked()
 {
     if( !query().isEmpty() )
     {
+        Playlist::instance()->proposePlaylistName( text(0) );
         Playlist::instance()->insertMediaSql( query(), Playlist::DefaultOptions );
     }
 }
