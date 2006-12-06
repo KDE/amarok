@@ -1613,6 +1613,12 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
     }
 
     QStringList folders = MountPointManager::instance()->collectionFolders();
+    if( folders.isEmpty() )
+    {
+        QString longMsg = i18n( "You need to configure at least one folder for your collection for organizing your files." );
+        Amarok::StatusBar::instance()->longMessage( longMsg, KDE::StatusBar::Sorry );
+        return;
+    }
 
     OrganizeCollectionDialogBase base( m_parent, "OrganizeFiles", true, caption,
             KDialogBase::Ok|KDialogBase::Cancel|KDialogBase::Details );
