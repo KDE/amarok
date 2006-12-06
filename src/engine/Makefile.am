@@ -14,10 +14,14 @@ if with_helix
     HELIX_ENGINE_SUBDIR = helix
 endif
 
+if with_yauap
+    YAUAP_ENGINE_SUBDIR = yauap
+endif
 
 SUBDIRS = . \
     void \
     $(XINE_ENGINE_SUBDIR) \
     $(NMM_ENGINE_SUBDIR) \
-    $(HELIX_ENGINE_SUBDIR)
+    $(HELIX_ENGINE_SUBDIR) \
+    $(YAUAP_ENGINE_SUBDIR)
 

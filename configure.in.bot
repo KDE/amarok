@@ -194,6 +194,10 @@ else
         echo " =   - Helix-engine"
     fi
 
+    if test x$build_yauap = xno; then
+        echo " =   - yauap-engine"
+    fi
+
     if test x$build_libvisual != xyes; then
         echo " =   - libvisual Support"
     fi
@@ -264,6 +268,10 @@ else
 
     if test x$build_helix != xno; then
         echo " =   + Helix-engine"
+    fi
+
+    if test x$build_yauap != xno; then
+        echo " =   + yauap-engine"
     fi
 
     if test x$build_libvisual = xyes; then

@@ -337,6 +337,45 @@ AM_CONDITIONAL(with_helix, test x$build_helix != xno)
 # END HELIX CHECK
 ###############################################################################
 
+###############################################################################
+# BEGIN yauap CHECK
+###############################################################################
+
+AC_ARG_WITH(yauap,
+    AC_HELP_STRING([--with-yauap],[build Amarok with yauap-engine]),
+    [build_yauap=$withval],
+    [build_yauap=no]
+)
+
+if test "$build_yauap" != "no"; then
+    if test "$PKGCONFIGFOUND" = "yes" ; then
+        # check for dbus-glib
+        have_yauap=no
+
+        PKG_CHECK_MODULES(DBUSGLIB, dbus-glib-1,
+            have_yauap=yes,have_yauap=no)
+
+        dnl Give error if we don't have gstreamer
+        if test "x$have_yauap" = "xno"; then
+            LIB_YAUAP=""
+            CFLAGS_YAUAP=""
+        else
+            LIB_YAUAP="$DBUSGLIB_LIBS -ldbus-qt-1"
+            CFLAGS_YAUAP=$DBUSGLIB_CFLAGS
+            AC_SUBST(LIB_YAUAP)
+            AC_SUBST(CFLAGS_YAUAP)
+            AC_DEFINE(HAVE_YAUAP, 1, [have yauap])
+        fi
+    fi
+fi
+
+AM_CONDITIONAL(with_yauap, [test x$have_yauap = xyes])
+
+###############################################################################
+# END yauap CHECK
+###############################################################################
+
+
 
 ###############################################################################
 # BEGIN stdint.h CHECK
