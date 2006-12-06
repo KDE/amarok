@@ -94,50 +94,7 @@ namespace Amarok
     const DynamicMode *dynamicMode() { return Playlist::instance()->dynamicMode(); }
 }
 
-/**
- * Iterator class that only edits visible items! Preferentially always use
- * this! Invisible items should not be operated on! To iterate over all
- * items use MyIt::All as the flags parameter. MyIt::All cannot be OR'd,
- * sorry.
- */
-
-class MyIterator : public QListViewItemIterator
-{
-public:
-    MyIterator( QListViewItem *item, int flags = 0 )
-        //QListViewItemIterator is not great and doesn't allow you to see everything if you
-        //mask both Visible and Invisible :( instead just visible items are returned
-        : QListViewItemIterator( item, flags == All ? 0 : flags | Visible  )
-    {}
-
-    MyIterator( QListView *view, int flags = 0 )
-        : QListViewItemIterator( view, flags == All ? 0 : flags | Visible )
-    {}
-
-    //FIXME! Dirty hack for enabled/disabled items.
-    enum IteratorFlag {
-        Visible = QListViewItemIterator::Visible,
-        All = QListViewItemIterator::Invisible
-    };
-
-    inline PlaylistItem *operator*() { return static_cast<PlaylistItem*>( QListViewItemIterator::operator*() ); }
-
-    /// @return the next visible PlaylistItem after item
-    static PlaylistItem *nextVisible( PlaylistItem *item )
-    {
-        MyIterator it( item );
-        return (*it == item) ? *static_cast<MyIterator&>(++it) : *it;
-    }
-
-    static PlaylistItem *prevVisible( PlaylistItem *item )
-    {
-        MyIterator it( item );
-        return (*it == item) ? *static_cast<MyIterator&>(--it) : *it;
-    }
-
-};
-
-typedef MyIterator MyIt;
+typedef PlaylistIterator MyIt;
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -689,7 +646,7 @@ Playlist::setDynamicHistory( bool enable /*false*/ )
     if( !m_currentTrack )
         return;
 
-    for( MyIterator it( this, MyIterator::All ) ; *it ; ++it )
+    for( PlaylistIterator it( this, PlaylistIterator::All ) ; *it ; ++it )
     {
         if( *it == m_currentTrack )          break;
 
@@ -1055,7 +1012,7 @@ Playlist::playNextTrack( bool forceNext )
                             // don't add it to previous albums if we only have one album in the playlist
                             // would loop infinitely otherwise
                             QPtrList<PlaylistAlbum> albums;
-                            for( MyIterator it( this, MyIterator::Visible ); *it && albums.count() <= 1; ++it )
+                            for( PlaylistIterator it( this, PlaylistIterator::Visible ); *it && albums.count() <= 1; ++it )
                                 if( albums.findRef( (*it)->m_album ) == -1 )
                                     albums.append( (*it)->m_album );
 
@@ -1085,7 +1042,7 @@ Playlist::playNextTrack( bool forceNext )
                             // don't add it to previous tracks if we only have one file in the playlist
                             // would loop infinitely otherwise
                             int count = 0;
-                            for( MyIterator it( this, MyIterator::Visible ); *it && count <= 1; ++it )
+                            for( PlaylistIterator it( this, PlaylistIterator::Visible ); *it && count <= 1; ++it )
                                 ++count;
 
                             if ( count > 1 )
@@ -3357,7 +3314,7 @@ Playlist::removeSelectedItems() //SLOT
     PLItemList queued, list;
     int dontReplaceDynamic = 0;
 
-    for( MyIterator it( this, MyIt::Selected ); *it; ++it )
+    for( PlaylistIterator it( this, MyIt::Selected ); *it; ++it )
     {
         if( !(*it)->isDynamicEnabled() )
             dontReplaceDynamic++;
@@ -4639,7 +4596,7 @@ Playlist::slotMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic )
         // automatically next time it's displayed.  We do have to
         // repaint so that they get displayed though.
 
-        for( MyIterator it( this, MyIterator::All ) ; *it ; ++it )
+        for( PlaylistIterator it( this, PlaylistIterator::All ) ; *it ; ++it )
           {
             (*it)->moodbar().reset();
             repaintItem(*it);

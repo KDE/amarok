@@ -78,6 +78,7 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, int options 
         , m_markerListViewItem( new PlaylistItem( Playlist::instance(), after ) )
         , m_playFirstUrl( options & (Playlist::StartPlay | Playlist::DirectPlay) )
         , m_coloring( options & Playlist::Colorize )
+        , m_options( options )
         , m_block( "UrlLoader" )
         , m_oldQueue( Playlist::instance()->m_nextTracks )
         , m_xmlSource( 0 )
@@ -139,7 +140,8 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, int options 
         }
 
         else if( PlaylistFile::isPlaylistFile( url ) ) {
-            new RemotePlaylistFetcher( url, after, m_playFirstUrl );
+            debug() << "remote playlist" << endl;
+            new RemotePlaylistFetcher( url, after, m_options );
             m_playFirstUrl = false;
         }
 
@@ -226,21 +228,36 @@ UrlLoader::customEvent( QCustomEvent *e)
     case 1000:
         foreachType( BundleList, e->bundles )
         {
-            //Only add files that exist to the playlist
-            if( !(*it).exists() )
-            {
-                //Since ATF's read-only functions will now always be on, always use the ATF
-                //behavior...add anyways, but disable, we expect to find with an update
-                new PlaylistItem( *it, m_markerListViewItem, false );
-            }
-            else
-            {
-                PlaylistItem *item = new PlaylistItem( *it, m_markerListViewItem );
+            //passing by value is quick for QValueLists, though it is slow
+            //if we change the list, but this is unlikely
+            KURL::List::Iterator jt;
+            int alreadyOnPlaylist = 0;
 
-                if( m_playFirstUrl ) {
-                    Playlist::instance()->activate( item );
-                    m_playFirstUrl = false;
+            PlaylistItem *item = 0;
+            if( m_options & (Playlist::Unique | Playlist::Queue) )
+            {
+                for( PlaylistIterator jt( Playlist::instance(), PlaylistIterator::All ); *jt; ++jt )
+                {
+                    if( (*jt)->url() == (*it).url() )
+                    {
+                        item = *jt;
+                        break;
+                    }
                 }
+            }
+
+            if( item )
+                alreadyOnPlaylist++;
+            else
+                item = new PlaylistItem( *it, m_markerListViewItem, (*it).exists() );
+
+            if( m_options & Playlist::Queue )
+                Playlist::instance()->queue( item );
+
+            if( m_playFirstUrl && (*it).exists() )
+            {
+                Playlist::instance()->activate( item );
+                m_playFirstUrl = false;
             }
         }
         break;
@@ -956,6 +973,7 @@ RemotePlaylistFetcher::RemotePlaylistFetcher( const KURL &source, QListViewItem 
         , m_source( source )
         , m_after( after )
         , m_playFirstUrl( options & (Playlist::StartPlay | Playlist::DirectPlay) )
+        , m_options( options )
 {
     //We keep the extension so the UrlLoader knows what file type it is
     const QString path = source.path();
@@ -996,7 +1014,7 @@ RemotePlaylistFetcher::result( KIO::Job *job )
     else {
         debug() << "Playlist was downloaded successfully\n";
 
-        UrlLoader *loader = new UrlLoader( m_destination, m_after, m_playFirstUrl );
+        UrlLoader *loader = new UrlLoader( m_destination, m_after, m_options );
         ThreadWeaver::instance()->queueJob( loader );
 
         // we mustn't get deleted until the loader is finished

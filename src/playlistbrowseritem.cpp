@@ -862,7 +862,7 @@ void PlaylistEntry::showContextMenu( const QPoint &position )
 
     menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), LOAD );
     menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
-    //menu.insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), i18n( "&Queue Track" ), QUEUE );
+    menu.insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), i18n( "&Queue Tracks" ), QUEUE );
 
     if( MediaBrowser::isAvailable() )
     {
@@ -1268,8 +1268,7 @@ StreamEntry::showContextMenu( const QPoint &position )
 
     menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), LOAD );
     menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
-    if( dynamic_cast<LastFmEntry*>(this) )
-        menu.insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), i18n( "&Queue Track" ), QUEUE );
+    menu.insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), i18n( "&Queue Tracks" ), QUEUE );
     menu.insertSeparator();
 
     // Forbid editing non removable items
@@ -3327,10 +3326,11 @@ void SmartPlaylist::showContextMenu( const QPoint &position )
 {
     KPopupMenu menu( listView() );
 
-    enum Actions { LOAD, ADD, EDIT, REMOVE, MEDIADEVICE_COPY, MEDIADEVICE_SYNC };
+    enum Actions { LOAD, ADD, QUEUE, EDIT, REMOVE, MEDIADEVICE_COPY, MEDIADEVICE_SYNC };
 
     menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), LOAD );
     menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), ADD );
+    menu.insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), i18n( "&Queue Tracks" ), QUEUE );
     if( MediaBrowser::isAvailable() )
     {
         menu.insertSeparator();
@@ -3357,6 +3357,9 @@ void SmartPlaylist::showContextMenu( const QPoint &position )
             //FALL THROUGH
         case ADD:
             Playlist::instance()->insertMediaSql( query(), Playlist::Append );
+            break;
+        case QUEUE:
+            Playlist::instance()->insertMediaSql( query(), Playlist::Queue );
             break;
         case EDIT:
             PlaylistBrowser::instance()->editSmartPlaylist( this );

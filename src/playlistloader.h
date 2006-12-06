@@ -134,6 +134,7 @@ private:
     PlaylistItem *m_markerListViewItem;
     bool          m_playFirstUrl;
     bool          m_coloring;
+    int           m_options;
     Debug::Block  m_block;
     QPtrList<PlaylistItem> m_oldQueue;
     QXmlInputSource  *m_xmlSource;
@@ -178,6 +179,7 @@ class RemotePlaylistFetcher : public QObject
     KURL m_destination;
     QListViewItem *m_after;
     bool m_playFirstUrl;
+    int m_options;
     class KTempFile *m_temp;
 
 public:

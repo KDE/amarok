@@ -437,4 +437,47 @@ public:
     PlaylistAlbum(): refcount( 0 ), total( 0 ) { }
 };
 
+/**
+ * Iterator class that only edits visible items! Preferentially always use
+ * this! Invisible items should not be operated on! To iterate over all
+ * items use MyIt::All as the flags parameter. MyIt::All cannot be OR'd,
+ * sorry.
+ */
+
+class PlaylistIterator : public QListViewItemIterator
+{
+public:
+    PlaylistIterator( QListViewItem *item, int flags = 0 )
+        //QListViewItemIterator is not great and doesn't allow you to see everything if you
+        //mask both Visible and Invisible :( instead just visible items are returned
+        : QListViewItemIterator( item, flags == All ? 0 : flags | Visible  )
+    {}
+
+    PlaylistIterator( QListView *view, int flags = 0 )
+        : QListViewItemIterator( view, flags == All ? 0 : flags | Visible )
+    {}
+
+    //FIXME! Dirty hack for enabled/disabled items.
+    enum IteratorFlag {
+        Visible = QListViewItemIterator::Visible,
+        All = QListViewItemIterator::Invisible
+    };
+
+    inline PlaylistItem *operator*() { return static_cast<PlaylistItem*>( QListViewItemIterator::operator*() ); }
+
+    /// @return the next visible PlaylistItem after item
+    static PlaylistItem *nextVisible( PlaylistItem *item )
+    {
+        PlaylistIterator it( item );
+        return (*it == item) ? *static_cast<PlaylistIterator&>(++it) : *it;
+    }
+
+    static PlaylistItem *prevVisible( PlaylistItem *item )
+    {
+        PlaylistIterator it( item );
+        return (*it == item) ? *static_cast<PlaylistIterator&>(--it) : *it;
+    }
+
+};
+
 #endif //AMAROK_PLAYLIST_H
