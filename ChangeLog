@@ -57,6 +57,9 @@ VERSION 1.4.5
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
+    * (Don't) Show Under Various Artists would not work when multiple albums
+      are selected. Patch by Tobias Knieper <tobias.knieper@micekiller.de>.
+      (BR 112422)
     * Changed temp download location for Magnatune purchases (BR 137912)
     * Fixed potential double payment issues in the Magnatune store
     * Only synchronize already set values to media devices. (BR 138150)
