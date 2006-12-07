@@ -49,7 +49,7 @@ public:
      * Sets the album to process.
      * @param album The album to process.
      */
-    void setAlbum( MagnatuneAlbum * album );
+    void setAlbum( const MagnatuneAlbum& album );
 
     /**
      * Loads image into the cover label.
@@ -81,8 +81,8 @@ signals:
 public slots:
     /*$PUBLIC_SLOTS$*/
 
-protected:
-    /*$PROTECTED_FUNCTIONS$*/
+private:
+    /*$PRIVATE_FUNCTIONS$*/
 
     QString m_albumCode;
 

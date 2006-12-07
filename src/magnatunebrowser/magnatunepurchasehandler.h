@@ -47,23 +47,22 @@ public:
     * Starts a purchase operation
     * @param album The album to purchase
     */
-   void purchaseAlbum( MagnatuneAlbum * album );
+   void purchaseAlbum( const MagnatuneAlbum &album );
 
 signals:
 
     void purchaseCompleted( bool success );
 
-protected:
-   
+private:
     KIO::TransferJob * m_resultDownloadJob;
 
-        
+
     //need a parent to pass to any dialogs we spawn
     QWidget * m_parent;
     MagnatunePurchaseDialog * m_purchaseDialog;
     MagnatuneDownloadDialog * m_downloadDialog;
     MagnatuneAlbumDownloader * m_albumDownloader;
-    MagnatuneAlbum * m_currentAlbum;
+    MagnatuneAlbum m_currentAlbum;
     QString m_currentAlbumCoverName;
 
     bool parseDownloadXml( QString xml );

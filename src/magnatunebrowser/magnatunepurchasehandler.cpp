@@ -36,7 +36,6 @@ MagnatunePurchaseHandler::MagnatunePurchaseHandler()
     m_downloadDialog = 0;
     m_purchaseDialog = 0;
     m_albumDownloader = 0;
-    m_currentAlbum = 0;
 }
 
 
@@ -45,20 +44,18 @@ MagnatunePurchaseHandler::~MagnatunePurchaseHandler()
     if ( m_downloadDialog != 0 ) delete m_downloadDialog;
     if ( m_purchaseDialog != 0 ) delete m_purchaseDialog;
     if ( m_albumDownloader != 0 ) delete m_albumDownloader;
-
 }
 
 
-void MagnatunePurchaseHandler::purchaseAlbum( MagnatuneAlbum * album )
+void MagnatunePurchaseHandler::purchaseAlbum( const MagnatuneAlbum &album )
 {
-
     m_currentAlbum = album;
 
     //first lets get the album cover for the album we are about to purchase.
     //Then we can show it on the purchase dialog as well as put it in the
     //same directory as the album.
 
-    QString albumCoverUrlString = album->getCoverURL();
+    QString albumCoverUrlString = album.getCoverURL();
 
     if ( m_albumDownloader == 0 )
     {
@@ -66,7 +63,7 @@ void MagnatunePurchaseHandler::purchaseAlbum( MagnatuneAlbum * album )
         connect( m_albumDownloader, SIGNAL( coverDownloadCompleted( QString ) ), this, SLOT( showPurchaseDialog( QString ) ) );
     }
 
-    m_currentAlbumCoverName = album->getName() + " - cover.jpg";
+    m_currentAlbumCoverName = album.getName() + " - cover.jpg";
 
 
     m_albumDownloader->downloadCover( albumCoverUrlString, m_currentAlbumCoverName );
@@ -94,7 +91,7 @@ void MagnatunePurchaseHandler::showPurchaseDialog(  QString coverTempLocation )
 
 
 
-    if ( m_currentAlbum != 0 )
+    if ( m_currentAlbum.getId() != 0 )
     {
 
         KTempDir tempDir;
@@ -198,9 +195,9 @@ void MagnatunePurchaseHandler::saveDownloadInfo( QString infoXml )
     }
 
     //Create file name
-    MagnatuneArtist artist = MagnatuneDatabaseHandler::instance() ->getArtistById( m_currentAlbum->getArtistId() );
+    MagnatuneArtist artist = MagnatuneDatabaseHandler::instance() ->getArtistById( m_currentAlbum.getArtistId() );
     QString artistName = artist.getName();
-    QString fileName = artistName + " - " + m_currentAlbum->getName();
+    QString fileName = artistName + " - " + m_currentAlbum.getName();
 
     QFile file( purchaseDir.absPath() + "/" + fileName );
 

@@ -258,7 +258,8 @@ void MagnatuneBrowser::purchaseSelectedAlbum( )
 
     MagnatuneListViewAlbumItem *selectedAlbum = dynamic_cast<MagnatuneListViewAlbumItem *>( m_listView->selectedItem() );
 
-    m_purchaseHandler->purchaseAlbum( selectedAlbum );
+    if (selectedAlbum)
+        m_purchaseHandler->purchaseAlbum( *selectedAlbum );
 }
 
 void MagnatuneBrowser::purchaseAlbumContainingSelectedTrack( )
@@ -272,8 +273,7 @@ void MagnatuneBrowser::purchaseAlbumContainingSelectedTrack( )
 
     MagnatuneListViewTrackItem *selectedTrack = dynamic_cast<MagnatuneListViewTrackItem *>( m_listView->selectedItem() );
 
-    MagnatuneAlbum *album = new MagnatuneAlbum( MagnatuneDatabaseHandler::instance() ->getAlbumById( selectedTrack->getAlbumId() ) );
-
+    MagnatuneAlbum album( MagnatuneDatabaseHandler::instance() ->getAlbumById( selectedTrack->getAlbumId() ) );
     m_purchaseHandler->purchaseAlbum( album );
 }
 

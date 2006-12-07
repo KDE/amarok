@@ -36,18 +36,18 @@ MagnatunePurchaseDialog::MagnatunePurchaseDialog( QWidget* parent, const char* n
 MagnatunePurchaseDialog::~MagnatunePurchaseDialog()
 {}
 
-void MagnatunePurchaseDialog::setAlbum( MagnatuneAlbum *album )
+void MagnatunePurchaseDialog::setAlbum( const MagnatuneAlbum &album )
 {
 
     //albumEdit->setText("Hello!");
-    albumEdit->setText( album->getName() );
+    albumEdit->setText( album.getName() );
 
-    MagnatuneArtist artist = MagnatuneDatabaseHandler::instance()->getArtistById( album->getArtistId() );
+    MagnatuneArtist artist = MagnatuneDatabaseHandler::instance()->getArtistById( album.getArtistId() );
     artistEdit->setText( artist.getName() );
-    genresEdit->setText( album->getMp3Genre() );
-    launchDateEdit->setText( QString::number( album->getLaunchDate().year() ) );
+    genresEdit->setText( album.getMp3Genre() );
+    launchDateEdit->setText( QString::number( album.getLaunchDate().year() ) );
 
-    m_albumCode = album->getAlbumCode();
+    m_albumCode = album.getAlbumCode();
 
 }
 
