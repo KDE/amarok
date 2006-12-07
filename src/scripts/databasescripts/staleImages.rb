@@ -5,7 +5,7 @@
 # (c) 2006 Roland Gigler <rolandg@web.de>
 # License: GNU General Public License V2
 
-`dcop amarok playlist shortStatusMessage "Removing stale 'images' entries from the database"`
+system("dcop", "amarok", "playlist", "shortStatusMessage", "Removing stale 'images' entries from the database")
 
 qresult = `dcop amarok collection query "SELECT path FROM images;"`
 result = qresult.split( "\n" )
@@ -18,10 +18,10 @@ result.each do |url|
         i = i + 1
         url.gsub!(/[']/, '\\\\\'')
         puts "Deleting: #{url}"
-        `dcop amarok collection query "DELETE FROM images WHERE path = '#{url}'"`
+        system("dcop", "amarok", "collection", "query", "DELETE FROM images WHERE path = '#{url}'")
     end
 end
 
 if i > 0
-    `dcop amarok playlist popupMessage "Removed #{i} stale 'images' entries from the database"`
+    system("dcop", "amarok", "playlist", "popupMessage" "Removed #{i} stale 'images' entries from the database")
 end
