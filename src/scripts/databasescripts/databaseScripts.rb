@@ -16,7 +16,7 @@ begin
     require 'Korundum'
 rescue LoadError
     error = 'Korundum (KDE bindings for ruby) from kdebindings v3.4 is required for this script.'
-    `dcop amarok playlist popupMessage "DatabaseScripts: #{error}"`
+    system("dcop", "amarok", "playlist", "popupMessage", "DatabaseScripts: #{error}")
     exit
 end
 
@@ -103,7 +103,7 @@ class DatabaseScriptChooser < Qt::Dialog
                 filename = File.dirname( File.expand_path( __FILE__ ) ) + "/staleStatistics.rb"
         end
 
-        `ruby "#{filename}" "#{arg}"`
+        system("ruby", filename, arg)
 
         done( 0 )
     end
