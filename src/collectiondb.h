@@ -141,6 +141,7 @@ class SqliteConnection : public DbConnection
     private:
         static void sqlite_rand( sqlite3_context *context, int /*argc*/, sqlite3_value ** /*argv*/ );
         static void sqlite_power( sqlite3_context *context, int argc, sqlite3_value **argv );
+        static void sqlite_like_new( sqlite3_context *context, int argc, sqlite3_value **argv );
 
         sqlite3* m_db;
 };

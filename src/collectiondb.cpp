@@ -5979,6 +5979,10 @@ SqliteConnection::SqliteConnection( const SqliteConfig* config )
             m_initialized = false;
         if( sqlite3_create_function(m_db, "power", 2, SQLITE_UTF8, NULL, sqlite_power, NULL, NULL) != SQLITE_OK )
             m_initialized = false;
+        if ( sqlite3_create_function(m_db, "like", 2, SQLITE_UTF8, NULL, sqlite_like_new, NULL, NULL) != SQLITE_OK )
+            m_initialized = false;
+        if ( sqlite3_create_function(m_db, "like", 3, SQLITE_UTF8, NULL, sqlite_like_new, NULL, NULL) != SQLITE_OK )
+            m_initialized = false;
     }
 
     //optimization for speeding up SQLite
@@ -6185,6 +6189,32 @@ void SqliteConnection::sqlite_power(sqlite3_context *context, int argc, sqlite3_
     sqlite3_result_double( context, pow(a,b) );
 }
 
+// this implements a LIKE() function that overrides the default string comparison function
+// Reason: default function is case-sensitive for utf8 strings (BUG: 116458, ...)
+void SqliteConnection::sqlite_like_new( sqlite3_context *context, int argc, sqlite3_value **argv )
+{
+
+    const unsigned char *zA = sqlite3_value_text( argv[0] );
+    const unsigned char *zB = sqlite3_value_text( argv[1] );
+
+    QString pattern = QString::fromUtf8( (const char*)zA );
+    QString text = QString::fromUtf8( (const char*)zB );
+
+    pattern = QRegExp::escape( pattern );
+
+    if ( pattern.startsWith("%") ) pattern = ".*" + pattern.mid(1);
+    if ( pattern.endsWith("%") ) pattern = pattern.left( pattern.length() - 1 ) + ".*";
+
+    if( argc == 3 ) {
+        const unsigned char *zEsc = sqlite3_value_text( argv[2] );
+        QChar escape = QString::fromUtf8( (const char*)zEsc ).at( 0 );
+        pattern.replace( escape + '%', "%" ).replace( escape + '_', "_" ).replace( escape + '/', "/" );
+    }
+
+    const QRegExp rx( pattern, 0 /* case-sensitive */, 0 /* simple wildcards */ );
+
+    sqlite3_result_int( context, rx.search( text ) != -1 );
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS MySqlConnection
