@@ -89,8 +89,8 @@ class SubmitItem
         const QString artist() const { return m_artist; }
         const QString album() const { return m_album; }
         const QString title() const { return m_title; }
-        const int length() const { return m_length; }
-        const uint playStartTime() const { return m_playStartTime; }
+        int length() const { return m_length; }
+        uint playStartTime() const { return m_playStartTime; }
 
         QDomElement toDomElement( QDomDocument& /* document */ ) const;
 

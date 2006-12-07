@@ -3113,7 +3113,7 @@ InfoPane::~InfoPane()
     delete m_infoBrowser;
 }
 
-const int
+int
 InfoPane::getHeight()
 {
     if( static_cast<QWidget*>( child( "container" ) )->isShown() )
