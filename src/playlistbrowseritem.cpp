@@ -2106,14 +2106,17 @@ PodcastChannel::setParent( PlaylistCategory *newParent )
 void
 PodcastChannel::updateInfo()
 {
+    if( !isPolished() )
+            load();
+
     const QString body = "<tr><td><b>%1</b></td><td>%2</td></tr>";
 
     QString str  = "<html><body><table width=\"100%\" border=\"0\">";
 
-    str += body.arg( i18n( "URL" ),         m_url.prettyURL() );
+    str += body.arg( i18n( "Description" ), description() );
     str += body.arg( i18n( "Website" ),     link().prettyURL() );
     str += body.arg( i18n( "Copyright" ),   copyright() );
-    str += body.arg( i18n( "Description" ), description() );
+    str += body.arg( i18n( "URL" ),         m_url.prettyURL() );
     str += "</table>";
     str += i18n( "<p>&nbsp;<b>Episodes</b></p><ul>" );
     for( QListViewItem *c = firstChild(); c; c = c->nextSibling() )
@@ -2758,12 +2761,13 @@ PodcastEpisode::updateInfo()
 
     QString str  = "<html><body><table width=\"100%\" border=\"0\">";
 
-    str += body.arg( i18n( "Title" ),       m_bundle.title() );
-    str += body.arg( i18n( "Author" ),      m_bundle.author() );
-    str += body.arg( i18n( "Date" ),        m_bundle.date() );
-    str += body.arg( i18n( "Type" ),        m_bundle.type() );
+    //str += body.arg( i18n( "Title" ),       m_bundle.title() );
     str += body.arg( i18n( "Description" ), m_bundle.description() );
+    str += body.arg( i18n( "Date" ),        m_bundle.date() );
+    str += body.arg( i18n( "Author" ),      m_bundle.author() );
+    str += body.arg( i18n( "Type" ),        m_bundle.type() );
     str += body.arg( i18n( "URL" ),         m_bundle.url().prettyURL() );
+    str += body.arg( i18n( "Local URL" ),   isOnDisk() ? localUrl().prettyURL() : i18n( "n/a" ) );
     str += "</table></body></html>";
 
     PlaylistBrowser::instance()->setInfo( text(0), str );
