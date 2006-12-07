@@ -8,6 +8,7 @@
 // (c) 2006 Jonas Hurrelmann <j@outpo.st>
 // (c) 2006 Shane King <kde@dontletsstart.com>
 // (c) 2006 Peter C. Ndikuwera <pndiku@gmail.com>
+// (c) 2006 Stanislav Nikolov <valsinats@gmail.com>
 // See COPYING file for licensing information.
 
 #define DEBUG_PREFIX "CollectionDB"
@@ -6200,20 +6201,18 @@ void SqliteConnection::sqlite_like_new( sqlite3_context *context, int argc, sqli
     QString pattern = QString::fromUtf8( (const char*)zA );
     QString text = QString::fromUtf8( (const char*)zB );
 
-    pattern = QRegExp::escape( pattern );
+    int begin = pattern.startsWith( "%" ), end = pattern.endsWith( "%" );
+    pattern = pattern.mid( 1, pattern.length() - 2 );
+    if( argc == 3 ) // The function is given an escape character. In likeCondition() it defaults to '/'
+        pattern.replace( "/%", "%" ).replace( "/_", "_" ).replace( "//", "/" );
 
-    if ( pattern.startsWith("%") ) pattern = ".*" + pattern.mid(1);
-    if ( pattern.endsWith("%") ) pattern = pattern.left( pattern.length() - 1 ) + ".*";
+    int result = 0;
+    if ( begin && end ) result = ( text.find( pattern, 0, 0 ) != -1);
+    else if ( begin ) result = text.startsWith( pattern, 0 );
+    else if ( end ) result = text.endsWith( pattern, 0 );
+    else result = ( text.lower() == pattern.lower() );
 
-    if( argc == 3 ) {
-        const unsigned char *zEsc = sqlite3_value_text( argv[2] );
-        QChar escape = QString::fromUtf8( (const char*)zEsc ).at( 0 );
-        pattern.replace( escape + '%', "%" ).replace( escape + '_', "_" ).replace( escape + '/', "/" );
-    }
-
-    const QRegExp rx( pattern, 0 /* case-sensitive */, 0 /* simple wildcards */ );
-
-    sqlite3_result_int( context, rx.search( text ) != -1 );
+    sqlite3_result_int( context, result );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
