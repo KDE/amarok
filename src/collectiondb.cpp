@@ -7920,7 +7920,7 @@ QueryBuilder::getField(const QString &tableValue, int *table, Q_INT64 *value)
     if ( dotIndex < 0 ) return false;
     int tmpTable = getTableByName( tableValue.left(dotIndex) );
     Q_UINT64 tmpValue = getValueByName( tableValue.mid( dotIndex + 1 ) );
-    if ( tmpTable >= 0 && value >= 0 ) {
+    if ( tmpTable >= 0 && value ) {
         *table = tmpTable;
         *value = tmpValue;
         return true;
