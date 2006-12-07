@@ -135,15 +135,22 @@ PlaylistBrowser *PlaylistBrowser::s_instance = 0;
 PlaylistBrowser::PlaylistBrowser( const char *name )
         : QVBox( 0, name )
         , m_polished( false )
+        , m_playlistCategory( 0 )
+        , m_streamsCategory( 0 )
         , m_smartCategory( 0 )
+        , m_dynamicCategory( 0 )
+        , m_podcastCategory( 0 )
         , m_coolStreams( 0 )
         , m_smartDefaults( 0 )
         , m_lastfmCategory( 0 )
+        , m_shoutcastCategory( 0 )
+        , m_lastPlaylist( 0 )
         , m_coolStreamsOpen( false )
         , m_smartDefaultsOpen( false )
         , m_lastfmOpen( false )
         , m_ac( new KActionCollection( this ) )
         , m_podcastTimer( new QTimer( this ) )
+
 
 {
     s_instance = this;
