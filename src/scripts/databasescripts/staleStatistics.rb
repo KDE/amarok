@@ -4,7 +4,7 @@
 # (c) 2005 Seb Ruiz <me@sebruiz.net>
 # License: GNU General Public License V2
 
-`dcop amarok playlist shortStatusMessage "Removing stale entries from the database"`
+system("dcop", "amarok", "playlist", "shortStatusMessage", "Removing stale entries from the database")
 
 qresult = `dcop amarok collection query "SELECT url FROM statistics;"`
 result = qresult.split( "\n" )
@@ -16,10 +16,10 @@ result.each do |url|
         i = i + 1
         url.gsub!(/[']/, '\\\\\'')
         puts "Deleting: #{url}"
-        `dcop amarok collection query "DELETE FROM statistics WHERE url = '#{url}'"`
+        system("dcop", "amarok", "collection", "query", "DELETE FROM statistics WHERE url = '#{url}'")
     end
 end
 
 if i > 0
-    `dcop amarok playlist popupMessage "Removed #{i} stale entries from the database"`
+    system("dcop", "amarok", "playlist", "popupMessage", "Removed #{i} stale entries from the database")
 end
