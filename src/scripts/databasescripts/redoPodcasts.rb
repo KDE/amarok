@@ -12,6 +12,6 @@ message = gets()
 
 podcasts.each do |channel|
     print "Adding podcast: #{channel}\n"
-    `dcop amarok playlistbrowser addPodcast #{channel}`
+    system("dcop", "amarok", "playlistbrowser", "addPodcast", channel)
 end
 print "Done.\n"
