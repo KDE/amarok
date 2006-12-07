@@ -59,7 +59,7 @@ void MagnatuneDownloadDialog::downloadButtonClicked( )
 
 void MagnatuneDownloadDialog::setDownloadInfo( MagnatuneDownloadInfo * info )
 {
-    if (m_currentDownloadInfo != 0) delete m_currentDownloadInfo;
+    delete m_currentDownloadInfo;
 
     m_currentDownloadInfo = info;
 

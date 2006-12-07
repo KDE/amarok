@@ -41,9 +41,9 @@ MagnatunePurchaseHandler::MagnatunePurchaseHandler()
 
 MagnatunePurchaseHandler::~MagnatunePurchaseHandler()
 {
-    if ( m_downloadDialog != 0 ) delete m_downloadDialog;
-    if ( m_purchaseDialog != 0 ) delete m_purchaseDialog;
-    if ( m_albumDownloader != 0 ) delete m_albumDownloader;
+    delete m_downloadDialog;
+    delete m_purchaseDialog;
+    delete m_albumDownloader;
 }
 
 
