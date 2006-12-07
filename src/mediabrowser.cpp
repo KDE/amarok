@@ -208,9 +208,9 @@ class DummyMediaDevice : public MediaDevice
 
 MediaBrowser::MediaBrowser( const char *name )
         : QVBox( 0, name )
-        , m_waitForTranscode( false )
         , m_timer( new QTimer( this ) )
         , m_currentDevice( m_devices.end() )
+        , m_waitForTranscode( false )
         , m_quitting( false )
 {
     s_instance = this;
