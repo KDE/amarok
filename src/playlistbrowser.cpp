@@ -3166,6 +3166,9 @@ InfoPane::setInfo( const QString &title, const QString &info )
     if ( !static_cast<QWidget*>(child("container"))->isShown() )
         m_pushButton->setEnabled( m_enable );
 
+    if( m_pushButton->isOn() )
+        toggle( !(info.isEmpty() && title.isEmpty()) );
+
     m_infoBrowser->set(
         m_enable ?
         QString( "<div id='extended_box' class='box'>"
