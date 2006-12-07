@@ -40,7 +40,6 @@ private:
 
 public:
     MagnatuneArtist();
-    ~MagnatuneArtist();
 
     void setId( int id );
     int getId() const;
@@ -73,7 +72,6 @@ private:
 
 public:
     MagnatuneAlbum();
-    ~MagnatuneAlbum();
 
     void setId( int id );
     int getId() const;
@@ -116,7 +114,6 @@ private:
 
 public:
     MagnatuneTrack();
-    ~MagnatuneTrack();
 
     void setId( int id );
     int getId() const;

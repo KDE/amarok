@@ -25,10 +25,7 @@
 //// MagnatuneArtist ////
 
 MagnatuneArtist::MagnatuneArtist( )
-{
-}
-
-MagnatuneArtist::~ MagnatuneArtist( )
+    : m_id(0)
 {
 }
 
@@ -92,10 +89,7 @@ QString MagnatuneArtist::getHomeURL( ) const
 //// MagnatuneAlbum ////
 
 MagnatuneAlbum::MagnatuneAlbum( )
-{
-}
-
-MagnatuneAlbum::~ MagnatuneAlbum( )
+    : m_id (0)
 {
 }
 
@@ -191,10 +185,11 @@ QString MagnatuneAlbum::getMagnatuneGenres( ) const
 //// MagnatuneTrack ////
 
 MagnatuneTrack::MagnatuneTrack( )
-{
-}
-
-MagnatuneTrack::~ MagnatuneTrack( )
+    : m_id( 0 )
+    , m_trackNumber( 0 )
+    , m_duration( 0 )
+    , m_albumId( 0 )
+    , m_artistId( 0 )
 {
 }
 
