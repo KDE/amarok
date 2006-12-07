@@ -88,6 +88,9 @@ EngineController::loadEngine() //static
     DEBUG_BLOCK
     //TODO remember song position, and resume playback
 
+    // new engine, new ext cache required
+    extensionCache().clear();
+
     if( m_engine != m_voidEngine ) {
         EngineBase *oldEngine = m_engine;
 
@@ -106,9 +109,6 @@ EngineController::loadEngine() //static
         // means Amarok sets all components to empty on startup, which is
         // their responsibility.
         slotStateChanged( Engine::Empty );
-
-        // new engine, new ext cache required
-        extensionCache().clear();
     }
 
     m_engine = loadEngine( AmarokConfig::soundSystem() );
