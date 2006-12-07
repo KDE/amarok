@@ -5,30 +5,36 @@
 # (c) 2006 Roland Gigler <rolandg@web.de>
 # License: GNU General Public License V2
 
-`dcop amarok playlist shortStatusMessage "Removing stale 'album' entries from the database"`
+class String
+    def shellquote
+        return "'" + self.gsub("'", "'\\\\''") + "'"
+    end
+end
 
-qresult = `dcop amarok collection query "SELECT id FROM album;"`
+system("dcop", "amarok", "playlist", "shortStatusMessage", "Removing stale 'album' entries from the database")
+
+qresult = `dcop amarok collection query #{"SELECT id FROM album;".shellquote}`
 result = qresult.split( "\n" )
 
 i = 0
 
 result.each do |id|
     print "Checking: #{id}, "
-    qresult2 = `dcop amarok collection query "SELECT COUNT(*) FROM tags where album = #{id};"`
+    qresult2 = `dcop amarok collection query #{"SELECT COUNT(*) FROM tags where album = #{id};".shellquote}`
     count = qresult2.chomp()
     printf "count: %s", count
     if  count == "0"
         i = i + 1
-	qresult3 = `dcop amarok collection query "SELECT name FROM album where id = #{id} ;"`
+	qresult3 = `dcop amarok collection query #{"SELECT name FROM album where id = #{id} ;".shellquote}`
         result3 = qresult3.split( "\n" )
         puts "==>: Deleting: #{id}, #{result3}"
-        `dcop amarok collection query "DELETE FROM album WHERE id = '#{id}'"`
+        system("dcop", "amarok", "collection", "query", "DELETE FROM album WHERE id = '#{id}'")
     end
     print "\n"
 end
 puts "removed #{i} albums."
 
 if i > 0
-    `dcop amarok playlist popupMessage "Removed #{i} stale 'album' entries from the database"`
+    system("dcop", "amarok", "playlist", "popupMessage", "Removed #{i.shellquote} stale 'album' entries from the database")
 end
 
