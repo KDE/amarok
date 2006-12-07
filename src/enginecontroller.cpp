@@ -65,7 +65,7 @@ EngineController::EngineController()
         , m_positionOffset( 0 )
         , m_lastPositionOffset( 0 )
 {
-    m_voidEngine = m_engine = static_cast<EngineBase*>( loadEngine( "void-engine" ) );
+    m_voidEngine = m_engine = loadEngine( "void-engine" );
 
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotMainTimer() ) );
 }
@@ -241,18 +241,21 @@ bool EngineController::canDecode( const KURL &url ) //static
 
     const bool valid = engine()->canDecode( url );
 
-    //we special case this as otherwise users hate us
-    if ( !valid && ext.lower() == "mp3" && !installDistroCodec(AmarokConfig::soundSystem()) )
-        Amarok::StatusBar::instance()->longMessageThreadSafe(
-           i18n( "<p>The %1 claims it <b>cannot</b> play MP3 files."
-                 "<p>You may want to choose a different engine from the <i>Configure Dialog</i>, or examine "
-                 "the installation of the multimedia-framework that the current engine uses. "
-                 "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok HandBook</i>." )
-            .arg( AmarokConfig::soundSystem() ), KDE::StatusBar::Error );
+    if( engine() != EngineController::instance()->m_voidEngine )
+    {
+        //we special case this as otherwise users hate us
+        if ( !valid && ext.lower() == "mp3" && !installDistroCodec(AmarokConfig::soundSystem()) )
+            Amarok::StatusBar::instance()->longMessageThreadSafe(
+                    i18n( "<p>The %1 claims it <b>cannot</b> play MP3 files."
+                        "<p>You may want to choose a different engine from the <i>Configure Dialog</i>, or examine "
+                        "the installation of the multimedia-framework that the current engine uses. "
+                        "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok HandBook</i>." )
+                    .arg( AmarokConfig::soundSystem() ), KDE::StatusBar::Error );
 
-    // Cache this result for the next lookup
-    if ( !ext.isEmpty() )
-        extensionCache().insert( ext, valid );
+        // Cache this result for the next lookup
+        if ( !ext.isEmpty() )
+            extensionCache().insert( ext, valid );
+    }
 
     return valid;
 }
