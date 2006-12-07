@@ -27,9 +27,10 @@
 
 
 
-class MagnatuneArtist {
-    
-protected:
+class MagnatuneArtist 
+{
+
+private:
     int m_id;
     QString m_name;
     QString m_genre;
@@ -38,9 +39,7 @@ protected:
     QString m_homeURL;
 
 public:
-
     MagnatuneArtist();
-    MagnatuneArtist( const MagnatuneArtist &artist );
     ~MagnatuneArtist();
 
     void setId( int id );
@@ -57,13 +56,12 @@ public:
   
     void setHomeURL( QString homeURL );
     QString getHomeURL() const;
-
 };
 
 
-class MagnatuneAlbum {
-
-protected:
+class MagnatuneAlbum 
+{
+private:
     int m_id;
     QString m_name;
     QString m_coverURL;
@@ -74,9 +72,7 @@ protected:
     int m_artistId;
 
 public:
-
     MagnatuneAlbum();
-    MagnatuneAlbum( const MagnatuneAlbum &album );
     ~MagnatuneAlbum();
 
     void setId( int id );
@@ -106,10 +102,9 @@ public:
 
 };
 
-class MagnatuneTrack {
-
-protected:
-
+class MagnatuneTrack 
+{
+private:
     int m_id;
     QString m_name;
     int m_trackNumber;
@@ -120,10 +115,8 @@ protected:
     int m_artistId;
 
 public:
-
     MagnatuneTrack();
     ~MagnatuneTrack();
-    MagnatuneTrack( const MagnatuneTrack &track );
 
     void setId( int id );
     int getId() const;
@@ -148,8 +141,6 @@ public:
 
     void setArtistId( int artistId );
     int getArtistId() const;
-
-   
 };
 
 typedef QValueList<MagnatuneArtist> MagnatuneArtistList;

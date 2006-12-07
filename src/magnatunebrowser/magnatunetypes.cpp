@@ -32,15 +32,6 @@ MagnatuneArtist::~ MagnatuneArtist( )
 {
 }
 
-MagnatuneArtist::MagnatuneArtist( const MagnatuneArtist &artist )
-{
-    m_id = artist.getId();
-    m_name = artist.getName();
-    m_description = artist.getDescription();
-    m_photoURL = artist.getPhotoURL();
-    m_homeURL = artist.getHomeURL();
-}
-
 void MagnatuneArtist::setId( int id )
 {
     m_id = id;
@@ -106,18 +97,6 @@ MagnatuneAlbum::MagnatuneAlbum( )
 
 MagnatuneAlbum::~ MagnatuneAlbum( )
 {
-}
-
-MagnatuneAlbum::MagnatuneAlbum( const MagnatuneAlbum &album )
-{
-    m_id = album.getId();
-    m_name = album.getName();
-    m_albumCode = album.getAlbumCode();
-    m_launchDate = album.getLaunchDate();
-    m_coverURL = album.getCoverURL();
-    m_mp3Genre = album.getMp3Genre();
-    m_magnatuneGenres = album.getMagnatuneGenres();
-    m_artistId = album.getArtistId();
 }
 
 void MagnatuneAlbum::setId( int id )
@@ -213,19 +192,6 @@ QString MagnatuneAlbum::getMagnatuneGenres( ) const
 
 MagnatuneTrack::MagnatuneTrack( )
 {
-}
-
-MagnatuneTrack::MagnatuneTrack( const MagnatuneTrack &track )
-{
-    m_id = track.getId();
-    m_name = track.getName();
-    m_artistId = track.getArtistId();
-    m_albumId = track.getAlbumId();
-    m_duration = track.getDuration();
-    m_trackNumber = track.getTrackNumber();
-    m_hifiURL = track.getHifiURL();
-    m_lofiURL = track.getLofiURL();
-
 }
 
 MagnatuneTrack::~ MagnatuneTrack( )

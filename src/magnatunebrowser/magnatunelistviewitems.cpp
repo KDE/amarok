@@ -50,7 +50,7 @@ void MagnatuneListViewArtistItem::setOpen( bool o )
         listView()->setUpdatesEnabled( false );
 
         MagnatuneAlbumList albums;
-        albums = MagnatuneDatabaseHandler::instance()->getAlbumsByArtistId( m_id, "" );
+        albums = MagnatuneDatabaseHandler::instance()->getAlbumsByArtistId( getId(), "" );
 
         MagnatuneAlbumList::iterator it;
         for ( it = albums.begin(); it != albums.end(); ++it ) {
@@ -105,7 +105,7 @@ void MagnatuneListViewAlbumItem::setOpen( bool o )
         listView()->setUpdatesEnabled( false );
 
         MagnatuneTrackList tracks;
-        tracks = MagnatuneDatabaseHandler::instance()->getTracksByAlbumId( m_id );
+        tracks = MagnatuneDatabaseHandler::instance()->getTracksByAlbumId( getId() );
 
         MagnatuneTrackList::iterator it;
         for ( it = tracks.begin(); it != tracks.end(); ++it ) {
