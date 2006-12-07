@@ -5,7 +5,7 @@
 # (c) 2006 Roland Gigler <rolandg@web.de>
 # License: GNU General Public License V2
 
-`dcop amarok playlist shortStatusMessage "Removing stale 'artist' entries from the database"`
+system("dcop", "amarok", "playlist", "shortStatusMessage", "Removing stale 'artist' entries from the database")
 
 qresult = `dcop amarok collection query "SELECT id FROM artist;"`
 result = qresult.split( "\n" )
@@ -22,12 +22,12 @@ result.each do |id|
 	qresult3 = `dcop amarok collection query "SELECT name FROM artist where id = #{id} ;"`
         result3 = qresult3.split( "\n" )
         puts "==>: Deleting: #{id}, #{result3}"
-        `dcop amarok collection query "DELETE FROM artist WHERE id = '#{id}'"`
+        system("dcop", "amarok", "collection", "query", "DELETE FROM artist WHERE id = '#{id}'")
     end
 end
 puts "i: #{i}"
 
 if i > 0
-    `dcop amarok playlist popupMessage "Removed #{i} stale 'artist' entries from the database"`
+    system("dcop", "amarok", "playlist", "popupMessage", "Removed #{i} stale 'artist' entries from the database")
 end
 
