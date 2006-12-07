@@ -78,20 +78,27 @@ OSDWidget::show( const QString &text, QImage newImage )
     show();
 }
 
-void OSDWidget::ratingChanged( const short rating )
+void
+OSDWidget::ratingChanged( const short rating )
 {
     m_text = '\n' + i18n( "Rating changed" );
-    setRating( rating );
+    setRating( rating ); //Checks isEnabled() before doing anything
 
     show();
+
 }
 
-void OSDWidget::volChanged( unsigned char volume )
+void
+OSDWidget::volChanged( unsigned char volume )
 {
-    m_volume = true;
-    m_newvolume = volume;
-    m_text = m_newvolume ? i18n("Volume: %1%").arg( m_newvolume ) : i18n("Mute");
-    show();
+    if ( isEnabled() )
+    {
+        m_volume = true;
+        m_newvolume = volume;
+        m_text = m_newvolume ? i18n("Volume: %1%").arg( m_newvolume ) : i18n("Mute");
+
+        show();
+    }
 }
 
 void
@@ -166,7 +173,7 @@ OSDWidget::determineMetrics( const uint M )
     {	
         static const QString tmp = QString ("******").insert( 3,
             ( i18n("Volume: 100%").length() >= i18n("Mute").length() )?
-            i18n("Volume: 100%"):i18n("Mute") );
+            i18n("Volume: 100%") : i18n("Mute") );
 
         QRect tmpRect = fontMetrics().boundingRect( 0, 0,
             max.width() - image.width(), max.height() - fontMetrics().height(),
@@ -186,7 +193,7 @@ OSDWidget::determineMetrics( const uint M )
     }
 
     if( useMoodbar() )
-      rect.setHeight( rect.height() + MOODBAR_HEIGHT + M );
+        rect.setHeight( rect.height() + MOODBAR_HEIGHT + M );
 
     if( !m_cover.isNull() )
     {

@@ -61,7 +61,7 @@ class OSDWidget : public QWidget
         void setText( const QString &text ) { m_text = text; }
         void setDrawShadow( const bool b ) { m_drawShadow = b; }
         void setTranslucency( const bool b ) { m_translucency = b; }
-        void setRating( const short rating ) { m_rating = rating; }
+        void setRating( const short rating ) { if ( isEnabled() ) m_rating = rating; }
         void setMoodbar( void ) { m_moodbarBundle = MetaBundle(); }
         void setMoodbar( const MetaBundle &bundle )
           { m_moodbarBundle = bundle;  m_moodbarBundle.moodbar().load(); }
