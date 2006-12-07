@@ -37,14 +37,12 @@ end
 destination = $*[0] + "/"
 
 unless FileTest.directory?( destination )
-    error = "Error: Save destination must be a directory"
-    `dcop amarok playlist popupMessage '#{error}'`
+    system("dcop", "amarok", "playlist", "popupMessage", "Error: Save destination must be a directory")
     exit( 1 )
 end
 
 unless FileTest.writable_real?( destination )
-    error = "Error: Destination directory not writable."
-    `dcop amarok playlist popupMessage '#{error}'`
+    system("dcop", "amarok", "playlist", "popupMessage", "Error: Destination directory not writeable.")
     exit( 1 )
 end
 
@@ -68,14 +66,11 @@ case database
         db   = `dcop amarok script readConfig MySqlDbName`.chomp!()
         user = `dcop amarok script readConfig MySqlUser`.chomp!()
         pass = `dcop amarok script readConfig MySqlPassword`.chomp!()
-        `mysqldump -u #{user} -p#{pass} #{db} > #{dest}`
+        system("mysqldump", "-u", user, "-p", pass, db, "-r", dest);
 
     when "2" # postgres
-        error = "Sorry, postgresql database backups have not been implemented"
-        `dcop amarok playlist popupMessage #{error}`
+        system("dcop", "amarok", "playlist", "popupMessage", "Sorry, postgresql database backups have not been implemented.")
         exit( 1 )
 end
 
-message = "Database backup saved to: #{destination}/#{filename}"
-`dcop amarok playlist popupMessage '#{message}'`
-
+system("dcop", "amarok", "playlist", "popupMessage", "Database backup saved to: #{destination}/#{filename}")
