@@ -1,6 +1,12 @@
 [Desktop Entry]
 Type=Service
 Name=yauap engine
+Name[bg]=Yauap
+Name[de]=Yauap
+Name[et]=yauap mootor
+Name[ga]=inneall yauap
+Name[pt]=Motor yauap
+Name[pt_BR]=Motor yauap
 X-KDE-Library=libamarok_yauap-engine_plugin
 Comment=Plugin for Amarok
 Comment[af]=Inprop module vir Amarok
