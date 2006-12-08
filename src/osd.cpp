@@ -16,6 +16,7 @@
 #include "amarokconfig.h"
 #include "collectiondb.h"    //for albumCover location
 #include "debug.h"
+#include "enginecontroller.h"
 #include "osd.h"
 #include "playlist.h"        //if osdUsePlaylistColumns()
 #include "playlistitem.h"    //ditto
@@ -626,17 +627,6 @@ Amarok::OSD::OSD(): OSDWidget( 0 )
              this,                   SLOT( slotImageChanged( const QString& ) ) );
 }
 
-template<class T>
-class MyVector: public QValueVector<T> //QValueVector doesn't have operator<<, wtf?
-{
-    public:
-    inline MyVector<T> &operator<< (const T &x)
-    {
-        append( x );
-        return *this;
-    }
-};
-
 void
 Amarok::OSD::show( const MetaBundle &bundle ) //slot
 {
@@ -646,10 +636,10 @@ Amarok::OSD::show( const MetaBundle &bundle ) //slot
 
     else
     {
-        MyVector<QString> tags;
-        tags << bundle.prettyTitle();
+        QValueVector<QString> tags;
+        tags.append(bundle.prettyTitle());
         for( int i = 0; i < PlaylistItem::NUM_COLUMNS; ++i )
-            tags << bundle.prettyText( i );
+            tags.append(bundle.prettyText( i ));
 
         if( bundle.length() <= 0 )
             tags[PlaylistItem::Length+1] = QString::null;
@@ -657,7 +647,7 @@ Amarok::OSD::show( const MetaBundle &bundle ) //slot
         if( AmarokConfig::osdUsePlaylistColumns() )
         {
             QString tag;
-            MyVector<int> availableTags; //eg, ones that aren't empty
+            QValueVector<int> availableTags; //eg, ones that aren't empty
             static const QValueList<int> parens = //display these in parentheses
                 QValueList<int>() << PlaylistItem::PlayCount  << PlaylistItem::Year   << PlaylistItem::Comment
                                   << PlaylistItem::Genre      << PlaylistItem::Length << PlaylistItem::Bitrate
@@ -668,7 +658,7 @@ Amarok::OSD::show( const MetaBundle &bundle ) //slot
             {
                 const int column = Playlist::instance()->mapToLogicalColumn( i );
                 if( !tags.at( column + 1 ).isEmpty() && column != PlaylistItem::Rating )
-                    availableTags << column;
+                    availableTags.append(column);
                 if( column == PlaylistItem::Rating )
                     OSDWidget::setRating( bundle.rating() );
                 else if( column == PlaylistItem::Mood )
@@ -695,7 +685,26 @@ Amarok::OSD::show( const MetaBundle &bundle ) //slot
 
             if( bundle.length() <= 0 )
                 args["length"] = QString::null;
-
+	    
+	    
+	    uint time=EngineController::instance()->engine()->position();
+	    uint sec=(time/1000)%60;	//is there a better way to calculate the time?
+	    time /= 1000;
+	    uint min=(time/60)%60;
+	    time /= 60;
+	    uint hour=(time/60)%60;
+	    QString timeformat="";
+	    if(hour!=0)
+	    {
+		    timeformat += QString::number(hour);
+		    timeformat +=":";
+	    }
+	    timeformat +=QString::number(min);
+	    timeformat +=":";
+	    if(sec<10)
+		    timeformat +="0";
+	    timeformat +=QString::number(sec);
+	    args["elapsed"]=timeformat;
             QStringx osd = AmarokConfig::osdText();
 
             // hacky, but works...

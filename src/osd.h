@@ -16,7 +16,7 @@
 #define AMAROK_OSD_H
 
 #include "metabundle.h"
-
+		
 #include <kpixmap.h>
 #include <qimage.h>
 #include <qvaluelist.h>

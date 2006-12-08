@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 1.4.5
   FEATURES:
+    * Elapsed time can be shown in OSD. Patch by Christian Engels
+      <s9chenge@stud.uni-sb.de>. (BR 120051)
     * New redownload manager for the Magnatune.com store. Allows re-download
       of any previous purchase free of charge (in any format). 
     * Star ratings now have different colors for different ratings, to easily
