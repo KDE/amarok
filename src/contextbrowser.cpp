@@ -504,14 +504,19 @@ void ContextBrowser::openURLRequest( const KURL &url )
         Amarok::invokeBrowser( url2 );
     }
 
+    else if( url.protocol() == "file" )
+    {
+        Playlist::instance()->insertMedia( url, Playlist::DefaultOptions );
+    }
+
     else if( url.protocol() == "stream" )
     {
-        Playlist::instance()->insertMedia( KURL::fromPathOrURL( url.url().replace( QRegExp( "^stream:" ), "http:" ) ), Playlist::Unique|Playlist::DirectPlay );
+        Playlist::instance()->insertMedia( KURL::fromPathOrURL( url.url().replace( QRegExp( "^stream:" ), "http:" ) ), Playlist::DefaultOptions );
     }
 
     else if( url.protocol() == "compilationdisc" || url.protocol() == "albumdisc" )
     {
-        Playlist::instance()->insertMedia( expandURL( url ) , Playlist::Unique|Playlist::DirectPlay );
+        Playlist::instance()->insertMedia( expandURL( url ) , Playlist::DefaultOptions );
     }
 
     else
@@ -950,7 +955,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         //FALL_THROUGH
 
     case APPEND:
-        Playlist::instance()->insertMedia( urls, Playlist::Unique );
+        Playlist::instance()->insertMedia( urls, Playlist::Append );
         break;
 
     case MEDIA_DEVICE:
