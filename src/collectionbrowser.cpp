@@ -1312,13 +1312,8 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                 cat = catArr[m_currentDepth];
         }
 
-        #ifdef AMAZON_SUPPORT
         enum Actions { APPEND, QUEUE, MAKE, SAVE, MEDIA_DEVICE, BURN_ARTIST, BURN_COMPOSER, BURN_ALBUM, BURN_CD, COVER, INFO,
                        COMPILATION_SET, COMPILATION_UNSET, ORGANIZE, DELETE, TRASH, FILE_MENU  };
-        #else
-        enum Actions { APPEND, QUEUE, MAKE, SAVE, MEDIA_DEVICE, BURN_ARTIST, BURN_COMPOSER, BURN_ALBUM, BURN_CD, INFO,
-                       COMPILATION_SET, COMPILATION_UNSET, ORGANIZE, DELETE, TRASH, FILE_MENU  };
-        #endif
         KURL::List selection = listSelected();
         QStringList siblingSelection = listSelectedSiblingsOf( cat, item );
         menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), MAKE );
@@ -1360,29 +1355,26 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
         menu.insertSeparator();
 
+        KPopupMenu fileMenu;
+        fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18n("Organize File...", "Organize %n Files..." , selection.count() )
+                , ORGANIZE );
+        fileMenu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n("Delete File...", "Delete %n Files..." , selection.count() )
+                , DELETE );
+        menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n("Manage Files"), &fileMenu, FILE_MENU );
+
         #ifdef AMAZON_SUPPORT
         if( cat == IdAlbum || cat == IdVisYearAlbum )
             menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n( "&Fetch Cover Image" ), this, SLOT( fetchCover() ), 0, COVER );
         #endif
 
-        menu.insertItem( SmallIconSet( Amarok::icon( "info" ) )
-            , i18n( "Edit Track &Information...",  "Edit &Information for %n Tracks...", selection.count())
-            , this, SLOT( showTrackInfo() ), 0, INFO );
-
-        KPopupMenu fileMenu;
-        fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18n("Organize File...", "Organize %n Files..." , selection.count() )
-                , ORGANIZE );
-
-        fileMenu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n("Delete File...", "Delete %n Files..." , selection.count() )
-                , DELETE );
-
-        menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n("Manage Files"), &fileMenu, FILE_MENU );
-
         if ( (cat == IdAlbum || cat == IdVisYearAlbum) && siblingSelection.count() > 0 ) {
-            menu.insertSeparator();
             menu.insertItem( SmallIconSet( "ok" ), i18n( "Show under &Various Artists" ), COMPILATION_SET );
             menu.insertItem( SmallIconSet( "cancel" ), i18n( "&Do not Show under Various Artists" ), COMPILATION_UNSET );
         }
+
+        menu.insertItem( SmallIconSet( Amarok::icon( "info" ) )
+            , i18n( "Edit Track &Information...",  "Edit &Information for %n Tracks...", selection.count())
+            , this, SLOT( showTrackInfo() ), 0, INFO );
 
         QString trueItemText = getTrueItemText( cat, item );
 
