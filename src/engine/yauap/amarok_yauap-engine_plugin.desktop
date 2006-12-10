@@ -2,12 +2,14 @@
 Type=Service
 Name=yauap engine
 Name[bg]=Yauap
+Name[da]=Yauap-grænseflade
 Name[de]=Yauap
 Name[et]=yauap mootor
 Name[ga]=inneall yauap
 Name[nl]=yauap-engine
 Name[pt]=Motor yauap
 Name[pt_BR]=Mecanismo Yauap
+Name[sv]=Yauap-gränssnitt
 X-KDE-Library=libamarok_yauap-engine_plugin
 Comment=Plugin for Amarok
 Comment[af]=Inprop module vir Amarok
