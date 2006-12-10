@@ -39,19 +39,22 @@ class MtpTrack {
     friend class MediaItem;
     public:
         MtpTrack( LIBMTP_track_t* track );
-        ~MtpTrack();
+        ~MtpTrack() {};
         bool                    operator==( const MtpTrack& second ) const { return m_id == second.m_id; }
 
     public:
         u_int32_t               id() const { return m_id; }
         MetaBundle              *bundle() { return new MetaBundle( m_bundle ); }
+        uint32_t                folderId() const { return m_folder_id; }
         void                    setBundle( MetaBundle &bundle );
         void                    setId( int id ) { m_id = id; }
+        void                    setFolderId( uint32_t folder_id ) { m_folder_id = folder_id; }
         void                    readMetaData( LIBMTP_track_t *track );
 
     private:
         u_int32_t               m_id;
         MetaBundle              m_bundle;
+        uint32_t                m_folder_id;
 };
 
 class MtpPlaylist {
@@ -67,6 +70,23 @@ class MtpPlaylist {
         u_int32_t               m_id;
 };
 
+
+class MtpAlbum {
+    friend class MediaItem;
+    public:
+        MtpAlbum( LIBMTP_album_t* album );
+        ~MtpAlbum();
+        bool                    operator==( const MtpAlbum& second ) const { return m_id == second.m_id; }
+
+    public:
+        u_int32_t               id() const { return m_id; }
+        void                    setId( int id ) { m_id = id; }
+        QString                 album() const { return m_album; }
+
+    private:
+        u_int32_t               m_id;
+        QString                 m_album;
+};
 
 class MtpMediaItem : public MediaItem
 {
@@ -158,7 +178,12 @@ class MtpMediaDevice : public MediaDevice
         void                    updateFolders( void );
         void                    initView( void );
         void                    readPlaylists( void );
+        void                    readAlbums( void );
         void                    playlistFromItem( MtpMediaItem *item);
+        QByteArray              *getSupportedImage( QString path );
+        void                    sendAlbumArt( QPtrList<MediaItem> *items );
+        void                    updateAlbumArt( QPtrList<MediaItem> *items );
+        LIBMTP_album_t          *getOrCreateAlbum( QPtrList<MediaItem> *items );
         LIBMTP_mtpdevice_t      *m_device;
         QMutex                  m_mutex;
         QMutex                  m_critical_mutex;
@@ -168,9 +193,12 @@ class MtpMediaDevice : public MediaDevice
         QLineEdit               *m_folderStructureBox;
         QLabel                  *m_folderLabel;
         QStringList             m_supportedFiles;
+        QPtrList<MediaItem>     *m_newTracks;
         QMap<int,QString>       mtpFileTypes;
         QMap<uint32_t,MtpTrack*> m_idToTrack;
         QMap<QString,MtpMediaItem*> m_fileNameToItem;
+        QMap<uint32_t,MtpAlbum*> m_idToAlbum;
+        QString                 m_format;
 };
 
 #endif

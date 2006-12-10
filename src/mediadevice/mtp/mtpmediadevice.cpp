@@ -50,8 +50,8 @@ AMAROK_EXPORT_PLUGIN( MtpMediaDevice )
 #include <qtooltip.h>
 #include <qlineedit.h>
 #include <qregexp.h>
+#include <qbuffer.h>
 #include <qmap.h>
-
 
 /**
  * MtpMediaDevice Class
@@ -107,6 +107,8 @@ MtpMediaDevice::MtpMediaDevice() : MediaDevice()
     mtpFileTypes[LIBMTP_FILETYPE_TEXT] = "txt";
     mtpFileTypes[LIBMTP_FILETYPE_HTML] = "html";
     mtpFileTypes[LIBMTP_FILETYPE_UNKNOWN] = "unknown";
+
+    m_newTracks = new QPtrList<MediaItem>;
 }
 
 void
@@ -326,7 +328,7 @@ MediaItem
     debug() << "Sending track... " << bundle.url().path().latin1() << endl;
     int ret = LIBMTP_Send_Track_From_File(
         m_device, bundle.url().path().latin1(), trackmeta,
-        progressCallback, this, parent_id  // callbacks only in libmtp >= 0.0.15
+        progressCallback, this, parent_id
     );
     m_critical_mutex.unlock();
 
@@ -349,8 +351,195 @@ MediaItem
 
     kapp->processEvents( 100 );
 
-    // cache the track
-    return addTrackToView( taggedTrack );
+    // add track to view and to new tracks list
+    MediaItem *newItem = addTrackToView( taggedTrack );
+    m_newTracks->append( newItem );
+    return newItem;
+}
+
+/**
+ * Get the cover image for a track, convert it to a format supported on the
+ * device and set it as the cover art.
+ */
+void
+MtpMediaDevice::sendAlbumArt( QPtrList<MediaItem> *items )
+{
+    QString image;
+    image = CollectionDB::instance()->albumImage(items->first()->bundle()->artist(), items->first()->bundle()->album(), false, 100);
+    if( ! image.endsWith( "@nocover.png" ) )
+    {
+        debug() << "image " << image << " found for " << items->first()->bundle()->album() << endl;
+        QByteArray *imagedata = getSupportedImage( image );
+        if( imagedata == 0 )
+        {
+            debug() << "Cannot generate a supported image format" << endl;
+            return;
+        }
+        if( imagedata->size() )
+        {
+            m_critical_mutex.lock();
+            LIBMTP_album_t *album_object = getOrCreateAlbum( items );
+            if( album_object )
+            {
+                LIBMTP_filesampledata_t *imagefile = LIBMTP_new_filesampledata_t();
+                imagefile->data = (char *) imagedata->data();
+                imagefile->size = imagedata->size();
+                imagefile->filetype = LIBMTP_FILETYPE_JPEG;
+                int ret = LIBMTP_Send_Representative_Sample( m_device, album_object->album_id, imagefile );
+                if( ret != 0 )
+                {
+                    debug() << "image send failed : " << ret << endl;
+                }
+            }
+            m_critical_mutex.unlock();
+        }
+    }
+}
+
+/**
+ * Takes path to an existing cover image and converts it to a format
+ * supported on the device
+ */
+QByteArray
+*MtpMediaDevice::getSupportedImage( QString path )
+{
+    if( m_format == 0 )
+        return 0;
+
+    debug() << "Will convert image to " << m_format << endl;
+
+    // open image
+    const QImage original( path );
+
+    // save as new image
+    QImage newformat( original );
+    QByteArray *newimage = new QByteArray();
+    QBuffer buffer( *newimage );
+    buffer.open( IO_WriteOnly );
+    if( newformat.save( &buffer, m_format.ascii() ) )
+    {
+        buffer.close();
+        return newimage;
+    }
+    return 0;
+}
+
+/**
+ * Update cover art for a number of tracks
+ */
+void
+MtpMediaDevice::updateAlbumArt( QPtrList<MediaItem> *items )
+{
+    DEBUG_BLOCK
+
+    if( m_format == 0 )  // no supported image types. Don't even bother.
+        return;
+
+    setCanceled( false );
+
+    kapp->processEvents( 100 );
+    QMap< QString, QPtrList<MediaItem> > albumList;
+
+    for( MtpMediaItem *it = dynamic_cast<MtpMediaItem*>(items->first()); it && !(m_canceled); it = dynamic_cast<MtpMediaItem*>(items->next()) )
+    {
+        // build album list
+        if( it->type() == MediaItem::TRACK )
+        {
+            albumList[ it->bundle()->album() ].append( it );
+        }
+        if( it->type() == MediaItem::ALBUM )
+        {
+            debug() << "look, we get albums too!" << endl;
+        }
+    }
+    int i = 0;
+    setProgress( i, albumList.count() );
+    kapp->processEvents( 100 );
+    QMap< QString, QPtrList<MediaItem> >::Iterator it;
+    for( it = albumList.begin(); it != albumList.end(); ++it )
+    {
+        sendAlbumArt( &it.data() );
+        setProgress( ++i );
+        if( i % 20 == 0 )
+            kapp->processEvents( 100 );
+    }
+    hideProgress();
+}
+
+/**
+ * Retrieve existing or create new album object.
+ */
+LIBMTP_album_t
+*MtpMediaDevice::getOrCreateAlbum( QPtrList<MediaItem> *items )//uint32_t track_id, const MetaBundle &bundle )
+{
+    LIBMTP_album_t *album_object = 0;
+    uint32_t albumid = 0;
+    int ret;
+    QMap<uint32_t,MtpAlbum*>::Iterator it;
+    for( it = m_idToAlbum.begin(); it != m_idToAlbum.end(); ++it )
+    {
+        if( it.data()->album() == items->first()->bundle()->album() )
+        {
+            albumid = it.data()->id();
+            break;
+        }
+    }
+    if( albumid )
+    {
+        debug() << "reusing existing album " << albumid << endl;
+        album_object = LIBMTP_Get_Album( m_device, albumid );
+        if( album_object == 0 )
+        {
+            debug() << "retrieving album failed." << endl;
+            return 0;
+        }
+        uint32_t i;
+        uint32_t trackCount = album_object->no_tracks;
+        for( MtpMediaItem *it = dynamic_cast<MtpMediaItem*>(items->first()); it; it = dynamic_cast<MtpMediaItem*>(items->next()) )
+        {
+            bool exists = false;
+            for( i = 0; i < album_object->no_tracks; i++ )
+            {
+                if( album_object->tracks[i] == it->track()->id() )
+                {
+                    exists = true;
+                    break;
+                }
+            }
+            if( ! exists )
+            {
+                debug() << "adding track " << it->track()->id() << " to existing album " << albumid << endl;
+                album_object->no_tracks++;
+                album_object->tracks = (uint32_t *)realloc( album_object->tracks, album_object->no_tracks * sizeof( uint32_t ) );
+                album_object->tracks[ ( album_object->no_tracks - 1 ) ] = it->track()->id();
+            }
+        }
+        if( trackCount != album_object->no_tracks ) // album needs an update
+        {
+            ret = LIBMTP_Update_Album( m_device, album_object );
+            if( ret != 0 )
+                debug() << "updating album failed : " << ret << endl;
+        }
+    }
+    else
+    {
+        debug() << "creating new album " << endl;
+        album_object = LIBMTP_new_album_t();
+        album_object->name = qstrdup( items->first()->bundle()->album().string().utf8() );
+        album_object->tracks = (uint32_t *) malloc(items->count() * sizeof(uint32_t));
+        int i = 0;
+        for( MtpMediaItem *it = dynamic_cast<MtpMediaItem*>(items->first()); it; it = dynamic_cast<MtpMediaItem*>(items->next()) )
+            album_object->tracks[i++] = it->track()->id();
+        album_object->no_tracks = items->count();
+        ret = LIBMTP_Create_New_Album( m_device, album_object, 0 );
+        if( ret != 0 )
+        {
+            debug() << "creating album failed : " << ret << endl;
+            return 0;
+        }
+        m_idToAlbum[ album_object->album_id ] = new MtpAlbum( album_object );
+    }
+    return album_object;
 }
 
 /**
@@ -490,7 +679,7 @@ MtpMediaDevice::downloadSelectedItemsToCollection()
             QString filename = tempdir.name() + it->bundle()->filename();
             int ret = LIBMTP_Get_Track_To_File(
                     m_device, it->track()->id(), filename.utf8(),
-                    progressCallback, this // callbacks only in libmtp >= 0.0.15
+                    progressCallback, this
                   );
             if( ret != 0 )
             {
@@ -525,6 +714,8 @@ MtpMediaDevice::downloadSelectedItemsToCollection()
 void
 MtpMediaDevice::synchronizeDevice()
 {
+    updateAlbumArt( m_newTracks );
+    m_newTracks->clear();
     return;
 }
 
@@ -588,7 +779,7 @@ MtpMediaDevice::addToPlaylist( MediaItem *mlist, MediaItem *after, QPtrList<Medi
     {
         order = 0;
         it = dynamic_cast<MtpMediaItem*>( list->firstChild() );
- }
+    }
 
     for(  ; it; it = dynamic_cast<MtpMediaItem *>( it->nextSibling() ) )
     {
@@ -916,6 +1107,13 @@ MtpMediaDevice::openDevice( bool silent )
             m_supportedFiles << mtpFileTypes[ filetypes[ i ] ];
         }
     }
+    // find supported image types (for album art).
+    if( m_supportedFiles.findIndex( "jpg" ) )
+        m_format = "JPEG";
+    else if( m_supportedFiles.findIndex( "png" ) )
+        m_format = "PNG";
+    else if( m_supportedFiles.findIndex( "gif" ) )
+        m_format = "GIF";
     free( filetypes );
     m_critical_mutex.unlock();
 
@@ -963,6 +1161,11 @@ MtpMediaDevice::closeDevice()
         setDisconnected();
         debug() << "Device released" << endl;
     }
+
+    // clear the cached mappings
+    m_idToAlbum.clear();
+    m_idToTrack.clear();
+    m_fileNameToItem.clear();
 
     // clean up the view
     clearItems();
@@ -1081,7 +1284,7 @@ void
 MtpMediaDevice::rmbPressed( QListViewItem *qitem, const QPoint &point, int )
 {
 
-    enum Actions {RENAME, DOWNLOAD, DELETE, MAKE_PLAYLIST};
+    enum Actions {RENAME, DOWNLOAD, DELETE, MAKE_PLAYLIST, UPDATE_ALBUM_ART};
 
     MtpMediaItem *item = static_cast<MtpMediaItem *>( qitem );
     if( item )
@@ -1094,6 +1297,7 @@ MtpMediaDevice::rmbPressed( QListViewItem *qitem, const QPoint &point, int )
         case MediaItem::TRACK:
             menu.insertItem( SmallIconSet( Amarok::icon( "collection" ) ), i18n("&Copy Files to Collection..."), DOWNLOAD );
             menu.insertItem( SmallIconSet( Amarok::icon( "playlist" ) ), i18n( "Make Media Device Playlist" ), MAKE_PLAYLIST );
+            menu.insertItem( SmallIconSet( Amarok::icon( "covermanager" ) ), i18n( "Refresh Cover Images" ), UPDATE_ALBUM_ART );
             break;
         case MediaItem::PLAYLIST:
             menu.insertItem( SmallIconSet( Amarok::icon( "edit" ) ), i18n( "Rename" ), RENAME );
@@ -1127,6 +1331,26 @@ MtpMediaDevice::rmbPressed( QListViewItem *qitem, const QPoint &point, int )
         case DOWNLOAD:
             downloadSelectedItemsToCollection();
             break;
+        case UPDATE_ALBUM_ART:
+            {
+                QPtrList<MediaItem> *items = new QPtrList<MediaItem>;
+                m_view->getSelectedLeaves( 0, items );
+
+                if( items->count() > 100 )
+                {
+                    int button = KMessageBox::warningContinueCancel( m_parent,
+                            i18n( "<p>You are updating cover art for 1 track. This may take some time.",
+                                "<p>You are updating cover art for %n tracks. This may take some time.",
+                                items->count()
+                                ),
+                            QString::null );
+
+                    if( button != KMessageBox::Continue )
+                        return;
+                }
+                updateAlbumArt( items );
+                break;
+            }
         }
     }
     return;
@@ -1228,7 +1452,7 @@ MtpMediaItem
         item->setBundle( track->bundle() );
         item->track()->setId( track->id() );
         m_fileNameToItem[ track->bundle()->filename() ] = item;
-        m_idToTrack[track->id()] = track;
+        m_idToTrack[ track->id() ] = track;
     }
     return item;
 }
@@ -1296,12 +1520,14 @@ MtpMediaDevice::readMtpMusic()
                 kapp->processEvents( 100 );
         }
     }
+
+    readPlaylists();
+    readAlbums();
+
     setProgress( total );
     hideProgress();
 
     m_critical_mutex.unlock();
-
-    readPlaylists();
 
     return 0;
 }
@@ -1312,7 +1538,6 @@ MtpMediaDevice::readMtpMusic()
 void
 MtpMediaDevice::readPlaylists()
 {
-    m_critical_mutex.lock();
     LIBMTP_playlist_t *playlists = LIBMTP_Get_Playlist_List( m_device );
 
     if( playlists != 0 )
@@ -1342,10 +1567,32 @@ MtpMediaDevice::readPlaylists()
             tmp = playlists;
             playlists = playlists->next;
             LIBMTP_destroy_playlist_t( tmp );
+            kapp->processEvents( 50 );
         }
-        kapp->processEvents( 100 );
     }
-    m_critical_mutex.unlock();
+}
+
+
+/**
+ * Read existing albums
+ */
+void
+MtpMediaDevice::readAlbums()
+{
+    LIBMTP_album_t *albums = LIBMTP_Get_Album_List( m_device );
+
+    if( albums != 0 )
+    {
+        LIBMTP_album_t *tmp;
+        while( albums != 0 )
+        {
+            m_idToAlbum[ albums->album_id ] = new MtpAlbum( albums );
+            tmp = albums;
+            albums = albums->next;
+            LIBMTP_destroy_album_t( tmp );
+            kapp->processEvents( 50 );
+        }
+    }
 }
 
 /**
@@ -1402,6 +1649,8 @@ MtpTrack::readMetaData( LIBMTP_track_t *track )
     if( track->duration > 0 )
         bundle->setLength( track->duration / 1000 ); // Divide by 1000 since this is in milliseconds
 
+    this->setFolderId( track->parent_id );
+
     this->setBundle( *bundle );
 }
 
@@ -1412,4 +1661,13 @@ void
 MtpTrack::setBundle( MetaBundle &bundle )
 {
     m_bundle = bundle;
+}
+
+/**
+ * MtpAlbum Class
+ */
+MtpAlbum::MtpAlbum( LIBMTP_album_t *album )
+{
+    m_id = album->album_id;
+    m_album = QString::fromUtf8( album->name );
 }
