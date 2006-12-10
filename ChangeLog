@@ -61,7 +61,7 @@ VERSION 1.4.5
 
   BUGFIXES:
     * Don't enable a mount point for devices that can't support them (mtp,
-      njb, riokarma devices).
+      njb).
     * With SQLite, the search in the collection browser was case-sensitive
       with UTF-8. Patch by Stanislav Nikolov <stanley_87@mail.ru>. (BR 138482)
     * (Don't) Show Under Various Artists would not work when multiple albums

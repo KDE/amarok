@@ -332,8 +332,7 @@ ManualDeviceAdder::comboChanged( const QString &string )
     if( MediaBrowser::instance()->getInternalPluginName( string ) == "ifp-mediadevice" ||
             MediaBrowser::instance()->getInternalPluginName( string ) == "daap-mediadevice" ||
             MediaBrowser::instance()->getInternalPluginName( string ) == "mtp-mediadevice" ||
-            MediaBrowser::instance()->getInternalPluginName( string ) == "njb-mediadevice" ||
-            MediaBrowser::instance()->getInternalPluginName( string) == "riokarma-mediadevice" )
+            MediaBrowser::instance()->getInternalPluginName( string ) == "njb-mediadevice" )
     {
         m_comboOldText = m_mdaMountPoint->text();
         m_mdaMountPoint->setText( QString::null );
