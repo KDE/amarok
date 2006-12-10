@@ -60,6 +60,8 @@ VERSION 1.4.5
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
+    * Don't enable a mount point for devices that can't support them ( mtp,
+      njb, riokarma devices).
     * With SQLite, the search in the collection browser was case-sensitive
       with UTF-8. Patch by Stanislav Nikolov <stanley_87@mail.ru>. (BR 138482)
     * (Don't) Show Under Various Artists would not work when multiple albums
