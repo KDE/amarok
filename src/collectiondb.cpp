@@ -4860,7 +4860,13 @@ CollectionDB::fetchCover( QWidget* parent, const QString& artist, const QString&
     #ifdef AMAZON_SUPPORT
     debug() << "Fetching cover for " << artist << " - " << album << endl;
 
-    CoverFetcher* fetcher = new CoverFetcher( parent, artist, album );
+    const bool isCompilation = albumIsCompilation( QString::number( albumID( album, false, false, true ) ) );
+    CoverFetcher* fetcher;
+    if( isCompilation )
+        // avoid putting various artists in front of album title. this causes problems for locales other than US.
+        fetcher = new CoverFetcher( parent, "", album );
+    else
+        fetcher = new CoverFetcher( parent, artist, album );
     connect( fetcher, SIGNAL(result( CoverFetcher* )), SLOT(coverFetcherResult( CoverFetcher* )) );
     fetcher->setUserCanEditQuery( !noedit );
     fetcher->startFetch();
