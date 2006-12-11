@@ -60,6 +60,8 @@ VERSION 1.4.5
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
+    * Improved cover images handling for Various Artists. Patch by Tobias
+      Knieper <tobias.knieper@micekiller.de>. (BR 136833)
     * Don't enable a mount point for devices that can't support them (mtp,
       njb).
     * With SQLite, the search in the collection browser was case-sensitive

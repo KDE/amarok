@@ -1849,17 +1849,20 @@ CollectionDB::setAlbumImage( const QString& artist, const QString& album, QImage
     //show a wait cursor for the duration
     Amarok::OverrideCursor keep;
 
-    // remove existing album covers
-    removeAlbumImage( artist, album );
+    const bool isCompilation = albumIsCompilation( QString::number( albumID( album, false, false, true ) ) );
+    const QString artist_ = isCompilation ? "" : artist;
 
-    QCString key = md5sum( artist, album );
+    // remove existing album covers
+    removeAlbumImage( artist_, album );
+
+    QCString key = md5sum( artist_, album );
     newAmazonReloadDate(asin, AmarokConfig::amazonLocale(), key);
     // Save Amazon product page URL as embedded string, for later retreival
     if ( !amazonUrl.isEmpty() )
         img.setText( "amazon-url", 0, amazonUrl );
 
     const bool b = img.save( largeCoverDir().filePath( key ), "PNG");
-    emit coverChanged( artist, album );
+    emit coverChanged( artist_, album );
     return b;
 }
 
@@ -1968,7 +1971,7 @@ CollectionDB::albumImage( const QString &artist, const QString &album, bool with
     s = findAmazonImage( artist, album, width );
 
     if( s.isEmpty() )
-        s = findAmazonImage( "", album, width );
+        s = findAmazonImage( "", album, width ); // handle compilations
 
     if( s.isEmpty() )
         s = findDirectoryImage( artist, album, width );
@@ -2015,7 +2018,7 @@ CollectionDB::albumImage( MetaBundle trackInformation, bool withShadow, uint wid
     if( s.isEmpty() )
         s = findAmazonImage( artist, album, width );
     if( s.isEmpty() )
-        s = findAmazonImage( "", album, width );
+        s = findAmazonImage( "", album, width ); // handle compilations
     if( s.isEmpty() )
         s = findDirectoryImage( artist, album, width );
     if( s.isEmpty() )
