@@ -1494,7 +1494,7 @@ void
 CollectionItem::setPixmap(int column, const QPixmap & pix)
 {
     //Generate Album name
-    QString album( text( 0 ) );
+    QString album( text( 0 ) ), artist;
     if ( m_cat == IdVisYearAlbum )
     {
         QString pointlessString;
@@ -1508,16 +1508,39 @@ CollectionItem::setPixmap(int column, const QPixmap & pix)
 
     //Now m_cat is either IdAlbum or IdVisYearAlbum, and so this is an album as required.
 
-    QStringList values =
-        CollectionDB::instance()->query ( QString (
-            "SELECT DISTINCT artist.name FROM artist, album, tags "
-            "WHERE artist.id = tags.artist AND tags.album = album.id "
-            "AND album.name = '%1';" )
-            .arg( CollectionDB::instance()->escapeString( album ) ) );
-    if ( !values.isEmpty() )
-        QListViewItem::setPixmap( column, QPixmap( CollectionDB::instance()->albumImage( values[0], album ) ) );
-    else
-        QListViewItem::setPixmap( column, QPixmap( CollectionDB::instance()->notAvailCover() ) );
+    //Now work out the artist 
+    CollectionItem *p = this;
+    while ( p->parent() && dynamic_cast<CollectionItem*>( p->parent() ) )
+    {
+        p = static_cast<CollectionItem*>( p->parent() );
+        if ( IdArtist == p->m_cat )
+        {
+            artist = p->text( 0 );
+            break;
+        }
+    }
+
+    if ( artist.isNull() )
+    {
+        //Try to guess artist - this will only happen if you don't have an Artist category
+        //above the Album category in the tree
+        QStringList values =
+            CollectionDB::instance()->query ( QString (
+                "SELECT DISTINCT artist.name FROM artist, album, tags "
+                "WHERE artist.id = tags.artist AND tags.album = album.id "
+                "AND album.name = '%1';" )
+                .arg( CollectionDB::instance()->escapeString( album ) ) );
+
+        if ( !values.isEmpty() )
+            artist = values[ 0 ];
+        else
+        {
+            QListViewItem::setPixmap( column, QPixmap( CollectionDB::instance()->notAvailCover( false, 50 ) ) );
+            return;
+        }
+    }
+
+    QListViewItem::setPixmap( column, QPixmap( CollectionDB::instance()->albumImage( artist, album, false, 50 ) ) );
 }
 
 
