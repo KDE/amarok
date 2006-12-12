@@ -223,6 +223,9 @@ class CollectionView : public KListView, public DropProxyTarget
 
         bool isOrganizingFiles() const;
 
+        //Useful helper function to avoid duplicating code
+        static inline void yearAlbumCalc( QString &year, QString &text );
+
     protected:
         // Reimplemented for iPod-style navigation, etc.
         virtual void keyPressEvent( QKeyEvent *e );
@@ -311,7 +314,6 @@ class CollectionView : public KListView, public DropProxyTarget
 
         // avoid duplicated code
         static inline bool endsInThe( const QString & text );
-        static inline void yearAlbumCalc( QString &year, QString &text );
         inline void updateTrackDepth();
 
         uint translateTimeFilter( uint filterMode );

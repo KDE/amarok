@@ -1493,20 +1493,31 @@ CollectionView::setViewMode( int mode, bool rerender /*=true*/ )
 void
 CollectionItem::setPixmap(int column, const QPixmap & pix)
 {
-    if ( m_cat == IdAlbum ) {
-        QString album = text(0);
-        QStringList values =
-            CollectionDB::instance()->query ( QString (
-                "SELECT DISTINCT artist.name FROM artist, album, tags "
-                "WHERE artist.id = tags.artist AND tags.album = album.id "
-                "AND album.name = '%1';" )
-                .arg( CollectionDB::instance()->escapeString( album ) ) );
-        if ( !values.isEmpty() )
-            QListViewItem::setPixmap( column, QPixmap( CollectionDB::instance()->albumImage( values[0], album ) ) );
-        else
-            QListViewItem::setPixmap( column, QPixmap( CollectionDB::instance()->notAvailCover() ) );
-    } else
+    //Generate Album name
+    QString album( text( 0 ) );
+    if ( m_cat == IdVisYearAlbum )
+    {
+        QString pointlessString;
+        CollectionView::yearAlbumCalc( pointlessString, album );
+    }
+    else if ( m_cat != IdAlbum )
+    {
         QListViewItem::setPixmap( column, pix );
+        return;
+    }
+
+    //Now m_cat is either IdAlbum or IdVisYearAlbum, and so this is an album as required.
+
+    QStringList values =
+        CollectionDB::instance()->query ( QString (
+            "SELECT DISTINCT artist.name FROM artist, album, tags "
+            "WHERE artist.id = tags.artist AND tags.album = album.id "
+            "AND album.name = '%1';" )
+            .arg( CollectionDB::instance()->escapeString( album ) ) );
+    if ( !values.isEmpty() )
+        QListViewItem::setPixmap( column, QPixmap( CollectionDB::instance()->albumImage( values[0], album ) ) );
+    else
+        QListViewItem::setPixmap( column, QPixmap( CollectionDB::instance()->notAvailCover() ) );
 }
 
 
