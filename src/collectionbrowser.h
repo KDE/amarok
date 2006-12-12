@@ -165,6 +165,8 @@ class CollectionItem : public KListViewItem {
         inline bool isUnknown() {return m_isUnknown;}
         inline bool isSampler() {return m_isSampler;}
 
+        virtual void setPixmap(int column, const QPixmap & pix);
+
         static QPixmap *star();
         static QPixmap *smallStar();
 

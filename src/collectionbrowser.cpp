@@ -1490,6 +1490,25 @@ CollectionView::setViewMode( int mode, bool rerender /*=true*/ )
     }
 }
 
+void
+CollectionItem::setPixmap(int column, const QPixmap & pix)
+{
+    if ( m_cat == IdAlbum ) {
+        QString album = text(0);
+        QStringList values =
+            CollectionDB::instance()->query ( QString (
+                "SELECT DISTINCT artist.name FROM artist, album, tags "
+                "WHERE artist.id = tags.artist AND tags.album = album.id "
+                "AND album.name = '%1';" )
+                .arg( CollectionDB::instance()->escapeString( album ) ) );
+        if ( !values.isEmpty() )
+            QListViewItem::setPixmap( column, QPixmap( CollectionDB::instance()->albumImage( values[0], album ) ) );
+        else
+            QListViewItem::setPixmap( column, QPixmap( CollectionDB::instance()->notAvailCover() ) );
+    } else
+        QListViewItem::setPixmap( column, pix );
+}
+
 
 void
 CollectionView::fetchCover() //SLOT
