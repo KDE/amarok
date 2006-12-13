@@ -1539,7 +1539,7 @@ CollectionItem::setPixmap(int column, const QPixmap & pix)
         }
     }
 
-    QListViewItem::setPixmap( column, QPixmap( CollectionDB::instance()->albumImage( artist, album, false, 50 ) ) );
+    QListViewItem::setPixmap( column, QPixmap( CollectionDB::instance()->albumImage( artist, album, true, 50 ) ) );
 }
 
 
