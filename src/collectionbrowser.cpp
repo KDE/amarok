@@ -1534,6 +1534,8 @@ CollectionItem::setPixmap(int column, const QPixmap & pix)
             artist = values[ 0 ];
         else
         {
+            //Don't bother trying to create a shadow because it won't work anyway. The
+            //nocover image has intial transparency, so adding the shadow doesn't work.
             QListViewItem::setPixmap( column, QPixmap( CollectionDB::instance()->notAvailCover( false, 50 ) ) );
             return;
         }
