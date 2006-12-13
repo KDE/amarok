@@ -174,6 +174,10 @@ void MagnatuneBrowser::selectionChanged( QListViewItem *item )
         {
             // a track is selected, show the corrosponding album info!
             MagnatuneListViewTrackItem *trackItem = dynamic_cast<MagnatuneListViewTrackItem*>( item );
+	    if (!trackItem) {
+		debug() << "dynamic_cast to trackItem failed!" << endl;
+		return;
+	    }
             int albumId = trackItem->getAlbumId();
             MagnatuneAlbum album = MagnatuneDatabaseHandler::instance() ->getAlbumById( albumId );
             m_artistInfobox->displayAlbumInfo( &album );
@@ -272,6 +276,10 @@ void MagnatuneBrowser::purchaseAlbumContainingSelectedTrack( )
     }
 
     MagnatuneListViewTrackItem *selectedTrack = dynamic_cast<MagnatuneListViewTrackItem *>( m_listView->selectedItem() );
+    if (!selectedTrack) {
+	debug() << "dynamic_cast to selected track failed!" << endl;
+	return;
+    }
 
     MagnatuneAlbum album( MagnatuneDatabaseHandler::instance() ->getAlbumById( selectedTrack->getAlbumId() ) );
     m_purchaseHandler->purchaseAlbum( album );

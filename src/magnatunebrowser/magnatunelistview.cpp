@@ -56,6 +56,10 @@ KURLDrag * MagnatuneListView::dragObject( )
     MagnatuneTrackList::iterator it;
 
     KListViewItem * pSelectedItem = dynamic_cast<KListViewItem *>( selectedItem() );
+    if (!pSelectedItem) {
+	debug() << "dynamic_cast to pSelectedItem failed!" << endl;
+	return 0;
+    }
 
     switch ( pSelectedItem->depth() )
     {

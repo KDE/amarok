@@ -515,6 +515,10 @@ DaapClient::passwordPrompt()
     };
 
     Daap::Reader* callback = dynamic_cast<Daap::Reader*>( const_cast<QObject*>( sender() ) );
+    if (!callback) {
+	debug() << "No callback!" << endl;
+	return;
+    }	
     ServerItem* root = callback->rootMediaItem();
 
     PasswordDialog dialog( 0 );

@@ -615,9 +615,10 @@ void App::applySettings( bool firstTime )
 
     //on startup we need to show the window, but only if it wasn't hidden on exit
     //and always if the trayicon isn't showing
-    if( firstTime && !Amarok::config()->readBoolEntry( "HiddenOnExit", false ) || !AmarokConfig::showTrayIcon() )
+    QWidget* main_window = mainWindow();
+    if( ( main_window && firstTime && !Amarok::config()->readBoolEntry( "HiddenOnExit", false ) ) || ( main_window && !AmarokConfig::showTrayIcon() ) )
     {
-        mainWindow()->show();
+        main_window->show();
 
         //takes longer but feels shorter. Crazy eh? :)
         kapp->eventLoop()->processEvents( QEventLoop::ExcludeUserInput );

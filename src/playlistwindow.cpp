@@ -718,7 +718,9 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
             if( pl->currentItem() && ( e->key() == Key_Up && pl->currentItem()->itemAbove() == 0 ) )
             {
                 QListViewItem *lastitem = *It( pl, It::Visible );
-                while( lastitem && lastitem->itemBelow() )
+		if ( !lastitem )
+		    return false;
+                while( lastitem->itemBelow() )
                     lastitem = lastitem->itemBelow();
                 pl->currentItem()->setSelected( false );
                 pl->setCurrentItem( lastitem );

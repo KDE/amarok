@@ -1055,7 +1055,7 @@ MediaItem::compare( QListViewItem *i, int col, bool ascending ) const
     MediaItem *item = dynamic_cast<MediaItem *>(i);
     if(item && col==0 && item->m_order != m_order)
         return m_order-item->m_order;
-    else if( item->type() == MediaItem::ARTIST )
+    else if( item && item->type() == MediaItem::ARTIST )
     {
         QString key1 = key( col, ascending );
         if( key1.startsWith( "the ", false ) )

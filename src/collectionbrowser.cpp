@@ -4380,6 +4380,9 @@ DividerItem::text(int column) const
 int
 DividerItem::compare( QListViewItem* i, int col, bool ascending ) const
 {
+    if (!i) {
+	return QString::localeAwareCompare( text(col).lower(), QString("") );
+    }
     if (dynamic_cast<CollectionItem*>(i)) {
         return -1 * i->compare(const_cast<DividerItem*>(this), col, ascending);
     }

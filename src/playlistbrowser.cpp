@@ -2080,10 +2080,12 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
         if( parent && parent->isSelected() ) //parent will remove children
             continue;
 
-        while( parent && parent->parent() && static_cast<PlaylistBrowserEntry*>(parent)->isKept() )
-            parent = parent->parent();
+	if (parent) {
+            while( parent->parent() && static_cast<PlaylistBrowserEntry*>(parent)->isKept() )
+                parent = parent->parent();
+	}
 
-        if( !static_cast<PlaylistBrowserEntry*>(parent)->isKept() )
+        if( parent && !static_cast<PlaylistBrowserEntry*>(parent)->isKept() )
             continue;
 
         switch( (*it)->rtti() )
