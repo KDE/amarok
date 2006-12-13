@@ -161,9 +161,21 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
         return;
 
     const QCString dir8Bit = QFile::encodeName( dir );
+    DIR *d = opendir( dir8Bit );
+    if( d == NULL ) {
+        warning() << "Skipping, " << strerror(errno) << ": " << dir << endl;
+        return;
+    }
+    int dfd = dirfd(d);
+    if (dfd == -1) {
+	warning() << "Skipping, unable to obtain file descriptor: " << dir << endl;
+	closedir(d);
+	return;
+    }
+
     struct stat statBuf;
     struct stat statBuf_symlink;
-    stat( dir8Bit, &statBuf );
+    fstat( dfd, &statBuf );
 
     struct direntry de;
     memset(&de, 0, sizeof(struct direntry));
@@ -182,6 +194,7 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
 
     if ( ! S_ISDIR( statBuf.st_mode ) || f != -1 ) {
         debug() << "Skipping, already scanned: " << dir << endl;
+        closedir(d);
         return;
     }
 
@@ -191,13 +204,6 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
 
     m_processedDirs.resize( m_processedDirs.size() + 1 );
     m_processedDirs[m_processedDirs.size() - 1] = de;
-
-    DIR *d = opendir( dir8Bit );
-    if( d == NULL ) {
-        if( errno == EACCES )
-            warning() << "Skipping, no access permissions: " << dir << endl;
-        return;
-    }
 
     for( dirent *ent; ( ent = readdir( d ) ); ) {
         QCString entry (ent->d_name);
