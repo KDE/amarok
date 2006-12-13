@@ -1524,12 +1524,11 @@ CollectionItem::setPixmap(int column, const QPixmap & pix)
     {
         //Try to guess artist - this will only happen if you don't have an Artist category
         //above the Album category in the tree
-        QStringList values =
-            CollectionDB::instance()->query ( QString (
-                "SELECT DISTINCT artist.name FROM artist, album, tags "
-                "WHERE artist.id = tags.artist AND tags.album = album.id "
-                "AND album.name = '%1';" )
-                .arg( CollectionDB::instance()->escapeString( album ) ) );
+        QueryBuilder qb;
+        qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+        qb.addMatch( QueryBuilder::tabAlbum, QueryBuilder::valName, album );
+
+        QStringList values( qb.run() );
 
         if ( !values.isEmpty() )
             artist = values[ 0 ];
