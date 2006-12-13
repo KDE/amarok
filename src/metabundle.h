@@ -162,7 +162,7 @@ public:
     bool audioPropertiesUndetermined() const;
 
     /** The embedded artwork in the file (loaded from file into images variable, unmodified if no images present/loadable) */
-    void embeddedImages(EmbeddedImageList &images);
+    void embeddedImages(EmbeddedImageList &images) const;
 
     /** If you want Accurate reading say so. If EmbeddedImageList != NULL, embedded art is loaded into it */
     void readTags( TagLib::AudioProperties::ReadStyle = TagLib::AudioProperties::Fast, EmbeddedImageList* images = 0 );
@@ -428,7 +428,7 @@ private:
 
     void setExtendedTag( TagLib::File *file, int tag, const QString value );
 
-    void loadImagesFromTag( const TagLib::ID3v2::Tag &tag, EmbeddedImageList& images );
+    void loadImagesFromTag( const TagLib::ID3v2::Tag &tag, EmbeddedImageList& images ) const;
 
     int getRand();
 };

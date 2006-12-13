@@ -435,7 +435,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         QString findAmazonImage( const QString &artist, const QString &album, const uint width = 1 );
         QString findDirectoryImage( const QString& artist, const QString& album, uint width = 0 );
         QString findEmbeddedImage( const QString& artist, const QString& album, uint width = 1 );
-        QString findMetaBundleImage( MetaBundle trackInformation, const uint = 1 );
+        QString findMetaBundleImage( const MetaBundle &trackInformation, const uint = 1 );
 
         /// ensure the sql only return urls to tracks for efficiency
         static QPixmap createDragPixmapFromSQL( const QString &sql, QString textOverRide=QString::null );
@@ -456,7 +456,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
          * @param width the size of the image. 0 == full size, 1 == preview size
          * @param embedded if not NULL, sets a bool indicating whether the path is an embedded image
          */
-        QString albumImage( MetaBundle trackInformation, const bool withShadow = false, uint width = 1, bool* embedded = 0 );
+        QString albumImage( const MetaBundle &trackInformation, const bool withShadow = false, uint width = 1, bool* embedded = 0 );
         QString albumImage( const uint artist_id, const uint album_id, const bool withShadow = false, uint width = 1, bool* embedded = 0 );
         QString albumImage( const QString &artist, const QString &album, const bool withShadow = false, uint width = 1, bool* embedded = 0 );
 
@@ -560,7 +560,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
 
         // helpers for embedded images
         QString loadHashFile( const QCString& hash, uint width );
-        bool extractEmbeddedImage( MetaBundle &trackInformation, QCString& hash );
+        bool extractEmbeddedImage( const MetaBundle &trackInformation, QCString& hash );
 
         //general management methods
         void createStatsTable();

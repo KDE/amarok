@@ -1412,7 +1412,7 @@ TagDialog::openURLRequest(const KURL &url )         //SLOT
 }
 
 bool
-TagDialog::writeTag( MetaBundle mb, bool updateCB )
+TagDialog::writeTag( MetaBundle &mb, bool updateCB )
 {
     QCString path = QFile::encodeName( mb.url().path() );
     if ( !TagLib::File::isWritable( path ) ) {

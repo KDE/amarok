@@ -467,7 +467,7 @@ MetaBundle::init( const KFileMetaInfo& info )
 }
 
 void
-MetaBundle::embeddedImages( MetaBundle::EmbeddedImageList& images )
+MetaBundle::embeddedImages( MetaBundle::EmbeddedImageList& images ) const
 {
     if ( isFile() )
     {
@@ -1371,7 +1371,7 @@ MetaBundle::setLastFmBundle( const LastFm::Bundle &last )
    *m_lastFmBundle = last;
 }
 
-void MetaBundle::loadImagesFromTag( const TagLib::ID3v2::Tag &tag, EmbeddedImageList& images )
+void MetaBundle::loadImagesFromTag( const TagLib::ID3v2::Tag &tag, EmbeddedImageList& images ) const
 {
     TagLib::ID3v2::FrameList l = tag.frameListMap()[ "APIC" ];
     foreachType( TagLib::ID3v2::FrameList, l ) {

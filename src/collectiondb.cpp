@@ -2001,7 +2001,7 @@ CollectionDB::albumImage( const uint artist_id, const uint album_id, bool withSh
 
 
 QString
-CollectionDB::albumImage( MetaBundle trackInformation, bool withShadow, uint width, bool* embedded )
+CollectionDB::albumImage( const MetaBundle &trackInformation, bool withShadow, uint width, bool* embedded )
 {
     QString s;
     if( width == 1 )
@@ -2231,7 +2231,7 @@ CollectionDB::findEmbeddedImage( const QString& artist, const QString& album, ui
 
 
 QString
-CollectionDB::findMetaBundleImage( MetaBundle trackInformation, uint width )
+CollectionDB::findMetaBundleImage( const MetaBundle& trackInformation, uint width )
 {
     int deviceid = MountPointManager::instance()->getIdForUrl( trackInformation.url() );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, trackInformation.url().path() );
@@ -5770,7 +5770,7 @@ CollectionDB::loadHashFile( const QCString& hash, uint width )
 
 
 bool
-CollectionDB::extractEmbeddedImage( MetaBundle &trackInformation, QCString& hash )
+CollectionDB::extractEmbeddedImage( const MetaBundle &trackInformation, QCString& hash )
 {
     //debug() << "extractEmbeddedImage: " << hash << " - " << trackInformation.url().path() << endl;
 

@@ -95,7 +95,7 @@ class TagDialog : public TagDialogBase
         QStringList labelsForURL( const KURL &url );
         QStringList getCommonLabels();
         void saveTags();
-        bool writeTag( MetaBundle mb, bool updateCB=true );
+        bool writeTag( MetaBundle &mb, bool updateCB=true );
         const QString unknownSafe( QString );
         const QStringList statisticsData();
         void applyToAllTracks();
