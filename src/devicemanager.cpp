@@ -64,7 +64,7 @@ DeviceManager::DeviceManager()
             QDataStream arg(data, IO_WriteOnly);
             QStringList result;
             arg << 5;
-            if (!m_dc->call("kded", "mediamanager", "fullList()", data, replyType, replyData))
+            if (!m_dc->call("kded", "mediamanager", "fullList()", data, replyType, replyData, false, 5000))
             {
                 debug() << "During DeviceManager init, error during DCOP call" << endl;
             }
