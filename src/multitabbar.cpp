@@ -460,7 +460,7 @@ void MultiTabBarInternal::setTabVisible( int id, bool visible )
                 tab->show();
             else {
                 tab->hide();
-                // if the user wants to hide the currently avtive tab
+                // if the user wants to hide the currently active tab
                 // turn on another tab
                 if ( tab->isOn() )
                     for( uint i = 0; i < m_tabs.count(); i++ ) {
