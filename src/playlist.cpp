@@ -1584,7 +1584,11 @@ Playlist::activate( QListViewItem *item )
 
     #define item static_cast<PlaylistItem*>(item)
 
-    checkFileStatus( item );
+    if ( !checkFileStatus( item ) )
+    {
+	Amarok::StatusBar::instance()->shortMessage( i18n("Local file does not exist.") );
+	return;
+    }
 
     if( dynamicMode() && !m_dynamicDirt && !Amarok::repeatTrack() )
     {
@@ -1619,12 +1623,6 @@ Playlist::activate( QListViewItem *item )
         if( m_currentTrack && m_currentTrack != item )
             m_currentTrack->setDynamicEnabled( false );
         advanceDynamicTrack();
-    }
-
-    if( !item->isFilestatusEnabled() )
-    {
-        Amarok::StatusBar::instance()->shortMessage( i18n("Local file does not exist.") );
-        return;
     }
 
     if( Amarok::entireAlbums() )

@@ -1008,7 +1008,9 @@ void PlaylistItem::derefAlbum()
         m_album->refcount--;
         if( !m_album->refcount )
         {
-            listView()->m_prevAlbums.removeRef( m_album );
+            if (!listView()->m_prevAlbums.removeRef( m_album ))
+		warning() << "Unable to remove album reference from "
+		          << "listView.m_prevAlbums" << endl;
             listView()->m_albums[artist_album()].remove( album() );
             if( listView()->m_albums[artist_album()].isEmpty() )
                 listView()->m_albums.remove( artist_album() );
@@ -1048,7 +1050,8 @@ void PlaylistItem::decrementTotals()
     {
         const Q_INT64 prevTotal = m_album->total;
         Q_INT64 total = m_album->total * m_album->tracks.count();
-        m_album->tracks.removeRef( this );
+        if (!m_album->tracks.removeRef( this ))
+	    warning() << "Unable to remove myself from m_album" << endl;
         total -= totalIncrementAmount();
         m_album->total = Q_INT64( double( total + 0.5 ) / m_album->tracks.count() );
         if( listView()->m_prevAlbums.findRef( m_album ) == -1 )

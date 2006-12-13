@@ -325,7 +325,7 @@ GenericMediaDevice::GenericMediaDevice()
     m_songLocation    = QString::null;
     m_podcastLocation = QString::null;
 
-    m_supportedFileTypes.empty();
+    m_supportedFileTypes.clear();
 
     m_configDialog = 0;
 

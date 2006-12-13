@@ -1250,7 +1250,10 @@ bool XineEngine::getAudioCDContents(const QString &device, KURL::List &urls)
     if (!device.isNull()) {
         debug() << "xine-engine setting CD Device to: " << device << endl;
         xine_cfg_entry_t config;
-        xine_config_lookup_entry(m_xine, "input.cdda_device", &config);
+        if (!xine_config_lookup_entry(m_xine, "input.cdda_device", &config)) {
+	    emit statusText(i18n("Failed CD device lookup in xine engine"));
+	    return false;
+	}
         config.str_value = (char *)device.latin1();
         xine_config_update_entry(m_xine, &config);
     }

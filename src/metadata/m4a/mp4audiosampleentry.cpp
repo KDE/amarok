@@ -69,7 +69,8 @@ void MP4::Mp4AudioSampleEntry::parseEntry()
     TagLib::MP4::Fourcc fourcc;
     TagLib::uint        esds_size;
 
-    mp4file->readSizeAndType( esds_size, fourcc );
+    if (!mp4file->readSizeAndType( esds_size, fourcc ))
+	return;
 
     // read esds' main parts
     if( size()-48 > 0 )

@@ -282,7 +282,7 @@ DEBUG_BLOCK
         uint limit=0, offset=0;
 
         QRegExp limitSearch( "LIMIT.*(\\d+).*OFFSET.*(\\d+)" );
-        int findLocation = sql.find( limitSearch, false );
+        int findLocation = limitSearch.search( sql, 0 );
         if( findLocation == -1 ) //not found, let's find out the higher limit the hard way
         {
             QString counting( sql );
@@ -293,8 +293,7 @@ DEBUG_BLOCK
             limit = countingResult[0].toInt();
         }
         else
-        {   // There's a Limit, so we've got to respect it.
-            limitSearch.search( sql );
+        {   // There's a Limit, we have to respect it.
             // capturedTexts() gives us the strings that were matched by each subexpression
             offset = limitSearch.capturedTexts()[2].toInt();
             limit  = limitSearch.capturedTexts()[1].toInt();
