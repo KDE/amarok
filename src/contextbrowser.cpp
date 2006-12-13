@@ -1641,8 +1641,7 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
     newUrls.append( &artistUrl );
     newUrls.append( &titleUrl  );
 
-    QString* url = newUrls.first();
-    for ( url = newUrls.first(); url; url = newUrls.next() )
+    for ( QString* url = newUrls.first(); url; url = newUrls.next() )
         url->replace( QRegExp( "^http:" ), "externalurl:" );
 
     const QString skipIcon = KGlobal::iconLoader()->iconPath( Amarok::icon("next"),   -KIcon::SizeSmallMedium );

@@ -72,14 +72,13 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
     SearchPane *searchPane;
 
     KURL *location;
-    KFileItem *currentFolder;
 
     // Try to keep filebrowser working even if not in a medium context
     // so if a medium object not passed in, keep earlier behavior
     if (!medium) {
         m_medium = 0;
         location = new KURL( Amarok::config( "Filebrowser" )->readPathEntry( "Location", QDir::homeDirPath() ) );
-        currentFolder = new KFileItem( KFileItem::Unknown, KFileItem::Unknown, *location );
+        KFileItem *currentFolder = new KFileItem( KFileItem::Unknown, KFileItem::Unknown, *location );
         //KIO sucks, NetAccess::exists puts up a dialog and has annoying error message boxes
         //if there is a problem so there is no point in using it anyways.
         //so... setting the diroperator to ~ is the least sucky option
@@ -91,7 +90,6 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
     else{
         m_medium = medium;
         location = new KURL( m_medium->mountPoint() );
-        currentFolder = new KFileItem( KFileItem::Unknown, KFileItem::Unknown, *location );
     }
 
     KActionCollection* ac = new KActionCollection( this );
