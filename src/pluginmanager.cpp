@@ -151,8 +151,10 @@ PluginManager::getService( const Plugin* plugin )
     //search plugin in store
     vector<StoreItem>::const_iterator iter = lookupPlugin( plugin );
 
-    if ( iter == m_store.end() )
+    if ( iter == m_store.end() ) {
         warning() << k_funcinfo << "Plugin not found in store.\n";
+	return 0;
+    }
 
     return (*iter).service;
 }
