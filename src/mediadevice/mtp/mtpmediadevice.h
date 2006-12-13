@@ -128,7 +128,7 @@ class MtpMediaDevice : public MediaDevice
 
     public:
         MtpMediaDevice();
-        virtual bool            autoConnect()          { return true; }
+        virtual bool            autoConnect()          { return false; }
         virtual bool            asynchronousTransfer() { return false; }
         bool                    isConnected();
         LIBMTP_mtpdevice_t      *current_device();

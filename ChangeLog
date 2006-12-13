@@ -32,6 +32,13 @@ VERSION 1.4.5
       you move and rename them.
 
   CHANGES:
+    * MTP media devices are not automatically connected on start-up. This 
+      should solve slow loading times for those with large collections on an 
+      MTP media device. Contributed by Mikko Seppälä. (BR 138409)
+    * Internationalize unknown artist/album/genre strings. Contributed by Mikko
+      Seppälä. (BR 138409)
+    * Don't assume that a device returning 0 tracks is invalid. It could just
+      have no tracks on. Contributed by Mikko Seppälä. (BR 138409)
     * Magnatune store look now matches rest of Amarok much better
     * Album art is displayed on the Magnatune purchase dialog
     * Generic media device now has an option to force VFAT-safe filenames even

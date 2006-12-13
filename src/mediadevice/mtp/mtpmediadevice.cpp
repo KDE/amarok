@@ -59,7 +59,7 @@ AMAROK_EXPORT_PLUGIN( MtpMediaDevice )
 
 MtpMediaDevice::MtpMediaDevice() : MediaDevice()
 {
-    m_name = "MTP Device";
+    m_name = i18n("MTP Media Device");
     m_device = 0;
     m_folders = 0;
     m_playlistItem = 0;
@@ -224,7 +224,7 @@ MediaItem
 
     if( bundle.title().isEmpty() )
     {
-        trackmeta->title = qstrdup( "<Unknown title>" );
+        trackmeta->title = qstrdup( i18n( "Unknown title" ).utf8() );
     }
     else
     {
@@ -233,7 +233,7 @@ MediaItem
 
     if( bundle.album().isEmpty() )
     {
-        trackmeta->album = qstrdup( "<Unknown album>" );
+        trackmeta->album = qstrdup( i18n( "Unknown album" ).utf8() );
     }
     else
     {
@@ -242,7 +242,7 @@ MediaItem
 
     if( bundle.artist().isEmpty() )
     {
-        trackmeta->artist = qstrdup( "<Unknown artist>" );
+        trackmeta->artist = qstrdup( i18n( "Unknown artist" ).utf8() );
     }
     else
     {
@@ -251,7 +251,7 @@ MediaItem
 
     if( bundle.genre().isEmpty() )
     {
-        trackmeta->genre = qstrdup( "<Unknown genre>" );
+        trackmeta->genre = qstrdup( i18n( "Unknown genre" ).utf8() );
     }
     else
     {
@@ -1484,14 +1484,7 @@ MtpMediaDevice::readMtpMusic()
 
     if( tracks == 0 )
     {
-        debug()<< "Error reading tracks. 0 returned." << endl;
-        Amarok::StatusBar::instance()->shortLongMessage(
-            genericError,
-            i18n( "Could not read MTP Device tracks" ),
-            KDE::StatusBar::Error
-        );
-        hideProgress();
-        return -1;
+        debug() << "0 tracks returned. Empty device..." << endl;
     }
     else
     {
