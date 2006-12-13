@@ -1067,6 +1067,14 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
         else
             child->setUrl( values[ i + 1 ] );
         child->setExpandable( expandable );
+
+        //Display the album cover for the parent item now it is expanded
+        if ( dynamic_cast<CollectionItem*>( item ) )
+        {
+            CollectionItem *i = static_cast<CollectionItem*>( item );
+            if ( i->m_cat == IdAlbum || i->m_cat == IdVisYearAlbum )
+                i->setPixmap( 0, QPixmap() );   //The pixmap given is unimportant. The cover is used.
+        }
     }
 }
 
@@ -1074,6 +1082,14 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 void
 CollectionView::slotCollapse( QListViewItem* item )  //SLOT
 {
+    //On collapse, go back from showing the cover to showing the icon for albums
+    if ( dynamic_cast<CollectionItem*>( item ) )
+    {
+        CollectionItem *i = static_cast<CollectionItem*>( item );
+        if ( i->m_cat == IdAlbum || i->m_cat == IdVisYearAlbum )
+            i->setPixmap( 0, iconForCategory( i->m_cat ) );
+    }
+
     QListViewItem* child = item->firstChild();
     QListViewItem* childTmp;
 
@@ -1493,6 +1509,13 @@ CollectionView::setViewMode( int mode, bool rerender /*=true*/ )
 void
 CollectionItem::setPixmap(int column, const QPixmap & pix)
 {
+    //Don't show the cover if the album isn't expanded (for speed)
+    if ( !isOpen() )
+    {
+        QListViewItem::setPixmap( column, pix );
+        return;
+    }
+
     //Generate Album name
     QString album( text( 0 ) ), artist;
     if ( m_cat == IdVisYearAlbum )
