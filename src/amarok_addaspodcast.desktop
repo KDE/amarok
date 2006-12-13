@@ -24,5 +24,6 @@ Name[sr]=Додај као подемисију у Amarok
 Name[sr@Latn]=Dodaj kao podemisiju u Amarok
 Name[sv]=Lägg till som podradiosändning i Amarok
 Name[th]=เพิ่มเป็นพ็อดแคสต์ไปยัง Amarok
+Name[tr]=Amarok'a Podcast olarak ekle
 Icon=amarok
 Exec=dcop amarok playlistbrowser addPodcast %u
