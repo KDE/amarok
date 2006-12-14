@@ -741,7 +741,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
                 pl->removeSelectedItems();
                 return true;
             }
-            if( ( e->key() >= Key_0 && e->key() <= Key_Z ) || e->key() == Key_Backspace || e->key() == Key_Escape )
+            if( ( ( e->key() >= Key_0 && e->key() <= Key_Z ) || e->key() == Key_Backspace || e->key() == Key_Escape ) && ( !e->state() || e->state() == Qt::ShiftButton ) ) //only if shift or no modifier key is pressed and 0-Z or backspace or escape
             {
                 m_lineEdit->setFocus();
                 QApplication::sendEvent( m_lineEdit, e );
