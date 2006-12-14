@@ -317,7 +317,7 @@ Playlist::Playlist( QWidget *parent )
 
     new KAction( i18n( "&Repopulate" ), Amarok::icon( "playlist_refresh" ), 0, this, SLOT( repopulate() ), ac, "repopulate" );
     new KAction( i18n( "S&huffle" ), "rebuild", CTRL+Key_H, this, SLOT( shuffle() ), ac, "playlist_shuffle" );
-    new KAction( i18n( "&Go To Current Track" ), Amarok::icon( "music" ), CTRL+Key_Enter, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
+    KAction *gotoCurrent = new KAction( i18n( "&Go To Current Track" ), Amarok::icon( "music" ), CTRL+Key_J, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
     new KAction( i18n( "&Remove Duplicate && Dead Entries" ), 0, this, SLOT( removeDuplicates() ), ac, "playlist_remove_duplicates" );
     new KAction( i18n( "&Queue Selected Tracks" ), Amarok::icon( "queue_track" ), CTRL+Key_D, this, SLOT( queueSelected() ), ac, "queue_selected" );
     KToggleAction *stopafter = new KToggleAction( i18n( "&Stop Playing After Track" ), Amarok::icon( "stop" ), CTRL+ALT+Key_V,
@@ -327,8 +327,10 @@ Playlist::Playlist( QWidget *parent )
         KPopupMenu asdf;
         copy->plug( &asdf );
         stopafter->plug( &asdf );
+        gotoCurrent->plug( &asdf );
         copy->unplug( &asdf );
         stopafter->unplug( &asdf );
+        gotoCurrent->unplug( &asdf );
     }
 
     //ensure we update action enabled states when repeat Playlist is toggled
