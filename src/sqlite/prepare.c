@@ -84,7 +84,6 @@ int sqlite3InitCallback(void *pInit, int argc, char **argv, char **azColName){
       sqlite3_free(zErr);
       return rc;
     }
-    sqlite3_free(zErr);
   }else{
     /* If the SQL column is blank it means this is an index that
     ** was created to be the PRIMARY KEY or to fulfill a UNIQUE
