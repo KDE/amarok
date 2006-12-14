@@ -1067,14 +1067,14 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
         else
             child->setUrl( values[ i + 1 ] );
         child->setExpandable( expandable );
+    }
 
-        //Display the album cover for the parent item now it is expanded
-        if ( dynamic_cast<CollectionItem*>( item ) )
-        {
-            CollectionItem *i = static_cast<CollectionItem*>( item );
-            if ( i->m_cat == IdAlbum || i->m_cat == IdVisYearAlbum )
-                i->setPixmap( 0, QPixmap() );   //The pixmap given is unimportant. The cover is used.
-        }
+    //Display the album cover for the parent item now it is expanded
+    if ( dynamic_cast<CollectionItem*>( item ) )
+    {
+        CollectionItem *i = static_cast<CollectionItem*>( item );
+        if ( i->m_cat == IdAlbum || i->m_cat == IdVisYearAlbum )
+            i->setPixmap( 0, QPixmap() );   //The pixmap given is unimportant. The cover is used.
     }
 }
 
