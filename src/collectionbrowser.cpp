@@ -1453,14 +1453,6 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                 }
                 break;
             case COMPILATION_SET_TRACK:
-                {
-                    const KURL::List selectedURLs = listSelected();
-                    for ( KURL::List::const_iterator it = selectedURLs.begin(); it != selectedURLs.end(); ++it )
-                    {
-                        debug() << "xa:" << ( *it ).path() << endl;
-                    }
-                }
-
                 setCompilation( listSelected(), true );
                 break;
             case COMPILATION_UNSET:
