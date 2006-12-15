@@ -180,6 +180,14 @@ int sqlite3_step(sqlite3_stmt *pStmt){
     return SQLITE_MISUSE;
   }
   if( p->pc<0 ){
+    /* If there are no other statements currently running, then
+    ** reset the interrupt flag.  This prevents a call to sqlite3_interrupt
+    ** from interrupting a statement that has not yet started.
+    */
+    if( db->activeVdbeCnt==0 ){
+      db->u1.isInterrupted = 0;
+    }
+
 #ifndef SQLITE_OMIT_TRACE
     /* Invoke the trace callback if there is one
     */
@@ -246,6 +254,7 @@ int sqlite3_step(sqlite3_stmt *pStmt){
 
   sqlite3Error(p->db, rc, 0);
   p->rc = sqlite3ApiExit(p->db, p->rc);
+  assert( (rc&0xff)==rc );
   return rc;
 }
 
@@ -256,6 +265,27 @@ int sqlite3_step(sqlite3_stmt *pStmt){
 void *sqlite3_user_data(sqlite3_context *p){
   assert( p && p->pFunc );
   return p->pFunc->pUserData;
+}
+
+/*
+** The following is the implementation of an SQL function that always
+** fails with an error message stating that the function is used in the
+** wrong context.  The sqlite3_overload_function() API might construct
+** SQL function that use this routine so that the functions will exist
+** for name resolution but are actually overloaded by the xFindFunction
+** method of virtual tables.
+*/
+void sqlite3InvalidFunction(
+  sqlite3_context *context,  /* The function calling context */
+  int argc,                  /* Number of arguments to the function */
+  sqlite3_value **argv       /* Value of each argument */
+){
+  const char *zName = context->pFunc->zName;
+  char *zErr;
+  zErr = sqlite3MPrintf(
+      "unable to use function %s in the requested context", zName);
+  sqlite3_result_error(context, zErr, -1);
+  sqliteFree(zErr);
 }
 
 /*
@@ -375,10 +405,9 @@ static Mem *columnMem(sqlite3_stmt *pStmt, int i){
   Vdbe *pVm = (Vdbe *)pStmt;
   int vals = sqlite3_data_count(pStmt);
   if( i>=vals || i<0 ){
-    static Mem nullMem;
-    if( nullMem.flags==0 ){ nullMem.flags = MEM_Null; }
+    static const Mem nullMem = {0, 0.0, "", 0, MEM_Null, MEM_Null };
     sqlite3Error(pVm->db, SQLITE_RANGE, 0);
-    return &nullMem;
+    return (Mem*)&nullMem;
   }
   return &pVm->pTos[(1-vals)+i];
 }
@@ -454,11 +483,9 @@ const unsigned char *sqlite3_column_text(sqlite3_stmt *pStmt, int i){
   columnMallocFailure(pStmt);
   return val;
 }
-#if 0
 sqlite3_value *sqlite3_column_value(sqlite3_stmt *pStmt, int i){
   return columnMem(pStmt, i);
 }
-#endif
 #ifndef SQLITE_OMIT_UTF16
 const void *sqlite3_column_text16(sqlite3_stmt *pStmt, int i){
   const void *val = sqlite3_value_text16( columnMem(pStmt,i) );
@@ -713,6 +740,15 @@ int sqlite3_bind_text16(
   return bindText(pStmt, i, zData, nData, xDel, SQLITE_UTF16NATIVE);
 }
 #endif /* SQLITE_OMIT_UTF16 */
+int sqlite3_bind_value(sqlite3_stmt *pStmt, int i, const sqlite3_value *pValue){
+  int rc;
+  Vdbe *p = (Vdbe *)pStmt;
+  rc = vdbeUnbind(p, i);
+  if( rc==SQLITE_OK ){
+    sqlite3VdbeMemCopy(&p->aVar[i-1], pValue);
+  }
+  return rc;
+}
 
 /*
 ** Return the number of wildcards that can be potentially bound to.
@@ -801,6 +837,7 @@ int sqlite3_transfer_bindings(sqlite3_stmt *pFromStmt, sqlite3_stmt *pToStmt){
     rc = sqlite3VdbeMemMove(&pTo->aVar[i], &pFrom->aVar[i]);
     sqlite3MallocAllow();
   }
+  assert( rc==SQLITE_OK || rc==SQLITE_NOMEM );
   return rc;
 }
 

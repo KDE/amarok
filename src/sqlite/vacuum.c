@@ -69,8 +69,6 @@ static int execExecSql(sqlite3 *db, const char *zSql){
   return sqlite3_finalize(pStmt);
 }
 
-#endif
-
 /*
 ** The non-standard VACUUM command is used to clean up the database,
 ** collapse free space, etc.  It is modelled after the VACUUM command
@@ -94,7 +92,6 @@ void sqlite3Vacuum(Parse *pParse){
 */
 int sqlite3RunVacuum(char **pzErrMsg, sqlite3 *db){
   int rc = SQLITE_OK;     /* Return code from service routines */
-#ifndef SQLITE_OMIT_VACUUM
   const char *zFilename;  /* full pathname of the database file */
   int nFilename;          /* number of characters  in zFilename[] */
   char *zTemp = 0;        /* a temporary file in same directory as zFilename */
@@ -190,7 +187,9 @@ int sqlite3RunVacuum(char **pzErrMsg, sqlite3 *db){
   */
   rc = execExecSql(db, 
       "SELECT 'CREATE TABLE vacuum_db.' || substr(sql,14,100000000) "
-      "  FROM sqlite_master WHERE type='table' AND name!='sqlite_sequence'");
+      "  FROM sqlite_master WHERE type='table' AND name!='sqlite_sequence'"
+      "   AND rootpage>0"
+  );
   if( rc!=SQLITE_OK ) goto end_of_vacuum;
   rc = execExecSql(db, 
       "SELECT 'CREATE INDEX vacuum_db.' || substr(sql,14,100000000)"
@@ -199,11 +198,6 @@ int sqlite3RunVacuum(char **pzErrMsg, sqlite3 *db){
   rc = execExecSql(db, 
       "SELECT 'CREATE UNIQUE INDEX vacuum_db.' || substr(sql,21,100000000) "
       "  FROM sqlite_master WHERE sql LIKE 'CREATE UNIQUE INDEX %'");
-  if( rc!=SQLITE_OK ) goto end_of_vacuum;
-  rc = execExecSql(db, 
-      "SELECT 'CREATE VIEW vacuum_db.' || substr(sql,13,100000000) "
-      "  FROM sqlite_master WHERE type='view'"
-  );
   if( rc!=SQLITE_OK ) goto end_of_vacuum;
 
   /* Loop through the tables in the main database. For each, do
@@ -214,7 +208,9 @@ int sqlite3RunVacuum(char **pzErrMsg, sqlite3 *db){
       "SELECT 'INSERT INTO vacuum_db.' || quote(name) "
       "|| ' SELECT * FROM ' || quote(name) || ';'"
       "FROM sqlite_master "
-      "WHERE type = 'table' AND name!='sqlite_sequence';"
+      "WHERE type = 'table' AND name!='sqlite_sequence' "
+      "  AND rootpage>0"
+
   );
   if( rc!=SQLITE_OK ) goto end_of_vacuum;
 
@@ -233,17 +229,19 @@ int sqlite3RunVacuum(char **pzErrMsg, sqlite3 *db){
   if( rc!=SQLITE_OK ) goto end_of_vacuum;
 
 
-  /* Copy the triggers from the main database to the temporary database.
-  ** This was deferred before in case the triggers interfered with copying
-  ** the data. It's possible the indices should be deferred until this
-  ** point also.
+  /* Copy the triggers, views, and virtual tables from the main database
+  ** over to the temporary database.  None of these objects has any
+  ** associated storage, so all we have to do is copy their entries
+  ** from the SQLITE_MASTER table.
   */
-  rc = execExecSql(db, 
-      "SELECT 'CREATE TRIGGER  vacuum_db.' || substr(sql, 16, 1000000) "
-      "FROM sqlite_master WHERE type='trigger'"
+  rc = execSql(db,
+      "INSERT INTO vacuum_db.sqlite_master "
+      "  SELECT type, name, tbl_name, rootpage, sql"
+      "    FROM sqlite_master"
+      "   WHERE type='view' OR type='trigger'"
+      "      OR (type='table' AND rootpage=0)"
   );
-  if( rc!=SQLITE_OK ) goto end_of_vacuum;
-
+  if( rc ) goto end_of_vacuum;
 
   /* At this point, unless the main db was completely empty, there is now a
   ** transaction open on the vacuum database, but not on the main database.
@@ -309,21 +307,13 @@ end_of_vacuum:
     pDb->pSchema = 0;
   }
 
-  /* If one of the execSql() calls above returned SQLITE_NOMEM, then the
-  ** mallocFailed flag will be clear (because execSql() calls sqlite3_exec()).
-  ** Fix this so the flag and return code match.
-  */
-  if( rc==SQLITE_NOMEM ){
-    sqlite3MallocFailed();
-  }
-
   if( zTemp ){
     sqlite3OsDelete(zTemp);
     sqliteFree(zTemp);
   }
   sqliteFree( zSql );
   sqlite3ResetInternalSchema(db, 0);
-#endif
 
   return rc;
 }
+#endif  /* SQLITE_OMIT_VACUUM */

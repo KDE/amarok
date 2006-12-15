@@ -247,6 +247,10 @@ static void detachFunc(
     strcpy(zErr, "cannot DETACH database within transaction");
     goto detach_error;
   }
+  if( sqlite3BtreeIsInReadTrans(pDb->pBt) ){
+    sqlite3_snprintf(sizeof(zErr),zErr, "database %s is locked", zName);
+    goto detach_error;
+  }
 
   sqlite3BtreeClose(pDb->pBt);
   pDb->pBt = 0;

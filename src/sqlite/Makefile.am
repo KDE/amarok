@@ -25,10 +25,15 @@ libsqlite_la_SOURCES = \
     date.c \
     delete.c \
     expr.c \
+	fts1.c \
+	fts1_hash.c \
+	fts1_porter.c \
+	fts1_tokenizer1.c \
     func.c \
     hash.c \
     insert.c \
     legacy.c \
+	loadext.c \
     main.c \
     opcodes.c \
     os.c \
@@ -54,5 +59,6 @@ libsqlite_la_SOURCES = \
     vdbeaux.c \
     vdbefifo.c \
     vdbemem.c \
+	vtab.c \
     where.c
 

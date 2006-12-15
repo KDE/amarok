@@ -285,6 +285,10 @@ static int getToken(const unsigned char *z, int *tokenType){
         *tokenType = TK_FLOAT;
       }
 #endif
+      while( IdChar(z[i]) ){
+        *tokenType = TK_ILLEGAL;
+        i++;
+      }
       return i;
     }
     case '[': {
@@ -394,7 +398,9 @@ int sqlite3RunParser(Parse *pParse, const char *zSql, char **pzErrMsg){
   extern void sqlite3ParserFree(void*, void(*)(void*));
   extern int sqlite3Parser(void*, int, Token, Parse*);
 
-  db->flags &= ~SQLITE_Interrupt;
+  if( db->activeVdbeCnt==0 ){
+    db->u1.isInterrupted = 0;
+  }
   pParse->rc = SQLITE_OK;
   i = 0;
   pEngine = sqlite3ParserAlloc((void*(*)(int))sqlite3MallocX);
@@ -418,7 +424,7 @@ int sqlite3RunParser(Parse *pParse, const char *zSql, char **pzErrMsg){
     switch( tokenType ){
       case TK_SPACE:
       case TK_COMMENT: {
-        if( (db->flags & SQLITE_Interrupt)!=0 ){
+        if( db->u1.isInterrupted ){
           pParse->rc = SQLITE_INTERRUPT;
           sqlite3SetString(pzErrMsg, "interrupt", (char*)0);
           goto abort_parse;
@@ -483,7 +489,15 @@ abort_parse:
     pParse->nTableLock = 0;
   }
 #endif
-  sqlite3DeleteTable(pParse->db, pParse->pNewTable);
+
+  if( !IN_DECLARE_VTAB ){
+    /* If the pParse->declareVtab flag is set, do not delete any table 
+    ** structure built up in pParse->pNewTable. The calling code (see vtab.c)
+    ** will take responsibility for freeing the Table structure.
+    */
+    sqlite3DeleteTable(pParse->db, pParse->pNewTable);
+  }
+
   sqlite3DeleteTrigger(pParse->pNewTrigger);
   sqliteFree(pParse->apVarExpr);
   if( nErr>0 && (pParse->rc==SQLITE_OK || pParse->rc==SQLITE_DONE) ){

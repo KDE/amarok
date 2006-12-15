@@ -53,9 +53,11 @@ struct os2File {
 ** Delete the named file
 */
 int sqlite3Os2Delete( const char *zFilename ){
-  DosDelete( (PSZ)zFilename );
+  APIRET rc = NO_ERROR;
+
+  rc = DosDelete( (PSZ)zFilename );
   TRACE2( "DELETE \"%s\"\n", zFilename );
-  return SQLITE_OK;
+  return rc == NO_ERROR ? SQLITE_OK : SQLITE_IOERR;
 }
 
 /*
@@ -92,7 +94,7 @@ int sqlite3Os2OpenReadWrite(
   os2File  f;
   HFILE    hf;
   ULONG    ulAction;
-  APIRET   rc;
+  APIRET   rc = NO_ERROR;
 
   assert( *pld == 0 );
   rc = DosOpen( (PSZ)zFilename, &hf, &ulAction, 0L,
@@ -142,7 +144,7 @@ int sqlite3Os2OpenExclusive( const char *zFilename, OsFile **pld, int delFlag ){
   os2File  f;
   HFILE    hf;
   ULONG    ulAction;
-  APIRET   rc;
+  APIRET   rc = NO_ERROR;
 
   assert( *pld == 0 );
   rc = DosOpen( (PSZ)zFilename, &hf, &ulAction, 0L, FILE_NORMAL,
@@ -174,7 +176,7 @@ int sqlite3Os2OpenReadOnly( const char *zFilename, OsFile **pld ){
   os2File  f;
   HFILE    hf;
   ULONG    ulAction;
-  APIRET   rc;
+  APIRET   rc = NO_ERROR;
 
   assert( *pld == 0 );
   rc = DosOpen( (PSZ)zFilename, &hf, &ulAction, 0L,
@@ -262,18 +264,19 @@ int sqlite3Os2TempFileName( char *zBuf ){
 */
 int os2Close( OsFile **pld ){
   os2File *pFile;
-  if( pld && (pFile = (os2File*)*pld)!=0 ){
+  APIRET rc = NO_ERROR;
+  if( pld && (pFile = (os2File*)*pld) != 0 ){
     TRACE2( "CLOSE %d\n", pFile->h );
-    DosClose( pFile->h );
+    rc = DosClose( pFile->h );
     pFile->locktype = NO_LOCK;
     if( pFile->delOnClose != 0 ){
-        DosForceDelete( pFile->pathToDel );
+        rc = DosForceDelete( pFile->pathToDel );
     }
     *pld = 0;
     OpenCounter( -1 );
   }
 
-  return SQLITE_OK;
+  return rc == NO_ERROR ? SQLITE_OK : SQLITE_IOERR;
 }
 
 /*
@@ -284,7 +287,7 @@ int os2Close( OsFile **pld ){
 int os2Read( OsFile *id, void *pBuf, int amt ){
   ULONG got;
   assert( id!=0 );
-  SimulateIOError( SQLITE_IOERR );
+  SimulateIOError( return SQLITE_IOERR );
   TRACE3( "READ %d lock=%d\n", ((os2File*)id)->h, ((os2File*)id)->locktype );
   DosRead( ((os2File*)id)->h, pBuf, amt, &got );
   return (got == (ULONG)amt) ? SQLITE_OK : SQLITE_IOERR;
@@ -295,11 +298,11 @@ int os2Read( OsFile *id, void *pBuf, int amt ){
 ** or some other error code on failure.
 */
 int os2Write( OsFile *id, const void *pBuf, int amt ){
-  APIRET rc=NO_ERROR;
+  APIRET rc = NO_ERROR;
   ULONG wrote;
   assert( id!=0 );
-  SimulateIOError( SQLITE_IOERR );
-  SimulateDiskfullError;
+  SimulateIOError( return SQLITE_IOERR );
+  SimulateDiskfullError( return SQLITE_FULL );
   TRACE3( "WRITE %d lock=%d\n", ((os2File*)id)->h, ((os2File*)id)->locktype );
   while( amt > 0 &&
       (rc = DosWrite( ((os2File*)id)->h, (PVOID)pBuf, amt, &wrote )) && wrote > 0 ){
@@ -314,7 +317,7 @@ int os2Write( OsFile *id, const void *pBuf, int amt ){
 ** Move the read/write pointer in a file.
 */
 int os2Seek( OsFile *id, i64 offset ){
-  APIRET rc;
+  APIRET rc = NO_ERROR;
   ULONG filePointer = 0L;
   assert( id!=0 );
   rc = DosSetFilePtr( ((os2File*)id)->h, offset, FILE_BEGIN, &filePointer );
@@ -328,7 +331,7 @@ int os2Seek( OsFile *id, i64 offset ){
 int os2Sync( OsFile *id, int dataOnly ){
   assert( id!=0 );
   TRACE3( "SYNC %d lock=%d\n", ((os2File*)id)->h, ((os2File*)id)->locktype );
-  return DosResetBuffer( ((os2File*)id)->h ) ? SQLITE_IOERR : SQLITE_OK;
+  return DosResetBuffer( ((os2File*)id)->h ) == NO_ERROR ? SQLITE_OK : SQLITE_IOERR;
 }
 
 /*
@@ -336,7 +339,7 @@ int os2Sync( OsFile *id, int dataOnly ){
 ** than UNIX.
 */
 int sqlite3Os2SyncDirectory( const char *zDirname ){
-  SimulateIOError( SQLITE_IOERR );
+  SimulateIOError( return SQLITE_IOERR );
   return SQLITE_OK;
 }
 
@@ -344,11 +347,11 @@ int sqlite3Os2SyncDirectory( const char *zDirname ){
 ** Truncate an open file to a specified size
 */
 int os2Truncate( OsFile *id, i64 nByte ){
-  APIRET rc;
+  APIRET rc = NO_ERROR;
   ULONG upperBits = nByte>>32;
   assert( id!=0 );
   TRACE3( "TRUNCATE %d %lld\n", ((os2File*)id)->h, nByte );
-  SimulateIOError( SQLITE_IOERR );
+  SimulateIOError( return SQLITE_IOERR );
   rc = DosSetFilePtr( ((os2File*)id)->h, nByte, FILE_BEGIN, &upperBits );
   if( rc != NO_ERROR ){
     return SQLITE_IOERR;
@@ -361,11 +364,11 @@ int os2Truncate( OsFile *id, i64 nByte ){
 ** Determine the current size of a file in bytes
 */
 int os2FileSize( OsFile *id, i64 *pSize ){
-  APIRET rc;
+  APIRET rc = NO_ERROR;
   FILESTATUS3 fsts3FileInfo;
   memset(&fsts3FileInfo, 0, sizeof(fsts3FileInfo));
   assert( id!=0 );
-  SimulateIOError( SQLITE_IOERR );
+  SimulateIOError( return SQLITE_IOERR );
   rc = DosQueryFileInfo( ((os2File*)id)->h, FIL_STANDARD, &fsts3FileInfo, sizeof(FILESTATUS3) );
   if( rc == NO_ERROR ){
     *pSize = fsts3FileInfo.cbFile;
@@ -453,7 +456,7 @@ int sqlite3Os2IsDirWritable( char *zDirname ){
 */
 int os2Lock( OsFile *id, int locktype ){
   APIRET rc = SQLITE_OK;    /* Return code from subroutines */
-  APIRET res = 1;           /* Result of a windows lock call */
+  APIRET res = NO_ERROR;    /* Result of an OS/2 lock call */
   int newLocktype;       /* Set id->locktype to this value before exiting */
   int gotPendingLock = 0;/* True if we acquired a PENDING lock this time */
   FILELOCK  LockArea,
@@ -583,7 +586,7 @@ int os2Lock( OsFile *id, int locktype ){
 ** non-zero, otherwise zero.
 */
 int os2CheckReservedLock( OsFile *id ){
-  APIRET rc;
+  APIRET rc = NO_ERROR;
   os2File *pFile = (os2File*)id;
   assert( pFile!=0 );
   if( pFile->locktype>=RESERVED_LOCK ){
@@ -780,7 +783,7 @@ int sqlite3Os2RandomSeed( char *zBuf ){
   ** in the random seed.
   **
   ** When testing, initializing zBuf[] to zero is all we do.  That means
-  ** that we always use the same random number sequence.* This makes the
+  ** that we always use the same random number sequence. This makes the
   ** tests repeatable.
   */
   memset( zBuf, 0, 256 );

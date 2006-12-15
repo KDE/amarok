@@ -57,17 +57,21 @@
 ** working correctly.  This variable has no function other than to
 ** help verify the correct operation of the library.
 */
+#ifdef SQLITE_TEST
 int sqlite3_search_count = 0;
+#endif
 
 /*
 ** When this global variable is positive, it gets decremented once before
-** each instruction in the VDBE.  When reaches zero, the SQLITE_Interrupt
-** of the db.flags field is set in order to simulate and interrupt.
+** each instruction in the VDBE.  When reaches zero, the u1.isInterrupted
+** field of the sqlite3 structure is set in order to simulate and interrupt.
 **
 ** This facility is used for testing purposes only.  It does not function
 ** in an ordinary build.
 */
+#ifdef SQLITE_TEST
 int sqlite3_interrupt_count = 0;
+#endif
 
 /*
 ** The next global variable is incremented each type the OP_Sort opcode
@@ -76,7 +80,9 @@ int sqlite3_interrupt_count = 0;
 ** has no function other than to help verify the correct operation of the
 ** library.
 */
+#ifdef SQLITE_TEST
 int sqlite3_sort_count = 0;
+#endif
 
 /*
 ** Release the memory associated with the given stack level.  This
@@ -180,7 +186,7 @@ static Cursor *allocateCursor(Vdbe *p, int iCur, int iDb){
   Cursor *pCx;
   assert( iCur<p->nCursor );
   if( p->apCsr[iCur] ){
-    sqlite3VdbeFreeCursor(p->apCsr[iCur]);
+    sqlite3VdbeFreeCursor(p, p->apCsr[iCur]);
   }
   p->apCsr[iCur] = pCx = sqliteMalloc( sizeof(Cursor) );
   if( pCx ){
@@ -376,7 +382,7 @@ __inline__ unsigned long long int hwtime(void){
 ** flag on jump instructions, we get a (small) speed improvement.
 */
 #define CHECK_FOR_INTERRUPT \
-   if( db->flags & SQLITE_Interrupt ) goto abort_due_to_interrupt;
+   if( db->u1.isInterrupted ) goto abort_due_to_interrupt;
 
 
 /*
@@ -2640,9 +2646,9 @@ case OP_OpenWrite: {       /* no-push */
   break;
 }
 
-/* Opcode: OpenVirtual P1 P2 P3
+/* Opcode: OpenEphemeral P1 P2 P3
 **
-** Open a new cursor P1 to a transient or virtual table.
+** Open a new cursor P1 to a transient table.
 ** The cursor is always opened read/write even if 
 ** the main database is read-only.  The transient or virtual
 ** table is deleted automatically when the cursor is closed.
@@ -2651,8 +2657,14 @@ case OP_OpenWrite: {       /* no-push */
 ** The cursor points to a BTree table if P3==0 and to a BTree index
 ** if P3 is not 0.  If P3 is not NULL, it points to a KeyInfo structure
 ** that defines the format of keys in the index.
+**
+** This opcode was once called OpenTemp.  But that created
+** confusion because the term "temp table", might refer either
+** to a TEMP table at the SQL level, or to a table opened by
+** this opcode.  Then this opcode was call OpenVirtual.  But
+** that created confusion with the whole virtual-table idea.
 */
-case OP_OpenVirtual: {       /* no-push */
+case OP_OpenEphemeral: {       /* no-push */
   int i = pOp->p1;
   Cursor *pCx;
   assert( i>=0 );
@@ -2727,7 +2739,7 @@ case OP_OpenPseudo: {       /* no-push */
 case OP_Close: {       /* no-push */
   int i = pOp->p1;
   if( i>=0 && i<p->nCursor ){
-    sqlite3VdbeFreeCursor(p->apCsr[i]);
+    sqlite3VdbeFreeCursor(p, p->apCsr[i]);
     p->apCsr[i] = 0;
   }
   break;
@@ -2818,7 +2830,9 @@ case OP_MoveGt: {       /* no-push */
     pC->deferredMoveto = 0;
     pC->cacheStatus = CACHE_STALE;
     *pC->pIncrKey = 0;
+#ifdef SQLITE_TEST
     sqlite3_search_count++;
+#endif
     if( oc==OP_MoveGe || oc==OP_MoveGt ){
       if( res<0 ){
         rc = sqlite3BtreeNext(pC->pCursor, &res);
@@ -2966,7 +2980,7 @@ case OP_IsUnique: {        /* no-push */
   R = pTos->i;
   assert( (pTos->flags & MEM_Dyn)==0 );
   pTos--;
-  assert( i>=0 && i<=p->nCursor );
+  assert( i>=0 && i<p->nCursor );
   pCx = p->apCsr[i];
   assert( pCx!=0 );
   pCrsr = pCx->pCursor;
@@ -3262,6 +3276,10 @@ case OP_NewRowid: {
 ** incremented (otherwise not).  If the OPFLAG_LASTROWID flag of P2 is set,
 ** then rowid is stored for subsequent return by the
 ** sqlite3_last_insert_rowid() function (otherwise it's unmodified).
+**
+** Parameter P3 may point to a string containing the table-name, or
+** may be NULL. If it is not NULL, then the update-hook 
+** (sqlite3.xUpdateCallback) is invoked following a successful insert.
 **
 ** This instruction only works on tables.  The equivalent instruction
 ** for indices is OP_IdxInsert.
@@ -3572,8 +3590,10 @@ case OP_Last: {        /* no-push */
 ** correctly optimizing out sorts.
 */
 case OP_Sort: {        /* no-push */
+#ifdef SQLITE_TEST
   sqlite3_sort_count++;
   sqlite3_search_count--;
+#endif
   /* Fall through into OP_Rewind */
 }
 /* Opcode: Rewind P1 P2 *
@@ -3646,7 +3666,9 @@ case OP_Next: {        /* no-push */
     }
     if( res==0 ){
       pc = pOp->p2 - 1;
+#ifdef SQLITE_TEST
       sqlite3_search_count++;
+#endif
     }
   }else{
     pC->nullRow = 1;
@@ -3884,19 +3906,31 @@ case OP_IdxIsNull: {        /* no-push */
 */
 case OP_Destroy: {
   int iMoved;
-  if( db->activeVdbeCnt>1 ){
+  Vdbe *pVdbe;
+  int iCnt;
+#ifndef SQLITE_OMIT_VIRTUALTABLE
+  iCnt = 0;
+  for(pVdbe=db->pVdbe; pVdbe; pVdbe=pVdbe->pNext){
+    if( pVdbe->magic==VDBE_MAGIC_RUN && pVdbe->inVtabMethod<2 && pVdbe->pc>=0 ){
+      iCnt++;
+    }
+  }
+#else
+  iCnt = db->activeVdbeCnt;
+#endif
+  if( iCnt>1 ){
     rc = SQLITE_LOCKED;
   }else{
-    assert( db->activeVdbeCnt==1 );
+    assert( iCnt==1 );
     rc = sqlite3BtreeDropTable(db->aDb[pOp->p2].pBt, pOp->p1, &iMoved);
     pTos++;
     pTos->flags = MEM_Int;
     pTos->i = iMoved;
-  #ifndef SQLITE_OMIT_AUTOVACUUM
+#ifndef SQLITE_OMIT_AUTOVACUUM
     if( rc==SQLITE_OK && iMoved!=0 ){
       sqlite3RootPageMoved(&db->aDb[pOp->p2], iMoved, pOp->p1);
     }
-  #endif
+#endif
   }
   break;
 }
@@ -4016,16 +4050,18 @@ case OP_ParseSchema: {        /* no-push */
   if( !DbHasProperty(db, iDb, DB_SchemaLoaded) ) break;
   zMaster = SCHEMA_TABLE(iDb);
   initData.db = db;
+  initData.iDb = pOp->p1;
   initData.pzErrMsg = &p->zErrMsg;
   zSql = sqlite3MPrintf(
-     "SELECT name, rootpage, sql, %d FROM '%q'.%s WHERE %s",
-     pOp->p1, db->aDb[iDb].zName, zMaster, pOp->p3);
+     "SELECT name, rootpage, sql FROM '%q'.%s WHERE %s",
+     db->aDb[iDb].zName, zMaster, pOp->p3);
   if( zSql==0 ) goto no_mem;
   sqlite3SafetyOff(db);
   assert( db->init.busy==0 );
   db->init.busy = 1;
   assert( !sqlite3MallocFailed() );
   rc = sqlite3_exec(db, zSql, sqlite3InitCallback, &initData, 0);
+  if( rc==SQLITE_ABORT ) rc = initData.rc;
   sqliteFree(zSql);
   db->init.busy = 0;
   sqlite3SafetyOn(db);
@@ -4464,6 +4500,7 @@ case OP_AggFinal: {        /* no-push */
 }
 
 
+#ifndef SQLITE_OMIT_VACUUM
 /* Opcode: Vacuum * * *
 **
 ** Vacuum the entire database.  This opcode will cause other virtual
@@ -4476,6 +4513,7 @@ case OP_Vacuum: {        /* no-push */
   if( sqlite3SafetyOn(db) ) goto abort_due_to_misuse;
   break;
 }
+#endif
 
 /* Opcode: Expire P1 * *
 **
@@ -4525,7 +4563,316 @@ case OP_TableLock: {        /* no-push */
   }
   break;
 }
-#endif /* SHARED_OMIT_SHARED_CACHE */
+#endif /* SQLITE_OMIT_SHARED_CACHE */
+
+#ifndef SQLITE_OMIT_VIRTUALTABLE
+/* Opcode: VBegin * * P3
+**
+** P3 a pointer to an sqlite3_vtab structure. Call the xBegin method 
+** for that table.
+*/
+case OP_VBegin: {   /* no-push */
+  rc = sqlite3VtabBegin(db, (sqlite3_vtab *)pOp->p3);
+  break;
+}
+#endif /* SQLITE_OMIT_VIRTUALTABLE */
+
+#ifndef SQLITE_OMIT_VIRTUALTABLE
+/* Opcode: VCreate P1 * P3
+**
+** P3 is the name of a virtual table in database P1. Call the xCreate method
+** for that table.
+*/
+case OP_VCreate: {   /* no-push */
+  rc = sqlite3VtabCallCreate(db, pOp->p1, pOp->p3, &p->zErrMsg);
+  break;
+}
+#endif /* SQLITE_OMIT_VIRTUALTABLE */
+
+#ifndef SQLITE_OMIT_VIRTUALTABLE
+/* Opcode: VDestroy P1 * P3
+**
+** P3 is the name of a virtual table in database P1.  Call the xDestroy method
+** of that table.
+*/
+case OP_VDestroy: {   /* no-push */
+  p->inVtabMethod = 2;
+  rc = sqlite3VtabCallDestroy(db, pOp->p1, pOp->p3);
+  p->inVtabMethod = 0;
+  break;
+}
+#endif /* SQLITE_OMIT_VIRTUALTABLE */
+
+#ifndef SQLITE_OMIT_VIRTUALTABLE
+/* Opcode: VOpen P1 * P3
+**
+** P3 is a pointer to a virtual table object, an sqlite3_vtab structure.
+** P1 is a cursor number.  This opcode opens a cursor to the virtual
+** table and stores that cursor in P1.
+*/
+case OP_VOpen: {   /* no-push */
+  Cursor *pCur = 0;
+  sqlite3_vtab_cursor *pVtabCursor = 0;
+
+  sqlite3_vtab *pVtab = (sqlite3_vtab *)(pOp->p3);
+  sqlite3_module *pModule = (sqlite3_module *)pVtab->pModule;
+
+  assert(pVtab && pModule);
+  if( sqlite3SafetyOff(db) ) goto abort_due_to_misuse;
+  rc = pModule->xOpen(pVtab, &pVtabCursor);
+  if( sqlite3SafetyOn(db) ) goto abort_due_to_misuse;
+  if( SQLITE_OK==rc ){
+    /* Initialise sqlite3_vtab_cursor base class */
+    pVtabCursor->pVtab = pVtab;
+
+    /* Initialise vdbe cursor object */
+    pCur = allocateCursor(p, pOp->p1, -1);
+    if( pCur ){
+      pCur->pVtabCursor = pVtabCursor;
+      pCur->pModule = pVtabCursor->pVtab->pModule;
+    }else{
+      pModule->xClose(pVtabCursor);
+    }
+  }
+  break;
+}
+#endif /* SQLITE_OMIT_VIRTUALTABLE */
+
+#ifndef SQLITE_OMIT_VIRTUALTABLE
+/* Opcode: VFilter P1 P2 P3
+**
+** P1 is a cursor opened using VOpen.  P2 is an address to jump to if
+** the filtered result set is empty.
+**
+** P3 is either NULL or a string that was generated by the xBestIndex
+** method of the module.  The interpretation of the P3 string is left
+** to the module implementation.
+**
+** This opcode invokes the xFilter method on the virtual table specified
+** by P1.  The integer query plan parameter to xFilter is the top of the
+** stack.  Next down on the stack is the argc parameter.  Beneath the
+** next of stack are argc additional parameters which are passed to
+** xFilter as argv. The topmost parameter (i.e. 3rd element popped from
+** the stack) becomes argv[argc-1] when passed to xFilter.
+**
+** The integer query plan parameter, argc, and all argv stack values 
+** are popped from the stack before this instruction completes.
+**
+** A jump is made to P2 if the result set after filtering would be 
+** empty.
+*/
+case OP_VFilter: {   /* no-push */
+  int nArg;
+
+  const sqlite3_module *pModule;
+
+  Cursor *pCur = p->apCsr[pOp->p1];
+  assert( pCur->pVtabCursor );
+  pModule = pCur->pVtabCursor->pVtab->pModule;
+
+  /* Grab the index number and argc parameters off the top of the stack. */
+  assert( (&pTos[-1])>=p->aStack );
+  assert( (pTos[0].flags&MEM_Int)!=0 && pTos[-1].flags==MEM_Int );
+  nArg = pTos[-1].i;
+
+  /* Invoke the xFilter method if one is defined. */
+  if( pModule->xFilter ){
+    int res;
+    int i;
+    Mem **apArg = p->apArg;
+    for(i = 0; i<nArg; i++){
+      apArg[i] = &pTos[i+1-2-nArg];
+      storeTypeInfo(apArg[i], 0);
+    }
+
+    if( sqlite3SafetyOff(db) ) goto abort_due_to_misuse;
+    p->inVtabMethod = 1;
+    rc = pModule->xFilter(pCur->pVtabCursor, pTos->i, pOp->p3, nArg, apArg);
+    p->inVtabMethod = 0;
+    if( rc==SQLITE_OK ){
+      res = pModule->xEof(pCur->pVtabCursor);
+    }
+    if( sqlite3SafetyOn(db) ) goto abort_due_to_misuse;
+
+    if( res ){
+      pc = pOp->p2 - 1;
+    }
+  }
+
+  /* Pop the index number, argc value and parameters off the stack */
+  popStack(&pTos, 2+nArg);
+  break;
+}
+#endif /* SQLITE_OMIT_VIRTUALTABLE */
+
+#ifndef SQLITE_OMIT_VIRTUALTABLE
+/* Opcode: VRowid P1 * *
+**
+** Push an integer onto the stack which is the rowid of
+** the virtual-table that the P1 cursor is pointing to.
+*/
+case OP_VRowid: {
+  const sqlite3_module *pModule;
+
+  Cursor *pCur = p->apCsr[pOp->p1];
+  assert( pCur->pVtabCursor );
+  pModule = pCur->pVtabCursor->pVtab->pModule;
+  if( pModule->xRowid==0 ){
+    sqlite3SetString(&p->zErrMsg, "Unsupported module operation: xRowid", 0);
+    rc = SQLITE_ERROR;
+  } else {
+    sqlite_int64 iRow;
+
+    if( sqlite3SafetyOff(db) ) goto abort_due_to_misuse;
+    rc = pModule->xRowid(pCur->pVtabCursor, &iRow);
+    if( sqlite3SafetyOn(db) ) goto abort_due_to_misuse;
+
+    pTos++;
+    pTos->flags = MEM_Int;
+    pTos->i = iRow;
+  }
+
+  break;
+}
+#endif /* SQLITE_OMIT_VIRTUALTABLE */
+
+#ifndef SQLITE_OMIT_VIRTUALTABLE
+/* Opcode: VColumn P1 P2 *
+**
+** Push onto the stack the value of the P2-th column of
+** the row of the virtual-table that the P1 cursor is pointing to.
+*/
+case OP_VColumn: {
+  const sqlite3_module *pModule;
+
+  Cursor *pCur = p->apCsr[pOp->p1];
+  assert( pCur->pVtabCursor );
+  pModule = pCur->pVtabCursor->pVtab->pModule;
+  if( pModule->xColumn==0 ){
+    sqlite3SetString(&p->zErrMsg, "Unsupported module operation: xColumn", 0);
+    rc = SQLITE_ERROR;
+  } else {
+    sqlite3_context sContext;
+    memset(&sContext, 0, sizeof(sContext));
+    sContext.s.flags = MEM_Null;
+    if( sqlite3SafetyOff(db) ) goto abort_due_to_misuse;
+    rc = pModule->xColumn(pCur->pVtabCursor, &sContext, pOp->p2);
+
+    /* Copy the result of the function to the top of the stack. We
+    ** do this regardless of whether or not an error occured to ensure any
+    ** dynamic allocation in sContext.s (a Mem struct) is  released.
+    */
+    sqlite3VdbeChangeEncoding(&sContext.s, encoding);
+    pTos++;
+    pTos->flags = 0;
+    sqlite3VdbeMemMove(pTos, &sContext.s);
+
+    if( sqlite3SafetyOn(db) ) goto abort_due_to_misuse;
+  }
+  
+  break;
+}
+#endif /* SQLITE_OMIT_VIRTUALTABLE */
+
+#ifndef SQLITE_OMIT_VIRTUALTABLE
+/* Opcode: VNext P1 P2 *
+**
+** Advance virtual table P1 to the next row in its result set and
+** jump to instruction P2.  Or, if the virtual table has reached
+** the end of its result set, then fall through to the next instruction.
+*/
+case OP_VNext: {   /* no-push */
+  const sqlite3_module *pModule;
+  int res = 0;
+
+  Cursor *pCur = p->apCsr[pOp->p1];
+  assert( pCur->pVtabCursor );
+  pModule = pCur->pVtabCursor->pVtab->pModule;
+  if( pModule->xNext==0 ){
+    sqlite3SetString(&p->zErrMsg, "Unsupported module operation: xNext", 0);
+    rc = SQLITE_ERROR;
+  } else {
+    /* Invoke the xNext() method of the module. There is no way for the
+    ** underlying implementation to return an error if one occurs during
+    ** xNext(). Instead, if an error occurs, true is returned (indicating that 
+    ** data is available) and the error code returned when xColumn or
+    ** some other method is next invoked on the save virtual table cursor.
+    */
+    if( sqlite3SafetyOff(db) ) goto abort_due_to_misuse;
+    p->inVtabMethod = 1;
+    rc = pModule->xNext(pCur->pVtabCursor);
+    p->inVtabMethod = 0;
+    if( rc==SQLITE_OK ){
+      res = pModule->xEof(pCur->pVtabCursor);
+    }
+    if( sqlite3SafetyOn(db) ) goto abort_due_to_misuse;
+
+    if( !res ){
+      /* If there is data, jump to P2 */
+      pc = pOp->p2 - 1;
+    }
+  }
+
+  break;
+}
+#endif /* SQLITE_OMIT_VIRTUALTABLE */
+
+
+#ifndef SQLITE_OMIT_VIRTUALTABLE
+/* Opcode: VUpdate P1 P2 P3
+**
+** P3 is a pointer to a virtual table object, an sqlite3_vtab structure.
+** This opcode invokes the corresponding xUpdate method. P2 values
+** are taken from the stack to pass to the xUpdate invocation. The
+** value on the top of the stack corresponds to the p2th element 
+** of the argv array passed to xUpdate.
+**
+** The xUpdate method will do a DELETE or an INSERT or both.
+** The argv[0] element (which corresponds to the P2-th element down
+** on the stack) is the rowid of a row to delete.  If argv[0] is
+** NULL then no deletion occurs.  The argv[1] element is the rowid
+** of the new row.  This can be NULL to have the virtual table
+** select the new rowid for itself.  The higher elements in the
+** stack are the values of columns in the new row.
+**
+** If P2==1 then no insert is performed.  argv[0] is the rowid of
+** a row to delete.
+**
+** P1 is a boolean flag. If it is set to true and the xUpdate call
+** is successful, then the value returned by sqlite3_last_insert_rowid() 
+** is set to the value of the rowid for the row just inserted.
+*/
+case OP_VUpdate: {   /* no-push */
+  sqlite3_vtab *pVtab = (sqlite3_vtab *)(pOp->p3);
+  sqlite3_module *pModule = (sqlite3_module *)pVtab->pModule;
+  int nArg = pOp->p2;
+  assert( pOp->p3type==P3_VTAB );
+  if( pModule->xUpdate==0 ){
+    sqlite3SetString(&p->zErrMsg, "read-only table", 0);
+    rc = SQLITE_ERROR;
+  }else{
+    int i;
+    sqlite_int64 rowid;
+    Mem **apArg = p->apArg;
+    Mem *pX = &pTos[1-nArg];
+    for(i = 0; i<nArg; i++, pX++){
+      storeTypeInfo(pX, 0);
+      apArg[i] = pX;
+    }
+    if( sqlite3SafetyOff(db) ) goto abort_due_to_misuse;
+    sqlite3VtabLock(pVtab);
+    rc = pModule->xUpdate(pVtab, nArg, apArg, &rowid);
+    sqlite3VtabUnlock(pVtab);
+    if( sqlite3SafetyOn(db) ) goto abort_due_to_misuse;
+    if( pOp->p1 && rc==SQLITE_OK ){
+      assert( nArg>1 && apArg[0] && (apArg[0]->flags&MEM_Null) );
+      db->lastRowid = rowid;
+    }
+  }
+  popStack(&pTos, nArg);
+  break;
+}
+#endif /* SQLITE_OMIT_VIRTUALTABLE */
 
 /* An other opcode is illegal...
 */
@@ -4563,8 +4910,12 @@ default: {
     ** the evaluator loop.  So we can leave it out when NDEBUG is defined.
     */
 #ifndef NDEBUG
-    /* Sanity checking on the top element of the stack */
-    if( pTos>=p->aStack ){
+    /* Sanity checking on the top element of the stack. If the previous
+    ** instruction was VNoChange, then the flags field of the top
+    ** of the stack is set to 0. This is technically invalid for a memory
+    ** cell, so avoid calling MemSanity() in this case.
+    */
+    if( pTos>=p->aStack && pTos->flags ){
       sqlite3VdbeMemSanity(pTos);
     }
     assert( pc>=-1 && pc<p->nOp );
@@ -4637,8 +4988,7 @@ abort_due_to_error:
   ** flag.
   */
 abort_due_to_interrupt:
-  assert( db->flags & SQLITE_Interrupt );
-  db->flags &= ~SQLITE_Interrupt;
+  assert( db->u1.isInterrupted );
   if( db->magic!=SQLITE_MAGIC_BUSY ){
     rc = SQLITE_MISUSE;
   }else{

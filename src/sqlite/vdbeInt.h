@@ -83,6 +83,8 @@ struct Cursor {
   KeyInfo *pKeyInfo;    /* Info about index keys needed by index cursors */
   int nField;           /* Number of fields in the header */
   i64 seqCount;         /* Sequence counter */
+  sqlite3_vtab_cursor *pVtabCursor;  /* The cursor for a virtual table */
+  const sqlite3_module *pModule;     /* Module for cursor pVtabCursor */
 
   /* Cached information about the header for the data record that the
   ** cursor is currently pointing to.  Only valid if cacheValid is true.
@@ -268,6 +270,14 @@ struct Context {
 **
 ** The "sqlite3_stmt" structure pointer that is returned by sqlite3_compile()
 ** is really a pointer to an instance of this structure.
+**
+** The Vdbe.inVtabMethod variable is set to non-zero for the duration of
+** any virtual table method invocations made by the vdbe program. It is
+** set to 2 for xDestroy method calls and 1 for all other methods. This
+** variable is used for two purposes: to allow xDestroy methods to execute
+** "DROP TABLE" statements and to prevent some nasty side effects of
+** malloc failure when SQLite is invoked recursively by a virtual table 
+** method function.
 */
 struct Vdbe {
   sqlite3 *db;        /* The whole database */
@@ -315,6 +325,7 @@ struct Vdbe {
   u8 aborted;             /* True if ROLLBACK in another VM causes an abort */
   u8 expired;             /* True if the VM needs to be recompiled */
   u8 minWriteFileFormat;  /* Minimum file format for writable database files */
+  u8 inVtabMethod;        /* See comments above */
   int nChange;            /* Number of db changes made since last reset */
   i64 startTime;          /* Time when query started - used for profiling */
 #ifdef SQLITE_SSE
@@ -334,7 +345,7 @@ struct Vdbe {
 /*
 ** Function prototypes
 */
-void sqlite3VdbeFreeCursor(Cursor*);
+void sqlite3VdbeFreeCursor(Vdbe *, Cursor*);
 void sqliteVdbePopStack(Vdbe*,int);
 int sqlite3VdbeCursorMoveto(Cursor*);
 #if defined(SQLITE_DEBUG) || defined(VDBE_PROFILE)

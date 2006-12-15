@@ -482,12 +482,19 @@ void sqlite3Pragma(
       sqlite3VdbeSetColName(v, 5, COLNAME_NAME, "pk", P3_STATIC);
       sqlite3ViewGetColumnNames(pParse, pTab);
       for(i=0, pCol=pTab->aCol; i<pTab->nCol; i++, pCol++){
+        const Token *pDflt;
+        static const Token noDflt =  { (unsigned char*)"", 0, 0 };
         sqlite3VdbeAddOp(v, OP_Integer, i, 0);
         sqlite3VdbeOp3(v, OP_String8, 0, 0, pCol->zName, 0);
         sqlite3VdbeOp3(v, OP_String8, 0, 0,
            pCol->zType ? pCol->zType : "", 0);
         sqlite3VdbeAddOp(v, OP_Integer, pCol->notNull, 0);
-        sqlite3ExprCode(pParse, pCol->pDflt);
+        pDflt = pCol->pDflt ? &pCol->pDflt->span : &noDflt;
+        if( pDflt->z ){
+          sqlite3VdbeOp3(v, OP_String8, 0, 0, (char*)pDflt->z, pDflt->n);
+        }else{
+          sqlite3VdbeAddOp(v, OP_Null, 0, 0);
+        }
         sqlite3VdbeAddOp(v, OP_Integer, pCol->isPrimKey, 0);
         sqlite3VdbeAddOp(v, OP_Callback, 6, 0);
       }
@@ -780,7 +787,7 @@ void sqlite3Pragma(
   ** useful if invoked immediately after the main database i
   */
   if( sqlite3StrICmp(zLeft, "encoding")==0 ){
-    static struct EncName {
+    static const struct EncName {
       char *zName;
       u8 enc;
     } encnames[] = {
@@ -790,12 +797,11 @@ void sqlite3Pragma(
       { "UTF16le",  SQLITE_UTF16LE     },
       { "UTF-16be", SQLITE_UTF16BE     },
       { "UTF16be",  SQLITE_UTF16BE     },
-      { "UTF-16",   0 /* Filled in at run-time */ },
-      { "UTF16",    0 /* Filled in at run-time */ },
+      { "UTF-16",   0                  }, /* SQLITE_UTF16NATIVE */
+      { "UTF16",    0                  }, /* SQLITE_UTF16NATIVE */
       { 0, 0 }
     };
-    struct EncName *pEnc;
-    encnames[6].enc = encnames[7].enc = SQLITE_UTF16NATIVE;
+    const struct EncName *pEnc;
     if( !zRight ){    /* "PRAGMA encoding" */
       if( sqlite3ReadSchema(pParse) ) goto pragma_out;
       sqlite3VdbeSetNumCols(v, 1);
@@ -820,7 +826,7 @@ void sqlite3Pragma(
       ){
         for(pEnc=&encnames[0]; pEnc->zName; pEnc++){
           if( 0==sqlite3StrICmp(zRight, pEnc->zName) ){
-            ENC(pParse->db) = pEnc->enc;
+            ENC(pParse->db) = pEnc->enc ? pEnc->enc : SQLITE_UTF16NATIVE;
             break;
           }
         }
@@ -940,6 +946,22 @@ void sqlite3Pragma(
   if( sqlite3StrICmp(zLeft, "key")==0 ){
     sqlite3_key(db, zRight, strlen(zRight));
   }else
+#endif
+#if SQLITE_HAS_CODEC || defined(SQLITE_ENABLE_CEROD)
+  if( sqlite3StrICmp(zLeft, "activate_extensions")==0 ){
+#if SQLITE_HAS_CODEC
+    if( sqlite3StrNICmp(zRight, "see-", 4)==0 ){
+      extern void sqlite3_activate_see(const char*);
+      sqlite3_activate_see(&zRight[4]);
+    }
+#endif
+#ifdef SQLITE_ENABLE_CEROD
+    if( sqlite3StrNICmp(zRight, "cerod-", 6)==0 ){
+      extern void sqlite3_activate_cerod(const char*);
+      sqlite3_activate_cerod(&zRight[6]);
+    }
+#endif
+  }
 #endif
 
   {}

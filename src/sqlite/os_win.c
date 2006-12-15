@@ -495,7 +495,8 @@ int sqlite3WinDelete(const char *zFilename){
   if( zWide ){
     do{
       rc = DeleteFileW(zWide);
-    }while( rc==0 && cnt++ < MX_DELETION_ATTEMPTS && (Sleep(100), 1) );
+    }while( rc==0 && GetFileAttributesW(zWide)!=0xffffffff 
+            && cnt++ < MX_DELETION_ATTEMPTS && (Sleep(100), 1) );
     sqliteFree(zWide);
   }else{
 #if OS_WINCE
@@ -503,11 +504,12 @@ int sqlite3WinDelete(const char *zFilename){
 #else
     do{
       rc = DeleteFileA(zFilename);
-    }while( rc==0 && cnt++ < MX_DELETION_ATTEMPTS && (Sleep(100), 1) );
+    }while( rc==0 && GetFileAttributesA(zFilename)!=0xffffffff
+            && cnt++ < MX_DELETION_ATTEMPTS && (Sleep(100), 1) );
 #endif
   }
   TRACE2("DELETE \"%s\"\n", zFilename);
-  return rc==0 ? SQLITE_OK : SQLITE_IOERR;
+  return rc!=0 ? SQLITE_OK : SQLITE_IOERR;
 }
 
 /*
@@ -864,7 +866,7 @@ static int winClose(OsFile **pId){
 static int winRead(OsFile *id, void *pBuf, int amt){
   DWORD got;
   assert( id!=0 );
-  SimulateIOError(SQLITE_IOERR);
+  SimulateIOError(return SQLITE_IOERR);
   TRACE3("READ %d lock=%d\n", ((winFile*)id)->h, ((winFile*)id)->locktype);
   if( !ReadFile(((winFile*)id)->h, pBuf, amt, &got, 0) ){
     got = 0;
@@ -884,8 +886,8 @@ static int winWrite(OsFile *id, const void *pBuf, int amt){
   int rc = 0;
   DWORD wrote;
   assert( id!=0 );
-  SimulateIOError(SQLITE_IOERR);
-  SimulateDiskfullError;
+  SimulateIOError(return SQLITE_IOERR);
+  SimulateDiskfullError(return SQLITE_FULL);
   TRACE3("WRITE %d lock=%d\n", ((winFile*)id)->h, ((winFile*)id)->locktype);
   assert( amt>0 );
   while( amt>0 && (rc = WriteFile(((winFile*)id)->h, pBuf, amt, &wrote, 0))!=0
@@ -915,7 +917,7 @@ static int winSeek(OsFile *id, i64 offset){
   DWORD rc;
   assert( id!=0 );
 #ifdef SQLITE_TEST
-  if( offset ) SimulateDiskfullError
+  if( offset ) SimulateDiskfullError(return SQLITE_FULL);
 #endif
   SEEK(offset/1024 + 1);
   rc = SetFilePointer(((winFile*)id)->h, lowerBits, &upperBits, FILE_BEGIN);
@@ -944,7 +946,7 @@ static int winSync(OsFile *id, int dataOnly){
 ** than UNIX.
 */
 int sqlite3WinSyncDirectory(const char *zDirname){
-  SimulateIOError(SQLITE_IOERR);
+  SimulateIOError(return SQLITE_IOERR);
   return SQLITE_OK;
 }
 
@@ -955,7 +957,7 @@ static int winTruncate(OsFile *id, i64 nByte){
   LONG upperBits = nByte>>32;
   assert( id!=0 );
   TRACE3("TRUNCATE %d %lld\n", ((winFile*)id)->h, nByte);
-  SimulateIOError(SQLITE_IOERR);
+  SimulateIOError(return SQLITE_IOERR);
   SetFilePointer(((winFile*)id)->h, nByte, &upperBits, FILE_BEGIN);
   SetEndOfFile(((winFile*)id)->h);
   return SQLITE_OK;
@@ -967,7 +969,7 @@ static int winTruncate(OsFile *id, i64 nByte){
 static int winFileSize(OsFile *id, i64 *pSize){
   DWORD upperBits, lowerBits;
   assert( id!=0 );
-  SimulateIOError(SQLITE_IOERR);
+  SimulateIOError(return SQLITE_IOERR);
   lowerBits = GetFileSize(((winFile*)id)->h, &upperBits);
   *pSize = (((i64)upperBits)<<32) + lowerBits;
   return SQLITE_OK;

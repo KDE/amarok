@@ -245,7 +245,7 @@ int sqlite3VdbeMemTranslate(Mem *pMem, u8 desiredEnc){
   unsigned char *zIn;                   /* Input iterator */
   unsigned char *zTerm;                 /* End of input */
   unsigned char *z;                     /* Output iterator */
-  int c;
+  unsigned int c;
 
   assert( pMem->flags&MEM_Str );
   assert( pMem->enc!=desiredEnc );
@@ -462,8 +462,8 @@ char *sqlite3utf16to8(const void *z, int nByte){
   memset(&m, 0, sizeof(m));
   sqlite3VdbeMemSetStr(&m, z, nByte, SQLITE_UTF16NATIVE, SQLITE_STATIC);
   sqlite3VdbeChangeEncoding(&m, SQLITE_UTF8);
-  assert( m.flags & MEM_Term );
-  assert( m.flags & MEM_Str );
+  assert( (m.flags & MEM_Term)!=0 || sqlite3MallocFailed() );
+  assert( (m.flags & MEM_Str)!=0 || sqlite3MallocFailed() );
   return (m.flags & MEM_Dyn)!=0 ? m.z : sqliteStrDup(m.z);
 }
 
@@ -475,7 +475,7 @@ char *sqlite3utf16to8(const void *z, int nByte){
 ** in pZ (or up until the first pair of 0x00 bytes, whichever comes first).
 */
 int sqlite3utf16ByteLen(const void *zIn, int nChar){
-  int c = 1;
+  unsigned int c = 1;
   char const *z = zIn;
   int n = 0;
   if( SQLITE_UTF16NATIVE==SQLITE_UTF16BE ){
@@ -556,11 +556,11 @@ void sqlite3utf16Substr(
 ** characters in each encoding are inverses of each other.
 */
 void sqlite3utfSelfTest(){
-  int i;
+  unsigned int i;
   unsigned char zBuf[20];
   unsigned char *z;
   int n;
-  int c;
+  unsigned int c;
 
   for(i=0; i<0x00110000; i++){
     z = zBuf;
