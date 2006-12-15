@@ -169,6 +169,9 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         menu->clear();
         menu->insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), MakePlaylist );
         menu->insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), AppendToPlaylist );
+        menu->insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), i18n( "&Queue Track" ), QueueTrack );
+        menu->insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), i18n( "&Queue Tracks" ), QueueTracks );
+
         menu->insertItem( SmallIconSet( Amarok::icon( "save" ) ), i18n( "&Save as Playlist..." ), SavePlaylist );
         menu->insertSeparator();
 
@@ -423,6 +426,10 @@ FileBrowser::prepareContextMenu()
     const KFileItemList &items = *m_dir->selectedItems();
     static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( SavePlaylist,
         items.count() > 1 || ( items.count() == 1 && items.getFirst()->isDir() ) );
+    static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( QueueTrack,
+        items.count() == 1  );
+    static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( QueueTracks,
+        items.count() > 1 );
     static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( MediaDevice,
         MediaBrowser::isAvailable() );
     static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( MoveToCollection, !CollectionDB::instance()->isDirInCollection( url().path() ) );
@@ -445,6 +452,11 @@ FileBrowser::contextMenuActivated( int id )
 
     case AppendToPlaylist:
         Playlist::instance()->insertMedia( selectedItems() );
+        break;
+
+    case QueueTrack:
+    case QueueTracks:
+        Playlist::instance()->insertMedia( selectedItems(), Playlist::Queue );
         break;
 
     case EditTags:

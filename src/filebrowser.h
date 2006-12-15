@@ -52,7 +52,7 @@ class FileBrowser : public QVBox
 {
     Q_OBJECT
 
-    enum MenuId { MakePlaylist, SavePlaylist, MediaDevice, AppendToPlaylist, SelectAllFiles, BurnCd, MoveToCollection, CopyToCollection, OrganizeFiles, EditTags };
+    enum MenuId { MakePlaylist, SavePlaylist, MediaDevice, AppendToPlaylist, QueueTrack, QueueTracks, SelectAllFiles, BurnCd, MoveToCollection, CopyToCollection, OrganizeFiles, EditTags };
 
 public:
     FileBrowser( const char *name = 0, Medium *medium = 0 );
