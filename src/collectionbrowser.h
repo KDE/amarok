@@ -307,6 +307,7 @@ class CollectionView : public KListView, public DropProxyTarget
         QPixmap ipodDecrementIcon ( void );
 
         void setCompilation( const QString &album, bool compilation );
+        void setCompilation( const KURL::List &urls, bool compilation );
 
         /** Rebuild selections, viewport and expanded items after reloads */
         void cacheView();

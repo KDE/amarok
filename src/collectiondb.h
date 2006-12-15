@@ -394,6 +394,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         //album methods
         void checkCompilations( const QString &path, const bool temporary = false );
         QStringList setCompilation( const QString &album, const bool enabled, const bool updateView = true );
+        void setCompilation( const KURL::List &urls, bool enabled, bool updateView );
         QString albumSongCount( const QString &artist_id, const QString &album_id );
         bool albumIsCompilation( const QString &album_id );
         void sanitizeCompilations();

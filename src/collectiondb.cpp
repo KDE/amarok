@@ -4380,6 +4380,26 @@ CollectionDB::setCompilation( const QString &album, const bool enabled, const bo
     return URLsFromQuery( rs );
 }
 
+void
+CollectionDB::setCompilation( const KURL::List &urls, bool enabled, bool updateView )
+{
+    for ( KURL::List::const_iterator it = urls.begin(); it != urls.end(); ++it )
+    {
+        QString url( ( *it ).path() );
+
+        int deviceid = MountPointManager::instance()->getIdForUrl( url );
+        QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
+
+        query( QString( "UPDATE tags SET sampler = %1 WHERE tags.url = '%2' AND tags.deviceid = %3;" )
+                .arg( ( enabled ? boolT() : boolF() ), escapeString( rpath ), QString::number( deviceid ) ) );
+    }
+
+    // Update the Collection-Browser view,
+    // using QTimer to make sure we don't manipulate the GUI from a thread
+    if ( updateView )
+        QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
+}
+
 
 void
 CollectionDB::removeDirFromCollection( QString path )
