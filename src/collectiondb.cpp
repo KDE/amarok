@@ -200,9 +200,11 @@ INotify::doJob()
 //////////////////////////////////////////////////////////////////////////////////////////
 
 QMutex* CollectionDB::connectionMutex = new QMutex();
+QMutex* CollectionDB::itemCoverMapMutex = new QMutex();
 //we don't have to worry about this map leaking memory since ThreadWeaver limits the total
 //number of QThreads ever created
 QMap<QThread *, DbConnection *> *CollectionDB::threadConnections = new QMap<QThread *, DbConnection *>();
+QMap<QListViewItem*, CoverFetcher*> *CollectionDB::itemCoverMap = new QMap<QListViewItem*, CoverFetcher*>();
 
 CollectionDB* CollectionDB::instance()
 {
@@ -4858,7 +4860,7 @@ CollectionDB::timerEvent( QTimerEvent* )
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void
-CollectionDB::fetchCover( QWidget* parent, const QString& artist, const QString& album, bool noedit ) //SLOT
+CollectionDB::fetchCover( QWidget* parent, const QString& artist, const QString& album, bool noedit, QListViewItem* item ) //SLOT
 {
     #ifdef AMAZON_SUPPORT
     debug() << "Fetching cover for " << artist << " - " << album << endl;
@@ -4870,12 +4872,17 @@ CollectionDB::fetchCover( QWidget* parent, const QString& artist, const QString&
         fetcher = new CoverFetcher( parent, "", album );
     else
         fetcher = new CoverFetcher( parent, artist, album );
+    if( item )
+    {
+        itemCoverMapMutex->lock();
+        itemCoverMap->insert( item, fetcher );
+        itemCoverMapMutex->unlock();
+    }
     connect( fetcher, SIGNAL(result( CoverFetcher* )), SLOT(coverFetcherResult( CoverFetcher* )) );
     fetcher->setUserCanEditQuery( !noedit );
     fetcher->startFetch();
     #endif
 }
-
 
 void
 CollectionDB::scanMonitor()  //SLOT
@@ -4939,6 +4946,21 @@ CollectionDB::coverFetcherResult( CoverFetcher *fetcher )
         setAlbumImage( fetcher->artist(), fetcher->album(), fetcher->image(), fetcher->amazonURL(), fetcher->asin() );
         emit coverFetched( fetcher->artist(), fetcher->album() );
     }
+
+    //check the validity of the CollectionItem as it may have been deleted e.g. by a
+    //collection scan while fetching the cover
+    itemCoverMapMutex->lock();
+    QMap<QListViewItem*, CoverFetcher*>::Iterator it;
+    for( it = itemCoverMap->begin(); it != itemCoverMap->end(); ++it )
+    {
+        if( it.data() == fetcher )
+        {
+            if( it.key()->isOpen() )
+                static_cast<CollectionItem*>(it.key())->setPixmap( 0, QPixmap() );
+            itemCoverMap->erase( it );
+        }
+    }
+    itemCoverMapMutex->unlock();
 }
 
 /**

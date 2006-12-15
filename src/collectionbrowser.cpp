@@ -76,6 +76,8 @@ using namespace CollectionBrowserIds;
 
 namespace Amarok { extern KConfig *config( const QString& ); }
 
+class CoverFetcher;
+
 CollectionBrowser *CollectionBrowser::s_instance = 0;
 
 CollectionBrowser::CollectionBrowser( const char* name )
@@ -1606,7 +1608,7 @@ CollectionView::fetchCover() //SLOT
             .arg( CollectionDB::instance()->escapeString( album ) ) );
 
     if ( !values.isEmpty() )
-        CollectionDB::instance()->fetchCover( this, values[0], album, false );
+        CollectionDB::instance()->fetchCover( this, values[0], album, false, static_cast<QListViewItem*>(item) );
     #endif
 }
 
@@ -1877,13 +1879,19 @@ CollectionView::safeClear()
     blockSignals( true );
     clearSelection();
 
+    QMap<QListViewItem*, CoverFetcher*> *itemCoverMap = CollectionDB::instance()->getItemCoverMap(); 
+    QMutex* itemCoverMapMutex = CollectionDB::instance()->getItemCoverMapMutex(); 
     QListViewItem *c = firstChild();
     QListViewItem *n;
+    itemCoverMapMutex->lock();
     while( c ) {
+        if( itemCoverMap->contains( c ) )
+            itemCoverMap->erase( c );
         n = c->nextSibling();
         delete c;
         c = n;
     }
+    itemCoverMapMutex->unlock();
     blockSignals( block );
     triggerUpdate();
 }

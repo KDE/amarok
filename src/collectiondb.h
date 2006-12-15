@@ -38,6 +38,7 @@ class MetaBundle;
 class OrganizeCollectionDialog;
 class PodcastChannelBundle;
 class PodcastEpisodeBundle;
+class QListViewItem;
 class Scrobbler;
 
 class DbConfig
@@ -459,6 +460,8 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         QString albumImage( const MetaBundle &trackInformation, const bool withShadow = false, uint width = 1, bool* embedded = 0 );
         QString albumImage( const uint artist_id, const uint album_id, const bool withShadow = false, uint width = 1, bool* embedded = 0 );
         QString albumImage( const QString &artist, const QString &album, const bool withShadow = false, uint width = 1, bool* embedded = 0 );
+        QMap<QListViewItem*, CoverFetcher*> * getItemCoverMap() { return itemCoverMap; }
+        QMutex * getItemCoverMapMutex() { return itemCoverMapMutex; }
 
         bool removeAlbumImage( const uint artist_id, const uint album_id );
         bool removeAlbumImage( const QString &artist, const QString &album );
@@ -503,7 +506,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         void timerEvent( QTimerEvent* e );
 
     public slots:
-        void fetchCover( QWidget* parent, const QString& artist, const QString& album, bool noedit );
+        void fetchCover( QWidget* parent, const QString& artist, const QString& album, bool noedit, QListViewItem* item = 0 );
         void scanMonitor();
         void startScan();
         void stopScan();
@@ -613,10 +616,12 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         bool m_monitor;
         bool m_autoScoring;
 
-        static QMutex *connectionMutex;
+        static QMap<QListViewItem*, CoverFetcher*> *itemCoverMap;
+        static QMutex *itemCoverMapMutex;
         QImage m_noCover;
 
         static QMap<QThread *, DbConnection *> *threadConnections;
+        static QMutex *connectionMutex;
         DbConnection::DbConnectionType m_dbConnType;
         DbConfig *m_dbConfig;
 
