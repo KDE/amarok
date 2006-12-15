@@ -472,7 +472,7 @@ void MagnatuneBrowser::processRedownload( )
     m_redownloadHandler->showRedownloadDialog();
 }
 
-void MagnatuneBrowser::purchaseCompleted( bool success )
+void MagnatuneBrowser::purchaseCompleted( bool /*success*/ )
 {
 
     if ( m_purchaseHandler != 0 )
