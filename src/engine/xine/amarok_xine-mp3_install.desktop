@@ -1,4 +1,5 @@
 [Desktop Entry]
+Encoding=UTF-8
 Type=Service
 ServiceTypes=Amarok/CodecInstall
 X-KDE-Amarok-codec=mp3

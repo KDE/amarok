@@ -1,6 +1,7 @@
 [Desktop Entry]
+Encoding=UTF-8
 ServiceTypes=text/html,text/xml,application/xml,text/rss,text/rdf
-Actions=addAsPodcast
+Actions=addAsPodcast;
 [Desktop Action addAsPodcast]
 Name=Add as Podcast to Amarok
 Name[af]=Voeg as Podcast by Amarok by
