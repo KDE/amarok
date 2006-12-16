@@ -33,6 +33,8 @@ VERSION 1.4.5
       you move and rename them.
 
   CHANGES:
+    * Save media device transfer queue when adding items or after transfers.
+      (BR 138885)
     * Upgraded internal SQLite to 3.3.8.
     * MTP media devices are not automatically connected on start-up. This 
       should solve slow loading times for those with large collections on an 

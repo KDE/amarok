@@ -2327,6 +2327,8 @@ MediaQueue::URLsAdded()
             && m_parent->currentDevice()->asynchronousTransfer()
             && !m_parent->currentDevice()->isTransferring() )
         m_parent->currentDevice()->transferFiles();
+
+    save( Amarok::saveLocation() + "transferlist.xml" );
 }
 
 void
@@ -3118,6 +3120,7 @@ MediaDevice::transferFiles()
     }
 
     m_parent->updateButtons();
+    m_parent->queue()->save( Amarok::saveLocation() + "transferlist.xml" );
     m_transferring = false;
 
     if( m_deferredDisconnect )
