@@ -325,9 +325,11 @@ Playlist::Playlist( QWidget *parent )
 
     { // KAction idiocy -- shortcuts don't work until they've been plugged into a menu
         KPopupMenu asdf;
+
         copy->plug( &asdf );
         stopafter->plug( &asdf );
         gotoCurrent->plug( &asdf );
+
         copy->unplug( &asdf );
         stopafter->unplug( &asdf );
         gotoCurrent->unplug( &asdf );
