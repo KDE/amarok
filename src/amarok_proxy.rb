@@ -152,7 +152,11 @@ class Proxy
       filler = Array.new( 4096, 0 )
       safe_write( output, filler ) # HACK: Fill xine's buffer so that xine_open() won't block
     end
-    data = income.read( 4 )
+    if @engine == 'helix-engine'
+      data = income.read( 1024 )
+    else
+      data = income.read( 4 )
+    end
     desync( data )
     holdover = ""
     loop do
