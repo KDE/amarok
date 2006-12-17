@@ -1333,7 +1333,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         enum Actions { APPEND, QUEUE, MAKE, SAVE, MEDIA_DEVICE, BURN_ARTIST,
                        BURN_COMPOSER, BURN_ALBUM, BURN_CD, COVER, INFO,
                        COMPILATION_SET, COMPILATION_UNSET, ORGANIZE, DELETE, TRASH,
-                       FILE_MENU, COMPILATION_SET_TRACK, COMPILATION_UNSET_TRACK };
+                       FILE_MENU };
 
         KURL::List selection = listSelected();
         QStringList siblingSelection = listSelectedSiblingsOf( cat, item );
@@ -1388,16 +1388,13 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
             menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n( "&Fetch Cover Image" ), this, SLOT( fetchCover() ), 0, COVER );
         #endif
 
-        if ( (cat == IdAlbum || cat == IdVisYearAlbum) && siblingSelection.count() > 0 ) { //album
+        if ( ( (cat == IdAlbum || cat == IdVisYearAlbum) && siblingSelection.count() > 0 ) //album
+            || ( !item->isExpandable() && m_viewMode == modeTreeView ) ) //or track
+        {
             menu.insertItem( SmallIconSet( "ok" ), i18n( "Show under &Various Artists" ), COMPILATION_SET );
             menu.insertItem( SmallIconSet( "cancel" ), i18n( "&Do not Show under Various Artists" ), COMPILATION_UNSET );
         }
-        else if ( !item->isExpandable() && m_viewMode == modeTreeView ) { //track (tree view)
-            menu.insertItem( SmallIconSet( "ok" ), i18n( "Show under &Various Artists" ), COMPILATION_SET_TRACK );
-            menu.insertItem( SmallIconSet( "cancel" ), i18n( "&Do not Show under Various Artists" ), COMPILATION_UNSET_TRACK );
-        }
 
-                
         menu.insertItem( SmallIconSet( Amarok::icon( "info" ) )
             , i18n( "Edit Track &Information...",  "Edit &Information for %n Tracks...", selection.count())
             , this, SLOT( showTrackInfo() ), 0, INFO );
@@ -1448,19 +1445,9 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                 K3bExporter::instance()->exportTracks( selection );
                 break;
             case COMPILATION_SET:
-                for ( QStringList::Iterator it = siblingSelection.begin(); it != siblingSelection.end(); ++it ) {
-                    setCompilation( *it, true );
-                }
-                break;
-            case COMPILATION_SET_TRACK:
                 setCompilation( listSelected(), true );
                 break;
             case COMPILATION_UNSET:
-                for ( QStringList::Iterator it = siblingSelection.begin(); it != siblingSelection.end(); ++it ) {
-                    setCompilation( *it, false );
-                }
-                break;
-            case COMPILATION_UNSET_TRACK:
                 setCompilation( listSelected(), false );
                 break;
             case ORGANIZE:
@@ -3254,36 +3241,6 @@ QPixmap
 CollectionView::ipodDecrementIcon ( void )
 {
     return SmallIcon( Amarok::icon( "rewind" ) );
-}
-
-
-
-void
-CollectionView::setCompilation( const QString &album, bool compilation )
-{
-    //visual feedback
-    QApplication::setOverrideCursor( KCursor::waitCursor() );
-
-    //Set it in the DB. We don't need to update the view now as we do it at the end.
-    QStringList files = CollectionDB::instance()->setCompilation( album, compilation, false );
-
-    foreachType( QStringList, files ) {
-        if ( !TagLib::File::isWritable( QFile::encodeName( *it ) ) )
-            continue;
-
-        MetaBundle mb( KURL::fromPathOrURL( *it ) );
-
-        mb.setCompilation( compilation ? MetaBundle::CompilationYes : MetaBundle::CompilationNo );
-
-        if( mb.save() ) {
-            mb.updateFilesize();
-            //update the collection db, since filesize might have changed
-            CollectionDB::instance()->updateTags( mb.url().path(), mb, false );
-        }
-    }
-    //visual feedback
-    QApplication::restoreOverrideCursor();
-    if ( !files.isEmpty() ) renderView(true);
 }
 
 void

@@ -4354,32 +4354,6 @@ CollectionDB::checkCompilations( const QString &path, const bool temporary )
     }
 }
 
-
-QStringList
-CollectionDB::setCompilation( const QString &album, const bool enabled, const bool updateView )
-{
-    uint id = albumID( album, false, false, true );
-    QStringList rs;
-
-    if ( id )
-    {
-        QString idString = QString::number( id );
-        query( QString( "UPDATE tags SET sampler = %1 WHERE tags.album = %2;" )
-                .arg( enabled ? boolT() : boolF() )
-                .arg( idString ) );
-        //FIXME max: do we have to restrict the query to the available devices?
-        rs = query( QString( "SELECT deviceid, url FROM tags WHERE tags.album = %1;" ).arg( idString ) );
-    }
-
-    // Update the Collection-Browser view,
-    // using QTimer to make sure we don't manipulate the GUI from a thread
-    if ( updateView )
-        QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
-
-    // return a list so tags can be updated
-    return URLsFromQuery( rs );
-}
-
 void
 CollectionDB::setCompilation( const KURL::List &urls, bool enabled, bool updateView )
 {
