@@ -437,9 +437,15 @@ XineEngine::position() const
     int time = 0;
     int length;
 
-    xine_get_pos_length( m_stream, &pos, &time, &length );
-
-
+    // Workaround for problems when you seek too quickly, see BUG 99808
+    int tmp = 0, i = 0;
+    while( ++i < 4 )
+    {
+        xine_get_pos_length( m_stream, &pos, &time, &length );
+        if( time > tmp ) break;
+        usleep( 100000 );
+    }
+			
     // Here we check for new metadata periodically, because xine does not emit an event
     // in all cases (e.g. with ogg streams). See BUG 122505
     if ( state() != Engine::Idle && state() != Engine::Empty )

@@ -74,6 +74,8 @@ VERSION 1.4.5
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
+    * Improved seeking with xine-engine. No longer jumps to 0 when you seek
+      too quickly. Patch by Alexander Bechikov <goo@t72.ru>. (BR 99808)
     * Improved cover images handling for Various Artists. Patch by Tobias
       Knieper <tobias.knieper@micekiller.de>. (BR 136833)
     * Don't enable a mount point for devices that can't support them (mtp,
