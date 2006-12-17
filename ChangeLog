@@ -5,7 +5,8 @@ Amarok ChangeLog
 
 VERSION 1.4.5
   FEATURES:
-    * Space key is now a shortcut for Play/Pause.
+    * Improved keyboard navigation: Space key is now a shortcut for Play/Pause,
+      and cursor left/right seeks forward/backward.
     * Cover images are shown in collection browser. Patch by Trever Fischer
       <wm161@wm161.net>. (BR 91044)
     * Send cover art to MTP media devices if they support it.

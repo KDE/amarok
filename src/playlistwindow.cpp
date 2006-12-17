@@ -148,6 +148,8 @@ PlaylistWindow::PlaylistWindow()
     KAction *playPause = new KAction( i18n( "&Play/Pause" ), Amarok::icon( "play" ), Key_Space, ec, SLOT( playPause() ), ac, "play_pause" );
     new KAction( i18n("Script Manager"), Amarok::icon( "scripts" ), 0, this, SLOT(showScriptSelector()), ac, "script_manager" );
     new KAction( i18n("Queue Manager"), Amarok::icon( "queue" ), 0, this, SLOT(showQueueManager()), ac, "queue_manager" );
+    KAction *seekForward = new KAction( i18n( "&Seek Forward" ), Amarok::icon( "fastforward" ), Key_Right, ec, SLOT( seekForward() ), ac, "seek_forward" );
+    KAction *seekBackward = new KAction( i18n( "&Seek Backward" ), Amarok::icon( "rewind" ), Key_Left, ec, SLOT( seekBackward() ), ac, "seek_backward" );
     new KAction( i18n("Statistics"), Amarok::icon( "info" ), 0, this, SLOT(showStatistics()), ac, "statistics" );
     new KAction( i18n("Update Collection"), Amarok::icon( "refresh" ), 0, CollectionDB::instance(), SLOT( scanModifiedDirs() ), actionCollection(), "update_collection" );
 
@@ -193,13 +195,21 @@ PlaylistWindow::PlaylistWindow()
 
     KAction *toggleFocus = new KAction( i18n( "Toggle Focus" ), "reload", CTRL+Key_Tab, this, SLOT( slotToggleFocus() ), ac, "toggle_focus" );
 
+
     { // KAction idiocy -- shortcuts don't work until they've been plugged into a menu
         KPopupMenu asdf;
+
         playPause->plug( &asdf );
+        seekForward->plug( &asdf );
+        seekBackward->plug( &asdf );
         toggleFocus->plug( &asdf );
+
         playPause->unplug( &asdf );
+        seekForward->unplug( &asdf );
+        seekBackward->unplug( &asdf );
         toggleFocus->unplug( &asdf );
     }
+
 
     new Amarok::MenuAction( ac );
     new Amarok::StopAction( ac );
