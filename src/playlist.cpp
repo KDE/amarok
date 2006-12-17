@@ -1289,11 +1289,16 @@ Playlist::queueSelected()
     {
         // Dequeuing selection with dynamic doesn't work due to the moving of the track after the last queued
         if( dynamicMode() )
+        {
+            ( !m_nextTracks.containsRef( *it ) ? in : out ).append( *it );
             dynamicList.append( *it );
+        }
         else
+        {
             queue( *it, true );
+            ( m_nextTracks.containsRef( *it ) ? in : out ).append( *it );
+        }
 
-        ( m_nextTracks.containsRef( *it ) ? in : out ).append( *it );
     }
 
     if( dynamicMode() )
@@ -3507,26 +3512,32 @@ Playlist::showQueueManager()
     QueueManager dialog;
     if( dialog.exec() == QDialog::Accepted )
     {
-        PLItemList oldQueue = m_nextTracks;
-        m_nextTracks = dialog.newQueue();
-
-        PLItemList in, out;
-        // make sure we repaint items no longer queued
-        for( PlaylistItem* item = oldQueue.first(); item; item = oldQueue.next() )
-            if( !m_nextTracks.containsRef( item ) )
-                out << item;
-        for( PlaylistItem* item = m_nextTracks.first(); item; item = m_nextTracks.next() )
-            if( !oldQueue.containsRef( item ) )
-                in << item;
-
-        emit queueChanged( in, out );
-
-        // repaint newly queued or altered queue items
-        if( dynamicMode() )
-            sortQueuedItems();
-        else
-            refreshNextTracks();
+        changeFromQueueManager(dialog.newQueue());
     }
+}
+
+void 
+Playlist::changeFromQueueManager(QPtrList<PlaylistItem> list)
+{
+    PLItemList oldQueue = m_nextTracks;
+    m_nextTracks = list;
+
+    PLItemList in, out;
+    // make sure we repaint items no longer queued
+    for( PlaylistItem* item = oldQueue.first(); item; item = oldQueue.next() )
+        if( !m_nextTracks.containsRef( item ) )
+            out << item;
+    for( PlaylistItem* item = m_nextTracks.first(); item; item = m_nextTracks.next() )
+        if( !oldQueue.containsRef( item ) )
+            in << item;
+
+    emit queueChanged( in, out );
+
+    // repaint newly queued or altered queue items
+    if( dynamicMode() )
+        sortQueuedItems();
+    else
+        refreshNextTracks();
 }
 
 void

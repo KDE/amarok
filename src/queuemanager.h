@@ -38,6 +38,8 @@ class QueueList : public KListView
 {
         Q_OBJECT
 
+    friend class QueueManager;
+
     public:
         QueueList( QWidget *parent, const char *name = 0 );
         ~QueueList() {};
@@ -50,6 +52,7 @@ class QueueList : public KListView
         void    moveSelectedUp();
         void    moveSelectedDown();
         void    removeSelected();
+        virtual void    clear();
 
     private:
         void    contentsDragEnterEvent( QDragEnterEvent *e );
@@ -57,6 +60,9 @@ class QueueList : public KListView
         void    contentsDropEvent( QDropEvent *e );
         void    keyPressEvent( QKeyEvent *e );
         void    viewportPaintEvent( QPaintEvent* );
+
+     signals:
+        void    changed();
 };
 
 class QueueManager : public KDialogBase
@@ -72,16 +78,19 @@ class QueueManager : public KDialogBase
         static QueueManager *instance() { return s_instance; }
 
     public slots:
+        void    applyNow();
         void    addItems( QListViewItem *after = 0 ); /// For the add button (uses selected playlist tracks)
-        void    addQueuedItems( const PLItemList &in, const PLItemList &out );  /// For keeping queue/dequeue in sync
+        void    changeQueuedItems( const PLItemList &in, const PLItemList &out );  /// For keeping queue/dequeue in sync
         void    updateButtons();
 
     private slots:
         void    removeSelected();
+        void    changed();
 
     private:
         void    insertItems();
         void    addQueuedItem( PlaylistItem *item );
+        void    removeQueuedItem( PlaylistItem *item );
 
         QMap<QListViewItem*, PlaylistItem*> m_map;
         QueueList   *m_listview;

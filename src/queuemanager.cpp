@@ -11,6 +11,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#define DEBUG_PREFIX "QueueManager"
+#include "debug.h"
+
 #include "amarok.h"
 #include "amarokconfig.h"     //check if dynamic mode
 #include "playlist.h"
@@ -154,6 +157,7 @@ void
 QueueList::moveSelectedUp() // SLOT
 {
     QPtrList<QListViewItem> selected = selectedItems();
+    bool item_moved = false;
 
     // Whilst it would be substantially faster to do this: ((*it)->itemAbove())->move( *it ),
     // this would only work for sequentially ordered items
@@ -169,15 +173,20 @@ QueueList::moveSelectedUp() // SLOT
             after = ( item->itemAbove() )->itemAbove();
 
         moveItem( item, 0, after );
+        item_moved = true;
     }
 
     ensureItemVisible( selected.first() );
+
+    if( item_moved )
+        emit changed();
 }
 
 void
 QueueList::moveSelectedDown() // SLOT
 {
     QPtrList<QListViewItem> list = selectedItems();
+    bool item_moved = false;
 
     for( QListViewItem *item  = list.last(); item; item = list.prev() )
     {
@@ -187,9 +196,13 @@ QueueList::moveSelectedDown() // SLOT
             continue;
 
         moveItem( item, 0, after );
+        item_moved = true;
     }
 
     ensureItemVisible( list.last() );
+
+    if( item_moved )
+        emit changed();
 }
 
 void
@@ -197,24 +210,40 @@ QueueList::removeSelected() //SLOT
 {
     setSelected( currentItem(), true );
 
+    bool item_removed = false;
     QPtrList<QListViewItem> selected = selectedItems();
 
     for( QListViewItem *item = selected.first(); item; item = selected.next() )
+    {
         delete item;
+        item_removed = true;
+    }
 
     if( isEmpty() )
         QueueManager::instance()->updateButtons();
+
+    if( item_removed )
+        emit changed();
+}
+
+void
+QueueList::clear() // SLOT
+{
+    KListView::clear();
+    emit changed();
 }
 
 void
 QueueList::contentsDragEnterEvent( QDragEnterEvent *e )
 {
+    debug() << "contentsDrageEnterEvent()" << endl;
     e->accept( e->source() == reinterpret_cast<KListView*>( Playlist::instance() )->viewport() );
 }
 
 void
 QueueList::contentsDragMoveEvent( QDragMoveEvent *e )
 {
+    debug() << "contentsDrageMoveEvent()" << endl;
     KListView::contentsDragMoveEvent( e );
 
     // Must be overloaded for dnd to work
@@ -225,9 +254,12 @@ QueueList::contentsDragMoveEvent( QDragMoveEvent *e )
 void
 QueueList::contentsDropEvent( QDropEvent *e )
 {
+    debug() << "contentsDragDropEvent()" << endl;
     if( e->source() == viewport() )
+    {
         KListView::contentsDropEvent( e );
-
+        emit changed();
+    }
     else
     {
         QListViewItem *parent = 0;
@@ -247,7 +279,7 @@ QueueList::contentsDropEvent( QDropEvent *e )
 QueueManager *QueueManager::s_instance = 0;
 
 QueueManager::QueueManager( QWidget *parent, const char *name )
-    : KDialogBase( KDialogBase::Swallow, 0, parent, name, false, 0, Ok|Cancel )
+    : KDialogBase( KDialogBase::Swallow, 0, parent, name, false, 0, Ok|Apply|Cancel )
 {
     s_instance = this;
 
@@ -295,7 +327,10 @@ QueueManager::QueueManager( QWidget *parent, const char *name )
     connect( pl,         SIGNAL( selectionChanged() ),    SLOT( updateButtons() ) );
     connect( m_listview, SIGNAL( selectionChanged() ),    SLOT( updateButtons() ) );
     connect( pl,         SIGNAL( queueChanged(const PLItemList &, const PLItemList &) ),
-                         SLOT( addQueuedItems(const PLItemList &, const PLItemList &) ) );
+                         SLOT( changeQueuedItems(const PLItemList &, const PLItemList &) ) );
+    connect( this,       SIGNAL( applyClicked()), SLOT( applyNow() ) );
+    connect( m_listview, SIGNAL( changed() ), this, SLOT ( changed() ) );
+    s_instance->enableButtonApply(false);
 
     insertItems();
 }
@@ -303,6 +338,14 @@ QueueManager::QueueManager( QWidget *parent, const char *name )
 QueueManager::~QueueManager()
 {
     s_instance = 0;
+}
+
+void
+QueueManager::applyNow()
+{
+    Playlist *pl = Playlist::instance();
+    pl->changeFromQueueManager( newQueue() );
+    s_instance->enableButtonApply(false);
 }
 
 void
@@ -317,12 +360,12 @@ QueueManager::addItems( QListViewItem *after )
         - After a drag, those items are still selected in the playlist, so we can find out
           which PlaylistItems were dragged by selectedItems();
     */
-
     if( !after )
         after = m_listview->lastChild();
 
     QPtrList<QListViewItem> list = Playlist::instance()->selectedItems();
 
+    bool item_added = false;
     for( QListViewItem *item = list.first(); item; item = list.next() )
     {
         #define item static_cast<PlaylistItem*>(item)
@@ -334,19 +377,22 @@ QueueManager::addItems( QListViewItem *after )
 
             after = new QueueItem( m_listview, after, title );
             m_map[ after ] = item;
+            item_added = true;
         }
         #undef item
     }
 
+    if( item_added )
+        emit m_listview->changed();
 }
 
 void
-QueueManager::addQueuedItems( const PLItemList &in, const PLItemList &out ) //SLOT
+QueueManager::changeQueuedItems( const PLItemList &in, const PLItemList &out ) //SLOT
 {
     QPtrListIterator<PlaylistItem> it(in);
     for( it.toFirst(); it; ++it ) addQueuedItem( *it );
     it = QPtrListIterator<PlaylistItem>(out);
-    for( it.toFirst(); it; ++it ) addQueuedItem( *it );
+    for( it.toFirst(); it; ++it ) removeQueuedItem( *it );
 }
 
 void
@@ -377,29 +423,50 @@ QueueManager::addQueuedItem( PlaylistItem *item )
         after = new QueueItem( m_listview, after, title );
         m_map[ after ] = item;
     }
-    else //track is in the queue, remove it.
+}
+
+void
+QueueManager::removeQueuedItem( PlaylistItem *item )
+{
+    Playlist *pl = Playlist::instance();
+    if( !pl ) return; //should never happen
+
+    const int index = pl->m_nextTracks.findRef( item );
+
+    QListViewItem *after;
+    if( !index ) after = 0;
+    else
     {
-        QListViewItem *removableItem = m_listview->findItem( title, 0 );
+        int find = m_listview->childCount();
+        if( index - 1 <= find )
+            find = index - 1;
+        after = m_listview->itemAtIndex( find );
+    }
 
-        if( removableItem )
+    QValueList<PlaylistItem*>         current = m_map.values();
+    QValueListIterator<PlaylistItem*> newItem = current.find( item );
+
+    QString title = i18n("%1 - %2").arg( item->artist(), item->title() );
+
+    QListViewItem *removableItem = m_listview->findItem( title, 0 );
+
+    if( removableItem )
+    {
+        //Remove the key from the map, so we can re-queue the item
+        QMapIterator<QListViewItem*, PlaylistItem*> end(  m_map.end() );
+        for( QMapIterator<QListViewItem*, PlaylistItem*> it = m_map.begin(); it != end; ++it )
         {
-            //Remove the key from the map, so we can re-queue the item
-            QMapIterator<QListViewItem*, PlaylistItem*> end(  m_map.end() );
-            for( QMapIterator<QListViewItem*, PlaylistItem*> it = m_map.begin(); it != end; ++it )
+            if( it.data() == item )
             {
-                if( it.data() == item )
-                {
-                    m_map.remove( it );
+                m_map.remove( it );
 
-                    //Remove the item from the queuelist
-                    m_listview->takeItem( removableItem );
-                    delete removableItem;
-                    return;
-                }
+                //Remove the item from the queuelist
+                m_listview->takeItem( removableItem );
+                delete removableItem;
+                return;
             }
         }
     }
-
 }
 
 /// Playlist uses this to determine the altered queue and reflect the changes.
@@ -433,9 +500,18 @@ QueueManager::insertItems()
 }
 
 void
+QueueManager::changed() // SLOT
+{
+  s_instance->enableButtonApply(true);
+}
+
+
+void
 QueueManager::removeSelected() //SLOT
 {
     QPtrList<QListViewItem>  selected = m_listview->selectedItems();
+
+    bool item_removed = false;
 
     for( QListViewItem *item = selected.first(); item; item = selected.next() )
     {
@@ -447,7 +523,11 @@ QueueManager::removeSelected() //SLOT
         //Remove the item from the queuelist
         m_listview->takeItem( item );
         delete item;
+        item_removed = true;
     }
+
+    if( item_removed )
+        emit m_listview->changed();
 }
 
 void

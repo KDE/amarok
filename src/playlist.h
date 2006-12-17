@@ -235,6 +235,7 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         void setStopAfterMode( int mode );
         void showCurrentTrack() { ensureItemCentered( m_currentTrack ); }
         void showQueueManager();
+        void changeFromQueueManager(QPtrList<PlaylistItem> list);
         void shuffle();
         void undo();
         void updateMetaData( const MetaBundle& );
