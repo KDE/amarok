@@ -91,7 +91,7 @@ extern "C"
 
 namespace Amarok
 {
-    const DynamicMode *dynamicMode() { return Playlist::instance()->dynamicMode(); }
+    const DynamicMode *dynamicMode() { return Playlist::instance() ? Playlist::instance()->dynamicMode() : 0; }
 }
 
 typedef PlaylistIterator MyIt;
