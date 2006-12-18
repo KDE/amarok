@@ -2188,21 +2188,23 @@ CollectionDB::findEmbeddedImage( const QString& artist, const QString& album, ui
     if ( artist == i18n("Various Artists") || artist.isEmpty() ) {
         // VAs need special handling to not match on artist name but instead check for sampler flag
         rs = query( QString(
-                "SELECT embed.hash, embed.deviceid, embed.url FROM tags, embed, album "
-                "WHERE tags.url = embed.url "
-                "AND tags.album = album.id "
-                "AND album.name = '%1' "
+                "SELECT embed.hash, embed.deviceid, embed.url FROM "
+                "tags INNER JOIN embed ON tags.url = embed.url "
+                     "INNER JOIN album ON tags.album = album.id "
+                "WHERE "
+                "album.name = '%1' "
                 "AND tags.sampler = %2 "
                 "ORDER BY modifydate DESC LIMIT 1;" )
                 .arg( escapeString( album ) )
                 .arg( boolT() ) );
     } else {
         rs = query( QString(
-                "SELECT embed.hash, embed.deviceid, embed.url FROM tags, embed, artist, album "
-                "WHERE tags.url = embed.url "
-                "AND tags.artist = artist.id "
-                "AND tags.album = album.id "
-                "AND artist.name = '%1' "
+                "SELECT embed.hash, embed.deviceid, embed.url FROM"
+                "tags INNER JOIN embed ON tags.url = embed.url "
+                     "INNER JOIN artist ON tags.artist = artist.id "
+                     "INNER JOIN album ON tags.album = album.id "
+                "WHERE  "
+                "artist.name = '%1' "
                 "AND album.name = '%2' "
                 "ORDER BY modifydate DESC LIMIT 1;" )
                 .arg( escapeString( artist ) )
@@ -3965,17 +3967,17 @@ CollectionDB::organizeFile( const KURL &src, const OrganizeCollectionDialog &dia
         if( m_moveFileJobCancelled )
         {
             disconnect( job, SIGNAL(result( KIO::Job * )), this, SLOT(fileOperationResult( KIO::Job * )) );
-            
+
             QString partFile = QString( "%1.part" ).arg( (job->destURL()).path() );
             job->kill();
             QFile file( partFile );
             if( file.exists() ) file.remove();
-            
+
             m_waitForFileOperation = false;
             m_fileOperationFailed = true;
             continue;
         }
-         
+
          usleep( 10000 );
          kapp->processEvents( 100 );
       }
@@ -4095,12 +4097,12 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
         if( m_moveFileJobCancelled )
         {
             disconnect( job, SIGNAL(result( KIO::Job * )), this, SLOT(fileOperationResult( KIO::Job * )) );
-            
+
             QString partFile = QString( "%1.part" ).arg( (job->destURL()).path() );
             job->kill();
             QFile file( partFile );
             if( file.exists() ) file.remove();
-            
+
             m_waitForFileOperation = false;
             m_fileOperationFailed = true;
             continue;
@@ -5163,8 +5165,8 @@ CollectionDB::initialize()
     else
 #endif
     {
-        m_dbConfig = new SqliteConfig( 
-                        Amarok::config( "Sqlite" )->readPathEntry( "location", 
+        m_dbConfig = new SqliteConfig(
+                        Amarok::config( "Sqlite" )->readPathEntry( "location",
                                         Amarok::saveLocation() + "collection.db" ) );
     }
 
@@ -5845,7 +5847,7 @@ CollectionDB::setLabels( const QString &url, const QStringList &labels, const QS
     QString rpath = escapeString( MountPointManager::instance()->getRelativePath( deviceid, url ) );
     QStringList labelIds = query( QString( "SELECT id FROM labels WHERE type = %1;" ).arg( type ) );
     QString ids;
-    if ( !labelIds.isEmpty() ) 
+    if ( !labelIds.isEmpty() )
     {
         foreach( labelIds )
         {
