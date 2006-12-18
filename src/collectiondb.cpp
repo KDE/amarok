@@ -6229,14 +6229,17 @@ void SqliteConnection::sqlite_like_new( sqlite3_context *context, int argc, sqli
     QString text = QString::fromUtf8( (const char*)zB );
 
     int begin = pattern.startsWith( "%" ), end = pattern.endsWith( "%" );
-    pattern = pattern.mid( 1, pattern.length() - 2 );
+    if (begin)
+        pattern = pattern.right( 1 );
+    if (end)
+        pattern = pattern.left( pattern.length() - 2 );
     if( argc == 3 ) // The function is given an escape character. In likeCondition() it defaults to '/'
         pattern.replace( "/%", "%" ).replace( "/_", "_" ).replace( "//", "/" );
 
     int result = 0;
     if ( begin && end ) result = ( text.find( pattern, 0, 0 ) != -1);
-    else if ( begin ) result = text.startsWith( pattern, 0 );
-    else if ( end ) result = text.endsWith( pattern, 0 );
+    else if ( begin ) result = text.endsWith( pattern, 0 );
+    else if ( end ) result = text.startsWith( pattern, 0 );
     else result = ( text.lower() == pattern.lower() );
 
     sqlite3_result_int( context, result );
