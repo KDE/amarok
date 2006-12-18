@@ -48,7 +48,7 @@ class MtpTrack {
         uint32_t                folderId() const { return m_folder_id; }
         void                    setBundle( MetaBundle &bundle );
         void                    setId( int id ) { m_id = id; }
-        void                    setFolderId( uint32_t folder_id ) { m_folder_id = folder_id; }
+        void                    setFolderId( const uint32_t folder_id ) { m_folder_id = folder_id; }
         void                    readMetaData( LIBMTP_track_t *track );
 
     private:
@@ -171,8 +171,9 @@ class MtpMediaDevice : public MediaDevice
         int                     readMtpMusic( void );
         void                    clearItems();
         int                     deleteObject( MtpMediaItem *deleteItem );
-        uint32_t                checkFolderStructure( uint32_t parent_id, const LIBMTP_track_t *trackmeta, const MetaBundle &bundle );
+        uint32_t                checkFolderStructure( const MetaBundle &bundle, bool create = true );
         uint32_t                createFolder( const char *name, uint32_t parent_id );
+        uint32_t                getDefaultParentId( void );
         uint32_t                folderNameToID( char *name, LIBMTP_folder_t *folderlist );
         uint32_t                subfolderNameToID( const char *name, LIBMTP_folder_t *folderlist, uint32_t parent_id );
         void                    updateFolders( void );

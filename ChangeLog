@@ -34,6 +34,8 @@ VERSION 1.4.5
       you move and rename them.
 
   CHANGES:
+    * Duplicate filenames are now allowed on MTP media devices if the files are
+      in different folders.
     * Save media device transfer queue when adding items or after transfers.
       (BR 138885)
     * Upgraded internal SQLite to 3.3.8.

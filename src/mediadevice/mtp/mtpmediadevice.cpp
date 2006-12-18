@@ -163,18 +163,6 @@ MediaItem
 
     QString genericError = i18n( "Could not send track" );
 
-    if( m_fileNameToItem[ bundle.filename() ] != 0 )
-    {
-        // track already exists. don't do anything (for now).
-        debug() << "Track already exists on device." << endl;
-        Amarok::StatusBar::instance()->shortLongMessage(
-            genericError,
-            i18n( "Track already exists on device" ),
-            KDE::StatusBar::Error
-        );
-        return 0;
-    }
-
     LIBMTP_track_t *trackmeta = LIBMTP_new_track_t();
     trackmeta->item_id = 0;
     debug() << "filetype : " << bundle.fileType() << endl;
@@ -284,33 +272,11 @@ MediaItem
     }
     trackmeta->filesize = bundle.filesize();
 
-    // Decide which folder to send it to:
-    // If the device gave us a parent_folder setting, we use it
-    uint32_t parent_id = 0;
-    if( m_default_parent_folder )
-    {
-        parent_id = m_default_parent_folder;
-        debug() << "Using default music folder : " << parent_id << endl;
-    }
-    // Otherwise look for a folder called "Music"
-    else if( m_folders != 0 )
-    {
-        parent_id = folderNameToID( "Music", m_folders );
-        if( !parent_id )
-        {
-            debug() << "Parent folder could not be found. Going to use top level." << endl;
-        }
-    }
-    // Give up and don't set a parent folder, let the device deal with it
-    else
-    {
-        debug() << "No folders found. Going to use top level." << endl;
-    }
-
     // try and create the requested folder structure
+    uint32_t parent_id = 0;
     if( !m_folderStructure.isEmpty() )
     {
-        parent_id = checkFolderStructure( parent_id, trackmeta, bundle );
+        parent_id = checkFolderStructure( bundle );
         if( parent_id == 0 )
         {
             debug() << "Couldn't create new parent (" << m_folderStructure << ")" << endl;
@@ -321,6 +287,10 @@ MediaItem
             );
             return 0;
         }
+    }
+    else
+    {
+        parent_id = getDefaultParentId();
     }
     debug() << "Parent id : " << parent_id << endl;
 
@@ -346,6 +316,7 @@ MediaItem
     MetaBundle temp( bundle );
     MtpTrack *taggedTrack = new MtpTrack( trackmeta );
     taggedTrack->setBundle( temp );
+    taggedTrack->setFolderId( parent_id );
 
     LIBMTP_destroy_track_t( trackmeta );
 
@@ -394,6 +365,33 @@ MtpMediaDevice::sendAlbumArt( QPtrList<MediaItem> *items )
             m_critical_mutex.unlock();
         }
     }
+}
+
+uint32_t
+MtpMediaDevice::getDefaultParentId( void )
+{
+    // Decide which folder to send it to:
+    // If the device gave us a parent_folder setting, we use it
+    uint32_t parent_id = 0;
+    if( m_default_parent_folder )
+    {
+        parent_id = m_default_parent_folder;
+    }
+    // Otherwise look for a folder called "Music"
+    else if( m_folders != 0 )
+    {
+        parent_id = folderNameToID( "Music", m_folders );
+        if( !parent_id )
+        {
+            debug() << "Parent folder could not be found. Going to use top level." << endl;
+        }
+    }
+    // Give up and don't set a parent folder, let the device deal with it
+    else
+    {
+        debug() << "No folders found. Going to use top level." << endl;
+    }
+    return parent_id;
 }
 
 /**
@@ -543,13 +541,25 @@ LIBMTP_album_t
 }
 
 /**
- * Check (and create) the folder structure to put a
+ * Check (and optionally create) the folder structure to put a
  * track into. Return the (possibly new) parent folder ID
  */
 uint32_t
-MtpMediaDevice::checkFolderStructure( uint32_t parent_id, const LIBMTP_track_t *trackmeta, const MetaBundle &bundle )
+MtpMediaDevice::checkFolderStructure( const MetaBundle &bundle, bool create )
 {
+    QString artist = bundle.artist();
+    if( artist.isEmpty() )
+        artist = i18n( "Unknown Artist" );
+    if( bundle.compilation() == MetaBundle::CompilationYes )
+        artist = i18n( "Various Artists" );    
+    QString album = bundle.album();
+    if( album.isEmpty() )
+        album = i18n( "Unknown Album" );
+    QString genre = bundle.genre();
+    if( genre.isEmpty() )
+        genre = i18n( "Unknown Genre" );
     m_critical_mutex.lock();
+    uint32_t parent_id = getDefaultParentId();
     QStringList folders = QStringList::split( "/", m_folderStructure ); // use slash as a dir separator
     QString completePath;
     for( QStringList::Iterator it = folders.begin(); it != folders.end(); ++it )
@@ -557,20 +567,28 @@ MtpMediaDevice::checkFolderStructure( uint32_t parent_id, const LIBMTP_track_t *
         if( (*it).isEmpty() )
             continue;
         // substitute %a , %b , %g
-        QString artist = trackmeta->artist;
-        if( bundle.compilation() == MetaBundle::CompilationYes )
-            artist = i18n( "Various Artists" );
         (*it).replace( QRegExp( "%a" ), artist )
-            .replace( QRegExp( "%b" ), trackmeta->album )
-            .replace( QRegExp( "%g" ), trackmeta->genre );
+            .replace( QRegExp( "%b" ), album )
+            .replace( QRegExp( "%g" ), genre );
         // check if it exists
         uint32_t check_folder = subfolderNameToID( (*it).utf8(), m_folders, parent_id );
-        // create if not exists
+        // create if not exists (if requested)
         if( check_folder == 0 )
         {
-            check_folder = createFolder( (*it).utf8() , parent_id );
-            if( check_folder == 0 )
+            if( create )
+            {
+                check_folder = createFolder( (*it).utf8() , parent_id );
+                if( check_folder == 0 )
+                {
+                    m_critical_mutex.unlock();
+                    return 0;
+                }
+            }
+            else
+            {
+                m_critical_mutex.unlock();
                 return 0;
+            }
         }
         completePath += (*it).utf8() + '/';
         // set new parent
@@ -731,9 +749,15 @@ MediaItem
         MediaItem *album = dynamic_cast<MediaItem *>( artist->findItem( bundle.album() ) );
         if( album )
         {
-            return dynamic_cast<MediaItem *>( album->findItem( bundle.title() ) );
+            MediaItem *track = dynamic_cast<MediaItem *>( album->findItem( bundle.title() ) );
+            if( track )
+                return track;
         }
     }
+    uint32_t folderId = checkFolderStructure( bundle, false );
+    MediaItem *file = m_fileNameToItem[ QString( "%1/%2" ).arg( folderId ).arg( bundle.filename() ) ];
+    if( file != 0 )
+	return file;
     return 0;
 }
 
@@ -1017,7 +1041,8 @@ MtpMediaDevice::deleteObject( MtpMediaItem *deleteItem )
     debug() << "object deleted" << endl;
 
     // clear cached filename
-    m_fileNameToItem.remove( deleteItem->bundle()->filename() );
+    if( deleteItem->type() == MediaItem::TRACK )
+        m_fileNameToItem.remove( QString( "%1/%2" ).arg( deleteItem->track()->folderId() ).arg( deleteItem->bundle()->filename() ) );
     // remove from the media view
     delete deleteItem;
     kapp->processEvents( 100 );
@@ -1062,10 +1087,10 @@ MtpMediaDevice::openDevice( bool silent )
     QString genericError = i18n( "Could not connect to MTP Device" );
 
     m_critical_mutex.lock();
-	LIBMTP_Init();
-	m_device = LIBMTP_Get_First_Device();
+    LIBMTP_Init();
+    m_device = LIBMTP_Get_First_Device();
     m_critical_mutex.unlock();
-	if( m_device == 0 ) {
+    if( m_device == 0 ) {
         debug() << "No devices." << endl;
         Amarok::StatusBar::instance()->shortLongMessage(
             genericError,
@@ -1074,7 +1099,7 @@ MtpMediaDevice::openDevice( bool silent )
         );
         setDisconnected();
         return false;
-	}
+    }
 
     connect(
         m_view, SIGNAL( itemRenamed( QListViewItem*, const QString&, int ) ),
@@ -1085,9 +1110,7 @@ MtpMediaDevice::openDevice( bool silent )
     QString ownername = QString( LIBMTP_Get_Friendlyname( m_device ) );
     m_name = modelname;
     if(! ownername.isEmpty() )
-    {
         m_name += " (" + ownername + ')';
-    }
 
     m_default_parent_folder = m_device->default_music_folder;
     debug() << "setting default parent : " << m_default_parent_folder << endl;
@@ -1103,9 +1126,7 @@ MtpMediaDevice::openDevice( bool silent )
     {
         uint16_t i;
         for( i = 0; i < filetypes_len; i++ )
-        {
             m_supportedFiles << mtpFileTypes[ filetypes[ i ] ];
-        }
     }
     // find supported image types (for album art).
     if( m_supportedFiles.findIndex( "jpg" ) )
@@ -1451,7 +1472,7 @@ MtpMediaItem
         item->setType( MediaItem::TRACK );
         item->setBundle( track->bundle() );
         item->track()->setId( track->id() );
-        m_fileNameToItem[ track->bundle()->filename() ] = item;
+        m_fileNameToItem[ QString( "%1/%2" ).arg( track->folderId() ).arg( track->bundle()->filename() ) ] = item;
         m_idToTrack[ track->id() ] = track;
     }
     return item;
@@ -1463,7 +1484,6 @@ MtpMediaItem
 int
 MtpMediaDevice::readMtpMusic()
 {
-
     DEBUG_BLOCK
 
     clearItems();
