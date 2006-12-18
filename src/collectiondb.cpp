@@ -2199,7 +2199,7 @@ CollectionDB::findEmbeddedImage( const QString& artist, const QString& album, ui
                 .arg( boolT() ) );
     } else {
         rs = query( QString(
-                "SELECT embed.hash, embed.deviceid, embed.url FROM"
+                "SELECT embed.hash, embed.deviceid, embed.url FROM "
                 "tags INNER JOIN embed ON tags.url = embed.url "
                      "INNER JOIN artist ON tags.artist = artist.id "
                      "INNER JOIN album ON tags.album = album.id "
