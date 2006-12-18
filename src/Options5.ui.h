@@ -80,7 +80,7 @@ void Options5::init()
 		"<li>Elapsed Time - %18"
                 "</ul>"
             "If you surround sections of text that contain a token with curly-braces, that section will be hidden if the token is empty, for example:"
-                "<pre>%11</pre>"
+                "<pre>%19</pre>"
             "Will not show <b>Score: <i>%score</i></b> if the track has no score." );
 
     QToolTip::add( kcfg_OsdText, text.args( QStringList()
