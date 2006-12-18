@@ -103,6 +103,9 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     box->addWidget( m_slider );
     box->addWidget( m_timeLabel2 );
 
+    if( !AmarokConfig::leftTimeDisplayEnabled() )
+        m_timeLabel->hide();
+ 
     connect( m_slider, SIGNAL(sliderReleased( int )), EngineController::instance(), SLOT(seek( int )) );
     connect( m_slider, SIGNAL(valueChanged( int )), SLOT(drawTimeDisplay( int )) );
 
@@ -263,6 +266,11 @@ StatusBar::drawTimeDisplay( int ms )  //SLOT
     int seconds = ms / 1000;
     int seconds2 = seconds; // for the second label.
     const uint trackLength = EngineController::instance()->bundle().length();
+
+    if( AmarokConfig::leftTimeDisplayEnabled() )
+        m_timeLabel->show();
+    else
+        m_timeLabel->hide();
 
     // when the left label shows the remaining time and it's not a stream
     if( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
