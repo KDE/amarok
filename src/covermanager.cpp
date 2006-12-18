@@ -59,6 +59,28 @@
 static QString artistToSelectInInitFunction;
 CoverManager *CoverManager::s_instance = 0;
 
+class ArtistItem : public KListViewItem 
+{
+    public:
+    ArtistItem(QListView *view, QListViewItem *item, const QString &text)
+        : KListViewItem(view, item, text) {}
+    protected:
+    int compare( QListViewItem* i, int col, bool ascending ) const
+    {
+        Q_UNUSED(col);
+        Q_UNUSED(ascending);
+
+        QString a = text(0);
+        QString b = i->text(0);
+
+        if ( a.startsWith( "the ", false ) )
+            CollectionView::manipulateThe( a, true );
+        if ( b.startsWith( "the ", false ) )
+            CollectionView::manipulateThe( b, true );
+
+        return QString::localeAwareCompare( a.lower(), b.lower() );
+    }
+};
 
 CoverManager::CoverManager()
         : QSplitter( 0, "TheCoverManager" )
@@ -84,24 +106,21 @@ CoverManager::CoverManager()
     m_artistView->setFullWidth( true );
     m_artistView->setSorting( 0 );
     m_artistView->setMinimumWidth( 180 );
-    KListViewItem *item = 0;
+    ArtistItem *item = 0;
 
     //load artists from the collection db
     const QStringList artists = CollectionDB::instance()->artistList( false, false );
     foreach( artists )
     {
         QString artist = *it;
-        if( artist.startsWith( "The " ) )
-            CollectionView::instance()->manipulateThe( artist, true );
-
-        item = new KListViewItem( m_artistView, item, artist );
+        item = new ArtistItem( m_artistView, item, artist );
         item->setPixmap( 0, SmallIcon( Amarok::icon( "artist" ) ) );
     }
     m_artistView->sort();
 
     m_artistView->setSorting( -1 );
-    KListViewItem *last = (KListViewItem *)m_artistView->lastItem();
-    item = new KListViewItem( m_artistView, 0, i18n( "All Albums" ) );
+    ArtistItem *last = static_cast<ArtistItem *>(m_artistView->lastItem());
+    item = new ArtistItem( m_artistView, 0, i18n( "All Albums" ) );
     item->setPixmap( 0, SmallIcon( Amarok::icon( "album" ) ) );
 
     QueryBuilder qb;
@@ -110,7 +129,7 @@ CoverManager::CoverManager()
     qb.setOptions( QueryBuilder::optOnlyCompilations );
     qb.setLimit( 0, 1 );
     if ( qb.run().count() ) {
-        item = new KListViewItem( m_artistView, last, i18n( "Various Artists" ) );
+        item = new ArtistItem( m_artistView, last, i18n( "Various Artists" ) );
         item->setPixmap( 0, SmallIcon("personal") );
     }
 
