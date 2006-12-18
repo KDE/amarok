@@ -5205,6 +5205,17 @@ CollectionDB::initialize()
             setAdminValue( "Database AFT Version", QString::number( DATABASE_AFT_VERSION ) );
         }
 
+
+        // Due to a bug in our sqllite handling code, we have to recreate the indices.
+        // We should rmeove this before 1.4.5
+        if ( m_dbConnType == DbConnection::sqlite ) {
+            QStringList indices = query( "SELECT name FROM sqlite_master WHERE type='index' ORDER BY name;" );
+            if (!indices.contains("url_tag")) {
+                createIndices();
+            }
+        }
+
+
         //updates for the Devices table go here
         //put all other update code into checkDatabase()
         //make sure that there is no call to MountPointManager in CollectionDB's ctor
