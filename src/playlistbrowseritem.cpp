@@ -807,6 +807,7 @@ void PlaylistEntry::setOpen( bool open )
     }
 
     QListViewItem::setOpen( open );
+    PlaylistBrowser::instance()->savePlaylists();
 }
 
 
