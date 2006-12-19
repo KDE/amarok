@@ -407,14 +407,6 @@ yauapEngine::load( const KURL &url, bool isStream )
     int gerror = 0;
     debug() << "In load " << curl << endl;
 
-    /* check if the url can really be decoded */
-    if( !canDecode( url ) )
-    {
-        debug() << "cannot decode this file" << endl;
-        g_error_free( error );
-        return false;
-    }
-
     m_isStream = isStream;
 
     Engine::Base::load( url, isStream || url.protocol() == "http" );
