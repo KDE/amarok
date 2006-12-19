@@ -990,8 +990,10 @@ Playlist::playNextTrack( bool forceNext )
             {
                 for( ArtistAlbumMap::const_iterator it = m_albums.constBegin(), end = m_albums.constEnd(); it != end;   ++it )
                     for( AlbumMap::const_iterator it2 = (*it).constBegin(), end2 = (*it).constEnd(); it2 != end2; ++it2 )
-                        if( m_prevAlbums.findRef( *it2 ) == -1 )
-                            tracks.append( (*it2)->tracks.getFirst() );
+                        if( m_prevAlbums.findRef( *it2 ) == -1 ) {
+                            if ( (*it2)->tracks.getFirst() )
+                                tracks.append( (*it2)->tracks.getFirst() );
+                        }
             }
             else
                 for( MyIt it( this ); *it; ++it )
@@ -3516,7 +3518,7 @@ Playlist::showQueueManager()
     }
 }
 
-void 
+void
 Playlist::changeFromQueueManager(QPtrList<PlaylistItem> list)
 {
     PLItemList oldQueue = m_nextTracks;
