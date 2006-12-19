@@ -52,6 +52,8 @@ class yauapEngine : public Engine::Base
     virtual uint length() const ;
     virtual Engine::State state() const { return m_state; }
     virtual const Engine::Scope &scope();
+    virtual bool getAudioCDContents(const QString &device, KURL::List &urls);
+    virtual bool metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b);
 public: 
     yauapEngine() : EngineBase() {}
     /* these need to be public because they are called from the dbus signal handler */
@@ -59,6 +61,7 @@ public:
     void update_scope();
     void track_ended();
 private:
+    std::vector<Engine::SimpleMetaBundle> cd_tracks;
     void change_state( Engine::State );
     DBusGConnection *bus;
     DBusGProxy *remote_object;

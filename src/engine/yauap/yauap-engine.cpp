@@ -567,3 +567,60 @@ yauapEngine::seek( uint offset )
 }
 
 
+bool
+yauapEngine::getAudioCDContents(const QString &device, KURL::List &urls)
+{
+    GError *error = NULL;
+    char **reply_list;
+    char **reply_ptr;
+    int i = 0;
+    
+
+    debug() << "Getting AudioCD contents..." << endl;
+
+    if( !dbus_g_proxy_call (remote_object, "get_audio_cd_contents", &error,
+        G_TYPE_STRING,(char*)device.latin1(),G_TYPE_INVALID,G_TYPE_STRV, &reply_list, G_TYPE_INVALID) )
+    {
+        debug() << "get_audio_cd_contents failed " << error->message <<  endl;
+        g_error_free(error);
+        return false;
+    }
+   
+    cd_tracks.clear(); 
+    for(reply_ptr = reply_list; *reply_ptr; reply_ptr++)
+    {
+        Engine::SimpleMetaBundle b;
+        char* saveptr;
+        KURL url = QString("cdda://").append( strtok_r(*reply_ptr,"=",&saveptr)); 
+        urls << url;
+        debug() << url << endl;
+        b.title  = QString( i18n( "Track %1" ) ).arg( i+1 );
+        b.length = strtok_r(NULL,"=",&saveptr);
+        b.album = "AudioCD";
+        b.tracknr = i+1;
+        b.samplerate = "44100";
+        b.bitrate = "1411";
+        cd_tracks.push_back(b);
+        ++i;
+    }
+    /* free reply_list */
+    for( reply_ptr = reply_list; *reply_ptr; reply_ptr++)
+        free( *reply_ptr );
+    free( reply_list );
+
+    return true;
+}
+
+
+
+bool 
+yauapEngine::metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b)
+{
+    if ( url.protocol() == "cdda" )
+    {
+         b = cd_tracks[url.host().toUInt()-1];
+         return true;
+    }
+    return false;
+}
+
