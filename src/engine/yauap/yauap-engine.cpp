@@ -56,6 +56,15 @@ signal_handler( DBusConnection * /*con*/, DBusMessage *msg, void *data )
         engine->update_metadata();
     else if(dbus_message_is_signal( msg, "org.yauap.CommandInterface", "EosSignal"))
        	engine->track_ended();
+    else if(dbus_message_is_signal( msg, "org.yauap.CommandInterface", "ErrorSignal"))
+    {
+        char* text = NULL;
+        DBusError error;
+        dbus_error_init(&error);
+        if(dbus_message_get_args( msg, &error, DBUS_TYPE_STRING, &text, DBUS_TYPE_INVALID)){
+            engine->error_msg(text);
+        }
+    }
     else
         handled = false;
 
@@ -278,6 +287,12 @@ yauapEngine::track_ended( void )
     emit trackEnded();
 }
 
+/* display a error message */
+void
+yauapEngine::error_msg( char * msg )
+{
+    emit statusText( msg );
+}
 
 /* init engine */
 bool 

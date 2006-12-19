@@ -60,6 +60,7 @@ public:
     void update_metadata();
     void update_scope();
     void track_ended();
+    void error_msg(char* msg);
 private:
     KURL loaded_url;
     std::vector<Engine::SimpleMetaBundle> cd_tracks;
