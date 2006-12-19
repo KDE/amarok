@@ -1498,7 +1498,7 @@ MtpMediaDevice::readMtpMusic()
 
     kapp->processEvents( 100 );
 
-    LIBMTP_track_t *tracks = LIBMTP_Get_Tracklisting( m_device );
+    LIBMTP_track_t *tracks = LIBMTP_Get_Tracklisting_With_Callback( m_device, progressCallback, this );
 
     debug() << "Got tracks from device" << endl;
 
