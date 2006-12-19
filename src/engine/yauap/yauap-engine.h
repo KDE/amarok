@@ -61,6 +61,7 @@ public:
     void update_scope();
     void track_ended();
 private:
+    KURL loaded_url;
     std::vector<Engine::SimpleMetaBundle> cd_tracks;
     void change_state( Engine::State );
     DBusGConnection *bus;

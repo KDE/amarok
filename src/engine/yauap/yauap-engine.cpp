@@ -230,6 +230,12 @@ yauapEngine::update_metadata(void){
     debug() << "tracknr:" << bndl.tracknr << endl;
     debug() << "length:" << bndl.length << endl;
     debug() << "bitrate:" << bndl.bitrate << endl;
+
+
+    /* do not overwrite manually generated metadata from audio cds */
+    if(bndl.title.isEmpty() && loaded_url.protocol() == "cdda")
+        return;
+
     emit EngineBase::metaData( bndl );
 }
 
@@ -411,9 +417,10 @@ yauapEngine::load( const KURL &url, bool isStream )
     }
 
     debug() << "=> " << gerror << endl;
-    if( gerror )
-        return true;
-    return false;
+    if( !gerror )
+        return false;
+    loaded_url = url;
+    return true;
 }
 
 /* set volume */
