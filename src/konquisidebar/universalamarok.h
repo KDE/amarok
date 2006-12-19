@@ -22,7 +22,7 @@
 
 #include <khtml_part.h>
 #include <konqsidebarplugin.h>
-#include <dcopclient.h> 
+#include <dcopclient.h>
 #include <qslider.h>
 #include <qvbox.h>
 #include <khtmlview.h>
@@ -79,7 +79,7 @@ private:
    AmarokPlayerInterface_stub *playerStub;
    AmarokPlaylistInterface_stub *playlistStub;
    AmarokContextBrowserInterface_stub *contextStub;
-   
+
 public slots:
     void updateBrowser(const QString&);
     void updateStatus();
@@ -92,6 +92,8 @@ public slots:
     void volChanged(int vol);
     void openURLRequest( const KURL & );
     void checkForAmarok();
+    void noAmarokRunning();
+    void runAmarok();
     void lyrics() { contextStub->showLyrics(); }
     void currentTrack() { contextStub->showCurrentTrack(); }
     void wiki() { contextStub->showWiki(); }

@@ -212,6 +212,7 @@ void UniversalAmarok::updateBrowser(const QString& file)
  */
 void UniversalAmarok::updateStatus()
 {
+    checkForAmarok();
     vol_slider->setValue( playerStub->getVolume() );
     fileInfo->refresh();
     if( fileInfo->lastModified() != fileDT )
@@ -236,7 +237,11 @@ QString UniversalAmarok::getCurrentPlaying()
  */
 void UniversalAmarok::openURLRequest( const KURL &url )
 {
-    if( ! url.isValid() ) return;
+   if( ! url.isValid() ) return;
+   if (url.url() == "run:amarok") {
+        runAmarok();
+        return;
+   }
    checkForAmarok();
    playlistStub->playMedia(url);
 }
@@ -247,9 +252,41 @@ void UniversalAmarok::openURLRequest( const KURL &url )
  */
 void UniversalAmarok::checkForAmarok()
 {
-    if(amarokDCOP->isApplicationRegistered("amarok")) return;
+    if(!amarokDCOP->isApplicationRegistered("amarok"))
+        noAmarokRunning();
+}
+
+
+void UniversalAmarok::noAmarokRunning() {
+    QString  m_HTMLSource="";
+    m_HTMLSource.append(
+            "<html>"
+            "<div id='introduction_box' class='box'>"
+                "<div id='introduction_box-header' class='box-header'>"
+                    "<span id='introduction_box-header-title' class='box-header-title'>"
+                    + i18n( "Amarok is not running!" ) +
+                    "</span>"
+                "</div>"
+                "<div id='introduction_box-body' class='box-body'>"
+                    "<p>" +
+                    i18n( "To run Amarok, just click on the link below: "
+                        ) +
+                    "</p>"
+                    "<a href='run:amarok' class='button'>" + i18n( "Run Amarok..." ) + "</a>"
+                "</div>"
+            "</div>"
+            "</html>"
+                       );
+    browser->begin();
+    browser->write( m_HTMLSource );
+    browser->end();
+}
+
+void UniversalAmarok::runAmarok() {
     KApplication::kdeinitExecWait("amarok");
 }
+
+
 
 void UniversalAmarok::volChanged(int vol)
 {
