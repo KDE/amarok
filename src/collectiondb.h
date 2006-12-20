@@ -540,7 +540,6 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         static const int DATABASE_DEVICES_VERSION = 1;
 
         static const int MONITOR_INTERVAL = 60; //sec
-        static const bool DEBUG = false;
 
         static QDir largeCoverDir();
         static QDir tagCoverDir();
