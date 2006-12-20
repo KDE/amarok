@@ -6241,9 +6241,10 @@ void SqliteConnection::sqlite_like_new( sqlite3_context *context, int argc, sqli
 
     int begin = pattern.startsWith( "%" ), end = pattern.endsWith( "%" );
     if (begin)
-        pattern = pattern.right( 1 );
+        pattern = pattern.right( pattern.length() - 1 );
     if (end)
-        pattern = pattern.left( pattern.length() - 2 );
+        pattern = pattern.left( pattern.length() - 1 );
+
     if( argc == 3 ) // The function is given an escape character. In likeCondition() it defaults to '/'
         pattern.replace( "/%", "%" ).replace( "/_", "_" ).replace( "//", "/" );
 
