@@ -65,15 +65,15 @@ private:
     QPtrList<Ball> balls;
     Paddle * leftPaddle, * rightPaddle;
     float unitX, unitY;
-    unsigned int ballTexture;
-    unsigned int gridTexture;
+    GLuint ballTexture;
+    GLuint gridTexture;
 
     void drawDot3s( float x, float y, float z, float size );
     void drawHFace( float y );
     void drawScrollGrid( float scroll, float color[4] );
 
-    bool loadTexture(QString file, unsigned int & textureID);
-    void freeTexture(unsigned int & textureID);
+    bool loadTexture(QString file, GLuint& textureID);
+    void freeTexture(GLuint& textureID);
 };
 
 #endif

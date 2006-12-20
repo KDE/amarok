@@ -297,7 +297,7 @@ void GLAnalyzer2::setTextureMatrix( float rot, float scale )
     glMatrixMode( GL_MODELVIEW );
 }
 
-bool GLAnalyzer2::loadTexture( QString fileName, unsigned int & textureID )
+bool GLAnalyzer2::loadTexture( QString fileName, GLuint& textureID )
 {
     //reset texture ID to the default EMPTY value
     textureID = 0;
@@ -323,7 +323,7 @@ bool GLAnalyzer2::loadTexture( QString fileName, unsigned int & textureID )
 }
 
 
-void GLAnalyzer2::freeTexture( unsigned int & textureID )
+void GLAnalyzer2::freeTexture( GLuint & textureID )
 {
     if ( textureID > 0 )
         glDeleteTextures( 1, &textureID );

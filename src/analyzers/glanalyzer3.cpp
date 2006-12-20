@@ -445,7 +445,7 @@ void GLAnalyzer3::drawScrollGrid( float scroll, float color[4] )
     glMatrixMode( GL_MODELVIEW );
 }
 
-bool GLAnalyzer3::loadTexture( QString fileName, unsigned int & textureID )
+bool GLAnalyzer3::loadTexture( QString fileName, GLuint& textureID )
 {
     //reset texture ID to the default EMPTY value
     textureID = 0;
@@ -470,7 +470,7 @@ bool GLAnalyzer3::loadTexture( QString fileName, unsigned int & textureID )
     return true;
 }
 
-void GLAnalyzer3::freeTexture( unsigned int & textureID )
+void GLAnalyzer3::freeTexture( GLuint& textureID )
 {
     if ( textureID > 0 )
     glDeleteTextures( 1, &textureID );
