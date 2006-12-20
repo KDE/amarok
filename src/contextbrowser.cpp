@@ -2297,7 +2297,7 @@ void CurrentTrackJob::showSuggestedSongs( const QStringList &relArtists )
     qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
     qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
     qb.addMatches( QueryBuilder::tabArtist, relArtists );
-    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valScore, true );
+    qb.sortByFavorite();
     qb.setLimit( 0, 10 );
     values = qb.run();
 
@@ -2350,7 +2350,7 @@ CurrentTrackJob::showSongsWithLabel( const QString &label )
     qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
     qb.addMatch( QueryBuilder::tabLabels, QueryBuilder::valType, QString::number( CollectionDB::typeUser ) );
     qb.addMatch( QueryBuilder::tabLabels, QueryBuilder::valName, label );
-    qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valScore, true );
+    qb.sortByFavorite();
     qb.setLimit( 0, 10 );
     values = qb.run();
 

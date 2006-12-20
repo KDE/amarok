@@ -2295,7 +2295,7 @@ CollectionDB::removeAlbumImage( const QString &artist, const QString &album )
     {
         int id = MountPointManager::instance()->getIdForUrl( hardImage );
         QString rpath = MountPointManager::instance()->getRelativePath( id, hardImage );
-        query( "DELETE FROM images WHERE path='" + escapeString( hardImage ) + "' AND deviceid = " + id + ';' );
+        query( "DELETE FROM images WHERE path='" + escapeString( hardImage ) + "' AND deviceid = " + QString::number( id ) + ';' );
         deleted = true;
     }
 
