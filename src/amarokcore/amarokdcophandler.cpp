@@ -32,6 +32,7 @@
 #include "equalizersetup.h"
 #include "htmlview.h"
 #include "mediabrowser.h"
+#include "mountpointmanager.h"
 #include "osd.h"
 #include "playlist.h"
 #include "playlistbrowser.h"
@@ -876,6 +877,17 @@ namespace Amarok
     void DcopCollectionHandler::disableAutoScoring( bool disable )
     {
         CollectionDB::instance()->disableAutoScoring( disable );
+    }
+
+    int DcopCollectionHandler::deviceId( const QString &url )
+    {
+        return MountPointManager::instance()->getIdForUrl( url );
+    }
+
+    QString DcopCollectionHandler::relativePath( const QString &url )
+    {
+        int deviceid = deviceId( url );
+        return MountPointManager::instance()->getRelativePath( deviceid, url );
     }
 
 /////////////////////////////////////////////////////////////////////////////////////

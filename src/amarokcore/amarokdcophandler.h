@@ -198,6 +198,8 @@ class DcopCollectionHandler : public QObject, virtual public AmarokCollectionInt
       virtual void scannerAcknowledged();
       virtual int addLabels( const QString &url, const QStringList &labels );
       virtual void removeLabels( const QString &url, const QStringList &oldLabels );
+      virtual int deviceId( const QString &url );
+      virtual QString relativePath( const QString &url );
 };
 
 

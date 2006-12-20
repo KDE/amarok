@@ -194,6 +194,8 @@ k_dcop:
    virtual void scannerAcknowledged() = 0;                 ///< Called by the scanner to acknowledge the request.
    virtual int addLabels( const QString &url, const QStringList &labels ) = 0; ///< Add user-defined labels to the song with the given url. Returns the number of labels which were not already assigned to the track.
    virtual void removeLabels( const QString &url, const QStringList &oldLabels ) = 0; ///< Remove user-defined labels from the song with the given url.
+   virtual int deviceId( const QString &url ) = 0;         ///< Returns the device id for the URL.
+   virtual QString relativePath( const QString &url ) = 0; ///< Returns the relative path used in Amarok's database
 };
 
 
