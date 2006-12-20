@@ -385,8 +385,10 @@ void App::initGlobalShortcuts()
                             m_pPlaylistWindow, SLOT( slotAddLocation() ), true, true );
     m_pGlobalAccel->insert( "show", i18n( "Toggle Playlist Window" ), 0, KKey("WIN+p"), 0,
                             m_pPlaylistWindow, SLOT( showHide() ), true, true );
+#ifdef Q_WS_X11
     m_pGlobalAccel->insert( "osd", i18n( "Show OSD" ), 0, KKey("WIN+o"), 0,
                             Amarok::OSD::instance(), SLOT( forceToggleOSD() ), true, true );
+#endif
     m_pGlobalAccel->insert( "mute", i18n( "Mute Volume" ), 0, KKey("WIN+m"), 0,
                             ec, SLOT( mute() ), true, true );
 
