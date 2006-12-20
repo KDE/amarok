@@ -2546,7 +2546,7 @@ PodcastEpisode::downloadMedia()
 }
 
 /* change the localurl if redirected, allows us to use the original filename to transfer to mediadevices*/
-void PodcastEpisode::redirected( KIO::Job * job, const KURL & redirectedUrl )
+void PodcastEpisode::redirected( KIO::Job *, const KURL & redirectedUrl )
 {
     DEBUG_BLOCK
     debug() << "redirecting to " << redirectedUrl << ". filename: " << redirectedUrl.fileName() << endl;
