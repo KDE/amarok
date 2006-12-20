@@ -9,6 +9,7 @@
 #define AMAROK_CONTEXTBROWSER_H
 
 #include "amarokdcophandler.h"
+#include "clicklineedit.h"
 #include "engineobserver.h"
 
 #include <ktabwidget.h>
@@ -52,6 +53,8 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         void reloadStyleSheet();
         static KURL::List expandURL( const KURL &url ); // expand urls (album, compilation, ...)
         static bool hasContextProtocol( const KURL &url ); // is url expandable by context browser?
+
+        virtual bool eventFilter( QObject *o, QEvent *e ); //required by the labels dialog
 
     public slots:
         void openURLRequest(const KURL &url );
@@ -196,6 +199,8 @@ class ContextBrowser : public KTabWidget, public EngineObserver
 
         bool          m_browseLabels;
         QString       m_label;
+        ClickLineEdit* m_addLabelEdit;
+        QListView*    m_labelListView;
 
         CueFile      *m_cuefile;
 };

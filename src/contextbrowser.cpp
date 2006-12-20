@@ -3,6 +3,7 @@
 // (c) 2005 Mark Kretschmann <markey@web.de>
 // (c) 2006 Peter C. Ndikuwera <pndiku@gmail.com>
 // (c) 2006 Alexandre Pereira de Oliveira <aleprj@gmail.com>
+// (c) 2006 Maximilian Kossick <maximilian.kossick@googlemail.com>
 // License: GNU General Public License V2
 
 
@@ -13,6 +14,7 @@
 #include "app.h"
 #include "browserToolBar.h"
 #include "debug.h"
+#include "clicklineedit.h"
 #include "collectiondb.h"
 #include "collectionbrowser.h"
 #include "colorgenerator.h"
@@ -3545,19 +3547,26 @@ ContextBrowser::showLabelsDialog()
     debug() << "Showing add label dialog" << endl;
     KDialogBase *dialog = new KDialogBase( this, 0, false, QString::null, KDialogBase::Ok|KDialogBase::Cancel );
     dialog->makeVBoxMainWidget();
-    QListView *view = new QListView( dialog->mainWidget() );
-    view->addColumn( i18n( "Label" ) );
-    view->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+
+    m_addLabelEdit = new ClickLineEdit( i18n( "Add new label" ), dialog->mainWidget() );
+    m_addLabelEdit->installEventFilter( this );
+    m_addLabelEdit->setFrame( QFrame::Sunken );
+    QToolTip::add( m_addLabelEdit, i18n( "Enter a new label and press Return to add it" ) );
+
+    m_labelListView = new QListView( dialog->mainWidget() );
+    m_labelListView->addColumn( i18n( "Label" ) );
+    m_labelListView->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+
     foreach( allLabels )
     {
-        QCheckListItem *item = new QCheckListItem( view, *it, QCheckListItem::CheckBox );
+        QCheckListItem *item = new QCheckListItem( m_labelListView, *it, QCheckListItem::CheckBox );
         item->setOn( trackLabels.contains( *it ) );
     }
     if( dialog->exec() == QDialog::Accepted )
     {
         debug() << "Dialog closed, updating labels" << endl;
         QStringList newTrackLabels;
-        QListViewItemIterator iter( view );
+        QListViewItemIterator iter( m_labelListView );
         while( iter.current() )
         {
             QCheckListItem *item = static_cast<QCheckListItem*>( iter.current() );
@@ -3569,12 +3578,49 @@ ContextBrowser::showLabelsDialog()
                                              newTrackLabels,
                                              CollectionDB::instance()->uniqueIdFromUrl( currentUrl ),
                                              CollectionDB::typeUser );
+        CollectionDB::instance()->cleanLabels();
         if( newTrackLabels != trackLabels )
         {
             m_dirtyCurrentTrackPage = true;
             showCurrentTrack();
         }
     }
+    delete dialog; //deletes children
+    m_addLabelEdit = 0;
+    m_labelListView = 0;
+}
+
+bool
+ContextBrowser::eventFilter( QObject *o, QEvent *e )
+{
+    switch( e->type() )
+    {
+    case 6/*QEvent::KeyPress*/:
+        #define e static_cast<QKeyEvent*>(e)
+
+        if( o == m_addLabelEdit ) //the add label lineedit
+        {
+            switch( e->key() )
+            {
+            case Key_Return:
+            case Key_Enter:
+            {
+                QCheckListItem *item = new QCheckListItem( m_labelListView, m_addLabelEdit->text(), QCheckListItem::CheckBox );
+                item->setOn( true );
+                m_addLabelEdit->setText( QString() );
+                return true;
+            }
+
+            default:
+                return false;
+            }
+        }
+
+    default:
+        break;
+    }
+
+    return KTabWidget::eventFilter( o, e );
 }
 
 void ContextBrowser::showWikipedia( const QString &url, bool fromHistory, bool replaceHistory )
