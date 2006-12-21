@@ -1082,7 +1082,7 @@ void PlaylistWindow::toolsMenuAboutToShow() //SLOT
  */
 void PlaylistWindow::showHide() //SLOT
 {
-
+#ifdef Q_WS_X11
     const KWin::WindowInfo info = KWin::windowInfo( winId() );
     const uint desktop = KWin::currentDesktop();
     const bool isOnThisDesktop = info.isOnDesktop( desktop );
@@ -1102,10 +1102,14 @@ void PlaylistWindow::showHide() //SLOT
     else if( !info.isMinimized() && !isShaded ) setShown( !isShown() );
 
     if( isShown() ) KWin::deIconifyWindow( winId() );
+#else
+    setShown( !isShown() );
+#endif
 }
 
 void PlaylistWindow::activate()
 {
+#ifdef Q_WS_X11
     const KWin::WindowInfo info = KWin::windowInfo( winId() );
 
     if( KWinModule( NULL, KWinModule::INFO_DESKTOP ).activeWindow() != winId())
@@ -1114,12 +1118,19 @@ void PlaylistWindow::activate()
         setShown( true );
     if( isShown() )
         KWin::activateWindow( winId() );
+#else
+    setShown( true );
+#endif
 }
 
 bool PlaylistWindow::isReallyShown() const
 {
+#ifdef Q_WS_X11
     const KWin::WindowInfo info = KWin::windowInfo( winId() );
     return isShown() && !info.isMinimized() && info.isOnDesktop( KWin::currentDesktop() );
+#else
+    return isShown();
+#endif
 }
 
 void
