@@ -7651,7 +7651,7 @@ QueryBuilder::buildQuery( bool withDeviceidPlaceholder )
         m_query += CollectionDB::instance()->boolT();
         m_query += ' ';
         m_query += m_where;
-        if ( !m_showAll && ( m_linkTables & tabSong ) )     //Only for things on mounted devices, unless you use optShowAll
+        if ( !m_showAll && ( m_linkTables & tabSong || m_tables.contains( tableName( tabSong) ) ) )     //Only stuff on mounted devices, unless you use optShowAll
         {
             if ( withDeviceidPlaceholder )
                 m_query += "(*MountedDeviceSelection*)";
