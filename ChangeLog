@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 1.4.5
   FEATURES:
+    * "Automatically show context browser" feature makes a return, as per
+      popular request. It is however disabled by default.
     * Improved keyboard navigation: Space key is now a shortcut for Play/Pause,
       and cursor left/right seeks forward/backward.
     * Cover images are shown in collection browser. Patch by Trever Fischer
