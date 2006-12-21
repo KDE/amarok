@@ -250,10 +250,12 @@ void AmarokConfigDialog::updateButtons()
  */
 void AmarokConfigDialog::updateSettings()
 {
+#ifdef Q_WS_X11
     OSDPreviewWidget *osd = static_cast<OSDPreviewWidget*>( child( "osdpreview" ) );
     AmarokConfig::setOsdAlignment( osd->alignment() );
     AmarokConfig::setOsdYOffset( osd->y() );
     Amarok::OSD::instance()->applySettings();
+#endif
 
     static_cast<CollectionSetup*>(child("CollectionSetup"))->writeConfig();
 
@@ -337,11 +339,15 @@ void AmarokConfigDialog::updateWidgetsDefault()
  */
 bool AmarokConfigDialog::hasChanged()
 {
+#ifdef Q_WS_X11
     OSDPreviewWidget *osd = static_cast<OSDPreviewWidget*>( child( "osdpreview" ) );
+#endif
 
     return  m_soundSystem->currentText() != m_pluginAmarokName[AmarokConfig::soundSystem()] ||
+#ifdef Q_WS_X11
             osd->alignment() != AmarokConfig::osdAlignment() ||
             osd->alignment() != OSDWidget::Center && osd->y() != AmarokConfig::osdYOffset() ||
+#endif
             m_opt2->styleComboBox->currentText() != AmarokConfig::contextBrowserStyleSheet() ||
             Amarok::databaseTypeCode(  m_opt7->dbSetupFrame->databaseEngine->currentText()  ) != AmarokConfig::databaseEngine().toInt() ||
             m_engineConfig && m_engineConfig->hasChanged() ||
