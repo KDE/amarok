@@ -12,6 +12,7 @@
 #include "amarokconfig.h"
 #include "browserbar.h"
 #include "debug.h"
+#include "enginecontroller.h"
 #include "multitabbar.h"   //m_tabBar
 
 #include <kapplication.h>  //kapp
@@ -62,6 +63,7 @@ BrowserBar* BrowserBar::s_instance = 0;
 
 BrowserBar::BrowserBar( QWidget *parent )
         : QWidget( parent, "BrowserBar" )
+        , EngineObserver( EngineController::instance() )
         , m_playlistBox( new QVBox( this ) )
         , m_divider( new Amarok::Splitter( this ) )
         , m_browserBox( new QVBox( this ) )
@@ -69,9 +71,6 @@ BrowserBar::BrowserBar( QWidget *parent )
         , m_lastIndex( -1 )
         , m_mapper( new QSignalMapper( this ) )
 {
-
- 
-
     m_tabManagementButton = new QPushButton( SmallIconSet(Amarok::icon( "configure" )), 0, this, "tab_managment_button" );
     connect (m_tabManagementButton, SIGNAL(clicked()), SLOT(showBrowserSelectionMenu()));
     m_tabManagementButton->setIsMenuButton ( true ); //deprecated, but since I cannot add menu directly to button it is needed.
@@ -375,9 +374,35 @@ BrowserBar::indexForName( const QString &name ) const
     return -1;
 }
 
-void BrowserBar::showBrowserSelectionMenu()
+void
+BrowserBar::showBrowserSelectionMenu()
 {
       m_tabBar->showTabSelectionMenu(mapToGlobal(QPoint(m_tabManagementButton->pos().x(), m_tabManagementButton->pos().y() +m_tabManagementButton->height() )));
+}
+
+void
+BrowserBar::engineStateChanged( Engine::State state, Engine::State oldState )
+{
+    if( !AmarokConfig::autoShowContextBrowser() || m_currentIndex == -1 )
+        return;
+
+    switch( state ) {
+    case Engine::Playing:
+
+        if( oldState != Engine::Paused && m_currentIndex != -1 ) {
+            m_lastIndex = m_currentIndex;
+            showBrowser( "ContextBrowser" );
+        }
+        break;
+
+    case Engine::Empty:
+
+        if( m_lastIndex >= 0 )
+            showBrowser( m_lastIndex );
+
+    default:
+        ;
+    }
 }
 
 #include "browserbar.moc"

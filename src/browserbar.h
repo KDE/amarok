@@ -12,6 +12,8 @@
 #define BROWSERBAR_H
 
 #include "amarok_export.h"  //LIBAMAROK_EXPORT
+#include "engineobserver.h" //baseclass
+
 #include <qwidget.h>        //baseclass
 #include <qvaluevector.h>   //stack allocated
 #include <qmap.h>           //stack allocated
@@ -28,7 +30,7 @@ class QSignalMapper;
 class QVBox;
 
 
-class BrowserBar : public QWidget
+class BrowserBar : public QWidget, public EngineObserver
 {
     Q_OBJECT
 
@@ -59,6 +61,9 @@ public:
 protected:
     virtual bool event( QEvent* );
     virtual void polish();
+
+protected:
+    virtual void engineStateChanged( Engine::State, Engine::State = Engine::Empty );
 
 public slots:
     void showBrowser( const QString& name ) { showBrowser( indexForName( name ) ); }
