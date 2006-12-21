@@ -890,6 +890,11 @@ namespace Amarok
         return MountPointManager::instance()->getRelativePath( deviceid, url );
     }
 
+    QString DcopCollectionHandler::absolutePath( int deviceid, const QString &relativePath )
+    {
+        return MountPointManager::instance()->getAbsolutePath( deviceid, relativePath );
+    }
+
 /////////////////////////////////////////////////////////////////////////////////////
 // class DcopScriptHandler
 /////////////////////////////////////////////////////////////////////////////////////

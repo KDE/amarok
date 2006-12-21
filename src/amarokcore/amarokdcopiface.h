@@ -196,6 +196,7 @@ k_dcop:
    virtual void removeLabels( const QString &url, const QStringList &oldLabels ) = 0; ///< Remove user-defined labels from the song with the given url.
    virtual int deviceId( const QString &url ) = 0;         ///< Returns the device id for the URL.
    virtual QString relativePath( const QString &url ) = 0; ///< Returns the relative path used in Amarok's database
+   virtual QString absolutePath( int deviceid, const QString &relativePath ) = 0; ///< Returns the absolute path
 };
 
 
