@@ -548,7 +548,9 @@ void App::applySettings( bool firstTime )
     //determine and apply colors first
     applyColorScheme();
 
+#ifdef Q_WS_X11
     TrackToolTip::instance()->removeFromWidget( m_pTray );
+#endif
 
     if( AmarokConfig::showPlayerWindow() )
     {
@@ -568,6 +570,7 @@ void App::applySettings( bool firstTime )
 
             connect( m_pPlayerWindow, SIGNAL(playlistToggled( bool )), m_pPlaylistWindow, SLOT(showHide()) );
 
+#ifdef Q_WS_X11
             //TODO get this to work!
             //may work if you set no parent for the systray?
             //KWin::setSystemTrayWindowFor( m_pTray->winId(), m_pPlayerWindow->winId() );
@@ -577,6 +580,7 @@ void App::applySettings( bool firstTime )
             //make tray icon behave properly after selecting to show or hide player window
             m_pTray->engineStateChanged(EngineController::instance()->engine()->state(), EngineController::instance()->engine()->state());
             m_pTray->engineNewMetaData(EngineController::instance()->bundle(), false);
+#endif
 
             //make player window minimal if it was last time
             if( AmarokConfig::playerWindowMinimalView() ){
@@ -588,9 +592,11 @@ void App::applySettings( bool firstTime )
             m_pPlayerWindow->applySettings();
 
     } else if( m_pPlayerWindow ) {
+#ifdef Q_WS_X11
         delete m_pTray; m_pTray = new Amarok::TrayIcon( m_pPlaylistWindow );
         m_pTray->engineStateChanged(EngineController::instance()->engine()->state(), EngineController::instance()->engine()->state());
         m_pTray->engineNewMetaData(EngineController::instance()->bundle(), false);
+#endif
         delete m_pPlayerWindow; m_pPlayerWindow = 0;
 
         //Set the caption correctly.
@@ -611,14 +617,18 @@ void App::applySettings( bool firstTime )
     Scrobbler::instance()->applySettings();
     Amarok::OSD::instance()->applySettings();
     CollectionDB::instance()->applySettings();
+#ifdef Q_WS_X11
     m_pTray->setShown( AmarokConfig::showTrayIcon() );
     TrackToolTip::instance()->addToWidget( m_pTray );
+#endif
 
 
     //on startup we need to show the window, but only if it wasn't hidden on exit
     //and always if the trayicon isn't showing
     QWidget* main_window = mainWindow();
+#ifdef Q_WS_X11
     if( ( main_window && firstTime && !Amarok::config()->readBoolEntry( "HiddenOnExit", false ) ) || ( main_window && !AmarokConfig::showTrayIcon() ) )
+#endif
     {
         main_window->show();
 
@@ -698,7 +708,9 @@ App::continueInit()
     m_pMediaDeviceManager = MediaDeviceManager::instance();
     m_pGlobalAccel    = new KGlobalAccel( this );
     m_pPlaylistWindow = new PlaylistWindow();
+#ifdef Q_WS_X11
     m_pTray           = new Amarok::TrayIcon( m_pPlaylistWindow );
+#endif
     m_pPlaylistWindow->init(); //creates the playlist, browsers, etc.
     //init playlist window as soon as the database is guaranteed to be usable
     //connect( CollectionDB::instance(), SIGNAL( databaseUpdateDone() ), m_pPlaylistWindow, SLOT( init() ) );

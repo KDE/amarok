@@ -113,7 +113,9 @@ class LIBAMAROK_EXPORT App : public KApplication, public EngineObserver
         KGlobalAccel        *m_pGlobalAccel;
         PlayerWidget        *m_pPlayerWindow;
         PlaylistWindow      *m_pPlaylistWindow;
+#ifdef Q_WS_X11
         Amarok::TrayIcon    *m_pTray;
+#endif
         MediaDeviceManager       *m_pMediaDeviceManager;
 };
 
