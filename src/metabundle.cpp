@@ -544,10 +544,10 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
 
                 if ( !file->ID3v2Tag()->frameListMap()["TPE2"].isEmpty() ) // non-standard: Apple, Microsoft
                     setAlbumArtist( TStringToQString( file->ID3v2Tag()->frameListMap()["TPE2"].front()->toString() ).stripWhiteSpace() );
-                    
+
                 if ( !file->ID3v2Tag()->frameListMap()["TCMP"].isEmpty() )
                     compilation = TStringToQString( file->ID3v2Tag()->frameListMap()["TCMP"].front()->toString() ).stripWhiteSpace();
-                    
+
                 if(images) {
                     loadImagesFromTag( *file->ID3v2Tag(), *images );
                 }
