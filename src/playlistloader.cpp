@@ -827,9 +827,21 @@ PlaylistFile::loadASX( QTextStream &stream )
     QString errorMsg;
     int errorLine, errorColumn;
     stream.setEncoding( QTextStream::UnicodeUTF8 );
-    if (!doc.setContent(stream.read(), &errorMsg, &errorLine, &errorColumn))
+
+    QString content = stream.read();
+
+    //ASX looks a lot like xml, but doesn't require tags to be case sensitive,
+    //meaning we have to accept things like: <Abstract>...</abstract>
+    //We use a dirty way to achieve this: we make all tags lower case
+    QRegExp ex("(<[/]?[^>]*[A-Z]+[^>]*>)");
+    ex.setCaseSensitive(true);
+    while ( (ex.search(content)) != -1 )
+        content.replace(ex.cap( 1 ), ex.cap( 1 ).lower());
+
+
+    if (!doc.setContent(content, &errorMsg, &errorLine, &errorColumn))
     {
-        debug() << "[PLAYLISTLOADER]: Error loading xml file: " "(" << errorMsg << ")"
+        debug() << "Error loading xml file: " "(" << errorMsg << ")"
                 << " at line " << errorLine << ", column " << errorColumn << endl;
         return false;
     }
