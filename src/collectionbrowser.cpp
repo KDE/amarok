@@ -104,7 +104,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
         searchToolBar->setStretchableWidget( m_searchEdit );
 
         m_searchEdit->setFrame( QFrame::Sunken );
-        connect( button, SIGNAL( clicked() ), m_searchEdit, SLOT( clear() ) );
+        connect( button, SIGNAL( clicked() ), SLOT( slotClearFilter() ) );
 
         QToolTip::add( button, i18n( "Clear filter" ) );
         QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to filter collection" ) );
@@ -247,6 +247,12 @@ CollectionBrowser::CollectionBrowser( const char* name )
     setFocusProxy( m_view ); //default object to get focus
 }
 
+void
+CollectionBrowser::slotClearFilter() //SLOT
+{
+    m_searchEdit->clear();
+    QTimer::singleShot( 0, this, SLOT( slotSetFilter() ) ); //Filter instantly
+}
 
 void
 CollectionBrowser::slotSetFilterTimeout() //SLOT

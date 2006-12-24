@@ -72,6 +72,7 @@ class CollectionBrowser: public QVBox
         void toggleDivider();
 
     private slots:
+        void slotClearFilter();
         void slotSetFilterTimeout();
         void slotSetFilter();
 
