@@ -115,7 +115,7 @@ class DbConnection
         DbConnection();
         virtual ~DbConnection() {}
 
-        virtual QStringList query( const QString& /* statement */ ) = 0;
+        virtual QStringList query( const QString& /* statement */, bool suppressDebug ) = 0;
         virtual int insert( const QString& /* statement */, const QString& /* table */ ) = 0;
         bool isInitialized() const { return m_initialized; }
         virtual bool isConnected() const = 0;
@@ -136,7 +136,7 @@ class SqliteConnection : public DbConnection
         SqliteConnection( const SqliteConfig* /* config */ );
        ~SqliteConnection();
 
-        QStringList query( const QString& /* statement */ );
+        QStringList query( const QString& /* statement */, bool suppressDebug = false );
         int insert( const QString& /* statement */, const QString& /* table */ );
         bool isConnected()const { return true; }
     private:
@@ -157,7 +157,7 @@ class MySqlConnection : public DbConnection
         MySqlConnection( const MySqlConfig* /* config */ );
        ~MySqlConnection();
 
-        QStringList query( const QString& /* statement */ );
+        QStringList query( const QString& /* statement */, bool suppressDebug = false );
         int insert( const QString& /* statement */, const QString& /* table */ );
         bool isConnected()const { return m_connected; }
         QString lastError() const { return m_error; }
@@ -179,7 +179,7 @@ class PostgresqlConnection : public DbConnection
         PostgresqlConnection( const PostgresqlConfig* /* config */ );
        ~PostgresqlConnection();
 
-        QStringList query( const QString& /* statement */ );
+        QStringList query( const QString& /* statement */, bool suppressDebug = false );
         int insert( const QString& /* statement */, const QString& /* table */ );
         bool isConnected()const { return m_connected; }
         QString lastError() const { return m_error; }
@@ -270,7 +270,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         int getType() { return getDbConnectionType(); }
 
         //sql helper methods
-        QStringList query( const QString& statement );
+        QStringList query( const QString& statement, bool suppressDebug = false );
         int insert( const QString& statement, const QString& table );
 
         /**

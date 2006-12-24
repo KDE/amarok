@@ -361,7 +361,7 @@ CollectionDB::initDirOperations()
  * @return          The queried data, or QStringList() on error.
  */
 QStringList
-CollectionDB::query( const QString& statement )
+CollectionDB::query( const QString& statement, bool suppressDebug )
 {
     m_mutex.lock();
     clock_t start;
@@ -379,7 +379,7 @@ CollectionDB::query( const QString& statement )
     DbConnection *dbConn;
     dbConn = getMyConnection();
 
-    QStringList values = dbConn->query( statement );
+    QStringList values = dbConn->query( statement, suppressDebug );
     if ( DEBUG )
     {
         clock_t finish = clock();
@@ -3190,7 +3190,7 @@ CollectionDB::urlFromUniqueId( const QString &id )
             "FROM uniqueid%1 "
             "WHERE uniqueid = '%2';" )
                 .arg( scanning ? "_temp" : QString::null )
-                .arg( id ) );
+                .arg( id ), true );
 
     if( urls.empty() && scanning )
         urls = query( QString(
@@ -3219,7 +3219,7 @@ CollectionDB::uniqueIdFromUrl( const KURL &url )
             "WHERE deviceid = %2 AND url = '%3';" )
                 .arg( scanning ? "_temp" : QString::null )
                 .arg( currdeviceid )
-                .arg( currurl ) );
+                .arg( currurl ), true );
 
     if( uid.empty() && scanning )
         uid = query( QString(
@@ -6035,7 +6035,7 @@ SqliteConnection::~SqliteConnection()
 }
 
 
-QStringList SqliteConnection::query( const QString& statement )
+QStringList SqliteConnection::query( const QString& statement, bool suppressDebug )
 {
 
     QStringList values;
@@ -6331,7 +6331,7 @@ MySqlConnection::~MySqlConnection()
 }
 
 
-QStringList MySqlConnection::query( const QString& statement )
+QStringList MySqlConnection::query( const QString& statement, bool suppressDebug )
 {
     QStringList values;
 
@@ -6354,7 +6354,8 @@ QStringList MySqlConnection::query( const QString& statement )
         {
             if ( mysql_field_count( m_db ) != 0 )
             {
-                debug() << "MYSQL QUERY FAILED: " << mysql_error( m_db ) << "\n" << "FAILED QUERY: " << statement << "\n";
+                if ( !suppressDebug )
+                    debug() << "MYSQL QUERY FAILED: " << mysql_error( m_db ) << "\n" << "FAILED QUERY: " << statement << "\n";
                 values = QStringList();
             }
         }
@@ -6362,7 +6363,8 @@ QStringList MySqlConnection::query( const QString& statement )
     }
     else
     {
-        debug() << "MYSQL QUERY FAILED: " << mysql_error( m_db ) << "\n" << "FAILED QUERY: " << statement << "\n";
+        if ( !suppressDebug )
+            debug() << "MYSQL QUERY FAILED: " << mysql_error( m_db ) << "\n" << "FAILED QUERY: " << statement << "\n";
         values = QStringList();
     }
 
@@ -6442,7 +6444,7 @@ PostgresqlConnection::~PostgresqlConnection()
 }
 
 
-QStringList PostgresqlConnection::query( const QString& statement )
+QStringList PostgresqlConnection::query( const QString& statement, bool suppressDebug )
 {
     QStringList values;
     PGresult* result;
@@ -6451,14 +6453,16 @@ QStringList PostgresqlConnection::query( const QString& statement )
     result = PQexec(m_db, statement.utf8());
     if (result == NULL)
     {
-        debug() << "POSTGRESQL QUERY FAILED: " << PQerrorMessage( m_db ) << "\n" << "FAILED QUERY: " << statement << "\n";
+        if ( !suppressDebug )
+            debug() << "POSTGRESQL QUERY FAILED: " << PQerrorMessage( m_db ) << "\n" << "FAILED QUERY: " << statement << "\n";
         return values;
     }
 
     status = PQresultStatus(result);
     if ((status != PGRES_COMMAND_OK) && (status != PGRES_TUPLES_OK))
     {
-        debug() << "POSTGRESQL QUERY FAILED: " << PQerrorMessage( m_db ) << "\n" << "FAILED QUERY: " << statement << "\n";
+        if ( !suppressDebug )
+            debug() << "POSTGRESQL QUERY FAILED: " << PQerrorMessage( m_db ) << "\n" << "FAILED QUERY: " << statement << "\n";
         PQclear(result);
         return values;
     }
