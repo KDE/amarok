@@ -252,6 +252,7 @@ CollectionBrowser::slotClearFilter() //SLOT
 {
     m_searchEdit->clear();
     QTimer::singleShot( 0, this, SLOT( slotSetFilter() ) ); //Filter instantly
+    QTimer::singleShot( 0, m_view, SLOT( slotEnsureSelectedItemVisible() ) );
 }
 
 void
@@ -730,6 +731,44 @@ CollectionView::scanDone( bool changed ) //SLOT
     Amarok::actionCollection()->action("update_collection")->setEnabled( true );
 }
 
+void
+CollectionView::slotEnsureSelectedItemVisible() //SLOT
+{
+    //Scroll to make sure the first selected item is visible
+
+    //Find the first selected item
+    QListViewItem *r=0;
+    for ( QListViewItem *i = firstChild(); i && !r; i=i->nextSibling() )
+    {
+        if ( i->isSelected() )
+            r = i;
+        for ( QListViewItem *j = i->firstChild(); j && !r; j=j->nextSibling() )
+        {
+            if ( j->isSelected() )
+                r = j;
+            for ( QListViewItem *k = j->firstChild(); k && !r; k=k->nextSibling() )
+            {
+                if ( k->isSelected() )
+                    r = k;
+            }
+        }
+    }
+    if ( r )
+    {
+        //An elaborate agorithm to try to make as much as possible of the vicinity visible
+        if ( lastChild() )
+            ensureItemVisible( lastChild() );
+        if ( r->parent() )
+        {
+            if ( r->parent()->parent() )
+                ensureItemVisible( r->parent()->parent() );
+            if ( r->parent()->nextSibling() )
+                ensureItemVisible( r->parent()->nextSibling() );
+            ensureItemVisible( r->parent() );
+        }
+        ensureItemVisible( r );
+    }
+}
 
 void
 CollectionView::slotExpand( QListViewItem* item )  //SLOT
