@@ -1071,12 +1071,15 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
         child->setExpandable( expandable );
     }
 
-    //Display the album cover for the parent item now it is expanded
+    //Load album covers to be shown in Collection Browser
     if ( dynamic_cast<CollectionItem*>( item ) )
     {
         CollectionItem *i = static_cast<CollectionItem*>( item );
-        if ( i->m_cat == IdAlbum || i->m_cat == IdVisYearAlbum )
-            i->setPixmap( 0, QPixmap() );   //The pixmap given is unimportant. The cover is used.
+        if ( i->m_cat == IdArtist || i->m_cat == IdAlbum || i->m_cat == IdVisYearAlbum ) //Album or Artist
+        {
+            i->loadCovers();
+            i->setup(); //set new height
+        }
     }
 }
 
@@ -1088,8 +1091,8 @@ CollectionView::slotCollapse( QListViewItem* item )  //SLOT
     if ( dynamic_cast<CollectionItem*>( item ) )
     {
         CollectionItem *i = static_cast<CollectionItem*>( item );
-        if ( i->m_cat == IdAlbum || i->m_cat == IdVisYearAlbum )
-            i->setPixmap( 0, iconForCategory( i->m_cat ) );
+        if ( !i->m_coverImages.isEmpty() )
+            i->setup(); //Restore height
     }
 
     QListViewItem* child = item->firstChild();
@@ -1508,68 +1511,6 @@ CollectionView::setViewMode( int mode, bool rerender /*=true*/ )
         renderView( true );
     }
 }
-
-void
-CollectionItem::setPixmap(int column, const QPixmap & pix)
-{
-    //Don't show the cover if the album isn't expanded (for speed)
-    if ( !isOpen() )
-    {
-        QListViewItem::setPixmap( column, pix );
-        return;
-    }
-
-    //Generate Album name
-    QString album( text( 0 ) ), artist;
-    if ( m_cat == IdVisYearAlbum )
-    {
-        QString pointlessString;
-        CollectionView::yearAlbumCalc( pointlessString, album );
-    }
-    else if ( m_cat != IdAlbum )
-    {
-        QListViewItem::setPixmap( column, pix );
-        return;
-    }
-
-    //Now m_cat is either IdAlbum or IdVisYearAlbum, and so this is an album as required.
-
-    //Now work out the artist 
-    CollectionItem *p = this;
-    while ( p->parent() && dynamic_cast<CollectionItem*>( p->parent() ) )
-    {
-        p = static_cast<CollectionItem*>( p->parent() );
-        if ( IdArtist == p->m_cat )
-        {
-            artist = p->text( 0 );
-            break;
-        }
-    }
-
-    if ( artist.isNull() )
-    {
-        //Try to guess artist - this will only happen if you don't have an Artist category
-        //above the Album category in the tree
-        QueryBuilder qb;
-        qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-        qb.addMatch( QueryBuilder::tabAlbum, QueryBuilder::valName, album );
-
-        QStringList values( qb.run() );
-
-        if ( !values.isEmpty() )
-            artist = values[ 0 ];
-        else
-        {
-            //Don't bother trying to create a shadow because it won't work anyway. The
-            //nocover image has intial transparency, so adding the shadow doesn't work.
-            QListViewItem::setPixmap( column, QPixmap( CollectionDB::instance()->notAvailCover( false, 50 ) ) );
-            return;
-        }
-    }
-
-    QListViewItem::setPixmap( column, QPixmap( CollectionDB::instance()->albumImage( artist, album, true, 50 ) ) );
-}
-
 
 void
 CollectionView::fetchCover() //SLOT
@@ -4169,6 +4110,15 @@ CollectionView::renderIpodModeView( bool /*=false*/ )
     removeDuplicatedHeaders();
 }
 
+QPixmap
+CollectionView::coverFromPath( const QString &path )
+{
+    QPixmap &r( m_covers[ path ] );
+    if ( r.isNull() )
+        r.load( path );
+    return r;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS CollectionItem
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -4228,8 +4178,108 @@ CollectionItem::paintCell ( QPainter * painter, const QColorGroup & cg,
     }
     else
     {
-        KListViewItem::paintCell( painter, cg, column, width, align );
+        KListViewItem::paintCell( painter, cg, column, width, align );  //Draw as normal
+
+        //Add cover images after text, if we have any
+        if ( !m_coverImages.isEmpty() && isOpen() )
+        {
+            int x = KListViewItem::width(painter->fontMetrics(),listView(),column) + 16;
+            foreachType( QValueList<QPixmap>, m_coverImages )
+            {
+                painter->drawPixmap( x, ( height() - ( *it ).height() ) / 2, *it );
+                x += ( *it ).width() + 4;
+            }
+        }
     }
+}
+
+void
+CollectionItem::loadCovers( bool refresh )
+{
+    const unsigned int maxCovers = 3;
+
+    if ( refresh )
+        m_coverImages.clear();
+
+    if ( !m_coverImages.isEmpty() )
+        return;
+
+    //For Artist
+    if ( m_cat == IdArtist )
+    {
+        QueryBuilder qb;
+        qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
+        qb.addMatch( QueryBuilder::tabArtist, QueryBuilder::valName, text( 0 ) );
+        qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
+        qb.setLimit( 0, maxCovers );
+
+        QStringList albums = qb.run();
+        foreach( albums )
+        {
+            QString path( CollectionDB::instance()->albumImage( text( 0 ), *it, true, 50 ) );
+            if ( path != CollectionDB::instance()->notAvailCover( true, 50 ) )
+                m_coverImages.push_back( listView()->coverFromPath( path ) );
+        }
+        return;
+    }
+
+    //For Albums
+    if ( m_cat == IdAlbum || m_cat == IdVisYearAlbum )
+    {
+        QString album( text( 0 ) ), artist;
+        if ( m_cat == IdVisYearAlbum )
+        {
+            QString pointlessString;
+            CollectionView::yearAlbumCalc( pointlessString, album );
+        }
+
+        //Now work out the artist
+        CollectionItem *p = this;
+        while ( p->parent() && dynamic_cast<CollectionItem*>( p->parent() ) )
+        {
+            p = static_cast<CollectionItem*>( p->parent() );
+            if ( IdArtist == p->m_cat )
+            {
+                artist = p->text( 0 );
+                break;
+            }
+        }
+
+        if ( artist.isNull() )
+        {
+            //Try to guess artist - this will only happen if you don't have an Artist category
+            //above the Album category in the tree
+            QueryBuilder qb;
+            qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
+            qb.addMatch( QueryBuilder::tabAlbum, QueryBuilder::valName, album );
+            qb.setLimit( 0, 1 );
+
+            QStringList values( qb.run() );
+            if ( values.isEmpty() )
+                return;
+            else
+                artist = values[ 0 ];
+        }
+        QString path( CollectionDB::instance()->albumImage( artist, album, true, 50 ) );
+//        if ( path != CollectionDB::instance()->notAvailCover( true, 50 ) )
+        m_coverImages.push_back( listView()->coverFromPath( path ) );
+        return;
+    }
+}
+
+void
+CollectionItem::setup()
+{
+    if ( isOpen() && !m_coverImages.isEmpty() )
+    {
+        int maxHeight = height();
+        foreachType( QValueList<QPixmap>, m_coverImages )
+            if ( ( *it ).height() > maxHeight )
+                maxHeight = ( *it ).height();
+        setHeight( maxHeight + 2 + maxHeight % 2 ); //make the height an even num. of px.
+    }
+    else
+        KListViewItem::setup();
 }
 
 int
