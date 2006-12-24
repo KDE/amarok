@@ -213,7 +213,7 @@ CoverManager::CoverManager()
     // signals and slots connections
     connect( m_artistView, SIGNAL(selectionChanged( QListViewItem* ) ),
                            SLOT(slotArtistSelected( QListViewItem* )) );
-    connect( m_coverView,  SIGNAL(rightButtonPressed( QIconViewItem*, const QPoint& )),
+    connect( m_coverView,  SIGNAL(contextMenuRequested( QIconViewItem*, const QPoint& )),
                            SLOT(showCoverMenu( QIconViewItem*, const QPoint& )) );
     connect( m_coverView,  SIGNAL(executed( QIconViewItem* )),
                            SLOT(coverItemExecuted( QIconViewItem* )) );

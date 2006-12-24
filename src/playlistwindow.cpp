@@ -91,8 +91,8 @@ namespace Amarok
 
     protected:
         virtual void
-        mousePressEvent( QMouseEvent *e ) {
-            if( e->button() == RightButton ) Amarok::Menu::instance()->popup( e->globalPos() );
+        contextMenuEvent( QContextMenuEvent *e ) {
+            Amarok::Menu::instance()->popup( e->globalPos() );
         }
 
         virtual void

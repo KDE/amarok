@@ -34,7 +34,7 @@ protected:
     virtual void transform( Scope& );
     virtual void analyze( const Scope& );
     virtual void resizeEvent( QResizeEvent* );
-    virtual void mousePressEvent( QMouseEvent* );
+    virtual void contextMenuEvent( QContextMenuEvent* );
     virtual void paletteChange( const QPalette& );
 
     void drawBackground();

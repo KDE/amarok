@@ -175,7 +175,7 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
 
     connect( m_gui->listView, SIGNAL( currentChanged( QListViewItem* ) ), SLOT( slotCurrentChanged( QListViewItem* ) ) );
     connect( m_gui->listView, SIGNAL( doubleClicked ( QListViewItem*, const QPoint&, int ) ), SLOT( slotRunScript() ) );
-    connect( m_gui->listView, SIGNAL( rightButtonPressed ( QListViewItem*, const QPoint&, int ) ), SLOT( slotShowContextMenu( QListViewItem*, const QPoint& ) ) );
+    connect( m_gui->listView, SIGNAL( contextMenuRequested ( QListViewItem*, const QPoint&, int ) ), SLOT( slotShowContextMenu( QListViewItem*, const QPoint& ) ) );
 
     connect( m_gui->installButton,   SIGNAL( clicked() ), SLOT( slotInstallScript() ) );
     connect( m_gui->retrieveButton,  SIGNAL( clicked() ), SLOT( slotRetrieveScript() ) );

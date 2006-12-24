@@ -137,7 +137,7 @@ StatisticsList::StatisticsList( QWidget *parent, const char *name )
     connect( this, SIGNAL( onItem( QListViewItem*) ),  SLOT( startHover( QListViewItem* ) ) );
     connect( this, SIGNAL( onViewport() ),             SLOT( clearHover() ) );
     connect( this, SIGNAL( clicked( QListViewItem*) ), SLOT( itemClicked( QListViewItem* ) ) );
-    connect( this, SIGNAL( rightButtonPressed( QListViewItem *, const QPoint &, int ) ),
+    connect( this, SIGNAL( contextMenuRequested( QListViewItem *, const QPoint &, int ) ),
              this,   SLOT( showContextMenu( QListViewItem *, const QPoint &, int )  ) );
 
     if( CollectionDB::instance()->isEmpty() )

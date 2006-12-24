@@ -203,7 +203,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     connect( m_podcastTimer, SIGNAL(timeout()), this, SLOT(scanPodcasts()) );
 
     // signals and slots connections
-    connect( m_listview, SIGNAL( rightButtonPressed( QListViewItem *, const QPoint &, int ) ),
+    connect( m_listview, SIGNAL( contextMenuRequested( QListViewItem *, const QPoint &, int ) ),
              this,         SLOT( showContextMenu( QListViewItem *, const QPoint &, int ) ) );
     connect( m_listview, SIGNAL( doubleClicked( QListViewItem *, const QPoint &, int ) ),
              this,         SLOT( invokeItem( QListViewItem *, const QPoint &, int ) ) );

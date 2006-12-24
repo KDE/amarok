@@ -480,7 +480,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
              this,             SLOT( invokeItem( QListViewItem*, const QPoint&, int ) ) );
     connect( this,           SIGNAL( clicked( QListViewItem*, const QPoint&, int ) ),
              this,             SLOT( ipodItemClicked( QListViewItem*, const QPoint&, int ) ) );
-    connect( this,           SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
+    connect( this,           SIGNAL( contextMenuRequested( QListViewItem*, const QPoint&, int ) ),
              this,             SLOT( rmbPressed( QListViewItem*, const QPoint&, int ) ) );
     connect( header(),       SIGNAL( sizeChange( int, int, int ) ),
              this,             SLOT( triggerUpdate() ) );

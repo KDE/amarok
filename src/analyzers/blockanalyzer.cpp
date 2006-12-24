@@ -412,42 +412,37 @@ BlockAnalyzer::drawBackground()
 }
 
 void
-BlockAnalyzer::mousePressEvent( QMouseEvent *e )
+BlockAnalyzer::contextMenuEvent( QContextMenuEvent *e )
 {
-    if( e->button() == Qt::RightButton )
+    //this is hard to read in order to be compact, apologies..
+    //the id of each menu item is the value of the attribute it represents,
+    //so mapping is concise.
+
+    const uint ids[] = { 50, 33, 25, 20, 10 };
+
+    KPopupMenu menu;
+    menu.insertTitle( i18n( "Framerate" ) );
+
+    for( uint x = 0; x < 5; ++x )
     {
-        //this is hard to read in order to be compact, apologies..
-        //the id of each menu item is the value of the attribute it represents,
-        //so mapping is concise.
+        const uint v = ids[x];
 
-        const uint ids[] = { 50, 33, 25, 20, 10 };
-
-        KPopupMenu menu;
-        menu.insertTitle( i18n( "Framerate" ) );
-
-        for( uint x = 0; x < 5; ++x )
-        {
-            const uint v = ids[x];
-
-            menu.insertItem( i18n( "%1 fps" ).arg( 1000/v ), v );
-            menu.setItemChecked( v, v == timeout() );
-        }
-
-        #if defined HAVE_XMMS || defined HAVE_LIBVISUAL
-        menu.insertSeparator();
-        menu.insertItem( SmallIconSet( Amarok::icon( "visualizations" ) ), i18n("&Visualizations"),
-            0 );
-        #endif
-
-        const int id = menu.exec( e->globalPos() );
-
-        if( id == 0 )
-            Amarok::Menu::instance()->slotActivated( Amarok::Menu::ID_SHOW_VIS_SELECTOR );
-        else if( id != -1 ) {
-            changeTimeout( id );
-            determineStep();
-        }
+        menu.insertItem( i18n( "%1 fps" ).arg( 1000/v ), v );
+        menu.setItemChecked( v, v == timeout() );
     }
-    else
-        e->ignore();
+
+#if defined HAVE_XMMS || defined HAVE_LIBVISUAL
+    menu.insertSeparator();
+    menu.insertItem( SmallIconSet( Amarok::icon( "visualizations" ) ), i18n("&Visualizations"),
+            0 );
+#endif
+
+    const int id = menu.exec( e->globalPos() );
+
+    if( id == 0 )
+        Amarok::Menu::instance()->slotActivated( Amarok::Menu::ID_SHOW_VIS_SELECTOR );
+    else if( id != -1 ) {
+        changeTimeout( id );
+        determineStep();
+    }
 }

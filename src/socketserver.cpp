@@ -173,7 +173,7 @@ Vis::Selector::Selector( QWidget *parent )
     reinterpret_cast<QWidget*>(header())->hide();
 
 
-     connect( this, SIGNAL(rightButtonPressed( QListViewItem*, const QPoint&, int )),
+     connect( this, SIGNAL(contextMenuRequested( QListViewItem*, const QPoint&, int )),
               this, SLOT(rightButton( QListViewItem*, const QPoint&, int )) );
 
     //can I get a pointer to the data section of a QCString?

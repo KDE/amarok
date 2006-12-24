@@ -414,38 +414,29 @@ Amarok::VolumeSlider::slotAnimTimer() //SLOT
 }
 
 void
-Amarok::VolumeSlider::mousePressEvent( QMouseEvent *e )
+Amarok::VolumeSlider::contextMenuEvent( QContextMenuEvent *e )
 {
-    if( e->button() == RightButton )
-    {
-        KPopupMenu menu;
-        menu.insertTitle( i18n( "Volume" ) );
-        menu.insertItem(  i18n(   "100%" ), 100 );
-        menu.insertItem(  i18n(    "80%" ),  80 );
-        menu.insertItem(  i18n(    "60%" ),  60 );
-        menu.insertItem(  i18n(    "40%" ),  40 );
-        menu.insertItem(  i18n(    "20%" ),  20 );
-        menu.insertItem(  i18n(     "0%" ),   0 );
+    KPopupMenu menu;
+    menu.insertTitle( i18n( "Volume" ) );
+    menu.insertItem(  i18n(   "100%" ), 100 );
+    menu.insertItem(  i18n(    "80%" ),  80 );
+    menu.insertItem(  i18n(    "60%" ),  60 );
+    menu.insertItem(  i18n(    "40%" ),  40 );
+    menu.insertItem(  i18n(    "20%" ),  20 );
+    menu.insertItem(  i18n(     "0%" ),   0 );
 
-        if( EngineController::hasEngineProperty( "HasEqualizer" ) )
-        {
-            menu.insertSeparator();
-            menu.insertItem( SmallIconSet( "equalizer" ), i18n( "&Equalizer" ),
+    if( EngineController::hasEngineProperty( "HasEqualizer" ) )
+    {
+        menu.insertSeparator();
+        menu.insertItem( SmallIconSet( "equalizer" ), i18n( "&Equalizer" ),
                 kapp, SLOT( slotConfigEqualizer() ) );
-        }
-
-        const int n = menu.exec( mapToGlobal( e->pos() ) );
-        if( n >= 0 )
-        {
-            QSlider::setValue( n );
-            emit sliderReleased( n );
-        }
     }
-    else
-    {
-        Amarok::Slider::mousePressEvent( e );
 
-        slideEvent( e );
+    const int n = menu.exec( mapToGlobal( e->pos() ) );
+    if( n >= 0 )
+    {
+        QSlider::setValue( n );
+        emit sliderReleased( n );
     }
 }
 

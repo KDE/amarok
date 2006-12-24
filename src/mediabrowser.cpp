@@ -1162,7 +1162,7 @@ MediaView::MediaView( QWidget* parent, MediaDevice *device )
     KActionCollection* ac = new KActionCollection( this );
     KStdAction::selectAll( this, SLOT( selectAll() ), ac, "mediabrowser_select_all" );
 
-    connect( this, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
+    connect( this, SIGNAL( contextMenuRequested( QListViewItem*, const QPoint&, int ) ),
              this,   SLOT( rmbPressed( QListViewItem*, const QPoint&, int ) ) );
 
     connect( this, SIGNAL( itemRenamed( QListViewItem* ) ),
@@ -3551,7 +3551,7 @@ MediaQueue::MediaQueue(MediaBrowser *parent)
     KActionCollection* ac = new KActionCollection( this );
     KStdAction::selectAll( this, SLOT( selectAll() ), ac, "MediaQueue" );
 
-    connect( this, SIGNAL( rightButtonPressed( QListViewItem*, const QPoint&, int ) ),
+    connect( this, SIGNAL( contextMenuRequested( QListViewItem*, const QPoint&, int ) ),
             SLOT( slotShowContextMenu( QListViewItem*, const QPoint&, int ) ) );
     connect( this, SIGNAL( dropped(QDropEvent*, QListViewItem*, QListViewItem*) ),
             SLOT( slotDropped(QDropEvent*, QListViewItem*, QListViewItem*) ) );

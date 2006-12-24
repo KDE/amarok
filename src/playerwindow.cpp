@@ -753,11 +753,16 @@ void PlayerWidget::paintEvent( QPaintEvent* )
 }
 
 
+void PlayerWidget::contextMenuEvent( QMouseEvent *e )
+{
+    Amarok::Menu::instance()->exec( e->globalPos() );
+}
+
 void PlayerWidget::mousePressEvent( QMouseEvent *e )
 {
     if ( e->button() == QMouseEvent::RightButton )
     {
-        Amarok::Menu::instance()->exec( e->globalPos() );
+        //Amarok::Menu::instance()->exec( e->globalPos() );
     }
     else if ( m_pAnalyzer->geometry().contains( e->pos() ) )
     {

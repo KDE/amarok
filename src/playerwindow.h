@@ -127,6 +127,7 @@ class PlayerWidget : public QWidget, public EngineObserver
         virtual bool eventFilter( QObject*, QEvent* );
         //virtual bool x11Event( XEvent* );
         virtual void paintEvent( QPaintEvent* );
+        virtual void contextMenuEvent( QMouseEvent* );
         virtual void mousePressEvent( QMouseEvent* );
         virtual void mouseMoveEvent( QMouseEvent* );
 

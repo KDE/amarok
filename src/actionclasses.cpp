@@ -320,15 +320,18 @@ AnalyzerContainer::mousePressEvent( QMouseEvent *e)
         AmarokConfig::setCurrentPlaylistAnalyzer( AmarokConfig::currentPlaylistAnalyzer() + 1 );
         changeAnalyzer();
     }
-    else if( e->button() == Qt::RightButton ) {
-        #if defined HAVE_XMMS || defined HAVE_LIBVISUAL
-        KPopupMenu menu;
-        menu.insertItem( SmallIconSet( Amarok::icon( "visualizations" ) ), i18n("&Visualizations"), Menu::ID_SHOW_VIS_SELECTOR );
+}
 
-        if( menu.exec( mapToGlobal( e->pos() ) ) == Menu::ID_SHOW_VIS_SELECTOR )
-            Menu::instance()->slotActivated( Menu::ID_SHOW_VIS_SELECTOR );
-        #endif
-    }
+void
+AnalyzerContainer::contextMenuEvent( QContextMenuEvent *e)
+{
+#if defined HAVE_XMMS || defined HAVE_LIBVISUAL
+    KPopupMenu menu;
+    menu.insertItem( SmallIconSet( Amarok::icon( "visualizations" ) ), i18n("&Visualizations"), Menu::ID_SHOW_VIS_SELECTOR );
+
+    if( menu.exec( mapToGlobal( e->pos() ) ) == Menu::ID_SHOW_VIS_SELECTOR )
+        Menu::instance()->slotActivated( Menu::ID_SHOW_VIS_SELECTOR );
+#endif
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

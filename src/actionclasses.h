@@ -71,6 +71,7 @@ namespace Amarok
         protected:
             virtual void resizeEvent( QResizeEvent* );
             virtual void mousePressEvent( QMouseEvent* );
+            virtual void contextMenuEvent( QContextMenuEvent* );
         private:
             void changeAnalyzer();
             QWidget *m_child;
