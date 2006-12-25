@@ -6035,7 +6035,7 @@ SqliteConnection::~SqliteConnection()
 }
 
 
-QStringList SqliteConnection::query( const QString& statement, bool suppressDebug )
+QStringList SqliteConnection::query( const QString& statement, bool /*suppressDebug*/ )
 {
 
     QStringList values;
