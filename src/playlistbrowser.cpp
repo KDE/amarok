@@ -645,8 +645,26 @@ void PlaylistBrowser::addSmartPlaylist( QListViewItem *parent ) //SLOT
 
     if( !parent ) parent = static_cast<QListViewItem*>(m_smartCategory);
 
+
     SmartPlaylistEditor dialog( i18n("Untitled"), this );
     if( dialog.exec() == QDialog::Accepted ) {
+
+        PlaylistCategory *category = dynamic_cast<PlaylistCategory*>(parent);
+        for( QListViewItem *item = category->firstChild(); item; item = item->nextSibling() ) {
+            SmartPlaylist *sp = dynamic_cast<SmartPlaylist*>(item);
+            if ( sp && sp->title() == dialog.name() ) {
+                if( KMessageBox::warningContinueCancel(
+                    PlaylistWindow::self(),
+                    i18n( "A Smart Playlist named \"%1\" already exists. Do you want to overwrite it?" ).arg( dialog.name() ),
+                    i18n( "Overwrite Playlist?" ), i18n( "Overwrite" ) ) == KMessageBox::Continue )
+                {
+                    delete item;
+                    break;
+                }
+                else
+                    return;
+            }
+        }
         new SmartPlaylist( parent, 0, dialog.result() );
         parent->sortChildItems( 0, true );
         parent->setOpen( true );
