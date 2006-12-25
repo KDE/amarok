@@ -727,11 +727,11 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 
         if( o == pl )
         {
-            if( pl->currentItem() && ( e->key() == Key_Up && pl->currentItem()->itemAbove() == 0 ) )
+            if( pl->currentItem() && ( e->key() == Key_Up && pl->currentItem()->itemAbove() == 0 && !(e->state() & Qt::ShiftButton) ) )
             {
                 QListViewItem *lastitem = *It( pl, It::Visible );
-		if ( !lastitem )
-		    return false;
+                if ( !lastitem )
+                    return false;
                 while( lastitem->itemBelow() )
                     lastitem = lastitem->itemBelow();
                 pl->currentItem()->setSelected( false );
@@ -740,7 +740,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
                 pl->ensureItemVisible( lastitem );
                 return true;
             }
-            if( pl->currentItem() && ( e->key() == Key_Down && pl->currentItem()->itemBelow() == 0 ) )
+            if( pl->currentItem() && ( e->key() == Key_Down && pl->currentItem()->itemBelow() == 0 && !(e->state() & Qt::ShiftButton) ) )
             {
                 pl->currentItem()->setSelected( false );
                 pl->setCurrentItem( *It( pl, It::Visible ) );
