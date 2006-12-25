@@ -1056,66 +1056,71 @@ void MultiTabBarTab::drawButtonAmarok( QPainter *paint )
         textColor = colorGroup().text();
     }
 
-    QPixmap icon = iconSet()->pixmap( QIconSet::Small, QIconSet::Normal );
+#ifndef QT_NO_ICONSET
+    if ( iconSet() && !iconSet() ->isNull() )
+    {
+        QPixmap icon = iconSet()->pixmap( QIconSet::Small, QIconSet::Normal );
 
-    // Apply icon effect when widget disabled. Should really be cached, but *shrug*.
-    if( !isEnabled() )
-        icon = kapp->iconLoader()->iconEffect()->apply( icon, KIcon::Small, KIcon::DisabledState );
+        // Apply icon effect when widget disabled. Should really be cached, but *shrug*.
+        if( !isEnabled() )
+            icon = kapp->iconLoader()->iconEffect()->apply( icon, KIcon::Small, KIcon::DisabledState );
 
-    if( m_position == MultiTabBar::Left || m_position == MultiTabBar::Right ) {
-        QPixmap pixmap( height(), width() );
-        pixmap.fill( fillColor );
-        QPainter painter( &pixmap );
+        if( m_position == MultiTabBar::Left || m_position == MultiTabBar::Right ) {
+            QPixmap pixmap( height(), width() );
+            pixmap.fill( fillColor );
+            QPainter painter( &pixmap );
 
-        // Draw the frame
-        painter.setPen( colorGroup().mid() );
-        /*if ( m_id != bar->visibleTabCount() - 1 )*/ painter.drawLine( 0, 0, 0, pixmap.height() - 1 );
-        painter.drawLine( 0, pixmap.height() - 1, pixmap.width() - 1, pixmap.height() - 1 );
+            // Draw the frame
+            painter.setPen( colorGroup().mid() );
+            /*if ( m_id != bar->visibleTabCount() - 1 )*/ painter.drawLine( 0, 0, 0, pixmap.height() - 1 );
+            painter.drawLine( 0, pixmap.height() - 1, pixmap.width() - 1, pixmap.height() - 1 );
 
-        // Draw the text
-        QFont font;
-        painter.setFont( font );
-        QString text = KStringHandler::rPixelSqueeze( m_text, QFontMetrics( font ), pixmap.width() - icon.width() - 3 );
-        text.replace( "...", ".." );
-        const int textX = pixmap.width() / 2 - QFontMetrics( font ).width( text ) / 2;
-        painter.setPen( textColor );
-        const QRect rect( textX + icon.width() / 2 + 2, 0, pixmap.width(), pixmap.height() );
-        painter.drawText( rect, Qt::AlignLeft | Qt::AlignVCenter, text );
+            // Draw the text
+            QFont font;
+            painter.setFont( font );
+            QString text = KStringHandler::rPixelSqueeze( m_text, QFontMetrics( font ), pixmap.width() - icon.width() - 3 );
+            text.replace( "...", ".." );
+            const int textX = pixmap.width() / 2 - QFontMetrics( font ).width( text ) / 2;
+            painter.setPen( textColor );
+            const QRect rect( textX + icon.width() / 2 + 2, 0, pixmap.width(), pixmap.height() );
+            painter.drawText( rect, Qt::AlignLeft | Qt::AlignVCenter, text );
 
-        // Draw the icon
-        painter.drawPixmap( textX - icon.width() / 2 - 2, pixmap.height() / 2 - icon.height() / 2, icon );
+            // Draw the icon
+            painter.drawPixmap( textX - icon.width() / 2 - 2, pixmap.height() / 2 - icon.height() / 2, icon );
 
-        // Paint to widget
-        paint->rotate( -90 );
-        paint->drawPixmap( 1 - pixmap.width(), 0, pixmap );
+            // Paint to widget
+            paint->rotate( -90 );
+            paint->drawPixmap( 1 - pixmap.width(), 0, pixmap );
 
-    } else { // Horizontal
+        } else { // Horizontal
 
-        QPixmap pixmap( width(), height() );
-        pixmap.fill( fillColor );
-        QPainter painter( &pixmap );
+            QPixmap pixmap( width(), height() );
+            pixmap.fill( fillColor );
+            QPainter painter( &pixmap );
 
-        // Draw the frame
-        painter.setPen( colorGroup().mid() );
-        /*if ( m_id != bar->visibleTabCount() - 1 )*/ painter.drawLine( 0, 0, 0, pixmap.height() - 1 );
-        painter.drawLine( 0, pixmap.height() - 1, pixmap.width() - 1, pixmap.height() - 1 );
+            // Draw the frame
+            painter.setPen( colorGroup().mid() );
+            /*if ( m_id != bar->visibleTabCount() - 1 )*/ painter.drawLine( 0, 0, 0, pixmap.height() - 1 );
+            painter.drawLine( 0, pixmap.height() - 1, pixmap.width() - 1, pixmap.height() - 1 );
 
-        // Draw the text
-        QFont font;
-        painter.setFont( font );
-        QString text = KStringHandler::rPixelSqueeze( m_text, QFontMetrics( font ), pixmap.width() - icon.width() - 3 );
-        text.replace( "...", ".." );
-        const int textX = pixmap.width() / 2 - QFontMetrics( font ).width( text ) / 2;
-        painter.setPen( textColor );
-        const QRect rect( textX + icon.width() / 2 + 2, 0, pixmap.width(), pixmap.height() );
-        painter.drawText( rect, Qt::AlignLeft | Qt::AlignVCenter, text );
+            // Draw the text
+            QFont font;
+            painter.setFont( font );
+            QString text = KStringHandler::rPixelSqueeze( m_text, QFontMetrics( font ), pixmap.width() - icon.width() - 3 );
+            text.replace( "...", ".." );
+            const int textX = pixmap.width() / 2 - QFontMetrics( font ).width( text ) / 2;
+            painter.setPen( textColor );
+            const QRect rect( textX + icon.width() / 2 + 2, 0, pixmap.width(), pixmap.height() );
+            painter.drawText( rect, Qt::AlignLeft | Qt::AlignVCenter, text );
 
-        // Draw the icon
-        painter.drawPixmap( textX - icon.width() / 2 - 2, pixmap.height() / 2 - icon.height() / 2, icon );
+            // Draw the icon
+            painter.drawPixmap( textX - icon.width() / 2 - 2, pixmap.height() / 2 - icon.height() / 2, icon );
 
-        // Paint to widget
-        paint->drawPixmap( 0, 0, pixmap );
+            // Paint to widget
+            paint->drawPixmap( 0, 0, pixmap );
+        }
     }
+#endif
 }
 
 
