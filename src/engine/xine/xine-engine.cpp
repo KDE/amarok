@@ -94,14 +94,13 @@ XineEngine::~XineEngine()
         m_stopFader = true;
         s_fader->resume(); // safety call if the engine is in the pause state
         s_fader->wait();
-        delete s_fader;
-    }
-    if( s_outfader ) {
-        s_outfader->wait();
-        delete s_outfader;
     }
 
-    fadeOut( true ); // true == exiting
+    delete s_fader;
+    delete s_outfader;
+
+    bool terminateFader = false;
+    fadeOut( &terminateFader, true ); // true == exiting
 
     if( m_xine )       xine_config_save( m_xine, configPath() );
 
@@ -215,6 +214,11 @@ XineEngine::load( const KURL &url, bool isStream )
         return false;
 
     Engine::Base::load( url, isStream );
+
+    if( s_outfader ) {
+        s_outfader->finish();
+        delete s_outfader;
+    }
 
     if( m_xfadeLength > 0 && xine_get_status( m_stream ) == XINE_STATUS_PLAY &&
          xine_get_param( m_stream, XINE_PARAM_SPEED ) != XINE_SPEED_PAUSE &&
@@ -367,7 +371,7 @@ XineEngine::stop()
        return;
     if( !m_fadeOutRunning || state() == Engine::Paused )
     {
-        s_outfader = new OutFader( this, true, true );
+        s_outfader = new OutFader( this );
         s_outfader->start();
         ::usleep( 100 ); //to be sure engine state won't be changed before it is checked in fadeOut()
         m_url = KURL(); //to ensure we return Empty from state()
@@ -513,7 +517,7 @@ XineEngine::setVolumeSW( uint vol )
 }
 
 void
-XineEngine::fadeOut( bool exiting )
+XineEngine::fadeOut( bool* terminate, bool exiting )
 {
     if( m_fadeOutRunning ) //Let us not start another fadeout...
         return;
@@ -537,6 +541,8 @@ XineEngine::fadeOut( bool exiting )
         float mix = 0.0;
         while ( mix < 1.0 )
         {
+            if( *terminate ) break;
+
             ::usleep( stepSizeUs );
             float vol = Engine::Base::makeVolumeLogarithmic( m_volume ) * m_preamp;
             float mix = (float)t.elapsed() / (float)length;
@@ -1024,172 +1030,6 @@ XineEngine::fetchMetaData() const
     return bundle;
 }
 
-
-//////////////////
-/// class Fader
-//////////////////
-
-Fader::Fader( XineEngine *engine, uint fadeMs )
-   : QObject( engine )
-   , QThread()
-   , m_engine( engine )
-   , m_xine( engine->m_xine )
-   , m_decrease( engine->m_stream )
-   , m_increase( 0 )
-   , m_port( engine->m_audioPort )
-   , m_post( engine->m_post )
-   , m_fadeLength( fadeMs )
-   , m_paused( false )
-   , m_terminated( false )
-{
-    if( engine->makeNewStream() )
-    {
-        m_increase = engine->m_stream;
-
-        xine_set_param( m_increase, XINE_PARAM_AUDIO_AMP_LEVEL, 0 );
-    }
-    else {
-        s_fader = 0;
-        deleteLater();
-    }
-}
-
-Fader::~Fader()
-{
-     wait();
-
-     DEBUG_FUNC_INFO
-
-     xine_close( m_decrease );
-     xine_dispose( m_decrease );
-     xine_close_audio_driver( m_xine, m_port );
-     if( m_post ) xine_post_dispose( m_xine, m_post );
-
-     if( !m_engine->m_stopFader )
-         m_engine->setVolume( m_engine->volume() );
-
-     m_engine->m_stopFader = false;
-     s_fader = 0;
-}
-
-void
-Fader::run()
-{
-    // do a volume change in 100 steps (or every 10ms)
-    uint stepsCount = m_fadeLength < 1000 ? m_fadeLength / 10 : 100;
-    uint stepSizeUs = (int)( 1000.0 * (float)m_fadeLength / (float)stepsCount );
-
-    float mix = 0.0;
-    float elapsedUs = 0.0;
-    while ( mix < 1.0 )
-    {
-        if ( m_terminated )
-            break;
-        // sleep a constant amount of time
-        QThread::usleep( stepSizeUs );
-
-        if ( m_paused )
-        	continue;
-
-        elapsedUs += stepSizeUs;
-
-        // get volume (amarok main * equalizer preamp)
-        float vol = Engine::Base::makeVolumeLogarithmic( m_engine->m_volume ) * m_engine->m_preamp;
-
-        // compute the mix factor as the percentage of time spent since fade begun
-        float mix = (elapsedUs / 1000.0) / (float)m_fadeLength;
-        if ( mix > 1.0 )
-        {
-            if ( m_increase )
-                xine_set_param( m_increase, XINE_PARAM_AUDIO_AMP_LEVEL, (uint)vol );
-            break;
-        }
-
-        // change volume of streams (using dj-like cross-fade profile)
-        if ( m_decrease )
-        {
-            //xine_set_param( m_decrease, XINE_PARAM_AUDIO_AMP_LEVEL, (uint)(vol * (1.0 - mix)) );  // linear
-            float v = 4.0 * (1.0 - mix) / 3.0;
-            xine_set_param( m_decrease, XINE_PARAM_AUDIO_AMP_LEVEL, (uint)( v < 1.0 ? vol * v : vol ) );
-        }
-        if ( m_increase )
-        {
-            //xine_set_param( m_increase, XINE_PARAM_AUDIO_AMP_LEVEL, (uint)(vol * mix) );  //linear
-            float v = 4.0 * mix / 3.0;
-            xine_set_param( m_increase, XINE_PARAM_AUDIO_AMP_LEVEL, (uint)( v < 1.0 ? vol * v : vol ) );
-        }
-    }
-
-    //stop using cpu!
-    xine_stop( m_decrease );
-
-    deleteLater();
-}
-
-void
-Fader::pause()
-{
-	m_paused = true;
-}
-
-void
-Fader::resume()
-{
-	m_paused = false;
-}
-
-
-void
-Fader::finish()
-{
-    DEBUG_BLOCK
-	m_terminated = true;
-}
-
-//////////////////
-/// class OutFader
-//////////////////
-
-OutFader::OutFader( XineEngine *engine, bool stop, bool force )
-   : QObject( engine )
-   , QThread()
-   , m_engine( engine )
-   , m_stop( stop )
-   , m_force( force )
-{
-}
-
-OutFader::~OutFader()
-{
-     wait();
-
-     DEBUG_FUNC_INFO
-
-     s_outfader = 0;
-}
-
-void
-OutFader::run()
-{
-    m_engine->fadeOut();
-    if( m_engine->m_fadeOutRunning == false || m_force )
-    {
-        if( m_stop )
-        {
-            xine_stop( m_engine->m_stream );
-            xine_close( m_engine->m_stream );
-            xine_set_param( m_engine->m_stream, XINE_PARAM_AUDIO_CLOSE_DEVICE, 1);
-        }
-        else
-        {
-            xine_set_param( m_engine->m_stream, XINE_PARAM_SPEED, XINE_SPEED_PAUSE );
-            xine_set_param( m_engine->m_stream, XINE_PARAM_AUDIO_CLOSE_DEVICE, 1);
-        }
-    }
-    QThread::sleep( 3 );
-    deleteLater();
-}
-
 bool XineEngine::metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b)
 {
     bool result = false;
@@ -1282,6 +1122,173 @@ bool XineEngine::getAudioCDContents(const QString &device, KURL::List &urls)
 bool XineEngine::flushBuffer()
 {
     return false;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+/// class Fader
+//////////////////////////////////////////////////////////////////////////////
+
+Fader::Fader( XineEngine *engine, uint fadeMs )
+   : QObject( engine )
+   , QThread()
+   , m_engine( engine )
+   , m_xine( engine->m_xine )
+   , m_decrease( engine->m_stream )
+   , m_increase( 0 )
+   , m_port( engine->m_audioPort )
+   , m_post( engine->m_post )
+   , m_fadeLength( fadeMs )
+   , m_paused( false )
+   , m_terminated( false )
+{
+    DEBUG_BLOCK
+
+    if( engine->makeNewStream() )
+    {
+        m_increase = engine->m_stream;
+
+        xine_set_param( m_increase, XINE_PARAM_AUDIO_AMP_LEVEL, 0 );
+    }
+    else {
+        s_fader = 0;
+        deleteLater();
+    }
+}
+
+Fader::~Fader()
+{
+     DEBUG_BLOCK
+
+     wait();
+
+     xine_close( m_decrease );
+     xine_dispose( m_decrease );
+     xine_close_audio_driver( m_xine, m_port );
+     if( m_post ) xine_post_dispose( m_xine, m_post );
+
+     if( !m_engine->m_stopFader )
+         m_engine->setVolume( m_engine->volume() );
+
+     m_engine->m_stopFader = false;
+     s_fader = 0;
+}
+
+void
+Fader::run()
+{
+    DEBUG_BLOCK
+
+    // do a volume change in 100 steps (or every 10ms)
+    uint stepsCount = m_fadeLength < 1000 ? m_fadeLength / 10 : 100;
+    uint stepSizeUs = (int)( 1000.0 * (float)m_fadeLength / (float)stepsCount );
+
+    float mix = 0.0;
+    float elapsedUs = 0.0;
+    while ( mix < 1.0 )
+    {
+        if ( m_terminated )
+            break;
+        // sleep a constant amount of time
+        QThread::usleep( stepSizeUs );
+
+        if ( m_paused )
+        	continue;
+
+        elapsedUs += stepSizeUs;
+
+        // get volume (amarok main * equalizer preamp)
+        float vol = Engine::Base::makeVolumeLogarithmic( m_engine->m_volume ) * m_engine->m_preamp;
+
+        // compute the mix factor as the percentage of time spent since fade begun
+        float mix = (elapsedUs / 1000.0) / (float)m_fadeLength;
+        if ( mix > 1.0 )
+        {
+            if ( m_increase )
+                xine_set_param( m_increase, XINE_PARAM_AUDIO_AMP_LEVEL, (uint)vol );
+            break;
+        }
+
+        // change volume of streams (using dj-like cross-fade profile)
+        if ( m_decrease )
+        {
+            //xine_set_param( m_decrease, XINE_PARAM_AUDIO_AMP_LEVEL, (uint)(vol * (1.0 - mix)) );  // linear
+            float v = 4.0 * (1.0 - mix) / 3.0;
+            xine_set_param( m_decrease, XINE_PARAM_AUDIO_AMP_LEVEL, (uint)( v < 1.0 ? vol * v : vol ) );
+        }
+        if ( m_increase )
+        {
+            //xine_set_param( m_increase, XINE_PARAM_AUDIO_AMP_LEVEL, (uint)(vol * mix) );  //linear
+            float v = 4.0 * mix / 3.0;
+            xine_set_param( m_increase, XINE_PARAM_AUDIO_AMP_LEVEL, (uint)( v < 1.0 ? vol * v : vol ) );
+        }
+    }
+
+    //stop using cpu!
+    xine_stop( m_decrease );
+
+    deleteLater();
+}
+
+void
+Fader::pause()
+{
+	m_paused = true;
+}
+
+void
+Fader::resume()
+{
+	m_paused = false;
+}
+
+void
+Fader::finish()
+{
+    DEBUG_BLOCK
+	m_terminated = true;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+/// class OutFader
+//////////////////////////////////////////////////////////////////////////////
+
+OutFader::OutFader( XineEngine *engine )
+   : QObject( engine )
+   , QThread()
+   , m_engine( engine )
+   , m_terminated( false )
+{
+    DEBUG_BLOCK
+}
+
+OutFader::~OutFader()
+{
+     DEBUG_BLOCK
+
+     wait();
+
+     s_outfader = 0;
+}
+
+void
+OutFader::run()
+{
+    DEBUG_BLOCK
+
+    m_engine->fadeOut( &m_terminated );
+
+    xine_stop( m_engine->m_stream );
+    xine_close( m_engine->m_stream );
+    xine_set_param( m_engine->m_stream, XINE_PARAM_AUDIO_CLOSE_DEVICE, 1);
+
+    deleteLater();
+}
+
+void
+OutFader::finish()
+{
+    DEBUG_BLOCK
+	m_terminated = true;
 }
 
 #include "xine-engine.moc"
