@@ -18,6 +18,12 @@
 #include "m4a/mp4file.h"
 #endif
 
+#include "trueaudio/taglib_trueaudiofiletyperesolver.h"
+#include "trueaudio/ttafile.h"
+#include "wavpack/taglib_wavpackfiletyperesolver.h"
+#include "wavpack/wvfile.h"
+#include "speex/taglib_speexfiletyperesolver.h"
+#include "speex/speexfile.h"
 #include "wma/taglib_wmafiletyperesolver.h"
 #include "wma/wmafile.h"
 #include "rmff/taglib_realmediafiletyperesolver.h"
@@ -110,5 +116,8 @@ void registerTaglibPlugins()
     TagLib::FileRef::addFileTypeResolver(new RealMediaFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new AudibleFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new AACFileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new WavPackFileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new SpeexFileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new TTAFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new WavFileTypeResolver);
 }

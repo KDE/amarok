@@ -5,6 +5,9 @@ Amarok ChangeLog
 
 VERSION 1.4.5
   FEATURES:
+    * Support for Speex (.spx), WavPack (.wv) and TrueAudio (.tta) files in
+      the collection thanks to taglib plugins by Lukáš Lalinský
+      <lalinsky@gmail.com>.
     * Search inside of lyrics, by using "/" on Context Browser. Patch by
       Carles Pina i Estany <carles@pina.cat>. (BR 139210)
     * "Automatically show context browser" feature makes a return, as per

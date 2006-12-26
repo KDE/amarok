@@ -21,6 +21,9 @@ noinst_HEADERS = \
                      tplugins.h
 
 libmetadata_la_LIBADD = \
+                     speex/libtagspeex.la \
+                     trueaudio/libtagtrueaudio.la \
+                     wavpack/libtagwavpack.la \
                      wma/libtagwma.la \
                      wav/libtagwav.la \
                      rmff/libtagrealmedia.la \
