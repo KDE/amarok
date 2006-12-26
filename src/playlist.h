@@ -138,7 +138,7 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         //call this every time you modifyDynamicMode(), otherwise you'll get memory leaks and/or crashes
         void finishedModifying( DynamicMode *mode );
 
-        int  stopAfterMode() const;
+        int  stopAfterMode();
 
         void addCustomMenuItem ( const QString &submenu, const QString &itemTitle );
         void customMenuClicked ( int id );
@@ -230,6 +230,7 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         void setFilter( const QString &filter );
         void setFilterSlot( const QString &filter );                       //uses a delay where applicable
         void setStopAfterCurrent( bool on );
+        void setStopAfterItem( PlaylistItem *item );
         void toggleStopAfterCurrentItem();
         void toggleStopAfterCurrentTrack();
         void setStopAfterMode( int mode );
@@ -388,6 +389,7 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         DynamicMode  *m_dynamicMode;
         KURL::List    m_queueList;
         PlaylistItem *m_stopAfterTrack;
+        int           m_stopAfterMode;
         bool          m_showHelp;
         bool          m_dynamicDirt;        //So we don't call advanceDynamicTrack() on activate()
         bool          m_queueDirt;          //When queuing disabled items, we need to place the marker on the newly inserted item

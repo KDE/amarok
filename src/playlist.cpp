@@ -179,6 +179,7 @@ Playlist::Playlist( QWidget *parent )
         , m_undoCounter( 0 )
         , m_dynamicMode( 0 )
         , m_stopAfterTrack( 0 )
+        , m_stopAfterMode( DoNotStop )
         , m_showHelp( true )
         , m_dynamicDirt( false )
         , m_queueDirt( false )
@@ -939,7 +940,7 @@ Playlist::playNextTrack( bool forceNext )
 {
     PlaylistItem *item = currentTrack();
 
-    if( !m_visCount || ( m_currentTrack && m_stopAfterTrack == m_currentTrack  ) )
+    if( !m_visCount || stopAfterMode() == StopAfterCurrent )
     {
         if( dynamicMode() && m_visCount )
         {
@@ -948,7 +949,7 @@ Playlist::playNextTrack( bool forceNext )
             m_dynamicDirt = false;
         }
 
-        m_stopAfterTrack = 0;
+        setStopAfterMode(DoNotStop);
         EngineController::instance()->stop();
 
         if( !AmarokConfig::randomMode() ) {
@@ -1179,7 +1180,7 @@ Playlist::advanceDynamicTrack()
                         upcomingTracks > dynamicMode()->upcomingCount();
 
     //keep upcomingTracks requirement, this seems to break StopAfterCurrent
-    if( !dontAppend && m_stopAfterTrack != m_currentTrack )
+    if( !dontAppend && stopAfterMode() != StopAfterCurrent )
     {
         addDynamicModeTracks( 1 );
     }
@@ -1410,15 +1411,31 @@ void Playlist::setStopAfterCurrent( bool on )
 {
     PlaylistItem *prev_stopafter = m_stopAfterTrack;
 
-    if( on )
-        m_stopAfterTrack = m_currentTrack;
-    else
-        m_stopAfterTrack = 0;
+    if( on ) {
+        setStopAfterItem( m_currentTrack );
+    }
+    else {
+        setStopAfterMode( DoNotStop );
+    }
 
     if( m_stopAfterTrack )
         m_stopAfterTrack->update();
     if( prev_stopafter )
         prev_stopafter->update();
+}
+
+void Playlist::setStopAfterItem( PlaylistItem *item ) {
+    if( !item ) {
+        setStopAfterMode( DoNotStop );
+        return;
+    }
+    else if( item == m_currentTrack )
+        setStopAfterMode( StopAfterCurrent );
+    else if( item == m_nextTracks.getLast() )
+        setStopAfterMode( StopAfterQueue );
+    else
+        setStopAfterMode( StopAfterQueue );
+    m_stopAfterTrack = item;
 }
 
 void Playlist::toggleStopAfterCurrentItem()
@@ -1430,11 +1447,13 @@ void Playlist::toggleStopAfterCurrentItem()
         return;
 
     PlaylistItem *prev_stopafter = m_stopAfterTrack;
-    if( m_stopAfterTrack == item )
+    if( m_stopAfterTrack == item ) {
             m_stopAfterTrack = 0;
+            setStopAfterMode( DoNotStop );
+    }
     else
     {
-        m_stopAfterTrack = item;
+        setStopAfterItem( item );
         item->setSelected( false );
         item->update();
     }
@@ -1451,12 +1470,12 @@ void Playlist::toggleStopAfterCurrentTrack()
 
     PlaylistItem *prev_stopafter = m_stopAfterTrack;
     if( m_stopAfterTrack == item ) {
-        m_stopAfterTrack = 0;
+        setStopAfterMode( DoNotStop );
         Amarok::OSD::instance()->OSDWidget::show( i18n("Stop Playing After Track: Off") );
     }
     else
     {
-        m_stopAfterTrack = item;
+        setStopAfterItem( item );
         item->setSelected( false );
         item->update();
         Amarok::OSD::instance()->OSDWidget::show( i18n("Stop Playing After Track: On") );
@@ -1469,7 +1488,7 @@ void Playlist::toggleStopAfterCurrentTrack()
 void Playlist::setStopAfterMode( int mode )
 {
     PlaylistItem *prevStopAfter = m_stopAfterTrack;
-
+    m_stopAfterMode = mode;
     switch( mode )
     {
         case DoNotStop:
@@ -1489,18 +1508,14 @@ void Playlist::setStopAfterMode( int mode )
         m_stopAfterTrack->update();
 }
 
-int Playlist::stopAfterMode() const
+int Playlist::stopAfterMode()
 {
-    if( !m_stopAfterTrack )
-        return DoNotStop;
-    else if( m_stopAfterTrack == m_currentTrack )
-        return StopAfterCurrent;
-    else if( m_stopAfterTrack == m_nextTracks.getLast() )
-        return StopAfterQueue;
-    else if( m_stopAfterTrack )
-        return StopAfterOther;
-    else
-        return DoNotStop;
+    if ( m_stopAfterMode != DoNotStop
+         && m_stopAfterTrack && m_stopAfterTrack == m_currentTrack ) {
+         m_stopAfterMode = StopAfterCurrent;
+    }
+
+    return m_stopAfterMode;
 }
 
 void Playlist::generateInfo()
@@ -2051,8 +2066,8 @@ Playlist::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
 
             PlaylistItem::setPixmapChanged();
 
-            if( m_stopAfterTrack == m_currentTrack )
-                m_stopAfterTrack = 0; //we just stopped
+            if( stopAfterMode() == StopAfterCurrent )
+                setStopAfterMode( DoNotStop );
 
             //reset glow state
             slotGlowTimer();
@@ -2099,7 +2114,9 @@ Playlist::clear() //SLOT
 
     if (m_stopAfterTrack) {
         m_stopAfterTrack = 0;
-        setStopAfterMode( DoNotStop );
+        if ( stopAfterMode() != StopAfterCurrent ) {
+            setStopAfterMode( DoNotStop );
+        }
     }
     const PLItemList prev = m_nextTracks;
     m_nextTracks.clear();
@@ -4314,7 +4331,8 @@ Playlist::removeItem( PlaylistItem *item, bool multi )
 
     if( m_stopAfterTrack == item ) {
         m_stopAfterTrack = 0; //to be safe
-        setStopAfterMode( DoNotStop );
+        if (stopAfterMode() != StopAfterCurrent)
+            setStopAfterMode( DoNotStop );
     }
 
     //keep m_nextTracks queue synchronized
