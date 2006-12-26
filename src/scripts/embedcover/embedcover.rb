@@ -2,21 +2,20 @@
 #
 # amaroK Script for embedding album cover images in MP3 files.
 #
-# (c) 2005 Mark Kretschmann <markey@web.de>
+# (c) 2005-2006 Mark Kretschmann <markey@web.de>
 # License: GNU General Public License V2
 
 
 require 'md5'
 require "uri"
 
-
+$stdout.sync = true
 MenuItemName = "EmbedCover DoIt!"
 
 
 def cleanup()
   `dcop amarok script removeCustomMenuItem #{MenuItemName}`
 end
-
 
 def sql_escape( string )
   return string.gsub( /[']/, "''" )
@@ -54,12 +53,16 @@ loop do
 
         backend = File.dirname( File.expand_path( __FILE__ ) ) + "/addimage2mp3.rb"
 
-        # Query is two parts, first ID, then name
-        artist_id = `dcop amarok collection query "SELECT DISTINCT artist FROM tags WHERE url = '#{sql_escape( file )}'"`.chomp()
-        artist    = `dcop amarok collection query "SELECT DISTINCT artist.name FROM artist WHERE id = '#{artist_id}'"`.chomp()
+        # In the database we store relative URLs (for dynamic collection), so we need to convert
+        file = `dcop amarok collection relativePath "#{file}"`.chomp
+        puts file
 
-        album_id  = `dcop amarok collection query "SELECT DISTINCT album FROM tags WHERE url = '#{sql_escape( file )}'"`.chomp()
-        album     = `dcop amarok collection query "SELECT DISTINCT album.name FROM album WHERE id = '#{album_id}'"`.chomp()
+        # Query is two parts, first ID, then name
+        artist_id = `dcop amarok collection query "SELECT DISTINCT artist FROM tags WHERE url = '#{sql_escape( file )}'"`.chomp
+        artist    = `dcop amarok collection query "SELECT DISTINCT artist.name FROM artist WHERE id = '#{artist_id}'"`.chomp
+
+        album_id  = `dcop amarok collection query "SELECT DISTINCT album FROM tags WHERE url = '#{sql_escape( file )}'"`.chomp
+        album     = `dcop amarok collection query "SELECT DISTINCT album.name FROM album WHERE id = '#{album_id}'"`.chomp
 
         puts( "ArtistId : #{artist_id}" )
         puts( "Artist   : #{artist}" )

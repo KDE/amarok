@@ -3,7 +3,7 @@
 # Script for embedding album cover images in MP3 files. This requires an existing
 # ID3-V2 tag in the file.
 #
-# (c) 2005 Mark Kretschmann <markey@web.de>
+# (c) 2005-2006 Mark Kretschmann <markey@web.de>
 # License: GNU General Public License V2
 
 
