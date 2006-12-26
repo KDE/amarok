@@ -86,6 +86,12 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
 
     // IMPORTANT Don't simply change the page names, they are used as identifiers in other parts of the app.
             m_opt1 = new Options1( 0, "General" );
+#ifdef Q_WS_MAC
+            m_opt1->kcfg_ShowSplashscreen->setEnabled(false);
+            m_opt1->kcfg_ShowTrayIcon->setEnabled(false);
+            m_opt1->kcfg_AnimateTrayIcon->setEnabled(false);
+            m_opt1->kcfg_ShowPlayerWindow->setEnabled(false);
+#endif
             m_opt2 = new Options2( 0, "Appearance" );
             m_opt4 = new Options4( 0, "Playback" );
 #ifdef Q_WS_X11
