@@ -1,6 +1,6 @@
 #!/usr/bin/ruby -w
 
-# Ruby beautifier, version 1.6, 08/19/2006
+# Ruby beautifier, version 2.1, 09/11/2006
 # Copyright (c) 2006, P. Lutus
 # Released under the GPL
 
@@ -11,13 +11,13 @@ $tabStr = " "
 
 $indentExp = [
    /^module\b/,
-   /(=\s*|^)if\b/,
+   /^if\b/,
    /(=\s*|^)until\b/,
    /(=\s*|^)for\b/,
-   /(=\s*|^)unless\b/,
+   /^unless\b/,
    /(=\s*|^)while\b/,
    /(=\s*|^)begin\b/,
-   /(=\s*|^)case\b/,
+   /(^| )case\b/,
    /\bthen\b/,
    /^class\b/,
    /^rescue\b/,
@@ -95,13 +95,21 @@ def beautifyRuby(path)
          if(!commentLine)
             # throw out sequences that will
             # only sow confusion
-            tline.gsub!(/\([^\n]\)/,"")
-            tline.gsub!(/%r\{.*?\}/,"")
-            tline.gsub!(/%r(.).*?\1/,"")
+            while tline.gsub!(/'.*?'/,"")
+            end
+            while tline.gsub!(/".*?"/,"")
+            end
+            while tline.gsub!(/\`.*?\`/,"")
+            end
+            while tline.gsub!(/\{[^\{]*?\}/,"")
+            end
+            while tline.gsub!(/\([^\(]*?\)/,"")
+            end
+            while tline.gsub!(/\/.*?\//,"")
+            end
+            while tline.gsub!(/%r(.).*?\1/,"")
+            end
             tline.gsub!(/\\\"/,"'")
-            tline.gsub!(/".*?"/,"\"\"")
-            tline.gsub!(/'.*?'/,"''")
-            tline.gsub!(/#\{.*?\}/,"")
             $outdentExp.each do |re|
                if(tline =~ re)
                   tab -= 1
