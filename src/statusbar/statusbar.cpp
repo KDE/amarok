@@ -83,7 +83,6 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     m_timeLabel2 = new TimeLabel( positionBox );
     m_slider->setMinimumWidth( m_timeLabel2->width() );
 
-
     // TODO Both labels need tooltips (string freeze?)
     QWidget *hbox = new QWidget( this );
     QBoxLayout *layout = new QHBoxLayout( hbox, 0, 2 );
@@ -102,6 +101,10 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     box->addWidget( m_timeLabel );
     box->addWidget( m_slider );
     box->addWidget( m_timeLabel2 );
+#ifdef Q_WS_MAC
+    // don't overlap the resize handle with the time display
+    box->addSpacing( 12 );
+#endif
 
     if( !AmarokConfig::leftTimeDisplayEnabled() )
         m_timeLabel->hide();
