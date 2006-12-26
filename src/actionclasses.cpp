@@ -325,7 +325,7 @@ AnalyzerContainer::mousePressEvent( QMouseEvent *e)
 }
 
 void
-AnalyzerContainer::contextMenuEvent( QContextMenuEvent */*e*/)
+AnalyzerContainer::contextMenuEvent( QContextMenuEvent *e)
 {
 #if defined HAVE_XMMS || defined HAVE_LIBVISUAL
     KPopupMenu menu;
