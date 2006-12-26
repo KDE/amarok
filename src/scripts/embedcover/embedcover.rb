@@ -54,14 +54,13 @@ loop do
         backend = File.dirname( File.expand_path( __FILE__ ) ) + "/addimage2mp3.rb"
 
         # In the database we store relative URLs (for dynamic collection), so we need to convert
-        file = `dcop amarok collection relativePath "#{file}"`.chomp
-        puts file
+        file_relative = `dcop amarok collection relativePath "#{file}"`.chomp
 
         # Query is two parts, first ID, then name
-        artist_id = `dcop amarok collection query "SELECT DISTINCT artist FROM tags WHERE url = '#{sql_escape( file )}'"`.chomp
+        artist_id = `dcop amarok collection query "SELECT DISTINCT artist FROM tags WHERE url = '#{sql_escape( file_relative )}'"`.chomp
         artist    = `dcop amarok collection query "SELECT DISTINCT artist.name FROM artist WHERE id = '#{artist_id}'"`.chomp
 
-        album_id  = `dcop amarok collection query "SELECT DISTINCT album FROM tags WHERE url = '#{sql_escape( file )}'"`.chomp
+        album_id  = `dcop amarok collection query "SELECT DISTINCT album FROM tags WHERE url = '#{sql_escape( file_relative )}'"`.chomp
         album     = `dcop amarok collection query "SELECT DISTINCT album.name FROM album WHERE id = '#{album_id}'"`.chomp
 
         puts( "ArtistId : #{artist_id}" )
