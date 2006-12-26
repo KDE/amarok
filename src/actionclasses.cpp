@@ -1,7 +1,7 @@
 // Maintainer: Max Howell <max.howell@methylblue.com>, (C) 2004
 // Copyright:  See COPYING file that comes with this distribution
 
-#include "config.h"             //HAVE_XMMS definition
+#include "config.h"             //HAVE_LIBVISUAL definition
 
 #include "actionclasses.h"
 #include "amarok.h"
@@ -156,9 +156,6 @@ Menu::Menu()
     connect( this, SIGNAL( activated(int) ), SLOT( slotActivated(int) ) );
 
     setItemEnabled( ID_SHOW_VIS_SELECTOR, false );
-    #ifdef HAVE_XMMS
-    setItemEnabled( ID_SHOW_VIS_SELECTOR, true );
-    #endif
     #ifdef HAVE_LIBVISUAL
     setItemEnabled( ID_SHOW_VIS_SELECTOR, true );
     #endif
@@ -327,7 +324,7 @@ AnalyzerContainer::mousePressEvent( QMouseEvent *e)
 void
 AnalyzerContainer::contextMenuEvent( QContextMenuEvent *e)
 {
-#if defined HAVE_XMMS || defined HAVE_LIBVISUAL
+#if defined HAVE_LIBVISUAL
     KPopupMenu menu;
     menu.insertItem( SmallIconSet( Amarok::icon( "visualizations" ) ), i18n("&Visualizations"), Menu::ID_SHOW_VIS_SELECTOR );
 

@@ -14,7 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "config.h"           //HAVE_XMMS definition
+#include "config.h"           //HAVE_LIBVISUAL definition
 
 #include "actionclasses.h"    //see toolbar construction
 #include "amarok.h"
@@ -376,7 +376,7 @@ void PlaylistWindow::init()
     actionCollection()->action("update_collection")->plug( m_toolsMenu );
     m_toolsMenu->insertItem( SmallIconSet( Amarok::icon( "rescan" ) ), i18n("&Rescan Collection"), Amarok::Menu::ID_RESCAN_COLLECTION );
 
-    #if defined HAVE_XMMS || defined HAVE_LIBVISUAL
+    #if defined HAVE_LIBVISUAL
     m_toolsMenu->setItemEnabled( Amarok::Menu::ID_SHOW_VIS_SELECTOR, true );
     #else
     m_toolsMenu->setItemEnabled( Amarok::Menu::ID_SHOW_VIS_SELECTOR, false );

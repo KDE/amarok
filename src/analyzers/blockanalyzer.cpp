@@ -5,6 +5,8 @@
 
 #define DEBUG_PREFIX "BlockAnalyzer"
 
+#include "config.h"           //HAVE_LIBVISUAL definition
+
 #include "actionclasses.h"   //mousePressEvent
 #include "amarok.h"
 #include "blockanalyzer.h"
@@ -431,7 +433,7 @@ BlockAnalyzer::contextMenuEvent( QContextMenuEvent *e )
         menu.setItemChecked( v, v == timeout() );
     }
 
-#if defined HAVE_XMMS || defined HAVE_LIBVISUAL
+#if defined HAVE_LIBVISUAL
     menu.insertSeparator();
     menu.insertItem( SmallIconSet( Amarok::icon( "visualizations" ) ), i18n("&Visualizations"),
             0 );
