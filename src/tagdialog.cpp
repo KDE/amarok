@@ -1457,7 +1457,7 @@ TagDialogWriter::doJob()
         QCString path = QFile::encodeName( m_tags[i].url().path() );
         if ( !TagLib::File::isWritable( path ) ) {
             Amarok::StatusBar::instance()->longMessageThreadSafe( i18n(
-                "The file %1 is not writable." ).arg( path ), KDE::StatusBar::Error );
+                "The file %1 is not writable." ).arg( m_tags[i].url().fileName() ), KDE::StatusBar::Error );
             m_failed += true;
             continue;
         }
