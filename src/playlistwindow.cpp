@@ -138,7 +138,9 @@ PlaylistWindow::PlaylistWindow()
     ac->action( "stream_add" )->setIcon( Amarok::icon( "files" ) );
     KStdAction::save( this, SLOT(savePlaylist()), ac, "playlist_save" )->setText( i18n("&Save Playlist As...") );
     ac->action( "playlist_save" )->setIcon( Amarok::icon( "save" ) );
+#ifndef Q_WS_MAC
     KStdAction::showMenubar( this, SLOT(slotToggleMenu()), ac );
+#endif
 
     //FIXME: after string freeze rename to "Burn Current Playlist"?
     new KAction( i18n("Burn to CD"), Amarok::icon( "burn" ), 0, this, SLOT(slotBurnPlaylist()), ac, "playlist_burn" );
@@ -299,7 +301,9 @@ void PlaylistWindow::init()
 
     dynamicBar->init();
     m_toolbar = new Amarok::ToolBar( m_browsers->container(), "mainToolBar" );
+#ifndef Q_WS_MAC
     m_toolbar->setShown( AmarokConfig::showToolbar() );
+#endif
     QWidget *statusbar = new Amarok::StatusBar( this );
 
     KAction* repeatAction = Amarok::actionCollection()->action( "repeat" );
@@ -307,8 +311,12 @@ void PlaylistWindow::init()
 
     connect( m_lineEdit, SIGNAL(textChanged( const QString& )), playlist, SLOT(setFilterSlot( const QString& )) );
 
+#ifdef Q_WS_MAC
+    m_menubar = new QMenuBar( this );
+#else
     m_menubar = new KMenuBar( this );
     m_menubar->setShown( AmarokConfig::showMenuBar() );
+#endif
 
     //BEGIN Actions menu
     KPopupMenu *actionsMenu = new KPopupMenu( m_menubar );
@@ -381,11 +389,18 @@ void PlaylistWindow::init()
     //BEGIN Settings menu
     m_settingsMenu = new KPopupMenu( m_menubar );
     //TODO use KStdAction or KMainWindow
+#ifndef Q_WS_MAC
     static_cast<KToggleAction *>(actionCollection()->action(KStdAction::name(KStdAction::ShowMenubar)))->setChecked( AmarokConfig::showMenuBar() );
     actionCollection()->action(KStdAction::name(KStdAction::ShowMenubar))->plug( m_settingsMenu );
     m_settingsMenu->insertItem( AmarokConfig::showToolbar() ? i18n( "Hide Toolbar" ) : i18n("Show Toolbar"), ID_SHOW_TOOLBAR );
     m_settingsMenu->insertItem( AmarokConfig::showPlayerWindow() ? i18n("Hide Player &Window") : i18n("Show Player &Window"), ID_SHOW_PLAYERWINDOW );
     m_settingsMenu->insertSeparator();
+#endif
+
+#ifdef Q_WS_MAC
+    // plug it first, as this item will be moved to the applications first menu
+    actionCollection()->action(KStdAction::name(KStdAction::Preferences))->plug( m_settingsMenu );
+#endif
     actionCollection()->action("options_configure_globals")->plug( m_settingsMenu );
     actionCollection()->action(KStdAction::name(KStdAction::KeyBindings))->plug( m_settingsMenu );
     actionCollection()->action(KStdAction::name(KStdAction::ConfigureToolbars))->plug( m_settingsMenu );

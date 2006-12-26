@@ -131,9 +131,11 @@ Menu::Menu()
     insertItem( SmallIconSet( Amarok::icon( "rescan" ) ), i18n("&Rescan Collection"), ID_RESCAN_COLLECTION );
     setItemEnabled( ID_RESCAN_COLLECTION, !ThreadWeaver::instance()->isJobPending( "CollectionScanner" ) );
 
+#ifndef Q_WS_MAC
     insertSeparator();
 
     safePlug( ac, KStdAction::name(KStdAction::ShowMenubar), this );
+#endif
 
     insertSeparator();
 

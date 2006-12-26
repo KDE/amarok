@@ -26,7 +26,7 @@ class ClickLineEdit;
 class CollectionBrowser;
 class ContextBrowser;
 class MediaBrowser;
-class KMenuBar;
+class QMenuBar;
 class KPopupMenu;
 class KToolBar;
 class QLabel;
@@ -102,7 +102,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
     private:
         enum MenuId { ID_SHOW_TOOLBAR = 2000, ID_SHOW_PLAYERWINDOW };
 
-        KMenuBar      *m_menubar;
+        QMenuBar      *m_menubar;
         KPopupMenu    *m_toolsMenu;
         KPopupMenu    *m_settingsMenu;
         BrowserBar    *m_browsers;
