@@ -788,7 +788,11 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 
 void PlaylistWindow::closeEvent( QCloseEvent *e )
 {
+#ifdef Q_WS_MAC
+    hide();
+#else
     Amarok::genericEventHandler( this, e );
+#endif
 }
 
 

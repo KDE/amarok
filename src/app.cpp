@@ -91,6 +91,33 @@ QMutex Amarok::globalDirsMutex;
 
 int App::mainThreadId = 0;
 
+#ifdef Q_WS_MAC
+#include <qt_mac.h>
+
+static AEEventHandlerUPP appleEventProcessorUPP = 0;
+
+OSStatus
+appleEventProcessor(const AppleEvent *ae, AppleEvent *, long handlerRefCon)
+{
+    App *app = (App *)handlerRefCon;
+    OSType aeID = typeWildCard;
+    OSType aeClass = typeWildCard;
+    AEGetAttributePtr(ae, keyEventClassAttr, typeType, 0, &aeClass, sizeof(aeClass), 0);
+    AEGetAttributePtr(ae, keyEventIDAttr, typeType, 0, &aeID, sizeof(aeID), 0);
+
+    if(aeClass == kCoreEventClass)
+    {
+        if(aeID == kAEReopenApplication)
+        {
+            if( PlaylistWindow::self() )
+                PlaylistWindow::self()->show();
+        }
+        return noErr;
+    }
+    return eventNotHandledErr;
+}
+#endif
+
 LIBAMAROK_EXPORT KAboutData aboutData( "amarok",
     I18N_NOOP( "Amarok" ), APP_VERSION,
     I18N_NOOP( "The audio player for KDE" ), KAboutData::License_GPL,
@@ -122,8 +149,12 @@ App::App()
         qWarning("AtomicString was initialized from a thread other than the GUI "
                  "thread. This could lead to memory leaks.");
 
-    QTimer::singleShot( 0, this, SLOT( continueInit() ) );
+#ifdef Q_WS_MAC
+    appleEventProcessorUPP = AEEventHandlerUPP(appleEventProcessor);
+    AEInstallEventHandler(kCoreEventClass, kAEReopenApplication, appleEventProcessorUPP, (long)this, true);
+#endif
 
+    QTimer::singleShot( 0, this, SLOT( continueInit() ) );
 }
 
 App::~App()
