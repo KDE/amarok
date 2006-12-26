@@ -330,6 +330,8 @@ AnalyzerContainer::contextMenuEvent( QContextMenuEvent *e)
 
     if( menu.exec( mapToGlobal( e->pos() ) ) == Menu::ID_SHOW_VIS_SELECTOR )
         Menu::instance()->slotActivated( Menu::ID_SHOW_VIS_SELECTOR );
+#else
+    Q_UNUSED(e);
 #endif
 }
 
