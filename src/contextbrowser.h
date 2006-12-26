@@ -13,8 +13,10 @@
 #include "engineobserver.h"
 
 #include <ktabwidget.h>
+#include <ktoolbarbutton.h>
 #include <kurl.h>
 
+class ClickLineEdit;
 class CollectionDB;
 class Color;
 class HTMLView;
@@ -101,6 +103,12 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         void lyricsRefresh();
         void lyricsExternalPage();
 
+	void lyricsSearchText( const QString &text );
+	void lyricsSearchTextNext();
+	void lyricsSearchTextHide();
+	void lyricsSearchTextShow();
+	void lyricsSearchTextToggle();
+
         void wikiHistoryBack();
         void wikiHistoryForward();
         void wikiBackPopupActivated( int id );
@@ -159,6 +167,10 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         QString       m_lyricsBeingEditedUrl;
         QString       m_lyricsBeingEditedArtist;
         QString       m_lyricsBeingEditedTitle;
+	ClickLineEdit* m_lyricsSearchText;
+	KToolBar*     m_lyricsTextBar;
+	bool          m_lyricsTextBarShowed;
+
 
         QString       m_wiki;
         QString       m_wikiLanguages;

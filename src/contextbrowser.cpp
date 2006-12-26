@@ -50,6 +50,7 @@
 #include <qtimer.h>
 #include <qtooltip.h>
 
+#include <kaction.h>
 #include <kapplication.h> //kapp
 #include <kcalendarsystem.h>  // for Amarok::verboseTimeSince()
 #include <kconfig.h> // suggested/related/favorite box visibility
@@ -222,6 +223,44 @@ ContextBrowser::ContextBrowser( const char *name )
     m_lyricsToolBar->insertButton( Amarok::icon( "search" ), LYRICS_SEARCH, true, i18n("Search") );
     m_lyricsToolBar->setIconText( KToolBar::IconOnly, false );
     m_lyricsToolBar->insertButton( Amarok::icon( "external" ), LYRICS_BROWSER, true, i18n("Open in external browser") );
+
+    { //Search text inside lyrics. Code inspired/copied from playlistwindow.cpp
+       m_lyricsTextBar = new KToolBar( m_lyricsTab, "NotMainToolBar" );
+       m_lyricsTextBar->hide();
+       m_lyricsTextBarShowed=false;
+
+       m_lyricsTextBar->setIconSize( 22, false ); //looks more sensible
+       m_lyricsTextBar->setFlat( true ); //removes the ugly frame
+       m_lyricsTextBar->setMovingEnabled( false ); //removes the ugly frame
+
+       m_lyricsTextBar->boxLayout()->addStretch();
+
+       QWidget *button = new KToolBarButton( "locationbar_erase", 1, m_lyricsTextBar );
+       QLabel *filter_label = new QLabel( i18n("S&earch:") + ' ', m_lyricsTextBar );
+       m_lyricsSearchText = new ClickLineEdit( i18n( "Search text in lyric" ), m_lyricsTextBar );
+       filter_label->setBuddy( m_lyricsSearchText );
+
+       m_lyricsTextBar->setStretchableWidget(m_lyricsSearchText );
+
+       m_lyricsSearchText->setFrame( QFrame::Sunken );
+       m_lyricsSearchText->installEventFilter( this ); //we intercept keyEvents
+
+       connect( button, SIGNAL(clicked()), m_lyricsSearchText, SLOT(clear()) );
+
+       QToolTip::add( button, i18n( "Clear search text in lyric" ) );
+       QString filtertip = i18n( "Write to search this word in lyric, from the begin. Press enter to search next match" );
+
+       QToolTip::add( m_lyricsSearchText, filtertip );
+
+       connect ( button, SIGNAL(clicked()), m_lyricsSearchText, SLOT(clear()) );
+       connect ( m_lyricsSearchText, SIGNAL(textChanged(const QString &)), this, SLOT(lyricsSearchText(const QString & )) );
+       connect ( m_lyricsSearchText, SIGNAL(returnPressed()), this, (SLOT(lyricsSearchTextNext())) );
+       Amarok::actionCollection()->setAutoConnectShortcuts ( true );
+       new KAction( i18n("Search text in lyric"), KShortcut("/"), this,SLOT( lyricsSearchTextShow() ), Amarok::actionCollection(), "search_text_lyric");
+       Amarok::actionCollection()->setAutoConnectShortcuts ( false );
+    }
+
+
 
     m_lyricsPage = new HTMLView( m_lyricsTab, "lyrics_page", true /* DNDEnabled */, false /* No JScript */ );
     m_lyricsTextEdit = new KTextEdit ( m_lyricsTab, "lyrics_text_edit");
@@ -3362,8 +3401,52 @@ ContextBrowser::lyricsRefresh() //SLOT
     showLyrics( "reload" );
 }
 
+void
+ContextBrowser::lyricsSearchText(QString const &text) //SLOT
+{
+    m_lyricsPage->findText( text, 0 );
+    lyricsSearchTextNext();
+}
 
-//////////////////////////////////////////////////////////////////////////////////////////
+void
+ContextBrowser::lyricsSearchTextNext() //SLOT
+{
+    m_lyricsPage->findTextNext();
+}
+
+void
+ContextBrowser::lyricsSearchTextShow() //SLOT
+{
+    m_lyricsSearchText->setEnabled( true );
+    m_lyricsTextBar->show();
+    m_lyricsTextBarShowed = true;
+    m_lyricsSearchText->setFocus();
+}
+
+
+void
+ContextBrowser::lyricsSearchTextHide() //SLOT
+{
+    m_lyricsSearchText->setText("");
+    m_lyricsSearchText->setEnabled( false );
+    m_lyricsTextBar->hide();
+    m_lyricsTextBarShowed=false;
+}
+
+
+void
+ContextBrowser::lyricsSearchTextToggle() //SLOT
+{
+    if ( m_lyricsTextBarShowed )
+    {
+        lyricsSearchTextHide();
+    }
+    else
+    {
+        lyricsSearchTextShow();
+    }
+}
+
 // Wikipedia-Tab
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -3615,6 +3698,19 @@ ContextBrowser::eventFilter( QObject *o, QEvent *e )
                 return false;
             }
         }
+	if (o == m_lyricsSearchText)
+	{
+	   switch ( e->key() )
+	   {
+	   case Key_Escape:
+	   {
+	   	lyricsSearchTextHide();
+		return true;
+	   }
+	   default:
+	       return false;
+	   }
+       }
 
     default:
         break;

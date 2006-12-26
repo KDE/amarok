@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 1.4.5
   FEATURES:
+    * Search inside of lyrics, by using "/" on Context Browser. Patch by
+      Carles Pina i Estany <carles@pina.cat>. (BR 139210)
     * "Automatically show context browser" feature makes a return, as per
       popular request. It is however disabled by default.
     * Improved keyboard navigation: Space key is now a shortcut for Play/Pause,
@@ -15,7 +17,7 @@ VERSION 1.4.5
     * Elapsed time can be shown in OSD. Patch by Christian Engels
       <s9chenge@stud.uni-sb.de>. (BR 120051)
     * New redownload manager for the Magnatune.com store. Allows re-download
-      of any previous purchase free of charge (in any format). 
+      of any previous purchase free of charge (in any format).
     * Star ratings now have different colors for different ratings, to easily
       identify songs with a particular rating. Thanks to Tristan Olive for the
       idea.
@@ -43,8 +45,8 @@ VERSION 1.4.5
     * Save media device transfer queue when adding items or after transfers.
       (BR 138885)
     * Upgraded internal SQLite to 3.3.8.
-    * MTP media devices are not automatically connected on start-up. This 
-      should solve slow loading times for those with large collections on an 
+    * MTP media devices are not automatically connected on start-up. This
+      should solve slow loading times for those with large collections on an
       MTP media device. Contributed by Mikko Seppälä. (BR 138409)
     * Internationalize unknown artist/album/genre strings. Contributed by Mikko
       Seppälä. (BR 138409)
@@ -61,7 +63,7 @@ VERSION 1.4.5
     * Consistent double-click behavior in sidebar. (BR 138125)
     * Propose name of currently loaded playlist when saving current one.
     * Remove support for older libmtp versions. We now require 0.0.15 or
-      newer. 
+      newer.
     * Deleting a playlist item on an MTP media device now results in it being
       removed from the playlist.
     * Magnatune store is lazy loaded to improve startup times.
