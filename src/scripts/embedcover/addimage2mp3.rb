@@ -173,7 +173,7 @@ until data[index] == 0 or data[index..index+2] == "3DI"
   frametype = data[index..index+3]
   puts( "Frame Type : #{frametype}" )
   if frametype == "APIC"
-    puts( "Error: File does already contain an image." )
+    puts( "Error: File already contains an image." )
     exit( 1 )
   end
   framesize = data[index+4]*2**21 + data[index+5]*2**14 + data[index+6]*2**7 + data[index+7]
