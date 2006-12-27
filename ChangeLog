@@ -41,6 +41,8 @@ VERSION 1.4.5
       you move and rename them.
 
   CHANGES:
+    * Restart collection scanner as long as not more than 5 % of the files
+      make it crash. (BR 106474)
     * Ensure the first selected item in the Collection Browser stays visible
       when the search field is cleared using the clear button.
     * Duplicate filenames are now allowed on MTP media devices if the files are

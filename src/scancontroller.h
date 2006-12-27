@@ -103,6 +103,7 @@ class ScanController : public ThreadWeaver::DependentJob, public QXmlDefaultHand
 
         // Member variables:
         static const uint MAX_RESTARTS = 20;
+        static const uint MAX_FAILURE_PERCENTAGE = 5;
 
         KProcIO* m_scanner;
         QStringList m_folders;
@@ -132,6 +133,7 @@ class ScanController : public ThreadWeaver::DependentJob, public QXmlDefaultHand
         bool m_lastCommandPaused;
         bool m_isPaused;
         bool m_tablesCreated;
+        int m_scanCount;
 };
 
 

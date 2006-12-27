@@ -68,6 +68,7 @@ ScanController::ScanController( CollectionDB* parent, bool incremental, const QS
     , m_lastCommandPaused( false )
     , m_isPaused( false )
     , m_tablesCreated( false )
+    , m_scanCount( 0 )
 {
     DEBUG_BLOCK
 
@@ -107,7 +108,7 @@ ScanController::~ScanController()
                                   "<i>" + m_crashedFiles.join( "<br>" ) + "</i>",
                                   i18n( "Collection Scan Report" ) );
     }
-    else if( m_crashedFiles.size() >= MAX_RESTARTS ) {
+    else if( !isAborted() ) {
         KMessageBox::error( 0, i18n( "<p>Sorry, the Collection Scan was aborted, since too many problems were encountered.</p>" ) +
                             "<p>Advice: A common source for this problem is a broken 'TagLib' package on your computer. Replacing this package may help fixing the issue.</p>"
                             "<p>The following files caused problems:</p>" +
@@ -304,7 +305,8 @@ main_loop:
 
         }
         else {
-            if( m_crashedFiles.size() < MAX_RESTARTS ) {
+            if( m_crashedFiles.size() <= MAX_RESTARTS ||
+                    m_crashedFiles.size() <= (m_scanCount * MAX_FAILURE_PERCENTAGE) / 100 ) {
                 kapp->postEvent( this, new RestartEvent() );
                 sleep( 3 );
             }
@@ -454,6 +456,8 @@ ScanController::startElement( const QString&, const QString& localName, const QS
             m_filesAdded[bundle.uniqueId()] = bundle.url().path();
             m_fileMapsMutex.unlock();
         }
+
+        m_scanCount++;
     }
 
     else if( localName == "folder" ) {
