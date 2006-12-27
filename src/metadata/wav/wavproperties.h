@@ -1,8 +1,27 @@
-// (C) 2005 Martin Aumueller <aumuell@reserv.at>
-// portions are (C) 2005 Umesh Shankar <ushankar@cs.berkeley.edu>
-//          and (C) 2005 Andy Leadbetter <andrew.leadbetter@gmail.com>
-//
-// See COPYING file for licensing information
+/***************************************************************************
+    copyright            : (C) 2006 by Martin Aumueller
+    email                : aumuell@reserv.at
+
+    copyright            : (C) 2005 by Andy Leadbetter
+    email                : andrew.leadbetter@gmail.com
+                           (original mp4 implementation)
+ ***************************************************************************/
+
+/***************************************************************************
+ *   This library is free software; you can redistribute it and/or modify  *
+ *   it  under the terms of the GNU Lesser General Public License version  *
+ *   2.1 as published by the Free Software Foundation.                     *
+ *                                                                         *
+ *   This library is distributed in the hope that it will be useful, but   *
+ *   WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU     *
+ *   Lesser General Public License for more details.                       *
+ *                                                                         *
+ *   You should have received a copy of the GNU Lesser General Public      *
+ *   License along with this library; if not, write to the Free Software   *
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,            *
+ *   MA  02110-1301  USA                                                   *
+ ***************************************************************************/
 
 #ifndef TAGLIB_WAVPROPERTIES_H
 #define TAGLIB_WAVPROPERTIES_H

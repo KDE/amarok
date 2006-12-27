@@ -1,14 +1,16 @@
 /***************************************************************************
- *   Copyright (C) 2005 Paul Cifarelli                                     *
- *                                                                         *
+      copyright            : (C) 2005 by Paul Cifarelli
+      email                : paulc2@optonline.net
+ ***************************************************************************/
+
+/***************************************************************************
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
- *                                                                         *
- *                                                                         *
- * portions (C) 2005 Martin Aumueller <aumuell@reserv.at>                  *
- *                                                                         *
+ ***************************************************************************/
+
+/***************************************************************************
  *   This library is distributed in the hope that it will be useful, but   *
  *   WITHOUT ANY WARRANTY; without even the implied warranty of            *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU     *
@@ -20,6 +22,7 @@
  *   USA, or check http://www.fsf.org/about/contact.html                   *
  *                                                                         *
  ***************************************************************************/
+
 #include <tfile.h>
 #include <audioproperties.h>
 #include <id3v1tag.h>

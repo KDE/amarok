@@ -1,14 +1,17 @@
 /***************************************************************************
- *   Copyright (C) 2005 Paul Cifarelli                                     *
- *                                                                         *
+      copyright            : (C) 2005 by Paul Cifarelli
+      email                : paulc2@optonline.net
+
+      copyright            : (C) 2005 by Lukas Lalinsky
+      email                : lalinsky@gmail.com
+                             (portions)
+ ***************************************************************************/
+
+/***************************************************************************
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
- *                                                                         *
- *                                                                         *
- * portions may be (C) 2005 Martin Aumueller <aumuell@reserv.at>           *
- *             and (C) 2005 by Lukas Lalinsky <lalinsky@gmail.com>         *
  ***************************************************************************/
 
 /***************************************************************************
