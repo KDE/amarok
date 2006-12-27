@@ -512,7 +512,7 @@ Playlist::insertMedia( KURL::List list, int options )
             }
         }
         if ( alreadyOnPlaylist )
-            Amarok::StatusBar::instance()->shortMessage( i18n("One track was already in the playlist, so it wasn't added.", "%n tracks were already in the playlist, so they weren't added.", alreadyOnPlaylist ) );
+            Amarok::StatusBar::instance()->shortMessage( i18n("One track was already in the playlist, so it was not added.", "%n tracks were already in the playlist, so they were not added.", alreadyOnPlaylist ) );
     }
 
     insertMediaInternal( list, after, options );

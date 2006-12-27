@@ -86,7 +86,7 @@ BrowserBar::BrowserBar( QWidget *parent )
 
 
     s_instance = this;
-    m_pos = m_tabBar->sizeHint().width() + 5; //5 = aesthetic spacing
+    m_pos = m_tabBar->sizeHint().width() + 5; //5 = esthetic spacing
 
     m_tabBar->setStyle( MultiTabBar::AMAROK );
     m_tabBar->setPosition( MultiTabBar::Left );

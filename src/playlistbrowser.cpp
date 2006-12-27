@@ -984,7 +984,7 @@ PlaylistCategory* PlaylistBrowser::loadDynamics()
             return p;
         }
         else if ( version == "1.1" ) {
-            // In 1.1, playlists would be refered only by its name.
+            // In 1.1, playlists would be referred only by its name.
             // TODO: We can *try* to convert by using findItem
             PlaylistCategory* p = new PlaylistCategory( m_listview, after, e );
             p->setText( 0, i18n("Dynamic Playlists") );

@@ -801,7 +801,7 @@ class QueryBuilder
         QStringList run();
 
         // Transform a string table.value "field" into enum values
-        // @return true if we succeded
+        // @return true if we succeeded
         bool getField(const QString &tableValue, int *table, Q_INT64 *value);
 
     private:
