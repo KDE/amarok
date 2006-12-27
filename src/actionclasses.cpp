@@ -411,6 +411,9 @@ QString SelectAction::currentIcon() const
     return QString::null;
 }
 
+QString SelectAction::currentText() const {
+    return KSelectAction::currentText() + "<br /><br />" + i18n("Click to change");
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // VolumeAction

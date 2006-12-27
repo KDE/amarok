@@ -120,6 +120,8 @@ namespace Amarok
 
             virtual void setIcons( QStringList icons );
 
+            virtual QString currentText() const;
+
             QStringList icons() const;
 
             QString currentIcon() const;
