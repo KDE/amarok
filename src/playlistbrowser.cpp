@@ -590,12 +590,15 @@ void PlaylistBrowser::addLastFmRadio( QListViewItem *parent )
 
 void PlaylistBrowser::addLastFmCustomRadio( QListViewItem *parent )
 {
-    const QString token = LastFm::Controller::createCustomStation();
+    QString token = LastFm::Controller::createCustomStation();
     if( token.isEmpty() ) return;
+    token.replace( "/", "%252" );
 
     const QString text = "lastfm://artistnames/" + token;
     const KURL url( text );
-    const QString name = LastFm::Controller::stationDescription( text );
+
+    QString name = LastFm::Controller::stationDescription( text );
+    name.replace( "%252", "/" );
     new LastFmEntry( parent, 0, url, name );
     saveLastFm();
 }
