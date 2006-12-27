@@ -106,8 +106,8 @@ CollectionBrowser::CollectionBrowser( const char* name )
         m_searchEdit->setFrame( QFrame::Sunken );
         connect( button, SIGNAL( clicked() ), SLOT( slotClearFilter() ) );
 
-        QToolTip::add( button, i18n( "Clear filter" ) );
-        QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to filter collection" ) );
+        QToolTip::add( button, i18n( "Clear search field" ) );
+        QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to search in the collection" ) );
     } //</Search LineEdit>
 
 
@@ -1629,7 +1629,7 @@ void CollectionView::cancelOrganizingFiles()
 {
     // Set the indicator
     m_organizingFileCancelled = true;
-    
+
     // Cancel the current underlying CollectionDB::instance()->moveFile operation
     CollectionDB::instance()->cancelMovingFileJob();
 }
@@ -1866,8 +1866,8 @@ CollectionView::safeClear()
     blockSignals( true );
     clearSelection();
 
-    QMap<QListViewItem*, CoverFetcher*> *itemCoverMap = CollectionDB::instance()->getItemCoverMap(); 
-    QMutex* itemCoverMapMutex = CollectionDB::instance()->getItemCoverMapMutex(); 
+    QMap<QListViewItem*, CoverFetcher*> *itemCoverMap = CollectionDB::instance()->getItemCoverMap();
+    QMutex* itemCoverMapMutex = CollectionDB::instance()->getItemCoverMapMutex();
     QListViewItem *c = firstChild();
     QListViewItem *n;
     itemCoverMapMutex->lock();
@@ -3388,7 +3388,7 @@ CollectionView::viewportPaintEvent( QPaintEvent *e )
         QSimpleRichText t( i18n(
                 "<div align=center>"
                   "<h3>Flat-View Mode</h3>"
-                    "To enable the Flat-View mode, please enter search terms in the filter line above."
+                    "To enable the Flat-View mode, please enter search terms in the search line above."
                 "</div>" ), QApplication::font() );
 
         t.setWidth( width() - 50 );

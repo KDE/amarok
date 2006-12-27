@@ -86,7 +86,7 @@ Statistics::Statistics( QWidget *parent, const char *name )
         connect( m_lineEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
         connect( m_lineEdit, SIGNAL( returnPressed() )              , SLOT( slotSetFilter() ) );
 
-        QToolTip::add( button, i18n( "Clear filter" ) );
+        QToolTip::add( button, i18n( "Clear search field" ) );
     } //</Search LineEdit>
 
     m_listView = new StatisticsList( box );

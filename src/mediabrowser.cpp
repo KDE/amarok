@@ -281,7 +281,7 @@ MediaBrowser::MediaBrowser( const char *name )
         connect( button, SIGNAL( clicked() ), m_searchEdit, SLOT( clear() ) );
 
         QToolTip::add( button, i18n( "Clear filter" ) );
-        QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to filter" ) );
+        QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to search" ) );
     } //</Search LineEdit>
 
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );

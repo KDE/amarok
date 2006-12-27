@@ -277,7 +277,7 @@ void PlaylistWindow::init()
         bar->boxLayout()->addStretch();
         QWidget *button = new KToolBarButton( "locationbar_erase", 1, bar );
         QLabel *filter_label = new QLabel( i18n("S&earch:") + ' ', bar );
-        m_lineEdit = new ClickLineEdit( i18n( "Playlist Filter" ), bar );
+        m_lineEdit = new ClickLineEdit( i18n( "Playlist Search" ), bar );
 
         filter_label->setBuddy( m_lineEdit );
 
@@ -289,8 +289,8 @@ void PlaylistWindow::init()
 
         connect( button, SIGNAL(clicked()), m_lineEdit, SLOT(clear()) );
 
-        QToolTip::add( button, i18n( "Clear filter" ) );
-        QString filtertip = i18n( "Enter space-separated terms to filter the playlist.\n\n"
+        QToolTip::add( button, i18n( "Clear search field" ) );
+        QString filtertip = i18n( "Enter space-separated terms to search in the playlist.\n\n"
                                   "Advanced, Google-esque syntax is also available;\n"
                                   "see the handbook (The Playlist section of chapter 4) for details." );
 

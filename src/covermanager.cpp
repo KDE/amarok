@@ -59,7 +59,7 @@
 static QString artistToSelectInInitFunction;
 CoverManager *CoverManager::s_instance = 0;
 
-class ArtistItem : public KListViewItem 
+class ArtistItem : public KListViewItem
 {
     public:
     ArtistItem(QListView *view, QListViewItem *item, const QString &text)
@@ -149,8 +149,8 @@ CoverManager::CoverManager()
         searchToolBar->setStretchableWidget( m_searchEdit );
         connect( button, SIGNAL(clicked()), m_searchEdit, SLOT(clear()) );
 
-        QToolTip::add( button, i18n( "Clear filter" ) );
-        QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to filter albums" ) );
+        QToolTip::add( button, i18n( "Clear search field" ) );
+        QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to search in the albums" ) );
 
         hbox->setStretchFactor( searchBox, 1 );
     } //</Search LineEdit>

@@ -106,8 +106,8 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
 
         connect( button, SIGNAL(clicked()), m_filter, SLOT(clear()) );
 
-        QToolTip::add( button, i18n( "Clear filter" ) );
-        QToolTip::add( m_filter, i18n( "Enter space-separated terms to filter the directory-listing" ) );
+        QToolTip::add( button, i18n( "Clear search field" ) );
+        QToolTip::add( m_filter, i18n( "Enter space-separated terms to search in the directory-listing" ) );
     }
 
     { //Directory Listing
