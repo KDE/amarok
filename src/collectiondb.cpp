@@ -2275,6 +2275,8 @@ CollectionDB::makeWidthKey( uint width )
 bool
 CollectionDB::removeAlbumImage( const QString &artist, const QString &album )
 {
+    DEBUG_BLOCK
+
     QCString widthKey = "*@";
     QCString key = md5sum( artist, album );
     query( "DELETE FROM amazon WHERE filename='" + key + '\'' );
@@ -2291,6 +2293,8 @@ CollectionDB::removeAlbumImage( const QString &artist, const QString &album )
         deleted = true;
 
     QString hardImage = findDirectoryImage( artist, album );
+    debug() << "hardImage: " << hardImage << endl;
+
     if( !hardImage.isEmpty() && QFile::remove( hardImage ) )
     {
         int id = MountPointManager::instance()->getIdForUrl( hardImage );
