@@ -3404,7 +3404,7 @@ CollectionDB::bundleForUrl( MetaBundle* bundle )
         fillInBundle( values, *bundle );
         valid = true;
     }
-    else if( MediaBrowser::instance()->getBundle( bundle->url(), bundle ) )
+    else if( MediaBrowser::instance() && MediaBrowser::instance()->getBundle( bundle->url(), bundle ) )
     {
         valid = true;
     }
