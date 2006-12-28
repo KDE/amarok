@@ -2295,7 +2295,7 @@ CollectionDB::removeAlbumImage( const QString &artist, const QString &album )
     QString hardImage = findDirectoryImage( artist, album );
     debug() << "hardImage: " << hardImage << endl;
 
-    if( !hardImage.isEmpty() && QFile::remove( hardImage ) )
+    if( !hardImage.isEmpty() )
     {
         int id = MountPointManager::instance()->getIdForUrl( hardImage );
         QString rpath = MountPointManager::instance()->getRelativePath( id, hardImage );
