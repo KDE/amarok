@@ -4118,8 +4118,6 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
 
     if( !m_fileOperationFailed )
     {
-        emit fileMoved( src, dest );
-
         if( copy )
         {
             MetaBundle bundle( dstURL );
@@ -4131,9 +4129,11 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
         }
         else
         {
+            emit fileMoved( src, dest );
+            migrateFile( srcURL.path(), dstURL.path() );
+
             if( isFileInCollection( srcURL.path() ) )
             {
-                migrateFile( srcURL.path(), dstURL.path() );
                 return true;
             }
             else
