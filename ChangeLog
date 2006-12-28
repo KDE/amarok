@@ -87,6 +87,8 @@ VERSION 1.4.5
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
+    * Don't crash when quitting while initially loading the playlist.
+      (BR 136353)
     * The same track could be queued multiple times for transferring to a
       media device. (BR 129136)
     * Migrate statistics for files moved from outside to the collection.

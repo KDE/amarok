@@ -172,9 +172,12 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, int options 
 
 UrlLoader::~UrlLoader()
 {
-    Playlist::instance()->unlock();
+    if( Playlist::instance() )
+    {
+        Playlist::instance()->unlock();
+        delete m_markerListViewItem;
+    }
 
-    delete m_markerListViewItem;
     delete m_xmlSource;
 }
 

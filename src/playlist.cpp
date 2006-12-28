@@ -175,6 +175,9 @@ Playlist::Playlist( QWidget *parent )
         , m_visLength( 0 )
         , m_total( 0 )
         , m_itemCountDirty( false )
+        , m_undoButton( 0 )
+        , m_redoButton( 0 )
+        , m_clearButton( 0 )
         , m_undoDir( Amarok::saveLocation( "undo/" ) )
         , m_undoCounter( 0 )
         , m_dynamicMode( 0 )
@@ -401,12 +404,13 @@ Playlist::~Playlist()
 {
     saveLayout( KGlobal::config(), "PlaylistColumnsLayout" );
 
-    if( AmarokConfig::savePlaylist() ) saveXML( defaultPlaylistPath() );
+    if( AmarokConfig::savePlaylist() && m_lockStack == 0 ) saveXML( defaultPlaylistPath() );
 
     //speed up quit a little
     safeClear();   //our implementation is slow
     Amarok::ToolTip::remove( viewport() );
     blockSignals( true ); //might help
+    s_instance = 0;
 }
 
 
