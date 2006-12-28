@@ -80,7 +80,10 @@ DeviceConfigureDialog::DeviceConfigureDialog( const Medium &medium )
         m_transcodeCheck->setChecked( device->m_transcode );
 
         transcodeGroup = new QVButtonGroup( vbox );
-        transcodeGroup->setTitle( i18n( "Transcode to preferred format for device" ) );
+        QString format = "mp3";
+        if( !device->supportedFiletypes().isEmpty() )
+            format = device->supportedFiletypes().first();
+        transcodeGroup->setTitle( i18n( "Transcode to preferred format (%1) for device" ).arg( format ) );
         m_transcodeAlways = new QRadioButton( transcodeGroup );
         m_transcodeAlways->setText( i18n( "Whenever possible" ) );
         m_transcodeAlways->setChecked( device->m_transcodeAlways );
