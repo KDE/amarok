@@ -87,6 +87,7 @@ VERSION 1.4.5
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
+    * Select All/Copy action would not copy from context browser. (BR 138635)
     * Xine-engine: When a track was fading out (after pressing Stop), and you
       started another track, Amarok could become unresponsive.
     * Improved seeking with xine-engine. No longer jumps to 0 when you seek

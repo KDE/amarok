@@ -10,6 +10,7 @@
 #include <khtml_part.h>
 #include <khtmlview.h>
 
+class KAction;
 class KTempFile;
 
 class HTMLView : public KHTMLPart
@@ -30,6 +31,14 @@ class HTMLView : public KHTMLPart
         static KTempFile *m_headerGradientImage;
         static KTempFile *m_shadowGradientImage;
         static int m_instances;
+
+        KAction *m_selectAll;
+        KAction *m_copy;
+
+    private slots:
+        void enableCopyAction();
+        void selectAll();
+        void copyText();
 };
 
 #endif /* AMAROK_HTMLVIEW_H */

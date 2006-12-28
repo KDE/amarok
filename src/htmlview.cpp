@@ -10,12 +10,15 @@
 #include "htmlview.h"
 #include "playlist.h"      //appendMedia()
 
+#include <qclipboard.h>
 #include <qfile.h> // External CSS opening
 #include <qimage.h> // External CSS opening
 
 #include <kapplication.h> //kapp
+#include <kactioncollection.h>
 #include <kglobal.h> //kapp
 #include <kimageeffect.h> // gradient background image
+#include <kpopupmenu.h>
 #include <kstandarddirs.h> //locate file
 #include <ktempfile.h>
 
@@ -33,6 +36,22 @@ HTMLView::HTMLView( QWidget *parentWidget, const char *widgetname, const bool DN
 
     setDNDEnabled( DNDEnabled );
     setJScriptEnabled( JScriptEnabled );
+
+    KActionCollection* ac = actionCollection();
+    ac->setAutoConnectShortcuts( true );
+    m_copy = KStdAction::copy( this, SLOT( copyText() ), ac, "htmlview_copy" );
+    m_selectAll = KStdAction::selectAll( this, SLOT( selectAll() ), ac, "htmlview_select_all" );
+    {
+        KPopupMenu m;
+        m_copy->plug( &m );
+        m_selectAll->plug( &m );
+
+        m_copy->unplug( &m );
+        m_selectAll->unplug( &m );
+    }
+
+    connect( this, SIGNAL( selectionChanged() ), SLOT( enableCopyAction() ) );
+    enableCopyAction();
 }
 
 
@@ -46,6 +65,27 @@ HTMLView::~HTMLView()
     }
 }
 
+void
+HTMLView::enableCopyAction()
+{
+    m_copy->setEnabled( hasSelection() );
+}
+
+void
+HTMLView::selectAll()
+{
+    KHTMLPart::selectAll();
+}
+
+void
+HTMLView::copyText()
+{
+    QString text = selectedText();
+
+    // Copy both to clipboard and X11-selection
+    QApplication::clipboard()->setText( text, QClipboard::Clipboard );
+    QApplication::clipboard()->setText( text, QClipboard::Selection );
+}
 
 void HTMLView::paletteChange() {
     delete m_bgGradientImage;
