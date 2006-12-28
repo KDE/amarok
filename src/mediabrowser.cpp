@@ -2247,6 +2247,21 @@ MediaQueue::addURL( const KURL& url2, MetaBundle *bundle, const QString &playlis
         return;
     }
 
+    if( playlistName.isNull() )
+    {
+        for( MediaItem *it = static_cast<MediaItem *>(firstChild());
+                it;
+                it = static_cast<MediaItem *>(it->nextSibling()) )
+        {
+            if( it->url() == url )
+            {
+                Amarok::StatusBar::instance()->shortMessage(
+                        i18n( "Track already queued for transfer: %1" ).arg( url.url() ) );
+                return;
+            }
+        }
+    }
+
     if(!bundle)
         bundle = new MetaBundle( url );
 

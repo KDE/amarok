@@ -87,6 +87,8 @@ VERSION 1.4.5
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
+    * The same track could be queued multiple times for transferring to a
+      media device. (BR 129136)
     * Migrate statistics for files moved from outside to the collection.
       (BR 127776)
     * Select All/Copy action would not copy from context browser. (BR 138635)
