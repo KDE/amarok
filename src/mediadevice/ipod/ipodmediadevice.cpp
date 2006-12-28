@@ -2308,9 +2308,9 @@ QStringList
 IpodMediaDevice::supportedFiletypes()
 {
     QStringList list;
+    list << "mp3";
     list << "m4a";
     list << "m4b";
-    list << "mp3";
     list << "wav";
     list << "mp4";
     list << "aa";
