@@ -3700,7 +3700,7 @@ CollectionDB::getSongRating( const QString &url )
 }
 
 void
-CollectionDB::setSongPercentage( const QString &url , int percentage)
+CollectionDB::setSongPercentage( const QString &url , float percentage)
 {
     int deviceid = MountPointManager::instance()->getIdForUrl( url );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
@@ -3747,7 +3747,7 @@ CollectionDB::setSongPercentage( const QString &url , int percentage)
                         .arg( escapeString( rpath ) ),0 );
     }
 
-    emit scoreChanged( url, percentage );
+    emit scoreChanged( url, (int)percentage );
 }
 
 void

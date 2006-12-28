@@ -430,7 +430,7 @@ namespace Amarok
         CollectionDB::instance()->setSongPercentage(url, score);
     }
 
-    void DcopPlayerHandler::setScoreByPath( const QString &url, int score )
+    void DcopPlayerHandler::setScoreByPath( const QString &url, float score )
     {
         CollectionDB::instance()->setSongPercentage(url, score);
     }

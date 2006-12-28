@@ -30,8 +30,6 @@ loop do
                 newscore = ( ( prevscore * playcount ) + percentage ) / ( playcount + 1 )
             end
 
-            newscore = newscore.to_i
-
             system( "dcop", "amarok", "player", "setScoreByPath", URI::decode( url ), newscore.to_s )
     end
 end

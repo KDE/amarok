@@ -101,7 +101,7 @@ k_dcop:
    virtual void setBpm( float bpm ) = 0;                  ///< Set the bpm of the currently playing track.
    virtual void setBpmByPath( const QString &url, float bpm ) = 0;  ///< Set the bpm of a track by it's path.
    virtual void setScore( int score ) = 0;                  ///< Set the score of the currently playing track.
-   virtual void setScoreByPath( const QString &url, int score ) = 0;  ///< Set the score of a track by it's path.
+   virtual void setScoreByPath( const QString &url, float score ) = 0;  ///< Set the score of a track by it's path.
    virtual void setRating( int rating ) = 0;                ///< Set the rating of the currently playing track.
    virtual void setRatingByPath( const QString &url, int rating ) = 0;  ///< Set the rating of a track by it's path.
    virtual void setVolume(int volume) = 0;                  ///< Set volume in range 0-100%.

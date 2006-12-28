@@ -94,7 +94,7 @@ class DcopPlayerHandler : public QObject, virtual public AmarokPlayerInterface
       virtual void setEqualizerPreset( QString name );
       virtual void setLyricsByPath( const QString& url, const QString& lyrics );
       virtual void setScore( int score );
-      virtual void setScoreByPath( const QString &url, int score );
+      virtual void setScoreByPath( const QString &url, float score );
       virtual void setBpm( float bpm );
       virtual void setBpmByPath( const QString &url, float bpm );
       virtual void setRating( int rating );

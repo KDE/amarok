@@ -379,7 +379,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
                 const QString &reason, const QDateTime *playtime = 0 );
         int getSongPercentage( const QString &url );
         int getSongRating( const QString &url );
-        void setSongPercentage( const QString &url, int percentage );
+        void setSongPercentage( const QString &url, float percentage );
         void setSongRating( const QString &url, int percentage, bool toggleHalf = false );
         int getPlayCount( const QString &url );
         QDateTime getFirstPlay( const QString &url );
@@ -629,7 +629,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         bool m_fileOperationFailed;
         bool m_scanInProgress;
         bool m_rescanRequired;
- 
+
         QStringList m_aftEnabledPersistentTables;
 
         // Cancel move/copy job
