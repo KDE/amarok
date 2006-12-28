@@ -2729,6 +2729,8 @@ MediaDevice::syncStatsFromDevice( MediaItem *root )
         it = static_cast<MediaItem *>( root->firstChild() );
     }
 
+    kapp->processEvents( 100 );
+
     for( ; it; it = static_cast<MediaItem *>( it->nextSibling() ) )
     {
         switch( it->type() )
@@ -2828,6 +2830,8 @@ MediaDevice::syncStatsToDevice( MediaItem *root )
     {
         it = static_cast<MediaItem *>( root->firstChild() );
     }
+
+    kapp->processEvents( 100 );
 
     for( ; it; it = static_cast<MediaItem *>( it->nextSibling() ) )
     {
