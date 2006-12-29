@@ -755,18 +755,32 @@ CollectionView::slotEnsureSelectedItemVisible() //SLOT
     }
     if ( r )
     {
+        //We've found the selected item. Now let's refocus on it.
         //An elaborate agorithm to try to make as much as possible of the vicinity visible
+
+        //It looks better if things end up at consistently in one place.
+        //So, scroll to the end so that we come at items from the bottom.
         if ( lastChild() )
             ensureItemVisible( lastChild() );
-        if ( r->parent() )
+
+        //Create a reverse list of parents, grandparents etc.
+        //Later we try to make the grandparents in view, then their children etc.
+        //This means that the selected item has the most priority as it is done last.
+        QValueStack<QListViewItem*> parents;
+        while ( r )
         {
-            if ( r->parent()->parent() )
-                ensureItemVisible( r->parent()->parent() );
-            if ( r->parent()->nextSibling() )
-                ensureItemVisible( r->parent()->nextSibling() );
-            ensureItemVisible( r->parent() );
+            parents.push( r );
+            r = r->parent();
         }
-        ensureItemVisible( r );
+        while ( !parents.isEmpty() )
+        {
+            //We would prefer the next item to be visible.
+            if ( parents.top()->nextSibling() )
+                ensureItemVisible( parents.top()->nextSibling() );
+            //It's even more important the actual item is visible than the next one.
+            ensureItemVisible( parents.top() );
+            parents.pop();
+        }
     }
 }
 
