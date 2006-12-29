@@ -102,12 +102,22 @@ CollectionScanner::doJob() //SLOT
 
     if( m_restart ) {
         QFile logFile( m_logfile );
-        logFile.open( IO_ReadOnly );
-        QString lastFile = logFile.readAll();
+	QString lastFile;
+        if ( !logFile.open( IO_ReadOnly ) )
+	    warning() << "Failed to open log file " << logFile.name() << " read-only"
+		<< endl;
+	else {
+	    QTextStream logStream;
+	    logStream.setDevice(&logFile);
+            lastFile = logStream.read();
+	}
 
         QFile folderFile( Amarok::saveLocation( QString::null ) + "collection_scan.files"   );
-        folderFile.open( IO_ReadOnly );
-        entries = QStringList::split( "\n", folderFile.readAll() );
+        if ( !folderFile.open( IO_ReadOnly ) )
+	    warning() << "Failed to open folder file " << folderFile.name()
+		<< " read-only" << endl;
+	else
+            entries = QStringList::split( "\n", folderFile.readAll() );
 
         for( int count = entries.findIndex( lastFile ) + 1; count; --count )
             entries.pop_front();
