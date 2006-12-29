@@ -758,7 +758,7 @@ CollectionView::slotEnsureSelectedItemVisible() //SLOT
         //We've found the selected item. Now let's refocus on it.
         //An elaborate agorithm to try to make as much as possible of the vicinity visible
 
-        //It looks better if things end up at consistently in one place.
+        //It looks better if things end up consistently in one place.
         //So, scroll to the end so that we come at items from the bottom.
         if ( lastChild() )
             ensureItemVisible( lastChild() );
