@@ -189,6 +189,7 @@ RealMediaFF::~RealMediaFF()
    }
 
    delete m_id3v1tag;
+   delete m_md;
 
    close(m_fd);
 }
