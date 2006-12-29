@@ -121,7 +121,7 @@ appleEventProcessor(const AppleEvent *ae, AppleEvent *, long handlerRefCon)
 LIBAMAROK_EXPORT KAboutData aboutData( "amarok",
     I18N_NOOP( "Amarok" ), APP_VERSION,
     I18N_NOOP( "The audio player for KDE" ), KAboutData::License_GPL,
-    I18N_NOOP( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2006, The Amarok Development Squad" ),
+    I18N_NOOP( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2007, The Amarok Development Squad" ),
     I18N_NOOP( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es\n\nFeedback:\namarok@kde.org\n\n(Build Date: " __DATE__ ")" ),
              ( "http://amarok.kde.org" ) );
 
