@@ -34,8 +34,9 @@
 #include <kwin.h>
 
 
-namespace Amarok {
-    void coverContextMenu( QWidget *parent, QPoint point, const QString &artist, const QString &album, bool showCoverManager ) {
+void
+Amarok::coverContextMenu( QWidget *parent, QPoint point, const QString &artist, const QString &album, bool showCoverManager )
+{
         KPopupMenu menu;
         enum { SHOW, FETCH, CUSTOM, DELETE, MANAGER };
 
@@ -105,7 +106,6 @@ namespace Amarok {
             CoverManager::showOnce( album );
             break;
         }
-    }
 }
 
 
