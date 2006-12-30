@@ -97,9 +97,8 @@ int App::mainThreadId = 0;
 static AEEventHandlerUPP appleEventProcessorUPP = 0;
 
 OSStatus
-appleEventProcessor(const AppleEvent *ae, AppleEvent *, long handlerRefCon)
+appleEventProcessor(const AppleEvent *ae, AppleEvent *, long /*handlerRefCon*/)
 {
-    App *app = (App *)handlerRefCon;
     OSType aeID = typeWildCard;
     OSType aeClass = typeWildCard;
     AEGetAttributePtr(ae, keyEventClassAttr, typeType, 0, &aeClass, sizeof(aeClass), 0);

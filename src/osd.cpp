@@ -78,6 +78,9 @@ OSDWidget::show( const QString &text, QImage newImage )
         m_scaledCover = m_cover.smoothScale(w, h);
     }
     show();
+#else
+    Q_UNUSED( text );
+    Q_UNUSED( newImage );
 #endif
 }
 
@@ -754,6 +757,8 @@ Amarok::OSD::show( const MetaBundle &bundle ) //slot
         text = i18n("No information available for this track");
 
     OSDWidget::show( text );
+#else
+    Q_UNUSED( bundle );
 #endif
 }
 

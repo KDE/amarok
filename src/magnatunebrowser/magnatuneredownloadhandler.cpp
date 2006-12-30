@@ -140,6 +140,7 @@ void MagnatuneRedownloadHandler::selectionDialogCancelled( )
 
 void MagnatuneRedownloadHandler::albumDownloadComplete( bool success )
 {
+    Q_UNUSED( success );
     //cleanup time!
 
     if (m_downloadDialog != 0) {
