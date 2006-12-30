@@ -2897,7 +2897,7 @@ MediaDevice::transferFiles()
     m_transferring = true;
     m_parent->m_toolbar->getButton(MediaBrowser::TRANSFER)->setEnabled( false );
 
-    setProgress( 0, m_parent->m_queue->childCount() + 1 /* for synchronizing */ );
+    setProgress( 0, m_parent->m_queue->childCount() );
 
     // ok, let's copy the stuff to the device
 
@@ -2964,6 +2964,7 @@ MediaDevice::transferFiles()
                         arg( (*it).url().prettyURL() ),
                         KDE::StatusBar::Sorry );
                 existing += (*it).url();
+                setProgress( progress() + 1 );
                 continue;
             }
             else if( !item ) // the item does not yet exist on the media device
@@ -3013,6 +3014,7 @@ MediaDevice::transferFiles()
                         delete bundle;
                         bundle = 0;
                     }
+                    setProgress( progress() + 1 );
                     continue;
                 }
                 item = copyTrackToDevice( *bundle );
@@ -3042,7 +3044,10 @@ MediaDevice::transferFiles()
                 break;
 
             if( !item )
+            {
+                setProgress( progress() + 1 );
                 continue;
+            }
 
             item->syncStatsFromPath( (*it).url().path() );
 
