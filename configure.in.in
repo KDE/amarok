@@ -587,7 +587,6 @@ if test "$enable_postgresql" = "yes"; then
         enable_postgresql=no
     fi
 
-    AC_DEFINE(USE_POSTGRESQL, 1, [Postgresql database support enabled])
 fi
 
 AM_CONDITIONAL(enable_postgresql, test x$enable_postgresql = xyes)
