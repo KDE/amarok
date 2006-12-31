@@ -30,7 +30,7 @@ class MagnatuneRedownloadDialog : public magnatuneReDownloadDialogBase
     Q_OBJECT
 
 public:
-    MagnatuneRedownloadDialog( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    MagnatuneRedownloadDialog( QWidget* parent = 0, const char* name = 0, bool modal = false, WFlags fl = 0 );
     ~MagnatuneRedownloadDialog();
     /*$PUBLIC_FUNCTIONS$*/
 

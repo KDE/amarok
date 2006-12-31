@@ -330,7 +330,7 @@ yauapEngine::init( void )
     if( !bus )
     {
         debug() << "could not connect to dbus" << endl;
-        emit statusText( i18n( "Error: couldn't connect to dbus" ) );
+        emit statusText( i18n( "Error: could not connect to dbus" ) );
         return false;
     }
 

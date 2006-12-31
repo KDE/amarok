@@ -36,7 +36,7 @@ public:
      * @param modal Sets modal state.
      * @param fl Additional dialog flags.
      */
-    MagnatunePurchaseDialog( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+    MagnatunePurchaseDialog( QWidget* parent = 0, const char* name = 0, bool modal = false, WFlags fl = 0 );
 
     /**
      * Destructor
