@@ -2005,7 +2005,7 @@ Playlist::engineNewMetaData( const MetaBundle &bundle, bool trackChanged )
     {
         if ( m_currentTrack && !trackChanged ) {
             //if the track hasn't changed then this is a meta-data update
-            if( stopAfterMode() == StopAfterCurrent )
+            if( stopAfterMode() == StopAfterCurrent || !m_nextTracks.isEmpty() )
                 Playlist::instance()->playNextTrack( true );
             //this is a hack, I repeat a hack! FIXME FIXME
             //we do it because often the stream title is from the pls file and is informative
