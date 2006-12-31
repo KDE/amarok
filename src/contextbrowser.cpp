@@ -3662,7 +3662,8 @@ ContextBrowser::showLabelsDialog()
                                              CollectionDB::instance()->uniqueIdFromUrl( currentUrl ),
                                              CollectionDB::typeUser );
         CollectionDB::instance()->cleanLabels();
-        if( newTrackLabels != trackLabels )
+        if( newTrackLabels != trackLabels
+                && currentUrl == EngineController::instance()->bundle().url() )
         {
             m_dirtyCurrentTrackPage = true;
             showCurrentTrack();
