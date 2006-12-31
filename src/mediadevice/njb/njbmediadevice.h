@@ -1,16 +1,27 @@
-//
-// C++ Interface: njbmediadevice
-//
-// Description: This class is used to manipulate Nomad Creative Jukebox and others media player that works with the njb libraries.
-//
-//
-// Author: Andres Oton <andres.oton@gmail.com>, (C) 2006
-//
-// Modified by: T.R.Shashwath <trshash84@gmail.com>
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
+/***************************************************************************
+    copyright            : (C) 2006 by Andres Oton
+    email                : andres.oton@gmail.com
+
+    copyright            : (C) 2006 by T.R.Shashwath
+    email                : trshash84@gmail.com
+ ***************************************************************************/
+
+/***************************************************************************
+ *   This library is free software; you can redistribute it and/or modify  *
+ *   it  under the terms of the GNU General Public License version 2 as    *
+ *   published by the Free Software Foundation.                            *
+ *                                                                         *
+ *   This library is distributed in the hope that it will be useful, but   *
+ *   WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU     *
+ *   Lesser General Public License for more details.                       *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this library; if not, write to the Free Software           *
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,            *
+ *   MA  02110-1301  USA                                                   *
+ ***************************************************************************/
+
 #ifndef NJBMEDIADEVICE_H
 #define NJBMEDIADEVICE_H
 

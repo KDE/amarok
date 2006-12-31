@@ -1,16 +1,26 @@
-// //
-// C++ Implementation: njbmediadevice
-//
-// Description: This class is used to manipulate Nomad Creative Jukebox and others media player that works with the njb libraries.
-//
-//
-// Author: Andres Oton <andres.oton@gmail.com>, (C) 2006
-//
-// Modified by: T.R.Shashwath <trshash84@gmail.com>
-//
-// Based on kionjb (http://sourceforge.net/projects/kionjb) and kzenexplorer (http://sourceforge.net/projects/kzenexplorer)
-// Copyright: See COPYING file that comes with this distribution
-//
+/***************************************************************************
+    copyright            : (C) 2006 by Andres Oton
+    email                : andres.oton@gmail.com
+
+    copyright            : (C) 2006 by T.R.Shashwath
+    email                : trshash84@gmail.com
+ ***************************************************************************/
+
+/***************************************************************************
+ *   This library is free software; you can redistribute it and/or modify  *
+ *   it  under the terms of the GNU General Public License version 2 as    *
+ *   published by the Free Software Foundation.                            *
+ *                                                                         *
+ *   This library is distributed in the hope that it will be useful, but   *
+ *   WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU     *
+ *   Lesser General Public License for more details.                       *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this library; if not, write to the Free Software           *
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,            *
+ *   MA  02110-1301  USA                                                   *
+ ***************************************************************************/
 
 #include "njbmediadevice.h"
 
@@ -879,8 +889,8 @@ NjbMediaDevice::customClicked()
         batteryCharging = ( (NJB_Get_Battery_Charging( m_njb ) == 1) ? i18n("Battery charging") : i18n("Battery not charging") );
         batteryLevel = (i18n("Battery level: ") + QString::number( NJB_Get_Battery_Level( m_njb ) ) );
 
-        Information = ( i18n("Player Information for ") + m_name +"\n" +
-                        i18n("Power status: ") + powerStatus + "\n" +
+        Information = ( i18n("Player Information for ") + m_name +'\n' +
+                        i18n("Power status: ") + powerStatus + '\n' +
                         i18n("Battery status: ") + batteryLevel + " (" +
                         batteryCharging + ')' );
     }
