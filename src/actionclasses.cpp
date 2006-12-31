@@ -629,7 +629,7 @@ StopMenu::slotAboutToShow()
 
     setItemEnabled( NOW,         Amarok::actionCollection()->action( "stop" )->isEnabled() );
 
-    setItemEnabled( AFTER_TRACK, pl->currentTrackIndex() >= 0 );
+    setItemEnabled( AFTER_TRACK, EngineController::engine()->loaded() );
     setItemChecked( AFTER_TRACK, pl->stopAfterMode() == Playlist::StopAfterCurrent );
 
     setItemEnabled( AFTER_QUEUE, pl->nextTracks().count() );
