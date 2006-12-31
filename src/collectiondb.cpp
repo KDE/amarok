@@ -6999,43 +6999,40 @@ QueryBuilder::addFilter( int tables, const QString& filter )
 void
 QueryBuilder::addFilter( int tables, Q_INT64 value, const QString& filter, int mode, bool exact )
 {
-    if ( !filter.isEmpty() )
+    //true for INTEGER fields (see comment of coalesceField(int, Q_INT64)
+    bool useCoalesce = coalesceField( tables, value );
+    m_where += ANDslashOR() + " ( ";
+
+    QString m, s;
+    if (mode == modeLess || mode == modeGreater)
     {
-        //true for INTEGER fields (see comment of coalesceField(int, Q_INT64)
-        bool useCoalesce = coalesceField( tables, value );
-        m_where += ANDslashOR() + " ( ";
-
-        QString m, s;
-        if (mode == modeLess || mode == modeGreater)
-        {
-            QString escapedFilter;
-            if (useCoalesce && DbConnection::sqlite == CollectionDB::instance()->getDbConnectionType())
-                escapedFilter = CollectionDB::instance()->escapeString( filter );
-            else
-                escapedFilter = "'" + CollectionDB::instance()->escapeString( filter ) + "' ";
-            s = ( mode == modeLess ? "< " : "> " ) + escapedFilter;
-        }
+        QString escapedFilter;
+        if (useCoalesce && DbConnection::sqlite == CollectionDB::instance()->getDbConnectionType())
+            escapedFilter = CollectionDB::instance()->escapeString( filter );
         else
-        {
-            if (exact)
-                if (useCoalesce && DbConnection::sqlite == CollectionDB::instance()->getDbConnectionType())
-                    s = " = " +CollectionDB::instance()->escapeString( filter ) + ' ';
-                else
-                    s = " = '" + CollectionDB::instance()->escapeString( filter ) + "' ";
-            else
-                s = CollectionDB::likeCondition( filter, mode != modeBeginMatch, mode != modeEndMatch );
-        }
-
-        if( coalesceField( tables, value ) )
-            m_where += QString( "COALESCE(%1.%2,0) " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
-        else
-            m_where += QString( "%1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
-
-        if ( !exact && (value & valName) && mode == modeNormal && i18n( "Unknown").contains( filter, false ) )
-            m_where += QString( "OR %1.%2 = '' " ).arg( tableName( tables ) ).arg( valueName( value ) );
-
-        m_where += " ) ";
+            escapedFilter = "'" + CollectionDB::instance()->escapeString( filter ) + "' ";
+        s = ( mode == modeLess ? "< " : "> " ) + escapedFilter;
     }
+    else
+    {
+        if (exact)
+            if (useCoalesce && DbConnection::sqlite == CollectionDB::instance()->getDbConnectionType())
+                s = " = " +CollectionDB::instance()->escapeString( filter ) + ' ';
+            else
+                s = " = '" + CollectionDB::instance()->escapeString( filter ) + "' ";
+        else
+            s = CollectionDB::likeCondition( filter, mode != modeBeginMatch, mode != modeEndMatch );
+    }
+
+    if( coalesceField( tables, value ) )
+        m_where += QString( "COALESCE(%1.%2,0) " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
+    else
+        m_where += QString( "%1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
+
+    if ( !exact && (value & valName) && mode == modeNormal && i18n( "Unknown").contains( filter, false ) )
+        m_where += QString( "OR %1.%2 = '' " ).arg( tableName( tables ) ).arg( valueName( value ) );
+
+    m_where += " ) ";
 
     m_linkTables |= tables;
 }
