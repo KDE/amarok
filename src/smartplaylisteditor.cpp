@@ -127,6 +127,8 @@ SmartPlaylistEditor::SmartPlaylistEditor( QWidget *parent, QDomElement xml, cons
         updateOrderTypes( dbfield );
         if ( orderby.attribute( "order" ) == "DESC" || orderby.attribute( "order" ) == "weighted" )
             m_orderTypeCombo->setCurrentItem( 1 );
+        else if ( orderby.attribute( "order" ) == "ratingweighted" )
+            m_orderTypeCombo->setCurrentItem( 2 );
         else
             m_orderTypeCombo->setCurrentItem( 0 );
     }
@@ -309,6 +311,7 @@ void SmartPlaylistEditor::updateOrderTypes( int index )
         m_orderTypeCombo->clear();
         m_orderTypeCombo->insertItem( i18n("Completely Random") );
         m_orderTypeCombo->insertItem( i18n("Score Weighted") );
+        m_orderTypeCombo->insertItem( i18n("Rating Weighted") );
     }
     else {  // ordinary order column selected
         m_orderTypeCombo->clear();
@@ -372,7 +375,14 @@ QDomElement SmartPlaylistEditor::result()
             orderby.setAttribute( "order", m_orderTypeCombo->currentItem() == 1 ? "DESC" : "ASC" );
         } else {
             orderby.setAttribute( "field", "random" );
-            orderby.setAttribute( "order", m_orderTypeCombo->currentItem() == 1 ? "weighted" : "random" );
+            QString order;
+            if ( m_orderTypeCombo->currentItem() == 0 )
+                order = "random";
+            else if ( m_orderTypeCombo->currentItem() == 1 )
+                order = "weighted";
+            else
+                order = "ratingweighted";
+            orderby.setAttribute( "order", order );
         }
 
         smartplaylist.appendChild( orderby );
