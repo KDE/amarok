@@ -2288,6 +2288,7 @@ PodcastChannel::showContextMenu( const QPoint &position )
     menu.insertItem( SmallIconSet( Amarok::icon( "artist" ) ), i18n( "Mark as &Listened" ), LISTENED );
     menu.insertItem( SmallIconSet( Amarok::icon( "configure" ) ), i18n( "&Configure..." ), CONFIG );
     menu.setItemEnabled( LISTENED, hasNew() );
+    menu.setItemEnabled( CONFIG, m_settingsValid );
 
     switch( menu.exec( position ) )
     {
