@@ -7141,31 +7141,28 @@ QueryBuilder::excludeFilter( int tables, const QString& filter )
 void
 QueryBuilder::excludeFilter( int tables, Q_INT64 value, const QString& filter, int mode, bool exact )
 {
-    if ( !filter.isEmpty() )
+    m_where += ANDslashOR() + " ( ";
+
+    QString m, s;
+    if (mode == modeLess || mode == modeGreater)
+        s = ( mode == modeLess ? ">= '" : "<= '" ) + CollectionDB::instance()->escapeString( filter ) + "' ";
+    else
     {
-        m_where += ANDslashOR() + " ( ";
-
-        QString m, s;
-        if (mode == modeLess || mode == modeGreater)
-            s = ( mode == modeLess ? ">= '" : "<= '" ) + CollectionDB::instance()->escapeString( filter ) + "' ";
+        if (exact)
+            s = " <> '" + CollectionDB::instance()->escapeString( filter ) + "' ";
         else
-        {
-            if (exact)
-                s = " <> '" + CollectionDB::instance()->escapeString( filter ) + "' ";
-            else
-                s = "NOT " + CollectionDB::instance()->likeCondition( filter, mode != modeBeginMatch, mode != modeEndMatch ) + ' ';
-        }
-
-        if( coalesceField( tables, value ) )
-            m_where += QString( "COALESCE(%1.%2,0) " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
-        else
-            m_where += QString( "%1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
-
-        if ( !exact && (value & valName) && mode == modeNormal && i18n( "Unknown").contains( filter, false ) )
-            m_where += QString( "AND %1.%2 <> '' " ).arg( tableName( tables ) ).arg( valueName( value ) );
-
-        m_where += " ) ";
+            s = "NOT " + CollectionDB::instance()->likeCondition( filter, mode != modeBeginMatch, mode != modeEndMatch ) + ' ';
     }
+
+    if( coalesceField( tables, value ) )
+        m_where += QString( "COALESCE(%1.%2,0) " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
+    else
+        m_where += QString( "%1.%2 " ).arg( tableName( tables ) ).arg( valueName( value ) ) + s;
+
+    if ( !exact && (value & valName) && mode == modeNormal && i18n( "Unknown").contains( filter, false ) )
+        m_where += QString( "AND %1.%2 <> '' " ).arg( tableName( tables ) ).arg( valueName( value ) );
+
+    m_where += " ) ";
 
     m_linkTables |= tables;
 }
