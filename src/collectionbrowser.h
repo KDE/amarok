@@ -171,6 +171,7 @@ class CollectionItem : public KListViewItem {
 
         /// convenience functions
         CollectionView *listView() const { return reinterpret_cast<CollectionView*>( KListViewItem::listView() ); }
+        void refreshPixmap();
 
     private:
         friend class CollectionView;

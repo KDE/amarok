@@ -4956,7 +4956,7 @@ CollectionDB::coverFetcherResult( CoverFetcher *fetcher )
         if( it.data() == fetcher )
         {
             if( it.key()->isOpen() )
-                static_cast<CollectionItem*>(it.key())->setPixmap( 0, QPixmap() );
+                static_cast<CollectionItem*>(it.key())->refreshPixmap();
             itemCoverMap->erase( it );
         }
     }

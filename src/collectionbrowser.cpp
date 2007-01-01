@@ -4327,6 +4327,13 @@ CollectionItem::loadCovers( bool refresh )
 }
 
 void
+CollectionItem::refreshPixmap()
+{
+    loadCovers( true );
+    setup();
+}
+
+void
 CollectionItem::setup()
 {
     if ( isOpen() && !m_coverImages.isEmpty() )
