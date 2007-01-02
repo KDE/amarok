@@ -279,7 +279,7 @@ ScriptManager::specForScript( const QString& name )
     if( !m_scripts.contains( name ) )
         return QString::null;
     QFileInfo info( m_scripts[name].url.path() );
-    const QString specPath = info.dirPath() + '/' + info.baseName() + ".spec";
+    const QString specPath = info.dirPath() + '/' + info.baseName( true ) + ".spec";
 
     return specPath;
 }
@@ -843,7 +843,7 @@ ScriptManager::loadScript( const QString& path )
         // Read and parse .spec file, if exists
         QFileInfo info( path );
         KListViewItem* li = 0;
-        const QString specPath = info.dirPath() + '/' + info.baseName() + ".spec";
+        const QString specPath = info.dirPath() + '/' + info.baseName( true ) + ".spec";
         if( QFile::exists( specPath ) ) {
             KConfig spec( specPath, true, false );
             if( spec.hasKey( "name" ) )

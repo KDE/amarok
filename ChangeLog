@@ -87,6 +87,8 @@ VERSION 1.4.5
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
+    * Assume that all dots but the last in script executable files belong to
+      the script name. (BR 139460)
     * Don't crash when quitting while initially loading the playlist.
       (BR 136353)
     * The same track could be queued multiple times for transferring to a
