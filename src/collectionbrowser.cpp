@@ -251,6 +251,7 @@ void
 CollectionBrowser::slotClearFilter() //SLOT
 {
     m_searchEdit->clear();
+    kapp->processEvents();  //Let the search bar redraw fully.
     QTimer::singleShot( 0, this, SLOT( slotSetFilter() ) ); //Filter instantly
     QTimer::singleShot( 0, m_view, SLOT( slotEnsureSelectedItemVisible() ) );
 }
@@ -296,7 +297,7 @@ CollectionBrowser::appendSearchResults()
     m_view->selectAll();
     Playlist::instance()->insertMedia( m_view->listSelected(), Playlist::Unique | Playlist::Append );
     m_view->clearSelection();
-    m_searchEdit->clear();
+    slotClearFilter();
 }
 
 bool
@@ -323,7 +324,7 @@ CollectionBrowser::eventFilter( QObject *o, QEvent *e )
                 return true;
 
             case Key_Escape:
-                m_searchEdit->clear();
+                slotClearFilter();
                 return true;
 
             case Key_Return:
