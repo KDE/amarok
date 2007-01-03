@@ -27,6 +27,7 @@ Name[sr@Latn]=MTP, multimedijalni uređaj
 Name[sv]=MTP-mediaenhet
 Name[th]=อุปกรณ์เล่นสื่อ MTP
 Name[tr]=MTP Ortam Aygıtı
+Name[zh_CN]=MTP 媒体设备
 X-KDE-Library=libamarok_mtp-mediadevice
 Comment=Plugin for Amarok
 Comment[af]=Inprop module vir Amarok

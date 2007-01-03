@@ -15,6 +15,7 @@ Name[pa]=yauap ਇੰਜਣ
 Name[pt]=Motor yauap
 Name[pt_BR]=Mecanismo Yauap
 Name[sv]=Yauap-gränssnitt
+Name[zh_CN]=yauap 引擎
 X-KDE-Library=libamarok_yauap-engine_plugin
 Comment=Plugin for Amarok
 Comment[af]=Inprop module vir Amarok

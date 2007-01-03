@@ -26,6 +26,7 @@ Name[sr@Latn]=Rio Karma, multimedijalni uređaj
 Name[sv]=Rio Karma-mediaenhet
 Name[th]=อุปกรณ์เล่นสื่อ Rio Karma
 Name[tr]=Rio Karma Ortam Aygıtı
+Name[zh_CN]=Rio Karma 媒体设备
 X-KDE-Library=libamarok_riokarma-mediadevice
 Comment=Plugin for Amarok
 Comment[af]=Inprop module vir Amarok

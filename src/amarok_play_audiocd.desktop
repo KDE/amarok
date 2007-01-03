@@ -25,5 +25,6 @@ Name[pt_BR]=Reproduzir CD de Áudio com o Amarok
 Name[sv]=Spela ljud-cd med Amarok
 Name[th]=เล่นซีดีบันทึกเสียงด้วย Amarok
 Name[tr]=Ses CD'sini Amarok ile Çal
+Name[zh_CN]=用 Amarok 播放音频 CD
 Icon=amarok
 Exec=amarok --cdplay %u
