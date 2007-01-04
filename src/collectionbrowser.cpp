@@ -4337,6 +4337,8 @@ CollectionItem::refreshPixmap()
 void
 CollectionItem::setup()
 {
+    KListViewItem::setup();
+
     if ( isOpen() && !m_coverImages.isEmpty() )
     {
         int maxHeight = height();
@@ -4345,8 +4347,6 @@ CollectionItem::setup()
                 maxHeight = ( *it ).height();
         setHeight( maxHeight + 2 + maxHeight % 2 ); //make the height an even num. of px.
     }
-    else
-        KListViewItem::setup();
 }
 
 int
