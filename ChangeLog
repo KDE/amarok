@@ -41,6 +41,7 @@ VERSION 1.4.5
       you move and rename them.
 
   CHANGES:
+    * Script Manager now remembers if categories were open or closed.
     * Restart collection scanner as long as not more than 5 % of the files
       make it crash. (BR 106474)
     * Ensure the first selected item in the Collection Browser stays visible
