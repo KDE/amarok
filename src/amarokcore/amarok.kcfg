@@ -319,6 +319,21 @@
         <whatsthis>Determines whether to crossfade always, or on automatic/manual track changes only.</whatsthis>
         <default>0</default>
     </entry>
+    <entry key="Fadeout" type="Bool">
+        <label>Whether to fade out tracks when pressing stop.</label>
+        <whatsthis>Enable/Disable fadeout.</whatsthis>
+        <default>true</default>
+    </entry>
+    <entry key="Fadeout Length" type="Int">
+        <label>Length of fadeout, in milliseconds</label>
+        <whatsthis>The length of the fadeout in milliseconds.</whatsthis>
+        <default>3500</default>
+        <min>400</min>
+    </entry>
+    <entry key="FadeoutOnExit" type="Bool">
+        <label>Whether to fade out when exiting the program.</label>
+        <default>true</default>
+    </entry>
     <entry key="Sound System" type="String">
         <label>Sound system to use</label>
         <whatsthis>Select the sound system used to play media. Amarok currently support aRts, GStreamer, xine, and NMM; however, their availability depends on the configuration used at compile time.</whatsthis>

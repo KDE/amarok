@@ -99,8 +99,10 @@ XineEngine::~XineEngine()
     delete s_fader;
     delete s_outfader;
 
-    bool terminateFader = false;
-    fadeOut( &terminateFader, true ); // true == exiting
+    if( AmarokConfig::fadeoutOnExit() ) {
+        bool terminateFader = false;
+        fadeOut( &terminateFader, true ); // true == exiting
+    }
 
     if( m_xine )       xine_config_save( m_xine, configPath() );
 
@@ -370,7 +372,8 @@ XineEngine::stop()
 
     if ( !m_stream )
        return;
-    if( !m_fadeOutRunning || state() == Engine::Paused )
+
+    if( AmarokConfig::fadeout() && !m_fadeOutRunning || state() == Engine::Paused )
     {
         s_outfader = new OutFader( this );
         s_outfader->start();
@@ -528,7 +531,7 @@ XineEngine::fadeOut( bool* terminate, bool exiting )
     const float originalVol = Engine::Base::makeVolumeLogarithmic( m_volume ) * m_preamp;
 
     // On shutdown, limit fadeout to 3 secs max, so that we don't risk getting killed
-    const int length = exiting ? QMIN( m_xfadeLength, 3000 ) : m_xfadeLength;
+    const int length = exiting ? QMIN( AmarokConfig::fadeoutLength(), 3000 ) : m_xfadeLength;
 
     if( length > 0 && isPlaying )
     {
