@@ -294,7 +294,7 @@ GenericMediaDeviceConfigDialog::init()
     m_previewBundle->setPlayCount( 2 );
     m_previewBundle->setRating( 3 );
     m_previewBundle->setSampleRate( 44100 );
-    m_previewBundle->setScore( 3 );
+    m_previewBundle->setScore( 3.f );
     m_previewBundle->setTitle( AtomicString( "Some Title" ) );
     m_previewBundle->setTrack( 7 );
     m_previewBundle->setUrl( "/some%20directory/some%20file.mp3" );
