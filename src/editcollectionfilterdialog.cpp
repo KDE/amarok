@@ -122,6 +122,7 @@ EditCollectionFilterDialog::EditCollectionFilterDialog( QWidget* parent, const Q
     m_comboKeyword->insertItem( i18n("title") );
     m_comboKeyword->insertItem( i18n("track") );
     m_comboKeyword->insertItem( i18n("year") );
+    m_comboKeyword->insertItem( i18n("label") );
     QToolTip::add( m_comboKeyword, i18n("Select a keyword for the filter") );
     vector[0] = "type text";
     vector[1] = "album";
@@ -145,6 +146,7 @@ EditCollectionFilterDialog::EditCollectionFilterDialog( QWidget* parent, const Q
     vector[19] = "title";
     vector[20] = "track";
     vector[21] = "year";
+    vector[22] = "label";
 
     // the "type text" text is selected in the comboKeyword
     m_selectedIndex = 0;
@@ -498,7 +500,7 @@ void EditCollectionFilterDialog::selectedKeyword(int index) // SLOT
       break;
     case 1:  case 2:  case 4:  case 5:
     case 6:  case 9:  case 10: case 11:
-    case 13: case 19:
+    case 13: case 19: case 22:
       textWanted();
       break;
     case 3:
@@ -631,7 +633,7 @@ void EditCollectionFilterDialog::slotDefault() // SLOT
   // now append the filter rule if not empty
   if (m_editKeyword->text().isEmpty() && (m_selectedIndex == 0))
   {
-    KMessageBox::sorry( 0, i18n("<p>Sorry but the filter rule cannot be setted. The text field is empty. "
+    KMessageBox::sorry( 0, i18n("<p>Sorry but the filter rule cannot be set. The text field is empty. "
       "Please type something into it and retry.</p>"), i18n("Empty Text Field"));
     m_editKeyword->setFocus();
     return;
