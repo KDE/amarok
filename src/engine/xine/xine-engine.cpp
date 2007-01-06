@@ -381,9 +381,15 @@ XineEngine::stop()
         m_url = KURL(); //to ensure we return Empty from state()
 
         std::fill( m_scope.begin(), m_scope.end(), 0 );
-
-        emit stateChanged( Engine::Empty );
     }
+    else if( !m_fadeOutRunning )
+    {
+        xine_stop( m_stream );
+        xine_close( m_stream );
+        xine_set_param( m_stream, XINE_PARAM_AUDIO_CLOSE_DEVICE, 1);
+    }
+
+    emit stateChanged( Engine::Empty );
 }
 
 void
