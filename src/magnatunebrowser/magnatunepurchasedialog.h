@@ -67,14 +67,14 @@ signals:
      * @param expMonth The credit card expiration month.
      * @param name Name of customer.
      * @param email Email of customer. Used to send verification email. Can also be used.
-     * on the Magnatune.com site to re-download any prvious purchases.
+     * on the Magnatune.com site to re-download any previous purchases.
      * @param albumCode The album code of the album.
      * @param amount The amount to pay (in us $)
      */
     void makePurchase( QString ccNumber, QString expYear, QString expMonth, QString name, QString email, QString albumCode, int amount );
 
     /**
-     * Signal emited if purchase operation is cancelled
+     * Signal emitted if purchase operation is cancelled
      */
     void cancelled();
 
