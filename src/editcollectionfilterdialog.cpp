@@ -38,7 +38,7 @@ EditCollectionFilterDialog::EditCollectionFilterDialog( QWidget* parent, const Q
     // define "User1" button
     KGuiItem user1Button( i18n("&Clear Filter"), "remove" );
     setButtonWhatsThis( User1, i18n( "<p>Clicking here you will clear the collection filter. If you intend just "
-                                     "undo last appending just click on \"Append this filter\" button.</p>" ) );
+                                     "undo last appending just click on \"Unappend last filter\" button.</p>" ) );
     setButtonTip(User1, i18n( "Clear the collection filter" ) );
     setButtonGuiItem( User1, user1Button );
 
@@ -88,8 +88,8 @@ EditCollectionFilterDialog::EditCollectionFilterDialog( QWidget* parent, const Q
            "keywords are the following: <b>album</b>, <b>artist</b>, <b>filename</b> "
            " (including path), <b>mountpoint</b> (i.e. /home/user1), <b>filetype</b> "
            " (you can specify: mp3, ogg, flac... it will match the file extensions), "
-           "<b>genre</b>, <b>comment</b>, <b>composer</b>, <b>directory</b>, <b>lyrics</b> "
-           "and <b>title</b>.</p>"
+           "<b>genre</b>, <b>comment</b>, <b>composer</b>, <b>directory</b>, <b>lyrics</b>, "
+           "<b>title</b> and <b>label</b>.</p>"
            "<p>The numeric keywords are: <i>bitrate</i>, <i>disc/discnumber</i> "
            "<b>length</b> (expressed in seconds), <b>playcount</b>, <b>rating</b> "
            "<b>samplerate</b>, <b>score</b>, <b>size/filesize</b>, (expressed in bytes, "
