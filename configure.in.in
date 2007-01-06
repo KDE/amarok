@@ -919,10 +919,6 @@ if test "$build_libgpod" != "no"; then
         have_libgpod=no
 
         PKG_CHECK_MODULES(LIBGPOD, libgpod-1.0, have_libgpod=yes,have_libgpod=no)
-        AC_MSG_RESULT($have_libgpod)
-        if test "x$have_libgpod" != "xno"; then
-            AC_DEFINE(HAVE_LIBGPOD, 1, [have libgpod])
-        fi
 
         if test "x$have_libgpod" = "xyes"; then
             ac_cppflags_save=$CPPFLAGS
@@ -932,9 +928,9 @@ if test "$build_libgpod" != "no"; then
             CFLAGS="$CFLAGS $LIBGPOD_CFLAGS"
             LIBS="$LIBS $LIBGPOD_LIBS"
 
-            AC_CHECK_FUNCS(itdb_track_set_thumbnails, have_libgpod_artwork=yes)
-            AC_CHECK_FUNCS(itdb_get_mountpoint)
-            AC_CHECK_FUNCS(itdb_device_get_ipod_info)
+            AC_CHECK_FUNCS(itdb_track_set_thumbnails, , have_libgpod_04=no)
+            AC_CHECK_FUNCS(itdb_get_mountpoint, , have_libgpod_04=no)
+            AC_CHECK_FUNCS(itdb_device_get_ipod_info, , have_libgpod_04=no)
 
             AC_CHECK_MEMBER(struct _Itdb_Track.movie_flag,
                   [AC_DEFINE(HAVE_ITDB_MOVIE_FLAG, 1, [have libgpod movie flag])],
@@ -959,6 +955,15 @@ if test "$build_libgpod" != "no"; then
             CPPFLAGS=$ac_cppflags_save
             CFLAGS=$ac_cflags_save
             LIBS=$ac_libs_save
+        fi
+
+        if test "x$have_libgpod_04" = "xno"; then
+            have_libgpod=no
+            AC_MSG_RESULT(Your libgpod version is too old: at least 0.4.0 is required)
+        fi
+
+        if test "x$have_libgpod" != "xno"; then
+            AC_DEFINE(HAVE_LIBGPOD, 1, [have libgpod])
         fi
     fi
 fi

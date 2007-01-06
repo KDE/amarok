@@ -67,13 +67,13 @@ AMAROK_EXPORT_PLUGIN( IpodMediaDevice )
 #include <cstdlib>
 #include <unistd.h>
 
+#ifndef HAVE_ITDB_MEDIATYPE
+#define mediatype unk208
+#endif
+
 
 // disable if it takes too long for you
 #define CHECK_FOR_INTEGRITY 1
-
-#ifndef HAVE_ITDB_GET_MOUNTPOINT
-#define itdb_get_mountpoint(x) (x)->mountpoint
-#endif
 
 #include "metadata/audible/taglib_audiblefile.h"
 
@@ -209,10 +209,8 @@ class IpodMediaItem : public MediaItem
             {
                 if( m_podcastInfo )
                     m_podcastInfo->listened = listened();
-#ifdef HAVE_ITDB_MARK_UNPLAYED
                 if( m_track )
                     m_track->mark_unplayed = listened() ? 0x01 : 0x02;
-#endif
             }
         }
 
@@ -337,12 +335,7 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
     track->artist = g_strdup( metaBundle.artist()->utf8() );
     track->genre = g_strdup( metaBundle.genre()->utf8() );
 
-
-#ifdef HAVE_ITDB_MEDIATYPE
     track->mediatype = 0x01; // for audio
-#else
-    track->unk208 = 0x01; // for audio
-#endif
     if(type=="wav")
     {
         track->filetype = g_strdup( "wav" );
@@ -358,42 +351,20 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
     else if(type=="m4b")
     {
         track->filetype = g_strdup( "mp4" );
-#ifdef HAVE_ITDB_SKIP_SHUFFLE_FLAG
         track->remember_playback_position |= 0x01; // remember current position in track
-#else
-        track->flag3 |= 0x01; // remember current position in track
-#endif
-#ifdef HAVE_ITDB_MEDIATYPE
         track->mediatype = 0x08; // for audiobooks
-#else
-        track->unk208 = 0x08; // for audiobooks
-#endif
     }
     else if(type=="m4v" || type=="mp4v" || type=="mov" || type=="mpg" || type=="mp4")
     {
         track->filetype = g_strdup( "m4v video" );
-#ifdef HAVE_ITDB_SKIP_SHUFFLE_FLAG
         track->movie_flag = 0x01; // for videos
-#endif
-#ifdef HAVE_ITDB_MEDIATYPE
         track->mediatype = 0x02; // for videos
-#else
-        track->unk208 = 0x02; // for videos
-#endif
     }
     else if(type=="aa")
     {
         track->filetype = g_strdup( "audible" );
-#ifdef HAVE_ITDB_SKIP_SHUFFLE_FLAG
         track->remember_playback_position |= 0x01; // remember current position in track
-#else
-        track->flag3 |= 0x01; // remember current position in track
-#endif
-#ifdef HAVE_ITDB_MEDIATYPE
         track->mediatype = 0x08; // for audiobooks
-#else
-        track->unk208 = 0x08; // for audiobooks
-#endif
 
         TagLib::Audible::File f( QFile::encodeName( propertiesBundle.url().path() ) );
         TagLib::Audible::Tag *t = f.getAudibleTag();
@@ -438,22 +409,12 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
 
     if(podcastInfo)
     {
-#ifdef HAVE_ITDB_SKIP_SHUFFLE_FLAG
         track->skip_when_shuffling = 0x01; // skip  when shuffling
         track->remember_playback_position = 0x01; // remember playback position
-#else
-        track->flag2 = 0x01; // skip  when shuffling
-        track->flag3 = 0x01; // remember playback position
         // FIXME: track->unk176 = 0x00020000; // for podcasts
-#endif
-#ifdef HAVE_ITDB_MARK_UNPLAYED
         track->mark_unplayed = podcastInfo->listened ? 0x01 : 0x02;
-#endif
-#ifdef HAVE_ITDB_MEDIATYPE
         track->mediatype = track->mediatype==0x02 ? 0x06 : 0x04; // video or audio podcast
-#else
-        track->unk208 = track->unk208==0x02 ? 0x06 : 0x04; // video or audio podcast
-#endif
+
         track->flag4 = 0x01; // also show description on iPod
         QString plaindesc = podcastInfo->description;
         plaindesc.replace( QRegExp("<[^>]*>"), "" );
@@ -481,7 +442,6 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
 
     m_dbChanged = true;
 
-#ifdef HAVE_ITDB_TRACK_SET_THUMBNAILS
     if( m_supportsArtwork )
     {
         QString image;
@@ -499,7 +459,6 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
             itdb_track_set_thumbnails( track, g_strdup( QFile::encodeName(image) ) );
         }
     }
-#endif
 
     if( item )
     {
@@ -1094,7 +1053,6 @@ IpodMediaDevice::openDevice( bool silent )
            return false;
     }
 
-#ifdef HAVE_ITDB_DEVICE_GET_IPOD_INFO
     // needs recent libgpod-0.3.3 from cvs
     if( m_itdb->device )
     {
@@ -1135,9 +1093,9 @@ IpodMediaDevice::openDevice( bool silent )
     else
     {
         debug() << "iPod type detection failed, no video support" << endl;
-        //Amarok::StatusBar::instance()->shortMessage( i18n("Media device: iPod type detection failed, no video support") );
+        Amarok::StatusBar::instance()->longMessage(
+                i18n("iPod type detection failed: no support for iPod Shuffle, for artwork or video") );
     }
-#endif
 
     if( !createLockFile( silent ) )
     {
@@ -1150,9 +1108,7 @@ IpodMediaDevice::openDevice( bool silent )
     }
 
     m_isShuffle = true;
-#ifdef HAVE_ITDB_TRACK_SET_THUMBNAILS
     m_supportsArtwork = true;
-#endif
 
     for( int i=0; i < itdb_musicdirs_number(m_itdb); i++)
     {
@@ -2250,7 +2206,6 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                 checkIntegrity();
                 break;
             case REPAIR_COVERS:
-#ifdef HAVE_ITDB_TRACK_SET_THUMBNAILS
                 if( m_supportsArtwork )
                 {
                     QPtrList<MediaItem> items;
@@ -2281,7 +2236,6 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                         }
                     }
                 }
-#endif
                 break;
             default:
                 if( playlistsMenu && id >= FIRST_PLAYLIST )
