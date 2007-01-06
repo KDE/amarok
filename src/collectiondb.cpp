@@ -2524,7 +2524,7 @@ CollectionDB::addPodcastChannel( const PodcastChannelBundle &pcb, const bool &re
     command += ( description.isEmpty() ? "NULL" : '\'' + escapeString( description ) + '\'' ) + ',';
     command += ( copyright.isEmpty() ?   "NULL" : '\'' + escapeString( copyright ) + '\'' ) + ',';
     command += QString::number( pcb.parentId() ) + ",'";
-    command += escapeString( pcb.saveLocation().url() ) + "',";
+    command += escapeString( pcb.saveLocation() ) + "',";
     command += pcb.autoscan() ? boolT() + ',' : boolF() + ',';
     command += QString::number( pcb.fetchType() ) + ',';
     command += pcb.autotransfer() ? boolT() + ',' : boolF() + ',';
@@ -2614,7 +2614,7 @@ CollectionDB::getPodcastChannels()
         pcb.setDescription ( *++it );
         pcb.setCopyright   ( *++it );
         pcb.setParentId    ( (*++it).toInt() );
-        pcb.setSaveLocation( KURL::fromPathOrURL(*++it) );
+        pcb.setSaveLocation( *++it );
         pcb.setAutoScan    ( *++it == boolT() ? true : false );
         pcb.setFetchType   ( (*++it).toInt() );
         pcb.setAutoTransfer( *++it == boolT() ? true : false  );
@@ -2750,7 +2750,7 @@ CollectionDB::getPodcastChannelBundle( const KURL &url, PodcastChannelBundle *pc
         pcb->setDescription ( *++it );
         pcb->setCopyright   ( *++it );
         pcb->setParentId    ( (*++it).toInt() );
-        pcb->setSaveLocation( KURL::fromPathOrURL(*++it) );
+        pcb->setSaveLocation( *++it );
         pcb->setAutoScan    ( *++it == boolT() ? true : false );
         pcb->setFetchType   ( (*++it).toInt() );
         pcb->setAutoTransfer( *++it == boolT() ? true : false  );
@@ -2793,7 +2793,7 @@ CollectionDB::updatePodcastChannel( const PodcastChannelBundle &b )
 		       << escapeString( b.description() )
 		       << escapeString( b.copyright() )
 		       << QString::number( b.parentId() )
-		       << escapeString( b.saveLocation().url() )
+		       << escapeString( b.saveLocation() )
 		       << ( b.autoscan() ? boolT() : boolF() )
 		       << QString::number( b.fetchType() )
 		       << (b.hasPurge() ? boolT() : boolF() )

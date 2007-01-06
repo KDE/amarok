@@ -22,7 +22,7 @@
 PodcastSettings::PodcastSettings( const QDomNode &channelSettings, const QString &title )
     : m_title( title )
 {
-    m_saveLocation = KURL::fromPathOrURL( channelSettings.namedItem( "savelocation").toElement().text() );
+    m_saveLocation = channelSettings.namedItem( "savelocation").toElement().text();
     m_autoScan = channelSettings.namedItem( "autoscan").toElement().text() == "true";
     m_fetch = channelSettings.namedItem("fetch").toElement().text() == "automatic"?AUTOMATIC:STREAM;
     m_addToMediaDevice = channelSettings.namedItem( "autotransfer").toElement().text() == "true";
@@ -34,8 +34,8 @@ PodcastSettings::PodcastSettings( const QDomNode &channelSettings, const QString
 PodcastSettings::PodcastSettings( const QString &title )
     : m_title( title )
 {
-    m_saveLocation = KURL::fromPathOrURL( Amarok::saveLocation( "podcasts/" ) );
-    m_saveLocation.addPath( Amarok::vfatPath( m_title ) );
+    m_saveLocation = Amarok::saveLocation( "podcasts/" );
+    m_saveLocation += Amarok::vfatPath( m_title );
     m_autoScan = true;
     m_fetch = STREAM;
     m_addToMediaDevice = false;
@@ -49,11 +49,11 @@ PodcastSettings::PodcastSettings( const QString &title, const QString &save, con
     m_title = title;
     if( save.isEmpty() )
     {
-        m_saveLocation = KURL::fromPathOrURL( Amarok::saveLocation( "podcasts/" ) );
-        m_saveLocation.addPath( Amarok::vfatPath( m_title ) );
+        m_saveLocation = Amarok::saveLocation( "podcasts/" );
+        m_saveLocation += Amarok::vfatPath( m_title );
     }
     else
-        m_saveLocation = KURL::fromPathOrURL( save );
+        m_saveLocation = save;
 
     m_autoScan = autoScan;
     m_fetch = fetchType;
@@ -82,7 +82,8 @@ PodcastSettingsDialog::PodcastSettingsDialog( const QPtrList<PodcastSettings> &l
 {
     init();
     m_settings = m_settingsList.first();
-    m_settings->m_saveLocation = m_settings->m_saveLocation.directory();
+    if( !m_settings->m_saveLocation.endsWith( "/" ) )
+        m_settings->m_saveLocation = m_settings->m_saveLocation.section( "/", 0, -2 );
     setSettings( m_settings );
 }
 
@@ -182,9 +183,9 @@ QString PodcastSettingsDialog::requesterSaveLocation()
 
 void PodcastSettingsDialog::setSettings( PodcastSettings *settings )
 {
-    KURL saveLocation = settings->m_saveLocation;
+    QString saveLocation = settings->m_saveLocation;
 
-    m_ps->m_saveLocation->setURL( saveLocation.prettyURL() );
+    m_ps->m_saveLocation->setURL( saveLocation );
     m_ps->m_autoFetchCheck->setChecked( settings->m_autoScan );
 
     if( settings->m_fetch == STREAM )

@@ -1704,21 +1704,16 @@ PodcastChannel::setSettings( PodcastSettings *newSettings )
             if( item->isOnDisk() )
             {
                 copyList << item->localUrl();
-                item->setLocalUrlBase( newSettings->saveLocation().prettyURL() );
+                item->setLocalUrlBase( newSettings->saveLocation() );
             }
-//             else
-//             {
-//                 item->setLocalUrlBase( newSettings->saveLocation().prettyURL() );
-//                 item->isOnDisk();
-//             }
             item = static_cast<PodcastEpisode*>( item->nextSibling() );
         }
             // move the items
         if( !copyList.isEmpty() )
         {
             //create the local directory first
-            PodcastEpisode::createLocalDir( newSettings->saveLocation().path() );
-            KIO::CopyJob* m_podcastMoveJob = KIO::move( copyList, newSettings->saveLocation(), false );
+            PodcastEpisode::createLocalDir( newSettings->saveLocation() );
+            KIO::CopyJob* m_podcastMoveJob = KIO::move( copyList, KURL::fromPathOrURL( newSettings->saveLocation() ), false );
             Amarok::StatusBar::instance()->newProgressOperation( m_podcastMoveJob )
                     .setDescription( i18n( "Moving Podcasts" ) );
         }
@@ -2524,10 +2519,10 @@ PodcastEpisode::downloadMedia()
 
     KURL m_localDir;
     PodcastChannel *channel = dynamic_cast<PodcastChannel*>(m_parent);
-        if( channel )
-            m_localDir = channel->saveLocation();
-        else
-            m_localDir = PodcastSettings("Podcasts").saveLocation();
+    if( channel )
+        m_localDir = KURL::fromPathOrURL( channel->saveLocation() );
+    else
+        m_localDir = KURL::fromPathOrURL( PodcastSettings("Podcasts").saveLocation() );
     createLocalDir( m_localDir );
 
     //filename might get changed by redirects later.
@@ -2943,7 +2938,7 @@ class AssociatePodcastDialog : public KDialogBase
 
         m_urlRequester = new KURLRequester( vbox );
         if( dynamic_cast<PodcastChannel *>(item->parent()) )
-        m_urlRequester->setURL( static_cast<PodcastChannel *>(item->parent())->saveLocation().prettyURL() );
+        m_urlRequester->setURL( static_cast<PodcastChannel *>(item->parent())->saveLocation() );
     }
     KURL url() const { return KURL::fromPathOrURL( m_urlRequester->url() ); }
 };

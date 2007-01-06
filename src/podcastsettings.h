@@ -27,7 +27,7 @@ class PodcastSettings
         PodcastSettings( const QString &title, const QString &save, const bool autoScan,
                          const int fetchType, const bool autotransfer, const bool purge, const int purgecount );
 
-        const KURL &saveLocation() { return m_saveLocation; }
+        const QString &saveLocation() { return m_saveLocation; }
         const QString &title() { return m_title; }
         bool    autoscan()         { return m_autoScan; }
         int     fetchType()        { return m_fetch; }
@@ -36,7 +36,7 @@ class PodcastSettings
         int     purgeCount()       { return m_purgeCount; }
 
         QString m_title;    //the title of the podcast or category these settings belong to
-        KURL    m_saveLocation;
+        QString m_saveLocation;
         bool    m_autoScan;
         int     m_fetch;
         bool    m_addToMediaDevice;

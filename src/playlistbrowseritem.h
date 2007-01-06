@@ -379,10 +379,10 @@ class PodcastChannel : public PlaylistBrowserEntry
         const int  fetchType()    const { return m_bundle.fetchType(); }
         const bool hasPurge()     const { return m_bundle.hasPurge(); }
         const int  purgeCount()   const { return m_bundle.purgeCount(); }
-        const KURL saveLocation() const { return m_bundle.saveLocation(); }
+        const QString &saveLocation() const { return m_bundle.saveLocation(); }
         PodcastSettings *getSettings() const
         {
-            return new PodcastSettings( title(), saveLocation().path(),
+            return new PodcastSettings( title(), saveLocation(),
                                         autoscan(), fetchType(), autotransfer(),
                                         hasPurge(), purgeCount() );
         }

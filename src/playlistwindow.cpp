@@ -311,10 +311,8 @@ void PlaylistWindow::init()
 
     connect( m_lineEdit, SIGNAL(textChanged( const QString& )), playlist, SLOT(setFilterSlot( const QString& )) );
 
-#ifdef Q_WS_MAC
-    m_menubar = new QMenuBar( this );
-#else
     m_menubar = new KMenuBar( this );
+#ifndef Q_WS_MAC
     m_menubar->setShown( AmarokConfig::showMenuBar() );
 #endif
 
