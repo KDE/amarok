@@ -45,7 +45,7 @@ TrackToolTip::TrackToolTip(): m_haspos( false )
     connect( CollectionDB::instance(), SIGNAL( imageFetched( const QString & ) ),
              this, SLOT( slotImageChanged( const QString & ) ) );
     connect( Playlist::instance(), SIGNAL( columnsChanged() ), this, SLOT( slotUpdate() ) );
-    connect( CollectionDB::instance(), SIGNAL( scoreChanged( const QString&, int ) ),
+    connect( CollectionDB::instance(), SIGNAL( scoreChanged( const QString&, float ) ),
              this, SLOT( slotUpdate( const QString& ) ) );
     connect( CollectionDB::instance(), SIGNAL( ratingChanged( const QString&, int ) ),
              this, SLOT( slotUpdate( const QString& ) ) );

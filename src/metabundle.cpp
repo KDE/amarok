@@ -651,12 +651,12 @@ void MetaBundle::updateFilesize()
     m_filesize = QFile( path ).size();
 }
 
-int MetaBundle::score( bool ensureCached ) const
+float MetaBundle::score( bool ensureCached ) const
 {
     if( m_score == Undetermined && !ensureCached )
         //const_cast is ugly, but other option was mutable, and then we lose const correctness checking
         //everywhere else
-        *const_cast<int*>(&m_score) = CollectionDB::instance()->getSongPercentage( m_url.path() );
+        *const_cast<float*>(&m_score) = CollectionDB::instance()->getSongPercentage( m_url.path() );
     return m_score;
 }
 
@@ -752,7 +752,7 @@ void MetaBundle::setExactText( int column, const QString &newText )
         case Length:     setLength(     newText.toInt() );   break;
         case Bitrate:    setBitrate(    newText.toInt() );   break;
         case SampleRate: setSampleRate( newText.toInt() );   break;
-        case Score:      setScore(      newText.toInt() );   break;
+        case Score:      setScore(      newText.toFloat() ); break;
         case Rating:     setRating(     newText.toInt() );   break;
         case PlayCount:  setPlayCount(  newText.toInt() );   break;
         case LastPlayed: setLastPlay(   newText.toInt() );   break;
@@ -817,7 +817,7 @@ QString MetaBundle::prettyText( int column ) const
         case Length:     text = prettyLength( length(), true );                                      break;
         case Bitrate:    text = prettyBitrate( bitrate() );                                          break;
         case SampleRate: text = prettySampleRate();                                                  break;
-        case Score:      text = QString::number( score() );                                          break;
+        case Score:      text = QString::number( static_cast<int>( score() ) );                      break;
         case Rating:     text = prettyRating();                                                      break;
         case PlayCount:  text = QString::number( playCount() );                                      break;
         case LastPlayed: text = Amarok::verboseTimeSince( lastPlay() );                              break;
@@ -1767,7 +1767,7 @@ void MetaBundle::setLastPlay( uint lastplay )
 void MetaBundle::setRating( int rating )
 { aboutToChange( Rating ); m_rating = rating; reactToChange( Rating ); }
 
-void MetaBundle::setScore( int score )
+void MetaBundle::setScore( float score )
 { aboutToChange( Score ); m_score = score; reactToChange( Score ); }
 
 void MetaBundle::setFilesize( int bytes )

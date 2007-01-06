@@ -296,8 +296,8 @@ Playlist::Playlist( QWidget *parent )
              this,       SLOT( writeTag( QListViewItem*, const QString&, int ) ) );
     connect( this,     SIGNAL( aboutToClear() ),
              this,       SLOT( saveUndoState() ) );
-    connect( CollectionDB::instance(), SIGNAL( scoreChanged( const QString&, int ) ),
-             this,       SLOT( scoreChanged( const QString&, int ) ) );
+    connect( CollectionDB::instance(), SIGNAL( scoreChanged( const QString&, float ) ),
+             this,       SLOT( scoreChanged( const QString&, float ) ) );
     connect( CollectionDB::instance(), SIGNAL( ratingChanged( const QString&, int ) ),
              this,       SLOT( ratingChanged( const QString&, int ) ) );
     connect( CollectionDB::instance(), SIGNAL( fileMoved( const QString&, const QString& ) ),
@@ -2078,7 +2078,9 @@ Playlist::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
         }
 
     case Engine::Idle:
-        ;
+        slotGlowTimer();
+
+        break;
     }
 
     //POSSIBLYAHACK
@@ -3618,7 +3620,7 @@ Playlist::setFilter( const QString &query ) //SLOT
 }
 
 void
-Playlist::scoreChanged( const QString &path, int score )
+Playlist::scoreChanged( const QString &path, float score )
 {
     for( MyIt it( this, MyIt::All ); *it; ++it )
     {

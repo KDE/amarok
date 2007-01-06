@@ -3332,7 +3332,7 @@ CollectionDB::bundleFromQuery( QStringList::const_iterator *iter )
     b.setFileType( (*++it).toInt() );
     b.setBpm       ( (*++it).toFloat() );
 
-    b.setScore     ( static_cast<int>( (*++it).toFloat() ) );
+    b.setScore     ( (*++it).toFloat() );
     b.setRating    ( (*++it).toInt() );
     b.setPlayCount ( (*++it).toInt() );
     b.setLastPlay  ( (*++it).toInt() );
@@ -3593,7 +3593,7 @@ CollectionDB::addAudioproperties( const MetaBundle& bundle )
 
 
 void
-CollectionDB::addSongPercentage( const QString &url, int percentage,
+CollectionDB::addSongPercentage( const QString &url, float percentage,
         const QString &reason, const QDateTime *playtime )
 {
     //the URL must always be inserted last! an escaped URL can contain Strings like %1->bug
@@ -3626,8 +3626,8 @@ CollectionDB::addSongPercentage( const QString &url, int percentage,
     uint atime = playtime ? playtime->toTime_t() : QDateTime::currentDateTime().toTime_t();
 
     // check boundaries
-    if ( percentage > 100 ) percentage = 100;
-    if ( percentage < 1 )   percentage = 1;
+    if ( percentage > 100.f ) percentage = 100.f;
+    if ( percentage < 1.f )   percentage = 1.f;
 
     if ( !values.isEmpty() )
     {
@@ -3669,7 +3669,7 @@ CollectionDB::addSongPercentage( const QString &url, int percentage,
 }
 
 
-int
+float
 CollectionDB::getSongPercentage( const QString &url )
 {
     QueryBuilder qb;
@@ -3679,7 +3679,7 @@ CollectionDB::getSongPercentage( const QString &url )
     QStringList values = qb.run();
 
     if( !values.isEmpty() )
-        return values.first().toInt();
+        return values.first().toFloat();
 
     return 0;
 }
@@ -3725,8 +3725,8 @@ CollectionDB::setSongPercentage( const QString &url , float percentage)
     }
 
     // check boundaries
-    if ( percentage > 100 ) percentage = 100;
-    if ( percentage < 0 )   percentage = 0;
+    if ( percentage > 100.f ) percentage = 100.f;
+    if ( percentage < 0.f )   percentage = 0.f;
 
     if ( !values.isEmpty() )
     {
@@ -3747,7 +3747,7 @@ CollectionDB::setSongPercentage( const QString &url , float percentage)
                         .arg( escapeString( rpath ) ),0 );
     }
 
-    emit scoreChanged( url, (int)percentage );
+    emit scoreChanged( url, percentage );
 }
 
 void

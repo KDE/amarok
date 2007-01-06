@@ -205,7 +205,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
 
         void databaseUpdateDone();
 
-        void scoreChanged( const QString &url, int score );
+        void scoreChanged( const QString &url, float score );
         void ratingChanged( const QString &url, int rating );
         void fileMoved( const QString &srcUrl, const QString &dstUrl );
         void fileMoved( const QString &srcUrl, const QString &dstUrl, const QString &uniqueid );
@@ -375,9 +375,9 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         QString getUniqueId( const QString &url );
 
         //statistics methods
-        void addSongPercentage( const QString &url, int percentage,
+        void addSongPercentage( const QString &url, float percentage,
                 const QString &reason, const QDateTime *playtime = 0 );
-        int getSongPercentage( const QString &url );
+        float getSongPercentage( const QString &url );
         int getSongRating( const QString &url );
         void setSongPercentage( const QString &url, float percentage );
         void setSongRating( const QString &url, int percentage, bool toggleHalf = false );

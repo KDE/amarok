@@ -223,7 +223,7 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         void rebuildDynamicModeCache();
         void repopulate();
         void safeClear();
-        void scoreChanged( const QString &path, int score );
+        void scoreChanged( const QString &path, float score );
         void ratingChanged( const QString &path, int rating );
         void fileMoved( const QString &srcPath, const QString &dstPath );
         void selectAll() { QListView::selectAll( true ); }

@@ -358,7 +358,7 @@ ContextBrowser::ContextBrowser( const char *name )
              this, SLOT( tagsChanged( const QString&, const QString& ) ) );
     connect( CollectionDB::instance(), SIGNAL( ratingChanged( const QString&, int ) ),
              this, SLOT( ratingOrScoreChanged( const QString& ) ) );
-    connect( CollectionDB::instance(), SIGNAL( scoreChanged( const QString&, int ) ),
+    connect( CollectionDB::instance(), SIGNAL( scoreChanged( const QString&, float ) ),
              this, SLOT( ratingOrScoreChanged( const QString& ) ) );
     connect( CollectionDB::instance(), SIGNAL( imageFetched( const QString& ) ),
              this, SLOT( imageFetched( const QString& ) ) );

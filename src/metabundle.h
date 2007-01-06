@@ -260,7 +260,7 @@ public: //accessors
     int     length()      const;
     int     bitrate()     const;
     int     sampleRate()  const;
-    int     score( bool ensureCached = false )      const;
+    float   score( bool ensureCached = false )      const;
     int     rating( bool ensureCached = false )     const; //returns rating * 2, to accommodate .5 ratings
     int     playCount( bool ensureCached = false )  const;
     uint    lastPlay( bool ensureCached = false )   const;
@@ -309,7 +309,7 @@ public: //modifiers
     void setLength( int length );
     void setBitrate( int bitrate );
     void setSampleRate( int sampleRate );
-    void setScore( int score );
+    void setScore( float score );
     void setRating( int rating );
     void setPlayCount( int playcount );
     void setLastPlay( uint lastplay );
@@ -380,11 +380,11 @@ protected:
     int m_length;
     int m_sampleRate;
 
-    int  m_score;
-    int  m_rating;
-    int  m_playCount;
+    float m_score;
+    int m_rating;
+    int m_playCount;
     uint m_lastPlay;
-    int  m_filesize;
+    int m_filesize;
 
     Moodbar *m_moodbar;
 
