@@ -428,8 +428,13 @@ void AmarokConfigDialog::soundSystemChanged()
 QString AmarokConfigDialog::externalBrowser() const
 {
     return   m_opt1->kComboBox_browser->isEnabled() ?
+#ifdef Q_WS_MAC
+                 m_opt1->kComboBox_browser->currentText() == i18n( "Default Browser" ) ?
+                 "open" :
+#else
                  m_opt1->kComboBox_browser->currentText() == i18n( "Default KDE Browser" ) ?
                  "kfmclient openURL" :
+#endif
                  m_opt1->kComboBox_browser->currentText().lower() :
              m_opt1->kLineEdit_customBrowser->text().lower();
 }

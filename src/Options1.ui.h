@@ -33,13 +33,33 @@ void Options1::init()
         else
             ++it;
     }
+#ifdef Q_WS_MAC
+    if ( KStandardDirs::findExe( "open" ) != QString::null )
+        browsers.prepend( i18n( "Default Browser" ) );
+#else
     if ( KStandardDirs::findExe( "kfmclient" ) != QString::null )
         browsers.prepend( i18n( "Default KDE Browser" ) );
+#endif
 
     kComboBox_browser->insertStringList( browsers );
-    kComboBox_browser->setCurrentItem( AmarokConfig::externalBrowser() == "kfmclient openURL" ?
-                                       0 :
-                                       browsers.findIndex( AmarokConfig::externalBrowser() ) );
+    kLineEdit_customBrowser->setText( AmarokConfig::externalBrowser() );
+    int index = browsers.findIndex( AmarokConfig::externalBrowser() );
+    if( index >= 0 )
+        kComboBox_browser->setCurrentItem( index );
+    else if( AmarokConfig::externalBrowser() ==
+#ifdef Q_WS_MAC
+            "open"
+#else
+            "kfmclient openURL"
+#endif
+      )
+    {
+        kComboBox_browser->setCurrentItem( 0 );
+    }
+    else
+    {
+        checkBox_customBrowser->setChecked( true );
+    }
 }
 
 
