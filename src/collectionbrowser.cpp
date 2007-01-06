@@ -284,12 +284,10 @@ CollectionBrowser::slotSetFilter() //SLOT
 void
 CollectionBrowser::slotSetFilter( const QString &filter ) //SLOT
 {
-    m_timer->stop();
-    m_view->m_dirty = true;
-    m_view->setFilter( filter );
-    m_view->setTimeFilter( m_timeFilter->currentItem() );
-    m_view->renderView();
-    m_returnPressed = false;
+    m_searchEdit->setText( filter );
+    kapp->processEvents();  //Let the search bar redraw fully.
+    QTimer::singleShot( 0, this, SLOT( slotSetFilter() ) ); //Filter instantly
+    QTimer::singleShot( 0, m_view, SLOT( slotEnsureSelectedItemVisible() ) );
 }
 
 void
