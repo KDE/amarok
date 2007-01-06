@@ -99,10 +99,10 @@ void TrackToolTip::setTrack( const MetaBundle &tags, bool force )
 
             if( column == PlaylistItem::Score )
             {
-                const int score = CollectionDB::instance()->getSongPercentage( tags.url().path() );
-                if( score > 0 )
+                const float score = CollectionDB::instance()->getSongPercentage( tags.url().path() );
+                if( score > 0.f )
                 {
-                    right << QString::number( score );
+                    right << QString::number( score, 'i' );
                     left << playlist->columnText( column );
                 }
             }

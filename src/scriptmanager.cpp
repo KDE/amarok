@@ -319,7 +319,7 @@ void ScriptManager::notifyTranscode( const QString& srcUrl, const QString& filet
 
 
 void
-ScriptManager::requestNewScore( const QString &url, double prevscore, int playcount, int length, int percentage, const QString &reason )
+ScriptManager::requestNewScore( const QString &url, double prevscore, int playcount, int length, float percentage, const QString &reason )
 {
     const QString script = ensureScoreScriptRunning();
     if( script.isNull() )

@@ -120,10 +120,10 @@ namespace Amarok
         return EngineController::instance()->bundle().sampleRate();
     }
 
-    int DcopPlayerHandler::score()
+    float DcopPlayerHandler::score()
     {
         const MetaBundle &bundle = EngineController::instance()->bundle();
-        int score = CollectionDB::instance()->getSongPercentage( bundle.url().path() );
+        float score = CollectionDB::instance()->getSongPercentage( bundle.url().path() );
         return score;
     }
 
@@ -424,7 +424,7 @@ namespace Amarok
         CollectionDB::instance()->setLyrics( url, lyrics );
     }
 
-    void DcopPlayerHandler::setScore( int score )
+    void DcopPlayerHandler::setScore( float score )
     {
         const QString &url = EngineController::instance()->bundle().url().path();
         CollectionDB::instance()->setSongPercentage(url, score);

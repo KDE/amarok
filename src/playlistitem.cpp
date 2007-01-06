@@ -1069,7 +1069,7 @@ int PlaylistItem::totalIncrementAmount() const
     switch( AmarokConfig::favorTracks() )
     {
         case AmarokConfig::EnumFavorTracks::Off: return 0;
-        case AmarokConfig::EnumFavorTracks::HigherScores: return score() ? score() : 50;
+        case AmarokConfig::EnumFavorTracks::HigherScores: return score() > 0.f ? static_cast<int>( score() ) : 50;
         case AmarokConfig::EnumFavorTracks::HigherRatings: return rating() ? rating() : 5; // 2.5
         case AmarokConfig::EnumFavorTracks::LessRecentlyPlayed:
         {

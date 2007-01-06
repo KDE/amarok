@@ -656,7 +656,7 @@ void TagDialog::readTags()
     kIntSpinBox_track      ->setValue( m_bundle.track() );
     kComboBox_composer     ->setCurrentText( m_bundle.composer() );
     kIntSpinBox_year       ->setValue( m_bundle.year() );
-    kIntSpinBox_score      ->setValue( m_bundle.score() );
+    kIntSpinBox_score      ->setValue( static_cast<int>(m_bundle.score()) );
     kIntSpinBox_discNumber ->setValue( m_bundle.discNumber() );
     kTextEdit_comment      ->setText( m_bundle.comment() );
 
@@ -679,7 +679,7 @@ void TagDialog::readTags()
 
     summaryText += "</table></td><td width=50%><table>";
     if( AmarokConfig::useScores() )
-        summaryText += body2cols.arg( i18n("Score"), QString::number( m_bundle.score() ) );
+        summaryText += body2cols.arg( i18n("Score"), QString::number( static_cast<int>( m_bundle.score() ) ) );
     if( AmarokConfig::useRatings() )
         summaryText += body2cols.arg( i18n("Rating"), m_bundle.prettyRating() );
 
@@ -831,7 +831,8 @@ TagDialog::readMultipleTracks()
 
     bool artist=true, album=true, genre=true, comment=true, year=true,
          score=true, rating=true, composer=true, discNumber=true;
-    int songCount=0, ratingCount=0, ratingSum=0, scoreCount=0, scoreSum=0;
+    int songCount=0, ratingCount=0, ratingSum=0, scoreCount=0;
+    float scoreSum = 0.f;
     for ( ; it != end; ++it ) {
         MetaBundle mb = bundleForURL( *it );
         songCount++;
@@ -839,7 +840,7 @@ TagDialog::readMultipleTracks()
             ratingCount++;
             ratingSum+=mb.rating();
         }
-        if ( mb.score() ) {
+        if ( mb.score() > 0.f ) {
             scoreCount++;
             scoreSum+=mb.score();
         }
@@ -900,7 +901,7 @@ TagDialog::readMultipleTracks()
     }
     if (score) {
         m_bundle.setScore( first.score() );
-        kIntSpinBox_score->setValue( first.score() );
+        kIntSpinBox_score->setValue( static_cast<int>( first.score() ) );
     }
     if (rating) {
         m_bundle.setRating( first.rating() );
@@ -923,7 +924,7 @@ TagDialog::readMultipleTracks()
     if( AmarokConfig::useRatings() ) {
         statisticsText += body.arg( i18n( "Scored Songs" ) , QString::number( scoreCount )  );
         if ( scoreCount )
-            statisticsText += body.arg( i18n( "Average Score" ) , QString::number( scoreSum / scoreCount )  );
+            statisticsText += body.arg( i18n( "Average Score" ) , QString::number( scoreSum / scoreCount, 'f', 1 ) );
     }
 
 
@@ -1155,7 +1156,7 @@ TagDialog::bundleForURL( const KURL &url )
     return MetaBundle( url, url.isLocalFile() );
 }
 
-int
+float
 TagDialog::scoreForURL( const KURL &url )
 {
     if( storedScores.find( url.path() ) != storedScores.end() )
@@ -1206,8 +1207,8 @@ TagDialog::saveTags()
         storeTags();
     }
 
-    QMap<QString, int>::ConstIterator endScore( storedScores.end() );
-    for(QMap<QString, int>::ConstIterator it = storedScores.begin(); it != endScore; ++it ) {
+    QMap<QString, float>::ConstIterator endScore( storedScores.end() );
+    for(QMap<QString, float>::ConstIterator it = storedScores.begin(); it != endScore; ++it ) {
         CollectionDB::instance()->setSongPercentage( it.key(), it.data() );
     }
     QMap<QString, int>::ConstIterator endRating( storedRatings.end() );

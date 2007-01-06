@@ -104,7 +104,23 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, int options 
         // FIXME: url needs detach()ing
         const QString protocol = url.protocol();
 
-        if( protocol == "file" ) {
+        if( protocol == "seek" )
+            continue;
+
+        else if( ContextBrowser::hasContextProtocol( url ) )
+        {
+            DEBUG_BLOCK
+            debug() << "context expandurl" << endl;
+
+            m_URLs += ContextBrowser::expandURL( url );
+        }
+
+        else if( !MetaBundle::isKioUrl( url ) )
+        {
+            m_URLs += url;
+        }
+
+        else if( protocol == "file" ) {
             if( QFileInfo( url.path() ).isDir() )
                 m_URLs += recurse( url );
             else
@@ -143,17 +159,6 @@ UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, int options 
             debug() << "remote playlist" << endl;
             new RemotePlaylistFetcher( url, after, m_options );
             m_playFirstUrl = false;
-        }
-
-        else if( protocol == "seek" )
-            continue;
-
-        else if( ContextBrowser::hasContextProtocol( url ) )
-        {
-            DEBUG_BLOCK
-            debug() << "context expandurl" << endl;
-
-            m_URLs += ContextBrowser::expandURL( url );
         }
 
         else {

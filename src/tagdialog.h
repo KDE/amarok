@@ -89,7 +89,7 @@ class TagDialog : public TagDialogBase
         void loadLyrics( const KURL& url );
         void loadLabels( const KURL &url );
         MetaBundle bundleForURL( const KURL &url );
-        int scoreForURL( const KURL &url );
+        float scoreForURL( const KURL &url );
         int ratingForURL( const KURL &url );
         QString lyricsForURL( const KURL &url );
         QStringList labelsForURL( const KURL &url );
@@ -112,7 +112,7 @@ class TagDialog : public TagDialogBase
         bool m_perTrack;
         PlaylistItem* m_playlistItem;
         QMap<QString, MetaBundle> storedTags;
-        QMap<QString, int> storedScores;
+        QMap<QString, float> storedScores;
         QMap<QString, int> storedRatings;
         QMap<QString, QString> storedLyrics;
         QMap<QString, QStringList> newLabels;
