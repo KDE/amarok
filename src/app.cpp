@@ -130,6 +130,50 @@ App::App()
 {
     DEBUG_BLOCK
 
+#ifdef Q_WS_MAC
+    // this is inspired by OpenSceneGraph: osgDB/FilePath.cpp
+
+    // Start with the the Bundle PlugIns directory.
+
+    // Get the main bundle first. No need to retain or release it since
+    //  we are not keeping a reference
+    CFBundleRef myBundle = CFBundleGetMainBundle();
+    if( myBundle )
+    {
+        // CFBundleGetMainBundle will return a bundle ref even if
+        //  the application isn't part of a bundle, so we need to
+        //  check
+        //  if the path to the bundle ends in ".app" to see if it is
+        //  a
+        //  proper application bundle. If it is, the plugins path is
+        //  added
+        CFURLRef urlRef = CFBundleCopyBundleURL(myBundle);
+        if(urlRef)
+        {
+            char bundlePath[1024];
+            if( CFURLGetFileSystemRepresentation( urlRef, true, (UInt8 *)bundlePath, sizeof(bundlePath) ) )
+            {
+                QCString bp( bundlePath );
+                size_t len = bp.length();
+                if( len > 4 && bp.right( 4 ) == ".app" )
+                {
+                    bp.append( "/Contents/MacOS" );
+                    QCString path = getenv( "PATH" );
+                    if( path.length() > 0 )
+                    {
+                        path.prepend( ":" );
+                    }
+                    path.prepend( bp );
+                    debug() << "setting PATH=" << path << endl;
+                    setenv("PATH", path, 1);
+                }
+            }
+            // docs say we are responsible for releasing CFURLRef
+            CFRelease(urlRef);
+        }
+    }
+#endif
+
     QPixmap::setDefaultOptimization( QPixmap::MemoryOptim );
 
     //needs to be created before the wizard
