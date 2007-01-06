@@ -24,6 +24,7 @@
 #include "amarokconfig.h"
 #include "collectiondb.h"
 #include "debug.h"
+#include "enginecontroller.h"
 #include "playlist.h"
 #include "sliderwidget.h"
 
