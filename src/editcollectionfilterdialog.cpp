@@ -38,7 +38,7 @@ EditCollectionFilterDialog::EditCollectionFilterDialog( QWidget* parent, const Q
     // define "User1" button
     KGuiItem user1Button( i18n("&Clear filter"), "remove" );
     setButtonWhatsThis( User1, i18n( "<p>Clicking here you will clear the collection filter. If you intend just "
-                                     "undo last appending click on \"Append this filter\" button</p>" ) );
+                                     "undo last appending just click on \"Append this filter\" button.</p>" ) );
     setButtonTip(User1, i18n( "Clear the collection filter" ) );
     setButtonGuiItem( User1, user1Button );
 

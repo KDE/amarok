@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 1.4.5
   FEATURES:
+    * Added a dialog to filter titles collection. Patch by Giovanni
+      Venturi <giovanni@kde-it.org> (BR 139292)
     * Added GUI options for fadeout and fadeout on exit. Both are now enabled
       by default.
     * Support for Speex (.spx), WavPack (.wv) and TrueAudio (.tta) files in
