@@ -146,7 +146,8 @@ libamarok_la_SOURCES = \
     tracktooltip.cpp \
     transferdialog.cpp \
     xmlloader.cpp \
-    xspfplaylist.cpp
+    xspfplaylist.cpp \
+    editcollectionfilterdialog.cpp
 
 libamarok_la_LIBADD = \
     $(top_builddir)/amarok/src/amarokcore/libamarokcore.la \

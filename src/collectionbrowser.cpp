@@ -29,6 +29,7 @@
 #include "tagdialog.h"
 #include "threadweaver.h"
 #include "qstringx.h"
+#include "editcollectionfilterdialog.h"
 
 #include <taglib/tfile.h>   //TagLib::File::isWritable
 
@@ -64,6 +65,7 @@
 #include <ktoolbarbutton.h> //ctor
 #include <kurldrag.h>       //dragObject()
 #include <kio/job.h>
+#include <kpushbutton.h>
 
 extern "C"
 {
@@ -101,13 +103,16 @@ CollectionBrowser::CollectionBrowser( const char* name )
         button       = new KToolBarButton( "locationbar_erase", 0, searchToolBar );
         m_searchEdit = new ClickLineEdit( i18n( "Enter search terms here" ), searchToolBar );
         m_searchEdit->installEventFilter( this );
+        KPushButton *filterButton = new KPushButton("...", searchToolBar, "filter");
         searchToolBar->setStretchableWidget( m_searchEdit );
 
         m_searchEdit->setFrame( QFrame::Sunken );
         connect( button, SIGNAL( clicked() ), SLOT( slotClearFilter() ) );
+        connect( filterButton, SIGNAL( clicked() ), SLOT( slotEditFilter() ) );
 
         QToolTip::add( button, i18n( "Clear search field" ) );
         QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to search in the collection" ) );
+        QToolTip::add( filterButton, i18n( "Click here to setup the collection filter" ) );
     } //</Search LineEdit>
 
 
@@ -274,6 +279,14 @@ CollectionBrowser::slotSetFilter() //SLOT
     if ( m_returnPressed )
         appendSearchResults();
     m_returnPressed = false;
+}
+
+void
+CollectionBrowser::slotEditFilter() //SLOT
+{
+    EditCollectionFilterDialog *cod = new EditCollectionFilterDialog( this, m_searchEdit->text() );
+    if (cod->exec())
+      m_searchEdit->setText(cod->filter());
 }
 
 void

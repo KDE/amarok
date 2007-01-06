@@ -72,6 +72,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Derek Nelson", I18N_NOOP( "graphics, splash-screen" ), "admrla@gmail.com" );
     aboutData.addCredit( "Enrico Ros", I18N_NOOP( "Analyzers, Context Browser and systray eye-candy" ), "eros.kde@email.it" );
     aboutData.addCredit( "Gérard Dürrmeyer", I18N_NOOP( "icons and image work" ), "gerard@randomtree.com" );
+    aboutData.addCredit( "Giovanni Venturi", I18N_NOOP( "dialog to filter the collection titles" ), "giovanni@ksniffer.org" );
     aboutData.addCredit( "Greg Meyer", I18N_NOOP( "Live CD, Bug squashing (oggb4mp3)" ), "greg@gkmweb.com" );
     aboutData.addCredit( "Harald Sitter", I18N_NOOP( "handbook enhancements, translations, bug fixes, screenshots, roKymoter (apachelogger)" ), "harald.sitter@kdemail.net" );
     aboutData.addCredit( "Jarkko Lehti", I18N_NOOP( "Tester, IRC channel operator, whipping" ), "grue@iki.fi" );

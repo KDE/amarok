@@ -75,6 +75,7 @@ class CollectionBrowser: public QVBox
         void slotClearFilter();
         void slotSetFilterTimeout();
         void slotSetFilter();
+        void slotEditFilter();
 
     private:
         void layoutToolbar();
