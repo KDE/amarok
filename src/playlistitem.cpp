@@ -639,7 +639,9 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                                     + painter->fontMetrics().minRightBearing();
                     }
                     const bool italic = font.italic();
-                    font.setItalic( !italic );
+                    int state = EngineController::engine()->state();
+                    if( state == Engine::Playing || state == Engine::Paused )
+                        font.setItalic( !italic );
                     p.setFont( font );
                     p.setPen( cg.highlightedText() );
 //                  paint.setPen( glowText );
