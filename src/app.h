@@ -116,7 +116,7 @@ class LIBAMAROK_EXPORT App : public KApplication, public EngineObserver
 #ifdef Q_WS_X11
         Amarok::TrayIcon    *m_pTray;
 #endif
-        MediaDeviceManager       *m_pMediaDeviceManager;
+        MediaDeviceManager  *m_pMediaDeviceManager;
 };
 
 #define pApp static_cast<App*>(kapp)

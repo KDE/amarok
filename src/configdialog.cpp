@@ -73,6 +73,8 @@ namespace Amarok {
 }
 
 
+int AmarokConfigDialog::s_currentPage = 0;
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -208,6 +210,10 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
 
 AmarokConfigDialog::~AmarokConfigDialog()
 {
+    DEBUG_FUNC_INFO
+
+    s_currentPage = activePageIndex();
+
     delete m_engineConfig;
     delete m_deviceManager;
 }
@@ -224,7 +230,7 @@ void AmarokConfigDialog::addPage( QWidget *page, const QString &itemName, const 
 
 
 /** Show page by object name */
-void AmarokConfigDialog::showPage( const QCString& page )
+void AmarokConfigDialog::showPageByName( const QCString& page )
 {
     for( uint index = 0; index < m_pageList.count(); index++ ) {
         if ( m_pageList[index]->name() == page ) {
