@@ -26,6 +26,9 @@ class EditCollectionFilterDialog : public KDialogBase
 
         QString filter() const;
 
+    signals:
+        void filterChanged( const QString &filter );
+
     private:
         QVBoxLayout *m_mainLay;
         QLineEdit *m_filterRule;

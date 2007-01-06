@@ -282,9 +282,21 @@ CollectionBrowser::slotSetFilter() //SLOT
 }
 
 void
+CollectionBrowser::slotSetFilter( const QString &filter ) //SLOT
+{
+    m_timer->stop();
+    m_view->m_dirty = true;
+    m_view->setFilter( filter );
+    m_view->setTimeFilter( m_timeFilter->currentItem() );
+    m_view->renderView();
+    m_returnPressed = false;
+}
+
+void
 CollectionBrowser::slotEditFilter() //SLOT
 {
     EditCollectionFilterDialog *cod = new EditCollectionFilterDialog( this, m_searchEdit->text() );
+    connect( cod, SIGNAL(filterChanged(const QString &)), SLOT(slotSetFilter(const QString &)) );
     if (cod->exec())
         m_searchEdit->setText(cod->filter());
 }

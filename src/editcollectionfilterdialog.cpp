@@ -688,6 +688,7 @@ void EditCollectionFilterDialog::slotDefault() // SLOT
       m_filterText += vector[m_selectedIndex] + ":" +  m_editKeyword->text();
   }
   m_filterRule->setText( m_filterText );
+  emit filterChanged( m_filterText );
 }
 
 void EditCollectionFilterDialog::slotUser1() // SLOT
@@ -695,6 +696,7 @@ void EditCollectionFilterDialog::slotUser1() // SLOT
   m_previousFilterText = m_filterText;
   m_filterText = "";
   m_filterRule->setText( m_filterText );
+  emit filterChanged( m_filterText );
 
   // no filter appended cause all cleared
   m_appended = false;
@@ -711,6 +713,7 @@ void EditCollectionFilterDialog::slotUser2() // SLOT
     m_groupBox3->setEnabled( false );
   }
   m_filterRule->setText( m_filterText );
+  emit filterChanged( m_filterText );
 }
 
 void EditCollectionFilterDialog::slotOk() // SLOT
