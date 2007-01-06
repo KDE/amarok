@@ -692,7 +692,7 @@ class QueryBuilder
         static const Q_INT64 valPlayCounter   = 1LL << 10;
         static const Q_INT64 valCreateDate    = 1LL << 11;
         static const Q_INT64 valAccessDate    = 1LL << 12;
-        static const Q_INT64 valPercentage    = 1LL << 13;
+        //static const Q_INT64 valPercentage    = 1LL << 13; // same as valScore
         static const Q_INT64 valArtistID      = 1LL << 14;
         static const Q_INT64 valAlbumID       = 1LL << 15;
         static const Q_INT64 valYearID        = 1LL << 16;

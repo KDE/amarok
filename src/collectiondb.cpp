@@ -6687,13 +6687,6 @@ QueryBuilder::addReturnValue( int table, Q_INT64 value, bool caseSensitive /* = 
 
     if ( !m_values.isEmpty() && m_values != "DISTINCT " ) m_values += ',';
 
-    if ( table & tabStats && value & valScore )
-    {
-        if ( CollectionDB::instance()->getType() == DbConnection::sqlite )
-            m_values += "CAST(";
-        m_values += "round(";
-    }
-
     if ( value == valDummy )
         m_values += "''";
     else
@@ -6702,13 +6695,6 @@ QueryBuilder::addReturnValue( int table, Q_INT64 value, bool caseSensitive /* = 
             m_values += "BINARY ";
         m_values += tableName( table ) + '.';
         m_values += valueName( value );
-    }
-
-    if ( table & tabStats && value & valScore )
-    {
-        m_values += " + 0.4 )";
-        if ( CollectionDB::instance()->getType() == DbConnection::sqlite )
-            m_values += " AS INTEGER)";
     }
 
     m_linkTables |= table;
@@ -6729,7 +6715,7 @@ QueryBuilder::addReturnFunctionValue( int function, int table, Q_INT64 value)
 {
     // translate NULL and 0 values into the default value for percentage/rating
     // First translate 0 to NULL via NULLIF, then NULL to default via COALESCE
-    bool defaults = function == funcAvg && ( value & valPercentage || value & valRating );
+    bool defaults = function == funcAvg && ( value & valScore || value & valRating );
 
     if ( !m_values.isEmpty() && m_values != "DISTINCT " ) m_values += ',';
     m_values += functionName( function ) + '(';
@@ -6740,7 +6726,7 @@ QueryBuilder::addReturnFunctionValue( int function, int table, Q_INT64 value)
     if ( defaults )
     {
         m_values += ", 0), ";
-        if ( value & valPercentage )
+        if ( value & valScore )
             m_values += "50";
         else
             m_values += '6';
@@ -7412,13 +7398,13 @@ QueryBuilder::sortBy( int table, Q_INT64 value, bool descending )
     bool b = true;
     if ( value & valID || value & valTrack || value & valScore || value & valRating || value & valLength || value & valBitrate ||
          value & valSamplerate || value & valPlayCounter || value & valAccessDate || value & valCreateDate ||
-         value & valPercentage || value & valFilesize || value & valDiscNumber ||
+         value & valFilesize || value & valDiscNumber ||
          table & tabYear )
         b = false;
 
 	// only coalesce for certain columns
 	bool c = false;
-    if ( value & valScore || value & valRating || value & valPlayCounter || value & valPercentage || value & valAccessDate || value & valCreateDate )
+    if ( value & valScore || value & valRating || value & valPlayCounter || value & valAccessDate || value & valCreateDate )
 		c = true;
 
     if ( !m_sort.isEmpty() ) m_sort += ',';
@@ -7453,19 +7439,19 @@ QueryBuilder::sortByFunction( int function, int table, Q_INT64 value, bool desce
     // since it uses the "func(table.value) AS functablevalue" definition.
 
     // this column is already coalesced, but need to reconstruct for postgres
-    bool defaults = function == funcAvg && ( value & valPercentage || value & valRating );
+    bool defaults = function == funcAvg && ( value & valScore || value & valRating );
 
     //shall we sort case-sensitively? (not for integer columns!)
     bool b = true;
     if ( value & valID || value & valTrack || value & valScore || value & valRating || value & valLength || value & valBitrate ||
          value & valSamplerate || value & valPlayCounter || value & valAccessDate || value & valCreateDate ||
-         value & valPercentage || value & valFilesize || value & valDiscNumber ||
+         value & valFilesize || value & valDiscNumber ||
          table & tabYear )
         b = false;
 
     // only coalesce for certain columns
     bool c = false;
-    if ( !defaults && ( value & valScore || value & valRating || value & valPlayCounter || value & valPercentage|| value & valAccessDate || value & valCreateDate ) )
+    if ( !defaults && ( value & valScore || value & valRating || value & valPlayCounter || value & valAccessDate || value & valCreateDate ) )
         c = true;
 
     if ( !m_sort.isEmpty() ) m_sort += ',';
@@ -7484,7 +7470,7 @@ QueryBuilder::sortByFunction( int function, int table, Q_INT64 value, bool desce
         if ( defaults )
         {
             columnName += ", 0), ";
-            if ( value & valPercentage )
+            if ( value & valScore )
                 columnName += "50";
             else
                 columnName += '6';
@@ -7630,7 +7616,7 @@ QueryBuilder::initSQLDrag()
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valIsCompilation );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valFileType );
     addReturnValue( QueryBuilder::tabSong, QueryBuilder::valBPM );
-    addReturnValue( QueryBuilder::tabStats, QueryBuilder::valPercentage );
+    addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
     addReturnValue( QueryBuilder::tabStats, QueryBuilder::valRating );
     addReturnValue( QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
     addReturnValue( QueryBuilder::tabStats, QueryBuilder::valAccessDate );
@@ -7732,7 +7718,7 @@ QueryBuilder::valForFavoriteSorting() {
     if ( !AmarokConfig::useScores() && !AmarokConfig::useRatings() )
         favSortBy = valPlayCounter;
     else if( !AmarokConfig::useRatings() )
-        favSortBy = valPercentage;
+        favSortBy = valScore;
     return favSortBy;
 }
 
@@ -7741,7 +7727,7 @@ QueryBuilder::sortByFavorite() {
     if ( AmarokConfig::useRatings() )
         sortBy(tabStats, valRating, true );
     if ( AmarokConfig::useScores() )
-        sortBy(tabStats, valPercentage, true );
+        sortBy(tabStats, valScore, true );
     sortBy(tabStats, valPlayCounter, true );
 
 }
@@ -7755,8 +7741,8 @@ QueryBuilder::sortByFavoriteAvg() {
         addReturnFunctionValue( funcAvg, tabStats, valRating );
     }
     if ( AmarokConfig::useScores() ) {
-        sortByFunction(funcAvg, tabStats, valPercentage, true );
-        addReturnFunctionValue( funcAvg, tabStats, valPercentage );
+        sortByFunction(funcAvg, tabStats, valScore, true );
+        addReturnFunctionValue( funcAvg, tabStats, valScore );
     }
     sortByFunction(funcAvg, tabStats, valPlayCounter, true );
     addReturnFunctionValue( funcAvg, tabStats, valPlayCounter );

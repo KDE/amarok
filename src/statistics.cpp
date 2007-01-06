@@ -401,7 +401,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         }
 
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
-        qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage );
+        qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valScore );
         qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valRating );
         qb.sortByFavoriteAvg();
         // only artists with more than 3 tracks
@@ -439,7 +439,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valName );
         qb.addReturnValue( QueryBuilder::tabArtist, QueryBuilder::valID );
         qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valID );
-        qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage );
+        qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valScore );
         qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valRating );
         qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valIsCompilation );
         // only albums with more than 3 tracks
@@ -486,7 +486,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         }
 
         qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valName );
-        qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valPercentage );
+        qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valScore );
         qb.addReturnFunctionValue( QueryBuilder::funcAvg, QueryBuilder::tabStats, QueryBuilder::valRating );
         // only genres with more than 3 tracks
         qb.having( QueryBuilder::tabGenre, QueryBuilder::valID, QueryBuilder::funcCount, QueryBuilder::modeGreater, "3" );
