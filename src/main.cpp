@@ -95,16 +95,19 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Vadim Petrunin", I18N_NOOP( "Graphics, splash-screen (vnizzz)" ), "vnizzz@list.ru" );
     aboutData.addCredit( "Whitehawk Stormchaser", I18N_NOOP( "Tester, patches" ), "zerokode@gmx.net" );
 
+    registerTaglibPlugins();
+
     KApplication::disableAutoDcopRegistration();
 
     App::initCliArgs( argc, argv );
     App app;
 
+#ifdef Q_WS_X11
     #ifndef AMAROK_USE_DRKONQI
     KCrash::setCrashHandler( Amarok::Crash::crashHandler );
     #endif
+#endif
 
-    registerTaglibPlugins();
 
     return app.exec();
 }
