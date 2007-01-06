@@ -18,6 +18,7 @@
 #include "debug.h"
 #include "deletedialog.h"
 #include "directorylist.h"
+#include "editcollectionfilterdialog.h"
 #include "k3bexporter.h"
 #include "mediabrowser.h"
 #include "metabundle.h"
@@ -29,7 +30,6 @@
 #include "tagdialog.h"
 #include "threadweaver.h"
 #include "qstringx.h"
-#include "editcollectionfilterdialog.h"
 
 #include <taglib/tfile.h>   //TagLib::File::isWritable
 
@@ -112,7 +112,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
         QToolTip::add( button, i18n( "Clear search field" ) );
         QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to search in the collection" ) );
-        QToolTip::add( filterButton, i18n( "Click here to setup the collection filter" ) );
+        QToolTip::add( filterButton, i18n( "Click to edit collection filter" ) );
     } //</Search LineEdit>
 
 
@@ -286,7 +286,7 @@ CollectionBrowser::slotEditFilter() //SLOT
 {
     EditCollectionFilterDialog *cod = new EditCollectionFilterDialog( this, m_searchEdit->text() );
     if (cod->exec())
-      m_searchEdit->setText(cod->filter());
+        m_searchEdit->setText(cod->filter());
 }
 
 void

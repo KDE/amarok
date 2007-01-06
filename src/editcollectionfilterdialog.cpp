@@ -28,7 +28,7 @@ EditCollectionFilterDialog::EditCollectionFilterDialog( QWidget* parent, const Q
       m_filterText(text)
 {
     // Redefine "Default" button
-    KGuiItem defaultButton( i18n("&Append this filter"), "add" );
+    KGuiItem defaultButton( i18n("&Append Filter"), "add" );
     setButtonWhatsThis( Default, i18n( "<qt><p>Clicking here you can add the defined condition. The \"OK\" button is intended to "
                                         "close the dialog and apply the defined filter. With this button you can add more than "
                                         "one condition, so to create a more complex filtering condition.</p></qt>" ) );
@@ -36,14 +36,14 @@ EditCollectionFilterDialog::EditCollectionFilterDialog( QWidget* parent, const Q
     setButtonGuiItem( Default, defaultButton );
 
     // define "User1" button
-    KGuiItem user1Button( i18n("&Clear filter"), "remove" );
+    KGuiItem user1Button( i18n("&Clear Filter"), "remove" );
     setButtonWhatsThis( User1, i18n( "<p>Clicking here you will clear the collection filter. If you intend just "
                                      "undo last appending just click on \"Append this filter\" button.</p>" ) );
     setButtonTip(User1, i18n( "Clear the collection filter" ) );
     setButtonGuiItem( User1, user1Button );
 
     // define "User2" button
-    KGuiItem user2Button( i18n("&Unappend last filter"), "undo" );
+    KGuiItem user2Button( i18n("&Remove Last Filter"), "undo" );
     setButtonWhatsThis( User2, i18n( "<p>Clicking here you will remove the last appended collection filter, so to undo last "
                                      "appending filter. You cannot undo more than one action.</p>" ) );
     setButtonTip(User2, i18n( "Remove last appendend collection filter" ) );
@@ -57,9 +57,8 @@ EditCollectionFilterDialog::EditCollectionFilterDialog( QWidget* parent, const Q
 
     // text explanation of this dialog
     QLabel *label1 = new QLabel( plainPage(), "label1" );
-    label1->setText( i18n("<p>In this dialog you can configure the collection filter "
-                             "that let you find title with specific attributes, for example "
-                             "you can look for a title that has a length of 3 minutes.</p>") );
+    label1->setText( i18n("<p>Edit the collection filter for finding tracks with specific attributes"
+                             ", e.g. you can look for a track that has a length of 3 minutes.</p>") );
     m_mainLay->addWidget( label1 );
     m_mainLay->addItem( new QSpacerItem( 10, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
 
@@ -83,8 +82,8 @@ EditCollectionFilterDialog::EditCollectionFilterDialog( QWidget* parent, const Q
            "<p>Here you can choose to <i>type text</i> directly or to use "
            "some keywords to specify some attributes as the artist name "
            "and so on. The keyword selectable are divided by their specific value. "
-           "Some keywords are numeric and others are alphanumeric. You don't need "
-           "to know it diectly. When a keyword is numeric than will be enabled "
+           "Some keywords are numeric and others are alphanumeric. You do not need "
+           "to know it directly. When a keyword is numeric than will be enabled "
            "the part related to the numeric specifics.</p><p>The alphanumeric "
            "keywords are the following: <b>album</b>, <b>artist</b>, <b>filename</b> "
            " (including path), <b>mountpoint</b> (i.e. /home/user1), <b>filetype</b> "
@@ -100,29 +99,29 @@ EditCollectionFilterDialog::EditCollectionFilterDialog( QWidget* parent, const Q
     keywordLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
     m_comboKeyword = new QComboBox( plainPage(), "keywordComboBox");
     label3->setBuddy( m_comboKeyword );
-    m_comboKeyword->insertItem( i18n("type text") );
-    m_comboKeyword->insertItem( i18n("album") );
-    m_comboKeyword->insertItem( i18n("artist") );
-    m_comboKeyword->insertItem( i18n("bitrate") );
-    m_comboKeyword->insertItem( i18n("comment") );
-    m_comboKeyword->insertItem( i18n("composer") );
-    m_comboKeyword->insertItem( i18n("directory") );
-    m_comboKeyword->insertItem( i18n("disc/discnumber") );
-    m_comboKeyword->insertItem( i18n("filename") );
-    m_comboKeyword->insertItem( i18n("mountpoint") );
-    m_comboKeyword->insertItem( i18n("filetype") );
-    m_comboKeyword->insertItem( i18n("genre") );
-    m_comboKeyword->insertItem( i18n("length") );
-    m_comboKeyword->insertItem( i18n("lyrics") );
-    m_comboKeyword->insertItem( i18n("playcount") );
-    m_comboKeyword->insertItem( i18n("rating") );
-    m_comboKeyword->insertItem( i18n("samplerate") );
-    m_comboKeyword->insertItem( i18n("score") );
-    m_comboKeyword->insertItem( i18n("size/filesize") );
-    m_comboKeyword->insertItem( i18n("title") );
-    m_comboKeyword->insertItem( i18n("track") );
-    m_comboKeyword->insertItem( i18n("year") );
-    m_comboKeyword->insertItem( i18n("label") );
+    m_comboKeyword->insertItem( i18n("Type Text") );
+    m_comboKeyword->insertItem( i18n("Album") );
+    m_comboKeyword->insertItem( i18n("Artist") );
+    m_comboKeyword->insertItem( i18n("Bitrate") );
+    m_comboKeyword->insertItem( i18n("Comment") );
+    m_comboKeyword->insertItem( i18n("Composer") );
+    m_comboKeyword->insertItem( i18n("Directory") );
+    m_comboKeyword->insertItem( i18n("Disc Number") );
+    m_comboKeyword->insertItem( i18n("Filename") );
+    m_comboKeyword->insertItem( i18n("Mount Point") );
+    m_comboKeyword->insertItem( i18n("Filetype") );
+    m_comboKeyword->insertItem( i18n("Genre") );
+    m_comboKeyword->insertItem( i18n("Length") );
+    m_comboKeyword->insertItem( i18n("Lyrics") );
+    m_comboKeyword->insertItem( i18n("Play Count") );
+    m_comboKeyword->insertItem( i18n("Rating") );
+    m_comboKeyword->insertItem( i18n("Sample Rate") );
+    m_comboKeyword->insertItem( i18n("Score") );
+    m_comboKeyword->insertItem( i18n("File Size") );
+    m_comboKeyword->insertItem( i18n("Title") );
+    m_comboKeyword->insertItem( i18n("Track") );
+    m_comboKeyword->insertItem( i18n("Year") );
+    m_comboKeyword->insertItem( i18n("Label") );
     QToolTip::add( m_comboKeyword, i18n("Select a keyword for the filter") );
     vector[0] = "type text";
     vector[1] = "album";
@@ -154,7 +153,7 @@ EditCollectionFilterDialog::EditCollectionFilterDialog( QWidget* parent, const Q
     keywordLayout->addWidget( m_comboKeyword );
     keywordLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
     m_editKeyword = new QLineEdit( plainPage(), "editKeywordBox" );
-    QWhatsThis::add( m_editKeyword, i18n("<p>Type here the keyword attribut or type text to look for into the collection.</p>") );
+    QWhatsThis::add( m_editKeyword, i18n("<p>Type here the keyword attribute or type text to look for into the collection.</p>") );
     keywordLayout->addWidget( m_editKeyword );
     m_mainLay->addLayout( keywordLayout );
     m_mainLay->addItem( new QSpacerItem( 10, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
@@ -218,14 +217,14 @@ EditCollectionFilterDialog::EditCollectionFilterDialog( QWidget* parent, const Q
     connect(m_spinMax1, SIGNAL(valueChanged(int)), this, SLOT(maxSpinChanged(int)));
 
     QHBoxLayout *filesizeLayout = new QHBoxLayout( vertLayout );
-    QLabel *filesizeLabel = new QLabel( i18n("Choose the related unit for the \"filesize\" keyword:"), m_groupBox, "filesizeLabel");
+    QLabel *filesizeLabel = new QLabel( i18n("Unit for file size:"), m_groupBox, "filesizeLabel");
     filesizeLayout->addWidget( filesizeLabel );
     filesizeLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
     m_comboUnitSize = new QComboBox( m_groupBox, "comboKiloMega" );
     filesizeLabel->setBuddy( m_comboUnitSize );
-    m_comboUnitSize->insertItem( i18n("bytes") );
-    m_comboUnitSize->insertItem( i18n("kbytes") );
-    m_comboUnitSize->insertItem( i18n("mbytes") );
+    m_comboUnitSize->insertItem( i18n("B (1 Byte)") );
+    m_comboUnitSize->insertItem( i18n("KB (1024 Bytes)") );
+    m_comboUnitSize->insertItem( i18n("MB (1024 KB)") );
     filesizeLayout->addWidget( m_comboUnitSize );
 
     // type text selected
