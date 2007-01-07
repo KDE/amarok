@@ -3941,6 +3941,7 @@ CollectionView::renderTreeModeView( bool /*=false*/ )
     }
 
     int count = childCount() - dividerCount;
+    const bool selectFinalItem( 1 == count ); //Make sure we have found just one item
     QListViewItem *item = firstChild();
     if( dynamic_cast<DividerItem *>( item ) )
         item = item->nextSibling();
@@ -3949,6 +3950,21 @@ CollectionView::renderTreeModeView( bool /*=false*/ )
         item->setOpen( true );
         count = item->childCount();
         item = item->firstChild();
+    }
+
+    //If the tree has only one child for its top branch(es), make the lowest child which
+    //has no siblings become selected. This is the lowest expanded child.
+    //Rationale: If you search for something and then clear the search bar, this way it
+    //will stay in view, assuming you only had one real result.
+    if ( selectFinalItem )
+    {
+        item = item->parent();
+        if ( item && item->isExpandable() )
+        {
+            setCurrentItem( item );
+            item->setSelected( true );
+            setSelectionAnchor( item );
+        }
     }
 
     removeDuplicatedHeaders();
