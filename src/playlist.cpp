@@ -219,6 +219,8 @@ Playlist::Playlist( QWidget *parent )
     connect( ec, SIGNAL(orderNext( const bool )),     SLOT(playNextTrack( const bool )) );
     connect( ec, SIGNAL(orderCurrent()),  SLOT(playCurrentTrack()) );
 
+    connect( this, SIGNAL( itemCountChanged( int, int, int, int, int, int ) ), ec, SLOT( playlistChanged() ) );
+
 
     setShowSortIndicator( true );
     setDropVisualizer( false );   //we handle the drawing for ourselves

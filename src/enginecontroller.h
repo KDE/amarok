@@ -91,6 +91,8 @@ public slots:
 
     void mute();
 
+    void playlistChanged() { m_engine->playlistChanged(); }
+
     void slotStreamMetaData( const MetaBundle &bundle );
     void currentTrackMetaDataChanged( const MetaBundle& bundle ) { m_bundle = bundle; newMetaDataNotify( bundle, false /* no track change */ ); }
 

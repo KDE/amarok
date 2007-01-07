@@ -59,6 +59,8 @@ class XineEngine : public Engine::Base
     virtual void customEvent( QCustomEvent* );
     virtual void timerEvent( QTimerEvent* );
 
+    virtual void playlistChanged();
+
     Engine::SimpleMetaBundle fetchMetaData() const;
 
     bool makeNewStream();

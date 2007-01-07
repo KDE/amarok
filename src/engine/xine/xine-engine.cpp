@@ -85,6 +85,7 @@ XineEngine::XineEngine()
     #endif
     addPluginProperty("HasCDDA", "true"); // new property
     debug() << "hello" << endl;
+
 }
 
 XineEngine::~XineEngine()
@@ -259,21 +260,7 @@ XineEngine::load( const KURL &url, bool isStream )
       xine_post_wire( source, target );
       #endif
 
-      #ifdef XINE_PARAM_EARLY_FINISHED_EVENT
-      #ifdef XINE_PARAM_GAPLESS_SWITCH
-      if ( xine_check_version(1,1,1) && !(m_xfadeLength > 0) && Playlist::instance()->isTrackAfter() )
-      {
-        xine_set_param(m_stream, XINE_PARAM_EARLY_FINISHED_EVENT, 1 );
-        debug() << "XINE_PARAM_EARLY_FINISHED_EVENT enabled" << endl;
-      }
-      else
-      {
-        //we don't want an early finish event if there is no track after the current one
-        xine_set_param(m_stream, XINE_PARAM_EARLY_FINISHED_EVENT, 0 );
-        debug() << "XINE_PARAM_EARLY_FINISHED_EVENT disabled" << endl;
-      }
-      #endif
-      #endif
+      playlistChanged();
 
       return true;
    }
@@ -867,6 +854,28 @@ void XineEngine::configChanged()
             setEqualizerParameters( m_intPreamp, m_equalizerGains );
         emit resetConfig(m_xine);
     }
+}
+
+//SLOT
+void
+XineEngine::playlistChanged()
+{
+    #ifdef XINE_PARAM_EARLY_FINISHED_EVENT
+    #ifdef XINE_PARAM_GAPLESS_SWITCH
+    if ( xine_check_version(1,1,1) && !(m_xfadeLength > 0) 
+         && m_url.isLocalFile() && Playlist::instance()->isTrackAfter() )
+    {
+        xine_set_param(m_stream, XINE_PARAM_EARLY_FINISHED_EVENT, 1 );
+        debug() << "XINE_PARAM_EARLY_FINISHED_EVENT enabled" << endl;
+    }
+    else
+    {
+        //we don't want an early finish event if there is no track after the current one
+        xine_set_param(m_stream, XINE_PARAM_EARLY_FINISHED_EVENT, 0 );
+        debug() << "XINE_PARAM_EARLY_FINISHED_EVENT disabled" << endl;
+    }
+    #endif
+    #endif
 }
 
 static time_t last_error_time = 0; // hysteresis on xine errors
