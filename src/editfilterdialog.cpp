@@ -66,20 +66,6 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     m_mainLay->addWidget( label1 );
     m_mainLay->addItem( new QSpacerItem( 10, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
 
-    // let see to the users what will be the resulting filter string
-    QHBoxLayout *filterLayout = new QHBoxLayout( plainPage() );
-
-    QLabel *label2 = new QLabel( i18n("Resulting filter:"), plainPage(), "label2");
-    filterLayout->addWidget( label2 );
-    filterLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
-
-    m_filterRule = new QLineEdit( plainPage(), "filterRule" );
-    m_filterRule->setEnabled( false );
-    m_filterRule->setText( text );
-    filterLayout->addWidget( m_filterRule );
-    m_mainLay->addLayout( filterLayout );
-    m_mainLay->addItem( new QSpacerItem( 10, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
-
     // choosing keyword filtering
     QHBoxLayout *keywordLayout = new QHBoxLayout( plainPage() );
     QLabel *label3 = new QLabel( i18n("Choose keyword:"), plainPage(), "label3" );
@@ -188,7 +174,6 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     keywordLayout->addWidget( m_editKeyword );
     m_mainLay->addLayout( keywordLayout );
     m_mainLay->addItem( new QSpacerItem( 10, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
-
     connect(m_comboKeyword, SIGNAL(activated(int)), this, SLOT(selectedKeyword(int)));
 
     // group of options on numeric attribute keywords: a value <,>,= ... or a value between Min and Max
@@ -343,8 +328,6 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
 
     // setup Min Max Value spin
     setMinMaxValueSpins();
-
-    //resize( 500, 470 );
 }
 
 EditFilterDialog::~EditFilterDialog()
@@ -782,6 +765,8 @@ void EditFilterDialog::slotDefault() // SLOT
     }
     m_filterRule->setText( m_filterText );
     emit filterChanged( m_filterText );
+
+    m_editKeyword->clear();
 }
 
 void EditFilterDialog::slotUser1() // SLOT
