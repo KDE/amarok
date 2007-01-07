@@ -282,6 +282,7 @@ void PlaylistWindow::init()
         filter_label->setBuddy( m_lineEdit );
         bar->setStretchableWidget( m_lineEdit );
         KPushButton *filterButton = new KPushButton("...", bar, "filter");
+        filterButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
 
         m_lineEdit->setFrame( QFrame::Sunken );
         m_lineEdit->installEventFilter( this ); //we intercept keyEvents
