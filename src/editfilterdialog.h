@@ -34,7 +34,6 @@ class EditFilterDialog : public KDialogBase
 
     private:
         QVBoxLayout *m_mainLay;
-        QLineEdit *m_filterRule;
 
         QCheckBox *m_prefixNOT;
         QComboBox *m_comboKeyword;

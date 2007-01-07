@@ -375,13 +375,12 @@ EditFilterDialog::~EditFilterDialog()
     delete m_editKeyword;
     delete m_comboKeyword;
     delete m_prefixNOT;
-    delete m_filterRule;
     delete m_mainLay;
 }
 
 QString EditFilterDialog::filter() const
 {
-    return m_filterRule->text();
+    return m_filterText;
 }
 
 void EditFilterDialog::exclusiveSelectOf( int which )
@@ -781,7 +780,6 @@ void EditFilterDialog::slotDefault() // SLOT
     {
         m_filterText += m_vector[m_selectedIndex] + ":" +  m_editKeyword->text();
     }
-    m_filterRule->setText( m_filterText );
     emit filterChanged( m_filterText );
 
     m_editKeyword->clear();
@@ -796,7 +794,6 @@ void EditFilterDialog::slotUser1() // SLOT
     m_appended = false;
     m_groupBox3->setEnabled( false );
 
-    m_filterRule->setText( m_filterText );
     emit filterChanged( m_filterText );
 }
 
@@ -809,7 +806,6 @@ void EditFilterDialog::slotUser2() // SLOT
         m_appended = false;
         m_groupBox3->setEnabled( false );
     }
-    m_filterRule->setText( m_filterText );
     emit filterChanged( m_filterText );
 }
 
