@@ -578,7 +578,7 @@ IpodMediaDevice::synchronizeDevice()
 {
     debug() << "Syncing iPod!" << endl;
     Amarok::StatusBar::instance()->newProgressOperation( this )
-        .setDescription( i18n( "Flushing outstanding data to iPod" ) )
+        .setDescription( i18n( "Flushing iPod filesystem transfer cache" ) )
         .setTotalSteps( 1 );
     writeITunesDB();
     Amarok::StatusBar::instance()->endProgressOperation( this );
