@@ -197,15 +197,14 @@ In order to limit the dependencies the Amarok package demands we suggest
 splitting Amarok into the following packages:
 
    1. Amarok + one backend
-   2. GStreamer-engine
-   3. xine-engine
-   4. Helix-engine
-   5. amarok_libvisual
-   6. ipod media device
-   7. ifp media device
-   8. njb media device
-   9. mtp media device
-   10. rio karma media device
+   2. xine-engine
+   3. Helix-engine
+   4. amarok_libvisual
+   5. ipod media device
+   6. ifp media device
+   7. njb media device
+   8. mtp media device
+   9. rio karma media device
 
 Amarok is modular and will be fully functional as long as one of 2, 3, or 4 is
 also installed. Hence we suggest Amarok + one backend. Feel free to include the
