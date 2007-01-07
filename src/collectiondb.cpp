@@ -6873,7 +6873,7 @@ QueryBuilder::setGoogleFilter( int defaultTables, QString query )
                 table = tabSong;
                 value = valURL;
             }
-            else if( e.field == "filetype" )
+            else if( e.field == "filetype" || e.field == "type" )
             {
                 table = tabSong;
                 value = valURL;

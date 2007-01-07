@@ -911,7 +911,25 @@ bool MetaBundle::matchesParsedExpression( const ParsedExpression &data, const QV
             expression_element e = data[i][ii];
             int column = -1;
             if( !e.field.isEmpty() )
-                column = columnIndex( e.field.lower() );
+            {
+                QString field = e.field.lower();
+                column = columnIndex( field );
+                if( column == -1 )
+                {
+                    column = -2;
+                    if( field == "size" )
+                        field = "filesize";
+                    else if( field == "filetype" )
+                        field = "type";
+                    else if( field == "disc" )
+                        field = "discnumber";
+                    else
+                        column = -1;
+
+                    if( column == -2 )
+                        column = columnIndex( field );
+                }
+            }
             if( column >= 0 ) //a field was specified and it exists
             {
                 QString q = e.text, v = prettyText( column ).lower(), w = q.lower();
