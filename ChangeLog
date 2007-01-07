@@ -5,7 +5,7 @@ Amarok ChangeLog
 
 VERSION 1.4.5
   FEATURES:
-    * Gueded editing of the collection filter. Patch by Giovanni Venturi
+    * Guided editing of the collection filter. Patch by Giovanni Venturi
       <giovanni@kde-it.org> (BR 139292)
     * Added GUI options for fadeout and fadeout on exit. Both are now enabled
       by default.
