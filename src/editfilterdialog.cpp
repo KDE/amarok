@@ -40,7 +40,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     setButtonGuiItem( Default, defaultButton );
 
     // define "User1" button
-    KGuiItem user1Button( i18n("&Clear Filter"), "remove" );
+    KGuiItem user1Button( i18n("&Clear"), "remove" );
     setButtonWhatsThis( User1, i18n( "<p>By clicking here you will clear the filter. If you intend to "
                                      "undo the last appending just click on the \"Undo\" button.</p>" ) );
     setButtonTip(User1, i18n( "Clear the filter" ) );
@@ -566,6 +566,11 @@ void EditFilterDialog::selectedKeyword(int index) // SLOT
         m_spinMax1->setValue( 5 );
         QToolTip::add( m_spinMin1, i18n("Minutes") );
         QToolTip::add( m_spinMax1, i18n("Minutes") );
+
+        // fix the maximum values to reduce spinboxes size
+        m_spinValue1->setMaxValue( 240 );
+        m_spinMin1->setMaxValue( 240 );
+        m_spinMax1->setMaxValue( 240 );
 
         valueWanted();
     }
