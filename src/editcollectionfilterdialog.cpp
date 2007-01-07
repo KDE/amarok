@@ -13,18 +13,21 @@
 #include <qtooltip.h>
 #include <qwhatsthis.h>
 
+#include <kglobal.h>
+#include <klineedit.h>
 #include <klocale.h>
 #include <kpushbutton.h>
 #include <kmessagebox.h>
 #include <ktoolbarbutton.h>
 
-#include <kdebug.h>
-
+#include "collectiondb.h"
+#include "debug.h"
 #include "editcollectionfilterdialog.h"
+#include "metabundle.h"
 
-EditCollectionFilterDialog::EditCollectionFilterDialog( QWidget* parent, const QString &text)
-    : KDialogBase( Plain, i18n("Edit Collection Filter"), User1|User2|Default|Ok|Cancel,
-      Cancel, parent, "editcollectionfilter", /*modal*/true, /*separator*/false ),
+EditCollectionFilterDialog::EditCollectionFilterDialog( QWidget* parent, bool metaBundleKeywords, const QString &text )
+    : KDialogBase( Plain, i18n("Edit Filter"), User1|User2|Default|Ok|Cancel,
+      Cancel, parent, "editfilter", /*modal*/true, /*separator*/false ),
       m_filterText(text)
 {
     // Redefine "Default" button
@@ -64,9 +67,11 @@ EditCollectionFilterDialog::EditCollectionFilterDialog( QWidget* parent, const Q
 
     // let see to the users what will be the resulting filter string
     QHBoxLayout *filterLayout = new QHBoxLayout( plainPage() );
+
     QLabel *label2 = new QLabel( i18n("Resulting filter:"), plainPage(), "label2");
     filterLayout->addWidget( label2 );
     filterLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
+
     m_filterRule = new QLineEdit( plainPage(), "filterRule" );
     m_filterRule->setEnabled( false );
     m_filterRule->setText( text );
@@ -98,61 +103,76 @@ EditCollectionFilterDialog::EditCollectionFilterDialog( QWidget* parent, const Q
     keywordLayout->addWidget( label3 );
     keywordLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
     m_comboKeyword = new QComboBox( plainPage(), "keywordComboBox");
-    label3->setBuddy( m_comboKeyword );
-    m_comboKeyword->insertItem( i18n("Type Text") );
-    m_comboKeyword->insertItem( i18n("Album") );
-    m_comboKeyword->insertItem( i18n("Artist") );
-    m_comboKeyword->insertItem( i18n("Bitrate") );
-    m_comboKeyword->insertItem( i18n("Comment") );
-    m_comboKeyword->insertItem( i18n("Composer") );
-    m_comboKeyword->insertItem( i18n("Directory") );
-    m_comboKeyword->insertItem( i18n("Disc Number") );
-    m_comboKeyword->insertItem( i18n("Filename") );
-    m_comboKeyword->insertItem( i18n("Mount Point") );
-    m_comboKeyword->insertItem( i18n("Filetype") );
-    m_comboKeyword->insertItem( i18n("Genre") );
-    m_comboKeyword->insertItem( i18n("Length") );
-    m_comboKeyword->insertItem( i18n("Lyrics") );
-    m_comboKeyword->insertItem( i18n("Play Count") );
-    m_comboKeyword->insertItem( i18n("Rating") );
-    m_comboKeyword->insertItem( i18n("Sample Rate") );
-    m_comboKeyword->insertItem( i18n("Score") );
-    m_comboKeyword->insertItem( i18n("File Size") );
-    m_comboKeyword->insertItem( i18n("Title") );
-    m_comboKeyword->insertItem( i18n("Track") );
-    m_comboKeyword->insertItem( i18n("Year") );
-    m_comboKeyword->insertItem( i18n("Label") );
     QToolTip::add( m_comboKeyword, i18n("Select a keyword for the filter") );
-    vector[0] = "type text";
-    vector[1] = "album";
-    vector[2] = "artist";
-    vector[3] = "bitrate";
-    vector[4] = "comment";
-    vector[5] = "composer";
-    vector[6] = "directory";
-    vector[7] = "disc";
-    vector[8] = "filename";
-    vector[9] = "mountpoint";
-    vector[10] = "filetype";
-    vector[11] = "genre";
-    vector[12] = "length";
-    vector[13] = "lyrics";
-    vector[14] = "playcount";
-    vector[15] = "rating";
-    vector[16] = "samplerate";
-    vector[17] = "score";
-    vector[18] = "size";
-    vector[19] = "title";
-    vector[20] = "track";
-    vector[21] = "year";
-    vector[22] = "label";
+    label3->setBuddy( m_comboKeyword );
+
+    m_comboKeyword->insertItem( i18n("Type Text") );
+    m_vector.push_back("type text");
+    if( metaBundleKeywords )
+    {
+        for( int i=0; i < MetaBundle::NUM_COLUMNS; ++i )
+        {
+            if( i == MetaBundle::Mood )
+                continue;
+
+            m_comboKeyword->insertItem( MetaBundle::prettyColumnName( i ) );
+            m_vector.push_back( MetaBundle::exactColumnName( i ).lower() );
+        }
+    }
+    else
+    {
+        m_comboKeyword->insertItem( i18n("Album") );
+        m_vector.push_back( "album" );
+        m_comboKeyword->insertItem( i18n("Artist") );
+        m_vector.push_back( "artist" );
+        m_comboKeyword->insertItem( i18n("Bitrate") );
+        m_vector.push_back( "bitrate" );
+        m_comboKeyword->insertItem( i18n("Comment") );
+        m_vector.push_back( "comment" );
+        m_comboKeyword->insertItem( i18n("Composer") );
+        m_vector.push_back( "composer" );
+        m_comboKeyword->insertItem( i18n("Directory") );
+        m_vector.push_back( "directory" );
+        m_comboKeyword->insertItem( i18n("Disc Number") );
+        m_vector.push_back( "disc" );
+        m_comboKeyword->insertItem( i18n("Filename") );
+        m_vector.push_back( "filename" );
+        m_comboKeyword->insertItem( i18n("Mount Point") );
+        m_vector.push_back( "mountpoint" );
+        m_comboKeyword->insertItem( i18n("Filetype") );
+        m_vector.push_back( "filetype" );
+        m_comboKeyword->insertItem( i18n("Genre") );
+        m_vector.push_back( "genre" );
+        m_comboKeyword->insertItem( i18n("Length") );
+        m_vector.push_back( "length" );
+        m_comboKeyword->insertItem( i18n("Label") );
+        m_vector.push_back( "label" );
+        m_comboKeyword->insertItem( i18n("Lyrics") );
+        m_vector.push_back( "lyrics" );
+        m_comboKeyword->insertItem( i18n("Play Count") );
+        m_vector.push_back( "playcount" );
+        m_comboKeyword->insertItem( i18n("Rating") );
+        m_vector.push_back( "rating" );
+        m_comboKeyword->insertItem( i18n("Sample Rate") );
+        m_vector.push_back( "samplerate" );
+        m_comboKeyword->insertItem( i18n("Score") );
+        m_vector.push_back( "score" );
+        m_comboKeyword->insertItem( i18n("File Size") );
+        m_vector.push_back( "size" );
+        m_comboKeyword->insertItem( i18n("Title") );
+        m_vector.push_back( "title" );
+        m_comboKeyword->insertItem( i18n("Track") );
+        m_vector.push_back( "track" );
+        m_comboKeyword->insertItem( i18n("Year") );
+        m_vector.push_back( "year" );
+    }
 
     // the "type text" text is selected in the comboKeyword
     m_selectedIndex = 0;
 
     keywordLayout->addWidget( m_comboKeyword );
     keywordLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
-    m_editKeyword = new QLineEdit( plainPage(), "editKeywordBox" );
+    m_editKeyword = new KLineEdit( plainPage(), "editKeywordBox" );
     QWhatsThis::add( m_editKeyword, i18n("<p>Type here the keyword attribute or type text to look for into the collection.</p>") );
     keywordLayout->addWidget( m_editKeyword );
     m_mainLay->addLayout( keywordLayout );
@@ -160,9 +180,9 @@ EditCollectionFilterDialog::EditCollectionFilterDialog( QWidget* parent, const Q
 
     connect(m_comboKeyword, SIGNAL(activated(int)), this, SLOT(selectedKeyword(int)));
 
-    // group of options on numeric attribut keywords: a value <,>,= ... or a value between Min and Max
+    // group of options on numeric attribute keywords: a value <,>,= ... or a value between Min and Max
     m_groupBox = new QGroupBox( plainPage(), "groupBox" );
-    m_groupBox->setTitle( i18n( "keyword attribut value..." ) );
+    m_groupBox->setTitle( i18n( "keyword attribute value..." ) );
     m_mainLay->addWidget( m_groupBox );
     m_mainLay->addItem( new QSpacerItem( 10, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
 
@@ -256,7 +276,7 @@ EditCollectionFilterDialog::EditCollectionFilterDialog( QWidget* parent, const Q
     m_checkExactly = new QRadioButton( i18n("select exactly the words"), m_groupBox2, "checkexactly");
     ratioLay->addWidget( m_checkExactly );
 
-    m_checkExclude = new QRadioButton( i18n("don't select the words"), m_groupBox2, "checkexclude");
+    m_checkExclude = new QRadioButton( i18n("do not select the words"), m_groupBox2, "checkexclude");
     ratioLay->addWidget( m_checkExclude );
 
     m_actionCheck << m_checkALL;
@@ -482,73 +502,111 @@ void EditCollectionFilterDialog::setMinMaxValueSpins()
 // SLOTS
 void EditCollectionFilterDialog::selectedKeyword(int index) // SLOT
 {
-  kdDebug() << "you selected index " << index << ": '" << m_comboKeyword->text(index) << "'" << endl;
-  m_groupBox2->setEnabled( false );
-  m_comboUnitSize->setEnabled( false );
-  m_prefixNOT->setEnabled( true );
+    debug() << "you selected index " << index << ": '" << m_comboKeyword->text(index) << "'" << endl;
+    m_groupBox2->setEnabled( false );
+    m_comboUnitSize->setEnabled( false );
+    m_prefixNOT->setEnabled( true );
 
-  setMinMaxValueSpins();
+    setMinMaxValueSpins();
 
-  switch(index)
-  {
-    case 0:
-      // type text
-      m_groupBox2->setEnabled( true );
-      m_prefixNOT->setEnabled( false );
-      textWanted();
-      break;
-    case 1:  case 2:  case 4:  case 5:
-    case 6:  case 9:  case 10: case 11:
-    case 13: case 19: case 22:
-      textWanted();
-      break;
-    case 3:
-      // bitrate: set useful values for the spinboxes
-      m_spinValue1->setValue( 128 );
-      m_spinMin1->setValue( 128 );
-      m_spinMax1->setValue( 400 );
-      valueWanted();
-      break;
-    case 12:
-      // length: set useful values for the spinboxes
-      m_spinValue2->show();
-      m_spinValue1->setValue( 0 );
-      m_spinValue2->setValue( 0 );
-      QToolTip::add( m_spinValue1, i18n("minutes") );
-      m_spinMin2->show();
-      m_spinMax2->show();
-      m_spinMin1->setValue( 0 );
-      m_spinMax1->setValue( 1 );
-      QToolTip::add( m_spinMin1, i18n("minutes") );
-      QToolTip::add( m_spinMax1, i18n("minutes") );
+    const QString key = m_vector[index];
+    if( index == 0 )
+    {
+        // type text
+        m_groupBox2->setEnabled( true );
+        m_prefixNOT->setEnabled( false );
+        textWanted();
+    }
+    else if( key=="bitrate" )
+    {
+        // bitrate: set useful values for the spinboxes
+        m_spinValue1->setValue( 128 );
+        m_spinMin1->setValue( 192 );
+        m_spinMax1->setValue( 384 );
+        valueWanted();
+    }
+    else if( key=="samplerate" )
+    {
+        // samplerate: set useful values for the spinboxes
+        m_spinValue1->setValue( 44100 );
+        m_spinMin1->setValue( 8000 );
+        m_spinMax1->setValue( 48000 );
+        valueWanted();
+    }
+    else if( key=="length" )
+    {
+        // length: set useful values for the spinboxes
+        m_spinValue2->show();
+        m_spinValue1->setValue( 3 );
+        m_spinValue2->setValue( 0 );
+        QToolTip::add( m_spinValue1, i18n("Minutes") );
+        m_spinMin2->show();
+        m_spinMax2->show();
+        m_spinMin1->setValue( 1 );
+        m_spinMax1->setValue( 5 );
+        QToolTip::add( m_spinMin1, i18n("Minutes") );
+        QToolTip::add( m_spinMax1, i18n("Minutes") );
 
-      valueWanted();
-      break;
-    case 18:
-      // size: set useful values for the spinboxes
-      m_comboUnitSize->setEnabled( true );
-      m_spinValue1->setValue( 1 );
-      m_spinMin1->setValue( 1 );
-      m_spinMax1->setValue( 3 );
-      m_comboUnitSize->setCurrentItem( 2 );
-      valueWanted();
-      break;
-    case 21:
-      // year: set useful values for the spinboxes
-      m_spinValue1->setValue( 1900 );
-      m_spinMin1->setValue( 1900 );
-      m_spinMax1->setValue( QDate::currentDate().year() );
-      valueWanted();
-      break;
-    default:
-      valueWanted();
-  }
+        valueWanted();
+    }
+    else if( key=="size" || key=="filesize" )
+    {
+        // size: set useful values for the spinboxes
+        m_comboUnitSize->setEnabled( true );
+        m_spinValue1->setValue( 1 );
+        m_spinMin1->setValue( 1 );
+        m_spinMax1->setValue( 3 );
+        m_comboUnitSize->setCurrentItem( 2 );
+        valueWanted();
+    }
+    else if( key=="year" )
+    {
+        // year: set useful values for the spinboxes
+        m_spinValue1->setValue( 1900 );
+        m_spinMin1->setValue( 1900 );
+        m_spinMax1->setValue( QDate::currentDate().year() );
+        valueWanted();
+    }
+    else if( key=="track" || key=="disc" || key=="discnumber" )
+    {
+        // track/disc: set useful values for the spinboxes
+        m_spinValue1->setValue( 1 );
+        m_spinMin1->setValue( 0 );
+        m_spinMax1->setValue( 15 );
+        valueWanted();
+    }
+    else if( key=="playcount"
+          || key=="rating"
+          || key=="score" )
+          
+    {
+        valueWanted();
+    }
+    else if( key=="label" )
+        textWanted( CollectionDB::instance()->labelList() );
+    else if( key=="album" )
+        textWanted( CollectionDB::instance()->albumList() );
+    else if( key=="artist" )
+        textWanted( CollectionDB::instance()->artistList() );
+    else if( key=="composer" )
+        textWanted( CollectionDB::instance()->composerList() );
+    else if( key=="genre" )
+        textWanted( CollectionDB::instance()->genreList() );
+    else if( key=="type" || key=="filetype" )
+    {
+        QStringList types;
+        types << "mp3" << "flac" << "ogg" << "aac" << "m4a" << "mp4" << "mp2" << "ac3"
+            << "wav" << "asf" << "wma";
+        textWanted( types );
+    }
+    else
+        textWanted();
 
-  // assign the correct value to the m_strPrefixNOT
-  assignPrefixNOT();
+    // assign the correct value to the m_strPrefixNOT
+    assignPrefixNOT();
 
-  // assign the right index
-  m_selectedIndex = index;
+    // assign the right index
+    m_selectedIndex = index;
 }
 
 void EditCollectionFilterDialog::minSpinChanged(int value) // SLOT
@@ -565,8 +623,21 @@ void EditCollectionFilterDialog::maxSpinChanged(int value) // SLOT
 
 void EditCollectionFilterDialog::textWanted() // SLOT
 {
-  m_editKeyword->setEnabled( true );
-  m_groupBox->setEnabled( false );
+    m_editKeyword->setEnabled( true );
+    m_groupBox->setEnabled( false );
+
+    m_editKeyword->completionObject()->clear();
+}
+
+void EditCollectionFilterDialog::textWanted( const QStringList &completion ) // SLOT
+{
+    m_editKeyword->setEnabled( true );
+    m_groupBox->setEnabled( false );
+
+    m_editKeyword->completionObject()->clear();
+    m_editKeyword->completionObject()->insertItems( completion );
+    m_editKeyword->completionObject()->setIgnoreCase( true );
+    m_editKeyword->setCompletionMode( KGlobalSettings::CompletionPopup );
 }
 
 void EditCollectionFilterDialog::valueWanted() // SLOT
@@ -652,11 +723,11 @@ void EditCollectionFilterDialog::slotDefault() // SLOT
       m_filterText += "OR ";
   }
   QStringList list = QStringList::split( " ", m_editKeyword->text() );
-  switch (m_selectedIndex)
+  const QString key = m_vector[m_selectedIndex];
+  if( m_selectedIndex == 0 )
   {
-    case 0:
       // type text
-      kdDebug() << "selected text: '" << m_editKeyword->text() << "'" << endl;
+      debug() << "selected text: '" << m_editKeyword->text() << "'" << endl;
       if (m_actionCheck[0]->isChecked())
       {
         // all words
@@ -680,12 +751,23 @@ void EditCollectionFilterDialog::slotDefault() // SLOT
         for ( QStringList::Iterator it = list.begin(); it != list.end(); ++it )
           m_filterText += " -" + *it;
       }
-      break;
-    case 3: case 7: case 12: case 14: case 15: case 16: case 17: case 18: case 20: case 21:
-      m_filterText += keywordConditionString( vector[m_selectedIndex] );
-      break;
-    default:
-      m_filterText += vector[m_selectedIndex] + ":" +  m_editKeyword->text();
+  }
+  else if( key=="bitrate"
+          || key=="disc" || key=="discnumber"
+          || key=="length"
+          || key=="playcount"
+          || key=="rating"
+          || key=="samplerate"
+          || key=="score"
+          || key=="filesize" || key=="size"
+          || key=="track"
+          || key=="year" )
+  {
+      m_filterText += keywordConditionString( m_vector[m_selectedIndex] );
+  }
+  else
+  {
+      m_filterText += m_vector[m_selectedIndex] + ":" +  m_editKeyword->text();
   }
   m_filterRule->setText( m_filterText );
   emit filterChanged( m_filterText );

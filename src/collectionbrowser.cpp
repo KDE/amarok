@@ -293,7 +293,7 @@ CollectionBrowser::slotSetFilter( const QString &filter ) //SLOT
 void
 CollectionBrowser::slotEditFilter() //SLOT
 {
-    EditCollectionFilterDialog *cod = new EditCollectionFilterDialog( this, m_searchEdit->text() );
+    EditCollectionFilterDialog *cod = new EditCollectionFilterDialog( this, false, m_searchEdit->text() );
     connect( cod, SIGNAL(filterChanged(const QString &)), SLOT(slotSetFilter(const QString &)) );
     if (cod->exec())
         m_searchEdit->setText(cod->filter());

@@ -5,6 +5,7 @@
 #define AMAROK_EDITCOLLECTIONFILTERDIALOG_H
 
 #include <qvaluelist.h>
+#include <qvaluevector.h>
 
 #include <kdialogbase.h>
 
@@ -16,12 +17,14 @@ class QLineEdit;
 class QRadioButton;
 class QGroupBox;
 class QSpinBox;
+class QStringList;
+class KComboBox;
 
 class EditCollectionFilterDialog : public KDialogBase
 {
     Q_OBJECT
     public:
-        EditCollectionFilterDialog( QWidget* parent = 0, const QString &text = "");
+        EditCollectionFilterDialog( QWidget* parent, bool metaBundleKeywords, const QString &text = "" );
         ~EditCollectionFilterDialog();
 
         QString filter() const;
@@ -35,7 +38,7 @@ class EditCollectionFilterDialog : public KDialogBase
 
         QCheckBox *m_prefixNOT;
         QComboBox *m_comboKeyword;
-        QLineEdit *m_editKeyword;
+        KLineEdit *m_editKeyword;
 
         QGroupBox *m_groupBox;
 
@@ -62,7 +65,7 @@ class EditCollectionFilterDialog : public KDialogBase
 
         bool m_appended;               // true if a filter appended
         int m_selectedIndex;           // the position of the selected keyword in the combobox
-        QString vector[23];            // the vector of the amarok filter keyword
+        QValueVector<QString> m_vector; // the vector of the amarok filter keyword
         QString m_filterText;          // the resulting filter string
         QString m_previousFilterText;  // the previous resulting filter string
         QString m_strPrefixNOT;        // is empty if no NOT prefix is needed else it's "-"
@@ -79,6 +82,7 @@ class EditCollectionFilterDialog : public KDialogBase
         void maxSpinChanged(int value);
 
         void textWanted();
+        void textWanted( const QStringList &completions );
         void valueWanted();
 
         void chooseOneValue();
