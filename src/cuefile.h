@@ -51,7 +51,7 @@ class CueFile : public QObject, public QMap<long, CueFileItem>, public EngineObs
         static CueFile *instance();
 
         void setCueFileName( QString name ) { m_cueFileName = name; };
-        bool load();
+        bool load(int mediaLength);
 
         // EngineObserver
         virtual void engineTrackPositionChanged( long /*position*/ , bool /*userSeek*/ );

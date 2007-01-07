@@ -59,7 +59,7 @@ enum {
 /**
 * @return true if the cuefile could be successfully loaded
 */
-bool CueFile::load()
+bool CueFile::load(int mediaLength)
 {
     clear();
     m_lastSeekPos = -1;
@@ -74,6 +74,7 @@ bool CueFile::load()
         QString title = QString::null;
         long length = 0;
         long prevIndex = -1;
+        bool index00Present = false;
         long index = -1;
 
         int mode = BEGIN;
@@ -130,7 +131,6 @@ bool CueFile::load()
                         // add previous entry to map
                         insert( index, CueFileItem( title, artist, defaultAlbum, track, index ) );
                         prevIndex = index;
-                        index  = -1;
                         title  = QString::null;
                         artist = QString::null;
                         track  = 0;
@@ -145,28 +145,38 @@ bool CueFile::load()
                     {
                         int indexNo = line.section(' ',1,1).toInt();
 
-                        if(indexNo == 1)
+                        if( indexNo == 1 )
                         {
                             QStringList time = QStringList::split( QChar(':'),line.section (' ',-1,-1) );
 
                             index = time[0].toLong()*60*1000 + time[1].toLong()*1000 + time[2].toLong()*1000/75; //75 frames per second
+
+                             if( prevIndex != -1 && !index00Present ) // set the prev track's length if there is INDEX01 present, but no INDEX00
+                            {
+                            	length = index - prevIndex; 
+                            	debug() << "Setting length of track " << (*this)[prevIndex].getTitle() << " to " << length << " msecs." << endl;
+                            	(*this)[prevIndex].setLength(length);
+                            }
+
+                            index00Present = false;
                             mode = INDEX_FOUND;
                             length = 0;
                         }
-                        else if(indexNo == 0) // gap, use to calc prev track length
+
+                        else if( indexNo == 0 ) // gap, use to calc prev track length
                         {
                             QStringList time = QStringList::split( QChar(':'),line.section (' ',-1,-1) );
                             length = time[0].toLong()*60*1000 + time[1].toLong()*1000 + time[2].toLong()*1000/75; //75 frames per second
 
-                            if(prevIndex != -1)
+                            if( prevIndex != -1 )
                             {
                             	length -= prevIndex; //this[prevIndex].getIndex();
                             	debug() << "Setting length of track " << (*this)[prevIndex].getTitle() << " to " << length << " msecs." << endl;
                             	(*this)[prevIndex].setLength(length);
-                            	prevIndex = -1; // FIXME safety?
+                            	index00Present = true;
                             }
                             else
-                            	length = 0;
+                                length =  0;
                         }
                         else
                         {
@@ -192,11 +202,21 @@ bool CueFile::load()
             insert( index, CueFileItem( title, artist, defaultAlbum, track, index ) );
             file.close();
         }
+
+        /**
+            *  Because there is no way to set the length for the last track in a normal way,
+            *  we have to do some magic here. Having the total length of the media file given
+            *  we can set the lenth for the last track after all the cue file was loaded into array.
+            */
+
+        (*this)[index].setLength(mediaLength*1000 - index);
+        debug() << "Setting length of track " << (*this)[index].getTitle() << " to " << mediaLength*1000 - index << " msecs." << endl;
+
         return true;
     }
-    else {
+
+    else 
         return false;
-    }
 }
 
 void CueFile::engineTrackPositionChanged( long position, bool userSeek )

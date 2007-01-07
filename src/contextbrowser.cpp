@@ -666,7 +666,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
 
         m_cuefile->setCueFileName( cueFile );
 
-        if( m_cuefile->load() )
+        if( m_cuefile->load( bundle.length() ) )
             debug() << "[CUEFILE]: " << cueFile << " - Shoot blindly, found and loaded. " << endl;
 
         // if unlucky, let's have a look inside cue files, if any
@@ -704,7 +704,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
                                     cueFile = dir.filePath(*it);
                                     foundCueFile = true;
                                     m_cuefile->setCueFileName( cueFile );
-                                    if( m_cuefile->load() )
+                                    if( m_cuefile->load( bundle.length() ) )
                                         debug() << "[CUEFILE]: " << cueFile << " - Looked inside cue files, found and loaded proper one" << endl;
                                 }
                             }

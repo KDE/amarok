@@ -94,6 +94,8 @@ VERSION 1.4.5
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
+    * Length of tracks wouldn't be shown correctly for some cue files.
+      Patch by Dawid Wróbel <dawid@klej.net> (BR 139707)
     * Assume that all dots but the last in script executable files belong to
       the script name. (BR 139460)
     * Don't crash when quitting while initially loading the playlist.
