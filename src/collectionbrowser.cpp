@@ -18,7 +18,7 @@
 #include "debug.h"
 #include "deletedialog.h"
 #include "directorylist.h"
-#include "editcollectionfilterdialog.h"
+#include "editfilterdialog.h"
 #include "k3bexporter.h"
 #include "mediabrowser.h"
 #include "metabundle.h"

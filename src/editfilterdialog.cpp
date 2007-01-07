@@ -22,7 +22,7 @@
 
 #include "collectiondb.h"
 #include "debug.h"
-#include "editcollectionfilterdialog.h"
+#include "editfilterdialog.h"
 #include "metabundle.h"
 
 EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, const QString &text )
@@ -805,4 +805,4 @@ void EditFilterDialog::slotOk() // SLOT
     accept();
 }
 
-#include "editcollectionfilterdialog.moc"
+#include "editfilterdialog.moc"
