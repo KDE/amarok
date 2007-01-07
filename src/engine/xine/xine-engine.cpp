@@ -191,7 +191,7 @@ XineEngine::makeNewStream()
     if ( xine_check_version(1,1,1) && !(m_xfadeLength > 0) ) {
         // enable gapless playback
         debug() << "gapless playback enabled." << endl;
-        xine_set_param(m_stream, XINE_PARAM_EARLY_FINISHED_EVENT, 1 );
+        //xine_set_param(m_stream, XINE_PARAM_EARLY_FINISHED_EVENT, 1 );
     }
 #endif
    return true;
@@ -257,6 +257,22 @@ XineEngine::load( const KURL &url, bool isStream )
       xine_post_out_t *source = xine_get_audio_source( m_stream );
       xine_post_in_t  *target = (xine_post_in_t*)xine_post_input( m_post, const_cast<char*>("audio in") );
       xine_post_wire( source, target );
+      #endif
+
+      #ifdef XINE_PARAM_EARLY_FINISHED_EVENT
+      #ifdef XINE_PARAM_GAPLESS_SWITCH
+      if ( xine_check_version(1,1,1) && !(m_xfadeLength > 0) && Playlist::instance()->isTrackAfter() )
+      {
+        xine_set_param(m_stream, XINE_PARAM_EARLY_FINISHED_EVENT, 1 );
+        debug() << "XINE_PARAM_EARLY_FINISHED_EVENT enabled" << endl;
+      }
+      else
+      {
+        //we don't want an early finish event if there is a track after the current one
+        xine_set_param(m_stream, XINE_PARAM_EARLY_FINISHED_EVENT, 0 );
+        debug() << "XINE_PARAM_EARLY_FINISHED_EVENT disabled" << endl;
+      }
+      #endif
       #endif
 
       return true;
