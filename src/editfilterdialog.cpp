@@ -811,7 +811,12 @@ void EditFilterDialog::slotUser2() // SLOT
 
 void EditFilterDialog::slotOk() // SLOT
 {
-    // avoid confusing people that think to click OK to set a filter
+    // If there's a filter typed in but unadded, add it.
+    // This makes it easier to just add one condition - you only need to press OK.
+    if ( !m_editKeyword->text().isEmpty() )
+        slotDefault();
+
+    // Don't let OK do anything if they haven't set any filters.
     if (m_appended)
         accept();
 }
