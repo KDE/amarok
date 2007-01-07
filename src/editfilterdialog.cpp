@@ -32,7 +32,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
       m_filterText(text)
 {
     // Redefine "Default" button
-    KGuiItem defaultButton( i18n("&Append Filter"), "add" );
+    KGuiItem defaultButton( i18n("&Append"), "add" );
     setButtonWhatsThis( Default, i18n( "<qt><p>By clicking here you can add the defined condition. The \"OK\" button will "
                                         "close the dialog and apply the defined filter. With this button you can add more than "
                                         "one condition to create a more complex filtering condition.</p></qt>" ) );
@@ -42,12 +42,12 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     // define "User1" button
     KGuiItem user1Button( i18n("&Clear Filter"), "remove" );
     setButtonWhatsThis( User1, i18n( "<p>By clicking here you will clear the filter. If you intend to "
-                                     "undo the last appending just click on the \"Remove Last Filter\" button.</p>" ) );
+                                     "undo the last appending just click on the \"Undo\" button.</p>" ) );
     setButtonTip(User1, i18n( "Clear the filter" ) );
     setButtonGuiItem( User1, user1Button );
 
     // define "User2" button
-    KGuiItem user2Button( i18n("&Remove Last Filter"), "undo" );
+    KGuiItem user2Button( i18n("&Undo"), "undo" );
     setButtonWhatsThis( User2, i18n( "<p>Clicking here will remove the last appended filter. "
                 "You cannot undo more than one action.</p>" ) );
     setButtonTip(User2, i18n( "Remove last appendend filter" ) );
@@ -85,7 +85,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     QLabel *label3 = new QLabel( i18n("Choose keyword:"), plainPage(), "label3" );
     QWhatsThis::add( label3,
       i18n("you can translate the keyword as you will do for the combobox",
-           "<p>Here you can choose to <i>type text</i> directly or to use "
+           "<p>Here you can choose to <i>Simple Search</i> directly or to use "
            "some keywords to specify some attributes as the artist name "
            "and so on. The keyword selectable are divided by their specific value. "
            "Some keywords are numeric and others are alphanumeric. You do not need "
@@ -107,8 +107,8 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     QToolTip::add( m_comboKeyword, i18n("Select a keyword for the filter") );
     label3->setBuddy( m_comboKeyword );
 
-    m_comboKeyword->insertItem( i18n("Type Text") );
-    m_vector.push_back("type text");
+    m_comboKeyword->insertItem( i18n("Simple Search") );
+    m_vector.push_back("Simple Search");
     if( metaBundleKeywords )
     {
         for( int i=0; i < MetaBundle::NUM_COLUMNS; ++i )
@@ -178,7 +178,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
         m_vector.push_back( "year" );
     }
 
-    // the "type text" text is selected in the comboKeyword
+    // the "Simple Search" text is selected in the comboKeyword
     m_selectedIndex = 0;
 
     keywordLayout->addWidget( m_comboKeyword );
@@ -523,7 +523,7 @@ void EditFilterDialog::selectedKeyword(int index) // SLOT
     const QString key = m_vector[index];
     if( index == 0 )
     {
-        // type text
+        // Simple Search
         m_groupBox2->setEnabled( true );
         m_prefixNOT->setEnabled( false );
         textWanted();
@@ -737,7 +737,7 @@ void EditFilterDialog::slotDefault() // SLOT
     const QString key = m_vector[m_selectedIndex];
     if( m_selectedIndex == 0 )
     {
-        // type text
+        // Simple Search
         debug() << "selected text: '" << m_editKeyword->text() << "'" << endl;
         if (m_actionCheck[0]->isChecked())
         {
