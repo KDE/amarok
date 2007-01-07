@@ -20,6 +20,7 @@
 #include <kmessagebox.h>
 #include <ktoolbarbutton.h>
 
+#include "amarokcore/amarokconfig.h"
 #include "collectiondb.h"
 #include "debug.h"
 #include "editfilterdialog.h"
@@ -114,6 +115,10 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
         {
             if( i == MetaBundle::Mood )
                 continue;
+            if( !AmarokConfig::useRatings() && i == MetaBundle::Rating )
+                continue;
+            if( !AmarokConfig::useScores() && i == MetaBundle::Score )
+                continue;
 
             m_comboKeyword->insertItem( MetaBundle::prettyColumnName( i ) );
             m_vector.push_back( MetaBundle::exactColumnName( i ).lower() );
@@ -151,12 +156,18 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
         m_vector.push_back( "lyrics" );
         m_comboKeyword->insertItem( i18n("Play Count") );
         m_vector.push_back( "playcount" );
-        m_comboKeyword->insertItem( i18n("Rating") );
-        m_vector.push_back( "rating" );
+        if( AmarokConfig::useRatings() )
+        {
+            m_comboKeyword->insertItem( i18n("Rating") );
+            m_vector.push_back( "rating" );
+        }
         m_comboKeyword->insertItem( i18n("Sample Rate") );
         m_vector.push_back( "samplerate" );
-        m_comboKeyword->insertItem( i18n("Score") );
-        m_vector.push_back( "score" );
+        if( AmarokConfig::useScores() )
+        {
+            m_comboKeyword->insertItem( i18n("Score") );
+            m_vector.push_back( "score" );
+        }
         m_comboKeyword->insertItem( i18n("File Size") );
         m_vector.push_back( "size" );
         m_comboKeyword->insertItem( i18n("Title") );
