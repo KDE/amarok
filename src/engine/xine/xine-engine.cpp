@@ -268,7 +268,7 @@ XineEngine::load( const KURL &url, bool isStream )
       }
       else
       {
-        //we don't want an early finish event if there is a track after the current one
+        //we don't want an early finish event if there is no track after the current one
         xine_set_param(m_stream, XINE_PARAM_EARLY_FINISHED_EVENT, 0 );
         debug() << "XINE_PARAM_EARLY_FINISHED_EVENT disabled" << endl;
       }
