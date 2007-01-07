@@ -33,23 +33,23 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
 {
     // Redefine "Default" button
     KGuiItem defaultButton( i18n("&Append Filter"), "add" );
-    setButtonWhatsThis( Default, i18n( "<qt><p>Clicking here you can add the defined condition. The \"OK\" button is intended to "
+    setButtonWhatsThis( Default, i18n( "<qt><p>By clicking here you can add the defined condition. The \"OK\" button will "
                                         "close the dialog and apply the defined filter. With this button you can add more than "
-                                        "one condition, so to create a more complex filtering condition.</p></qt>" ) );
+                                        "one condition to create a more complex filtering condition.</p></qt>" ) );
     setButtonTip(Default, i18n( "Add this filter condition to the list" ) );
     setButtonGuiItem( Default, defaultButton );
 
     // define "User1" button
     KGuiItem user1Button( i18n("&Clear Filter"), "remove" );
-    setButtonWhatsThis( User1, i18n( "<p>Clicking here you will clear the filter. If you intend just "
-                                     "undo last appending just click on \"Remove Last Filter\" button.</p>" ) );
+    setButtonWhatsThis( User1, i18n( "<p>By clicking here you will clear the filter. If you intend to "
+                                     "undo the last appending just click on the \"Remove Last Filter\" button.</p>" ) );
     setButtonTip(User1, i18n( "Clear the filter" ) );
     setButtonGuiItem( User1, user1Button );
 
     // define "User2" button
     KGuiItem user2Button( i18n("&Remove Last Filter"), "undo" );
-    setButtonWhatsThis( User2, i18n( "<p>Clicking here you will remove the last appended filter, "
-                "i.e. undo last the appended filter. You cannot undo more than one action.</p>" ) );
+    setButtonWhatsThis( User2, i18n( "<p>Clicking here will remove the last appended filter. "
+                "You cannot undo more than one action.</p>" ) );
     setButtonTip(User2, i18n( "Remove last appendend filter" ) );
     setButtonGuiItem( User2, user2Button );
 
@@ -184,7 +184,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     keywordLayout->addWidget( m_comboKeyword );
     keywordLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
     m_editKeyword = new KLineEdit( plainPage(), "editKeywordBox" );
-    QWhatsThis::add( m_editKeyword, i18n("<p>Type here the keyword attribute or type text to look for.</p>") );
+    QWhatsThis::add( m_editKeyword, i18n("<p>Type the keyword attribute or the text to look for here.</p>") );
     keywordLayout->addWidget( m_editKeyword );
     m_mainLay->addLayout( keywordLayout );
     m_mainLay->addItem( new QSpacerItem( 10, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
