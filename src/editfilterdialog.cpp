@@ -312,9 +312,15 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     QVBoxLayout* ratioLay2 = new QVBoxLayout( m_groupBox3, 15, 0 );
 
     m_checkAND = new QRadioButton( i18n("AND logic condition", "AND"), m_groupBox3, "checkAND" );
+    QToolTip::add( m_checkAND,
+      i18n("<p>Check this box if you want add another condition and you want that the filter has "
+           "to consider the previous conditions and this new one to be true together</p>"));
     ratioLay2->addWidget( m_checkAND );
 
     m_checkOR = new QRadioButton( i18n("OR logic condition", "OR"), m_groupBox3, "checkOR" );
+    QToolTip::add( m_checkOR,
+      i18n("<p>Check this box if you want add another condition and you want that the filter has "
+           "to consider either the previous conditions or this new one to be true</p>"));
     ratioLay2->addWidget( m_checkOR );
 
     otherOptionsLayout->addItem( new QSpacerItem( 10, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
