@@ -1920,7 +1920,7 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
     KURL::List urls = m_view->nodeBuildDragList( 0 );
     KPopupMenu menu( m_view );
 
-    enum Actions { APPEND, LOAD, QUEUE,
+    enum Actions { CREATE_PLAYLIST, APPEND, LOAD, QUEUE,
         COPY_TO_COLLECTION,
         BURN_ARTIST, BURN_ALBUM, BURN_DATACD, BURN_AUDIOCD,
         RENAME, SUBSCRIBE,
@@ -1932,9 +1932,17 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
     KPopupMenu *playlistsMenu = 0;
     if ( item )
     {
-        menu.insertItem( SmallIconSet( Amarok::icon( "playlist" ) ), i18n( "&Load" ), LOAD );
-        menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
-        menu.insertItem( SmallIconSet( Amarok::icon( "fastforward" ) ), i18n( "&Queue Tracks" ), QUEUE );
+        if( item->type() == MediaItem::PLAYLISTSROOT )
+        {
+            menu.insertItem( SmallIconSet(Amarok::icon( "add_playlist" )),
+                    i18n("Create Playlist..."), CREATE_PLAYLIST );
+        }
+        else
+        {
+            menu.insertItem( SmallIconSet( Amarok::icon( "playlist" ) ), i18n( "&Load" ), LOAD );
+            menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
+            menu.insertItem( SmallIconSet( Amarok::icon( "fastforward" ) ), i18n( "&Queue Tracks" ), QUEUE );
+        }
         menu.insertSeparator();
 
         menu.insertItem( SmallIconSet( Amarok::icon( "collection" ) ), i18n( "&Copy Files to Collection..." ), COPY_TO_COLLECTION );
@@ -2050,6 +2058,8 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
     int id =  menu.exec( point );
     switch( id )
     {
+        case CREATE_PLAYLIST:
+            break;
         case LOAD:
             Playlist::instance()->insertMedia( urls, Playlist::Replace );
             break;
@@ -2114,10 +2124,12 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
     {
         switch( id )
         {
+            case CREATE_PLAYLIST:
             case MAKE_PLAYLIST:
                 {
                     QPtrList<MediaItem> items;
-                    m_view->getSelectedLeaves( 0, &items );
+                    if( id == MAKE_PLAYLIST )
+                        m_view->getSelectedLeaves( 0, &items );
                     QString base(i18n("New Playlist"));
                     QString name = base;
                     int i=1;
@@ -2258,6 +2270,12 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                     }
                 }
                 break;
+        }
+
+        if( m_dbChanged && lockDevice( true ) )
+        {
+            synchronizeDevice();
+            unlockDevice();
         }
     }
 }
