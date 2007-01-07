@@ -225,6 +225,9 @@ namespace Engine
         /** flush the current stream buffer */
         virtual bool flushBuffer() { return false; }
 
+        /** allow the engine to perform necessary work on changes in the playlist **/
+        virtual void playlistChanged() { };
+
     protected:
         Base();
 
