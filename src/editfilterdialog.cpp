@@ -82,7 +82,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
            " (you can specify: mp3, ogg, flac... it will match the file extensions), "
            "<b>genre</b>, <b>comment</b>, <b>composer</b>, <b>directory</b>, <b>lyrics</b>, "
            "<b>title</b> and <b>label</b>.</p>"
-           "<p>The numeric keywords are: <i>bitrate</i>, <i>disc/discnumber</i> "
+           "<p>The numeric keywords are: <b>bitrate</b>, <b>disc/discnumber</b> "
            "<b>length</b> (expressed in seconds), <b>playcount</b>, <b>rating</b> "
            "<b>samplerate</b>, <b>score</b>, <b>size/filesize</b>, (expressed in bytes, "
            "kbytes and megabytes as specified in the unit for the filesize keyword) "
@@ -235,8 +235,8 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     QHBoxLayout *filesizeLayout = new QHBoxLayout( vertLayout );
     QLabel *filesizeLabel = new QLabel( i18n("Unit for file size:"), m_groupBox, "filesizeLabel");
     filesizeLayout->addWidget( filesizeLabel );
-    filesizeLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
-    m_comboUnitSize = new QComboBox( m_groupBox, "comboKiloMega" );
+    filesizeLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Fixed, QSizePolicy::Minimum ) );
+    m_comboUnitSize = new QComboBox( m_groupBox, "comboUnitSize" );
     filesizeLabel->setBuddy( m_comboUnitSize );
     m_comboUnitSize->insertItem( i18n("B (1 Byte)") );
     m_comboUnitSize->insertItem( i18n("KB (1024 Bytes)") );
@@ -264,15 +264,27 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     QVBoxLayout* ratioLay = new QVBoxLayout( m_groupBox2, 15, 0 );
 
     m_checkALL = new QRadioButton( i18n("select all words"), m_groupBox2, "checkall" );
+    QToolTip::add( m_checkALL,
+      i18n("<p>Check this box to look for the titles that contains all the words you typed "
+           "in the related Simple Search edit box</p>"));
     ratioLay->addWidget( m_checkALL );
 
     m_checkAtLeastOne = new QRadioButton( i18n("select at least one word"), m_groupBox2, "checkor");
+    QToolTip::add( m_checkAtLeastOne,
+      i18n("<p>Check this box to look for the titles that contains at least one of the words "
+           "you typed in the related Simple Search edit box</p>"));
     ratioLay->addWidget( m_checkAtLeastOne );
 
     m_checkExactly = new QRadioButton( i18n("select exactly the words"), m_groupBox2, "checkexactly");
+    QToolTip::add( m_checkExactly,
+      i18n("<p>Check this box to look for all the titles that contains exactly the words you typed "
+           "in the related Simple Search edit box</p>"));
     ratioLay->addWidget( m_checkExactly );
 
     m_checkExclude = new QRadioButton( i18n("do not select the words"), m_groupBox2, "checkexclude");
+    QToolTip::add( m_checkExclude,
+      i18n("<p>Check this box to look for all the titles that doesn't contain the words you typed "
+           "in the related Simple Search edit box</p>"));
     ratioLay->addWidget( m_checkExclude );
 
     m_actionCheck << m_checkALL;
@@ -308,6 +320,12 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     otherOptionsLayout->addItem( new QSpacerItem( 10, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
 
     m_prefixNOT = new QCheckBox( i18n("Add NOT condition prefix"), plainPage(), "prefixNOT" );
+    QToolTip::add( m_prefixNOT,
+      i18n("Check this box to negate the defined filter condition"));
+    QWhatsThis::add( m_prefixNOT,
+      i18n("<p>If this option is checked the defined filter condition will be negated."
+           "This means that, for example, you can define a filter that looks for all "
+           "titles that are not of a specific album, artist, and so on.</p>"));
     verticalCondLay->addWidget( m_prefixNOT );
     m_prefixNOT->setEnabled( false );
 
