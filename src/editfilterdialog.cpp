@@ -63,7 +63,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     // text explanation of this dialog
     QLabel *label1 = new QLabel( plainPage(), "label1" );
     label1->setText( i18n("<p>Edit the filter for finding tracks with specific attributes"
-                             ", e.g. you can look for a track that has a length of 3 minutes.</p>") );
+                             ", e.g. you can look for a track that has a length of three minutes.</p>") );
     m_mainLay->addWidget( label1 );
     m_mainLay->addItem( new QSpacerItem( 10, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
 
@@ -236,6 +236,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     connect(m_spinMax1, SIGNAL(valueChanged(int)), this, SLOT(maxSpinChanged(int)));
 
     QHBoxLayout *filesizeLayout = new QHBoxLayout( vertLayout );
+    filesizeLayout->setAlignment( AlignLeft );
     QLabel *filesizeLabel = new QLabel( i18n("Unit for file size:"), m_groupBox, "filesizeLabel");
     filesizeLayout->addWidget( filesizeLabel );
     filesizeLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Fixed, QSizePolicy::Minimum ) );
@@ -793,7 +794,7 @@ void EditFilterDialog::slotDefault() // SLOT
     }
     else
     {
-        m_filterText += m_vector[m_selectedIndex] + ":" +  m_editKeyword->text();
+        m_filterText += m_vector[m_selectedIndex] + ":\"" +  m_editKeyword->text() + "\"";
     }
     emit filterChanged( m_filterText );
 
