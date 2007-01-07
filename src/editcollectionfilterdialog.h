@@ -1,8 +1,8 @@
 // (c) 2006 Giovanni Venturi <giovanni@kde-it.org>
 // See COPYING file for licensing information.
 
-#ifndef AMAROK_EDITCOLLECTIONFILTERDIALOG_H
-#define AMAROK_EDITCOLLECTIONFILTERDIALOG_H
+#ifndef AMAROK_EDITFILTERDIALOG_H
+#define AMAROK_EDITFILTERDIALOG_H
 
 #include <qvaluelist.h>
 #include <qvaluevector.h>
@@ -20,12 +20,12 @@ class QSpinBox;
 class QStringList;
 class KComboBox;
 
-class EditCollectionFilterDialog : public KDialogBase
+class EditFilterDialog : public KDialogBase
 {
     Q_OBJECT
     public:
-        EditCollectionFilterDialog( QWidget* parent, bool metaBundleKeywords, const QString &text = "" );
-        ~EditCollectionFilterDialog();
+        EditFilterDialog( QWidget* parent, bool metaBundleKeywords, const QString &text = "" );
+        ~EditFilterDialog();
 
         QString filter() const;
 
@@ -105,4 +105,4 @@ class EditCollectionFilterDialog : public KDialogBase
         virtual void slotOk();
 };
 
-#endif /* AMAROK_EDITCOLLECTIONFILTERDIALOG_H */
+#endif /* AMAROK_EDITFILTERDIALOG_H */

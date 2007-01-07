@@ -25,7 +25,7 @@
 #include "editcollectionfilterdialog.h"
 #include "metabundle.h"
 
-EditCollectionFilterDialog::EditCollectionFilterDialog( QWidget* parent, bool metaBundleKeywords, const QString &text )
+EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, const QString &text )
     : KDialogBase( Plain, i18n("Edit Filter"), User1|User2|Default|Ok|Cancel,
       Cancel, parent, "editfilter", /*modal*/true, /*separator*/false ),
       m_filterText(text)
@@ -40,16 +40,16 @@ EditCollectionFilterDialog::EditCollectionFilterDialog( QWidget* parent, bool me
 
     // define "User1" button
     KGuiItem user1Button( i18n("&Clear Filter"), "remove" );
-    setButtonWhatsThis( User1, i18n( "<p>Clicking here you will clear the collection filter. If you intend just "
-                                     "undo last appending just click on \"Remove last filter\" button.</p>" ) );
-    setButtonTip(User1, i18n( "Clear the collection filter" ) );
+    setButtonWhatsThis( User1, i18n( "<p>Clicking here you will clear the filter. If you intend just "
+                                     "undo last appending just click on \"Remove Last Filter\" button.</p>" ) );
+    setButtonTip(User1, i18n( "Clear the filter" ) );
     setButtonGuiItem( User1, user1Button );
 
     // define "User2" button
     KGuiItem user2Button( i18n("&Remove Last Filter"), "undo" );
-    setButtonWhatsThis( User2, i18n( "<p>Clicking here you will remove the last appended collection filter, so to undo last "
-                                     "appending filter. You cannot undo more than one action.</p>" ) );
-    setButtonTip(User2, i18n( "Remove last appendend collection filter" ) );
+    setButtonWhatsThis( User2, i18n( "<p>Clicking here you will remove the last appended filter, "
+                "i.e. undo last the appended filter. You cannot undo more than one action.</p>" ) );
+    setButtonTip(User2, i18n( "Remove last appendend filter" ) );
     setButtonGuiItem( User2, user2Button );
 
     m_mainLay = new QVBoxLayout( plainPage() );
@@ -60,7 +60,7 @@ EditCollectionFilterDialog::EditCollectionFilterDialog( QWidget* parent, bool me
 
     // text explanation of this dialog
     QLabel *label1 = new QLabel( plainPage(), "label1" );
-    label1->setText( i18n("<p>Edit the collection filter for finding tracks with specific attributes"
+    label1->setText( i18n("<p>Edit the filter for finding tracks with specific attributes"
                              ", e.g. you can look for a track that has a length of 3 minutes.</p>") );
     m_mainLay->addWidget( label1 );
     m_mainLay->addItem( new QSpacerItem( 10, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
@@ -173,7 +173,7 @@ EditCollectionFilterDialog::EditCollectionFilterDialog( QWidget* parent, bool me
     keywordLayout->addWidget( m_comboKeyword );
     keywordLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
     m_editKeyword = new KLineEdit( plainPage(), "editKeywordBox" );
-    QWhatsThis::add( m_editKeyword, i18n("<p>Type here the keyword attribute or type text to look for into the collection.</p>") );
+    QWhatsThis::add( m_editKeyword, i18n("<p>Type here the keyword attribute or type text to look for.</p>") );
     keywordLayout->addWidget( m_editKeyword );
     m_mainLay->addLayout( keywordLayout );
     m_mainLay->addItem( new QSpacerItem( 10, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
@@ -336,7 +336,7 @@ EditCollectionFilterDialog::EditCollectionFilterDialog( QWidget* parent, bool me
     //resize( 500, 470 );
 }
 
-EditCollectionFilterDialog::~EditCollectionFilterDialog()
+EditFilterDialog::~EditFilterDialog()
 {
   delete m_checkOR;
   delete m_checkAND;
@@ -367,12 +367,12 @@ EditCollectionFilterDialog::~EditCollectionFilterDialog()
   delete m_mainLay;
 }
 
-QString EditCollectionFilterDialog::filter() const
+QString EditFilterDialog::filter() const
 {
   return m_filterRule->text();
 }
 
-void EditCollectionFilterDialog::exclusiveSelectOf( int which )
+void EditFilterDialog::exclusiveSelectOf( int which )
 {
   int size = static_cast<int>( m_actionCheck.count() );
 
@@ -383,7 +383,7 @@ void EditCollectionFilterDialog::exclusiveSelectOf( int which )
       m_actionCheck[i]->setChecked( true );
 }
 
-QString EditCollectionFilterDialog::keywordConditionString(const QString& keyword) const
+QString EditFilterDialog::keywordConditionString(const QString& keyword) const
 {
   // this member is called when there is a keyword that needs numeric attributes
   QString result, unit;
@@ -460,7 +460,7 @@ QString EditCollectionFilterDialog::keywordConditionString(const QString& keywor
   return result;
 }
 
-void EditCollectionFilterDialog::setMinMaxValueSpins()
+void EditFilterDialog::setMinMaxValueSpins()
 {
   // setting some spin box options and limit values
   m_spinValue1->setValue( 0 );
@@ -500,7 +500,7 @@ void EditCollectionFilterDialog::setMinMaxValueSpins()
 }
 
 // SLOTS
-void EditCollectionFilterDialog::selectedKeyword(int index) // SLOT
+void EditFilterDialog::selectedKeyword(int index) // SLOT
 {
     debug() << "you selected index " << index << ": '" << m_comboKeyword->text(index) << "'" << endl;
     m_groupBox2->setEnabled( false );
@@ -609,19 +609,19 @@ void EditCollectionFilterDialog::selectedKeyword(int index) // SLOT
     m_selectedIndex = index;
 }
 
-void EditCollectionFilterDialog::minSpinChanged(int value) // SLOT
+void EditFilterDialog::minSpinChanged(int value) // SLOT
 {
   if (value >= m_spinMax1->value())
     m_spinMax1->setValue(value + 1);
 }
 
-void EditCollectionFilterDialog::maxSpinChanged(int value) // SLOT
+void EditFilterDialog::maxSpinChanged(int value) // SLOT
 {
   if (m_spinMin1->value() >= value)
     m_spinMin1->setValue(value - 1);
 }
 
-void EditCollectionFilterDialog::textWanted() // SLOT
+void EditFilterDialog::textWanted() // SLOT
 {
     m_editKeyword->setEnabled( true );
     m_groupBox->setEnabled( false );
@@ -629,7 +629,7 @@ void EditCollectionFilterDialog::textWanted() // SLOT
     m_editKeyword->completionObject()->clear();
 }
 
-void EditCollectionFilterDialog::textWanted( const QStringList &completion ) // SLOT
+void EditFilterDialog::textWanted( const QStringList &completion ) // SLOT
 {
     m_editKeyword->setEnabled( true );
     m_groupBox->setEnabled( false );
@@ -640,57 +640,57 @@ void EditCollectionFilterDialog::textWanted( const QStringList &completion ) // 
     m_editKeyword->setCompletionMode( KGlobalSettings::CompletionPopup );
 }
 
-void EditCollectionFilterDialog::valueWanted() // SLOT
+void EditFilterDialog::valueWanted() // SLOT
 {
   m_editKeyword->setEnabled( false );
   m_groupBox->setEnabled( true );
 }
 
-void EditCollectionFilterDialog::chooseOneValue() // SLOT
+void EditFilterDialog::chooseOneValue() // SLOT
 {
   m_keywordValueRadio->setChecked( true );
   m_minMaxRadio->setChecked( false );
 }
 
-void EditCollectionFilterDialog::chooseMinMaxValue() // SLOT
+void EditFilterDialog::chooseMinMaxValue() // SLOT
 {
   m_keywordValueRadio->setChecked( false );
   m_minMaxRadio->setChecked( true );
 }
 
-void EditCollectionFilterDialog::slotCheckAll() // SLOT
+void EditFilterDialog::slotCheckAll() // SLOT
 {
   exclusiveSelectOf( 0 );
 }
 
-void EditCollectionFilterDialog::slotCheckAtLeastOne() // SLOT
+void EditFilterDialog::slotCheckAtLeastOne() // SLOT
 {
   exclusiveSelectOf( 1 );
 }
 
-void EditCollectionFilterDialog::slotCheckExactly() // SLOT
+void EditFilterDialog::slotCheckExactly() // SLOT
 {
   exclusiveSelectOf( 2 );
 }
 
-void EditCollectionFilterDialog::slotCheckExclude() // SLOT
+void EditFilterDialog::slotCheckExclude() // SLOT
 {
   exclusiveSelectOf( 3 );
 }
 
-void EditCollectionFilterDialog::slotCheckAND() // SLOT
+void EditFilterDialog::slotCheckAND() // SLOT
 {
   m_checkAND->setChecked( true );
   m_checkOR->setChecked( false );
 }
 
-void EditCollectionFilterDialog::slotCheckOR() // SLOT
+void EditFilterDialog::slotCheckOR() // SLOT
 {
   m_checkAND->setChecked( false );
   m_checkOR->setChecked( true );
 }
 
-void EditCollectionFilterDialog::assignPrefixNOT() // SLOT
+void EditFilterDialog::assignPrefixNOT() // SLOT
 {
   if (m_prefixNOT->isChecked())
     m_strPrefixNOT = "-";
@@ -698,7 +698,7 @@ void EditCollectionFilterDialog::assignPrefixNOT() // SLOT
     m_strPrefixNOT = "";
 }
 
-void EditCollectionFilterDialog::slotDefault() // SLOT
+void EditFilterDialog::slotDefault() // SLOT
 {
   // now append the filter rule if not empty
   if (m_editKeyword->text().isEmpty() && (m_selectedIndex == 0))
@@ -773,7 +773,7 @@ void EditCollectionFilterDialog::slotDefault() // SLOT
   emit filterChanged( m_filterText );
 }
 
-void EditCollectionFilterDialog::slotUser1() // SLOT
+void EditFilterDialog::slotUser1() // SLOT
 {
   m_previousFilterText = m_filterText;
   m_filterText = "";
@@ -785,7 +785,7 @@ void EditCollectionFilterDialog::slotUser1() // SLOT
   m_groupBox3->setEnabled( false );
 }
 
-void EditCollectionFilterDialog::slotUser2() // SLOT
+void EditFilterDialog::slotUser2() // SLOT
 {
   m_filterText = m_previousFilterText;
   if (m_filterText.isEmpty())
@@ -798,7 +798,7 @@ void EditCollectionFilterDialog::slotUser2() // SLOT
   emit filterChanged( m_filterText );
 }
 
-void EditCollectionFilterDialog::slotOk() // SLOT
+void EditFilterDialog::slotOk() // SLOT
 {
   // avoid confusing people that think to click OK to set a filter
   if (m_appended)
