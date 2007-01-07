@@ -646,76 +646,80 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
     else if ( CollectionDB::instance()->isEmpty() || !CollectionDB::instance()->isValid() )
         showCurrentTrack();
 
-
-    if (trackChanged && bundle.url().isLocalFile())
+    if (trackChanged)
     {
+        m_cuefile->clear();
 
-        /** The cue file that is provided with the media might have different name than the
-           * media file itself, hence simply cutting the media extension and adding ".cue"
-           * is not always enough to find the matching cue file. In such cases we have
-           * to search for all the cue files in the directory and have a look inside them for
-           * the matching FILE="" stanza. However the FILE="" stanza does not always
-           * point at the coresponding media file (e.g. it is quite often set to the misleading
-           * FILE="audio.wav" WAV). Therfore we also have to check blindly if there is a cue
-           * file having the same name as the media file played, as described above.
-           */
-
-        // look for the cue file that matches the media file played first
-        QString path    = bundle.url().path();
-        QString cueFile = path.left( path.findRev('.') ) + ".cue";
-
-        m_cuefile->setCueFileName( cueFile );
-
-        if( m_cuefile->load( bundle.length() ) )
-            debug() << "[CUEFILE]: " << cueFile << " - Shoot blindly, found and loaded. " << endl;
-
-        // if unlucky, let's have a look inside cue files, if any
-        else
+        if (bundle.url().isLocalFile())
         {
-            debug() << "[CUEFILE]: " << cueFile << " - Shoot blindly and missed, searching for other cue files." << endl;
 
-            bool foundCueFile = false;
-            QDir dir ( bundle.directory() );    
-            dir.setFilter( QDir::Files ) ;
-            dir.setNameFilter( "*.cue *.CUE" ) ;
+            /** The cue file that is provided with the media might have different name than the
+             * media file itself, hence simply cutting the media extension and adding ".cue"
+             * is not always enough to find the matching cue file. In such cases we have
+             * to search for all the cue files in the directory and have a look inside them for
+             * the matching FILE="" stanza. However the FILE="" stanza does not always
+             * point at the coresponding media file (e.g. it is quite often set to the misleading
+             * FILE="audio.wav" WAV). Therfore we also have to check blindly if there is a cue
+             * file having the same name as the media file played, as described above.
+             */
 
-            QStringList cueFilesList = dir.entryList();
+            // look for the cue file that matches the media file played first
+            QString path    = bundle.url().path();
+            QString cueFile = path.left( path.findRev('.') ) + ".cue";
 
-            if ( !cueFilesList.empty() )
-                for ( QStringList::Iterator it = cueFilesList.begin(); it != cueFilesList.end() && !foundCueFile; ++it ) 
-                {
-                    QFile file ( dir.filePath(*it) );
-                    if( file.open( IO_ReadOnly ) )
+            m_cuefile->setCueFileName( cueFile );
+
+            if( m_cuefile->load( bundle.length() ) )
+                debug() << "[CUEFILE]: " << cueFile << " - Shoot blindly, found and loaded. " << endl;
+
+            // if unlucky, let's have a look inside cue files, if any
+            else
+            {
+                debug() << "[CUEFILE]: " << cueFile << " - Shoot blindly and missed, searching for other cue files." << endl;
+
+                bool foundCueFile = false;
+                QDir dir ( bundle.directory() );    
+                dir.setFilter( QDir::Files ) ;
+                dir.setNameFilter( "*.cue *.CUE" ) ;
+
+                QStringList cueFilesList = dir.entryList();
+
+                if ( !cueFilesList.empty() )
+                    for ( QStringList::Iterator it = cueFilesList.begin(); it != cueFilesList.end() && !foundCueFile; ++it ) 
                     {
-                        debug() << "[CUEFILE]: " << *it << " - Opened, looking for the matching FILE stanza." << endl;
-                        QTextStream stream( &file );
-                        QString line;
-
-                        while ( !stream.atEnd() && !foundCueFile)
+                        QFile file ( dir.filePath(*it) );
+                        if( file.open( IO_ReadOnly ) )
                         {
-                            line = stream.readLine().simplifyWhiteSpace();
+                            debug() << "[CUEFILE]: " << *it << " - Opened, looking for the matching FILE stanza." << endl;
+                            QTextStream stream( &file );
+                            QString line;
 
-                            if( line.startsWith( "file", false ) )
+                            while ( !stream.atEnd() && !foundCueFile)
                             {
-                                line = line.mid( 5 ).remove( '"' );
+                                line = stream.readLine().simplifyWhiteSpace();
 
-                                if ( line.contains( bundle.filename(), false ) )
+                                if( line.startsWith( "file", false ) )
                                 {
-                                    cueFile = dir.filePath(*it);
-                                    foundCueFile = true;
-                                    m_cuefile->setCueFileName( cueFile );
-                                    if( m_cuefile->load( bundle.length() ) )
-                                        debug() << "[CUEFILE]: " << cueFile << " - Looked inside cue files, found and loaded proper one" << endl;
+                                    line = line.mid( 5 ).remove( '"' );
+
+                                    if ( line.contains( bundle.filename(), false ) )
+                                    {
+                                        cueFile = dir.filePath(*it);
+                                        foundCueFile = true;
+                                        m_cuefile->setCueFileName( cueFile );
+                                        if( m_cuefile->load( bundle.length() ) )
+                                            debug() << "[CUEFILE]: " << cueFile << " - Looked inside cue files, found and loaded proper one" << endl;
+                                    }
                                 }
                             }
+
+                            file.close();
                         }
-
-                        file.close();
                     }
-                }
 
-            if ( !foundCueFile )
-                debug() << "[CUEFILE]: - Didn't find any matching cue file." << endl;
+                if ( !foundCueFile )
+                    debug() << "[CUEFILE]: - Didn't find any matching cue file." << endl;
+            }
         }
     }
 }
