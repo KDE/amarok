@@ -1222,7 +1222,7 @@ Moodbar::readFile( void )
             val        = 250;
           }
 
-        debug() << "ReadMood: Appling filter t=" << threshold
+        debug() << "ReadMood: Applying filter t=" << threshold
                 << ", rS=" << rangeStart << ", rD=" << rangeDelta
                 << ", s=" << sat << "%, v=" << val << "%" << endl;
 
