@@ -338,165 +338,165 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
 
 EditFilterDialog::~EditFilterDialog()
 {
-  delete m_checkOR;
-  delete m_checkAND;
-  delete m_groupBox3;
-  delete m_checkExclude;
-  delete m_checkExactly;
-  delete m_checkAtLeastOne;
-  delete m_checkALL;
+    delete m_checkOR;
+    delete m_checkAND;
+    delete m_groupBox3;
+    delete m_checkExclude;
+    delete m_checkExactly;
+    delete m_checkAtLeastOne;
+    delete m_checkALL;
 
-  delete m_groupBox2;
-  delete m_spinMax2;
-  delete m_spinMax1;
-  delete m_spinMin2;
-  delete m_spinMin1;
+    delete m_groupBox2;
+    delete m_spinMax2;
+    delete m_spinMax1;
+    delete m_spinMin2;
+    delete m_spinMin1;
 
-  delete m_minMaxRadio;
-  delete m_comboUnitSize;
-  delete m_spinValue2;
-  delete m_spinValue1;
-  delete m_comboCondition;
-  delete m_keywordValueRadio;
+    delete m_minMaxRadio;
+    delete m_comboUnitSize;
+    delete m_spinValue2;
+    delete m_spinValue1;
+    delete m_comboCondition;
+    delete m_keywordValueRadio;
 
-  delete m_groupBox;
-  delete m_editKeyword;
-  delete m_comboKeyword;
-  delete m_prefixNOT;
-  delete m_filterRule;
-  delete m_mainLay;
+    delete m_groupBox;
+    delete m_editKeyword;
+    delete m_comboKeyword;
+    delete m_prefixNOT;
+    delete m_filterRule;
+    delete m_mainLay;
 }
 
 QString EditFilterDialog::filter() const
 {
-  return m_filterRule->text();
+    return m_filterRule->text();
 }
 
 void EditFilterDialog::exclusiveSelectOf( int which )
 {
-  int size = static_cast<int>( m_actionCheck.count() );
+    int size = static_cast<int>( m_actionCheck.count() );
 
-  for ( int i = 0; i < size; i++ )
-    if ( i != which )
-      m_actionCheck[i]->setChecked( false );
-    else
-      m_actionCheck[i]->setChecked( true );
+    for ( int i = 0; i < size; i++ )
+        if ( i != which )
+            m_actionCheck[i]->setChecked( false );
+        else
+            m_actionCheck[i]->setChecked( true );
 }
 
 QString EditFilterDialog::keywordConditionString(const QString& keyword) const
 {
-  // this member is called when there is a keyword that needs numeric attributes
-  QString result, unit;
+    // this member is called when there is a keyword that needs numeric attributes
+    QString result, unit;
 
-  if (m_selectedIndex == 18)
-    switch (m_comboUnitSize->currentItem())
-    {
-      case 1:
-        // kbytes
-        unit = "k";
-        break;
-      case 2:
-        // mbytes
-        unit = "m";
-        break;
-    }
+    if (m_selectedIndex == 18)
+        switch (m_comboUnitSize->currentItem())
+        {
+            case 1:
+                // kbytes
+                unit = "k";
+                break;
+            case 2:
+                // mbytes
+                unit = "m";
+                break;
+        }
 
-  if (m_keywordValueRadio->isChecked())
-    // less than..., greater than..., equal to...
-    switch(m_comboCondition->currentItem())
-    {
-      case 0:
-        // less than...
-        result = m_strPrefixNOT + keyword + ":<";
+    if (m_keywordValueRadio->isChecked())
+        // less than..., greater than..., equal to...
+        switch(m_comboCondition->currentItem())
+        {
+            case 0:
+                // less than...
+                result = m_strPrefixNOT + keyword + ":<";
+                if (keyword == "length")
+                    result += QString::number( m_spinValue1->value() * 60 + m_spinValue2->value() ) + unit;
+                else
+                    result += m_spinValue1->text() + unit;
+                break;
+            case 1:
+                // greater than...
+                result = m_strPrefixNOT + keyword + ":>";
+                if (keyword == "length")
+                    result += QString::number( m_spinValue1->value() * 60 + m_spinValue2->value() ) + unit;
+                else
+                    result += m_spinValue1->text() + unit;
+                break;
+            case 2:
+                // equal to...
+                if (keyword == "length")
+                    result = m_strPrefixNOT + "length:" + QString::number( m_spinValue1->value() * 60 + m_spinValue2->value() ) + unit;
+                else
+                {
+                    if (m_strPrefixNOT.isEmpty())
+                        result = keyword + ":>" + QString::number(m_spinValue1->value() - 1) + unit +
+                            " " + keyword + ":<" + QString::number(m_spinValue1->value() + 1) + unit;
+                    else
+                        result = keyword + ":<" + QString::number(m_spinValue1->value()) + unit +
+                            " OR " + keyword + ":>" + QString::number(m_spinValue1->value()) + unit;
+                }
+                break;
+        }
+    else
+        // between...
         if (keyword == "length")
-          result += QString::number( m_spinValue1->value() * 60 + m_spinValue2->value() ) + unit;
-        else
-          result += m_spinValue1->text() + unit;
-        break;
-      case 1:
-        // greater than...
-        result = m_strPrefixNOT + keyword + ":>";
-        if (keyword == "length")
-          result += QString::number( m_spinValue1->value() * 60 + m_spinValue2->value() ) + unit;
-        else
-          result += m_spinValue1->text() + unit;
-        break;
-      case 2:
-        // equal to...
-        if (keyword == "length")
-          result = m_strPrefixNOT + "length:" + QString::number( m_spinValue1->value() * 60 + m_spinValue2->value() ) + unit;
+        {
+            if (m_strPrefixNOT.isEmpty())
+                result = "length:>" + QString::number( m_spinMin1->value() * 60 + m_spinMin2->value() - 1) + unit
+                    + " length:<" + QString::number( m_spinMax1->value() * 60 + m_spinMax2->value() + 1) + unit;
+            else
+                result = "length:<" + QString::number( m_spinMin1->value() * 60 + m_spinMin2->value()) + unit
+                    + " OR length:>" + QString::number( m_spinMax1->value() * 60 + m_spinMax2->value()) + unit;
+        }
         else
         {
-          if (m_strPrefixNOT.isEmpty())
-            result = keyword + ":>" + QString::number(m_spinValue1->value() - 1) + unit +
-              " " + keyword + ":<" + QString::number(m_spinValue1->value() + 1) + unit;
-          else
-            result = keyword + ":<" + QString::number(m_spinValue1->value()) + unit +
-              " OR " + keyword + ":>" + QString::number(m_spinValue1->value()) + unit;
+            if (m_strPrefixNOT.isEmpty())
+                result = keyword + ":>" + QString::number(m_spinMin1->value() - 1) + unit +
+                    " " + keyword + ":<" + QString::number(m_spinMax1->value() + 1) + unit;
+            else
+                result = keyword + ":<" + QString::number(m_spinMin1->value() - 1) + unit +
+                    " OR " + keyword + ":>" + QString::number(m_spinMax1->value() + 1) + unit;
         }
-        break;
-    }
-  else
-    // between...
-    if (keyword == "length")
-    {
-      if (m_strPrefixNOT.isEmpty())
-        result = "length:>" + QString::number( m_spinMin1->value() * 60 + m_spinMin2->value() - 1) + unit
-          + " length:<" + QString::number( m_spinMax1->value() * 60 + m_spinMax2->value() + 1) + unit;
-      else
-        result = "length:<" + QString::number( m_spinMin1->value() * 60 + m_spinMin2->value()) + unit
-          + " OR length:>" + QString::number( m_spinMax1->value() * 60 + m_spinMax2->value()) + unit;
-    }
-    else
-    {
-      if (m_strPrefixNOT.isEmpty())
-        result = keyword + ":>" + QString::number(m_spinMin1->value() - 1) + unit +
-          " " + keyword + ":<" + QString::number(m_spinMax1->value() + 1) + unit;
-      else
-        result = keyword + ":<" + QString::number(m_spinMin1->value() - 1) + unit +
-          " OR " + keyword + ":>" + QString::number(m_spinMax1->value() + 1) + unit;
-    }
 
-  return result;
+    return result;
 }
 
 void EditFilterDialog::setMinMaxValueSpins()
 {
-  // setting some spin box options and limit values
-  m_spinValue1->setValue( 0 );
-  m_spinValue1->setMinValue( 0 );
-  m_spinValue1->setMaxValue( 100000000 );
+    // setting some spin box options and limit values
+    m_spinValue1->setValue( 0 );
+    m_spinValue1->setMinValue( 0 );
+    m_spinValue1->setMaxValue( 100000000 );
 
-  m_spinValue2->setValue( 0 );
-  m_spinValue2->setMinValue( 0 );
-  m_spinValue2->setMaxValue( 59 );
-  m_spinValue2->hide();
+    m_spinValue2->setValue( 0 );
+    m_spinValue2->setMinValue( 0 );
+    m_spinValue2->setMaxValue( 59 );
+    m_spinValue2->hide();
 
-  m_spinMin1->setValue( 0 );
-  m_spinMin1->setMinValue( 0 );
-  m_spinMin1->setMaxValue( 100000000 );
+    m_spinMin1->setValue( 0 );
+    m_spinMin1->setMinValue( 0 );
+    m_spinMin1->setMaxValue( 100000000 );
 
-  m_spinMin2->setMinValue( 0 );
-  m_spinMin2->setMaxValue( 59 );
-  m_spinMin2->hide();
+    m_spinMin2->setMinValue( 0 );
+    m_spinMin2->setMaxValue( 59 );
+    m_spinMin2->hide();
 
-  m_spinMax1->setValue( 1 );
-  m_spinMax1->setMinValue( 0 );
-  m_spinMax1->setMaxValue( 100000000 );
+    m_spinMax1->setValue( 1 );
+    m_spinMax1->setMinValue( 0 );
+    m_spinMax1->setMaxValue( 100000000 );
 
-  m_spinMax2->setMinValue( 0 );
-  m_spinMax2->setMaxValue( 59 );
-  m_spinMax2->hide();
+    m_spinMax2->setMinValue( 0 );
+    m_spinMax2->setMaxValue( 59 );
+    m_spinMax2->hide();
 
-  // fix tooltip
-  QToolTip::add( m_spinValue1, "" );
-  QToolTip::add( m_spinValue2, i18n("seconds") );
+    // fix tooltip
+    QToolTip::add( m_spinValue1, "" );
+    QToolTip::add( m_spinValue2, i18n("seconds") );
 
-  QToolTip::add( m_spinMin1, "" );
-  QToolTip::add( m_spinMin2, i18n("seconds") );
+    QToolTip::add( m_spinMin1, "" );
+    QToolTip::add( m_spinMin2, i18n("seconds") );
 
-  QToolTip::add( m_spinMax1, "" );
-  QToolTip::add( m_spinMax2, i18n("seconds") );
+    QToolTip::add( m_spinMax1, "" );
+    QToolTip::add( m_spinMax2, i18n("seconds") );
 }
 
 // SLOTS
@@ -576,9 +576,9 @@ void EditFilterDialog::selectedKeyword(int index) // SLOT
         valueWanted();
     }
     else if( key=="playcount"
-          || key=="rating"
-          || key=="score" )
-          
+            || key=="rating"
+            || key=="score" )
+
     {
         valueWanted();
     }
@@ -642,167 +642,167 @@ void EditFilterDialog::textWanted( const QStringList &completion ) // SLOT
 
 void EditFilterDialog::valueWanted() // SLOT
 {
-  m_editKeyword->setEnabled( false );
-  m_groupBox->setEnabled( true );
+    m_editKeyword->setEnabled( false );
+    m_groupBox->setEnabled( true );
 }
 
 void EditFilterDialog::chooseOneValue() // SLOT
 {
-  m_keywordValueRadio->setChecked( true );
-  m_minMaxRadio->setChecked( false );
+    m_keywordValueRadio->setChecked( true );
+    m_minMaxRadio->setChecked( false );
 }
 
 void EditFilterDialog::chooseMinMaxValue() // SLOT
 {
-  m_keywordValueRadio->setChecked( false );
-  m_minMaxRadio->setChecked( true );
+    m_keywordValueRadio->setChecked( false );
+    m_minMaxRadio->setChecked( true );
 }
 
 void EditFilterDialog::slotCheckAll() // SLOT
 {
-  exclusiveSelectOf( 0 );
+    exclusiveSelectOf( 0 );
 }
 
 void EditFilterDialog::slotCheckAtLeastOne() // SLOT
 {
-  exclusiveSelectOf( 1 );
+    exclusiveSelectOf( 1 );
 }
 
 void EditFilterDialog::slotCheckExactly() // SLOT
 {
-  exclusiveSelectOf( 2 );
+    exclusiveSelectOf( 2 );
 }
 
 void EditFilterDialog::slotCheckExclude() // SLOT
 {
-  exclusiveSelectOf( 3 );
+    exclusiveSelectOf( 3 );
 }
 
 void EditFilterDialog::slotCheckAND() // SLOT
 {
-  m_checkAND->setChecked( true );
-  m_checkOR->setChecked( false );
+    m_checkAND->setChecked( true );
+    m_checkOR->setChecked( false );
 }
 
 void EditFilterDialog::slotCheckOR() // SLOT
 {
-  m_checkAND->setChecked( false );
-  m_checkOR->setChecked( true );
+    m_checkAND->setChecked( false );
+    m_checkOR->setChecked( true );
 }
 
 void EditFilterDialog::assignPrefixNOT() // SLOT
 {
-  if (m_prefixNOT->isChecked())
-    m_strPrefixNOT = "-";
-  else
-    m_strPrefixNOT = "";
+    if (m_prefixNOT->isChecked())
+        m_strPrefixNOT = "-";
+    else
+        m_strPrefixNOT = "";
 }
 
 void EditFilterDialog::slotDefault() // SLOT
 {
-  // now append the filter rule if not empty
-  if (m_editKeyword->text().isEmpty() && (m_selectedIndex == 0))
-  {
-    KMessageBox::sorry( 0, i18n("<p>Sorry but the filter rule cannot be set. The text field is empty. "
-      "Please type something into it and retry.</p>"), i18n("Empty Text Field"));
-    m_editKeyword->setFocus();
-    return;
-  }
-  if (!m_appended)
-  {
-    // it's the first rule
-    m_appended = true;
-    m_groupBox3->setEnabled( true );
-  }
+    // now append the filter rule if not empty
+    if (m_editKeyword->text().isEmpty() && (m_selectedIndex == 0))
+    {
+        KMessageBox::sorry( 0, i18n("<p>Sorry but the filter rule cannot be set. The text field is empty. "
+                    "Please type something into it and retry.</p>"), i18n("Empty Text Field"));
+        m_editKeyword->setFocus();
+        return;
+    }
+    if (!m_appended)
+    {
+        // it's the first rule
+        m_appended = true;
+        m_groupBox3->setEnabled( true );
+    }
 
-  m_previousFilterText = m_filterText;
-  if (!m_filterText.isEmpty())
-  {
-    m_filterText += " ";
-    if (m_checkOR->isChecked())
-      m_filterText += "OR ";
-  }
-  QStringList list = QStringList::split( " ", m_editKeyword->text() );
-  const QString key = m_vector[m_selectedIndex];
-  if( m_selectedIndex == 0 )
-  {
-      // type text
-      debug() << "selected text: '" << m_editKeyword->text() << "'" << endl;
-      if (m_actionCheck[0]->isChecked())
-      {
-        // all words
-        m_filterText += m_editKeyword->text();
-      }
-      else if (m_actionCheck[1]->isChecked())
-      {
-        // at least one word
-        m_filterText += *(list.begin());
-        for ( QStringList::Iterator it = ++list.begin(); it != list.end(); ++it )
-          m_filterText += " OR " + *it;
-      }
-      else if (m_actionCheck[2]->isChecked())
-      {
-        // exactly the words
-        m_filterText += "\"" + m_editKeyword->text() + "\"";
-      }
-      else if (m_actionCheck[3]->isChecked())
-      {
-        // exclude words
-        for ( QStringList::Iterator it = list.begin(); it != list.end(); ++it )
-          m_filterText += " -" + *it;
-      }
-  }
-  else if( key=="bitrate"
-          || key=="disc" || key=="discnumber"
-          || key=="length"
-          || key=="playcount"
-          || key=="rating"
-          || key=="samplerate"
-          || key=="score"
-          || key=="filesize" || key=="size"
-          || key=="track"
-          || key=="year" )
-  {
-      m_filterText += keywordConditionString( m_vector[m_selectedIndex] );
-  }
-  else
-  {
-      m_filterText += m_vector[m_selectedIndex] + ":" +  m_editKeyword->text();
-  }
-  m_filterRule->setText( m_filterText );
-  emit filterChanged( m_filterText );
+    m_previousFilterText = m_filterText;
+    if (!m_filterText.isEmpty())
+    {
+        m_filterText += " ";
+        if (m_checkOR->isChecked())
+            m_filterText += "OR ";
+    }
+    QStringList list = QStringList::split( " ", m_editKeyword->text() );
+    const QString key = m_vector[m_selectedIndex];
+    if( m_selectedIndex == 0 )
+    {
+        // type text
+        debug() << "selected text: '" << m_editKeyword->text() << "'" << endl;
+        if (m_actionCheck[0]->isChecked())
+        {
+            // all words
+            m_filterText += m_editKeyword->text();
+        }
+        else if (m_actionCheck[1]->isChecked())
+        {
+            // at least one word
+            m_filterText += *(list.begin());
+            for ( QStringList::Iterator it = ++list.begin(); it != list.end(); ++it )
+                m_filterText += " OR " + *it;
+        }
+        else if (m_actionCheck[2]->isChecked())
+        {
+            // exactly the words
+            m_filterText += "\"" + m_editKeyword->text() + "\"";
+        }
+        else if (m_actionCheck[3]->isChecked())
+        {
+            // exclude words
+            for ( QStringList::Iterator it = list.begin(); it != list.end(); ++it )
+                m_filterText += " -" + *it;
+        }
+    }
+    else if( key=="bitrate"
+            || key=="disc" || key=="discnumber"
+            || key=="length"
+            || key=="playcount"
+            || key=="rating"
+            || key=="samplerate"
+            || key=="score"
+            || key=="filesize" || key=="size"
+            || key=="track"
+            || key=="year" )
+    {
+        m_filterText += keywordConditionString( m_vector[m_selectedIndex] );
+    }
+    else
+    {
+        m_filterText += m_vector[m_selectedIndex] + ":" +  m_editKeyword->text();
+    }
+    m_filterRule->setText( m_filterText );
+    emit filterChanged( m_filterText );
 }
 
 void EditFilterDialog::slotUser1() // SLOT
 {
-  m_previousFilterText = m_filterText;
-  m_filterText = "";
-  m_filterRule->setText( m_filterText );
-  emit filterChanged( m_filterText );
+    m_previousFilterText = m_filterText;
+    m_filterText = "";
+    m_filterRule->setText( m_filterText );
+    emit filterChanged( m_filterText );
 
-  // no filter appended cause all cleared
-  m_appended = false;
-  m_groupBox3->setEnabled( false );
+    // no filter appended cause all cleared
+    m_appended = false;
+    m_groupBox3->setEnabled( false );
 }
 
 void EditFilterDialog::slotUser2() // SLOT
 {
-  m_filterText = m_previousFilterText;
-  if (m_filterText.isEmpty())
-  {
-    // no filter appended cause all cleared
-    m_appended = false;
-    m_groupBox3->setEnabled( false );
-  }
-  m_filterRule->setText( m_filterText );
-  emit filterChanged( m_filterText );
+    m_filterText = m_previousFilterText;
+    if (m_filterText.isEmpty())
+    {
+        // no filter appended cause all cleared
+        m_appended = false;
+        m_groupBox3->setEnabled( false );
+    }
+    m_filterRule->setText( m_filterText );
+    emit filterChanged( m_filterText );
 }
 
 void EditFilterDialog::slotOk() // SLOT
 {
-  // avoid confusing people that think to click OK to set a filter
-  if (m_appended)
-    accept();
+    // avoid confusing people that think to click OK to set a filter
+    if (m_appended)
+        accept();
 }
 
 #include "editfilterdialog.moc"
