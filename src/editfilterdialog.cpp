@@ -118,6 +118,8 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
         m_vector.push_back( "artist" );
         m_comboKeyword->insertItem( i18n("Bitrate") );
         m_vector.push_back( "bitrate" );
+        m_comboKeyword->insertItem( i18n("BPM") );
+        m_vector.push_back( "bpm" );
         m_comboKeyword->insertItem( i18n("Comment") );
         m_vector.push_back( "comment" );
         m_comboKeyword->insertItem( i18n("Composer") );
@@ -593,9 +595,10 @@ void EditFilterDialog::selectedKeyword(int index) // SLOT
         valueWanted();
     }
     else if( key=="playcount"
+            || key=="lastplayed"
             || key=="rating"
-            || key=="score" )
-
+            || key=="score"
+            || key=="bpm" )
     {
         valueWanted();
     }
