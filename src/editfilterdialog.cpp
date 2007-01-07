@@ -47,7 +47,8 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     setButtonGuiItem( User1, user1Button );
 
     // define "User2" button
-    KGuiItem user2Button( i18n("&Undo"), "undo" );
+    KGuiItem user2Button( i18n("this \"undo\" will undo the last appended filter... be careful how you will translate it "
+       "to avoid two buttons (\"Cancel\" and \"Undo\") with same label in the same dialog", "&Undo"), "undo" );
     setButtonWhatsThis( User2, i18n( "<p>Clicking here will remove the last appended filter. "
                 "You cannot undo more than one action.</p>" ) );
     setButtonTip(User2, i18n( "Remove last appendend filter" ) );
