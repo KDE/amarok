@@ -777,12 +777,13 @@ void EditFilterDialog::slotUser1() // SLOT
 {
     m_previousFilterText = m_filterText;
     m_filterText = "";
-    m_filterRule->setText( m_filterText );
-    emit filterChanged( m_filterText );
 
     // no filter appended cause all cleared
     m_appended = false;
     m_groupBox3->setEnabled( false );
+
+    m_filterRule->setText( m_filterText );
+    emit filterChanged( m_filterText );
 }
 
 void EditFilterDialog::slotUser2() // SLOT

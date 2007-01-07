@@ -25,6 +25,7 @@
 #include "contextbrowser.h"
 #include "debug.h"
 #include "mediadevicemanager.h"
+#include "editfilterdialog.h"
 #include "enginecontroller.h" //for actions in ctor
 #include "filebrowser.h"
 #include "k3bexporter.h"
@@ -278,24 +279,25 @@ void PlaylistWindow::init()
         QWidget *button = new KToolBarButton( "locationbar_erase", 1, bar );
         QLabel *filter_label = new QLabel( i18n("S&earch:") + ' ', bar );
         m_lineEdit = new ClickLineEdit( i18n( "Playlist Search" ), bar );
-
         filter_label->setBuddy( m_lineEdit );
-
         bar->setStretchableWidget( m_lineEdit );
+        KPushButton *filterButton = new KPushButton("...", bar, "filter");
 
-        //bar->setStretchableWidget( m_lineEdit );
         m_lineEdit->setFrame( QFrame::Sunken );
         m_lineEdit->installEventFilter( this ); //we intercept keyEvents
 
         connect( button, SIGNAL(clicked()), m_lineEdit, SLOT(clear()) );
+        connect( m_lineEdit, SIGNAL(textChanged( const QString& )),
+                playlist, SLOT(setFilterSlot( const QString& )) );
+        connect( filterButton, SIGNAL( clicked() ), SLOT( slotEditFilter() ) );
 
         QToolTip::add( button, i18n( "Clear search field" ) );
         QString filtertip = i18n( "Enter space-separated terms to search in the playlist.\n\n"
                                   "Advanced, Google-esque syntax is also available;\n"
                                   "see the handbook (The Playlist section of chapter 4) for details." );
 
-        //QToolTip::add( filter_label, filtertip );
         QToolTip::add( m_lineEdit, filtertip );
+        QToolTip::add( filterButton, i18n( "Click to edit playlist filter" ) );
     } //</Search LineEdit>
 
 
@@ -308,8 +310,6 @@ void PlaylistWindow::init()
 
     KAction* repeatAction = Amarok::actionCollection()->action( "repeat" );
     connect( repeatAction, SIGNAL( activated( int ) ), playlist, SLOT( slotRepeatTrackToggled( int ) ) );
-
-    connect( m_lineEdit, SIGNAL(textChanged( const QString& )), playlist, SLOT(setFilterSlot( const QString& )) );
 
     m_menubar = new KMenuBar( this );
 #ifndef Q_WS_MAC
@@ -495,6 +495,20 @@ void PlaylistWindow::init()
              statusbar,  SLOT( updateQueueLabel() ) );
     connect( playlist, SIGNAL( aboutToClear() ), m_lineEdit, SLOT( clear() ) );
     Amarok::MessageQueue::instance()->sendMessages();
+}
+
+void PlaylistWindow::slotSetFilter( const QString &filter ) //SLOT
+{
+    m_lineEdit->setText( filter );
+}
+
+void PlaylistWindow::slotEditFilter() //SLOT
+{
+    EditFilterDialog *fd = new EditFilterDialog( this, true, m_lineEdit->text() );
+    connect( fd, SIGNAL(filterChanged(const QString &)), SLOT(slotSetFilter(const QString &)) );
+    if( fd->exec() )
+        m_lineEdit->setText( fd->filter() );
+    delete fd;
 }
 
 void PlaylistWindow::addBrowser( const QString &name, QWidget *browser, const QString &text, const QString &icon )
