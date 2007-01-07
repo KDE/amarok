@@ -18,6 +18,7 @@
 #include "colorgenerator.h"
 #include "contextbrowser.h"
 #include "debug.h"
+#include "editfilterdialog.h"
 #include "deviceconfiguredialog.h"
 #include "mediadevicemanager.h"
 #include "expression.h"
@@ -274,14 +275,16 @@ MediaBrowser::MediaBrowser( const char *name )
         KToolBar* searchToolBar = new Browser::ToolBar( this );
         KToolBarButton *button = new KToolBarButton( "locationbar_erase", 0, searchToolBar );
         m_searchEdit = new ClickLineEdit( i18n( "Enter search terms here" ), searchToolBar );
-
+        KPushButton *filterButton = new KPushButton("...", searchToolBar, "filter");
         searchToolBar->setStretchableWidget( m_searchEdit );
         m_searchEdit->setFrame( QFrame::Sunken );
 
         connect( button, SIGNAL( clicked() ), m_searchEdit, SLOT( clear() ) );
+        connect( filterButton, SIGNAL( clicked() ), SLOT( slotEditFilter() ) );
 
         QToolTip::add( button, i18n( "Clear filter" ) );
         QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to search" ) );
+        QToolTip::add( filterButton, i18n( "Click to edit filter" ) );
     } //</Search LineEdit>
 
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
@@ -726,6 +729,23 @@ MediaBrowser::slotSetFilter() //SLOT
 
     if( currentDevice() )
         currentDevice()->view()->setFilter( m_searchEdit->text() );
+}
+
+void
+MediaBrowser::slotSetFilter( const QString &text )
+{
+    m_searchEdit->setText( text );
+    slotSetFilter();
+}
+
+void
+MediaBrowser::slotEditFilter()
+{
+    EditFilterDialog *fd = new EditFilterDialog( this, true, m_searchEdit->text() );
+    connect( fd, SIGNAL(filterChanged(const QString &)), SLOT(slotSetFilter(const QString &)) );
+    if( fd->exec() )
+        m_searchEdit->setText( fd->filter() );
+    delete fd;
 }
 
 void
@@ -1838,9 +1858,11 @@ MediaView::setFilter( const QString &filter, MediaItem *parent )
     defaultColumns << MetaBundle::Title;
     defaultColumns << MetaBundle::Artist;
 
+    bool root = false;
     MediaItem *it;
     if( !parent )
     {
+        root = true;
         it = dynamic_cast<MediaItem *>(firstChild());
     }
     else
@@ -1895,6 +1917,9 @@ MediaView::setFilter( const QString &filter, MediaItem *parent )
         if(visible)
             childrenVisible = true;
     }
+
+    if( root && m_device )
+        m_device->updateRootItems();
 
     return childrenVisible;
 }
