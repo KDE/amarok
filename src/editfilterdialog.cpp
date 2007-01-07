@@ -501,13 +501,13 @@ void EditFilterDialog::setMinMaxValueSpins()
 
     // fix tooltip
     QToolTip::add( m_spinValue1, "" );
-    QToolTip::add( m_spinValue2, i18n("seconds") );
+    QToolTip::add( m_spinValue2, i18n("Seconds") );
 
     QToolTip::add( m_spinMin1, "" );
-    QToolTip::add( m_spinMin2, i18n("seconds") );
+    QToolTip::add( m_spinMin2, i18n("Seconds") );
 
     QToolTip::add( m_spinMax1, "" );
-    QToolTip::add( m_spinMax2, i18n("seconds") );
+    QToolTip::add( m_spinMax2, i18n("Seconds") );
 }
 
 // SLOTS
