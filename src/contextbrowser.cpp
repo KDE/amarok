@@ -2339,6 +2339,7 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
                     + i18n("&#xa0;&#8211; ") +
                     "</span>\n"
                     "<span class='album-song-title'>\n" + escapeHTML( it.data().getArtist() ) + "</span>\n"
+                    "<span class='album-song-time'>&nbsp(" + MetaBundle::prettyTime( it.data().getLength()/1000, false ) + ")</span>\n"
                     "</a>\n"
                     "</td>\n"
                     ""
