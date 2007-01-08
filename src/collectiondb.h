@@ -419,7 +419,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         QStringList albumListOfArtist( const QString &artist, bool withUnknown = true, bool withCompilations = true );
         QStringList artistAlbumList( bool withUnknown = true, bool withCompilations = true );
 
-        QStringList albumTracks( const QString &artist_id, const QString &album_id, const bool isValue = false );
+        QStringList albumTracks( const QString &artist_id, const QString &album_id );
         QStringList albumDiscTracks( const QString &artist_id, const QString &album_id, const QString &discNumber );
         QStringList artistTracks( const QString &artist_id );
 

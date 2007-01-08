@@ -4391,27 +4391,12 @@ ContextBrowser::expandURL( const KURL &url )
         QString artist, album, track; // track unused here
         Amarok::albumArtistTrackFromUrl( url.path(), artist, album, track );
 
-        if( artist.isEmpty() )
-        {
-            // probably a compilation
-            QString albumID = QString::number( CollectionDB::instance()->albumID( album ) );
-            QueryBuilder qb;
-            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-            qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, albumID );
-            qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
-            qb.setOptions( QueryBuilder::optOnlyCompilations );
-            QStringList values = qb.run();
+        QString artistID = QString::number( CollectionDB::instance()->artistID( artist ) );
+        QString albumID = QString::number( CollectionDB::instance()->albumID( album ) );
 
-            for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it ) {
-                urls += KURL::fromPathOrURL( *it );
-            }
-        }
-        else
-        {
-            QStringList trackUrls = CollectionDB::instance()->albumTracks( artist, album, true );
-            foreach( trackUrls ) {
-                urls += KURL::fromPathOrURL( *it );
-            }
+        QStringList trackUrls = CollectionDB::instance()->albumTracks( artistID, albumID );
+        foreach( trackUrls ) {
+            urls += KURL::fromPathOrURL( *it );
         }
     }
 

@@ -1487,17 +1487,14 @@ CollectionDB::albumIsCompilation( const QString &album_id )
 }
 
 QStringList
-CollectionDB::albumTracks( const QString &artist_id, const QString &album_id, const bool isValue )
+CollectionDB::albumTracks( const QString &artist_id, const QString &album_id )
 {
-    Q_INT64 matchType;
-    if ( isValue )
-        matchType = QueryBuilder::valName;
-    else
-        matchType = QueryBuilder::valID;
     QueryBuilder qb;
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
-    qb.addMatch( QueryBuilder::tabAlbum, matchType, album_id );
-    qb.addMatch( QueryBuilder::tabArtist, matchType, artist_id );
+    qb.addMatch( QueryBuilder::tabAlbum, QueryBuilder::valID, album_id );
+    const bool isCompilation = albumIsCompilation( album_id );
+    if( !isCompilation )
+        qb.addMatch( QueryBuilder::tabArtist, QueryBuilder::valID, artist_id );
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valDiscNumber );
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
     QStringList ret = qb.run();
