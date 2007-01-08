@@ -1798,13 +1798,15 @@ void
 PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
 {
     stopAnimation();
-    if ( !job->error() == 0 ) {
+    if ( job->error() != 0 )
+    {
         Amarok::StatusBar::instance()->shortMessage( i18n( "Unable to connect to Podcast server." ) );
         debug() << "Unable to retrieve podcast information. KIO Error: " << job->error() << endl;
 
         title().isEmpty() ?
             setText( 0, m_url.prettyURL() ) :
             setText( 0, title() );
+        setPixmap( 0, SmallIcon("cancel") );
 
         return;
     }
@@ -1813,6 +1815,7 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
 
     QDomDocument d;
 
+    QString data = QString( storedJob->data() );
     QString error;
     int errorline, errorcolumn;
     if( !d.setContent( storedJob->data(), false /* disable namespace processing */,
@@ -1821,9 +1824,9 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
         Amarok::StatusBar::instance()->shortMessage( i18n("Podcast returned invalid data.") );
         debug() << "Podcast DOM failure in line " << errorline << ", column " << errorcolumn << ": " << error << endl;
 
-        if( title().isEmpty() )
-            setText( 0, m_url.prettyURL() );
-
+        title().isEmpty() ?
+            setText( 0, m_url.prettyURL() ) :
+            setText( 0, title() );
         setPixmap( 0, SmallIcon("cancel") );
         return;
     }
