@@ -216,7 +216,7 @@ void RealMediaFF::saveHeader(Collectable *hdr)
 int RealMediaFF::init()
 {
    int nbytes;
-   unsigned char buf[65535];
+   unsigned char buf[65536];
    UINT32 object_id;
    UINT32 sz;
    UINT32 consumed = 0;
