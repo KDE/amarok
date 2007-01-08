@@ -42,6 +42,7 @@ AMAROK_EXPORT_PLUGIN( IpodMediaDevice )
 #include <metadata/tplugins.h>
 #include <hintlineedit.h>
 
+#include <kactionclasses.h>
 #include <kapplication.h>
 #include <kmountpoint.h>
 #include <kpushbutton.h>
@@ -246,6 +247,7 @@ IpodMediaDevice::IpodMediaDevice()
     , m_masterPlaylist( 0 )
     , m_podcastPlaylist( 0 )
     , m_lockFile( 0 )
+    , m_customAction( 0 )
 {
     registerTaglibPlugins();
 
@@ -262,7 +264,7 @@ IpodMediaDevice::IpodMediaDevice()
     m_orphanedItem = 0;
     m_invisibleItem = 0;
     m_playlistItem = 0;
-    m_supportsArtwork = false;
+    m_supportsArtwork = true;
     m_supportsVideo = false;
     m_isShuffle = true;
     m_isMobile = false;
@@ -273,6 +275,92 @@ IpodMediaDevice::IpodMediaDevice()
     // config stuff
     m_syncStatsCheck = 0;
     m_autoDeletePodcastsCheck = 0;
+
+    KActionCollection *ac = new KActionCollection( this );
+    KActionMenu *am = new KActionMenu( i18n( "iPod" ), Amarok::icon( "device" ), ac );
+    m_customAction = am;
+    am->setDelayed( false );
+    KPopupMenu *menu = am->popupMenu();
+    connect( menu, SIGNAL(activated(int)), SLOT(slotIpodAction(int)) );
+    menu->insertItem( i18n( "Stale and Orphaned" ), CHECK_INTEGRITY );
+    menu->insertItem( i18n( "Update Artwork" ), UPDATE_ARTWORK );
+
+    KPopupMenu *ipodGen = new KPopupMenu( menu );
+    menu->insertItem( i18n( "Set iPod Model" ), ipodGen );
+    const Itdb_IpodInfo *table = itdb_info_get_ipod_info_table();
+    if( !table )
+        return;
+
+    bool infoFound = false;
+    int generation = ITDB_IPOD_GENERATION_FIRST;
+    do
+    {
+        const Itdb_IpodInfo *info = table;
+        infoFound = false;
+        KPopupMenu *gen = 0;
+        int index = SET_IPOD_MODEL;
+        while( info->model_number )
+        {
+            if( info->ipod_generation == generation )
+            {
+                if (!infoFound)
+                {
+                    infoFound = true;
+                    gen = new KPopupMenu( ipodGen );
+                    connect( gen, SIGNAL(activated(int)), SLOT(slotIpodAction(int)) );
+                    ipodGen->insertItem(
+                            itdb_info_get_ipod_generation_string( info->ipod_generation),
+                            gen );
+                }
+                if( info->capacity > 0.f )
+                    gen->insertItem( i18n( "%1 GB %2 (x%3)" )
+                            .arg( QString::number( info->capacity ),
+                                itdb_info_get_ipod_model_name_string( info->ipod_model ),
+                                info->model_number ),
+                            index );
+                else
+                    gen->insertItem( i18n( "%1 (x%2)" )
+                            .arg( itdb_info_get_ipod_model_name_string( info->ipod_model ),
+                                info->model_number ), 
+                            index );
+            }
+            ++info;
+            ++index;
+        }
+        ++generation;
+    }
+    while( infoFound );
+}
+
+void
+IpodMediaDevice::slotIpodAction( int id )
+{
+    switch( id )
+    {
+        case CHECK_INTEGRITY:
+            checkIntegrity();
+            break;
+        case UPDATE_ARTWORK:
+            updateArtwork();
+            break;
+        default:
+            if( const Itdb_IpodInfo *table = itdb_info_get_ipod_info_table() )
+            {
+                int index = id - SET_IPOD_MODEL;
+                if( m_itdb && m_itdb->device )
+                {
+                    itdb_device_set_sysinfo( m_itdb->device,
+                            "ModelNumStr", table[index].model_number );
+
+                    Amarok::StatusBar::instance()->shortMessage(
+                            i18n( "Setting iPod model to %1 GB %2 (x%3)" )
+                            .arg( QString::number( table[index].capacity ),
+                                itdb_info_get_ipod_model_name_string( table[index].ipod_model ),
+                                table[index].model_number ) );
+                }
+            }
+            break;
+    }
 }
 
 void
@@ -1192,6 +1280,47 @@ IpodMediaDevice::initView()
     updateRootItems();
 }
 
+void
+IpodMediaDevice::updateArtwork()
+{
+    if( !m_supportsArtwork )
+        return;
+
+    QPtrList<MediaItem> items;
+    m_view->getSelectedLeaves( 0, &items, false );
+
+    int updateCount = 0;
+    for( QPtrList<MediaItem>::iterator it = items.begin();
+            it != items.end();
+            it++ )
+    {
+        IpodMediaItem *i = dynamic_cast<IpodMediaItem *>( *it );
+        if( !i || i->type() == MediaItem::PLAYLISTITEM )
+            continue;
+
+        const MetaBundle *bundle = i->bundle();
+        QString image;
+        if( i->m_podcastInfo && !i->m_podcastInfo->rss.isEmpty() )
+        {
+            PodcastChannelBundle pcb;
+            if( CollectionDB::instance()->getPodcastChannelBundle( i->m_podcastInfo->rss, &pcb ) )
+                image = CollectionDB::instance()->podcastImage( pcb.imageURL().url(), 0 );
+        }
+        if( image.isEmpty() )
+            image  = CollectionDB::instance()->albumImage(bundle->artist(), bundle->album(), false, 0);
+        if( !image.endsWith( "@nocover.png" ) )
+        {
+            debug() << "adding image " << image << " to " << bundle->artist() << ":"
+                << bundle->album() << endl;
+            itdb_track_set_thumbnails( i->m_track, g_strdup( QFile::encodeName(image) ) );
+            ++updateCount;
+        }
+    }
+
+    Amarok::StatusBar::instance()->shortMessage(
+            i18n( "Updated artwork for one track", "Updated artwork for %n tracks", updateCount ) );
+}
+
 
 bool
 IpodMediaDevice::checkIntegrity()
@@ -1248,6 +1377,9 @@ IpodMediaDevice::checkIntegrity()
     }
 
     updateRootItems();
+
+    Amarok::StatusBar::instance()->shortMessage(
+            i18n( "Scanning for stale and orphaned tracks finished" ) );
 
     return true;
 }
@@ -1926,7 +2058,6 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
         RENAME, SUBSCRIBE,
         MAKE_PLAYLIST, ADD_TO_PLAYLIST, ADD,
         DELETE_PLAYED, DELETE_FROM_IPOD, REMOVE_FROM_PLAYLIST,
-        REPAIR_MENU, REPAIR_SCAN, REPAIR_COVERS,
         FIRST_PLAYLIST};
 
     KPopupMenu *playlistsMenu = 0;
@@ -2048,12 +2179,6 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                 DELETE_FROM_IPOD );
         menu.setItemEnabled( DELETE_FROM_IPOD, !locked && urls.count() > 0 );
     }
-
-    KPopupMenu repairMenu;
-    repairMenu.insertItem( SmallIconSet( Amarok::icon( "playlist_refresh" ) ), i18n( "Scan for Orphaned and Missing Files" ), REPAIR_SCAN );
-    repairMenu.insertItem( SmallIconSet( Amarok::icon( "covermanager" ) ), i18n( "Refresh Cover Images" ), REPAIR_COVERS );
-    repairMenu.setItemEnabled( REPAIR_COVERS, m_supportsArtwork );
-    menu.insertItem( SmallIconSet( "folder" ), i18n("Repair iPod"), &repairMenu, REPAIR_MENU );
 
     int id =  menu.exec( point );
     switch( id )
@@ -2214,42 +2339,7 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
             case DELETE_FROM_IPOD:
                 deleteFromDevice();
                 break;
-            case REPAIR_SCAN:
-                checkIntegrity();
-                break;
-            case REPAIR_COVERS:
-                if( m_supportsArtwork )
-                {
-                    QPtrList<MediaItem> items;
-                    m_view->getSelectedLeaves( 0, &items, false );
-
-                    for( QPtrList<MediaItem>::iterator it = items.begin();
-                            it != items.end();
-                            it++ )
-                    {
-                        IpodMediaItem *i = dynamic_cast<IpodMediaItem *>( *it );
-                        if( !i || i->type() == MediaItem::PLAYLISTITEM )
-                            continue;
-
-                        const MetaBundle *bundle = i->bundle();
-                        QString image;
-                        if( i->m_podcastInfo && !i->m_podcastInfo->rss.isEmpty() )
-                        {
-                            PodcastChannelBundle pcb;
-                            if( CollectionDB::instance()->getPodcastChannelBundle( i->m_podcastInfo->rss, &pcb ) )
-                                image = CollectionDB::instance()->podcastImage( pcb.imageURL().url(), 0 );
-                        }
-                        if( image.isEmpty() )
-                            image  = CollectionDB::instance()->albumImage(bundle->artist(), bundle->album(), false, 0);
-                        if( !image.endsWith( "@nocover.png" ) )
-                        {
-                            debug() << "adding image " << image << " to " << bundle->artist() << ":" << bundle->album() << endl;
-                            itdb_track_set_thumbnails( i->m_track, g_strdup( QFile::encodeName(image) ) );
-                        }
-                    }
-                }
-                break;
-            default:
+           default:
                 if( playlistsMenu && id >= FIRST_PLAYLIST )
                 {
                     QString name = playlistsMenu->text(id);

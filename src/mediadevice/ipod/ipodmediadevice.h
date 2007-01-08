@@ -43,6 +43,8 @@ class QLabel;
 class QLineEdit;
 class QFile;
 
+class KAction;
+
 class IpodMediaItem;
 class PodcastInfo;
 
@@ -66,6 +68,8 @@ class IpodMediaDevice : public MediaDevice
         virtual void      applyConfig();
         virtual void      loadConfig();
         virtual MediaItem*tagsChanged( MediaItem *item, const MetaBundle &bundle );
+
+        virtual KAction  *customAction() { return m_customAction; }
 
     protected:
         MediaItem        *trackExists( const MetaBundle& bundle );
@@ -107,6 +111,7 @@ class IpodMediaDevice : public MediaDevice
         bool              getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
         void              rmbPressed( QListViewItem* qitem, const QPoint& point, int );
         bool              checkIntegrity();
+        void              updateArtwork();
 
     protected slots:
         void              renameItem( QListViewItem *item );
@@ -154,6 +159,12 @@ class IpodMediaDevice : public MediaDevice
         QCheckBox        *m_autoDeletePodcastsCheck;
         QFile            *m_lockFile;
         QMutex            m_mutex;
+
+        KAction          *m_customAction;
+        enum              { CHECK_INTEGRITY, UPDATE_ARTWORK, SET_IPOD_MODEL };
+
+    private slots:
+        void              slotIpodAction( int );
 };
 
 #endif
