@@ -510,6 +510,9 @@ MediaBrowser::activateDevice( const MediaDevice *dev )
 void
 MediaBrowser::activateDevice( int index, bool skipDummy )
 {
+    if( currentDevice() && currentDevice()->customAction() )
+        currentDevice()->customAction()->unplug( m_toolbar );
+
     for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
             it != m_devices.end();
             it++ )
@@ -529,19 +532,22 @@ MediaBrowser::activateDevice( int index, bool skipDummy )
     if( (uint)index >= m_devices.count() )
     {
         m_currentDevice = m_devices.end();
-        return;
-    }
-
-    if( m_currentDevice == m_devices.at( index ) )
-    {
-        if( currentDevice() )
-            currentDevice()->view()->show();
+        updateButtons();
+        queue()->computeSize();
+        updateStats();
         return;
     }
 
     m_currentDevice = m_devices.at( index );
     if( currentDevice() )
+    {
         currentDevice()->view()->show();
+        if( currentDevice()->customAction() )
+        {
+            m_toolbar->setIconText( KToolBar::IconTextRight, false );
+            currentDevice()->customAction()->plug( m_toolbar );
+        }
+    }
     m_deviceCombo->setCurrentItem( index-1 );
 
     updateButtons();

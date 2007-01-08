@@ -27,10 +27,12 @@
 
 class MediaBrowser;
 class MediaDevice;
+class MediaItemTip;
 class MediaView;
 class SpaceLabel;
 class TransferDialog;
 
+class KAction;
 class KComboBox;
 class KDialogBase;
 class KProgress;
@@ -40,7 +42,6 @@ class KShellProcess;
 class QDragObject;
 class QLabel;
 class QPalette;
-class MediaItemTip;
 
 class LIBAMAROK_EXPORT MediaItem : public KListViewItem
 {
@@ -344,6 +345,11 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
         virtual ~MediaDevice();
 
         MediaView *view();
+
+        /**
+         * @retrun a KAction that will be plugged into the media device browser toolbar
+         */
+        virtual KAction *customAction() { return 0; }
 
         virtual void rmbPressed( QListViewItem *item, const QPoint &point, int ) { (void)item; (void) point; }
 
