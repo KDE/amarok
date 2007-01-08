@@ -135,7 +135,7 @@ AtomicString::~AtomicString()
 
 QString AtomicString::string() const
 {
-    if ( !m_string ) return QString::null;
+    if ( !m_string ) return QString();
     // References to the stored string are only allowed to circulate in the main thread
     if ( isMainThread() ) return *m_string;
     else return deepCopy();
@@ -145,7 +145,7 @@ QString AtomicString::deepCopy() const
 {
     if (m_string)
 	return QString( m_string->unicode(), m_string->length() );
-    return QString::null;
+    return QString();
 }
 
 bool AtomicString::isEmpty() const
@@ -167,7 +167,7 @@ uint AtomicString::refcount() const
 	uint rc = m_string->refcount;
 	s_storeMutex.unlock();
 	return rc;
-    } 
+    }
     return 0;
 }
 

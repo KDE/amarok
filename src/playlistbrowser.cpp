@@ -3041,7 +3041,7 @@ QString PlaylistDialog::getSaveFileName( const QString &suggestion, bool propose
     }
     if( dialog.exec() == Accepted )
         return dialog.result;
-    return QString::null;
+    return QString();
 }
 
 PlaylistDialog::PlaylistDialog()

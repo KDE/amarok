@@ -314,7 +314,7 @@ StreamProvider::extractStr( const QString &str, const QString &key ) const
     int index = str.find( key, 0, true );
 
     if ( index == -1 )
-        return QString::null;
+        return QString();
 
     else {
 

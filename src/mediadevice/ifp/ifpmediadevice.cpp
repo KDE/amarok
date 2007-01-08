@@ -622,7 +622,7 @@ IfpMediaDevice::getCapacity( KIO::filesize_t *total, KIO::filesize_t *available 
 QString
 IfpMediaDevice::getFullPath( const QListViewItem *item, const bool getFilename )
 {
-    if( !item ) return QString::null;
+    if( !item ) return QString();
 
     QString path;
 

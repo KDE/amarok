@@ -408,7 +408,7 @@ QString SelectAction::currentIcon() const
 {
     if( m_icons.count() )
         return *m_icons.at( currentItem() );
-    return QString::null;
+    return QString();
 }
 
 QString SelectAction::currentText() const {

@@ -2102,7 +2102,7 @@ CollectionView::getTrueItemText( int cat, QListViewItem* item ) const
     if ( item == 0 )
     {
         warning() << "getTrueItemText() called for empty CollectionItem" << endl;
-        return QString::null;
+        return QString();
     }
     if ( dynamic_cast<CollectionItem*>( item ) )
     {
@@ -2698,7 +2698,7 @@ CollectionView::captionForCategory( const int cat ) const
             break;
     }
 
-    return QString::null;
+    return QString();
 }
 
 
@@ -2850,7 +2850,7 @@ CollectionView::allForCategory( const int cat, const int num ) const
             break;
     }
 
-    return QString::null;
+    return QString();
 }
 
 // This slot is called when the "browse right" action is activated,

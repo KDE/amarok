@@ -422,7 +422,7 @@ QString KTRMResult::title() const
 #if HAVE_TUNEPIMP
     return d->title;
 #else
-    return QString::null;
+    return QString();
 #endif
 }
 
@@ -431,7 +431,7 @@ QString KTRMResult::artist() const
 #if HAVE_TUNEPIMP
     return d->artist;
 #else
-    return QString::null;
+    return QString();
 #endif
 }
 
@@ -440,7 +440,7 @@ QString KTRMResult::album() const
 #if HAVE_TUNEPIMP
     return d->album;
 #else
-    return QString::null;
+    return QString();
 #endif
 }
 
@@ -560,7 +560,7 @@ QString KTRMLookup::file() const
 #if HAVE_TUNEPIMP
     return d->file;
 #else
-    return QString::null;
+    return QString();
 #endif
 }
 

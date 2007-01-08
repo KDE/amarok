@@ -788,11 +788,11 @@ QString MetaBundle::exactText( int column, bool ensureCached ) const
         case PlayCount:  return QString::number( playCount( ensureCached ) );
         case LastPlayed: return QString::number( lastPlay( ensureCached ) );
         case Filesize:   return QString::number( filesize() );
-        case Mood:       return QString::null;
+        case Mood:       return QString();
         default: warning() << "Tried to get the text of a nonexistent column! [" << column << endl;
     }
 
-    return QString::null; //shouldn't happen
+    return QString(); //shouldn't happen
 }
 
 QString MetaBundle::prettyText( int column ) const
@@ -1099,7 +1099,7 @@ MetaBundle::prettyLength( int seconds, bool showHours ) //static
     if( seconds == Undetermined ) return "?";
     if( seconds == Irrelevant  ) return "-";
 
-    return QString::null; //Unavailable = ""
+    return QString(); //Unavailable = ""
 }
 
 QString
@@ -1622,7 +1622,7 @@ MetaBundle::readUniqueId( TagLib::FileRef* fileref )
     }
 
     if( !fileref || fileref->isNull() )
-        return QString::null;
+        return QString();
 
     TagLib::ByteVector bv = readUniqueIdHelper( *fileref );
 
@@ -1647,7 +1647,7 @@ MetaBundle::readUniqueId( TagLib::FileRef* fileref )
             return QString( md5.hexDigest().data() );
         }
         else
-            return QString::null;
+            return QString();
     }
 
     return QString::null;
@@ -1677,7 +1677,7 @@ MetaBundle::getRandomString( int size, bool numbersOnly )
     if( size != 8 )
     {
         debug() << "Wrong size passed in!" << endl;
-        return QString::null;
+        return QString();
     }
 
     QString str;

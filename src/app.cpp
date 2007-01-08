@@ -261,7 +261,7 @@ namespace
             if (!reply.isValid() || properties.count() < 6)
             {
                 debug() << "Invalid reply from mediamanager" << endl;
-                return QString::null;
+                return QString();
             }
             else
             {

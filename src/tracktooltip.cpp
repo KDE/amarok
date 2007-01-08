@@ -262,7 +262,7 @@ void TrackToolTip::setPos( int pos )
 void TrackToolTip::clear()
 {
     m_pos     = 0;
-    m_cover   = QString::null;
+    m_cover = QString::null;
     m_tooltip = i18n( "Amarok - rediscover your music" );
     m_tags    = MetaBundle();
     m_tags.setUrl( KURL() );

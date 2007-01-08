@@ -604,7 +604,7 @@ QString CriteriaEditor::getSearchCriteria()
     QString criteria = m_criteriaCombo->currentText();
 
     if( field.isEmpty() )
-        return QString::null;
+        return QString();
 
     if ( ( field=="statistics.playcounter" || field=="statistics.rating" || field=="statistics.percentage" || field=="statistics.accessdate" || field=="statistics.createdate") )
         searchCriteria += "COALESCE(" + field + ",0)";

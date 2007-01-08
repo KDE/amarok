@@ -289,7 +289,7 @@ QString
 ScriptManager::specForScript( const QString& name )
 {
     if( !m_scripts.contains( name ) )
-        return QString::null;
+        return QString();
     QFileInfo info( m_scripts[name].url.path() );
     const QString specPath = info.dirPath() + '/' + info.baseName( true ) + ".spec";
 
@@ -794,7 +794,7 @@ ScriptManager::scriptRunningOfType( const QString &type ) const
             if( it.data().type == type )
                 return it.key();
 
-    return QString::null;
+    return QString();
 }
 
 
@@ -817,7 +817,7 @@ ScriptManager::ensureScoreScriptRunning()
         if( runScript( *it, true ) )
             return *it;
 
-    return QString::null;
+    return QString();
 }
 
 

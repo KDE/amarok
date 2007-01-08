@@ -274,7 +274,7 @@ Controller::stationDescription( QString url )
     if( url.isEmpty() && instance() && instance()->isPlaying() )
         url = instance()->getService()->currentStation();
 
-    if( url.isEmpty() ) return QString::null;
+    if( url.isEmpty() ) return QString();
 
     QStringList elements = QStringList::split( "/", url );
 

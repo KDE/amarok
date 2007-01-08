@@ -683,7 +683,7 @@ namespace Amarok
     {
         if( Playlist::instance()->currentItem() )
             return Playlist::instance()->currentItem()->uniqueId();
-        return QString::null;
+        return QString();
     }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -936,7 +936,7 @@ namespace Amarok
         if (configItem)
             return configItem->property().toString();
         else
-            return QString::null;
+            return QString();
     }
 
     QStringList DcopScriptHandler::readListConfig(const QString& key)

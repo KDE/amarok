@@ -768,7 +768,7 @@ CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
 
                 // ignore APIC frames without picture and those with obviously bogus size
                 if( imgVector.size() == 0 || imgVector.size() > 10000000 /*10MB*/ )
-                    return QString::null;
+                    return QString();
 
                 QImage image;
                 if( image.loadFromData((const uchar*)imgVector.data(), imgVector.size()) )
@@ -787,7 +787,7 @@ CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
         } // tag is empty
     } // caching
 
-    return QString::null;
+    return QString();
 }
 
 

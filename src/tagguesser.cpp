@@ -77,56 +77,56 @@ bool FileNameScheme::matches( const QString &fileName ) const
 QString FileNameScheme::title() const
 {
     if( m_titleField == -1 )
-        return QString::null;
+        return QString();
     return m_regExp.capturedTexts()[ m_titleField ];
 }
 
 QString FileNameScheme::artist() const
 {
     if( m_artistField == -1 )
-        return QString::null;
+        return QString();
     return m_regExp.capturedTexts()[ m_artistField ];
 }
 
 QString FileNameScheme::album() const
 {
     if( m_albumField == -1 )
-        return QString::null;
+        return QString();
     return m_regExp.capturedTexts()[ m_albumField ];
 }
 
 QString FileNameScheme::track() const
 {
     if( m_trackField == -1 )
-        return QString::null;
+        return QString();
     return m_regExp.capturedTexts()[ m_trackField ];
 }
 
 QString FileNameScheme::comment() const
 {
     if( m_commentField == -1 )
-        return QString::null;
+        return QString();
     return m_regExp.capturedTexts()[ m_commentField ];
 }
 
 QString FileNameScheme::year() const
 {
     if( m_yearField == -1 )
-        return QString::null;
+        return QString();
     return m_regExp.capturedTexts()[ m_yearField ];
 }
 
 QString FileNameScheme::composer() const
 {
     if( m_composerField == -1 )
-        return QString::null;
+        return QString();
     return m_regExp.capturedTexts()[ m_composerField ];
 }
 
 QString FileNameScheme::genre() const
 {
     if( m_genreField == -1 )
-        return QString::null;
+        return QString();
     return m_regExp.capturedTexts()[ m_genreField ];
 }
 

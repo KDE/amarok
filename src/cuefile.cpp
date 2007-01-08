@@ -131,7 +131,7 @@ bool CueFile::load(int mediaLength)
                         // add previous entry to map
                         insert( index, CueFileItem( title, artist, defaultAlbum, track, index ) );
                         prevIndex = index;
-                        title  = QString::null;
+                        title = QString::null;
                         artist = QString::null;
                         track  = 0;
                     }

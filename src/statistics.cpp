@@ -568,7 +568,7 @@ QString StatisticsList::subText( const QString &score, const QString &rating ) /
     else if( AmarokConfig::useRatings() )
         return i18n( "Rating: %1" ).arg( rating );
     else
-        return QString::null;
+        return QString();
 }
 
 void

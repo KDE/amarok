@@ -1321,7 +1321,7 @@ Moodbar::moodFilename( const KURL &url, bool withMusic )
         path.truncate(path.findRev('.'));
 
         if (path.isEmpty())  // Weird...
-          return QString::null;
+          return QString();
 
         path += ".mood";
         int slash = path.findRev('/') + 1;
@@ -1341,7 +1341,7 @@ Moodbar::moodFilename( const KURL &url, bool withMusic )
         path.truncate(path.findRev('.'));
 
         if (path.isEmpty())  // Weird...
-          return QString::null;
+          return QString();
 
         path = QString::number( deviceid ) + ','
           + path.replace('/', ',') + ".mood";

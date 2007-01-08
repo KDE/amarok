@@ -106,7 +106,7 @@ HTMLView::loadStyleSheet()
         const QString CSSLocation = kapp->dirs()->findResource( "data","amarok/themes/" + themeName + "/stylesheet.css" );
         QFile ExternalCSS( CSSLocation );
         if ( !ExternalCSS.open( IO_ReadOnly ) )
-            return QString::null; //FIXME: should actually return the default style sheet, then
+            return QString(); //FIXME: should actually return the default style sheet, then
 
         const QString pxSize = QString::number( ContextBrowser::instance()->fontMetrics().height() - 4 );
         const QString fontFamily = AmarokConfig::useCustomFonts() ?

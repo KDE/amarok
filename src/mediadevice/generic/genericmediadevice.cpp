@@ -322,7 +322,7 @@ GenericMediaDevice::GenericMediaDevice()
     m_ignoreThePrefix     = false;
     m_asciiTextOnly       = false;
 
-    m_songLocation    = QString::null;
+    m_songLocation = QString::null;
     m_podcastLocation = QString::null;
 
     m_supportedFileTypes.clear();
