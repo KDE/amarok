@@ -45,8 +45,6 @@ VERSION 1.4.5
       you move and rename them.
 
   CHANGES:
-    * The select custom cover dialog no longer starts in the wrong directory 
-      for compilations. (BR 131776)
     * Support for cue files not matching audio files' name. Patch by Dawid
       Wróbel <dawid@klej.net>. (BR 128046)
     * Script Manager now remembers if categories were open or closed.
@@ -96,6 +94,8 @@ VERSION 1.4.5
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
+    * The select custom cover dialog no longer starts in the wrong directory 
+      for compilations. (BR 131776)
     * Amarok's xine engine would cut off approximately the last second of an
       audio file. (BR 135190)
     * Cue sheet would remain enabled when switching to a stream. Patch
