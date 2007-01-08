@@ -1518,26 +1518,17 @@ QStringList
 CollectionDB::albumDiscTracks( const QString &artist_id, const QString &album_id, const QString &discNumber)
 {
     QStringList rs;
-    if (getDbConnectionType() == DbConnection::postgresql)
-        rs = query( QString( "SELECT tags.deviceid, tags.url, tags.track AS __discard FROM tags, year WHERE tags.album = %1 AND "
-                           "tags.artist = %2 AND year.id = tags.year AND tags.discnumber = %3 ORDER BY tags.track;" )
-                  .arg( album_id )
-                  .arg( artist_id )
-                  .arg( discNumber ) );
-    else
-        rs = query( QString( "SELECT tags.deviceid, tags.url FROM tags, year WHERE tags.album = %1 AND "
-                           "tags.artist = %2 AND year.id = tags.year AND tags.discnumber = %3 "
-                           + deviceidSelection() + " ORDER BY tags.track;" )
-                  .arg( album_id )
-                  .arg( artist_id )
-                  .arg( discNumber ) );
+    rs = query( QString( "SELECT tags.deviceid, tags.url FROM tags, year WHERE tags.album = %1 AND "
+                         "tags.artist = %2 AND year.id = tags.year AND tags.discnumber = %3 "
+                         + deviceidSelection() + " ORDER BY tags.track;" )
+                .arg( album_id )
+                .arg( artist_id )
+                .arg( discNumber ) );
     QStringList result;
     foreach( rs )
     {
         const int id = (*it).toInt();
         result << MountPointManager::instance()->getAbsolutePath( id, *(++it) );
-        //PostGreSql requires a third column
-        if ( getDbConnectionType() == DbConnection::postgresql ) ++it;
     }
     return result;
 }
