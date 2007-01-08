@@ -3219,8 +3219,20 @@ SmartPlaylist::xmlToQuery(const QDomElement &xml, bool forExpand /* = false */) 
                         filters[0].prepend( "./" );
                 qb.addFilter( table, value, filters[0], QueryBuilder::modeBeginMatch );
             }
+            else if ( condition == i18n( "does not start with" ) )
+            {
+                // need to take care of absolute paths
+                if ( field == "tags.url" )
+                    if ( filters[0].startsWith( "/" ) )
+                        filters[0].prepend( '.' );
+                    else if ( !filters[0].startsWith( "./" ) )
+                        filters[0].prepend( "./" );
+                qb.excludeFilter( table, value, filters[0], QueryBuilder::modeBeginMatch );
+            }
             else if ( condition == i18n( "ends with" ) )
                 qb.addFilter( table, value, filters[0], QueryBuilder::modeEndMatch );
+            else if ( condition == i18n( "does not end with" ) )
+                qb.excludeFilter( table, value, filters[0], QueryBuilder::modeEndMatch );
             else if ( condition == i18n( "is greater than") || condition == i18n( "is after" ) )
                 qb.addNumericFilter( table, value, filters[0], QueryBuilder::modeGreater );
             else if ( condition == i18n( "is smaller than") || condition == i18n( "is before" ) )

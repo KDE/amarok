@@ -10,6 +10,7 @@
 #include "debug.h"
 #include "collectiondb.h"
 #include "metabundle.h"
+#include "mountpointmanager.h"
 #include "smartplaylisteditor.h"
 
 #include <kcombobox.h>
@@ -714,8 +715,21 @@ QString CriteriaEditor::getSearchCriteria()
         }
         searchCriteria += CollectionDB::likeCondition( value, false, true );
     }
+    else if( criteria == i18n("does not start with") )
+    {
+        if( field == "tags.url" )
+        {
+            if( value.startsWith( "/" ) )
+                value = '.' + value;
+            if( !value.startsWith( "./" ) )
+                value = "./" + value;
+        }
+        searchCriteria += " NOT " + CollectionDB::likeCondition( value, false, true );
+    }
     else if( criteria == i18n("ends with") )
         searchCriteria += CollectionDB::likeCondition( value, true, false );
+    else if( criteria == i18n("does not end with") )
+        searchCriteria += " NOT " + CollectionDB::likeCondition( value, true, false );
     else if( criteria == i18n("is greater than") || criteria == i18n("is after") )
         searchCriteria += " > " + value;
     else if( criteria == i18n("is smaller than") || criteria == i18n("is before" ) )
@@ -768,8 +782,8 @@ void CriteriaEditor::slotFieldSelected( int field )
     loadEditWidgets();
     m_currentValueType = valueType;
 
-    //enable auto-completion for artist, album and genre
-    if( valueType == AutoCompletionString ) { //Artist, Composer, Album, Genre
+    //enable auto-completion for artist, album, composer, label, mountpoint and genre
+    if( valueType == AutoCompletionString ) {
         QStringList items;
         m_comboBox->clear();
         m_comboBox->completionObject()->clear();
@@ -783,6 +797,8 @@ void CriteriaEditor::slotFieldSelected( int field )
            items = CollectionDB::instance()->albumList();
         else if (currentField == FLabel ) //label
             items = CollectionDB::instance()->labelList();
+        else if (currentField == FMountPoint ) //mount point
+            items = MountPointManager::instance()->collectionFolders();
         else  //genre
            items = CollectionDB::instance()->genreList();
 
@@ -953,7 +969,8 @@ void CriteriaEditor::loadCriteriaList( int valueType, QString condition )
         case String:
         case AutoCompletionString:
             items << i18n( "contains" ) << i18n( "does not contain" ) << i18n( "is" ) << i18n( "is not" )
-                  << i18n( "starts with" ) << i18n( "ends with" );
+                  << i18n( "starts with" ) << i18n( "does not start with" ) 
+                  << i18n( "ends with" ) << i18n( "does not end with" );
             break;
 
         case Rating:
@@ -992,12 +1009,12 @@ int CriteriaEditor::getValueType( int index )
         case FAlbum:
         case FGenre:
         case FLabel:
+        case FMountPoint:
             valueType = AutoCompletionString;
             break;
         case FTitle:
         case FComment:
         case FFilePath:
-        case FMountPoint:
             valueType = String;
             break;
         case FLength:
