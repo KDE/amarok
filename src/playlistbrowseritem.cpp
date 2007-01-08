@@ -2275,7 +2275,7 @@ PodcastChannel::showContextMenu( const QPoint &position )
 {
     KPopupMenu menu( listView() );
 
-    enum Actions { LOAD, APPEND, QUEUE, DELETE, RESCAN, LISTENED, CONFIG };
+    enum Actions { LOAD, APPEND, QUEUE, DELETE, RESCAN, LISTENED, NEW, CONFIG };
 
     menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), LOAD );
     menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
@@ -2284,6 +2284,7 @@ PodcastChannel::showContextMenu( const QPoint &position )
     menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n( "&Delete" ), DELETE );
     menu.insertItem( SmallIconSet( Amarok::icon( "refresh" ) ), i18n( "&Check for Updates" ), RESCAN );
     menu.insertItem( SmallIconSet( Amarok::icon( "artist" ) ), i18n( "Mark as &Listened" ), LISTENED );
+    menu.insertItem( SmallIconSet( Amarok::icon( "artist" ) ), i18n( "Mark as &New" ), NEW );
     menu.insertItem( SmallIconSet( Amarok::icon( "configure" ) ), i18n( "&Configure..." ), CONFIG );
     menu.setItemEnabled( LISTENED, hasNew() );
     menu.setItemEnabled( CONFIG, m_settingsValid );
@@ -2310,6 +2311,9 @@ PodcastChannel::showContextMenu( const QPoint &position )
             setListened();
             break;
 
+        case NEW:
+            setListened(false);
+            break;
         case DELETE:
             PlaylistBrowser::instance()->removeSelectedItems();
             break;
@@ -2793,7 +2797,7 @@ PodcastEpisode::showContextMenu( const QPoint &position )
 {
     KPopupMenu menu( listView() );
 
-    enum Actions { LOAD, APPEND, QUEUE, GET, ASSOCIATE, DELETE, MEDIA_DEVICE, LISTENED, OPEN_WITH /* has to be last */ };
+    enum Actions { LOAD, APPEND, QUEUE, GET, ASSOCIATE, DELETE, MEDIA_DEVICE, LISTENED, NEW, OPEN_WITH /* has to be last */ };
     menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), LOAD );
     menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
     menu.insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), i18n( "&Queue Track" ), QUEUE );
@@ -2838,12 +2842,14 @@ PodcastEpisode::showContextMenu( const QPoint &position )
     menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n( "&Download Media" ), GET );
     menu.insertItem( SmallIconSet( Amarok::icon( "attach" ) ), i18n( "&Associate with Local File" ), ASSOCIATE );
     menu.insertItem( SmallIconSet( Amarok::icon( "artist" ) ),   i18n( "Mark as &Listened" ),  LISTENED );
+    menu.insertItem( SmallIconSet( Amarok::icon( "artist" ) ),   i18n( "Mark as &New" ),  NEW );
     menu.insertItem( SmallIconSet( Amarok::icon("remove") ), i18n( "De&lete Downloaded Podcast" ), DELETE );
 
     menu.setItemEnabled( GET, !isOnDisk() );
     menu.setItemEnabled( ASSOCIATE, !isOnDisk() );
     menu.setItemEnabled( DELETE, isOnDisk() );
-    menu.setItemEnabled( LISTENED, isNew() );
+    menu.setItemVisible( LISTENED, isNew() );
+    menu.setItemVisible( NEW, !isNew() );
 
     uint id = menu.exec( position );
     switch( id )
@@ -2877,6 +2883,14 @@ PodcastEpisode::showContextMenu( const QPoint &position )
             {
                 if ( isPodcastEpisode( *it ) )
                     static_cast<PodcastEpisode*>(*it)->setListened();
+            }
+            break;
+
+        case NEW:
+            for ( QListViewItemIterator it( listView(), QListViewItemIterator::Selected); *it; ++it )
+            {
+                if ( isPodcastEpisode( *it ) )
+                    static_cast<PodcastEpisode*>(*it)->setListened(false);
             }
             break;
 
