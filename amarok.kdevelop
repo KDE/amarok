@@ -11,11 +11,12 @@
     </keywords>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <version/>
-    <description/>
+    <version></version>
+    <description></description>
     <ignoreparts/>
     <secondaryLanguages/>
     <defaultencoding/>
+    <versioncontrol>kdevsubversion</versioncontrol>
   </general>
   <kdevautoproject>
     <general>
@@ -28,14 +29,11 @@
       <configargs>\s--build=i386-linux --host=i386-linux --target=i386-linux\s</configargs>
     </configure>
     <make>
-      <abortonerror>false</abortonerror>
+      <abortonerror>true</abortonerror>
       <numberofjobs>1</numberofjobs>
       <dontact>false</dontact>
       <makebin>unsermake</makebin>
-      <envvars>
-        <envvar value="1" name="WANT_AUTOCONF_2_5" />
-        <envvar value="1" name="WANT_AUTOMAKE_1_6" />
-      </envvars>
+      <envvars/>
       <prio>0</prio>
       <runmultiplejobs>false</runmultiplejobs>
     </make>
@@ -44,8 +42,8 @@
       <cxxflags>\s-O0 -g3 -Wall</cxxflags>
     </compiler>
     <run>
-      <mainprogram/>
-      <programargs/>
+      <mainprogram>src/amarokapp</mainprogram>
+      <programargs></programargs>
       <terminal>false</terminal>
       <autocompile>false</autocompile>
       <envvars/>
@@ -114,16 +112,16 @@
   </kdevdoctreeview>
   <kdevdebugger>
     <general>
-      <dbgshell>/usr/bin/libtool</dbgshell>
-      <programargs/>
-      <gdbpath/>
+      <dbgshell>/home/micekiller/development/c++/kde/multimedia/libtool</dbgshell>
+      <programargs></programargs>
+      <gdbpath>/usr/bin</gdbpath>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
       <runappinappdirectory>true</runappinappdirectory>
-      <configGdbScript/>
-      <runShellScript/>
-      <runGdbScript/>
+      <configGdbScript></configGdbScript>
+      <runShellScript></runShellScript>
+      <runGdbScript></runGdbScript>
     </general>
     <display>
       <staticmembers>false</staticmembers>
@@ -160,7 +158,7 @@
     </codecompletion>
     <references/>
     <creategettersetter>
-      <prefixGet/>
+      <prefixGet></prefixGet>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
@@ -205,13 +203,13 @@
   </kdevcvsservice>
   <kdevdocumentation>
     <projectdoc>
-      <docsystem/>
-      <docurl/>
-      <usermanualurl/>
+      <docsystem></docsystem>
+      <docurl></docurl>
+      <usermanualurl></usermanualurl>
     </projectdoc>
   </kdevdocumentation>
   <ctagspart>
-    <customArguments/>
+    <customArguments></customArguments>
     <customTagfilePath>/home/ian/workspace/local/amarok/tags</customTagfilePath>
     <activeTagsFiles/>
   </ctagspart>
