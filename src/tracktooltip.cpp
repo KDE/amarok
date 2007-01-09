@@ -102,7 +102,7 @@ void TrackToolTip::setTrack( const MetaBundle &tags, bool force )
                 const float score = CollectionDB::instance()->getSongPercentage( tags.url().path() );
                 if( score > 0.f )
                 {
-                    right << QString::number( score, 'i' );
+                    right << QString::number( score, 'f', 2 );  // 2 digits after decimal point
                     left << playlist->columnText( column );
                 }
             }
