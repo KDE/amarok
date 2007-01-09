@@ -3953,13 +3953,16 @@ CollectionView::renderTreeModeView( bool /*=false*/ )
     }
 
     //If the tree has only one child for its top branch(es), make the lowest child which
-    //has no siblings become selected. This is the lowest expanded child.
+    //has no siblings become selected.
     //Rationale: If you search for something and then clear the search bar, this way it
     //will stay in view, assuming you only had one real result.
     if ( selectFinalItem )
     {
-        item = item->parent();
-        if ( item && item->isExpandable() )
+        //The algorithm usually goes one too far down the tree in most cases.
+        //So if it has a sibling, backtrack.
+        if ( item->parent() && item->parent()->childCount() > 1 )
+            item = item->parent();
+        if ( item )
         {
             setCurrentItem( item );
             item->setSelected( true );
