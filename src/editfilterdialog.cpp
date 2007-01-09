@@ -501,7 +501,7 @@ void EditFilterDialog::setMinMaxValueSpins()
     m_spinMin2->setMaxValue( 59 );
     m_spinMin2->hide();
 
-    m_spinMax1->setValue( 1 );
+    m_spinMax1->setValue( 0 );
     m_spinMax1->setMinValue( 0 );
     m_spinMax1->setMaxValue( 100000000 );
 
@@ -597,7 +597,7 @@ void EditFilterDialog::selectedKeyword(int index) // SLOT
     {
         // track/disc: set useful values for the spinboxes
         m_spinValue1->setValue( 1 );
-        m_spinMin1->setValue( 0 );
+        m_spinMin1->setValue( 1 );
         m_spinMax1->setValue( 15 );
         valueWanted();
     }
@@ -638,14 +638,14 @@ void EditFilterDialog::selectedKeyword(int index) // SLOT
 
 void EditFilterDialog::minSpinChanged(int value) // SLOT
 {
-  if (value >= m_spinMax1->value())
-    m_spinMax1->setValue(value + 1);
+  if (value > m_spinMax1->value())
+    m_spinMax1->setValue(value);
 }
 
 void EditFilterDialog::maxSpinChanged(int value) // SLOT
 {
-  if (m_spinMin1->value() >= value)
-    m_spinMin1->setValue(value - 1);
+  if (m_spinMin1->value() > value)
+    m_spinMin1->setValue(value);
 }
 
 void EditFilterDialog::textWanted() // SLOT
