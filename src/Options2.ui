@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>403</width>
-            <height>481</height>
+            <width>487</width>
+            <height>523</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -112,194 +112,146 @@
                     <property name="flat">
                         <bool>true</bool>
                     </property>
-                    <vbox>
+                    <grid>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="QLayoutWidget">
+                        <widget class="QLabel" row="0" column="0">
                             <property name="name">
-                                <cstring>layout5</cstring>
+                                <cstring>textLabel3</cstring>
                             </property>
-                            <hbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <widget class="QLabel">
-                                    <property name="name">
-                                        <cstring>textLabel3</cstring>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>1</hsizetype>
-                                            <vsizetype>5</vsizetype>
-                                            <horstretch>0</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                    <property name="minimumSize">
-                                        <size>
-                                            <width>90</width>
-                                            <height>0</height>
-                                        </size>
-                                    </property>
-                                    <property name="text">
-                                        <string>Playlist Window:</string>
-                                    </property>
-                                    <property name="toolTip" stdset="0">
-                                        <string>The font to use in the playlist window.</string>
-                                    </property>
-                                    <property name="whatsThis" stdset="0">
-                                        <string>The font to use in the playlist window.</string>
-                                    </property>
-                                </widget>
-                                <widget class="KFontRequester">
-                                    <property name="name">
-                                        <cstring>kcfg_PlaylistWindowFont</cstring>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>3</hsizetype>
-                                            <vsizetype>5</vsizetype>
-                                            <horstretch>0</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                    <property name="sampleText">
-                                        <string></string>
-                                    </property>
-                                    <property name="toolTip" stdset="0">
-                                        <string>The font to use in the playlist window.</string>
-                                    </property>
-                                    <property name="whatsThis" stdset="0">
-                                        <string>The font to use in the playlist window.</string>
-                                    </property>
-                                </widget>
-                            </hbox>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>1</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>Playlist Window:</string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>The font to use in the playlist window.</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The font to use in the playlist window.</string>
+                            </property>
                         </widget>
-                        <widget class="QLayoutWidget">
+                        <widget class="KFontRequester" row="0" column="1">
                             <property name="name">
-                                <cstring>layout4</cstring>
+                                <cstring>kcfg_PlaylistWindowFont</cstring>
                             </property>
-                            <hbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <widget class="QLabel">
-                                    <property name="name">
-                                        <cstring>textLabel1</cstring>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>1</hsizetype>
-                                            <vsizetype>5</vsizetype>
-                                            <horstretch>0</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                    <property name="minimumSize">
-                                        <size>
-                                            <width>90</width>
-                                            <height>0</height>
-                                        </size>
-                                    </property>
-                                    <property name="text">
-                                        <string>Player Window:</string>
-                                    </property>
-                                    <property name="alignment">
-                                        <set>AlignVCenter</set>
-                                    </property>
-                                    <property name="toolTip" stdset="0">
-                                        <string>The font to use in the player window.</string>
-                                    </property>
-                                    <property name="whatsThis" stdset="0">
-                                        <string>The font to use in the player window.</string>
-                                    </property>
-                                </widget>
-                                <widget class="KFontRequester">
-                                    <property name="name">
-                                        <cstring>kcfg_PlayerWidgetFont</cstring>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>3</hsizetype>
-                                            <vsizetype>5</vsizetype>
-                                            <horstretch>0</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                    <property name="sampleText">
-                                        <string></string>
-                                    </property>
-                                    <property name="toolTip" stdset="0">
-                                        <string>The font to use in the player window.</string>
-                                    </property>
-                                    <property name="whatsThis" stdset="0">
-                                        <string>The font to use in the player window.</string>
-                                    </property>
-                                </widget>
-                            </hbox>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>5</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="sampleText">
+                                <string></string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>The font to use in the playlist window.</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The font to use in the playlist window.</string>
+                            </property>
                         </widget>
-                        <widget class="QLayoutWidget">
+                        <widget class="QLabel" row="1" column="0">
                             <property name="name">
-                                <cstring>layout6</cstring>
+                                <cstring>textLabel1</cstring>
                             </property>
-                            <hbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <widget class="QLabel">
-                                    <property name="name">
-                                        <cstring>textLabel3_2</cstring>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>1</hsizetype>
-                                            <vsizetype>5</vsizetype>
-                                            <horstretch>0</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                    <property name="minimumSize">
-                                        <size>
-                                            <width>90</width>
-                                            <height>0</height>
-                                        </size>
-                                    </property>
-                                    <property name="text">
-                                        <string>Context Sidebar:</string>
-                                    </property>
-                                    <property name="toolTip" stdset="0">
-                                        <string>The font to use in the context browser.</string>
-                                    </property>
-                                    <property name="whatsThis" stdset="0">
-                                        <string>The font to use in the context browser.</string>
-                                    </property>
-                                </widget>
-                                <widget class="KFontRequester">
-                                    <property name="name">
-                                        <cstring>kcfg_ContextBrowserFont</cstring>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>3</hsizetype>
-                                            <vsizetype>5</vsizetype>
-                                            <horstretch>0</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                    <property name="sampleText">
-                                        <string></string>
-                                    </property>
-                                    <property name="toolTip" stdset="0">
-                                        <string>The font to use in the context browser.</string>
-                                    </property>
-                                    <property name="whatsThis" stdset="0">
-                                        <string>The font to use in the context browser.</string>
-                                    </property>
-                                </widget>
-                            </hbox>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>1</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>Player Window:</string>
+                            </property>
+                            <property name="alignment">
+                                <set>AlignVCenter</set>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>The font to use in the player window.</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The font to use in the player window.</string>
+                            </property>
                         </widget>
-                    </vbox>
+                        <widget class="QLabel" row="2" column="0">
+                            <property name="name">
+                                <cstring>textLabel3_2</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>1</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>Context Sidebar:</string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>The font to use in the context browser.</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The font to use in the context browser.</string>
+                            </property>
+                        </widget>
+                        <widget class="KFontRequester" row="2" column="1">
+                            <property name="name">
+                                <cstring>kcfg_ContextBrowserFont</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>5</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="sampleText">
+                                <string></string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>The font to use in the context browser.</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The font to use in the context browser.</string>
+                            </property>
+                        </widget>
+                        <widget class="KFontRequester" row="1" column="1">
+                            <property name="name">
+                                <cstring>kcfg_PlayerWidgetFont</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>5</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="sampleText">
+                                <string></string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>The font to use in the context browser.</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The font to use in the context browser.</string>
+                            </property>
+                        </widget>
+                    </grid>
                 </widget>
             </vbox>
         </widget>
@@ -706,6 +658,8 @@
         </spacer>
     </vbox>
 </widget>
+<customwidgets>
+</customwidgets>
 <connections>
     <connection>
         <sender>kcfg_UseCustomFonts</sender>
@@ -758,4 +712,12 @@
     <function access="private" specifier="non virtual">init()</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kfontrequester.h</includehint>
+    <includehint>kfontrequester.h</includehint>
+    <includehint>kfontrequester.h</includehint>
+    <includehint>kcolorbutton.h</includehint>
+    <includehint>kcolorbutton.h</includehint>
+    <includehint>kcombobox.h</includehint>
+</includehints>
 </UI>
