@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>487</width>
-            <height>523</height>
+            <width>447</width>
+            <height>556</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -64,9 +64,6 @@
             <vbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
-                </property>
-                <property name="spacing">
-                    <number>0</number>
                 </property>
                 <widget class="QCheckBox">
                     <property name="name">
@@ -262,11 +259,11 @@
             <property name="title">
                 <string>Color Scheme</string>
             </property>
-            <grid>
+            <vbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QButtonGroup" row="0" column="0">
+                <widget class="QButtonGroup">
                     <property name="name">
                         <cstring>radioGroup</cstring>
                     </property>
@@ -515,7 +512,56 @@
                         </widget>
                     </grid>
                 </widget>
-            </grid>
+                <widget class="Line">
+                    <property name="name">
+                        <cstring>line1</cstring>
+                    </property>
+                    <property name="frameShape">
+                        <enum>HLine</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout5</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel1_3</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Color for new playlist items:</string>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>kcfg_NewPlaylistItemsColor</cstring>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>The color that is used when fresh items are being loaded in the playlist.</string>
+                            </property>
+                        </widget>
+                        <widget class="KColorButton">
+                            <property name="name">
+                                <cstring>kcfg_NewPlaylistItemsColor</cstring>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>The color that is used when fresh items are being loaded in the playlist.</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+            </vbox>
         </widget>
         <widget class="QGroupBox">
             <property name="name">
@@ -716,6 +762,7 @@
     <includehint>kfontrequester.h</includehint>
     <includehint>kfontrequester.h</includehint>
     <includehint>kfontrequester.h</includehint>
+    <includehint>kcolorbutton.h</includehint>
     <includehint>kcolorbutton.h</includehint>
     <includehint>kcolorbutton.h</includehint>
     <includehint>kcombobox.h</includehint>

@@ -421,6 +421,10 @@
         <whatsthis>The color of the OSD background. The color is specified in RGB, a comma-separated list containing three integers between 0 and 255.</whatsthis>
         <default>#1500a0</default>
     </entry>
+    <entry key="New Playlist Items Color" type="Color">
+        <label>The color that is used for new items in the playlist.</label>
+        <default>#0000ff</default>
+    </entry>
     <entry key="Osd Duration" type="Int">
         <label>How many milliseconds the text should be displayed</label>
         <whatsthis>The time in milliseconds to show the OSD. A value of 0 means never hide. The default value is 5000 ms.</whatsthis>
