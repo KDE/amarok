@@ -1032,6 +1032,7 @@ CollectionDB::createPersistentTables()
     query( "CREATE UNIQUE INDEX labels_name ON labels( name, type );" );
     query( "CREATE INDEX tags_labels_uniqueid ON tags_labels( uniqueid );" ); //m:n relationship, DO NOT MAKE UNIQUE!
     query( "CREATE INDEX tags_labels_url ON tags_labels( url, deviceid );" ); //m:n relationship, DO NOT MAKE UNIQUE!
+    query( "CREATE INDEX tags_labels_labelid ON tags_labels( labelid );" );   //m:n relationship, DO NOT MAKE UNIQUE!
 }
 
 void
@@ -5632,8 +5633,12 @@ CollectionDB::updatePersistentTables()
             query( "ALTER TABLE lyrics ADD uniqueid " + exactTextColumnType(32) + ';' );
             query( "CREATE INDEX lyrics_uniqueid ON lyrics( uniqueid );" );
         }
+        if ( PersistentVersion.toInt() < 19 )
+        {
+            query( "CREATE INDEX tags_labels_labelid ON tags_labels( labelid );" );   //m:n relationship, DO NOT MAKE UNIQUE!
+        }
         //Up to date. Keep this number   \/   in sync!
-        if ( PersistentVersion.toInt() > 18 || PersistentVersion.toInt() < 0 )
+        if ( PersistentVersion.toInt() > 19 || PersistentVersion.toInt() < 0 )
         {
             //Something is horribly wrong
             if ( adminValue( "Database Persistent Tables Version" ).toInt() != DATABASE_PERSISTENT_TABLES_VERSION )
