@@ -79,6 +79,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( "Jocke Andersson", I18N_NOOP( "roKymoter, bug fixer and Swedish Bitch (Firetech)" ), "ajocke@gmail.com" );
     aboutData.addCredit( "Kenneth Wesley Wimer II", I18N_NOOP( "Icons" ), "kwwii@bootsplash.org" );
     aboutData.addCredit( "Marco Gulino", I18N_NOOP( "Konqueror Sidebar, some DCOP methods" ), "marco@kmobiletools.org" );
+    aboutData.addCredit( "Maximilian Kossick", I18N_NOOP( "Dynamic Collection, label support, patches" ), "maximilian.kossick@gmail.com" );
     aboutData.addCredit( "Melchior Franz", I18N_NOOP( "FHT routine, bugfixes" ), "mfranz@kde.org" );
     aboutData.addCredit( "Michael Pyne", I18N_NOOP( "K3B export code" ), "michael.pyne@kdemail.net" );
     aboutData.addCredit( "Nenad Grujicic", I18N_NOOP( "Splash screen" ), "mchitman@neobee.net" );
