@@ -2271,7 +2271,7 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
         lastPlay.setTime_t( values[1].toUInt() );
 
         const uint playtimes = values[2].toInt();
-        const uint score = values[3].toInt();
+        const uint score = static_cast<uint>( values[3].toFloat() );
         const uint rating = values[4].toInt();
 
         //SAFE   = .arg( x, y )
@@ -2430,7 +2430,7 @@ void CurrentTrackJob::showSuggestedSongs( const QStringList &relArtists )
                     "</span><span class='album-song-title'>\n" + escapeHTML( values[i + 1] ) + "</span>\n"
                     "</a>\n"
                     "</td>\n"
-                    "<td>\n" + statsHTML( values[i + 3].toInt(), values[i + 4].toInt() ) + "</td>\n"
+                    "<td>\n" + statsHTML( static_cast<int>( values[i + 3].toFloat() ), values[i + 4].toInt() ) + "</td>\n"
                     "<td width='1'></td>\n"
                     "</tr>\n" );
 
@@ -2482,7 +2482,7 @@ CurrentTrackJob::showSongsWithLabel( const QString &label )
                     "</span><span class='album-song-title'>\n" + escapeHTML( values[i + 1] ) + "</span>\n"
                     "</a>\n"
                     "</td>\n"
-                    "<td>\n" + statsHTML( values[i + 3].toInt(), values[i + 4].toInt() ) + "</td>\n"
+                    "<td>\n" + statsHTML( static_cast<int>( values[i + 3].toFloat() ), values[i + 4].toInt() ) + "</td>\n"
                     "<td width='1'></td>\n"
                     "</tr>\n" );
 
@@ -2575,7 +2575,7 @@ void CurrentTrackJob::showArtistsFaves( const QString &artist, uint artist_id )
                     "<span class='album-song-title'>\n" + escapeHTML( values[i] ) + "</span>\n"
                     "</a>\n"
                     "</td>\n"
-                    "<td>\n" + statsHTML( values[i + 2].toInt(), values[i + 3].toInt() ) + "</td>\n"
+                    "<td>\n" + statsHTML( static_cast<int>( values[i + 2].toFloat() ), values[i + 3].toInt() ) + "</td>\n"
                     "<td width='1'></td>\n"
                     "</tr>\n"
                     );
