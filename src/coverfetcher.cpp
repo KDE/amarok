@@ -43,14 +43,14 @@ Amarok::coverContextMenu( QWidget *parent, QPoint point, const QString &artist, 
         menu.insertTitle( i18n( "Cover Image" ) );
 
         menu.insertItem( SmallIconSet( Amarok::icon( "zoom" ) ), i18n( "&Show Fullsize" ), SHOW );
-        menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n( "&Fetch From amazon.%1" ).arg(CoverManager::amazonTld()), FETCH );
+        menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n( "&Fetch From amazon.%1" ).arg( CoverManager::amazonTld() ), FETCH );
         menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "Set &Custom Cover" ), CUSTOM );
         menu.insertSeparator();
 
-        menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n("&Unset Cover"), DELETE );
+        menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n( "&Unset Cover" ), DELETE );
         if ( showCoverManager ) {
             menu.insertSeparator();
-            menu.insertItem( SmallIconSet( Amarok::icon( "covermanager" ) ), i18n( "Cover Manager" ), MANAGER );
+            menu.insertItem( SmallIconSet( Amarok::icon( "covermanager" ) ), i18n( "Cover &Manager" ), MANAGER );
         }
         #ifndef AMAZON_SUPPORT
         menu.setItemEnabled( FETCH, false );

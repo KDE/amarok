@@ -492,28 +492,23 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
 
     QPtrList<CoverViewItem> selected = selectedItems();
     if( selected.count() > 1 ) {
-        #ifdef AMAZON_SUPPORT
         menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n( "&Fetch Selected Covers" ), FETCH );
-        #endif
-        menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n("Set &Custom Cover for Selected Albums"), CUSTOM );
-        menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n("&Unset Selected Covers"), DELETE );
+        menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "Set &Custom Cover for Selected Albums" ), CUSTOM );
+        menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n( "&Unset Selected Covers" ), DELETE );
     }
     else {
-        menu.insertItem( SmallIconSet( Amarok::icon( "search" ) ), i18n("&Show Fullsize"), SHOW );
-
-        #ifdef AMAZON_SUPPORT
-        menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n("&Fetch From amazon.%1").arg( CoverManager::amazonTld() ), FETCH );
+        menu.insertItem( SmallIconSet( Amarok::icon( "zoom" ) ), i18n( "&Show Fullsize" ), SHOW );
+        menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n( "&Fetch From amazon.%1" ).arg( CoverManager::amazonTld() ), FETCH );
+        menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "Set &Custom Cover" ), CUSTOM );
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n("Set &Custom Image"), CUSTOM );
-        #else
-        menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n("Set &Cover Image"), CUSTOM );
-        #endif
-        menu.insertSeparator();
-        menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n("&Unset Cover Image"), DELETE );
 
+        menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n( "&Unset Cover" ), DELETE );
         menu.setItemEnabled( SHOW, item->hasCover() );
         menu.setItemEnabled( DELETE, item->canRemoveCover() );
     }
+    #ifndef AMAZON_SUPPORT
+    menu.setItemEnabled( FETCH, false );
+    #endif
 
     switch( menu.exec(p) ) {
         case SHOW:
