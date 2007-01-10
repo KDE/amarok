@@ -168,19 +168,17 @@ class CollectionItem : public KListViewItem {
         inline bool isUnknown() {return m_isUnknown;}
         inline bool isSampler() {return m_isSampler;}
 
+        virtual void setPixmap(int column, const QPixmap & pix);
+
         static QPixmap *star();
         static QPixmap *smallStar();
 
         /// convenience functions
         CollectionView *listView() const { return reinterpret_cast<CollectionView*>( KListViewItem::listView() ); }
-        void refreshPixmap();
 
     private:
         friend class CollectionView;
-
         virtual void paintCell ( QPainter * painter, const QColorGroup & cg, int column, int width, int align );
-        virtual void setup();
-        void loadCovers( bool refresh = false );
 
         //for sorting
         virtual int compare( QListViewItem*, int, bool ) const; //reimplemented
@@ -190,7 +188,6 @@ class CollectionItem : public KListViewItem {
         int m_cat;
         bool m_isUnknown;
         bool m_isSampler;
-        QValueList<QPixmap> m_coverImages;
 
         static QPixmap *s_star;
         static QPixmap *s_smallStar;
@@ -340,8 +337,6 @@ class CollectionView : public KListView, public DropProxyTarget
 
         void safeClear();
 
-        QPixmap coverFromPath( const QString &path );
-
     //attributes:
         LIBAMAROK_EXPORT static CollectionView* m_instance;
 
@@ -377,8 +372,6 @@ class CollectionView : public KListView, public DropProxyTarget
 
         bool m_showDivider;
         QValueList<int>         m_flatColumnWidths;
-
-        QMap<QString, QPixmap> m_covers;
 };
 
 // why is signal detailsClicked() missing from KDialogBase?
