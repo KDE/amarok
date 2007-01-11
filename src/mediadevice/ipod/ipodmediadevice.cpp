@@ -929,7 +929,7 @@ IpodMediaDevice::createLockFile( bool silent )
     if( m_lockFile->exists() )
     {
         ok = false;
-        msg = i18n( "Media Device: iPod mounted at %1 already locked! " ).arg( mountPoint() );
+        msg = i18n( "Media Device: iPod mounted at %1 already locked. " ).arg( mountPoint() );
         msg += i18n( "If you are sure that this is an error, then remove the file %1 and try again." )
            .arg( lockFilePath );
 
@@ -939,7 +939,7 @@ IpodMediaDevice::createLockFile( bool silent )
                         KGuiItem(i18n("&Remove"), "editdelete"), QString::null, KMessageBox::Dangerous )
                     == KMessageBox::Continue )
             {
-                msg = i18n( "Media Device: removing lockfile %1 failed: %2! " )
+                msg = i18n( "Media Device: removing lockfile %1 failed: %2. " )
                     .arg( lockFilePath, m_lockFile->errorString() );
                 ok = m_lockFile->remove();
             }

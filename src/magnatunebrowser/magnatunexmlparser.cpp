@@ -47,7 +47,7 @@ void
 MagnatuneXmlParser::completeJob( )
 {
     Amarok::StatusBar::instance() ->longMessage(
-        i18n( "Magnatune.com database update complete! Added %1 tracks on %2 albums from %3 artists" )
+        i18n( "Magnatune.com database update complete. Added %1 tracks on %2 albums from %3 artists" )
         .arg( m_nNumberOfTracks )
         .arg( m_nNumberOfAlbums )
         .arg( m_nNumberOfArtists ), KDE::StatusBar::Information );

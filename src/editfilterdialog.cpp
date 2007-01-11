@@ -51,7 +51,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
        "to avoid two buttons (\"Cancel\" and \"Undo\") with same label in the same dialog", "&Undo"), "undo" );
     setButtonWhatsThis( User2, i18n( "<p>Clicking here will remove the last appended filter. "
                 "You cannot undo more than one action.</p>" ) );
-    setButtonTip(User2, i18n( "Remove last appendend filter" ) );
+    setButtonTip(User2, i18n( "Remove last appended filter" ) );
     setButtonGuiItem( User2, user2Button );
 
     m_mainLay = new QVBoxLayout( plainPage() );
@@ -73,21 +73,21 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     QWhatsThis::add( label3,
       i18n("you can translate the keyword as you will do for the combobox",
            "<p>Here you can choose to <i>Simple Search</i> directly or to use "
-           "some keywords to specify some attributes as the artist name "
-           "and so on. The keyword selectable are divided by their specific value. "
+           "some keywords to specify some attributes, such as the artist name "
+           "and so on. The keywords selectable are divided by their specific value. "
            "Some keywords are numeric and others are alphanumeric. You do not need "
-           "to know it directly. When a keyword is numeric than will be enabled "
-           "the part related to the numeric specifics.</p><p>The alphanumeric "
+           "to know it directly. When a keyword is numeric it will be used to search "
+           "the numeric data for each track.</p><p>The alphanumeric "
            "keywords are the following: <b>album</b>, <b>artist</b>, <b>filename</b> "
-           " (including path), <b>mountpoint</b> (i.e. /home/user1), <b>filetype</b> "
-           " (you can specify: mp3, ogg, flac... it will match the file extensions), "
+           " (including path), <b>mountpoint</b> (e.g. /home/user1), <b>filetype</b> "
+           " (you can specify mp3, ogg, flac, ... and the file extensions will be matched), "
            "<b>genre</b>, <b>comment</b>, <b>composer</b>, <b>directory</b>, <b>lyrics</b>, "
-           "<b>title</b> and <b>label</b>.</p>"
+           "<b>title</b>, and <b>label</b>.</p>"
            "<p>The numeric keywords are: <b>bitrate</b>, <b>disc/discnumber</b> "
            "<b>length</b> (expressed in seconds), <b>playcount</b>, <b>rating</b> "
-           "<b>samplerate</b>, <b>score</b>, <b>size/filesize</b>, (expressed in bytes, "
-           "kbytes and megabytes as specified in the unit for the filesize keyword) "
-           "<b>track</b> (that is the track number) and <b>year</b>.</p>") );
+           "<b>samplerate</b>, <b>score</b>, <b>size/filesize</b> (expressed in bytes, "
+           "kbytes, and megabytes as specified in the unit for the filesize keyword), "
+           "<b>track</b> (i.e. the track number), and <b>year</b>.</p>") );
     keywordLayout->addWidget( label3 );
     keywordLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
     m_comboKeyword = new QComboBox( plainPage(), "keywordComboBox");
@@ -287,7 +287,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
 
     m_checkExclude = new QRadioButton( i18n("do not select the words"), m_groupBox2, "checkexclude");
     QToolTip::add( m_checkExclude,
-      i18n("<p>Check this box to look for all the titles that doesn't contain the words you typed "
+      i18n("<p>Check this box to look for all the titles that do not contain the words you typed "
            "in the related Simple Search edit box</p>"));
     ratioLay->addWidget( m_checkExclude );
 
@@ -317,14 +317,14 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
 
     m_checkAND = new QRadioButton( i18n("AND logic condition", "AND"), m_groupBox3, "checkAND" );
     QToolTip::add( m_checkAND,
-      i18n("<p>Check this box if you want add another condition and you want that the filter has "
-           "to consider the previous conditions and this new one to be true together</p>"));
+      i18n("<p>Check this box if you want add another condition and you want that the filter "
+           "to match both the previous conditions and this new one</p>"));
     ratioLay2->addWidget( m_checkAND );
 
     m_checkOR = new QRadioButton( i18n("OR logic condition", "OR"), m_groupBox3, "checkOR" );
     QToolTip::add( m_checkOR,
-      i18n("<p>Check this box if you want add another condition and you want that the filter has "
-           "to consider either the previous conditions or this new one to be true</p>"));
+      i18n("<p>Check this box if you want add another condition and you want that the filter "
+           "to match either the previous conditions or this new one</p>"));
     ratioLay2->addWidget( m_checkOR );
 
     otherOptionsLayout->addItem( new QSpacerItem( 10, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
