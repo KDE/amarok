@@ -61,8 +61,8 @@ class PlaylistBrowserEntry :  public QObject, public KListViewItem
         virtual QDomElement xml() const { return QDomElement(); }
         QListViewItem* parent() const { return KListViewItem::parent(); }
 
-        bool    isKept() const { return m_kept; }           // if kept == true, then it will be saved
-        void    setKept( const bool k ) { m_kept = k; }     // to the cache files.
+        bool isKept() const { return m_kept; }  // if kept == true, then it will be saved
+        void setKept( bool k );                 // to the cache files. If false, non-renameable
 
         virtual void updateInfo();
         virtual void setDynamic( bool ) {};

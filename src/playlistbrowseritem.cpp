@@ -128,6 +128,14 @@ PlaylistBrowserEntry::compare( QListViewItem* item, int col, bool ascending ) co
 }
 
 void
+PlaylistBrowserEntry::setKept( bool k )
+{
+    m_kept = k;
+    if ( !k )   //Disable renaming by two single clicks
+        setRenameEnabled( 0, false );
+}
+
+void
 PlaylistBrowserEntry::updateInfo()
 {
     PlaylistBrowser::instance()->setInfo( QString::null, QString::null );

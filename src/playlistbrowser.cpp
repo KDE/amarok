@@ -439,7 +439,6 @@ void PlaylistBrowser::loadCoolStreams()
     m_coolStreams = new PlaylistCategory( m_streamsCategory, 0, i18n("Cool-Streams") );
     m_coolStreams->setOpen( m_coolStreamsOpen );
     m_coolStreams->setKept( false );
-    m_coolStreams->setRenameEnabled( 0, false );
     StreamEntry *last = 0;
 
     QDomNode n = d.namedItem( "coolstreams" ).firstChild();
@@ -452,7 +451,6 @@ void PlaylistBrowser::loadCoolStreams()
         KURL url  = KURL::KURL( e.text() );
         last = new StreamEntry( m_coolStreams, last, url, name );
         last->setKept( false );
-        last->setRenameEnabled( 0, false );
     }
 }
 
