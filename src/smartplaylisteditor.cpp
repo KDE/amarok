@@ -16,6 +16,7 @@
 #include <kcombobox.h>
 #include <klineedit.h>
 #include <klocale.h>
+#include <kmountpoint.h>
 #include <knuminput.h>
 
 #include <qcheckbox.h>
@@ -798,7 +799,16 @@ void CriteriaEditor::slotFieldSelected( int field )
         else if (currentField == FLabel ) //label
             items = CollectionDB::instance()->labelList();
         else if (currentField == FMountPoint ) //mount point
-            items = MountPointManager::instance()->collectionFolders();
+        {
+            KMountPoint::List mountpoints = KMountPoint::currentMountPoints( KMountPoint::NeedRealDeviceName );
+            foreachType( KMountPoint::List, mountpoints )
+            {
+                //TODO: doesn't work for network shares
+                QString device = (*it)->realDeviceName();
+                if ( device.startsWith( "/dev/hd" ) || device.startsWith( "/dev/sd" ) )
+                    items << (*it)->mountPoint();
+            }
+        }
         else  //genre
            items = CollectionDB::instance()->genreList();
 
