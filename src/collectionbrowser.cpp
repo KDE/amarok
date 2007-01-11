@@ -3999,28 +3999,65 @@ CollectionView::renderTreeModeView( bool /*=false*/ )
         }
     }
 
-    int count = childCount() - dividerCount;
-    const bool selectFinalItem( 1 == count ); //Make sure we have found just one item
-    QListViewItem *item = firstChild();
-    if( dynamic_cast<DividerItem *>( item ) )
-        item = item->nextSibling();
-    while( count == 1 && item && item->isExpandable() )
+    //Algorithm to expand some items after a search in a pretty/useful way:
+    //Aim to expand all items with one child, but with a maximum limit to how many items
+    //should be shown in the listview ( maxRows) after which we give up. If an item has
+    //more than one child and we haven't reached the limit, we may end up expanding it
+    //later.
+    QValueList<QListViewItem*> couldOpen;
+    int totalCount = childCount() - dividerCount;
+    const int maxRows = 20; //This seems like a fair limit for a 1024x768 screen
+    if ( totalCount < maxRows )
     {
-        item->setOpen( true );
-        count = item->childCount();
-        item = item->firstChild();
+        //Generate initial list of top list items to look at
+        for ( QListViewItem* top = firstChild(); top; top = top->nextSibling() )
+        {
+            if ( !dynamic_cast<CollectionItem*>( top ) )
+                continue;
+            couldOpen.push_back( top );
+        }
+        //Expand suggested items and expand or enqueue their children until we run out of
+        //rows or have expanded everything
+        for ( QValueList<QListViewItem*>::iterator it = couldOpen.begin(); it != couldOpen.end() && totalCount < maxRows; ++it )
+        {
+            if ( !( *it )->isOpen() )
+               ( *it )->setOpen( true );
+            totalCount += ( *it )->childCount();
+            if ( ( *it )->firstChild()->isExpandable() )    //Check we have not reached the bottom
+            {
+                for ( QListViewItem *j = ( *it )->firstChild(); j && totalCount < maxRows; j = j->nextSibling() )
+                {
+                    j->setOpen( true );
+                    if ( j->childCount() > 1 )  //More than one child - maybe later
+                    {
+                        j->setOpen( false );
+                        couldOpen.push_back( j );
+                    }
+                    else
+                    {
+                        //Prioritize expanding its children - add it immediately next
+                        QValueList<QListViewItem*>::iterator next = it;
+                        ++next;
+                        couldOpen.insert( next, j );
+                        ++totalCount;
+                    }
+                }
+            }
+        }
     }
 
-    //If the tree has only one child for its top branch(es), make the lowest child which
-    //has no siblings become selected.
+    //If the tree has only one branch, at least at the top, make the lowest child
+    //which has no siblings (other branches) become selected.
     //Rationale: If you search for something and then clear the search bar, this way it
     //will stay in view, assuming you only had one real result.
-    if ( selectFinalItem )
+    if ( childCount() - dividerCount == 1 )
     {
-        //The algorithm usually goes one too far down the tree in most cases.
-        //So if it has a sibling, backtrack.
-        if ( item->parent() && item->parent()->childCount() > 1 )
-            item = item->parent();
+        QListViewItem *item = firstChild();
+        if ( dynamic_cast<DividerItem*>( item ) ) //Skip a divider, if present
+            item = item->nextSibling();
+        for ( ; item ; item = item->firstChild() )
+            if ( !item->isOpen() || item->childCount() > 1 )
+                break;
         if ( item )
         {
             setCurrentItem( item );
