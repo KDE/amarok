@@ -36,7 +36,7 @@ VERSION 1.4.5
     * Propose list of composers in collection when editing the composer tag
       from the playlist. (BR 137775)
     * Greatly improved sound quality for the xine equalizer. Patch by Tobias
-      Knieper <tobias.knieper@micekiller.de>. (BR 127307)
+      Knieper <tobias.knieper@gmail.com>. (BR 127307)
     * Fancy graphical volume slider for the OSD. Patch by Alexander Bechikov
       <goo@t72.ru>
     * Shoutcast stream directory. Contributed by Adam Pigg <adam@piggz.co.uk>.
@@ -118,13 +118,13 @@ VERSION 1.4.5
     * Improved seeking with xine-engine. No longer jumps to 0 when you seek
       too quickly. Patch by Alexander Bechikov <goo@t72.ru>. (BR 99808)
     * Improved cover images handling for Various Artists. Patch by Tobias
-      Knieper <tobias.knieper@micekiller.de>. (BR 136833)
+      Knieper <tobias.knieper@gmail.com>. (BR 136833)
     * Don't enable a mount point for devices that can't support them (mtp,
       njb).
     * With SQLite, the search in the collection browser was case-sensitive
       with UTF-8. Patch by Stanislav Nikolov <stanley_87@mail.ru>. (BR 138482)
     * (Don't) Show Under Various Artists would not work when multiple albums
-      are selected. Patch by Tobias Knieper <tobias.knieper@micekiller.de>.
+      are selected. Patch by Tobias Knieper <tobias.knieper@gmail.com>.
       (BR 112422)
     * Changed temp download location for Magnatune purchases (BR 137912)
     * Fixed potential double payment issues in the Magnatune store
@@ -821,7 +821,7 @@ VERSION 1.4-beta3:
     * Don't pretend to be able to uninstall default ContextBrowser themes.
       (BR 123585)
     * Fix preamp and frequency band scaling in the xine equalizer. Patch by
-      Tobias Knieper <webmaster@micekiller.de>. (BR 116633)
+      Tobias Knieper <tobias.knieper@gmail.com>. (BR 116633)
     * OSD text would not be stripped of empty lines.
     * Playlist couldn't be shuffled if queued items existed. (BR 120221)
     * Fixed renaming of Smart Playlists. (BR 122509)
@@ -1054,7 +1054,7 @@ VERSION 1.3.9:
     * Playlist popup menu had a visual glitch with Lipstik and (probably)
       earlier versions of Plastik.
     * Fix preamp and frequency band scaling in the xine equalizer. Patch by
-      Tobias Knieper <webmaster@micekiller.de>. (BR 116633)
+      Tobias Knieper <tobias.knieper@gmail.com>. (BR 116633)
     * Fixed a huge memory leak when using xine-engine with crossfading.
       (BR 119230)
     * Fix memory leak in the helix engine when the player and playlist are
