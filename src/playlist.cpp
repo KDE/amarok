@@ -2724,7 +2724,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 
         popup.insertItem( i18n("&Show Column" ), &sub );
 
-        popup.insertItem( i18n("&Select Columns..."), SELECT );
+        popup.insertItem( i18n("Select &Columns..."), SELECT );
 
         popup.insertItem( i18n("&Fit to Width"), SMARTRESIZING );
         popup.setItemChecked( SMARTRESIZING, m_smartResizing );
@@ -3843,34 +3843,34 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     if( itemCount > 1 )
     {
-        popup.insertItem( SmallIconSet( Amarok::icon( "playlist" ) ), i18n("Set as Playlist (Crop)"), CROP_PLAYLIST );
-        popup.insertItem( SmallIconSet( Amarok::icon( "save" ) ), i18n("Save as Playlist..."), SAVE_PLAYLIST );
+        popup.insertItem( SmallIconSet( Amarok::icon( "playlist" ) ), i18n("&Set as Playlist (Crop)"), CROP_PLAYLIST );
+        popup.insertItem( SmallIconSet( Amarok::icon( "save" ) ), i18n("S&ave as Playlist..."), SAVE_PLAYLIST );
     }
 
-    popup.insertItem( SmallIconSet( Amarok::icon( "remove_from_playlist" ) ), i18n( "&Remove From Playlist" ), this, SLOT( removeSelectedItems() ), Key_Delete, REMOVE );
+    popup.insertItem( SmallIconSet( Amarok::icon( "remove_from_playlist" ) ), i18n( "Re&move From Playlist" ), this, SLOT( removeSelectedItems() ), Key_Delete, REMOVE );
 
     popup.insertSeparator();
 
     KPopupMenu fileMenu;
     if( CollectionDB::instance()->isDirInCollection( item->url().directory() ) )
     {
-        fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18n("Organize File...", "Organize %n Files...", itemCount), ORGANIZE );
+        fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18n("&Organize File...", "&Organize %n Files...", itemCount), ORGANIZE );
     }
     else
     {
-        fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18n("Copy Track to Collection...", "Copy %n Tracks to Collection...", itemCount), COPY_TO_COLLECTION );
-        fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18n("Move Track to Collection...", "Move %n Tracks to Collection...", itemCount), MOVE_TO_COLLECTION );
+        fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18n("&Copy Track to Collection...", "&Copy %n Tracks to Collection...", itemCount), COPY_TO_COLLECTION );
+        fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18n("&Move Track to Collection...", "&Move %n Tracks to Collection...", itemCount), MOVE_TO_COLLECTION );
     }
-    fileMenu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n("Delete File...", "Delete %n Selected Files...", itemCount ), this, SLOT( deleteSelectedFiles() ), SHIFT+Key_Delete, DELETE );
-    popup.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n("Manage Files"), &fileMenu, FILE_MENU );
+    fileMenu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n("&Delete File...", "&Delete %n Selected Files...", itemCount ), this, SLOT( deleteSelectedFiles() ), SHIFT+Key_Delete, DELETE );
+    popup.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n("Manage &Files"), &fileMenu, FILE_MENU );
 
     if( itemCount == 1 )
         popup.insertItem( SmallIconSet( Amarok::icon( "editcopy" ) ), i18n( "&Copy Tags to Clipboard" ), COPY );
 
     if( itemCount > 1 )
         popup.insertItem( trackColumn
-                        ? i18n("&Iteratively Assign Track Numbers")
-                        : i18n("Write '%1' for Selected Tracks")
+                        ? i18n("Iteratively Assign Track &Numbers")
+                        : i18n("&Write '%1' for Selected Tracks")
                         .arg( KStringHandler::rsqueeze( tag, 30 ).replace( "&", "&&" ) ), FILL_DOWN );
 
     popup.insertItem( SmallIconSet( Amarok::icon( "edit" ) ), (itemCount == 1
