@@ -176,22 +176,13 @@ Vis::Selector::Selector( QWidget *parent )
      connect( this, SIGNAL(contextMenuRequested( QListViewItem*, const QPoint&, int )),
               this, SLOT(rightButton( QListViewItem*, const QPoint&, int )) );
 
-    //can I get a pointer to the data section of a QCString?
+    // Can I get a pointer to the data section of a QCString?
     char str[4096];
-    FILE *vis = popen( "amarok_xmmswrapper2 --list", "r" );
+    FILE* vis = popen( "amarok_libvisual --list", "r" );
     str[ fread( static_cast<void*>( str ), sizeof(char), 4096, vis ) ] = '\0';
     pclose( vis );
 
-    QStringList entries = QStringList::split( '\n', QString::fromLocal8Bit( str ) );
-
-    for( QStringList::ConstIterator it = entries.begin(); it != entries.end(); ++it )
-        new Item( this, "amarok_xmmswrapper2", *it, "xmms" );
-
-    vis = popen( "amarok_libvisual --list", "r" );
-    str[ fread( static_cast<void*>( str ), sizeof(char), 4096, vis ) ] = '\0';
-    pclose( vis );
-
-    entries = QStringList::split( '\n', QString::fromLocal8Bit( str ) );
+    const QStringList entries = QStringList::split( '\n', QString::fromLocal8Bit( str ) );
 
     for( QStringList::ConstIterator it = entries.begin(); it != entries.end(); ++it )
         new Item( this, "amarok_libvisual", *it, "libvisual" );
@@ -242,20 +233,13 @@ Vis::Selector::rightButton( QListViewItem* qitem, const QPoint& pos, int )
     Item *item = static_cast<Item*>( qitem );
 
     KPopupMenu menu( this );
-    menu.insertItem( i18n( "Configure" ), 0 );
-    menu.insertItem( i18n( "Fullscreen" ), 1 );
+    menu.insertItem( i18n( "Fullscreen" ), 0 );
 
-    if( item->m_proc && item->m_proc->isRunning() )
-        // xmms has no fullscreen, libvisual no configure
-        menu.setItemEnabled( item->text( 1 ) == "xmms" ? 1 : 0, false );
-    else {
+    if( !item->m_proc || !item->m_proc->isRunning() )
         menu.setItemEnabled( 0, false );
-        menu.setItemEnabled( 1, false );
-    }
 
     switch( menu.exec( pos ) ) {
-        case 0: ::send( item->m_sockfd, "configure", 10, 0 ); break;
-        case 1: ::send( item->m_sockfd, "fullscreen", 11, 0 ); break;
+        case 0: ::send( item->m_sockfd, "fullscreen", 11, 0 ); break;
         default: break;
     }
 }
