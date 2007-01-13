@@ -15,6 +15,7 @@
 #include "clicklineedit.h"
 #include "collectionbrowser.h"
 #include "collectiondb.h"
+#include "covermanager.h"
 #include "debug.h"
 #include "deletedialog.h"
 #include "directorylist.h"
@@ -1415,7 +1416,7 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         }
 
         enum Actions { APPEND, QUEUE, MAKE, SAVE, MEDIA_DEVICE, BURN_ARTIST,
-                       BURN_COMPOSER, BURN_ALBUM, BURN_CD, COVER, INFO,
+                       BURN_COMPOSER, BURN_ALBUM, BURN_CD, FETCH, INFO,
                        COMPILATION_SET, COMPILATION_UNSET, ORGANIZE, DELETE, TRASH,
                        FILE_MENU };
 
@@ -1436,17 +1437,17 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
 
         if( cat == IdArtist )
         {
-            menu.insertItem( SmallIconSet( Amarok::icon( "burn" ) ), i18n("Burn All Tracks by This Artist"), BURN_ARTIST );
+            menu.insertItem( SmallIconSet( Amarok::icon( "burn" ) ), i18n( "&Burn All Tracks by This Artist" ), BURN_ARTIST );
             menu.setItemEnabled( BURN_ARTIST, K3bExporter::isAvailable() && siblingSelection.count() == 1 );
         }
         else if( cat == IdComposer )
         {
-            menu.insertItem( SmallIconSet( Amarok::icon( "burn" ) ), i18n("Burn All Tracks by This Composer"), BURN_COMPOSER );
+            menu.insertItem( SmallIconSet( Amarok::icon( "burn" ) ), i18n( "&Burn All Tracks by This Composer" ), BURN_COMPOSER );
             menu.setItemEnabled( BURN_COMPOSER, K3bExporter::isAvailable() && siblingSelection.count() == 1 );
         }
         else if( (cat == IdAlbum || cat == IdVisYearAlbum) )
         {
-            menu.insertItem( SmallIconSet( Amarok::icon( "burn" ) ), i18n("Burn This Album"), BURN_ALBUM );
+            menu.insertItem( SmallIconSet( Amarok::icon( "burn" ) ), i18n( "&Burn This Album" ), BURN_ALBUM );
             menu.setItemEnabled( BURN_ALBUM, K3bExporter::isAvailable() && siblingSelection.count() == 1 );
         }
         // !item->isExpandable() in tree mode corresponds to
@@ -1454,30 +1455,34 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         else if( !item->isExpandable() &&
                  (m_viewMode != modeIpodView || m_currentDepth == trackDepth()) )
         {
-            menu.insertItem( SmallIconSet( Amarok::icon( "burn" ) ), i18n("Burn to CD"), BURN_CD );
+            menu.insertItem( SmallIconSet( Amarok::icon( "burn" ) ), i18n( "B&urn to CD" ), BURN_CD );
             menu.setItemEnabled( BURN_CD, K3bExporter::isAvailable() );
         }
 
         menu.insertSeparator();
 
         KPopupMenu fileMenu;
-        fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18n("Organize File...", "Organize %n Files..." , selection.count() )
-                , ORGANIZE );
-        fileMenu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n("Delete File...", "Delete %n Files..." , selection.count() )
-                , DELETE );
-        menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n("Manage Files"), &fileMenu, FILE_MENU );
+        fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18n( "&Organize File..." , "&Organize %n Files..." , selection.count() ) , ORGANIZE );
+        fileMenu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n( "&Delete File..." , "&Delete %n Files..." , selection.count() ) , DELETE );
+        menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "Manage &Files" ), &fileMenu, FILE_MENU );
 
-        #ifdef AMAZON_SUPPORT
-        if( cat == IdAlbum || cat == IdVisYearAlbum )
-            menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n( "&Fetch Cover Image" ), this, SLOT( fetchCover() ), 0, COVER );
-        #endif
+        if( (cat == IdAlbum || cat == IdVisYearAlbum) && siblingSelection.count() == 1 ) // cover fetch isn't multiselection capable
+        {
+            menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n( "&Fetch Cover From amazon.%1" ).arg( CoverManager::amazonTld() ), this, SLOT( fetchCover() ), 0, FETCH );
+            #ifndef AMAZON_SUPPORT
+            menu.setItemEnabled( FETCH, false );
+            #endif
+        }
 
         if ( ( (cat == IdAlbum || cat == IdVisYearAlbum) && siblingSelection.count() > 0 ) //album
             || ( !item->isExpandable() && m_viewMode == modeTreeView ) ) //or track
         {
+            menu.insertSeparator();
             menu.insertItem( SmallIconSet( "ok" ), i18n( "Show under &Various Artists" ), COMPILATION_SET );
             menu.insertItem( SmallIconSet( "cancel" ), i18n( "&Do not Show under Various Artists" ), COMPILATION_UNSET );
         }
+
+        menu.insertSeparator();
 
         menu.insertItem( SmallIconSet( Amarok::icon( "info" ) )
             , i18n( "Edit Track &Information...",  "Edit &Information for %n Tracks...", selection.count())
@@ -1529,10 +1534,10 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                 K3bExporter::instance()->exportTracks( selection );
                 break;
             case COMPILATION_SET:
-                setCompilation( listSelected(), true );
+                setCompilation( selection, true );
                 break;
             case COMPILATION_UNSET:
-                setCompilation( listSelected(), false );
+                setCompilation( selection, false );
                 break;
             case ORGANIZE:
                 organizeFiles( selection, i18n( "Organize Collection Files" ), false /* do not add to collection, just move */ );
