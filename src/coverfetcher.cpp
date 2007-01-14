@@ -45,6 +45,9 @@ Amarok::coverContextMenu( QWidget *parent, QPoint point, const QString &artist, 
         menu.insertItem( SmallIconSet( Amarok::icon( "zoom" ) ), i18n( "&Show Fullsize" ), SHOW );
         menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n( "&Fetch From amazon.%1" ).arg( CoverManager::amazonTld() ), FETCH );
         menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "Set &Custom Cover" ), CUSTOM );
+        bool disable = !album.isEmpty(); // disable setting covers for unknown albums
+        menu.setItemEnabled( FETCH, disable );
+        menu.setItemEnabled( CUSTOM, disable );
         menu.insertSeparator();
 
         menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n( "&Unset Cover" ), DELETE );
@@ -55,7 +58,7 @@ Amarok::coverContextMenu( QWidget *parent, QPoint point, const QString &artist, 
         #ifndef AMAZON_SUPPORT
         menu.setItemEnabled( FETCH, false );
         #endif
-        bool disable = !CollectionDB::instance()->albumImage( artist, album, 0 ).contains( "nocover" );
+        disable = !CollectionDB::instance()->albumImage( artist, album, 0 ).contains( "nocover" );
         menu.setItemEnabled( SHOW, disable );
         menu.setItemEnabled( DELETE, disable );
 

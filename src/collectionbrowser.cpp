@@ -1420,8 +1420,10 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
                        COMPILATION_SET, COMPILATION_UNSET, ORGANIZE, DELETE, TRASH,
                        FILE_MENU };
 
+        QString trueItemText = getTrueItemText( cat, item );
         KURL::List selection = listSelected();
         QStringList siblingSelection = listSelectedSiblingsOf( cat, item );
+
         menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), MAKE );
         menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), selection.count() == 1 ? i18n( "&Queue Track" )
@@ -1472,6 +1474,8 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
             #ifndef AMAZON_SUPPORT
             menu.setItemEnabled( FETCH, false );
             #endif
+            if( trueItemText.isEmpty() ) // disable cover fetch for unknown albums
+                menu.setItemEnabled( FETCH, false );
         }
 
         if ( ( (cat == IdAlbum || cat == IdVisYearAlbum) && siblingSelection.count() > 0 ) //album
@@ -1487,8 +1491,6 @@ CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SL
         menu.insertItem( SmallIconSet( Amarok::icon( "info" ) )
             , i18n( "Edit Track &Information...",  "Edit &Information for %n Tracks...", selection.count())
             , this, SLOT( showTrackInfo() ), 0, INFO );
-
-        QString trueItemText = getTrueItemText( cat, item );
 
         switch( menu.exec( point ) )
         {
@@ -2205,8 +2207,7 @@ CollectionView::listSelectedSiblingsOf( int cat, QListViewItem* item )
         {
             trueItemText = getTrueItemText( cat, item );
             //debug() << "selected item: " << trueItemText << endl;
-            if( !trueItemText.isEmpty() ) // filter out "Unknown"
-                list << trueItemText;
+            list << trueItemText;
         }
         item = item->itemBelow();
     }
