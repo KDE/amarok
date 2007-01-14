@@ -41,14 +41,13 @@ class EditFilterDialog : public KDialogBase
 
         QGroupBox *m_groupBox;
 
-        QRadioButton *m_keywordValueRadio;
         QComboBox *m_comboCondition;
-        QSpinBox *m_spinValue1;
-        QSpinBox *m_spinValue2;
+        QLabel *m_filesizeLabel;
         QComboBox *m_comboUnitSize;
 
         QRadioButton *m_minMaxRadio;
         QSpinBox *m_spinMin1, *m_spinMin2;
+        QLabel *m_andLabel;
         QSpinBox *m_spinMax1, *m_spinMax2;
 
         QGroupBox *m_groupBox2;
@@ -84,6 +83,7 @@ class EditFilterDialog : public KDialogBase
         void textWanted( const QStringList &completions );
         void valueWanted();
 
+        void chooseCondition(int index);
         void chooseOneValue();
         void chooseMinMaxValue();
 
