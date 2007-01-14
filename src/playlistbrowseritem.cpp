@@ -2615,9 +2615,8 @@ void PodcastEpisode::downloadResult( KIO::Job * transferJob )
     localFile->writeBlock( m_podcastEpisodeJob->data() );
     localFile->close();
 
-    m_bundle.setLocalURL( m_localUrl );
-    CollectionDB::instance()->updatePodcastEpisode( dBId(), m_bundle );
-    m_onDisk = true;
+    setLocalUrl( m_localUrl );
+
     PodcastChannel *channel = dynamic_cast<PodcastChannel *>( m_parent );
     if( channel && channel->autotransfer() && MediaBrowser::isAvailable() )
     {
