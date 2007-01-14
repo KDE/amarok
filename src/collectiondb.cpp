@@ -4298,8 +4298,8 @@ CollectionDB::similarArtists( const QString &artist, uint count )
 {
     QStringList values;
 
-    values = query( QString( "SELECT suggestion FROM related_artists WHERE artist = '%1' LIMIT %2 OFFSET 0;" )
-                                 .arg( escapeString( artist ), QString::number( count ) ) );
+    values = query( QString( "SELECT suggestion FROM related_artists WHERE artist = '%1' ORDER BY %2 LIMIT %3 OFFSET 0;" )
+                                 .arg( escapeString( artist ), randomFunc(), QString::number( count ) ) );
 
     if ( values.isEmpty() )
         Scrobbler::instance()->similarArtists( artist );
