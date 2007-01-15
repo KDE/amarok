@@ -803,10 +803,35 @@ void CriteriaEditor::slotFieldSelected( int field )
             KMountPoint::List mountpoints = KMountPoint::currentMountPoints( KMountPoint::NeedRealDeviceName );
             foreachType( KMountPoint::List, mountpoints )
             {
-                //TODO: doesn't work for network shares
+                /* This code is adapted from KDE mediamanager's fstabbackend.cpp
+                 * Copyright Kévin Ottens, Bernhard Rosenkraenzer, and from looking
+                 * at the commit messages a few other guys who didn't add their name to the header.
+                 */
                 QString device = (*it)->realDeviceName();
-                if ( device.startsWith( "/dev/hd" ) || device.startsWith( "/dev/sd" ) )
-                    items << (*it)->mountPoint();
+                QString fs = (*it)->mountType();
+                QString mountpoint = (*it)->mountPoint();
+                if ( fs != "swap"
+                     && fs != "tmpfs"
+                     && fs != "sysfs"
+                     && fs != "fdescfs"
+                     && fs != "kernfs"
+                     && fs != "usbfs"
+                     && !fs.contains( "proc" )
+                     && fs != "unknown"
+                     && fs != "none"
+                     && fs != "sunrpc"
+                     && fs != "none"
+                     && device != "tmpfs"
+                     && device.find("shm") == -1
+                     && mountpoint != "/dev/swap"
+                     && mountpoint != "/dev/pts"
+                     && mountpoint.find("/proc") != 0
+                     && mountpoint.find("/sys") != 0
+                     || fs.find( "smb" ) != -1
+                     || fs.find( "cifs" ) != -1
+                     || fs.find( "nfs" ) != -1
+                )
+                    items << mountpoint;
             }
         }
         else  //genre
