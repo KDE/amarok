@@ -104,6 +104,7 @@ private:
    {
       unsigned long m_startfadetime;
       bool m_fadeactive;
+      bool m_stopfade;
    } m_pfade[2];
 
    void cleanup();

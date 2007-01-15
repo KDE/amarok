@@ -77,6 +77,7 @@ HelixEngine::HelixEngine()
    addPluginProperty( "HasConfigure", "true" );
    addPluginProperty( "HasEqualizer", "true" );
    addPluginProperty( "HasCrossfade", "true" );
+   addPluginProperty( "HasCDDA", "false");
 
    memset(&m_md, 0, sizeof(m_md));
    memset(hscope, 0, 2*sizeof(HelixScope));
@@ -293,7 +294,7 @@ HelixEngine::load( const KURL &url, bool isStream )
    }
 
    debug() << "xfadeLength is " << m_xfadeLength << endl;
-   if( m_xfadeLength > 0 && m_state == Engine::Playing && !isStream &&
+   if( m_xfadeLength > 0 && m_state == Engine::Playing && !isStream && 
         ( m_xfadeNextTrack || //set by engine controller when switching tracks automatically
          (uint) AmarokConfig::crossfadeType() == 0 ||  //crossfade always
          (uint) AmarokConfig::crossfadeType() == 2 ) ) //crossfade when switching tracks manually)
@@ -415,10 +416,20 @@ HelixEngine::stop()
       return;
 
    debug() << "In stop\n";
-   cleanup();
-   cleanUpStream(m_current);
-   m_state = Engine::Empty;
-   emit stateChanged( m_state );
+   if( AmarokConfig::fadeout() && !m_pfade[m_current].m_fadeactive && state() != Engine::Paused )
+   {
+      m_pfade[m_current].m_fadeactive = true;
+      m_pfade[m_current].m_stopfade = true;
+      m_pfade[m_current].m_startfadetime = PlayerControl::where(m_current);
+      setFadeout(true, m_xfadeLength, m_current);
+   }
+   else
+   {
+      cleanup();
+      cleanUpStream(m_current);
+      m_state = Engine::Empty;
+      emit stateChanged( m_state );
+   }
 }
 
 
@@ -560,9 +571,15 @@ HelixEngine::timerEvent( QTimerEvent * )
       if ( m_state == Engine::Playing && isPlaying(m_current?0:1) && PlayerControl::done(m_current?0:1) )
          hscope[m_current?0:1].m_lasttime = 0;
 
-      if (m_pfade[m_current?0:1].m_fadeactive &&
-          PlayerControl::where(m_current?0:1) > m_pfade[m_current?0:1].m_startfadetime + (unsigned)m_xfadeLength)
+      // crossfade finished
+      if ( m_pfade[m_current?0:1].m_fadeactive &&
+           PlayerControl::where(m_current?0:1) > m_pfade[m_current?0:1].m_startfadetime + (unsigned)m_xfadeLength)
          play_finished(m_current?0:1);
+
+      // fade on stop finished
+      if (m_pfade[m_current].m_stopfade && m_pfade[m_current].m_fadeactive &&
+          PlayerControl::where(m_current) > m_pfade[m_current].m_startfadetime + (unsigned)m_xfadeLength)
+         stop();
    }
 
    // prune the scope(s)
