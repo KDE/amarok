@@ -102,7 +102,7 @@ class ScanController : public ThreadWeaver::DependentJob, public QXmlDefaultHand
         void customEvent( QCustomEvent* );
 
         // Member variables:
-        static const uint MAX_RESTARTS = 20;
+        static const uint MAX_RESTARTS = 80;
         static const uint MAX_FAILURE_PERCENTAGE = 5;
 
         KProcIO* m_scanner;
