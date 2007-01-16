@@ -166,7 +166,7 @@ class Proxy
         myputs( "error from o.write, #{$!}" )
         break
       end
-      newdata = income.read( 4096 )
+      newdata = income.read( 1024 )
 
       data = holdover + newdata[0..-5]
       holdover = newdata[-4..-1]
