@@ -1203,25 +1203,10 @@ MtpMediaDevice::getCapacity( KIO::filesize_t *total, KIO::filesize_t *available 
     if( !isConnected() )
         return false;
 
-    uint64_t totalbytes;
-    uint64_t freebytes;
-    char *storage_description;
-    char *volume_label;
-
-    m_critical_mutex.lock();
-    int ret = LIBMTP_Get_Storageinfo( m_device, &totalbytes, &freebytes, &storage_description, &volume_label );
-    m_critical_mutex.unlock();
-    if( ret == 0 )
-    {
-        *total = totalbytes;
-        *available = freebytes;
-        return true;
-    }
-    else
-    {
-        debug() << "couldn't get storage details" << endl;
-        return false;
-    }
+    // TODO : Follow the links so we sum up all the device's storage.
+    *total = m_device->storage->MaxCapacity;
+    *available = m_device->storage->FreeSpaceInBytes;
+    return true;
 }
 
 /**
@@ -1235,20 +1220,14 @@ MtpMediaDevice::customClicked()
     {
         QString batteryLevel;
         QString secureTime;
-        QString storageInformation;
         QString supportedFiles;
 
         uint8_t maxbattlevel;
         uint8_t currbattlevel;
-        uint64_t totalbytes;
-        uint64_t freebytes;
-        char *storage_description;
-        char *volume_label;
         char *sectime;
 
 
         m_critical_mutex.lock();
-        LIBMTP_Get_Storageinfo( m_device, &totalbytes, &freebytes, &storage_description, &volume_label );
         LIBMTP_Get_Batterylevel( m_device, &maxbattlevel, &currbattlevel );
         LIBMTP_Get_Secure_Time( m_device, &sectime );
         m_critical_mutex.unlock();
@@ -1257,18 +1236,13 @@ MtpMediaDevice::customClicked()
             + QString::number( (int) ( (float) currbattlevel / (float) maxbattlevel * 100.0 ) )
             + '%';
         secureTime = i18n("Secure time: ") + sectime;
-        storageInformation = i18n("Volume label: ")
-            + volume_label + '\n'
-            + i18n("Storage description: ") + storage_description;
         supportedFiles = i18n("Supported file types: ")
             + m_supportedFiles.join( ", " );
 
         Information = ( i18n( "Player Information for " )
                         + m_name + '\n' + batteryLevel
                         + '\n' + secureTime + '\n'
-                        + storageInformation + '\n' + supportedFiles );
-        free(storage_description);
-        free(volume_label);
+                        + supportedFiles );
         free(sectime);
     }
     else
