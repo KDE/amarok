@@ -96,8 +96,8 @@ void HSPPreMixAudioHook::setFadeout(bool fadeout)
    m_fadeout = fadeout;
    if (m_fadeout)
    {
-      // the "time constant" (ms) is the time it takes to reach +6db of the target
-      gainSetTimeConstant((float) m_fadelength / 2.0, m_gaintool);
+      // the "time constant" (ms) is the time it takes to reach +/- 6db of the original
+      gainSetTimeConstant((float) m_fadelength / 8.0, m_gaintool);
       gainSetSmoothdB(FADE_MIN_dB, m_gaintool);
    }
 }

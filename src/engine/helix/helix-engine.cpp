@@ -416,12 +416,13 @@ HelixEngine::stop()
       return;
 
    debug() << "In stop\n";
+
    if( AmarokConfig::fadeout() && !m_pfade[m_current].m_fadeactive && state() != Engine::Paused )
    {
       m_pfade[m_current].m_fadeactive = true;
       m_pfade[m_current].m_stopfade = true;
       m_pfade[m_current].m_startfadetime = PlayerControl::where(m_current);
-      setFadeout(true, m_xfadeLength, m_current);
+      setFadeout(true, AmarokConfig::fadeoutLength(), m_current);
    }
    else
    {
@@ -578,7 +579,7 @@ HelixEngine::timerEvent( QTimerEvent * )
 
       // fade on stop finished
       if (m_pfade[m_current].m_stopfade && m_pfade[m_current].m_fadeactive &&
-          PlayerControl::where(m_current) > m_pfade[m_current].m_startfadetime + (unsigned)m_xfadeLength)
+          PlayerControl::where(m_current) > m_pfade[m_current].m_startfadetime + (unsigned)AmarokConfig::fadeoutLength())
          stop();
    }
 

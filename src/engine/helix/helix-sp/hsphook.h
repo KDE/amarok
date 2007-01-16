@@ -18,7 +18,7 @@
 
 struct GAIN_STATE;
 
-#define FADE_MIN_dB -126
+#define FADE_MIN_dB -120
 
 class HSPPreMixAudioHook : public IHXAudioHook
 {
