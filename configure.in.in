@@ -816,7 +816,7 @@ AC_ARG_WITH(libmtp,
 )
 if test "$build_libmtp" != "no"; then
     if test "$PKGCONFIGFOUND" = "yes" ; then
-        PKG_CHECK_MODULES(LIBMTP, libmtp >= 0.1.0,
+        PKG_CHECK_MODULES(LIBMTP, libmtp >= 0.1.1,
         [
             have_libmtp=yes
         ],
