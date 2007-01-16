@@ -29,8 +29,8 @@
 EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, const QString &text )
     : KDialogBase( Plain, i18n("Edit Filter"), User1|User2|Default|Ok|Cancel,
       Cancel, parent, "editfilter", /*modal*/true, /*separator*/false ),
-      m_filterText(text),
-      m_minMaxRadio(0)
+      m_minMaxRadio(0),
+      m_filterText(text)
 {
     // Redefine "Default" button
     KGuiItem defaultButton( i18n("&Append"), "add" );
