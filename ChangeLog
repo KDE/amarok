@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 1.4.5
   FEATURES:
+    * Fade-out for helix-engine when pressing Stop.
     * Guided editing of the collection/playlist/devices filters. Patch by
       Giovanni Venturi <giovanni@kde-it.org>. (BR 139292)
     * Added GUI options for fadeout and fadeout on exit. Both are now enabled
