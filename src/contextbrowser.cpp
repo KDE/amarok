@@ -1389,7 +1389,7 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
 
         QString artistName = albumValues[5].isEmpty() ? i18n( "Unknown artist" ) : albumValues[5];
 
-        QString albumImage = CollectionDB::instance()->albumImage( albumValues[5], reqResult[ i ], true, 50 );
+        QString albumImage = ContextBrowser::getEncodedImage( CollectionDB::instance()->albumImage( albumValues[5], reqResult[ i ], true, 50 ) );
         QString albumImageTitleAttr = albumImageTooltip( albumImage, 50 );
 
         // Album image
@@ -1733,13 +1733,7 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
     const QString titleUrl   = lastFmInfo->titleUrl();
     const QString lastfmIcon = "file://" + locate( "data","amarok/images/lastfm.png" );
 
-    // Embed cover image in html (encoded string), to get around khtml's caching
-    const QImage img( lastFmInfo->imageUrl() );
-    QByteArray ba;
-    QBuffer buffer( ba );
-    buffer.open( IO_WriteOnly );
-    img.save( &buffer, "PNG" ); // writes image into ba in PNG format
-    const QString coverImage = QString( "data:image/png;base64,%1" ).arg( KCodecs::base64Encode( ba ) );
+    const QString coverImage = ContextBrowser::getEncodedImage( lastFmInfo->imageUrl() );
 
     QPtrList<QString> newUrls;
     newUrls.append( &albumUrl  );
@@ -2194,7 +2188,7 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
     usleep( 10000 );
 
     //making 2 tables is most probably not the cleanest way to do it, but it works.
-    QString albumImage = CollectionDB::instance()->albumImage( currentTrack, true, 1 );
+    QString albumImage = ContextBrowser::getEncodedImage( CollectionDB::instance()->albumImage( currentTrack, true, 1 ) );
     QString albumImageTitleAttr = albumImageTooltip( albumImage, 0 );
 
     bool isCompilation = false;
@@ -2660,7 +2654,7 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
                 i_albumLength += QString(albumValues[j + 4]).toInt();
 
             QString albumLength = ( i_albumLength==0 ? i18n( "Unknown" ) : MetaBundle::prettyTime( i_albumLength, true ) );
-            QString albumImage = CollectionDB::instance()->albumImage( artist, values[ i ], true, 50 );
+            QString albumImage = ContextBrowser::getEncodedImage( CollectionDB::instance()->albumImage( artist, values[ i ], true, 50 ) );
             QString albumImageTitleAttr = albumImageTooltip( albumImage, 50 );
 
             m_HTMLSource.append( QStringx (
@@ -2823,7 +2817,7 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
                 i_albumLength += QString(albumValues[j + 4]).toInt();
 
             QString albumLength = ( i_albumLength==0 ? i18n( "Unknown" ) : MetaBundle::prettyTime( i_albumLength, true ) );
-            QString albumImage = CollectionDB::instance()->albumImage( artist, values[ i ], true, 50 );
+            QString albumImage = ContextBrowser::getEncodedImage( CollectionDB::instance()->albumImage( artist, values[ i ], true, 50 ) );
             QString albumImageTitleAttr = albumImageTooltip( albumImage, 50 );
 
             m_HTMLSource.append( QStringx (
@@ -3155,6 +3149,21 @@ void ContextBrowser::showScanning()
 
     m_currentTrackPage->set( m_HTMLSource );
     saveHtmlData(); // Send html code to file
+}
+
+QString
+ContextBrowser::getEncodedImage( const QString &imageUrl )
+{
+    // Embed cover image in html (encoded string), to get around khtml's caching
+    //debug() << "Encoding imageUrl: " << imageUrl << endl;
+    const QImage img( imageUrl );
+    QByteArray ba;
+    QBuffer buffer( ba );
+    buffer.open( IO_WriteOnly );
+    img.save( &buffer, "PNG" ); // writes image into ba in PNG format
+    const QString coverImage = QString( "data:image/png;base64,%1" ).arg( KCodecs::base64Encode( ba ) );
+    //debug() << "Encoded imageUrl: " << coverImage << endl;
+    return coverImage;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

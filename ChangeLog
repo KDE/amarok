@@ -97,6 +97,7 @@ VERSION 1.4.5
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
+    * Context browser would not display updated covers correctly. (BR 130518)
     * The select custom cover dialog no longer starts in the wrong directory 
       for compilations. (BR 131776)
     * Amarok's xine engine would cut off approximately the last second of an
