@@ -53,7 +53,7 @@ class XineEngine : public Engine::Base
     virtual void setEqualizerEnabled( bool );
     virtual void setEqualizerParameters( int preamp, const QValueList<int>& );
     virtual void setVolumeSW( uint );
-    virtual void fadeOut( bool* terminate, bool exiting = false );
+    virtual void fadeOut( uint fadeLength, bool* terminate, bool exiting = false );
 
     static  void XineEventListener( void*, const xine_event_t* );
     virtual void customEvent( QCustomEvent* );
@@ -124,12 +124,13 @@ public:
 class OutFader : public QObject, public QThread
 {
     XineEngine *m_engine;
-    bool m_terminated;
+    bool        m_terminated;
+    uint        m_fadeLength;
 
     virtual void run();
 
 public:
-    OutFader( XineEngine * );
+    OutFader( XineEngine *, uint fadeLengthMs );
     ~OutFader();
 
    void finish();

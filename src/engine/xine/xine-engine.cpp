@@ -102,7 +102,7 @@ XineEngine::~XineEngine()
 
     if( AmarokConfig::fadeoutOnExit() ) {
         bool terminateFader = false;
-        fadeOut( &terminateFader, true ); // true == exiting
+        fadeOut( AmarokConfig::fadeoutLength(), &terminateFader, true ); // true == exiting
     }
 
     if( m_xine )       xine_config_save( m_xine, configPath() );
@@ -378,7 +378,7 @@ XineEngine::stop()
 
     if( AmarokConfig::fadeout() && !m_fadeOutRunning || state() == Engine::Paused )
     {
-        s_outfader = new OutFader( this );
+        s_outfader = new OutFader( this, AmarokConfig::fadeoutLength() );
         s_outfader->start();
         ::usleep( 100 ); //to be sure engine state won't be changed before it is checked in fadeOut()
         m_url = KURL(); //to ensure we return Empty from state()
@@ -530,7 +530,7 @@ XineEngine::setVolumeSW( uint vol )
 }
 
 void
-XineEngine::fadeOut( bool* terminate, bool exiting )
+XineEngine::fadeOut( uint fadeLength, bool* terminate, bool exiting )
 {
     if( m_fadeOutRunning ) //Let us not start another fadeout...
         return;
@@ -540,7 +540,7 @@ XineEngine::fadeOut( bool* terminate, bool exiting )
     const float originalVol = Engine::Base::makeVolumeLogarithmic( m_volume ) * m_preamp;
 
     // On shutdown, limit fadeout to 3 secs max, so that we don't risk getting killed
-    const int length = exiting ? QMIN( AmarokConfig::fadeoutLength(), 3000 ) : m_xfadeLength;
+    const int length = exiting ? QMIN( fadeLength, 3000 ) : fadeLength;
 
     if( length > 0 && isPlaying )
     {
@@ -1287,11 +1287,12 @@ Fader::finish()
 /// class OutFader
 //////////////////////////////////////////////////////////////////////////////
 
-OutFader::OutFader( XineEngine *engine )
+OutFader::OutFader( XineEngine *engine, uint fadeLength )
    : QObject( engine )
    , QThread()
    , m_engine( engine )
    , m_terminated( false )
+   , m_fadeLength( fadeLength )
 {
     DEBUG_BLOCK
 }
@@ -1310,7 +1311,7 @@ OutFader::run()
 {
     DEBUG_BLOCK
 
-    m_engine->fadeOut( &m_terminated );
+    m_engine->fadeOut( m_fadeLength, &m_terminated );
 
     xine_stop( m_engine->m_stream );
     xine_close( m_engine->m_stream );
