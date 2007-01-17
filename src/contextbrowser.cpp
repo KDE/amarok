@@ -1863,7 +1863,7 @@ void CurrentTrackJob::showStream( const MetaBundle &currentTrack )
                 "<br />\n"
                 "%4"
                 "<br />\n"
-                "%5"
+                "%5 kbps"
                 "<br />\n"
                 "%6"
                 "<br />\n"
