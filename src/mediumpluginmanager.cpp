@@ -114,8 +114,10 @@ MediumPluginManager::detectDevices( const bool redetect, const bool nographics )
 {
     bool foundNew = false;
     KConfig *config = Amarok::config( "MediaBrowser" );
-    if( redetect )
-        MediaDeviceManager::instance()->getDevice( "dummyjusttorerundecop" );
+    if( redetect ) {
+        Medium *dummyMedium = MediaDeviceManager::instance()->getDevice( "dummyjusttorerundecop" );
+        delete dummyMedium;
+    }
     MediumMap mmap = MediaDeviceManager::instance()->getMediumMap();
     for( MediumMap::Iterator it = mmap.begin(); it != mmap.end(); it++ )
     {

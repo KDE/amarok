@@ -41,6 +41,7 @@ DeviceManager::DeviceManager()
     m_dc = KApplication::dcopClient();
     m_dc->setNotifications(true);
     m_valid = false;
+    m_initMedium = 0;
 
     if (!m_dc->isRegistered())
     {
@@ -68,7 +69,7 @@ DeviceManager::DeviceManager()
             {
                 debug() << "During DeviceManager init, error during DCOP call" << endl;
             }
-            getDevice( "init" );
+            m_initMedium = getDevice( "init" );
             debug() << "DeviceManager:  connectDCOPSignal returned successfully!" << endl;
         }
     }
@@ -76,6 +77,7 @@ DeviceManager::DeviceManager()
 
 DeviceManager::~DeviceManager()
 {
+    delete m_initMedium;
 }
 
 void

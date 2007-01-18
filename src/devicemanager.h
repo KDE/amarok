@@ -70,6 +70,7 @@ class DeviceManager : public QObject
         DCOPClient *m_dc;
         bool m_valid;
         MediumMap m_mediumMap;
+        Medium* m_initMedium;
 
 };
 
