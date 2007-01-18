@@ -17,13 +17,14 @@ require "uri"
 
 @app_name = "Lyrics_Lyrc"
 
+class String
+    def shellquote
+        return "'" + self.gsub("'", "'\\\\''") + "'"
+    end
+end
 
 def showLyrics( lyrics )
-    # Important, otherwise we might execute arbitrary nonsense in the DCOP call
-    lyrics.gsub!( '"', "'" )
-    lyrics.gsub!( '`', "'" )
-
-    `dcop amarok contextbrowser showLyrics "#{lyrics}"`
+    system("dcop", "amarok", "contextbrowser", "showLyrics", lyrics)
 end
 
 
@@ -111,7 +112,7 @@ def fetchLyrics( artist, title, url )
     proxy_host = nil
     proxy_port = nil
     if ( @proxy == nil )
-        @proxy = `dcop amarok script proxyForUrl "#{@page_url}"`
+        @proxy = `dcop amarok script proxyForUrl #{@page_url.shellquote}"`
     end
     proxy_uri = URI.parse( @proxy )
     if ( proxy_uri.class != URI::Generic )
@@ -178,8 +179,7 @@ loop do
 
     case command
         when "configure"
-            msg  = 'This script does not require any configuration.'
-            `dcop amarok playlist popupMessage "#{msg}"`
+            `dcop amarok playlist popupMessage "This script does not require any configuration."`
 
         when "fetchLyrics"
             args = message.split()

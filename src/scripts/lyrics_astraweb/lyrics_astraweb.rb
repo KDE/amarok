@@ -12,13 +12,8 @@ require "net/telnet"
 require "rexml/document"
 require "uri"
 
-
 def showLyrics( lyrics )
-    # Important, otherwise we might execute arbitrary nonsense in the DCOP call
-    lyrics.gsub!( '"', "'" )
-    lyrics.gsub!( '`', "'" )
-
-    `dcop amarok contextbrowser showLyrics "#{lyrics}"`
+    system("dcop", "amarok", "contextbrowser", "showLyrics", lyrics)
 end
 
 
@@ -36,7 +31,7 @@ def fetchLyrics( artist, title )
 
     unless response.code == "200"
 #         lyrics = "HTTP Error: #{response.message}"
-        `dcop amarok contextbrowser showLyrics`
+        system("dcop", "amarok", "contextbrowser", "showLyrics")
         return
     end
 
@@ -133,8 +128,7 @@ loop do
 
     case command
         when "configure"
-            msg  = 'This script does not require any configuration.'
-            `dcop amarok playlist popupMessage "#{msg}"`
+            system("dcop", "amarok", "playlist", "popupMessage", 'This script does not require any configuration.')
 
         when "fetchLyrics"
             args = message.split()
