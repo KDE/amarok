@@ -2156,7 +2156,7 @@ CollectionDB::findDirectoryImage( const QString& artist, const QString& album, u
             QString path = cacheCoverDir().filePath( widthKey + key );
             if ( !QFile::exists( path ) )
             {
-                QImage img = QImage( image );
+                QImage img( image );
                 img.smoothScale( width, width, QImage::ScaleMin ).save( path, "PNG" );
             }
             return path;
