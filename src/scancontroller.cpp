@@ -76,6 +76,8 @@ ScanController::ScanController( CollectionDB* parent, bool incremental, const QS
     m_reader->setContentHandler( this );
     m_reader->parse( m_source, true );
 
+    connect( this, SIGNAL( scanDone( bool ) ), MountPointManager::instance(), SLOT( updateStatisticsURLs( bool ) ) );
+
     connect( m_scanner, SIGNAL( readReady( KProcIO* ) ), SLOT( slotReadReady() ) );
 
     *m_scanner << "amarokcollectionscanner";
@@ -149,6 +151,8 @@ ScanController::completeJob( void )
     }
 
     m_fileMapsMutex.unlock();
+
+    emit scanDone( !m_incremental || m_hasChanged );
 
     ThreadWeaver::DependentJob::completeJob();
 }

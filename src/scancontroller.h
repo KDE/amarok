@@ -83,6 +83,7 @@ class ScanController : public ThreadWeaver::DependentJob, public QXmlDefaultHand
 
     signals:
         void scannerAcknowledged();
+        void scanDone( bool changed );
 
     public slots:
         bool requestPause();

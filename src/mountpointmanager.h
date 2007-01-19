@@ -209,10 +209,11 @@ public slots:
     void mediumChanged( const Medium* m );
     void mediumRemoved( const Medium* m );
 
+    void updateStatisticsURLs( bool changed = true );
+
 private slots:
     void migrateStatistics();
     void checkDeviceAvailability();
-    void updateStatisticsURLs();
     void startStatisticsUpdateJob();
 
 private:

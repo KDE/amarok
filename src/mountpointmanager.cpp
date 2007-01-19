@@ -472,9 +472,10 @@ MountPointManager::migrateStatistics()
 }
 
 void
-MountPointManager::updateStatisticsURLs()
+MountPointManager::updateStatisticsURLs( bool changed )
 {
-    QTimer::singleShot( 0, this, SLOT( startStatisticsUpdateJob() ) );
+    if ( changed )
+        QTimer::singleShot( 0, this, SLOT( startStatisticsUpdateJob() ) );
 }
 
 void
