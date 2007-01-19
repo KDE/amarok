@@ -2153,10 +2153,12 @@ CollectionDB::findDirectoryImage( const QString& artist, const QString& album, u
 
         if ( width > 1 )
         {
-            QImage img = QImage( image );
             QString path = cacheCoverDir().filePath( widthKey + key );
-            img.smoothScale( width, width, QImage::ScaleMin ).save( path, "PNG" );
-
+            if ( !QFile::exists( path ) )
+            {
+                QImage img = QImage( image );
+                img.smoothScale( width, width, QImage::ScaleMin ).save( path, "PNG" );
+            }
             return path;
         }
         else //large image
