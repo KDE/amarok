@@ -27,6 +27,7 @@ namespace Daap {
             Proxy(KURL stream, DaapClient* client, const char* name);
             ~Proxy();
             KURL proxyUrl() { return m_proxyUrl; }
+            static KURL realStreamUrl( KURL fakeStream, int sessionId );
 
         public slots:
             void playbackStopped();

@@ -16,6 +16,7 @@
 #include <qhttp.h>
 
 class QDataStream;
+class QFile;
 
 namespace Daap {
 
@@ -32,7 +33,7 @@ class ContentFetcher : public QHttp
         ContentFetcher( const QString & hostname, Q_UINT16 port, const QString& password, QObject * parent = 0, const char * name = 0 );
         ~ContentFetcher();
 
-        void getDaap( const QString & path );
+        void getDaap( const QString & command, QIODevice* musicFile = 0 );
         QDataStream& results();
 
     private slots:

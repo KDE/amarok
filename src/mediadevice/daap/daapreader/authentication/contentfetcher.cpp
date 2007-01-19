@@ -54,7 +54,7 @@ ContentFetcher::results()
 }
 
 void
-ContentFetcher::getDaap( const QString & command )
+ContentFetcher::getDaap( const QString & command, QIODevice* musicFile /*= 0*/ )
 {
     QHttpRequestHeader header( "GET", command );
     char hash[33] = {0};
@@ -74,7 +74,7 @@ ContentFetcher::getDaap( const QString & command )
     header.setValue( "Accept", "*/*" );
     header.setValue( "Accept-Encoding", "gzip" );
 
-    request( header );
+    request( header, 0, musicFile );
 }
 
 /**

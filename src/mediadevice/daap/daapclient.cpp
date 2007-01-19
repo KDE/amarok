@@ -1,6 +1,7 @@
 /***************************************************************************
- * copyright            : (C) 2006 Ian Monroe <ian@monroe.nu>              *
- *                        (C) 2006 Seb Ruiz <me@sebruiz.net>               *
+ * copyright: (C) 2006, 2007 Ian Monroe <ian@monroe.nu>                    *
+ *            (C) 2006 Seb Ruiz <me@sebruiz.net>                           *
+ *            (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
  ***************************************************************************/
 
 /***************************************************************************
@@ -19,6 +20,7 @@
 #include "collectiondb.h"
 #include "collectionbrowser.h"
 #include "daapreader/reader.h"
+#include "daapreader/authentication/contentfetcher.h"
 #include "daapclient.h"
 #include "daapserver.h"
 #include "debug.h"
@@ -43,6 +45,7 @@
 #include <kpopupmenu.h>
 #include <kresolver.h>
 #include <kstandarddirs.h>     //loading icons
+#include <ktempfile.h>
 #include <ktoolbar.h>
 #include <ktoolbarbutton.h>
 
@@ -224,7 +227,7 @@ DaapClient::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
 {
     DEBUG_BLOCK
 
-    enum Actions { APPEND, LOAD, QUEUE, INFO, CONNECT, REMOVE };
+    enum Actions { APPEND, LOAD, QUEUE, INFO, CONNECT, REMOVE, DOWNLOAD };
 
     MediaItem *item = dynamic_cast<MediaItem *>(qitem);
     ServerItem* sitem = dynamic_cast<ServerItem *>(qitem);
@@ -256,6 +259,7 @@ DaapClient::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
             menu.insertItem( SmallIconSet( Amarok::icon( "playlist" ) ), i18n( "&Load" ), LOAD );
             menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
             menu.insertItem( SmallIconSet( Amarok::icon( "fastforward" ) ), i18n( "&Queue Tracks" ), QUEUE );
+            menu.insertItem( SmallIconSet( Amarok::icon( "playlist" ) ), i18n( "&Download" ), DOWNLOAD );
 
             // albums and artists don't have bundles, so they crash... :(
             if( item->bundle() )
@@ -301,7 +305,21 @@ DaapClient::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                 delete sitem;
             }
             break;
+        case DOWNLOAD:
+            downloadSongs( urls );
+            break;
     }
+}
+
+void
+DaapClient::downloadSongs( KURL::List urls )
+{
+    DEBUG_BLOCK
+    KURL::List realStreamUrls;
+    KURL::List::Iterator it;
+    for( it = urls.begin(); it != urls.end(); ++it )
+        realStreamUrls << Daap::Proxy::realStreamUrl( (*it), getSession( (*it).host() + ':' + QString::number( (*it).port() ) ) );
+    ThreadWeaver::instance()->queueJob( new DaapDownloader( realStreamUrls ) );
 }
 
 void
@@ -767,6 +785,94 @@ ServerItem::httpError( const QString& errorString )
     m_reader->deleteLater();
     m_reader = 0;
     m_loaded = false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// CLASS DaapDownloader
+////////////////////////////////////////////////////////////////////////////////
+DaapDownloader::DaapDownloader( KURL::List urls ) : Job( "DaapDownloader" )
+    , m_urls( urls )
+    , m_ready( false )
+    , m_successful( false )
+    , m_errorOccured( false )
+{
+   // setDescription( i18n( "Downloading song from remote computer." ) ); //no new strings,uncomment after string freeze
+    setDescription( i18n( "Downloading Media..." ) );
+}
+
+bool
+DaapDownloader::doJob()
+{
+    DEBUG_BLOCK
+    KURL::List::iterator urlIt = m_urls.begin();
+    Daap::ContentFetcher* http = new Daap::ContentFetcher( (*urlIt).host(), (*urlIt).port(), QString(), this );
+    connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( downloadFinished( int, bool ) ) );
+    connect( http, SIGNAL( dataReadProgress( int, int ) ), this, SLOT( dataReadProgress( int, int ) ) );
+    connect( http, SIGNAL( httpError( const QString& ) ), this, SLOT( downloadFailed( const QString& ) ) );
+    while( !isAborted() && !m_errorOccured && urlIt != m_urls.end() )
+    {
+        m_ready = false;
+        debug() << "downloading " << (*urlIt).path() << endl;
+        setProgressTotalSteps( 100 );
+        KTempFile* tempNewFile = new KTempFile( QString(), '.' + QFileInfo( (*urlIt).path() ).extension() );
+        tempNewFile->setAutoDelete( true );
+        m_tempFileList.append( tempNewFile );
+        http->getDaap( (*urlIt).path() + (*urlIt).query(), tempNewFile->file() );
+        while( !m_ready && !isAborted() )
+        {
+            msleep( 100 );   //Sleep 100 msec
+        }
+        debug() << "finished " << (*urlIt).path() << endl;
+        ++urlIt;
+    }
+    debug() << "returning " << m_successful << endl;
+    http->deleteLater();
+    http = 0;
+    return m_successful;
+}
+
+void
+DaapDownloader::downloadFinished( int /*id*/, bool error )
+{
+    DEBUG_BLOCK
+    m_tempFileList.last()->close();
+    setProgress100Percent(); //just to make sure
+    m_successful = !error;
+    m_ready = true;
+}
+
+void
+DaapDownloader::completeJob()
+{
+    DEBUG_BLOCK
+    KURL path;
+    KURL::List tempUrlList;
+    for( QValueList<KTempFile*>::Iterator itTemps = m_tempFileList.begin(); itTemps != m_tempFileList.end(); ++itTemps )
+    {
+        path.setPath( (*itTemps)->name() );
+        tempUrlList << path;
+    }
+    CollectionView::instance()->organizeFiles( tempUrlList, i18n( "Copy Files To Collection" ), false );
+    for( QValueList<KTempFile*>::Iterator itTemps = m_tempFileList.begin(); itTemps != m_tempFileList.end(); ++itTemps )
+        delete (*itTemps); //autodelete is true, so file is unlinked now
+    m_tempFileList.clear();
+}
+
+void
+DaapDownloader::dataReadProgress( int done, int total )
+{
+    setProgress( int( ( float(done) / float(total) ) * 100.0 ) );
+}
+
+void
+DaapDownloader::downloadFailed( const QString & error )
+{
+ //   Amarok::StatusBar::instance()->longMessageThreadSafe( i18n( "An error occured while downloading from remote music server." ), Amarok::StatusBar::Error );
+    DEBUG_BLOCK
+    debug() << "failed on " << error << endl;
+    m_successful = false;
+    m_errorOccured = true;
+    m_ready = true;
 }
 
 #include "daapclient.moc"

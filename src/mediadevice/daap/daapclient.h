@@ -16,8 +16,11 @@
 
 #include "daapreader/reader.h"
 #include "mediabrowser.h"
+#include "threadweaver.h"
+
 #include <kdeversion.h>
 #include <kdialogbase.h>
+#include <ktempfile.h>
 
 #define DNSSD_SUPPORT KDE_IS_VERSION(3,4,0)
 
@@ -39,6 +42,8 @@ class AddHostBase;
 class MediaItem;
 class ServerItem;
 class DaapServer;
+
+class KURL;
 
 class QCheckBox;
 class QString;
@@ -96,6 +101,7 @@ class DaapClient : public MediaDevice
 
    private:
         ServerItem* newHost( const QString& serviceName, const QString& host, const QString& ip, const Q_INT16 port );
+        void downloadSongs( KURL::List urls );
         QString resolve( const QString& hostname );
 #if DNSSD_SUPPORT
         QString serverKey( const DNSSD::RemoteService* service ) const;
@@ -157,6 +163,29 @@ class ServerItem : public QObject, public MediaItem
         uint            m_iconCounter;
 
         static const int ANIMATION_INTERVAL = 250;
+};
+
+class DaapDownloader : public ThreadWeaver::Job
+{
+Q_OBJECT
+public:
+    DaapDownloader( KURL::List urls );
+
+    virtual bool doJob();
+
+    virtual void completeJob();
+
+private slots:
+    void downloadFinished( int id, bool error );
+    void dataReadProgress( int done, int total );
+    void downloadFailed( const QString &error );
+
+private:
+    KURL::List m_urls;
+    QValueList<KTempFile*> m_tempFileList;
+    bool m_ready;
+    bool m_successful;
+    bool m_errorOccured;
 };
 
 #endif /*AMAROK_DAAPCLIENT_H*/

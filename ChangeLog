@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 1.4.5
   FEATURES:
+    * Download songs from Shared Music (DAAP) directly into the collection.
     * Fadeout for Helix engine when pressing Stop.
     * Guided editing of the collection/playlist/devices filters. Patch by
       Giovanni Venturi <giovanni@kde-it.org>. (BR 139292)
