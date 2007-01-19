@@ -317,6 +317,11 @@ class CollectionView : public KListView, public DropProxyTarget
         void cacheView();
         void restoreView();
 
+        //Used to store the name of an item (and its parents), so it can be recalled later
+        //even if the pointer to the item has been invalidated.
+        QStringList makeStructuredNameList( QListViewItem* ) const;
+        QListViewItem* findFromStructuredNameList( const QStringList& ) const;
+
         // avoid duplicated code
         static inline bool endsInThe( const QString & text );
         inline void updateTrackDepth();
@@ -363,8 +368,8 @@ class CollectionView : public KListView, public DropProxyTarget
         bool m_dirty; // we use this to avoid re-rendering the view when unnecessary (eg, browser is not visible)
 
         QValueList<QStringList> m_cacheOpenItemPaths;
-        QString                 m_cacheViewportTopItem;
-        QString                 m_cacheCurrentItem;
+        QStringList             m_cacheViewportTopItem;
+        QStringList             m_cacheCurrentItem;
         KURL::List              m_organizeURLs;
         bool                    m_organizeCopyMode;
 

@@ -3366,9 +3366,9 @@ CollectionView::cacheView()
 {
     //free cache
     m_cacheOpenItemPaths.clear();
-    m_cacheViewportTopItem = QString::null;
 
-    m_cacheCurrentItem = currentItem() ? currentItem()->text( 0 ) : QString::null;
+    //Store the current item
+    m_cacheCurrentItem = makeStructuredNameList( currentItem() );
 
     //cache expanded/open items
     if ( m_viewMode == modeTreeView ) {
@@ -3388,9 +3388,7 @@ CollectionView::cacheView()
     }
 
     //cache viewport's top item
-    QListViewItem* item = itemAt( QPoint(0, 0) );
-    if ( item )
-        m_cacheViewportTopItem = item->text(0);
+    m_cacheViewportTopItem = makeStructuredNameList( itemAt( QPoint(0, 0) ) );
 }
 
 
@@ -3417,12 +3415,14 @@ CollectionView::restoreView()
     }
 
     //scroll to previous viewport top item
-    QListViewItem* item = findItem( m_cacheViewportTopItem, 0 );
+    QListViewItem* item = findFromStructuredNameList( m_cacheViewportTopItem );
     if ( item )
         setContentsPos( 0, itemPos(item) );
 
-    item = findItem( m_cacheCurrentItem, 0 );
-    if ( item ) {
+    //Restore a selected item (all levels of the tree stored to fully specify which item)
+    item = findFromStructuredNameList( m_cacheCurrentItem );
+    if ( item )
+    {
         setCurrentItem( item );
         item->setSelected( true );
         // More intuitive if shift-click selects from current selection
@@ -3431,8 +3431,41 @@ CollectionView::restoreView()
 
     //free cache
     m_cacheOpenItemPaths.clear();
-    m_cacheViewportTopItem = QString::null;
-    m_cacheCurrentItem = QString::null;
+    m_cacheViewportTopItem = QStringList();
+    m_cacheCurrentItem = QStringList();
+}
+
+QStringList
+CollectionView::makeStructuredNameList( QListViewItem *item ) const
+{
+    QStringList nameList;
+    for ( QListViewItem *current = item; current; current = current->parent() )
+        nameList.push_front( current->text( 0 ) );
+    return nameList;
+}
+
+QListViewItem*
+CollectionView::findFromStructuredNameList( const QStringList &nameList ) const
+{
+    QListViewItem *item( firstChild() );
+    bool firstTime = true;
+    foreach( nameList )
+    {
+        if ( !firstTime )
+            item = item->firstChild();
+        else
+            firstTime = false;
+
+        while ( item && item->text( 0 ) != *it )
+            item = item->nextSibling();
+
+        if ( !item )
+        {
+            debug() << "Could not find expected element to select: " << nameList << endl;
+            break;
+        }
+    }
+    return nameList.isEmpty() ? 0 : item;
 }
 
 
