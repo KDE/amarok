@@ -7130,7 +7130,14 @@ QueryBuilder::excludeFilter( int tables, Q_INT64 value, const QString& filter, i
     else
     {
         if (exact)
-            s = " <> '" + CollectionDB::instance()->escapeString( filter ) + "' ";
+        {
+            bool isNumber;
+            filter.toInt( &isNumber );
+            if (isNumber)
+                s = " <> " + CollectionDB::instance()->escapeString( filter ) + " ";
+            else
+                s = " <> '" + CollectionDB::instance()->escapeString( filter ) + "' ";
+        }
         else
             s = "NOT " + CollectionDB::instance()->likeCondition( filter, mode != modeBeginMatch, mode != modeEndMatch ) + ' ';
     }

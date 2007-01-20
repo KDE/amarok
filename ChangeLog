@@ -98,6 +98,8 @@ VERSION 1.4.5
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
+    * Smart playlists now work correctly with "is not" filters containing
+      numbers. Patch by Felix Rotthowe <felix.rotthowe@cs.uni-dortmund.de>. 
     * Context browser would not display updated covers correctly. (BR 130518)
     * The select custom cover dialog no longer starts in the wrong directory 
       for compilations. (BR 131776)
