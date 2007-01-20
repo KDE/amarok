@@ -1,5 +1,5 @@
 //
-// C++ Implementation: devicemanager
+// C++ Implementation: mediadevicemanager
 //
 // Description: Controls device/medium object handling, providing
 //              helper functions for other objects
