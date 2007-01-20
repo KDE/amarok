@@ -415,10 +415,14 @@ HelixEngine::stop()
    if (!m_inited)
       return;
 
-   debug() << "In stop\n";
+   debug() << "In stop where=" << where(m_current) << " duration=" << duration(m_current) << endl;
 
-   if( AmarokConfig::fadeout() && !m_pfade[m_current].m_fadeactive && state() != Engine::Paused )
+   if( AmarokConfig::fadeout() && !m_pfade[m_current].m_fadeactive && state() == Engine::Playing ) 
    {
+      debug() << "fading out...\n";
+      m_state = Engine::Empty;
+      emit stateChanged( Engine::Empty ); // tell the controller not to bother you anymore
+
       m_pfade[m_current].m_fadeactive = true;
       m_pfade[m_current].m_stopfade = true;
       m_pfade[m_current].m_startfadetime = PlayerControl::where(m_current);
@@ -426,6 +430,7 @@ HelixEngine::stop()
    }
    else
    {
+      debug() << "Stopping immediately\n";
       cleanup();
       cleanUpStream(m_current);
       m_state = Engine::Empty;
@@ -441,9 +446,10 @@ void HelixEngine::play_finished(int playerIndex)
    resetScope(playerIndex);
    memset(&hscope[playerIndex], 0, sizeof(HelixScope));
    memset(&m_pfade[playerIndex], 0, sizeof(FadeTrack));
-   if (playerIndex == m_current)
+   if (playerIndex == m_current && !m_pfade[playerIndex].m_stopfade && !m_pfade[playerIndex].m_fadeactive)
    {
       m_state = Engine::Idle;
+      emit stateChanged( m_state );
       emit trackEnded();
    }
 }
@@ -567,20 +573,24 @@ HelixEngine::timerEvent( QTimerEvent * )
    PlayerControl::dispatch(); // dispatch the players
    if ( m_xfadeLength <= 0 && m_state == Engine::Playing && PlayerControl::done(m_current) )
       play_finished(m_current);
-   else if ( m_xfadeLength > 0 )
+   else if ( m_xfadeLength > 0 || AmarokConfig::fadeout() )
    {
       if ( m_state == Engine::Playing && isPlaying(m_current?0:1) && PlayerControl::done(m_current?0:1) )
          hscope[m_current?0:1].m_lasttime = 0;
+
+      // fade on stop finished
+      if ( m_pfade[m_current].m_stopfade && m_pfade[m_current].m_fadeactive &&
+          (PlayerControl::where(m_current) > m_pfade[m_current].m_startfadetime + (unsigned)AmarokConfig::fadeoutLength() ||
+           PlayerControl::done(m_current)) )
+      {
+         debug() << "Stop fade end\n";
+         stop();
+      }
 
       // crossfade finished
       if ( m_pfade[m_current?0:1].m_fadeactive &&
            PlayerControl::where(m_current?0:1) > m_pfade[m_current?0:1].m_startfadetime + (unsigned)m_xfadeLength)
          play_finished(m_current?0:1);
-
-      // fade on stop finished
-      if (m_pfade[m_current].m_stopfade && m_pfade[m_current].m_fadeactive &&
-          PlayerControl::where(m_current) > m_pfade[m_current].m_startfadetime + (unsigned)AmarokConfig::fadeoutLength())
-         stop();
    }
 
    // prune the scope(s)
