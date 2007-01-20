@@ -44,6 +44,8 @@ class DeviceManager : public QObject
 
         MediumMap getMediumMap() { return m_mediumMap; }
         Medium* getDevice( const QString name );
+        // reconciles m_mediumMap to whatever kded has in it.
+        void reconcileMediumMap();
 
         bool isValid() { return m_valid; }
 
@@ -70,7 +72,6 @@ class DeviceManager : public QObject
         DCOPClient *m_dc;
         bool m_valid;
         MediumMap m_mediumMap;
-        Medium* m_initMedium;
 
 };
 

@@ -14,6 +14,7 @@
 #include "debug.h"
 #include "deviceconfiguredialog.h"
 #include "mediadevicemanager.h"
+#include "devicemanager.h"
 #include "hintlineedit.h"
 #include "mediabrowser.h"
 #include "medium.h"
@@ -114,10 +115,8 @@ MediumPluginManager::detectDevices( const bool redetect, const bool nographics )
 {
     bool foundNew = false;
     KConfig *config = Amarok::config( "MediaBrowser" );
-    if( redetect ) {
-        Medium *dummyMedium = MediaDeviceManager::instance()->getDevice( "dummyjusttorerundecop" );
-        delete dummyMedium;
-    }
+    if( redetect )
+        DeviceManager::instance()->reconcileMediumMap();
     MediumMap mmap = MediaDeviceManager::instance()->getMediumMap();
     for( MediumMap::Iterator it = mmap.begin(); it != mmap.end(); it++ )
     {

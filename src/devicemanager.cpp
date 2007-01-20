@@ -28,6 +28,7 @@
 #include <kapplication.h>
 
 typedef Medium::List MediumList;
+typedef QMap<QString, Medium*>::Iterator MediumIterator;
 
 DeviceManager* DeviceManager::instance()
 {
@@ -41,7 +42,6 @@ DeviceManager::DeviceManager()
     m_dc = KApplication::dcopClient();
     m_dc->setNotifications(true);
     m_valid = false;
-    m_initMedium = 0;
 
     if (!m_dc->isRegistered())
     {
@@ -69,7 +69,7 @@ DeviceManager::DeviceManager()
             {
                 debug() << "During DeviceManager init, error during DCOP call" << endl;
             }
-            m_initMedium = getDevice( "init" );
+            reconcileMediumMap();
             debug() << "DeviceManager:  connectDCOPSignal returned successfully!" << endl;
         }
     }
@@ -77,7 +77,11 @@ DeviceManager::DeviceManager()
 
 DeviceManager::~DeviceManager()
 {
-    delete m_initMedium;
+    for( MediumIterator it = m_mediumMap.begin(); it != m_mediumMap.end(); it++ )
+    {
+        m_mediumMap.remove( it );
+        delete (*it);
+    }
 }
 
 void
@@ -207,7 +211,6 @@ DeviceManager::getDevice( const QString name )
         return NULL;
     debug() << "DeviceManager: getDevice called with name argument = " << name << endl;
     Medium* returnedMedium = 0;
-    Medium* tempMedium = 0;
     MediumList currMediumList = getDeviceList();
 
     Medium::List::iterator it;
@@ -216,17 +219,40 @@ DeviceManager::getDevice( const QString name )
         if ( (*it).name() == name )
         {
             returnedMedium = new Medium(*it);
+            MediumIterator secIt;
+            if ( (secIt = m_mediumMap.find( name )) != m_mediumMap.end() )
+            {
+                Medium* tempMedium = (*secIt);
+                m_mediumMap.remove( name );
+                delete tempMedium;
+            }
+            m_mediumMap[ name ] = returnedMedium;
+            break;
         }
-        if( m_mediumMap.contains( name ) )
-        {
-            tempMedium = m_mediumMap[(*it).name()];
-            m_mediumMap.remove( (*it).name() );
-            delete tempMedium;
-        }
-        m_mediumMap[(*it).name()] = new Medium(*it);
     }
-
     return returnedMedium;
+}
+
+void
+DeviceManager::reconcileMediumMap()
+{
+    DEBUG_BLOCK
+    if ( !m_valid )
+        return;
+
+    MediumList currMediumList = getDeviceList();
+
+    Medium::List::iterator it;
+    for ( it = currMediumList.begin(); it != currMediumList.end(); it++ )
+    {
+        MediumIterator locIt;
+        if ( (locIt = m_mediumMap.find( (*it).name() )) != m_mediumMap.end() ) {
+	        Medium* mediumHolder = (*locIt);
+	        m_mediumMap.remove( (*it).name() );
+	        delete mediumHolder;
+	    }
+	    m_mediumMap[ (*it).name() ] = new Medium(*it);
+    }
 }
 
 QString DeviceManager::convertMediaUrlToDevice( QString url )
