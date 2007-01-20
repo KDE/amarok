@@ -78,10 +78,7 @@ DeviceManager::DeviceManager()
 DeviceManager::~DeviceManager()
 {
     for( MediumIterator it = m_mediumMap.begin(); it != m_mediumMap.end(); it++ )
-    {
-        m_mediumMap.remove( it );
         delete (*it);
-    }
 }
 
 void
@@ -208,25 +205,28 @@ DeviceManager::getDevice( const QString name )
 {
     DEBUG_BLOCK
     if ( !m_valid )
-        return NULL;
+        return 0;
     debug() << "DeviceManager: getDevice called with name argument = " << name << endl;
     Medium* returnedMedium = 0;
     MediumList currMediumList = getDeviceList();
 
-    Medium::List::iterator it;
-    for ( it = currMediumList.begin(); it != currMediumList.end(); it++ )
+    for ( Medium::List::iterator it = currMediumList.begin(); it != currMediumList.end(); ++it )
     {
         if ( (*it).name() == name )
         {
-            returnedMedium = new Medium(*it);
             MediumIterator secIt;
             if ( (secIt = m_mediumMap.find( name )) != m_mediumMap.end() )
             {
-                Medium* tempMedium = (*secIt);
-                m_mediumMap.remove( name );
-                delete tempMedium;
+                //Refresh the Medium by reconstructing then copying it over.
+                returnedMedium = *secIt;
+                *returnedMedium = Medium( *it );
             }
-            m_mediumMap[ name ] = returnedMedium;
+            else
+            {
+                //No previous version of this Medium - create it
+                returnedMedium = new Medium( *it );
+                m_mediumMap[ name ] = returnedMedium;
+            }
             break;
         }
     }
@@ -243,16 +243,21 @@ DeviceManager::reconcileMediumMap()
     MediumList currMediumList = getDeviceList();
 
     Medium::List::iterator it;
-    for ( it = currMediumList.begin(); it != currMediumList.end(); it++ )
+    for ( it = currMediumList.begin(); it != currMediumList.end(); ++it )
     {
         MediumIterator locIt;
-        if ( (locIt = m_mediumMap.find( (*it).name() )) != m_mediumMap.end() ) {
-	        Medium* mediumHolder = (*locIt);
-	        m_mediumMap.remove( (*it).name() );
-	        delete mediumHolder;
-	    }
-	    m_mediumMap[ (*it).name() ] = new Medium(*it);
+        if ( (locIt = m_mediumMap.find( (*it).name() )) != m_mediumMap.end() )
+        {
+            Medium* mediumHolder = (*locIt);
+            *mediumHolder = Medium( *it );
+        }
+        else
+            m_mediumMap[ (*it).name() ] = new Medium(*it);
     }
+
+    //Sanity check
+    if ( currMediumList.size() != m_mediumMap.size() )
+        warning() << "Number of devices does not equal expected number" << endl;
 }
 
 QString DeviceManager::convertMediaUrlToDevice( QString url )
