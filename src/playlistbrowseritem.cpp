@@ -3022,10 +3022,10 @@ SmartPlaylist::SmartPlaylist( QListViewItem *parent, QListViewItem *after, const
 
 int SmartPlaylist::length()
 {
-  QString sql = m_sqlForTags;
+  QString sql = query();
   sql.replace(QRegExp("SELECT.*FROM"), "SELECT COUNT(*) FROM");
   CollectionDB *db = CollectionDB::instance();
-  QStringList result = db->query( sql.replace( "(*MountedDeviceSelection*)" , db->deviceidSelection() ) );
+  QStringList result = db->query( sql );
 
   if (! result.isEmpty())
     return result.first().toInt();
