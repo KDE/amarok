@@ -35,10 +35,10 @@ using namespace TagLib;
 
 struct WavHeader
 {
-    uint8_t        riff_id[4];
+    uint32_t       riff_id;
     uint32_t       riff_size;
-    uint8_t        wave_id[4];
-    uint8_t        format_id[4];
+    uint32_t       wave_id;
+    uint32_t       format_id;
     uint32_t       format_size;
     uint16_t       format_tag;
     uint16_t       num_channels;
@@ -46,7 +46,7 @@ struct WavHeader
     uint32_t       num_avg_bytes_per_sec;
     uint16_t       num_block_align;
     uint16_t       bits_per_sample;
-    uint8_t        data_id[4];
+    uint32_t       data_id;
     uint32_t       num_data_bytes;
 };
 
