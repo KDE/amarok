@@ -9,16 +9,7 @@ MyDirOperator::MyDirOperator ( const KURL &url, QWidget *parent, Medium *medium 
 {
     m_medium = medium;
     setDirLister( new MyDirLister( true ) );
-    //the delete key event was being eaten with the file browser open
-    //so folks couldn't use the del key to remove items from the playlist
-    //refer to KDirOperator::setupActions() to understand this code
-    KActionCollection* dirActionCollection = static_cast<KActionCollection*>(KDirOperator::child("KDirOperator::myActionCollection"));
-    if(dirActionCollection)
-    {
-        KAction* trash = dirActionCollection->action("trash");
-        if(trash)
-            trash->setEnabled(false);
-    }
+    reenableDeleteKey();
 }
 
 void
@@ -39,4 +30,18 @@ MyDirOperator::myCdUp()
     setURL(tmp, true);
 }
 
+
+//BEGIN private methods
+void
+MyDirOperator::reenableDeleteKey()
+{
+    KActionCollection* dirActionCollection = static_cast<KActionCollection*>(KDirOperator::child("KDirOperator::myActionCollection"));
+    if( dirActionCollection )
+    {
+        KAction* trash = dirActionCollection->action("trash");
+        if(trash)
+            trash->setEnabled(false);
+    }
+}
+//END private methods
 #include "mydiroperator.moc"
