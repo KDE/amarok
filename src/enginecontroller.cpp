@@ -687,6 +687,7 @@ void EngineController::slotMainTimer() //SLOT
     if ( m_engine->state() == Engine::Playing &&
          AmarokConfig::crossfade() && m_xFadeThisTrack &&
          m_engine->hasPluginProperty( "HasCrossfade" ) &&
+         Playlist::instance()->stopAfterMode() != Playlist::StopAfterCurrent &&
          ( (uint) AmarokConfig::crossfadeType() == 0 ||    //Always or...
            (uint) AmarokConfig::crossfadeType() == 1 ) &&  //...automatic track change only
          Playlist::instance()->isTrackAfter() &&
