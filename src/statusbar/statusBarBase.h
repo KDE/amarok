@@ -65,7 +65,7 @@ namespace KDE
      * QObject!
      *
      * You can also follow KIO::Jobs, with built in error handling, and
-     * ThreadWeaver::Jobs have built in thread-safe progress handling.
+     * ThreadManager::Jobs have built in thread-safe progress handling.
      *
      * You can show long status/error messages using longMessage(), these are
      * meant to be instead of showing an irritating, interuptory KMessageBox.

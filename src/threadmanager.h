@@ -3,8 +3,8 @@
 // See COPYING file that comes with this distribution
 //
 
-#ifndef THREADWEAVER_H
-#define THREADWEAVER_H
+#ifndef THREADMANAGER_H
+#define THREADMANAGER_H
 
 #include "debug.h"
 #include <qevent.h>   //baseclass
@@ -27,11 +27,11 @@
 
 
 /**
- * @class ThreadWeaver
+ * @class ThreadManager
  * @author Max Howell <max.howell@methylblue.com>
- * @short ThreadWeaver is designed to encourage you to use threads and to make their use easy.
+ * @short ThreadManager is designed to encourage you to use threads and to make their use easy.
  *
- * You create Jobs on the heap and ThreadWeaver allows you to easily queue them,
+ * You create Jobs on the heap and ThreadManager allows you to easily queue them,
  * abort them, ensure only one runs at once, ensure that bad data is never acted
  * on and even cleans up for you should the class that wants the Job's results
  * get deleted while a thread is running.
@@ -41,7 +41,7 @@
  *
  * This is a typical use:
  *
-    class MyJob : public ThreadWeaver::Job
+    class MyJob : public ThreadManager::Job
     {
     public:
         MyJob( QObject *dependent ) : Job( dependent, "MyJob" ) {}
@@ -59,20 +59,20 @@
 
     SomeClass::someFunction()
     {
-        ThreadWeaver::instance()->queueJob( new MyJob( this ) );
+        ThreadManager::instance()->queueJob( new MyJob( this ) );
     }
 
  *
  * That's it! The queue is fifo, there's one queue per job-type, the
- * ThreadWeaver takes ownership of the Job, and the Weaver calls
+ * ThreadManager takes ownership of the Job, and the Manager calls
  * Job::completeJob() on completion which you reimplement to do whatever you
  * need done.
  *
  * BEWARE! None of the functions are thread-safe, only call them from the GUI
  * thread or your application WILL crash!
  *
- * @see ThreadWeaver::Job
- * @see ThreadWeaver::DependentJob
+ * @see ThreadManager::Job
+ * @see ThreadManager::DependentJob
  */
 
 
@@ -84,7 +84,7 @@ public slots: void abort() { m_aborted = true; }
 protected:    bool m_aborted;
 };
 
-class ThreadWeaver : public QObject
+class ThreadManager : public QObject
 {
 public:
     class Thread;
@@ -94,7 +94,7 @@ public:
     friend class Job;
     typedef QValueList<Job*> JobList;
 
-    static ThreadWeaver *instance();
+    static ThreadManager *instance();
     static void deleteInstance();
 
     static volatile uint getNewThreadId();
@@ -102,14 +102,14 @@ public:
     static volatile uint threadIdCounter;
 
     /**
-     * If the ThreadWeaver is already handling a job of this type then the job
+     * If the ThreadManager is already handling a job of this type then the job
      * will be queued, otherwise the job will be processed immediately. Allocate
-     * the job on the heap, and ThreadWeaver will delete it for you.
+     * the job on the heap, and ThreadManager will delete it for you.
      *
      * This is not thread-safe - only call it from the GUI-thread!
      *
      * @return number of jobs in the queue after the call
-     * @see ThreadWeaver::Job
+     * @see ThreadManager::Job
      */
     int queueJob( Job* );
 
@@ -156,8 +156,8 @@ public:
     uint jobCount( const QCString &name );
 
 private:
-    ThreadWeaver();
-   ~ThreadWeaver();
+    ThreadManager();
+   ~ThreadManager();
 
     enum EventType { JobEvent = 20202, OverrideCursorEvent, RestoreOverrideCursorEvent };
 
@@ -204,7 +204,7 @@ public:
         ~Thread();
 
         //we can delete threads here only
-        friend bool ThreadWeaver::event( QEvent* );
+        friend bool ThreadManager::event( QEvent* );
 
     protected:
         DISABLE_GENERATED_MEMBER_FUNCTIONS_3( Thread )
@@ -223,7 +223,7 @@ public:
      *
      * Things can change while you are in a separate thread. Stuff in the GUI
      * thread may not be there anymore by the time you finish the job. @see
-     * ThreadWeaver::dependentJob for a solution.
+     * ThreadManager::dependentJob for a solution.
      *
      * Do your cleanup in the destructor not completeJob(), as completeJob()
      * doesn't have to be called.
@@ -231,13 +231,13 @@ public:
 
     class Job : public JobBase, public QCustomEvent
     {
-        friend class ThreadWeaver;         //access to m_thread
-        friend class ThreadWeaver::Thread; //access to m_aborted
+        friend class ThreadManager;         //access to m_thread
+        friend class ThreadManager::Thread; //access to m_aborted
 
     public:
         /**
          * Like-named jobs are queued and run FIFO. Always allocate Jobs on the
-         * heap, ThreadWeaver will take ownership of the memory.
+         * heap, ThreadManager will take ownership of the memory.
          */
         Job( const char *name );
         virtual ~Job();
@@ -246,7 +246,7 @@ public:
          * These are used by @class DependentJob, but are made available for
          * your use should you need them.
          */
-       enum EventType { JobFinishedEvent = ThreadWeaver::JobEvent, JobStartedEvent };
+       enum EventType { JobFinishedEvent = ThreadManager::JobEvent, JobStartedEvent };
 
         const char *name() const { return m_name; }
 
@@ -349,7 +349,7 @@ public:
      * This Job type is dependent on a QObject instance, if that instance is
      * deleted, this Job will be aborted and safely deleted.
      *
-     * ThreadWeaver::DependentJob (and Job, the baseclass) isa QCustomEvent,
+     * ThreadManager::DependentJob (and Job, the baseclass) isa QCustomEvent,
      * and completeJob() is reimplemented to send the job to the dependent.
      * Of course you can still reimplement completeJob() yourself.
      *
@@ -388,33 +388,33 @@ public:
     };
 
 protected:
-    ThreadWeaver( const ThreadWeaver& );
-    ThreadWeaver &operator=( const ThreadWeaver& );
+    ThreadManager( const ThreadManager& );
+    ThreadManager &operator=( const ThreadManager& );
 };
 
 //useful debug thingy
-#define DEBUG_THREAD_FUNC_INFO { Debug::mutex.lock(); kdDebug() << Debug::indent() << k_funcinfo << "thread: " << ThreadWeaver::Thread::threadId() << endl; Debug::mutex.unlock(); }
+#define DEBUG_THREAD_FUNC_INFO { Debug::mutex.lock(); kdDebug() << Debug::indent() << k_funcinfo << "thread: " << ThreadManager::Thread::threadId() << endl; Debug::mutex.unlock(); }
 
-#define SHOULD_BE_GUI if( ThreadWeaver::Thread::getRunning() ) warning() \
+#define SHOULD_BE_GUI if( ThreadManager::Thread::getRunning() ) warning() \
     << __PRETTY_FUNCTION__ <<  " should not be Threaded, but is running in " << \
-    ThreadWeaver::Thread::getRunning() <<endl;
+    ThreadManager::Thread::getRunning() <<endl;
 
-inline ThreadWeaver*
-ThreadWeaver::instance()
+inline ThreadManager*
+ThreadManager::instance()
 {
-    static ThreadWeaver* instance = new ThreadWeaver();
+    static ThreadManager* instance = new ThreadManager();
 
     return instance;
 }
 
 inline void
-ThreadWeaver::deleteInstance()
+ThreadManager::deleteInstance()
 {
     delete instance();
 }
 
 inline volatile uint
-ThreadWeaver::getNewThreadId()
+ThreadManager::getNewThreadId()
 {
     uint temp;
     threadIdMutex->lock();

@@ -27,7 +27,7 @@
 #include "metabundle.h"
 #include "statusbar.h"
 #include "tagdialog.h"
-#include "threadweaver.h"
+#include "threadmanager.h"
 #include "mediabrowser.h"
 
 #include <qdatetime.h>
@@ -57,11 +57,11 @@
 ///    CLASS PlaylistReader
 ////////////////////////////////////////////////////////////////////////////
 
-class PlaylistReader : public ThreadWeaver::DependentJob
+class PlaylistReader : public ThreadManager::DependentJob
 {
     public:
         PlaylistReader( QObject *recipient, const QString &path )
-                : ThreadWeaver::DependentJob( recipient, "PlaylistReader" )
+                : ThreadManager::DependentJob( recipient, "PlaylistReader" )
                 , m_path( QDeepCopy<QString>( path ) ) {}
 
         virtual bool doJob() {
@@ -81,7 +81,7 @@ class PlaylistReader : public ThreadWeaver::DependentJob
                     it != bundles.end();
                     ++it )
                 *it = QDeepCopy<MetaBundle>( *it );
-            ThreadWeaver::DependentJob::completeJob();
+            ThreadManager::DependentJob::completeJob();
         }
 
         BundleList bundles;
@@ -640,7 +640,7 @@ void PlaylistEntry::load()
         delete firstChild();
 
      //read the playlist file in a thread
-    ThreadWeaver::instance()->queueJob( new PlaylistReader( this, m_url.path() ) );
+    ThreadManager::instance()->queueJob( new PlaylistReader( this, m_url.path() ) );
 }
 
 void PlaylistEntry::startAnimation()

@@ -662,6 +662,10 @@
       <whatsthis>Music Sharing servers added by the user.</whatsthis>
       <default/>
   </entry>
+  <entry key="ServerPasswords" type="StringList">
+    <label>ServerPasswords</label>
+    <whatsthis>Passwords stored by hostname.</whatsthis>
+  </entry>
 </group>
 
 </kcfg>

@@ -22,7 +22,7 @@
 
 
 #include "magnatunetypes.h"
-#include "threadweaver.h"
+#include "threadmanager.h"
 
 #include <qdom.h>
 #include <qstring.h>
@@ -34,7 +34,7 @@
 *
 * @author Nikolaj Hald Nielsen
 */
-class MagnatuneXmlParser : public ThreadWeaver::Job
+class MagnatuneXmlParser : public ThreadManager::Job
 {
     Q_OBJECT
 
@@ -48,7 +48,7 @@ public:
     MagnatuneXmlParser( QString fileName );
 
     /**
-     * The function that starts the actual work. Inherited fromThreadWeaver::Job 
+     * The function that starts the actual work. Inherited fromThreadManager::Job 
      * Note the work is performed in a separate thread
      * @return Returns true on success and false on failure
      */

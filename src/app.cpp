@@ -46,7 +46,7 @@ email                : markey@web.de
 #include "scrobbler.h"
 #include "statusbar.h"
 #include "systray.h"
-#include "threadweaver.h"
+#include "threadmanager.h"
 #include "tracktooltip.h"        //engineNewMetaData()
 
 #include <iostream>
@@ -228,7 +228,7 @@ App::~App()
     delete m_pPlayerWindow;   //sets some XT keys
     delete m_pPlaylistWindow; //sets some XT keys
 
-    ThreadWeaver::deleteInstance(); //waits for jobs to finish
+    ThreadManager::deleteInstance(); //waits for jobs to finish
 
     // this must be deleted before the connection to the Xserver is
     // severed, or we risk a crash when the QApplication is exited,

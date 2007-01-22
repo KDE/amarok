@@ -16,7 +16,7 @@
 
 #include "daapreader/reader.h"
 #include "mediabrowser.h"
-#include "threadweaver.h"
+#include "threadmanager.h"
 
 #include <kdeversion.h>
 #include <kdialogbase.h>
@@ -165,7 +165,7 @@ class ServerItem : public QObject, public MediaItem
         static const int ANIMATION_INTERVAL = 250;
 };
 
-class DaapDownloader : public ThreadWeaver::Job
+class DaapDownloader : public ThreadManager::Job
 {
 Q_OBJECT
 public:

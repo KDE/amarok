@@ -14,7 +14,7 @@
 #define AMAROK_COLLECTIONDB_H
 
 #include "engineobserver.h"
-#include "threadweaver.h" //baseclass
+#include "threadmanager.h" //baseclass
 #include "amarok_export.h"
 
 #include <kurl.h>
@@ -642,7 +642,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         QMutex m_mutex;
 };
 
-class INotify : public ThreadWeaver::DependentJob
+class INotify : public ThreadManager::DependentJob
 {
     Q_OBJECT
 

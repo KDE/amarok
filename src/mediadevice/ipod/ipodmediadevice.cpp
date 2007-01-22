@@ -38,7 +38,7 @@ AMAROK_EXPORT_PLUGIN( IpodMediaDevice )
 #include <collectionbrowser.h>
 #include <playlistbrowser.h>
 #include <tagdialog.h>
-#include <threadweaver.h>
+#include <threadmanager.h>
 #include <metadata/tplugins.h>
 #include <hintlineedit.h>
 
@@ -1675,11 +1675,11 @@ IpodMediaDevice::ipodPath(const QString &realPath)
     return QString();
 }
 
-class IpodWriteDBJob : public ThreadWeaver::DependentJob
+class IpodWriteDBJob : public ThreadManager::DependentJob
 {
     public:
         IpodWriteDBJob( QObject *parent, Itdb_iTunesDB *itdb, bool isShuffle, bool *resultPtr )
-        : ThreadWeaver::DependentJob( parent, "IpodWriteDBJob" )
+        : ThreadManager::DependentJob( parent, "IpodWriteDBJob" )
         , m_itdb( itdb )
         , m_isShuffle( isShuffle )
         , m_resultPtr( resultPtr )
@@ -1793,8 +1793,8 @@ IpodMediaDevice::writeITunesDB( bool threaded )
         }
         else
         {
-            ThreadWeaver::instance()->queueJob( new IpodWriteDBJob( this, m_itdb, m_isShuffle, &ok ) );
-            while( ThreadWeaver::instance()->isJobPending( "IpodWriteDBJob" ) )
+            ThreadManager::instance()->queueJob( new IpodWriteDBJob( this, m_itdb, m_isShuffle, &ok ) );
+            while( ThreadManager::instance()->isJobPending( "IpodWriteDBJob" ) )
             {
                 kapp->processEvents();
                 usleep( 10000 );

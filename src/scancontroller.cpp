@@ -154,7 +154,7 @@ ScanController::completeJob( void )
 
     emit scanDone( !m_incremental || m_hasChanged );
 
-    ThreadWeaver::DependentJob::completeJob();
+    ThreadManager::DependentJob::completeJob();
 }
 
 
@@ -543,7 +543,7 @@ ScanController::customEvent( QCustomEvent* e )
         m_scanner->start();
     }
     else
-        ThreadWeaver::Job::customEvent( e );
+        ThreadManager::Job::customEvent( e );
 }
 
 

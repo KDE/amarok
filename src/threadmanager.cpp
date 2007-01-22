@@ -5,7 +5,7 @@
 
 // the asserts we use in this module prevent crashes, so best to abort the application if they fail
 #define QT_FATAL_ASSERT
-#define DEBUG_PREFIX "ThreadWeaver"
+#define DEBUG_PREFIX "ThreadManager"
 
 #include <kcursor.h>
 #include <qapplication.h>
@@ -14,22 +14,22 @@
 
 #include "debug.h"
 #include "statusbar.h"
-#include "threadweaver.h"
+#include "threadmanager.h"
 #include "collectiondb.h"
 #include "amarokconfig.h"
 
 using Amarok::StatusBar;
 
-volatile uint ThreadWeaver::threadIdCounter = 1; //main thread grabs zero
-QMutex* ThreadWeaver::threadIdMutex = new QMutex();
+volatile uint ThreadManager::threadIdCounter = 1; //main thread grabs zero
+QMutex* ThreadManager::threadIdMutex = new QMutex();
 
 
-ThreadWeaver::ThreadWeaver()
+ThreadManager::ThreadManager()
 {
     startTimer( 5 * 60 * 1000 ); // prunes the thread pool every 5 minutes
 }
 
-ThreadWeaver::~ThreadWeaver()
+ThreadManager::~ThreadManager()
 {
     DEBUG_BLOCK
 
@@ -55,7 +55,7 @@ ThreadWeaver::~ThreadWeaver()
 }
 
 uint
-ThreadWeaver::jobCount( const QCString &name )
+ThreadManager::jobCount( const QCString &name )
 {
     uint count = 0;
 
@@ -67,7 +67,7 @@ ThreadWeaver::jobCount( const QCString &name )
 }
 
 int
-ThreadWeaver::queueJob( Job *job )
+ThreadManager::queueJob( Job *job )
 {
     SHOULD_BE_GUI
 
@@ -86,7 +86,7 @@ ThreadWeaver::queueJob( Job *job )
 }
 
 int
-ThreadWeaver::queueJobs( const JobList &jobs )
+ThreadManager::queueJobs( const JobList &jobs )
 {
     SHOULD_BE_GUI
 
@@ -105,7 +105,7 @@ ThreadWeaver::queueJobs( const JobList &jobs )
 }
 
 void
-ThreadWeaver::onlyOneJob( Job *job )
+ThreadManager::onlyOneJob( Job *job )
 {
     SHOULD_BE_GUI
 
@@ -126,7 +126,7 @@ ThreadWeaver::onlyOneJob( Job *job )
 }
 
 int
-ThreadWeaver::abortAllJobsNamed( const QCString &name )
+ThreadManager::abortAllJobsNamed( const QCString &name )
 {
     SHOULD_BE_GUI
 
@@ -141,8 +141,8 @@ ThreadWeaver::abortAllJobsNamed( const QCString &name )
     return count;
 }
 
-ThreadWeaver::Thread*
-ThreadWeaver::gimmeThread()
+ThreadManager::Thread*
+ThreadManager::gimmeThread()
 {
     for( ThreadList::ConstIterator it = m_threads.begin(), end = m_threads.end(); it != end; ++it )
         if ( !(*it)->running() && (*it)->job() == 0 )
@@ -154,7 +154,7 @@ ThreadWeaver::gimmeThread()
 }
 
 bool
-ThreadWeaver::event( QEvent *e )
+ThreadManager::event( QEvent *e )
 {
     switch( e->type() )
     {
@@ -165,8 +165,8 @@ ThreadWeaver::event( QEvent *e )
         Thread *thread = job->m_thread;
 
         QApplication::postEvent(
-                ThreadWeaver::instance(),
-                new QCustomEvent( ThreadWeaver::RestoreOverrideCursorEvent ) );
+                ThreadManager::instance(),
+                new QCustomEvent( ThreadManager::RestoreOverrideCursorEvent ) );
 
         if ( !job->isAborted() ) {
             d << "completed";
@@ -232,26 +232,26 @@ static void create_current_thread_key()
 }
 
 
-/// @class ThreadWeaver::Thread
+/// @class ThreadManager::Thread
 
-ThreadWeaver::Thread::Thread()
+ThreadManager::Thread::Thread()
     : QThread()
 {}
 
-ThreadWeaver::Thread::~Thread()
+ThreadManager::Thread::~Thread()
 {
     Q_ASSERT( finished() );
 }
 
 QThread*
-ThreadWeaver::Thread::getRunning()
+ThreadManager::Thread::getRunning()
 {
     pthread_once( &current_thread_key_once, create_current_thread_key );
     return reinterpret_cast<QThread *>( pthread_getspecific( current_thread_key ) );
 }
 
 QString
-ThreadWeaver::Thread::threadId()
+ThreadManager::Thread::threadId()
 {
     if (!getRunning())
         return "None";
@@ -263,26 +263,26 @@ ThreadWeaver::Thread::threadId()
 }
 
 void
-ThreadWeaver::Thread::runJob( Job *job )
+ThreadManager::Thread::runJob( Job *job )
 {
     job->m_thread = this;
     job->m_parentThreadId = m_threadId;
 
     if ( job->isAborted() )
-        QApplication::postEvent( ThreadWeaver::instance(), job );
+        QApplication::postEvent( ThreadManager::instance(), job );
 
     else {
         m_job = job;
         start( Thread::IdlePriority ); //will wait() first if necessary
 
         QApplication::postEvent(
-                ThreadWeaver::instance(),
-                new QCustomEvent( ThreadWeaver::OverrideCursorEvent ) );
+                ThreadManager::instance(),
+                new QCustomEvent( ThreadManager::OverrideCursorEvent ) );
     }
 }
 
 void
-ThreadWeaver::Thread::run()
+ThreadManager::Thread::run()
 {
     // BE THREAD-SAFE!
 
@@ -293,14 +293,14 @@ ThreadWeaver::Thread::run()
         CollectionDB::instance()->releasePreviousConnection( this );
 
     //register this thread so that it can be returned in a static getRunning() function
-    m_threadId = ThreadWeaver::getNewThreadId();
+    m_threadId = ThreadManager::getNewThreadId();
     pthread_once( &current_thread_key_once, create_current_thread_key );
     pthread_setspecific( current_thread_key, this );
 
     if( m_job )
     {
         m_job->m_aborted |= !m_job->doJob();
-        QApplication::postEvent( ThreadWeaver::instance(), m_job );
+        QApplication::postEvent( ThreadManager::instance(), m_job );
     }
 
     // almost always the thread doesn't finish until after the
@@ -310,7 +310,7 @@ ThreadWeaver::Thread::run()
 
 
 /// @class ProgressEvent
-/// @short Used by ThreadWeaver::Job internally
+/// @short Used by ThreadManager::Job internally
 
 class ProgressEvent : public QCustomEvent {
 public:
@@ -323,10 +323,10 @@ public:
 
 
 
-/// @class ThreadWeaver::Job
+/// @class ThreadManager::Job
 
-ThreadWeaver::Job::Job( const char *name )
-        : QCustomEvent( ThreadWeaver::JobEvent )
+ThreadManager::Job::Job( const char *name )
+        : QCustomEvent( ThreadManager::JobEvent )
         , m_name( name )
         , m_thread( 0 )
         , m_percentDone( 0 )
@@ -334,14 +334,14 @@ ThreadWeaver::Job::Job( const char *name )
         , m_totalSteps( 1 ) // no divide by zero
 {}
 
-ThreadWeaver::Job::~Job()
+ThreadManager::Job::~Job()
 {
     if( m_thread->running() && m_thread->job() == this )
         warning() << "Deleting a job before its thread has finished with it!\n";
 }
 
 void
-ThreadWeaver::Job::setProgressTotalSteps( uint steps )
+ThreadManager::Job::setProgressTotalSteps( uint steps )
 {
     if ( steps == 0 ) {
         warning() << k_funcinfo << "You can't set steps to 0!\n";
@@ -354,7 +354,7 @@ ThreadWeaver::Job::setProgressTotalSteps( uint steps )
 }
 
 void
-ThreadWeaver::Job::setProgress( uint steps )
+ThreadManager::Job::setProgress( uint steps )
 {
     m_progressDone = steps;
 
@@ -367,7 +367,7 @@ ThreadWeaver::Job::setProgress( uint steps )
 }
 
 void
-ThreadWeaver::Job::setStatus( const QString &status )
+ThreadManager::Job::setStatus( const QString &status )
 {
     m_status = status;
 
@@ -375,13 +375,13 @@ ThreadWeaver::Job::setStatus( const QString &status )
 }
 
 void
-ThreadWeaver::Job::incrementProgress()
+ThreadManager::Job::incrementProgress()
 {
     setProgress( m_progressDone + 1 );
 }
 
 void
-ThreadWeaver::Job::customEvent( QCustomEvent *e )
+ThreadManager::Job::customEvent( QCustomEvent *e )
 {
     int progress = static_cast<ProgressEvent*>(e)->progress;
 
@@ -405,7 +405,7 @@ ThreadWeaver::Job::customEvent( QCustomEvent *e )
 
 
 
-ThreadWeaver::DependentJob::DependentJob( QObject *dependent, const char *name )
+ThreadManager::DependentJob::DependentJob( QObject *dependent, const char *name )
     : Job( name )
     , m_dependent( dependent )
 {
@@ -415,11 +415,11 @@ ThreadWeaver::DependentJob::DependentJob( QObject *dependent, const char *name )
 }
 
 void
-ThreadWeaver::DependentJob::completeJob()
+ThreadManager::DependentJob::completeJob()
 {
     //synchronous, so we don't get deleted twice
     QApplication::sendEvent( m_dependent, this );
 }
 
-#include "threadweaver.moc"
+#include "threadmanager.moc"
 #undef QT_FATAL_ASSERT //enable-final

@@ -46,7 +46,7 @@
 #include <kstandarddirs.h>
 
 
-class TagDialogWriter : public ThreadWeaver::Job
+class TagDialogWriter : public ThreadManager::Job
 {
 public:
     TagDialogWriter( const QMap<QString, MetaBundle> tagsToChange );
@@ -1228,7 +1228,7 @@ TagDialog::saveTags()
     }
     CollectionDB::instance()->cleanLabels();
 
-    ThreadWeaver::instance()->queueJob( new TagDialogWriter( storedTags ) );
+    ThreadManager::instance()->queueJob( new TagDialogWriter( storedTags ) );
 
 }
 
@@ -1438,7 +1438,7 @@ TagDialog::writeTag( MetaBundle &mb, bool updateCB )
 }
 
 TagDialogWriter::TagDialogWriter( const QMap<QString, MetaBundle> tagsToChange )
-        : ThreadWeaver::Job( "TagDialogWriter" ),
+        : ThreadManager::Job( "TagDialogWriter" ),
           m_successCount ( 0 ),
           m_failCount    ( 0 )
 {

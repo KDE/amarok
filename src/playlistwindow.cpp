@@ -38,7 +38,7 @@
 #include "scriptmanager.h"
 #include "statistics.h"
 #include "statusbar.h"
-#include "threadweaver.h"
+#include "threadmanager.h"
 #include "magnatunebrowser/magnatunebrowser.h"
 
 #include <qevent.h>           //eventFilter()
@@ -1094,7 +1094,7 @@ void PlaylistWindow::actionsMenuAboutToShow() //SLOT
 void PlaylistWindow::toolsMenuAboutToShow() //SLOT
 {
     m_toolsMenu->setItemEnabled( Amarok::Menu::ID_CONFIGURE_EQUALIZER, EngineController::hasEngineProperty( "HasEqualizer" ) );
-    m_toolsMenu->setItemEnabled( Amarok::Menu::ID_RESCAN_COLLECTION, !ThreadWeaver::instance()->isJobPending( "CollectionScanner" ) );
+    m_toolsMenu->setItemEnabled( Amarok::Menu::ID_RESCAN_COLLECTION, !ThreadManager::instance()->isJobPending( "CollectionScanner" ) );
 }
 
 

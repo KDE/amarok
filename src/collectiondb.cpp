@@ -36,7 +36,7 @@
 #include "scriptmanager.h"
 #include "scrobbler.h"
 #include "statusbar.h"
-#include "threadweaver.h"
+#include "threadmanager.h"
 
 #include <qbuffer.h>
 #include <qcheckbox.h>
@@ -201,7 +201,7 @@ INotify::doJob()
 
 QMutex* CollectionDB::connectionMutex = new QMutex();
 QMutex* CollectionDB::itemCoverMapMutex = new QMutex();
-//we don't have to worry about this map leaking memory since ThreadWeaver limits the total
+//we don't have to worry about this map leaking memory since ThreadManager limits the total
 //number of QThreads ever created
 QMap<QThread *, DbConnection *> *CollectionDB::threadConnections = new QMap<QThread *, DbConnection *>();
 QMap<QListViewItem*, CoverFetcher*> *CollectionDB::itemCoverMap = new QMap<QListViewItem*, CoverFetcher*>();
@@ -348,7 +348,7 @@ CollectionDB::initDirOperations()
     else
     {
         debug() << "INotify enabled!" << endl;
-        ThreadWeaver::instance()->onlyOneJob( new INotify( this, inotify_fd ) );
+        ThreadManager::instance()->onlyOneJob( new INotify( this, inotify_fd ) );
     }
 #endif
 
@@ -4735,7 +4735,7 @@ DbConnection * CollectionDB::getMyConnection()
     connectionMutex->lock();
 
     DbConnection *dbConn;
-    QThread *currThread = ThreadWeaver::Thread::getRunning();
+    QThread *currThread = ThreadManager::Thread::getRunning();
 
     if (threadConnections->contains(currThread))
     {
@@ -4900,7 +4900,7 @@ CollectionDB::startScan()  //SLOT
     else if( PlaylistBrowser::instance() )
     {
         emit scanStarted();
-        ThreadWeaver::instance()->queueJob( new ScanController( this, false, folders ) );
+        ThreadManager::instance()->queueJob( new ScanController( this, false, folders ) );
     }
 }
 
@@ -4908,7 +4908,7 @@ CollectionDB::startScan()  //SLOT
 void
 CollectionDB::stopScan() //SLOT
 {
-    ThreadWeaver::instance()->abortAllJobsNamed( "CollectionScanner" );
+    ThreadManager::instance()->abortAllJobsNamed( "CollectionScanner" );
 }
 
 
@@ -4921,7 +4921,7 @@ CollectionDB::dirDirty( const QString& path )
 {
     debug() << k_funcinfo << "Dirty: " << path << endl;
 
-    ThreadWeaver::instance()->queueJob( new ScanController( this, false, path ) );
+    ThreadManager::instance()->queueJob( new ScanController( this, false, path ) );
 }
 
 
@@ -4958,7 +4958,7 @@ CollectionDB::coverFetcherResult( CoverFetcher *fetcher )
  * This query is fairly slow with sqlite, and often happens just
  * after the OSD is shown. Threading it restores responsivity.
  */
-class SimilarArtistsInsertionJob : public ThreadWeaver::DependentJob
+class SimilarArtistsInsertionJob : public ThreadManager::DependentJob
 {
     virtual bool doJob()
     {
@@ -4981,7 +4981,7 @@ class SimilarArtistsInsertionJob : public ThreadWeaver::DependentJob
 
 public:
     SimilarArtistsInsertionJob( CollectionDB *parent, const QString &s, const QStringList &list )
-            : ThreadWeaver::DependentJob( parent, "SimilarArtistsInsertionJob" )
+            : ThreadManager::DependentJob( parent, "SimilarArtistsInsertionJob" )
             , artist( QDeepCopy<QString>(s) )
             , escapedArtist( parent->escapeString( QDeepCopy<QString>(s) ) )
             , suggestions( QDeepCopy<QStringList>(list) )
@@ -4993,7 +4993,7 @@ CollectionDB::similarArtistsFetched( const QString& artist, const QStringList& s
 {
     debug() << "Received similar artists\n";
 
-    ThreadWeaver::instance()->queueJob( new SimilarArtistsInsertionJob( this, artist, suggestions ) );
+    ThreadManager::instance()->queueJob( new SimilarArtistsInsertionJob( this, artist, suggestions ) );
 }
 
 void
@@ -5723,13 +5723,13 @@ CollectionDB::scanModifiedDirs()
     if ( !m_scanInProgress )
     {
         //we check if a job is pending because we don't want to abort incremental collection readings
-        if ( !ThreadWeaver::instance()->isJobPending( "CollectionScanner" ) && PlaylistBrowser::instance() )
+        if ( !ThreadManager::instance()->isJobPending( "CollectionScanner" ) && PlaylistBrowser::instance() )
         {
             m_scanInProgress = true;
             m_rescanRequired = false;
             emit scanStarted();
 
-            ThreadWeaver::instance()->onlyOneJob( new ScanController( this, true ) );
+            ThreadManager::instance()->onlyOneJob( new ScanController( this, true ) );
         }
     }
     else

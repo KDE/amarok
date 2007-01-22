@@ -29,7 +29,7 @@
 #include "scancontroller.h"
 #include "smartplaylisteditor.h"
 #include "tagdialog.h"         //showContextMenu()
-#include "threadweaver.h"
+#include "threadmanager.h"
 #include "statusbar.h"
 #include "contextbrowser.h"
 #include "xspfplaylist.h"

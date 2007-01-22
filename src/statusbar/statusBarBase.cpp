@@ -24,7 +24,7 @@
 #include "debug.h"
 #include "squeezedtextlabel.h"
 #include "statusBarBase.h"
-#include "threadweaver.h"
+#include "threadmanager.h"
 
 #include <kio/job.h>
 #include <kiconloader.h>

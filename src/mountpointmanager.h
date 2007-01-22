@@ -24,7 +24,7 @@
 #include "medium.h"
 #include "plugin/plugin.h"
 #include "pluginmanager.h"
-#include "threadweaver.h"
+#include "threadmanager.h"
 
 #include <kconfig.h>
 #include <kurl.h>
@@ -242,7 +242,7 @@ private:
 
 };
 
-class UrlUpdateJob : public ThreadWeaver::DependentJob
+class UrlUpdateJob : public ThreadManager::DependentJob
 {
 public:
     UrlUpdateJob( QObject *dependent ) : DependentJob( dependent, "UrlUpdateJob" ) {}

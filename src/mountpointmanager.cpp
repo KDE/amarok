@@ -481,7 +481,7 @@ MountPointManager::updateStatisticsURLs( bool changed )
 void
 MountPointManager::startStatisticsUpdateJob()
 {
-    ThreadWeaver::instance()->queueJob( new UrlUpdateJob( this ) );
+    ThreadManager::instance()->queueJob( new UrlUpdateJob( this ) );
 }
 
 void

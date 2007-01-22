@@ -319,7 +319,7 @@ DaapClient::downloadSongs( KURL::List urls )
     KURL::List::Iterator it;
     for( it = urls.begin(); it != urls.end(); ++it )
         realStreamUrls << Daap::Proxy::realStreamUrl( (*it), getSession( (*it).host() + ':' + QString::number( (*it).port() ) ) );
-    ThreadWeaver::instance()->queueJob( new DaapDownloader( realStreamUrls ) );
+    ThreadManager::instance()->queueJob( new DaapDownloader( realStreamUrls ) );
 }
 
 void

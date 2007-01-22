@@ -34,7 +34,7 @@
 #include "scriptmanager.h"
 #include "statusbar.h"
 #include "tagdialog.h"
-#include "threadweaver.h"
+#include "threadmanager.h"
 
 #include <qdatetime.h>
 #include <qdeepcopy.h>
@@ -383,7 +383,7 @@ ContextBrowser::~ContextBrowser()
 {
     DEBUG_BLOCK
 
-    ThreadWeaver::instance()->abortAllJobsNamed( "CurrentTrackJob" );
+    ThreadManager::instance()->abortAllJobsNamed( "CurrentTrackJob" );
 
     // Ensure the KHTMLPart dies before its KHTMLView dies,
     // because KHTMLPart's dtoring relies on its KHTMLView still being alive
@@ -1077,11 +1077,11 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 //////////////////////////////////////////////////////////////////////////////////////////
 
 /** This is the slowest part of track change, so we thread it */
-class CurrentTrackJob : public ThreadWeaver::DependentJob
+class CurrentTrackJob : public ThreadManager::DependentJob
 {
 public:
     CurrentTrackJob( ContextBrowser *parent )
-        : ThreadWeaver::DependentJob( parent, "CurrentTrackJob" )
+        : ThreadManager::DependentJob( parent, "CurrentTrackJob" )
         , b( parent )
         , m_currentTrack( QDeepCopy<MetaBundle>( EngineController::instance()->bundle() ) )
         , m_isStream( EngineController::engine()->isStream() )
@@ -1240,7 +1240,7 @@ void ContextBrowser::showCurrentTrack() //SLOT
         return;
     m_currentURL = EngineController::instance()->bundle().url();
     m_currentTrackPage->write( QString::null );
-    ThreadWeaver::instance()->onlyOneJob( new CurrentTrackJob( this ) );
+    ThreadManager::instance()->onlyOneJob( new CurrentTrackJob( this ) );
 }
 
 

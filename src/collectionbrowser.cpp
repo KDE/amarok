@@ -29,7 +29,7 @@
 #include "playlistbrowser.h"
 #include "statusbar.h"
 #include "tagdialog.h"
-#include "threadweaver.h"
+#include "threadmanager.h"
 #include "qstringx.h"
 
 #include <taglib/tfile.h>   //TagLib::File::isWritable

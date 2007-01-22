@@ -223,7 +223,7 @@
 // then decides to clear the playlist again.  The jobEvent() signal
 // passes the URL of the job that was completed.
 //
-// The analyzer is actually run using a KProcess.  ThreadWeaver::Job
+// The analyzer is actually run using a KProcess.  ThreadManager::Job
 // is not a good solution, since we need more flexibility in the
 // queuing process, and in addition, KProcess'es must be started from
 // the GUI thread!

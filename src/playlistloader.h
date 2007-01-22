@@ -12,7 +12,7 @@
 #include <qxml.h>         //baseclass
 #include <kurl.h>         //KURL::List
 #include "metabundle.h"   //stack allocated
-#include "threadweaver.h" //baseclass
+#include "threadmanager.h" //baseclass
 #include "xmlloader.h"    //baseclass
 
 class QListViewItem;
@@ -100,7 +100,7 @@ PlaylistFile::format( const QString &fileName )
  * + List directories, remote and local
  * + Read tags, from file:/// and from DB
  */
-class UrlLoader : public ThreadWeaver::DependentJob
+class UrlLoader : public ThreadManager::DependentJob
 {
 Q_OBJECT
 
@@ -114,7 +114,7 @@ signals:
     void queueChanged( const PLItemList &, const PLItemList & );
 
 protected:
-    /// reimplemented from ThreadWeaver::Job
+    /// reimplemented from ThreadManager::Job
     virtual bool doJob();
     virtual void completeJob();
     virtual void customEvent( QCustomEvent* );

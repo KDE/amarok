@@ -16,7 +16,7 @@
 #include "playlistwindow.h"
 #include "playlist.h"
 #include "socketserver.h"       //Vis::Selector::showInstance()
-#include "threadweaver.h"
+#include "threadmanager.h"
 
 #include <qpixmap.h>
 #include <qtooltip.h>
@@ -129,7 +129,7 @@ Menu::Menu()
 
     safePlug( ac, "update_collection", this );
     insertItem( SmallIconSet( Amarok::icon( "rescan" ) ), i18n("&Rescan Collection"), ID_RESCAN_COLLECTION );
-    setItemEnabled( ID_RESCAN_COLLECTION, !ThreadWeaver::instance()->isJobPending( "CollectionScanner" ) );
+    setItemEnabled( ID_RESCAN_COLLECTION, !ThreadManager::instance()->isJobPending( "CollectionScanner" ) );
 
 #ifndef Q_WS_MAC
     insertSeparator();

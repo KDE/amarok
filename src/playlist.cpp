@@ -41,7 +41,7 @@
 #include "sliderwidget.h"
 #include "statusbar.h"       //for status messages
 #include "tagdialog.h"
-#include "threadweaver.h"
+#include "threadmanager.h"
 #include "xspfplaylist.h"
 
 #include <cmath> //for pow() in playNextTrack()
@@ -101,7 +101,7 @@ typedef PlaylistIterator MyIt;
 /// CLASS TagWriter : Threaded tag-updating
 //////////////////////////////////////////////////////////////////////////////////////////
 
-class TagWriter : public ThreadWeaver::Job
+class TagWriter : public ThreadManager::Job
 { //TODO make this do all tags at once when you split playlist.cpp up
 public:
     TagWriter( PlaylistItem*, const QString &oldTag, const QString &newTag, const int, const bool updateView = true );
@@ -535,7 +535,7 @@ Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, int 
         while( after && after->url().isEmpty() )
             after = static_cast<PlaylistItem*>( after->itemAbove() );
 
-        ThreadWeaver::instance()->queueJob( new UrlLoader( list, after, options ) );
+        ThreadManager::instance()->queueJob( new UrlLoader( list, after, options ) );
     }
 }
 
@@ -555,7 +555,7 @@ Playlist::insertMediaSql( const QString& sql, int options )
         after = lastItem();
 
     setSorting( NO_SORT );
-    ThreadWeaver::instance()->queueJob( new SqlLoader( sql, after, options ) );
+    ThreadManager::instance()->queueJob( new SqlLoader( sql, after, options ) );
 }
 
 void
@@ -694,7 +694,7 @@ Playlist::restoreSession()
     // first ever-run
     if( QFile::exists( url.path() ) )
     {
-        ThreadWeaver::instance()->queueJob( new UrlLoader( url, 0, 0 ) );
+        ThreadManager::instance()->queueJob( new UrlLoader( url, 0, 0 ) );
     }
 }
 
@@ -2136,7 +2136,7 @@ Playlist::clear() //SLOT
     Amarok::actionCollection()->action( "next" )->setEnabled( false );
     Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( false );
 
-    ThreadWeaver::instance()->abortAllJobsNamed( "TagWriter" );
+    ThreadManager::instance()->abortAllJobsNamed( "TagWriter" );
 
     // something to bear in mind, if there is any event in the loop
     // that depends on a PlaylistItem, we are about to crash Amarok
@@ -2274,7 +2274,7 @@ Playlist::writeTag( QListViewItem *qitem, const QString &, int column ) //SLOT
             CollectionDB::instance()->setSongRating( item->url().path(), newTag.toInt() );
         else
             if (oldTag != newTag)
-                ThreadWeaver::instance()->queueJob( new TagWriter( item, oldTag, newTag, column ) );
+                ThreadManager::instance()->queueJob( new TagWriter( item, oldTag, newTag, column ) );
             else if( item->deleteAfterEditing() )
             {
                 removeItem( item );
@@ -2453,7 +2453,7 @@ Playlist::contentsDropEvent( QDropEvent *e )
         if( subtype == "amarok-sql" ) {
             setSorting( NO_SORT );
             QString query = data.section( "\n", 1 );
-            ThreadWeaver::instance()->queueJob( new SqlLoader( query, after ) );
+            ThreadManager::instance()->queueJob( new SqlLoader( query, after ) );
         }
 
         else if( subtype == "dynamic" ) {
@@ -3982,7 +3982,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
             if ( trackColumn && trackNo > 0 )
                 ++it;
 
-            ThreadWeaver::JobList jobs;
+            ThreadManager::JobList jobs;
             bool updateView = true;
             for( ; *it; ++it ) {
                 if ( trackColumn )
@@ -4010,7 +4010,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
                 updateView = false;
             }
 
-            ThreadWeaver::instance()->queueJobs( jobs );
+            ThreadManager::instance()->queueJobs( jobs );
         }
         break;
 
@@ -4469,7 +4469,7 @@ Playlist::switchState( QStringList &loadFromMe, QStringList &saveToMe )
     const PLItemList prev = m_nextTracks;
     m_nextTracks.clear();
     emit queueChanged( PLItemList(), prev );
-    ThreadWeaver::instance()->abortAllJobsNamed( "TagWriter" );
+    ThreadManager::instance()->abortAllJobsNamed( "TagWriter" );
     safeClear();
     m_total = 0;
     m_albums.clear();
@@ -4869,7 +4869,7 @@ Playlist::addCustomColumn()
 #include <taglib/tag.h>
 
 TagWriter::TagWriter( PlaylistItem *item, const QString &oldTag, const QString &newTag, const int col, const bool updateView )
-        : ThreadWeaver::Job( "TagWriter" )
+        : ThreadManager::Job( "TagWriter" )
         , m_item( item )
         , m_failed( true )
         , m_oldTagString( oldTag )

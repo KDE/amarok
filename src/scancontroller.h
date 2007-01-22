@@ -23,7 +23,7 @@
 #include <qmutex.h>
 #include <qxml.h>         //baseclass
 
-#include "threadweaver.h" //baseclass
+#include "threadmanager.h" //baseclass
 
 class CollectionDB;
 class KProcIO;
@@ -43,7 +43,7 @@ class KProcIO;
  * the need for a DOM document structure.
  */
 
-class ScanController : public ThreadWeaver::DependentJob, public QXmlDefaultHandler
+class ScanController : public ThreadManager::DependentJob, public QXmlDefaultHandler
 {
     Q_OBJECT
 

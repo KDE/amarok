@@ -390,7 +390,7 @@ void MagnatuneBrowser::listDownloadComplete( KIO::Job * downLoadJob )
     MagnatuneXmlParser * parser = new MagnatuneXmlParser( "/tmp/album_info.xml" );
     connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
 
-    ThreadWeaver::instance() ->queueJob( parser );
+    ThreadManager::instance() ->queueJob( parser );
 }
 
 void MagnatuneBrowser::listDownloadCancelled( )

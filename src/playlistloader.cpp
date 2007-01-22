@@ -74,7 +74,7 @@ public:
 
 
 UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, int options )
-        : ThreadWeaver::DependentJob( Playlist::instance(), "UrlLoader" )
+        : ThreadManager::DependentJob( Playlist::instance(), "UrlLoader" )
         , m_markerListViewItem( new PlaylistItem( Playlist::instance(), after ) )
         , m_playFirstUrl( options & (Playlist::StartPlay | Playlist::DirectPlay) )
         , m_coloring( options & Playlist::Colorize )
@@ -1035,7 +1035,7 @@ RemotePlaylistFetcher::result( KIO::Job *job )
         debug() << "Playlist was downloaded successfully\n";
 
         UrlLoader *loader = new UrlLoader( m_destination, m_after, m_options );
-        ThreadWeaver::instance()->queueJob( loader );
+        ThreadManager::instance()->queueJob( loader );
 
         // we mustn't get deleted until the loader is finished
         // or the playlist we downloaded will be deleted before
