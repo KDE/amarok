@@ -697,6 +697,13 @@ void EngineController::slotMainTimer() //SLOT
         m_engine->setXFadeNextTrack( true );
         trackFinished();
     }
+    else if ( m_engine->state() == Engine::Playing &&
+              AmarokConfig::fadeout() &&
+              Playlist::instance()->stopAfterMode() == Playlist::StopAfterCurrent &&
+              m_bundle.length()*1000 - position < (uint) AmarokConfig::fadeoutLength() )
+    {
+       m_engine->stop();
+    }
 }
 
 
