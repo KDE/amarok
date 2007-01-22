@@ -98,6 +98,8 @@ VERSION 1.4.5
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
+    * "Listening since..." has been changed to the more clear "First
+      Played..."  Patch by Andrew Ash <ash211@gmail.com>. (BR 131727)
     * Fixed regression: the DEL key no longer worked in the 
       playlist after opening the File Browser context menu. (BR 140197)
     * Smart playlists now work correctly with "is not" filters containing

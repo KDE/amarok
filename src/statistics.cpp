@@ -277,7 +277,7 @@ StatisticsList::renderView()
         firstPlay.setTime_t( a[0].toUInt() );
 
     m_newestItem = new StatisticsItem( i18n("Newest Items"), this, m_genreItem );
-    m_newestItem->setSubtext( i18n("Listening since %1").arg( Amarok::verboseTimeSince( firstPlay ) ) );
+    m_newestItem->setSubtext( i18n("First played %1").arg( Amarok::verboseTimeSince( firstPlay ) ) );
 
     m_trackItem     ->setIcon( Amarok::icon("track") );
     m_mostplayedItem->setIcon( Amarok::icon("mostplayed") );
