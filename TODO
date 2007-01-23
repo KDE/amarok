@@ -5,9 +5,6 @@ TODO-list for Amarok
 
 
 SHORT-TERM (URGENT):
- <sebr>    SQLite - smart playlist with criteria playcount = 1 doesn't work. And probably more too.
-           SQLite - favorite tracks expanded section in statistics tool expands to nothing. :(
-
  <sebr>    When using "Copy files to collection" in the filebrowser, tags wont get recognised from
            urls which are organised from media:/ locations.
 
@@ -88,7 +85,7 @@ SHORT-TERM (URGENT):
            <muesli> See SqlLoader class in playlistloader. We do the very same stuff for
            Smart-Playlists already.
 
- <sebr>    The unknown album should ALWAYS be shown last.  Year has a hiegher weighting than album
+ <sebr>    The unknown album should ALWAYS be shown last.  Year has a higher weighting than album
            name.  We should special case the Unknown album.
 
  <markey>  When all 5 browser tabs are activated, the current tab button is drawn a few
