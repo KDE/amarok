@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>397</width>
-            <height>465</height>
+            <width>455</width>
+            <height>447</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -20,18 +20,18 @@
             <verstretch>0</verstretch>
         </sizepolicy>
     </property>
-    <vbox>
+    <grid>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QButtonGroup">
+        <widget class="QButtonGroup" row="0" column="0">
             <property name="name">
                 <cstring>opt_crossfade</cstring>
             </property>
             <property name="sizePolicy">
                 <sizepolicy>
                     <hsizetype>5</hsizetype>
-                    <vsizetype>3</vsizetype>
+                    <vsizetype>5</vsizetype>
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                 </sizepolicy>
@@ -347,14 +347,53 @@
                 </spacer>
             </grid>
         </widget>
-        <widget class="QButtonGroup">
+        <widget class="QCheckBox" row="2" column="0">
+            <property name="name">
+                <cstring>kcfg_FadeoutOnExit</cstring>
+            </property>
+            <property name="text">
+                <string>Fade out on e&amp;xit</string>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>If checked, Amarok will fade out the music on program exit.</string>
+            </property>
+        </widget>
+        <widget class="QCheckBox" row="3" column="0">
+            <property name="name">
+                <cstring>kcfg_ResumePlayback</cstring>
+            </property>
+            <property name="text">
+                <string>&amp;Resume playback on start</string>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>If checked, Amarok will&lt;br&gt;resume playback from where you left it the previous session -- just like a tape-player.</string>
+            </property>
+        </widget>
+        <spacer row="4" column="0">
+            <property name="name">
+                <cstring>spacer2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>31</width>
+                    <height>70</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QButtonGroup" row="1" column="0">
             <property name="name">
                 <cstring>opt_crossfade_2</cstring>
             </property>
             <property name="sizePolicy">
                 <sizepolicy>
                     <hsizetype>5</hsizetype>
-                    <vsizetype>3</vsizetype>
+                    <vsizetype>5</vsizetype>
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                 </sizepolicy>
@@ -362,7 +401,7 @@
             <property name="minimumSize">
                 <size>
                     <width>0</width>
-                    <height>180</height>
+                    <height>120</height>
                 </size>
             </property>
             <property name="frameShape">
@@ -394,20 +433,6 @@
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Disable fadeout. Music will stop immediately.</string>
-                    </property>
-                </widget>
-                <widget class="QRadioButton" row="1" column="0" rowspan="1" colspan="2">
-                    <property name="name">
-                        <cstring>kcfg_Fadeout</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Fade&amp;out</string>
-                    </property>
-                    <property name="checked">
-                        <bool>false</bool>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Fade the music out when the Stop button is pressed.</string>
                     </property>
                 </widget>
                 <spacer row="2" column="0">
@@ -525,48 +550,23 @@
                         </widget>
                     </hbox>
                 </widget>
+                <widget class="QRadioButton" row="1" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>kcfg_Fadeout</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Fade&amp;out</string>
+                    </property>
+                    <property name="checked">
+                        <bool>false</bool>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Fade the music out when the Stop button is pressed.</string>
+                    </property>
+                </widget>
             </grid>
         </widget>
-        <widget class="QCheckBox">
-            <property name="name">
-                <cstring>kcfg_FadeoutOnExit</cstring>
-            </property>
-            <property name="text">
-                <string>Fade out on e&amp;xit</string>
-            </property>
-            <property name="toolTip" stdset="0">
-                <string>If checked, Amarok will fade out the music on program exit.</string>
-            </property>
-        </widget>
-        <widget class="QCheckBox">
-            <property name="name">
-                <cstring>kcfg_ResumePlayback</cstring>
-            </property>
-            <property name="text">
-                <string>&amp;Resume playback on start</string>
-            </property>
-            <property name="toolTip" stdset="0">
-                <string>If checked, Amarok will&lt;br&gt;resume playback from where you left it the previous session -- just like a tape-player.</string>
-            </property>
-        </widget>
-        <spacer>
-            <property name="name">
-                <cstring>spacer2</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>31</width>
-                    <height>70</height>
-                </size>
-            </property>
-        </spacer>
-    </vbox>
+    </grid>
 </widget>
 <connections>
     <connection>
