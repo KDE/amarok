@@ -227,6 +227,7 @@ void PlaylistItem::setAllCriteriaEnabled( bool enabled )
 {
     m_filestatusEnabled = enabled;
     m_dynamicEnabled = enabled;
+    checkExists();
     setEnabled();
 }
 
