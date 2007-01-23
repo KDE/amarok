@@ -1026,12 +1026,13 @@ static int unixRead(OsFile *id, void *pBuf, int amt){
   TRACE5("READ    %-3d %5d %7d %d\n", ((unixFile*)id)->h, got,
           last_page, TIMER_ELAPSED);
   SEEK(0);
-  SimulateIOError( got=0 );
+  SimulateIOError( got = -1 );
   if( got==amt ){
     return SQLITE_OK;
   }else if( got<0 ){
     return SQLITE_IOERR_READ;
   }else{
+    memset(&((char*)pBuf)[got], 0, amt-got);
     return SQLITE_IOERR_SHORT_READ;
   }
 }
@@ -2445,12 +2446,12 @@ static int allocateUnixFile(
   const char *zFilename,  /* Name of the file being opened */
   int delFlag             /* Delete-on-or-before-close flag */
 ){
-  sqlite3LockingStyle lockStyle;
+  sqlite3LockingStyle lockingStyle;
   unixFile *pNew;
   unixFile f;
   int rc;
 
-  lockingStyle = sqlite3DetectLockingStyle(zFilename, f.h);
+  lockingStyle = sqlite3DetectLockingStyle(zFilename, h);
   if ( lockingStyle == posixLockingStyle ) {
     sqlite3OsEnterMutex();
     rc = findLockInfo(h, &f.pLock, &f.pOpen);
@@ -2485,7 +2486,7 @@ static int allocateUnixFile(
     return SQLITE_NOMEM;
   }else{
     *pNew = f;
-    switch(lockStyle) {
+    switch(lockingStyle) {
       case afpLockingStyle:
         /* afp locking uses the file path so it needs to be included in
         ** the afpLockingContext */
@@ -2580,6 +2581,23 @@ static int allocateUnixFile(
 ** with other miscellanous aspects of the operating system interface
 ****************************************************************************/
 
+
+#ifndef SQLITE_OMIT_LOAD_EXTENSION
+/*
+** Interfaces for opening a shared library, finding entry points
+** within the shared library, and closing the shared library.
+*/
+#include <dlfcn.h>
+void *sqlite3UnixDlopen(const char *zFilename){
+  return dlopen(zFilename, RTLD_NOW | RTLD_GLOBAL);
+}
+void *sqlite3UnixDlsym(void *pHandle, const char *zSymbol){
+  return dlsym(pHandle, zSymbol);
+}
+int sqlite3UnixDlclose(void *pHandle){
+  return dlclose(pHandle);
+}
+#endif /* SQLITE_OMIT_LOAD_EXTENSION */
 
 /*
 ** Get information to seed the random number generator.  The seed

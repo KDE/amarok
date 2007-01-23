@@ -483,14 +483,12 @@ void sqlite3Pragma(
       sqlite3ViewGetColumnNames(pParse, pTab);
       for(i=0, pCol=pTab->aCol; i<pTab->nCol; i++, pCol++){
         const Token *pDflt;
-        static const Token noDflt =  { (unsigned char*)"", 0, 0 };
         sqlite3VdbeAddOp(v, OP_Integer, i, 0);
         sqlite3VdbeOp3(v, OP_String8, 0, 0, pCol->zName, 0);
         sqlite3VdbeOp3(v, OP_String8, 0, 0,
            pCol->zType ? pCol->zType : "", 0);
         sqlite3VdbeAddOp(v, OP_Integer, pCol->notNull, 0);
-        pDflt = pCol->pDflt ? &pCol->pDflt->span : &noDflt;
-        if( pDflt->z ){
+        if( pCol->pDflt && (pDflt = &pCol->pDflt->span)->z ){
           sqlite3VdbeOp3(v, OP_String8, 0, 0, (char*)pDflt->z, pDflt->n);
         }else{
           sqlite3VdbeAddOp(v, OP_Null, 0, 0);
@@ -896,6 +894,7 @@ void sqlite3Pragma(
       sqlite3VdbeChangeP1(v, addr, iDb);
       sqlite3VdbeChangeP2(v, addr, iCookie);
       sqlite3VdbeSetNumCols(v, 1);
+      sqlite3VdbeSetColName(v, 0, COLNAME_NAME, zLeft, P3_TRANSIENT);
     }
   }
 #endif /* SQLITE_OMIT_SCHEMA_VERSION_PRAGMAS */

@@ -942,12 +942,19 @@ static int openDatabase(
   /* Load automatic extensions - extensions that have been registered
   ** using the sqlite3_automatic_extension() API.
   */
-  sqlite3AutoLoadExtensions(db);
+  (void)sqlite3AutoLoadExtensions(db);
 
 #ifdef SQLITE_ENABLE_FTS1
   {
     extern int sqlite3Fts1Init(sqlite3*);
     sqlite3Fts1Init(db);
+  }
+#endif
+
+#ifdef SQLITE_ENABLE_FTS2
+  {
+    extern int sqlite3Fts2Init(sqlite3*);
+    sqlite3Fts2Init(db);
   }
 #endif
 

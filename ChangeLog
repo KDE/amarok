@@ -60,7 +60,7 @@ VERSION 1.4.5
       in different folders.
     * Save media device transfer queue when adding items or after transfers.
       (BR 138885)
-    * Upgraded internal SQLite to 3.3.8.
+    * Upgraded internal SQLite to 3.3.11.
     * MTP media devices are not automatically connected on start-up. This
       should solve slow loading times for those with large collections on an
       MTP media device. Contributed by Mikko Seppälä. (BR 138409)

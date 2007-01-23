@@ -50,14 +50,14 @@ typedef struct StringBuffer {
   char *s;      /* Content of the string */
 } StringBuffer;
 
-void initStringBuffer(StringBuffer *sb){
+static void initStringBuffer(StringBuffer *sb){
   sb->len = 0;
   sb->alloced = 100;
   sb->s = malloc(100);
   sb->s[0] = '\0';
 }
 
-void nappend(StringBuffer *sb, const char *zFrom, int nFrom){
+static void nappend(StringBuffer *sb, const char *zFrom, int nFrom){
   if( sb->len + nFrom >= sb->alloced ){
     sb->alloced = sb->len + nFrom + 100;
     sb->s = realloc(sb->s, sb->alloced+1);
@@ -70,7 +70,7 @@ void nappend(StringBuffer *sb, const char *zFrom, int nFrom){
   sb->len += nFrom;
   sb->s[sb->len] = 0;
 }
-void append(StringBuffer *sb, const char *zFrom){
+static void append(StringBuffer *sb, const char *zFrom){
   nappend(sb, zFrom, strlen(zFrom));
 }
 
@@ -1242,7 +1242,7 @@ static int content_update(fulltext_vtab *v, sqlite3_value **pValues,
   return sql_single_step_statement(v, CONTENT_UPDATE_STMT, &s);
 }
 
-void freeStringArray(int nString, const char **pString){
+static void freeStringArray(int nString, const char **pString){
   int i;
 
   for (i=0 ; i < nString ; ++i) {
@@ -1634,7 +1634,7 @@ static char **tokenizeString(const char *z, int *pnToken){
 **     [pqr]   becomes   pqr
 **     `mno`   becomes   mno
 */
-void dequoteString(char *z){
+static void dequoteString(char *z){
   int quote;
   int i, j;
   if( z==0 ) return;
@@ -1676,7 +1676,7 @@ void dequoteString(char *z){
 **     input:      delimiters ( '[' , ']' , '...' )
 **     output:     [ ] ...
 */
-void tokenListToIdList(char **azIn){
+static void tokenListToIdList(char **azIn){
   int i, j;
   if( azIn ){
     for(i=0, j=-1; azIn[i]; i++){
@@ -1699,8 +1699,7 @@ void tokenListToIdList(char **azIn){
 ** the result.
 */
 static char *firstToken(char *zIn, char **pzTail){
-  int i, n, ttype;
-  i = 0;
+  int n, ttype;
   while(1){
     n = getToken(zIn, &ttype);
     if( ttype==TOKEN_SPACE ){
@@ -1753,7 +1752,7 @@ typedef struct TableSpec {
 /*
 ** Reclaim all of the memory used by a TableSpec
 */
-void clearTableSpec(TableSpec *p) {
+static void clearTableSpec(TableSpec *p) {
   free(p->azColumn);
   free(p->azContentColumn);
   free(p->azTokenizer);
@@ -1767,8 +1766,9 @@ void clearTableSpec(TableSpec *p) {
  * We return parsed information in a TableSpec structure.
  * 
  */
-int parseSpec(TableSpec *pSpec, int argc, const char *const*argv, char**pzErr){
-  int i, j, n;
+static int parseSpec(TableSpec *pSpec, int argc, const char *const*argv,
+                     char**pzErr){
+  int i, n;
   char *z, *zDummy;
   char **azArg;
   const char *zTokenizer = 0;    /* argv[] entry describing the tokenizer */
@@ -1808,7 +1808,7 @@ int parseSpec(TableSpec *pSpec, int argc, const char *const*argv, char**pzErr){
   pSpec->nColumn = 0;
   pSpec->azColumn = azArg;
   zTokenizer = "tokenize simple";
-  for(i=3, j=0; i<argc; ++i){
+  for(i=3; i<argc; ++i){
     if( startsWith(azArg[i],"tokenize") ){
       zTokenizer = azArg[i];
     }else{
@@ -2039,6 +2039,7 @@ out:
 /* Decide how to handle an SQL query. */
 static int fulltextBestIndex(sqlite3_vtab *pVTab, sqlite3_index_info *pInfo){
   int i;
+  TRACE(("FTS1 BestIndex\n"));
 
   for(i=0; i<pInfo->nConstraint; ++i){
     const struct sqlite3_index_constraint *pConstraint;
@@ -2047,10 +2048,12 @@ static int fulltextBestIndex(sqlite3_vtab *pVTab, sqlite3_index_info *pInfo){
       if( pConstraint->iColumn==-1 &&
           pConstraint->op==SQLITE_INDEX_CONSTRAINT_EQ ){
         pInfo->idxNum = QUERY_ROWID;      /* lookup by rowid */
+        TRACE(("FTS1 QUERY_ROWID\n"));
       } else if( pConstraint->iColumn>=0 &&
                  pConstraint->op==SQLITE_INDEX_CONSTRAINT_MATCH ){
         /* full-text search */
         pInfo->idxNum = QUERY_FULLTEXT + pConstraint->iColumn;
+        TRACE(("FTS1 QUERY_FULLTEXT %d\n", pConstraint->iColumn));
       } else continue;
 
       pInfo->aConstraintUsage[i].argvIndex = 1;
@@ -2065,7 +2068,6 @@ static int fulltextBestIndex(sqlite3_vtab *pVTab, sqlite3_index_info *pInfo){
     }
   }
   pInfo->idxNum = QUERY_GENERIC;
-  TRACE(("FTS1 BestIndex\n"));
   return SQLITE_OK;
 }
 
@@ -2081,7 +2083,9 @@ static int fulltextDestroy(sqlite3_vtab *pVTab){
 
   TRACE(("FTS1 Destroy %p\n", pVTab));
   rc = sql_exec(v->db, v->zName,
-                    "drop table %_content; drop table %_term");
+                "drop table if exists %_content;"
+                "drop table if exists %_term;"
+                );
   if( rc!=SQLITE_OK ) return rc;
 
   fulltext_vtab_destroy((fulltext_vtab *)pVTab);
@@ -2815,6 +2819,11 @@ static int fulltextQuery(
 ** number idxNum-QUERY_FULLTEXT, 0 indexed.  argv[0] is the right-hand
 ** side of the MATCH operator.
 */
+/* TODO(shess) Upgrade the cursor initialization and destruction to
+** account for fulltextFilter() being called multiple times on the
+** same cursor.  The current solution is very fragile.  Apply fix to
+** fts2 as appropriate.
+*/
 static int fulltextFilter(
   sqlite3_vtab_cursor *pCursor,     /* The cursor used for this query */
   int idxNum, const char *idxStr,   /* Which indexing scheme to use */
@@ -2829,9 +2838,10 @@ static int fulltextFilter(
 
   zSql = sqlite3_mprintf("select rowid, * from %%_content %s",
                           idxNum==QUERY_GENERIC ? "" : "where rowid=?");
+  sqlite3_finalize(c->pStmt);
   rc = sql_prepare(v->db, v->zName, &c->pStmt, zSql);
   sqlite3_free(zSql);
-  if( rc!=SQLITE_OK ) goto out;
+  if( rc!=SQLITE_OK ) return rc;
 
   c->iCursorType = idxNum;
   switch( idxNum ){
@@ -2840,7 +2850,7 @@ static int fulltextFilter(
 
     case QUERY_ROWID:
       rc = sqlite3_bind_int64(c->pStmt, 1, sqlite3_value_int64(argv[0]));
-      if( rc!=SQLITE_OK ) goto out;
+      if( rc!=SQLITE_OK ) return rc;
       break;
 
     default:   /* full-text search */
@@ -2851,16 +2861,14 @@ static int fulltextFilter(
       assert( argc==1 );
       queryClear(&c->q);
       rc = fulltextQuery(v, idxNum-QUERY_FULLTEXT, zQuery, -1, &pResult, &c->q);
-      if( rc!=SQLITE_OK ) goto out;
+      if( rc!=SQLITE_OK ) return rc;
+      if( c->result.pDoclist!=NULL ) docListDelete(c->result.pDoclist);
       readerInit(&c->result, pResult);
       break;
     }
   }
 
-  rc = fulltextNext(pCursor);
-
-out:
-  return rc;
+  return fulltextNext(pCursor);
 }
 
 /* This is the xEof method of the virtual table.  The SQLite core

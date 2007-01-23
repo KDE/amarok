@@ -12,6 +12,12 @@
 **
 ** This file contains code that is specific to OS/2.
 */
+
+#if (__GNUC__ > 3 || __GNUC__ == 3 && __GNUC_MINOR__ >= 3) && defined(OS2_HIGH_MEMORY)
+/* os2safe.h has to be included before os2.h, needed for high mem */
+#include <os2safe.h>
+#endif
+
 #include "sqliteInt.h"
 #include "os.h"
 
@@ -290,7 +296,7 @@ int os2Read( OsFile *id, void *pBuf, int amt ){
   SimulateIOError( return SQLITE_IOERR );
   TRACE3( "READ %d lock=%d\n", ((os2File*)id)->h, ((os2File*)id)->locktype );
   DosRead( ((os2File*)id)->h, pBuf, amt, &got );
-  return (got == (ULONG)amt) ? SQLITE_OK : SQLITE_IOERR;
+  return (got == (ULONG)amt) ? SQLITE_OK : SQLITE_IOERR_SHORT_READ;
 }
 
 /*
@@ -767,6 +773,23 @@ int allocateOs2File( os2File *pInit, OsFile **pld ){
 ** Everything above deals with file I/O.  Everything that follows deals
 ** with other miscellanous aspects of the operating system interface
 ****************************************************************************/
+
+#ifndef SQLITE_OMIT_LOAD_EXTENSION
+/*
+** Interfaces for opening a shared library, finding entry points
+** within the shared library, and closing the shared library.
+*/
+void *sqlite3Os2Dlopen(const char *zFilename){
+  return 0;
+}
+void *sqlite3Os2Dlsym(void *pHandle, const char *zSymbol){
+  return 0;
+}
+int sqlite3Os2Dlclose(void *pHandle){
+  return 0;
+}
+#endif /* SQLITE_OMIT_LOAD_EXTENSION */
+
 
 /*
 ** Get information to seed the random number generator.  The seed
