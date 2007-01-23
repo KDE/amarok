@@ -2233,11 +2233,6 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
         delete (*it);
     }
 
-    if( streamCount )        saveStreams();
-    if( smartyCount ) saveSmartPlaylists();
-    if( dynamicCount )      saveDynamics();
-    if( lastfmCount )         saveLastFm();
-
     // used for deleting playlists first, then folders.
     if( playlistCount )
     {
@@ -2266,6 +2261,11 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
 
     if( playlistCount || trackCount )
         savePlaylists();
+
+    if( streamCount )        saveStreams();
+    if( smartyCount ) saveSmartPlaylists();
+    if( dynamicCount )      saveDynamics();
+    if( lastfmCount )         saveLastFm();
 }
 
 // remove podcast folders. we need to do this recursively to ensure all children are removed from the db
