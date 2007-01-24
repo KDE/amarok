@@ -11,9 +11,6 @@ SHORT-TERM (URGENT):
  <jeff>    When playing a stream from e.g. Ampache, even if an Artist is detected, Wikipedia
            will pull up "Artist - Song" instead of just Artist.
 
- <jeff>    Keep promises: implement http://mail.kde.org/pipermail/amarok/2006-August/000993.html,
-           confirmed by popular vote but unimplemented due to the rushed 1.4.3...so get it in 1.4.4.           
-
  <sebr>    PlaylistBrowser::slotDoubleClicked() and PlaylistBrowser::addSelectedToPlaylist()
            should be merged for better code reusage. They are practically the same.
 
