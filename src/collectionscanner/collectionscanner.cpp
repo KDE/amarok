@@ -288,8 +288,9 @@ CollectionScanner::scanFiles( const QStringList& entries )
         // Write path to logfile
         if( !m_logfile.isEmpty() ) {
             QFile log( m_logfile );
+            QCString cPath = path.utf8();
             if( log.open( IO_WriteOnly ) )
-                log.writeBlock( path.local8Bit(), path.length() );
+                log.writeBlock( cPath, cPath.length() );
         }
 
         if( validImages.contains( ext ) )

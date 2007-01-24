@@ -512,10 +512,13 @@ ScanController::customEvent( QCustomEvent* e )
         debug() << "RestartEvent received." << endl;
 
         QFile log( Amarok::saveLocation( QString::null ) + "collection_scan.log" );
-        if ( !log.open( IO_ReadOnly ) ) 
-	    ::warning() << "Failed opening log file " << log.name() << endl;
-	else
-            m_crashedFiles << log.readAll();
+        if ( !log.open( IO_ReadOnly ) )
+        ::warning() << "Failed opening log file " << log.name() << endl;
+        else {
+            QCString path = QCString(log.readAll());
+            m_crashedFiles << QString::fromUtf8( path, path.length() );
+
+        }
 
         m_dataMutex.lock();
         m_xmlData = QString::null;
