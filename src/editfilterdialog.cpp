@@ -346,29 +346,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
 
 EditFilterDialog::~EditFilterDialog()
 {
-    delete m_checkOR;
-    delete m_checkAND;
-    delete m_groupBox3;
-    delete m_checkExclude;
-    delete m_checkExactly;
-    delete m_checkAtLeastOne;
-    delete m_checkALL;
-
-    delete m_groupBox2;
-    delete m_spinMax2;
-    delete m_spinMax1;
-    delete m_spinMin2;
-    delete m_spinMin1;
-
-    delete m_minMaxRadio;
-    delete m_comboUnitSize;
-    delete m_comboCondition;
-
-    delete m_groupBox;
     delete m_editKeyword;
-    delete m_comboKeyword;
-    delete m_prefixNOT;
-    delete m_mainLay;
 }
 
 QString EditFilterDialog::filter() const
@@ -392,7 +370,7 @@ QString EditFilterDialog::keywordConditionString(const QString& keyword) const
     // this member is called when there is a keyword that needs numeric attributes
     QString result, unit;
 
-    if (m_selectedIndex == 18)
+    if (m_vector.at(m_selectedIndex) == "size")
         switch (m_comboUnitSize->currentItem())
         {
             case 1:
