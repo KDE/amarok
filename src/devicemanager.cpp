@@ -114,6 +114,7 @@ DeviceManager::mediumRemoved( const QString name )
     //has been running
     //There is no point in calling getDevice, since it will not be in the list anyways
     emit mediumRemoved( removedMedium, name );
+    kapp->processEvents();  //Ensure everything that might dereference the removedMedium gets done
     if ( m_mediumMap.contains(name) )
     {
         delete removedMedium;   //If we are to remove it from the map, delete it first
