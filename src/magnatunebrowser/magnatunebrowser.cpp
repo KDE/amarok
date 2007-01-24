@@ -198,7 +198,7 @@ void MagnatuneBrowser::showPopupMenu( QListViewItem * item, const QPoint & pos, 
 
 void MagnatuneBrowser::addSelectionToPlaylist( )
 {
-    QListViewItem * selectedItem = dynamic_cast<QListViewItem *>( m_listView->selectedItem() );
+    QListViewItem * selectedItem = m_listView->selectedItem();
 
     switch ( selectedItem->depth() )
     {
@@ -217,7 +217,7 @@ void MagnatuneBrowser::menuAboutToShow( )
 {
     m_popupMenu->clear();
 
-    QListViewItem *selectedItem = dynamic_cast<QListViewItem *>( m_listView->selectedItem() );
+    QListViewItem *selectedItem = m_listView->selectedItem();
 
     if ( !selectedItem ) return ;
 
