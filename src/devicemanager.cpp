@@ -93,7 +93,7 @@ DeviceManager::mediumAdded( const QString name )
     else
         debug() << "[DeviceManager::mediumAdded] Obtained medium is null; name was " << name << endl;
     emit mediumAdded( addedMedium, name );
-    delete addedMedium;
+    //delete addedMedium;
 }
 
 
@@ -117,7 +117,7 @@ DeviceManager::mediumRemoved( const QString name )
     emit mediumRemoved( removedMedium, name );
     if ( m_mediumMap.contains(name) )
         m_mediumMap.remove(name);
-    delete removedMedium;
+    //delete removedMedium;
 }
 
 
@@ -133,7 +133,7 @@ DeviceManager::mediumChanged( const QString name )
     else
         debug() << "[DeviceManager::mediumChanged] Obtained medium is null; name was " << name << endl;
     emit mediumChanged( changedMedium, name );
-    delete changedMedium;
+    //delete changedMedium;
 }
 
 
