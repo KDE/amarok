@@ -49,9 +49,9 @@ main( int argc, char *argv[] )
     if( !args.isEmpty() )
     {
         // These arguments cannot be passed to Amarok, or Amarok will exit
-        // after processing them. TODO handle -v short hand for version
+        // after processing them.
         QStringList longs; longs
-                << "-help" << "-help-qt" << "-help-kde" << "-help-all" << "-author" << "-version" << "-license";
+                << "-help" << "-help-qt" << "-help-kde" << "-help-all" << "-author" << "-version" << "-license" << "-v";
 
         // both --arg and -arg are valid
         {
