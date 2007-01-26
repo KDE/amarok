@@ -435,7 +435,7 @@ Playlist::mediumChange( int deviceid ) // SLOT
             bool exist = p->exists();
             if( exist != p->checkExists() )
             {
-                p->setFilestatusEnabled( exist );
+                p->setFilestatusEnabled( p->checkExists() );
                 p->update();
             }
         }
