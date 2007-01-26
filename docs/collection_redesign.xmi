@@ -1,0 +1,810 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<XMI xmlns:UML="http://schema.omg.org/spec/UML/1.3" verified="false" timestamp="2007-01-21T11:38:24" xmi.version="1.2" >
+ <XMI.header>
+  <XMI.documentation>
+   <XMI.exporter>umbrello uml modeller http://uml.sf.net</XMI.exporter>
+   <XMI.exporterVersion>1.5.5</XMI.exporterVersion>
+   <XMI.exporterEncoding>UnicodeUTF8</XMI.exporterEncoding>
+  </XMI.documentation>
+  <XMI.metamodel xmi.name="UML" href="UML.xml" xmi.version="1.3" />
+ </XMI.header>
+ <XMI.content>
+  <UML:Model isSpecification="false" isLeaf="false" isRoot="false" xmi.id="m1" isAbstract="false" name="UML Model" >
+   <UML:Namespace.ownedElement>
+    <UML:Stereotype isSpecification="false" isLeaf="false" visibility="public" namespace="m1" xmi.id="2" isRoot="false" isAbstract="false" name="folder" />
+    <UML:Stereotype isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="2" isRoot="false" isAbstract="false" name="folder" />
+    <UML:Stereotype isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="4394" isRoot="false" isAbstract="false" name="datatype" />
+    <UML:Stereotype isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="4405" isRoot="false" isAbstract="false" name="constructor" />
+    <UML:Stereotype isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="4406" isRoot="false" isAbstract="false" name="friend" />
+    <UML:Stereotype isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="4407" isRoot="false" isAbstract="false" name="virtual" />
+    <UML:Stereotype isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="4410" isRoot="false" isAbstract="false" name="interface" />
+    <UML:Stereotype isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="2" isRoot="false" isAbstract="false" name="folder" />
+    <UML:Stereotype isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="4394" isRoot="false" isAbstract="false" name="datatype" />
+    <UML:Stereotype isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="4405" isRoot="false" isAbstract="false" name="constructor" />
+    <UML:Stereotype isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="4406" isRoot="false" isAbstract="false" name="friend" />
+    <UML:Stereotype isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="4407" isRoot="false" isAbstract="false" name="virtual" />
+    <UML:Stereotype isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="4410" isRoot="false" isAbstract="false" name="interface" />
+    <UML:Model stereotype="2" isSpecification="false" isLeaf="false" visibility="public" namespace="m1" xmi.id="1" isRoot="false" isAbstract="false" name="Logical View" >
+     <UML:Namespace.ownedElement>
+      <UML:Package stereotype="2" isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="8" isRoot="false" isAbstract="false" name="Datatypes" >
+       <UML:Namespace.ownedElement>
+        <UML:DataType stereotype="4394" isSpecification="false" isLeaf="false" visibility="public" namespace="8" xmi.id="4393" isRoot="false" isAbstract="false" name="int" />
+        <UML:DataType stereotype="4394" isSpecification="false" isLeaf="false" visibility="public" namespace="8" xmi.id="4395" isRoot="false" isAbstract="false" name="char" />
+        <UML:DataType stereotype="4394" isSpecification="false" isLeaf="false" visibility="public" namespace="8" xmi.id="4396" isRoot="false" isAbstract="false" name="bool" />
+        <UML:DataType stereotype="4394" isSpecification="false" isLeaf="false" visibility="public" namespace="8" xmi.id="4397" isRoot="false" isAbstract="false" name="float" />
+        <UML:DataType stereotype="4394" isSpecification="false" isLeaf="false" visibility="public" namespace="8" xmi.id="4398" isRoot="false" isAbstract="false" name="double" />
+        <UML:DataType stereotype="4394" isSpecification="false" isLeaf="false" visibility="public" namespace="8" xmi.id="4399" isRoot="false" isAbstract="false" name="short" />
+        <UML:DataType stereotype="4394" isSpecification="false" isLeaf="false" visibility="public" namespace="8" xmi.id="4400" isRoot="false" isAbstract="false" name="long" />
+        <UML:DataType stereotype="4394" isSpecification="false" isLeaf="false" visibility="public" namespace="8" xmi.id="4401" isRoot="false" isAbstract="false" name="unsigned int" />
+        <UML:DataType stereotype="4394" isSpecification="false" isLeaf="false" visibility="public" namespace="8" xmi.id="4402" isRoot="false" isAbstract="false" name="unsigned short" />
+        <UML:DataType stereotype="4394" isSpecification="false" isLeaf="false" visibility="public" namespace="8" xmi.id="4403" isRoot="false" isAbstract="false" name="unsigned long" />
+        <UML:DataType stereotype="4394" isSpecification="false" isLeaf="false" visibility="public" namespace="8" xmi.id="4404" isRoot="false" isAbstract="false" name="string" />
+       </UML:Namespace.ownedElement>
+      </UML:Package>
+      <UML:Class comment="This singleton is the " isSpecification="false" isLeaf="false" visibility="public" namespace="m1" xmi.id="4408" isRoot="false" isAbstract="false" name="CollectionManager" >
+       <UML:Classifier.feature>
+        <UML:Operation comment="factory method for this singleton." isSpecification="false" isLeaf="false" visibility="public" xmi.id="9274" isRoot="false" isAbstract="false" isQuery="false" name="instance" ownerScope="classifier" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14465" type="4408" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="private" xmi.id="12814" isRoot="false" isAbstract="false" isQuery="false" name="CollectionManager" />
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="4458" isRoot="false" isAbstract="false" isQuery="false" name="queryBuilder" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14466" type="4409" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="6143" isRoot="false" isAbstract="false" isQuery="false" name="startFullScan" />
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="6395" isRoot="false" isAbstract="false" isQuery="false" name="collectionLocations" />
+       </UML:Classifier.feature>
+      </UML:Class>
+      <UML:Interface stereotype="4410" comment="Abstract base class for QueryBuilder implementations. All implementations must return this when the return type is QueryBuilder to allow method chaining." isSpecification="false" isLeaf="false" visibility="public" namespace="m1" xmi.id="4409" isRoot="false" isAbstract="true" name="QueryBuilder" >
+       <UML:Classifier.feature>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="4714" isRoot="false" isAbstract="true" isQuery="false" name="signalNewResultReady" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter comment="Identifies the collection which returned the new results. QString is just a placeholder" isSpecification="false" visibility="private" xmi.id="4739" value="" type="4736" name="collectionId" />
+          <UML:Parameter comment="the songs which were found by the collection for the given query. The calling function takes ownership of the objects." isSpecification="false" visibility="private" xmi.id="4745" value="" type="4742" name="songs" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="13516" isRoot="false" isAbstract="true" isQuery="false" name="signalNewResultReady" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter isSpecification="false" visibility="private" xmi.id="13517" value="" type="4736" name="collectionId" />
+          <UML:Parameter isSpecification="false" visibility="private" xmi.id="13601" value="" type="13559" name="albums" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="13348" isRoot="false" isAbstract="true" isQuery="false" name="signalNewResultReady" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter isSpecification="false" visibility="private" xmi.id="13349" value="" type="4736" name="collectionId" />
+          <UML:Parameter isSpecification="false" visibility="private" xmi.id="13433" value="" type="13391" name="artists" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="4750" isRoot="false" isAbstract="true" isQuery="false" name="signalNewResultReady" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter comment="identifies the collection which returned this result. The type is just a placeholder, there are probably better choices than a QString" isSpecification="false" visibility="private" xmi.id="4751" value="" type="4736" name="collectionId" />
+          <UML:Parameter comment="The result of the given query." isSpecification="false" visibility="private" xmi.id="4757" value="" type="4754" name="result" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation comment="start the defined query. this method will not block but return immediately." isSpecification="false" isLeaf="false" visibility="public" xmi.id="4724" isRoot="false" isAbstract="true" isQuery="false" name="run" />
+        <UML:Operation comment="This method starts a song query. A song query will return Song objects and does not allow you to add additional return values by calling addReturnValue()" isSpecification="false" isLeaf="false" visibility="public" xmi.id="4762" isRoot="false" isAbstract="true" isQuery="false" name="startSongQuery()" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14467" type="4409" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="13726" isRoot="false" isAbstract="true" isQuery="false" name="startAlbumQuery" />
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="13684" isRoot="false" isAbstract="true" isQuery="false" name="startArtistQuery" />
+        <UML:Operation comment="starts a custom query. A custom query allows the client code define the needed return values by calling addReturnValue(). Do not use this method if you want songs, use startSongQuery() instead." isSpecification="false" isLeaf="false" visibility="public" xmi.id="4765" isRoot="false" isAbstract="true" isQuery="false" name="startCustomQuery" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14468" type="4409" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation comment="resets the query represented by the QueryBuilder. After calling this method the state of the QueryBuilder instance is equal to a new one created by calling CollectionManager's queryBuilder() method." isSpecification="false" isLeaf="false" visibility="public" xmi.id="4768" isRoot="false" isAbstract="true" isQuery="false" name="reset()" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14469" type="4409" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation comment="adds a filter to the query.
+TODO: add parameters" isSpecification="false" isLeaf="false" visibility="public" xmi.id="4771" isRoot="false" isAbstract="true" isQuery="false" name="addFilter" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14470" type="4409" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation comment="define the sort order of the returned result.
+TODO: add parameters" isSpecification="false" isLeaf="false" visibility="public" xmi.id="4774" isRoot="false" isAbstract="true" isQuery="false" name="orderBy" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14471" type="4409" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation comment="aborts a running query. Calling this method has no effect if query wasnt run yet or the QueryBuilder already returned the results for the query. The QueryBuilder instance will try to exit as soon as possible after calling this method." isSpecification="false" isLeaf="false" visibility="public" xmi.id="4792" isRoot="false" isAbstract="true" isQuery="false" name="abortQuery" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14472" type="4409" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation comment="adds a return value to the query. NOTE: calls to this method are ignored if you started a song query by calling startSongQuery()" isSpecification="false" isLeaf="false" visibility="public" xmi.id="4809" isRoot="false" isAbstract="true" isQuery="false" name="addReturnValue" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14473" type="4409" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation comment="This signal is emitted when the query completed and no additional signalNewResultReady() signals will be emitted." isSpecification="false" isLeaf="false" visibility="public" xmi.id="8743" isRoot="false" isAbstract="true" isQuery="false" name="signalQueryDone" />
+        <UML:Operation comment="include the collection identified by the collection id in this query. By default, all collections are queried. After this calling this method once, all collections which are not explicitly included are not queried." isSpecification="false" isLeaf="false" visibility="public" xmi.id="9377" isRoot="false" isAbstract="true" isQuery="false" name="includeCollection" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14474" type="4409" />
+          <UML:Parameter isSpecification="false" visibility="private" xmi.id="9378" value="" type="4736" name="collectionId" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation comment="exclude the collection identified by its collection id from this query." isSpecification="false" isLeaf="false" visibility="public" xmi.id="9448" isRoot="false" isAbstract="true" isQuery="false" name="excludeCollection" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14475" type="4409" />
+          <UML:Parameter isSpecification="false" visibility="private" xmi.id="9449" value="" type="4736" name="collectionId" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+       </UML:Classifier.feature>
+      </UML:Interface>
+      <UML:Class comment="This class encapsulates multiple QueryBuilder and simply forwards most method calls to each of them. A notable exception is the run() method (or maybe query() method, i'm not sure if it shouldn't be renamed).
+
+In this method the class will query all internal QueryBuilders in parallel. It will emit the signal signalNewResultReady() as soon as an internal QueryBuilder delivers its result. Depending on whether the client code started a song query or a custom query it will emit signalNewResultReady(QString, QPtrList&lt;Song>) or signalNewResultReady(QString, QStringList)." isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="4411" isRoot="false" isAbstract="false" name="MetaQueryBuilder" >
+       <UML:Classifier.feature>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="4719" isRoot="false" isAbstract="false" isQuery="false" name="slotNewResultReady" />
+       </UML:Classifier.feature>
+      </UML:Class>
+      <UML:Class isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="4412" isRoot="false" isAbstract="false" name="LocalQueryBuilder" />
+      <UML:Class isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="4413" isRoot="false" isAbstract="false" name="DaapQueryBuilder" />
+      <UML:Class isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="4414" isRoot="false" isAbstract="false" name="AmpacheQueryBuilder" />
+      <UML:Interface stereotype="4410" isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="4434" isRoot="false" isAbstract="true" name="Collection" >
+       <UML:Classifier.feature>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="4447" isRoot="false" isAbstract="true" isQuery="false" name="queryBuilder" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14476" type="4409" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="6244" isRoot="false" isAbstract="true" isQuery="false" name="startFullScan" />
+        <UML:Operation comment="get writable collection locations. Collection which are not writable should return a list with length 0." isSpecification="false" isLeaf="false" visibility="public" xmi.id="6446" isRoot="false" isAbstract="true" isQuery="false" name="collectionLocations" />
+        <UML:Operation comment="returns the collection id.
+TODO: think of a better type for the collection id." isSpecification="false" isLeaf="false" visibility="public" xmi.id="9809" isRoot="false" isAbstract="true" isQuery="true" name="collectionId" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14477" type="4736" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation comment="returns a displayble name for this collection, e.g. &quot;Your collection&quot; or &quot;Your Ipod&quot;." isSpecification="false" isLeaf="false" visibility="public" xmi.id="9847" isRoot="false" isAbstract="true" isQuery="true" name="prettyName" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14478" type="4736" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+       </UML:Classifier.feature>
+      </UML:Interface>
+      <UML:Class isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="4435" isRoot="false" isAbstract="false" name="LocalCollection" />
+      <UML:Class isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="4436" isRoot="false" isAbstract="false" name="DaapCollection" />
+      <UML:Class isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="4437" isRoot="false" isAbstract="false" name="AmpacheCollection" />
+      <UML:Class isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="4606" isRoot="false" isAbstract="false" name="Amarok" />
+      <UML:Class isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="4648" isRoot="false" isAbstract="false" name="IpodCollection" />
+      <UML:Class isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="4651" isRoot="false" isAbstract="false" name="IpodQueryBuilder" />
+      <UML:Class isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="4736" isRoot="false" isAbstract="false" name="QString" />
+      <UML:Class isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="4742" isRoot="false" isAbstract="false" name="QPtrList&lt;Song>" />
+      <UML:Class isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="4754" isRoot="false" isAbstract="false" name="QStringList" />
+      <UML:Interface stereotype="4410" isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="4892" isRoot="false" isAbstract="true" name="Song" >
+       <UML:Classifier.feature>
+        <UML:Operation comment="returns an URL playable by Phonon" isSpecification="false" isLeaf="false" visibility="public" xmi.id="4902" isRoot="false" isAbstract="true" isQuery="false" name="playableUrl" />
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="4930" isRoot="false" isAbstract="true" isQuery="true" name="prettyTitle" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14479" type="4736" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="4971" isRoot="false" isAbstract="true" isQuery="true" name="prettyUrl" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14480" type="4736" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="4994" isRoot="false" isAbstract="true" isQuery="true" name="title" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14481" type="4736" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation comment="returns true if the collection that this song is stored in supports statistics." isSpecification="false" isLeaf="false" visibility="public" xmi.id="5033" isRoot="false" isAbstract="true" isQuery="true" name="supportsStatistics" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14482" type="4396" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="5064" isRoot="false" isAbstract="true" isQuery="false" name="playcount" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14483" type="4393" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="5096" isRoot="false" isAbstract="true" isQuery="false" name="rating" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14484" type="4393" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="5114" isRoot="false" isAbstract="true" isQuery="false" name="percentage" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14485" type="4397" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="5133" isRoot="false" isAbstract="true" isQuery="false" name="setPlaycount" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter isSpecification="false" visibility="private" xmi.id="5134" value="" type="4393" name="newPlaycount" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation comment="increases the playcount of this song. This is a convience function and equivalent to calling setPlaycount( playcount + delta )" isSpecification="false" isLeaf="false" visibility="public" xmi.id="9041" isRoot="false" isAbstract="true" isQuery="false" name="void increasePlaycount" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter isSpecification="false" visibility="private" xmi.id="9042" value="" type="4393" name="delta" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="5171" isRoot="false" isAbstract="true" isQuery="false" name="setRating" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter isSpecification="false" visibility="private" xmi.id="5172" value="" type="4393" name="newRating" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="5209" isRoot="false" isAbstract="true" isQuery="false" name="setPercentage" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter isSpecification="false" visibility="private" xmi.id="5210" value="" type="4397" name="newPercentage" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="5600" isRoot="false" isAbstract="true" isQuery="false" name="artist" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14486" type="5320" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="5623" isRoot="false" isAbstract="true" isQuery="false" name="album" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14487" type="5301" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="5715" isRoot="false" isAbstract="true" isQuery="false" name="playable" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14488" type="4396" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="5740" isRoot="false" isAbstract="true" isQuery="false" name="supportsTagUpdates" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14489" type="4396" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation comment="returns a TagUpdate instance whichis able to update the tags of the song, if possible. will return 0 if supportsTagUpdates() return false." isSpecification="false" isLeaf="false" visibility="public" xmi.id="12608" isRoot="false" isAbstract="true" isQuery="false" name="tagUpdater" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14490" type="12609" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation comment="update the title of this song. This method will return immediately and will not update the title if supportsTagUpdates() returns false." isSpecification="false" isLeaf="false" visibility="public" xmi.id="5766" isRoot="false" isAbstract="true" isQuery="false" name="setTitle" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter isSpecification="false" visibility="private" xmi.id="5767" value="" type="4736" name="newTitle" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation comment="find out whether this song is deletable." isSpecification="false" isLeaf="false" visibility="public" xmi.id="6699" isRoot="false" isAbstract="true" isQuery="true" name="deletable" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14491" type="4396" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation comment="Calling this method will remove the song from the underlying collection and from the filesystem. Client code should delete the instance after calling this method.
+
+This method is a NOOP when deletable() returns false" isSpecification="false" isLeaf="false" visibility="public" xmi.id="6726" isRoot="false" isAbstract="true" isQuery="false" name="delete" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14492" type="4396" />
+          <UML:Parameter comment="if true, the file is not deleted but moved to trash instead. If it is not possible to move it to trash because the underlying storage system does not support it, the file is directly deleted." isSpecification="false" visibility="private" xmi.id="6727" value="true" type="4396" name="moveToTrash" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="8577" isRoot="false" isAbstract="true" isQuery="false" name="trackNumber" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14493" type="4393" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="8610" isRoot="false" isAbstract="true" isQuery="false" name="cdNumber" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14494" type="4393" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation comment="returns true if the collection that this song is stored in supports labels." isSpecification="false" isLeaf="false" visibility="public" xmi.id="5019" isRoot="false" isAbstract="true" isQuery="true" name="supportsLabels" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14495" type="4396" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation comment="get the labels for this song, if any. It will return an empty list if no labels were defined or the collection of this song does not support labels." isSpecification="false" isLeaf="false" visibility="public" xmi.id="5048" isRoot="false" isAbstract="true" isQuery="false" name="labels" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14496" type="4754" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="11560" isRoot="false" isAbstract="true" isQuery="false" name="setLabels" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter isSpecification="false" visibility="private" xmi.id="11561" value="" type="4754" name="labels" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="11638" isRoot="false" isAbstract="true" isQuery="false" name="removeLabel" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14497" type="4396" />
+          <UML:Parameter isSpecification="false" visibility="private" xmi.id="11639" value="" type="4736" name="label" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="11717" isRoot="false" isAbstract="true" isQuery="false" name="addLabel" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14498" type="4396" />
+          <UML:Parameter isSpecification="false" visibility="private" xmi.id="11718" value="" type="4736" name="label" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+       </UML:Classifier.feature>
+      </UML:Interface>
+      <UML:Interface stereotype="4410" isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="5301" isRoot="false" isAbstract="true" name="Album" >
+       <UML:Classifier.feature>
+        <UML:Operation comment="get all the tracks of the album. The tracks will be ordered by ascending CD number first, ascending track number second.
+
+NOTE: what about albums which span multiple collections? We would need an asynchronous method, otherwise this method could block for a long time." isSpecification="false" isLeaf="false" visibility="public" xmi.id="5413" isRoot="false" isAbstract="true" isQuery="false" name="tracks" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14499" type="4742" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="5433" isRoot="false" isAbstract="true" isQuery="false" name="albumImage" />
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="5453" isRoot="false" isAbstract="true" isQuery="true" name="name" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14500" type="4736" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="8006" isRoot="false" isAbstract="true" isQuery="false" name="setAlbumImage" />
+       </UML:Classifier.feature>
+      </UML:Interface>
+      <UML:Interface stereotype="4410" isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="5320" isRoot="false" isAbstract="true" name="Artist" >
+       <UML:Classifier.feature>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="5339" isRoot="false" isAbstract="true" isQuery="false" name="similarArtists" />
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="5358" isRoot="false" isAbstract="true" isQuery="false" name="albums" />
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="5494" isRoot="false" isAbstract="true" isQuery="true" name="name" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14501" type="4736" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="8297" isRoot="false" isAbstract="true" isQuery="false" name="allSongs" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14502" type="4742" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation comment="Get the user's favorite songs from this artist" isSpecification="false" isLeaf="false" visibility="public" xmi.id="8328" isRoot="false" isAbstract="true" isQuery="false" name="favoriteSongs" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14503" type="4742" />
+          <UML:Parameter comment="The maximum number of favorite songs to return." isSpecification="false" visibility="private" xmi.id="8329" value="" type="4393" name="count" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+       </UML:Classifier.feature>
+      </UML:Interface>
+      <UML:Interface stereotype="4410" comment="This abstract class encapsulates and extends the collection folders of Amarok 1.x. The idea is to allow the user to move/copy from one collection type to another, e.g. from the local collection to an ipod or from a DAAP share to the local collection or to a media device.
+
+It should be possible to reuse this code when implementing the copy mechanism for the media device browser." isSpecification="false" isLeaf="false" visibility="public" namespace="m1" xmi.id="7051" isRoot="false" isAbstract="true" name="CollectionLocation" >
+       <UML:Classifier.feature>
+        <UML:Operation comment="pretty name of this collection location for display purposes." isSpecification="false" isLeaf="false" visibility="public" xmi.id="7079" isRoot="false" isAbstract="true" isQuery="true" name="prettyName" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14504" type="4736" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation comment="copy a file to a destination in this collection location. Will return true if the file could be copied successfully, false otherwise.
+Note: the method will return true even if the original file could not be deleted as long as the file was copied successfully.
+
+Note: implementations are free to ignore the relative path if the underlying collection requires it.
+
+TODO:
+figure out how the CollectionLocation can easily access the song. Add a toStream() method to Song???" isSpecification="false" isLeaf="false" visibility="public" xmi.id="7136" isRoot="false" isAbstract="true" isQuery="false" name="copy" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter kind="return" xmi.id="14505" type="4396" />
+          <UML:Parameter comment="the original file to be copied to the new location." isSpecification="false" visibility="private" xmi.id="7137" value="" type="4892" name="originalFile" />
+          <UML:Parameter comment="The relative path to copy the file to. This includes directories (if any) below the root of the collection location and the full destination filename" isSpecification="false" visibility="private" xmi.id="7166" value="" type="4736" name="relativeDestinationPath" />
+          <UML:Parameter comment="attempt to delete the original file (thereby implementing a move operation).
+Note: the original filename will not be deleted if originalFile->deletable() returns false. The move operation will still succeed though." isSpecification="false" visibility="private" xmi.id="7223" value="false" type="4396" name="deleteOriginal" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+       </UML:Classifier.feature>
+      </UML:Interface>
+      <UML:Interface stereotype="4410" isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="11878" isRoot="false" isAbstract="true" name="TagUpdater" >
+       <UML:Classifier.feature>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="11919" isRoot="false" isAbstract="true" isQuery="false" name="setAlbum" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter isSpecification="false" visibility="private" xmi.id="11920" value="" type="4736" name="album" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="12041" isRoot="false" isAbstract="true" isQuery="false" name="setAlbum" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter isSpecification="false" visibility="private" xmi.id="12083" value="" type="5301" name="*album" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="12244" isRoot="false" isAbstract="true" isQuery="false" name="setArtist" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter isSpecification="false" visibility="private" xmi.id="12245" value="" type="4736" name="artist" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+        <UML:Operation isSpecification="false" isLeaf="false" visibility="public" xmi.id="12326" isRoot="false" isAbstract="true" isQuery="false" name="setArtist" >
+         <UML:BehavioralFeature.parameter>
+          <UML:Parameter isSpecification="false" visibility="private" xmi.id="12327" value="" type="5320" name="*artist" />
+         </UML:BehavioralFeature.parameter>
+        </UML:Operation>
+       </UML:Classifier.feature>
+      </UML:Interface>
+      <UML:DataType stereotype="4394" isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="12609" isRoot="false" isAbstract="false" name="TagUpdater*" />
+      <UML:Class isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="13391" isRoot="false" isAbstract="false" name="QPtrList&lt;Artist>" />
+      <UML:Class isSpecification="false" isLeaf="false" visibility="public" namespace="1" xmi.id="13559" isRoot="false" isAbstract="false" name="QPtrList&lt;Album>" />
+      <UML:Abstraction isSpecification="false" visibility="public" namespace="1" xmi.id="4415" client="4412" name="" supplier="4409" />
+      <UML:Abstraction isSpecification="false" visibility="public" namespace="1" xmi.id="4418" client="4413" name="" supplier="4409" />
+      <UML:Abstraction isSpecification="false" visibility="public" namespace="1" xmi.id="4421" client="4414" name="" supplier="4409" />
+      <UML:Abstraction isSpecification="false" visibility="public" namespace="1" xmi.id="4424" client="4411" name="" supplier="4409" />
+      <UML:Association isSpecification="false" visibility="public" namespace="1" xmi.id="4427" name="" >
+       <UML:Association.connection>
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4428" aggregation="composite" type="4411" name="" multiplicity="1" />
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4429" aggregation="none" type="4409" name="" multiplicity="n" />
+       </UML:Association.connection>
+      </UML:Association>
+      <UML:Abstraction isSpecification="false" visibility="public" namespace="1" xmi.id="4438" client="4437" name="" supplier="4434" />
+      <UML:Abstraction isSpecification="false" visibility="public" namespace="1" xmi.id="4441" client="4436" name="" supplier="4434" />
+      <UML:Abstraction isSpecification="false" visibility="public" namespace="1" xmi.id="4444" client="4435" name="" supplier="4434" />
+      <UML:Association isSpecification="false" visibility="public" namespace="1" xmi.id="4452" name="" >
+       <UML:Association.connection>
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4453" aggregation="composite" type="4408" name="" />
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4454" aggregation="none" type="4434" name="" />
+       </UML:Association.connection>
+      </UML:Association>
+      <UML:Association isSpecification="false" visibility="public" namespace="1" xmi.id="4513" name="" >
+       <UML:Association.connection>
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4514" aggregation="none" type="4412" name="" />
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4515" aggregation="none" type="4435" name="" />
+       </UML:Association.connection>
+      </UML:Association>
+      <UML:Association isSpecification="false" visibility="public" namespace="1" xmi.id="4520" name="" >
+       <UML:Association.connection>
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4521" aggregation="none" type="4413" name="" />
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4522" aggregation="none" type="4436" name="" />
+       </UML:Association.connection>
+      </UML:Association>
+      <UML:Association isSpecification="false" visibility="public" namespace="1" xmi.id="4527" name="" >
+       <UML:Association.connection>
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4528" aggregation="none" type="4414" name="" />
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4529" aggregation="none" type="4437" name="" />
+       </UML:Association.connection>
+      </UML:Association>
+      <UML:Association isSpecification="false" visibility="public" namespace="1" xmi.id="4540" name="" >
+       <UML:Association.connection>
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4541" aggregation="none" type="4408" name="" />
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4542" aggregation="none" type="4411" name="" />
+       </UML:Association.connection>
+      </UML:Association>
+      <UML:Association isSpecification="false" visibility="public" namespace="1" xmi.id="4609" name="" >
+       <UML:Association.connection>
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4610" aggregation="none" type="4606" name="" />
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4611" aggregation="none" type="4606" name="" />
+       </UML:Association.connection>
+      </UML:Association>
+      <UML:Association isSpecification="false" visibility="public" namespace="1" xmi.id="4618" name="" >
+       <UML:Association.connection>
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4619" aggregation="none" type="4606" name="" />
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4620" aggregation="none" type="4408" name="" />
+       </UML:Association.connection>
+      </UML:Association>
+      <UML:Association isSpecification="false" visibility="public" namespace="1" xmi.id="4625" name="" >
+       <UML:Association.connection>
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4626" aggregation="none" type="4606" name="" />
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4627" aggregation="none" type="4409" name="" />
+       </UML:Association.connection>
+      </UML:Association>
+      <UML:Abstraction isSpecification="false" visibility="public" namespace="1" xmi.id="4654" client="4648" name="" supplier="4434" />
+      <UML:Abstraction isSpecification="false" visibility="public" namespace="1" xmi.id="4661" client="4651" name="" supplier="4409" />
+      <UML:Association isSpecification="false" visibility="public" namespace="1" xmi.id="4672" name="" >
+       <UML:Association.connection>
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4673" aggregation="none" type="4648" name="" />
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4674" aggregation="none" type="4651" name="" />
+       </UML:Association.connection>
+      </UML:Association>
+      <UML:Abstraction isSpecification="false" visibility="public" namespace="1" xmi.id="4415" client="4412" name="" supplier="4409" />
+      <UML:Abstraction isSpecification="false" visibility="public" namespace="1" xmi.id="4418" client="4413" name="" supplier="4409" />
+      <UML:Abstraction isSpecification="false" visibility="public" namespace="1" xmi.id="4421" client="4414" name="" supplier="4409" />
+      <UML:Abstraction isSpecification="false" visibility="public" namespace="1" xmi.id="4424" client="4411" name="" supplier="4409" />
+      <UML:Association isSpecification="false" visibility="public" namespace="1" xmi.id="4427" name="" >
+       <UML:Association.connection>
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4428" aggregation="composite" type="4411" name="" multiplicity="1" />
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4429" aggregation="none" type="4409" name="" multiplicity="n" />
+       </UML:Association.connection>
+      </UML:Association>
+      <UML:Abstraction isSpecification="false" visibility="public" namespace="1" xmi.id="4438" client="4437" name="" supplier="4434" />
+      <UML:Abstraction isSpecification="false" visibility="public" namespace="1" xmi.id="4441" client="4436" name="" supplier="4434" />
+      <UML:Abstraction isSpecification="false" visibility="public" namespace="1" xmi.id="4444" client="4435" name="" supplier="4434" />
+      <UML:Association isSpecification="false" visibility="public" namespace="1" xmi.id="4452" name="" >
+       <UML:Association.connection>
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4453" aggregation="composite" type="4408" name="" />
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4454" aggregation="none" type="4434" name="" />
+       </UML:Association.connection>
+      </UML:Association>
+      <UML:Association isSpecification="false" visibility="public" namespace="1" xmi.id="4513" name="" >
+       <UML:Association.connection>
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4514" aggregation="none" type="4412" name="" />
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4515" aggregation="none" type="4435" name="" />
+       </UML:Association.connection>
+      </UML:Association>
+      <UML:Association isSpecification="false" visibility="public" namespace="1" xmi.id="4520" name="" >
+       <UML:Association.connection>
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4521" aggregation="none" type="4413" name="" />
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4522" aggregation="none" type="4436" name="" />
+       </UML:Association.connection>
+      </UML:Association>
+      <UML:Association isSpecification="false" visibility="public" namespace="1" xmi.id="4527" name="" >
+       <UML:Association.connection>
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4528" aggregation="none" type="4414" name="" />
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4529" aggregation="none" type="4437" name="" />
+       </UML:Association.connection>
+      </UML:Association>
+      <UML:Association isSpecification="false" visibility="public" namespace="1" xmi.id="4540" name="" >
+       <UML:Association.connection>
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4541" aggregation="none" type="4408" name="" />
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4542" aggregation="none" type="4411" name="" />
+       </UML:Association.connection>
+      </UML:Association>
+      <UML:Association isSpecification="false" visibility="public" namespace="1" xmi.id="4609" name="" >
+       <UML:Association.connection>
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4610" aggregation="none" type="4606" name="" />
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4611" aggregation="none" type="4606" name="" />
+       </UML:Association.connection>
+      </UML:Association>
+      <UML:Association isSpecification="false" visibility="public" namespace="1" xmi.id="4618" name="" >
+       <UML:Association.connection>
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4619" aggregation="none" type="4606" name="" />
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4620" aggregation="none" type="4408" name="" />
+       </UML:Association.connection>
+      </UML:Association>
+      <UML:Association isSpecification="false" visibility="public" namespace="1" xmi.id="4625" name="" >
+       <UML:Association.connection>
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4626" aggregation="none" type="4606" name="" />
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4627" aggregation="none" type="4409" name="" />
+       </UML:Association.connection>
+      </UML:Association>
+      <UML:Abstraction isSpecification="false" visibility="public" namespace="1" xmi.id="4654" client="4648" name="" supplier="4434" />
+      <UML:Abstraction isSpecification="false" visibility="public" namespace="1" xmi.id="4661" client="4651" name="" supplier="4409" />
+      <UML:Association isSpecification="false" visibility="public" namespace="1" xmi.id="4672" name="" >
+       <UML:Association.connection>
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4673" aggregation="none" type="4648" name="" />
+        <UML:AssociationEnd isSpecification="false" visibility="public" changeability="changeable" isNavigable="true" xmi.id="4674" aggregation="none" type="4651" name="" />
+       </UML:Association.connection>
+      </UML:Association>
+     </UML:Namespace.ownedElement>
+     <XMI.extension xmi.extender="umbrello" >
+      <diagrams>
+       <diagram snapgrid="0" showattsig="1" fillcolor="#ffffc0" linewidth="0" zoom="100" showgrid="1" showopsig="1" usefillcolor="1" snapx="10" canvaswidth="1874" snapy="10" showatts="1" xmi.id="4392" documentation="" type="1" showops="1" showpackage="0" name="class diagram" localid="900000" showstereotype="0" showscope="1" snapcsgrid="0" font="Nimbus Sans L,8,-1,5,50,0,0,0,0,0" linecolor="#ff0000" canvasheight="958" >
+        <widgets>
+         <classwidget usesdiagramfillcolour="0" width="199" showattsigs="601" usesdiagramusefillcolour="0" x="348" y="450" showopsigs="601" linewidth="none" fillcolour="#ffffc0" height="117" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="4408" showoperations="1" showpackage="0" showscope="1" font="Nimbus Sans L,8,-1,5,75,0,0,0,0,0" linecolor="#ff0000" />
+         <interfacewidget usesdiagramfillcolour="0" width="451" usesdiagramusefillcolour="0" x="819" y="509" drawascircle="0" showopsigs="601" linewidth="none" fillcolour="#ffffc0" height="351" usefillcolor="1" showpubliconly="0" isinstance="0" xmi.id="4409" showoperations="1" showpackage="0" showscope="1" showstereotype="1" font="Nimbus Sans L,8,-1,5,75,1,0,0,0,0" linecolor="#ff0000" />
+         <classwidget usesdiagramfillcolour="0" width="151" showattsigs="601" usesdiagramusefillcolour="0" x="546" y="654" showopsigs="601" linewidth="none" fillcolour="#ffffc0" height="45" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="4411" showoperations="1" showpackage="0" showscope="1" font="Nimbus Sans L,8,-1,5,75,0,0,0,0,0" linecolor="#ff0000" />
+         <classwidget usesdiagramfillcolour="1" width="127" showattsigs="601" usesdiagramusefillcolour="1" x="615" y="829" showopsigs="601" linewidth="none" fillcolour="none" height="36" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="4412" showoperations="1" showpackage="0" showscope="1" font="Nimbus Sans L,8,-1,5,75,0,0,0,0,0" linecolor="none" />
+         <interfacewidget usesdiagramfillcolour="0" width="192" usesdiagramusefillcolour="0" x="318" y="608" drawascircle="0" showopsigs="601" linewidth="none" fillcolour="#ffffc0" height="135" usefillcolor="1" showpubliconly="0" isinstance="0" xmi.id="4434" showoperations="1" showpackage="0" showscope="1" showstereotype="1" font="Nimbus Sans L,8,-1,5,75,1,0,0,0,0" linecolor="#ff0000" />
+         <classwidget usesdiagramfillcolour="1" width="108" showattsigs="601" usesdiagramusefillcolour="1" x="470" y="829" showopsigs="601" linewidth="none" fillcolour="none" height="36" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="4435" showoperations="1" showpackage="0" showscope="1" font="Nimbus Sans L,8,-1,5,75,0,0,0,0,0" linecolor="none" />
+         <classwidget usesdiagramfillcolour="1" width="59" showattsigs="601" usesdiagramusefillcolour="1" x="576" y="187" showopsigs="601" linewidth="none" fillcolour="none" height="36" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="4606" showoperations="1" showpackage="0" showscope="1" font="Nimbus Sans L,8,-1,5,75,0,0,0,0,0" linecolor="none" />
+         <classwidget usesdiagramfillcolour="1" width="102" showattsigs="601" usesdiagramusefillcolour="1" x="330" y="889" showopsigs="601" linewidth="none" fillcolour="none" height="36" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="4648" showoperations="1" showpackage="0" showscope="1" font="Nimbus Sans L,8,-1,5,75,0,0,0,0,0" linecolor="none" />
+         <classwidget usesdiagramfillcolour="1" width="121" showattsigs="601" usesdiagramusefillcolour="1" x="838" y="888" showopsigs="601" linewidth="none" fillcolour="none" height="36" usefillcolor="1" showpubliconly="0" showattributes="1" isinstance="0" xmi.id="4651" showoperations="1" showpackage="0" showscope="1" font="Nimbus Sans L,8,-1,5,75,0,0,0,0,0" linecolor="none" />
+         <interfacewidget usesdiagramfillcolour="0" width="258" usesdiagramusefillcolour="0" x="1336" y="153" drawascircle="0" showopsigs="601" linewidth="none" fillcolour="#ffffc0" height="531" usefillcolor="1" showpubliconly="0" isinstance="0" xmi.id="4892" showoperations="1" showpackage="0" showscope="1" showstereotype="1" font="Nimbus Sans L,8,-1,5,75,1,0,0,0,0" linecolor="#ff0000" />
+         <interfacewidget usesdiagramfillcolour="0" width="175" usesdiagramusefillcolour="0" x="1600" y="153" drawascircle="0" showopsigs="601" linewidth="none" fillcolour="#ffffc0" height="117" usefillcolor="1" showpubliconly="0" isinstance="0" xmi.id="5301" showoperations="1" showpackage="0" showscope="1" showstereotype="1" font="Nimbus Sans L,8,-1,5,75,1,0,0,0,0" linecolor="#ff0000" />
+         <interfacewidget usesdiagramfillcolour="0" width="277" usesdiagramusefillcolour="0" x="1055" y="154" drawascircle="0" showopsigs="601" linewidth="none" fillcolour="#ffffc0" height="135" usefillcolor="1" showpubliconly="0" isinstance="0" xmi.id="5320" showoperations="1" showpackage="0" showscope="1" showstereotype="1" font="Nimbus Sans L,8,-1,5,75,1,0,0,0,0" linecolor="#ff0000" />
+         <notewidget usesdiagramfillcolour="1" width="205" usesdiagramusefillcolour="1" x="61" y="170" linewidth="none" fillcolour="none" height="187" usefillcolor="1" isinstance="0" xmi.id="6915" showstereotype="1" text="Note: the interfaces in this diagram should be implemented by abstract base classes in c++. This allows us to add convienence implementations for some methods too." font="Nimbus Sans L,8,-1,5,50,0,0,0,0,0" linecolor="none" />
+         <interfacewidget usesdiagramfillcolour="0" width="566" usesdiagramusefillcolour="0" x="1304" y="842" drawascircle="0" showopsigs="601" linewidth="none" fillcolour="#ffffc0" height="81" usefillcolor="1" showpubliconly="0" isinstance="0" xmi.id="7051" showoperations="1" showpackage="0" showscope="1" showstereotype="1" font="Nimbus Sans L,8,-1,5,75,1,0,0,0,0" linecolor="#ff0000" />
+         <notewidget usesdiagramfillcolour="1" width="116" usesdiagramusefillcolour="1" x="183" y="861" linewidth="none" fillcolour="none" height="93" usefillcolor="1" isinstance="0" xmi.id="10989" showstereotype="1" text="Not actually required for the initial implementation." font="Nimbus Sans L,8,-1,5,50,0,0,0,0,0" linecolor="none" />
+         <interfacewidget usesdiagramfillcolour="0" width="179" usesdiagramusefillcolour="0" x="1603" y="410" drawascircle="0" showopsigs="601" linewidth="none" fillcolour="#ffffc0" height="117" usefillcolor="1" showpubliconly="0" isinstance="0" xmi.id="11878" showoperations="1" showpackage="0" showscope="1" showstereotype="1" font="Nimbus Sans L,8,-1,5,75,1,0,0,0,0" linecolor="#ff0000" />
+        </widgets>
+        <messages/>
+        <associations>
+         <assocwidget totalcounta="2" indexa="1" totalcountb="4" indexb="3" linewidth="none" widgetbid="4409" widgetaid="4412" xmi.id="4415" linecolor="none" >
+          <linepath>
+           <startpoint startx="678" starty="829" />
+           <endpoint endx="819" endy="772" />
+          </linepath>
+         </assocwidget>
+         <assocwidget totalcounta="3" indexa="1" totalcountb="4" indexb="1" linewidth="none" widgetbid="4409" widgetaid="4411" xmi.id="4424" linecolor="none" >
+          <linepath>
+           <startpoint startx="697" starty="669" />
+           <endpoint endx="819" endy="596" />
+          </linepath>
+         </assocwidget>
+         <assocwidget totalcounta="3" indexa="2" totalcountb="4" indexb="2" linewidth="none" widgetbid="4409" widgetaid="4411" xmi.id="4427" linecolor="none" >
+          <linepath>
+           <startpoint startx="697" starty="684" />
+           <endpoint endx="819" endy="684" />
+          </linepath>
+          <floatingtext usesdiagramfillcolour="1" width="32" usesdiagramusefillcolour="1" x="712" y="663" linewidth="none" posttext="" role="701" fillcolour="none" height="32" usefillcolor="1" pretext="" isinstance="0" xmi.id="54" text="1" font="Nimbus Sans L,8,-1,5,50,0,0,0,0,0" linecolor="none" />
+          <floatingtext usesdiagramfillcolour="1" width="32" usesdiagramusefillcolour="1" x="788" y="682" linewidth="none" posttext="" role="702" fillcolour="none" height="32" usefillcolor="1" pretext="" isinstance="0" xmi.id="55" showstereotype="1" text="n" font="Nimbus Sans L,8,-1,5,50,0,0,0,0,0" linecolor="none" />
+         </assocwidget>
+         <assocwidget totalcounta="2" indexa="1" totalcountb="3" indexb="2" linewidth="none" widgetbid="4434" widgetaid="4435" xmi.id="4444" linecolor="none" >
+          <linepath>
+           <startpoint startx="524" starty="829" />
+           <endpoint endx="446" endy="743" />
+          </linepath>
+         </assocwidget>
+         <assocwidget totalcounta="3" indexa="1" totalcountb="2" indexb="1" linewidth="none" widgetbid="4434" widgetaid="4408" xmi.id="4452" linecolor="none" >
+          <linepath>
+           <startpoint startx="414" starty="567" />
+           <endpoint endx="414" endy="608" />
+          </linepath>
+         </assocwidget>
+         <assocwidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" linewidth="none" widgetbid="4435" widgetaid="4412" xmi.id="4513" linecolor="none" >
+          <linepath>
+           <startpoint startx="615" starty="847" />
+           <endpoint endx="578" endy="847" />
+          </linepath>
+         </assocwidget>
+         <assocwidget totalcounta="3" indexa="2" totalcountb="2" indexb="1" linewidth="none" widgetbid="4411" widgetaid="4408" xmi.id="4540" linecolor="none" >
+          <linepath>
+           <startpoint startx="480" starty="567" />
+           <endpoint endx="621" endy="654" />
+          </linepath>
+         </assocwidget>
+         <assocwidget totalcounta="3" indexa="1" totalcountb="2" indexb="1" linewidth="none" widgetbid="4408" widgetaid="4606" xmi.id="4618" linecolor="none" >
+          <linepath>
+           <startpoint startx="595" starty="223" />
+           <endpoint endx="447" endy="450" />
+          </linepath>
+         </assocwidget>
+         <assocwidget totalcounta="3" indexa="2" totalcountb="2" indexb="1" linewidth="none" widgetbid="4409" widgetaid="4606" xmi.id="4625" linecolor="none" >
+          <linepath>
+           <startpoint startx="615" starty="223" />
+           <endpoint endx="1044" endy="509" />
+          </linepath>
+         </assocwidget>
+         <assocwidget totalcounta="2" indexa="1" totalcountb="3" indexb="1" linewidth="none" widgetbid="4434" widgetaid="4648" xmi.id="4654" linecolor="none" >
+          <linepath>
+           <startpoint startx="381" starty="889" />
+           <endpoint endx="382" endy="743" />
+          </linepath>
+         </assocwidget>
+         <assocwidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" linewidth="none" widgetbid="4409" widgetaid="4651" xmi.id="4661" linecolor="none" >
+          <linepath>
+           <startpoint startx="898" starty="888" />
+           <endpoint endx="1044" endy="860" />
+          </linepath>
+         </assocwidget>
+         <assocwidget totalcounta="2" indexa="1" totalcountb="2" indexb="1" linewidth="none" widgetbid="4651" widgetaid="4648" xmi.id="4672" linecolor="none" >
+          <linepath>
+           <startpoint startx="432" starty="907" />
+           <endpoint endx="838" endy="906" />
+          </linepath>
+         </assocwidget>
+         <assocwidget totalcounta="2" indexa="1" visibilityB="200" totalcountb="2" indexb="1" linewidth="none" widgetbid="4648" widgetaid="10989" roleBdoc="" documentation="" roleAdoc="" type="513" changeabilityA="900" changeabilityB="900" linecolor="none" visibilityA="200" >
+          <linepath>
+           <startpoint startx="299" starty="907" />
+           <endpoint endx="330" endy="907" />
+          </linepath>
+         </assocwidget>
+        </associations>
+       </diagram>
+      </diagrams>
+     </XMI.extension>
+    </UML:Model>
+    <UML:Model stereotype="2" isSpecification="false" isLeaf="false" visibility="public" namespace="m1" xmi.id="3" isRoot="false" isAbstract="false" name="Use Case View" >
+     <UML:Namespace.ownedElement/>
+    </UML:Model>
+    <UML:Model stereotype="2" isSpecification="false" isLeaf="false" visibility="public" namespace="m1" xmi.id="4" isRoot="false" isAbstract="false" name="Component View" >
+     <UML:Namespace.ownedElement/>
+    </UML:Model>
+    <UML:Model stereotype="2" isSpecification="false" isLeaf="false" visibility="public" namespace="m1" xmi.id="5" isRoot="false" isAbstract="false" name="Deployment View" >
+     <UML:Namespace.ownedElement/>
+    </UML:Model>
+    <UML:Model stereotype="2" isSpecification="false" isLeaf="false" visibility="public" namespace="m1" xmi.id="6" isRoot="false" isAbstract="false" name="Entity Relationship Model" >
+     <UML:Namespace.ownedElement/>
+    </UML:Model>
+   </UML:Namespace.ownedElement>
+  </UML:Model>
+ </XMI.content>
+ <XMI.extensions xmi.extender="umbrello" >
+  <docsettings viewid="4392" documentation="" uniqueid="14505" />
+  <listview>
+   <listitem open="1" type="800" label="Views" >
+    <listitem open="1" type="801" id="1" >
+     <listitem open="1" type="813" id="4606" />
+     <listitem open="1" type="813" id="4437" />
+     <listitem open="1" type="813" id="4414" />
+     <listitem open="1" type="813" id="4408" >
+      <listitem open="0" type="815" id="9274" />
+      <listitem open="0" type="815" id="12814" />
+      <listitem open="0" type="815" id="4458" />
+      <listitem open="0" type="815" id="6143" />
+      <listitem open="0" type="815" id="6395" />
+     </listitem>
+     <listitem open="1" type="813" id="4436" />
+     <listitem open="1" type="813" id="4413" />
+     <listitem open="1" type="813" id="4648" />
+     <listitem open="1" type="813" id="4651" />
+     <listitem open="1" type="813" id="4435" />
+     <listitem open="1" type="813" id="4412" />
+     <listitem open="0" type="813" id="4411" >
+      <listitem open="0" type="815" id="4719" />
+     </listitem>
+     <listitem open="1" type="813" id="13559" />
+     <listitem open="1" type="813" id="13391" />
+     <listitem open="1" type="813" id="4742" />
+     <listitem open="1" type="813" id="4736" />
+     <listitem open="1" type="813" id="4754" />
+     <listitem open="0" type="817" id="5301" >
+      <listitem open="0" type="815" id="5413" />
+      <listitem open="0" type="815" id="5433" />
+      <listitem open="0" type="815" id="5453" />
+      <listitem open="0" type="815" id="8006" />
+     </listitem>
+     <listitem open="0" type="817" id="5320" >
+      <listitem open="0" type="815" id="5339" />
+      <listitem open="0" type="815" id="5358" />
+      <listitem open="0" type="815" id="5494" />
+      <listitem open="0" type="815" id="8297" />
+      <listitem open="0" type="815" id="8328" />
+     </listitem>
+     <listitem open="0" type="817" id="4434" >
+      <listitem open="0" type="815" id="4447" />
+      <listitem open="0" type="815" id="6244" />
+      <listitem open="0" type="815" id="6446" />
+      <listitem open="0" type="815" id="9809" />
+      <listitem open="0" type="815" id="9847" />
+     </listitem>
+     <listitem open="1" type="817" id="7051" >
+      <listitem open="0" type="815" id="7079" />
+      <listitem open="0" type="815" id="7136" />
+     </listitem>
+     <listitem open="1" type="817" id="4409" >
+      <listitem open="0" type="815" id="4714" />
+      <listitem open="0" type="815" id="13516" />
+      <listitem open="0" type="815" id="13348" />
+      <listitem open="0" type="815" id="4750" />
+      <listitem open="0" type="815" id="4724" />
+      <listitem open="0" type="815" id="4762" />
+      <listitem open="0" type="815" id="13726" />
+      <listitem open="0" type="815" id="13684" />
+      <listitem open="0" type="815" id="4765" />
+      <listitem open="0" type="815" id="4768" />
+      <listitem open="0" type="815" id="4771" />
+      <listitem open="0" type="815" id="4774" />
+      <listitem open="0" type="815" id="4792" />
+      <listitem open="0" type="815" id="4809" />
+      <listitem open="0" type="815" id="8743" />
+      <listitem open="0" type="815" id="9377" />
+      <listitem open="0" type="815" id="9448" />
+     </listitem>
+     <listitem open="1" type="817" id="4892" >
+      <listitem open="0" type="815" id="4902" />
+      <listitem open="0" type="815" id="4930" />
+      <listitem open="0" type="815" id="4971" />
+      <listitem open="0" type="815" id="4994" />
+      <listitem open="0" type="815" id="5033" />
+      <listitem open="0" type="815" id="5064" />
+      <listitem open="0" type="815" id="5096" />
+      <listitem open="0" type="815" id="5114" />
+      <listitem open="0" type="815" id="5133" />
+      <listitem open="0" type="815" id="9041" />
+      <listitem open="0" type="815" id="5171" />
+      <listitem open="0" type="815" id="5209" />
+      <listitem open="0" type="815" id="5600" />
+      <listitem open="0" type="815" id="5623" />
+      <listitem open="0" type="815" id="5715" />
+      <listitem open="0" type="815" id="5740" />
+      <listitem open="0" type="815" id="12608" />
+      <listitem open="0" type="815" id="5766" />
+      <listitem open="0" type="815" id="6699" />
+      <listitem open="0" type="815" id="6726" />
+      <listitem open="0" type="815" id="8577" />
+      <listitem open="0" type="815" id="8610" />
+      <listitem open="0" type="815" id="5019" />
+      <listitem open="0" type="815" id="5048" />
+      <listitem open="0" type="815" id="11560" />
+      <listitem open="0" type="815" id="11638" />
+      <listitem open="0" type="815" id="11717" />
+     </listitem>
+     <listitem open="1" type="817" id="11878" >
+      <listitem open="0" type="815" id="11919" />
+      <listitem open="0" type="815" id="12041" />
+      <listitem open="0" type="815" id="12244" />
+      <listitem open="0" type="815" id="12326" />
+     </listitem>
+     <listitem open="1" type="829" id="12609" />
+     <listitem open="1" type="830" id="8" >
+      <listitem open="1" type="829" id="4396" />
+      <listitem open="1" type="829" id="4395" />
+      <listitem open="1" type="829" id="4398" />
+      <listitem open="1" type="829" id="4397" />
+      <listitem open="1" type="829" id="4393" />
+      <listitem open="1" type="829" id="4400" />
+      <listitem open="1" type="829" id="4399" />
+      <listitem open="1" type="829" id="4404" />
+      <listitem open="1" type="829" id="4401" />
+      <listitem open="1" type="829" id="4403" />
+      <listitem open="1" type="829" id="4402" />
+     </listitem>
+    </listitem>
+    <listitem open="1" type="802" id="3" />
+    <listitem open="1" type="821" id="4" />
+    <listitem open="1" type="827" id="5" />
+    <listitem open="1" type="836" id="6" />
+   </listitem>
+  </listview>
+  <codegeneration>
+   <codegenerator language="C++" />
+  </codegeneration>
+ </XMI.extensions>
+</XMI>
