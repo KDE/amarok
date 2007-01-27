@@ -279,6 +279,7 @@ IpodMediaDevice::IpodMediaDevice()
     KActionCollection *ac = new KActionCollection( this );
     KActionMenu *am = new KActionMenu( i18n( "iPod" ), Amarok::icon( "device" ), ac );
     m_customAction = am;
+    m_customAction->setEnabled( false );
     am->setDelayed( false );
     KPopupMenu *menu = am->popupMenu();
     connect( menu, SIGNAL(activated(int)), SLOT(slotIpodAction(int)) );
@@ -1243,6 +1244,7 @@ IpodMediaDevice::openDevice( bool silent )
         kapp->processEvents( 100 );
 
     updateRootItems();
+    m_customAction->setEnabled( true );
 
     return true;
 }
@@ -1387,6 +1389,8 @@ IpodMediaDevice::checkIntegrity()
 bool
 IpodMediaDevice::closeDevice()  //SLOT
 {
+    m_customAction->setEnabled( false );
+
     writeITunesDB();
 
     m_view->clear();
