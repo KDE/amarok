@@ -102,27 +102,32 @@ CollectionScanner::doJob() //SLOT
 
     if( m_restart ) {
         QFile logFile( m_logfile );
-	QString lastFile;
+        QString lastFile;
         if ( !logFile.open( IO_ReadOnly ) )
-	    warning() << "Failed to open log file " << logFile.name() << " read-only"
-		<< endl;
-	else {
-	    QTextStream logStream;
-	    logStream.setDevice(&logFile);
+            warning() << "Failed to open log file " << logFile.name() << " read-only"
+            << endl;
+        else {
+            QTextStream logStream;
+            logStream.setDevice(&logFile);
+            logStream.setEncoding(QTextStream::UnicodeUTF8);
             lastFile = logStream.read();
-	}
+            logFile.close();
+        }
 
         QFile folderFile( Amarok::saveLocation( QString::null ) + "collection_scan.files"   );
         if ( !folderFile.open( IO_ReadOnly ) )
-	    warning() << "Failed to open folder file " << folderFile.name()
-		<< " read-only" << endl;
-	else
-            entries = QStringList::split( "\n", folderFile.readAll() );
+            warning() << "Failed to open folder file " << folderFile.name()
+            << " read-only" << endl;
+        else {
+            QTextStream folderStream;
+            folderStream.setDevice(&folderFile);
+            folderStream.setEncoding(QTextStream::UnicodeUTF8);
+            entries = QStringList::split( "\n", folderStream.read() );
+        }
 
         for( int count = entries.findIndex( lastFile ) + 1; count; --count )
             entries.pop_front();
 
-//         debug() << "Restarting at: " << entries.front() << endl;
     }
     else {
         foreachType( QStringList, m_folders ) {
@@ -141,6 +146,7 @@ CollectionScanner::doJob() //SLOT
         QFile folderFile( Amarok::saveLocation( QString::null ) + "collection_scan.files"   );
         folderFile.open( IO_WriteOnly );
         QTextStream stream( &folderFile );
+        stream.setEncoding(QTextStream::UnicodeUTF8);
         stream << entries.join( "\n" );
         folderFile.close();
     }
@@ -288,9 +294,11 @@ CollectionScanner::scanFiles( const QStringList& entries )
         // Write path to logfile
         if( !m_logfile.isEmpty() ) {
             QFile log( m_logfile );
-            QCString cPath = path.utf8();
-            if( log.open( IO_WriteOnly ) )
+            if( log.open( IO_WriteOnly ) ) {
+                QCString cPath = path.utf8();
                 log.writeBlock( cPath, cPath.length() );
+                log.close();
+            }
         }
 
         if( validImages.contains( ext ) )
