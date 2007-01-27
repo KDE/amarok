@@ -928,28 +928,28 @@ if test "$build_libgpod" != "no"; then
             CFLAGS="$CFLAGS $LIBGPOD_CFLAGS"
             LIBS="$LIBS $LIBGPOD_LIBS"
 
-            AC_CHECK_FUNCS(itdb_track_set_thumbnails, , have_libgpod_04=no)
-            AC_CHECK_FUNCS(itdb_get_mountpoint, , have_libgpod_04=no)
-            AC_CHECK_FUNCS(itdb_device_get_ipod_info, , have_libgpod_04=no)
+            AC_CHECK_FUNCS(itdb_track_set_thumbnails, , have_libgpod_042=no)
+            AC_CHECK_FUNCS(itdb_get_mountpoint, , have_libgpod_042=no)
+            AC_CHECK_FUNCS(itdb_device_get_ipod_info, , have_libgpod_042=no)
 
             AC_CHECK_MEMBER(struct _Itdb_Track.movie_flag,
                   [AC_DEFINE(HAVE_ITDB_MOVIE_FLAG, 1, [have libgpod movie flag])],
-                  ,
+                  have_libgpod_042=no,
                   [#include <gpod/itdb.h>])
 
             AC_CHECK_MEMBER(struct _Itdb_Track.skip_when_shuffling,
                   [AC_DEFINE(HAVE_ITDB_SKIP_SHUFFLE_FLAG, 1, [have libgpod skip when shuffling flag])],
-                  ,
+                  have_libgpod_042=no,
                   [#include <gpod/itdb.h>])
 
             AC_CHECK_MEMBER(struct _Itdb_Track.mark_unplayed,
                   [AC_DEFINE(HAVE_ITDB_MARK_UNPLAYED, 1, [have libgpod mark played flag])],
-                  ,
+                  have_libgpod_042=no,
                   [#include <gpod/itdb.h>])
 
             AC_CHECK_MEMBER(struct _Itdb_Track.mediatype,
                   [AC_DEFINE(HAVE_ITDB_MEDIATYPE, 1, [have libgpod mediatype flag])],
-                  ,
+                  have_libgpod_042=no,
                   [#include <gpod/itdb.h>])
 
             CPPFLAGS=$ac_cppflags_save
@@ -957,9 +957,9 @@ if test "$build_libgpod" != "no"; then
             LIBS=$ac_libs_save
         fi
 
-        if test "x$have_libgpod_04" = "xno"; then
+        if test "x$have_libgpod_042" = "xno"; then
             have_libgpod=no
-            AC_MSG_RESULT(Your libgpod version is too old: at least 0.4.0 is required)
+            AC_MSG_RESULT(Your libgpod version is too old: at least 0.4.2 is required)
         fi
 
         if test "x$have_libgpod" != "xno"; then

@@ -223,10 +223,10 @@ else
     fi
 
     if test x$have_libgpod != xyes; then
-        if test x$have_libgpod_04 != xno; then
+        if test x$have_libgpod_042 != xno; then
             echo " =   - iPod Support"
         else
-            echo " =   - iPod Support (at least libgpod 0.4.0 is required)"
+            echo " =   - iPod Support (at least libgpod 0.4.2 is required)"
         fi
     fi
 
