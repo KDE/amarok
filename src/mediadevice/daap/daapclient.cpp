@@ -259,12 +259,12 @@ DaapClient::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
             menu.insertItem( SmallIconSet( Amarok::icon( "playlist" ) ), i18n( "&Load" ), LOAD );
             menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
             menu.insertItem( SmallIconSet( Amarok::icon( "fastforward" ) ), i18n( "&Queue Tracks" ), QUEUE );
-            menu.insertItem( SmallIconSet( Amarok::icon( "playlist" ) ), i18n( "&Download" ), DOWNLOAD );
+            menu.insertSeparator();
+            menu.insertItem( SmallIconSet( Amarok::icon( "playlist" ) ), i18n( "&Copy Files to Collection..." ), DOWNLOAD );
 
             // albums and artists don't have bundles, so they crash... :(
             if( item->bundle() )
             {
-                menu.insertSeparator();
                 menu.insertItem( SmallIconSet( Amarok::icon( "info" ) ), i18n( "Track &Information..." ), INFO );
             }
             break;
