@@ -511,7 +511,11 @@ void
 MediaBrowser::activateDevice( int index, bool skipDummy )
 {
     if( currentDevice() && currentDevice()->customAction() )
+    {
         currentDevice()->customAction()->unplug( m_toolbar );
+        m_toolbar->hide();
+        m_toolbar->show();
+    }
 
     for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
             it != m_devices.end();
@@ -546,6 +550,8 @@ MediaBrowser::activateDevice( int index, bool skipDummy )
         {
             m_toolbar->setIconText( KToolBar::IconTextRight, false );
             currentDevice()->customAction()->plug( m_toolbar );
+            m_toolbar->hide();
+            m_toolbar->show();
         }
     }
     m_deviceCombo->setCurrentItem( index-1 );
