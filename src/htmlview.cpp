@@ -210,7 +210,7 @@ HTMLView::loadStyleSheet()
         styleSheet += QString( ".song-place { font-size: %1px; font-weight: bold; }" ).arg( pxSize + 3 );
 
         //box: the base container for every block (border hilighted on hover, 'A' without underlining)
-        styleSheet += QString( ".box { border: solid %1 1px; text-align: left; margin-bottom: 10px; overflow: hidden;}" ).arg( bg );
+        styleSheet += QString( ".box { border: solid %1 1px; text-align: left; margin-bottom: 10px; }" ).arg( bg );
         styleSheet += QString( ".box a { text-decoration: none; }" );
         styleSheet += QString( ".box:hover { border: solid %1 1px; }" ).arg( text );
 
