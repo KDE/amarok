@@ -67,8 +67,11 @@ class PlaylistReader : public ThreadManager::DependentJob
         virtual bool doJob() {
             DEBUG_BLOCK
             PlaylistFile pf = PlaylistFile( m_path );
-            bundles = pf.bundles();
-            title   = pf.title();
+            title = pf.title();
+            for( BundleList::iterator it = pf.bundles().begin();
+                    it != pf.bundles().end();
+                    ++it )
+                bundles += MetaBundle( (*it).url() );
             return true;
         }
 
@@ -1052,7 +1055,13 @@ PlaylistTrackItem::PlaylistTrackItem( QListViewItem *parent, QListViewItem *afte
 {
     setDragEnabled( true );
     setRenameEnabled( 0, false );
-    setText( 0, info->title() );
+    PlaylistEntry *p = dynamic_cast<PlaylistEntry *>(parent);
+    if(!p)
+        debug() << "parent: " << parent << " is not a PlaylistEntry" << endl;
+    if( p && p->text( 0 ).contains( info->artist() ) )
+        setText( 0, info->title() );
+    else
+        setText( 0, i18n("%1 - %2").arg( info->artist(), info->title() ) );
 }
 
 const KURL &PlaylistTrackItem::url()
