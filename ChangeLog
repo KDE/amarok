@@ -101,6 +101,7 @@ VERSION 1.4.5
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
+    * Some .rm files would make Amarok crash. (BR 137695)
     * Remember 'User Cover Art for Folder Icons' when organizing files.
       (BR 138582)
     * "Listening since..." has been changed to the more clear "First

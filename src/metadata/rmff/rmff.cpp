@@ -122,8 +122,22 @@ int RealMediaFF::channels () const
 
 
 RealMediaFF::RealMediaFF(const char *file, bool readProperties, AudioProperties::ReadStyle /*propertiesStyle*/)
-   : m_filename(0), m_head(0), m_tail(0), m_err(0), media_hdrs(0), m_id3v1tag(0), 
-     m_flipYearInMetadataSection(0), m_readProperties(readProperties)
+: m_filename(0)
+, m_head(0)
+, m_tail(0)
+, m_err(0)
+, m_hdr(0)
+, m_props(0)
+, media_hdrs(0)
+, m_contenthdr(0)
+, m_md(0)
+, m_title(0)
+, m_author(0)
+, m_copyright(0)
+, m_comment(0)
+, m_id3v1tag(0)
+, m_flipYearInMetadataSection(0)
+, m_readProperties(readProperties)
 {
    m_filename = strdup(file);
 
@@ -150,8 +164,22 @@ RealMediaFF::RealMediaFF(const char *file, bool readProperties, AudioProperties:
 
 
 RealMediaFF::RealMediaFF(RealMediaFF &src)
-   : m_filename(0), m_head(0), m_tail(0), m_err(0), media_hdrs(0), m_id3v1tag(0), 
-     m_flipYearInMetadataSection(0), m_readProperties(src.m_readProperties)
+: m_filename(0)
+, m_head(0)
+, m_tail(0)
+, m_err(0)
+, m_hdr(0)
+, m_props(0)
+, media_hdrs(0)
+, m_contenthdr(0)
+, m_md(0)
+, m_title(0)
+, m_author(0)
+, m_copyright(0)
+, m_comment(0)
+, m_id3v1tag(0)
+, m_flipYearInMetadataSection(0)
+, m_readProperties(src.m_readProperties)
 {
    m_filename=strdup(src.m_filename);
 
