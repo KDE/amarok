@@ -889,7 +889,7 @@ void PlaylistEntry::showContextMenu( const QPoint &position )
     menu.insertSeparator();
     menu.insertItem( SmallIconSet( Amarok::icon("edit") ), i18n( "&Rename" ), RENAME );
     menu.insertItem( SmallIconSet( Amarok::icon("remove_from_playlist") ), i18n( "&Delete" ), DELETE );
-    menu.setAccel( Key_Return, LOAD );
+    menu.setAccel( Key_Space, LOAD );
     menu.setAccel( Key_F2, RENAME );
     menu.setAccel( SHIFT+Key_Delete, DELETE );
 
