@@ -556,8 +556,8 @@ class TrackItemInfo
         TrackItemInfo( const MetaBundle &mb );
         ~TrackItemInfo() {}
         const KURL    &url()    const { return m_url;    }
-        const QString &album()  const { return m_artist; }
-        const QString &artist() const { return m_album;  }
+        const QString &album()  const { return m_album; }
+        const QString &artist() const { return m_artist;  }
         const QString &title()  const { return m_title;  }
         const int     length()  const { return m_length; }
 
