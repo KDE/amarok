@@ -868,43 +868,20 @@ void PlaylistItem::drawRating( QPainter *p, int stars, int graystars, bool half 
     int i = 1, x = 1, starchoice = stars;
     const int y = height() / 2 - star()->height() / 2;
     //We use multiple pre-colored stars instead of coloring here to keep things speedy
-    QPixmap *whichStar;
-    if( half )
-    {
-        i++;
-        starchoice--;
-    }
-    switch( starchoice )
-    {
-        case 1:
-            whichStar = oneStar();
-            break;
-        case 2:
-            whichStar = twoStar();
-            break;
-        case 3:
-            whichStar = threeStar();
-            break;
-        case 4:
-            whichStar = fourStar();
-            break;
-        default:
-            whichStar = fiveStar();
-    }
     for(; i <= stars; ++i )
     {
-        bitBlt( p->device(), x, y, whichStar );
-        x += whichStar->width() + listView()->itemMargin();
+        bitBlt( p->device(), x, y, star() );
+        x += star()->width() + listView()->itemMargin();
     }
     if( half )
     {
         bitBlt( p->device(), x, y, smallStar() );
-        x += whichStar->width() + listView()->itemMargin();
+        x += star()->width() + listView()->itemMargin();
     }
     for(; i <= graystars; ++i )
     {
         bitBlt( p->device(), x, y, grayedStar() );
-        x += whichStar->width() + listView()->itemMargin();
+        x += star()->width() + listView()->itemMargin();
     }
 }
 
@@ -1148,9 +1125,4 @@ void PlaylistItem::decrementLengths()
 
 QPixmap *PlaylistItem::s_star = 0;
 QPixmap *PlaylistItem::s_grayedStar = 0;
-QPixmap *PlaylistItem::s_oneStar = 0;
-QPixmap *PlaylistItem::s_twoStar = 0;
-QPixmap *PlaylistItem::s_threeStar = 0;
-QPixmap *PlaylistItem::s_fourStar = 0;
-QPixmap *PlaylistItem::s_fiveStar = 0;
 QPixmap *PlaylistItem::s_smallStar = 0;

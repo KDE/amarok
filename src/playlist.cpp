@@ -4101,10 +4101,6 @@ Playlist::fontChange( const QFont &old )
     delete PlaylistItem::s_star;
     delete PlaylistItem::s_smallStar;
     delete PlaylistItem::s_grayedStar;
-    delete PlaylistItem::s_oneStar;
-    delete PlaylistItem::s_twoStar;
-    delete PlaylistItem::s_threeStar;
-    delete PlaylistItem::s_fourStar;
     initStarPixmaps();
     triggerUpdate();
 }
@@ -4530,35 +4526,12 @@ void Playlist::initStarPixmaps()
     QImage img = QImage( locate( "data", "amarok/images/star.png" ) ).smoothScale( h, h, QImage::ScaleMin );
     PlaylistItem::s_star = new QPixmap( img );
 
-    //first, since it uses default color, and otherwise will inherit other changes
-    PlaylistItem::s_threeStar = new QPixmap;
-    PlaylistItem::s_threeStar->convertFromImage( img );
-
     PlaylistItem::s_grayedStar = new QPixmap;
     QImage imgGray (img);
     KIconEffect::toGray( imgGray, 1.0 );
     PlaylistItem::s_grayedStar->convertFromImage( img );
 
-    QImage img2 (img);
-
-    PlaylistItem::s_twoStar = new QPixmap;
-    KIconEffect::colorize( img, QColor( 255, 0, 0 ), 0.3 );
-    PlaylistItem::s_twoStar->convertFromImage( img );
-
-    PlaylistItem::s_oneStar = new QPixmap;
-    KIconEffect::colorize( img, QColor( 250, 0, 0 ), 0.3 );
-    PlaylistItem::s_oneStar->convertFromImage( img );
-
-    PlaylistItem::s_fourStar = new QPixmap;
-    KIconEffect::colorize( img2, QColor( 0, 255, 0  ), 0.4 );
-    PlaylistItem::s_fourStar->convertFromImage( img );
-
-    PlaylistItem::s_fiveStar = new QPixmap;
-    KIconEffect::colorize( img2, QColor( 0, 255, 0 ), 0.3 );
-    PlaylistItem::s_fiveStar->convertFromImage( img );
-
     QImage small = QImage( locate( "data", "amarok/images/smallstar.png" ) );
-    KIconEffect::colorize( small, QColor( 168, 0, 172 ), 0.5 );
     PlaylistItem::s_smallStar = new QPixmap( small.smoothScale( h, h, QImage::ScaleMin ) );
 }
 

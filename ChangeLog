@@ -27,9 +27,6 @@ VERSION 1.4.5
       <s9chenge@stud.uni-sb.de>. (BR 120051)
     * New redownload manager for the Magnatune.com store. Allows re-download
       of any previous purchase free of charge (in any format).
-    * Star ratings now have different colors for different ratings, to easily
-      identify songs with a particular rating. Thanks to Tristan Olive for the
-      idea.
     * New items in the playlist are colorized, as a visual cue.
     * Show rating as stars in flat collection view. Patch by Daniel Faust
       <hessijames@gmail.com>. (BR 133797)
