@@ -447,7 +447,7 @@ XineEngine::state() const
 uint
 XineEngine::position() const
 {
-    if ( !m_stream )
+    if ( state() == Engine::Empty )
        return 0;
 
     int pos;
