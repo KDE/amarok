@@ -889,7 +889,7 @@ void PlaylistEntry::showContextMenu( const QPoint &position )
     menu.insertSeparator();
     menu.insertItem( SmallIconSet( Amarok::icon("edit") ), i18n( "&Rename" ), RENAME );
     menu.insertItem( SmallIconSet( Amarok::icon("remove_from_playlist") ), i18n( "&Delete" ), DELETE );
-    menu.setAccel( Key_Space, LOAD );
+    menu.setAccel( Key_L, LOAD );
     menu.setAccel( Key_F2, RENAME );
     menu.setAccel( SHIFT+Key_Delete, DELETE );
 
@@ -3544,6 +3544,7 @@ void ShoutcastBrowser::doneGenreDownload( KIO::Job *job, const KURL &from, const
     genreMapping["Turk"] = "Turkish";
     genreMapping["Turkce"] = "Turkish";
     genreMapping["Polskie"] = "Polska";
+    genreMapping["Polski"] = "Polish";
     genreMapping["Greece"] = "Greek";
     genreMapping["Dnb"] = "Drum&bass";
     genreMapping["Classic"] = "Classical";
@@ -3554,6 +3555,10 @@ void ShoutcastBrowser::doneGenreDownload( KIO::Job *job, const KURL &from, const
     genreMapping["Oldie"] = "Oldies";
     genreMapping["Nederlands"] = "Dutch";
     genreMapping["Variety"] = "Various";
+    genreMapping["Soundtracks"] = "Soundtrack";
+    genreMapping["Gaming"] = "Game";
+    genreMapping["Sports"] = "Sport";
+    genreMapping["Spain"] = "Spanish";
 
     QDomElement docElem = doc.documentElement();
     QDomNode n = docElem.firstChild();
