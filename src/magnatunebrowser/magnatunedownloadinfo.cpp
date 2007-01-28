@@ -27,7 +27,7 @@
 
 MagnatuneDownloadInfo::MagnatuneDownloadInfo()
 {
-    m_selectedDownloadFormat = "";
+    m_selectedDownloadFormat = QString::null;
     m_albumId = -1;
 }
 
@@ -229,7 +229,6 @@ bool MagnatuneDownloadInfo::isReadyForDownload( )
 
 KURL MagnatuneDownloadInfo::getCompleteDownloadUrl( )
 {
-   
    QString url =  m_downloadFormats[ m_selectedDownloadFormat ];
    KURL downloadUrl(url);
    downloadUrl.setUser(m_userName);
