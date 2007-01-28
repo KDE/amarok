@@ -495,8 +495,6 @@ Playlist::insertMedia( KURL::List list, int options )
             if ( !after )
                 after = lastItem();
 
-            // wait until Playlist loader has finished its process, then go to customEvent() to start the queue process.
-            m_queueList = list;
             insertMediaInternal( addMe, after, options );
         }
         return;
