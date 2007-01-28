@@ -61,7 +61,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
     public slots:
         void openURLRequest(const KURL &url );
         void collectionScanStarted();
-        void collectionScanDone();
+        void collectionScanDone( bool changed );
         void renderView();
         void lyricsChanged( const QString& );
         void lyricsScriptChanged();

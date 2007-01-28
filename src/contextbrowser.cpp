@@ -344,7 +344,7 @@ ContextBrowser::ContextBrowser( const char *name )
     connect( m_wikiForwardPopup, SIGNAL(activated( int )), SLOT(wikiForwardPopupActivated( int )) );
 
     connect( CollectionDB::instance(), SIGNAL( scanStarted() ), SLOT( collectionScanStarted() ) );
-    connect( CollectionDB::instance(), SIGNAL( scanDone( bool ) ), SLOT( collectionScanDone() ) );
+    connect( CollectionDB::instance(), SIGNAL( scanDone( bool ) ), SLOT( collectionScanDone( bool ) ) );
     connect( CollectionDB::instance(), SIGNAL( databaseEngineChanged() ), SLOT( renderView() ) );
     connect( CollectionDB::instance(), SIGNAL( coverFetched( const QString&, const QString& ) ),
              this, SLOT( coverFetched( const QString&, const QString& ) ) );
@@ -573,7 +573,7 @@ void ContextBrowser::collectionScanStarted()
 }
 
 
-void ContextBrowser::collectionScanDone()
+void ContextBrowser::collectionScanDone( bool changed )
 {
     if ( CollectionDB::instance()->isEmpty() )
     {
@@ -585,6 +585,11 @@ void ContextBrowser::collectionScanDone()
     {
         m_emptyDB = false;
         PlaylistWindow::self()->showBrowser("CollectionBrowser");
+    }
+    else if( changed && currentPage() == m_contextTab )
+    {
+        m_dirtyCurrentTrackPage = true;
+        showCurrentTrack();
     }
 }
 

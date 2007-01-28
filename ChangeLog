@@ -47,6 +47,8 @@ VERSION 1.4.5
       you move and rename them.
 
   CHANGES:
+    * Update context browser when a change in the collection has been detected.
+      (BR 140588)
     * Ignore leading 'The ' when sorting playlist by artist. (BR 139829)
     * Smart Playlists now have 'does not start with' and 'does not end with' 
       options, as well as a dropdown for mount points. (BR 139552)
