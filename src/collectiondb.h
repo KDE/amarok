@@ -207,6 +207,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
 
         void scoreChanged( const QString &url, float score );
         void ratingChanged( const QString &url, int rating );
+        void labelsChanged( const QString &url );
         void fileMoved( const QString &srcUrl, const QString &dstUrl );
         void fileMoved( const QString &srcUrl, const QString &dstUrl, const QString &uniqueid );
         void fileDeleted( const QString &absPath );

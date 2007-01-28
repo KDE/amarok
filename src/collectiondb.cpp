@@ -5883,6 +5883,8 @@ CollectionDB::setLabels( const QString &url, const QStringList &labels, const QS
         insert( QString( "INSERT INTO tags_labels( labelid, deviceid, url, uniqueid ) VALUES ( %1, %2, '%3', '%4' );" )
                          .arg( id ).arg( deviceid ).arg( rpath ).arg( escapeString( uid ) ), 0 );
     }
+
+    emit labelsChanged( url );
 }
 
 void
@@ -5901,6 +5903,8 @@ CollectionDB::removeLabels( const QString &url, const QStringList &labels, const
     }
     sql += ");";
     query( sql );
+
+    emit labelsChanged( url );
 }
 
 bool
@@ -5928,6 +5932,8 @@ CollectionDB::addLabel( const QString &url, const QString &label, const QString 
     }
     insert( QString( "INSERT INTO tags_labels( labelid, deviceid, url, uniqueid ) VALUES ( %1, %2, '%3', '%4' );" )
                      .arg( id ).arg( deviceid ).arg( rpath ).arg( escapeString( uid ) ), "tags_labels" );
+
+    emit labelsChanged( url );
     return true;
 }
 

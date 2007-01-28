@@ -357,9 +357,11 @@ ContextBrowser::ContextBrowser( const char *name )
     connect( CollectionDB::instance(), SIGNAL( tagsChanged( const QString&, const QString& ) ),
              this, SLOT( tagsChanged( const QString&, const QString& ) ) );
     connect( CollectionDB::instance(), SIGNAL( ratingChanged( const QString&, int ) ),
-             this, SLOT( ratingOrScoreChanged( const QString& ) ) );
+             this, SLOT( ratingOrScoreOrLabelsChanged( const QString& ) ) );
     connect( CollectionDB::instance(), SIGNAL( scoreChanged( const QString&, float ) ),
-             this, SLOT( ratingOrScoreChanged( const QString& ) ) );
+             this, SLOT( ratingOrScoreOrLabelsChanged( const QString& ) ) );
+    connect( CollectionDB::instance(), SIGNAL( labelsChanged( const QString& ) ),
+             this, SLOT( ratingOrScoreOrLabelsChanged( const QString& ) ) );
     connect( CollectionDB::instance(), SIGNAL( imageFetched( const QString& ) ),
              this, SLOT( imageFetched( const QString& ) ) );
 
@@ -4274,7 +4276,7 @@ ContextBrowser::imageFetched( const QString &url ) //SLOT
     }
 }
 
-void ContextBrowser::ratingOrScoreChanged( const QString &path ) //SLOT
+void ContextBrowser::ratingOrScoreOrLabelsChanged( const QString &path ) //SLOT
 {
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
 
