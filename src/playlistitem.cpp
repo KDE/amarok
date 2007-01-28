@@ -865,8 +865,10 @@ void PlaylistItem::drawRating( QPainter *p )
 
 void PlaylistItem::drawRating( QPainter *p, int stars, int graystars, bool half )
 {
-    int i = 1, x = 1, starchoice = stars;
+    int i = 1, x = 1;
     const int y = height() / 2 - star()->height() / 2;
+    if( half )
+       i++;
     //We use multiple pre-colored stars instead of coloring here to keep things speedy
     for(; i <= stars; ++i )
     {
