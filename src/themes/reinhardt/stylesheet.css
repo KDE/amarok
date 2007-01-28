@@ -17,7 +17,7 @@ h6 { font-size: AMAROK_FONTSIZEpx; background-color: ButtonFace; color: ButtonTe
 .song-time { }
 .song-place { font-size: 12px; font-weight: 900; }
 .warning { font-size: AMAROK_FONTSIZEpx; color: InfoText; background-color: InfoBackground; font-weight: bold; padding: none; margin-bottom: 1em; }
-.box { border: solid ButtonShadow 1px; text-align: left; margin-bottom: AMAROK_FONTSIZEpx; overflow: hidden; }
+.box { border: solid ButtonShadow 1px; text-align: left; margin-bottom: AMAROK_FONTSIZEpx; }
 .box a { text-decoration: none; }
 .box:hover { border: solid ButtonShadow 1px; }
 .box-header { color: ButtonText; background-color: ButtonFace; font-size: AMAROK_FONTSIZEpx; font-weight: bold; padding: 1px 0.5em; border-bottom: 1px solid ButtonShadow; }
