@@ -306,7 +306,7 @@ void HTMLView::openURLRequest( const KURL &url )
     // here, http urls are streams. For webpages we use externalurl
     // NOTE there have been no links to streams! http now used for wiki tab.
     if ( url.protocol() == "file" )
-        Playlist::instance()->insertMedia( url, Playlist::DirectPlay | Playlist::Unique );
+        Playlist::instance()->insertMedia( url, Playlist::DefaultOptions );
 }
 
 #include "htmlview.moc"
