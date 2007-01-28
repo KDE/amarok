@@ -663,7 +663,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
              * is not always enough to find the matching cue file. In such cases we have
              * to search for all the cue files in the directory and have a look inside them for
              * the matching FILE="" stanza. However the FILE="" stanza does not always
-             * point at the coresponding media file (e.g. it is quite often set to the misleading
+             * point at the corresponding media file (e.g. it is quite often set to the misleading
              * FILE="audio.wav" WAV). Therfore we also have to check blindly if there is a cue
              * file having the same name as the media file played, as described above.
              */
