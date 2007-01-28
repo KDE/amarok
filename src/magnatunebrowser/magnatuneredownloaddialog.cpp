@@ -48,6 +48,8 @@ void MagnatuneRedownloadDialog::setRedownloadItems( QStringList items )
 void MagnatuneRedownloadDialog::redownload( )
 {
     emit ( redownload( redownloadListView->currentItem()->text( 0 ) ) );
+
+    hide();
 }
 
 void MagnatuneRedownloadDialog::reject( )
