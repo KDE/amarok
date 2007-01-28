@@ -101,6 +101,9 @@ VERSION 1.4.5
     * Amarok now saves playlists with relative paths by default.
 
   BUGFIXES:
+    * Disable seeking in streams. (BR 140364)
+    * With the default theme, the playlist browser info pane would not show
+      the horizontal scrollbar if necessary. (BR 134221)
     * Some .rm files would make Amarok crash. (BR 137695)
     * Remember 'User Cover Art for Folder Icons' when organizing files.
       (BR 138582)

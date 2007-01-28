@@ -536,8 +536,11 @@ void EngineController::playPause() //SLOT
 
 void EngineController::seek( int ms ) //SLOT
 {
-    trackPositionChangedNotify( ms, true ); /* User seek */
-    engine()->seek( ms );
+    if( bundle().length() > 0 )
+    {
+        trackPositionChangedNotify( ms, true ); /* User seek */
+        engine()->seek( ms );
+    }
 }
 
 
