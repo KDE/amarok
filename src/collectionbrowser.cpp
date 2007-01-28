@@ -1784,6 +1784,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
     dialog.filetypeCheck->setChecked( AmarokConfig::groupByFiletype() );
     dialog.initialCheck->setChecked( AmarokConfig::groupArtists() );
     dialog.spaceCheck->setChecked( AmarokConfig::replaceSpace() );
+    dialog.coverCheck->setChecked( AmarokConfig::coverIcons() );
     dialog.ignoreTheCheck->setChecked( AmarokConfig::ignoreThe() );
     dialog.vfatCheck->setChecked( AmarokConfig::vfatCompatible() );
     dialog.asciiCheck->setChecked( AmarokConfig::asciiOnly() );
