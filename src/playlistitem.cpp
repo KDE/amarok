@@ -488,6 +488,13 @@ PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
         case Artist:
             if( a == b ) //if same artist, try to sort by album
                 return compare( i, Album, ascending );
+            else
+            {
+                if( a.startsWith( "the ", false ) )
+                    a = a.mid( 4 );
+                if( b.startsWith( "the ", false ) )
+                    b = b.mid( 4 );
+            }
             break;
 
         case Album:
