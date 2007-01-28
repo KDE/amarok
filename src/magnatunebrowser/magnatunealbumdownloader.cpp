@@ -20,6 +20,8 @@
 #include "amarok.h"
 #include "debug.h"
 #include "magnatunealbumdownloader.h"
+#include "magnatunedatabasehandler.h"
+#include "magnatunetypes.h"
 #include "statusbar.h"
 
 
@@ -32,6 +34,10 @@ MagnatuneAlbumDownloader::~MagnatuneAlbumDownloader()
 
 void MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo * info )
 {
+
+
+    m_currentAlbumId = info->getAlbumId();
+
     KURL downloadUrl = info->getCompleteDownloadUrl();
     m_currentAlbumFileName = downloadUrl.fileName( false );
 
@@ -89,9 +95,38 @@ void MagnatuneAlbumDownloader::albumDownloadComplete( KIO::Job * downloadJob )
 
     system( unzipString.ascii() );
 
-    //delete m_albumDownloadJob; //whoa... this crashes everything... but not instantly... Is this job automatically deleted?
+  
 
-    emit( downloadComplete( true ) );
+    if (m_currentAlbumId != -1 ) {
+
+        //now I really want to add the album cover to the same folder where I just unzipped the album... The 
+        //only way of getting the actual location where the album was unpacked is using the artist and album names
+   
+        MagnatuneAlbum album = MagnatuneDatabaseHandler::instance()->getAlbumById( m_currentAlbumId );
+        MagnatuneArtist artist = MagnatuneDatabaseHandler::instance()->getArtistById( album.getArtistId() );
+
+        QString finalAlbumPath = m_currentAlbumUnpackLocation + "/" + artist.getName() + "/" + album.getName();
+        QString coverUrlString = album.getCoverURL();
+
+
+
+        KURL downloadUrl( coverUrlString );
+
+        debug() << "Adding cover " << downloadUrl.url() << " to collection at " << finalAlbumPath << endl;
+
+        m_albumDownloadJob = KIO::file_copy( downloadUrl, KURL( finalAlbumPath + "/cover.jpg" ), -1, true, false, false );
+
+        connect( m_albumDownloadJob, SIGNAL( result( KIO::Job* ) ), SLOT( coverAddComplete( KIO::Job* ) ) );
+
+        Amarok::StatusBar::instance() ->newProgressOperation( m_albumDownloadJob )
+        .setDescription( i18n( "Adding album cover to collection" ) )
+        .setAbortSlot( this, SLOT( coverAddAborted() ) );
+
+    } else {
+
+        //we do not know exactly what album this is (we are most likely using the redownload manager)
+        emit( downloadComplete( true ) );
+    }
 
 }
 
@@ -132,6 +167,34 @@ void MagnatuneAlbumDownloader::coverDownloadAborted( )
     debug() << "Aborted cover download" << endl;
 
     emit( coverDownloadComplete( false ) );
+}
+
+void MagnatuneAlbumDownloader::coverAddComplete(KIO::Job * downloadJob)
+{
+
+    debug() << "cover add complete" << endl;
+
+    if ( !downloadJob || !downloadJob->error() == 0 )
+    {
+        //TODO: error handling here
+        return ;
+    }
+    if ( downloadJob != m_albumDownloadJob )
+        return ; //not the right job, so let's ignore it
+
+    emit( downloadComplete( true ) ); //all done, everyone is happy! :-)
+}
+
+void MagnatuneAlbumDownloader::coverAddAborted()
+{
+
+    Amarok::StatusBar::instance()->endProgressOperation( m_albumDownloadJob );
+    m_albumDownloadJob->kill( true );
+    delete m_albumDownloadJob;
+    m_albumDownloadJob = 0;
+    debug() << "Aborted cover add" << endl;
+
+     emit( downloadComplete( true ) ); //the album download still went well, just the cover is missing
 }
 
 

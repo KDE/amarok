@@ -46,10 +46,12 @@ public:
     QString getUserName();
     QString getPassword();
     QString getDownloadMessage();
+    int getAlbumId();
 
 
     void setFormatSelection(QString selectedFormat);
     void setUnpackUrl(QString unpackUrl);
+    void setAlbumId(int id);
     bool isReadyForDownload();
     KURL getCompleteDownloadUrl();
     QString getUnpackLocation();
@@ -62,6 +64,8 @@ protected:
     QString m_userName;
     QString m_password;
     QString m_downloadMessage;
+
+    int m_albumId;
 
     //the following members are for storing the user selections regarding a download
     QString m_unpackUrl;

@@ -28,6 +28,7 @@
 MagnatuneDownloadInfo::MagnatuneDownloadInfo()
 {
     m_selectedDownloadFormat = "";
+    m_albumId = -1;
 }
 
 
@@ -245,6 +246,20 @@ void MagnatuneDownloadInfo::setUnpackUrl( QString unpackUrl )
 QString MagnatuneDownloadInfo::getUnpackLocation( )
 {
     return m_unpackUrl;
+}
+
+
+
+int MagnatuneDownloadInfo::getAlbumId()
+{
+    return m_albumId;
+}
+
+
+
+void MagnatuneDownloadInfo::setAlbumId(int id)
+{
+    m_albumId = id;
 }
 
 

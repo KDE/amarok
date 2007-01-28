@@ -90,7 +90,9 @@ MagnatuneListViewAlbumItem::MagnatuneListViewAlbumItem( MagnatuneAlbum album, KL
     KListViewItem::setText( 0, album.getName() );
     setDragEnabled( true );
 
-    setPixmap(0, KGlobal::iconLoader()->loadIcon( "cdrom_unmount", KIcon::Toolbar, KIcon::SizeSmall ) );
+    //setPixmap(0, KGlobal::iconLoader()->loadIcon( "cdrom_unmount", KIcon::Toolbar, KIcon::SizeSmall ) );
+
+
 }
 
 MagnatuneListViewAlbumItem::~ MagnatuneListViewAlbumItem( )

@@ -158,6 +158,9 @@ void MagnatunePurchaseHandler::xmlDownloadComplete( KIO::Job * downloadJob )
     if ( downloadInfo->initFromString( resultXml ) )
     {
 
+
+        downloadInfo->setAlbumId( m_currentAlbum.getId() );
+
         saveDownloadInfo( resultXml );
         m_downloadDialog->setDownloadInfo( downloadInfo );
         //m_purchaseDialog->close();

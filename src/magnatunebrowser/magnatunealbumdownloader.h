@@ -64,6 +64,7 @@ protected:
     KIO::FileCopyJob * m_albumDownloadJob;
     QString m_currentAlbumUnpackLocation;
     QString m_currentAlbumFileName;
+    int m_currentAlbumId;
     KTempDir m_tempDir;
 
 protected slots:
@@ -76,6 +77,9 @@ protected slots:
 
     void coverDownloadComplete( KIO::Job* downloadJob );
     void coverDownloadAborted();
+
+    void coverAddComplete( KIO::Job* downloadJob );
+    void coverAddAborted();
 
 };
 
