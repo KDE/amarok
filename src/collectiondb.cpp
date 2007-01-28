@@ -5833,7 +5833,7 @@ CollectionDB::cleanLabels()
     DEBUG_BLOCK
     QStringList labelIds = query( "select labels.id "
                                   "from labels left join tags_labels on labels.id = tags_labels.labelid "
-                                  "where tags_labels.labelid is null;" );
+                                  "where tags_labels.labelid is NULL;" );
     if ( !labelIds.isEmpty() )
     {
         QString ids;
@@ -5868,7 +5868,7 @@ CollectionDB::setLabels( const QString &url, const QStringList &labels, const QS
         //TODO: max: add uniqueid handling
         query( QString( "DELETE FROM tags_labels "
                         "WHERE tags_labels.labelid IN (%1) AND tags_labels.deviceid = %2 AND tags_labels.url = '%3';" )
-                        .arg( ids ).arg( deviceid ).arg( rpath ) );
+                        .arg( ids,  QString::number(deviceid),  rpath ) );
     }
 
     foreach( labels )
@@ -5881,7 +5881,7 @@ CollectionDB::setLabels( const QString &url, const QStringList &labels, const QS
                                   .arg( type ).arg( escapeString( *it ) ), "labels" );
         }
         insert( QString( "INSERT INTO tags_labels( labelid, deviceid, url, uniqueid ) VALUES ( %1, %2, '%3', '%4' );" )
-                         .arg( id ).arg( deviceid ).arg( rpath ).arg( escapeString( uid ) ), 0 );
+                         .arg( QString::number(id), QString::number(deviceid),  rpath, escapeString( uid ) ), 0 );
     }
 
     emit labelsChanged( url );
@@ -5931,7 +5931,7 @@ CollectionDB::addLabel( const QString &url, const QString &label, const QString 
             return false;
     }
     insert( QString( "INSERT INTO tags_labels( labelid, deviceid, url, uniqueid ) VALUES ( %1, %2, '%3', '%4' );" )
-                     .arg( id ).arg( deviceid ).arg( rpath ).arg( escapeString( uid ) ), "tags_labels" );
+                     .arg( QString::number(id), QString::number(deviceid), rpath, escapeString( uid ) ), "tags_labels" );
 
     emit labelsChanged( url );
     return true;
