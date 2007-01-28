@@ -102,6 +102,11 @@ WMA::Attribute::Attribute(const String &name, bool value)
   d->value_int = value;
 }
 
+WMA::Attribute::Attribute(const Attribute &attr)
+{
+  d = new AttributePrivate(*attr.d);
+} 
+
 WMA::Attribute::~Attribute()
 {
   if(d) 
@@ -172,7 +177,6 @@ bool WMA::Attribute::parse(WMA::File &f)
     break;
     
   default:
-    //debug("WMA::Attribute::parse() -- Unsupported attribute type!");
     return false; 
   }
   
@@ -218,7 +222,6 @@ ByteVector WMA::Attribute::render() const
     break;
     
   default:  
-    //debug("WMA::Attribute::render() -- Unsupported attribute type!");
     return ByteVector::null; 
   }
   

@@ -24,14 +24,14 @@
 
 #include <tmap.h>
 #include <tag.h>
-#include "wmafile.h"
-#include "wmaattribute.h"
+#include <wmafile.h>
+#include <wmaattribute.h>
 
 namespace TagLib {
 
   namespace WMA {
   
-    typedef Map<ByteVector, Attribute*> AttributeMap;
+    typedef Map<const ByteVector, Attribute> AttributeMap;
       
     class Tag : public TagLib::Tag {
     
@@ -84,13 +84,13 @@ namespace TagLib {
       /*!
        * Returns the year; if there is no year set, this will return 0.
        */
-      virtual unsigned year() const;
+      virtual uint year() const;
 
       /*!
        * Returns the track number; if there is no track number set, this will
        * return 0.
        */
-      virtual unsigned track() const;
+      virtual uint track() const;
 
       /*!
        * Sets the title to \a s.
@@ -131,12 +131,12 @@ namespace TagLib {
       /*!
        * Sets the year to \a i.  If \a s is 0 then this value will be cleared.
        */
-      virtual void setYear(unsigned i);
+      virtual void setYear(uint i);
 
       /*!
        * Sets the track to \a i.  If \a s is 0 then this value will be cleared.
        */
-      virtual void setTrack(unsigned i);
+      virtual void setTrack(uint i);
 
       /*!
        * Returns true if the tag does not contain any data.  This should be
@@ -153,10 +153,29 @@ namespace TagLib {
        */
       static void duplicate(const Tag *source, Tag *target, bool overwrite = true);
 
-      const AttributeMap &attributeMap() const;
+      /*!
+       * Returns a reference to the item list map.  This is an ItemListMap of
+       * all of the items in the tag.
+       *
+       * This is the most powerfull structure for accessing the items of the tag.
+       *
+       * \warning You should not modify this data structure directly, instead
+       * use setItem() and removeItem().
+       */ 
+       const AttributeMap &attributeMap() const;
       
-      void setAttribute(const ByteVector &name, const String &value);
-      void setAttribute(const ByteVector &name, Attribute *attribute);
+      /*!
+       * Removes the \a key attribute from the tag
+       */
+      void removeItem(const ByteVector &key);       
+      
+      void setAttribute(const ByteVector &key, const String &value);
+      
+      /*!
+       * Sets the \a key attribute to the value of \a attribute. If an attribute
+       * with the \a key is already present, it will be replaced.
+       */
+      void setAttribute(const ByteVector &key, const Attribute &attribute);
 
     private:
       

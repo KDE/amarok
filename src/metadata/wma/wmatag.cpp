@@ -62,7 +62,7 @@ String
 WMA::Tag::album() const
 {
   if(d->attributeMap.contains("WM/AlbumTitle"))
-    return d->attributeMap["WM/AlbumTitle"]->toString();
+    return d->attributeMap["WM/AlbumTitle"].toString();
   return String::null;
 }
 
@@ -84,21 +84,21 @@ WMA::Tag::rating() const
   return d->rating;
 }
 
-unsigned
+unsigned int
 WMA::Tag::year() const
 {
   if(d->attributeMap.contains("WM/Year"))
-    return d->attributeMap["WM/Year"]->toInt();
+    return d->attributeMap["WM/Year"].toInt();
   return 0;
 }
 
-unsigned
+unsigned int
 WMA::Tag::track() const
 {
   if(d->attributeMap.contains("WM/TrackNumber"))
-    return d->attributeMap["WM/TrackNumber"]->toInt();
+    return d->attributeMap["WM/TrackNumber"].toInt();
   if(d->attributeMap.contains("WM/Track"))
-    return d->attributeMap["WM/Track"]->toInt();
+    return d->attributeMap["WM/Track"].toInt();
   return 0;
 }
 
@@ -106,7 +106,7 @@ String
 WMA::Tag::genre() const
 {
   if(d->attributeMap.contains("WM/Genre"))
-    return d->attributeMap["WM/Genre"]->toString();
+    return d->attributeMap["WM/Genre"].toString();
   return String::null;
 }
 
@@ -153,34 +153,38 @@ WMA::Tag::setGenre(const String &value)
 }
 
 void 
-WMA::Tag::setYear(unsigned value)
+WMA::Tag::setYear(uint value)
 {
   setAttribute("WM/Year", String::number(value));
 }
 
 void 
-WMA::Tag::setTrack(unsigned value)
+WMA::Tag::setTrack(uint value)
 {
   setAttribute("WM/TrackNumber", String::number(value));
 }
 
-const WMA::AttributeMap &
-WMA::Tag::attributeMap() const
+const WMA::AttributeMap& WMA::Tag::attributeMap() const
 {
   return d->attributeMap;
 }
 
-void
-WMA::Tag::setAttribute(const ByteVector &name, const String &value)
+void WMA::Tag::removeItem(const ByteVector &key)
 {
-  WMA::Attribute *attribute = new WMA::Attribute(name, value);
-  d->attributeMap[name] = attribute;
+  AttributeMap::Iterator it = d->attributeMap.find(key);
+  if(it != d->attributeMap.end())
+    d->attributeMap.erase(it);
+} 
+
+void WMA::Tag::setAttribute(const ByteVector &key, const String &value)
+{
+  setAttribute(key, WMA::Attribute(key, value));
 }
 
-void
-WMA::Tag::setAttribute(const ByteVector &name, Attribute *attribute)
+void WMA::Tag::setAttribute(const ByteVector &key, const Attribute &attribute)
 {
-  d->attributeMap[name] = attribute;
+  removeItem(key);
+  d->attributeMap.insert(key, attribute);
 }
 
 bool WMA::Tag::isEmpty() const {

@@ -49,14 +49,29 @@ namespace TagLib {
         WordType    = 5
       };
 
+      /*!
+       * Constructs an empty attribute.
+       */       
       Attribute();
-      Attribute(const String &name, const String &value);
-      Attribute(const String &name, const ByteVector &value);
+      
+      /*!
+       * Constructs an attribute with \a key and \a value.
+       */       
+      Attribute(const String &key, const String &value);
+      Attribute(const String &key, const ByteVector &value);
       Attribute(const String &key, unsigned int value);
       Attribute(const String &key, unsigned long long value);
       Attribute(const String &key, unsigned short value);
       Attribute(const String &key, bool value);
       
+      /*!
+       * Construct an attribute as a copy of \a item.
+       */
+      Attribute(const Attribute &item);       
+      
+      /*!
+       * Destroys the attribute.
+       */ 
       virtual ~Attribute();
 
       /*!

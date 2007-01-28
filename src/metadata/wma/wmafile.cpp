@@ -116,13 +116,12 @@ WMA::Properties *WMA::File::audioProperties() const
   return d->properties;
 } 
 
-void WMA::File::read(bool readProperties, Properties::ReadStyle /*propertiesStyle*/)
+void WMA::File::read(bool readProperties, Properties::ReadStyle /* propertiesStyle */)
 {
   WMA::GUID guid;
 
   readGUID(guid);
   if(guid != GUID::header) {
-    //debug("WMA::File::read() -- Invalid ASF file!");
     return;
   }
 
@@ -158,7 +157,6 @@ void WMA::File::read(bool readProperties, Properties::ReadStyle /*propertiesStyl
         
       readGUID(guid);
       if(guid != GUID::audioMedia) {
-        //debug("WMA::File::read() -- File contains non-audio streams!");
         return; 
       }
         
@@ -178,8 +176,8 @@ void WMA::File::read(bool readProperties, Properties::ReadStyle /*propertiesStyl
       int numDescriptors = readWORD();
         
       for(int j = 0; j < numDescriptors; j++) {
-        WMA::Attribute *attr = new WMA::Attribute(*this);
-        d->tag->setAttribute(attr->name().toCString(false), attr);
+        WMA::Attribute attr(*this);
+        d->tag->setAttribute(attr.name().toCString(false), attr);
       }
       
     }
@@ -230,7 +228,6 @@ void WMA::File::read(bool readProperties, Properties::ReadStyle /*propertiesStyl
 bool WMA::File::save()
 {
   if(readOnly()) {
-    //debug("WMA::File::save() -- File is read only.");
     return false;
   }
 
@@ -377,7 +374,7 @@ ByteVector WMA::File::renderExtendedContentDescription()
   
   WMA::AttributeMap::ConstIterator it = d->tag->attributeMap().begin();
   for(; it != d->tag->attributeMap().end(); it++) 
-    data.append(it->second->render());
+    data.append(it->second.render());
   
   data = ByteVector(reinterpret_cast<const char *>(&GUID::extendedContentDescription), sizeof(GUID))
     + ByteVector::fromLongLong(data.size() + 16 + 8, false)
