@@ -4280,7 +4280,7 @@ void ContextBrowser::ratingOrScoreOrLabelsChanged( const QString &path ) //SLOT
 {
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
 
-    if( currentTrack.isFile() && currentTrack.url().path() == path )
+    if( (currentTrack.isFile() && currentTrack.url().path() == path) || m_showLabels )
         refreshCurrentTrackPage();
 }
 
