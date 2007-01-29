@@ -31,7 +31,7 @@ extern "C" {
 #ifdef SQLITE_VERSION
 # undef SQLITE_VERSION
 #endif
-#define SQLITE_VERSION         "3.3.11"
+#define SQLITE_VERSION         "3.3.12"
 
 /*
 ** The format of the version string is "X.Y.Z<trailing string>", where
@@ -48,7 +48,7 @@ extern "C" {
 #ifdef SQLITE_VERSION_NUMBER
 # undef SQLITE_VERSION_NUMBER
 #endif
-#define SQLITE_VERSION_NUMBER 3003011
+#define SQLITE_VERSION_NUMBER 3003012
 
 /*
 ** The version string is also compiled into the library so that a program
@@ -1185,9 +1185,13 @@ void sqlite3_set_auxdata(sqlite3_context*, int, void*, void (*)(void*));
 ** SQLITE_TRANSIENT value means that the content will likely change in
 ** the near future and that SQLite should make its own private copy of
 ** the content before returning.
+**
+** The typedef is necessary to work around problems in certain
+** C++ compilers.  See ticket #2191.
 */
-#define SQLITE_STATIC      ((void(*)(void *))0)
-#define SQLITE_TRANSIENT   ((void(*)(void *))-1)
+typedef void (*sqlite3_destructor_type)(void*);
+#define SQLITE_STATIC      ((sqlite3_destructor_type)0)
+#define SQLITE_TRANSIENT   ((sqlite3_destructor_type)-1)
 
 /*
 ** User-defined functions invoke the following routines in order to

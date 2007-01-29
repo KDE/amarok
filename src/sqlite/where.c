@@ -160,20 +160,28 @@ struct ExprMaskSet {
 #define WO_ISNULL 128
 
 /*
-** Value for flags returned by bestIndex()
+** Value for flags returned by bestIndex().  
+**
+** The least significant byte is reserved as a mask for WO_ values above.
+** The WhereLevel.flags field is usually set to WO_IN|WO_EQ|WO_ISNULL.
+** But if the table is the right table of a left join, WhereLevel.flags
+** is set to WO_IN|WO_EQ.  The WhereLevel.flags field can then be used as
+** the "op" parameter to findTerm when we are resolving equality constraints.
+** ISNULL constraints will then not be used on the right table of a left
+** join.  Tickets #2177 and #2189.
 */
-#define WHERE_ROWID_EQ       0x0001   /* rowid=EXPR or rowid IN (...) */
-#define WHERE_ROWID_RANGE    0x0002   /* rowid<EXPR and/or rowid>EXPR */
-#define WHERE_COLUMN_EQ      0x0010   /* x=EXPR or x IN (...) */
-#define WHERE_COLUMN_RANGE   0x0020   /* x<EXPR and/or x>EXPR */
-#define WHERE_COLUMN_IN      0x0040   /* x IN (...) */
-#define WHERE_TOP_LIMIT      0x0100   /* x<EXPR or x<=EXPR constraint */
-#define WHERE_BTM_LIMIT      0x0200   /* x>EXPR or x>=EXPR constraint */
-#define WHERE_IDX_ONLY       0x0800   /* Use index only - omit table */
-#define WHERE_ORDERBY        0x1000   /* Output will appear in correct order */
-#define WHERE_REVERSE        0x2000   /* Scan in reverse order */
-#define WHERE_UNIQUE         0x4000   /* Selects no more than one row */
-#define WHERE_VIRTUALTABLE   0x8000   /* Use virtual-table processing */
+#define WHERE_ROWID_EQ     0x000100   /* rowid=EXPR or rowid IN (...) */
+#define WHERE_ROWID_RANGE  0x000200   /* rowid<EXPR and/or rowid>EXPR */
+#define WHERE_COLUMN_EQ    0x001000   /* x=EXPR or x IN (...) */
+#define WHERE_COLUMN_RANGE 0x002000   /* x<EXPR and/or x>EXPR */
+#define WHERE_COLUMN_IN    0x004000   /* x IN (...) */
+#define WHERE_TOP_LIMIT    0x010000   /* x<EXPR or x<=EXPR constraint */
+#define WHERE_BTM_LIMIT    0x020000   /* x>EXPR or x>=EXPR constraint */
+#define WHERE_IDX_ONLY     0x080000   /* Use index only - omit table */
+#define WHERE_ORDERBY      0x100000   /* Output will appear in correct order */
+#define WHERE_REVERSE      0x200000   /* Scan in reverse order */
+#define WHERE_UNIQUE       0x400000   /* Selects no more than one row */
+#define WHERE_VIRTUALTABLE 0x800000   /* Use virtual-table processing */
 
 /*
 ** Initialize a preallocated WhereClause structure.
@@ -1275,6 +1283,7 @@ static double bestIndex(
   int rev;                    /* True to scan in reverse order */
   int flags;                  /* Flags associated with pProbe */
   int nEq;                    /* Number of == or IN constraints */
+  int eqTermMask;             /* Mask of valid equality operators */
   double cost;                /* Cost of using pProbe */
 
   TRACE(("bestIndex: tbl=%s notReady=%x\n", pSrc->pTab->zName, notReady));
@@ -1366,6 +1375,17 @@ static double bestIndex(
     bestFlags = flags;
   }
 
+  /* If the pSrc table is the right table of a LEFT JOIN then we may not
+  ** use an index to satisfy IS NULL constraints on that table.  This is
+  ** because columns might end up being NULL if the table does not match -
+  ** a circumstance which the index cannot help us discover.  Ticket #2177.
+  */
+  if( (pSrc->jointype & JT_LEFT)!=0 ){
+    eqTermMask = WO_EQ|WO_IN;
+  }else{
+    eqTermMask = WO_EQ|WO_IN|WO_ISNULL;
+  }
+
   /* Look at each index.
   */
   for(; pProbe; pProbe=pProbe->pNext){
@@ -1380,7 +1400,7 @@ static double bestIndex(
     flags = 0;
     for(i=0; i<pProbe->nColumn; i++){
       int j = pProbe->aiColumn[i];
-      pTerm = findTerm(pWC, iCur, j, notReady, WO_EQ|WO_IN|WO_ISNULL, pProbe);
+      pTerm = findTerm(pWC, iCur, j, notReady, eqTermMask, pProbe);
       if( pTerm==0 ) break;
       flags |= WHERE_COLUMN_EQ;
       if( pTerm->eOperator & WO_IN ){
@@ -1474,7 +1494,7 @@ static double bestIndex(
   *ppIndex = bestIdx;
   TRACE(("best index is %s, cost=%.9g, flags=%x, nEq=%d\n",
         bestIdx ? bestIdx->zName : "(none)", lowestCost, bestFlags, bestNEq));
-  *pFlags = bestFlags;
+  *pFlags = bestFlags | eqTermMask;
   *pnEq = bestNEq;
   return lowestCost;
 }
@@ -1636,9 +1656,10 @@ static void codeAllEqualityTerms(
 
   /* Evaluate the equality constraints
   */
-  for(j=0; j<pIdx->nColumn; j++){
+  assert( pIdx->nColumn>=nEq );
+  for(j=0; j<nEq; j++){
     int k = pIdx->aiColumn[j];
-    pTerm = findTerm(pWC, iCur, k, notReady, WO_EQ|WO_IN|WO_ISNULL, pIdx);
+    pTerm = findTerm(pWC, iCur, k, notReady, pLevel->flags, pIdx);
     if( pTerm==0 ) break;
     assert( (pTerm->flags & TERM_CODED)==0 );
     codeEqualityTerm(pParse, pTerm, brk, pLevel);
@@ -1649,7 +1670,6 @@ static void codeAllEqualityTerms(
       sqlite3VdbeAddOp(v, OP_MemStore, pLevel->iMem+j+1, 1);
     }
   }
-  assert( j==nEq );
 
   /* Make sure all the constraint values are on the top of the stack
   */
