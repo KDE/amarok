@@ -7692,7 +7692,7 @@ QStringList
 QueryBuilder::run()
 {
     buildQuery();
-    debug() << m_query << endl;
+    //debug() << m_query << endl;
     QStringList rs = CollectionDB::instance()->query( m_query );
     //calling code is unaware of the dynamic collection implementation, it simply expects an URL
     if( m_deviceidPos > 0 )
