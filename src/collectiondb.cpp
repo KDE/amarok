@@ -6633,7 +6633,13 @@ void
 QueryBuilder::linkTables( int tables )
 {
     m_tables.setLength(0);
-    m_tables += tableName( tabSong );
+
+    if ( tables & tabLabels ) {
+        ( m_tables += "tags_labels LEFT JOIN tags ON tags.url = tags_labels.url AND tags.deviceid = tags_labels.deviceid" )
+            += " LEFT JOIN labels ON tags_labels.labelid = labels.id";
+    }
+    else
+        m_tables += tableName( tabSong );
 
     if ( !(tables & tabSong ) )
     {
@@ -6674,9 +6680,6 @@ QueryBuilder::linkTables( int tables )
 
         if ( tables & tabDevices )
             ((m_tables += " LEFT JOIN ") += tableName( tabDevices )) += " ON tags.deviceid = devices.id";
-        if ( tables & tabLabels )
-            ( m_tables += " LEFT JOIN tags_labels ON tags.url = tags_labels.url AND tags.deviceid = tags_labels.deviceid" )
-                += " LEFT JOIN labels ON tags_labels.labelid = labels.id";
     }
 }
 
@@ -7689,7 +7692,7 @@ QStringList
 QueryBuilder::run()
 {
     buildQuery();
-    //debug() << m_query << endl;
+    debug() << m_query << endl;
     QStringList rs = CollectionDB::instance()->query( m_query );
     //calling code is unaware of the dynamic collection implementation, it simply expects an URL
     if( m_deviceidPos > 0 )
