@@ -2458,7 +2458,8 @@ CurrentTrackJob::showSongsWithLabel( const QString &label )
     qb.addMatch( QueryBuilder::tabLabels, QueryBuilder::valType, QString::number( CollectionDB::typeUser ) );
     qb.addMatch( QueryBuilder::tabLabels, QueryBuilder::valName, label );
     qb.sortByFavorite();
-    qb.setLimit( 0, 10 );
+    qb.setOptions( QueryBuilder::optRandomize );
+    qb.setLimit( 0, 30 );
     values = qb.run();
 
     if ( !values.isEmpty() )
