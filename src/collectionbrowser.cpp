@@ -2729,6 +2729,10 @@ CollectionView::iconForCategory( const int cat ) const
         case IdYear:
             icon = "history";
             break;
+
+        case IdLabel:
+            icon = "kfm";
+            break;
     }
 
     return KGlobal::iconLoader()->loadIcon( icon, KIcon::Toolbar, KIcon::SizeSmall );
