@@ -5,6 +5,10 @@ Amarok ChangeLog
 
 VERSION 1.4.5
   FEATURES:
+    * Added support for custom song labels. Labels can be managed
+      through the GUI or using new DCOP functions. (BR 89314)
+    * New DCOP functions to make it easier for scripts to use Amarok's
+      Dynamic Collection feature
     * Download songs from Shared Music (DAAP) directly into the collection.
     * Fadeout for Helix engine when pressing Stop.
     * Guided editing of the collection/playlist/devices filters. Patch by
