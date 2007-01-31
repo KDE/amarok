@@ -50,9 +50,9 @@ void MagnatuneRedownloadHandler::showRedownloadDialog( )
 
     if (previousDownloads.isEmpty()) {
 
-        //No previously purchased trak information found. No more to do here...
+        //No previously purchased track information found. No more to do here...
         QMessageBox::information( m_parent, i18n( "No purchases found!" ) ,
-                                  i18n( "No previous purchases has been found. Nothing to redownload..." ) + "\n" );
+                                  i18n( "No previous purchases have been found. Nothing to redownload..." ) + "\n" );
         return;
     }
 
