@@ -173,7 +173,7 @@ VERSION 1.4.5
     * Pause would act as Play/Pause. (BR 116101)
     * The same track would sometimes be shown twice in suggested songs.
       (BR 129395)
-    * Detect vfat partitioned devices on FreeBSD. Patch by Daniel
+    * Detect VFAT partitioned devices on FreeBSD. Patch by Daniel
       O'Connor <doconnor@gsoft.com.au>.
     * Favorite Tracks wouldn't be shown on Context Browser, and
       Statistics Panel would be empty for SQLite users. (BR 136791)
@@ -504,8 +504,8 @@ VERSION 1.4.2:
     * Double clicking in the filebrowser will append to playlist. (BR 117465)
     * Fixed problems with last.fm streams containing spaces, e.g. "Hip Hop".
     * When generic media devices were specified manually, transferred files
-      would not always get converted to vfat-friendly names if they were on a
-      vfat filesystem.
+      would not always get converted to VFAT-friendly names if they were on a
+      VFAT filesystem.
     * When using ATF, tags in MP3 files would be written as ID3v2 only and
       existing ID3v1 tags would be stripped, which could lead to media devices
       and tagging libraries that were not ID3v2.4-aware to report that no tag
@@ -752,8 +752,8 @@ VERSION 1.4.0:
 VERSION 1.4-beta3:
   FEATURES:
     * amaroK now supports multiple media devices of varying types (currently
-      iPods, UMS/vfat, and iFP devices).
-    * Autodetection of iPods and UMS/vfat devices (if KDE has HAL/DBUS support
+      iPods, UMS/VFAT, and iFP devices).
+    * Autodetection of iPods and UMS/VFAT devices (if KDE has HAL/DBUS support
       compiled in).
     * New DCOP call "devices: showDeviceList()" to show the Device Manager's
       current device knowledge.
