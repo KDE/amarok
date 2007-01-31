@@ -42,8 +42,8 @@ h6 { font-size: AMAROK_FONTSIZEpx; background-color: ButtonFace; color: ButtonTe
 .album-song-title { }
 .album-song-time { }
 .album-length { float:right; padding-right:4px; font-size: AMAROK_FONTSIZEpx; clear:right; }
-.disc-separator {  }
-.disc-separator a { display: block; padding: 1px 2px; font-weight: normal; text-decoration: none; }
+.disc-separator { border: none; border-bottom: 1px dotted WindowText; padding-left: 2em; }
+.disc-separator a { display: block; padding: 1px 2px; font-weight: 900; text-decoration: none; }
 .disc-separator a:hover { color: HighlightText; background-color: Highlight; }
 .statsBox { border-left: solid Highlight 1px; }
 .sbtext { padding: 0px 4px; font-size: AMAROK_FONTSIZEpx; text-align: right; }
