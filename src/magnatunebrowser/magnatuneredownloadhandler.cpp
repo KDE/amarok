@@ -26,6 +26,7 @@
 
 #include "qdir.h"
 #include "qmessagebox.h"
+#include <klocale.h>
 
 
 
@@ -50,8 +51,8 @@ void MagnatuneRedownloadHandler::showRedownloadDialog( )
     if (previousDownloads.isEmpty()) {
 
         //No previously purchased trak information found. No more to do here...
-        QMessageBox::information( m_parent, "No purchases found!",
-                                  "No previous purchases has been found. Nothing to redownload...\n" );
+        QMessageBox::information( m_parent, i18n( "No purchases found!" ) ,
+                                  i18n( "No previous purchases has been found. Nothing to redownload..." ) + "\n" );
         return;
     }
 
@@ -122,8 +123,8 @@ void MagnatuneRedownloadHandler::redownload( QString storedInfoFileName )
     else
     {
 
-        QMessageBox::information( m_parent, "Could not re-download album",
-                                  "There seems to be a problem with the selected redownload info file.\n" );
+        QMessageBox::information( m_parent, i18n( "Could not re-download album" ),
+                                  i18n( "There seems to be a problem with the selected redownload info file." ) + "\n" );
 
     }
 
