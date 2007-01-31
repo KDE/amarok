@@ -100,6 +100,8 @@ VERSION 1.4.5
       track. Patch by Tuomas Nurmi <tnurmi@edu.kauhajoki.fi>.
       (BR 136428)
     * Amarok now saves playlists with relative paths by default.
+    * Album covers are now downloaded and added to album directory when 
+      purchasing from the Magnatune.com store (BR 136680)
 
   BUGFIXES:
     * Disable seeking in streams. (BR 140364)
