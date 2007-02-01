@@ -34,8 +34,8 @@ MagnatuneListView::MagnatuneListView( QWidget * parent )
     addColumn( i18n( "Artist/Album/Track" ) );
     addColumn( i18n( "Duration" ) );
 
-    setColumnWidthMode( 0, QListView::Maximum );
-    setResizeMode( QListView::LastColumn );
+    setColumnWidthMode( 0, Q3ListView::Maximum );
+    setResizeMode( Q3ListView::LastColumn );
 
     setShowSortIndicator ( true );
 

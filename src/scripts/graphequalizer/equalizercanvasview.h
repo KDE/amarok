@@ -9,38 +9,42 @@
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
-#include <qcanvas.h>
+#include <q3canvas.h>
 #include <qpen.h>
 #include <qslider.h>
 
 #endif
 
 #include <kmainwindow.h>
+//Added by qt3to4:
+#include <QMouseEvent>
+#include <Q3ValueList>
+#include <Q3PtrList>
 
-class EqualizerCircle : public QCanvasEllipse
+class EqualizerCircle : public Q3CanvasEllipse
 {
 
 public:
     enum { RTTI = 1001 };
     
     
-    EqualizerCircle(int x, int y, QCanvas *canvas, QCanvasLine* line1, QCanvasLine* line2, QPtrList<EqualizerCircle>* circleList ); 
+    EqualizerCircle(int x, int y, Q3Canvas *canvas, Q3CanvasLine* line1, Q3CanvasLine* line2, Q3PtrList<EqualizerCircle>* circleList ); 
     void setLocation(const QPoint &newLocation);
     int rtti() { return RTTI; }
 private:
     enum WhichLine { LEFT = 1, RIGHT = 2 }; 
-    void setLine(WhichLine lineNum, QCanvasLine* line);
+    void setLine(WhichLine lineNum, Q3CanvasLine* line);
 
-    QCanvasLine *m_line1;
-    QCanvasLine *m_line2;
-    QPtrList<EqualizerCircle>* m_circleList;
+    Q3CanvasLine *m_line1;
+    Q3CanvasLine *m_line2;
+    Q3PtrList<EqualizerCircle>* m_circleList;
 };
 
 /**
  * @short An equalizer widget for amaroK, using a line graph
  * @author Ian Monroe <ian@monroe.nu>
  */
-class EqualizerCanvasView : public QCanvasView
+class EqualizerCanvasView : public Q3CanvasView
 {
     Q_OBJECT
 public:
@@ -50,15 +54,15 @@ public:
     void contentsMouseDoubleClickEvent(QMouseEvent *event);
     void contentsMouseMoveEvent(QMouseEvent *event);
     void contentsMouseReleaseEvent(QMouseEvent *event);
-    QValueList<int> currentSettings();
+    Q3ValueList<int> currentSettings();
 signals:
     void eqChanged();
 private:
     int getY(int xCoord);
-    QCanvasLine* makeLine(QPoint startPoint, QPoint endPoint);
+    Q3CanvasLine* makeLine(QPoint startPoint, QPoint endPoint);
     QPen m_pen;
-    QCanvasItem* m_selectedItem;
-    QPtrList<EqualizerCircle>* m_circleList;
+    Q3CanvasItem* m_selectedItem;
+    Q3PtrList<EqualizerCircle>* m_circleList;
 };
 
 class CallAmarok : public QObject

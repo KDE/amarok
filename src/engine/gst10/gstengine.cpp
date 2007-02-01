@@ -36,6 +36,10 @@
 #include <qfile.h>
 #include <qregexp.h>
 #include <qtimer.h>
+//Added by qt3to4:
+#include <QTimerEvent>
+#include <Q3ValueList>
+#include <Q3CString>
 
 #include <kapplication.h>
 #include <kio/job.h>
@@ -840,7 +844,7 @@ GstEngine::setEqualizerEnabled( bool enabled ) //SLOT
 
 
 void
-GstEngine::setEqualizerParameters( int preamp, const QValueList<int>& bandGains ) //SLOT
+GstEngine::setEqualizerParameters( int preamp, const Q3ValueList<int>& bandGains ) //SLOT
 {
     m_equalizerPreamp = preamp;
     m_equalizerGains = bandGains;
@@ -1005,7 +1009,7 @@ GstEngine::errorNoOutput() //SLOT
 /////////////////////////////////////////////////////////////////////////////////////
 
 GstElement*
-GstEngine::createElement( const QCString& factoryName, GstElement* bin, const QCString& name ) //static
+GstEngine::createElement( const Q3CString& factoryName, GstElement* bin, const Q3CString& name ) //static
 {
     GstElement* element = gst_element_factory_make( factoryName, name );
 
@@ -1025,7 +1029,7 @@ GstEngine::createElement( const QCString& factoryName, GstElement* bin, const QC
 
 
 QStringList
-GstEngine::getPluginList( const QCString& classname ) const
+GstEngine::getPluginList( const Q3CString& classname ) const
 {
     GList* features = NULL;
     QString name;
@@ -1065,7 +1069,7 @@ GstEngine::createPipeline()
     debug() << "Output Params: " << GstConfig::outputParams() << endl;
 
     // Let gst construct the output element from a string
-    QCString output  = GstConfig::soundOutput().latin1();
+    Q3CString output  = GstConfig::soundOutput().latin1();
     if ( GstConfig::useCustomOutputParams() ) {
         output += ' ';
         output += GstConfig::outputParams().latin1();

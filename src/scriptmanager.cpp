@@ -42,6 +42,8 @@
 #include <qlabel.h>
 #include <qtextcodec.h>
 #include <qtimer.h>
+//Added by qt3to4:
+#include <QPixmap>
 
 #include <kaboutdialog.h>
 #include <kapplication.h>
@@ -179,9 +181,9 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     m_scoreCategory    ->setOpen( config->readBoolEntry( "Score category State" ) );
     m_transcodeCategory->setOpen( config->readBoolEntry( "Transcode category open" ) );
 
-    connect( m_gui->listView, SIGNAL( currentChanged( QListViewItem* ) ), SLOT( slotCurrentChanged( QListViewItem* ) ) );
-    connect( m_gui->listView, SIGNAL( doubleClicked ( QListViewItem*, const QPoint&, int ) ), SLOT( slotRunScript() ) );
-    connect( m_gui->listView, SIGNAL( contextMenuRequested ( QListViewItem*, const QPoint&, int ) ), SLOT( slotShowContextMenu( QListViewItem*, const QPoint& ) ) );
+    connect( m_gui->listView, SIGNAL( currentChanged( Q3ListViewItem* ) ), SLOT( slotCurrentChanged( Q3ListViewItem* ) ) );
+    connect( m_gui->listView, SIGNAL( doubleClicked ( Q3ListViewItem*, const QPoint&, int ) ), SLOT( slotRunScript() ) );
+    connect( m_gui->listView, SIGNAL( contextMenuRequested ( Q3ListViewItem*, const QPoint&, int ) ), SLOT( slotShowContextMenu( Q3ListViewItem*, const QPoint& ) ) );
 
     connect( m_gui->installButton,   SIGNAL( clicked() ), SLOT( slotInstallScript() ) );
     connect( m_gui->retrieveButton,  SIGNAL( clicked() ), SLOT( slotRetrieveScript() ) );
@@ -376,7 +378,7 @@ ScriptManager::findScripts() //SLOT
 
 
 void
-ScriptManager::slotCurrentChanged( QListViewItem* item )
+ScriptManager::slotCurrentChanged( Q3ListViewItem* item )
 {
     const bool isCategory = item == m_generalCategory ||
                             item == m_lyricsCategory ||
@@ -416,7 +418,7 @@ ScriptManager::slotInstallScript( const QString& path )
     }
 
     KTar archive( _path );
-    if( !archive.open( IO_ReadOnly ) ) {
+    if( !archive.open( QIODevice::ReadOnly ) ) {
         KMessageBox::sorry( 0, i18n( "Could not read this package." ) );
         return false;
     }
@@ -545,7 +547,7 @@ ScriptManager::slotRunScript( bool silent )
 {
     if( !m_gui->runButton->isEnabled() ) return false;
 
-    QListViewItem* const li = m_gui->listView->currentItem();
+    Q3ListViewItem* const li = m_gui->listView->currentItem();
     const QString name = li->text( 0 );
 
     if( m_scripts[name].type == "lyrics" && lyricsScriptRunning() != QString::null ) {
@@ -608,7 +610,7 @@ ScriptManager::slotRunScript( bool silent )
 void
 ScriptManager::slotStopScript()
 {
-    QListViewItem* const li = m_gui->listView->currentItem();
+    Q3ListViewItem* const li = m_gui->listView->currentItem();
     const QString name = li->text( 0 );
 
     // Just a sanity check
@@ -643,7 +645,7 @@ ScriptManager::slotAboutScript()
     QFile readme( m_scripts[name].url.directory( false ) + "README" );
     QFile license( m_scripts[name].url.directory( false ) + "COPYING" );
 
-    if( !readme.open( IO_ReadOnly ) ) {
+    if( !readme.open( QIODevice::ReadOnly ) ) {
         KMessageBox::sorry( 0, i18n( "There is no information available for this script." ) );
         return;
     }
@@ -659,7 +661,7 @@ ScriptManager::slotAboutScript()
     if( product ) product->setText( i18n( "%1 Amarok Script" ).arg( name ) );
 
     about->addTextPage( i18n( "About" ), readme.readAll(), true );
-    if( license.open( IO_ReadOnly ) )
+    if( license.open( QIODevice::ReadOnly ) )
         about->addLicensePage( i18n( "License" ), license.readAll() );
 
     about->setInitialSize( QSize( 500, 350 ) );
@@ -668,7 +670,7 @@ ScriptManager::slotAboutScript()
 
 
 void
-ScriptManager::slotShowContextMenu( QListViewItem* item, const QPoint& pos )
+ScriptManager::slotShowContextMenu( Q3ListViewItem* item, const QPoint& pos )
 {
     const bool isCategory = item == m_generalCategory ||
                             item == m_lyricsCategory ||
@@ -712,7 +714,7 @@ ScriptManager::slotShowContextMenu( QListViewItem* item, const QPoint& pos )
             font.setStyleHint( QFont::TypeWriter );
             editor->setFont( font );
 
-            editor->setTextFormat( QTextEdit::PlainText );
+            editor->setTextFormat( Qt::PlainText );
             editor->resize( 500, 380 );
             editor->show();
             break;

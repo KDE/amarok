@@ -8,6 +8,10 @@
  *                                                                         *
  ***************************************************************************/
 #include <qthread.h>
+//Added by qt3to4:
+#include <QTimerEvent>
+#include <Q3ValueList>
+#include <Q3CString>
 #include <sys/param.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -58,7 +62,7 @@ extern "C"
 
 
 ///returns the configuration we will use
-static inline QCString configPath() { return QFile::encodeName( QDir::homeDirPath() + "/.helix/config" ); }
+static inline Q3CString configPath() { return QFile::encodeName( QDir::homeDirPath() + "/.helix/config" ); }
 
 
 HelixEngine::HelixEngine()
@@ -211,7 +215,7 @@ HelixEngine::init()
       long vol=0;
       bool eqenabled=false;
       int savedpreamp=0;
-      QValueList<int> savedequalizerGains;
+      Q3ValueList<int> savedequalizerGains;
 
       if (m_inited)
       {
@@ -876,7 +880,7 @@ HelixEngine::setEqualizerEnabled( bool enabled ) //SLOT
 
 // ok, this is lifted from gst... but why mess with what works?
 void
-HelixEngine::setEqualizerParameters( int preamp, const QValueList<int>& bandGains ) //SLOT
+HelixEngine::setEqualizerParameters( int preamp, const Q3ValueList<int>& bandGains ) //SLOT
 {
    m_preamp = ( preamp + 100 ) / 2;
 
@@ -891,7 +895,7 @@ HelixEngine::setEqualizerParameters( int preamp, const QValueList<int>& bandGain
 namespace Debug
 {
     #undef helix_indent
-    QCString helix_indent;
+    Q3CString helix_indent;
 }
 
 #include "helix-engine.moc"

@@ -14,7 +14,7 @@
 #define DAAPPROXY_H
 
 #include <qobject.h>
-#include <qserversocket.h>
+#include <q3serversocket.h>
 class DaapClient;
 
 namespace Daap {
@@ -40,10 +40,10 @@ namespace Daap {
 
     // We must implement this because QServerSocket has one pure virtual method.
     // It's just used for finding a free port.
-    class MyServerSocket : public QServerSocket
+    class MyServerSocket : public Q3ServerSocket
     {
         public:
-            MyServerSocket() : QServerSocket( Q_UINT16( 0 ) ) {}
+            MyServerSocket() : Q3ServerSocket( Q_UINT16( 0 ) ) {}
 
         private:
             void newConnection( int ) {}

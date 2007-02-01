@@ -10,8 +10,8 @@
 #include <kurl.h>
 #include <qdir.h>            //stack allocated
 #include <qobject.h>         //baseclass
-#include <qptrqueue.h>       //baseclass
-#include <qsemaphore.h>      //stack allocated
+#include <q3ptrqueue.h>       //baseclass
+#include <q3semaphore.h>      //stack allocated
 #include <qstringlist.h>     //stack allocated
 
 class DbConfig;

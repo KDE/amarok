@@ -40,7 +40,7 @@ class HostListItem : public KListViewItem {
       Playback
     };
 
-    HostListItem( QListView*, QString hostname, bool audio = true, bool video = true, int volume = 0, int status = 0, bool read_only = false);
+    HostListItem( Q3ListView*, QString hostname, bool audio = true, bool video = true, int volume = 0, int status = 0, bool read_only = false);
     ~HostListItem();
 
     bool isVideoEnabled() const { return m_video; }

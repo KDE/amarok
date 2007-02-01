@@ -28,7 +28,7 @@ class PlaylistSelection : public KListView
         }
 
     private:
-        void loadChildren(QListViewItem* browserParent, QListViewItem* selectionParent);
+        void loadChildren(Q3ListViewItem* browserParent, Q3ListViewItem* selectionParent);
 };
 
 namespace ConfigDynamic
@@ -41,11 +41,11 @@ namespace ConfigDynamic
     KDialogBase* basicDialog( QWidget* parent );
 }
 
-class SelectionListItem : public QCheckListItem
+class SelectionListItem : public Q3CheckListItem
 {
     public:
-        SelectionListItem( QListViewItem  * parent, const QString& text, QListViewItem* browserEquivalent );
-        SelectionListItem( QCheckListItem * parent, const QString& text, QListViewItem* browserEquivalent );
+        SelectionListItem( Q3ListViewItem  * parent, const QString& text, Q3ListViewItem* browserEquivalent );
+        SelectionListItem( Q3CheckListItem * parent, const QString& text, Q3ListViewItem* browserEquivalent );
 
         virtual QString name() const;
 
@@ -53,7 +53,7 @@ class SelectionListItem : public QCheckListItem
         virtual void stateChange( bool );
 
     private:
-        QListViewItem* m_browserEquivalent;
+        Q3ListViewItem* m_browserEquivalent;
 };
 
 #endif /*PLAYLISTSELECTION_H*/

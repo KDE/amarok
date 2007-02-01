@@ -53,7 +53,7 @@
 #include "amarok_export.h"
 
 #include <qstring.h>
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 #include <qmutex.h>
 
 class LIBAMAROK_EXPORT AtomicString
@@ -188,7 +188,7 @@ private:
 
     // static data
     static set_type s_store;    // main string store
-    static QPtrList<QString> s_lazyDeletes;  // strings scheduled for deletion
+    static Q3PtrList<QString> s_lazyDeletes;  // strings scheduled for deletion
                                              // by main thread
     static QMutex s_storeMutex;  // protects the static data above
 };

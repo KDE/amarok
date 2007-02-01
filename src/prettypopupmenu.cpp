@@ -23,6 +23,9 @@
 #include <qpainter.h>
 #include <qpixmap.h>
 #include <qstyle.h>
+//Added by qt3to4:
+#include <QResizeEvent>
+#include <QPaintEvent>
 
 #include <kapplication.h>
 #include <kconfig.h>

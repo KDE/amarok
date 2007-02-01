@@ -23,7 +23,7 @@
 
 #include <qdatetime.h>
 #include <qstring.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 
 
 
@@ -140,8 +140,8 @@ public:
     int getArtistId() const;
 };
 
-typedef QValueList<MagnatuneArtist> MagnatuneArtistList;
-typedef QValueList<MagnatuneAlbum> MagnatuneAlbumList;
-typedef QValueList<MagnatuneTrack> MagnatuneTrackList;
+typedef Q3ValueList<MagnatuneArtist> MagnatuneArtistList;
+typedef Q3ValueList<MagnatuneAlbum> MagnatuneAlbumList;
+typedef Q3ValueList<MagnatuneTrack> MagnatuneTrackList;
 
 #endif

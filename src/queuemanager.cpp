@@ -18,6 +18,13 @@
 #include "amarokconfig.h"     //check if dynamic mode
 #include "playlist.h"
 #include "queuemanager.h"
+//Added by qt3to4:
+#include <QDragMoveEvent>
+#include <QDropEvent>
+#include <QPaintEvent>
+#include <Q3ValueList>
+#include <QKeyEvent>
+#include <QDragEnterEvent>
 
 #include <kapplication.h>
 #include <kguiitem.h>
@@ -27,10 +34,10 @@
 #include <kwin.h>
 
 #include <qpainter.h>
-#include <qptrlist.h>
-#include <qsimplerichtext.h>
+#include <q3ptrlist.h>
+#include <q3simplerichtext.h>
 #include <qtooltip.h>
-#include <qvbox.h>
+#include <q3vbox.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// CLASS QueueItem
@@ -68,8 +75,8 @@ QueueList::QueueList( QWidget *parent, const char *name )
             : KListView( parent, name )
 {
     addColumn( i18n("Name") );
-    setResizeMode( QListView::LastColumn );
-    setSelectionMode( QListView::Extended );
+    setResizeMode( Q3ListView::LastColumn );
+    setSelectionMode( Q3ListView::Extended );
     setSorting( -1 );
 
     setAcceptDrops( true );
@@ -94,7 +101,7 @@ QueueList::viewportPaintEvent( QPaintEvent *e )
                     "<b>drop</b> them here.<br><br>"
                     "Drag and drop tracks within the manager to resort queue orders."
                 "</div>" ) );
-        QSimpleRichText t( minimumText, QApplication::font() );
+        Q3SimpleRichText t( minimumText, QApplication::font() );
 
         if ( t.width()+30 >= viewport()->width() || t.height()+30 >= viewport()->height() )
             //too big, giving up
@@ -133,7 +140,7 @@ QueueList::keyPressEvent( QKeyEvent *e )
 bool
 QueueList::hasSelection()
 {
-    QListViewItemIterator it( this, QListViewItemIterator::Selected );
+    Q3ListViewItemIterator it( this, Q3ListViewItemIterator::Selected );
 
     if( !it.current() )
         return false;
@@ -141,11 +148,11 @@ QueueList::hasSelection()
     return true;
 }
 
-QPtrList<QListViewItem>
+Q3PtrList<Q3ListViewItem>
 QueueList::selectedItems()
 {
-    QPtrList<QListViewItem> selected;
-    QListViewItemIterator it( this, QListViewItemIterator::Selected );
+    Q3PtrList<Q3ListViewItem> selected;
+    Q3ListViewItemIterator it( this, Q3ListViewItemIterator::Selected );
 
     for( ; it.current(); ++it )
         selected.append( it.current() );
@@ -156,17 +163,17 @@ QueueList::selectedItems()
 void
 QueueList::moveSelectedUp() // SLOT
 {
-    QPtrList<QListViewItem> selected = selectedItems();
+    Q3PtrList<Q3ListViewItem> selected = selectedItems();
     bool item_moved = false;
 
     // Whilst it would be substantially faster to do this: ((*it)->itemAbove())->move( *it ),
     // this would only work for sequentially ordered items
-    for( QListViewItem *item = selected.first(); item; item = selected.next() )
+    for( Q3ListViewItem *item = selected.first(); item; item = selected.next() )
     {
         if( item == itemAtIndex(0) )
             continue;
 
-        QListViewItem *after;
+        Q3ListViewItem *after;
 
         item == itemAtIndex(1) ?
             after = 0:
@@ -185,12 +192,12 @@ QueueList::moveSelectedUp() // SLOT
 void
 QueueList::moveSelectedDown() // SLOT
 {
-    QPtrList<QListViewItem> list = selectedItems();
+    Q3PtrList<Q3ListViewItem> list = selectedItems();
     bool item_moved = false;
 
-    for( QListViewItem *item  = list.last(); item; item = list.prev() )
+    for( Q3ListViewItem *item  = list.last(); item; item = list.prev() )
     {
-        QListViewItem *after = item->nextSibling();
+        Q3ListViewItem *after = item->nextSibling();
 
         if( !after )
             continue;
@@ -211,9 +218,9 @@ QueueList::removeSelected() //SLOT
     setSelected( currentItem(), true );
 
     bool item_removed = false;
-    QPtrList<QListViewItem> selected = selectedItems();
+    Q3PtrList<Q3ListViewItem> selected = selectedItems();
 
-    for( QListViewItem *item = selected.first(); item; item = selected.next() )
+    for( Q3ListViewItem *item = selected.first(); item; item = selected.next() )
     {
         delete item;
         item_removed = true;
@@ -262,8 +269,8 @@ QueueList::contentsDropEvent( QDropEvent *e )
     }
     else
     {
-        QListViewItem *parent = 0;
-        QListViewItem *after;
+        Q3ListViewItem *parent = 0;
+        Q3ListViewItem *after;
 
         findDrop( e->pos(), parent, after );
 
@@ -291,14 +298,14 @@ QueueManager::QueueManager( QWidget *parent, const char *name )
     setCaption( kapp->makeStdCaption( i18n("Queue Manager") ) );
     setInitialSize( QSize( 400, 260 ) );
 
-    QVBox *mainBox = new QVBox( this );
+    Q3VBox *mainBox = new Q3VBox( this );
     setMainWidget( mainBox );
 
-    QHBox *box = new QHBox( mainWidget() );
+    Q3HBox *box = new Q3HBox( mainWidget() );
     box->setSpacing( 5 );
     m_listview = new QueueList( box );
 
-    QVBox *buttonBox = new QVBox( box );
+    Q3VBox *buttonBox = new Q3VBox( box );
     m_up     = new KPushButton( KGuiItem( QString::null, "up" ), buttonBox );
     m_down   = new KPushButton( KGuiItem( QString::null, "down" ), buttonBox );
     m_remove = new KPushButton( KGuiItem( QString::null, Amarok::icon( "dequeue_track" ) ), buttonBox );
@@ -349,7 +356,7 @@ QueueManager::applyNow()
 }
 
 void
-QueueManager::addItems( QListViewItem *after )
+QueueManager::addItems( Q3ListViewItem *after )
 {
     /*
         HACK!!!!! We can know which items where dragged since they should still be selected
@@ -363,13 +370,13 @@ QueueManager::addItems( QListViewItem *after )
     if( !after )
         after = m_listview->lastChild();
 
-    QPtrList<QListViewItem> list = Playlist::instance()->selectedItems();
+    Q3PtrList<Q3ListViewItem> list = Playlist::instance()->selectedItems();
 
     bool item_added = false;
-    for( QListViewItem *item = list.first(); item; item = list.next() )
+    for( Q3ListViewItem *item = list.first(); item; item = list.next() )
     {
         #define item static_cast<PlaylistItem*>(item)
-        QValueList<PlaylistItem*> current = m_map.values();
+        Q3ValueList<PlaylistItem*> current = m_map.values();
 
         if( current.find( item ) == current.end() ) //avoid duplication
         {
@@ -389,9 +396,9 @@ QueueManager::addItems( QListViewItem *after )
 void
 QueueManager::changeQueuedItems( const PLItemList &in, const PLItemList &out ) //SLOT
 {
-    QPtrListIterator<PlaylistItem> it(in);
+    Q3PtrListIterator<PlaylistItem> it(in);
     for( it.toFirst(); it; ++it ) addQueuedItem( *it );
-    it = QPtrListIterator<PlaylistItem>(out);
+    it = Q3PtrListIterator<PlaylistItem>(out);
     for( it.toFirst(); it; ++it ) removeQueuedItem( *it );
 }
 
@@ -403,7 +410,7 @@ QueueManager::addQueuedItem( PlaylistItem *item )
 
     const int index = pl->m_nextTracks.findRef( item );
 
-    QListViewItem *after;
+    Q3ListViewItem *after;
     if( !index ) after = 0;
     else
     {
@@ -413,8 +420,8 @@ QueueManager::addQueuedItem( PlaylistItem *item )
         after = m_listview->itemAtIndex( find );
     }
 
-    QValueList<PlaylistItem*>         current = m_map.values();
-    QValueListIterator<PlaylistItem*> newItem = current.find( item );
+    Q3ValueList<PlaylistItem*>         current = m_map.values();
+    Q3ValueListIterator<PlaylistItem*> newItem = current.find( item );
 
     QString title = i18n("%1 - %2").arg( item->artist(), item->title() );
 
@@ -433,7 +440,7 @@ QueueManager::removeQueuedItem( PlaylistItem *item )
 
     const int index = pl->m_nextTracks.findRef( item );
 
-    QListViewItem *after;
+    Q3ListViewItem *after;
     if( !index ) after = 0;
     else
     {
@@ -443,18 +450,18 @@ QueueManager::removeQueuedItem( PlaylistItem *item )
         after = m_listview->itemAtIndex( find );
     }
 
-    QValueList<PlaylistItem*>         current = m_map.values();
-    QValueListIterator<PlaylistItem*> newItem = current.find( item );
+    Q3ValueList<PlaylistItem*>         current = m_map.values();
+    Q3ValueListIterator<PlaylistItem*> newItem = current.find( item );
 
     QString title = i18n("%1 - %2").arg( item->artist(), item->title() );
 
-    QListViewItem *removableItem = m_listview->findItem( title, 0 );
+    Q3ListViewItem *removableItem = m_listview->findItem( title, 0 );
 
     if( removableItem )
     {
         //Remove the key from the map, so we can re-queue the item
-        QMapIterator<QListViewItem*, PlaylistItem*> end(  m_map.end() );
-        for( QMapIterator<QListViewItem*, PlaylistItem*> it = m_map.begin(); it != end; ++it )
+        QMapIterator<Q3ListViewItem*, PlaylistItem*> end(  m_map.end() );
+        for( QMapIterator<Q3ListViewItem*, PlaylistItem*> it = m_map.begin(); it != end; ++it )
         {
             if( it.data() == item )
             {
@@ -471,11 +478,11 @@ QueueManager::removeQueuedItem( PlaylistItem *item )
 
 /// Playlist uses this to determine the altered queue and reflect the changes.
 
-QPtrList<PlaylistItem>
+Q3PtrList<PlaylistItem>
 QueueManager::newQueue()
 {
-    QPtrList<PlaylistItem> queue;
-    for( QListViewItem *key = m_listview->firstChild(); key; key = key->nextSibling() )
+    Q3PtrList<PlaylistItem> queue;
+    for( Q3ListViewItem *key = m_listview->firstChild(); key; key = key->nextSibling() )
     {
         queue.append( m_map[ key ] );
     }
@@ -485,8 +492,8 @@ QueueManager::newQueue()
 void
 QueueManager::insertItems()
 {
-    QPtrList<PlaylistItem> list = Playlist::instance()->m_nextTracks;
-    QListViewItem *last = 0;
+    Q3PtrList<PlaylistItem> list = Playlist::instance()->m_nextTracks;
+    Q3ListViewItem *last = 0;
 
     for( PlaylistItem *item = list.first(); item; item = list.next() )
     {
@@ -509,14 +516,14 @@ QueueManager::changed() // SLOT
 void
 QueueManager::removeSelected() //SLOT
 {
-    QPtrList<QListViewItem>  selected = m_listview->selectedItems();
+    Q3PtrList<Q3ListViewItem>  selected = m_listview->selectedItems();
 
     bool item_removed = false;
 
-    for( QListViewItem *item = selected.first(); item; item = selected.next() )
+    for( Q3ListViewItem *item = selected.first(); item; item = selected.next() )
     {
         //Remove the key from the map, so we can re-queue the item
-        QMapIterator<QListViewItem*, PlaylistItem*> it = m_map.find( item );
+        QMapIterator<Q3ListViewItem*, PlaylistItem*> it = m_map.find( item );
 
         m_map.remove( it );
 

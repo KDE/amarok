@@ -18,8 +18,14 @@
 
 #include "browserbar.h"
 
-#include <qhbox.h>          //baseclass for DynamicBox
+#include <q3hbox.h>          //baseclass for DynamicBox
 #include <qwidget.h>        //baseclass
+//Added by qt3to4:
+#include <QShowEvent>
+#include <QEvent>
+#include <QLabel>
+#include <QCloseEvent>
+#include <QPaintEvent>
 #include <kxmlguiclient.h>  //baseclass (for XMLGUI)
 
 class ClickLineEdit;
@@ -138,7 +144,7 @@ class DynamicTitle : public QWidget
         QFont m_font;
 };
 
-class DynamicBar : public QHBox
+class DynamicBar : public Q3HBox
 {
     Q_OBJECT
     public:

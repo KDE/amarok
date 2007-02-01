@@ -6,11 +6,13 @@
 #define TAGGUESSER_H
 
 #include <qregexp.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 
 class FileNameScheme
 {
     public:
-        typedef QValueList<FileNameScheme> List;
+        typedef Q3ValueList<FileNameScheme> List;
 
         FileNameScheme() { }
         FileNameScheme( const QString &s );

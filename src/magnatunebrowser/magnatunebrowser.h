@@ -35,10 +35,10 @@
 
 #include <qcheckbox.h>
 #include <qcombobox.h>
-#include <qhbox.h>
-#include <qpopupmenu.h>
+#include <q3hbox.h>
+#include <q3popupmenu.h>
 #include <qpushbutton.h>
-#include <qvbox.h>
+#include <q3vbox.h>
 
 
 
@@ -48,7 +48,7 @@ Implemented as a singleton
 
 @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class MagnatuneBrowser : public QVBox
+class MagnatuneBrowser : public Q3VBox
 {
     Q_OBJECT
 
@@ -104,14 +104,14 @@ private slots:
      * item in the list view. Ads item to playlist.
      * @param item The item that was double clicked
      */
-    void itemExecuted( QListViewItem * item);
+    void itemExecuted( Q3ListViewItem * item);
 
     /**
      * Slot for recieving notification when a new item in the list is selected.
      * Adds the corrosponding artist or album info to the info view (if visible)
      * @param item The selected item
      */
-    void selectionChanged( QListViewItem * item);
+    void selectionChanged( Q3ListViewItem * item);
 
     /**
      * Slot for recieving notifications about right clicks in the list view.
@@ -120,7 +120,7 @@ private slots:
      * @param pos The position of the cursor at the time of thre right click
      * @param column The column of the item that was right clicked (unused)
      */
-    void showPopupMenu( QListViewItem * item, const QPoint & pos, int column );
+    void showPopupMenu( Q3ListViewItem * item, const QPoint & pos, int column );
 
     /**
      * Slot for recieving notification that the update button has been clicked.
@@ -228,12 +228,12 @@ private:
     MagnatuneListView         *m_listView;
     MagnatuneArtistInfoBox    *m_artistInfobox;
     QString                    m_currentInfoUrl;
-    QPopupMenu                *m_popupMenu;
+    Q3PopupMenu                *m_popupMenu;
     MagnatunePurchaseHandler  *m_purchaseHandler;
     MagnatuneRedownloadHandler *m_redownloadHandler;
 
-    QHBox       *m_topPanel;
-    QVBox       *m_bottomPanel;
+    Q3HBox       *m_topPanel;
+    Q3VBox       *m_bottomPanel;
     QPushButton *m_advancedFeaturesButton;
     QPushButton *m_updateListButton;
     QPushButton *m_purchaseAlbumButton;

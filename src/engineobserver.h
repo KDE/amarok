@@ -46,7 +46,7 @@ private:
     EngineSubject *m_subject;
 };
 
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 /**
  * Inherited by EngineController.
  * Notify observer functionality is captured in this class.
@@ -69,7 +69,7 @@ protected:
     void trackLengthChangedNotify( long /*length*/ );
 
 private:
-    QPtrList<EngineObserver> Observers;
+    Q3PtrList<EngineObserver> Observers;
     Engine::State m_oldEngineState;
 };
 

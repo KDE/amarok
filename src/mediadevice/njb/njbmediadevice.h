@@ -29,15 +29,15 @@
 #include <transferdialog.h>
 #include <libnjb.h>
 
-#include <qptrlist.h>
-#include <qlistview.h>
+#include <q3ptrlist.h>
+#include <q3listview.h>
 
 #include "playlist.h"
 #include "track.h"
 
-#include <qcstring.h>
+#include <q3cstring.h>
 #include <qstring.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 
 // kde
 #include <kurl.h>
@@ -64,10 +64,10 @@ extern trackValueList* theTracks;
 class NjbMediaItem : public MediaItem
 {
     public:
-        NjbMediaItem( QListView *parent, QListViewItem *after = 0 ) : MediaItem( parent, after )
+        NjbMediaItem( Q3ListView *parent, Q3ListViewItem *after = 0 ) : MediaItem( parent, after )
         {}
 
-        NjbMediaItem( QListViewItem *parent, QListViewItem *after = 0 ) : MediaItem( parent, after )
+        NjbMediaItem( Q3ListViewItem *parent, Q3ListViewItem *after = 0 ) : MediaItem( parent, after )
         {}
 
         ~NjbMediaItem()
@@ -97,7 +97,7 @@ class NjbMediaDevice : public MediaDevice
 
         //    virtual bool needsManualConfig();
 
-        virtual MediaItem* newPlaylist(const QString& name, MediaItem* parent, QPtrList< MediaItem > items);
+        virtual MediaItem* newPlaylist(const QString& name, MediaItem* parent, Q3PtrList< MediaItem > items);
 
         //    virtual MediaItem* tagsChanged(MediaItem* item, const MetaBundle& changed);
 
@@ -106,13 +106,13 @@ class NjbMediaDevice : public MediaDevice
         virtual bool hasTransferDialog() { return true; }
         virtual TransferDialog* getTransferDialog();
         virtual void addConfigElements(QWidget* arg1);
-        virtual void addToDirectory(MediaItem* directory, QPtrList< MediaItem > items) { Q_UNUSED(directory) Q_UNUSED(items) }
-        virtual void addToPlaylist(MediaItem* playlist, MediaItem* after, QPtrList< MediaItem > items);
+        virtual void addToDirectory(MediaItem* directory, Q3PtrList< MediaItem > items) { Q_UNUSED(directory) Q_UNUSED(items) }
+        virtual void addToPlaylist(MediaItem* playlist, MediaItem* after, Q3PtrList< MediaItem > items);
         virtual void applyConfig();
         virtual void init(MediaBrowser* parent);
         virtual void loadConfig();
         virtual void removeConfigElements(QWidget* arg1);
-        virtual void rmbPressed(QListViewItem* qitem, const QPoint& point, int arg1);
+        virtual void rmbPressed(Q3ListViewItem* qitem, const QPoint& point, int arg1);
         virtual void runTransferDialog();
         virtual void customClicked();
 
@@ -120,7 +120,7 @@ class NjbMediaDevice : public MediaDevice
         void setSpacesToUnderscores(bool yesno);
         static njb_t *theNjb();
     public slots:
-        void expandItem( QListViewItem *item );
+        void expandItem( Q3ListViewItem *item );
         
     protected:
 
@@ -165,7 +165,7 @@ class NjbMediaDevice : public MediaDevice
         NjbMediaItem* addArtist( NjbTrack *track );
         TransferDialog      *m_td;
         
-        QListView *listAmarokPlayLists;
+        Q3ListView *listAmarokPlayLists;
         QString devNode;
         QString m_errMsg;
         bool m_connected; // Replaces m_captured from the original code.

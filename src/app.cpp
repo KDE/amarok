@@ -71,12 +71,15 @@ email                : markey@web.de
 #include <qevent.h>              //genericEventHandler()
 #include <qeventloop.h>          //applySettings()
 #include <qfile.h>
-#include <qobjectlist.h>         //applyColorScheme()
+#include <qobject.h>         //applyColorScheme()
 #include <qpalette.h>            //applyColorScheme()
 #include <qpixmap.h>             //QPixmap::setDefaultOptimization()
-#include <qpopupmenu.h>          //genericEventHandler
+#include <q3popupmenu.h>          //genericEventHandler
 #include <qtimer.h>              //showHyperThreadingWarning()
 #include <qtooltip.h>            //default tooltip for trayicon
+//Added by qt3to4:
+#include <QCloseEvent>
+#include <Q3CString>
 
 // For the HyperThreading fix
 #ifdef __linux__
@@ -153,12 +156,12 @@ App::App()
             char bundlePath[1024];
             if( CFURLGetFileSystemRepresentation( urlRef, true, (UInt8 *)bundlePath, sizeof(bundlePath) ) )
             {
-                QCString bp( bundlePath );
+                Q3CString bp( bundlePath );
                 size_t len = bp.length();
                 if( len > 4 && bp.right( 4 ) == ".app" )
                 {
                     bp.append( "/Contents/MacOS" );
-                    QCString path = getenv( "PATH" );
+                    Q3CString path = getenv( "PATH" );
                     if( path.length() > 0 )
                     {
                         path.prepend( ":" );
@@ -518,7 +521,7 @@ void App::fixHyperThreading()
     QString line;
     uint cpuCount = 0;
     QFile cpuinfo( "/proc/cpuinfo" );
-    if ( cpuinfo.open( IO_ReadOnly ) ) {
+    if ( cpuinfo.open( QIODevice::ReadOnly ) ) {
         while ( cpuinfo.readLine( line, 20000 ) != -1 ) {
             if ( line.startsWith( "flags" ) )
                 cpuCount++;
@@ -592,7 +595,7 @@ class ID3v1StringHandler : public TagLib::ID3v1::StringHandler
 
     virtual TagLib::ByteVector render( const TagLib::String &ts ) const
     {
-        const QCString qcs = m_codec->fromUnicode( TStringToQString(ts) );
+        const Q3CString qcs = m_codec->fromUnicode( TStringToQString(ts) );
         return TagLib::ByteVector( qcs, qcs.length() );
     }
 
@@ -984,7 +987,7 @@ bool Amarok::genericEventHandler( QWidget *recipient, QEvent *e )
     case QEvent::Drop:
         if( KURLDrag::canDecode( e ) )
         {
-            QPopupMenu popup;
+            Q3PopupMenu popup;
             //FIXME this isn't a good way to determine if there is a currentTrack, need playlist() function
             const bool b = EngineController::engine()->loaded();
 
@@ -1133,7 +1136,7 @@ void App::slotConfigEqualizer() //SLOT
 }
 
 
-void App::slotConfigAmarok( const QCString& page )
+void App::slotConfigAmarok( const Q3CString& page )
 {
     DEBUG_THREAD_FUNC_INFO
 

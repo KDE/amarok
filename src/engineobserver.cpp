@@ -20,7 +20,7 @@ email                : fh@ez.no
 #include "engineobserver.h"
 #include "metabundle.h"
 #include "podcastbundle.h"
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -60,7 +60,7 @@ void EngineSubject::stateChangedNotify( Engine::State state )
 {
     DEBUG_BLOCK
 
-    QPtrListIterator<EngineObserver> it( Observers );
+    Q3PtrListIterator<EngineObserver> it( Observers );
     EngineObserver *observer;
     while( ( observer = it.current() ) != 0 )
     {
@@ -76,7 +76,7 @@ void EngineSubject::newMetaDataNotify( const MetaBundle &bundle, bool trackChang
 {
     DEBUG_BLOCK
 
-    QPtrListIterator<EngineObserver> it( Observers );
+    Q3PtrListIterator<EngineObserver> it( Observers );
     EngineObserver *observer;
 
     PodcastEpisodeBundle peb;
@@ -96,14 +96,14 @@ void EngineSubject::newMetaDataNotify( const MetaBundle &bundle, bool trackChang
 
 void EngineSubject::trackEnded( int finalPosition, int trackLength, const QString &reason )
 {
-    for( QPtrListIterator<EngineObserver> it( Observers ); *it; ++it )
+    for( Q3PtrListIterator<EngineObserver> it( Observers ); *it; ++it )
         (*it)->engineTrackEnded( finalPosition, trackLength, reason );
 }
 
 
 void EngineSubject::volumeChangedNotify( int percent )
 {
-    QPtrListIterator<EngineObserver> it( Observers );
+    Q3PtrListIterator<EngineObserver> it( Observers );
     EngineObserver *observer;
     while( ( observer = it.current() ) != 0 )
     {
@@ -115,7 +115,7 @@ void EngineSubject::volumeChangedNotify( int percent )
 
 void EngineSubject::trackPositionChangedNotify( long position, bool userSeek )
 {
-    QPtrListIterator<EngineObserver> it( Observers );
+    Q3PtrListIterator<EngineObserver> it( Observers );
     EngineObserver *observer;
     while( ( observer = it.current() ) != 0 )
     {
@@ -127,7 +127,7 @@ void EngineSubject::trackPositionChangedNotify( long position, bool userSeek )
 
 void EngineSubject::trackLengthChangedNotify( long length )
 {
-    QPtrListIterator<EngineObserver> it( Observers );
+    Q3PtrListIterator<EngineObserver> it( Observers );
     EngineObserver *observer;
     while( ( observer = it.current() ) != 0 )
     {

@@ -31,7 +31,7 @@
 
 class MetaBundle;
 class ScriptManagerBase;
-class QListViewItem;
+class Q3ListViewItem;
 class KArchiveDirectory;
 class KProcess;
 class KProcIO;
@@ -124,7 +124,7 @@ class ScriptManager : public KDialogBase, public EngineObserver
         void findScripts();
 
         /** Enables/disables the buttons */
-        void slotCurrentChanged( QListViewItem* );
+        void slotCurrentChanged( Q3ListViewItem* );
 
         bool slotInstallScript( const QString& path = QString::null );
         void slotRetrieveScript();
@@ -133,7 +133,7 @@ class ScriptManager : public KDialogBase, public EngineObserver
         void slotStopScript();
         void slotConfigureScript();
         void slotAboutScript();
-        void slotShowContextMenu( QListViewItem*, const QPoint& );
+        void slotShowContextMenu( Q3ListViewItem*, const QPoint& );
 
         void slotReceivedStdout( KProcess*, char*, int );
         void slotReceivedStderr( KProcess*, char*, int );
@@ -171,10 +171,10 @@ class ScriptManager : public KDialogBase, public EngineObserver
         static ScriptManager* s_instance;
         ScriptManagerBase*    m_gui;
 
-        QListViewItem*        m_generalCategory;
-        QListViewItem*        m_lyricsCategory;
-        QListViewItem*        m_scoreCategory;
-        QListViewItem*        m_transcodeCategory;
+        Q3ListViewItem*        m_generalCategory;
+        Q3ListViewItem*        m_lyricsCategory;
+        Q3ListViewItem*        m_scoreCategory;
+        Q3ListViewItem*        m_transcodeCategory;
 
         bool                  m_installSuccess;
 
@@ -182,7 +182,7 @@ class ScriptManager : public KDialogBase, public EngineObserver
             KURL           url;
             QString        type;
             KProcIO*       process;
-            QListViewItem* li;
+            Q3ListViewItem* li;
             QString        log;
             ScriptItem() : process( 0 ), li( 0 ) {}
         };

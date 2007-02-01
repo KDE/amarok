@@ -21,9 +21,11 @@
 #include <kapplication.h>
 #include <qpainter.h>
 #include <qpixmap.h>
+//Added by qt3to4:
+#include <QMouseEvent>
 
 PixmapViewer::PixmapViewer(QWidget *widget, const QPixmap &pixmap)
-    : QScrollView(widget, 0, WNoAutoErase)
+    : Q3ScrollView(widget, 0, Qt::WNoAutoErase)
     , m_isDragging(false)
     , m_pixmap(pixmap)
 {

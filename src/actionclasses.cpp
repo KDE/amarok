@@ -20,6 +20,11 @@
 
 #include <qpixmap.h>
 #include <qtooltip.h>
+//Added by qt3to4:
+#include <QContextMenuEvent>
+#include <QResizeEvent>
+#include <Q3PopupMenu>
+#include <QMouseEvent>
 
 #include <kaction.h>
 #include <khelpmenu.h>
@@ -246,7 +251,7 @@ PlayPauseAction::engineStateChanged( Engine::State state,  Engine::State /*oldSt
     for( int x = 0; x < containerCount(); ++x ) {
         QWidget *w = container( x );
         if( w->inherits( "QPopupMenu" ) )
-            static_cast<QPopupMenu*>(w)->changeItem( itemId( x ), text );
+            static_cast<Q3PopupMenu*>(w)->changeItem( itemId( x ), text );
         //TODO KToolBar sucks so much
 //         else if( w->inherits( "KToolBar" ) )
 //             static_cast<KToolBar*>(w)->getButton( itemId( x ) )->setText( text );

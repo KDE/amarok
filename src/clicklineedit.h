@@ -22,6 +22,9 @@
 #define CLICKLINEEDIT_H
 
 #include <klineedit.h>
+//Added by qt3to4:
+#include <QFocusEvent>
+#include <QDropEvent>
 
 /**
   This class provides a KLineEdit which contains a grayed-out hinting

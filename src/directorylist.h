@@ -20,8 +20,8 @@
 #define AMAROK_DIRECTORYLIST_H
 
 #include <qcheckbox.h>  //inlined functions
-#include <qlistview.h>  //baseclass
-#include <qvbox.h>      //baseclass
+#include <q3listview.h>  //baseclass
+#include <q3vbox.h>      //baseclass
 
 #include <kdirlister.h> //stack allocated
 #include <kurl.h>       //stack allocated
@@ -29,12 +29,12 @@
 
 namespace Collection { class Item; }
 
-class QFixedListView : public QListView
+class QFixedListView : public Q3ListView
 // Reimplement sizeHint to have directorylist not being too big for "low" (1024x768 is not exactly low) resolutions
 {
 public:
-    QFixedListView ( QWidget * parent = 0, const char * name = 0, WFlags f = 0 )
-                   :QListView(parent, name, f) {};
+    QFixedListView ( QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0 )
+                   :Q3ListView(parent, name, f) {};
     QSize sizeHint() const
     {
         return QSize(400, 100);
@@ -42,7 +42,7 @@ public:
 
 };
 
-class CollectionSetup : public QVBox
+class CollectionSetup : public Q3VBox
 {
     friend class Collection::Item;
 
@@ -68,14 +68,14 @@ private:
 
 namespace Collection { //just to keep it out of the global namespace
 
-class Item : public QObject, public QCheckListItem
+class Item : public QObject, public Q3CheckListItem
 {
 Q_OBJECT
 public:
-    Item( QListView *parent );
-    Item( QListViewItem *parent, const KURL &url , bool full_disable=false );
+    Item( Q3ListView *parent );
+    Item( Q3ListViewItem *parent, const KURL &url , bool full_disable=false );
 
-    QCheckListItem *parent() const { return static_cast<QCheckListItem*>( QListViewItem::parent() ); }
+    Q3CheckListItem *parent() const { return static_cast<Q3CheckListItem*>( Q3ListViewItem::parent() ); }
     bool isFullyDisabled() const { return m_fullyDisabled; }
     bool isDisabled() const { return isFullyDisabled() || ( CollectionSetup::instance()->recursive() && parent() && parent()->isOn() ); }
     QString fullPath() const;

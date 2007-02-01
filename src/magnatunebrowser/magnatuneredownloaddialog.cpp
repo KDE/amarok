@@ -23,13 +23,13 @@
 #include <qpushbutton.h>
 #include <klistview.h>
 
-MagnatuneRedownloadDialog::MagnatuneRedownloadDialog(QWidget* parent, const char* name, bool modal, WFlags fl)
+MagnatuneRedownloadDialog::MagnatuneRedownloadDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
 : magnatuneReDownloadDialogBase(parent,name, modal,fl)
 {
     redownloadButton->setEnabled ( false );
 
-    redownloadListView->setColumnWidthMode( 0, QListView::Manual );
-    redownloadListView->setResizeMode( QListView::LastColumn );
+    redownloadListView->setColumnWidthMode( 0, Q3ListView::Manual );
+    redownloadListView->setResizeMode( Q3ListView::LastColumn );
 }
 
 MagnatuneRedownloadDialog::~MagnatuneRedownloadDialog()

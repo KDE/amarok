@@ -55,18 +55,24 @@
 #include "tagdialog.h"
 
 #include <qdir.h>
-#include <qhbox.h>
-#include <qiconview.h>
+#include <q3hbox.h>
+#include <q3iconview.h>
 #include <qlabel.h>
 #include <qtimer.h>
 #include <qtooltip.h>
+//Added by qt3to4:
+#include <Q3PtrList>
+#include <Q3Frame>
+#include <QDropEvent>
+#include <Q3PopupMenu>
+#include <QPaintEvent>
 
 
 
 //BEGIN Constructor/destructor
 
 FileBrowser::FileBrowser( const char * name, Medium * medium )
-        : QVBox( 0, name )
+        : Q3VBox( 0, name )
 {
     KActionCollection *actionCollection;
     SearchPane *searchPane;
@@ -111,15 +117,15 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
     }
 
     { //Directory Listing
-        QVBox *container; QHBox *box;
+        Q3VBox *container; Q3HBox *box;
 
-        container = new QVBox( this );
+        container = new Q3VBox( this );
         container->setFrameStyle( m_filter->frameStyle() );
         container->setMargin( 3 );
         container->setSpacing( 2 );
         container->setBackgroundMode( Qt::PaletteBase );
 
-        box = new QHBox( container );
+        box = new Q3HBox( container );
         box->setMargin( 3 );
         box->setBackgroundMode( Qt::PaletteBase );
 
@@ -153,8 +159,8 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         //TODO: Find out a way to fix this?
         //m_dir->setDropOptions( KFileView::AutoOpenDirs );
 
-        static_cast<QFrame*>(m_dir->viewWidget())->setFrameStyle( QFrame::NoFrame );
-        static_cast<QIconView*>(m_dir->viewWidget())->setSpacing( 1 );
+        static_cast<Q3Frame*>(m_dir->viewWidget())->setFrameStyle( Q3Frame::NoFrame );
+        static_cast<Q3IconView*>(m_dir->viewWidget())->setSpacing( 1 );
 
         actionCollection = m_dir->actionCollection();
 
@@ -164,7 +170,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
     }
 
     {
-        QPopupMenu* const menu = static_cast<KActionMenu*>(actionCollection->action("popupMenu"))->popupMenu();
+        Q3PopupMenu* const menu = static_cast<KActionMenu*>(actionCollection->action("popupMenu"))->popupMenu();
 
         menu->clear();
         menu->insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), MakePlaylist );
@@ -525,7 +531,7 @@ FileBrowser::selectAll()
 
 #include <kurldrag.h>
 #include <qpainter.h>
-#include <qsimplerichtext.h>
+#include <q3simplerichtext.h>
 
 class KURLView : public KListView
 {
@@ -536,7 +542,7 @@ public:
         addColumn( QString() );
         setResizeMode( KListView::LastColumn );
         setDragEnabled( true );
-        setSelectionMode( QListView::Extended );
+        setSelectionMode( Q3ListView::Extended );
     }
 
     class Item : public KListViewItem {
@@ -545,9 +551,9 @@ public:
         KURL m_url;
     };
 
-    virtual QDragObject *dragObject()
+    virtual Q3DragObject *dragObject()
     {
-        QPtrList<QListViewItem> items = selectedItems();
+        Q3PtrList<Q3ListViewItem> items = selectedItems();
         KURL::List urls;
 
         for( Item *item = static_cast<Item*>( items.first() ); item; item = static_cast<Item*>( items.next() ) )
@@ -565,7 +571,7 @@ public:
 
             if ( m_text.isEmpty() ) {
                 //TODO Perhaps it's time to put this in some header, as we use it in three places now
-                QSimpleRichText t( i18n(
+                Q3SimpleRichText t( i18n(
                         "<div align=center>"
                             "Enter a search term above; you can use wildcards like * and ?"
                         "</div>" ), font() );
@@ -596,16 +602,16 @@ private:
 
 
 SearchPane::SearchPane( FileBrowser *parent )
-        : QVBox( parent )
+        : Q3VBox( parent )
         , m_lineEdit( 0 )
         , m_listView( 0 )
         , m_lister( 0 )
 {
-    QFrame *container = new QVBox( this, "container" );
+    Q3Frame *container = new Q3VBox( this, "container" );
     container->hide();
 
     {
-        QFrame *box = new QHBox( container );
+        Q3Frame *box = new Q3HBox( container );
         box->setMargin( 5 );
         box->setBackgroundMode( Qt::PaletteBase );
 
@@ -618,8 +624,8 @@ SearchPane::SearchPane( FileBrowser *parent )
         container->setMargin( 5 );
         container->setBackgroundMode( Qt::PaletteBase );
 
-        m_listView->setFrameStyle( QFrame::NoFrame );
-        connect( m_listView, SIGNAL(executed( QListViewItem* )), SLOT(activate( QListViewItem* )) );
+        m_listView->setFrameStyle( Q3Frame::NoFrame );
+        connect( m_listView, SIGNAL(executed( Q3ListViewItem* )), SLOT(activate( Q3ListViewItem* )) );
     }
 
     KPushButton *button = new KPushButton( KGuiItem( i18n("&Show Search Panel"), "find" ), this );
@@ -702,7 +708,7 @@ SearchPane::_searchComplete()
 }
 
 void
-SearchPane::activate( QListViewItem *item )
+SearchPane::activate( Q3ListViewItem *item )
 {
     Playlist::instance()->insertMedia( static_cast<KURLView::Item*>(item)->m_url, Playlist::DirectPlay );
 }

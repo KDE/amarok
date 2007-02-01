@@ -49,7 +49,7 @@ class AmarokThemeNewStuff : public KNewStuff
     {
         KTar archive( fileName );
 
-        if ( !archive.open( IO_ReadOnly ) ) {
+        if ( !archive.open( QIODevice::ReadOnly ) ) {
             KMessageBox::sorry( 0, i18n( "Could not read this package." ) );
             return false;
         }
@@ -88,7 +88,7 @@ void Options2::installPushButton_clicked()
 
     KTar archive( dia.selectedURL().path() );
 
-    if ( !archive.open( IO_ReadOnly ) ) {
+    if ( !archive.open( QIODevice::ReadOnly ) ) {
         KMessageBox::sorry( 0, i18n( "Could not read this package." ) );
         return;
     }

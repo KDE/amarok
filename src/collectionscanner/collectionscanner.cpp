@@ -39,6 +39,9 @@
 #include <qdom.h>
 #include <qfile.h>
 #include <qtimer.h>
+//Added by qt3to4:
+#include <Q3CString>
+#include <Q3ValueList>
 
 #include <dcopref.h>
 #include <kglobal.h>
@@ -103,25 +106,25 @@ CollectionScanner::doJob() //SLOT
     if( m_restart ) {
         QFile logFile( m_logfile );
         QString lastFile;
-        if ( !logFile.open( IO_ReadOnly ) )
+        if ( !logFile.open( QIODevice::ReadOnly ) )
             warning() << "Failed to open log file " << logFile.name() << " read-only"
             << endl;
         else {
-            QTextStream logStream;
+            Q3TextStream logStream;
             logStream.setDevice(&logFile);
-            logStream.setEncoding(QTextStream::UnicodeUTF8);
+            logStream.setEncoding(Q3TextStream::UnicodeUTF8);
             lastFile = logStream.read();
             logFile.close();
         }
 
         QFile folderFile( Amarok::saveLocation( QString::null ) + "collection_scan.files"   );
-        if ( !folderFile.open( IO_ReadOnly ) )
+        if ( !folderFile.open( QIODevice::ReadOnly ) )
             warning() << "Failed to open folder file " << folderFile.name()
             << " read-only" << endl;
         else {
-            QTextStream folderStream;
+            Q3TextStream folderStream;
             folderStream.setDevice(&folderFile);
-            folderStream.setEncoding(QTextStream::UnicodeUTF8);
+            folderStream.setEncoding(Q3TextStream::UnicodeUTF8);
             entries = QStringList::split( "\n", folderStream.read() );
         }
 
@@ -144,9 +147,9 @@ CollectionScanner::doJob() //SLOT
         }
 
         QFile folderFile( Amarok::saveLocation( QString::null ) + "collection_scan.files"   );
-        folderFile.open( IO_WriteOnly );
-        QTextStream stream( &folderFile );
-        stream.setEncoding(QTextStream::UnicodeUTF8);
+        folderFile.open( QIODevice::WriteOnly );
+        Q3TextStream stream( &folderFile );
+        stream.setEncoding(Q3TextStream::UnicodeUTF8);
         stream << entries.join( "\n" );
         folderFile.close();
     }
@@ -176,7 +179,7 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
     if( dir.startsWith( "/dev" ) || dir.startsWith( "/sys" ) || dir.startsWith( "/proc" ) )
         return;
 
-    const QCString dir8Bit = QFile::encodeName( dir );
+    const Q3CString dir8Bit = QFile::encodeName( dir );
     DIR *d = opendir( dir8Bit );
     if( d == NULL ) {
         warning() << "Skipping, " << strerror(errno) << ": " << dir << endl;
@@ -222,8 +225,8 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
     m_processedDirs[m_processedDirs.size() - 1] = de;
 
     for( dirent *ent; ( ent = readdir( d ) ); ) {
-        QCString entry (ent->d_name);
-        QCString entryname (ent->d_name);
+        Q3CString entry (ent->d_name);
+        Q3CString entryname (ent->d_name);
 
         if ( entry == "." || entry == ".." )
             continue;
@@ -277,7 +280,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
     QStringList validImages;    validImages    << "jpg" << "png" << "gif" << "jpeg";
     QStringList validPlaylists; validPlaylists << "m3u" << "pls";
 
-    QValueList<CoverBundle> covers;
+    Q3ValueList<CoverBundle> covers;
     QStringList images;
 
     int itemCount = 0;
@@ -294,8 +297,8 @@ CollectionScanner::scanFiles( const QStringList& entries )
         // Write path to logfile
         if( !m_logfile.isEmpty() ) {
             QFile log( m_logfile );
-            if( log.open( IO_WriteOnly ) ) {
-                QCString cPath = path.utf8();
+            if( log.open( QIODevice::WriteOnly ) ) {
+                Q3CString cPath = path.utf8();
                 log.writeBlock( cPath, cPath.length() );
                 log.close();
             }
@@ -344,7 +347,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
                 // Serialize CoverBundle list with AMAROK_MAGIC as separator
                 QString string;
 
-                for( QValueList<CoverBundle>::ConstIterator it2 = covers.begin(); it2 != covers.end(); ++it2 )
+                for( Q3ValueList<CoverBundle>::ConstIterator it2 = covers.begin(); it2 != covers.end(); ++it2 )
                     string += (*it2).first + "AMAROK_MAGIC" + (*it2).second + "AMAROK_MAGIC";
 
                 AttributeMap attributes;
@@ -461,7 +464,7 @@ CollectionScanner::writeElement( const QString& name, const AttributeMap& attrib
     }
 
     QString text;
-    QTextStream stream( &text, IO_WriteOnly );
+    Q3TextStream stream( &text, QIODevice::WriteOnly );
     element.save( stream, 0 );
 
     std::cout << text.utf8() << std::endl;

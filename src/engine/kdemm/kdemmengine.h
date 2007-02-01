@@ -23,7 +23,7 @@ what                 : interface to KDE Multimedia (KDEMM)
 
 #include <vector>
 
-#include <qguardedptr.h>
+#include <qpointer.h>
 #include <qmap.h>
 #include <qstringlist.h>
 #include <qwidget.h>

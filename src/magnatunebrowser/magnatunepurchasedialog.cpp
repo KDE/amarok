@@ -27,9 +27,11 @@
 #include <qpushbutton.h>
 #include <qregexp.h>
 #include <qlabel.h>
+//Added by qt3to4:
+#include <QPixmap>
 
 
-MagnatunePurchaseDialog::MagnatunePurchaseDialog( QWidget* parent, const char* name, bool modal, WFlags fl )
+MagnatunePurchaseDialog::MagnatunePurchaseDialog( QWidget* parent, const char* name, bool modal, Qt::WFlags fl )
         : magnatunePurchaseDialogBase( parent, name, modal, fl )
 {}
 

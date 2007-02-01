@@ -13,6 +13,9 @@
 
 #include "enginebase.h"
 #include <qobject.h>
+//Added by qt3to4:
+#include <Q3ValueList>
+#include <QTimerEvent>
 #include <sys/types.h>
 #include <hxplayercontrol.h>
 
@@ -52,7 +55,7 @@ public slots:
    virtual void seek( uint );
 
    virtual void setEqualizerEnabled( bool );
-   virtual void setEqualizerParameters( int preamp, const QValueList<int>& );
+   virtual void setEqualizerParameters( int preamp, const Q3ValueList<int>& );
 
 
 protected:

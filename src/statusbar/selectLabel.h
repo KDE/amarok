@@ -30,10 +30,14 @@
 
 #include <kglobalsettings.h>
 #include <kiconloader.h>
-#include <qiconset.h>
+#include <qicon.h>
 #include <qlabel.h>
 #include <qtimer.h>
 #include <qtooltip.h>
+//Added by qt3to4:
+#include <QPixmap>
+#include <QEvent>
+#include <QMouseEvent>
 
 class SelectLabel : public QLabel
 {
@@ -106,7 +110,7 @@ class SelectLabel : public QLabel
         void setEnabled( bool /*on*/ )
         {
             if( !m_action->currentIcon().isNull() )
-                setPixmap( SmallIconSet( m_action->currentIcon() ).pixmap( QIconSet::Small, QIconSet::Disabled ) );
+                setPixmap( SmallIconSet( m_action->currentIcon() ).pixmap( QIcon::Small, QIcon::Disabled ) );
         }
 
     private slots:
@@ -147,9 +151,9 @@ class SelectLabel : public QLabel
             m_tooltip->setText( tip );
             const QPixmap pix = KGlobal::iconLoader()
                                 ->loadIconSet( m_action->currentIcon(), KIcon::Toolbar, KIcon::SizeHuge )
-                                .pixmap( QIconSet::Large, m_action->isEnabled()
-                                                          ? QIconSet::Normal
-                                                          : QIconSet::Disabled );
+                                .pixmap( QIcon::Large, m_action->isEnabled()
+                                                          ? QIcon::Normal
+                                                          : QIcon::Disabled );
             m_tooltip->setImage( pix );
 
             m_tooltip->reposition();

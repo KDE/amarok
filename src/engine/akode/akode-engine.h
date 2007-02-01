@@ -10,6 +10,8 @@
 
 #include "enginebase.h"
 #include "akode-scope.h"
+//Added by qt3to4:
+#include <QEvent>
 
 namespace aKode { class Player; }
 

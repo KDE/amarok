@@ -22,6 +22,8 @@
 
 #include <qmutex.h>
 #include <qxml.h>         //baseclass
+//Added by qt3to4:
+#include <QCustomEvent>
 
 #include "threadmanager.h" //baseclass
 

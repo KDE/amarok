@@ -19,15 +19,26 @@
 #include <kpushbutton.h>
 #include <kurl.h>
 #include <qdom.h>
-#include <qptrlist.h>
-#include <qvbox.h>
+#include <q3ptrlist.h>
+#include <q3vbox.h>
+//Added by qt3to4:
+#include <QDragLeaveEvent>
+#include <QKeyEvent>
+#include <Q3ValueList>
+#include <QCustomEvent>
+#include <QPixmap>
+#include <QDragEnterEvent>
+#include <QDragMoveEvent>
+#include <QDropEvent>
+#include <QResizeEvent>
+#include <QPaintEvent>
 
 class KTextBrowser;
 class KToolBar;
 
 class QCustomEvent;
 class QColorGroup;
-class QDragObject;
+class Q3DragObject;
 class QPainter;
 class QPixmap;
 class QPoint;
@@ -40,7 +51,7 @@ class PlaylistBrowserView;
 class PlaylistTrackItem;
 
 
-class PlaylistBrowser : public QVBox
+class PlaylistBrowser : public Q3VBox
 {
         Q_OBJECT
     friend class DynamicMode;
@@ -64,21 +75,21 @@ class PlaylistBrowser : public QVBox
 
         void setInfo( const QString &title, const QString &info );
 
-        void addStream( QListViewItem *parent = 0 );
-        void addSmartPlaylist( QListViewItem *parent = 0 );
-        void addDynamic( QListViewItem *parent = 0 );
-        void addPlaylist( const QString &path, QListViewItem *parent = 0, bool force=false, bool imported=false );
-        PlaylistEntry *findPlaylistEntry( const QString &url, QListViewItem *parent=0 ) const;
+        void addStream( Q3ListViewItem *parent = 0 );
+        void addSmartPlaylist( Q3ListViewItem *parent = 0 );
+        void addDynamic( Q3ListViewItem *parent = 0 );
+        void addPlaylist( const QString &path, Q3ListViewItem *parent = 0, bool force=false, bool imported=false );
+        PlaylistEntry *findPlaylistEntry( const QString &url, Q3ListViewItem *parent=0 ) const;
         int  loadPlaylist( const QString &playlist, bool force=false );
 
-        void addPodcast( QListViewItem *parent = 0 );
-        void addPodcast( const KURL &url, QListViewItem *parent = 0 );
+        void addPodcast( Q3ListViewItem *parent = 0 );
+        void addPodcast( const KURL &url, Q3ListViewItem *parent = 0 );
         void loadPodcastsFromDatabase( PlaylistCategory *p = 0 );
         void registerPodcastSettings( const QString &title, const PodcastSettings *settings );
 
-        static bool savePlaylist( const QString &path, const QValueList<KURL> &urls,
-                                  const QValueList<QString> &titles = QValueList<QString>(),
-                                  const QValueList<int> &lengths = QValueList<int>(),
+        static bool savePlaylist( const QString &path, const Q3ValueList<KURL> &urls,
+                                  const Q3ValueList<QString> &titles = Q3ValueList<QString>(),
+                                  const Q3ValueList<int> &lengths = Q3ValueList<int>(),
                                   bool relative = AmarokConfig::relativePlaylist() );
 
         QString dynamicBrowserCache() const;
@@ -88,12 +99,12 @@ class PlaylistBrowser : public QVBox
         QString smartplaylistBrowserCache() const;
 
         PlaylistBrowserEntry *findItem( QString &t, int c ) const;
-        QListViewItem *findItemInTree( const QString &searchstring, int c ) const;
+        Q3ListViewItem *findItemInTree( const QString &searchstring, int c ) const;
         PodcastEpisode *findPodcastEpisode( const KURL &episode, const KURL &feed ) const;
 
-        QPtrList<PlaylistBrowserEntry> dynamicEntries() const { return m_dynamicEntries; }
+        Q3PtrList<PlaylistBrowserEntry> dynamicEntries() const { return m_dynamicEntries; }
         DynamicMode *findDynamicModeByTitle( const QString &title );
-        QListViewItem *podcastCategory() const { return m_podcastCategory; }
+        Q3ListViewItem *podcastCategory() const { return m_podcastCategory; }
 
         static PlaylistBrowser *instance() {
             if(!s_instance)  s_instance = new PlaylistBrowser("PlaylistBrowser");
@@ -112,25 +123,25 @@ class PlaylistBrowser : public QVBox
         void selectionChanged();
 
     public slots:
-        void openPlaylist( QListViewItem *parent = 0 );
+        void openPlaylist( Q3ListViewItem *parent = 0 );
         void scanPodcasts();
 
     private slots:
         void abortPodcastQueue();
         void addSelectedToPlaylist( int options = -1 );
         void collectionScanDone();
-        void currentItemChanged( QListViewItem * );
+        void currentItemChanged( Q3ListViewItem * );
         void downloadPodcastQueue();
         void editStreamURL( StreamEntry *item, const bool readOnly=false );
         void removeSelectedItems();
-        void renamePlaylist( QListViewItem*, const QString&, int );
+        void renamePlaylist( Q3ListViewItem*, const QString&, int );
         void renameSelectedItem();
-        void invokeItem( QListViewItem*, const QPoint &, int column );
-        void slotDoubleClicked( QListViewItem *item );
+        void invokeItem( Q3ListViewItem*, const QPoint &, int column );
+        void slotDoubleClicked( Q3ListViewItem *item );
 
         void slotAddMenu( int id );
         void slotAddPlaylistMenu( int id );
-        void showContextMenu( QListViewItem*, const QPoint&, int );
+        void showContextMenu( Q3ListViewItem*, const QPoint&, int );
 
         void loadDynamicItems();
 
@@ -145,34 +156,34 @@ class PlaylistBrowser : public QVBox
         void saveStreams();
 
         void loadLastfmStreams( const bool subscriber = false );
-        void addLastFmRadio( QListViewItem *parent );
-        void addLastFmCustomRadio( QListViewItem *parent );
+        void addLastFmRadio( Q3ListViewItem *parent );
+        void addLastFmCustomRadio( Q3ListViewItem *parent );
         void saveLastFm();
 
         PlaylistCategory* loadSmartPlaylists();
         void loadDefaultSmartPlaylists();
         void editSmartPlaylist( SmartPlaylist* );
         void saveSmartPlaylists( PlaylistCategory *smartCategory = NULL );
-        void updateSmartPlaylists( QListViewItem *root );
+        void updateSmartPlaylists( Q3ListViewItem *root );
         void updateSmartPlaylistElement( QDomElement& query );
 
         PlaylistCategory* loadDynamics();
-        void fixDynamicPlaylistPath( QListViewItem *item );
+        void fixDynamicPlaylistPath( Q3ListViewItem *item );
         QString guessPathFromPlaylistName( QString name );
 
         PlaylistCategory* loadPodcasts();
         QMap<int,PlaylistCategory*> loadPodcastFolders( PlaylistCategory *p );
         void changePodcastInterval();
-        void configurePodcasts( QListViewItem *parent );
-        void configurePodcasts( QPtrList<PodcastChannel> &podcastChannelList, const QString &caption );
+        void configurePodcasts( Q3ListViewItem *parent );
+        void configurePodcasts( Q3PtrList<PodcastChannel> &podcastChannelList, const QString &caption );
         void configureSelectedPodcasts();
         bool deleteSelectedPodcastItems( const bool removeItem=false, const bool silent=false );
-        bool deletePodcasts( QPtrList<PodcastChannel> items );
+        bool deletePodcasts( Q3PtrList<PodcastChannel> items );
         void downloadSelectedPodcasts();
-        void refreshPodcasts( QListViewItem *category );
+        void refreshPodcasts( Q3ListViewItem *category );
         void removePodcastFolder( PlaylistCategory *item );
         void savePodcastFolderStates( PlaylistCategory *folder );
-        PodcastChannel *findPodcastChannel( const KURL &feed, QListViewItem *parent=0 ) const;
+        PodcastChannel *findPodcastChannel( const KURL &feed, Q3ListViewItem *parent=0 ) const;
 
         void markDynamicEntries();
         PlaylistBrowserEntry* findByName( QString name );
@@ -180,8 +191,8 @@ class PlaylistBrowser : public QVBox
         PlaylistCategory* loadPlaylists();
         void savePlaylists();
         void savePlaylist( PlaylistEntry * );
-        bool createPlaylist( QListViewItem *parent = 0, bool current = true, QString title = 0 );
-        bool deletePlaylists( QPtrList<PlaylistEntry> items );
+        bool createPlaylist( Q3ListViewItem *parent = 0, bool current = true, QString title = 0 );
+        bool deletePlaylists( Q3PtrList<PlaylistEntry> items );
         bool deletePlaylists( KURL::List items );
 
         void customEvent( QCustomEvent* e );
@@ -218,15 +229,15 @@ class PlaylistBrowser : public QVBox
         KActionMenu         *viewMenuButton;
         KActionMenu         *addMenuButton;
         KToolBar            *m_toolbar;
-        QValueList<int>      m_dynamicSizeSave;
+        Q3ValueList<int>      m_dynamicSizeSave;
 
-        QDict<PodcastSettings>   m_podcastSettings;
-        QPtrList<PlaylistBrowserEntry>  m_dynamicEntries;
+        Q3Dict<PodcastSettings>   m_podcastSettings;
+        Q3PtrList<PlaylistBrowserEntry>  m_dynamicEntries;
 
         QTimer                  *m_podcastTimer;
         int                      m_podcastTimerInterval;        //in ms
-        QPtrList<PodcastChannel> m_podcastItemsToScan;
-        QPtrList<PodcastEpisode> m_podcastDownloadQueue;
+        Q3PtrList<PodcastChannel> m_podcastItemsToScan;
+        Q3PtrList<PodcastEpisode> m_podcastDownloadQueue;
 
         InfoPane *m_infoPane;
 
@@ -247,14 +258,14 @@ class PlaylistBrowserView : public KListView
         PlaylistBrowserView( QWidget *parent, const char *name=0 );
         ~PlaylistBrowserView();
 
-        void rename( QListViewItem *item, int c );
+        void rename( Q3ListViewItem *item, int c );
 
     protected:
         virtual void keyPressEvent( QKeyEvent * );
 
     private slots:
-        void mousePressed( int, QListViewItem *, const QPoint &, int );
-        void moveSelectedItems( QListViewItem* newParent );
+        void mousePressed( int, Q3ListViewItem *, const QPoint &, int );
+        void moveSelectedItems( Q3ListViewItem* newParent );
 
     private:
         void startDrag();
@@ -265,7 +276,7 @@ class PlaylistBrowserView : public KListView
         void viewportPaintEvent( QPaintEvent* );
         void eraseMarker();
 
-        QListViewItem   *m_marker;       //track that has the drag/drop marker under it
+        Q3ListViewItem   *m_marker;       //track that has the drag/drop marker under it
 };
 
 class PlaylistDialog: public KDialogBase
@@ -290,7 +301,7 @@ class PlaylistDialog: public KDialogBase
 
 // Returns true if item is Playlist, Stream, Smart Playlist or DynamicMode.
 inline bool
-isElement( QListViewItem *item )
+isElement( Q3ListViewItem *item )
 {
     if( !item )
         return false;
@@ -299,7 +310,7 @@ isElement( QListViewItem *item )
 }
 
 inline bool
-isCategory( QListViewItem *item )
+isCategory( Q3ListViewItem *item )
 {
     if( !item )
         return false;
@@ -307,7 +318,7 @@ isCategory( QListViewItem *item )
 }
 
 inline bool
-isDynamic( QListViewItem *item )
+isDynamic( Q3ListViewItem *item )
 {
     if( !item )
         return false;
@@ -315,7 +326,7 @@ isDynamic( QListViewItem *item )
 }
 
 inline bool
-isPlaylist( QListViewItem *item )
+isPlaylist( Q3ListViewItem *item )
 {
     if( !item )
         return false;
@@ -323,7 +334,7 @@ isPlaylist( QListViewItem *item )
 }
 
 inline bool
-isSmartPlaylist( QListViewItem *item )
+isSmartPlaylist( Q3ListViewItem *item )
 {
     if( !item )
         return false;
@@ -331,7 +342,7 @@ isSmartPlaylist( QListViewItem *item )
 }
 
 inline bool
-isPlaylistTrackItem( QListViewItem *item )
+isPlaylistTrackItem( Q3ListViewItem *item )
 {
     if( !item )
         return false;
@@ -339,7 +350,7 @@ isPlaylistTrackItem( QListViewItem *item )
 }
 
 inline bool
-isPodcastChannel( QListViewItem *item )
+isPodcastChannel( Q3ListViewItem *item )
 {
     if( !item )
         return false;
@@ -347,7 +358,7 @@ isPodcastChannel( QListViewItem *item )
 }
 
 inline bool
-isPodcastEpisode( QListViewItem *item )
+isPodcastEpisode( Q3ListViewItem *item )
 {
     if( !item )
         return false;
@@ -355,7 +366,7 @@ isPodcastEpisode( QListViewItem *item )
 }
 
 inline bool
-isStream( QListViewItem *item )
+isStream( Q3ListViewItem *item )
 {
     if( !item )
         return false;
@@ -363,7 +374,7 @@ isStream( QListViewItem *item )
 }
 
 inline bool
-isLastFm( QListViewItem *item )
+isLastFm( Q3ListViewItem *item )
 {
     if( !item )
         return false;
@@ -387,7 +398,7 @@ fileDirPath( const QString &filePath )
 
 
 
-class InfoPane : public QVBox
+class InfoPane : public Q3VBox
 {
     Q_OBJECT
 

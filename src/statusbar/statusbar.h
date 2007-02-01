@@ -24,7 +24,9 @@
 #include "statusBarBase.h"  //baseclass
 #include "queueLabel.h"
 
-#include <qvaluestack.h>
+#include <q3valuestack.h>
+//Added by qt3to4:
+#include <QLabel>
 
 class QTimer;
 
@@ -81,7 +83,7 @@ namespace Amarok
         void sendMessages();
     private:
         MessageQueue();
-        QValueStack<QString> m_messages;
+        Q3ValueStack<QString> m_messages;
         bool m_queueMessages;
     };
 

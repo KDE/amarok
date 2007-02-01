@@ -22,8 +22,8 @@
 
 #include <qlabel.h>
 #include <qtooltip.h>
-#include <qvbox.h>
-#include <qbuttongroup.h>
+#include <q3vbox.h>
+#include <q3buttongroup.h>
 #include <qvbuttongroup.h>
 
 #include <kapplication.h>
@@ -40,7 +40,7 @@ DeviceConfigureDialog::DeviceConfigureDialog( const Medium &medium )
     setCaption( kapp->makeStdCaption( i18n( "Configure Media Device" ) ) );
     showButtonApply( false );
 
-    QVBox* vbox = makeVBoxMainWidget();
+    Q3VBox* vbox = makeVBoxMainWidget();
     vbox->setSpacing( KDialog::spacingHint() );
 
     QLabel *connectLabel = 0;
@@ -48,7 +48,7 @@ DeviceConfigureDialog::DeviceConfigureDialog( const Medium &medium )
     QLabel *disconnectLabel = 0;
     m_disconnectEdit = 0;
     m_transcodeCheck = 0;
-    QButtonGroup *transcodeGroup = 0;
+    Q3ButtonGroup *transcodeGroup = 0;
     m_transcodeAlways = 0;
     m_transcodeWhenNecessary = 0;
     m_transcodeRemove = 0;
@@ -79,7 +79,7 @@ DeviceConfigureDialog::DeviceConfigureDialog( const Medium &medium )
         m_transcodeCheck->setText( i18n( "&Transcode before transferring to device" ) );
         m_transcodeCheck->setChecked( device->m_transcode );
 
-        transcodeGroup = new QVButtonGroup( vbox );
+        transcodeGroup = new Q3VButtonGroup( vbox );
         QString format = "mp3";
         if( !device->supportedFiletypes().isEmpty() )
             format = device->supportedFiletypes().first();

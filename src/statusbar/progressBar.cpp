@@ -32,7 +32,7 @@ namespace KDE {
 
 
 ProgressBar::ProgressBar( QWidget *parent, QLabel *label )
-        : QProgressBar( parent )
+        : Q3ProgressBar( parent )
         , m_label( label )
         , m_done( false )
 {

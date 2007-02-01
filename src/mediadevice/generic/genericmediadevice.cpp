@@ -20,6 +20,8 @@
 #define DEBUG_PREFIX "GenericMediaDevice"
 
 #include "genericmediadevice.h"
+//Added by qt3to4:
+#include <Q3PtrList>
 
 AMAROK_EXPORT_PLUGIN( GenericMediaDevice )
 
@@ -53,17 +55,17 @@ AMAROK_EXPORT_PLUGIN( GenericMediaDevice )
 
 #include <unistd.h>            //usleep()
 
-#include <qcstring.h>
+#include <q3cstring.h>
 #include <qfile.h>
 #include <qstringx.h>
 #include <qstringlist.h>
 
 #include <qcombobox.h>
-#include <qlistbox.h>
+#include <q3listbox.h>
 #include <qlineedit.h>
 
-typedef QPtrList<GenericMediaFile> MediaFileList;
-typedef QPtrListIterator<GenericMediaFile> MediaFileListIterator;
+typedef Q3PtrList<GenericMediaFile> MediaFileList;
+typedef Q3PtrListIterator<GenericMediaFile> MediaFileListIterator;
 
 /**
  * GenericMediaItem Class
@@ -72,11 +74,11 @@ typedef QPtrListIterator<GenericMediaFile> MediaFileListIterator;
 class GenericMediaItem : public MediaItem
 {
     public:
-        GenericMediaItem( QListView *parent, QListViewItem *after = 0 )
+        GenericMediaItem( Q3ListView *parent, Q3ListViewItem *after = 0 )
             : MediaItem( parent, after )
         { }
 
-        GenericMediaItem( QListViewItem *parent, QListViewItem *after = 0 )
+        GenericMediaItem( Q3ListViewItem *parent, Q3ListViewItem *after = 0 )
             : MediaItem( parent, after )
         { }
 
@@ -87,14 +89,14 @@ class GenericMediaItem : public MediaItem
         }
 
         void
-        setEncodedName( QCString &name ) { m_encodedName = name; }
+        setEncodedName( Q3CString &name ) { m_encodedName = name; }
 
-        QCString
+        Q3CString
         encodedName() { return m_encodedName; }
 
         // List directories first, always
         int
-        compare( QListViewItem *i, int col, bool ascending ) const
+        compare( Q3ListViewItem *i, int col, bool ascending ) const
         {
             #define i static_cast<GenericMediaItem *>(i)
             switch( type() )
@@ -115,7 +117,7 @@ class GenericMediaItem : public MediaItem
 
     private:
         bool     m_dir;
-        QCString m_encodedName;
+        Q3CString m_encodedName;
 };
 
 class GenericMediaFile
@@ -201,7 +203,7 @@ class GenericMediaFile
         QString
         getFullName() { return m_fullName; }
 
-        QCString
+        Q3CString
         getEncodedFullName() { return m_encodedFullName; }
 
         QString
@@ -263,9 +265,9 @@ class GenericMediaFile
 
     private:
         QString m_fullName;
-        QCString m_encodedFullName;
+        Q3CString m_encodedFullName;
         QString m_baseName;
-        QCString m_encodedBaseName;
+        Q3CString m_encodedBaseName;
         GenericMediaFile *m_parent;
         MediaFileList *m_children;
         GenericMediaItem *m_viewItem;
@@ -452,7 +454,7 @@ GenericMediaDevice::closeDevice()  //SLOT
 /// Renaming
 
 void
-GenericMediaDevice::renameItem( QListViewItem *item ) // SLOT
+GenericMediaDevice::renameItem( Q3ListViewItem *item ) // SLOT
 {
 
     if( !item )
@@ -460,8 +462,8 @@ GenericMediaDevice::renameItem( QListViewItem *item ) // SLOT
 
     #define item static_cast<GenericMediaItem*>(item)
 
-    QCString src = m_mim[item]->getEncodedFullName();
-    QCString dst = m_mim[item]->getParent()->getEncodedFullName() + '/' + QFile::encodeName( item->text(0) );
+    Q3CString src = m_mim[item]->getEncodedFullName();
+    Q3CString dst = m_mim[item]->getParent()->getEncodedFullName() + '/' + QFile::encodeName( item->text(0) );
 
     debug() << "Renaming: " << src << " to: " << dst << endl;
 
@@ -499,7 +501,7 @@ GenericMediaDevice::newDirectory( const QString &name, MediaItem *parent )
     QString fullName = m_mim[parent]->getFullName();
     QString cleanedName = cleanPath( name );
     QString fullPath = fullName + '/' + cleanedName;
-    QCString dirPath = QFile::encodeName( fullPath );
+    Q3CString dirPath = QFile::encodeName( fullPath );
     debug() << "Creating directory: " << dirPath << endl;    
     const KURL url( dirPath );
 
@@ -517,7 +519,7 @@ GenericMediaDevice::newDirectory( const QString &name, MediaItem *parent )
 }
 
 void
-GenericMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items )
+GenericMediaDevice::addToDirectory( MediaItem *directory, Q3PtrList<MediaItem> items )
 {
     if( !directory || items.isEmpty() ) return;
 
@@ -528,11 +530,11 @@ GenericMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> it
     else
         dropDir = m_mim[directory];
 
-    for( QPtrListIterator<MediaItem> it(items); *it; ++it )
+    for( Q3PtrListIterator<MediaItem> it(items); *it; ++it )
     {
         GenericMediaItem *currItem = static_cast<GenericMediaItem *>(*it);
-        QCString src  = m_mim[currItem]->getEncodedFullName();
-        QCString dst = dropDir->getEncodedFullName() + '/' + QFile::encodeName( currItem->text(0) );
+        Q3CString src  = m_mim[currItem]->getEncodedFullName();
+        Q3CString dst = dropDir->getEncodedFullName() + '/' + QFile::encodeName( currItem->text(0) );
         debug() << "Moving: " << src << " to: " << dst << endl;
 
         const KURL srcurl(src);
@@ -672,7 +674,7 @@ GenericMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
 
     checkAndBuildLocation( path );
 
-    const QCString dest = QFile::encodeName( path );
+    const Q3CString dest = QFile::encodeName( path );
     const KURL desturl = KURL::fromPathOrURL( dest );
 
     //kapp->processEvents( 100 );
@@ -703,7 +705,7 @@ GenericMediaDevice::trackExists( const MetaBundle& bundle )
     KURL url( path );
     QStringList directories = QStringList::split( "/", url.directory(1,1), false );
 
-    QListViewItem *it = view()->firstChild();
+    Q3ListViewItem *it = view()->firstChild();
     for( QStringList::Iterator directory = directories.begin();
          directory != directories.end();
          directory++ )
@@ -754,7 +756,7 @@ GenericMediaDevice::deleteItemFromDevice( MediaItem *item, int /*flags*/ )
 
     #define item static_cast<GenericMediaItem*>(item)
 
-    QCString encodedPath = m_mim[item]->getEncodedFullName();
+    Q3CString encodedPath = m_mim[item]->getEncodedFullName();
     debug() << "Deleting path: " << encodedPath << endl;
 
     if ( !KIO::NetAccess::del( KURL::fromPathOrURL(encodedPath), m_view ))
@@ -786,7 +788,7 @@ GenericMediaDevice::deleteItemFromDevice( MediaItem *item, int /*flags*/ )
 /// Directory Reading
 
 void
-GenericMediaDevice::expandItem( QListViewItem *item ) // SLOT
+GenericMediaDevice::expandItem( Q3ListViewItem *item ) // SLOT
 {
     if( !item || !item->isExpandable() ) return;
 
@@ -825,7 +827,7 @@ GenericMediaDevice::refreshDir( const QString &dir )
 void
 GenericMediaDevice::newItems( const KFileItemList &items )
 {
-    QPtrListIterator<KFileItem> it( items );
+    Q3PtrListIterator<KFileItem> it( items );
     KFileItem *kfi;
     while ( (kfi = it.current()) != 0 ) {
         ++it;
@@ -948,7 +950,7 @@ GenericMediaDevice::foundMountPoint( const QString & mountPoint, unsigned long k
 /// Helper functions
 
 void
-GenericMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
+GenericMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
 {
     enum Actions { APPEND, LOAD, QUEUE,
         DOWNLOAD,

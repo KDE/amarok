@@ -16,7 +16,7 @@
 #define TRACKTOOLTIP_H
 
 #include <qobject.h>
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 #include <metabundle.h>
 
 #include "tooltip.h"
@@ -52,7 +52,7 @@ class TrackToolTip: public QObject, public Amarok::ToolTipClient
     void updateWidgets();
 
     static TrackToolTip *s_instance;
-    QPtrList<QWidget> m_widgets;
+    Q3PtrList<QWidget> m_widgets;
     MetaBundle m_tags;
     int        m_pos;
     QString    m_cover;

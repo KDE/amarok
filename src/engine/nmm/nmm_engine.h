@@ -36,6 +36,8 @@
 #include <nmm/base/NMMApplication.hpp>
 #include <nmm/base/EDObject.hpp>
 #include <nmm/base/sync/MultiAudioVideoSynchronizer.hpp>
+//Added by qt3to4:
+#include <Q3ValueList>
 
 using namespace NMM;
 
@@ -60,11 +62,11 @@ public:
 
     Amarok::PluginConfig* configure() const;
 
-    QValueList<NmmLocation> environmentHostList() const {return tmp_environment_list;}
-    void setEnvironmentHostList(QValueList<NmmLocation> list) { tmp_environment_list = list;}
+    Q3ValueList<NmmLocation> environmentHostList() const {return tmp_environment_list;}
+    void setEnvironmentHostList(Q3ValueList<NmmLocation> list) { tmp_environment_list = list;}
 
-    QValueList<NmmLocation> userHostList() const {return tmp_user_list;}
-    void setUserHostList(QValueList<NmmLocation> list) { tmp_user_list = list;}
+    Q3ValueList<NmmLocation> userHostList() const {return tmp_user_list;}
+    void setUserHostList(Q3ValueList<NmmLocation> list) { tmp_user_list = list;}
 
 
     static NmmEngine* instance() { return s_instance; }
@@ -234,12 +236,12 @@ private:
      * Environment variables host list.
      * Only read on startup, volume can be changed via settings dialog.
      */
-    QValueList<NmmLocation> tmp_environment_list;
+    Q3ValueList<NmmLocation> tmp_environment_list;
 
      /**
       * User host list.
       */
-    QValueList<NmmLocation> tmp_user_list;
+    Q3ValueList<NmmLocation> tmp_user_list;
 
     static NmmEngine* s_instance;
 

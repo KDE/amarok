@@ -14,7 +14,7 @@ copyright            : (C) 2006 by Sascha Sommer <saschasommer@freenet.de>
  ***************************************************************************/
 
 
-#include <qprocess.h>
+#include <q3process.h>
 
 /* FIXME use the qt bindings.... 
    we can't use the glib signal handling because it requires a g_main loop 
@@ -307,7 +307,7 @@ yauapEngine::init( void )
     /* start yauap in slave mode */
     helper.addArgument( "yauap" );
     helper.addArgument( "-noexit" );
-    helper.setCommunication( QProcess::Stdin|QProcess::Stdout );
+    helper.setCommunication( Q3Process::Stdin|Q3Process::Stdout );
        
     if( !helper.start() )
     {

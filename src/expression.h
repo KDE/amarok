@@ -21,7 +21,7 @@
 #define AMAROK_EXPRESSION_H
 
 #include <qstring.h>
-#include <qvaluevector.h>
+#include <q3valuevector.h>
 
 struct expression_element
 {
@@ -31,9 +31,9 @@ struct expression_element
     enum { Contains, Less, More } match: 2;
     expression_element(): negate( false ), match( Contains ) { }
 };
-typedef QValueVector<expression_element> or_list;
+typedef Q3ValueVector<expression_element> or_list;
 
-typedef QValueVector<or_list> ParsedExpression;
+typedef Q3ValueVector<or_list> ParsedExpression;
 
 class ExpressionParser
 {

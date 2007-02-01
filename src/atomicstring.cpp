@@ -21,8 +21,10 @@
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
 #endif
-#include <qdeepcopy.h>
+#include <q3deepcopy.h>
 #include <qstring.h>
+//Added by qt3to4:
+#include <Q3PtrList>
 #include <pthread.h>
 
 #include "atomicstring.h"
@@ -120,7 +122,7 @@ AtomicString::AtomicString( const QString &string ): m_string( 0 )
     if( rc && !isMainThread()) {
 	// Inserted, and we are not in the main thread -- we need to make s a deep copy,
 	// as this copy may be refcounted by the main thread outside our locks
-	(QString &) (*s) = QDeepCopy<QString>( string );
+	(QString &) (*s) = Q3DeepCopy<QString>( string );
     }
     s_storeMutex.unlock();
     if ( !rc ) delete( s );	// already present
@@ -238,5 +240,5 @@ inline void AtomicString::checkLazyDeletes()
 }
 
 AtomicString::set_type AtomicString::s_store;
-QPtrList<QString> AtomicString::s_lazyDeletes;
+Q3PtrList<QString> AtomicString::s_lazyDeletes;
 QMutex AtomicString::s_storeMutex;

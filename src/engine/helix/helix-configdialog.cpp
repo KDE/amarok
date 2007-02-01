@@ -13,13 +13,17 @@
 #include <unistd.h>
 #include <qlabel.h>
 #include <qlayout.h>
-#include <qscrollview.h>
+#include <q3scrollview.h>
 #include <qspinbox.h>
 #include <qtooltip.h>
-#include <qtextedit.h>
-#include <qtextview.h>
+#include <q3textedit.h>
+#include <q3textview.h>
 #include <qfileinfo.h>
 #include <qcheckbox.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
+#include <Q3Frame>
+#include <QPixmap>
 
 #include <klineedit.h>
 #include <kseparator.h>
@@ -53,7 +57,7 @@ HelixConfigEntry::HelixConfigEntry( QWidget *parent,
          , m_valueChanged( false )
          , m_stringValue( defaultvalue )
 {
-    QGridLayout *grid = (QGridLayout*)parent->layout();
+    Q3GridLayout *grid = (Q3GridLayout*)parent->layout();
 
     m_w = new KLineEdit( m_stringValue, parent );
     connect( (QWidget *) m_w, SIGNAL(textChanged( const QString& )), this, SLOT(slotStringChanged( const QString& )) );
@@ -62,7 +66,7 @@ HelixConfigEntry::HelixConfigEntry( QWidget *parent,
     QToolTip::add( (QWidget *) m_w, "<qt>" + tooltip );
 
     QLabel* d = new QLabel( description + ':', parent );
-    d->setAlignment( QLabel::WordBreak | QLabel::AlignVCenter );
+    d->setAlignment( Qt::TextWordWrap | Qt::AlignVCenter );
 
     grid->addWidget( (QWidget *) m_w, row, 1 );
     grid->addWidget( d, row, 0 );
@@ -79,7 +83,7 @@ HelixConfigEntry::HelixConfigEntry( QWidget *parent,
    , m_valueChanged( false )
    , m_stringValue( defaultvalue )
 {
-    QGridLayout *grid = (QGridLayout*)parent->layout();
+    Q3GridLayout *grid = (Q3GridLayout*)parent->layout();
 
     m_key = str;
 
@@ -90,7 +94,7 @@ HelixConfigEntry::HelixConfigEntry( QWidget *parent,
     QToolTip::add( m_w, "<qt>" + tooltip );
 
     QLabel* d = new QLabel( description + ':', parent );
-    d->setAlignment( QLabel::WordBreak | QLabel::AlignVCenter );
+    d->setAlignment( Qt::TextWordWrap | Qt::AlignVCenter );
 
     grid->addWidget( m_w, row, 1 );
     grid->addWidget( d, row, 0 );
@@ -110,7 +114,7 @@ HelixSoundDevice::HelixSoundDevice( QWidget *parent,
                                     HelixEngine *engine )
    : deviceComboBox(0), checkBox_outputDevice(0), lineEdit_outputDevice(0), m_changed(false), m_engine(engine)
 {
-   QGridLayout *grid = (QGridLayout*)parent->layout();
+   Q3GridLayout *grid = (Q3GridLayout*)parent->layout();
 
    deviceComboBox = new KComboBox( false, parent, "deviceComboBox" );
    deviceComboBox->insertItem("oss");  // I believe these are not subject to translation (they don't seem to be in xine,
@@ -119,7 +123,7 @@ HelixSoundDevice::HelixSoundDevice( QWidget *parent,
 #endif
    deviceComboBox->setCurrentItem(HelixConfig::outputplugin());
    QLabel* op = new QLabel( i18n("Output plugin:"), parent );
-   op->setAlignment( QLabel::WordBreak | QLabel::AlignVCenter );
+   op->setAlignment( Qt::TextWordWrap | Qt::AlignVCenter );
    grid->addWidget( op, row, 0 );
    grid->addWidget( deviceComboBox, row, 1);
    connect( (QWidget *)deviceComboBox, SIGNAL( activated( const QString& ) ), this, SLOT( slotNewDevice( const QString& )) );
@@ -258,20 +262,20 @@ HelixConfigDialogBase::HelixConfigDialogBase( HelixEngine *engine, Amarok::Plugi
     int row = 0;
     QString currentPage;
     QWidget *parent = 0;
-    QGridLayout *grid = 0;
-    QScrollView *sv = 0;
+    Q3GridLayout *grid = 0;
+    Q3ScrollView *sv = 0;
 
     QString pageName( i18n("Main") );
 
-    addTab( sv = new QScrollView, pageName );
+    addTab( sv = new Q3ScrollView, pageName );
     parent = new QWidget( sv->viewport() );
 
-    sv->setResizePolicy( QScrollView::AutoOneFit );
-    sv->setHScrollBarMode( QScrollView::AlwaysOff );
-    sv->setFrameShape( QFrame::NoFrame );
+    sv->setResizePolicy( Q3ScrollView::AutoOneFit );
+    sv->setHScrollBarMode( Q3ScrollView::AlwaysOff );
+    sv->setFrameShape( Q3Frame::NoFrame );
     sv->addChild( parent );
 
-    grid = new QGridLayout( parent, /*rows*/20, /*cols*/2, /*margin*/10, /*spacing*/10 );
+    grid = new Q3GridLayout( parent, /*rows*/20, /*cols*/2, /*margin*/10, /*spacing*/10 );
     grid->setColStretch( 0, 1 );
     grid->setColStretch( 1, 1 );
 
@@ -341,19 +345,19 @@ HelixConfigDialogBase::HelixConfigDialogBase( HelixEngine *engine, Amarok::Plugi
 
     pageName = i18n("Plugins");
 
-    addTab( sv = new QScrollView, pageName );
+    addTab( sv = new Q3ScrollView, pageName );
     parent = new QWidget( sv->viewport() );
 
-    sv->setResizePolicy( QScrollView::AutoOneFit );
+    sv->setResizePolicy( Q3ScrollView::AutoOneFit );
     sv->addChild( parent );
 
-    QTextEdit *le = new QTextEdit( parent );
+    Q3TextEdit *le = new Q3TextEdit( parent );
     if( sv )
        sv->setMinimumWidth( le->sizeHint().width() );
 
-    grid = new QGridLayout( parent, /*rows*/1, /*cols*/1, /*margin*/2, /*spacing*/1 );
+    grid = new Q3GridLayout( parent, /*rows*/1, /*cols*/1, /*margin*/2, /*spacing*/1 );
     grid->addMultiCellWidget( le, 0, 1, 0, 1, 0 );
-    le->setWordWrap(QTextEdit::NoWrap);
+    le->setWordWrap(Q3TextEdit::NoWrap);
 
     int n = engine->numPlugins();
     const char *description, *copyright, *moreinfourl;
@@ -384,7 +388,7 @@ HelixConfigDialogBase::~HelixConfigDialogBase()
 bool
 HelixConfigDialogBase::hasChanged() const
 {
-   for( QPtrListIterator<HelixConfigEntry> it( entries ); *it != 0; ++it )
+   for( Q3PtrListIterator<HelixConfigEntry> it( entries ); *it != 0; ++it )
       if ( (*it)->isChanged() )
          return true;
    if (m_core->isChanged() || m_plugin->isChanged() || m_codec->isChanged() || m_device->isChanged())

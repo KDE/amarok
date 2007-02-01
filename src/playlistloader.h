@@ -8,15 +8,18 @@
 
 #include "amarok.h"
 #include "debug.h"        //stack allocated
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 #include <qxml.h>         //baseclass
+//Added by qt3to4:
+#include <QCustomEvent>
+#include <Q3ValueList>
 #include <kurl.h>         //KURL::List
 #include "metabundle.h"   //stack allocated
 #include "threadmanager.h" //baseclass
 #include "xmlloader.h"    //baseclass
 
-class QListViewItem;
-class QTextStream;
+class Q3ListViewItem;
+class Q3TextStream;
 class PlaylistItem;
 class PLItemList;
 class XMLData;
@@ -62,13 +65,13 @@ public:
 
 protected:
     /// make these virtual if you need to
-    bool loadM3u( QTextStream& );
-    bool loadPls( QTextStream& );
+    bool loadM3u( Q3TextStream& );
+    bool loadPls( Q3TextStream& );
     unsigned int loadPls_extractIndex( const QString &str ) const;
-    bool loadRealAudioRam( QTextStream& );
-    bool loadASX( QTextStream& );
-    bool loadSMIL( QTextStream& );
-    bool loadXSPF( QTextStream& );
+    bool loadRealAudioRam( Q3TextStream& );
+    bool loadASX( Q3TextStream& );
+    bool loadSMIL( Q3TextStream& );
+    bool loadXSPF( Q3TextStream& );
     QString m_path;
     QString m_error;
     BundleList m_bundles;
@@ -105,7 +108,7 @@ class UrlLoader : public ThreadManager::DependentJob
 Q_OBJECT
 
 public:
-    UrlLoader( const KURL::List&, QListViewItem*, int options = 0 );
+    UrlLoader( const KURL::List&, Q3ListViewItem*, int options = 0 );
    ~UrlLoader();
 
     static const uint OPTIMUM_BUNDLE_COUNT = 50;
@@ -136,9 +139,9 @@ private:
     bool          m_coloring;
     int           m_options;
     Debug::Block  m_block;
-    QPtrList<PlaylistItem> m_oldQueue;
+    Q3PtrList<PlaylistItem> m_oldQueue;
     QXmlInputSource  *m_xmlSource;
-    QValueList<XMLData> m_xml;
+    Q3ValueList<XMLData> m_xml;
     KURL m_currentURL;
     QString m_dynamicMode;
 
@@ -160,7 +163,7 @@ class SqlLoader : public UrlLoader
     const QString m_sql;
 
 public:
-    SqlLoader( const QString &sql, QListViewItem *after, int options = 0 );
+    SqlLoader( const QString &sql, Q3ListViewItem *after, int options = 0 );
 
     virtual bool doJob();
 };
@@ -177,13 +180,13 @@ class RemotePlaylistFetcher : public QObject
 
     const KURL m_source;
     KURL m_destination;
-    QListViewItem *m_after;
+    Q3ListViewItem *m_after;
     bool m_playFirstUrl;
     int m_options;
     class KTempFile *m_temp;
 
 public:
-    RemotePlaylistFetcher( const KURL &source, QListViewItem *after, int options = 0 );
+    RemotePlaylistFetcher( const KURL &source, Q3ListViewItem *after, int options = 0 );
    ~RemotePlaylistFetcher();
 
 private slots:

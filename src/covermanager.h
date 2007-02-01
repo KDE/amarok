@@ -5,13 +5,18 @@
 #ifndef COVERMANAGER_H
 #define COVERMANAGER_H
 
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 #include <qsplitter.h>
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <QDropEvent>
+#include <Q3ValueList>
+#include <QLabel>
 #include <kiconview.h>
 #include <qdialog.h>
 #include <qpixmap.h>
 
-class QListViewItem;
+class Q3ListViewItem;
 class CoverViewItem;
 class ClickLineEdit;
 class KPushButton;
@@ -20,9 +25,9 @@ class QToolButton;
 class QLabel;
 class KListView;
 class CoverView;
-class QHBox;
+class Q3HBox;
 class KProgress;
-class QHBoxLayout;
+class Q3HBoxLayout;
 class PixmapViewer;
 
 class CoverManager : public QSplitter
@@ -51,9 +56,9 @@ class CoverManager : public QSplitter
         void changeLocale( int id );
 
     private slots:
-        void slotArtistSelected( QListViewItem* );
-        void coverItemExecuted( QIconViewItem *item );
-        void showCoverMenu( QIconViewItem *item, const QPoint& );
+        void slotArtistSelected( Q3ListViewItem* );
+        void coverItemExecuted( Q3IconViewItem *item );
+        void showCoverMenu( Q3IconViewItem *item, const QPoint& );
         void slotSetFilter();
         void slotSetFilterTimeout();
         void changeView( int id );
@@ -73,7 +78,7 @@ class CoverManager : public QSplitter
         void setCustomSelectedCovers();
         void fetchSelectedCovers();
         void deleteSelectedCovers();
-        QPtrList<CoverViewItem> selectedItems();
+        Q3PtrList<CoverViewItem> selectedItems();
 
         KListView      *m_artistView;
         CoverView      *m_coverView;
@@ -88,12 +93,12 @@ class CoverManager : public QSplitter
 
         //status bar widgets
         QLabel         *m_statusLabel;
-        QHBox          *m_progressBox;
+        Q3HBox          *m_progressBox;
         KProgress      *m_progress;
         QString         m_oldStatusText;
 
         QTimer         *m_timer;              //search filter timer
-        QPtrList<QIconViewItem> m_coverItems; //used for filtering
+        Q3PtrList<Q3IconViewItem> m_coverItems; //used for filtering
         QString         m_filter;
 
 
@@ -112,19 +117,19 @@ class CoverView : public KIconView
         Q_OBJECT
 
     public:
-        CoverView( QWidget *parent = 0, const char *name = 0, WFlags f = 0 );
+        CoverView( QWidget *parent = 0, const char *name = 0, Qt::WFlags f = 0 );
 
     protected:
-        QDragObject *dragObject();
+        Q3DragObject *dragObject();
 
     private slots:
-        void setStatusText( QIconViewItem *item );
+        void setStatusText( Q3IconViewItem *item );
 };
 
 class CoverViewItem : public KIconViewItem
 {
     public:
-        CoverViewItem( QIconView *parent, QIconViewItem *after, const QString &artist, const QString &album );
+        CoverViewItem( Q3IconView *parent, Q3IconViewItem *after, const QString &artist, const QString &album );
 
         void loadCover();
         bool hasCover() const;
@@ -136,7 +141,7 @@ class CoverViewItem : public KIconViewItem
     protected:
         void paintItem(QPainter* painter, const QColorGroup& colorGroup);
         void paintFocus(QPainter *, const QColorGroup &) { }
-        void dropped( QDropEvent *, const QValueList<QIconDragItem> & );
+        void dropped( QDropEvent *, const Q3ValueList<Q3IconDragItem> & );
         void dragEntered();
         void dragLeft();
         void calcRect( const QString& text_=QString::null );
@@ -157,7 +162,7 @@ class CoverViewDialog : public QDialog {
         CoverViewDialog(const QString& artist, const QString& album, QWidget *parent);
 
     private:
-        QHBoxLayout *m_layout;
+        Q3HBoxLayout *m_layout;
         QPixmap m_pixmap;
         PixmapViewer *m_pixmapViewer;
         QLabel *m_label;

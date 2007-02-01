@@ -30,10 +30,13 @@
 #include <kactionclasses.h>
 #include <kglobalsettings.h>
 #include <kiconloader.h>
-#include <qiconset.h>
+#include <qicon.h>
 #include <qlabel.h>
 #include <qtimer.h>
 #include <qtooltip.h>
+//Added by qt3to4:
+#include <QEvent>
+#include <QMouseEvent>
 
 class ToggleLabel : public QLabel
 {
@@ -89,7 +92,7 @@ class ToggleLabel : public QLabel
     public slots:
         void setChecked( bool on )
         {
-            setPixmap( m_action->iconSet().pixmap( QIconSet::Small, on ? QIconSet::Normal : QIconSet::Disabled ) );
+            setPixmap( m_action->iconSet().pixmap( QIcon::Small, on ? QIcon::Normal : QIcon::Disabled ) );
         }
 
         void setEnabled( bool /*on*/ ) { }

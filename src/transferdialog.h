@@ -18,6 +18,9 @@
 #include <qcheckbox.h>
 #include <qmap.h>
 #include <qsignalmapper.h>
+//Added by qt3to4:
+#include <Q3PtrList>
+#include <QLabel>
 #include <kdialogbase.h>
 
 class KComboBox;
@@ -52,7 +55,7 @@ class LIBAMAROK_EXPORT TransferDialog : public KDialogBase
         QLabel                          *m_label1;
         QLabel                          *m_label2;
         QLabel                          *m_label3;
-        QPtrList<KComboBox>             *m_combolist;
+        Q3PtrList<KComboBox>             *m_combolist;
         int                              m_sort1LastIndex;
         int                              m_sort2LastIndex;
 };

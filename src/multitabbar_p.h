@@ -24,10 +24,16 @@
 
 #ifndef MULTI_TAB_BAR_P_H
 #define MULTI_TAB_BAR_P_H
-#include <qscrollview.h>
+#include <q3scrollview.h>
+//Added by qt3to4:
+#include <QResizeEvent>
+#include <QMouseEvent>
+#include <QEvent>
+#include <Q3PtrList>
+#include <QPixmap>
 #include <multitabbar.h>
 
-class MultiTabBarInternal: public QScrollView
+class MultiTabBarInternal: public Q3ScrollView
 {
         Q_OBJECT
 public:
@@ -39,7 +45,7 @@ public:
         void setPosition(enum MultiTabBar::MultiTabBarPosition pos);
         void setStyle(enum MultiTabBar::MultiTabBarStyle style);
         void showActiveTabTexts(bool show);
-        QPtrList<MultiTabBarTab>* tabs(){return &m_tabs;}
+        Q3PtrList<MultiTabBarTab>* tabs(){return &m_tabs;}
         uint visibleTabCount();
         uint sizePerTab();
         void showTabSelectionMenu(QPoint pos);
@@ -47,8 +53,8 @@ public:
 private:
         friend class MultiTabBar;
         QWidget *box;
-        QBoxLayout *mainLayout;
-        QPtrList<MultiTabBarTab> m_tabs;
+        Q3BoxLayout *mainLayout;
+        Q3PtrList<MultiTabBarTab> m_tabs;
         enum MultiTabBar::MultiTabBarPosition m_position;
         bool m_showActiveTabTexts;
         enum  MultiTabBar::MultiTabBarStyle m_style;

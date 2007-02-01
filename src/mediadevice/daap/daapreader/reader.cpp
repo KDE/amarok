@@ -17,11 +17,13 @@
 #include "metabundle.h"
 #include "qstringx.h"
 
-#include <qcstring.h>
+#include <q3cstring.h>
 #include <qdatastream.h>
-#include <qptrlist.h>
-#include <qvaluevector.h>
+#include <q3ptrlist.h>
+#include <q3valuevector.h>
 #include <qvariant.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 
 using namespace Daap;
 
@@ -180,18 +182,18 @@ Reader::loginRequest()
     DEBUG_BLOCK
     ContentFetcher* http = new ContentFetcher( m_host, m_port, m_password, this, "readerHttp");
     connect( http, SIGNAL( httpError( const QString& ) ), this, SLOT( fetchingError( const QString& ) ) );
-    connect( http, SIGNAL(  responseHeaderReceived( const QHttpResponseHeader & ) )
-            , this, SLOT( loginHeaderReceived( const QHttpResponseHeader & ) ) );
+    connect( http, SIGNAL(  responseHeaderReceived( const Q3HttpResponseHeader & ) )
+            , this, SLOT( loginHeaderReceived( const Q3HttpResponseHeader & ) ) );
     http->getDaap( "/login" );
 }
 
 void
-Reader::loginHeaderReceived( const QHttpResponseHeader & resp )
+Reader::loginHeaderReceived( const Q3HttpResponseHeader & resp )
 {
     DEBUG_BLOCK
     ContentFetcher* http = (ContentFetcher*) sender();
-    disconnect( http, SIGNAL(  responseHeaderReceived( const QHttpResponseHeader & ) )
-            , this, SLOT( loginHeaderReceived( const QHttpResponseHeader & ) ) );
+    disconnect( http, SIGNAL(  responseHeaderReceived( const Q3HttpResponseHeader & ) )
+            , this, SLOT( loginHeaderReceived( const Q3HttpResponseHeader & ) ) );
     if( resp.statusCode() == 401 /*authorization required*/)
     {
         emit passwordRequired();
@@ -276,10 +278,10 @@ Reader::songListFinished( int /*id*/, bool error )
     Map songResults = parse( http->results(), 0, true );
 
     SongList result;
-    QValueList<QVariant> songList;
+    Q3ValueList<QVariant> songList;
     songList = songResults["adbs"].asList()[0].asMap()["mlcl"].asList()[0].asMap()["mlit"].asList();
     debug() << "songList.count() = " << songList.count() << endl;
-    QValueList<QVariant>::iterator it;
+    Q3ValueList<QVariant>::iterator it;
     for( it = songList.begin(); it != songList.end(); ++it )
     {
         MetaBundle* bundle = new MetaBundle();
@@ -410,7 +412,7 @@ void
 Reader::addElement( Map &parentMap, char* tag, QVariant element )
 {
     if( !parentMap.contains( tag ) )
-        parentMap[tag] = QVariant( QValueList<QVariant>() );
+        parentMap[tag] = QVariant( Q3ValueList<QVariant>() );
 
     parentMap[tag].asList().append(element);
 }

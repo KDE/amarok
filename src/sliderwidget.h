@@ -28,7 +28,15 @@
 
 #include <qpixmap.h>
 #include <qslider.h>
-#include <qvaluevector.h>
+#include <q3valuevector.h>
+//Added by qt3to4:
+#include <QShowEvent>
+#include <QWheelEvent>
+#include <QEvent>
+#include <QHideEvent>
+#include <QMouseEvent>
+#include <QContextMenuEvent>
+#include <QPaintEvent>
 
 class QPalette;
 class QTimer;
@@ -152,7 +160,7 @@ namespace Amarok
             QPixmap m_pixmapInset;
             KPixmap m_pixmapGradient;
 
-            QValueVector<QPixmap> m_handlePixmaps;
+            Q3ValueVector<QPixmap> m_handlePixmaps;
     };
 
 }

@@ -24,7 +24,12 @@
 #include "amarok_export.h"
 #include <qwidget.h>     //baseclass
 #include <qmap.h>        //stack allocated
-#include <qvaluelist.h>  //stack allocated
+#include <q3valuelist.h>  //stack allocated
+//Added by qt3to4:
+#include <QEvent>
+#include <QCustomEvent>
+#include <QLabel>
+#include <QPaintEvent>
 
 class QLabel;
 class QTimer;
@@ -219,10 +224,10 @@ namespace KDE
         QWidget *shortLongButton() { return static_cast<QWidget*>( child( "shortLongButton" ) ); }
 
         OverlayWidget *m_popupProgress;
-        QProgressBar  *m_mainProgressBar;
+        Q3ProgressBar  *m_mainProgressBar;
 
         ProgressMap          m_progressMap;
-        QValueList<QWidget*> m_messageQueue;
+        Q3ValueList<QWidget*> m_messageQueue;
         QString              m_mainText;
         QString              m_shortLongText;
         int                  m_shortLongType;

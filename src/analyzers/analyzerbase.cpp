@@ -19,6 +19,8 @@
 #include <cmath>        //interpolate()
 #include "enginecontroller.h"
 #include <qevent.h>     //event()
+//Added by qt3to4:
+#include <QResizeEvent>
 
 
 // INSTRUCTIONS Base2D

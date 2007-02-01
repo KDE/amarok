@@ -16,6 +16,8 @@
 #define SPLASH_H
 
 #include <qwidget.h> //baseclass
+//Added by qt3to4:
+#include <QMouseEvent>
 
 class Splash : public QWidget
 {

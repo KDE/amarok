@@ -46,16 +46,25 @@
 #include <qdir.h>
 #include <qdom.h>
 #include <qfileinfo.h>
-#include <qgroupbox.h>
-#include <qheader.h>
+#include <q3groupbox.h>
+#include <q3header.h>
 #include <qimage.h>
 #include <qlabel.h>
-#include <qobjectlist.h>
+#include <qobject.h>
 #include <qpainter.h>
 #include <qradiobutton.h>
-#include <qsimplerichtext.h>
+#include <q3simplerichtext.h>
 #include <qtimer.h>
 #include <qtooltip.h>       //QToolTip::add()
+//Added by qt3to4:
+#include <QPixmap>
+#include <Q3ValueList>
+#include <QKeyEvent>
+#include <Q3Frame>
+#include <QDropEvent>
+#include <Q3CString>
+#include <QPaintEvent>
+#include <Q3PtrList>
 
 #include <kapplication.h> //kapp
 #include <kcombobox.h>
@@ -208,7 +217,7 @@ class DummyMediaDevice : public MediaDevice
 
 
 MediaBrowser::MediaBrowser( const char *name )
-        : QVBox( 0, name )
+        : Q3VBox( 0, name )
         , m_timer( new QTimer( this ) )
         , m_currentDevice( m_devices.end() )
         , m_waitForTranscode( false )
@@ -277,7 +286,7 @@ MediaBrowser::MediaBrowser( const char *name )
         m_searchEdit = new ClickLineEdit( i18n( "Enter search terms here" ), searchToolBar );
         KPushButton *filterButton = new KPushButton("...", searchToolBar, "filter");
         searchToolBar->setStretchableWidget( m_searchEdit );
-        m_searchEdit->setFrame( QFrame::Sunken );
+        m_searchEdit->setFrame( Q3Frame::Sunken );
 
         connect( button, SIGNAL( clicked() ), m_searchEdit, SLOT( clear() ) );
         connect( filterButton, SIGNAL( clicked() ), SLOT( slotEditFilter() ) );
@@ -313,9 +322,9 @@ MediaBrowser::MediaBrowser( const char *name )
         m_pluginAmarokName[(*it)->property( "X-KDE-Amarok-name" ).toString()] = (*it)->name();
     }
 
-    m_views = new QVBox( this );
+    m_views = new Q3VBox( this );
     m_queue = new MediaQueue( this );
-    m_progressBox  = new QHBox( this );
+    m_progressBox  = new Q3HBox( this );
     m_progress     = new KProgress( m_progressBox );
     m_cancelButton = new KPushButton( SmallIconSet( Amarok::icon( "cancel" ) ), i18n("Cancel"), m_progressBox );
 
@@ -393,7 +402,7 @@ MediaBrowser::MediaBrowser( const char *name )
 bool
 MediaBrowser::blockQuit() const
 {
-    for( QValueList<MediaDevice *>::const_iterator it = m_devices.begin();
+    for( Q3ValueList<MediaDevice *>::const_iterator it = m_devices.begin();
             it != m_devices.end();
             ++it )
     {
@@ -448,7 +457,7 @@ MediaBrowser::getBundle( const KURL &url, MetaBundle *bundle ) const
         return false;
 
     if( bundle )
-        *bundle = QDeepCopy<MetaBundle>( *(*it)->bundle() );
+        *bundle = Q3DeepCopy<MetaBundle>( *(*it)->bundle() );
 
     return true;
 }
@@ -467,7 +476,7 @@ MediaBrowser::getProxyUrl( const KURL& daapUrl ) const
 MediaDevice *
 MediaBrowser::currentDevice() const
 {
-    QValueList<MediaDevice *>::const_iterator current = m_currentDevice;
+    Q3ValueList<MediaDevice *>::const_iterator current = m_currentDevice;
     if( current != m_devices.constEnd() )
     {
         return *m_currentDevice;
@@ -479,7 +488,7 @@ MediaBrowser::currentDevice() const
 MediaDevice *
 MediaBrowser::deviceFromId( const QString &id ) const
 {
-    for( QValueList<MediaDevice *>::const_iterator it = m_devices.constBegin();
+    for( Q3ValueList<MediaDevice *>::const_iterator it = m_devices.constBegin();
                 it != m_devices.end();
                 it++ )
         {
@@ -494,7 +503,7 @@ void
 MediaBrowser::activateDevice( const MediaDevice *dev )
 {
     int index = 0;
-    for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
+    for( Q3ValueList<MediaDevice *>::iterator it = m_devices.begin();
             it != m_devices.end();
             it++ )
     {
@@ -517,7 +526,7 @@ MediaBrowser::activateDevice( int index, bool skipDummy )
         m_toolbar->show();
     }
 
-    for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
+    for( Q3ValueList<MediaDevice *>::iterator it = m_devices.begin();
             it != m_devices.end();
             it++ )
     {
@@ -584,7 +593,7 @@ MediaBrowser::removeDevice( MediaDevice *device )
 
     debug() << "remove device: type=" << device->deviceType() << endl;
 
-    for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
+    for( Q3ValueList<MediaDevice *>::iterator it = m_devices.begin();
             it != m_devices.end();
             it++ )
     {
@@ -621,7 +630,7 @@ MediaBrowser::updateDevices()
 {
     m_deviceCombo->clear();
     uint i = 0;
-    for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
+    for( Q3ValueList<MediaDevice *>::iterator it = m_devices.begin();
             it != m_devices.end();
             it++ )
     {
@@ -653,7 +662,7 @@ MediaBrowser::deviceNames() const
 {
     QStringList list;
 
-    for( QValueList<MediaDevice *>::const_iterator it = m_devices.constBegin();
+    for( Q3ValueList<MediaDevice *>::const_iterator it = m_devices.constBegin();
             it != m_devices.constEnd();
             it++ )
     {
@@ -668,7 +677,7 @@ bool
 MediaBrowser::deviceSwitch( const QString &name )
 {
     int index = 0;
-    for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
+    for( Q3ValueList<MediaDevice *>::iterator it = m_devices.begin();
             it != m_devices.end();
             it++ )
     {
@@ -765,7 +774,7 @@ MediaBrowser::prepareToQuit()
 {
     m_waitForTranscode = false;
     m_quitting = true;
-    for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
+    for( Q3ValueList<MediaDevice *>::iterator it = m_devices.begin();
             it != m_devices.end();
             ++it )
     {
@@ -789,25 +798,25 @@ MediaBrowser::~MediaBrowser()
 }
 
 
-MediaItem::MediaItem( QListView* parent )
+MediaItem::MediaItem( Q3ListView* parent )
 : KListViewItem( parent )
 {
     init();
 }
 
-MediaItem::MediaItem( QListViewItem* parent )
+MediaItem::MediaItem( Q3ListViewItem* parent )
 : KListViewItem( parent )
 {
     init();
 }
 
-MediaItem::MediaItem( QListView* parent, QListViewItem* after )
+MediaItem::MediaItem( Q3ListView* parent, Q3ListViewItem* after )
 : KListViewItem( parent, after )
 {
     init();
 }
 
-MediaItem::MediaItem( QListViewItem* parent, QListViewItem* after )
+MediaItem::MediaItem( Q3ListViewItem* parent, Q3ListViewItem* after )
 : KListViewItem( parent, after )
 {
     init();
@@ -1019,8 +1028,8 @@ MediaItem::setFailed( bool failed )
 MediaItem *
 MediaItem::lastChild() const
 {
-    QListViewItem *last = 0;
-    for( QListViewItem *it = firstChild();
+    Q3ListViewItem *last = 0;
+    for( Q3ListViewItem *it = firstChild();
             it;
             it = it->nextSibling() )
     {
@@ -1082,7 +1091,7 @@ MediaItem::findItem( const QString &key, const MediaItem *after ) const
 }
 
 int
-MediaItem::compare( QListViewItem *i, int col, bool ascending ) const
+MediaItem::compare( Q3ListViewItem *i, int col, bool ascending ) const
 {
     MediaItem *item = dynamic_cast<MediaItem *>(i);
     if(item && col==0 && item->m_order != m_order)
@@ -1105,7 +1114,7 @@ MediaItem::compare( QListViewItem *i, int col, bool ascending ) const
 class MediaItemTip : public QToolTip
 {
     public:
-    MediaItemTip( QListView *listview )
+    MediaItemTip( Q3ListView *listview )
     : QToolTip( listview->viewport() )
     , m_view( listview )
     {}
@@ -1167,7 +1176,7 @@ class MediaItemTip : public QToolTip
             tip( m_view->itemRect( i ), text );
     }
 
-    QListView *m_view;
+    Q3ListView *m_view;
 };
 
 
@@ -1177,7 +1186,7 @@ MediaView::MediaView( QWidget* parent, MediaDevice *device )
     , m_device( device )
 {
     hide();
-    setSelectionMode( QListView::Extended );
+    setSelectionMode( Q3ListView::Extended );
     setItemsMovable( false );
     setShowSortIndicator( true );
     setFullWidth( true );
@@ -1194,20 +1203,20 @@ MediaView::MediaView( QWidget* parent, MediaDevice *device )
     KActionCollection* ac = new KActionCollection( this );
     KStdAction::selectAll( this, SLOT( selectAll() ), ac, "mediabrowser_select_all" );
 
-    connect( this, SIGNAL( contextMenuRequested( QListViewItem*, const QPoint&, int ) ),
-             this,   SLOT( rmbPressed( QListViewItem*, const QPoint&, int ) ) );
+    connect( this, SIGNAL( contextMenuRequested( Q3ListViewItem*, const QPoint&, int ) ),
+             this,   SLOT( rmbPressed( Q3ListViewItem*, const QPoint&, int ) ) );
 
-    connect( this, SIGNAL( itemRenamed( QListViewItem* ) ),
-             this,   SLOT( renameItem( QListViewItem* ) ) );
+    connect( this, SIGNAL( itemRenamed( Q3ListViewItem* ) ),
+             this,   SLOT( renameItem( Q3ListViewItem* ) ) );
 
-    connect( this, SIGNAL( expanded( QListViewItem* ) ),
-             this,   SLOT( slotExpand( QListViewItem* ) ) );
+    connect( this, SIGNAL( expanded( Q3ListViewItem* ) ),
+             this,   SLOT( slotExpand( Q3ListViewItem* ) ) );
 
-    connect( this, SIGNAL( returnPressed( QListViewItem* ) ),
-             this,   SLOT( invokeItem( QListViewItem* ) ) );
+    connect( this, SIGNAL( returnPressed( Q3ListViewItem* ) ),
+             this,   SLOT( invokeItem( Q3ListViewItem* ) ) );
 
-    connect( this, SIGNAL( doubleClicked( QListViewItem*, const QPoint&, int ) ),
-             this,   SLOT( invokeItem( QListViewItem*, const QPoint &, int ) ) );
+    connect( this, SIGNAL( doubleClicked( Q3ListViewItem*, const QPoint&, int ) ),
+             this,   SLOT( invokeItem( Q3ListViewItem*, const QPoint &, int ) ) );
 
     m_toolTip = new MediaItemTip( this );
 }
@@ -1222,7 +1231,7 @@ MediaView::keyPressEvent( QKeyEvent *e )
 }
 
 void
-MediaView::invokeItem( QListViewItem* i, const QPoint& point, int column ) //SLOT
+MediaView::invokeItem( Q3ListViewItem* i, const QPoint& point, int column ) //SLOT
 {
     if( column == -1 )
         return;
@@ -1235,7 +1244,7 @@ MediaView::invokeItem( QListViewItem* i, const QPoint& point, int column ) //SLO
 
 
 void
-MediaView::invokeItem( QListViewItem *i )
+MediaView::invokeItem( Q3ListViewItem *i )
 {
     MediaItem *item = dynamic_cast<MediaItem *>( i );
     if( !item )
@@ -1246,13 +1255,13 @@ MediaView::invokeItem( QListViewItem *i )
 }
 
 void
-MediaView::renameItem( QListViewItem *item )
+MediaView::renameItem( Q3ListViewItem *item )
 {
     m_device->renameItem( item );
 }
 
 void
-MediaView::slotExpand( QListViewItem *item )
+MediaView::slotExpand( Q3ListViewItem *item )
 {
     m_device->expandItem( item );
 }
@@ -1264,7 +1273,7 @@ MediaView::~MediaView()
 }
 
 
-QDragObject *
+Q3DragObject *
 MediaView::dragObject()
 {
     KURL::List urls = nodeBuildDragList( 0 );
@@ -1317,11 +1326,11 @@ MediaView::nodeBuildDragList( MediaItem* item, int flags )
 }
 
 int
-MediaView::getSelectedLeaves( MediaItem *parent, QPtrList<MediaItem> *list, int flags )
+MediaView::getSelectedLeaves( MediaItem *parent, Q3PtrList<MediaItem> *list, int flags )
 {
     int numFiles = 0;
     if( !list )
-        list = new QPtrList<MediaItem>;
+        list = new Q3PtrList<MediaItem>;
 
     MediaItem *it;
     if( !parent )
@@ -1374,8 +1383,8 @@ MediaView::acceptDrag( QDropEvent *e ) const
         return false;
 
     QString data;
-    QCString subtype;
-    QTextDrag::decode( e, data, subtype );
+    Q3CString subtype;
+    Q3TextDrag::decode( e, data, subtype );
 
     return e->source() == viewport()
         || subtype == "amarok-sql"
@@ -1396,7 +1405,7 @@ MediaView::contentsDropEvent( QDropEvent *e )
         if( !item )
             return;
 
-        QPtrList<MediaItem> items;
+        Q3PtrList<MediaItem> items;
 
         if( item->type() == MediaItem::PLAYLIST )
         {
@@ -1428,7 +1437,7 @@ MediaView::contentsDropEvent( QDropEvent *e )
         }
         else if( item->type() == MediaItem::PLAYLISTSROOT )
         {
-            QPtrList<MediaItem> items;
+            Q3PtrList<MediaItem> items;
             getSelectedLeaves( 0, &items );
             QString base( i18n("New Playlist") );
             QString name = base;
@@ -1447,7 +1456,7 @@ MediaView::contentsDropEvent( QDropEvent *e )
         else if( item->type() == MediaItem::DIRECTORY ||
                     item->type() == MediaItem::TRACK )
         {
-            QPtrList<MediaItem> items;
+            Q3PtrList<MediaItem> items;
             getSelectedLeaves( 0, &items );
             m_device->addToDirectory( item, items );
         }
@@ -1455,8 +1464,8 @@ MediaView::contentsDropEvent( QDropEvent *e )
     else
     {
         QString data;
-        QCString subtype;
-        QTextDrag::decode( e, data, subtype );
+        Q3CString subtype;
+        Q3TextDrag::decode( e, data, subtype );
         KURL::List list;
 
         if( subtype == "amarok-sql" )
@@ -1485,7 +1494,7 @@ MediaView::viewportPaintEvent( QPaintEvent *e )
     {
         QPainter p( viewport() );
 
-        QSimpleRichText t( i18n(
+        Q3SimpleRichText t( i18n(
                 "<div align=center>"
                   "<h3>Media Device Browser</h3>"
                   "Configure your media device and then "
@@ -1506,7 +1515,7 @@ MediaView::viewportPaintEvent( QPaintEvent *e )
 }
 
 void
-MediaView::rmbPressed( QListViewItem *item, const QPoint &p, int i )
+MediaView::rmbPressed( Q3ListViewItem *item, const QPoint &p, int i )
 {
     if( m_device->isConnected() )
         m_device->rmbPressed( item, p, i );
@@ -1563,7 +1572,7 @@ MediaBrowser::pluginSelected( const Medium *medium, const QString plugin )
         Amarok::config( "MediaBrowser" )->writeEntry( medium->id(), plugin );
 
         bool success = true;
-        for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
+        for( Q3ValueList<MediaDevice *>::iterator it = m_devices.begin();
                 it != m_devices.end();
                 it++ )
         {
@@ -1612,7 +1621,7 @@ MediaBrowser::mediumChanged( const Medium *medium, QString /*name*/ )
 {
     if( medium )
     {
-        for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
+        for( Q3ValueList<MediaDevice *>::iterator it = m_devices.begin();
                 it != m_devices.end();
                 it++ )
         {
@@ -1643,7 +1652,7 @@ MediaBrowser::mediumRemoved( const Medium *medium, QString name )
 {
     if( medium )
     {
-        for( QValueList<MediaDevice *>::iterator it = m_devices.begin();
+        for( Q3ValueList<MediaDevice *>::iterator it = m_devices.begin();
                 it != m_devices.end();
                 it++ )
         {
@@ -1865,7 +1874,7 @@ bool
 MediaView::setFilter( const QString &filter, MediaItem *parent )
 {
     bool advanced = ExpressionParser::isAdvancedExpression( filter );
-    QValueList<int> defaultColumns;
+    Q3ValueList<int> defaultColumns;
     defaultColumns << MetaBundle::Album;
     defaultColumns << MetaBundle::Title;
     defaultColumns << MetaBundle::Artist;
@@ -2389,18 +2398,18 @@ MediaDevice::copyTrackFromDevice( MediaItem *item )
     debug() << "copyTrackFromDevice: not copying " << item->url() << ": not implemented" << endl;
 }
 
-QDragObject *
+Q3DragObject *
 MediaQueue::dragObject()
 {
     KURL::List urls;
-    for( QListViewItem *it = firstChild(); it; it = it->nextSibling() )
+    for( Q3ListViewItem *it = firstChild(); it; it = it->nextSibling() )
     {
         if( it->isVisible() && it->isSelected() && dynamic_cast<MediaItem *>(it) )
             urls += static_cast<MediaItem *>(it)->url();
     }
 
     KMultipleDrag *md = new KMultipleDrag( viewport() );
-    QDragObject *d = KListView::dragObject();
+    Q3DragObject *d = KListView::dragObject();
     KURLDrag* urldrag = new KURLDrag( urls, viewport() );
     md->addDragObject( d );
     md->addDragObject( urldrag );
@@ -2678,7 +2687,7 @@ MediaDevice::connectDevice( bool silent )
     // delete podcasts already played
     if( m_autoDeletePodcasts && m_podcastItem )
     {
-        QPtrList<MediaItem> list;
+        Q3PtrList<MediaItem> list;
         //NOTE we assume that currentItem is the main target
         int numFiles  = m_view->getSelectedLeaves( m_podcastItem, &list, MediaView::OnlyPlayed );
 
@@ -3093,12 +3102,12 @@ MediaDevice::transferFiles()
                 MediaItem *pl = m_playlistItem->findItem( playlist );
                 if( !pl )
                 {
-                    QPtrList<MediaItem> items;
+                    Q3PtrList<MediaItem> items;
                     pl = newPlaylist( playlist, m_playlistItem, items );
                 }
                 if( pl )
                 {
-                    QPtrList<MediaItem> items;
+                    Q3PtrList<MediaItem> items;
                     items.append( item );
                     addToPlaylist( pl, pl->lastChild(), items );
                 }
@@ -3236,7 +3245,7 @@ MediaDevice::deleteFromDevice(MediaItem *item, int flags )
 
         m_deleting = true;
 
-        QPtrList<MediaItem> list;
+        Q3PtrList<MediaItem> list;
         //NOTE we assume that currentItem is the main target
         int numFiles  = m_view->getSelectedLeaves(item, &list, MediaView::OnlySelected | ((flags & OnlyPlayed) ? MediaView::OnlyPlayed : MediaView::None) );
 
@@ -3366,7 +3375,7 @@ MediaQueue::save( const QString &path )
 {
     QFile file( path );
 
-    if( !file.open( IO_WriteOnly ) ) return;
+    if( !file.open( QIODevice::WriteOnly ) ) return;
 
     QDomDocument newdoc;
     QDomElement transferlist = newdoc.createElement( "playlist" );
@@ -3464,8 +3473,8 @@ MediaQueue::save( const QString &path )
         transferlist.appendChild( i );
     }
 
-    QTextStream stream( &file );
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    Q3TextStream stream( &file );
+    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     stream << newdoc.toString();
 }
@@ -3475,14 +3484,14 @@ void
 MediaQueue::load( const QString& filename )
 {
     QFile file( filename );
-    if( !file.open( IO_ReadOnly ) ) {
+    if( !file.open( QIODevice::ReadOnly ) ) {
         return;
     }
 
     clearItems();
 
-    QTextStream stream( &file );
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    Q3TextStream stream( &file );
+    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
 
     QDomDocument d;
     QString er;
@@ -3497,7 +3506,7 @@ MediaQueue::load( const QString& filename )
         return;
     }
 
-    QValueList<QDomNode> nodes;
+    Q3ValueList<QDomNode> nodes;
     const QString ITEM( "item" ); //so we don't construct this QString all the time
     for( QDomNode n = d.namedItem( "playlist" ).firstChild(); !n.isNull(); n = n.nextSibling() )
     {
@@ -3594,7 +3603,7 @@ MediaQueue::MediaQueue(MediaBrowser *parent)
     : KListView( parent ), m_parent( parent )
 {
     setFixedHeight( 200 );
-    setSelectionMode( QListView::Extended );
+    setSelectionMode( Q3ListView::Extended );
     setItemsMovable( true );
     setDragEnabled( true );
     setShowSortIndicator( false );
@@ -3612,18 +3621,18 @@ MediaQueue::MediaQueue(MediaBrowser *parent)
     KActionCollection* ac = new KActionCollection( this );
     KStdAction::selectAll( this, SLOT( selectAll() ), ac, "MediaQueue" );
 
-    connect( this, SIGNAL( contextMenuRequested( QListViewItem*, const QPoint&, int ) ),
-            SLOT( slotShowContextMenu( QListViewItem*, const QPoint&, int ) ) );
-    connect( this, SIGNAL( dropped(QDropEvent*, QListViewItem*, QListViewItem*) ),
-            SLOT( slotDropped(QDropEvent*, QListViewItem*, QListViewItem*) ) );
+    connect( this, SIGNAL( contextMenuRequested( Q3ListViewItem*, const QPoint&, int ) ),
+            SLOT( slotShowContextMenu( Q3ListViewItem*, const QPoint&, int ) ) );
+    connect( this, SIGNAL( dropped(QDropEvent*, Q3ListViewItem*, Q3ListViewItem*) ),
+            SLOT( slotDropped(QDropEvent*, Q3ListViewItem*, Q3ListViewItem*) ) );
 }
 
 bool
 MediaQueue::acceptDrag( QDropEvent *e ) const
 {
     QString data;
-    QCString subtype;
-    QTextDrag::decode( e, data, subtype );
+    Q3CString subtype;
+    Q3TextDrag::decode( e, data, subtype );
 
     return e->source() == viewport()
         || subtype == "amarok-sql"
@@ -3631,13 +3640,13 @@ MediaQueue::acceptDrag( QDropEvent *e ) const
 }
 
 void
-MediaQueue::slotDropped( QDropEvent* e, QListViewItem* parent, QListViewItem* after)
+MediaQueue::slotDropped( QDropEvent* e, Q3ListViewItem* parent, Q3ListViewItem* after)
 {
     if( e->source() != viewport() )
     {
         QString data;
-        QCString subtype;
-        QTextDrag::decode( e, data, subtype );
+        Q3CString subtype;
+        Q3TextDrag::decode( e, data, subtype );
         KURL::List list;
 
         if( subtype == "amarok-sql" )
@@ -3653,7 +3662,7 @@ MediaQueue::slotDropped( QDropEvent* e, QListViewItem* parent, QListViewItem* af
             addURLs( list );
         }
     }
-    else if( QListViewItem *i = currentItem() )
+    else if( Q3ListViewItem *i = currentItem() )
     {
         moveItem( i, parent, after );
     }
@@ -3668,7 +3677,7 @@ MediaQueue::dropProxyEvent( QDropEvent *e )
 MediaItem*
 MediaQueue::findPath( QString path )
 {
-    for( QListViewItem *item = firstChild();
+    for( Q3ListViewItem *item = firstChild();
             item;
             item = item->nextSibling())
     {
@@ -3683,7 +3692,7 @@ void
 MediaQueue::computeSize() const
 {
     m_totalSize = 0;
-    for( QListViewItem *it = firstChild();
+    for( Q3ListViewItem *it = firstChild();
             it;
             it = it->nextSibling())
     {
@@ -3726,9 +3735,9 @@ MediaQueue::subtractItemFromSize( const MediaItem *item, bool unconditionally ) 
 void
 MediaQueue::removeSelected()
 {
-    QPtrList<QListViewItem>  selected = selectedItems();
+    Q3PtrList<Q3ListViewItem>  selected = selectedItems();
 
-    for( QListViewItem *item = selected.first(); item; item = selected.next() )
+    for( Q3ListViewItem *item = selected.first(); item; item = selected.next() )
     {
         if( !(static_cast<MediaItem *>(item)->flags() & MediaItem::Transferring) )
         {
@@ -3765,7 +3774,7 @@ MediaQueue::itemCountChanged()
 }
 
 void
-MediaQueue::slotShowContextMenu( QListViewItem* item, const QPoint& point, int )
+MediaQueue::slotShowContextMenu( Q3ListViewItem* item, const QPoint& point, int )
 {
     if( !childCount() )
         return;

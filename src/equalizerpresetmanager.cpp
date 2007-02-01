@@ -23,7 +23,11 @@
 #include <qfile.h>
 #include <qlayout.h>
 #include <qpushbutton.h>
-#include <qvbox.h>
+#include <q3vbox.h>
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <Q3VBoxLayout>
+#include <Q3ValueList>
 
 #include <kapplication.h>
 #include <kinputdialog.h>
@@ -37,16 +41,16 @@ EqualizerPresetManager::EqualizerPresetManager( QWidget *parent, const char *nam
 {
     QWidget *mainWidget = new QWidget( this );
     setMainWidget( mainWidget );
-    QHBoxLayout *mainLayout = new QHBoxLayout( mainWidget, 0, spacingHint() );
+    Q3HBoxLayout *mainLayout = new Q3HBoxLayout( mainWidget, 0, spacingHint() );
 
     m_presetsView = new KListView( mainWidget, "presetListView" );
     m_presetsView->addColumn( i18n( "Presets" ) );
     m_presetsView->setFullWidth( true );
     connect(m_presetsView, SIGNAL( selectionChanged() ), SLOT( updateButtonState() ));
-    connect(m_presetsView, SIGNAL( doubleClicked ( QListViewItem*, const QPoint&, int ) ), SLOT( slotRename() ));
+    connect(m_presetsView, SIGNAL( doubleClicked ( Q3ListViewItem*, const QPoint&, int ) ), SLOT( slotRename() ));
     mainLayout->addWidget( m_presetsView );
 
-    QVBoxLayout* buttonsLayout = new QVBoxLayout( mainLayout );
+    Q3VBoxLayout* buttonsLayout = new Q3VBoxLayout( mainLayout );
 
     m_renameBtn = new QPushButton( i18n("&Rename"), mainWidget, "renameBtn" );
     m_deleteBtn = new QPushButton( i18n("&Delete"), mainWidget, "deleteBtn" );
@@ -72,7 +76,7 @@ EqualizerPresetManager::~EqualizerPresetManager()
 }
 
 void
-EqualizerPresetManager::setPresets(QMap< QString, QValueList<int> > presets)
+EqualizerPresetManager::setPresets(QMap< QString, Q3ValueList<int> > presets)
 {
     if ( presets.empty() )
         return;
@@ -80,13 +84,13 @@ EqualizerPresetManager::setPresets(QMap< QString, QValueList<int> > presets)
     m_presets = presets;
     m_presetsView->clear();
 
-    QMap< QString, QValueList<int> >::Iterator end = presets.end();
-    for ( QMap< QString, QValueList<int> >::Iterator it = presets.begin(); it != end; ++it )
+    QMap< QString, Q3ValueList<int> >::Iterator end = presets.end();
+    for ( QMap< QString, Q3ValueList<int> >::Iterator it = presets.begin(); it != end; ++it )
         if ( it.key() != i18n( "Zero" ) && it.key() != i18n( "Manual" ) ) // Don't add 'Manual' and 'Zero'
             new KListViewItem( m_presetsView, it.key() );
 }
 
-QMap< QString, QValueList<int> >
+QMap< QString, Q3ValueList<int> >
 EqualizerPresetManager::presets()
 {
     return m_presets;
@@ -96,7 +100,7 @@ void
 EqualizerPresetManager::slotRename()
 {
     bool ok;
-    QListViewItem* item = m_presetsView->selectedItem();
+    Q3ListViewItem* item = m_presetsView->selectedItem();
     const QString title = KInputDialog::getText( i18n("Rename Equalizer Preset"),
                                                  i18n("Enter new preset name:"), item->text(0), &ok, this);
 
@@ -124,13 +128,13 @@ EqualizerPresetManager::slotDefault()
         return;
 
     // Preserve the 'Manual' preset
-    QValueList<int> manualGains = m_presets[ i18n("Manual") ];
+    Q3ValueList<int> manualGains = m_presets[ i18n("Manual") ];
 
     // Delete all presets
     m_presets.clear();
 
     // Create predefined presets 'Zero' and 'Manual'
-    QValueList<int> zeroGains;
+    Q3ValueList<int> zeroGains;
     zeroGains << 0 << 0 << 0 << 0 << 0 << 0 << 0 << 0 << 0 << 0;
     m_presets[ i18n("Zero") ] = zeroGains;
     m_presets[ i18n("Manual") ] = manualGains;
@@ -138,12 +142,12 @@ EqualizerPresetManager::slotDefault()
     // Load the default presets
     QFile file( locate( "data", "amarok/data/equalizer_presets.xml" ) );
 
-    QTextStream stream( &file );
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    Q3TextStream stream( &file );
+    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
 
     QDomDocument d;
 
-    if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
+    if( !file.open( QIODevice::ReadOnly ) || !d.setContent( stream.read() ) )
         return;
 
     QDomNode n = d.namedItem( "equalizerpresets" ).namedItem("preset");
@@ -153,7 +157,7 @@ EqualizerPresetManager::slotDefault()
         QDomElement e = n.toElement();
         QString title = e.attribute( "name" );
 
-        QValueList<int> gains;
+        Q3ValueList<int> gains;
         gains << e.namedItem( "b0" ).toElement().text().toInt();
         gains << e.namedItem( "b1" ).toElement().text().toInt();
         gains << e.namedItem( "b2" ).toElement().text().toInt();
@@ -177,7 +181,7 @@ EqualizerPresetManager::slotDefault()
 void
 EqualizerPresetManager::slotDelete()
 {
-    QListViewItem* item = m_presetsView->selectedItem();
+    Q3ListViewItem* item = m_presetsView->selectedItem();
 
     m_presets.remove( item->text(0) );
 

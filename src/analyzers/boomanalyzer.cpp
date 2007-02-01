@@ -9,6 +9,8 @@
 #include <qpainter.h>
 #include <qslider.h>
 #include <qspinbox.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
 
 BoomAnalyzer::BoomAnalyzer( QWidget *parent )
     : Analyzer::Base2D( parent, 10, 9 )
@@ -24,7 +26,7 @@ BoomAnalyzer::BoomAnalyzer( QWidget *parent )
     QSpinBox *m;
     int v;
 
-    (new QGridLayout( box, 2, 3 ))->setAutoAdd( true );
+    (new Q3GridLayout( box, 2, 3 ))->setAutoAdd( true );
 
     v = int(K_barHeight*1000);
     new QLabel( "Bar fall-rate:", box );

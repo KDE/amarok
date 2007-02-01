@@ -26,7 +26,7 @@
 #include <kdirlister.h>
 #include <kurl.h>
 
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 
 class GenericMediaItem;
 class GenericMediaFile;
@@ -51,7 +51,7 @@ class GenericMediaDevice : public MediaDevice
 
         bool              isConnected() { return m_connected; }
 
-        void              rmbPressed( QListViewItem* qitem, const QPoint& point, int );
+        void              rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int );
 
         QStringList       supportedFiletypes() { return m_supportedFileTypes; }
         bool              isPlayable( const MetaBundle& bundle );
@@ -75,7 +75,7 @@ class GenericMediaDevice : public MediaDevice
         MediaItem        *copyTrackToDevice( const MetaBundle& bundle );
         int               deleteItemFromDevice( MediaItem *item, int flags=DeleteTrack );
         MediaItem        *newDirectory( const QString &name, MediaItem *parent );
-        void              addToDirectory( MediaItem *directory, QPtrList<MediaItem> items );
+        void              addToDirectory( MediaItem *directory, Q3PtrList<MediaItem> items );
 
         bool              getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
         QString           fileName( const MetaBundle & );
@@ -84,8 +84,8 @@ class GenericMediaDevice : public MediaDevice
         bool              lockDevice( bool ) { return true; }
         void              unlockDevice() {}
         void              synchronizeDevice() {}
-        void              addToPlaylist( MediaItem *, MediaItem *, QPtrList<MediaItem> ) {}
-        MediaItem        *newPlaylist( const QString &, MediaItem *, QPtrList<MediaItem> ) { return 0; }
+        void              addToPlaylist( MediaItem *, MediaItem *, Q3PtrList<MediaItem> ) {}
+        MediaItem        *newPlaylist( const QString &, MediaItem *, Q3PtrList<MediaItem> ) { return 0; }
 
 
     signals:
@@ -93,8 +93,8 @@ class GenericMediaDevice : public MediaDevice
 
 
     protected slots:
-        void              renameItem( QListViewItem *item );
-        void              expandItem( QListViewItem *item );
+        void              renameItem( Q3ListViewItem *item );
+        void              expandItem( Q3ListViewItem *item );
         void              foundMountPoint( const QString & mountPoint, unsigned long kBSize, unsigned long kBUsed, unsigned long kBAvail );
         void              refreshDir( const QString &dir );
 

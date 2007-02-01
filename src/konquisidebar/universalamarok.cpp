@@ -23,6 +23,10 @@
 
 
 #include <qlabel.h>
+//Added by qt3to4:
+#include <QDropEvent>
+#include <QEvent>
+#include <QDragEnterEvent>
 #include <kinstance.h>
 #include <klocale.h>
 #include <qstring.h>
@@ -46,8 +50,8 @@
 
 #define HTML_FILE KGlobal::dirs()->saveLocation( "data", "amarok/", true ) + "contextbrowser.html"
 
-amarokWidget::amarokWidget( QWidget * parent, const char * name, WFlags f )
-                 : QVBox(parent, name, f)
+amarokWidget::amarokWidget( QWidget * parent, const char * name, Qt::WFlags f )
+                 : Q3VBox(parent, name, f)
 {
     setAcceptDrops(true);
 }
@@ -189,10 +193,10 @@ void UniversalAmarok::updateBrowser(const QString& file)
     }
     QString text;
     QFile f_file(file);
-    if( f_file.open(IO_ReadOnly) )
+    if( f_file.open(QIODevice::ReadOnly) )
     {
-        QTextStream stream( &f_file );
-        stream.setEncoding( QTextStream::UnicodeUTF8 );
+        Q3TextStream stream( &f_file );
+        stream.setEncoding( Q3TextStream::UnicodeUTF8 );
         QString line;
         while ( !stream.atEnd() ) {
             line = stream.readLine(); // line of text excluding '\n'

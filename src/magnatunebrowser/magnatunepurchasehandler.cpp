@@ -209,9 +209,9 @@ void MagnatunePurchaseHandler::saveDownloadInfo( QString infoXml )
         return ;
 
     //write info
-    if ( file.open( IO_WriteOnly ) )
+    if ( file.open( QIODevice::WriteOnly ) )
     {
-        QTextStream stream( &file );
+        Q3TextStream stream( &file );
         stream << infoXml << "\n";
         file.close();
     }

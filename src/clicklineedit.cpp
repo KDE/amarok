@@ -23,6 +23,9 @@
 #include "clicklineedit.h"
 
 #include "qpainter.h"
+//Added by qt3to4:
+#include <QFocusEvent>
+#include <QDropEvent>
 
 
 ClickLineEdit::ClickLineEdit( const QString &msg, QWidget *parent, const char* name ) :

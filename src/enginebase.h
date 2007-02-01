@@ -10,7 +10,9 @@
 
 #include <kurl.h>
 #include <qobject.h>       //baseclass
-#include <qvaluelist.h>    //stack alloc
+#include <q3valuelist.h>    //stack alloc
+//Added by qt3to4:
+#include <Q3CString>
 #include <vector>
 
 #include <sys/types.h>
@@ -83,7 +85,7 @@ namespace Engine
         void stateChanged( Engine::State );
 
         /** Shows Amarok config dialog at specified page */
-        void showConfigDialog( const QCString& );
+        void showConfigDialog( const Q3CString& );
 
     public:
         virtual ~Base();
@@ -197,7 +199,7 @@ namespace Engine
           * @param bandGains a list of 10 integers, ascending in frequency, the exact frequencies you amplify
           *                  are not too-important at this time
           */
-        virtual void setEqualizerParameters( int /*preamp*/, const QValueList<int> &/*bandGains*/ ) {};
+        virtual void setEqualizerParameters( int /*preamp*/, const Q3ValueList<int> &/*bandGains*/ ) {};
 
 
         /** Tries to retrieve metadata for the given url (called only if url

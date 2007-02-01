@@ -36,6 +36,22 @@
 #include "playlistloader.h"
 #include "playlistselection.h"
 #include "queuemanager.h"
+//Added by qt3to4:
+#include <QCustomEvent>
+#include <Q3CString>
+#include <QWheelEvent>
+#include <Q3PtrList>
+#include <QPaintEvent>
+#include <QDragMoveEvent>
+#include <Q3VBoxLayout>
+#include <QDragLeaveEvent>
+#include <QResizeEvent>
+#include <QDropEvent>
+#include <QDragEnterEvent>
+#include <Q3HBoxLayout>
+#include <QPixmap>
+#include <QMouseEvent>
+#include <Q3GridLayout>
 #include "prettypopupmenu.h"
 #include "scriptmanager.h"
 #include "sliderwidget.h"
@@ -50,16 +66,16 @@
 #include <qcolor.h>
 #include <qevent.h>
 #include <qfile.h>           //undo system
-#include <qheader.h>         //eventFilter()
+#include <q3header.h>         //eventFilter()
 #include <qlabel.h>          //showUsageMessage()
 #include <qpainter.h>
 #include <qpen.h>            //slotGlowTimer()
-#include <qsimplerichtext.h> //toolTipText()
-#include <qsortedlist.h>
+#include <q3simplerichtext.h> //toolTipText()
+#include <q3sortedlist.h>
 #include <qtimer.h>
 #include <qtooltip.h>
-#include <qvaluelist.h>      //addHybridTracks()
-#include <qvaluevector.h>    //playNextTrack()
+#include <q3valuelist.h>      //addHybridTracks()
+#include <q3valuevector.h>    //playNextTrack()
 #include <qlayout.h>
 
 #include <kaction.h>
@@ -230,7 +246,7 @@ Playlist::Playlist( QWidget *parent )
     //setItemsRenameable( true );
 
     setAcceptDrops( true );
-    setSelectionMode( QListView::Extended );
+    setSelectionMode( Q3ListView::Extended );
     setAllColumnsShowFocus( true );
     //setItemMargin( 1 ); //aesthetics
 
@@ -286,16 +302,16 @@ Playlist::Playlist( QWidget *parent )
     setColumnAlignment( PlaylistItem::PlayCount,  Qt::AlignCenter );
 
 
-    connect( this,     SIGNAL( doubleClicked( QListViewItem* ) ),
-             this,       SLOT( doubleClicked( QListViewItem* ) ) );
-    connect( this,     SIGNAL( returnPressed( QListViewItem* ) ),
-             this,       SLOT( activate( QListViewItem* ) ) );
-    connect( this,     SIGNAL( mouseButtonPressed( int, QListViewItem*, const QPoint&, int ) ),
-             this,       SLOT( slotMouseButtonPressed( int, QListViewItem*, const QPoint&, int ) ) );
+    connect( this,     SIGNAL( doubleClicked( Q3ListViewItem* ) ),
+             this,       SLOT( doubleClicked( Q3ListViewItem* ) ) );
+    connect( this,     SIGNAL( returnPressed( Q3ListViewItem* ) ),
+             this,       SLOT( activate( Q3ListViewItem* ) ) );
+    connect( this,     SIGNAL( mouseButtonPressed( int, Q3ListViewItem*, const QPoint&, int ) ),
+             this,       SLOT( slotMouseButtonPressed( int, Q3ListViewItem*, const QPoint&, int ) ) );
     connect( this,     SIGNAL( queueChanged(     const PLItemList &, const PLItemList & ) ),
              this,       SLOT( slotQueueChanged( const PLItemList &, const PLItemList & ) ) );
-    connect( this,     SIGNAL( itemRenamed( QListViewItem*, const QString&, int ) ),
-             this,       SLOT( writeTag( QListViewItem*, const QString&, int ) ) );
+    connect( this,     SIGNAL( itemRenamed( Q3ListViewItem*, const QString&, int ) ),
+             this,       SLOT( writeTag( Q3ListViewItem*, const QString&, int ) ) );
     connect( this,     SIGNAL( aboutToClear() ),
              this,       SLOT( saveUndoState() ) );
     connect( CollectionDB::instance(), SIGNAL( scoreChanged( const QString&, float ) ),
@@ -322,11 +338,11 @@ Playlist::Playlist( QWidget *parent )
     m_redoButton ->setIcon( Amarok::icon( "redo" ) );
 
     new KAction( i18n( "&Repopulate" ), Amarok::icon( "playlist_refresh" ), 0, this, SLOT( repopulate() ), ac, "repopulate" );
-    new KAction( i18n( "S&huffle" ), "rebuild", CTRL+Key_H, this, SLOT( shuffle() ), ac, "playlist_shuffle" );
-    KAction *gotoCurrent = new KAction( i18n( "&Go To Current Track" ), Amarok::icon( "music" ), CTRL+Key_J, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
+    new KAction( i18n( "S&huffle" ), "rebuild", Qt::CTRL+Qt::Key_H, this, SLOT( shuffle() ), ac, "playlist_shuffle" );
+    KAction *gotoCurrent = new KAction( i18n( "&Go To Current Track" ), Amarok::icon( "music" ), Qt::CTRL+Qt::Key_J, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
     new KAction( i18n( "&Remove Duplicate && Dead Entries" ), 0, this, SLOT( removeDuplicates() ), ac, "playlist_remove_duplicates" );
-    new KAction( i18n( "&Queue Selected Tracks" ), Amarok::icon( "queue_track" ), CTRL+Key_D, this, SLOT( queueSelected() ), ac, "queue_selected" );
-    KToggleAction *stopafter = new KToggleAction( i18n( "&Stop Playing After Track" ), Amarok::icon( "stop" ), CTRL+ALT+Key_V,
+    new KAction( i18n( "&Queue Selected Tracks" ), Amarok::icon( "queue_track" ), Qt::CTRL+Qt::Key_D, this, SLOT( queueSelected() ), ac, "queue_selected" );
+    KToggleAction *stopafter = new KToggleAction( i18n( "&Stop Playing After Track" ), Amarok::icon( "stop" ), Qt::CTRL+Qt::ALT+Qt::Key_V,
                             this, SLOT( toggleStopAfterCurrentItem() ), ac, "stop_after" );
 
     { // KAction idiocy -- shortcuts don't work until they've been plugged into a menu
@@ -425,7 +441,7 @@ Playlist::mediumChange( int deviceid ) // SLOT
 {
     Q_UNUSED( deviceid );
 
-    for( QListViewItem *it = firstChild();
+    for( Q3ListViewItem *it = firstChild();
             it;
             it = it->nextSibling() )
     {
@@ -636,16 +652,16 @@ Playlist::adjustDynamicPrevious( uint songCount, bool saveUndo )
     int current = currentTrackIndex();
     int x = current - songCount;
 
-    QPtrList<QListViewItem> list;
+    Q3PtrList<Q3ListViewItem> list;
     int y=0;
-    for( QListViewItemIterator it( firstChild() ); y < x ; list.prepend( *it ), ++it, y++ );
+    for( Q3ListViewItemIterator it( firstChild() ); y < x ; list.prepend( *it ), ++it, y++ );
 
     if( list.isEmpty() ) return;
     if ( saveUndo )
         saveUndoState();
 
     //remove the items
-    for( QListViewItem *item = list.first(); item; item = list.next() )
+    for( Q3ListViewItem *item = list.first(); item; item = list.next() )
     {
         removeItem( static_cast<PlaylistItem*>( item ) );
         delete item;
@@ -711,7 +727,7 @@ void Playlist::saveLayout(KConfig *config, const QString &group) const
   QStringList names, widths, order;
 
   const int colCount = columns();
-  QHeader* const thisHeader = header();
+  Q3Header* const thisHeader = header();
   for (int i = 0; i < colCount; ++i)
   {
     names << PlaylistItem::exactColumnName(i);
@@ -731,7 +747,7 @@ void Playlist::restoreLayout(KConfig *config, const QString &group)
   KConfigGroupSaver saver(config, group);
   int version = config->readNumEntry("ColumnsVersion", 0);
 
-  QValueList<int> iorder; //internal ordering
+  Q3ValueList<int> iorder; //internal ordering
   if( version )
   {
     QStringList names = config->readListEntry("ColumnNames");
@@ -816,11 +832,11 @@ void Playlist::restoreLayout(KConfig *config, const QString &group)
 void
 Playlist::addToUniqueMap( const QString uniqueid, PlaylistItem* item )
 {
-    QPtrList<PlaylistItem> *list;
+    Q3PtrList<PlaylistItem> *list;
     if( m_uniqueMap.contains( uniqueid ) )
         list = m_uniqueMap[uniqueid];
     else
-        list = new QPtrList<PlaylistItem>();
+        list = new Q3PtrList<PlaylistItem>();
     list->append( item );
     if( !m_uniqueMap.contains( uniqueid ) )
         m_uniqueMap[uniqueid] = list;
@@ -832,7 +848,7 @@ Playlist::removeFromUniqueMap( const QString uniqueid, PlaylistItem* item )
     if( !m_uniqueMap.contains( uniqueid ) )
         return;
 
-    QPtrList<PlaylistItem> *list;
+    Q3PtrList<PlaylistItem> *list;
     list = m_uniqueMap[uniqueid];
 
     list->remove( item ); //don't care about return value
@@ -850,7 +866,7 @@ Playlist::updateEntriesUrl( const QString &oldUrl, const QString &newUrl, const 
     // Make sure the MoodServer gets this signal first!
     MoodServer::instance()->slotFileMoved( oldUrl, newUrl );
 
-    QPtrList<PlaylistItem> *list;
+    Q3PtrList<PlaylistItem> *list;
     if( m_uniqueMap.contains( uniqueid ) )
     {
         list = m_uniqueMap[uniqueid];
@@ -866,7 +882,7 @@ Playlist::updateEntriesUrl( const QString &oldUrl, const QString &newUrl, const 
 void
 Playlist::updateEntriesUniqueId( const QString &/*url*/, const QString &oldid, const QString &newid )
 {
-    QPtrList<PlaylistItem> *list, *oldlist;
+    Q3PtrList<PlaylistItem> *list, *oldlist;
     if( m_uniqueMap.contains( oldid ) )
     {
         list = m_uniqueMap[oldid];
@@ -892,7 +908,7 @@ Playlist::updateEntriesUniqueId( const QString &/*url*/, const QString &oldid, c
 void
 Playlist::updateEntriesStatusDeleted( const QString &/*absPath*/, const QString &uniqueid )
 {
-    QPtrList<PlaylistItem> *list;
+    Q3PtrList<PlaylistItem> *list;
     if( m_uniqueMap.contains( uniqueid ) )
     {
         list = m_uniqueMap[uniqueid];
@@ -905,7 +921,7 @@ Playlist::updateEntriesStatusDeleted( const QString &/*absPath*/, const QString 
 void
 Playlist::updateEntriesStatusAdded( const QString &absPath, const QString &uniqueid )
 {
-    QPtrList<PlaylistItem> *list;
+    Q3PtrList<PlaylistItem> *list;
     if( m_uniqueMap.contains( uniqueid ) )
     {
         list = m_uniqueMap[uniqueid];
@@ -922,9 +938,9 @@ Playlist::updateEntriesStatusAdded( const QString &absPath, const QString &uniqu
 void
 Playlist::updateEntriesStatusAdded( const QMap<QString,QString> &map )
 {
-    QMap<QString,QPtrList<PlaylistItem>*> uniquecopy( m_uniqueMap );
+    QMap<QString,Q3PtrList<PlaylistItem>*> uniquecopy( m_uniqueMap );
 
-    QMap<QString,QPtrList<PlaylistItem>*>::Iterator it;
+    QMap<QString,Q3PtrList<PlaylistItem>*>::Iterator it;
     for( it = uniquecopy.begin(); it != uniquecopy.end(); ++it )
     {
         if( map.contains( it.key()  ))
@@ -991,7 +1007,7 @@ Playlist::playNextTrack( bool forceNext )
 
         else if( AmarokConfig::randomMode() )
         {
-            QValueVector<PlaylistItem*> tracks;
+            Q3ValueVector<PlaylistItem*> tracks;
 
             //make a list of everything we can play
             if( Amarok::randomAlbums() ) // add the first visible track from every unplayed album
@@ -1025,7 +1041,7 @@ Playlist::playNextTrack( bool forceNext )
                         {
                             // don't add it to previous albums if we only have one album in the playlist
                             // would loop infinitely otherwise
-                            QPtrList<PlaylistAlbum> albums;
+                            Q3PtrList<PlaylistAlbum> albums;
                             for( PlaylistIterator it( this, PlaylistIterator::Visible ); *it && albums.count() <= 1; ++it )
                                 if( albums.findRef( (*it)->m_album ) == -1 )
                                     albums.append( (*it)->m_album );
@@ -1087,7 +1103,7 @@ Playlist::playNextTrack( bool forceNext )
                 else
                 {
                     const uint currenttime_t = QDateTime::currentDateTime().toTime_t();
-                    QValueVector<int> weights( tracks.size() );
+                    Q3ValueVector<int> weights( tracks.size() );
                     Q_INT64 total = m_total;
                     if( Amarok::randomAlbums() )
                     {
@@ -1293,7 +1309,7 @@ void
 Playlist::queueSelected()
 {
     PLItemList in, out;
-    QPtrList<QListViewItem> dynamicList;
+    Q3PtrList<Q3ListViewItem> dynamicList;
 
     for( MyIt it( this, MyIt::Selected ); *it; ++it )
     {
@@ -1313,7 +1329,7 @@ Playlist::queueSelected()
 
     if( dynamicMode() )
     {
-        QListViewItem *item = dynamicList.first();
+        Q3ListViewItem *item = dynamicList.first();
         if( m_nextTracks.containsRef( static_cast<PlaylistItem*>(item) ) )
         {
             for( item = dynamicList.last(); item; item = dynamicList.prev() )
@@ -1330,7 +1346,7 @@ Playlist::queueSelected()
 }
 
 void
-Playlist::queue( QListViewItem *item, bool multi, bool invertQueue )
+Playlist::queue( Q3ListViewItem *item, bool multi, bool invertQueue )
 {
     #define item static_cast<PlaylistItem*>(item)
 
@@ -1537,7 +1553,7 @@ void Playlist::generateInfo()
             (*it)->incrementTotals();
 }
 
-void Playlist::doubleClicked( QListViewItem *item )
+void Playlist::doubleClicked( Q3ListViewItem *item )
 {
     /* We have to check if the item exists before calling activate, otherwise clicking on an empty
     playlist space would stop playing (check BR #105106)*/
@@ -1597,7 +1613,7 @@ Playlist::checkFileStatus( PlaylistItem * item )
 }
 
 void
-Playlist::activate( QListViewItem *item )
+Playlist::activate( Q3ListViewItem *item )
 {
     ///item will be played if possible, the playback may be delayed
     ///so we start the glow anyway and hope
@@ -1730,7 +1746,7 @@ QPair<QString, QRect> Playlist::toolTipText( QWidget*, const QPoint &pos ) const
         return QPair<QString, QRect>( QString::null, QRect() );
 
     QRect globalRect( viewport()->mapToGlobal( irect.topLeft() ), irect.size() );
-    QSimpleRichText t( text, font() );
+    Q3SimpleRichText t( text, font() );
     int dright = QApplication::desktop()->screenGeometry( qscrollview() ).topRight().x();
     t.setWidth( dright - globalRect.left() );
     if( col == PlaylistItem::Rating )
@@ -1757,7 +1773,7 @@ QPair<QString, QRect> Playlist::toolTipText( QWidget*, const QPoint &pos ) const
 void
 Playlist::activateByIndex( int index )
 {
-    QListViewItem* item = itemAtIndex( index );
+    Q3ListViewItem* item = itemAtIndex( index );
 
     if ( item )
         activate(item);
@@ -1861,7 +1877,7 @@ BundleList
 Playlist::nextTracks() const
 {
     BundleList list;
-    for( QPtrListIterator<PlaylistItem> it( m_nextTracks ); *it; ++it )
+    for( Q3PtrListIterator<PlaylistItem> it( m_nextTracks ); *it; ++it )
         list << (**it);
     return list;
 }
@@ -2167,8 +2183,8 @@ Playlist::safeClear()
         blockSignals( true );
         clearSelection();
 
-        QListViewItem *c = firstChild();
-        QListViewItem *n;
+        Q3ListViewItem *c = firstChild();
+        Q3ListViewItem *n;
         while( c ) {
             n = c->nextSibling();
             if ( !static_cast<PlaylistItem *>( c )->isEmpty() ) //avoid deleting markers
@@ -2203,7 +2219,7 @@ Playlist::setColumnWidth( int col, int width )
 }
 
 void
-Playlist::rename( QListViewItem *item, int column ) //SLOT
+Playlist::rename( Q3ListViewItem *item, int column ) //SLOT
 {
     if( !item )
         return;
@@ -2253,7 +2269,7 @@ Playlist::rename( QListViewItem *item, int column ) //SLOT
 }
 
 void
-Playlist::writeTag( QListViewItem *qitem, const QString &, int column ) //SLOT
+Playlist::writeTag( Q3ListViewItem *qitem, const QString &, int column ) //SLOT
 {
     const bool dynamicEnabled = static_cast<PlaylistItem*>(qitem)->isDynamicEnabled();
 
@@ -2366,8 +2382,8 @@ void
 Playlist::contentsDragEnterEvent( QDragEnterEvent *e )
 {
     QString data;
-    QCString subtype;
-    QTextDrag::decode( e, data, subtype );
+    Q3CString subtype;
+    Q3TextDrag::decode( e, data, subtype );
 
     e->accept(
             e->source() == viewport() ||
@@ -2382,14 +2398,14 @@ Playlist::contentsDragMoveEvent( QDragMoveEvent* e )
     if( !e->isAccepted() ) return;
 
     #if KDE_IS_VERSION( 3, 3, 91 )
-    const bool ctrlPressed = KApplication::keyboardMouseState() & Qt::ControlButton;
+    const bool ctrlPressed = KApplication::keyboardMouseState() & Qt::ControlModifier;
     #else
     const bool ctrlPressed = KApplication::keyboardModifiers() & ControlMask;
     #endif
 
     //Get the closest item _before_ the cursor
     const QPoint p = contentsToViewport( e->pos() );
-    QListViewItem *item = itemAt( p );
+    Q3ListViewItem *item = itemAt( p );
     if( !item || ctrlPressed ) item = lastItem();
     else if( p.y() - itemRect( item ).top() < (item->height()/2) ) item = item->itemAbove();
 
@@ -2413,8 +2429,8 @@ Playlist::contentsDropEvent( QDropEvent *e )
     DEBUG_BLOCK
 
     //NOTE parent is always 0 currently, but we support it in case we start using trees
-    QListViewItem *parent = 0;
-    QListViewItem *after  = m_marker;
+    Q3ListViewItem *parent = 0;
+    Q3ListViewItem *after  = m_marker;
 
     if( m_marker && !( static_cast<PlaylistItem *>(m_marker)->isDynamicEnabled() ) && dynamicMode() )
     {
@@ -2437,8 +2453,8 @@ Playlist::contentsDropEvent( QDropEvent *e )
         movableDropEvent( parent, after );
         if( dynamicMode() && static_cast<PlaylistItem *>(after)->isDynamicEnabled() )
         {
-            QPtrList<QListViewItem> items = selectedItems();
-            QListViewItem *item;
+            Q3PtrList<Q3ListViewItem> items = selectedItems();
+            Q3ListViewItem *item;
             for( item = items.first(); item; item = items.next() )
                 static_cast<PlaylistItem *>(item)->setDynamicEnabled( true );
         }
@@ -2446,8 +2462,8 @@ Playlist::contentsDropEvent( QDropEvent *e )
 
     else {
         QString data;
-        QCString subtype;
-        QTextDrag::decode( e, data, subtype );
+        Q3CString subtype;
+        Q3TextDrag::decode( e, data, subtype );
 
         debug() << "QTextDrag::subtype(): " << subtype << endl;
 
@@ -2479,7 +2495,7 @@ Playlist::contentsDropEvent( QDropEvent *e )
     updateNextPrev();
 }
 
-QDragObject*
+Q3DragObject*
 Playlist::dragObject()
 {
     DEBUG_THREAD_FUNC_INFO
@@ -2499,7 +2515,7 @@ Playlist::dragObject()
     return drag;
 }
 
-#include <qsimplerichtext.h>
+#include <q3simplerichtext.h>
 void
 Playlist::viewportPaintEvent( QPaintEvent *e )
 {
@@ -2521,7 +2537,7 @@ Playlist::viewportPaintEvent( QPaintEvent *e )
                       "<b>drag</b> tracks from the browser-panels on the left, "
                       "<b>drop</b> them here and then <b>double-click</b> them to start playback."
                 "</div>" ) );
-        QSimpleRichText *t = new QSimpleRichText( minimumText +
+        Q3SimpleRichText *t = new Q3SimpleRichText( minimumText +
                 i18n( "<div align=center>"
                   "<h3>The Browsers</h3>"
                     "The browsers are the source of all your music. "
@@ -2533,7 +2549,7 @@ Playlist::viewportPaintEvent( QPaintEvent *e )
         if ( t->width()+30 >= viewport()->width() || t->height()+30 >= viewport()->height() ) {
             // too big for the window, so let's cut part of the text
             delete t;
-            t = new QSimpleRichText( minimumText, QApplication::font());
+            t = new Q3SimpleRichText( minimumText, QApplication::font());
             if ( t->width()+30 >= viewport()->width() || t->height()+30 >= viewport()->height() ) {
                 //still too big, giving up
                 return;
@@ -2771,7 +2787,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
     }
 
     // not in slotMouseButtonPressed because we need to disable normal usage.
-    if( o == viewport() && e->type() == QEvent::MouseButtonPress && me->state() == Qt::ControlButton && me->button() == RightButton )
+    if( o == viewport() && e->type() == QEvent::MouseButtonPress && me->state() == Qt::ControlModifier && me->button() == Qt::RightButton )
     {
         PlaylistItem *item = static_cast<PlaylistItem*>( itemAt( me->pos() ) );
 
@@ -2786,7 +2802,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
     }
 
     // trigger in-place tag editing
-    else if( o == viewport() && e->type() == QEvent::MouseButtonPress && me->button() == LeftButton )
+    else if( o == viewport() && e->type() == QEvent::MouseButtonPress && me->button() == Qt::LeftButton )
     {
         m_clicktimer->stop();
         m_itemToRename = 0;
@@ -2797,7 +2813,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
             bool edit = item
                 && item->isSelected()
                 && selectedItems().count()==1
-                && (me->state() & ~LeftButton) == 0
+                && (me->state() & ~Qt::LeftButton) == 0
                 && item->url().isLocalFile();
             if( edit )
             {
@@ -2809,7 +2825,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
         }
     }
 
-    else if( o == viewport() && e->type() == QEvent::MouseButtonRelease && me->button() == LeftButton )
+    else if( o == viewport() && e->type() == QEvent::MouseButtonRelease && me->button() == Qt::LeftButton )
     {
         int col = header()->sectionAt( viewportToContents( me->pos() ).x() );
         if( col != PlaylistItem::Rating )
@@ -2835,7 +2851,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
     }
 
     // Toggle play/pause if user middle-clicks on current track
-    else if( o == viewport() && e->type() == QEvent::MouseButtonPress && me->button() == MidButton )
+    else if( o == viewport() && e->type() == QEvent::MouseButtonPress && me->button() == Qt::MidButton )
     {
         PlaylistItem *item = static_cast<PlaylistItem*>( itemAt( me->pos() ) );
 
@@ -2860,9 +2876,9 @@ Playlist::eventFilter( QObject *o, QEvent *e )
         }
 
         int column = m_renameColumn;
-        QListViewItem *item = m_renameItem;
+        Q3ListViewItem *item = m_renameItem;
 
-        if( ke->state() & Qt::AltButton )
+        if( ke->state() & Qt::AltModifier )
         {
             if( ke->key() == Qt::Key_Up && m_visCount > 1 )
                 if( !( item = m_renameItem->itemAbove() ) )
@@ -3055,9 +3071,9 @@ Playlist::customEvent( QCustomEvent *e )
 bool
 Playlist::saveM3U( const QString &path, bool relative ) const
 {
-    QValueList<KURL> urls;
-    QValueList<QString> titles;
-    QValueList<int> lengths;
+    Q3ValueList<KURL> urls;
+    Q3ValueList<QString> titles;
+    Q3ValueList<int> lengths;
     for( MyIt it( firstChild(), MyIt::Visible ); *it; ++it )
     {
         urls << (*it)->url();
@@ -3073,11 +3089,11 @@ Playlist::saveXML( const QString &path )
     DEBUG_BLOCK
 
     QFile file( path );
-    if( !file.open( IO_WriteOnly ) ) return;
+    if( !file.open( QIODevice::WriteOnly ) ) return;
 
     QString buffer;
-    QTextStream stream( &buffer, IO_WriteOnly );
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    Q3TextStream stream( &buffer, QIODevice::WriteOnly );
+    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 
     QString dynamic;
@@ -3116,8 +3132,8 @@ Playlist::saveXML( const QString &path )
 
     stream << "</playlist>\n";
 
-    QTextStream fstream( &file );
-    fstream.setEncoding( QTextStream::UnicodeUTF8 );
+    Q3TextStream fstream( &file );
+    fstream.setEncoding( Q3TextStream::UnicodeUTF8 );
     fstream << buffer;
 }
 
@@ -3126,7 +3142,7 @@ Playlist::burnPlaylist( int projectType )
 {
     KURL::List list;
 
-    QListViewItemIterator it( this );
+    Q3ListViewItemIterator it( this );
     for( ; it.current(); ++it ) {
         PlaylistItem *item = static_cast<PlaylistItem*>(*it);
         KURL url = item->url();
@@ -3142,7 +3158,7 @@ Playlist::burnSelectedTracks( int projectType )
 {
     KURL::List list;
 
-    QListViewItemIterator it( this, QListViewItemIterator::Selected );
+    Q3ListViewItemIterator it( this, Q3ListViewItemIterator::Selected );
     for( ; it.current(); ++it ) {
         PlaylistItem *item = static_cast<PlaylistItem*>(*it);
         KURL url = item->url();
@@ -3179,7 +3195,7 @@ void
 Playlist::customMenuClicked(int id)  //adapted from burnSelectedTracks
 {
     QString message = m_customIdItem[id];
-    QListViewItemIterator it( this, QListViewItemIterator::Selected );
+    Q3ListViewItemIterator it( this, Q3ListViewItemIterator::Selected );
     for( ; it.current(); ++it ) {
         PlaylistItem *item = static_cast<PlaylistItem*>(*it);
         KURL url = item->url().url();
@@ -3278,7 +3294,7 @@ Playlist::repopulate() //SLOT
 
     // Repopulate the upcoming tracks
     MyIt it( this, MyIt::All );
-    QPtrList<QListViewItem> list;
+    Q3PtrList<Q3ListViewItem> list;
 
     for( ; *it; ++it )
     {
@@ -3297,7 +3313,7 @@ Playlist::repopulate() //SLOT
     saveUndoState();
 
     //remove the items
-    for( QListViewItem *item = list.first(); item; item = list.next() )
+    for( Q3ListViewItem *item = list.first(); item; item = list.next() )
     {
         removeItem( static_cast<PlaylistItem*>( item ) );
         delete item;
@@ -3316,7 +3332,7 @@ Playlist::shuffle() //SLOT
     if( dynamicMode() )
         return;
 
-    QPtrList<QListViewItem> list;
+    Q3PtrList<Q3ListViewItem> list;
 
     setSorting( NO_SORT );
 
@@ -3326,14 +3342,14 @@ Playlist::shuffle() //SLOT
 
     // we do it in two steps because the iterator doesn't seem
     // to like it when we do takeItem and ++it in the same loop
-    for( QListViewItem *item = list.first(); item; item = list.next() )
+    for( Q3ListViewItem *item = list.first(); item; item = list.next() )
         takeItem( item );
 
     //shuffle
     KRandomSequence( (long)KApplication::random() ).randomize( &list );
 
     //reinsert in new order
-    for( QListViewItem *item = list.first(); item; item = list.next() )
+    for( Q3ListViewItem *item = list.first(); item; item = list.next() )
         insertItem( item );
 
     updateNextPrev();
@@ -3388,16 +3404,16 @@ Playlist::removeSelectedItems() //SLOT
     //remove the items
     if( queued.count() )
     {
-        for( QListViewItem *item = queued.first(); item; item = queued.next() )
+        for( Q3ListViewItem *item = queued.first(); item; item = queued.next() )
             removeItem( static_cast<PlaylistItem*>( item ), true );
 
         emit queueChanged( PLItemList(), queued );
 
-        for( QListViewItem *item = queued.first(); item; item = queued.next() )
+        for( Q3ListViewItem *item = queued.first(); item; item = queued.next() )
             delete item;
     }
 
-    for( QListViewItem *item = list.first(); item; item = list.next() )
+    for( Q3ListViewItem *item = list.first(); item; item = list.next() )
     {
         removeItem( static_cast<PlaylistItem*>( item ) );
         delete item;
@@ -3436,7 +3452,7 @@ Playlist::removeDuplicates() //SLOT
 {
     // Remove dead entries:
 
-    for( QListViewItemIterator it( this ); it.current(); ) {
+    for( Q3ListViewItemIterator it( this ); it.current(); ) {
         PlaylistItem* item = static_cast<PlaylistItem*>( *it );
         const KURL url = item->url();
         if ( url.isLocalFile() && !QFile::exists( url.path() ) ) {
@@ -3449,13 +3465,13 @@ Playlist::removeDuplicates() //SLOT
 
     // Remove dupes:
 
-    QSortedList<PlaylistItem> list;
-    for( QListViewItemIterator it( this ); it.current(); ++it )
+    Q3SortedList<PlaylistItem> list;
+    for( Q3ListViewItemIterator it( this ); it.current(); ++it )
         list.prepend( static_cast<PlaylistItem*>( it.current() ) );
 
     list.sort();
 
-    QPtrListIterator<PlaylistItem> it( list );
+    Q3PtrListIterator<PlaylistItem> it( list );
     PlaylistItem *item;
     while( (item = it.current()) ) {
         const KURL &compare = item->url();
@@ -3468,7 +3484,7 @@ Playlist::removeDuplicates() //SLOT
 }
 
 void
-Playlist::copyToClipboard( const QListViewItem *item ) const //SLOT
+Playlist::copyToClipboard( const Q3ListViewItem *item ) const //SLOT
 {
     if( !item ) item = currentTrack();
 
@@ -3545,7 +3561,7 @@ Playlist::showQueueManager()
 }
 
 void
-Playlist::changeFromQueueManager(QPtrList<PlaylistItem> list)
+Playlist::changeFromQueueManager(Q3PtrList<PlaylistItem> list)
 {
     PLItemList oldQueue = m_nextTracks;
     m_nextTracks = list;
@@ -3601,7 +3617,7 @@ Playlist::setFilter( const QString &query ) //SLOT
     if( advanced )
     {
         ParsedExpression parsed = ExpressionParser::parse( query );
-        QValueList<int> visible = visibleColumns();
+        Q3ValueList<int> visible = visibleColumns();
         for(; *it; ++it )
             (*it)->setVisible( (*it)->matchesParsedExpression( parsed, visible ) );
     }
@@ -3717,7 +3733,7 @@ Playlist::removeFromPreviousAlbums( PlaylistAlbum *album )
 
 
 void
-Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLOT
+Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SLOT
 {
     //if clicked on an empty area
     enum { REPOPULATE, ENABLEDYNAMIC };
@@ -3848,7 +3864,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         popup.insertItem( SmallIconSet( Amarok::icon( "save" ) ), i18n("S&ave as Playlist..."), SAVE_PLAYLIST );
     }
 
-    popup.insertItem( SmallIconSet( Amarok::icon( "remove_from_playlist" ) ), i18n( "Re&move From Playlist" ), this, SLOT( removeSelectedItems() ), Key_Delete, REMOVE );
+    popup.insertItem( SmallIconSet( Amarok::icon( "remove_from_playlist" ) ), i18n( "Re&move From Playlist" ), this, SLOT( removeSelectedItems() ), Qt::Key_Delete, REMOVE );
 
     popup.insertSeparator();
 
@@ -3862,7 +3878,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18n("&Copy Track to Collection...", "&Copy %n Tracks to Collection...", itemCount), COPY_TO_COLLECTION );
         fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18n("&Move Track to Collection...", "&Move %n Tracks to Collection...", itemCount), MOVE_TO_COLLECTION );
     }
-    fileMenu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n("&Delete File...", "&Delete %n Selected Files...", itemCount ), this, SLOT( deleteSelectedFiles() ), SHIFT+Key_Delete, DELETE );
+    fileMenu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n("&Delete File...", "&Delete %n Selected Files...", itemCount ), this, SLOT( deleteSelectedFiles() ), Qt::SHIFT+Qt::Key_Delete, DELETE );
     popup.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n("Manage &Files"), &fileMenu, FILE_MENU );
 
     if( itemCount == 1 )
@@ -3895,8 +3911,8 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
 
     if( m_customSubmenuItem.count() > 0 )
         popup.insertSeparator();
-    QValueList<QString> submenuTexts = m_customSubmenuItem.keys();
-    for( QValueList<QString>::Iterator keyIt =submenuTexts.begin(); keyIt !=  submenuTexts.end(); ++keyIt )
+    Q3ValueList<QString> submenuTexts = m_customSubmenuItem.keys();
+    for( Q3ValueList<QString>::Iterator keyIt =submenuTexts.begin(); keyIt !=  submenuTexts.end(); ++keyIt )
     {
         KPopupMenu* menu;
         if( (*keyIt) == "root")
@@ -4064,7 +4080,7 @@ Playlist::showContextMenu( QListViewItem *item, const QPoint &p, int col ) //SLO
         {
             KURL::List list;
 
-            for( QListViewItemIterator it( this, QListViewItemIterator::Selected );
+            for( Q3ListViewItemIterator it( this, Q3ListViewItemIterator::Selected );
                     it.current();
                     ++it )
             {
@@ -4126,7 +4142,7 @@ Playlist::contentsMouseMoveEvent( QMouseEvent *e )
     if( prev )
     {
         if( m_selCount > 1 && prev->isSelected() )
-            QScrollView::updateContents( header()->sectionPos( PlaylistItem::Rating ) + 1, contentsY(),
+            Q3ScrollView::updateContents( header()->sectionPos( PlaylistItem::Rating ) + 1, contentsY(),
                                          header()->sectionSize( PlaylistItem::Rating ) - 2, visibleHeight() );
         else
             prev->updateColumn( PlaylistItem::Rating );
@@ -4240,9 +4256,9 @@ Playlist::numVisibleColumns() const
     return r;
 }
 
-QValueList<int> Playlist::visibleColumns() const
+Q3ValueList<int> Playlist::visibleColumns() const
 {
-    QValueList<int> r;
+    Q3ValueList<int> r;
     for( int i = 0, n = columns(); i < n; ++i)
         if( columnWidth( i ) )
             r.append( i );
@@ -4283,7 +4299,7 @@ Playlist::mapToLogicalColumn( int physical ) const
 }
 
 void
-Playlist::setColumns( QValueList<int> order, QValueList<int> visible )
+Playlist::setColumns( Q3ValueList<int> order, Q3ValueList<int> visible )
 {
     for( int i = order.count() - 1; i >= 0; --i )
         header()->moveSection( order[i], i );
@@ -4350,7 +4366,7 @@ Playlist::removeItem( PlaylistItem *item, bool multi )
     updateNextPrev();
 }
 
-void Playlist::ensureItemCentered( QListViewItem *item )
+void Playlist::ensureItemCentered( Q3ListViewItem *item )
 {
     if( !item )
         return;
@@ -4363,7 +4379,7 @@ void Playlist::ensureItemCentered( QListViewItem *item )
 void
 Playlist::reallyEnsureItemCentered()
 {
-    if( QListViewItem *item = m_itemToReallyCenter )
+    if( Q3ListViewItem *item = m_itemToReallyCenter )
     {
         m_itemToReallyCenter = 0;
         if( m_selCount == 1 )
@@ -4506,9 +4522,9 @@ Playlist::saveSelectedAsPlaylist()
     if( path.isEmpty() )
         return;
 
-    QValueList<KURL> urls;
-    QValueList<QString> titles;
-    QValueList<int> lengths;
+    Q3ValueList<KURL> urls;
+    Q3ValueList<QString> titles;
+    Q3ValueList<int> lengths;
     for( it = MyIt( this, MyIt::Visible | MyIt::Selected ); *it; ++it )
     {
         urls << (*it)->url();
@@ -4536,7 +4552,7 @@ void Playlist::initStarPixmaps()
 }
 
 void
-Playlist::slotMouseButtonPressed( int button, QListViewItem *after, const QPoint &p, int col ) //SLOT
+Playlist::slotMouseButtonPressed( int button, Q3ListViewItem *after, const QPoint &p, int col ) //SLOT
 {
     switch( button )
     {
@@ -4569,7 +4585,7 @@ void Playlist::slotContentsMoving()
 void
 Playlist::slotQueueChanged( const PLItemList &/*in*/, const PLItemList &out)
 {
-    for( QPtrListIterator<PlaylistItem> it( out ); *it; ++it )
+    for( Q3PtrListIterator<PlaylistItem> it( out ); *it; ++it )
         (*it)->update();
     refreshNextTracks( 0 );
     updateNextPrev();
@@ -4668,7 +4684,7 @@ Playlist::slotEraseMarker() //SLOT
 }
 
 void
-Playlist::showTagDialog( QPtrList<QListViewItem> items )
+Playlist::showTagDialog( Q3PtrList<Q3ListViewItem> items )
 {
     /// the tag dialog was once modal, because we thought that damage would occur
     /// when passing playlist items into the editor and it was removed from the playlist.
@@ -4708,7 +4724,7 @@ Playlist::showTagDialog( QPtrList<QListViewItem> items )
     else {
         //edit multiple tracks in tag dialog
         KURL::List urls;
-        for( QListViewItem *item = items.first(); item; item = items.next() )
+        for( Q3ListViewItem *item = items.first(); item; item = items.next() )
             if ( item->isVisible() )
                 urls << static_cast<PlaylistItem*>( item )->url();
 
@@ -4723,10 +4739,10 @@ Playlist::showTagDialog( QPtrList<QListViewItem> items )
 #include <kactivelabel.h>
 #include <kdialog.h>
 #include <kpushbutton.h>
-#include <qgroupbox.h>
+#include <q3groupbox.h>
 #include <qlabel.h>
 #include <qlayout.h>
-#include <qprocess.h>
+#include <q3process.h>
 #include <unistd.h>      //usleep()
 
 // Moved outside the only function that uses it because
@@ -4739,7 +4755,7 @@ Playlist::showTagDialog( QPtrList<QListViewItem> items )
         {
             QLabel *textLabel1, *textLabel2, *textLabel3;
             QLineEdit *lineEdit1, *lineEdit2;
-            QGroupBox *groupBox1;
+            Q3GroupBox *groupBox1;
 
             textLabel1 = new QLabel( i18n(
                 "<p>You can create a custom column that runs a shell command against each item in the playlist. "
@@ -4753,7 +4769,7 @@ Playlist::showTagDialog( QPtrList<QListViewItem> items )
             lineEdit1  = new QLineEdit( this, "ColumnName" );
             lineEdit2  = new QLineEdit( this, "Command" );
 
-            groupBox1 = new QGroupBox( 1, Qt::Vertical, i18n( "Examples" ), this );
+            groupBox1 = new Q3GroupBox( 1, Qt::Vertical, i18n( "Examples" ), this );
             groupBox1->layout()->setMargin( 11 );
             new KActiveLabel( i18n( "file --brief %f\n" "ls -sh %f\n" "basename %f\n" "dirname %f" ), groupBox1 );
 
@@ -4762,18 +4778,18 @@ Playlist::showTagDialog( QPtrList<QListViewItem> items )
             textLabel3->setBuddy( lineEdit2 );
 
             // layouts
-            QHBoxLayout *layout1 = new QHBoxLayout( 0, 0, 6 );
+            Q3HBoxLayout *layout1 = new Q3HBoxLayout( 0, 0, 6 );
             layout1->addItem( new QSpacerItem( 181, 20, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
             layout1->addWidget( new KPushButton( KStdGuiItem::ok(), this, "OkButton" ) );
             layout1->addWidget( new KPushButton( KStdGuiItem::cancel(), this, "CancelButton" ) );
 
-            QGridLayout *layout2 = new QGridLayout( 0, 2, 2, 0, 6 );
+            Q3GridLayout *layout2 = new Q3GridLayout( 0, 2, 2, 0, 6 );
             layout2->QLayout::add( textLabel2 );
             layout2->QLayout::add( lineEdit1 );
             layout2->QLayout::add( textLabel3 );
             layout2->QLayout::add( lineEdit2 );
 
-            QVBoxLayout *Form1Layout = new QVBoxLayout( this, 11, 6, "Form1Layout");
+            Q3VBoxLayout *Form1Layout = new Q3VBoxLayout( this, 11, 6, "Form1Layout");
             Form1Layout->addWidget( textLabel1 );
             Form1Layout->addWidget( groupBox1 );
             Form1Layout->addLayout( layout2 );
@@ -4830,7 +4846,7 @@ Playlist::addCustomColumn()
 
             debug() << args << endl;
 
-            QProcess p( args );
+            Q3Process p( args );
             for( p.start(); p.isRunning(); /*kapp->processEvents()*/ )
                 ::usleep( 5000 );
 

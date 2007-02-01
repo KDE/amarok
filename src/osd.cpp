@@ -22,6 +22,11 @@
 #include "playlistitem.h"    //ditto
 #include "podcastbundle.h"
 #include "qstringx.h"
+//Added by qt3to4:
+#include <Q3ValueList>
+#include <QPixmap>
+#include <QMouseEvent>
+#include <QEvent>
 
 #include <kapplication.h>
 #include <kpixmap.h>
@@ -32,7 +37,7 @@
 #include <qpainter.h>
 #include <qregexp.h>
 #include <qtimer.h>
-#include <qvaluevector.h>
+#include <q3valuevector.h>
 
 namespace ShadowEngine
 {
@@ -44,7 +49,7 @@ namespace ShadowEngine
 
 
 OSDWidget::OSDWidget( QWidget *parent, const char *name )
-        : QWidget( parent, name, WType_TopLevel | WNoAutoErase | WStyle_Customize | WX11BypassWM | WStyle_StaysOnTop )
+        : QWidget( parent, name, Qt::WType_TopLevel | Qt::WNoAutoErase | Qt::WStyle_Customize | Qt::WX11BypassWM | Qt::WStyle_StaysOnTop )
         , m_duration( 2000 )
         , m_timer( new QTimer( this ) )
         , m_alignment( Middle )
@@ -642,7 +647,7 @@ Amarok::OSD::show( const MetaBundle &bundle ) //slot
 
     else
     {
-        QValueVector<QString> tags;
+        Q3ValueVector<QString> tags;
         tags.append(bundle.prettyTitle());
         for( int i = 0; i < PlaylistItem::NUM_COLUMNS; ++i )
             tags.append(bundle.prettyText( i ));
@@ -653,9 +658,9 @@ Amarok::OSD::show( const MetaBundle &bundle ) //slot
         if( AmarokConfig::osdUsePlaylistColumns() )
         {
             QString tag;
-            QValueVector<int> availableTags; //eg, ones that aren't empty
-            static const QValueList<int> parens = //display these in parentheses
-                QValueList<int>() << PlaylistItem::PlayCount  << PlaylistItem::Year   << PlaylistItem::Comment
+            Q3ValueVector<int> availableTags; //eg, ones that aren't empty
+            static const Q3ValueList<int> parens = //display these in parentheses
+                Q3ValueList<int>() << PlaylistItem::PlayCount  << PlaylistItem::Year   << PlaylistItem::Comment
                                   << PlaylistItem::Genre      << PlaylistItem::Length << PlaylistItem::Bitrate
                                   << PlaylistItem::LastPlayed << PlaylistItem::Score  << PlaylistItem::Filesize;
             OSDWidget::setMoodbar();

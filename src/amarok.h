@@ -5,6 +5,9 @@
 
 #include <qnamespace.h>
 #include <qstring.h>
+//Added by qt3to4:
+#include <QPixmap>
+#include <QEvent>
 
 #include <kurl.h> // recursiveUrlExpand
 #include <kprocio.h> //Amarok::ProcIO
@@ -22,8 +25,8 @@ class QMutex;
 class QPixmap;
 class QWidget;
 class DynamicMode;
-class QListView;
-class QListViewItem;
+class Q3ListView;
+class Q3ListViewItem;
 namespace KIO { class Job; }
 
 namespace Amarok
@@ -199,7 +202,7 @@ namespace Amarok
 
     const DynamicMode *dynamicMode(); //defined in playlist.cpp
 
-    QListViewItem* findItemByPath( QListView *view, QString path ); //defined in playlistbrowser.cpp
+    Q3ListViewItem* findItemByPath( Q3ListView *view, QString path ); //defined in playlistbrowser.cpp
     QStringList splitPath( QString path ); //defined in playlistbrowser.cpp
 
     /**

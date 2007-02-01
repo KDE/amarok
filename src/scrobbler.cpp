@@ -21,7 +21,7 @@
 #include <unistd.h>
 
 #include <qdatetime.h>
-#include <qdeepcopy.h>
+#include <q3deepcopy.h>
 
 #include <kapplication.h>
 #include <kio/job.h>
@@ -68,7 +68,7 @@ Scrobbler::~Scrobbler()
  */
 void Scrobbler::similarArtists( const QString & artist )
 {
-    QString safeArtist = QDeepCopy<QString>( artist );
+    QString safeArtist = Q3DeepCopy<QString>( artist );
     if ( AmarokConfig::retrieveSimilarArtists() )
     {
 //         Request looks like this:
@@ -345,7 +345,7 @@ QDomElement SubmitItem::toDomElement( QDomDocument& document ) const
 ////////////////////////////////////////////////////////////////////////////////
 
 
-int SubmitQueue::compareItems( QPtrCollection::Item item1, QPtrCollection::Item item2 )
+int SubmitQueue::compareItems( Q3PtrCollection::Item item1, Q3PtrCollection::Item item2 )
 {
     SubmitItem *sItem1 = static_cast<SubmitItem*>( item1 );
     SubmitItem *sItem2 = static_cast<SubmitItem*>( item2 );
@@ -403,7 +403,7 @@ ScrobblerSubmitter::~ScrobblerSubmitter()
     // need to rescue current submit. This may meant it gets submitted twice,
     // but last.fm handles that, and it's better than losing it when you quit
     // while a submit is happening
-    for ( QPtrDictIterator<SubmitItem> it( m_ongoingSubmits ); it.current(); ++it )
+    for ( Q3PtrDictIterator<SubmitItem> it( m_ongoingSubmits ); it.current(); ++it )
         m_submitQueue.inSort( it.current() );
     m_ongoingSubmits.clear();
 
@@ -1040,7 +1040,7 @@ void ScrobblerSubmitter::saveSubmitQueue()
 {
     QFile file( m_savePath );
 
-    if( !file.open( IO_WriteOnly ) )
+    if( !file.open( QIODevice::WriteOnly ) )
     {
         debug() << "[SCROBBLER] Couldn't write submit queue to file: " << m_savePath << endl;
         return;
@@ -1073,8 +1073,8 @@ void ScrobblerSubmitter::saveSubmitQueue()
     QDomNode submitNode = newdoc.importNode( submitQueue, true );
     newdoc.appendChild( submitNode );
 
-    QTextStream stream( &file );
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    Q3TextStream stream( &file );
+    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     stream << newdoc.toString();
     file.close();
@@ -1086,14 +1086,14 @@ void ScrobblerSubmitter::readSubmitQueue()
     m_savePath = Amarok::saveLocation() + "submit.xml";
     QFile file( m_savePath );
 
-    if ( !file.open( IO_ReadOnly ) )
+    if ( !file.open( QIODevice::ReadOnly ) )
     {
         debug() << "Couldn't open file: " << m_savePath << endl;
         return;
     }
 
-    QTextStream stream( &file );
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    Q3TextStream stream( &file );
+    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
 
     QDomDocument d;
     if( !d.setContent( stream.read() ) )

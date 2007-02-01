@@ -21,6 +21,8 @@
 #define AMAROK_DCOP_HANDLER_H
 
 #include <qobject.h>
+//Added by qt3to4:
+#include <Q3CString>
 #include "amarokdcopiface.h"
 class AmarokConfig;
 
@@ -167,7 +169,7 @@ class DcopContextBrowserHandler : public QObject, virtual public AmarokContextBr
       virtual void showCurrentTrack();
       virtual void showLyrics();
       virtual void showWiki();
-      virtual void showLyrics( const QCString& lyrics );
+      virtual void showLyrics( const Q3CString& lyrics );
 };
 
 

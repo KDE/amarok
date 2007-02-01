@@ -1,3 +1,5 @@
+//Added by qt3to4:
+#include <Q3CString>
 /***************************************************************************
                           track.cpp  -  description
                              -------------------
@@ -24,7 +26,7 @@ static const char* rcsid __attribute__((unused)) =
 #include "njbmediadevice.h"
 
 #include <qregexp.h>
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 
 #include <klocale.h>
 
@@ -115,7 +117,7 @@ NjbTrack::NjbTrack( njb_songid_t* song)
     frame = NJB_Songid_Findframe( song, FR_CODEC);
     if( frame )
     {
-        codec = QCString( frame->data.strval).lower();
+        codec = Q3CString( frame->data.strval).lower();
         if( codec == "mp3" )
             bundle->setFileType( MetaBundle::mp3 );
         else if (codec == "wma" )

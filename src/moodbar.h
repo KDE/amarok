@@ -25,11 +25,11 @@
 #define MOODBAR_H
 
 #include <qobject.h>
-#include <qvaluevector.h>
+#include <q3valuevector.h>
 #include <qcolor.h>
 #include <qpixmap.h>
 #include <qmutex.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 
 #include <kurl.h>
 
@@ -41,7 +41,7 @@ class Moodbar : public QObject
   Q_OBJECT
   
 public:
-  typedef QValueVector<QColor> ColorList;
+  typedef Q3ValueVector<QColor> ColorList;
 
   typedef enum
   {
@@ -170,7 +170,7 @@ private:
   void setMoodbarBroken( void );
   void clearJobs( void );
 
-  QValueList<ProcData> m_jobQueue;
+  Q3ValueList<ProcData> m_jobQueue;
   bool m_moodbarBroken;
   KProcess *m_currentProcess;
   ProcData m_currentData;

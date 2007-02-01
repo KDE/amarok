@@ -22,6 +22,12 @@
 //these files are from libamarok
 #include "playlist.h"
 #include "enginecontroller.h"
+//Added by qt3to4:
+#include <QTimerEvent>
+#include <Q3ValueList>
+#include <QCustomEvent>
+#include <Q3CString>
+#include <QEvent>
 
 AMAROK_EXPORT_PLUGIN( XineEngine )
 
@@ -61,7 +67,7 @@ namespace Log
 
 ///returns the configuration we will use. there is no KInstance, so using this hacked up method.
 //static inline QCString configPath() { return QFile::encodeName(KStandardDirs().localkdedir() + KStandardDirs::kde_default("data") + "amarok/xine-config"); }
-static inline QCString configPath() { return QFile::encodeName(locate( "data", "amarok/") + "xine-config" ); }
+static inline Q3CString configPath() { return QFile::encodeName(locate( "data", "amarok/") + "xine-config" ); }
 static Fader *s_fader = 0;
 static OutFader *s_outfader = 0;
 
@@ -584,7 +590,7 @@ XineEngine::setEqualizerEnabled( bool enable )
     m_equalizerEnabled = enable;
 
     if( !enable ) {
-        QValueList<int> gains;
+        Q3ValueList<int> gains;
         for( uint x = 0; x < 10; x++ )
             gains << -101; // sets eq gains to zero.
 
@@ -604,14 +610,14 @@ XineEngine::setEqualizerEnabled( bool enable )
    post: (1..200) - (1 = down, 100 = middle, 200 = up, 0 = off)
  */
 void
-XineEngine::setEqualizerParameters( int preamp, const QValueList<int> &gains )
+XineEngine::setEqualizerParameters( int preamp, const Q3ValueList<int> &gains )
 {
     if ( !m_stream )
         return;
 
     m_equalizerGains = gains;
     m_intPreamp = preamp;
-    QValueList<int>::ConstIterator it = gains.begin();
+    Q3ValueList<int>::ConstIterator it = gains.begin();
 
     xine_set_param( m_stream, XINE_PARAM_EQ_30HZ,    int( (*it  )*0.995 + 100 ) );
     xine_set_param( m_stream, XINE_PARAM_EQ_60HZ,    int( (*++it)*0.995 + 100 ) );

@@ -44,6 +44,9 @@
 #include "lastfm.h"
 
 #include <qfile.h>
+//Added by qt3to4:
+#include <Q3ValueList>
+#include <Q3CString>
 
 #include <dcopclient.h>
 #include <kactioncollection.h>
@@ -389,7 +392,7 @@ namespace Amarok
             bool instantiated = EqualizerSetup::isInstantiated();
             EqualizerSetup* eq = EqualizerSetup::instance();
 
-            QValueList<int> gains;
+            Q3ValueList<int> gains;
             gains << band60 << band170 << band310 << band600 << band1k
                   << band3k << band6k << band12k << band14k << band16k;
 
@@ -739,7 +742,7 @@ namespace Amarok
         ContextBrowser::instance()->showWikipedia();
     }
 
-    void DcopContextBrowserHandler::showLyrics( const QCString& lyrics )
+    void DcopContextBrowserHandler::showLyrics( const Q3CString& lyrics )
     {
         ContextBrowser::instance()->lyricsResult( lyrics );
     }
@@ -946,8 +949,8 @@ namespace Amarok
         QStringList stringList;
         if(configItem)
         {
-            QValueList<QVariant> variantList = configItem->property().toList();
-            QValueList<QVariant>::Iterator it = variantList.begin();
+            Q3ValueList<QVariant> variantList = configItem->property().toList();
+            Q3ValueList<QVariant>::Iterator it = variantList.begin();
             while(it != variantList.end())
             {
                 stringList << (*it).toString();

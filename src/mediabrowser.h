@@ -16,8 +16,16 @@
 #include "pluginmanager.h"
 
 #include <qmutex.h>
-#include <qvbox.h>           //baseclass
+#include <q3vbox.h>           //baseclass
 #include <qdatetime.h>
+//Added by qt3to4:
+#include <QKeyEvent>
+#include <Q3ValueList>
+#include <QLabel>
+#include <Q3PtrList>
+#include <QPixmap>
+#include <QDropEvent>
+#include <QPaintEvent>
 
 #include <klistview.h>       //baseclass
 #include <kurl.h>            //stack allocated
@@ -39,17 +47,17 @@ class KProgress;
 class KPushButton;
 class KShellProcess;
 
-class QDragObject;
+class Q3DragObject;
 class QLabel;
 class QPalette;
 
 class LIBAMAROK_EXPORT MediaItem : public KListViewItem
 {
     public:
-        MediaItem( QListView* parent );
-        MediaItem( QListViewItem* parent );
-        MediaItem( QListView* parent, QListViewItem* after );
-        MediaItem( QListViewItem* parent, QListViewItem* after );
+        MediaItem( Q3ListView* parent );
+        MediaItem( Q3ListViewItem* parent );
+        MediaItem( Q3ListView* parent, Q3ListViewItem* after );
+        MediaItem( Q3ListViewItem* parent, Q3ListViewItem* after );
         void init();
         virtual ~MediaItem();
 
@@ -88,7 +96,7 @@ class LIBAMAROK_EXPORT MediaItem : public KListViewItem
         virtual bool listened()       const { return m_listened; }
         virtual void setListened( bool listened=true ) { m_listened = listened; }
 
-        int compare( QListViewItem *i, int col, bool ascending ) const;
+        int compare( Q3ListViewItem *i, int col, bool ascending ) const;
         int flags() const { return m_flags; }
 
         void paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align );
@@ -151,15 +159,15 @@ class MediaQueue : public KListView, public DropProxyTarget
         void dropProxyEvent( QDropEvent *e );
         // Reimplemented from KListView
         bool acceptDrag( QDropEvent *e ) const;
-        QDragObject *dragObject();
+        Q3DragObject *dragObject();
 
     public slots:
         void itemCountChanged();
 
     private slots:
-        void selectAll() {QListView::selectAll(true); }
-        void slotShowContextMenu( QListViewItem* item, const QPoint& point, int );
-        void slotDropped (QDropEvent* e, QListViewItem* parent, QListViewItem* after);
+        void selectAll() {Q3ListView::selectAll(true); }
+        void slotShowContextMenu( Q3ListViewItem* item, const QPoint& point, int );
+        void slotDropped (QDropEvent* e, Q3ListViewItem* parent, Q3ListViewItem* after);
 
     private:
         void keyPressEvent( QKeyEvent *e );
@@ -168,7 +176,7 @@ class MediaQueue : public KListView, public DropProxyTarget
 };
 
 
-class MediaBrowser : public QVBox
+class MediaBrowser : public Q3VBox
 {
     Q_OBJECT
     friend class DeviceConfigureDialog;
@@ -244,8 +252,8 @@ class MediaBrowser : public QVBox
         QTimer *m_timer;
         LIBAMAROK_EXPORT static MediaBrowser *s_instance;
 
-        QValueList<MediaDevice *> m_devices;
-        QValueList<MediaDevice *>::iterator m_currentDevice;
+        Q3ValueList<MediaDevice *> m_devices;
+        Q3ValueList<MediaDevice *>::iterator m_currentDevice;
 
         QMap<QString, QString> m_pluginName;
         QMap<QString, QString> m_pluginAmarokName;
@@ -258,12 +266,12 @@ class MediaBrowser : public QVBox
         QString m_transcodeSrc;
 
         SpaceLabel*      m_stats;
-        QHBox*           m_progressBox;
+        Q3HBox*           m_progressBox;
         KProgress*       m_progress;
-        QVBox*           m_views;
+        Q3VBox*           m_views;
         KPushButton*     m_cancelButton;
         //KPushButton*     m_playlistButton;
-        QVBox*           m_configBox;
+        Q3VBox*           m_configBox;
         KComboBox*       m_configPluginCombo;
         KComboBox*       m_deviceCombo;
         Browser::ToolBar*m_toolbar;
@@ -292,17 +300,17 @@ class MediaView : public KListView
         MediaView( QWidget *parent, MediaDevice *device );
         virtual ~MediaView();
         LIBAMAROK_EXPORT KURL::List nodeBuildDragList( MediaItem* item, int flags=OnlySelected );
-        int getSelectedLeaves(MediaItem *parent, QPtrList<MediaItem> *list, int flags=OnlySelected );
+        int getSelectedLeaves(MediaItem *parent, Q3PtrList<MediaItem> *list, int flags=OnlySelected );
         LIBAMAROK_EXPORT MediaItem *newDirectory( MediaItem* parent );
         bool setFilter( const QString &filter, MediaItem *parent=NULL );
 
     private slots:
-        void rmbPressed( QListViewItem*, const QPoint&, int );
-        void renameItem( QListViewItem *item );
-        void slotExpand( QListViewItem* );
-        void selectAll() { QListView::selectAll(true); }
-        void invokeItem( QListViewItem*, const QPoint &, int column );
-        void invokeItem( QListViewItem* );
+        void rmbPressed( Q3ListViewItem*, const QPoint&, int );
+        void renameItem( Q3ListViewItem *item );
+        void slotExpand( Q3ListViewItem* );
+        void selectAll() { Q3ListView::selectAll(true); }
+        void invokeItem( Q3ListViewItem*, const QPoint &, int column );
+        void invokeItem( Q3ListViewItem* );
 
     private:
         void keyPressEvent( QKeyEvent *e );
@@ -310,7 +318,7 @@ class MediaView : public KListView
         void contentsDropEvent( QDropEvent *e );
         void viewportPaintEvent( QPaintEvent* );
         bool acceptDrag( QDropEvent *e ) const;
-        QDragObject *dragObject();
+        Q3DragObject *dragObject();
 
         QWidget *m_parent;
         MediaDevice *m_device;
@@ -351,7 +359,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
          */
         virtual KAction *customAction() { return 0; }
 
-        virtual void rmbPressed( QListViewItem *item, const QPoint &point, int ) { (void)item; (void) point; }
+        virtual void rmbPressed( Q3ListViewItem *item, const QPoint &point, int ) { (void)item; (void) point; }
 
         /**
          * @return list of filetypes playable on this device
@@ -382,7 +390,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
          * @param after insert following this item
          * @param items tracks to add to playlist
          */
-        virtual void       addToPlaylist(MediaItem *playlist, MediaItem *after, QPtrList<MediaItem> items) { Q_UNUSED(playlist); Q_UNUSED(after); Q_UNUSED(items); }
+        virtual void       addToPlaylist(MediaItem *playlist, MediaItem *after, Q3PtrList<MediaItem> items) { Q_UNUSED(playlist); Q_UNUSED(after); Q_UNUSED(items); }
 
         /**
          * Create a new playlist
@@ -391,14 +399,14 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
          * @param items tracks to add to the new playlist
          * @return the newly created playlist
          */
-        virtual MediaItem *newPlaylist(const QString &name, MediaItem *parent, QPtrList<MediaItem> items) { Q_UNUSED(name); Q_UNUSED(parent); Q_UNUSED(items); return 0; }
+        virtual MediaItem *newPlaylist(const QString &name, MediaItem *parent, Q3PtrList<MediaItem> items) { Q_UNUSED(name); Q_UNUSED(parent); Q_UNUSED(items); return 0; }
 
         /**
          * Move items to a directory
          * @param directory new parent of dropped items
          * @param items tracks to add to the directory
          */
-        virtual void      addToDirectory( MediaItem *directory, QPtrList<MediaItem> items ) { Q_UNUSED(directory); Q_UNUSED(items); }
+        virtual void      addToDirectory( MediaItem *directory, Q3PtrList<MediaItem> items ) { Q_UNUSED(directory); Q_UNUSED(items); }
 
         /**
          * Create a new directory
@@ -514,8 +522,8 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
     public slots:
         void abortTransfer();
         void transferFiles();
-        virtual void renameItem( QListViewItem *item ) {(void)item; }
-        virtual void expandItem( QListViewItem *item ) {(void)item; }
+        virtual void renameItem( Q3ListViewItem *item ) {(void)item; }
+        virtual void expandItem( Q3ListViewItem *item ) {(void)item; }
         bool connectDevice( bool silent=false );
         bool disconnectDevice( bool postdisconnecthook=true );
         void scheduleDisconnect() { m_scheduledDisconnect = true; }
@@ -661,7 +669,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
         MediaItem *m_orphanedItem;
 
         // stow away all items below m_rootItems when device is not current
-        QPtrList<QListViewItem> m_rootItems;
+        Q3PtrList<Q3ListViewItem> m_rootItems;
 };
 
 

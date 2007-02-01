@@ -26,6 +26,9 @@
 #include <qcolor.h>
 #include <qimage.h>
 #include <qrect.h>
+//Added by qt3to4:
+#include <QPaintEvent>
+#include <QResizeEvent>
 
 class QSize;
 

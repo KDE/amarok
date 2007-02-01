@@ -22,7 +22,7 @@
 
 #include "mediabrowser.h"
 
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 #include <qmutex.h>
 
 #include "libkarma/lkarma.h"
@@ -48,16 +48,16 @@ class RioKarmaTrack {
     private:
         unsigned int                m_id;
         MetaBundle                  m_bundle;
-        QPtrList<RioKarmaMediaItem> m_itemList;
+        Q3PtrList<RioKarmaMediaItem> m_itemList;
 };
 
 
 class RioKarmaMediaItem : public MediaItem
 {
     public:
-        RioKarmaMediaItem( QListView *parent, QListViewItem *after = 0 ) : MediaItem( parent, after )
+        RioKarmaMediaItem( Q3ListView *parent, Q3ListViewItem *after = 0 ) : MediaItem( parent, after )
         {}
-        RioKarmaMediaItem( QListViewItem *parent, QListViewItem *after = 0 ) : MediaItem( parent, after )
+        RioKarmaMediaItem( Q3ListViewItem *parent, Q3ListViewItem *after = 0 ) : MediaItem( parent, after )
         {}
         ~RioKarmaMediaItem()
         {
@@ -81,7 +81,7 @@ class RioKarmaMediaDevice : public MediaDevice
         bool                        isConnected();
         int                         current_id();
         void                        setDisconnected();
-        virtual void                rmbPressed( QListViewItem *qitem, const QPoint &point, int arg1 );
+        virtual void                rmbPressed( Q3ListViewItem *qitem, const QPoint &point, int arg1 );
         virtual void                init( MediaBrowser *parent );
         virtual QStringList         supportedFiletypes();
 
@@ -97,8 +97,8 @@ class RioKarmaMediaDevice : public MediaDevice
 
         void                        synchronizeDevice();
         int                         deleteItemFromDevice( MediaItem *item, int flags=DeleteTrack );
-        void                        addToPlaylist( MediaItem *list, MediaItem *after, QPtrList<MediaItem> items );
-        RioKarmaMediaItem           *newPlaylist( const QString &name, MediaItem *list, QPtrList<MediaItem> items );
+        void                        addToPlaylist( MediaItem *list, MediaItem *after, Q3PtrList<MediaItem> items );
+        RioKarmaMediaItem           *newPlaylist( const QString &name, MediaItem *list, Q3PtrList<MediaItem> items );
         bool                        getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
         virtual void                updateRootItems() {};
 

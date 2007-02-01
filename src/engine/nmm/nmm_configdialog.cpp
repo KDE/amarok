@@ -29,13 +29,15 @@
 #include "HostListItem.h"
 #include "debug.h"
 
-#include <qbuttongroup.h>
+#include <q3buttongroup.h>
 #include <qinputdialog.h>
 #include <qlayout.h>
-#include <qlistbox.h>
+#include <q3listbox.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
-#include <qwidgetstack.h>
+#include <q3widgetstack.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 #include <kcombobox.h>
 
 NmmConfigDialog::NmmConfigDialog()
@@ -53,10 +55,10 @@ NmmConfigDialog::NmmConfigDialog()
   /* create host list widget stack */
   m_environment_list = new HostList( m_view->audioGroup, "TheEnvironmentList" );
   m_environment_list->setReadOnly( true );
-  m_environment_list->setSelectionMode( QListView::NoSelection );
+  m_environment_list->setSelectionMode( Q3ListView::NoSelection );
 
   m_user_list = new HostList( m_view->audioGroup, "TheUserList" );
-  m_user_list->setSelectionMode( QListView::Single );
+  m_user_list->setSelectionMode( Q3ListView::Single );
   connect( m_user_list, SIGNAL( viewChanged() ), this, SLOT( hostListModified() ) );
   
   m_view->hostListStack->addWidget( m_environment_list );
@@ -121,9 +123,9 @@ void NmmConfigDialog::save()
     //NmmEngine::instance()->setEnvironmentHostList( tmp_environment_list );
 
     /* save user host list and toggle states for audio, video */
-    QValueList<NmmLocation> tmp_user_list;
+    Q3ValueList<NmmLocation> tmp_user_list;
 
-    QListViewItemIterator it( m_user_list );
+    Q3ListViewItemIterator it( m_user_list );
     HostListItem *host;
     while( it.current() ) {
       host = static_cast<HostListItem*>( it.current() );
@@ -136,7 +138,7 @@ void NmmConfigDialog::save()
     QStringList hosts;
     QStringList audio_hosts;
     QStringList video_hosts;
-    QValueList<NmmLocation>::iterator it_n;
+    Q3ValueList<NmmLocation>::iterator it_n;
     for( it_n = tmp_user_list.begin(); it_n != tmp_user_list.end(); ++it_n ) 
     {
       debug() << "saved user host" << endl;
@@ -243,8 +245,8 @@ void NmmConfigDialog::createHostLists()
 {
   DEBUG_BLOCK
     
-  QValueList<NmmLocation>::iterator it; 
-  QValueList<NmmLocation> list;
+  Q3ValueList<NmmLocation>::iterator it; 
+  Q3ValueList<NmmLocation> list;
 
   list = NmmEngine::instance()->environmentHostList();
   for( it =  list.begin(); it != list.end(); ++it ) 

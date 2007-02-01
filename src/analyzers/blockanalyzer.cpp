@@ -21,6 +21,9 @@
 
 #include <qevent.h>          //mousePressEvent
 #include <qpainter.h>        //paletteChange()
+//Added by qt3to4:
+#include <QContextMenuEvent>
+#include <QResizeEvent>
 
 
 static inline uint myMax( uint v1, uint v2 ) { return v1 > v2 ? v1 : v2; }

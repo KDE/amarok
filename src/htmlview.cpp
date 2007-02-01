@@ -105,7 +105,7 @@ HTMLView::loadStyleSheet()
     {
         const QString CSSLocation = kapp->dirs()->findResource( "data","amarok/themes/" + themeName + "/stylesheet.css" );
         QFile ExternalCSS( CSSLocation );
-        if ( !ExternalCSS.open( IO_ReadOnly ) )
+        if ( !ExternalCSS.open( QIODevice::ReadOnly ) )
             return QString(); //FIXME: should actually return the default style sheet, then
 
         const QString pxSize = QString::number( ContextBrowser::instance()->fontMetrics().height() - 4 );
@@ -128,7 +128,7 @@ HTMLView::loadStyleSheet()
                 .arg( AmarokConfig::schemeAmarok() ? fg : gradientColor.name() )
                 .arg( fontFamily );
 
-        QTextStream eCSSts( &ExternalCSS );
+        Q3TextStream eCSSts( &ExternalCSS );
         QString tmpCSS = eCSSts.read();
         ExternalCSS.close();
 

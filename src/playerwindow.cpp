@@ -26,16 +26,23 @@ email                : markey@web.de
 #include "sliderwidget.h"
 #include "tracktooltip.h"    //setScroll()
 
-#include <qaccel.h>          //our quit shortcut in the ctor
+#include <q3accel.h>          //our quit shortcut in the ctor
 #include <qevent.h>          //various events
 #include <qfont.h>
-#include <qhbox.h>
+#include <q3hbox.h>
 #include <qlabel.h>
 #include <qpainter.h>
 #include <qpixmap.h>
 #include <qstringlist.h>
 #include <qtimer.h>
 #include <qtooltip.h>        //analyzer tooltip
+//Added by qt3to4:
+#include <QTimerEvent>
+#include <QKeyEvent>
+#include <Q3Frame>
+#include <QMouseEvent>
+#include <QPaintEvent>
+#include <QCloseEvent>
 
 #include <kapplication.h>
 #include <klocale.h>
@@ -107,8 +114,8 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
     setAcceptDrops( true );
 
     //another quit shortcut because the other window has all the accels
-    QAccel *accel = new QAccel( this );
-    accel->insertItem( CTRL + Key_Q );
+    Q3Accel *accel = new Q3Accel( this );
+    accel->insertItem( Qt::CTRL + Qt::Key_Q );
     connect( accel, SIGNAL( activated( int ) ), kapp, SLOT( quit() ) );
 
     QFont font;
@@ -118,7 +125,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
 
     { //<NavButtons>
         //NOTE we use a layout for the buttons so resizing will be possible
-        m_pFrameButtons = createWidget<QHBox>( QRect(0, 118, 311, 22), this );
+        m_pFrameButtons = createWidget<Q3HBox>( QRect(0, 118, 311, 22), this );
 
         KActionCollection *ac =Amarok::actionCollection();
 
@@ -131,7 +138,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
 
         KPushButton *switchView = new KPushButton( KGuiItem( "", "mini_dock" ), m_pFrameButtons );
         switchView->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred ); // too big!
-        switchView->setFocusPolicy( QWidget::NoFocus );
+        switchView->setFocusPolicy( Qt::NoFocus );
         connect( switchView, SIGNAL( clicked() ), SLOT( toggleView() ) );
 
 
@@ -161,7 +168,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
         font.setPixelSize( 11 );
         const int fontHeight = QFontMetrics( font ).height(); //the real height is more like 13px
 
-        m_pScrollFrame = createWidget<QFrame>( QRect(6,18, 285,fontHeight), this );
+        m_pScrollFrame = createWidget<Q3Frame>( QRect(6,18, 285,fontHeight), this );
         m_pScrollFrame->setFont( font );
     { //</Scroller>
 
@@ -186,7 +193,7 @@ PlayerWidget::PlayerWidget( QWidget *parent, const char *name, bool enablePlayli
 
 
     m_pDescription = createWidget<QLabel>( QRect(4,6, 250,10), this );
-    m_pTimeSign    = createWidget<QLabel>( QRect(6,40, 10,10), this, 0, Qt::WRepaintNoErase );
+    m_pTimeSign    = createWidget<QLabel>( QRect(6,40, 10,10), this, 0, Qt::WNoAutoErase );
     m_pVolSign     = createWidget<QLabel>( QRect(295,7, 9,8),  this );
 
     m_pDescription->setText( i18n( "Artist-Title|Album|Length" ) );
@@ -812,7 +819,7 @@ void PlayerWidget::createAnalyzer( int increment )
 
 void PlayerWidget::startDrag()
 {
-    QDragObject *d = new QTextDrag( EngineController::instance()->bundle().prettyTitle(), this );
+    Q3DragObject *d = new Q3TextDrag( EngineController::instance()->bundle().prettyTitle(), this );
     d->dragCopy();
     // Qt will delete d for us.
 }
@@ -880,10 +887,10 @@ NavButton::NavButton( QWidget *parent, const QString &icon, KAction *action )
     }
 
     // This is just for initialization
-    QIconSet iconSet;
-    iconSet.setPixmap( pixmap, QIconSet::Automatic, QIconSet::Normal, QIconSet::Off );
-    iconSet.setPixmap( pixmap, QIconSet::Automatic, QIconSet::Normal, QIconSet::On );
-    iconSet.setPixmap( pixmap, QIconSet::Automatic, QIconSet::Disabled, QIconSet::Off );
+    QIcon iconSet;
+    iconSet.setPixmap( pixmap, QIcon::Automatic, QIcon::Normal, QIcon::Off );
+    iconSet.setPixmap( pixmap, QIcon::Automatic, QIcon::Normal, QIcon::On );
+    iconSet.setPixmap( pixmap, QIcon::Automatic, QIcon::Disabled, QIcon::Off );
     setIconSet( iconSet );
 
     setFocusPolicy( QWidget::NoFocus );
@@ -933,7 +940,7 @@ IconButton::IconButton( QWidget *parent, const QString &icon, const char *signal
     connect( this, SIGNAL(toggled( bool )), parent, signal );
 
     setToggleButton( true );
-    setFocusPolicy( NoFocus ); //we have no way to show focus on these widgets currently
+    setFocusPolicy( Qt::NoFocus ); //we have no way to show focus on these widgets currently
 }
 
 IconButton::IconButton( QWidget *parent, const QString &icon, QObject* receiver, const char *slot )
@@ -944,7 +951,7 @@ IconButton::IconButton( QWidget *parent, const QString &icon, QObject* receiver,
     connect( this, SIGNAL(toggled( bool )), receiver, slot );
 
     setToggleButton( true );
-    setFocusPolicy( NoFocus ); //we have no way to show focus on these widgets currently
+    setFocusPolicy( Qt::NoFocus ); //we have no way to show focus on these widgets currently
 }
 
 void IconButton::drawButton( QPainter *p )

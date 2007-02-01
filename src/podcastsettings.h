@@ -8,7 +8,7 @@
 
 #include <kurl.h>
 
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 
 class PodcastChannel;
 class PodcastEpisode;
@@ -51,7 +51,7 @@ class PodcastSettingsDialog : public KDialogBase
 
     public:
         PodcastSettingsDialog( PodcastSettings *list, QWidget* parent=0 );
-        PodcastSettingsDialog( const QPtrList<PodcastSettings> &list, const QString &caption, QWidget* parent=0 );
+        PodcastSettingsDialog( const Q3PtrList<PodcastSettings> &list, const QString &caption, QWidget* parent=0 );
 
         bool    configure();
         PodcastSettings *getSettings() { return m_settings; }
@@ -70,7 +70,7 @@ class PodcastSettingsDialog : public KDialogBase
         QString requesterSaveLocation();
 
         PodcastSettingsDialogBase *m_ps;
-        QPtrList<PodcastSettings> m_settingsList;
+        Q3PtrList<PodcastSettings> m_settingsList;
         PodcastSettings           *m_settings;
 };
 

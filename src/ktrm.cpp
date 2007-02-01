@@ -38,6 +38,8 @@
 #include <qobject.h>
 #include <qfile.h>
 #include <qregexp.h>
+//Added by qt3to4:
+#include <QCustomEvent>
 
 #if HAVE_TUNEPIMP
 
@@ -710,7 +712,7 @@ void KTRMLookup::collision()
 
     tr_Unlock(track);
     tp_ReleaseTrack(KTRMRequestHandler::instance()->tunePimp(), track);
-    qHeapSort(d->results);
+    qSort(d->results);
 
     finished();
 #endif
@@ -796,7 +798,7 @@ void KTRMLookup::lookupResult( KIO::Job* job )
         }
      }
 
-     qHeapSort(d->results);
+     qSort(d->results);
 
      finished();
 #else

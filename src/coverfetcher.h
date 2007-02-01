@@ -9,6 +9,8 @@
 #include <qimage.h>       //stack allocated
 #include <qobject.h>      //baseclass
 #include <qstringlist.h>  //stack allocated
+//Added by qt3to4:
+#include <QMouseEvent>
 
 namespace Amarok {
     void coverContextMenu(  QWidget *parent, QPoint point, const QString &artist, const QString &album, bool showCoverManager = true );
@@ -17,7 +19,7 @@ namespace Amarok {
 
 class CoverLabel : public QLabel {
     public:
-    CoverLabel ( QWidget * parent, const char * name = 0, WFlags f = 0 );
+    CoverLabel ( QWidget * parent, const char * name = 0, Qt::WFlags f = 0 );
 
     void setInformation( const QString artist, const QString album ) {
         m_artist = artist;

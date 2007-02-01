@@ -6,6 +6,8 @@
 
 #include <qobject.h>
 #include <qstringlist.h>
+//Added by qt3to4:
+#include <Q3CString>
 #include <kurl.h>    //inline functions
 #include <klocale.h> //inline functions
 #include <taglib/audioproperties.h>
@@ -41,7 +43,7 @@ private:
     MetaBundle *m_bundle;
     QString m_tempSavePath;
     QString m_origRenamedSavePath;
-    QCString m_tempSaveDigest;
+    Q3CString m_tempSaveDigest;
     TagLib::FileRef* m_saveFileref;
     char m_databuf[8192];
     Q_ULONG m_maxlen;

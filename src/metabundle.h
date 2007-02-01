@@ -12,6 +12,9 @@
 #endif
 
 #include <qstringlist.h>
+//Added by qt3to4:
+#include <Q3ValueList>
+#include <Q3CString>
 #include <kurl.h>    //inline functions
 #include <klocale.h> //inline functions
 #include <taglib/audioproperties.h>
@@ -23,8 +26,8 @@
 
 class KFileMetaInfo;
 class QDir;
-class QTextStream;
-template<class T> class QValueList;
+class Q3TextStream;
+template<class T> class Q3ValueList;
 namespace TagLib {
     class ByteVector;
     class File;
@@ -89,17 +92,17 @@ public:
         EmbeddedImage() {}
         EmbeddedImage( const TagLib::ByteVector& data, const TagLib::String& description );
 
-        const QCString &hash() const;
+        const Q3CString &hash() const;
         const QString &description() const { return m_description; }
         bool save( const QDir& dir ) const;
 
     private:
         QByteArray m_data;
         QString m_description;
-        mutable QCString m_hash;
+        mutable Q3CString m_hash;
    };
 
-    typedef QValueList<EmbeddedImage> EmbeddedImageList;
+    typedef Q3ValueList<EmbeddedImage> EmbeddedImageList;
 
     /** This is a bit vector for selecting columns. It's very fast to compare
         in matchFast. It might be a good idea to replace the QValue<int>
@@ -174,7 +177,7 @@ public:
     bool save( TagLib::FileRef* fileref = 0 );
 
     /** Saves the MetaBundle's data as XML to a text stream. */
-    bool save( QTextStream &stream, const QStringList &attributes = QStringList() ) const;
+    bool save( Q3TextStream &stream, const QStringList &attributes = QStringList() ) const;
 
     /** Returns whether the url referred to is a local file */
     bool isFile() const;
@@ -208,7 +211,7 @@ public:
         and should only be used when it is certain none is present.
         The tags in \p columns are checked for matches.
         @see ExpressionParser::isAdvancedExpression() */
-    bool matchesSimpleExpression( const QString &expression, const QValueList<int> &columns ) const;
+    bool matchesSimpleExpression( const QString &expression, const Q3ValueList<int> &columns ) const;
 
     /** A faster version of the above, that pre-caches all the data to be
         searched in a single string, to avoid re-building integer and lower
@@ -222,12 +225,12 @@ public:
     /** Returns whether the bundle matches \p expression.
         This takes advanced syntax into account, and is slightly slower than matchesSimpleExpression().
         The tags in \p defaultColumns are checked for matches where the expression doesn't specify any manually. */
-    bool matchesExpression( const QString &expression, const QValueList<int> &defaultColumns ) const;
+    bool matchesExpression( const QString &expression, const Q3ValueList<int> &defaultColumns ) const;
 
     /** Returns whether the bundle matches the pre-parsed expression \p parsedData.
         The tags in \p defaultColumns are checked for matches where the expression doesn't specify any manually.
         @see ExpressionParser */
-    bool matchesParsedExpression( const ParsedExpression &parsedData, const QValueList<int> &defaultColumns ) const;
+    bool matchesParsedExpression( const ParsedExpression &parsedData, const Q3ValueList<int> &defaultColumns ) const;
 
     /** PlaylistItem reimplements this so it can be informed of moodbar
         data events without having to use signals */
@@ -349,13 +352,13 @@ protected:
     enum ExtendedTags { composerTag, albumArtistTag, discNumberTag, bpmTag, compilationTag };
 
     /** Called before the tags in \p columns are changed. */
-    virtual void aboutToChange( const QValueList<int> &columns );
+    virtual void aboutToChange( const Q3ValueList<int> &columns );
 
     /** Convenience method. */
     void aboutToChange( int column );
 
     /** Called after the tags in \p columns are changed. */
-    virtual void reactToChanges( const QValueList<int> &columns );
+    virtual void reactToChanges( const Q3ValueList<int> &columns );
 
     /** Convenience method. */
     void reactToChange( int column );
@@ -398,7 +401,7 @@ protected:
     int m_waitingOnKIO;
     QString m_tempSavePath;
     QString m_origRenamedSavePath;
-    QCString m_tempSaveDigest;
+    Q3CString m_tempSaveDigest;
     TagLib::FileRef* m_saveFileref;
 
     PodcastEpisodeBundle *m_podcastBundle;
@@ -434,7 +437,7 @@ private:
 };
 
 /// for your convenience
-typedef QValueList<MetaBundle> BundleList;
+typedef Q3ValueList<MetaBundle> BundleList;
 
 
 
@@ -449,9 +452,9 @@ inline bool MetaBundle::audioPropertiesUndetermined() const
     return m_bitrate == Undetermined || m_sampleRate == Undetermined || m_length == Undetermined;
 }
 
-inline void MetaBundle::aboutToChange( const QValueList<int>& ) { }
-inline void MetaBundle::aboutToChange( int column ) { aboutToChange( QValueList<int>() << column ); }
-inline void MetaBundle::reactToChange( int column ) { reactToChanges( QValueList<int>() << column ); }
+inline void MetaBundle::aboutToChange( const Q3ValueList<int>& ) { }
+inline void MetaBundle::aboutToChange( int column ) { aboutToChange( Q3ValueList<int>() << column ); }
+inline void MetaBundle::reactToChange( int column ) { reactToChanges( Q3ValueList<int>() << column ); }
 
 inline bool MetaBundle::exists() const { return m_exists; }
 

@@ -30,8 +30,8 @@ public:
     {
         const QStringList text = QStringList::split( QRegExp( "%\\d+" ), *this, true );
 
-        QValueListConstIterator<QString> itrText = text.begin();
-        QValueListConstIterator<QString> itrArgs = args.begin();
+        Q3ValueListConstIterator<QString> itrText = text.begin();
+        Q3ValueListConstIterator<QString> itrArgs = args.begin();
         QString merged = (*itrText);
         ++itrText;
         while ( itrText != text.end() && itrArgs != args.end() )

@@ -13,10 +13,14 @@
 #include "statusbar.h"
 
 #include <qdom.h>
-#include <qhbox.h>
+#include <q3hbox.h>
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qregexp.h>
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <QMouseEvent>
+#include <Q3VBoxLayout>
 
 #include <kapplication.h>
 #include <kcombobox.h>
@@ -113,7 +117,7 @@ Amarok::coverContextMenu( QWidget *parent, QPoint point, const QString &artist, 
 
 
 
-CoverLabel::CoverLabel ( QWidget * parent, const char * name, WFlags f )
+CoverLabel::CoverLabel ( QWidget * parent, const char * name, Qt::WFlags f )
         : QLabel( parent, name, f)
 {}
 
@@ -439,7 +443,7 @@ CoverFetcher::attemptAnotherFetch()
             else
                 connect( amazonLocale, SIGNAL( activated(int) ),
                         fetcher, SLOT( changeLocale(int) ) );
-            QHBoxLayout *hbox1 = new QHBoxLayout( 8 );
+            Q3HBoxLayout *hbox1 = new Q3HBoxLayout( 8 );
             hbox1->addWidget( new QLabel( i18n( "Amazon Locale: " ), this ) );
             hbox1->addWidget( amazonLocale );
 
@@ -449,12 +453,12 @@ CoverFetcher::attemptAnotherFetch()
             KPushButton* cancelButton = new KPushButton( KStdGuiItem::cancel(), this );
             KPushButton* searchButton = new KPushButton( i18n("&Search"), this );
 
-            QHBoxLayout *hbox2 = new QHBoxLayout( 8 );
+            Q3HBoxLayout *hbox2 = new Q3HBoxLayout( 8 );
             hbox2->addItem( new QSpacerItem( 160, 8, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
             hbox2->addWidget( searchButton );
             hbox2->addWidget( cancelButton );
 
-            QVBoxLayout *vbox = new QVBoxLayout( this, 8, 8 );
+            Q3VBoxLayout *vbox = new Q3VBoxLayout( this, 8, 8 );
             vbox->addLayout( hbox1 );
             vbox->addWidget( new QLabel( "<qt>" + text, this ) );
             vbox->addWidget( new KLineEdit( keyword, this, "Query" ) );
@@ -550,11 +554,11 @@ CoverFetcher::getUserQuery( QString explanation )
             KWin::setType( winId(), NET::Utility );
             KWin::setState( winId(), NET::SkipTaskbar );
 
-            (new QVBoxLayout( this ))->setAutoAdd( true );
+            (new Q3VBoxLayout( this ))->setAutoAdd( true );
 
             QLabel      *labelPix  = new QLabel( this );
             QLabel      *labelName = new QLabel( this );
-            QHBox       *buttons   = new QHBox( this );
+            Q3HBox       *buttons   = new Q3HBox( this );
             KPushButton *save      = new KPushButton( KStdGuiItem::save(), buttons );
             KPushButton *newsearch = new KPushButton( i18n( "Ne&w Search..." ), buttons, "NewSearch" );
             KPushButton *nextcover = new KPushButton( i18n( "&Next Cover" ), buttons, "NextCover" );

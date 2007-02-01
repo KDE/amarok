@@ -16,9 +16,11 @@
 #include "hasher.h"
 
 #include <qbuffer.h>
-#include <qsocket.h>
+#include <q3socket.h>
 #include <qdatastream.h>
-#include <qhttp.h>
+#include <q3http.h>
+//Added by qt3to4:
+#include <Q3CString>
 
 #include <kfilterdev.h>
 #include <kmdcodec.h>
@@ -27,13 +29,13 @@ using namespace Daap;
 int ContentFetcher::s_requestId = 10;
 
 ContentFetcher::ContentFetcher( const QString & hostname, Q_UINT16 port, const QString& password, QObject * parent, const char * name )
- : QHttp(hostname, port, parent, name)
+ : Q3Http(hostname, port, parent, name)
  , m_hostname( hostname )
  , m_port( port )
  , m_selfDestruct( false )
 {
     connect( this, SIGNAL( stateChanged( int ) ), this , SLOT( checkForErrors( int ) ) );
-    QCString pass = password.utf8();
+    Q3CString pass = password.utf8();
     if( !password.isNull() )
     {
         m_authorize = "Basic " + KCodecs::base64Encode( "none:" + pass );
@@ -48,7 +50,7 @@ ContentFetcher::results()
 {
     QBuffer* bytes = new QBuffer( readAll() ); 
     QIODevice* stream =  KFilterDev::device( bytes, "application/x-gzip", false );
-    stream->open( IO_ReadOnly );
+    stream->open( QIODevice::ReadOnly );
     QDataStream* ds = new QDataStream( stream );
     return *ds;
 }
@@ -56,7 +58,7 @@ ContentFetcher::results()
 void
 ContentFetcher::getDaap( const QString & command, QIODevice* musicFile /*= 0*/ )
 {
-    QHttpRequestHeader header( "GET", command );
+    Q3HttpRequestHeader header( "GET", command );
     char hash[33] = {0};
     GenerateHash(3, reinterpret_cast<const unsigned char*>(command.ascii()), 2, reinterpret_cast<unsigned char*>(hash), 0 /*s_requestId*/);
 

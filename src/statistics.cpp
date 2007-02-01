@@ -33,14 +33,17 @@
 
 #include <qcolor.h>
 #include <qdatetime.h>
-#include <qheader.h>
+#include <q3header.h>
 #include <qpainter.h>
 #include <qpen.h>
 #include <qpixmap.h>
-#include <qsimplerichtext.h>
+#include <q3simplerichtext.h>
 #include <qtimer.h>
 #include <qtooltip.h>
-#include <qvbox.h>
+#include <q3vbox.h>
+//Added by qt3to4:
+#include <Q3Frame>
+#include <QPaintEvent>
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// CLASS Statistics
@@ -62,10 +65,10 @@ Statistics::Statistics( QWidget *parent, const char *name )
     setCaption( kapp->makeStdCaption( i18n("Collection Statistics") ) );
     setInitialSize( QSize( 400, 550 ) );
 
-    QVBox *mainBox = new QVBox( this );
+    Q3VBox *mainBox = new Q3VBox( this );
     setMainWidget( mainBox );
 
-    QVBox *box = new QVBox( mainWidget() );
+    Q3VBox *box = new Q3VBox( mainWidget() );
     box->setSpacing( 5 );
 
     { //<Search LineEdit>
@@ -78,7 +81,7 @@ Statistics::Statistics( QWidget *parent, const char *name )
         m_lineEdit = new ClickLineEdit( i18n( "Enter search terms here" ), bar );
 
         bar->setStretchableWidget( m_lineEdit );
-        m_lineEdit->setFrame( QFrame::Sunken );
+        m_lineEdit->setFrame( Q3Frame::Sunken );
         m_lineEdit->installEventFilter( this ); //we intercept keyEvents
 
         connect( button,     SIGNAL( clicked() )      , m_lineEdit  , SLOT( clear() ) );
@@ -127,18 +130,18 @@ StatisticsList::StatisticsList( QWidget *parent, const char *name )
     header()->hide();
 
     addColumn( i18n("Name") );
-    setResizeMode( QListView::LastColumn );
-    setSelectionMode( QListView::Extended );
+    setResizeMode( Q3ListView::LastColumn );
+    setSelectionMode( Q3ListView::Extended );
     setSorting( -1 );
 
     setAcceptDrops( false );
     setDragEnabled( true );
 
-    connect( this, SIGNAL( onItem( QListViewItem*) ),  SLOT( startHover( QListViewItem* ) ) );
+    connect( this, SIGNAL( onItem( Q3ListViewItem*) ),  SLOT( startHover( Q3ListViewItem* ) ) );
     connect( this, SIGNAL( onViewport() ),             SLOT( clearHover() ) );
-    connect( this, SIGNAL( clicked( QListViewItem*) ), SLOT( itemClicked( QListViewItem* ) ) );
-    connect( this, SIGNAL( contextMenuRequested( QListViewItem *, const QPoint &, int ) ),
-             this,   SLOT( showContextMenu( QListViewItem *, const QPoint &, int )  ) );
+    connect( this, SIGNAL( clicked( Q3ListViewItem*) ), SLOT( itemClicked( Q3ListViewItem* ) ) );
+    connect( this, SIGNAL( contextMenuRequested( Q3ListViewItem *, const QPoint &, int ) ),
+             this,   SLOT( showContextMenu( Q3ListViewItem *, const QPoint &, int )  ) );
 
     if( CollectionDB::instance()->isEmpty() )
         return;
@@ -156,7 +159,7 @@ StatisticsList::startDrag()
     KURL::List list;
     KMultipleDrag *drag = new KMultipleDrag( this );
 
-    QListViewItemIterator it( this, QListViewItemIterator::Selected );
+    Q3ListViewItemIterator it( this, Q3ListViewItemIterator::Selected );
 
     StatisticsDetailedItem *item = dynamic_cast<StatisticsDetailedItem*>(*it);
 
@@ -173,7 +176,7 @@ StatisticsList::startDrag()
     }
     else
     {
-        QTextDrag *textdrag = new QTextDrag( '\n' + item->getSQL(), 0 );
+        Q3TextDrag *textdrag = new Q3TextDrag( '\n' + item->getSQL(), 0 );
         textdrag->setSubtype( "amarok-sql" );
         drag->addDragObject( textdrag );
         drag->setPixmap( CollectionDB::createDragPixmapFromSQL( item->getSQL() ),
@@ -288,7 +291,7 @@ StatisticsList::renderView()
 }
 
 void
-StatisticsList::itemClicked( QListViewItem *item ) //SLOT
+StatisticsList::itemClicked( Q3ListViewItem *item ) //SLOT
 {
     if( !item )
         return;
@@ -572,7 +575,7 @@ QString StatisticsList::subText( const QString &score, const QString &rating ) /
 }
 
 void
-StatisticsList::startHover( QListViewItem *item ) //SLOT
+StatisticsList::startHover( Q3ListViewItem *item ) //SLOT
 {
     if( m_currentItem && item != m_currentItem )
         static_cast<StatisticsItem*>(m_currentItem)->leaveHover();
@@ -611,7 +614,7 @@ StatisticsList::viewportPaintEvent( QPaintEvent *e )
                     "Create a collection and then start playing  "
                     "tracks to accumulate data on your play habits!"
                 "</div>" ) );
-        QSimpleRichText t( minimumText, QApplication::font() );
+        Q3SimpleRichText t( minimumText, QApplication::font() );
 
         if ( t.width()+30 >= viewport()->width() || t.height()+30 >= viewport()->height() )
             //too big, giving up
@@ -629,7 +632,7 @@ StatisticsList::viewportPaintEvent( QPaintEvent *e )
 }
 
 void
-StatisticsList::showContextMenu( QListViewItem *item, const QPoint &p, int )  //SLOT
+StatisticsList::showContextMenu( Q3ListViewItem *item, const QPoint &p, int )  //SLOT
 {
     if( !item || item->rtti() == StatisticsItem::RTTI ) return;
 

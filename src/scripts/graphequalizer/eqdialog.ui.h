@@ -11,23 +11,25 @@
 *****************************************************************************/
 #include <dcopclient.h>
 #include <kapplication.h>
+//Added by qt3to4:
+#include <Q3CString>
 //#include <kdebug.h>
 
 void EqDialog::init()
 {
  	//kdDebug() << "start" << endl;
-    QCanvas* canvas = new QCanvas();
+    Q3Canvas* canvas = new Q3Canvas();
     canvas->resize(400, 200);
-    canvasView->setVScrollBarMode(QScrollView::AlwaysOff);
-    canvasView->setHScrollBarMode(QScrollView::AlwaysOff);
+    canvasView->setVScrollBarMode(Q3ScrollView::AlwaysOff);
+    canvasView->setHScrollBarMode(Q3ScrollView::AlwaysOff);
     canvasView->setCanvas(canvas);
     canvasView->init();
     QByteArray send_data, reply_data;
-    QCString reply_type;
+    Q3CString reply_type;
     //kdDebug() << "continue" << endl;
     if(!KApplication::dcopClient()->call("amarok","player","equalizerEnabled()", send_data, reply_type, reply_data,true,1000));
     //kdDebug() << "called" << endl;
-    QDataStream answer(reply_data, IO_ReadOnly);
+    QDataStream answer(reply_data, QIODevice::ReadOnly);
     //kdDebug() << "answer created" << answer << endl;
     bool eqEnabled;
     answer >> eqEnabled;
@@ -40,7 +42,7 @@ void EqDialog::init()
 void EqDialog::eqGroupBox_toggled( bool eqEnabled)
 {
         QByteArray data;
-        QDataStream arg(data, IO_WriteOnly);
+        QDataStream arg(data, QIODevice::WriteOnly);
         arg << eqEnabled;
         KApplication::dcopClient()->send("amarok", "player", "setEqualizerEnabled(bool)" , data);
 }

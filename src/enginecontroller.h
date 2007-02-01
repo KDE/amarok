@@ -19,7 +19,7 @@
 
 #include <qmap.h>
 #include <qobject.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 
 class QTimer;
 

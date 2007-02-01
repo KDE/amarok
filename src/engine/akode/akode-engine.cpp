@@ -13,6 +13,9 @@
 #include <akode/player.h>
 #include <klocale.h>
 #include <qapplication.h>
+//Added by qt3to4:
+#include <QEvent>
+#include <QCustomEvent>
 
 AMAROK_EXPORT_PLUGIN( AkodeEngine )
 

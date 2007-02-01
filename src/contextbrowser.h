@@ -15,6 +15,9 @@
 #include <ktabwidget.h>
 #include <ktoolbarbutton.h>
 #include <kurl.h>
+//Added by qt3to4:
+#include <Q3CString>
+#include <QEvent>
 
 class ClickLineEdit;
 class CollectionDB;
@@ -23,7 +26,7 @@ class HTMLView;
 class KPopupMenu;
 class MetaBundle;
 class QPalette;
-class QVBox;
+class Q3VBox;
 class QLineEdit;
 class QComboBox;
 class KDialogBase;
@@ -65,7 +68,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         void renderView();
         void lyricsChanged( const QString& );
         void lyricsScriptChanged();
-        void lyricsResult( QCString cXmlDoc, bool cached = false );
+        void lyricsResult( Q3CString cXmlDoc, bool cached = false );
 
     protected:
         void engineNewMetaData( const MetaBundle&, bool );
@@ -147,9 +150,9 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         HTMLView    *m_lyricsPage;
         HTMLView    *m_wikiPage;
 
-        QVBox        *m_contextTab;
-        QVBox        *m_lyricsTab;
-        QVBox        *m_wikiTab;
+        Q3VBox        *m_contextTab;
+        Q3VBox        *m_lyricsTab;
+        Q3VBox        *m_wikiTab;
         // These controls are used to dictate whether the page should be rebuilt
         // true -> need rebuild
         bool          m_dirtyCurrentTrackPage;
@@ -214,7 +217,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         bool          m_browseLabels;
         QString       m_label;
         ClickLineEdit* m_addLabelEdit;
-        QListView*    m_labelListView;
+        Q3ListView*    m_labelListView;
 
         CueFile      *m_cuefile;
 };

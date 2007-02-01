@@ -35,11 +35,23 @@
 #include "xspfplaylist.h"
 
 #include <qevent.h>            //customEvent()
-#include <qheader.h>           //mousePressed()
+#include <q3header.h>           //mousePressed()
 #include <qlabel.h>
 #include <qpainter.h>          //paintCell()
 #include <qpixmap.h>           //paintCell()
-#include <qtextstream.h>       //loadPlaylists(), saveM3U(), savePLS()
+#include <q3textstream.h>       //loadPlaylists(), saveM3U(), savePLS()
+//Added by qt3to4:
+#include <QResizeEvent>
+#include <QDragLeaveEvent>
+#include <Q3ValueList>
+#include <QDragEnterEvent>
+#include <QKeyEvent>
+#include <Q3Frame>
+#include <QDropEvent>
+#include <QDragMoveEvent>
+#include <QCustomEvent>
+#include <QPaintEvent>
+#include <Q3PtrList>
 
 #include <kaction.h>
 #include <kactionclasses.h>
@@ -64,8 +76,8 @@
 
 
 namespace Amarok {
-    QListViewItem*
-    findItemByPath( QListView *view, QString name )
+    Q3ListViewItem*
+    findItemByPath( Q3ListView *view, QString name )
     {
         const static QString escaped( "\\/" );
         const static QChar sep( '/' );
@@ -73,8 +85,8 @@ namespace Amarok {
         debug() << "Searching " << name << endl;
         QStringList path = splitPath( name );
 
-        QListViewItem *prox = view->firstChild();
-        QListViewItem *item = 0;
+        Q3ListViewItem *prox = view->firstChild();
+        Q3ListViewItem *item = 0;
 
         foreach( path ) {
             item = prox;
@@ -133,7 +145,7 @@ PlaylistBrowser *PlaylistBrowser::s_instance = 0;
 
 
 PlaylistBrowser::PlaylistBrowser( const char *name )
-        : QVBox( 0, name )
+        : Q3VBox( 0, name )
         , m_polished( false )
         , m_playlistCategory( 0 )
         , m_streamsCategory( 0 )
@@ -155,7 +167,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 {
     s_instance = this;
 
-    QVBox *browserBox = new QVBox( this );
+    Q3VBox *browserBox = new Q3VBox( this );
     browserBox->setSpacing( 3 );
 
     //<Toolbar>
@@ -203,14 +215,14 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     connect( m_podcastTimer, SIGNAL(timeout()), this, SLOT(scanPodcasts()) );
 
     // signals and slots connections
-    connect( m_listview, SIGNAL( contextMenuRequested( QListViewItem *, const QPoint &, int ) ),
-             this,         SLOT( showContextMenu( QListViewItem *, const QPoint &, int ) ) );
-    connect( m_listview, SIGNAL( doubleClicked( QListViewItem *, const QPoint &, int ) ),
-             this,         SLOT( invokeItem( QListViewItem *, const QPoint &, int ) ) );
-    connect( m_listview, SIGNAL( itemRenamed( QListViewItem*, const QString&, int ) ),
-             this,         SLOT( renamePlaylist( QListViewItem*, const QString&, int ) ) );
-    connect( m_listview, SIGNAL( currentChanged( QListViewItem * ) ),
-             this,         SLOT( currentItemChanged( QListViewItem * ) ) );
+    connect( m_listview, SIGNAL( contextMenuRequested( Q3ListViewItem *, const QPoint &, int ) ),
+             this,         SLOT( showContextMenu( Q3ListViewItem *, const QPoint &, int ) ) );
+    connect( m_listview, SIGNAL( doubleClicked( Q3ListViewItem *, const QPoint &, int ) ),
+             this,         SLOT( invokeItem( Q3ListViewItem *, const QPoint &, int ) ) );
+    connect( m_listview, SIGNAL( itemRenamed( Q3ListViewItem*, const QString&, int ) ),
+             this,         SLOT( renamePlaylist( Q3ListViewItem*, const QString&, int ) ) );
+    connect( m_listview, SIGNAL( currentChanged( Q3ListViewItem * ) ),
+             this,         SLOT( currentItemChanged( Q3ListViewItem * ) ) );
     connect( CollectionDB::instance(), SIGNAL( scanDone( bool ) ), SLOT( collectionScanDone() ) );
 
     setMinimumWidth( m_toolbar->sizeHint().width() );
@@ -238,7 +250,7 @@ PlaylistBrowser::polish()
 //     BrowserBar::instance()->restoreWidth();
 //     blockSignals( false );
 
-    QVBox::polish();
+    Q3VBox::polish();
 
     /// Podcasting is always initialised in the ctor because of autoscanning
 
@@ -284,8 +296,8 @@ PlaylistBrowser::polish()
     // First we check if the number of items in the listview is the same as it was on last
     // application exit. If true, we iterate over all items and restore their open/closed state.
     // Note: We ignore podcast items, because they are added dynamically added to the ListView.
-    QValueList<int> stateList = Amarok::config( "PlaylistBrowser" )->readIntListEntry( "Item State" );
-    QListViewItemIterator it( m_listview );
+    Q3ValueList<int> stateList = Amarok::config( "PlaylistBrowser" )->readIntListEntry( "Item State" );
+    Q3ListViewItemIterator it( m_listview );
     uint count = 0;
     while ( it.current() ) {
         if( !isPodcastEpisode( it.current() ) )
@@ -295,7 +307,7 @@ PlaylistBrowser::polish()
 
     if ( count == stateList.count() ) {
         uint index = 0;
-        it = QListViewItemIterator( m_listview );
+        it = Q3ListViewItemIterator( m_listview );
         while ( it.current() ) {
             if( !isPodcastEpisode( it.current() ) ) {
                 it.current()->setOpen( stateList[index] );
@@ -323,7 +335,7 @@ PlaylistBrowser::~PlaylistBrowser()
         QStringList list;
         for( uint i=0; i < m_dynamicEntries.count(); i++ )
         {
-            QListViewItem *item = m_dynamicEntries.at( i );
+            Q3ListViewItem *item = m_dynamicEntries.at( i );
             list.append( item->text(0) );
         }
 
@@ -388,15 +400,15 @@ PlaylistCategory* PlaylistBrowser::loadStreams()
 {
     QFile file( streamBrowserCache() );
 
-    QTextStream stream( &file );
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    Q3TextStream stream( &file );
+    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
 
     QDomDocument d;
     QDomElement e;
 
-    QListViewItem *after = m_dynamicCategory;
+    Q3ListViewItem *after = m_dynamicCategory;
 
-    if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
+    if( !file.open( QIODevice::ReadOnly ) || !d.setContent( stream.read() ) )
     { /*Couldn't open the file or it had invalid content, so let's create an empty element*/
         return new PlaylistCategory( m_listview, after , i18n("Radio Streams") );
     }
@@ -409,7 +421,7 @@ PlaylistCategory* PlaylistBrowser::loadStreams()
         }
         else { // Old unversioned format
             PlaylistCategory* p = new PlaylistCategory( m_listview, after, i18n("Radio Streams") );
-            QListViewItem *last = 0;
+            Q3ListViewItem *last = 0;
             QDomNode n = d.namedItem( "streambrowser" ).namedItem("stream");
             for( ; !n.isNull();  n = n.nextSibling() ) {
                 last = new StreamEntry( p, last, n.toElement() );
@@ -422,11 +434,11 @@ PlaylistCategory* PlaylistBrowser::loadStreams()
 void PlaylistBrowser::loadCoolStreams()
 {
     QFile file( locate( "data","amarok/data/Cool-Streams.xml" ) );
-    if( !file.open( IO_ReadOnly ) )
+    if( !file.open( QIODevice::ReadOnly ) )
         return;
 
-    QTextStream stream( &file );
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    Q3TextStream stream( &file );
+    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
 
     QDomDocument d;
 
@@ -454,12 +466,12 @@ void PlaylistBrowser::loadCoolStreams()
     }
 }
 
-void PlaylistBrowser::addStream( QListViewItem *parent )
+void PlaylistBrowser::addStream( Q3ListViewItem *parent )
 {
     StreamEditor dialog( this, i18n( "Radio Stream" ), QString::null );
     dialog.setCaption( i18n( "Add Radio Stream" ) );
 
-    if( !parent ) parent = static_cast<QListViewItem*>(m_streamsCategory);
+    if( !parent ) parent = static_cast<Q3ListViewItem*>(m_streamsCategory);
 
     if( dialog.exec() == QDialog::Accepted )
     {
@@ -500,10 +512,10 @@ void PlaylistBrowser::saveStreams()
     QString temp( doc.toString() );
 
     // Only open the file after all data is ready. If it crashes, data is not lost!
-    if ( !file.open( IO_WriteOnly ) ) return;
+    if ( !file.open( QIODevice::WriteOnly ) ) return;
 
-    QTextStream stream( &file );
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    Q3TextStream stream( &file );
+    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     stream << temp;
 }
@@ -518,15 +530,15 @@ void PlaylistBrowser::loadLastfmStreams( const bool subscriber /*false*/ )
 {
     QFile file( Amarok::saveLocation() + "lastfmbrowser_save.xml" );
 
-    QTextStream stream( &file );
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    Q3TextStream stream( &file );
+    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
 
     QDomDocument d;
     QDomElement e;
 
-    QListViewItem *after = m_streamsCategory;
+    Q3ListViewItem *after = m_streamsCategory;
 
-    if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
+    if( !file.open( QIODevice::ReadOnly ) || !d.setContent( stream.read() ) )
     { /*Couldn't open the file or it had invalid content, so let's create an empty element*/
         m_lastfmCategory = new PlaylistCategory( m_listview, after , i18n("Last.fm Radio") );
     }
@@ -572,12 +584,12 @@ void PlaylistBrowser::loadLastfmStreams( const bool subscriber /*false*/ )
     }
 }
 
-void PlaylistBrowser::addLastFmRadio( QListViewItem *parent )
+void PlaylistBrowser::addLastFmRadio( Q3ListViewItem *parent )
 {
     StreamEditor dialog( this, i18n( "Last.fm Radio" ), QString::null );
     dialog.setCaption( i18n( "Add Last.fm Radio" ) );
 
-    if( !parent ) parent = static_cast<QListViewItem*>(m_lastfmCategory);
+    if( !parent ) parent = static_cast<Q3ListViewItem*>(m_lastfmCategory);
 
     if( dialog.exec() == QDialog::Accepted )
     {
@@ -588,7 +600,7 @@ void PlaylistBrowser::addLastFmRadio( QListViewItem *parent )
     }
 }
 
-void PlaylistBrowser::addLastFmCustomRadio( QListViewItem *parent )
+void PlaylistBrowser::addLastFmCustomRadio( Q3ListViewItem *parent )
 {
     QString token = LastFm::Controller::createCustomStation();
     if( token.isEmpty() ) return;
@@ -621,10 +633,10 @@ void PlaylistBrowser::saveLastFm()
     QString temp( doc.toString() );
 
     // Only open the file after all data is ready. If it crashes, data is not lost!
-    if ( !file.open( IO_WriteOnly ) ) return;
+    if ( !file.open( QIODevice::WriteOnly ) ) return;
 
-    QTextStream stream( &file );
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    Q3TextStream stream( &file );
+    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     stream << temp;
 }
@@ -641,19 +653,19 @@ QString PlaylistBrowser::smartplaylistBrowserCache() const
     return Amarok::saveLocation() + "smartplaylistbrowser_save.xml";
 }
 
-void PlaylistBrowser::addSmartPlaylist( QListViewItem *parent ) //SLOT
+void PlaylistBrowser::addSmartPlaylist( Q3ListViewItem *parent ) //SLOT
 {
     if( CollectionDB::instance()->isEmpty() || !m_smartCategory )
         return;
 
-    if( !parent ) parent = static_cast<QListViewItem*>(m_smartCategory);
+    if( !parent ) parent = static_cast<Q3ListViewItem*>(m_smartCategory);
 
 
     SmartPlaylistEditor dialog( i18n("Untitled"), this );
     if( dialog.exec() == QDialog::Accepted ) {
 
         PlaylistCategory *category = dynamic_cast<PlaylistCategory*>(parent);
-        for( QListViewItem *item = category->firstChild(); item; item = item->nextSibling() ) {
+        for( Q3ListViewItem *item = category->firstChild(); item; item = item->nextSibling() ) {
             SmartPlaylist *sp = dynamic_cast<SmartPlaylist*>(item);
             if ( sp && sp->title() == dialog.name() ) {
                 if( KMessageBox::warningContinueCancel(
@@ -680,14 +692,14 @@ PlaylistCategory* PlaylistBrowser::loadSmartPlaylists()
 {
 
     QFile file( smartplaylistBrowserCache() );
-    QTextStream stream( &file );
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
-    QListViewItem *after = m_playlistCategory;
+    Q3TextStream stream( &file );
+    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
+    Q3ListViewItem *after = m_playlistCategory;
 
     QDomDocument d;
     QDomElement e;
 
-    if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
+    if( !file.open( QIODevice::ReadOnly ) || !d.setContent( stream.read() ) )
     { /*Couldn't open the file or it had invalid content, so let's create an empty element*/
         return new PlaylistCategory(m_listview, after, i18n("Smart Playlists") );
     }
@@ -712,7 +724,7 @@ PlaylistCategory* PlaylistBrowser::loadSmartPlaylists()
         }
         else { // Old unversioned format
             PlaylistCategory* p = new PlaylistCategory(m_listview, after , i18n("Smart Playlists") );
-            QListViewItem *last = 0;
+            Q3ListViewItem *last = 0;
             QDomNode n = d.namedItem( "smartplaylists" ).namedItem("smartplaylist");
             for( ; !n.isNull();  n = n.nextSibling() ) {
                 last = new SmartPlaylist( p, last, n.toElement() );
@@ -722,12 +734,12 @@ PlaylistCategory* PlaylistBrowser::loadSmartPlaylists()
     }
 }
 
-void PlaylistBrowser::updateSmartPlaylists( QListViewItem *p )
+void PlaylistBrowser::updateSmartPlaylists( Q3ListViewItem *p )
 {
     if( !p )
         return;
 
-    for( QListViewItem *it =  p->firstChild();
+    for( Q3ListViewItem *it =  p->firstChild();
             it;
             it = it->nextSibling() )
     {
@@ -940,10 +952,10 @@ void PlaylistBrowser::saveSmartPlaylists( PlaylistCategory *smartCategory )
     QString temp( doc.toString() );
 
     // Only open the file after all data is ready. If it crashes, data is not lost!
-    if ( !file.open( IO_WriteOnly ) ) return;
+    if ( !file.open( QIODevice::WriteOnly ) ) return;
 
-    QTextStream smart( &file );
-    smart.setEncoding( QTextStream::UnicodeUTF8 );
+    Q3TextStream smart( &file );
+    smart.setEncoding( Q3TextStream::UnicodeUTF8 );
     smart << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     smart << temp;
 }
@@ -963,8 +975,8 @@ PlaylistCategory* PlaylistBrowser::loadDynamics()
 {
     QFile file( dynamicBrowserCache() );
 
-    QTextStream stream( &file );
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    Q3TextStream stream( &file );
+    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
 
     QDomDocument d;
     QDomElement e;
@@ -973,7 +985,7 @@ PlaylistCategory* PlaylistBrowser::loadDynamics()
     if( CollectionDB::instance()->isEmpty() || !m_smartCategory ) // incase of no collection
         after = m_playlistCategory;
 
-    if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
+    if( !file.open( QIODevice::ReadOnly ) || !d.setContent( stream.read() ) )
     { /*Couldn't open the file or it had invalid content, so let's create some defaults*/
         PlaylistCategory *p = new PlaylistCategory( m_listview, after, i18n("Dynamic Playlists") );
         return p;
@@ -996,7 +1008,7 @@ PlaylistCategory* PlaylistBrowser::loadDynamics()
         }
         else { // Old unversioned format
             PlaylistCategory* p = new PlaylistCategory( m_listview, after, i18n("Dynamic Playlists") );
-            QListViewItem *last = 0;
+            Q3ListViewItem *last = 0;
             QDomNode n = d.namedItem( "dynamicbrowser" ).namedItem("dynamic");
             for( ; !n.isNull();  n = n.nextSibling() ) {
                 last = new DynamicEntry( p, last, n.toElement() );
@@ -1008,7 +1020,7 @@ PlaylistCategory* PlaylistBrowser::loadDynamics()
 
 
 void
-PlaylistBrowser::fixDynamicPlaylistPath( QListViewItem *item )
+PlaylistBrowser::fixDynamicPlaylistPath( Q3ListViewItem *item )
 {
     DynamicEntry *entry = dynamic_cast<DynamicEntry*>( item );
     if ( entry ) {
@@ -1023,7 +1035,7 @@ PlaylistBrowser::fixDynamicPlaylistPath( QListViewItem *item )
     }
     PlaylistCategory *cat = dynamic_cast<PlaylistCategory*>( item );
     if ( cat ) {
-        QListViewItem *it = cat->firstChild();
+        Q3ListViewItem *it = cat->firstChild();
         for( ; it; it = it->nextSibling() ) {
             fixDynamicPlaylistPath( it );
         }
@@ -1033,7 +1045,7 @@ PlaylistBrowser::fixDynamicPlaylistPath( QListViewItem *item )
 QString
 PlaylistBrowser::guessPathFromPlaylistName( QString name )
 {
-    QListViewItem *item = m_listview->findItem( name, 0, Qt::ExactMatch );
+    Q3ListViewItem *item = m_listview->findItem( name, 0, Qt::ExactMatch );
     PlaylistBrowserEntry *entry = dynamic_cast<PlaylistBrowserEntry*>( item );
     if ( entry )
         return entry->name();
@@ -1051,7 +1063,7 @@ void PlaylistBrowser::saveDynamics()
     Amarok::config( "PlaylistBrowser" )->writeEntry( "Dynamic Suggest Previous Count", m_suggestedDynamic->previousCount() );
 
     QFile file( dynamicBrowserCache() );
-    QTextStream stream( &file );
+    Q3TextStream stream( &file );
 
     QDomDocument doc;
     QDomElement dynamicB = m_dynamicCategory->xml();
@@ -1064,9 +1076,9 @@ void PlaylistBrowser::saveDynamics()
     QString temp( doc.toString() );
 
     // Only open the file after all data is ready. If it crashes, data is not lost!
-    if ( !file.open( IO_WriteOnly ) ) return;
+    if ( !file.open( QIODevice::WriteOnly ) ) return;
 
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     stream << temp;
 }
@@ -1076,7 +1088,7 @@ void PlaylistBrowser::loadDynamicItems()
     // Make sure all items are unmarked
     for( uint i=0; i < m_dynamicEntries.count(); i++ )
     {
-        QListViewItem *it = m_dynamicEntries.at( i );
+        Q3ListViewItem *it = m_dynamicEntries.at( i );
 
         if( it )
             static_cast<PlaylistBrowserEntry*>(it)->setDynamic( false );
@@ -1104,15 +1116,15 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
     DEBUG_BLOCK
 
     QFile file( podcastBrowserCache() );
-    QTextStream stream( &file );
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    Q3TextStream stream( &file );
+    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
 
     QDomDocument d;
     QDomElement e;
 
-    QListViewItem *after = 0;
+    Q3ListViewItem *after = 0;
 
-    if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
+    if( !file.open( QIODevice::ReadOnly ) || !d.setContent( stream.read() ) )
     { /*Couldn't open the file or it had invalid content, so let's create an empty element*/
         PlaylistCategory *p = new PlaylistCategory( m_listview, after, i18n("Podcasts") );
         p->setId( 0 );
@@ -1153,13 +1165,13 @@ DEBUG_BLOCK
 
     QMap<int,PlaylistCategory*> folderMap = loadPodcastFolders( p );
 
-    QValueList<PodcastChannelBundle> channels;
+    Q3ValueList<PodcastChannelBundle> channels;
 
     channels = CollectionDB::instance()->getPodcastChannels();
 
     PodcastChannel *channel = 0;
 
-    foreachType( QValueList<PodcastChannelBundle>, channels )
+    foreachType( Q3ValueList<PodcastChannelBundle>, channels )
     {
         PlaylistCategory *parent = p;
         const int parentId = (*it).parentId();
@@ -1259,7 +1271,7 @@ void PlaylistBrowser::scanPodcasts()
 
     for( uint i=0; i < m_podcastItemsToScan.count(); i++ )
     {
-        QListViewItem  *item = m_podcastItemsToScan.at( i );
+        Q3ListViewItem  *item = m_podcastItemsToScan.at( i );
         PodcastChannel *pc   = static_cast<PodcastChannel*>(item);
         pc->rescan();
     }
@@ -1267,9 +1279,9 @@ void PlaylistBrowser::scanPodcasts()
     m_podcastTimer->start( m_podcastTimerInterval );
 }
 
-void PlaylistBrowser::refreshPodcasts( QListViewItem *parent )
+void PlaylistBrowser::refreshPodcasts( Q3ListViewItem *parent )
 {
-    for( QListViewItem *child = parent->firstChild();
+    for( Q3ListViewItem *child = parent->firstChild();
             child;
             child = child->nextSibling() )
     {
@@ -1280,7 +1292,7 @@ void PlaylistBrowser::refreshPodcasts( QListViewItem *parent )
     }
 }
 
-void PlaylistBrowser::addPodcast( QListViewItem *parent )
+void PlaylistBrowser::addPodcast( Q3ListViewItem *parent )
 {
     bool ok;
     const QString name = KInputDialog::getText(i18n("Add Podcast"), i18n("Enter Podcast URL:"), QString::null, &ok, this);
@@ -1291,10 +1303,10 @@ void PlaylistBrowser::addPodcast( QListViewItem *parent )
     }
 }
 
-void PlaylistBrowser::configurePodcasts( QListViewItem *parent )
+void PlaylistBrowser::configurePodcasts( Q3ListViewItem *parent )
 {
-    QPtrList<PodcastChannel> podcastChannelList;
-    for( QListViewItem *child = parent->firstChild();
+    Q3PtrList<PodcastChannel> podcastChannelList;
+    for( Q3ListViewItem *child = parent->firstChild();
          child;
          child = child->nextSibling() )
     {
@@ -1309,8 +1321,8 @@ void PlaylistBrowser::configurePodcasts( QListViewItem *parent )
 
 void PlaylistBrowser::configureSelectedPodcasts()
 {
-    QPtrList<PodcastChannel> selected;
-    QListViewItemIterator it( m_listview, QListViewItemIterator::Selected);
+    Q3PtrList<PodcastChannel> selected;
+    Q3ListViewItemIterator it( m_listview, Q3ListViewItemIterator::Selected);
     for( ; it.current(); ++it )
     {
         if( isPodcastChannel( (*it) ) )
@@ -1332,7 +1344,7 @@ void PlaylistBrowser::configureSelectedPodcasts()
                     // else timer is already running
 }
 
-void PlaylistBrowser::configurePodcasts( QPtrList<PodcastChannel> &podcastChannelList,
+void PlaylistBrowser::configurePodcasts( Q3PtrList<PodcastChannel> &podcastChannelList,
                                          const QString &caption )
 {
 
@@ -1341,8 +1353,8 @@ void PlaylistBrowser::configurePodcasts( QPtrList<PodcastChannel> &podcastChanne
         debug() << "BUG: podcastChannelList is empty" << endl;
         return;
     }
-    QPtrList<PodcastSettings> podcastSettingsList;
-    foreachType( QPtrList<PodcastChannel>, podcastChannelList)
+    Q3PtrList<PodcastSettings> podcastSettingsList;
+    foreachType( Q3PtrList<PodcastChannel>, podcastChannelList)
     {
         podcastSettingsList.append( (*it)->getSettings() );
     }
@@ -1350,7 +1362,7 @@ void PlaylistBrowser::configurePodcasts( QPtrList<PodcastChannel> &podcastChanne
     if( dialog->configure() )
     {
         PodcastChannel *channel = podcastChannelList.first();
-        foreachType( QPtrList<PodcastSettings>, podcastSettingsList )
+        foreachType( Q3PtrList<PodcastSettings>, podcastSettingsList )
         {
             if ( (*it)->title() ==  channel->title() )
             {
@@ -1365,11 +1377,11 @@ void PlaylistBrowser::configurePodcasts( QPtrList<PodcastChannel> &podcastChanne
 }
 
 PodcastChannel *
-PlaylistBrowser::findPodcastChannel( const KURL &feed, QListViewItem *parent ) const
+PlaylistBrowser::findPodcastChannel( const KURL &feed, Q3ListViewItem *parent ) const
 {
-    if( !parent ) parent = static_cast<QListViewItem*>(m_podcastCategory);
+    if( !parent ) parent = static_cast<Q3ListViewItem*>(m_podcastCategory);
 
-    for( QListViewItem *it = parent->firstChild();
+    for( Q3ListViewItem *it = parent->firstChild();
             it;
             it = it->nextSibling() )
     {
@@ -1402,7 +1414,7 @@ PlaylistBrowser::findPodcastEpisode( const KURL &episode, const KURL &feed ) con
     if( !channel->isPolished() )
         channel->load();
 
-    QListViewItem *child = channel->firstChild();
+    Q3ListViewItem *child = channel->firstChild();
     while( child )
     {
         #define child static_cast<PodcastEpisode*>(child)
@@ -1415,9 +1427,9 @@ PlaylistBrowser::findPodcastEpisode( const KURL &episode, const KURL &feed ) con
     return 0;
 }
 
-void PlaylistBrowser::addPodcast( const KURL& origUrl, QListViewItem *parent )
+void PlaylistBrowser::addPodcast( const KURL& origUrl, Q3ListViewItem *parent )
 {
-    if( !parent ) parent = static_cast<QListViewItem*>(m_podcastCategory);
+    if( !parent ) parent = static_cast<Q3ListViewItem*>(m_podcastCategory);
 
     KURL url( origUrl );
     if( url.protocol() == "itpc" || url.protocol() == "pcast" )
@@ -1471,8 +1483,8 @@ void PlaylistBrowser::changePodcastInterval()
 bool PlaylistBrowser::deleteSelectedPodcastItems( const bool removeItem, const bool silent )
 {
     KURL::List urls;
-    QListViewItemIterator it( m_podcastCategory, QListViewItemIterator::Selected );
-    QPtrList<PodcastEpisode> erasedItems;
+    Q3ListViewItemIterator it( m_podcastCategory, Q3ListViewItemIterator::Selected );
+    Q3PtrList<PodcastEpisode> erasedItems;
 
     for( ; it.current(); ++it )
     {
@@ -1513,14 +1525,14 @@ bool PlaylistBrowser::deleteSelectedPodcastItems( const bool removeItem, const b
     return true;
 }
 
-bool PlaylistBrowser::deletePodcasts( QPtrList<PodcastChannel> items )
+bool PlaylistBrowser::deletePodcasts( Q3PtrList<PodcastChannel> items )
 {
     if( items.isEmpty() ) return false;
 
     KURL::List urls;
-    foreachType( QPtrList<PodcastChannel>, items )
+    foreachType( Q3PtrList<PodcastChannel>, items )
     {
-        for( QListViewItem *ch = (*it)->firstChild(); ch; ch = ch->nextSibling() )
+        for( Q3ListViewItem *ch = (*it)->firstChild(); ch; ch = ch->nextSibling() )
         {
             #define ch static_cast<PodcastEpisode*>(ch)
             if( ch->isOnDisk() )
@@ -1544,7 +1556,7 @@ bool PlaylistBrowser::deletePodcasts( QPtrList<PodcastChannel> items )
 
 void PlaylistBrowser::downloadSelectedPodcasts()
 {
-    QListViewItemIterator it( m_listview, QListViewItemIterator::Selected );
+    Q3ListViewItemIterator it( m_listview, Q3ListViewItemIterator::Selected );
 
     for( ; it.current(); ++it )
     {
@@ -1597,13 +1609,13 @@ PlaylistCategory* PlaylistBrowser::loadPlaylists()
 {
     QFile file( playlistBrowserCache() );
 
-    QTextStream stream( &file );
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    Q3TextStream stream( &file );
+    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
 
     QDomDocument d;
     QDomElement e;
 
-    if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) )
+    if( !file.open( QIODevice::ReadOnly ) || !d.setContent( stream.read() ) )
     { /*Couldn't open the file or it had invalid content, so let's create an empty element*/
         return new PlaylistCategory(m_listview, 0 , i18n("Playlists") );
     }
@@ -1617,7 +1629,7 @@ PlaylistCategory* PlaylistBrowser::loadPlaylists()
         }
         else { // Old unversioned format
             PlaylistCategory* p = new PlaylistCategory( m_listview, 0 , i18n("Playlists") );
-            QListViewItem *last = 0;
+            Q3ListViewItem *last = 0;
             QDomNode n = d.namedItem( "playlistbrowser" ).namedItem("playlist");
 
             for ( ; !n.isNull();  n = n.nextSibling() )
@@ -1628,20 +1640,20 @@ PlaylistCategory* PlaylistBrowser::loadPlaylists()
     }
 }
 
-QListViewItem *
+Q3ListViewItem *
 PlaylistBrowser::findItemInTree( const QString &searchstring, int c ) const
 {
     QStringList list = QStringList::split( "/", searchstring, true );
 
     // select the 1st level
     QStringList::Iterator it = list.begin();
-    QListViewItem *pli = findItem (*it, c);
+    Q3ListViewItem *pli = findItem (*it, c);
     if ( !pli ) return pli;
 
     for ( ++it ; it != list.end(); ++it )
     {
 
-        QListViewItemIterator it2( pli );
+        Q3ListViewItemIterator it2( pli );
         for( ++it2 ; it2.current(); ++it2 )
         {
             if ( *it == (*it2)->text(0) )
@@ -1665,7 +1677,7 @@ DynamicMode *PlaylistBrowser::findDynamicModeByTitle( const QString &title )
     if( !m_polished )
        polish();
 
-    for ( QListViewItem *item = m_dynamicCategory->firstChild(); item; item = item->nextSibling() )
+    for ( Q3ListViewItem *item = m_dynamicCategory->firstChild(); item; item = item->nextSibling() )
     {
         DynamicEntry *entry = dynamic_cast<DynamicEntry *>( item );
         if ( entry && entry->title() == title )
@@ -1676,11 +1688,11 @@ DynamicMode *PlaylistBrowser::findDynamicModeByTitle( const QString &title )
 }
 
 PlaylistEntry *
-PlaylistBrowser::findPlaylistEntry( const QString &url, QListViewItem *parent ) const
+PlaylistBrowser::findPlaylistEntry( const QString &url, Q3ListViewItem *parent ) const
 {
-    if( !parent ) parent = static_cast<QListViewItem*>(m_playlistCategory);
+    if( !parent ) parent = static_cast<Q3ListViewItem*>(m_playlistCategory);
 
-    for( QListViewItem *it = parent->firstChild();
+    for( Q3ListViewItem *it = parent->firstChild();
             it;
             it = it->nextSibling() )
     {
@@ -1710,7 +1722,7 @@ int PlaylistBrowser::loadPlaylist( const QString &playlist, bool /*force*/ )
     // roland
     DEBUG_BLOCK
 
-    QListViewItem *pli = findItemInTree( playlist, 0 );
+    Q3ListViewItem *pli = findItemInTree( playlist, 0 );
     if ( ! pli ) return -1;
 
     slotDoubleClicked( pli );
@@ -1718,7 +1730,7 @@ int PlaylistBrowser::loadPlaylist( const QString &playlist, bool /*force*/ )
     // roland
 }
 
-void PlaylistBrowser::addPlaylist( const QString &path, QListViewItem *parent, bool force, bool imported )
+void PlaylistBrowser::addPlaylist( const QString &path, Q3ListViewItem *parent, bool force, bool imported )
 {
     // this function adds a playlist to the playlist browser
 
@@ -1734,9 +1746,9 @@ void PlaylistBrowser::addPlaylist( const QString &path, QListViewItem *parent, b
         playlist->load(); //reload the playlist
 
     if( imported ) {
-        QListViewItem *playlistImports = 0;
+        Q3ListViewItem *playlistImports = 0;
         //First try and find the imported folder
-        for ( QListViewItem *it = m_playlistCategory->firstChild(); it; it = it->nextSibling() )
+        for ( Q3ListViewItem *it = m_playlistCategory->firstChild(); it; it = it->nextSibling() )
         {
             if ( dynamic_cast<PlaylistCategory*>( it ) && static_cast<PlaylistCategory*>( it )->isFolder() &&
                  it->text( 0 ) == i18n( "Imported" ) )
@@ -1749,7 +1761,7 @@ void PlaylistBrowser::addPlaylist( const QString &path, QListViewItem *parent, b
             playlistImports = new PlaylistCategory( m_playlistCategory, 0, i18n("Imported") );
         parent = playlistImports;
     }
-    else if( !parent ) parent = static_cast<QListViewItem*>(m_playlistCategory);
+    else if( !parent ) parent = static_cast<Q3ListViewItem*>(m_playlistCategory);
 
     if( !playlist ) {
         if( !m_playlistCategory || !m_playlistCategory->childCount() ) {  //first child
@@ -1768,8 +1780,8 @@ void PlaylistBrowser::addPlaylist( const QString &path, QListViewItem *parent, b
     playlist->setSelected( true );
 }
 
-bool PlaylistBrowser::savePlaylist( const QString &path, const QValueList<KURL> &in_urls,
-                                    const QValueList<QString> &titles, const QValueList<int> &lengths,
+bool PlaylistBrowser::savePlaylist( const QString &path, const Q3ValueList<KURL> &in_urls,
+                                    const Q3ValueList<QString> &titles, const Q3ValueList<int> &lengths,
                                     bool relative )
 {
     if( path.isEmpty() )
@@ -1777,13 +1789,13 @@ bool PlaylistBrowser::savePlaylist( const QString &path, const QValueList<KURL> 
 
     QFile file( path );
 
-    if( !file.open( IO_WriteOnly ) )
+    if( !file.open( QIODevice::WriteOnly ) )
     {
         KMessageBox::sorry( PlaylistWindow::self(), i18n( "Cannot write playlist (%1).").arg(path) );
         return false;
     }
 
-    QTextStream stream( &file );
+    Q3TextStream stream( &file );
     stream << "#EXTM3U\n";
 
     KURL::List urls;
@@ -1826,7 +1838,7 @@ bool PlaylistBrowser::savePlaylist( const QString &path, const QValueList<KURL> 
     return true;
 }
 
-void PlaylistBrowser::openPlaylist( QListViewItem *parent ) //SLOT
+void PlaylistBrowser::openPlaylist( Q3ListViewItem *parent ) //SLOT
 {
     // open a file selector to add playlists to the playlist browser
     QStringList files;
@@ -1854,18 +1866,18 @@ void PlaylistBrowser::savePlaylists()
     QString temp( doc.toString() );
 
     // Only open the file after all data is ready. If it crashes, data is not lost!
-    if ( !file.open( IO_WriteOnly ) ) return;
+    if ( !file.open( QIODevice::WriteOnly ) ) return;
 
-    QTextStream stream( &file );
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    Q3TextStream stream( &file );
+    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     stream << temp;
 }
 
-bool PlaylistBrowser::deletePlaylists( QPtrList<PlaylistEntry> items )
+bool PlaylistBrowser::deletePlaylists( Q3PtrList<PlaylistEntry> items )
 {
     KURL::List urls;
-    foreachType( QPtrList<PlaylistEntry>, items )
+    foreachType( Q3PtrList<PlaylistEntry>, items )
     {
         urls.append( (*it)->url() );
     }
@@ -1920,7 +1932,7 @@ PlaylistBrowser::findItem( QString &t, int c ) const
     return static_cast<PlaylistBrowserEntry *>( m_listview->findItem( t, c, Qt::ExactMatch ) );
 }
 
-bool PlaylistBrowser::createPlaylist( QListViewItem *parent, bool current, QString title )
+bool PlaylistBrowser::createPlaylist( Q3ListViewItem *parent, bool current, QString title )
 {
     if( title.isEmpty() ) title = i18n("Untitled");
 
@@ -1929,7 +1941,7 @@ bool PlaylistBrowser::createPlaylist( QListViewItem *parent, bool current, QStri
         return false;
 
     if( !parent )
-        parent = static_cast<QListViewItem *>( m_playlistCategory );
+        parent = static_cast<Q3ListViewItem *>( m_playlistCategory );
 
     if( current )
     {
@@ -1941,12 +1953,12 @@ bool PlaylistBrowser::createPlaylist( QListViewItem *parent, bool current, QStri
     {
         //Remove any items in Listview that have the same path as this one
         //  Should only happen when overwriting a playlist
-        QListViewItem *item = parent->firstChild();
+        Q3ListViewItem *item = parent->firstChild();
         while( item )
         {
             if( static_cast<PlaylistEntry*>( item )->url() == path )
             {
-                QListViewItem *todelete = item;
+                Q3ListViewItem *todelete = item;
                 item = item->nextSibling();
                 delete todelete;
             }
@@ -1974,7 +1986,7 @@ void PlaylistBrowser::addSelectedToPlaylist( int options )
 
     KURL::List list;
 
-    QListViewItemIterator it( m_listview, QListViewItemIterator::Selected );
+    Q3ListViewItemIterator it( m_listview, Q3ListViewItemIterator::Selected );
     for( ; it.current(); ++it )
     {
         #define item (*it)
@@ -1994,7 +2006,7 @@ void PlaylistBrowser::addSelectedToPlaylist( int options )
                  channel->load();
             #undef  channel
             KURL::List _list;
-            QListViewItem *child = item->firstChild();
+            Q3ListViewItem *child = item->firstChild();
             while( child )
             {
                 #define child static_cast<PodcastEpisode *>(child)
@@ -2027,7 +2039,7 @@ void PlaylistBrowser::addSelectedToPlaylist( int options )
 }
 
 void
-PlaylistBrowser::invokeItem( QListViewItem* i, const QPoint& point, int column ) //SLOT
+PlaylistBrowser::invokeItem( Q3ListViewItem* i, const QPoint& point, int column ) //SLOT
 {
     if( column == -1 )
         return;
@@ -2040,7 +2052,7 @@ PlaylistBrowser::invokeItem( QListViewItem* i, const QPoint& point, int column )
         slotDoubleClicked( i );
 }
 
-void PlaylistBrowser::slotDoubleClicked( QListViewItem *item ) //SLOT
+void PlaylistBrowser::slotDoubleClicked( Q3ListViewItem *item ) //SLOT
 {
     if( !item ) return;
     PlaylistBrowserEntry *entry = dynamic_cast<PlaylistBrowserEntry*>(item);
@@ -2075,17 +2087,17 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
     int folderCount   = 0;
     int lastfmCount   = 0;
 
-    QPtrList<PlaylistEntry>    playlistsToDelete;
-    QPtrList<PodcastChannel>   podcastsToDelete;
+    Q3PtrList<PlaylistEntry>    playlistsToDelete;
+    Q3PtrList<PodcastChannel>   podcastsToDelete;
 
-    QPtrList<PlaylistCategory> playlistFoldersToDelete;
-    QPtrList<PlaylistCategory> podcastFoldersToDelete;
+    Q3PtrList<PlaylistCategory> playlistFoldersToDelete;
+    Q3PtrList<PlaylistCategory> podcastFoldersToDelete;
 
     //remove currentItem, no matter if selected or not
     m_listview->setSelected( m_listview->currentItem(), true );
 
-    QPtrList<QListViewItem> selected;
-    QListViewItemIterator it( m_listview, QListViewItemIterator::Selected );
+    Q3PtrList<Q3ListViewItem> selected;
+    Q3ListViewItemIterator it( m_listview, Q3ListViewItemIterator::Selected );
     for( ; it.current(); ++it )
     {
         if( !static_cast<PlaylistBrowserEntry*>(*it)->isKept() )
@@ -2096,7 +2108,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
 
         // if the playlist containing this item is already selected the current item will be skipped
         // it will be deleted from the parent
-        QListViewItem *parent = it.current()->parent();
+        Q3ListViewItem *parent = it.current()->parent();
 
         if( parent && parent->isSelected() ) //parent will remove children
             continue;
@@ -2146,7 +2158,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
                 folderCount++;
                 if( parent == m_playlistCategory )
                 {
-                    for( QListViewItem *ch = (*it)->firstChild(); ch; ch = ch->nextSibling() )
+                    for( Q3ListViewItem *ch = (*it)->firstChild(); ch; ch = ch->nextSibling() )
                     {
                         if( isCategory( ch ) )
                         {
@@ -2164,7 +2176,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
                 }
                 else if( parent == m_podcastCategory )
                 {
-                    for( QListViewItem *ch = (*it)->firstChild(); ch; ch = ch->nextSibling() )
+                    for( Q3ListViewItem *ch = (*it)->firstChild(); ch; ch = ch->nextSibling() )
                     {
                         if( isCategory( ch ) )
                         {
@@ -2221,7 +2233,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
             return;
     }
 
-    foreachType( QPtrList<QListViewItem>, selected )
+    foreachType( Q3PtrList<Q3ListViewItem>, selected )
     {
         if ( isPlaylistTrackItem( *it ) )
         {
@@ -2238,7 +2250,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
     {
         if( deletePlaylists( playlistsToDelete ) )
         {
-            foreachType( QPtrList<PlaylistEntry>, playlistsToDelete )
+            foreachType( Q3PtrList<PlaylistEntry>, playlistsToDelete )
             {
                 m_dynamicEntries.remove(*it);
                 delete (*it);
@@ -2249,14 +2261,14 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
     if( podcastCount )
     {
         if( deletePodcasts( podcastsToDelete ) )
-            foreachType( QPtrList<PodcastChannel>, podcastsToDelete )
+            foreachType( Q3PtrList<PodcastChannel>, podcastsToDelete )
                 delete (*it);
     }
 
-    foreachType( QPtrList<PlaylistCategory>, playlistFoldersToDelete )
+    foreachType( Q3PtrList<PlaylistCategory>, playlistFoldersToDelete )
         delete (*it);
 
-    foreachType( QPtrList<PlaylistCategory>, podcastFoldersToDelete )
+    foreachType( Q3PtrList<PlaylistCategory>, podcastFoldersToDelete )
         removePodcastFolder( *it );
 
     if( playlistCount || trackCount )
@@ -2279,10 +2291,10 @@ void PlaylistBrowser::removePodcastFolder( PlaylistCategory *item )
         return;
     }
 
-    QListViewItem *child = item->firstChild();
+    Q3ListViewItem *child = item->firstChild();
     while( child )
     {
-        QListViewItem *nextChild = 0;
+        Q3ListViewItem *nextChild = 0;
         if( isPodcastChannel( child ) )
         {
         #define child static_cast<PodcastChannel*>(child)
@@ -2305,7 +2317,7 @@ void PlaylistBrowser::removePodcastFolder( PlaylistCategory *item )
 
 void PlaylistBrowser::renameSelectedItem() //SLOT
 {
-    QListViewItem *item = m_listview->currentItem();
+    Q3ListViewItem *item = m_listview->currentItem();
     if( !item ) return;
 
     if( item == m_randomDynamic || item == m_suggestedDynamic )
@@ -2317,7 +2329,7 @@ void PlaylistBrowser::renameSelectedItem() //SLOT
 }
 
 
-void PlaylistBrowser::renamePlaylist( QListViewItem* item, const QString& newName, int ) //SLOT
+void PlaylistBrowser::renamePlaylist( Q3ListViewItem* item, const QString& newName, int ) //SLOT
 {
     PlaylistBrowserEntry *entry = dynamic_cast<PlaylistBrowserEntry*>( item );
     if ( entry )
@@ -2329,12 +2341,12 @@ void PlaylistBrowser::saveM3U( PlaylistEntry *item, bool append )
 {
     QFile file( item->url().path() );
 
-    if( append ? file.open( IO_WriteOnly | IO_Append ) : file.open( IO_WriteOnly ) )
+    if( append ? file.open( QIODevice::WriteOnly | QIODevice::Append ) : file.open( QIODevice::WriteOnly ) )
     {
-        QTextStream stream( &file );
+        Q3TextStream stream( &file );
         if( !append )
             stream << "#EXTM3U\n";
-        QPtrList<TrackItemInfo> trackList = append ? item->droppedTracks() : item->trackList();
+        Q3PtrList<TrackItemInfo> trackList = append ? item->droppedTracks() : item->trackList();
         for( TrackItemInfo *info = trackList.first(); info; info = trackList.next() )
         {
             stream << "#EXTINF:";
@@ -2359,7 +2371,7 @@ void PlaylistBrowser::saveXSPF( PlaylistEntry *item, bool append )
 
     XSPFtrackList list;
 
-    QPtrList<TrackItemInfo> trackList = append ? item->droppedTracks() : item->trackList();
+    Q3PtrList<TrackItemInfo> trackList = append ? item->droppedTracks() : item->trackList();
     for( TrackItemInfo *info = trackList.first(); info; info = trackList.next() )
     {
         XSPFtrack track;
@@ -2373,9 +2385,9 @@ void PlaylistBrowser::saveXSPF( PlaylistEntry *item, bool append )
     playlist->setTrackList( list, append );
 
     QFile file( item->url().path() );
-    file.open( IO_WriteOnly );
+    file.open( QIODevice::WriteOnly );
 
-    QTextStream stream ( &file );
+    Q3TextStream stream ( &file );
 
     playlist->save( stream, 2 );
 
@@ -2387,10 +2399,10 @@ void PlaylistBrowser::savePLS( PlaylistEntry *item, bool append )
 {
     QFile file( item->url().path() );
 
-    if( append ? file.open( IO_WriteOnly | IO_Append ) : file.open( IO_WriteOnly ) )
+    if( append ? file.open( QIODevice::WriteOnly | QIODevice::Append ) : file.open( QIODevice::WriteOnly ) )
     {
-        QTextStream stream( &file );
-        QPtrList<TrackItemInfo> trackList = append ? item->droppedTracks() : item->trackList();
+        Q3TextStream stream( &file );
+        Q3PtrList<TrackItemInfo> trackList = append ? item->droppedTracks() : item->trackList();
         stream << "NumberOfEntries=" << trackList.count() << endl;
         int c=1;
         for( TrackItemInfo *info = trackList.first(); info; info = trackList.next(), ++c )
@@ -2444,7 +2456,7 @@ KURL::List PlaylistBrowser::recurse( const KURL &url )
 }
 
 
-void PlaylistBrowser::currentItemChanged( QListViewItem *item )    //SLOT
+void PlaylistBrowser::currentItemChanged( Q3ListViewItem *item )    //SLOT
 {
     // rename remove and delete buttons are disabled if there are no playlists
     // rename and delete buttons are disabled for track items
@@ -2532,7 +2544,7 @@ void PlaylistBrowser::slotAddPlaylistMenu( int id ) //SLOT
  ************************
  **/
 
-void PlaylistBrowser::showContextMenu( QListViewItem *item, const QPoint &p, int )  //SLOT
+void PlaylistBrowser::showContextMenu( Q3ListViewItem *item, const QPoint &p, int )  //SLOT
 {
     if( !item ) return;
 
@@ -2551,8 +2563,8 @@ PlaylistBrowserView::PlaylistBrowserView( QWidget *parent, const char *name )
 {
     addColumn( i18n("Playlists") );
 
-    setSelectionMode( QListView::Extended );
-    setResizeMode( QListView::AllColumns );
+    setSelectionMode( Q3ListView::Extended );
+    setResizeMode( Q3ListView::AllColumns );
     setShowSortIndicator( true );
     setRootIsDecorated( true );
 
@@ -2563,8 +2575,8 @@ PlaylistBrowserView::PlaylistBrowserView( QWidget *parent, const char *name )
 
     setTreeStepSize( 20 );
 
-    connect( this, SIGNAL( mouseButtonPressed ( int, QListViewItem *, const QPoint &, int ) ),
-             this,   SLOT( mousePressed( int, QListViewItem *, const QPoint &, int ) ) );
+    connect( this, SIGNAL( mouseButtonPressed ( int, Q3ListViewItem *, const QPoint &, int ) ),
+             this,   SLOT( mousePressed( int, Q3ListViewItem *, const QPoint &, int ) ) );
 
     //TODO moving tracks
     //connect( this, SIGNAL( moved(QListViewItem *, QListViewItem *, QListViewItem * )),
@@ -2582,7 +2594,7 @@ void PlaylistBrowserView::contentsDragMoveEvent( QDragMoveEvent* e )
 {
     //Get the closest item _before_ the cursor
     const QPoint p = contentsToViewport( e->pos() );
-    QListViewItem *item = itemAt( p );
+    Q3ListViewItem *item = itemAt( p );
     if( !item ) {
         eraseMarker();
         return;
@@ -2608,11 +2620,11 @@ void PlaylistBrowserView::contentsDragLeaveEvent( QDragLeaveEvent* )
 
 void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
 {
-    QListViewItem *parent = 0;
-    QListViewItem *after;
+    Q3ListViewItem *parent = 0;
+    Q3ListViewItem *after;
 
     const QPoint p = contentsToViewport( e->pos() );
-    QListViewItem *item = itemAt( p );
+    Q3ListViewItem *item = itemAt( p );
     if( !item ) {
         eraseMarker();
         return;
@@ -2629,7 +2641,7 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
     }
     else {
         KURL::List decodedList;
-        QValueList<MetaBundle> bundles;
+        Q3ValueList<MetaBundle> bundles;
         if( KURLDrag::decode( e, decodedList ) )
         {
             KURL::List::ConstIterator it = decodedList.begin();
@@ -2643,7 +2655,7 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
             {
                 if( isCategory(item) )
                 { // check if it is podcast category
-                    QListViewItem *cat = item;
+                    Q3ListViewItem *cat = item;
                     while( isCategory(cat) && cat!=PlaylistBrowser::instance()->podcastCategory() )
                         cat = cat->parent();
 
@@ -2687,7 +2699,7 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
             }
             else //dropped on a playlist item
             {
-                QListViewItem *parent = item;
+                Q3ListViewItem *parent = item;
                 bool isPlaylistFolder = false;
 
                 while( parent )
@@ -2752,12 +2764,12 @@ void PlaylistBrowserView::viewportPaintEvent( QPaintEvent *e )
     }
 }
 
-void PlaylistBrowserView::mousePressed( int button, QListViewItem *item, const QPoint &pnt, int )    //SLOT
+void PlaylistBrowserView::mousePressed( int button, Q3ListViewItem *item, const QPoint &pnt, int )    //SLOT
 {
     // this function expande/collapse the playlist if the +/- symbol has been pressed
     // and show the save menu if the save icon has been pressed
 
-    if( !item || button != LeftButton ) return;
+    if( !item || button != Qt::LeftButton ) return;
 
     if( isPlaylist( item ) )
     {
@@ -2774,7 +2786,7 @@ void PlaylistBrowserView::mousePressed( int button, QListViewItem *item, const Q
     }
 }
 
-void PlaylistBrowserView::moveSelectedItems( QListViewItem *newParent )
+void PlaylistBrowserView::moveSelectedItems( Q3ListViewItem *newParent )
 {
     if( !newParent || isDynamic( newParent ) || isPodcastChannel( newParent ) ||
          isSmartPlaylist( newParent ) || isPodcastEpisode( newParent ) )
@@ -2785,8 +2797,8 @@ void PlaylistBrowserView::moveSelectedItems( QListViewItem *newParent )
         return;
     #undef  newParent
 
-    QPtrList<QListViewItem> selected;
-    QListViewItemIterator it( this, QListViewItemIterator::Selected );
+    Q3PtrList<Q3ListViewItem> selected;
+    Q3ListViewItemIterator it( this, Q3ListViewItemIterator::Selected );
     for( ; it.current(); ++it )
     {
         if( !(*it)->parent() ) //must be a base category we are draggin'
@@ -2795,10 +2807,10 @@ void PlaylistBrowserView::moveSelectedItems( QListViewItem *newParent )
         selected.append( *it );
     }
 
-    QListViewItem *after=0;
-    for( QListViewItem *item = selected.first(); item; item = selected.next() )
+    Q3ListViewItem *after=0;
+    for( Q3ListViewItem *item = selected.first(); item; item = selected.next() )
     {
-        QListViewItem *itemParent = item->parent();
+        Q3ListViewItem *itemParent = item->parent();
         if( isPlaylistTrackItem( item ) )
         {
             if( isPlaylistTrackItem( newParent ) )
@@ -2823,7 +2835,7 @@ void PlaylistBrowserView::moveSelectedItems( QListViewItem *newParent )
         else if( !isCategory( newParent ) )
             continue;
 
-        QListViewItem *base = newParent;
+        Q3ListViewItem *base = newParent;
         while( base->parent() )
             base = base->parent();
 
@@ -2845,7 +2857,7 @@ void PlaylistBrowserView::moveSelectedItems( QListViewItem *newParent )
     }
 }
 
-void PlaylistBrowserView::rename( QListViewItem *item, int c )
+void PlaylistBrowserView::rename( Q3ListViewItem *item, int c )
 {
     KListView::rename( item, c );
 
@@ -2891,7 +2903,7 @@ void PlaylistBrowserView::startDrag()
     PodcastEpisode *lastPodcastEpisode = 0; // keep track of the last podcastepisode we visited.
     KMultipleDrag *drag = new KMultipleDrag( this );
 
-    QListViewItemIterator it( this, QListViewItemIterator::Selected );
+    Q3ListViewItemIterator it( this, Q3ListViewItemIterator::Selected );
     QString pixText = QString::null;
     uint count = 0;
 
@@ -2927,7 +2939,7 @@ void PlaylistBrowserView::startDrag()
         else if( isPodcastEpisode( *it ) )
         {
             if( (*it)->parent()->isSelected() ) continue;
-            if( !podList.isEmpty() && lastPodcastEpisode && lastPodcastEpisode->QListViewItem::parent() != (*it)->parent() )
+            if( !podList.isEmpty() && lastPodcastEpisode && lastPodcastEpisode->Q3ListViewItem::parent() != (*it)->parent() )
             {   // we moved onto a new podcast channel
                 urls += podList;
                 podList.clear();
@@ -2953,7 +2965,7 @@ void PlaylistBrowserView::startDrag()
             if( !item->isPolished() )
                  item->load();
 
-            QListViewItem *child = item->firstChild();
+            Q3ListViewItem *child = item->firstChild();
             KURL::List tmp;
             // we add the podcasts in reverse, its much nicer to add them chronologically :)
             while( child )
@@ -2977,7 +2989,7 @@ void PlaylistBrowserView::startDrag()
 
             if( !item->query().isEmpty() )
             {
-                QTextDrag *textdrag = new QTextDrag( item->text(0) + '\n' + item->query(), 0 );
+                Q3TextDrag *textdrag = new Q3TextDrag( item->text(0) + '\n' + item->query(), 0 );
                 textdrag->setSubtype( "amarok-sql" );
                 drag->addDragObject( textdrag );
             }
@@ -2990,9 +3002,9 @@ void PlaylistBrowserView::startDrag()
             DynamicEntry *item = static_cast<DynamicEntry*>( *it );
 
             // Serialize pointer to string
-            const QString str = QString::number( reinterpret_cast<Q_ULLONG>( item ) );
+            const QString str = QString::number( reinterpret_cast<qulonglong>( item ) );
 
-            QTextDrag *textdrag = new QTextDrag( str, 0 );
+            Q3TextDrag *textdrag = new Q3TextDrag( str, 0 );
             textdrag->setSubtype( "dynamic" );
             drag->addDragObject( textdrag );
             itemList += KURL::fromPathOrURL( QString("dynamic://%1").arg( item->text(0) ) );
@@ -3050,7 +3062,7 @@ PlaylistDialog::PlaylistDialog()
                    KGuiItem( i18n( "Save to location..." ), SmallIconSet( Amarok::icon( "files" ) ) ) )
     , customChosen( false )
 {
-    QVBox *vbox = makeVBoxMainWidget();
+    Q3VBox *vbox = makeVBoxMainWidget();
     QLabel *label = new QLabel( i18n( "&Enter a name for the playlist:" ), vbox );
     edit = new KLineEdit( vbox );
     edit->setFocus();
@@ -3100,21 +3112,21 @@ void PlaylistDialog::slotCustomPath()
 
 
 InfoPane::InfoPane( QWidget *parent )
-        : QVBox( parent ),
+        : Q3VBox( parent ),
           m_enable( false ),
           m_storedHeight( 100 )
 {
-    QFrame *container = new QVBox( this, "container" );
+    Q3Frame *container = new Q3VBox( this, "container" );
     container->hide();
 
     {
-        QFrame *box = new QHBox( container );
+        Q3Frame *box = new Q3HBox( container );
         box->setMargin( 3 );
         box->setBackgroundMode( Qt::PaletteBase );
 
         m_infoBrowser = new HTMLView( box, "extended_info" );
 
-        container->setFrameStyle( QFrame::StyledPanel );
+        container->setFrameStyle( Q3Frame::StyledPanel );
         container->setMargin( 3 );
         container->setBackgroundMode( Qt::PaletteBase );
     }
@@ -3174,7 +3186,7 @@ InfoPane::toggle( bool toggled )
 
         //Restore the height of the InfoPane (change the splitter properties)
         //Done every time since the pane forgets its height if you try to resize it while the info is hidden.
-        QValueList<int> sizes = splitter->sizes();
+        Q3ValueList<int> sizes = splitter->sizes();
         const int sizeOffset = getHeight() - sizes.last();
         sizes.first() -= sizeOffset;
         sizes.last() += sizeOffset;

@@ -6,6 +6,8 @@
 #define BOOMANALYZER_H
 
 #include "analyzerbase.h"
+//Added by qt3to4:
+#include <QPixmap>
 
 /**
 @author Max Howell

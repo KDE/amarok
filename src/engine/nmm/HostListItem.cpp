@@ -26,9 +26,11 @@
 
 #include <qbitmap.h>
 #include <qfont.h>
-#include <qheader.h>
+#include <q3header.h>
 #include <qpainter.h>
-#include <qwhatsthis.h>
+#include <q3whatsthis.h>
+//Added by qt3to4:
+#include <QPixmap>
 
 #include <kglobal.h>
 #include <kiconloader.h>
@@ -41,7 +43,7 @@
 #include "HostList.h"
 #include "nmm_engine.h"
 
-HostListItem::HostListItem( QListView *parent, QString hostname, bool audio, bool video, int volume, int status, bool read_only )
+HostListItem::HostListItem( Q3ListView *parent, QString hostname, bool audio, bool video, int volume, int status, bool read_only )
     : KListViewItem( parent ),
     m_audio( audio ),
     m_video( video ),
@@ -88,7 +90,7 @@ void HostListItem::updateColumn( int column ) const
 
 void HostListItem::statusToolTip()
 {
-  QWhatsThis::display( prettyStatus( m_status ) );
+  Q3WhatsThis::display( prettyStatus( m_status ) );
 }
 
 QString HostListItem::prettyStatus( int error )

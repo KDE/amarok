@@ -13,11 +13,11 @@
 #include <kcmdlineargs.h>
 
 
-#include <qcanvas.h>
+#include <q3canvas.h>
 #include <qlayout.h>
 
 #include <qsocketnotifier.h>
-#include <qtextstream.h>
+#include <q3textstream.h>
 
 
 static const char description[] =

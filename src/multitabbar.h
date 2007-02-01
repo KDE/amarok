@@ -26,17 +26,28 @@
 #ifndef _Multitabbar_h_
 #define _Multitabbar_h_
 
-#include <qscrollview.h>
-#include <qvbox.h>
-#include <qhbox.h>
+#include <q3scrollview.h>
+#include <q3vbox.h>
+#include <q3hbox.h>
 #include <qlayout.h>
 #include <qstring.h>
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 #include <qpushbutton.h>
+//Added by qt3to4:
+#include <QDragMoveEvent>
+#include <QDropEvent>
+#include <QDragLeaveEvent>
+#include <QShowEvent>
+#include <Q3Frame>
+#include <QPixmap>
+#include <Q3PopupMenu>
+#include <QHideEvent>
+#include <QEvent>
+#include <QDragEnterEvent>
 
 class QPixmap;
 class QPainter;
-class QFrame;
+class Q3Frame;
 
 class MultiTabBarPrivate;
 class MultiTabBarTabPrivate;
@@ -84,7 +95,7 @@ class MultiTabBar: public QWidget
         * @param popup A popup menu which should be displayed if the button is clicked
         * @param not_used_yet will be used for a popup text in the future
         */
-        int appendButton( const QPixmap &pic, int id = -1, QPopupMenu* popup = 0, const QString& not_used_yet = QString::null );
+        int appendButton( const QPixmap &pic, int id = -1, Q3PopupMenu* popup = 0, const QString& not_used_yet = QString::null );
         /**
             * remove a button with the given ID
         */
@@ -132,11 +143,11 @@ class MultiTabBar: public QWidget
         /**
         * be carefull, don't delete tabs yourself and don't delete the list itself
         */
-        QPtrList<MultiTabBarTab>* tabs();
+        Q3PtrList<MultiTabBarTab>* tabs();
         /**
         * be carefull, don't delete buttons yourself and don't delete the list itself
         */
-        QPtrList<MultiTabBarButton>* buttons();
+        Q3PtrList<MultiTabBarButton>* buttons();
 
         /**
         * might vanish, not sure yet
@@ -160,9 +171,9 @@ class MultiTabBar: public QWidget
         void updateSeparator();
     private:
         class MultiTabBarInternal *m_internal;
-        QBoxLayout *m_l;
-        QFrame *m_btnTabSep;
-        QPtrList<MultiTabBarButton> m_buttons;
+        Q3BoxLayout *m_l;
+        Q3Frame *m_btnTabSep;
+        Q3PtrList<MultiTabBarButton> m_buttons;
         MultiTabBarPosition m_position;
         MultiTabBarPrivate *d;
 };
@@ -174,9 +185,9 @@ class MultiTabBarButton: public QPushButton
 {
         Q_OBJECT
     public:
-        MultiTabBarButton( const QPixmap& pic, const QString&, QPopupMenu *popup,
+        MultiTabBarButton( const QPixmap& pic, const QString&, Q3PopupMenu *popup,
                            int id, QWidget *parent, MultiTabBar::MultiTabBarPosition pos, MultiTabBar::MultiTabBarStyle style );
-        MultiTabBarButton( const QString&, QPopupMenu *popup,
+        MultiTabBarButton( const QString&, Q3PopupMenu *popup,
                            int id, QWidget *parent, MultiTabBar::MultiTabBarPosition pos, MultiTabBar::MultiTabBarStyle style );
         virtual ~MultiTabBarButton();
         int id() const;

@@ -11,7 +11,9 @@
 
 #include <qapplication.h>
 #include <qpixmap.h>
-#include <qprocess.h>
+#include <q3process.h>
+//Added by qt3to4:
+#include <QMouseEvent>
 
 #include <kstandarddirs.h>
 #include "splash.h"
@@ -22,7 +24,7 @@ extern "C"
 }
 
 Splash::Splash()
-        : QWidget( 0, 0, WType_TopLevel | WX11BypassWM | WStyle_StaysOnTop )
+        : QWidget( 0, 0, Qt::WType_TopLevel | Qt::WX11BypassWM | Qt::WStyle_StaysOnTop )
 {
     QString path = KStandardDirs().findResource("data", "amarok/images/splash_screen.jpg");
 

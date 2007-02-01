@@ -24,6 +24,9 @@
 #include "debug.h"
 #include "enginecontroller.h"
 #include "queueLabel.h"
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <QLabel>
 #include "metabundle.h"
 #include "sliderwidget.h"
 #include "statusbar.h"
@@ -31,7 +34,7 @@
 #include <kiconloader.h>
 #include <klocale.h>
 
-#include <qhbox.h>
+#include <q3hbox.h>
 #include <qlayout.h>
 #include <qtimer.h>
 
@@ -70,7 +73,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 
     //positionBox
     QWidget *positionBox = new QWidget( this, "positionBox" );
-    QBoxLayout *box = new QHBoxLayout( positionBox, 1, 3 );
+    Q3BoxLayout *box = new Q3HBoxLayout( positionBox, 1, 3 );
 
     m_slider = new Amarok::PrettySlider( Qt::Horizontal, Amarok::PrettySlider::Normal,
 					 positionBox );
@@ -85,7 +88,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 
     // TODO Both labels need tooltips (string freeze?)
     QWidget *hbox = new QWidget( this );
-    QBoxLayout *layout = new QHBoxLayout( hbox, 0, 2 );
+    Q3BoxLayout *layout = new Q3HBoxLayout( hbox, 0, 2 );
     layout->addSpacing( 3 );
     layout->addWidget( m_queueLabel = new QueueLabel( hbox ) );
     layout->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( Amarok::action( "repeat" ) ), hbox ) );

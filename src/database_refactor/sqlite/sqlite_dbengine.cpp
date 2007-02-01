@@ -17,6 +17,8 @@
 #include <qfile.h>
 #include <qimage.h>
 #include <qtimer.h>
+//Added by qt3to4:
+#include <Q3CString>
 
 #include <cmath>                 //DbConnection::sqlite_power()
 #include <ctime>                 //query()
@@ -34,12 +36,12 @@ AMAROK_EXPORT_PLUGIN( SqliteDbEngine )
 SqliteDbEngine::SqliteDbEngine()
     : DbConnection( new SqliteConfig( "collection.db" ) )
 {
-    const QCString path = QString(/*amaroK::saveLocation()+*/"collection.db").local8Bit();
+    const Q3CString path = QString(/*amaroK::saveLocation()+*/"collection.db").local8Bit();
 
     // Open database file and check for correctness
     m_initialized = false;
     QFile file( path );
-    if ( file.open( IO_ReadOnly ) )
+    if ( file.open( QIODevice::ReadOnly ) )
     {
         QString format;
         file.readLine( format, 50 );

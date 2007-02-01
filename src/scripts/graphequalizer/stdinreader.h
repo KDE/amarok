@@ -6,7 +6,7 @@
  *   Released under GPL 2 or later, see COPYING
  */
 #include <qsocketnotifier.h>
-#include <qtextstream.h>
+#include <q3textstream.h>
 #include <kdebug.h>
 
 class StdinReader : public QObject

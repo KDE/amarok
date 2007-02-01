@@ -19,9 +19,12 @@
  ***************************************************************************/
 
 #include "squeezedtextlabel.h"
-#include <qsimplerichtext.h>
+#include <q3simplerichtext.h>
 #include <qwindowdefs.h> //QCOORD_MAX
 #include <qtooltip.h>
+//Added by qt3to4:
+#include <QResizeEvent>
+#include <QLabel>
 #include <kdebug.h>
 
 namespace KDE {
@@ -62,11 +65,11 @@ void SqueezedTextLabel::setText( const QString &text ) {
 
 //QSimpleRichText suck
 //in more detail, we only want the widthUsed(), which doesn't normally work, see below
-class MySimpleRichText: public QSimpleRichText
+class MySimpleRichText: public Q3SimpleRichText
 {
     public:
     MySimpleRichText( const QString &text, const QFont &font )
-        : QSimpleRichText( text, font )
+        : Q3SimpleRichText( text, font )
     {
         setWidth( QCOORD_MAX ); //by default it's like 150-something, always. wtf?
     }

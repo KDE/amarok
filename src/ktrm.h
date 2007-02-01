@@ -30,7 +30,7 @@
 #include <qobject.h>
 #include <qmap.h>
 #include <qstring.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 
 /**
  * This represents a potential match for a TRM lookup.  KTRMResultList is
@@ -106,7 +106,7 @@ private:
     KTRMResultPrivate *d;
 };
 
-typedef QValueList<KTRMResult> KTRMResultList;
+typedef Q3ValueList<KTRMResult> KTRMResultList;
 
 /**
  * An abstraction for libtunepimp's TRM based lookup and file recognition.

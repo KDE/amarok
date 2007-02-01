@@ -14,7 +14,7 @@
 #include <qmap.h>
 #include <qobject.h>
 #include <qstringlist.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 #include <qvariant.h>
 
 #include <kio/job.h>

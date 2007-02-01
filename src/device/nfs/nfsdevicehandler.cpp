@@ -24,7 +24,7 @@ AMAROK_EXPORT_PLUGIN( NfsDeviceHandlerFactory )
 #include <kconfig.h>
 #include <kurl.h>
 
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 
 
 NfsDeviceHandler::NfsDeviceHandler( int deviceId, QString server, QString dir, QString mountPoint )

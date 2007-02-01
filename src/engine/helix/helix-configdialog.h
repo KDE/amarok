@@ -12,11 +12,13 @@
 #define _HELIX_CONFIG_H_
 
 #include "plugin/pluginconfig.h"
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 #include <qtabwidget.h>
-#include <qvbox.h>
+#include <q3vbox.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
 
-class QGridLayout;
+class Q3GridLayout;
 class KComboBox;
 class QCheckBox;
 class KLineEdit;
@@ -92,7 +94,7 @@ public:
    void setEngine(HelixEngine *e) { m_engine = e; }
 
 private:
-   QPtrList<HelixConfigEntry> entries;
+   Q3PtrList<HelixConfigEntry> entries;
    HelixConfigEntry *m_core;
    HelixConfigEntry *m_plugin;
    HelixConfigEntry *m_codec;

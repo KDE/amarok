@@ -27,7 +27,7 @@
 #include <kmdcodec.h>
 #include <kurl.h>
 #include <qfile.h> //decodePath()
-#include <qcstring.h>
+#include <q3cstring.h>
 #include <qstring.h>
 #include <taglib/fileref.h>
 
@@ -95,14 +95,14 @@ MetaBundleSaver::prepareToSave()
     QFile orig( m_bundle->url().path() );
     QFile copy( m_tempSavePath );
 
-    if( !orig.open( IO_Raw | IO_ReadOnly ) )
+    if( !orig.open( QIODevice::Unbuffered | QIODevice::ReadOnly ) )
     {
         debug() << "Could not open original file!" << endl;
         return 0;
     }
 
     //Do this separately so as not to create a zero-length file if you can't read from input
-    if( !copy.open( IO_Raw | IO_WriteOnly | IO_Truncate ) )
+    if( !copy.open( QIODevice::Unbuffered | QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
         debug() << "Could not create file copy" << endl;
         return 0;
@@ -165,7 +165,7 @@ MetaBundleSaver::doSave()
 
     int errcode;
 
-    QCString origRenamedDigest;
+    Q3CString origRenamedDigest;
 
     if( !m_saveFileref || m_tempSavePath.isEmpty() || m_tempSaveDigest.isEmpty() || m_origRenamedSavePath.isEmpty() )
     {
@@ -197,7 +197,7 @@ MetaBundleSaver::doSave()
 
     debug() << "Calculating MD5 of " << m_origRenamedSavePath << endl;
 
-    if( !origRenamedFile.open( IO_Raw | IO_ReadOnly ) )
+    if( !origRenamedFile.open( QIODevice::Unbuffered | QIODevice::ReadOnly ) )
     {
         debug() << "Could not open temporary file!" << endl;
         goto fail_remove_copy;
@@ -292,7 +292,7 @@ MetaBundleSaver::cleanupSave()
 
     m_tempSavePath = QString::null;
     m_origRenamedSavePath = QString::null;
-    m_tempSaveDigest = QCString( 0 );
+    m_tempSaveDigest = Q3CString( 0 );
     if( m_saveFileref )
     {
         delete m_saveFileref;

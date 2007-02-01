@@ -23,6 +23,8 @@
 #include <dcopobject.h>
 #include <kurl.h>
 #include <qstringlist.h>
+//Added by qt3to4:
+#include <Q3CString>
 
 ///////////////////////////////////////////////////////////////////////
 // WARNING! Please ask on #amarok before modifying the DCOP interface!
@@ -166,7 +168,7 @@ k_dcop:
    virtual void showCurrentTrack() = 0;                     ///< Show the current track in the context browser.
    virtual void showLyrics() = 0;                           ///< Show the lyrics tab in the context browser.
    virtual void showWiki() = 0;                             ///< Show the wikipedia tab in the context browser.
-   virtual void showLyrics( const QCString& lyrics ) = 0;    ///< Renders the lyrics (plan text) in the Lyrics tab.
+   virtual void showLyrics( const Q3CString& lyrics ) = 0;    ///< Renders the lyrics (plan text) in the Lyrics tab.
 };
 
 

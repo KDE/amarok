@@ -26,10 +26,10 @@ Boston, MA 02110-1301, USA.
 
 #include <qcheckbox.h>
 #include <qcombobox.h>
-#include <qtextedit.h>
+#include <q3textedit.h>
 
 
-MagnatuneDownloadDialog::MagnatuneDownloadDialog( QWidget *parent, const char *name, bool modal, WFlags fl )
+MagnatuneDownloadDialog::MagnatuneDownloadDialog( QWidget *parent, const char *name, bool modal, Qt::WFlags fl )
         : MagnatuneDownloadDialogBase( parent, name, modal, fl )
 {
     downloadTargetURLRequester->fileDialog() ->setMode( KFile::Directory );

@@ -18,6 +18,8 @@
 #include <kconfig.h>
 #include <klocale.h>
 #include <qpushbutton.h>
+//Added by qt3to4:
+#include <QPixmap>
 
 namespace Amarok
 {
@@ -54,7 +56,7 @@ FirstRunWizard::init()
 void
 FirstRunWizard::showPage( QWidget *w ) //virtual
 {
-    QWizard::showPage( w );
+    Q3Wizard::showPage( w );
 
     cancelButton()->setText( w == WizardPage ? i18n("&Skip") : i18n("&Cancel") );
 }

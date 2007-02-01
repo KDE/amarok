@@ -21,6 +21,9 @@
 
 #include <config.h>
 #include "riokarmamediadevice.h"
+//Added by qt3to4:
+#include <Q3CString>
+#include <Q3PtrList>
 
 AMAROK_EXPORT_PLUGIN( RioKarmaMediaDevice )
 
@@ -37,7 +40,7 @@ AMAROK_EXPORT_PLUGIN( RioKarmaMediaDevice )
 
 // Qt
 #include <qdir.h>
-#include <qlistview.h>
+#include <q3listview.h>
 #include <qmap.h>
 
 
@@ -165,7 +168,7 @@ MediaItem
  * @note Playlists not implemented yet... :-)
  */
 RioKarmaMediaItem
-*RioKarmaMediaDevice::newPlaylist( const QString &name, MediaItem *parent, QPtrList<MediaItem> items )
+*RioKarmaMediaDevice::newPlaylist( const QString &name, MediaItem *parent, Q3PtrList<MediaItem> items )
 {
     Q_UNUSED( name );
     Q_UNUSED( parent );
@@ -178,7 +181,7 @@ RioKarmaMediaItem
  * @note Playlists not implemented yet... :-)
  */
 void
-RioKarmaMediaDevice::addToPlaylist( MediaItem *mlist, MediaItem *after, QPtrList<MediaItem> items )
+RioKarmaMediaDevice::addToPlaylist( MediaItem *mlist, MediaItem *after, Q3PtrList<MediaItem> items )
 {
     Q_UNUSED( mlist );
     Q_UNUSED( after );
@@ -382,7 +385,7 @@ RioKarmaMediaDevice::setDisconnected()
  * Handle clicking of the right mouse button
  */
 void
-RioKarmaMediaDevice::rmbPressed( QListViewItem *qitem, const QPoint &point, int )
+RioKarmaMediaDevice::rmbPressed( Q3ListViewItem *qitem, const QPoint &point, int )
 {
 
     enum Actions {DELETE};
@@ -562,7 +565,7 @@ RioKarmaTrack::readMetaData()
     bundle->setTitle( AtomicString( QString::fromUtf8( lk_properties_get_property( m_id, "title" ) ) ) );
 
     // translate codecs to file types
-    QString codec = QCString( lk_properties_get_property( m_id, "codec" ) );
+    QString codec = Q3CString( lk_properties_get_property( m_id, "codec" ) );
     if( codec == "mp3" )
         bundle->setFileType( MetaBundle::mp3 );
     else if( codec == "wma" )

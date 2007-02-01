@@ -24,6 +24,8 @@
 
 // Qt
 #include <qstringlist.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 
 
 class NjbPlaylist {
@@ -55,7 +57,7 @@ class NjbPlaylist {
         njb_playlist_t* m_playlist;
 };
 
-class playlistValueList: public QValueList<NjbPlaylist>
+class playlistValueList: public Q3ValueList<NjbPlaylist>
 {
     public:
         int readFromDevice( void);

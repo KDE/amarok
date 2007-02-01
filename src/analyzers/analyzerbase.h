@@ -15,6 +15,10 @@
 #include <qpixmap.h> //stack allocated and convenience
 #include <qtimer.h>  //stack allocated
 #include <qwidget.h> //baseclass
+//Added by qt3to4:
+#include <QResizeEvent>
+#include <QEvent>
+#include <QPaintEvent>
 #include <vector>    //included for convenience
 
 #ifdef HAVE_QGLWIDGET

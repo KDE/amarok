@@ -23,6 +23,8 @@
  ***************************************************************************/
 
 #include "njbmediadevice.h"
+//Added by qt3to4:
+#include <Q3PtrList>
 
 AMAROK_EXPORT_PLUGIN( NjbMediaDevice )
 
@@ -54,7 +56,7 @@ AMAROK_EXPORT_PLUGIN( NjbMediaDevice )
 
 // Qt
 #include <qdir.h>
-#include <qlistview.h>
+#include <q3listview.h>
 #include <qregexp.h>
 #include <qtooltip.h>
 #include <quuid.h>
@@ -287,7 +289,7 @@ NjbMediaDevice::deleteItemFromDevice(MediaItem* item, int flags )
             if( isCanceled() )
                 break;
 
-            expandItem( dynamic_cast<QListViewItem *>(item) );
+            expandItem( dynamic_cast<Q3ListViewItem *>(item) );
 
             for( MediaItem *it = dynamic_cast<MediaItem *>( item->firstChild() ); it ; it = next )
             {
@@ -349,7 +351,7 @@ NjbMediaDevice::downloadSelectedItems()
     QDir dir;
     QString path;
 
-    QPtrList<MediaItem> items;
+    Q3PtrList<MediaItem> items;
     m_view->getSelectedLeaves( 0, &items );
     int result = 0;
 
@@ -376,7 +378,7 @@ NjbMediaDevice::downloadToCollection()
 {
     // We will first download all files into a temp dir, and then call move to collection.
 
-    QPtrList<MediaItem> items;
+    Q3PtrList<MediaItem> items;
     m_view->getSelectedLeaves( 0, &items );
 
     KTempDir tempdir( QString::null ); // Default prefix is fine with us
@@ -505,7 +507,7 @@ NjbMediaDevice::copyTrackFromDevice( MediaItem *item )
 }
 
 MediaItem*
-NjbMediaDevice::newPlaylist(const QString& name, MediaItem* parent, QPtrList< MediaItem > items)
+NjbMediaDevice::newPlaylist(const QString& name, MediaItem* parent, Q3PtrList< MediaItem > items)
 {
     DEBUG_BLOCK
 
@@ -571,7 +573,7 @@ NjbMediaDevice::addConfigElements(QWidget* arg1)
 }
 
 void
-NjbMediaDevice::addToPlaylist(MediaItem* playlist, MediaItem* after, QPtrList< MediaItem > items)
+NjbMediaDevice::addToPlaylist(MediaItem* playlist, MediaItem* after, Q3PtrList< MediaItem > items)
 {
     MediaDevice::addToPlaylist(playlist, after, items);
 }
@@ -622,7 +624,7 @@ NjbMediaDevice::trackExists( const MetaBundle & bundle )
 }
 
 void
-NjbMediaDevice::rmbPressed(QListViewItem* qitem, const QPoint& point, int )
+NjbMediaDevice::rmbPressed(Q3ListViewItem* qitem, const QPoint& point, int )
 {
 
     enum Actions { DOWNLOAD, DOWNLOAD_TO_COLLECTION, RENAME, DELETE};
@@ -640,7 +642,7 @@ NjbMediaDevice::rmbPressed(QListViewItem* qitem, const QPoint& point, int )
 
         int id =  menu.exec( point );
         MediaItem *i;
-        QPtrList<MediaItem> items;
+        Q3PtrList<MediaItem> items;
         switch( id )
         {
         case DOWNLOAD:
@@ -796,7 +798,7 @@ NjbMediaDevice::theNjb()
 }
 
 void
-NjbMediaDevice::expandItem( QListViewItem *item )
+NjbMediaDevice::expandItem( Q3ListViewItem *item )
 {
     DEBUG_BLOCK
     // First clear the item's children to repopulate.

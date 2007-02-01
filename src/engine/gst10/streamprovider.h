@@ -21,8 +21,8 @@ email                : markey@web.de
 #include <kurl.h>             //stack allocated
 
 #include <qobject.h>
-#include <qserversocket.h>    //baseclass
-#include <qsocket.h>          //stack allocated
+#include <q3serversocket.h>    //baseclass
+#include <q3socket.h>          //stack allocated
 #include <kresolver.h> // namespace
 
 class MetaBundle;
@@ -124,8 +124,8 @@ using namespace KNetwork;
 
             char *m_pBuf;
 
-            QSocket m_sockRemote;
-            QSocket m_sockProxy;
+            Q3Socket m_sockRemote;
+            Q3Socket m_sockProxy;
             KResolver m_resolver;
 
             GstEngine &m_engine;

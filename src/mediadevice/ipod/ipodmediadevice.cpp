@@ -26,6 +26,8 @@
 
 #include <config.h>
 #include "ipodmediadevice.h"
+//Added by qt3to4:
+#include <Q3PtrList>
 
 AMAROK_EXPORT_PLUGIN( IpodMediaDevice )
 
@@ -93,9 +95,9 @@ struct PodcastInfo
     PodcastInfo() { listened = false; }
 };
 
-class TrackList : public QPtrList<Itdb_Track>
+class TrackList : public Q3PtrList<Itdb_Track>
 {
-    int compareItems ( QPtrCollection::Item track1, QPtrCollection::Item track2 )
+    int compareItems ( Q3PtrCollection::Item track1, Q3PtrCollection::Item track2 )
     {
         Itdb_Track *t1 = (Itdb_Track *)track1;
         Itdb_Track *t2 = (Itdb_Track *)track2;
@@ -110,16 +112,16 @@ class TrackList : public QPtrList<Itdb_Track>
 class IpodMediaItem : public MediaItem
 {
     public:
-        IpodMediaItem( QListView *parent, MediaDevice *dev )
+        IpodMediaItem( Q3ListView *parent, MediaDevice *dev )
             : MediaItem( parent ) { init( dev ); }
 
-        IpodMediaItem( QListViewItem *parent, MediaDevice *dev )
+        IpodMediaItem( Q3ListViewItem *parent, MediaDevice *dev )
             : MediaItem( parent ) { init( dev ); }
 
-        IpodMediaItem( QListView *parent, QListViewItem *after, MediaDevice *dev )
+        IpodMediaItem( Q3ListView *parent, Q3ListViewItem *after, MediaDevice *dev )
             : MediaItem( parent, after ) { init( dev ); }
 
-        IpodMediaItem( QListViewItem *parent, QListViewItem *after, MediaDevice *dev )
+        IpodMediaItem( Q3ListViewItem *parent, Q3ListViewItem *after, MediaDevice *dev )
             : MediaItem( parent, after ) { init( dev ); }
 
         virtual ~IpodMediaItem() { delete m_podcastInfo; }
@@ -686,7 +688,7 @@ IpodMediaDevice::trackExists( const MetaBundle& bundle )
 }
 
 MediaItem *
-IpodMediaDevice::newPlaylist(const QString &name, MediaItem *parent, QPtrList<MediaItem> items)
+IpodMediaDevice::newPlaylist(const QString &name, MediaItem *parent, Q3PtrList<MediaItem> items)
 {
     m_dbChanged = true;
     IpodMediaItem *item = new IpodMediaItem(parent, this);
@@ -700,7 +702,7 @@ IpodMediaDevice::newPlaylist(const QString &name, MediaItem *parent, QPtrList<Me
 
 
 void
-IpodMediaDevice::addToPlaylist(MediaItem *mlist, MediaItem *after, QPtrList<MediaItem> items)
+IpodMediaDevice::addToPlaylist(MediaItem *mlist, MediaItem *after, Q3PtrList<MediaItem> items)
 {
     IpodMediaItem *list = dynamic_cast<IpodMediaItem *>(mlist);
     if(!list)
@@ -951,7 +953,7 @@ IpodMediaDevice::createLockFile( bool silent )
         }
     }
 
-    if( ok && !m_lockFile->open( IO_WriteOnly ) )
+    if( ok && !m_lockFile->open( QIODevice::WriteOnly ) )
     {
         ok = false;
         msg = i18n( "Media Device: failed to create lockfile on iPod mounted at %1: %2" )
@@ -1288,11 +1290,11 @@ IpodMediaDevice::updateArtwork()
     if( !m_supportsArtwork )
         return;
 
-    QPtrList<MediaItem> items;
+    Q3PtrList<MediaItem> items;
     m_view->getSelectedLeaves( 0, &items, false );
 
     int updateCount = 0;
-    for( QPtrList<MediaItem>::iterator it = items.begin();
+    for( Q3PtrList<MediaItem>::iterator it = items.begin();
             it != items.end();
             it++ )
     {
@@ -1420,7 +1422,7 @@ IpodMediaDevice::closeDevice()  //SLOT
 }
 
 void
-IpodMediaDevice::renameItem( QListViewItem *i ) // SLOT
+IpodMediaDevice::renameItem( Q3ListViewItem *i ) // SLOT
 {
     IpodMediaItem *item = dynamic_cast<IpodMediaItem *>(i);
     if(!item)
@@ -2048,7 +2050,7 @@ IpodMediaDevice::getCapacity( KIO::filesize_t *total, KIO::filesize_t *available
 }
 
 void
-IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
+IpodMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
 {
     MediaItem *item = dynamic_cast<MediaItem *>(qitem);
     bool locked = m_mutex.locked();
@@ -2200,7 +2202,7 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
             break;
         case COPY_TO_COLLECTION:
             {
-                QPtrList<MediaItem> items;
+                Q3PtrList<MediaItem> items;
                 m_view->getSelectedLeaves( 0, &items );
 
                 KURL::List urls;
@@ -2256,7 +2258,7 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
             case CREATE_PLAYLIST:
             case MAKE_PLAYLIST:
                 {
-                    QPtrList<MediaItem> items;
+                    Q3PtrList<MediaItem> items;
                     if( id == MAKE_PLAYLIST )
                         m_view->getSelectedLeaves( 0, &items );
                     QString base(i18n("New Playlist"));
@@ -2299,9 +2301,9 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                     }
                     else
                     {
-                        QPtrList<MediaItem> items;
+                        Q3PtrList<MediaItem> items;
                         m_view->getSelectedLeaves( 0, &items );
-                        for( QPtrList<MediaItem>::iterator it = items.begin();
+                        for( Q3PtrList<MediaItem>::iterator it = items.begin();
                                 it != items.end();
                                 it++ )
                         {
@@ -2357,7 +2359,7 @@ IpodMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
                                     it;
                                     it = dynamic_cast<MediaItem *>(it->nextSibling()))
                                 after = it;
-                            QPtrList<MediaItem> items;
+                            Q3PtrList<MediaItem> items;
                             m_view->getSelectedLeaves( 0, &items );
                             addToPlaylist( list, after, items );
                         }

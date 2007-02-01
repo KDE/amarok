@@ -23,6 +23,8 @@
 #include "engineobserver.h" //baseclass
 #include <kapplication.h>   //baseclass
 #include <kurl.h>
+//Added by qt3to4:
+#include <Q3CString>
 
 namespace Amarok {
     class TrayIcon;
@@ -82,7 +84,7 @@ class LIBAMAROK_EXPORT App : public KApplication, public EngineObserver
 
     public slots:
         void applySettings( bool firstTime = false );
-        void slotConfigAmarok( const QCString& page = QCString() );
+        void slotConfigAmarok( const Q3CString& page = Q3CString() );
         void slotConfigShortcuts();
         void slotConfigGlobalShortcuts();
         void slotConfigToolBars();

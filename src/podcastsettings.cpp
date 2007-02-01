@@ -18,6 +18,8 @@
 #include <qpushbutton.h>
 #include <qradiobutton.h>
 #include <qlabel.h>
+//Added by qt3to4:
+#include <Q3PtrList>
 
 PodcastSettings::PodcastSettings( const QDomNode &channelSettings, const QString &title )
     : m_title( title )
@@ -73,7 +75,7 @@ PodcastSettingsDialog::PodcastSettingsDialog( PodcastSettings *settings, QWidget
     setSettings( settings );
 }
 
-PodcastSettingsDialog::PodcastSettingsDialog( const QPtrList<PodcastSettings> &list, const QString &caption, QWidget* parent )
+PodcastSettingsDialog::PodcastSettingsDialog( const Q3PtrList<PodcastSettings> &list, const QString &caption, QWidget* parent )
     : KDialogBase(  parent, 0, true, i18n("change options", "Configure %1").arg( caption )
             , KDialogBase::User1|KDialogBase::Ok|KDialogBase::Cancel
                     , KDialogBase::Ok, true
@@ -141,7 +143,7 @@ void PodcastSettingsDialog::slotOk()       //slot
 
     if ( !m_settingsList.isEmpty() )
     {
-        foreachType( QPtrList<PodcastSettings>, m_settingsList)
+        foreachType( Q3PtrList<PodcastSettings>, m_settingsList)
         {
             (*it)->m_saveLocation     = requesterSaveLocation().append( Amarok::vfatPath( (*it)->title() ) );
             (*it)->m_autoScan         = m_ps->m_autoFetchCheck->isChecked();

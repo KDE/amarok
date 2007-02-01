@@ -15,11 +15,14 @@
 #include "engineobserver.h" //baseclass
 
 #include <qwidget.h>        //baseclass
-#include <qvaluevector.h>   //stack allocated
+#include <q3valuevector.h>   //stack allocated
 #include <qmap.h>           //stack allocated
 #include <qpushbutton.h>
+//Added by qt3to4:
+#include <QEvent>
+#include <QMouseEvent>
 
-typedef QValueVector<QWidget*> BrowserList;
+typedef Q3ValueVector<QWidget*> BrowserList;
 typedef QMap<QString,int> BrowserIdMap;
 
 class MultiTabBar;
@@ -27,7 +30,7 @@ class MultiTabBarTab;
 class DropProxyTarget;
 class KURL;
 class QSignalMapper;
-class QVBox;
+class Q3VBox;
 
 
 class BrowserBar : public QWidget, public EngineObserver
@@ -39,8 +42,8 @@ public:
    ~BrowserBar();
 
     LIBAMAROK_EXPORT static BrowserBar* instance() { return s_instance; }
-    QVBox *container() const { return m_playlistBox; }
-    QVBox *browserBox() const { return m_browserBox; }
+    Q3VBox *container() const { return m_playlistBox; }
+    Q3VBox *browserBox() const { return m_browserBox; }
 
     QWidget *browser( const QString& ) const;
     QWidget *browser( int index ) const { if( index < 0 ) index = 0; return m_browsers[index]; }
@@ -84,12 +87,12 @@ private:
 
     LIBAMAROK_EXPORT static BrowserBar    *s_instance;
     uint           m_pos;         ///the x-axis position of m_divider
-    QVBox         *m_playlistBox; ///parent to playlist, playlist filter and toolbar
+    Q3VBox         *m_playlistBox; ///parent to playlist, playlist filter and toolbar
     QWidget       *m_divider;     ///a qsplitter like widget
     MultiTabBar   *m_tabBar;
     BrowserList    m_browsers;
     BrowserIdMap   m_browserIds;
-    QVBox         *m_browserBox;  ///parent widget to the browsers
+    Q3VBox         *m_browserBox;  ///parent widget to the browsers
     int            m_currentIndex;
     int            m_lastIndex;
     QSignalMapper *m_mapper;      ///maps tab clicks to browsers

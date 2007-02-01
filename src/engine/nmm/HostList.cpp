@@ -25,7 +25,10 @@
 #include "HostList.h"
 
 #include <qcursor.h>
-#include <qheader.h>
+#include <q3header.h>
+//Added by qt3to4:
+#include <QEvent>
+#include <QMouseEvent>
 #include <klocale.h>
 
 #include "debug.h"
@@ -60,7 +63,7 @@ HostList::~HostList()
 
 void HostList::notifyHostError( QString hostname, int error)
 {
-  QListViewItemIterator it( this );
+  Q3ListViewItemIterator it( this );
   HostListItem *host;
   while( it.current() ) {
     host = static_cast<HostListItem*>( it.current() );

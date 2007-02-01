@@ -38,15 +38,22 @@
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qmessagebox.h>
-#include <qobjectlist.h> //polish()
+#include <qobject.h> //polish()
 #include <qpainter.h>
 #include <qpalette.h>
-#include <qprogressbar.h>
+#include <q3progressbar.h>
 #include <qstyle.h>   //class CloseButton
 #include <qtimer.h>
 #include <qtoolbutton.h>
 #include <qtooltip.h> //QToolTip::palette()
-#include <qvbox.h>
+#include <q3vbox.h>
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <QCustomEvent>
+#include <Q3GridLayout>
+#include <Q3Frame>
+#include <QEvent>
+#include <QPaintEvent>
 
 //segregated classes
 #include "popupMessage.h"
@@ -85,19 +92,19 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
         : QWidget( parent, name )
         , m_logCounter( -1 )
 {
-    QBoxLayout *mainlayout = new QHBoxLayout( this, 2, /*spacing*/5 );
+    Q3BoxLayout *mainlayout = new Q3HBoxLayout( this, 2, /*spacing*/5 );
 
     //we need extra spacing due to the way we paint the surrounding boxes
-    QBoxLayout *layout = new QHBoxLayout( mainlayout, /*spacing*/5 );
+    Q3BoxLayout *layout = new Q3HBoxLayout( mainlayout, /*spacing*/5 );
 
-    QHBox *statusBarTextBox = new QHBox( this, "statusBarTextBox" );
+    Q3HBox *statusBarTextBox = new Q3HBox( this, "statusBarTextBox" );
     m_mainTextLabel = new KDE::SqueezedTextLabel( statusBarTextBox, "mainTextLabel" );
     QToolButton *shortLongButton = new QToolButton( statusBarTextBox, "shortLongButton" );
     shortLongButton->hide();
 
-    QHBox *mainProgressBarBox = new QHBox( this, "progressBox" );
+    Q3HBox *mainProgressBarBox = new Q3HBox( this, "progressBox" );
     QToolButton *b1 = new QToolButton( mainProgressBarBox, "cancelButton" );
-    m_mainProgressBar  = new QProgressBar( mainProgressBarBox, "mainProgressBar" );
+    m_mainProgressBar  = new Q3ProgressBar( mainProgressBarBox, "mainProgressBar" );
     QToolButton *b2 = new QToolButton( mainProgressBarBox, "showAllProgressDetails" );
     mainProgressBarBox->setSpacing( 2 );
     mainProgressBarBox->hide();
@@ -107,7 +114,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     layout->setStretchFactor( statusBarTextBox, 3 );
     layout->setStretchFactor( mainProgressBarBox, 1 );
 
-    m_otherWidgetLayout = new QHBoxLayout( mainlayout, /*spacing*/5 );
+    m_otherWidgetLayout = new Q3HBoxLayout( mainlayout, /*spacing*/5 );
 
     mainlayout->setStretchFactor( layout, 6 );
     mainlayout->setStretchFactor( m_otherWidgetLayout, 4 );
@@ -126,10 +133,10 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 
     m_popupProgress = new OverlayWidget( this, mainProgressBarBox, "popupProgress" );
     m_popupProgress->setMargin( 1 );
-    m_popupProgress->setFrameStyle( QFrame::Panel | QFrame::Raised );
-    m_popupProgress->setFrameShape( QFrame::StyledPanel );
+    m_popupProgress->setFrameStyle( Q3Frame::Panel | Q3Frame::Raised );
+    m_popupProgress->setFrameShape( Q3Frame::StyledPanel );
     m_popupProgress->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-   (new QGridLayout( m_popupProgress, 1 /*rows*/, 3 /*cols*/, 6, 3 ))->setAutoAdd( true );
+   (new Q3GridLayout( m_popupProgress, 1 /*rows*/, 3 /*cols*/, 6, 3 ))->setAutoAdd( true );
 }
 
 void
@@ -657,12 +664,12 @@ StatusBar::writeLogFile( const QString &text )
 
         file.setName( logBase + QString::number(m_logCounter) );
         // if we have overflown the log, then we want to overwrite the previous content
-        if( !file.open( IO_WriteOnly ) ) return;
+        if( !file.open( QIODevice::WriteOnly ) ) return;
     }
-    else if( !file.open( IO_WriteOnly|IO_Append ) ) return;
+    else if( !file.open( QIODevice::WriteOnly|QIODevice::Append ) ) return;
 
-    QTextStream stream( &file );
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    Q3TextStream stream( &file );
+    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
 
     stream << "[" << KGlobal::locale()->formatDateTime( QDateTime::currentDateTime() ) << "] " << text << endl;
 }

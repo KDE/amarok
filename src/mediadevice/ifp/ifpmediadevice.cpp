@@ -24,6 +24,8 @@
 #define DEBUG_PREFIX "IfpMediaDevice"
 
 #include "ifpmediadevice.h"
+//Added by qt3to4:
+#include <Q3PtrList>
 
 AMAROK_EXPORT_PLUGIN( IfpMediaDevice )
 
@@ -42,7 +44,7 @@ AMAROK_EXPORT_PLUGIN( IfpMediaDevice )
 #include <kurlrequesterdlg.h>  //downloadSelectedItems()
 
 #include <qfile.h>
-#include <qcstring.h>
+#include <q3cstring.h>
 #include <qregexp.h>
 
 namespace Amarok {
@@ -57,11 +59,11 @@ namespace Amarok {
 class IfpMediaItem : public MediaItem
 {
     public:
-        IfpMediaItem( QListView *parent, QListViewItem *after = 0 )
+        IfpMediaItem( Q3ListView *parent, Q3ListViewItem *after = 0 )
             : MediaItem( parent, after )
         {}
 
-        IfpMediaItem( QListViewItem *parent, QListViewItem *after = 0 )
+        IfpMediaItem( Q3ListViewItem *parent, Q3ListViewItem *after = 0 )
             : MediaItem( parent, after )
         {}
 
@@ -72,14 +74,14 @@ class IfpMediaItem : public MediaItem
         }
 
         void
-        setEncodedName( QCString &name ) { m_encodedName = name; }
+        setEncodedName( Q3CString &name ) { m_encodedName = name; }
 
-        QCString
+        Q3CString
         encodedName() { return m_encodedName; }
 
         // List directories first, always
         int
-        compare( QListViewItem *i, int col, bool ascending ) const
+        compare( Q3ListViewItem *i, int col, bool ascending ) const
         {
             #define i static_cast<IfpMediaItem *>(i)
             switch( type() )
@@ -100,7 +102,7 @@ class IfpMediaItem : public MediaItem
 
     private:
         bool     m_dir;
-        QCString m_encodedName;
+        Q3CString m_encodedName;
 };
 
 
@@ -253,18 +255,18 @@ IfpMediaDevice::runTransferDialog()
 /// Renaming
 
 void
-IfpMediaDevice::renameItem( QListViewItem *item ) // SLOT
+IfpMediaDevice::renameItem( Q3ListViewItem *item ) // SLOT
 {
     if( !item )
         return;
 
     #define item static_cast<IfpMediaItem*>(item)
 
-    QCString src  = QFile::encodeName( getFullPath( item, false ) );
+    Q3CString src  = QFile::encodeName( getFullPath( item, false ) );
     src.append( item->encodedName() );
 
      //the rename line edit has already changed the QListViewItem text
-    QCString dest = QFile::encodeName( getFullPath( item ) );
+    Q3CString dest = QFile::encodeName( getFullPath( item ) );
 
     debug() << "Renaming " << src << " to: " << dest << endl;
 
@@ -284,7 +286,7 @@ IfpMediaDevice::newDirectory( const QString &name, MediaItem *parent )
 
     QString cleanedName = cleanPath( name );
 
-    const QCString dirPath = QFile::encodeName( getFullPath( parent ) + "\\" + cleanedName );
+    const Q3CString dirPath = QFile::encodeName( getFullPath( parent ) + "\\" + cleanedName );
     debug() << "Creating directory: " << dirPath << endl;
     int err = ifp_mkdir( &m_ifpdev, dirPath );
 
@@ -311,7 +313,7 @@ IfpMediaDevice::newDirectoryRecursive( const QString &name, MediaItem *parent )
     {
         debug() << "Checking folder: " << progress << endl;
         progress += *it;
-        const QCString dirPath = QFile::encodeName( progress );
+        const Q3CString dirPath = QFile::encodeName( progress );
 
         if( ifp_exists( &m_ifpdev, dirPath ) == IFP_DIR )
         {
@@ -337,7 +339,7 @@ IfpMediaDevice::newDirectoryRecursive( const QString &name, MediaItem *parent )
 MediaItem *
 IfpMediaDevice::findChildItem( const QString &name, MediaItem *parent )
 {
-    QListViewItem *child;
+    Q3ListViewItem *child;
 
     parent ?
         child = parent->firstChild():
@@ -353,15 +355,15 @@ IfpMediaDevice::findChildItem( const QString &name, MediaItem *parent )
 }
 
 void
-IfpMediaDevice::addToDirectory( MediaItem *directory, QPtrList<MediaItem> items )
+IfpMediaDevice::addToDirectory( MediaItem *directory, Q3PtrList<MediaItem> items )
 {
     if( !directory || items.isEmpty() ) return;
 
     m_tmpParent = directory;
-    for( QPtrListIterator<MediaItem> it(items); *it; ++it )
+    for( Q3PtrListIterator<MediaItem> it(items); *it; ++it )
     {
-        QCString src  = QFile::encodeName( getFullPath( *it ) );
-        QCString dest = QFile::encodeName( getFullPath( directory ) + "\\" + (*it)->text(0) );
+        Q3CString src  = QFile::encodeName( getFullPath( *it ) );
+        Q3CString dest = QFile::encodeName( getFullPath( directory ) + "\\" + (*it)->text(0) );
         debug() << "Moving: " << src << " to: " << dest << endl;
 
         int err = ifp_rename( &m_ifpdev, src, dest );
@@ -381,7 +383,7 @@ IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
     if( !m_connected ) return 0;
     m_transferring = true;
 
-    const QCString src  = QFile::encodeName( bundle.url().path() );
+    const Q3CString src  = QFile::encodeName( bundle.url().path() );
 
     QString directory = "\\"; //root
     bool cleverFilename = false;
@@ -417,7 +419,7 @@ IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
     else
         newFilename = cleanPath( bundle.prettyTitle() ) + '.' + bundle.type();
 
-    const QCString dest = QFile::encodeName( cleanPath(directory + newFilename) );
+    const Q3CString dest = QFile::encodeName( cleanPath(directory + newFilename) );
 
     kapp->processEvents( 100 );
     int result = uploadTrack( src, dest );
@@ -433,7 +435,7 @@ IfpMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
 /// File transfer methods
 
 int
-IfpMediaDevice::uploadTrack( const QCString& src, const QCString& dest )
+IfpMediaDevice::uploadTrack( const Q3CString& src, const Q3CString& dest )
 {
     debug() << "Transferring " << src << " to: " << dest << endl;
 
@@ -441,7 +443,7 @@ IfpMediaDevice::uploadTrack( const QCString& src, const QCString& dest )
 }
 
 int
-IfpMediaDevice::downloadTrack( const QCString& src, const QCString& dest )
+IfpMediaDevice::downloadTrack( const Q3CString& src, const Q3CString& dest )
 {
     debug() << "Downloading " << src << " to: " << dest << endl;
 
@@ -469,11 +471,11 @@ IfpMediaDevice::downloadSelectedItems()
 //     if( save != destDir.path() )
 //         config->writeEntry( "DownloadLocation", destDir.path() );
 
-    QListViewItemIterator it( m_view, QListViewItemIterator::Selected );
+    Q3ListViewItemIterator it( m_view, Q3ListViewItemIterator::Selected );
     for( ; it.current(); ++it )
     {
-        QCString dest = QFile::encodeName( destDir.path() + (*it)->text(0) );
-        QCString src = QFile::encodeName( getFullPath( *it ) );
+        Q3CString dest = QFile::encodeName( destDir.path() + (*it)->text(0) );
+        Q3CString src = QFile::encodeName( getFullPath( *it ) );
 
         downloadTrack( src, dest );
     }
@@ -517,7 +519,7 @@ IfpMediaDevice::deleteItemFromDevice( MediaItem *item, int /*flags*/ )
 
     QString path = getFullPath( item );
 
-    QCString encodedPath = QFile::encodeName( path );
+    Q3CString encodedPath = QFile::encodeName( path );
     int err;
     int count = 0;
 
@@ -545,7 +547,7 @@ IfpMediaDevice::deleteItemFromDevice( MediaItem *item, int /*flags*/ )
 /// Directory Reading
 
 void
-IfpMediaDevice::expandItem( QListViewItem *item ) // SLOT
+IfpMediaDevice::expandItem( Q3ListViewItem *item ) // SLOT
 {
     if( !item || !item->isExpandable() || m_transferring ) return;
 
@@ -620,7 +622,7 @@ IfpMediaDevice::getCapacity( KIO::filesize_t *total, KIO::filesize_t *available 
 /// Helper functions
 
 QString
-IfpMediaDevice::getFullPath( const QListViewItem *item, const bool getFilename )
+IfpMediaDevice::getFullPath( const Q3ListViewItem *item, const bool getFilename )
 {
     if( !item ) return QString();
 
@@ -628,7 +630,7 @@ IfpMediaDevice::getFullPath( const QListViewItem *item, const bool getFilename )
 
     if( getFilename ) path = item->text(0);
 
-    QListViewItem *parent = item->parent();
+    Q3ListViewItem *parent = item->parent();
     while( parent )
     {
         path.prepend( "\\" );
@@ -642,7 +644,7 @@ IfpMediaDevice::getFullPath( const QListViewItem *item, const bool getFilename )
 
 
 void
-IfpMediaDevice::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
+IfpMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
 {
     enum Actions { DOWNLOAD, DIRECTORY, RENAME, DELETE };
 

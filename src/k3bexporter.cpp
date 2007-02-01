@@ -24,8 +24,10 @@
 #include <klocale.h>
 #include <kstandarddirs.h>
 
-#include <qcstring.h>
+#include <q3cstring.h>
 #include <qstringlist.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 
 #include <dcopref.h>
 #include <dcopclient.h>
@@ -44,7 +46,7 @@ void K3bExporter::exportTracks( const KURL::List &urls, int openmode )
         return;
 
     DCOPClient *client = DCOPClient::mainClient();
-    QCString appId, appObj;
+    Q3CString appId, appObj;
     QByteArray data;
 
     if( openmode == -1 )
@@ -152,7 +154,7 @@ void K3bExporter::exportComposer( const QString &composer, int openmode )
 
 void K3bExporter::exportViaCmdLine( const KURL::List &urls, int openmode )
 {
-    QCString cmdOption;
+    Q3CString cmdOption;
 
     switch( openmode ) {
     case AudioCD:
@@ -183,10 +185,10 @@ void K3bExporter::exportViaCmdLine( const KURL::List &urls, int openmode )
 
 void K3bExporter::exportViaDCOP( const KURL::List &urls, DCOPRef &ref, int openmode )
 {
-    QValueList<DCOPRef> projectList;
+    Q3ValueList<DCOPRef> projectList;
     DCOPReply projectListReply = ref.call("projects()");
 
-    if( !projectListReply.get<QValueList<DCOPRef> >(projectList, "QValueList<DCOPRef>") ) {
+    if( !projectListReply.get<Q3ValueList<DCOPRef> >(projectList, "QValueList<DCOPRef>") ) {
         DCOPErrorMessage();
         return;
     }
@@ -207,7 +209,7 @@ void K3bExporter::DCOPErrorMessage()
 
 bool K3bExporter::startNewK3bProject( DCOPRef &ref, int openmode )
 {
-    QCString request;
+    Q3CString request;
     //K3bOpenMode mode = openMode();
 
     switch( openmode ) {

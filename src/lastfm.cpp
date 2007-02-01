@@ -24,11 +24,14 @@
 #include "lastfm.h"
 #include "statusbar.h"      //showError()
 
-#include <qdeepcopy.h>
+#include <q3deepcopy.h>
 #include <qdom.h>
-#include <qhttp.h>
+#include <q3http.h>
 #include <qlabel.h>
 #include <qregexp.h>
+//Added by qt3to4:
+#include <Q3ValueList>
+#include <Q3CString>
 
 #include <kaction.h>
 #include <klineedit.h>
@@ -66,8 +69,8 @@ AmarokHttp::get ( const QString & path )
                   .arg( path );
 
     m_done = false;
-    m_error = QHttp::NoError;
-    m_state = QHttp::Connecting;
+    m_error = Q3Http::NoError;
+    m_state = Q3Http::Connecting;
     KIO::TransferJob *job = KIO::get(uri, true, false);
     connect(job,  SIGNAL(data(KIO::Job*, const QByteArray&)),
             this, SLOT(slotData(KIO::Job*, const QByteArray&)));
@@ -77,7 +80,7 @@ AmarokHttp::get ( const QString & path )
     return 0;
 }
 
-QHttp::State
+Q3Http::State
 AmarokHttp::state() const
 {
     return m_state;
@@ -89,7 +92,7 @@ AmarokHttp::readAll ()
     return m_result;
 }
 
-QHttp::Error
+Q3Http::Error
 AmarokHttp::error()
 {
     return m_error;
@@ -113,14 +116,14 @@ void
 AmarokHttp::slotResult(KIO::Job* job)
 {
     bool err = job->error();
-    if( err || m_error != QHttp::NoError ) {
-        m_error = QHttp::UnknownError;
+    if( err || m_error != Q3Http::NoError ) {
+        m_error = Q3Http::UnknownError;
     }
     else {
-        m_error = QHttp::NoError;
+        m_error = Q3Http::NoError;
     }
     m_done = true;
-    m_state = QHttp::Unconnected;
+    m_state = Q3Http::Unconnected;
     emit( requestFinished( 0, err ) );
 }
 
@@ -399,7 +402,7 @@ WebService::handshake( const QString& username, const QString& password )
             QString( "/radio/handshake.php?version=%1&platform=%2&username=%3&passwordmd5=%4&debug=%5" )
             .arg( APP_VERSION )             //Muesli-approved: Amarok version, and Amarok-as-platform
             .arg( QString("Amarok") )
-            .arg( QString( QUrl( username ).encodedPathAndQuery() ) )
+            .arg( QString( Q3Url( username ).encodedPathAndQuery() ) )
             .arg( KMD5( m_password.utf8() ).hexDigest() )
             .arg( "0" );
 
@@ -407,12 +410,12 @@ WebService::handshake( const QString& username, const QString& password )
 
     do
         kapp->processEvents();
-    while( http.state() != QHttp::Unconnected );
+    while( http.state() != Q3Http::Unconnected );
 
-    if ( http.error() != QHttp::NoError )
+    if ( http.error() != Q3Http::NoError )
         return false;
 
-    const QString result( QDeepCopy<QString>( http.readAll() ) );
+    const QString result( Q3DeepCopy<QString>( http.readAll() ) );
 
     debug() << "result: " << result << endl;
 
@@ -420,7 +423,7 @@ WebService::handshake( const QString& username, const QString& password )
     m_baseHost = parameter( "base_url", result );
     m_basePath = parameter( "base_path", result );
     m_subscriber = parameter( "subscriber", result ) == "1";
-    m_streamUrl = QUrl( parameter( "stream_url", result ) );
+    m_streamUrl = Q3Url( parameter( "stream_url", result ) );
 //     bool banned = parameter( "banned", result ) == "1";
 
     if ( m_session.lower() == "failed" ) {
@@ -482,15 +485,15 @@ WebService::changeStation( QString url )
 
     do
         kapp->processEvents();
-    while( http.state() != QHttp::Unconnected );
+    while( http.state() != Q3Http::Unconnected );
 
-    if ( http.error() != QHttp::NoError )
+    if ( http.error() != Q3Http::NoError )
     {
         showError( E_OTHER ); // default error
         return false;
     }
 
-    const QString result( QDeepCopy<QString>( http.readAll() ) );
+    const QString result( Q3DeepCopy<QString>( http.readAll() ) );
     const int errCode = parameter( "error", result ).toInt();
 
     if ( errCode )
@@ -713,7 +716,7 @@ WebService::friends( QString username )
     connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( friendsFinished( bool ) ) );
 
     http->get( QString( "/1.0/user/%1/friends.xml" )
-                  .arg( QString( QUrl( username ).encodedPathAndQuery() ) ) );
+                  .arg( QString( Q3Url( username ).encodedPathAndQuery() ) ) );
 }
 
 
@@ -755,7 +758,7 @@ WebService::neighbours( QString username )
     connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( neighboursFinished( bool ) ) );
 
     http->get( QString( "/1.0/user/%1/neighbours.xml" )
-                  .arg( QString( QUrl( username ).encodedPathAndQuery() ) ) );
+                  .arg( QString( Q3Url( username ).encodedPathAndQuery() ) ) );
 }
 
 
@@ -797,7 +800,7 @@ WebService::userTags( QString username )
     connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( userTagsFinished( bool ) ) );
 
     http->get( QString( "/1.0/user/%1/tags.xml?debug=%2" )
-                  .arg( QString( QUrl( username ).encodedPathAndQuery() ) ) );
+                  .arg( QString( Q3Url( username ).encodedPathAndQuery() ) ) );
 }
 
 
@@ -839,7 +842,7 @@ WebService::recentTracks( QString username )
     connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( recentTracksFinished( bool ) ) );
 
     http->get( QString( "/1.0/user/%1/recenttracks.xml" )
-                  .arg( QString( QUrl( username ).encodedPathAndQuery() ) ) );
+                  .arg( QString( Q3Url( username ).encodedPathAndQuery() ) ) );
 }
 
 
@@ -850,7 +853,7 @@ WebService::recentTracksFinished( int /*id*/, bool error ) //SLOT
     http->deleteLater();
     if( error ) return;
 
-    QValueList< QPair<QString, QString> > songs;
+    Q3ValueList< QPair<QString, QString> > songs;
     QDomDocument document;
     document.setContent( http->readAll() );
 
@@ -881,37 +884,37 @@ WebService::recommend( int type, QString username, QString artist, QString token
     switch ( type )
     {
         case 0:
-            modeToken = QString( "artist_name=%1" ).arg( QString( QUrl( artist ).encodedPathAndQuery() ) );
+            modeToken = QString( "artist_name=%1" ).arg( QString( Q3Url( artist ).encodedPathAndQuery() ) );
             break;
 
         case 1:
             modeToken = QString( "album_artist=%1&album_name=%2" )
-                           .arg( QString( QUrl( artist ).encodedPathAndQuery() ) )
-                           .arg( QString( QUrl( token ).encodedPathAndQuery() ) );
+                           .arg( QString( Q3Url( artist ).encodedPathAndQuery() ) )
+                           .arg( QString( Q3Url( token ).encodedPathAndQuery() ) );
             break;
 
         case 2:
             modeToken = QString( "track_artist=%1&track_name=%2" )
-                           .arg( QString( QUrl( artist ).encodedPathAndQuery() ) )
-                           .arg( QString( QUrl( token ).encodedPathAndQuery() ) );
+                           .arg( QString( Q3Url( artist ).encodedPathAndQuery() ) )
+                           .arg( QString( Q3Url( token ).encodedPathAndQuery() ) );
             break;
     }
 
-    QHttp *http = new QHttp( "wsdev.audioscrobbler.com", 80, this );
+    Q3Http *http = new Q3Http( "wsdev.audioscrobbler.com", 80, this );
     connect( http, SIGNAL( requestFinished( bool ) ), this, SLOT( recommendFinished( bool ) ) );
 
     uint currentTime = QDateTime::currentDateTime( Qt::UTC ).toTime_t();
     QString challenge = QString::number( currentTime );
 
-    QCString md5pass = KMD5( KMD5( m_password.utf8() ).hexDigest() + currentTime ).hexDigest();
+    Q3CString md5pass = KMD5( KMD5( m_password.utf8() ).hexDigest() + currentTime ).hexDigest();
 
     QString token = QString( "user=%1&auth=%2&nonce=%3recipient=%4" )
-                       .arg( QString( QUrl( currentUsername() ).encodedPathAndQuery() ) )
-                       .arg( QString( QUrl( md5pass ).encodedPathAndQuery() ) )
-                       .arg( QString( QUrl( challenge ).encodedPathAndQuery() ) )
-                       .arg( QString( QUrl( username ).encodedPathAndQuery() ) );
+                       .arg( QString( Q3Url( currentUsername() ).encodedPathAndQuery() ) )
+                       .arg( QString( Q3Url( md5pass ).encodedPathAndQuery() ) )
+                       .arg( QString( Q3Url( challenge ).encodedPathAndQuery() ) )
+                       .arg( QString( Q3Url( username ).encodedPathAndQuery() ) );
 
-    QHttpRequestHeader header( "POST", "/1.0/rw/recommend.php?" + token.utf8() );
+    Q3HttpRequestHeader header( "POST", "/1.0/rw/recommend.php?" + token.utf8() );
     header.setValue( "Host", "wsdev.audioscrobbler.com" );
     header.setContentType( "application/x-www-form-urlencoded" );
     http->request( header, modeToken.utf8() );
@@ -1034,10 +1037,10 @@ Bundle::Bundle( const Bundle& lhs )
 {}
 
 void Bundle::detach() {
-    m_imageUrl = QDeepCopy<QString>(m_imageUrl);
-    m_albumUrl = QDeepCopy<QString>(m_albumUrl);
-    m_artistUrl = QDeepCopy<QString>(m_artistUrl);
-    m_titleUrl = QDeepCopy<QString>(m_titleUrl);
+    m_imageUrl = Q3DeepCopy<QString>(m_imageUrl);
+    m_albumUrl = Q3DeepCopy<QString>(m_albumUrl);
+    m_artistUrl = Q3DeepCopy<QString>(m_artistUrl);
+    m_titleUrl = Q3DeepCopy<QString>(m_titleUrl);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

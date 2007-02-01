@@ -27,13 +27,13 @@
 #ifndef SERVERREGISTRYPING_H 
 #define SERVERREGISTRYPING_H 
 
-#include <qsocket.h>
+#include <q3socket.h>
 
 /**
  * Connects to a remote host on the default NMM serverregistry port.
  */
 class ServerregistryPing
-    : public QSocket
+    : public Q3Socket
 {
     Q_OBJECT
 

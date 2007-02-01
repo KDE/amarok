@@ -19,10 +19,12 @@
 
 #include <config.h>
 
-#include <qheader.h>
+#include <q3header.h>
 #include <qpainter.h>
 #include <qtooltip.h>
-#include <qvbox.h>
+#include <q3vbox.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 #include <klistview.h>
 #include <kpushbutton.h>
 #include "amarokconfig.h"
@@ -31,13 +33,13 @@
 
 #include "columnlist.h"
 
-class MyCheckListItem: public QCheckListItem
+class MyCheckListItem: public Q3CheckListItem
 {
-    typedef QCheckListItem super;
+    typedef Q3CheckListItem super;
     ColumnList *m_list;
 public:
     int column;
-    MyCheckListItem( int c, QListView *v, const QString &s, Type t, ColumnList *list ):
+    MyCheckListItem( int c, Q3ListView *v, const QString &s, Type t, ColumnList *list ):
         super( v, s, t ), m_list( list ), column( c ) { }
     virtual void paintCell( QPainter * p, const QColorGroup &cg, int c, int w, int a )
     {
@@ -52,16 +54,16 @@ public:
         super::stateChange( b );
         m_list->setChanged();
     }
-    MyCheckListItem *itemAbove() { return static_cast<MyCheckListItem*>( QCheckListItem::itemAbove() ); }
-    MyCheckListItem *itemBelow() { return static_cast<MyCheckListItem*>( QCheckListItem::itemBelow() ); }
+    MyCheckListItem *itemAbove() { return static_cast<MyCheckListItem*>( Q3CheckListItem::itemAbove() ); }
+    MyCheckListItem *itemBelow() { return static_cast<MyCheckListItem*>( Q3CheckListItem::itemBelow() ); }
 };
 
 ColumnList::ColumnList( QWidget *parent, const char *name )
-    : QHBox( parent, name ), m_changed( true )
+    : Q3HBox( parent, name ), m_changed( true )
 {
     setSpacing( 5 );
 
-    QVBox *buttonbox = new QVBox( this );
+    Q3VBox *buttonbox = new Q3VBox( this );
 
     m_up = new KPushButton( KGuiItem( QString::null, "up" ), buttonbox );
     QToolTip::add( m_up, i18n( "Move column up" ) );
@@ -74,8 +76,8 @@ ColumnList::ColumnList( QWidget *parent, const char *name )
     m_list = new KListView( this );
     m_list->addColumn("");
     m_list->header()->hide();
-    m_list->setSelectionMode( QListView::Single );
-    m_list->setResizeMode( QListView::LastColumn );
+    m_list->setSelectionMode( Q3ListView::Single );
+    m_list->setResizeMode( Q3ListView::LastColumn );
     m_list->setSorting( -1 );
     m_list->setAcceptDrops( true );
     m_list->setDragEnabled( true );
@@ -83,9 +85,9 @@ ColumnList::ColumnList( QWidget *parent, const char *name )
     m_list->setDropVisualizerWidth( 3 );
     connect( m_list, SIGNAL( moved() ), this, SLOT( updateUI() ) );
     connect( m_list, SIGNAL( moved() ), this, SLOT( setChanged() ) );
-    connect( m_list, SIGNAL( currentChanged( QListViewItem* ) ), this, SLOT( updateUI() ) );
+    connect( m_list, SIGNAL( currentChanged( Q3ListViewItem* ) ), this, SLOT( updateUI() ) );
 
-    QHeader* const h = Playlist::instance()->header();
+    Q3Header* const h = Playlist::instance()->header();
     for( int i = h->count() - 1; i >= 0; --i )
     {
         const int s = h->mapToSection( i );
@@ -93,7 +95,7 @@ ColumnList::ColumnList( QWidget *parent, const char *name )
             ( s != MetaBundle::Mood   || AmarokConfig::showMoodbar() ) &&
             ( s != MetaBundle::Score  || AmarokConfig::useScores() ) )
         {
-            ( new MyCheckListItem( s, m_list, MetaBundle::prettyColumnName( s ), QCheckListItem::CheckBox, this ) )
+            ( new MyCheckListItem( s, m_list, MetaBundle::prettyColumnName( s ), Q3CheckListItem::CheckBox, this ) )
                 ->setOn( h->sectionSize( s ) );
         }
     }
@@ -103,18 +105,18 @@ ColumnList::ColumnList( QWidget *parent, const char *name )
     resetChanged();
 }
 
-QValueList<int> ColumnList::visibleColumns() const
+Q3ValueList<int> ColumnList::visibleColumns() const
 {
-    QValueList<int> v;
+    Q3ValueList<int> v;
     for( MyCheckListItem *item = static_cast<MyCheckListItem*>( m_list->firstChild() ); item; item = item->itemBelow() )
         if( item->isOn() )
             v.append( item->column );
     return v;
 }
 
-QValueList<int> ColumnList::columnOrder() const
+Q3ValueList<int> ColumnList::columnOrder() const
 {
-    QValueList<int> v;
+    Q3ValueList<int> v;
     for( MyCheckListItem *item = static_cast<MyCheckListItem*>( m_list->firstChild() ); item; item = item->itemBelow() )
         v.append( item->column );
     return v;
@@ -132,7 +134,7 @@ void ColumnList::resetChanged()
 
 void ColumnList::moveUp()
 {
-    if( QListViewItem *item = m_list->currentItem() )
+    if( Q3ListViewItem *item = m_list->currentItem() )
         if( item->itemAbove() )
         {
             m_list->moveItem( item, 0, item->itemAbove()->itemAbove() );
@@ -145,7 +147,7 @@ void ColumnList::moveUp()
 
 void ColumnList::moveDown()
 {
-    if( QListViewItem *item = m_list->currentItem() )
+    if( Q3ListViewItem *item = m_list->currentItem() )
     {
         m_list->moveItem( item, 0, item->itemBelow() );
         m_list->setCurrentItem( item );

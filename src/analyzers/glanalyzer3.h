@@ -23,7 +23,7 @@
 
 #include "analyzerbase.h"
 #include <qstring.h>
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 
 class QWidget;
 class Ball;
@@ -62,7 +62,7 @@ private:
     
     static const int NUMBER_OF_BALLS = 16;
     
-    QPtrList<Ball> balls;
+    Q3PtrList<Ball> balls;
     Paddle * leftPaddle, * rightPaddle;
     float unitX, unitY;
     GLuint ballTexture;

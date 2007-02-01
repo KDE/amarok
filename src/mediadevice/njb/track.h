@@ -22,6 +22,9 @@
 
 // qt
 #include <qstring.h>
+//Added by qt3to4:
+#include <Q3ValueList>
+#include <Q3PtrList>
 
 // libnjb
 #include <libnjb.h>
@@ -52,10 +55,10 @@ class NjbTrack {
     private:
         unsigned int m_id;
         MetaBundle m_bundle;
-        QPtrList<NjbMediaItem> ItemList;
+        Q3PtrList<NjbMediaItem> ItemList;
 };
 
-class trackValueList: public QValueList<NjbTrack *>
+class trackValueList: public Q3ValueList<NjbTrack *>
 {
     public:
         trackValueList::iterator findTrackByName( const QString& );

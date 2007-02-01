@@ -31,7 +31,9 @@
 #include <kapplication.h> // random func
 
 #include <qregexp.h>
-#include <qvaluevector.h>
+#include <q3valuevector.h>
+//Added by qt3to4:
+#include <Q3PtrList>
 
 /////////////////////////////////////////////////////////////////////////////
 ///    CLASS DynamicMode
@@ -80,13 +82,13 @@ void DynamicMode::setPreviousCount( int c )           { m_previous = c;      }
 void DynamicMode::setAppendType( int type )           { m_appendType = type; }
 void DynamicMode::setTitle( const QString& title )    { m_title = title;     }
 
-void DynamicMode::setDynamicItems( QPtrList<PlaylistBrowserEntry>& newList )
+void DynamicMode::setDynamicItems( Q3PtrList<PlaylistBrowserEntry>& newList )
 {
 DEBUG_BLOCK
 
     QStringList strListEntries;
     PlaylistBrowserEntry* entry;
-    QPtrListIterator<PlaylistBrowserEntry> it( newList );
+    Q3PtrListIterator<PlaylistBrowserEntry> it( newList );
 
     while( (entry = it.current()) != 0 )
     {
@@ -173,7 +175,7 @@ DEBUG_BLOCK
     else
     {
         PlaylistBrowser *pb = PlaylistBrowser::instance();
-        QPtrList<PlaylistBrowserEntry> dynamicEntries = pb->dynamicEntries();
+        Q3PtrList<PlaylistBrowserEntry> dynamicEntries = pb->dynamicEntries();
         if( !dynamicEntries.count() )
         {
             Amarok::StatusBar::instance()->longMessage( i18n( "This dynamic playlist has no sources set." ),
@@ -181,13 +183,13 @@ DEBUG_BLOCK
             return;
         }
         // Create an array of the sizes of each of the playlists
-        QValueVector<int> trackCount(dynamicEntries.count()) ;
+        Q3ValueVector<int> trackCount(dynamicEntries.count()) ;
         int trackCountTotal = 0;
 
         for( uint i=0; i < dynamicEntries.count(); i++ ){
           trackCount[i] = 0;
 
-          if ( QListViewItem *item = dynamicEntries.at( i ) ){
+          if ( Q3ListViewItem *item = dynamicEntries.at( i ) ){
             if( item->rtti() == PlaylistEntry::RTTI )
               trackCount[i] = static_cast<PlaylistEntry *>(item)->tracksURL().count();
             else if( item->rtti() == SmartPlaylist::RTTI  )
@@ -199,7 +201,7 @@ DEBUG_BLOCK
 
 
         PlaylistBrowserEntry* entry;
-        QPtrListIterator<PlaylistBrowserEntry> it( dynamicEntries );
+        Q3PtrListIterator<PlaylistBrowserEntry> it( dynamicEntries );
 
         //const int itemsPerSource = CACHE_SIZE / dynamicEntries.count() != 0 ? CACHE_SIZE / dynamicEntries.count() : 1;
 

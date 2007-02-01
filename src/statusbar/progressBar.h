@@ -24,7 +24,9 @@
 #ifndef KDE_PROGRESSBAR_H
 #define KDE_PROGRESSBAR_H
 
-#include <qprogressbar.h>
+#include <q3progressbar.h>
+//Added by qt3to4:
+#include <QLabel>
 
 class QLabel;
 class QPushButton;
@@ -35,7 +37,7 @@ namespace KDE
      * @class KDE::ProgressBar
      * @short ProgressBar class with some useful additions
      */
-    class ProgressBar : public QProgressBar
+    class ProgressBar : public Q3ProgressBar
     {
         friend class StatusBar;
 

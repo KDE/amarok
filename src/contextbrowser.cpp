@@ -31,22 +31,29 @@
 #include "playlist.h"      //appendMedia()
 #include "podcastbundle.h"
 #include "qstringx.h"
+//Added by qt3to4:
+#include <QLabel>
+#include <Q3ValueList>
+#include <QEvent>
+#include <Q3Frame>
+#include <Q3CString>
+#include <Q3PtrList>
 #include "scriptmanager.h"
 #include "statusbar.h"
 #include "tagdialog.h"
 #include "threadmanager.h"
 
 #include <qdatetime.h>
-#include <qdeepcopy.h>
+#include <q3deepcopy.h>
 #include <qdom.h>
 #include <qimage.h>
 #include <qregexp.h>
-#include <qtextstream.h>  // External CSS reading
-#include <qvbox.h> //wiki tab
-#include <qhbox.h>
+#include <q3textstream.h>  // External CSS reading
+#include <q3vbox.h> //wiki tab
+#include <q3hbox.h>
 #include <qlayout.h>
 #include <qlineedit.h>
-#include <qlistview.h>
+#include <q3listview.h>
 #include <qtimer.h>
 #include <qtooltip.h>
 
@@ -208,11 +215,11 @@ ContextBrowser::ContextBrowser( const char *name )
     s_instance = this;
     s_wikiLocale = AmarokConfig::wikipediaLocale();
 
-    m_contextTab = new QVBox(this, "context_tab");
+    m_contextTab = new Q3VBox(this, "context_tab");
 
     m_currentTrackPage = new HTMLView( m_contextTab, "current_track_page", true /* DNDEnabled */ );
 
-    m_lyricsTab = new QVBox(this, "lyrics_tab");
+    m_lyricsTab = new Q3VBox(this, "lyrics_tab");
 
     m_lyricsToolBar = new Browser::ToolBar( m_lyricsTab );
     m_lyricsToolBar->setIconText( KToolBar::IconTextRight, false );
@@ -242,7 +249,7 @@ ContextBrowser::ContextBrowser( const char *name )
 
        m_lyricsTextBar->setStretchableWidget(m_lyricsSearchText );
 
-       m_lyricsSearchText->setFrame( QFrame::Sunken );
+       m_lyricsSearchText->setFrame( Q3Frame::Sunken );
        m_lyricsSearchText->installEventFilter( this ); //we intercept keyEvents
 
        connect( button, SIGNAL(clicked()), m_lyricsSearchText, SLOT(clear()) );
@@ -267,7 +274,7 @@ ContextBrowser::ContextBrowser( const char *name )
     m_lyricsTextEdit->setTextFormat( Qt::PlainText );
     m_lyricsTextEdit->hide();
 
-    m_wikiTab = new QVBox(this, "wiki_tab");
+    m_wikiTab = new Q3VBox(this, "wiki_tab");
 
     m_wikiToolBar = new Browser::ToolBar( m_wikiTab );
     m_wikiToolBar->insertButton( "back", WIKI_BACK, false, i18n("Back") );
@@ -695,10 +702,10 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
                     for ( QStringList::Iterator it = cueFilesList.begin(); it != cueFilesList.end() && !foundCueFile; ++it ) 
                     {
                         QFile file ( dir.filePath(*it) );
-                        if( file.open( IO_ReadOnly ) )
+                        if( file.open( QIODevice::ReadOnly ) )
                         {
                             debug() << "[CUEFILE]: " << *it << " - Opened, looking for the matching FILE stanza." << endl;
-                            QTextStream stream( &file );
+                            Q3TextStream stream( &file );
                             QString line;
 
                             while ( !stream.atEnd() && !foundCueFile)
@@ -788,9 +795,9 @@ void ContextBrowser::engineStateChanged( Engine::State state, Engine::State oldS
 void ContextBrowser::saveHtmlData()
 {
     QFile exportedDocument( Amarok::saveLocation() + "contextbrowser.html" );
-    exportedDocument.open(IO_WriteOnly);
-    QTextStream stream( &exportedDocument );
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    exportedDocument.open(QIODevice::WriteOnly);
+    Q3TextStream stream( &exportedDocument );
+    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
     stream << m_HTMLSource // the pure html data..
         .replace( "<html>", QString( "<html><head><style type=\"text/css\">%1</style></head>" ).arg( HTMLView::loadStyleSheet() ) ); // and the stylesheet code
     exportedDocument.close();
@@ -1090,14 +1097,14 @@ public:
     CurrentTrackJob( ContextBrowser *parent )
         : ThreadManager::DependentJob( parent, "CurrentTrackJob" )
         , b( parent )
-        , m_currentTrack( QDeepCopy<MetaBundle>( EngineController::instance()->bundle() ) )
+        , m_currentTrack( Q3DeepCopy<MetaBundle>( EngineController::instance()->bundle() ) )
         , m_isStream( EngineController::engine()->isStream() )
     {
         for( QStringList::iterator it = b->m_metadataHistory.begin();
                 it != b->m_metadataHistory.end();
                 ++it )
         {
-            m_metadataHistory += QDeepCopy<QString>( *it );
+            m_metadataHistory += Q3DeepCopy<QString>( *it );
         }
     }
 
@@ -1133,8 +1140,8 @@ private:
         for( QStringList::iterator it = m_shownAlbums.begin();
                 it != m_shownAlbums.end();
                 ++it )
-            b->m_shownAlbums.append( QDeepCopy<QString>( *it ) );
-        b->m_HTMLSource = QDeepCopy<QString>( m_HTMLSource );
+            b->m_shownAlbums.append( Q3DeepCopy<QString>( *it ) );
+        b->m_HTMLSource = Q3DeepCopy<QString>( m_HTMLSource );
         b->m_currentTrackPage->set( m_HTMLSource );
         b->m_dirtyCurrentTrackPage = false;
         b->saveHtmlData(); // Send html code to file
@@ -1540,7 +1547,7 @@ CurrentTrackJob::showHomeByAlbums()
                 if( !CollectionDB::instance()->getPodcastChannelBundle( *it, &pcb ) )
                     continue;
 
-                QValueList<PodcastEpisodeBundle> episodes = CollectionDB::instance()->getPodcastEpisodes( *it, true /* only new */, 1 );
+                Q3ValueList<PodcastEpisodeBundle> episodes = CollectionDB::instance()->getPodcastEpisodes( *it, true /* only new */, 1 );
                 if( !episodes.isEmpty() )
                 {
                     PodcastEpisodeBundle &ep = *episodes.begin();
@@ -1742,7 +1749,7 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
 
     const QString coverImage = ContextBrowser::getEncodedImage( lastFmInfo->imageUrl() );
 
-    QPtrList<QString> newUrls;
+    Q3PtrList<QString> newUrls;
     newUrls.append( &albumUrl  );
     newUrls.append( &artistUrl );
     newUrls.append( &titleUrl  );
@@ -2008,7 +2015,7 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
             "<table id='albums_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>\n" );
 
     uint i = 0;
-    QValueList<PodcastEpisodeBundle> episodes = CollectionDB::instance()->getPodcastEpisodes( peb.parent() );
+    Q3ValueList<PodcastEpisodeBundle> episodes = CollectionDB::instance()->getPodcastEpisodes( peb.parent() );
     while( !episodes.isEmpty() )
     {
         PodcastEpisodeBundle &ep = episodes.back();
@@ -3167,7 +3174,7 @@ ContextBrowser::getEncodedImage( const QString &imageUrl )
     const QImage img( imageUrl );
     QByteArray ba;
     QBuffer buffer( ba );
-    buffer.open( IO_WriteOnly );
+    buffer.open( QIODevice::WriteOnly );
     img.save( &buffer, "PNG" ); // writes image into ba in PNG format
     const QString coverImage = QString( "data:image/png;base64,%1" ).arg( KCodecs::base64Encode( ba ) );
     //debug() << "Encoded imageUrl: " << coverImage << endl;
@@ -3307,7 +3314,7 @@ void ContextBrowser::showLyrics( const QString &url )
 
 
 void
-ContextBrowser::lyricsResult( QCString cXmlDoc, bool cached ) //SLOT
+ContextBrowser::lyricsResult( Q3CString cXmlDoc, bool cached ) //SLOT
 {
     QDomDocument doc;
     QString xmldoc = QString::fromUtf8( cXmlDoc );
@@ -3636,12 +3643,12 @@ ContextBrowser::wikiConfig() // SLOT
     m_wikiConfigDialog = new KDialogBase( this, 0, true, 0, KDialogBase::Ok|KDialogBase::Apply|KDialogBase::Cancel );
     kapp->setTopWidget( m_wikiConfigDialog );
     m_wikiConfigDialog->setCaption( kapp->makeStdCaption( i18n( "Wikipedia Locale" ) ) );
-    QVBox *box = m_wikiConfigDialog->makeVBoxMainWidget();
+    Q3VBox *box = m_wikiConfigDialog->makeVBoxMainWidget();
 
     m_wikiLocaleCombo = new QComboBox( box );
     m_wikiLocaleCombo->insertStringList( localeList );
 
-    QHBox  *hbox       = new QHBox( box );
+    Q3HBox  *hbox       = new Q3HBox( box );
     QLabel *otherLabel = new QLabel( i18n( "Locale: " ), hbox );
     m_wikiLocaleEdit   = new QLineEdit( "en", hbox );
 
@@ -3715,26 +3722,26 @@ ContextBrowser::showLabelsDialog()
 
     m_addLabelEdit = new ClickLineEdit( i18n( "Add new label" ), dialog->mainWidget() );
     m_addLabelEdit->installEventFilter( this );
-    m_addLabelEdit->setFrame( QFrame::Sunken );
+    m_addLabelEdit->setFrame( Q3Frame::Sunken );
     QToolTip::add( m_addLabelEdit, i18n( "Enter a new label and press Return to add it" ) );
 
-    m_labelListView = new QListView( dialog->mainWidget() );
+    m_labelListView = new Q3ListView( dialog->mainWidget() );
     m_labelListView->addColumn( i18n( "Label" ) );
     m_labelListView->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
     foreach( allLabels )
     {
-        QCheckListItem *item = new QCheckListItem( m_labelListView, *it, QCheckListItem::CheckBox );
+        Q3CheckListItem *item = new Q3CheckListItem( m_labelListView, *it, Q3CheckListItem::CheckBox );
         item->setOn( trackLabels.contains( *it ) );
     }
     if( dialog->exec() == QDialog::Accepted )
     {
         debug() << "Dialog closed, updating labels" << endl;
         QStringList newTrackLabels;
-        QListViewItemIterator iter( m_labelListView );
+        Q3ListViewItemIterator iter( m_labelListView );
         while( iter.current() )
         {
-            QCheckListItem *item = static_cast<QCheckListItem*>( iter.current() );
+            Q3CheckListItem *item = static_cast<Q3CheckListItem*>( iter.current() );
             if( item->isOn() )
                 newTrackLabels.append( item->text() );
             iter++;
@@ -3771,7 +3778,7 @@ ContextBrowser::eventFilter( QObject *o, QEvent *e )
             case Key_Return:
             case Key_Enter:
             {
-                QCheckListItem *item = new QCheckListItem( m_labelListView, m_addLabelEdit->text(), QCheckListItem::CheckBox );
+                Q3CheckListItem *item = new Q3CheckListItem( m_labelListView, m_addLabelEdit->text(), Q3CheckListItem::CheckBox );
                 item->setOn( true );
                 m_addLabelEdit->setText( QString() );
                 return true;

@@ -21,6 +21,9 @@
 #include <kdeversion.h>
 #include <kdialogbase.h>
 #include <ktempfile.h>
+//Added by qt3to4:
+#include <Q3ValueList>
+#include <QPixmap>
 
 #define DNSSD_SUPPORT KDE_IS_VERSION(3,4,0)
 
@@ -82,7 +85,7 @@ class DaapClient : public MediaDevice
 
     protected:
          bool getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
-         void rmbPressed( QListViewItem* qitem, const QPoint& point, int );
+         void rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int );
          bool lockDevice( bool tryOnly = false );
          void unlockDevice();
          bool openDevice( bool silent=false );
@@ -130,7 +133,7 @@ class ServerItem : public QObject, public MediaItem
     Q_OBJECT
 
     public:
-        ServerItem( QListView* parent, DaapClient* client, const QString& ip, Q_UINT16 port, const QString& title, const QString& host );
+        ServerItem( Q3ListView* parent, DaapClient* client, const QString& ip, Q_UINT16 port, const QString& title, const QString& host );
         ~ServerItem();
         void setOpen( bool o );
         void resetTitle()                     { setText( 0, m_title ); }
@@ -182,7 +185,7 @@ private slots:
 
 private:
     KURL::List m_urls;
-    QValueList<KTempFile*> m_tempFileList;
+    Q3ValueList<KTempFile*> m_tempFileList;
     bool m_ready;
     bool m_successful;
     bool m_errorOccured;

@@ -20,11 +20,14 @@
 #ifndef KDEOVERLAYWIDGET_H
 #define KDEOVERLAYWIDGET_H
 
-#include <qhbox.h>
+#include <q3hbox.h>
+//Added by qt3to4:
+#include <QEvent>
+#include <Q3Frame>
 
 namespace KDE
 {
-    class OverlayWidget : public QFrame
+    class OverlayWidget : public Q3Frame
     {
     public:
         /**

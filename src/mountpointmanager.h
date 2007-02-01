@@ -31,15 +31,15 @@
 
 #include <qmap.h>
 #include <qmutex.h>
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 #include <qstringlist.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 
 class DeviceHandler;
 class DeviceHandlerFactory;
 
-typedef QValueList<int> IdList;
-typedef QPtrList<DeviceHandlerFactory> FactoryList;
+typedef Q3ValueList<int> IdList;
+typedef Q3PtrList<DeviceHandlerFactory> FactoryList;
 typedef QMap<int, DeviceHandler*> HandlerMap;
 
 

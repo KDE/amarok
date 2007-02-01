@@ -21,9 +21,11 @@
 #define AMAROK_TOOLTIP_H
 
 #include <qtooltip.h>
-#include <qframe.h>
+#include <q3frame.h>
 #include <qpoint.h>
 #include <qtimer.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 
 namespace Amarok
 {
@@ -34,7 +36,7 @@ public:
     virtual QPair<QString, QRect> toolTipText( QWidget *widget, const QPoint &pos ) const = 0;
 };
 
-class ToolTip: public QFrame, public QToolTip
+class ToolTip: public Q3Frame, public QToolTip
 {
     Q_OBJECT
 
@@ -58,7 +60,7 @@ private:
     static QPoint s_pos;
     static QRect s_rect;
     static QString s_text;
-    static QValueList<ToolTip*> s_tooltips;
+    static Q3ValueList<ToolTip*> s_tooltips;
     class Manager;
     friend class Manager;
     static Manager* s_manager;

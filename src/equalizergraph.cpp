@@ -21,7 +21,11 @@
 
 #include <qpainter.h>
 #include <qpixmap.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
+//Added by qt3to4:
+#include <QResizeEvent>
+#include <Q3MemArray>
+#include <QPaintEvent>
 
 #include <kapplication.h>
 
@@ -161,7 +165,7 @@ EqualizerGraph::init_spline( float* x, float* y, int n, float* y2 )
 {
     int i, k;
     float p, qn, sig, un;
-    QMemArray<float> u(n * sizeof(float));
+    Q3MemArray<float> u(n * sizeof(float));
 
     y2[ 0 ] = u[ 0 ] = 0.0;
 

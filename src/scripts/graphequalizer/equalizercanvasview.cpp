@@ -7,8 +7,13 @@
 #include "equalizercanvasview.h"
 
 #include <qlabel.h>
-#include <qcanvas.h>
+#include <q3canvas.h>
 #include <qpen.h>
+//Added by qt3to4:
+#include <Q3ValueList>
+#include <QMouseEvent>
+#include <Q3PtrList>
+#include <Q3MemArray>
 
 #include <dcopclient.h>
 #include <kapplication.h>
@@ -17,10 +22,10 @@
 #include <kmessagebox.h>
 
 EqualizerCanvasView::EqualizerCanvasView(QWidget *parent = 0, const char *name = 0)
-    : QCanvasView(parent, name)
+    : Q3CanvasView(parent, name)
 {
     m_pen.setWidth(5);
-    m_circleList = new QPtrList<EqualizerCircle>();
+    m_circleList = new Q3PtrList<EqualizerCircle>();
 }
 
 //called after setCanvas
@@ -32,9 +37,9 @@ EqualizerCanvasView::init()
 //     line->setPoints(0,100,400,100);
 //     line->setPen(QPen(m_pen));
 //     line->setBrush(QBrush(Qt::black));
-    QCanvasLine* lineLeft = makeLine(QPoint(0,canvas()->height()/2)
+    Q3CanvasLine* lineLeft = makeLine(QPoint(0,canvas()->height()/2)
                 ,QPoint(canvas()->width()/2,canvas()->height()/2));
-    QCanvasLine* lineRight= makeLine(QPoint(canvas()->width()/2,canvas()->height()/2)
+    Q3CanvasLine* lineRight= makeLine(QPoint(canvas()->width()/2,canvas()->height()/2)
                 ,QPoint(canvas()->width(),canvas()->height()/2));
     EqualizerCircle* circleMid = new EqualizerCircle(canvas()->width()/2
               ,canvas()->height()/2
@@ -54,7 +59,7 @@ EqualizerCanvasView::init()
 void
 EqualizerCanvasView::contentsMousePressEvent(QMouseEvent *event)
 {
-    QCanvasItemList items = canvas()->collisions(event->pos());
+    Q3CanvasItemList items = canvas()->collisions(event->pos());
     if (items.empty())
         m_selectedItem = 0;
     else
@@ -66,9 +71,9 @@ void
 EqualizerCanvasView::contentsMouseDoubleClickEvent(QMouseEvent *event)
 {
     if (event->button() == LeftButton && m_selectedItem
-            && m_selectedItem->rtti() == QCanvasLine::RTTI)
+            && m_selectedItem->rtti() == Q3CanvasLine::RTTI)
     {
-        QCanvasLine* line = (QCanvasLine*) m_selectedItem;
+        Q3CanvasLine* line = (Q3CanvasLine*) m_selectedItem;
         int y = getY(event->x());
 
         EqualizerCircle* circle = new EqualizerCircle(event->x(), y
@@ -89,7 +94,7 @@ EqualizerCanvasView::contentsMouseMoveEvent(QMouseEvent *event)
 {
     if ((event->state() & LeftButton) && m_selectedItem ) {
       //  kdDebug() << "dragging " << m_selectedItem->rtti() << endl;
-        if (m_selectedItem->rtti() == QCanvasEllipse::RTTI)
+        if (m_selectedItem->rtti() == Q3CanvasEllipse::RTTI)
         {
             EqualizerCircle* circle = (EqualizerCircle*) m_selectedItem;
             circle->setLocation(event->pos());
@@ -100,7 +105,7 @@ EqualizerCanvasView::contentsMouseMoveEvent(QMouseEvent *event)
 void
 EqualizerCanvasView::contentsMouseReleaseEvent(QMouseEvent */*event*/)
 {
-    if (m_selectedItem && m_selectedItem->rtti() == QCanvasEllipse::RTTI)
+    if (m_selectedItem && m_selectedItem->rtti() == Q3CanvasEllipse::RTTI)
     {
         emit eqChanged();
     }
@@ -128,11 +133,11 @@ EqualizerCanvasView::getY(int xCoord)
     //yAxis->makeEllipse(xCoord, canvas()->height()/2,1,canvas->height());
     //canvas()->collisions(yAxis,0,false);
     //delete yAxis;
-    QMemArray<int> collidedPoints(20);
+    Q3MemArray<int> collidedPoints(20);
     unsigned int collisionNum = 0;
     for(int i=0; i<canvas()->height();i++)
     {
-        QCanvasItemList list = canvas()->collisions(QPoint(xCoord,i));
+        Q3CanvasItemList list = canvas()->collisions(QPoint(xCoord,i));
         if( ! list.isEmpty())
         {
             if(collidedPoints.size() <= collisionNum)
@@ -145,10 +150,10 @@ EqualizerCanvasView::getY(int xCoord)
     return collidedPoints[collisionNum] - collisionNum/2;
 }
 
-QCanvasLine*
+Q3CanvasLine*
 EqualizerCanvasView::makeLine(QPoint startPoint, QPoint endPoint)
 {
-    QCanvasLine* line = new QCanvasLine(canvas());
+    Q3CanvasLine* line = new Q3CanvasLine(canvas());
     line->setPoints(startPoint.x(),
                    startPoint.y(),
                    endPoint.x(),
@@ -158,12 +163,12 @@ EqualizerCanvasView::makeLine(QPoint startPoint, QPoint endPoint)
     line->show();
     return line;
 }
-QValueList<int>
+Q3ValueList<int>
 EqualizerCanvasView::currentSettings()
 {
     int step = canvas()->width()/10;
     int i;
-    QValueList<int> ret;
+    Q3ValueList<int> ret;
     ret << (int)(m_circleList->first()->y() - 100)*-1;
     for(i=1; i<9; i++)
         ret << (getY(i*step) - 100)*-1;
@@ -175,9 +180,9 @@ EqualizerCanvasView::currentSettings()
 //////////////////////
 //EqualizerCircle
 //////////////////////
-EqualizerCircle::EqualizerCircle(int x, int y, QCanvas *canvas, QCanvasLine* line1, QCanvasLine* line2,
-QPtrList<EqualizerCircle>* circleList )
-: QCanvasEllipse(15, 15, canvas)
+EqualizerCircle::EqualizerCircle(int x, int y, Q3Canvas *canvas, Q3CanvasLine* line1, Q3CanvasLine* line2,
+Q3PtrList<EqualizerCircle>* circleList )
+: Q3CanvasEllipse(15, 15, canvas)
 {
     m_line1 = line1;
     m_line2 = line2;
@@ -263,7 +268,7 @@ void EqualizerCircle::setLocation(const QPoint &newLocation)
     canvas()->update();
 }
 
-void EqualizerCircle::setLine(WhichLine lineNum, QCanvasLine* line)
+void EqualizerCircle::setLine(WhichLine lineNum, Q3CanvasLine* line)
 {
     if(lineNum == LEFT)
         m_line1 = line;
@@ -274,10 +279,10 @@ void EqualizerCircle::setLine(WhichLine lineNum, QCanvasLine* line)
 void CallAmarok::updateEq()
 {
         QByteArray data;
-        QDataStream arg(data, IO_WriteOnly);
+        QDataStream arg(data, QIODevice::WriteOnly);
         arg << m_preampSlider->value() *-1;
-        QValueList<int> cs = m_canvasView->currentSettings();
-        QValueList<int>::iterator it;
+        Q3ValueList<int> cs = m_canvasView->currentSettings();
+        Q3ValueList<int>::iterator it;
         for ( it = cs.begin(); it != cs.end(); ++it )
             arg << (*it);
         KApplication::dcopClient()->send("amarok", "player",

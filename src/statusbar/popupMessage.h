@@ -30,6 +30,10 @@
 #include <qbitmap.h>
 #include <qlayout.h>
 #include <qpixmap.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <QTimerEvent>
+#include <Q3Frame>
 
 namespace KDE
 {
@@ -84,8 +88,8 @@ namespace KDE
         void slideMask();
 
     private:
-        QVBoxLayout *m_layout;
-        QFrame      *m_countdownFrame;
+        Q3VBoxLayout *m_layout;
+        Q3Frame      *m_countdownFrame;
         QWidget     *m_anchor;
         QWidget     *m_parent;
         QBitmap      m_mask;

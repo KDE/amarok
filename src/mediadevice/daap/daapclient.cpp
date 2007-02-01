@@ -32,11 +32,13 @@
 
 #include <qcheckbox.h>
 #include <qmetaobject.h>
-#include <qobjectlist.h>
+#include <qobject.h>
 #include <qlabel.h>
 #include <qpixmap.h>
 #include <qtimer.h>
 #include <qtooltip.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 
 #include <kiconloader.h>
 #include <klineedit.h>
@@ -223,7 +225,7 @@ DaapClient::deleteItemFromDevice( MediaItem* /*item*/, int /*flags*/ )
 }
 
 void
-DaapClient::rmbPressed( QListViewItem* qitem, const QPoint& point, int )
+DaapClient::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
 {
     DEBUG_BLOCK
 
@@ -524,7 +526,7 @@ DaapClient::passwordPrompt()
 
                 QLabel* passIcon = new QLabel( mainWidget(), "passicon" );
                 passIcon->setPixmap( QPixmap( KGlobal::iconLoader()->iconPath( "password", -KIcon::SizeHuge ) ) );
-                QHBox* loginArea = new QHBox( mainWidget(), "passhbox" );
+                Q3HBox* loginArea = new Q3HBox( mainWidget(), "passhbox" );
                 new QLabel( i18n( "Password:"), loginArea, "passlabel" );
                 m_input = new KPasswordEdit( loginArea, "passedit" );
                 m_input->setFocus();
@@ -680,7 +682,7 @@ DEBUG_BLOCK
 // CLASS ServerItem
 ////////////////////////////////////////////////////////////////////////////////
 
-ServerItem::ServerItem( QListView* parent, DaapClient* client, const QString& ip, Q_UINT16 port, const QString& title, const QString& host )
+ServerItem::ServerItem( Q3ListView* parent, DaapClient* client, const QString& ip, Q_UINT16 port, const QString& title, const QString& host )
     : MediaItem( parent )
     , m_daapClient( client )
     , m_reader( 0 )
@@ -710,8 +712,8 @@ ServerItem::reset()
 
     m_loaded = 0;
 
-    QListViewItem *c = firstChild();
-    QListViewItem *n;
+    Q3ListViewItem *c = firstChild();
+    Q3ListViewItem *n;
     while( c ) {
         n = c->nextSibling();
         delete c;
@@ -847,13 +849,13 @@ DaapDownloader::completeJob()
     DEBUG_BLOCK
     KURL path;
     KURL::List tempUrlList;
-    for( QValueList<KTempFile*>::Iterator itTemps = m_tempFileList.begin(); itTemps != m_tempFileList.end(); ++itTemps )
+    for( Q3ValueList<KTempFile*>::Iterator itTemps = m_tempFileList.begin(); itTemps != m_tempFileList.end(); ++itTemps )
     {
         path.setPath( (*itTemps)->name() );
         tempUrlList << path;
     }
     CollectionView::instance()->organizeFiles( tempUrlList, i18n( "Copy Files To Collection" ), false );
-    for( QValueList<KTempFile*>::Iterator itTemps = m_tempFileList.begin(); itTemps != m_tempFileList.end(); ++itTemps )
+    for( Q3ValueList<KTempFile*>::Iterator itTemps = m_tempFileList.begin(); itTemps != m_tempFileList.end(); ++itTemps )
         delete (*itTemps); //autodelete is true, so file is unlinked now
     m_tempFileList.clear();
 }

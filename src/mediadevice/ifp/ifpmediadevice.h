@@ -1,3 +1,5 @@
+//Added by qt3to4:
+#include <Q3CString>
 /***************************************************************************
  * copyright            : (C) 2005-2006 Seb Ruiz <me@sebruiz.net>          *
  *                                                                         *
@@ -26,7 +28,7 @@ extern "C" {
 
 #include <kurl.h>
 
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 
 class IfpMediaItem;
 class TransferDialog;
@@ -41,7 +43,7 @@ class IfpMediaDevice : public MediaDevice
         virtual           ~IfpMediaDevice();
 
         bool              isConnected() { return m_connected; }
-        void              rmbPressed( QListViewItem* qitem, const QPoint& point, int );
+        void              rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int );
         bool              hasTransferDialog() { return true; }
         void              runTransferDialog();
         TransferDialog   *getTransferDialog() { return m_td; }
@@ -58,11 +60,11 @@ class IfpMediaDevice : public MediaDevice
         int               deleteItemFromDevice( MediaItem *item, int flags=DeleteTrack );
         bool              getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
         MediaItem        *newDirectory( const QString &name, MediaItem *parent );
-        void              addToDirectory( MediaItem *directory, QPtrList<MediaItem> items );
+        void              addToDirectory( MediaItem *directory, Q3PtrList<MediaItem> items );
 
     protected slots:
-        void              renameItem( QListViewItem *item );
-        void              expandItem( QListViewItem *item );
+        void              renameItem( Q3ListViewItem *item );
+        void              expandItem( Q3ListViewItem *item );
 
     private:
         enum              Error { ERR_ACCESS_DENIED, ERR_CANNOT_RENAME, ERR_DISK_FULL, ERR_COULD_NOT_WRITE };
@@ -74,9 +76,9 @@ class IfpMediaDevice : public MediaDevice
 
         // file transfer
         MediaItem        *newDirectoryRecursive( const QString &name, MediaItem *parent );
-        int               uploadTrack( const QCString& src, const QCString& dest );
+        int               uploadTrack( const Q3CString& src, const Q3CString& dest );
         void              downloadSelectedItems();
-        int               downloadTrack( const QCString& src, const QCString& dest );
+        int               downloadTrack( const Q3CString& src, const Q3CString& dest );
 
         // listDir
         void              listDir( const QString &dir );
@@ -88,7 +90,7 @@ class IfpMediaDevice : public MediaDevice
         int               setProgressInfo( struct ifp_transfer_status *progress );
         // Will iterate over parents and add directory name to the item.
         // getFilename = false will return only parent structure, as opposed to returning the filename as well
-        QString           getFullPath( const QListViewItem *item, const bool getFilename = true );
+        QString           getFullPath( const Q3ListViewItem *item, const bool getFilename = true );
         QString           cleanPath( const QString &component );
         
         MediaItem        *findChildItem( const QString &name, MediaItem *parent );
@@ -102,7 +104,7 @@ class IfpMediaDevice : public MediaDevice
 
         IfpMediaItem      *m_last;
         //used to specify new IfpMediaItem parent. Make sure it is restored to 0 (m_listview)
-        QListViewItem     *m_tmpParent;
+        Q3ListViewItem     *m_tmpParent;
         TransferDialog    *m_td;
 };
 

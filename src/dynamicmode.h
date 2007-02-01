@@ -35,10 +35,12 @@
 #define AMAROK_DYNAMIC_H
 
 #include <kurl.h>  //KURL::List
+//Added by qt3to4:
+#include <Q3PtrList>
 
 class QString;
 class QStringList;
-template<class T> class QPtrList;
+template<class T> class Q3PtrList;
 class PlaylistBrowserEntry;
 class PlaylistEntry;
 class SmartPlaylist;
@@ -52,7 +54,7 @@ class DynamicMode
 
         void edit();
         void deleting();
-        void setDynamicItems( QPtrList<PlaylistBrowserEntry>& newList );
+        void setDynamicItems( Q3PtrList<PlaylistBrowserEntry>& newList );
 
         /**
          * Retrieves \p tracks from the cache, \p m_cachedItemSet

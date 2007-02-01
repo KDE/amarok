@@ -29,13 +29,15 @@ Boston, MA 02110-1301, USA.
 #include <kiconloader.h>   //multiTabBar icons
 
 #include <qsplitter.h>
-#include <qdragobject.h>
+#include <q3dragobject.h>
 #include <qlabel.h>
+//Added by qt3to4:
+#include <Q3PopupMenu>
 
 MagnatuneBrowser *MagnatuneBrowser::s_instance = 0;
 
 MagnatuneBrowser::MagnatuneBrowser( const char *name )
-        : QVBox( 0, name )
+        : Q3VBox( 0, name )
 {
     DEBUG_BLOCK
     initTopPanel( );
@@ -45,19 +47,19 @@ MagnatuneBrowser::MagnatuneBrowser( const char *name )
     debug() << "Magnatune browser starting..." << endl;
     m_listView = new MagnatuneListView( spliter );
 
-    m_popupMenu = new QPopupMenu( spliter, "MagnatuneMenu" );
+    m_popupMenu = new Q3PopupMenu( spliter, "MagnatuneMenu" );
     m_artistInfobox = new MagnatuneArtistInfoBox( spliter, "ArtistInfoBox" );
 
 
     initBottomPanel();
 
     //connect (m_listView, SIGNAL(executed(KListViewItem *)), this, SLOT(itemExecuted(KListViewItem *)));
-    connect( m_listView, SIGNAL( doubleClicked( QListViewItem * ) ),
-             this, SLOT( itemExecuted( QListViewItem * ) ) );
-    connect( m_listView, SIGNAL( selectionChanged( QListViewItem * ) ),
-             this, SLOT( selectionChanged( QListViewItem * ) ) );
-    connect( m_listView, SIGNAL( rightButtonClicked ( QListViewItem *, const QPoint &, int ) ),
-             this, SLOT( showPopupMenu( QListViewItem *, const QPoint &, int ) ) );
+    connect( m_listView, SIGNAL( doubleClicked( Q3ListViewItem * ) ),
+             this, SLOT( itemExecuted( Q3ListViewItem * ) ) );
+    connect( m_listView, SIGNAL( selectionChanged( Q3ListViewItem * ) ),
+             this, SLOT( selectionChanged( Q3ListViewItem * ) ) );
+    connect( m_listView, SIGNAL( rightButtonClicked ( Q3ListViewItem *, const QPoint &, int ) ),
+             this, SLOT( showPopupMenu( Q3ListViewItem *, const QPoint &, int ) ) );
     connect( m_popupMenu, SIGNAL( aboutToShow() ),
              this, SLOT( menuAboutToShow() ) );
 
@@ -72,7 +74,7 @@ MagnatuneBrowser::MagnatuneBrowser( const char *name )
 
 }
 
-void MagnatuneBrowser::itemExecuted( QListViewItem * item )
+void MagnatuneBrowser::itemExecuted( Q3ListViewItem * item )
 {
     DEBUG_BLOCK;
     switch ( item->depth() )
@@ -129,7 +131,7 @@ void MagnatuneBrowser::addArtistToPlaylist( MagnatuneArtist *item )
         addAlbumToPlaylist( &( *it ) );
 }
 
-void MagnatuneBrowser::selectionChanged( QListViewItem *item )
+void MagnatuneBrowser::selectionChanged( Q3ListViewItem *item )
 {
     if ( !item ) return ; // sanity check
 
@@ -189,7 +191,7 @@ void MagnatuneBrowser::selectionChanged( QListViewItem *item )
     }
 }
 
-void MagnatuneBrowser::showPopupMenu( QListViewItem * item, const QPoint & pos, int /*column*/ )
+void MagnatuneBrowser::showPopupMenu( Q3ListViewItem * item, const QPoint & pos, int /*column*/ )
 {
     if ( !item ) return ;
 
@@ -198,7 +200,7 @@ void MagnatuneBrowser::showPopupMenu( QListViewItem * item, const QPoint & pos, 
 
 void MagnatuneBrowser::addSelectionToPlaylist( )
 {
-    QListViewItem * selectedItem = m_listView->selectedItem();
+    Q3ListViewItem * selectedItem = m_listView->selectedItem();
 
     switch ( selectedItem->depth() )
     {
@@ -217,7 +219,7 @@ void MagnatuneBrowser::menuAboutToShow( )
 {
     m_popupMenu->clear();
 
-    QListViewItem *selectedItem = m_listView->selectedItem();
+    Q3ListViewItem *selectedItem = m_listView->selectedItem();
 
     if ( !selectedItem ) return ;
 
@@ -287,7 +289,7 @@ void MagnatuneBrowser::purchaseAlbumContainingSelectedTrack( )
 
 void MagnatuneBrowser::initTopPanel( )
 {
-    m_topPanel = new QHBox( this, "topPanel", 0 );
+    m_topPanel = new Q3HBox( this, "topPanel", 0 );
     m_topPanel->setMaximumHeight( 24 );
     m_topPanel->setSpacing( 2 );
     m_topPanel->setMargin( 2 );
@@ -306,12 +308,12 @@ void MagnatuneBrowser::initTopPanel( )
 
 void MagnatuneBrowser::initBottomPanel()
 {
-    m_bottomPanel = new QVBox( this, "bottomPanel", 0 );
+    m_bottomPanel = new Q3VBox( this, "bottomPanel", 0 );
     m_bottomPanel->setMaximumHeight( 54 );
     m_bottomPanel->setSpacing( 2 );
     m_bottomPanel->setMargin( 2 );
 
-    QHBox *hBox = new QHBox( m_bottomPanel, "bottomHBox", 0 );
+    Q3HBox *hBox = new Q3HBox( m_bottomPanel, "bottomHBox", 0 );
     hBox->setMaximumHeight( 24 );
     hBox->setSpacing( 2 );
     //hBox->setMargin( 2 );
@@ -379,9 +381,9 @@ void MagnatuneBrowser::listDownloadComplete( KIO::Job * downLoadJob )
     if ( file.exists() )
         file.remove();
 
-    if ( file.open( IO_WriteOnly ) )
+    if ( file.open( QIODevice::WriteOnly ) )
     {
-        QTextStream stream( &file );
+        Q3TextStream stream( &file );
         stream << list;
         file.close();
     }

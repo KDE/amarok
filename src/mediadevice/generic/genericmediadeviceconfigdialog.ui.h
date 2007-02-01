@@ -1,3 +1,5 @@
+//Added by qt3to4:
+#include <Q3PopupMenu>
 /*
   (c) 2006 Roel Meeuws <r.j.meeuws+amarok@gmail.com>
 
@@ -26,9 +28,9 @@
 void
 GenericMediaDeviceConfigDialog::addSupportedButtonClicked( int id )
 {
-    QPopupMenu *unsupported = m_addSupportedButton->popup();
+    Q3PopupMenu *unsupported = m_addSupportedButton->popup();
     QComboBox *convert     = m_convertComboBox;
-    QListBox  *supported   = m_supportedListBox;
+    Q3ListBox  *supported   = m_supportedListBox;
 
     supported->insertItem( unsupported->text( id ) );
 
@@ -50,7 +52,7 @@ GenericMediaDeviceConfigDialog::removeSupportedButtonClicked()
     QStringList unsupported;
 
     QComboBox *convert     = m_convertComboBox;
-    QListBox  *supported   = m_supportedListBox;
+    Q3ListBox  *supported   = m_supportedListBox;
 
     for( uint i = 0; i < m_addSupportedButton->popup()->count(); i++ )
     {
@@ -60,7 +62,7 @@ GenericMediaDeviceConfigDialog::removeSupportedButtonClicked()
 
     for( uint i = 0; i < supported->count() ; /* nothing */)
     {
-        QListBoxItem *item = supported->item( i );
+        Q3ListBoxItem *item = supported->item( i );
 
         if( item->isSelected() )
         {
@@ -106,7 +108,7 @@ GenericMediaDeviceConfigDialog::removeSupportedButtonClicked()
 
 
 void
-GenericMediaDeviceConfigDialog::supportedListBoxDoubleClicked( QListBoxItem* item )
+GenericMediaDeviceConfigDialog::supportedListBoxDoubleClicked( Q3ListBoxItem* item )
 {
     m_convertComboBox->setCurrentText( item->text() );
 }
@@ -124,7 +126,7 @@ GenericMediaDeviceConfigDialog::updateConfigDialogLists( const QStringList & sup
 
     QStringList unsupported;
     QComboBox *convert      = m_convertComboBox;
-    QListBox  *supported    = m_supportedListBox;
+    Q3ListBox  *supported    = m_supportedListBox;
 
     for( QStringList::Iterator it = allTypes.begin(); it != allTypes.end(); it++ )
     {
@@ -303,7 +305,7 @@ GenericMediaDeviceConfigDialog::init()
     m_formatHelp->setText( QString( "<a href='whatsthis:%1'>%2</a>" ).
             arg( Amarok::escapeHTMLAttr( buildFormatTip() ), i18n( "(Help)" ) ) );
 
-    m_unsupportedMenu = new QPopupMenu( m_addSupportedButton, "unsupported" );
+    m_unsupportedMenu = new Q3PopupMenu( m_addSupportedButton, "unsupported" );
 
     m_addSupportedButton->setPopup( m_unsupportedMenu );
 

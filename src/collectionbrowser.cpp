@@ -31,24 +31,35 @@
 #include "tagdialog.h"
 #include "threadmanager.h"
 #include "qstringx.h"
+//Added by qt3to4:
+#include <QResizeEvent>
+#include <QMouseEvent>
+#include <Q3ValueList>
+#include <QDragEnterEvent>
+#include <QKeyEvent>
+#include <QEvent>
+#include <Q3Frame>
+#include <QDropEvent>
+#include <QDragMoveEvent>
+#include <QPaintEvent>
 
 #include <taglib/tfile.h>   //TagLib::File::isWritable
 
 #include <unistd.h>         //CollectionView ctor
 
 #include <qapplication.h>
-#include <qcstring.h>
-#include <qdragobject.h>
+#include <q3cstring.h>
+#include <q3dragobject.h>
 #include <qlayout.h>        //infobox
 #include <qmap.h>
 #include <qpainter.h>
 #include <qpixmap.h>
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 #include <qpushbutton.h>
-#include <qsimplerichtext.h>
+#include <q3simplerichtext.h>
 #include <qtimer.h>
 #include <qtooltip.h>       //QToolTip::add()
-#include <qheader.h>
+#include <q3header.h>
 #include <qregexp.h>
 
 #include <kactioncollection.h>
@@ -84,7 +95,7 @@ class CoverFetcher;
 CollectionBrowser *CollectionBrowser::s_instance = 0;
 
 CollectionBrowser::CollectionBrowser( const char* name )
-    : QVBox( 0, name )
+    : Q3VBox( 0, name )
     , m_cat1Menu( new KPopupMenu( this ) )
     , m_cat2Menu( new KPopupMenu( this ) )
     , m_cat3Menu( new KPopupMenu( this ) )
@@ -107,7 +118,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
         KPushButton *filterButton = new KPushButton("...", searchToolBar, "filter");
         searchToolBar->setStretchableWidget( m_searchEdit );
 
-        m_searchEdit->setFrame( QFrame::Sunken );
+        m_searchEdit->setFrame( Q3Frame::Sunken );
         connect( button, SIGNAL( clicked() ), SLOT( slotClearFilter() ) );
         connect( filterButton, SIGNAL( clicked() ), SLOT( slotEditFilter() ) );
 
@@ -122,7 +133,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     // hidden when not in iPod browsing mode; it is shown and hidden
     // in CollectionView::setViewMode().  m_ipodHbox holds m_timeFilter
     // and m_ipodToolbar
-    m_ipodHbox = new QHBox( this );
+    m_ipodHbox = new Q3HBox( this );
     m_ipodHbox->setSpacing( 7 );  // looks better
 
     m_timeFilter = new KComboBox( m_ipodHbox, "timeFilter" );
@@ -177,11 +188,11 @@ CollectionBrowser::CollectionBrowser( const char* name )
     // correspond to moving forward / backward in the iPod collection
     // browser window; see the "For iPod-style navigation" comments below.
     m_ipodDecrement = new KAction( i18n( "Browse backward" ),
-                                   QIconSet( m_view->ipodDecrementIcon(), QIconSet::Small ),
+                                   QIcon( m_view->ipodDecrementIcon(), QIcon::Small ),
                                    0, m_view, SLOT( decrementDepth() ), ac,
                                    "iPod Decrement" );
     m_ipodIncrement = new KAction( i18n( "Browse forward" ),
-                                   QIconSet( m_view->ipodIncrementIcon(), QIconSet::Small ),
+                                   QIcon( m_view->ipodIncrementIcon(), QIcon::Small ),
                                    0, m_view, SLOT( incrementDepth() ), ac,
                                    "iPod Increment" );
     m_ipodDecrement->plug( m_ipodToolbar );
@@ -340,20 +351,20 @@ CollectionBrowser::eventFilter( QObject *o, QEvent *e )
         {
             switch( e->key() )
             {
-            case Key_Up:
-            case Key_Down:
-            case Key_PageDown:
-            case Key_PageUp:
+            case Qt::Key_Up:
+            case Qt::Key_Down:
+            case Qt::Key_PageDown:
+            case Qt::Key_PageUp:
                 m_view->setFocus();
                 QApplication::sendEvent( m_view, e );
                 return true;
 
-            case Key_Escape:
+            case Qt::Key_Escape:
                 slotClearFilter();
                 return true;
 
-            case Key_Return:
-            case Key_Enter:
+            case Qt::Key_Return:
+            case Qt::Key_Enter:
                 if ( m_timer->isActive() )
                 {
                     //Immediately filter and add results
@@ -378,7 +389,7 @@ CollectionBrowser::eventFilter( QObject *o, QEvent *e )
         // moved to CollectionView::keyPressEvent().  That code also
         // skips dividers.
 
-        if( ( e->key() >= Key_0 && e->key() <= Key_Z ) || e->key() == Key_Backspace || e->key() == Key_Escape )
+        if( ( e->key() >= Qt::Key_0 && e->key() <= Qt::Key_Z ) || e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Escape )
         {
             m_searchEdit->setFocus();
             QApplication::sendEvent( m_searchEdit, e );
@@ -391,7 +402,7 @@ CollectionBrowser::eventFilter( QObject *o, QEvent *e )
         break;
     }
 
-    return QVBox::eventFilter( o, e );
+    return Q3VBox::eventFilter( o, e );
 }
 
 void
@@ -452,7 +463,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     DEBUG_FUNC_INFO
     m_instance = this;
 
-    setSelectionMode( QListView::Extended );
+    setSelectionMode( Q3ListView::Extended );
     setItemsMovable( false );
     setSorting( 0 );
     setShowSortIndicator( true );
@@ -503,18 +514,18 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     connect( BrowserBar::instance(),   SIGNAL( browserActivated( int ) ),
              this,                      SLOT( renderView() ) ); // renderView() checks if current tab is this
 
-    connect( this,           SIGNAL( expanded( QListViewItem* ) ),
-             this,             SLOT( slotExpand( QListViewItem* ) ) );
-    connect( this,           SIGNAL( collapsed( QListViewItem* ) ),
-             this,             SLOT( slotCollapse( QListViewItem* ) ) );
-    connect( this,           SIGNAL( returnPressed( QListViewItem* ) ),
-             this,             SLOT( invokeItem( QListViewItem* ) ) );
-    connect( this,           SIGNAL( doubleClicked( QListViewItem*, const QPoint&, int ) ),
-             this,             SLOT( invokeItem( QListViewItem*, const QPoint&, int ) ) );
-    connect( this,           SIGNAL( clicked( QListViewItem*, const QPoint&, int ) ),
-             this,             SLOT( ipodItemClicked( QListViewItem*, const QPoint&, int ) ) );
-    connect( this,           SIGNAL( contextMenuRequested( QListViewItem*, const QPoint&, int ) ),
-             this,             SLOT( rmbPressed( QListViewItem*, const QPoint&, int ) ) );
+    connect( this,           SIGNAL( expanded( Q3ListViewItem* ) ),
+             this,             SLOT( slotExpand( Q3ListViewItem* ) ) );
+    connect( this,           SIGNAL( collapsed( Q3ListViewItem* ) ),
+             this,             SLOT( slotCollapse( Q3ListViewItem* ) ) );
+    connect( this,           SIGNAL( returnPressed( Q3ListViewItem* ) ),
+             this,             SLOT( invokeItem( Q3ListViewItem* ) ) );
+    connect( this,           SIGNAL( doubleClicked( Q3ListViewItem*, const QPoint&, int ) ),
+             this,             SLOT( invokeItem( Q3ListViewItem*, const QPoint&, int ) ) );
+    connect( this,           SIGNAL( clicked( Q3ListViewItem*, const QPoint&, int ) ),
+             this,             SLOT( ipodItemClicked( Q3ListViewItem*, const QPoint&, int ) ) );
+    connect( this,           SIGNAL( contextMenuRequested( Q3ListViewItem*, const QPoint&, int ) ),
+             this,             SLOT( rmbPressed( Q3ListViewItem*, const QPoint&, int ) ) );
     connect( header(),       SIGNAL( sizeChange( int, int, int ) ),
              this,             SLOT( triggerUpdate() ) );
 
@@ -543,7 +554,7 @@ CollectionView::~CollectionView() {
     config->writeEntry( "ShowDivider", m_showDivider );
 
     QStringList flatWidths;
-    for( QValueList<int>::iterator it = m_flatColumnWidths.begin();
+    for( Q3ValueList<int>::iterator it = m_flatColumnWidths.begin();
             it != m_flatColumnWidths.end();
             it++ )
             flatWidths.push_back( QString::number( (*it) ) );
@@ -568,7 +579,7 @@ CollectionView::setShowDivider( bool show )
 void
 CollectionView::keyPressEvent( QKeyEvent *e )
 {
-    typedef QListViewItemIterator It;
+    typedef Q3ListViewItemIterator It;
 
     // Reimplement up and down to skip dividers and to loop around.
     // Some of this code used to be in CollectionBrowser::eventFilter.
@@ -582,9 +593,9 @@ CollectionView::keyPressEvent( QKeyEvent *e )
         // Handle both up and down at once to avoid code duplication (it's
         // a delicate piece of logic, and was hard to get right)
 
-        QListViewItem *cur = currentItem();
+        Q3ListViewItem *cur = currentItem();
 
-        #define nextItem (e->key() == Key_Up ? cur->itemAbove() : cur->itemBelow())
+        #define nextItem (e->key() == Qt::Key_Up ? cur->itemAbove() : cur->itemBelow())
 
         bool wraparound = true;
 
@@ -613,7 +624,7 @@ CollectionView::keyPressEvent( QKeyEvent *e )
         if( wraparound )
         {
             QKeyEvent e2 ( e->type(),
-                    (e->key() == Key_Up ? Key_End : Key_Home),
+                    (e->key() == Qt::Key_Up ? Qt::Key_End : Qt::Key_Home),
                     0, e->state(),
                     QString::null, e->isAutoRepeat(), e->count() );
             QApplication::sendEvent( this, &e2 );
@@ -763,16 +774,16 @@ CollectionView::slotEnsureSelectedItemVisible() //SLOT
     //Scroll to make sure the first selected item is visible
 
     //Find the first selected item
-    QListViewItem *r=0;
-    for ( QListViewItem *i = firstChild(); i && !r; i=i->nextSibling() )
+    Q3ListViewItem *r=0;
+    for ( Q3ListViewItem *i = firstChild(); i && !r; i=i->nextSibling() )
     {
         if ( i->isSelected() )
             r = i;
-        for ( QListViewItem *j = i->firstChild(); j && !r; j=j->nextSibling() )
+        for ( Q3ListViewItem *j = i->firstChild(); j && !r; j=j->nextSibling() )
         {
             if ( j->isSelected() )
                 r = j;
-            for ( QListViewItem *k = j->firstChild(); k && !r; k=k->nextSibling() )
+            for ( Q3ListViewItem *k = j->firstChild(); k && !r; k=k->nextSibling() )
             {
                 if ( k->isSelected() )
                     r = k;
@@ -792,7 +803,7 @@ CollectionView::slotEnsureSelectedItemVisible() //SLOT
         //Create a reverse list of parents, grandparents etc.
         //Later we try to make the grandparents in view, then their children etc.
         //This means that the selected item has the most priority as it is done last.
-        QValueStack<QListViewItem*> parents;
+        Q3ValueStack<Q3ListViewItem*> parents;
         while ( r )
         {
             parents.push( r );
@@ -811,7 +822,7 @@ CollectionView::slotEnsureSelectedItemVisible() //SLOT
 }
 
 void
-CollectionView::slotExpand( QListViewItem* item )  //SLOT
+CollectionView::slotExpand( Q3ListViewItem* item )  //SLOT
 {
     if ( !item || !item->isExpandable() ) return;
 
@@ -1167,7 +1178,7 @@ CollectionView::slotExpand( QListViewItem* item )  //SLOT
 
 
 void
-CollectionView::slotCollapse( QListViewItem* item )  //SLOT
+CollectionView::slotCollapse( Q3ListViewItem* item )  //SLOT
 {
     //On collapse, go back from showing the cover to showing the icon for albums
     if ( dynamic_cast<CollectionItem*>( item ) )
@@ -1177,8 +1188,8 @@ CollectionView::slotCollapse( QListViewItem* item )  //SLOT
             i->setPixmap( 0, iconForCategory( i->m_cat ) );
     }
 
-    QListViewItem* child = item->firstChild();
-    QListViewItem* childTmp;
+    Q3ListViewItem* child = item->firstChild();
+    Q3ListViewItem* childTmp;
 
     //delete all children
     while ( child )
@@ -1334,7 +1345,7 @@ CollectionView::enableCat3Menu( bool enable )
 
 
 void
-CollectionView::invokeItem( QListViewItem* i, const QPoint& point, int column ) //SLOT
+CollectionView::invokeItem( Q3ListViewItem* i, const QPoint& point, int column ) //SLOT
 {
     if( column == -1 )
         return;
@@ -1346,7 +1357,7 @@ CollectionView::invokeItem( QListViewItem* i, const QPoint& point, int column ) 
 }
 
 void
-CollectionView::invokeItem( QListViewItem* item ) //SLOT
+CollectionView::invokeItem( Q3ListViewItem* item ) //SLOT
 {
     if ( !item || dynamic_cast<DividerItem*>(item) )
         return;
@@ -1365,7 +1376,7 @@ CollectionView::invokeItem( QListViewItem* item ) //SLOT
 // This slot is here to handle clicks on the right-arrow buttons
 // in iPod browsing mode
 void
-CollectionView::ipodItemClicked( QListViewItem *item, const QPoint&, int c )
+CollectionView::ipodItemClicked( Q3ListViewItem *item, const QPoint&, int c )
 {
     if( item == 0 || c == 0 )
         return;
@@ -1378,7 +1389,7 @@ CollectionView::ipodItemClicked( QListViewItem *item, const QPoint&, int c )
 
 
 void
-CollectionView::rmbPressed( QListViewItem* item, const QPoint& point, int ) //SLOT
+CollectionView::rmbPressed( Q3ListViewItem* item, const QPoint& point, int ) //SLOT
 {
     if ( dynamic_cast<DividerItem*>( item ) ) return;
 
@@ -1606,7 +1617,7 @@ CollectionItem::setPixmap(int column, const QPixmap & pix)
     //Don't show the cover if the album isn't expanded (for speed)
     if ( !isOpen() )
     {
-        QListViewItem::setPixmap( column, pix );
+        Q3ListViewItem::setPixmap( column, pix );
         return;
     }
 
@@ -1619,7 +1630,7 @@ CollectionItem::setPixmap(int column, const QPixmap & pix)
     }
     else if ( m_cat != IdAlbum )
     {
-        QListViewItem::setPixmap( column, pix );
+        Q3ListViewItem::setPixmap( column, pix );
         return;
     }
 
@@ -1653,12 +1664,12 @@ CollectionItem::setPixmap(int column, const QPixmap & pix)
         {
             //Don't bother trying to create a shadow because it won't work anyway. The
             //nocover image has intial transparency, so adding the shadow doesn't work.
-            QListViewItem::setPixmap( column, QPixmap( CollectionDB::instance()->notAvailCover( false, 50 ) ) );
+            Q3ListViewItem::setPixmap( column, QPixmap( CollectionDB::instance()->notAvailCover( false, 50 ) ) );
             return;
         }
     }
 
-    QListViewItem::setPixmap( column, QPixmap( CollectionDB::instance()->albumImage( artist, album, true, 50 ) ) );
+    Q3ListViewItem::setPixmap( column, QPixmap( CollectionDB::instance()->albumImage( artist, album, true, 50 ) ) );
 }
 
 
@@ -1700,7 +1711,7 @@ CollectionView::fetchCover() //SLOT
             .arg( CollectionDB::instance()->escapeString( album ) ) );
 
     if ( !values.isEmpty() )
-        CollectionDB::instance()->fetchCover( this, values[0], album, false, static_cast<QListViewItem*>(item) );
+        CollectionDB::instance()->fetchCover( this, values[0], album, false, static_cast<Q3ListViewItem*>(item) );
     #endif
 }
 
@@ -1775,7 +1786,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
 
     OrganizeCollectionDialogBase base( m_parent, "OrganizeFiles", true, caption,
             KDialogBase::Ok|KDialogBase::Cancel|KDialogBase::Details );
-    QVBox* page = base.makeVBoxMainWidget();
+    Q3VBox* page = base.makeVBoxMainWidget();
 
     OrganizeCollectionDialog dialog( page );
     dialog.folderCombo->insertStringList( folders, 0 );
@@ -1972,10 +1983,10 @@ CollectionView::safeClear()
     blockSignals( true );
     clearSelection();
 
-    QMap<QListViewItem*, CoverFetcher*> *itemCoverMap = CollectionDB::instance()->getItemCoverMap();
+    QMap<Q3ListViewItem*, CoverFetcher*> *itemCoverMap = CollectionDB::instance()->getItemCoverMap();
     QMutex* itemCoverMapMutex = CollectionDB::instance()->getItemCoverMapMutex();
-    QListViewItem *c = firstChild();
-    QListViewItem *n;
+    Q3ListViewItem *c = firstChild();
+    Q3ListViewItem *n;
     itemCoverMapMutex->lock();
     while( c ) {
         if( itemCoverMap->contains( c ) )
@@ -1998,7 +2009,7 @@ CollectionView::updateColumnHeader()
 
     if ( m_viewMode == modeFlatView )
     {
-        setResizeMode( QListView::NoColumn );
+        setResizeMode( Q3ListView::NoColumn );
 
         if( m_flatColumnWidths.size() == 0 )
         {
@@ -2078,7 +2089,7 @@ CollectionView::updateColumnHeader()
 
         //QListView allows invisible columns to be resized, so we disable resizing for them
         for ( int i = 0; i < columns(); ++i ) {
-            setColumnWidthMode ( i, QListView::Manual );
+            setColumnWidthMode ( i, Q3ListView::Manual );
             if ( columnWidth( i ) == 0 )
                 header()->setResizeEnabled( false, i );
         }
@@ -2086,7 +2097,7 @@ CollectionView::updateColumnHeader()
     }
     else if ( m_viewMode == modeTreeView )
     {
-        setResizeMode( QListView::LastColumn );
+        setResizeMode( Q3ListView::LastColumn );
 
         QString caption = captionForCategory( m_cat1 );
         int catArr[2] = {m_cat2, m_cat3};
@@ -2162,7 +2173,7 @@ CollectionView::startDrag()
 }
 
 QString
-CollectionView::getTrueItemText( int cat, QListViewItem* item ) const
+CollectionView::getTrueItemText( int cat, Q3ListViewItem* item ) const
 {
     //Work out the true name of the album ( where Unknown is "" ) , and the
     QString trueItemText;
@@ -2187,7 +2198,7 @@ CollectionView::getTrueItemText( int cat, QListViewItem* item ) const
 }
 
 QStringList
-CollectionView::listSelectedSiblingsOf( int cat, QListViewItem* item )
+CollectionView::listSelectedSiblingsOf( int cat, Q3ListViewItem* item )
 {
     // notice that using the nextSibling()-axis does not work in this case as this
     // would only select items below the specified item.
@@ -2222,7 +2233,7 @@ CollectionView::listSelected()
     //and another one for the children.
 
     KURL::List list;
-    QListViewItem* item;
+    Q3ListViewItem* item;
     QStringList values;
     QueryBuilder qb;
 
@@ -2286,8 +2297,8 @@ CollectionView::listSelected()
         // If we're already displaying tracks, just return the selected ones
         if( m_currentDepth == trackDepth() )
         {
-            QPtrList<QListViewItem> selected = selectedItems();
-            QPtrList<QListViewItem>::iterator it = selected.begin();
+            Q3PtrList<Q3ListViewItem> selected = selectedItems();
+            Q3PtrList<Q3ListViewItem>::iterator it = selected.begin();
             while( it != selected.end() )
             {
                 if( dynamic_cast<CollectionItem*>(*it) != 0 )
@@ -2448,13 +2459,13 @@ CollectionView::listSelected()
     if ( m_cat2 == IdNone )
     {
         for ( item = firstChild(); item; item = item->nextSibling() )
-            for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
+            for ( Q3ListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
                 if ( child->isSelected() && !child->parent()->isSelected() )
                     list << static_cast<CollectionItem*>( child ) ->url();
     }
     else {
         for ( item = firstChild(); item; item = item->nextSibling() )
-            for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
+            for ( Q3ListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
                 if ( child->isSelected() && !child->parent()->isSelected() )
                 {
                     const bool sampler = static_cast<CollectionItem*>( item )->isSampler();
@@ -2540,8 +2551,8 @@ CollectionView::listSelected()
 
     //third pass: category 2
     for ( item = firstChild(); item; item = item->nextSibling() )
-        for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
-            for ( QListViewItem* grandChild = child->firstChild(); grandChild; grandChild = grandChild->nextSibling() )
+        for ( Q3ListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
+            for ( Q3ListViewItem* grandChild = child->firstChild(); grandChild; grandChild = grandChild->nextSibling() )
                 if ( grandChild->isSelected() && !grandChild->isExpandable() && !child->parent()->isSelected() && !child->isSelected() )
                     list << static_cast<CollectionItem*>( grandChild ) ->url();
 
@@ -2549,16 +2560,16 @@ CollectionView::listSelected()
     if ( m_cat3 == IdNone )
     {
         for ( item = firstChild(); item; item = item->nextSibling() )
-            for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
-                for ( QListViewItem* grandChild = child->firstChild(); grandChild; grandChild = grandChild->nextSibling() )
-                    for ( QListViewItem* grandChild2 = grandChild->firstChild(); grandChild2; grandChild2 = grandChild2->nextSibling() )
+            for ( Q3ListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
+                for ( Q3ListViewItem* grandChild = child->firstChild(); grandChild; grandChild = grandChild->nextSibling() )
+                    for ( Q3ListViewItem* grandChild2 = grandChild->firstChild(); grandChild2; grandChild2 = grandChild2->nextSibling() )
                         if ( grandChild2->isSelected() && !child->parent()->isSelected() && !child->isSelected() && !grandChild->isSelected() )
                             list << static_cast<CollectionItem*>( grandChild2 ) ->url();
     }
     else {
         for ( item = firstChild(); item; item = item->nextSibling() )
-            for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
-                for ( QListViewItem* grandChild = child->firstChild(); grandChild; grandChild = grandChild->nextSibling() )
+            for ( Q3ListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
+                for ( Q3ListViewItem* grandChild = child->firstChild(); grandChild; grandChild = grandChild->nextSibling() )
                     if ( grandChild->isSelected() && !grandChild->parent()->isSelected() )
                     {
                         const bool sampler = static_cast<CollectionItem*>( item )->isSampler();
@@ -2657,9 +2668,9 @@ CollectionView::listSelected()
 
     //category 3
     for ( item = firstChild(); item; item = item->nextSibling() )
-            for ( QListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
-                for ( QListViewItem* grandChild = child->firstChild(); grandChild; grandChild = grandChild->nextSibling() )
-                    for ( QListViewItem* grandChild2 = grandChild->firstChild(); grandChild2; grandChild2 = grandChild2->nextSibling() )
+            for ( Q3ListViewItem* child = item->firstChild(); child; child = child->nextSibling() )
+                for ( Q3ListViewItem* grandChild = child->firstChild(); grandChild; grandChild = grandChild->nextSibling() )
+                    for ( Q3ListViewItem* grandChild2 = grandChild->firstChild(); grandChild2; grandChild2 = grandChild2->nextSibling() )
                         if ( grandChild2->isSelected() && !child->parent()->isSelected() && !child->isSelected() && !grandChild->isSelected() )
                             list << static_cast<CollectionItem*>( grandChild2 ) ->url();
 
@@ -2671,7 +2682,7 @@ void
 CollectionView::playlistFromURLs( const KURL::List &urls )
 {
     QString suggestion;
-    typedef QListViewItemIterator It;
+    typedef Q3ListViewItemIterator It;
     It it( this, It::Visible | It::Selected );
     if( (*it) && !(*(++it)) )
         suggestion = (*It( this, It::Visible | It::Selected ))->text( 0 );
@@ -2684,8 +2695,8 @@ CollectionView::playlistFromURLs( const KURL::List &urls )
 
     CollectionDB* db = CollectionDB::instance();
 
-    QValueList<QString> titles;
-    QValueList<int> lengths;
+    Q3ValueList<QString> titles;
+    Q3ValueList<int> lengths;
     for( KURL::List::ConstIterator it = urls.constBegin(), end = urls.constEnd(); it != end; ++it )
     {
         int deviceid = MountPointManager::instance()->getIdForUrl( *it );
@@ -2976,13 +2987,13 @@ CollectionView::incrementDepth( bool rerender /*= true*/ )
         m_ipodCurrent[m_currentDepth] = currentItem()->text( 0 );
 
     //cache viewport's top item
-    QListViewItem* item = itemAt( QPoint(0, 0) );
+    Q3ListViewItem* item = itemAt( QPoint(0, 0) );
     if ( item )
         m_ipodTopItem[m_currentDepth] = item->text( 0 );
 
     // Figure out the next filter, and save the current selection
-    QPtrList<QListViewItem> selected = selectedItems();
-    QPtrList<QListViewItem>::iterator it = selected.begin();
+    Q3PtrList<Q3ListViewItem> selected = selectedItems();
+    Q3PtrList<Q3ListViewItem>::iterator it = selected.begin();
 
     while( it != selected.end() )
     {
@@ -3255,7 +3266,7 @@ CollectionView::selectIpodItems ( void )
             QStringList::iterator it = m_ipodSelected[m_currentDepth].begin();
             while( it != m_ipodSelected[m_currentDepth].end() )
             {
-                QListViewItem *item = findItem( *it, 0 );
+                Q3ListViewItem *item = findItem( *it, 0 );
                 ++it;
 
                 if( !item )
@@ -3280,7 +3291,7 @@ CollectionView::selectIpodItems ( void )
                         !m_ipodTopItem[m_currentDepth].isNull() )
                 {
                     //scroll to previous viewport top item
-                    QListViewItem* item = findItem( m_ipodTopItem[m_currentDepth], 0 );
+                    Q3ListViewItem* item = findItem( m_ipodTopItem[m_currentDepth], 0 );
                     if ( item )
                         setContentsPos( 0, itemPos( item ) );
                 }
@@ -3288,7 +3299,7 @@ CollectionView::selectIpodItems ( void )
                 if( !m_ipodCurrent[m_currentDepth].isEmpty() &&
                         !m_ipodCurrent[m_currentDepth].isNull() )
                 {
-                    QListViewItem *item = findItem( m_ipodCurrent[m_currentDepth], 0);
+                    Q3ListViewItem *item = findItem( m_ipodCurrent[m_currentDepth], 0);
                     if( item )
                         setCurrentItem( item );
                 }
@@ -3303,7 +3314,7 @@ CollectionView::selectIpodItems ( void )
     if( m_ipodIncremented == 1 )
     {
         KListView::selectAll( false );
-        QListViewItem *item = firstChild();
+        Q3ListViewItem *item = firstChild();
 
         // There will be a divider in the first slot if there is only
         // one item in the list and m_showDivider is on
@@ -3377,13 +3388,13 @@ CollectionView::cacheView()
 
     //cache expanded/open items
     if ( m_viewMode == modeTreeView ) {
-        QListViewItemIterator it( this );
+        Q3ListViewItemIterator it( this );
         while ( it.current() ) {
-            QListViewItem *item = it.current();
+            Q3ListViewItem *item = it.current();
             if ( item->isOpen() ) {
                 //construct path to item
                 QStringList itemPath;
-                for( const QListViewItem *i = item; i; i = i->parent() )
+                for( const Q3ListViewItem *i = item; i; i = i->parent() )
                     itemPath.prepend( i->text( 0 ) );
 
                 m_cacheOpenItemPaths.append ( itemPath );
@@ -3402,9 +3413,9 @@ CollectionView::restoreView()
 {
     //expand cached items
     if ( m_viewMode == modeTreeView ) {
-        QValueList<QStringList>::const_iterator it;
+        Q3ValueList<QStringList>::const_iterator it;
         for ( it = m_cacheOpenItemPaths.begin(); it != m_cacheOpenItemPaths.end(); ++it ) {
-            QListViewItem* item = findItem( (*it)[0], 0 );
+            Q3ListViewItem* item = findItem( (*it)[0], 0 );
             if ( item )
                 item->setOpen ( true );
 
@@ -3420,7 +3431,7 @@ CollectionView::restoreView()
     }
 
     //scroll to previous viewport top item
-    QListViewItem* item = findFromStructuredNameList( m_cacheViewportTopItem );
+    Q3ListViewItem* item = findFromStructuredNameList( m_cacheViewportTopItem );
     if ( item )
         setContentsPos( 0, itemPos(item) );
 
@@ -3441,18 +3452,18 @@ CollectionView::restoreView()
 }
 
 QStringList
-CollectionView::makeStructuredNameList( QListViewItem *item ) const
+CollectionView::makeStructuredNameList( Q3ListViewItem *item ) const
 {
     QStringList nameList;
-    for ( QListViewItem *current = item; current; current = current->parent() )
+    for ( Q3ListViewItem *current = item; current; current = current->parent() )
         nameList.push_front( current->text( 0 ) );
     return nameList;
 }
 
-QListViewItem*
+Q3ListViewItem*
 CollectionView::findFromStructuredNameList( const QStringList &nameList ) const
 {
-    QListViewItem *item( firstChild() );
+    Q3ListViewItem *item( firstChild() );
     bool firstTime = true;
     foreach( nameList )
     {
@@ -3527,7 +3538,7 @@ CollectionView::viewportPaintEvent( QPaintEvent *e )
     {
         QPainter p( viewport() );
 
-        QSimpleRichText t( i18n(
+        Q3SimpleRichText t( i18n(
                 "<div align=center>"
                   "<h3>Flat-View Mode</h3>"
                     "To enable the Flat-View mode, please enter search terms in the search line above."
@@ -3719,7 +3730,7 @@ CollectionView::renderFlatModeView( bool /*=false*/ )
         return;
     }
 
-    QValueList<Tag> visibleColumns;
+    Q3ValueList<Tag> visibleColumns;
     for ( int c = 0; c < columns(); ++c )
         if ( columnWidth( c ) != 0 )
         {
@@ -3731,7 +3742,7 @@ CollectionView::renderFlatModeView( bool /*=false*/ )
     //device automatically added
 
     int filterTables = 0;
-    for ( QValueList<Tag>::ConstIterator it = visibleColumns.constBegin(); it != visibleColumns.constEnd(); ++it )
+    for ( Q3ValueList<Tag>::ConstIterator it = visibleColumns.constBegin(); it != visibleColumns.constEnd(); ++it )
     {
         switch ( *it )
         {
@@ -3834,7 +3845,7 @@ CollectionView::renderFlatModeView( bool /*=false*/ )
         item->setUrl( MountPointManager::instance()->getAbsolutePath( (*++it).toInt(), rpath ) );
         ++it;
 
-        for ( QValueList<Tag>::ConstIterator it_c = visibleColumns.constBegin(); it_c != visibleColumns.constEnd(); ++it_c )
+        for ( Q3ValueList<Tag>::ConstIterator it_c = visibleColumns.constBegin(); it_c != visibleColumns.constEnd(); ++it_c )
         {
             switch ( *it_c )
             {
@@ -4048,13 +4059,13 @@ CollectionView::renderTreeModeView( bool /*=false*/ )
     //should be shown in the listview ( maxRows) after which we give up. If an item has
     //more than one child and we haven't reached the limit, we may end up expanding it
     //later.
-    QValueList<QListViewItem*> couldOpen;
+    Q3ValueList<Q3ListViewItem*> couldOpen;
     int totalCount = childCount() - dividerCount;
     const int maxRows = 20; //This seems like a fair limit for a 1024x768 screen
     if ( totalCount < maxRows )
     {
         //Generate initial list of top list items to look at
-        for ( QListViewItem* top = firstChild(); top; top = top->nextSibling() )
+        for ( Q3ListViewItem* top = firstChild(); top; top = top->nextSibling() )
         {
             if ( !dynamic_cast<CollectionItem*>( top ) )
                 continue;
@@ -4062,14 +4073,14 @@ CollectionView::renderTreeModeView( bool /*=false*/ )
         }
         //Expand suggested items and expand or enqueue their children until we run out of
         //rows or have expanded everything
-        for ( QValueList<QListViewItem*>::iterator it = couldOpen.begin(); it != couldOpen.end() && totalCount < maxRows; ++it )
+        for ( Q3ValueList<Q3ListViewItem*>::iterator it = couldOpen.begin(); it != couldOpen.end() && totalCount < maxRows; ++it )
         {
             if ( !( *it )->isOpen() )
                ( *it )->setOpen( true );
             totalCount += ( *it )->childCount();
             if ( ( *it )->firstChild()->isExpandable() )    //Check we have not reached the bottom
             {
-                for ( QListViewItem *j = ( *it )->firstChild(); j && totalCount < maxRows; j = j->nextSibling() )
+                for ( Q3ListViewItem *j = ( *it )->firstChild(); j && totalCount < maxRows; j = j->nextSibling() )
                 {
                     j->setOpen( true );
                     if ( j->childCount() > 1 )  //More than one child - maybe later
@@ -4080,7 +4091,7 @@ CollectionView::renderTreeModeView( bool /*=false*/ )
                     else
                     {
                         //Prioritize expanding its children - add it immediately next
-                        QValueList<QListViewItem*>::iterator next = it;
+                        Q3ValueList<Q3ListViewItem*>::iterator next = it;
                         ++next;
                         couldOpen.insert( next, j );
                         ++totalCount;
@@ -4096,7 +4107,7 @@ CollectionView::renderTreeModeView( bool /*=false*/ )
     //will stay in view, assuming you only had one real result.
     if ( childCount() - dividerCount == 1 )
     {
-        QListViewItem *item = firstChild();
+        Q3ListViewItem *item = firstChild();
         if ( dynamic_cast<DividerItem*>( item ) ) //Skip a divider, if present
             item = item->nextSibling();
         for ( ; item ; item = item->firstChild() )
@@ -4119,10 +4130,10 @@ CollectionView::removeDuplicatedHeaders()
     /* Following code depends on the order! */
     sort();
 
-    QValueList<DividerItem *> toDelete;
+    Q3ValueList<DividerItem *> toDelete;
     DividerItem *current=0, *last=0;
     bool empty;
-    QListViewItem *item;
+    Q3ListViewItem *item;
     /* If we have two consecutive headers, one of them is useless, and should be removed */
     for( item = firstChild(),empty=false; item; item=item->nextSibling() )
     {
@@ -4148,7 +4159,7 @@ CollectionView::removeDuplicatedHeaders()
             empty=false;
     }
 
-    for ( QValueList<DividerItem *>::iterator it = toDelete.begin(); it != toDelete.end(); ++it )
+    for ( Q3ValueList<DividerItem *>::iterator it = toDelete.begin(); it != toDelete.end(); ++it )
         delete *it;
 }
 
@@ -4417,7 +4428,7 @@ CollectionItem::paintCell ( QPainter * painter, const QColorGroup & cg,
 }
 
 int
-CollectionItem::compare( QListViewItem* i, int col, bool ascending ) const
+CollectionItem::compare( Q3ListViewItem* i, int col, bool ascending ) const
 {
     QString a =    text( col );
     QString b = i->text( col );
@@ -4530,13 +4541,13 @@ CollectionItem::sortChildItems ( int column, bool ascending ) {
     CollectionView* view = static_cast<CollectionView*>( listView() );
     // Sort only if it's not the tracks
     if ( depth() + 1 < view->trackDepth())
-        QListViewItem::sortChildItems( column, ascending );
+        Q3ListViewItem::sortChildItems( column, ascending );
 }
 
 //
 // DividerItem
 
-DividerItem::DividerItem( QListView* parent, QString txt, int cat/*, bool sortYearsInverted*/)
+DividerItem::DividerItem( Q3ListView* parent, QString txt, int cat/*, bool sortYearsInverted*/)
 : KListViewItem( parent), m_blockText(false), m_text(txt), m_cat(cat)/*, m_sortYearsInverted(sortYearsInverted)*/
 {
     setExpandable(false);
@@ -4594,7 +4605,7 @@ DividerItem::text(int column) const
 }
 
 int
-DividerItem::compare( QListViewItem* i, int col, bool ascending ) const
+DividerItem::compare( Q3ListViewItem* i, int col, bool ascending ) const
 {
     if (!i) {
 	return QString::localeAwareCompare( text(col).lower(), QString("") );

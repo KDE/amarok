@@ -28,9 +28,12 @@
 #include <kio/jobclasses.h>
 #include <kio/netaccess.h>
 #include <kmdcodec.h>
-#include <qdeepcopy.h>
+#include <q3deepcopy.h>
 #include <qdom.h>
 #include <qfile.h> //decodePath()
+//Added by qt3to4:
+#include <Q3ValueList>
+#include <Q3CString>
 #include <taglib/attachedpictureframe.h>
 #include <taglib/fileref.h>
 #include <taglib/id3v1genres.h> //used to load genre list
@@ -81,7 +84,7 @@ MetaBundle::EmbeddedImage::EmbeddedImage( const TagLib::ByteVector& data, const 
     m_data.duplicate( data.data(), data.size() );
 }
 
-const QCString &MetaBundle::EmbeddedImage::hash() const
+const Q3CString &MetaBundle::EmbeddedImage::hash() const
 {
     if( m_hash.isEmpty() ) {
         m_hash = KMD5( m_data ).hexDigest();
@@ -93,7 +96,7 @@ bool MetaBundle::EmbeddedImage::save( const QDir& dir ) const
 {
     QFile   file( dir.filePath( hash() ) );
 
-    if( file.open( IO_WriteOnly | IO_Raw ) ) {
+    if( file.open( QIODevice::WriteOnly | QIODevice::Unbuffered ) ) {
         const Q_LONG s = file.writeBlock( m_data.data(), m_data.size() );
         if( s >= 0 && Q_ULONG( s ) == m_data.size() ) {
             debug() << "EmbeddedImage::save " << file.name() << endl;
@@ -833,7 +836,7 @@ QString MetaBundle::prettyText( int column ) const
     return text.stripWhiteSpace();
 }
 
-bool MetaBundle::matchesSimpleExpression( const QString &expression, const QValueList<int> &columns ) const
+bool MetaBundle::matchesSimpleExpression( const QString &expression, const Q3ValueList<int> &columns ) const
 {
     const QStringList terms = QStringList::split( ' ', expression.lower() );
     bool matches = true;
@@ -849,7 +852,7 @@ bool MetaBundle::matchesSimpleExpression( const QString &expression, const QValu
     return matches;
 }
 
-void MetaBundle::reactToChanges( const QValueList<int>& columns)
+void MetaBundle::reactToChanges( const Q3ValueList<int>& columns)
 {
     // mark search dirty if we need to
     for (uint i = 0; !m_isSearchDirty && i < columns.count(); i++)
@@ -896,12 +899,12 @@ bool MetaBundle::matchesFast(const QStringList &terms, ColumnMask columnMask) co
 }
 
 
-bool MetaBundle::matchesExpression( const QString &expression, const QValueList<int> &defaultColumns ) const
+bool MetaBundle::matchesExpression( const QString &expression, const Q3ValueList<int> &defaultColumns ) const
 {
     return matchesParsedExpression( ExpressionParser::parse( expression ), defaultColumns );
 }
 
-bool MetaBundle::matchesParsedExpression( const ParsedExpression &data, const QValueList<int> &defaults ) const
+bool MetaBundle::matchesParsedExpression( const ParsedExpression &data, const Q3ValueList<int> &defaults ) const
 {
     for( uint i = 0, n = data.count(); i < n; ++i ) //check each part for matchiness
     {
@@ -1503,7 +1506,7 @@ MetaBundle::save( TagLib::FileRef* fileref )
     return returnval;
 }
 
-bool MetaBundle::save( QTextStream &stream, const QStringList &attributes ) const
+bool MetaBundle::save( Q3TextStream &stream, const QStringList &attributes ) const
 {
     QDomDocument qDomSucksItNeedsADocument;
     QDomElement item = qDomSucksItNeedsADocument.createElement( "item" );
@@ -1532,7 +1535,7 @@ bool MetaBundle::save( QTextStream &stream, const QStringList &attributes ) cons
 
 void MetaBundle::setUrl( const KURL &url )
 {
-    QValueList<int> changes;
+    Q3ValueList<int> changes;
     for( int i = 0; i < NUM_COLUMNS; ++i ) changes << i;
     aboutToChange( changes ); m_url = url; reactToChanges( changes );
 
@@ -1541,7 +1544,7 @@ void MetaBundle::setUrl( const KURL &url )
 
 void MetaBundle::setPath( const QString &path )
 {
-    QValueList<int> changes;
+    Q3ValueList<int> changes;
     for( int i = 0; i < NUM_COLUMNS; ++i ) changes << i;
     aboutToChange( changes ); m_url.setPath( path ); reactToChanges( changes );
 
@@ -1633,12 +1636,12 @@ MetaBundle::readUniqueId( TagLib::FileRef* fileref )
 
     char databuf[8192];
     int readlen = 0;
-    QCString size = 0;
+    Q3CString size = 0;
     QString returnval;
 
     md5.update( bv.data(), bv.size() );
 
-    if( qfile.open( IO_Raw | IO_ReadOnly ) )
+    if( qfile.open( QIODevice::Unbuffered | QIODevice::ReadOnly ) )
     {
         if( ( readlen = qfile.readBlock( databuf, 8192 ) ) > 0 )
         {
@@ -1799,25 +1802,25 @@ void MetaBundle::detach()
     //m_url.detach();
     m_url = Amarok::detachedKURL( m_url );
 
-    m_title = QDeepCopy<QString>(m_title);
+    m_title = Q3DeepCopy<QString>(m_title);
     m_artist = m_artist.deepCopy();
     m_albumArtist = m_albumArtist.deepCopy();
     m_album = m_album.deepCopy();
     m_comment = m_comment.deepCopy();
     m_composer = m_composer.deepCopy();
     m_genre = m_genre.deepCopy();
-    m_streamName = QDeepCopy<QString>(m_streamName);
-    m_streamUrl = QDeepCopy<QString>(m_streamUrl);
+    m_streamName = Q3DeepCopy<QString>(m_streamName);
+    m_streamUrl = Q3DeepCopy<QString>(m_streamUrl);
 
     if( m_moodbar != 0 )
       m_moodbar->detach();
 
-    m_uniqueId = QDeepCopy<QString>( m_uniqueId );
+    m_uniqueId = Q3DeepCopy<QString>( m_uniqueId );
 
     if ( m_podcastBundle )
-         setPodcastBundle( QDeepCopy<PodcastEpisodeBundle>( *m_podcastBundle ) );
+         setPodcastBundle( Q3DeepCopy<PodcastEpisodeBundle>( *m_podcastBundle ) );
     if ( m_lastFmBundle )
-         setLastFmBundle( QDeepCopy<LastFm::Bundle>( *m_lastFmBundle ) );
+         setLastFmBundle( Q3DeepCopy<LastFm::Bundle>( *m_lastFmBundle ) );
 }
 
 
@@ -1827,11 +1830,11 @@ void PodcastEpisodeBundle::detach()
     m_localUrl = Amarok::detachedKURL( m_localUrl );
     m_parent = Amarok::detachedKURL( m_parent );
 
-    m_author = QDeepCopy<QString>(m_author);
-    m_title = QDeepCopy<QString>(m_title);
-    m_subtitle = QDeepCopy<QString>(m_subtitle);
-    m_description = QDeepCopy<QString>(m_subtitle);
-    m_date =  QDeepCopy<QString>(m_date);
-    m_type = QDeepCopy<QString>(m_type);
-    m_guid = QDeepCopy<QString>(m_guid);
+    m_author = Q3DeepCopy<QString>(m_author);
+    m_title = Q3DeepCopy<QString>(m_title);
+    m_subtitle = Q3DeepCopy<QString>(m_subtitle);
+    m_description = Q3DeepCopy<QString>(m_subtitle);
+    m_date =  Q3DeepCopy<QString>(m_date);
+    m_type = Q3DeepCopy<QString>(m_type);
+    m_guid = Q3DeepCopy<QString>(m_guid);
 }

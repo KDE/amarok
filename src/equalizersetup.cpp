@@ -27,14 +27,17 @@
 #include <qcheckbox.h>
 #include <qdom.h>
 #include <qfile.h>
-#include <qgroupbox.h>
+#include <q3groupbox.h>
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qpushbutton.h>
 #include <qstringlist.h>
-#include <qtextstream.h>   //presets
+#include <q3textstream.h>   //presets
 #include <qtooltip.h>
-#include <qvbox.h>
+#include <q3vbox.h>
+//Added by qt3to4:
+#include <Q3GridLayout>
+#include <Q3ValueList>
 
 #include <kapplication.h>
 #include <kcombobox.h>
@@ -63,11 +66,11 @@ EqualizerSetup::EqualizerSetup()
     KWin::setType( winId(), NET::Utility );
     KWin::setState( winId(), NET::SkipTaskbar );
 
-    QVBox* vbox = makeVBoxMainWidget();
+    Q3VBox* vbox = makeVBoxMainWidget();
     vbox->setSpacing( KDialog::spacingHint() );
 
     // BEGIN Presets
-    QHBox* presetBox = new QHBox( vbox );
+    Q3HBox* presetBox = new Q3HBox( vbox );
     presetBox->setSpacing( KDialog::spacingHint() );
 
     new QLabel( i18n("Presets:"), presetBox );
@@ -90,7 +93,7 @@ EqualizerSetup::EqualizerSetup()
     // END Presets
 
     // BEGIN GroupBox
-    m_groupBoxSliders = new QGroupBox( 1, Qt::Vertical, i18n("Enable Equalizer"), vbox );
+    m_groupBoxSliders = new Q3GroupBox( 1, Qt::Vertical, i18n("Enable Equalizer"), vbox );
     m_groupBoxSliders->setCheckable( true );
     m_groupBoxSliders->setChecked( AmarokConfig::equalizerEnabled() );
     m_groupBoxSliders->setInsideMargin( KDialog::marginHint() );
@@ -99,7 +102,7 @@ EqualizerSetup::EqualizerSetup()
     // Helper widget for layouting inside the groupbox
     QWidget* slidersLayoutWidget = new QWidget( m_groupBoxSliders );
     slidersLayoutWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    QGridLayout* slidersGridLayout = new QGridLayout( slidersLayoutWidget, 1, 1, 0, KDialog::spacingHint() );
+    Q3GridLayout* slidersGridLayout = new Q3GridLayout( slidersLayoutWidget, 1, 1, 0, KDialog::spacingHint() );
     // END GroupBox
 
     // BEGIN Preamp slider
@@ -142,10 +145,10 @@ EqualizerSetup::EqualizerSetup()
     // END
 
     // BEGIN Equalizer Graph Widget
-    QGroupBox* graphGBox = new QGroupBox( 2, Qt::Horizontal, 0, vbox );
+    Q3GroupBox* graphGBox = new Q3GroupBox( 2, Qt::Horizontal, 0, vbox );
     graphGBox->setInsideMargin( KDialog::marginHint() );
 
-    QVBox* graphVBox = new QVBox( graphGBox );
+    Q3VBox* graphVBox = new Q3VBox( graphGBox );
     QLabel* graphLabel1 = new QLabel("+20 db", graphVBox);
     QLabel* graphLabel2 = new QLabel("0 db", graphVBox);
     QLabel* graphLabel3 = new QLabel("-20 db", graphVBox);
@@ -181,7 +184,7 @@ EqualizerSetup::setActive( bool active )
 }
 
 void
-EqualizerSetup::setBands( int preamp, QValueList<int> gains )
+EqualizerSetup::setBands( int preamp, Q3ValueList<int> gains )
 {
     m_slider_preamp->setValue( preamp );
 
@@ -228,7 +231,7 @@ void
 EqualizerSetup::loadPresets()
 {
     // Create predefined presets 'Zero' and 'Manual'
-    QValueList<int> zeroGains;
+    Q3ValueList<int> zeroGains;
     zeroGains << 0 << 0 << 0 << 0 << 0 << 0 << 0 << 0 << 0 << 0;
     m_presets[ i18n("Manual") ] = zeroGains;
     m_presets[ i18n("Zero") ] = zeroGains;
@@ -237,12 +240,12 @@ EqualizerSetup::loadPresets()
     if ( !file.exists() )
         file.setName( locate( "data", "amarok/data/equalizer_presets.xml" ) );
 
-    QTextStream stream( &file );
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    Q3TextStream stream( &file );
+    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
 
     QDomDocument d;
 
-    if( !file.open( IO_ReadOnly ) || !d.setContent( stream.read() ) ) {
+    if( !file.open( QIODevice::ReadOnly ) || !d.setContent( stream.read() ) ) {
         // Everything went wrong, so at least provide the two predefined presets
         updatePresets( AmarokConfig::equalizerPreset() );
         return;
@@ -255,7 +258,7 @@ EqualizerSetup::loadPresets()
         QDomElement e = n.toElement();
         QString title = e.attribute( "name" );
 
-        QValueList<int> gains;
+        Q3ValueList<int> gains;
         gains << e.namedItem( "b0" ).toElement().text().toInt();
         gains << e.namedItem( "b1" ).toElement().text().toInt();
         gains << e.namedItem( "b2" ).toElement().text().toInt();
@@ -279,7 +282,7 @@ EqualizerSetup::savePresets()
 {
     QFile file( presetsCache() );
 
-    if( !file.open( IO_WriteOnly ) ) return;
+    if( !file.open( QIODevice::WriteOnly ) ) return;
 
     QDomDocument doc;
     QDomElement e = doc.createElement("equalizerpresets");
@@ -301,7 +304,7 @@ EqualizerSetup::savePresets()
         if ( title == i18n("Zero") )
             continue;
 
-        QValueList<int> gains = m_presets[ title ];
+        Q3ValueList<int> gains = m_presets[ title ];
 
         QDomElement i = doc.createElement("preset");
         i.setAttribute( "name", title );
@@ -319,8 +322,8 @@ EqualizerSetup::savePresets()
         e.appendChild( i );
     }
 
-    QTextStream stream( &file );
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    Q3TextStream stream( &file );
+    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     stream << doc.toString();
     file.close();
@@ -333,10 +336,10 @@ EqualizerSetup::editPresets()
     editor->setPresets(m_presets);
 
     if ( editor->exec() ) {
-        QMap< QString, QValueList<int> > presets = editor->presets();
+        QMap< QString, Q3ValueList<int> > presets = editor->presets();
 
         QString currentTitle = m_presetCombo->currentText();
-        QValueList<int> currentGains= m_presets[ currentTitle ];
+        Q3ValueList<int> currentGains= m_presets[ currentTitle ];
 
         QString newTitle = currentTitle;
 
@@ -344,8 +347,8 @@ EqualizerSetup::editPresets()
         if ( presets.find( currentTitle ) == presets.end() || currentGains != presets[ currentTitle ] ) {
 
             // Find the new name
-            QMap< QString, QValueList<int> >::Iterator end = presets.end();
-            for ( QMap< QString, QValueList<int> >::Iterator it = presets.begin(); it != end; ++it ) {
+            QMap< QString, Q3ValueList<int> >::Iterator end = presets.end();
+            for ( QMap< QString, Q3ValueList<int> >::Iterator it = presets.begin(); it != end; ++it ) {
                 if ( it.data() == currentGains ) {
                     newTitle = it.key();
                     break;
@@ -377,7 +380,7 @@ EqualizerSetup::addPreset()
         }
 
         // Add the new preset based on the current slider positions
-        QValueList <int> gains;
+        Q3ValueList <int> gains;
         for ( uint i = 0; i < m_bandSliders.count(); i++ )
             gains += m_bandSliders.at( i )->value();
         m_presets[ title ] = gains;
@@ -399,8 +402,8 @@ EqualizerSetup::updatePresets(QString selectTitle)
 
     // Sort titles
     QStringList titles;
-    QMap< QString, QValueList<int> >::Iterator end = m_presets.end();
-    for ( QMap< QString, QValueList<int> >::Iterator it = m_presets.begin(); it != end; ++it )
+    QMap< QString, Q3ValueList<int> >::Iterator end = m_presets.end();
+    for ( QMap< QString, Q3ValueList<int> >::Iterator it = m_presets.begin(); it != end; ++it )
         titles << it.key();
 
     titles.sort();
@@ -438,7 +441,7 @@ EqualizerSetup::presetChanged( int id ) //SLOT
 void
 EqualizerSetup::presetChanged( QString title ) //SLOT
 {
-    const QValueList<int> gains = m_presets[ title ];
+    const Q3ValueList<int> gains = m_presets[ title ];
 
     for ( uint i = 0; i < m_bandSliders.count(); i++ ) {
         // Block signals to prevent unwanted setting to 'Manual'
@@ -485,7 +488,7 @@ EqualizerSetup::sliderChanged() //SLOT
 {
     m_presetCombo->setCurrentItem( m_manualPos );
 
-    QValueList<int> gains;
+    Q3ValueList<int> gains;
     for ( uint i = 0; i < m_bandSliders.count(); i++ )
         gains += m_bandSliders.at( i )->value();
 

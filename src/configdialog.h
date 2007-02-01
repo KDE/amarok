@@ -17,13 +17,15 @@ email                : markey@web.de
 #define AMAROKCONFIGDIALOG_H
 
 #include <qmap.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
+//Added by qt3to4:
+#include <Q3CString>
 
 #include <kconfigdialog.h>
 
 class QComboBox;
-class QGroupBox;
-class QVBox;
+class Q3GroupBox;
+class Q3VBox;
 
 namespace Amarok {
     class PluginConfig;
@@ -42,7 +44,7 @@ class AmarokConfigDialog : public KConfigDialog
         void addPage( QWidget *page, const QString &itemName, const QString &pixmapName,
                       const QString &header=QString::null, bool manage=true);
 
-        void showPageByName( const QCString& page );
+        void showPageByName( const Q3CString& page );
 
         static int s_currentPage;
 
@@ -65,14 +67,14 @@ class AmarokConfigDialog : public KConfigDialog
 
         QComboBox* m_soundSystem;
         Amarok::PluginConfig *m_engineConfig;
-        QGroupBox            *m_engineConfigFrame;
+        Q3GroupBox            *m_engineConfigFrame;
         class Options1       *m_opt1;
         class Options2       *m_opt2;
         class Options4       *m_opt4;
         class Options7       *m_opt7;
         MediumPluginManager  *m_deviceManager;
 
-        QValueList<QWidget*> m_pageList;
+        Q3ValueList<QWidget*> m_pageList;
         QMap<QString, QString> m_pluginName;
         QMap<QString, QString> m_pluginAmarokName;
 };

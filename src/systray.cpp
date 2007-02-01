@@ -14,6 +14,10 @@
 
 #include <qevent.h>
 #include <qimage.h>
+//Added by qt3to4:
+#include <QTimerEvent>
+#include <QPixmap>
+#include <QMouseEvent>
 #include <kaction.h>
 #include <kapplication.h>
 #include <kpopupmenu.h>

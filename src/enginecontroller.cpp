@@ -26,8 +26,10 @@
 #include "statusbar.h"
 
 #include <qfile.h>
-#include <qobjectlist.h>
+#include <qobject.h>
 #include <qtimer.h>
+//Added by qt3to4:
+#include <Q3CString>
 
 #include <kapplication.h>
 #include <kfileitem.h>
@@ -134,7 +136,7 @@ EngineController::loadEngine() //static
     return m_engine;
 }
 
-#include <qvaluevector.h>
+#include <q3valuevector.h>
 EngineBase*
 EngineController::loadEngine( const QString &engineName )
 {
@@ -177,8 +179,8 @@ EngineController::loadEngine( const QString &engineName )
             }
             connect( engine, SIGNAL(metaData( const Engine::SimpleMetaBundle& )),
                        this,   SLOT(slotEngineMetaData( const Engine::SimpleMetaBundle& )) );
-            connect( engine, SIGNAL(showConfigDialog( const QCString& )),
-                       kapp,   SLOT(slotConfigAmarok( const QCString& )) );
+            connect( engine, SIGNAL(showConfigDialog( const Q3CString& )),
+                       kapp,   SLOT(slotConfigAmarok( const Q3CString& )) );
 
             if( engine->init() )
                 return engine;

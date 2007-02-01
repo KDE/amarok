@@ -12,9 +12,12 @@
 #define VIS_SOCKETSERVER_H
 
 #include <qstring.h>          //stack allocated
-#include <qlistview.h>        //baseclass
-#include <qserversocket.h>    //baseclass
+#include <q3listview.h>        //baseclass
+#include <q3serversocket.h>    //baseclass
 #include <qsocketnotifier.h>  //baseclass
+//Added by qt3to4:
+#include <QPaintEvent>
+#include <Q3CString>
 
 class QPoint;
 class KProcess;
@@ -22,7 +25,7 @@ class KProcess;
 
 namespace Amarok
 {
-    class SocketServer : public QServerSocket
+    class SocketServer : public Q3ServerSocket
     {
     public:
         SocketServer( const QString &socketName, QObject *parent );
@@ -30,7 +33,7 @@ namespace Amarok
 
     protected:
         int      m_sockfd;
-        QCString m_path;
+        Q3CString m_path;
     };
 }
 
@@ -44,7 +47,7 @@ namespace Vis
 
         void newConnection( int );
 
-        QCString path() const { return m_path; }
+        Q3CString path() const { return m_path; }
     };
 
     class SocketNotifier : public QSocketNotifier
@@ -58,7 +61,7 @@ namespace Vis
         void request( int );
     };
 
-    class Selector : public QListView
+    class Selector : public Q3ListView
     {
         Q_OBJECT
         Selector( QWidget *parent=0 );
@@ -74,11 +77,11 @@ namespace Vis
         ///assigns pid/sockfd combo
         void mapPID( int, int );
 
-        class Item : public QCheckListItem
+        class Item : public Q3CheckListItem
         {
         public:
-            Item( QListView *parent, const char *command, const QString &text, const QString &s2 )
-                    : QCheckListItem( parent, text, QCheckListItem::CheckBox )
+            Item( Q3ListView *parent, const char *command, const QString &text, const QString &s2 )
+                    : Q3CheckListItem( parent, text, Q3CheckListItem::CheckBox )
                     , m_proc( 0 )
                     , m_sockfd( -1 )
                     , m_command( command ) { setText( 1, s2 ); }
@@ -92,7 +95,7 @@ namespace Vis
         };
 
     private slots:
-        void rightButton( QListViewItem*, const QPoint&, int );
+        void rightButton( Q3ListViewItem*, const QPoint&, int );
 
     public slots:
         void processExited( KProcess* );

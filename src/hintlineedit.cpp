@@ -1,11 +1,11 @@
 #include <hintlineedit.h>
-#include <qvbox.h>
+#include <q3vbox.h>
 #include <qlabel.h>
 #include <qfont.h>
 
 HintLineEdit::HintLineEdit( const QString &hint, const QString &text, QWidget *parent, const char *name )
    : KLineEdit( text, 0, name )
-   , m_vbox( new QVBox( parent ) )
+   , m_vbox( new Q3VBox( parent ) )
 {
     init();
     m_hint->setText( hint );
@@ -13,14 +13,14 @@ HintLineEdit::HintLineEdit( const QString &hint, const QString &text, QWidget *p
 
 HintLineEdit::HintLineEdit( const QString &text, QWidget *parent, const char *name )
    : KLineEdit( text, 0, name )
-   , m_vbox( new QVBox( parent ) )
+   , m_vbox( new Q3VBox( parent ) )
 {
     init();
 }
 
 HintLineEdit::HintLineEdit( QWidget *parent, const char *name )
    : KLineEdit( 0, name )
-   , m_vbox( new QVBox( parent ) )
+   , m_vbox( new Q3VBox( parent ) )
 {
     init();
 }
@@ -31,7 +31,7 @@ HintLineEdit::init()
     reparent( m_vbox, 0, QPoint(0,0), true );
     m_hint = new QLabel( m_vbox );
     //m_hint->setBuddy( this );
-    m_hint->setFocusPolicy( NoFocus );
+    m_hint->setFocusPolicy( Qt::NoFocus );
     QFont font;
     font.setPointSize( font.pointSize() - 2);
     m_hint->setFont( font );

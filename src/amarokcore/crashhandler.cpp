@@ -20,8 +20,13 @@
 
 #include <qfile.h>
 #include <qregexp.h>
-#include <qtextstream.h>
+#include <q3textstream.h>
 #include <qglobal.h> //qVersion()
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <Q3CString>
+#include <Q3Frame>
+#include <Q3VBoxLayout>
 
 #include <cstdio>         //popen, fread
 #include <iostream>
@@ -48,7 +53,7 @@ namespace Amarok
     #endif
 
     static QString
-    runCommand( const QCString &command )
+    runCommand( const Q3CString &command )
     {
         static const uint SIZE = 40960; //40 KiB
         static char stdoutBuf[ SIZE ] = {0};
@@ -109,7 +114,7 @@ namespace Amarok
             QString line;
             uint cpuCount = 0;
             QFile cpuinfo( "/proc/cpuinfo" );
-            if ( cpuinfo.open( IO_ReadOnly ) ) {
+            if ( cpuinfo.open( QIODevice::ReadOnly ) ) {
                 while ( cpuinfo.readLine( line, 20000 ) != -1 ) {
                     if ( line.startsWith( "processor" ) ) {
                         ++cpuCount;
@@ -145,7 +150,7 @@ namespace Amarok
 //                     "bt\n" "echo \\n\n"
 //                     "thread apply all bt\n";
 
-            const QCString gdb_batch =
+            const Q3CString gdb_batch =
                     "bt\n"
                     "echo \\n\\n\n"
                     "bt full\n"
@@ -160,11 +165,11 @@ namespace Amarok
             ::dup2( fileno( stdout ), fileno( stderr ) );
 
 
-            QCString gdb;
+            Q3CString gdb;
             gdb  = "gdb --nw -n --batch -x ";
             gdb += temp.name().latin1();
             gdb += " amarokapp ";
-            gdb += QCString().setNum( ::getppid() );
+            gdb += Q3CString().setNum( ::getppid() );
 
             QString bt = runCommand( gdb );
 
@@ -257,7 +262,7 @@ namespace Amarok
 
 #include <qlabel.h>
 #include <qlayout.h>
-#include <qvbox.h>
+#include <q3vbox.h>
 #include <kdialog.h>
 #include <kpushbutton.h>
 #include <kstdguiitem.h>
@@ -265,18 +270,18 @@ namespace Amarok
 
 Amarok::CrashHandlerWidget::CrashHandlerWidget()
 {
-    QBoxLayout *layout = new QHBoxLayout( this, 18, 12 );
+    Q3BoxLayout *layout = new Q3HBoxLayout( this, 18, 12 );
 
     {
-        QBoxLayout *lay = new QVBoxLayout( layout );
+        Q3BoxLayout *lay = new Q3VBoxLayout( layout );
         QLabel *label = new QLabel( this );
         label->setPixmap( locate( "data", "drkonqi/pics/konqi.png" ) );
-        label->setFrameStyle( QFrame::Plain | QFrame::Box );
+        label->setFrameStyle( Q3Frame::Plain | Q3Frame::Box );
         lay->add( label );
         lay->addItem( new QSpacerItem( 3, 3, QSizePolicy::Minimum, QSizePolicy::Expanding ) );
     }
 
-    layout = new QVBoxLayout( layout, 6 );
+    layout = new Q3VBoxLayout( layout, 6 );
 
     layout->add( new QLabel( /*i18n*/(
             "<p>" "Amarok has crashed! We are terribly sorry about this :("
@@ -286,7 +291,7 @@ Amarok::CrashHandlerWidget::CrashHandlerWidget()
                   "as soon as possible."
             "<p>" "Thanks for choosing Amarok.<br>" ), this ) );
 
-    layout = new QHBoxLayout( layout, 6 );
+    layout = new Q3HBoxLayout( layout, 6 );
 
     layout->addItem( new QSpacerItem( 6, 6, QSizePolicy::Expanding ) );
     layout->add( new KPushButton( KGuiItem( i18n("Send Email"), "mail_send" ), this, "email" ) );

@@ -20,6 +20,8 @@
 #include <klistview.h>      //baseclass
 
 #include <qtimer.h>
+//Added by qt3to4:
+#include <QPaintEvent>
 
 class ClickLineEdit;
 class QColor;
@@ -66,9 +68,9 @@ class StatisticsList : public KListView
 
     private slots:
         void    clearHover();
-        void    itemClicked( QListViewItem *item );
-        void    showContextMenu( QListViewItem *item, const QPoint &p, int );
-        void    startHover( QListViewItem *item );
+        void    itemClicked( Q3ListViewItem *item );
+        void    showContextMenu( Q3ListViewItem *item, const QPoint &p, int );
+        void    startHover( Q3ListViewItem *item );
 
     private:
         void    startDrag();
@@ -83,7 +85,7 @@ class StatisticsList : public KListView
         StatisticsItem *m_genreItem;
         StatisticsItem *m_newestItem;
 
-        QListViewItem  *m_currentItem;
+        Q3ListViewItem  *m_currentItem;
         QString         m_filter;
         bool            m_expanded;
 };

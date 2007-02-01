@@ -4,18 +4,21 @@
 #ifndef AMAROK_EDITFILTERDIALOG_H
 #define AMAROK_EDITFILTERDIALOG_H
 
-#include <qvaluelist.h>
-#include <qvaluevector.h>
+#include <q3valuelist.h>
+#include <q3valuevector.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <QLabel>
 
 #include <kdialogbase.h>
 
 class QWidget;
-class QVBoxLayout;
+class Q3VBoxLayout;
 class QComboBox;
 class QCheckBox;
 class QLineEdit;
 class QRadioButton;
-class QGroupBox;
+class Q3GroupBox;
 class QSpinBox;
 class QStringList;
 class KComboBox;
@@ -33,13 +36,13 @@ class EditFilterDialog : public KDialogBase
         void filterChanged( const QString &filter );
 
     private:
-        QVBoxLayout *m_mainLay;
+        Q3VBoxLayout *m_mainLay;
 
         QCheckBox *m_prefixNOT;
         QComboBox *m_comboKeyword;
         KLineEdit *m_editKeyword;
 
-        QGroupBox *m_groupBox;
+        Q3GroupBox *m_groupBox;
 
         QComboBox *m_comboCondition;
         QLabel *m_filesizeLabel;
@@ -50,20 +53,20 @@ class EditFilterDialog : public KDialogBase
         QLabel *m_andLabel;
         QSpinBox *m_spinMax1, *m_spinMax2;
 
-        QGroupBox *m_groupBox2;
+        Q3GroupBox *m_groupBox2;
         QRadioButton *m_checkALL;
         QRadioButton *m_checkAtLeastOne;
         QRadioButton *m_checkExactly;
         QRadioButton *m_checkExclude;
-        QValueList<QRadioButton*> m_actionCheck;
+        Q3ValueList<QRadioButton*> m_actionCheck;
 
-        QGroupBox *m_groupBox3;
+        Q3GroupBox *m_groupBox3;
         QRadioButton *m_checkAND;
         QRadioButton *m_checkOR;
 
         bool m_appended;               // true if a filter appended
         int m_selectedIndex;           // the position of the selected keyword in the combobox
-        QValueVector<QString> m_vector; // the vector of the amarok filter keyword
+        Q3ValueVector<QString> m_vector; // the vector of the amarok filter keyword
         QString m_filterText;          // the resulting filter string
         QString m_previousFilterText;  // the previous resulting filter string
         QString m_strPrefixNOT;        // is empty if no NOT prefix is needed else it's "-"

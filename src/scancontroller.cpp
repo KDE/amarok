@@ -30,9 +30,13 @@
 #include "scancontroller.h"
 #include "statusbar.h"
 
-#include <qdeepcopy.h>
+#include <q3deepcopy.h>
 #include <qfileinfo.h>
 #include <qtextcodec.h>
+//Added by qt3to4:
+#include <QCustomEvent>
+#include <Q3CString>
+#include <Q3ValueList>
 
 #include <dcopref.h>
 #include <kapplication.h>
@@ -59,7 +63,7 @@ ScanController::ScanController( CollectionDB* parent, bool incremental, const QS
     : DependentJob( parent, "CollectionScanner" )
     , QXmlDefaultHandler()
     , m_scanner( new Amarok::ProcIO() )
-    , m_folders( QDeepCopy<QStringList>( folders ) )
+    , m_folders( Q3DeepCopy<QStringList>( folders ) )
     , m_incremental( incremental )
     , m_hasChanged( false )
     , m_source( new QXmlInputSource() )
@@ -267,7 +271,7 @@ main_loop:
         else {
             m_dataMutex.lock();
 
-            QDeepCopy<QString> data = m_xmlData;
+            Q3DeepCopy<QString> data = m_xmlData;
             m_source->setData( data );
             m_xmlData = QString::null;
 
@@ -486,7 +490,7 @@ ScanController::startElement( const QString&, const QString& localName, const QS
     else if( localName == "image" ) {
         // Deserialize CoverBundle list
         QStringList list = QStringList::split( "AMAROK_MAGIC", attrs.value( "list" ), true );
-        QValueList< QPair<QString, QString> > covers;
+        Q3ValueList< QPair<QString, QString> > covers;
 
         for( uint i = 0; i < list.count(); ) {
             covers += qMakePair( list[i], list[i + 1] );
@@ -512,10 +516,10 @@ ScanController::customEvent( QCustomEvent* e )
         debug() << "RestartEvent received." << endl;
 
         QFile log( Amarok::saveLocation( QString::null ) + "collection_scan.log" );
-        if ( !log.open( IO_ReadOnly ) )
+        if ( !log.open( QIODevice::ReadOnly ) )
         ::warning() << "Failed opening log file " << log.name() << endl;
         else {
-            QCString path = QCString(log.readAll());
+            Q3CString path = Q3CString(log.readAll());
             m_crashedFiles << QString::fromUtf8( path, path.length() );
 
         }

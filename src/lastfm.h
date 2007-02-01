@@ -19,11 +19,13 @@
 
 #include "metabundle.h"
 
-#include <qhttp.h>
+#include <q3http.h>
 #include <qobject.h>
-#include <qserversocket.h>
-#include <qurl.h>
-#include <qvaluelist.h>
+#include <q3serversocket.h>
+#include <q3url.h>
+#include <q3valuelist.h>
+//Added by qt3to4:
+#include <Q3PtrList>
 
 #include <kconfigdialog.h>
 
@@ -31,7 +33,7 @@ class KLineEdit;
 class KAction;
 class KProcIO;
 class KURL;
-class QSocket;
+class Q3Socket;
 class QTimer;
 
 namespace KIO { class Job; }
@@ -45,9 +47,9 @@ class AmarokHttp : public QObject
     public:
     AmarokHttp ( const QString & hostname, Q_UINT16 port = 80, QObject* parent = 0 );
     int get ( const QString & path );
-    QHttp::State state() const;
+    Q3Http::State state() const;
     QByteArray readAll ();
-    QHttp::Error error();
+    Q3Http::Error error();
 
     signals:
     void requestFinished ( int id, bool error );
@@ -60,8 +62,8 @@ class AmarokHttp : public QObject
     QString m_hostname;
     Q_UINT16 m_port;
     QString  m_path;
-    QHttp::State m_state;
-    QHttp::Error m_error;
+    Q3Http::State m_state;
+    Q3Http::Error m_error;
     bool m_done;
     QByteArray m_result;
 };
@@ -99,7 +101,7 @@ namespace LastFm
             void setActionsEnabled( bool enable );
 
             static Controller *s_instance;
-            QPtrList<KAction> m_actionList;
+            Q3PtrList<KAction> m_actionList;
 
             QString     m_genreUrl;
             WebService* m_service;
@@ -122,7 +124,7 @@ namespace LastFm
             QString currentPassword() const { return m_password;  }
             QString currentStation()  const { return m_station;   }
             QString session()         const { return m_session;   }
-            QUrl    streamUrl()       const { return m_streamUrl; }
+            Q3Url    streamUrl()       const { return m_streamUrl; }
 
             void friends( QString username );
             void neighbours( QString username );
@@ -175,7 +177,7 @@ namespace LastFm
             void friendsResult( const QString& username, const QStringList& friends );
             void neighboursResult( const QString& username, const QStringList& friends );
 
-            void recentTracksResult( const QString& username, QValueList< QPair<QString, QString> > songs );
+            void recentTracksResult( const QString& username, Q3ValueList< QPair<QString, QString> > songs );
             void userTagsResult( const QString& username, const QStringList& tags );
 
         private:
@@ -194,7 +196,7 @@ namespace LastFm
             QString m_session;      // session id that last.fm provides
             QString m_baseHost;     // who are we connecting to?
             QString m_basePath;     // where are we connecting to!
-            QUrl    m_streamUrl;    // last.fm webserver for direct connection (proxy connects to this)
+            Q3Url    m_streamUrl;    // last.fm webserver for direct connection (proxy connects to this)
             bool    m_subscriber;   // self explanatory
 
             QString    m_proxyUrl;
@@ -248,10 +250,10 @@ namespace LastFm
 
     // We must implement this because QServerSocket has one pure virtual method.
     // It's just used for finding a free port.
-    class MyServerSocket : public QServerSocket
+    class MyServerSocket : public Q3ServerSocket
     {
         public:
-            MyServerSocket() : QServerSocket( Q_UINT16( 0 ) ) {}
+            MyServerSocket() : Q3ServerSocket( Q_UINT16( 0 ) ) {}
 
         private:
             void newConnection( int ) {}

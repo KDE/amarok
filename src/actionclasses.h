@@ -13,7 +13,11 @@
 
 #include <kaction.h>
 #include <kactionclasses.h>
-#include <qguardedptr.h>
+#include <qpointer.h>
+//Added by qt3to4:
+#include <QResizeEvent>
+#include <QMouseEvent>
+#include <QContextMenuEvent>
 
 class KActionCollection;
 class KHelpMenu;
@@ -92,7 +96,7 @@ namespace Amarok
             virtual int plug( QWidget *, int index = -1 );
         private:
             void engineVolumeChanged( int value );
-            QGuardedPtr<Amarok::VolumeSlider> m_slider;
+            QPointer<Amarok::VolumeSlider> m_slider;
     };
 
 

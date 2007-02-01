@@ -22,6 +22,9 @@
 #include <kwin.h>             //Vis::Selector
 #include <kstandarddirs.h>    //locateLocal()
 #include <qtooltip.h>         //Vis::Selector ctor
+//Added by qt3to4:
+#include <Q3CString>
+#include <QPaintEvent>
 #include "socketserver.h"
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -39,7 +42,7 @@
 /// @class Amarok::SocketServer
 
 Amarok::SocketServer::SocketServer( const QString &socketName, QObject *parent )
-        : QServerSocket( parent )
+        : Q3ServerSocket( parent )
 {
     m_sockfd = ::socket( AF_UNIX, SOCK_STREAM, 0 );
 
@@ -114,7 +117,7 @@ Vis::SocketNotifier::request( int sockfd ) //slot
 
     if( nbytes > 0 )
     {
-        QCString result( buf );
+        Q3CString result( buf );
 
         if( result == "REG" )
         {
@@ -154,7 +157,7 @@ Vis::Selector::instance()
 }
 
 Vis::Selector::Selector( QWidget *parent )
-        : QListView( parent, "Vis::Selector::instance", Qt::WType_Dialog )
+        : Q3ListView( parent, "Vis::Selector::instance", Qt::WType_Dialog )
         , m_server( new SocketServer( this ) )
 {
     Amarok::OverrideCursor waitcursor;
@@ -166,15 +169,15 @@ Vis::Selector::Selector( QWidget *parent )
     KWin::setState( winId(), NET::SkipTaskbar );
 
     setSorting( 0 );
-    setColumnWidthMode( 0, QListView::Maximum );
+    setColumnWidthMode( 0, Q3ListView::Maximum );
     QToolTip::add( viewport(), i18n( "Right-click on item for context menu" ) );
     addColumn( QString() );
     addColumn( QString() );
     reinterpret_cast<QWidget*>(header())->hide();
 
 
-     connect( this, SIGNAL(contextMenuRequested( QListViewItem*, const QPoint&, int )),
-              this, SLOT(rightButton( QListViewItem*, const QPoint&, int )) );
+     connect( this, SIGNAL(contextMenuRequested( Q3ListViewItem*, const QPoint&, int )),
+              this, SLOT(rightButton( Q3ListViewItem*, const QPoint&, int )) );
 
     // Can I get a pointer to the data section of a QCString?
     char str[4096];
@@ -223,7 +226,7 @@ Vis::Selector::mapPID( int pid, int sockfd )
 }
 
 void
-Vis::Selector::rightButton( QListViewItem* qitem, const QPoint& pos, int )
+Vis::Selector::rightButton( Q3ListViewItem* qitem, const QPoint& pos, int )
 {
     //TODO if the vis is not running it cannot be configured and you shouldn't show the popupmenu!
 
@@ -245,7 +248,7 @@ Vis::Selector::rightButton( QListViewItem* qitem, const QPoint& pos, int )
 }
 
 #include <qpainter.h>
-#include <qsimplerichtext.h>
+#include <q3simplerichtext.h>
 void
 Vis::Selector::viewportPaintEvent( QPaintEvent *e )
 {
@@ -264,7 +267,7 @@ Vis::Selector::viewportPaintEvent( QPaintEvent *e )
                  "Please check these possibilities and restart Amarok."
                 "</div>" ), KDE::StatusBar::Sorry );
     }
-    else { QListView::viewportPaintEvent( e ); }
+    else { Q3ListView::viewportPaintEvent( e ); }
 }
 
 

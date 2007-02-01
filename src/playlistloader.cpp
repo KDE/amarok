@@ -31,10 +31,13 @@
 #include <qdatetime.h>   //::recurse()
 #include <qeventloop.h>  //::recurse()
 #include <qfile.h>       //::loadPlaylist()
-#include <qlistview.h>
+#include <q3listview.h>
 #include <qregexp.h>
 #include <qstringlist.h>
-#include <qtextstream.h> //::loadPlaylist()
+#include <q3textstream.h> //::loadPlaylist()
+//Added by qt3to4:
+#include <Q3ValueList>
+#include <QCustomEvent>
 
 #include <dcopref.h>
 #include <kapplication.h>
@@ -57,8 +60,8 @@ struct XMLData
 
 class TagsEvent : public QCustomEvent {
 public:
-    TagsEvent( const QValueList<XMLData> &x ) : QCustomEvent( 1001 ), xml( QDeepCopy<QValueList<XMLData> >( x ) ) { }
-    TagsEvent( const BundleList &bees ) : QCustomEvent( 1000 ), bundles( QDeepCopy<BundleList>( bees ) ) {
+    TagsEvent( const Q3ValueList<XMLData> &x ) : QCustomEvent( 1001 ), xml( Q3DeepCopy<Q3ValueList<XMLData> >( x ) ) { }
+    TagsEvent( const BundleList &bees ) : QCustomEvent( 1000 ), bundles( Q3DeepCopy<BundleList>( bees ) ) {
         for( BundleList::Iterator it = bundles.begin(), end = bundles.end(); it != end; ++it )
         {
             (*it).detach();
@@ -68,12 +71,12 @@ public:
         }
     }
 
-    QValueList<XMLData> xml;
+    Q3ValueList<XMLData> xml;
     BundleList bundles;
 };
 
 
-UrlLoader::UrlLoader( const KURL::List &urls, QListViewItem *after, int options )
+UrlLoader::UrlLoader( const KURL::List &urls, Q3ListViewItem *after, int options )
         : ThreadManager::DependentJob( Playlist::instance(), "UrlLoader" )
         , m_markerListViewItem( new PlaylistItem( Playlist::instance(), after ) )
         , m_playFirstUrl( options & (Playlist::StartPlay | Playlist::DirectPlay) )
@@ -272,7 +275,7 @@ UrlLoader::customEvent( QCustomEvent *e)
 
     case 1001:
     {
-        foreachType( QValueList<XMLData>, e->xml )
+        foreachType( Q3ValueList<XMLData>, e->xml )
         {
             if( (*it).bundle.isEmpty() ) //safety
                 continue;
@@ -322,7 +325,7 @@ UrlLoader::completeJob()
 {
     DEBUG_BLOCK
     const PLItemList &newQueue = Playlist::instance()->m_nextTracks;
-    QPtrListIterator<PlaylistItem> it( newQueue );
+    Q3PtrListIterator<PlaylistItem> it( newQueue );
     PLItemList added;
     for( it.toFirst(); *it; ++it )
         if( !m_oldQueue.containsRef( *it ) )
@@ -463,7 +466,7 @@ void
 UrlLoader::loadXml( const KURL &url )
 {
     QFile file( url.path() );
-    if( !file.open( IO_ReadOnly ) ) {
+    if( !file.open( QIODevice::ReadOnly ) ) {
         m_badURLs += url;
         return;
     }
@@ -495,7 +498,7 @@ UrlLoader::loadXml( const KURL &url )
 void UrlLoader::slotNewBundle( const MetaBundle &bundle, const XmlAttributeList &atts )
 {
     XMLData data;
-    data.bundle = QDeepCopy<MetaBundle>( bundle );
+    data.bundle = Q3DeepCopy<MetaBundle>( bundle );
     for( int i = 0, n = atts.count(); i < n; ++i )
     {
         if( atts[i].first == "queue_index" )
@@ -543,12 +546,12 @@ PlaylistFile::PlaylistFile( const QString &path )
         : m_path( path )
 {
     QFile file( path );
-    if( !file.open( IO_ReadOnly ) ) {
+    if( !file.open( QIODevice::ReadOnly ) ) {
         m_error = i18n( "Amarok could not open the file." );
         return;
     }
 
-    QTextStream stream( &file );
+    Q3TextStream stream( &file );
 
     switch( format( m_path ) ) {
     case M3U: loadM3u( stream ); break;
@@ -571,7 +574,7 @@ PlaylistFile::PlaylistFile( const QString &path )
 }
 
 bool
-PlaylistFile::loadM3u( QTextStream &stream )
+PlaylistFile::loadM3u( Q3TextStream &stream )
 {
     const QString directory = m_path.left( m_path.findRev( '/' ) + 1 );
     MetaBundle b;
@@ -616,7 +619,7 @@ PlaylistFile::loadM3u( QTextStream &stream )
 }
 
 bool
-PlaylistFile::loadPls( QTextStream &stream )
+PlaylistFile::loadPls( Q3TextStream &stream )
 {
     // Counted number of "File#=" lines.
     unsigned int entryCnt = 0;
@@ -739,7 +742,7 @@ PlaylistFile::loadPls( QTextStream &stream )
 }
 
 bool
-PlaylistFile::loadXSPF( QTextStream &stream )
+PlaylistFile::loadXSPF( Q3TextStream &stream )
 {
     XSPFPlaylist* doc = new XSPFPlaylist( stream );
 
@@ -805,7 +808,7 @@ PlaylistFile::loadPls_extractIndex( const QString &str ) const
 }
 
 bool
-PlaylistFile::loadRealAudioRam( QTextStream &stream )
+PlaylistFile::loadRealAudioRam( Q3TextStream &stream )
 {
     MetaBundle b;
     QString url;
@@ -827,14 +830,14 @@ PlaylistFile::loadRealAudioRam( QTextStream &stream )
 }
 
 bool
-PlaylistFile::loadASX( QTextStream &stream )
+PlaylistFile::loadASX( Q3TextStream &stream )
 {
     //adapted from Kaffeine 0.7
     MetaBundle b;
     QDomDocument doc;
     QString errorMsg;
     int errorLine, errorColumn;
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
 
     QString content = stream.read();
 
@@ -931,7 +934,7 @@ PlaylistFile::loadASX( QTextStream &stream )
 }
 
 bool
-PlaylistFile::loadSMIL( QTextStream &stream )
+PlaylistFile::loadSMIL( Q3TextStream &stream )
 {
 	// adapted from Kaffeine 0.7
 	QDomDocument doc;
@@ -941,7 +944,7 @@ PlaylistFile::loadSMIL( QTextStream &stream )
         return false;
     }
 	QDomElement root = doc.documentElement();
-	stream.setEncoding ( QTextStream::UnicodeUTF8 );
+	stream.setEncoding ( Q3TextStream::UnicodeUTF8 );
 
 	if( root.nodeName().lower() != "smil" )
        return false;
@@ -988,7 +991,7 @@ PlaylistFile::loadSMIL( QTextStream &stream )
 #include <kio/job.h>
 #include <klocale.h>
 
-RemotePlaylistFetcher::RemotePlaylistFetcher( const KURL &source, QListViewItem *after, int options )
+RemotePlaylistFetcher::RemotePlaylistFetcher( const KURL &source, Q3ListViewItem *after, int options )
         : QObject( Playlist::instance()->qscrollview() )
         , m_source( source )
         , m_after( after )
@@ -1048,9 +1051,9 @@ RemotePlaylistFetcher::result( KIO::Job *job )
 
 /// @class SqlLoader
 
-SqlLoader::SqlLoader( const QString &sql, QListViewItem *after, int options )
+SqlLoader::SqlLoader( const QString &sql, Q3ListViewItem *after, int options )
         : UrlLoader( KURL::List(), after, options )
-        , m_sql( QDeepCopy<QString>( sql ) )
+        , m_sql( Q3DeepCopy<QString>( sql ) )
 {
     // Ovy: just until we make sure every SQL query from dynamic playlists is handled
     // correctly

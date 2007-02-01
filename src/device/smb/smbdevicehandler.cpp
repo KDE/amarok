@@ -24,7 +24,7 @@ AMAROK_EXPORT_PLUGIN( SmbDeviceHandlerFactory )
 #include <kconfig.h>
 #include <kurl.h>
 
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 
 
 SmbDeviceHandler::SmbDeviceHandler( int deviceId, QString server, QString dir, QString mountPoint )

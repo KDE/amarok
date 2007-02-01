@@ -8,12 +8,15 @@
 
 #include "debug.h"
 #include <qevent.h>   //baseclass
-#include <qguardedptr.h>
+#include <qpointer.h>
 #include <qmap.h>
 #include <qobject.h>
 #include <qthread.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 #include <qmutex.h>
+//Added by qt3to4:
+#include <Q3CString>
+#include <QCustomEvent>
 #include "debug.h"
 
 #define DISABLE_GENERATED_MEMBER_FUNCTIONS_3( T ) \
@@ -89,10 +92,10 @@ class ThreadManager : public QObject
 public:
     class Thread;
     friend class Thread;
-    typedef QValueList<Thread*> ThreadList;
+    typedef Q3ValueList<Thread*> ThreadList;
     class Job;
     friend class Job;
-    typedef QValueList<Job*> JobList;
+    typedef Q3ValueList<Job*> JobList;
 
     static ThreadManager *instance();
     static void deleteInstance();
@@ -143,17 +146,17 @@ public:
      *
      * @return how many jobs were aborted, or -1 if no thread was found
      */
-    int abortAllJobsNamed( const QCString &name );
+    int abortAllJobsNamed( const Q3CString &name );
 
     /**
      * @return true if a Job with name is queued or is running
      */
-    bool isJobPending( const QCString &name ) { return jobCount( name ) > 0; }
+    bool isJobPending( const Q3CString &name ) { return jobCount( name ) > 0; }
 
     /**
      * @return the number of jobs running, pending, aborted and otherwise.
      */
-    uint jobCount( const QCString &name );
+    uint jobCount( const Q3CString &name );
 
 private:
     ThreadManager();
@@ -381,7 +384,7 @@ public:
         QObject *dependent() { return m_dependent; }
 
     private:
-        const QGuardedPtr<QObject> m_dependent;
+        const QPointer<QObject> m_dependent;
 
     protected:
         DISABLE_GENERATED_MEMBER_FUNCTIONS_4( DependentJob )

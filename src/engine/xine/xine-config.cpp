@@ -17,9 +17,11 @@
 #include <knuminput.h>
 #include <kstandarddirs.h>
 
-#include <qgroupbox.h>
+#include <q3groupbox.h>
 #include <qlabel.h>
 #include <qpixmap.h>
+//Added by qt3to4:
+#include <Q3CString>
 
 ////////////////////
 /// XineGeneralEntry
@@ -76,7 +78,7 @@ XineStrFunctor::operator()( xine_cfg_entry_t* ent, const QString& val )
 ////////////////////
 /// XineStrEntry
 ////////////////////
-XineStrEntry::XineStrEntry(QLineEdit* input, const QCString & key, xine_t *xine, XineConfigDialog* xcf)
+XineStrEntry::XineStrEntry(QLineEdit* input, const Q3CString & key, xine_t *xine, XineConfigDialog* xcf)
     : XineGeneralEntry(key,xine,xcf)
 {
     xine_cfg_entry_t ent;
@@ -108,7 +110,7 @@ XineStrEntry::entryChanged(const QString & val)
 ////////////////////
 /// XineIntEntry
 ////////////////////
-XineIntEntry::XineIntEntry(KIntSpinBox* input, const QCString & key, xine_t *xine, XineConfigDialog* xcf)
+XineIntEntry::XineIntEntry(KIntSpinBox* input, const Q3CString & key, xine_t *xine, XineConfigDialog* xcf)
   : XineGeneralEntry(key,xine,xcf)
 {
     xine_cfg_entry_t ent;
@@ -145,7 +147,7 @@ XineIntEntry::entryChanged(int val)
 ////////////////////
 /// XineEnumEntry
 ////////////////////
-XineEnumEntry::XineEnumEntry(QComboBox* input, const QCString & key, xine_t *xine, XineConfigDialog* xcf)
+XineEnumEntry::XineEnumEntry(QComboBox* input, const Q3CString & key, xine_t *xine, XineConfigDialog* xcf)
     : XineIntEntry(key,xine,xcf)
 {
     input->clear();
@@ -259,7 +261,7 @@ XineConfigDialog::hasChanged() const
     if(XineCfg::outputPlugin() != ((m_view->deviceComboBox->currentItem() == 0) ? "auto" : m_view->deviceComboBox->currentText()))
         return true;
 
-    QPtrListIterator<XineGeneralEntry> it( m_entries );
+    Q3PtrListIterator<XineGeneralEntry> it( m_entries );
     XineGeneralEntry* entry;
     while( (entry = it.current()) != 0 )
     {

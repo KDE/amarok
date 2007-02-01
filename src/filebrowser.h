@@ -24,7 +24,9 @@
 #ifndef FILESELECTOR_WIDGET_H
 #define FILESELECTOR_WIDGET_H
 
-#include <qvbox.h>        //baseclass
+#include <q3vbox.h>        //baseclass
+//Added by qt3to4:
+#include <QDropEvent>
 #include <kdiroperator.h> //some inline functions
 #include <ktoolbar.h>     //baseclass
 #include <kurl.h>         //stack allocated
@@ -48,7 +50,7 @@ class Medium;
 */
 
 
-class FileBrowser : public QVBox
+class FileBrowser : public Q3VBox
 {
     Q_OBJECT
 
@@ -93,12 +95,12 @@ private:
 class KDirLister;
 class KURLView;
 class QLineEdit;
-class QListViewItem;
+class Q3ListViewItem;
 
 ///@author Max Howell
 ///@short Widget for recursive searching of current FileBrowser location
 
-class SearchPane : public QVBox
+class SearchPane : public Q3VBox
 {
     Q_OBJECT
 
@@ -112,7 +114,7 @@ private slots:
     void searchMatches( const KFileItemList& );
     void searchComplete();
     void _searchComplete();
-    void activate( QListViewItem* );
+    void activate( Q3ListViewItem* );
 
 private:
     KURL searchURL() const { return static_cast<FileBrowser*>(parentWidget())->url(); }

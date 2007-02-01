@@ -14,18 +14,20 @@
 #define DAAPREADER_H
 
 #include <qobject.h>
+//Added by qt3to4:
+#include <Q3PtrList>
 
 #include <kurl.h>
 
 class QString;
 
 template <class T>
-class QPtrList;
+class Q3PtrList;
 class MetaBundle;
 class ServerItem;
-class QHttpResponseHeader;
+class Q3HttpResponseHeader;
 
-namespace QHttp {
+namespace Q3Http {
     class Error;
 }
 
@@ -33,7 +35,7 @@ namespace Daap
 {
     typedef QMap<QString, QVariant>    Map;
 
-    typedef QPtrList< MetaBundle >     TrackList;
+    typedef Q3PtrList< MetaBundle >     TrackList;
     typedef QMap< QString, TrackList > AlbumList;
     typedef QMap< QString, AlbumList > SongList;
 
@@ -76,7 +78,7 @@ namespace Daap
             Q_UINT16 port() const { return m_port; }
         public slots:
             void logoutRequest(int, bool );
-            void loginHeaderReceived( const QHttpResponseHeader& resp );
+            void loginHeaderReceived( const Q3HttpResponseHeader& resp );
             void loginFinished( int id , bool error );
             void updateFinished( int id , bool error );
             void databaseIdFinished( int id , bool error );

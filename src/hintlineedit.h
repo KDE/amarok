@@ -2,8 +2,10 @@
 #define HINTLINEEDIT_H
 
 #include <klineedit.h> //baseclass
+//Added by qt3to4:
+#include <QLabel>
 
-class QVBox;
+class Q3VBox;
 class QLabel;
 class QWidget;
 
@@ -20,7 +22,7 @@ public:
     virtual void setHint( const QString &hint );
 private:
     void init();
-    QVBox *m_vbox;
+    Q3VBox *m_vbox;
     QLabel *m_hint;
 };
 

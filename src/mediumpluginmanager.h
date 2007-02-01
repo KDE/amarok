@@ -18,17 +18,20 @@
 
 #include <qlayout.h>
 #include <qmap.h>
-#include <qhbox.h>
+#include <q3hbox.h>
+//Added by qt3to4:
+#include <QLabel>
+#include <Q3ValueList>
 
 #include <kconfig.h>
 #include <kdialogbase.h>
 #include <klocale.h>
 
 class QButton;
-class QGroupBox;
+class Q3GroupBox;
 class QLabel;
 class QSignalMapper;
-class QVBox;
+class Q3VBox;
 class KComboBox;
 class KLineEdit;
 class Medium;
@@ -42,7 +45,7 @@ typedef QMap<QString, Medium*> NewDeviceMap;
     @author Martin Aumueller <aumuell@reserv.at>
 */
 
-class MediaDeviceConfig : public QHBox
+class MediaDeviceConfig : public Q3HBox
 {
     Q_OBJECT
 
@@ -76,7 +79,7 @@ class MediaDeviceConfig : public QHBox
         bool m_new;
 };
 
-typedef QValueList<MediaDeviceConfig *> DeviceList;
+typedef Q3ValueList<MediaDeviceConfig *> DeviceList;
 
 class MediumPluginManager : public QObject
 {
@@ -125,8 +128,8 @@ class MediumPluginManagerDialog : public KDialogBase
 
     private:
 
-        QVBox *m_devicesBox;
-        QGroupBox *m_location;
+        Q3VBox *m_devicesBox;
+        Q3GroupBox *m_location;
         MediumPluginManager *m_manager;
 };
 

@@ -20,8 +20,10 @@
 #include "loader.h"
 #include <qfile.h>
 #include <qmessagebox.h>
-#include <qprocess.h>
+#include <q3process.h>
 #include <qstring.h>
+//Added by qt3to4:
+#include <QTimerEvent>
 #include <kinstance.h>
 #include <kglobal.h>
 #include <kstandarddirs.h>
@@ -69,7 +71,7 @@ main( int argc, char *argv[] )
                     // this argument cannot be passed to the running amarokapp
                     // or KCmdLineArgs would exit the application
 
-                    QProcess proc( QString("amarokapp") );
+                    Q3Process proc( QString("amarokapp") );
                     proc.setCommunication( 0 ); //show everything
                     proc.addArgument( arg );
                     proc.start();
@@ -100,7 +102,7 @@ main( int argc, char *argv[] )
         dcop_args += args;
         dcop_args += "]";
 
-        QProcess proc( dcop_args );
+        Q3Process proc( dcop_args );
         proc.start();
         while( proc.isRunning() )
             ::usleep( 100 );
@@ -118,7 +120,7 @@ main( int argc, char *argv[] )
 bool
 amarokIsRunning()
 {
-    QProcess proc( QString( "dcop" ) );
+    Q3Process proc( QString( "dcop" ) );
     proc.start();
     while( proc.isRunning() )
         ::usleep( 100 );
@@ -147,8 +149,8 @@ Loader::Loader( QStringList args )
 
     args.prepend( "amarokapp" );
 
-    m_proc = new QProcess( args, this );
-    m_proc->setCommunication( QProcess::Stdout );
+    m_proc = new Q3Process( args, this );
+    m_proc->setCommunication( Q3Process::Stdout );
 
     std::cout << "Amarok: [Loader] Starting amarokapp..\n";
     std::cout << "Amarok: [Loader] Don't run gdb, valgrind, etc. against this binary! Use amarokapp.\n";
@@ -216,7 +218,7 @@ isSplashEnabled()
             ++path )
     {
         QFile file( *path );
-        if ( file.open( IO_ReadOnly ) )
+        if ( file.open( QIODevice::ReadOnly ) )
         {
             QString line;
             while( file.readLine( line, 2000 ) != -1 )

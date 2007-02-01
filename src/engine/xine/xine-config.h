@@ -17,6 +17,9 @@
 #include "xineconfigbase.h"
 
 #include <xine.h>
+//Added by qt3to4:
+#include <Q3CString>
+#include <Q3PtrList>
 
 class XineConfigDialog;
 class KLineEdit;
@@ -65,7 +68,7 @@ class XineStrEntry : public XineGeneralEntry
     Q_OBJECT
 
     public:
-        XineStrEntry(QLineEdit* input, const QCString & key, xine_t *m_xine, XineConfigDialog* xcf);
+        XineStrEntry(QLineEdit* input, const Q3CString & key, xine_t *m_xine, XineConfigDialog* xcf);
         void save();
 
     private slots:
@@ -81,7 +84,7 @@ class XineIntEntry : public XineGeneralEntry
     Q_OBJECT
 
     public:
-        XineIntEntry(KIntSpinBox* input, const QCString & key, xine_t *xine, XineConfigDialog* xcf);
+        XineIntEntry(KIntSpinBox* input, const Q3CString & key, xine_t *xine, XineConfigDialog* xcf);
         XineIntEntry(const QString& key, xine_t *xine, XineConfigDialog* xcf);
         void save();
 
@@ -97,7 +100,7 @@ class XineEnumEntry : public XineIntEntry
 {
     Q_OBJECT
 public:
-    XineEnumEntry(QComboBox* input, const QCString & key, xine_t *xine, XineConfigDialog* xcf);
+    XineEnumEntry(QComboBox* input, const Q3CString & key, xine_t *xine, XineConfigDialog* xcf);
 };
 
 
@@ -124,7 +127,7 @@ class XineConfigDialog : public Amarok::PluginConfig
         void init();
         void showHidePluginConfigs() const;
         xine_t *m_xine;
-        QPtrList<XineGeneralEntry> m_entries;
+        Q3PtrList<XineGeneralEntry> m_entries;
         XineConfigBase* m_view;
 };
 

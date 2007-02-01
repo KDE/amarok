@@ -18,7 +18,7 @@
 #include <qdatetime.h>
 #include <qlabel.h>
 #include <qmap.h>
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 
 #include <khtml_part.h>
 

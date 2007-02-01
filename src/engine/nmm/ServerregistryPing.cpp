@@ -27,7 +27,7 @@
 #include "debug.h"
 
 ServerregistryPing::ServerregistryPing(const QString &host, Q_UINT16 port)
-    : QSocket()
+    : Q3Socket()
 {
     connect( this, SIGNAL(connected()),
             SLOT(socketConnected()) );

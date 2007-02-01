@@ -22,10 +22,14 @@
 
 #include <qdom.h>
 #include <qfile.h>
-#include <qhttp.h>
-#include <qptrlist.h>
+#include <q3http.h>
+#include <q3ptrlist.h>
 #include <qtimer.h>     // Podcast loading animation
-#include <qurl.h>
+#include <q3url.h>
+//Added by qt3to4:
+#include <Q3ValueList>
+#include <QCustomEvent>
+#include <QPixmap>
 
 class MetaBundle;
 class PlaylistTrackItem;
@@ -51,15 +55,15 @@ class PlaylistBrowserEntry :  public QObject, public KListViewItem
 {
     Q_OBJECT
     public:
-        PlaylistBrowserEntry( QListViewItem *parent, QListViewItem *after )
+        PlaylistBrowserEntry( Q3ListViewItem *parent, Q3ListViewItem *after )
             : KListViewItem( parent, after) { m_kept = true; }
-        PlaylistBrowserEntry( QListView *parent, QListViewItem *after )
+        PlaylistBrowserEntry( Q3ListView *parent, Q3ListViewItem *after )
             : KListViewItem( parent, after) { m_kept = true; }
-        PlaylistBrowserEntry( QListViewItem *parent, QListViewItem *after, const QString &name )
+        PlaylistBrowserEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const QString &name )
             : KListViewItem( parent, after, name) { m_kept = true; }
 
         virtual QDomElement xml() const { return QDomElement(); }
-        QListViewItem* parent() const { return KListViewItem::parent(); }
+        Q3ListViewItem* parent() const { return KListViewItem::parent(); }
 
         bool isKept() const { return m_kept; }  // if kept == true, then it will be saved
         void setKept( bool k );                 // to the cache files. If false, non-renameable
@@ -74,7 +78,7 @@ class PlaylistBrowserEntry :  public QObject, public KListViewItem
         virtual void showContextMenu( const QPoint & ) {};
 
     protected:
-        virtual int compare( QListViewItem*, int, bool ) const; //reimplemented
+        virtual int compare( Q3ListViewItem*, int, bool ) const; //reimplemented
 
         /** Interval of the download pixmap animation, in milliseconds */
         static const int ANIMATION_INTERVAL = 250;
@@ -87,8 +91,8 @@ class DynamicEntry : public PlaylistBrowserEntry, public DynamicMode
 {
     Q_OBJECT
     public:
-        DynamicEntry( QListViewItem *parent, QListViewItem *after, const QString &title );
-        DynamicEntry( QListViewItem *parent, QListViewItem *after, const QDomElement &xmlDefinition );
+        DynamicEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const QString &title );
+        DynamicEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const QDomElement &xmlDefinition );
         ~DynamicEntry() { };
 
         virtual QString text( int column ) const;
@@ -107,11 +111,11 @@ class PlaylistCategory : public PlaylistBrowserEntry
 {
     Q_OBJECT
     public:
-        PlaylistCategory( QListView *parent, QListViewItem *after, const QString &, bool isFolder=false );
-        PlaylistCategory( PlaylistCategory *parent, QListViewItem *after, const QString &, bool isFolder=true );
-        PlaylistCategory( QListView *parent, QListViewItem *after, const QDomElement &xmlDefinition, bool isFolder=false);
-        PlaylistCategory( PlaylistCategory *parent, QListViewItem *after, const QDomElement &xmlDefinition );
-        PlaylistCategory( PlaylistCategory *parent, QListViewItem *after, const QString &t, const int id );
+        PlaylistCategory( Q3ListView *parent, Q3ListViewItem *after, const QString &, bool isFolder=false );
+        PlaylistCategory( PlaylistCategory *parent, Q3ListViewItem *after, const QString &, bool isFolder=true );
+        PlaylistCategory( Q3ListView *parent, Q3ListViewItem *after, const QDomElement &xmlDefinition, bool isFolder=false);
+        PlaylistCategory( PlaylistCategory *parent, Q3ListViewItem *after, const QDomElement &xmlDefinition );
+        PlaylistCategory( PlaylistCategory *parent, Q3ListViewItem *after, const QString &t, const int id );
 
         ~PlaylistCategory() { };
 
@@ -155,8 +159,8 @@ class PlaylistEntry :  public PlaylistBrowserEntry
     friend class PlaylistCategory;
 
     public:
-        PlaylistEntry( QListViewItem *parent, QListViewItem *after, const KURL &, int tracks=0, int length=0 );
-        PlaylistEntry( QListViewItem *parent, QListViewItem *after, const QDomElement &xmlDefinition );
+        PlaylistEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const KURL &, int tracks=0, int length=0 );
+        PlaylistEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const QDomElement &xmlDefinition );
         ~PlaylistEntry();
 
         void sortChildItems ( int /*column*/, bool /*ascending*/ ) { /* Don't sort its children */ }; //reimplemented
@@ -172,17 +176,17 @@ class PlaylistEntry :  public PlaylistBrowserEntry
 
         void        setDynamic( bool );
 
-        int         compare( QListViewItem* i, int col ) const; //reimpl.
+        int         compare( Q3ListViewItem* i, int col ) const; //reimpl.
         KURL::List  tracksURL();    //returns the list of tracks url
-        void        insertTracks( QListViewItem *after, KURL::List list );
-        void        insertTracks( QListViewItem *after, QValueList<MetaBundle> bundles );
+        void        insertTracks( Q3ListViewItem *after, KURL::List list );
+        void        insertTracks( Q3ListViewItem *after, Q3ValueList<MetaBundle> bundles );
         // isLast is used to avoid saving the playlist to disk every time a track is removed
         // when removing a list of tracks from the playlist
-        void        removeTrack( QListViewItem *item, bool isLast = true );
+        void        removeTrack( Q3ListViewItem *item, bool isLast = true );
 
         //returns a list of track information
-        QPtrList<TrackItemInfo> trackList()     const { return m_trackList; }
-        QPtrList<TrackItemInfo> droppedTracks() const { return tmp_droppedTracks; }
+        Q3PtrList<TrackItemInfo> trackList()     const { return m_trackList; }
+        Q3PtrList<TrackItemInfo> droppedTracks() const { return tmp_droppedTracks; }
 
         void  setOpen( bool );
         void  setup();
@@ -216,8 +220,8 @@ class PlaylistEntry :  public PlaylistBrowserEntry
         KURL                 m_url;                 //playlist url
         int                  m_length;              //total length in seconds
         int                  m_trackCount;          //track counter
-        QPtrList<TrackItemInfo> m_trackList;        //tracks in playlist
-        QPtrList<TrackItemInfo> tmp_droppedTracks;  //tracks dropped to the playlist while it wasn't been loaded
+        Q3PtrList<TrackItemInfo> m_trackList;        //tracks in playlist
+        Q3PtrList<TrackItemInfo> tmp_droppedTracks;  //tracks dropped to the playlist while it wasn't been loaded
         bool                 m_loading;
         bool                 m_loaded;              //playlist loaded
         bool                 m_dynamic;             //the playlist is scheduled for dynamic mode rotation
@@ -233,7 +237,7 @@ class PlaylistTrackItem : public PlaylistBrowserEntry
     friend class TrackItemInfo;
 
     public:
-        PlaylistTrackItem( QListViewItem *parent, QListViewItem *after, TrackItemInfo *info );
+        PlaylistTrackItem( Q3ListViewItem *parent, Q3ListViewItem *after, TrackItemInfo *info );
 
         const KURL    &url();
         TrackItemInfo *trackInfo() const { return m_trackInfo; }
@@ -256,13 +260,13 @@ class PodcastEpisode : public PlaylistBrowserEntry
         Q_OBJECT
 
     public:
-        PodcastEpisode( QListViewItem *parent, QListViewItem *after, const QDomElement &xml,
+        PodcastEpisode( Q3ListViewItem *parent, Q3ListViewItem *after, const QDomElement &xml,
                         const int feedType, const bool &isNew=false );
-        PodcastEpisode( QListViewItem *parent, QListViewItem *after, PodcastEpisodeBundle &bundle );
+        PodcastEpisode( Q3ListViewItem *parent, Q3ListViewItem *after, PodcastEpisodeBundle &bundle );
 
         void  downloadMedia();
         void setOnDisk( bool d = true );
-        QListViewItem *itemChannel() { return m_parent; }
+        Q3ListViewItem *itemChannel() { return m_parent; }
 
 
         const bool isNew() const { return m_bundle.isNew(); }
@@ -314,7 +318,7 @@ class PodcastEpisode : public PlaylistBrowserEntry
     private:
         enum FeedType{ RSS=0, ATOM=1 };
 
-        virtual int compare( QListViewItem*, int, bool ) const; //reimplemented
+        virtual int compare( Q3ListViewItem*, int, bool ) const; //reimplemented
 
         void associateWithLocalFile();
 
@@ -322,7 +326,7 @@ class PodcastEpisode : public PlaylistBrowserEntry
         void stopAnimation();
         void updatePixmap();
 
-        QListViewItem *m_parent;           //podcast channel it belongs to
+        Q3ListViewItem *m_parent;           //podcast channel it belongs to
         PodcastEpisodeBundle m_bundle;
         KURL        m_localUrl;
 
@@ -343,12 +347,12 @@ class PodcastChannel : public PlaylistBrowserEntry
         Q_OBJECT
 
     public:
-        PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url,
+        PodcastChannel( Q3ListViewItem *parent, Q3ListViewItem *after, const KURL &url,
                         const QDomNode &channelSettings );
-        PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url );
-        PodcastChannel( QListViewItem *parent, QListViewItem *after, const KURL &url,
+        PodcastChannel( Q3ListViewItem *parent, Q3ListViewItem *after, const KURL &url );
+        PodcastChannel( Q3ListViewItem *parent, Q3ListViewItem *after, const KURL &url,
                         const QDomNode &channelSettings, const QDomDocument &xml );
-        PodcastChannel( QListViewItem *parent, QListViewItem *after, const PodcastChannelBundle &pcb );
+        PodcastChannel( Q3ListViewItem *parent, Q3ListViewItem *after, const PodcastChannelBundle &pcb );
 
         enum MediaFetch{ STREAM=0, AUTOMATIC=1 };
 
@@ -438,7 +442,7 @@ class PodcastChannel : public PlaylistBrowserEntry
         KIO::TransferJob        *m_podcastJob;
         PlaylistCategory        *m_parent;        // category it belongs to
         QString                  m_podcastCurrentUrl;
-        QPtrList<PodcastEpisode> m_podcastDownloadQueue;
+        Q3PtrList<PodcastEpisode> m_podcastDownloadQueue;
         bool                     m_settingsValid;
 };
 
@@ -446,8 +450,8 @@ class StreamEntry : public PlaylistBrowserEntry
 {
     Q_OBJECT
     public:
-        StreamEntry( QListViewItem *parent, QListViewItem *after, const KURL &, const QString &t );
-        StreamEntry( QListViewItem *parent, QListViewItem *after, const QDomElement &xmlDefinition );
+        StreamEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const KURL &, const QString &t );
+        StreamEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const QDomElement &xmlDefinition );
         ~StreamEntry() { };
 
         void  setURL  ( KURL u )    { m_url = u; }
@@ -479,9 +483,9 @@ class LastFmEntry : public StreamEntry
 {
     Q_OBJECT
     public:
-        LastFmEntry( QListViewItem *parent, QListViewItem *after, const KURL &u, const QString &t )
+        LastFmEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const KURL &u, const QString &t )
             : StreamEntry( parent, after, u, t ) { }
-        LastFmEntry( QListViewItem *parent, QListViewItem *after, const QDomElement &xmlDefinition )
+        LastFmEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const QDomElement &xmlDefinition )
             : StreamEntry( parent, after, xmlDefinition ) { }
         virtual QDomElement xml() const;
 
@@ -511,10 +515,10 @@ class SmartPlaylist : public PlaylistBrowserEntry
 {
     Q_OBJECT
     public:
-        SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QString &name, const QString &query );
-        SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QString &name,
+        SmartPlaylist( Q3ListViewItem *parent, Q3ListViewItem *after, const QString &name, const QString &query );
+        SmartPlaylist( Q3ListViewItem *parent, Q3ListViewItem *after, const QString &name,
                          const QString &urls, const QString &tags );
-        SmartPlaylist( QListViewItem *parent, QListViewItem *after, const QDomElement &xmlDefinition );
+        SmartPlaylist( Q3ListViewItem *parent, Q3ListViewItem *after, const QDomElement &xmlDefinition );
 
         bool        isDynamic()     const { return m_dynamic; }
         bool        isEditable()    const { return !m_xml.isNull(); }
@@ -541,7 +545,7 @@ class SmartPlaylist : public PlaylistBrowserEntry
 
         QString         m_title;
         QDomElement     m_xml;
-        QListViewItem  *m_after;
+        Q3ListViewItem  *m_after;
         bool            m_dynamic;
 
         // Build the query for a given xml object. If \p for expand is true,
@@ -610,7 +614,7 @@ class ShoutcastGenre : public PlaylistCategory
 {
         Q_OBJECT
     public:
-        ShoutcastGenre( ShoutcastBrowser *browser, QListViewItem *after, QString genre );
+        ShoutcastGenre( ShoutcastBrowser *browser, Q3ListViewItem *after, QString genre );
         void setOpen( bool open );
         void appendAlternateGenre( QString alternateGenre ) { m_alternateGenres << alternateGenre; }
 

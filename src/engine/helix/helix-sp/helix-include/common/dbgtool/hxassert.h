@@ -434,9 +434,9 @@ int safe_int_func_call(LONG32 f);
 #if defined(_WINDOWS)
 
 #ifdef _WIN32
-#define HX_SAFE_VOID2HANDLE(f) ((HANDLE)(f))
+#define HX_SAFE_VOID2HANDLE(f) ((Qt::HANDLE)(f))
 #else // !_WIN23
-#define HX_SAFE_VOID2HANDLE(f) ((HANDLE)LOWORD(f))
+#define HX_SAFE_VOID2HANDLE(f) ((Qt::HANDLE)LOWORD(f))
 // this doesn't work most of the time since the assignment of a handle (near *) to a
 // void * sets the high word to the SS.
 //	( ( (0xFFFF0000 & ((ULONG32)(f))) == 0)?((HANDLE)LOWORD(f)): 
@@ -520,7 +520,7 @@ int safe_int_func_call(LONG32 f);
 #define HX_ASSERT(f)			        ((void)0)
 #define HX_SAFESIZE_T(f)			((size_t)(f))
 #define HX_SAFEINT(f)				((int)(f))
-#define HX_SAFE_VOID2HANDLE(f)		((HANDLE)(ULONG32)(f))
+#define HX_SAFE_VOID2HANDLE(f)		((Qt::HANDLE)(ULONG32)(f))
 #define HX_ASSERT_VALID_PTR(pOb)	((void)0)
 #define HX_ASSERT_VALID_READ_PTR(pOb)   ((void)0)
 #define HXOutputDebugString(f)			((void)0)

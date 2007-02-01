@@ -29,13 +29,15 @@
 #include "sliderwidget.h"
 
 #include <qcursor.h>
-#include <qheader.h>
+#include <q3header.h>
 #include <qimage.h>
 #include <qmutex.h>
 #include <qpainter.h>
 #include <qpen.h>
 #include <qpixmap.h>
 #include <qrect.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 
 #include <kdeversion.h>
 #include <kfilemetainfo.h>
@@ -52,14 +54,14 @@ QColor  PlaylistItem::glowBase = Qt::white;
 bool    PlaylistItem::s_pixmapChanged = false;
 
 
-PlaylistItem::PlaylistItem( QListView *listview, QListViewItem *item )
+PlaylistItem::PlaylistItem( Q3ListView *listview, Q3ListViewItem *item )
         : KListViewItem( listview, item )
         , m_album( 0 )
 {
     KListViewItem::setVisible( false );
 }
 
-PlaylistItem::PlaylistItem( const MetaBundle &bundle, QListViewItem *lvi, bool enabled )
+PlaylistItem::PlaylistItem( const MetaBundle &bundle, Q3ListViewItem *lvi, bool enabled )
         : MetaBundle( bundle ), KListViewItem( lvi->listView(), lvi->itemAbove() )
         , m_album( 0 )
         , m_deleteAfterEdit( false )
@@ -138,7 +140,7 @@ QString PlaylistItem::text( int column ) const
     }
 }
 
-void PlaylistItem::aboutToChange( const QValueList<int> &columns )
+void PlaylistItem::aboutToChange( const Q3ValueList<int> &columns )
 {
     bool totals = false, ref = false, length = false;
     for( int i = 0, n = columns.count(); i < n; ++i )
@@ -156,7 +158,7 @@ void PlaylistItem::aboutToChange( const QValueList<int> &columns )
         derefAlbum();
 }
 
-void PlaylistItem::reactToChanges( const QValueList<int> &columns )
+void PlaylistItem::reactToChanges( const Q3ValueList<int> &columns )
 {
     MetaBundle::reactToChanges(columns);
     bool totals = false, ref = false, length = false;
@@ -406,7 +408,7 @@ PlaylistItem::nextInAlbum() const
             if( m_album->tracks.at( i )->track() > track() )
                 return m_album->tracks.at( i );
     else
-        for( QListViewItemIterator it( const_cast<PlaylistItem*>(this), QListViewItemIterator::Visible ); *it; ++it )
+        for( Q3ListViewItemIterator it( const_cast<PlaylistItem*>(this), Q3ListViewItemIterator::Visible ); *it; ++it )
             #define pit static_cast<PlaylistItem*>( *it )
             if( pit != this && pit->m_album == m_album && !pit->track() )
                 return pit;
@@ -429,7 +431,7 @@ PlaylistItem::prevInAlbum() const
             if( m_album->tracks.at( i )->track() && m_album->tracks.at( i )->track() < track() )
                 return m_album->tracks.at( i );
     else
-        for( QListViewItemIterator it( const_cast<PlaylistItem*>(this), QListViewItemIterator::Visible ); *it; --it )
+        for( Q3ListViewItemIterator it( const_cast<PlaylistItem*>(this), Q3ListViewItemIterator::Visible ); *it; --it )
             #define pit static_cast<PlaylistItem*>( *it )
             if( pit != this && pit->m_album == m_album && !pit->track() )
                 return pit;
@@ -442,7 +444,7 @@ PlaylistItem::prevInAlbum() const
 /////////////////////////////////////////////////////////////////////////////////////
 
 int
-PlaylistItem::compare( QListViewItem *i, int col, bool ascending ) const
+PlaylistItem::compare( Q3ListViewItem *i, int col, bool ascending ) const
 {
     #define i static_cast<PlaylistItem*>(i)
     if( Playlist::instance()->dynamicMode() && (isEnabled() != i->isEnabled()) )
@@ -596,7 +598,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
 
                 // Left part
                 if( column == listView()->m_firstColumn ) {
-                    QImage tmpImage = currentTrackLeft.smoothScale( 1, height(), QImage::ScaleMax );
+                    QImage tmpImage = currentTrackLeft.smoothScale( 1, height(), Qt::KeepAspectRatioByExpanding );
                     KIconEffect::colorize( tmpImage, glowBase, colorize );
                     imageTransparency( tmpImage, intensity );
                     p.drawImage( 0, 0, tmpImage, 0, 0, tmpImage.width() - 1 ); //HACK
@@ -608,7 +610,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                 else
                 if( column == Playlist::instance()->mapToLogicalColumn( Playlist::instance()->numVisibleColumns() - 1 ) )
                 {
-                    QImage tmpImage = currentTrackRight.smoothScale( 1, height(), QImage::ScaleMax );
+                    QImage tmpImage = currentTrackRight.smoothScale( 1, height(), Qt::KeepAspectRatioByExpanding );
                     KIconEffect::colorize( tmpImage, glowBase, colorize );
                     imageTransparency( tmpImage, intensity );
                     p.drawImage( width - tmpImage.width(), 0, tmpImage );
@@ -852,15 +854,15 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
 
 void PlaylistItem::drawRating( QPainter *p )
 {
-    int gray = 0;
+    int Qt::gray = 0;
     if( this == listView()->m_hoveredRating || ( isSelected() && listView()->m_selCount > 1 &&
         listView()->m_hoveredRating && listView()->m_hoveredRating->isSelected() ) )
     {
         const int pos = listView()->viewportToContents( listView()->viewport()->mapFromGlobal( QCursor::pos() ) ).x();
-        gray = ratingAtPoint( pos );
+        Qt::gray = ratingAtPoint( pos );
     }
 
-    drawRating( p, ( rating() + 1 ) / 2, gray / 2, rating() % 2 );
+    drawRating( p, ( rating() + 1 ) / 2, Qt::gray / 2, rating() % 2 );
 }
 
 void PlaylistItem::drawRating( QPainter *p, int stars, int graystars, bool half )

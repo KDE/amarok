@@ -7,7 +7,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <qdict.h>
+#include <q3dict.h>
 #include <config.h>
 #include <iostream>
 #include "debug.h"

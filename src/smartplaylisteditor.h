@@ -8,18 +8,20 @@
 
 #include <kdialogbase.h> //baseclass
 #include <qdom.h>
-#include <qhbox.h>       //baseclass
-#include <qptrlist.h>    //definition required
+#include <q3hbox.h>       //baseclass
+#include <q3ptrlist.h>    //definition required
+//Added by qt3to4:
+#include <QLabel>
 #include <klineedit.h>   //inline function
 
 class KComboBox;
 class KIntSpinBox;
 class KLineEdit;
 class QCheckBox;
-class QDateEdit;
+class Q3DateEdit;
 class QLabel;
 class QToolButton;
-class QVGroupBox;
+class Q3VGroupBox;
 
 class CriteriaEditor;
 
@@ -60,8 +62,8 @@ Q_OBJECT
         QCheckBox *m_matchAllCheck;
 
         // matching boxes
-        QVGroupBox *m_criteriaAnyGroupBox;
-        QVGroupBox *m_criteriaAllGroupBox;
+        Q3VGroupBox *m_criteriaAnyGroupBox;
+        Q3VGroupBox *m_criteriaAllGroupBox;
 
         //limit widgets
         QCheckBox *m_limitCheck;
@@ -74,13 +76,13 @@ Q_OBJECT
         QCheckBox *m_expandCheck;
         KComboBox *m_expandCombo;
 
-        QPtrList<CriteriaEditor> m_criteriaEditorAnyList;
-        QPtrList<CriteriaEditor> m_criteriaEditorAllList;
+        Q3PtrList<CriteriaEditor> m_criteriaEditorAnyList;
+        Q3PtrList<CriteriaEditor> m_criteriaEditorAllList;
 };
 
 
 
-class CriteriaEditor : public QHBox
+class CriteriaEditor : public Q3HBox
 {
 Q_OBJECT
     public:
@@ -117,14 +119,14 @@ Q_OBJECT
         QToolButton *m_removeButton;
 
         //editing widgets
-        QHBox *m_editBox;
+        Q3HBox *m_editBox;
         KLineEdit *m_lineEdit;
         KComboBox *m_comboBox;
         KComboBox *m_comboBox2;
         KIntSpinBox *m_intSpinBox1;
         KIntSpinBox *m_intSpinBox2;
-        QDateEdit *m_dateEdit1;
-        QDateEdit *m_dateEdit2;
+        Q3DateEdit *m_dateEdit1;
+        Q3DateEdit *m_dateEdit2;
         KComboBox *m_dateCombo;
         QLabel *m_rangeLabel;
 	KComboBox *m_lengthCombo;

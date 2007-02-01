@@ -28,8 +28,8 @@
 #include <qlayout.h>
 #include <qlabel.h>
 #include <qtimer.h>
-#include <qvbox.h>
-#include <qhbox.h>
+#include <q3vbox.h>
+#include <q3hbox.h>
 
 #include "amarok.h"
 #include "playlist.h"
@@ -85,7 +85,7 @@ void DeleteWidget::slotShouldDelete(bool shouldDelete)
 //////////////////////////////////////////////////////////////////////////////
 
 DeleteDialog::DeleteDialog(QWidget *parent, const char *name) :
-    KDialogBase(Swallow, WStyle_DialogBorder, parent, name,
+    KDialogBase(Swallow, Qt::WStyle_DialogBorder, parent, name,
         true /* modal */, i18n("About to delete selected files"),
         Ok | Cancel, Cancel /* Default */, true /* separator */),
     m_trashGuiItem(i18n("&Send to Trash"), "trashcan_full")

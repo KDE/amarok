@@ -23,12 +23,18 @@
 #include <qimage.h>
 #include <qmutex.h>
 #include <qobject.h>         //baseclass
-#include <qptrqueue.h>       //baseclass
-#include <qsemaphore.h>      //stack allocated
+#include <q3ptrqueue.h>       //baseclass
+#include <q3semaphore.h>      //stack allocated
 #include <qstringlist.h>     //stack allocated
-#include <qptrvector.h>
+#include <q3ptrvector.h>
 #include <qthread.h>
-#include <qvaluestack.h>
+#include <q3valuestack.h>
+//Added by qt3to4:
+#include <QTimerEvent>
+#include <QPixmap>
+#include <Q3ValueList>
+#include <QCustomEvent>
+#include <Q3CString>
 
 namespace KIO { class Job; }
 
@@ -38,7 +44,7 @@ class MetaBundle;
 class OrganizeCollectionDialog;
 class PodcastChannelBundle;
 class PodcastEpisodeBundle;
-class QListViewItem;
+class Q3ListViewItem;
 class Scrobbler;
 
 class DbConfig
@@ -344,9 +350,9 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         /// use updatePodcastEpisode() always in preference
         int  addPodcastEpisode( const PodcastEpisodeBundle &episode, const int idToUpdate=0 );
         int  addPodcastFolder( const QString &name, const int parent_id=0, const bool isOpen=false );
-        QValueList<PodcastChannelBundle> getPodcastChannels();
+        Q3ValueList<PodcastChannelBundle> getPodcastChannels();
         PodcastEpisodeBundle getPodcastEpisodeById( int id );
-        QValueList<PodcastEpisodeBundle> getPodcastEpisodes( const KURL &parent, bool newOnly=false, int limit=-1 );
+        Q3ValueList<PodcastEpisodeBundle> getPodcastEpisodes( const KURL &parent, bool newOnly=false, int limit=-1 );
         void removePodcastChannel( const KURL &url ); // will remove all episodes too
         void removePodcastEpisode( const int id );
         void removePodcastFolder( const int id );
@@ -364,7 +370,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
          * @return true if in the collection
          */
         bool bundleForUrl( MetaBundle* bundle );
-        QValueList<MetaBundle> bundlesByUrls( const KURL::List& urls );
+        Q3ValueList<MetaBundle> bundlesByUrls( const KURL::List& urls );
         void addAudioproperties( const MetaBundle& bundle );
 
         //Helper function for updateTags
@@ -462,7 +468,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         QString albumImage( const MetaBundle &trackInformation, const bool withShadow = false, uint width = 1, bool* embedded = 0 );
         QString albumImage( const uint artist_id, const uint album_id, const bool withShadow = false, uint width = 1, bool* embedded = 0 );
         QString albumImage( const QString &artist, const QString &album, const bool withShadow = false, uint width = 1, bool* embedded = 0 );
-        QMap<QListViewItem*, CoverFetcher*> * getItemCoverMap() { return itemCoverMap; }
+        QMap<Q3ListViewItem*, CoverFetcher*> * getItemCoverMap() { return itemCoverMap; }
         QMutex * getItemCoverMapMutex() { return itemCoverMapMutex; }
 
         bool removeAlbumImage( const uint artist_id, const uint album_id );
@@ -471,7 +477,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         static QString makeShadowedImage( const QString& albumImage, bool cache = true );
 
         //local cover methods
-        void addImageToAlbum( const QString& image, QValueList< QPair<QString, QString> > info, const bool temporary );
+        void addImageToAlbum( const QString& image, Q3ValueList< QPair<QString, QString> > info, const bool temporary );
         QString notAvailCover( const bool withShadow = false, int width = 1 );
 
         //embedded cover methods
@@ -502,13 +508,13 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         void cancelMovingFileJob();
 
     protected:
-        QCString md5sum( const QString& artist, const QString& album, const QString& file = QString::null );
+        Q3CString md5sum( const QString& artist, const QString& album, const QString& file = QString::null );
         void engineTrackEnded( int finalPosition, int trackLength, const QString &reason );
         /** Manages regular folder monitoring scan */
         void timerEvent( QTimerEvent* e );
 
     public slots:
-        void fetchCover( QWidget* parent, const QString& artist, const QString& album, bool noedit, QListViewItem* item = 0 );
+        void fetchCover( QWidget* parent, const QString& artist, const QString& album, bool noedit, Q3ListViewItem* item = 0 );
         void scanMonitor();
         void startScan();
         void stopScan();
@@ -563,8 +569,8 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         void customEvent( QCustomEvent * );
 
         // helpers for embedded images
-        QString loadHashFile( const QCString& hash, uint width );
-        bool extractEmbeddedImage( const MetaBundle &trackInformation, QCString& hash );
+        QString loadHashFile( const Q3CString& hash, uint width );
+        bool extractEmbeddedImage( const MetaBundle &trackInformation, Q3CString& hash );
 
         //general management methods
         void createStatsTable();
@@ -588,7 +594,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         void dropPodcastTablesV2();
 
 
-        QCString makeWidthKey( uint width );
+        Q3CString makeWidthKey( uint width );
         QString artistValue( uint id );
         QString composerValue( uint id );
         QString albumValue( uint id );
@@ -617,7 +623,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         bool m_monitor;
         bool m_autoScoring;
 
-        static QMap<QListViewItem*, CoverFetcher*> *itemCoverMap;
+        static QMap<Q3ListViewItem*, CoverFetcher*> *itemCoverMap;
         static QMutex *itemCoverMapMutex;
         QImage m_noCover;
 
@@ -819,7 +825,7 @@ class QueryBuilder
 
         void linkTables( int tables );
 
-        QValueStack<bool> m_OR;
+        Q3ValueStack<bool> m_OR;
         bool m_showAll;
         uint m_deviceidPos;
 

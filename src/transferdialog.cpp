@@ -15,10 +15,12 @@
 #include "transferdialog.h"
 
 #include <qcheckbox.h>
-#include <qgroupbox.h>
+#include <q3groupbox.h>
 #include <qlabel.h>
 #include <qlayout.h>
-#include <qvbox.h>
+#include <q3vbox.h>
+//Added by qt3to4:
+#include <Q3PtrList>
 
 #include <kapplication.h>
 #include <kcombobox.h>
@@ -37,17 +39,17 @@ TransferDialog::TransferDialog( MediaDevice *mdev )
     kapp->setTopWidget( this );
     setCaption( kapp->makeStdCaption( i18n( "Transfer Queue to Device" ) ) );
 
-    QVBox* vbox = makeVBoxMainWidget();
+    Q3VBox* vbox = makeVBoxMainWidget();
     vbox->setSpacing( KDialog::spacingHint() );
 
     QString transferDir = mdev->getTransferDir();
 
-    QGroupBox *location = new QGroupBox( 1, Qt::Vertical, i18n( "Music Location" ), vbox );
+    Q3GroupBox *location = new Q3GroupBox( 1, Qt::Vertical, i18n( "Music Location" ), vbox );
 
     new QLabel( i18n( "Your music will be transferred to:\n%1" )
                     .arg( transferDir ), location );
 
-    QVBox *vbox2 = new QVBox( vbox );
+    Q3VBox *vbox2 = new Q3VBox( vbox );
     QSpacerItem *spacer = new QSpacerItem( 0, 25 );
     QLayout *vlayout = vbox2->layout();
     if( vlayout )
@@ -57,7 +59,7 @@ TransferDialog::TransferDialog( MediaDevice *mdev )
                       "a variety of ways. Each grouping will create\n"
                       "directories based upon the specified criteria.\n"), vbox );
 
-    QGroupBox *sorting = new QGroupBox( 6, Qt::Vertical, i18n( "Groupings" ), vbox );
+    Q3GroupBox *sorting = new Q3GroupBox( 6, Qt::Vertical, i18n( "Groupings" ), vbox );
     m_label1 = new QLabel( i18n( "Select first grouping:\n" ), sorting );
     m_sort1  = new KComboBox( sorting );
     m_label2 = new QLabel( i18n( "Select second grouping:\n" ), sorting );
@@ -65,7 +67,7 @@ TransferDialog::TransferDialog( MediaDevice *mdev )
     m_label3 = new QLabel( i18n( "Select third grouping:\n" ), sorting );
     m_sort3  = new KComboBox( sorting );
 
-    m_combolist = new QPtrList<KComboBox>();
+    m_combolist = new Q3PtrList<KComboBox>();
     m_combolist->append( m_sort1 );
     m_combolist->append( m_sort2 );
     m_combolist->append( m_sort3 );
@@ -92,13 +94,13 @@ TransferDialog::TransferDialog( MediaDevice *mdev )
     connect( m_sort1, SIGNAL( activated(int) ), SLOT( sort1_activated(int)) );
     connect( m_sort2, SIGNAL( activated(int) ), SLOT( sort2_activated(int)) );
 
-    QVBox *vbox3 = new QVBox( vbox );
+    Q3VBox *vbox3 = new Q3VBox( vbox );
     QSpacerItem *spacer2 = new QSpacerItem( 0, 25 );
     QLayout *vlayout2 = vbox3->layout();
     if( vlayout2 )
         vlayout2->addItem( spacer2 );
 
-    QGroupBox *options = new QGroupBox( 6, Qt::Vertical, i18n( "Options" ), vbox );
+    Q3GroupBox *options = new Q3GroupBox( 6, Qt::Vertical, i18n( "Options" ), vbox );
 
     QCheckBox *convertSpaces = new QCheckBox( i18n( "Convert spaces to underscores" ), options );
     convertSpaces->setChecked( mdev->getSpacesToUnderscores() );

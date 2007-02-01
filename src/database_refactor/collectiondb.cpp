@@ -27,6 +27,11 @@
 #include <qfile.h>
 #include <qimage.h>
 #include <qtimer.h>
+//Added by qt3to4:
+#include <QTimerEvent>
+#include <Q3ValueList>
+#include <QCustomEvent>
+#include <Q3CString>
 
 #include <kapplication.h>
 #include <kconfig.h>
@@ -671,9 +676,9 @@ CollectionDB::albumTracks( const QString &artist_id, const QString &album_id )
 
 
 void
-CollectionDB::addImageToAlbum( const QString& image, QValueList< QPair<QString, QString> > info, DbConnection *conn )
+CollectionDB::addImageToAlbum( const QString& image, Q3ValueList< QPair<QString, QString> > info, DbConnection *conn )
 {
-    for ( QValueList< QPair<QString, QString> >::ConstIterator it = info.begin(); it != info.end(); ++it )
+    for ( Q3ValueList< QPair<QString, QString> >::ConstIterator it = info.begin(); it != info.end(); ++it )
     {
         if ( (*it).first.isEmpty() || (*it).second.isEmpty() )
             continue;
@@ -724,7 +729,7 @@ CollectionDB::setAlbumImage( const QString& artist, const QString& album, QImage
     removeAlbumImage( artist, album );
 
     QDir largeCoverDir( amaroK::saveLocation( "albumcovers/large/" ) );
-    QCString key = md5sum( artist, album );
+    Q3CString key = md5sum( artist, album );
 
     // Save Amazon product page URL as embedded string, for later retreival
     if ( !amazonUrl.isEmpty() )
@@ -739,8 +744,8 @@ CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
 {
     if( width == 1 ) width = AmarokConfig::coverPreviewSize();
 
-    QCString widthKey = makeWidthKey( width );
-    QCString tagKey = md5sum( trackInformation.artist(), trackInformation.album() );
+    Q3CString widthKey = makeWidthKey( width );
+    Q3CString tagKey = md5sum( trackInformation.artist(), trackInformation.album() );
     QDir tagCoverDir( amaroK::saveLocation( "albumcovers/tagcover/" ) );
 
     //FIXME: the cached versions will never be refreshed
@@ -775,7 +780,7 @@ CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
                 {
                     if ( width > 1 )
                     {
-                        image.smoothScale( width, width, QImage::ScaleMin ).save( m_cacheDir.filePath( widthKey + tagKey ), "PNG" );
+                        image.smoothScale( width, width, Qt::KeepAspectRatio ).save( m_cacheDir.filePath( widthKey + tagKey ), "PNG" );
                         return m_cacheDir.filePath( widthKey + tagKey );
                     } else
                     {
@@ -794,13 +799,13 @@ CollectionDB::findImageByMetabundle( MetaBundle trackInformation, uint width )
 QString
 CollectionDB::findImageByArtistAlbum( const QString &artist, const QString &album, uint width )
 {
-    QCString widthKey = makeWidthKey( width );
+    Q3CString widthKey = makeWidthKey( width );
 
     if ( artist.isEmpty() && album.isEmpty() )
         return notAvailCover( width );
     else
     {
-        QCString key = md5sum( artist, album );
+        Q3CString key = md5sum( artist, album );
 
         // check cache for existing cover
         if ( m_cacheDir.exists( widthKey + key ) )
@@ -813,7 +818,7 @@ CollectionDB::findImageByArtistAlbum( const QString &artist, const QString &albu
                 if ( width > 1 )
                 {
                     QImage img( largeCoverDir.filePath( key ) );
-                    img.smoothScale( width, width, QImage::ScaleMin ).save( m_cacheDir.filePath( widthKey + key ), "PNG" );
+                    img.smoothScale( width, width, Qt::KeepAspectRatio ).save( m_cacheDir.filePath( widthKey + key ), "PNG" );
 
                     return m_cacheDir.filePath( widthKey + key );
                 }
@@ -860,7 +865,7 @@ CollectionDB::albumImage( MetaBundle trackInformation, uint width )
 }
 
 
-QCString
+Q3CString
 CollectionDB::makeWidthKey( uint width )
 {
     return QString::number( width ).local8Bit() + "@";
@@ -871,7 +876,7 @@ QString
 CollectionDB::getImageForAlbum( const QString& artist, const QString& album, uint width )
 {
     if ( width == 1 ) width = AmarokConfig::coverPreviewSize();
-    QCString widthKey = QString::number( width ).local8Bit() + "@";
+    Q3CString widthKey = QString::number( width ).local8Bit() + "@";
 
     if ( album.isEmpty() )
         return notAvailCover( width );
@@ -897,7 +902,7 @@ CollectionDB::getImageForAlbum( const QString& artist, const QString& album, uin
             }
         }
 
-        QCString key = md5sum( artist, album, image );
+        Q3CString key = md5sum( artist, album, image );
 
         if ( width > 1 )
         {
@@ -922,8 +927,8 @@ CollectionDB::getImageForAlbum( const QString& artist, const QString& album, uin
 bool
 CollectionDB::removeAlbumImage( const QString &artist, const QString &album )
 {
-    QCString widthKey = "*@";
-    QCString key = md5sum( artist, album );
+    Q3CString widthKey = "*@";
+    Q3CString key = md5sum( artist, album );
 
     // remove scaled versions of images
     QStringList scaledList = m_cacheDir.entryList( widthKey + key );
@@ -1174,10 +1179,10 @@ CollectionDB::bundleForUrl( MetaBundle* bundle )
 }
 
 
-QValueList<MetaBundle>
+Q3ValueList<MetaBundle>
 CollectionDB::bundlesByUrls( const KURL::List& urls )
 {
-    typedef QValueList<MetaBundle> BundleList;
+    typedef Q3ValueList<MetaBundle> BundleList;
     BundleList bundles;
     QStringList paths;
     QueryBuilder qb;
@@ -1631,7 +1636,7 @@ CollectionDB::applySettings()
 // PROTECTED
 //////////////////////////////////////////////////////////////////////////////////////////
 
-QCString
+Q3CString
 CollectionDB::md5sum( const QString& artist, const QString& album, const QString& file )
 {
     KMD5 context( artist.lower().local8Bit() + album.lower().local8Bit() + file.local8Bit() );

@@ -28,6 +28,8 @@
 
 #include <qmap.h>
 #include <qstringlist.h>
+//Added by qt3to4:
+#include <Q3MemArray>
 
 #include <kapplication.h>
 
@@ -109,7 +111,7 @@ private:
       ino_t ino;
     } KDE_PACKED;
 
-    QMemArray<direntry> m_processedDirs;
+    Q3MemArray<direntry> m_processedDirs;
 };
 
 

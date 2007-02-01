@@ -23,6 +23,10 @@
 #include "playlist.h"
 #include "playlistitem.h"
 #include "queueLabel.h"
+//Added by qt3to4:
+#include <QMouseEvent>
+#include <Q3PtrList>
+#include <QEvent>
 #include "statusbar.h"
 
 #include <qapplication.h>
@@ -161,13 +165,13 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
         return;
 
     int length = 0;
-    for( QPtrListIterator<PlaylistItem> it( queue ); *it; ++it )
+    for( Q3PtrListIterator<PlaylistItem> it( queue ); *it; ++it )
     {
         const int s = (*it)->length();
         if( s > 0 ) length += s;
     }
 
-    QPtrList<KPopupMenu> menus;
+    Q3PtrList<KPopupMenu> menus;
     menus.setAutoDelete( true );
     KPopupMenu *menu = new KPopupMenu;
     menus.append( menu );
@@ -184,7 +188,7 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
     menu->insertSeparator();
 
     uint i = 1;
-    QPtrListIterator<PlaylistItem> it( queue );
+    Q3PtrListIterator<PlaylistItem> it( queue );
     it.toFirst();
 
     while( i <= count )
@@ -257,7 +261,7 @@ void QueueLabel::showToolTip()
     if( count > 1 )
     {
         int length = 0;
-        for( QPtrListIterator<PlaylistItem> it( pl->m_nextTracks ); *it; ++it )
+        for( Q3PtrListIterator<PlaylistItem> it( pl->m_nextTracks ); *it; ++it )
         {
             const int s = (*it)->length();
             if( s > 0 ) length += s;

@@ -18,11 +18,13 @@
 #ifndef AMAROK_EQUALIZERSETUP_H
 #define AMAROK_EQUALIZERSETUP_H
 
-#include <qptrlist.h>           //stack alloc
+#include <q3ptrlist.h>           //stack alloc
+//Added by qt3to4:
+#include <Q3ValueList>
 #include <kdialogbase.h>
 
 class EqualizerGraph;
-class QGroupBox;
+class Q3GroupBox;
 class QCheckBox;
 class KComboBox;
 class KPopupMenu;
@@ -43,7 +45,7 @@ class EqualizerSetup : public KDialogBase
 
         // for use by DCOP
         void setActive( bool active );
-        void setBands( int preamp, QValueList<int> gains );
+        void setBands( int preamp, Q3ValueList<int> gains );
         void setPreset( QString name );
 
     private slots:
@@ -65,13 +67,13 @@ class EqualizerSetup : public KDialogBase
 
         Amarok::Slider* m_slider_preamp;
         EqualizerGraph* m_equalizerGraph;
-        QPtrList<Amarok::Slider> m_bandSliders;
+        Q3PtrList<Amarok::Slider> m_bandSliders;
 
-        QGroupBox*      m_groupBoxSliders;
+        Q3GroupBox*      m_groupBoxSliders;
         KComboBox*      m_presetCombo;
         uint            m_manualPos;
 
-        QMap< QString, QValueList<int> > m_presets;
+        QMap< QString, Q3ValueList<int> > m_presets;
 };
 
 #endif /*AMAROK_EQUALIZERSETUP_H*/

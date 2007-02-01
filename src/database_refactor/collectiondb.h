@@ -11,16 +11,21 @@
 #include <kurl.h>
 #include <qdir.h>            //stack allocated
 #include <qobject.h>         //baseclass
-#include <qptrqueue.h>       //baseclass
-#include <qsemaphore.h>      //stack allocated
+#include <q3ptrqueue.h>       //baseclass
+#include <q3semaphore.h>      //stack allocated
 #include <qstringlist.h>     //stack allocated
+//Added by qt3to4:
+#include <QCustomEvent>
+#include <Q3CString>
+#include <QTimerEvent>
+#include <Q3ValueList>
 
 class CoverFetcher;
 class MetaBundle;
 class Scrobbler;
 
 
-class DbConnectionPool : QPtrQueue<DbConnection>
+class DbConnectionPool : Q3PtrQueue<DbConnection>
 {
     public:
         DbConnectionPool();
@@ -116,7 +121,7 @@ class CollectionDB : public QObject, public EngineObserver
          * @return true if in the collection
          */
         bool bundleForUrl( MetaBundle* bundle );
-        QValueList<MetaBundle> bundlesByUrls( const KURL::List& urls );
+        Q3ValueList<MetaBundle> bundlesByUrls( const KURL::List& urls );
         void addAudioproperties( const MetaBundle& bundle );
 
         void updateTags( const QString &url, const MetaBundle &bundle, const bool updateView = true );
@@ -167,7 +172,7 @@ class CollectionDB : public QObject, public EngineObserver
         bool removeAlbumImage( const QString &artist, const QString &album );
 
         //local cover methods
-        void addImageToAlbum( const QString& image, QValueList< QPair<QString, QString> > info, DbConnection *conn = NULL );
+        void addImageToAlbum( const QString& image, Q3ValueList< QPair<QString, QString> > info, DbConnection *conn = NULL );
         QString getImageForAlbum( const QString& artist, const QString& album, uint width = 0 );
         QString notAvailCover( int width = 0 );
 
@@ -177,7 +182,7 @@ class CollectionDB : public QObject, public EngineObserver
         CollectionDB();
         ~CollectionDB();
 
-        QCString md5sum( const QString& artist, const QString& album, const QString& file = QString::null );
+        Q3CString md5sum( const QString& artist, const QString& album, const QString& file = QString::null );
         void engineTrackEnded( int finalPosition, int trackLength );
         /** Manages regular folder monitoring scan */
         void timerEvent( QTimerEvent* e );
@@ -209,7 +214,7 @@ class CollectionDB : public QObject, public EngineObserver
         void dropStatsTable();
         void scanModifiedDirs();
 
-        QCString makeWidthKey( uint width );
+        Q3CString makeWidthKey( uint width );
         QString artistValue( uint id );
         QString albumValue( uint id );
         QString genreValue( uint id );

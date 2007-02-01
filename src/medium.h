@@ -23,12 +23,14 @@
 
 #include <qstring.h>
 #include <qstringlist.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 #include <kurl.h>
 
 class LIBAMAROK_EXPORT Medium
 {
 public:
-    typedef QValueList<const Medium> List;
+    typedef Q3ValueList<const Medium> List;
 
     static const uint AUTODETECTED = 0;
     static const uint ID = 1;

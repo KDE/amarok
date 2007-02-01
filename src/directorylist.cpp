@@ -33,7 +33,7 @@ CollectionSetup* CollectionSetup::s_instance;
 
 
 CollectionSetup::CollectionSetup( QWidget *parent )
-        : QVBox( parent, "CollectionSetup" )
+        : Q3VBox( parent, "CollectionSetup" )
 {
     s_instance = this;
 
@@ -62,7 +62,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_view->addColumn( QString::null );
     m_view->setRootIsDecorated( true );
     m_view->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-    m_view->setResizeMode( QListView::LastColumn );
+    m_view->setResizeMode( Q3ListView::LastColumn );
 
     reinterpret_cast<QWidget*>(m_view->header())->hide();
     new Collection::Item( m_view );
@@ -112,8 +112,8 @@ CollectionSetup::writeConfig()
 
 namespace Collection {
 
-Item::Item( QListView *parent )
-    : QCheckListItem( parent, "/", QCheckListItem::CheckBox  )
+Item::Item( Q3ListView *parent )
+    : Q3CheckListItem( parent, "/", Q3CheckListItem::CheckBox  )
     , m_lister( true )
     , m_url( "file:/" )
     , m_listed( false )
@@ -121,7 +121,7 @@ Item::Item( QListView *parent )
 {
     //Since we create the "/" checklistitem here, we need to enable it if needed
     if ( CollectionSetup::instance()->m_dirs.contains( "/" ) )
-        static_cast<QCheckListItem*>( this )->setOn(true);
+        static_cast<Q3CheckListItem*>( this )->setOn(true);
     m_lister.setDirOnlyMode( true );
     connect( &m_lister, SIGNAL(newItems( const KFileItemList& )), SLOT(newItems( const KFileItemList& )) );
     setOpen( true );
@@ -129,8 +129,8 @@ Item::Item( QListView *parent )
 }
 
 
-Item::Item( QListViewItem *parent, const KURL &url , bool full_disable /* default=false */ )
-    : QCheckListItem( parent, url.fileName(), QCheckListItem::CheckBox )
+Item::Item( Q3ListViewItem *parent, const KURL &url , bool full_disable /* default=false */ )
+    : Q3CheckListItem( parent, url.fileName(), Q3CheckListItem::CheckBox )
     , m_lister( true )
     , m_url( url )
     , m_listed( false )
@@ -149,7 +149,7 @@ Item::fullPath() const
 {
     QString path;
 
-    for( const QListViewItem *item = this; item != listView()->firstChild(); item = item->parent() )
+    for( const Q3ListViewItem *item = this; item != listView()->firstChild(); item = item->parent() )
     {
         path.prepend( item->text( 0 ) );
         path.prepend( '/' );
@@ -168,7 +168,7 @@ Item::setOpen( bool b )
         m_listed = true;
     }
 
-    QListViewItem::setOpen( b );
+    Q3ListViewItem::setOpen( b );
 }
 
 
@@ -181,9 +181,9 @@ Item::stateChange( bool b )
         return;
 
     if( CollectionSetup::instance()->recursive() )
-        for( QListViewItem *item = firstChild(); item; item = item->nextSibling() )
+        for( Q3ListViewItem *item = firstChild(); item; item = item->nextSibling() )
             if ( dynamic_cast<Item*>( item ) && !dynamic_cast<Item*>( item )->isFullyDisabled() )
-               static_cast<QCheckListItem*>(item)->QCheckListItem::setOn( b );
+               static_cast<Q3CheckListItem*>(item)->Q3CheckListItem::setOn( b );
 
     //If it is disabled, allow us to change its appearance (above code) but not add it
     //to the list of folders (code below)
@@ -248,7 +248,7 @@ void
 Item::activate()
 {
     if( !isDisabled() )
-        QCheckListItem::activate();
+        Q3CheckListItem::activate();
 }
 
 
@@ -309,7 +309,7 @@ Item::paintCell( QPainter * p, const QColorGroup & cg, int column, int width, in
         p->setFont( font );
     }
 
-    QCheckListItem::paintCell( p, isDisabled() ? listView()->palette().disabled() : _cg, column, width, align );
+    Q3CheckListItem::paintCell( p, isDisabled() ? listView()->palette().disabled() : _cg, column, width, align );
     p->setFont( f );
 }
 

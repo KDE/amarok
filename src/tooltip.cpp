@@ -21,7 +21,11 @@
 #include <qcursor.h>
 #include <qpainter.h>
 #include <qpixmap.h>
-#include <qsimplerichtext.h>
+#include <q3simplerichtext.h>
+//Added by qt3to4:
+#include <Q3Frame>
+#include <Q3ValueList>
+#include <QEvent>
 #include <kglobal.h>
 
 #include "debug.h"
@@ -66,7 +70,7 @@ Amarok::ToolTip::Manager* Amarok::ToolTip::s_manager = 0;
 QPoint Amarok::ToolTip::s_pos;
 QRect Amarok::ToolTip::s_rect;
 QString Amarok::ToolTip::s_text;
-QValueList<Amarok::ToolTip*> Amarok::ToolTip::s_tooltips;
+Q3ValueList<Amarok::ToolTip*> Amarok::ToolTip::s_tooltips;
 int Amarok::ToolTip::s_hack = 0;
 
 void Amarok::ToolTip::add( ToolTipClient *client, QWidget *parent ) //static
@@ -117,12 +121,12 @@ void Amarok::ToolTip::updateTip() //static
 }
 
 Amarok::ToolTip::ToolTip( ToolTipClient *client, QWidget *parent )
-    : QFrame( 0, 0, WStyle_Customize | WStyle_NoBorder | WStyle_Tool | WStyle_StaysOnTop | WX11BypassWM | WNoAutoErase ),
+    : Q3Frame( 0, 0, Qt::WStyle_Customize | Qt::WStyle_NoBorder | Qt::WStyle_Tool | Qt::WStyle_StaysOnTop | Qt::WX11BypassWM | Qt::WNoAutoErase ),
       QToolTip( parent ),
       m_client( client )
 {
     s_tooltips.append( this );
-    QFrame::setPalette( QToolTip::palette() );
+    Q3Frame::setPalette( QToolTip::palette() );
     connect( &m_timer, SIGNAL( timeout() ), this, SLOT( hideTip() ) );
 }
 
@@ -166,7 +170,7 @@ void Amarok::ToolTip::hideTip()
 {
     if( !isVisible() )
         return;
-    QFrame::hide();
+    Q3Frame::hide();
     QToolTip::parentWidget()->update();
     m_timer.stop();
     s_hack = 0;
@@ -181,7 +185,7 @@ void Amarok::ToolTip::drawContents( QPainter *painter )
     p.setPen( colorGroup().foreground() );
     p.drawRect( buf.rect() );
 
-    QSimpleRichText text( s_text, QToolTip::parentWidget()->font() );
+    Q3SimpleRichText text( s_text, QToolTip::parentWidget()->font() );
     text.setWidth( width() );
     p.translate( 0, height() / 2 - text.height() / 2);
     QPoint pos = s_rect.isNull() ? QPoint(2, -1)
@@ -199,7 +203,7 @@ QSize Amarok::ToolTip::sizeHint() const
         return s_rect.size();
     else
     {
-        QSimpleRichText text( s_text, QToolTip::parentWidget()->font() );
+        Q3SimpleRichText text( s_text, QToolTip::parentWidget()->font() );
         text.setWidth( 500 ); //is this reasonable?
         return QSize( text.widthUsed() - 2, text.height() );
     }

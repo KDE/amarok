@@ -48,6 +48,8 @@
 
 #include <qapplication.h>
 #include <qtimer.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 
 #include <kfileitem.h>
 #include <klocale.h>
@@ -153,14 +155,14 @@ void NmmEngine::notifyHostError( QString hostname, int error )
 {
   DEBUG_BLOCK
 
-  for( QValueList<NmmLocation>::Iterator it = tmp_user_list.begin(); it != tmp_user_list.end(); ++it ) {
+  for( Q3ValueList<NmmLocation>::Iterator it = tmp_user_list.begin(); it != tmp_user_list.end(); ++it ) {
     if( (*it).hostname() == hostname ) {
       (*it).setStatus( error );
       break;
     }
   }
 
-  for( QValueList<NmmLocation>::Iterator it = tmp_environment_list.begin(); it != tmp_environment_list.end(); ++it ) {
+  for( Q3ValueList<NmmLocation>::Iterator it = tmp_environment_list.begin(); it != tmp_environment_list.end(); ++it ) {
     if( (*it).hostname() == hostname ) {
       (*it).setStatus( error );
       break;
@@ -502,7 +504,7 @@ void NmmEngine::createEnvironmentHostList()
   for( QStringList::Iterator it = list.begin(); it != list.end(); ++it ) {
 
     found = false;
-    for( QValueList<NmmLocation>::Iterator it_t = tmp_environment_list.begin(); it_t != tmp_environment_list.end(); ++it_t ) {
+    for( Q3ValueList<NmmLocation>::Iterator it_t = tmp_environment_list.begin(); it_t != tmp_environment_list.end(); ++it_t ) {
       if( (*it_t).hostname() == *it ) {
         (*it_t).setVideo(true);
         found = true;
@@ -644,7 +646,7 @@ QStringList NmmEngine::getSinkHosts( bool audio )
   // read locations from environment variable
   if( NmmKDEConfig::location() == NmmKDEConfig::EnumLocation::EnvironmentVariable )
   {
-    for( QValueList<NmmLocation>::Iterator it = tmp_environment_list.begin(); it != tmp_environment_list.end(); ++it ) {
+    for( Q3ValueList<NmmLocation>::Iterator it = tmp_environment_list.begin(); it != tmp_environment_list.end(); ++it ) {
       if( audio && (*it).audio() )
         hosts.append( (*it).hostname() );
       else if( !audio && (*it).video() )
@@ -657,7 +659,7 @@ QStringList NmmEngine::getSinkHosts( bool audio )
   // read locations from host list
   else if( NmmKDEConfig::location() == NmmKDEConfig::EnumLocation::HostList )
   {
-    for( QValueList<NmmLocation>::Iterator it = tmp_user_list.begin(); it != tmp_user_list.end(); ++it ) {
+    for( Q3ValueList<NmmLocation>::Iterator it = tmp_user_list.begin(); it != tmp_user_list.end(); ++it ) {
       if( audio && (*it).audio() )
         hosts.append( (*it).hostname() );
       else if( !audio && (*it).video() )

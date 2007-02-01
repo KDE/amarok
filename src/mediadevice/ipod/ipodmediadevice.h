@@ -1,3 +1,5 @@
+//Added by qt3to4:
+#include <QLabel>
 /***************************************************************************
     copyright            : (C) 2005, 2006 by Martin Aumueller
     email                : aumuell@reserv.at
@@ -33,8 +35,8 @@ extern "C" {
 #include "mediabrowser.h"
 
 #include <qmutex.h>
-#include <qptrlist.h>
-#include <qdict.h>
+#include <q3ptrlist.h>
+#include <q3dict.h>
 
 #include <kio/job.h>
 
@@ -106,15 +108,15 @@ class IpodMediaDevice : public MediaDevice
         void              synchronizeDevice();
         int               deleteItemFromDevice( MediaItem *item, int flags=DeleteTrack );
         virtual void      deleteFile( const KURL &url );
-        void              addToPlaylist( MediaItem *list, MediaItem *after, QPtrList<MediaItem> items );
-        MediaItem        *newPlaylist( const QString &name, MediaItem *list, QPtrList<MediaItem> items );
+        void              addToPlaylist( MediaItem *list, MediaItem *after, Q3PtrList<MediaItem> items );
+        MediaItem        *newPlaylist( const QString &name, MediaItem *list, Q3PtrList<MediaItem> items );
         bool              getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
-        void              rmbPressed( QListViewItem* qitem, const QPoint& point, int );
+        void              rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int );
         bool              checkIntegrity();
         void              updateArtwork();
 
     protected slots:
-        void              renameItem( QListViewItem *item );
+        void              renameItem( Q3ListViewItem *item );
         virtual void      fileDeleted( KIO::Job *job );
 
     private:
@@ -134,7 +136,7 @@ class IpodMediaDevice : public MediaDevice
         // ipod database
         Itdb_iTunesDB    *m_itdb;
         Itdb_Playlist    *m_masterPlaylist;
-        QDict<Itdb_Track> m_files;
+        Q3Dict<Itdb_Track> m_files;
 
         // podcasts
         Itdb_Playlist*    m_podcastPlaylist;

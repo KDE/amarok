@@ -19,12 +19,15 @@
 #include <qfont.h>     //stack allocated
 #include <qmap.h>
 #include <qpixmap.h>
-#include <qvaluevector.h>
+#include <q3valuevector.h>
+//Added by qt3to4:
+#include <Q3ValueList>
+#include <Q3PtrList>
 
 class QColorGroup;
 class QDomNode;
 class QImage;
-class QListViewItem;
+class Q3ListViewItem;
 class QPainter;
 class MetaBundle;
 class Playlist;
@@ -43,8 +46,8 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
         static QColor glowBase;
 
     public:
-        PlaylistItem( QListView*, QListViewItem* ); //used by PlaylistLoader
-        PlaylistItem( const MetaBundle&, QListViewItem*, bool enabled = true );
+        PlaylistItem( Q3ListView*, Q3ListViewItem* ); //used by PlaylistLoader
+        PlaylistItem( const MetaBundle&, Q3ListViewItem*, bool enabled = true );
         ~PlaylistItem();
 
         /// pass 'raw' data here, for example "92" for Length, and not "1:32"
@@ -108,8 +111,8 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
         PlaylistItem *prevInAlbum() const;
 
     protected:
-        virtual void aboutToChange( const QValueList<int> &columns );
-        virtual void reactToChanges( const QValueList<int> &columns );
+        virtual void aboutToChange( const Q3ValueList<int> &columns );
+        virtual void reactToChanges( const Q3ValueList<int> &columns );
 
     private:
         friend class Playlist;
@@ -132,7 +135,7 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
         virtual void moodbarJobEvent( int newState );
 
         // Used for sorting
-        virtual int compare( QListViewItem*, int, bool ) const;
+        virtual int compare( Q3ListViewItem*, int, bool ) const;
 
         /**
         * Paints a focus indicator on the rectangle (current item). We disable it
@@ -172,12 +175,12 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
         static QPixmap *s_smallStar;
 };
 
-class PLItemList: public QPtrList<PlaylistItem>
+class PLItemList: public Q3PtrList<PlaylistItem>
 {
     public:
-        PLItemList() : QPtrList<PlaylistItem>() { }
-        PLItemList( const QPtrList<PlaylistItem> &list ) : QPtrList<PlaylistItem>( list ) { }
-        PLItemList( PlaylistItem *item ) : QPtrList<PlaylistItem>() { append( item ); }
+        PLItemList() : Q3PtrList<PlaylistItem>() { }
+        PLItemList( const Q3PtrList<PlaylistItem> &list ) : Q3PtrList<PlaylistItem>( list ) { }
+        PLItemList( PlaylistItem *item ) : Q3PtrList<PlaylistItem>() { append( item ); }
 
         inline PLItemList &operator<<( PlaylistItem *item ) { append( item ); return *this; }
 };

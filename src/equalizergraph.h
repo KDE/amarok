@@ -19,6 +19,10 @@
 #define AMAROK_EQUALIZERGRAPH_H
 
 #include <qwidget.h>     //baseclass
+//Added by qt3to4:
+#include <QPixmap>
+#include <QPaintEvent>
+#include <QResizeEvent>
 
 class QPixmap;
 

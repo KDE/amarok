@@ -65,7 +65,7 @@ MagnatuneXmlParser::readConfigFile( QString filename )
     QDomDocument doc( "config" );
 
     QFile file( filename );
-    if ( !file.open( IO_ReadOnly ) )
+    if ( !file.open( QIODevice::ReadOnly ) )
         return ;
     if ( !doc.setContent( &file ) )
     {

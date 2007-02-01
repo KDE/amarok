@@ -18,7 +18,7 @@
 #include "mediadevicemanager.h"
 #include "medium.h"
 
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 #include <qtimer.h>
 
 #include <dcopclient.h>

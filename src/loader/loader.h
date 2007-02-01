@@ -19,8 +19,10 @@
 #define LOADER_H
 
 #include <qapplication.h>
+//Added by qt3to4:
+#include <QTimerEvent>
 
-class QProcess;
+class Q3Process;
 class QStringList;
 
 class Loader : public QApplication
@@ -32,7 +34,7 @@ public:
 private:
     virtual void timerEvent( QTimerEvent* );
 
-    QProcess *m_proc;
+    Q3Process *m_proc;
     int       m_counter;
     QObject  *m_splash;
 

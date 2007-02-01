@@ -22,14 +22,19 @@
 
 #include <qdom.h>
 #include <qfile.h>
-#include <qheader.h>
+#include <q3header.h>
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qpair.h>
 #include <qpushbutton.h>
 #include <qtooltip.h>
-#include <qvbox.h>
+#include <q3vbox.h>
 #include <qcheckbox.h>
+//Added by qt3to4:
+#include <Q3ValueList>
+#include <Q3CString>
+#include <QPixmap>
+#include <Q3VBoxLayout>
 
 #include <kapplication.h>
 #include <kcombobox.h>
@@ -53,8 +58,8 @@ public:
     bool doJob();
     void completeJob();
 private:
-    QValueList<bool> m_failed;
-    QValueList<MetaBundle> m_tags;
+    Q3ValueList<bool> m_failed;
+    Q3ValueList<MetaBundle> m_tags;
     bool    m_updateView;
     int     m_successCount;
     int     m_failCount;
@@ -419,10 +424,10 @@ void TagDialog::init()
     //m_labelCloud = new KHTMLPart( labels_favouriteLabelsFrame );
     m_labelCloud = new HTMLView( labels_favouriteLabelsFrame );
     m_labelCloud->view()->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored, false );
-    m_labelCloud->view()->setVScrollBarMode( QScrollView::AlwaysOff );
-    m_labelCloud->view()->setHScrollBarMode( QScrollView::AlwaysOff );
+    m_labelCloud->view()->setVScrollBarMode( Q3ScrollView::AlwaysOff );
+    m_labelCloud->view()->setHScrollBarMode( Q3ScrollView::AlwaysOff );
 
-    new QVBoxLayout( labels_favouriteLabelsFrame );
+    new Q3VBoxLayout( labels_favouriteLabelsFrame );
     labels_favouriteLabelsFrame->layout()->add( m_labelCloud->view() );
     const QStringList favoriteLabels = CollectionDB::instance()->favoriteLabels();
     QString html = generateHTML( favoriteLabels );
@@ -1415,7 +1420,7 @@ TagDialog::openURLRequest(const KURL &url )         //SLOT
 bool
 TagDialog::writeTag( MetaBundle &mb, bool updateCB )
 {
-    QCString path = QFile::encodeName( mb.url().path() );
+    Q3CString path = QFile::encodeName( mb.url().path() );
     if ( !TagLib::File::isWritable( path ) ) {
         Amarok::StatusBar::instance()->longMessage( i18n(
            "The file %1 is not writable." ).arg( mb.url().fileName() ), KDE::StatusBar::Error );
@@ -1455,7 +1460,7 @@ bool
 TagDialogWriter::doJob()
 {
     for( int i = 0, size=m_tags.size(); i<size; ++i ) {
-        QCString path = QFile::encodeName( m_tags[i].url().path() );
+        Q3CString path = QFile::encodeName( m_tags[i].url().path() );
         if ( !TagLib::File::isWritable( path ) ) {
             Amarok::StatusBar::instance()->longMessageThreadSafe( i18n(
                 "The file %1 is not writable." ).arg( m_tags[i].url().fileName() ), KDE::StatusBar::Error );

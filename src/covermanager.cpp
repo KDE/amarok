@@ -20,18 +20,24 @@
 #include <qimage.h>
 #include <qlabel.h>
 #include <qlayout.h>
-#include <qobjectlist.h>    //used to delete all cover fetchers
+#include <qobject.h>    //used to delete all cover fetchers
 #include <qpainter.h>    //paintItem()
 #include <qpalette.h>    //paintItem()
 #include <qpixmap.h>
 #include <qpoint.h>
-#include <qprogressdialog.h>
+#include <q3progressdialog.h>
 #include <qrect.h>
 #include <qstringlist.h>
 #include <qtooltip.h>
 #include <qtimer.h>    //search filter timer
 #include <qtooltip.h>
-#include <qvbox.h>
+#include <q3vbox.h>
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <Q3ValueList>
+#include <Q3PtrList>
+#include <Q3Frame>
+#include <QDropEvent>
 
 #include <kapplication.h>
 #include <kconfig.h>
@@ -62,10 +68,10 @@ CoverManager *CoverManager::s_instance = 0;
 class ArtistItem : public KListViewItem
 {
     public:
-    ArtistItem(QListView *view, QListViewItem *item, const QString &text)
+    ArtistItem(Q3ListView *view, Q3ListViewItem *item, const QString &text)
         : KListViewItem(view, item, text) {}
     protected:
-    int compare( QListViewItem* i, int col, bool ascending ) const
+    int compare( Q3ListViewItem* i, int col, bool ascending ) const
     {
         Q_UNUSED(col);
         Q_UNUSED(ascending);
@@ -133,18 +139,18 @@ CoverManager::CoverManager()
         item->setPixmap( 0, SmallIcon("personal") );
     }
 
-    QVBox *vbox = new QVBox( this );
-    QHBox *hbox = new QHBox( vbox );
+    Q3VBox *vbox = new Q3VBox( this );
+    Q3HBox *hbox = new Q3HBox( vbox );
 
     vbox->setSpacing( 4 );
     hbox->setSpacing( 4 );
 
     { //<Search LineEdit>
-        QHBox *searchBox = new QHBox( hbox );
+        Q3HBox *searchBox = new Q3HBox( hbox );
         KToolBar* searchToolBar = new Browser::ToolBar( searchBox );
         KToolBarButton *button = new KToolBarButton( "locationbar_erase", 0, searchToolBar );
         m_searchEdit = new ClickLineEdit( i18n( "Enter search terms here" ), searchToolBar );
-        m_searchEdit->setFrame( QFrame::Sunken );
+        m_searchEdit->setFrame( Q3Frame::Sunken );
 
         searchToolBar->setStretchableWidget( m_searchEdit );
         connect( button, SIGNAL(clicked()), m_searchEdit, SLOT(clear()) );
@@ -177,7 +183,7 @@ CoverManager::CoverManager()
 
     KToolBar* toolBar = new KToolBar( hbox );
     toolBar->setIconText( KToolBar::IconTextRight );
-    toolBar->setFrameShape( QFrame::NoFrame );
+    toolBar->setFrameShape( Q3Frame::NoFrame );
     toolBar->insertButton( "view_choose", 1, m_viewMenu, true, i18n( "View" ) );
     #ifdef AMAZON_SUPPORT
     toolBar->insertButton( "babelfish", 2, m_amazonLocaleMenu, true, i18n( "Amazon Locale" ) );
@@ -198,7 +204,7 @@ CoverManager::CoverManager()
     KStatusBar *m_statusBar = new KStatusBar( vbox );
     m_statusBar->addWidget( m_statusLabel = new KSqueezedTextLabel( m_statusBar ), 4 );
     m_statusLabel->setIndent( 3 );
-    m_statusBar->addWidget( m_progressBox = new QHBox( m_statusBar ), 1, true );
+    m_statusBar->addWidget( m_progressBox = new Q3HBox( m_statusBar ), 1, true );
     KPushButton *stopButton = new KPushButton( KGuiItem(i18n("Abort"), "stop"), m_progressBox );
     connect( stopButton, SIGNAL(clicked()), SLOT(stopFetching()) );
     m_progress = new KProgress( m_progressBox );
@@ -211,12 +217,12 @@ CoverManager::CoverManager()
 
 
     // signals and slots connections
-    connect( m_artistView, SIGNAL(selectionChanged( QListViewItem* ) ),
-                           SLOT(slotArtistSelected( QListViewItem* )) );
-    connect( m_coverView,  SIGNAL(contextMenuRequested( QIconViewItem*, const QPoint& )),
-                           SLOT(showCoverMenu( QIconViewItem*, const QPoint& )) );
-    connect( m_coverView,  SIGNAL(executed( QIconViewItem* )),
-                           SLOT(coverItemExecuted( QIconViewItem* )) );
+    connect( m_artistView, SIGNAL(selectionChanged( Q3ListViewItem* ) ),
+                           SLOT(slotArtistSelected( Q3ListViewItem* )) );
+    connect( m_coverView,  SIGNAL(contextMenuRequested( Q3IconViewItem*, const QPoint& )),
+                           SLOT(showCoverMenu( Q3IconViewItem*, const QPoint& )) );
+    connect( m_coverView,  SIGNAL(executed( Q3IconViewItem* )),
+                           SLOT(coverItemExecuted( Q3IconViewItem* )) );
     connect( m_timer,      SIGNAL(timeout()),
                            SLOT(slotSetFilter()) );
     connect( m_searchEdit, SIGNAL(textChanged( const QString& )),
@@ -256,7 +262,7 @@ void CoverManager::init()
 {
     DEBUG_BLOCK
 
-    QListViewItem *item = 0;
+    Q3ListViewItem *item = 0;
 
     if ( !artistToSelectInInitFunction.isEmpty() )
         for ( item = m_artistView->firstChild(); item; item = item->nextSibling() )
@@ -271,14 +277,14 @@ void CoverManager::init()
 
 
 CoverViewDialog::CoverViewDialog( const QString& artist, const QString& album, QWidget *parent )
-    : QDialog( parent, 0, false, WDestructiveClose | WType_TopLevel | WNoAutoErase )
+    : QDialog( parent, 0, false, Qt::WDestructiveClose | Qt::WType_TopLevel | Qt::WNoAutoErase )
     , m_pixmap( CollectionDB::instance()->albumImage( artist, album, false, 0 ) )
 {
     KWin::setType( winId(), NET::Utility );
     kapp->setTopWidget( this );
     setCaption( kapp->makeStdCaption( i18n("%1 - %2").arg( artist, album ) ) );
 
-    m_layout = new QHBoxLayout( this );
+    m_layout = new Q3HBoxLayout( this );
     m_layout->setAutoAdd( true );
     m_pixmapViewer = new PixmapViewer( this, m_pixmap );
 
@@ -315,7 +321,7 @@ void CoverManager::fetchMissingCovers() //SLOT
 
     DEBUG_BLOCK
 
-    for ( QIconViewItem *item = m_coverView->firstItem(); item; item = item->nextItem() ) {
+    for ( Q3IconViewItem *item = m_coverView->firstItem(); item; item = item->nextItem() ) {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>( item );
         if( !coverItem->hasCover() ) {
             m_fetchCovers += coverItem->artist() + " @@@ " + coverItem->album();
@@ -370,7 +376,7 @@ void CoverManager::showOnce( const QString &artist )
     }
 }
 
-void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
+void CoverManager::slotArtistSelected( Q3ListViewItem *item ) //SLOT
 {
     if( item->depth() ) //album item
         return;
@@ -389,7 +395,7 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     m_viewMenu->setItemChecked( AlbumsWithCover, false );
     m_viewMenu->setItemChecked( AlbumsWithoutCover, false );
 
-    QProgressDialog progress( this, 0, true );
+    Q3ProgressDialog progress( this, 0, true );
     progress.setLabelText( i18n("Loading Thumbnails...") );
     progress.QDialog::setCaption( i18n("...") );
 
@@ -466,7 +472,7 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     }
 
     //now, load the thumbnails
-    for( QIconViewItem *item = m_coverView->firstItem(); item; item = item->nextItem() ) {
+    for( Q3IconViewItem *item = m_coverView->firstItem(); item; item = item->nextItem() ) {
         progress.setProgress( progress.progress() + 1 );
         kapp->processEvents();
 
@@ -479,7 +485,7 @@ void CoverManager::slotArtistSelected( QListViewItem *item ) //SLOT
     updateStatusBar();
 }
 
-void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
+void CoverManager::showCoverMenu( Q3IconViewItem *item, const QPoint &p ) //SLOT
 {
     #define item static_cast<CoverViewItem*>(item)
     if( !item ) return;
@@ -490,7 +496,7 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
 
     menu.insertTitle( i18n( "Cover Image" ) );
 
-    QPtrList<CoverViewItem> selected = selectedItems();
+    Q3PtrList<CoverViewItem> selected = selectedItems();
     if( selected.count() > 1 ) {
         menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n( "&Fetch Selected Covers" ), FETCH );
         menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "Set &Custom Cover for Selected Albums" ), CUSTOM );
@@ -537,7 +543,7 @@ void CoverManager::showCoverMenu( QIconViewItem *item, const QPoint &p ) //SLOT
     #undef item
 }
 
-void CoverManager::coverItemExecuted( QIconViewItem *item ) //SLOT
+void CoverManager::coverItemExecuted( Q3IconViewItem *item ) //SLOT
 {
     #define item static_cast<CoverViewItem*>(item)
 
@@ -558,16 +564,16 @@ void CoverManager::slotSetFilter() //SLOT
     m_filter = m_searchEdit->text();
 
     m_coverView->selectAll( false);
-    QIconViewItem *item = m_coverView->firstItem();
+    Q3IconViewItem *item = m_coverView->firstItem();
     while ( item )
     {
-        QIconViewItem *tmp = item->nextItem();
+        Q3IconViewItem *tmp = item->nextItem();
         m_coverView->takeItem( item );
         item = tmp;
     }
 
     m_coverView->setAutoArrange( false );
-    for( QIconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() )
+    for( Q3IconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() )
     {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
         if( coverItem->album().contains( m_filter, false ) || coverItem->artist().contains( m_filter, false ) )
@@ -593,15 +599,15 @@ void CoverManager::changeView( int id  ) //SLOT
 
     //clear the iconview without deleting items
     m_coverView->selectAll( false);
-    QIconViewItem *item = m_coverView->firstItem();
+    Q3IconViewItem *item = m_coverView->firstItem();
     while ( item ) {
-        QIconViewItem *tmp = item->nextItem();
+        Q3IconViewItem *tmp = item->nextItem();
         m_coverView->takeItem( item );
         item = tmp;
     }
 
     m_coverView->setAutoArrange(false );
-    for( QIconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() ) {
+    for( Q3IconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() ) {
         bool show = false;
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
         if( !m_filter.isEmpty() ) {
@@ -684,7 +690,7 @@ void CoverManager::stopFetching()
 
 void CoverManager::loadCover( const QString &artist, const QString &album )
 {
-    for( QIconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() )
+    for( Q3IconViewItem *item = m_coverItems.first(); item; item = m_coverItems.next() )
     {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>(item);
         if ( album == coverItem->album() && ( artist == coverItem->artist() || ( artist.isEmpty() && coverItem->artist().isEmpty() ) ) )
@@ -698,7 +704,7 @@ void CoverManager::loadCover( const QString &artist, const QString &album )
 void CoverManager::setCustomSelectedCovers()
 {
     //function assumes something is selected
-    QPtrList<CoverViewItem> selected = selectedItems();
+    Q3PtrList<CoverViewItem> selected = selectedItems();
     CoverViewItem* first = selected.getFirst();
 
     QString artist_id; artist_id.setNum( CollectionDB::instance()->artistID( first->artist() ) );
@@ -726,7 +732,7 @@ void CoverManager::setCustomSelectedCovers()
 
 void CoverManager::fetchSelectedCovers()
 {
-    QPtrList<CoverViewItem> selected = selectedItems();
+    Q3PtrList<CoverViewItem> selected = selectedItems();
     for ( CoverViewItem* item = selected.first(); item; item = selected.next() )
         m_fetchCovers += item->artist() + " @@@ " + item->album();
 
@@ -741,7 +747,7 @@ void CoverManager::fetchSelectedCovers()
 
 void CoverManager::deleteSelectedCovers()
 {
-    QPtrList<CoverViewItem> selected = selectedItems();
+    Q3PtrList<CoverViewItem> selected = selectedItems();
 
     int button = KMessageBox::warningContinueCancel( this,
                             i18n( "Are you sure you want to remove this cover from the Collection?",
@@ -760,10 +766,10 @@ void CoverManager::deleteSelectedCovers()
 }
 
 
-QPtrList<CoverViewItem> CoverManager::selectedItems()
+Q3PtrList<CoverViewItem> CoverManager::selectedItems()
 {
-    QPtrList<CoverViewItem> selectedItems;
-    for ( QIconViewItem* item = m_coverView->firstItem(); item; item = item->nextItem() )
+    Q3PtrList<CoverViewItem> selectedItems;
+    for ( Q3IconViewItem* item = m_coverView->firstItem(); item; item = item->nextItem() )
         if ( item->isSelected() )
               selectedItems.append( static_cast<CoverViewItem*>(item) );
 
@@ -828,7 +834,7 @@ void CoverManager::updateStatusBar()
             m_progressBox->hide();
 
         //album info
-        for( QIconViewItem *item = m_coverView->firstItem(); item; item = item->nextItem() ) {
+        for( Q3IconViewItem *item = m_coverView->firstItem(); item; item = item->nextItem() ) {
             totalCounter++;
             if( !static_cast<CoverViewItem*>( item )->hasCover() )
                 missingCounter++;    //counter for albums without cover
@@ -868,14 +874,14 @@ void CoverManager::setStatusText( QString text )
 //    CLASS CoverView
 /////////////////////////////////////////////////////////////////////
 
-CoverView::CoverView( QWidget *parent, const char *name, WFlags f )
+CoverView::CoverView( QWidget *parent, const char *name, Qt::WFlags f )
     : KIconView( parent, name, f )
 {
     Debug::Block block( __PRETTY_FUNCTION__ );
 
-    setArrangement( QIconView::LeftToRight );
-    setResizeMode( QIconView::Adjust );
-    setSelectionMode( QIconView::Extended );
+    setArrangement( Q3IconView::LeftToRight );
+    setResizeMode( Q3IconView::Adjust );
+    setSelectionMode( Q3IconView::Extended );
     arrangeItemsInGrid();
     setAutoArrange( true );
     setItemsMovable( false );
@@ -884,12 +890,12 @@ CoverView::CoverView( QWidget *parent, const char *name, WFlags f )
     // icon (and not the text), we have to create our own tooltips
     setShowToolTips( false );
 
-    connect( this, SIGNAL( onItem( QIconViewItem * ) ), SLOT( setStatusText( QIconViewItem * ) ) );
+    connect( this, SIGNAL( onItem( Q3IconViewItem * ) ), SLOT( setStatusText( Q3IconViewItem * ) ) );
     connect( this, SIGNAL( onViewport() ), CoverManager::instance(), SLOT( updateStatusBar() ) );
 }
 
 
-QDragObject *CoverView::dragObject()
+Q3DragObject *CoverView::dragObject()
 {
     CoverViewItem *item = static_cast<CoverViewItem*>( currentItem() );
     if( !item )
@@ -905,14 +911,14 @@ QDragObject *CoverView::dragObject()
     QString imagePath = CollectionDB::instance()->albumImage( item->artist(), item->album(), false, 1 );
     KMultipleDrag *drag = new KMultipleDrag( this );
     drag->setPixmap( item->coverPixmap() );
-    drag->addDragObject( new QIconDrag( this ) );
-    drag->addDragObject( new QImageDrag( QImage( imagePath ) ) );
+    drag->addDragObject( new Q3IconDrag( this ) );
+    drag->addDragObject( new Q3ImageDrag( QImage( imagePath ) ) );
     drag->addDragObject( new KURLDrag( urls ) );
 
     return drag;
 }
 
-void CoverView::setStatusText( QIconViewItem *item )
+void CoverView::setStatusText( Q3IconViewItem *item )
 {
     #define item static_cast<CoverViewItem *>( item )
     if ( !item )
@@ -935,7 +941,7 @@ void CoverView::setStatusText( QIconViewItem *item )
 //    CLASS CoverViewItem
 /////////////////////////////////////////////////////////////////////
 
-CoverViewItem::CoverViewItem( QIconView *parent, QIconViewItem *after, const QString &artist, const QString &album )
+CoverViewItem::CoverViewItem( Q3IconView *parent, Q3IconViewItem *after, const QString &artist, const QString &album )
     : KIconViewItem( parent, after, album )
     , m_artist( artist )
     , m_album( album )
@@ -1016,9 +1022,9 @@ void CoverViewItem::paintItem(QPainter* p, const QColorGroup& cg)
 }
 
 
-void CoverViewItem::dropped( QDropEvent *e, const QValueList<QIconDragItem> & )
+void CoverViewItem::dropped( QDropEvent *e, const Q3ValueList<Q3IconDragItem> & )
 {
-    if( QImageDrag::canDecode( e ) ) {
+    if( Q3ImageDrag::canDecode( e ) ) {
        if( hasCover() ) {
            int button = KMessageBox::warningContinueCancel( iconView(),
                             i18n( "Are you sure you want to overwrite this cover?"),
@@ -1029,7 +1035,7 @@ void CoverViewItem::dropped( QDropEvent *e, const QValueList<QIconDragItem> & )
        }
 
        QImage img;
-       QImageDrag::decode( e, img );
+       Q3ImageDrag::decode( e, img );
        CollectionDB::instance()->setAlbumImage( artist(), album(), img );
        m_coverImagePath = CollectionDB::instance()->albumImage( m_artist, m_album, false, 0 );
        loadCover();

@@ -40,9 +40,9 @@ bool MagnatuneDownloadInfo::initFromFile( QString downloadInfoFileName )
     QString xml;
 
     QFile file( downloadInfoFileName );
-    if ( file.open( IO_ReadOnly ) )
+    if ( file.open( QIODevice::ReadOnly ) )
     {
-        QTextStream stream( &file );
+        Q3TextStream stream( &file );
         while ( !stream.atEnd() )
         {
             xml += (stream.readLine() + '\n');

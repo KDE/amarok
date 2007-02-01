@@ -27,6 +27,9 @@ email                : fh@ez.no
 #include <klocale.h>
 #include "qstringx.h"
 #include <qtooltip.h>
+//Added by qt3to4:
+#include <QShowEvent>
+#include <QHideEvent>
 
 
 void Options5::init()

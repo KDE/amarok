@@ -23,12 +23,12 @@
 #include "pluginmanager.h"
 #include "statusbar.h"
 
-#include <qgroupbox.h>
+#include <q3groupbox.h>
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qsignalmapper.h>
 #include <qtooltip.h>
-#include <qvbox.h>
+#include <q3vbox.h>
 
 #include <kapplication.h>
 #include <kactivelabel.h>
@@ -50,18 +50,18 @@ MediumPluginManagerDialog::MediumPluginManagerDialog()
     kapp->setTopWidget( this );
     setCaption( kapp->makeStdCaption( i18n( "Manage Devices and Plugins" ) ) );
 
-    QVBox* vbox = makeVBoxMainWidget();
+    Q3VBox* vbox = makeVBoxMainWidget();
     vbox->setSpacing( KDialog::spacingHint() );
     vbox->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
 
-    m_location = new QGroupBox( 1, Qt::Vertical, i18n( "Devices" ), vbox );
+    m_location = new Q3GroupBox( 1, Qt::Vertical, i18n( "Devices" ), vbox );
     m_location->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred ) );
-    m_devicesBox = new QVBox( m_location );
+    m_devicesBox = new Q3VBox( m_location );
     m_devicesBox->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
 
     m_manager = new MediumPluginManager( m_devicesBox );
 
-    QHBox *hbox = new QHBox( vbox );
+    Q3HBox *hbox = new Q3HBox( vbox );
     KPushButton *detectDevices = new KPushButton( i18n( "Autodetect Devices" ), hbox);
     detectDevices->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
     connect( detectDevices, SIGNAL( clicked() ), m_manager, SLOT( redetectDevices() ) );
@@ -262,10 +262,10 @@ ManualDeviceAdder::ManualDeviceAdder( MediumPluginManager* mpm )
     kapp->setTopWidget( this );
     setCaption( kapp->makeStdCaption( i18n( "Add New Device") ) );
 
-    QHBox* hbox = makeHBoxMainWidget();
+    Q3HBox* hbox = makeHBoxMainWidget();
     hbox->setSpacing( KDialog::spacingHint() );
 
-    QVBox* vbox1 = new QVBox( hbox );
+    Q3VBox* vbox1 = new Q3VBox( hbox );
 
     new QLabel( i18n( "Select the plugin to use with this device:"), vbox1 );
     m_mdaCombo = new KComboBox( false, vbox1, "m_mdacombo" );
@@ -367,7 +367,7 @@ ManualDeviceAdder::getMedium()
 }
 
 MediaDeviceConfig::MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, const bool nographics, QWidget *parent, const char *name )
-: QHBox( parent, name )
+: Q3HBox( parent, name )
 , m_manager( mgr )
 , m_medium( medium )
 , m_configButton( 0 )

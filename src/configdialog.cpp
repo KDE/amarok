@@ -38,18 +38,22 @@ email                : markey@web.de
 #include "plugin/pluginconfig.h"
 #include "pluginmanager.h"
 
-#include <qgroupbox.h>
+#include <q3groupbox.h>
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qlineedit.h>
 #include <qmessagebox.h>
-#include <qobjectlist.h>
+#include <qobject.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
 #include <qspinbox.h>
 #include <qtextcodec.h>
 #include <qtooltip.h>
-#include <qvbox.h>
+#include <q3vbox.h>
+//Added by qt3to4:
+#include <Q3CString>
+#include <Q3Frame>
+#include <QPixmap>
 
 #include <kapplication.h> //kapp
 #include <kcombobox.h>
@@ -99,17 +103,17 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
 #ifdef Q_WS_X11
     Options5 *opt5 = new Options5( 0, "OSD" );
 #endif
-    QVBox    *opt6 = new QVBox;
+    Q3VBox    *opt6 = new Q3VBox;
             m_opt7 = new Options7( 0, "Collection" );
     Options8 *opt8 = new Options8( 0, "Scrobbler" );
-    QVBox    *opt9 = new QVBox;
+    Q3VBox    *opt9 = new Q3VBox;
 
     // Sound System
     opt6->setName( "Engine" );
     opt6->setSpacing( KDialog::spacingHint() );
     QWidget *groupBox, *aboutEngineButton;
-    groupBox            = new QGroupBox( 2, Qt::Horizontal, i18n("Sound System"), opt6 );
-    m_engineConfigFrame = new QGroupBox( 1, Qt::Horizontal, opt6 );
+    groupBox            = new Q3GroupBox( 2, Qt::Horizontal, i18n("Sound System"), opt6 );
+    m_engineConfigFrame = new Q3GroupBox( 1, Qt::Horizontal, opt6 );
     m_soundSystem       = new QComboBox( false, groupBox );
     aboutEngineButton   = new QPushButton( i18n("About"), groupBox );
 
@@ -150,15 +154,15 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     // Media Devices
     opt9->setName( "Media Devices" );
     opt9->setSpacing( KDialog::spacingHint() );
-    QVBox *topbox = new QVBox( opt9 );
+    Q3VBox *topbox = new Q3VBox( opt9 );
     topbox->setSpacing( KDialog::spacingHint() );
-    QGroupBox *mediaBox  = new QGroupBox( 2, Qt::Horizontal, i18n("Media Devices"), topbox );
+    Q3GroupBox *mediaBox  = new Q3GroupBox( 2, Qt::Horizontal, i18n("Media Devices"), topbox );
     mediaBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
-    QVBox *vbox = new QVBox( mediaBox );
+    Q3VBox *vbox = new Q3VBox( mediaBox );
     vbox->setSpacing( KDialog::spacingHint() );
     m_deviceManager = new MediumPluginManager( vbox );
 
-    QHBox *hbox = new QHBox( topbox );
+    Q3HBox *hbox = new Q3HBox( topbox );
     hbox->setSpacing( KDialog::spacingHint() );
     hbox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
     KPushButton *autodetect = new KPushButton( i18n( "Autodetect Devices" ), hbox );
@@ -168,7 +172,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     add->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
     connect( add, SIGNAL(clicked()), m_deviceManager, SLOT(newDevice()) );
 
-    QFrame *frame = new QFrame( topbox );
+    Q3Frame *frame = new Q3Frame( topbox );
     frame->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
     // add pages
@@ -230,7 +234,7 @@ void AmarokConfigDialog::addPage( QWidget *page, const QString &itemName, const 
 
 
 /** Show page by object name */
-void AmarokConfigDialog::showPageByName( const QCString& page )
+void AmarokConfigDialog::showPageByName( const Q3CString& page )
 {
     for( uint index = 0; index < m_pageList.count(); index++ ) {
         if ( m_pageList[index]->name() == page ) {

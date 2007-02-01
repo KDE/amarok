@@ -20,8 +20,15 @@
 
 #include <qpixmap.h>     //stack allocated
 #include <qtoolbutton.h> //baseclass
-#include <qvaluevector.h>//stack allocated
+#include <q3valuevector.h>//stack allocated
 #include <qwidget.h>     //baseclass
+//Added by qt3to4:
+#include <QEvent>
+#include <QLabel>
+#include <QMouseEvent>
+#include <Q3Frame>
+#include <QTimerEvent>
+#include <QPaintEvent>
 
 #include "engineobserver.h" //baseclass
 
@@ -31,7 +38,7 @@ class MetaBundle;
 class PlayerWidget;
 class QBitmap;
 class QButton;
-class QHBox;
+class Q3HBox;
 class QLabel;
 class QString;
 class QStringList;
@@ -53,7 +60,7 @@ protected:
     QPixmap m_pixmapOff;
     QPixmap m_pixmapDisabled;
 
-    QValueVector<QPixmap> m_glowPixmaps;
+    Q3ValueVector<QPixmap> m_glowPixmaps;
     int m_glowIndex;
 };
 
@@ -158,10 +165,10 @@ class PlayerWidget : public QWidget, public EngineObserver
         QLabel      *m_pTimeLabel;
         QLabel      *m_pTimeSign;
 
-        QFrame  *m_pScrollFrame;
+        Q3Frame  *m_pScrollFrame;
         QLabel  *m_pVolSign;
         QLabel  *m_pDescription;
-        QHBox   *m_pFrameButtons;
+        Q3HBox   *m_pFrameButtons;
 
         Amarok::PrettySlider *m_pSlider;
         Amarok::PrettySlider *m_pVolSlider;

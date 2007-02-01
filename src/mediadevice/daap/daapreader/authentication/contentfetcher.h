@@ -13,7 +13,9 @@
 #ifndef DAAPCONTENTFETCHER_H
 #define DAAPCONTENTFETCHER_H
 
-#include <qhttp.h>
+#include <q3http.h>
+//Added by qt3to4:
+#include <Q3CString>
 
 class QDataStream;
 class QFile;
@@ -25,7 +27,7 @@ namespace Daap {
    that DAAP needs
 	@author Ian Monroe <ian@monroe.nu>
 */
-class ContentFetcher : public QHttp
+class ContentFetcher : public Q3Http
 {
     Q_OBJECT
 
@@ -45,7 +47,7 @@ class ContentFetcher : public QHttp
     private:
         QString m_hostname;
         Q_UINT16 m_port;
-        QCString m_authorize;
+        Q3CString m_authorize;
         bool m_selfDestruct;
         static int s_requestId; //! Apple needs this for some reason
 };

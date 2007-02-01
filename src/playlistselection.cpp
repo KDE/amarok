@@ -18,10 +18,10 @@
 #include "playlistselection.h"
 
 #include <qcheckbox.h>
-#include <qgroupbox.h>
+#include <q3groupbox.h>
 #include <qlabel.h>
 #include <qlayout.h>
-#include <qlistview.h>
+#include <q3listview.h>
 #include <qsizepolicy.h>
 #include <qstringlist.h>
 
@@ -37,11 +37,11 @@ PlaylistSelection::PlaylistSelection( QWidget* parent, char* name )
     addColumn( i18n("Select Playlists") );
     setRootIsDecorated( true );
     PlaylistBrowserView* browserTree = PlaylistBrowser::instance()->getListView();
-    QListViewItem*       browserItem = browserTree->firstChild();
+    Q3ListViewItem*       browserItem = browserTree->firstChild();
     //load into the tree the first two items, which is the smart playlist and the playlist
     for( int i = 0; i<2; i++ )
     {
-        QListViewItem* newItem = new QListViewItem( this, browserItem->text(0) );
+        Q3ListViewItem* newItem = new Q3ListViewItem( this, browserItem->text(0) );
         newItem->setPixmap( 0, *browserItem->pixmap(0) );
         loadChildren( browserItem, newItem );
         newItem->setOpen( true );
@@ -49,9 +49,9 @@ PlaylistSelection::PlaylistSelection( QWidget* parent, char* name )
     }
 }
 
-void PlaylistSelection::loadChildren( QListViewItem* browserParent, QListViewItem* selectionParent )
+void PlaylistSelection::loadChildren( Q3ListViewItem* browserParent, Q3ListViewItem* selectionParent )
 {
-    QListViewItem* browserChild = browserParent->firstChild();
+    Q3ListViewItem* browserChild = browserParent->firstChild();
 
     while( browserChild )
     {
@@ -114,7 +114,7 @@ namespace ConfigDynamic
             QStringList items = mode->items();
             foreach( items )
             {
-                QCheckListItem* current = dynamic_cast<QCheckListItem*>(
+                Q3CheckListItem* current = dynamic_cast<Q3CheckListItem*>(
                                             Amarok::findItemByPath(nd->selectPlaylist, (*it)) );
                 if( current )
                     current->setOn(true);
@@ -158,7 +158,7 @@ namespace ConfigDynamic
 
         QStringList list;
         debug() << "Saving custom list..." << endl;
-        QListViewItemIterator it( dialog->selectPlaylist, QListViewItemIterator::Checked );
+        Q3ListViewItemIterator it( dialog->selectPlaylist, Q3ListViewItemIterator::Checked );
 
         while( it.current() )
         {
@@ -171,7 +171,7 @@ namespace ConfigDynamic
 
     void addDynamic( NewDynamic* dialog )
     {
-        QListViewItem *parent = PlaylistBrowser::instance()->getDynamicCategory();
+        Q3ListViewItem *parent = PlaylistBrowser::instance()->getDynamicCategory();
         DynamicEntry    *saveMe = new DynamicEntry( parent, 0, dialog->m_name->text().replace( "\n", " " ) );
         saveMe->setAppendType( DynamicMode::CUSTOM );
 
@@ -187,19 +187,19 @@ namespace ConfigDynamic
 ////////////////////////////////
 /// SelectionListItem
 ////////////////////////////////
-SelectionListItem::SelectionListItem( QCheckListItem * parent, const QString& text, QListViewItem* browserEquivalent )
-    : QCheckListItem( parent, text, QCheckListItem::CheckBox )
+SelectionListItem::SelectionListItem( Q3CheckListItem * parent, const QString& text, Q3ListViewItem* browserEquivalent )
+    : Q3CheckListItem( parent, text, Q3CheckListItem::CheckBox )
     , m_browserEquivalent( browserEquivalent )
 { }
 
-SelectionListItem::SelectionListItem( QListViewItem * parent, const QString& text, QListViewItem* browserEquivalent )
-    : QCheckListItem( parent, text, QCheckListItem::CheckBox )
+SelectionListItem::SelectionListItem( Q3ListViewItem * parent, const QString& text, Q3ListViewItem* browserEquivalent )
+    : Q3CheckListItem( parent, text, Q3CheckListItem::CheckBox )
     , m_browserEquivalent( browserEquivalent )
 { }
 
 void SelectionListItem::stateChange( bool b )
 {
-    QListViewItem* it = firstChild();
+    Q3ListViewItem* it = firstChild();
     while( it )
     {
         static_cast<SelectionListItem*>(it)->setOn( b ); //calls stateChange, so is recursive
@@ -211,7 +211,7 @@ QString
 SelectionListItem::name() const
 {
     QString fullName = text(0).replace('/', "\\/");
-    QListViewItem *p = parent();
+    Q3ListViewItem *p = parent();
     while ( p ) {
         fullName.prepend( p->text(0).replace('/', "\\/") + "/" );
         p = p->parent();

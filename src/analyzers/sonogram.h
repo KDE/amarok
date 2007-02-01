@@ -15,6 +15,8 @@
 #define SONOGRAM_H
 
 #include "analyzerbase.h"
+//Added by qt3to4:
+#include <QResizeEvent>
 
 /**
 @author Melchior FRANZ

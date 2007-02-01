@@ -24,6 +24,9 @@
 #include <qevent.h>
 #include <qobject.h>
 #include <qxml.h>
+//Added by qt3to4:
+#include <QCustomEvent>
+#include <Q3ValueList>
 #include "metabundle.h"
 
 /**
@@ -44,7 +47,7 @@
  */
 
 /** The type used for extra XML attributes not recognized. */
-typedef QValueList< QPair<QString, QString> > XmlAttributeList;
+typedef Q3ValueList< QPair<QString, QString> > XmlAttributeList;
 
 
 class MetaBundle::XmlLoader: public QObject, public QXmlDefaultHandler
@@ -68,7 +71,7 @@ class MetaBundle::XmlLoader: public QObject, public QXmlDefaultHandler
                 MetaBundle bundle;
 
                 /** Any extra attributes not recognized. */
-                QValueList< QPair<QString, QString> > extraAttributes;
+                Q3ValueList< QPair<QString, QString> > extraAttributes;
 
             public:
                 BundleLoadedEvent( const MetaBundle &b, const XmlAttributeList &a )

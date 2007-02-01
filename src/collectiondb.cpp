@@ -32,6 +32,13 @@
 #include "playlistbrowser.h"
 #include "podcastbundle.h"        //addPodcast
 #include "qstringx.h"
+//Added by qt3to4:
+#include <QTimerEvent>
+#include <QCustomEvent>
+#include <Q3CString>
+#include <QLabel>
+#include <Q3ValueList>
+#include <QPixmap>
 #include "scancontroller.h"
 #include "scriptmanager.h"
 #include "scrobbler.h"
@@ -40,7 +47,7 @@
 
 #include <qbuffer.h>
 #include <qcheckbox.h>
-#include <qdeepcopy.h>
+#include <q3deepcopy.h>
 #include <qfile.h>
 #include <qmap.h>
 #include <qmutex.h>
@@ -204,7 +211,7 @@ QMutex* CollectionDB::itemCoverMapMutex = new QMutex();
 //we don't have to worry about this map leaking memory since ThreadManager limits the total
 //number of QThreads ever created
 QMap<QThread *, DbConnection *> *CollectionDB::threadConnections = new QMap<QThread *, DbConnection *>();
-QMap<QListViewItem*, CoverFetcher*> *CollectionDB::itemCoverMap = new QMap<QListViewItem*, CoverFetcher*>();
+QMap<Q3ListViewItem*, CoverFetcher*> *CollectionDB::itemCoverMap = new QMap<Q3ListViewItem*, CoverFetcher*>();
 
 CollectionDB* CollectionDB::instance()
 {
@@ -1578,11 +1585,11 @@ CollectionDB::artistTracks( const QString &artist_id )
 
 
 void
-CollectionDB::addImageToAlbum( const QString& image, QValueList< QPair<QString, QString> > info, const bool temporary )
+CollectionDB::addImageToAlbum( const QString& image, Q3ValueList< QPair<QString, QString> > info, const bool temporary )
 {
     int deviceid = MountPointManager::instance()->getIdForUrl( image );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, image );
-    for ( QValueList< QPair<QString, QString> >::ConstIterator it = info.begin(); it != info.end(); ++it )
+    for ( Q3ValueList< QPair<QString, QString> >::ConstIterator it = info.begin(); it != info.end(); ++it )
     {
         if ( (*it).first.isEmpty() || (*it).second.isEmpty() )
             continue;
@@ -1875,7 +1882,7 @@ CollectionDB::setAlbumImage( const QString& artist, const QString& album, QImage
     // remove existing album covers
     removeAlbumImage( artist_, album );
 
-    QCString key = md5sum( artist_, album );
+    Q3CString key = md5sum( artist_, album );
     newAmazonReloadDate(asin, AmarokConfig::amazonLocale(), key);
     // Save Amazon product page URL as embedded string, for later retreival
     if ( !amazonUrl.isEmpty() )
@@ -1970,7 +1977,7 @@ CollectionDB::podcastImageResult( KIO::Job *gjob )
        if( url.isEmpty() )
           url = job->url().url();
 
-        QCString key = md5sum( "Podcast", url );
+        Q3CString key = md5sum( "Podcast", url );
         if( image.save( largeCoverDir().filePath( key ), "PNG") )
            emit imageFetched( url );
     }
@@ -2092,12 +2099,12 @@ CollectionDB::makeShadowedImage( const QString& albumImage, bool cache )
 QString
 CollectionDB::findAmazonImage( const QString &artist, const QString &album, uint width )
 {
-    QCString widthKey = makeWidthKey( width );
+    Q3CString widthKey = makeWidthKey( width );
 
     if ( artist.isEmpty() && album.isEmpty() )
         return QString();
 
-    QCString key = md5sum( artist, album );
+    Q3CString key = md5sum( artist, album );
 
     // check cache for existing cover
     if ( cacheCoverDir().exists( widthKey + key ) )
@@ -2110,7 +2117,7 @@ CollectionDB::findAmazonImage( const QString &artist, const QString &album, uint
         if ( width > 1 )
         {
             QImage img( imageDir.filePath( key ) );
-            img.smoothScale( width, width, QImage::ScaleMin ).save( cacheCoverDir().filePath( widthKey + key ), "PNG" );
+            img.smoothScale( width, width, Qt::KeepAspectRatio ).save( cacheCoverDir().filePath( widthKey + key ), "PNG" );
 
             return cacheCoverDir().filePath( widthKey + key );
         }
@@ -2127,7 +2134,7 @@ CollectionDB::findDirectoryImage( const QString& artist, const QString& album, u
 {
     if ( width == 1 )
         width = AmarokConfig::coverPreviewSize();
-    QCString widthKey = makeWidthKey( width );
+    Q3CString widthKey = makeWidthKey( width );
     if ( album.isEmpty() )
         return QString();
 
@@ -2178,7 +2185,7 @@ CollectionDB::findDirectoryImage( const QString& artist, const QString& album, u
             }
         }
 
-        QCString key = md5sum( artist, album, image );
+        Q3CString key = md5sum( artist, album, image );
 
         if ( width > 1 )
         {
@@ -2238,7 +2245,7 @@ CollectionDB::findEmbeddedImage( const QString& artist, const QString& album, ui
     }
 
     if ( values.count() == 2 ) {
-        QCString hash = values.first().utf8();
+        Q3CString hash = values.first().utf8();
         QString result = loadHashFile( hash, width );
         if ( result.isEmpty() ) {
             // need to get original from file first
@@ -2266,7 +2273,7 @@ CollectionDB::findMetaBundleImage( const MetaBundle& trackInformation, uint widt
             .arg( deviceid ).arg( escapeString( rpath ) ) );
 
     if ( values.empty() || !values.first().isEmpty() ) {
-        QCString hash;
+        Q3CString hash;
         QString result;
         if( !values.empty() ) { // file in collection, so we know the hash
             hash = values.first().utf8();
@@ -2285,7 +2292,7 @@ CollectionDB::findMetaBundleImage( const MetaBundle& trackInformation, uint widt
 }
 
 
-QCString
+Q3CString
 CollectionDB::makeWidthKey( uint width )
 {
     return QString::number( width ).local8Bit() + '@';
@@ -2297,8 +2304,8 @@ CollectionDB::removeAlbumImage( const QString &artist, const QString &album )
 {
     DEBUG_BLOCK
 
-    QCString widthKey = "*@";
-    QCString key = md5sum( artist, album );
+    Q3CString widthKey = "*@";
+    Q3CString key = md5sum( artist, album );
     query( "DELETE FROM amazon WHERE filename='" + key + '\'' );
 
     // remove scaled versions of images (and add the asterisk for the shadow-caches)
@@ -2615,14 +2622,14 @@ CollectionDB::addPodcastEpisode( const PodcastEpisodeBundle &episode, const int 
     return values[0].toInt();
 }
 
-QValueList<PodcastChannelBundle>
+Q3ValueList<PodcastChannelBundle>
 CollectionDB::getPodcastChannels()
 {
     QString command = "SELECT url, title, weblink, image, comment, copyright, parent, directory "
         ", autoscan, fetchtype, autotransfer, haspurge, purgecount FROM podcastchannels;";
 
     QStringList values = query( command );
-    QValueList<PodcastChannelBundle> bundles;
+    Q3ValueList<PodcastChannelBundle> bundles;
 
     foreach( values )
     {
@@ -2647,7 +2654,7 @@ CollectionDB::getPodcastChannels()
     return bundles;
 }
 
-QValueList<PodcastEpisodeBundle>
+Q3ValueList<PodcastEpisodeBundle>
 CollectionDB::getPodcastEpisodes( const KURL &parent, bool onlyNew, int limit )
 {
     QString command = QString( "SELECT id, url, localurl, parent, guid, title, subtitle, composer, comment, filetype, createdate, length, size, isNew FROM podcastepisodes WHERE ( parent='%1'" ).arg( parent.url() );
@@ -2659,7 +2666,7 @@ CollectionDB::getPodcastEpisodes( const KURL &parent, bool onlyNew, int limit )
     command += ';';
 
     QStringList values = query( command );
-    QValueList<PodcastEpisodeBundle> bundles;
+    Q3ValueList<PodcastEpisodeBundle> bundles;
 
     foreach( values )
     {
@@ -3448,7 +3455,7 @@ CollectionDB::bundleForUrl( MetaBundle* bundle )
 }
 
 
-QValueList<MetaBundle>
+Q3ValueList<MetaBundle>
 CollectionDB::bundlesByUrls( const KURL::List& urls )
 {
     BundleList bundles;
@@ -4825,7 +4832,7 @@ CollectionDB::isConnected()
 // PROTECTED
 //////////////////////////////////////////////////////////////////////////////////////////
 
-QCString
+Q3CString
 CollectionDB::md5sum( const QString& artist, const QString& album, const QString& file )
 {
     KMD5 context( artist.lower().local8Bit() + album.lower().local8Bit() + file.local8Bit() );
@@ -4880,7 +4887,7 @@ CollectionDB::timerEvent( QTimerEvent* )
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void
-CollectionDB::fetchCover( QWidget* parent, const QString& artist, const QString& album, bool noedit, QListViewItem* item ) //SLOT
+CollectionDB::fetchCover( QWidget* parent, const QString& artist, const QString& album, bool noedit, Q3ListViewItem* item ) //SLOT
 {
     #ifdef AMAZON_SUPPORT
     debug() << "Fetching cover for " << artist << " - " << album << endl;
@@ -4968,7 +4975,7 @@ CollectionDB::coverFetcherResult( CoverFetcher *fetcher )
     //check the validity of the CollectionItem as it may have been deleted e.g. by a
     //collection scan while fetching the cover
     itemCoverMapMutex->lock();
-    QMap<QListViewItem*, CoverFetcher*>::Iterator it;
+    QMap<Q3ListViewItem*, CoverFetcher*>::Iterator it;
     for( it = itemCoverMap->begin(); it != itemCoverMap->end(); ++it )
     {
         if( it.data() == fetcher )
@@ -5009,9 +5016,9 @@ class SimilarArtistsInsertionJob : public ThreadManager::DependentJob
 public:
     SimilarArtistsInsertionJob( CollectionDB *parent, const QString &s, const QStringList &list )
             : ThreadManager::DependentJob( parent, "SimilarArtistsInsertionJob" )
-            , artist( QDeepCopy<QString>(s) )
-            , escapedArtist( parent->escapeString( QDeepCopy<QString>(s) ) )
-            , suggestions( QDeepCopy<QStringList>(list) )
+            , artist( Q3DeepCopy<QString>(s) )
+            , escapedArtist( parent->escapeString( Q3DeepCopy<QString>(s) ) )
+            , suggestions( Q3DeepCopy<QStringList>(list) )
     {}
 };
 
@@ -5798,7 +5805,7 @@ CollectionDB::customEvent( QCustomEvent *e )
 
 
 QString
-CollectionDB::loadHashFile( const QCString& hash, uint width )
+CollectionDB::loadHashFile( const Q3CString& hash, uint width )
 {
     //debug() << "loadHashFile: " << hash << " - " << width << endl;
 
@@ -5811,7 +5818,7 @@ CollectionDB::loadHashFile( const QCString& hash, uint width )
         }
     } else {
         if ( width == 1 ) width = AmarokConfig::coverPreviewSize();
-        QCString widthKey = makeWidthKey( width );
+        Q3CString widthKey = makeWidthKey( width );
 
         QString path = cacheCoverDir().filePath( widthKey + hash );
         if ( QFileInfo( path ).isReadable() ) {
@@ -5831,7 +5838,7 @@ CollectionDB::loadHashFile( const QCString& hash, uint width )
 
 
 bool
-CollectionDB::extractEmbeddedImage( const MetaBundle &trackInformation, QCString& hash )
+CollectionDB::extractEmbeddedImage( const MetaBundle &trackInformation, Q3CString& hash )
 {
     //debug() << "extractEmbeddedImage: " << hash << " - " << trackInformation.url().path() << endl;
 
@@ -6020,11 +6027,11 @@ SqliteConnection::SqliteConnection( const SqliteConfig* config )
 
     DEBUG_BLOCK
 
-    const QCString path = QFile::encodeName( config->dbFile() );
+    const Q3CString path = QFile::encodeName( config->dbFile() );
 
     // Open database file and check for correctness
     QFile file( path );
-    if ( file.open( IO_ReadOnly ) )
+    if ( file.open( QIODevice::ReadOnly ) )
     {
         QString format;
         file.readLine( format, 50 );

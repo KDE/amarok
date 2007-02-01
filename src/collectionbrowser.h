@@ -8,8 +8,18 @@
 #define AMAROK_COLLECTIONBROWSER_H
 
 #include <qlabel.h>
-#include <qvaluelist.h>      //stack allocated
-#include <qvbox.h>           //baseclass
+#include <q3valuelist.h>      //stack allocated
+#include <q3vbox.h>           //baseclass
+//Added by qt3to4:
+#include <QKeyEvent>
+#include <Q3CString>
+#include <QPixmap>
+#include <QDragEnterEvent>
+#include <QDragMoveEvent>
+#include <QDropEvent>
+#include <QResizeEvent>
+#include <QEvent>
+#include <QPaintEvent>
 
 #include <klistview.h>       //baseclass
 #include <qstringlist.h>     //stack allocated
@@ -24,8 +34,8 @@
 class ClickLineEdit;
 class CollectionDB;
 
-class QCString;
-class QDragObject;
+class Q3CString;
+class Q3DragObject;
 class QPixmap;
 class QPoint;
 class QStringList;
@@ -56,7 +66,7 @@ namespace CollectionBrowserIds
     };
 }
 
-class CollectionBrowser: public QVBox
+class CollectionBrowser: public Q3VBox
 {
     Q_OBJECT
     friend class CollectionView;
@@ -90,7 +100,7 @@ class CollectionBrowser: public QVBox
         // For iPod-style browsing
         KAction           *m_ipodIncrement, *m_ipodDecrement;
         class KToolBar    *m_ipodToolbar;
-        class QHBox       *m_ipodHbox;
+        class Q3HBox       *m_ipodHbox;
 
         KToggleAction     *m_showDividerAction;
         KRadioAction      *m_treeViewAction;
@@ -123,7 +133,7 @@ public:
     static bool shareTheSameGroup(const QString& a, const QString& b, int cat);
 
 public:
-    DividerItem( QListView* parent, QString txt, int cat);
+    DividerItem( Q3ListView* parent, QString txt, int cat);
 
     virtual void paintCell ( QPainter * p, const QColorGroup & cg, int column, int width, int align );
     virtual void paintFocus ( QPainter * p, const QColorGroup & cg, const QRect & r );
@@ -133,7 +143,7 @@ public:
     void setBlockText(bool block) { m_blockText = block; }
 
 private:
-    virtual int compare( QListViewItem*, int, bool ) const;
+    virtual int compare( Q3ListViewItem*, int, bool ) const;
 
 private:
     bool m_blockText;
@@ -145,12 +155,12 @@ private:
 
 class CollectionItem : public KListViewItem {
     public:
-        CollectionItem( QListView* parent, int cat = 0, bool unknown = false, bool sampler=false )
+        CollectionItem( Q3ListView* parent, int cat = 0, bool unknown = false, bool sampler=false )
             : KListViewItem( parent )
             , m_cat( cat )
             , m_isUnknown( unknown )
             , m_isSampler( sampler ) {};
-        CollectionItem( QListViewItem* parent, int cat = 0, bool unknown = false, bool sampler=false )
+        CollectionItem( Q3ListViewItem* parent, int cat = 0, bool unknown = false, bool sampler=false )
             : KListViewItem( parent )
             , m_cat( cat )
             , m_isUnknown( unknown )
@@ -181,7 +191,7 @@ class CollectionItem : public KListViewItem {
         virtual void paintCell ( QPainter * painter, const QColorGroup & cg, int column, int width, int align );
 
         //for sorting
-        virtual int compare( QListViewItem*, int, bool ) const; //reimplemented
+        virtual int compare( Q3ListViewItem*, int, bool ) const; //reimplemented
 
     //attributes:
         KURL m_url;
@@ -262,19 +272,19 @@ class CollectionView : public KListView, public DropProxyTarget
         void scanStarted();
         void scanDone( bool changed = true );
 
-        void slotExpand( QListViewItem* );
-        void slotCollapse( QListViewItem* );
+        void slotExpand( Q3ListViewItem* );
+        void slotCollapse( Q3ListViewItem* );
         void enableCat3Menu( bool );
-        void invokeItem( QListViewItem*, const QPoint &, int column );
-        void invokeItem( QListViewItem* );
+        void invokeItem( Q3ListViewItem*, const QPoint &, int column );
+        void invokeItem( Q3ListViewItem* );
 
         // ipod-style navigation slots
-        void ipodItemClicked( QListViewItem*, const QPoint&, int );
+        void ipodItemClicked( Q3ListViewItem*, const QPoint&, int );
         void incrementDepth ( bool rerender = true );
         void decrementDepth ( bool rerender = true );
 
-        void rmbPressed( QListViewItem*, const QPoint&, int );
-        void selectAll() {QListView::selectAll(true); }
+        void rmbPressed( Q3ListViewItem*, const QPoint&, int );
+        void selectAll() {Q3ListView::selectAll(true); }
         /** Tries to download the cover image from Amazon.com */
         void fetchCover();
         /** Shows dialog with information on selected track */
@@ -294,8 +304,8 @@ class CollectionView : public KListView, public DropProxyTarget
         void removeDuplicatedHeaders();
 
         void startDrag();
-        QString getTrueItemText( int, QListViewItem* ) const;
-        QStringList listSelectedSiblingsOf( int, QListViewItem* );
+        QString getTrueItemText( int, Q3ListViewItem* ) const;
+        QStringList listSelectedSiblingsOf( int, Q3ListViewItem* );
         KURL::List listSelected();
 
         void playlistFromURLs( const KURL::List &urls );
@@ -319,8 +329,8 @@ class CollectionView : public KListView, public DropProxyTarget
 
         //Used to store the name of an item (and its parents), so it can be recalled later
         //even if the pointer to the item has been invalidated.
-        QStringList makeStructuredNameList( QListViewItem* ) const;
-        QListViewItem* findFromStructuredNameList( const QStringList& ) const;
+        QStringList makeStructuredNameList( Q3ListViewItem* ) const;
+        Q3ListViewItem* findFromStructuredNameList( const QStringList& ) const;
 
         // avoid duplicated code
         static inline bool endsInThe( const QString & text );
@@ -367,7 +377,7 @@ class CollectionView : public KListView, public DropProxyTarget
 
         bool m_dirty; // we use this to avoid re-rendering the view when unnecessary (eg, browser is not visible)
 
-        QValueList<QStringList> m_cacheOpenItemPaths;
+        Q3ValueList<QStringList> m_cacheOpenItemPaths;
         QStringList             m_cacheViewportTopItem;
         QStringList             m_cacheCurrentItem;
         KURL::List              m_organizeURLs;
@@ -376,7 +386,7 @@ class CollectionView : public KListView, public DropProxyTarget
         bool                    m_organizingFileCancelled;
 
         bool m_showDivider;
-        QValueList<int>         m_flatColumnWidths;
+        Q3ValueList<int>         m_flatColumnWidths;
 };
 
 // why is signal detailsClicked() missing from KDialogBase?

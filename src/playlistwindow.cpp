@@ -43,7 +43,7 @@
 
 #include <qevent.h>           //eventFilter()
 #include <qfont.h>
-#include <qheader.h>
+#include <q3header.h>
 #include <qlayout.h>
 #include <qlabel.h>           //search filter label
 
@@ -53,7 +53,16 @@
 #include <qsizepolicy.h>      //qspaceritem in dynamic bar
 #include <qtimer.h>           //search filter timer
 #include <qtooltip.h>         //QToolTip::add()
-#include <qvbox.h>            //contains the playlist
+#include <q3vbox.h>            //contains the playlist
+//Added by qt3to4:
+#include <QContextMenuEvent>
+#include <QWheelEvent>
+#include <QCloseEvent>
+#include <QShowEvent>
+#include <Q3VBoxLayout>
+#include <Q3Frame>
+#include <QPaintEvent>
+#include <Q3PopupMenu>
 
 #include <kaction.h>          //m_actionCollection
 #include <kapplication.h>     //kapp
@@ -176,14 +185,14 @@ PlaylistWindow::PlaylistWindow()
     }
 
     KActionMenu* playLastfm = new KActionMenu( i18n( "Play las&t.fm Stream" ), Amarok::icon( "audioscrobbler" ), ac, "lastfm_play" );
-    QPopupMenu* playLastfmMenu = playLastfm->popupMenu();
+    Q3PopupMenu* playLastfmMenu = playLastfm->popupMenu();
     playLastfmMenu->insertItem( i18n( "Personal Radio" ), this, SLOT( playLastfmPersonal() ) );
     playLastfmMenu->insertItem( i18n( "Neighbor Radio" ), this, SLOT( playLastfmNeighbor() ) );
     playLastfmMenu->insertItem( i18n( "Custom Station" ), this, SLOT( playLastfmCustom() ) );
     playLastfmMenu->insertItem( i18n( "Global Tag Radio" ), playTagRadioMenu );
 
     KActionMenu* addLastfm = new KActionMenu( i18n( "Add las&t.fm Stream" ), Amarok::icon( "audioscrobbler" ), ac, "lastfm_add" );
-    QPopupMenu* addLastfmMenu = addLastfm->popupMenu();
+    Q3PopupMenu* addLastfmMenu = addLastfm->popupMenu();
     addLastfmMenu->insertItem( i18n( "Personal Radio" ), this, SLOT( addLastfmPersonal() ) );
     addLastfmMenu->insertItem( i18n( "Neighbor Radio" ), this, SLOT( addLastfmNeighbor() ) );
     addLastfmMenu->insertItem( i18n( "Custom Station" ), this, SLOT( addLastfmCustom() ) );
@@ -261,7 +270,7 @@ void PlaylistWindow::init()
     //<Dynamic Mode Status Bar />
     DynamicBar *dynamicBar = new DynamicBar( m_browsers->container());
 
-    QFrame *playlist;
+    Q3Frame *playlist;
 
     { //<Search LineEdit>
         KToolBar *bar = new KToolBar( m_browsers->container(), "NotMainToolBar" );
@@ -284,7 +293,7 @@ void PlaylistWindow::init()
         KPushButton *filterButton = new KPushButton("...", bar, "filter");
         filterButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
 
-        m_lineEdit->setFrame( QFrame::Sunken );
+        m_lineEdit->setFrame( Q3Frame::Sunken );
         m_lineEdit->installEventFilter( this ); //we intercept keyEvents
 
         connect( button, SIGNAL(clicked()), m_lineEdit, SLOT(clear()) );
@@ -416,7 +425,7 @@ void PlaylistWindow::init()
     m_menubar->insertItem( i18n( "&Help" ), Amarok::Menu::helpMenu() );
 
 
-    QBoxLayout *layV = new QVBoxLayout( this );
+    Q3BoxLayout *layV = new Q3VBoxLayout( this );
     layV->addWidget( m_menubar );
     layV->addWidget( m_browsers, 1 );
     layV->addWidget( m_toolbar );
@@ -631,7 +640,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 
 
     Playlist* const pl = Playlist::instance();
-    typedef QListViewItemIterator It;
+    typedef Q3ListViewItemIterator It;
 
     switch( e->type() )
     {
@@ -641,10 +650,10 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 
         #define e static_cast<QKeyEvent*>(e)
 
-        if( e->key() == Key_F2 )
+        if( e->key() == Qt::Key_F2 )
         {
             // currentItem is ALWAYS visible.
-            QListViewItem *item = pl->currentItem();
+            Q3ListViewItem *item = pl->currentItem();
 
             // intercept F2 for inline tag renaming
             // NOTE: tab will move to the next tag
@@ -658,17 +667,17 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
             return true;
         }
 
-        if( e->state() & ControlButton )
+        if( e->state() & Qt::ControlModifier )
         {
             int n = -1;
             switch( e->key() )
             {
-                case Key_0: n = 0; break;
-                case Key_1: n = 1; break;
-                case Key_2: n = 2; break;
-                case Key_3: n = 3; break;
-                case Key_4: n = 4; break;
-                case Key_5: n = 5; break;
+                case Qt::Key_0: n = 0; break;
+                case Qt::Key_1: n = 1; break;
+                case Qt::Key_2: n = 2; break;
+                case Qt::Key_3: n = 3; break;
+                case Qt::Key_4: n = 4; break;
+                case Qt::Key_5: n = 5; break;
             }
             if( n == 0 )
             {
@@ -684,26 +693,26 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 
         if( o == m_lineEdit ) //the search lineedit
         {
-            QListViewItem *item;
+            Q3ListViewItem *item;
             switch( e->key() )
             {
-            case Key_Up:
-            case Key_Down:
-            case Key_PageDown:
-            case Key_PageUp:
+            case Qt::Key_Up:
+            case Qt::Key_Down:
+            case Qt::Key_PageDown:
+            case Qt::Key_PageUp:
                 pl->setFocus();
                 QApplication::sendEvent( pl, e );
                 return true;
 
-            case Key_Return:
-            case Key_Enter:
+            case Qt::Key_Return:
+            case Qt::Key_Enter:
                 item = *It( pl, It::Visible );
                 m_lineEdit->clear();
                 pl->m_filtertimer->stop(); //HACK HACK HACK
-                if( e->state() & ControlButton )
+                if( e->state() & Qt::ControlModifier )
                 {
                     PLItemList in, out;
-                    if( e->state() & ShiftButton )
+                    if( e->state() & Qt::ShiftModifier )
                         for( It it( pl, It::Visible ); PlaylistItem *x = static_cast<PlaylistItem*>( *it ); ++it )
                         {
                             pl->queue( x, true );
@@ -723,12 +732,12 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
                     if( !in.isEmpty() || !out.isEmpty() )
                         emit pl->queueChanged( in, out );
                     pl->setFilter( "" );
-                    pl->ensureItemCentered( ( e->state() & ShiftButton ) ? item : pl->currentTrack() );
+                    pl->ensureItemCentered( ( e->state() & Qt::ShiftModifier ) ? item : pl->currentTrack() );
                 }
                 else
                 {
                     pl->setFilter( "" );
-                    if( ( e->state() & ShiftButton ) && item )
+                    if( ( e->state() & Qt::ShiftModifier ) && item )
                     {
                         pl->queue( item );
                         pl->ensureItemCentered( item );
@@ -741,7 +750,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
                 }
                 return true;
 
-            case Key_Escape:
+            case Qt::Key_Escape:
                 m_lineEdit->clear();
                 return true;
 
@@ -755,9 +764,9 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
 
         if( o == pl )
         {
-            if( pl->currentItem() && ( e->key() == Key_Up && pl->currentItem()->itemAbove() == 0 && !(e->state() & Qt::ShiftButton) ) )
+            if( pl->currentItem() && ( e->key() == Qt::Key_Up && pl->currentItem()->itemAbove() == 0 && !(e->state() & Qt::ShiftModifier) ) )
             {
-                QListViewItem *lastitem = *It( pl, It::Visible );
+                Q3ListViewItem *lastitem = *It( pl, It::Visible );
                 if ( !lastitem )
                     return false;
                 while( lastitem->itemBelow() )
@@ -768,7 +777,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
                 pl->ensureItemVisible( lastitem );
                 return true;
             }
-            if( pl->currentItem() && ( e->key() == Key_Down && pl->currentItem()->itemBelow() == 0 && !(e->state() & Qt::ShiftButton) ) )
+            if( pl->currentItem() && ( e->key() == Qt::Key_Down && pl->currentItem()->itemBelow() == 0 && !(e->state() & Qt::ShiftModifier) ) )
             {
                 pl->currentItem()->setSelected( false );
                 pl->setCurrentItem( *It( pl, It::Visible ) );
@@ -776,12 +785,12 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
                 pl->ensureItemVisible( *It( pl, It::Visible ) );
                 return true;
             }
-            if( e->key() == Key_Delete )
+            if( e->key() == Qt::Key_Delete )
             {
                 pl->removeSelectedItems();
                 return true;
             }
-            if( ( ( e->key() >= Key_0 && e->key() <= Key_Z ) || e->key() == Key_Backspace || e->key() == Key_Escape ) && ( !e->state() || e->state() == Qt::ShiftButton ) ) //only if shift or no modifier key is pressed and 0-Z or backspace or escape
+            if( ( ( e->key() >= Qt::Key_0 && e->key() <= Qt::Key_Z ) || e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Escape ) && ( !e->state() || e->state() == Qt::ShiftModifier ) ) //only if shift or no modifier key is pressed and 0-Z or backspace or escape
             {
                 m_lineEdit->setFocus();
                 QApplication::sendEvent( m_lineEdit, e );
@@ -1188,7 +1197,7 @@ PlaylistWindow::mbAvailabilityChanged( bool isAvailable ) //SLOT
 /// DynamicBar
 //////////////////////////////////////////////////////////////////////////////////////////
 DynamicBar::DynamicBar(QWidget* parent)
-       : QHBox( parent, "DynamicModeStatusBar" )
+       : Q3HBox( parent, "DynamicModeStatusBar" )
 {
     m_titleWidget = new DynamicTitle(this);
 

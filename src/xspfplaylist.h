@@ -8,11 +8,11 @@
 class AtomicString;
 
 #include <qstring.h>
-#include <qtextstream.h>
+#include <q3textstream.h>
 #include <qdom.h>
 #include <qdatetime.h>
 #include <qfile.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 
 #include <kurl.h>
 
@@ -37,13 +37,13 @@ typedef struct {
 //     extension
 } XSPFtrack;
 
-typedef QValueList < XSPFtrack > XSPFtrackList;
+typedef Q3ValueList < XSPFtrack > XSPFtrackList;
 
 class XSPFPlaylist : public QDomDocument
 {
 public:
     XSPFPlaylist();
-    XSPFPlaylist( QTextStream &stream );
+    XSPFPlaylist( Q3TextStream &stream );
 
 public:
     /* convenience functions */
@@ -80,7 +80,7 @@ public:
 
 
 private:
-    bool loadXSPF( QTextStream& );
+    bool loadXSPF( Q3TextStream& );
 };
 
 #endif // XSPFPlaylist_H

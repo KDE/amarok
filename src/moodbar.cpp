@@ -291,6 +291,9 @@
 #include <qdir.h>  // For QDir::rename()
 #include <qpainter.h>
 #include <qtimer.h>
+//Added by qt3to4:
+#include <Q3ValueList>
+#include <QPixmap>
 
 #include <kstandarddirs.h>
 
@@ -359,7 +362,7 @@ MoodServer::queueJob( MetaBundle *bundle )
       }
 
     // Check if there's already a job in the queue for that URL
-    QValueList<ProcData>::iterator it;
+    Q3ValueList<ProcData>::iterator it;
     for( it = m_jobQueue.begin(); it != m_jobQueue.end(); ++it )
       {
         if( (*it).m_url == bundle->url() )
@@ -407,7 +410,7 @@ MoodServer::deQueueJob( KURL url )
       }
 
     // Check if there's already a job in the queue for that URL
-    QValueList<ProcData>::iterator it;
+    Q3ValueList<ProcData>::iterator it;
     for( it = m_jobQueue.begin(); it != m_jobQueue.end(); ++it )
       {
         if( (*it).m_url == url )
@@ -673,12 +676,12 @@ MoodServer::clearJobs( void )
     // We don't want to emit jobEvent (or really do anything
     // external) while the mutex is locked.
     m_mutex.lock();
-    QValueList<ProcData> queueCopy
-      = QDeepCopy< QValueList<ProcData> > ( m_jobQueue );
+    Q3ValueList<ProcData> queueCopy
+      = Q3DeepCopy< Q3ValueList<ProcData> > ( m_jobQueue );
     m_jobQueue.clear();
     m_mutex.unlock();
 
-    QValueList<ProcData>::iterator it;
+    Q3ValueList<ProcData>::iterator it;
     for( it = queueCopy.begin(); it != queueCopy.end(); ++it )
       emit jobEvent( (*it).m_url, Moodbar::JobStateFailed );
 }
@@ -799,7 +802,7 @@ Moodbar::detach( void )
 {
   m_mutex.lock();
 
-  m_data = QDeepCopy<ColorList>(m_data);
+  m_data = Q3DeepCopy<ColorList>(m_data);
   m_pixmap.detach();
 
   // Apparently this is the wrong hack -- don't detach urls
@@ -1081,7 +1084,7 @@ Moodbar::readFile( void )
     QFile moodFile( path );
 
     if( !QFile::exists( path )  ||
-        !moodFile.open( IO_ReadOnly ) )
+        !moodFile.open( QIODevice::ReadOnly ) )
       {
         // If the user has changed his/her preference about where to
         // store the mood files, he/she might have the .mood file
@@ -1093,7 +1096,7 @@ Moodbar::readFile( void )
         moodFile.setName( path2 );
 
         if( !QFile::exists( path2 )  ||
-            !moodFile.open( IO_ReadOnly ) )
+            !moodFile.open( QIODevice::ReadOnly ) )
           return false;
 
         debug() << "Moodbar::readFile: Found a file at " << path2
@@ -1103,7 +1106,7 @@ Moodbar::readFile( void )
         if( !copyFile( path2, path ) )
           return false;
         moodFile.setName( path );
-        if( !moodFile.open( IO_ReadOnly ) )
+        if( !moodFile.open( QIODevice::ReadOnly ) )
           return false;
       }
 
@@ -1360,12 +1363,12 @@ bool
 Moodbar::copyFile( const QString &srcPath, const QString &dstPath )
 {
   QFile file( srcPath );
-  if( !file.open( IO_ReadOnly ) )
+  if( !file.open( QIODevice::ReadOnly ) )
     return false;
   QByteArray contents = file.readAll();
   file.close();
   file.setName( dstPath );
-  if( !file.open( IO_WriteOnly | IO_Truncate ) )
+  if( !file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     return false;
   bool res = ( uint( file.writeBlock( contents ) ) == contents.size() );
   file.close();

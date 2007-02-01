@@ -25,6 +25,12 @@
 #include <qsignalmapper.h> //m_mapper
 #include <qstyle.h>        //Amarok::Splitter
 #include <qtooltip.h>
+//Added by qt3to4:
+#include <QPaintEvent>
+#include <QMouseEvent>
+#include <Q3PtrList>
+#include <QEvent>
+#include <Q3VBoxLayout>
 
 
 // we emulate a qsplitter, mostly for historic reasons, but there are still a few advantages
@@ -37,7 +43,7 @@ namespace Amarok
     public:
         Splitter( BrowserBar *w ) : QWidget( w, "divider" )
         {
-            setCursor( QCursor(SplitHCursor) );
+            setCursor( QCursor(Qt::SplitHCursor) );
             styleChange( style() );
         }
 
@@ -64,9 +70,9 @@ BrowserBar* BrowserBar::s_instance = 0;
 BrowserBar::BrowserBar( QWidget *parent )
         : QWidget( parent, "BrowserBar" )
         , EngineObserver( EngineController::instance() )
-        , m_playlistBox( new QVBox( this ) )
+        , m_playlistBox( new Q3VBox( this ) )
         , m_divider( new Amarok::Splitter( this ) )
-        , m_browserBox( new QVBox( this ) )
+        , m_browserBox( new Q3VBox( this ) )
         , m_currentIndex( -1 )
         , m_lastIndex( -1 )
         , m_mapper( new QSignalMapper( this ) )
@@ -94,7 +100,7 @@ BrowserBar::BrowserBar( QWidget *parent )
     m_tabBar->setFixedWidth( m_pos );
     m_tabBar->move( 0, 25 );
 
-    QVBoxLayout *layout = new QVBoxLayout( m_browserBox );
+    Q3VBoxLayout *layout = new Q3VBoxLayout( m_browserBox );
     layout->addSpacing( 3 ); // aesthetics
     layout->setAutoAdd( true );
 
@@ -325,7 +331,7 @@ void
 BrowserBar::showHideVisibleBrowser( int index )
 {
     int realindex = -1;
-    QPtrList<MultiTabBarTab> tabs = *m_tabBar->tabs();
+    Q3PtrList<MultiTabBarTab> tabs = *m_tabBar->tabs();
     for( int i = 0, n = tabs.count(); i < n; ++i )
     {
         if( tabs.at( i )->visible() )
@@ -355,7 +361,7 @@ int
 BrowserBar::visibleCount() const
 {
     int num = 0;
-    QPtrList<MultiTabBarTab> tabs = *m_tabBar->tabs();
+    Q3PtrList<MultiTabBarTab> tabs = *m_tabBar->tabs();
     for( int i = 0, n = tabs.count(); i < n; ++i )
     {
         if( tabs.at( i )->visible() )

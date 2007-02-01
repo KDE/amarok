@@ -70,7 +70,7 @@ private:
     Engine::State m_state;
     DBusConnection *con;
     /* helper process to start */
-    QProcess helper;
+    Q3Process helper;
 };
 
 

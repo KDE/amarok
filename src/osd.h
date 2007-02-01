@@ -19,8 +19,12 @@
 		
 #include <kpixmap.h>
 #include <qimage.h>
-#include <qvaluelist.h>
+#include <q3valuelist.h>
 #include <qwidget.h> //baseclass
+//Added by qt3to4:
+#include <QPixmap>
+#include <QEvent>
+#include <QMouseEvent>
 
 
 class OSDWidget : public QWidget

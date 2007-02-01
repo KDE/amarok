@@ -35,8 +35,21 @@
 #include <kurl.h>            //KURL::List
 #include <qdir.h>            //stack allocated
 #include <qpoint.h>          //stack allocated
-#include <qptrlist.h>        //stack allocated
+#include <q3ptrlist.h>        //stack allocated
 #include <qstringlist.h>     //stack allocated
+//Added by qt3to4:
+#include <QDragLeaveEvent>
+#include <Q3ValueList>
+#include <QLabel>
+#include <QCustomEvent>
+#include <QDragEnterEvent>
+#include <QDragMoveEvent>
+#include <QDropEvent>
+#include <QResizeEvent>
+#include <QMouseEvent>
+#include <QEvent>
+#include <QPaintEvent>
+#include <QWheelEvent>
 #include <vector>            //stack allocated
 
 class KAction;
@@ -47,7 +60,7 @@ class PlaylistEntry;
 class PlaylistLoader;
 class PlaylistAlbum;
 class TagWriter;
-class QBoxLayout;
+class Q3BoxLayout;
 class QLabel;
 class QTimer;
 
@@ -92,9 +105,9 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         static const int DefaultOptions = Append | Unique | StartPlay;
 
         // it's really just the *ListView parts we want to hide...
-        QScrollView *qscrollview() const
+        Q3ScrollView *qscrollview() const
         {
-            return reinterpret_cast<QScrollView*>( const_cast<Playlist*>( this ) );
+            return reinterpret_cast<Q3ScrollView*>( const_cast<Playlist*>( this ) );
         }
 
         /** Add media to the playlist
@@ -152,11 +165,11 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         PlaylistItem *currentItem() const { return static_cast<PlaylistItem*>( KListView::currentItem() ); }
 
         int  numVisibleColumns() const;
-        QValueList<int> visibleColumns() const;
+        Q3ValueList<int> visibleColumns() const;
         MetaBundle::ColumnMask getVisibleColumnMask() const;
         int  mapToLogicalColumn( int physical ) const; // Converts physical PlaylistItem column position to logical
         QString columnText( int c ) const { return KListView::columnText( c ); };
-        void setColumns( QValueList<int> order, QValueList<int> visible );
+        void setColumns( Q3ValueList<int> order, Q3ValueList<int> visible );
 
         /** Call this to prevent items being removed from the playlist, it is mostly for internal use only
          *  Don't forget to unlock() !! */
@@ -175,7 +188,7 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         enum RequestType { Prev = -1, Current = 0, Next = 1 };
         enum StopAfterMode { DoNotStop, StopAfterCurrent, StopAfterQueue, StopAfterOther };
 
-        class QDragObject *dragObject();
+        class Q3DragObject *dragObject();
         friend class PlaylistItem;
         friend class UrlLoader;
         friend class QueueManager;
@@ -205,9 +218,9 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         void appendMedia( const KURL &url );
         void appendMedia( const QString &path );
         void clear();
-        void copyToClipboard( const QListViewItem* = 0 ) const;
+        void copyToClipboard( const Q3ListViewItem* = 0 ) const;
         void deleteSelectedFiles();
-        void ensureItemCentered( QListViewItem* item );
+        void ensureItemCentered( Q3ListViewItem* item );
         void playCurrentTrack();
         void playNextTrack( const bool forceNext = true );
         void playPrevTrack();
@@ -226,7 +239,7 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         void scoreChanged( const QString &path, float score );
         void ratingChanged( const QString &path, int rating );
         void fileMoved( const QString &srcPath, const QString &dstPath );
-        void selectAll() { QListView::selectAll( true ); }
+        void selectAll() { Q3ListView::selectAll( true ); }
         void setFilter( const QString &filter );
         void setFilterSlot( const QString &filter );                       //uses a delay where applicable
         void setStopAfterCurrent( bool on );
@@ -236,7 +249,7 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         void setStopAfterMode( int mode );
         void showCurrentTrack() { ensureItemCentered( m_currentTrack ); }
         void showQueueManager();
-        void changeFromQueueManager(QPtrList<PlaylistItem> list);
+        void changeFromQueueManager(Q3PtrList<PlaylistItem> list);
         void shuffle();
         void undo();
         void updateMetaData( const MetaBundle& );
@@ -259,25 +272,25 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
     private slots:
         void mediumChange( int );
         void slotCountChanged();
-        void activate( QListViewItem* );
+        void activate( Q3ListViewItem* );
         void columnOrderChanged();
         void columnResizeEvent( int, int, int );
-        void doubleClicked( QListViewItem* );
+        void doubleClicked( Q3ListViewItem* );
 
         void generateInfo(); //generates info for Random Albums
 
         /* the only difference multi makes is whether it emits queueChanged(). (if multi, then no)
            if you're queue()ing many items, consider passing true and emitting queueChanged() yourself. */
         /* if invertQueue then queueing an already queued song dequeues it */
-        void queue( QListViewItem*, bool multi = false, bool invertQueue = true );
+        void queue( Q3ListViewItem*, bool multi = false, bool invertQueue = true );
 
         void saveUndoState();
         void setDelayedFilter();                                           //after the delay is over
-        void showContextMenu( QListViewItem*, const QPoint&, int );
+        void showContextMenu( Q3ListViewItem*, const QPoint&, int );
         void slotEraseMarker();
         void slotGlowTimer();
         void reallyEnsureItemCentered();
-        void slotMouseButtonPressed( int, QListViewItem*, const QPoint&, int );
+        void slotMouseButtonPressed( int, Q3ListViewItem*, const QPoint&, int );
         void slotSingleClick();
         void slotContentsMoving();
         void slotRepeatTrackToggled( int mode );
@@ -286,7 +299,7 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         void slotUseRatings( bool use );
         void slotMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic );
         void updateNextPrev();
-        void writeTag( QListViewItem*, const QString&, int );
+        void writeTag( Q3ListViewItem*, const QString&, int );
 
     private:
         Playlist( QWidget* );
@@ -306,7 +319,7 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         bool saveState( QStringList& );
         void setCurrentTrack( PlaylistItem* );
         void setCurrentTrackPixmap( int state = -1 );
-        void showTagDialog( QPtrList<QListViewItem> items );
+        void showTagDialog( Q3PtrList<Q3ListViewItem> items );
         void sortQueuedItems();
         void switchState( QStringList&, QStringList& );
         void saveSelectedAsPlaylist();
@@ -323,13 +336,13 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         void contentsDragLeaveEvent( QDragLeaveEvent* );
 
         #ifdef PURIST //KListView imposes hand cursor so override it
-        void contentsMouseMoveEvent( QMouseEvent *e ) { QListView::contentsMouseMoveEvent( e ); }
+        void contentsMouseMoveEvent( QMouseEvent *e ) { Q3ListView::contentsMouseMoveEvent( e ); }
         #endif
 
         void customEvent( QCustomEvent* );
         bool eventFilter( QObject*, QEvent* );
         void paletteChange( const QPalette& );
-        void rename( QListViewItem*, int );
+        void rename( Q3ListViewItem*, int );
         void setColumnWidth( int, int );
         void setSorting( int, bool = true );
 
@@ -351,11 +364,11 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         /// ATTRIBUTES
 
         PlaylistItem  *m_currentTrack;          //the track that is playing
-        QListViewItem *m_marker;                //track that has the drag/drop marker under it
+        Q3ListViewItem *m_marker;                //track that has the drag/drop marker under it
         PlaylistItem  *m_hoveredRating;         //if the mouse is hovering over the rating of an item
 
         //NOTE these container types were carefully chosen
-        QPtrList<PlaylistAlbum> m_prevAlbums; //the previously played albums in Entire Albums mode
+        Q3PtrList<PlaylistAlbum> m_prevAlbums; //the previously played albums in Entire Albums mode
         PLItemList m_prevTracks;    //the previous history
         PLItemList m_nextTracks;    //the tracks to be played after the current track
 
@@ -395,11 +408,11 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         bool          m_queueDirt;          //When queuing disabled items, we need to place the marker on the newly inserted item
         bool          m_undoDirt;           //Make sure we don't repopulate the playlist when dynamic mode and undo()
 
-        QListViewItem *m_itemToReallyCenter;
-        QListViewItem *m_renameItem;
+        Q3ListViewItem *m_itemToReallyCenter;
+        Q3ListViewItem *m_renameItem;
         int            m_renameColumn;
         QTimer        *m_clicktimer;
-        QListViewItem *m_itemToRename;
+        Q3ListViewItem *m_itemToRename;
         QPoint         m_clickPos;
         int            m_columnToRename;
 
@@ -415,7 +428,7 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
 
         std::vector<double> m_columnFraction;
 
-        QMap<QString,QPtrList<PlaylistItem>*> m_uniqueMap;
+        QMap<QString,Q3PtrList<PlaylistItem>*> m_uniqueMap;
         int m_oldRandom;
         int m_oldRepeat;
 
@@ -448,26 +461,26 @@ public:
  * sorry.
  */
 
-class PlaylistIterator : public QListViewItemIterator
+class PlaylistIterator : public Q3ListViewItemIterator
 {
 public:
-    PlaylistIterator( QListViewItem *item, int flags = 0 )
+    PlaylistIterator( Q3ListViewItem *item, int flags = 0 )
         //QListViewItemIterator is not great and doesn't allow you to see everything if you
         //mask both Visible and Invisible :( instead just visible items are returned
-        : QListViewItemIterator( item, flags == All ? 0 : flags | Visible  )
+        : Q3ListViewItemIterator( item, flags == All ? 0 : flags | Visible  )
     {}
 
-    PlaylistIterator( QListView *view, int flags = 0 )
-        : QListViewItemIterator( view, flags == All ? 0 : flags | Visible )
+    PlaylistIterator( Q3ListView *view, int flags = 0 )
+        : Q3ListViewItemIterator( view, flags == All ? 0 : flags | Visible )
     {}
 
     //FIXME! Dirty hack for enabled/disabled items.
     enum IteratorFlag {
-        Visible = QListViewItemIterator::Visible,
-        All = QListViewItemIterator::Invisible
+        Visible = Q3ListViewItemIterator::Visible,
+        All = Q3ListViewItemIterator::Invisible
     };
 
-    inline PlaylistItem *operator*() { return static_cast<PlaylistItem*>( QListViewItemIterator::operator*() ); }
+    inline PlaylistItem *operator*() { return static_cast<PlaylistItem*>( Q3ListViewItemIterator::operator*() ); }
 
     /// @return the next visible PlaylistItem after item
     static PlaylistItem *nextVisible( PlaylistItem *item )

@@ -27,8 +27,12 @@
 #include "streamprovider.h"
 
 #include <qmutex.h>
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 #include <qstringlist.h>
+//Added by qt3to4:
+#include <Q3CString>
+#include <QTimerEvent>
+#include <Q3ValueList>
 
 #include <kio/jobclasses.h>
 
@@ -87,7 +91,7 @@ class GstEngine : public Engine::Base
         void setEqualizerEnabled( bool );
 
         /** Set equalizer preamp and gains, range -100..100. Gains are 10 values. */
-        void setEqualizerParameters( int preamp, const QValueList<int>& bandGains );
+        void setEqualizerParameters( int preamp, const Q3ValueList<int>& bandGains );
 
     protected:
         void setVolumeSW( uint percent );
@@ -117,7 +121,7 @@ class GstEngine : public Engine::Base
          * @param name Identifier for the element.
          * @return Pointer to the created element, or NULL for failure.
          */
-        static GstElement* createElement( const QCString& factoryName, GstElement* bin = 0, const QCString& name = 0 );
+        static GstElement* createElement( const Q3CString& factoryName, GstElement* bin = 0, const Q3CString& name = 0 );
 
         /**
          * Fetches a list of available output sink plugins
@@ -146,7 +150,7 @@ class GstEngine : public Engine::Base
         static void kio_resume_cb();
 
         /** Get a list of available plugins from a specified Class */
-        QStringList getPluginList( const QCString& classname ) const;
+        QStringList getPluginList( const Q3CString& classname ) const;
 
         /** Construct the output pipeline */
         bool createPipeline();
@@ -228,7 +232,7 @@ class GstEngine : public Engine::Base
 
         bool              m_equalizerEnabled;
         int               m_equalizerPreamp;
-        QValueList<int>   m_equalizerGains;
+        Q3ValueList<int>   m_equalizerGains;
 
         Engine::SimpleMetaBundle m_metaBundle;
 

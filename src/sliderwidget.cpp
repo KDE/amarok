@@ -33,6 +33,16 @@
 #include <qpainter.h>
 #include <qsize.h>
 #include <qtimer.h>
+//Added by qt3to4:
+#include <QContextMenuEvent>
+#include <Q3PointArray>
+#include <QShowEvent>
+#include <QWheelEvent>
+#include <QPaintEvent>
+#include <QPixmap>
+#include <QMouseEvent>
+#include <QHideEvent>
+#include <QEvent>
 
 #include <kiconloader.h>
 #include <kimageeffect.h>
@@ -96,9 +106,9 @@ Amarok::Slider::slideEvent( QMouseEvent *e )
 {
     QSlider::setValue( orientation() == Horizontal
         ? ((QApplication::reverseLayout())
-          ? QRangeControl::valueFromPosition( width() - (e->pos().x() - sliderRect().width()/2),  width()  + sliderRect().width() )
-          : QRangeControl::valueFromPosition( e->pos().x() - sliderRect().width()/2,  width()  - sliderRect().width() ) )
-        : QRangeControl::valueFromPosition( e->pos().y() - sliderRect().height()/2, height() - sliderRect().height() ) );
+          ? Q3RangeControl::valueFromPosition( width() - (e->pos().x() - sliderRect().width()/2),  width()  + sliderRect().width() )
+          : Q3RangeControl::valueFromPosition( e->pos().x() - sliderRect().width()/2,  width()  - sliderRect().width() ) )
+        : Q3RangeControl::valueFromPosition( e->pos().y() - sliderRect().height()/2, height() - sliderRect().height() ) );
 }
 
 void
@@ -149,7 +159,7 @@ Amarok::PrettySlider::PrettySlider( Qt::Orientation orientation, SliderMode mode
     if( m_mode == Pretty)
       {
         setWFlags( Qt::WNoAutoErase );
-        setFocusPolicy( QWidget::NoFocus );
+        setFocusPolicy( Qt::NoFocus );
       }
 
     // We only have to connect this *once*, since our MetaBundle
@@ -176,8 +186,8 @@ Amarok::PrettySlider::slideEvent( QMouseEvent *e )
 {
     if( m_mode == Pretty  ||  m_showingMoodbar )
       QSlider::setValue( orientation() == Horizontal
-          ? QRangeControl::valueFromPosition( e->pos().x(), width()-2 )
-          : QRangeControl::valueFromPosition( e->pos().y(), height()-2 ) );
+          ? Q3RangeControl::valueFromPosition( e->pos().x(), width()-2 )
+          : Q3RangeControl::valueFromPosition( e->pos().y(), height()-2 ) );
     else
       Amarok::Slider::slideEvent( e );
 }
@@ -247,7 +257,7 @@ Amarok::PrettySlider::paintEvent( QPaintEvent *e )
     //<Triangle Marker>
     if( m_mode == Pretty )
       {
-        QPointArray pa( 3 );
+        Q3PointArray pa( 3 );
         pa.setPoint( 0, pos - 3, 1 );
         pa.setPoint( 1, pos + 3, 1 );
         pa.setPoint( 2, pos,     5 );
@@ -257,7 +267,7 @@ Amarok::PrettySlider::paintEvent( QPaintEvent *e )
 
     else if( m_mode == Normal )
       {
-        QPointArray pa( 3 );
+        Q3PointArray pa( 3 );
         pa.setPoint( 0, pos - 5, 1 );
         pa.setPoint( 1, pos + 5, 1 );
         pa.setPoint( 2, pos,     9 );
@@ -340,7 +350,7 @@ Amarok::PrettySlider::sizeHint() const
 {
     constPolish();
 
-    return (orientation() == Horizontal
+    return (orientation() == Qt::Horizontal
              ? QSize( maxValue(), THICKNESS + MARGIN )
              : QSize( THICKNESS + MARGIN, maxValue() )).expandedTo( QApplit ication::globalStrut() );
 }
@@ -356,8 +366,8 @@ Amarok::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
     , m_animTimer( new QTimer( this ) )
     , m_pixmapInset( QPixmap( locate( "data","amarok/images/volumeslider-inset.png" ) ) )
 {
-    setWFlags( getWFlags() | WNoAutoErase );
-    setFocusPolicy( QWidget::NoFocus );
+    setWFlags( getWFlags() | Qt::WNoAutoErase );
+    setFocusPolicy( Qt::NoFocus );
 
     // BEGIN Calculate handle animation pixmaps for mouse-over effect
     QImage pixmapHandle    ( locate( "data","amarok/images/volumeslider-handle.png" ) );
@@ -443,7 +453,7 @@ Amarok::VolumeSlider::contextMenuEvent( QContextMenuEvent *e )
 void
 Amarok::VolumeSlider::slideEvent( QMouseEvent *e )
 {
-    QSlider::setValue( QRangeControl::valueFromPosition( e->pos().x(), width()-2 ) );
+    QSlider::setValue( Q3RangeControl::valueFromPosition( e->pos().x(), width()-2 ) );
 }
 
 void

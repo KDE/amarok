@@ -20,13 +20,20 @@
 #include <klistview.h>      //baseclass
 
 #include <qmap.h>
+//Added by qt3to4:
+#include <QDragEnterEvent>
+#include <QDropEvent>
+#include <QDragMoveEvent>
+#include <QKeyEvent>
+#include <QPaintEvent>
+#include <Q3PtrList>
 
 class KPushButton;
 
 class QueueItem : public KListViewItem
 {
     public:
-        QueueItem( QListView *parent, QListViewItem *after, QString t )
+        QueueItem( Q3ListView *parent, Q3ListViewItem *after, QString t )
             : KListViewItem( parent, after, t )
         { };
 
@@ -46,7 +53,7 @@ class QueueList : public KListView
 
         bool    hasSelection();
         bool    isEmpty() { return ( childCount() == 0 ); }
-        QPtrList<QListViewItem>  selectedItems();
+        Q3PtrList<Q3ListViewItem>  selectedItems();
 
     public slots:
         void    moveSelectedUp();
@@ -73,13 +80,13 @@ class QueueManager : public KDialogBase
         QueueManager( QWidget *parent = 0, const char *name = 0 );
         ~QueueManager();
 
-        QPtrList<PlaylistItem> newQueue();
+        Q3PtrList<PlaylistItem> newQueue();
 
         static QueueManager *instance() { return s_instance; }
 
     public slots:
         void    applyNow();
-        void    addItems( QListViewItem *after = 0 ); /// For the add button (uses selected playlist tracks)
+        void    addItems( Q3ListViewItem *after = 0 ); /// For the add button (uses selected playlist tracks)
         void    changeQueuedItems( const PLItemList &in, const PLItemList &out );  /// For keeping queue/dequeue in sync
         void    updateButtons();
 
@@ -92,7 +99,7 @@ class QueueManager : public KDialogBase
         void    addQueuedItem( PlaylistItem *item );
         void    removeQueuedItem( PlaylistItem *item );
 
-        QMap<QListViewItem*, PlaylistItem*> m_map;
+        QMap<Q3ListViewItem*, PlaylistItem*> m_map;
         QueueList   *m_listview;
         KPushButton *m_up;
         KPushButton *m_down;

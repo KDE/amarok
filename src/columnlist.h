@@ -20,20 +20,22 @@
 #ifndef AMAROK_COLUMNLIST_H
 #define AMAROK_COLUMNLIST_H
 
-#include <qhbox.h>
+#include <q3hbox.h>
+//Added by qt3to4:
+#include <Q3ValueList>
 #include <kdialogbase.h>
 
 class KListView;
 class KPushButton;
-template<class T> class QValueList;
+template<class T> class Q3ValueList;
 
-class ColumnList: public QHBox
+class ColumnList: public Q3HBox
 {
     Q_OBJECT
 public:
     ColumnList( QWidget *parent = 0, const char *name = 0 );
-    QValueList<int> visibleColumns() const;
-    QValueList<int> columnOrder() const;
+    Q3ValueList<int> visibleColumns() const;
+    Q3ValueList<int> columnOrder() const;
     bool isChanged() const;
     void resetChanged();
 

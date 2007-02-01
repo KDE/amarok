@@ -27,8 +27,10 @@
 
 #include "mediabrowser.h"
 
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 #include <qmutex.h>
+//Added by qt3to4:
+#include <QLabel>
 
 #include <libmtp.h>
 
@@ -91,13 +93,13 @@ class MtpAlbum {
 class MtpMediaItem : public MediaItem
 {
     public:
-        MtpMediaItem( QListView *parent, QListViewItem *after = 0 )
+        MtpMediaItem( Q3ListView *parent, Q3ListViewItem *after = 0 )
             : MediaItem( parent, after ) {}
-        MtpMediaItem( QListViewItem *parent, QListViewItem *after = 0 )
+        MtpMediaItem( Q3ListViewItem *parent, Q3ListViewItem *after = 0 )
             : MediaItem( parent, after ) {}
-        MtpMediaItem( QListView *parent, MediaDevice *dev )
+        MtpMediaItem( Q3ListView *parent, MediaDevice *dev )
             : MediaItem( parent ) { init( dev ); }
-        MtpMediaItem( QListViewItem *parent, MediaDevice *dev )
+        MtpMediaItem( Q3ListViewItem *parent, MediaDevice *dev )
             : MediaItem( parent ) { init( dev ); }
 
         void init( MediaDevice *dev )
@@ -133,7 +135,7 @@ class MtpMediaDevice : public MediaDevice
         bool                    isConnected();
         LIBMTP_mtpdevice_t      *current_device();
         void                    setDisconnected();
-        virtual void            rmbPressed( QListViewItem *qitem, const QPoint &point, int arg1 );
+        virtual void            rmbPressed( Q3ListViewItem *qitem, const QPoint &point, int arg1 );
         virtual void            init( MediaBrowser* parent );
         virtual QStringList     supportedFiletypes();
         void                    setFolders( LIBMTP_folder_t *folders );
@@ -158,13 +160,13 @@ class MtpMediaDevice : public MediaDevice
 
         void                    synchronizeDevice();
         int                     deleteItemFromDevice( MediaItem *mediaitem, int flags=DeleteTrack );
-        void                    addToPlaylist( MediaItem *list, MediaItem *after, QPtrList<MediaItem> items );
-        MtpMediaItem            *newPlaylist( const QString &name, MediaItem *list, QPtrList<MediaItem> items );
+        void                    addToPlaylist( MediaItem *list, MediaItem *after, Q3PtrList<MediaItem> items );
+        MtpMediaItem            *newPlaylist( const QString &name, MediaItem *list, Q3PtrList<MediaItem> items );
         bool                    getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );
         virtual void            updateRootItems() {};
 
     private slots:
-        void                    playlistRenamed( QListViewItem *item, const QString &, int );
+        void                    playlistRenamed( Q3ListViewItem *item, const QString &, int );
 
     private:
         MtpMediaItem            *addTrackToView(MtpTrack *track, MtpMediaItem *item=0 );
@@ -182,9 +184,9 @@ class MtpMediaDevice : public MediaDevice
         void                    readAlbums( void );
         void                    playlistFromItem( MtpMediaItem *item);
         QByteArray              *getSupportedImage( QString path );
-        void                    sendAlbumArt( QPtrList<MediaItem> *items );
-        void                    updateAlbumArt( QPtrList<MediaItem> *items );
-        LIBMTP_album_t          *getOrCreateAlbum( QPtrList<MediaItem> *items );
+        void                    sendAlbumArt( Q3PtrList<MediaItem> *items );
+        void                    updateAlbumArt( Q3PtrList<MediaItem> *items );
+        LIBMTP_album_t          *getOrCreateAlbum( Q3PtrList<MediaItem> *items );
         LIBMTP_mtpdevice_t      *m_device;
         QMutex                  m_mutex;
         QMutex                  m_critical_mutex;
@@ -194,7 +196,7 @@ class MtpMediaDevice : public MediaDevice
         QLineEdit               *m_folderStructureBox;
         QLabel                  *m_folderLabel;
         QStringList             m_supportedFiles;
-        QPtrList<MediaItem>     *m_newTracks;
+        Q3PtrList<MediaItem>     *m_newTracks;
         QMap<int,QString>       mtpFileTypes;
         QMap<uint32_t,MtpTrack*> m_idToTrack;
         QMap<QString,MtpMediaItem*> m_fileNameToItem;

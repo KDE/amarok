@@ -4,14 +4,17 @@
 #include <qlayout.h>
 #include <qdatetime.h>
 #include <qlabel.h>
-#include <qgroupbox.h>
+#include <q3groupbox.h>
 #include <qradiobutton.h>
 #include <qlineedit.h>
 #include <qcombobox.h>
 #include <qcheckbox.h>
 #include <qspinbox.h>
 #include <qtooltip.h>
-#include <qwhatsthis.h>
+#include <q3whatsthis.h>
+//Added by qt3to4:
+#include <Q3HBoxLayout>
+#include <Q3VBoxLayout>
 
 #include <kglobal.h>
 #include <klineedit.h>
@@ -55,7 +58,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     setButtonTip(User2, i18n( "Remove last appended filter" ) );
     setButtonGuiItem( User2, user2Button );
 
-    m_mainLay = new QVBoxLayout( plainPage() );
+    m_mainLay = new Q3VBoxLayout( plainPage() );
     m_mainLay->activate();
 
     // no filter rule available
@@ -69,9 +72,9 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     m_mainLay->addItem( new QSpacerItem( 10, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
 
     // choosing keyword filtering
-    QHBoxLayout *keywordLayout = new QHBoxLayout( plainPage() );
+    Q3HBoxLayout *keywordLayout = new Q3HBoxLayout( plainPage() );
     QLabel *label3 = new QLabel( i18n("Attribute:"), plainPage(), "label3" );
-    QWhatsThis::add( label3,
+    Q3WhatsThis::add( label3,
       i18n("you can translate the keyword as you will do for the combobox",
            "<p>Here you can choose to <i>Simple Search</i> directly or to use "
            "some keywords to specify some attributes, such as the artist name "
@@ -174,22 +177,22 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     keywordLayout->addWidget( m_comboKeyword );
     keywordLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
     m_editKeyword = new KLineEdit( plainPage(), "editKeywordBox" );
-    QWhatsThis::add( m_editKeyword, i18n("<p>Type the attribute value or the text to look for here.</p>") );
+    Q3WhatsThis::add( m_editKeyword, i18n("<p>Type the attribute value or the text to look for here.</p>") );
     keywordLayout->addWidget( m_editKeyword );
     m_mainLay->addLayout( keywordLayout );
     m_mainLay->addItem( new QSpacerItem( 10, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
     connect(m_comboKeyword, SIGNAL(activated(int)), this, SLOT(selectedKeyword(int)));
 
     // group of options on numeric attribute keywords: a value <,>,= ... or a value between Min and Max
-    m_groupBox = new QGroupBox( plainPage(), "groupBox" );
+    m_groupBox = new Q3GroupBox( plainPage(), "groupBox" );
     m_groupBox->setTitle( i18n( "Attribute value is" ) );
     m_mainLay->addWidget( m_groupBox );
     m_mainLay->addItem( new QSpacerItem( 10, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
 
-    QVBoxLayout *vertLayout = new QVBoxLayout( m_groupBox, 15, 5 );
+    Q3VBoxLayout *vertLayout = new Q3VBoxLayout( m_groupBox, 15, 5 );
 
     // choose other keyword parameters: smaller than, greater than, equal to...
-    QHBoxLayout *paramLayout = new QHBoxLayout( vertLayout );
+    Q3HBoxLayout *paramLayout = new Q3HBoxLayout( vertLayout );
 
     m_comboCondition = new QComboBox( m_groupBox, "valuecondition");
     m_comboCondition->insertItem( i18n("smaller than") );
@@ -222,7 +225,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
 
     connect(m_spinMax1, SIGNAL(valueChanged(int)), this, SLOT(maxSpinChanged(int)));
 
-    QHBoxLayout *filesizeLayout = new QHBoxLayout( vertLayout );
+    Q3HBoxLayout *filesizeLayout = new Q3HBoxLayout( vertLayout );
     filesizeLayout->setAlignment( AlignLeft );
     m_filesizeLabel = new QLabel( i18n("Unit:"), m_groupBox, "filesizeLabel");
     filesizeLayout->addWidget( m_filesizeLabel );
@@ -242,16 +245,16 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
 
     connect( m_comboCondition, SIGNAL(activated(int)), SLOT(chooseCondition(int)) );
 
-    QHBoxLayout *otherOptionsLayout = new QHBoxLayout( plainPage() );
+    Q3HBoxLayout *otherOptionsLayout = new Q3HBoxLayout( plainPage() );
     otherOptionsLayout->setAlignment( AlignHCenter );
     m_mainLay->addLayout( otherOptionsLayout );
 
     // the groupbox to select the action filter
-    m_groupBox2 = new QGroupBox( plainPage(), "groupBox2" );
+    m_groupBox2 = new Q3GroupBox( plainPage(), "groupBox2" );
     m_groupBox2->setTitle( i18n( "Filter action" ) );
     otherOptionsLayout->addWidget( m_groupBox2 );
 
-    QVBoxLayout* ratioLay = new QVBoxLayout( m_groupBox2, 15, 0 );
+    Q3VBoxLayout* ratioLay = new Q3VBoxLayout( m_groupBox2, 15, 0 );
 
     m_checkALL = new QRadioButton( i18n("Match all words"), m_groupBox2, "checkall" );
     QToolTip::add( m_checkALL,
@@ -293,13 +296,13 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     // some vertical space
     otherOptionsLayout->addItem( new QSpacerItem( 50, 5, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
 
-    QVBoxLayout* verticalCondLay = new QVBoxLayout( otherOptionsLayout, 15, 0 );
+    Q3VBoxLayout* verticalCondLay = new Q3VBoxLayout( otherOptionsLayout, 15, 0 );
 
-    m_groupBox3 = new QGroupBox( plainPage(), "groupBox3" );
+    m_groupBox3 = new Q3GroupBox( plainPage(), "groupBox3" );
     m_groupBox3->setTitle( i18n( "Appending condition" ) );
     verticalCondLay->addWidget( m_groupBox3 );
 
-    QVBoxLayout* ratioLay2 = new QVBoxLayout( m_groupBox3, 15, 0 );
+    Q3VBoxLayout* ratioLay2 = new Q3VBoxLayout( m_groupBox3, 15, 0 );
 
     m_checkAND = new QRadioButton( i18n("AND logic condition", "AND"), m_groupBox3, "checkAND" );
     QToolTip::add( m_checkAND,
@@ -318,7 +321,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     m_prefixNOT = new QCheckBox( i18n("Invert condition"), plainPage(), "prefixNOT" );
     QToolTip::add( m_prefixNOT,
       i18n("Check this box to negate the defined filter condition"));
-    QWhatsThis::add( m_prefixNOT,
+    Q3WhatsThis::add( m_prefixNOT,
       i18n("<p>If this option is checked the defined filter condition will be negated."
            "This means that, for example, you can define a filter that looks for all "
            "tracks that are not of a specific album, artist, and so on.</p>"));

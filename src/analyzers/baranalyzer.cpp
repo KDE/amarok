@@ -15,6 +15,8 @@
 #include <cmath>     //log10(), etc.
 #include "debug.h"
 #include <qpainter.h>
+//Added by qt3to4:
+#include <QResizeEvent>
 
 
 BarAnalyzer::BarAnalyzer( QWidget *parent )

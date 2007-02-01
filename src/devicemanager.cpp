@@ -19,8 +19,10 @@
 #include "medium.h"
 #include "mediumpluginmanager.h"
 
-#include <qptrlist.h>
+#include <q3ptrlist.h>
 #include <qtimer.h>
+//Added by qt3to4:
+#include <Q3CString>
 
 #include <dcopclient.h>
 #include <dcopobject.h>
@@ -61,8 +63,8 @@ DeviceManager::DeviceManager()
             //run the DCOP query here because apparently if you don't run KDE as a DM the first call will fail
             //...go figure
             QByteArray data, replyData;
-            QCString replyType;
-            QDataStream arg(data, IO_WriteOnly);
+            Q3CString replyType;
+            QDataStream arg(data, QIODevice::WriteOnly);
             QStringList result;
             arg << 5;
             if (!m_dc->call("kded", "mediamanager", "fullList()", data, replyType, replyData, false, 5000))
@@ -171,8 +173,8 @@ DeviceManager::getDeviceStringList()
     int autodetect_insert = Medium::PROPERTIES_COUNT - 1;
 
     QByteArray data, replyData;
-    QCString replyType;
-    QDataStream arg(data, IO_WriteOnly);
+    Q3CString replyType;
+    QDataStream arg(data, QIODevice::WriteOnly);
     QStringList result;
     arg << 5;
     if (!m_dc->call("kded", "mediamanager", "fullList()", data, replyType, replyData))
@@ -181,7 +183,7 @@ DeviceManager::getDeviceStringList()
     }
     else
     {
-        QDataStream reply(replyData, IO_ReadOnly);
+        QDataStream reply(replyData, QIODevice::ReadOnly);
         while(!reply.atEnd())
         {
             reply >> result;
