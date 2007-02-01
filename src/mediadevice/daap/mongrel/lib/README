@@ -1,5 +1,5 @@
 The following Ruby libraries are included here, both licensed under the Ruby 
 License, which has a dual-licensed that includes the GPL.
-*Mongrel 0.3.14 pre-release http://mongrel.rubyforge.org/ - a web server library
+*Mongrel 1.0.1 http://mongrel.rubyforge.org/ - a web server library
 *RubyGems 0.9.0 http://www.rubygems.org/ - a Ruby package system needed by Mongrel
 

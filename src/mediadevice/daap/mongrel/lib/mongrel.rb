@@ -6,10 +6,18 @@
 
 $mongrel_debug_client = false
 
+require 'rubygems'
 require 'socket'
 require 'http11'
 require 'tempfile'
-require 'thread'
+begin
+  require 'fastthread'
+rescue RuntimeError => e
+  warn "fastthread not loaded: #{ e.message }"
+rescue LoadError
+ensure
+  require 'thread'
+end
 require 'stringio'
 require 'mongrel/cgi'
 require 'mongrel/handlers'
@@ -18,8 +26,8 @@ require 'mongrel/tcphack'
 require 'yaml'
 require 'mongrel/configurator'
 require 'time'
-require 'rubygems'
 require 'etc'
+require 'uri'
 
 
 # Mongrel module containing all of the classes (include C extensions) for running
@@ -46,6 +54,7 @@ module Mongrel
 
   # Used to stop the HttpServer via Thread.raise.
   class StopServer < Exception; end
+
 
   # Thrown at a thread when it is timed out.
   class TimeoutError < Exception; end
@@ -95,7 +104,6 @@ module Mongrel
   }
 
 
-
   # Frequently used constants when constructing requests or responses.  Many times
   # the constant just refers to a string with the same contents.  Using these constants
   # gave about a 3% to 10% performance improvement over using the strings directly.
@@ -117,9 +125,8 @@ module Mongrel
     REQUEST_URI='REQUEST_URI'.freeze
     REQUEST_PATH='REQUEST_PATH'.freeze
 
-    MONGREL_VERSION="0.3.13.4".freeze
+    MONGREL_VERSION="1.0.1".freeze
 
-    # TODO: this use of a base for tempfiles needs to be looked at for security problems
     MONGREL_TMP_BASE="mongrel".freeze
 
     # The standard empty 404 response for bad requests.  Use Error4040Handler for custom stuff.
@@ -158,12 +165,15 @@ module Mongrel
     HTTP_IF_MODIFIED_SINCE="HTTP_IF_MODIFIED_SINCE".freeze
     HTTP_IF_NONE_MATCH="HTTP_IF_NONE_MATCH".freeze
     REDIRECT = "HTTP/1.1 302 Found\r\nLocation: %s\r\nConnection: close\r\n\r\n".freeze
+    HOST = "HOST".freeze
   end
+
 
   # Basically a Hash with one extra parameter for the HTTP body, mostly used internally.
   class HttpParams < Hash
     attr_accessor :http_body
   end
+
 
   # When a handler is found for a registered URI then this class is constructed
   # and passed to your HttpHandler::process method.  You should assume that 
@@ -185,23 +195,24 @@ module Mongrel
     # You don't really call this.  It's made for you.
     # Main thing it does is hook up the params, and store any remaining
     # body data into the HttpRequest.body attribute.
-    #
-    # TODO: Implement tempfile removal when the request is done.
-    def initialize(params, socket, dispatcher)
+    def initialize(params, socket, dispatchers)
       @params = params
       @socket = socket
-      content_length = params[Const::CONTENT_LENGTH].to_i
-      remain = content_length - params.http_body.length
+      @dispatchers = dispatchers
+      content_length = @params[Const::CONTENT_LENGTH].to_i
+      remain = content_length - @params.http_body.length
       
-
-      dispatcher.request_begins(params) if dispatcher
+      # tell all dispatchers the request has begun
+      @dispatchers.each do |dispatcher|
+        dispatcher.request_begins(@params) 
+      end unless @dispatchers.nil? || @dispatchers.empty?
 
       # Some clients (like FF1.0) report 0 for body and then send a body.  This will probably truncate them but at least the request goes through usually.
       if remain <= 0
         # we've got everything, pack it up
         @body = StringIO.new
-        @body.write params.http_body
-        dispatcher.request_progress(params, 0, content_length) if dispatcher
+        @body.write @params.http_body
+        update_request_progress(0, content_length)
       elsif remain > 0
         # must read more data to complete body
         if remain > Const::MAX_BODY
@@ -213,32 +224,42 @@ module Mongrel
           @body = StringIO.new 
         end
 
-        @body.write params.http_body
-        read_body(remain, content_length, dispatcher)
+        @body.write @params.http_body
+        read_body(remain, content_length)
       end
 
-      @body.rewind if body
+      @body.rewind if @body
     end
 
+    # updates all dispatchers about our progress
+    def update_request_progress(clen, total)
+      return if @dispatchers.nil? || @dispatchers.empty?
+      @dispatchers.each do |dispatcher|
+        dispatcher.request_progress(@params, clen, total) 
+      end 
+    end
+    private :update_request_progress
 
     # Does the heavy lifting of properly reading the larger body requests in 
     # small chunks.  It expects @body to be an IO object, @socket to be valid,
     # and will set @body = nil if the request fails.  It also expects any initial
     # part of the body that has been read to be in the @body already.
-    def read_body(remain, total, dispatcher)
+    def read_body(remain, total)
       begin
         # write the odd sized chunk first
-        remain -= @body.write(@socket.read(remain % Const::CHUNK_SIZE))
-        dispatcher.request_progress(params, remain, total) if dispatcher
+        @params.http_body = read_socket(remain % Const::CHUNK_SIZE)
+
+        remain -= @body.write(@params.http_body)
+
+        update_request_progress(remain, total)
 
         # then stream out nothing but perfectly sized chunks
         until remain <= 0 or @socket.closed?
-          data = @socket.read(Const::CHUNK_SIZE)
-          # have to do it this way since @socket.eof? causes it to block
-          raise "Socket closed or read failure" if not data or data.length != Const::CHUNK_SIZE
-          remain -= @body.write(data)
           # ASSUME: we are writing to a disk and these writes always write the requested amount
-          dispatcher.request_progress(params, remain, total) if dispatcher
+          @params.http_body = read_socket(Const::CHUNK_SIZE)
+          remain -= @body.write(@params.http_body)
+
+          update_request_progress(remain, total)
         end
       rescue Object
         STDERR.puts "ERROR reading http body: #$!"
@@ -249,7 +270,21 @@ module Mongrel
         @body = nil # signals that there was a problem
       end
     end
-
+ 
+    def read_socket(len)
+      if !@socket.closed?
+        data = @socket.read(len)
+        if !data
+          raise "Socket read return nil"
+        elsif data.length != len
+          raise "Socket read returned insufficient data: #{data.length}"
+        else
+          data
+        end
+      else
+        raise "Socket already closed when reading."
+      end
+    end
 
     # Performs URI escaping so that you can construct proper
     # query strings faster.  Use this rather than the cgi.rb
@@ -301,16 +336,24 @@ module Mongrel
   # semantics for Hash (where doing an insert replaces) is not there.
   class HeaderOut
     attr_reader :out
+    attr_accessor :allowed_duplicates
 
     def initialize(out)
+      @sent = {}
+      @allowed_duplicates = {"Set-Cookie" => true, "Set-Cookie2" => true,
+        "Warning" => true, "WWW-Authenticate" => true}
       @out = out
     end
 
     # Simply writes "#{key}: #{value}" to an output buffer.
     def[]=(key,value)
-      @out.write(Const::HEADER_FORMAT % [key, value])
+      if not @sent.has_key?(key) or @allowed_duplicates.has_key?(key)
+        @sent[key] = true
+        @out.write(Const::HEADER_FORMAT % [key, value])
+      end
     end
   end
+
 
   # Writes and controls your response to the client using the HTTP/1.1 specification.
   # You use it by simply doing:
@@ -386,8 +429,9 @@ module Mongrel
       elsif @header_sent
         raise "You have already sent the request headers."
       else
-        @header.out.rewind
-        @body.rewind
+        @header.out.truncate(0)
+        @body.close
+        @body = StringIO.new
       end
     end
 
@@ -419,18 +463,21 @@ module Mongrel
     # reading and written in chunks to the socket.
     #
     # Sendfile API support has been removed in 0.3.13.4 due to stability problems.
-    def send_file(path)
-      File.open(path, "rb") do |f|
-        while chunk = f.read(Const::CHUNK_SIZE) and chunk.length > 0
-          begin
-            write(chunk)
-          rescue Object => exc
-            # TODO: find out if people care about failures to write these files
-            break
+    def send_file(path, small_file = false)
+      if small_file
+        File.open(path, "rb") {|f| @socket << f.read }
+      else
+        File.open(path, "rb") do |f|
+          while chunk = f.read(Const::CHUNK_SIZE) and chunk.length > 0
+            begin
+              write(chunk)
+            rescue Object => exc
+              break
+            end
           end
         end
-        @body_sent = true
       end
+      @body_sent = true
     end
 
     def socket_error(details)
@@ -467,6 +514,7 @@ module Mongrel
     end
 
   end
+
 
   # This is the main driver of Mongrel, while the Mongrel::HttpParser and Mongrel::URIClassifier
   # make up the majority of how the server functions.  It's a very simple class that just
@@ -508,8 +556,6 @@ module Mongrel
     # The timeout parameter is a sleep timeout (in hundredths of a second) that is placed between 
     # socket.accept calls in order to give the server a cheap throttle time.  It defaults to 0 and
     # actually if it is 0 then the sleep is not done at all.
-    #
-    # TODO: Find out if anyone actually uses the timeout option since it seems to cause problems on FBSD.
     def initialize(host, port, num_processors=(2**30-1), timeout=0)
       @socket = TCPServer.new(host, port) 
       @classifier = URIClassifier.new
@@ -520,7 +566,6 @@ module Mongrel
       @num_processors = num_processors
       @death_time = 60
     end
-
 
     # Does the majority of the IO processing.  It has been written in Ruby using
     # about 7 different IO processing strategies and no matter how it's done 
@@ -543,15 +588,24 @@ module Mongrel
           nparsed = parser.execute(params, data, nparsed)
 
           if parser.finished?
+            if not params[Const::REQUEST_PATH]
+              # it might be a dumbass full host request header
+              uri = URI.parse(params[Const::REQUEST_URI])
+              params[Const::REQUEST_PATH] = uri.request_uri
+            end
+
+            raise "No REQUEST PATH" if not params[Const::REQUEST_PATH]
+
             script_name, path_info, handlers = @classifier.resolve(params[Const::REQUEST_PATH])
 
             if handlers
               params[Const::PATH_INFO] = path_info
               params[Const::SCRIPT_NAME] = script_name
               params[Const::REMOTE_ADDR] = params[Const::HTTP_X_FORWARDED_FOR] || client.peeraddr.last
-              notifier = handlers[0].request_notify ? handlers[0] : nil
 
-              request = HttpRequest.new(params, client, notifier)
+              # select handlers that want more detailed request notification
+              notifiers = handlers.select { |h| h.request_notify }
+              request = HttpRequest.new(params, client, notifiers)
 
               # in the case of large file uploads the user could close the socket, so skip those requests
               break if request.body == nil  # nil signals from HttpRequest::initialize that the request was aborted
@@ -587,7 +641,7 @@ module Mongrel
           end
         end
       rescue EOFError,Errno::ECONNRESET,Errno::EPIPE,Errno::EINVAL,Errno::EBADF
-        # ignored
+        client.close rescue Object
       rescue HttpParserError
         if $mongrel_debug_client
           STDERR.puts "#{Time.now}: BAD CLIENT (#{params[Const::HTTP_X_FORWARDED_FOR] || client.peeraddr.last}): #$!"
@@ -595,8 +649,8 @@ module Mongrel
         end
       rescue Errno::EMFILE
         reap_dead_workers('too many files')
-      rescue Object => e
-        STDERR.puts "#{Time.now}: ERROR: #$! #{e.backtrace.join(' ')}"
+      rescue Object
+        STDERR.puts "#{Time.now}: ERROR: #$!"
         STDERR.puts $!.backtrace.join("\n") if $mongrel_debug_client
       ensure
         client.close rescue Object
@@ -638,10 +692,17 @@ module Mongrel
     end
 
     def configure_socket_options
-      if /linux/ === RUBY_PLATFORM
+      case RUBY_PLATFORM
+      when /linux/
         # 9 is currently TCP_DEFER_ACCEPT
-        $tcp_defer_accept_opts = [9,1]
-        $tcp_cork_opts = [3,1]
+        $tcp_defer_accept_opts = [Socket::SOL_TCP, 9, 1]
+        $tcp_cork_opts = [Socket::SOL_TCP, 3, 1]
+      when /freebsd/
+        # Use the HTTP accept filter if available.
+        # The struct made by pack() is defined in /usr/include/sys/socket.h as accept_filter_arg
+        unless `/sbin/sysctl -nq net.inet.accf.http`.empty?
+          $tcp_defer_accept_opts = [Socket::SOL_SOCKET, Socket::SO_ACCEPTFILTER, ['httpready', nil].pack('a16a240')]
+        end
       end
     end
 
@@ -652,13 +713,18 @@ module Mongrel
 
       configure_socket_options
 
-      @socket.setsockopt(Socket::SOL_TCP, $tcp_defer_accept_opts[0], $tcp_defer_accept_opts[1]) if $tcp_defer_accept_opts
+      if $tcp_defer_accept_opts
+        @socket.setsockopt(*$tcp_defer_accept_opts) rescue nil
+      end
 
       @acceptor = Thread.new do
         while true
           begin
             client = @socket.accept
-            client.setsockopt(Socket::SOL_TCP, $tcp_cork_opts[0], $tcp_cork_opts[1]) if $tcp_cork_opts
+
+            if $tcp_cork_opts
+              client.setsockopt(*$tcp_cork_opts) rescue nil
+            end
 
             worker_list = @workers.list
 
@@ -667,8 +733,7 @@ module Mongrel
               client.close rescue Object
               reap_dead_workers("max processors")
             else
-              thread = Thread.new { process_client(client) }
-              thread.abort_on_exception = true
+              thread = Thread.new(client) {|c| process_client(c) }
               thread[:started_on] = Time.now
               @workers.add(thread)
 
@@ -688,13 +753,11 @@ module Mongrel
             STDERR.puts $!.backtrace.join("\n") if $mongrel_debug_client
           end
         end
-
         graceful_shutdown
       end
 
       return @acceptor
     end
-
 
     # Simply registers a handler with the internal URIClassifier.  When the URI is
     # found in the prefix of a request then your handler's HttpHandler::process method

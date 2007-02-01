@@ -8,6 +8,7 @@ amarokmongrel_DATA = \
     debug.rb \
     handlers.rb \
     init.rb \
+    mime_types.yml \
     stats.rb\
     tcphack.rb
 

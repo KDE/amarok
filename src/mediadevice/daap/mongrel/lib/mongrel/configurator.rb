@@ -70,6 +70,10 @@ module Mongrel
       end
     end
 
+    def remove_pid_file
+      File.unlink(@pid_file) if @pid_file and File.exists?(@pid_file)
+    end
+
     # Writes the PID file but only if we're on windows.
     def write_pid_file
       if RUBY_PLATFORM !~ /mswin/
@@ -248,7 +252,7 @@ module Mongrel
       GemPlugin::Manager.instance.create(name, ops)
     end
 
-    # Let's you do redirects easily as described in Mongrel::RedirectHandler.
+    # Lets you do redirects easily as described in Mongrel::RedirectHandler.
     # You use it inside the configurator like this:
     #
     #   redirect("/test", "/to/there") # simple
@@ -302,17 +306,17 @@ module Mongrel
     #   debug "/", what = [:rails]
     # 
     # And it will only produce the log/mongrel_debug/rails.log file.
-    # Available options are:  :objects, :rails, :files, :threads, :params
+    # Available options are: :access, :files, :objects, :threads, :rails 
     # 
     # NOTE: Use [:files] to get accesses dumped to stderr like with WEBrick.
-    def debug(location, what = [:objects, :rails, :files, :threads, :params])
+    def debug(location, what = [:access, :files, :objects, :threads, :rails])
       require 'mongrel/debug'
       handlers = {
-        :files => "/handlers/requestlog::access", 
-        :rails => "/handlers/requestlog::files", 
+        :access => "/handlers/requestlog::access", 
+        :files => "/handlers/requestlog::files", 
         :objects => "/handlers/requestlog::objects", 
         :threads => "/handlers/requestlog::threads",
-        :params => "/handlers/requestlog::params"
+        :rails => "/handlers/requestlog::params"
       }
 
       # turn on the debugging infrastructure, and ObjectTracker is a pig
@@ -350,7 +354,7 @@ module Mongrel
       trap("INT") { log "INT signal received."; stop(false) }
 
       # clean up the pid file always
-      at_exit { File.unlink(@pid_file) if @pid_file and File.exists?(@pid_file) }
+      at_exit { remove_pid_file }
 
       if RUBY_PLATFORM !~ /mswin/
         # graceful shutdown

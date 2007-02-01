@@ -6,6 +6,7 @@
 
 require 'mongrel/stats'
 require 'zlib'
+require 'yaml'
 
 
 module Mongrel
@@ -23,16 +24,16 @@ module Mongrel
     attr_reader :request_notify
     attr_accessor :listener
 
-    # This will be called by Mongrel on the *first* (index 0) handler *if* it has
-    # HttpHandler.request_notify set to *true*.  You only get the parameters 
-    # for the request, with the idea that you'd "bound" the beginning of the
-    # request processing and the first call to process.
+    # This will be called by Mongrel if HttpHandler.request_notify set to *true*.
+    # You only get the parameters for the request, with the idea that you'd "bound"
+    # the beginning of the request processing and the first call to process.
     def request_begins(params)
     end
 
     # Called by Mongrel for each IO chunk that is received on the request socket
     # from the client, allowing you to track the progress of the IO and monitor
-    # the input.
+    # the input.  This will be called by Mongrel only if HttpHandler.request_notify
+    # set to *true*.
     def request_progress(params, clen, total)
     end
 
@@ -101,22 +102,11 @@ module Mongrel
   # can change it anything you want using the DirHandler.default_content_type
   # attribute.
   class DirHandler < HttpHandler
-    attr_reader :default_content_type
-    attr_writer :default_content_type
+    attr_accessor :default_content_type
     attr_reader :path
 
-    MIME_TYPES = {
-      ".css"        =>  "text/css",
-      ".gif"        =>  "image/gif",
-      ".htm"        =>  "text/html",
-      ".html"       =>  "text/html",
-      ".jpeg"       =>  "image/jpeg",
-      ".jpg"        =>  "image/jpeg",
-      ".js"         =>  "text/javascript",
-      ".png"        =>  "image/png",
-      ".swf"        =>  "application/x-shockwave-flash",
-      ".txt"        =>  "text/plain"
-    }
+    MIME_TYPES_FILE = "mime_types.yml"
+    MIME_TYPES = YAML.load_file(File.join(File.dirname(__FILE__), MIME_TYPES_FILE))
 
     ONLY_HEAD_GET="Only HEAD and GET allowed.".freeze
 
@@ -125,12 +115,11 @@ module Mongrel
       @path = File.expand_path(path)
       @listing_allowed=listing_allowed
       @index_html = index_html
-      @default_content_type = "text/plain; charset=ISO-8859-1".freeze
+      @default_content_type = "application/octet-stream".freeze
     end
 
     # Checks if the given path can be served and returns the full path (or nil if not).
     def can_serve(path_info)
-      # TODO: investigate freezing the path_info to prevent double escaping
       req_path = File.expand_path(File.join(@path,HttpRequest.unescape(path_info)), @path)
 
       if req_path.index(@path) == 0 and File.exist? req_path
@@ -227,6 +216,8 @@ module Mongrel
         dot_at = req_path.rindex('.')
         if dot_at
           header[Const::CONTENT_TYPE] = MIME_TYPES[req_path[dot_at .. -1]] || @default_content_type
+        else
+          header[Const::CONTENT_TYPE] = @default_content_type
         end
 
         # send a status with out content length
@@ -234,7 +225,7 @@ module Mongrel
         response.send_header
 
         if not header_only
-          response.send_file(req_path)
+          response.send_file(req_path, stat.size < Const::CHUNK_SIZE * 2)
         end
       end
     end
@@ -282,6 +273,7 @@ module Mongrel
   # Valid option is :always_deflate => false which tells the handler to
   # deflate everything even if the client can't handle it.
   class DeflateFilter < HttpHandler
+    include Zlib
     HTTP_ACCEPT_ENCODING = "HTTP_ACCEPT_ENCODING" 
 
     def initialize(ops={})
@@ -294,14 +286,25 @@ module Mongrel
       # only process if they support compression
       if @always_deflate or (accepts and (accepts.include? "deflate" and not response.body_sent))
         response.header["Content-Encoding"] = "deflate"
-        # we can't just rewind the body and gzip it since the body could be an attached file
-        response.body.rewind
-        gzout = StringIO.new(Zlib::Deflate.deflate(response.body.read))
-        gzout.rewind
-        response.body.close
-        response.body = gzout
+        response.body = deflate(response.body)
       end
     end
+
+    private
+      def deflate(stream)
+        deflater = Deflate.new(
+          DEFAULT_COMPRESSION,
+          # drop the zlib header which causes both Safari and IE to choke
+          -MAX_WBITS, 
+          DEF_MEM_LEVEL,
+          DEFAULT_STRATEGY)
+
+        stream.rewind
+        gzout = StringIO.new(deflater.deflate(stream.read, FINISH))
+        stream.close
+        gzout.rewind
+        gzout
+      end
   end
 
 
@@ -324,11 +327,11 @@ module Mongrel
     def initialize(ops={})
       @sample_rate = ops[:sample_rate] || 300
 
-      @processors = Stats.new("processors")
-      @reqsize = Stats.new("request Kb")
-      @headcount = Stats.new("req param count")
-      @respsize = Stats.new("response Kb")
-      @interreq = Stats.new("inter-request time")
+      @processors = Mongrel::Stats.new("processors")
+      @reqsize = Mongrel::Stats.new("request Kb")
+      @headcount = Mongrel::Stats.new("req param count")
+      @respsize = Mongrel::Stats.new("response Kb")
+      @interreq = Mongrel::Stats.new("inter-request time")
     end
 
 

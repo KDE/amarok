@@ -166,7 +166,7 @@ class DatabaseServlet < Mongrel::HttpHandler
                       @music[id] = url
                   else
                       url[0] = ''
-                      @music[id] = "#{indexes[3][:indexed][ device_id ]}/#{url}"
+                      @music[id] = "#{indexes.last[:indexed][ device_id ]}/#{url}"
                   end
                   track << Element.new( 'miid', id )
                   track << Element.new( 'asfm', File::extname( url ).reverse.chop.reverse )
