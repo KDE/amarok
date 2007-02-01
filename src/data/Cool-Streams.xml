@@ -70,7 +70,7 @@
   <url>http://somafm.com/secretagent.pls</url>
  </stream>
  <stream name="SLAY Radio [C64 Remixes]">
-  <url>http://relay.slayradio.org:8000/listen.pls</url>
+  <url>http://sc.slayradio.org:8000/listen.pls</url>
  </stream>
  <stream name="Virgin Radio [Rock/Pop]">
   <url>http://www.smgradio.com/core/audio/mp3/live.pls?service=vrbb</url>
