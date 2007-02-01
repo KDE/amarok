@@ -48,6 +48,7 @@ VERSION 1.4.5
       you move and rename them.
 
   CHANGES:
+    * Added configure option to build without DAAP support.
     * Album covers are now downloaded and added to album directory when 
       purchasing from the Magnatune.com store. (BR 136680)
     * Update context browser when a change in the collection has been detected.
