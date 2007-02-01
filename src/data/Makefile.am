@@ -11,5 +11,4 @@ amarokdata_DATA = \
     grid.png \
     wirl1.png \
     wirl2.png \
-    magnatune_start_page.html \
     magnatune_logo.png
