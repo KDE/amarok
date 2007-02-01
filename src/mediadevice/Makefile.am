@@ -16,9 +16,13 @@ endif
 
 if with_libkarma
     KARMA_SUBDIR = riokarma
-endif    
+endif
+
+if with_daap
+    DAAP_SUBDIR = daap
+endif
 
 METASOURCES = AUTO
 
-SUBDIRS = generic daap $(IPOD_SUBDIR) $(IFP_SUBDIR) $(NJB_SUBDIR) $(MTP_SUBDIR) $(KARMA_SUBDIR)
+SUBDIRS = generic $(DAAP_SUBDIR) $(IPOD_SUBDIR) $(IFP_SUBDIR) $(NJB_SUBDIR) $(MTP_SUBDIR) $(KARMA_SUBDIR)
 

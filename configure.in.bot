@@ -246,6 +246,10 @@ else
         echo " =   - Rio Karma Support"
     fi
 
+    if test x$have_daap != xyes; then
+        echo " =   - DAAP Music Sharing Support"
+    fi
+    
     echo " ="
     echo " = The following extra functionality will be included:"
 
@@ -322,6 +326,10 @@ else
         echo " =   + Rio Karma Support"
     fi
 
+    if test x$have_daap = xyes; then
+        echo " =   + DAAP Music Sharing Support"
+    fi
+    
    echo " ="
 fi
 
