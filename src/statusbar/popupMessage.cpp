@@ -23,7 +23,7 @@
 #include "popupMessage.h"
 #include "debug.h"
 
-#include <kactivelabel.h>
+#include <k3activelabel.h>
 #include <kpushbutton.h>
 #include <kstdguiitem.h>
 
@@ -65,7 +65,7 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
 
     Q3HBoxLayout *hbox;
     QLabel *label;
-    KActiveLabel *alabel;
+    K3ActiveLabel *alabel;
 
     m_layout = new Q3VBoxLayout( this, 9 /*margin*/, 6 /*spacing*/ );
 
@@ -79,7 +79,7 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
     label = new QLabel( this, "image" );
     hbox->add( label );
 
-    alabel = new KActiveLabel( this, "label" );
+    alabel = new K3ActiveLabel( this, "label" );
     alabel->setTextFormat( Qt::RichText );
     alabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
     alabel->setPalette( p );
@@ -89,7 +89,7 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
     hbox = new Q3HBoxLayout( m_layout );
 
     hbox->addItem( new QSpacerItem( 4, 4, QSizePolicy::Expanding, QSizePolicy::Preferred ) );
-    hbox->add( new KPushButton( KStdGuiItem::close(), this, "closeButton" ) );
+    hbox->add( new KPushButton( KStandardGuiItem::close(), this, "closeButton" ) );
 
     connect( child( "closeButton" ), SIGNAL(clicked()), SLOT(close()) );
 }
@@ -115,7 +115,7 @@ void PopupMessage::setShowCounter( const bool show )
 
 void PopupMessage::setText( const QString &text )
 {
-    static_cast<KActiveLabel*>(child( "label" ))->setText( text );
+    static_cast<K3ActiveLabel*>(child( "label" ))->setText( text );
     adjustSize();
 }
 

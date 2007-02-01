@@ -37,10 +37,10 @@ DeviceConfigureDialog::DeviceConfigureDialog( const Medium &medium )
 {
     m_medium = new Medium( medium );
     kapp->setTopWidget( this );
-    setCaption( kapp->makeStdCaption( i18n( "Configure Media Device" ) ) );
+    setCaption( KInstance::makeStandardCaption( i18n( "Configure Media Device" ) ) );
     showButtonApply( false );
 
-    Q3VBox* vbox = makeVBoxMainWidget();
+    KVBox* vbox = makeVBoxMainWidget();
     vbox->setSpacing( KDialog::spacingHint() );
 
     QLabel *connectLabel = 0;

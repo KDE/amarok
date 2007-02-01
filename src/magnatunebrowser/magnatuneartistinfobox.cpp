@@ -34,7 +34,7 @@ MagnatuneArtistInfoBox::~MagnatuneArtistInfoBox()
 {}
 
 bool 
-MagnatuneArtistInfoBox::displayArtistInfo( KURL url )
+MagnatuneArtistInfoBox::displayArtistInfo( KUrl url )
 {
     debug() << "displayArtistInfo started" << endl;
 

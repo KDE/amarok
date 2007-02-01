@@ -39,7 +39,7 @@
 #include <gst/gst.h>
 
 class QTimerEvent;
-class KURL;
+class KUrl;
 
 /**
  * @class GstEngine
@@ -62,14 +62,14 @@ class GstEngine : public Engine::Base
 
         bool init();
 
-        bool canDecode( const KURL &url ) const;
+        bool canDecode( const KUrl &url ) const;
         uint position() const;
         uint length() const;
         Engine::State state() const;
         const Engine::Scope& scope();
 
-        virtual bool metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b);
-        virtual bool getAudioCDContents(const QString &device, KURL::List &urls);
+        virtual bool metaDataForUrl(const KUrl &url, Engine::SimpleMetaBundle &b);
+        virtual bool getAudioCDContents(const QString &device, KUrl::List &urls);
 
         Amarok::PluginConfig* configure() const;
 
@@ -77,7 +77,7 @@ class GstEngine : public Engine::Base
         void gstMetaData( Engine::SimpleMetaBundle &bundle ) { emit metaData( bundle ); }
 
     public slots:
-        bool load( const KURL&, bool stream );
+        bool load( const KUrl&, bool stream );
         bool play( uint offset );
         void stop();
         void pause();

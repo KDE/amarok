@@ -22,7 +22,7 @@ class HTMLView : public KHTMLPart
        ~HTMLView();
 
         static QString loadStyleSheet();
-        static void    openURLRequest(const KURL &url );
+        static void    openURLRequest(const KUrl &url );
         void   set( const QString& data );
         static void paletteChange();
 

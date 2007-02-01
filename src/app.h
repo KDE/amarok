@@ -92,7 +92,7 @@ class LIBAMAROK_EXPORT App : public KApplication, public EngineObserver
         void setUseScores( bool use );
         void setUseRatings( bool use );
         void setMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic );
-        KIO::Job *trashFiles( const KURL::List &files );
+        KIO::Job *trashFiles( const KUrl::List &files );
         void quit();
 
     private slots:

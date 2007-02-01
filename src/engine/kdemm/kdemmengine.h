@@ -30,7 +30,7 @@ what                 : interface to KDE Multimedia (KDEMM)
 
 
 class QTimer;
-class KURL;
+class KUrl;
 
 namespace KDE { namespace Multimedia { class SimplePlayer; } }
 
@@ -45,7 +45,7 @@ class KDEMMEngine : public Engine::Base
         bool init();
 
         bool initMixer( bool hardware );
-        bool canDecode( const KURL& ) const;
+        bool canDecode( const KUrl& ) const;
         uint position() const;
         Engine::State state() const {return m_state;}
 //        std::vector<float>* scope();
@@ -54,7 +54,7 @@ class KDEMMEngine : public Engine::Base
         bool supportsXFade() const     { return false; }
 
     public slots:
-        bool load( const KURL&, bool stream );
+        bool load( const KUrl&, bool stream );
         bool play( unsigned int offset = 0);
         void stop();
         void pause();
@@ -73,7 +73,7 @@ class KDEMMEngine : public Engine::Base
         //bool m_xfadeFadeout;
         //float m_xfadeValue;
         //QString m_xfadeCurrent;
-        KURL m_url;
+        KUrl m_url;
 	KDE::Multimedia::SimplePlayer *m_player;
 
 	QTimer* m_pPlayingTimer;

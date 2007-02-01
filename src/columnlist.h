@@ -25,7 +25,7 @@
 #include <Q3ValueList>
 #include <kdialogbase.h>
 
-class KListView;
+class K3ListView;
 class KPushButton;
 template<class T> class Q3ValueList;
 
@@ -50,7 +50,7 @@ private slots:
 
 private:
     friend class MyCheckListItem;
-    KListView *m_list;
+    K3ListView *m_list;
     KPushButton *m_up, *m_down;
     bool m_changed;
 };

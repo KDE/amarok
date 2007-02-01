@@ -18,9 +18,9 @@ namespace aKode { class Player; }
 class AkodeEngine : public Engine::Base
 {
     virtual bool init();
-    virtual bool canDecode( const KURL& ) const;
+    virtual bool canDecode( const KUrl& ) const;
     virtual uint position() const;
-    virtual bool load( const KURL&, bool );
+    virtual bool load( const KUrl&, bool );
     virtual bool play( uint );
     virtual void stop();
     virtual void pause();

@@ -17,7 +17,7 @@
 #include "playlistitem.h"
 
 #include <kdialogbase.h>    //baseclass
-#include <klistview.h>      //baseclass
+#include <k3listview.h>      //baseclass
 
 #include <qmap.h>
 //Added by qt3to4:
@@ -30,18 +30,18 @@
 
 class KPushButton;
 
-class QueueItem : public KListViewItem
+class QueueItem : public K3ListViewItem
 {
     public:
         QueueItem( Q3ListView *parent, Q3ListViewItem *after, QString t )
-            : KListViewItem( parent, after, t )
+            : K3ListViewItem( parent, after, t )
         { };
 
         void paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align );
 
 };
 
-class QueueList : public KListView
+class QueueList : public K3ListView
 {
         Q_OBJECT
 

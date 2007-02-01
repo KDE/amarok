@@ -81,14 +81,14 @@ public:
   { return m_state; }
   
   // Where are we storing the .mood file?
-  static QString moodFilename( const KURL &url );
-  static QString moodFilename( const KURL &url, bool withMusic );
+  static QString moodFilename( const KUrl &url );
+  static QString moodFilename( const KUrl &url, bool withMusic );
   static bool copyFile( const QString &srcPath, const QString &dstPath );
 
   static bool executableExists( void );
   
 public slots:
-  void slotJobEvent( KURL url, int newState );
+  void slotJobEvent( KUrl url, int newState );
   
 signals:
   void jobEvent( int newState );
@@ -103,7 +103,7 @@ private:
   MetaBundle    *m_bundle;      // Parent bundle
   ColorList      m_data;        // .mood file contents
   QPixmap        m_pixmap;      // Cached from the last time draw() was called
-  KURL           m_url;         // Keep a copy of this, mainly for dtor
+  KUrl           m_url;         // Keep a copy of this, mainly for dtor
   mutable QMutex m_mutex;       // Locks the whole object
   int            m_hueSort;     // For PlaylistItem sorting
   State          m_state;
@@ -121,13 +121,13 @@ public:
   static MoodServer *instance( void );
   
   bool queueJob( MetaBundle *bundle );
-  void deQueueJob( KURL url );
+  void deQueueJob( KUrl url );
 
   bool moodbarBroken( void ) const
   { return m_moodbarBroken; }
 
 signals:
-  void jobEvent( KURL url, int newState );
+  void jobEvent( KUrl url, int newState );
   
 private slots:
   void slotJobCompleted( KProcess *proc );
@@ -144,13 +144,13 @@ private:
   class ProcData
   {
   public:
-    ProcData( KURL url, QString infile, QString outfile )
+    ProcData( KUrl url, QString infile, QString outfile )
       : m_url( url ), m_infile( infile ), m_outfile( outfile )
       , m_refcount( 1 )
     {}
     ProcData( void ) {}
 
-    KURL    m_url;
+    KUrl    m_url;
     QString m_infile;
     QString m_outfile; 
     // Keep track of how many Moodbars are waiting on this URL

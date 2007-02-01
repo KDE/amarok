@@ -60,7 +60,7 @@ using namespace KNetwork;
              *                      socket: Sets up proxy server and writes the data to the proxy.
              *                              (This mode is only needed by aRts-engine.)
              */
-            StreamProvider( KURL url, const QString& streamingMode, GstEngine &engine );
+            StreamProvider( KUrl url, const QString& streamingMode, GstEngine &engine );
             ~StreamProvider();
 
             /** Returns true if initialisation was successful */
@@ -102,7 +102,7 @@ using namespace KNetwork;
             QString extractStr( const QString &str, const QString &key ) const;
 
         //ATTRIBUTES:
-            KURL m_url;
+            KUrl m_url;
             QString m_streamingMode;
             bool m_initSuccess;
             bool m_connectSuccess;

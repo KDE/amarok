@@ -57,16 +57,16 @@ XSPFPlaylist::annotation()
     return documentElement().namedItem( "annotation" ).firstChild().nodeValue();
 }
 
-KURL
+KUrl
 XSPFPlaylist::info()
 {
-    return KURL::fromPathOrURL( documentElement().namedItem( "info" ).firstChild().nodeValue() );
+    return KUrl::fromPathOrUrl( documentElement().namedItem( "info" ).firstChild().nodeValue() );
 }
 
-KURL
+KUrl
 XSPFPlaylist::location()
 {
-    return KURL::fromPathOrURL( documentElement().namedItem( "location" ).firstChild().nodeValue() );
+    return KUrl::fromPathOrUrl( documentElement().namedItem( "location" ).firstChild().nodeValue() );
 }
 
 QString
@@ -75,10 +75,10 @@ XSPFPlaylist::identifier()
     return documentElement().namedItem( "identifier" ).firstChild().nodeValue();
 }
 
-KURL
+KUrl
 XSPFPlaylist::image()
 {
-    return KURL::fromPathOrURL( documentElement().namedItem( "image" ).firstChild().nodeValue() );
+    return KUrl::fromPathOrUrl( documentElement().namedItem( "image" ).firstChild().nodeValue() );
 }
 
 QDateTime
@@ -87,17 +87,17 @@ XSPFPlaylist::date()
     return QDateTime::fromString( documentElement().namedItem( "date" ).firstChild().nodeValue(), Qt::ISODate );
 }
 
-KURL
+KUrl
 XSPFPlaylist::license()
 {
-    return KURL::fromPathOrURL( documentElement().namedItem( "license" ).firstChild().nodeValue() );
+    return KUrl::fromPathOrUrl( documentElement().namedItem( "license" ).firstChild().nodeValue() );
 }
 
-KURL::List
+KUrl::List
 XSPFPlaylist::attribution()
 {
     QDomNode node = documentElement().namedItem( "attribution" );
-    KURL::List list;
+    KUrl::List list;
 
     while ( !node.isNull() )
     {
@@ -112,10 +112,10 @@ XSPFPlaylist::attribution()
     return list;
 }
 
-KURL
+KUrl
 XSPFPlaylist::link()
 {
-    return KURL::fromPathOrURL( documentElement().namedItem( "link" ).firstChild().nodeValue() );
+    return KUrl::fromPathOrUrl( documentElement().namedItem( "link" ).firstChild().nodeValue() );
 }
 
 void
@@ -161,7 +161,7 @@ XSPFPlaylist::setAnnotation( QString annotation )
 }
 
 void
-XSPFPlaylist::setInfo( KURL info )
+XSPFPlaylist::setInfo( KUrl info )
 {
     if ( documentElement().namedItem( "info" ).isNull() )
     {
@@ -175,7 +175,7 @@ XSPFPlaylist::setInfo( KURL info )
 }
 
 void
-XSPFPlaylist::setLocation( KURL location )
+XSPFPlaylist::setLocation( KUrl location )
 {
     if ( documentElement().namedItem( "location" ).isNull() )
     {
@@ -203,7 +203,7 @@ XSPFPlaylist::setIdentifier( QString identifier )
 }
 
 void
-XSPFPlaylist::setImage( KURL image )
+XSPFPlaylist::setImage( KUrl image )
 {
     if ( documentElement().namedItem( "image" ).isNull() )
     {
@@ -234,7 +234,7 @@ XSPFPlaylist::setDate( QDateTime date )
 }
 
 void
-XSPFPlaylist::setLicense( KURL license )
+XSPFPlaylist::setLicense( KUrl license )
 {
     if ( documentElement().namedItem( "license" ).isNull() )
     {
@@ -248,7 +248,7 @@ XSPFPlaylist::setLicense( KURL license )
 }
 
 void
-XSPFPlaylist::setAttribution( KURL attribution, bool append )
+XSPFPlaylist::setAttribution( KUrl attribution, bool append )
 {
     if ( documentElement().namedItem( "attribution" ).isNull() )
         documentElement().insertBefore( createElement( "attribution" ), documentElement().namedItem( "trackList" ) );
@@ -272,7 +272,7 @@ XSPFPlaylist::setAttribution( KURL attribution, bool append )
 }
 
 void
-XSPFPlaylist::setLink( KURL link )
+XSPFPlaylist::setLink( KUrl link )
 {
     if ( documentElement().namedItem( "link" ).isNull() )
     {

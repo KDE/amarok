@@ -231,7 +231,7 @@ NjbPlaylist::update( void)
         {
             const char* error;
             while ((error = NJB_Error_Geterror(NjbMediaDevice::theNjb())))
-                kdError( 7182) << __func__ << ": " << error << endl;
+                kError( 7182) << __func__ << ": " << error << endl;
         }
         else
             debug() << __func__ << ": No reason for failure reported.\n";

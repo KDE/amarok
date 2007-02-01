@@ -110,7 +110,7 @@ bool MasEngine::init()
 // PUBLIC METHODS
 ////////////////////////////////////////////////////////////////////////////////
 
-bool MasEngine::canDecode( const KURL &url ) const
+bool MasEngine::canDecode( const KUrl &url ) const
 {
     DEBUG_BLOCK
 
@@ -137,7 +137,7 @@ bool MasEngine::canDecode( const KURL &url ) const
 }  // canDecode
 
 
-bool MasEngine::load( const KURL& url, bool stream )
+bool MasEngine::load( const KUrl& url, bool stream )
 {
     DEBUG_BLOCK
     struct mas_package pkg;

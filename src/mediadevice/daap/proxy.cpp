@@ -31,7 +31,7 @@ using namespace Daap;
                         << m_loginString ) );
 
 */
-Proxy::Proxy(KURL stream, DaapClient* client, const char* name)
+Proxy::Proxy(KUrl stream, DaapClient* client, const char* name)
     : QObject(client, name)
     , m_proxy( new Amarok::ProcIO() )
 {
@@ -41,7 +41,7 @@ Proxy::Proxy(KURL stream, DaapClient* client, const char* name)
     const int revisionId = client->incRevision( hostKey );
     const int sessionId = client->getSession( hostKey );
     //compose URL
-    KURL realStream = realStreamUrl( stream, sessionId );
+    KUrl realStream = realStreamUrl( stream, sessionId );
 
     //get hash
     char hash[33] = {0};
@@ -56,7 +56,7 @@ Proxy::Proxy(KURL stream, DaapClient* client, const char* name)
     const int port = socket->port();
     debug() << "Proxy server using port: " << port << endl;
     delete socket;
-    m_proxyUrl = KURL( QString("http://localhost:%1/daap.mp3").arg( port ) );
+    m_proxyUrl = KUrl( QString("http://localhost:%1/daap.mp3").arg( port ) );
     //start proxy
     m_proxy->setComm( KProcess::Communication( KProcess::AllOutput ) );
     *m_proxy << "amarok_proxy.rb";
@@ -106,9 +106,9 @@ Proxy::readProxy()
     }
 }
 
-KURL Proxy::realStreamUrl( KURL fakeStream, int sessionId )
+KUrl Proxy::realStreamUrl( KUrl fakeStream, int sessionId )
 {
-    KURL realStream;
+    KUrl realStream;
     realStream.setProtocol( "http" );
     realStream.setHost(fakeStream.host());
     realStream.setPort(fakeStream.port());

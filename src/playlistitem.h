@@ -12,7 +12,7 @@
 #include "metabundle.h" //baseclass
 #include "amarok_export.h"
 
-#include <klistview.h> //baseclass
+#include <k3listview.h> //baseclass
 #include <kurl.h>      //stack allocated
 
 #include <qcolor.h>    //stack allocated
@@ -33,7 +33,7 @@ class MetaBundle;
 class Playlist;
 class PlaylistAlbum;
 
-class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
+class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public K3ListViewItem
 {
     typedef MetaBundle super;
     public:
@@ -87,8 +87,8 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
         void setIsNew( bool is ) { m_isNew = is; }
 
         /// convenience functions
-        Playlist *listView() const { return reinterpret_cast<Playlist*>( KListViewItem::listView() ); }
-        PlaylistItem *nextSibling() const { return static_cast<PlaylistItem*>( KListViewItem::nextSibling() ); }
+        Playlist *listView() const { return reinterpret_cast<Playlist*>( K3ListViewItem::listView() ); }
+        PlaylistItem *nextSibling() const { return static_cast<PlaylistItem*>( K3ListViewItem::nextSibling() ); }
 
         static QPixmap *star();
         static QPixmap *grayedStar();

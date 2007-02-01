@@ -120,10 +120,10 @@ using Debug::fatal;
 using Debug::DebugStream;
 
 /// Standard function announcer
-#define DEBUG_FUNC_INFO { Debug::mutex.lock(); kdDebug() << Debug::indent() << k_funcinfo << endl; Debug::mutex.unlock(); }
+#define DEBUG_FUNC_INFO { Debug::mutex.lock(); kDebug() << Debug::indent() << k_funcinfo << endl; Debug::mutex.unlock(); }
 
 /// Announce a line
-#define DEBUG_LINE_INFO { Debug::mutex.lock(); kdDebug() << Debug::indent() << k_funcinfo << "Line: " << __LINE__ << endl; Debug::mutex.unlock(); }
+#define DEBUG_LINE_INFO { Debug::mutex.lock(); kDebug() << Debug::indent() << k_funcinfo << "Line: " << __LINE__ << endl; Debug::mutex.unlock(); }
 
 /// Convenience macro for making a standard Debug::Block
 #define DEBUG_BLOCK Debug::Block uniquelyNamedStackAllocatedStandardBlock( __PRETTY_FUNCTION__ );
@@ -172,7 +172,7 @@ namespace Debug
             mutex.lock();
             gettimeofday( &m_start, 0 );
 
-            kdDebug() << "BEGIN: " << label << "\n";
+            kDebug() << "BEGIN: " << label << "\n";
             Debug::modifieableIndent() += "  ";
             mutex.unlock();
         }
@@ -194,7 +194,7 @@ namespace Debug
             double duration = double(end.tv_sec) + (double(end.tv_usec) / 1000000.0);
 
             Debug::modifieableIndent().truncate( Debug::indent().length() - 2 );
-            kdDebug() << "END__: " << m_label
+            kDebug() << "END__: " << m_label
                       << " - Took " << QString::number( duration, 'g', 2 ) << "s\n";
             mutex.unlock();
         }

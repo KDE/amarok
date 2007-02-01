@@ -31,8 +31,8 @@
 #include "tooltip.h"         //baseclass
 #include "tracktooltip.h"
 
-#include <klistview.h>       //baseclass
-#include <kurl.h>            //KURL::List
+#include <k3listview.h>       //baseclass
+#include <kurl.h>            //KUrl::List
 #include <qdir.h>            //stack allocated
 #include <qpoint.h>          //stack allocated
 #include <q3ptrlist.h>        //stack allocated
@@ -69,7 +69,7 @@ class Medium;
 /**
  * @authors Mark Kretschmann && Max Howell
  *
- * Playlist inherits KListView privately and thus is no longer a ListView
+ * Playlist inherits K3ListView privately and thus is no longer a ListView
  * Instead it is a part of PlaylistWindow and they interact in harmony. The change
  * was necessary as it is too dangerous to allow public access to PlaylistItems
  * due to the multi-threading environment.
@@ -83,7 +83,7 @@ class Medium;
  */
 
 
-class Playlist : private KListView, public EngineObserver, public Amarok::ToolTipClient
+class Playlist : private K3ListView, public EngineObserver, public Amarok::ToolTipClient
 {
         Q_OBJECT
 
@@ -113,7 +113,7 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         /** Add media to the playlist
          *  @param options you can OR these together, see the enum
          *  @param sql     Sql program to execute */
-        LIBAMAROK_EXPORT void insertMedia( KURL::List, int options = Append );
+        LIBAMAROK_EXPORT void insertMedia( KUrl::List, int options = Append );
         void insertMediaSql( const QString& sql, int options = Append );
 
         // Dynamic mode functions
@@ -157,18 +157,18 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         void customMenuClicked ( int id );
         bool removeCustomMenuItem( const QString &submenu, const QString &itemTitle );
 
-        void setFont( const QFont &f ) { KListView::setFont( f ); } //made public for convenience
-        void unsetFont()               { KListView::unsetFont(); }
+        void setFont( const QFont &f ) { K3ListView::setFont( f ); } //made public for convenience
+        void unsetFont()               { K3ListView::unsetFont(); }
 
-        PlaylistItem *firstChild() const { return static_cast<PlaylistItem*>( KListView::firstChild() ); }
-        PlaylistItem *lastItem()   const { return static_cast<PlaylistItem*>( KListView::lastItem() ); }
-        PlaylistItem *currentItem() const { return static_cast<PlaylistItem*>( KListView::currentItem() ); }
+        PlaylistItem *firstChild() const { return static_cast<PlaylistItem*>( K3ListView::firstChild() ); }
+        PlaylistItem *lastItem()   const { return static_cast<PlaylistItem*>( K3ListView::lastItem() ); }
+        PlaylistItem *currentItem() const { return static_cast<PlaylistItem*>( K3ListView::currentItem() ); }
 
         int  numVisibleColumns() const;
         Q3ValueList<int> visibleColumns() const;
         MetaBundle::ColumnMask getVisibleColumnMask() const;
         int  mapToLogicalColumn( int physical ) const; // Converts physical PlaylistItem column position to logical
-        QString columnText( int c ) const { return KListView::columnText( c ); };
+        QString columnText( int c ) const { return K3ListView::columnText( c ); };
         void setColumns( Q3ValueList<int> order, Q3ValueList<int> visible );
 
         /** Call this to prevent items being removed from the playlist, it is mostly for internal use only
@@ -215,7 +215,7 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
     public slots:
         void activateByIndex(int);
         void addCustomColumn();
-        void appendMedia( const KURL &url );
+        void appendMedia( const KUrl &url );
         void appendMedia( const QString &path );
         void clear();
         void copyToClipboard( const Q3ListViewItem* = 0 ) const;
@@ -312,7 +312,7 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         PlaylistItem *currentTrack() const { return m_currentTrack; }
         PlaylistItem *restoreCurrentTrack();
 
-        void insertMediaInternal( const KURL::List&, PlaylistItem*, int options = 0 );
+        void insertMediaInternal( const KUrl::List&, PlaylistItem*, int options = 0 );
         bool isAdvancedQuery( const QString &query );
         void refreshNextTracks( int = -1 );
         void removeItem( PlaylistItem*, bool = false );
@@ -329,13 +329,13 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         void engineNewMetaData( const MetaBundle&, bool );
         void engineStateChanged( Engine::State, Engine::State = Engine::Empty );
 
-        /// KListView Overloaded functions
+        /// K3ListView Overloaded functions
         void contentsDropEvent     ( QDropEvent* );
         void contentsDragEnterEvent( QDragEnterEvent* );
         void contentsDragMoveEvent ( QDragMoveEvent* );
         void contentsDragLeaveEvent( QDragLeaveEvent* );
 
-        #ifdef PURIST //KListView imposes hand cursor so override it
+        #ifdef PURIST //K3ListView imposes hand cursor so override it
         void contentsMouseMoveEvent( QMouseEvent *e ) { Q3ListView::contentsMouseMoveEvent( e ); }
         #endif
 
@@ -387,7 +387,7 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         int           m_selLength;
         int           m_visCount;
         int           m_visLength;
-        Q_INT64       m_total; //for Favor Tracks
+        qint64       m_total; //for Favor Tracks
         bool          m_itemCountDirty;
 
         KAction      *m_undoButton;
@@ -400,7 +400,7 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         uint          m_undoCounter;
 
         DynamicMode  *m_dynamicMode;
-        KURL::List    m_queueList;
+        KUrl::List    m_queueList;
         PlaylistItem *m_stopAfterTrack;
         int           m_stopAfterMode;
         bool          m_showHelp;
@@ -450,7 +450,7 @@ class PlaylistAlbum
 public:
     PLItemList tracks;
     int refcount;
-    Q_INT64 total; //for Favor Tracks
+    qint64 total; //for Favor Tracks
     PlaylistAlbum(): refcount( 0 ), total( 0 ) { }
 };
 

@@ -106,7 +106,7 @@ RefreshImages::finishedXmlFetch( KIO::Job* xmlJob ) //SLOT
         }
     }
     debug() << imageUrl << endl;
-    KURL testUrl( imageUrl );
+    KUrl testUrl( imageUrl );
     if( !testUrl.isValid() ) //KIO crashs on empty strings!!!
     {
         //Amazon sometimes takes down covers

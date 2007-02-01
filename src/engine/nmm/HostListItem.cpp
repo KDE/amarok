@@ -44,7 +44,7 @@
 #include "nmm_engine.h"
 
 HostListItem::HostListItem( Q3ListView *parent, QString hostname, bool audio, bool video, int volume, int status, bool read_only )
-    : KListViewItem( parent ),
+    : K3ListViewItem( parent ),
     m_audio( audio ),
     m_video( video ),
     m_volume( volume ),
@@ -223,7 +223,7 @@ void HostListItem::paintCell(QPainter * p, const QColorGroup & cg, int column, i
     return;
   }
 
-  KListViewItem::paintCell(p, m_cg, column, width, align);
+  K3ListViewItem::paintCell(p, m_cg, column, width, align);
 }
 
 QPixmap* HostListItem::pixmapVolume( int type )

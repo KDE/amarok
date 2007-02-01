@@ -395,7 +395,7 @@ MoodServer::queueJob( MetaBundle *bundle )
 // Decrements the refcount of the job for the given URL
 // and deletes that job if necessary.
 void
-MoodServer::deQueueJob( KURL url )
+MoodServer::deQueueJob( KUrl url )
 {
     m_mutex.lock();
 
@@ -499,7 +499,7 @@ MoodServer::slotNewJob( void )
     }
 
   // Extreme reentrancy pedatry :)
-  KURL url = m_currentData.m_url;
+  KUrl url = m_currentData.m_url;
   m_mutex.unlock();
 
   emit jobEvent( url, Moodbar::JobStateRunning );
@@ -524,7 +524,7 @@ MoodServer::slotJobCompleted( KProcess *proc )
       returnval = (ReturnStatus) m_currentProcess->exitStatus();
 
     bool success = (returnval == Success);
-    KURL url = m_currentData.m_url;
+    KUrl url = m_currentData.m_url;
 
     if( success )
       {
@@ -616,7 +616,7 @@ MoodServer::slotMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic
 void
 MoodServer::slotFileDeleted( const QString &path )
 {
-    QString mood = Moodbar::moodFilename( KURL::fromPathOrURL( path ) );
+    QString mood = Moodbar::moodFilename( KUrl::fromPathOrUrl( path ) );
     if( mood.isEmpty()  ||  !QFile::exists( mood ) )
       return;
 
@@ -630,8 +630,8 @@ MoodServer::slotFileDeleted( const QString &path )
 void
 MoodServer::slotFileMoved( const QString &srcPath, const QString &dstPath )
 {
-    QString srcMood = Moodbar::moodFilename( KURL::fromPathOrURL( srcPath ) );
-    QString dstMood = Moodbar::moodFilename( KURL::fromPathOrURL( dstPath ) );
+    QString srcMood = Moodbar::moodFilename( KUrl::fromPathOrUrl( srcPath ) );
+    QString dstMood = Moodbar::moodFilename( KUrl::fromPathOrUrl( dstPath ) );
 
     if( srcMood.isEmpty()   ||  dstMood.isEmpty()  ||
         srcMood == dstMood  ||  !QFile::exists( srcMood ) )
@@ -736,7 +736,7 @@ Moodbar::operator=( const Moodbar &mood )
     mood.m_mutex.lock();
 
     State oldState = m_state;
-    KURL oldURL    = m_url;
+    KUrl oldURL    = m_url;
 
     m_data    = mood.m_data;
     m_pixmap  = mood.m_pixmap;
@@ -749,8 +749,8 @@ Moodbar::operator=( const Moodbar &mood )
     if( JOB_PENDING( m_state )  &&  !JOB_PENDING( oldState ) )
       {
         connect( MoodServer::instance(),
-                 SIGNAL( jobEvent( KURL, int ) ),
-                 SLOT( slotJobEvent( KURL, int ) ) );
+                 SIGNAL( jobEvent( KUrl, int ) ),
+                 SLOT( slotJobEvent( KUrl, int ) ) );
         // Increase the refcount for this job.  Use mood.m_bundle
         // since that one's already initialized.
         MoodServer::instance()->queueJob( mood.m_bundle );
@@ -759,7 +759,7 @@ Moodbar::operator=( const Moodbar &mood )
     // If we had a job pending, de-queue it
     if( !JOB_PENDING( m_state )  &&  JOB_PENDING( oldState ) )
       {
-        MoodServer::instance()->disconnect( this, SLOT( slotJobEvent( KURL, int ) ) );
+        MoodServer::instance()->disconnect( this, SLOT( slotJobEvent( KUrl, int ) ) );
         MoodServer::instance()->deQueueJob( oldURL );
       }
 
@@ -782,13 +782,13 @@ Moodbar::reset( void )
 
   if( JOB_PENDING( m_state ) )
     {
-      MoodServer::instance()->disconnect( this, SLOT( slotJobEvent( KURL, int ) ) );
+      MoodServer::instance()->disconnect( this, SLOT( slotJobEvent( KUrl, int ) ) );
       MoodServer::instance()->deQueueJob( m_url );
     }
 
   m_data.clear();
   m_pixmap  = QPixmap();
-  m_url     = KURL();
+  m_url     = KUrl();
   m_hueSort = 0;
   m_state   = Unloaded;
 
@@ -807,7 +807,7 @@ Moodbar::detach( void )
 
   // Apparently this is the wrong hack -- don't detach urls
   //QString url( QDeepCopy<QString>( m_url.url() ) );
-  //m_url = KURL::fromPathOrURL( url );
+  //m_url = KUrl::fromPathOrUrl( url );
 
   m_mutex.unlock();
 }
@@ -901,8 +901,8 @@ Moodbar::load( void )
 
     // Ok no more excuses, we have to queue a job
     connect( MoodServer::instance(),
-             SIGNAL( jobEvent( KURL, int ) ),
-             SLOT( slotJobEvent( KURL, int ) ) );
+             SIGNAL( jobEvent( KUrl, int ) ),
+             SLOT( slotJobEvent( KUrl, int ) ) );
     bool isRunning = MoodServer::instance()->queueJob( m_bundle );
     m_state = isRunning ? JobRunning : JobQueued;
     m_url = m_bundle->url();  // Use this URL for MoodServer::deQueueJob
@@ -915,7 +915,7 @@ Moodbar::load( void )
 // or finishes.  It may change the state from JobQueued / JobRunning
 // to JobRunning, Loaded, or JobFailed.  It may emit a jobEvent()
 void
-Moodbar::slotJobEvent( KURL url, int newState )
+Moodbar::slotJobEvent( KUrl url, int newState )
 {
     // Is this job for us?
     if( !JOB_PENDING( m_state )  ||  url != m_bundle->url() )
@@ -933,7 +933,7 @@ Moodbar::slotJobEvent( KURL url, int newState )
     m_mutex.lock();
 
     // Disconnect the signal for efficiency's sake
-    MoodServer::instance()->disconnect( this, SLOT( slotJobEvent( KURL, int ) ) );
+    MoodServer::instance()->disconnect( this, SLOT( slotJobEvent( KUrl, int ) ) );
 
     if( !success )
       {
@@ -1306,13 +1306,13 @@ Moodbar::readFile( void )
 // return QString::null.
 
 QString
-Moodbar::moodFilename( const KURL &url )
+Moodbar::moodFilename( const KUrl &url )
 {
   return moodFilename( url, AmarokConfig::moodsWithMusic() );
 }
 
 QString
-Moodbar::moodFilename( const KURL &url, bool withMusic )
+Moodbar::moodFilename( const KUrl &url, bool withMusic )
 {
     // No need to lock the object
 
@@ -1337,7 +1337,7 @@ Moodbar::moodFilename( const KURL &url, bool withMusic )
       {
         // The moodbar file is {device id},{relative path}.mood}
         int deviceid = MountPointManager::instance()->getIdForUrl( url );
-        KURL relativePath;
+        KUrl relativePath;
         MountPointManager::instance()->getRelativePath( deviceid,
             url, relativePath );
         path = relativePath.path();

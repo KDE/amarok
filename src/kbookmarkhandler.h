@@ -24,12 +24,12 @@
 #include <qobject.h>
 
 class KDirOperator;
-class KPopupMenu;
+class KMenu;
 
 class KBookmarkHandler : public QObject, public KBookmarkOwner
 {
 public:
-    KBookmarkHandler( KDirOperator *parent, KPopupMenu* );
+    KBookmarkHandler( KDirOperator *parent, KMenu* );
 
     /// KBookmarkOwner interface:
     virtual void openBookmarkURL( const QString &url );

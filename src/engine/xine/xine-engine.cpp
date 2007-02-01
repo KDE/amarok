@@ -215,7 +215,7 @@ XineEngine::ensureStream()
 }
 
 bool
-XineEngine::load( const KURL &url, bool isStream )
+XineEngine::load( const KUrl &url, bool isStream )
 {
     DEBUG_BLOCK
 
@@ -369,7 +369,7 @@ XineEngine::determineAndShowErrorMessage()
     }
 
     Amarok::StatusBar::instance()->longMessage(
-            "<b>" + i18n("Error Loading Media") + "</b><p>" + body + "<p>" + m_url.prettyURL(),
+            "<b>" + i18n("Error Loading Media") + "</b><p>" + body + "<p>" + m_url.prettyUrl(),
             KDE::StatusBar::Error );
 }
 
@@ -387,7 +387,7 @@ XineEngine::stop()
         s_outfader = new OutFader( this, AmarokConfig::fadeoutLength() );
         s_outfader->start();
         ::usleep( 100 ); //to be sure engine state won't be changed before it is checked in fadeOut()
-        m_url = KURL(); //to ensure we return Empty from state()
+        m_url = KUrl(); //to ensure we return Empty from state()
 
         std::fill( m_scope.begin(), m_scope.end(), 0 );
     }
@@ -546,7 +546,7 @@ XineEngine::fadeOut( uint fadeLength, bool* terminate, bool exiting )
     const float originalVol = Engine::Base::makeVolumeLogarithmic( m_volume ) * m_preamp;
 
     // On shutdown, limit fadeout to 3 secs max, so that we don't risk getting killed
-    const int length = exiting ? QMIN( fadeLength, 3000 ) : fadeLength;
+    const int length = exiting ? qMin( fadeLength, 3000 ) : fadeLength;
 
     if( length > 0 && isPlaying )
     {
@@ -635,7 +635,7 @@ XineEngine::setEqualizerParameters( int preamp, const Q3ValueList<int> &gains )
 }
 
 bool
-XineEngine::canDecode( const KURL &url ) const
+XineEngine::canDecode( const KUrl &url ) const
 {
     static QStringList list;
     if(list.isEmpty())
@@ -806,7 +806,7 @@ XineEngine::customEvent( QCustomEvent *e )
         break;
 
     case 3001:
-        emit infoMessage( (*message).arg( m_url.prettyURL() ) );
+        emit infoMessage( (*message).arg( m_url.prettyUrl() ) );
         delete message;
         break;
 
@@ -824,7 +824,7 @@ XineEngine::customEvent( QCustomEvent *e )
 
     case 3004:
         emit statusText( i18n("Redirecting to: ").arg( *message ) );
-        load( KURL( *message ), false );
+        load( KUrl( *message ), false );
         play();
         delete message;
         break;
@@ -1071,7 +1071,7 @@ XineEngine::fetchMetaData() const
     return bundle;
 }
 
-bool XineEngine::metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b)
+bool XineEngine::metaDataForUrl(const KUrl &url, Engine::SimpleMetaBundle &b)
 {
     bool result = false;
     xine_stream_t* tmpstream = xine_stream_new(m_xine, NULL, NULL);
@@ -1128,7 +1128,7 @@ bool XineEngine::metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b)
     return result;
 }
 
-bool XineEngine::getAudioCDContents(const QString &device, KURL::List &urls)
+bool XineEngine::getAudioCDContents(const QString &device, KUrl::List &urls)
 {
     char **xine_urls = NULL;
     int num;
@@ -1151,7 +1151,7 @@ bool XineEngine::getAudioCDContents(const QString &device, KURL::List &urls)
 
     if (xine_urls) {
         while (xine_urls[i]) {
-            urls << KURL(xine_urls[i]);
+            urls << KUrl(xine_urls[i]);
             ++i;
         }
     }

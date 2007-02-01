@@ -62,23 +62,23 @@ KDEMMEngine::KDEMMEngine( )
         , m_state( Engine::Empty )
 	, m_pPlayingTimer( new QTimer( this ) )
 {
-    kdDebug() << k_funcinfo << endl;
+    kDebug() << k_funcinfo << endl;
     m_player = new SimplePlayer();
 }
 
 
 KDEMMEngine::~KDEMMEngine()
 {
-    kdDebug() << "BEGIN " << k_funcinfo << endl;
+    kDebug() << "BEGIN " << k_funcinfo << endl;
     m_pPlayingTimer->stop();
     delete m_player;
-    kdDebug() << "END " << k_funcinfo << endl;
+    kDebug() << "END " << k_funcinfo << endl;
 }
 
 
 bool KDEMMEngine::init()
 {
-    kdDebug() << "BEGIN " << k_funcinfo << endl;
+    kDebug() << "BEGIN " << k_funcinfo << endl;
    /*
     m_scopeSize = 1 << scopeSize;
     m_restoreEffects = restoreEffects;
@@ -87,7 +87,7 @@ bool KDEMMEngine::init()
 
     connect ( m_pPlayingTimer, SIGNAL( timeout() ), this, SLOT( playingTimeout() ) );
 
-    kdDebug() << "END " << k_funcinfo << endl;
+    kDebug() << "END " << k_funcinfo << endl;
     return true;
 }
 
@@ -96,13 +96,13 @@ bool KDEMMEngine::init()
 // PUBLIC METHODS
 ////////////////////////////////////////////////////////////////////////////////
 
-bool KDEMMEngine::canDecode( const KURL &url ) const
+bool KDEMMEngine::canDecode( const KUrl &url ) const
 {
     static QStringList list;
 
-    kdDebug() << "BEGIN " << k_funcinfo << endl;
-    kdDebug() << "  Param: url: " << url << endl;
-    //kdDebug() << "  url.protocol()   >" << url.protocol() <<"<"<< endl;
+    kDebug() << "BEGIN " << k_funcinfo << endl;
+    kDebug() << "  Param: url: " << url << endl;
+    //kDebug() << "  url.protocol()   >" << url.protocol() <<"<"<< endl;
 
     if (url.protocol() == "http" ) return false;
 
@@ -111,20 +111,20 @@ bool KDEMMEngine::canDecode( const KURL &url ) const
 
     KFileItem fileItem( KFileItem::Unknown, KFileItem::Unknown, url, false ); //false = determineMimeType straight away
     KMimeType::Ptr mimetype = fileItem.determineMimeType();
-    kdDebug() << "mimetype: " << mimetype->name().latin1() << endl;
+    kDebug() << "mimetype: " << mimetype->name().latin1() << endl;
 
     return list.contains( mimetype->name().latin1() );
 }  // canDecode
 
 
-bool KDEMMEngine::load( const KURL& url, bool stream )
+bool KDEMMEngine::load( const KUrl& url, bool stream )
 {
-    kdDebug() << "BEGIN " << k_funcinfo << endl;
+    kDebug() << "BEGIN " << k_funcinfo << endl;
 
     m_isStream = stream;
-    kdDebug() << "  m_url: " << m_url << endl;
-    kdDebug() << "  Param: stream: " << stream << endl;
-    kdDebug() << "  Param: url " << url << endl;
+    kDebug() << "  m_url: " << m_url << endl;
+    kDebug() << "  Param: stream: " << stream << endl;
+    kDebug() << "  Param: url " << url << endl;
 
     if ( !url.isLocalFile() ) {         // for now
        return false;
@@ -140,22 +140,22 @@ bool KDEMMEngine::load( const KURL& url, bool stream )
 
     m_state = Engine::Idle;
 
-    kdDebug() << "END " << k_funcinfo << endl;
+    kDebug() << "END " << k_funcinfo << endl;
     return true;
 }   // load
 
 
 bool KDEMMEngine::play( unsigned int offset)
 {
-    kdDebug() << "BEGIN " << k_funcinfo << endl;
-    kdDebug() << "  param: offset " << offset << endl;
+    kDebug() << "BEGIN " << k_funcinfo << endl;
+    kDebug() << "  param: offset " << offset << endl;
 
     m_player->play(m_url);
     m_pPlayingTimer->start(KDEMM_TIMER, false);
     m_state = Engine::Playing;
     emit stateChanged( Engine::Playing );
 
-    kdDebug() << "END " << k_funcinfo << endl;
+    kDebug() << "END " << k_funcinfo << endl;
     return true;
 }   // play
 
@@ -166,14 +166,14 @@ bool KDEMMEngine::play( unsigned int offset)
 uint KDEMMEngine::position() const
 {
     uint pos=0;
-    //kdDebug() << "BEGIN " << k_funcinfo << endl;
+    //kDebug() << "BEGIN " << k_funcinfo << endl;
 
-    //kdDebug() << "  totalTime: " << m_player->totalTime() << endl;
-    //kdDebug() << "  currentTime: " << m_player->currentTime() << endl;
+    //kDebug() << "  totalTime: " << m_player->totalTime() << endl;
+    //kDebug() << "  currentTime: " << m_player->currentTime() << endl;
 
     pos = m_player->currentTime();
 
-    //kdDebug() << "END " << k_funcinfo << endl;
+    //kDebug() << "END " << k_funcinfo << endl;
     return (pos);
 }   // position
 
@@ -182,7 +182,7 @@ uint KDEMMEngine::position() const
 
 void KDEMMEngine::stop()
 {
-    kdDebug() << "BEGIN " << k_funcinfo << endl;
+    kDebug() << "BEGIN " << k_funcinfo << endl;
 
     //switch xfade channels
 /*    m_xfadeCurrent = ( m_xfadeCurrent == "invalue1" ) ? "invalue2" : "invalue1";
@@ -196,13 +196,13 @@ void KDEMMEngine::stop()
 
     m_state = Engine::Idle;     // Empty
     emit stateChanged( m_state );
-    kdDebug() << "END " << k_funcinfo << endl;
+    kDebug() << "END " << k_funcinfo << endl;
 }
 
 
 void KDEMMEngine::pause()
 {
-    kdDebug() << "BEGIN " << k_funcinfo << endl;
+    kDebug() << "BEGIN " << k_funcinfo << endl;
 
     // KDEMM: pause() cannot do un-pause, do it manually
     if (m_state == Engine::Paused){
@@ -216,30 +216,30 @@ void KDEMMEngine::pause()
     }
 
     emit stateChanged( m_state );
-    kdDebug() << "END " << k_funcinfo << endl;
+    kDebug() << "END " << k_funcinfo << endl;
 }   // pause
 
 
 void KDEMMEngine::seek( unsigned int ms )
 {
-    kdDebug() << "BEGIN " << k_funcinfo << endl;
-    kdDebug() << "  param: ms " << ms << endl;
+    kDebug() << "BEGIN " << k_funcinfo << endl;
+    kDebug() << "  param: ms " << ms << endl;
     m_player->seek(ms);
-    kdDebug() << "END " << k_funcinfo << endl;
+    kDebug() << "END " << k_funcinfo << endl;
 }   // seek
 
 
 void KDEMMEngine::setVolumeSW( unsigned int percent )
 {
-    kdDebug() << "BEGIN " << k_funcinfo << endl;
-    kdDebug() << "  Param: percent " << percent << endl;
+    kDebug() << "BEGIN " << k_funcinfo << endl;
+    kDebug() << "  Param: percent " << percent << endl;
 
 
     float vol = percent*0.01;
-    kdDebug() << " setting vol to " << vol << endl;
+    kDebug() << " setting vol to " << vol << endl;
     m_player->setVolume(vol);
 
-    kdDebug() << "END " << k_funcinfo << endl;
+    kDebug() << "END " << k_funcinfo << endl;
 }   // setVolumeSW
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -248,13 +248,13 @@ void KDEMMEngine::setVolumeSW( unsigned int percent )
 
 void KDEMMEngine::playingTimeout() //SLOT
 {
-    //kdDebug() << "BEGIN " << k_funcinfo << endl;
+    //kDebug() << "BEGIN " << k_funcinfo << endl;
     if( !m_player->isPlaying() ) {
         m_pPlayingTimer->stop();
         m_state = Engine::Idle;
         emit trackEnded();
     }
-    //kdDebug() << "END " << k_funcinfo << endl;
+    //kDebug() << "END " << k_funcinfo << endl;
 }   // playingTimeout
 
 #include "kdemmengine.moc"

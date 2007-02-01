@@ -37,7 +37,7 @@ GLAnalyzer::~GLAnalyzer()
 
 void GLAnalyzer::analyze( const Scope &s )
 {
-	//kdDebug() << "Scope Size: " << s.size() << endl;
+	//kDebug() << "Scope Size: " << s.size() << endl;
         /* Scope t(32);
 	if (s.size() != 32)
 	{
@@ -78,7 +78,7 @@ void GLAnalyzer::analyze( const Scope &s )
         for ( uint i = 0; i < 32; i++ )
 	{
 
-                //kdDebug() << "Scope item " << i << " value: " << s[i] << endl;
+                //kDebug() << "Scope item " << i << " value: " << s[i] << endl;
 
                 // Calculate new horizontal position (x) depending on number of samples
 		x = -16.0f + i;

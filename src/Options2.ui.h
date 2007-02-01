@@ -82,7 +82,7 @@ void Options2::installPushButton_clicked()
 {
     KFileDialog dia( QString::null, "*.tar *.tar.bz2 *.tar.gz|" + i18n( "Style Packages (*.tar, *.tar.bz2, *.tar.gz)" ), 0, 0, true );
     kapp->setTopWidget( &dia );
-    dia.setCaption( kapp->makeStdCaption( i18n( "Select Style Package" ) ) );
+    dia.setCaption( KInstance::makeStandardCaption( i18n( "Select Style Package" ) ) );
     dia.setMode( KFile::File | KFile::ExistingOnly );
     if ( !dia.exec() ) return;
 
@@ -146,7 +146,7 @@ void Options2::uninstallPushButton_clicked()
         ContextBrowser::instance()->reloadStyleSheet();
     }
 
-    KURL themeDir( KURL::fromPathOrURL( Amarok::saveLocation( "themes/" ) ) );
+    KUrl themeDir( KUrl::fromPathOrUrl( Amarok::saveLocation( "themes/" ) ) );
     themeDir.addPath( name );
 
     if( !KIO::NetAccess::del( themeDir, 0 ) ) {

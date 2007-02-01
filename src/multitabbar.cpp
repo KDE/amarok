@@ -61,7 +61,7 @@
 #include <kiconeffect.h>
 #include <kiconloader.h>
 #include <klocale.h>
-#include <kpopupmenu.h>
+#include <kmenu.h>
 #include <kstringhandler.h>
 
 #define NEARBYINT(i) ((int(float(i) + 0.5)))
@@ -188,7 +188,7 @@ void MultiTabBarInternal::contentsMousePressEvent( QMouseEvent *ev )
 void MultiTabBarInternal::showTabSelectionMenu(QPoint pos)
 {
 
-    KPopupMenu popup;
+    KMenu popup;
     popup.insertTitle(  i18n("Browsers") , /*id*/ -1, /*index*/ 1 );
     popup.setCheckable( true );
     for( uint i = 0; i < m_tabs.count(); i++ ) {
@@ -217,7 +217,7 @@ void MultiTabBarInternal::mousePressEvent( QMouseEvent *ev )
 
 
 #define CALCDIFF(m_tabs,diff,i) if (m_lines>(int)lines) {\
-                    /*kdDebug()<<"i="<<i<<" visibleTabCount="<<visibleTabCount()<<" space="<<space<<endl;*/ \
+                    /*kDebug()<<"i="<<i<<" visibleTabCount="<<visibleTabCount()<<" space="<<space<<endl;*/ \
                     uint ulen=0;\
                     diff=0; \
                     for (uint i2=i;i2<visibleTabCount();i2++) {\
@@ -234,9 +234,9 @@ void MultiTabBarInternal::mousePressEvent( QMouseEvent *ev )
 
 void MultiTabBarInternal::resizeEvent( QResizeEvent *ev )
 {
-    /*  kdDebug()<<"MultiTabBarInternal::resizeEvent"<<endl;
-        kdDebug()<<"MultiTabBarInternal::resizeEvent - box geometry"<<box->geometry()<<endl;
-        kdDebug()<<"MultiTabBarInternal::resizeEvent - geometry"<<geometry()<<endl;*/
+    /*  kDebug()<<"MultiTabBarInternal::resizeEvent"<<endl;
+        kDebug()<<"MultiTabBarInternal::resizeEvent - box geometry"<<box->geometry()<<endl;
+        kDebug()<<"MultiTabBarInternal::resizeEvent - geometry"<<geometry()<<endl;*/
 
     if ( ev ) Q3ScrollView::resizeEvent( ev );
 
@@ -281,20 +281,20 @@ void MultiTabBarInternal::resizeEvent( QResizeEvent *ev )
             CALCDIFF( m_tabs, diff, 0 )
             tmp = -diff;
 
-            //kdDebug()<<"m_lines recalculated="<<m_lines<<endl;
+            //kDebug()<<"m_lines recalculated="<<m_lines<<endl;
             for ( uint i = 0;i < tabCount;i++ ) {
                 MultiTabBarTab *tab = m_tabs.at( i );
                 if ( ! tab->visible() ) continue;
                 cnt++;
                 tmp += sizePerTab() + diff;
                 if ( tmp > space ) {
-                    //kdDebug()<<"about to start new line"<<endl;
+                    //kDebug()<<"about to start new line"<<endl;
                     if ( cnt > 1 ) {
                         CALCDIFF( m_tabs, diff, i )
                         i--;
                     } else {
-                        //kdDebug()<<"placing line on old line"<<endl;
-                        kdDebug() << "diff=" << diff << endl;
+                        //kDebug()<<"placing line on old line"<<endl;
+                        kDebug() << "diff=" << diff << endl;
                         tab->removeEventFilter( this );
                         tab->move( NEARBYINT( tmp - sizePerTab() ), lines * 24 );
                         //						tab->setFixedWidth(tab->neededSize()+diff);
@@ -306,11 +306,11 @@ void MultiTabBarInternal::resizeEvent( QResizeEvent *ev )
                     tmp = -diff;
                     cnt = 0;
                     lines++;
-                    //kdDebug()<<"starting new line:"<<lines<<endl;
+                    //kDebug()<<"starting new line:"<<lines<<endl;
 
                 } else {
-                    //kdDebug()<<"Placing line on line:"<<lines<<" pos: (x/y)=("<<tmp-m_tabs.at(i)->neededSize()<<"/"<<lines*24<<")"<<endl;
-                    //kdDebug()<<"diff="<<diff<<endl;
+                    //kDebug()<<"Placing line on line:"<<lines<<" pos: (x/y)=("<<tmp-m_tabs.at(i)->neededSize()<<"/"<<lines*24<<")"<<endl;
+                    //kDebug()<<"diff="<<diff<<endl;
                     tab->removeEventFilter( this );
                     tab->move( NEARBYINT( tmp - sizePerTab() ), lines * 24 );
                     tab->setFixedWidth( NEARBYINT( tmp + diff ) - tab->x() );;
@@ -358,7 +358,7 @@ void MultiTabBarInternal::resizeEvent( QResizeEvent *ev )
         }
 
 
-        //kdDebug()<<"needed lines:"<<m_lines<<endl;
+        //kDebug()<<"needed lines:"<<m_lines<<endl;
     } else {
         int size = 0; /*move the calculation into another function and call it only on add tab and tab click events*/
         for ( int i = 0;i < ( int ) m_tabs.count();i++ )
@@ -699,7 +699,7 @@ QSize MultiTabBarButton::sizeHint() const
         int iw = iconSet() ->pixmap( QIcon::Small, QIcon::Normal ).width() + 4;
         int ih = iconSet() ->pixmap( QIcon::Small, QIcon::Normal ).height();
         w += iw;
-        h = QMAX( h, ih );
+        h = qMax( h, ih );
     }
 #endif
     if ( isMenuButton() )
@@ -719,7 +719,7 @@ QSize MultiTabBarButton::sizeHint() const
         if ( !empty || !w )
             w += sz.width();
         if ( !empty || !h )
-            h = QMAX( h, sz.height() );
+            h = qMax( h, sz.height() );
     }
 
 //     //PATCH by markey
@@ -821,7 +821,7 @@ void MultiTabBarTab::updateState()
         if ( ( m_style == MultiTabBar::KDEV3 ) || ( m_style == MultiTabBar::KDEV3ICON ) || ( m_style == MultiTabBar::AMAROK ) || ( isOn() ) ) {
             QPushButton::setText( m_text );
         } else {
-            kdDebug() << "MultiTabBarTab::updateState(): setting text to an empty QString***************" << endl;
+            kDebug() << "MultiTabBarTab::updateState(): setting text to an empty QString***************" << endl;
             QPushButton::setText( QString::null );
         }
 
@@ -1002,7 +1002,7 @@ void MultiTabBarTab::drawButtonClassic( QPainter *paint )
                 painter.drawText( 0, + width() / 2 + QFontMetrics( QFont() ).height() / 2, m_text );
 
                 paint->rotate( 90 );
-                kdDebug() << "tpixmap.width:" << tpixmap.width() << endl;
+                kDebug() << "tpixmap.width:" << tpixmap.width() << endl;
                 paint->drawPixmap( 25, -tpixmap.height() + 1, tpixmap );
             }
 
@@ -1047,7 +1047,7 @@ void MultiTabBarTab::drawButtonClassic( QPainter *paint )
                         painter.drawText( tpixmap.width() - QFontMetrics( QFont() ).width( m_text ), + width() / 2 + QFontMetrics( QFont() ).height() / 2, m_text );
 
                         paint->rotate( -90 );
-                        kdDebug() << "tpixmap.width:" << tpixmap.width() << endl;
+                        kDebug() << "tpixmap.width:" << tpixmap.width() << endl;
 
                         paint->drawPixmap( -24 - tpixmap.width(), 2, tpixmap );
 
@@ -1079,7 +1079,7 @@ void MultiTabBarTab::drawButtonAmarok( QPainter *paint )
 
         // Apply icon effect when widget disabled. Should really be cached, but *shrug*.
         if( !isEnabled() )
-            icon = kapp->iconLoader()->iconEffect()->apply( icon, KIcon::Small, KIcon::DisabledState );
+            icon = kapp->iconLoader()->iconEffect()->apply( icon, K3Icon::Small, K3Icon::DisabledState );
 
         if( m_position == MultiTabBar::Left || m_position == MultiTabBar::Right ) {
             QPixmap pixmap( height(), width() );

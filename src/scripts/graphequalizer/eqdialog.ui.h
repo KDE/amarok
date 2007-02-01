@@ -17,7 +17,7 @@
 
 void EqDialog::init()
 {
- 	//kdDebug() << "start" << endl;
+ 	//kDebug() << "start" << endl;
     Q3Canvas* canvas = new Q3Canvas();
     canvas->resize(400, 200);
     canvasView->setVScrollBarMode(Q3ScrollView::AlwaysOff);
@@ -26,16 +26,16 @@ void EqDialog::init()
     canvasView->init();
     QByteArray send_data, reply_data;
     Q3CString reply_type;
-    //kdDebug() << "continue" << endl;
+    //kDebug() << "continue" << endl;
     if(!KApplication::dcopClient()->call("amarok","player","equalizerEnabled()", send_data, reply_type, reply_data,true,1000));
-    //kdDebug() << "called" << endl;
+    //kDebug() << "called" << endl;
     QDataStream answer(reply_data, QIODevice::ReadOnly);
-    //kdDebug() << "answer created" << answer << endl;
+    //kDebug() << "answer created" << answer << endl;
     bool eqEnabled;
     answer >> eqEnabled;
-    //kdDebug() << "eqEnabled set to " << eqEnabled << endl;
+    //kDebug() << "eqEnabled set to " << eqEnabled << endl;
     eqGroupBox->setChecked(eqEnabled);
-    //kdDebug() << "end" << endl;
+    //kDebug() << "end" << endl;
 }
 
 

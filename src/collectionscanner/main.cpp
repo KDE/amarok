@@ -53,7 +53,7 @@ int main( int argc, char *argv[] )
 
 
     KCmdLineArgs::reset();
-    KCmdLineArgs::init( argc, argv, &about ); //calls KApplication::addCmdLineOptions()
+    KCmdLineArgs::init( argc, argv, &about ); //calls KCmdLineArgs::addStdCmdLineOptions()
     KCmdLineArgs::addCmdLineOptions( options );  //add our own options
 
     const KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();

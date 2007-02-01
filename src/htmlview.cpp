@@ -18,7 +18,7 @@
 #include <kactioncollection.h>
 #include <kglobal.h> //kapp
 #include <kimageeffect.h> // gradient background image
-#include <kpopupmenu.h>
+#include <kmenu.h>
 #include <kstandarddirs.h> //locate file
 #include <ktempfile.h>
 
@@ -39,10 +39,10 @@ HTMLView::HTMLView( QWidget *parentWidget, const char *widgetname, const bool DN
 
     KActionCollection* ac = actionCollection();
     ac->setAutoConnectShortcuts( true );
-    m_copy = KStdAction::copy( this, SLOT( copyText() ), ac, "htmlview_copy" );
-    m_selectAll = KStdAction::selectAll( this, SLOT( selectAll() ), ac, "htmlview_select_all" );
+    m_copy = KStandardAction::copy( this, SLOT( copyText() ), ac, "htmlview_copy" );
+    m_selectAll = KStandardAction::selectAll( this, SLOT( selectAll() ), ac, "htmlview_select_all" );
     {
-        KPopupMenu m;
+        KMenu m;
         m_copy->plug( &m );
         m_selectAll->plug( &m );
 
@@ -132,7 +132,7 @@ HTMLView::loadStyleSheet()
         QString tmpCSS = eCSSts.read();
         ExternalCSS.close();
 
-        tmpCSS.replace( "./", KURL::fromPathOrURL( CSSLocation ).directory( false ) );
+        tmpCSS.replace( "./", KUrl::fromPathOrUrl( CSSLocation ).directory( false ) );
         tmpCSS.replace( "AMAROK_FONTSIZE-2", pxSize );
         tmpCSS.replace( "AMAROK_FONTSIZE", pxSize );
         tmpCSS.replace( "AMAROK_FONTSIZE+2", pxSize );
@@ -301,7 +301,7 @@ HTMLView::set( const QString& data )
 }
 
 
-void HTMLView::openURLRequest( const KURL &url )
+void HTMLView::openURLRequest( const KUrl &url )
 {
     // here, http urls are streams. For webpages we use externalurl
     // NOTE there have been no links to streams! http now used for wiki tab.

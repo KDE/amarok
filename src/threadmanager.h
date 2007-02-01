@@ -360,7 +360,7 @@ public:
      * the Job (not after it has started unfortunately), and a JobFinishedEvent
      * after the Job has finished.
      *
-     * The dependent is a QGuardedPtr, so you can reference the pointer returned
+     * The dependent is a QPointer, so you can reference the pointer returned
      * from dependent() safely provided you always test for 0 first. However
      * safest of all is to not rely on that pointer at all! Pass required
      * data-members with the job, only operate on the dependent in
@@ -396,7 +396,7 @@ protected:
 };
 
 //useful debug thingy
-#define DEBUG_THREAD_FUNC_INFO { Debug::mutex.lock(); kdDebug() << Debug::indent() << k_funcinfo << "thread: " << ThreadManager::Thread::threadId() << endl; Debug::mutex.unlock(); }
+#define DEBUG_THREAD_FUNC_INFO { Debug::mutex.lock(); kDebug() << Debug::indent() << k_funcinfo << "thread: " << ThreadManager::Thread::threadId() << endl; Debug::mutex.unlock(); }
 
 #define SHOULD_BE_GUI if( ThreadManager::Thread::getRunning() ) warning() \
     << __PRETTY_FUNCTION__ <<  " should not be Threaded, but is running in " << \

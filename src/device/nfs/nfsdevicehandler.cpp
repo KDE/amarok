@@ -66,7 +66,7 @@ NfsDeviceHandler::getDevicePath() const
 }
 
 void
-NfsDeviceHandler::getURL( KURL &absolutePath, const KURL &relativePath )
+NfsDeviceHandler::getURL( KUrl &absolutePath, const KUrl &relativePath )
 {
     absolutePath.setPath( m_mountPoint );
     absolutePath.addPath( relativePath.path() );
@@ -74,7 +74,7 @@ NfsDeviceHandler::getURL( KURL &absolutePath, const KURL &relativePath )
 }
 
 void
-NfsDeviceHandler::getPlayableURL( KURL &absolutePath, const KURL &relativePath )
+NfsDeviceHandler::getPlayableURL( KUrl &absolutePath, const KUrl &relativePath )
 {
     getURL( absolutePath, relativePath );
 }

@@ -118,7 +118,7 @@ class ToggleLabel : public QLabel
                 tip += i18n("&nbsp;<br>&nbsp;<i>Disabled</i>");
 
             tip += "&nbsp;";
-            const QString path = KGlobal::iconLoader()->iconPath( m_action->icon(), -KIcon::SizeHuge );
+            const QString path = KIconLoader::global()->iconPath( m_action->icon(), -K3Icon::SizeHuge );
 
 
             m_tooltip = new KDE::PopupMessage( parentWidget()->parentWidget(), parentWidget(), 0 /*timeout*/ );

@@ -66,7 +66,7 @@
 #include <kmessagebox.h>       //renamePlaylist(), deleteSelectedPlaylist()
 #include <kmimetype.h>
 #include <kmultipledrag.h>     //dragObject()
-#include <kpopupmenu.h>
+#include <kmenu.h>
 #include <kpushbutton.h>
 #include <kstandarddirs.h>     //KGlobal::dirs()
 #include <kurldrag.h>          //dragObject()
@@ -174,12 +174,12 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     addMenuButton  = new KActionMenu( i18n("Add"), Amarok::icon( "add_playlist" ), m_ac );
     addMenuButton->setDelayed( false );
 
-    KPopupMenu *playlistMenu = new KPopupMenu( this );
+    KMenu *playlistMenu = new KMenu( this );
     playlistMenu->insertItem( i18n("New..."), PLAYLIST );
     playlistMenu->insertItem( i18n("Import Existing..."), PLAYLIST_IMPORT );
     connect( playlistMenu, SIGNAL( activated(int) ), SLOT( slotAddPlaylistMenu(int) ) );
 
-    KPopupMenu *addMenu  = addMenuButton->popupMenu();
+    KMenu *addMenu  = addMenuButton->popupMenu();
     addMenu->insertItem( i18n("Playlist"), playlistMenu );
     addMenu->insertItem( i18n("Smart Playlist..."), SMARTPLAYLIST );
     addMenu->insertItem( i18n("Dynamic Playlist..."), ADDDYNAMIC);
@@ -460,7 +460,7 @@ void PlaylistBrowser::loadCoolStreams()
         QDomElement e = n.toElement();
         QString name = e.attribute( "name" );
         e = n.namedItem( "url" ).toElement();
-        KURL url  = KURL::KURL( e.text() );
+        KUrl url  = KUrl::KUrl( e.text() );
         last = new StreamEntry( m_coolStreams, last, url, name );
         last->setKept( false );
     }
@@ -486,7 +486,7 @@ void PlaylistBrowser::addStream( Q3ListViewItem *parent )
 
 void PlaylistBrowser::editStreamURL( StreamEntry *item, const bool readonly )
 {
-    StreamEditor dialog( this, item->title(), item->url().prettyURL(), readonly );
+    StreamEditor dialog( this, item->title(), item->url().prettyUrl(), readonly );
     dialog.setCaption( readonly ? i18n( "Radio Stream" ) : i18n( "Edit Radio Stream" ) );
 
     if( dialog.exec() == QDialog::Accepted )
@@ -562,23 +562,23 @@ void PlaylistBrowser::loadLastfmStreams( const bool subscriber /*false*/ )
 
     foreach( globaltags )
     {
-        const KURL url( "lastfm://globaltags/" + *it );
+        const KUrl url( "lastfm://globaltags/" + *it );
         last = new LastFmEntry( tagsFolder, last, url, *it );
         last->setKept( false );
     }
 
     QString user = AmarokConfig::scrobblerUsername();
-    KURL url( QString("lastfm://user/%1/neighbours").arg( user ) );
+    KUrl url( QString("lastfm://user/%1/neighbours").arg( user ) );
     last = new LastFmEntry( m_lastfmCategory, tagsFolder, url, i18n( "Neighbor Radio" ) );
     last->setKept( false );
 
     if( subscriber )
     {
-        url = KURL::fromPathOrURL( QString("lastfm://user/%1/personal").arg( user ) );
+        url = KUrl::fromPathOrUrl( QString("lastfm://user/%1/personal").arg( user ) );
         last = new LastFmEntry( m_lastfmCategory, last, url, i18n( "Personal Radio" ) );
         last->setKept( false );
 
-        url = KURL::fromPathOrURL( QString("lastfm://user/%1/loved").arg( user ) );
+        url = KUrl::fromPathOrUrl( QString("lastfm://user/%1/loved").arg( user ) );
         last = new LastFmEntry( m_lastfmCategory, last, url, i18n( "Loved Radio" ) );
         last->setKept( false );
     }
@@ -607,7 +607,7 @@ void PlaylistBrowser::addLastFmCustomRadio( Q3ListViewItem *parent )
     token.replace( "/", "%252" );
 
     const QString text = "lastfm://artistnames/" + token;
-    const KURL url( text );
+    const KUrl url( text );
 
     QString name = LastFm::Controller::stationDescription( text );
     name.replace( "%252", "/" );
@@ -1141,7 +1141,7 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
             PlaylistCategory *p = new PlaylistCategory( m_listview, after, e );
             p->setId( 0 );
             //delete the file, it is deprecated
-            KIO::del( KURL::fromPathOrURL( podcastBrowserCache() ) );
+            KIO::del( KUrl::fromPathOrUrl( podcastBrowserCache() ) );
 
             if( !m_podcastItemsToScan.isEmpty() )
                 m_podcastTimer->start( m_podcastTimerInterval );
@@ -1299,7 +1299,7 @@ void PlaylistBrowser::addPodcast( Q3ListViewItem *parent )
 
     if( ok && !name.isEmpty() )
     {
-        addPodcast( KURL::fromPathOrURL( name ), parent );
+        addPodcast( KUrl::fromPathOrUrl( name ), parent );
     }
 }
 
@@ -1377,7 +1377,7 @@ void PlaylistBrowser::configurePodcasts( Q3PtrList<PodcastChannel> &podcastChann
 }
 
 PodcastChannel *
-PlaylistBrowser::findPodcastChannel( const KURL &feed, Q3ListViewItem *parent ) const
+PlaylistBrowser::findPodcastChannel( const KUrl &feed, Q3ListViewItem *parent ) const
 {
     if( !parent ) parent = static_cast<Q3ListViewItem*>(m_podcastCategory);
 
@@ -1388,7 +1388,7 @@ PlaylistBrowser::findPodcastChannel( const KURL &feed, Q3ListViewItem *parent ) 
         if( isPodcastChannel( it ) )
         {
             PodcastChannel *channel = static_cast<PodcastChannel *>( it );
-            if( channel->url().prettyURL() == feed.prettyURL() )
+            if( channel->url().prettyUrl() == feed.prettyUrl() )
             {
                 return channel;
             }
@@ -1405,7 +1405,7 @@ PlaylistBrowser::findPodcastChannel( const KURL &feed, Q3ListViewItem *parent ) 
 }
 
 PodcastEpisode *
-PlaylistBrowser::findPodcastEpisode( const KURL &episode, const KURL &feed ) const
+PlaylistBrowser::findPodcastEpisode( const KUrl &episode, const KUrl &feed ) const
 {
     PodcastChannel *channel = findPodcastChannel( feed );
     if( !channel )
@@ -1427,11 +1427,11 @@ PlaylistBrowser::findPodcastEpisode( const KURL &episode, const KURL &feed ) con
     return 0;
 }
 
-void PlaylistBrowser::addPodcast( const KURL& origUrl, Q3ListViewItem *parent )
+void PlaylistBrowser::addPodcast( const KUrl& origUrl, Q3ListViewItem *parent )
 {
     if( !parent ) parent = static_cast<Q3ListViewItem*>(m_podcastCategory);
 
-    KURL url( origUrl );
+    KUrl url( origUrl );
     if( url.protocol() == "itpc" || url.protocol() == "pcast" )
         url.setProtocol( "http" );
 
@@ -1440,7 +1440,7 @@ void PlaylistBrowser::addPodcast( const KURL& origUrl, Q3ListViewItem *parent )
     {
         Amarok::StatusBar::instance()->longMessage(
                 i18n( "Already subscribed to feed %1 as %2" )
-                .arg( url.prettyURL(), channel->title() ),
+                .arg( url.prettyUrl(), channel->title() ),
                 KDE::StatusBar::Sorry );
         return;
     }
@@ -1475,14 +1475,14 @@ void PlaylistBrowser::changePodcastInterval()
         if( milliseconds != m_podcastTimerInterval )
         {
             m_podcastTimerInterval = milliseconds;
-            m_podcastTimer->changeInterval( m_podcastTimerInterval );
+            m_podcastTimer->start( m_podcastTimerInterval );
         }
     }
 }
 
 bool PlaylistBrowser::deleteSelectedPodcastItems( const bool removeItem, const bool silent )
 {
-    KURL::List urls;
+    KUrl::List urls;
     Q3ListViewItemIterator it( m_podcastCategory, Q3ListViewItemIterator::Selected );
     Q3PtrList<PodcastEpisode> erasedItems;
 
@@ -1505,7 +1505,7 @@ bool PlaylistBrowser::deleteSelectedPodcastItems( const bool removeItem, const b
         button = KMessageBox::warningContinueCancel( this,
                     i18n( "<p>You have selected 1 podcast episode to be <b>irreversibly</b> deleted. ",
                           "<p>You have selected %n podcast episodes to be <b>irreversibly</b> deleted. ",
-                           urls.count() ), QString::null, KStdGuiItem::del() );
+                           urls.count() ), QString::null, KStandardGuiItem::del() );
     if( silent || button != KMessageBox::Continue )
         return false;
 
@@ -1529,7 +1529,7 @@ bool PlaylistBrowser::deletePodcasts( Q3PtrList<PodcastChannel> items )
 {
     if( items.isEmpty() ) return false;
 
-    KURL::List urls;
+    KUrl::List urls;
     foreachType( Q3PtrList<PodcastChannel>, items )
     {
         for( Q3ListViewItem *ch = (*it)->firstChild(); ch; ch = ch->nextSibling() )
@@ -1769,7 +1769,7 @@ void PlaylistBrowser::addPlaylist( const QString &path, Q3ListViewItem *parent, 
             renameButton->setEnabled( true );
         }
 
-        KURL auxKURL;
+        KUrl auxKURL;
         auxKURL.setPath(path);
         m_lastPlaylist = playlist = new PlaylistEntry( parent, 0, auxKURL );
     }
@@ -1780,7 +1780,7 @@ void PlaylistBrowser::addPlaylist( const QString &path, Q3ListViewItem *parent, 
     playlist->setSelected( true );
 }
 
-bool PlaylistBrowser::savePlaylist( const QString &path, const Q3ValueList<KURL> &in_urls,
+bool PlaylistBrowser::savePlaylist( const QString &path, const Q3ValueList<KUrl> &in_urls,
                                     const Q3ValueList<QString> &titles, const Q3ValueList<int> &lengths,
                                     bool relative )
 {
@@ -1798,10 +1798,10 @@ bool PlaylistBrowser::savePlaylist( const QString &path, const Q3ValueList<KURL>
     Q3TextStream stream( &file );
     stream << "#EXTM3U\n";
 
-    KURL::List urls;
+    KUrl::List urls;
     for( int i = 0, n = in_urls.count(); i < n; ++i )
     {
-        const KURL &url = in_urls[i];
+        const KUrl &url = in_urls[i];
         if( url.isLocalFile() && QFileInfo( url.path() ).isDir() )
             urls += recurse( url );
         else
@@ -1810,7 +1810,7 @@ bool PlaylistBrowser::savePlaylist( const QString &path, const Q3ValueList<KURL>
 
     for( int i = 0, n = urls.count(); i < n; ++i )
     {
-        const KURL &url = urls[i];
+        const KUrl &url = urls[i];
 
         if( !titles.isEmpty() && !lengths.isEmpty() )
         {
@@ -1823,7 +1823,7 @@ bool PlaylistBrowser::savePlaylist( const QString &path, const Q3ValueList<KURL>
         if (url.protocol() == "file" ) {
             if ( relative ) {
                 const QFileInfo fi(file);
-                stream << KURL::relativePath(fi.dirPath(), url.path());
+                stream << KUrl::relativePath(fi.dirPath(), url.path());
             } else
                 stream << url.path();
         } else {
@@ -1876,7 +1876,7 @@ void PlaylistBrowser::savePlaylists()
 
 bool PlaylistBrowser::deletePlaylists( Q3PtrList<PlaylistEntry> items )
 {
-    KURL::List urls;
+    KUrl::List urls;
     foreachType( Q3PtrList<PlaylistEntry>, items )
     {
         urls.append( (*it)->url() );
@@ -1887,13 +1887,13 @@ bool PlaylistBrowser::deletePlaylists( Q3PtrList<PlaylistEntry> items )
     return false;
 }
 
-bool PlaylistBrowser::deletePlaylists( KURL::List items )
+bool PlaylistBrowser::deletePlaylists( KUrl::List items )
 {
     if ( items.isEmpty() ) return false;
 
     // TODO We need to check which files have been deleted successfully
     // Avoid deleting dirs. See bug #122480
-    for ( KURL::List::iterator it = items.begin(), end = items.end(); it != end; ++it ) {
+    for ( KUrl::List::iterator it = items.begin(), end = items.end(); it != end; ++it ) {
         if ( QFileInfo( (*it).path() ).isDir() ) {
             it = items.remove( it );
             continue;
@@ -1984,7 +1984,7 @@ void PlaylistBrowser::addSelectedToPlaylist( int options )
     if ( options == -1 )
         options = Playlist::Unique | Playlist::Append;
 
-    KURL::List list;
+    KUrl::List list;
 
     Q3ListViewItemIterator it( m_listview, Q3ListViewItemIterator::Selected );
     for( ; it.current(); ++it )
@@ -2005,7 +2005,7 @@ void PlaylistBrowser::addSelectedToPlaylist( int options )
             if( !channel->isPolished() )
                  channel->load();
             #undef  channel
-            KURL::List _list;
+            KUrl::List _list;
             Q3ListViewItem *child = item->firstChild();
             while( child )
             {
@@ -2228,7 +2228,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
 
     if( totalCount > 0 )
     {
-        int button = KMessageBox::warningContinueCancel( this, message, QString::null, KStdGuiItem::del() );
+        int button = KMessageBox::warningContinueCancel( this, message, QString::null, KStandardGuiItem::del() );
         if( button != KMessageBox::Continue )
             return;
     }
@@ -2425,9 +2425,9 @@ void PlaylistBrowser::savePLS( PlaylistEntry *item, bool append )
 #include <qeventloop.h>
 #include "playlistloader.h"
 //this function (C) Copyright 2003-4 Max Howell, (C) Copyright 2004 Mark Kretschmann
-KURL::List PlaylistBrowser::recurse( const KURL &url )
+KUrl::List PlaylistBrowser::recurse( const KUrl &url )
 {
-    typedef QMap<QString, KURL> FileMap;
+    typedef QMap<QString, KUrl> FileMap;
 
     KDirLister lister( false );
     lister.setAutoUpdate( false );
@@ -2438,7 +2438,7 @@ KURL::List PlaylistBrowser::recurse( const KURL &url )
         kapp->eventLoop()->processEvents( QEventLoop::ExcludeUserInput );
 
     KFileItemList items = lister.items(); //returns QPtrList, so we MUST only do it once!
-    KURL::List urls;
+    KUrl::List urls;
     FileMap files;
     for( KFileItem *item = items.first(); item; item = items.next() ) {
         if( item->isFile() ) { files[item->name()] = item->url(); continue; }
@@ -2558,7 +2558,7 @@ void PlaylistBrowser::showContextMenu( Q3ListViewItem *item, const QPoint &p, in
 ////////////////////////////////////////////////////////////////////////////
 
 PlaylistBrowserView::PlaylistBrowserView( QWidget *parent, const char *name )
-    : KListView( parent, name )
+    : K3ListView( parent, name )
     , m_marker( 0 )
 {
     addColumn( i18n("Playlists") );
@@ -2640,16 +2640,16 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
         moveSelectedItems( item ); // D&D sucks, do it ourselves
     }
     else {
-        KURL::List decodedList;
+        KUrl::List decodedList;
         Q3ValueList<MetaBundle> bundles;
         if( KURLDrag::decode( e, decodedList ) )
         {
-            KURL::List::ConstIterator it = decodedList.begin();
+            KUrl::List::ConstIterator it = decodedList.begin();
             MetaBundle first( *it );
             const QString album  = first.album();
             const QString artist = first.artist();
 
-            int suggestion = !album.stripWhiteSpace().isEmpty() ? 1 : !artist.stripWhiteSpace().isEmpty() ? 2 : 3;
+            int suggestion = !album.trimmed().isEmpty() ? 1 : !artist.trimmed().isEmpty() ? 2 : 3;
 
             for ( ; it != decodedList.end(); ++it )
             {
@@ -2670,8 +2670,8 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
                     PlaylistBrowser::instance()->addPlaylist( (*it).path() );
                 else if( ContextBrowser::hasContextProtocol( *it ) )
                 {
-                    KURL::List urls = ContextBrowser::expandURL( *it );
-                    for( KURL::List::iterator i = urls.begin();
+                    KUrl::List urls = ContextBrowser::expandURL( *it );
+                    for( KUrl::List::iterator i = urls.begin();
                             i != urls.end();
                             i++ )
                     {
@@ -2683,9 +2683,9 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
                 {
                     MetaBundle mb(*it);
                     bundles.append( mb );
-                    if( suggestion == 1 && mb.album()->lower().stripWhiteSpace() != album.lower().stripWhiteSpace() )
+                    if( suggestion == 1 && mb.album()->lower().trimmed() != album.lower().trimmed() )
                         suggestion = 2;
-                    if( suggestion == 2 && mb.artist()->lower().stripWhiteSpace() != artist.lower().stripWhiteSpace() )
+                    if( suggestion == 2 && mb.artist()->lower().trimmed() != artist.lower().trimmed() )
                         suggestion = 3;
                 }
             }
@@ -2751,7 +2751,7 @@ void PlaylistBrowserView::eraseMarker() //SLOT
 
 void PlaylistBrowserView::viewportPaintEvent( QPaintEvent *e )
 {
-    if( e ) KListView::viewportPaintEvent( e ); //we call with 0 in contentsDropEvent()
+    if( e ) K3ListView::viewportPaintEvent( e ); //we call with 0 in contentsDropEvent()
 
     if( m_marker )
     {
@@ -2825,7 +2825,7 @@ void PlaylistBrowserView::moveSelectedItems( Q3ListViewItem *newParent )
 
 
             #define newParent static_cast<PlaylistEntry*>(newParent)
-            newParent->insertTracks( after, KURL::List( static_cast<PlaylistTrackItem*>(item)->url() ));
+            newParent->insertTracks( after, KUrl::List( static_cast<PlaylistTrackItem*>(item)->url() ));
             #undef  newParent
             #define itemParent static_cast<PlaylistEntry*>(itemParent)
             itemParent->removeTrack( static_cast<PlaylistTrackItem*>(item) );
@@ -2859,7 +2859,7 @@ void PlaylistBrowserView::moveSelectedItems( Q3ListViewItem *newParent )
 
 void PlaylistBrowserView::rename( Q3ListViewItem *item, int c )
 {
-    KListView::rename( item, c );
+    K3ListView::rename( item, c );
 
     QRect rect( itemRect( item ) );
     int fieldX = rect.x() + treeStepSize() + 2;
@@ -2887,7 +2887,7 @@ void PlaylistBrowserView::keyPressEvent( QKeyEvent *e )
             break;
 
         default:
-            KListView::keyPressEvent( e );
+            K3ListView::keyPressEvent( e );
             break;
     }
 }
@@ -2897,9 +2897,9 @@ void PlaylistBrowserView::startDrag()
 {
     DEBUG_BLOCK
 
-    KURL::List urls;
-    KURL::List itemList; // this is for CollectionDB::createDragPixmap()
-    KURL::List podList;  // used to add podcast episodes of the same channel in reverse order (usability)
+    KUrl::List urls;
+    KUrl::List itemList; // this is for CollectionDB::createDragPixmap()
+    KUrl::List podList;  // used to add podcast episodes of the same channel in reverse order (usability)
     PodcastEpisode *lastPodcastEpisode = 0; // keep track of the last podcastepisode we visited.
     KMultipleDrag *drag = new KMultipleDrag( this );
 
@@ -2925,7 +2925,7 @@ void PlaylistBrowserView::startDrag()
         else if( isStream( *it ) )
         {
             urls     += static_cast<StreamEntry*>(*it)->url();
-            itemList += KURL::fromPathOrURL( "stream://" );
+            itemList += KUrl::fromPathOrUrl( "stream://" );
             pixText = (*it)->text(0);
         }
 
@@ -2966,7 +2966,7 @@ void PlaylistBrowserView::startDrag()
                  item->load();
 
             Q3ListViewItem *child = item->firstChild();
-            KURL::List tmp;
+            KUrl::List tmp;
             // we add the podcasts in reverse, its much nicer to add them chronologically :)
             while( child )
             {
@@ -2978,7 +2978,7 @@ void PlaylistBrowserView::startDrag()
                 child = child->nextSibling();
             }
             urls += tmp;
-            itemList += KURL::fromPathOrURL( item->url().url() );
+            itemList += KUrl::fromPathOrUrl( item->url().url() );
             pixText = (*it)->text(0);
             #undef item
         }
@@ -2993,7 +2993,7 @@ void PlaylistBrowserView::startDrag()
                 textdrag->setSubtype( "amarok-sql" );
                 drag->addDragObject( textdrag );
             }
-            itemList += KURL::fromPathOrURL( QString("smartplaylist://%1").arg( item->text(0) ) );
+            itemList += KUrl::fromPathOrUrl( QString("smartplaylist://%1").arg( item->text(0) ) );
             pixText = (*it)->text(0);
         }
 
@@ -3007,7 +3007,7 @@ void PlaylistBrowserView::startDrag()
             Q3TextDrag *textdrag = new Q3TextDrag( str, 0 );
             textdrag->setSubtype( "dynamic" );
             drag->addDragObject( textdrag );
-            itemList += KURL::fromPathOrURL( QString("dynamic://%1").arg( item->text(0) ) );
+            itemList += KUrl::fromPathOrUrl( QString("dynamic://%1").arg( item->text(0) ) );
             pixText = (*it)->text(0);
         }
 
@@ -3062,12 +3062,12 @@ PlaylistDialog::PlaylistDialog()
                    KGuiItem( i18n( "Save to location..." ), SmallIconSet( Amarok::icon( "files" ) ) ) )
     , customChosen( false )
 {
-    Q3VBox *vbox = makeVBoxMainWidget();
+    KVBox *vbox = makeVBoxMainWidget();
     QLabel *label = new QLabel( i18n( "&Enter a name for the playlist:" ), vbox );
     edit = new KLineEdit( vbox );
     edit->setFocus();
     label->setBuddy( edit );
-    enableButtonOK( false );
+    enableButtonOk( false );
     connect( edit, SIGNAL( textChanged( const QString & ) ),
              this, SLOT( slotTextChanged( const QString& ) ) );
     connect( this, SIGNAL( user1Clicked() ), SLOT( slotCustomPath() ) );
@@ -3095,7 +3095,7 @@ void PlaylistDialog::slotOk()
 
 void PlaylistDialog::slotTextChanged( const QString &s )
 {
-    enableButtonOK( !s.isEmpty() );
+    enableButtonOk( !s.isEmpty() );
 }
 
 void PlaylistDialog::slotCustomPath()
@@ -3105,7 +3105,7 @@ void PlaylistDialog::slotCustomPath()
    {
       edit->setText( result );
       edit->setReadOnly( true );
-      enableButtonOK( true );
+      enableButtonOk( true );
       customChosen = true;
    }
 }

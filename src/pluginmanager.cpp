@@ -47,7 +47,7 @@ PluginManager::query( const QString& constraint )
     QString
     str  = "[X-KDE-Amarok-framework-version] == ";
     str += QString::number( FrameworkVersion );
-    if ( !constraint.stripWhiteSpace().isEmpty() )
+    if ( !constraint.trimmed().isEmpty() )
         str += " and " + constraint;
     str += " and ";
     str += "[X-KDE-Amarok-rank] > 0";
@@ -192,7 +192,7 @@ PluginManager::dump( const KService::Ptr service )
 {
     #define ENDLI endl << Debug::indent()
 
-    kdDebug()
+    kDebug()
       << ENDLI
       << "PluginManager Service Info:" << ENDLI
       << "---------------------------" << ENDLI

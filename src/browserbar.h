@@ -28,7 +28,7 @@ typedef QMap<QString,int> BrowserIdMap;
 class MultiTabBar;
 class MultiTabBarTab;
 class DropProxyTarget;
-class KURL;
+class KUrl;
 class QSignalMapper;
 class Q3VBox;
 

@@ -189,7 +189,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
 
     // Show information labels (must be done after insertions)
     QObjectList *list = queryList( "QLabel", "infoPixmap" );
-    QPixmap const info = KGlobal::iconLoader()->iconPath( "messagebox_info", -KIcon::SizeHuge );
+    QPixmap const info = KIconLoader::global()->iconPath( "messagebox_info", -K3Icon::SizeHuge );
     for( QObject *label = list->first(); label; label = list->next() )
         static_cast<QLabel*>(label)->setPixmap( info );
     delete list;

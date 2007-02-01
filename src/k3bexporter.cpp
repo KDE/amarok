@@ -40,7 +40,7 @@ bool K3bExporter::isAvailable() //static
     return !KStandardDirs::findExe( "k3b" ).isNull();
 }
 
-void K3bExporter::exportTracks( const KURL::List &urls, int openmode )
+void K3bExporter::exportTracks( const KUrl::List &urls, int openmode )
 {
     if( urls.empty() )
         return;
@@ -95,10 +95,10 @@ void K3bExporter::exportAlbum( const QString &artist, const QString &album, int 
 
     if( !values.isEmpty() )
     {
-        KURL::List urls;
+        KUrl::List urls;
 
         foreach( values )
-            urls << KURL( *it );
+            urls << KUrl( *it );
 
         exportTracks( urls, openmode );
     }
@@ -119,10 +119,10 @@ void K3bExporter::exportArtist( const QString &artist, int openmode )
 
     if( !values.isEmpty() )
     {
-        KURL::List urls;
+        KUrl::List urls;
 
         foreach( values )
-            urls << KURL( *it );
+            urls << KUrl( *it );
 
         exportTracks( urls, openmode );
     }
@@ -143,16 +143,16 @@ void K3bExporter::exportComposer( const QString &composer, int openmode )
 
     if( !values.isEmpty() )
     {
-        KURL::List urls;
+        KUrl::List urls;
 
         foreach( values )
-            urls << KURL( *it );
+            urls << KUrl( *it );
 
         exportTracks( urls, openmode );
     }
 }
 
-void K3bExporter::exportViaCmdLine( const KURL::List &urls, int openmode )
+void K3bExporter::exportViaCmdLine( const KUrl::List &urls, int openmode )
 {
     Q3CString cmdOption;
 
@@ -174,8 +174,8 @@ void K3bExporter::exportViaCmdLine( const KURL::List &urls, int openmode )
     *process << "k3b";
     *process << cmdOption;
 
-    KURL::List::ConstIterator it;
-    KURL::List::ConstIterator end( urls.end() );
+    KUrl::List::ConstIterator it;
+    KUrl::List::ConstIterator end( urls.end() );
     for( it = urls.begin(); it != end; ++it )
         *process << ( *it ).path();
 
@@ -183,7 +183,7 @@ void K3bExporter::exportViaCmdLine( const KURL::List &urls, int openmode )
         KMessageBox::error( 0, i18n("Unable to start K3b.") );
 }
 
-void K3bExporter::exportViaDCOP( const KURL::List &urls, DCOPRef &ref, int openmode )
+void K3bExporter::exportViaDCOP( const KUrl::List &urls, DCOPRef &ref, int openmode )
 {
     Q3ValueList<DCOPRef> projectList;
     DCOPReply projectListReply = ref.call("projects()");
@@ -196,7 +196,7 @@ void K3bExporter::exportViaDCOP( const KURL::List &urls, DCOPRef &ref, int openm
     if( projectList.count() == 0 && !startNewK3bProject(ref, openmode) )
         return;
 
-    if( !ref.send( "addUrls(KURL::List)", DCOPArg(urls, "KURL::List") ) ) {
+    if( !ref.send( "addUrls(KUrl::List)", DCOPArg(urls, "KUrl::List") ) ) {
         DCOPErrorMessage();
         return;
     }

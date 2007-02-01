@@ -227,10 +227,10 @@ bool MagnatuneDownloadInfo::isReadyForDownload( )
     return !m_selectedDownloadFormat.isEmpty();
 }
 
-KURL MagnatuneDownloadInfo::getCompleteDownloadUrl( )
+KUrl MagnatuneDownloadInfo::getCompleteDownloadUrl( )
 {
    QString url =  m_downloadFormats[ m_selectedDownloadFormat ];
-   KURL downloadUrl(url);
+   KUrl downloadUrl(url);
    downloadUrl.setUser(m_userName);
    downloadUrl.setPass(m_password);
 

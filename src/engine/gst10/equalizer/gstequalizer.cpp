@@ -83,7 +83,7 @@ static GstFlowReturn gst_equalizer_transform_ip (GstBaseTransform * base, GstBuf
 void
 gst_equalizer_base_init ( gpointer g_class )
 {
-    kdDebug() << k_funcinfo << endl;
+    kDebug() << k_funcinfo << endl;
 
     GstElementClass * gstelement_class = GST_ELEMENT_CLASS ( g_class );
     gst_element_class_add_pad_template (gstelement_class,
@@ -97,7 +97,7 @@ gst_equalizer_base_init ( gpointer g_class )
 void
 gst_equalizer_class_init ( GstEqualizerClass * klass )
 {
-    kdDebug() << k_funcinfo << endl;
+    kDebug() << k_funcinfo << endl;
 
     GObjectClass* gobject_class;
     GstElementClass* gstelement_class = GST_ELEMENT_CLASS( klass );
@@ -119,7 +119,7 @@ gst_equalizer_class_init ( GstEqualizerClass * klass )
 void
 gst_equalizer_init ( GstEqualizer* obj, GstEqualizerClass * klass )
 {
-    kdDebug() << k_funcinfo << endl;
+    kDebug() << k_funcinfo << endl;
 
     // Properties
     obj->active = false;
@@ -146,7 +146,7 @@ gst_equalizer_set_caps (GstBaseTransform * base, GstCaps * incaps, GstCaps * out
     set_filters( obj );
     /* Zero the history arrays */
     memset(obj->data_history, 0, sizeof(sXYData) * EQ_MAX_BANDS * EQ_CHANNELS);
-    kdDebug() << "Samplerate " << obj->samplerate << ", channels: " << obj->channels << endl;    
+    kDebug() << "Samplerate " << obj->samplerate << ", channels: " << obj->channels << endl;    
     return TRUE;
 }
 

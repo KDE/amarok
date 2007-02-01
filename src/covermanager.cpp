@@ -44,12 +44,12 @@
 #include <kcursor.h>
 #include <kfiledialog.h>
 #include <kiconloader.h>
-#include <klistview.h>
+#include <k3listview.h>
 #include <klocale.h>
 #include <kmessagebox.h>    //showCoverMenu()
 #include <kmultipledrag.h>
 #include <kio/netaccess.h>
-#include <kpopupmenu.h>    //showCoverMenu()
+#include <kmenu.h>    //showCoverMenu()
 #include <kprogress.h>
 #include <kpushbutton.h>
 #include <ksqueezedtextlabel.h> //status label
@@ -57,7 +57,7 @@
 #include <kstatusbar.h>
 #include <kstringhandler.h>    //paintItem
 #include <ktoolbar.h>
-#include <ktoolbarbutton.h>    //clear filter button
+    //clear filter button
 #include <kurl.h>
 #include <kurldrag.h>
 #include <kwin.h>
@@ -65,11 +65,11 @@
 static QString artistToSelectInInitFunction;
 CoverManager *CoverManager::s_instance = 0;
 
-class ArtistItem : public KListViewItem
+class ArtistItem : public K3ListViewItem
 {
     public:
     ArtistItem(Q3ListView *view, Q3ListViewItem *item, const QString &text)
-        : KListViewItem(view, item, text) {}
+        : K3ListViewItem(view, item, text) {}
     protected:
     int compare( Q3ListViewItem* i, int col, bool ascending ) const
     {
@@ -102,12 +102,12 @@ CoverManager::CoverManager()
 
     // Sets caption and icon correctly (needed e.g. for GNOME)
     kapp->setTopWidget( this );
-    setCaption( kapp->makeStdCaption( i18n("Cover Manager") ) );
+    setCaption( KInstance::makeStandardCaption( i18n("Cover Manager") ) );
     setWFlags( WDestructiveClose );
     setMargin( 4 );
 
     //artist listview
-    m_artistView = new KListView( this );
+    m_artistView = new K3ListView( this );
     m_artistView->addColumn(i18n( "Albums By" ));
     m_artistView->setFullWidth( true );
     m_artistView->setSorting( 0 );
@@ -162,7 +162,7 @@ CoverManager::CoverManager()
     } //</Search LineEdit>
 
     // view menu
-    m_viewMenu = new KPopupMenu( this );
+    m_viewMenu = new KMenu( this );
     m_viewMenu->insertItem( i18n("All Albums"), AllAlbums );
     m_viewMenu->insertItem( i18n("Albums With Cover"), AlbumsWithCover );
     m_viewMenu->insertItem( i18n("Albums Without Cover"), AlbumsWithoutCover );
@@ -171,7 +171,7 @@ CoverManager::CoverManager()
 
     #ifdef AMAZON_SUPPORT
     // amazon locale menu
-    m_amazonLocaleMenu = new KPopupMenu( this );
+    m_amazonLocaleMenu = new KMenu( this );
     m_amazonLocaleMenu->insertItem( i18n("International"), CoverFetcher::International );
     m_amazonLocaleMenu->insertItem( i18n("Canada"), CoverFetcher::Canada );
     m_amazonLocaleMenu->insertItem( i18n("France"), CoverFetcher::France );
@@ -282,7 +282,7 @@ CoverViewDialog::CoverViewDialog( const QString& artist, const QString& album, Q
 {
     KWin::setType( winId(), NET::Utility );
     kapp->setTopWidget( this );
-    setCaption( kapp->makeStdCaption( i18n("%1 - %2").arg( artist, album ) ) );
+    setCaption( KInstance::makeStandardCaption( i18n("%1 - %2").arg( artist, album ) ) );
 
     m_layout = new Q3HBoxLayout( this );
     m_layout->setAutoAdd( true );
@@ -492,7 +492,7 @@ void CoverManager::showCoverMenu( Q3IconViewItem *item, const QPoint &p ) //SLOT
 
     enum { SHOW, FETCH, CUSTOM, DELETE };
 
-    KPopupMenu menu;
+    KMenu menu;
 
     menu.insertTitle( i18n( "Cover Image" ) );
 
@@ -713,11 +713,11 @@ void CoverManager::setCustomSelectedCovers()
 
     QString startPath = ":homedir";
     if ( !values.isEmpty() ) {
-        KURL url;
+        KUrl url;
         url.setPath( values.first() );
         startPath = url.directory();
     }
-    KURL file = KFileDialog::getImageOpenURL( startPath, this, i18n( "Select Cover Image File" ) );
+    KUrl file = KFileDialog::getImageOpenURL( startPath, this, i18n( "Select Cover Image File" ) );
     if ( !file.isEmpty() ) {
         qApp->processEvents();    //it may takes a while so process pending events
         QString tmpFile;
@@ -754,7 +754,7 @@ void CoverManager::deleteSelectedCovers()
                                   "Are you sure you want to delete these %n covers from the Collection?",
                                   selected.count() ),
                             QString::null,
-                            KStdGuiItem::del() );
+                            KStandardGuiItem::del() );
 
     if ( button == KMessageBox::Continue ) {
         for ( CoverViewItem* item = selected.first(); item; item = selected.next() ) {
@@ -875,7 +875,7 @@ void CoverManager::setStatusText( QString text )
 /////////////////////////////////////////////////////////////////////
 
 CoverView::CoverView( QWidget *parent, const char *name, Qt::WFlags f )
-    : KIconView( parent, name, f )
+    : K3IconView( parent, name, f )
 {
     Debug::Block block( __PRETTY_FUNCTION__ );
 
@@ -904,7 +904,7 @@ Q3DragObject *CoverView::dragObject()
     const QString sql = "SELECT tags.url FROM tags, album WHERE album.name %1 AND tags.album = album.id ORDER BY tags.track;";
     const QStringList values = CollectionDB::instance()->query( sql.arg( CollectionDB::likeCondition( item->album() ) ) );
 
-    KURL::List urls;
+    KUrl::List urls;
     for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it )
         urls += *it;
 
@@ -942,7 +942,7 @@ void CoverView::setStatusText( Q3IconViewItem *item )
 /////////////////////////////////////////////////////////////////////
 
 CoverViewItem::CoverViewItem( Q3IconView *parent, Q3IconViewItem *after, const QString &artist, const QString &album )
-    : KIconViewItem( parent, after, album )
+    : K3IconViewItem( parent, after, album )
     , m_artist( artist )
     , m_album( album )
     , m_coverImagePath( CollectionDB::instance()->albumImage( m_artist, m_album, false, 0, &m_embedded ) )

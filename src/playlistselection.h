@@ -10,14 +10,14 @@
 #ifndef PLAYLISTSELECTION_H
 #define PLAYLISTSELECTION_H
 
-#include <klistview.h>
+#include <k3listview.h>
 
 class NewDynamic;
 class KDialogBase;
 class DynamicMode;
 
 //this is a widget used in newdynamic.ui
-class PlaylistSelection : public KListView
+class PlaylistSelection : public K3ListView
 {
         Q_OBJECT
     public:

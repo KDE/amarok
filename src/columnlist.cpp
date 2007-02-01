@@ -25,7 +25,7 @@
 #include <q3vbox.h>
 //Added by qt3to4:
 #include <Q3ValueList>
-#include <klistview.h>
+#include <k3listview.h>
 #include <kpushbutton.h>
 #include "amarokconfig.h"
 #include "metabundle.h"
@@ -73,7 +73,7 @@ ColumnList::ColumnList( QWidget *parent, const char *name )
     QToolTip::add( m_down, i18n( "Move column down" ) );
     connect( m_down, SIGNAL( clicked() ), this, SLOT( moveDown() ) );
 
-    m_list = new KListView( this );
+    m_list = new K3ListView( this );
     m_list->addColumn("");
     m_list->header()->hide();
     m_list->setSelectionMode( Q3ListView::Single );

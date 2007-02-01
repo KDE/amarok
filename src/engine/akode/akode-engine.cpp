@@ -73,7 +73,7 @@ AkodeEngine::init()
 }
 
 bool
-AkodeEngine::load( const KURL &url, bool isStream )
+AkodeEngine::load( const KUrl &url, bool isStream )
 {
     Engine::Base::load( url, isStream );
 
@@ -97,7 +97,7 @@ AkodeEngine::unpause()
 }
 
 bool
-AkodeEngine::canDecode( const KURL &url ) const
+AkodeEngine::canDecode( const KUrl &url ) const
 {
     const QString ext = url.path().right( 4 ).lower();
 
@@ -183,7 +183,7 @@ AkodeEngine::event( QEvent *e )
     case 3002:
         m_player->stop();
         emit trackEnded();
-        emit infoMessage( i18n("Unable to decode <i>%1</i>").arg( m_url.prettyURL()) );
+        emit infoMessage( i18n("Unable to decode <i>%1</i>").arg( m_url.prettyUrl()) );
         break;
 
     default:

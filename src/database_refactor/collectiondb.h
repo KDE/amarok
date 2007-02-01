@@ -109,7 +109,7 @@ class CollectionDB : public QObject, public EngineObserver
         bool isFileInCollection( const QString &url );
         void removeDirFromCollection( QString path );
         void removeSongsInDir( QString path );
-        void removeSongs( const KURL::List& urls );
+        void removeSongs( const KUrl::List& urls );
         void updateDirStats( QString path, const long datetime, DbConnection *conn = NULL );
 
         //song methods
@@ -121,7 +121,7 @@ class CollectionDB : public QObject, public EngineObserver
          * @return true if in the collection
          */
         bool bundleForUrl( MetaBundle* bundle );
-        Q3ValueList<MetaBundle> bundlesByUrls( const KURL::List& urls );
+        Q3ValueList<MetaBundle> bundlesByUrls( const KUrl::List& urls );
         void addAudioproperties( const MetaBundle& bundle );
 
         void updateTags( const QString &url, const MetaBundle &bundle, const bool updateView = true );
@@ -156,9 +156,9 @@ class CollectionDB : public QObject, public EngineObserver
         /** Returns the image from a given URL, network-transparently.
          * You must run KIO::NetAccess::removeTempFile( tmpFile ) when you are finished using the image;
          **/
-        static QImage fetchImage(const KURL& url, QString &tmpFile);
+        static QImage fetchImage(const KUrl& url, QString &tmpFile);
         /** Saves images located on the user's filesystem */
-        bool setAlbumImage( const QString& artist, const QString& album, const KURL& url );
+        bool setAlbumImage( const QString& artist, const QString& album, const KUrl& url );
         /** Saves images obtained from CoverFetcher */
         bool setAlbumImage( const QString& artist, const QString& album, QImage img, const QString& amazonUrl = QString::null );
 

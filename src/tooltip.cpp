@@ -219,18 +219,18 @@ void Amarok::ToolTip::position()
     {
         pos = s_rect.topLeft();
         if( pos.y() + height > drect.bottom() )
-            pos.setY( kMax( drect.top(), drect.bottom() - height ) );
+            pos.setY( qMax( drect.top(), drect.bottom() - height ) );
         if( pos.x() + width > drect.right() )
-            pos.setX( kMax( drect.left(), drect.right() - width ) );
+            pos.setX( qMax( drect.left(), drect.right() - width ) );
     }
     else
     {
         const QRect r = QRect( QToolTip::parentWidget()->mapToGlobal( QToolTip::parentWidget()->pos() ), QToolTip::parentWidget()->size() );
         pos = r.bottomRight();
         if( pos.y() + height > drect.bottom() )
-            pos.setY( kMax( drect.top(), r.top() - height ) );
+            pos.setY( qMax( drect.top(), r.top() - height ) );
         if( pos.x() + width > drect.right() )
-            pos.setX( kMax( drect.left(), r.left() - width ) );
+            pos.setX( qMax( drect.left(), r.left() - width ) );
     }
 
     move( pos );

@@ -43,13 +43,13 @@
 #include <kiconloader.h>
 #include <klineedit.h>
 #include <knuminput.h>
-#include <kpassdlg.h>
-#include <kpopupmenu.h>
+#include <kpassworddialog.h>
+#include <kmenu.h>
 #include <kresolver.h>
 #include <kstandarddirs.h>     //loading icons
 #include <ktempfile.h>
 #include <ktoolbar.h>
-#include <ktoolbarbutton.h>
+
 
 #if DNSSD_SUPPORT
     #include <dnssd/remoteservice.h>
@@ -153,7 +153,7 @@ DaapClient::openDevice(bool /* silent=false */)
     {
         QStringList current = QStringList::split(":", (*it) );
         QString host = current.first();
-        Q_UINT16 port = current.last().toInt();
+        quint16 port = current.last().toInt();
         QString ip = resolve( host );
         if( ip != "0" )
         {
@@ -192,8 +192,8 @@ DaapClient::closeDevice()
     return true;
 }
 
-KURL
-DaapClient::getProxyUrl( const KURL& url )
+KUrl
+DaapClient::getProxyUrl( const KUrl& url )
 {
     DEBUG_BLOCK
     Daap::Proxy* daapProxy = new Daap::Proxy( url, this, "daapProxy" );
@@ -236,9 +236,9 @@ DaapClient::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
     if( !item )
         return;
 
-    KURL::List urls;
+    KUrl::List urls;
 
-    KPopupMenu menu( m_view );
+    KMenu menu( m_view );
     switch( item->type() )
     {
         case MediaItem::DIRECTORY:
@@ -314,11 +314,11 @@ DaapClient::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
 }
 
 void
-DaapClient::downloadSongs( KURL::List urls )
+DaapClient::downloadSongs( KUrl::List urls )
 {
     DEBUG_BLOCK
-    KURL::List realStreamUrls;
-    KURL::List::Iterator it;
+    KUrl::List realStreamUrls;
+    KUrl::List::Iterator it;
     for( it = urls.begin(); it != urls.end(); ++it )
         realStreamUrls << Daap::Proxy::realStreamUrl( (*it), getSession( (*it).host() + ':' + QString::number( (*it).port() ) ) );
     ThreadManager::instance()->queueJob( new DaapDownloader( realStreamUrls ) );
@@ -474,7 +474,7 @@ DaapClient::customClicked()
                 : KDialogBase( parent, "DaapAddHostDialog", true, i18n( "Add Computer" ) , Ok|Cancel)
             {
                 m_base = new AddHostBase( this, "DaapAddHostBase" );
-                m_base->m_downloadPixmap->setPixmap( QPixmap( KGlobal::iconLoader()->iconPath( Amarok::icon( "download" ), -KIcon::SizeEnormous ) ) );
+                m_base->m_downloadPixmap->setPixmap( QPixmap( KIconLoader::global()->iconPath( Amarok::icon( "download" ), -K3Icon::SizeEnormous ) ) );
                 m_base->m_hostName->setFocus();
                 setMainWidget( m_base );
             }
@@ -501,7 +501,7 @@ DaapClient::customClicked()
 }
 
 ServerItem*
-DaapClient::newHost( const QString& serviceName, const QString& host, const QString& ip, const Q_INT16 port )
+DaapClient::newHost( const QString& serviceName, const QString& host, const QString& ip, const qint16 port )
 {
     if( ip.isEmpty() ) return 0;
 
@@ -519,13 +519,13 @@ DaapClient::passwordPrompt()
             {
                 makeHBoxMainWidget();
 
-                KGuiItem ok( KStdGuiItem::ok() );
+                KGuiItem ok( KStandardGuiItem::ok() );
                 ok.setText( i18n( "Login" ) );
                 ok.setToolTip( i18n("Login to the music share with the password given.") );
                 setButtonOK( ok );
 
                 QLabel* passIcon = new QLabel( mainWidget(), "passicon" );
-                passIcon->setPixmap( QPixmap( KGlobal::iconLoader()->iconPath( "password", -KIcon::SizeHuge ) ) );
+                passIcon->setPixmap( QPixmap( KIconLoader::global()->iconPath( "password", -K3Icon::SizeHuge ) ) );
                 Q3HBox* loginArea = new Q3HBox( mainWidget(), "passhbox" );
                 new QLabel( i18n( "Password:"), loginArea, "passlabel" );
                 m_input = new KPasswordEdit( loginArea, "passedit" );
@@ -682,7 +682,7 @@ DEBUG_BLOCK
 // CLASS ServerItem
 ////////////////////////////////////////////////////////////////////////////////
 
-ServerItem::ServerItem( Q3ListView* parent, DaapClient* client, const QString& ip, Q_UINT16 port, const QString& title, const QString& host )
+ServerItem::ServerItem( Q3ListView* parent, DaapClient* client, const QString& ip, quint16 port, const QString& title, const QString& host )
     : MediaItem( parent )
     , m_daapClient( client )
     , m_reader( 0 )
@@ -792,7 +792,7 @@ ServerItem::httpError( const QString& errorString )
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS DaapDownloader
 ////////////////////////////////////////////////////////////////////////////////
-DaapDownloader::DaapDownloader( KURL::List urls ) : Job( "DaapDownloader" )
+DaapDownloader::DaapDownloader( KUrl::List urls ) : Job( "DaapDownloader" )
     , m_urls( urls )
     , m_ready( false )
     , m_successful( false )
@@ -806,7 +806,7 @@ bool
 DaapDownloader::doJob()
 {
     DEBUG_BLOCK
-    KURL::List::iterator urlIt = m_urls.begin();
+    KUrl::List::iterator urlIt = m_urls.begin();
     Daap::ContentFetcher* http = new Daap::ContentFetcher( (*urlIt).host(), (*urlIt).port(), QString(), this );
     connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( downloadFinished( int, bool ) ) );
     connect( http, SIGNAL( dataReadProgress( int, int ) ), this, SLOT( dataReadProgress( int, int ) ) );
@@ -847,8 +847,8 @@ void
 DaapDownloader::completeJob()
 {
     DEBUG_BLOCK
-    KURL path;
-    KURL::List tempUrlList;
+    KUrl path;
+    KUrl::List tempUrlList;
     for( Q3ValueList<KTempFile*>::Iterator itTemps = m_tempFileList.begin(); itTemps != m_tempFileList.end(); ++itTemps )
     {
         path.setPath( (*itTemps)->name() );

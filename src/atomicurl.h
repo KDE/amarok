@@ -30,7 +30,7 @@
 #include "atomicstring.h"
 #include "amarok_export.h"
 
-class KURL;
+class KUrl;
 
 class LIBAMAROK_EXPORT AtomicURL
 {
@@ -44,7 +44,7 @@ public:
 
     AtomicURL( const AtomicURL &other );
 
-    AtomicURL( const KURL &url );
+    AtomicURL( const KUrl &url );
 
     virtual ~AtomicURL();
 
@@ -54,9 +54,9 @@ public:
 
     QString string() const;
 
-    KURL url() const;
+    KUrl url() const;
 
-    operator KURL() const { return url(); }
+    operator KUrl() const { return url(); }
 
     bool isEmpty() const;
 

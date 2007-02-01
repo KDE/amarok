@@ -93,7 +93,7 @@ k_dcop:
    virtual void play() = 0;                                 ///< Equivalent to pressing "Play" button.
    virtual void playPause() = 0;                            ///< Toggle play/pause state (good for mm keyboard users)
    virtual void prev() = 0;                                 ///< Equivalent to pressing "Prev" button.
-   virtual void queueForTransfer( KURL url ) = 0;           ///< Queue file for transfer to Media Device.
+   virtual void queueForTransfer( KUrl url ) = 0;           ///< Queue file for transfer to Media Device.
    virtual void seek(int s) = 0;                            ///< Seek track to seconds position.
    virtual void seekRelative(int s) = 0;                    ///< Seek to a position relative to the current track position.
    virtual void setEqualizer(int, int, int, int, int, int, int, int, int, int, int) = 0;  ///< Set the equalizer bands
@@ -128,12 +128,12 @@ k_dcop:
    virtual QString saveCurrentPlaylist() = 0;               ///< Saves the current playlist to current.xml and returns its path.
 
    /* These two methods are used by mediacontrol. DO NOT TOUCH! */
-   virtual void addMedia(const KURL &) = 0;                 ///< Add audio media specified by the url.
-   virtual void addMediaList(const KURL::List &) = 0;       ///< Add some audio media specified by the url.
+   virtual void addMedia(const KUrl &) = 0;                 ///< Add audio media specified by the url.
+   virtual void addMediaList(const KUrl::List &) = 0;       ///< Add some audio media specified by the url.
    virtual void clearPlaylist() = 0;                        ///< Clears the playlist.
    virtual QString currentTrackUniqueId() = 0;              ///< Return the current track's unique ID
    virtual void playByIndex(int) = 0;                       ///< Starts playing the track at the specified index.
-   virtual void playMedia(const KURL &) = 0;                ///< Add audio media specified by the url.
+   virtual void playMedia(const KUrl &) = 0;                ///< Add audio media specified by the url.
    virtual void popupMessage(const QString&) = 0;           ///< Shows a temporary popup message.
    virtual void removeCurrentTrack() = 0;                   ///< Removes the current-track item from the playlist.
    virtual void removeByIndex(int) = 0;                     ///< Removes the item at the specified index from the playlist.
@@ -239,8 +239,8 @@ k_dcop:
    virtual void deviceDisconnect() = 0;                  ///< Disconnect the current media device
    virtual void deviceSwitch( QString name ) = 0;        ///< Switch the current media device
    virtual QStringList deviceList() = 0;                 ///< List available media devices
-   virtual void queue( KURL url ) = 0;                   ///< Add url to transfer queue
-   virtual void queueList( KURL::List url ) = 0;         ///< Add list of urls to transfer queue
+   virtual void queue( KUrl url ) = 0;                   ///< Add url to transfer queue
+   virtual void queueList( KUrl::List url ) = 0;         ///< Add list of urls to transfer queue
    virtual void transfer() = 0;                          ///< Transfer items in queue to current device
    virtual void transcodingFinished( QString src, QString dest ) = 0;  ///< Announce that transcoding of job is finished
 };

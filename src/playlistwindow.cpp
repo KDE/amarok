@@ -74,11 +74,11 @@
 #include <klocale.h>
 #include <kmenubar.h>
 #include <kmessagebox.h>      //savePlaylist()
-#include <kpopupmenu.h>
+#include <kmenu.h>
 #include <kpushbutton.h>
 #include <kstandarddirs.h>    //Welcome Tab, locate welcome.html
 #include <ktoolbar.h>
-#include <ktoolbarbutton.h>   //createGUI()
+   //createGUI()
 #include <kxmlguibuilder.h>   //XMLGUI
 #include <kxmlguifactory.h>   //XMLGUI
 
@@ -132,24 +132,24 @@ PlaylistWindow::PlaylistWindow()
 
     new K3bExporter();
 
-    KStdAction::configureToolbars( kapp, SLOT( slotConfigToolBars() ), ac );
-    KStdAction::keyBindings( kapp, SLOT( slotConfigShortcuts() ), ac );
-    KStdAction::keyBindings( kapp, SLOT( slotConfigGlobalShortcuts() ), ac, "options_configure_globals" );
-    KStdAction::preferences( kapp, SLOT( slotConfigAmarok() ), ac );
+    KStandardAction::configureToolbars( kapp, SLOT( slotConfigToolBars() ), ac );
+    KStandardAction::keyBindings( kapp, SLOT( slotConfigShortcuts() ), ac );
+    KStandardAction::keyBindings( kapp, SLOT( slotConfigGlobalShortcuts() ), ac, "options_configure_globals" );
+    KStandardAction::preferences( kapp, SLOT( slotConfigAmarok() ), ac );
     ac->action("options_configure_globals")->setIcon( Amarok::icon( "configure" ) );
-    ac->action(KStdAction::name(KStdAction::KeyBindings))->setIcon( Amarok::icon( "configure" ) );
-    ac->action(KStdAction::name(KStdAction::ConfigureToolbars))->setIcon( Amarok::icon( "configure" ) );
-    ac->action(KStdAction::name(KStdAction::Preferences))->setIcon( Amarok::icon( "configure" ) );
+    ac->action(KStandardAction::name(KStandardAction::KeyBindings))->setIcon( Amarok::icon( "configure" ) );
+    ac->action(KStandardAction::name(KStandardAction::ConfigureToolbars))->setIcon( Amarok::icon( "configure" ) );
+    ac->action(KStandardAction::name(KStandardAction::Preferences))->setIcon( Amarok::icon( "configure" ) );
 
-    KStdAction::quit( kapp, SLOT( quit() ), ac );
-    KStdAction::open( this, SLOT(slotAddLocation()), ac, "playlist_add" )->setText( i18n("&Add Media...") );
+    KStandardAction::quit( kapp, SLOT( quit() ), ac );
+    KStandardAction::open( this, SLOT(slotAddLocation()), ac, "playlist_add" )->setText( i18n("&Add Media...") );
     ac->action( "playlist_add" )->setIcon( Amarok::icon( "files" ) );
-    KStdAction::open( this, SLOT(slotAddStream()), ac, "stream_add" )->setText( i18n("&Add Stream...") );
+    KStandardAction::open( this, SLOT(slotAddStream()), ac, "stream_add" )->setText( i18n("&Add Stream...") );
     ac->action( "stream_add" )->setIcon( Amarok::icon( "files" ) );
-    KStdAction::save( this, SLOT(savePlaylist()), ac, "playlist_save" )->setText( i18n("&Save Playlist As...") );
+    KStandardAction::save( this, SLOT(savePlaylist()), ac, "playlist_save" )->setText( i18n("&Save Playlist As...") );
     ac->action( "playlist_save" )->setIcon( Amarok::icon( "save" ) );
 #ifndef Q_WS_MAC
-    KStdAction::showMenubar( this, SLOT(slotToggleMenu()), ac );
+    KStandardAction::showMenubar( this, SLOT(slotToggleMenu()), ac );
 #endif
 
     //FIXME: after string freeze rename to "Burn Current Playlist"?
@@ -170,14 +170,14 @@ PlaylistWindow::PlaylistWindow()
                  << "Industrial" << "Japanese" << "Pop" << "Psytrance" << "Rap" << "Rock"
                  << "Soundtrack" << "Techno" << "Trance";
 
-    KPopupMenu* playTagRadioMenu = new KPopupMenu( this );
+    KMenu* playTagRadioMenu = new KMenu( this );
     int id = 0;
     foreach( m_lastfmTags ) {
         playTagRadioMenu->insertItem( *it, this, SLOT( playLastfmGlobaltag( int ) ), 0, id );
         ++id;
     }
 
-    KPopupMenu* addTagRadioMenu = new KPopupMenu( this );
+    KMenu* addTagRadioMenu = new KMenu( this );
     id = 0;
     foreach( m_lastfmTags ) {
         addTagRadioMenu->insertItem( *it, this, SLOT( addLastfmGlobaltag( int ) ), 0, id );
@@ -209,7 +209,7 @@ PlaylistWindow::PlaylistWindow()
 
 
     { // KAction idiocy -- shortcuts don't work until they've been plugged into a menu
-        KPopupMenu asdf;
+        KMenu asdf;
 
         playPause->plug( &asdf );
         seekForward->plug( &asdf );
@@ -290,7 +290,8 @@ void PlaylistWindow::init()
         m_lineEdit = new ClickLineEdit( i18n( "Playlist Search" ), bar );
         filter_label->setBuddy( m_lineEdit );
         bar->setStretchableWidget( m_lineEdit );
-        KPushButton *filterButton = new KPushButton("...", bar, "filter");
+        KPushButton *filterButton = new KPushButton( "...", bar );
+        filterButton->setObjectName( "filter" );
         filterButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
 
         m_lineEdit->setFrame( Q3Frame::Sunken );
@@ -327,7 +328,7 @@ void PlaylistWindow::init()
 #endif
 
     //BEGIN Actions menu
-    KPopupMenu *actionsMenu = new KPopupMenu( m_menubar );
+    KMenu *actionsMenu = new KMenu( m_menubar );
     actionCollection()->action("playlist_playmedia")->plug( actionsMenu );
     actionCollection()->action("lastfm_play")->plug( actionsMenu );
     actionCollection()->action("play_audiocd")->plug( actionsMenu );
@@ -337,13 +338,13 @@ void PlaylistWindow::init()
     actionCollection()->action("stop")->plug( actionsMenu );
     actionCollection()->action("next")->plug( actionsMenu );
     actionsMenu->insertSeparator();
-    actionCollection()->action(KStdAction::name(KStdAction::Quit))->plug( actionsMenu );
+    actionCollection()->action(KStandardAction::name(KStandardAction::Quit))->plug( actionsMenu );
 
     connect( actionsMenu, SIGNAL( aboutToShow() ), SLOT( actionsMenuAboutToShow() ) );
     //END Actions menu
 
     //BEGIN Playlist menu
-    KPopupMenu *playlistMenu = new KPopupMenu( m_menubar );
+    KMenu *playlistMenu = new KMenu( m_menubar );
     actionCollection()->action("playlist_add")->plug( playlistMenu );
     actionCollection()->action("stream_add")->plug( playlistMenu );
     actionCollection()->action("lastfm_add")->plug( playlistMenu );
@@ -364,7 +365,7 @@ void PlaylistWindow::init()
     //END Playlist menu
 
     //BEGIN Mode menu
-    KPopupMenu *modeMenu = new KPopupMenu( m_menubar );
+    KMenu *modeMenu = new KMenu( m_menubar );
     actionCollection()->action("repeat")->plug( modeMenu );
     KSelectAction *random = static_cast<KSelectAction*>( actionCollection()->action("random_mode") );
     random->plug( modeMenu );
@@ -373,7 +374,7 @@ void PlaylistWindow::init()
     //END Mode menu
 
     //BEGIN Tools menu
-    m_toolsMenu = new KPopupMenu( m_menubar );
+    m_toolsMenu = new KMenu( m_menubar );
     m_toolsMenu->insertItem( SmallIconSet( Amarok::icon( "covermanager" ) ), i18n("&Cover Manager"), Amarok::Menu::ID_SHOW_COVER_MANAGER );
     actionCollection()->action("queue_manager")->plug( m_toolsMenu );
     m_toolsMenu->insertItem( SmallIconSet( Amarok::icon( "visualizations" ) ), i18n("&Visualizations"), Amarok::Menu::ID_SHOW_VIS_SELECTOR );
@@ -395,11 +396,11 @@ void PlaylistWindow::init()
     //END Tools menu
 
     //BEGIN Settings menu
-    m_settingsMenu = new KPopupMenu( m_menubar );
-    //TODO use KStdAction or KMainWindow
+    m_settingsMenu = new KMenu( m_menubar );
+    //TODO use KStandardAction or KMainWindow
 #ifndef Q_WS_MAC
-    static_cast<KToggleAction *>(actionCollection()->action(KStdAction::name(KStdAction::ShowMenubar)))->setChecked( AmarokConfig::showMenuBar() );
-    actionCollection()->action(KStdAction::name(KStdAction::ShowMenubar))->plug( m_settingsMenu );
+    static_cast<KToggleAction *>(actionCollection()->action(KStandardAction::name(KStandardAction::ShowMenubar)))->setChecked( AmarokConfig::showMenuBar() );
+    actionCollection()->action(KStandardAction::name(KStandardAction::ShowMenubar))->plug( m_settingsMenu );
     m_settingsMenu->insertItem( AmarokConfig::showToolbar() ? i18n( "Hide Toolbar" ) : i18n("Show Toolbar"), ID_SHOW_TOOLBAR );
     m_settingsMenu->insertItem( AmarokConfig::showPlayerWindow() ? i18n("Hide Player &Window") : i18n("Show Player &Window"), ID_SHOW_PLAYERWINDOW );
     m_settingsMenu->insertSeparator();
@@ -407,12 +408,12 @@ void PlaylistWindow::init()
 
 #ifdef Q_WS_MAC
     // plug it first, as this item will be moved to the applications first menu
-    actionCollection()->action(KStdAction::name(KStdAction::Preferences))->plug( m_settingsMenu );
+    actionCollection()->action(KStandardAction::name(KStandardAction::Preferences))->plug( m_settingsMenu );
 #endif
     actionCollection()->action("options_configure_globals")->plug( m_settingsMenu );
-    actionCollection()->action(KStdAction::name(KStdAction::KeyBindings))->plug( m_settingsMenu );
-    actionCollection()->action(KStdAction::name(KStdAction::ConfigureToolbars))->plug( m_settingsMenu );
-    actionCollection()->action(KStdAction::name(KStdAction::Preferences))->plug( m_settingsMenu );
+    actionCollection()->action(KStandardAction::name(KStandardAction::KeyBindings))->plug( m_settingsMenu );
+    actionCollection()->action(KStandardAction::name(KStandardAction::ConfigureToolbars))->plug( m_settingsMenu );
+    actionCollection()->action(KStandardAction::name(KStandardAction::Preferences))->plug( m_settingsMenu );
 
     connect( m_settingsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );
     //END Settings menu
@@ -658,7 +659,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
             // intercept F2 for inline tag renaming
             // NOTE: tab will move to the next tag
             // NOTE: if item is still null don't select first item in playlist, user wouldn't want that. It's silly.
-            // TODO: berkus has solved the "inability to cancel" issue with KListView, but it's not in kdelibs yet..
+            // TODO: berkus has solved the "inability to cancel" issue with K3ListView, but it's not in kdelibs yet..
 
             // item may still be null, but this is safe
             // NOTE: column 0 cannot be edited currently, hence we pick column 1
@@ -895,7 +896,7 @@ void PlaylistWindow::slotPlayMedia() //SLOT
 void PlaylistWindow::slotAddLocation( bool directPlay ) //SLOT
 {
     // open a file selector to add media to the playlist
-    KURL::List files;
+    KUrl::List files;
     //files = KFileDialog::getOpenURLs( QString::null, "*.*|" + i18n("All Files"), this, i18n("Add Media") );
     KFileDialog dlg( QString::null, "*.*|", this, "openMediaDialog", true );
     dlg.setCaption( directPlay ? i18n("Play Media (Files or URLs)") : i18n("Add Media (Files or URLs)") );
@@ -905,9 +906,9 @@ void PlaylistWindow::slotAddLocation( bool directPlay ) //SLOT
     if( files.isEmpty() ) return;
     const int options = directPlay ? Playlist::Append | Playlist::DirectPlay : Playlist::Append;
 
-    const KURL::List::ConstIterator end  = files.constEnd();
+    const KUrl::List::ConstIterator end  = files.constEnd();
 
-    for(  KURL::List::ConstIterator it = files.constBegin(); it != end; ++it )
+    for(  KUrl::List::ConstIterator it = files.constBegin(); it != end; ++it )
         if( it == files.constBegin() )
             Playlist::instance()->insertMedia( *it, options );
         else
@@ -921,7 +922,7 @@ void PlaylistWindow::slotAddStream() //SLOT
 
     if ( !ok ) return;
 
-    KURL::List media( KURL::fromPathOrURL( url ) );
+    KUrl::List media( KUrl::fromPathOrUrl( url ) );
     Playlist::instance()->insertMedia( media );
 }
 
@@ -930,7 +931,7 @@ void PlaylistWindow::playLastfmPersonal() //SLOT
 {
     if( !LastFm::Controller::checkCredentials() ) return;
 
-    const KURL url( QString( "lastfm://user/%1/personal" )
+    const KUrl url( QString( "lastfm://user/%1/personal" )
                     .arg( AmarokConfig::scrobblerUsername() ) );
 
     Playlist::instance()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
@@ -941,7 +942,7 @@ void PlaylistWindow::addLastfmPersonal() //SLOT
 {
     if( !LastFm::Controller::checkCredentials() ) return;
 
-    const KURL url( QString( "lastfm://user/%1/personal" )
+    const KUrl url( QString( "lastfm://user/%1/personal" )
                     .arg( AmarokConfig::scrobblerUsername() ) );
 
     Playlist::instance()->insertMedia( url );
@@ -952,7 +953,7 @@ void PlaylistWindow::playLastfmNeighbor() //SLOT
 {
     if( !LastFm::Controller::checkCredentials() ) return;
 
-    const KURL url( QString( "lastfm://user/%1/neighbours" )
+    const KUrl url( QString( "lastfm://user/%1/neighbours" )
                     .arg( AmarokConfig::scrobblerUsername() ) );
 
     Playlist::instance()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
@@ -963,7 +964,7 @@ void PlaylistWindow::addLastfmNeighbor() //SLOT
 {
     if( !LastFm::Controller::checkCredentials() ) return;
 
-    const KURL url( QString( "lastfm://user/%1/neighbours" )
+    const KUrl url( QString( "lastfm://user/%1/neighbours" )
                     .arg( AmarokConfig::scrobblerUsername() ) );
 
     Playlist::instance()->insertMedia( url );
@@ -975,7 +976,7 @@ void PlaylistWindow::playLastfmCustom() //SLOT
     const QString token = LastFm::Controller::createCustomStation();
     if( token.isEmpty() ) return;
 
-    const KURL url( "lastfm://artistnames/" + token );
+    const KUrl url( "lastfm://artistnames/" + token );
     Playlist::instance()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
 }
 
@@ -985,7 +986,7 @@ void PlaylistWindow::addLastfmCustom() //SLOT
     const QString token = LastFm::Controller::createCustomStation();
     if( token.isEmpty() ) return;
 
-    const KURL url( "lastfm://artistnames/" + token );
+    const KUrl url( "lastfm://artistnames/" + token );
     Playlist::instance()->insertMedia( url );
 }
 
@@ -995,7 +996,7 @@ void PlaylistWindow::playLastfmGlobaltag( int id ) //SLOT
     if( !LastFm::Controller::checkCredentials() ) return;
 
     const QString tag = m_lastfmTags[id].lower();
-    const KURL url( "lastfm://globaltags/" + tag );
+    const KUrl url( "lastfm://globaltags/" + tag );
 
     Playlist::instance()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
 }
@@ -1006,7 +1007,7 @@ void PlaylistWindow::addLastfmGlobaltag( int id ) //SLOT
     if( !LastFm::Controller::checkCredentials() ) return;
 
     const QString tag = m_lastfmTags[id].lower();
-    const KURL url( "lastfm://globaltags/" + tag );
+    const KUrl url( "lastfm://globaltags/" + tag );
 
     Playlist::instance()->insertMedia( url );
 }
@@ -1014,7 +1015,7 @@ void PlaylistWindow::addLastfmGlobaltag( int id ) //SLOT
 
 void PlaylistWindow::playAudioCD() //SLOT
 {
-    KURL::List urls;
+    KUrl::List urls;
     if( EngineController::engine()->getAudioCDContents(QString::null, urls) )
     {
         if (!urls.isEmpty())
@@ -1024,7 +1025,7 @@ void PlaylistWindow::playAudioCD() //SLOT
     { // Default behaviour
         m_browsers->showBrowser( "FileBrowser" );
         FileBrowser *fb = static_cast<FileBrowser *>( m_browsers->browser("FileBrowser") );
-        fb->setUrl( KURL("audiocd:/Wav/") );
+        fb->setUrl( KUrl("audiocd:/Wav/") );
     }
 }
 
@@ -1059,7 +1060,7 @@ void PlaylistWindow::slotToggleFocus() //SLOT
 
 void PlaylistWindow::slotToggleMenu() //SLOT
 {
-    if( static_cast<KToggleAction *>(actionCollection()->action(KStdAction::name(KStdAction::ShowMenubar)))->isChecked() ) {
+    if( static_cast<KToggleAction *>(actionCollection()->action(KStandardAction::name(KStandardAction::ShowMenubar)))->isChecked() ) {
         AmarokConfig::setShowMenuBar( true );
         m_menubar->setShown( true );
     }
@@ -1082,7 +1083,7 @@ void PlaylistWindow::slotMenuActivated( int index ) //SLOT
     case ID_SHOW_TOOLBAR:
         m_toolbar->setShown( !m_toolbar->isShown() );
         AmarokConfig::setShowToolbar( !AmarokConfig::showToolbar() );
-        actionCollection()->action(KStdAction::name(KStdAction::ShowMenubar))->setEnabled( m_toolbar->isShown() );
+        actionCollection()->action(KStandardAction::name(KStandardAction::ShowMenubar))->setEnabled( m_toolbar->isShown() );
         m_settingsMenu->changeItem( index, m_toolbar->isShown() ? i18n("Hide Toolbar") : i18n("Show Toolbar") );
         break;
     case ID_SHOW_PLAYERWINDOW:

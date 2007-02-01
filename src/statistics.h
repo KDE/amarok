@@ -17,7 +17,7 @@
 #include "playlistwindow.h"
 
 #include <kdialogbase.h>    //baseclass
-#include <klistview.h>      //baseclass
+#include <k3listview.h>      //baseclass
 
 #include <qtimer.h>
 //Added by qt3to4:
@@ -53,7 +53,7 @@ class Statistics : public KDialogBase
         static Statistics *s_instance;
 };
 
-class StatisticsList : public KListView
+class StatisticsList : public K3ListView
 {
         Q_OBJECT
 
@@ -91,12 +91,12 @@ class StatisticsList : public KListView
 };
 
 /// The listview items which are the headers for the categories
-class StatisticsItem : public QObject, public KListViewItem
+class StatisticsItem : public QObject, public K3ListViewItem
 {
         Q_OBJECT
 
     public:
-        StatisticsItem( QString text, StatisticsList *parent, KListViewItem *after=0, const char *name=0 );
+        StatisticsItem( QString text, StatisticsList *parent, K3ListViewItem *after=0, const char *name=0 );
         ~StatisticsItem() {};
 
         void    paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align );
@@ -135,7 +135,7 @@ class StatisticsItem : public QObject, public KListViewItem
 };
 
 /// Listview items for the children of expanded items (the actual results)
-class StatisticsDetailedItem : public KListViewItem
+class StatisticsDetailedItem : public K3ListViewItem
 {
     public:
         StatisticsDetailedItem( const QString &text, const QString &subtext, StatisticsItem *parent,
@@ -155,7 +155,7 @@ class StatisticsDetailedItem : public KListViewItem
 
         void    setSubtext( QString t ) { m_subText = t; }
         QString getSQL(); //get the sql query for all the urls the item represents
-        KURL::List getURLs();
+        KUrl::List getURLs();
 
         void    paintFocus( QPainter*, const QColorGroup& , const QRect& ) {};  //reimp
 

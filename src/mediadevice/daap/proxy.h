@@ -24,17 +24,17 @@ namespace Daap {
         Q_OBJECT
 
         public:
-            Proxy(KURL stream, DaapClient* client, const char* name);
+            Proxy(KUrl stream, DaapClient* client, const char* name);
             ~Proxy();
-            KURL proxyUrl() { return m_proxyUrl; }
-            static KURL realStreamUrl( KURL fakeStream, int sessionId );
+            KUrl proxyUrl() { return m_proxyUrl; }
+            static KUrl realStreamUrl( KUrl fakeStream, int sessionId );
 
         public slots:
             void playbackStopped();
             void readProxy();
 
         private:
-            KURL m_proxyUrl;
+            KUrl m_proxyUrl;
             Amarok::ProcIO* m_proxy;
     };
 
@@ -43,7 +43,7 @@ namespace Daap {
     class MyServerSocket : public Q3ServerSocket
     {
         public:
-            MyServerSocket() : Q3ServerSocket( Q_UINT16( 0 ) ) {}
+            MyServerSocket() : Q3ServerSocket( quint16( 0 ) ) {}
 
         private:
             void newConnection( int ) {}

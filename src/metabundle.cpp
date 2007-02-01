@@ -27,7 +27,7 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 #include <kio/netaccess.h>
-#include <kmdcodec.h>
+#include <kcodecs.h>
 #include <q3deepcopy.h>
 #include <qdom.h>
 #include <qfile.h> //decodePath()
@@ -69,10 +69,10 @@
 
 
 namespace Amarok {
-    KURL detachedKURL( const KURL &url ) {
-        KURL urlCopy;
+    KUrl detachedKURL( const KUrl &url ) {
+        KUrl urlCopy;
         if (!url.isEmpty())
-            urlCopy = KURL(url.url());
+            urlCopy = KUrl(url.url());
         return urlCopy;
     }
 }
@@ -196,7 +196,7 @@ MetaBundle::MetaBundle()
     init();
 }
 
-MetaBundle::MetaBundle( const KURL &url, bool noCache, TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImageList* images )
+MetaBundle::MetaBundle( const KUrl &url, bool noCache, TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImageList* images )
     : m_url( url )
     , m_uniqueId( QString::null )
     , m_year( Undetermined )
@@ -249,7 +249,7 @@ MetaBundle::MetaBundle( const QString& title,
                         const int      bitrate,
                         const QString& genre,
                         const QString& streamName,
-                        const KURL& url )
+                        const KUrl& url )
         : m_url       ( url )
         , m_genre     ( genre )
         , m_streamName( streamName )
@@ -285,8 +285,8 @@ MetaBundle::MetaBundle( const QString& title,
 {
     if( title.contains( '-' ) )
     {
-        m_title  = title.section( '-', 1, 1 ).stripWhiteSpace();
-        m_artist = title.section( '-', 0, 0 ).stripWhiteSpace();
+        m_title  = title.section( '-', 1, 1 ).trimmed();
+        m_artist = title.section( '-', 0, 0 ).trimmed();
     }
     else
     {
@@ -512,7 +512,7 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
         tag = fileref.tag();
         if ( tag )
         {
-            #define strip( x ) TStringToQString( x ).stripWhiteSpace()
+            #define strip( x ) TStringToQString( x ).trimmed()
             setTitle( strip( tag->title() ) );
             setArtist( strip( tag->artist() ) );
             setAlbum( strip( tag->album() ) );
@@ -537,19 +537,19 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
             if ( file->ID3v2Tag() )
             {
                 if ( !file->ID3v2Tag()->frameListMap()["TPOS"].isEmpty() )
-                    disc = TStringToQString( file->ID3v2Tag()->frameListMap()["TPOS"].front()->toString() ).stripWhiteSpace();
+                    disc = TStringToQString( file->ID3v2Tag()->frameListMap()["TPOS"].front()->toString() ).trimmed();
 
                 if ( !file->ID3v2Tag()->frameListMap()["TBPM"].isEmpty() )
-                    setBpm( TStringToQString( file->ID3v2Tag()->frameListMap()["TBPM"].front()->toString() ).stripWhiteSpace().toFloat() );
+                    setBpm( TStringToQString( file->ID3v2Tag()->frameListMap()["TBPM"].front()->toString() ).trimmed().toFloat() );
 
                 if ( !file->ID3v2Tag()->frameListMap()["TCOM"].isEmpty() )
-                    setComposer( TStringToQString( file->ID3v2Tag()->frameListMap()["TCOM"].front()->toString() ).stripWhiteSpace() );
+                    setComposer( TStringToQString( file->ID3v2Tag()->frameListMap()["TCOM"].front()->toString() ).trimmed() );
 
                 if ( !file->ID3v2Tag()->frameListMap()["TPE2"].isEmpty() ) // non-standard: Apple, Microsoft
-                    setAlbumArtist( TStringToQString( file->ID3v2Tag()->frameListMap()["TPE2"].front()->toString() ).stripWhiteSpace() );
+                    setAlbumArtist( TStringToQString( file->ID3v2Tag()->frameListMap()["TPE2"].front()->toString() ).trimmed() );
 
                 if ( !file->ID3v2Tag()->frameListMap()["TCMP"].isEmpty() )
-                    compilation = TStringToQString( file->ID3v2Tag()->frameListMap()["TCMP"].front()->toString() ).stripWhiteSpace();
+                    compilation = TStringToQString( file->ID3v2Tag()->frameListMap()["TCMP"].front()->toString() ).trimmed();
 
                 if(images) {
                     loadImagesFromTag( *file->ID3v2Tag(), *images );
@@ -562,16 +562,16 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
             if ( file->tag() )
             {
                 if ( !file->tag()->fieldListMap()[ "COMPOSER" ].isEmpty() )
-                    setComposer( TStringToQString( file->tag()->fieldListMap()["COMPOSER"].front() ).stripWhiteSpace() );
+                    setComposer( TStringToQString( file->tag()->fieldListMap()["COMPOSER"].front() ).trimmed() );
 
                 if ( !file->tag()->fieldListMap()[ "BPM" ].isEmpty() )
-                    setBpm( TStringToQString( file->tag()->fieldListMap()["BPM"].front() ).stripWhiteSpace().toFloat() );
+                    setBpm( TStringToQString( file->tag()->fieldListMap()["BPM"].front() ).trimmed().toFloat() );
 
                 if ( !file->tag()->fieldListMap()[ "DISCNUMBER" ].isEmpty() )
-                    disc = TStringToQString( file->tag()->fieldListMap()["DISCNUMBER"].front() ).stripWhiteSpace();
+                    disc = TStringToQString( file->tag()->fieldListMap()["DISCNUMBER"].front() ).trimmed();
 
                 if ( !file->tag()->fieldListMap()[ "COMPILATION" ].isEmpty() )
-                    compilation = TStringToQString( file->tag()->fieldListMap()["COMPILATION"].front() ).stripWhiteSpace();
+                    compilation = TStringToQString( file->tag()->fieldListMap()["COMPILATION"].front() ).trimmed();
             }
         }
         else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
@@ -580,16 +580,16 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
             if ( file->xiphComment() )
             {
                 if ( !file->xiphComment()->fieldListMap()[ "COMPOSER" ].isEmpty() )
-                    setComposer( TStringToQString( file->xiphComment()->fieldListMap()["COMPOSER"].front() ).stripWhiteSpace() );
+                    setComposer( TStringToQString( file->xiphComment()->fieldListMap()["COMPOSER"].front() ).trimmed() );
 
                 if ( !file->xiphComment()->fieldListMap()[ "BPM" ].isEmpty() )
-                    setBpm( TStringToQString( file->xiphComment()->fieldListMap()["BPM"].front() ).stripWhiteSpace().toFloat() );
+                    setBpm( TStringToQString( file->xiphComment()->fieldListMap()["BPM"].front() ).trimmed().toFloat() );
 
                 if ( !file->xiphComment()->fieldListMap()[ "DISCNUMBER" ].isEmpty() )
-                    disc = TStringToQString( file->xiphComment()->fieldListMap()["DISCNUMBER"].front() ).stripWhiteSpace();
+                    disc = TStringToQString( file->xiphComment()->fieldListMap()["DISCNUMBER"].front() ).trimmed();
 
                 if ( !file->xiphComment()->fieldListMap()[ "COMPILATION" ].isEmpty() )
-                    compilation = TStringToQString( file->xiphComment()->fieldListMap()["COMPILATION"].front() ).stripWhiteSpace();
+                    compilation = TStringToQString( file->xiphComment()->fieldListMap()["COMPILATION"].front() ).trimmed();
             }
 
             if ( images && file->ID3v2Tag() ) {
@@ -803,7 +803,7 @@ QString MetaBundle::prettyText( int column ) const
     QString text;
     switch( column )
     {
-        case Filename:   text = isFile() ? MetaBundle::prettyTitle(filename()) : url().prettyURL();  break;
+        case Filename:   text = isFile() ? MetaBundle::prettyTitle(filename()) : url().prettyUrl();  break;
         case Title:      text = title().isEmpty() ? MetaBundle::prettyTitle( filename() ) : title(); break;
         case Artist:     text = artist();                                                            break;
         case AlbumArtist: text = albumArtist();                                                      break;
@@ -833,7 +833,7 @@ QString MetaBundle::prettyText( int column ) const
         default: warning() << "Tried to get the text of a nonexistent column!" << endl;              break;
     }
 
-    return text.stripWhiteSpace();
+    return text.trimmed();
 }
 
 bool MetaBundle::matchesSimpleExpression( const QString &expression, const Q3ValueList<int> &columns ) const
@@ -1090,7 +1090,7 @@ MetaBundle::prettyTitle( const QString &filename ) //static
 
     //remove file extension, s/_/ /g and decode %2f-like sequences
     s = s.left( s.findRev( '.' ) ).replace( '_', ' ' );
-    s = KURL::decode_string( s );
+    s = KUrl::decode_string( s );
 
     return s;
 }
@@ -1209,9 +1209,9 @@ MetaBundle::fuzzyTime( int time )
     QString hours = i18n( "1 hour", "%n hours", hr );
 
     if( week )
-        return weeks.arg( day ? days.arg("") : "" ).simplifyWhiteSpace();
+        return weeks.arg( day ? days.arg("") : "" ).simplified();
     else if ( day )
-        return days.arg( hr ? hours : "" ).simplifyWhiteSpace();
+        return days.arg( hr ? hours : "" ).simplified();
     else if ( hr )
         return i18n( "%1:%2 hours" ).arg( hr ).arg( zeroPad( min ) );
     else
@@ -1472,18 +1472,18 @@ MetaBundle::save( TagLib::FileRef* fileref )
     {
         TagLib::Tag * t = f->tag();
         if ( t ) { // f.tag() can return null if the file couldn't be opened for writing
-            t->setTitle( QStringToTString( title().stripWhiteSpace() ) );
-            t->setArtist( QStringToTString( artist().string().stripWhiteSpace() ) );
-            t->setAlbum( QStringToTString( album().string().stripWhiteSpace() ) );
+            t->setTitle( QStringToTString( title().trimmed() ) );
+            t->setArtist( QStringToTString( artist().string().trimmed() ) );
+            t->setAlbum( QStringToTString( album().string().trimmed() ) );
             t->setTrack( track() );
             t->setYear( year() );
-            t->setComment( QStringToTString( comment().string().stripWhiteSpace() ) );
-            t->setGenre( QStringToTString( genre().string().stripWhiteSpace() ) );
+            t->setComment( QStringToTString( comment().string().trimmed() ) );
+            t->setGenre( QStringToTString( genre().string().trimmed() ) );
 
             if ( hasExtendedMetaInformation() )
             {
                 setExtendedTag( f->file(), albumArtistTag, albumArtist() );
-                setExtendedTag( f->file(), composerTag, composer().string().stripWhiteSpace() );
+                setExtendedTag( f->file(), composerTag, composer().string().trimmed() );
                 setExtendedTag( f->file(), discNumberTag, discNumber() ? QString::number( discNumber() ) : QString() );
                 setExtendedTag( f->file(), bpmTag, bpm() ? QString::number( bpm() ) : QString() );
                 if ( compilation() != CompilationUnknown )
@@ -1533,7 +1533,7 @@ bool MetaBundle::save( Q3TextStream &stream, const QStringList &attributes ) con
     return true;
 }
 
-void MetaBundle::setUrl( const KURL &url )
+void MetaBundle::setUrl( const KUrl &url )
 {
     Q3ValueList<int> changes;
     for( int i = 0; i < NUM_COLUMNS; ++i ) changes << i;

@@ -5,7 +5,7 @@
 
 #include <qdir.h>
 
-MyDirOperator::MyDirOperator ( const KURL &url, QWidget *parent, Medium *medium ) : KDirOperator( url, parent )
+MyDirOperator::MyDirOperator ( const KUrl &url, QWidget *parent, Medium *medium ) : KDirOperator( url, parent )
 {
     m_medium = medium;
     setDirLister( new MyDirLister( true ) );
@@ -15,15 +15,15 @@ MyDirOperator::MyDirOperator ( const KURL &url, QWidget *parent, Medium *medium 
 void
 MyDirOperator::myHome()
 {
-    KURL u;
-    u.setPath( m_medium ? m_medium->mountPoint() : QDir::homeDirPath() );
+    KUrl u;
+    u.setPath( m_medium ? m_medium->mountPoint() : QDir::homePath() );
     setURL(u, true);
 }
 
 void
 MyDirOperator::myCdUp()
 {
-    KURL tmp( url() );
+    KUrl tmp( url() );
     tmp.cd( QString::fromLatin1(".."));
     if( m_medium && !tmp.path().startsWith( m_medium->mountPoint() ) )
         tmp.setPath( m_medium->mountPoint() );

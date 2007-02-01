@@ -49,12 +49,13 @@
 #include <klocale.h>
 #include <kmessagebox.h>       //podcast info box
 #include <kmimetype.h>
-#include <kpopupmenu.h>
+#include <kmenu.h>
 #include <krun.h>
 #include <kstandarddirs.h>     //podcast loading icons
 #include <kstringhandler.h>
 #include <ktrader.h>
 #include <kurlrequester.h>
+#include <krandom.h>
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -131,7 +132,7 @@ PlaylistBrowserEntry::compare( Q3ListViewItem* item, int col, bool ascending ) c
         }
     }
 
-    return KListViewItem::compare(item, col, ascending);
+    return K3ListViewItem::compare(item, col, ascending);
 }
 
 void
@@ -158,7 +159,7 @@ PlaylistBrowserEntry::slotDoubleClicked()
 void
 PlaylistBrowserEntry::slotRenameItem()
 {
-    Q3ListViewItem *parent = KListViewItem::parent();
+    Q3ListViewItem *parent = K3ListViewItem::parent();
 
     while( parent )
     {
@@ -299,7 +300,7 @@ void PlaylistCategory::setXml( const QDomElement &xml )
             }
             else if ( e.tagName() == "podcast" )
             {
-                const KURL url( n.namedItem( "url").toElement().text() );
+                const KUrl url( n.namedItem( "url").toElement().text() );
                 QString xmlLocation = Amarok::saveLocation( "podcasts/" );
                 xmlLocation        += n.namedItem( "cache" ).toElement().text();
 
@@ -394,7 +395,7 @@ PlaylistCategory::slotRenameItem()
 void
 PlaylistCategory::showContextMenu( const QPoint &position )
 {
-    KPopupMenu menu( listView() );
+    KMenu menu( listView() );
 
     if( !isKept() ) return;
 
@@ -545,7 +546,7 @@ PlaylistCategory::paintCell( QPainter *p, const QColorGroup &cg, int column, int
 
     p->setFont( font );
 
-    KListViewItem::paintCell( p, cg, column, width, align );
+    K3ListViewItem::paintCell( p, cg, column, width, align );
 }
 
 
@@ -553,7 +554,7 @@ PlaylistCategory::paintCell( QPainter *p, const QColorGroup &cg, int column, int
 ///    CLASS PlaylistEntry
 ////////////////////////////////////////////////////////////////////////////
 
-PlaylistEntry::PlaylistEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const KURL &url, int tracks, int length )
+PlaylistEntry::PlaylistEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const KUrl &url, int tracks, int length )
     : PlaylistBrowserEntry( parent, after )
     , m_url( url )
     , m_length( length )
@@ -673,11 +674,11 @@ void PlaylistEntry::slotAnimation()
     m_iconCounter++;
 }
 
-void PlaylistEntry::insertTracks( Q3ListViewItem *after, KURL::List list )
+void PlaylistEntry::insertTracks( Q3ListViewItem *after, KUrl::List list )
 {
     Q3ValueList<MetaBundle> bundles;
 
-    foreachType( KURL::List, list )
+    foreachType( KUrl::List, list )
         bundles += MetaBundle( *it );
 
     insertTracks( after, bundles );
@@ -835,9 +836,9 @@ int PlaylistEntry::compare( Q3ListViewItem* i, int /*col*/ ) const
 }
 
 
-KURL::List PlaylistEntry::tracksURL()
+KUrl::List PlaylistEntry::tracksURL()
 {
-    KURL::List list;
+    KUrl::List list;
 
     if( m_loaded )  { //playlist loaded
         for( TrackItemInfo *info = m_trackList.first(); info; info = m_trackList.next() )
@@ -858,7 +859,7 @@ void PlaylistEntry::updateInfo()
     str += body.arg( i18n( "Playlist" ),         text(0) );
     str += body.arg( i18n( "Number of tracks" ), QString::number(m_trackCount) );
     str += body.arg( i18n( "Length" ),           MetaBundle::prettyTime( m_length ) );
-    str += body.arg( i18n( "Location" ),         m_url.prettyURL() );
+    str += body.arg( i18n( "Location" ),         m_url.prettyUrl() );
     str += "</table></body></html>";
 
     PlaylistBrowser::instance()->setInfo( text(0), str );
@@ -873,7 +874,7 @@ void PlaylistEntry::slotDoubleClicked()
 
 void PlaylistEntry::showContextMenu( const QPoint &position )
 {
-    KPopupMenu menu( listView() );
+    KMenu menu( listView() );
 
     enum Id { LOAD, APPEND, QUEUE, RENAME, DELETE, MEDIADEVICE_COPY, MEDIADEVICE_SYNC };
 
@@ -972,7 +973,7 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
 
     if( buffer.isNull() )
     {
-        KListViewItem::paintCell( p, cg, column, width, align );
+        K3ListViewItem::paintCell( p, cg, column, width, align );
         return;
     }
 
@@ -984,7 +985,7 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
     pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor(0) );
 #endif
 
-    KListView *lv = static_cast<KListView *>( listView() );
+    K3ListView *lv = static_cast<K3ListView *>( listView() );
 
     QFont font( p->font() );
     QFontMetrics fm( p->fontMetrics() );
@@ -1068,7 +1069,7 @@ PlaylistTrackItem::PlaylistTrackItem( Q3ListViewItem *parent, Q3ListViewItem *af
         setText( 0, i18n("%1 - %2").arg( info->artist(), info->title() ) );
 }
 
-const KURL &PlaylistTrackItem::url()
+const KUrl &PlaylistTrackItem::url()
 {
     return m_trackInfo->url();
 }
@@ -1081,7 +1082,7 @@ void PlaylistTrackItem::slotDoubleClicked()
 
 void PlaylistTrackItem::showContextMenu( const QPoint &position )
 {
-    KPopupMenu menu( listView() );
+    KMenu menu( listView() );
     enum Actions { LOAD, APPEND, QUEUE, BURN, REMOVE, INFO };
 
     menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), LOAD );
@@ -1152,7 +1153,7 @@ TrackItemInfo::TrackItemInfo( const MetaBundle &mb )
 ///    CLASS StreamEntry
 ////////////////////////////////////////////////////////////////////////////
 
-StreamEntry::StreamEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const KURL &u, const QString &t )
+StreamEntry::StreamEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const KUrl &u, const QString &t )
     : PlaylistBrowserEntry( parent, after )
     , m_title( t )
     , m_url( u )
@@ -1162,7 +1163,7 @@ StreamEntry::StreamEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const K
     setExpandable( false );
 
     if( m_title.isEmpty() )
-        m_title = fileBaseName( m_url.prettyURL() );
+        m_title = fileBaseName( m_url.prettyUrl() );
 
     setPixmap( 0, SmallIcon( Amarok::icon( "playlist" ) ) );
 
@@ -1178,11 +1179,11 @@ StreamEntry::StreamEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const Q
 
     m_title = xmlDefinition.attribute( "name" );
     QDomElement e = xmlDefinition.namedItem( "url" ).toElement();
-    m_url  = KURL::fromPathOrURL( e.text() );
+    m_url  = KUrl::fromPathOrUrl( e.text() );
 
 
     if( m_title.isEmpty() )
-        m_title = fileBaseName( m_url.prettyURL() );
+        m_title = fileBaseName( m_url.prettyUrl() );
 
     setPixmap( 0, SmallIcon( Amarok::icon( "playlist" ) ) );
 
@@ -1198,7 +1199,7 @@ QDomElement StreamEntry::xml() const
     if( isOpen() )
         i.setAttribute( "isOpen", "true" );
     QDomElement url = doc.createElement( "url" );
-    url.appendChild( doc.createTextNode( m_url.prettyURL() ));
+    url.appendChild( doc.createTextNode( m_url.prettyUrl() ));
     i.appendChild( url );
     return i;
 }
@@ -1209,7 +1210,7 @@ void StreamEntry::updateInfo()
 
     QString str = "<html><body><table width=\"100%\" border=\"0\">";
 
-    str += body.arg( i18n( "URL" ),  m_url.prettyURL() );
+    str += body.arg( i18n( "URL" ),  m_url.prettyUrl() );
     str += "</table></body></html>";
 
     PlaylistBrowser::instance()->setInfo( text(0), str );
@@ -1238,7 +1239,7 @@ void StreamEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, int
 
     if( buffer.isNull() )
     {
-        KListViewItem::paintCell( p, cg, column, width, align );
+        K3ListViewItem::paintCell( p, cg, column, width, align );
         return;
     }
 
@@ -1250,7 +1251,7 @@ void StreamEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, int
     pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor(0) );
 #endif
 
-    KListView *lv = static_cast<KListView *>( listView() );
+    K3ListView *lv = static_cast<K3ListView *>( listView() );
 
     QFont font( p->font() );
     QFontMetrics fm( p->fontMetrics() );
@@ -1287,7 +1288,7 @@ void StreamEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, int
 void
 StreamEntry::showContextMenu( const QPoint &position )
 {
-    KPopupMenu menu( listView() );
+    KMenu menu( listView() );
     enum Actions { LOAD, APPEND, QUEUE, EDIT, REMOVE };
 
     menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), LOAD );
@@ -1342,7 +1343,7 @@ QDomElement LastFmEntry::xml() const
     if( isOpen() )
         i.setAttribute( "isOpen", "true" );
     QDomElement url = doc.createElement( "url" );
-    url.appendChild( doc.createTextNode( m_url.prettyURL() ));
+    url.appendChild( doc.createTextNode( m_url.prettyUrl() ));
     i.appendChild( url );
     return i;
 }
@@ -1373,7 +1374,7 @@ StreamEditor::StreamEditor( QWidget *parent, const QString &title, const QString
         // In case of readonly ok button makes no sense
         showButtonOK( false );
         // Change Cancel to Close button
-        setButtonCancel( KStdGuiItem::close() );
+        setButtonCancel( KStandardGuiItem::close() );
     }
 
     QSize min( 480, 110 );
@@ -1479,7 +1480,7 @@ DynamicEntry::slotDoubleClicked()
 void
 DynamicEntry::showContextMenu( const QPoint &position )
 {
-    KPopupMenu menu( listView() );
+    KMenu menu( listView() );
 
     enum Actions { LOAD, RENAME, REMOVE, EDIT };
     menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), LOAD );
@@ -1508,7 +1509,7 @@ DynamicEntry::showContextMenu( const QPoint &position )
 ///    CLASS PodcastChannel
 ////////////////////////////////////////////////////////////////////////////
 
-PodcastChannel::PodcastChannel( Q3ListViewItem *parent, Q3ListViewItem *after, const KURL &url )
+PodcastChannel::PodcastChannel( Q3ListViewItem *parent, Q3ListViewItem *after, const KUrl &url )
     : PlaylistBrowserEntry( parent, after )
         , m_polished( true ) // we get the items immediately if url is given
         , m_url( url )
@@ -1528,7 +1529,7 @@ PodcastChannel::PodcastChannel( Q3ListViewItem *parent, Q3ListViewItem *after, c
     fetch();
 }
 
-PodcastChannel::PodcastChannel( Q3ListViewItem *parent, Q3ListViewItem *after, const KURL &url,
+PodcastChannel::PodcastChannel( Q3ListViewItem *parent, Q3ListViewItem *after, const KUrl &url,
                                 const QDomNode &channelSettings )
     : PlaylistBrowserEntry( parent, after )
     , m_polished( true ) // we get the items immediately if url is given
@@ -1552,7 +1553,7 @@ PodcastChannel::PodcastChannel( Q3ListViewItem *parent, Q3ListViewItem *after, c
 }
 
 PodcastChannel::PodcastChannel( Q3ListViewItem *parent, Q3ListViewItem *after,
-                                const KURL &url, const QDomNode &channelSettings,
+                                const KUrl &url, const QDomNode &channelSettings,
                                 const QDomDocument &xmlDefinition )
     : PlaylistBrowserEntry( parent, after )
     , m_polished( true ) //automatically load the channel
@@ -1609,7 +1610,7 @@ PodcastChannel::setDOMSettings( const QDomNode &channelSettings )
     if( channelSettings.namedItem( "fetch").toElement().text() == "automatic" )
         fetchType  = AUTOMATIC;
 
-    KURL saveURL;
+    KUrl saveURL;
     QString t = title();
     if( save.isEmpty() )
         save = Amarok::saveLocation( "podcasts/" + Amarok::vfatPath( t ) );
@@ -1716,7 +1717,7 @@ PodcastChannel::setSettings( PodcastSettings *newSettings )
      */
     if( saveLocation() != newSettings->saveLocation() )
     {
-        KURL::List copyList;
+        KUrl::List copyList;
 
         PodcastEpisode *item = static_cast<PodcastEpisode*>( firstChild() );
             // get a list of the urls of already downloaded items
@@ -1734,7 +1735,7 @@ PodcastChannel::setSettings( PodcastSettings *newSettings )
         {
             //create the local directory first
             PodcastEpisode::createLocalDir( newSettings->saveLocation() );
-            KIO::CopyJob* m_podcastMoveJob = KIO::move( copyList, KURL::fromPathOrURL( newSettings->saveLocation() ), false );
+            KIO::CopyJob* m_podcastMoveJob = KIO::move( copyList, KUrl::fromPathOrUrl( newSettings->saveLocation() ), false );
             Amarok::StatusBar::instance()->newProgressOperation( m_podcastMoveJob )
                     .setDescription( i18n( "Moving Podcasts" ) );
         }
@@ -1811,7 +1812,7 @@ PodcastChannel::abortFetch()
 
     stopAnimation();
     title().isEmpty() ?
-        setText( 0, m_url.prettyURL() ) :
+        setText( 0, m_url.prettyUrl() ) :
         setText( 0, title() );
 }
 
@@ -1825,7 +1826,7 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
         debug() << "Unable to retrieve podcast information. KIO Error: " << job->error() << endl;
 
         title().isEmpty() ?
-            setText( 0, m_url.prettyURL() ) :
+            setText( 0, m_url.prettyUrl() ) :
             setText( 0, title() );
         setPixmap( 0, SmallIcon("cancel") );
 
@@ -1846,7 +1847,7 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
         debug() << "Podcast DOM failure in line " << errorline << ", column " << errorcolumn << ": " << error << endl;
 
         title().isEmpty() ?
-            setText( 0, m_url.prettyURL() ) :
+            setText( 0, m_url.prettyUrl() ) :
             setText( 0, title() );
         setPixmap( 0, SmallIcon("cancel") );
         return;
@@ -1861,7 +1862,7 @@ PodcastChannel::fetchResult( KIO::Job* job ) //SLOT
             Amarok::StatusBar::instance()->shortMessage( i18n("Sorry, only RSS 2.0 or Atom feeds for podcasts!") );
 
             if( title().isEmpty() )
-                setText( 0, m_url.prettyURL() );
+                setText( 0, m_url.prettyUrl() );
 
             setPixmap( 0, SmallIcon("cancel") );
             return;
@@ -1959,7 +1960,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
 
     m_bundle = PodcastChannelBundle( m_url, t, a, l, d, c, settings );
     delete settings;
-    m_bundle.setImageURL( KURL::fromPathOrURL( img ) );
+    m_bundle.setImageURL( KUrl::fromPathOrUrl( img ) );
 
     m_bundle.setParentId( m_parent->id() );
     if( !m_updating )
@@ -2061,7 +2062,7 @@ PodcastChannel::episodeExists( const QDomNode &xml, const int feedType )
         }
 
         QString episodeTitle = xml.namedItem( "title" ).toElement().text();
-        KURL episodeURL      = xml.namedItem( "enclosure" ).toElement().attribute( "url" );
+        KUrl episodeURL      = xml.namedItem( "enclosure" ).toElement().attribute( "url" );
         command = QString("SELECT id FROM podcastepisodes WHERE parent='%1' AND url='%2' AND title='%3';")
                           .arg( CollectionDB::instance()->escapeString( url().url() ),
                                 CollectionDB::instance()->escapeString( episodeURL.url() ),
@@ -2134,9 +2135,9 @@ PodcastChannel::updateInfo()
     QString str  = "<html><body><table width=\"100%\" border=\"0\">";
 
     str += body.arg( i18n( "Description" ), description() );
-    str += body.arg( i18n( "Website" ),     link().prettyURL() );
+    str += body.arg( i18n( "Website" ),     link().prettyUrl() );
     str += body.arg( i18n( "Copyright" ),   copyright() );
-    str += body.arg( i18n( "URL" ),         m_url.prettyURL() );
+    str += body.arg( i18n( "URL" ),         m_url.prettyUrl() );
     str += "</table>";
     str += i18n( "<p>&nbsp;<b>Episodes</b></p><ul>" );
     for( Q3ListViewItem *c = firstChild(); c; c = c->nextSibling() )
@@ -2154,7 +2155,7 @@ PodcastChannel::slotDoubleClicked()
 {
     if( !isPolished() )
             load();
-    KURL::List list;
+    KUrl::List list;
     Q3ListViewItem *child = firstChild();
     while( child )
     {
@@ -2183,7 +2184,7 @@ PodcastChannel::purge()
         return;
     }
 
-    KURL::List urlsToDelete;
+    KUrl::List urlsToDelete;
     Q3ValueList<Q3ListViewItem*> purgedItems;
 
     Q3ListViewItem *current = firstChild();
@@ -2294,7 +2295,7 @@ PodcastChannel::slotAnimation()
 void
 PodcastChannel::showContextMenu( const QPoint &position )
 {
-    KPopupMenu menu( listView() );
+    KMenu menu( listView() );
 
     enum Actions { LOAD, APPEND, QUEUE, DELETE, RESCAN, LISTENED, NEW, CONFIG };
 
@@ -2366,7 +2367,7 @@ PodcastEpisode::PodcastEpisode( Q3ListViewItem *parent, Q3ListViewItem *after,
     QString description, author, date, guid, type;
     int duration = 0;
     uint size = 0;
-    KURL link;
+    KUrl link;
 
     if( isAtom )
     {
@@ -2381,7 +2382,7 @@ PodcastEpisode::PodcastEpisode( Q3ListViewItem *parent, Q3ListViewItem *after,
                 if( n.toElement().attribute( "rel" ) == "enclosure" )
                 {
                     const QString weblink = n.toElement().attribute( "href" );
-                    link = KURL::fromPathOrURL( weblink );
+                    link = KUrl::fromPathOrUrl( weblink );
                 }
             }
         }
@@ -2418,13 +2419,13 @@ PodcastEpisode::PodcastEpisode( Q3ListViewItem *parent, Q3ListViewItem *after,
 
         const QString weblink = xml.namedItem( "enclosure" ).toElement().attribute( "url" );
 
-        link     = KURL::fromPathOrURL( weblink );
+        link     = KUrl::fromPathOrUrl( weblink );
     }
 
     if( title.isEmpty() )
         title = link.fileName();
 
-    KURL parentUrl = static_cast<PodcastChannel*>(parent)->url();
+    KUrl parentUrl = static_cast<PodcastChannel*>(parent)->url();
     m_bundle.setDBId( -1 );
     m_bundle.setURL( link );
     m_bundle.setParent( parentUrl );
@@ -2522,7 +2523,7 @@ PodcastEpisode::isOnDisk()
         bool oldOnDisk = m_onDisk;
         m_onDisk = QFile::exists( m_localUrl.path() );
         updatePixmap();
-        m_bundle.setLocalURL( m_onDisk ? m_localUrl : KURL() );
+        m_bundle.setLocalURL( m_onDisk ? m_localUrl : KUrl() );
         if( oldOnDisk != m_onDisk && dBId() )
             CollectionDB::instance()->updatePodcastEpisode( dBId(), m_bundle );
         return m_onDisk;
@@ -2545,12 +2546,12 @@ PodcastEpisode::downloadMedia()
     startAnimation();
     connect( &m_animationTimer, SIGNAL(timeout()), this, SLOT(slotAnimation()) );
 
-    KURL m_localDir;
+    KUrl m_localDir;
     PodcastChannel *channel = dynamic_cast<PodcastChannel*>(m_parent);
     if( channel )
-        m_localDir = KURL::fromPathOrURL( channel->saveLocation() );
+        m_localDir = KUrl::fromPathOrUrl( channel->saveLocation() );
     else
-        m_localDir = KURL::fromPathOrURL( PodcastSettings("Podcasts").saveLocation() );
+        m_localDir = KUrl::fromPathOrUrl( PodcastSettings("Podcasts").saveLocation() );
     createLocalDir( m_localDir );
 
     //filename might get changed by redirects later.
@@ -2566,18 +2567,18 @@ PodcastEpisode::downloadMedia()
             .setProgressSignal( m_podcastEpisodeJob, SIGNAL( percent( KIO::Job *, unsigned long ) ) );
 
     connect( m_podcastEpisodeJob, SIGNAL(  result( KIO::Job * ) ), SLOT( downloadResult( KIO::Job * ) ) );
-    connect( m_podcastEpisodeJob, SIGNAL( redirection( KIO::Job *,const KURL& ) ), SLOT( redirected( KIO::Job *,const KURL& ) ) );
+    connect( m_podcastEpisodeJob, SIGNAL( redirection( KIO::Job *,const KUrl& ) ), SLOT( redirected( KIO::Job *,const KUrl& ) ) );
 }
 
 /* change the localurl if redirected, allows us to use the original filename to transfer to mediadevices*/
-void PodcastEpisode::redirected( KIO::Job *, const KURL & redirectedUrl )
+void PodcastEpisode::redirected( KIO::Job *, const KUrl & redirectedUrl )
 {
     DEBUG_BLOCK
     debug() << "redirecting to " << redirectedUrl << ". filename: " << redirectedUrl.fileName() << endl;
     m_filename = redirectedUrl.fileName();
 }
 
-void PodcastEpisode::createLocalDir( const KURL &localDir )
+void PodcastEpisode::createLocalDir( const KUrl &localDir )
 {
     if( localDir.isEmpty() ) return;
 
@@ -2640,7 +2641,7 @@ void PodcastEpisode::downloadResult( KIO::Job * transferJob )
     updatePixmap();
 }
 void
-PodcastEpisode::setLocalUrl( const KURL &localUrl )
+PodcastEpisode::setLocalUrl( const KUrl &localUrl )
 {
     m_localUrl = localUrl;
     m_bundle.setLocalURL( m_localUrl );
@@ -2658,7 +2659,7 @@ PodcastEpisode::addToMediaDevice()
     if(!title().isEmpty())
         bundle->setTitle(title());
 
-    MediaBrowser::queue()->addURL( localUrl(), bundle );
+    MediaBrowser::queue()->addUrl( localUrl(), bundle );
 }
 
 void
@@ -2666,7 +2667,7 @@ PodcastEpisode::setLocalUrlBase( const QString &s )
 {
     QString filename = m_localUrl.filename();
     QString newL = s + filename;
-    m_localUrl = KURL::fromPathOrURL( newL );
+    m_localUrl = KUrl::fromPathOrUrl( newL );
 }
 
 void
@@ -2728,7 +2729,7 @@ PodcastEpisode::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
 
     if( buffer.isNull() )
     {
-        KListViewItem::paintCell( p, cg, column, width, align );
+        K3ListViewItem::paintCell( p, cg, column, width, align );
         return;
     }
 
@@ -2740,7 +2741,7 @@ PodcastEpisode::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
     pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor(0) );
 #endif
 
-    KListView *lv = static_cast<KListView *>( listView() );
+    K3ListView *lv = static_cast<K3ListView *>( listView() );
 
     QFont font( p->font() );
     QFontMetrics fm( p->fontMetrics() );
@@ -2790,8 +2791,8 @@ PodcastEpisode::updateInfo()
     str += body.arg( i18n( "Date" ),        m_bundle.date() );
     str += body.arg( i18n( "Author" ),      m_bundle.author() );
     str += body.arg( i18n( "Type" ),        m_bundle.type() );
-    str += body.arg( i18n( "URL" ),         m_bundle.url().prettyURL() );
-    str += body.arg( i18n( "Local URL" ),   isOnDisk() ? localUrl().prettyURL() : i18n( "n/a" ) );
+    str += body.arg( i18n( "URL" ),         m_bundle.url().prettyUrl() );
+    str += body.arg( i18n( "Local URL" ),   isOnDisk() ? localUrl().prettyUrl() : i18n( "n/a" ) );
     str += "</table></body></html>";
 
     PlaylistBrowser::instance()->setInfo( text(0), str );
@@ -2801,7 +2802,7 @@ PodcastEpisode::updateInfo()
 void
 PodcastEpisode::slotDoubleClicked()
 {
-    KURL::List list;
+    KUrl::List list;
 
     isOnDisk() ?
         list.append( localUrl() ):
@@ -2815,7 +2816,7 @@ PodcastEpisode::slotDoubleClicked()
 void
 PodcastEpisode::showContextMenu( const QPoint &position )
 {
-    KPopupMenu menu( listView() );
+    KMenu menu( listView() );
 
     enum Actions { LOAD, APPEND, QUEUE, GET, ASSOCIATE, DELETE, MEDIA_DEVICE, LISTENED, NEW, OPEN_WITH /* has to be last */ };
     menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), LOAD );
@@ -2836,7 +2837,7 @@ PodcastEpisode::showContextMenu( const QPoint &position )
     else
     {
         int i = 1;
-        KPopupMenu *openMenu = new KPopupMenu;
+        KMenu *openMenu = new KMenu;
         for( KTrader::OfferList::iterator it = offers.begin();
                 it != offers.end();
                 ++it )
@@ -2935,7 +2936,7 @@ PodcastEpisode::showContextMenu( const QPoint &position )
             break;
         case OPEN_WITH:
                 {
-                    KURL::List urlList;
+                    KUrl::List urlList;
                     urlList.append( isOnDisk() ? localUrl() : url() );
                     KRun::displayOpenWithDialog( urlList );
                 }
@@ -2950,7 +2951,7 @@ PodcastEpisode::showContextMenu( const QPoint &position )
                     ++it;
                 }
                 KService::Ptr ptr = offers.first();
-                KURL::List urlList;
+                KUrl::List urlList;
                 urlList.append( isOnDisk() ? localUrl() : url() );
                 if( it != offers.end() )
                 {
@@ -2964,20 +2965,20 @@ PodcastEpisode::showContextMenu( const QPoint &position )
 
 class AssociatePodcastDialog : public KDialogBase
 {
-    KURLRequester *m_urlRequester;
+    KUrlRequester *m_urlRequester;
 
     public:
     AssociatePodcastDialog( PodcastEpisode *item )
         : KDialogBase( Amarok::mainWindow(), "associatepodcastdialog", true, i18n("Select Local File for %1").arg(item->title()), Ok|Cancel, Ok, false )
     {
-        Q3VBox* vbox = makeVBoxMainWidget();
+        KVBox* vbox = makeVBoxMainWidget();
         vbox->setSpacing( KDialog::spacingHint() );
 
-        m_urlRequester = new KURLRequester( vbox );
+        m_urlRequester = new KUrlRequester( vbox );
         if( dynamic_cast<PodcastChannel *>(item->parent()) )
         m_urlRequester->setURL( static_cast<PodcastChannel *>(item->parent())->saveLocation() );
     }
-    KURL url() const { return KURL::fromPathOrURL( m_urlRequester->url() ); }
+    KUrl url() const { return KUrl::fromPathOrUrl( m_urlRequester->url() ); }
 };
 
 void
@@ -3172,7 +3173,7 @@ SmartPlaylist::xmlToQuery(const QDomElement &xml, bool forExpand /* = false */) 
             QDomElement criteria = criteriaList.item( j ).toElement();
             QString field = criteria.attribute( "field" );
             int table;
-            Q_INT64 value;
+            qint64 value;
             if ( !qb.getField( field, &table, &value ) ) continue;
 
             QStringList filters;
@@ -3308,7 +3309,7 @@ SmartPlaylist::xmlToQuery(const QDomElement &xml, bool forExpand /* = false */) 
         } else {
             // normal sort
             int table;
-            Q_INT64 value;
+            qint64 value;
             if ( !qb.getField( field, &table, &value ) ) continue;
             qb.sortBy( table, value, orderby.attribute( "order" ) == "DESC" );
         }
@@ -3383,7 +3384,7 @@ void SmartPlaylist::slotDoubleClicked()
 
 void SmartPlaylist::showContextMenu( const QPoint &position )
 {
-    KPopupMenu menu( listView() );
+    KMenu menu( listView() );
 
     enum Actions { LOAD, ADD, QUEUE, EDIT, REMOVE, MEDIADEVICE_COPY, MEDIADEVICE_SYNC };
 
@@ -3478,15 +3479,15 @@ void ShoutcastBrowser::setOpen( bool open )
 
     QStringList tmpdirs = KGlobal::dirs()->resourceDirs( "tmp" );
     QString tmpfile = tmpdirs[0];
-    tmpfile += "/amarok-genres-" + KApplication::randomString(10) + ".xml-";
+    tmpfile += "/amarok-genres-" + KRandom::randomString(10) + ".xml-";
 
     //get the genre list
     if ( !m_downloading )
     {
         m_downloading = true;
         m_cj = KIO::copy( "http://www.shoutcast.com/sbin/newxml.phtml", tmpfile, false );
-        connect( m_cj, SIGNAL( copyingDone( KIO::Job*, const KURL&, const KURL&, bool, bool))
-                , this, SLOT(doneGenreDownload(KIO::Job*, const KURL&, const KURL&, bool, bool )));
+        connect( m_cj, SIGNAL( copyingDone( KIO::Job*, const KUrl&, const KUrl&, bool, bool))
+                , this, SLOT(doneGenreDownload(KIO::Job*, const KUrl&, const KUrl&, bool, bool )));
         connect( m_cj, SIGNAL( result( KIO::Job* )), this, SLOT( jobFinished( KIO::Job* )));
     }
 
@@ -3503,7 +3504,7 @@ void ShoutcastBrowser::slotAnimation()
     s_iconCounter++;
 }
 
-void ShoutcastBrowser::doneGenreDownload( KIO::Job *job, const KURL &from, const KURL &to, bool directory, bool renamed )
+void ShoutcastBrowser::doneGenreDownload( KIO::Job *job, const KUrl &from, const KUrl &to, bool directory, bool renamed )
 {
     Q_UNUSED( job ); Q_UNUSED( from ); Q_UNUSED( directory ); Q_UNUSED( renamed );
 
@@ -3650,10 +3651,10 @@ void ShoutcastGenre::setOpen( bool open )
 
 void ShoutcastGenre::startGenreDownload( QString genre, QString tmppath )
 {
-    QString tmpfile = tmppath + "/amarok-list-" + genre + "-" + KApplication::randomString(10) + ".xml";
+    QString tmpfile = tmppath + "/amarok-list-" + genre + "-" + KRandom::randomString(10) + ".xml";
     KIO::CopyJob *cj = KIO::copy( "http://www.shoutcast.com/sbin/newxml.phtml?genre=" + genre, tmpfile, false );
-    connect( cj, SIGNAL( copyingDone     ( KIO::Job*, const KURL&, const KURL&, bool, bool ) ),
-             this,   SLOT( doneListDownload( KIO::Job*, const KURL&, const KURL&, bool, bool ) ) );
+    connect( cj, SIGNAL( copyingDone     ( KIO::Job*, const KUrl&, const KUrl&, bool, bool ) ),
+             this,   SLOT( doneListDownload( KIO::Job*, const KUrl&, const KUrl&, bool, bool ) ) );
     connect( cj, SIGNAL( result     ( KIO::Job* ) ),
              this,   SLOT( jobFinished( KIO::Job* ) ) );
     m_totalJobs++;
@@ -3669,7 +3670,7 @@ void ShoutcastGenre::slotAnimation()
     s_iconCounter++;
 }
 
-void ShoutcastGenre::doneListDownload( KIO::Job *job, const KURL &from, const KURL &to, bool directory, bool renamed )
+void ShoutcastGenre::doneListDownload( KIO::Job *job, const KUrl &from, const KUrl &to, bool directory, bool renamed )
 {
     Q_UNUSED( job ); Q_UNUSED( from ); Q_UNUSED( directory ); Q_UNUSED( renamed );
 

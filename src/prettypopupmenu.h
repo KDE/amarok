@@ -21,7 +21,7 @@
 #ifndef AMAROK_PRETTYPOPUPMENU_H
 #define AMAROK_PRETTYPOPUPMENU_H
 
-#include <kpopupmenu.h>
+#include <kmenu.h>
 
 #include <qcolor.h>
 #include <qimage.h>
@@ -34,15 +34,15 @@ class QSize;
 
 /**
  * @class PrettyPopup
- * @short KPopupMenu with a pixmap at the left side
+ * @short KMenu with a pixmap at the left side
  * @author Mark Kretschmann <markey@web.de>
  *
- * This class behaves just like KPopupMenu, but adds a decorative banner
+ * This class behaves just like KMenu, but adds a decorative banner
  * graphic at the left border of the menu.
  *
  * The idea and the code are based on the Kicker start menu from KDE.
  */
-class PrettyPopupMenu : public KPopupMenu
+class PrettyPopupMenu : public KMenu
 {
         Q_OBJECT
 

@@ -33,7 +33,7 @@
 #include <klineedit.h>
 #include <klocale.h>
 #include <kmessagebox.h>
-#include <kpopupmenu.h>
+#include <kmenu.h>
 #include <kpushbutton.h>
 #include <kwin.h>
 
@@ -41,7 +41,7 @@
 void
 Amarok::coverContextMenu( QWidget *parent, QPoint point, const QString &artist, const QString &album, bool showCoverManager )
 {
-        KPopupMenu menu;
+        KMenu menu;
         enum { SHOW, FETCH, CUSTOM, DELETE, MANAGER };
 
         menu.insertTitle( i18n( "Cover Image" ) );
@@ -77,7 +77,7 @@ Amarok::coverContextMenu( QWidget *parent, QPoint point, const QString &artist, 
             const int button = KMessageBox::warningContinueCancel( parent,
                 i18n( "Are you sure you want to remove this cover from the Collection?" ),
                 QString::null,
-                KStdGuiItem::del() );
+                KStandardGuiItem::del() );
 
             if ( button == KMessageBox::Continue )
                 CollectionDB::instance()->removeAlbumImage( artist, album );
@@ -98,12 +98,12 @@ Amarok::coverContextMenu( QWidget *parent, QPoint point, const QString &artist, 
             QString startPath = ":homedir";
 
             if ( !values.isEmpty() ) {
-                KURL url;
+                KUrl url;
                 url.setPath( values.first() );
                 startPath = url.directory();
             }
 
-            KURL file = KFileDialog::getImageOpenURL( startPath, parent, i18n("Select Cover Image File") );
+            KUrl file = KFileDialog::getImageOpenURL( startPath, parent, i18n("Select Cover Image File") );
             if ( !file.isEmpty() )
                 CollectionDB::instance()->setAlbumImage( artist, album, file );
             break;
@@ -237,7 +237,7 @@ CoverFetcher::startFetch()
     // changed to type=lite because it makes less traffic
     url = "http://xml.amazon." + tld
         + "/onca/xml3?t=webservices-20&dev-t=" + LICENSE
-        + "&KeywordSearch=" + KURL::encode_string_no_slash( query, mibenum )
+        + "&KeywordSearch=" + KUrl::encode_string_no_slash( query, mibenum )
         + "&mode=" + musicMode
         + "&type=lite&locale=" + AmarokConfig::amazonLocale()
         + "&page=1&f=xml";
@@ -375,7 +375,7 @@ CoverFetcher::attemptAnotherFetch()
         // Amazon suggested some more cover URLs to try before we
         // try a different query
 
-        KIO::TransferJob* job = KIO::storedGet( KURL(m_coverUrls.front()), false, false );
+        KIO::TransferJob* job = KIO::storedGet( KUrl(m_coverUrls.front()), false, false );
         connect( job, SIGNAL(result( KIO::Job* )), SLOT(finishedImageFetch( KIO::Job* )) );
 
         Amarok::StatusBar::instance()->newProgressOperation( job );
@@ -450,7 +450,7 @@ CoverFetcher::attemptAnotherFetch()
             int currentLocale = CoverFetcher::localeStringToID( AmarokConfig::amazonLocale() );
             amazonLocale->setCurrentItem( currentLocale );
 
-            KPushButton* cancelButton = new KPushButton( KStdGuiItem::cancel(), this );
+            KPushButton* cancelButton = new KPushButton( KStandardGuiItem::cancel(), this );
             KPushButton* searchButton = new KPushButton( i18n("&Search"), this );
 
             Q3HBoxLayout *hbox2 = new Q3HBoxLayout( 8 );
@@ -559,10 +559,10 @@ CoverFetcher::getUserQuery( QString explanation )
             QLabel      *labelPix  = new QLabel( this );
             QLabel      *labelName = new QLabel( this );
             Q3HBox       *buttons   = new Q3HBox( this );
-            KPushButton *save      = new KPushButton( KStdGuiItem::save(), buttons );
+            KPushButton *save      = new KPushButton( KStandardGuiItem::save(), buttons );
             KPushButton *newsearch = new KPushButton( i18n( "Ne&w Search..." ), buttons, "NewSearch" );
             KPushButton *nextcover = new KPushButton( i18n( "&Next Cover" ), buttons, "NextCover" );
-            KPushButton *cancel    = new KPushButton( KStdGuiItem::cancel(), buttons );
+            KPushButton *cancel    = new KPushButton( KStandardGuiItem::cancel(), buttons );
 
             labelPix ->setAlignment( Qt::AlignHCenter );
             labelName->setAlignment( Qt::AlignHCenter );

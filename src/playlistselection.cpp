@@ -28,11 +28,11 @@
 #include <kapplication.h>
 #include <kiconloader.h>
 #include <knuminput.h>
-#include <klistview.h>
+#include <k3listview.h>
 #include <klocale.h>
 
 PlaylistSelection::PlaylistSelection( QWidget* parent, char* name )
-    : KListView( parent, name )
+    : K3ListView( parent, name )
 {
     addColumn( i18n("Select Playlists") );
     setRootIsDecorated( true );

@@ -135,7 +135,7 @@ NjbTrack::NjbTrack( njb_songid_t* song)
     QString filename;
     if( frame )
     {
-        //bundle->setUrl( KURL( frame->data.strval ) );
+        //bundle->setUrl( KUrl( frame->data.strval ) );
         filename = frame->data.strval;
 
     }

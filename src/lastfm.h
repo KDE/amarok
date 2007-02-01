@@ -32,7 +32,7 @@
 class KLineEdit;
 class KAction;
 class KProcIO;
-class KURL;
+class KUrl;
 class Q3Socket;
 class QTimer;
 
@@ -45,7 +45,7 @@ class AmarokHttp : public QObject
     Q_OBJECT
 
     public:
-    AmarokHttp ( const QString & hostname, Q_UINT16 port = 80, QObject* parent = 0 );
+    AmarokHttp ( const QString & hostname, quint16 port = 80, QObject* parent = 0 );
     int get ( const QString & path );
     Q3Http::State state() const;
     QByteArray readAll ();
@@ -60,7 +60,7 @@ class AmarokHttp : public QObject
 
     protected:
     QString m_hostname;
-    Q_UINT16 m_port;
+    quint16 m_port;
     QString  m_path;
     Q3Http::State m_state;
     Q3Http::Error m_error;
@@ -80,7 +80,7 @@ namespace LastFm
         public:
             static Controller* instance();
 
-            KURL        getNewProxy( QString genreUrl );
+            KUrl        getNewProxy( QString genreUrl );
 
             bool        isPlaying() const { return m_service != 0; }
             WebService* getService() const { return m_service; }
@@ -253,7 +253,7 @@ namespace LastFm
     class MyServerSocket : public Q3ServerSocket
     {
         public:
-            MyServerSocket() : Q3ServerSocket( Q_UINT16( 0 ) ) {}
+            MyServerSocket() : Q3ServerSocket( quint16( 0 ) ) {}
 
         private:
             void newConnection( int ) {}

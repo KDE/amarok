@@ -5,7 +5,7 @@
 
 #include <kaction.h>
 #include <kdiroperator.h>
-#include <kpopupmenu.h>
+#include <kmenu.h>
 
 class Medium;
 
@@ -14,7 +14,7 @@ class MyDirOperator : public KDirOperator {
     Q_OBJECT
 
     public:
-        MyDirOperator( const KURL &url, QWidget *parent, Medium *medium = 0 );
+        MyDirOperator( const KUrl &url, QWidget *parent, Medium *medium = 0 );
 
     public slots:
         //reimplemented due to a bug in KDirOperator::activatedMenu ( KDE 3.4.2 ) - See Bug #103305

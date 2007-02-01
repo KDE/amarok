@@ -24,19 +24,19 @@
 #include "magnatunedatabasehandler.h"
 #include "magnatunetypes.h"
 
-#include <klistview.h>
+#include <k3listview.h>
 
 /**
-A specialized KListViewItem that encapsulates a MagnatuneArtist
+A specialized K3ListViewItem that encapsulates a MagnatuneArtist
 
 @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 
 
-class MagnatuneListViewArtistItem : public KListViewItem, public MagnatuneArtist
+class MagnatuneListViewArtistItem : public K3ListViewItem, public MagnatuneArtist
 {
 public:
-    MagnatuneListViewArtistItem(MagnatuneArtist artist, KListView * parent);
+    MagnatuneListViewArtistItem(MagnatuneArtist artist, K3ListView * parent);
 
     ~MagnatuneListViewArtistItem();
 
@@ -47,15 +47,15 @@ public:
 
 
 /**
-A specialized KListViewItem that encapsulates a MagnatuneAlbum
+A specialized K3ListViewItem that encapsulates a MagnatuneAlbum
 
 @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
  */
-class MagnatuneListViewAlbumItem : public KListViewItem, public MagnatuneAlbum
+class MagnatuneListViewAlbumItem : public K3ListViewItem, public MagnatuneAlbum
 {
 public:
 
-    MagnatuneListViewAlbumItem(MagnatuneAlbum album, KListViewItem * parent);
+    MagnatuneListViewAlbumItem(MagnatuneAlbum album, K3ListViewItem * parent);
     ~MagnatuneListViewAlbumItem();
 
     void setOpen( bool o );
@@ -65,15 +65,15 @@ public:
 
 
 /**
-A specialized KListViewItem that encapsulates a MagnatuneTrack
+A specialized K3ListViewItem that encapsulates a MagnatuneTrack
 
 @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
  */
-class MagnatuneListViewTrackItem : public KListViewItem, public MagnatuneTrack
+class MagnatuneListViewTrackItem : public K3ListViewItem, public MagnatuneTrack
 {
 public:
 
-    MagnatuneListViewTrackItem(MagnatuneTrack track, KListViewItem * parent);
+    MagnatuneListViewTrackItem(MagnatuneTrack track, K3ListViewItem * parent);
     ~MagnatuneListViewTrackItem();
 
 };

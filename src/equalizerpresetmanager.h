@@ -28,7 +28,7 @@
 
 class QPushButton;
 class QStringList;
-class KListView;
+class K3ListView;
 
 class EqualizerPresetManager : public KDialogBase
 {
@@ -50,7 +50,7 @@ class EqualizerPresetManager : public KDialogBase
 
     private:
         QMap< QString, Q3ValueList<int> > m_presets;
-        KListView* m_presetsView;
+        K3ListView* m_presetsView;
 
         //QPushButton* m_addBtn;
         QPushButton* m_renameBtn;

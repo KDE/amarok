@@ -38,7 +38,7 @@ void MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo * info )
 
     m_currentAlbumId = info->getAlbumId();
 
-    KURL downloadUrl = info->getCompleteDownloadUrl();
+    KUrl downloadUrl = info->getCompleteDownloadUrl();
     m_currentAlbumFileName = downloadUrl.fileName( false );
 
     m_currentAlbumUnpackLocation = info->getUnpackLocation();
@@ -48,7 +48,7 @@ void MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo * info )
     debug() << "Download: " << downloadUrl.url() << " to: " << m_currentAlbumUnpackLocation << endl;
     debug() << "Using temporary location: " << m_tempDir.name() + m_currentAlbumFileName << endl;
 
-    m_albumDownloadJob = KIO::file_copy( downloadUrl, KURL( m_tempDir.name() + m_currentAlbumFileName ), -1, true, false, false );
+    m_albumDownloadJob = KIO::file_copy( downloadUrl, KUrl( m_tempDir.name() + m_currentAlbumFileName ), -1, true, false, false );
 
     connect( m_albumDownloadJob, SIGNAL( result( KIO::Job* ) ), SLOT( albumDownloadComplete( KIO::Job* ) ) );
 
@@ -59,11 +59,11 @@ void MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo * info )
 
 void MagnatuneAlbumDownloader::downloadCover( QString albumCoverUrlString, QString fileName )
 {
-    KURL downloadUrl( albumCoverUrlString );
+    KUrl downloadUrl( albumCoverUrlString );
 
     debug() << "Download Cover: " << downloadUrl.url() << " to: " << m_tempDir.name() << fileName << endl;
 
-    m_albumDownloadJob = KIO::file_copy( downloadUrl, KURL( m_tempDir.name() + fileName ), -1, true, false, false );
+    m_albumDownloadJob = KIO::file_copy( downloadUrl, KUrl( m_tempDir.name() + fileName ), -1, true, false, false );
 
     connect( m_albumDownloadJob, SIGNAL( result( KIO::Job* ) ), SLOT( coverDownloadComplete( KIO::Job* ) ) );
 
@@ -110,11 +110,11 @@ void MagnatuneAlbumDownloader::albumDownloadComplete( KIO::Job * downloadJob )
 
 
 
-        KURL downloadUrl( coverUrlString );
+        KUrl downloadUrl( coverUrlString );
 
         debug() << "Adding cover " << downloadUrl.url() << " to collection at " << finalAlbumPath << endl;
 
-        m_albumDownloadJob = KIO::file_copy( downloadUrl, KURL( finalAlbumPath + "/cover.jpg" ), -1, true, false, false );
+        m_albumDownloadJob = KIO::file_copy( downloadUrl, KUrl( finalAlbumPath + "/cover.jpg" ), -1, true, false, false );
 
         connect( m_albumDownloadJob, SIGNAL( result( KIO::Job* ) ), SLOT( coverAddComplete( KIO::Job* ) ) );
 

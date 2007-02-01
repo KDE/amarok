@@ -63,7 +63,7 @@ protected:
 
     void changeTimeout( uint newTimeout )
     {
-        m_timer.changeInterval( newTimeout );
+        m_timer.start( newTimeout );
         m_timeout = newTimeout;
     }
 

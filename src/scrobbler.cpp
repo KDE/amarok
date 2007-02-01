@@ -27,7 +27,7 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 #include <klocale.h>
-#include <kmdcodec.h>
+#include <kcodecs.h>
 #include <kstandarddirs.h>
 #include <kurl.h>
 
@@ -535,9 +535,9 @@ void ScrobblerSubmitter::performSubmit()
 
 
         data =
-                "u=" + KURL::encode_string_no_slash( m_username ) +
+                "u=" + KUrl::encode_string_no_slash( m_username ) +
                 "&s=" +
-                KURL::encode_string_no_slash( KMD5( KMD5( m_password.utf8() ).hexDigest() +
+                KUrl::encode_string_no_slash( KMD5( KMD5( m_password.utf8() ).hexDigest() +
                 m_challenge.utf8() ).hexDigest() );
 
         m_submitQueue.first();
@@ -567,12 +567,12 @@ void ScrobblerSubmitter::performSubmit()
             const QString count = QString::number( submitCounter );
 
             data +=
-                    "a["  + count + "]=" + KURL::encode_string_no_slash( itemFromQueue->artist(), 106 /*utf-8*/ ) +
-                    "&t[" + count + "]=" + KURL::encode_string_no_slash( itemFromQueue->title(), 106 /*utf-8*/ ) +
-                    "&b[" + count + "]=" + KURL::encode_string_no_slash( itemFromQueue->album(), 106 /*utf-8*/ ) +
+                    "a["  + count + "]=" + KUrl::encode_string_no_slash( itemFromQueue->artist(), 106 /*utf-8*/ ) +
+                    "&t[" + count + "]=" + KUrl::encode_string_no_slash( itemFromQueue->title(), 106 /*utf-8*/ ) +
+                    "&b[" + count + "]=" + KUrl::encode_string_no_slash( itemFromQueue->album(), 106 /*utf-8*/ ) +
                     "&m[" + count + "]=" +
                     "&l[" + count + "]=" + QString::number( itemFromQueue->length() ) +
-                    "&i[" + count + "]=" + KURL::encode_string_no_slash( playStartTime.toString( "yyyy-MM-dd hh:mm:ss" ) );
+                    "&i[" + count + "]=" + KUrl::encode_string_no_slash( playStartTime.toString( "yyyy-MM-dd hh:mm:ss" ) );
         }
     }
 
@@ -714,7 +714,7 @@ void ScrobblerSubmitter::audioScrobblerHandshakeResult( KIO::Job* job ) //SLOT
     {
         QString reason = m_submitResultBuffer.mid( 0, m_submitResultBuffer.find( "\n" ) );
         if ( reason.length() > 6 )
-            reason = reason.mid( 7 ).stripWhiteSpace();
+            reason = reason.mid( 7 ).trimmed();
 
         warning() << "Handshake failed (" << reason << ")" << endl;
         QString interval = m_submitResultBuffer.section( "\n", 1, 1 );
@@ -775,7 +775,7 @@ void ScrobblerSubmitter::audioScrobblerSubmitResult( KIO::Job* job ) //SLOT
     {
         QString reason = m_submitResultBuffer.mid( 0, m_submitResultBuffer.find( "\n" ) );
         if ( reason.length() > 6 )
-            reason = reason.mid( 7 ).stripWhiteSpace();
+            reason = reason.mid( 7 ).trimmed();
 
         warning() << "Submit failed (" << reason << ")" << endl;
 
@@ -1135,8 +1135,8 @@ bool ScrobblerSubmitter::schedule( bool failure )
 
     if ( failure )
     {
-        m_backoff = kMin( kMax( m_backoff * 2, unsigned( MIN_BACKOFF ) ), unsigned( MAX_BACKOFF ) );
-        when = kMax( m_backoff, m_interval );
+        m_backoff = qMin( qMax( m_backoff * 2, unsigned( MIN_BACKOFF ) ), unsigned( MAX_BACKOFF ) );
+        when = qMax( m_backoff, m_interval );
     }
     else
         m_backoff = 0;

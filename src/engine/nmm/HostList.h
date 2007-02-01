@@ -25,14 +25,14 @@
 #ifndef HOSTLIST_H
 #define HOSTLIST_H
 
-#include <klistview.h>
+#include <k3listview.h>
 //Added by qt3to4:
 #include <QEvent>
 #include <QMouseEvent>
 
 class HostListItem;
 
-class HostList : public KListView
+class HostList : public K3ListView
 {
   Q_OBJECT
 

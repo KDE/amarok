@@ -13,7 +13,7 @@
 #include "engineobserver.h"
 
 #include <ktabwidget.h>
-#include <ktoolbarbutton.h>
+
 #include <kurl.h>
 //Added by qt3to4:
 #include <Q3CString>
@@ -23,7 +23,7 @@ class ClickLineEdit;
 class CollectionDB;
 class Color;
 class HTMLView;
-class KPopupMenu;
+class KMenu;
 class MetaBundle;
 class QPalette;
 class Q3VBox;
@@ -56,13 +56,13 @@ class ContextBrowser : public KTabWidget, public EngineObserver
 
         void setFont( const QFont& );
         void reloadStyleSheet();
-        static KURL::List expandURL( const KURL &url ); // expand urls (album, compilation, ...)
-        static bool hasContextProtocol( const KURL &url ); // is url expandable by context browser?
+        static KUrl::List expandURL( const KUrl &url ); // expand urls (album, compilation, ...)
+        static bool hasContextProtocol( const KUrl &url ); // is url expandable by context browser?
 
         virtual bool eventFilter( QObject *o, QEvent *e ); //required by the labels dialog
 
     public slots:
-        void openURLRequest(const KURL &url );
+        void openURLRequest(const KUrl &url );
         void collectionScanStarted();
         void collectionScanDone( bool changed );
         void renderView();
@@ -81,7 +81,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
     private slots:
         void tabChanged( QWidget *page );
         void slotContextMenu( const QString& urlString, const QPoint& point );
-        void showContext( const KURL& url, bool fromHistory = false );
+        void showContext( const KUrl& url, bool fromHistory = false );
         void showCurrentTrack();
         void showLyrics( const QString& url = QString::null );
         void showWikipedia( const QString& url = QString::null, bool fromHistory = false, bool replaceHistory = false );
@@ -160,7 +160,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         bool          m_dirtyWikiPage;
 
         QStringList   m_contextBackHistory;
-        KURL          m_contextURL;
+        KUrl          m_contextURL;
 
         QString       m_styleSheet;
         bool          m_emptyDB;
@@ -185,8 +185,8 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         QString       m_wikiCurrentEntry;
         QStringList   m_wikiBackHistory;
         QStringList   m_wikiForwardHistory;
-        KPopupMenu*   m_wikiBackPopup;
-        KPopupMenu*   m_wikiForwardPopup;
+        KMenu*   m_wikiBackPopup;
+        KMenu*   m_wikiForwardPopup;
         KIO::TransferJob* m_wikiJob;
         Browser::ToolBar* m_wikiToolBar;
         QLineEdit*    m_wikiLocaleEdit;
@@ -195,7 +195,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
 
         QString       m_HTMLSource;
         QStringList   m_metadataHistory;
-        KURL          m_currentURL;
+        KUrl          m_currentURL;
 
         bool          m_relatedOpen;
         bool          m_suggestionsOpen;

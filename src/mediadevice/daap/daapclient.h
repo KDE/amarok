@@ -46,7 +46,7 @@ class MediaItem;
 class ServerItem;
 class DaapServer;
 
-class KURL;
+class KUrl;
 
 class QCheckBox;
 class QString;
@@ -76,7 +76,7 @@ class DaapClient : public MediaDevice
 
         int incRevision( const QString& host );
         int getSession( const QString& host );
-        KURL getProxyUrl( const KURL& url );
+        KUrl getProxyUrl( const KUrl& url );
         void customClicked();
         bool autoConnect() { return true; }
 
@@ -103,8 +103,8 @@ class DaapClient : public MediaDevice
         void broadcastButtonToggled();
 
    private:
-        ServerItem* newHost( const QString& serviceName, const QString& host, const QString& ip, const Q_INT16 port );
-        void downloadSongs( KURL::List urls );
+        ServerItem* newHost( const QString& serviceName, const QString& host, const QString& ip, const qint16 port );
+        void downloadSongs( KUrl::List urls );
         QString resolve( const QString& hostname );
 #if DNSSD_SUPPORT
         QString serverKey( const DNSSD::RemoteService* service ) const;
@@ -133,7 +133,7 @@ class ServerItem : public QObject, public MediaItem
     Q_OBJECT
 
     public:
-        ServerItem( Q3ListView* parent, DaapClient* client, const QString& ip, Q_UINT16 port, const QString& title, const QString& host );
+        ServerItem( Q3ListView* parent, DaapClient* client, const QString& ip, quint16 port, const QString& title, const QString& host );
         ~ServerItem();
         void setOpen( bool o );
         void resetTitle()                     { setText( 0, m_title ); }
@@ -146,7 +146,7 @@ class ServerItem : public QObject, public MediaItem
 
         QString key() const { return key( m_host, m_port ); }
         void reset();
-        static QString key( const QString& host, Q_UINT16 port ) { return host + ':' + QString::number( port ); }
+        static QString key( const QString& host, quint16 port ) { return host + ':' + QString::number( port ); }
     public slots:
         void httpError( const QString& );
     private slots:
@@ -156,7 +156,7 @@ class ServerItem : public QObject, public MediaItem
         DaapClient     *m_daapClient;
         Daap::Reader   *m_reader;
         const QString   m_ip;
-        const Q_UINT16  m_port;
+        const quint16  m_port;
         const QString   m_title;
         const QString   m_host;
         bool            m_loaded;
@@ -172,7 +172,7 @@ class DaapDownloader : public ThreadManager::Job
 {
 Q_OBJECT
 public:
-    DaapDownloader( KURL::List urls );
+    DaapDownloader( KUrl::List urls );
 
     virtual bool doJob();
 
@@ -184,7 +184,7 @@ private slots:
     void downloadFailed( const QString &error );
 
 private:
-    KURL::List m_urls;
+    KUrl::List m_urls;
     Q3ValueList<KTempFile*> m_tempFileList;
     bool m_ready;
     bool m_successful;

@@ -76,7 +76,7 @@ public:
 };
 
 
-UrlLoader::UrlLoader( const KURL::List &urls, Q3ListViewItem *after, int options )
+UrlLoader::UrlLoader( const KUrl::List &urls, Q3ListViewItem *after, int options )
         : ThreadManager::DependentJob( Playlist::instance(), "UrlLoader" )
         , m_markerListViewItem( new PlaylistItem( Playlist::instance(), after ) )
         , m_playFirstUrl( options & (Playlist::StartPlay | Playlist::DirectPlay) )
@@ -102,8 +102,8 @@ UrlLoader::UrlLoader( const KURL::List &urls, Q3ListViewItem *after, int options
             .setAbortSlot( this, SLOT(abort()) )
             .setTotalSteps( 100 );
 
-    foreachType( KURL::List, urls ) {
-        const KURL url = Amarok::mostLocalURL( *it );
+    foreachType( KUrl::List, urls ) {
+        const KUrl url = Amarok::mostLocalURL( *it );
         // FIXME: url needs detach()ing
         const QString protocol = url.protocol();
 
@@ -148,7 +148,7 @@ UrlLoader::UrlLoader( const KURL::List &urls, Q3ListViewItem *after, int options
             if( reply.isValid() ) {
                 const QStringList properties = reply;
                 // properties[6] is the mount point
-                KURL localUrl = KURL( properties[6] + filePath );
+                KUrl localUrl = KUrl( properties[6] + filePath );
 
                 // add urls
                 if( QFileInfo( localUrl.path() ).isDir() )
@@ -167,7 +167,7 @@ UrlLoader::UrlLoader( const KURL::List &urls, Q3ListViewItem *after, int options
         else {
             // this is the best way I found for recursing if required
             // and not recusring if not required
-            const KURL::List urls = recurse( url );
+            const KUrl::List urls = recurse( url );
 
             // recurse only works on directories, else it swallows the URL
             if( urls.isEmpty() )
@@ -194,10 +194,10 @@ UrlLoader::doJob()
 {
     setProgressTotalSteps( m_URLs.count() );
 
-    KURL::List urls;
-    for( for_iterators( KURL::List, m_URLs ); it != end && !isAborted(); ++it )
+    KUrl::List urls;
+    for( for_iterators( KUrl::List, m_URLs ); it != end && !isAborted(); ++it )
     {
-        const KURL &url = *it;
+        const KUrl &url = *it;
 
         incrementProgress();
 
@@ -241,7 +241,7 @@ UrlLoader::customEvent( QCustomEvent *e)
         {
             //passing by value is quick for QValueLists, though it is slow
             //if we change the list, but this is unlikely
-            KURL::List::Iterator jt;
+            KUrl::List::Iterator jt;
             int alreadyOnPlaylist = 0;
 
             PlaylistItem *item = 0;
@@ -340,7 +340,7 @@ UrlLoader::completeJob()
         for ( uint it = 0; it < m_badURLs.count(); it++  )
         {
             if( it < 5 )
-                text += QString("<br>%1").arg( m_badURLs[it].prettyURL() );
+                text += QString("<br>%1").arg( m_badURLs[it].prettyUrl() );
             else if( it == 5 )
                 text += QString("<br>Plus %1 more").arg( m_badURLs.count() - it );
             debug() << "\t" << m_badURLs[it] << endl;
@@ -357,16 +357,16 @@ UrlLoader::completeJob()
     QApplication::sendEvent( dependent(), this );
 }
 
-KURL::List
-UrlLoader::recurse( const KURL &url )
+KUrl::List
+UrlLoader::recurse( const KUrl &url )
 {
-    typedef QMap<QString, KURL> FileMap;
+    typedef QMap<QString, KUrl> FileMap;
 
     KDirLister lister( false );
     lister.setAutoUpdate( false );
     lister.setAutoErrorHandlingEnabled( false, 0 );
     if ( !lister.openURL( url ) )
-        return KURL::List();
+        return KUrl::List();
 
     // Fucking KDirLister sometimes hangs on remote media, so we add a timeout
     const int timeout = 3000; // ms
@@ -377,7 +377,7 @@ UrlLoader::recurse( const KURL &url )
         kapp->eventLoop()->processEvents( QEventLoop::ExcludeUserInput );
 
     KFileItemList items = lister.items(); //returns QPtrList, so we MUST only do it once!
-    KURL::List urls;
+    KUrl::List urls;
     FileMap files;
     for( KFileItem *item = items.first(); item; item = items.next() ) {
         if( item->isFile() ) { files[item->name()] = item->url(); continue; }
@@ -398,19 +398,19 @@ namespace Amarok
 {
 
 // almost the same as UrlLoader::recurse, but global
-KURL::List
-recursiveUrlExpand( const KURL &url, int maxURLs )
+KUrl::List
+recursiveUrlExpand( const KUrl &url, int maxURLs )
 {
-    typedef QMap<QString, KURL> FileMap;
+    typedef QMap<QString, KUrl> FileMap;
 
     if( url.protocol() != "file" || !QFileInfo( url.path() ).isDir() )
-        return KURL::List( url );
+        return KUrl::List( url );
 
     MyDirLister lister( false );
     lister.setAutoUpdate( false );
     lister.setAutoErrorHandlingEnabled( false, 0 );
     if ( !lister.openURL( url ) )
-        return KURL::List();
+        return KUrl::List();
 
     // Fucking KDirLister sometimes hangs on remote media, so we add a timeout
     const int timeout = 3000; // ms
@@ -421,7 +421,7 @@ recursiveUrlExpand( const KURL &url, int maxURLs )
         kapp->eventLoop()->processEvents( QEventLoop::ExcludeUserInput );
 
     KFileItemList items = lister.items(); //returns QPtrList, so we MUST only do it once!
-    KURL::List urls;
+    KUrl::List urls;
     FileMap files;
     for( KFileItem *item = items.first(); item; item = items.next() ) {
         if( maxURLs >= 0 && (int)(urls.count() + files.count()) >= maxURLs )
@@ -446,11 +446,11 @@ recursiveUrlExpand( const KURL &url, int maxURLs )
     return urls;
 }
 
-KURL::List
-recursiveUrlExpand( const KURL::List &list, int maxURLs )
+KUrl::List
+recursiveUrlExpand( const KUrl::List &list, int maxURLs )
 {
-    KURL::List urls;
-    foreachType( KURL::List, list )
+    KUrl::List urls;
+    foreachType( KUrl::List, list )
     {
         if( maxURLs >= 0 && (int)urls.count() >= maxURLs )
             break;
@@ -463,7 +463,7 @@ recursiveUrlExpand( const KURL::List &list, int maxURLs )
 } // Amarok
 
 void
-UrlLoader::loadXml( const KURL &url )
+UrlLoader::loadXml( const KUrl &url )
 {
     QFile file( url.path() );
     if( !file.open( QIODevice::ReadOnly ) ) {
@@ -491,7 +491,7 @@ UrlLoader::loadXml( const KURL &url )
                 //TODO add a link to the path to the playlist
                 "The XML in the playlist was invalid. Please report this as a bug to the Amarok "
                 "developers. Thank you." ), KDE::StatusBar::Error );
-        ::error() << "[PLAYLISTLOADER]: Error in " << m_currentURL.prettyURL() << ": " << loader.lastError() << endl;
+        ::error() << "[PLAYLISTLOADER]: Error in " << m_currentURL.prettyUrl() << ": " << loader.lastError() << endl;
     }
 }
 
@@ -592,18 +592,18 @@ PlaylistFile::loadM3u( Q3TextStream &stream )
 
         else if( !line.startsWith( "#" ) && !line.isEmpty() )
         {
-            // KURL::isRelativeURL() expects absolute URLs to start with a protocol, so prepend it if missing
+            // KUrl::isRelativeUrl() expects absolute URLs to start with a protocol, so prepend it if missing
             QString url = line;
             if( url.startsWith( "/" ) )
                 url.prepend( "file://" );
 
-            if( KURL::isRelativeURL( url ) ) {
-                KURL kurl( KURL::fromPathOrURL( directory + line ) );
+            if( KUrl::isRelativeUrl( url ) ) {
+                KUrl kurl( KUrl::fromPathOrUrl( directory + line ) );
                 kurl.cleanPath();
                 b.setPath( kurl.path() );
             }
             else {
-                b.setUrl( KURL::fromPathOrURL( line ) );
+                b.setUrl( KUrl::fromPathOrUrl( line ) );
             }
 
             // Ensure that we always have a title: use the URL as fallback
@@ -643,7 +643,7 @@ PlaylistFile::loadPls( Q3TextStream &stream )
      */
     while (!stream.atEnd()) {
         tmp = stream.readLine();
-        tmp = tmp.stripWhiteSpace();
+        tmp = tmp.trimmed();
         if (tmp.isEmpty())
             continue;
         lines.append(tmp);
@@ -657,7 +657,7 @@ PlaylistFile::loadPls( Q3TextStream &stream )
             continue;
         }
         if (tmp.contains(regExp_NumberOfEntries)) {
-            numberOfEntries = tmp.section('=', -1).stripWhiteSpace().toUInt();
+            numberOfEntries = tmp.section('=', -1).trimmed().toUInt();
             continue;
         }
     }
@@ -698,8 +698,8 @@ PlaylistFile::loadPls( Q3TextStream &stream )
             index = loadPls_extractIndex(*i);
             if (index > numberOfEntries || index == 0)
                 continue;
-            tmp = (*i).section('=', 1).stripWhiteSpace();
-            m_bundles[index - 1].setUrl(KURL::fromPathOrURL(tmp));
+            tmp = (*i).section('=', 1).trimmed();
+            m_bundles[index - 1].setUrl(KUrl::fromPathOrUrl(tmp));
             // Ensure that if the entry has no title, we show at least the URL as title
             m_bundles[index - 1].setTitle(tmp);
             continue;
@@ -709,7 +709,7 @@ PlaylistFile::loadPls( Q3TextStream &stream )
             index = loadPls_extractIndex(*i);
             if (index > numberOfEntries || index == 0)
                 continue;
-            tmp = (*i).section('=', 1).stripWhiteSpace();
+            tmp = (*i).section('=', 1).trimmed();
             m_bundles[index - 1].setTitle(tmp);
             continue;
         }
@@ -718,7 +718,7 @@ PlaylistFile::loadPls( Q3TextStream &stream )
             index = loadPls_extractIndex(*i);
             if (index > numberOfEntries || index == 0)
                 continue;
-            tmp = (*i).section('=', 1).stripWhiteSpace();
+            tmp = (*i).section('=', 1).trimmed();
             m_bundles[index - 1].setLength(tmp.toInt(&ok));
             Q_ASSERT(ok);
             continue;
@@ -729,7 +729,7 @@ PlaylistFile::loadPls( Q3TextStream &stream )
         }
         if ((*i).contains(regExp_Version)) {
             // Have the "Version=#" line.
-            tmp = (*i).section('=', 1).stripWhiteSpace();
+            tmp = (*i).section('=', 1).trimmed();
             // We only support Version=2
             if (tmp.toUInt(&ok) != 2)
                 warning() << ".pls playlist: Unsupported version." << endl;
@@ -750,7 +750,7 @@ PlaylistFile::loadXSPF( Q3TextStream &stream )
 
     foreachType( XSPFtrackList, trackList )
     {
-        KURL location = (*it).location;
+        KUrl location = (*it).location;
         QString artist = (*it).creator;
         QString title  = (*it).title;
         QString album  = (*it).album;
@@ -802,7 +802,7 @@ PlaylistFile::loadPls_extractIndex( const QString &str ) const
     unsigned int ret;
     QString tmp(str.section('=', 0, 0));
     tmp.remove(QRegExp("^\\D*"));
-    ret = tmp.stripWhiteSpace().toUInt(&ok);
+    ret = tmp.trimmed().toUInt(&ok);
     Q_ASSERT(ok);
     return ret;
 }
@@ -820,7 +820,7 @@ PlaylistFile::loadRealAudioRam( Q3TextStream &stream )
         if (url == "--stop--") break; /* stop line */
         if ((url.left(7) == "rtsp://") || (url.left(6) == "pnm://") || (url.left(7) == "http://"))
         {
-            b.setUrl(KURL(url));
+            b.setUrl(KUrl(url));
             m_bundles += b;
             b = MetaBundle();
         }
@@ -923,7 +923,7 @@ PlaylistFile::loadASX( Q3TextStream &stream )
           {
 	     if (title.isNull())
                 title = url;
-                b.setUrl(KURL(url));
+                b.setUrl(KUrl(url));
                 m_bundles += b;
                 b = MetaBundle();
 	   }
@@ -949,7 +949,7 @@ PlaylistFile::loadSMIL( Q3TextStream &stream )
 	if( root.nodeName().lower() != "smil" )
        return false;
 
-	KURL kurl;
+	KUrl kurl;
 	QString url;
 	QDomNodeList nodeList;
 	QDomNode node;
@@ -991,7 +991,7 @@ PlaylistFile::loadSMIL( Q3TextStream &stream )
 #include <kio/job.h>
 #include <klocale.h>
 
-RemotePlaylistFetcher::RemotePlaylistFetcher( const KURL &source, Q3ListViewItem *after, int options )
+RemotePlaylistFetcher::RemotePlaylistFetcher( const KUrl &source, Q3ListViewItem *after, int options )
         : QObject( Playlist::instance()->qscrollview() )
         , m_source( source )
         , m_after( after )
@@ -1052,7 +1052,7 @@ RemotePlaylistFetcher::result( KIO::Job *job )
 /// @class SqlLoader
 
 SqlLoader::SqlLoader( const QString &sql, Q3ListViewItem *after, int options )
-        : UrlLoader( KURL::List(), after, options )
+        : UrlLoader( KUrl::List(), after, options )
         , m_sql( Q3DeepCopy<QString>( sql ) )
 {
     // Ovy: just until we make sure every SQL query from dynamic playlists is handled

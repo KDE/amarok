@@ -62,7 +62,7 @@ extern "C"
 
 
 ///returns the configuration we will use
-static inline Q3CString configPath() { return QFile::encodeName( QDir::homeDirPath() + "/.helix/config" ); }
+static inline Q3CString configPath() { return QFile::encodeName( QDir::homePath() + "/.helix/config" ); }
 
 
 HelixEngine::HelixEngine()
@@ -282,7 +282,7 @@ HelixEngine::init()
 
 
 bool
-HelixEngine::load( const KURL &url, bool isStream )
+HelixEngine::load( const KUrl &url, bool isStream )
 {
    debug() << "In load " << url.url() << endl;
 
@@ -402,7 +402,7 @@ HelixEngine::cleanup()
    if (!m_inited)
       return;
 
-   m_url = KURL();
+   m_url = KUrl();
    PlayerControl::stop(); // stop all players
    resetScope(0);
    resetScope(1);
@@ -543,12 +543,12 @@ HelixEngine::setVolumeSW( uint vol )
 
 
 bool
-HelixEngine::canDecode( const KURL &url ) const
+HelixEngine::canDecode( const KUrl &url ) const
 {
    if (!m_inited)
       return false;
 
-   debug() << "In canDecode " << url.prettyURL() << endl;
+   debug() << "In canDecode " << url.prettyUrl() << endl;
 
    if (url.protocol() == "http" || url.protocol() == "rtsp")
       return true;

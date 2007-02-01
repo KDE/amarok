@@ -38,7 +38,7 @@
  * to stop would be bad because some components behave differently when the engine is
  * Empty or not. You are Idle because you still have a URL assigned.
  *
- * load( KURL ) is a key function because after this point your engine is loaded, and
+ * load( KUrl ) is a key function because after this point your engine is loaded, and
  * Amarok will expect you to be able to play the URL until stop() or another load() is
  * called.
  *
@@ -101,7 +101,7 @@ namespace Engine
          * @param url The URL of the file/stream.
          * @return True if we can play the URL.
          */
-        virtual bool canDecode( const KURL &url ) const = 0;
+        virtual bool canDecode( const KUrl &url ) const = 0;
 
         /**
          * Determines if current track is a stream.
@@ -115,7 +115,7 @@ namespace Engine
          * @param stream True if URL is a stream.
          * @return True for success.
          */
-        virtual bool load( const KURL &url, bool stream = false );
+        virtual bool load( const KUrl &url, bool stream = false );
 
         /**
          * Load new track and start Playback. Convenience function for Amarok to use.
@@ -123,7 +123,7 @@ namespace Engine
          * @param stream True if URL is a stream.
          * @return True for success.
          */
-        bool play( const KURL &u, bool stream = false ) { return load( u, stream ) && play(); }
+        bool play( const KUrl &u, bool stream = false ) { return load( u, stream ) && play(); }
 
         /**
          * Start playback.
@@ -210,18 +210,18 @@ namespace Engine
          * @param bundle the SimpleMetaBundle to fill
          * @return true if metadata found, false otherwise
          */
-        virtual bool metaDataForUrl(const KURL &, Engine::SimpleMetaBundle &)
+        virtual bool metaDataForUrl(const KUrl &, Engine::SimpleMetaBundle &)
         { return false; }
 
         /** returns true if this engine performs some special action to play
-         * audio cds: in this case, the KURL::List is filled with the urls of
+         * audio cds: in this case, the KUrl::List is filled with the urls of
          * the songs in the cd...
          *
          * @param device the cdrom device , with QString::null meaning use engine-specific default value
          * @param urls the list of urls for AudioCD tracks to fill
          * @return true if the engine has the feature of reading from audio cds, false otherwise (note that this should return true also in case of error if the engine is capable of reading audio cds in general...)
          * */
-        virtual bool getAudioCDContents(const QString &, KURL::List &)
+        virtual bool getAudioCDContents(const QString &, KUrl::List &)
         { return false; }
 
         /** flush the current stream buffer */
@@ -250,7 +250,7 @@ namespace Engine
     protected:
         static const int SCOPESIZE = 1024;
         uint  m_volume;
-        KURL  m_url;
+        KUrl  m_url;
         Scope m_scope;
         bool  m_isStream;
     };

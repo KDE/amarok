@@ -34,11 +34,11 @@
 #include <kdiroperator.h>
 #include <kiconloader.h>
 #include <kio/netaccess.h>
-#include <klistview.h>
+#include <k3listview.h>
 #include <klocale.h>
-#include <kpopupmenu.h>
+#include <kmenu.h>
 #include <kpushbutton.h>     ///@see SearchPane
-#include <ktoolbarbutton.h>  ///@see ctor
+  ///@see ctor
 #include <kurlcombobox.h>
 #include <kurlcompletion.h>
 
@@ -77,29 +77,29 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
     KActionCollection *actionCollection;
     SearchPane *searchPane;
 
-    KURL *location;
+    KUrl *location;
 
     // Try to keep filebrowser working even if not in a medium context
     // so if a medium object not passed in, keep earlier behavior
     if (!medium) {
         m_medium = 0;
-        location = new KURL( Amarok::config( "Filebrowser" )->readPathEntry( "Location", QDir::homeDirPath() ) );
+        location = new KUrl( Amarok::config( "Filebrowser" )->readPathEntry( "Location", QDir::homePath() ) );
         KFileItem *currentFolder = new KFileItem( KFileItem::Unknown, KFileItem::Unknown, *location );
         //KIO sucks, NetAccess::exists puts up a dialog and has annoying error message boxes
         //if there is a problem so there is no point in using it anyways.
         //so... setting the diroperator to ~ is the least sucky option
         if ( !location->isLocalFile() || !currentFolder->isReadable() ) {
             delete location;
-            location = new KURL( QDir::homeDirPath() ) ;
+            location = new KUrl( QDir::homePath() ) ;
         }
     }
     else{
         m_medium = medium;
-        location = new KURL( m_medium->mountPoint() );
+        location = new KUrl( m_medium->mountPoint() );
     }
 
     KActionCollection* ac = new KActionCollection( this );
-    KStdAction::selectAll( this, SLOT( selectAll() ), ac, "filebrowser_select_all" );
+    KStandardAction::selectAll( this, SLOT( selectAll() ), ac, "filebrowser_select_all" );
 
     KToolBar *toolbar = new Browser::ToolBar( this );
 
@@ -130,10 +130,10 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         box->setBackgroundMode( Qt::PaletteBase );
 
         //folder selection combo box
-        m_combo = new KURLComboBox( KURLComboBox::Directories, true, box, "path combo" );
+        m_combo = new KUrlComboBox( KUrlComboBox::Directories, true, box, "path combo" );
 
         if (!m_medium){
-            m_combo->setCompletionObject( new KURLCompletion( KURLCompletion::DirCompletion ) );
+            m_combo->setCompletionObject( new KUrlCompletion( KUrlCompletion::DirCompletion ) );
             m_combo->setAutoDeleteCompletionObject( true );
         }
         m_combo->setMaxItems( 9 );
@@ -258,14 +258,14 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
     }
 
     connect( m_filter, SIGNAL(textChanged( const QString& )), SLOT(setFilter( const QString& )) );
-    connect( m_combo, SIGNAL(urlActivated( const KURL& )), SLOT(setUrl( const KURL& )) );
+    connect( m_combo, SIGNAL(urlActivated( const KUrl& )), SLOT(setUrl( const KUrl& )) );
     connect( m_combo, SIGNAL(returnPressed( const QString& )), SLOT(setUrl( const QString& )) );
     connect( m_dir, SIGNAL(viewChanged( KFileView* )), SLOT(slotViewChanged( KFileView* )) );
     connect( m_dir, SIGNAL(fileSelected( const KFileItem* )), SLOT(activate( const KFileItem* )) );
-    connect( m_dir, SIGNAL(urlEntered( const KURL& )), SLOT(urlChanged( const KURL& )) );
-    connect( m_dir, SIGNAL(urlEntered( const KURL& )), searchPane, SLOT(urlChanged( const KURL& )) );
-    connect( m_dir, SIGNAL(dropped( const KFileItem*, QDropEvent*, const KURL::List& )),
-                        SLOT(dropped( const KFileItem*, QDropEvent*, const KURL::List& )) );
+    connect( m_dir, SIGNAL(urlEntered( const KUrl& )), SLOT(urlChanged( const KUrl& )) );
+    connect( m_dir, SIGNAL(urlEntered( const KUrl& )), searchPane, SLOT(urlChanged( const KUrl& )) );
+    connect( m_dir, SIGNAL(dropped( const KFileItem*, QDropEvent*, const KUrl::List& )),
+                        SLOT(dropped( const KFileItem*, QDropEvent*, const KUrl::List& )) );
 
     setSpacing( 4 );
     setFocusProxy( m_dir ); //so the dirOperator is focused when we get focus events
@@ -286,14 +286,14 @@ FileBrowser::~FileBrowser()
 
 //END Constructor/Destructor
 
-void FileBrowser::setUrl( const KURL &url )
+void FileBrowser::setUrl( const KUrl &url )
 {
     m_dir->setFocus();
     if (!m_medium)
         m_dir->setURL( url, true );
     else {
-        QString urlpath = url.isLocalFile() ? url.path() : url.prettyURL();
-        KURL newURL( urlpath.prepend( m_medium->mountPoint() ).remove("..") );
+        QString urlpath = url.isLocalFile() ? url.path() : url.prettyUrl();
+        KUrl newURL( urlpath.prepend( m_medium->mountPoint() ).remove("..") );
         //debug() << "set-url-kurl: changing to: " << newURL.path() << endl;
         m_dir->setURL( newURL, true );
     }
@@ -302,9 +302,9 @@ void FileBrowser::setUrl( const KURL &url )
 void FileBrowser::setUrl( const QString &url )
 {
     if (!m_medium)
-        m_dir->setURL( KURL(url), true );
+        m_dir->setURL( KUrl(url), true );
     else{
-        KURL newURL( QString(url).prepend( m_medium->mountPoint() ).remove("..") );
+        KUrl newURL( QString(url).prepend( m_medium->mountPoint() ).remove("..") );
         //debug() << "set-url-qstring: changing to: " << newURL.path() << endl;
         m_dir->setURL( newURL, true );
     }
@@ -312,16 +312,16 @@ void FileBrowser::setUrl( const QString &url )
 
 //BEGIN Private Methods
 
-KURL::List FileBrowser::selectedItems()
+KUrl::List FileBrowser::selectedItems()
 {
-    KURL::List list;
+    KUrl::List list;
     for( KFileItemListIterator it( m_dir->selectedItems()->count() ? *m_dir->selectedItems() : *m_dir->view()->items() ); *it; ++it )
         list.append( (*it)->url() );
 
     return list;
 }
 
-void FileBrowser::playlistFromURLs( const KURL::List &urls )
+void FileBrowser::playlistFromURLs( const KUrl::List &urls )
 {
     QString suggestion;
     if( urls.count() == 1 && QFileInfo( urls.first().path() ).isDir() )
@@ -368,14 +368,14 @@ FileBrowser::setFilter( const QString &text )
 }
 
 void
-FileBrowser::dropped( const KFileItem* /*item*/, QDropEvent* event, const KURL::List &urls){
+FileBrowser::dropped( const KFileItem* /*item*/, QDropEvent* event, const KUrl::List &urls){
     //Do nothing right now
     event->ignore();
     //Run into const problems iterating over the list, so copy it to a malleable one
     //(besides, need to filter for local giles)
-    KURL::List list(urls);
+    KUrl::List list(urls);
 
-    for ( KURL::List::iterator it = list.begin(); it != list.end(); ){
+    for ( KUrl::List::iterator it = list.begin(); it != list.end(); ){
         if ( m_medium && !(*it).isLocalFile() )
             it = list.erase( it );
         else{
@@ -391,11 +391,11 @@ FileBrowser::dropped( const KFileItem* /*item*/, QDropEvent* event, const KURL::
 //BEGIN Private Slots
 
 inline void
-FileBrowser::urlChanged( const KURL &u )
+FileBrowser::urlChanged( const KUrl &u )
 {
     //the DirOperator's URL has changed
 
-    QString url = u.isLocalFile() ? u.path() : u.prettyURL();
+    QString url = u.isLocalFile() ? u.path() : u.prettyUrl();
 
     if( m_medium ){
         //remove the leading mountPoint value
@@ -406,17 +406,17 @@ FileBrowser::urlChanged( const KURL &u )
     urls.remove( url );
     urls.prepend( url );
 
-    m_combo->setURLs( urls, KURLComboBox::RemoveBottom );
+    m_combo->setURLs( urls, KUrlComboBox::RemoveBottom );
 }
 
 inline void
 FileBrowser::slotViewChanged( KFileView *view )
 {
-    if( view->widget()->inherits( "KListView" ) )
+    if( view->widget()->inherits( "K3ListView" ) )
     {
         using namespace Amarok::ColorScheme;
 
-        static_cast<KListView*>(view->widget())->setAlternateBackground( AltBase );
+        static_cast<K3ListView*>(view->widget())->setAlternateBackground( AltBase );
     }
 }
 
@@ -467,7 +467,7 @@ FileBrowser::contextMenuActivated( int id )
 
     case EditTags:
         {
-            KURL::List list = Amarok::recursiveUrlExpand( selectedItems() );
+            KUrl::List list = Amarok::recursiveUrlExpand( selectedItems() );
             TagDialog *dialog = NULL;
             if( list.count() == 1 )
             {
@@ -510,8 +510,8 @@ FileBrowser::contextMenuActivated( int id )
 inline void
 FileBrowser::gotoCurrentFolder()
 {
-    const KURL &url = EngineController::instance()->bundle().url();
-    KURL dirURL = KURL::fromPathOrURL( url.directory() );
+    const KUrl &url = EngineController::instance()->bundle().url();
+    KUrl dirURL = KUrl::fromPathOrUrl( url.directory() );
 
     m_combo->setURL( dirURL );
     setUrl( dirURL );
@@ -533,28 +533,28 @@ FileBrowser::selectAll()
 #include <qpainter.h>
 #include <q3simplerichtext.h>
 
-class KURLView : public KListView
+class KURLView : public K3ListView
 {
 public:
-    KURLView( QWidget *parent ) : KListView( parent )
+    KURLView( QWidget *parent ) : K3ListView( parent )
     {
         reinterpret_cast<QWidget*>(header())->hide();
         addColumn( QString() );
-        setResizeMode( KListView::LastColumn );
+        setResizeMode( K3ListView::LastColumn );
         setDragEnabled( true );
         setSelectionMode( Q3ListView::Extended );
     }
 
-    class Item : public KListViewItem {
+    class Item : public K3ListViewItem {
     public:
-        Item( const KURL &url, KURLView *parent ) : KListViewItem( parent, url.fileName() ), m_url( url ) {}
-        KURL m_url;
+        Item( const KUrl &url, KURLView *parent ) : K3ListViewItem( parent, url.fileName() ), m_url( url ) {}
+        KUrl m_url;
     };
 
     virtual Q3DragObject *dragObject()
     {
         Q3PtrList<Q3ListViewItem> items = selectedItems();
-        KURL::List urls;
+        KUrl::List urls;
 
         for( Item *item = static_cast<Item*>( items.first() ); item; item = static_cast<Item*>( items.next() ) )
             urls += item->m_url;
@@ -564,7 +564,7 @@ public:
 
     virtual void viewportPaintEvent( QPaintEvent *e )
     {
-        KListView::viewportPaintEvent( e );
+        K3ListView::viewportPaintEvent( e );
 
         if ( childCount() == 0 ) {
             QPainter p( viewport() );
@@ -587,7 +587,7 @@ public:
             }
             else {
                 p.setPen( palette().color( QPalette::Disabled, QColorGroup::Text ) );
-                p.drawText( rect(), Qt::AlignCenter | Qt::WordBreak, m_text );
+                p.drawText( rect(), Qt::AlignCenter | Qt::TextWordWrap, m_text );
             }
         }
     }
@@ -648,7 +648,7 @@ SearchPane::toggle( bool toggled )
 }
 
 void
-SearchPane::urlChanged( const KURL& )
+SearchPane::urlChanged( const KUrl& )
 {
     searchTextChanged( m_lineEdit->text() );
 }
@@ -699,7 +699,7 @@ void
 SearchPane::_searchComplete()
 {
     if ( !m_dirs.isEmpty() ) {
-        KURL url = m_dirs.first();
+        KUrl url = m_dirs.first();
         m_dirs.pop_front();
         m_lister->openURL( url );
     }

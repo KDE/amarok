@@ -88,7 +88,7 @@ bool MagnatunePurchaseDialog::verifyEntries( )
 
     //cc number:
     QString ccString = ccEdit->text();
-    ccString.stripWhiteSpace ();
+    ccString.trimmed ();
     QRegExp ccExp( "^[\\d]{10,20}$" );
 
     if ( !ccExp.exactMatch( ccString ) )
@@ -100,7 +100,7 @@ bool MagnatunePurchaseDialog::verifyEntries( )
 
     //email
     QString emailString = emailEdit->text();
-    emailString.stripWhiteSpace ();
+    emailString.trimmed ();
     QRegExp emailExp( "^\\S+@\\S+\\.\\S+$" );
 
     if ( !emailExp.exactMatch( emailString ) )
@@ -112,7 +112,7 @@ bool MagnatunePurchaseDialog::verifyEntries( )
 
     //month
     QString monthString = expMonthEdit->text();
-    monthString.stripWhiteSpace ();
+    monthString.trimmed ();
     QRegExp monthExp( "^\\d{2}$" );
 
     if ( !monthExp.exactMatch( monthString ) )
@@ -124,7 +124,7 @@ bool MagnatunePurchaseDialog::verifyEntries( )
 
     //month
     QString yearString = expYearEdit->text();
-    yearString.stripWhiteSpace ();
+    yearString.trimmed ();
     QRegExp yearExp( "^\\d{2}$" );
 
     if ( !yearExp.exactMatch( yearString ) )

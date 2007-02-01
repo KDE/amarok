@@ -15,7 +15,7 @@
 #include "podcastsettings.h"
 
 #include <kaction.h>
-#include <klistview.h>
+#include <k3listview.h>
 #include <kpushbutton.h>
 #include <kurl.h>
 #include <qdom.h>
@@ -83,11 +83,11 @@ class PlaylistBrowser : public Q3VBox
         int  loadPlaylist( const QString &playlist, bool force=false );
 
         void addPodcast( Q3ListViewItem *parent = 0 );
-        void addPodcast( const KURL &url, Q3ListViewItem *parent = 0 );
+        void addPodcast( const KUrl &url, Q3ListViewItem *parent = 0 );
         void loadPodcastsFromDatabase( PlaylistCategory *p = 0 );
         void registerPodcastSettings( const QString &title, const PodcastSettings *settings );
 
-        static bool savePlaylist( const QString &path, const Q3ValueList<KURL> &urls,
+        static bool savePlaylist( const QString &path, const Q3ValueList<KUrl> &urls,
                                   const Q3ValueList<QString> &titles = Q3ValueList<QString>(),
                                   const Q3ValueList<int> &lengths = Q3ValueList<int>(),
                                   bool relative = AmarokConfig::relativePlaylist() );
@@ -100,7 +100,7 @@ class PlaylistBrowser : public Q3VBox
 
         PlaylistBrowserEntry *findItem( QString &t, int c ) const;
         Q3ListViewItem *findItemInTree( const QString &searchstring, int c ) const;
-        PodcastEpisode *findPodcastEpisode( const KURL &episode, const KURL &feed ) const;
+        PodcastEpisode *findPodcastEpisode( const KUrl &episode, const KUrl &feed ) const;
 
         Q3PtrList<PlaylistBrowserEntry> dynamicEntries() const { return m_dynamicEntries; }
         DynamicMode *findDynamicModeByTitle( const QString &title );
@@ -183,7 +183,7 @@ class PlaylistBrowser : public Q3VBox
         void refreshPodcasts( Q3ListViewItem *category );
         void removePodcastFolder( PlaylistCategory *item );
         void savePodcastFolderStates( PlaylistCategory *folder );
-        PodcastChannel *findPodcastChannel( const KURL &feed, Q3ListViewItem *parent=0 ) const;
+        PodcastChannel *findPodcastChannel( const KUrl &feed, Q3ListViewItem *parent=0 ) const;
 
         void markDynamicEntries();
         PlaylistBrowserEntry* findByName( QString name );
@@ -193,14 +193,14 @@ class PlaylistBrowser : public Q3VBox
         void savePlaylist( PlaylistEntry * );
         bool createPlaylist( Q3ListViewItem *parent = 0, bool current = true, QString title = 0 );
         bool deletePlaylists( Q3PtrList<PlaylistEntry> items );
-        bool deletePlaylists( KURL::List items );
+        bool deletePlaylists( KUrl::List items );
 
         void customEvent( QCustomEvent* e );
         void saveM3U( PlaylistEntry *, bool append );
         void savePLS( PlaylistEntry *, bool append );
         void saveXSPF( PlaylistEntry *, bool append );
 
-        static KURL::List recurse( const KURL &url );
+        static KUrl::List recurse( const KUrl &url );
 
         static PlaylistBrowser *s_instance;
 
@@ -248,7 +248,7 @@ class PlaylistBrowser : public Q3VBox
 
 
 
-class PlaylistBrowserView : public KListView
+class PlaylistBrowserView : public K3ListView
 {
         Q_OBJECT
 

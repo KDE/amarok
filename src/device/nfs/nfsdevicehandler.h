@@ -53,8 +53,8 @@ public:
     virtual QString type() const;
     virtual int getDeviceID( );
     virtual const QString &getDevicePath() const;
-    virtual void getURL( KURL &absolutePath, const KURL &relativePath );
-    virtual void getPlayableURL( KURL &absolutePath, const KURL &relativePath );
+    virtual void getURL( KUrl &absolutePath, const KUrl &relativePath );
+    virtual void getPlayableURL( KUrl &absolutePath, const KUrl &relativePath );
     virtual bool deviceIsMedium( const Medium *m ) const;
 
 private:

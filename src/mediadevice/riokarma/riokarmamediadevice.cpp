@@ -36,7 +36,7 @@ AMAROK_EXPORT_PLUGIN( RioKarmaMediaDevice )
 // KDE
 #include <kapplication.h>
 #include <kiconloader.h>
-#include <kpopupmenu.h>
+#include <kmenu.h>
 
 // Qt
 #include <qdir.h>
@@ -393,7 +393,7 @@ RioKarmaMediaDevice::rmbPressed( Q3ListViewItem *qitem, const QPoint &point, int
     RioKarmaMediaItem *item = static_cast<RioKarmaMediaItem *>( qitem );
     if( item )
     {
-        KPopupMenu menu( m_view );
+        KMenu menu( m_view );
         menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n( "Delete from device" ), DELETE );
 
         int id =  menu.exec( point );

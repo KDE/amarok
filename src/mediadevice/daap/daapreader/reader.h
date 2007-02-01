@@ -63,7 +63,7 @@ namespace Daap
         Q_OBJECT
 
         public:
-            Reader( const QString& host, Q_UINT16 port, ServerItem* root,
+            Reader( const QString& host, quint16 port, ServerItem* root,
                     const QString& password, QObject* parent, const char* name );
            ~Reader();
 
@@ -75,7 +75,7 @@ namespace Daap
 
             int sessionId() const { return m_sessionId; }
             QString host() const { return m_host; }
-            Q_UINT16 port() const { return m_port; }
+            quint16 port() const { return m_port; }
         public slots:
             void logoutRequest(int, bool );
             void loginHeaderReceived( const Q3HttpResponseHeader& resp );
@@ -98,12 +98,12 @@ namespace Daap
             */
             static Map parse( QDataStream &raw, uint containerLength, bool first = false );
             static void addElement( Map &parentMap, char* tag, QVariant element ); //! supporter function for parse
-            static Q_UINT32 getTagAndLength( QDataStream &raw, char tag[5] );
+            static quint32 getTagAndLength( QDataStream &raw, char tag[5] );
 
             static QMap<QString, Code> s_codes;
 
             QString m_host;
-            Q_UINT16 m_port;
+            quint16 m_port;
             QString m_loginString;
             QString m_databaseId;
             int m_sessionId;

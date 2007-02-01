@@ -44,7 +44,7 @@ public:
     // instance with a voidEngine
     static EngineController* instance();
     static EngineBase*       engine() { return instance()->m_engine; }
-    static bool              canDecode( const KURL& );
+    static bool              canDecode( const KUrl& );
     static ExtensionCache&   extensionCache() { return s_extensionCache; }
     static QString           engineProperty( const QString& key ) { return engine()->pluginProperty( key ); }
     static bool              hasEngineProperty( const QString& key ) { return engine()->hasPluginProperty( key ); }
@@ -55,7 +55,7 @@ public:
 
     uint trackLength() const { return m_bundle.length() * 1000; }
     const MetaBundle &bundle() const;
-    KURL playingURL() const { return bundle().url(); }
+    KUrl playingURL() const { return bundle().url(); }
 
     void restoreSession();
     void endSession();

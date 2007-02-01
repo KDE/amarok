@@ -370,10 +370,10 @@ yauapEngine::init( void )
 
 /* check if the given url can be decoded */
 bool 
-yauapEngine::canDecode( const KURL &kurl ) const 
+yauapEngine::canDecode( const KUrl &kurl ) const 
 {
     GError *error = NULL;
-    QString qurl = kurl.prettyURL(); 
+    QString qurl = kurl.prettyUrl(); 
     const char* url = qurl.ascii();
     int can_decode = 0;
     
@@ -399,10 +399,10 @@ yauapEngine::canDecode( const KURL &kurl ) const
 
 /* load a new track FIXME: implement cross fading */
 bool 
-yauapEngine::load( const KURL &url, bool isStream )
+yauapEngine::load( const KUrl &url, bool isStream )
 {
     GError *error = NULL;
-    QString qurl = url.prettyURL();
+    QString qurl = url.prettyUrl();
     const char* curl = qurl.ascii();
     int gerror = 0;
     debug() << "In load " << curl << endl;
@@ -582,7 +582,7 @@ yauapEngine::seek( uint offset )
 
 
 bool
-yauapEngine::getAudioCDContents(const QString &device, KURL::List &urls)
+yauapEngine::getAudioCDContents(const QString &device, KUrl::List &urls)
 {
     GError *error = NULL;
     char **reply_list;
@@ -605,7 +605,7 @@ yauapEngine::getAudioCDContents(const QString &device, KURL::List &urls)
     {
         Engine::SimpleMetaBundle b;
         char* saveptr;
-        KURL url = QString("cdda://").append( strtok_r(*reply_ptr,"=",&saveptr)); 
+        KUrl url = QString("cdda://").append( strtok_r(*reply_ptr,"=",&saveptr)); 
         urls << url;
         debug() << url << endl;
         b.title  = QString( i18n( "Track %1" ) ).arg( i+1 );
@@ -628,7 +628,7 @@ yauapEngine::getAudioCDContents(const QString &device, KURL::List &urls)
 
 
 bool 
-yauapEngine::metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b)
+yauapEngine::metaDataForUrl(const KUrl &url, Engine::SimpleMetaBundle &b)
 {
     if ( url.protocol() == "cdda" )
     {

@@ -45,9 +45,9 @@
 void
 QueueItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
 {
-    KListViewItem::paintCell( p, cg, column, width, align );
+    K3ListViewItem::paintCell( p, cg, column, width, align );
 
-    QString str = QString::number( ( static_cast<KListView *>( listView() ) )->itemIndex( this ) + 1 );
+    QString str = QString::number( ( static_cast<K3ListView *>( listView() ) )->itemIndex( this ) + 1 );
 
     //draw the symbol's outline
           uint fw = p->fontMetrics().width( str ) + 2;
@@ -72,7 +72,7 @@ QueueItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width,
 //////////////////////////////////////////////////////////////////////////////////////////
 
 QueueList::QueueList( QWidget *parent, const char *name )
-            : KListView( parent, name )
+            : K3ListView( parent, name )
 {
     addColumn( i18n("Name") );
     setResizeMode( Q3ListView::LastColumn );
@@ -88,7 +88,7 @@ QueueList::QueueList( QWidget *parent, const char *name )
 void
 QueueList::viewportPaintEvent( QPaintEvent *e )
 {
-    if( e ) KListView::viewportPaintEvent( e );
+    if( e ) K3ListView::viewportPaintEvent( e );
 
     if( !childCount() && e )
     {
@@ -236,7 +236,7 @@ QueueList::removeSelected() //SLOT
 void
 QueueList::clear() // SLOT
 {
-    KListView::clear();
+    K3ListView::clear();
     emit changed();
 }
 
@@ -244,17 +244,17 @@ void
 QueueList::contentsDragEnterEvent( QDragEnterEvent *e )
 {
     debug() << "contentsDrageEnterEvent()" << endl;
-    e->accept( e->source() == reinterpret_cast<KListView*>( Playlist::instance() )->viewport() );
+    e->accept( e->source() == reinterpret_cast<K3ListView*>( Playlist::instance() )->viewport() );
 }
 
 void
 QueueList::contentsDragMoveEvent( QDragMoveEvent *e )
 {
     debug() << "contentsDrageMoveEvent()" << endl;
-    KListView::contentsDragMoveEvent( e );
+    K3ListView::contentsDragMoveEvent( e );
 
     // Must be overloaded for dnd to work
-    e->accept( ( e->source() == reinterpret_cast<KListView*>( Playlist::instance() )->viewport() ) ||
+    e->accept( ( e->source() == reinterpret_cast<K3ListView*>( Playlist::instance() )->viewport() ) ||
                  e->source() == viewport() );
 }
 
@@ -264,7 +264,7 @@ QueueList::contentsDropEvent( QDropEvent *e )
     debug() << "contentsDragDropEvent()" << endl;
     if( e->source() == viewport() )
     {
-        KListView::contentsDropEvent( e );
+        K3ListView::contentsDropEvent( e );
         emit changed();
     }
     else
@@ -295,7 +295,7 @@ QueueManager::QueueManager( QWidget *parent, const char *name )
     KWin::setState( winId(), NET::SkipTaskbar );
 
     kapp->setTopWidget( this );
-    setCaption( kapp->makeStdCaption( i18n("Queue Manager") ) );
+    setCaption( KInstance::makeStandardCaption( i18n("Queue Manager") ) );
     setInitialSize( QSize( 400, 260 ) );
 
     Q3VBox *mainBox = new Q3VBox( this );

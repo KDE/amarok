@@ -35,7 +35,7 @@
 
 #include <kaction.h>
 #include <klineedit.h>
-#include <kmdcodec.h>       //md5sum
+#include <kcodecs.h>       //md5sum
 #include <kmessagebox.h>
 #include <kio/job.h>
 #include <kio/jobclasses.h>
@@ -53,7 +53,7 @@ using namespace LastFm;
 // AmarokHttp is a hack written so that lastfm code could easily use something proxy aware.
 // DO NOT use this class for anything else, use KIO directly instead.
 ////////////////////////////////////////////////////////////////////////////////
-AmarokHttp::AmarokHttp ( const QString& hostname, Q_UINT16 port,
+AmarokHttp::AmarokHttp ( const QString& hostname, quint16 port,
                          QObject* parent )
     : QObject( parent ),
       m_hostname( hostname ),
@@ -160,7 +160,7 @@ Controller::instance()
 }
 
 
-KURL
+KUrl
 Controller::getNewProxy( QString genreUrl )
 {
     DEBUG_BLOCK
@@ -185,14 +185,14 @@ Controller::getNewProxy( QString genreUrl )
                 if( !AmarokConfig::submitPlayedSongs() )
                     m_service->enableScrobbling( false );
                 setActionsEnabled( true );
-                return KURL( m_service->proxyUrl() );
+                return KUrl( m_service->proxyUrl() );
             }
         }
     }
 
     // Some kind of failure happened, so crap out
     playbackStopped();
-    return KURL();
+    return KUrl();
 }
 
 
@@ -228,7 +228,7 @@ Controller::createCustomStation() //static
     if( dialog.exec() == QDialog::Accepted ) {
         const QStringList artists = QStringList::split( ",", dialog.text() );
         for( uint i = 0; i < artists.count(); i++ )
-            token += ( i > 0 ? "," : "" ) + artists[i].simplifyWhiteSpace();
+            token += ( i > 0 ? "," : "" ) + artists[i].simplified();
     }
 
     return token;
@@ -548,7 +548,7 @@ WebService::metaDataFinished( int /*id*/, bool error ) //SLOT
     m_metaBundle.setArtist( parameter( "artist", result ) );
     m_metaBundle.setAlbum ( parameter( "album", result )  );
     m_metaBundle.setTitle ( parameter( "track", result )  );
-    m_metaBundle.setUrl   ( KURL( Controller::instance()->getGenreUrl() ) );
+    m_metaBundle.setUrl   ( KUrl( Controller::instance()->getGenreUrl() ) );
     m_metaBundle.setLength( parameter( "trackduration", result ).toInt()  );
 
     Bundle lastFmStuff;
@@ -566,7 +566,7 @@ WebService::metaDataFinished( int /*id*/, bool error ) //SLOT
 
     m_metaBundle.setLastFmBundle( lastFmStuff );
 
-    const KURL u( imageUrl );
+    const KUrl u( imageUrl );
     if( !u.isValid() ) {
         debug() << "imageUrl empty or invalid." << endl;
         emit metaDataResult( m_metaBundle );

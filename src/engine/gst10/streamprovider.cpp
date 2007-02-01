@@ -30,11 +30,11 @@ email                : markey@web.de
 #include <Q3CString>
 
 #include <klocale.h>
-#include <kmdcodec.h>
+#include <kcodecs.h>
 #include <kprotocolmanager.h>
 
 
-StreamProvider::StreamProvider( KURL url, const QString& streamingMode, GstEngine &engine )
+StreamProvider::StreamProvider( KUrl url, const QString& streamingMode, GstEngine &engine )
         : QObject()
         , m_url( url )
         , m_streamingMode( streamingMode )
@@ -277,8 +277,8 @@ StreamProvider::transmitData( const QString &data )
     QString title = codec->toUnicode( extractStr( data, "StreamTitle" ).latin1() );
     if (title.contains('-'))
     {
-       bundle.artist = title.section('-',0,0).stripWhiteSpace();
-       bundle.title = title.section('-',1,1).stripWhiteSpace();
+       bundle.artist = title.section('-',0,0).trimmed();
+       bundle.title = title.section('-',1,1).trimmed();
 
        debug() << "title = " << bundle.title << endl;
        debug() << "artist = " << bundle.artist << endl;
@@ -291,7 +291,7 @@ StreamProvider::transmitData( const QString &data )
     bundle.bitrate.setNum(m_bitRate);
     bundle.genre = codec->toUnicode( m_streamGenre.latin1() );
 
-    bundle.album = codec->toUnicode( m_streamName.stripWhiteSpace().latin1() );
+    bundle.album = codec->toUnicode( m_streamName.trimmed().latin1() );
 
     emit m_engine.gstMetaData( bundle );
 }

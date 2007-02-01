@@ -111,7 +111,7 @@ void MagnatunePurchaseHandler::processPayment( QString ccNumber, QString expYear
     QString debugPurchaseURL = "https://magnatune.com/buy/buy_dl_cc_xml?cc=**********&mm=**&yy=**&sku=" + albumCode + "&name=" + name + "&email=********&id=amarok&amount=" + amountString;
     debug() << "purchase url : " << debugPurchaseURL << endl;
 
-    m_resultDownloadJob = KIO::storedGet( KURL( purchaseURL ), false, false );
+    m_resultDownloadJob = KIO::storedGet( KUrl( purchaseURL ), false, false );
     Amarok::StatusBar::instance() ->newProgressOperation( m_resultDownloadJob ).setDescription( i18n( "Processing Payment" ) );
 
     connect( m_resultDownloadJob, SIGNAL( result( KIO::Job* ) ), SLOT( xmlDownloadComplete( KIO::Job* ) ) );

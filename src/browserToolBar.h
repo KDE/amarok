@@ -24,7 +24,7 @@ namespace Browser
                 setMovingEnabled(false);
                 setFlat(true);
                 setIconSize( 16 );
-                setEnableContextMenu( false );
+                setContextMenuEnabled( false );
             }
     };
 }

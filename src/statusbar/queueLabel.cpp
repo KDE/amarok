@@ -38,7 +38,7 @@
 #include <kactioncollection.h>
 #include <kglobal.h>
 #include <kiconloader.h>
-#include <kpopupmenu.h>
+#include <kmenu.h>
 #include <kstringhandler.h>
 
 static const uint MAX_TO_SHOW = 20;
@@ -79,7 +79,7 @@ void QueueLabel::getCover( const QString &artist, const QString &album )
 {
     m_cover = CollectionDB::instance()->albumImage( artist, album, 50 );
     if( m_cover == CollectionDB::instance()->notAvailCover( 50 ) )
-        m_cover = KGlobal::iconLoader()->iconPath( "goto", -KIcon::SizeHuge );
+        m_cover = KIconLoader::global()->iconPath( "goto", -K3Icon::SizeHuge );
 }
 
 void QueueLabel::setNum( int num )
@@ -98,7 +98,7 @@ void QueueLabel::setNum( int num )
         QFont f = font();
         f.setPixelSize( h - 2 );
         f.setBold( true );
-        const int w = kMax( h, QFontMetrics( f ).width( text ) + h/4 + 2 );
+        const int w = qMax( h, QFontMetrics( f ).width( text ) + h/4 + 2 );
 
         QPixmap pix( w, h );
         QPainter p( &pix );
@@ -124,7 +124,7 @@ void QueueLabel::setNum( int num )
         p.setFont( f );
         p.setPen( colorGroup().highlightedText() );
         p.setBrush( colorGroup().highlight().dark() );
-        p.drawText( pix.rect(), Qt::AlignCenter | Qt::SingleLine, text );
+        p.drawText( pix.rect(), Qt::AlignCenter | Qt::TextSingleLine, text );
 
         p.end();
         setPixmap( pix );
@@ -171,9 +171,9 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
         if( s > 0 ) length += s;
     }
 
-    Q3PtrList<KPopupMenu> menus;
+    Q3PtrList<KMenu> menus;
     menus.setAutoDelete( true );
-    KPopupMenu *menu = new KPopupMenu;
+    KMenu *menu = new KMenu;
     menus.append( menu );
 
     const uint count = queue.count();
@@ -193,13 +193,13 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
 
     while( i <= count )
     {
-        for( uint n = kMin( i + MAX_TO_SHOW - 1, count ); i <= n; ++i, ++it )
+        for( uint n = qMin( i + MAX_TO_SHOW - 1, count ); i <= n; ++i, ++it )
             menu->insertItem(
                 KStringHandler::rsqueeze( i18n( "%1. %2" ).arg( i ).arg( veryNiceTitle( *it ) ), 50 ), i );
 
         if( i < count )
         {
-            menus.append( new KPopupMenu );
+            menus.append( new KMenu );
             menu->insertSeparator();
             menu->insertItem( i18n( "1 More Track", "%n More Tracks", count - i + 1 ), menus.getLast() );
             menu = menus.getLast();
@@ -297,8 +297,8 @@ void QueueLabel::hideToolTip()
 
 QString QueueLabel::veryNiceTitle( PlaylistItem* item, bool bold ) const
 {
-    const QString artist = item->artist()->stripWhiteSpace(),
-                  title =  item->title().stripWhiteSpace();
+    const QString artist = item->artist()->trimmed(),
+                  title =  item->title().trimmed();
     if( !artist.isEmpty() && !title.isEmpty() )
        return ( bold ? i18n( "<b>%1</b> by <b>%2</b>" ) : i18n( "%1 by %2" ) ).arg( title ).arg( artist );
     else

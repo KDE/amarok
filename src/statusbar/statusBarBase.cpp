@@ -303,16 +303,16 @@ StatusBar::longMessage( const QString &text, int type )
     {
         case Information:
         case Question:
-            image = KGlobal::iconLoader()->iconPath( "messagebox_info", -KIcon::SizeHuge );
+            image = KIconLoader::global()->iconPath( "messagebox_info", -K3Icon::SizeHuge );
             break;
 
         case Sorry:
         case Warning:
-            image = KGlobal::iconLoader()->iconPath( "messagebox_warning", -KIcon::SizeHuge );
+            image = KIconLoader::global()->iconPath( "messagebox_warning", -K3Icon::SizeHuge );
             break;
 
         case Error:
-            image = KGlobal::iconLoader()->iconPath( "messagebox_critical", -KIcon::SizeHuge );
+            image = KIconLoader::global()->iconPath( "messagebox_critical", -K3Icon::SizeHuge );
             // don't hide error messages.
 //             message->setTimeout( 0 );
             break;

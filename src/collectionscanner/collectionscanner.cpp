@@ -315,7 +315,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
 
         else {
             MetaBundle::EmbeddedImageList images;
-            MetaBundle mb( KURL::fromPathOrURL( path ), true, TagLib::AudioProperties::Fast, &images );
+            MetaBundle mb( KUrl::fromPathOrUrl( path ), true, TagLib::AudioProperties::Fast, &images );
             const AttributeMap attributes = readTags( mb );
 
             if( !attributes.empty() ) {

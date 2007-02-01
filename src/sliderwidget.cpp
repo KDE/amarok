@@ -48,7 +48,7 @@
 #include <kimageeffect.h>
 #include <klocale.h>
 #include <kpixmapeffect.h>
-#include <kpopupmenu.h>
+#include <kmenu.h>
 #include <kstandarddirs.h>
 
 Amarok::Slider::Slider( Qt::Orientation orientation, QWidget *parent, uint max )
@@ -72,8 +72,8 @@ Amarok::Slider::wheelEvent( QWheelEvent *e )
     // Position Slider (horizontal)
     int step = e->delta() * 1500 / 18;
     int nval = QSlider::value() + step;
-    nval = QMAX(nval, minValue());
-    nval = QMIN(nval, maxValue());
+    nval = qMax(nval, minValue());
+    nval = qMin(nval, maxValue());
 
     QSlider::setValue( nval );
 
@@ -426,7 +426,7 @@ Amarok::VolumeSlider::slotAnimTimer() //SLOT
 void
 Amarok::VolumeSlider::contextMenuEvent( QContextMenuEvent *e )
 {
-    KPopupMenu menu;
+    KMenu menu;
     menu.insertTitle( i18n( "Volume" ) );
     menu.insertItem(  i18n(   "100%" ), 100 );
     menu.insertItem(  i18n(    "80%" ),  80 );

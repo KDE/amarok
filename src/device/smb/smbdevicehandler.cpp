@@ -66,7 +66,7 @@ SmbDeviceHandler::getDevicePath() const
 }
 
 void
-SmbDeviceHandler::getURL( KURL &absolutePath, const KURL &relativePath )
+SmbDeviceHandler::getURL( KUrl &absolutePath, const KUrl &relativePath )
 {
     absolutePath.setPath( m_mountPoint );
     absolutePath.addPath( relativePath.path() );
@@ -74,7 +74,7 @@ SmbDeviceHandler::getURL( KURL &absolutePath, const KURL &relativePath )
 }
 
 void
-SmbDeviceHandler::getPlayableURL( KURL &absolutePath, const KURL &relativePath )
+SmbDeviceHandler::getPlayableURL( KUrl &absolutePath, const KUrl &relativePath )
 {
     getURL( absolutePath, relativePath );
 }

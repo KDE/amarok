@@ -47,7 +47,7 @@ AMAROK_EXPORT_PLUGIN( GenericMediaDevice )
 #include <kio/netaccess.h>
 #include <kmessagebox.h>
 #include <kmountpoint.h>
-#include <kpopupmenu.h>
+#include <kmenu.h>
 #include <kurlrequester.h>     //downloadSelectedItems()
 #include <kurlrequesterdlg.h>  //downloadSelectedItems()
 
@@ -228,7 +228,7 @@ class GenericMediaFile
             m_encodedFullName = QFile::encodeName( m_fullName );
             m_encodedBaseName = QFile::encodeName( m_baseName );
             if( m_viewItem )
-                m_viewItem->setBundle( new MetaBundle( KURL::fromPathOrURL( m_fullName ), true, TagLib::AudioProperties::Fast ) );
+                m_viewItem->setBundle( new MetaBundle( KUrl::fromPathOrUrl( m_fullName ), true, TagLib::AudioProperties::Fast ) );
         }
 
         MediaFileList*
@@ -334,7 +334,7 @@ GenericMediaDevice::GenericMediaDevice()
     connect( m_dirLister, SIGNAL( newItems(const KFileItemList &) ), this, SLOT( newItems(const KFileItemList &) ) );
     connect( m_dirLister, SIGNAL( completed() ), this, SLOT( dirListerCompleted() ) );
     connect( m_dirLister, SIGNAL( clear() ), this, SLOT( dirListerClear() ) );
-    connect( m_dirLister, SIGNAL( clear(const KURL &) ), this, SLOT( dirListerClear(const KURL &) ) );
+    connect( m_dirLister, SIGNAL( clear(const KUrl &) ), this, SLOT( dirListerClear(const KUrl &) ) );
     connect( m_dirLister, SIGNAL( deleteItem(KFileItem *) ), this, SLOT( dirListerDeleteItem(KFileItem *) ) );
 }
 
@@ -468,7 +468,7 @@ GenericMediaDevice::renameItem( Q3ListViewItem *item ) // SLOT
     debug() << "Renaming: " << src << " to: " << dst << endl;
 
     //do we want a progress dialog?  If so, set last false to true
-    if( KIO::NetAccess::file_move( KURL::fromPathOrURL(src), KURL::fromPathOrURL(dst), -1, false, false, false ) )
+    if( KIO::NetAccess::file_move( KUrl::fromPathOrUrl(src), KUrl::fromPathOrUrl(dst), -1, false, false, false ) )
     {
         m_mfm.erase( m_mim[item]->getFullName() );
         m_mim[item]->setNamesFromBase( item->text(0) );
@@ -503,7 +503,7 @@ GenericMediaDevice::newDirectory( const QString &name, MediaItem *parent )
     QString fullPath = fullName + '/' + cleanedName;
     Q3CString dirPath = QFile::encodeName( fullPath );
     debug() << "Creating directory: " << dirPath << endl;    
-    const KURL url( dirPath );
+    const KUrl url( dirPath );
 
     if( !KIO::NetAccess::mkdir( url, m_parent ) ) //failed
     {
@@ -537,8 +537,8 @@ GenericMediaDevice::addToDirectory( MediaItem *directory, Q3PtrList<MediaItem> i
         Q3CString dst = dropDir->getEncodedFullName() + '/' + QFile::encodeName( currItem->text(0) );
         debug() << "Moving: " << src << " to: " << dst << endl;
 
-        const KURL srcurl(src);
-        const KURL dsturl(dst);
+        const KUrl srcurl(src);
+        const KUrl dsturl(dst);
 
         if ( !KIO::NetAccess::file_move( srcurl, dsturl, -1, false, false, m_parent ) )
             debug() << "Failed moving " << src << " to " << dst << endl;
@@ -618,7 +618,7 @@ GenericMediaDevice::checkAndBuildLocation( const QString& location )
 
         QString firstpart = location.section( '/', 0, i-1 );
         QString secondpart = cleanPath( location.section( '/', i, i ) );
-        KURL url = KURL::fromPathOrURL( QFile::encodeName( firstpart + '/' + secondpart ) );
+        KUrl url = KUrl::fromPathOrUrl( QFile::encodeName( firstpart + '/' + secondpart ) );
 
         if( !KIO::NetAccess::exists( url, false, m_parent ) )
         {
@@ -675,7 +675,7 @@ GenericMediaDevice::copyTrackToDevice( const MetaBundle& bundle )
     checkAndBuildLocation( path );
 
     const Q3CString dest = QFile::encodeName( path );
-    const KURL desturl = KURL::fromPathOrURL( dest );
+    const KUrl desturl = KUrl::fromPathOrUrl( dest );
 
     //kapp->processEvents( 100 );
 
@@ -702,7 +702,7 @@ GenericMediaDevice::trackExists( const MetaBundle& bundle )
 {
     QString key;
     QString path = buildDestination( m_songLocation, bundle);
-    KURL url( path );
+    KUrl url( path );
     QStringList directories = QStringList::split( "/", url.directory(1,1), false );
 
     Q3ListViewItem *it = view()->firstChild();
@@ -734,14 +734,14 @@ GenericMediaDevice::trackExists( const MetaBundle& bundle )
 void
 GenericMediaDevice::downloadSelectedItems()
 {
-    KURL::List urls = getSelectedItems();
+    KUrl::List urls = getSelectedItems();
 
     CollectionView::instance()->organizeFiles( urls, i18n("Copy Files to Collection"), true );
 
     hideProgress();
 }
 
-KURL::List
+KUrl::List
 GenericMediaDevice::getSelectedItems()
 {
     return m_view->nodeBuildDragList( static_cast<MediaItem*>(m_view->firstChild()), true );
@@ -759,7 +759,7 @@ GenericMediaDevice::deleteItemFromDevice( MediaItem *item, int /*flags*/ )
     Q3CString encodedPath = m_mim[item]->getEncodedFullName();
     debug() << "Deleting path: " << encodedPath << endl;
 
-    if ( !KIO::NetAccess::del( KURL::fromPathOrURL(encodedPath), m_view ))
+    if ( !KIO::NetAccess::del( KUrl::fromPathOrUrl(encodedPath), m_view ))
     {
         debug() << "Could not delete!" << endl;
         return -1;
@@ -809,10 +809,10 @@ GenericMediaDevice::listDir( const QString &dir )
 {
     m_dirListerComplete = false;
     if( m_mfm[dir]->getListed() )
-        m_dirLister->updateDirectory( KURL::fromPathOrURL(dir) );
+        m_dirLister->updateDirectory( KUrl::fromPathOrUrl(dir) );
     else
     {
-        m_dirLister->openURL( KURL::fromPathOrURL(dir), true, true );
+        m_dirLister->openURL( KUrl::fromPathOrUrl(dir), true, true );
         m_mfm[dir]->setListed( true );
     }
 }
@@ -821,7 +821,7 @@ void
 GenericMediaDevice::refreshDir( const QString &dir )
 {
     m_dirListerComplete = false;
-    m_dirLister->updateDirectory( KURL::fromPathOrURL(dir) );
+    m_dirLister->updateDirectory( KUrl::fromPathOrUrl(dir) );
 }
 
 void
@@ -854,7 +854,7 @@ GenericMediaDevice::dirListerClear()
 }
 
 void
-GenericMediaDevice::dirListerClear( const KURL &url )
+GenericMediaDevice::dirListerClear( const KUrl &url )
 {
     QString directory = url.path(-1);
     GenericMediaFile *vmf = m_mfm[directory];
@@ -872,7 +872,7 @@ GenericMediaDevice::dirListerDeleteItem( KFileItem *fileitem )
 }
 
 int
-GenericMediaDevice::addTrackToList( int type, KURL url, int /*size*/ )
+GenericMediaDevice::addTrackToList( int type, KUrl url, int /*size*/ )
 {
     QString path = url.path( -1 ); //no trailing slash
     int index = path.findRev( '/', -1 );
@@ -961,7 +961,7 @@ GenericMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int 
     MediaItem *item = static_cast<MediaItem *>(qitem);
     if ( item )
     {
-        KPopupMenu menu( m_view );
+        KMenu menu( m_view );
         menu.insertItem( SmallIconSet( Amarok::icon( "playlist" ) ), i18n( "&Load" ), LOAD );
         menu.insertItem( SmallIconSet( Amarok::icon( "1downarrow" ) ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( Amarok::icon( "fastforward" ) ), i18n( "&Queue Tracks" ), QUEUE );
@@ -1032,7 +1032,7 @@ GenericMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int 
 
     if( isConnected() )
     {
-        KPopupMenu menu( m_view );
+        KMenu menu( m_view );
         menu.insertItem( SmallIconSet( Amarok::icon( "folder" ) ), i18n("Add Directory" ), DIRECTORY );
         if ( MediaBrowser::queue()->childCount())
         {
@@ -1063,7 +1063,7 @@ QString GenericMediaDevice::cleanPath( const QString &component )
     if( m_asciiTextOnly )
         result = Amarok::asciiPath( result );
 
-    result.simplifyWhiteSpace();
+    result.simplified();
     if( m_spacesToUnderscores )
         result.replace( QRegExp( "\\s" ), "_" );
     if( m_actuallyVfat || m_vfatTextOnly )

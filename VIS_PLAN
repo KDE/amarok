@@ -155,9 +155,9 @@ has many visuals running, the beat-detection is only done once for all visualisa
                         if ( m_beatEnergy[x][0] > factor )
                         {
                             total_hits++;
-                            kdDebug() << "*CLAP* factor: " << factor << " - x: " << x << " - average energy: " << beatAvg[x] << " - current peak: " << m_beatEnergy[x][0] << endl;
+                            kDebug() << "*CLAP* factor: " << factor << " - x: " << x << " - average energy: " << beatAvg[x] << " - current peak: " << m_beatEnergy[x][0] << endl;
                         }
                     }
 
-                    if ( total_hits > 3 ) kdDebug() << "***CLAPCLAPCLAP***" << endl;
+                    if ( total_hits > 3 ) kDebug() << "***CLAPCLAPCLAP***" << endl;
         */

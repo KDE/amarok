@@ -20,7 +20,7 @@
 #include <QMouseEvent>
 #include <kaction.h>
 #include <kapplication.h>
-#include <kpopupmenu.h>
+#include <kmenu.h>
 #include <kiconeffect.h>
 #include <kstandarddirs.h>
 

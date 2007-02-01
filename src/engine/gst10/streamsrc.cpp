@@ -58,7 +58,7 @@ GST_BOILERPLATE ( GstStreamSrc, gst_streamsrc, GstElement, GST_TYPE_ELEMENT );
 void
 gst_streamsrc_base_init ( gpointer g_class )
 {
-    kdDebug() << k_funcinfo << endl;
+    kDebug() << k_funcinfo << endl;
 
     GstElementClass * gstelement_class = GST_ELEMENT_CLASS ( g_class );
     gst_element_class_set_details ( gstelement_class, &gst_streamsrc_details );
@@ -71,7 +71,7 @@ gst_streamsrc_base_init ( gpointer g_class )
 void
 gst_streamsrc_class_init ( GstStreamSrcClass * klass )
 {
-    kdDebug() << k_funcinfo << endl;
+    kDebug() << k_funcinfo << endl;
 
     GObjectClass* gobject_class;
     GstElementClass* gstelement_class = GST_ELEMENT_CLASS( klass );
@@ -79,7 +79,7 @@ gst_streamsrc_class_init ( GstStreamSrcClass * klass )
     parent_class = GST_ELEMENT_CLASS( g_type_class_ref( GST_TYPE_ELEMENT ) );
 
     if (!G_IS_OBJECT_CLASS(gobject_class))
-       kdDebug() << "THIS IS NOT AN OBJECT CLASS\n";
+       kDebug() << "THIS IS NOT AN OBJECT CLASS\n";
 
 //why do these property installs fail?
     g_object_class_install_property ( G_OBJECT_CLASS ( klass ), ARG_BLOCKSIZE,
@@ -112,19 +112,19 @@ gst_streamsrc_class_init ( GstStreamSrcClass * klass )
 void
 gst_streamsrc_init ( GstStreamSrc *streamsrc, GstStreamSrcClass *streamsrcclass )
 {
-    kdDebug() << k_funcinfo << endl;
+    kDebug() << k_funcinfo << endl;
 
     GstElementClass * klass = GST_ELEMENT_CLASS(streamsrcclass);
 
     streamsrc->srcpad  = gst_pad_new_from_template(gst_element_class_get_pad_template(klass, "src"), "src");
 
-    kdDebug() << "srcpad: " << streamsrc->srcpad << endl; 
+    kDebug() << "srcpad: " << streamsrc->srcpad << endl; 
 
     gst_pad_set_setcaps_function( streamsrc->srcpad, gst_streamsrc_setcaps);
 
     gst_element_add_pad ( GST_ELEMENT ( streamsrc ), streamsrc->srcpad );
 
-    kdDebug() << "here\n"; 
+    kDebug() << "here\n"; 
 
     streamsrc->stopped = false;
     streamsrc->curoffset = 0;
@@ -156,7 +156,7 @@ gst_streamsrc_loop(GstStreamSrc *streamsrc)
    
    if ( *streamsrc->m_bufStop && *streamsrc->m_bufIndex == 0 ) {
       // Send EOS event when buffer is empty
-      kdDebug() << "Streamsrc EOS\n";
+      kDebug() << "Streamsrc EOS\n";
       streamsrc->stopped = true;
       gst_element_send_event( GST_ELEMENT( streamsrc ), gst_event_new_eos());
 
@@ -195,7 +195,7 @@ gst_streamsrc_loop(GstStreamSrc *streamsrc)
       
       if (ret != GST_FLOW_OK) 
       {
-         //kdDebug() << "pad_push failed: " << gst_flow_get_name (ret) << endl;
+         //kDebug() << "pad_push failed: " << gst_flow_get_name (ret) << endl;
          return;
       }
    }
@@ -210,7 +210,7 @@ gst_streamsrc_change_state (GstElement * element, GstStateChange trans)
    GstStateChangeReturn ret = GST_STATE_CHANGE_SUCCESS;
    GstStreamSrc *streamsrc = GST_STREAMSRC (element);
 
-   kdDebug() << k_funcinfo << endl;
+   kDebug() << k_funcinfo << endl;
 
    switch ( trans ) {
       case GST_STATE_CHANGE_NULL_TO_READY:
@@ -227,11 +227,11 @@ gst_streamsrc_change_state (GstElement * element, GstStateChange trans)
    if ( parent_class->change_state )
    {
       ret =  GST_ELEMENT_CLASS(parent_class)->change_state( element, trans );
-      kdDebug() << "parent class is not null and returns " << ret << endl;
+      kDebug() << "parent class is not null and returns " << ret << endl;
    }
    else
    {
-      kdDebug() << "parent class is null\n";
+      kDebug() << "parent class is null\n";
       return GST_STATE_CHANGE_FAILURE;
    }
 
@@ -269,7 +269,7 @@ gst_streamsrc_setcaps(GstPad *pad, GstCaps *caps)
    //gst_structure_get_int (structure, "rate", &streamsrc->samplerate);
    //gst_structure_get_int (structure, "channels", &stream->channels);
    
-   kdDebug() << "Caps negotiation succeeded in streamsrc\n";
+   kDebug() << "Caps negotiation succeeded in streamsrc\n";
    
    return TRUE;
 }
@@ -298,7 +298,7 @@ gst_streamsrc_new ( char* buf, int* index, bool* stop, bool* buffering )
 void
 gst_streamsrc_dispose( GObject *object )
 {
-   kdDebug() << "BEGIN: " << k_funcinfo << endl;
+   kDebug() << "BEGIN: " << k_funcinfo << endl;
 
    GstStreamSrc* obj = GST_STREAMSRC( object );
    *obj->m_buffering = false;
@@ -307,7 +307,7 @@ gst_streamsrc_dispose( GObject *object )
       
    G_OBJECT_CLASS( parent_class )->dispose( object );
 
-   kdDebug() << "END: " << k_funcinfo << endl;
+   kDebug() << "END: " << k_funcinfo << endl;
 }
 
 

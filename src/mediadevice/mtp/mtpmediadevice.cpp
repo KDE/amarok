@@ -42,9 +42,9 @@ AMAROK_EXPORT_PLUGIN( MtpMediaDevice )
 // KDE
 #include <kapplication.h>
 #include <kiconloader.h>
-#include <kpopupmenu.h>
+#include <kmenu.h>
 #include <kmessagebox.h>
-#include <ktoolbarbutton.h>
+
 #include <ktempdir.h>
 
 // Qt
@@ -682,7 +682,7 @@ MtpMediaDevice::downloadSelectedItemsToCollection()
 
     KTempDir tempdir( QString::null );
     tempdir.setAutoDelete( true );
-    KURL::List urls;
+    KUrl::List urls;
     QString genericError = i18n( "Could not copy track from device." );
 
     int total,progress;
@@ -1287,7 +1287,7 @@ MtpMediaDevice::rmbPressed( Q3ListViewItem *qitem, const QPoint &point, int )
     MtpMediaItem *item = static_cast<MtpMediaItem *>( qitem );
     if( item )
     {
-        KPopupMenu menu( m_view );
+        KMenu menu( m_view );
         switch( item->type() )
         {
         case MediaItem::ARTIST:

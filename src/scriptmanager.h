@@ -179,7 +179,7 @@ class ScriptManager : public KDialogBase, public EngineObserver
         bool                  m_installSuccess;
 
         struct ScriptItem {
-            KURL           url;
+            KUrl           url;
             QString        type;
             KProcIO*       process;
             Q3ListViewItem* li;

@@ -53,7 +53,7 @@ MagnatuneBrowser::MagnatuneBrowser( const char *name )
 
     initBottomPanel();
 
-    //connect (m_listView, SIGNAL(executed(KListViewItem *)), this, SLOT(itemExecuted(KListViewItem *)));
+    //connect (m_listView, SIGNAL(executed(K3ListViewItem *)), this, SLOT(itemExecuted(K3ListViewItem *)));
     connect( m_listView, SIGNAL( doubleClicked( Q3ListViewItem * ) ),
              this, SLOT( itemExecuted( Q3ListViewItem * ) ) );
     connect( m_listView, SIGNAL( selectionChanged( Q3ListViewItem * ) ),
@@ -103,7 +103,7 @@ void MagnatuneBrowser::addTrackToPlaylist( MagnatuneTrack *item )
     debug() << "Magnatune browser: adding single track" << endl;
     QString url = item->getHifiURL();
     Playlist * playlist = Playlist::instance();
-    playlist->insertMedia( KURL( url ) );
+    playlist->insertMedia( KUrl( url ) );
 }
 
 void MagnatuneBrowser::addAlbumToPlaylist( MagnatuneAlbum * item )
@@ -156,7 +156,7 @@ void MagnatuneBrowser::selectionChanged( Q3ListViewItem *item )
             if ( artistItem && m_currentInfoUrl != artistItem->getHomeURL() )
             {
                 m_currentInfoUrl = artistItem->getHomeURL();
-                m_artistInfobox->displayArtistInfo( KURL( m_currentInfoUrl ) );
+                m_artistInfobox->displayArtistInfo( KUrl( m_currentInfoUrl ) );
             }
         }
         break;
@@ -347,7 +347,7 @@ bool MagnatuneBrowser::updateMagnatuneList()
 {
     //download new list from magnatune
 
-    m_listDownloadJob = KIO::storedGet( KURL( "http://magnatune.com/info/album_info.xml" ), false, false );
+    m_listDownloadJob = KIO::storedGet( KUrl( "http://magnatune.com/info/album_info.xml" ), false, false );
     Amarok::StatusBar::instance() ->newProgressOperation( m_listDownloadJob )
     .setDescription( i18n( "Downloading Magnatune.com Database" ) )
     .setAbortSlot( this, SLOT( listDownloadCancelled() ) );
@@ -502,7 +502,7 @@ void MagnatuneBrowser::polish( )
     if (!m_polished) {
         m_polished = true;
         updateList( );
-        m_artistInfobox->begin( KURL( locate( "data", "amarok/data/" ) ) );
+        m_artistInfobox->begin( KUrl( locate( "data", "amarok/data/" ) ) );
         m_artistInfobox->write( "<table align='center' border='0'><tbody align='center' valign='top'>"
           "<tr align='center'><td><div align='center'>"
           "<IMG src='magnatune_logo.png' width='200' height='36' align='center' border='0'>"

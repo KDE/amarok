@@ -31,7 +31,7 @@
 
 #include <kapplication.h>
 #include <kinputdialog.h>
-#include <klistview.h>
+#include <k3listview.h>
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kstandarddirs.h> //locate()
@@ -43,7 +43,7 @@ EqualizerPresetManager::EqualizerPresetManager( QWidget *parent, const char *nam
     setMainWidget( mainWidget );
     Q3HBoxLayout *mainLayout = new Q3HBoxLayout( mainWidget, 0, spacingHint() );
 
-    m_presetsView = new KListView( mainWidget, "presetListView" );
+    m_presetsView = new K3ListView( mainWidget, "presetListView" );
     m_presetsView->addColumn( i18n( "Presets" ) );
     m_presetsView->setFullWidth( true );
     connect(m_presetsView, SIGNAL( selectionChanged() ), SLOT( updateButtonState() ));
@@ -87,7 +87,7 @@ EqualizerPresetManager::setPresets(QMap< QString, Q3ValueList<int> > presets)
     QMap< QString, Q3ValueList<int> >::Iterator end = presets.end();
     for ( QMap< QString, Q3ValueList<int> >::Iterator it = presets.begin(); it != end; ++it )
         if ( it.key() != i18n( "Zero" ) && it.key() != i18n( "Manual" ) ) // Don't add 'Manual' and 'Zero'
-            new KListViewItem( m_presetsView, it.key() );
+            new K3ListViewItem( m_presetsView, it.key() );
 }
 
 QMap< QString, Q3ValueList<int> >

@@ -35,7 +35,7 @@
 #include "HostListItem.h"
 
 HostList::HostList( QWidget *parent, const char *name ) 
-  : KListView( parent, name ),
+  : K3ListView( parent, name ),
     m_read_only( false ),
     m_hoveredVolume(0)
 {
@@ -81,7 +81,7 @@ void HostList::notifyHostError( QString hostname, int error)
 void HostList::contentsMousePressEvent( QMouseEvent *e)
 {
   HostListItem *item = static_cast<HostListItem*>( itemAt( contentsToViewport( e->pos() ) ) );
-  if( !( e->state() & Qt::ControlButton || e->state() & Qt::ShiftButton ) && ( e->button() & Qt::LeftButton ) && item)
+  if( !( e->state() & Qt::ControlModifier || e->state() & Qt::ShiftModifier ) && ( e->button() & Qt::LeftButton ) && item)
   {
     // video column
     if( !m_read_only && 
@@ -118,16 +118,16 @@ void HostList::contentsMousePressEvent( QMouseEvent *e)
       item->setVolume( item->volumeAtPosition( vol ) );
     }
     else 
-      KListView::contentsMousePressEvent( e );
+      K3ListView::contentsMousePressEvent( e );
   }
   else
-    KListView::contentsMousePressEvent( e );
+    K3ListView::contentsMousePressEvent( e );
 }
 
 void HostList::contentsMouseMoveEvent( QMouseEvent *e )
 {
   if( e )
-    KListView::contentsMouseMoveEvent( e );
+    K3ListView::contentsMouseMoveEvent( e );
 
     HostListItem *prev = m_hoveredVolume;
     const QPoint pos = e ? e->pos() : viewportToContents( viewport()->mapFromGlobal( QCursor::pos() ) );
@@ -148,7 +148,7 @@ void HostList::contentsMouseMoveEvent( QMouseEvent *e )
 
 void HostList::leaveEvent( QEvent *e )
 {
-  KListView::leaveEvent( e );
+  K3ListView::leaveEvent( e );
 
   HostListItem *prev = m_hoveredVolume;
   m_hoveredVolume = 0;

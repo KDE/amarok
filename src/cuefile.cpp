@@ -85,7 +85,7 @@ bool CueFile::load(int mediaLength)
 
             while ( !stream.atEnd() )
             {
-                line = stream.readLine().simplifyWhiteSpace();
+                line = stream.readLine().simplified();
 
                 if( line.startsWith( "title", false ) )
                 {
@@ -249,7 +249,7 @@ void CueFile::engineTrackPositionChanged( long position, bool userSeek )
                         ++it;
                         long nextKey = it == end() ? bundle.length() * 1000 : it.key();
                         --it;
-                        length = kMax( nextKey - it.key(), 0L );
+                        length = qMax( nextKey - it.key(), 0L );
                     }
                     emit newCuePoint( position, it.key() / 1000, ( it.key() + length ) / 1000 );
                 }

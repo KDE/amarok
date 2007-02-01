@@ -27,7 +27,7 @@
 #include <qcolor.h>
 
 MagnatuneListView::MagnatuneListView( QWidget * parent )
-        : KListView( parent )
+        : K3ListView( parent )
 {
 
     setRootIsDecorated( true );
@@ -50,12 +50,12 @@ MagnatuneListView::~MagnatuneListView()
 
 KURLDrag * MagnatuneListView::dragObject( )
 {
-    KURL::List urls;
+    KUrl::List urls;
     int id;
     MagnatuneTrackList tracks;
     MagnatuneTrackList::iterator it;
 
-    KListViewItem * pSelectedItem = dynamic_cast<KListViewItem *>( selectedItem() );
+    K3ListViewItem * pSelectedItem = dynamic_cast<K3ListViewItem *>( selectedItem() );
     if (!pSelectedItem) {
 	debug() << "dynamic_cast to pSelectedItem failed!" << endl;
 	return 0;

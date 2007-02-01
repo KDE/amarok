@@ -117,7 +117,7 @@ great too.
  | #ifndef AMAROK_QUEUEMANAGER_H
  | #define AMAROK_QUEUEMANAGER_H
 
- | class QueueList : public KListView
+ | class QueueList : public K3ListView
  | {
  |         Q_OBJECT
  |
@@ -165,7 +165,7 @@ Example:
 Debugging
 ---------
 debug.h contains some handy functions for our debug console output.
-Please use them instead of kdDebug().
+Please use them instead of kDebug().
 
 Usage:
 
@@ -203,8 +203,8 @@ inspection, we can see that we may produce very obscure bugs in the wrong case:
  | *config( const QString &group )
  | {
  |    //Slightly more useful config() that allows setting the group simultaneously
- |    kapp->config()->setGroup( group );
- |    return kapp->config();
+ |    KGlobal::config()->setGroup( group );
+ |    return KGlobal::config();
  | }
 
 Take the following example:

@@ -40,7 +40,7 @@
 #include <kio/job.h>
 #include <klineedit.h>            //setupCoverFetcher()
 #include <klocale.h>
-#include <kmdcodec.h>
+#include <kcodecs.h>
 #include <kstandarddirs.h>
 #include <kurl.h>
 #include <kio/netaccess.h>
@@ -693,7 +693,7 @@ CollectionDB::addImageToAlbum( const QString& image, Q3ValueList< QPair<QString,
 }
 
 QImage
-CollectionDB::fetchImage(const KURL& url, QString &/*tmpFile*/)
+CollectionDB::fetchImage(const KUrl& url, QString &/*tmpFile*/)
 {
     if(url.protocol() != "file")
     {
@@ -708,7 +708,7 @@ CollectionDB::fetchImage(const KURL& url, QString &/*tmpFile*/)
 
 }
 bool
-CollectionDB::setAlbumImage( const QString& artist, const QString& album, const KURL& url )
+CollectionDB::setAlbumImage( const QString& artist, const QString& album, const KUrl& url )
 {
     QString tmpFile;
     bool success = setAlbumImage( artist, album, fetchImage(url, tmpFile) );
@@ -1101,9 +1101,9 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental, DbConnection 
         title = bundle->url().fileName();
         if ( bundle->url().fileName().find( '-' ) > 0 )
         {
-            if ( artist.isEmpty() ) artist = bundle->url().fileName().section( '-', 0, 0 ).stripWhiteSpace();
-            title = bundle->url().fileName().section( '-', 1 ).stripWhiteSpace();
-            title = title.left( title.findRev( '.' ) ).stripWhiteSpace();
+            if ( artist.isEmpty() ) artist = bundle->url().fileName().section( '-', 0, 0 ).trimmed();
+            title = bundle->url().fileName().section( '-', 1 ).trimmed();
+            title = title.left( title.findRev( '.' ) ).trimmed();
             if ( title.isEmpty() ) title = bundle->url().fileName();
         }
     }
@@ -1180,14 +1180,14 @@ CollectionDB::bundleForUrl( MetaBundle* bundle )
 
 
 Q3ValueList<MetaBundle>
-CollectionDB::bundlesByUrls( const KURL::List& urls )
+CollectionDB::bundlesByUrls( const KUrl::List& urls )
 {
     typedef Q3ValueList<MetaBundle> BundleList;
     BundleList bundles;
     QStringList paths;
     QueryBuilder qb;
 
-    for( KURL::List::ConstIterator it = urls.begin(), end = urls.end(), last = urls.fromLast(); it != end; ++it )
+    for( KUrl::List::ConstIterator it = urls.begin(), end = urls.end(), last = urls.fromLast(); it != end; ++it )
     {
         // non file stuff won't exist in the db, but we still need to
         // re-insert it into the list we return, just with no tags assigned
@@ -1247,7 +1247,7 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
                 // if we get here, we didn't find an entry
                 debug() << "No bundle recovered for: " << *it << endl;
                 b = MetaBundle();
-                b.setUrl( KURL::fromPathOrURL(*it) );
+                b.setUrl( KUrl::fromPathOrUrl(*it) );
                 bundles += b;
 
             success: ;
@@ -1445,9 +1445,9 @@ CollectionDB::isFileInCollection( const QString &url  )
 
 
 void
-CollectionDB::removeSongs( const KURL::List& urls )
+CollectionDB::removeSongs( const KUrl::List& urls )
 {
-    for( KURL::List::ConstIterator it = urls.begin(), end = urls.end(); it != end; ++it )
+    for( KUrl::List::ConstIterator it = urls.begin(), end = urls.end(); it != end; ++it )
     {
         query( QString( "DELETE FROM tags WHERE url = '%1';" )
             .arg( escapeString( (*it).path() ) ) );
@@ -1566,7 +1566,7 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
 void
 CollectionDB::updateURL( const QString &url, const bool updateView )
 {
-    // don't use the KURL ctor as it checks the db first
+    // don't use the KUrl ctor as it checks the db first
     MetaBundle bundle;
     bundle.setPath( url );
     bundle.readTags( TagLib::AudioProperties::Fast );
@@ -1653,7 +1653,7 @@ void CollectionDB::engineTrackEnded( int finalPosition, int trackLength )
     // Don't update statistics if song has been played for less than 15 seconds
     // if ( finalPosition < 15000 ) return;
 
-    const KURL url = EngineController::instance()->bundle().url();
+    const KUrl url = EngineController::instance()->bundle().url();
     if ( url.path().isEmpty() ) return;
 
     // sanity check

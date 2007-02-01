@@ -50,10 +50,10 @@
 #include <kfiledialog.h>
 #include <kiconloader.h>
 #include <kio/netaccess.h>
-#include <klistview.h>
+#include <k3listview.h>
 #include <klocale.h>
 #include <kmessagebox.h>
-#include <kpopupmenu.h>
+#include <kmenu.h>
 #include <kprocio.h>
 #include <kprotocolmanager.h>
 #include <kpushbutton.h>
@@ -85,7 +85,7 @@ namespace Amarok {
     QString
     proxyForUrl(const QString& url)
     {
-        KURL kurl( url );
+        KUrl kurl( url );
 
         QString proxy;
 
@@ -146,7 +146,7 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     s_instance = this;
 
     kapp->setTopWidget( this );
-    setCaption( kapp->makeStdCaption( i18n( "Script Manager" ) ) );
+    setCaption( KInstance::makeStandardCaption( i18n( "Script Manager" ) ) );
 
     // Gives the window a small title bar, and skips a taskbar entry
     KWin::setType( winId(), NET::Utility );
@@ -159,10 +159,10 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
 
 
     /// Category items
-    m_generalCategory    = new KListViewItem( m_gui->listView, i18n( "General" ) );
-    m_lyricsCategory     = new KListViewItem( m_gui->listView, i18n( "Lyrics" ) );
-    m_scoreCategory      = new KListViewItem( m_gui->listView, i18n( "Score" ) );
-    m_transcodeCategory  = new KListViewItem( m_gui->listView, i18n( "Transcoding" ) );
+    m_generalCategory    = new K3ListViewItem( m_gui->listView, i18n( "General" ) );
+    m_lyricsCategory     = new K3ListViewItem( m_gui->listView, i18n( "Lyrics" ) );
+    m_scoreCategory      = new K3ListViewItem( m_gui->listView, i18n( "Score" ) );
+    m_transcodeCategory  = new K3ListViewItem( m_gui->listView, i18n( "Transcoding" ) );
 
     m_generalCategory  ->setSelectable( false );
     m_lyricsCategory   ->setSelectable( false );
@@ -202,7 +202,7 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     m_gui->aboutButton    ->setIconSet( SmallIconSet( Amarok::icon( "info" ) ) );
 
     QSize sz = sizeHint();
-    setMinimumSize( kMax( 350, sz.width() ), kMax( 250, sz.height() ) );
+    setMinimumSize( qMax( 350, sz.width() ), qMax( 250, sz.height() ) );
     resize( sizeHint() );
 
     connect( this, SIGNAL(lyricsScriptChanged()), ContextBrowser::instance(), SLOT( lyricsScriptChanged() ) );
@@ -302,7 +302,7 @@ ScriptManager::specForScript( const QString& name )
 void
 ScriptManager::notifyFetchLyrics( const QString& artist, const QString& title )
 {
-    const QString args = KURL::encode_string( artist ) + ' ' + KURL::encode_string( title );
+    const QString args = KUrl::encode_string( artist ) + ' ' + KUrl::encode_string( title );
     notifyScripts( "fetchLyrics " + args );
 }
 
@@ -339,7 +339,7 @@ ScriptManager::requestNewScore( const QString &url, double prevscore, int playco
         .arg( length )
         .arg( percentage )
         .arg( reason )
-        .arg( KURL::encode_string( url ) ) ); //last because it might have %s
+        .arg( KUrl::encode_string( url ) ) ); //last because it might have %s
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -448,7 +448,7 @@ ScriptManager::slotInstallScript( const QString& path )
                                      "Please inform the package maintainer about this error.</p>" ) );
 
         // Delete directory recursively
-        KIO::NetAccess::del( KURL::fromPathOrURL( scriptFolder ), 0 );
+        KIO::NetAccess::del( KUrl::fromPathOrUrl( scriptFolder ), 0 );
     }
 
     return false;
@@ -516,7 +516,7 @@ ScriptManager::slotUninstallScript()
     const QString directory = m_scripts[name].url.directory();
 
     // Delete directory recursively
-    const KURL url = KURL::fromPathOrURL( directory );
+    const KUrl url = KUrl::fromPathOrUrl( directory );
     if( !KIO::NetAccess::del( url, 0 ) ) {
         KMessageBox::sorry( 0, i18n( "<p>Could not uninstall this script.</p><p>The ScriptManager can only uninstall scripts which have been installed as packages.</p>" ) );
         return;
@@ -569,7 +569,7 @@ ScriptManager::slotRunScript( bool silent )
 
     Amarok::ProcIO* script = new Amarok::ProcIO();
     script->setComm( static_cast<KProcess::Communication>( KProcess::All ) );
-    const KURL url = m_scripts[name].url;
+    const KUrl url = m_scripts[name].url;
     *script << url.path();
     script->setWorkingDirectory( Amarok::saveLocation( "scripts-data/" ) );
 
@@ -631,7 +631,7 @@ ScriptManager::slotConfigureScript()
     const QString name = m_gui->listView->currentItem()->text( 0 );
     if( !m_scripts[name].process ) return;
 
-    const KURL url = m_scripts[name].url;
+    const KUrl url = m_scripts[name].url;
     QDir::setCurrent( url.directory() );
 
     m_scripts[name].process->writeStdin( "configure" );
@@ -654,7 +654,7 @@ ScriptManager::slotAboutScript()
                                             QString::null,
                                             KDialogBase::Ok, KDialogBase::Ok, this );
     kapp->setTopWidget( about );
-    about->setCaption( kapp->makeStdCaption( i18n( "About %1" ).arg( name ) ) );
+    about->setCaption( KInstance::makeStandardCaption( i18n( "About %1" ).arg( name ) ) );
     about->setProduct( "", "", "", "" );
     // Get rid of the confusing KDE version text
     QLabel* product = static_cast<QLabel*>( about->mainWidget()->child( "version" ) );
@@ -686,7 +686,7 @@ ScriptManager::slotShowContextMenu( Q3ListViewItem* item, const QPoint& pos )
         if( it.data().li == item ) break;
 
     enum { SHOW_LOG, EDIT };
-    KPopupMenu menu;
+    KMenu menu;
     menu.insertTitle( i18n( "Debugging" ) );
     menu.insertItem( SmallIconSet( Amarok::icon( "clock" ) ), i18n( "Show Output &Log" ), SHOW_LOG );
     menu.insertItem( SmallIconSet( Amarok::icon( "edit" ) ), i18n( "&Edit" ), EDIT );
@@ -706,7 +706,7 @@ ScriptManager::slotShowContextMenu( Q3ListViewItem* item, const QPoint& pos )
 
             KTextEdit* editor = new KTextEdit( it.data().log );
             kapp->setTopWidget( editor );
-            editor->setCaption( kapp->makeStdCaption( i18n( "Output Log for %1" ).arg( it.key() ) ) );
+            editor->setCaption( KInstance::makeStandardCaption( i18n( "Output Log for %1" ).arg( it.key() ) ) );
             editor->setReadOnly( true );
 
             QFont font( "fixed" );
@@ -850,13 +850,13 @@ void
 ScriptManager::loadScript( const QString& path )
 {
     if( !path.isEmpty() ) {
-        const KURL url = KURL::fromPathOrURL( path );
+        const KUrl url = KUrl::fromPathOrUrl( path );
         QString name = url.fileName();
         QString type = "generic";
 
         // Read and parse .spec file, if exists
         QFileInfo info( path );
-        KListViewItem* li = 0;
+        K3ListViewItem* li = 0;
         const QString specPath = info.dirPath() + '/' + info.baseName( true ) + ".spec";
         if( QFile::exists( specPath ) ) {
             KConfig spec( specPath, true, false );
@@ -865,16 +865,16 @@ ScriptManager::loadScript( const QString& path )
             if( spec.hasKey( "type" ) ) {
                 type = spec.readEntry( "type" );
                 if( type == "lyrics" )
-                    li = new KListViewItem( m_lyricsCategory, name );
+                    li = new K3ListViewItem( m_lyricsCategory, name );
                 if( type == "transcode" )
-                    li = new KListViewItem( m_transcodeCategory, name );
+                    li = new K3ListViewItem( m_transcodeCategory, name );
                 if( type == "score" )
-                    li = new KListViewItem( m_scoreCategory, name );
+                    li = new K3ListViewItem( m_scoreCategory, name );
             }
         }
 
         if( !li )
-            li = new KListViewItem( m_generalCategory, name );
+            li = new K3ListViewItem( m_generalCategory, name );
 
         li->setPixmap( 0, QPixmap() );
 

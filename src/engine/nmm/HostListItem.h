@@ -25,10 +25,10 @@
 #ifndef HOSTLISTITEM_H
 #define HOSTLISTITEM_H
 
-#include <klistview.h>
+#include <k3listview.h>
 #include <qpixmap.h>
 
-class HostListItem : public KListViewItem {
+class HostListItem : public K3ListViewItem {
   public:
     enum Column
     {

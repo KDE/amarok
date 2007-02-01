@@ -58,7 +58,7 @@ public:
      * @param url The url of the Magnatune artist page
      * @return currently always returns true
      */
-    bool displayArtistInfo( KURL url );
+    bool displayArtistInfo( KUrl url );
 
     /**
      * Display info about a Magnatune album. Retrieves cover url and 

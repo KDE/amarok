@@ -299,7 +299,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         /**
          * converts the result list of a amarok-sql query to a list of urls
          */
-        KURL::List URLsFromSqlDrag( const QStringList &values ) const;
+        KUrl::List URLsFromSqlDrag( const QStringList &values ) const;
 
         //table management methods
         bool isEmpty();
@@ -325,7 +325,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         QString getURL( const MetaBundle &bundle );
         void removeDirFromCollection( QString path );
         void removeSongsInDir( QString path, QMap<QString,QString> *tagsRemoved = 0 );
-        void removeSongs( const KURL::List& urls );
+        void removeSongs( const KUrl::List& urls );
         void updateDirStats( QString path, const long datetime, const bool temporary = false );
 
         //song methods
@@ -340,7 +340,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         bool newUniqueIdForFile( const QString &path );
         bool removeUniqueIdFromFile( const QString &path );
         QString urlFromUniqueId( const QString &id );
-        QString uniqueIdFromUrl( const KURL &url );
+        QString uniqueIdFromUrl( const KUrl &url );
 
         //podcast methods
         /// Insert a podcast channel into the database.  If @param replace is true, replace the row
@@ -352,16 +352,16 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         int  addPodcastFolder( const QString &name, const int parent_id=0, const bool isOpen=false );
         Q3ValueList<PodcastChannelBundle> getPodcastChannels();
         PodcastEpisodeBundle getPodcastEpisodeById( int id );
-        Q3ValueList<PodcastEpisodeBundle> getPodcastEpisodes( const KURL &parent, bool newOnly=false, int limit=-1 );
-        void removePodcastChannel( const KURL &url ); // will remove all episodes too
+        Q3ValueList<PodcastEpisodeBundle> getPodcastEpisodes( const KUrl &parent, bool newOnly=false, int limit=-1 );
+        void removePodcastChannel( const KUrl &url ); // will remove all episodes too
         void removePodcastEpisode( const int id );
         void removePodcastFolder( const int id );
         void updatePodcastChannel( const PodcastChannelBundle &b );
         void updatePodcastEpisode( const int id, const PodcastEpisodeBundle &b );
         void updatePodcastFolder( const int folder_id, const QString &name, const int parent_id=0, const bool isOpen=false );
         // these return false when no bundle was available
-        bool getPodcastChannelBundle( const KURL &url, PodcastChannelBundle *channel );
-        bool getPodcastEpisodeBundle( const KURL &url, PodcastEpisodeBundle *channel );
+        bool getPodcastChannelBundle( const KUrl &url, PodcastChannelBundle *channel );
+        bool getPodcastEpisodeBundle( const KUrl &url, PodcastEpisodeBundle *channel );
 
         MetaBundle bundleFromQuery( QStringList::const_iterator *iter );
         /**
@@ -370,7 +370,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
          * @return true if in the collection
          */
         bool bundleForUrl( MetaBundle* bundle );
-        Q3ValueList<MetaBundle> bundlesByUrls( const KURL::List& urls );
+        Q3ValueList<MetaBundle> bundlesByUrls( const KUrl::List& urls );
         void addAudioproperties( const MetaBundle& bundle );
 
         //Helper function for updateTags
@@ -394,14 +394,14 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         QDateTime getLastPlay( const QString &url );
         void migrateFile( const QString &oldURL, const QString &newURL );
         bool moveFile( const QString &src, const QString &dest, bool overwrite, bool copy = false );
-        bool organizeFile( const KURL &src, const OrganizeCollectionDialog &dialog, bool copy );
+        bool organizeFile( const KUrl &src, const OrganizeCollectionDialog &dialog, bool copy );
 
         //artist methods
         QStringList similarArtists( const QString &artist, uint count );
 
         //album methods
         void checkCompilations( const QString &path, const bool temporary = false );
-        void setCompilation( const KURL::List &urls, bool enabled, bool updateView );
+        void setCompilation( const KUrl::List &urls, bool enabled, bool updateView );
         QString albumSongCount( const QString &artist_id, const QString &album_id );
         bool albumIsCompilation( const QString &album_id );
         void sanitizeCompilations();
@@ -435,9 +435,9 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         /** Returns the image from a given URL, network-transparently.
          * You must run KIO::NetAccess::removeTempFile( tmpFile ) when you are finished using the image;
          **/
-        static QImage fetchImage( const KURL& url, QString &tmpFile );
+        static QImage fetchImage( const KUrl& url, QString &tmpFile );
         /** Saves images located on the user's filesystem */
-        bool setAlbumImage( const QString& artist, const QString& album, const KURL& url );
+        bool setAlbumImage( const QString& artist, const QString& album, const KUrl& url );
         /** Saves images obtained from CoverFetcher */
         bool setAlbumImage( const QString& artist, const QString& album, QImage img, const QString& amazonUrl = QString::null, const QString& asin = QString::null );
 
@@ -448,7 +448,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
 
         /// ensure the sql only return urls to tracks for efficiency
         static QPixmap createDragPixmapFromSQL( const QString &sql, QString textOverRide=QString::null );
-        static QPixmap createDragPixmap( const KURL::List &urls, QString textOverRide=QString::null );
+        static QPixmap createDragPixmap( const KUrl::List &urls, QString textOverRide=QString::null );
         static const int DRAGPIXMAP_OFFSET_X = -12;
         static const int DRAGPIXMAP_OFFSET_Y = -28;
 
@@ -686,53 +686,53 @@ class QueryBuilder
                                optRandomize = 8,
                                optShowAll = 16 /* get all songs, not just mounted ones */ };
         /* This has been an enum in the past, but 32 bits wasn't enough anymore :-( */
-        static const Q_INT64 valDummy         = 0;
-        static const Q_INT64 valID            = 1LL << 0;
-        static const Q_INT64 valName          = 1LL << 1;
-        static const Q_INT64 valURL           = 1LL << 2;
-        static const Q_INT64 valTitle         = 1LL << 3;
-        static const Q_INT64 valTrack         = 1LL << 4;
-        static const Q_INT64 valScore         = 1LL << 5;
-        static const Q_INT64 valComment       = 1LL << 6;
-        static const Q_INT64 valBitrate       = 1LL << 7;
-        static const Q_INT64 valLength        = 1LL << 8;
-        static const Q_INT64 valSamplerate    = 1LL << 9;
-        static const Q_INT64 valPlayCounter   = 1LL << 10;
-        static const Q_INT64 valCreateDate    = 1LL << 11;
-        static const Q_INT64 valAccessDate    = 1LL << 12;
-        //static const Q_INT64 valPercentage    = 1LL << 13; // same as valScore
-        static const Q_INT64 valArtistID      = 1LL << 14;
-        static const Q_INT64 valAlbumID       = 1LL << 15;
-        static const Q_INT64 valYearID        = 1LL << 16;
-        static const Q_INT64 valGenreID       = 1LL << 17;
-        static const Q_INT64 valDirectory     = 1LL << 18;
-        static const Q_INT64 valLyrics        = 1LL << 19;
-        static const Q_INT64 valRating        = 1LL << 20;
-        static const Q_INT64 valComposerID    = 1LL << 21;
-        static const Q_INT64 valDiscNumber    = 1LL << 22;
-        static const Q_INT64 valFilesize      = 1LL << 23;
-        static const Q_INT64 valFileType      = 1LL << 24;
-        static const Q_INT64 valIsCompilation = 1LL << 25;
-        static const Q_INT64 valBPM           = 1LL << 26;
+        static const qint64 valDummy         = 0;
+        static const qint64 valID            = 1LL << 0;
+        static const qint64 valName          = 1LL << 1;
+        static const qint64 valURL           = 1LL << 2;
+        static const qint64 valTitle         = 1LL << 3;
+        static const qint64 valTrack         = 1LL << 4;
+        static const qint64 valScore         = 1LL << 5;
+        static const qint64 valComment       = 1LL << 6;
+        static const qint64 valBitrate       = 1LL << 7;
+        static const qint64 valLength        = 1LL << 8;
+        static const qint64 valSamplerate    = 1LL << 9;
+        static const qint64 valPlayCounter   = 1LL << 10;
+        static const qint64 valCreateDate    = 1LL << 11;
+        static const qint64 valAccessDate    = 1LL << 12;
+        //static const qint64 valPercentage    = 1LL << 13; // same as valScore
+        static const qint64 valArtistID      = 1LL << 14;
+        static const qint64 valAlbumID       = 1LL << 15;
+        static const qint64 valYearID        = 1LL << 16;
+        static const qint64 valGenreID       = 1LL << 17;
+        static const qint64 valDirectory     = 1LL << 18;
+        static const qint64 valLyrics        = 1LL << 19;
+        static const qint64 valRating        = 1LL << 20;
+        static const qint64 valComposerID    = 1LL << 21;
+        static const qint64 valDiscNumber    = 1LL << 22;
+        static const qint64 valFilesize      = 1LL << 23;
+        static const qint64 valFileType      = 1LL << 24;
+        static const qint64 valIsCompilation = 1LL << 25;
+        static const qint64 valBPM           = 1LL << 26;
         // podcast relevant:
-        static const Q_INT64 valCopyright     = 1LL << 27;
-        static const Q_INT64 valParent        = 1LL << 28;
-        static const Q_INT64 valWeblink       = 1LL << 29;
-        static const Q_INT64 valAutoscan      = 1LL << 30;
-        static const Q_INT64 valFetchtype     = 1LL << 31;
-        static const Q_INT64 valAutotransfer  = 1LL << 32;
-        static const Q_INT64 valPurge         = 1LL << 33;
-        static const Q_INT64 valPurgeCount    = 1LL << 34;
-        static const Q_INT64 valIsNew         = 1LL << 35;
+        static const qint64 valCopyright     = 1LL << 27;
+        static const qint64 valParent        = 1LL << 28;
+        static const qint64 valWeblink       = 1LL << 29;
+        static const qint64 valAutoscan      = 1LL << 30;
+        static const qint64 valFetchtype     = 1LL << 31;
+        static const qint64 valAutotransfer  = 1LL << 32;
+        static const qint64 valPurge         = 1LL << 33;
+        static const qint64 valPurgeCount    = 1LL << 34;
+        static const qint64 valIsNew         = 1LL << 35;
         // dynamic collection relevant:
-        static const Q_INT64 valDeviceId      = 1LL << 36;
-        static const Q_INT64 valRelativePath  = 1LL << 37;
-        static const Q_INT64 valDeviceLabel   = 1LL << 38;
-        static const Q_INT64 valMountPoint    = 1LL << 39;
+        static const qint64 valDeviceId      = 1LL << 36;
+        static const qint64 valRelativePath  = 1LL << 37;
+        static const qint64 valDeviceLabel   = 1LL << 38;
+        static const qint64 valMountPoint    = 1LL << 39;
         //label relevant
-        static const Q_INT64 valType         = 1LL << 40;
+        static const qint64 valType         = 1LL << 40;
 
-        static Q_INT64 valForFavoriteSorting();
+        static qint64 valForFavoriteSorting();
         void sortByFavorite();
 
         // sortByFavoriteAvg() add the average rating, if enabled, the average score, if enabled,
@@ -747,8 +747,8 @@ class QueryBuilder
 
         QueryBuilder();
 
-        void addReturnValue( int table, Q_INT64 value, bool caseSensitive = false /* unless value refers to a string */ );
-        void addReturnFunctionValue( int function, int table, Q_INT64 value);
+        void addReturnValue( int table, qint64 value, bool caseSensitive = false /* unless value refers to a string */ );
+        void addReturnFunctionValue( int function, int table, qint64 value);
         uint countReturnValues();
 
         // Note: the filter chain begins in AND mode
@@ -762,30 +762,30 @@ class QueryBuilder
         void addURLFilters( const QStringList& filter );
 
         void addFilter( int tables, const QString& filter);
-        void addFilter( int tables, Q_INT64 value, const QString& filter, int mode = modeNormal, bool exact = false );
+        void addFilter( int tables, qint64 value, const QString& filter, int mode = modeNormal, bool exact = false );
         void addFilters( int tables, const QStringList& filter );
         void excludeFilter( int tables, const QString& filter );
-        void excludeFilter( int tables, Q_INT64 value, const QString& filter, int mode = modeNormal, bool exact = false );
+        void excludeFilter( int tables, qint64 value, const QString& filter, int mode = modeNormal, bool exact = false );
 
         void addMatch( int tables, const QString& match, bool interpretUnknown = true, bool caseSensitive = true );
-        void addMatch( int tables, Q_INT64 value, const QString& match, bool interpretUnknown = true, bool caseSensitive = true );
+        void addMatch( int tables, qint64 value, const QString& match, bool interpretUnknown = true, bool caseSensitive = true );
         void addMatches( int tables, const QStringList& match, bool interpretUnknown = true, bool caseSensitive = true );
         void excludeMatch( int tables, const QString& match );
-        void having( int table, Q_INT64 value, int function, int mode, const QString& match );
+        void having( int table, qint64 value, int function, int mode, const QString& match );
 
-        void exclusiveFilter( int tableMatching, int tableNotMatching, Q_INT64 value );
+        void exclusiveFilter( int tableMatching, int tableNotMatching, qint64 value );
 
         // For numeric filters:
         // modeNormal means strict equality; modeBeginMatch and modeEndMatch are not
         // allowed; modeBetween needs a second value endRange
-        void addNumericFilter(int tables, Q_INT64 value, const QString &n,
+        void addNumericFilter(int tables, qint64 value, const QString &n,
                               int mode = modeNormal,
                               const QString &endRange = QString::null);
 
         void setOptions( int options );
-        void sortBy( int table, Q_INT64 value, bool descending = false );
-        void sortByFunction( int function, int table, Q_INT64 value, bool descending = false );
-        void groupBy( int table, Q_INT64 value );
+        void sortBy( int table, qint64 value, bool descending = false );
+        void sortByFunction( int function, int table, qint64 value, bool descending = false );
+        void groupBy( int table, qint64 value );
         void setLimit( int startPos, int length );
 
         // Returns the results in random order.
@@ -793,7 +793,7 @@ class QueryBuilder
         // that field.
         // The shuffle is cumulative with other sorts, but any sorts after this are
         // pointless because of the precision of the random function.
-        void shuffle( int table = 0, Q_INT64 value = 0 );
+        void shuffle( int table = 0, qint64 value = 0 );
 
         static const int dragFieldCount;
         static QString dragSQLFields();
@@ -810,16 +810,16 @@ class QueryBuilder
 
         // Transform a string table.value "field" into enum values
         // @return true if we succeeded
-        bool getField(const QString &tableValue, int *table, Q_INT64 *value);
+        bool getField(const QString &tableValue, int *table, qint64 *value);
 
     private:
         QString tableName( int table );
-        const QString &valueName( Q_INT64 value );
+        const QString &valueName( qint64 value );
         QString functionName( int functions );
-        bool coalesceField( int table, Q_INT64 value );
+        bool coalesceField( int table, qint64 value );
 
         int getTableByName(const QString &name);
-        Q_INT64 getValueByName(const QString &field);
+        qint64 getValueByName(const QString &field);
 
         QStringList cleanURL( QStringList result );
 

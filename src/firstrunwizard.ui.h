@@ -20,6 +20,7 @@
 #include <qpushbutton.h>
 //Added by qt3to4:
 #include <QPixmap>
+#include <ktoolinvocation.h>
 
 namespace Amarok
 {
@@ -65,7 +66,7 @@ inline void
 FirstRunWizard::invokeHandbook() //SLOT
 {
     // Show handbook
-    kapp->invokeHelp( QString::null, QString::null, 0 );
+    KToolInvocation::invokeHelp( QString::null, QString::null, 0 );
 }
 
 void

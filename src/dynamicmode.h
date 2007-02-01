@@ -34,7 +34,7 @@
 #ifndef AMAROK_DYNAMIC_H
 #define AMAROK_DYNAMIC_H
 
-#include <kurl.h>  //KURL::List
+#include <kurl.h>  //KUrl::List
 //Added by qt3to4:
 #include <Q3PtrList>
 
@@ -59,7 +59,7 @@ class DynamicMode
         /**
          * Retrieves \p tracks from the cache, \p m_cachedItemSet
          */
-        KURL::List retrieveTracks( const uint trackCount );
+        KUrl::List retrieveTracks( const uint trackCount );
 
         /**
          * Creates a list of \p CACHE_SIZE urls, stored in \p m_cachedItemSet in order
@@ -93,7 +93,7 @@ class DynamicMode
          * adequate subset of data after execution. Limits and ordering attributes
          * within the statement will be respected (to a certain extent).
          */
-        KURL::List tracksFromSmartPlaylist( SmartPlaylist *item, uint songCount );
+        KUrl::List tracksFromSmartPlaylist( SmartPlaylist *item, uint songCount );
 
         /**
          * Returns a list of \p songCount urls from \p item - to be stored as part of
@@ -102,7 +102,7 @@ class DynamicMode
          * This function will return a random selection of elements from within the
          * playlist given, in order to give some diversity when rebuilding the cache.
          */
-        KURL::List tracksFromStaticPlaylist( PlaylistEntry *item, uint songCount );
+        KUrl::List tracksFromStaticPlaylist( PlaylistEntry *item, uint songCount );
 
         /**
          * A list of urls which satisfy at least one of the dynamic mode sources. As tracks
@@ -112,7 +112,7 @@ class DynamicMode
          * The cache is used to reduce the number of database queries required when adding and
          * removing tracks from the playlist when using dynamic mode.
          */
-        KURL::List  m_cachedItemSet;
+        KUrl::List  m_cachedItemSet;
 
         QStringList m_items;
 

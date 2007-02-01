@@ -31,7 +31,7 @@ public:
    ~HelixEngine();
 
    virtual bool init();
-   virtual bool canDecode( const KURL& ) const;
+   virtual bool canDecode( const KUrl& ) const;
    virtual uint position() const;
    virtual uint length() const;
    virtual Engine::State state() const;
@@ -47,7 +47,7 @@ public:
    virtual int fallbackToOSS();
 
 public slots:
-   virtual bool load( const KURL &url, bool stream );
+   virtual bool load( const KUrl &url, bool stream );
    virtual bool play( uint = 0 );
    virtual void stop();
    virtual void pause();
@@ -63,7 +63,7 @@ protected:
 
 private:
    Engine::State m_state;
-   KURL          m_url;
+   KUrl          m_url;
 
    QString      m_coredir;
    QString      m_pluginsdir;

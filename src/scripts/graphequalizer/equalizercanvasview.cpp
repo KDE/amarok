@@ -81,7 +81,7 @@ EqualizerCanvasView::contentsMouseDoubleClickEvent(QMouseEvent *event)
               ,makeLine(line->startPoint(),QPoint(event->x(),event->y()))
               ,makeLine(QPoint(event->x(),event->y()),line->endPoint())
               ,m_circleList);
-        //kdDebug() << event->x() << 'x' << y << " cursor at " << event->x() << 'x' << event->y() << endl;
+        //kDebug() << event->x() << 'x' << y << " cursor at " << event->x() << 'x' << event->y() << endl;
         circle->show();
         canvas()->update();
         m_selectedItem=0;
@@ -93,12 +93,12 @@ void
 EqualizerCanvasView::contentsMouseMoveEvent(QMouseEvent *event)
 {
     if ((event->state() & LeftButton) && m_selectedItem ) {
-      //  kdDebug() << "dragging " << m_selectedItem->rtti() << endl;
+      //  kDebug() << "dragging " << m_selectedItem->rtti() << endl;
         if (m_selectedItem->rtti() == Q3CanvasEllipse::RTTI)
         {
             EqualizerCircle* circle = (EqualizerCircle*) m_selectedItem;
             circle->setLocation(event->pos());
-      //      kdDebug() << "dragged" <<endl;
+      //      kDebug() << "dragged" <<endl;
         }
     }
 }
@@ -124,11 +124,11 @@ EqualizerCanvasView::getY(int xCoord)
 //     int x1 = line->startPoint().x();
 //     int x2 = line->endPoint().x();
 //     double slope = double(y1-y2) / double(x1-x2);
-//     kdDebug() << slope << "= (" << y1 << " - " << y2 << ")/(" << x1  << " - " << x2 << ')' << endl;
+//     kDebug() << slope << "= (" << y1 << " - " << y2 << ")/(" << x1  << " - " << x2 << ')' << endl;
 //     double b = slope*double(x1 - y1);
-//     kdDebug() << b << " = " << slope <<" * "<< x1 << " - " << y1 << endl;
+//     kDebug() << b << " = " << slope <<" * "<< x1 << " - " << y1 << endl;
 //     double y = double(xCoord)*slope - b;
-//     kdDebug() << y << " = " << xCoord << '*' << slope << " - " << b << endl;
+//     kDebug() << y << " = " << xCoord << '*' << slope << " - " << b << endl;
     //QPointArray* yAxis = new QPointArray(canvas->height());
     //yAxis->makeEllipse(xCoord, canvas()->height()/2,1,canvas->height());
     //canvas()->collisions(yAxis,0,false);
@@ -173,7 +173,7 @@ EqualizerCanvasView::currentSettings()
     for(i=1; i<9; i++)
         ret << (getY(i*step) - 100)*-1;
     ret << (int)(m_circleList->last()->y() - 100)*-1;
-//    kdDebug() << "sending " << ret << endl;
+//    kDebug() << "sending " << ret << endl;
     return ret;
 }
 
@@ -231,22 +231,22 @@ void EqualizerCircle::setLocation(const QPoint &newLocation)
         xMin = 0; xMax = canvas()->width();
         if(circleIndex > 0)
         {
-        // kdDebug() << "circleIndex " << circleIndex << endl;
+        // kDebug() << "circleIndex " << circleIndex << endl;
             xMin = m_circleList->at(circleIndex - 1)->x();
         }
         if(circleIndex < m_circleList->count()-1)
         {
-            //kdDebug() << "circleIndex " << circleIndex << " count " << m_circleList->count() << endl;
+            //kDebug() << "circleIndex " << circleIndex << " count " << m_circleList->count() << endl;
             xMax = m_circleList->at(circleIndex + 1)->x();
         }
         if(newLocation.x() < xMin)
         {
-            //kdDebug() << "set " << newLocation.x() << " to xMin " << xMin << endl;
+            //kDebug() << "set " << newLocation.x() << " to xMin " << xMin << endl;
             correctedLoc.setX( (int) (xMin + 1.0) );
         }
         else if (newLocation.x() > xMax)
         {
-        //kdDebug() << "set " << newLocation.x() << " to xMax " << xMax << endl;
+        //kDebug() << "set " << newLocation.x() << " to xMax " << xMax << endl;
             correctedLoc.setX( (int) (xMax - 1.0) );
         }
     }

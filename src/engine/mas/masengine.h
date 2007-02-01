@@ -34,7 +34,7 @@ extern "C" {
 
 
 class QTimer;
-class KURL;
+class KUrl;
 
 class MasEngine : public Engine::Base
 {
@@ -47,7 +47,7 @@ class MasEngine : public Engine::Base
         bool init();
 
         bool initMixer( bool hardware );
-        bool canDecode( const KURL& ) const;
+        bool canDecode( const KUrl& ) const;
         uint position() const;
         uint length() const;
         Engine::State state() const {return m_state;}
@@ -59,7 +59,7 @@ class MasEngine : public Engine::Base
         bool supportsXFade() const     { return false; }
 
     public slots:
-        bool load( const KURL&, bool stream );
+        bool load( const KUrl&, bool stream );
         bool play( unsigned int offset = 0);
         void stop();
         void pause();
@@ -89,7 +89,7 @@ class MasEngine : public Engine::Base
         //QString m_xfadeCurrent;
         QTimer* m_pPlayingTimer;
 
-        KURL m_url;
+        KUrl m_url;
 
         mas_device_t m_mp1a_source_device;
         mas_device_t m_visual;

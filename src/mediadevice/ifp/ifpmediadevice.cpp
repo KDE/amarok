@@ -39,7 +39,7 @@ AMAROK_EXPORT_PLUGIN( IfpMediaDevice )
 #include <kconfig.h>           //download saveLocation
 #include <kiconloader.h>       //smallIcon
 #include <kmessagebox.h>
-#include <kpopupmenu.h>
+#include <kmenu.h>
 #include <kurlrequester.h>     //downloadSelectedItems()
 #include <kurlrequesterdlg.h>  //downloadSelectedItems()
 
@@ -457,12 +457,12 @@ IfpMediaDevice::downloadSelectedItems()
 //     QString save = config->readEntry( "DownloadLocation", QString::null );  //restore the save directory
     QString save = QString::null;
 
-    KURLRequesterDlg dialog( save, 0, 0 );
-    dialog.setCaption( kapp->makeStdCaption( i18n( "Choose a Download Directory" ) ) );
+    KUrlRequesterDlg dialog( save, 0, 0 );
+    dialog.setCaption( KInstance::makeStandardCaption( i18n( "Choose a Download Directory" ) ) );
     dialog.urlRequester()->setMode( KFile::Directory | KFile::ExistingOnly );
     dialog.exec();
 
-    KURL destDir = dialog.selectedURL();
+    KUrl destDir = dialog.selectedURL();
     if( destDir.isEmpty() )
         return;
 
@@ -651,7 +651,7 @@ IfpMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
     MediaItem *item = static_cast<MediaItem *>(qitem);
     if ( item )
     {
-        KPopupMenu menu( m_view );
+        KMenu menu( m_view );
         menu.insertItem( SmallIconSet( Amarok::icon( "collection" ) ), i18n( "Download" ), DOWNLOAD );
         menu.insertSeparator();
         menu.insertItem( SmallIconSet( Amarok::icon( "folder" ) ), i18n("Add Directory" ), DIRECTORY );
@@ -685,7 +685,7 @@ IfpMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
 
     if( isConnected() )
     {
-        KPopupMenu menu( m_view );
+        KMenu menu( m_view );
         menu.insertItem( SmallIconSet( Amarok::icon( "folder" ) ), i18n("Add Directory" ), DIRECTORY );
         int id =  menu.exec( point );
         switch( id )
@@ -701,7 +701,7 @@ QString IfpMediaDevice::cleanPath( const QString &component )
 {
     QString result = Amarok::asciiPath( component );
 
-    result.simplifyWhiteSpace();
+    result.simplified();
 
     result.remove( "?" ).replace( "*", " " ).replace( ":", " " );
 

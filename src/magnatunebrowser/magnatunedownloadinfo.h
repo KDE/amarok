@@ -53,7 +53,7 @@ public:
     void setUnpackUrl(QString unpackUrl);
     void setAlbumId(int id);
     bool isReadyForDownload();
-    KURL getCompleteDownloadUrl();
+    KUrl getCompleteDownloadUrl();
     QString getUnpackLocation();
 
 

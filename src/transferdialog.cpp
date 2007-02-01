@@ -37,9 +37,9 @@ TransferDialog::TransferDialog( MediaDevice *mdev )
     m_sort1LastIndex = m_sort2LastIndex = -1;
 
     kapp->setTopWidget( this );
-    setCaption( kapp->makeStdCaption( i18n( "Transfer Queue to Device" ) ) );
+    setCaption( KInstance::makeStandardCaption( i18n( "Transfer Queue to Device" ) ) );
 
-    Q3VBox* vbox = makeVBoxMainWidget();
+    KVBox* vbox = makeVBoxMainWidget();
     vbox->setSpacing( KDialog::spacingHint() );
 
     QString transferDir = mdev->getTransferDir();

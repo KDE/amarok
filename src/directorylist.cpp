@@ -39,7 +39,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     (new QLabel( i18n(
         "These folders will be scanned for "
-        "media to make up your collection:"), this ))->setAlignment( Qt::WordBreak );
+        "media to make up your collection:"), this ))->setAlignment( Qt::TextWordWrap );
 
     m_view = new QFixedListView( this );
     m_recursive = new QCheckBox( i18n("&Scan folders recursively"), this );
@@ -129,7 +129,7 @@ Item::Item( Q3ListView *parent )
 }
 
 
-Item::Item( Q3ListViewItem *parent, const KURL &url , bool full_disable /* default=false */ )
+Item::Item( Q3ListViewItem *parent, const KUrl &url , bool full_disable /* default=false */ )
     : Q3CheckListItem( parent, url.fileName(), Q3CheckListItem::CheckBox )
     , m_lister( true )
     , m_url( url )
@@ -280,7 +280,7 @@ Item::newItems( const KFileItemList &list ) //SLOT
             }
         }
 
-        item->setPixmap( 0, (*it)->pixmap( KIcon::SizeSmall ) );
+        item->setPixmap( 0, (*it)->pixmap( K3Icon::SizeSmall ) );
     }
 }
 

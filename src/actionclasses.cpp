@@ -32,8 +32,9 @@
 #include <klocale.h>
 #include <kstandarddirs.h>
 #include <ktoolbar.h>
-#include <ktoolbarbutton.h>
+
 #include <kurl.h>
+#include <kauthorized.h>
 
 namespace Amarok
 {
@@ -82,7 +83,7 @@ MenuAction::plug( QWidget *w, int index )
 {
     KToolBar *bar = dynamic_cast<KToolBar*>(w);
 
-    if( bar && kapp->authorizeKAction( name() ) )
+    if( bar && KAuthorized::authorizeKAction( name() ) )
     {
         const int id = KAction::getToolButtonID();
 
@@ -139,15 +140,15 @@ Menu::Menu()
 #ifndef Q_WS_MAC
     insertSeparator();
 
-    safePlug( ac, KStdAction::name(KStdAction::ShowMenubar), this );
+    safePlug( ac, KStandardAction::name(KStandardAction::ShowMenubar), this );
 #endif
 
     insertSeparator();
 
-    safePlug( ac, KStdAction::name(KStdAction::ConfigureToolbars), this );
-    safePlug( ac, KStdAction::name(KStdAction::KeyBindings), this );
+    safePlug( ac, KStandardAction::name(KStandardAction::ConfigureToolbars), this );
+    safePlug( ac, KStandardAction::name(KStandardAction::KeyBindings), this );
     safePlug( ac, "options_configure_globals", this ); //we created this one
-    safePlug( ac, KStdAction::name(KStdAction::Preferences), this );
+    safePlug( ac, KStandardAction::name(KStandardAction::Preferences), this );
 
     insertSeparator();
 
@@ -155,7 +156,7 @@ Menu::Menu()
 
     insertSeparator();
 
-    safePlug( ac, KStdAction::name(KStdAction::Quit), this );
+    safePlug( ac, KStandardAction::name(KStandardAction::Quit), this );
 
     connect( this, SIGNAL( aboutToShow() ),  SLOT( slotAboutToShow() ) );
     connect( this, SIGNAL( activated(int) ), SLOT( slotActivated(int) ) );
@@ -173,7 +174,7 @@ Menu::instance()
     return &menu;
 }
 
-KPopupMenu*
+KMenu*
 Menu::helpMenu( QWidget *parent ) //STATIC
 {
     extern KAboutData aboutData;
@@ -278,7 +279,7 @@ AnalyzerAction::plug( QWidget *w, int index )
 
     KToolBar *bar = dynamic_cast<KToolBar*>(w);
 
-    if( bar && kapp->authorizeKAction( name() ) )
+    if( bar && KAuthorized::authorizeKAction( name() ) )
     {
         const int id = KAction::getToolButtonID();
 
@@ -330,7 +331,7 @@ void
 AnalyzerContainer::contextMenuEvent( QContextMenuEvent *e)
 {
 #if defined HAVE_LIBVISUAL
-    KPopupMenu menu;
+    KMenu menu;
     menu.insertItem( SmallIconSet( Amarok::icon( "visualizations" ) ), i18n("&Visualizations"), Menu::ID_SHOW_VIS_SELECTOR );
 
     if( menu.exec( mapToGlobal( e->pos() ) ) == Menu::ID_SHOW_VIS_SELECTOR )
@@ -404,7 +405,7 @@ void SelectAction::setIcons( QStringList icons )
 {
     m_icons = icons;
     for( int i = 0, n = items().count(); i < n; ++i )
-        popupMenu()->changeItem( i, kapp->iconLoader()->loadIconSet( *icons.at( i ), KIcon::Small ), popupMenu()->text( i ) );
+        popupMenu()->changeItem( i, kapp->iconLoader()->loadIconSet( *icons.at( i ), K3Icon::Small ), popupMenu()->text( i ) );
 }
 
 QStringList SelectAction::icons() const { return m_icons; }
@@ -427,7 +428,7 @@ QString SelectAction::currentText() const {
 VolumeAction::VolumeAction( KActionCollection *ac )
         : KAction( i18n( "Volume" ), 0, ac, "toolbar_volume" )
         , EngineObserver( EngineController::instance() )
-        , m_slider( 0 ) //is QGuardedPtr
+        , m_slider( 0 ) //is QPointer
 {}
 
 int
@@ -520,7 +521,7 @@ BurnMenuAction::plug( QWidget *w, int index )
 {
     KToolBar *bar = dynamic_cast<KToolBar*>(w);
 
-    if( bar && kapp->authorizeKAction( name() ) )
+    if( bar && KAuthorized::authorizeKAction( name() ) )
     {
         const int id = KAction::getToolButtonID();
 
@@ -549,7 +550,7 @@ BurnMenu::BurnMenu()
     connect( this, SIGNAL( activated(int) ), SLOT( slotActivated(int) ) );
 }
 
-KPopupMenu*
+KMenu*
 BurnMenu::instance()
 {
     static BurnMenu menu;
@@ -588,7 +589,7 @@ StopAction::plug( QWidget *w, int index )
 {
     KToolBar *bar = dynamic_cast<KToolBar*>(w);
 
-    if( bar && kapp->authorizeKAction( name() ) )
+    if( bar && KAuthorized::authorizeKAction( name() ) )
     {
         const int id = KAction::getToolButtonID();
 
@@ -620,7 +621,7 @@ StopMenu::StopMenu()
     connect( this, SIGNAL( activated(int) ), SLOT( slotActivated(int) ) );
 }
 
-KPopupMenu*
+KMenu*
 StopMenu::instance()
 {
     static StopMenu menu;

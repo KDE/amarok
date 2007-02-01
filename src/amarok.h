@@ -49,7 +49,7 @@ namespace Amarok
         extern QColor Background; //brighter blue
         ///eg. outline of slider widgets in Player-window
         extern QColor Foreground; //lighter blue
-        ///eg. KListView alternative row color
+        ///eg. K3ListView alternative row color
         extern QColor AltBase; //grey toned base
     }
 
@@ -125,14 +125,14 @@ namespace Amarok
      */
     LIBAMAROK_EXPORT QString saveLocation( const QString &directory = QString::null ); //defined in collectionreader.cpp
 
-    KIO::Job *trashFiles( const KURL::List &files ); //defined in app.cpp
+    KIO::Job *trashFiles( const KUrl::List &files ); //defined in app.cpp
 
     /**
-     * For recursively expanding the contents of a directory into a KURL::List
+     * For recursively expanding the contents of a directory into a KUrl::List
      * (playlists are ignored)
      */
-    LIBAMAROK_EXPORT KURL::List recursiveUrlExpand( const KURL &url, int maxURLs = -1 ); //defined in playlistloader.cpp
-    LIBAMAROK_EXPORT KURL::List recursiveUrlExpand( const KURL::List &urls, int maxURLs = -1 ); //defined in playlistloader.cpp
+    LIBAMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl &url, int maxURLs = -1 ); //defined in playlistloader.cpp
+    LIBAMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl::List &urls, int maxURLs = -1 ); //defined in playlistloader.cpp
 
     QString verboseTimeSince( const QDateTime &datetime ); //defined in contextbrowser.cpp
 
@@ -153,7 +153,7 @@ namespace Amarok
     }
 
     /** Transform url into a file url if possible */
-    inline KURL mostLocalURL( const KURL &url )
+    inline KUrl mostLocalURL( const KUrl &url )
     {
 #if KDE_VERSION < KDE_MAKE_VERSION(3,5,0)
         return url;
@@ -206,9 +206,9 @@ namespace Amarok
     QStringList splitPath( QString path ); //defined in playlistbrowser.cpp
 
     /**
-     * Creates a copy of of the KURL instance, that doesn't have any QStrings sharing memory.
+     * Creates a copy of of the KUrl instance, that doesn't have any QStrings sharing memory.
     **/
-    KURL detachedKURL( const KURL &url ); //defined in metabundle.cpp
+    KUrl detachedKURL( const KUrl &url ); //defined in metabundle.cpp
 
     /**
      * Maps the icon name to a system icon or custom Amarok icon, depending on the settings.

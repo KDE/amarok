@@ -17,7 +17,7 @@
 #include <kglobalsettings.h> //paletteChange()
 #include <kiconloader.h>     //mousePressEvent
 #include <klocale.h>         //mousePressEvent
-#include <kpopupmenu.h>      //mousePressEvent
+#include <kmenu.h>      //mousePressEvent
 
 #include <qevent.h>          //mousePressEvent
 #include <qpainter.h>        //paletteChange()
@@ -425,7 +425,7 @@ BlockAnalyzer::contextMenuEvent( QContextMenuEvent *e )
 
     const uint ids[] = { 50, 33, 25, 20, 10 };
 
-    KPopupMenu menu;
+    KMenu menu;
     menu.insertTitle( i18n( "Framerate" ) );
 
     for( uint x = 0; x < 5; ++x )

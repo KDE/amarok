@@ -211,7 +211,7 @@ EngineController::loadEngine( const QString &engineName )
 }
 
 
-bool EngineController::canDecode( const KURL &url ) //static
+bool EngineController::canDecode( const KUrl &url ) //static
 {
    //NOTE this function must be thread-safe
     //TODO a KFileItem version? <- presumably so we can mimetype check
@@ -276,7 +276,7 @@ bool EngineController::installDistroCodec( const QString& engine /*Filetype type
             , i18n("Amarok currently cannot play MP3 files.")
             , i18n( "No MP3 Support" )
             , installButton
-            , KStdGuiItem::no()
+            , KStandardGuiItem::no()
             , "codecInstallWarning" ) == KMessageBox::Yes )
             {
                     KRun::runCommand(installScript);
@@ -294,7 +294,7 @@ void EngineController::restoreSession()
 
     if( !AmarokConfig::resumeTrack().isEmpty() )
     {
-        const KURL url = AmarokConfig::resumeTrack();
+        const KUrl url = AmarokConfig::resumeTrack();
 
         play( MetaBundle( url ), AmarokConfig::resumeTime() );
     }
@@ -344,7 +344,7 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
 {
     DEBUG_BLOCK
 
-    KURL url = bundle.url();
+    KUrl url = bundle.url();
     // don't destroy connection if we need to change station
     if( url.protocol() != "lastfm" && LastFm::Controller::instance()->isPlaying() )
     {
@@ -414,7 +414,7 @@ void EngineController::play( const MetaBundle &bundle, uint offset )
     }
     else if (url.protocol() == "daap" )
     {
-        KURL newUrl = MediaBrowser::instance()->getProxyUrl( url );
+        KUrl newUrl = MediaBrowser::instance()->getProxyUrl( url );
         if( !newUrl.isEmpty() )
         {
             debug() << newUrl << endl;

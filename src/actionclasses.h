@@ -30,7 +30,7 @@ namespace Amarok
         Q_OBJECT
         public:
             static Menu *instance();
-            static KPopupMenu *helpMenu( QWidget *parent = 0 );
+            static KMenu *helpMenu( QWidget *parent = 0 );
 
             enum MenuIds {
                 ID_CONF_DECODER,
@@ -155,7 +155,7 @@ namespace Amarok
             RepeatAction( KActionCollection *ac );
     };
 
-    class BurnMenu : public KPopupMenu
+    class BurnMenu : public KMenu
     {
             Q_OBJECT
 
@@ -165,7 +165,7 @@ namespace Amarok
                 SELECTED_TRACKS
             };
 
-            static KPopupMenu *instance();
+            static KMenu *instance();
 
         private slots:
             void slotAboutToShow();
@@ -183,7 +183,7 @@ namespace Amarok
             virtual int plug( QWidget*, int index = -1 );
     };
 
-    class StopMenu : public KPopupMenu
+    class StopMenu : public KMenu
     {
             Q_OBJECT
 
@@ -194,7 +194,7 @@ namespace Amarok
                 AFTER_QUEUE
             };
 
-            static KPopupMenu *instance();
+            static KMenu *instance();
 
         private slots:
             void slotAboutToShow();

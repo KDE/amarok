@@ -27,7 +27,7 @@ class EqualizerGraph;
 class Q3GroupBox;
 class QCheckBox;
 class KComboBox;
-class KPopupMenu;
+class KMenu;
 
 namespace Amarok { class Slider; }
 

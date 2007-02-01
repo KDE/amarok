@@ -77,7 +77,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kmultipledrag.h>
-#include <kpopupmenu.h>
+#include <kmenu.h>
 #include <kprocess.h>
 #include <kprogress.h>
 #include <kpushbutton.h>
@@ -85,7 +85,7 @@
 #include <kstandarddirs.h> //locate file
 #include <ktabbar.h>
 #include <ktempfile.h>
-#include <ktoolbarbutton.h> //ctor
+ //ctor
 #include <kurldrag.h>       //dragObject()
 #include <kactioncollection.h>
 
@@ -227,12 +227,12 @@ MediaBrowser::MediaBrowser( const char *name )
 
     // preload pixmaps used in browser
     KIconLoader iconLoader;
-    MediaItem::s_pixUnknown = new QPixmap(iconLoader.loadIcon( Amarok::icon( "unknown" ), KIcon::Toolbar, KIcon::SizeSmall ));
-    MediaItem::s_pixTrack = new QPixmap(iconLoader.loadIcon( Amarok::icon( "playlist" ), KIcon::Toolbar, KIcon::SizeSmall ));
-    MediaItem::s_pixFile = new QPixmap(iconLoader.loadIcon( Amarok::icon( "sound" ), KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixPodcast = new QPixmap(iconLoader.loadIcon( Amarok::icon( "podcast" ), KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixPlaylist = new QPixmap(iconLoader.loadIcon( Amarok::icon( "playlist" ), KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixRootItem = new QPixmap(iconLoader.loadIcon( Amarok::icon( "files2" ), KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixUnknown = new QPixmap(iconLoader.loadIcon( Amarok::icon( "unknown" ), K3Icon::Toolbar, K3Icon::SizeSmall ));
+    MediaItem::s_pixTrack = new QPixmap(iconLoader.loadIcon( Amarok::icon( "playlist" ), K3Icon::Toolbar, K3Icon::SizeSmall ));
+    MediaItem::s_pixFile = new QPixmap(iconLoader.loadIcon( Amarok::icon( "sound" ), K3Icon::Toolbar, K3Icon::SizeSmall ) );
+    MediaItem::s_pixPodcast = new QPixmap(iconLoader.loadIcon( Amarok::icon( "podcast" ), K3Icon::Toolbar, K3Icon::SizeSmall ) );
+    MediaItem::s_pixPlaylist = new QPixmap(iconLoader.loadIcon( Amarok::icon( "playlist" ), K3Icon::Toolbar, K3Icon::SizeSmall ) );
+    MediaItem::s_pixRootItem = new QPixmap(iconLoader.loadIcon( Amarok::icon( "files2" ), K3Icon::Toolbar, K3Icon::SizeSmall ) );
     // history
     // favorites
     // collection
@@ -241,15 +241,15 @@ MediaBrowser::MediaBrowser( const char *name )
     // player_playlist_2
     // cancel
     // sound
-    MediaItem::s_pixArtist = new QPixmap(iconLoader.loadIcon( Amarok::icon( "personal" ), KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixAlbum = new QPixmap(iconLoader.loadIcon( Amarok::icon( "cdrom_unmount" ), KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixInvisible = new QPixmap(iconLoader.loadIcon( Amarok::icon( "cancel" ), KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixStale = new QPixmap(iconLoader.loadIcon( Amarok::icon( "cancel" ), KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixOrphaned = new QPixmap(iconLoader.loadIcon( Amarok::icon( "cancel" ), KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixDirectory = new QPixmap(iconLoader.loadIcon( Amarok::icon( "folder" ), KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixTransferBegin = new QPixmap(iconLoader.loadIcon( Amarok::icon( "play" ), KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixTransferEnd = new QPixmap(iconLoader.loadIcon( Amarok::icon( "stop" ), KIcon::Toolbar, KIcon::SizeSmall ) );
-    MediaItem::s_pixTransferFailed = new QPixmap(iconLoader.loadIcon( Amarok::icon( "cancel" ), KIcon::Toolbar, KIcon::SizeSmall ) );
+    MediaItem::s_pixArtist = new QPixmap(iconLoader.loadIcon( Amarok::icon( "personal" ), K3Icon::Toolbar, K3Icon::SizeSmall ) );
+    MediaItem::s_pixAlbum = new QPixmap(iconLoader.loadIcon( Amarok::icon( "cdrom_unmount" ), K3Icon::Toolbar, K3Icon::SizeSmall ) );
+    MediaItem::s_pixInvisible = new QPixmap(iconLoader.loadIcon( Amarok::icon( "cancel" ), K3Icon::Toolbar, K3Icon::SizeSmall ) );
+    MediaItem::s_pixStale = new QPixmap(iconLoader.loadIcon( Amarok::icon( "cancel" ), K3Icon::Toolbar, K3Icon::SizeSmall ) );
+    MediaItem::s_pixOrphaned = new QPixmap(iconLoader.loadIcon( Amarok::icon( "cancel" ), K3Icon::Toolbar, K3Icon::SizeSmall ) );
+    MediaItem::s_pixDirectory = new QPixmap(iconLoader.loadIcon( Amarok::icon( "folder" ), K3Icon::Toolbar, K3Icon::SizeSmall ) );
+    MediaItem::s_pixTransferBegin = new QPixmap(iconLoader.loadIcon( Amarok::icon( "play" ), K3Icon::Toolbar, K3Icon::SizeSmall ) );
+    MediaItem::s_pixTransferEnd = new QPixmap(iconLoader.loadIcon( Amarok::icon( "stop" ), K3Icon::Toolbar, K3Icon::SizeSmall ) );
+    MediaItem::s_pixTransferFailed = new QPixmap(iconLoader.loadIcon( Amarok::icon( "cancel" ), K3Icon::Toolbar, K3Icon::SizeSmall ) );
 
     setSpacing( 4 );
 
@@ -284,7 +284,8 @@ MediaBrowser::MediaBrowser( const char *name )
         KToolBar* searchToolBar = new Browser::ToolBar( this );
         KToolBarButton *button = new KToolBarButton( "locationbar_erase", 0, searchToolBar );
         m_searchEdit = new ClickLineEdit( i18n( "Enter search terms here" ), searchToolBar );
-        KPushButton *filterButton = new KPushButton("...", searchToolBar, "filter");
+        KPushButton *filterButton = new KPushButton( "...", searchToolBar );
+        filterButton->setObjectName( "filter" );
         searchToolBar->setStretchableWidget( m_searchEdit );
         m_searchEdit->setFrame( Q3Frame::Sunken );
 
@@ -434,7 +435,7 @@ MediaBrowser::tagsChanged( const MetaBundle &bundle )
 
             QString text = item->bundle()->prettyTitle();
             if( text.isEmpty() || (!item->bundle()->isValidMedia() && !item->bundle()->podcastBundle()) )
-                text = item->bundle()->url().prettyURL();
+                text = item->bundle()->url().prettyUrl();
             if( !item->m_playlistName.isNull() )
             {
                 text += " (" + item->m_playlistName + ')';
@@ -449,7 +450,7 @@ MediaBrowser::tagsChanged( const MetaBundle &bundle )
 }
 
 bool
-MediaBrowser::getBundle( const KURL &url, MetaBundle *bundle ) const
+MediaBrowser::getBundle( const KUrl &url, MetaBundle *bundle ) const
 {
     QMutexLocker locker( &m_itemMapMutex );
     ItemMap::const_iterator it = m_itemMap.find( url.url() );
@@ -462,11 +463,11 @@ MediaBrowser::getBundle( const KURL &url, MetaBundle *bundle ) const
     return true;
 }
 
-KURL
-MediaBrowser::getProxyUrl( const KURL& daapUrl ) const
+KUrl
+MediaBrowser::getProxyUrl( const KUrl& daapUrl ) const
 {
     DEBUG_BLOCK
-    KURL url;
+    KUrl url;
     MediaDevice* dc = dynamic_cast<MediaDevice*>( queryList( "DaapClient" )->getFirst() );
     if( dc )
         url = dc->getProxyUrl( daapUrl );
@@ -695,12 +696,12 @@ MediaBrowser::deviceSwitch( const QString &name )
 void
 MediaBrowser::transcodingFinished( const QString &src, const QString &dst )
 {
-    KURL srcJob = KURL::fromPathOrURL( m_transcodeSrc );
-    KURL srcResult = KURL::fromPathOrURL( src );
+    KUrl srcJob = KUrl::fromPathOrUrl( m_transcodeSrc );
+    KUrl srcResult = KUrl::fromPathOrUrl( src );
 
     if( srcJob.path() == srcResult.path() )
     {
-        m_transcodedUrl = KURL::fromPathOrURL( dst );
+        m_transcodedUrl = KUrl::fromPathOrUrl( dst );
         m_waitForTranscode = false;
     }
     else
@@ -711,20 +712,20 @@ MediaBrowser::transcodingFinished( const QString &src, const QString &dst )
     }
 }
 
-KURL
-MediaBrowser::transcode( const KURL &src, const QString &filetype )
+KUrl
+MediaBrowser::transcode( const KUrl &src, const QString &filetype )
 {
     const ScriptManager* const sm = ScriptManager::instance();
 
     if( sm->transcodeScriptRunning().isEmpty() )
     {
         debug() << "cannot transcode with no transcoder registered" << endl;
-        return KURL();
+        return KUrl();
     }
 
     m_waitForTranscode = true;
     m_transcodeSrc = src.url();
-    m_transcodedUrl = KURL();
+    m_transcodedUrl = KUrl();
     ScriptManager::instance()->notifyTranscode( src.url(), filetype );
 
     while( m_waitForTranscode && sm->transcodeScriptRunning() != QString::null )
@@ -799,25 +800,25 @@ MediaBrowser::~MediaBrowser()
 
 
 MediaItem::MediaItem( Q3ListView* parent )
-: KListViewItem( parent )
+: K3ListViewItem( parent )
 {
     init();
 }
 
 MediaItem::MediaItem( Q3ListViewItem* parent )
-: KListViewItem( parent )
+: K3ListViewItem( parent )
 {
     init();
 }
 
 MediaItem::MediaItem( Q3ListView* parent, Q3ListViewItem* after )
-: KListViewItem( parent, after )
+: K3ListViewItem( parent, after )
 {
     init();
 }
 
 MediaItem::MediaItem( Q3ListViewItem* parent, Q3ListViewItem* after )
-: KListViewItem( parent, after )
+: K3ListViewItem( parent, after )
 {
     init();
 }
@@ -883,7 +884,7 @@ void MediaItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
         break;
     }
 
-    KListViewItem::paintCell( p, cg, column, width, align );
+    K3ListViewItem::paintCell( p, cg, column, width, align );
 }
 
 const MetaBundle *
@@ -892,13 +893,13 @@ MediaItem::bundle() const
     return m_bundle;
 }
 
-KURL
+KUrl
 MediaItem::url() const
 {
     if( bundle() )
         return bundle()->url();
     else
-        return KURL();
+        return KUrl();
 }
 
 bool
@@ -1108,7 +1109,7 @@ MediaItem::compare( Q3ListViewItem *i, int col, bool ascending ) const
        return key1.localeAwareCompare( key2 );
     }
 
-    return KListViewItem::compare(i, col, ascending);
+    return K3ListViewItem::compare(i, col, ascending);
 }
 
 class MediaItemTip : public QToolTip
@@ -1181,7 +1182,7 @@ class MediaItemTip : public QToolTip
 
 
 MediaView::MediaView( QWidget* parent, MediaDevice *device )
-    : KListView( parent )
+    : K3ListView( parent )
     , m_parent( parent )
     , m_device( device )
 {
@@ -1201,7 +1202,7 @@ MediaView::MediaView( QWidget* parent, MediaDevice *device )
     addColumn( i18n( "Remote Media" ) );
 
     KActionCollection* ac = new KActionCollection( this );
-    KStdAction::selectAll( this, SLOT( selectAll() ), ac, "mediabrowser_select_all" );
+    KStandardAction::selectAll( this, SLOT( selectAll() ), ac, "mediabrowser_select_all" );
 
     connect( this, SIGNAL( contextMenuRequested( Q3ListViewItem*, const QPoint&, int ) ),
              this,   SLOT( rmbPressed( Q3ListViewItem*, const QPoint&, int ) ) );
@@ -1227,7 +1228,7 @@ MediaView::keyPressEvent( QKeyEvent *e )
     if( e->key() == Key_Delete )
         m_device->deleteFromDevice();
     else
-        KListView::keyPressEvent( e );
+        K3ListView::keyPressEvent( e );
 }
 
 void
@@ -1250,7 +1251,7 @@ MediaView::invokeItem( Q3ListViewItem *i )
     if( !item )
         return;
 
-    KURL::List urls = nodeBuildDragList( item );
+    KUrl::List urls = nodeBuildDragList( item );
     Playlist::instance()->insertMedia( urls, Playlist::DefaultOptions );
 }
 
@@ -1276,9 +1277,9 @@ MediaView::~MediaView()
 Q3DragObject *
 MediaView::dragObject()
 {
-    KURL::List urls = nodeBuildDragList( 0 );
+    KUrl::List urls = nodeBuildDragList( 0 );
     KMultipleDrag *md = new KMultipleDrag( viewport() );
-    md->addDragObject( KListView::dragObject() );
+    md->addDragObject( K3ListView::dragObject() );
     KURLDrag* ud = new KURLDrag( urls, viewport() );
     md->addDragObject( ud );
     md->setPixmap( CollectionDB::createDragPixmap( urls ),
@@ -1287,10 +1288,10 @@ MediaView::dragObject()
 }
 
 
-KURL::List
+KUrl::List
 MediaView::nodeBuildDragList( MediaItem* item, int flags )
 {
-    KURL::List items;
+    KUrl::List items;
     MediaItem* fi;
 
     if ( !item )
@@ -1466,7 +1467,7 @@ MediaView::contentsDropEvent( QDropEvent *e )
         QString data;
         Q3CString subtype;
         Q3TextDrag::decode( e, data, subtype );
-        KURL::List list;
+        KUrl::List list;
 
         if( subtype == "amarok-sql" )
         {
@@ -1486,7 +1487,7 @@ MediaView::contentsDropEvent( QDropEvent *e )
 void
 MediaView::viewportPaintEvent( QPaintEvent *e )
 {
-    KListView::viewportPaintEvent( e );
+    K3ListView::viewportPaintEvent( e );
 
     // Superimpose bubble help:
 
@@ -2097,7 +2098,7 @@ MediaQueue::syncPlaylist( const QString &name, const QString &query, bool loadin
 }
 
 void
-MediaQueue::syncPlaylist( const QString &name, const KURL &url, bool loading )
+MediaQueue::syncPlaylist( const QString &name, const KUrl &url, bool loading )
 {
     MediaItem* item = new MediaItem( this, lastItem() );
     item->setType( MediaItem::PLAYLIST );
@@ -2112,7 +2113,7 @@ MediaQueue::syncPlaylist( const QString &name, const KURL &url, bool loading )
 }
 
 BundleList
-MediaDevice::bundlesToSync( const QString &name, const KURL &url )
+MediaDevice::bundlesToSync( const QString &name, const KUrl &url )
 {
     BundleList bundles;
     if( !PlaylistFile::isPlaylistFile( url ) )
@@ -2249,9 +2250,9 @@ MediaDevice::isOnPlaylist( const MediaItem &playlist, const MetaBundle &bundle )
 }
 
 void
-MediaQueue::addURL( const KURL& url2, MetaBundle *bundle, const QString &playlistName )
+MediaQueue::addUrl( const KUrl& url2, MetaBundle *bundle, const QString &playlistName )
 {
-    KURL url = Amarok::mostLocalURL( url2 );
+    KUrl url = Amarok::mostLocalURL( url2 );
 
     if( PlaylistFile::isPlaylistFile( url ) )
     {
@@ -2269,27 +2270,27 @@ MediaQueue::addURL( const KURL& url2, MetaBundle *bundle, const QString &playlis
                 it != playlist.bundles().end();
                 ++it )
         {
-            addURL( (*it).url(), 0, name );
+            addUrl( (*it).url(), 0, name );
         }
         return;
     }
     else if( ContextBrowser::hasContextProtocol( url ) )
     {
-        KURL::List urls = ContextBrowser::expandURL( url );
+        KUrl::List urls = ContextBrowser::expandURL( url );
 
-        for( KURL::List::iterator it = urls.begin();
+        for( KUrl::List::iterator it = urls.begin();
                 it != urls.end();
                 ++it )
         {
-            addURL( *it );
+            addUrl( *it );
         }
         return;
     }
     else if( url.protocol() == "file" && QFileInfo( url.path() ).isDir() )
     {
-        KURL::List urls = Amarok::recursiveUrlExpand( url );
-        foreachType( KURL::List, urls )
-            addURL( *it );
+        KUrl::List urls = Amarok::recursiveUrlExpand( url );
+        foreachType( KUrl::List, urls )
+            addUrl( *it );
         return;
     }
 
@@ -2323,7 +2324,7 @@ MediaQueue::addURL( const KURL& url2, MetaBundle *bundle, const QString &playlis
 
     QString text = item->bundle()->prettyTitle();
     if( text.isEmpty() || (!item->bundle()->isValidMedia() && !item->bundle()->podcastBundle()) )
-        text = item->bundle()->url().prettyURL();
+        text = item->bundle()->url().prettyUrl();
     if( !item->m_playlistName.isNull() )
     {
         text += " (" + item->m_playlistName + ')';
@@ -2337,14 +2338,14 @@ MediaQueue::addURL( const KURL& url2, MetaBundle *bundle, const QString &playlis
 }
 
 void
-MediaQueue::addURL( const KURL &url, MediaItem *item )
+MediaQueue::addUrl( const KUrl &url, MediaItem *item )
 {
     DEBUG_BLOCK
     MediaItem *newitem = new MediaItem( this, lastItem() );
     newitem->setExpandable( false );
     newitem->setDropEnabled( true );
     MetaBundle *bundle = new MetaBundle( *item->bundle() );
-    KURL filepath(url);
+    KUrl filepath(url);
     filepath.addPath( bundle->filename() );
     bundle->setUrl( filepath );
     newitem->m_device = item->m_device;
@@ -2354,7 +2355,7 @@ MediaQueue::addURL( const KURL &url, MediaItem *item )
     }
     QString text = item->bundle()->prettyTitle();
     if( text.isEmpty() || (!item->bundle()->isValidMedia() && !item->bundle()->podcastBundle()) )
-        text = item->bundle()->url().prettyURL();
+        text = item->bundle()->url().prettyUrl();
     if( item->m_playlistName != QString::null )
     {
         text += " (" + item->m_playlistName + ')';
@@ -2369,11 +2370,11 @@ MediaQueue::addURL( const KURL &url, MediaItem *item )
 }
 
 void
-MediaQueue::addURLs( const KURL::List urls, const QString &playlistName )
+MediaQueue::addURLs( const KUrl::List urls, const QString &playlistName )
 {
-    KURL::List::ConstIterator it = urls.begin();
+    KUrl::List::ConstIterator it = urls.begin();
     for ( ; it != urls.end(); ++it )
-        addURL( *it, 0, playlistName );
+        addUrl( *it, 0, playlistName );
 
     URLsAdded();
 }
@@ -2401,7 +2402,7 @@ MediaDevice::copyTrackFromDevice( MediaItem *item )
 Q3DragObject *
 MediaQueue::dragObject()
 {
-    KURL::List urls;
+    KUrl::List urls;
     for( Q3ListViewItem *it = firstChild(); it; it = it->nextSibling() )
     {
         if( it->isVisible() && it->isSelected() && dynamic_cast<MediaItem *>(it) )
@@ -2409,7 +2410,7 @@ MediaQueue::dragObject()
     }
 
     KMultipleDrag *md = new KMultipleDrag( viewport() );
-    Q3DragObject *d = KListView::dragObject();
+    Q3DragObject *d = K3ListView::dragObject();
     KURLDrag* urldrag = new KURLDrag( urls, viewport() );
     md->addDragObject( d );
     md->addDragObject( urldrag );
@@ -2460,7 +2461,7 @@ int MediaDevice::sysCall( const QString &command )
     sysProc->clearArguments();
     (*sysProc) << command;
     if (!sysProc->start( KProcess::Block, KProcess::AllOutput ))
-        kdFatal() << i18n("could not execute %1").arg(command.local8Bit().data()) << endl;
+        kFatal() << i18n("could not execute %1").arg(command.local8Bit().data()) << endl;
 
     return (sysProc->exitStatus());
 }
@@ -2473,7 +2474,7 @@ MediaDevice::abortTransfer()
 }
 
 bool
-MediaDevice::kioCopyTrack( const KURL &src, const KURL &dst )
+MediaDevice::kioCopyTrack( const KUrl &src, const KUrl &dst )
 {
     m_wait = true;
 
@@ -2508,7 +2509,7 @@ MediaDevice::kioCopyTrack( const KURL &src, const KURL &dst )
             tryToRemove = true;
             Amarok::StatusBar::instance()->longMessage(
                     i18n( "Media Device: Copying %1 to %2 failed" )
-                    .arg( src.prettyURL(), dst.prettyURL() ),
+                    .arg( src.prettyUrl(), dst.prettyUrl() ),
                     KDE::StatusBar::Error );
         }
         else
@@ -2519,7 +2520,7 @@ MediaDevice::kioCopyTrack( const KURL &src, const KURL &dst )
                 tryToRemove = true;
                 // probably s.th. went wrong
                 Amarok::StatusBar::instance()->longMessage(
-                        i18n( "Media Device: Reading tags from %1 failed" ).arg( dst.prettyURL() ),
+                        i18n( "Media Device: Reading tags from %1 failed" ).arg( dst.prettyUrl() ),
                         KDE::StatusBar::Error );
             }
         }
@@ -2947,7 +2948,7 @@ MediaDevice::transferFiles()
 
     // ok, let's copy the stuff to the device
 
-    KURL::List existing, unplayable;
+    KUrl::List existing, unplayable;
     unsigned transcodeFail = 0;
     // iterate through items
     MediaItem *next = static_cast<MediaItem *>(m_parent->m_queue->firstChild());
@@ -2975,7 +2976,7 @@ MediaDevice::transferFiles()
             if( transferredItem->flags() & MediaItem::SmartPlaylist )
                 bundles = bundlesToSync( transferredItem->text( 0 ), transferredItem->data() );
             else
-                bundles = bundlesToSync( transferredItem->text( 0 ), KURL::fromPathOrURL( transferredItem->data() ) );
+                bundles = bundlesToSync( transferredItem->text( 0 ), KUrl::fromPathOrUrl( transferredItem->data() ) );
         }
         else if( transferredItem->bundle() )
             bundles += *transferredItem->bundle();
@@ -3007,7 +3008,7 @@ MediaDevice::transferFiles()
             if( item && playlist.isEmpty() )
             {
                 Amarok::StatusBar::instance()->shortMessage( i18n( "Track already on media device: %1" ).
-                        arg( (*it).url().prettyURL() ),
+                        arg( (*it).url().prettyUrl() ),
                         KDE::StatusBar::Sorry );
                 existing += (*it).url();
                 setProgress( progress() + 1 );
@@ -3019,7 +3020,7 @@ MediaDevice::transferFiles()
                 {
                     QString preferred = supportedFiletypes().isEmpty() ? "mp3" : supportedFiletypes().first();
                     debug() << "transcoding " << bundle->url() << " to " << preferred << endl;
-                    KURL transcoded = MediaBrowser::instance()->transcode( bundle->url(), preferred );
+                    KUrl transcoded = MediaBrowser::instance()->transcode( bundle->url(), preferred );
                     if( isCanceled() )
                         break;
                     if( transcoded.isEmpty() )
@@ -3170,17 +3171,17 @@ MediaDevice::transferFiles()
     if( unplayable.count() + existing.count() > 0 )
     {
         QString longMsg = i18n( "The following tracks were not transferred: ");
-        for( KURL::List::Iterator it = existing.begin();
+        for( KUrl::List::Iterator it = existing.begin();
                 it != existing.end();
                 it++ )
         {
-            longMsg += "<br>" + (*it).prettyURL();
+            longMsg += "<br>" + (*it).prettyUrl();
         }
-        for( KURL::List::Iterator it = unplayable.begin();
+        for( KUrl::List::Iterator it = unplayable.begin();
                 it != unplayable.end();
                 it++ )
         {
-            longMsg += "<br>" + (*it).prettyURL();
+            longMsg += "<br>" + (*it).prettyUrl();
         }
         Amarok::StatusBar::instance()->shortLongMessage( msg, longMsg, KDE::StatusBar::Sorry );
     }
@@ -3520,7 +3521,7 @@ MediaQueue::load( const QString& filename )
         {
             continue;
         }
-        KURL url(elem.attribute("url"));
+        KUrl url(elem.attribute("url"));
 
         bool podcast = elem.hasAttribute( "podcast" );
         PodcastEpisodeBundle peb;
@@ -3551,9 +3552,9 @@ MediaQueue::load( const QString& filename )
             else if(node.nodeName() == "PodcastAuthor" )
                 peb.setAuthor( node.firstChild().toText().nodeValue() );
             else if(node.nodeName() == "PodcastRSS" )
-                peb.setParent( KURL::fromPathOrURL( node.firstChild().toText().nodeValue() ) );
+                peb.setParent( KUrl::fromPathOrUrl( node.firstChild().toText().nodeValue() ) );
             else if(node.nodeName() == "PodcastURL" )
-                peb.setURL( KURL::fromPathOrURL( node.firstChild().toText().nodeValue() ) );
+                peb.setURL( KUrl::fromPathOrUrl( node.firstChild().toText().nodeValue() ) );
         }
 
         if( podcast )
@@ -3567,12 +3568,12 @@ MediaQueue::load( const QString& filename )
         {
             QString smart = elem.attribute( "smartplaylist" );
             if( smart.isEmpty() )
-                syncPlaylist( playlist, KURL::fromPathOrURL( playlistdata ), true );
+                syncPlaylist( playlist, KUrl::fromPathOrUrl( playlistdata ), true );
             else
                 syncPlaylist( playlist, playlistdata, true );
         }
         else
-            addURL( url, bundle, playlist );
+            addUrl( url, bundle, playlist );
     }
 
     URLsAdded();
@@ -3600,7 +3601,7 @@ MediaDevice::isPreferredFormat( const MetaBundle &bundle )
 
 
 MediaQueue::MediaQueue(MediaBrowser *parent)
-    : KListView( parent ), m_parent( parent )
+    : K3ListView( parent ), m_parent( parent )
 {
     setFixedHeight( 200 );
     setSelectionMode( Q3ListView::Extended );
@@ -3619,7 +3620,7 @@ MediaQueue::MediaQueue(MediaBrowser *parent)
     itemCountChanged();
 
     KActionCollection* ac = new KActionCollection( this );
-    KStdAction::selectAll( this, SLOT( selectAll() ), ac, "MediaQueue" );
+    KStandardAction::selectAll( this, SLOT( selectAll() ), ac, "MediaQueue" );
 
     connect( this, SIGNAL( contextMenuRequested( Q3ListViewItem*, const QPoint&, int ) ),
             SLOT( slotShowContextMenu( Q3ListViewItem*, const QPoint&, int ) ) );
@@ -3647,7 +3648,7 @@ MediaQueue::slotDropped( QDropEvent* e, Q3ListViewItem* parent, Q3ListViewItem* 
         QString data;
         Q3CString subtype;
         Q3TextDrag::decode( e, data, subtype );
-        KURL::List list;
+        KUrl::List list;
 
         if( subtype == "amarok-sql" )
         {
@@ -3761,7 +3762,7 @@ MediaQueue::keyPressEvent( QKeyEvent *e )
     if( e->key() == Key_Delete )
         removeSelected();
     else
-        KListView::keyPressEvent( e );
+        K3ListView::keyPressEvent( e );
 }
 
 void
@@ -3779,7 +3780,7 @@ MediaQueue::slotShowContextMenu( Q3ListViewItem* item, const QPoint& point, int 
     if( !childCount() )
         return;
 
-    KPopupMenu menu( this );
+    KMenu menu( this );
 
     enum Actions { REMOVE_SELECTED, CLEAR_ALL, START_TRANSFER };
 

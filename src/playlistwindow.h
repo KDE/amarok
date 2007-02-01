@@ -33,7 +33,7 @@ class CollectionBrowser;
 class ContextBrowser;
 class MediaBrowser;
 class QMenuBar;
-class KPopupMenu;
+class KMenu;
 class KToolBar;
 class QLabel;
 class QTimer;
@@ -111,10 +111,10 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         enum MenuId { ID_SHOW_TOOLBAR = 2000, ID_SHOW_PLAYERWINDOW };
 
         QMenuBar      *m_menubar;
-        KPopupMenu    *m_toolsMenu;
-        KPopupMenu    *m_settingsMenu;
+        KMenu    *m_toolsMenu;
+        KMenu    *m_settingsMenu;
         BrowserBar    *m_browsers;
-        KPopupMenu    *m_searchMenu;
+        KMenu    *m_searchMenu;
         ClickLineEdit *m_lineEdit;
         KToolBar      *m_toolbar;
         QTimer        *m_timer;  //search filter timer

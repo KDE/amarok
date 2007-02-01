@@ -123,7 +123,7 @@ MountPointManager::init()
 }
 
 int
-MountPointManager::getIdForUrl( KURL url )
+MountPointManager::getIdForUrl( KUrl url )
 {
     uint mountPointLength = 0;
     int id = -1;
@@ -152,7 +152,7 @@ MountPointManager::getIdForUrl( KURL url )
 int
 MountPointManager::getIdForUrl( const QString &url )
 {
-    return getIdForUrl( KURL::fromPathOrURL( url ) );
+    return getIdForUrl( KUrl::fromPathOrUrl( url ) );
 }
 
 bool
@@ -180,7 +180,7 @@ MountPointManager::getMountPointForId( const int id ) const
 }
 
 void
-MountPointManager::getAbsolutePath( const int deviceId, const KURL& relativePath, KURL& absolutePath) const
+MountPointManager::getAbsolutePath( const int deviceId, const KUrl& relativePath, KUrl& absolutePath) const
 {
     //debug() << "id is " << deviceId << ", relative path is " << relativePath.path() << endl;
     if ( deviceId == -1 )
@@ -224,21 +224,21 @@ MountPointManager::getAbsolutePath( const int deviceId, const KURL& relativePath
 QString
 MountPointManager::getAbsolutePath( const int deviceId, const QString& relativePath ) const
 {
-    KURL rpath;
+    KUrl rpath;
     rpath.setPath( relativePath );
-    KURL url;
+    KUrl url;
     getAbsolutePath( deviceId, rpath, url );
     return url.path();
 }
 
 void
-MountPointManager::getRelativePath( const int deviceId, const KURL& absolutePath, KURL& relativePath ) const
+MountPointManager::getRelativePath( const int deviceId, const KUrl& absolutePath, KUrl& relativePath ) const
 {
     m_handlerMapMutex.lock();
     if ( deviceId != -1 && m_handlerMap.contains( deviceId ) )
     {
         //FIXME max: returns garbage if the absolute path is actually not under the device's mount point
-        QString rpath = KURL::relativePath( m_handlerMap[deviceId]->getDevicePath(), absolutePath.path() );
+        QString rpath = KUrl::relativePath( m_handlerMap[deviceId]->getDevicePath(), absolutePath.path() );
         m_handlerMapMutex.unlock();
         relativePath.setPath( rpath );
     }
@@ -246,7 +246,7 @@ MountPointManager::getRelativePath( const int deviceId, const KURL& absolutePath
     {
         m_handlerMapMutex.unlock();
         //TODO: better error handling
-        QString rpath = KURL::relativePath( "/", absolutePath.path() );
+        QString rpath = KUrl::relativePath( "/", absolutePath.path() );
         relativePath.setPath( rpath );
     }
 }
@@ -254,8 +254,8 @@ MountPointManager::getRelativePath( const int deviceId, const KURL& absolutePath
 QString
 MountPointManager::getRelativePath( const int deviceId, const QString& absolutePath ) const
 {
-    KURL url;
-    getRelativePath( deviceId, KURL::fromPathOrURL( absolutePath ), url );
+    KUrl url;
+    getRelativePath( deviceId, KUrl::fromPathOrUrl( absolutePath ), url );
     return url.path();
 }
 

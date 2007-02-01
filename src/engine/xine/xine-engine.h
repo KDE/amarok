@@ -36,8 +36,8 @@ class XineEngine : public Engine::Base
    ~XineEngine();
 
     virtual bool init();
-    virtual bool canDecode( const KURL& ) const;
-    virtual bool load( const KURL &url, bool stream );
+    virtual bool canDecode( const KUrl& ) const;
+    virtual bool load( const KUrl &url, bool stream );
     virtual bool play( uint = 0 );
     virtual void stop();
     virtual void pause();
@@ -46,8 +46,8 @@ class XineEngine : public Engine::Base
     virtual uint length() const;
     virtual void seek( uint );
 
-    virtual bool metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b);
-    virtual bool getAudioCDContents(const QString &device, KURL::List &urls);
+    virtual bool metaDataForUrl(const KUrl &url, Engine::SimpleMetaBundle &b);
+    virtual bool getAudioCDContents(const QString &device, KUrl::List &urls);
     virtual bool flushBuffer();
 
     virtual Engine::State state() const;

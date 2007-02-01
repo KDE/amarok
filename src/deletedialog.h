@@ -37,7 +37,7 @@ class DeleteWidget : public DeleteDialogBase
 public:
     DeleteWidget(QWidget *parent = 0, const char *name = 0);
 
-    void setFiles(const KURL::List &files);
+    void setFiles(const KUrl::List &files);
 
 protected slots:
     virtual void slotShouldDelete(bool shouldDelete);
@@ -49,10 +49,10 @@ class DeleteDialog : public KDialogBase
 
 public:
     DeleteDialog(QWidget *parent, const char *name = "delete_dialog");
-    static bool showTrashDialog(QWidget* parent, const KURL::List &files);
+    static bool showTrashDialog(QWidget* parent, const KUrl::List &files);
 
-    bool confirmDeleteList(const KURL::List &condemnedFiles);
-    void setFiles(const KURL::List &files);
+    bool confirmDeleteList(const KUrl::List &condemnedFiles);
+    void setFiles(const KUrl::List &files);
     bool shouldDelete() const { return m_widget->ddShouldDelete->isChecked(); }
 
 protected slots:

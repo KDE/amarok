@@ -55,14 +55,14 @@ bool    PlaylistItem::s_pixmapChanged = false;
 
 
 PlaylistItem::PlaylistItem( Q3ListView *listview, Q3ListViewItem *item )
-        : KListViewItem( listview, item )
+        : K3ListViewItem( listview, item )
         , m_album( 0 )
 {
-    KListViewItem::setVisible( false );
+    K3ListViewItem::setVisible( false );
 }
 
 PlaylistItem::PlaylistItem( const MetaBundle &bundle, Q3ListViewItem *lvi, bool enabled )
-        : MetaBundle( bundle ), KListViewItem( lvi->listView(), lvi->itemAbove() )
+        : MetaBundle( bundle ), K3ListViewItem( lvi->listView(), lvi->itemAbove() )
         , m_album( 0 )
         , m_deleteAfterEdit( false )
         , m_isBeingRenamed( false )
@@ -241,7 +241,7 @@ void PlaylistItem::setSelected( bool selected )
     if( isVisible() )
     {
         const bool prevSelected = isSelected();
-        KListViewItem::setSelected( selected );
+        K3ListViewItem::setSelected( selected );
         if( prevSelected && !isSelected() )
         {
             listView()->m_selCount--;
@@ -266,12 +266,12 @@ void PlaylistItem::setVisible( bool visible )
     {
         listView()->m_selCount--;
         listView()->m_selLength -= length();
-        KListViewItem::setSelected( false );
+        K3ListViewItem::setSelected( false );
         listView()->countChanged();
     }
 
     const bool prevVisible = isVisible();
-    KListViewItem::setVisible( visible );
+    K3ListViewItem::setVisible( visible );
     if( prevVisible && !isVisible() )
     {
         listView()->m_visCount--;
@@ -483,8 +483,8 @@ PlaylistItem::compare( Q3ListViewItem *i, int col, bool ascending ) const
     switch( col )
     {
         case Type:
-            a = a.rightJustify( b.length(), '0' );
-            b = b.rightJustify( a.length(), '0' );
+            a = a.rightJustified( b.length(), '0' );
+            b = b.rightJustified( a.length(), '0' );
             break;
 
         case Artist:
@@ -768,11 +768,11 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
                    qh = painter->fontMetrics().height(),     sh = pixstop.height(), rh = pixrepeat.height();
 
         //maxwidth
-        const uint mw = kMax( qw, kMax( rw, sw ) );
+        const uint mw = qMax( qw, qMax( rw, sw ) );
 
         //width of first & second column of pixmaps
-        const uint w1 = ( num == 3 ) ? kMax( qw, rw )
-                      : ( num == 2 && isCurrent ) ? kMax( repeat ? rw : 0, kMax( stop ? sw : 0, queue ? qw : 0 ) )
+        const uint w1 = ( num == 3 ) ? qMax( qw, rw )
+                      : ( num == 2 && isCurrent ) ? qMax( repeat ? rw : 0, qMax( stop ? sw : 0, queue ? qw : 0 ) )
                       : ( num == 2 ) ? qw
                       : queue ? qw : repeat ? rw : stop ? sw : 0,
                    w2 = ( num == 3 ) ? sw
@@ -926,7 +926,7 @@ void PlaylistItem::moodbarJobEvent( int newState )
 
 void PlaylistItem::setup()
 {
-    KListViewItem::setup();
+    K3ListViewItem::setup();
 
     // We make the current track item a bit taller than ordinary items
     if( this == listView()->currentTrack() )
@@ -937,7 +937,7 @@ void PlaylistItem::setup()
 void PlaylistItem::paintFocus( QPainter* p, const QColorGroup& cg, const QRect& r )
 {
     if( this != listView()->currentTrack() )
-        KListViewItem::paintFocus( p, cg, r );
+        K3ListViewItem::paintFocus( p, cg, r );
 }
 
 const QString &PlaylistItem::editingText()
@@ -1025,10 +1025,10 @@ void PlaylistItem::incrementTotals()
                     m_album->tracks.insert( i, this );
                     break;
                 }
-        const Q_INT64 prevTotal = m_album->total;
-        Q_INT64 total = m_album->total * prevCount;
+        const qint64 prevTotal = m_album->total;
+        qint64 total = m_album->total * prevCount;
         total += totalIncrementAmount();
-        m_album->total = Q_INT64( double( total + 0.5 ) / m_album->tracks.count() );
+        m_album->total = qint64( double( total + 0.5 ) / m_album->tracks.count() );
         if( listView()->m_prevAlbums.findRef( m_album ) == -1 )
             listView()->m_total = listView()->m_total - prevTotal + m_album->total;
     }
@@ -1040,12 +1040,12 @@ void PlaylistItem::decrementTotals()
 {
     if( Amarok::entireAlbums() && m_album )
     {
-        const Q_INT64 prevTotal = m_album->total;
-        Q_INT64 total = m_album->total * m_album->tracks.count();
+        const qint64 prevTotal = m_album->total;
+        qint64 total = m_album->total * m_album->tracks.count();
         if (!m_album->tracks.removeRef( this ))
 	    warning() << "Unable to remove myself from m_album" << endl;
         total -= totalIncrementAmount();
-        m_album->total = Q_INT64( double( total + 0.5 ) / m_album->tracks.count() );
+        m_album->total = qint64( double( total + 0.5 ) / m_album->tracks.count() );
         if( listView()->m_prevAlbums.findRef( m_album ) == -1 )
             listView()->m_total = listView()->m_total - prevTotal + m_album->total;
     }

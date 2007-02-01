@@ -559,7 +559,7 @@ bool PlayerWidget::event( QEvent *e )
             if( m_pAnalyzer->parent() )
             {
                 m_pAnalyzer->reparent( 0, QPoint(50,50), true );
-                m_pAnalyzer->setCaption( kapp->makeStdCaption( i18n("Analyzer") ) );
+                m_pAnalyzer->setCaption( KInstance::makeStandardCaption( i18n("Analyzer") ) );
                 m_pAnalyzer->installEventFilter( this );
                 m_pAnalyzer->setPaletteBackgroundColor( paletteBackgroundColor() );
                 QToolTip::remove( m_pAnalyzer );
@@ -673,7 +673,7 @@ bool PlayerWidget::event( QEvent *e )
 // {
 //     if( e->type == ConfigureNotify )
 //     {
-//         kdDebug() << "CirculateNotify\n";
+//         kDebug() << "CirculateNotify\n";
 //         XRaiseWindow( x11Display(), playlistWindow()->winId() );
 //     }
 //
@@ -773,7 +773,7 @@ void PlayerWidget::mousePressEvent( QMouseEvent *e )
     }
     else if ( m_pAnalyzer->geometry().contains( e->pos() ) )
     {
-        createAnalyzer( e->state() & Qt::ControlButton ? -1 : +1 );
+        createAnalyzer( e->state() & Qt::ControlModifier ? -1 : +1 );
     }
     else
     {

@@ -30,7 +30,7 @@ using namespace Daap;
 QMap<QString, Code> Reader::s_codes;
 
 
-Reader::Reader(const QString& host, Q_UINT16 port, ServerItem* root, const QString& password, QObject* parent, const char* name)
+Reader::Reader(const QString& host, quint16 port, ServerItem* root, const QString& password, QObject* parent, const char* name)
     : QObject(parent, name)
     , m_host( host )
     , m_port( port )
@@ -311,12 +311,12 @@ Reader::songListFinished( int /*id*/, bool error )
     http->deleteLater();
 }
 
-Q_UINT32
+quint32
 Reader::getTagAndLength( QDataStream &raw, char tag[5] )
 {
    tag[4] = 0;
    raw.readRawBytes(tag, 4);
-   Q_UINT32 tagLength = 0;
+   quint32 tagLength = 0;
    raw >> tagLength;
    return tagLength;
 }
@@ -335,7 +335,7 @@ Reader::parse( QDataStream &raw, uint containerLength, bool first )
     {
     //    debug() << "at index " << index << " of a total container size " << containerLength << endl;
         char tag[5];
-        Q_UINT32 tagLength = getTagAndLength( raw, tag );
+        quint32 tagLength = getTagAndLength( raw, tag );
         if( tagLength == 0 )
         {
 //             debug() << "tag " << tag << " has 0 length." << endl;
@@ -347,25 +347,25 @@ Reader::parse( QDataStream &raw, uint containerLength, bool first )
         switch( s_codes[tag].type )
         {
             case CHAR: {
-                Q_INT8 charData;
+                qint8 charData;
                 raw >> charData; DEBUGTAG( charData )
                 addElement( childMap, tag, QVariant( static_cast<int>(charData) ) );
                 }
                 break;
             case SHORT: {
-                Q_INT16 shortData;
+                qint16 shortData;
                 raw >> shortData; DEBUGTAG( shortData )
                 addElement( childMap, tag, QVariant( static_cast<int>(shortData) ) );
                 }
                 break;
             case LONG: {
-                Q_INT32 longData;
+                qint32 longData;
                 raw >> longData; DEBUGTAG( longData )
                 addElement( childMap, tag, QVariant( longData ) );
                 }
                 break;
             case LONGLONG: {
-                Q_INT64 longlongData;
+                qint64 longlongData;
                 raw >> longlongData; DEBUGTAG( longlongData )
                 addElement( childMap, tag, QVariant( longlongData ) );
                 }
@@ -377,7 +377,7 @@ Reader::parse( QDataStream &raw, uint containerLength, bool first )
                 }
                 break;
             case DATE: {
-                Q_INT64 dateData;
+                qint64 dateData;
                 QDateTime date;
                 raw >> dateData; DEBUGTAG( dateData )
                 date.setTime_t(dateData);
@@ -385,9 +385,9 @@ Reader::parse( QDataStream &raw, uint containerLength, bool first )
                 }
                 break;
             case DVERSION: {
-                Q_INT16 major;
-                Q_INT8 minor;
-                Q_INT8 patchLevel;
+                qint16 major;
+                qint8 minor;
+                qint8 patchLevel;
                 raw >> major >> minor >> patchLevel; DEBUGTAG( patchLevel )
                 QString version("%1.%2.%3");
                 version.arg(major, minor, patchLevel);

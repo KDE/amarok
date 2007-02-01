@@ -13,7 +13,7 @@
 //Added by qt3to4:
 #include <QCustomEvent>
 #include <Q3ValueList>
-#include <kurl.h>         //KURL::List
+#include <kurl.h>         //KUrl::List
 #include "metabundle.h"   //stack allocated
 #include "threadmanager.h" //baseclass
 #include "xmlloader.h"    //baseclass
@@ -58,7 +58,7 @@ public:
     QString error() const { return m_error; }
 
 
-    static inline bool isPlaylistFile( const KURL &url ) { return isPlaylistFile( url.fileName() ); }
+    static inline bool isPlaylistFile( const KUrl &url ) { return isPlaylistFile( url.fileName() ); }
     static inline bool isPlaylistFile( const QString &fileName ) { return format( fileName ) != Unknown; }
     static inline Format format( const QString &fileName );
     static QTime stringToTime(const QString&);
@@ -108,7 +108,7 @@ class UrlLoader : public ThreadManager::DependentJob
 Q_OBJECT
 
 public:
-    UrlLoader( const KURL::List&, Q3ListViewItem*, int options = 0 );
+    UrlLoader( const KUrl::List&, Q3ListViewItem*, int options = 0 );
    ~UrlLoader();
 
     static const uint OPTIMUM_BUNDLE_COUNT = 50;
@@ -122,18 +122,18 @@ protected:
     virtual void completeJob();
     virtual void customEvent( QCustomEvent* );
 
-    void loadXml( const KURL& );
+    void loadXml( const KUrl& );
 
 private slots:
     void slotNewBundle( const MetaBundle &bundle, const XmlAttributeList &attributes );
     void slotPlaylistInfo( const QString &product, const QString &version, const QString &dynamicMode );
 
 private:
-    KURL::List recurse( const KURL& );
+    KUrl::List recurse( const KUrl& );
 
 private:
-    KURL::List    m_badURLs;
-    KURL::List    m_URLs;
+    KUrl::List    m_badURLs;
+    KUrl::List    m_URLs;
     PlaylistItem *m_markerListViewItem;
     bool          m_playFirstUrl;
     bool          m_coloring;
@@ -142,7 +142,7 @@ private:
     Q3PtrList<PlaylistItem> m_oldQueue;
     QXmlInputSource  *m_xmlSource;
     Q3ValueList<XMLData> m_xml;
-    KURL m_currentURL;
+    KUrl m_currentURL;
     QString m_dynamicMode;
 
 protected:
@@ -178,15 +178,15 @@ class RemotePlaylistFetcher : public QObject
 {
     Q_OBJECT
 
-    const KURL m_source;
-    KURL m_destination;
+    const KUrl m_source;
+    KUrl m_destination;
     Q3ListViewItem *m_after;
     bool m_playFirstUrl;
     int m_options;
     class KTempFile *m_temp;
 
 public:
-    RemotePlaylistFetcher( const KURL &source, Q3ListViewItem *after, int options = 0 );
+    RemotePlaylistFetcher( const KUrl &source, Q3ListViewItem *after, int options = 0 );
    ~RemotePlaylistFetcher();
 
 private slots:

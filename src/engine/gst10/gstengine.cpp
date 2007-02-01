@@ -305,7 +305,7 @@ GstEngine::init()
 
 
 bool
-GstEngine::canDecode( const KURL &url ) const
+GstEngine::canDecode( const KUrl &url ) const
 {
 
     // We had some bug reports claiming that video files cause crashes in canDecode(),
@@ -315,7 +315,7 @@ GstEngine::canDecode( const KURL &url ) const
          url.fileName().lower().endsWith( ".wmv" ) )
         return false;
 
-    debug() << "Can decode for " << url.prettyURL() << endl;
+    debug() << "Can decode for " << url.prettyUrl() << endl;
     int count = 0;
     m_canDecodeSuccess = false;
     m_canDecodeLast = false;
@@ -519,7 +519,7 @@ GstEngine::scope()
 
 
 bool
-GstEngine::metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b)
+GstEngine::metaDataForUrl(const KUrl &url, Engine::SimpleMetaBundle &b)
 {
     debug() << "GstEngine::metaDataForUrl " << url << endl;
     if ( url.protocol() == "cdda" )
@@ -574,7 +574,7 @@ GstEngine::metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b)
 
 
 bool
-GstEngine::getAudioCDContents(const QString &device, KURL::List &urls)
+GstEngine::getAudioCDContents(const QString &device, KUrl::List &urls)
 {
     debug() << "GstEngine::getAudioCDContents " << device << endl;
 
@@ -590,7 +590,7 @@ GstEngine::getAudioCDContents(const QString &device, KURL::List &urls)
                 debug() << "Found " << tracks << " cdda tracks" << endl;
                 for ( int i = 1; i <= tracks; ++i )
                 {
-                    KURL temp( QString( "cdda://%1" ).arg( i ) );
+                    KUrl temp( QString( "cdda://%1" ).arg( i ) );
                     if ( !device.isNull() )
                         temp.setQuery( device );
                     urls << temp;
@@ -623,7 +623,7 @@ GstEngine::configure() const
 /////////////////////////////////////////////////////////////////////////////////////
 
 bool
-GstEngine::load( const KURL& url, bool stream )  //SLOT
+GstEngine::load( const KUrl& url, bool stream )  //SLOT
 {
     DEBUG_BLOCK
 
@@ -689,7 +689,7 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
 
        if (src)
        {
-          debug() << "******* Got src element for URI " << url.prettyURL().utf8() << endl;
+          debug() << "******* Got src element for URI " << url.prettyUrl().utf8() << endl;
 
           m_gst_src = src;
 
@@ -761,7 +761,7 @@ GstEngine::stop()  //SLOT
 {
     DEBUG_BLOCK
 
-    m_url = KURL(); // To ensure we return Empty from state()
+    m_url = KUrl(); // To ensure we return Empty from state()
 
     if ( m_pipelineFilled )
     {
@@ -809,7 +809,7 @@ GstEngine::seek( uint ms )  //SLOT
     RETURN_IF_PIPELINE_EMPTY
 
     if (!gst_element_seek(m_gst_pipeline, 1.0, GST_FORMAT_TIME, GST_SEEK_FLAG_FLUSH, GST_SEEK_TYPE_SET, ms*GST_MSECOND,
-       GST_SEEK_TYPE_NONE, GST_CLOCK_TIME_NONE)) kdDebug() << "Seek failed" << endl;
+       GST_SEEK_TYPE_NONE, GST_CLOCK_TIME_NONE)) kDebug() << "Seek failed" << endl;
     else clearScopeQ();
     gst_element_get_state(m_gst_pipeline, NULL, NULL, 100*GST_MSECOND);
 }

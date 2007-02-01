@@ -17,7 +17,7 @@
 #include "enginecontroller.h" //to get the engine
 #include "statusbar.h"
 #include <klocale.h>
-#include <kpopupmenu.h>       //Vis::Selector
+#include <kmenu.h>       //Vis::Selector
 #include <kprocess.h>         //Vis::Selector
 #include <kwin.h>             //Vis::Selector
 #include <kstandarddirs.h>    //locateLocal()
@@ -162,7 +162,7 @@ Vis::Selector::Selector( QWidget *parent )
 {
     Amarok::OverrideCursor waitcursor;
 
-    setCaption( kapp->makeStdCaption( i18n( "Visualizations" ) ) );
+    setCaption( KInstance::makeStandardCaption( i18n( "Visualizations" ) ) );
 
     // Gives the window a small title bar, and skips a taskbar entry
     KWin::setType( winId(), NET::Utility );
@@ -235,7 +235,7 @@ Vis::Selector::rightButton( Q3ListViewItem* qitem, const QPoint& pos, int )
 
     Item *item = static_cast<Item*>( qitem );
 
-    KPopupMenu menu( this );
+    KMenu menu( this );
     menu.insertItem( i18n( "Fullscreen" ), 0 );
 
     if( !item->m_proc || !item->m_proc->isRunning() )

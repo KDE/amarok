@@ -89,10 +89,10 @@
 #include <klineedit.h>       //setCurrentTrack()
 #include <klocale.h>
 #include <kmessagebox.h>
-#include <kpopupmenu.h>
+#include <kmenu.h>
 #include <krandomsequence.h> //random Mode
 #include <kstandarddirs.h>   //KGlobal::dirs()
-#include <kstdaction.h>
+#include <kstandardaction.h>
 #include <kstringhandler.h>  //::showContextMenu()
 #include <kurldrag.h>
 
@@ -175,7 +175,7 @@ namespace Glow
 Playlist *Playlist::s_instance = 0;
 
 Playlist::Playlist( QWidget *parent )
-        : KListView( parent, "ThePlaylist" )
+        : K3ListView( parent, "ThePlaylist" )
         , EngineObserver( EngineController::instance() )
         , m_startupTime_t( QDateTime::currentDateTime().toTime_t() )
         , m_oldestTime_t( CollectionDB::instance()->query( "SELECT MIN( createdate ) FROM statistics;" ).first().toInt() )
@@ -328,12 +328,12 @@ Playlist::Playlist( QWidget *parent )
 
 
     KActionCollection* const ac = Amarok::actionCollection();
-    KAction *copy = KStdAction::copy( this, SLOT( copyToClipboard() ), ac, "playlist_copy" );
-    KStdAction::selectAll( this, SLOT( selectAll() ), ac, "playlist_select_all" );
+    KAction *copy = KStandardAction::copy( this, SLOT( copyToClipboard() ), ac, "playlist_copy" );
+    KStandardAction::selectAll( this, SLOT( selectAll() ), ac, "playlist_select_all" );
 
     m_clearButton = new KAction( i18n( "clear playlist", "&Clear" ), Amarok::icon( "playlist_clear" ), 0, this, SLOT( clear() ), ac, "playlist_clear" );
-    m_undoButton  = KStdAction::undo( this, SLOT( undo() ), ac, "playlist_undo" );
-    m_redoButton  = KStdAction::redo( this, SLOT( redo() ), ac, "playlist_redo" );
+    m_undoButton  = KStandardAction::undo( this, SLOT( undo() ), ac, "playlist_undo" );
+    m_redoButton  = KStandardAction::redo( this, SLOT( redo() ), ac, "playlist_redo" );
     m_undoButton ->setIcon( Amarok::icon( "undo" ) );
     m_redoButton ->setIcon( Amarok::icon( "redo" ) );
 
@@ -346,7 +346,7 @@ Playlist::Playlist( QWidget *parent )
                             this, SLOT( toggleStopAfterCurrentItem() ), ac, "stop_after" );
 
     { // KAction idiocy -- shortcuts don't work until they've been plugged into a menu
-        KPopupMenu asdf;
+        KMenu asdf;
 
         copy->plug( &asdf );
         stopafter->plug( &asdf );
@@ -380,7 +380,7 @@ Playlist::Playlist( QWidget *parent )
     restoreLayout( KGlobal::config(), "PlaylistColumnsLayout" );
 
     // Sorting must be disabled when current.xml is being loaded. See BUG 113042
-    KListView::setSorting( NO_SORT ); //use base so we don't saveUndoState() too
+    K3ListView::setSorting( NO_SORT ); //use base so we don't saveUndoState() too
 
     setDynamicMode( 0 );
 
@@ -459,7 +459,7 @@ Playlist::mediumChange( int deviceid ) // SLOT
 }
 
 void
-Playlist::insertMedia( KURL::List list, int options )
+Playlist::insertMedia( KUrl::List list, int options )
 {
     if( list.isEmpty() ) {
         Amarok::StatusBar::instance()->shortMessage( i18n("Attempted to insert nothing into playlist.") );
@@ -480,8 +480,8 @@ Playlist::insertMedia( KURL::List list, int options )
 
     if( options & Queue )
     {
-        KURL::List addMe = list;
-        KURL::List::Iterator jt;
+        KUrl::List addMe = list;
+        KUrl::List::Iterator jt;
 
         // add any songs not in the playlist to it.
         for( MyIt it( this, MyIt::All ); *it; ++it ) {
@@ -519,7 +519,7 @@ Playlist::insertMedia( KURL::List list, int options )
     else if( options & Unique ) {
         //passing by value is quick for QValueLists, though it is slow
         //if we change the list, but this is unlikely
-        KURL::List::Iterator jt;
+        KUrl::List::Iterator jt;
         int alreadyOnPlaylist = 0;
         for( MyIt it( this, MyIt::All ); *it; ++it ) {
             jt = list.find( (*it)->url() );
@@ -542,7 +542,7 @@ Playlist::insertMedia( KURL::List list, int options )
 }
 
 void
-Playlist::insertMediaInternal( const KURL::List &list, PlaylistItem *after, int options )
+Playlist::insertMediaInternal( const KUrl::List &list, PlaylistItem *after, int options )
 {
     if ( !list.isEmpty() ) {
         setSorting( NO_SORT );
@@ -599,7 +599,7 @@ Playlist::addDynamicModeTracks( uint songCount )
         songCount = required - remainder;
 
     DynamicMode *m = modifyDynamicMode();
-    KURL::List tracksToInsert = m->retrieveTracks( songCount );
+    KUrl::List tracksToInsert = m->retrieveTracks( songCount );
     Playlist::instance()->finishedModifying( m );
 
     insertMedia( tracksToInsert, Playlist::Unique );
@@ -696,7 +696,7 @@ Playlist::defaultPlaylistPath() //static
 void
 Playlist::restoreSession()
 {
-    KURL url;
+    KUrl url;
 
     if ( Amarok::config()->readBoolEntry( "First 1.4 Run", true ) ) {
         // On first startup of 1.4, we load a special playlist with an intro track
@@ -873,7 +873,7 @@ Playlist::updateEntriesUrl( const QString &oldUrl, const QString &newUrl, const 
         PlaylistItem *item;
         for( item = list->first(); item; item = list->next() )
         {
-            item->setUrl( KURL( newUrl ) );
+            item->setUrl( KUrl( newUrl ) );
             item->setFilestatusEnabled( item->checkExists() );
         }
     }
@@ -1099,12 +1099,12 @@ Playlist::playNextTrack( bool forceNext )
             else
             {
                 if( Amarok::favorNone() )
-                    item = tracks.at( KApplication::random() % tracks.count() ); //is O(1)
+                    item = tracks.at( KRandom::random() % tracks.count() ); //is O(1)
                 else
                 {
                     const uint currenttime_t = QDateTime::currentDateTime().toTime_t();
                     Q3ValueVector<int> weights( tracks.size() );
-                    Q_INT64 total = m_total;
+                    qint64 total = m_total;
                     if( Amarok::randomAlbums() )
                     {
                         for( int i = 0, n = tracks.count(); i < n; ++i )
@@ -1132,15 +1132,15 @@ Playlist::playNextTrack( bool forceNext )
                             total += ( currenttime_t - m_startupTime_t ) * weights.count();
                     }
 
-                    Q_INT64 random;
+                    qint64 random;
                     if( Amarok::favorLastPlay() ) //really big huge numbers
                     {
-                        Q_INT64 r = Q_INT64( ( KApplication::random() / pow( 2, sizeof( int ) * 8 ) )
+                        qint64 r = qint64( ( KRandom::random() / pow( 2, sizeof( int ) * 8 ) )
                                                                       * pow( 2, 64 ) );
                         random = r % total;
                     }
                     else
-                        random = KApplication::random() % total;
+                        random = KRandom::random() % total;
                     int i = 0;
                     for( int n = tracks.count(); i < n && random >= 0; ++i )
                         random -= weights.at( i );
@@ -1595,7 +1595,7 @@ Playlist::checkFileStatus( PlaylistItem * item )
         }
         if( !path.isEmpty() )
         {
-            item->setUrl( KURL( path ) );
+            item->setUrl( KUrl( path ) );
             if( item->checkExists() )
                 item->setFilestatusEnabled( true );
             else
@@ -1627,7 +1627,7 @@ Playlist::activate( Q3ListViewItem *item )
         EngineController::instance()->stop();
         setCurrentTrack( 0 );
         Amarok::OSD::instance()->OSDWidget::show( i18n("Playlist finished"),
-                                            QImage( KIconLoader().iconPath( "amarok", -KIcon::SizeHuge ) ) );
+                                            QImage( KIconLoader().iconPath( "amarok", -K3Icon::SizeHuge ) ) );
         return;
     }
 
@@ -1750,10 +1750,10 @@ QPair<QString, QRect> Playlist::toolTipText( QWidget*, const QPoint &pos ) const
     int dright = QApplication::desktop()->screenGeometry( qscrollview() ).topRight().x();
     t.setWidth( dright - globalRect.left() );
     if( col == PlaylistItem::Rating )
-        globalRect.setRight( kMin( dright, kMax( globalRect.left() + t.widthUsed(), globalRect.left() + ( PlaylistItem::star()->width() + 1 ) * ( ( item->rating() + 1 ) / 2 ) ) ) );
+        globalRect.setRight( qMin( dright, qMax( globalRect.left() + t.widthUsed(), globalRect.left() + ( PlaylistItem::star()->width() + 1 ) * ( ( item->rating() + 1 ) / 2 ) ) ) );
     else
-        globalRect.setRight( kMin( globalRect.left() + t.widthUsed(), dright ) );
-    globalRect.setBottom( globalRect.top() + kMax( irect.height(), t.height() ) - 1 );
+        globalRect.setRight( qMin( globalRect.left() + t.widthUsed(), dright ) );
+    globalRect.setBottom( globalRect.top() + qMax( irect.height(), t.height() ) - 1 );
 
     if( ( col == PlaylistItem::Rating && PlaylistItem::ratingAtPoint( contentsPos.x() ) <= item->rating() + 1 ) ||
         ( col != PlaylistItem::Rating ) )
@@ -1941,7 +1941,7 @@ Playlist::restoreCurrentTrack()
     ///It is always possible that the current track has been lost
     ///eg it was removed and then reinserted, here we check
 
-    const KURL url = EngineController::instance()->playingURL();
+    const KUrl url = EngineController::instance()->playingURL();
 
     if ( !(m_currentTrack && ( m_currentTrack->url() == url  || !m_currentTrack->url().isEmpty() && url.isEmpty() ) ) )
     {
@@ -2109,19 +2109,19 @@ Playlist::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
 
 
 ////////////////////////////////////////////////////////////////////////////////
-/// KListView Reimplementation
+/// K3ListView Reimplementation
 ////////////////////////////////////////////////////////////////////////////////
 
 void
 Playlist::appendMedia( const QString &path )
 {
-    appendMedia( KURL::fromPathOrURL( path ) );
+    appendMedia( KUrl::fromPathOrUrl( path ) );
 }
 
 void
-Playlist::appendMedia( const KURL &url )
+Playlist::appendMedia( const KUrl &url )
 {
-    insertMedia( KURL::List( url ) );
+    insertMedia( KUrl::List( url ) );
 }
 
 void
@@ -2173,7 +2173,7 @@ Playlist::clear() //SLOT
 void
 Playlist::safeClear()
 {
-    /* 3.3.5 and 3.3.6 have bad KListView::clear() functions.
+    /* 3.3.5 and 3.3.6 have bad K3ListView::clear() functions.
        3.3.5 forgets to clear the pointer to the highlighted item.
        3.3.6 forgets to clear the pointer to the last dragged item */
     if ( strcmp( qVersion(), "3.3.5" ) == 0
@@ -2195,7 +2195,7 @@ Playlist::safeClear()
         triggerUpdate();
     }
     else
-        KListView::clear();
+        K3ListView::clear();
 }
 
 void
@@ -2203,14 +2203,14 @@ Playlist::setSorting( int col, bool b )
 {
     saveUndoState();
 
-    KListView::setSorting( col, b );
+    K3ListView::setSorting( col, b );
 }
 
 void
 Playlist::setColumnWidth( int col, int width )
 {
 
-    KListView::setColumnWidth( col, width );
+    K3ListView::setColumnWidth( col, width );
 
     //FIXME this is because Qt doesn't by default disable resizing width 0 columns. GRRR!
     //NOTE  default column sizes are stored in default amarokrc so that restoreLayout() in ctor will
@@ -2259,7 +2259,7 @@ Playlist::rename( Q3ListViewItem *item, int column ) //SLOT
         item->setSelected( true );
     }
     setCurrentItem( item );
-    KListView::rename( item, column );
+    K3ListView::rename( item, column );
 
     m_renameItem = item;
     m_renameColumn = column;
@@ -2372,7 +2372,7 @@ Playlist::paletteChange( const QPalette &p )
         b = fg.blue();
     }
 
-    KListView::paletteChange( p );
+    K3ListView::paletteChange( p );
 
     counter = 0; // reset the counter or apparently the text lacks contrast
     slotGlowTimer(); // repaint currentTrack marker
@@ -2484,7 +2484,7 @@ Playlist::contentsDropEvent( QDropEvent *e )
         {
             debug() << "KURLDrag::canDecode" << endl;
 
-            KURL::List list;
+            KUrl::List list;
             KURLDrag::decode( e, list );
             insertMediaInternal( list, static_cast<PlaylistItem*>( after ) );
         }
@@ -2500,12 +2500,12 @@ Playlist::dragObject()
 {
     DEBUG_THREAD_FUNC_INFO
 
-    KURL::List list;
+    KUrl::List list;
 
     for( MyIt it( this, MyIt::Selected ); *it; ++it )
     {
         const PlaylistItem *item = static_cast<PlaylistItem*>( *it );
-        const KURL url = item->url();
+        const KUrl url = item->url();
         list += url;
     }
 
@@ -2519,7 +2519,7 @@ Playlist::dragObject()
 void
 Playlist::viewportPaintEvent( QPaintEvent *e )
 {
-    if( e ) KListView::viewportPaintEvent( e ); //we call with 0 in contentsDropEvent()
+    if( e ) K3ListView::viewportPaintEvent( e ); //we call with 0 in contentsDropEvent()
 
     if ( m_marker ) {
         QPainter p( viewport() );
@@ -2574,7 +2574,7 @@ void
 Playlist::viewportResizeEvent( QResizeEvent *e )
 {
     if ( !m_smartResizing ) {
-        KListView::viewportResizeEvent( e );
+        K3ListView::viewportResizeEvent( e );
         return;
     }
     //only be clever with the sizing if there is not many items
@@ -2727,11 +2727,11 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 
         const int mouseOverColumn = header()->sectionAt( me->pos().x() );
 
-        KPopupMenu popup;
+        KMenu popup;
         if( mouseOverColumn >= 0 )
             popup.insertItem( i18n("&Hide %1").arg( columnText( mouseOverColumn ) ), HIDE ); //TODO
 
-        KPopupMenu sub;
+        KMenu sub;
         for( int i = 0; i < columns(); ++i ) //columns() references a property
             if( !columnWidth( i ) )
                 sub.insertItem( columnText( i ), i, i + 1 );
@@ -2959,7 +2959,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
     }
 
     //allow the header to process this
-    return KListView::eventFilter( o, e );
+    return K3ListView::eventFilter( o, e );
 
     #undef me
     #undef ke
@@ -2988,7 +2988,7 @@ Playlist::customEvent( QCustomEvent *e )
             m_showHelp = false;
 
         if ( !m_queueList.isEmpty() ) {
-            KURL::List::Iterator jt;
+            KUrl::List::Iterator jt;
             for( MyIt it( this, MyIt::All ); *it; ++it ) {
                 jt = m_queueList.find( (*it)->url() );
 
@@ -3071,7 +3071,7 @@ Playlist::customEvent( QCustomEvent *e )
 bool
 Playlist::saveM3U( const QString &path, bool relative ) const
 {
-    Q3ValueList<KURL> urls;
+    Q3ValueList<KUrl> urls;
     Q3ValueList<QString> titles;
     Q3ValueList<int> lengths;
     for( MyIt it( firstChild(), MyIt::Visible ); *it; ++it )
@@ -3140,12 +3140,12 @@ Playlist::saveXML( const QString &path )
 void
 Playlist::burnPlaylist( int projectType )
 {
-    KURL::List list;
+    KUrl::List list;
 
     Q3ListViewItemIterator it( this );
     for( ; it.current(); ++it ) {
         PlaylistItem *item = static_cast<PlaylistItem*>(*it);
-        KURL url = item->url();
+        KUrl url = item->url();
         if( url.isLocalFile() )
             list << url;
     }
@@ -3156,12 +3156,12 @@ Playlist::burnPlaylist( int projectType )
 void
 Playlist::burnSelectedTracks( int projectType )
 {
-    KURL::List list;
+    KUrl::List list;
 
     Q3ListViewItemIterator it( this, Q3ListViewItemIterator::Selected );
     for( ; it.current(); ++it ) {
         PlaylistItem *item = static_cast<PlaylistItem*>(*it);
-        KURL url = item->url();
+        KUrl url = item->url();
         if( url.isLocalFile() )
             list << url;
     }
@@ -3198,7 +3198,7 @@ Playlist::customMenuClicked(int id)  //adapted from burnSelectedTracks
     Q3ListViewItemIterator it( this, Q3ListViewItemIterator::Selected );
     for( ; it.current(); ++it ) {
         PlaylistItem *item = static_cast<PlaylistItem*>(*it);
-        KURL url = item->url().url();
+        KUrl url = item->url().url();
         message += ' ' + url.url();
     }
     ScriptManager::instance()->customMenuClicked( message );
@@ -3346,7 +3346,7 @@ Playlist::shuffle() //SLOT
         takeItem( item );
 
     //shuffle
-    KRandomSequence( (long)KApplication::random() ).randomize( &list );
+    KRandomSequence( (long)KRandom::random() ).randomize( &list );
 
     //reinsert in new order
     for( Q3ListViewItem *item = list.first(); item; item = list.next() )
@@ -3431,7 +3431,7 @@ Playlist::deleteSelectedFiles() //SLOT
 {
     if( isLocked() ) return;
 
-    KURL::List urls;
+    KUrl::List urls;
 
     //assemble a list of what needs removing
     for( MyIt it( this, MyIt::Selected );
@@ -3441,7 +3441,7 @@ Playlist::deleteSelectedFiles() //SLOT
     {
         CollectionDB::instance()->removeSongs( urls );
         removeSelectedItems();
-        foreachType( KURL::List, urls )
+        foreachType( KUrl::List, urls )
           CollectionDB::instance()->emitFileDeleted( (*it).path() );
         QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
     }
@@ -3454,7 +3454,7 @@ Playlist::removeDuplicates() //SLOT
 
     for( Q3ListViewItemIterator it( this ); it.current(); ) {
         PlaylistItem* item = static_cast<PlaylistItem*>( *it );
-        const KURL url = item->url();
+        const KUrl url = item->url();
         if ( url.isLocalFile() && !QFile::exists( url.path() ) ) {
             removeItem( item );
             ++it;
@@ -3474,7 +3474,7 @@ Playlist::removeDuplicates() //SLOT
     Q3PtrListIterator<PlaylistItem> it( list );
     PlaylistItem *item;
     while( (item = it.current()) ) {
-        const KURL &compare = item->url();
+        const KUrl &compare = item->url();
         ++it;
         if ( *it && compare == it.current()->url() ) {
             removeItem( item );
@@ -3539,7 +3539,7 @@ Playlist::adjustColumn( int n )
     else if( n == PlaylistItem::Mood )
         setColumnWidth( n, 120 );
     else
-        KListView::adjustColumn( n );
+        K3ListView::adjustColumn( n );
 }
 
 void
@@ -3679,7 +3679,7 @@ Playlist::fileMoved( const QString &srcPath, const QString &dstPath )
         PlaylistItem *item = static_cast<PlaylistItem*>( *it );
         if ( item->url().path() == srcPath )
         {
-            item->setUrl( KURL::fromPathOrURL( dstPath ) );
+            item->setUrl( KUrl::fromPathOrUrl( dstPath ) );
             item->filter( m_filter );
         }
     }
@@ -3739,7 +3739,7 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
     enum { REPOPULATE, ENABLEDYNAMIC };
     if( item == 0 )
     {
-        KPopupMenu popup;
+        KMenu popup;
         Amarok::actionCollection()->action("playlist_save")->plug( &popup );
         Amarok::actionCollection()->action("playlist_clear")->plug( &popup );
         DynamicMode *m = 0;
@@ -3868,7 +3868,7 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
 
     popup.insertSeparator();
 
-    KPopupMenu fileMenu;
+    KMenu fileMenu;
     if( CollectionDB::instance()->isDirInCollection( item->url().directory() ) )
     {
         fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18n("&Organize File...", "&Organize %n Files...", itemCount), ORGANIZE );
@@ -3914,12 +3914,12 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
     Q3ValueList<QString> submenuTexts = m_customSubmenuItem.keys();
     for( Q3ValueList<QString>::Iterator keyIt =submenuTexts.begin(); keyIt !=  submenuTexts.end(); ++keyIt )
     {
-        KPopupMenu* menu;
+        KMenu* menu;
         if( (*keyIt) == "root")
             menu = &popup;
         else
         {
-            menu = new KPopupMenu();
+            menu = new KMenu();
             popup.insertItem( *keyIt, menu);
         }
         foreach(m_customSubmenuItem[*keyIt])
@@ -4078,14 +4078,14 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
     case MOVE_TO_COLLECTION:
     case COPY_TO_COLLECTION:
         {
-            KURL::List list;
+            KUrl::List list;
 
             for( Q3ListViewItemIterator it( this, Q3ListViewItemIterator::Selected );
                     it.current();
                     ++it )
             {
                 PlaylistItem *i= static_cast<PlaylistItem*>(*it);
-                KURL url = i->url();
+                KUrl url = i->url();
                 list << url;
             }
             bool organize = CollectionDB::instance()->isDirInCollection( item->url().directory() );
@@ -4113,7 +4113,7 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
 void
 Playlist::fontChange( const QFont &old )
 {
-    KListView::fontChange( old );
+    K3ListView::fontChange( old );
     delete PlaylistItem::s_star;
     delete PlaylistItem::s_smallStar;
     delete PlaylistItem::s_grayedStar;
@@ -4125,7 +4125,7 @@ void
 Playlist::contentsMouseMoveEvent( QMouseEvent *e )
 {
     if( e )
-        KListView::contentsMouseMoveEvent( e );
+        K3ListView::contentsMouseMoveEvent( e );
     PlaylistItem *prev = m_hoveredRating;
     const QPoint pos = e ? e->pos() : viewportToContents( viewport()->mapFromGlobal( QCursor::pos() ) );
 
@@ -4151,7 +4151,7 @@ Playlist::contentsMouseMoveEvent( QMouseEvent *e )
 
 void Playlist::leaveEvent( QEvent *e )
 {
-    KListView::leaveEvent( e );
+    K3ListView::leaveEvent( e );
 
     PlaylistItem *prev = m_hoveredRating;
     m_hoveredRating = 0;
@@ -4168,7 +4168,7 @@ void Playlist::contentsMousePressEvent( QMouseEvent *e )
 
     /// Conditions on setting the rating of an item
     if( item &&
-       !( e->state()  & Qt::ControlButton || e->state() & Qt::ShiftButton ) &&     // skip if ctrl or shift held
+       !( e->state()  & Qt::ControlModifier || e->state() & Qt::ShiftModifier ) &&     // skip if ctrl or shift held
         ( e->button() & Qt::LeftButton )                                    &&     // only on a left click
         ( e->pos().x() > beginRatingSection && e->pos().x() < endRatingSection ) ) // mouse over rating column
     {
@@ -4180,7 +4180,7 @@ void Playlist::contentsMousePressEvent( QMouseEvent *e )
             CollectionDB::instance()->setSongRating( item->url().path(), rating, true );
     }
     else
-        KListView::contentsMousePressEvent( e );
+        K3ListView::contentsMousePressEvent( e );
 }
 
 void Playlist::contentsWheelEvent( QWheelEvent *e )
@@ -4213,7 +4213,7 @@ void Playlist::contentsWheelEvent( QWheelEvent *e )
             changed.at(i)->update();
     }
     else
-        KListView::contentsWheelEvent( e );
+        K3ListView::contentsWheelEvent( e );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -4467,7 +4467,7 @@ Playlist::switchState( QStringList &loadFromMe, QStringList &saveToMe )
 {
     m_undoDirt = true;
     //switch to a previously saved state, remember current state
-    KURL url; url.setPath( loadFromMe.last() );
+    KUrl url; url.setPath( loadFromMe.last() );
     loadFromMe.pop_back();
 
     //save current state
@@ -4504,12 +4504,12 @@ Playlist::saveSelectedAsPlaylist()
         return; //safety
     const QString album = (*it)->album(),
                   artist = (*it)->artist();
-    int suggestion = !album.stripWhiteSpace().isEmpty() ? 1 : !artist.stripWhiteSpace().isEmpty() ? 2 : 3;
+    int suggestion = !album.trimmed().isEmpty() ? 1 : !artist.trimmed().isEmpty() ? 2 : 3;
     while( *it )
     {
-        if( suggestion == 1 && (*it)->album()->lower().stripWhiteSpace() != album.lower().stripWhiteSpace() )
+        if( suggestion == 1 && (*it)->album()->lower().trimmed() != album.lower().trimmed() )
             suggestion = 2;
-        if( suggestion == 2 && (*it)->artist()->lower().stripWhiteSpace() != artist.lower().stripWhiteSpace() )
+        if( suggestion == 2 && (*it)->artist()->lower().trimmed() != artist.lower().trimmed() )
             suggestion = 3;
         if( suggestion == 3 )
             break;
@@ -4522,7 +4522,7 @@ Playlist::saveSelectedAsPlaylist()
     if( path.isEmpty() )
         return;
 
-    Q3ValueList<KURL> urls;
+    Q3ValueList<KUrl> urls;
     Q3ValueList<QString> titles;
     Q3ValueList<int> lengths;
     for( it = MyIt( this, MyIt::Visible | MyIt::Selected ); *it; ++it )
@@ -4559,7 +4559,7 @@ Playlist::slotMouseButtonPressed( int button, Q3ListViewItem *after, const QPoin
     case Qt::MidButton:
     {
         const QString path = QApplication::clipboard()->text( QClipboard::Selection );
-        const KURL url = KURL::fromPathOrURL( path );
+        const KUrl url = KUrl::fromPathOrUrl( path );
 
         if( url.isValid() )
             insertMediaInternal( url, static_cast<PlaylistItem*>(after ? after : lastItem()) );
@@ -4700,7 +4700,7 @@ Playlist::showTagDialog( Q3PtrList<Q3ListViewItem> items )
         bool isDaap        = item->url().protocol() == "daap";
         if ( !item->url().isLocalFile() && !isDaap )
         {
-            StreamEditor dialog( this, item->title(), item->url().prettyURL(), true );
+            StreamEditor dialog( this, item->title(), item->url().prettyUrl(), true );
             if( item->url().protocol() == "cdda" )
                 dialog.setCaption( i18n( "CD Audio" ) );
             else
@@ -4723,7 +4723,7 @@ Playlist::showTagDialog( Q3PtrList<Q3ListViewItem> items )
     }
     else {
         //edit multiple tracks in tag dialog
-        KURL::List urls;
+        KUrl::List urls;
         for( Q3ListViewItem *item = items.first(); item; item = items.next() )
             if ( item->isVisible() )
                 urls << static_cast<PlaylistItem*>( item )->url();
@@ -4736,7 +4736,7 @@ Playlist::showTagDialog( Q3PtrList<Q3ListViewItem> items )
 }
 
 
-#include <kactivelabel.h>
+#include <k3activelabel.h>
 #include <kdialog.h>
 #include <kpushbutton.h>
 #include <q3groupbox.h>
@@ -4771,7 +4771,7 @@ Playlist::showTagDialog( Q3PtrList<Q3ListViewItem> items )
 
             groupBox1 = new Q3GroupBox( 1, Qt::Vertical, i18n( "Examples" ), this );
             groupBox1->layout()->setMargin( 11 );
-            new KActiveLabel( i18n( "file --brief %f\n" "ls -sh %f\n" "basename %f\n" "dirname %f" ), groupBox1 );
+            new K3ActiveLabel( i18n( "file --brief %f\n" "ls -sh %f\n" "basename %f\n" "dirname %f" ), groupBox1 );
 
             // buddies
             textLabel2->setBuddy( lineEdit1 );
@@ -4780,8 +4780,8 @@ Playlist::showTagDialog( Q3PtrList<Q3ListViewItem> items )
             // layouts
             Q3HBoxLayout *layout1 = new Q3HBoxLayout( 0, 0, 6 );
             layout1->addItem( new QSpacerItem( 181, 20, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
-            layout1->addWidget( new KPushButton( KStdGuiItem::ok(), this, "OkButton" ) );
-            layout1->addWidget( new KPushButton( KStdGuiItem::cancel(), this, "CancelButton" ) );
+            layout1->addWidget( new KPushButton( KStandardGuiItem::ok(), this, "OkButton" ) );
+            layout1->addWidget( new KPushButton( KStandardGuiItem::cancel(), this, "CancelButton" ) );
 
             Q3GridLayout *layout2 = new Q3GridLayout( 0, 2, 2, 0, 6 );
             layout2->QLayout::add( textLabel2 );
@@ -4857,6 +4857,7 @@ Playlist::addCustomColumn()
 
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
+#include <krandom.h>
 
 TagWriter::TagWriter( PlaylistItem *item, const QString &oldTag, const QString &newTag, const int col, const bool updateView )
         : ThreadManager::Job( "TagWriter" )

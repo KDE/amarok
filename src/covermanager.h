@@ -12,7 +12,7 @@
 #include <QDropEvent>
 #include <Q3ValueList>
 #include <QLabel>
-#include <kiconview.h>
+#include <k3iconview.h>
 #include <qdialog.h>
 #include <qpixmap.h>
 
@@ -20,10 +20,10 @@ class Q3ListViewItem;
 class CoverViewItem;
 class ClickLineEdit;
 class KPushButton;
-class KPopupMenu;
+class KMenu;
 class QToolButton;
 class QLabel;
-class KListView;
+class K3ListView;
 class CoverView;
 class Q3HBox;
 class KProgress;
@@ -80,12 +80,12 @@ class CoverManager : public QSplitter
         void deleteSelectedCovers();
         Q3PtrList<CoverViewItem> selectedItems();
 
-        KListView      *m_artistView;
+        K3ListView      *m_artistView;
         CoverView      *m_coverView;
         ClickLineEdit  *m_searchEdit;
         KPushButton    *m_fetchButton;
-        KPopupMenu     *m_amazonLocaleMenu;
-        KPopupMenu     *m_viewMenu;
+        KMenu     *m_amazonLocaleMenu;
+        KMenu     *m_viewMenu;
         QToolButton    *m_amazonLocaleButton;
         QToolButton    *m_viewButton;
         int             m_currentLocale;
@@ -112,7 +112,7 @@ class CoverManager : public QSplitter
         int m_coverErrors;
 };
 
-class CoverView : public KIconView
+class CoverView : public K3IconView
 {
         Q_OBJECT
 
@@ -126,7 +126,7 @@ class CoverView : public KIconView
         void setStatusText( Q3IconViewItem *item );
 };
 
-class CoverViewItem : public KIconViewItem
+class CoverViewItem : public K3IconViewItem
 {
     public:
         CoverViewItem( Q3IconView *parent, Q3IconViewItem *after, const QString &artist, const QString &album );

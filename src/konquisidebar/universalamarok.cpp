@@ -47,6 +47,7 @@
 #include <kdebug.h>
 #include <kurldrag.h>
 #include <khtmlview.h>
+#include <ktoolinvocation.h>
 
 #define HTML_FILE KGlobal::dirs()->saveLocation( "data", "amarok/", true ) + "contextbrowser.html"
 
@@ -62,11 +63,11 @@ void amarokWidget::dragEnterEvent(QDragEnterEvent* event)
 
 void amarokWidget::dropEvent(QDropEvent* event)
 {
-    KURL::List urlList;
+    KUrl::List urlList;
     if( KURLDrag::decode(event, urlList) )
     {
-        KURL::List::iterator it;
-        KURL::List::iterator end( urlList.end() );
+        KUrl::List::iterator it;
+        KUrl::List::iterator end( urlList.end() );
         for (it = urlList.begin(); it != end; ++it )
             emit emitURL(*it);
     }
@@ -83,7 +84,7 @@ bool amarokWidget::eventFilter( QObject *, QEvent *e )
 UniversalAmarok::UniversalAmarok(KInstance *inst,QObject *parent,QWidget *widgetParent, QString &desktopName, const char* name):
                    KonqSidebarPlugin(inst,parent,widgetParent,desktopName,name)
 {
-    KGlobal::iconLoader()->addAppDir( "amarok" );
+    KIconLoader::global()->addAppDir( "amarok" );
     widget = new amarokWidget( widgetParent );
 //    widgetParent->resize(580,300);
     KToolBar *topBar = new KToolBar( widget, "Topbar" );
@@ -94,7 +95,7 @@ UniversalAmarok::UniversalAmarok(KInstance *inst,QObject *parent,QWidget *widget
 
     browser = new KHTMLPart(widget, "widget-browser");
 //browser=new KHTMLPart(widget);
-    kdDebug() << "parentPart() << " << browser->parentPart() << endl;
+    kDebug() << "parentPart() << " << browser->parentPart() << endl;
     browser->setDNDEnabled( true );
     browser->setEncoding( "utf8", true );
     updateBrowser( HTML_FILE );
@@ -129,12 +130,12 @@ UniversalAmarok::UniversalAmarok(KInstance *inst,QObject *parent,QWidget *widget
 
     connect( t, SIGNAL(timeout()), SLOT(updateStatus() ) );
     t->start( 2000, false );
-    kdDebug() << "Connecting widget signal" << endl;
+    kDebug() << "Connecting widget signal" << endl;
 
-    connect( widget,                      SIGNAL( emitURL( const KURL &)),
-             this,                        SLOT( openURLRequest( const KURL &) ) );
-    connect( browser->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
-             this,                        SLOT( openURLRequest( const KURL & ) ) );
+    connect( widget,                      SIGNAL( emitURL( const KUrl &)),
+             this,                        SLOT( openURLRequest( const KUrl &) ) );
+    connect( browser->browserExtension(), SIGNAL( openURLRequest( const KUrl &, const KParts::URLArgs & ) ),
+             this,                        SLOT( openURLRequest( const KUrl & ) ) );
     widget->show();
 }
 
@@ -157,7 +158,7 @@ extern "C"
 {
     KDE_EXPORT void* create_konqsidebar_universalamarok(KInstance *instance,QObject *par,QWidget *widp,QString &desktopname,const char *name)
     {
-        KGlobal::locale()->insertCatalogue( "amarok" );
+        KGlobal::locale()->insertCatalog( "amarok" );
         return new UniversalAmarok(instance,par,widp,desktopname,name);
     }
 }
@@ -237,9 +238,9 @@ QString UniversalAmarok::getCurrentPlaying()
 
 
 /*!
-    \fn UniversalAmarok::openURLRequest( const KURL &url )
+    \fn UniversalAmarok::openURLRequest( const KUrl &url )
  */
-void UniversalAmarok::openURLRequest( const KURL &url )
+void UniversalAmarok::openURLRequest( const KUrl &url )
 {
    if( ! url.isValid() ) return;
    if (url.url() == "run:amarok") {
@@ -287,7 +288,7 @@ void UniversalAmarok::noAmarokRunning() {
 }
 
 void UniversalAmarok::runAmarok() {
-    KApplication::kdeinitExecWait("amarok");
+    KToolInvocation::kdeinitExecWait("amarok");
 }
 
 
@@ -321,7 +322,7 @@ void UniversalAmarok::showIntroduction()
             "</div>"
             "</html>"
                        );
-kdDebug() << m_HTMLSource << endl;
+kDebug() << m_HTMLSource << endl;
     browser->begin();
     browser->write( m_HTMLSource );
     browser->end();

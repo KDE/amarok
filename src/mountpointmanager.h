@@ -112,7 +112,7 @@ public:
      * @param absolutePath
      * @param relativePath
      */
-    virtual void getPlayableURL( KURL &absolutePath, const KURL &relativePath ) = 0;
+    virtual void getPlayableURL( KUrl &absolutePath, const KUrl &relativePath ) = 0;
 
     /**
      * builds an absolute path from a relative path and DeviceHandler specific information. The absolute path
@@ -120,7 +120,7 @@ public:
      * @param absolutePath the not necessarily playbale absolute path
      * @param relativePath the device specific relative path
      */
-    virtual void getURL( KURL &absolutePath, const KURL &relativePath ) = 0;
+    virtual void getURL( KUrl &absolutePath, const KUrl &relativePath ) = 0;
 
     /**
      * retrieves the unique database id of a given Medium. Implementations are responsible
@@ -166,7 +166,7 @@ public:
      * @param url
      * @return
      */
-    int getIdForUrl( KURL url );
+    int getIdForUrl( KUrl url );
     int getIdForUrl( const QString &url );
     /**
      *
@@ -181,7 +181,7 @@ public:
      * @param relativePath relative path on the medium
      * @return the absolute path
      */
-    void getAbsolutePath( const int deviceId, const KURL& relativePath, KURL& absolutePath ) const;
+    void getAbsolutePath( const int deviceId, const KUrl& relativePath, KUrl& absolutePath ) const;
     QString getAbsolutePath ( const int deviceId, const QString& relativePath ) const;
     /**
      * calculates a file's/directory's relative path on a given device.
@@ -189,7 +189,7 @@ public:
      * @param absolutePath the file's/directory's absolute path
      * @param relativePath the calculated relative path
      */
-    void getRelativePath( const int deviceId, const KURL& absolutePath, KURL& relativePath ) const;
+    void getRelativePath( const int deviceId, const KUrl& absolutePath, KUrl& relativePath ) const;
     QString getRelativePath( const int deviceId, const QString& absolutePath ) const;
     /**
      * allows calling code to access the ids of all active devices

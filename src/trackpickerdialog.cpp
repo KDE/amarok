@@ -20,7 +20,7 @@
 #include <qlabel.h>
 
 #include <kapplication.h>
-#include <klistview.h>
+#include <k3listview.h>
 #include <klocale.h>
 
 #include "trackpickerdialog.h"
@@ -28,11 +28,11 @@
 
 #define NUMBER(x) (x == 0 ? QString::null : QString::number(x))
 
-class TrackPickerItem : public KListViewItem
+class TrackPickerItem : public K3ListViewItem
 {
 public:
-    TrackPickerItem(KListView *parent, const KTRMResult &result) :
-        KListViewItem(parent, parent->lastChild(),
+    TrackPickerItem(K3ListView *parent, const KTRMResult &result) :
+        K3ListViewItem(parent, parent->lastChild(),
                       result.title(), result.artist(), result.album(),
                       NUMBER(result.track()), NUMBER(result.year())),
                       m_result(result) {
@@ -55,7 +55,7 @@ TrackPickerDialog::TrackPickerDialog(const QString &name, const KTRMResultList &
         : KDialogBase(parent, name.latin1(), true, QString::null, Ok | Cancel, Ok, true)
 {
     kapp->setTopWidget( this );
-    setCaption( kapp->makeStdCaption( i18n("MusicBrainz Results") ) );
+    setCaption( KInstance::makeStandardCaption( i18n("MusicBrainz Results") ) );
 
     m_base = new TrackPickerDialogBase(this);
     setMainWidget(m_base);
@@ -77,7 +77,7 @@ TrackPickerDialog::TrackPickerDialog(const QString &name, const KTRMResultList &
 //     }
     m_base->trackList->setSelected(m_base->trackList->firstChild(), true);
   //  m_base->trackList->triggerUpdate();
-    setMinimumWidth(kMax(300, width()));
+    setMinimumWidth(qMax(300, width()));
     connect(this, SIGNAL( sigSelectionMade( KTRMResult ) ), parent, SLOT( fillSelected( KTRMResult ) ) );
 
 }

@@ -25,7 +25,7 @@ Engine::Base::~Base()
 
 
 bool
-Engine::Base::load( const KURL &url, bool stream )
+Engine::Base::load( const KUrl &url, bool stream )
 {
     m_url = url;
     m_isStream = stream;

@@ -45,7 +45,7 @@ void TagGuesserConfigDialog::init()
     QStringList::ConstIterator it = schemes.begin();
     QStringList::ConstIterator end = schemes.end();
     for ( ; it != end; ++it ) {
-        KListViewItem *item = new KListViewItem( lvSchemes, *it );
+        K3ListViewItem *item = new K3ListViewItem( lvSchemes, *it );
         item->moveItem( lvSchemes->lastItem() );
     }
 
@@ -121,7 +121,7 @@ void TagGuesserConfigDialog::slotMoveDownClicked()
 
 void TagGuesserConfigDialog::slotAddClicked()
 {
-    KListViewItem *item = new KListViewItem( lvSchemes );
+    K3ListViewItem *item = new K3ListViewItem( lvSchemes );
     lvSchemes->rename(item, 0);
 }
 

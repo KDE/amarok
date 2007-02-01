@@ -67,12 +67,12 @@
 #include <kiconloader.h>
 #include <kio/job.h>
 #include <kio/jobclasses.h>
-#include <kmdcodec.h> // for data: URLs
+#include <kcodecs.h> // for data: URLs
 #include <kmessagebox.h>
-#include <kpopupmenu.h>
+#include <kmenu.h>
 #include <kstandarddirs.h>
 #include <ktextedit.h>
-#include <ktoolbarbutton.h>
+
 
 #include <unistd.h> //usleep()
 
@@ -197,8 +197,8 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_dirtyLyricsPage( true )
         , m_dirtyWikiPage( true )
         , m_emptyDB( CollectionDB::instance()->isEmpty() )
-        , m_wikiBackPopup( new KPopupMenu( this ) )
-        , m_wikiForwardPopup( new KPopupMenu( this ) )
+        , m_wikiBackPopup( new KMenu( this ) )
+        , m_wikiForwardPopup( new KMenu( this ) )
         , m_wikiJob( NULL )
         , m_wikiConfigDialog( NULL )
         , m_relatedOpen( true )
@@ -315,16 +315,16 @@ ContextBrowser::ContextBrowser( const char *name )
     m_showFavoriteAlbums = Amarok::config( "ContextBrowser" )->readBoolEntry( "ShowFavoriteAlbums", true );
 
     // Delete folder with the cached coverimage shadow pixmaps
-    KIO::del( KURL::fromPathOrURL( Amarok::saveLocation( "covershadow-cache/" ) ), false, false );
+    KIO::del( KUrl::fromPathOrUrl( Amarok::saveLocation( "covershadow-cache/" ) ), false, false );
 
     connect( this, SIGNAL( currentChanged( QWidget* ) ), SLOT( tabChanged( QWidget* ) ) );
 
-    connect( m_currentTrackPage->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
-             this,                                   SLOT( openURLRequest( const KURL & ) ) );
-    connect( m_lyricsPage->browserExtension(),       SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
-             this,                                   SLOT( openURLRequest( const KURL & ) ) );
-    connect( m_wikiPage->browserExtension(),         SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
-             this,                                   SLOT( openURLRequest( const KURL & ) ) );
+    connect( m_currentTrackPage->browserExtension(), SIGNAL( openURLRequest( const KUrl &, const KParts::URLArgs & ) ),
+             this,                                   SLOT( openURLRequest( const KUrl & ) ) );
+    connect( m_lyricsPage->browserExtension(),       SIGNAL( openURLRequest( const KUrl &, const KParts::URLArgs & ) ),
+             this,                                   SLOT( openURLRequest( const KUrl & ) ) );
+    connect( m_wikiPage->browserExtension(),         SIGNAL( openURLRequest( const KUrl &, const KParts::URLArgs & ) ),
+             this,                                   SLOT( openURLRequest( const KUrl & ) ) );
 
     connect( m_currentTrackPage, SIGNAL( popupMenu( const QString&, const QPoint& ) ),
              this,               SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
@@ -382,7 +382,7 @@ ContextBrowser::ContextBrowser( const char *name )
     connect( MountPointManager::instance(), SIGNAL( mediumRemoved( int ) ),
              this, SLOT( renderView() ) );
 
-    showContext( KURL( "current://track" ) );
+    showContext( KUrl( "current://track" ) );
 
 //     setMinimumHeight( AmarokConfig::coverPreviewSize() + (fontMetrics().height()+2)*5 + tabBar()->height() );
 }
@@ -419,7 +419,7 @@ void ContextBrowser::setFont( const QFont &newFont )
 // PUBLIC SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void ContextBrowser::openURLRequest( const KURL &url )
+void ContextBrowser::openURLRequest( const KUrl &url )
 {
     QString artist, album, track;
     Amarok::albumArtistTrackFromUrl( url.path(), artist, album, track );
@@ -430,7 +430,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
     {
         if ( url.hasHTMLRef() )
         {
-            KURL base = url;
+            KUrl base = url;
             base.setRef(QString::null);
             // Wikipedia also has links to otherpages with Anchors, so we have to check if it's for the current one
             if ( m_wikiCurrentUrl == base.url() ) {
@@ -467,7 +467,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
             showLabelsDialog();
         }
         // Konqueror sidebar needs these
-        if (url.path() == "context") { m_dirtyCurrentTrackPage=true; showContext( KURL( "current://track" ) ); saveHtmlData(); }
+        if (url.path() == "context") { m_dirtyCurrentTrackPage=true; showContext( KUrl( "current://track" ) ); saveHtmlData(); }
         if (url.path() == "wiki") { m_dirtyWikiPage=true; showWikipedia(); saveHtmlData(); }
         if (url.path() == "lyrics") { m_dirtyLyricsPage=true; m_wikiJob=false; showLyrics(); saveHtmlData(); }
     }
@@ -500,9 +500,9 @@ void ContextBrowser::openURLRequest( const KURL &url )
     else if ( url.protocol() == "musicbrainz" )
     {
         const QString url = "http://www.musicbrainz.org/taglookup.html?artist=%1&album=%2&track=%3";
-        Amarok::invokeBrowser( url.arg( KURL::encode_string_no_slash( artist, 106 /*utf-8*/ ),
-        KURL::encode_string_no_slash( album, 106 /*utf-8*/ ),
-        KURL::encode_string_no_slash( track, 106 /*utf-8*/ ) ) );
+        Amarok::invokeBrowser( url.arg( KUrl::encode_string_no_slash( artist, 106 /*utf-8*/ ),
+        KUrl::encode_string_no_slash( album, 106 /*utf-8*/ ),
+        KUrl::encode_string_no_slash( track, 106 /*utf-8*/ ) ) );
     }
 
     else if ( url.protocol() == "externalurl" )
@@ -550,7 +550,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
     else if( url.protocol() == "ggartist" )
     {
         const QString url2 = QString( "http://www.google.com/musicsearch?q=%1&res=artist" )
-            .arg( KURL::encode_string_no_slash( unescapeHTMLAttr( url.path() ).replace( " ", "+" ), 106 /*utf-8*/ ) );
+            .arg( KUrl::encode_string_no_slash( unescapeHTMLAttr( url.path() ).replace( " ", "+" ), 106 /*utf-8*/ ) );
         Amarok::invokeBrowser( url2 );
     }
 
@@ -561,7 +561,7 @@ void ContextBrowser::openURLRequest( const KURL &url )
 
     else if( url.protocol() == "stream" )
     {
-        Playlist::instance()->insertMedia( KURL::fromPathOrURL( url.url().replace( QRegExp( "^stream:" ), "http:" ) ), Playlist::DefaultOptions );
+        Playlist::instance()->insertMedia( KUrl::fromPathOrUrl( url.url().replace( QRegExp( "^stream:" ), "http:" ) ), Playlist::DefaultOptions );
     }
 
     else if( url.protocol() == "compilationdisc" || url.protocol() == "albumdisc" )
@@ -710,7 +710,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
 
                             while ( !stream.atEnd() && !foundCueFile)
                             {
-                                line = stream.readLine().simplifyWhiteSpace();
+                                line = stream.readLine().simplified();
 
                                 if( line.startsWith( "file", false ) )
                                 {
@@ -882,10 +882,10 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         currentPage() != m_contextTab  )
         return;
 
-    KURL url( urlString );
+    KUrl url( urlString );
 
-    KPopupMenu menu;
-    KURL::List urls( url );
+    KMenu menu;
+    KUrl::List urls( url );
     QString artist, album, track; // track unused here
     Amarok::albumArtistTrackFromUrl( url.path(), artist, album, track );
 
@@ -923,8 +923,8 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     }
     else if( url.protocol() == "stream" )
     {
-        url = KURL::fromPathOrURL( url.url().replace( QRegExp( "^stream:" ), "http:" ) );
-        urls = KURL::List( url );
+        url = KUrl::fromPathOrUrl( url.url().replace( QRegExp( "^stream:" ), "http:" ) );
+        urls = KUrl::List( url );
         menu.insertTitle( i18n("Podcast"), TITLE );
         menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), MAKE );
         menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
@@ -1156,7 +1156,7 @@ private:
 };
 
 void
-ContextBrowser::showContext( const KURL &url, bool fromHistory )
+ContextBrowser::showContext( const KUrl &url, bool fromHistory )
 {
     if ( currentPage() != m_contextTab )
     {
@@ -1212,7 +1212,7 @@ ContextBrowser::contextHistoryBack() //SLOT
 
         m_dirtyCurrentTrackPage = true;
 
-        showContext( KURL( m_contextBackHistory.last() ), true );
+        showContext( KUrl( m_contextBackHistory.last() ), true );
     }
 }
 
@@ -1331,7 +1331,7 @@ void CurrentTrackJob::showHome()
                 "</div>\n" )
             .args( QStringList()
                     << escapeHTMLAttr( "externalurl://amarok.kde.org" )
-                    << escapeHTMLAttr( KGlobal::iconLoader()->iconPath( "amarok", -KIcon::SizeEnormous ) )
+                    << escapeHTMLAttr( KIconLoader::global()->iconPath( "amarok", -K3Icon::SizeEnormous ) )
                     << i18n( "1 Track",  "%n Tracks",  songCount.toInt() )
                     << i18n( "1 Artist", "%n Artists", artistCount.toInt() )
                     << i18n( "1 Album",  "%n Albums",  albumCount.toInt() )
@@ -1460,7 +1460,7 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
         {
             for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() )
             {
-                QString newDiscNumber = albumValues[ j + 7 ].stripWhiteSpace();
+                QString newDiscNumber = albumValues[ j + 7 ].trimmed();
                 if( discNumber != newDiscNumber && newDiscNumber.toInt() > 0)
                 {
                     discNumber = newDiscNumber;
@@ -1476,7 +1476,7 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
                                 << escapeHTMLAttr( discNumber )
                                 << i18n( "Disc %1" ).arg( discNumber ) ) );
                 }
-                QString track = albumValues[j + 2].stripWhiteSpace();
+                QString track = albumValues[j + 2].trimmed();
                 if( track.length() > 0 )
                 {
                     if( track.length() == 1 )
@@ -1558,7 +1558,7 @@ CurrentTrackJob::showHomeByAlbums()
                             date = ep.dateTime().toString();
 
                     QString image = CollectionDB::instance()->podcastImage( pcb.imageURL().url(), true, 50 );
-                    QString imageAttr = escapeHTMLAttr( i18n( "Click to go to podcast website: %1." ).arg( pcb.link().prettyURL() ) );
+                    QString imageAttr = escapeHTMLAttr( i18n( "Click to go to podcast website: %1." ).arg( pcb.link().prettyUrl() ) );
 
                     m_HTMLSource.append( QStringx (
                                 "<tr class='" + QString( (i % 2) ? "box-row-alt" : "box-row" ) + "'>\n"
@@ -1757,9 +1757,9 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
     for ( QString* url = newUrls.first(); url; url = newUrls.next() )
         url->replace( QRegExp( "^http:" ), "externalurl:" );
 
-    const QString skipIcon = KGlobal::iconLoader()->iconPath( Amarok::icon("next"),   -KIcon::SizeSmallMedium );
-    const QString loveIcon = KGlobal::iconLoader()->iconPath( Amarok::icon("love"),   -KIcon::SizeSmallMedium );
-    const QString banIcon  = KGlobal::iconLoader()->iconPath( Amarok::icon("remove"), -KIcon::SizeSmallMedium );
+    const QString skipIcon = KIconLoader::global()->iconPath( Amarok::icon("next"),   -K3Icon::SizeSmallMedium );
+    const QString loveIcon = KIconLoader::global()->iconPath( Amarok::icon("love"),   -K3Icon::SizeSmallMedium );
+    const QString banIcon  = KIconLoader::global()->iconPath( Amarok::icon("remove"), -K3Icon::SizeSmallMedium );
 
 
     m_HTMLSource.append( QStringx(
@@ -1893,7 +1893,7 @@ void CurrentTrackJob::showStream( const MetaBundle &currentTrack )
                         << escapeHTML( currentTrack.genre() )
                         << escapeHTML( currentTrack.prettyBitrate() )
                         << escapeHTML( currentTrack.streamUrl() )
-                        << escapeHTML( currentTrack.prettyURL() ) ) );
+                        << escapeHTML( currentTrack.prettyUrl() ) ) );
 
     addMetaHistory();
 
@@ -1942,7 +1942,7 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
        image = CollectionDB::instance()->notAvailCover( true );
 
     QString imageAttr = escapeHTMLAttr( pcb.link().isValid()
-            ? i18n( "Click to go to podcast website: %1." ).arg( pcb.link().prettyURL() )
+            ? i18n( "Click to go to podcast website: %1." ).arg( pcb.link().prettyUrl() )
             : i18n( "No podcast website." )
             );
 
@@ -2713,7 +2713,7 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
             if ( !albumValues.isEmpty() )
                 for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() )
                 {
-                    QString newDiscNumber = albumValues[ j + 5 ].stripWhiteSpace();
+                    QString newDiscNumber = albumValues[ j + 5 ].trimmed();
                     if( discNumber != newDiscNumber && newDiscNumber.toInt() > 0)
                     {
                         discNumber = newDiscNumber;
@@ -2729,7 +2729,7 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
                                                     << escapeHTMLAttr( discNumber )
                                                     << i18n( "Disc %1" ).arg( discNumber ) ) );
                     }
-                    QString track = albumValues[j + 2].stripWhiteSpace();
+                    QString track = albumValues[j + 2].trimmed();
                     if( track.length() > 0 ) {
                         if( track.length() == 1 )
                             track.prepend( "0" );
@@ -2874,7 +2874,7 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
             if ( !albumValues.isEmpty() )
                 for ( uint j = 0; j < albumValues.count(); j += qb.countReturnValues() )
                 {
-                    QString newDiscNumber = albumValues[ j + 6 ].stripWhiteSpace();
+                    QString newDiscNumber = albumValues[ j + 6 ].trimmed();
                     if( discNumber != newDiscNumber && newDiscNumber.toInt() > 0)
                     {
                         discNumber = newDiscNumber;
@@ -2890,7 +2890,7 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
                                                     << i18n( "Disc %1" ).arg( discNumber ) ) );
                     }
 
-                    QString track = albumValues[j + 2].stripWhiteSpace();
+                    QString track = albumValues[j + 2].trimmed();
                     if( track.length() > 0 ) {
                         if( track.length() == 1 )
                             track.prepend( "0" );
@@ -3225,11 +3225,11 @@ void ContextBrowser::showLyrics( const QString &url )
         int h = prettyTitle.find( '-' );
         if ( h != -1 )
         {
-            title = prettyTitle.mid( h+1 ).stripWhiteSpace();
+            title = prettyTitle.mid( h+1 ).trimmed();
             if( title.contains("PREVIEW: buy it at www.magnatune.com", true) >= 1 )
                 title = title.remove(" (PREVIEW: buy it at www.magnatune.com)");
             if ( artist.isEmpty() ) {
-                artist = prettyTitle.mid( 0, h ).stripWhiteSpace();
+                artist = prettyTitle.mid( 0, h ).trimmed();
                 if( artist.contains("PREVIEW: buy it at www.magnatune.com", true) >= 1 )
                     artist = artist.remove(" (PREVIEW: buy it at www.magnatune.com)");
             }
@@ -3238,8 +3238,8 @@ void ContextBrowser::showLyrics( const QString &url )
     }
 
     m_lyricSearchUrl = QString( "http://www.google.com/search?ie=UTF-8&q=lyrics+%1+%2" )
-        .arg( KURL::encode_string_no_slash( '"' + artist + '"', 106 /*utf-8*/ ),
-              KURL::encode_string_no_slash( '"' + title  + '"', 106 /*utf-8*/ ) );
+        .arg( KUrl::encode_string_no_slash( '"' + artist + '"', 106 /*utf-8*/ ),
+              KUrl::encode_string_no_slash( '"' + title  + '"', 106 /*utf-8*/ ) );
 
     m_lyricsToolBar->getButton( LYRICS_BROWSER )->setEnabled(false);
 
@@ -3353,10 +3353,10 @@ ContextBrowser::lyricsResult( Q3CString cXmlDoc, bool cached ) //SLOT
     spec.setGroup( "Lyrics" );
 
     m_lyricAddUrl = spec.readPathEntry( "add_url" );
-    m_lyricAddUrl.replace( "MAGIC_ARTIST", KURL::encode_string_no_slash( EngineController::instance()->bundle().artist() ) );
-    m_lyricAddUrl.replace( "MAGIC_TITLE", KURL::encode_string_no_slash( EngineController::instance()->bundle().title() ) );
-    m_lyricAddUrl.replace( "MAGIC_ALBUM", KURL::encode_string_no_slash( EngineController::instance()->bundle().album() ) );
-    m_lyricAddUrl.replace( "MAGIC_YEAR", KURL::encode_string_no_slash( QString::number( EngineController::instance()->bundle().year() ) ) );
+    m_lyricAddUrl.replace( "MAGIC_ARTIST", KUrl::encode_string_no_slash( EngineController::instance()->bundle().artist() ) );
+    m_lyricAddUrl.replace( "MAGIC_TITLE", KUrl::encode_string_no_slash( EngineController::instance()->bundle().title() ) );
+    m_lyricAddUrl.replace( "MAGIC_ALBUM", KUrl::encode_string_no_slash( EngineController::instance()->bundle().album() ) );
+    m_lyricAddUrl.replace( "MAGIC_YEAR", KUrl::encode_string_no_slash( QString::number( EngineController::instance()->bundle().year() ) ) );
 
 
     if ( el.tagName() == "suggestions" )
@@ -3470,7 +3470,7 @@ ContextBrowser::lyricsEditToggle() //SLOT
         QDomText t = doc.createTextNode( m_lyricsTextEdit->text() );
         e.appendChild( t );
         doc.appendChild( e );
-        CollectionDB::instance()->setLyrics( m_lyricsBeingEditedUrl, doc.toString(), CollectionDB::instance()->uniqueIdFromUrl( KURL( m_lyricsBeingEditedUrl) ) );
+        CollectionDB::instance()->setLyrics( m_lyricsBeingEditedUrl, doc.toString(), CollectionDB::instance()->uniqueIdFromUrl( KUrl( m_lyricsBeingEditedUrl) ) );
         m_lyricsPage->show();
         lyricsChanged( m_lyricsBeingEditedUrl );
     }
@@ -3642,8 +3642,8 @@ ContextBrowser::wikiConfig() // SLOT
 
     m_wikiConfigDialog = new KDialogBase( this, 0, true, 0, KDialogBase::Ok|KDialogBase::Apply|KDialogBase::Cancel );
     kapp->setTopWidget( m_wikiConfigDialog );
-    m_wikiConfigDialog->setCaption( kapp->makeStdCaption( i18n( "Wikipedia Locale" ) ) );
-    Q3VBox *box = m_wikiConfigDialog->makeVBoxMainWidget();
+    m_wikiConfigDialog->setCaption( KInstance::makeStandardCaption( i18n( "Wikipedia Locale" ) ) );
+    KVBox *box = m_wikiConfigDialog->makeVBoxMainWidget();
 
     m_wikiLocaleCombo = new QComboBox( box );
     m_wikiLocaleCombo->insertStringList( localeList );
@@ -3692,7 +3692,7 @@ QString
 ContextBrowser::wikiURL( const QString &item )
 {
     return QString( "http://%1.wikipedia.org/wiki/" ).arg( wikiLocale() )
-        + KURL::encode_string_no_slash( item, 106 /*utf-8*/ );
+        + KUrl::encode_string_no_slash( item, 106 /*utf-8*/ );
 }
 
 void
@@ -3713,7 +3713,7 @@ void
 ContextBrowser::showLabelsDialog()
 {
     DEBUG_BLOCK
-    KURL currentUrl = EngineController::instance()->bundle().url();
+    KUrl currentUrl = EngineController::instance()->bundle().url();
     QStringList allLabels = CollectionDB::instance()->labelList();
     QStringList trackLabels = CollectionDB::instance()->getLabels( currentUrl.path(), CollectionDB::typeUser );
     debug() << "Showing add label dialog" << endl;
@@ -4336,7 +4336,7 @@ void ContextBrowser::refreshCurrentTrackPage() //SLOT
 
 
 bool
-ContextBrowser::hasContextProtocol( const KURL &url )
+ContextBrowser::hasContextProtocol( const KUrl &url )
 {
     QString protocol = url.protocol();
     return protocol == "album"
@@ -4348,10 +4348,10 @@ ContextBrowser::hasContextProtocol( const KURL &url )
         || protocol == "fetchcover";
 }
 
-KURL::List
-ContextBrowser::expandURL( const KURL &url )
+KUrl::List
+ContextBrowser::expandURL( const KUrl &url )
 {
-    KURL::List urls;
+    KUrl::List urls;
     QString protocol = url.protocol();
 
     if( protocol == "artist" ) {
@@ -4360,7 +4360,7 @@ ContextBrowser::expandURL( const KURL &url )
         {
             QStringList trackUrls = CollectionDB::instance()->artistTracks( QString::number( artist_id ) );
             foreach( trackUrls )
-                urls += KURL::fromPathOrURL( *it );
+                urls += KUrl::fromPathOrUrl( *it );
         }
     }
     else if( protocol == "album" ) {
@@ -4369,7 +4369,7 @@ ContextBrowser::expandURL( const KURL &url )
 
         QStringList trackUrls = CollectionDB::instance()->albumTracks( artist, album );
         foreach( trackUrls ) {
-            urls += KURL::fromPathOrURL( *it );
+            urls += KUrl::fromPathOrUrl( *it );
         }
     }
     else if( protocol == "albumdisc" ) {
@@ -4378,7 +4378,7 @@ ContextBrowser::expandURL( const KURL &url )
 
         QStringList trackUrls = CollectionDB::instance()->albumDiscTracks( artist, album, discnumber );
         foreach( trackUrls ) {
-            urls += KURL::fromPathOrURL( *it );
+            urls += KUrl::fromPathOrUrl( *it );
         }
     }
     else if( protocol == "compilation" ) {
@@ -4391,7 +4391,7 @@ ContextBrowser::expandURL( const KURL &url )
         QStringList values = qb.run();
 
         for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it ) {
-            urls += KURL::fromPathOrURL( *it );
+            urls += KUrl::fromPathOrUrl( *it );
         }
     }
     else if( protocol == "compilationdisc") {
@@ -4407,7 +4407,7 @@ ContextBrowser::expandURL( const KURL &url )
         QStringList values = qb.run();
 
         for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it ) {
-            urls += KURL::fromPathOrURL( *it );
+            urls += KUrl::fromPathOrUrl( *it );
         }
     }
 
@@ -4420,12 +4420,12 @@ ContextBrowser::expandURL( const KURL &url )
 
         QStringList trackUrls = CollectionDB::instance()->albumTracks( artistID, albumID );
         foreach( trackUrls ) {
-            urls += KURL::fromPathOrURL( *it );
+            urls += KUrl::fromPathOrUrl( *it );
         }
     }
 
     else if( protocol == "stream" ) {
-        urls += KURL::fromPathOrURL( url.url().replace( QRegExp( "^stream:" ), "http:" ) );
+        urls += KUrl::fromPathOrUrl( url.url().replace( QRegExp( "^stream:" ), "http:" ) );
     }
 
     return urls;

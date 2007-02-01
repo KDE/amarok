@@ -54,7 +54,7 @@ protected:
     bool eventFilter( QObject *o, QEvent *e );
 
 signals:
-    void emitURL( const KURL &);
+    void emitURL( const KUrl &);
 };
 
 
@@ -68,7 +68,7 @@ public:
 
    virtual QWidget *getWidget(){return (QWidget*)widget;}
    virtual void *provides(const QString &) {return 0;}
-   virtual void handleURL(const KURL& /*url*/) {}
+   virtual void handleURL(const KUrl& /*url*/) {}
    QString getCurrentPlaying();
    void showIntroduction();
 
@@ -94,7 +94,7 @@ public slots:
     void sendNext() { checkForAmarok(); playerStub->next(); }
     void sendMute() { checkForAmarok(); playerStub->mute(); }
     void volChanged(int vol);
-    void openURLRequest( const KURL & );
+    void openURLRequest( const KUrl & );
     void checkForAmarok();
     void noAmarokRunning();
     void runAmarok();

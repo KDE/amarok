@@ -101,7 +101,7 @@ class GenericMediaDevice : public MediaDevice
         void              newItems( const KFileItemList &items );
         void              dirListerCompleted();
         void              dirListerClear();
-        void              dirListerClear( const KURL &url );
+        void              dirListerClear( const KUrl &url );
         void              dirListerDeleteItem( KFileItem *fileitem );
 
 
@@ -114,12 +114,12 @@ class GenericMediaDevice : public MediaDevice
         QString           buildPodcastDestination( const PodcastEpisodeBundle *bundle );
         void              checkAndBuildLocation( const QString& location );
 
-        KURL::List        getSelectedItems();
+        KUrl::List        getSelectedItems();
         void              downloadSelectedItems();
         void              copyTrackSortHelper( const MetaBundle& bundle, QString& sort, QString& base );
 
         void              listDir( const QString &dir );
-        int               addTrackToList( int type, KURL name, int size=0 );
+        int               addTrackToList( int type, KUrl name, int size=0 );
 
         QString           cleanPath( const QString &component );
 
@@ -133,7 +133,7 @@ class GenericMediaDevice : public MediaDevice
         bool              m_actuallyVfat;
         bool              m_dirListerComplete;
         bool              m_connected;
-        KURL::List        m_downloadList;
+        KUrl::List        m_downloadList;
         MediaFileMap      m_mfm;
         MediaItemMap      m_mim;
 

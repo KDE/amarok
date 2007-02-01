@@ -144,7 +144,7 @@ QString OrganizeCollectionDialog::cleanPath( const QString &component ) const
     if( !regexpEdit->text().isEmpty() )
         result.replace( QRegExp( regexpEdit->text() ), replaceEdit->text() );
 
-    result.simplifyWhiteSpace();
+    result.simplified();
     if( spaceCheck->isChecked() )
         result.replace( QRegExp( "\\s" ), "_" );
     if( vfatCheck->isChecked() )

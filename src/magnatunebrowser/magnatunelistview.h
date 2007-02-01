@@ -22,16 +22,16 @@
 
 #include "magnatunelistviewitems.h"
 
-#include <klistview.h>
+#include <k3listview.h>
 #include <kurldrag.h>
 
 /**
-A specialized KListView that provides drag and drop functionality
+A specialized K3ListView that provides drag and drop functionality
 
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 	
 */
-class MagnatuneListView : public KListView
+class MagnatuneListView : public K3ListView
 {
 public:
     MagnatuneListView(QWidget * parent);

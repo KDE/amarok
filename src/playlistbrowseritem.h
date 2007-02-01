@@ -17,7 +17,7 @@
 #include <kdialogbase.h> // StreamEditor baseclass
 #include <kio/job.h>
 #include <klineedit.h>
-#include <klistview.h>
+#include <k3listview.h>
 #include <kurl.h>
 
 #include <qdom.h>
@@ -51,19 +51,19 @@ namespace KIO { class Job; class TransferJob; class CopyJob; } //podcast downloa
 
 
 /* A base class to be able to use polymorphism and avoid tons of casts */
-class PlaylistBrowserEntry :  public QObject, public KListViewItem
+class PlaylistBrowserEntry :  public QObject, public K3ListViewItem
 {
     Q_OBJECT
     public:
         PlaylistBrowserEntry( Q3ListViewItem *parent, Q3ListViewItem *after )
-            : KListViewItem( parent, after) { m_kept = true; }
+            : K3ListViewItem( parent, after) { m_kept = true; }
         PlaylistBrowserEntry( Q3ListView *parent, Q3ListViewItem *after )
-            : KListViewItem( parent, after) { m_kept = true; }
+            : K3ListViewItem( parent, after) { m_kept = true; }
         PlaylistBrowserEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const QString &name )
-            : KListViewItem( parent, after, name) { m_kept = true; }
+            : K3ListViewItem( parent, after, name) { m_kept = true; }
 
         virtual QDomElement xml() const { return QDomElement(); }
-        Q3ListViewItem* parent() const { return KListViewItem::parent(); }
+        Q3ListViewItem* parent() const { return K3ListViewItem::parent(); }
 
         bool isKept() const { return m_kept; }  // if kept == true, then it will be saved
         void setKept( bool k );                 // to the cache files. If false, non-renameable
@@ -159,7 +159,7 @@ class PlaylistEntry :  public PlaylistBrowserEntry
     friend class PlaylistCategory;
 
     public:
-        PlaylistEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const KURL &, int tracks=0, int length=0 );
+        PlaylistEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const KUrl &, int tracks=0, int length=0 );
         PlaylistEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const QDomElement &xmlDefinition );
         ~PlaylistEntry();
 
@@ -167,7 +167,7 @@ class PlaylistEntry :  public PlaylistBrowserEntry
 
         void load();
 
-        const KURL &url()                      const { return m_url; }
+        const KUrl &url()                      const { return m_url; }
         void        setUrl( const QString &u )       { m_url.setPath( u ); }
         int         trackCount()               const { return m_trackCount; }
         int         length()                   const { return m_length; }
@@ -177,8 +177,8 @@ class PlaylistEntry :  public PlaylistBrowserEntry
         void        setDynamic( bool );
 
         int         compare( Q3ListViewItem* i, int col ) const; //reimpl.
-        KURL::List  tracksURL();    //returns the list of tracks url
-        void        insertTracks( Q3ListViewItem *after, KURL::List list );
+        KUrl::List  tracksURL();    //returns the list of tracks url
+        void        insertTracks( Q3ListViewItem *after, KUrl::List list );
         void        insertTracks( Q3ListViewItem *after, Q3ValueList<MetaBundle> bundles );
         // isLast is used to avoid saving the playlist to disk every time a track is removed
         // when removing a list of tracks from the playlist
@@ -217,7 +217,7 @@ class PlaylistEntry :  public PlaylistBrowserEntry
         void startAnimation();
         void stopAnimation();
 
-        KURL                 m_url;                 //playlist url
+        KUrl                 m_url;                 //playlist url
         int                  m_length;              //total length in seconds
         int                  m_trackCount;          //track counter
         Q3PtrList<TrackItemInfo> m_trackList;        //tracks in playlist
@@ -239,7 +239,7 @@ class PlaylistTrackItem : public PlaylistBrowserEntry
     public:
         PlaylistTrackItem( Q3ListViewItem *parent, Q3ListViewItem *after, TrackItemInfo *info );
 
-        const KURL    &url();
+        const KUrl    &url();
         TrackItemInfo *trackInfo() const { return m_trackInfo; }
 
         int rtti() const { return RTTI; }
@@ -276,7 +276,7 @@ class PodcastEpisode : public PlaylistBrowserEntry
 
         // for convenience
         const int     dBId()        const { return m_bundle.dBId(); }
-        const KURL    url()         const { return m_bundle.url(); }
+        const KUrl    url()         const { return m_bundle.url(); }
         const QString title()       const { return m_bundle.title(); }
         const QString author()      const { return m_bundle.author(); }
         const QString date()        const { return m_bundle.date(); }
@@ -284,9 +284,9 @@ class PodcastEpisode : public PlaylistBrowserEntry
         const QString description() const { return m_bundle.description(); }
         const QString guid()        const { return m_bundle.guid(); }
         const int     duration()    const { return m_bundle.duration(); }
-        const KURL   &localUrl()    const { return m_localUrl; }
+        const KUrl   &localUrl()    const { return m_localUrl; }
         void  setLocalUrlBase( const QString &s );
-        void setLocalUrl( const KURL &localUrl );
+        void setLocalUrl( const KUrl &localUrl );
 
         void  setup();
         void  paintCell( QPainter*, const QColorGroup&, int, int, int );
@@ -297,7 +297,7 @@ class PodcastEpisode : public PlaylistBrowserEntry
 
         int    rtti() const { return RTTI; }
         static const int RTTI = 1007;              //PodcastEpisode
-        static void createLocalDir( const KURL &localDir );
+        static void createLocalDir( const KUrl &localDir );
 
     signals:
         void downloadFinished();
@@ -313,7 +313,7 @@ class PodcastEpisode : public PlaylistBrowserEntry
         void abortDownload();
         void downloadResult( KIO::Job * transferJob );
         void slotAnimation();
-        void redirected( KIO::Job * job,const KURL & redirectedUrl );
+        void redirected( KIO::Job * job,const KUrl & redirectedUrl );
 
     private:
         enum FeedType{ RSS=0, ATOM=1 };
@@ -328,7 +328,7 @@ class PodcastEpisode : public PlaylistBrowserEntry
 
         Q3ListViewItem *m_parent;           //podcast channel it belongs to
         PodcastEpisodeBundle m_bundle;
-        KURL        m_localUrl;
+        KUrl        m_localUrl;
 
         bool        m_fetching;
         QTimer      m_animationTimer;
@@ -347,10 +347,10 @@ class PodcastChannel : public PlaylistBrowserEntry
         Q_OBJECT
 
     public:
-        PodcastChannel( Q3ListViewItem *parent, Q3ListViewItem *after, const KURL &url,
+        PodcastChannel( Q3ListViewItem *parent, Q3ListViewItem *after, const KUrl &url,
                         const QDomNode &channelSettings );
-        PodcastChannel( Q3ListViewItem *parent, Q3ListViewItem *after, const KURL &url );
-        PodcastChannel( Q3ListViewItem *parent, Q3ListViewItem *after, const KURL &url,
+        PodcastChannel( Q3ListViewItem *parent, Q3ListViewItem *after, const KUrl &url );
+        PodcastChannel( Q3ListViewItem *parent, Q3ListViewItem *after, const KUrl &url,
                         const QDomNode &channelSettings, const QDomDocument &xml );
         PodcastChannel( Q3ListViewItem *parent, Q3ListViewItem *after, const PodcastChannelBundle &pcb );
 
@@ -372,8 +372,8 @@ class PodcastChannel : public PlaylistBrowserEntry
         void  fetch();
         void  rescan();
 
-        const KURL   &url()         const { return m_url; }
-        const KURL    link()        const { return m_bundle.link(); }
+        const KUrl   &url()         const { return m_url; }
+        const KUrl    link()        const { return m_bundle.link(); }
         const QString title()       const { return m_bundle.title(); }
         const QString description() const { return m_bundle.description(); }
         const QString copyright()   const { return m_bundle.copyright(); }
@@ -431,7 +431,7 @@ class PodcastChannel : public PlaylistBrowserEntry
         /// When the user expands the podcast for the first time, we load up the episodes.
         bool                     m_polished;
 
-        KURL                     m_url;            //remote xml url
+        KUrl                     m_url;            //remote xml url
         bool                     m_fetching;
         bool                     m_updating;
         QTimer                   m_animationTimer;
@@ -450,17 +450,17 @@ class StreamEntry : public PlaylistBrowserEntry
 {
     Q_OBJECT
     public:
-        StreamEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const KURL &, const QString &t );
+        StreamEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const KUrl &, const QString &t );
         StreamEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const QDomElement &xmlDefinition );
         ~StreamEntry() { };
 
-        void  setURL  ( KURL u )    { m_url = u; }
+        void  setURL  ( KUrl u )    { m_url = u; }
         void  setTitle( QString t ) { m_title = t; }
 
         void  setup();
         void  paintCell( QPainter*, const QColorGroup&, int, int, int );
 
-        const KURL    &url()   const { return m_url; }
+        const KUrl    &url()   const { return m_url; }
         const QString &title() const { return m_title; }
 
         virtual QDomElement xml() const;
@@ -476,14 +476,14 @@ class StreamEntry : public PlaylistBrowserEntry
 
     protected:
         QString m_title;
-        KURL    m_url;
+        KUrl    m_url;
 };
 
 class LastFmEntry : public StreamEntry
 {
     Q_OBJECT
     public:
-        LastFmEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const KURL &u, const QString &t )
+        LastFmEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const KUrl &u, const QString &t )
             : StreamEntry( parent, after, u, t ) { }
         LastFmEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const QDomElement &xmlDefinition )
             : StreamEntry( parent, after, xmlDefinition ) { }
@@ -502,7 +502,7 @@ class StreamEditor : public KDialogBase
     public:
         StreamEditor( QWidget *parent, const QString &title, const QString &url, bool readonly = false );
 
-        KURL    url()  const { return KURL::KURL( m_urlLineEdit->text() ); }
+        KUrl    url()  const { return KUrl::KUrl( m_urlLineEdit->text() ); }
         QString name() const { return m_nameLineEdit->text().replace( "\n", " " ); }
 
     private:
@@ -559,14 +559,14 @@ class TrackItemInfo
     public:
         TrackItemInfo( const MetaBundle &mb );
         ~TrackItemInfo() {}
-        const KURL    &url()    const { return m_url;    }
+        const KUrl    &url()    const { return m_url;    }
         const QString &album()  const { return m_album; }
         const QString &artist() const { return m_artist;  }
         const QString &title()  const { return m_title;  }
         const int     length()  const { return m_length; }
 
     private:
-        KURL    m_url;
+        KUrl    m_url;
         QString m_artist;
         QString m_album;
         QString m_title;
@@ -592,7 +592,7 @@ class ShoutcastBrowser : public PlaylistCategory
         virtual void slotDoubleClicked();
 
     private slots:
-        void doneGenreDownload( KIO::Job *job, const KURL &from, const KURL &to, bool directory, bool renamed );
+        void doneGenreDownload( KIO::Job *job, const KUrl &from, const KUrl &to, bool directory, bool renamed );
         void jobFinished( KIO::Job *job );
         void slotAnimation();
 
@@ -622,7 +622,7 @@ class ShoutcastGenre : public PlaylistCategory
         virtual void slotDoubleClicked();
 
     private slots:
-        void doneListDownload( KIO::Job *job, const KURL &from, const KURL &to, bool directory, bool renamed );
+        void doneListDownload( KIO::Job *job, const KUrl &from, const KUrl &to, bool directory, bool renamed );
         void jobFinished( KIO::Job *job );
         void slotAnimation();
 

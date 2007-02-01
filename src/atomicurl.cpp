@@ -33,7 +33,7 @@ AtomicURL::AtomicURL( const AtomicURL &other )
     m_end = other.m_end;
 }
 
-AtomicURL::AtomicURL( const KURL &url )
+AtomicURL::AtomicURL( const KUrl &url )
 {
     if( url.isEmpty() )
         return;
@@ -86,17 +86,17 @@ QString AtomicURL::string() const
     return m_beginning + path() + m_end;
 }
 
-KURL AtomicURL::url() const
+KUrl AtomicURL::url() const
 {
     if( isEmpty() )
-        return KURL();
-    return KURL( string(), 106 );
+        return KUrl();
+    return KUrl( string(), 106 );
     QString s = m_beginning;
     if( !m_directory->isEmpty() || !m_filename.isEmpty() )
     {
         s += "/foo/";
     }
-    KURL u( s );
+    KUrl u( s );
     u.setPath( path() );
     return u;
 }
@@ -111,7 +111,7 @@ bool AtomicURL::isEmpty() const
 
 void AtomicURL::setPath( const QString &path )
 {
-    KURL url;
+    KUrl url;
     url.setPath( path );
     if( m_beginning->isEmpty() )
         *this = url;

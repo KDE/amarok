@@ -368,9 +368,9 @@ namespace Amarok
         EngineController::instance() ->previous();
     }
 
-    void DcopPlayerHandler::queueForTransfer( KURL url )
+    void DcopPlayerHandler::queueForTransfer( KUrl url )
     {
-        MediaBrowser::queue()->addURL( url );
+        MediaBrowser::queue()->addUrl( url );
         MediaBrowser::queue()->URLsAdded();
     }
 
@@ -578,12 +578,12 @@ namespace Amarok
         return Playlist::defaultPlaylistPath();
     }
 
-    void DcopPlaylistHandler::addMedia(const KURL &url)
+    void DcopPlaylistHandler::addMedia(const KUrl &url)
     {
         Playlist::instance()->appendMedia(url);
     }
 
-    void DcopPlaylistHandler::addMediaList(const KURL::List &urls)
+    void DcopPlaylistHandler::addMediaList(const KUrl::List &urls)
     {
         Playlist::instance()->insertMedia(urls);
     }
@@ -598,7 +598,7 @@ namespace Amarok
         Playlist::instance()->activateByIndex( index );
     }
 
-    void DcopPlaylistHandler::playMedia( const KURL &url )
+    void DcopPlaylistHandler::playMedia( const KUrl &url )
     {
         Playlist::instance()->insertMedia( url, Playlist::DirectPlay | Playlist::Unique);
     }
@@ -1030,13 +1030,13 @@ namespace Amarok
         MediaBrowser::instance()->deviceSwitch( name );
     }
 
-    void DcopMediaBrowserHandler::queue( KURL url )
+    void DcopMediaBrowserHandler::queue( KUrl url )
     {
-        MediaBrowser::queue()->addURL( url );
+        MediaBrowser::queue()->addUrl( url );
         MediaBrowser::queue()->URLsAdded();
     }
 
-    void DcopMediaBrowserHandler::queueList( KURL::List urls )
+    void DcopMediaBrowserHandler::queueList( KUrl::List urls )
     {
         MediaBrowser::queue()->addURLs( urls );
     }

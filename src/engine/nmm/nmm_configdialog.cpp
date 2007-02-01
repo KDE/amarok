@@ -47,7 +47,7 @@ NmmConfigDialog::NmmConfigDialog()
     m_user_list(NULL),
     m_host_list_modified(false)
 {
-  kdDebug() << k_funcinfo << endl;
+  kDebug() << k_funcinfo << endl;
 
 
   m_view = new NmmConfigDialogBase();
@@ -91,7 +91,7 @@ NmmConfigDialog::NmmConfigDialog()
 
 NmmConfigDialog::~NmmConfigDialog()
 {
-  kdDebug() << k_funcinfo << endl;
+  kDebug() << k_funcinfo << endl;
   delete m_view;
 }
 

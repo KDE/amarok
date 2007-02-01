@@ -88,7 +88,7 @@ class DcopPlayerHandler : public QObject, virtual public AmarokPlayerInterface
       virtual void play();
       virtual void playPause();
       virtual void prev();
-      virtual void queueForTransfer( KURL url );
+      virtual void queueForTransfer( KUrl url );
       virtual void seek( int s );
       virtual void seekRelative( int s );
       virtual void setEqualizer(int preamp, int band60, int band170, int band310, int band600, int band1k, int band3k, int band6k, int band12k, int band14k, int band16k);
@@ -126,12 +126,12 @@ class DcopPlaylistHandler : public QObject, virtual public AmarokPlaylistInterfa
       virtual int     getActiveIndex();
       virtual int     getTotalTrackCount();
       virtual QString saveCurrentPlaylist();
-      virtual void    addMedia(const KURL &);
-      virtual void    addMediaList(const KURL::List &);
+      virtual void    addMedia(const KUrl &);
+      virtual void    addMediaList(const KUrl::List &);
       virtual void    clearPlaylist();
       virtual QString currentTrackUniqueId();
       virtual void    playByIndex(int);
-      virtual void    playMedia(const KURL &);
+      virtual void    playMedia(const KUrl &);
       virtual void    popupMessage(const QString&);
       virtual void    removeCurrentTrack();
       virtual void    removeByIndex(int);
@@ -251,8 +251,8 @@ class DcopMediaBrowserHandler : public QObject, virtual public AmarokMediaBrowse
       virtual void deviceDisconnect();
       virtual QStringList deviceList();
       virtual void deviceSwitch( QString name );
-      virtual void queue( KURL url );
-      virtual void queueList( KURL::List urls );
+      virtual void queue( KUrl url );
+      virtual void queueList( KUrl::List urls );
       virtual void transfer();
       virtual void transcodingFinished( QString src, QString dest );
 };

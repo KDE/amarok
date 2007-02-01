@@ -116,7 +116,8 @@ HelixSoundDevice::HelixSoundDevice( QWidget *parent,
 {
    Q3GridLayout *grid = (Q3GridLayout*)parent->layout();
 
-   deviceComboBox = new KComboBox( false, parent, "deviceComboBox" );
+   deviceComboBox = new KComboBox( false, parent );
+   deviceComboBox->setObjectName( "deviceComboBox" );
    deviceComboBox->insertItem("oss");  // I believe these are not subject to translation (they don't seem to be in xine,
 #ifdef USE_HELIX_ALSA
    deviceComboBox->insertItem("alsa"); // and neither are the equivalents in gst (osssink and alsasink)

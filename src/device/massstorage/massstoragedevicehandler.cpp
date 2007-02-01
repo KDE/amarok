@@ -66,14 +66,14 @@ const QString &MassStorageDeviceHandler::getDevicePath() const
     return m_mountPoint;
 }
 
-void MassStorageDeviceHandler::getURL( KURL &absolutePath, const KURL &relativePath )
+void MassStorageDeviceHandler::getURL( KUrl &absolutePath, const KUrl &relativePath )
 {
     absolutePath.setPath( m_mountPoint );
     absolutePath.addPath( relativePath.path() );
     absolutePath.cleanPath();
 }
 
-void MassStorageDeviceHandler::getPlayableURL( KURL &absolutePath, const KURL &relativePath )
+void MassStorageDeviceHandler::getPlayableURL( KUrl &absolutePath, const KUrl &relativePath )
 {
     getURL( absolutePath, relativePath );
 }

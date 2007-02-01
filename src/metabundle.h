@@ -107,7 +107,7 @@ public:
     /** This is a bit vector for selecting columns. It's very fast to compare
         in matchFast. It might be a good idea to replace the QValue<int>
         column masks with this eventually. */
-    typedef Q_UINT32 ColumnMask;
+    typedef quint32 ColumnMask;
 
     /** Returns the name of the column at \p index as a string -- not i18ned, for internal purposes. */
     static const QString &exactColumnName( int index );
@@ -131,7 +131,7 @@ public:
     LIBAMAROK_EXPORT MetaBundle();
 
     /// Creates a MetaBundle for url, tags will be obtained and set
-    LIBAMAROK_EXPORT explicit MetaBundle( const KURL &url,
+    LIBAMAROK_EXPORT explicit MetaBundle( const KUrl &url,
                                           bool noCache = false,
                                           TagLib::AudioProperties::ReadStyle = TagLib::AudioProperties::Fast,
                                           EmbeddedImageList* images = 0 );
@@ -142,7 +142,7 @@ public:
             const int bitrate,
             const QString &genre,
             const QString &streamName,
-            const KURL &url );
+            const KUrl &url );
 
     LIBAMAROK_EXPORT MetaBundle( const MetaBundle &bundle );
 
@@ -186,7 +186,7 @@ public:
     bool isKioUrl() const;
 
     /** Returns whether url can be accessed via kio slaves */
-    static bool isKioUrl( const KURL &url );
+    static bool isKioUrl( const KUrl &url );
 
     /** Returns whether composer, disc number and bpm fields are available. */
     bool hasExtendedMetaInformation() const;
@@ -245,7 +245,7 @@ public:
     class XmlLoader;
 
 public: //accessors
-    const KURL &url()               const;
+    const KUrl &url()               const;
     QString      title()     const;
     AtomicString artist()    const;
     AtomicString albumArtist() const;
@@ -284,7 +284,7 @@ public: //accessors
 
     QString prettyTitle() const;
     QString veryNiceTitle() const;
-    QString prettyURL() const;
+    QString prettyUrl() const;
     QString prettyBitrate() const;
     QString prettyLength() const;
     QString prettySampleRate( bool shortened = false ) const;
@@ -296,7 +296,7 @@ public: //accessors
     QString getRandomString( int size, bool numbersOnly = false );
 
 public: //modifiers
-    void setUrl( const KURL &url );
+    void setUrl( const KUrl &url );
     void setPath( const QString &path );
     void setTitle( const QString &title );
     void setArtist( const AtomicString &artist );
@@ -363,7 +363,7 @@ protected:
     /** Convenience method. */
     void reactToChange( int column );
 
-    KURL m_url;
+    KUrl m_url;
     QString m_title;
     AtomicString m_artist;
     AtomicString m_albumArtist;
@@ -460,7 +460,7 @@ inline bool MetaBundle::exists() const { return m_exists; }
 
 inline bool MetaBundle::isFile() const { return url().isLocalFile(); }
 inline bool MetaBundle::isKioUrl() const { return isKioUrl( url() ); }
-inline bool MetaBundle::isKioUrl( const KURL &url ) { return url.protocol() != "daap" && url.protocol() != "cdda" && url.protocol() != "lastfm"; }
+inline bool MetaBundle::isKioUrl( const KUrl &url ) { return url.protocol() != "daap" && url.protocol() != "cdda" && url.protocol() != "lastfm"; }
 
 inline int MetaBundle::track()      const { return m_track == Undetermined ? 0 : m_track; }
 inline int MetaBundle::year()       const { return m_year  == Undetermined ? 0 : m_year; }
@@ -484,11 +484,11 @@ inline const Moodbar &MetaBundle::moodbar_const() const
   return *m_moodbar;
 }
 
-inline const KURL&     MetaBundle::url()        const { return m_url; }
+inline const KUrl&     MetaBundle::url()        const { return m_url; }
 inline QString  MetaBundle::filename()   const { return url().fileName(); }
 inline QString  MetaBundle::directory()  const
 {
-    return url().isLocalFile() ? url().directory() : url().upURL().prettyURL();
+    return url().isLocalFile() ? url().directory() : url().upUrl().prettyUrl();
 }
 inline QString MetaBundle::title()            const { return m_title; }
 inline AtomicString MetaBundle::artist()      const { return m_artist; }
@@ -523,7 +523,7 @@ inline QString MetaBundle::type() const
 inline PodcastEpisodeBundle *MetaBundle::podcastBundle() const { return m_podcastBundle; }
 inline LastFm::Bundle *MetaBundle::lastFmBundle() const { return m_lastFmBundle; }
 
-inline QString MetaBundle::prettyURL() const { return url().prettyURL(); }
+inline QString MetaBundle::prettyUrl() const { return url().prettyUrl(); }
 inline QString MetaBundle::prettyBitrate() const { return prettyBitrate( m_bitrate ); }
 inline QString MetaBundle::prettyLength() const { return prettyLength( m_length, true ); }
 inline QString MetaBundle::prettyFilesize() const { return prettyFilesize( filesize() ); }

@@ -24,7 +24,7 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 #include <kio/netaccess.h>
-#include <kmdcodec.h>
+#include <kcodecs.h>
 #include <kurl.h>
 #include <qfile.h> //decodePath()
 #include <q3cstring.h>
@@ -63,7 +63,7 @@ MetaBundleSaver::prepareToSave()
 
     m_cleanupNeeded = true;
     KMD5 md5sum( 0, 0 );
-    const KURL origPath = m_bundle->url();
+    const KUrl origPath = m_bundle->url();
     char hostbuf[32];
     int hostname = gethostname( hostbuf, 32 );
     hostbuf[31] = '\0';

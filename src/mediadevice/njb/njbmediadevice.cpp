@@ -46,9 +46,9 @@ AMAROK_EXPORT_PLUGIN( NjbMediaDevice )
 #include <kinstance.h>
 #include <klocale.h>
 #include <kmessagebox.h>
-#include <kpopupmenu.h>
+#include <kmenu.h>
 #include <ktempdir.h>
-#include <ktoolbarbutton.h>
+
 #include <kurl.h>
 #include <kurlrequester.h>     //downloadSelectedItems()
 #include <kurlrequesterdlg.h>  //downloadSelectedItems()
@@ -338,12 +338,12 @@ NjbMediaDevice::downloadSelectedItems()
     /* Copied from ifpmediadevice */
     QString save = QString::null;
 
-    KURLRequesterDlg dialog( save, 0, 0 );
-    dialog.setCaption( kapp->makeStdCaption( i18n( "Choose a Download Directory" ) ) );
+    KUrlRequesterDlg dialog( save, 0, 0 );
+    dialog.setCaption( KInstance::makeStandardCaption( i18n( "Choose a Download Directory" ) ) );
     dialog.urlRequester()->setMode( KFile::Directory | KFile::ExistingOnly );
     dialog.exec();
 
-    KURL destDir = dialog.selectedURL();
+    KUrl destDir = dialog.selectedURL();
     if( destDir.isEmpty() )
 	    return -1;
 
@@ -360,7 +360,7 @@ NjbMediaDevice::downloadSelectedItems()
         path = destDir.path();
         if( it->type() == MediaItem::TRACK )
         {
-            dynamic_cast<MediaBrowser *>( parent() )->queue()->addURL(path, dynamic_cast<MediaItem *>(it) );
+            dynamic_cast<MediaBrowser *>( parent() )->queue()->addUrl(path, dynamic_cast<MediaItem *>(it) );
 
         }
     }
@@ -384,7 +384,7 @@ NjbMediaDevice::downloadToCollection()
     KTempDir tempdir( QString::null ); // Default prefix is fine with us
     tempdir.setAutoDelete( true ); // We don't need it once the work is done.
     QString path = tempdir.name(), filepath;
-    KURL::List urls;
+    KUrl::List urls;
     for( MediaItem *it = items.first(); it && !(m_canceled); it = items.next() )
     {
         if( (it->type() == MediaItem::TRACK) )
@@ -632,7 +632,7 @@ NjbMediaDevice::rmbPressed(Q3ListViewItem* qitem, const QPoint& point, int )
     NjbMediaItem *item = static_cast<NjbMediaItem *>(qitem);
     if ( item )
     {
-        KPopupMenu menu( m_view);
+        KMenu menu( m_view);
         menu.insertItem( SmallIconSet( Amarok::icon( "collection" ) ), i18n("Download file"), DOWNLOAD );
         menu.insertItem( SmallIconSet( Amarok::icon( "collection" ) ), i18n("Download to collection"), DOWNLOAD_TO_COLLECTION );
         menu.insertSeparator();

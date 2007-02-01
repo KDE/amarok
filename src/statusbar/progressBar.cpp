@@ -39,7 +39,7 @@ ProgressBar::ProgressBar( QWidget *parent, QLabel *label )
     DEBUG_FUNC_INFO
 
     m_label->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-    m_abort = new KPushButton( KStdGuiItem::cancel(), parent );
+    m_abort = new KPushButton( KStandardGuiItem::cancel(), parent );
     m_abort->hide();
     m_abort->setText( i18n("Abort") );
     m_label->show();

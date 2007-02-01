@@ -21,7 +21,7 @@
 #include <QEvent>
 #include <QPaintEvent>
 
-#include <klistview.h>       //baseclass
+#include <k3listview.h>       //baseclass
 #include <qstringlist.h>     //stack allocated
 #include <kurl.h>            //stack allocated
 #include <kdialogbase.h>     //baseclass
@@ -42,7 +42,7 @@ class QStringList;
 
 class KAction;
 class KComboBox;
-class KPopupMenu;
+class KMenu;
 class KRadioAction;
 class KTabBar;
 class KToolBar;
@@ -108,10 +108,10 @@ class CollectionBrowser: public Q3VBox
         KRadioAction      *m_ipodViewAction;
         class KActionMenu *m_tagfilterMenuButton;
 
-        KPopupMenu* m_categoryMenu;
-        KPopupMenu* m_cat1Menu;
-        KPopupMenu* m_cat2Menu;
-        KPopupMenu* m_cat3Menu;
+        KMenu* m_categoryMenu;
+        KMenu* m_cat1Menu;
+        KMenu* m_cat2Menu;
+        KMenu* m_cat3Menu;
         KLineEdit*  m_searchEdit;
         KComboBox* m_timeFilter;
         CollectionView* m_view;
@@ -126,7 +126,7 @@ class CollectionBrowser: public Q3VBox
     friend class DividerItem;
 };
 
-class DividerItem : public KListViewItem
+class DividerItem : public K3ListViewItem
 {
 public:
     static QString createGroup(const QString& src, int cat);
@@ -153,20 +153,20 @@ private:
 
 
 
-class CollectionItem : public KListViewItem {
+class CollectionItem : public K3ListViewItem {
     public:
         CollectionItem( Q3ListView* parent, int cat = 0, bool unknown = false, bool sampler=false )
-            : KListViewItem( parent )
+            : K3ListViewItem( parent )
             , m_cat( cat )
             , m_isUnknown( unknown )
             , m_isSampler( sampler ) {};
         CollectionItem( Q3ListViewItem* parent, int cat = 0, bool unknown = false, bool sampler=false )
-            : KListViewItem( parent )
+            : K3ListViewItem( parent )
             , m_cat( cat )
             , m_isUnknown( unknown )
             , m_isSampler( sampler ) {};
         void setUrl( const QString& url ) { m_url.setPath( url ); }
-        const KURL& url() const { return m_url; }
+        const KUrl& url() const { return m_url; }
 
         virtual void sortChildItems ( int column, bool ascending ); //reimplemented
 
@@ -184,7 +184,7 @@ class CollectionItem : public KListViewItem {
         static QPixmap *smallStar();
 
         /// convenience functions
-        CollectionView *listView() const { return reinterpret_cast<CollectionView*>( KListViewItem::listView() ); }
+        CollectionView *listView() const { return reinterpret_cast<CollectionView*>( K3ListViewItem::listView() ); }
 
     private:
         friend class CollectionView;
@@ -194,7 +194,7 @@ class CollectionItem : public KListViewItem {
         virtual int compare( Q3ListViewItem*, int, bool ) const; //reimplemented
 
     //attributes:
-        KURL m_url;
+        KUrl m_url;
         int m_cat;
         bool m_isUnknown;
         bool m_isSampler;
@@ -204,7 +204,7 @@ class CollectionItem : public KListViewItem {
 };
 
 
-class CollectionView : public KListView, public DropProxyTarget
+class CollectionView : public K3ListView, public DropProxyTarget
 {
     Q_OBJECT
     friend class CollectionBrowser;
@@ -224,7 +224,7 @@ class CollectionView : public KListView, public DropProxyTarget
         void setTimeFilter( const uint timeFilter ) { m_timeFilter = timeFilter; }
         QString filter()                            { return m_filter; }
         uint    timeFilter()                        { return m_timeFilter; }
-        CollectionItem* currentItem() { return static_cast<CollectionItem*>( KListView::currentItem() ); }
+        CollectionItem* currentItem() { return static_cast<CollectionItem*>( K3ListView::currentItem() ); }
 
         int trackDepth() { return m_trackDepth; }
         int viewMode() const { return m_viewMode; }
@@ -258,7 +258,7 @@ class CollectionView : public KListView, public DropProxyTarget
         void cat1Menu( int id, bool rerender = true );
         void cat2Menu( int id, bool rerender = true );
         void cat3Menu( int id, bool rerender = true );
-        void organizeFiles( const KURL::List &list, const QString &caption, bool addToCollection=false ) LIBAMAROK_EXPORT;
+        void organizeFiles( const KUrl::List &list, const QString &caption, bool addToCollection=false ) LIBAMAROK_EXPORT;
 
     private slots:
         void setupDirs();
@@ -306,9 +306,9 @@ class CollectionView : public KListView, public DropProxyTarget
         void startDrag();
         QString getTrueItemText( int, Q3ListViewItem* ) const;
         QStringList listSelectedSiblingsOf( int, Q3ListViewItem* );
-        KURL::List listSelected();
+        KUrl::List listSelected();
 
-        void playlistFromURLs( const KURL::List &urls );
+        void playlistFromURLs( const KUrl::List &urls );
         QPixmap iconForCategory( const int cat ) const;
         QString captionForCategory( const int cat ) const;
         inline QString captionForTag( const Tag ) const;
@@ -321,7 +321,7 @@ class CollectionView : public KListView, public DropProxyTarget
         QPixmap ipodIncrementIcon ( void );
         QPixmap ipodDecrementIcon ( void );
 
-        void setCompilation( const KURL::List &urls, bool compilation );
+        void setCompilation( const KUrl::List &urls, bool compilation );
 
         /** Rebuild selections, viewport and expanded items after reloads */
         void cacheView();
@@ -340,7 +340,7 @@ class CollectionView : public KListView, public DropProxyTarget
 
         /**Call when a category has changed **/
         void updateColumnHeader();
-        // Reimplemented from KListView
+        // Reimplemented from K3ListView
         void viewportPaintEvent( QPaintEvent* );
         void viewportResizeEvent( QResizeEvent* );
         bool eventFilter( QObject*, QEvent* );
@@ -380,7 +380,7 @@ class CollectionView : public KListView, public DropProxyTarget
         Q3ValueList<QStringList> m_cacheOpenItemPaths;
         QStringList             m_cacheViewportTopItem;
         QStringList             m_cacheCurrentItem;
-        KURL::List              m_organizeURLs;
+        KUrl::List              m_organizeURLs;
         bool                    m_organizeCopyMode;
 
         bool                    m_organizingFileCancelled;

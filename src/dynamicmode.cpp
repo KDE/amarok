@@ -34,6 +34,7 @@
 #include <q3valuevector.h>
 //Added by qt3to4:
 #include <Q3PtrList>
+#include <krandom.h>
 
 /////////////////////////////////////////////////////////////////////////////
 ///    CLASS DynamicMode
@@ -136,7 +137,7 @@ DEBUG_BLOCK
                 if( suggestions.isEmpty() )
                     break;
 
-                QString chosen = suggestions[ KApplication::random() % suggestions.count() ];
+                QString chosen = suggestions[ KRandom::random() % suggestions.count() ];
 
                 debug() << "found similar artist: " << chosen << endl;
 
@@ -146,7 +147,7 @@ DEBUG_BLOCK
                     if( newSuggestions.isEmpty() )
                         break;
 
-                    QString s = newSuggestions[ KApplication::random() % newSuggestions.count() ];
+                    QString s = newSuggestions[ KRandom::random() % newSuggestions.count() ];
 
                     debug() << "found extended similar artist: " << s << endl;
                     newChosen += s;
@@ -166,7 +167,7 @@ DEBUG_BLOCK
 
         foreach( urls ) //we have to run setPath on all raw paths
         {
-            KURL current;
+            KUrl current;
             current.setPath( *it );
             m_cachedItemSet += current;
         }
@@ -217,13 +218,13 @@ DEBUG_BLOCK
 
             if( entry->rtti() == PlaylistEntry::RTTI )
             {
-                KURL::List t = tracksFromStaticPlaylist( static_cast<PlaylistEntry*>(entry), itemsForThisSource);
+                KUrl::List t = tracksFromStaticPlaylist( static_cast<PlaylistEntry*>(entry), itemsForThisSource);
                 m_cachedItemSet += t;
             }
 
             else if( entry->rtti() == SmartPlaylist::RTTI )
             {
-                KURL::List t = tracksFromSmartPlaylist( static_cast<SmartPlaylist*>(entry), itemsForThisSource);
+                KUrl::List t = tracksFromSmartPlaylist( static_cast<SmartPlaylist*>(entry), itemsForThisSource);
                 m_cachedItemSet += t;
             }
             i++;
@@ -231,19 +232,19 @@ DEBUG_BLOCK
     }
 }
 
-KURL::List DynamicMode::tracksFromStaticPlaylist( PlaylistEntry *item, uint songCount )
+KUrl::List DynamicMode::tracksFromStaticPlaylist( PlaylistEntry *item, uint songCount )
 {
 DEBUG_BLOCK
 
-    KURL::List trackList = item->tracksURL();
-    KURL::List returnList;
+    KUrl::List trackList = item->tracksURL();
+    KUrl::List returnList;
 
     for( uint i=0; i < songCount; )
     {
         if( trackList.isEmpty() )
             break;
 
-        KURL::List::Iterator urlIt = trackList.at( KApplication::random() % trackList.count() );
+        KUrl::List::Iterator urlIt = trackList.at( KRandom::random() % trackList.count() );
         if( (*urlIt).isValid() )
         {
             returnList << (*urlIt).path();
@@ -257,11 +258,11 @@ DEBUG_BLOCK
     return returnList;
 }
 
-KURL::List DynamicMode::tracksFromSmartPlaylist( SmartPlaylist *item, uint songCount )
+KUrl::List DynamicMode::tracksFromSmartPlaylist( SmartPlaylist *item, uint songCount )
 {
 DEBUG_BLOCK
     if( !item || !songCount )
-        return KURL::List();
+        return KUrl::List();
 
     bool useDirect = true;
     const bool hasTimeOrder = item->isTimeOrdered();
@@ -321,7 +322,7 @@ DEBUG_BLOCK
                 songCount = limit;
             else
                 // Let's get a random limit, repecting the original one.
-                offset += KApplication::random() % (limit - songCount);
+                offset += KRandom::random() % (limit - songCount);
 
             if( findLocation == -1 ) // there is no limit
             {
@@ -348,14 +349,14 @@ DEBUG_BLOCK
         items = queryResult;
 
 
-    KURL::List urls;
+    KUrl::List urls;
     foreach( items ) //we have to run setPath on all raw paths
     {
-        KURL tmp;
+        KUrl tmp;
         tmp.setPath( *it );
         urls << tmp;
     }
-    KURL::List addMe;
+    KUrl::List addMe;
 
     // we have to randomly select tracks from the returned query since we can't have
     // ORDER BY RAND() for some statements
@@ -363,7 +364,7 @@ DEBUG_BLOCK
     {
         for( uint i=0; i < songCount && urls.count(); i++ )
         {
-            KURL::List::iterator newItem = urls.at( KApplication::random() % urls.count() );
+            KUrl::List::iterator newItem = urls.at( KRandom::random() % urls.count() );
             addMe << (*newItem);
             urls.remove( newItem );
         }
@@ -377,10 +378,10 @@ DEBUG_BLOCK
 }
 
 
-KURL::List DynamicMode::retrieveTracks( const uint trackCount )
+KUrl::List DynamicMode::retrieveTracks( const uint trackCount )
 {
 DEBUG_BLOCK
-    KURL::List retrieval;
+    KUrl::List retrieval;
 
     if( m_cachedItemSet.count() <= trackCount )
         rebuildCachedItemSet();
@@ -389,8 +390,8 @@ DEBUG_BLOCK
     {
         if( m_cachedItemSet.isEmpty() )
             break;
-        const int pos = KApplication::random() % m_cachedItemSet.count();
-        KURL::List::iterator newItem = m_cachedItemSet.at( pos );
+        const int pos = KRandom::random() % m_cachedItemSet.count();
+        KUrl::List::iterator newItem = m_cachedItemSet.at( pos );
         retrieval << (*newItem);
         m_cachedItemSet.remove( newItem );
     }

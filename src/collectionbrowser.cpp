@@ -72,9 +72,9 @@
 #include <kiconloader.h>    //renderView()
 #include <klocale.h>
 #include <kmessagebox.h>
-#include <kpopupmenu.h>
+#include <kmenu.h>
 #include <kstandarddirs.h>   //KGlobal::dirs()
-#include <ktoolbarbutton.h> //ctor
+ //ctor
 #include <kurldrag.h>       //dragObject()
 #include <kio/job.h>
 #include <kpushbutton.h>
@@ -96,9 +96,9 @@ CollectionBrowser *CollectionBrowser::s_instance = 0;
 
 CollectionBrowser::CollectionBrowser( const char* name )
     : Q3VBox( 0, name )
-    , m_cat1Menu( new KPopupMenu( this ) )
-    , m_cat2Menu( new KPopupMenu( this ) )
-    , m_cat3Menu( new KPopupMenu( this ) )
+    , m_cat1Menu( new KMenu( this ) )
+    , m_cat2Menu( new KMenu( this ) )
+    , m_cat3Menu( new KMenu( this ) )
     , m_timer( new QTimer( this ) )
     , m_returnPressed( false )
 {
@@ -115,7 +115,8 @@ CollectionBrowser::CollectionBrowser( const char* name )
         button       = new KToolBarButton( "locationbar_erase", 0, searchToolBar );
         m_searchEdit = new ClickLineEdit( i18n( "Enter search terms here" ), searchToolBar );
         m_searchEdit->installEventFilter( this );
-        KPushButton *filterButton = new KPushButton("...", searchToolBar, "filter");
+        KPushButton *filterButton = new KPushButton( "...", searchToolBar );
+        filterButton->setObjectName( "filter" );
         searchToolBar->setStretchableWidget( m_searchEdit );
 
         m_searchEdit->setFrame( Q3Frame::Sunken );
@@ -328,7 +329,7 @@ void
 CollectionBrowser::appendSearchResults()
 {
     //If we are not filtering, or the search string has changed recently, do nothing
-    if ( m_searchEdit->text().stripWhiteSpace().isEmpty() || m_timer->isActive() )
+    if ( m_searchEdit->text().trimmed().isEmpty() || m_timer->isActive() )
         return;
     m_view->selectAll();
     Playlist::instance()->insertMedia( m_view->listSelected(), Playlist::Unique | Playlist::Append );
@@ -452,7 +453,7 @@ CollectionView* CollectionView::m_instance = 0;
 
 
 CollectionView::CollectionView( CollectionBrowser* parent )
-        : KListView( parent )
+        : K3ListView( parent )
         , m_parent( parent )
         , m_timeFilter( 0 )
         , m_currentDepth( 0 )
@@ -505,7 +506,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 
     //</READ CONFIG>
      KActionCollection* ac = new KActionCollection( this );
-     KStdAction::selectAll( this, SLOT( selectAll() ), ac, "collectionview_select_all" );
+     KStandardAction::selectAll( this, SLOT( selectAll() ), ac, "collectionview_select_all" );
 
     connect( CollectionDB::instance(), SIGNAL( scanStarted() ),
              this,                      SLOT( scanStarted() ) );
@@ -602,7 +603,7 @@ CollectionView::keyPressEvent( QKeyEvent *e )
         // First skip any dividers directly above / below
         do
         {
-            KListView::keyPressEvent( e );
+            K3ListView::keyPressEvent( e );
             if( currentItem() == cur ) // Prevent infinite loops
             {
                 if( nextItem != 0 )
@@ -636,7 +637,7 @@ CollectionView::keyPressEvent( QKeyEvent *e )
                     && dynamic_cast<DividerItem*>(cur) != 0
                     && nextItem != 0 )
             {
-                KListView::keyPressEvent( e );
+                K3ListView::keyPressEvent( e );
                 if( currentItem() == cur ) // Prevent infinite loops
                     break;
                 cur = currentItem();
@@ -661,7 +662,7 @@ CollectionView::keyPressEvent( QKeyEvent *e )
     }
 
     else // we don't want the event
-        KListView::keyPressEvent( e );
+        K3ListView::keyPressEvent( e );
 }
 
 
@@ -730,7 +731,7 @@ CollectionView::setupDirs()  //SLOT
 {
     KDialogBase dialog( this, 0, false );
     kapp->setTopWidget( &dialog );
-    dialog.setCaption( kapp->makeStdCaption( i18n("Configure Collection") ) );
+    dialog.setCaption( KInstance::makeStandardCaption( i18n("Configure Collection") ) );
 
     CollectionSetup *setup = new CollectionSetup( &dialog );
     dialog.setMainWidget( setup );
@@ -1136,7 +1137,7 @@ CollectionView::slotExpand( Q3ListViewItem* item )  //SLOT
         //show "artist - title" for compilations
         if ( c )
         {
-            if ( values[ i + 2 ].stripWhiteSpace().isEmpty() )
+            if ( values[ i + 2 ].trimmed().isEmpty() )
             {
                 text += i18n( "Unknown" ) + i18n( " - " );
                 unknown = true;
@@ -1145,7 +1146,7 @@ CollectionView::slotExpand( Q3ListViewItem* item )  //SLOT
                 text = values[ i + 2 ] + i18n( " - " );
         }
 
-        if ( values[ i ].stripWhiteSpace().isEmpty() )
+        if ( values[ i ].trimmed().isEmpty() )
         {
             if ( category == IdLabel )
                 text += i18n( "No Label" );
@@ -1396,7 +1397,7 @@ CollectionView::rmbPressed( Q3ListViewItem* item, const QPoint& point, int ) //S
     int artistLevel = -1;
 
     if ( item ) {
-        KPopupMenu menu( this );
+        KMenu menu( this );
 
         int cat = 0;
         if ( m_viewMode == modeTreeView ) {
@@ -1432,7 +1433,7 @@ CollectionView::rmbPressed( Q3ListViewItem* item, const QPoint& point, int ) //S
                        FILE_MENU };
 
         QString trueItemText = getTrueItemText( cat, item );
-        KURL::List selection = listSelected();
+        KUrl::List selection = listSelected();
         QStringList siblingSelection = listSelectedSiblingsOf( cat, item );
 
         menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), MAKE );
@@ -1474,7 +1475,7 @@ CollectionView::rmbPressed( Q3ListViewItem* item, const QPoint& point, int ) //S
 
         menu.insertSeparator();
 
-        KPopupMenu fileMenu;
+        KMenu fileMenu;
         fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18n( "&Organize File..." , "&Organize %n Files..." , selection.count() ) , ORGANIZE );
         fileMenu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n( "&Delete File..." , "&Delete %n Files..." , selection.count() ) , DELETE );
         menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "Manage &Files" ), &fileMenu, FILE_MENU );
@@ -1559,7 +1560,7 @@ CollectionView::rmbPressed( Q3ListViewItem* item, const QPoint& point, int ) //S
                 if ( DeleteDialog::showTrashDialog(this, selection) )
                   {
                     CollectionDB::instance()->removeSongs( selection );
-                    foreachType( KURL::List, selection )
+                    foreachType( KUrl::List, selection )
                       CollectionDB::instance()->emitFileDeleted( (*it).path() );
                   }
                 m_dirty = true;
@@ -1719,7 +1720,7 @@ void
 CollectionView::showTrackInfo() //SLOT
 {
     DEBUG_BLOCK
-     KURL::List urls = listSelected();
+     KUrl::List urls = listSelected();
      int selectedTracksNumber = urls.count();
 
      //If we have only one, call the full dialog. Otherwise, the multiple tracks one.
@@ -1751,7 +1752,7 @@ void CollectionView::cancelOrganizingFiles()
 }
 
 void
-CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, bool copy )  //SLOT
+CollectionView::organizeFiles( const KUrl::List &urls, const QString &caption, bool copy )  //SLOT
 {
     if( m_organizingFileCancelled )
     {
@@ -1786,7 +1787,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
 
     OrganizeCollectionDialogBase base( m_parent, "OrganizeFiles", true, caption,
             KDialogBase::Ok|KDialogBase::Cancel|KDialogBase::Details );
-    Q3VBox* page = base.makeVBoxMainWidget();
+    KVBox* page = base.makeVBoxMainWidget();
 
     OrganizeCollectionDialog dialog( page );
     dialog.folderCombo->insertStringList( folders, 0 );
@@ -1814,7 +1815,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
         dialog.slotDetails();
     }
 
-    KURL::List previewURLs = Amarok::recursiveUrlExpand( urls.first(), 1 );
+    KUrl::List previewURLs = Amarok::recursiveUrlExpand( urls.first(), 1 );
     if( previewURLs.count() )
     {
         dialog.setPreviewBundle( MetaBundle( previewURLs.first() ) );
@@ -1838,7 +1839,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
         AmarokConfig::setCustomScheme( dialog.formatEdit->text() );
         AmarokConfig::setReplacementRegexp( dialog.regexpEdit->text() );
         AmarokConfig::setReplacementString( dialog.replaceEdit->text() );
-        KURL::List skipped;
+        KUrl::List skipped;
 
         m_organizeURLs = Amarok::recursiveUrlExpand( urls );
         m_organizeCopyMode = copy;
@@ -1850,7 +1851,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
 
         while( !m_organizeURLs.empty() && !m_organizingFileCancelled )
         {
-            KURL &src = m_organizeURLs.first();
+            KUrl &src = m_organizeURLs.first();
 
             if( !CollectionDB::instance()->organizeFile( src, dialog, copy ) )
             {
@@ -1875,7 +1876,7 @@ CollectionView::organizeFiles( const KURL::List &urls, const QString &caption, b
             QString longMsg = i18n( "The following file could not be organized: ",
                     "The following %n files could not be organized: ", skipped.count() );
             bool first = true;
-            for( KURL::List::iterator it = skipped.begin();
+            for( KUrl::List::iterator it = skipped.begin();
                     it != skipped.end();
                     it++ )
             {
@@ -1922,13 +1923,13 @@ CollectionView::contentsDragMoveEvent( QDragMoveEvent *e )
 void
 CollectionView::contentsDropEvent( QDropEvent *e )
 {
-    KURL::List list;
+    KUrl::List list;
     if( KURLDrag::decode( e, list ) )
     {
-        KURL::List expandedList;
+        KUrl::List expandedList;
         int dropped = 0;
         int invalid = 0;
-        for( KURL::List::iterator it = list.begin();
+        for( KUrl::List::iterator it = list.begin();
                 it != list.end();
                 ++it )
         {
@@ -1938,8 +1939,8 @@ CollectionView::contentsDropEvent( QDropEvent *e )
                 expandedList += *it;
         }
 
-        KURL::List cleanList;
-        for( KURL::List::iterator it = expandedList.begin();
+        KUrl::List cleanList;
+        for( KUrl::List::iterator it = expandedList.begin();
                 it != expandedList.end();
                 ++it )
         {
@@ -2164,7 +2165,7 @@ CollectionView::updateColumnHeader()
 void
 CollectionView::startDrag()
 {
-    KURL::List urls = listSelected();
+    KUrl::List urls = listSelected();
     KURLDrag* d = new KURLDrag( urls, this );
     d->setPixmap( CollectionDB::createDragPixmap(urls),
                   QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X,
@@ -2226,13 +2227,13 @@ CollectionView::listSelectedSiblingsOf( int cat, Q3ListViewItem* item )
     return list;
 }
 
-KURL::List
+KUrl::List
 CollectionView::listSelected()
 {
     //Here we determine the URLs of all selected items. We use two passes, one for the parent items,
     //and another one for the children.
 
-    KURL::List list;
+    KUrl::List list;
     Q3ListViewItem* item;
     QStringList values;
     QueryBuilder qb;
@@ -2377,7 +2378,7 @@ CollectionView::listSelected()
 
 
         QStringList::Iterator it = values.begin();
-        KURL tmp;
+        KUrl tmp;
         while ( it != values.end() )
         {
             tmp.setPath( (*(it++)) );
@@ -2449,7 +2450,7 @@ CollectionView::listSelected()
 
             for ( uint i = 0; i < values.count(); i++ )
             {
-                KURL tmp;
+                KUrl tmp;
                 tmp.setPath( values[i] );
                 list << tmp;
             }
@@ -2542,7 +2543,7 @@ CollectionView::listSelected()
 
                     for ( uint i = 0; i < values.count(); i++ )
                     {
-                        KURL tmp;
+                        KUrl tmp;
                         tmp.setPath( values[i] );
                         list << tmp;
                     }
@@ -2659,7 +2660,7 @@ CollectionView::listSelected()
 
                         for ( uint i = 0; i < values.count(); i++ )
                         {
-                            KURL tmp;
+                            KUrl tmp;
                             tmp.setPath( values[i] );
                             list << tmp;
                         }
@@ -2679,7 +2680,7 @@ CollectionView::listSelected()
 
 
 void
-CollectionView::playlistFromURLs( const KURL::List &urls )
+CollectionView::playlistFromURLs( const KUrl::List &urls )
 {
     QString suggestion;
     typedef Q3ListViewItemIterator It;
@@ -2697,10 +2698,10 @@ CollectionView::playlistFromURLs( const KURL::List &urls )
 
     Q3ValueList<QString> titles;
     Q3ValueList<int> lengths;
-    for( KURL::List::ConstIterator it = urls.constBegin(), end = urls.constEnd(); it != end; ++it )
+    for( KUrl::List::ConstIterator it = urls.constBegin(), end = urls.constEnd(); it != end; ++it )
     {
         int deviceid = MountPointManager::instance()->getIdForUrl( *it );
-        KURL rpath;
+        KUrl rpath;
         MountPointManager::instance()->getRelativePath( deviceid, *it, rpath );
         const QString query = QString("SELECT title, length FROM tags WHERE url = '%1' AND deviceid = %2;")
                               .arg( db->escapeString( rpath.path() ) ).arg( deviceid );
@@ -2746,7 +2747,7 @@ CollectionView::iconForCategory( const int cat ) const
             break;
     }
 
-    return KGlobal::iconLoader()->loadIcon( icon, KIcon::Toolbar, KIcon::SizeSmall );
+    return KIconLoader::global()->loadIcon( icon, K3Icon::Toolbar, K3Icon::SizeSmall );
 }
 
 QString
@@ -3261,7 +3262,7 @@ CollectionView::selectIpodItems ( void )
 
         else
         {
-            KListView::selectAll( false );
+            K3ListView::selectAll( false );
             int selected = 0;
             QStringList::iterator it = m_ipodSelected[m_currentDepth].begin();
             while( it != m_ipodSelected[m_currentDepth].end() )
@@ -3313,7 +3314,7 @@ CollectionView::selectIpodItems ( void )
     // navigation
     if( m_ipodIncremented == 1 )
     {
-        KListView::selectAll( false );
+        K3ListView::selectAll( false );
         Q3ListViewItem *item = firstChild();
 
         // There will be a divider in the first slot if there is only
@@ -3350,7 +3351,7 @@ CollectionView::ipodDecrementIcon ( void )
 }
 
 void
-CollectionView::setCompilation( const KURL::List &urls, bool compilation )
+CollectionView::setCompilation( const KUrl::List &urls, bool compilation )
 {
     //visual feedback
     QApplication::setOverrideCursor( KCursor::waitCursor() );
@@ -3358,7 +3359,7 @@ CollectionView::setCompilation( const KURL::List &urls, bool compilation )
     //Set it in the DB. We don't need to update the view now as we do it at the end.
     CollectionDB::instance()->setCompilation( urls, compilation, false );
 
-    foreachType( KURL::List, urls ) {
+    foreachType( KUrl::List, urls ) {
         if ( !TagLib::File::isWritable( QFile::encodeName( ( *it ).path() ) ) )
             continue;
 
@@ -3530,7 +3531,7 @@ CollectionView::yearAlbumCalc( QString &year, QString &text )
 void
 CollectionView::viewportPaintEvent( QPaintEvent *e )
 {
-    KListView::viewportPaintEvent( e );
+    K3ListView::viewportPaintEvent( e );
 
     // Superimpose bubble help for Flat-View mode:
 
@@ -3636,7 +3637,7 @@ CollectionView::eventFilter( QObject* o, QEvent* e )
         && static_cast<QMouseEvent*>( e )->button() == Qt::RightButton
         && m_viewMode == modeFlatView )
     {
-        KPopupMenu popup;
+        KMenu popup;
         popup.setCheckable( true );
         popup.insertTitle( i18n( "Flat View Columns" ), /*id*/ -1, /*index*/ 1 );
 
@@ -3676,7 +3677,7 @@ CollectionView::eventFilter( QObject* o, QEvent* e )
         return true;
     }
 
-    return KListView::eventFilter( o, e );
+    return K3ListView::eventFilter( o, e );
 }
 
 uint CollectionView::translateTimeFilter( uint filterMode )
@@ -3872,7 +3873,7 @@ CollectionView::renderFlatModeView( bool /*=false*/ )
                         item->setText( *it_c, (*it).isNull() ? "0" : (*it) );
                         break;
                     case Filename:
-                        item->setText( *it_c, KURL::fromPathOrURL( (*it).right( (*it).length() -1 ) ).filename() );
+                        item->setText( *it_c, KUrl::fromPathOrUrl( (*it).right( (*it).length() -1 ) ).filename() );
                         break;
                     case Filesize:
                         item->setText( *it_c, MetaBundle::prettyFilesize( (*it).toInt() ) );
@@ -3982,7 +3983,7 @@ CollectionView::renderTreeModeView( bool /*=false*/ )
                     ( *it ) += *album;
             }
 
-            if ( (*it).stripWhiteSpace().isEmpty() )
+            if ( (*it).trimmed().isEmpty() )
             {
                 if ( VisLabel == 1 )
                     (*it) = i18n( "No Label" );
@@ -4041,7 +4042,7 @@ CollectionView::renderTreeModeView( bool /*=false*/ )
 
         if ( values.count() )
         {
-            //                 KListViewItem* x = new DividerItem(this, i18n( "Various" ), m_cat1);
+            //                 K3ListViewItem* x = new DividerItem(this, i18n( "Various" ), m_cat1);
             //                 x->setExpandable(false);
             //                 x->setDropEnabled( false );
             //                 x->setSelectable(false);
@@ -4423,7 +4424,7 @@ CollectionItem::paintCell ( QPainter * painter, const QColorGroup & cg,
     }
     else
     {
-        KListViewItem::paintCell( painter, cg, column, width, align );
+        K3ListViewItem::paintCell( painter, cg, column, width, align );
     }
 }
 
@@ -4548,7 +4549,7 @@ CollectionItem::sortChildItems ( int column, bool ascending ) {
 // DividerItem
 
 DividerItem::DividerItem( Q3ListView* parent, QString txt, int cat/*, bool sortYearsInverted*/)
-: KListViewItem( parent), m_blockText(false), m_text(txt), m_cat(cat)/*, m_sortYearsInverted(sortYearsInverted)*/
+: K3ListViewItem( parent), m_blockText(false), m_text(txt), m_cat(cat)/*, m_sortYearsInverted(sortYearsInverted)*/
 {
     setExpandable(false);
     setDropEnabled(false);
@@ -4561,9 +4562,9 @@ DividerItem::paintCell ( QPainter * p, const QColorGroup & cg,
 {
     p->save();
 
-    // be sure, that KListViewItem::paintCell() does not draw its text
+    // be sure, that K3ListViewItem::paintCell() does not draw its text
     setBlockText( true );
-    KListViewItem::paintCell(p, cg, column, width, align);
+    K3ListViewItem::paintCell(p, cg, column, width, align);
     setBlockText( false );
 
         //use bold font for the divider
@@ -4601,7 +4602,7 @@ DividerItem::text(int column) const
     if (column == 0) {
         return m_blockText ? "" : m_text;
     }
-    return KListViewItem::text(column);
+    return K3ListViewItem::text(column);
 }
 
 int
@@ -4648,7 +4649,7 @@ DividerItem::createGroup(const QString& src, int cat)
         break;
     }
     default:
-        ret = src.stripWhiteSpace();
+        ret = src.trimmed();
         // (Joe Rabinoff) deleted.  The bug this fixes is as follows.
         // If the category is Album and the album name is "Heroes" (by
         // David Bowie -- the quotes are part of the title), it gets
@@ -4680,7 +4681,7 @@ bool
 DividerItem::shareTheSameGroup(const QString& itemStr, const QString& divStr, int cat)
 {
     bool inGroup = false;
-    QString tmp = itemStr.stripWhiteSpace();
+    QString tmp = itemStr.trimmed();
 
     switch (cat) {
     case IdVisYearAlbum: {

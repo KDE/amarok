@@ -211,8 +211,8 @@ OSDWidget::determineMetrics( const uint M )
         const int availableWidth = max.width() - rect.width() - M; //WILL be >= (minImageSize.width() - M)
 
         m_scaledCover = m_cover.smoothScale(
-                QMIN( availableWidth, m_cover.width() ),
-                QMIN( rect.height(), m_cover.height() ),
+                qMin( availableWidth, m_cover.width() ),
+                qMin( rect.height(), m_cover.height() ),
                 QImage::ScaleMin ); //this will force us to be with our bounds
 
         int shadowWidth = 0;
@@ -532,7 +532,7 @@ OSDWidget::useMoodbar( void )
 
 namespace Amarok
 {
-    QImage icon() { return QImage( KIconLoader().iconPath( "amarok", -KIcon::SizeHuge ) ); }
+    QImage icon() { return QImage( KIconLoader().iconPath( "amarok", -K3Icon::SizeHuge ) ); }
 }
 
 OSDPreviewWidget::OSDPreviewWidget( QWidget *parent )
@@ -749,11 +749,11 @@ Amarok::OSD::show( const MetaBundle &bundle ) //slot
                 setImage( location );
         }
 
-        text = text.stripWhiteSpace();
+        text = text.trimmed();
     }
 
     if( text.isEmpty() )
-        text = MetaBundle::prettyTitle( bundle.url().fileName() ).stripWhiteSpace();
+        text = MetaBundle::prettyTitle( bundle.url().fileName() ).trimmed();
 
     if( text.startsWith( "- " ) ) //When we only have a title tag, _something_ prepends a fucking hyphen. Remove that.
         text = text.mid( 2 );
@@ -906,7 +906,7 @@ namespace ShadowEngine
             {
                 alphaShadow = (int) decay( img, i, j );
 
-                result.setPixel( i,j, qRgba( bgr, bgg , bgb, QMIN( MAX_OPACITY, alphaShadow ) ) );
+                result.setPixel( i,j, qRgba( bgr, bgg , bgb, qMin( MAX_OPACITY, alphaShadow ) ) );
             }
         }
 

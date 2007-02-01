@@ -183,7 +183,7 @@ Amarok::PluginConfig* NmmEngine::configure() const
     return dialog;
 }
 
-bool NmmEngine::load(const KURL& url, bool stream)
+bool NmmEngine::load(const KUrl& url, bool stream)
 {
   DEBUG_BLOCK
 
@@ -607,7 +607,7 @@ uint NmmEngine::length() const
   return __track_length;
 }
 
-bool NmmEngine::canDecode(const KURL& url) const
+bool NmmEngine::canDecode(const KUrl& url) const
 {
     static QStringList types;
 
@@ -707,7 +707,7 @@ Result NmmEngine::trackDuration(Interval& duration)
 {
   // we got the duration of the track, so let's convert it to milliseconds
   __track_length = duration.sec * 1000 + duration.nsec / 1000;
-  kdDebug() << "NmmEngine::trackDuration " << __track_length << endl;
+  kDebug() << "NmmEngine::trackDuration " << __track_length << endl;
   return SUCCESS;
 }
 

@@ -38,7 +38,7 @@ class ServerregistryPing
     Q_OBJECT
 
     public:
-        ServerregistryPing(const QString & host, Q_UINT16 port = 22801);
+        ServerregistryPing(const QString & host, quint16 port = 22801);
 
     private slots:
         void socketConnected();

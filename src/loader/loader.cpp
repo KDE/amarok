@@ -97,7 +97,7 @@ main( int argc, char *argv[] )
 
         // relative URLs should be interpreted correctly by amarokapp
         // so we need to pass the current working directory
-        dcop_args << "--cwd" << QDir::currentDirPath();
+        dcop_args << "--cwd" << QDir::currentPath();
 
         dcop_args += args;
         dcop_args += "]";

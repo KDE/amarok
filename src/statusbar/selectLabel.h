@@ -149,8 +149,8 @@ class SelectLabel : public QLabel
             m_tooltip->setShowCounter( false );
             m_tooltip->setMaskEffect( KDE::PopupMessage::Plain );
             m_tooltip->setText( tip );
-            const QPixmap pix = KGlobal::iconLoader()
-                                ->loadIconSet( m_action->currentIcon(), KIcon::Toolbar, KIcon::SizeHuge )
+            const QPixmap pix = KIconLoader::global()
+                                ->loadIconSet( m_action->currentIcon(), K3Icon::Toolbar, K3Icon::SizeHuge )
                                 .pixmap( QIcon::Large, m_action->isEnabled()
                                                           ? QIcon::Normal
                                                           : QIcon::Disabled );

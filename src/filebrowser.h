@@ -36,7 +36,7 @@ class QTimer;
 class KActionCollection;
 class KFileItem;
 class KFileView;
-class KURLComboBox;
+class KUrlComboBox;
 class Medium;
 
 //Hi! I think we ripped this from Kate, since then it's been modified somewhat
@@ -60,13 +60,13 @@ public:
     FileBrowser( const char *name = 0, Medium *medium = 0 );
    ~FileBrowser();
 
-    KURL url() const { return m_dir->url(); }
+    KUrl url() const { return m_dir->url(); }
 
 public slots:
-    void setUrl( const KURL &url );
+    void setUrl( const KUrl &url );
     void setUrl( const QString &url );
     void setFilter( const QString& );
-    void dropped( const KFileItem*, QDropEvent*, const KURL::List& );
+    void dropped( const KFileItem*, QDropEvent*, const KUrl::List& );
 
 private slots:
     void activate( const KFileItem* );
@@ -75,13 +75,13 @@ private slots:
     void prepareContextMenu();
     void selectAll();
     void slotViewChanged( KFileView* );
-    void urlChanged( const KURL& );
+    void urlChanged( const KUrl& );
 
 private:
-    KURL::List selectedItems();
-    void playlistFromURLs( const KURL::List &urls );
+    KUrl::List selectedItems();
+    void playlistFromURLs( const KUrl::List &urls );
 
-    KURLComboBox  *m_combo;
+    KUrlComboBox  *m_combo;
     KDirOperator  *m_dir;
     ClickLineEdit *m_filter;
     Medium        *m_medium;
@@ -109,7 +109,7 @@ public:
 
 private slots:
     void toggle( bool );
-    void urlChanged( const KURL& );
+    void urlChanged( const KUrl& );
     void searchTextChanged( const QString &text );
     void searchMatches( const KFileItemList& );
     void searchComplete();
@@ -117,13 +117,13 @@ private slots:
     void activate( Q3ListViewItem* );
 
 private:
-    KURL searchURL() const { return static_cast<FileBrowser*>(parentWidget())->url(); }
+    KUrl searchURL() const { return static_cast<FileBrowser*>(parentWidget())->url(); }
 
     QLineEdit  *m_lineEdit;
     KURLView   *m_listView;
     KDirLister *m_lister;
     QRegExp     m_filter;
-    KURL::List  m_dirs;
+    KUrl::List  m_dirs;
 };
 
 #endif

@@ -203,7 +203,7 @@ QString GenericMediaDeviceConfigDialog::cleanPath( const QString &component ) co
     if( m_asciiCheck->isChecked() )
         result = Amarok::asciiPath( result );
 
-    result.simplifyWhiteSpace();
+    result.simplified();
     if( m_spaceCheck->isChecked() )
         result.replace( QRegExp( "\\s" ), "_" );
     if( m_device->m_actuallyVfat || m_vfatCheck->isChecked() )

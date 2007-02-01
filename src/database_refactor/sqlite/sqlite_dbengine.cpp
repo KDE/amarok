@@ -23,6 +23,7 @@
 #include <cmath>                 //DbConnection::sqlite_power()
 #include <ctime>                 //query()
 #include <unistd.h>              //usleep()
+#include <krandom.h>
 
 #include "sqlite/sqlite3.h"
 
@@ -202,7 +203,7 @@ int SqliteDbEngine::insert( const QString& statement, const QString& /* table */
 // this implements a RAND() function compatible with the MySQL RAND() (0-param-form without seed)
 void SqliteDbEngine::sqlite_rand(sqlite3_context *context, int /*argc*/, sqlite3_value ** /*argv*/)
 {
-    //sqlite3_result_double( context, static_cast<double>(KApplication::random()) / (RAND_MAX+1.0) );
+    //sqlite3_result_double( context, static_cast<double>(KRandom::random()) / (RAND_MAX+1.0) );
 }
 
 // this implements a POWER() function compatible with the MySQL POWER()

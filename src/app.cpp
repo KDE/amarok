@@ -214,7 +214,7 @@ App::~App()
 
     if ( AmarokConfig::resumePlayback() ) {
         if ( engine->state() != Engine::Empty ) {
-            AmarokConfig::setResumeTrack( EngineController::instance()->playingURL().prettyURL() );
+            AmarokConfig::setResumeTrack( EngineController::instance()->playingURL().prettyUrl() );
             AmarokConfig::setResumeTime( engine->position() );
         }
         else AmarokConfig::setResumeTrack( QString::null ); //otherwise it'll play previous resume next time!
@@ -254,7 +254,7 @@ namespace
     // grabbed from KsCD source, kompatctdisk.cpp
     QString urlToDevice(const QString& device)
     {
-        KURL deviceUrl(device);
+        KUrl deviceUrl(device);
         if (deviceUrl.protocol() == "media" || deviceUrl.protocol() == "system")
         {
             DCOPRef mediamanager( "kded", "mediamanager" );
@@ -296,10 +296,10 @@ void App::handleCliArgs() //static
     {
         haveArgs = true;
 
-        KURL::List list;
+        KUrl::List list;
         for( int i = 0; i < args->count(); i++ )
         {
-            KURL url = args->url( i );
+            KUrl url = args->url( i );
             if( url.protocol() == "itpc" || url.protocol() == "pcast" )
                 PlaylistBrowser::instance()->addPodcast( url );
             else
@@ -360,7 +360,7 @@ void App::handleCliArgs() //static
         haveArgs = true;
         QString device = args->getOption("cdplay");
         device = DeviceManager::instance()->convertMediaUrlToDevice( device );
-        KURL::List urls;
+        KUrl::List urls;
         if (EngineController::engine()->getAudioCDContents(device, urls)) {
             Playlist::instance()->insertMedia(
                 urls, Playlist::Replace|Playlist::DirectPlay);
@@ -425,7 +425,7 @@ void App::initCliArgs( int argc, char *argv[] ) //static
         };
 
     KCmdLineArgs::reset();
-    KCmdLineArgs::init( argc, argv, &::aboutData ); //calls KApplication::addCmdLineOptions()
+    KCmdLineArgs::init( argc, argv, &::aboutData ); //calls KCmdLineArgs::addStdCmdLineOptions()
     KCmdLineArgs::addCmdLineOptions( options );   //add our own options
 }
 
@@ -481,7 +481,7 @@ void App::initGlobalShortcuts()
                             this, SLOT( setRating5() ), true, true );
 
     m_pGlobalAccel->setConfigGroup( "Shortcuts" );
-    m_pGlobalAccel->readSettings( kapp->config() );
+    m_pGlobalAccel->readSettings( KGlobal::config() );
     m_pGlobalAccel->updateConnections();
 
     //TODO fix kde accel system so that kactions find appropriate global shortcuts
@@ -580,6 +580,7 @@ void App::showHyperThreadingWarning() // SLOT
 #include <taglib/id3v1tag.h>
 #include <taglib/tbytevector.h>
 #include <qtextcodec.h>
+#include <kglobal.h>
 
 //this class is only used in this module, so I figured I may as well define it
 //here and save creating another header/source file combination
@@ -636,7 +637,7 @@ void App::applySettings( bool firstTime )
             //the player Window becomes the main Window
             //it is the focus for hideWithMainWindow behaviour etc.
             //it gets the majestic "Amarok" caption
-            m_pPlaylistWindow->setCaption( kapp->makeStdCaption( i18n("Playlist") ) );
+            m_pPlaylistWindow->setCaption( KInstance::makeStandardCaption( i18n("Playlist") ) );
 
             m_pPlayerWindow = new PlayerWidget( m_pPlaylistWindow, "PlayerWindow", firstTime && AmarokConfig::playlistWindowEnabled() );
 
@@ -957,10 +958,10 @@ App::applyColorScheme()
         playlistWindow()->unsetPalette();
     }
 
-    // set the KListView alternate colours
-    QObjectList* const list = playlistWindow()->queryList( "KListView" );
+    // set the K3ListView alternate colours
+    QObjectList* const list = playlistWindow()->queryList( "K3ListView" );
     for( QObject *o = list->first(); o; o = list->next() )
-        static_cast<KListView*>(o)->setAlternateBackground( AltBase );
+        static_cast<K3ListView*>(o)->setAlternateBackground( AltBase );
     delete list; //heap allocated!
 }
 
@@ -1002,7 +1003,7 @@ bool Amarok::genericEventHandler( QWidget *recipient, QEvent *e )
             popup.insertItem( i18n( "&Cancel" ), 0 );
 
             const int id = popup.exec( recipient->mapToGlobal( e->pos() ) );
-            KURL::List list;
+            KUrl::List list;
             KURLDrag::decode( e, list );
 
             if ( id > 0 )
@@ -1024,7 +1025,7 @@ bool Amarok::genericEventHandler( QWidget *recipient, QEvent *e )
 
         switch( e->state() )
         {
-        case Qt::ControlButton:
+        case Qt::ControlModifier:
         {
             const bool up = e->delta() > 0;
 
@@ -1034,7 +1035,7 @@ bool Amarok::genericEventHandler( QWidget *recipient, QEvent *e )
             else     EngineController::instance()->next();
             break;
         }
-        case Qt::ShiftButton:
+        case Qt::ShiftModifier:
         {
             EngineController::instance()->seekRelative( ( e->delta() / 120 ) * 10000 ); // 10 seconds
             break;
@@ -1082,10 +1083,10 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
     {
     case Engine::Empty:
         if ( AmarokConfig::showPlayerWindow() )
-            m_pPlaylistWindow->setCaption( kapp->makeStdCaption( i18n("Playlist") ) );
+            m_pPlaylistWindow->setCaption( KInstance::makeStandardCaption( i18n("Playlist") ) );
         else m_pPlaylistWindow->setCaption( "Amarok" );
         TrackToolTip::instance()->clear();
-        Amarok::OSD::instance()->setImage( KIconLoader().iconPath( "amarok", -KIcon::SizeHuge ) );
+        Amarok::OSD::instance()->setImage( KIconLoader().iconPath( "amarok", -K3Icon::SizeHuge ) );
         break;
 
     case Engine::Playing:
@@ -1101,7 +1102,7 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
 
     case Engine::Idle:
         if ( AmarokConfig::showPlayerWindow() )
-            m_pPlaylistWindow->setCaption( kapp->makeStdCaption( i18n("Playlist") ) );
+            m_pPlaylistWindow->setCaption( KInstance::makeStandardCaption( i18n("Playlist") ) );
         else m_pPlaylistWindow->setCaption( "Amarok" );
         break;
 
@@ -1238,7 +1239,7 @@ void App::setMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic )
     emit moodbarPrefs( show, moodier, alter, withMusic );
 }
 
-KIO::Job *App::trashFiles( const KURL::List &files )
+KIO::Job *App::trashFiles( const KUrl::List &files )
 {
 #if KDE_IS_VERSION( 3, 3, 91 )
     KIO::Job *job = KIO::trash( files, true /*show progress*/ );
@@ -1311,15 +1312,15 @@ namespace Amarok
     KConfig *config( const QString &group )
     {
         //Slightly more useful config() that allows setting the group simultaneously
-        kapp->config()->setGroup( group );
-        return kapp->config();
+        KGlobal::config()->setGroup( group );
+        return KGlobal::config();
     }
 
     bool invokeBrowser( const QString& url )
     {
-        //URL can be in whatever forms KURL::fromPathOrURL understands - ie most.
+        //URL can be in whatever forms KUrl::fromPathOrUrl understands - ie most.
         const QString cmd = "%1 \"%2\"";
-        return KRun::runCommand( cmd.arg( AmarokConfig::externalBrowser(), KURL::fromPathOrURL( url ).url() ) ) > 0;
+        return KRun::runCommand( cmd.arg( AmarokConfig::externalBrowser(), KUrl::fromPathOrUrl( url ).url() ) ) > 0;
     }
 
     namespace ColorScheme
@@ -1477,7 +1478,7 @@ namespace Amarok
         }
         QString clean = input;
         if( t.endsWith( " " ) || !ref.at( t.length() ).isLetterOrNumber() ) // common part ends with a space or complete word
-            clean = input.right( input.length() - commonLength ).stripWhiteSpace();
+            clean = input.right( input.length() - commonLength ).trimmed();
         return clean;
     }
 
@@ -1485,7 +1486,7 @@ namespace Amarok
     void setUseRatings( bool use ) { App::instance()->setUseRatings( use ); }
     void setMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic )
     { App::instance()->setMoodbarPrefs( show, moodier, alter, withMusic ); }
-    KIO::Job *trashFiles( const KURL::List &files ) { return App::instance()->trashFiles( files ); }
+    KIO::Job *trashFiles( const KUrl::List &files ) { return App::instance()->trashFiles( files ); }
 }
 
 #include "app.moc"

@@ -22,17 +22,17 @@ class AtomicString;
  */
 
 typedef struct {
-    KURL location;
+    KUrl location;
     QString identifier;
     QString title;
     AtomicString creator;
     QString annotation;
-    KURL info;
-    KURL image;
+    KUrl info;
+    KUrl image;
     AtomicString album;
     uint trackNum;
     uint duration;
-    KURL link;
+    KUrl link;
 //     meta,
 //     extension
 } XSPFtrack;
@@ -50,28 +50,28 @@ public:
     QString title();
     QString creator();
     QString annotation();
-    KURL info();
-    KURL location();
+    KUrl info();
+    KUrl location();
     QString identifier();
-    KURL image();
+    KUrl image();
     QDateTime date();
-    KURL license();
-    KURL::List attribution();
-    KURL link();
+    KUrl license();
+    KUrl::List attribution();
+    KUrl link();
 //    meta();
 //    extension();
 
     void setTitle( QString title );
     void setCreator( QString creator );
     void setAnnotation( QString annotation );
-    void setInfo( KURL info );
-    void setLocation( KURL location );
+    void setInfo( KUrl info );
+    void setLocation( KUrl location );
     void setIdentifier( QString identifier );
-    void setImage( KURL image );
+    void setImage( KUrl image );
     void setDate( QDateTime date );
-    void setLicense( KURL license );
-    void setAttribution( KURL attribution, bool append = true );
-    void setLink( KURL link );
+    void setLicense( KUrl license );
+    void setAttribution( KUrl attribution, bool append = true );
+    void setLink( KUrl link );
     void setTrackList( XSPFtrackList trackList, bool append = false );
 //    meta();
 //    extension();

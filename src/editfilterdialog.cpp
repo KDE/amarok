@@ -21,7 +21,7 @@
 #include <klocale.h>
 #include <kpushbutton.h>
 #include <kmessagebox.h>
-#include <ktoolbarbutton.h>
+
 
 #include "amarokcore/amarokconfig.h"
 #include "collectiondb.h"

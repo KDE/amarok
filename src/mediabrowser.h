@@ -27,7 +27,7 @@
 #include <QDropEvent>
 #include <QPaintEvent>
 
-#include <klistview.h>       //baseclass
+#include <k3listview.h>       //baseclass
 #include <kurl.h>            //stack allocated
 #include <kio/global.h>      //filesize_t
 #include "scrobbler.h"       //SubmitItem
@@ -51,7 +51,7 @@ class Q3DragObject;
 class QLabel;
 class QPalette;
 
-class LIBAMAROK_EXPORT MediaItem : public KListViewItem
+class LIBAMAROK_EXPORT MediaItem : public K3ListViewItem
 {
     public:
         MediaItem( Q3ListView* parent );
@@ -63,7 +63,7 @@ class LIBAMAROK_EXPORT MediaItem : public KListViewItem
 
         MediaItem *lastChild() const;
 
-        virtual KURL url() const;
+        virtual KUrl url() const;
         const MetaBundle *bundle() const;
         void setBundle( MetaBundle *bundle );
 
@@ -130,7 +130,7 @@ class LIBAMAROK_EXPORT MediaItem : public KListViewItem
         mutable MetaBundle *m_bundle;
 };
 
-class MediaQueue : public KListView, public DropProxyTarget
+class MediaQueue : public K3ListView, public DropProxyTarget
 {
     Q_OBJECT
 
@@ -149,15 +149,15 @@ class MediaQueue : public KListView, public DropProxyTarget
         void load( const QString &path );
         void save( const QString &path );
         void syncPlaylist( const QString &playlistName, const QString &sql, bool loading=false );
-        void syncPlaylist( const QString &playlistName, const KURL &url, bool loading=false );
-        void addURL( const KURL& url, MetaBundle *bundle=NULL, const QString &playlistName=QString::null );
-        void addURL( const KURL& url, MediaItem *item );
-        void addURLs( const KURL::List urls, const QString &playlistName=QString::null );
+        void syncPlaylist( const QString &playlistName, const KUrl &url, bool loading=false );
+        void addUrl( const KUrl& url, MetaBundle *bundle=NULL, const QString &playlistName=QString::null );
+        void addUrl( const KUrl& url, MediaItem *item );
+        void addURLs( const KUrl::List urls, const QString &playlistName=QString::null );
 
         void URLsAdded(); // call after finishing adding single urls
 
         void dropProxyEvent( QDropEvent *e );
-        // Reimplemented from KListView
+        // Reimplemented from K3ListView
         bool acceptDrag( QDropEvent *e ) const;
         Q3DragObject *dragObject();
 
@@ -210,10 +210,10 @@ class MediaBrowser : public Q3VBox
         void updateButtons();
         void updateDevices();
         // return bundle for url if it is known to MediaBrowser
-        bool getBundle( const KURL &url, MetaBundle *bundle ) const;
+        bool getBundle( const KUrl &url, MetaBundle *bundle ) const;
         bool isQuitting() const { return m_quitting; }
 
-        KURL getProxyUrl( const KURL& daapUrl ) const;
+        KUrl getProxyUrl( const KUrl& daapUrl ) const;
         KToolBar* getToolBar() const { return m_toolbar; }
 
     signals:
@@ -240,7 +240,7 @@ class MediaBrowser : public Q3VBox
         void customClicked();
         void configSelectPlugin( int index );
         bool config(); // false if canceled by user
-        KURL transcode( const KURL &src, const QString &filetype );
+        KUrl transcode( const KUrl &src, const QString &filetype );
         void tagsChanged( const MetaBundle &bundle );
         void prepareToQuit();
 
@@ -262,7 +262,7 @@ class MediaBrowser : public Q3VBox
 
         MediaQueue* m_queue;
         bool m_waitForTranscode;
-        KURL m_transcodedUrl;
+        KUrl m_transcodedUrl;
         QString m_transcodeSrc;
 
         SpaceLabel*      m_stats;
@@ -283,7 +283,7 @@ class MediaBrowser : public Q3VBox
         bool             m_quitting;
 };
 
-class MediaView : public KListView
+class MediaView : public K3ListView
 {
     Q_OBJECT
     friend class MediaBrowser;
@@ -299,7 +299,7 @@ class MediaView : public KListView
 
         MediaView( QWidget *parent, MediaDevice *device );
         virtual ~MediaView();
-        LIBAMAROK_EXPORT KURL::List nodeBuildDragList( MediaItem* item, int flags=OnlySelected );
+        LIBAMAROK_EXPORT KUrl::List nodeBuildDragList( MediaItem* item, int flags=OnlySelected );
         int getSelectedLeaves(MediaItem *parent, Q3PtrList<MediaItem> *list, int flags=OnlySelected );
         LIBAMAROK_EXPORT MediaItem *newDirectory( MediaItem* parent );
         bool setFilter( const QString &filter, MediaItem *parent=NULL );
@@ -314,7 +314,7 @@ class MediaView : public KListView
 
     private:
         void keyPressEvent( QKeyEvent *e );
-        // Reimplemented from KListView
+        // Reimplemented from K3ListView
         void contentsDropEvent( QDropEvent *e );
         void viewportPaintEvent( QPaintEvent* );
         bool acceptDrag( QDropEvent *e ) const;
@@ -508,11 +508,11 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
         void              setThirdSort( QString text ) { m_thirdSort = text;
             setConfigString( "thirdGrouping", text ); }
 
-        virtual KURL getProxyUrl( const KURL& /*url*/) { return KURL(); }
+        virtual KUrl getProxyUrl( const KUrl& /*url*/) { return KUrl(); }
         virtual void customClicked() { return; }
 
         BundleList bundlesToSync( const QString &playlistName, const QString &sql );
-        BundleList bundlesToSync( const QString &playlistName, const KURL &url );
+        BundleList bundlesToSync( const QString &playlistName, const KUrl &url );
         void preparePlaylistForSync( const QString &playlistName, const BundleList &bundles );
         bool isOnOtherPlaylist( const QString &playlistToAvoid, const MetaBundle &bundle );
         bool isOnPlaylist( const MediaItem &playlist, const MetaBundle &bundle );
@@ -618,7 +618,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
         void syncStatsFromDevice( MediaItem *root=0 );
         void syncStatsToDevice( MediaItem *root=0 );
 
-        bool kioCopyTrack( const KURL &src, const KURL &dst );
+        bool kioCopyTrack( const KUrl &src, const KUrl &dst );
 
         QString     m_name;
 

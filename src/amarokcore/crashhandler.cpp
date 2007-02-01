@@ -13,7 +13,7 @@
 #include "crashhandler.h"
 
 #include <kapplication.h> //invokeMailer()
-#include <kdebug.h>       //kdBacktrace()
+#include <kdebug.h>       //kBacktrace()
 #include <kdeversion.h>
 #include <klocale.h>
 #include <ktempfile.h>
@@ -177,7 +177,7 @@ namespace Amarok
             bt.remove( "(no debugging symbols found)..." );
             bt.remove( "(no debugging symbols found)\n" );
             bt.replace( QRegExp("\n{2,}"), "\n" ); //clean up multiple \n characters
-            bt.stripWhiteSpace();
+            bt.trimmed();
 
             /// analyze usefulness
             bool useful = true;
@@ -220,11 +220,11 @@ namespace Amarok
                 body += fileCommandOutput + "\n\n";
                 body += "==== (gdb) bt =====================\n";
                 body += bt + "\n\n";
-                body += "==== kdBacktrace() ================\n";
-                body += kdBacktrace();
+                body += "==== kBacktrace() ================\n";
+                body += kBacktrace();
 
                 //TODO startup notification
-                kapp->invokeMailer(
+                KToolInvocation::invokeMailer(
                         /*to*/          "amarok-backtraces@lists.sf.net",
                         /*cc*/          QString(),
                         /*bcc*/         QString(),
@@ -267,6 +267,7 @@ namespace Amarok
 #include <kpushbutton.h>
 #include <kstdguiitem.h>
 #include <kstandarddirs.h>
+#include <ktoolinvocation.h>
 
 Amarok::CrashHandlerWidget::CrashHandlerWidget()
 {
@@ -295,7 +296,7 @@ Amarok::CrashHandlerWidget::CrashHandlerWidget()
 
     layout->addItem( new QSpacerItem( 6, 6, QSizePolicy::Expanding ) );
     layout->add( new KPushButton( KGuiItem( i18n("Send Email"), "mail_send" ), this, "email" ) );
-    layout->add( new KPushButton( KStdGuiItem::close(), this, "close" ) );
+    layout->add( new KPushButton( KStandardGuiItem::close(), this, "close" ) );
 
     static_cast<QPushButton*>(child("email"))->setDefault( true );
 

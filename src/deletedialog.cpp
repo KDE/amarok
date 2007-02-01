@@ -51,11 +51,11 @@ DeleteWidget::DeleteWidget(QWidget *parent, const char *name)
     ddShouldDelete->setChecked(deleteInstead);
 }
 
-void DeleteWidget::setFiles(const KURL::List &files)
+void DeleteWidget::setFiles(const KUrl::List &files)
 {
     ddFileList->clear();
 //    ddFileList->insertStringList(files);
-    for( KURL::List::ConstIterator it = files.begin(); it != files.end(); it++)
+    for( KUrl::List::ConstIterator it = files.begin(); it != files.end(); it++)
     {
         if( (*it).isLocalFile() ) //path is nil for non-local
             ddFileList->insertItem( (*it).path() );
@@ -70,13 +70,13 @@ void DeleteWidget::slotShouldDelete(bool shouldDelete)
     if(shouldDelete) {
         ddDeleteText->setText(i18n("<qt>These items will be <b>permanently "
             "deleted</b> from your hard disk.</qt>"));
-        ddWarningIcon->setPixmap(KGlobal::iconLoader()->loadIcon("messagebox_warning",
-            KIcon::Desktop, KIcon::SizeLarge));
+        ddWarningIcon->setPixmap(KIconLoader::global()->loadIcon("messagebox_warning",
+            K3Icon::Desktop, K3Icon::SizeLarge));
     }
     else {
         ddDeleteText->setText(i18n("<qt>These items will be moved to the Trash Bin.</qt>"));
-        ddWarningIcon->setPixmap(KGlobal::iconLoader()->loadIcon("trashcan_full",
-            KIcon::Desktop, KIcon::SizeLarge));
+        ddWarningIcon->setPixmap(KIconLoader::global()->loadIcon("trashcan_full",
+            K3Icon::Desktop, K3Icon::SizeLarge));
     }
 }
 
@@ -102,14 +102,14 @@ DeleteDialog::DeleteDialog(QWidget *parent, const char *name) :
 
 }
 
-bool DeleteDialog::confirmDeleteList(const KURL::List& condemnedFiles)
+bool DeleteDialog::confirmDeleteList(const KUrl::List& condemnedFiles)
 {
     m_widget->setFiles(condemnedFiles);
 
     return exec() == QDialog::Accepted;
 }
 
-void DeleteDialog::setFiles(const KURL::List &files)
+void DeleteDialog::setFiles(const KUrl::List &files)
 {
     m_widget->setFiles(files);
 }
@@ -128,10 +128,10 @@ void DeleteDialog::accept()
 
 void DeleteDialog::slotShouldDelete(bool shouldDelete)
 {
-    setButtonGuiItem(Ok, shouldDelete ? KStdGuiItem::del() : m_trashGuiItem);
+    setButtonGuiItem(Ok, shouldDelete ? KStandardGuiItem::del() : m_trashGuiItem);
 }
 
-bool DeleteDialog::showTrashDialog(QWidget* parent, const KURL::List& files)
+bool DeleteDialog::showTrashDialog(QWidget* parent, const KUrl::List& files)
 {
     DeleteDialog dialog(parent);
     bool doDelete = dialog.confirmDeleteList(files);

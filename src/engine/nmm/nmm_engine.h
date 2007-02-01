@@ -52,7 +52,7 @@ public:
     ~NmmEngine();
 
     bool init();
-    bool canDecode(const KURL&) const;
+    bool canDecode(const KUrl&) const;
 
     uint position() const;
 
@@ -72,7 +72,7 @@ public:
     static NmmEngine* instance() { return s_instance; }
 
 public slots:
-    bool  load(const KURL&, bool stream = false);
+    bool  load(const KUrl&, bool stream = false);
     bool  play(unsigned int offset = 0);
     void  stop();
     void  pause();

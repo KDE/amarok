@@ -25,9 +25,9 @@
 #include <kiconloader.h>
 #include <klocale.h>
 #include <kmultipledrag.h>     //startDrag()
-#include <kpopupmenu.h>
+#include <kmenu.h>
 #include <kstringhandler.h>    //paintCell
-#include <ktoolbarbutton.h>    //ctor
+    //ctor
 #include <kurldrag.h>          //startDrag()
 #include <kwin.h>
 
@@ -62,7 +62,7 @@ Statistics::Statistics( QWidget *parent, const char *name )
     KWin::setState( winId(), NET::SkipTaskbar );
 
     kapp->setTopWidget( this );
-    setCaption( kapp->makeStdCaption( i18n("Collection Statistics") ) );
+    setCaption( KInstance::makeStandardCaption( i18n("Collection Statistics") ) );
     setInitialSize( QSize( 400, 550 ) );
 
     Q3VBox *mainBox = new Q3VBox( this );
@@ -123,7 +123,7 @@ Statistics::slotSetFilter() //SLOT
 //////////////////////////////////////////////////////////////////////////////////////////
 
 StatisticsList::StatisticsList( QWidget *parent, const char *name )
-    : KListView( parent, name )
+    : K3ListView( parent, name )
     , m_currentItem( 0 )
     , m_expanded( false )
 {
@@ -156,7 +156,7 @@ StatisticsList::startDrag()
 
     DEBUG_FUNC_INFO
 
-    KURL::List list;
+    KUrl::List list;
     KMultipleDrag *drag = new KMultipleDrag( this );
 
     Q3ListViewItemIterator it( this, Q3ListViewItemIterator::Selected );
@@ -168,7 +168,7 @@ StatisticsList::startDrag()
 
     if( item->itemType() == StatisticsDetailedItem::TRACK )
     {
-        list += KURL::fromPathOrURL( item->url() );
+        list += KUrl::fromPathOrUrl( item->url() );
         drag->addDragObject( new KURLDrag( list, viewport() ) );
         drag->setPixmap( CollectionDB::createDragPixmap(list),
                          QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X,
@@ -602,7 +602,7 @@ StatisticsList::clearHover() //SLOT
 void
 StatisticsList::viewportPaintEvent( QPaintEvent *e )
 {
-    if( e ) KListView::viewportPaintEvent( e );
+    if( e ) K3ListView::viewportPaintEvent( e );
 
     if( CollectionDB::instance()->isEmpty() && e )
     {
@@ -640,7 +640,7 @@ StatisticsList::showContextMenu( Q3ListViewItem *item, const QPoint &p, int )  /
 
     bool hasSQL = !( item->itemType() == StatisticsDetailedItem::TRACK ); //track is url
 
-    KPopupMenu menu( this );
+    KMenu menu( this );
     enum Actions { APPEND, QUEUE, INFO };
 
     menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
@@ -655,13 +655,13 @@ StatisticsList::showContextMenu( Q3ListViewItem *item, const QPoint &p, int )  /
         case APPEND:
             hasSQL ?
                 Playlist::instance()->insertMediaSql( item->getSQL() ):
-                Playlist::instance()->insertMedia( KURL::fromPathOrURL( item->url() ) );
+                Playlist::instance()->insertMedia( KUrl::fromPathOrUrl( item->url() ) );
             break;
 
         case QUEUE:
             hasSQL ?
                 Playlist::instance()->insertMediaSql( item->getSQL(), Playlist::Queue ):
-                Playlist::instance()->insertMedia( KURL::fromPathOrURL( item->url() ), Playlist::Queue );
+                Playlist::instance()->insertMedia( KUrl::fromPathOrUrl( item->url() ), Playlist::Queue );
             break;
 
         case INFO:
@@ -672,7 +672,7 @@ StatisticsList::showContextMenu( Q3ListViewItem *item, const QPoint &p, int )  /
             }
             else
             {
-                TagDialog* dialog = new TagDialog( KURL::fromPathOrURL( item->url() ), Statistics::instance() );
+                TagDialog* dialog = new TagDialog( KUrl::fromPathOrUrl( item->url() ), Statistics::instance() );
                 dialog->show();
             }
     }
@@ -683,8 +683,8 @@ StatisticsList::showContextMenu( Q3ListViewItem *item, const QPoint &p, int )  /
 /// CLASS StatisticsItem
 //////////////////////////////////////////////////////////////////////////////////////////
 
-StatisticsItem::StatisticsItem( QString text, StatisticsList *parent, KListViewItem *after, const char *name )
-    : KListViewItem( static_cast<KListView*>(parent), after, name )
+StatisticsItem::StatisticsItem( QString text, StatisticsList *parent, K3ListViewItem *after, const char *name )
+    : K3ListViewItem( static_cast<K3ListView*>(parent), after, name )
     , m_animTimer( new QTimer( this ) )
     , m_animCount( 0 )
     , m_isActive( false )
@@ -702,7 +702,7 @@ StatisticsItem::StatisticsItem( QString text, StatisticsList *parent, KListViewI
 void
 StatisticsItem::setIcon( const QString &icon )
 {
-    QString path = kapp->iconLoader()->iconPath( icon, -KIcon::SizeHuge );
+    QString path = kapp->iconLoader()->iconPath( icon, -K3Icon::SizeHuge );
     path.replace( "32x32", "48x48" ); //HACK fucking KIconLoader only returns 32x32 max. Why?
 
 //     debug() << "ICONPATH: " << path << endl;
@@ -781,7 +781,7 @@ StatisticsItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
 
     if( buffer.isNull() )
     {
-        KListViewItem::paintCell( p, cg, column, width, align );
+        K3ListViewItem::paintCell( p, cg, column, width, align );
         return;
     }
 
@@ -789,7 +789,7 @@ StatisticsItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
 
     QPainter pBuf( &buffer, true );
 
-    KListView *lv = static_cast<KListView *>( listView() );
+    K3ListView *lv = static_cast<K3ListView *>( listView() );
 
     QFont font( p->font() );
     font.setBold( true );
@@ -861,7 +861,7 @@ StatisticsItem::blendColors( const QColor& color1, const QColor& color2, int per
 
 StatisticsDetailedItem::StatisticsDetailedItem( const QString &text, const QString &subtext, StatisticsItem *parent,
                                                 StatisticsDetailedItem *after, const char *name )
-    : KListViewItem( parent, after, name )
+    : K3ListViewItem( parent, after, name )
     , m_type( NONE )
     , m_subText( subtext )
 {
@@ -883,7 +883,7 @@ StatisticsDetailedItem::paintCell( QPainter *p, const QColorGroup &cg, int colum
 
     if( buffer.isNull() )
     {
-        KListViewItem::paintCell( p, cg, column, width, align );
+        K3ListViewItem::paintCell( p, cg, column, width, align );
         return;
     }
 
@@ -895,7 +895,7 @@ StatisticsDetailedItem::paintCell( QPainter *p, const QColorGroup &cg, int colum
     pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor(0) );
 #endif
 
-    KListView *lv = static_cast<KListView *>( listView() );
+    K3ListView *lv = static_cast<K3ListView *>( listView() );
 
     QFont font( p->font() );
     QFontMetrics fm( p->fontMetrics() );
@@ -996,11 +996,11 @@ StatisticsDetailedItem::getSQL()
     return qb.query();
 }
 
-KURL::List
+KUrl::List
 StatisticsDetailedItem::getURLs()
 {
     if( itemType() == StatisticsDetailedItem::TRACK )
-        return KURL::List( KURL::fromPathOrURL(url()) );
+        return KUrl::List( KUrl::fromPathOrUrl(url()) );
 
     QueryBuilder qb;
     QString query = QString::null;
@@ -1032,9 +1032,9 @@ StatisticsDetailedItem::getURLs()
     }
 
     QStringList values = qb.run();
-    KURL::List urls;
+    KUrl::List urls;
     foreach( values )
-        urls += KURL::fromPathOrURL( *it );
+        urls += KUrl::fromPathOrUrl( *it );
     return urls;
 }
 

@@ -22,9 +22,9 @@ class VoidEngine : public Engine::Base
     //and in case no engines are found
 
     virtual bool init() { return true; }
-    virtual bool canDecode( const KURL& ) const { return false; }
+    virtual bool canDecode( const KUrl& ) const { return false; }
     virtual uint position() const { return 0; }
-    virtual bool load( const KURL&, bool );
+    virtual bool load( const KUrl&, bool );
     virtual bool play( uint ) { return false; }
     virtual void stop() {}
     virtual void pause() {}

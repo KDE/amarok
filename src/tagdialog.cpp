@@ -66,7 +66,7 @@ private:
     QStringList m_failedURLs;
 };
 
-TagDialog::TagDialog( const KURL& url, QWidget* parent )
+TagDialog::TagDialog( const KUrl& url, QWidget* parent )
     : TagDialogBase( parent )
     , m_bundle( url, true )
     , m_playlistItem( 0 )
@@ -76,7 +76,7 @@ TagDialog::TagDialog( const KURL& url, QWidget* parent )
 }
 
 
-TagDialog::TagDialog( const KURL::List list, QWidget* parent )
+TagDialog::TagDialog( const KUrl::List list, QWidget* parent )
     : TagDialogBase( parent )
     , m_bundle()
     , m_playlistItem( 0 )
@@ -181,7 +181,7 @@ TagDialog::nextTrack()
     {
         storeTags( *m_currentURL );
 
-        KURL::List::iterator next = m_currentURL;
+        KUrl::List::iterator next = m_currentURL;
         ++next;
         if( next != m_urlList.end() )
             ++m_currentURL;
@@ -219,7 +219,7 @@ TagDialog::enableItems()
 {
     checkBox_perTrack->setChecked( m_perTrack );
     pushButton_previous->setEnabled( m_perTrack && m_currentURL != m_urlList.begin() );
-    KURL::List::ConstIterator next = m_currentURL;
+    KUrl::List::ConstIterator next = m_currentURL;
     ++next;
     pushButton_next->setEnabled( m_perTrack && next != m_urlList.end());
     if( m_urlList.count() == 1 )
@@ -295,7 +295,7 @@ void
 TagDialog::musicbrainzQuery() //SLOT
 {
 #if HAVE_TUNEPIMP
-    kdDebug() << k_funcinfo << endl;
+    kDebug() << k_funcinfo << endl;
 
     m_mbTrack = m_bundle.url();
     KTRMLookup* ktrm = new KTRMLookup( m_mbTrack.path(), true );
@@ -342,7 +342,7 @@ void
 TagDialog::fillSelected( KTRMResult selected ) //SLOT
 {
 #if HAVE_TUNEPIMP
-    kdDebug() << k_funcinfo << endl;
+    kDebug() << k_funcinfo << endl;
 
 
     if ( m_bundle.url() == m_mbTrack ) {
@@ -432,8 +432,8 @@ void TagDialog::init()
     const QStringList favoriteLabels = CollectionDB::instance()->favoriteLabels();
     QString html = generateHTML( favoriteLabels );
     m_labelCloud->set( html );
-    connect( m_labelCloud->browserExtension(), SIGNAL( openURLRequest( const KURL &, const KParts::URLArgs & ) ),
-             this,                             SLOT( openURLRequest( const KURL & ) ) );
+    connect( m_labelCloud->browserExtension(), SIGNAL( openURLRequest( const KUrl &, const KParts::URLArgs & ) ),
+             this,                             SLOT( openURLRequest( const KUrl & ) ) );
 
     // looks better to have a blank label than 0, we can't do this in
     // the UI file due to bug in Designer
@@ -634,7 +634,7 @@ void TagDialog::readTags()
 {
     bool local = m_bundle.url().isLocalFile();
 
-    setCaption( kapp->makeStdCaption( i18n("Track Information: %1 by %2").arg( m_bundle.title(),  m_bundle.artist() ) ) );
+    setCaption( KInstance::makeStandardCaption( i18n("Track Information: %1 by %2").arg( m_bundle.title(),  m_bundle.artist() ) ) );
 
     QString niceTitle;
     if ( m_bundle.album().isEmpty() ) {
@@ -824,11 +824,11 @@ void
 TagDialog::readMultipleTracks()
 {
 
-    setCaption( kapp->makeStdCaption( i18n("1 Track", "Information for %n Tracks", m_urlList.count()) ) );
+    setCaption( KInstance::makeStandardCaption( i18n("1 Track", "Information for %n Tracks", m_urlList.count()) ) );
 
     //Check which fields are the same for all selected tracks
-    const KURL::List::ConstIterator end = m_urlList.end();
-    KURL::List::ConstIterator it = m_urlList.begin();
+    const KUrl::List::ConstIterator end = m_urlList.end();
+    KUrl::List::ConstIterator it = m_urlList.begin();
 
     m_bundle = MetaBundle();
 
@@ -957,8 +957,8 @@ TagDialog::getCommonLabels()
 {
     DEBUG_BLOCK
     QMap<QString, int> counterMap;
-    const KURL::List::ConstIterator end = m_urlList.end();
-    KURL::List::ConstIterator iter = m_urlList.begin();
+    const KUrl::List::ConstIterator end = m_urlList.end();
+    KUrl::List::ConstIterator iter = m_urlList.begin();
     for(; iter != end; ++iter )
     {
         QStringList labels = labelsForURL( *iter );
@@ -1037,7 +1037,7 @@ TagDialog::storeTags()
 }
 
 void
-TagDialog::storeTags( const KURL &kurl )
+TagDialog::storeTags( const KUrl &kurl )
 {
     int result = changes();
     QString url = kurl.path();
@@ -1098,7 +1098,7 @@ TagDialog::storeTags( const KURL &kurl )
 }
 
 void
-TagDialog::storeTags( const KURL &url, int changes, const MetaBundle &mb )
+TagDialog::storeTags( const KUrl &url, int changes, const MetaBundle &mb )
 {
     if ( changes & TagDialog::TAGSCHANGED )
         storedTags.replace( url.path(), mb );
@@ -1109,14 +1109,14 @@ TagDialog::storeTags( const KURL &url, int changes, const MetaBundle &mb )
 }
 
 void
-TagDialog::storeLabels( const KURL &url, const QStringList &labels )
+TagDialog::storeLabels( const KUrl &url, const QStringList &labels )
 {
     newLabels.replace( url.path(), labels );
 }
 
 
 void
-TagDialog::loadTags( const KURL &url )
+TagDialog::loadTags( const KUrl &url )
 {
     m_bundle = bundleForURL( url );
     loadLyrics( url );
@@ -1124,7 +1124,7 @@ TagDialog::loadTags( const KURL &url )
 }
 
 void
-TagDialog::loadLyrics( const KURL &url )
+TagDialog::loadLyrics( const KUrl &url )
 {
     QString xml = lyricsForURL(url.path() );
 
@@ -1136,7 +1136,7 @@ TagDialog::loadLyrics( const KURL &url )
 }
 
 void
-TagDialog::loadLabels( const KURL &url )
+TagDialog::loadLabels( const KUrl &url )
 {
     DEBUG_BLOCK
     m_labels = labelsForURL( url );
@@ -1153,7 +1153,7 @@ TagDialog::loadLabels( const KURL &url )
 }
 
 MetaBundle
-TagDialog::bundleForURL( const KURL &url )
+TagDialog::bundleForURL( const KUrl &url )
 {
     if( storedTags.find( url.path() ) != storedTags.end() )
         return storedTags[ url.path() ];
@@ -1162,7 +1162,7 @@ TagDialog::bundleForURL( const KURL &url )
 }
 
 float
-TagDialog::scoreForURL( const KURL &url )
+TagDialog::scoreForURL( const KUrl &url )
 {
     if( storedScores.find( url.path() ) != storedScores.end() )
         return storedScores[ url.path() ];
@@ -1171,7 +1171,7 @@ TagDialog::scoreForURL( const KURL &url )
 }
 
 int
-TagDialog::ratingForURL( const KURL &url )
+TagDialog::ratingForURL( const KUrl &url )
 {
     if( storedRatings.find( url.path() ) != storedRatings.end() )
         return storedRatings[ url.path() ];
@@ -1180,7 +1180,7 @@ TagDialog::ratingForURL( const KURL &url )
 }
 
 QString
-TagDialog::lyricsForURL( const KURL &url )
+TagDialog::lyricsForURL( const KUrl &url )
 {
     if( storedLyrics.find( url.path() ) != storedLyrics.end() )
         return storedLyrics[ url.path() ];
@@ -1189,7 +1189,7 @@ TagDialog::lyricsForURL( const KURL &url )
 }
 
 QStringList
-TagDialog::labelsForURL( const KURL &url )
+TagDialog::labelsForURL( const KUrl &url )
 {
     if( newLabels.find( url.path() ) != newLabels.end() )
         return newLabels[ url.path() ];
@@ -1223,13 +1223,13 @@ TagDialog::saveTags()
     QMap<QString, QString>::ConstIterator endLyrics( storedLyrics.end() );
     for(QMap<QString, QString>::ConstIterator it = storedLyrics.begin(); it != endLyrics; ++it ) {
         CollectionDB::instance()->setLyrics( it.key(), it.data(),
-               CollectionDB::instance()->uniqueIdFromUrl( KURL( it.key() ) ) );
+               CollectionDB::instance()->uniqueIdFromUrl( KUrl( it.key() ) ) );
         emit lyricsChanged( it.key() );
     }
     QMap<QString, QStringList>::ConstIterator endLabels( newLabels.end() );
     for(QMap<QString, QStringList>::ConstIterator it = newLabels.begin(); it != endLabels; ++it ) {
         CollectionDB::instance()->setLabels( it.key(), it.data(),
-                CollectionDB::instance()->uniqueIdFromUrl( KURL( it.key() ) ), CollectionDB::typeUser );
+                CollectionDB::instance()->uniqueIdFromUrl( KUrl( it.key() ) ), CollectionDB::typeUser );
     }
     CollectionDB::instance()->cleanLabels();
 
@@ -1242,8 +1242,8 @@ TagDialog::applyToAllTracks()
 {
     generateDeltaForLabelList( labelListFromText( kTextEdit_selectedLabels->text() ) );
 
-    const KURL::List::ConstIterator end = m_urlList.end();
-    for ( KURL::List::ConstIterator it = m_urlList.begin(); it != end; ++it ) {
+    const KUrl::List::ConstIterator end = m_urlList.end();
+    for ( KUrl::List::ConstIterator it = m_urlList.begin(); it != end; ++it ) {
 
         /* we have to update the values if they changed, so:
            1) !kLineEdit_field->text().isEmpty() && kLineEdit_field->text() != mb.field
@@ -1335,7 +1335,7 @@ TagDialog::labelListFromText( const QString &text )
     QMap<QString, int> map;
     foreach( tmp )
     {
-        QString tmpString = (*it).stripWhiteSpace();
+        QString tmpString = (*it).trimmed();
         if ( !tmpString.isEmpty() )
             map.replace( tmpString, 0 );
     }
@@ -1401,7 +1401,7 @@ TagDialog::generateHTML( const QStringList &labels )
 }
 
 void
-TagDialog::openURLRequest(const KURL &url )         //SLOT
+TagDialog::openURLRequest(const KUrl &url )         //SLOT
 {
     DEBUG_BLOCK
     if ( url.protocol() == "label" )
@@ -1475,7 +1475,7 @@ TagDialogWriter::doJob()
             m_successCount++;
         else {
             m_failCount++;
-            m_failedURLs += m_tags[i].prettyURL();
+            m_failedURLs += m_tags[i].prettyUrl();
         }
         m_failed += !result;
     }

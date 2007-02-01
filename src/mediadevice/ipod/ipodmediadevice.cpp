@@ -51,7 +51,7 @@ AMAROK_EXPORT_PLUGIN( IpodMediaDevice )
 #include <kprogress.h>
 #include <kmessagebox.h>
 #include <kiconloader.h>
-#include <kpopupmenu.h>
+#include <kmenu.h>
 
 #include <qcheckbox.h>
 #include <qdir.h>
@@ -163,7 +163,7 @@ class IpodMediaItem : public MediaItem
 
             if( !rss.isEmpty() || !url.isEmpty() )
             {
-                PodcastEpisodeBundle peb( KURL::fromPathOrURL(url), KURL::fromPathOrURL(rss),
+                PodcastEpisodeBundle peb( KUrl::fromPathOrUrl(url), KUrl::fromPathOrUrl(rss),
                         track->title, track->artist, desc, date.toString(Qt::ISODate), QString::null /*type*/,
                         bundle->length(), QString::null /*guid*/, track->playcount<=0 );
                 bundle->setPodcastBundle( peb );
@@ -283,12 +283,12 @@ IpodMediaDevice::IpodMediaDevice()
     m_customAction = am;
     m_customAction->setEnabled( false );
     am->setDelayed( false );
-    KPopupMenu *menu = am->popupMenu();
+    KMenu *menu = am->popupMenu();
     connect( menu, SIGNAL(activated(int)), SLOT(slotIpodAction(int)) );
     menu->insertItem( i18n( "Stale and Orphaned" ), CHECK_INTEGRITY );
     menu->insertItem( i18n( "Update Artwork" ), UPDATE_ARTWORK );
 
-    KPopupMenu *ipodGen = new KPopupMenu( menu );
+    KMenu *ipodGen = new KMenu( menu );
     menu->insertItem( i18n( "Set iPod Model" ), ipodGen );
     const Itdb_IpodInfo *table = itdb_info_get_ipod_info_table();
     if( !table )
@@ -300,7 +300,7 @@ IpodMediaDevice::IpodMediaDevice()
     {
         const Itdb_IpodInfo *info = table;
         infoFound = false;
-        KPopupMenu *gen = 0;
+        KMenu *gen = 0;
         int index = SET_IPOD_MODEL;
         while( info->model_number )
         {
@@ -309,7 +309,7 @@ IpodMediaDevice::IpodMediaDevice()
                 if (!infoFound)
                 {
                     infoFound = true;
-                    gen = new KPopupMenu( ipodGen );
+                    gen = new KMenu( ipodGen );
                     connect( gen, SIGNAL(activated(int)), SLOT(slotIpodAction(int)) );
                     ipodGen->insertItem(
                             itdb_info_get_ipod_generation_string( info->ipod_generation),
@@ -603,7 +603,7 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
 MediaItem *
 IpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle)
 {
-    KURL url = determineURLOnDevice(bundle);
+    KUrl url = determineURLOnDevice(bundle);
 
     // check if path exists and make it if needed
     QFileInfo finfo( url.path() );
@@ -845,7 +845,7 @@ IpodMediaDevice::deleteItemFromDevice(MediaItem *mediaitem, int flags )
             if( !stale )
             {
                 // delete file
-                KURL url;
+                KUrl url;
                 url.setPath(realPath(track->ipod_path));
                 deleteFile( url );
                 count++;
@@ -1371,7 +1371,7 @@ IpodMediaDevice::checkIntegrity()
                 debug() << "file: " << filename << " is orphaned" << endl;
                 IpodMediaItem *item = new IpodMediaItem(m_orphanedItem, this);
                 item->setType(MediaItem::ORPHANED);
-                KURL url = KURL::fromPathOrURL(filename);
+                KUrl url = KUrl::fromPathOrUrl(filename);
                 MetaBundle *bundle = new MetaBundle(url);
                 item->setBundle( bundle );
                 QString title = bundle->artist() + " - " + bundle->title();
@@ -1948,13 +1948,13 @@ IpodMediaDevice::getTrack( const Itdb_Track *itrack )
 }
 
 
-KURL
+KUrl
 IpodMediaDevice::determineURLOnDevice(const MetaBundle &bundle)
 {
     if( !m_itdb )
     {
         debug() << "m_itdb is NULL" << endl;
-        return KURL();
+        return KUrl();
     }
 
     QString local = bundle.filename();
@@ -2055,8 +2055,8 @@ IpodMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
     MediaItem *item = dynamic_cast<MediaItem *>(qitem);
     bool locked = m_mutex.locked();
 
-    KURL::List urls = m_view->nodeBuildDragList( 0 );
-    KPopupMenu menu( m_view );
+    KUrl::List urls = m_view->nodeBuildDragList( 0 );
+    KMenu menu( m_view );
 
     enum Actions { CREATE_PLAYLIST, APPEND, LOAD, QUEUE,
         COPY_TO_COLLECTION,
@@ -2066,7 +2066,7 @@ IpodMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
         DELETE_PLAYED, DELETE_FROM_IPOD, REMOVE_FROM_PLAYLIST,
         FIRST_PLAYLIST};
 
-    KPopupMenu *playlistsMenu = 0;
+    KMenu *playlistsMenu = 0;
     if ( item )
     {
         if( item->type() == MediaItem::PLAYLISTSROOT )
@@ -2128,7 +2128,7 @@ IpodMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
                 menu.insertItem( SmallIconSet( Amarok::icon( "playlist" ) ), i18n( "Make Media Device Playlist" ), MAKE_PLAYLIST );
                 menu.setItemEnabled( MAKE_PLAYLIST, !locked );
 
-                playlistsMenu = new KPopupMenu(&menu);
+                playlistsMenu = new KMenu(&menu);
                 int i=0;
                 for(MediaItem *it = dynamic_cast<MediaItem *>(m_playlistItem->firstChild());
                         it;
@@ -2205,7 +2205,7 @@ IpodMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
                 Q3PtrList<MediaItem> items;
                 m_view->getSelectedLeaves( 0, &items );
 
-                KURL::List urls;
+                KUrl::List urls;
                 for( MediaItem *it = items.first();
                         it;
                         it = items.next() )
@@ -2491,9 +2491,9 @@ IpodMediaDevice::fileDeleted( KIO::Job *job )  //SLOT
 }
 
 void
-IpodMediaDevice::deleteFile( const KURL &url )
+IpodMediaDevice::deleteFile( const KUrl &url )
 {
-    debug() << "deleting " << url.prettyURL() << endl;
+    debug() << "deleting " << url.prettyUrl() << endl;
     m_waitForDeletion = true;
     KIO::Job *job = KIO::file_delete( url, false );
     connect( job, SIGNAL( result( KIO::Job * ) ),

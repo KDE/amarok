@@ -29,12 +29,12 @@
 
 
 
-MagnatuneListViewArtistItem::MagnatuneListViewArtistItem( MagnatuneArtist artist, KListView * parent )
-: KListViewItem( parent ), MagnatuneArtist( artist )
+MagnatuneListViewArtistItem::MagnatuneListViewArtistItem( MagnatuneArtist artist, K3ListView * parent )
+: K3ListViewItem( parent ), MagnatuneArtist( artist )
 {
-    KListViewItem::setText( 0, artist.getName() );
+    K3ListViewItem::setText( 0, artist.getName() );
 
-    setPixmap(0, KGlobal::iconLoader()->loadIcon( "personal", KIcon::Toolbar, KIcon::SizeSmall ) );
+    setPixmap(0, KIconLoader::global()->loadIcon( "personal", K3Icon::Toolbar, K3Icon::SizeSmall ) );
 
     setDragEnabled ( true );
 }
@@ -58,7 +58,7 @@ void MagnatuneListViewArtistItem::setOpen( bool o )
         }
     }
     listView()->setUpdatesEnabled( true );
-    KListViewItem::setOpen( o );
+    K3ListViewItem::setOpen( o );
     invalidateHeight();
     listView()->repaintContents();
    
@@ -69,7 +69,7 @@ void MagnatuneListViewArtistItem::setOpen( bool o )
 void MagnatuneListViewArtistItem::setup()
 {
     setExpandable( true );
-    KListViewItem::setup();
+    K3ListViewItem::setup();
 }
 
 
@@ -84,13 +84,13 @@ void MagnatuneListViewArtistItem::setup()
 
 
 
-MagnatuneListViewAlbumItem::MagnatuneListViewAlbumItem( MagnatuneAlbum album, KListViewItem * parent )
-: KListViewItem( parent ), MagnatuneAlbum( album )
+MagnatuneListViewAlbumItem::MagnatuneListViewAlbumItem( MagnatuneAlbum album, K3ListViewItem * parent )
+: K3ListViewItem( parent ), MagnatuneAlbum( album )
 {
-    KListViewItem::setText( 0, album.getName() );
+    K3ListViewItem::setText( 0, album.getName() );
     setDragEnabled( true );
 
-    //setPixmap(0, KGlobal::iconLoader()->loadIcon( "cdrom_unmount", KIcon::Toolbar, KIcon::SizeSmall ) );
+    //setPixmap(0, KIconLoader::global()->loadIcon( "cdrom_unmount", K3Icon::Toolbar, K3Icon::SizeSmall ) );
 
 
 }
@@ -116,7 +116,7 @@ void MagnatuneListViewAlbumItem::setOpen( bool o )
     }
 
     listView()->setUpdatesEnabled( true );
-    KListViewItem::setOpen( o );
+    K3ListViewItem::setOpen( o );
     invalidateHeight();
     listView()->repaintContents();
     
@@ -126,7 +126,7 @@ void MagnatuneListViewAlbumItem::setOpen( bool o )
 void MagnatuneListViewAlbumItem::setup( )
 {
     setExpandable( true );
-    KListViewItem::setup();
+    K3ListViewItem::setup();
 }
 
 
@@ -141,8 +141,8 @@ void MagnatuneListViewAlbumItem::setup( )
 
 
 
-MagnatuneListViewTrackItem::MagnatuneListViewTrackItem( MagnatuneTrack track, KListViewItem * parent )
-: KListViewItem( parent ), MagnatuneTrack( track )
+MagnatuneListViewTrackItem::MagnatuneListViewTrackItem( MagnatuneTrack track, K3ListViewItem * parent )
+: K3ListViewItem( parent ), MagnatuneTrack( track )
 {
     
     int trackNumber = track.getTrackNumber();
@@ -152,7 +152,7 @@ MagnatuneListViewTrackItem::MagnatuneListViewTrackItem( MagnatuneTrack track, KL
     
     
     
-    KListViewItem::setText( 0, trackNumberString + " - " +  track.getName() );
+    K3ListViewItem::setText( 0, trackNumberString + " - " +  track.getName() );
     
     debug() << "track duration: " << QString::number( track.getDuration() ) <<  endl;
     
@@ -160,13 +160,13 @@ MagnatuneListViewTrackItem::MagnatuneListViewTrackItem( MagnatuneTrack track, KL
     duration = duration.addSecs(track.getDuration());
     
     if (duration.hour() == 0)
-        KListViewItem::setText( 1, duration.toString( "m:ss" ) );
+        K3ListViewItem::setText( 1, duration.toString( "m:ss" ) );
     else
-        KListViewItem::setText( 1, duration.toString( "h:mm:ss" ) );
+        K3ListViewItem::setText( 1, duration.toString( "h:mm:ss" ) );
     
     setDragEnabled( true );
 
-     //setPixmap(0, KGlobal::iconLoader()->loadIcon( "track", KIcon::Toolbar, KIcon::SizeSmall ) );
+     //setPixmap(0, KIconLoader::global()->loadIcon( "track", K3Icon::Toolbar, K3Icon::SizeSmall ) );
 }
 
 MagnatuneListViewTrackItem::~ MagnatuneListViewTrackItem( )

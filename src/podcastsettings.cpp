@@ -101,7 +101,7 @@ PodcastSettingsDialog::init()
 
         m_ps->m_addToMediaDeviceCheck->setEnabled( MediaBrowser::isAvailable() );
 
-        enableButtonOK( false );
+        enableButtonOk( false );
 
          // Connects for modification check
         connect( m_ps->m_purgeCountSpinBox->child( "qt_spinbox_edit" ),  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
@@ -134,12 +134,12 @@ PodcastSettingsDialog::hasChanged()
 void
 PodcastSettingsDialog::checkModified() //slot
 {
-    enableButtonOK( hasChanged() );
+    enableButtonOk( hasChanged() );
 }
 
 void PodcastSettingsDialog::slotOk()       //slot
 {
-    enableButtonOK( false ); //visual feedback
+    enableButtonOk( false ); //visual feedback
 
     if ( !m_settingsList.isEmpty() )
     {

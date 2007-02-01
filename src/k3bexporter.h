@@ -42,7 +42,7 @@ public:
     * @param urls The list of urls to export
     * @param openmode The mode of the album
     */
-    LIBAMAROK_EXPORT void exportTracks( const KURL::List &urls, int openmode=-1 );
+    LIBAMAROK_EXPORT void exportTracks( const KUrl::List &urls, int openmode=-1 );
 
     /**
     * Exports the current playlist to K3B. The mode @p openmode will be used
@@ -90,8 +90,8 @@ public:
     static K3bExporter *instance() { return s_instance; }
 
 private:
-    void exportViaCmdLine( const KURL::List &urls, int openmode );
-    void exportViaDCOP( const KURL::List &urls, DCOPRef &ref, int mode );
+    void exportViaCmdLine( const KUrl::List &urls, int openmode );
+    void exportViaDCOP( const KUrl::List &urls, DCOPRef &ref, int mode );
     void DCOPErrorMessage();
     bool startNewK3bProject( DCOPRef &ref, int mode );
     K3bOpenMode openMode();

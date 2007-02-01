@@ -103,11 +103,11 @@ class IpodMediaDevice : public MediaDevice
          * @param bundle MetaBundle of track to base pathname creation on
          * @return the url to upload the track to
          */
-        virtual KURL determineURLOnDevice( const MetaBundle& bundle );
+        virtual KUrl determineURLOnDevice( const MetaBundle& bundle );
 
         void              synchronizeDevice();
         int               deleteItemFromDevice( MediaItem *item, int flags=DeleteTrack );
-        virtual void      deleteFile( const KURL &url );
+        virtual void      deleteFile( const KUrl &url );
         void              addToPlaylist( MediaItem *list, MediaItem *after, Q3PtrList<MediaItem> items );
         MediaItem        *newPlaylist( const QString &name, MediaItem *list, Q3PtrList<MediaItem> items );
         bool              getCapacity( KIO::filesize_t *total, KIO::filesize_t *available );

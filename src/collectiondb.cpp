@@ -65,7 +65,7 @@
 #include <kinputdialog.h>         //setupCoverFetcher()
 #include <klineedit.h>            //setupCoverFetcher()
 #include <klocale.h>
-#include <kmdcodec.h>
+#include <kcodecs.h>
 #include <kmessagebox.h>
 #include <ksimpleconfig.h>
 #include <kstandarddirs.h>
@@ -93,6 +93,7 @@
 
 #ifdef HAVE_INOTIFY
     #include <linux/inotify.h>
+#include <krandom.h>
     #include "inotify/inotify-syscalls.h"
 #endif
 
@@ -377,7 +378,7 @@ CollectionDB::query( const QString& statement, bool suppressDebug )
         debug() << "Query-start: " << statement << endl;
         start = clock();
     }
-    if ( statement.stripWhiteSpace().isEmpty() )
+    if ( statement.trimmed().isEmpty() )
     {
         m_mutex.unlock();
         return QStringList();
@@ -458,10 +459,10 @@ CollectionDB::URLsFromQuery( const QStringList &result ) const
     return values;
 }
 
-KURL::List
+KUrl::List
 CollectionDB::URLsFromSqlDrag( const QStringList &values ) const
 {
-    KURL::List urls;
+    KUrl::List urls;
     for( QStringList::const_iterator it = values.begin();
             it != values.end();
             it++ )
@@ -469,7 +470,7 @@ CollectionDB::URLsFromSqlDrag( const QStringList &values ) const
         const QString &rel = *it;
         it++;
         int id = (*it).toInt();
-        urls += KURL::fromPathOrURL( MountPointManager::instance()->getAbsolutePath( id, rel ) );
+        urls += KUrl::fromPathOrUrl( MountPointManager::instance()->getAbsolutePath( id, rel ) );
         for( int i = 0;
                 i < QueryBuilder::dragFieldCount-1 && it != values.end();
                 i++ )
@@ -1639,10 +1640,10 @@ CollectionDB::createDragPixmapFromSQL( const QString &sql, QString textOverRide 
     // it is too slow to check if the url is actually in the colleciton.
     //TODO mountpointmanager: figure out what has to be done here
     QStringList values = instance()->query( sql );
-    KURL::List list;
+    KUrl::List list;
     foreach( values )
     {
-        KURL u = KURL::fromPathOrURL( *it );
+        KUrl u = KUrl::fromPathOrUrl( *it );
         if( u.isValid() )
             list += u;
     }
@@ -1650,7 +1651,7 @@ CollectionDB::createDragPixmapFromSQL( const QString &sql, QString textOverRide 
 }
 
 QPixmap
-CollectionDB::createDragPixmap( const KURL::List &urls, QString textOverRide )
+CollectionDB::createDragPixmap( const KUrl::List &urls, QString textOverRide )
 {
     // settings
     const int maxCovers = 4; // maximum number of cover images to show
@@ -1675,7 +1676,7 @@ CollectionDB::createDragPixmap( const KURL::List &urls, QString textOverRide )
 
     // iterate urls, get covers and count artist/albums
     bool correctAlbumCount = true;
-    KURL::List::ConstIterator it = urls.begin();
+    KUrl::List::ConstIterator it = urls.begin();
     for ( ; it != urls.end(); ++it )
     {
         if( PlaylistFile::isPlaylistFile( *it )
@@ -1846,7 +1847,7 @@ CollectionDB::createDragPixmap( const KURL::List &urls, QString textOverRide )
 }
 
 QImage
-CollectionDB::fetchImage( const KURL& url, QString &/*tmpFile*/ )
+CollectionDB::fetchImage( const KUrl& url, QString &/*tmpFile*/ )
 {
     if ( url.protocol() != "file" )
     {
@@ -1861,7 +1862,7 @@ CollectionDB::fetchImage( const KURL& url, QString &/*tmpFile*/ )
 
 }
 bool
-CollectionDB::setAlbumImage( const QString& artist, const QString& album, const KURL& url )
+CollectionDB::setAlbumImage( const QString& artist, const QString& album, const KUrl& url )
 {
     QString tmpFile;
     bool success = setAlbumImage( artist, album, fetchImage(url, tmpFile) );
@@ -1900,7 +1901,7 @@ CollectionDB::podcastImage( const MetaBundle &bundle, const bool withShadow, uin
     PodcastEpisodeBundle peb;
     PodcastChannelBundle pcb;
 
-    KURL url = bundle.url().url();
+    KUrl url = bundle.url().url();
 
     if( getPodcastEpisodeBundle( url, &peb ) )
     {
@@ -1931,7 +1932,7 @@ CollectionDB::podcastImage( const QString &remoteURL, const bool withShadow, uin
     {
         s = notAvailCover( withShadow, width );
 
-        const KURL url = KURL::fromPathOrURL( remoteURL );
+        const KUrl url = KUrl::fromPathOrUrl( remoteURL );
         if( url.isValid() ) //KIO crashes with invalid URLs
         {
             KIO::Job *job = KIO::storedGet( url, false, false );
@@ -2249,7 +2250,7 @@ CollectionDB::findEmbeddedImage( const QString& artist, const QString& album, ui
         QString result = loadHashFile( hash, width );
         if ( result.isEmpty() ) {
             // need to get original from file first
-            MetaBundle mb(  KURL::fromPathOrURL( values.last() ) );
+            MetaBundle mb(  KUrl::fromPathOrUrl( values.last() ) );
             if ( extractEmbeddedImage( mb, hash ) ) {
                 // try again, as should be possible now
                 result = loadHashFile( hash, width );
@@ -2536,13 +2537,13 @@ CollectionDB::addPodcastChannel( const PodcastChannelBundle &pcb, const bool &re
     }
 
     QString title       = pcb.title();
-    KURL    link        = pcb.link();
-    KURL    image       = pcb.imageURL();
+    KUrl    link        = pcb.link();
+    KUrl    image       = pcb.imageURL();
     QString description = pcb.description();
     QString copyright   = pcb.copyright();
 
     if( title.isEmpty() )
-        title = pcb.url().prettyURL();
+        title = pcb.url().prettyUrl();
 
     command += '\'' + escapeString( pcb.url().url() )  + "',";
     command += ( title.isEmpty() ?       "NULL" : '\'' + escapeString( title ) + '\'' ) + ',';
@@ -2591,7 +2592,7 @@ CollectionDB::addPodcastEpisode( const PodcastEpisodeBundle &episode, const int 
     uint    size        = episode.size();
 
     if( title.isEmpty() )
-        title = episode.url().prettyURL();
+        title = episode.url().prettyUrl();
 
     if( idToUpdate )
         command += QString::number( idToUpdate ) + ',';
@@ -2634,10 +2635,10 @@ CollectionDB::getPodcastChannels()
     foreach( values )
     {
         PodcastChannelBundle pcb;
-        pcb.setURL         ( KURL::fromPathOrURL(*it) );
+        pcb.setURL         ( KUrl::fromPathOrUrl(*it) );
         pcb.setTitle       ( *++it );
-        pcb.setLink        ( KURL::fromPathOrURL(*++it) );
-        pcb.setImageURL    ( KURL::fromPathOrURL(*++it) );
+        pcb.setLink        ( KUrl::fromPathOrUrl(*++it) );
+        pcb.setImageURL    ( KUrl::fromPathOrUrl(*++it) );
         pcb.setDescription ( *++it );
         pcb.setCopyright   ( *++it );
         pcb.setParentId    ( (*++it).toInt() );
@@ -2655,7 +2656,7 @@ CollectionDB::getPodcastChannels()
 }
 
 Q3ValueList<PodcastEpisodeBundle>
-CollectionDB::getPodcastEpisodes( const KURL &parent, bool onlyNew, int limit )
+CollectionDB::getPodcastEpisodes( const KUrl &parent, bool onlyNew, int limit )
 {
     QString command = QString( "SELECT id, url, localurl, parent, guid, title, subtitle, composer, comment, filetype, createdate, length, size, isNew FROM podcastepisodes WHERE ( parent='%1'" ).arg( parent.url() );
     if( onlyNew )
@@ -2672,10 +2673,10 @@ CollectionDB::getPodcastEpisodes( const KURL &parent, bool onlyNew, int limit )
     {
         PodcastEpisodeBundle peb;
         peb.setDBId        ( (*it).toInt() );
-        peb.setURL         ( KURL::fromPathOrURL(*++it) );
+        peb.setURL         ( KUrl::fromPathOrUrl(*++it) );
         if( *++it != "NULL" )
-            peb.setLocalURL    ( KURL::fromPathOrURL(*it) );
-        peb.setParent      ( KURL::fromPathOrURL(*++it) );
+            peb.setLocalURL    ( KUrl::fromPathOrUrl(*it) );
+        peb.setParent      ( KUrl::fromPathOrUrl(*++it) );
         peb.setGuid        ( *++it );
         peb.setTitle       ( *++it );
         if( *++it != NULL )
@@ -2707,10 +2708,10 @@ CollectionDB::getPodcastEpisodeById( int id )
     foreach( values )
     {
         peb.setDBId        ( id );
-        peb.setURL         ( KURL::fromPathOrURL(*it) );
+        peb.setURL         ( KUrl::fromPathOrUrl(*it) );
         if( *++it != "NULL" )
-            peb.setLocalURL( KURL::fromPathOrURL(*it) );
-        peb.setParent      ( KURL::fromPathOrURL(*++it) );
+            peb.setLocalURL( KUrl::fromPathOrUrl(*it) );
+        peb.setParent      ( KUrl::fromPathOrUrl(*++it) );
         peb.setGuid        ( *++it );
         peb.setTitle       ( *++it );
         peb.setSubtitle    ( *++it );
@@ -2730,7 +2731,7 @@ CollectionDB::getPodcastEpisodeById( int id )
 }
 
 bool
-CollectionDB::getPodcastEpisodeBundle( const KURL &url, PodcastEpisodeBundle *peb )
+CollectionDB::getPodcastEpisodeBundle( const KUrl &url, PodcastEpisodeBundle *peb )
 {
     int id = 0;
     if( url.isLocalFile() )
@@ -2760,7 +2761,7 @@ CollectionDB::getPodcastEpisodeBundle( const KURL &url, PodcastEpisodeBundle *pe
 }
 
 bool
-CollectionDB::getPodcastChannelBundle( const KURL &url, PodcastChannelBundle *pcb )
+CollectionDB::getPodcastChannelBundle( const KUrl &url, PodcastChannelBundle *pcb )
 {
     QStringList values = query( QString(
                 "SELECT url, title, weblink, image, comment, copyright, parent, directory "
@@ -2769,11 +2770,11 @@ CollectionDB::getPodcastChannelBundle( const KURL &url, PodcastChannelBundle *pc
 
     foreach( values )
     {
-        pcb->setURL         ( KURL::fromPathOrURL(*it) );
+        pcb->setURL         ( KUrl::fromPathOrUrl(*it) );
         pcb->setTitle       ( *++it );
-        pcb->setLink        ( KURL::fromPathOrURL(*++it) );
+        pcb->setLink        ( KUrl::fromPathOrUrl(*++it) );
         if( *++it != "NULL" )
-            pcb->setImageURL( KURL::fromPathOrURL(*it) );
+            pcb->setImageURL( KUrl::fromPathOrUrl(*it) );
         pcb->setDescription ( *++it );
         pcb->setCopyright   ( *++it );
         pcb->setParentId    ( (*++it).toInt() );
@@ -2892,7 +2893,7 @@ CollectionDB::updatePodcastFolder( const int folder_id, const QString &name, con
 }
 
 void
-CollectionDB::removePodcastChannel( const KURL &url )
+CollectionDB::removePodcastChannel( const KUrl &url )
 {
     //remove channel
     query( QString( "DELETE FROM podcastchannels WHERE url = '%1';" )
@@ -2940,18 +2941,18 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
         {
             if ( artist.isEmpty() )
             {
-                artist = bundle->url().fileName().section( '-', 0, 0 ).stripWhiteSpace();
+                artist = bundle->url().fileName().section( '-', 0, 0 ).trimmed();
                 bundle->setArtist( artist );
             }
-            title = bundle->url().fileName().section( '-', 1 ).stripWhiteSpace();
-            title = title.left( title.findRev( '.' ) ).stripWhiteSpace();
+            title = bundle->url().fileName().section( '-', 1 ).trimmed();
+            title = title.left( title.findRev( '.' ) ).trimmed();
             if ( title.isEmpty() ) title = bundle->url().fileName();
         }
         bundle->setTitle( title );
     }
 
     int deviceId = MountPointManager::instance()->getIdForUrl( bundle->url() );
-    KURL relativePath;
+    KUrl relativePath;
     MountPointManager::instance()->getRelativePath( deviceId, bundle->url(), relativePath );
     //debug() << "File has deviceId " << deviceId << ", relative path " << relativePath.path() << ", absolute path " << bundle->url().path() << endl;
 
@@ -3237,7 +3238,7 @@ CollectionDB::urlFromUniqueId( const QString &id )
 }
 
 QString
-CollectionDB::uniqueIdFromUrl( const KURL &url )
+CollectionDB::uniqueIdFromUrl( const KUrl &url )
 {
     MountPointManager *mpm = MountPointManager::instance();
     int currdeviceid = mpm->getIdForUrl( url.path() );
@@ -3410,7 +3411,7 @@ bool
 CollectionDB::bundleForUrl( MetaBundle* bundle )
 {
     int deviceid = MountPointManager::instance()->getIdForUrl( bundle->url() );
-    KURL rpath;
+    KUrl rpath;
     MountPointManager::instance()->getRelativePath( deviceid, bundle->url(), rpath );
     QStringList values = query( QString(
             "SELECT album.name, artist.name, composer.name, genre.name, tags.title, "
@@ -3456,13 +3457,13 @@ CollectionDB::bundleForUrl( MetaBundle* bundle )
 
 
 Q3ValueList<MetaBundle>
-CollectionDB::bundlesByUrls( const KURL::List& urls )
+CollectionDB::bundlesByUrls( const KUrl::List& urls )
 {
     BundleList bundles;
     QStringList paths;
     QueryBuilder qb;
 
-    for( KURL::List::ConstIterator it = urls.begin(), end = urls.end(), last = urls.fromLast(); it != end; ++it )
+    for( KUrl::List::ConstIterator it = urls.begin(), end = urls.end(), last = urls.fromLast(); it != end; ++it )
     {
         // non file stuff won't exist in the db, but we still need to
         // re-insert it into the list we return, just with no tags assigned
@@ -3541,7 +3542,7 @@ CollectionDB::bundlesByUrls( const KURL::List& urls )
 
                 // if we get here, we didn't find an entry
                 {
-                    KURL url = KURL::fromPathOrURL( *it );
+                    KUrl url = KUrl::fromPathOrUrl( *it );
 
                     if( !MediaBrowser::instance()->getBundle( url, &b ) )
                     {
@@ -3608,7 +3609,7 @@ void
 CollectionDB::addAudioproperties( const MetaBundle& bundle )
 {
     int deviceid = MountPointManager::instance()->getIdForUrl( bundle.url() );
-    KURL rpath;
+    KUrl rpath;
     MountPointManager::instance()->getRelativePath( deviceid, bundle.url(), rpath );
     query( QString( "UPDATE tags SET bitrate='%1', length='%2', samplerate='%3' WHERE url='%5' AND deviceid = %4;" )
                     .arg( bundle.bitrate() )
@@ -3960,14 +3961,14 @@ void CollectionDB::cancelMovingFileJob()
 }
 
 bool
-CollectionDB::organizeFile( const KURL &src, const OrganizeCollectionDialog &dialog, bool copy )
+CollectionDB::organizeFile( const KUrl &src, const OrganizeCollectionDialog &dialog, bool copy )
 {
    if( !MetaBundle::isKioUrl( src ) )
        return false;
 
    bool overwrite = dialog.overwriteCheck->isChecked();
    bool localFile = src.isLocalFile();
-   KURL tmpSrc = src;
+   KUrl tmpSrc = src;
    if( !localFile )
    {
       QString tmp;
@@ -3980,7 +3981,7 @@ CollectionDB::organizeFile( const KURL &src, const OrganizeCollectionDialog &dia
          tmp = QString( dialog.folderCombo->currentText() + "/amarok-tmp-%1." + extension ).arg( count );
          count++;
       } while( QFile::exists( tmp ) );
-      tmpSrc = KURL::fromPathOrURL( tmp );
+      tmpSrc = KUrl::fromPathOrUrl( tmp );
 
       KIO::FileCopyJob *job = 0;
       if( copy )
@@ -4043,7 +4044,7 @@ CollectionDB::organizeFile( const KURL &src, const OrganizeCollectionDialog &dia
    //Use cover image for folder icon
    if( !m_moveFileJobCancelled && dialog.coverCheck->isChecked() && !mb.artist().isEmpty() && !mb.album().isEmpty() )
    {
-      KURL dstURL = KURL::fromPathOrURL( dest );
+      KUrl dstURL = KUrl::fromPathOrUrl( dest );
       dstURL.cleanPath();
 
       QString path  = dstURL.directory();
@@ -4090,8 +4091,8 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
     }
 
     // Escape URL.
-    KURL srcURL = KURL::fromPathOrURL( src );
-    KURL dstURL = KURL::fromPathOrURL( dest );
+    KUrl srcURL = KUrl::fromPathOrUrl( src );
+    KUrl dstURL = KUrl::fromPathOrUrl( dest );
 
     // Clean it.
     srcURL.cleanPath();
@@ -4102,7 +4103,7 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
         debug() << "Invalid URL "  << endl;
 
     // Get just the directory.
-    KURL dir = dstURL;
+    KUrl dir = dstURL;
     dir.setFileName(QString::null);
 
     // Create the directory.
@@ -4310,9 +4311,9 @@ CollectionDB::isFileInCollection( const QString &url  )
 
 
 void
-CollectionDB::removeSongs( const KURL::List& urls )
+CollectionDB::removeSongs( const KUrl::List& urls )
 {
-    for( KURL::List::ConstIterator it = urls.begin(), end = urls.end(); it != end; ++it )
+    for( KUrl::List::ConstIterator it = urls.begin(), end = urls.end(); it != end; ++it )
     {
         int deviceid = MountPointManager::instance()->getIdForUrl( *it );
         QString rpath = MountPointManager::instance()->getRelativePath( deviceid, (*it).path() );
@@ -4388,9 +4389,9 @@ CollectionDB::checkCompilations( const QString &path, const bool temporary )
 }
 
 void
-CollectionDB::setCompilation( const KURL::List &urls, bool enabled, bool updateView )
+CollectionDB::setCompilation( const KUrl::List &urls, bool enabled, bool updateView )
 {
-    for ( KURL::List::const_iterator it = urls.begin(); it != urls.end(); ++it )
+    for ( KUrl::List::const_iterator it = urls.begin(); it != urls.end(); ++it )
     {
         QString url( ( *it ).path() );
 
@@ -4593,7 +4594,7 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
 void
 CollectionDB::updateURL( const QString &url, const bool updateView )
 {
-    // don't use the KURL ctor as it checks the db first
+    // don't use the KUrl ctor as it checks the db first
     MetaBundle bundle;
     bundle.setPath( url );
     bundle.readTags( TagLib::AudioProperties::Fast );
@@ -4849,7 +4850,7 @@ void CollectionDB::engineTrackEnded( int finalPosition, int trackLength, const Q
     // Don't update statistics if song has been played for less than 15 seconds
     // if ( finalPosition < 15000 ) return;
 
-    const KURL url = EngineController::instance()->bundle().url();
+    const KUrl url = EngineController::instance()->bundle().url();
     debug() << "track ended: " << url.url() << endl;
     PodcastEpisodeBundle peb;
     if( getPodcastEpisodeBundle( url.url(), &peb ) )
@@ -6257,7 +6258,7 @@ int SqliteConnection::insert( const QString& statement, const QString& /* table 
 // this implements a RAND() function compatible with the MySQL RAND() (0-param-form without seed)
 void SqliteConnection::sqlite_rand(sqlite3_context *context, int /*argc*/, sqlite3_value ** /*argv*/)
 {
-    sqlite3_result_double( context, static_cast<double>(KApplication::random()) / (RAND_MAX+1.0) );
+    sqlite3_result_double( context, static_cast<double>(KRandom::random()) / (RAND_MAX+1.0) );
 }
 
 // this implements a POWER() function compatible with the MySQL POWER()
@@ -6723,7 +6724,7 @@ QueryBuilder::linkTables( int tables )
 
 
 void
-QueryBuilder::addReturnValue( int table, Q_INT64 value, bool caseSensitive /* = false, unless value refers to a string */ )
+QueryBuilder::addReturnValue( int table, qint64 value, bool caseSensitive /* = false, unless value refers to a string */ )
 {
     caseSensitive |= value == valName || value == valTitle || value == valComment;
 
@@ -6753,7 +6754,7 @@ QueryBuilder::addReturnValue( int table, Q_INT64 value, bool caseSensitive /* = 
 }
 
 void
-QueryBuilder::addReturnFunctionValue( int function, int table, Q_INT64 value)
+QueryBuilder::addReturnFunctionValue( int function, int table, qint64 value)
 {
     // translate NULL and 0 values into the default value for percentage/rating
     // First translate 0 to NULL via NULLIF, then NULL to default via COALESCE
@@ -6835,7 +6836,7 @@ QueryBuilder::setGoogleFilter( int defaultTables, QString query )
             bool exact = false; // enable for numeric values
 
             int table = -1;
-            Q_INT64 value = -1;
+            qint64 value = -1;
             if( e.field == "artist" )
                 table = tabArtist;
             else if( e.field == "composer" )
@@ -7025,9 +7026,9 @@ QueryBuilder::addFilter( int tables, const QString& filter )
 }
 
 void
-QueryBuilder::addFilter( int tables, Q_INT64 value, const QString& filter, int mode, bool exact )
+QueryBuilder::addFilter( int tables, qint64 value, const QString& filter, int mode, bool exact )
 {
-    //true for INTEGER fields (see comment of coalesceField(int, Q_INT64)
+    //true for INTEGER fields (see comment of coalesceField(int, qint64)
     bool useCoalesce = coalesceField( tables, value );
     m_where += ANDslashOR() + " ( ";
 
@@ -7167,7 +7168,7 @@ QueryBuilder::excludeFilter( int tables, const QString& filter )
 }
 
 void
-QueryBuilder::excludeFilter( int tables, Q_INT64 value, const QString& filter, int mode, bool exact )
+QueryBuilder::excludeFilter( int tables, qint64 value, const QString& filter, int mode, bool exact )
 {
     m_where += ANDslashOR() + " ( ";
 
@@ -7242,7 +7243,7 @@ QueryBuilder::addMatch( int tables, const QString& match, bool interpretUnknown 
 
 
 void
-QueryBuilder::addMatch( int tables, Q_INT64 value, const QString& match, bool interpretUnknown /* = true */, bool caseSensitive /* = true */  )
+QueryBuilder::addMatch( int tables, qint64 value, const QString& match, bool interpretUnknown /* = true */, bool caseSensitive /* = true */  )
 {
     m_where += ANDslashOR() + " ( " + CollectionDB::instance()->boolF() + ' ';
     if ( value & valURL )
@@ -7356,7 +7357,7 @@ QueryBuilder::excludeMatch( int tables, const QString& match )
 
 
 void
-QueryBuilder::exclusiveFilter( int tableMatching, int tableNotMatching, Q_INT64 value )
+QueryBuilder::exclusiveFilter( int tableMatching, int tableNotMatching, qint64 value )
 {
     m_where += " AND ";
     m_where += tableName( tableNotMatching ) + '.';
@@ -7369,7 +7370,7 @@ QueryBuilder::exclusiveFilter( int tableMatching, int tableNotMatching, Q_INT64 
 
 
 void
-QueryBuilder::addNumericFilter(int tables, Q_INT64 value, const QString &n,
+QueryBuilder::addNumericFilter(int tables, qint64 value, const QString &n,
                                int mode /* = modeNormal */,
                                const QString &endRange /* = QString::null */ )
 {
@@ -7441,7 +7442,7 @@ QueryBuilder::setOptions( int options )
 
 
 void
-QueryBuilder::sortBy( int table, Q_INT64 value, bool descending )
+QueryBuilder::sortBy( int table, qint64 value, bool descending )
 {
     //shall we sort case-sensitively? (not for integer columns!)
     bool b = true;
@@ -7482,7 +7483,7 @@ QueryBuilder::sortBy( int table, Q_INT64 value, bool descending )
 }
 
 void
-QueryBuilder::sortByFunction( int function, int table, Q_INT64 value, bool descending )
+QueryBuilder::sortByFunction( int function, int table, qint64 value, bool descending )
 {
     // This function should be used with the equivalent addReturnFunctionValue (with the same function on same values)
     // since it uses the "func(table.value) AS functablevalue" definition.
@@ -7542,7 +7543,7 @@ QueryBuilder::sortByFunction( int function, int table, Q_INT64 value, bool desce
 }
 
 void
-QueryBuilder::groupBy( int table, Q_INT64 value )
+QueryBuilder::groupBy( int table, qint64 value )
 {
     if ( !m_group.isEmpty() ) m_group += ',';
 
@@ -7560,7 +7561,7 @@ QueryBuilder::groupBy( int table, Q_INT64 value )
 }
 
 void
-QueryBuilder::having( int table, Q_INT64 value, int function, int mode, const QString& match )
+QueryBuilder::having( int table, qint64 value, int function, int mode, const QString& match )
 {
     if( !m_having.isEmpty() ) m_having += " AND ";
 
@@ -7594,7 +7595,7 @@ QueryBuilder::setLimit( int startPos, int length )
 }
 
 void
-QueryBuilder::shuffle( int table, Q_INT64 value )
+QueryBuilder::shuffle( int table, qint64 value )
 {
     if ( !m_sort.isEmpty() ) m_sort += " ,  ";
     if ( table == 0 || value == 0 ) {
@@ -7761,9 +7762,9 @@ QueryBuilder::clear()
 }
 
 
-Q_INT64
+qint64
 QueryBuilder::valForFavoriteSorting() {
-    Q_INT64 favSortBy = valRating;
+    qint64 favSortBy = valRating;
     if ( !AmarokConfig::useScores() && !AmarokConfig::useRatings() )
         favSortBy = valPlayCounter;
     else if( !AmarokConfig::useRatings() )
@@ -7881,7 +7882,7 @@ QueryBuilder::tableName( int table )
 
 
 const QString &
-QueryBuilder::valueName( Q_INT64 value )
+QueryBuilder::valueName( qint64 value )
 {
    static const QString values[] = {
        "id",
@@ -7937,12 +7938,12 @@ QueryBuilder::valueName( Q_INT64 value )
 /*
  * Return true if we should call COALESCE(..,0) for this DB field
  * (field names sourced from the old smartplaylistbrowser.cpp code)
- * Warning: addFilter( int, Q_INT64, const QString&, int bool )
+ * Warning: addFilter( int, qint64, const QString&, int bool )
  * expects this method to return true for all statistics table clomuns of type INTEGER
  * Sqlite doesn't like comparing strings to an INTEGER column.
  */
 bool
-QueryBuilder::coalesceField( int table, Q_INT64 value )
+QueryBuilder::coalesceField( int table, qint64 value )
 {
     if( tableName( table ) == "statistics" &&
         ( valueName( value ) == "playcounter" ||
@@ -7982,10 +7983,10 @@ QueryBuilder::getTableByName(const QString &name)
     return -1;
 }
 
-Q_INT64
+qint64
 QueryBuilder::getValueByName(const QString &name)
 {
-    for ( Q_INT64 i = 1; i <= valType; i <<= 1 ) {
+    for ( qint64 i = 1; i <= valType; i <<= 1 ) {
         if (valueName(i) == name) return i;
     }
 
@@ -7993,12 +7994,12 @@ QueryBuilder::getValueByName(const QString &name)
 }
 
 bool
-QueryBuilder::getField(const QString &tableValue, int *table, Q_INT64 *value)
+QueryBuilder::getField(const QString &tableValue, int *table, qint64 *value)
 {
     int dotIndex = tableValue.find( '.' ) ;
     if ( dotIndex < 0 ) return false;
     int tmpTable = getTableByName( tableValue.left(dotIndex) );
-    Q_UINT64 tmpValue = getValueByName( tableValue.mid( dotIndex + 1 ) );
+    quint64 tmpValue = getValueByName( tableValue.mid( dotIndex + 1 ) );
     if ( tmpTable >= 0 && value ) {
         *table = tmpTable;
         *value = tmpValue;

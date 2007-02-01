@@ -40,9 +40,9 @@ class yauapEngine : public Engine::Base
 {
     virtual ~yauapEngine(); 
     virtual bool init();
-    virtual bool canDecode( const KURL& ) const;
+    virtual bool canDecode( const KUrl& ) const;
     virtual uint position() const ;
-    virtual bool load( const KURL&, bool );
+    virtual bool load( const KUrl&, bool );
     virtual bool play( uint );
     virtual void stop();
     virtual void pause();
@@ -52,8 +52,8 @@ class yauapEngine : public Engine::Base
     virtual uint length() const ;
     virtual Engine::State state() const { return m_state; }
     virtual const Engine::Scope &scope();
-    virtual bool getAudioCDContents(const QString &device, KURL::List &urls);
-    virtual bool metaDataForUrl(const KURL &url, Engine::SimpleMetaBundle &b);
+    virtual bool getAudioCDContents(const QString &device, KUrl::List &urls);
+    virtual bool metaDataForUrl(const KUrl &url, Engine::SimpleMetaBundle &b);
 public: 
     yauapEngine() : EngineBase() {}
     /* these need to be public because they are called from the dbus signal handler */
@@ -62,7 +62,7 @@ public:
     void track_ended();
     void error_msg(char* msg);
 private:
-    KURL loaded_url;
+    KUrl loaded_url;
     std::vector<Engine::SimpleMetaBundle> cd_tracks;
     void change_state( Engine::State );
     DBusGConnection *bus;

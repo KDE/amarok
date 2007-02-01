@@ -31,7 +31,7 @@
 #include <q3vbox.h>
 
 #include <kapplication.h>
-#include <kactivelabel.h>
+#include <k3activelabel.h>
 #include <kcombobox.h>
 #include <kconfig.h>
 #include <kiconloader.h>
@@ -48,9 +48,9 @@ MediumPluginManagerDialog::MediumPluginManagerDialog()
         : KDialogBase( Amarok::mainWindow(), "mediumpluginmanagerdialog", false, QString::null, Ok|Cancel, Ok )
 {
     kapp->setTopWidget( this );
-    setCaption( kapp->makeStdCaption( i18n( "Manage Devices and Plugins" ) ) );
+    setCaption( KInstance::makeStandardCaption( i18n( "Manage Devices and Plugins" ) ) );
 
-    Q3VBox* vbox = makeVBoxMainWidget();
+    KVBox* vbox = makeVBoxMainWidget();
     vbox->setSpacing( KDialog::spacingHint() );
     vbox->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
 
@@ -260,15 +260,16 @@ ManualDeviceAdder::ManualDeviceAdder( MediumPluginManager* mpm )
     m_successful = false;
 
     kapp->setTopWidget( this );
-    setCaption( kapp->makeStdCaption( i18n( "Add New Device") ) );
+    setCaption( KInstance::makeStandardCaption( i18n( "Add New Device") ) );
 
-    Q3HBox* hbox = makeHBoxMainWidget();
+    KHBox* hbox = makeHBoxMainWidget();
     hbox->setSpacing( KDialog::spacingHint() );
 
     Q3VBox* vbox1 = new Q3VBox( hbox );
 
     new QLabel( i18n( "Select the plugin to use with this device:"), vbox1 );
-    m_mdaCombo = new KComboBox( false, vbox1, "m_mdacombo" );
+    m_mdaCombo = new KComboBox( false, vbox1 );
+    m_mdaCombo->setObjectName( "m_mdacombo" );
     m_mdaCombo->insertItem( i18n( "Do not handle" ) );
     for( KTrader::OfferList::ConstIterator it = MediaBrowser::instance()->getPlugins().begin();
             it != MediaBrowser::instance()->getPlugins().end();
@@ -410,7 +411,7 @@ MediaDeviceConfig::MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, 
 
     (void)new QLabel( i18n("Name: "), this );
     (void)new QLabel( medium->name(), this );
-    (void)new KActiveLabel( i18n( "(<a href='whatsthis:%1'>Details</a>)" )
+    (void)new K3ActiveLabel( i18n( "(<a href='whatsthis:%1'>Details</a>)" )
                             .arg( Amarok::escapeHTMLAttr( details ) ), this );
 
     (void)new QLabel( i18n("Plugin:"), this );

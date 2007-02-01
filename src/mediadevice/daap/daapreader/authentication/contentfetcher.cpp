@@ -23,12 +23,12 @@
 #include <Q3CString>
 
 #include <kfilterdev.h>
-#include <kmdcodec.h>
+#include <kcodecs.h>
 
 using namespace Daap;
 int ContentFetcher::s_requestId = 10;
 
-ContentFetcher::ContentFetcher( const QString & hostname, Q_UINT16 port, const QString& password, QObject * parent, const char * name )
+ContentFetcher::ContentFetcher( const QString & hostname, quint16 port, const QString& password, QObject * parent, const char * name )
  : Q3Http(hostname, port, parent, name)
  , m_hostname( hostname )
  , m_port( port )

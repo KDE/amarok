@@ -73,7 +73,7 @@ class Item : public QObject, public Q3CheckListItem
 Q_OBJECT
 public:
     Item( Q3ListView *parent );
-    Item( Q3ListViewItem *parent, const KURL &url , bool full_disable=false );
+    Item( Q3ListViewItem *parent, const KUrl &url , bool full_disable=false );
 
     Q3CheckListItem *parent() const { return static_cast<Q3CheckListItem*>( Q3ListViewItem::parent() ); }
     bool isFullyDisabled() const { return m_fullyDisabled; }
@@ -91,7 +91,7 @@ public slots:
 
 private:
     KDirLister m_lister;
-    KURL       m_url;
+    KUrl       m_url;
     bool       m_listed;
     bool       m_fullyDisabled;
 };
