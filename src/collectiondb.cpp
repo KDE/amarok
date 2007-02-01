@@ -4907,9 +4907,7 @@ CollectionDB::fetchCover( QWidget* parent, const QString& artist, const QString&
 void
 CollectionDB::scanMonitor()  //SLOT
 {
-    if ( AmarokConfig::monitorChanges()
-            && ( !CollectionView::instance() || !CollectionView::instance()->isOrganizingFiles() )
-            && ( !MediaBrowser::instance() || !MediaBrowser::instance()->isTranscoding() ) )
+    if ( AmarokConfig::monitorChanges() )
         scanModifiedDirs();
 }
 
@@ -5753,7 +5751,9 @@ CollectionDB::destroy()
 void
 CollectionDB::scanModifiedDirs()
 {
-    if ( !m_scanInProgress )
+    if ( !m_scanInProgress
+            && ( !CollectionView::instance() || !CollectionView::instance()->isOrganizingFiles() )
+            && ( !MediaBrowser::instance() || !MediaBrowser::instance()->isTranscoding() ) )
     {
         //we check if a job is pending because we don't want to abort incremental collection readings
         if ( !ThreadManager::instance()->isJobPending( "CollectionScanner" ) && PlaylistBrowser::instance() )

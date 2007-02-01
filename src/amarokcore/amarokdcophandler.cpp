@@ -828,7 +828,7 @@ namespace Amarok
 
     void DcopCollectionHandler::scanCollectionChanges()
     {
-        CollectionDB::instance()->scanMonitor();
+        CollectionDB::instance()->scanModifiedDirs();
     }
 
     void DcopCollectionHandler::scanPause()
