@@ -708,6 +708,7 @@ CollectionDB::createIndices()
 {
     //This creates the indices for tables created in createTables. It should not refer to
     //tables which are not created in that function.
+    debug() << "Creating indices, ignore errors about already existing indices" << endl;
 
     query( "CREATE UNIQUE INDEX url_tag ON tags( url, deviceid );" );
     query( "CREATE INDEX album_tag ON tags( album );" );
@@ -728,6 +729,48 @@ CollectionDB::createIndices()
     query( "CREATE UNIQUE INDEX directories_dir ON directories( dir, deviceid );" );
     query( "CREATE INDEX uniqueid_uniqueid ON uniqueid( uniqueid );");
     query( "CREATE INDEX uniqueid_url ON uniqueid( url, deviceid );");
+
+    query( "CREATE INDEX album_idx ON album( name );" );
+    query( "CREATE INDEX artist_idx ON artist( name );" );
+    query( "CREATE INDEX composer_idx ON composer( name );" );
+    query( "CREATE INDEX genre_idx ON genre( name );" );
+    query( "CREATE INDEX year_idx ON year( name );" );
+
+    query( "CREATE INDEX related_artists_artist ON related_artists( artist );" );
+
+    debug() << "Finished creating indices, stop ignoring errors" << endl;
+}
+
+void
+CollectionDB::createPermanentIndices()
+{
+    //this method creates all indices which are not referred to in createTables
+    //this method is called on each startup of amarok
+    //until we figure out a way to handle this better it produces SQL errors if the indices
+    //already exist, but these can be ignored
+    debug() << "Creating permanent indices, ignore errors about already existing indices" << endl;
+
+    query( "CREATE UNIQUE INDEX lyrics_url ON lyrics( url, deviceid );" );
+    query( "CREATE INDEX lyrics_uniqueid ON lyrics( uniqueid );" );
+    query( "CREATE INDEX playlist_playlists ON playlists( playlist );" );
+    query( "CREATE INDEX url_playlists ON playlists( url );" );
+    query( "CREATE UNIQUE INDEX labels_name ON labels( name, type );" );
+    query( "CREATE INDEX tags_labels_uniqueid ON tags_labels( uniqueid );" ); //m:n relationship, DO NOT MAKE UNIQUE!
+    query( "CREATE INDEX tags_labels_url ON tags_labels( url, deviceid );" ); //m:n relationship, DO NOT MAKE UNIQUE!
+    query( "CREATE INDEX tags_labels_labelid ON tags_labels( labelid );" );   //m:n relationship, DO NOT MAKE UNIQUE!
+
+    query( "CREATE UNIQUE INDEX url_stats ON statistics( deviceid, url );" );
+    query( "CREATE INDEX percentage_stats ON statistics( percentage );" );
+    query( "CREATE INDEX rating_stats ON statistics( rating );" );
+    query( "CREATE INDEX playcounter_stats ON statistics( playcounter );" );
+    query( "CREATE INDEX uniqueid_stats ON statistics( uniqueid );" );
+
+    query( "CREATE INDEX url_podchannel ON podcastchannels( url );" );
+    query( "CREATE INDEX url_podepisode ON podcastepisodes( url );" );
+    query( "CREATE INDEX localurl_podepisode ON podcastepisodes( localurl );" );
+    query( "CREATE INDEX url_podfolder ON podcastfolders( id );" );
+
+    debug() << "Finished creating permanent indices, stop ignoring errors" << endl;
 }
 
 
@@ -908,11 +951,6 @@ CollectionDB::createStatsTable()
                     "deleted BOOL DEFAULT " + boolF() + ","
                     "PRIMARY KEY(url, deviceid) );" ) );
 
-    query( "CREATE UNIQUE INDEX url_stats ON statistics( deviceid, url );" );
-    query( "CREATE INDEX percentage_stats ON statistics( percentage );" );
-    query( "CREATE INDEX rating_stats ON statistics( rating );" );
-    query( "CREATE INDEX playcounter_stats ON statistics( playcounter );" );
-    query( "CREATE INDEX uniqueid_stats ON statistics( uniqueid );" );
 }
 
 //Old version, used in upgrade code. This should never be changed.
@@ -1024,15 +1062,6 @@ CollectionDB::createPersistentTables()
                     "url " + exactTextColumnType() + ", "
                     "uniqueid " + exactTextColumnType(32) + ", "      //m:n relationship, DO NOT MAKE UNIQUE!
                     "labelid INTEGER REFERENCES labels( id ) ON DELETE CASCADE );" ) );
-
-    query( "CREATE UNIQUE INDEX lyrics_url ON lyrics( url, deviceid );" );
-    query( "CREATE INDEX lyrics_uniqueid ON lyrics( uniqueid );" );
-    query( "CREATE INDEX playlist_playlists ON playlists( playlist );" );
-    query( "CREATE INDEX url_playlists ON playlists( url );" );
-    query( "CREATE UNIQUE INDEX labels_name ON labels( name, type );" );
-    query( "CREATE INDEX tags_labels_uniqueid ON tags_labels( uniqueid );" ); //m:n relationship, DO NOT MAKE UNIQUE!
-    query( "CREATE INDEX tags_labels_url ON tags_labels( url, deviceid );" ); //m:n relationship, DO NOT MAKE UNIQUE!
-    query( "CREATE INDEX tags_labels_labelid ON tags_labels( labelid );" );   //m:n relationship, DO NOT MAKE UNIQUE!
 }
 
 void
@@ -5239,6 +5268,10 @@ CollectionDB::initialize()
         }
         Amarok::config( "Collection Browser" )->writeEntry( "Database Devices Version", DATABASE_DEVICES_VERSION );
         setAdminValue( "Database Devices Version", QString::number( DATABASE_DEVICES_VERSION ) );
+
+        //make sure that all indices exist
+        createIndices();
+        createPermanentIndices();
     }
 
 }
@@ -6634,12 +6667,7 @@ QueryBuilder::linkTables( int tables )
 {
     m_tables.setLength(0);
 
-    if ( tables & tabLabels ) {
-        ( m_tables += "tags_labels LEFT JOIN tags ON tags.url = tags_labels.url AND tags.deviceid = tags_labels.deviceid" )
-            += " LEFT JOIN labels ON tags_labels.labelid = labels.id";
-    }
-    else
-        m_tables += tableName( tabSong );
+    m_tables += tableName( tabSong );
 
     if ( !(tables & tabSong ) )
     {
@@ -6680,6 +6708,9 @@ QueryBuilder::linkTables( int tables )
 
         if ( tables & tabDevices )
             ((m_tables += " LEFT JOIN ") += tableName( tabDevices )) += " ON tags.deviceid = devices.id";
+        if ( tables & tabLabels )
+            ( m_tables += " LEFT JOIN tags_labels ON tags.url = tags_labels.url AND tags.deviceid = tags_labels.deviceid" )
+                += " LEFT JOIN labels ON tags_labels.labelid = labels.id";
     }
 }
 

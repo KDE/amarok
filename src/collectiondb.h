@@ -302,6 +302,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         void setAdminValue( QString noption, QString value );
         void createTables( const bool temporary = false );
         void createIndices(  );
+        void createPermanentIndices();
         void dropTables( const bool temporary = false);
         void clearTables( const bool temporary = false);
         void copyTempTables(  );
