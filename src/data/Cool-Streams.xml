@@ -46,7 +46,7 @@
   <url>http://stream.mth-house.de:8500/listen.pls</url>
  </stream>
  <stream name="Nectarine Demoscene Radio [Computer-Music]">
-  <url>http://nectarine.esuna.co.uk:8002/listen.pls</url>
+  <url>http://nectarine.sik.fi:8002/live.mp3.m3u</url>
  </stream>
  <stream name="Philosomatika [Psytrance]">
   <url>http://philosomatika.com/Philosomatika.pls</url>
