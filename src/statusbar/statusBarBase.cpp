@@ -93,9 +93,10 @@ namespace SingleShotPool
 
 
 StatusBar::StatusBar( QWidget *parent, const char *name )
-        : QWidget( parent, name )
+        : QWidget( parent )
         , m_logCounter( -1 )
 {
+    setObjectName( name );
     Q3BoxLayout *mainlayout = new Q3HBoxLayout( this, 2, /*spacing*/5 );
 
     //we need extra spacing due to the way we paint the surrounding boxes
@@ -103,7 +104,8 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 
     Q3HBox *statusBarTextBox = new Q3HBox( this, "statusBarTextBox" );
     m_mainTextLabel = new KDE::SqueezedTextLabel( statusBarTextBox, "mainTextLabel" );
-    QToolButton *shortLongButton = new QToolButton( statusBarTextBox, "shortLongButton" );
+    QToolButton *shortLongButton = new QToolButton( statusBarTextBox );
+    shortLongButton->setObjectName( "shortLongButton" );
     shortLongButton->hide();
 
     Q3HBox *mainProgressBarBox = new Q3HBox( this, "progressBox" );
