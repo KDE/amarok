@@ -56,7 +56,6 @@ class LIBAMAROK_EXPORT App : public KApplication, public EngineObserver
         static int mainThreadId;
 
         PlaylistWindow *playlistWindow() const { return m_pPlaylistWindow; }
-        PlayerWidget   *playerWindow()   const { return m_pPlayerWindow;   }
 
         // FRIENDS ------
         friend class PlaylistWindow; //requires access to applySettings()
@@ -106,14 +105,13 @@ class LIBAMAROK_EXPORT App : public KApplication, public EngineObserver
         void applyColorScheme();
         void firstRunWizard();
 
-        /** returns the leading window, either playerWindow or playlistWindow */
+        /** returns the playlistWindow */
         QWidget *mainWindow() const;
 
         void setRating( int n );
 
         // ATTRIBUTES ------
         KGlobalAccel        *m_pGlobalAccel;
-        PlayerWidget        *m_pPlayerWindow;
         PlaylistWindow      *m_pPlaylistWindow;
 #ifdef Q_WS_X11
         Amarok::TrayIcon    *m_pTray;

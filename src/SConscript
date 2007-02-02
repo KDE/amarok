@@ -43,7 +43,6 @@ amarok_sources = """
     multitabbar.cpp
     osd.cpp
     dynamicmode.cpp
-    playerwindow.cpp
     playlist.cpp
     playlistitem.cpp
     playlistloader.cpp

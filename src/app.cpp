@@ -36,7 +36,6 @@ email                : markey@web.de
 #include "metabundle.h"
 #include "mountpointmanager.h"
 #include "osd.h"
-#include "playerwindow.h"
 #include "playlist.h"
 #include "playlistbrowser.h"
 #include "playlistwindow.h"
@@ -129,7 +128,6 @@ LIBAMAROK_EXPORT KAboutData aboutData( "amarok",
 
 App::App()
         : KApplication()
-        , m_pPlayerWindow( 0 ) //will be created in applySettings()
 {
     DEBUG_BLOCK
 
@@ -228,7 +226,6 @@ App::~App()
 
     CollectionDB::instance()->stopScan();
 
-    delete m_pPlayerWindow;   //sets some XT keys
     delete m_pPlaylistWindow; //sets some XT keys
 
     ThreadManager::deleteInstance(); //waits for jobs to finish
@@ -629,68 +626,6 @@ void App::applySettings( bool firstTime )
 #ifdef Q_WS_X11
     TrackToolTip::instance()->removeFromWidget( m_pTray );
 #endif
-
-    if( AmarokConfig::showPlayerWindow() )
-    {
-        if( !m_pPlayerWindow )
-        {
-            //the player Window becomes the main Window
-            //it is the focus for hideWithMainWindow behaviour etc.
-            //it gets the majestic "Amarok" caption
-            m_pPlaylistWindow->setCaption( KInstance::makeStandardCaption( i18n("Playlist") ) );
-
-            m_pPlayerWindow = new PlayerWidget( m_pPlaylistWindow, "PlayerWindow", firstTime && AmarokConfig::playlistWindowEnabled() );
-
-            //don't show PlayerWindow on firstTime, that is done below
-            //we need to explicately set the PL button if it's the first time
-            if( !firstTime ) m_pPlayerWindow->show();
-
-
-            connect( m_pPlayerWindow, SIGNAL(playlistToggled( bool )), m_pPlaylistWindow, SLOT(showHide()) );
-
-#ifdef Q_WS_X11
-            //TODO get this to work!
-            //may work if you set no parent for the systray?
-            //KWin::setSystemTrayWindowFor( m_pTray->winId(), m_pPlayerWindow->winId() );
-
-            delete m_pTray; m_pTray = new Amarok::TrayIcon( m_pPlayerWindow );
-
-            //make tray icon behave properly after selecting to show or hide player window
-            m_pTray->engineStateChanged(EngineController::instance()->engine()->state(), EngineController::instance()->engine()->state());
-            m_pTray->engineNewMetaData(EngineController::instance()->bundle(), false);
-#endif
-
-            //make player window minimal if it was last time
-            if( AmarokConfig::playerWindowMinimalView() ){
-                m_pPlayerWindow->setMinimalView( true );
-            }
-        }
-        else
-            //this is called in the PlayerWindow ctor, hence the else
-            m_pPlayerWindow->applySettings();
-
-    } else if( m_pPlayerWindow ) {
-#ifdef Q_WS_X11
-        delete m_pTray; m_pTray = new Amarok::TrayIcon( m_pPlaylistWindow );
-        m_pTray->engineStateChanged(EngineController::instance()->engine()->state(), EngineController::instance()->engine()->state());
-        m_pTray->engineNewMetaData(EngineController::instance()->bundle(), false);
-#endif
-        delete m_pPlayerWindow; m_pPlayerWindow = 0;
-
-        //Set the caption correctly.
-        if ( !EngineController::instance()->bundle().prettyTitle().isEmpty() )
-            m_pPlaylistWindow->setCaption( i18n("Amarok - %1").arg( EngineController::instance()->bundle().veryNiceTitle() ) );
-        else
-            m_pPlaylistWindow->setCaption( "Amarok" );
-
-
-        //m_pPlaylistWindow->show(); //must be shown //we do below now
-
-        //ensure that at least one Menu is plugged into an accessible UI element
-        if( !AmarokConfig::showMenuBar() && !Amarok::actionCollection()->action( "amarok_menu" )->isPlugged() )
-           playlistWindow()->createGUI();
-    }
-
     playlistWindow()->applySettings();
     Scrobbler::instance()->applySettings();
     Amarok::OSD::instance()->applySettings();
@@ -809,7 +744,7 @@ App::continueInit()
         AmarokConfig::setSoundSystem( engine );
     }
     Debug::stamp();
-    //create engine, show PlayerWindow, show TrayIcon etc.
+    //create engine, show TrayIcon etc.
     applySettings( true );
     Debug::stamp();
     // Start ScriptManager. Must be created _after_ PlaylistWindow.
@@ -1020,7 +955,7 @@ bool Amarok::genericEventHandler( QWidget *recipient, QEvent *e )
     {
         #define e static_cast<QWheelEvent*>(e)
 
-        //this behaviour happens for the systray and the player window
+        //this behaviour happens for the systray
         //to override one, override it in that class
 
         switch( e->state() )
@@ -1082,9 +1017,7 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
     switch( state )
     {
     case Engine::Empty:
-        if ( AmarokConfig::showPlayerWindow() )
-            m_pPlaylistWindow->setCaption( KInstance::makeStandardCaption( i18n("Playlist") ) );
-        else m_pPlaylistWindow->setCaption( "Amarok" );
+        m_pPlaylistWindow->setCaption( "Amarok" );
         TrackToolTip::instance()->clear();
         Amarok::OSD::instance()->setImage( KIconLoader().iconPath( "amarok", -K3Icon::SizeHuge ) );
         break;
@@ -1101,9 +1034,7 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
         break;
 
     case Engine::Idle:
-        if ( AmarokConfig::showPlayerWindow() )
-            m_pPlaylistWindow->setCaption( KInstance::makeStandardCaption( i18n("Playlist") ) );
-        else m_pPlaylistWindow->setCaption( "Amarok" );
+        m_pPlaylistWindow->setCaption( "Amarok" );
         break;
 
     default:
@@ -1279,8 +1210,7 @@ void App::slotTrashResult( KIO::Job *job )
 
 QWidget *App::mainWindow() const
 {
-    return AmarokConfig::showPlayerWindow() ? static_cast<QWidget*>( m_pPlayerWindow )
-                                            : static_cast<QWidget*>( m_pPlaylistWindow );
+    return static_cast<QWidget*>( m_pPlaylistWindow );
 }
 
 void App::quit()

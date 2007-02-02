@@ -246,7 +246,6 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libanalyzers_SRCS}
    mydiroperator.cpp 
    osd.cpp 
    pixmapviewer.cpp 
-   playerwindow.cpp 
    playlist.cpp 
    playlistbrowser.cpp 
    playlistbrowseritem.cpp 
@@ -439,7 +438,6 @@ kde4_install_icons( ${ICON_INSTALL_DIR} )
 #    organizecollectiondialog.ui \
 #    osd.cpp \
 #    pixmapviewer.cpp \
-#    playerwindow.cpp \
 #    playlist.cpp \
 #    playlistbrowser.cpp \
 #    playlistbrowseritem.cpp \

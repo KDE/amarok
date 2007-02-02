@@ -34,7 +34,6 @@ email                : markey@web.de
 #include "Options8.h"
 #include "osd.h"
 #include "playlistwindow.h"
-#include "playerwindow.h"
 #include "plugin/pluginconfig.h"
 #include "pluginmanager.h"
 
@@ -96,7 +95,6 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
             m_opt1->kcfg_ShowSplashscreen->setEnabled(false);
             m_opt1->kcfg_ShowTrayIcon->setEnabled(false);
             m_opt1->kcfg_AnimateTrayIcon->setEnabled(false);
-            m_opt1->kcfg_ShowPlayerWindow->setEnabled(false);
 #endif
             m_opt2 = new Options2( 0, "Appearance" );
             m_opt4 = new Options4( 0, "Playback" );

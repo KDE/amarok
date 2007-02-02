@@ -112,7 +112,6 @@ libamarok_la_SOURCES = \
     organizecollectiondialog.ui \
     osd.cpp \
     pixmapviewer.cpp \
-    playerwindow.cpp \
     playlist.cpp \
     playlistbrowser.cpp \
     playlistbrowseritem.cpp \

@@ -29,7 +29,6 @@
 #include "metabundle.h"
 #include "mountpointmanager.h"
 #include "osd.h"
-#include "playerwindow.h"
 #include "playlistitem.h"
 #include "playlistbrowser.h"
 #include "playlistbrowseritem.h" //for stream editor dialog

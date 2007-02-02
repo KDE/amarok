@@ -159,31 +159,6 @@
                         </widget>
                         <widget class="QLabel" row="1" column="0">
                             <property name="name">
-                                <cstring>textLabel1</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>1</hsizetype>
-                                    <vsizetype>5</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="text">
-                                <string>Player Window:</string>
-                            </property>
-                            <property name="alignment">
-                                <set>AlignVCenter</set>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>The font to use in the player window.</string>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>The font to use in the player window.</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="2" column="0">
-                            <property name="name">
                                 <cstring>textLabel3_2</cstring>
                             </property>
                             <property name="sizePolicy">
@@ -204,31 +179,9 @@
                                 <string>The font to use in the context browser.</string>
                             </property>
                         </widget>
-                        <widget class="KFontRequester" row="2" column="1">
-                            <property name="name">
-                                <cstring>kcfg_ContextBrowserFont</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>5</hsizetype>
-                                    <vsizetype>5</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="sampleText">
-                                <string></string>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>The font to use in the context browser.</string>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>The font to use in the context browser.</string>
-                            </property>
-                        </widget>
                         <widget class="KFontRequester" row="1" column="1">
                             <property name="name">
-                                <cstring>kcfg_PlayerWidgetFont</cstring>
+                                <cstring>kcfg_ContextBrowserFont</cstring>
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>

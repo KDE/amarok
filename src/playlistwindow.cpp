@@ -402,7 +402,6 @@ void PlaylistWindow::init()
     static_cast<KToggleAction *>(actionCollection()->action(KStandardAction::name(KStandardAction::ShowMenubar)))->setChecked( AmarokConfig::showMenuBar() );
     actionCollection()->action(KStandardAction::name(KStandardAction::ShowMenubar))->plug( m_settingsMenu );
     m_settingsMenu->insertItem( AmarokConfig::showToolbar() ? i18n( "Hide Toolbar" ) : i18n("Show Toolbar"), ID_SHOW_TOOLBAR );
-    m_settingsMenu->insertItem( AmarokConfig::showPlayerWindow() ? i18n("Hide Player &Window") : i18n("Show Player &Window"), ID_SHOW_PLAYERWINDOW );
     m_settingsMenu->insertSeparator();
 #endif
 
@@ -1085,11 +1084,6 @@ void PlaylistWindow::slotMenuActivated( int index ) //SLOT
         AmarokConfig::setShowToolbar( !AmarokConfig::showToolbar() );
         actionCollection()->action(KStandardAction::name(KStandardAction::ShowMenubar))->setEnabled( m_toolbar->isShown() );
         m_settingsMenu->changeItem( index, m_toolbar->isShown() ? i18n("Hide Toolbar") : i18n("Show Toolbar") );
-        break;
-    case ID_SHOW_PLAYERWINDOW:
-        AmarokConfig::setShowPlayerWindow( !AmarokConfig::showPlayerWindow() );
-        m_settingsMenu->changeItem( index, AmarokConfig::showPlayerWindow() ? i18n("Hide Player &Window") : i18n("Show Player &Window") );
-        QTimer::singleShot( 0, kapp, SLOT( applySettings() ) );
         break;
     case Amarok::Menu::ID_RESCAN_COLLECTION:
         CollectionDB::instance()->startScan();

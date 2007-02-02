@@ -116,20 +116,6 @@
                         </widget>
                     </hbox>
                 </widget>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>kcfg_ShowPlayerWindow</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Show player window</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Check to enable an extra player window.</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Check to enable an extra player window.</string>
-                    </property>
-                </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
                         <cstring>layout4</cstring>
@@ -435,10 +421,10 @@
                                 <bool>true</bool>
                             </property>
                             <property name="toolTip" stdset="0">
-                                <string>Displays a visual representation of the current track in the slider bar of the player window and a column in the playlist window.</string>
+                                <string>Displays a visual representation of the current track in the column of the playlist window.</string>
                             </property>
                             <property name="whatsThis" stdset="0">
-                                <string>Displays a visual representation of the current track in the slider bar of the player window and a column in the playlist window.</string>
+                                <string>Displays a visual representation of the current track in the column of the playlist window.</string>
                             </property>
                         </widget>
                         <widget class="QLayoutWidget">

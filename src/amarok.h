@@ -103,8 +103,7 @@ namespace Amarok
     QPixmap getJPG( const QString& /*fileName*/ ); //defined in app.cpp
 
     /**
-     * The mainWindow is the playlistWindow or the playerWindow depending on
-     * the configuration of Amarok
+     * The mainWindow is the playlistWindow
      */
     QWidget *mainWindow(); //defined in app.cpp
 
