@@ -105,7 +105,7 @@ Analyzer::Base<W>::drawFrame()
         int i = 0;
 
         // convert to mono here - our built in analyzers need mono, but we the engines provide interleaved pcm
-        for( uint x = 0; (int)x < m_fht->size(); ++x ) 
+        for( uint x = 0; (int)x < m_fht->size(); ++x )
         {
            scope[x] = double(thescope[i] + thescope[i+1]) / (2*(1<<15));
            i += 2;
@@ -193,7 +193,8 @@ Analyzer::Base<W>::demo() //virtual
 Analyzer::Base2D::Base2D( QWidget *parent, uint timeout, uint scopeSize )
    : Base<QWidget>( parent, timeout, scopeSize )
 {
-    setWFlags( Qt::WNoAutoErase ); //no flicker
+    // Commentted out when porting
+    //setWFlags( Qt::WNoAutoErase ); //no flicker
 
     connect( &m_timer, SIGNAL( timeout() ), SLOT( draw() ) );
 }

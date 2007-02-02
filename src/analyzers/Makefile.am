@@ -14,17 +14,17 @@ INCLUDES = \
     $(all_includes)
 
 libanalyzers_la_SOURCES = \
-    analyzerbase.cpp \
-    analyzerfactory.cpp \
-    baranalyzer.cpp \
-    blockanalyzer.cpp \
-    glanalyzer.cpp \
-    glanalyzer2.cpp \
-    glanalyzer3.cpp \
-    sonogram.cpp \
-    turbine.cpp \
-    boomanalyzer.cpp
+    analyzerbase.cpp
+#    analyzerfactory.cpp \
+#    baranalyzer.cpp \
+#    blockanalyzer.cpp \
+#    glanalyzer.cpp \
+#    glanalyzer2.cpp \
+#    glanalyzer3.cpp \
+#    sonogram.cpp \
+#    turbine.cpp \
+#    boomanalyzer.cpp
 
 
 
-    
+
