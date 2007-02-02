@@ -301,7 +301,7 @@ kde4_add_ui3_files(amarok_LIB_SRCS
 
 kde4_add_library(amarok SHARED ${amarok_LIB_SRCS})
 
-target_link_libraries(amarok  ${KDE4_KDECORE_LIBS} ${KDE4_KUTILS_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_KHTML_LIBS} ${KDE4_KNEWSTUFF_LIBS} ${TAGLIB_LIBRARIES} ${SQLITE_LIBRARIES} ${KDE4_KDE3SUPPORT_LIBS})
+target_link_libraries(amarok  ${KDE4_KUTILS_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_KHTML_LIBS} ${KDE4_KNEWSTUFF_LIBS} ${TAGLIB_LIBRARIES} ${SQLITE_LIBRARIES} ${KDE4_KDE3SUPPORT_LIBS})
 
 set_target_properties(amarok PROPERTIES VERSION 1.0.0 SOVERSION 1 )
 install_targets(${LIB_INSTALL_DIR} amarok )
@@ -319,19 +319,19 @@ kde4_add_executable(amarokapp ${amarokapp_SRCS})
 
 target_link_libraries(amarokapp  ${KDE4_KDECORE_LIBS} amarok )
 
-install_targets(/bin amarokapp )
+install(TARGETS amarokapp DESTINATION ${BIN_INSTALL_DIR})
 
 
 ########### install files ###############
 
-install_files( ${XDG_APPS_DIR} FILES  amarok.desktop )
-install_files( ${DATA_INSTALL_DIR}/profiles FILES  amarok.profile.xml )
-install_files( ${CONFIG_INSTALL_DIR} FILES  amarokrc )
-install_files( ${SERVICETYPES_INSTALL_DIR} FILES  amarok_plugin.desktop )
-install_files( ${DATA_INSTALL_DIR}/amarok FILES  amarokui.rc      amarokui_xmms.rc )
-install_files( ${DATA_INSTALL_DIR}/konqueror/servicemenus FILES  amarok_append.desktop )
+install( FILES amarok.desktop DESTINATION ${XDG_APPS_DIR} )
+install(FILES  amarok.profile.xml DESTINATION ${DATA_INSTALL_DIR}/profiles )
+install(FILES amarokrc DESTINATION ${CONFIG_INSTALL_DIR})
+install( FILES amarok_plugin.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
+install(FILES  amarokui.rc      amarokui_xmms.rc DESTINATION ${DATA_INSTALL_DIR}/amarok)
+install(FILES  amarok_append.desktop DESTINATION ${DATA_INSTALL_DIR}/konqueror/servicemenus)
 
-kde4_install_icons( ${ICON_INSTALL_DIR}  hicolor )
+kde4_install_icons( ${ICON_INSTALL_DIR} )
 
 
 
