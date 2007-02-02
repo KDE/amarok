@@ -60,13 +60,13 @@ namespace Debug
     class Indent : QObject
     {
         friend Q3CString &modifieableIndent();
-        Indent() : QObject( qApp, "DEBUG_indent" ) {}
+        Indent() : QObject( qApp ) { setObjectName( "DEBUG_indent" ); }
         Q3CString m_string;
     };
 
     inline Q3CString &modifieableIndent()
     {
-        QObject *o = qApp ? qApp->child( "DEBUG_indent" ) : 0;
+        QObject* o = qApp ? qApp->findChild<QObject*>( "DEBUG_indent" ) : 0;
         Q3CString &ret = (o ? static_cast<Indent*>( o ) : new Indent)->m_string;
         return ret;
     }
