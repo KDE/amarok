@@ -1093,7 +1093,7 @@ Moodbar::readFile( void )
 
         QString path2 = moodFilename( m_bundle->url(),
                                       !AmarokConfig::moodsWithMusic() );
-        moodFile.setName( path2 );
+        moodFile.setFileName( path2 );
 
         if( !QFile::exists( path2 )  ||
             !moodFile.open( QIODevice::ReadOnly ) )
@@ -1105,7 +1105,7 @@ Moodbar::readFile( void )
         moodFile.close();
         if( !copyFile( path2, path ) )
           return false;
-        moodFile.setName( path );
+        moodFile.setFileName( path );
         if( !moodFile.open( QIODevice::ReadOnly ) )
           return false;
       }
@@ -1367,7 +1367,7 @@ Moodbar::copyFile( const QString &srcPath, const QString &dstPath )
     return false;
   QByteArray contents = file.readAll();
   file.close();
-  file.setName( dstPath );
+  file.setFileName( dstPath );
   if( !file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     return false;
   bool res = ( uint( file.writeBlock( contents ) ) == contents.size() );

@@ -242,7 +242,7 @@ EqualizerSetup::loadPresets()
 
     QFile file( presetsCache() );
     if ( !file.exists() )
-        file.setName( locate( "data", "amarok/data/equalizer_presets.xml" ) );
+        file.setFileName( locate( "data", "amarok/data/equalizer_presets.xml" ) );
 
     Q3TextStream stream( &file );
     stream.setEncoding( Q3TextStream::UnicodeUTF8 );

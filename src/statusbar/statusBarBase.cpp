@@ -643,17 +643,17 @@ StatusBar::writeLogFile( const QString &text )
         for( ; c > 0; c-- )
         {
             QString log = logBase + QString::number(c);
-            file.setName( log );
+            file.setFileName( log );
 
             if( QFile::exists( log ) && file.size() <= maxSize )
                 break;
         }
-        if( c == 0 ) file.setName( logBase + '0' );
+        if( c == 0 ) file.setFileName( logBase + '0' );
         m_logCounter = c;
     }
     else
     {
-        file.setName( logBase + QString::number(m_logCounter) );
+        file.setFileName( logBase + QString::number(m_logCounter) );
     }
 
     if( file.size() > maxSize )
@@ -661,7 +661,7 @@ StatusBar::writeLogFile( const QString &text )
         m_logCounter++;
         m_logCounter = m_logCounter % counter;
 
-        file.setName( logBase + QString::number(m_logCounter) );
+        file.setFileName( logBase + QString::number(m_logCounter) );
         // if we have overflown the log, then we want to overwrite the previous content
         if( !file.open( QIODevice::WriteOnly ) ) return;
     }
