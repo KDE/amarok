@@ -12,7 +12,8 @@
 #include "sliderwidget.h"
 
 #include <kaction.h>
-#include <kactionclasses.h>
+#include <ktoggleaction.h>
+#include <kselectaction.h>
 #include <qpointer.h>
 //Added by qt3to4:
 #include <QResizeEvent>

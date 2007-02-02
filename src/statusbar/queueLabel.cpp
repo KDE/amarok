@@ -25,6 +25,7 @@
 #include "queueLabel.h"
 //Added by qt3to4:
 #include <QMouseEvent>
+#include <QDesktopWidget>
 #include <Q3PtrList>
 #include <QEvent>
 #include "statusbar.h"
@@ -35,6 +36,7 @@
 #include <qpixmap.h>
 #include <qtimer.h>
 
+#include <kaction.h>
 #include <kactioncollection.h>
 #include <kglobal.h>
 #include <kiconloader.h>
@@ -178,11 +180,12 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
 
     const uint count = queue.count();
     if( length )
-        menu->insertTitle( i18n( "1 Queued Track (%1)", "%n Queued Tracks (%1)", count )
+        menu->addTitle( i18np( "1 Queued Track (%1)", "%n Queued Tracks (%1)", count )
                            .arg( MetaBundle::prettyLength( length, true ) ) );
     else
-        menu->insertTitle( i18n( "1 Queued Track", "%n Queued Tracks", count ) );
-    Amarok::actionCollection()->action( "queue_manager" )->plug( menu );
+        menu->addTitle( i18np( "1 Queued Track", "%n Queued Tracks", count ) );
+    menu->addAction(Amarok::actionCollection()->action( "queue_manager" ));
+
     menu->insertItem( SmallIconSet( Amarok::icon( "rewind" ) ),
                       count > 1 ? i18n( "&Dequeue All Tracks" ) : i18n( "&Dequeue Track" ), 0 );
     menu->insertSeparator();
@@ -201,7 +204,7 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
         {
             menus.append( new KMenu );
             menu->insertSeparator();
-            menu->insertItem( i18n( "1 More Track", "%n More Tracks", count - i + 1 ), menus.getLast() );
+            menu->insertItem( i18np( "1 More Track", "%n More Tracks", count - i + 1 ), menus.getLast() );
             menu = menus.getLast();
         }
     }
@@ -224,8 +227,8 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
 
     mx = mapXToGlobal( 0 ) - ( mw - width() ) / 2;
 
-    int id = menu->exec( QPoint( mx, my ) );
-    if( id < 0 )
+    menu->exec( QPoint( mx, my ) );
+    /*if( id < 0 )
         m_timer.start( 50, true );
     else if( id == 0 ) //dequeue
     {
@@ -239,7 +242,7 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
         PlaylistItem *selected = queue.at( id - 1 );
         if( selected )
             pl->ensureItemCentered( selected );
-    }
+    }*/
 }
 
 void QueueLabel::showToolTip()
@@ -268,7 +271,7 @@ void QueueLabel::showToolTip()
         }
         if( length )
             text += QString("<center>%1</center>")
-                    .arg( i18n( "1 track (%1)", "%n tracks (%1)", count )
+                    .arg( i18np( "1 track (%1)", "%n tracks (%1)", count )
                           .arg( MetaBundle::prettyLength( length, true ) ) );
     }
 

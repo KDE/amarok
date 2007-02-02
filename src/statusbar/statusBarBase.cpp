@@ -29,7 +29,7 @@
 #include <kio/job.h>
 #include <kiconloader.h>
 #include <klocale.h>
-#include <kstdguiitem.h>
+#include <kstandardguiitem.h>
 
 #include <qapplication.h>
 #include <qdatetime.h>      //writeLogFile()
@@ -54,6 +54,8 @@
 #include <Q3Frame>
 #include <QEvent>
 #include <QPaintEvent>
+#include <QStyleOption>
+#include <Q3TextStream>
 
 //segregated classes
 #include "popupMessage.h"
@@ -154,9 +156,10 @@ StatusBar::polish()
     QWidget::polish();
 
     int h = 0;
-    QObjectList *list = queryList( "QWidget", 0, false, false );
+    QObjectList list = queryList( "QWidget", 0, false, false );
 
-    for( QObject * o = list->first(); o; o = list->next() ) {
+    for( QObjectList::iterator it = list.begin(); it != list.end(); it++ ) {
+        QObject *o = *it;
         int _h = static_cast<QWidget*>( o ) ->minimumSizeHint().height();
         if ( _h > h )
             h = _h;
@@ -169,34 +172,30 @@ StatusBar::polish()
 
     h -= 4; // it's too big usually
 
-    for ( QObject * o = list->first(); o; o = list->next() )
+    for( QObjectList::iterator it = list.begin(); it != list.end(); it++ ) {
+        QObject *o = *it;
         static_cast<QWidget*>(o)->setFixedHeight( h );
-
-    delete list;
+    }
 }
 
 void
 StatusBar::paintEvent( QPaintEvent* )
 {
-    QObjectList *list = queryList( "QWidget", 0, false, false );
+    QObjectList list = queryList( "QWidget", 0, false, false );
     QPainter p( this );
 
-    for( QObject * o = list->first(); o; o = list->next() ) {
+    for( QObjectList::iterator it = list.begin(); it != list.end(); it++ ) {
+        QObject *o = *it;
         QWidget *w = static_cast<QWidget*>( o );
 
         if ( !w->isVisible() )
             continue;
-
-        style().drawPrimitive(
-                QStyle::PE_StatusBarSection,
-                &p,
-                QRect( w->x() - 1, w->y() - 1, w->width() + 2, w->height() + 2 ),
-                colorGroup(),
-                QStyle::Style_Default,
-                QStyleOption( w ) );
+        QStyleOption option( 1, QStyleOption::SO_Default );
+        style()->drawPrimitive(
+                QStyle::PE_FrameStatusBar,
+                &option,
+                &p);
     }
-
-    delete list;
 }
 
 bool

@@ -23,7 +23,7 @@
 #include <config.h>
 #include "metabundle.h"
 
-#include <kpixmap.h>
+#include <QPixmap>
 #include <kurl.h>
 
 #include <qpixmap.h>
@@ -76,7 +76,7 @@ namespace Amarok
             int adjustValue( int v ) const
             {
                int mp = (minValue() + maxValue()) / 2;
-               return orientation() == Vertical ? mp - (v - mp) : v;
+               return orientation() == Qt::Vertical ? mp - (v - mp) : v;
             }
 
         private:
@@ -158,7 +158,7 @@ namespace Amarok
             QTimer* m_animTimer;
 
             QPixmap m_pixmapInset;
-            KPixmap m_pixmapGradient;
+            QPixmap m_pixmapGradient;
 
             Q3ValueVector<QPixmap> m_handlePixmaps;
     };

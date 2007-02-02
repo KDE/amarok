@@ -851,7 +851,7 @@ NavButton::NavButton( QWidget *parent, const QString &icon, KAction *action )
     , m_glowIndex( 0 )
 {
     // Prevent flicker
-    setWFlags( Qt::WNoAutoErase );
+    setWindowFlags( Qt::WNoAutoErase );
 
     QPixmap pixmap( getPNG( "b_" + icon ) );
     KIconEffect ie;

@@ -30,6 +30,7 @@
 
 #include <kglobalsettings.h>
 #include <kiconloader.h>
+#include <kactioncollection.h>
 #include <qicon.h>
 #include <qlabel.h>
 #include <qtimer.h>
@@ -75,7 +76,7 @@ class SelectLabel : public QLabel
             do //TODO doesn't handle all of them being disabled, but we don't do that anyways.
             {
                 n = ( uint( n ) == m_action->items().count() - 1 ) ? 0 : n + 1;
-            } while ( !m_action->popupMenu()->isItemEnabled( n ) );
+            } while ( !m_action->menu()->isItemEnabled( n ) );
             if( isEnabled() )
             {
                 setCurrentItem( n );

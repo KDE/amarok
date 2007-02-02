@@ -21,8 +21,11 @@
 #define AMAROK_TIMELABEL_H
 
 #include <qlabel.h>
+#include <kglobalsettings.h>
 //Added by qt3to4:
 #include <QMouseEvent>
+
+
 
 class TimeLabel : public QLabel
 {

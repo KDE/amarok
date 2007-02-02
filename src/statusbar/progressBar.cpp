@@ -23,7 +23,8 @@
 
 #include <klocale.h>
 #include <kpushbutton.h>
-#include <kstdguiitem.h>
+#include <kstandardguiitem.h>
+#include <kguiitem.h>
 
 #include <qlabel.h>
 

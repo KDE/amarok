@@ -88,7 +88,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
         , m_engineConfig( 0 )
         , m_opt4( 0 )
 {
-    setWFlags( WDestructiveClose );
+    setWindowFlags( WDestructiveClose );
 
     // IMPORTANT Don't simply change the page names, they are used as identifiers in other parts of the app.
             m_opt1 = new Options1( 0, "General" );

@@ -25,7 +25,7 @@
 
 #include <k3activelabel.h>
 #include <kpushbutton.h>
-#include <kstdguiitem.h>
+#include <kstandardguiitem.h>
 
 #include <qfont.h>
 #include <q3frame.h>
@@ -34,6 +34,7 @@
 #include <qpainter.h>
 #include <qtimer.h>
 #include <qtooltip.h>
+#include <kguiitem.h>
 //Added by qt3to4:
 #include <Q3HBoxLayout>
 #include <QTimerEvent>
@@ -58,7 +59,7 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
 {
     setFrameStyle( Q3Frame::Panel | Q3Frame::Raised );
     setFrameShape( Q3Frame::StyledPanel );
-    setWFlags( Qt::WX11BypassWM );
+    setWindowFlags( Qt::WX11BypassWM );
 
     QPalette p = QToolTip::palette();
     setPalette( p );
@@ -79,7 +80,7 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
     label = new QLabel( this, "image" );
     hbox->add( label );
 
-    alabel = new K3ActiveLabel( this, "label" );
+    alabel = new K3ActiveLabel( this );
     alabel->setTextFormat( Qt::RichText );
     alabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
     alabel->setPalette( p );
@@ -89,7 +90,7 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
     hbox = new Q3HBoxLayout( m_layout );
 
     hbox->addItem( new QSpacerItem( 4, 4, QSizePolicy::Expanding, QSizePolicy::Preferred ) );
-    hbox->add( new KPushButton( KStandardGuiItem::close(), this, "closeButton" ) );
+    hbox->add( new KPushButton( KStandardGuiItem::close(), this ) );
 
     connect( child( "closeButton" ), SIGNAL(clicked()), SLOT(close()) );
 }
@@ -231,7 +232,7 @@ void PopupMessage::dissolveMask()
 
         if( m_dissolveSize > 0 )
         {
-            maskPainter.setRasterOp( Qt::EraseROP );
+            maskPainter.setCompositionMode( QPainter::CompositionMode_SourceOut );
 
             int x, y, s;
             const int size = 16;

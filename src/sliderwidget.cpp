@@ -158,7 +158,7 @@ Amarok::PrettySlider::PrettySlider( Qt::Orientation orientation, SliderMode mode
 {
     if( m_mode == Pretty)
       {
-        setWFlags( Qt::WNoAutoErase );
+        setWindowFlags( Qt::WNoAutoErase );
         setFocusPolicy( Qt::NoFocus );
       }
 
@@ -366,7 +366,7 @@ Amarok::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
     , m_animTimer( new QTimer( this ) )
     , m_pixmapInset( QPixmap( locate( "data","amarok/images/volumeslider-inset.png" ) ) )
 {
-    setWFlags( getWFlags() | Qt::WNoAutoErase );
+    setWindowFlags( getWindowFlags() | Qt::WNoAutoErase );
     setFocusPolicy( Qt::NoFocus );
 
     // BEGIN Calculate handle animation pixmaps for mouse-over effect

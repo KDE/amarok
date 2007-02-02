@@ -381,7 +381,7 @@ void TagDialog::resetMusicbrainz() //SLOT
 void TagDialog::init()
 {
     // delete itself when closing
-    setWFlags( getWFlags() | Qt::WDestructiveClose );
+    setWindowFlags( getWindowFlags() | Qt::WDestructiveClose );
 
     KConfig *config = Amarok::config( "TagDialog" );
 

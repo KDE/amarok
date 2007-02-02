@@ -103,7 +103,7 @@ CoverManager::CoverManager()
     // Sets caption and icon correctly (needed e.g. for GNOME)
     kapp->setTopWidget( this );
     setCaption( KInstance::makeStandardCaption( i18n("Cover Manager") ) );
-    setWFlags( WDestructiveClose );
+    setWindowFlags( WDestructiveClose );
     setMargin( 4 );
 
     //artist listview

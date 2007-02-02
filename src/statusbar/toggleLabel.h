@@ -27,7 +27,7 @@
 #include "overlayWidget.h"
 #include "popupMessage.h"
 
-#include <kactionclasses.h>
+#include <ktoggleaction.h>
 #include <kglobalsettings.h>
 #include <kiconloader.h>
 #include <qicon.h>
@@ -118,15 +118,13 @@ class ToggleLabel : public QLabel
                 tip += i18n("&nbsp;<br>&nbsp;<i>Disabled</i>");
 
             tip += "&nbsp;";
-            const QString path = KIconLoader::global()->iconPath( m_action->icon(), -K3Icon::SizeHuge );
-
 
             m_tooltip = new KDE::PopupMessage( parentWidget()->parentWidget(), parentWidget(), 0 /*timeout*/ );
             m_tooltip->setShowCloseButton( false );
             m_tooltip->setShowCounter( false );
             m_tooltip->setMaskEffect( KDE::PopupMessage::Plain );
             m_tooltip->setText( tip.arg(m_action->text().remove('&') ) );
-            m_tooltip->setImage( path );
+            m_tooltip->setImage( m_action->icon().pixmap(QSize(22, 22)) );
 
             m_tooltip->reposition();
             m_tooltip->display();

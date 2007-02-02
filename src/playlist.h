@@ -22,7 +22,7 @@
 #include <config.h>
 #include "amarok_export.h"
 #include "amarokconfig.h"
-#include "amarokdcophandler.h"
+//#include "amarokdcophandler.h"
 #include "engineobserver.h"  //baseclass
 #include "dynamicmode.h"
 #include "playlistwindow.h"  //friend
@@ -195,8 +195,8 @@ class Playlist : private K3ListView, public EngineObserver, public Amarok::ToolT
         friend class QueueLabel;
         friend class PlaylistWindow;
         friend class ColumnList;
-        friend void Amarok::DcopPlaylistHandler::removeCurrentTrack(); //calls removeItem() and currentTrack()
-        friend void Amarok::DcopPlaylistHandler::removeByIndex( int ); //calls removeItem()
+//        friend void Amarok::DcopPlaylistHandler::removeCurrentTrack(); //calls removeItem() and currentTrack()
+//        friend void Amarok::DcopPlaylistHandler::removeByIndex( int ); //calls removeItem()
         friend class TagWriter; //calls removeItem()
         friend void PlaylistWindow::init(); //setting up connections etc.
         friend TrackToolTip::TrackToolTip();

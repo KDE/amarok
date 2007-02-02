@@ -749,7 +749,7 @@ MultiTabBarTab::MultiTabBarTab( const QPixmap& pic, const QString& text,
     setToggleButton( true );
 
     // Prevent flicker on redraw
-    setWFlags( getWFlags() | Qt::WNoAutoErase );
+    setWindowFlags( getWindowFlags() | Qt::WNoAutoErase );
 }
 
 MultiTabBarTab::~MultiTabBarTab()

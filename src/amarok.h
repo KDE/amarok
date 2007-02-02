@@ -158,7 +158,7 @@ namespace Amarok
 #if KDE_VERSION < KDE_MAKE_VERSION(3,5,0)
         return url;
 #else
-        return KIO::NetAccess::mostLocalURL( url, mainWindow() );
+        return KIO::NetAccess::mostLocalUrl( url, mainWindow() );
 #endif
     }
 

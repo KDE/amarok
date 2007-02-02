@@ -50,7 +50,7 @@
 namespace Amarok {
 
 
-KAction *action( const char *name ) { return Amarok::actionCollection()->action( name ); }
+KAction *action( const char *name ) { return (KAction*)Amarok::actionCollection()->action( name ); }
 
 //TODO disable hide statusbar? or show when required? that sucks though.
 
@@ -111,7 +111,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 
     if( !AmarokConfig::leftTimeDisplayEnabled() )
         m_timeLabel->hide();
- 
+
     connect( m_slider, SIGNAL(sliderReleased( int )), EngineController::instance(), SLOT(seek( int )) );
     connect( m_slider, SIGNAL(valueChanged( int )), SLOT(drawTimeDisplay( int )) );
 
@@ -175,7 +175,7 @@ StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
     QString length      = escapeHTML( bundle.prettyLength() );
     #undef escapeHTML
 
-    if ( bundle.artist() == "Mike Oldfield" && bundle.title() == "Amarok" ) {
+    if ( bundle.artist() == QString("Mike Oldfield") && bundle.title() == QString("Amarok") ) {
         longMessage( i18n(
                 "<p>One of Mike Oldfield's best pieces of work, Amarok, inspired the name behind "
                 "the audio-player you are currently using. Thanks for choosing Amarok!</p>"
@@ -185,16 +185,16 @@ StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 
     // ugly because of translation requirements
     if( !title.isEmpty() && !artist.isEmpty() && !album.isEmpty() )
-        title = i18n( "track by artist on album", "<b>%1</b> by <b>%2</b> on <b>%3</b>" )
+        title = i18nc( "track by artist on album", "<b>%1</b> by <b>%2</b> on <b>%3</b>" )
                 .arg( title, artist, album );
 
     else if( !title.isEmpty() && !artist.isEmpty() )
-        title = i18n( "track by artist", "<b>%1</b> by <b>%2</b>" )
+        title = i18nc( "track by artist", "<b>%1</b> by <b>%2</b>" )
                 .arg( title, artist );
 
     else if( !album.isEmpty() )
         // we try for pretty title as it may come out better
-        title = i18n( "track on album", "<b>%1</b> on <b>%2</b>" )
+        title = i18nc( "track on album", "<b>%1</b> on <b>%2</b>" )
                .arg( prettyTitle, album );
     else
         title = "<b>" + prettyTitle + "</b>";
@@ -227,7 +227,7 @@ StatusBar::slotItemCountChanged( int newCount, int newLength,  //total
                  : ( hasVis && newCount == 1 ) ? i18n( "0 visible of 1 track" )
                  : ( hasVis ) ? i18n( "%1 visible of %2 tracks" ).arg( visCount).arg( newCount )
                  : ( hasSel ) ? i18n( "%1 selected of %2 tracks" ).arg( selCount ).arg( newCount )
-                 : i18n( "1 track", "%n tracks", newCount );
+                 : i18np( "1 track", "%n tracks", newCount );
 
     int getValue = 0;
 
@@ -241,7 +241,7 @@ StatusBar::slotItemCountChanged( int newCount, int newLength,  //total
         getValue = newLength;
 
     if( getValue )
-        m_itemCountLabel->setText( i18n( "X visible/selected tracks (time) ", "%1 (%2)" ).arg( text, MetaBundle::fuzzyTime( getValue ) ) );
+        m_itemCountLabel->setText( i18nc( "X visible/selected tracks (time) ", "%1 (%2)" ).arg( text, MetaBundle::fuzzyTime( getValue ) ) );
     else
         m_itemCountLabel->setText( text );
 

@@ -181,7 +181,7 @@ OSDWidget::determineMetrics( const uint M )
             AlignCenter | WordBreak, m_text );
 
     if( m_volume )
-    {	
+    {
         static const QString tmp = QString ("******").insert( 3,
             ( i18n("Volume: 100%").length() >= i18n("Mute").length() )?
             i18n("Volume: 100%") : i18n("Mute") );
@@ -696,8 +696,8 @@ Amarok::OSD::show( const MetaBundle &bundle ) //slot
 
             if( bundle.length() <= 0 )
                 args["length"] = QString::null;
-	    
-	    
+
+
 	    uint time=EngineController::instance()->engine()->position();
 	    uint sec=(time/1000)%60;	//is there a better way to calculate the time?
 	    time /= 1000;
