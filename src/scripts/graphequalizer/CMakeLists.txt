@@ -1,10 +1,5 @@
 
-include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
-
-
-########### install files ###############
-
-install_files( ${DATA_INSTALL_DIR}/amarok/scripts/graphequalizer FILES  README )
+install_files(FILES  README  DESTINATION ${DATA_INSTALL_DIR}/amarok/scripts/graphequalizer )
 
 
 
