@@ -26,14 +26,14 @@
 #include <qfile.h>
 
 MagnatuneArtistInfoBox::MagnatuneArtistInfoBox( QWidget *parentWidget, const char *widgetname )
-        : KHTMLPart( parentWidget, widgetname )
+        : KHTMLPart( parentWidget )
 {}
 
 
 MagnatuneArtistInfoBox::~MagnatuneArtistInfoBox()
 {}
 
-bool 
+bool
 MagnatuneArtistInfoBox::displayArtistInfo( KUrl url )
 {
     debug() << "displayArtistInfo started" << endl;
@@ -50,13 +50,13 @@ MagnatuneArtistInfoBox::displayArtistInfo( KUrl url )
     return true;
 }
 
-bool 
+bool
 MagnatuneArtistInfoBox::displayAlbumInfo( MagnatuneAlbum *album )
 {
     const MagnatuneArtist artist = MagnatuneDatabaseHandler::instance()->getArtistById( album->getArtistId() );
     const QString artistName = artist.getName();
 
-    QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" " 
+    QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" "
                        "CONTENT=\"text/html; charset=iso-8859-1\"></HEAD><BODY>";
 
     infoHtml += "<div align=\"center\"><strong>";
@@ -81,7 +81,7 @@ MagnatuneArtistInfoBox::displayAlbumInfo( MagnatuneAlbum *album )
     return true;
 }
 
-void 
+void
 MagnatuneArtistInfoBox::infoDownloadComplete( KIO::Job * downLoadJob )
 {
 
@@ -109,7 +109,7 @@ MagnatuneArtistInfoBox::infoDownloadComplete( KIO::Job * downLoadJob )
 
 }
 
-QString 
+QString
 MagnatuneArtistInfoBox::extractArtistInfo( QString artistPage )
 {
     QString trimmedHtml;
@@ -133,7 +133,7 @@ MagnatuneArtistInfoBox::extractArtistInfo( QString artistPage )
     }
 
 
-    QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" " 
+    QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" "
                        "CONTENT=\"text/html; charset=iso-8859-1\"></HEAD><BODY>";
 
     infoHtml += trimmedHtml;
@@ -145,7 +145,7 @@ MagnatuneArtistInfoBox::extractArtistInfo( QString artistPage )
 
 void MagnatuneArtistInfoBox::resetScrollBars( )
 {
-    //note: the scrollbar methods never return 0 
+    //note: the scrollbar methods never return 0
     view()->horizontalScrollBar()->setValue(0);
     view()->verticalScrollBar()->setValue(0);
 }
