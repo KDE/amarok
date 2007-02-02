@@ -29,6 +29,7 @@ add_subdirectory( statusbar )
 add_subdirectory( engine )
 add_subdirectory( mediadevice )
 add_subdirectory( collectionscanner )
+add_subdirectory( device )
 
 
 set(libsqlite_la_SRCS )
