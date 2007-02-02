@@ -6,7 +6,7 @@ FIND_PATH( KONQSIDEBAR_INCLUDE_DIR konqsidebarplugin.h
 )
 
 if(KONQSIDEBAR_INCLUDE_DIR)
-    add_subdirectory( konquisidebar )
+#   add_subdirectory( konquisidebar ) #disabling for now
 else(KONQSIDEBAR_INCLUDE_DIR)
     MESSAGE(STATUS "You're missing the kdebase header files")
     MESSAGE(STATUS "Konq sidebar will not compiled.")
@@ -80,7 +80,7 @@ endif(SQLITE_FOUND)
 
 include_directories( 
 	${CMAKE_SOURCE_DIR}/amarok/src/amarokcore 
-	${CMAKE_SOURCE_DIR}/amarok/src/klegendary 
+#	${CMAKE_SOURCE_DIR}/amarok/src/klegendary 
 	${CMAKE_SOURCE_DIR}/amarok/src/analyzers 
 	${CMAKE_SOURCE_DIR}/amarok/src/plugin 
 	${CMAKE_SOURCE_DIR}/amarok/src/statusbar 
@@ -95,7 +95,7 @@ set(tagmplib_SRCS
 	${CMAKE_SOURCE_DIR}/amarok/src/metadata/mp4/mp4properties.cpp
 	${CMAKE_SOURCE_DIR}/amarok/src/metadata/mp4/mp4tag.cpp
 	${CMAKE_SOURCE_DIR}/amarok/src/metadata/mp4/mp4file.cpp
-	{CMAKE_SOURCE_DIR}/amarok/src/metadata/mp4/taglib_mp4filetyperesolver.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/mp4/taglib_mp4filetyperesolver.cpp
 	)
 else(MP4V2_FOUND)
 set(tagmplib_SRCS	
@@ -260,7 +260,7 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libanalyzers_SRCS}
    scancontroller.cpp 
    scriptmanager.cpp 
    scrobbler.cpp 
-   sidebarwidget.cpp
+   #sidebarwidget.cpp
    sliderwidget.cpp 
    smartplaylisteditor.cpp 
    socketserver.cpp 
@@ -268,7 +268,7 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libanalyzers_SRCS}
    systray.cpp 
    tagdialog.cpp 
    tagguesser.cpp 
-   threadweaver.cpp 
+   threadmanager.cpp 
    trackpickerdialog.cpp 
    tracktooltip.cpp 
    transferdialog.cpp 
