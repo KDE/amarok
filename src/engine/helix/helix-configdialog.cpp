@@ -65,7 +65,8 @@ HelixConfigEntry::HelixConfigEntry( QWidget *parent,
 
     QToolTip::add( (QWidget *) m_w, "<qt>" + tooltip );
 
-    QLabel* d = new QLabel( description + ':', parent );
+    QLabel* d = new QLabel( parent );
+    d->setBuddy( description + ':' );
     d->setAlignment( Qt::TextWordWrap | Qt::AlignVCenter );
 
     grid->addWidget( (QWidget *) m_w, row, 1 );
@@ -93,7 +94,8 @@ HelixConfigEntry::HelixConfigEntry( QWidget *parent,
 
     QToolTip::add( m_w, "<qt>" + tooltip );
 
-    QLabel* d = new QLabel( description + ':', parent );
+    QLabel* d = new QLabel( parent );
+    d->setBuddy( description + ':' );
     d->setAlignment( Qt::TextWordWrap | Qt::AlignVCenter );
 
     grid->addWidget( m_w, row, 1 );

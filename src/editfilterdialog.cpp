@@ -65,7 +65,8 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     m_appended = false;
 
     // text explanation of this dialog
-    QLabel *label1 = new QLabel( plainPage(), "label1" );
+    QLabel *label1 = new QLabel( plainPage() );
+    label1->setObjectName( "label1" );
     label1->setText( i18n("<p>Edit the filter for finding tracks with specific attributes"
                              ", e.g. you can look for a track that has a length of three minutes.</p>") );
     m_mainLay->addWidget( label1 );
@@ -73,7 +74,8 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
 
     // choosing keyword filtering
     Q3HBoxLayout *keywordLayout = new Q3HBoxLayout( plainPage() );
-    QLabel *label3 = new QLabel( i18n("Attribute:"), plainPage(), "label3" );
+    QLabel *label3 = new QLabel( i18n("Attribute:"), plainPage() );
+    label3->setObjectName( "label3" );
     Q3WhatsThis::add( label3,
       i18nc("you can translate the keyword as you will do for the combobox",
            "<p>Here you can choose to <i>Simple Search</i> directly or to use "
@@ -212,7 +214,8 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
 
     connect(m_spinMin1, SIGNAL(valueChanged(int)), this, SLOT(minSpinChanged(int)));
 
-    m_andLabel = new QLabel( i18n("and"), m_groupBox, "andLabel");
+    m_andLabel = new QLabel( i18n("and"), m_groupBox );
+    m_andLabel->setObjectName( "andLabel" );
     paramLayout->addWidget( m_andLabel );
     paramLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
 
@@ -227,7 +230,8 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
 
     Q3HBoxLayout *filesizeLayout = new Q3HBoxLayout( vertLayout );
     filesizeLayout->setAlignment( AlignLeft );
-    m_filesizeLabel = new QLabel( i18n("Unit:"), m_groupBox, "filesizeLabel");
+    m_filesizeLabel = new QLabel( i18n("Unit:"), m_groupBox );
+    m_filesizeLabel->setObjectName( "filesizeLabel" );
     filesizeLayout->addWidget( m_filesizeLabel );
     filesizeLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Fixed, QSizePolicy::Minimum ) );
     m_comboUnitSize = new QComboBox( m_groupBox, "comboUnitSize" );

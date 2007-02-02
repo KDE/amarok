@@ -77,7 +77,8 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
     m_countdownFrame->setFrameStyle( Q3Frame::Plain | Q3Frame::Box );
     m_countdownFrame->setPaletteForegroundColor( paletteBackgroundColor().dark() );
 
-    label = new QLabel( this, "image" );
+    label = new QLabel( this );
+    label->setObjectName( "image" );
     hbox->add( label );
 
     alabel = new K3ActiveLabel( this );

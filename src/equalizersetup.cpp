@@ -130,7 +130,8 @@ EqualizerSetup::EqualizerSetup()
 
     for ( int i = 0; i < 10; i++ ) {
         Slider *slider = new Slider( Qt::Vertical, slidersLayoutWidget );
-        QLabel *label  = new QLabel( bandLabels[i], slidersLayoutWidget );
+        QLabel *label  = new QLabel( slidersLayoutWidget );
+        label->setBuddy( bandLabels[i] );
 
         slider->setMinValue( -100 );
         slider->setMaxValue( +100 );
@@ -149,9 +150,12 @@ EqualizerSetup::EqualizerSetup()
     graphGBox->setInsideMargin( KDialog::marginHint() );
 
     Q3VBox* graphVBox = new Q3VBox( graphGBox );
-    QLabel* graphLabel1 = new QLabel("+20 db", graphVBox);
-    QLabel* graphLabel2 = new QLabel("0 db", graphVBox);
-    QLabel* graphLabel3 = new QLabel("-20 db", graphVBox);
+    QLabel* graphLabel1 = new QLabel(graphVBox);
+    graphLabel1->setBuddy("+20 db");
+    QLabel* graphLabel2 = new QLabel(graphVBox);
+    graphLabel2->setBuddy("0 db");
+    QLabel* graphLabel3 = new QLabel(graphVBox);
+    graphLabel3->setBuddy("-20 db");
     graphLabel1->setAlignment( Qt::AlignRight | Qt::AlignTop );
     graphLabel2->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
     graphLabel3->setAlignment( Qt::AlignRight | Qt::AlignBottom );

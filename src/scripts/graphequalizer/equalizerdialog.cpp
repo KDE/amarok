@@ -33,7 +33,8 @@ EqualizerDialog::EqualizerDialog()
     Q3BoxLayout* sliderLayout  = new Q3VBoxLayout(this, 5, -1, "sliderLayout");
 
     QSlider*    preampSlider  = new QSlider(-100,100,1,0,QSlider::Vertical,this, "preampSlider");
-    QLabel*     preampLabel   = new QLabel("Pre-amp",this,"preampLabel");
+    QLabel*     preampLabel   = new QLabel("Pre-amp",this);
+    preampLabel->setObjectName("preampLabel");
 
     sliderLayout->addWidget(preampSlider);
     sliderLayout->addWidget(preampLabel);
