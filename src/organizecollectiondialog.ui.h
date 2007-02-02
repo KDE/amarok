@@ -31,13 +31,13 @@ QString OrganizeCollectionDialog::buildDestination( const QString &format, const
         if( i == MetaBundle::Score || i == MetaBundle::PlayCount
             || i == MetaBundle::LastPlayed || i == MetaBundle::Mood )
             continue;
-        args[mb.exactColumnName( i ).lower()] = cleanPath( mb.prettyText( i ) );
+        args[mb.exactColumnName( i ).toLower()] = cleanPath( mb.prettyText( i ) );
     }
     args["artist"] = artist;
     args["albumartist"] = albumartist;
     args["folder"] = folderCombo->currentText();
     args["initial"] = albumartist.mid( 0, 1 ).upper();
-    args["filetype"] = mb.url().path().section( ".", -1 ).lower();
+    args["filetype"] = mb.url().path().section( ".", -1 ).toLower();
     QString track;
     if ( mb.track() )
         track.sprintf( "%02d", mb.track() );
@@ -63,7 +63,7 @@ QString OrganizeCollectionDialog::buildFormatTip() const
         if( i == MetaBundle::Score || i == MetaBundle::PlayCount
             || i == MetaBundle::LastPlayed || i == MetaBundle::Mood )
             continue;
-        args[MetaBundle::exactColumnName( i ).lower()] = MetaBundle::prettyColumnName( i );
+        args[MetaBundle::exactColumnName( i ).toLower()] = MetaBundle::prettyColumnName( i );
     }
     args["albumartist"] = i18n( "%1 or %2" ).arg( "Album Artist, The" , "The Album Artist" );
     args["thealbumartist"] = "The Album Artist";

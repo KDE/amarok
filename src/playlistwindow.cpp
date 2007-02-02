@@ -994,7 +994,7 @@ void PlaylistWindow::playLastfmGlobaltag( int id ) //SLOT
 {
     if( !LastFm::Controller::checkCredentials() ) return;
 
-    const QString tag = m_lastfmTags[id].lower();
+    const QString tag = m_lastfmTags[id].toLower();
     const KUrl url( "lastfm://globaltags/" + tag );
 
     Playlist::instance()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
@@ -1005,7 +1005,7 @@ void PlaylistWindow::addLastfmGlobaltag( int id ) //SLOT
 {
     if( !LastFm::Controller::checkCredentials() ) return;
 
-    const QString tag = m_lastfmTags[id].lower();
+    const QString tag = m_lastfmTags[id].toLower();
     const KUrl url( "lastfm://globaltags/" + tag );
 
     Playlist::instance()->insertMedia( url );

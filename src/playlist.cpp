@@ -3608,7 +3608,7 @@ void
 Playlist::setFilter( const QString &query ) //SLOT
 {
     const bool advanced = ExpressionParser::isAdvancedExpression( query );
-    MyIt it( this, ( !advanced && query.lower().contains( m_prevfilter.lower() ) )
+    MyIt it( this, ( !advanced && query.toLower().contains( m_prevfilter.toLower() ) )
                    ? MyIt::Visible
                    : MyIt::All );
 
@@ -3622,7 +3622,7 @@ Playlist::setFilter( const QString &query ) //SLOT
     }
     else {
         // optimized path
-        const QStringList terms = QStringList::split( ' ', query.lower() );
+        const QStringList terms = QStringList::split( ' ', query.toLower() );
         const MetaBundle::ColumnMask visible = getVisibleColumnMask();
         for(; *it; ++it ) {
             (*it)->setVisible( (*it)->matchesFast(terms, visible));
@@ -4506,9 +4506,9 @@ Playlist::saveSelectedAsPlaylist()
     int suggestion = !album.trimmed().isEmpty() ? 1 : !artist.trimmed().isEmpty() ? 2 : 3;
     while( *it )
     {
-        if( suggestion == 1 && (*it)->album()->lower().trimmed() != album.lower().trimmed() )
+        if( suggestion == 1 && (*it)->album()->lower().trimmed() != album.toLower().trimmed() )
             suggestion = 2;
-        if( suggestion == 2 && (*it)->artist()->lower().trimmed() != artist.lower().trimmed() )
+        if( suggestion == 2 && (*it)->artist()->lower().trimmed() != artist.toLower().trimmed() )
             suggestion = 3;
         if( suggestion == 3 )
             break;

@@ -114,7 +114,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
                 continue;
 
             m_comboKeyword->insertItem( MetaBundle::prettyColumnName( i ) );
-            m_vector.push_back( MetaBundle::exactColumnName( i ).lower() );
+            m_vector.push_back( MetaBundle::exactColumnName( i ).toLower() );
         }
     }
     else

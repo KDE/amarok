@@ -18,24 +18,24 @@ Plugin::~Plugin()
 void
 Plugin::addPluginProperty( const QString& key, const QString& value )
 {
-    m_properties[key.lower()] = value;
+    m_properties[key.toLower()] = value;
 }
 
 
 QString
 Plugin::pluginProperty( const QString& key )
 {
-    if ( m_properties.find( key.lower() ) == m_properties.end() )
+    if ( m_properties.find( key.toLower() ) == m_properties.end() )
         return "false";
 
-    return m_properties[key.lower()];
+    return m_properties[key.toLower()];
 }
 
 
 bool
 Plugin::hasPluginProperty( const QString& key )
 {
-    return m_properties.find( key.lower() ) != m_properties.end();
+    return m_properties.find( key.toLower() ) != m_properties.end();
 }
 
 }

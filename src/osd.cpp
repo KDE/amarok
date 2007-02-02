@@ -692,7 +692,7 @@ Amarok::OSD::show( const MetaBundle &bundle ) //slot
             QMap<QString, QString> args;
             args["prettytitle"] = bundle.prettyTitle();
             for( int i = 0; i < PlaylistItem::NUM_COLUMNS; ++i )
-                args[bundle.exactColumnName( i ).lower()] = bundle.prettyText( i );
+                args[bundle.exactColumnName( i ).toLower()] = bundle.prettyText( i );
 
             if( bundle.length() <= 0 )
                 args["length"] = QString::null;

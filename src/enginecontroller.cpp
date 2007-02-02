@@ -246,7 +246,7 @@ bool EngineController::canDecode( const KUrl &url ) //static
     if( engine() != EngineController::instance()->m_voidEngine )
     {
         //we special case this as otherwise users hate us
-        if ( !valid && ext.lower() == "mp3" && !installDistroCodec(AmarokConfig::soundSystem()) )
+        if ( !valid && ext.toLower() == "mp3" && !installDistroCodec(AmarokConfig::soundSystem()) )
             Amarok::StatusBar::instance()->longMessageThreadSafe(
                     i18n( "<p>The %1 claims it <b>cannot</b> play MP3 files."
                         "<p>You may want to choose a different engine from the <i>Configure Dialog</i>, or examine "

@@ -359,7 +359,7 @@ XineEngine::determineAndShowErrorMessage()
                 // xine can read the plugin but it didn't find any codec
                 // THUS xine=daft for telling us it could handle the format in canDecode!
                 body = i18n("There is no available decoder.");
-                QString const ext = Amarok::extension( m_url.url() ).lower();
+                QString const ext = Amarok::extension( m_url.url() ).toLower();
                 if (ext == "mp3" && EngineController::installDistroCodec( "xine-engine" ))
                     return;
             }
@@ -674,7 +674,7 @@ XineEngine::canDecode( const KUrl &url ) const
     if (path.endsWith( ".part" ))
         path = path.left( path.length() - 5 );
 
-    const QString ext = path.mid( path.findRev( '.' ) + 1 ).lower();
+    const QString ext = path.mid( path.findRev( '.' ) + 1 ).toLower();
 
     return list.contains( ext );
 }

@@ -84,7 +84,7 @@ class ArtistItem : public K3ListViewItem
         if ( b.startsWith( "the ", false ) )
             CollectionView::manipulateThe( b, true );
 
-        return QString::localeAwareCompare( a.lower(), b.lower() );
+        return QString::localeAwareCompare( a.toLower(), b.toLower() );
     }
 };
 

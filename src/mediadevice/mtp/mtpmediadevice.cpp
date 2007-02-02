@@ -191,7 +191,7 @@ MediaItem
         // fallback to checking the extension (e.g. .wma, .ogg, etc)
         debug() << "No filetype found by Amarok filetype" << endl;
 
-        const QString extension = bundle.url().path().section( ".", -1 ).lower();
+        const QString extension = bundle.url().path().section( ".", -1 ).toLower();
 
         int libmtp_type = m_supportedFiles.findIndex( extension );
         if( libmtp_type >= 0 )

@@ -4513,7 +4513,7 @@ CollectionItem::compare( Q3ListViewItem* i, int col, bool ascending ) const
             ia = a.toInt();
             ib = b.toInt();
             if (ia==ib)
-                return QString::localeAwareCompare( text( col ).lower(), i->text( col ).lower() );
+                return QString::localeAwareCompare( text( col ).toLower(), i->text( col ).toLower() );
             if (ia<ib)
                 return 1;
             else
@@ -4534,7 +4534,7 @@ CollectionItem::compare( Q3ListViewItem* i, int col, bool ascending ) const
         a += a;
 
     // No special case, then fall on default
-    return QString::localeAwareCompare( a.lower(), b.lower() );
+    return QString::localeAwareCompare( a.toLower(), b.toLower() );
 }
 
 void
@@ -4609,7 +4609,7 @@ int
 DividerItem::compare( Q3ListViewItem* i, int col, bool ascending ) const
 {
     if (!i) {
-	return QString::localeAwareCompare( text(col).lower(), QString("") );
+	return QString::localeAwareCompare( text(col).toLower(), QString("") );
     }
     if (dynamic_cast<CollectionItem*>(i)) {
         return -1 * i->compare(const_cast<DividerItem*>(this), col, ascending);
@@ -4629,7 +4629,7 @@ DividerItem::compare( Q3ListViewItem* i, int col, bool ascending ) const
             else               return -1;
         }
     }
-    return QString::localeAwareCompare( text(col).lower(), i->text(col).lower() );
+    return QString::localeAwareCompare( text(col).toLower(), i->text(col).toLower() );
 }
 
 QString

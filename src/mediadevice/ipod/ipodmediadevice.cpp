@@ -413,7 +413,7 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
         return 0;
     }
 
-    QString type = pathname.section('.', -1).lower();
+    QString type = pathname.section('.', -1).toLower();
 
     track->ipod_path = g_strdup( ipodPath(pathname).latin1() );
     debug() << "on iPod: " << track->ipod_path << ", podcast=" << podcastInfo << endl;
@@ -1365,7 +1365,7 @@ IpodMediaDevice::checkIntegrity()
         {
             QString filename = hashpath + '/' + hashdir[j];
             QString ipodPath = itunesDir( "Music:" ) + dir[i] + ':' + hashdir[j];
-            Itdb_Track *track = m_files[ipodPath.lower()];
+            Itdb_Track *track = m_files[ipodPath.toLower()];
             if(!track)
             {
                 debug() << "file: " << filename << " is orphaned" << endl;
@@ -1481,7 +1481,7 @@ IpodMediaDevice::addTrackToView(Itdb_Track *track, IpodMediaItem *item, bool che
         }
         else
         {
-            m_files.insert( QString(track->ipod_path).lower(), track );
+            m_files.insert( QString(track->ipod_path).toLower(), track );
         }
     }
 
@@ -2456,7 +2456,7 @@ IpodMediaDevice::pathExists( const QString &ipodPath, QString *realPath )
         found = false;
         for(uint i=0; i<curDir.count(); i++)
         {
-            if( curDir[i].lower() == (*it).lower())
+            if( curDir[i].toLower() == (*it).toLower())
             {
                 curPath += '/' + curDir[i];
                 curDir.cd( curPath );

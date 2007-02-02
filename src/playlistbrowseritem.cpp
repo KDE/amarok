@@ -832,7 +832,7 @@ int PlaylistEntry::compare( Q3ListViewItem* i, int /*col*/ ) const
     PlaylistEntry* item = static_cast<PlaylistEntry*>(i);
 
     // Compare case-insensitive
-    return QString::localeAwareCompare( text( 0 ).lower(), item->text( 0 ).lower() );
+    return QString::localeAwareCompare( text( 0 ).toLower(), item->text( 0 ).toLower() );
 }
 
 
@@ -3573,7 +3573,7 @@ void ShoutcastBrowser::doneGenreDownload( KIO::Job *job, const KUrl &from, const
     {
         QDomElement e = n.toElement(); // try to convert the node to an element.
         const QString name = e.attribute( "name" );
-        if( !name.isNull() && !bannedGenres.contains( name.lower() ) && !genreMapping.contains( name ) )
+        if( !name.isNull() && !bannedGenres.contains( name.toLower() ) && !genreMapping.contains( name ) )
         {
             last = new ShoutcastGenre( this, last, name );
             genreCache[ name ] = last; // so we can append genres later if needed

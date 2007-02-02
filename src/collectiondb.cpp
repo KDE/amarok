@@ -4836,7 +4836,7 @@ CollectionDB::isConnected()
 Q3CString
 CollectionDB::md5sum( const QString& artist, const QString& album, const QString& file )
 {
-    KMD5 context( artist.lower().local8Bit() + album.lower().local8Bit() + file.local8Bit() );
+    KMD5 context( artist.toLower().local8Bit() + album.toLower().local8Bit() + file.local8Bit() );
 //     debug() << "MD5 SUM for " << artist << ", " << album << ": " << context.hexDigest() << endl;
     return context.hexDigest();
 }
@@ -6298,7 +6298,7 @@ void SqliteConnection::sqlite_like_new( sqlite3_context *context, int argc, sqli
     if ( begin && end ) result = ( text.find( pattern, 0, 0 ) != -1);
     else if ( begin ) result = text.endsWith( pattern, 0 );
     else if ( end ) result = text.startsWith( pattern, 0 );
-    else result = ( text.lower() == pattern.lower() );
+    else result = ( text.toLower() == pattern.toLower() );
 
     sqlite3_result_int( context, result );
 }
@@ -6906,9 +6906,9 @@ QueryBuilder::setGoogleFilter( int defaultTables, QString query )
                 table = tabSong;
                 value = valFilesize;
                 exact = true;
-                if( s.lower().endsWith( "m" ) )
+                if( s.toLower().endsWith( "m" ) )
                     s = QString::number( s.left( s.length()-1 ).toLong() * 1024 * 1024 );
-                else if( s.lower().endsWith( "k" ) )
+                else if( s.toLower().endsWith( "k" ) )
                     s = QString::number( s.left( s.length()-1 ).toLong() * 1024 );
             }
             else if( e.field == "filename" || e.field == "url" )

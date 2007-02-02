@@ -737,7 +737,7 @@ App::continueInit()
     }
     if( args->isSet( "engine" ) ) {
         // we correct some common errors (case issues, missing -engine off the end)
-        QString engine = args->getOption( "engine" ).lower();
+        QString engine = args->getOption( "engine" ).toLower();
         if( engine.startsWith( "gstreamer" ) ) engine = "gst-engine";
         if( !engine.endsWith( "engine" ) ) engine += "-engine";
 
@@ -1359,13 +1359,13 @@ namespace Amarok
         uint len = s.length();
         if( len == 3 || (len > 3 && s[3] == '.') )
         {
-            QString l = s.left(3).lower();
+            QString l = s.left(3).toLower();
             if( l=="aux" || l=="con" || l=="nul" || l=="prn" )
                 s = '_' + s;
         }
         else if( len == 4 || (len > 4 && s[4] == '.') )
         {
-            QString l = s.left(3).lower();
+            QString l = s.left(3).toLower();
             QString d = s.mid(3,1);
             if( (l=="com" || l=="lpt") &&
                     (d=="0" || d=="1" || d=="2" || d=="3" || d=="4" ||

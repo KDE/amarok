@@ -1376,12 +1376,12 @@ TagDialog::generateHTML( const QStringList &labels )
     oldForeach( labels )
     {
         QString label = *it;
-        sortedLabels << label.lower();
+        sortedLabels << label.toLower();
         ++it;
         int value = ( *it ).toInt();
         if ( value > max )
             max = value;
-        mapping[label.lower()] = QPair<QString, int>( label, value );
+        mapping[label.toLower()] = QPair<QString, int>( label, value );
     }
     sortedLabels.sort();
     QString html = "<html><body>";

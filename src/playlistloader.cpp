@@ -847,7 +847,7 @@ PlaylistFile::loadASX( Q3TextStream &stream )
     QRegExp ex("(<[/]?[^>]*[A-Z]+[^>]*>)");
     ex.setCaseSensitive(true);
     while ( (ex.search(content)) != -1 )
-        content.replace(ex.cap( 1 ), ex.cap( 1 ).lower());
+        content.replace(ex.cap( 1 ), ex.cap( 1 ).toLower());
 
 
     if (!doc.setContent(content, &errorMsg, &errorLine, &errorColumn))
@@ -865,7 +865,7 @@ PlaylistFile::loadASX( Q3TextStream &stream )
     QTime length;
     QString duration;
 
-    if (root.nodeName().lower() != "asx") return false;
+    if (root.nodeName().toLower() != "asx") return false;
 
     QDomNode node = root.firstChild();
     QDomNode subNode;
@@ -877,12 +877,12 @@ PlaylistFile::loadASX( Q3TextStream &stream )
        title = QString::null;
        author = QString::null;
        length = QTime();
-       if (node.nodeName().lower() == "entry")
+       if (node.nodeName().toLower() == "entry")
        {
           subNode = node.firstChild();
           while (!subNode.isNull())
           {
-             if ((subNode.nodeName().lower() == "ref") && (subNode.isElement()) && (url.isNull()))
+             if ((subNode.nodeName().toLower() == "ref") && (subNode.isElement()) && (url.isNull()))
              {
                 element = subNode.toElement();
                 if (element.hasAttribute("href"))
@@ -894,7 +894,7 @@ PlaylistFile::loadASX( Q3TextStream &stream )
                 if (element.hasAttribute("HRef"))
                    url = element.attribute("HRef");
               }
-		if ((subNode.nodeName().lower() == "duration") && (subNode.isElement()))
+		if ((subNode.nodeName().toLower() == "duration") && (subNode.isElement()))
                 {
                    duration = QString::null;
                    element = subNode.toElement();
@@ -909,11 +909,11 @@ PlaylistFile::loadASX( Q3TextStream &stream )
                       length = PlaylistFile::stringToTime(duration);
                   }
 
-                  if ((subNode.nodeName().lower() == "title") && (subNode.isElement()))
+                  if ((subNode.nodeName().toLower() == "title") && (subNode.isElement()))
                   {
                      title = subNode.toElement().text();
                   }
-                  if ((subNode.nodeName().lower() == "author") && (subNode.isElement()))
+                  if ((subNode.nodeName().toLower() == "author") && (subNode.isElement()))
                   {
                      author = subNode.toElement().text();
                   }
@@ -946,7 +946,7 @@ PlaylistFile::loadSMIL( Q3TextStream &stream )
 	QDomElement root = doc.documentElement();
 	stream.setEncoding ( Q3TextStream::UnicodeUTF8 );
 
-	if( root.nodeName().lower() != "smil" )
+	if( root.nodeName().toLower() != "smil" )
        return false;
 
 	KUrl kurl;
@@ -962,7 +962,7 @@ PlaylistFile::loadSMIL( Q3TextStream &stream )
         MetaBundle b;
 		node = nodeList.item(i);
 		url = QString::null;
-		if( (node.nodeName().lower() == "audio") && (node.isElement()) )
+		if( (node.nodeName().toLower() == "audio") && (node.isElement()) )
 		{
 			element = node.toElement();
 			if( element.hasAttribute("src") )

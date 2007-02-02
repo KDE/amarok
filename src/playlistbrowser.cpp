@@ -1912,9 +1912,9 @@ void PlaylistBrowser::savePlaylist( PlaylistEntry *item )
 
     //save the modified playlist in m3u or pls format
     const QString ext = fileExtension( item->url().path() );
-    if( ext.lower() == "m3u" )
+    if( ext.toLower() == "m3u" )
         saveM3U( item, append );
-    else if ( ext.lower() == "xspf" )
+    else if ( ext.toLower() == "xspf" )
         saveXSPF( item, append );
     else
         savePLS( item, append );
@@ -2683,9 +2683,9 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
                 {
                     MetaBundle mb(*it);
                     bundles.append( mb );
-                    if( suggestion == 1 && mb.album()->lower().trimmed() != album.lower().trimmed() )
+                    if( suggestion == 1 && mb.album()->lower().trimmed() != album.toLower().trimmed() )
                         suggestion = 2;
-                    if( suggestion == 2 && mb.artist()->lower().trimmed() != artist.lower().trimmed() )
+                    if( suggestion == 2 && mb.artist()->lower().trimmed() != artist.toLower().trimmed() )
                         suggestion = 3;
                 }
             }

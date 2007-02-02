@@ -86,7 +86,7 @@ private:
      */
     inline QString extension( const QString &fileName )
     {
-        return fileName.contains( '.' ) ? fileName.mid( fileName.findRev( '.' ) + 1 ).lower() : "";
+        return fileName.contains( '.' ) ? fileName.mid( fileName.findRev( '.' ) + 1 ).toLower() : "";
     }
 
     /**

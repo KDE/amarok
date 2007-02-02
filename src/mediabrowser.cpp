@@ -3585,7 +3585,7 @@ MediaDevice::isPlayable( const MetaBundle &bundle )
     if( supportedFiletypes().isEmpty() )
         return true;
 
-    QString type = bundle.url().path().section( ".", -1 ).lower();
+    QString type = bundle.url().path().section( ".", -1 ).toLower();
     return supportedFiletypes().contains( type );
 }
 
@@ -3595,7 +3595,7 @@ MediaDevice::isPreferredFormat( const MetaBundle &bundle )
     if( supportedFiletypes().isEmpty() )
         return true;
 
-    QString type = bundle.url().path().section( ".", -1 ).lower();
+    QString type = bundle.url().path().section( ".", -1 ).toLower();
     return ( type == supportedFiletypes().first() );
 }
 

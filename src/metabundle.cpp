@@ -158,7 +158,7 @@ const QString MetaBundle::prettyColumnName( int index ) //static
 int MetaBundle::columnIndex( const QString &name )
 {
     for( int i = 0; i < NUM_COLUMNS; ++i )
-        if( exactColumnName( i ).lower() == name.lower() )
+        if( exactColumnName( i ).toLower() == name.toLower() )
             return i;
     return -1;
 }
@@ -838,13 +838,13 @@ QString MetaBundle::prettyText( int column ) const
 
 bool MetaBundle::matchesSimpleExpression( const QString &expression, const Q3ValueList<int> &columns ) const
 {
-    const QStringList terms = QStringList::split( ' ', expression.lower() );
+    const QStringList terms = QStringList::split( ' ', expression.toLower() );
     bool matches = true;
     for( uint x = 0; matches && x < terms.count(); ++x )
     {
         uint y = 0, n = columns.count();
         for(; y < n; ++y )
-            if ( prettyText( columns[y] ).lower().contains( terms[x] ) )
+            if ( prettyText( columns[y] ).toLower().contains( terms[x] ) )
                 break;
         matches = ( y < n );
     }
@@ -885,7 +885,7 @@ bool MetaBundle::matchesFast(const QStringList &terms, ColumnMask columnMask) co
         for (int i = 0; i < NUM_COLUMNS; i++) {
             if ((columnMask & (1 << i)) > 0) {
                 if (!m_searchStr.isEmpty()) m_searchStr += ' ';
-                m_searchStr += prettyText(i).lower();
+                m_searchStr += prettyText(i).toLower();
             }
         }
     }
@@ -915,7 +915,7 @@ bool MetaBundle::matchesParsedExpression( const ParsedExpression &data, const Q3
             int column = -1;
             if( !e.field.isEmpty() )
             {
-                QString field = e.field.lower();
+                QString field = e.field.toLower();
                 column = columnIndex( field );
                 if( column == -1 )
                 {
@@ -935,7 +935,7 @@ bool MetaBundle::matchesParsedExpression( const ParsedExpression &data, const Q3
             }
             if( column >= 0 ) //a field was specified and it exists
             {
-                QString q = e.text, v = prettyText( column ).lower(), w = q.lower();
+                QString q = e.text, v = prettyText( column ).toLower(), w = q.toLower();
                 //q = query, v = contents of the field, w = match against it
                 bool condition; //whether it matches, not taking e.negateation into account
 

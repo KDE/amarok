@@ -426,7 +426,7 @@ WebService::handshake( const QString& username, const QString& password )
     m_streamUrl = Q3Url( parameter( "stream_url", result ) );
 //     bool banned = parameter( "banned", result ) == "1";
 
-    if ( m_session.lower() == "failed" ) {
+    if ( m_session.toLower() == "failed" ) {
         Amarok::StatusBar::instance()->longMessage( i18n(
         "Amarok failed to establish a session with last.fm. <br>"
         "Check if your last.fm user and password are correctly set."

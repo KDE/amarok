@@ -973,17 +973,17 @@ class ServiceBrowser(threading.Thread):
 		if record.type == _TYPE_PTR and record.name == self.type:
 			expired = record.isExpired(now)
 			try:
-				oldrecord = self.services[record.alias.lower()]
+				oldrecord = self.services[record.alias.toLower()]
 				if not expired:
 					oldrecord.resetTTL(record)
 				else:
-					del(self.services[record.alias.lower()])
+					del(self.services[record.alias.toLower()])
 					callback = lambda x: self.listener.removeService(x, self.type, record.alias)
 					self.list.append(callback)
 					return
 			except:
 				if not expired:
-					self.services[record.alias.lower()] = record
+					self.services[record.alias.toLower()] = record
 					callback = lambda x: self.listener.addService(x, self.type, record.alias)
 					self.list.append(callback)
 
@@ -1334,7 +1334,7 @@ class Zeroconf(object):
 		information for that service.  The name of the service may be
 		changed if needed to make it unique on the network."""
 		self.checkService(info)
-		self.services[info.name.lower()] = info
+		self.services[info.name.toLower()] = info
 		if self.servicetypes.has_key(info.type):
 			self.servicetypes[info.type]+=1
 		else:
@@ -1360,7 +1360,7 @@ class Zeroconf(object):
 	def unregisterService(self, info):
 		"""Unregister a service."""
 		try:
-			del(self.services[info.name.lower()])
+			del(self.services[info.name.toLower()])
 			if self.servicetypes[info.type]>1:
 				self.servicetypes[info.type]-=1
 			else:
@@ -1512,10 +1512,10 @@ class Zeroconf(object):
 					# Answer A record queries for any service addresses we know
 					if question.type == _TYPE_A or question.type == _TYPE_ANY:
 						for service in self.services.values():
-							if service.server == question.name.lower():
+							if service.server == question.name.toLower():
 								out.addAnswer(msg, DNSAddress(question.name, _TYPE_A, _CLASS_IN | _CLASS_UNIQUE, _DNS_TTL, service.address))
 					
-					service = self.services.get(question.name.lower(), None)
+					service = self.services.get(question.name.toLower(), None)
 					if not service: continue
 					
 					if question.type == _TYPE_SRV or question.type == _TYPE_ANY:

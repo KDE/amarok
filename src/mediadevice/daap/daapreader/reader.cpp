@@ -301,7 +301,7 @@ Reader::songListFinished( int /*id*/, bool error )
 
         QString artist = (*it).asMap()["asar"].asList()[0].toString();
         bundle->setArtist( artist );
-        result[ artist.lower() ][ album.lower() ].append(bundle);
+        result[ artist.toLower() ][ album.toLower() ].append(bundle);
 
         bundle->setYear( (*it).asMap()["asyr"].asList()[0].toInt() );
 

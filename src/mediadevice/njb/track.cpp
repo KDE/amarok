@@ -117,7 +117,7 @@ NjbTrack::NjbTrack( njb_songid_t* song)
     frame = NJB_Songid_Findframe( song, FR_CODEC);
     if( frame )
     {
-        codec = Q3CString( frame->data.strval).lower();
+        codec = Q3CString( frame->data.strval).toLower();
         if( codec == "mp3" )
             bundle->setFileType( MetaBundle::mp3 );
         else if (codec == "wma" )

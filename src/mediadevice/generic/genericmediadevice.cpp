@@ -575,12 +575,12 @@ GenericMediaDevice::buildDestination( const QString &format, const MetaBundle &m
     {
         if( i == MetaBundle::Score || i == MetaBundle::PlayCount || i == MetaBundle::LastPlayed )
             continue;
-        args[mb.exactColumnName( i ).lower()] = cleanPath( mb.prettyText( i ) );
+        args[mb.exactColumnName( i ).toLower()] = cleanPath( mb.prettyText( i ) );
     }
     args["artist"] = artist;
     args["albumartist"] = albumartist;
     args["initial"] = albumartist.mid( 0, 1 ).upper();
-    args["filetype"] = mb.url().path().section( ".", -1 ).lower();
+    args["filetype"] = mb.url().path().section( ".", -1 ).toLower();
     QString track;
     if ( mb.track() )
         track.sprintf( "%02d", mb.track() );
@@ -1080,7 +1080,7 @@ bool GenericMediaDevice::isPlayable( const MetaBundle& bundle )
 {
     for( QStringList::Iterator it = m_supportedFileTypes.begin(); it != m_supportedFileTypes.end() ; it++ )
     {
-        if( bundle.type().lower() == (*it).lower() )
+        if( bundle.type().toLower() == (*it).toLower() )
             return true;
     }
 
@@ -1090,7 +1090,7 @@ bool GenericMediaDevice::isPlayable( const MetaBundle& bundle )
 
 bool GenericMediaDevice::isPreferredFormat( const MetaBundle &bundle )
 {
-    return m_supportedFileTypes.first().lower() == bundle.type().lower();
+    return m_supportedFileTypes.first().toLower() == bundle.type().toLower();
 }
 
 /// Configuration Dialog Extension

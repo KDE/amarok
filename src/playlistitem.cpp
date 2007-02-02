@@ -477,8 +477,8 @@ PlaylistItem::compare( Q3ListViewItem *i, int col, bool ascending ) const
     #undef cmp
     #undef i
 
-    QString a =    text( col ).lower();
-    QString b = i->text( col ).lower();
+    QString a =    text( col ).toLower();
+    QString b = i->text( col ).toLower();
 
     switch( col )
     {
