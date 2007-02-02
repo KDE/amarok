@@ -6,7 +6,7 @@ find_package(KDE4)
 include(KDE4Defaults)
 include(MacroLibrary)
 
-add_definitions(-DQT3_SUPPORT -DQT3_SUPPORT_WARNINGS) 
+add_definitions(-DQT3_SUPPORTS) # -DQT3_SUPPORT_WARNINGS for more warnings
 
 OPTION(AMAROK_AMAZON_SUPPORT   "Enable Amazon cover download support")
 
