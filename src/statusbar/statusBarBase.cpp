@@ -71,18 +71,20 @@ namespace SingleShotPool
     {
         QTimer *timer = receiver->findChild<QTimer *>( slot );
         if( !timer ) {
-            timer = new QTimer( receiver, slot );
+            timer = new QTimer( receiver );
+            timer->setObjectName( slot );
             receiver->connect( timer, SIGNAL(timeout()), slot );
         }
 
-        timer->start( timeout, true );
+        timer->setSingleShot( true );
+        timer->start( timeout );
     }
 
     static inline bool isActive( QObject *parent, const char *slot )
     {
         QTimer *timer = parent->findChild<QTimer*>( slot );
 
-        return timer && timer->isA( "QTimer" ) && timer->isActive();
+        return timer && timer->metaObject()->className() == "QTimer" && timer->isActive();
     }
 }
 
@@ -128,8 +130,8 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     b1->setIconSet( SmallIconSet( "cancel" ) );
     b2->setIconSet( SmallIconSet( "2uparrow") );
     b2->setToggleButton( true );
-    QToolTip::add( b1, i18n( "Abort all background-operations" ) );
-    QToolTip::add( b2, i18n( "Show progress detail" ) );
+    b1->setToolTip( i18n( "Abort all background-operations" ) );
+    b2->setToolTip( i18n( "Show progress detail" ) );
     connect( b1, SIGNAL(clicked()), SLOT(abortAllProgressOperations()) );
     connect( b2, SIGNAL(toggled( bool )), SLOT(toggleProgressWindow( bool )) );
 
@@ -446,7 +448,7 @@ StatusBar::endProgressOperation( QObject *owner )
 
     m_progressMap[owner]->setDone();
 
-    if( allDone() && !m_popupProgress->isShown() ) {
+    if( allDone() && m_popupProgress->isHidden() ) {
         cancelButton()->setEnabled( false );
         SingleShotPool::startTimer( 2000, this, SLOT(hideMainProgressBar()) );
     }
@@ -496,7 +498,7 @@ StatusBar::showMainProgressBar()
 void
 StatusBar::hideMainProgressBar()
 {
-    if( allDone() && !m_popupProgress->isShown() )
+    if( allDone() && m_popupProgress->isHidden() )
     {
         pruneProgressBars();
 
