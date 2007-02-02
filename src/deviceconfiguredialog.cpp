@@ -37,7 +37,7 @@ DeviceConfigureDialog::DeviceConfigureDialog( const Medium &medium )
 {
     m_medium = new Medium( medium );
     kapp->setTopWidget( this );
-    setCaption( KInstance::makeStandardCaption( i18n( "Configure Media Device" ) ) );
+    setCaption( KDialog::makeStandardCaption( i18n( "Configure Media Device" ) ) );
     showButtonApply( false );
 
     KVBox* vbox = makeVBoxMainWidget();

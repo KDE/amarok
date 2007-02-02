@@ -162,7 +162,7 @@ Vis::Selector::Selector( QWidget *parent )
 {
     Amarok::OverrideCursor waitcursor;
 
-    setCaption( KInstance::makeStandardCaption( i18n( "Visualizations" ) ) );
+    setCaption( KDialog::makeStandardCaption( i18n( "Visualizations" ) ) );
 
     // Gives the window a small title bar, and skips a taskbar entry
     KWin::setType( winId(), NET::Utility );

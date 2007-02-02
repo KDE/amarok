@@ -89,7 +89,7 @@ namespace Amarok {
 
         QString proxy;
 
-        if ( KProtocolManager::proxyForURL( kurl ) != 
+        if ( KProtocolManager::proxyForURL( kurl ) !=
                 QString::fromLatin1( "DIRECT" ) ) {
             KProtocolManager::slaveProtocol ( kurl, proxy );
         }
@@ -146,7 +146,7 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     s_instance = this;
 
     kapp->setTopWidget( this );
-    setCaption( KInstance::makeStandardCaption( i18n( "Script Manager" ) ) );
+    setCaption( KDialog::makeStandardCaption( i18n( "Script Manager" ) ) );
 
     // Gives the window a small title bar, and skips a taskbar entry
     KWin::setType( winId(), NET::Utility );
@@ -654,7 +654,7 @@ ScriptManager::slotAboutScript()
                                             QString::null,
                                             KDialogBase::Ok, KDialogBase::Ok, this );
     kapp->setTopWidget( about );
-    about->setCaption( KInstance::makeStandardCaption( i18n( "About %1" ).arg( name ) ) );
+    about->setCaption( KDialog::makeStandardCaption( i18n( "About %1" ).arg( name ) ) );
     about->setProduct( "", "", "", "" );
     // Get rid of the confusing KDE version text
     QLabel* product = about->mainWidget()->findChild<QLabel*>( "version" );
@@ -706,7 +706,7 @@ ScriptManager::slotShowContextMenu( Q3ListViewItem* item, const QPoint& pos )
 
             KTextEdit* editor = new KTextEdit( it.data().log );
             kapp->setTopWidget( editor );
-            editor->setCaption( KInstance::makeStandardCaption( i18n( "Output Log for %1" ).arg( it.key() ) ) );
+            editor->setCaption( KDialog::makeStandardCaption( i18n( "Output Log for %1" ).arg( it.key() ) ) );
             editor->setReadOnly( true );
 
             QFont font( "fixed" );

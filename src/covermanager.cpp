@@ -102,7 +102,7 @@ CoverManager::CoverManager()
 
     // Sets caption and icon correctly (needed e.g. for GNOME)
     kapp->setTopWidget( this );
-    setCaption( KInstance::makeStandardCaption( i18n("Cover Manager") ) );
+    setCaption( KDialog::makeStandardCaption( i18n("Cover Manager") ) );
     setWindowFlags( WDestructiveClose );
     setMargin( 4 );
 
@@ -282,7 +282,7 @@ CoverViewDialog::CoverViewDialog( const QString& artist, const QString& album, Q
 {
     KWin::setType( winId(), NET::Utility );
     kapp->setTopWidget( this );
-    setCaption( KInstance::makeStandardCaption( i18n("%1 - %2").arg( artist, album ) ) );
+    setCaption( KDialog::makeStandardCaption( i18n("%1 - %2").arg( artist, album ) ) );
 
     m_layout = new Q3HBoxLayout( this );
     m_layout->setAutoAdd( true );

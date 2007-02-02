@@ -339,7 +339,7 @@ NjbMediaDevice::downloadSelectedItems()
     QString save = QString::null;
 
     KUrlRequesterDlg dialog( save, 0, 0 );
-    dialog.setCaption( KInstance::makeStandardCaption( i18n( "Choose a Download Directory" ) ) );
+    dialog.setCaption( KDialog::makeStandardCaption( i18n( "Choose a Download Directory" ) ) );
     dialog.urlRequester()->setMode( KFile::Directory | KFile::ExistingOnly );
     dialog.exec();
 

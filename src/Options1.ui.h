@@ -21,7 +21,7 @@
 void Options1::init()
 {
     slotUpdateMoodFrame();
-    
+
     QStringList browsers;
     browsers << "konqueror" << "firefox" << "opera" << "galeon" << "epiphany"
              << "safari" << "mozilla";
@@ -45,7 +45,7 @@ void Options1::init()
     kLineEdit_customBrowser->setText( AmarokConfig::externalBrowser() );
     int index = browsers.findIndex( AmarokConfig::externalBrowser() );
     if( index >= 0 )
-        kComboBox_browser->setCurrentItem( index );
+        kComboBox_browser->setCurrentItem( AmarokConfig::externalBrowser() );
     else if( AmarokConfig::externalBrowser() ==
 #ifdef Q_WS_MAC
             "open"

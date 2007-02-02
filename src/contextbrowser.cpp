@@ -3642,7 +3642,7 @@ ContextBrowser::wikiConfig() // SLOT
 
     m_wikiConfigDialog = new KDialogBase( this, 0, true, 0, KDialogBase::Ok|KDialogBase::Apply|KDialogBase::Cancel );
     kapp->setTopWidget( m_wikiConfigDialog );
-    m_wikiConfigDialog->setCaption( KInstance::makeStandardCaption( i18n( "Wikipedia Locale" ) ) );
+    m_wikiConfigDialog->setCaption( KDialog::makeStandardCaption( i18n( "Wikipedia Locale" ) ) );
     KVBox *box = m_wikiConfigDialog->makeVBoxMainWidget();
 
     m_wikiLocaleCombo = new QComboBox( box );

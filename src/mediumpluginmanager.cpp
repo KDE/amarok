@@ -48,7 +48,7 @@ MediumPluginManagerDialog::MediumPluginManagerDialog()
         : KDialogBase( Amarok::mainWindow(), "mediumpluginmanagerdialog", false, QString::null, Ok|Cancel, Ok )
 {
     kapp->setTopWidget( this );
-    setCaption( KInstance::makeStandardCaption( i18n( "Manage Devices and Plugins" ) ) );
+    setCaption( KDialog::makeStandardCaption( i18n( "Manage Devices and Plugins" ) ) );
 
     KVBox* vbox = makeVBoxMainWidget();
     vbox->setSpacing( KDialog::spacingHint() );
@@ -260,7 +260,7 @@ ManualDeviceAdder::ManualDeviceAdder( MediumPluginManager* mpm )
     m_newMed = 0;
 
     kapp->setTopWidget( this );
-    setCaption( KInstance::makeStandardCaption( i18n( "Add New Device") ) );
+    setCaption( KDialog::makeStandardCaption( i18n( "Add New Device") ) );
 
     KHBox* hbox = makeHBoxMainWidget();
     hbox->setSpacing( KDialog::spacingHint() );

@@ -37,7 +37,7 @@ TransferDialog::TransferDialog( MediaDevice *mdev )
     m_sort1LastIndex = m_sort2LastIndex = -1;
 
     kapp->setTopWidget( this );
-    setCaption( KInstance::makeStandardCaption( i18n( "Transfer Queue to Device" ) ) );
+    setCaption( KDialog::makeStandardCaption( i18n( "Transfer Queue to Device" ) ) );
 
     KVBox* vbox = makeVBoxMainWidget();
     vbox->setSpacing( KDialog::spacingHint() );

@@ -8,13 +8,14 @@
 #ifndef AMAROK_CONTEXTBROWSER_H
 #define AMAROK_CONTEXTBROWSER_H
 
-#include "amarokdcophandler.h"
+//#include "amarokdcophandler.h"
 #include "clicklineedit.h"
 #include "engineobserver.h"
 
 #include <ktabwidget.h>
 
 #include <kurl.h>
+#include <ktoolbar.h>
 //Added by qt3to4:
 #include <Q3CString>
 #include <QEvent>
@@ -44,7 +45,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
     Q_OBJECT
 
         friend class CurrentTrackJob;
-        friend class Amarok::DcopContextBrowserHandler;
+        //friend class Amarok::DcopContextBrowserHandler;
 
         static ContextBrowser *s_instance;
 

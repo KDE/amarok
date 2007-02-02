@@ -60,7 +60,7 @@ EqualizerSetup::EqualizerSetup()
     s_instance = this;
 
     kapp->setTopWidget( this );
-    setCaption( KInstance::makeStandardCaption( i18n( "Equalizer" ) ) );
+    setCaption( KDialog::makeStandardCaption( i18n( "Equalizer" ) ) );
 
     // Gives the window a small title bar, and skips a taskbar entry
     KWin::setType( winId(), NET::Utility );

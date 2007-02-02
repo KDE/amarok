@@ -62,7 +62,7 @@ Statistics::Statistics( QWidget *parent, const char *name )
     KWin::setState( winId(), NET::SkipTaskbar );
 
     kapp->setTopWidget( this );
-    setCaption( KInstance::makeStandardCaption( i18n("Collection Statistics") ) );
+    setCaption( KDialog::makeStandardCaption( i18n("Collection Statistics") ) );
     setInitialSize( QSize( 400, 550 ) );
 
     Q3VBox *mainBox = new Q3VBox( this );

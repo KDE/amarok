@@ -55,7 +55,7 @@ TrackPickerDialog::TrackPickerDialog(const QString &name, const KTRMResultList &
         : KDialogBase(parent, name.latin1(), true, QString::null, Ok | Cancel, Ok, true)
 {
     kapp->setTopWidget( this );
-    setCaption( KInstance::makeStandardCaption( i18n("MusicBrainz Results") ) );
+    setCaption( KDialog::makeStandardCaption( i18n("MusicBrainz Results") ) );
 
     m_base = new TrackPickerDialogBase(this);
     setMainWidget(m_base);

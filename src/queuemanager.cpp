@@ -295,7 +295,7 @@ QueueManager::QueueManager( QWidget *parent, const char *name )
     KWin::setState( winId(), NET::SkipTaskbar );
 
     kapp->setTopWidget( this );
-    setCaption( KInstance::makeStandardCaption( i18n("Queue Manager") ) );
+    setCaption( KDialog::makeStandardCaption( i18n("Queue Manager") ) );
     setInitialSize( QSize( 400, 260 ) );
 
     Q3VBox *mainBox = new Q3VBox( this );

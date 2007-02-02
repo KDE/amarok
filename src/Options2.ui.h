@@ -80,13 +80,13 @@ void Options2::init()
 // This method is basically lifted from ScriptManager::slotInstallScript()
 void Options2::installPushButton_clicked()
 {
-    KFileDialog dia( QString::null, "*.tar *.tar.bz2 *.tar.gz|" + i18n( "Style Packages (*.tar, *.tar.bz2, *.tar.gz)" ), 0, 0, true );
+    KFileDialog dia( KUrl(), "*.tar *.tar.bz2 *.tar.gz|" + i18n( "Style Packages (*.tar, *.tar.bz2, *.tar.gz)" ), 0, 0 );
     kapp->setTopWidget( &dia );
-    dia.setCaption( KInstance::makeStandardCaption( i18n( "Select Style Package" ) ) );
+    dia.setCaption( KDialog::makeStandardCaption( i18n( "Select Style Package" ) ) );
     dia.setMode( KFile::File | KFile::ExistingOnly );
     if ( !dia.exec() ) return;
 
-    KTar archive( dia.selectedURL().path() );
+    KTar archive( dia.selectedUrl().path() );
 
     if ( !archive.open( QIODevice::ReadOnly ) ) {
         KMessageBox::sorry( 0, i18n( "Could not read this package." ) );
@@ -138,7 +138,7 @@ void Options2::uninstallPushButton_clicked()
 
     if( KMessageBox::warningContinueCancel( 0,
         i18n( "<p>Are you sure you want to uninstall the theme <strong>%1</strong>?</p>" ).arg( name ),
-        i18n("Uninstall Theme"), i18n("Uninstall") ) == KMessageBox::Cancel )
+        i18n("Uninstall Theme") ) == KMessageBox::Cancel )
         return;
 
     if ( name == AmarokConfig::contextBrowserStyleSheet() ) {

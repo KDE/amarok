@@ -634,7 +634,7 @@ void TagDialog::readTags()
 {
     bool local = m_bundle.url().isLocalFile();
 
-    setCaption( KInstance::makeStandardCaption( i18n("Track Information: %1 by %2").arg( m_bundle.title(),  m_bundle.artist() ) ) );
+    setCaption( KDialog::makeStandardCaption( i18n("Track Information: %1 by %2").arg( m_bundle.title(),  m_bundle.artist() ) ) );
 
     QString niceTitle;
     if ( m_bundle.album().isEmpty() ) {
@@ -824,7 +824,7 @@ void
 TagDialog::readMultipleTracks()
 {
 
-    setCaption( KInstance::makeStandardCaption( i18np("1 Track", "Information for %n Tracks", m_urlList.count()) ) );
+    setCaption( KDialog::makeStandardCaption( i18np("1 Track", "Information for %n Tracks", m_urlList.count()) ) );
 
     //Check which fields are the same for all selected tracks
     const KUrl::List::ConstIterator end = m_urlList.end();
