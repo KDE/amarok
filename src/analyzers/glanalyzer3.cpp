@@ -126,8 +126,8 @@ Analyzer::Base3D(parent, 15)
 {
     //initialize openGL context before managing GL calls
     makeCurrent();
-    loadTexture( locate("data","amarok/data/ball.png"), ballTexture );
-    loadTexture( locate("data","amarok/data/grid.png"), gridTexture );
+    loadTexture( KStandardDirs::locate("data","amarok/data/ball.png"), ballTexture );
+    loadTexture( KStandardDirs::locate("data","amarok/data/grid.png"), gridTexture );
 
     balls.setAutoDelete( true );
     leftPaddle = new Paddle( -1.0 );

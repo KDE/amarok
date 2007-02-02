@@ -49,7 +49,7 @@ void MagnatuneDownloadDialog::downloadButtonClicked( )
     if (m_currentDownloadInfo == 0) return;
 
     m_currentDownloadInfo->setFormatSelection(formatComboBox->currentText());
-    m_currentDownloadInfo->setUnpackUrl(downloadTargetURLRequester->url());
+    m_currentDownloadInfo->setUnpackUrl( downloadTargetURLRequester->url().url() );
 
     emit( downloadAlbum( m_currentDownloadInfo ) );
 
@@ -66,12 +66,12 @@ void MagnatuneDownloadDialog::setDownloadInfo( MagnatuneDownloadInfo * info )
     DownloadFormatMap formatMap = info->getFormatMap();
 
     DownloadFormatMap::Iterator it;
-   
+
     for ( it = formatMap.begin(); it != formatMap.end(); ++it )
     {
         formatComboBox->insertItem( it.key() );
     }
-   
+
     infoEdit->setText( info->getDownloadMessage() );
 
 }

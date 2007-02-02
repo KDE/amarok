@@ -562,8 +562,8 @@ PlaylistEntry::PlaylistEntry( Q3ListViewItem *parent, Q3ListViewItem *after, con
     , m_loading( false )
     , m_loaded( false )
     , m_dynamic( false )
-    , m_loading1( new QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
-    , m_loading2( new QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
+    , m_loading1( new QPixmap( KStandardDirs::locate("data", "amarok/images/loading1.png" ) ) )
+    , m_loading2( new QPixmap( KStandardDirs::locate("data", "amarok/images/loading2.png" ) ) )
     , m_lastTrack( 0 )
 {
     m_trackList.setAutoDelete( true );
@@ -589,8 +589,8 @@ PlaylistEntry::PlaylistEntry( Q3ListViewItem *parent, Q3ListViewItem *after, con
     , m_loading( false )
     , m_loaded( false )
     , m_dynamic( false )
-    , m_loading1( new QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
-    , m_loading2( new QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
+    , m_loading1( new QPixmap( KStandardDirs::locate("data", "amarok/images/loading1.png" ) ) )
+    , m_loading2( new QPixmap( KStandardDirs::locate("data", "amarok/images/loading2.png" ) ) )
     , m_lastTrack( 0 )
 {
     m_url.setPath( xmlDefinition.attribute( "file" ) );
@@ -3450,8 +3450,8 @@ ShoutcastBrowser::ShoutcastBrowser( PlaylistCategory *parent )
     : PlaylistCategory( parent, 0, i18n( "Shoutcast Streams" ) )
     , m_downloading( false )
     , m_cj( 0 )
-    , m_loading1( new QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
-    , m_loading2( new QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
+    , m_loading1( new QPixmap( KStandardDirs::locate("data", "amarok/images/loading1.png" ) ) )
+    , m_loading2( new QPixmap( KStandardDirs::locate("data", "amarok/images/loading2.png" ) ) )
 {
     setExpandable( true );
     setKept( false );
@@ -3607,8 +3607,8 @@ void ShoutcastBrowser::jobFinished( KIO::Job *job )
 ShoutcastGenre::ShoutcastGenre( ShoutcastBrowser *browser, Q3ListViewItem *after, QString genre )
     : PlaylistCategory( browser, after, genre )
     , m_downloading( false )
-    , m_loading1( new QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
-    , m_loading2( new QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
+    , m_loading1( new QPixmap( KStandardDirs::locate("data", "amarok/images/loading1.png" ) ) )
+    , m_loading2( new QPixmap( KStandardDirs::locate("data", "amarok/images/loading2.png" ) ) )
 {
     setExpandable( true );
     setKept( false );

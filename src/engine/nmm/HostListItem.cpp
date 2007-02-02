@@ -230,7 +230,7 @@ QPixmap* HostListItem::pixmapVolume( int type )
 {
   if( type == PixInset )
   {
-    static QPixmap m_pixmapInset( locate( "data", "amarok/images/nmm-volume-inset.png" ) );
+    static QPixmap m_pixmapInset( KStandardDirs::locate( "data", "amarok/images/nmm-volume-inset.png" ) );
     return &m_pixmapInset;
   }
   else if( type == PixRight )
@@ -252,9 +252,9 @@ QPixmap HostListItem::generateGradient( int type )
   QPixmap temp;
 
   if( type == PixRight )
-    temp = QPixmap( locate( "data", "amarok/images/nmm-gradient-right.png" ) );
+    temp = QPixmap( KStandardDirs::locate( "data", "amarok/images/nmm-gradient-right.png" ) );
   else // PixLeft
-    temp = QPixmap( locate( "data", "amarok/images/nmm-gradient-left.png" ) );
+    temp = QPixmap( KStandardDirs::locate( "data", "amarok/images/nmm-gradient-left.png" ) );
   const QBitmap mask( temp.createHeuristicMask() );
 
   KPixmap result = QPixmap( 113, 24 );

@@ -224,7 +224,7 @@ CollectionDB* CollectionDB::instance()
 CollectionDB::CollectionDB()
         : EngineObserver( EngineController::instance() )
         , m_autoScoring( true )
-        , m_noCover( locate( "data", "amarok/images/nocover.png" ) )
+        , m_noCover( KStandardDirs::locate( "data", "amarok/images/nocover.png" ) )
         , m_scanInProgress( false )
         , m_rescanRequired( false )
         , m_aftEnabledPersistentTables()
@@ -1773,7 +1773,7 @@ CollectionDB::createDragPixmap( const KUrl::List &urls, QString textOverRide )
             for ( int i = maxCovers-1; i > 0; i-- )
                 coverPm[i] = coverPm[i-1];
 
-            QImage im( locate( "data","amarok/images/more_albums.png" ) );
+            QImage im( KStandardDirs::locate( "data","amarok/images/more_albums.png" ) );
             coverPm[0].convertFromImage( im.smoothScale( coverW, coverH, QImage::ScaleMin ) );
         }
 
@@ -2078,7 +2078,7 @@ CollectionDB::makeShadowedImage( const QString& albumImage, bool cache )
     if ( QFile::exists( folder + file ) )
         shadow.load( folder + file );
     else {
-        shadow.load( locate( "data", "amarok/images/shadow_albumcover.png" ) );
+        shadow.load( KStandardDirs::locate( "data", "amarok/images/shadow_albumcover.png" ) );
         shadow = shadow.smoothScale( original.width() + shadowSize, original.height() + shadowSize );
         shadow.save( folder + file, "PNG" );
     }

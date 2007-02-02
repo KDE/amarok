@@ -33,9 +33,9 @@ Analyzer::Base3D(parent, 15)
 {
     //initialize openGL context before managing GL calls
     makeCurrent();
-    loadTexture( locate("data","amarok/data/dot.png"), dotTexture );
-    loadTexture( locate("data","amarok/data/wirl1.png"), w1Texture );
-    loadTexture( locate("data","amarok/data/wirl2.png"), w2Texture );
+    loadTexture( KStandardDirs::locate("data","amarok/data/dot.png"), dotTexture );
+    loadTexture( KStandardDirs::locate("data","amarok/data/wirl1.png"), w1Texture );
+    loadTexture( KStandardDirs::locate("data","amarok/data/wirl2.png"), w2Texture );
 
     show.paused = true;
     show.pauseTimer = 0.0;

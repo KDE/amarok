@@ -60,7 +60,7 @@ PrettyPopupMenu::generateSidePixmap()
 
     if ( newColor != s_sidePixmapColor ) {
         s_sidePixmapColor = newColor;
-        s_sidePixmap.load( locate( "data","amarok/images/menu_sidepixmap.png" ) );
+        s_sidePixmap.load( KStandardDirs::locate( "data","amarok/images/menu_sidepixmap.png" ) );
         KIconEffect::colorize( s_sidePixmap, newColor, 1.0 );
     }
 }

@@ -28,6 +28,7 @@ Boston, MA 02110-1301, USA.
 #include <QDir>
 #include <QFile>
 #include <QMessageBox>
+#include <Q3TextStream>
 
 MagnatunePurchaseHandler::MagnatunePurchaseHandler()
         : QObject()

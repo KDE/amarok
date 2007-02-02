@@ -518,9 +518,9 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
     if( !painter || !listView() || width <= 0 || height() == 0 )
         return;
 
-    static const QImage currentTrackLeft  = locate( "data", "amarok/images/currenttrack_bar_left.png" );
-    static const QImage currentTrackMid   = locate( "data", "amarok/images/currenttrack_bar_mid.png" );
-    static const QImage currentTrackRight = locate( "data", "amarok/images/currenttrack_bar_right.png" );
+    static const QImage currentTrackLeft  = KStandardDirs::locate( "data", "amarok/images/currenttrack_bar_left.png" );
+    static const QImage currentTrackMid   = KStandardDirs::locate( "data", "amarok/images/currenttrack_bar_mid.png" );
+    static const QImage currentTrackRight = KStandardDirs::locate( "data", "amarok/images/currenttrack_bar_right.png" );
 
     if( column == Mood  &&  !moodbar().dataExists() )
       moodbar().load();  // Only has an effect the first time
@@ -740,7 +740,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
             }
             p.setFont( font );
             p.setPen( ( m_isNew && isEnabled() && !isSelected() ) ? AmarokConfig::newPlaylistItemsColor() : textc );
-            
+
             const int _width = width - leftMargin - margin + minbearing - 1; // -1 seems to be necessary
             const QString _text = KStringHandler::rPixelSqueeze( colText, painter->fontMetrics(), _width );
             p.drawText( leftMargin, 0, _width, height(), align, _text );

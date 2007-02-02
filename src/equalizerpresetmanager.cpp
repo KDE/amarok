@@ -140,7 +140,7 @@ EqualizerPresetManager::slotDefault()
     m_presets[ i18n("Manual") ] = manualGains;
 
     // Load the default presets
-    QFile file( locate( "data", "amarok/data/equalizer_presets.xml" ) );
+    QFile file( KStandardDirs::locate( "data", "amarok/data/equalizer_presets.xml" ) );
 
     Q3TextStream stream( &file );
     stream.setEncoding( Q3TextStream::UnicodeUTF8 );

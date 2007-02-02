@@ -1745,7 +1745,7 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
     const QString albumUrl   = lastFmInfo->albumUrl();
     const QString artistUrl  = lastFmInfo->artistUrl();
     const QString titleUrl   = lastFmInfo->titleUrl();
-    const QString lastfmIcon = "file://" + locate( "data","amarok/images/lastfm.png" );
+    const QString lastfmIcon = "file://" + KStandardDirs::locate( "data","amarok/images/lastfm.png" );
 
     const QString coverImage = ContextBrowser::getEncodedImage( lastFmInfo->imageUrl() );
 
@@ -2251,7 +2251,7 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
                         << escapeHTMLAttr( currentTrack.artist() )
                         << escapeHTMLAttr( currentTrack.album() )
                         << escapeHTMLAttr( currentTrack.title() )
-                        << escapeHTML( locate( "data", "amarok/images/musicbrainz.png" ) ) )
+                        << escapeHTML( KStandardDirs::locate( "data", "amarok/images/musicbrainz.png" ) ) )
                 : QString ( //no title
                         "<span id='current_box-header-prettytitle' class='box-header-prettytitle'>%1</span> "
                         "</div>\n"
@@ -2973,9 +2973,9 @@ QString CurrentTrackJob::statsHTML( int score, int rating, bool statsbox ) //sta
             contents += "<nobr>\n";
             const QString img = "<img src='%1' height='13px' class='ratingStar'></img>\n";
             for( int i = 0, n = rating / 2; i < n; ++i )
-                contents += img.arg( locate( "data", "amarok/images/star.png" ) );
+                contents += img.arg( KStandardDirs::locate( "data", "amarok/images/star.png" ) );
             if( rating % 2 )
-                contents += img.arg( locate( "data", "amarok/images/smallstar.png" ) );
+                contents += img.arg( KStandardDirs::locate( "data", "amarok/images/smallstar.png" ) );
             contents += "</nobr>\n";
         }
         else

@@ -173,7 +173,7 @@ XineConfigDialog::XineConfigDialog( const xine_t* const xine)
         , m_xine (const_cast<xine_t*>(xine))
 {
     m_view = new XineConfigBase();
-    m_view->xineLogo->setPixmap( QPixmap( locate( "data", "amarok/images/xine_logo.png" ) ) );
+    m_view->xineLogo->setPixmap( QPixmap( KStandardDirs::locate( "data", "amarok/images/xine_logo.png" ) ) );
     //sound output combo box
     m_view->deviceComboBox->insertItem(i18n("Autodetect"));
     const char* const* drivers = xine_list_audio_output_plugins(m_xine);

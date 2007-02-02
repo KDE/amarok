@@ -60,7 +60,7 @@
                 </size>
             </property>
         </spacer>
-        <widget class="KListView" row="1" column="0" rowspan="1" colspan="3">
+        <widget class="Q3ListView" row="1" column="0" rowspan="1" colspan="3">
             <column>
                 <property name="text">
                     <string>Artist - Album</string>
@@ -107,6 +107,6 @@
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>klistview.h</includehint>
+    <includehint>Q3ListView</includehint>
 </includehints>
 </UI>

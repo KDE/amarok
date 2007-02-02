@@ -699,7 +699,7 @@ Playlist::restoreSession()
 
     if ( Amarok::config()->readBoolEntry( "First 1.4 Run", true ) ) {
         // On first startup of 1.4, we load a special playlist with an intro track
-        url.setPath( locate( "data", "amarok/data/firstrun.m3u" ) );
+        url.setPath( KStandardDirs::locate( "data", "amarok/data/firstrun.m3u" ) );
         Amarok::config()->writeEntry( "First 1.4 Run", false );
     }
     else
@@ -4538,7 +4538,7 @@ Playlist::saveSelectedAsPlaylist()
 void Playlist::initStarPixmaps()
 {
     const int h = fontMetrics().height() + itemMargin() * 2 - 4 + ( ( fontMetrics().height() % 2 ) ? 1 : 0 );
-    QImage img = QImage( locate( "data", "amarok/images/star.png" ) ).smoothScale( h, h, QImage::ScaleMin );
+    QImage img = QImage( KStandardDirs::locate( "data", "amarok/images/star.png" ) ).smoothScale( h, h, QImage::ScaleMin );
     PlaylistItem::s_star = new QPixmap( img );
 
     PlaylistItem::s_grayedStar = new QPixmap;
@@ -4546,7 +4546,7 @@ void Playlist::initStarPixmaps()
     KIconEffect::toGray( imgGray, 1.0 );
     PlaylistItem::s_grayedStar->convertFromImage( img );
 
-    QImage small = QImage( locate( "data", "amarok/images/smallstar.png" ) );
+    QImage small = QImage( KStandardDirs::locate( "data", "amarok/images/smallstar.png" ) );
     PlaylistItem::s_smallStar = new QPixmap( small.smoothScale( h, h, QImage::ScaleMin ) );
 }
 

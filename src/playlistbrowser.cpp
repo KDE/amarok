@@ -433,7 +433,7 @@ PlaylistCategory* PlaylistBrowser::loadStreams()
 
 void PlaylistBrowser::loadCoolStreams()
 {
-    QFile file( locate( "data","amarok/data/Cool-Streams.xml" ) );
+    QFile file( KStandardDirs::locate( "data","amarok/data/Cool-Streams.xml" ) );
     if( !file.open( QIODevice::ReadOnly ) )
         return;
 

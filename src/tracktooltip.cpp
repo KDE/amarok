@@ -116,12 +116,12 @@ void TrackToolTip::setTrack( const MetaBundle &tags, bool force )
                     QString s;
                     for( int i = 0; i < rating / 2; ++i )
                         s += QString( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
-                             .arg( locate( "data", "amarok/images/star.png" ) )
+                             .arg( KStandardDirs::locate( "data", "amarok/images/star.png" ) )
                              .arg( QFontMetrics( QToolTip::font() ).height() )
                              .arg( QFontMetrics( QToolTip::font() ).height() );
                     if( rating % 2 )
                         s += QString( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
-                             .arg( locate( "data", "amarok/images/smallstar.png" ) )
+                             .arg( KStandardDirs::locate( "data", "amarok/images/smallstar.png" ) )
                              .arg( QFontMetrics( QToolTip::font() ).height() )
                              .arg( QFontMetrics( QToolTip::font() ).height() );
                     right << s;

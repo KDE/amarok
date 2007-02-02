@@ -364,14 +364,14 @@ Amarok::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
     : Amarok::Slider( Qt::Horizontal, parent, max )
     , m_animCount( 0 )
     , m_animTimer( new QTimer( this ) )
-    , m_pixmapInset( QPixmap( locate( "data","amarok/images/volumeslider-inset.png" ) ) )
+    , m_pixmapInset( QPixmap( KStandardDirs::locate( "data","amarok/images/volumeslider-inset.png" ) ) )
 {
     setWindowFlags( getWindowFlags() | Qt::WNoAutoErase );
     setFocusPolicy( Qt::NoFocus );
 
     // BEGIN Calculate handle animation pixmaps for mouse-over effect
-    QImage pixmapHandle    ( locate( "data","amarok/images/volumeslider-handle.png" ) );
-    QImage pixmapHandleGlow( locate( "data","amarok/images/volumeslider-handle_glow.png" ) );
+    QImage pixmapHandle    ( KStandardDirs::locate( "data","amarok/images/volumeslider-handle.png" ) );
+    QImage pixmapHandleGlow( KStandardDirs::locate( "data","amarok/images/volumeslider-handle_glow.png" ) );
 
     float opacity = 0.0;
     const float step = 1.0 / ANIM_MAX;
@@ -395,10 +395,10 @@ Amarok::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
 void
 Amarok::VolumeSlider::generateGradient()
 {
-    //QImage temp( locate( "data","amarok/images/volumeslider-gradient.png" ) );
+    //QImage temp( KStandardDirs::locate( "data","amarok/images/volumeslider-gradient.png" ) );
     //KIconEffect::colorize( temp, colorGroup().highlight(), 1.0 );
 
-    const QPixmap temp( locate( "data","amarok/images/volumeslider-gradient.png" ) );
+    const QPixmap temp( KStandardDirs::locate( "data","amarok/images/volumeslider-gradient.png" ) );
     const QBitmap mask( temp.createHeuristicMask() );
 
     m_pixmapGradient = QPixmap( m_pixmapInset.size() );

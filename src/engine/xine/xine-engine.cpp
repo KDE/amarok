@@ -67,7 +67,7 @@ namespace Log
 
 ///returns the configuration we will use. there is no KInstance, so using this hacked up method.
 //static inline QCString configPath() { return QFile::encodeName(KStandardDirs().localkdedir() + KStandardDirs::kde_default("data") + "amarok/xine-config"); }
-static inline Q3CString configPath() { return QFile::encodeName(locate( "data", "amarok/") + "xine-config" ); }
+static inline Q3CString configPath() { return QFile::encodeName(KStandardDirs::locate( "data", "amarok/") + "xine-config" ); }
 static Fader *s_fader = 0;
 static OutFader *s_outfader = 0;
 
@@ -424,7 +424,7 @@ XineEngine::unpause()
 {
     if ( !m_stream )
         return;
-    
+
     if( xine_get_param( m_stream, XINE_PARAM_SPEED ) == XINE_SPEED_PAUSE )
     {
         if( s_fader && s_fader->running() )
@@ -468,7 +468,7 @@ XineEngine::position() const
         if( time > tmp ) break;
         usleep( 100000 );
     }
-			
+
     // Here we check for new metadata periodically, because xine does not emit an event
     // in all cases (e.g. with ogg streams). See BUG 122505
     if ( state() != Engine::Idle && state() != Engine::Empty )
@@ -506,7 +506,7 @@ XineEngine::length() const
         xine_get_pos_length( m_stream, &pos, &time, &length );
         if( length < 0 )
             length=0;
-	    	
+
         return length;
     }
 }
@@ -868,7 +868,7 @@ XineEngine::playlistChanged()
 {
     #ifdef XINE_PARAM_EARLY_FINISHED_EVENT
     #ifdef XINE_PARAM_GAPLESS_SWITCH
-    if ( xine_check_version(1,1,1) && !(m_xfadeLength > 0) 
+    if ( xine_check_version(1,1,1) && !(m_xfadeLength > 0)
          && m_url.isLocalFile() && Playlist::instance()->isTrackAfter() )
     {
         xine_set_param(m_stream, XINE_PARAM_EARLY_FINISHED_EVENT, 1 );

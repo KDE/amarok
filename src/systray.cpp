@@ -29,7 +29,7 @@ namespace Amarok
     static QPixmap
     loadOverlay( const char *iconName )
     {
-        return QImage( locate( "data", QString( "amarok/images/b_%1.png" ).arg( iconName ) ), "PNG" ).smoothScale( 10, 10 );
+        return QImage( KStandardDirs::locate( "data", QString( "amarok/images/b_%1.png" ).arg( iconName ) ), "PNG" ).smoothScale( 10, 10 );
     }
 }
 

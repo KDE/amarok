@@ -197,7 +197,7 @@ OSDWidget::determineMetrics( const uint M )
     if( m_rating )
     {
         KPixmap star;
-        star.load( locate( "data", "amarok/images/star.png" ) );
+        star.load( KStandardDirs::locate( "data", "amarok/images/star.png" ) );
         if( rect.width() < star.width() * 5 )
             rect.setWidth( star.width() * 5 ); //changes right edge position
         rect.setHeight( rect.height() + star.height() + M ); //changes bottom edge pos
@@ -332,7 +332,7 @@ OSDWidget::render( const uint M, const QSize &size )
             if ( QFile::exists( folder + file ) )
                 shadow.load( folder + file );
             else {
-                shadow.load( locate( "data", "amarok/images/shadow_albumcover.png" ) );
+                shadow.load( KStandardDirs::locate( "data", "amarok/images/shadow_albumcover.png" ) );
                 shadow = shadow.smoothScale( m_scaledCover.width() + shadowSize, m_scaledCover.height() + shadowSize );
                 shadow.save( folder + file, "PNG" );
             }
@@ -414,7 +414,7 @@ OSDWidget::render( const uint M, const QSize &size )
     }
 
     KPixmap star;
-    star.load( locate( "data", "amarok/images/star.png" ) );
+    star.load( KStandardDirs::locate( "data", "amarok/images/star.png" ) );
     int graphicsHeight = 0;
 
     if( useMoodbar() )
@@ -442,7 +442,7 @@ OSDWidget::render( const uint M, const QSize &size )
         if( m_rating % 2 )
         {
             KPixmap halfStar;
-            halfStar.load( locate( "data", "amarok/images/smallstar.png" ) );
+            halfStar.load( KStandardDirs::locate( "data", "amarok/images/smallstar.png" ) );
             p.drawPixmap( r.left() + star.width() * ( m_rating / 2 ), r.top(), halfStar );
         }
 

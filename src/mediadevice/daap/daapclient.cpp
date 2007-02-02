@@ -539,7 +539,7 @@ DaapClient::passwordPrompt()
     if (!callback) {
 	debug() << "No callback!" << endl;
 	return;
-    }	
+    }
     ServerItem* root = callback->rootMediaItem();
 
     PasswordDialog dialog( 0 );
@@ -692,8 +692,8 @@ ServerItem::ServerItem( Q3ListView* parent, DaapClient* client, const QString& i
     , m_title( title )
     , m_host( host )
     , m_loaded( false )
-    , m_loading1( new QPixmap( locate("data", "amarok/images/loading1.png" ) ) )
-    , m_loading2( new QPixmap( locate("data", "amarok/images/loading2.png" ) ) )
+    , m_loading1( new QPixmap( KStandardDirs::locate("data", "amarok/images/loading1.png" ) ) )
+    , m_loading2( new QPixmap( KStandardDirs::locate("data", "amarok/images/loading2.png" ) ) )
 {
     setText( 0, title );
     setType( MediaItem::DIRECTORY );

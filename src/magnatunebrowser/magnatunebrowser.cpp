@@ -34,6 +34,8 @@ Boston, MA 02110-1301, USA.
 //Added by qt3to4:
 #include <Q3PopupMenu>
 
+#include <Q3TextStream>
+
 MagnatuneBrowser *MagnatuneBrowser::s_instance = 0;
 
 MagnatuneBrowser::MagnatuneBrowser( const char *name )
@@ -70,7 +72,7 @@ MagnatuneBrowser::MagnatuneBrowser( const char *name )
 
     m_purchaseInProgress = 0;
 
-    m_polished = false; 
+    m_polished = false;
 
 }
 
@@ -400,7 +402,7 @@ void MagnatuneBrowser::listDownloadCancelled( )
 
 
     Amarok::StatusBar::instance() ->endProgressOperation( m_listDownloadJob );
-    m_listDownloadJob->kill( true );
+    m_listDownloadJob->kill();
     delete m_listDownloadJob;
     m_listDownloadJob = 0;
     debug() << "Aborted xml download" << endl;
@@ -502,7 +504,7 @@ void MagnatuneBrowser::polish( )
     if (!m_polished) {
         m_polished = true;
         updateList( );
-        m_artistInfobox->begin( KUrl( locate( "data", "amarok/data/" ) ) );
+        m_artistInfobox->begin( KUrl( KStandardDirs::locate( "data", "amarok/data/" ) ) );
         m_artistInfobox->write( "<table align='center' border='0'><tbody align='center' valign='top'>"
           "<tr align='center'><td><div align='center'>"
           "<IMG src='magnatune_logo.png' width='200' height='36' align='center' border='0'>"
