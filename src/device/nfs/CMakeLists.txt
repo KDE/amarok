@@ -14,10 +14,10 @@ kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} libamarok_nfs-device )
 
 target_link_libraries(libamarok_nfs-device  ${KDE4_KDECORE_LIBS} )
 
-install_targets(${PLUGIN_INSTALL_DIR} libamarok_nfs-device )
+install( TARGETS libamarok_nfs-device DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 
 ########### install files ###############
 
-install_files( ${SERVICES_INSTALL_DIR} FILES  amarok_nfs-device.desktop )
+install( FILES amarok_nfs-device.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
 
