@@ -197,8 +197,8 @@ void TagGuesser::setSchemeStrings( const QStringList &schemes )
 {
     KConfig *cfg = KGlobal::config();
     {
-        KConfigGroupSaver saver( cfg, "TagGuesser" );
-        cfg->writeEntry( "Filename schemes", schemes );
+        KConfigGroup group( cfg, "TagGuesser" );
+        group.writeEntry( "Filename schemes", schemes );
     }
     cfg->sync();
 }

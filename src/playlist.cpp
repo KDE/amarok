@@ -723,7 +723,7 @@ Playlist::restoreSession()
 */
 void Playlist::saveLayout(KConfig *config, const QString &group) const
 {
-  KConfigGroupSaver saver(config, group);
+  KConfigGroup group(config, group);
   QStringList names, widths, order;
 
   const int colCount = columns();
@@ -734,23 +734,23 @@ void Playlist::saveLayout(KConfig *config, const QString &group) const
     widths << QString::number(columnWidth(i));
     order << QString::number(thisHeader->mapToIndex(i));
   }
-  config->writeEntry("ColumnsVersion", 1);
-  config->writeEntry("ColumnNames", names);
-  config->writeEntry("ColumnWidths", widths);
-  config->writeEntry("ColumnOrder", order);
-  config->writeEntry("SortColumn", columnSorted());
-  config->writeEntry("SortAscending", ascendingSort());
+  group.writeEntry("ColumnsVersion", 1);
+  group.writeEntry("ColumnNames", names);
+  group.writeEntry("ColumnWidths", widths);
+  group.writeEntry("ColumnOrder", order);
+  group.writeEntry("SortColumn", columnSorted());
+  group.writeEntry("SortAscending", ascendingSort());
 }
 
 void Playlist::restoreLayout(KConfig *config, const QString &group)
 {
-  KConfigGroupSaver saver(config, group);
-  int version = config->readNumEntry("ColumnsVersion", 0);
+  KConfigGroup group(config, group);
+  int version = group.readNumEntry("ColumnsVersion", 0);
 
   Q3ValueList<int> iorder; //internal ordering
   if( version )
   {
-    QStringList names = config->readListEntry("ColumnNames");
+    QStringList names = group.readListEntry("ColumnNames");
     for( int i = 0, n = names.count(); i < n; ++i )
     {
         bool found = false;
@@ -785,7 +785,7 @@ void Playlist::restoreLayout(KConfig *config, const QString &group)
   }
 
 
-  QStringList cols = config->readListEntry("ColumnWidths");
+  QStringList cols = group.readListEntry("ColumnWidths");
   int i = 0;
   { // scope the iterators
     QStringList::ConstIterator it = cols.constBegin();
@@ -798,7 +798,7 @@ void Playlist::restoreLayout(KConfig *config, const QString &group)
   // move sections in the correct sequence: from lowest to highest index position
   // otherwise we move a section from an index, which modifies
   // all index numbers to the right of the moved one
-  cols = config->readListEntry("ColumnOrder");
+  cols = group.readListEntry("ColumnOrder");
   const int colCount = columns();
   for (i = 0; i < colCount; ++i)   // final index positions from lowest to highest
   {
@@ -814,11 +814,11 @@ void Playlist::restoreLayout(KConfig *config, const QString &group)
     }
   }
 
-  if ( config->hasKey("SortColumn") )
+  if ( group.hasKey("SortColumn") )
   {
-    const int sort = config->readNumEntry("SortColumn");
+    const int sort = group.readNumEntry("SortColumn");
     if( sort >= 0 && uint(sort) < iorder.count() )
-        setSorting(iorder[config->readNumEntry("SortColumn")], config->readBoolEntry("SortAscending", true));
+        setSorting(iorder[group.readNumEntry("SortColumn")], group.readBoolEntry("SortAscending", true));
   }
 
   if( !AmarokConfig::useScores() )
