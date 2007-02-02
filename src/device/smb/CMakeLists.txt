@@ -13,7 +13,7 @@ kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} libamarok_smb-device )
 
 target_link_libraries(libamarok_smb-device  ${KDE4_KDECORE_LIBS} )
 
-install( TARGETS libamarok_smb-device DETINATION ${PLUGIN_INSTALL_DIR} )
+install( TARGETS libamarok_smb-device DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 
 ########### install files ###############
