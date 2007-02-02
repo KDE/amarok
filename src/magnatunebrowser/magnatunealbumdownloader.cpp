@@ -95,13 +95,13 @@ void MagnatuneAlbumDownloader::albumDownloadComplete( KIO::Job * downloadJob )
 
     system( unzipString.ascii() );
 
-  
+
 
     if (m_currentAlbumId != -1 ) {
 
-        //now I really want to add the album cover to the same folder where I just unzipped the album... The 
+        //now I really want to add the album cover to the same folder where I just unzipped the album... The
         //only way of getting the actual location where the album was unpacked is using the artist and album names
-   
+
         MagnatuneAlbum album = MagnatuneDatabaseHandler::instance()->getAlbumById( m_currentAlbumId );
         MagnatuneArtist artist = MagnatuneDatabaseHandler::instance()->getArtistById( album.getArtistId() );
 
@@ -149,7 +149,7 @@ void MagnatuneAlbumDownloader::coverDownloadComplete( KIO::Job * downloadJob )
 void MagnatuneAlbumDownloader::albumDownloadAborted( )
 {
     Amarok::StatusBar::instance()->endProgressOperation( m_albumDownloadJob );
-    m_albumDownloadJob->kill( true );
+    m_albumDownloadJob->kill();
     delete m_albumDownloadJob;
     m_albumDownloadJob = 0;
     debug() << "Aborted album download" << endl;
@@ -161,7 +161,7 @@ void MagnatuneAlbumDownloader::albumDownloadAborted( )
 void MagnatuneAlbumDownloader::coverDownloadAborted( )
 {
     Amarok::StatusBar::instance()->endProgressOperation( m_albumDownloadJob );
-    m_albumDownloadJob->kill( true );
+    m_albumDownloadJob->kill();
     delete m_albumDownloadJob;
     m_albumDownloadJob = 0;
     debug() << "Aborted cover download" << endl;
@@ -189,7 +189,7 @@ void MagnatuneAlbumDownloader::coverAddAborted()
 {
 
     Amarok::StatusBar::instance()->endProgressOperation( m_albumDownloadJob );
-    m_albumDownloadJob->kill( true );
+    m_albumDownloadJob->kill();
     delete m_albumDownloadJob;
     m_albumDownloadJob = 0;
     debug() << "Aborted cover add" << endl;
