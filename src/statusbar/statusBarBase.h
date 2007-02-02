@@ -218,10 +218,10 @@ namespace KDE
 
         int  m_logCounter;
 
-        QWidget *cancelButton() { return static_cast<QWidget*>( child( "cancelButton" ) ); }
-        QWidget *toggleProgressWindowButton() { return static_cast<QWidget*>( child( "showAllProgressDetails" ) ); }
-        QWidget *progressBox() { return static_cast<QWidget*>( child( "progressBox" ) ); }
-        QWidget *shortLongButton() { return static_cast<QWidget*>( child( "shortLongButton" ) ); }
+        QWidget *cancelButton()               { return findChild<QWidget*>( "cancelButton" ); }
+        QWidget *toggleProgressWindowButton() { return findChild<QWidget*>( "showAllProgressDetails" ); }
+        QWidget *progressBox()                { return findChild<QWidget*>( "progressBox" ); }
+        QWidget *shortLongButton()            { return findChild<QWidget*>( "shortLongButton" ); }
 
         OverlayWidget *m_popupProgress;
         Q3ProgressBar  *m_mainProgressBar;
