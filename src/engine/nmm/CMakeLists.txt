@@ -26,7 +26,7 @@ kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} amarok_nmmengine_plugin )
 
 target_link_libraries(amarok_nmmengine_plugin  ${KDE4_KDECORE_LIBS} amarok plugin nmmbase nmmgraphmgr nmmiprogress nmmiaudiodevice nmmigeneral )
 
-install_targets(${PLUGIN_INSTALL_DIR} amarok_nmmengine_plugin )
+install(TARGETS amarok_nmmengine_plugin DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 
 ########### install files ###############

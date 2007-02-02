@@ -15,7 +15,7 @@ kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} amarok_ipod-mediadevice )
 
 target_link_libraries(amarok_ipod-mediadevice  ${KDE4_KDECORE_LIBS} )
 
-install_targets(${PLUGIN_INSTALL_DIR} amarok_ipod-mediadevice )
+install(TARGETS amarok_ipod-mediadevice DESTINATION ${PLUGIN_INSTALL_DIR}  )
 
 
 ########### install files ###############

@@ -15,7 +15,7 @@ kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} amarok_xine-engine )
 
 target_link_libraries(amarok_xine-engine  ${KDE4_KDECORE_LIBS} )
 
-install_targets(${PLUGIN_INSTALL_DIR} amarok_xine-engine )
+install(TARGETS amarok_xine-engine DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 
 ########### install files ###############

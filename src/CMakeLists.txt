@@ -303,7 +303,7 @@ kde4_add_library(amarok SHARED ${amarok_LIB_SRCS})
 target_link_libraries(amarok  ${KDE4_KUTILS_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_KHTML_LIBS} ${KDE4_KNEWSTUFF_LIBS} ${TAGLIB_LIBRARIES} ${SQLITE_LIBRARIES} ${KDE4_KDE3SUPPORT_LIBS})
 
 set_target_properties(amarok PROPERTIES VERSION 1.0.0 SOVERSION 1 )
-install_targets(${LIB_INSTALL_DIR} amarok )
+install(TARGETS amarok DESTINATION ${LIB_INSTALL_DIR} )
 
 
 ########### next target ###############

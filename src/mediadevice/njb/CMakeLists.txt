@@ -15,7 +15,7 @@ kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} amarok_njb-mediadevice )
 
 target_link_libraries(amarok_njb-mediadevice  ${KDE4_KDECORE_LIBS} )
 
-install_targets(${PLUGIN_INSTALL_DIR} amarok_njb-mediadevice )
+install(TARGETS amarok_njb-mediadevice DESTINATION ${PLUGIN_INSTALL_DIR})
 
 
 ########### install files ###############
