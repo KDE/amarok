@@ -35,7 +35,6 @@ class Medium;
 class MediumPluginManager;
 
 typedef QMap<QString, Medium*> DeletedMap;
-typedef QMap<QString, Medium*> NewDeviceMap;
 
 /**
     @author Jeff Mitchell <kde-dev@emailgoeshere.com>
@@ -105,7 +104,6 @@ class MediumPluginManager : public QObject
     private:
         bool detectDevices( bool redetect=false, bool nographics=false );
         DeletedMap m_deletedMap;
-        NewDeviceMap m_newDevMap;
         DeviceList m_deviceList;
         QWidget *m_widget;
         bool m_hasChanged;
@@ -138,7 +136,7 @@ class ManualDeviceAdder : public KDialogBase
         ManualDeviceAdder( MediumPluginManager* mdm );
         ~ManualDeviceAdder();
         bool successful() const { return m_successful; }
-        Medium* getMedium();
+        Medium* getMedium( bool recreate = false );
         QString getPlugin() const { return m_selectedPlugin; }
 
     private slots:
@@ -151,6 +149,7 @@ class ManualDeviceAdder : public KDialogBase
         bool m_successful;
         QString m_comboOldText;
         QString m_selectedPlugin;
+        Medium *m_newMed;
 
         KComboBox* m_mdaCombo;
         HintLineEdit* m_mdaName;
