@@ -517,7 +517,7 @@ inline int MetaBundle::compilation() const
 inline QString MetaBundle::type() const
 {
     return isFile()
-           ? filename().mid( filename().findRev( '.' ) + 1 )
+           ? filename().mid( filename().lastIndexOf( '.' ) + 1 )
            : i18n( "Stream" );
 }
 inline PodcastEpisodeBundle *MetaBundle::podcastBundle() const { return m_podcastBundle; }
