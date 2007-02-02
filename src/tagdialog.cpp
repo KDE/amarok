@@ -671,7 +671,7 @@ void TagDialog::readTags()
 
 
     QString summaryText, statisticsText;
-    const QString body2cols = i18n( "<tr><td>Label:</td><td><b>Value</b></td></tr>", "<tr><td><nobr>%1:</nobr></td><td><b>%2</b></td></tr>" );
+    const QString body2cols = i18nc( "<tr><td>Label:</td><td><b>Value</b></td></tr>", "<tr><td><nobr>%1:</nobr></td><td><b>%2</b></td></tr>" );
     const QString body1col = "<tr><td colspan=2>%1</td></td></tr>";
     const QString emptyLine = "<tr><td colspan=2></td></tr>";
 
@@ -915,9 +915,9 @@ TagDialog::readMultipleTracks()
 
     m_currentURL = m_urlList.begin();
 
-    trackArtistAlbumLabel2->setText( i18n( "Editing 1 file", "Editing %n files", songCount ) );
+    trackArtistAlbumLabel2->setText( i18np( "Editing 1 file", "Editing %n files", songCount ) );
 
-    const QString body = i18n( "<tr><td>Label:</td><td><b>Value</b></td></tr>", "<tr><td><nobr>%1:</nobr></td><td><b>%2</b></td></tr>" );
+    const QString body = i18nc( "<tr><td>Label:</td><td><b>Value</b></td></tr>", "<tr><td><nobr>%1:</nobr></td><td><b>%2</b></td></tr>" );
     QString statisticsText = "<table>";
 
     if( AmarokConfig::useRatings() ) {

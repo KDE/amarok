@@ -750,7 +750,7 @@ void CoverManager::deleteSelectedCovers()
     Q3PtrList<CoverViewItem> selected = selectedItems();
 
     int button = KMessageBox::warningContinueCancel( this,
-                            i18n( "Are you sure you want to remove this cover from the Collection?",
+                            i18np( "Are you sure you want to remove this cover from the Collection?",
                                   "Are you sure you want to delete these %n covers from the Collection?",
                                   selected.count() ),
                             QString::null,
@@ -794,7 +794,7 @@ void CoverManager::updateStatusBar()
             //fetching finished
             text = i18n( "Finished." );
             if( m_coverErrors )
-                text += i18n( " Cover not found", " <b>%n</b> covers not found", m_coverErrors );
+                text += i18np( " Cover not found", " <b>%n</b> covers not found", m_coverErrors );
             //reset counters
             m_fetchingCovers = 0;
             m_coversFetched = 0;
@@ -813,12 +813,12 @@ void CoverManager::updateStatusBar()
             }
         }
         else if( m_fetchingCovers ) {
-            text = i18n( "Fetching 1 cover: ", "Fetching <b>%n</b> covers... : ", m_fetchingCovers );
+            text = i18np( "Fetching 1 cover: ", "Fetching <b>%n</b> covers... : ", m_fetchingCovers );
             if( m_coversFetched )
-                text += i18n( "1 fetched", "%n fetched", m_coversFetched );
+                text += i18np( "1 fetched", "%n fetched", m_coversFetched );
             if( m_coverErrors ) {
             if( m_coversFetched ) text += i18n(" - ");
-                text += i18n( "1 not found", "%n not found", m_coverErrors );
+                text += i18np( "1 not found", "%n not found", m_coverErrors );
             }
             if( m_coversFetched + m_coverErrors == 0 )
                 text += i18n( "Connecting..." );
@@ -841,9 +841,9 @@ void CoverManager::updateStatusBar()
         }
 
         if( !m_filter.isEmpty() )
-            text = i18n( "1 result for \"%1\"", "%n results for \"%1\"", totalCounter ).arg( m_filter );
+            text = i18np( "1 result for \"%1\"", "%n results for \"%1\"", totalCounter ).arg( m_filter );
         else if( m_artistView->selectedItem() ) {
-            text = i18n( "1 album", "%n albums", totalCounter );
+            text = i18np( "1 album", "%n albums", totalCounter );
             if( m_artistView->selectedItem() != m_artistView->firstChild() ) //showing albums by an artist
             {
                 QString artist = m_artistView->selectedItem()->text(0);

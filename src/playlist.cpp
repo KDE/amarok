@@ -330,7 +330,7 @@ Playlist::Playlist( QWidget *parent )
     KAction *copy = KStandardAction::copy( this, SLOT( copyToClipboard() ), ac, "playlist_copy" );
     KStandardAction::selectAll( this, SLOT( selectAll() ), ac, "playlist_select_all" );
 
-    m_clearButton = new KAction( i18n( "clear playlist", "&Clear" ), Amarok::icon( "playlist_clear" ), 0, this, SLOT( clear() ), ac, "playlist_clear" );
+    m_clearButton = new KAction( i18nc( "clear playlist", "&Clear" ), Amarok::icon( "playlist_clear" ), 0, this, SLOT( clear() ), ac, "playlist_clear" );
     m_undoButton  = KStandardAction::undo( this, SLOT( undo() ), ac, "playlist_undo" );
     m_redoButton  = KStandardAction::redo( this, SLOT( redo() ), ac, "playlist_redo" );
     m_undoButton ->setIcon( Amarok::icon( "undo" ) );
@@ -3895,8 +3895,8 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
 
     popup.insertItem( SmallIconSet( Amarok::icon( "info" ) )
         , item->url().isLocalFile() ?
-              i18n( "Edit Track &Information...",  "Edit &Information for %n Tracks...", itemCount):
-              i18n( "Track &Information...",  "&Information for %n Tracks...", itemCount)
+              i18np( "Edit Track &Information...",  "Edit &Information for %n Tracks...", itemCount):
+              i18np( "Track &Information...",  "&Information for %n Tracks...", itemCount)
         , VIEW );
 
     popup.setItemEnabled( EDIT, canRename ); //only enable for columns that have editable tags

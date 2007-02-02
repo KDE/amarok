@@ -1316,7 +1316,7 @@ void PlaylistBrowser::configurePodcasts( Q3ListViewItem *parent )
         }
     }
     if( !podcastChannelList.isEmpty() )
-        configurePodcasts( podcastChannelList, i18n( "Podcasts contained in %1", "All in %1").arg( parent->text( 0 ) ) );
+        configurePodcasts( podcastChannelList, i18nc( "Podcasts contained in %1", "All in %1").arg( parent->text( 0 ) ) );
 }
 
 void PlaylistBrowser::configureSelectedPodcasts()
@@ -1503,7 +1503,7 @@ bool PlaylistBrowser::deleteSelectedPodcastItems( const bool removeItem, const b
     int button;
     if( !silent )
         button = KMessageBox::warningContinueCancel( this,
-                    i18n( "<p>You have selected 1 podcast episode to be <b>irreversibly</b> deleted. ",
+                    i18np( "<p>You have selected 1 podcast episode to be <b>irreversibly</b> deleted. ",
                           "<p>You have selected %n podcast episodes to be <b>irreversibly</b> deleted. ",
                            urls.count() ), QString::null, KStandardGuiItem::del() );
     if( silent || button != KMessageBox::Continue )
@@ -2207,19 +2207,19 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
 
     QString message = i18n( "<p>You have selected:<ul>" );
 
-    if( playlistCount ) message += "<li>" + i18n( "1 playlist", "%n playlists", playlistCount )  + "</li>";
+    if( playlistCount ) message += "<li>" + i18np( "1 playlist", "%n playlists", playlistCount )  + "</li>";
 
-    if( smartyCount   ) message += "<li>" + i18n( "1 smart playlist", "%n smart playlists", smartyCount ) + "</li>";
+    if( smartyCount   ) message += "<li>" + i18pn( "1 smart playlist", "%n smart playlists", smartyCount ) + "</li>";
 
-    if( dynamicCount  ) message += "<li>" + i18n( "1 dynamic playlist", "%n dynamic playlists", dynamicCount ) + "</li>";
+    if( dynamicCount  ) message += "<li>" + i18np( "1 dynamic playlist", "%n dynamic playlists", dynamicCount ) + "</li>";
 
-    if( streamCount   ) message += "<li>" + i18n( "1 stream", "%n streams", streamCount ) + "</li>";
+    if( streamCount   ) message += "<li>" + i18np( "1 stream", "%n streams", streamCount ) + "</li>";
 
-    if( podcastCount  ) message += "<li>" + i18n( "1 podcast", "%n podcasts", podcastCount ) + "</li>";
+    if( podcastCount  ) message += "<li>" + i18np( "1 podcast", "%n podcasts", podcastCount ) + "</li>";
 
-    if( folderCount   ) message += "<li>" + i18n( "1 folder", "%n folders", folderCount ) + "</li>";
+    if( folderCount   ) message += "<li>" + i18np( "1 folder", "%n folders", folderCount ) + "</li>";
 
-    if( lastfmCount   ) message += "<li>" + i18n( "1 last.fm stream", "%n last.fm streams", lastfmCount ) + "</li>";
+    if( lastfmCount   ) message += "<li>" + i18np( "1 last.fm stream", "%n last.fm streams", lastfmCount ) + "</li>";
 
     message += i18n( "</ul><br>to be <b>irreversibly</b> deleted.</p>" );
 

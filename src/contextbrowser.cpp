@@ -102,13 +102,13 @@ namespace Amarok
         if( datediff >= 6*7 /*six weeks*/ ) {  // return absolute month/year
             const KCalendarSystem *cal = KGlobal::locale()->calendar();
             const QDate date = datetime.date();
-            return i18n( "monthname year", "%1 %2" ).arg( cal->monthName(date), cal->yearString(date, false) );
+            return i18nc( "monthname year", "%1 %2" ).arg( cal->monthName(date), cal->yearString(date, false) );
         }
 
         //TODO "last week" = maybe within 7 days, but prolly before last sunday
 
         if( datediff >= 7 )  // return difference in weeks
-            return i18n( "One week ago", "%n weeks ago", (datediff+3)/7 );
+            return i18np( "One week ago", "%n weeks ago", (datediff+3)/7 );
 
         if( datediff == -1 )
             return i18n( "Tomorrow" );
@@ -118,16 +118,16 @@ namespace Amarok
         if( timediff >= 24*60*60 /*24 hours*/ )  // return difference in days
             return datediff == 1 ?
                     i18n( "Yesterday" ) :
-                    i18n( "One day ago", "%n days ago", (timediff+12*60*60)/(24*60*60) );
+                    i18np( "One day ago", "%n days ago", (timediff+12*60*60)/(24*60*60) );
 
         if( timediff >= 90*60 /*90 minutes*/ )  // return difference in hours
-            return i18n( "One hour ago", "%n hours ago", (timediff+30*60)/(60*60) );
+            return i18np( "One hour ago", "%n hours ago", (timediff+30*60)/(60*60) );
 
         //TODO are we too specific here? Be more fuzzy? ie, use units of 5 minutes, or "Recently"
 
         if( timediff >= 0 )  // return difference in minutes
             return timediff/60 ?
-                    i18n( "One minute ago", "%n minutes ago", (timediff+30)/60 ) :
+                    i18np( "One minute ago", "%n minutes ago", (timediff+30)/60 ) :
                     i18n( "Within the last minute" );
 
         return i18n( "The future" );
@@ -692,14 +692,14 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
                 debug() << "[CUEFILE]: " << cueFile << " - Shoot blindly and missed, searching for other cue files." << endl;
 
                 bool foundCueFile = false;
-                QDir dir ( bundle.directory() );    
+                QDir dir ( bundle.directory() );
                 dir.setFilter( QDir::Files ) ;
                 dir.setNameFilter( "*.cue *.CUE" ) ;
 
                 QStringList cueFilesList = dir.entryList();
 
                 if ( !cueFilesList.empty() )
-                    for ( QStringList::Iterator it = cueFilesList.begin(); it != cueFilesList.end() && !foundCueFile; ++it ) 
+                    for ( QStringList::Iterator it = cueFilesList.begin(); it != cueFilesList.end() && !foundCueFile; ++it )
                     {
                         QFile file ( dir.filePath(*it) );
                         if( file.open( QIODevice::ReadOnly ) )
@@ -1332,10 +1332,10 @@ void CurrentTrackJob::showHome()
             .args( QStringList()
                     << escapeHTMLAttr( "externalurl://amarok.kde.org" )
                     << escapeHTMLAttr( KIconLoader::global()->iconPath( "amarok", -K3Icon::SizeEnormous ) )
-                    << i18n( "1 Track",  "%n Tracks",  songCount.toInt() )
-                    << i18n( "1 Artist", "%n Artists", artistCount.toInt() )
-                    << i18n( "1 Album",  "%n Albums",  albumCount.toInt() )
-                    << i18n( "1 Genre",  "%n Genres",  genreCount.toInt() )
+                    << i18np( "1 Track",  "%n Tracks",  songCount.toInt() )
+                    << i18np( "1 Artist", "%n Artists", artistCount.toInt() )
+                    << i18np( "1 Album",  "%n Albums",  albumCount.toInt() )
+                    << i18np( "1 Genre",  "%n Genres",  genreCount.toInt() )
                     << i18n( "%1 Play-time" ).arg ( playTime ) ) );
 
     m_shownAlbums = showHomeByAlbums();
@@ -1440,7 +1440,7 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
                     "<span class='album-length'>%3</span>\n"
                     "</td>\n")
                 .args( QStringList()
-                    << i18n( "Single", "%n Tracks",  albumValues.count() / qb.countReturnValues() )
+                    << i18np( "Single", "%n Tracks",  albumValues.count() / qb.countReturnValues() )
                     << albumYear
                     << albumLength) );
 
@@ -2290,7 +2290,7 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
                     "<span>%3</span><br />\n"
                     "<span>%4</span>\n"
                     )
-                .arg( i18n( "Track played once", "Track played %n times", playtimes ),
+                .arg( i18np( "Track played once", "Track played %n times", playtimes ),
                       statsHTML( score, rating, false ),
                       i18n( "Last played: %1" ).arg( Amarok::verboseTimeSince( lastPlay ) ),
                       i18n( "First played: %1" ).arg( Amarok::verboseTimeSince( firstPlay ) ) ) );
@@ -2700,7 +2700,7 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
                         << escapeHTMLAttr( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] ) // album.name
                         << albumImageTitleAttr
                         << escapeHTMLAttr( albumImage )
-                        << i18n( "Single", "%n Tracks",  albumValues.count() / qb.countReturnValues() )
+                        << i18np( "Single", "%n Tracks",  albumValues.count() / qb.countReturnValues() )
                         << QString::number( artist_id )
                         << values[ i + 1 ] //album.id
                         << escapeHTML( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] )
@@ -2862,7 +2862,7 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
                         << escapeHTMLAttr( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] ) // album.name
                         << albumImageTitleAttr
                         << escapeHTMLAttr( albumImage )
-                        << i18n( "Single", "%n Tracks",  albumValues.count() / qb.countReturnValues() )
+                        << i18np( "Single", "%n Tracks",  albumValues.count() / qb.countReturnValues() )
                         << values[ i + 1 ] //album.id
                         << escapeHTML( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] )
                         << albumYear

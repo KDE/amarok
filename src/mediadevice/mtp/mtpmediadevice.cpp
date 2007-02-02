@@ -554,7 +554,7 @@ MtpMediaDevice::checkFolderStructure( const MetaBundle &bundle, bool create )
     if( artist.isEmpty() )
         artist = i18n( "Unknown Artist" );
     if( bundle.compilation() == MetaBundle::CompilationYes )
-        artist = i18n( "Various Artists" );    
+        artist = i18n( "Various Artists" );
     QString album = bundle.album();
     if( album.isEmpty() )
         album = i18n( "Unknown Album" );
@@ -1337,7 +1337,7 @@ MtpMediaDevice::rmbPressed( Q3ListViewItem *qitem, const QPoint &point, int )
                 if( items->count() > 100 )
                 {
                     int button = KMessageBox::warningContinueCancel( m_parent,
-                            i18n( "<p>You are updating cover art for 1 track. This may take some time.",
+                            i18np( "<p>You are updating cover art for 1 track. This may take some time.",
                                 "<p>You are updating cover art for %n tracks. This may take some time.",
                                 items->count()
                                 ),

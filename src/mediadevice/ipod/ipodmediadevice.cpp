@@ -324,7 +324,7 @@ IpodMediaDevice::IpodMediaDevice()
                 else
                     gen->insertItem( i18n( "%1 (x%2)" )
                             .arg( itdb_info_get_ipod_model_name_string( info->ipod_model ),
-                                info->model_number ), 
+                                info->model_number ),
                             index );
             }
             ++info;
@@ -1322,7 +1322,7 @@ IpodMediaDevice::updateArtwork()
     }
 
     Amarok::StatusBar::instance()->shortMessage(
-            i18n( "Updated artwork for one track", "Updated artwork for %n tracks", updateCount ) );
+            i18np( "Updated artwork for one track", "Updated artwork for %n tracks", updateCount ) );
 }
 
 
@@ -2148,7 +2148,7 @@ IpodMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
                     item->type() == MediaItem::ORPHANED )
             {
                 menu.insertItem( SmallIconSet( Amarok::icon( "edit" ) ),
-                        i18n( "Edit &Information...", "Edit &Information for %n Tracks...", urls.count()),
+                        i18np( "Edit &Information...", "Edit &Information for %n Tracks...", urls.count()),
                         RENAME );
             }
             break;
@@ -2181,7 +2181,7 @@ IpodMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
             menu.setItemEnabled( DELETE_PLAYED, !locked );
         }
         menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ),
-                i18n( "Delete Track from iPod", "Delete %n Tracks from iPod", urls.count() ),
+                i18np( "Delete Track from iPod", "Delete %n Tracks from iPod", urls.count() ),
                 DELETE_FROM_IPOD );
         menu.setItemEnabled( DELETE_FROM_IPOD, !locked && urls.count() > 0 );
     }

@@ -21,7 +21,7 @@
 #include "magnatunedatabasehandler.h"
 #include "magnatunelistview.h"
 
-#include <kdeversion.h>  
+#include <kdeversion.h>
 #include <klocale.h>
 
 #include <qcolor.h>

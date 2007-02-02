@@ -148,7 +148,7 @@ const QString MetaBundle::prettyColumnName( int index ) //static
         case Score:      return i18n( "Score"       );
         case Rating:     return i18n( "Rating"      );
         case PlayCount:  return i18n( "Play Count"  );
-        case LastPlayed: return i18n( "Column name", "Last Played" );
+        case LastPlayed: return i18nc( "Column name", "Last Played" );
         case Mood:       return i18n( "Mood"        );
         case Filesize:   return i18n( "File Size"   );
     }
@@ -1147,10 +1147,10 @@ MetaBundle::veryPrettyTime( int time )
 
     switch( s.count() )
     {
-        case 1: return i18n( "seconds", "%1s" ).arg( s[0] );
-        case 2: return i18n( "minutes, seconds", "%2m %1s" ).arg( s[0], s[1] );
-        case 3: return i18n( "hours, minutes, seconds", "%3h %2m %1s" ).arg( s[0], s[1], s[2] );
-        case 4: return i18n( "days, hours, minutes, seconds", "%4d %3h %2m %1s" ).arg( s[0], s[1], s[2], s[3] );
+        case 1: return i18nc( "seconds", "%1s" ).arg( s[0] );
+        case 2: return i18nc( "minutes, seconds", "%2m %1s" ).arg( s[0], s[1] );
+        case 3: return i18nc( "hours, minutes, seconds", "%3h %2m %1s" ).arg( s[0], s[1], s[2] );
+        case 4: return i18nc( "days, hours, minutes, seconds", "%4d %3h %2m %1s" ).arg( s[0], s[1], s[2], s[3] );
         default: return "omg bug!";
     }
 }
@@ -1204,9 +1204,9 @@ MetaBundle::fuzzyTime( int time )
         }
     }
 
-    QString weeks = i18n( "1 week %1", "%n weeks %1", week );
-    QString days = i18n( "1 day %1", "%n days %1", day );
-    QString hours = i18n( "1 hour", "%n hours", hr );
+    QString weeks = i18np( "1 week %1", "%n weeks %1", week );
+    QString days = i18np( "1 day %1", "%n days %1", day );
+    QString hours = i18np( "1 hour", "%n hours", hr );
 
     if( week )
         return weeks.arg( day ? days.arg("") : "" ).simplified();
@@ -1267,7 +1267,7 @@ MetaBundle::ratingDescription( int r )
 QStringList
 MetaBundle::ratingList()
 {
-    QString s = i18n( "rating - description", "%1 - %2" );
+    QString s = i18nc( "rating - description", "%1 - %2" );
     QStringList list;
     list += ratingDescription( 0 );
     for ( int i = 2; i<=10; i++ )

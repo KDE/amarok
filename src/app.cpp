@@ -1024,7 +1024,7 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
 
     case Engine::Playing:
         if ( oldState == Engine::Paused )
-            Amarok::OSD::instance()->OSDWidget::show( i18n( "state, as in playing", "Play" ) );
+            Amarok::OSD::instance()->OSDWidget::show( i18nc( "state, as in playing", "Play" ) );
         if ( !bundle.prettyTitle().isEmpty() )
             m_pPlaylistWindow->setCaption( i18n("Amarok - %1").arg( bundle.veryNiceTitle() ) );
         break;
@@ -1085,11 +1085,11 @@ void App::slotConfigAmarok( const Q3CString& page )
     //FIXME it seems that if the dialog is on a different desktop it gets lost
     //      what do to? detect and move it?
 
-    if ( page.isNull() ) 
+    if ( page.isNull() )
         dialog->showPage( AmarokConfigDialog::s_currentPage );
     else
         dialog->showPageByName( page );
-    
+
     dialog->show();
     dialog->raise();
     dialog->setActiveWindow();

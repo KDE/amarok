@@ -885,7 +885,7 @@ NjbMediaDevice::customClicked()
     if( m_connected )
     {
         NJB_Set_Unicode( NJB_UC_UTF8 ); // I assume that UTF-8 is fine with everyone...
-        tracksFound = i18n( "1 track found on device",
+        tracksFound = i18np( "1 track found on device",
                             "%n tracks found on device ", trackList.size() );
         powerStatus = ( (NJB_Get_Auxpower( m_njb ) == 1) ? i18n("On auxiliary power") : i18n("On main power") );
         batteryCharging = ( (NJB_Get_Battery_Charging( m_njb ) == 1) ? i18n("Battery charging") : i18n("Battery not charging") );

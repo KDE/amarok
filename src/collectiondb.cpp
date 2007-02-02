@@ -1740,22 +1740,22 @@ CollectionDB::createDragPixmap( const KUrl::List &urls, QString textOverRide )
              ( songs && playlists  ) ||
              ( playlists && remoteUrls ) )
     {
-        text = i18n( "One item", "%n items", songs + remoteUrls + playlists );
+        text = i18np( "One item", "%n items", songs + remoteUrls + playlists );
     }
     else if( songs > 0 )
     {
         if( correctAlbumCount ) {
-            text = i18n( "X songs from X albums", "%2 from %1" );
-            text = text.arg( albums == 1 && !album.isEmpty() ? album : i18n( "one album", "%n albums",albums ) );
+            text = i18nc( "X songs from X albums", "%2 from %1" );
+            text = text.arg( albums == 1 && !album.isEmpty() ? album : i18np( "one album", "%n albums",albums ) );
         }
         else
             text = "%1";
-        text = text.arg( songs == 1 && !song.isEmpty() ? song : i18n( "One song", "%n songs", songs ) );
+        text = text.arg( songs == 1 && !song.isEmpty() ? song : i18np( "One song", "%n songs", songs ) );
     }
     else if( playlists > 0 )
-        text = i18n( "One playlist", "%n playlists", playlists );
+        text = i18np( "One playlist", "%n playlists", playlists );
     else if ( remoteUrls > 0 )
-        text = i18n( "One remote file", "%n remote files", remoteUrls );
+        text = i18np( "One remote file", "%n remote files", remoteUrls );
     else
         text = i18n( "Unknown item" );
 
