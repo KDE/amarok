@@ -48,7 +48,8 @@ ContentFetcher::~ContentFetcher()
 QDataStream&
 ContentFetcher::results()
 {
-    QBuffer* bytes = new QBuffer( readAll() ); 
+    QByteArray read = readAll();
+    QBuffer* bytes = new QBuffer( &read );
     QIODevice* stream =  KFilterDev::device( bytes, "application/x-gzip", false );
     stream->open( QIODevice::ReadOnly );
     QDataStream* ds = new QDataStream( stream );

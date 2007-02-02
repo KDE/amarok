@@ -16,10 +16,10 @@ noinst_HEADERS = \
     amarokdcophandler.h
 
 libamarokcore_la_SOURCES = \
-    amarokdcopiface.skel \
-    amarokdcophandler.cpp \
     amarokconfig.kcfgc \
     crashhandler.cpp
+#    amarokdcopiface.skel
+#    amarokdcophandler.cpp
 
 METASOURCES = \
     AUTO
