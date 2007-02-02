@@ -6,15 +6,15 @@
 #define COVERMANAGER_H
 
 #include <q3ptrlist.h>
-#include <qsplitter.h>
+#include <QSplitter>
 //Added by qt3to4:
 #include <Q3HBoxLayout>
 #include <QDropEvent>
 #include <Q3ValueList>
 #include <QLabel>
 #include <k3iconview.h>
-#include <qdialog.h>
-#include <qpixmap.h>
+#include <QDialog>
+#include <QPixmap>
 
 class Q3ListViewItem;
 class CoverViewItem;

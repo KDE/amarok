@@ -25,7 +25,7 @@ static const char* rcsid __attribute__((unused)) =
 #include "track.h"
 #include "njbmediadevice.h"
 
-#include <qregexp.h>
+#include <QRegExp>
 #include <q3ptrlist.h>
 
 #include <klocale.h>

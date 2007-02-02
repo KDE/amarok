@@ -3,9 +3,9 @@
 
 #define DEBUG_PREFIX "CueFile"
 
-#include <qfile.h>
+#include <QFile>
 #include <qmap.h>
-#include <qstringlist.h>
+#include <QStringList>
 
 #include <kglobal.h>
 

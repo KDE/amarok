@@ -23,7 +23,7 @@
 
 #include <khtmlview.h>
 
-#include <qfile.h>
+#include <QFile>
 
 MagnatuneArtistInfoBox::MagnatuneArtistInfoBox( QWidget *parentWidget, const char *widgetname )
         : KHTMLPart( parentWidget )

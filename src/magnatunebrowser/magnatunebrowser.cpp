@@ -28,9 +28,9 @@ Boston, MA 02110-1301, USA.
 #include <kurl.h>
 #include <kiconloader.h>   //multiTabBar icons
 
-#include <qsplitter.h>
+#include <QSplitter>
 #include <q3dragobject.h>
-#include <qlabel.h>
+#include <QLabel>
 //Added by qt3to4:
 #include <Q3PopupMenu>
 

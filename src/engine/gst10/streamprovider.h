@@ -20,7 +20,7 @@ email                : markey@web.de
 
 #include <kurl.h>             //stack allocated
 
-#include <qobject.h>
+#include <QObject>
 #include <q3serversocket.h>    //baseclass
 #include <q3socket.h>          //stack allocated
 #include <kresolver.h> // namespace

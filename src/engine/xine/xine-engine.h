@@ -12,7 +12,7 @@
 #define XINE_ENGINE_H
 
 #include "enginebase.h"
-#include <qthread.h>
+#include <QThread>
 //Added by qt3to4:
 #include <QCustomEvent>
 #include <Q3ValueList>

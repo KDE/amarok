@@ -9,7 +9,7 @@
 #include "amarok.h"
 #include "debug.h"        //stack allocated
 #include <q3ptrlist.h>
-#include <qxml.h>         //baseclass
+#include <QtXml>         //baseclass
 //Added by qt3to4:
 #include <QCustomEvent>
 #include <Q3ValueList>

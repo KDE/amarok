@@ -1,16 +1,16 @@
 // (c) 2006 Giovanni Venturi <giovanni@kde-it.org>
 // See COPYING file for licensing information.
 
-#include <qlayout.h>
-#include <qdatetime.h>
-#include <qlabel.h>
+#include <QLayout>
+#include <QDateTime>
+#include <QLabel>
 #include <q3groupbox.h>
-#include <qradiobutton.h>
-#include <qlineedit.h>
-#include <qcombobox.h>
-#include <qcheckbox.h>
+#include <QRadioButton>
+#include <QLineEdit>
+#include <QComboBox>
+#include <QCheckBox>
 #include <qspinbox.h>
-#include <qtooltip.h>
+#include <QToolTip>
 #include <q3whatsthis.h>
 //Added by qt3to4:
 #include <Q3HBoxLayout>

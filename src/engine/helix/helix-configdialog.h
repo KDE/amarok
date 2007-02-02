@@ -13,7 +13,7 @@
 
 #include "plugin/pluginconfig.h"
 #include <q3ptrlist.h>
-#include <qtabwidget.h>
+#include <QTabWidget>
 #include <q3vbox.h>
 //Added by qt3to4:
 #include <Q3GridLayout>

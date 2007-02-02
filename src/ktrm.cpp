@@ -33,11 +33,11 @@
 #include <kresolver.h>
 
 #include <qdom.h>
-#include <qmutex.h>
-#include <qevent.h>
-#include <qobject.h>
-#include <qfile.h>
-#include <qregexp.h>
+#include <QMutex>
+#include <QEvent>
+#include <QObject>
+#include <QFile>
+#include <QRegExp>
 //Added by qt3to4:
 #include <QCustomEvent>
 

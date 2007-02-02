@@ -30,13 +30,13 @@
 #include "statusbar/statusbar.h"
 #include "tagdialog.h"
 
-#include <qcheckbox.h>
-#include <qmetaobject.h>
-#include <qobject.h>
-#include <qlabel.h>
-#include <qpixmap.h>
-#include <qtimer.h>
-#include <qtooltip.h>
+#include <QCheckBox>
+#include <QMetaObject>
+#include <QObject>
+#include <QLabel>
+#include <QPixmap>
+#include <QTimer>
+#include <QToolTip>
 //Added by qt3to4:
 #include <Q3ValueList>
 

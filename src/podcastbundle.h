@@ -7,7 +7,7 @@
 #include "podcastsettings.h"
 #include <kurl.h>
 #include <krfcdate.h>
-#include <qdatetime.h>
+#include <QDateTime>
 
 class PodcastChannelBundle
 {

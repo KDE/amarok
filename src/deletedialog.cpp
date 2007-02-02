@@ -23,11 +23,11 @@
 #include <kstandardguiitem.h>
 #include <kurl.h>
 
-#include <qstringlist.h>
-#include <qcheckbox.h>
-#include <qlayout.h>
-#include <qlabel.h>
-#include <qtimer.h>
+#include <QStringList>
+#include <QCheckBox>
+#include <QLayout>
+#include <QLabel>
+#include <QTimer>
 #include <q3vbox.h>
 #include <q3hbox.h>
 

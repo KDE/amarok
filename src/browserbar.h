@@ -17,7 +17,7 @@
 #include <qwidget.h>        //baseclass
 #include <q3valuevector.h>   //stack allocated
 #include <qmap.h>           //stack allocated
-#include <qpushbutton.h>
+#include <QPushButton>
 //Added by qt3to4:
 #include <QEvent>
 #include <QMouseEvent>

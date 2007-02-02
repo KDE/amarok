@@ -25,8 +25,8 @@
 #include "threadmanager.h"
 
 #include <qdom.h>
-#include <qstring.h>
-#include <qxml.h>
+#include <QString>
+#include <QtXml>
 
 
 /**

@@ -9,10 +9,10 @@
 
 #include "engineobserver.h"
 #include <qdom.h>
-#include <qobject.h>
+#include <QObject>
 #include <q3ptrdict.h>
 #include <q3ptrlist.h>
-#include <qtimer.h>
+#include <QTimer>
 
 //some setups require this
 #undef PROTOCOL_VERSION

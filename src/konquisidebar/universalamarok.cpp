@@ -22,28 +22,28 @@
 #include "amarokdcopiface_stub.h"
 
 
-#include <qlabel.h>
+#include <QLabel>
 //Added by qt3to4:
 #include <QDropEvent>
 #include <QEvent>
 #include <QDragEnterEvent>
 #include <kinstance.h>
 #include <klocale.h>
-#include <qstring.h>
+#include <QString>
 #include <qwidget.h>
 #include <kglobal.h>
 #include <kstandarddirs.h>
-#include <qlayout.h>
-#include <qtimer.h>
+#include <QLayout>
+#include <QTimer>
 #include <dcopclient.h>
 #include <kmessagebox.h>
 #include <kpushbutton.h>
 #include <kiconloader.h>
-#include <qdatetime.h>
-#include <qfileinfo.h>
+#include <QDateTime>
+#include <QFileInfo>
 #include <ktoolbar.h>
 #include <kapplication.h>
-#include <qslider.h>
+#include <QSlider>
 #include <kdebug.h>
 #include <kurldrag.h>
 #include <khtmlview.h>

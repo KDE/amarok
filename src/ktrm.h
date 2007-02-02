@@ -27,9 +27,9 @@
 #ifndef KTRM_H
 #define KTRM_H
 
-#include <qobject.h>
+#include <QObject>
 #include <qmap.h>
-#include <qstring.h>
+#include <QString>
 #include <q3valuelist.h>
 
 /**

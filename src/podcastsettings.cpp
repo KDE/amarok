@@ -14,10 +14,10 @@
 #include <kurl.h>
 #include <kwin.h>
 
-#include <qcheckbox.h>
-#include <qpushbutton.h>
-#include <qradiobutton.h>
-#include <qlabel.h>
+#include <QCheckBox>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QLabel>
 //Added by qt3to4:
 #include <Q3PtrList>
 

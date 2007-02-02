@@ -24,11 +24,11 @@
 #ifndef MOODBAR_H
 #define MOODBAR_H
 
-#include <qobject.h>
+#include <QObject>
 #include <q3valuevector.h>
 #include <qcolor.h>
-#include <qpixmap.h>
-#include <qmutex.h>
+#include <QPixmap>
+#include <QMutex>
 #include <q3valuelist.h>
 
 #include <kurl.h>

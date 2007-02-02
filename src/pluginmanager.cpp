@@ -21,8 +21,8 @@ email                : markey@web.de
 
 #include <vector>
 
-#include <qfile.h>
-#include <qstring.h>
+#include <QFile>
+#include <QString>
 
 #include <klibloader.h>
 #include <klocale.h>

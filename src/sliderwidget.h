@@ -26,8 +26,8 @@
 #include <QPixmap>
 #include <kurl.h>
 
-#include <qpixmap.h>
-#include <qslider.h>
+#include <QPixmap>
+#include <QSlider>
 #include <q3valuevector.h>
 //Added by qt3to4:
 #include <QShowEvent>

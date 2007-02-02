@@ -25,7 +25,7 @@
 #include "magnatunedownloadinfo.h"
 #include "magnatuneredownloaddialog.h"
 
-#include <qobject.h>
+#include <QObject>
 
 /**
 This class handles the redownloading of previously purchased albums

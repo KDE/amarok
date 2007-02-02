@@ -31,10 +31,10 @@
 
 #include <q3buttongroup.h>
 #include <qinputdialog.h>
-#include <qlayout.h>
+#include <QLayout>
 #include <q3listbox.h>
-#include <qpushbutton.h>
-#include <qradiobutton.h>
+#include <QPushButton>
+#include <QRadioButton>
 #include <q3widgetstack.h>
 //Added by qt3to4:
 #include <Q3ValueList>

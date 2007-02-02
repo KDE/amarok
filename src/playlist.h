@@ -33,10 +33,10 @@
 
 #include <k3listview.h>       //baseclass
 #include <kurl.h>            //KUrl::List
-#include <qdir.h>            //stack allocated
+#include <QDir>            //stack allocated
 #include <qpoint.h>          //stack allocated
 #include <q3ptrlist.h>        //stack allocated
-#include <qstringlist.h>     //stack allocated
+#include <QStringList>     //stack allocated
 //Added by qt3to4:
 #include <QDragLeaveEvent>
 #include <Q3ValueList>

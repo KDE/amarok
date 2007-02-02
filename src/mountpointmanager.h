@@ -30,9 +30,9 @@
 #include <kurl.h>
 
 #include <qmap.h>
-#include <qmutex.h>
+#include <QMutex>
 #include <q3ptrlist.h>
-#include <qstringlist.h>
+#include <QStringList>
 #include <q3valuelist.h>
 
 class DeviceHandler;

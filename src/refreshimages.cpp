@@ -10,12 +10,12 @@
 #include "statusbar.h"
 
 #include <qdom.h>
-#include <qimage.h>
+#include <QImage>
 #include <qmap.h>
-#include <qobject.h>
-#include <qstringlist.h>
+#include <QObject>
+#include <QStringList>
 #include <q3valuelist.h>
-#include <qvariant.h>
+#include <QVariant>
 
 #include <kio/job.h>
 #include <kio/jobclasses.h>

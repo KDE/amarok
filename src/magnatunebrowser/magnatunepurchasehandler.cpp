@@ -25,9 +25,9 @@ Boston, MA 02110-1301, USA.
 
 #include <ktempdir.h>
 
-#include <qdir.h>
-#include <qfile.h>
-#include <qmessagebox.h>
+#include <QDir>
+#include <QFile>
+#include <QMessageBox>
 
 MagnatunePurchaseHandler::MagnatunePurchaseHandler()
         : QObject()

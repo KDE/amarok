@@ -24,7 +24,7 @@
 #include "glanalyzer2.h"
 #include <kdebug.h>
 #include <kstandarddirs.h>
-#include <qimage.h>
+#include <QImage>
 #include <sys/time.h>
 
 

@@ -7,7 +7,7 @@
 #include "gstconfigdialogbase.h"
 #include "pluginconfig.h"
 
-#include <qobject.h>
+#include <QObject>
 
 class GstEngine;
 

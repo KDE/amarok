@@ -7,7 +7,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <qthread.h>
+#include <QThread>
 //Added by qt3to4:
 #include <QTimerEvent>
 #include <Q3ValueList>
@@ -29,9 +29,9 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 
-#include <qapplication.h>
-#include <qdir.h>
-#include <qstringlist.h>
+#include <QApplication>
+#include <QDir>
+#include <QStringList>
 
 #include "helix-engine.h"
 #include "helix-configdialog.h"

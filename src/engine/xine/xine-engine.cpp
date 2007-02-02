@@ -39,8 +39,8 @@ AMAROK_EXPORT_PLUGIN( XineEngine )
 #include <kmessagebox.h>
 #include <kstandarddirs.h>
 
-#include <qapplication.h>
-#include <qdir.h>
+#include <QApplication>
+#include <QDir>
 
 extern "C"
 {

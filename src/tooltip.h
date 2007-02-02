@@ -20,10 +20,10 @@
 #ifndef AMAROK_TOOLTIP_H
 #define AMAROK_TOOLTIP_H
 
-#include <qtooltip.h>
+#include <QToolTip>
 #include <q3frame.h>
 #include <qpoint.h>
-#include <qtimer.h>
+#include <QTimer>
 //Added by qt3to4:
 #include <Q3ValueList>
 

@@ -15,7 +15,7 @@
 #ifndef TRACKTOOLTIP_H
 #define TRACKTOOLTIP_H
 
-#include <qobject.h>
+#include <QObject>
 #include <q3ptrlist.h>
 #include <metabundle.h>
 

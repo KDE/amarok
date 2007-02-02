@@ -21,9 +21,9 @@
 #ifndef AMAROK_XML_LOADER_H
 #define AMAROK_XML_LOADER_H
 
-#include <qevent.h>
-#include <qobject.h>
-#include <qxml.h>
+#include <QEvent>
+#include <QObject>
+#include <QtXml>
 //Added by qt3to4:
 #include <QCustomEvent>
 #include <Q3ValueList>

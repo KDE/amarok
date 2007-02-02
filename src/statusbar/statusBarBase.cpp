@@ -31,21 +31,21 @@
 #include <klocale.h>
 #include <kstandardguiitem.h>
 
-#include <qapplication.h>
-#include <qdatetime.h>      //writeLogFile()
-#include <qfile.h>          //writeLogFile()
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qmessagebox.h>
-#include <qobject.h> //polish()
-#include <qpainter.h>
-#include <qpalette.h>
+#include <QApplication>
+#include <QDateTime>      //writeLogFile()
+#include <QFile>          //writeLogFile()
+#include <QPushButton>
+#include <QLabel>
+#include <QLayout>
+#include <QMessageBox>
+#include <QObject> //polish()
+#include <QPainter>
+#include <QPalette>
 #include <q3progressbar.h>
-#include <qstyle.h>   //class CloseButton
-#include <qtimer.h>
-#include <qtoolbutton.h>
-#include <qtooltip.h> //QToolTip::palette()
+#include <QStyle>   //class CloseButton
+#include <QTimer>
+#include <QToolButton>
+#include <QToolTip> //QToolTip::palette()
 #include <q3vbox.h>
 //Added by qt3to4:
 #include <Q3HBoxLayout>

@@ -6,9 +6,9 @@
 
 #include "equalizercanvasview.h"
 
-#include <qlabel.h>
+#include <QLabel>
 #include <q3canvas.h>
-#include <qpen.h>
+#include <QPen>
 //Added by qt3to4:
 #include <Q3ValueList>
 #include <QMouseEvent>

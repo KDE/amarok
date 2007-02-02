@@ -14,10 +14,10 @@
 #include "mediabrowser.h"
 #include "transferdialog.h"
 
-#include <qcheckbox.h>
+#include <QCheckBox>
 #include <q3groupbox.h>
-#include <qlabel.h>
-#include <qlayout.h>
+#include <QLabel>
+#include <QLayout>
 #include <q3vbox.h>
 //Added by qt3to4:
 #include <Q3PtrList>

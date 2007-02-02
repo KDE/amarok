@@ -8,8 +8,8 @@
 #include <kdebug.h>
 #include <q3cstring.h>
 #include <q3deepcopy.h>
-#include <qmutex.h>
-#include <qobject.h>
+#include <QMutex>
+#include <QObject>
 //Added by qt3to4:
 #include <Q3ValueList>
 #include <sys/time.h>
@@ -230,7 +230,7 @@ namespace Debug
 }
 
 
-#include <qvariant.h>
+#include <QVariant>
 
 namespace Debug
 {

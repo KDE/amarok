@@ -48,12 +48,12 @@ AMAROK_EXPORT_PLUGIN( MtpMediaDevice )
 #include <ktempdir.h>
 
 // Qt
-#include <qdir.h>
+#include <QDir>
 #include <q3listview.h>
-#include <qtooltip.h>
-#include <qlineedit.h>
-#include <qregexp.h>
-#include <qbuffer.h>
+#include <QToolTip>
+#include <QLineEdit>
+#include <QRegExp>
+#include <QBuffer>
 #include <qmap.h>
 
 /**

@@ -25,7 +25,7 @@
 #include "playlist.h"
 #include "playlistitem.h"
 #include "podcastbundle.h"
-#include <qapplication.h>
+#include <QApplication>
 //Added by qt3to4:
 #include <QPixmap>
 #include <kstandarddirs.h>

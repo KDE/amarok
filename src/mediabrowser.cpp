@@ -41,21 +41,21 @@
 #include "browserToolBar.h"
 
 #include <qvbuttongroup.h>
-#include <qcheckbox.h>
-#include <qdatetime.h>
-#include <qdir.h>
+#include <QCheckBox>
+#include <QDateTime>
+#include <QDir>
 #include <qdom.h>
-#include <qfileinfo.h>
+#include <QFileInfo>
 #include <q3groupbox.h>
 #include <q3header.h>
-#include <qimage.h>
-#include <qlabel.h>
-#include <qobject.h>
-#include <qpainter.h>
-#include <qradiobutton.h>
+#include <QImage>
+#include <QLabel>
+#include <QObject>
+#include <QPainter>
+#include <QRadioButton>
 #include <q3simplerichtext.h>
-#include <qtimer.h>
-#include <qtooltip.h>       //QToolTip::add()
+#include <QTimer>
+#include <QToolTip>       //QToolTip::add()
 //Added by qt3to4:
 #include <QPixmap>
 #include <Q3ValueList>

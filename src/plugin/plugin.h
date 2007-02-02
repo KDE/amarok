@@ -13,7 +13,7 @@
     }
 
 #include <qmap.h>
-#include <qstring.h>
+#include <QString>
 
 class QWidget;
 

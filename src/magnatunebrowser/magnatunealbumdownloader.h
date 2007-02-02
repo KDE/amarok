@@ -25,7 +25,7 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 
-#include <qobject.h>
+#include <QObject>
 
 #include <ktempdir.h>
 /**

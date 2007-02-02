@@ -4,7 +4,7 @@
 #ifndef AMAROK_PLUGINCONFIG_H
 #define AMAROK_PLUGINCONFIG_H
 
-#include <qobject.h>
+#include <QObject>
 
 class QWidget;
 

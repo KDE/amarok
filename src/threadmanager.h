@@ -7,13 +7,13 @@
 #define THREADMANAGER_H
 
 #include "debug.h"
-#include <qevent.h>   //baseclass
-#include <qpointer.h>
+#include <QEvent>   //baseclass
+#include <QPointer>
 #include <qmap.h>
-#include <qobject.h>
-#include <qthread.h>
+#include <QObject>
+#include <QThread>
 #include <q3valuelist.h>
-#include <qmutex.h>
+#include <QMutex>
 //Added by qt3to4:
 #include <Q3CString>
 #include <QCustomEvent>

@@ -29,11 +29,11 @@
 
 #include <qfont.h>
 #include <q3frame.h>
-#include <qlabel.h>
-#include <qmessagebox.h>
-#include <qpainter.h>
-#include <qtimer.h>
-#include <qtooltip.h>
+#include <QLabel>
+#include <QMessageBox>
+#include <QPainter>
+#include <QTimer>
+#include <QToolTip>
 #include <kguiitem.h>
 //Added by qt3to4:
 #include <Q3HBoxLayout>

@@ -22,7 +22,7 @@
 #ifdef HAVE_QGLWIDGET
 
 #include "analyzerbase.h"
-#include <qstring.h>
+#include <QString>
 #include <q3ptrlist.h>
 
 

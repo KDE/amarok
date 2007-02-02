@@ -20,8 +20,8 @@
 #include <config.h>
 
 #include <q3header.h>
-#include <qpainter.h>
-#include <qtooltip.h>
+#include <QPainter>
+#include <QToolTip>
 #include <q3vbox.h>
 //Added by qt3to4:
 #include <Q3ValueList>

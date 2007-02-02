@@ -24,7 +24,7 @@
 #include <kiconloader.h> 
 #include <klocale.h>
 
-#include <qdatetime.h>
+#include <QDateTime>
 
 
 

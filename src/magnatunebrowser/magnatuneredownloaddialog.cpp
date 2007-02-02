@@ -20,7 +20,7 @@
 
 #include "magnatuneredownloaddialog.h"
 
-#include <qpushbutton.h>
+#include <QPushButton>
 #include <k3listview.h>
 
 MagnatuneRedownloadDialog::MagnatuneRedownloadDialog(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)

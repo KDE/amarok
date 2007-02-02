@@ -21,7 +21,7 @@
 #ifndef SQUEEZEDTEXTLABEL_H
 #define SQUEEZEDTEXTLABEL_H
 
-#include <qlabel.h>
+#include <QLabel>
 //Added by qt3to4:
 #include <QResizeEvent>
 

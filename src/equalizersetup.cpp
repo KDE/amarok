@@ -24,16 +24,16 @@
 #include "equalizersetup.h"
 #include "sliderwidget.h"
 
-#include <qcheckbox.h>
+#include <QCheckBox>
 #include <qdom.h>
-#include <qfile.h>
+#include <QFile>
 #include <q3groupbox.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qpushbutton.h>
-#include <qstringlist.h>
+#include <QLabel>
+#include <QLayout>
+#include <QPushButton>
+#include <QStringList>
 #include <q3textstream.h>   //presets
-#include <qtooltip.h>
+#include <QToolTip>
 #include <q3vbox.h>
 //Added by qt3to4:
 #include <Q3GridLayout>

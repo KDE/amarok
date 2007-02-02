@@ -24,13 +24,13 @@ what                 : interface to the KDE Multimedia interface (KDEMM)
 #include <string>
 #include <vector>
 
-#include <qdir.h>
+#include <QDir>
 #include <qdom.h>
-#include <qfile.h>
-#include <qlayout.h>
-#include <qstring.h>
+#include <QFile>
+#include <QLayout>
+#include <QString>
 #include <q3textstream.h>
-#include <qtimer.h>
+#include <QTimer>
 
 #include <kapplication.h>
 #include <kconfig.h>

@@ -20,9 +20,9 @@
 #include "equalizerpresetmanager.h"
 
 #include <qdom.h>
-#include <qfile.h>
-#include <qlayout.h>
-#include <qpushbutton.h>
+#include <QFile>
+#include <QLayout>
+#include <QPushButton>
 #include <q3vbox.h>
 //Added by qt3to4:
 #include <Q3HBoxLayout>

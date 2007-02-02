@@ -29,9 +29,9 @@
 
 #include <ktrader.h>
 
-#include <qfile.h>
-#include <qstringlist.h>
-#include <qtimer.h>
+#include <QFile>
+#include <QStringList>
+#include <QTimer>
 #include <q3valuelist.h>
 
 typedef Medium::List MediumList;

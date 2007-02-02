@@ -24,7 +24,7 @@
 #include "glanalyzer3.h"
 #include <kdebug.h>
 #include <kstandarddirs.h>
-#include <qimage.h>
+#include <QImage>
 #include <sys/time.h>
 
 #ifndef HAVE_FABSF

@@ -24,8 +24,8 @@ Boston, MA 02110-1301, USA.
 #include <kfiledialog.h>
 #include <kurlrequester.h>
 
-#include <qcheckbox.h>
-#include <qcombobox.h>
+#include <QCheckBox>
+#include <QComboBox>
 #include <q3textedit.h>
 
 

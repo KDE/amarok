@@ -26,13 +26,13 @@
 #include "enginecontroller.h"
 #include "sliderwidget.h"
 
-#include <qapplication.h>
-#include <qbitmap.h>
-#include <qbrush.h>
-#include <qimage.h>
-#include <qpainter.h>
-#include <qsize.h>
-#include <qtimer.h>
+#include <QApplication>
+#include <QBitmap>
+#include <QBrush>
+#include <QImage>
+#include <QPainter>
+#include <QSize>
+#include <QTimer>
 //Added by qt3to4:
 #include <QContextMenuEvent>
 #include <Q3PointArray>

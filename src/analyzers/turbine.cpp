@@ -8,7 +8,7 @@
 //
 
 #include <cmath>
-#include <qpainter.h>
+#include <QPainter>
 
 #include "amarok.h"
 #include "turbine.h"

@@ -34,7 +34,7 @@ extern "C" {
 
 #include "mediabrowser.h"
 
-#include <qmutex.h>
+#include <QMutex>
 #include <q3ptrlist.h>
 #include <q3dict.h>
 

@@ -24,10 +24,10 @@
 
 #include "HostListItem.h"
 
-#include <qbitmap.h>
+#include <QBitmap>
 #include <qfont.h>
 #include <q3header.h>
-#include <qpainter.h>
+#include <QPainter>
 #include <q3whatsthis.h>
 //Added by qt3to4:
 #include <QPixmap>

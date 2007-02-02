@@ -22,7 +22,7 @@
 #define GLBOUNCER_H
 
 #include "analyzerbase.h"
-#include <qstring.h>
+#include <QString>
 #include <q3ptrlist.h>
 
 class QWidget;

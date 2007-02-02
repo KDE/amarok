@@ -23,9 +23,9 @@ what                 : interface to KDE Multimedia (KDEMM)
 
 #include <vector>
 
-#include <qpointer.h>
+#include <QPointer>
 #include <qmap.h>
-#include <qstringlist.h>
+#include <QStringList>
 #include <qwidget.h>
 
 

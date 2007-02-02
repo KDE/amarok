@@ -3,7 +3,7 @@
 
 #include <kurl.h>
 
-#include <qdir.h>
+#include <QDir>
 
 MyDirOperator::MyDirOperator ( const KUrl &url, QWidget *parent, Medium *medium ) : KDirOperator( url, parent )
 {

@@ -21,10 +21,10 @@
 #include <kurl.h>
 
 #include <qdom.h>
-#include <qfile.h>
+#include <QFile>
 #include <q3http.h>
 #include <q3ptrlist.h>
-#include <qtimer.h>     // Podcast loading animation
+#include <QTimer>     // Podcast loading animation
 #include <q3url.h>
 //Added by qt3to4:
 #include <Q3ValueList>

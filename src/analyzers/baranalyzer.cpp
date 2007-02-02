@@ -14,7 +14,7 @@
 #include "baranalyzer.h"
 #include <cmath>     //log10(), etc.
 #include "debug.h"
-#include <qpainter.h>
+#include <QPainter>
 //Added by qt3to4:
 #include <QResizeEvent>
 

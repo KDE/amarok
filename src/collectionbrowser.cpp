@@ -47,20 +47,20 @@
 
 #include <unistd.h>         //CollectionView ctor
 
-#include <qapplication.h>
+#include <QApplication>
 #include <q3cstring.h>
 #include <q3dragobject.h>
-#include <qlayout.h>        //infobox
+#include <QLayout>        //infobox
 #include <qmap.h>
-#include <qpainter.h>
-#include <qpixmap.h>
+#include <QPainter>
+#include <QPixmap>
 #include <q3ptrlist.h>
-#include <qpushbutton.h>
+#include <QPushButton>
 #include <q3simplerichtext.h>
-#include <qtimer.h>
-#include <qtooltip.h>       //QToolTip::add()
+#include <QTimer>
+#include <QToolTip>       //QToolTip::add()
 #include <q3header.h>
-#include <qregexp.h>
+#include <QRegExp>
 
 #include <kactioncollection.h>
 #include <kapplication.h>   //kapp

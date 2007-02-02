@@ -19,8 +19,8 @@
 #include "amarokconfig.h"
 #include "equalizergraph.h"
 
-#include <qpainter.h>
-#include <qpixmap.h>
+#include <QPainter>
+#include <QPixmap>
 #include <q3valuelist.h>
 //Added by qt3to4:
 #include <QResizeEvent>

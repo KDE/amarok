@@ -68,15 +68,15 @@ email                : markey@web.de
 #include <kaboutdata.h>
 #include <kio/job.h>
 
-#include <qevent.h>              //genericEventHandler()
-#include <qeventloop.h>          //applySettings()
-#include <qfile.h>
-#include <qobject.h>         //applyColorScheme()
-#include <qpalette.h>            //applyColorScheme()
-#include <qpixmap.h>             //QPixmap::setDefaultOptimization()
+#include <QEvent>              //genericEventHandler()
+#include <QEventLoop>          //applySettings()
+#include <QFile>
+#include <QObject>         //applyColorScheme()
+#include <QPalette>            //applyColorScheme()
+#include <QPixmap>             //QPixmap::setDefaultOptimization()
 #include <q3popupmenu.h>          //genericEventHandler
-#include <qtimer.h>              //showHyperThreadingWarning()
-#include <qtooltip.h>            //default tooltip for trayicon
+#include <QTimer>              //showHyperThreadingWarning()
+#include <QToolTip>            //default tooltip for trayicon
 //Added by qt3to4:
 #include <QCloseEvent>
 #include <Q3CString>
@@ -247,7 +247,7 @@ App::~App()
 
 
 #include <dcopref.h>
-#include <qstringlist.h>
+#include <QStringList>
 
 namespace
 {
@@ -579,7 +579,7 @@ void App::showHyperThreadingWarning() // SLOT
 
 #include <taglib/id3v1tag.h>
 #include <taglib/tbytevector.h>
-#include <qtextcodec.h>
+#include <QTextCodec>
 #include <kglobal.h>
 
 //this class is only used in this module, so I figured I may as well define it

@@ -30,10 +30,10 @@
 #include <ktoggleaction.h>
 #include <kglobalsettings.h>
 #include <kiconloader.h>
-#include <qicon.h>
-#include <qlabel.h>
-#include <qtimer.h>
-#include <qtooltip.h>
+#include <QIcon>
+#include <QLabel>
+#include <QTimer>
+#include <QToolTip>
 //Added by qt3to4:
 #include <QEvent>
 #include <QMouseEvent>

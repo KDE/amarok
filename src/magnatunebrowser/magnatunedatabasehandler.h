@@ -23,7 +23,7 @@
 #include "collectiondb.h"
 #include "magnatunetypes.h"
 
-#include <qstringlist.h>
+#include <QStringList>
 
 
 /**

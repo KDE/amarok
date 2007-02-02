@@ -23,7 +23,7 @@
 
 #include "magnatuneredownloaddialogbase.h"
 
-#include <qstringlist.h>
+#include <QStringList>
 
 class MagnatuneRedownloadDialog : public magnatuneReDownloadDialogBase
 {

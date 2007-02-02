@@ -9,8 +9,8 @@
 // copyright: (C) 2003 Christian Muehlhaeuser
 //            (C) 2005 Max Howell
 
-#include <qapplication.h>
-#include <qpixmap.h>
+#include <QApplication>
+#include <QPixmap>
 #include <q3process.h>
 //Added by qt3to4:
 #include <QMouseEvent>

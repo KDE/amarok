@@ -23,10 +23,10 @@
 #include <kfileitem.h>
 #include <klocale.h>
 
-#include <qfile.h>
-#include <qlabel.h>
-#include <qpainter.h>
-#include <qtooltip.h>
+#include <QFile>
+#include <QLabel>
+#include <QPainter>
+#include <QToolTip>
 
 
 CollectionSetup* CollectionSetup::s_instance;

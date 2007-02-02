@@ -36,7 +36,7 @@
 #include "track.h"
 
 #include <q3cstring.h>
-#include <qstring.h>
+#include <QString>
 #include <q3valuelist.h>
 
 // kde

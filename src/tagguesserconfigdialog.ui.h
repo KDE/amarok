@@ -23,7 +23,7 @@
 
 #include "tagguesser.h"
 
-#include <qevent.h>
+#include <QEvent>
 //Added by qt3to4:
 #include <QKeyEvent>
 

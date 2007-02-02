@@ -43,9 +43,9 @@ AMAROK_EXPORT_PLUGIN( IfpMediaDevice )
 #include <kurlrequester.h>     //downloadSelectedItems()
 #include <kurlrequesterdlg.h>  //downloadSelectedItems()
 
-#include <qfile.h>
+#include <QFile>
 #include <q3cstring.h>
-#include <qregexp.h>
+#include <QRegExp>
 
 namespace Amarok {
     extern KConfig *config( const QString& );

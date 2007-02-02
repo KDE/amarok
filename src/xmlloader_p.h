@@ -20,8 +20,8 @@
 #ifndef AMAROK_XMLLOADER_P_H
 #define AMAROK_XMLLOADER_P_H
 
-#include <qapplication.h>
-#include <qthread.h>
+#include <QApplication>
+#include <QThread>
 
 class MetaBundle::XmlLoader::ThreadedLoader: public QObject, public QThread
 {

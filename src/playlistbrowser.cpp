@@ -34,11 +34,11 @@
 #include "contextbrowser.h"
 #include "xspfplaylist.h"
 
-#include <qevent.h>            //customEvent()
+#include <QEvent>            //customEvent()
 #include <q3header.h>           //mousePressed()
-#include <qlabel.h>
-#include <qpainter.h>          //paintCell()
-#include <qpixmap.h>           //paintCell()
+#include <QLabel>
+#include <QPainter>          //paintCell()
+#include <QPixmap>           //paintCell()
 #include <q3textstream.h>       //loadPlaylists(), saveM3U(), savePLS()
 //Added by qt3to4:
 #include <QResizeEvent>
@@ -2422,7 +2422,7 @@ void PlaylistBrowser::savePLS( PlaylistEntry *item, bool append )
 }
 
 #include <kdirlister.h>
-#include <qeventloop.h>
+#include <QEventLoop>
 #include "playlistloader.h"
 //this function (C) Copyright 2003-4 Max Howell, (C) Copyright 2004 Mark Kretschmann
 KUrl::List PlaylistBrowser::recurse( const KUrl &url )

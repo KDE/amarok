@@ -287,10 +287,10 @@
 #include "mountpointmanager.h"
 #include "statusbar.h"
 
-#include <qfile.h>
-#include <qdir.h>  // For QDir::rename()
-#include <qpainter.h>
-#include <qtimer.h>
+#include <QFile>
+#include <QDir>  // For QDir::rename()
+#include <QPainter>
+#include <QTimer>
 //Added by qt3to4:
 #include <Q3ValueList>
 #include <QPixmap>

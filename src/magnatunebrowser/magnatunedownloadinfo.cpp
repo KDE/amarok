@@ -23,7 +23,7 @@
 
 #include "debug.h"
 
-#include <qfile.h>
+#include <QFile>
 
 MagnatuneDownloadInfo::MagnatuneDownloadInfo()
 {

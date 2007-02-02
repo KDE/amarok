@@ -33,10 +33,10 @@
 #include <kurldrag.h>
 #include <kwin.h>
 
-#include <qpainter.h>
+#include <QPainter>
 #include <q3ptrlist.h>
 #include <q3simplerichtext.h>
-#include <qtooltip.h>
+#include <QToolTip>
 #include <q3vbox.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////

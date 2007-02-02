@@ -33,10 +33,10 @@
 #include <kpixmapeffect.h>
 #include <kstandarddirs.h>   //locate
 
-#include <qbitmap.h>
-#include <qpainter.h>
-#include <qregexp.h>
-#include <qtimer.h>
+#include <QBitmap>
+#include <QPainter>
+#include <QRegExp>
+#include <QTimer>
 #include <q3valuevector.h>
 
 namespace ShadowEngine
@@ -627,7 +627,7 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 
 #include "enginecontroller.h"
 #include "metabundle.h"
-#include <qregexp.h>
+#include <QRegExp>
 
 Amarok::OSD::OSD(): OSDWidget( 0 )
 {

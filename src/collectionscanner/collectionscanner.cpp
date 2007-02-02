@@ -37,8 +37,8 @@
 #include <taglib/tstring.h>
 
 #include <qdom.h>
-#include <qfile.h>
-#include <qtimer.h>
+#include <QFile>
+#include <QTimer>
 //Added by qt3to4:
 #include <Q3CString>
 #include <Q3ValueList>

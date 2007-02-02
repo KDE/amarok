@@ -39,7 +39,7 @@ AMAROK_EXPORT_PLUGIN( RioKarmaMediaDevice )
 #include <kmenu.h>
 
 // Qt
-#include <qdir.h>
+#include <QDir>
 #include <q3listview.h>
 #include <qmap.h>
 

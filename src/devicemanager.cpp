@@ -20,7 +20,7 @@
 #include "mediumpluginmanager.h"
 
 #include <q3ptrlist.h>
-#include <qtimer.h>
+#include <QTimer>
 //Added by qt3to4:
 #include <Q3CString>
 

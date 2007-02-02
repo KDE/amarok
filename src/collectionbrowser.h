@@ -7,7 +7,7 @@
 #ifndef AMAROK_COLLECTIONBROWSER_H
 #define AMAROK_COLLECTIONBROWSER_H
 
-#include <qlabel.h>
+#include <QLabel>
 #include <q3valuelist.h>      //stack allocated
 #include <q3vbox.h>           //baseclass
 //Added by qt3to4:
@@ -22,7 +22,7 @@
 #include <QPaintEvent>
 
 #include <k3listview.h>       //baseclass
-#include <qstringlist.h>     //stack allocated
+#include <QStringList>     //stack allocated
 #include <kurl.h>            //stack allocated
 #include <kdialogbase.h>     //baseclass
 #include <kprogress.h>

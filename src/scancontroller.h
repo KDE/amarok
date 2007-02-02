@@ -20,8 +20,8 @@
 #ifndef AMAROK_SCANCONTROLLER_H
 #define AMAROK_SCANCONTROLLER_H
 
-#include <qmutex.h>
-#include <qxml.h>         //baseclass
+#include <QMutex>
+#include <QtXml>         //baseclass
 //Added by qt3to4:
 #include <QCustomEvent>
 

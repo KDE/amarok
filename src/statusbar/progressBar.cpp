@@ -26,7 +26,7 @@
 #include <kstandardguiitem.h>
 #include <kguiitem.h>
 
-#include <qlabel.h>
+#include <QLabel>
 
 
 namespace KDE {

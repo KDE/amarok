@@ -11,10 +11,10 @@
 #ifndef VIS_SOCKETSERVER_H
 #define VIS_SOCKETSERVER_H
 
-#include <qstring.h>          //stack allocated
+#include <QString>          //stack allocated
 #include <q3listview.h>        //baseclass
 #include <q3serversocket.h>    //baseclass
-#include <qsocketnotifier.h>  //baseclass
+#include <QSocketNotifier>  //baseclass
 //Added by qt3to4:
 #include <QPaintEvent>
 #include <Q3CString>

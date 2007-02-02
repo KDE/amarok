@@ -20,11 +20,11 @@
 #include <kiconloader.h>   //multiTabBar icons
 #include <klocale.h>
 
-#include <qcursor.h>       //for resize cursor
-#include <qpainter.h>
-#include <qsignalmapper.h> //m_mapper
-#include <qstyle.h>        //Amarok::Splitter
-#include <qtooltip.h>
+#include <QCursor>       //for resize cursor
+#include <QPainter>
+#include <QSignalMapper> //m_mapper
+#include <QStyle>        //Amarok::Splitter
+#include <QToolTip>
 //Added by qt3to4:
 #include <QPaintEvent>
 #include <QMouseEvent>

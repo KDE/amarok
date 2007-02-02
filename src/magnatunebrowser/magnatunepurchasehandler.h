@@ -20,7 +20,7 @@
 #ifndef MAGNATUNEPURCHASEHANDLER_H
 #define MAGNATUNEPURCHASEHANDLER_H
 
-#include <qobject.h>
+#include <QObject>
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 

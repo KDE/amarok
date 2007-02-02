@@ -20,9 +20,9 @@
 
 #include "prettypopupmenu.h"
 
-#include <qpainter.h>
-#include <qpixmap.h>
-#include <qstyle.h>
+#include <QPainter>
+#include <QPixmap>
+#include <QStyle>
 //Added by qt3to4:
 #include <QResizeEvent>
 #include <QPaintEvent>

@@ -1,6 +1,6 @@
 #include <hintlineedit.h>
 #include <q3vbox.h>
-#include <qlabel.h>
+#include <QLabel>
 #include <qfont.h>
 
 HintLineEdit::HintLineEdit( const QString &hint, const QString &text, QWidget *parent, const char *name )

@@ -20,7 +20,7 @@
 #ifndef AMAROK_TIMELABEL_H
 #define AMAROK_TIMELABEL_H
 
-#include <qlabel.h>
+#include <QLabel>
 #include <kglobalsettings.h>
 //Added by qt3to4:
 #include <QMouseEvent>

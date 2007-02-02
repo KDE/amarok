@@ -14,9 +14,9 @@
 
 
 #include <q3canvas.h>
-#include <qlayout.h>
+#include <QLayout>
 
-#include <qsocketnotifier.h>
+#include <QSocketNotifier>
 #include <q3textstream.h>
 
 

@@ -32,7 +32,7 @@
 #include "glanalyzer3.h"
 #endif
 
-#include <qlabel.h>
+#include <QLabel>
 #include <klocale.h>
 
 //separate from analyzerbase.cpp to save compile time

@@ -20,7 +20,7 @@
 #ifndef AMAROK_EXPRESSION_H
 #define AMAROK_EXPRESSION_H
 
-#include <qstring.h>
+#include <QString>
 #include <q3valuevector.h>
 
 struct expression_element

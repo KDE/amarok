@@ -23,7 +23,7 @@
 #include "mediabrowser.h"
 
 #include <q3ptrlist.h>
-#include <qmutex.h>
+#include <QMutex>
 
 #include "libkarma/lkarma.h"
 

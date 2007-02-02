@@ -18,16 +18,16 @@
 #include "amarok_export.h"
 
 #include <kurl.h>
-#include <qdir.h>            //stack allocated
-#include <qdatetime.h>
-#include <qimage.h>
-#include <qmutex.h>
-#include <qobject.h>         //baseclass
+#include <QDir>            //stack allocated
+#include <QDateTime>
+#include <QImage>
+#include <QMutex>
+#include <QObject>         //baseclass
 #include <q3ptrqueue.h>       //baseclass
 #include <q3semaphore.h>      //stack allocated
-#include <qstringlist.h>     //stack allocated
+#include <QStringList>     //stack allocated
 #include <q3ptrvector.h>
-#include <qthread.h>
+#include <QThread>
 #include <q3valuestack.h>
 //Added by qt3to4:
 #include <QTimerEvent>

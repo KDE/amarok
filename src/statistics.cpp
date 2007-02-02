@@ -32,14 +32,14 @@
 #include <kwin.h>
 
 #include <qcolor.h>
-#include <qdatetime.h>
+#include <QDateTime>
 #include <q3header.h>
-#include <qpainter.h>
-#include <qpen.h>
-#include <qpixmap.h>
+#include <QPainter>
+#include <QPen>
+#include <QPixmap>
 #include <q3simplerichtext.h>
-#include <qtimer.h>
-#include <qtooltip.h>
+#include <QTimer>
+#include <QToolTip>
 #include <q3vbox.h>
 //Added by qt3to4:
 #include <Q3Frame>

@@ -12,7 +12,7 @@
 #include <akode/decoder.h>
 #include <akode/player.h>
 #include <klocale.h>
-#include <qapplication.h>
+#include <QApplication>
 //Added by qt3to4:
 #include <QEvent>
 #include <QCustomEvent>

@@ -26,9 +26,9 @@
 #include <ktar.h>
 #include <kio/netaccess.h>
 
-#include <qdir.h>
-#include <qfileinfo.h>
-#include <qtimer.h>
+#include <QDir>
+#include <QFileInfo>
+#include <QTimer>
 
 
 ////////////////////////////////////////////////////////////////////////////////

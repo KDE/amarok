@@ -27,8 +27,8 @@ what                 : interface to the Media Application Server (MAS)
 #include <string>
 //#include <vector>
 
-#include <qtimer.h>
-#include <qfile.h>
+#include <QTimer>
+#include <QFile>
 //Added by qt3to4:
 #include <Q3CString>
 

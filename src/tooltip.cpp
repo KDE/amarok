@@ -17,10 +17,10 @@
   Boston, MA 02110-1301, USA.
 */
 
-#include <qapplication.h>
-#include <qcursor.h>
-#include <qpainter.h>
-#include <qpixmap.h>
+#include <QApplication>
+#include <QCursor>
+#include <QPainter>
+#include <QPixmap>
 #include <q3simplerichtext.h>
 //Added by qt3to4:
 #include <Q3Frame>

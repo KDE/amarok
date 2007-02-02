@@ -19,7 +19,7 @@
 #include <kdialogbase.h>    //baseclass
 #include <k3listview.h>      //baseclass
 
-#include <qtimer.h>
+#include <QTimer>
 //Added by qt3to4:
 #include <QPaintEvent>
 

@@ -5,8 +5,8 @@
 #include "gstconfigdialog.h"
 #include "gstengine.h"
 
-#include <qcheckbox.h>
-#include <qlabel.h>
+#include <QCheckBox>
+#include <QLabel>
 
 #include <kcombobox.h>
 #include <kdebug.h>

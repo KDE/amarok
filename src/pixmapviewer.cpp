@@ -19,8 +19,8 @@
  ***************************************************************************/
 #include "pixmapviewer.h"
 #include <kapplication.h>
-#include <qpainter.h>
-#include <qpixmap.h>
+#include <QPainter>
+#include <QPixmap>
 //Added by qt3to4:
 #include <QMouseEvent>
 

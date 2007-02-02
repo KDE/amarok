@@ -23,7 +23,7 @@
 #include <khtml_part.h>
 #include <konqsidebarplugin.h>
 #include <dcopclient.h>
-#include <qslider.h>
+#include <QSlider>
 #include <q3vbox.h>
 //Added by qt3to4:
 #include <QEvent>

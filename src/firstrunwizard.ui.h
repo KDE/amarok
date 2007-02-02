@@ -17,7 +17,7 @@
 #include <kapplication.h>
 #include <kconfig.h>
 #include <klocale.h>
-#include <qpushbutton.h>
+#include <QPushButton>
 //Added by qt3to4:
 #include <QPixmap>
 #include <ktoolinvocation.h>

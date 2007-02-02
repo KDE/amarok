@@ -26,7 +26,7 @@
 #ifndef AMAROK_ATOMICURL_H
 #define AMAROK_ATOMICURL_H
 
-#include <qstring.h>
+#include <QString>
 #include "atomicstring.h"
 #include "amarok_export.h"
 

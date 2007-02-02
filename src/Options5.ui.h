@@ -26,7 +26,7 @@ email                : fh@ez.no
 #include "amarokconfig.h"
 #include <klocale.h>
 #include "qstringx.h"
-#include <qtooltip.h>
+#include <QToolTip>
 //Added by qt3to4:
 #include <QShowEvent>
 #include <QHideEvent>

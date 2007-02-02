@@ -23,8 +23,8 @@
 #include "playlistitem.h"
 #include "popupMessage.h"
 
-#include <qlabel.h>
-#include <qtimer.h>
+#include <QLabel>
+#include <QTimer>
 //Added by qt3to4:
 #include <QMouseEvent>
 #include <QEvent>

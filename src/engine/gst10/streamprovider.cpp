@@ -23,9 +23,9 @@ email                : markey@web.de
 #include "metabundle.h"
 #include "streamprovider.h"
 #include "gstengine.h"
-#include <qregexp.h>
-#include <qtextcodec.h>
-#include <qtimer.h>
+#include <QRegExp>
+#include <QTextCodec>
+#include <QTimer>
 //Added by qt3to4:
 #include <Q3CString>
 

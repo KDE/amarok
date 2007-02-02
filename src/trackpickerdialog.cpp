@@ -17,7 +17,7 @@
 
 #if HAVE_TUNEPIMP
 
-#include <qlabel.h>
+#include <QLabel>
 
 #include <kapplication.h>
 #include <k3listview.h>

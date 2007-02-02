@@ -20,8 +20,8 @@
 #include "pluginmanager.h"
 #include "scriptmanager.h"
 
-#include <qlabel.h>
-#include <qtooltip.h>
+#include <QLabel>
+#include <QToolTip>
 #include <q3vbox.h>
 #include <q3buttongroup.h>
 #include <qvbuttongroup.h>

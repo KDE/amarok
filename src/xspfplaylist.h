@@ -7,11 +7,11 @@
 
 class AtomicString;
 
-#include <qstring.h>
+#include <QString>
 #include <q3textstream.h>
 #include <qdom.h>
-#include <qdatetime.h>
-#include <qfile.h>
+#include <QDateTime>
+#include <QFile>
 #include <q3valuelist.h>
 
 #include <kurl.h>

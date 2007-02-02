@@ -5,7 +5,7 @@
 #ifndef TAGGUESSER_H
 #define TAGGUESSER_H
 
-#include <qregexp.h>
+#include <QRegExp>
 //Added by qt3to4:
 #include <Q3ValueList>
 

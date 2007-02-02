@@ -24,10 +24,10 @@
 #include "statusbar.h"
 
 #include <q3groupbox.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qsignalmapper.h>
-#include <qtooltip.h>
+#include <QLabel>
+#include <QLayout>
+#include <QSignalMapper>
+#include <QToolTip>
 #include <q3vbox.h>
 
 #include <kapplication.h>

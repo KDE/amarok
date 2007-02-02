@@ -30,7 +30,7 @@
 #include <kcodecs.h>
 #include <q3deepcopy.h>
 #include <qdom.h>
-#include <qfile.h> //decodePath()
+#include <QFile> //decodePath()
 //Added by qt3to4:
 #include <Q3ValueList>
 #include <Q3CString>

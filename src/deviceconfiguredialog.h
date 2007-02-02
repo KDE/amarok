@@ -15,8 +15,8 @@
 
 #include "hintlineedit.h"
 
-#include <qcheckbox.h>
-#include <qradiobutton.h>
+#include <QCheckBox>
+#include <QRadioButton>
 
 #include <kdialogbase.h>
 

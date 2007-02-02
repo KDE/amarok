@@ -30,12 +30,12 @@
 #include "threadmanager.h"
 #include "mediabrowser.h"
 
-#include <qdatetime.h>
-#include <qfileinfo.h>
-#include <qlabel.h>
-#include <qpainter.h>          //paintCell()
-#include <qpixmap.h>           //paintCell()
-#include <qregexp.h>
+#include <QDateTime>
+#include <QFileInfo>
+#include <QLabel>
+#include <QPainter>          //paintCell()
+#include <QPixmap>           //paintCell()
+#include <QRegExp>
 //Added by qt3to4:
 #include <Q3ValueList>
 #include <QCustomEvent>

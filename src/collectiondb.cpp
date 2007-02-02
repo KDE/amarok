@@ -45,16 +45,16 @@
 #include "statusbar.h"
 #include "threadmanager.h"
 
-#include <qbuffer.h>
-#include <qcheckbox.h>
+#include <QBuffer>
+#include <QCheckBox>
 #include <q3deepcopy.h>
-#include <qfile.h>
+#include <QFile>
 #include <qmap.h>
-#include <qmutex.h>
-#include <qregexp.h>              //setHTMLLyrics()
-#include <qtimer.h>
-#include <qpainter.h>             //createDragPixmap()
-#include <qpalette.h>
+#include <QMutex>
+#include <QRegExp>              //setHTMLLyrics()
+#include <QTimer>
+#include <QPainter>             //createDragPixmap()
+#include <QPalette>
 #include <pthread.h>              //debugging, can be removed later
 
 #include <kcharsets.h>            //setHTMLLyrics()

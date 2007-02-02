@@ -21,7 +21,7 @@
 #include "squeezedtextlabel.h"
 #include <q3simplerichtext.h>
 #include <qwindowdefs.h> //QCOORD_MAX
-#include <qtooltip.h>
+#include <QToolTip>
 //Added by qt3to4:
 #include <QResizeEvent>
 #include <QLabel>

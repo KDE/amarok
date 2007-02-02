@@ -17,7 +17,7 @@
 #define _DELETEDIALOG_H
 
 
-#include <qcheckbox.h>
+#include <QCheckBox>
 //Added by qt3to4:
 #include <QLabel>
 #include <kdialogbase.h>
@@ -25,7 +25,7 @@
 #include "deletedialogbase.h"
 
 class QStringList;
-class KListBox;
+class K3ListBox;
 class KGuiItem;
 class QLabel;
 class Q3WidgetStack;

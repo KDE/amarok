@@ -15,9 +15,9 @@
 #include "plugin/plugin.h"   //baseclass
 #include "pluginmanager.h"
 
-#include <qmutex.h>
+#include <QMutex>
 #include <q3vbox.h>           //baseclass
-#include <qdatetime.h>
+#include <QDateTime>
 //Added by qt3to4:
 #include <QKeyEvent>
 #include <Q3ValueList>

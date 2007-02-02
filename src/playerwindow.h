@@ -18,8 +18,8 @@
 #ifndef PLAYERWIDGET_H
 #define PLAYERWIDGET_H
 
-#include <qpixmap.h>     //stack allocated
-#include <qtoolbutton.h> //baseclass
+#include <QPixmap>     //stack allocated
+#include <QToolButton> //baseclass
 #include <q3valuevector.h>//stack allocated
 #include <qwidget.h>     //baseclass
 //Added by qt3to4:

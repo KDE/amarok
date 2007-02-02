@@ -30,11 +30,11 @@
 #include <QEvent>
 #include "statusbar.h"
 
-#include <qapplication.h>
-#include <qlabel.h>
-#include <qpainter.h>
-#include <qpixmap.h>
-#include <qtimer.h>
+#include <QApplication>
+#include <QLabel>
+#include <QPainter>
+#include <QPixmap>
+#include <QTimer>
 
 #include <kaction.h>
 #include <kactioncollection.h>

@@ -28,14 +28,14 @@
 #include "playlist.h"
 #include "sliderwidget.h"
 
-#include <qcursor.h>
+#include <QCursor>
 #include <q3header.h>
-#include <qimage.h>
-#include <qmutex.h>
-#include <qpainter.h>
-#include <qpen.h>
-#include <qpixmap.h>
-#include <qrect.h>
+#include <QImage>
+#include <QMutex>
+#include <QPainter>
+#include <QPen>
+#include <QPixmap>
+#include <QRect>
 //Added by qt3to4:
 #include <Q3ValueList>
 

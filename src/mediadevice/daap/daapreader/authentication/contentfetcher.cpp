@@ -15,7 +15,7 @@
 #include "debug.h"
 #include "hasher.h"
 
-#include <qbuffer.h>
+#include <QBuffer>
 #include <q3socket.h>
 #include <qdatastream.h>
 #include <q3http.h>

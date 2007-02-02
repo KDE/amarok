@@ -20,7 +20,7 @@
 #include "collectionscanner.h"
 #include "metadata/tplugins.h"
 
-#include <qfile.h>
+#include <QFile>
 
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>

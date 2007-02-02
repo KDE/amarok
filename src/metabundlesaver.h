@@ -4,8 +4,8 @@
 #ifndef METABUNDLESAVER_H
 #define METABUNDLESAVER_H
 
-#include <qobject.h>
-#include <qstringlist.h>
+#include <QObject>
+#include <QStringList>
 //Added by qt3to4:
 #include <Q3CString>
 #include <kurl.h>    //inline functions

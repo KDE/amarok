@@ -26,9 +26,9 @@
 #include "enginebase.h"
 #include "streamprovider.h"
 
-#include <qmutex.h>
+#include <QMutex>
 #include <q3ptrlist.h>
-#include <qstringlist.h>
+#include <QStringList>
 //Added by qt3to4:
 #include <Q3CString>
 #include <QTimerEvent>

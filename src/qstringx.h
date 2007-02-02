@@ -6,9 +6,9 @@
 #define AMAROK_QSTRINGX_H
 
 #include <qglobal.h>
-#include <qregexp.h>
-#include <qstring.h>
-#include <qstringlist.h>
+#include <QRegExp>
+#include <QString>
+#include <QStringList>
 #include <qmap.h>
 
 namespace Amarok

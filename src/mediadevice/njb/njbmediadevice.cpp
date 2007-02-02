@@ -55,10 +55,10 @@ AMAROK_EXPORT_PLUGIN( NjbMediaDevice )
 
 
 // Qt
-#include <qdir.h>
+#include <QDir>
 #include <q3listview.h>
-#include <qregexp.h>
-#include <qtooltip.h>
+#include <QRegExp>
+#include <QToolTip>
 #include <quuid.h>
 
 // posix

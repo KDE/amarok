@@ -15,9 +15,9 @@
 #include "mediabrowser.h"
 #include "amarok_export.h"
 
-#include <qcheckbox.h>
+#include <QCheckBox>
 #include <qmap.h>
-#include <qsignalmapper.h>
+#include <QSignalMapper>
 //Added by qt3to4:
 #include <Q3PtrList>
 #include <QLabel>

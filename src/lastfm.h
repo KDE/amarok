@@ -20,7 +20,7 @@
 #include "metabundle.h"
 
 #include <q3http.h>
-#include <qobject.h>
+#include <QObject>
 #include <q3serversocket.h>
 #include <q3url.h>
 #include <q3valuelist.h>

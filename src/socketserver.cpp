@@ -21,7 +21,7 @@
 #include <kprocess.h>         //Vis::Selector
 #include <kwin.h>             //Vis::Selector
 #include <kstandarddirs.h>    //locateLocal()
-#include <qtooltip.h>         //Vis::Selector ctor
+#include <QToolTip>         //Vis::Selector ctor
 //Added by qt3to4:
 #include <Q3CString>
 #include <QPaintEvent>
@@ -247,7 +247,7 @@ Vis::Selector::rightButton( Q3ListViewItem* qitem, const QPoint& pos, int )
     }
 }
 
-#include <qpainter.h>
+#include <QPainter>
 #include <q3simplerichtext.h>
 void
 Vis::Selector::viewportPaintEvent( QPaintEvent *e )

@@ -41,18 +41,18 @@
 #include "threadmanager.h"
 #include "magnatunebrowser/magnatunebrowser.h"
 
-#include <qevent.h>           //eventFilter()
+#include <QEvent>           //eventFilter()
 #include <qfont.h>
 #include <q3header.h>
-#include <qlayout.h>
-#include <qlabel.h>           //search filter label
+#include <QLayout>
+#include <QLabel>           //search filter label
 
-#include <qpainter.h>         //dynamic title
-#include <qpen.h>
+#include <QPainter>         //dynamic title
+#include <QPen>
 
-#include <qsizepolicy.h>      //qspaceritem in dynamic bar
-#include <qtimer.h>           //search filter timer
-#include <qtooltip.h>         //QToolTip::add()
+#include <QSizePolicy>      //qspaceritem in dynamic bar
+#include <QTimer>           //search filter timer
+#include <QToolTip>         //QToolTip::add()
 #include <q3vbox.h>            //contains the playlist
 //Added by qt3to4:
 #include <QContextMenuEvent>

@@ -25,9 +25,9 @@
 #include "pluginmanager.h"
 #include "statusbar.h"
 
-#include <qfile.h>
-#include <qobject.h>
-#include <qtimer.h>
+#include <QFile>
+#include <QObject>
+#include <QTimer>
 //Added by qt3to4:
 #include <Q3CString>
 

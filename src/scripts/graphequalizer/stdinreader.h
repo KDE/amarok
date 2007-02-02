@@ -5,7 +5,7 @@
  *   Copyright (C) 2005 by Ian Monroe <ian@monroe.nu>
  *   Released under GPL 2 or later, see COPYING
  */
-#include <qsocketnotifier.h>
+#include <QSocketNotifier>
 #include <q3textstream.h>
 #include <kdebug.h>
 

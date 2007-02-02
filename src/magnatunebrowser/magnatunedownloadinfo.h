@@ -24,7 +24,7 @@
 #include <kurl.h>
 
 #include <qmap.h>
-#include <qstring.h>
+#include <QString>
 
 
 typedef QMap<QString, QString> DownloadFormatMap;

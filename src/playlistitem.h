@@ -18,7 +18,7 @@
 #include <qcolor.h>    //stack allocated
 #include <qfont.h>     //stack allocated
 #include <qmap.h>
-#include <qpixmap.h>
+#include <QPixmap>
 #include <q3valuevector.h>
 //Added by qt3to4:
 #include <Q3ValueList>

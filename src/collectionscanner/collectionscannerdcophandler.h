@@ -20,7 +20,7 @@
 
 #include "collectionscannerdcopiface.h"
 
-#include <qobject.h>
+#include <QObject>
 
 #include <kapplication.h>
 

@@ -10,9 +10,9 @@
 #include "htmlview.h"
 #include "playlist.h"      //appendMedia()
 
-#include <qclipboard.h>
-#include <qfile.h> // External CSS opening
-#include <qimage.h> // External CSS opening
+#include <QClipboard>
+#include <QFile> // External CSS opening
+#include <QImage> // External CSS opening
 
 #include <kapplication.h> //kapp
 #include <kactioncollection.h>

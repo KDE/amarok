@@ -33,11 +33,11 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 
-#include <qcheckbox.h>
-#include <qcombobox.h>
+#include <QCheckBox>
+#include <QComboBox>
 #include <q3hbox.h>
 #include <q3popupmenu.h>
-#include <qpushbutton.h>
+#include <QPushButton>
 #include <q3vbox.h>
 
 

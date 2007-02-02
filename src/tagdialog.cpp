@@ -21,15 +21,15 @@
 #include <taglib/tfile.h> //TagLib::File::isWritable
 
 #include <qdom.h>
-#include <qfile.h>
+#include <QFile>
 #include <q3header.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qpair.h>
-#include <qpushbutton.h>
-#include <qtooltip.h>
+#include <QLabel>
+#include <QLayout>
+#include <QPair>
+#include <QPushButton>
+#include <QToolTip>
 #include <q3vbox.h>
-#include <qcheckbox.h>
+#include <QCheckBox>
 //Added by qt3to4:
 #include <Q3ValueList>
 #include <Q3CString>

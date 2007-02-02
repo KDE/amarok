@@ -18,8 +18,8 @@
 #include <kstandarddirs.h>
 
 #include <q3groupbox.h>
-#include <qlabel.h>
-#include <qpixmap.h>
+#include <QLabel>
+#include <QPixmap>
 //Added by qt3to4:
 #include <Q3CString>
 

@@ -27,15 +27,15 @@ email                : markey@web.de
 #include "tracktooltip.h"    //setScroll()
 
 #include <q3accel.h>          //our quit shortcut in the ctor
-#include <qevent.h>          //various events
+#include <QEvent>          //various events
 #include <qfont.h>
 #include <q3hbox.h>
-#include <qlabel.h>
-#include <qpainter.h>
-#include <qpixmap.h>
-#include <qstringlist.h>
-#include <qtimer.h>
-#include <qtooltip.h>        //analyzer tooltip
+#include <QLabel>
+#include <QPainter>
+#include <QPixmap>
+#include <QStringList>
+#include <QTimer>
+#include <QToolTip>        //analyzer tooltip
 //Added by qt3to4:
 #include <QTimerEvent>
 #include <QKeyEvent>

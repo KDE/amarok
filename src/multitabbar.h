@@ -29,10 +29,10 @@
 #include <q3scrollview.h>
 #include <q3vbox.h>
 #include <q3hbox.h>
-#include <qlayout.h>
-#include <qstring.h>
+#include <QLayout>
+#include <QString>
 #include <q3ptrlist.h>
-#include <qpushbutton.h>
+#include <QPushButton>
 //Added by qt3to4:
 #include <QDragMoveEvent>
 #include <QDropEvent>

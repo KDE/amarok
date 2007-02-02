@@ -28,7 +28,7 @@
 #include "mediabrowser.h"
 
 #include <q3ptrlist.h>
-#include <qmutex.h>
+#include <QMutex>
 //Added by qt3to4:
 #include <QLabel>
 

@@ -43,19 +43,19 @@
 #include "tagdialog.h"
 #include "threadmanager.h"
 
-#include <qdatetime.h>
+#include <QDateTime>
 #include <q3deepcopy.h>
 #include <qdom.h>
-#include <qimage.h>
-#include <qregexp.h>
+#include <QImage>
+#include <QRegExp>
 #include <q3textstream.h>  // External CSS reading
 #include <q3vbox.h> //wiki tab
 #include <q3hbox.h>
-#include <qlayout.h>
-#include <qlineedit.h>
+#include <QLayout>
+#include <QLineEdit>
 #include <q3listview.h>
-#include <qtimer.h>
-#include <qtooltip.h>
+#include <QTimer>
+#include <QToolTip>
 
 #include <kaction.h>
 #include <kapplication.h> //kapp

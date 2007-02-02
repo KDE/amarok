@@ -19,7 +19,7 @@
 #include "medium.h"
 
 #include <q3ptrlist.h>
-#include <qtimer.h>
+#include <QTimer>
 
 #include <dcopclient.h>
 #include <dcopobject.h>

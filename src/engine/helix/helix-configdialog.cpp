@@ -11,15 +11,15 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <qlabel.h>
-#include <qlayout.h>
+#include <QLabel>
+#include <QLayout>
 #include <q3scrollview.h>
 #include <qspinbox.h>
-#include <qtooltip.h>
+#include <QToolTip>
 #include <q3textedit.h>
 #include <q3textview.h>
-#include <qfileinfo.h>
-#include <qcheckbox.h>
+#include <QFileInfo>
+#include <QCheckBox>
 //Added by qt3to4:
 #include <Q3GridLayout>
 #include <Q3Frame>

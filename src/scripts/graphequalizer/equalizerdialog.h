@@ -20,7 +20,7 @@
 #ifndef EQUALIZERDIALOG_H
 #define EQUALIZERDIALOG_H
 
-#include <qdialog.h>
+#include <QDialog>
 
 
 /**

@@ -19,7 +19,7 @@
 #ifndef AMAROK_DIRECTORYLIST_H
 #define AMAROK_DIRECTORYLIST_H
 
-#include <qcheckbox.h>  //inlined functions
+#include <QCheckBox>  //inlined functions
 #include <q3listview.h>  //baseclass
 #include <q3vbox.h>      //baseclass
 

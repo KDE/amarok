@@ -14,7 +14,7 @@
 #include <kaction.h>
 #include <ktoggleaction.h>
 #include <kselectaction.h>
-#include <qpointer.h>
+#include <QPointer>
 //Added by qt3to4:
 #include <QResizeEvent>
 #include <QMouseEvent>

@@ -10,8 +10,8 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #include <q3canvas.h>
-#include <qpen.h>
-#include <qslider.h>
+#include <QPen>
+#include <QSlider>
 
 #endif
 

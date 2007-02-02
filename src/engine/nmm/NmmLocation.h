@@ -25,7 +25,7 @@
 #ifndef NMMLOCATION_H
 #define NMMLOCATION_H
 
-#include <qstring.h>
+#include <QString>
 
 class NmmLocation {
   public:

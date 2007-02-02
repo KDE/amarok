@@ -20,7 +20,7 @@
 #ifndef AMAROK_DCOP_HANDLER_H
 #define AMAROK_DCOP_HANDLER_H
 
-#include <qobject.h>
+#include <QObject>
 //Added by qt3to4:
 #include <Q3CString>
 #include "amarokdcopiface.h"

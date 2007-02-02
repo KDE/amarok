@@ -35,13 +35,13 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include <qcheckbox.h>
-#include <qdir.h>
-#include <qfileinfo.h>
+#include <QCheckBox>
+#include <QDir>
+#include <QFileInfo>
 #include <qfont.h>
-#include <qlabel.h>
-#include <qtextcodec.h>
-#include <qtimer.h>
+#include <QLabel>
+#include <QTextCodec>
+#include <QTimer>
 //Added by qt3to4:
 #include <QPixmap>
 

@@ -15,8 +15,8 @@
 #include "qwidget.h"
 
 #include <kurl.h>             //stack alloc
-#include <qdatetime.h>
-#include <qlabel.h>
+#include <QDateTime>
+#include <QLabel>
 #include <qmap.h>
 #include <q3ptrlist.h>
 

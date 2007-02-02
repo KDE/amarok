@@ -52,9 +52,9 @@
 #endif
 #include "amarok_export.h"
 
-#include <qstring.h>
+#include <QString>
 #include <q3ptrlist.h>
-#include <qmutex.h>
+#include <QMutex>
 
 class LIBAMAROK_EXPORT AtomicString
 {

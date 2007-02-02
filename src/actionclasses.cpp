@@ -18,8 +18,8 @@
 #include "socketserver.h"       //Vis::Selector::showInstance()
 #include "threadmanager.h"
 
-#include <qpixmap.h>
-#include <qtooltip.h>
+#include <QPixmap>
+#include <QToolTip>
 //Added by qt3to4:
 #include <QContextMenuEvent>
 #include <QResizeEvent>

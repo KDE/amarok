@@ -9,7 +9,7 @@
 #include "amarok_export.h"
 
 #include <kurl.h>
-#include <qobject.h>       //baseclass
+#include <QObject>       //baseclass
 #include <q3valuelist.h>    //stack alloc
 //Added by qt3to4:
 #include <Q3CString>

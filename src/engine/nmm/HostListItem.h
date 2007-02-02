@@ -26,7 +26,7 @@
 #define HOSTLISTITEM_H
 
 #include <k3listview.h>
-#include <qpixmap.h>
+#include <QPixmap>
 
 class HostListItem : public K3ListViewItem {
   public:

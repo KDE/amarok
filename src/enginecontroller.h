@@ -18,7 +18,7 @@
 #include "metabundle.h"
 
 #include <qmap.h>
-#include <qobject.h>
+#include <QObject>
 #include <q3valuelist.h>
 
 class QTimer;

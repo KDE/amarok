@@ -18,8 +18,8 @@
 #include <klocale.h>
 #include <ktempfile.h>
 
-#include <qfile.h>
-#include <qregexp.h>
+#include <QFile>
+#include <QRegExp>
 #include <q3textstream.h>
 #include <qglobal.h> //qVersion()
 //Added by qt3to4:
@@ -260,8 +260,8 @@ namespace Amarok
 
 #if 0
 
-#include <qlabel.h>
-#include <qlayout.h>
+#include <QLabel>
+#include <QLayout>
 #include <q3vbox.h>
 #include <kdialog.h>
 #include <kpushbutton.h>

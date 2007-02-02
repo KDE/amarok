@@ -5,10 +5,10 @@
 #ifndef AMAROK_COVERFETCHER_H
 #define AMAROK_COVERFETCHER_H
 
-#include <qlabel.h>       //baseclass
-#include <qimage.h>       //stack allocated
-#include <qobject.h>      //baseclass
-#include <qstringlist.h>  //stack allocated
+#include <QLabel>       //baseclass
+#include <QImage>       //stack allocated
+#include <QObject>      //baseclass
+#include <QStringList>  //stack allocated
 //Added by qt3to4:
 #include <QMouseEvent>
 

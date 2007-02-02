@@ -21,8 +21,8 @@
 
 #include "amarok_export.h"
 
-#include <qstring.h>
-#include <qstringlist.h>
+#include <QString>
+#include <QStringList>
 //Added by qt3to4:
 #include <Q3ValueList>
 #include <kurl.h>

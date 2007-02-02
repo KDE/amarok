@@ -18,7 +18,7 @@
 #include "analyzerbase.h"
 #include <cmath>        //interpolate()
 #include "enginecontroller.h"
-#include <qevent.h>     //event()
+#include <QEvent>     //event()
 //Added by qt3to4:
 #include <QResizeEvent>
 

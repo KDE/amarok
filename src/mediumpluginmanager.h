@@ -16,7 +16,7 @@
 #include "hintlineedit.h"
 #include "plugin/pluginconfig.h"
 
-#include <qlayout.h>
+#include <QLayout>
 #include <qmap.h>
 #include <q3hbox.h>
 //Added by qt3to4:

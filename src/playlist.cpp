@@ -62,21 +62,21 @@
 
 #include <cmath> //for pow() in playNextTrack()
 
-#include <qclipboard.h>      //copyToClipboard(), slotMouseButtonPressed()
+#include <QClipboard>      //copyToClipboard(), slotMouseButtonPressed()
 #include <qcolor.h>
-#include <qevent.h>
-#include <qfile.h>           //undo system
+#include <QEvent>
+#include <QFile>           //undo system
 #include <q3header.h>         //eventFilter()
-#include <qlabel.h>          //showUsageMessage()
-#include <qpainter.h>
-#include <qpen.h>            //slotGlowTimer()
+#include <QLabel>          //showUsageMessage()
+#include <QPainter>
+#include <QPen>            //slotGlowTimer()
 #include <q3simplerichtext.h> //toolTipText()
 #include <q3sortedlist.h>
-#include <qtimer.h>
-#include <qtooltip.h>
+#include <QTimer>
+#include <QToolTip>
 #include <q3valuelist.h>      //addHybridTracks()
 #include <q3valuevector.h>    //playNextTrack()
-#include <qlayout.h>
+#include <QLayout>
 
 #include <kaction.h>
 #include <kapplication.h>
@@ -4740,8 +4740,8 @@ Playlist::showTagDialog( Q3PtrList<Q3ListViewItem> items )
 #include <kdialog.h>
 #include <kpushbutton.h>
 #include <q3groupbox.h>
-#include <qlabel.h>
-#include <qlayout.h>
+#include <QLabel>
+#include <QLayout>
 #include <q3process.h>
 #include <unistd.h>      //usleep()
 

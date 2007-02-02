@@ -21,7 +21,7 @@
 #include <qdatastream.h>
 #include <q3ptrlist.h>
 #include <q3valuevector.h>
-#include <qvariant.h>
+#include <QVariant>
 //Added by qt3to4:
 #include <Q3ValueList>
 

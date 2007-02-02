@@ -20,9 +20,9 @@
 #include "equalizerdialog.h"
 #include "equalizercanvasview.h"
 
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qslider.h>
+#include <QLabel>
+#include <QLayout>
+#include <QSlider>
 //Added by qt3to4:
 #include <Q3HBoxLayout>
 #include <Q3VBoxLayout>

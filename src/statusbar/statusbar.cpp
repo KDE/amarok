@@ -35,8 +35,8 @@
 #include <klocale.h>
 
 #include <q3hbox.h>
-#include <qlayout.h>
-#include <qtimer.h>
+#include <QLayout>
+#include <QTimer>
 
 // stuff that must be included last
 //#include "startupTips.h"

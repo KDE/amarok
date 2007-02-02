@@ -90,7 +90,7 @@ private:
 
 
 #include <kfileitem.h> //KFileItemList
-#include <qregexp.h>
+#include <QRegExp>
 
 class KDirLister;
 class KURLView;

@@ -20,7 +20,7 @@
 
 #include <unistd.h>
 
-#include <qdatetime.h>
+#include <QDateTime>
 #include <q3deepcopy.h>
 
 #include <kapplication.h>

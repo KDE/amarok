@@ -24,8 +24,8 @@
 #include <kmenu.h>
 
 #include <qcolor.h>
-#include <qimage.h>
-#include <qrect.h>
+#include <QImage>
+#include <QRect>
 //Added by qt3to4:
 #include <QPaintEvent>
 #include <QResizeEvent>

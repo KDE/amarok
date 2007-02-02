@@ -54,12 +54,12 @@
 #include "statusbar.h"
 #include "tagdialog.h"
 
-#include <qdir.h>
+#include <QDir>
 #include <q3hbox.h>
 #include <q3iconview.h>
-#include <qlabel.h>
-#include <qtimer.h>
-#include <qtooltip.h>
+#include <QLabel>
+#include <QTimer>
+#include <QToolTip>
 //Added by qt3to4:
 #include <Q3PtrList>
 #include <Q3Frame>
@@ -530,7 +530,7 @@ FileBrowser::selectAll()
 }
 
 #include <kurldrag.h>
-#include <qpainter.h>
+#include <QPainter>
 #include <q3simplerichtext.h>
 
 class KURLView : public K3ListView

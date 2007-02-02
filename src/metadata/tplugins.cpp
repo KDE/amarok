@@ -22,7 +22,7 @@
 #include <config.h>
 #include <debug.h>
 
-#include <qfile.h>
+#include <QFile>
 #include <kmimetype.h>
 
 #include <taglib/fileref.h>

@@ -18,10 +18,10 @@
 #include <cstdlib>
 #include <iostream>
 #include "loader.h"
-#include <qfile.h>
-#include <qmessagebox.h>
+#include <QFile>
+#include <QMessageBox>
 #include <q3process.h>
-#include <qstring.h>
+#include <QString>
 //Added by qt3to4:
 #include <QTimerEvent>
 #include <kinstance.h>

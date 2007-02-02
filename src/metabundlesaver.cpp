@@ -26,9 +26,9 @@
 #include <kio/netaccess.h>
 #include <kcodecs.h>
 #include <kurl.h>
-#include <qfile.h> //decodePath()
+#include <QFile> //decodePath()
 #include <q3cstring.h>
-#include <qstring.h>
+#include <QString>
 #include <taglib/fileref.h>
 
 #include <config.h>

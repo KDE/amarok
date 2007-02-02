@@ -8,7 +8,7 @@
 #define DEBUG_PREFIX "ThreadManager"
 
 #include <kcursor.h>
-#include <qapplication.h>
+#include <QApplication>
 //Added by qt3to4:
 #include <QCustomEvent>
 #include <Q3CString>

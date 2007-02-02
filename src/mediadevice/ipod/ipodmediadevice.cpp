@@ -53,14 +53,14 @@ AMAROK_EXPORT_PLUGIN( IpodMediaDevice )
 #include <kiconloader.h>
 #include <kmenu.h>
 
-#include <qcheckbox.h>
-#include <qdir.h>
-#include <qfileinfo.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qregexp.h>
-#include <qtimer.h>
-#include <qtooltip.h>
+#include <QCheckBox>
+#include <QDir>
+#include <QFileInfo>
+#include <QLabel>
+#include <QLineEdit>
+#include <QRegExp>
+#include <QTimer>
+#include <QToolTip>
 
 #ifdef HAVE_STATVFS
 #include <stdint.h>

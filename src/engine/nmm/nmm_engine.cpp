@@ -46,8 +46,8 @@
 #include <nmm/base/ProxyObject.hpp>
 #include <nmm/utils/NMMConfig.hpp>
 
-#include <qapplication.h>
-#include <qtimer.h>
+#include <QApplication>
+#include <QTimer>
 //Added by qt3to4:
 #include <Q3ValueList>
 

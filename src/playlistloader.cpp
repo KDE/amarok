@@ -28,12 +28,12 @@
 #include "contextbrowser.h"
 #include "xspfplaylist.h"
 
-#include <qdatetime.h>   //::recurse()
-#include <qeventloop.h>  //::recurse()
-#include <qfile.h>       //::loadPlaylist()
+#include <QDateTime>   //::recurse()
+#include <QEventLoop>  //::recurse()
+#include <QFile>       //::loadPlaylist()
 #include <q3listview.h>
-#include <qregexp.h>
-#include <qstringlist.h>
+#include <QRegExp>
+#include <QStringList>
 #include <q3textstream.h> //::loadPlaylist()
 //Added by qt3to4:
 #include <Q3ValueList>

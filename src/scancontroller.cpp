@@ -31,8 +31,8 @@
 #include "statusbar.h"
 
 #include <q3deepcopy.h>
-#include <qfileinfo.h>
-#include <qtextcodec.h>
+#include <QFileInfo>
+#include <QTextCodec>
 //Added by qt3to4:
 #include <QCustomEvent>
 #include <Q3CString>

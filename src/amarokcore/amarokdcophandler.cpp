@@ -43,7 +43,7 @@
 #include "statusbar.h"
 #include "lastfm.h"
 
-#include <qfile.h>
+#include <QFile>
 //Added by qt3to4:
 #include <Q3ValueList>
 #include <Q3CString>

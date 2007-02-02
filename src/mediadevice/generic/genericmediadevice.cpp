@@ -56,13 +56,13 @@ AMAROK_EXPORT_PLUGIN( GenericMediaDevice )
 #include <unistd.h>            //usleep()
 
 #include <q3cstring.h>
-#include <qfile.h>
+#include <QFile>
 #include <qstringx.h>
-#include <qstringlist.h>
+#include <QStringList>
 
-#include <qcombobox.h>
+#include <QComboBox>
 #include <q3listbox.h>
-#include <qlineedit.h>
+#include <QLineEdit>
 
 typedef Q3PtrList<GenericMediaFile> MediaFileList;
 typedef Q3PtrListIterator<GenericMediaFile> MediaFileListIterator;

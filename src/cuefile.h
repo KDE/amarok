@@ -4,10 +4,10 @@
 #ifndef CUEFILE_H
 #define CUEFILE_H
 
-#include <qstring.h>
+#include <QString>
 #include <qmap.h>
 
-#include <qobject.h>
+#include <QObject>
 #include "engineobserver.h"
 
 class CueFileItem {

@@ -33,9 +33,9 @@
 #include <unistd.h>
 #include <vector>
 
-#include <qfile.h>
-#include <qregexp.h>
-#include <qtimer.h>
+#include <QFile>
+#include <QRegExp>
+#include <QTimer>
 //Added by qt3to4:
 #include <QTimerEvent>
 #include <Q3ValueList>

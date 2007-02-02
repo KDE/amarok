@@ -13,7 +13,7 @@
 #ifndef DAAPPROXY_H
 #define DAAPPROXY_H
 
-#include <qobject.h>
+#include <QObject>
 #include <q3serversocket.h>
 class DaapClient;
 

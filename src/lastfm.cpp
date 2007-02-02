@@ -27,8 +27,8 @@
 #include <q3deepcopy.h>
 #include <qdom.h>
 #include <q3http.h>
-#include <qlabel.h>
-#include <qregexp.h>
+#include <QLabel>
+#include <QRegExp>
 //Added by qt3to4:
 #include <Q3ValueList>
 #include <Q3CString>

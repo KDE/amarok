@@ -12,7 +12,7 @@
 #define _HELIX_ENGINE_H_
 
 #include "enginebase.h"
-#include <qobject.h>
+#include <QObject>
 //Added by qt3to4:
 #include <Q3ValueList>
 #include <QTimerEvent>

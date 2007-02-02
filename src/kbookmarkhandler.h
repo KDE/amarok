@@ -21,7 +21,7 @@
 #define _KBOOKMARKHANDLER_H_
 
 #include <kbookmarkmanager.h>
-#include <qobject.h>
+#include <QObject>
 
 class KDirOperator;
 class KMenu;

@@ -17,8 +17,8 @@
 
 #include "metabundle.h"
 
-#include <qpixmap.h>
-#include <qimage.h>
+#include <QPixmap>
+#include <QImage>
 #include <q3valuelist.h>
 #include <qwidget.h> //baseclass
 //Added by qt3to4:

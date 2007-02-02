@@ -18,7 +18,7 @@
 */
 
 
-#include <qapplication.h>
+#include <QApplication>
 
 #include "xmlloader.h"
 #include "xmlloader_p.h"

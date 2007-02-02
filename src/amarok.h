@@ -4,7 +4,7 @@
 #define AMAROK_H
 
 #include <qnamespace.h>
-#include <qstring.h>
+#include <QString>
 //Added by qt3to4:
 #include <QPixmap>
 #include <QEvent>

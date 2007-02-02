@@ -12,8 +12,8 @@
 #include "enginecontroller.h"
 #include "systray.h"
 
-#include <qevent.h>
-#include <qimage.h>
+#include <QEvent>
+#include <QImage>
 //Added by qt3to4:
 #include <QTimerEvent>
 #include <QPixmap>

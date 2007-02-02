@@ -17,13 +17,13 @@
 #include "playlistbrowser.h"
 #include "playlistselection.h"
 
-#include <qcheckbox.h>
+#include <QCheckBox>
 #include <q3groupbox.h>
-#include <qlabel.h>
-#include <qlayout.h>
+#include <QLabel>
+#include <QLayout>
 #include <q3listview.h>
-#include <qsizepolicy.h>
-#include <qstringlist.h>
+#include <QSizePolicy>
+#include <QStringList>
 
 #include <kapplication.h>
 #include <kiconloader.h>

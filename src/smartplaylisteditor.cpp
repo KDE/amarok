@@ -19,16 +19,16 @@
 #include <kmountpoint.h>
 #include <knuminput.h>
 
-#include <qcheckbox.h>
-#include <qdatetime.h>
+#include <QCheckBox>
+#include <QDateTime>
 #include <q3datetimeedit.h>    //loadEditWidgets()
 #include <q3frame.h>
 #include <q3hbox.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qobject.h>
-#include <qstringlist.h>
-#include <qtoolbutton.h>
+#include <QLabel>
+#include <QLayout>
+#include <QObject>
+#include <QStringList>
+#include <QToolButton>
 #include <q3vbox.h>
 #include <q3vgroupbox.h>
 

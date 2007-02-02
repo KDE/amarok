@@ -32,12 +32,12 @@
 #include <math.h>
 
 #include <qbutton.h>
-#include <qfontmetrics.h>
-#include <qlayout.h>
-#include <qpainter.h>
+#include <QFontMetrics>
+#include <QLayout>
+#include <QPainter>
 #include <q3popupmenu.h>
-#include <qstyle.h>
-#include <qtimer.h>
+#include <QStyle>
+#include <QTimer>
 //Added by qt3to4:
 #include <Q3HBoxLayout>
 #include <QDragLeaveEvent>

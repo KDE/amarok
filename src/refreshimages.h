@@ -4,7 +4,7 @@
 #ifndef AMAROK_REFRESHIMAGES_H
 #define AMAROK_REFRESHIMAGES_H
 
-#include <qobject.h>
+#include <QObject>
 namespace KIO {
     class StoredTransferJob;
     class Job;

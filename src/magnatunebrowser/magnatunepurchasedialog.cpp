@@ -21,12 +21,12 @@
 #include "magnatunedatabasehandler.h"
 #include "magnatunepurchasedialog.h"
 
-#include <qcombobox.h>
-#include <qlineedit.h>
-#include <qmessagebox.h>
-#include <qpushbutton.h>
-#include <qregexp.h>
-#include <qlabel.h>
+#include <QComboBox>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QRegExp>
+#include <QLabel>
 //Added by qt3to4:
 #include <QPixmap>
 

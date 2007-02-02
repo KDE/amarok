@@ -15,22 +15,22 @@
 #include "pixmapviewer.h"
 
 #include <qdesktopwidget.h>  //ctor: desktop size
-#include <qfile.h>
-#include <qfontmetrics.h>    //paintItem()
-#include <qimage.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qobject.h>    //used to delete all cover fetchers
-#include <qpainter.h>    //paintItem()
-#include <qpalette.h>    //paintItem()
-#include <qpixmap.h>
+#include <QFile>
+#include <QFontMetrics>    //paintItem()
+#include <QImage>
+#include <QLabel>
+#include <QLayout>
+#include <QObject>    //used to delete all cover fetchers
+#include <QPainter>    //paintItem()
+#include <QPalette>    //paintItem()
+#include <QPixmap>
 #include <qpoint.h>
 #include <q3progressdialog.h>
-#include <qrect.h>
-#include <qstringlist.h>
-#include <qtooltip.h>
-#include <qtimer.h>    //search filter timer
-#include <qtooltip.h>
+#include <QRect>
+#include <QStringList>
+#include <QToolTip>
+#include <QTimer>    //search filter timer
+#include <QToolTip>
 #include <q3vbox.h>
 //Added by qt3to4:
 #include <Q3HBoxLayout>
