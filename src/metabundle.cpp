@@ -1089,7 +1089,7 @@ MetaBundle::prettyTitle( const QString &filename ) //static
         s = s.left( s.length() - 5 );
 
     //remove file extension, s/_/ /g and decode %2f-like sequences
-    s = s.left( s.findRev( '.' ) ).replace( '_', ' ' );
+    s = s.left( s.lastIndexOf( '.' ) ).replace( '_', ' ' );
     s = KUrl::decode_string( s );
 
     return s;

@@ -679,7 +679,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
 
             // look for the cue file that matches the media file played first
             QString path    = bundle.url().path();
-            QString cueFile = path.left( path.findRev('.') ) + ".cue";
+            QString cueFile = path.left( path.lastIndexOf('.') ) + ".cue";
 
             m_cuefile->setCueFileName( cueFile );
 

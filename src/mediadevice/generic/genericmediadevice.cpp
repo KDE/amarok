@@ -875,7 +875,7 @@ int
 GenericMediaDevice::addTrackToList( int type, KUrl url, int /*size*/ )
 {
     QString path = url.path( -1 ); //no trailing slash
-    int index = path.findRev( '/', -1 );
+    int index = path.lastIndexOf( '/', -1 );
     QString baseName = path.right( path.length() - index - 1 );
     QString parentName = path.left( index );
 

@@ -70,7 +70,7 @@ bool FileNameScheme::matches( const QString &fileName ) const
      * does not work as a separator.
      */
     QString stripped = fileName;
-    stripped.truncate( stripped.findRev( '.' ) );
+    stripped.truncate( stripped.lastIndexOf( '.' ) );
     return m_regExp.exactMatch( stripped );
 }
 

@@ -293,7 +293,7 @@ HelixEngine::load( const KUrl &url, bool isStream )
    if (!canDecode(url))
    {
       const QString path = url.path();
-      const QString ext  = path.mid( path.findRev( '.' ) + 1 ).toLower();
+      const QString ext  = path.mid( path.lastIndexOf( '.' ) + 1 ).toLower();
       emit statusText( i18n("No plugin found for the %1 format").arg(ext) );
       return false;
    }
@@ -555,7 +555,7 @@ HelixEngine::canDecode( const KUrl &url ) const
       return true;
 
    const QString path = url.path();
-   const QString ext  = path.mid( path.findRev( '.' ) + 1 ).toLower();
+   const QString ext  = path.mid( path.lastIndexOf( '.' ) + 1 ).toLower();
 
    if (ext != "txt")
       for (int i=0; i<(int)m_mimes.size(); i++)

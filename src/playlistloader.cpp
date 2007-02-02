@@ -576,7 +576,7 @@ PlaylistFile::PlaylistFile( const QString &path )
 bool
 PlaylistFile::loadM3u( Q3TextStream &stream )
 {
-    const QString directory = m_path.left( m_path.findRev( '/' ) + 1 );
+    const QString directory = m_path.left( m_path.lastIndexOf( '/' ) + 1 );
     MetaBundle b;
 
     for( QString line; !stream.atEnd(); )
@@ -1000,7 +1000,7 @@ RemotePlaylistFetcher::RemotePlaylistFetcher( const KUrl &source, Q3ListViewItem
 {
     //We keep the extension so the UrlLoader knows what file type it is
     const QString path = source.path();
-    m_temp = new KTempFile( QString::null /*use default prefix*/, path.mid( path.findRev( '.' ) ) );
+    m_temp = new KTempFile( QString::null /*use default prefix*/, path.mid( path.lastIndexOf( '.' ) ) );
     m_temp->setAutoDelete( true );
 
     m_destination.setPath( m_temp->name() );

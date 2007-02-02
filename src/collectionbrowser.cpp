@@ -1698,7 +1698,7 @@ CollectionView::fetchCover() //SLOT
     QString album = item->text(0);
     if( cat == IdVisYearAlbum )
     {
-        // we can't use findRev since an album may have " - " within it.
+        // we can't use lastIndexOf since an album may have " - " within it.
         QString sep = i18n(" - ");
         album = album.right( album.length() - sep.length() - album.find( sep ) );
     }

@@ -529,8 +529,8 @@ MoodServer::slotJobCompleted( KProcess *proc )
     if( success )
       {
         QString file = m_currentData.m_outfile;
-        QString dir = file.left( file.findRev( '/' ) );
-        file = file.right( file.length() - file.findRev( '/' ) - 1 );
+        QString dir = file.left( file.lastIndexOf( '/' ) );
+        file = file.right( file.length() - file.lastIndexOf( '/' ) - 1 );
         QDir( dir ).rename( file + ".tmp", file );
       }
     else
@@ -1321,13 +1321,13 @@ Moodbar::moodFilename( const KUrl &url, bool withMusic )
     if( withMusic )
       {
         path = url.path();
-        path.truncate(path.findRev('.'));
+        path.truncate(path.lastIndexOf('.'));
 
         if (path.isEmpty())  // Weird...
           return QString();
 
         path += ".mood";
-        int slash = path.findRev('/') + 1;
+        int slash = path.lastIndexOf('/') + 1;
         QString dir  = path.left(slash);
         QString file = path.right(path.length() - slash);
         path = dir + '.' + file;
@@ -1341,7 +1341,7 @@ Moodbar::moodFilename( const KUrl &url, bool withMusic )
         MountPointManager::instance()->getRelativePath( deviceid,
             url, relativePath );
         path = relativePath.path();
-        path.truncate(path.findRev('.'));
+        path.truncate(path.lastIndexOf('.'));
 
         if (path.isEmpty())  // Weird...
           return QString();

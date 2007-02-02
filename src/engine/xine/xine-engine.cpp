@@ -674,7 +674,7 @@ XineEngine::canDecode( const KUrl &url ) const
     if (path.endsWith( ".part" ))
         path = path.left( path.length() - 5 );
 
-    const QString ext = path.mid( path.findRev( '.' ) + 1 ).toLower();
+    const QString ext = path.mid( path.lastIndexOf( '.' ) + 1 ).toLower();
 
     return list.contains( ext );
 }

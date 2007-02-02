@@ -2945,7 +2945,7 @@ CollectionDB::addSong( MetaBundle* bundle, const bool incremental )
                 bundle->setArtist( artist );
             }
             title = bundle->url().fileName().section( '-', 1 ).trimmed();
-            title = title.left( title.findRev( '.' ) ).trimmed();
+            title = title.left( title.lastIndexOf( '.' ) ).trimmed();
             if ( title.isEmpty() ) title = bundle->url().fileName();
         }
         bundle->setTitle( title );

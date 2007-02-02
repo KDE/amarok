@@ -386,14 +386,14 @@ fileBaseName( const QString &filePath )
 {
     // this function returns the file name without extension
     // (e.g. if the file path is "/home/user/playlist.m3u", "playlist" is returned
-    QString fileName = filePath.right( filePath.length() - filePath.findRev( '/' ) - 1 );
-    return fileName.mid( 0, fileName.findRev( '.' ) );
+    QString fileName = filePath.right( filePath.length() - filePath.lastIndexOf( '/' ) - 1 );
+    return fileName.mid( 0, fileName.lastIndexOf( '.' ) );
 }
 
 inline QString
 fileDirPath( const QString &filePath )
 {
-    return filePath.left( filePath.findRev( '/' )+1 );
+    return filePath.left( filePath.lastIndexOf( '/' )+1 );
 }
 
 
