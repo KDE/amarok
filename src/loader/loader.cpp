@@ -24,7 +24,7 @@
 #include <QString>
 //Added by qt3to4:
 #include <QTimerEvent>
-#include <kinstance.h>
+//#include <kinstance.h>
 #include <kglobal.h>
 #include <kstandarddirs.h>
 #include "splash.h"
@@ -209,7 +209,7 @@ bool
 isSplashEnabled()
 {
     //determine whether splash-screen is enabled in amarokrc
-    KInstance instance("amarok"); // KGlobal::dirs() crashes without
+//    KInstance instance("amarok"); // KGlobal::dirs() crashes without
     (void)KGlobal::config(); // the kubuntu special directory is not present without this
     QStringList dirs = KGlobal::dirs()->findAllResources( "config", "amarokrc" );
 
