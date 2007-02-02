@@ -145,7 +145,7 @@ EngineController::loadEngine( const QString &engineName )
     DEBUG_BLOCK
 
     QString query = "[X-KDE-Amarok-plugintype] == 'engine' and [X-KDE-Amarok-name] != '%1'";
-    KTrader::OfferList offers = PluginManager::query( query.arg( engineName ) );
+    KServiceOfferList offers = PluginManager::query( query.arg( engineName ) );
 
     // sort by rank, QValueList::operator[] is O(n), so this is quite inefficient
     #define rank( x ) (x)->property( "X-KDE-Amarok-rank" ).toInt()
@@ -159,7 +159,7 @@ EngineController::loadEngine( const QString &engineName )
     query = "[X-KDE-Amarok-plugintype] == 'engine' and [X-KDE-Amarok-name] == '%1'";
     offers = PluginManager::query( query.arg( engineName ) ) + offers;
 
-    oldForeachType( KTrader::OfferList, offers ) {
+    oldForeachType( KServiceOfferList, offers ) {
         Amarok::Plugin *plugin = PluginManager::createFromService( *it );
 
         if( plugin ) {

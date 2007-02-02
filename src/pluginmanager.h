@@ -19,7 +19,7 @@ email                : markey@web.de
 #include <vector>
 
 #include <kservice.h>
-#include <ktrader.h>
+#include <kservicetypetrader.h>
 
 namespace Amarok { class Plugin; }
 class KLibrary;
@@ -53,7 +53,7 @@ class PluginManager
          * @return            A list of services that satisfy the query
          * @see               http://developer.kde.org/documentation/library/kdeqt/tradersyntax.html
          */
-        static KTrader::OfferList query( const QString& constraint = QString::null );
+        static KServiceOfferList query( const QString& constraint = QString::null );
 
         /**
          * Load and instantiate plugin from query

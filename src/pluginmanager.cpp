@@ -54,7 +54,7 @@ PluginManager::query( const QString& constraint )
 
     debug() << "Plugin trader constraint: " << str << endl;
 
-    return KTrader::self()->query( "Amarok/Plugin", str );
+    return KServiceTypeTrader::self()->query( "Amarok/Plugin", str );
 }
 
 
