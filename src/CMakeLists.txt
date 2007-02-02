@@ -9,7 +9,7 @@ if(KONQSIDEBAR_INCLUDE_DIR)
 #   add_subdirectory( konquisidebar ) #disabling for now
 else(KONQSIDEBAR_INCLUDE_DIR)
     MESSAGE(STATUS "You're missing the kdebase header files")
-    MESSAGE(STATUS "Konq sidebar will not compiled.")
+    MESSAGE(STATUS "Konqueror sidebar will not be compiled.")
 endif(KONQSIDEBAR_INCLUDE_DIR)
 
 
