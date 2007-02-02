@@ -15,7 +15,7 @@
 #include <sys/time.h>
 
 class QApplication;
-extern QApplication *qApp; ///@see Debug::Indent
+extern QApplication *qDApp; ///@see Debug::Indent
 
 
 /**
@@ -56,17 +56,17 @@ namespace Debug
     // static namespaces are unique to each dlopened library. So we piggy back
     // the QCString on the KApplication instance
 
-    #define qApp reinterpret_cast<QObject*>(qApp)
+    #define qDApp reinterpret_cast<QObject*>(qDApp)
     class Indent : QObject
     {
         friend Q3CString &modifieableIndent();
-        Indent() : QObject( qApp ) { setObjectName( "DEBUG_indent" ); }
+        Indent() : QObject( qDApp ) { setObjectName( "DEBUG_indent" ); }
         Q3CString m_string;
     };
 
     inline Q3CString &modifieableIndent()
     {
-        QObject* o = qApp ? qApp->findChild<QObject*>( "DEBUG_indent" ) : 0;
+        QObject* o = qDApp ? qDApp->findChild<QObject*>( "DEBUG_indent" ) : 0;
         Q3CString &ret = (o ? static_cast<Indent*>( o ) : new Indent)->m_string;
         return ret;
     }
@@ -75,7 +75,7 @@ namespace Debug
     {
         return Q3DeepCopy<Q3CString>( modifieableIndent() );
     }
-    #undef qApp
+    #undef qDApp
 
 
     #ifdef NDEBUG

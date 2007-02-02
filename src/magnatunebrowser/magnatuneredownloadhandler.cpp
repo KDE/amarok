@@ -76,13 +76,14 @@ QStringList MagnatuneRedownloadHandler::GetPurchaseList( )
     purchaseInfoDir.setFilter( QDir::Files);
     purchaseInfoDir.setSorting( QDir::Name );
 
-    const QFileInfoList *list = purchaseInfoDir.entryInfoList();
-    QFileInfoListIterator it( *list );
+    const QFileInfoList list = purchaseInfoDir.entryInfoList();
+    QFileInfoList::const_iterator it( list.begin() );
     QFileInfo *fi;
 
     QStringList returnList;
 
-    while ( (fi = it.current()) != 0 ) {
+    while ( it != list.end() ) {
+        *fi = *it;
         returnList.append(fi->fileName());
         ++it;
     }
