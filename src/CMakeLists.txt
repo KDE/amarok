@@ -172,7 +172,7 @@ set(libtagaudible_SRCS
 
 
 set(libamarokcore_SRCS
-	${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokdcophandler.cpp
+#	${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokdcophandler.cpp
 	${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/crashhandler.cpp
 )
 

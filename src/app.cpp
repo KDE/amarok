@@ -180,14 +180,14 @@ App::App()
     QPixmap::setDefaultOptimization( QPixmap::MemoryOptim );
 
     //needs to be created before the wizard
-    new Amarok::DcopPlayerHandler(); // Must be created first
-    new Amarok::DcopPlaylistHandler();
-    new Amarok::DcopPlaylistBrowserHandler();
-    new Amarok::DcopContextBrowserHandler();
-    new Amarok::DcopCollectionHandler();
-    new Amarok::DcopMediaBrowserHandler();
-    new Amarok::DcopScriptHandler();
-    new Amarok::DcopDevicesHandler();
+//     new Amarok::DcopPlayerHandler(); // Must be created first
+//     new Amarok::DcopPlaylistHandler();
+//     new Amarok::DcopPlaylistBrowserHandler();
+//     new Amarok::DcopContextBrowserHandler();
+//     new Amarok::DcopCollectionHandler();
+//     new Amarok::DcopMediaBrowserHandler();
+//     new Amarok::DcopScriptHandler();
+//     new Amarok::DcopDevicesHandler();
 
     fixHyperThreading();
     // tell AtomicString that this is the GUI thread
