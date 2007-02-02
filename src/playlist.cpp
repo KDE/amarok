@@ -4800,17 +4800,17 @@ Playlist::showTagDialog( Q3PtrList<Q3ListViewItem> items )
 
             // connects
             connect(
-                child( "OkButton" ),
+                findChild<KPushButton *>( "OkButton" ),
                 SIGNAL(clicked()),
                 SLOT(accept()) );
             connect(
-                child( "CancelButton" ),
+                findChild<KPushButton *>( "CancelButton" ),
                 SIGNAL(clicked()),
                 SLOT(reject()) );
         }
 
-        QString command() { return static_cast<KLineEdit*>(child("Command"))->text(); }
-        QString name()    { return static_cast<KLineEdit*>(child("ColumnName"))->text(); }
+        QString command() { return findChild<KLineEdit*>("Command")->text(); }
+        QString name()    { return findChild<KLineEdit*>("ColumnName")->text(); }
     };
 
 void

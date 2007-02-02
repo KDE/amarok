@@ -473,7 +473,7 @@ CoverFetcher::attemptAnotherFetch()
             connect( cancelButton, SIGNAL(clicked()), SLOT(reject()) );
         }
 
-        QString query() { return static_cast<KLineEdit*>(child( "Query" ))->text(); }
+        QString query() { return findChild<KLineEdit*>( "Query" )->text(); }
     };
 
 QString

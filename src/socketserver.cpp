@@ -149,7 +149,7 @@ Vis::Selector*
 Vis::Selector::instance()
 {
     QWidget *parent = reinterpret_cast<QWidget*>( pApp->playlistWindow() );
-    QObject *o = parent->child( "Vis::Selector::instance" );
+    QObject *o = parent->findChild<QObject *>( "Vis::Selector::instance" );
 
     debug() << bool(o == 0) << endl;
 

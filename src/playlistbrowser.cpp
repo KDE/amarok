@@ -356,7 +356,7 @@ PlaylistBrowser::setInfo( const QString &title, const QString &info )
 void
 PlaylistBrowser::resizeEvent( QResizeEvent * )
 {
-    if( static_cast<QWidget*>( m_infoPane->child( "container" ) )->isShown() )
+    if( m_infoPane->findChild<QWidget*>( "container" )->isShown() )
         m_infoPane->setMaximumHeight( ( int )( m_splitter->height() / 1.5 ) );
 }
 
@@ -3151,7 +3151,7 @@ InfoPane::~InfoPane()
 int
 InfoPane::getHeight()
 {
-    if( static_cast<QWidget*>( child( "container" ) )->isShown() )
+    if( findChild<QWidget*>( "container" )->isShown() )
     {
         //If the InfoPane is shown, return true height.
         return static_cast<QSplitter*>( parentWidget() )->sizes().last();
@@ -3195,7 +3195,7 @@ InfoPane::toggle( bool toggled )
         setMinimumHeight( 150 );
     }
 
-    static_cast<QWidget*>( child( "container" ) )->setShown( toggled );
+    findChild<QWidget*>( "container" )->setShown( toggled );
 }
 
 void
@@ -3205,7 +3205,7 @@ InfoPane::setInfo( const QString &title, const QString &info )
     //whether there is content to show. Otherwise, just remember what we wanted to do
     //so we can do it later, when the user does hide the pane.
     m_enable = !( info.isEmpty() && title.isEmpty() );
-    if ( !static_cast<QWidget*>(child("container"))->isShown() )
+    if ( !findChild<QWidget*>("container")->isShown() )
         m_pushButton->setEnabled( m_enable );
 
     if( m_pushButton->isOn() )

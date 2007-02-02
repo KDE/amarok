@@ -644,7 +644,7 @@ SearchPane::toggle( bool toggled )
     if ( toggled )
         m_lineEdit->setFocus();
 
-    static_cast<QWidget*>(child("container"))->setShown( toggled );
+    findChild<QWidget*>("container")->setShown( toggled );
 }
 
 void

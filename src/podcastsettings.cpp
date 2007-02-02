@@ -104,7 +104,7 @@ PodcastSettingsDialog::init()
         enableButtonOk( false );
 
          // Connects for modification check
-        connect( m_ps->m_purgeCountSpinBox->child( "qt_spinbox_edit" ),  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
+        connect( m_ps->m_purgeCountSpinBox->findChild<QTextEdit *>( "qt_spinbox_edit" ),  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
         connect( m_ps->m_saveLocation,   SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
         connect( m_ps->m_autoFetchCheck, SIGNAL(clicked()),                     SLOT(checkModified()) );
         connect( m_ps->m_streamRadio,    SIGNAL(clicked()),                     SLOT(checkModified()) );

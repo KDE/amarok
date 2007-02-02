@@ -265,13 +265,13 @@ void AmarokConfigDialog::updateButtons()
 void AmarokConfigDialog::updateSettings()
 {
 #ifdef Q_WS_X11
-    OSDPreviewWidget *osd = static_cast<OSDPreviewWidget*>( child( "osdpreview" ) );
+    OSDPreviewWidget *osd = findChild<OSDPreviewWidget*>( "osdpreview" );
     AmarokConfig::setOsdAlignment( osd->alignment() );
     AmarokConfig::setOsdYOffset( osd->y() );
     Amarok::OSD::instance()->applySettings();
 #endif
 
-    static_cast<CollectionSetup*>(child("CollectionSetup"))->writeConfig();
+    findChild<CollectionSetup*>("CollectionSetup")->writeConfig();
 
     if ( m_engineConfig ) m_engineConfig->save();
 
@@ -354,7 +354,7 @@ void AmarokConfigDialog::updateWidgetsDefault()
 bool AmarokConfigDialog::hasChanged()
 {
 #ifdef Q_WS_X11
-    OSDPreviewWidget *osd = static_cast<OSDPreviewWidget*>( child( "osdpreview" ) );
+    OSDPreviewWidget *osd = findChild<OSDPreviewWidget*>( "osdpreview" );
 #endif
 
     return  m_soundSystem->currentText() != m_pluginAmarokName[AmarokConfig::soundSystem()] ||

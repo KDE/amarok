@@ -799,7 +799,7 @@ App::applyColorScheme()
     QColorGroup group;
     using Amarok::ColorScheme::AltBase;
     int h, s, v;
-    QWidget* const browserBar = static_cast<QWidget*>( playlistWindow()->child( "BrowserBar" ) );
+    QWidget* const browserBar = playlistWindow()->findChild<QWidget*>( "BrowserBar" );
     QWidget* const contextBrowser = static_cast<QWidget*>( ContextBrowser::instance() );
 
     if( AmarokConfig::schemeKDE() )

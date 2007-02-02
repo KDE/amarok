@@ -69,7 +69,7 @@ namespace SingleShotPool
 {
     static void startTimer( int timeout, QObject *receiver, const char *slot )
     {
-        QTimer *timer = static_cast<QTimer*>( receiver->child( slot ) );
+        QTimer *timer = receiver->findChild<QTimer *>( slot );
         if( !timer ) {
             timer = new QTimer( receiver, slot );
             receiver->connect( timer, SIGNAL(timeout()), slot );
@@ -80,7 +80,7 @@ namespace SingleShotPool
 
     static inline bool isActive( QObject *parent, const char *slot )
     {
-        QTimer *timer = static_cast<QTimer*>( parent->child( slot ) );
+        QTimer *timer = parent->findChild<QTimer*>( slot );
 
         return timer && timer->isA( "QTimer" ) && timer->isActive();
     }

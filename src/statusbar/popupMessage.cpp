@@ -93,7 +93,7 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
     hbox->addItem( new QSpacerItem( 4, 4, QSizePolicy::Expanding, QSizePolicy::Preferred ) );
     hbox->add( new KPushButton( KStandardGuiItem::close(), this ) );
 
-    connect( child( "closeButton" ), SIGNAL(clicked()), SLOT(close()) );
+    connect( findChild<KPushButton*>( "closeButton" ), SIGNAL(clicked()), SLOT(close()) );
 }
 
 void PopupMessage::addWidget( QWidget *widget )
@@ -104,32 +104,32 @@ void PopupMessage::addWidget( QWidget *widget )
 
 void PopupMessage::setShowCloseButton( const bool show )
 {
-    static_cast<KPushButton*>(child( "closeButton" ))->setShown( show );
+    findChild<KPushButton*>( "closeButton" )->setShown( show );
     adjustSize();
 }
 
 void PopupMessage::setShowCounter( const bool show )
 {
     m_showCounter = show;
-    static_cast<Q3Frame*>(child( "counterVisual" ))->setShown( show );
+    findChild<Q3Frame*>( "counterVisual" )->setShown( show );
     adjustSize();
 }
 
 void PopupMessage::setText( const QString &text )
 {
-    static_cast<K3ActiveLabel*>(child( "label" ))->setText( text );
+    findChild<K3ActiveLabel*>( "label" )->setText( text );
     adjustSize();
 }
 
 void PopupMessage::setImage( const QString &location )
 {
-    static_cast<QLabel*>(child( "image" ))->setPixmap( QPixmap( location ) );
+    findChild<QLabel*>( "image" )->setPixmap( QPixmap( location ) );
     adjustSize();
 }
 
 void PopupMessage::setImage( const QPixmap &pix )
 {
-    static_cast<QLabel*>(child( "image" ))->setPixmap( pix );
+    findChild<QLabel*>( "image" )->setPixmap( pix );
     adjustSize();
 }
 

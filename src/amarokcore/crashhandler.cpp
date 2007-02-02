@@ -298,7 +298,7 @@ Amarok::CrashHandlerWidget::CrashHandlerWidget()
     layout->add( new KPushButton( KGuiItem( i18n("Send Email"), "mail_send" ), this, "email" ) );
     layout->add( new KPushButton( KStandardGuiItem::close(), this, "close" ) );
 
-    static_cast<QPushButton*>(child("email"))->setDefault( true );
+    child<QPushButton*>("email")->setDefault( true );
 
     connect( child( "email" ), SIGNAL(clicked()), SLOT(accept()) );
     connect( child( "close" ), SIGNAL(clicked()), SLOT(reject()) );

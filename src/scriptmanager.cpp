@@ -657,7 +657,7 @@ ScriptManager::slotAboutScript()
     about->setCaption( KInstance::makeStandardCaption( i18n( "About %1" ).arg( name ) ) );
     about->setProduct( "", "", "", "" );
     // Get rid of the confusing KDE version text
-    QLabel* product = static_cast<QLabel*>( about->mainWidget()->child( "version" ) );
+    QLabel* product = about->mainWidget()->findChild<QLabel*>( "version" );
     if( product ) product->setText( i18n( "%1 Amarok Script" ).arg( name ) );
 
     about->addTextPage( i18n( "About" ), readme.readAll(), true );
