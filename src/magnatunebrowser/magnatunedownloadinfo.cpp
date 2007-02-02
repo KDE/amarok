@@ -24,6 +24,7 @@
 #include "debug.h"
 
 #include <QFile>
+#include <Q3TextStream>
 
 MagnatuneDownloadInfo::MagnatuneDownloadInfo()
 {
