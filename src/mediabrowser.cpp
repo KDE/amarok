@@ -2491,7 +2491,7 @@ MediaDevice::kioCopyTrack( const KUrl &src, const KUrl &dst )
     {
         if( isCanceled() )
         {
-            job->kill( false /* still emit result */ );
+            job->kill( KJob::EmitResult );
             tryToRemove = true;
             m_wait = false;
         }
