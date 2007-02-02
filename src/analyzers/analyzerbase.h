@@ -35,6 +35,9 @@
 #define QGLWidget QWidget
 #endif
 
+using namespace Qt;
+#include <qimage.h> //for bitBlt
+
 class QEvent;
 class QPaintEvent;
 class QResizeEvent;

@@ -68,7 +68,7 @@ namespace Amarok
             PlayPauseAction( KActionCollection* );
             virtual void engineStateChanged( Engine::State, Engine::State = Engine::Empty );
     };
-
+#if 0
     class AnalyzerContainer : public QWidget
     {
         public:
@@ -88,7 +88,7 @@ namespace Amarok
             AnalyzerAction( KActionCollection* );
             virtual int plug( QWidget *, int index = -1 );
     };
-
+#endif
 
     class VolumeAction : public KAction, public EngineObserver
     {

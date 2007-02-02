@@ -16,7 +16,7 @@ endif(KONQSIDEBAR_INCLUDE_DIR)
 ADD_DEFINITIONS(${TAGLIB_CFLAGS})
 
 add_subdirectory( amarokcore )
-add_subdirectory( analyzers )
+#add_subdirectory( analyzers )
 add_subdirectory( data )
 add_subdirectory( images )
 add_subdirectory( loader )
@@ -80,7 +80,7 @@ endif(SQLITE_FOUND)
 include_directories( 
 	${CMAKE_SOURCE_DIR}/amarok/src/amarokcore 
 #	${CMAKE_SOURCE_DIR}/amarok/src/klegendary 
-	${CMAKE_SOURCE_DIR}/amarok/src/analyzers 
+#	${CMAKE_SOURCE_DIR}/amarok/src/analyzers 
 	${CMAKE_SOURCE_DIR}/amarok/src/plugin 
 	${CMAKE_SOURCE_DIR}/amarok/src/statusbar 
 	${CMAKE_SOURCE_DIR}/amarok/src/mediadevice
@@ -179,18 +179,18 @@ set(libplugin_SRCS
 	${CMAKE_SOURCE_DIR}/amarok/src/plugin/plugin.cpp
 	)
 
-set(libanalyzers_SRCS 
-    ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/analyzerbase.cpp 
-    ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/analyzerfactory.cpp 
-    ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/baranalyzer.cpp 
-    ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/blockanalyzer.cpp 
-    ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/glanalyzer.cpp 
-    ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/glanalyzer2.cpp 
-    ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/glanalyzer3.cpp 
-    ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/sonogram.cpp 
-    ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/turbine.cpp 
-    ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/boomanalyzer.cpp
-)
+# set(libanalyzers_SRCS 
+#     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/analyzerbase.cpp 
+#     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/analyzerfactory.cpp 
+#     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/baranalyzer.cpp 
+#     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/blockanalyzer.cpp 
+#     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/glanalyzer.cpp 
+#     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/glanalyzer2.cpp 
+#     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/glanalyzer3.cpp 
+#     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/sonogram.cpp 
+#     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/turbine.cpp 
+#     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/boomanalyzer.cpp
+# )
 
 set(libstatusbar_SRCS 
     ${CMAKE_SOURCE_DIR}/amarok/src/statusbar/statusBarBase.cpp 
@@ -204,7 +204,7 @@ set(libstatusbar_SRCS
 
 ########### next target ###############
 
-set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libanalyzers_SRCS} ${libstatusbar_SRCS} ${libmetadata_SRCS} ${libsqlite_SRCS} ${tagmplib_SRCS} ${libtagrealmedia_SRCS} ${libtagaudible_SRCS} ${libtagaac_SRCS} ${libtagwma_SRCS}
+set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS} ${libmetadata_SRCS} ${libsqlite_SRCS} ${tagmplib_SRCS} ${libtagrealmedia_SRCS} ${libtagaudible_SRCS} ${libtagaac_SRCS} ${libtagwma_SRCS} # ${libanalyzers_SRCS} 
    Options1.ui.h 
    actionclasses.cpp 
    app.cpp 
