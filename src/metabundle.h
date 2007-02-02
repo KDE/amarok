@@ -531,9 +531,9 @@ inline QString MetaBundle::prettyRating() const { return prettyRating( rating() 
 inline QString MetaBundle::prettySampleRate( bool shortened ) const
     {
         if ( shortened )
-            return prettyGeneric( i18n( "SampleRate", "%1 kHz" ), m_sampleRate / 1000 );
+            return prettyGeneric( i18nc( "SampleRate", "%1 kHz" ), m_sampleRate / 1000 );
         else
-            return prettyGeneric( i18n( "SampleRate", "%1 Hz" ), m_sampleRate );
+            return prettyGeneric( i18nc( "SampleRate", "%1 Hz" ), m_sampleRate );
     }
 
 inline QString MetaBundle::zeroPad( uint i ) { return ( i < 10 ) ? QString( "0%1" ).arg( i ) : QString::number( i ); }

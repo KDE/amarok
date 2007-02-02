@@ -62,7 +62,7 @@ void DeleteWidget::setFiles(const KUrl::List &files)
         else
             ddFileList->insertItem( (*it).url() );
     }
-    ddNumFiles->setText(i18n("<b>1</b> file selected.", "<b>%n</b> files selected.", files.count()));
+    ddNumFiles->setText(i18np("<b>1</b> file selected.", "<b>%n</b> files selected.", files.count()));
 }
 
 void DeleteWidget::slotShouldDelete(bool shouldDelete)

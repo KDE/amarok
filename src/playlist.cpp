@@ -535,7 +535,7 @@ Playlist::insertMedia( KUrl::List list, int options )
             }
         }
         if ( alreadyOnPlaylist )
-            Amarok::StatusBar::instance()->shortMessage( i18n("One track was already in the playlist, so it was not added.", "%n tracks were already in the playlist, so they were not added.", alreadyOnPlaylist ) );
+            Amarok::StatusBar::instance()->shortMessage( i18np("One track was already in the playlist, so it was not added.", "%n tracks were already in the playlist, so they were not added.", alreadyOnPlaylist ) );
     }
 
     insertMediaInternal( list, after, options );
@@ -3871,14 +3871,14 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
     KMenu fileMenu;
     if( CollectionDB::instance()->isDirInCollection( item->url().directory() ) )
     {
-        fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18n("&Organize File...", "&Organize %n Files...", itemCount), ORGANIZE );
+        fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18np("&Organize File...", "&Organize %n Files...", itemCount), ORGANIZE );
     }
     else
     {
-        fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18n("&Copy Track to Collection...", "&Copy %n Tracks to Collection...", itemCount), COPY_TO_COLLECTION );
-        fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18n("&Move Track to Collection...", "&Move %n Tracks to Collection...", itemCount), MOVE_TO_COLLECTION );
+        fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18np("&Copy Track to Collection...", "&Copy %n Tracks to Collection...", itemCount), COPY_TO_COLLECTION );
+        fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18np("&Move Track to Collection...", "&Move %n Tracks to Collection...", itemCount), MOVE_TO_COLLECTION );
     }
-    fileMenu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n("&Delete File...", "&Delete %n Selected Files...", itemCount ), this, SLOT( deleteSelectedFiles() ), Qt::SHIFT+Qt::Key_Delete, DELETE );
+    fileMenu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18np("&Delete File...", "&Delete %n Selected Files...", itemCount ), this, SLOT( deleteSelectedFiles() ), Qt::SHIFT+Qt::Key_Delete, DELETE );
     popup.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n("Manage &Files"), &fileMenu, FILE_MENU );
 
     if( itemCount == 1 )

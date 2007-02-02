@@ -634,7 +634,7 @@ WebService::love() //SLOT
     http->get( QString( m_basePath + "/control.php?session=%1&command=love&debug=%2" )
                   .arg( m_session )
                   .arg( "0" ) );
-    Amarok::StatusBar::instance()->shortMessage( i18n("love, as in affection", "Loving song...") );
+    Amarok::StatusBar::instance()->shortMessage( i18nc("love, as in affection", "Loving song...") );
 }
 
 
@@ -660,7 +660,7 @@ WebService::ban() //SLOT
     http->get( QString( m_basePath + "/control.php?session=%1&command=ban&debug=%2" )
                   .arg( m_session )
                   .arg( "0" ) );
-    Amarok::StatusBar::instance()->shortMessage( i18n("Ban, as in dislike", "Banning song...") );
+    Amarok::StatusBar::instance()->shortMessage( i18nc("Ban, as in dislike", "Banning song...") );
 }
 
 

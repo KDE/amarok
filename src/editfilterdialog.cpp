@@ -75,7 +75,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     Q3HBoxLayout *keywordLayout = new Q3HBoxLayout( plainPage() );
     QLabel *label3 = new QLabel( i18n("Attribute:"), plainPage(), "label3" );
     Q3WhatsThis::add( label3,
-      i18n("you can translate the keyword as you will do for the combobox",
+      i18nc("you can translate the keyword as you will do for the combobox",
            "<p>Here you can choose to <i>Simple Search</i> directly or to use "
            "some keywords to specify some attributes, such as the artist name "
            "and so on. The keywords selectable are divided by their specific value. "
@@ -304,13 +304,13 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
 
     Q3VBoxLayout* ratioLay2 = new Q3VBoxLayout( m_groupBox3, 15, 0 );
 
-    m_checkAND = new QRadioButton( i18n("AND logic condition", "AND"), m_groupBox3, "checkAND" );
+    m_checkAND = new QRadioButton( i18nc("AND logic condition", "AND"), m_groupBox3, "checkAND" );
     QToolTip::add( m_checkAND,
       i18n("<p>Check this box if you want add another condition and you want that the filter "
            "to match both the previous conditions and this new one</p>"));
     ratioLay2->addWidget( m_checkAND );
 
-    m_checkOR = new QRadioButton( i18n("OR logic condition", "OR"), m_groupBox3, "checkOR" );
+    m_checkOR = new QRadioButton( i18nc("OR logic condition", "OR"), m_groupBox3, "checkOR" );
     QToolTip::add( m_checkOR,
       i18n("<p>Check this box if you want add another condition and you want that the filter "
            "to match either the previous conditions or this new one</p>"));
