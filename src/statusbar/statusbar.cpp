@@ -20,7 +20,7 @@
  ***************************************************************************/
 
 #include "amarok.h"
-#include "amarokcore/amarokconfig.h"
+#include "amarokconfig.h"
 #include "debug.h"
 #include "enginecontroller.h"
 #include "queueLabel.h"
