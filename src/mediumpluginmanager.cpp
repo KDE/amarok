@@ -229,7 +229,7 @@ MediumPluginManager::newDevice()
 {
     DEBUG_BLOCK
     ManualDeviceAdder* mda = new ManualDeviceAdder( this );
-    if( mda->exec() == QDialog::Accepted && mda->successful() && mda->getMedium() != 0 )
+    if( mda->exec() == QDialog::Accepted && mda->successful() )
     {
         if( !Amarok::config( "MediaBrowser" )->readEntry( mda->getMedium()->id() ).isNull() )
         {
@@ -240,10 +240,9 @@ MediumPluginManager::newDevice()
         }
         else
         {
-            Medium *newdev = mda->getMedium();
+            Medium *newdev = new Medium( mda->getMedium() );
             Amarok::config( "MediaBrowser" )->writeEntry( newdev->id(), mda->getPlugin() );
             MediaDeviceManager::instance()->addManualDevice( newdev );
-            m_newDevMap[newdev->id()] = newdev;
             detectDevices();
         }
     }
@@ -258,6 +257,7 @@ ManualDeviceAdder::ManualDeviceAdder( MediumPluginManager* mpm )
 {
     m_mpm = mpm;
     m_successful = false;
+    m_newMed = 0;
 
     kapp->setTopWidget( this );
     setCaption( KInstance::makeStandardCaption( i18n( "Add New Device") ) );
@@ -297,6 +297,7 @@ ManualDeviceAdder::ManualDeviceAdder( MediumPluginManager* mpm )
 
 ManualDeviceAdder::~ManualDeviceAdder()
 {
+    delete m_newMed;
     delete m_mdaName;
     delete m_mdaMountPoint;
 }
@@ -310,7 +311,7 @@ ManualDeviceAdder::slotCancel()
 void
 ManualDeviceAdder::slotOk()
 {
-    if( getMedium() && !getMedium()->name().isEmpty() &&
+    if( getMedium( true ) && !getMedium()->name().isEmpty() &&
             MediaDeviceManager::instance()->getDevice( getMedium()->name() ) == NULL )
     {
         m_successful = true;
@@ -349,8 +350,17 @@ ManualDeviceAdder::comboChanged( const QString &string )
 }
 
 Medium*
-ManualDeviceAdder::getMedium()
+ManualDeviceAdder::getMedium( bool recreate )
 {
+    if( !recreate )
+        return m_newMed;
+
+    if( m_newMed && recreate )
+    {
+        delete m_newMed;
+        m_newMed = 0;
+    }
+
     if( m_mdaMountPoint->isEnabled() == false &&
             m_mdaName->text().isNull() )
         return NULL;
@@ -361,10 +371,10 @@ ManualDeviceAdder::getMedium()
             ( m_mdaMountPoint->text().isNull() ||
                 m_mdaMountPoint->isEnabled() == false ?
                 "(null)" : m_mdaMountPoint->text() );
-    Medium* added = new Medium( id, m_mdaName->text() );
-    added->setAutodetected( false );
-    added->setMountPoint( m_mdaMountPoint->text() );
-    return added;
+    m_newMed = new Medium( id, m_mdaName->text() );
+    m_newMed->setAutodetected( false );
+    m_newMed->setMountPoint( m_mdaMountPoint->text() );
+    return m_newMed;
 }
 
 MediaDeviceConfig::MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, const bool nographics, QWidget *parent, const char *name )
