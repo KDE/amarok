@@ -12,7 +12,7 @@ include_directories( ${CMAKE_SOURCE_DIR}/amarok/src ${KDE4_INCLUDE_DIR} ${QT_INC
 
 #target_link_libraries(amarokcollectionscanner  ${KDE4_KDECORE_LIBS} metadata amarok )
 
-#install_targets(/bin amarokcollectionscanner )
+#install_targets(TARGETS amarokcollectionscanner DESTINATION ${BIN_INSTALL_DIR} )
 
 
 ########### install files ###############

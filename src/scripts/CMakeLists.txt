@@ -10,24 +10,3 @@ add_subdirectory( score_impulsive )
 add_subdirectory( templates )
 add_subdirectory( webcontrol )
 
-include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
-
-
-########### install files ###############
-
-
-
-
-#original Makefile.am contents follow:
-
-#SUBDIRS = \
-#    amarok_live \
-#    common \
-#    lyrics_astraweb \
-#    lyrics_lyrc \
-#    playlist2html \
-#    ruby_debug \
-#    score_default \
-#    score_impulsive \
-#    templates \
-#    webcontrol
