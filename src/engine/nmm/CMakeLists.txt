@@ -31,9 +31,9 @@ install_targets(${PLUGIN_INSTALL_DIR} amarok_nmmengine_plugin )
 
 ########### install files ###############
 
-install_files( ${KCFG_INSTALL_DIR} FILES  nmm_kdeconfig.kcfg )
-install_files( ${SERVICES_INSTALL_DIR} FILES  amarok_nmmengine_plugin.desktop )
-install_files( ${DATA_INSTALL_DIR}/amarok/images FILES  nmm-gradient-left.png      nmm-gradient-right.png      nmm-volume-inset.png )
+install(FILES  nmm_kdeconfig.kcfg DESTINATION ${KCFG_INSTALL_DIR)}
+install(FILES  amarok_nmmengine_plugin.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
+install(FILES  nmm-gradient-left.png      nmm-gradient-right.png      nmm-volume-inset.png DESTINATION ${DATA_INSTALL_DIR}/amarok/images)
 
 
 

@@ -14,12 +14,12 @@ kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} amarok_masengine_plugin )
 
 target_link_libraries(amarok_masengine_plugin  ${KDE4_KDECORE_LIBS} engine plugin ${KDE4_KDEUI_LIBS} )
 
-install_targets(${PLUGIN_INSTALL_DIR} amarok_masengine_plugin )
+install(TARGETS amarok_masengine_plugin DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 
 ########### install files ###############
 
-install_files( ${SERVICES_INSTALL_DIR} FILES  amarok_masengine_plugin.desktop )
+install(FILES  amarok_masengine_plugin.desktop DESTINATION  ${SERVICES_INSTALL_DIR} )
 
 
 

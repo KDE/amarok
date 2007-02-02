@@ -14,12 +14,12 @@ kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} amarok_kdemmengine_plugin )
 
 target_link_libraries(amarok_kdemmengine_plugin  ${KDE4_KDECORE_LIBS} amarok plugin ${KDE4_KDEUI_LIBS} kdemm )
 
-install_targets(${PLUGIN_INSTALL_DIR} amarok_kdemmengine_plugin )
+install(TARGETS amarok_kdemmengine_plugin DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 
 ########### install files ###############
 
-install_files( ${SERVICES_INSTALL_DIR} FILES  amarok_kdemmengine_plugin.desktop )
+install(FILES  amarok_kdemmengine_plugin.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 
 
 

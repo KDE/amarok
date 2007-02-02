@@ -20,7 +20,7 @@ install_targets(${PLUGIN_INSTALL_DIR} amarok_generic-mediadevice )
 
 ########### install files ###############
 
-install_files( ${SERVICES_INSTALL_DIR} FILES  amarok_generic-mediadevice.desktop )
+install(FILES amarok_generic-mediadevice.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 
 
 

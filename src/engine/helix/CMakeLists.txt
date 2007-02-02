@@ -19,16 +19,14 @@ kde4_add_plugin(amarok_helixengine_plugin WITH_PREFIX ${amarok_helixengine_plugi
 
 kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} amarok_helixengine_plugin )
 
-target_link_libraries(amarok_helixengine_plugin  ${KDE4_KDECORE_LIBS} amarok helixconfig plugin kdeui kdecore )
+target_link_libraries(amarok_helixengine_plugin  ${KDE4_KDEUI_LIBS} amarok helixconfig plugin  )
 
-install_targets(${PLUGIN_INSTALL_DIR} amarok_helixengine_plugin )
+install(TARGETS amarok_helixengine_plugin DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 
 ########### install files ###############
 
-install_files( ${SERVICES_INSTALL_DIR} FILES  amarok_helixengine_plugin.desktop )
-
-
+install(FILES  amarok_helixengine_plugin.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
 
 #original Makefile.am contents follow:
 

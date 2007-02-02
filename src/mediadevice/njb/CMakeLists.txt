@@ -20,8 +20,7 @@ install_targets(${PLUGIN_INSTALL_DIR} amarok_njb-mediadevice )
 
 ########### install files ###############
 
-install_files( ${SERVICES_INSTALL_DIR} FILES  amarok_njb-mediadevice.desktop )
-
+install(FILES amarok_njb-mediadevice.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 
 
 #original Makefile.am contents follow:

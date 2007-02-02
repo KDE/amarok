@@ -15,12 +15,12 @@ kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} amarok_ifp-mediadevice )
 
 target_link_libraries(amarok_ifp-mediadevice  ${KDE4_KDECORE_LIBS} )
 
-install_targets(${PLUGIN_INSTALL_DIR} amarok_ifp-mediadevice )
+install(TARGETS amarok_ifp-mediadevice DESTINATION ${PLUGIN_INSTALL_DIR}  )
 
 
 ########### install files ###############
 
-install_files( ${SERVICES_INSTALL_DIR} FILES  amarok_ifp-mediadevice.desktop )
+install( FILES  amarok_ifp-mediadevice.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
 
 
 

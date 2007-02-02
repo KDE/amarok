@@ -14,12 +14,12 @@ kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} amarok_void-engine_plugin )
 
 target_link_libraries(amarok_void-engine_plugin  ${KDE4_KDECORE_LIBS} )
 
-install_targets(${PLUGIN_INSTALL_DIR} amarok_void-engine_plugin )
+install(TARGETS amarok_void-engine_plugin DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 
 ########### install files ###############
 
-install_files( ${SERVICES_INSTALL_DIR} FILES  amarok_void-engine_plugin.desktop )
+install(FILES  amarok_void-engine_plugin.desktop  DESTINATION ${SERVICES_INSTALL_DIR} )
 
 
 

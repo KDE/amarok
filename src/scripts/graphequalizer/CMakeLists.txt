@@ -1,5 +1,5 @@
 
-install_files(FILES  README  DESTINATION ${DATA_INSTALL_DIR}/amarok/scripts/graphequalizer )
+install(FILES  README  DESTINATION ${DATA_INSTALL_DIR}/amarok/scripts/graphequalizer )
 
 
 

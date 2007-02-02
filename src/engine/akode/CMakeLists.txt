@@ -15,12 +15,12 @@ kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} amarok_aKode-engine )
 
 target_link_libraries(amarok_aKode-engine  ${KDE4_KDECORE_LIBS} )
 
-install_targets(${PLUGIN_INSTALL_DIR} amarok_aKode-engine )
+install(TARGETS amarok_aKode-engine DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 
 ########### install files ###############
 
-install_files( ${SERVICES_INSTALL_DIR} FILES  amarok_aKode-engine.desktop )
+install(FILES  amarok_aKode-engine.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
 
 
 

@@ -19,12 +19,12 @@ kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} amarok_gst10engine_plugin )
 
 target_link_libraries(amarok_gst10engine_plugin  ${KDE4_KDECORE_LIBS} amarok gstconfig gstequalizer plugin )
 
-install_targets(${PLUGIN_INSTALL_DIR} amarok_gst10engine_plugin )
+install(TARGETS amarok_gst10engine_plugin DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 
 ########### install files ###############
 
-install_files( ${SERVICES_INSTALL_DIR} FILES  amarok_gst10engine_plugin.desktop )
+install( FILES  amarok_gst10engine_plugin.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 
 
 

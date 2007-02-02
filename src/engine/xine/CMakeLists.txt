@@ -20,8 +20,8 @@ install_targets(${PLUGIN_INSTALL_DIR} amarok_xine-engine )
 
 ########### install files ###############
 
-install_files( ${KCFG_INSTALL_DIR} FILES  xinecfg.kcfg )
-install_files( ${SERVICES_INSTALL_DIR} FILES  amarok_xine-engine.desktop )
+install( FILES xinecfg.kcfg DESTINATION ${KCFG_INSTALL_DIR})
+install( FILES  amarok_xine-engine.desktop DESTINATION ${SERVICES_INSTALL_DIR})
 
 
 
