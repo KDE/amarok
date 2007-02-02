@@ -84,7 +84,7 @@
 #include <krun.h>
 #include <kstandarddirs.h> //locate file
 #include <ktabbar.h>
-#include <ktempfile.h>
+#include <k3tempfile.h>
  //ctor
 #include <kurldrag.h>       //dragObject()
 #include <kactioncollection.h>

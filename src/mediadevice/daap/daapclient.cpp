@@ -47,7 +47,7 @@
 #include <kmenu.h>
 #include <kresolver.h>
 #include <kstandarddirs.h>     //loading icons
-#include <ktempfile.h>
+#include <k3tempfile.h>
 #include <ktoolbar.h>
 
 

@@ -16,17 +16,15 @@
 #include <kdebug.h>       //kBacktrace()
 #include <kdeversion.h>
 #include <klocale.h>
-#include <ktempfile.h>
+#include <k3tempfile.h>
+#include <ktoolinvocation.h>
 
 #include <QFile>
 #include <QRegExp>
 #include <q3textstream.h>
 #include <qglobal.h> //qVersion()
-//Added by qt3to4:
-#include <Q3HBoxLayout>
 #include <Q3CString>
-#include <Q3Frame>
-#include <Q3VBoxLayout>
+
 
 #include <cstdio>         //popen, fread
 #include <iostream>
@@ -58,7 +56,7 @@ namespace Amarok
         static const uint SIZE = 40960; //40 KiB
         static char stdoutBuf[ SIZE ] = {0};
 
-        std::cout << "Running: " << command << std::endl;
+//        std::cout << "Running: " << command << std::endl;
 
         FILE *process = ::popen( command, "r" );
         if ( process )
@@ -115,7 +113,9 @@ namespace Amarok
             uint cpuCount = 0;
             QFile cpuinfo( "/proc/cpuinfo" );
             if ( cpuinfo.open( QIODevice::ReadOnly ) ) {
-                while ( cpuinfo.readLine( line, 20000 ) != -1 ) {
+                char cline[1024];
+                while ( cpuinfo.readLine( cline, sizeof(cline) ) != -1 ) {
+                    line = cline;
                     if ( line.startsWith( "processor" ) ) {
                         ++cpuCount;
                     }
@@ -139,7 +139,7 @@ namespace Amarok
 
             /// obtain the backtrace with gdb
 
-            KTempFile temp;
+            K3TempFile temp;
             temp.setAutoDelete( true );
 
             const int handle = temp.handle();
@@ -167,7 +167,7 @@ namespace Amarok
 
             Q3CString gdb;
             gdb  = "gdb --nw -n --batch -x ";
-            gdb += temp.name().latin1();
+            gdb += temp.name().toLatin1();
             gdb += " amarokapp ";
             gdb += Q3CString().setNum( ::getppid() );
 
@@ -183,14 +183,14 @@ namespace Amarok
             bool useful = true;
             const QString fileCommandOutput = runCommand( "file `which amarokapp`" );
 
-            if( fileCommandOutput.find( "not stripped", false ) == -1 )
+            if( fileCommandOutput.indexOf( "not stripped", false ) == -1 )
                 subject += "[___stripped]"; //same length as below
             else
                 subject += "[NOTstripped]";
 
             if( !bt.isEmpty() ) {
-                const int invalidFrames = bt.contains( QRegExp("\n#[0-9]+\\s+0x[0-9A-Fa-f]+ in \\?\\?") );
-                const int validFrames = bt.contains( QRegExp("\n#[0-9]+\\s+0x[0-9A-Fa-f]+ in [^?]") );
+                const int invalidFrames = bt.count( QRegExp("\n#[0-9]+\\s+0x[0-9A-Fa-f]+ in \\?\\?") );
+                const int validFrames = bt.count( QRegExp("\n#[0-9]+\\s+0x[0-9A-Fa-f]+ in [^?]") );
                 const int totalFrames = invalidFrames + validFrames;
 
                 if( totalFrames > 0 ) {
@@ -200,7 +200,7 @@ namespace Amarok
                 }
                 subject += QString("[frames: %1]").arg( totalFrames, 3 /*padding*/ );
 
-                if( bt.find( QRegExp(" at \\w*\\.cpp:\\d+\n") ) >= 0 )
+                if( bt.indexOf( QRegExp(" at \\w*\\.cpp:\\d+\n") ) >= 0 )
                     subject += "[line numbers]";
             }
             else
@@ -208,7 +208,7 @@ namespace Amarok
 
             subject += QString("[%1]").arg( AmarokConfig::soundSystem().remove( QRegExp("-?engine") ) );
 
-            std::cout << subject.latin1() << std::endl;
+            std::cout << subject.toLatin1().constData() << std::endl;
 
 
             //TODO -fomit-frame-pointer buggers up the backtrace, so detect it
@@ -237,7 +237,7 @@ namespace Amarok
             else {
                 std::cout << i18n( "\nAmarok has crashed! We are terribly sorry about this :(\n\n"
                                    "But, all is not lost! Perhaps an upgrade is already available "
-                                   "which fixes the problem. Please check your distribution's software repository.\n" ).local8Bit();
+                                   "which fixes the problem. Please check your distribution's software repository.\n" ).toLocal8Bit().constData();
             }
 
             //_exit() exits immediately, otherwise this

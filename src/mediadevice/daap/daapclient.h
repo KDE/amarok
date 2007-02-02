@@ -20,7 +20,7 @@
 
 #include <kdeversion.h>
 #include <kdialogbase.h>
-#include <ktempfile.h>
+#include <k3tempfile.h>
 //Added by qt3to4:
 #include <Q3ValueList>
 #include <QPixmap>
