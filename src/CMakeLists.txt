@@ -238,10 +238,12 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libanalyzers_SRCS}
    kbookmarkhandler.cpp 
    ktrm.cpp 
    mediabrowser.cpp 
+   mediadevicemanager.cpp
    medium.cpp 
    mediumpluginmanager.cpp 
    metabundle.cpp 
    moodbar.cpp 
+   mountpointmanager.cpp 
    mydiroperator.cpp 
    osd.cpp 
    pixmapviewer.cpp 
