@@ -41,6 +41,7 @@ what                 : interface to the Media Application Server (MAS)
 #include <kmimetype.h>
 #include <kstandarddirs.h>
 #include <kurl.h>
+#include <QAbstractEventDispatcher>
 
 #include "masengine.h"
 //#define DB_CUTOFF -40.0
@@ -81,7 +82,7 @@ MasEngine::~MasEngine()
 
     if ( m_inited ) stop();
     m_pPlayingTimer->stop();
-    killTimers();
+    QAbstractEventDispatcher::instance()->unregisterTimers(this);
 }
 
 

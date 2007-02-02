@@ -50,6 +50,7 @@ using namespace std;
 extern "C"
 {
     #include <unistd.h>
+#include <QAbstractEventDispatcher>
 }
 
 #define HELIX_ENGINE_TIMER 10  // 10 ms timer
@@ -406,7 +407,7 @@ HelixEngine::cleanup()
    PlayerControl::stop(); // stop all players
    resetScope(0);
    resetScope(1);
-   killTimers();
+   QAbstractEventDispatcher::instance()->unregisterTimers(this);
    m_isStream = false;
    memset(&m_md, 0, sizeof(m_md));
    memset(hscope, 0, 2*sizeof(HelixScope));

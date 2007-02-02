@@ -49,6 +49,7 @@
 
 #include <gst/gst.h>
 #include <iostream>
+#include <QAbstractEventDispatcher>
 
 #define RETURN_IF_PIPELINE_EMPTY if ( !m_pipelineFilled ) return;
 
@@ -904,7 +905,7 @@ void GstEngine::timerEvent( QTimerEvent* )
             // Fade transition has finished, stop playback
             debug() << "[Gst-Engine] Fade-out finished.\n";
             destroyPipeline();
-            killTimers();
+            QAbstractEventDispatcher::instance()->unregisterTimers(this);
             delete m_gst_streamprovider;
             m_gst_streamprovider = 0;
         }
