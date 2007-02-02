@@ -13,26 +13,3 @@ MESSAGE(STATUS "Readd ipod directory")
 #add_subdirectory(ipod)
 
 
-########### install files ###############
-
-
-
-
-#original Makefile.am contents follow:
-
-#if with_libgpod
-#    IPOD_SUBDIR = ipod
-#endif
-#
-#if with_ifp
-#    IFP_SUBDIR = ifp
-#endif
-#
-#if with_libnjb
-#    NJB_SUBDIR = njb
-#endif
-#
-#METASOURCES = AUTO
-#
-#SUBDIRS = 
-#
