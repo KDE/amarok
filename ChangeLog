@@ -2,6 +2,14 @@ Amarok ChangeLog
 ================
 (C) 2002-2007 the Amarok authors.
 
+VERSION 2.0
+  FEATURES:
+
+  CHANGES:
+    * Dependencies lifted to KDE 4 and Qt 4.2. Refer to the README.
+
+  BUGFIXES:
+
 
 VERSION 1.4.5
   FEATURES:
