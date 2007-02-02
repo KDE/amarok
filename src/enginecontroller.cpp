@@ -159,7 +159,7 @@ EngineController::loadEngine( const QString &engineName )
     query = "[X-KDE-Amarok-plugintype] == 'engine' and [X-KDE-Amarok-name] == '%1'";
     offers = PluginManager::query( query.arg( engineName ) ) + offers;
 
-    foreachType( KTrader::OfferList, offers ) {
+    oldForeachType( KTrader::OfferList, offers ) {
         Amarok::Plugin *plugin = PluginManager::createFromService( *it );
 
         if( plugin ) {

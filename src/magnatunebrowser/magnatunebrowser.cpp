@@ -461,7 +461,7 @@ void MagnatuneBrowser::updateGenreBox()
     m_genreComboBox->insertItem ( "All" , 0 ); // should not be i18n'ed as it is
     //used as a trigger in the code in the database handler.
 
-    foreach( genres )
+    oldForeach( genres )
     m_genreComboBox->insertItem( ( *it ), -1 );
 }
 

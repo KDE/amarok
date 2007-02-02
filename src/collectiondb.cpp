@@ -146,14 +146,14 @@ INotify::doJob()
 
     IdList list = MountPointManager::instance()->getMountedDeviceIds();
     QString deviceIds;
-    foreachType( IdList, list )
+    oldForeachType( IdList, list )
     {
         if ( !deviceIds.isEmpty() ) deviceIds += ',';
         deviceIds += QString::number(*it);
     }
     const QStringList values = m_parent->query( QString( "SELECT dir, deviceid FROM directories WHERE deviceid IN (%1);" )
                                                     .arg( deviceIds ) );
-    foreach( values )
+    oldForeach( values )
     {
         QString rpath = *it;
         int deviceid = (*(++it)).toInt();
@@ -255,7 +255,7 @@ CollectionDB::CollectionDB()
     // Remove cached "nocover" images, so that a new version actually gets shown
     // The asterisk is for also deleting the shadow-caches.
     const QStringList entryList = cacheCoverDir().entryList( "*nocover.png*", QDir::Files );
-    foreach( entryList )
+    oldForeach( entryList )
         cacheCoverDir().remove( *it );
 
 
@@ -437,7 +437,7 @@ CollectionDB::deviceidSelection( const bool showAll )
     {
         IdList list = MountPointManager::instance()->getMountedDeviceIds();
         QString deviceIds = "";
-        foreachType( IdList, list )
+        oldForeachType( IdList, list )
         {
             if ( it != list.begin() ) deviceIds += ',';
             deviceIds += QString::number(*it);
@@ -451,7 +451,7 @@ QStringList
 CollectionDB::URLsFromQuery( const QStringList &result ) const
 {
     QStringList values;
-    foreach( result )
+    oldForeach( result )
     {
         const int id = (*it).toInt();
         values << MountPointManager::instance()->getAbsolutePath( id, *(++it) );
@@ -855,7 +855,7 @@ CollectionDB::copyTempTables( )
     //in an empty database, albumIdList is empty. This would result in a SQL query like NOT IN ( ) without
     //the -1 below which is invalid SQL. The auto generated values start at 1 so this is fine
     QString albumIds = "-1";
-    foreach( albumIdList )
+    oldForeach( albumIdList )
     {
         albumIds += ',';
         albumIds += *it;
@@ -864,7 +864,7 @@ CollectionDB::copyTempTables( )
 
     QStringList artistIdList = query( "SELECT artist.id FROM artist;" );
     QString artistIds = "-1";
-    foreach( artistIdList )
+    oldForeach( artistIdList )
     {
         artistIds += ',';
         artistIds += *it;
@@ -873,7 +873,7 @@ CollectionDB::copyTempTables( )
 
     QStringList composerIdList = query( "SELECT composer.id FROM composer;" );
     QString composerIds = "-1";
-    foreach( composerIdList )
+    oldForeach( composerIdList )
     {
         composerIds += ',';
         composerIds += *it;
@@ -882,7 +882,7 @@ CollectionDB::copyTempTables( )
 
     QStringList genreIdList = query( "SELECT genre.id FROM genre;" );
     QString genreIds = "-1";
-    foreach( genreIdList )
+    oldForeach( genreIdList )
     {
         genreIds += ',';
         genreIds += *it;
@@ -891,7 +891,7 @@ CollectionDB::copyTempTables( )
 
     QStringList yearIdList = query( "SELECT year.id FROM year;" );
     QString yearIds = "-1";
-    foreach( yearIdList )
+    oldForeach( yearIdList )
     {
         yearIds += ',';
         yearIds += *it;
@@ -1560,7 +1560,7 @@ CollectionDB::albumDiscTracks( const QString &artist_id, const QString &album_id
                 .arg( artist_id )
                 .arg( discNumber ) );
     QStringList result;
-    foreach( rs )
+    oldForeach( rs )
     {
         const int id = (*it).toInt();
         result << MountPointManager::instance()->getAbsolutePath( id, *(++it) );
@@ -1576,7 +1576,7 @@ CollectionDB::artistTracks( const QString &artist_id )
                 "ORDER BY album.name, tags.discnumber, tags.track;" )
             .arg( artist_id ) );
     QStringList result = QStringList();
-    foreach( rs )
+    oldForeach( rs )
     {
         const int id = (*it).toInt();
         result << MountPointManager::instance()->getAbsolutePath( id, *(++it) );
@@ -1626,7 +1626,7 @@ CollectionDB::removeOrphanedEmbeddedImages()
     //TODO refactor
     // do it the hard way, since a delete subquery wont work on MySQL
     QStringList orphaned = query( "SELECT embed.deviceid, embed.url FROM embed LEFT JOIN tags ON embed.url = tags.url AND embed.deviceid = tags.deviceid WHERE tags.url IS NULL;" );
-    foreach( orphaned ) {
+    oldForeach( orphaned ) {
         QString deviceid = *it;
         QString rpath = *(++it);
         query( QString( "DELETE FROM embed WHERE embed.deviceid = %1 AND embed.url = '%2';" )
@@ -1641,7 +1641,7 @@ CollectionDB::createDragPixmapFromSQL( const QString &sql, QString textOverRide 
     //TODO mountpointmanager: figure out what has to be done here
     QStringList values = instance()->query( sql );
     KUrl::List list;
-    foreach( values )
+    oldForeach( values )
     {
         KUrl u = KUrl::fromPathOrUrl( *it );
         if( u.isValid() )
@@ -2141,7 +2141,7 @@ CollectionDB::findDirectoryImage( const QString& artist, const QString& album, u
 
     IdList list = MountPointManager::instance()->getMountedDeviceIds();
     QString deviceIds;
-    foreachType( IdList, list )
+    oldForeachType( IdList, list )
     {
         if ( !deviceIds.isEmpty() ) deviceIds += ',';
         deviceIds += QString::number(*it);
@@ -2632,7 +2632,7 @@ CollectionDB::getPodcastChannels()
     QStringList values = query( command );
     Q3ValueList<PodcastChannelBundle> bundles;
 
-    foreach( values )
+    oldForeach( values )
     {
         PodcastChannelBundle pcb;
         pcb.setURL         ( KUrl::fromPathOrUrl(*it) );
@@ -2669,7 +2669,7 @@ CollectionDB::getPodcastEpisodes( const KUrl &parent, bool onlyNew, int limit )
     QStringList values = query( command );
     Q3ValueList<PodcastEpisodeBundle> bundles;
 
-    foreach( values )
+    oldForeach( values )
     {
         PodcastEpisodeBundle peb;
         peb.setDBId        ( (*it).toInt() );
@@ -2705,7 +2705,7 @@ CollectionDB::getPodcastEpisodeById( int id )
 
     QStringList values = query( command );
     PodcastEpisodeBundle peb;
-    foreach( values )
+    oldForeach( values )
     {
         peb.setDBId        ( id );
         peb.setURL         ( KUrl::fromPathOrUrl(*it) );
@@ -2768,7 +2768,7 @@ CollectionDB::getPodcastChannelBundle( const KUrl &url, PodcastChannelBundle *pc
                 ", autoscan, fetchtype, autotransfer, haspurge, purgecount FROM podcastchannels WHERE url = '%1';"
                 ).arg( escapeString( url.url() ) ) );
 
-    foreach( values )
+    oldForeach( values )
     {
         pcb->setURL         ( KUrl::fromPathOrUrl(*it) );
         pcb->setTitle       ( *++it );
@@ -3498,7 +3498,7 @@ CollectionDB::bundlesByUrls( const KUrl::List& urls )
 
             BundleList buns50;
             MetaBundle b;
-            foreach( values )
+            oldForeach( values )
             {
                 b.setAlbum     (    *it );
                 b.setArtist    (  *++it );
@@ -3528,7 +3528,7 @@ CollectionDB::bundlesByUrls( const KUrl::List& urls )
             // we get no guarantee about the order that the database
             // will return our values, and sqlite indeed doesn't return
             // them in the desired order :( (MySQL does though)
-            foreach( paths )
+            oldForeach( paths )
             {
                 for( BundleList::Iterator jt = buns50.begin(), end = buns50.end(); jt != end; ++jt )
                 {
@@ -5000,7 +5000,7 @@ class SimilarArtistsInsertionJob : public ThreadManager::DependentJob
         CollectionDB::instance()->query( QString( "DELETE FROM related_artists WHERE artist = '%1';" ).arg( escapedArtist ) );
 
         const QString sql = "INSERT INTO related_artists ( artist, suggestion, changedate ) VALUES ( '%1', '%2', 0 );";
-        foreach( suggestions )
+        oldForeach( suggestions )
             CollectionDB::instance()->insert( sql
                     .arg( escapedArtist,
                           CollectionDB::instance()->escapeString( *it ) ), NULL);
@@ -5039,7 +5039,7 @@ CollectionDB::aftCheckPermanentTables( const QString &currdeviceid, const QStrin
 
     QStringList check1, check2;
 
-    foreach( m_aftEnabledPersistentTables )
+    oldForeach( m_aftEnabledPersistentTables )
     {
         //debug() << "Checking " << (*it) << endl;;
         check1 = query( QString(
@@ -5087,7 +5087,7 @@ CollectionDB::aftMigratePermanentTablesUrl( const QString& /*oldUrl*/, const QSt
     //NOTE: if ever do anything with "deleted" in the statistics table, set deleted to false in query
     //below; will need special case.
     //debug() << "deviceid = " << deviceid << endl << "newurl = " << newUrl << endl << "uid = " << uniqueid << endl;
-    foreach( m_aftEnabledPersistentTables )
+    oldForeach( m_aftEnabledPersistentTables )
     {
         query( QString( "DELETE FROM %1 WHERE deviceid = %2 AND url = '%3';" )
                                 .arg( escapeString( *it ) )
@@ -5108,7 +5108,7 @@ CollectionDB::aftMigratePermanentTablesUniqueId( const QString& /*url*/, const Q
     //debug() << "oldid = " << oldid << endl << "newid = " << newid << endl;
     //NOTE: if ever do anything with "deleted" in the statistics table, set deleted to false in query
     //below; will need special case.
-    foreach( m_aftEnabledPersistentTables )
+    oldForeach( m_aftEnabledPersistentTables )
     {
         query( QString( "DELETE FROM %1 WHERE uniqueid = '%2';" )
                                 .arg( escapeString( *it ) )
@@ -5502,7 +5502,7 @@ CollectionDB::updateStatsTables()
                 QStringList oldURLs = query( "SELECT url FROM statistics;" );
                 //it might be necessary to use batch updates to improve speed
                 debug() << "Updating " << oldURLs.count() << " rows in statistics" << endl;
-                foreach( oldURLs )
+                oldForeach( oldURLs )
                 {
                     bool exists = QFile::exists( *it );
                     int deviceid = exists ? MountPointManager::instance()->getIdForUrl( *it ) : -2;
@@ -5612,7 +5612,7 @@ CollectionDB::updatePersistentTables()
             QStringList oldURLs = query( "SELECT url FROM lyrics;" );
             //it might be necessary to use batch updates to improve speed
             debug() << "Updating " << oldURLs.count() << " rows in lyrics" << endl;
-            foreach( oldURLs )
+            oldForeach( oldURLs )
             {
                 int deviceid = MountPointManager::instance()->getIdForUrl( *it );
                 QString rpath = MountPointManager::instance()->getRelativePath( deviceid, *it );
@@ -5845,7 +5845,7 @@ CollectionDB::extractEmbeddedImage( const MetaBundle &trackInformation, Q3CStrin
 
     MetaBundle::EmbeddedImageList images;
     trackInformation.embeddedImages( images );
-    foreachType ( MetaBundle::EmbeddedImageList, images ) {
+    oldForeachType ( MetaBundle::EmbeddedImageList, images ) {
         if ( hash.isEmpty() || (*it).hash() == hash ) {
             if ( (*it).save( tagCoverDir() ) ) {
                 //debug() << "extractEmbeddedImage: saved to " << tagCoverDir().path() << endl;
@@ -5878,7 +5878,7 @@ CollectionDB::cleanLabels()
     if ( !labelIds.isEmpty() )
     {
         QString ids;
-        foreach( labelIds )
+        oldForeach( labelIds )
         {
             if ( !ids.isEmpty() )
                 ids += ',';
@@ -5900,7 +5900,7 @@ CollectionDB::setLabels( const QString &url, const QStringList &labels, const QS
     QString ids;
     if ( !labelIds.isEmpty() )
     {
-        foreach( labelIds )
+        oldForeach( labelIds )
         {
             if ( !ids.isEmpty() )
                 ids += ',';
@@ -5912,7 +5912,7 @@ CollectionDB::setLabels( const QString &url, const QStringList &labels, const QS
                         .arg( ids,  QString::number(deviceid),  rpath ) );
     }
 
-    foreach( labels )
+    oldForeach( labels )
     {
         int id = query( QString( "SELECT id FROM labels WHERE type = %1 AND name = '%2';" )
                                          .arg( type ).arg( escapeString( *it ) ) ).first().toInt();
@@ -5938,7 +5938,7 @@ CollectionDB::removeLabels( const QString &url, const QStringList &labels, const
                              "FROM tags_labels AS t LEFT JOIN labels AS l ON t.labelid = l.id "
                              "WHERE l.type = %1 AND t.deviceid = %2 AND t.url = '%3' AND ( 0" )
                              .arg( type ).arg( deviceid ).arg( rpath );
-    foreach( labels )
+    oldForeach( labels )
     {
         sql += QString( " OR l.name = '%1'" ).arg( escapeString( *it ) );
     }
@@ -7698,7 +7698,7 @@ QueryBuilder::buildQuery( bool withDeviceidPlaceholder )
                 IdList list = MountPointManager::instance()->getMountedDeviceIds();
                 //debug() << "number of device ids " << list.count() << endl;
                 m_query += " AND tags.deviceid IN (";
-                foreachType( IdList, list )
+                oldForeachType( IdList, list )
                 {
                     if ( it != list.begin() ) m_query += ',';
                     m_query += QString::number( *it );

@@ -11,7 +11,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "amarok.h"             //foreach macro
+#include "amarok.h"             //oldForeach macro
 #include "browserToolBar.h"     //search toolbar
 #include "clicklineedit.h"
 #include "collectiondb.h"
@@ -1033,7 +1033,7 @@ StatisticsDetailedItem::getURLs()
 
     QStringList values = qb.run();
     KUrl::List urls;
-    foreach( values )
+    oldForeach( values )
         urls += KUrl::fromPathOrUrl( *it );
     return urls;
 }

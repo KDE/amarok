@@ -116,7 +116,7 @@ CoverManager::CoverManager()
 
     //load artists from the collection db
     const QStringList artists = CollectionDB::instance()->artistList( false, false );
-    foreach( artists )
+    oldForeach( artists )
     {
         QString artist = *it;
         item = new ArtistItem( m_artistView, item, artist );
@@ -455,7 +455,7 @@ void CoverManager::slotArtistSelected( Q3ListViewItem *item ) //SLOT
     //doing it in the second loop looks really bad, unfortunately
     //this is the slowest step in the bit that we can't process events
     uint x = 0;
-    foreach( albums )
+    oldForeach( albums )
     {
         const QString artist = *it;
         const QString album = *(++it);

@@ -355,7 +355,7 @@ FileBrowser::setFilter( const QString &text )
         QString filter;
 
         const QStringList terms = QStringList::split( ' ', text );
-        foreach( terms ) {
+        oldForeach( terms ) {
             filter += '*';
             filter += *it;
         }

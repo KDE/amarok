@@ -149,7 +149,7 @@ DaapClient::openDevice(bool /* silent=false */)
     }
 #endif
     QStringList sl = AmarokConfig::manuallyAddedServers();
-    foreach( sl )
+    oldForeach( sl )
     {
         QStringList current = QStringList::split(":", (*it) );
         QString host = current.first();
@@ -249,7 +249,7 @@ DaapClient::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
             }
             {
                 QStringList sl = m_serverItemMap.keys();
-                foreach( sl )
+                oldForeach( sl )
                 {
                     debug() << (*it) << endl;
                 }
@@ -403,7 +403,7 @@ DaapClient::createTree( const QString& /*host*/, Daap::SongList bundles )
 
     ServerItem* root = callback->rootMediaItem();
     QStringList artists = bundles.keys();
-    foreach( artists )
+    oldForeach( artists )
     {
         MediaItem* parentArtist =  new MediaItem( root );
         parentArtist->setType( MediaItem::ARTIST );

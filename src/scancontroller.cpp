@@ -185,7 +185,7 @@ ScanController::initIncremental()
 
     IdList list = MountPointManager::instance()->getMountedDeviceIds();
     QString deviceIds;
-    foreachType( IdList, list )
+    oldForeachType( IdList, list )
     {
         if ( !deviceIds.isEmpty() ) deviceIds += ',';
         deviceIds += QString::number(*it);
@@ -195,7 +195,7 @@ ScanController::initIncremental()
             QString( "SELECT deviceid, dir, changedate FROM directories WHERE deviceid IN (%1);" )
             .arg( deviceIds ) );
 
-    foreach( values )
+    oldForeach( values )
     {
         int id = (*it).toInt();
         const QString folder = MountPointManager::instance()->getAbsolutePath( id, (*++it) );
@@ -287,7 +287,7 @@ main_loop:
             CollectionDB::instance()->sanitizeCompilations();
             if ( m_incremental ) {
                 m_foldersToRemove += m_folders;
-                foreach( m_foldersToRemove ) {
+                oldForeach( m_foldersToRemove ) {
                     m_fileMapsMutex.lock();
                     CollectionDB::instance()->removeSongsInDir( *it, &m_filesDeleted );
                     m_fileMapsMutex.unlock();

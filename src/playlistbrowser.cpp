@@ -88,7 +88,7 @@ namespace Amarok {
         Q3ListViewItem *prox = view->firstChild();
         Q3ListViewItem *item = 0;
 
-        foreach( path ) {
+        oldForeach( path ) {
             item = prox;
             QString text( *it );
             text.replace( escaped, sep );
@@ -560,7 +560,7 @@ void PlaylistBrowser::loadLastfmStreams( const bool subscriber /*false*/ )
     tagsFolder->setKept( false );
     LastFmEntry *last = 0;
 
-    foreach( globaltags )
+    oldForeach( globaltags )
     {
         const KUrl url( "lastfm://globaltags/" + *it );
         last = new LastFmEntry( tagsFolder, last, url, *it );
@@ -815,7 +815,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     qb.initSQLDrag();
     qb.sortByFavorite();
     qb.setLimit( 0, 15 );
-    foreach( artists ) {
+    oldForeach( artists ) {
         QueryBuilder qbTemp( qb );
         qbTemp.addMatch( QueryBuilder::tabArtist, *it );
 
@@ -835,7 +835,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     qb.initSQLDrag();
     qb.sortBy( QueryBuilder::tabStats, QueryBuilder::valPlayCounter, true );
     qb.setLimit( 0, 15 );
-    foreach( artists ) {
+    oldForeach( artists ) {
         QueryBuilder qbTemp( qb );
         qbTemp.addMatch( QueryBuilder::tabArtist, *it );
 
@@ -855,7 +855,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     qb.initSQLDrag();
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valCreateDate, true );
     qb.setLimit( 0, 15 );
-    foreach( artists ) {
+    oldForeach( artists ) {
         QueryBuilder qbTemp( qb );
         qbTemp.addMatch( QueryBuilder::tabArtist, *it );
 
@@ -901,7 +901,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
     qb.sortBy( QueryBuilder::tabArtist, QueryBuilder::valName );
     qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
     qb.sortBy( QueryBuilder::tabSong, QueryBuilder::valTrack );
-    foreach( genres ) {
+    oldForeach( genres ) {
         QueryBuilder qbTemp( qb );
         qbTemp.addMatch( QueryBuilder::tabGenre, *it );
 
@@ -1026,7 +1026,7 @@ PlaylistBrowser::fixDynamicPlaylistPath( Q3ListViewItem *item )
     if ( entry ) {
         QStringList names = entry->items();
         QStringList paths;
-        foreach( names ) {
+        oldForeach( names ) {
             QString path = guessPathFromPlaylistName( *it );
             if ( !path.isNull() )
                 paths+=path;
@@ -1171,7 +1171,7 @@ DEBUG_BLOCK
 
     PodcastChannel *channel = 0;
 
-    foreachType( Q3ValueList<PodcastChannelBundle>, channels )
+    oldForeachType( Q3ValueList<PodcastChannelBundle>, channels )
     {
         PlaylistCategory *parent = p;
         const int parentId = (*it).parentId();
@@ -1204,7 +1204,7 @@ DEBUG_BLOCK
     // store the folder and IDs so finding a parent is fast
     QMap<int,PlaylistCategory*> folderMap;
     PlaylistCategory *folder = 0;
-    foreach( values )
+    oldForeach( values )
     {
         const int     id       =     (*it).toInt();
         const QString t        =    *++it;
@@ -1354,7 +1354,7 @@ void PlaylistBrowser::configurePodcasts( Q3PtrList<PodcastChannel> &podcastChann
         return;
     }
     Q3PtrList<PodcastSettings> podcastSettingsList;
-    foreachType( Q3PtrList<PodcastChannel>, podcastChannelList)
+    oldForeachType( Q3PtrList<PodcastChannel>, podcastChannelList)
     {
         podcastSettingsList.append( (*it)->getSettings() );
     }
@@ -1362,7 +1362,7 @@ void PlaylistBrowser::configurePodcasts( Q3PtrList<PodcastChannel> &podcastChann
     if( dialog->configure() )
     {
         PodcastChannel *channel = podcastChannelList.first();
-        foreachType( Q3PtrList<PodcastSettings>, podcastSettingsList )
+        oldForeachType( Q3PtrList<PodcastSettings>, podcastSettingsList )
         {
             if ( (*it)->title() ==  channel->title() )
             {
@@ -1530,7 +1530,7 @@ bool PlaylistBrowser::deletePodcasts( Q3PtrList<PodcastChannel> items )
     if( items.isEmpty() ) return false;
 
     KUrl::List urls;
-    foreachType( Q3PtrList<PodcastChannel>, items )
+    oldForeachType( Q3PtrList<PodcastChannel>, items )
     {
         for( Q3ListViewItem *ch = (*it)->firstChild(); ch; ch = ch->nextSibling() )
         {
@@ -1877,7 +1877,7 @@ void PlaylistBrowser::savePlaylists()
 bool PlaylistBrowser::deletePlaylists( Q3PtrList<PlaylistEntry> items )
 {
     KUrl::List urls;
-    foreachType( Q3PtrList<PlaylistEntry>, items )
+    oldForeachType( Q3PtrList<PlaylistEntry>, items )
     {
         urls.append( (*it)->url() );
     }
@@ -2233,7 +2233,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
             return;
     }
 
-    foreachType( Q3PtrList<Q3ListViewItem>, selected )
+    oldForeachType( Q3PtrList<Q3ListViewItem>, selected )
     {
         if ( isPlaylistTrackItem( *it ) )
         {
@@ -2250,7 +2250,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
     {
         if( deletePlaylists( playlistsToDelete ) )
         {
-            foreachType( Q3PtrList<PlaylistEntry>, playlistsToDelete )
+            oldForeachType( Q3PtrList<PlaylistEntry>, playlistsToDelete )
             {
                 m_dynamicEntries.remove(*it);
                 delete (*it);
@@ -2261,14 +2261,14 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
     if( podcastCount )
     {
         if( deletePodcasts( podcastsToDelete ) )
-            foreachType( Q3PtrList<PodcastChannel>, podcastsToDelete )
+            oldForeachType( Q3PtrList<PodcastChannel>, podcastsToDelete )
                 delete (*it);
     }
 
-    foreachType( Q3PtrList<PlaylistCategory>, playlistFoldersToDelete )
+    oldForeachType( Q3PtrList<PlaylistCategory>, playlistFoldersToDelete )
         delete (*it);
 
-    foreachType( Q3PtrList<PlaylistCategory>, podcastFoldersToDelete )
+    oldForeachType( Q3PtrList<PlaylistCategory>, podcastFoldersToDelete )
         removePodcastFolder( *it );
 
     if( playlistCount || trackCount )
@@ -2445,7 +2445,7 @@ KUrl::List PlaylistBrowser::recurse( const KUrl &url )
         if( item->isDir() ) urls += recurse( item->url() );
     }
 
-    foreachType( FileMap, files )
+    oldForeachType( FileMap, files )
         // users often have playlist files that reflect directories
         // higher up, or stuff in this directory. Don't add them as
         // it produces double entries

@@ -367,7 +367,7 @@ Playlist::Playlist( QWidget *parent )
     // undostates are written in chronological order, so this is a clever way to get them back in the correct order :)
     QStringList undos = m_undoDir.entryList( QString("*.xml"), QDir::Files, QDir::Time );
 
-    foreach( undos )
+    oldForeach( undos )
         m_undoList.append( m_undoDir.absPath() + '/' + (*it) );
 
     m_undoCounter = m_undoList.count();
@@ -3441,7 +3441,7 @@ Playlist::deleteSelectedFiles() //SLOT
     {
         CollectionDB::instance()->removeSongs( urls );
         removeSelectedItems();
-        foreachType( KUrl::List, urls )
+        oldForeachType( KUrl::List, urls )
           CollectionDB::instance()->emitFileDeleted( (*it).path() );
         QTimer::singleShot( 0, CollectionView::instance(), SLOT( renderView() ) );
     }
@@ -3922,7 +3922,7 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
             menu = new KMenu();
             popup.insertItem( *keyIt, menu);
         }
-        foreach(m_customSubmenuItem[*keyIt])
+        oldForeach(m_customSubmenuItem[*keyIt])
         {
             int id;
             if(m_customIdItem.isEmpty())

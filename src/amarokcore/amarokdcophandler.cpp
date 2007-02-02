@@ -864,7 +864,7 @@ namespace Amarok
         CollectionDB *db = CollectionDB::instance();
         QString uid = db->getUniqueId( url );
         int count = 0;
-        foreach( labels )
+        oldForeach( labels )
         {
             if( db->addLabel( url, *it, uid , CollectionDB::typeUser ) )
                 count++;

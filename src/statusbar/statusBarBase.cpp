@@ -254,7 +254,7 @@ StatusBar::resetMainText()
     else {
         ProgressBar *bar = 0;
         uint count = 0;
-        foreachType( ProgressMap, m_progressMap )
+        oldForeachType( ProgressMap, m_progressMap )
             if( !(*it)->m_done ) {
                 bar = *it;
                 count++;
@@ -573,7 +573,7 @@ StatusBar::updateTotalProgress()
     uint totalSteps = 0;
     uint progress = 0;
 
-    foreachType( ProgressMap, m_progressMap ) {
+    oldForeachType( ProgressMap, m_progressMap ) {
         totalSteps += (*it)->totalSteps();
         progress += (*it)->progress();
     }

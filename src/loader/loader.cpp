@@ -58,15 +58,15 @@ main( int argc, char *argv[] )
         // both --arg and -arg are valid
         {
             QStringList longlongs;
-            foreach( longs )
+            oldForeach( longs )
                 longlongs += QChar('-') + *it;
 
             longs += longlongs;
         }
 
-        foreach( args ) {
+        oldForeach( args ) {
             const QString arg = *it;
-            foreach( longs )
+            oldForeach( longs )
                 if( arg == *it ) {
                     // this argument cannot be passed to the running amarokapp
                     // or KCmdLineArgs would exit the application

@@ -143,7 +143,7 @@ void PodcastSettingsDialog::slotOk()       //slot
 
     if ( !m_settingsList.isEmpty() )
     {
-        foreachType( Q3PtrList<PodcastSettings>, m_settingsList)
+        oldForeachType( Q3PtrList<PodcastSettings>, m_settingsList)
         {
             (*it)->m_saveLocation     = requesterSaveLocation().append( Amarok::vfatPath( (*it)->title() ) );
             (*it)->m_autoScan         = m_ps->m_autoFetchCheck->isChecked();

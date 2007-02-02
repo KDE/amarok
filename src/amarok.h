@@ -313,10 +313,10 @@ namespace Amarok
  * Watch out for the definition of last in the scope of your for.
  *
  *     QStringList strings;
- *     foreach( strings )
+ *     oldForeach( strings )
  *         debug() << *it << endl;
  */
-#define foreach( x ) \
+#define oldForeach( x ) \
     for( QStringList::ConstIterator it = x.begin(), end = x.end(); it != end; ++it )
 
 /**
@@ -324,10 +324,10 @@ namespace Amarok
  * Watch out for the definition of last in the scope of your for.
  *
  *     BundleList bundles;
- *     foreachType( BundleList, bundles )
+ *     oldForeachType( BundleList, bundles )
  *         debug() << *it.url() << endl;
  */
-#define foreachType( Type, x ) \
+#define oldForeachType( Type, x ) \
     for( Type::ConstIterator it = x.begin(), end = x.end(); it != end; ++it )
 
 /**

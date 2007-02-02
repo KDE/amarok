@@ -79,7 +79,7 @@ MountPointManager::MountPointManager()
 MountPointManager::~MountPointManager()
 {
     m_handlerMapMutex.lock();
-    foreachType( HandlerMap, m_handlerMap )
+    oldForeachType( HandlerMap, m_handlerMap )
     {
         delete it.data();
     }
@@ -98,7 +98,7 @@ MountPointManager::init()
     DEBUG_BLOCK
     KTrader::OfferList plugins = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'device'" );
     debug() << "Received [" << QString::number( plugins.count() ) << "] device plugin offers" << endl;
-    foreachType( KTrader::OfferList, plugins )
+    oldForeachType( KTrader::OfferList, plugins )
     {
         Amarok::Plugin *plugin = PluginManager::createFromService( *it );
         if( plugin )
@@ -116,7 +116,7 @@ MountPointManager::init()
     }
     //we need access to the unfiltered data
     MediumList list = DeviceManager::instance()->getDeviceList();
-    foreachType ( MediumList, list )
+    oldForeachType ( MediumList, list )
     {
         mediumChanged( &(*it) );
     }
@@ -128,7 +128,7 @@ MountPointManager::getIdForUrl( KUrl url )
     uint mountPointLength = 0;
     int id = -1;
     m_handlerMapMutex.lock();
-    foreachType( HandlerMap, m_handlerMap )
+    oldForeachType( HandlerMap, m_handlerMap )
     {
         if ( url.path().startsWith( it.data()->getDevicePath() ) && mountPointLength < it.data()->getDevicePath().length() )
         {
@@ -266,7 +266,7 @@ MountPointManager::mediumChanged( const Medium *m )
     if ( !m ) return;
     if ( m->isMounted() )
     {
-        foreachType( FactoryList, m_mediumFactories )
+        oldForeachType( FactoryList, m_mediumFactories )
         {
             if ( (*it)->canHandle ( m ) )
             {
@@ -296,7 +296,7 @@ MountPointManager::mediumChanged( const Medium *m )
     else
     {
         m_handlerMapMutex.lock();
-        foreachType( HandlerMap, m_handlerMap )
+        oldForeachType( HandlerMap, m_handlerMap )
         {
             if ( it.data()->deviceIsMedium( m ) )
             {
@@ -326,7 +326,7 @@ MountPointManager::mediumRemoved( const Medium *m )
     {
         //this works for USB devices, special cases might be required for other devices
         m_handlerMapMutex.lock();
-        foreachType( HandlerMap, m_handlerMap )
+        oldForeachType( HandlerMap, m_handlerMap )
         {
             if ( it.data()->deviceIsMedium( m ) )
             {
@@ -352,7 +352,7 @@ MountPointManager::mediumAdded( const Medium *m )
     if ( m->isMounted() )
     {
         debug() << "Device added and mounted, checking handlers" << endl;
-        foreachType( FactoryList, m_mediumFactories )
+        oldForeachType( FactoryList, m_mediumFactories )
         {
             if ( (*it)->canHandle ( m ) )
             {
@@ -397,7 +397,7 @@ MountPointManager::collectionFolders( )
     QStringList result;
     KConfig* const folders = Amarok::config( "Collection Folders" );
     IdList ids = getMountedDeviceIds();
-    foreachType( IdList, ids )
+    oldForeachType( IdList, ids )
     {
         QStringList rpaths = folders->readListEntry( QString::number( *it ) );
         for( QStringList::ConstIterator strIt = rpaths.begin(), end = rpaths.end(); strIt != end; ++strIt )
@@ -425,7 +425,7 @@ MountPointManager::setCollectionFolders( const QStringList &folders )
     typedef QMap<int, QStringList> FolderMap;
     KConfig* const folderConf = Amarok::config( "Collection Folders" );
     FolderMap folderMap;
-    foreach( folders )
+    oldForeach( folders )
     {
         int id = getIdForUrl( *it );
         QString rpath = getRelativePath( id, *it );
@@ -438,14 +438,14 @@ MountPointManager::setCollectionFolders( const QStringList &folders )
     }
     //make sure that collection folders on devices which are not in foldermap are deleted
     IdList ids = getMountedDeviceIds();
-    foreachType( IdList, ids )
+    oldForeachType( IdList, ids )
     {
         if( !folderMap.contains( *it ) )
         {
             folderConf->deleteEntry( QString::number( *it ) );
         }
     }
-    foreachType( FolderMap, folderMap )
+    oldForeachType( FolderMap, folderMap )
     {
         folderConf->writeEntry( QString::number( it.key() ), it.data() );
     }
@@ -455,7 +455,7 @@ void
 MountPointManager::migrateStatistics()
 {
     QStringList urls = CollectionDB::instance()->query( "SELECT url FROM statistics WHERE deviceid = -2;" );
-    foreach( urls )
+    oldForeach( urls )
     {
         if ( QFile::exists( *it) )
         {
@@ -516,7 +516,7 @@ void UrlUpdateJob::updateStatistics( )
                                       "FROM statistics AS s LEFT JOIN tags AS t ON s.deviceid = t.deviceid AND s.url = t.url "
                                       "WHERE t.url IS NULL AND s.deviceid != -2;" );
     debug() << "Trying to update " << urls.count() / 2 << " statistics rows" << endl;
-    foreach( urls )
+    oldForeach( urls )
     {
         int deviceid = (*it).toInt();
         QString rpath = *++it;
@@ -552,7 +552,7 @@ void UrlUpdateJob::updateLabels( )
                                         "FROM tags_labels AS l LEFT JOIN tags as t ON l.deviceid = t.deviceid AND l.url = t.url "
                                         "WHERE t.url IS NULL;" );
     debug() << "Trying to update " << labels.count() / 2 << " tags_labels rows" << endl;
-    foreach( labels )
+    oldForeach( labels )
     {
         int deviceid = (*it).toInt();
         QString rpath = *++it;
@@ -572,7 +572,7 @@ void UrlUpdateJob::updateLabels( )
             if( !labelids.isEmpty() )
             {
                 existingLabelids = " AND labelid NOT IN (";
-                foreach( labelids )
+                oldForeach( labelids )
                 {
                     if( it != labelids.begin() )
                         existingLabelids += ',';

@@ -81,7 +81,7 @@ BrowserBar::BrowserBar( QWidget *parent )
     connect (m_tabManagementButton, SIGNAL(clicked()), SLOT(showBrowserSelectionMenu()));
     m_tabManagementButton->setIsMenuButton ( true ); //deprecated, but since I cannot add menu directly to button it is needed.
 
-    QToolTip::add (m_tabManagementButton, i18n("Manage tabs")); 
+    QToolTip::add (m_tabManagementButton, i18n("Manage tabs"));
 
 
     m_tabBar = new MultiTabBar( MultiTabBar::Vertical, this );
@@ -111,10 +111,10 @@ BrowserBar::BrowserBar( QWidget *parent )
 
     connect( m_mapper, SIGNAL(mapped( int )), SLOT(showHideBrowser( int )) );
 
- 
 
 
-   
+
+
     //m_tabBar->appendButton( Amarok::icon( "configure" ), 1, 0, QString::null );
 
 }
@@ -155,7 +155,7 @@ BrowserBar::polish()
     QWidget::polish();
 
     uint M = 0;
-    foreachType( BrowserList, m_browsers ) {
+    oldForeachType( BrowserList, m_browsers ) {
         const uint m = (*it)->minimumWidth();
         if (m > M)
             M = m;
@@ -350,7 +350,7 @@ BrowserBar::showHideVisibleBrowser( int index )
 QWidget*
 BrowserBar::browser( const QString &name ) const
 {
-    foreachType( BrowserList, m_browsers )
+    oldForeachType( BrowserList, m_browsers )
         if( name == (*it)->name() )
             return *it;
 

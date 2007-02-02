@@ -102,7 +102,7 @@ UrlLoader::UrlLoader( const KUrl::List &urls, Q3ListViewItem *after, int options
             .setAbortSlot( this, SLOT(abort()) )
             .setTotalSteps( 100 );
 
-    foreachType( KUrl::List, urls ) {
+    oldForeachType( KUrl::List, urls ) {
         const KUrl url = Amarok::mostLocalURL( *it );
         // FIXME: url needs detach()ing
         const QString protocol = url.protocol();
@@ -237,7 +237,7 @@ UrlLoader::customEvent( QCustomEvent *e)
     #define e static_cast<TagsEvent*>(e)
     switch( e->type() ) {
     case 1000:
-        foreachType( BundleList, e->bundles )
+        oldForeachType( BundleList, e->bundles )
         {
             //passing by value is quick for QValueLists, though it is slow
             //if we change the list, but this is unlikely
@@ -275,7 +275,7 @@ UrlLoader::customEvent( QCustomEvent *e)
 
     case 1001:
     {
-        foreachType( Q3ValueList<XMLData>, e->xml )
+        oldForeachType( Q3ValueList<XMLData>, e->xml )
         {
             if( (*it).bundle.isEmpty() ) //safety
                 continue;
@@ -384,7 +384,7 @@ UrlLoader::recurse( const KUrl &url )
         if( item->isDir() ) urls += recurse( item->url() );
     }
 
-    foreachType( FileMap, files )
+    oldForeachType( FileMap, files )
         // users often have playlist files that reflect directories
         // higher up, or stuff in this directory. Don't add them as
         // it produces double entries
@@ -437,7 +437,7 @@ recursiveUrlExpand( const KUrl &url, int maxURLs )
             urls += recursiveUrlExpand( item->url(), maxURLs - urls.count() - files.count() );
     }
 
-    foreachType( FileMap, files )
+    oldForeachType( FileMap, files )
         // users often have playlist files that reflect directories
         // higher up, or stuff in this directory. Don't add them as
         // it produces double entries
@@ -450,7 +450,7 @@ KUrl::List
 recursiveUrlExpand( const KUrl::List &list, int maxURLs )
 {
     KUrl::List urls;
-    foreachType( KUrl::List, list )
+    oldForeachType( KUrl::List, list )
     {
         if( maxURLs >= 0 && (int)urls.count() >= maxURLs )
             break;
@@ -748,7 +748,7 @@ PlaylistFile::loadXSPF( Q3TextStream &stream )
 
     XSPFtrackList trackList = doc->trackList();
 
-    foreachType( XSPFtrackList, trackList )
+    oldForeachType( XSPFtrackList, trackList )
     {
         KUrl location = (*it).location;
         QString artist = (*it).creator;

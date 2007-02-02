@@ -272,7 +272,7 @@ QStringList
 ScriptManager::listRunningScripts()
 {
     QStringList runningScripts;
-    foreachType( ScriptMap, m_scripts )
+    oldForeachType( ScriptMap, m_scripts )
         if( it.data().process )
             runningScripts << it.key();
 
@@ -353,7 +353,7 @@ ScriptManager::findScripts() //SLOT
 
     // Add found scripts to listview:
     {
-        foreach( allFiles )
+        oldForeach( allFiles )
             if( QFileInfo( *it ).isExecutable() )
                 loadScript( *it );
     }
@@ -364,7 +364,7 @@ ScriptManager::findScripts() //SLOT
     const QStringList runningScripts = config->readListEntry( "Running Scripts" );
 
     {
-        foreach( runningScripts )
+        oldForeach( runningScripts )
             if( m_scripts.contains( *it ) ) {
                 debug() << "Auto-running script: " << *it << endl;
                 m_gui->listView->setCurrentItem( m_scripts[*it].li );
@@ -460,7 +460,7 @@ ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QStrin
 {
     const QStringList entries = archiveDir->entries();
 
-    foreach( entries ) {
+    oldForeach( entries ) {
         const QString entry = *it;
         const KArchiveEntry* const archEntry = archiveDir->entry( entry );
 
@@ -526,14 +526,14 @@ ScriptManager::slotUninstallScript()
 
     // Find all scripts that were in the uninstalled folder
     {
-        foreachType( ScriptMap, m_scripts )
+        oldForeachType( ScriptMap, m_scripts )
             if( it.data().url.directory() == directory )
                 keys << it.key();
     }
 
     // Terminate script processes, remove entries from script list
     {
-        foreach( keys ) {
+        oldForeach( keys ) {
             delete m_scripts[*it].li;
             terminateProcess( &m_scripts[*it].process );
             m_scripts.erase( *it );
@@ -780,7 +780,7 @@ QStringList
 ScriptManager::scriptsOfType( const QString &type ) const
 {
     QStringList scripts;
-    foreachType( ScriptMap, m_scripts )
+    oldForeachType( ScriptMap, m_scripts )
         if( it.data().type == type )
             scripts += it.key();
 
@@ -791,7 +791,7 @@ ScriptManager::scriptsOfType( const QString &type ) const
 QString
 ScriptManager::scriptRunningOfType( const QString &type ) const
 {
-    foreachType( ScriptMap, m_scripts )
+    oldForeachType( ScriptMap, m_scripts )
         if( it.data().process )
             if( it.data().type == type )
                 return it.key();
@@ -839,7 +839,7 @@ ScriptManager::terminateProcess( KProcIO** proc )
 void
 ScriptManager::notifyScripts( const QString& message )
 {
-    foreachType( ScriptMap, m_scripts ) {
+    oldForeachType( ScriptMap, m_scripts ) {
         KProcIO* const proc = it.data().process;
         if( proc ) proc->writeStdin( message );
     }

@@ -2289,7 +2289,7 @@ MediaQueue::addUrl( const KUrl& url2, MetaBundle *bundle, const QString &playlis
     else if( url.protocol() == "file" && QFileInfo( url.path() ).isDir() )
     {
         KUrl::List urls = Amarok::recursiveUrlExpand( url );
-        foreachType( KUrl::List, urls )
+        oldForeachType( KUrl::List, urls )
             addUrl( *it );
         return;
     }

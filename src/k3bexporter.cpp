@@ -79,7 +79,7 @@ void K3bExporter::exportAlbum( const QString &album, int openmode )
 void K3bExporter::exportAlbum( const QString &artist, const QString &album, int openmode )
 {
     QString albumId = QString::number( CollectionDB::instance()->albumID( album, false, false, true ) );
-    QString artistId;      
+    QString artistId;
     if( !artist.isNull() )
         artistId = QString::number( CollectionDB::instance()->artistID( artist, false, false, true ) );
 
@@ -97,7 +97,7 @@ void K3bExporter::exportAlbum( const QString &artist, const QString &album, int 
     {
         KUrl::List urls;
 
-        foreach( values )
+        oldForeach( values )
             urls << KUrl( *it );
 
         exportTracks( urls, openmode );
@@ -121,7 +121,7 @@ void K3bExporter::exportArtist( const QString &artist, int openmode )
     {
         KUrl::List urls;
 
-        foreach( values )
+        oldForeach( values )
             urls << KUrl( *it );
 
         exportTracks( urls, openmode );
@@ -145,7 +145,7 @@ void K3bExporter::exportComposer( const QString &composer, int openmode )
     {
         KUrl::List urls;
 
-        foreach( values )
+        oldForeach( values )
             urls << KUrl( *it );
 
         exportTracks( urls, openmode );

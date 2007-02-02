@@ -6,7 +6,7 @@
 
 #define DEBUG_PREFIX "SmartPlaylistEditor"
 
-#include "amarok.h" //foreach
+#include "amarok.h" //oldForeach
 #include "debug.h"
 #include "collectiondb.h"
 #include "metabundle.h"
@@ -588,7 +588,7 @@ QDomElement CriteriaEditor::getDomSearchCriteria( QDomDocument &doc )
          }
          default: ;
     }
-    foreach( values ) {
+    oldForeach( values ) {
         QDomElement value = doc.createElement( "value" );
         QDomText t = doc.createTextNode( *it );
         value.appendChild( t );
@@ -801,7 +801,7 @@ void CriteriaEditor::slotFieldSelected( int field )
         else if (currentField == FMountPoint ) //mount point
         {
             KMountPoint::List mountpoints = KMountPoint::currentMountPoints( KMountPoint::NeedRealDeviceName );
-            foreachType( KMountPoint::List, mountpoints )
+            oldForeachType( KMountPoint::List, mountpoints )
             {
                 /* This code is adapted from KDE mediamanager's fstabbackend.cpp
                  * Copyright Kévin Ottens, Bernhard Rosenkraenzer, and from looking

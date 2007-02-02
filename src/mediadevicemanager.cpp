@@ -40,7 +40,7 @@ MediaDeviceManager::MediaDeviceManager()
     connect( DeviceManager::instance(), SIGNAL( mediumChanged( const Medium*, QString ) ), SLOT( slotMediumChanged( const Medium*, QString ) ) );
     connect( DeviceManager::instance(), SIGNAL( mediumRemoved( const Medium*, QString ) ), SLOT( slotMediumRemoved( const Medium*, QString ) ) );
     Medium::List mediums = DeviceManager::instance()->getDeviceList();
-    foreachType( Medium::List, mediums )
+    oldForeachType( Medium::List, mediums )
     {
         slotMediumAdded( &(*it), (*it).id() );
     }
@@ -81,7 +81,7 @@ MediaDeviceManager::MediaDeviceManager()
         }
     }
     Medium::List manualMediums = Medium::createList( manualDevices );
-    foreachType( Medium::List, manualMediums )
+    oldForeachType( Medium::List, manualMediums )
     {
         slotMediumAdded( &(*it), (*it).id() );
     }
@@ -163,7 +163,7 @@ Medium* MediaDeviceManager::getDevice( QString name )
 void MediaDeviceManager::reinitDevices( )
 {
     Medium::List mediums = DeviceManager::instance()->getDeviceList();
-    foreachType( Medium::List, mediums )
+    oldForeachType( Medium::List, mediums )
     {
         slotMediumAdded( &(*it), (*it).id() );
     }

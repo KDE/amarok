@@ -146,7 +146,7 @@ CoverFetcher::CoverFetcher( QWidget *parent, const QString &artist, QString albu
     //we do several queries, one raw ie, without the following modifications
     //the others have the above strings removed with the following regex, as this can increase hit-rate
     const QString template1 = " ?-? ?[(^{]* ?%1 ?\\d*[)^}\\]]* *$"; //eg album - [disk 1] -> album
-    foreach( extensions ) {
+    oldForeach( extensions ) {
         QRegExp regexp( template1.arg( *it ) );
         regexp.setCaseSensitive( false );
         album.remove( regexp );

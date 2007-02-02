@@ -10,7 +10,7 @@
 
 #define DEBUG_PREFIX "PlaylistSelection"
 
-#include "amarok.h" //foreach
+#include "amarok.h" //oldForeach
 #include "debug.h"
 #include "newdynamic.h"
 #include "dynamicmode.h"
@@ -112,7 +112,7 @@ namespace ConfigDynamic
             //check items in the custom playlist
             nd->m_mixLabel->setText( i18n("Edit Dynamic Playlist") );
             QStringList items = mode->items();
-            foreach( items )
+            oldForeach( items )
             {
                 Q3CheckListItem* current = dynamic_cast<Q3CheckListItem*>(
                                             Amarok::findItemByPath(nd->selectPlaylist, (*it)) );

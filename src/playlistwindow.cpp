@@ -172,14 +172,14 @@ PlaylistWindow::PlaylistWindow()
 
     KMenu* playTagRadioMenu = new KMenu( this );
     int id = 0;
-    foreach( m_lastfmTags ) {
+    oldForeach( m_lastfmTags ) {
         playTagRadioMenu->insertItem( *it, this, SLOT( playLastfmGlobaltag( int ) ), 0, id );
         ++id;
     }
 
     KMenu* addTagRadioMenu = new KMenu( this );
     id = 0;
-    foreach( m_lastfmTags ) {
+    oldForeach( m_lastfmTags ) {
         addTagRadioMenu->insertItem( *it, this, SLOT( addLastfmGlobaltag( int ) ), 0, id );
         ++id;
     }

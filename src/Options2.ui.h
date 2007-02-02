@@ -179,10 +179,10 @@ void Options2::updateStyleComboBox()
 
     const QStringList styleList = kapp->dirs()->findAllResources("data","amarok/themes/*/stylesheet.css", false);
     QStringList sortedList;
-    foreach (styleList) sortedList.append(QFileInfo( *it ).dir().dirName());
+    oldForeach (styleList) sortedList.append(QFileInfo( *it ).dir().dirName());
     sortedList.append( "Default" );
     sortedList.sort();
-    foreach(sortedList) styleComboBox->insertItem(*it);
+    oldForeach(sortedList) styleComboBox->insertItem(*it);
 
     styleComboBox->setCurrentItem(AmarokConfig::contextBrowserStyleSheet());
 }

@@ -1560,7 +1560,7 @@ CollectionView::rmbPressed( Q3ListViewItem* item, const QPoint& point, int ) //S
                 if ( DeleteDialog::showTrashDialog(this, selection) )
                   {
                     CollectionDB::instance()->removeSongs( selection );
-                    foreachType( KUrl::List, selection )
+                    oldForeachType( KUrl::List, selection )
                       CollectionDB::instance()->emitFileDeleted( (*it).path() );
                   }
                 m_dirty = true;
@@ -3359,7 +3359,7 @@ CollectionView::setCompilation( const KUrl::List &urls, bool compilation )
     //Set it in the DB. We don't need to update the view now as we do it at the end.
     CollectionDB::instance()->setCompilation( urls, compilation, false );
 
-    foreachType( KUrl::List, urls ) {
+    oldForeachType( KUrl::List, urls ) {
         if ( !TagLib::File::isWritable( QFile::encodeName( ( *it ).path() ) ) )
             continue;
 
@@ -3466,7 +3466,7 @@ CollectionView::findFromStructuredNameList( const QStringList &nameList ) const
 {
     Q3ListViewItem *item( firstChild() );
     bool firstTime = true;
-    foreach( nameList )
+    oldForeach( nameList )
     {
         if ( !firstTime )
             item = item->firstChild();

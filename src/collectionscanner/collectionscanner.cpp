@@ -133,7 +133,7 @@ CollectionScanner::doJob() //SLOT
 
     }
     else {
-        foreachType( QStringList, m_folders ) {
+        oldForeachType( QStringList, m_folders ) {
             if( (*it).isEmpty() )
                 //apparently somewhere empty strings get into the mix
                 //which results in a full-system scan! Which we can't allow
@@ -287,7 +287,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
 
     DCOPRef dcopRef( "amarok", "collection" );
 
-    foreachType( QStringList, entries ) {
+    oldForeachType( QStringList, entries ) {
         const QString path = *it;
         const QString ext  = extension( path );
         const QString dir  = directory( path );
@@ -326,7 +326,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
                 if( !covers.contains( cover ) )
                     covers += cover;
 
-                foreachType( MetaBundle::EmbeddedImageList, images ) {
+                oldForeachType( MetaBundle::EmbeddedImageList, images ) {
                     AttributeMap attributes;
                     attributes["path"] = path;
                     attributes["hash"] = (*it).hash();
@@ -343,7 +343,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
         if( path == entries.last() || dir != directory( *itTemp ) )
         {
             // we entered the next directory
-            foreachType( QStringList, images ) {
+            oldForeachType( QStringList, images ) {
                 // Serialize CoverBundle list with AMAROK_MAGIC as separator
                 QString string;
 
@@ -440,7 +440,7 @@ CollectionScanner::writeElement( const QString& name, const AttributeMap& attrib
     QDomDocument doc; // A dummy. We don't really use DOM, but SAX2
     QDomElement element = doc.createElement( name );
 
-    foreachType( AttributeMap, attributes )
+    oldForeachType( AttributeMap, attributes )
     {
         // There are at least some characters that Qt cannot categorize which make the resulting
         // xml document ill-formed and prevent the parser from processing the remaining document.

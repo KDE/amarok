@@ -309,7 +309,7 @@ IfpMediaDevice::newDirectoryRecursive( const QString &name, MediaItem *parent )
     else
         progress += "\\";
 
-    foreach( folders )
+    oldForeach( folders )
     {
         debug() << "Checking folder: " << progress << endl;
         progress += *it;

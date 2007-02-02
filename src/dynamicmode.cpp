@@ -165,7 +165,7 @@ DEBUG_BLOCK
 
         QStringList urls = qb.run();
 
-        foreach( urls ) //we have to run setPath on all raw paths
+        oldForeach( urls ) //we have to run setPath on all raw paths
         {
             KUrl current;
             current.setPath( *it );
@@ -350,7 +350,7 @@ DEBUG_BLOCK
 
 
     KUrl::List urls;
-    foreach( items ) //we have to run setPath on all raw paths
+    oldForeach( items ) //we have to run setPath on all raw paths
     {
         KUrl tmp;
         tmp.setPath( *it );

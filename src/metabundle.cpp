@@ -1395,7 +1395,7 @@ MetaBundle::setLastFmBundle( const LastFm::Bundle &last )
 void MetaBundle::loadImagesFromTag( const TagLib::ID3v2::Tag &tag, EmbeddedImageList& images ) const
 {
     TagLib::ID3v2::FrameList l = tag.frameListMap()[ "APIC" ];
-    foreachType( TagLib::ID3v2::FrameList, l ) {
+    oldForeachType( TagLib::ID3v2::FrameList, l ) {
         debug() << "Found APIC frame" << endl;
         TagLib::ID3v2::AttachedPictureFrame *ap = static_cast<TagLib::ID3v2::AttachedPictureFrame*>( *it );
 

@@ -678,7 +678,7 @@ void PlaylistEntry::insertTracks( Q3ListViewItem *after, KUrl::List list )
 {
     Q3ValueList<MetaBundle> bundles;
 
-    foreachType( KUrl::List, list )
+    oldForeachType( KUrl::List, list )
         bundles += MetaBundle( *it );
 
     insertTracks( after, bundles );
@@ -694,7 +694,7 @@ void PlaylistEntry::insertTracks( Q3ListViewItem *after, Q3ValueList<MetaBundle>
     }
 
     uint k = 0;
-    foreachType( Q3ValueList<MetaBundle>, bundles )
+    oldForeachType( Q3ValueList<MetaBundle>, bundles )
     {
         TrackItemInfo *newInfo = new TrackItemInfo( *it );
         m_length += newInfo->length();
@@ -760,7 +760,7 @@ void PlaylistEntry::customEvent( QCustomEvent *e )
     str.replace( '_', ' ' );
     setText( 0, str );
 
-    foreachType( BundleList, playlist->bundles )
+    oldForeachType( BundleList, playlist->bundles )
     {
         const MetaBundle &b = *it;
         TrackItemInfo *info = new TrackItemInfo( b );
@@ -2014,7 +2014,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
     }
 
     uint i = m_bundle.hasPurge() ? m_bundle.purgeCount() : eList.count();
-    foreachType( Q3PtrList<QDomElement>, eList )
+    oldForeachType( Q3PtrList<QDomElement>, eList )
     {
         if( !m_updating || ( ( i++ >= eList.count() ) && !episodeExists( (**it), feedType ) ) )
         {
@@ -2196,7 +2196,7 @@ PodcastChannel::purge()
         purgedItems.append( current );
     }
 
-    foreachType( Q3ValueList<Q3ListViewItem*>, purgedItems )
+    oldForeachType( Q3ValueList<Q3ListViewItem*>, purgedItems )
     {
         Q3ListViewItem *item = *it;
 
@@ -3077,7 +3077,7 @@ void SmartPlaylist::setXml( const QDomElement &xml )
             if ( genres.isEmpty() ) {
                 genres = CollectionDB::instance()->genreList();
             }
-            foreach( genres ) {
+            oldForeach( genres ) {
                 m_after = new SmartPlaylist( item, m_after, i18n( "%1" ).arg( *it ),
                                              QString(queryChildren).replace(
                                                  "(*ExpandString*)", *it)  );
@@ -3087,7 +3087,7 @@ void SmartPlaylist::setXml( const QDomElement &xml )
             if ( artists.isEmpty() ) {
                 artists = CollectionDB::instance()->artistList();
             }
-            foreach( artists ) {
+            oldForeach( artists ) {
                 m_after = new SmartPlaylist( item, m_after, i18n( "By %1" ).arg( *it ),
                                              QString(queryChildren).replace(
                                                  "(*ExpandString*)", *it)  );
@@ -3097,7 +3097,7 @@ void SmartPlaylist::setXml( const QDomElement &xml )
             if ( composers.isEmpty() ) {
                 composers = CollectionDB::instance()->composerList();
             }
-            foreach( composers ) {
+            oldForeach( composers ) {
                 m_after = new SmartPlaylist( item, m_after, i18n( "By %1" ).arg( *it ),
                                              QString(queryChildren).replace(
                                                  "(*ExpandString*)", *it)  );
@@ -3107,7 +3107,7 @@ void SmartPlaylist::setXml( const QDomElement &xml )
             if ( albums.isEmpty() ) {
                 albums = CollectionDB::instance()->albumList();
             }
-            foreach( albums ) {
+            oldForeach( albums ) {
                 m_after = new SmartPlaylist( item, m_after, i18n( "%1" ).arg( *it ),
                                              QString(queryChildren).replace(
                                                  "(*ExpandString*)", *it)  );
@@ -3117,7 +3117,7 @@ void SmartPlaylist::setXml( const QDomElement &xml )
             if ( years.isEmpty() ) {
                 years = CollectionDB::instance()->yearList();
             }
-            foreach( years ) {
+            oldForeach( years ) {
                 m_after = new SmartPlaylist( item, m_after, i18n( "%1" ).arg( *it ),
                                              QString(queryChildren).replace(
                                                  "(*ExpandString*)", *it)  );
@@ -3127,7 +3127,7 @@ void SmartPlaylist::setXml( const QDomElement &xml )
             if (labels.isEmpty() ) {
                 labels = CollectionDB::instance()->labelList();
             }
-            foreach( labels ) {
+            oldForeach( labels ) {
                 m_after = new SmartPlaylist( item, m_after, i18n( "%1" ).arg( *it ), QString(queryChildren).replace("(*ExpandString*)", *it)  );
             }
         }

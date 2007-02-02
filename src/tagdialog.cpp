@@ -939,7 +939,7 @@ TagDialog::readMultipleTracks()
 
     QStringList commonLabels = getCommonLabels();
     QString text;
-    foreach ( commonLabels )
+    oldForeach ( commonLabels )
     {
         if ( !text.isEmpty() )
             text.append( ", " );
@@ -962,7 +962,7 @@ TagDialog::getCommonLabels()
     for(; iter != end; ++iter )
     {
         QStringList labels = labelsForURL( *iter );
-        foreach( labels )
+        oldForeach( labels )
         {
             if ( counterMap.contains( *it ) )
                 counterMap[ *it ] = counterMap[ *it ] +1;
@@ -1084,11 +1084,11 @@ TagDialog::storeTags( const KUrl &kurl )
         else
             tmpLabels = originalLabels[ url ];
         //apply delta
-        foreach( m_removedLabels )
+        oldForeach( m_removedLabels )
         {
             tmpLabels.remove( *it );
         }
-        foreach( m_addedLabels )
+        oldForeach( m_addedLabels )
         {
             if( tmpLabels.find( *it ) == tmpLabels.end() )
                 tmpLabels.append( *it );
@@ -1142,7 +1142,7 @@ TagDialog::loadLabels( const KUrl &url )
     m_labels = labelsForURL( url );
     originalLabels[ url.path() ] = m_labels;
     QString text;
-    foreach( m_labels )
+    oldForeach( m_labels )
     {
         if ( !text.isEmpty() )
             text.append( ", " );
@@ -1333,7 +1333,7 @@ TagDialog::labelListFromText( const QString &text )
     QStringList tmp = QStringList::split( ',', text );
     //insert each string into a map to remove duplicates
     QMap<QString, int> map;
-    foreach( tmp )
+    oldForeach( tmp )
     {
         QString tmpString = (*it).trimmed();
         if ( !tmpString.isEmpty() )
@@ -1352,12 +1352,12 @@ TagDialog::generateDeltaForLabelList( const QStringList &list )
 {
     m_addedLabels.clear();
     m_removedLabels.clear();
-    foreach( list )
+    oldForeach( list )
     {
         if ( !m_labels.contains( *it ) )
             m_addedLabels.append( *it );
     }
-    foreach( m_labels )
+    oldForeach( m_labels )
     {
         if ( !list.contains( *it ) )
             m_removedLabels.append( *it );
@@ -1373,7 +1373,7 @@ TagDialog::generateHTML( const QStringList &labels )
     QMap<QString, QPair<QString, int> > mapping;
     QStringList sortedLabels;
     int max = 1;
-    foreach( labels )
+    oldForeach( labels )
     {
         QString label = *it;
         sortedLabels << label.lower();
@@ -1385,7 +1385,7 @@ TagDialog::generateHTML( const QStringList &labels )
     }
     sortedLabels.sort();
     QString html = "<html><body>";
-    foreach( sortedLabels )
+    oldForeach( sortedLabels )
     {
         QString key = *it;
         //generate a number in the range 1..10 based on  how much the label is used

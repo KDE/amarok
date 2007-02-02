@@ -1634,7 +1634,7 @@ CurrentTrackJob::showHomeByAlbums()
         qb.setLimit( 0, 5 );
         QStringList recentAlbums = qb.run();
 
-        foreach( recentAlbums )
+        oldForeach( recentAlbums )
         {
             albums += *it;
             it++;
@@ -1684,7 +1684,7 @@ CurrentTrackJob::showHomeByAlbums()
         bool ratings = AmarokConfig::useRatings();
         bool scores = AmarokConfig::useScores();
 
-        foreach( faveAlbums ) {
+        oldForeach( faveAlbums ) {
             albums += *it;
             faveResults += *(it++);
             faveResults += *(it++);
@@ -2530,7 +2530,7 @@ CurrentTrackJob::showUserLabels( const MetaBundle &currentTrack )
     m_HTMLSource.append( "<tr><td>\n" );
     if ( !values.isEmpty() )
     {
-        foreach( values )
+        oldForeach( values )
         {
             if( it != values.begin() )
                 m_HTMLSource.append( ", \n" );
@@ -3249,7 +3249,7 @@ void ContextBrowser::showLyrics( const QString &url )
               i18n( "Sorry, no lyrics script running.") + "<br />\n" +
               "<br /><div class='info'>\n"+
               i18n( "Available Lyrics Scripts:" ) + "<br />\n";
-        foreach ( scripts ) {
+        oldForeach ( scripts ) {
             lyrics += QString( "<a href=\"runscript:%1\">%2</a><br />\n" ).arg( *it, *it );
         }
         lyrics += "<br />\n" + i18n( "Click on one of the scripts to run it, or use the Script Manager, to be able"
@@ -3729,7 +3729,7 @@ ContextBrowser::showLabelsDialog()
     m_labelListView->addColumn( i18n( "Label" ) );
     m_labelListView->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
-    foreach( allLabels )
+    oldForeach( allLabels )
     {
         Q3CheckListItem *item = new Q3CheckListItem( m_labelListView, *it, Q3CheckListItem::CheckBox );
         item->setOn( trackLabels.contains( *it ) );
@@ -4359,7 +4359,7 @@ ContextBrowser::expandURL( const KUrl &url )
         if( artist_id )
         {
             QStringList trackUrls = CollectionDB::instance()->artistTracks( QString::number( artist_id ) );
-            foreach( trackUrls )
+            oldForeach( trackUrls )
                 urls += KUrl::fromPathOrUrl( *it );
         }
     }
@@ -4368,7 +4368,7 @@ ContextBrowser::expandURL( const KUrl &url )
         Amarok::albumArtistTrackFromUrl( url.path(), artist, album, track );
 
         QStringList trackUrls = CollectionDB::instance()->albumTracks( artist, album );
-        foreach( trackUrls ) {
+        oldForeach( trackUrls ) {
             urls += KUrl::fromPathOrUrl( *it );
         }
     }
@@ -4377,7 +4377,7 @@ ContextBrowser::expandURL( const KUrl &url )
         Amarok::albumArtistTrackFromUrl( url.path(), artist, album, discnumber );
 
         QStringList trackUrls = CollectionDB::instance()->albumDiscTracks( artist, album, discnumber );
-        foreach( trackUrls ) {
+        oldForeach( trackUrls ) {
             urls += KUrl::fromPathOrUrl( *it );
         }
     }
@@ -4419,7 +4419,7 @@ ContextBrowser::expandURL( const KUrl &url )
         QString albumID = QString::number( CollectionDB::instance()->albumID( album ) );
 
         QStringList trackUrls = CollectionDB::instance()->albumTracks( artistID, albumID );
-        foreach( trackUrls ) {
+        oldForeach( trackUrls ) {
             urls += KUrl::fromPathOrUrl( *it );
         }
     }
