@@ -1045,10 +1045,10 @@ void App::slotConfigAmarok( const Q3CString& page )
     //FIXME it seems that if the dialog is on a different desktop it gets lost
     //      what do to? detect and move it?
 
-    if ( page.isNull() )
-        // FIXME
-        //dialog->showPage( AmarokConfigDialog::s_currentPage );
-    else
+//    if ( page.isNull() )
+          // FIXME
+//        dialog->showPage( AmarokConfigDialog::s_currentPage );
+//    else
         dialog->showPageByName( page );
 
     dialog->show();
