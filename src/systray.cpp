@@ -35,7 +35,7 @@ namespace Amarok
 
 
 Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
-        : KSystemTray( playerWidget )
+        : KSystemTrayIcon( playerWidget )
         , EngineObserver( EngineController::instance() )
         , trackLength( 0 )
         , mergeLevel( -1 )
@@ -101,7 +101,7 @@ Amarok::TrayIcon::event( QEvent *e )
         //else FALL THROUGH
 
     default:
-        return KSystemTray::event( e );
+        return KSystemTrayIcon::event( e );
     }
 }
 

@@ -583,7 +583,8 @@ void App::applySettings( bool firstTime )
     applyColorScheme();
 
 #ifdef Q_WS_X11
-    TrackToolTip::instance()->removeFromWidget( m_pTray );
+    //probably needs to be done in TrayIcon when it receives a QEvent::ToolTip (see QSystemtrayIcon documentation)
+    //TrackToolTip::instance()->removeFromWidget( m_pTray );
 #endif
     playlistWindow()->applySettings();
     Scrobbler::instance()->applySettings();
@@ -591,7 +592,7 @@ void App::applySettings( bool firstTime )
     CollectionDB::instance()->applySettings();
 #ifdef Q_WS_X11
     m_pTray->setShown( AmarokConfig::showTrayIcon() );
-    TrackToolTip::instance()->addToWidget( m_pTray );
+    //TrackToolTip::instance()->addToWidget( m_pTray );
 #endif
 
 

@@ -10,7 +10,7 @@
 #define AMAROKSYSTRAY_H
 
 #include "engineobserver.h" //baseclass
-#include <ksystemtray.h>
+#include <ksystemtrayicon.h>
 #include <QPixmap>
 //Added by qt3to4:
 #include <QEvent>
@@ -19,7 +19,7 @@ class App;
 
 namespace Amarok {
 
-class TrayIcon : public KSystemTray, public EngineObserver
+class TrayIcon : public KSystemTrayIcon, public EngineObserver
 {
 public:
     TrayIcon( QWidget* );
