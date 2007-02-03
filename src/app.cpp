@@ -679,7 +679,7 @@ void App::applySettings( bool firstTime )
         main_window->show();
 
         //takes longer but feels shorter. Crazy eh? :)
-        kapp->eventLoop()->processEvents( QEventLoop::ExcludeUserInput );
+        kapp->processEvents( QEventLoop::ExcludeUserInputEvents );
     }
 
 
