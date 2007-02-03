@@ -11,8 +11,8 @@
 # # # # # # # # # # # # # # # # # # # # # #   # # # # #   # # #   # #   # #   # #   #   #
 
 echo
-echo "Amarok-svn (Version 3.2-SVN)"
-echo "=============================="
+echo "Amarok-svn (Version 3.2)"
+echo "=========================="
 echo
 
 ## Define global variables
@@ -310,7 +310,7 @@ echo "###################### #### ### ## ## ## # #"
 ## Base checkout
 echo
 echo "# $C_STEP/$S_STEPS - Checking out base files."
-svn co -N $SVN_SERVER/home/kde/trunk/extragear/multimedia $BUILD_DIR
+svn co -N $SVN_SERVER/home/kde/branches/stable/extragear/multimedia $BUILD_DIR
 if [ "$?" != "0" ]; then #If the command didn't finish successfully
   Error "The SVN transfer didn't finish successfully."
 fi
