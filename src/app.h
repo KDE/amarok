@@ -36,7 +36,6 @@ class KActionCollection;
 class KConfig;
 class KGlobalAccel;
 class MetaBundle;
-class PlayerWidget;
 class Playlist;
 class PlaylistWindow;
 class MediaDeviceManager;

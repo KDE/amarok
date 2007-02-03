@@ -810,7 +810,7 @@ App::applyColorScheme()
         browserBar->unsetPalette();
         contextBrowser->unsetPalette();
 
-        PlayerWidget::determineAmarokColors();
+//        PlayerWidget::determineAmarokColors();
     }
 
     else if( AmarokConfig::schemeAmarok() )
@@ -884,7 +884,7 @@ App::applyColorScheme()
         group.setColor( QColorGroup::HighlightedText, Qt::white );
         group.setColor( QColorGroup::Dark, Qt::darkGray );
 
-        PlayerWidget::determineAmarokColors();
+//        PlayerWidget::determineAmarokColors();
 
         // we only colour the middle section since we only
         // allow the user to choose two colours
