@@ -208,7 +208,7 @@
                                 <string></string>
                             </property>
                         </widget>
-                        <widget class="KActiveLabel">
+                        <widget class="QLabel">
                             <property name="name">
                                 <cstring>formatHelp</cstring>
                             </property>
@@ -589,7 +589,6 @@
 <includehints>
     <includehint>kcombobox.h</includehint>
     <includehint>klineedit.h</includehint>
-    <includehint>kactivelabel.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>klineedit.h</includehint>
 </includehints>
