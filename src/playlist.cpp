@@ -93,7 +93,6 @@
 #include <kstandarddirs.h>   //KGlobal::dirs()
 #include <kstandardaction.h>
 #include <kstringhandler.h>  //::showContextMenu()
-#include <kurldrag.h>
 
 extern "C"
 {
@@ -2388,7 +2387,7 @@ Playlist::contentsDragEnterEvent( QDragEnterEvent *e )
             e->source() == viewport() ||
             subtype == "amarok-sql" ||
             subtype == "uri-list" || //this is to prevent DelayedUrlLists from performing their queries
-            KURLDrag::canDecode( e ) );
+            KUrl::List::canDecode( e->mimeData() ) );
 }
 
 void
@@ -2479,13 +2478,13 @@ Playlist::contentsDropEvent( QDropEvent *e )
             loadDynamicMode( entry );
         }
 
-        else if( KURLDrag::canDecode( e ) )
+        else if( KUrl::List::canDecode( e->mimeData() ) )
         {
-            debug() << "KURLDrag::canDecode" << endl;
+            debug() << "KUrl::List::canDecode" << endl;
 
-            KUrl::List list;
-            KURLDrag::decode( e, list );
-            insertMediaInternal( list, static_cast<PlaylistItem*>( after ) );
+            KUrl::List list = KUrl::List::fromMimeData( e->mimeData() );
+            if ( !list.isEmpty() )
+                insertMediaInternal( list, static_cast<PlaylistItem*>( after ) );
         }
         else
             e->ignore();
