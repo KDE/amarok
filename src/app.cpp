@@ -72,7 +72,6 @@ email                : markey@web.de
 #include <QFile>
 #include <QObject>         //applyColorScheme()
 #include <QPalette>            //applyColorScheme()
-#include <QPixmap>             //QPixmap::setDefaultOptimization()
 #include <q3popupmenu.h>          //genericEventHandler
 #include <QTimer>              //showHyperThreadingWarning()
 #include <QToolTip>            //default tooltip for trayicon
@@ -750,9 +749,6 @@ App::continueInit()
     Debug::stamp();
     //notify loader application that we have started
     std::cout << "STARTUP\n" << std::flush;
-
-    //after this point only analyzer and temporary pixmaps will be created
-    QPixmap::setDefaultOptimization( QPixmap::BestOptim );
 
     //do after applySettings(), or the OSD will flicker and other wierdness!
     //do before restoreSession()!
