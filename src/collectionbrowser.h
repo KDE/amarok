@@ -395,7 +395,7 @@ class OrganizeCollectionDialogBase : public KDialog
     public:
     OrganizeCollectionDialogBase( QWidget *parent=0, const char *name=0, bool modal=true,
             const QString &caption=QString::null,
-            int buttonMask=Ok|Apply|Cancel )
+            QFlags<KDialog::ButtonCode> buttonMask=Ok|Apply|Cancel )
         : KDialog( parent )
     {
         setCaption( caption );
@@ -407,7 +407,7 @@ class OrganizeCollectionDialogBase : public KDialog
     signals:
         void detailsClicked();
     public slots:
-        void slotDetails() { KDialog::slotDetails(); emit detailsClicked(); adjustSize(); }
+        void slotDetails() { KDialog::slotButtonClicked( Details ); emit detailsClicked(); adjustSize(); }
 };
 
 inline QPixmap *CollectionItem::star() { return s_star; }
