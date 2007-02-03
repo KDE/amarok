@@ -34,7 +34,6 @@ namespace KIO { class Job; }
 
 class KActionCollection;
 class KConfig;
-class KGlobalAccel;
 class MetaBundle;
 class Playlist;
 class PlaylistWindow;
@@ -106,7 +105,6 @@ class LIBAMAROK_EXPORT App : public KApplication, public EngineObserver
         void setRating( int n );
 
         // ATTRIBUTES ------
-        KGlobalAccel        *m_pGlobalAccel;
         PlaylistWindow      *m_pPlaylistWindow;
 #ifdef Q_WS_X11
         Amarok::TrayIcon    *m_pTray;

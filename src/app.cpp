@@ -503,8 +503,8 @@ void App::initGlobalShortcuts()
                             this, SLOT( setRating5() ), true, true );
 #endif
 
-    m_pGlobalAccel->setConfigGroup( "Shortcuts" );
-    m_pGlobalAccel->readSettings( KGlobal::config() );
+    KGlobalAccel::self()->setConfigGroup( "Shortcuts" );
+    KGlobalAccel::self()->readSettings( KGlobal::config() );
 
 
 // FIXME Is this still needed with KDE4? 
@@ -680,7 +680,6 @@ App::continueInit()
     CollectionDB::instance()->checkDatabase();
 
     m_pMediaDeviceManager = MediaDeviceManager::instance();
-    m_pGlobalAccel    = new KGlobalAccel( this );
     m_pPlaylistWindow = new PlaylistWindow();
 #ifdef Q_WS_X11
     m_pTray           = new Amarok::TrayIcon( m_pPlaylistWindow );
