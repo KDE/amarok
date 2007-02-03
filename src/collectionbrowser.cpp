@@ -2297,8 +2297,8 @@ CollectionView::listSelected()
         // If we're already displaying tracks, just return the selected ones
         if( m_currentDepth == trackDepth() )
         {
-            Q3PtrList<Q3ListViewItem> selected = selectedItems();
-            Q3PtrList<Q3ListViewItem>::iterator it = selected.begin();
+            QList<Q3ListViewItem*> selected = selectedItems();
+            QList<Q3ListViewItem*>::iterator it = selected.begin();
             while( it != selected.end() )
             {
                 if( dynamic_cast<CollectionItem*>(*it) != 0 )
@@ -2992,8 +2992,8 @@ CollectionView::incrementDepth( bool rerender /*= true*/ )
         m_ipodTopItem[m_currentDepth] = item->text( 0 );
 
     // Figure out the next filter, and save the current selection
-    Q3PtrList<Q3ListViewItem> selected = selectedItems();
-    Q3PtrList<Q3ListViewItem>::iterator it = selected.begin();
+    QList<Q3ListViewItem*> selected = selectedItems();
+    QList<Q3ListViewItem*>::iterator it = selected.begin();
 
     while( it != selected.end() )
     {
