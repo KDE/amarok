@@ -48,6 +48,7 @@
 #include <QBuffer>
 #include <QCheckBox>
 #include <q3deepcopy.h>
+#include <QEventLoop>
 #include <QFile>
 #include <qmap.h>
 #include <QMutex>
@@ -3464,14 +3465,15 @@ CollectionDB::bundlesByUrls( const KUrl::List& urls )
     BundleList bundles;
     QStringList paths;
     QueryBuilder qb;
+    int count = 0;
 
-    for( KUrl::List::ConstIterator it = urls.begin(), end = urls.end(), last = urls.fromLast(); it != end; ++it )
+    for( KUrl::List::ConstIterator it = urls.begin(), end = urls.end(); it != end; ++it, ++count )
     {
         // non file stuff won't exist in the db, but we still need to
         // re-insert it into the list we return, just with no tags assigned
         paths += (*it).protocol() == "file" ? (*it).path() : (*it).url();
 
-        if( paths.count() == 50 || it == last )
+        if( paths.count() == 50 || count == urls.size() - 1 )
         {
             qb.clear();
 
@@ -4013,7 +4015,7 @@ CollectionDB::organizeFile( const KUrl &src, const OrganizeCollectionDialog &dia
         }
 
          usleep( 10000 );
-         kapp->processEvents( 100 );
+         kapp->processEvents( QEventLoop::AllEvents );
       }
 
       if( m_fileOperationFailed )
@@ -4143,7 +4145,7 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
         }
 
         usleep( 10000 );
-        kapp->processEvents( 100 );
+        kapp->processEvents( QEventLoop:AllEvents );
     }
 
     if( !m_fileOperationFailed )
@@ -4957,8 +4959,10 @@ void
 CollectionDB::dirDirty( const QString& path )
 {
     debug() << k_funcinfo << "Dirty: " << path << endl;
+    QStringList dir;
+    dir.append( path );
 
-    ThreadManager::instance()->queueJob( new ScanController( this, false, path ) );
+    ThreadManager::instance()->queueJob( new ScanController( this, false, dir ) );
 }
 
 
