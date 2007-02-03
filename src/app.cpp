@@ -539,6 +539,7 @@ void App::initGlobalShortcuts()
 
 void App::fixHyperThreading()
 {
+#if 0
     /** Workaround for stability issues with HyperThreading CPU's, @see BUG 99199.
      * First we detect the presence of HyperThreading. If active, we bind amarokapp
      * to the first CPU only (hard affinity).
@@ -588,6 +589,7 @@ void App::fixHyperThreading()
     #else //__linux__
     debug() << "SCHEDAFFINITY_SUPPORT disabled since this isn't Linux" << endl;
     #endif //__linux__
+#endif
 }
 
 
