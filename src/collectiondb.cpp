@@ -4004,7 +4004,7 @@ CollectionDB::organizeFile( const KUrl &src, const OrganizeCollectionDialog &dia
         {
             disconnect( job, SIGNAL(result( KIO::Job * )), this, SLOT(fileOperationResult( KIO::Job * )) );
 
-            QString partFile = QString( "%1.part" ).arg( (job->destURL()).path() );
+            QString partFile = QString( "%1.part" ).arg( (job->destUrl()).path() );
             job->kill();
             QFile file( partFile );
             if( file.exists() ) file.remove();
@@ -4134,7 +4134,7 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
         {
             disconnect( job, SIGNAL(result( KIO::Job * )), this, SLOT(fileOperationResult( KIO::Job * )) );
 
-            QString partFile = QString( "%1.part" ).arg( (job->destURL()).path() );
+            QString partFile = QString( "%1.part" ).arg( (job->destUrl()).path() );
             job->kill();
             QFile file( partFile );
             if( file.exists() ) file.remove();
@@ -4145,7 +4145,7 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
         }
 
         usleep( 10000 );
-        kapp->processEvents( QEventLoop:AllEvents );
+        kapp->processEvents( QEventLoop::AllEvents );
     }
 
     if( !m_fileOperationFailed )
