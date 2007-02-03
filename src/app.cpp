@@ -850,11 +850,13 @@ App::applyColorScheme()
         playlistWindow()->unsetPalette();
     }
 
+#if 0
     // set the K3ListView alternate colours
     QObjectList* const list = playlistWindow()->queryList( "K3ListView" );
     for( QObject *o = list->first(); o; o = list->next() )
         static_cast<K3ListView*>(o)->setAlternateBackground( AltBase );
     delete list; //heap allocated!
+#endif
 }
 
 
