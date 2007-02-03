@@ -63,7 +63,7 @@ PluginManager::createFromQuery( const QString &constraint )
 {
     Debug::Block block( __PRETTY_FUNCTION__ );
 
-    KTrader::OfferList offers = query( constraint );
+    KService::List offers = query( constraint );
 
     if ( offers.isEmpty() ) {
         warning() << k_funcinfo << "No matching plugin found.\n";
@@ -163,7 +163,7 @@ PluginManager::getService( const Plugin* plugin )
 void
 PluginManager::showAbout( const QString &constraint )
 {
-    KTrader::OfferList offers = query( constraint );
+    KService::List offers = query( constraint );
 
     if ( offers.isEmpty() )
         return;

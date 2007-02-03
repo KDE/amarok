@@ -21,8 +21,6 @@
 #include <q3ptrlist.h>
 #include <QTimer>
 
-#include <dcopclient.h>
-#include <dcopobject.h>
 #include <kapplication.h>
 
 typedef Medium::List MediumList;

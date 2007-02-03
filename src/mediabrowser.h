@@ -203,7 +203,7 @@ class MediaBrowser : public Q3VBox
 
         QString getInternalPluginName ( const QString string ) { return m_pluginName[string]; }
         QString getDisplayPluginName ( const QString string ) { return m_pluginAmarokName[string]; }
-        const KServiceOfferList &getPlugins() { return m_plugins; }
+        const KService::List &getPlugins() { return m_plugins; }
         void transcodingFinished( const QString &src, const QString &dst );
         bool isTranscoding() const { return m_waitForTranscode; }
         void updateStats();
@@ -278,7 +278,7 @@ class MediaBrowser : public Q3VBox
         typedef QMap<QString, MediaItem*> ItemMap;
         mutable QMutex   m_itemMapMutex;
         ItemMap          m_itemMap;
-        KServiceOfferList m_plugins;
+        KService::List m_plugins;
         bool             m_haveDevices;
         bool             m_quitting;
 };

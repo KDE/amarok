@@ -96,9 +96,9 @@ void
 MountPointManager::init()
 {
     DEBUG_BLOCK
-    KServiceOfferList plugins = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'device'" );
+    KService::List plugins = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'device'" );
     debug() << "Received [" << QString::number( plugins.count() ) << "] device plugin offers" << endl;
-    oldForeachType( KServiceOfferList, plugins )
+    oldForeachType( KService::List, plugins )
     {
         Amarok::Plugin *plugin = PluginManager::createFromService( *it );
         if( plugin )

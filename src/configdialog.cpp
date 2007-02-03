@@ -119,9 +119,9 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     QToolTip::add( aboutEngineButton, i18n("Click to get the plugin information.") );
 
     /// Populate the engine selection combo box
-    KServiceOfferList offers = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'engine'" );
-    KServiceOfferList::ConstIterator end( offers.end() );
-    for( KServiceOfferList::ConstIterator it = offers.begin(); it != end; ++it ) {
+    KService::List offers = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'engine'" );
+    KService::List::ConstIterator end( offers.end() );
+    for( KService::List::ConstIterator it = offers.begin(); it != end; ++it ) {
         // Don't list the <no engine> (void engine) entry if it's not currently active,
         // cause there's no point in choosing this engine (it's a dummy, after all).
         if( (*it)->property( "X-KDE-Amarok-name" ).toString() == "void-engine"

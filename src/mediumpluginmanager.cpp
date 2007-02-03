@@ -271,7 +271,7 @@ ManualDeviceAdder::ManualDeviceAdder( MediumPluginManager* mpm )
     m_mdaCombo = new KComboBox( false, vbox1 );
     m_mdaCombo->setObjectName( "m_mdacombo" );
     m_mdaCombo->insertItem( i18n( "Do not handle" ) );
-    for( KTrader::OfferList::ConstIterator it = MediaBrowser::instance()->getPlugins().begin();
+    for( KService::List::ConstIterator it = MediaBrowser::instance()->getPlugins().begin();
             it != MediaBrowser::instance()->getPlugins().end();
             ++it )
         m_mdaCombo->insertItem( (*it)->name() );
@@ -428,7 +428,7 @@ MediaDeviceConfig::MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, 
     m_pluginCombo = new KComboBox( false, this );
     m_pluginCombo->insertItem( i18n( "Do not handle" ) );
 
-    for( KTrader::OfferList::ConstIterator it = MediaBrowser::instance()->getPlugins().begin();
+    for( KService::List::ConstIterator it = MediaBrowser::instance()->getPlugins().begin();
             it != MediaBrowser::instance()->getPlugins().end();
             ++it ){
         m_pluginCombo->insertItem( (*it)->name() );

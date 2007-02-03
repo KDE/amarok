@@ -317,7 +317,7 @@ MediaBrowser::MediaBrowser( const char *name )
     m_pluginAmarokName["ignore"] = i18n( "Do not handle" );
     // query available device plugins
     m_plugins = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'mediadevice'" );
-    for( KServiceOfferList::ConstIterator it = m_plugins.begin(); it != m_plugins.end(); ++it ) {
+    for( KService::List::ConstIterator it = m_plugins.begin(); it != m_plugins.end(); ++it ) {
         // Save name properties in QMap for lookup
         m_pluginName[(*it)->name()] = (*it)->property( "X-KDE-Amarok-name" ).toString();
         m_pluginAmarokName[(*it)->property( "X-KDE-Amarok-name" ).toString()] = (*it)->name();

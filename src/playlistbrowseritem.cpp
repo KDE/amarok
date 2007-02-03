@@ -2833,7 +2833,7 @@ PodcastEpisode::showContextMenu( const QPoint &position )
         mimetype = KMimeType::findByFileContent( localUrl().path(), &accuracy );
     if( accuracy <= 0 )
         mimetype = KMimeType::findByURL( url() );
-    KTrader::OfferList offers = KTrader::self()->query( mimetype->name(), "Type == 'Application'" );
+    KService::List offers = KMimeTypeTrader::self()->query( mimetype->name(), "Type == 'Application'" );
     if( offers.empty() || (offers.size()==1 && offers.first()->name()=="Amarok") )
     {
         menu.insertItem( SmallIconSet( Amarok::icon( "run" ) ), i18n( "&Open With..."), OPEN_WITH );
@@ -2842,7 +2842,7 @@ PodcastEpisode::showContextMenu( const QPoint &position )
     {
         int i = 1;
         KMenu *openMenu = new KMenu;
-        for( KTrader::OfferList::iterator it = offers.begin();
+        for( KService::List::iterator it = offers.begin();
                 it != offers.end();
                 ++it )
         {
@@ -2949,7 +2949,7 @@ PodcastEpisode::showContextMenu( const QPoint &position )
         default:
             if( id >= OPEN_WITH+1 && id <= OPEN_WITH + offers.size() )
             {
-                KTrader::OfferList::iterator it = offers.begin();
+                KService::List::iterator it = offers.begin();
                 for(uint i = OPEN_WITH+1; i < id && i < OPEN_WITH+offers.size(); ++i )
                 {
                     ++it;
