@@ -464,15 +464,30 @@ void App::initGlobalShortcuts()
     action->setGlobalShortcut( KShortcut( "WIN+z" ) );
     connect( action, SIGNAL( triggered() ), ec, SLOT( previous() ) );
 
+//    m_pGlobalAccel->insert( "volup", i18n( "Increase Volume" ), 0, KKey("WIN+KP_Add"), 0, ec, SLOT( increaseVolume() ), true, true );
+    action = new KAction( i18n( "Increase Volume" ), this );
+    action->setGlobalShortcut( KShortcut( "WIN+KP_Add" ) );
+    connect( action, SIGNAL( triggered() ), ec, SLOT( increaseVolume() ) );
 
-    m_pGlobalAccel->insert( "volup", i18n( "Increase Volume" ), 0, KKey("WIN+KP_Add"), 0,
-                            ec, SLOT( increaseVolume() ), true, true );
-    m_pGlobalAccel->insert( "voldn", i18n( "Decrease Volume" ), 0, KKey("WIN+KP_Subtract"), 0,
-                            ec, SLOT( decreaseVolume() ), true, true );
-    m_pGlobalAccel->insert( "seekforward", i18n( "Seek Forward" ), 0, KKey("WIN+Shift+KP_Add"), 0,
-                            ec, SLOT( seekForward() ), true, true );
-    m_pGlobalAccel->insert( "seekbackward", i18n( "Seek Backward" ), 0, KKey("WIN+Shift+KP_Subtract"), 0,
-                            ec, SLOT( seekBackward() ), true, true );
+//    m_pGlobalAccel->insert( "voldn", i18n( "Decrease Volume" ), 0, KKey("WIN+KP_Subtract"), 0, ec, SLOT( decreaseVolume() ), true, true );
+    action = new KAction( i18n( "Decrease Volume" ), this );
+    action->setGlobalShortcut( KShortcut( "WIN+KP_Subtract" ) );
+    connect( action, SIGNAL( triggered() ), ec, SLOT( decreaseVolume() ) );
+
+
+//    m_pGlobalAccel->insert( "seekforward", i18n( "Seek Forward" ), 0, KKey("WIN+Shift+KP_Add"), 0, ec, SLOT( seekForward() ), true, true );
+    action = new KAction( i18n( "Seek Forward" ), this );
+    action->setGlobalShortcut( KShortcut( "WIN+Shift+KP_Add" ) );
+    connect( action, SIGNAL( triggered() ), ec, SLOT( seekForward() ) );
+
+
+//    m_pGlobalAccel->insert( "seekbackward", i18n( "Seek Backward" ), 0, KKey("WIN+Shift+KP_Subtract"), 0, ec, SLOT( seekBackward() ), true, true );
+    action = new KAction( i18n( "Seek Backward" ), this );
+    action->setGlobalShortcut( KShortcut( "WIN+Shift+KP_Subtract" ) );
+    connect( action, SIGNAL( triggered() ), ec, SLOT( seekbackward() ) );
+
+
+#if 0
     m_pGlobalAccel->insert( "playlist_add", i18n( "Add Media..." ), 0, KKey("WIN+a"), 0,
                             m_pPlaylistWindow, SLOT( slotAddLocation() ), true, true );
     m_pGlobalAccel->insert( "show", i18n( "Toggle Playlist Window" ), 0, KKey("WIN+p"), 0,
@@ -494,6 +509,7 @@ void App::initGlobalShortcuts()
                             this, SLOT( setRating4() ), true, true );
     m_pGlobalAccel->insert( "rating5", i18n( "Rate Current Track: 5" ), 0, KKey("WIN+5"), 0,
                             this, SLOT( setRating5() ), true, true );
+#endif
 
     m_pGlobalAccel->setConfigGroup( "Shortcuts" );
     m_pGlobalAccel->readSettings( KGlobal::config() );
