@@ -9,6 +9,7 @@
 #include <QPixmap>
 #include <QEvent>
 
+#include <kactioncollection.h>
 #include <kconfig.h>
 #include <kurl.h> // recursiveUrlExpand
 #include <kprocio.h> //Amarok::ProcIO
@@ -17,7 +18,6 @@
 
 #include "amarok_export.h"
 
-class KActionCollection;
 class QColor;
 class QDateTime;
 class QEvent;
