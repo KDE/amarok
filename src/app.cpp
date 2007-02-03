@@ -24,14 +24,14 @@ email                : markey@web.de
 #include "configdialog.h"
 #include "contextbrowser.h"
 #include "collectionbrowser.h"
-#include "dbsetup.h"             //firstRunWizard()
+//#include "dbsetup.h"             //firstRunWizard()
 #include "debug.h"
 #include "devicemanager.h"
 #include "mediadevicemanager.h"
 #include "enginebase.h"
 #include "enginecontroller.h"
 #include "equalizersetup.h"
-#include "firstrunwizard.h"
+//#include "firstrunwizard.h"
 #include "mediabrowser.h"
 #include "metabundle.h"
 #include "mountpointmanager.h"
@@ -1121,6 +1121,7 @@ void App::slotConfigToolBars()
 
 void App::firstRunWizard()
 {
+#if 0
     ///show firstRunWizard
     DEBUG_BLOCK
 
@@ -1147,6 +1148,7 @@ void App::firstRunWizard()
             CollectionDB::instance()->startScan();
 
     }
+#endif
 }
 
 void App::setUseScores( bool use )
