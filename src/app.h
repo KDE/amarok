@@ -71,7 +71,6 @@ class LIBAMAROK_EXPORT App : public KApplication, public EngineObserver
         void engineVolumeChanged( int );
 
     private slots:
-        void showHyperThreadingWarning();
         void setRating1() { setRating( 1 ); }
         void setRating2() { setRating( 2 ); }
         void setRating3() { setRating( 3 ); }
@@ -97,9 +96,6 @@ class LIBAMAROK_EXPORT App : public KApplication, public EngineObserver
         void slotTrashResult( KIO::Job *job );
 
     private:
-        /** Workaround for HyperThreading CPU's, @see BUG 99199 */
-        void fixHyperThreading();
-
         void initGlobalShortcuts();
         void applyColorScheme();
         void firstRunWizard();

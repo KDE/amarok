@@ -79,13 +79,6 @@ email                : markey@web.de
 #include <QCloseEvent>
 #include <Q3CString>
 
-// For the HyperThreading fix
-#ifdef __linux__
-    #ifdef SCHEDAFFINITY_SUPPORT
-        #include <errno.h>
-        #include <sched.h>
-    #endif //SCHEDAFFINITY_SUPPORT
-#endif //__linux__
 
 QMutex Debug::mutex;
 QMutex Amarok::globalDirsMutex;
@@ -184,7 +177,6 @@ App::App()
 //     new Amarok::DcopScriptHandler();
 //     new Amarok::DcopDevicesHandler();
 
-    fixHyperThreading();
     // tell AtomicString that this is the GUI thread
     if ( !AtomicString::isMainThread() )
         qWarning("AtomicString was initialized from a thread other than the GUI "
@@ -534,77 +526,6 @@ void App::initGlobalShortcuts()
         }
     }
 #endif
-}
-
-
-void App::fixHyperThreading()
-{
-#if 0
-    /** Workaround for stability issues with HyperThreading CPU's, @see BUG 99199.
-     * First we detect the presence of HyperThreading. If active, we bind amarokapp
-     * to the first CPU only (hard affinity).
-     *
-     * @see http://www-128.ibm.com/developerworks/linux/library/l-affinity.html
-     * @see http://www.linuxjournal.com/article/6799
-     * (articles on processor affinity with the linux kernel)
-     */
-
-    DEBUG_BLOCK
-
-    #ifdef __linux__
-    QString line;
-    uint cpuCount = 0;
-    QFile cpuinfo( "/proc/cpuinfo" );
-    if ( cpuinfo.open( QIODevice::ReadOnly ) ) {
-        while ( cpuinfo.readLine( line, 20000 ) != -1 ) {
-            if ( line.startsWith( "flags" ) )
-                cpuCount++;
-        }
-    }
-    // If multiple CPUs are listed with the HT flag, we got HyperThreading enabled
-    if ( cpuCount > 1 ) {
-        debug() << "SMP system detected. Enabling WORKAROUND.\n";
-
-        // If the library is new enough try and call sched_setaffinity.
-        #ifdef SCHEDAFFINITY_SUPPORT
-        cpu_set_t mask;
-        CPU_ZERO( &mask ); // Initializes all the bits in the mask to zero
-        CPU_SET( 0, &mask ); // Sets only the bit corresponding to cpu
-        #ifdef SCHEDAFFINITY_3PARAMS
-        if ( sched_setaffinity( 0, sizeof(mask), &mask ) == -1 )
-        #else  //SCHEDAFFINITY_3PARAMS
-        if ( sched_setaffinity( 0, &mask ) == -1 )
-        #endif //SCHEDAFFINITY_3PARAMS
-        {
-            warning() << "sched_setaffinity() call failed with error code: " << errno << endl;
-            QTimer::singleShot( 0, this, SLOT( showHyperThreadingWarning() ) );
-            return;
-        }
-        #else //SCHEDAFFINITY_SUPPORT
-             warning()<<"glibc failed checks for sched_setaffinity" << endl;
-        QTimer::singleShot( 0, this, SLOT( showHyperThreadingWarning() ) );
-        #endif //SCHEDAFFINITY_SUPPORT
-    }
-    else { debug() << "Workaround not enabled" << endl; }
-    #else //__linux__
-    debug() << "SCHEDAFFINITY_SUPPORT disabled since this isn't Linux" << endl;
-    #endif //__linux__
-#endif
-}
-
-
-void App::showHyperThreadingWarning() // SLOT
-{
-    const QString text =
-        i18n( "<p>You are using a system with multiple CPUs. "
-              "Please note that Amarok may be unstable with this "
-              "configuration.</p>"
-              "<p>If your systems has hyperthreading, you can improve Amarok's stability by using the Linux kernel option 'NOHT', "
-              "or by disabling <i>HyperThreading</i> in your BIOS setup.</p>"
-              "<p>More information can be found in the README file. For further assistance "
-              "join us at #amarok on irc.freenode.net.</p>" );
-
-    KMessageBox::information( 0, text, i18n( "Warning" ), "showHyperThreadingWarning" );
 }
 
 
