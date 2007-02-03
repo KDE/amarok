@@ -196,8 +196,8 @@ CollectionBrowser::CollectionBrowser( const char* name )
                                    QIcon( m_view->ipodIncrementIcon(), QIcon::Small ),
                                    0, m_view, SLOT( incrementDepth() ), ac,
                                    "iPod Increment" );
-    m_ipodDecrement->plug( m_ipodToolbar );
-    m_ipodIncrement->plug( m_ipodToolbar );
+    m_ipodToolbar->addAction( m_ipodDecrement );
+    m_ipodToolbar->addAction( m_ipodIncrement );
 
     // Show / hide m_ipodToolbar based on the view mode
     ipodToolbar( m_view->m_viewMode == CollectionView::modeIpodView );
