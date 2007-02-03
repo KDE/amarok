@@ -1910,13 +1910,13 @@ CollectionView::organizeFiles( const KUrl::List &urls, const QString &caption, b
 void
 CollectionView::contentsDragEnterEvent( QDragEnterEvent *e )
 {
-    e->accept( e->source() != viewport() && e->source() != this && KURL::List::canDecode( e->mimeData() ) );
+    e->accept( e->source() != viewport() && e->source() != this && KUrl::List::canDecode( e->mimeData() ) );
 }
 
 void
 CollectionView::contentsDragMoveEvent( QDragMoveEvent *e )
 {
-    e->accept( e->source() != viewport() && e->source() != this && KURL::List::canDecode( e->mimeData() ) );
+    e->accept( e->source() != viewport() && e->source() != this && KUrl::List::canDecode( e->mimeData() ) );
 }
 
 void
