@@ -180,7 +180,7 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     m_transcodeCategory->setPixmap( 0, SmallIcon( Amarok::icon( "files" ) ) );
 
     // Restore the open/closed state of the category items
-    KConfig* const config = Amarok::config( "ScriptManager" );
+    KSharedConfigPtr config = Amarok::config( "ScriptManager" );
     m_generalCategory  ->setOpen( config->readBoolEntry( "General category open" ) );
     m_lyricsCategory   ->setOpen( config->readBoolEntry( "Lyrics category open" ) );
     m_scoreCategory    ->setOpen( config->readBoolEntry( "Score category State" ) );
@@ -232,7 +232,7 @@ ScriptManager::~ScriptManager()
     }
 
     // Save config
-    KConfig* const config = Amarok::config( "ScriptManager" );
+    KSharedConfigPtr config = Amarok::config( "ScriptManager" );
     config->writeEntry( "Running Scripts", runningScripts );
 
     // Save the open/closed state of the category items
@@ -365,7 +365,7 @@ ScriptManager::findScripts() //SLOT
 
     // Handle auto-run:
 
-    KConfig* const config = Amarok::config( "ScriptManager" );
+    KSharedConfigPtr config = Amarok::config( "ScriptManager" );
     const QStringList runningScripts = config->readListEntry( "Running Scripts" );
 
     {

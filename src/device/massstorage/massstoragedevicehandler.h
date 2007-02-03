@@ -34,7 +34,7 @@ public:
 
     virtual bool canCreateFromConfig() const;
 
-    virtual DeviceHandler* createHandler( const KConfig* c ) const;
+    virtual DeviceHandler* createHandler( KSharedConfigPtr c ) const;
 
     virtual QString type() const;
 

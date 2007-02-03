@@ -121,7 +121,7 @@ BrowserBar::BrowserBar( QWidget *parent )
 
 BrowserBar::~BrowserBar()
 {
-    KConfig* const config = Amarok::config( "BrowserBar" );
+    KSharedConfigPtr config = Amarok::config( "BrowserBar" );
     config->writeEntry( "CurrentPane", m_currentIndex != -1 ? QString(currentBrowser()->name()) : QString::null );
     config->writeEntry( "Width", m_browserBox->width() );
 }

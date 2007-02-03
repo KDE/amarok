@@ -277,7 +277,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
 
 FileBrowser::~FileBrowser()
 {
-    KConfig* const c = Amarok::config( "Filebrowser" );
+    KSharedConfigPtr c = Amarok::config( "Filebrowser" );
 
     m_dir->writeConfig( c ); //uses currently set group
 

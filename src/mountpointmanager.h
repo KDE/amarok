@@ -73,7 +73,7 @@ public:
 
     virtual bool canCreateFromConfig() const = 0;
 
-    virtual DeviceHandler* createHandler( const KConfig* c ) const = 0;
+    virtual DeviceHandler* createHandler( KSharedConfigPtr c ) const = 0;
 
     /**
      * returns the type of the DeviceHandler. Should be the same as the value used in

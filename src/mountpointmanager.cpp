@@ -395,7 +395,7 @@ MountPointManager::collectionFolders( )
 {
     //TODO max: cache data
     QStringList result;
-    KConfig* const folders = Amarok::config( "Collection Folders" );
+    KSharedConfigPtr folders = Amarok::config( "Collection Folders" );
     IdList ids = getMountedDeviceIds();
     oldForeachType( IdList, ids )
     {
@@ -423,7 +423,7 @@ MountPointManager::setCollectionFolders( const QStringList &folders )
 {
     //TODO max: cache data
     typedef QMap<int, QStringList> FolderMap;
-    KConfig* const folderConf = Amarok::config( "Collection Folders" );
+    KSharedConfigPtr folderConf = Amarok::config( "Collection Folders" );
     FolderMap folderMap;
     oldForeach( folders )
     {
@@ -565,7 +565,7 @@ void UrlUpdateJob::updateLabels( )
             QString newRpath = mpm->getRelativePath( newDeviceid, realUrl );
 
             //only update rows if there is not already a row with the new deviceid/rpath and the same labelid
-            QStringList labelids = collDB->query( 
+            QStringList labelids = collDB->query(
                                         QString( "SELECT labelid FROM tags_labels WHERE deviceid = %1 AND url = '%2';" )
                                                  .arg( QString::number( newDeviceid ), collDB->escapeString( newRpath ) ) );
             QString existingLabelids;

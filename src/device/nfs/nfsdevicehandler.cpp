@@ -86,7 +86,7 @@ NfsDeviceHandler::deviceIsMedium( const Medium * m ) const
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// class NfsDeviceHandlerFactory 
+// class NfsDeviceHandlerFactory
 ///////////////////////////////////////////////////////////////////////////////
 
 QString
@@ -122,7 +122,7 @@ NfsDeviceHandlerFactory::~NfsDeviceHandlerFactory( )
 }
 
 DeviceHandler *
-NfsDeviceHandlerFactory::createHandler( const KConfig* ) const
+NfsDeviceHandlerFactory::createHandler( KSharedConfigPtr ) const
 {
     return 0;
 }

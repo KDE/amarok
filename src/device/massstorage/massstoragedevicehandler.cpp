@@ -84,7 +84,7 @@ bool MassStorageDeviceHandler::deviceIsMedium( const Medium * m ) const
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// class MassStorageDeviceHandlerFactory 
+// class MassStorageDeviceHandlerFactory
 ///////////////////////////////////////////////////////////////////////////////
 
 QString MassStorageDeviceHandlerFactory::type( ) const
@@ -115,7 +115,7 @@ MassStorageDeviceHandlerFactory::~MassStorageDeviceHandlerFactory( )
 {
 }
 
-DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( const KConfig* ) const
+DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( KSharedConfigPtr ) const
 {
     return 0;
 }

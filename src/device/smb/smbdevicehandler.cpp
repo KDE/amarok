@@ -86,7 +86,7 @@ SmbDeviceHandler::deviceIsMedium( const Medium * m ) const
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// class SmbDeviceHandlerFactory 
+// class SmbDeviceHandlerFactory
 ///////////////////////////////////////////////////////////////////////////////
 
 QString
@@ -111,7 +111,7 @@ bool
 SmbDeviceHandlerFactory::canHandle( const Medium * m ) const
 {
     return m && ( m->fsType().find( "smb" ) != -1 ||
-                  m->fsType().find( "cifs" ) != -1 ) 
+                  m->fsType().find( "cifs" ) != -1 )
 		&& m->isMounted();
 }
 
@@ -124,7 +124,7 @@ SmbDeviceHandlerFactory::~SmbDeviceHandlerFactory( )
 }
 
 DeviceHandler *
-SmbDeviceHandlerFactory::createHandler( const KConfig* ) const
+SmbDeviceHandlerFactory::createHandler( KSharedConfigPtr ) const
 {
     return 0;
 }
