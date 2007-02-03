@@ -245,7 +245,11 @@ CollectionBrowser::CollectionBrowser( const char* name )
     ipodToolbar( m_view->m_viewMode == CollectionView::modeIpodView );
 
 
-    m_tagfilterMenuButton = new KActionMenu( i18n( "Group By" ), "filter", ac );
+    m_tagfilterMenuButton = new KActionMenu( this );
+    m_tagfilterMenuButton->setText(i18n( "Group By" ) );
+    m_tagfilterMenuButton->setIcon(KIcon("filter"));
+    ac->addAction( "filter", m_tagfilterMenuButton );
+
     m_tagfilterMenuButton->setDelayed( false );
     // FIXME: either both or nothing
     //m_tagfilterMenuButton->setEnabled( m_view->m_viewMode == CollectionView::modeTreeView );
@@ -445,7 +449,7 @@ CollectionBrowser::eventFilter( QObject *o, QEvent *e )
         break;
     }
 
-    return Q3VBox::eventFilter( o, e );
+    return QWidget::eventFilter( o, e );
 }
 
 void
@@ -455,18 +459,19 @@ CollectionBrowser::layoutToolbar()
 
     m_toolbar->clear();
 
-    m_toolbar->setIconText( KToolBar::IconTextRight, false );
-    m_tagfilterMenuButton->plug( m_toolbar );
-    m_toolbar->setIconText( KToolBar::IconOnly, false );
+    m_toolbar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+    m_toolbar->addAction( m_tagfilterMenuButton );
+    m_toolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
 
-    m_toolbar->insertLineSeparator();
-    m_treeViewAction->plug( m_toolbar );
-    m_flatViewAction->plug( m_toolbar );
-    m_ipodViewAction->plug( m_toolbar );
-    m_toolbar->insertLineSeparator();
+    m_toolbar->addSeparator();
+    m_toolbar->addAction( m_treeViewAction );
+    m_toolbar->addAction( m_flatViewAction );
+    m_toolbar->addAction( m_ipodViewAction );
 
-    m_showDividerAction->plug( m_toolbar );
-    m_configureAction->plug( m_toolbar );
+    m_toolbar->addSeparator();
+
+    m_toolbar->addAction( m_showDividerAction );
+    m_toolbar->addAction( m_configureAction );
 
     //This would break things if the toolbar is too big, see bug #121915
     //setMinimumWidth( m_toolbar->sizeHint().width() + 2 ); //set a reasonable minWidth
