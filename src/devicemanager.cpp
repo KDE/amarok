@@ -24,9 +24,6 @@
 //Added by qt3to4:
 #include <Q3CString>
 
-#include <dcopclient.h>
-#include <dcopobject.h>
-#include <dcopref.h>
 #include <kapplication.h>
 
 typedef Medium::List MediumList;
@@ -41,6 +38,7 @@ DeviceManager* DeviceManager::instance()
 DeviceManager::DeviceManager()
 {
     DEBUG_BLOCK
+/* //reimplement with Solid, disabling for now
     m_dc = KApplication::dcopClient();
     m_dc->setNotifications(true);
     m_valid = false;
@@ -74,7 +72,7 @@ DeviceManager::DeviceManager()
             reconcileMediumMap();
             debug() << "DeviceManager:  connectDCOPSignal returned successfully!" << endl;
         }
-    }
+    }*/
 }
 
 DeviceManager::~DeviceManager()

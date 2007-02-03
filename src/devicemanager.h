@@ -20,7 +20,6 @@
 
 #include <qmap.h>
 
-#include <dcopobject.h>
 
 typedef QMap<QString, Medium*> MediumMap;
 
@@ -69,7 +68,6 @@ class DeviceManager : public QObject
 
     private:
 
-        DCOPClient *m_dc;
         bool m_valid;
         MediumMap m_mediumMap;
 

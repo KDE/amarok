@@ -19,8 +19,6 @@
 
 #include <qmap.h>
 
-#include <dcopobject.h>
-
 typedef QMap<QString, Medium*> MediumMap;
 
 class MediaDeviceManager : public QObject
