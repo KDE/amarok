@@ -4375,7 +4375,7 @@ CollectionItem::paintCell ( QPainter * painter, const QColorGroup & cg,
     if( static_cast<CollectionView::Tag>(column) == CollectionView::Rating )
     {
         QPixmap buf( width, height() );
-        QPainter p( &buf, true );
+        QPainter p( &buf );
 
         const QColorGroup _cg = listView()->palette().active();
 
