@@ -24,6 +24,7 @@
 #include <QLayout>
 #include <QPushButton>
 #include <q3vbox.h>
+#include <QTextStream>
 //Added by qt3to4:
 #include <Q3HBoxLayout>
 #include <Q3VBoxLayout>
@@ -49,7 +50,8 @@ EqualizerPresetManager::EqualizerPresetManager( QWidget *parent, const char *nam
     setMainWidget( mainWidget );
     Q3HBoxLayout *mainLayout = new Q3HBoxLayout( mainWidget, 0, spacingHint() );
 
-    m_presetsView = new K3ListView( mainWidget, "presetListView" );
+    m_presetsView = new K3ListView( mainWidget );
+    m_presetsView->setObjectName( "presetListView" );
     m_presetsView->addColumn( i18n( "Presets" ) );
     m_presetsView->setFullWidth( true );
     connect(m_presetsView, SIGNAL( selectionChanged() ), SLOT( updateButtonState() ));
@@ -148,8 +150,8 @@ EqualizerPresetManager::slotDefault()
     // Load the default presets
     QFile file( KStandardDirs::locate( "data", "amarok/data/equalizer_presets.xml" ) );
 
-    Q3TextStream stream( &file );
-    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
+    QTextStream stream( &file );
+    stream.setEncoding( QTextStream::UnicodeUTF8 );
 
     QDomDocument d;
 
