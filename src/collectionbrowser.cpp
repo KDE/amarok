@@ -180,19 +180,19 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_treeViewAction->setText(i18n( "Tree View" ));
     m_treeViewAction->setIcon(KIcon("view_tree"));
     ac->addAction("Tree View", m_treeViewAction);
-    connect( m_treeViewAction, SIGNAL( trigger() ), m_view, SLOT(setTreeMode()) );
+    connect( m_treeViewAction, SIGNAL( triggered( bool ) ), m_view, SLOT(setTreeMode()) );
 
     m_flatViewAction = new KAction(this);
     m_flatViewAction->setText(i18n( "Flat View" ));
     m_flatViewAction->setIcon(KIcon("view_detailed"));
     ac->addAction("Tree View", m_flatViewAction);
-    connect( m_flatViewAction, SIGNAL( trigger() ), m_view, SLOT(setFlatMode()) );
+    connect( m_flatViewAction, SIGNAL( triggered( bool ) ), m_view, SLOT(setFlatMode()) );
 
     m_ipodViewAction = new KAction(this);
     m_ipodViewAction->setText(i18n( "iPod View" ));
     m_ipodViewAction->setIcon(KIcon(Amarok::icon("device")));
     ac->addAction("iPod View", m_ipodViewAction);
-    connect( m_flatViewAction, SIGNAL( trigger() ), m_view, SLOT(setIpodMode()) );
+    connect( m_flatViewAction, SIGNAL( triggered( bool ) ), m_view, SLOT(setIpodMode()) );
 
 
     QActionGroup *m_viewAction = new QActionGroup(this);
@@ -214,21 +214,30 @@ CollectionBrowser::CollectionBrowser( const char* name )
         break;
       }
 
-    m_showDividerAction = new KToggleAction( i18n( "Show Divider" ), "leftjust", 0, this, SLOT( toggleDivider() ), ac, "Show Divider" );
+    m_showDividerAction = new KToggleAction( this );
+    m_showDividerAction->setText(i18n( "Show Divider" ));
+    m_ipodViewAction->setIcon(KIcon("leftjust"));
+    ac->addAction( "Show Divider", m_showDividerAction );
+    connect ( m_showDividerAction, SIGNAL( triggered( bool ) ), this, SLOT( toggleDivider() ) );
     m_showDividerAction->setChecked(m_view->m_showDivider);
 
 
     // m_ipodIncrement and m_ipodDecrement are the actions that
     // correspond to moving forward / backward in the iPod collection
     // browser window; see the "For iPod-style navigation" comments below.
-    m_ipodDecrement = new KAction( i18n( "Browse backward" ),
-                                   QIcon( m_view->ipodDecrementIcon(), QIcon::Small ),
-                                   0, m_view, SLOT( decrementDepth() ), ac,
-                                   "iPod Decrement" );
-    m_ipodIncrement = new KAction( i18n( "Browse forward" ),
-                                   QIcon( m_view->ipodIncrementIcon(), QIcon::Small ),
-                                   0, m_view, SLOT( incrementDepth() ), ac,
-                                   "iPod Increment" );
+    m_ipodDecrement = new KAction( this );
+    m_ipodDecrement->setText(i18n( "Browse backward") );
+    m_ipodDecrement->setIcon(KIcon(m_view->ipodDecrementIcon()));
+    connect ( m_ipodDecrement, SIGNAL( triggered( bool ) ),  m_view, SLOT( decrementDepth() ) );
+    ac->addAction( "iPod Decrement", m_ipodDecrement );
+
+    m_ipodIncrement = new KAction( this );
+    m_ipodIncrement->setText(i18n( "Browse forward") );
+    m_ipodIncrement->setIcon(KIcon(m_view->ipodIncrementIcon()));
+    connect ( m_ipodIncrement, SIGNAL( triggered( bool ) ),  m_view, SLOT( incrementDepth() ) );
+    ac->addAction( "iPod Increment", m_ipodIncrement );
+
+
     m_ipodToolbar->addAction( m_ipodDecrement );
     m_ipodToolbar->addAction( m_ipodIncrement );
 
