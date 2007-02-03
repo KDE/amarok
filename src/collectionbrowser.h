@@ -25,7 +25,6 @@
 #include <QStringList>     //stack allocated
 #include <kurl.h>            //stack allocated
 #include <kdialog.h>     //baseclass
-#include <kprogress.h>
 
 #include "multitabbar.h"     //baseclass
 #include "collectiondb.h"
