@@ -98,12 +98,12 @@ QString
 HTMLView::loadStyleSheet()
 {
     QString themeName = AmarokConfig::contextBrowserStyleSheet().latin1();
-    const QString file = kapp->dirs()->findResource( "data","amarok/themes/" + themeName + "/stylesheet.css" );
+    const QString file = KGlobal::dirs()->findResource( "data","amarok/themes/" + themeName + "/stylesheet.css" );
 
     QString styleSheet;
     if ( themeName != "Default" && QFile::exists( file ) )
     {
-        const QString CSSLocation = kapp->dirs()->findResource( "data","amarok/themes/" + themeName + "/stylesheet.css" );
+        const QString CSSLocation = KGlobal::dirs()->findResource( "data","amarok/themes/" + themeName + "/stylesheet.css" );
         QFile ExternalCSS( CSSLocation );
         if ( !ExternalCSS.open( QIODevice::ReadOnly ) )
             return QString(); //FIXME: should actually return the default style sheet, then

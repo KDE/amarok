@@ -77,5 +77,6 @@
 <includehints>
     <includehint>klineedit.h</includehint>
     <includehint>kpushbutton.h</includehint>
+    <includehint>knuminput.h</includehint>
 </includehints>
 </UI>

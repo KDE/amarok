@@ -12,6 +12,7 @@
 #include "sliderwidget.h"
 
 #include <kaction.h>
+#include <kactioncollection.h>
 #include <ktoggleaction.h>
 #include <kselectaction.h>
 #include <QPointer>

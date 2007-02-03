@@ -45,7 +45,7 @@ using Amarok::escapeHTMLAttr;
 typedef QMap<QString, Medium*> MediumMap;
 
 MediumPluginManagerDialog::MediumPluginManagerDialog()
-        : KDialogBase( Amarok::mainWindow(), "mediumpluginmanagerdialog", false, QString::null, Ok|Cancel, Ok )
+        : KPageDialog( Amarok::mainWindow(), "mediumpluginmanagerdialog", false, QString::null, Ok|Cancel, Ok )
 {
     kapp->setTopWidget( this );
     setCaption( KDialog::makeStandardCaption( i18n( "Manage Devices and Plugins" ) ) );
@@ -80,7 +80,7 @@ void
 MediumPluginManagerDialog::slotOk()
 {
     m_manager->finished();
-    KDialogBase::slotOk();
+    KPageDialog::slotOk();
 }
 
 MediumPluginManager::MediumPluginManager( QWidget *widget, const bool nographics )
@@ -253,7 +253,7 @@ MediumPluginManager::newDevice()
 /////////////////////////////////////////////////////////////////////
 
 ManualDeviceAdder::ManualDeviceAdder( MediumPluginManager* mpm )
-: KDialogBase( Amarok::mainWindow(), "manualdeviceadder", true, QString::null, Ok|Cancel, Ok )
+: KPageDialog( Amarok::mainWindow(), "manualdeviceadder", true, QString::null, Ok|Cancel, Ok )
 {
     m_mpm = mpm;
     m_successful = false;
@@ -305,7 +305,7 @@ ManualDeviceAdder::~ManualDeviceAdder()
 void
 ManualDeviceAdder::slotCancel()
 {
-    KDialogBase::slotCancel( );
+    KPageDialog::slotCancel( );
 }
 
 void
@@ -315,7 +315,7 @@ ManualDeviceAdder::slotOk()
             MediaDeviceManager::instance()->getDevice( getMedium()->name() ) == NULL )
     {
         m_successful = true;
-        KDialogBase::slotOk( );
+        KPageDialog::slotOk( );
     }
     else
     {

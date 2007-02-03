@@ -24,7 +24,7 @@
 #include <Q3ValueList>
 
 #include <kconfig.h>
-#include <kdialogbase.h>
+#include <kpagedialog.h>
 #include <klocale.h>
 
 class QButton;
@@ -113,7 +113,7 @@ class MediumPluginManager : public QObject
 
 };
 
-class MediumPluginManagerDialog : public KDialogBase
+class MediumPluginManagerDialog : public KPageDialog
 {
     Q_OBJECT
 
@@ -131,7 +131,7 @@ class MediumPluginManagerDialog : public KDialogBase
         MediumPluginManager *m_manager;
 };
 
-class ManualDeviceAdder : public KDialogBase
+class ManualDeviceAdder : public KPageDialog
 {
     Q_OBJECT
 

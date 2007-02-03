@@ -177,7 +177,7 @@ void Options2::updateStyleComboBox()
 
     styleComboBox->clear();
 
-    const QStringList styleList = kapp->dirs()->findAllResources("data","amarok/themes/*/stylesheet.css", false);
+    const QStringList styleList = KGlobal::dirs()->findAllResources("data","amarok/themes/*/stylesheet.css", false);
     QStringList sortedList;
     oldForeach (styleList) sortedList.append(QFileInfo( *it ).dir().dirName());
     sortedList.append( "Default" );

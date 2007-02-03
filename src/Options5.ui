@@ -526,5 +526,6 @@
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>ktextedit.h</includehint>
+    <includehint>knuminput.h</includehint>
 </includehints>
 </UI>
