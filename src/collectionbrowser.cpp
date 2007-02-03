@@ -557,7 +557,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 CollectionView::~CollectionView() {
     DEBUG_FUNC_INFO
 
-    KConfig* const config = Amarok::config( "Collection Browser" );
+    KSharedConfigPtr const config = Amarok::config( "Collection Browser" );
     config->writeEntry( "Category1", m_cat1 );
     config->writeEntry( "Category2", m_cat2 );
     config->writeEntry( "Category3", m_cat3 );
