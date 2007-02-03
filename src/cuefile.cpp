@@ -6,6 +6,7 @@
 #include <QFile>
 #include <qmap.h>
 #include <QStringList>
+#include <QTextStream>
 
 #include <kglobal.h>
 
@@ -80,7 +81,7 @@ bool CueFile::load(int mediaLength)
         int mode = BEGIN;
         if( file.open( QIODevice::ReadOnly ) )
         {
-            Q3TextStream stream( &file );
+            QTextStream stream( &file );
             QString line;
 
             while ( !stream.atEnd() )
