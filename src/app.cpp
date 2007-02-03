@@ -240,7 +240,6 @@ App::~App()
 }
 
 
-#include <dcopref.h>
 #include <QStringList>
 
 namespace
@@ -251,8 +250,9 @@ namespace
         KUrl deviceUrl(device);
         if (deviceUrl.protocol() == "media" || deviceUrl.protocol() == "system")
         {
-            DCOPRef mediamanager( "kded", "mediamanager" );
-            DCOPReply reply = mediamanager.call( "properties(QString)", deviceUrl.fileName() );
+            debug() << "WARNING: urlToDevice needs to be reimplemented with KDE4 technology, it's just a stub at the moment" << endl;
+            /*DCOPRef mediamanager( "kded", "mediamanager" );
+            DCOPReply reply = mediamanager.call( "properties(QString)", deviceUrl.fileName() );*/
             QStringList properties = reply;
 
             if (!reply.isValid() || properties.count() < 6)
