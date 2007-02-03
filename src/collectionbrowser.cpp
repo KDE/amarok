@@ -536,11 +536,11 @@ CollectionView::CollectionView( CollectionBrowser* parent )
              this,                            SLOT( databaseChanged() ) );
 
     const int h = fontMetrics().height() + itemMargin() * 2 - 4 + ( ( fontMetrics().height() % 2 ) ? 1 : 0 );
-    QImage img = QImage( KStandardDirs::locate( "data", "amarok/images/star.png" ) ).smoothScale( h, h, QImage::ScaleMin );
+    QImage img = QImage( KStandardDirs::locate( "data", "amarok/images/star.png" ) ).scaled( h, h, Qt::KeepAspectRatio );
     CollectionItem::s_star = new QPixmap( img );
 
     QImage small = QImage( KStandardDirs::locate( "data", "amarok/images/smallstar.png" ) );
-    CollectionItem::s_smallStar = new QPixmap( small.smoothScale( h, h, QImage::ScaleMin ) );
+    CollectionItem::s_smallStar = new QPixmap( small.scaled( h, h, Qt::KeepAspectRatio ) );
 }
 
 
