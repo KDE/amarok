@@ -24,13 +24,13 @@
 #include <QString>
 #include <QStringList>
 //Added by qt3to4:
-#include <Q3ValueList>
+#include <QList>
 #include <kurl.h>
 
 class LIBAMAROK_EXPORT Medium
 {
 public:
-    typedef Q3ValueList<const Medium> List;
+    typedef QList<const Medium> List;
 
     static const uint AUTODETECTED = 0;
     static const uint ID = 1;
@@ -96,7 +96,8 @@ private:
 
     QStringList m_properties;
 
-friend class QValueListNode<const Medium>;
+//i have no idea why this is necessary. maxx_k
+//friend class QValueListNode<const Medium>;
 };
 
 #endif
