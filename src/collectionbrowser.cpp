@@ -666,10 +666,10 @@ CollectionView::keyPressEvent( QKeyEvent *e )
            && m_viewMode == modeIpodView )
     {
         if( e->key() == Qt::Key_Right )
-            m_parent->m_ipodIncrement->activate();
+            m_parent->m_ipodIncrement->trigger();
 
         else if( e->key() == Qt::Key_Left )
-            m_parent->m_ipodDecrement->activate();
+            m_parent->m_ipodDecrement->trigger();
 
     }
 
