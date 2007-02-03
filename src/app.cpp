@@ -512,8 +512,10 @@ void App::initGlobalShortcuts()
 
     m_pGlobalAccel->setConfigGroup( "Shortcuts" );
     m_pGlobalAccel->readSettings( KGlobal::config() );
-    m_pGlobalAccel->updateConnections();
 
+
+// FIXME Is this still needed with KDE4? 
+#if 0
     //TODO fix kde accel system so that kactions find appropriate global shortcuts
     //     and there is only one configure shortcuts dialog
 
@@ -531,6 +533,7 @@ void App::initGlobalShortcuts()
             action->setShortcut( list.shortcut( i ) );
         }
     }
+#endif
 }
 
 
