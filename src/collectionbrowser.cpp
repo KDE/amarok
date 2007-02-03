@@ -519,7 +519,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     setAllColumnsShowFocus( true );
 
     //<READ CONFIG>
-        KConfig* config = Amarok::config( "Collection Browser" );
+        KSharedConfigPtr const config = Amarok::config( "Collection Browser" );
         m_cat1 = config->readNumEntry( "Category1", IdArtist );
         m_cat2 = config->readNumEntry( "Category2", IdAlbum );
         m_cat3 = config->readNumEntry( "Category3", IdNone );
