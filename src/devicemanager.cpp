@@ -152,7 +152,8 @@ that it is not a problem.
 Medium::List
 DeviceManager::getDeviceList()
 {
-    return Medium::createList( getDeviceStringList() );
+    QStringList devices = getDeviceStringList();
+    return Medium::createList( devices );
 }
 
 QStringList
@@ -161,13 +162,14 @@ DeviceManager::getDeviceStringList()
     DEBUG_BLOCK
     MediumList currMediumList;
 
-    if ( !m_valid )
+    //TODO fix devicemanager, has to be ported to Solid
+    if ( true ) 
     {
         QStringList blah;
         return blah;
     }
 
-    //normal kded Medium doesn't have autodetect, so decrease by 1
+/*    //normal kded Medium doesn't have autodetect, so decrease by 1
     int autodetect_insert = Medium::PROPERTIES_COUNT - 1;
 
     QByteArray data, replyData;
@@ -197,7 +199,7 @@ DeviceManager::getDeviceStringList()
         }
     }
 
-    return result;
+    return result;*/
 }
 
 Medium*
@@ -262,8 +264,9 @@ DeviceManager::reconcileMediumMap()
 
 QString DeviceManager::convertMediaUrlToDevice( QString url )
 {
+    //do we still need this?
     QString device;
-    if ( url.startsWith( "media:" ) || url.startsWith( "system:" ) )
+    /*if ( url.startsWith( "media:" ) || url.startsWith( "system:" ) )
     {
         KUrl devicePath( url );
         DCOPRef mediamanager( "kded", "mediamanager" );
@@ -276,7 +279,7 @@ QString DeviceManager::convertMediaUrlToDevice( QString url )
             device = QString();
     }
     else
-        device = url;
+        device = url;*/
 
     return device;
 }
