@@ -729,13 +729,13 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
 void
 CollectionView::setupDirs()  //SLOT
 {
-    KDialog dialog( this, 0, false );
+    KDialog dialog( this, false );
     kapp->setTopWidget( &dialog );
     dialog.setCaption( KDialog::makeStandardCaption( i18n("Configure Collection") ) );
 
     CollectionSetup *setup = new CollectionSetup( &dialog );
     dialog.setMainWidget( setup );
-    dialog.showButtonApply( false );
+    dialog.showButton( KDialog::Apply, false );
     dialog.adjustSize();
     // Make the dialog a bit bigger, default is too small to be useful
     dialog.resize( dialog.width() + 50, dialog.height() + 150 );
