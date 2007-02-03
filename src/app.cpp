@@ -429,9 +429,14 @@ void App::initCliArgs( int argc, char *argv[] ) //static
 void App::initGlobalShortcuts()
 {
     EngineController* const ec = EngineController::instance();
+    KAction* action;
 
-    m_pGlobalAccel->insert( "play", i18n( "Play" ), 0, KKey("WIN+x"), 0,
-                            ec, SLOT( play() ), true, true );
+//    m_pGlobalAccel->insert( "play", i18n( "Play" ), 0, KKey("WIN+x"), 0, ec, SLOT( play() ), true, true );
+
+    action = new KAction( i18n( "Play" ), this );
+    action->setGlobalShortcut( KShortcut( "WIN+x" ) );
+    connect( action, SIGNAL( triggered() ), ec, SLOT( play() ) );
+
     m_pGlobalAccel->insert( "pause", i18n( "Pause" ), 0, 0, 0,
                             ec, SLOT( pause() ), true, true );
     m_pGlobalAccel->insert( "play_pause", i18n( "Play/Pause" ), 0, KKey("WIN+c"), 0,
