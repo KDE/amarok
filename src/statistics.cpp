@@ -24,11 +24,11 @@
 #include <kdeversion.h>        //KDE_VERSION ifndefs.  Remove this once we reach a kde 4 dep
 #include <kiconloader.h>
 #include <klocale.h>
-#include <kmultipledrag.h>     //startDrag()
 #include <kmenu.h>
+#include <k3multipledrag.h>
 #include <kstringhandler.h>    //paintCell
     //ctor
-#include <kurldrag.h>          //startDrag()
+#include <k3urldrag.h>          //startDrag()
 #include <kwin.h>
 
 #include <qcolor.h>
@@ -162,7 +162,7 @@ StatisticsList::startDrag()
     DEBUG_FUNC_INFO
 
     KUrl::List list;
-    KMultipleDrag *drag = new KMultipleDrag( this );
+    K3MultipleDrag *drag = new K3MultipleDrag( this );
 
     Q3ListViewItemIterator it( this, Q3ListViewItemIterator::Selected );
 
@@ -174,7 +174,7 @@ StatisticsList::startDrag()
     if( item->itemType() == StatisticsDetailedItem::TRACK )
     {
         list += KUrl::fromPathOrUrl( item->url() );
-        drag->addDragObject( new KURLDrag( list, viewport() ) );
+        drag->addDragObject( new K3URLDrag( list, viewport() ) );
         drag->setPixmap( CollectionDB::createDragPixmap(list),
                          QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X,
                                  CollectionDB::DRAGPIXMAP_OFFSET_Y ) );

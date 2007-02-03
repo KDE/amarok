@@ -2507,7 +2507,7 @@ Playlist::dragObject()
         list += url;
     }
 
-    KURLDrag *drag = new KURLDrag( list, viewport() );
+    K3URLDrag *drag = new K3URLDrag( list, viewport() );
     drag->setPixmap( CollectionDB::createDragPixmap( list ),
                      QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X, CollectionDB::DRAGPIXMAP_OFFSET_Y ) );
     return drag;

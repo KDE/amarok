@@ -30,7 +30,7 @@
 #include <kguiitem.h>
 #include <klocale.h>
 #include <kpushbutton.h>
-#include <kurldrag.h>
+#include <k3urldrag.h>
 #include <kwin.h>
 
 #include <QPainter>

@@ -65,11 +65,11 @@
 #include <klocale.h>
 #include <kmessagebox.h>       //renamePlaylist(), deleteSelectedPlaylist()
 #include <kmimetype.h>
-#include <kmultipledrag.h>     //dragObject()
+#include <k3multipledrag.h>     //dragObject()
 #include <kmenu.h>
 #include <kpushbutton.h>
 #include <kstandarddirs.h>     //KGlobal::dirs()
-#include <kurldrag.h>          //dragObject()
+#include <k3urldrag.h>          //dragObject()
 
 #include <cstdio>              //rename() in renamePlaylist()
 
@@ -2587,7 +2587,7 @@ PlaylistBrowserView::~PlaylistBrowserView() { }
 
 void PlaylistBrowserView::contentsDragEnterEvent( QDragEnterEvent *e )
 {
-    e->accept( e->source() == viewport() || KURLDrag::canDecode( e ) );
+    e->accept( e->source() == viewport() || K3URLDrag::canDecode( e ) );
 }
 
 void PlaylistBrowserView::contentsDragMoveEvent( QDragMoveEvent* e )
@@ -2642,7 +2642,7 @@ void PlaylistBrowserView::contentsDropEvent( QDropEvent *e )
     else {
         KUrl::List decodedList;
         Q3ValueList<MetaBundle> bundles;
-        if( KURLDrag::decode( e, decodedList ) )
+        if( K3URLDrag::decode( e, decodedList ) )
         {
             KUrl::List::ConstIterator it = decodedList.begin();
             MetaBundle first( *it );
@@ -2901,7 +2901,7 @@ void PlaylistBrowserView::startDrag()
     KUrl::List itemList; // this is for CollectionDB::createDragPixmap()
     KUrl::List podList;  // used to add podcast episodes of the same channel in reverse order (usability)
     PodcastEpisode *lastPodcastEpisode = 0; // keep track of the last podcastepisode we visited.
-    KMultipleDrag *drag = new KMultipleDrag( this );
+    K3MultipleDrag *drag = new K3MultipleDrag( this );
 
     Q3ListViewItemIterator it( this, Q3ListViewItemIterator::Selected );
     QString pixText = QString::null;
@@ -3025,7 +3025,7 @@ void PlaylistBrowserView::startDrag()
 
     if( count > 1 ) pixText = QString::null;
 
-    drag->addDragObject( new KURLDrag( urls, viewport() ) );
+    drag->addDragObject( new K3URLDrag( urls, viewport() ) );
     drag->setPixmap( CollectionDB::createDragPixmap( itemList, pixText ),
                      QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X, CollectionDB::DRAGPIXMAP_OFFSET_Y ) );
     drag->dragCopy();

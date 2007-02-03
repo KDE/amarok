@@ -76,7 +76,7 @@
 #include <kio/job.h>
 #include <klocale.h>
 #include <kmessagebox.h>
-#include <kmultipledrag.h>
+#include <k3multipledrag.h>
 #include <kmenu.h>
 #include <kprocess.h>
 #include <kprogress.h>
@@ -86,7 +86,7 @@
 #include <ktabbar.h>
 #include <k3tempfile.h>
  //ctor
-#include <kurldrag.h>       //dragObject()
+#include <k3urldrag.h>       //dragObject()
 #include <kactioncollection.h>
 
 
@@ -1278,9 +1278,9 @@ Q3DragObject *
 MediaView::dragObject()
 {
     KUrl::List urls = nodeBuildDragList( 0 );
-    KMultipleDrag *md = new KMultipleDrag( viewport() );
+    K3MultipleDrag *md = new K3MultipleDrag( viewport() );
     md->addDragObject( K3ListView::dragObject() );
-    KURLDrag* ud = new KURLDrag( urls, viewport() );
+    K3URLDrag* ud = new K3URLDrag( urls, viewport() );
     md->addDragObject( ud );
     md->setPixmap( CollectionDB::createDragPixmap( urls ),
                   QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X, CollectionDB::DRAGPIXMAP_OFFSET_Y ) );
@@ -1389,7 +1389,7 @@ MediaView::acceptDrag( QDropEvent *e ) const
 
     return e->source() == viewport()
         || subtype == "amarok-sql"
-        || KURLDrag::canDecode( e );
+        || K3URLDrag::canDecode( e );
 }
 
 void
@@ -1477,7 +1477,7 @@ MediaView::contentsDropEvent( QDropEvent *e )
             list = CollectionDB::instance()->URLsFromSqlDrag( values );
             MediaBrowser::queue()->addURLs( list, playlist );
         }
-        else if ( KURLDrag::decode( e, list ) )
+        else if ( K3URLDrag::decode( e, list ) )
         {
             MediaBrowser::queue()->addURLs( list );
         }
@@ -2409,9 +2409,9 @@ MediaQueue::dragObject()
             urls += static_cast<MediaItem *>(it)->url();
     }
 
-    KMultipleDrag *md = new KMultipleDrag( viewport() );
+    K3MultipleDrag *md = new K3MultipleDrag( viewport() );
     Q3DragObject *d = K3ListView::dragObject();
-    KURLDrag* urldrag = new KURLDrag( urls, viewport() );
+    K3URLDrag* urldrag = new K3URLDrag( urls, viewport() );
     md->addDragObject( d );
     md->addDragObject( urldrag );
     md->setPixmap( CollectionDB::createDragPixmap( urls ),
@@ -3637,7 +3637,7 @@ MediaQueue::acceptDrag( QDropEvent *e ) const
 
     return e->source() == viewport()
         || subtype == "amarok-sql"
-        || KURLDrag::canDecode( e );
+        || K3URLDrag::canDecode( e );
 }
 
 void
@@ -3658,7 +3658,7 @@ MediaQueue::slotDropped( QDropEvent* e, Q3ListViewItem* parent, Q3ListViewItem* 
             list = CollectionDB::instance()->URLsFromSqlDrag( values );
             addURLs( list, playlist );
         }
-        else if ( KURLDrag::decode( e, list ) )
+        else if ( K3URLDrag::decode( e, list ) )
         {
             addURLs( list );
         }

@@ -47,7 +47,7 @@
 #include <k3listview.h>
 #include <klocale.h>
 #include <kmessagebox.h>    //showCoverMenu()
-#include <kmultipledrag.h>
+#include <k3multipledrag.h>
 #include <kio/netaccess.h>
 #include <kmenu.h>    //showCoverMenu()
 #include <kprogress.h>
@@ -59,7 +59,7 @@
 #include <ktoolbar.h>
     //clear filter button
 #include <kurl.h>
-#include <kurldrag.h>
+#include <k3urldrag.h>
 #include <kwin.h>
 
 static QString artistToSelectInInitFunction;
@@ -909,11 +909,11 @@ Q3DragObject *CoverView::dragObject()
         urls += *it;
 
     QString imagePath = CollectionDB::instance()->albumImage( item->artist(), item->album(), false, 1 );
-    KMultipleDrag *drag = new KMultipleDrag( this );
+    K3MultipleDrag *drag = new K3MultipleDrag( this );
     drag->setPixmap( item->coverPixmap() );
     drag->addDragObject( new Q3IconDrag( this ) );
     drag->addDragObject( new Q3ImageDrag( QImage( imagePath ) ) );
-    drag->addDragObject( new KURLDrag( urls ) );
+    drag->addDragObject( new K3URLDrag( urls ) );
 
     return drag;
 }

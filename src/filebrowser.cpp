@@ -35,6 +35,7 @@
 #include <kiconloader.h>
 #include <kio/netaccess.h>
 #include <k3listview.h>
+#include <k3urldrag.h>
 #include <klocale.h>
 #include <kmenu.h>
 #include <kpushbutton.h>     ///@see SearchPane
@@ -529,7 +530,6 @@ FileBrowser::selectAll()
         m_dir->view()->setSelected( item, item->isFile() );
 }
 
-#include <kurldrag.h>
 #include <QPainter>
 #include <q3simplerichtext.h>
 
@@ -559,7 +559,7 @@ public:
         for( Item *item = static_cast<Item*>( items.first() ); item; item = static_cast<Item*>( items.next() ) )
             urls += item->m_url;
 
-        return new KURLDrag( urls, this );
+        return new K3URLDrag( urls, this );
     }
 
     virtual void viewportPaintEvent( QPaintEvent *e )

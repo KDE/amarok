@@ -45,7 +45,7 @@
 #include <kapplication.h>
 #include <QSlider>
 #include <kdebug.h>
-#include <kurldrag.h>
+#include <k3urldrag.h>
 #include <khtmlview.h>
 #include <ktoolinvocation.h>
 
@@ -58,13 +58,13 @@ amarokWidget::amarokWidget( QWidget * parent, const char * name, Qt::WFlags f )
 }
 void amarokWidget::dragEnterEvent(QDragEnterEvent* event)
 {
-    event->accept( KURLDrag::canDecode(event) );
+    event->accept( K3URLDrag::canDecode(event) );
 }
 
 void amarokWidget::dropEvent(QDropEvent* event)
 {
     KUrl::List urlList;
-    if( KURLDrag::decode(event, urlList) )
+    if( K3URLDrag::decode(event, urlList) )
     {
         KUrl::List::iterator it;
         KUrl::List::iterator end( urlList.end() );
