@@ -46,7 +46,7 @@ class LIBAMAROK_EXPORT App : public KApplication, public EngineObserver
         App();
        ~App();
 
-        static App *instance() { return static_cast<App*>( qApp ); }
+        static App *instance() { return static_cast<App*>( kapp ); }
 
         static void handleCliArgs();
         static void initCliArgs( int argc, char *argv[] );

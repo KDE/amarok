@@ -34,7 +34,7 @@
 class Amarok::ToolTip::Manager: public QObject
 {
 public:
-    Manager( QObject *parent ): QObject( parent ) { qApp->installEventFilter( this ); }
+    Manager( QObject *parent ): QObject( parent ) { kapp->installEventFilter( this ); }
     virtual ~Manager()
     {
         for( int n = Amarok::ToolTip::s_tooltips.count() - 1; n >= 0; --n )
@@ -57,7 +57,7 @@ public:
             case QEvent::Enter:
             case QEvent::Leave:
             case QEvent::FocusOut:
-                if( !dynamic_cast<Amarok::ToolTip*>( qApp->widgetAt( QCursor::pos(), true ) ) )
+                if( !dynamic_cast<Amarok::ToolTip*>( kapp->widgetAt( QCursor::pos(), true ) ) )
                     Amarok::ToolTip::hideTips();
             default: break;
         }
@@ -76,7 +76,7 @@ int Amarok::ToolTip::s_hack = 0;
 void Amarok::ToolTip::add( ToolTipClient *client, QWidget *parent ) //static
 {
     if( !s_manager )
-        s_manager = new Amarok::ToolTip::Manager( qApp );
+        s_manager = new Amarok::ToolTip::Manager( kapp );
     new ToolTip( client, parent );
 }
 

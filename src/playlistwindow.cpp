@@ -497,7 +497,7 @@ void PlaylistWindow::init()
              PlaylistBrowser::instance(), SLOT( loadDynamicItems() ) );
 
 
-    qApp->installEventFilter( this ); // keyboards shortcuts for the browsers
+    kapp->installEventFilter( this ); // keyboards shortcuts for the browsers
 
     connect( playlist, SIGNAL( itemCountChanged(     int, int, int, int, int, int ) ),
              statusbar,  SLOT( slotItemCountChanged( int, int, int, int, int, int ) ) );

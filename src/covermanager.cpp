@@ -719,7 +719,7 @@ void CoverManager::setCustomSelectedCovers()
     }
     KUrl file = KFileDialog::getImageOpenURL( startPath, this, i18n( "Select Cover Image File" ) );
     if ( !file.isEmpty() ) {
-        qApp->processEvents();    //it may takes a while so process pending events
+        kapp->processEvents();    //it may takes a while so process pending events
         QString tmpFile;
         QImage image = CollectionDB::fetchImage(file, tmpFile);
         for ( CoverViewItem* item = selected.first(); item; item = selected.next() ) {
@@ -758,7 +758,7 @@ void CoverManager::deleteSelectedCovers()
 
     if ( button == KMessageBox::Continue ) {
         for ( CoverViewItem* item = selected.first(); item; item = selected.next() ) {
-            qApp->processEvents();
+            kapp->processEvents();
             if ( CollectionDB::instance()->removeAlbumImage( item->artist(), item->album() ) )    //delete selected cover
                   coverRemoved( item->artist(), item->album() );
         }
