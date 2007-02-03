@@ -58,6 +58,7 @@
 #include <QPushButton>
 #include <q3simplerichtext.h>
 #include <QTimer>
+#include <QToolButton>
 #include <QToolTip>       //QToolTip::add()
 #include <q3header.h>
 #include <QRegExp>
@@ -92,7 +93,7 @@ extern "C"
 
 using namespace CollectionBrowserIds;
 
-namespace Amarok { extern KConfig *config( const QString& ); }
+//namespace Amarok { extern KConfig *config( const QString& ); }
 
 class CoverFetcher;
 
@@ -160,7 +161,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     // plugged below
     m_ipodToolbar = new Browser::ToolBar( m_ipodHbox );
     //m_ipodHbox->setStretchFactor( m_ipodToolbar, 0 );
-    m_ipodToolbar->setIconText( KToolBar::IconOnly, false );
+    m_ipodToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
 
 
     KActionCollection* ac = new KActionCollection( this );
@@ -168,7 +169,9 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_view = new CollectionView( this );
     m_view->installEventFilter( this );
 
-    m_configureAction = new KAction( i18n( "Configure Folders" ), Amarok::icon( "configure" ), 0, this, SLOT( setupDirs() ), ac, "Configure" );
+    m_configureAction = new KAction( KIcon(Amarok::icon( "configure" )), i18n( "Configure Folders" ), this );
+    connect( m_configureAction, SIGNAL( triggered( bool ) ), this, SLOT( setupDirs() ) );
+    ac->addAction( "Configure", m_configureAction );
     m_treeViewAction = new KRadioAction( i18n( "Tree View" ), "view_tree", 0, m_view, SLOT( setTreeMode() ), ac, "Tree View" );
     m_flatViewAction = new KRadioAction( i18n( "Flat View" ), "view_detailed", 0, m_view, SLOT( setFlatMode() ), ac, "Flat View" );
     m_ipodViewAction = new KRadioAction( i18n( "iPod View" ), Amarok::icon("device"), 0, m_view, SLOT( setIpodMode() ), ac, "iPod View" );
