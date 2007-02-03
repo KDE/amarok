@@ -39,7 +39,7 @@
 #include <QStyle>
 #include <QTimer>
 //Added by qt3to4:
-#include <Q3HBoxLayout>
+#include <QHBoxLayout>
 #include <QDragLeaveEvent>
 #include <Q3PtrList>
 #include <QPixmap>
@@ -51,7 +51,7 @@
 #include <QResizeEvent>
 #include <QMouseEvent>
 #include <QEvent>
-#include <Q3VBoxLayout>
+#include <QVBoxLayout>
 #include <QShowEvent>
 #include <QWheelEvent>
 
@@ -1162,16 +1162,15 @@ MultiTabBar::MultiTabBar( MultiTabBarMode bm, QWidget *parent, const char *name 
 {
     m_buttons.setAutoDelete( false );
     if ( bm == Vertical ) {
-        m_l = new Q3VBoxLayout( this );
+        m_l = new QVBoxLayout( this );
         setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding, true );
         //		setFixedWidth(24);
     } else {
-        m_l = new Q3HBoxLayout( this );
+        m_l = new QHBoxLayout( this );
         setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed, true );
         //		setFixedHeight(24);
     }
     m_l->setMargin( 0 );
-    m_l->setAutoAdd( false );
 
     m_internal = new MultiTabBarInternal( this, bm );
     setPosition( ( bm == MultiTabBar::Vertical ) ? MultiTabBar::Right : MultiTabBar::Bottom );

@@ -27,8 +27,7 @@
 #define _Multitabbar_h_
 
 #include <q3scrollview.h>
-#include <q3vbox.h>
-#include <q3hbox.h>
+#include <QBoxLayout>
 #include <QLayout>
 #include <QString>
 #include <q3ptrlist.h>
@@ -171,7 +170,7 @@ class MultiTabBar: public QWidget
         void updateSeparator();
     private:
         class MultiTabBarInternal *m_internal;
-        Q3BoxLayout *m_l;
+        QBoxLayout *m_l;
         Q3Frame *m_btnTabSep;
         Q3PtrList<MultiTabBarButton> m_buttons;
         MultiTabBarPosition m_position;
