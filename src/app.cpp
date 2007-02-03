@@ -591,7 +591,7 @@ void App::applySettings( bool firstTime )
     Amarok::OSD::instance()->applySettings();
     CollectionDB::instance()->applySettings();
 #ifdef Q_WS_X11
-    m_pTray->setShown( AmarokConfig::showTrayIcon() );
+    m_pTray->setVisible( AmarokConfig::showTrayIcon() );
     //TrackToolTip::instance()->addToWidget( m_pTray );
 #endif
 
