@@ -519,7 +519,8 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     setAllColumnsShowFocus( true );
 
     //<READ CONFIG>
-        KSharedConfigPtr const config = Amarok::config( "Collection Browser" );
+        KSharedConfigPtr config = Amarok::config( "Collection Browser" );
+
         m_cat1 = config->readNumEntry( "Category1", IdArtist );
         m_cat2 = config->readNumEntry( "Category2", IdAlbum );
         m_cat3 = config->readNumEntry( "Category3", IdNone );
@@ -553,7 +554,8 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 
     //</READ CONFIG>
      KActionCollection* ac = new KActionCollection( this );
-     KStandardAction::selectAll( this, SLOT( selectAll() ), ac, "collectionview_select_all" );
+     KAction *select = KStandardAction::selectAll( this, SLOT( selectAll() ), this );
+     ac->addAction( "collectionview_select_all", select );
 
     connect( CollectionDB::instance(), SIGNAL( scanStarted() ),
              this,                      SLOT( scanStarted() ) );
@@ -594,7 +596,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
 CollectionView::~CollectionView() {
     DEBUG_FUNC_INFO
 
-    KSharedConfigPtr const config = Amarok::config( "Collection Browser" );
+    KSharedConfigPtr config = Amarok::config( "Collection Browser" );
     config->writeEntry( "Category1", m_cat1 );
     config->writeEntry( "Category2", m_cat2 );
     config->writeEntry( "Category3", m_cat3 );
@@ -3692,7 +3694,7 @@ CollectionView::eventFilter( QObject* o, QEvent* e )
     {
         KMenu popup;
         popup.setCheckable( true );
-        popup.insertTitle( i18n( "Flat View Columns" ), /*id*/ -1, /*index*/ 1 );
+        popup.addTitle( i18n( "Flat View Columns" ), /*id*/ -1, /*index*/ 1 );
 
         for ( int i = 0; i < columns(); ++i )
         {
