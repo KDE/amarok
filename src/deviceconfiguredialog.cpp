@@ -24,12 +24,12 @@
 #include <QToolTip>
 #include <q3vbox.h>
 #include <q3buttongroup.h>
-#include <qvbuttongroup.h>
 
 #include <kapplication.h>
 #include <kcombobox.h>
 #include <klocale.h>
 #include <kpushbutton.h>
+#include <kvbox.h>
 #include <kwin.h>
 
 DeviceConfigureDialog::DeviceConfigureDialog( const Medium &medium )
@@ -43,9 +43,10 @@ DeviceConfigureDialog::DeviceConfigureDialog( const Medium &medium )
     m_medium = new Medium( medium );
     kapp->setTopWidget( this );
     setCaption( KDialog::makeStandardCaption( i18n( "Configure Media Device" ) ) );
-    showButtonApply( false );
+    showButton( KDialog::Apply, false );
 
-    KVBox* vbox = makeVBoxMainWidget();
+    KVBox* vbox = new KVBox( this );
+    setMainWidget( vbox );
     vbox->setSpacing( KDialog::spacingHint() );
 
     QLabel *connectLabel = 0;
@@ -126,14 +127,10 @@ DeviceConfigureDialog::~DeviceConfigureDialog()
 }
 
 void
-DeviceConfigureDialog::slotCancel()
+DeviceConfigureDialog::slotButtonClicked( KDialog::ButtonCode button )
 {
-    KDialog::slotCancel( );
-}
-
-void
-DeviceConfigureDialog::slotOk()
-{
+    if ( button != KDialog::Ok )
+        KDialog::slotButtonClicked( button );
     m_accepted = true;
     MediaDevice* device = MediaBrowser::instance()->deviceFromId( m_medium->id() );
 
@@ -157,7 +154,7 @@ DeviceConfigureDialog::slotOk()
     MediaBrowser::instance()->updateStats();
     MediaBrowser::instance()->updateDevices();
 
-    KDialog::slotOk();
+    KDialog::slotButtonClicked( button );
 }
 
 #include "deviceconfiguredialog.moc"

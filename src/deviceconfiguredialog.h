@@ -36,8 +36,7 @@ class DeviceConfigureDialog : public KDialog
         bool successful() { return m_accepted; };
 
     private slots:
-        void slotOk();
-        void slotCancel();
+        void slotButtonClicked( KDialog::ButtonCode button );
 
     private:
         bool            m_accepted;
