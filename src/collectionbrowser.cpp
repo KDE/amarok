@@ -589,7 +589,7 @@ CollectionView::keyPressEvent( QKeyEvent *e )
     // correctly if control-up is pressed at the top of the screen.)
     // It sends fake keypress events to the parent instead of programatically
     // selecting items.
-    if( (e->key() == Key_Up  ||  e->key() == Key_Down )  && currentItem() )
+    if( (e->key() == Qt::Key_Up  ||  e->key() == Qt::Key_Down )  && currentItem() )
     {
         // Handle both up and down at once to avoid code duplication (it's
         // a delicate piece of logic, and was hard to get right)
@@ -650,13 +650,13 @@ CollectionView::keyPressEvent( QKeyEvent *e )
 
     // When Right/Left is pressed in iPod view mode, activate the iPod
     // "move forward/backward" action.
-    else if( (e->key() == Key_Left  ||  e->key() == Key_Right)
+    else if( (e->key() == Qt::Key_Left  ||  e->key() == Qt::Key_Right)
            && m_viewMode == modeIpodView )
     {
-        if( e->key() == Key_Right )
+        if( e->key() == Qt::Key_Right )
             m_parent->m_ipodIncrement->activate();
 
-        else if( e->key() == Key_Left )
+        else if( e->key() == Qt::Key_Left )
             m_parent->m_ipodDecrement->activate();
 
     }
