@@ -20,7 +20,7 @@
  ***************************************************************************/
 
 #include "aacfiletyperesolver.h"
-#include <taglib/mpegfile.h>
+#include <mpegfile.h>
 
 TagLib::File *AACFileTypeResolver::createFile(const char *fileName,
         bool readProperties,

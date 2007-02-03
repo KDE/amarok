@@ -17,7 +17,7 @@
 #include <Q3CString>
 #include <kurl.h>    //inline functions
 #include <klocale.h> //inline functions
-#include <taglib/audioproperties.h>
+#include <audioproperties.h>
 #include "expression.h"
 #include "atomicstring.h"
 #include "moodbar.h"

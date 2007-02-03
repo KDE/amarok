@@ -1,5 +1,5 @@
 
-include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
+include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${MP4V2_INCLUDES} )
 
 
 ########### next target ###############

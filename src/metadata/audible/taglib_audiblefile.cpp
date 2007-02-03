@@ -26,8 +26,8 @@
 #include "taglib_audiblefile.h"
 
 #include "audibletag.h"
-#include <taglib/tfile.h>
-#include <taglib/audioproperties.h>
+#include <tfile.h>
+#include <audioproperties.h>
 
 namespace TagLib {
 ////////////////////////////////////////////////////////////////////////////////

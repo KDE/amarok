@@ -22,8 +22,8 @@
 #ifndef TAGLIB_AUDIBLEFILETYPERESOLVER_H
 #define TAGLIB_AUDIBLEFILETYPERESOLVER_H
 
-#include <taglib/tfile.h>
-#include <taglib/fileref.h>
+#include <tfile.h>
+#include <fileref.h>
 
 
 class AudibleFileTypeResolver : public TagLib::FileRef::FileTypeResolver

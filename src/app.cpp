@@ -86,7 +86,7 @@ QMutex Amarok::globalDirsMutex;
 int App::mainThreadId = 0;
 
 #ifdef Q_WS_MAC
-#include <qt_mac.h>
+#include <Carbon/Carbon.h>
 
 static AEEventHandlerUPP appleEventProcessorUPP = 0;
 

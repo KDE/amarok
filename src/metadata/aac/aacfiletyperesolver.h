@@ -22,8 +22,8 @@
 #ifndef TAGLIB_AACFILETYPERESOLVER_H
 #define TAGLIB_AACFILETYPERESOLVER_H
 
-#include <taglib/tfile.h>
-#include <taglib/fileref.h>
+#include <tfile.h>
+#include <fileref.h>
 
 
 class AACFileTypeResolver : public TagLib::FileRef::FileTypeResolver

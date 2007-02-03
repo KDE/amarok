@@ -26,7 +26,7 @@
 #ifndef TAGLIB_WAVFILE_H
 #define TAGLIB_WAVFILE_H
 
-#include <taglib/tfile.h>
+#include <tfile.h>
 #include "wavproperties.h"
 
 namespace TagLib { 

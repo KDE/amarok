@@ -22,8 +22,8 @@
 #ifndef TAGLIB_WAVPACKFILETYPERESOLVER_H
 #define TAGLIB_WAVPACKFILETYPERESOLVER_H
 
-#include <taglib/tfile.h>
-#include <taglib/fileref.h>
+#include <tfile.h>
+#include <fileref.h>
 
 
 class WavPackFileTypeResolver : public TagLib::FileRef::FileTypeResolver

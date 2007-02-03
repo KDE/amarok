@@ -28,8 +28,8 @@
 
 #include <config.h>
 
-#include <taglib/audioproperties.h>
-#include <taglib/tstring.h>
+#include <audioproperties.h>
+#include <tstring.h>
 
 namespace TagLib {
 

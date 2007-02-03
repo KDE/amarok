@@ -25,9 +25,9 @@
 
 #include "wavfile.h"
 
-#include <taglib/tfile.h>
-#include <taglib/audioproperties.h>
-#include <taglib/tag.h>
+#include <tfile.h>
+#include <audioproperties.h>
+#include <tag.h>
 
 namespace TagLib {
 ////////////////////////////////////////////////////////////////////////////////

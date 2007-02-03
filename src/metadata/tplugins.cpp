@@ -25,8 +25,8 @@
 #include <QFile>
 #include <kmimetype.h>
 
-#include <taglib/fileref.h>
-#include <taglib/tfile.h>
+#include <fileref.h>
+#include <tfile.h>
 
 #ifdef HAVE_MP4V2
 #include "mp4/taglib_mp4filetyperesolver.h"
@@ -52,12 +52,12 @@
 #include "wav/wavfile.h"
 #include "aac/aacfiletyperesolver.h"
 
-#include <taglib/mpegfile.h>
-#include <taglib/oggfile.h>
-#include <taglib/oggflacfile.h>
-#include <taglib/vorbisfile.h>
-#include <taglib/flacfile.h>
-#include <taglib/mpcfile.h>
+#include <mpegfile.h>
+#include <oggfile.h>
+#include <oggflacfile.h>
+#include <vorbisfile.h>
+#include <flacfile.h>
+#include <mpcfile.h>
 
 
 class MimeTypeFileTypeResolver : public TagLib::FileRef::FileTypeResolver

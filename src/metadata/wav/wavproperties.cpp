@@ -25,7 +25,7 @@
 
 #include "wavproperties.h"
 
-#include <taglib/tstring.h>
+#include <tstring.h>
 
 #include "wavfile.h"
 

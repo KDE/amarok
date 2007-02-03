@@ -22,8 +22,8 @@
 #ifndef TAGLIB_SPEEXFILETYPERESOLVER_H
 #define TAGLIB_SPEEXFILETYPERESOLVER_H
 
-#include <taglib/tfile.h>
-#include <taglib/fileref.h>
+#include <tfile.h>
+#include <fileref.h>
 
 
 class SpeexFileTypeResolver : public TagLib::FileRef::FileTypeResolver

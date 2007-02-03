@@ -90,6 +90,7 @@ include_directories(
 	${QT_INCLUDES}  )
 
 if(MP4V2_FOUND)
+include_directories( ${MP4V2_INCLUDE_DIR} )
 set(tagmplib_SRCS
 	${CMAKE_SOURCE_DIR}/amarok/src/metadata/mp4/mp4properties.cpp
 	${CMAKE_SOURCE_DIR}/amarok/src/metadata/mp4/mp4tag.cpp

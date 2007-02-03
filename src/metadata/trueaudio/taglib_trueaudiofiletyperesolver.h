@@ -22,8 +22,8 @@
 #ifndef TAGLIB_TRUEAUDIOFILETYPERESOLVER_H
 #define TAGLIB_TRUEAUDIOFILETYPERESOLVER_H
 
-#include <taglib/tfile.h>
-#include <taglib/fileref.h>
+#include <tfile.h>
+#include <fileref.h>
 
 
 class TTAFileTypeResolver : public TagLib::FileRef::FileTypeResolver

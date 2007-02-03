@@ -30,7 +30,7 @@
 #include <iostream>
 #include <sys/types.h>    //pid_t
 #include <sys/wait.h>     //waitpid
-#include <taglib/taglib.h>
+#include <taglib.h>
 #include <unistd.h>       //write, getpid
 
 
