@@ -52,7 +52,7 @@
                         <string></string>
                     </property>
                 </widget>
-                <widget class="KActiveLabel" row="0" column="1" rowspan="2" colspan="1">
+                <widget class="K3ActiveLabel" row="0" column="1" rowspan="2" colspan="1">
                     <property name="name">
                         <cstring>kActiveLabel1</cstring>
                     </property>
@@ -172,7 +172,7 @@
 </customwidgets>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>kactivelabel.h</includehint>
+    <includehint>k3activelabel.h</includehint>
     <includehint>klineedit.h</includehint>
     <includehint>knuminput.h</includehint>
     <includehint>knuminput.h</includehint>

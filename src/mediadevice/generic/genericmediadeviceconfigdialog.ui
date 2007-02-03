@@ -310,7 +310,7 @@
                                                         <string>The location of the transfered songs relative to the device mount point.</string>
                                                     </property>
                                                 </widget>
-                                                <widget class="KActiveLabel">
+                                                <widget class="K3ActiveLabel">
                                                     <property name="name">
                                                         <cstring>m_formatHelp</cstring>
                                                     </property>
@@ -458,6 +458,6 @@
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>kactivelabel.h</includehint>
+    <includehint>k3activelabel.h</includehint>
 </includehints>
 </UI>

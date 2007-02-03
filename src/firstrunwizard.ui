@@ -26,7 +26,7 @@
             <property name="name">
                 <cstring>unnamed</cstring>
             </property>
-            <widget class="KActiveLabel" row="0" column="0" rowspan="2" colspan="1">
+            <widget class="K3ActiveLabel" row="0" column="0" rowspan="2" colspan="1">
                 <property name="name">
                     <cstring>text1</cstring>
                 </property>
@@ -55,7 +55,7 @@
                     <bool>false</bool>
                 </property>
             </widget>
-            <widget class="KActiveLabel" row="2" column="0" rowspan="1" colspan="3">
+            <widget class="K3ActiveLabel" row="2" column="0" rowspan="1" colspan="3">
                 <property name="name">
                     <cstring>text1_2</cstring>
                 </property>
@@ -94,7 +94,7 @@
             <property name="name">
                 <cstring>unnamed</cstring>
             </property>
-            <widget class="KActiveLabel">
+            <widget class="K3ActiveLabel">
                 <property name="name">
                     <cstring>text3</cstring>
                 </property>
@@ -154,7 +154,7 @@
                     </size>
                 </property>
             </spacer>
-            <widget class="KActiveLabel" row="0" column="0">
+            <widget class="K3ActiveLabel" row="0" column="0">
                 <property name="name">
                     <cstring>dbActiveLabel</cstring>
                 </property>
@@ -185,7 +185,7 @@
             <property name="name">
                 <cstring>unnamed</cstring>
             </property>
-            <widget class="KActiveLabel">
+            <widget class="K3ActiveLabel">
                 <property name="name">
                     <cstring>text4</cstring>
                 </property>
@@ -296,11 +296,7 @@
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>kactivelabel.h</includehint>
-    <includehint>kactivelabel.h</includehint>
-    <includehint>kactivelabel.h</includehint>
-    <includehint>kactivelabel.h</includehint>
+    <includehint>k3activelabel.h</includehint>
     <includehint>dbsetup.h</includehint>
-    <includehint>kactivelabel.h</includehint>
 </includehints>
 </UI>
