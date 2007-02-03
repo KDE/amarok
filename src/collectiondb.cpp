@@ -56,6 +56,7 @@
 #include <QPainter>             //createDragPixmap()
 #include <QPalette>
 #include <pthread.h>              //debugging, can be removed later
+#include <QIODevice>
 
 #include <kcharsets.h>            //setHTMLLyrics()
 #include <kcombobox.h>
@@ -71,6 +72,7 @@
 #include <kstandarddirs.h>
 #include <kio/job.h>
 #include <kio/netaccess.h>
+#include <krandom.h>
 
 #include <cmath>                 //DbConnection::sqlite_power()
 #include <ctime>                 //query()
@@ -6033,8 +6035,8 @@ SqliteConnection::SqliteConnection( const SqliteConfig* config )
     QFile file( path );
     if ( file.open( QIODevice::ReadOnly ) )
     {
-        QString format;
-        file.readLine( format, 50 );
+        QByteArray format;
+        format = file.readLine( 50 );
         if ( !format.startsWith( "SQLite format 3" ) )
         {
             warning() << "Database versions incompatible. Removing and rebuilding database.\n";
