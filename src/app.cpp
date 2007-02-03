@@ -175,8 +175,6 @@ App::App()
     }
 #endif
 
-    QPixmap::setDefaultOptimization( QPixmap::MemoryOptim );
-
     //needs to be created before the wizard
 //     new Amarok::DcopPlayerHandler(); // Must be created first
 //     new Amarok::DcopPlaylistHandler();
