@@ -1936,8 +1936,8 @@ CollectionView::contentsDragMoveEvent( QDragMoveEvent *e )
 void
 CollectionView::contentsDropEvent( QDropEvent *e )
 {
-    KUrl::List list;
-    if( KURLDrag::decode( e, list ) )
+    KUrl::List list = KUrl::List::fromMimeData( e->mimeData() );
+    if( !list.isEmpty() )
     {
         KUrl::List expandedList;
         int dropped = 0;
@@ -2179,11 +2179,16 @@ void
 CollectionView::startDrag()
 {
     KUrl::List urls = listSelected();
-    KURLDrag* d = new KURLDrag( urls, this );
-    d->setPixmap( CollectionDB::createDragPixmap(urls),
+
+    QDrag *drag = new QDrag(this);
+    QMimeData *mimeData = new QMimeData();
+    urls.populateMimeData(mimeData);
+    drag->setMimeData(mimeData);
+    drag->setPixmap( CollectionDB::createDragPixmap(urls) );
+/*    d->setPixmap( CollectionDB::createDragPixmap(urls),
                   QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X,
-                          CollectionDB::DRAGPIXMAP_OFFSET_Y ) );
-    d->dragCopy();
+                          CollectionDB::DRAGPIXMAP_OFFSET_Y ) );*/
+    drag->start();
 }
 
 QString
