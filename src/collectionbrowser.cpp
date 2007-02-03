@@ -1446,7 +1446,7 @@ CollectionView::rmbPressed( Q3ListViewItem* item, const QPoint& point, int ) //S
     int artistLevel = -1;
 
     if ( item ) {
-        KMenu menu( this );
+        Q3PopupMenu menu( this );
 
         int cat = 0;
         if ( m_viewMode == modeTreeView ) {
@@ -3692,9 +3692,9 @@ CollectionView::eventFilter( QObject* o, QEvent* e )
         && static_cast<QMouseEvent*>( e )->button() == Qt::RightButton
         && m_viewMode == modeFlatView )
     {
-        KMenu popup;
+        Q3PopupMenu popup;
         popup.setCheckable( true );
-        popup.addTitle( i18n( "Flat View Columns" ), /*id*/ -1, /*index*/ 1 );
+        popup.setTitle( i18n( "Flat View Columns" ) ); //, /*id*/ -1, /*index*/ 1 );
 
         for ( int i = 0; i < columns(); ++i )
         {
