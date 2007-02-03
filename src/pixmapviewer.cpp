@@ -23,6 +23,7 @@
 #include <QPixmap>
 //Added by qt3to4:
 #include <QMouseEvent>
+#include <QDesktopWidget>
 
 PixmapViewer::PixmapViewer(QWidget *widget, const QPixmap &pixmap)
     : Q3ScrollView(widget, 0, Qt::WNoAutoErase)

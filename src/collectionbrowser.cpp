@@ -79,6 +79,8 @@
 #include <kmessagebox.h>
 #include <kmenu.h>
 #include <kstandarddirs.h>   //KGlobal::dirs()
+#include <ktoggleaction.h>
+#include <kactionmenu.h>
 #include <kvbox.h>
  //ctor
 #include <kio/job.h>
