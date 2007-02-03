@@ -63,7 +63,6 @@ email                : markey@web.de
 #include <kmessagebox.h>         //applySettings(), genericEventHandler()
 #include <krun.h>                //Amarok::invokeBrowser()
 #include <kstandarddirs.h>
-#include <kurldrag.h>            //genericEventHandler()
 #include <kaboutdata.h>
 #include <kio/job.h>
 
@@ -1258,7 +1257,7 @@ namespace Amarok
         return pApp->playlistWindow()->actionCollection();
     }
 
-    KConfig *config( const QString &group )
+    KSharedConfig::Ptr config( const QString &group )
     {
         //Slightly more useful config() that allows setting the group simultaneously
         KGlobal::config()->setGroup( group );
