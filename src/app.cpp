@@ -1046,7 +1046,8 @@ void App::slotConfigAmarok( const Q3CString& page )
     //      what do to? detect and move it?
 
     if ( page.isNull() )
-        dialog->showPage( AmarokConfigDialog::s_currentPage );
+        // FIXME
+        //dialog->showPage( AmarokConfigDialog::s_currentPage );
     else
         dialog->showPageByName( page );
 
