@@ -5389,7 +5389,7 @@ CollectionDB::updateGroupBy()
 
     if ( version && version < 32 )
     {
-        KSharedConfigPtr = Amarok::config( "Collection Browser" );
+        KSharedConfigPtr config = Amarok::config( "Collection Browser" );
         int m_cat1 = config->readNumEntry( "Category1" );
         int m_cat2 = config->readNumEntry( "Category2" );
         int m_cat3 = config->readNumEntry( "Category3" );
