@@ -75,7 +75,6 @@
 #include <kmenu.h>
 #include <kstandarddirs.h>   //KGlobal::dirs()
  //ctor
-#include <kurldrag.h>       //dragObject()
 #include <kio/job.h>
 #include <kpushbutton.h>
 
@@ -1911,13 +1910,13 @@ CollectionView::organizeFiles( const KUrl::List &urls, const QString &caption, b
 void
 CollectionView::contentsDragEnterEvent( QDragEnterEvent *e )
 {
-    e->accept( e->source() != viewport() && e->source() != this && KURLDrag::canDecode( e ) );
+    e->accept( e->source() != viewport() && e->source() != this && KURL::List::canDecode( e->mimeData() ) );
 }
 
 void
 CollectionView::contentsDragMoveEvent( QDragMoveEvent *e )
 {
-    e->accept( e->source() != viewport() && e->source() != this && KURLDrag::canDecode( e ) );
+    e->accept( e->source() != viewport() && e->source() != this && KURL::List::canDecode( e->mimeData() ) );
 }
 
 void
