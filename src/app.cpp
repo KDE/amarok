@@ -50,6 +50,7 @@ email                : markey@web.de
 
 #include <iostream>
 
+#include <kaction.h>
 #include <kconfigdialogmanager.h>
 #include <kcombobox.h>           //firstRunWizard()
 #include <kcmdlineargs.h>        //initCliArgs()
@@ -423,8 +424,6 @@ void App::initCliArgs( int argc, char *argv[] ) //static
 }
 
 
-#include <kaction.h>
-#include <kshortcutlist.h>
 void App::initGlobalShortcuts()
 {
     EngineController* const ec = EngineController::instance();
