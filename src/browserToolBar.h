@@ -21,9 +21,8 @@ namespace Browser
             ToolBar( QWidget *parent )
                     : KToolBar( parent, "NotMainToolBar" )
             {
-                setMovingEnabled(false);
-                setFlat(true);
-                setIconSize( 16 );
+                setMovable(false);
+                setIconDimensions( 16 );
                 setContextMenuEnabled( false );
             }
     };
