@@ -61,8 +61,8 @@ safePlug( KActionCollection *ac, const char *name, QWidget *w )
 {
     if( ac )
     {
-        KAction *a = ac->action( name );
-        if( a ) a->plug( w );
+        KAction *a = (KAction*) ac->action( name );
+        if( a && w ) w->addAction( a );
     }
 }
 
@@ -73,8 +73,10 @@ safePlug( KActionCollection *ac, const char *name, QWidget *w )
 //////////////////////////////////////////////////////////////////////////////////////////
 
 MenuAction::MenuAction( KActionCollection *ac )
-  : KAction( i18n( "Amarok Menu" ), 0, ac, "amarok_menu" )
+  : KAction( 0 )
 {
+    setText(i18n( "Amarok Menu" ));
+    ac->addAction("amarok_menu", this);
     setShortcutConfigurable ( false ); //FIXME disabled as it doesn't work, should use QCursor::pos()
 }
 
@@ -85,23 +87,24 @@ MenuAction::plug( QWidget *w, int index )
 
     if( bar && KAuthorized::authorizeKAction( name() ) )
     {
-        const int id = KAction::getToolButtonID();
+        //const int id = KAction::getToolButtonID();
 
-        addContainer( bar, id );
+        //addContainer( bar, id );
+        w->addAction( this );
         connect( bar, SIGNAL( destroyed() ), SLOT( slotDestroyed() ) );
 
         //TODO create menu on demand
         //TODO create menu above and aligned within window
         //TODO make the arrow point upwards!
-        bar->insertButton( QString::null, id, true, i18n( "Menu" ), index );
-        bar->alignItemRight( id );
+        //bar->insertButton( QString::null, id, true, i18n( "Menu" ), index );
+        //bar->alignItemRight( id );
 
-        KToolBarButton* button = bar->getButton( id );
-        button->setPopup( Amarok::Menu::instance() );
-        button->setName( "toolbutton_amarok_menu" );
-        button->setIcon( "amarok" );
+        //KToolBarButton* button = bar->getButton( id );
+        //button->setPopup( Amarok::Menu::instance() );
+        //button->setName( "toolbutton_amarok_menu" );
+        //button->setIcon( "amarok" );
 
-        return containerCount() - 1;
+        return associatedWidgets().count() - 1;
     }
     else return -1;
 }
@@ -215,9 +218,12 @@ Menu::slotActivated( int index )
 //////////////////////////////////////////////////////////////////////////////////////////
 
 PlayPauseAction::PlayPauseAction( KActionCollection *ac )
-        : KToggleAction( i18n( "Play/Pause" ), 0, ac, "play_pause" )
+        : KToggleAction( 0 )
         , EngineObserver( EngineController::instance() )
 {
+    setText(i18n( "Play/Pause" ));
+    ac->addAction("play_pause", this);
+
     engineStateChanged( EngineController::engine()->state() );
 
     connect( this, SIGNAL(activated()), EngineController::instance(), SLOT(playPause()) );
@@ -226,37 +232,35 @@ PlayPauseAction::PlayPauseAction( KActionCollection *ac )
 void
 PlayPauseAction::engineStateChanged( Engine::State state,  Engine::State /*oldState*/ )
 {
-    QString text;
-
     switch( state ) {
     case Engine::Playing:
         setChecked( false );
-        setIcon( Amarok::icon( "pause" ) );
-        text = i18n( "Pause" );
+        setIcon( KIcon(Amarok::icon( "pause" )) );
+        setText( i18n( "Pause" ) );
         break;
     case Engine::Paused:
         setChecked( true );
-        setIcon( Amarok::icon( "pause" ) );
-        text = i18n( "Pause" );
+        setIcon( KIcon(Amarok::icon( "pause" )) );
+        setText( i18n( "Pause" ) );
         break;
     case Engine::Empty:
         setChecked( false );
-        setIcon( Amarok::icon( "play" ) );
-        text = i18n( "Play" );
+        setIcon( KIcon(Amarok::icon( "play" )) );
+        setText( i18n( "Play" ) );
         break;
     case Engine::Idle:
         return;
     }
-
+/*
     //update menu texts for this special action
-    for( int x = 0; x < containerCount(); ++x ) {
-        QWidget *w = container( x );
+    for( int x = 0; x < associatedWidgets().count(); ++x ) {
+        QWidget *w = associatedWidgets().value( x );
         if( w->inherits( "QPopupMenu" ) )
-            static_cast<Q3PopupMenu*>(w)->changeItem( itemId( x ), text );
+            static_cast<Q3PopupMenu*>(w)->changeItem( *this, text );
         //TODO KToolBar sucks so much
 //         else if( w->inherits( "KToolBar" ) )
 //             static_cast<KToolBar*>(w)->getButton( itemId( x ) )->setText( text );
-    }
+    }*/
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -347,9 +351,12 @@ AnalyzerContainer::contextMenuEvent( QContextMenuEvent *e)
 //////////////////////////////////////////////////////////////////////////////////////////
 
 ToggleAction::ToggleAction( const QString &text, void ( *f ) ( bool ), KActionCollection* const ac, const char *name )
-        : KToggleAction( text, 0, ac, name )
+        : KToggleAction( 0 )
         , m_function( f )
-{}
+{
+    setText(text);
+    ac->addAction(name, this);
+}
 
 void ToggleAction::setChecked( bool b )
 {
@@ -369,7 +376,7 @@ void ToggleAction::setEnabled( bool b )
         setChecked( false );
     KToggleAction::setEnabled( b );
     AmarokConfig::writeConfig(); //So we don't lose the setting when crashing
-    if( announce ) emit enabled( b );
+    if( announce ) emit QAction::triggered( b );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -377,9 +384,12 @@ void ToggleAction::setEnabled( bool b )
 //////////////////////////////////////////////////////////////////////////////////////////
 
 SelectAction::SelectAction( const QString &text, void ( *f ) ( int ), KActionCollection* const ac, const char *name )
-        : KSelectAction( text, 0, ac, name )
+        : KSelectAction( 0 )
         , m_function( f )
-{ }
+{
+    setText(text);
+    ac->addAction(name, this);
+}
 
 void SelectAction::setCurrentItem( int n )
 {
@@ -399,14 +409,14 @@ void SelectAction::setEnabled( bool b )
         setCurrentItem( 0 );
     KSelectAction::setEnabled( b );
     AmarokConfig::writeConfig(); //So we don't lose the setting when crashing
-    if( announce ) emit enabled( b );
+    if( announce ) emit QAction::triggered( b );
 }
 
 void SelectAction::setIcons( QStringList icons )
 {
     m_icons = icons;
     for( int i = 0, n = items().count(); i < n; ++i )
-        popupMenu()->changeItem( i, kapp->iconLoader()->loadIconSet( *icons.at( i ), K3Icon::Small ), popupMenu()->text( i ) );
+        menu()->changeItem( i, KIconLoader::global()->loadIconSet( icons.at( i ), K3Icon::Small ), menu()->text( i ) );
 }
 
 QStringList SelectAction::icons() const { return m_icons; }
@@ -414,7 +424,7 @@ QStringList SelectAction::icons() const { return m_icons; }
 QString SelectAction::currentIcon() const
 {
     if( m_icons.count() )
-        return *m_icons.at( currentItem() );
+        return m_icons.at( currentItem() );
     return QString();
 }
 
@@ -427,10 +437,13 @@ QString SelectAction::currentText() const {
 //////////////////////////////////////////////////////////////////////////////////////////
 
 VolumeAction::VolumeAction( KActionCollection *ac )
-        : KAction( i18n( "Volume" ), 0, ac, "toolbar_volume" )
+        : KAction( 0 )
         , EngineObserver( EngineController::instance() )
         , m_slider( 0 ) //is QPointer
-{}
+{
+    setText(i18n( "Volume" ));
+    ac->addAction("toolbar_volume", this);
+}
 
 int
 VolumeAction::plug( QWidget *w, int index )
@@ -450,7 +463,8 @@ VolumeAction::plug( QWidget *w, int index )
     connect( m_slider, SIGNAL(sliderMoved( int )), ec, SLOT(setVolume( int )) );
     connect( m_slider, SIGNAL(sliderReleased( int )), ec, SLOT(setVolume( int )) );
 
-    static_cast<KToolBar*>(w)->insertWidget( KAction::getToolButtonID(), 0, m_slider, index );
+     // Porting
+    //static_cast<KToolBar*>(w)->insertWidget( KAction::getToolButtonID(), 0, m_slider, index );
 
     return 0;
 }
@@ -477,8 +491,9 @@ RandomAction::RandomAction( KActionCollection *ac ) :
 void
 RandomAction::setCurrentItem( int n )
 {
-    if( KAction *a = parentCollection()->action( "favor_tracks" ) )
-        a->setEnabled( n );
+    // Porting
+    //if( KAction *a = parentCollection()->action( "favor_tracks" ) )
+    //    a->setEnabled( n );
     SelectAction::setCurrentItem( n );
 }
 
@@ -514,8 +529,11 @@ RepeatAction::RepeatAction( KActionCollection *ac ) :
 // BurnMenuAction
 //////////////////////////////////////////////////////////////////////////////////////////
 BurnMenuAction::BurnMenuAction( KActionCollection *ac )
-  : KAction( i18n( "Burn" ), 0, ac, "burn_menu" )
-{}
+  : KAction( 0 )
+{
+    setText(i18n( "Burn" ));
+    ac->addAction("burn_menu", this);
+}
 
 int
 BurnMenuAction::plug( QWidget *w, int index )
@@ -524,19 +542,20 @@ BurnMenuAction::plug( QWidget *w, int index )
 
     if( bar && KAuthorized::authorizeKAction( name() ) )
     {
-        const int id = KAction::getToolButtonID();
+        //const int id = KAction::getToolButtonID();
 
-        addContainer( bar, id );
+        //addContainer( bar, id );
+        w->addAction( this );
         connect( bar, SIGNAL( destroyed() ), SLOT( slotDestroyed() ) );
 
-        bar->insertButton( QString::null, id, true, i18n( "Burn" ), index );
+        //bar->insertButton( QString::null, id, true, i18n( "Burn" ), index );
 
-        KToolBarButton* button = bar->getButton( id );
-        button->setPopup( Amarok::BurnMenu::instance() );
-        button->setName( "toolbutton_burn_menu" );
-        button->setIcon( "k3b" );
+        //KToolBarButton* button = bar->getButton( id );
+        //button->setPopup( Amarok::BurnMenu::instance() );
+        //button->setName( "toolbutton_burn_menu" );
+        //button->setIcon( "k3b" );
 
-        return containerCount() - 1;
+        return associatedWidgets().count() - 1;
     }
     else return -1;
 }
@@ -582,38 +601,47 @@ BurnMenu::slotActivated( int index )
 //////////////////////////////////////////////////////////////////////////////////////////
 
 StopAction::StopAction( KActionCollection *ac )
-  : KAction( i18n( "Stop" ), Amarok::icon( "stop" ), 0, EngineController::instance(), SLOT( stop() ), ac, "stop" )
-{}
+  : KAction( 0 )
+{
+    setText(i18n( "Stop" ));
+    setIcon(KIcon(Amarok::icon( "stop" )));
+    //EngineController::instance(), SLOT( stop() )
+    ac->addAction("stop", this);
+}
 
 int
 StopAction::plug( QWidget *w, int index )
 {
     KToolBar *bar = dynamic_cast<KToolBar*>(w);
-
+    w->addAction( this );
+    /*
     if( bar && KAuthorized::authorizeKAction( name() ) )
     {
-        const int id = KAction::getToolButtonID();
+        //const int id = KAction::getToolButtonID();
 
-        addContainer( bar, id );
+        //addContainer( bar, id );
+
+        w->addAction( this );
         connect( bar, SIGNAL( destroyed() ), SLOT( slotDestroyed() ) );
 
-        bar->insertButton( QString::null, id, SIGNAL( clicked() ), EngineController::instance(), SLOT( stop() ),
-                           true, i18n( "Stop" ), index );
+        //bar->insertButton( QString::null, id, SIGNAL( clicked() ), EngineController::instance(), SLOT( stop() ),
+        //                   true, i18n( "Stop" ), index );
 
-        KToolBarButton* button = bar->getButton( id );
-        button->setDelayedPopup( Amarok::StopMenu::instance() );
-        button->setName( "toolbutton_stop_menu" );
-        button->setIcon( Amarok::icon( "stop" ) );
-        button->setEnabled( EngineController::instance()->engine()->loaded() );  // Disable button at startup
+        //KToolBarButton* button = bar->getButton( id );
+        //button->setDelayedPopup( Amarok::StopMenu::instance() );
+        //button->setName( "toolbutton_stop_menu" );
+        //button->setIcon( Amarok::icon( "stop" ) );
+        //button->setEnabled( EngineController::instance()->engine()->loaded() );  // Disable button at startup
 
-        return containerCount() - 1;
+        return associatedWidgets().count() - 1;
     }
-    else return KAction::plug( w, index );
+    else return QAction::plug( w, index );
+    */
 }
 
 StopMenu::StopMenu()
 {
-    insertTitle( i18n( "Stop" ) );
+    addTitle( i18n( "Stop" ) );
     insertItem( i18n("Now"), NOW );
     insertItem( i18n("After Current Track"), AFTER_TRACK );
     insertItem( i18n("After Queue"), AFTER_QUEUE );
@@ -652,7 +680,7 @@ StopMenu::slotActivated( int index )
     switch( index )
     {
         case NOW:
-            Amarok::actionCollection()->action( "stop" )->activate();
+            Amarok::actionCollection()->action( "stop" )->trigger();
             if( mode == Playlist::StopAfterCurrent || mode == Playlist::StopAfterQueue )
                 pl->setStopAfterMode( Playlist::DoNotStop );
             break;
