@@ -74,6 +74,7 @@
 #include <kmessagebox.h>
 #include <kmenu.h>
 #include <kstandarddirs.h>   //KGlobal::dirs()
+#include <kvbox.h>
  //ctor
 #include <kio/job.h>
 #include <kpushbutton.h>
@@ -1786,7 +1787,8 @@ CollectionView::organizeFiles( const KUrl::List &urls, const QString &caption, b
 
     OrganizeCollectionDialogBase base( m_parent, "OrganizeFiles", true, caption,
             KDialog::Ok|KDialog::Cancel|KDialog::Details );
-    KVBox* page = base.makeVBoxMainWidget();
+    KVBox* page = new KVBox( &base );
+    base.setMainWidget( page );
 
     OrganizeCollectionDialog dialog( page );
     dialog.folderCombo->insertStringList( folders, 0 );
@@ -1807,7 +1809,7 @@ CollectionView::organizeFiles( const KUrl::List &urls, const QString &caption, b
 
     if( dialog.customschemeCheck->isChecked() )
     {
-        base.setDetails( true );
+        base.setButton( OrganizeCollectionDialog::Details, true );
     }
     else
     {
