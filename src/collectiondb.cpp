@@ -264,7 +264,7 @@ CollectionDB::CollectionDB()
     connect( this, SIGNAL(uniqueIdChanged(const QString&, const QString&, const QString&)),
              this, SLOT(aftMigratePermanentTablesUniqueId(const QString&, const QString&, const QString&)) );
 
-    connect( qApp, SIGNAL( aboutToQuit() ), this, SLOT( disableAutoScoring() ) );
+    connect( kapp, SIGNAL( aboutToQuit() ), this, SLOT( disableAutoScoring() ) );
 
     connect( this, SIGNAL( coverRemoved( const QString&, const QString& ) ),
                    SIGNAL( coverChanged( const QString&, const QString& ) ) );
