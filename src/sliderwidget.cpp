@@ -104,7 +104,7 @@ Amarok::Slider::mouseMoveEvent( QMouseEvent *e )
 void
 Amarok::Slider::slideEvent( QMouseEvent *e )
 {
-    QSlider::setValue( orientation() == Horizontal
+    QSlider::setValue( orientation() == Qt::Horizontal
         ? ((QApplication::reverseLayout())
           ? Q3RangeControl::valueFromPosition( width() - (e->pos().x() - sliderRect().width()/2),  width()  + sliderRect().width() )
           : Q3RangeControl::valueFromPosition( e->pos().x() - sliderRect().width()/2,  width()  - sliderRect().width() ) )
@@ -185,7 +185,7 @@ void
 Amarok::PrettySlider::slideEvent( QMouseEvent *e )
 {
     if( m_mode == Pretty  ||  m_showingMoodbar )
-      QSlider::setValue( orientation() == Horizontal
+      QSlider::setValue( orientation() == Qt::Horizontal
           ? Q3RangeControl::valueFromPosition( e->pos().x(), width()-2 )
           : Q3RangeControl::valueFromPosition( e->pos().y(), height()-2 ) );
     else
