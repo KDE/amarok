@@ -916,11 +916,13 @@ bool Amarok::genericEventHandler( QWidget *recipient, QEvent *e )
     {
     case QEvent::DragEnter:
         #define e static_cast<QDropEvent*>(e)
-        e->accept( KURLDrag::canDecode( e ) );
+        e->accept( KUrl::List::canDecode( e->mimeData() ) );
         break;
 
     case QEvent::Drop:
-        if( KURLDrag::canDecode( e ) )
+    {
+        KUrl::List list = KUrl::List::fromMimeData( e->mimeData() );
+        if( !list.isEmpty() )
         {
             Q3PopupMenu popup;
             //FIXME this isn't a good way to determine if there is a currentTrack, need playlist() function
@@ -937,8 +939,6 @@ bool Amarok::genericEventHandler( QWidget *recipient, QEvent *e )
             popup.insertItem( i18n( "&Cancel" ), 0 );
 
             const int id = popup.exec( recipient->mapToGlobal( e->pos() ) );
-            KUrl::List list;
-            KURLDrag::decode( e, list );
 
             if ( id > 0 )
                 Playlist::instance()->insertMedia( list, id );
@@ -947,6 +947,7 @@ bool Amarok::genericEventHandler( QWidget *recipient, QEvent *e )
         #undef e
 
         break;
+    }
 
     //this like every entry in the generic event handler is used by more than one widget
     //please don't remove!
