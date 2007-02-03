@@ -244,13 +244,14 @@ DEBUG_BLOCK
         if( trackList.isEmpty() )
             break;
 
-        KUrl::List::Iterator urlIt = trackList.at( KRandom::random() % trackList.count() );
-        if( (*urlIt).isValid() )
+        const uint index = KRandom::random() % trackList.count();
+        const KUrl &url = trackList.at( index );
+        if( url.isValid() )
         {
-            returnList << (*urlIt).path();
+            returnList << url.path();
             ++i;
         }
-        trackList.remove( urlIt );
+        trackList.removeAt( index );
     }
 
     debug() << "Returning " << returnList.count() << " tracks from " << item->text(0) << endl;
@@ -364,9 +365,9 @@ DEBUG_BLOCK
     {
         for( uint i=0; i < songCount && urls.count(); i++ )
         {
-            KUrl::List::iterator newItem = urls.at( KRandom::random() % urls.count() );
-            addMe << (*newItem);
-            urls.remove( newItem );
+            const uint index = KRandom::random() % urls.count();
+            addMe << urls.at( index );
+            urls.removeAt( index );
         }
     }
 
@@ -391,9 +392,8 @@ DEBUG_BLOCK
         if( m_cachedItemSet.isEmpty() )
             break;
         const int pos = KRandom::random() % m_cachedItemSet.count();
-        KUrl::List::iterator newItem = m_cachedItemSet.at( pos );
-        retrieval << (*newItem);
-        m_cachedItemSet.remove( newItem );
+        retrieval << m_cachedItemSet.at( pos );
+        m_cachedItemSet.removeAt( pos );
     }
 
     return retrieval;

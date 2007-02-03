@@ -15,6 +15,7 @@
 #include "podcastsettings.h"
 
 #include <kaction.h>
+#include <kactionmenu.h>
 #include <k3listview.h>
 #include <kpushbutton.h>
 #include <kurl.h>
