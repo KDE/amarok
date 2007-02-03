@@ -2873,16 +2873,16 @@ void PlaylistBrowserView::rename( Q3ListViewItem *item, int c )
 void PlaylistBrowserView::keyPressEvent( QKeyEvent *e )
 {
     switch( e->key() ) {
-         case Key_Space:    //load
+         case Qt::Key_Space:    //load
             PlaylistBrowser::instance()->slotDoubleClicked( currentItem() );
             break;
 
-        case SHIFT+Key_Delete:    //delete
-        case Key_Delete:          //remove
+        case Qt::ShiftModifier+Qt::Key_Delete:    //delete
+        case Qt::Key_Delete:          //remove
             PlaylistBrowser::instance()->removeSelectedItems();
             break;
 
-        case Key_F2:    //rename
+        case Qt::Key_F2:    //rename
             PlaylistBrowser::instance()->renameSelectedItem();
             break;
 

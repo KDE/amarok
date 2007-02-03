@@ -123,15 +123,15 @@ QueueList::keyPressEvent( QKeyEvent *e )
 {
     switch( e->key() ) {
 
-        case Key_Delete:    //remove
+        case Qt::Key_Delete:    //remove
             removeSelected();
             break;
 
-        case CTRL+Key_Up:
+        case Qt::CtrlModifier+Qt::Key_Up:
             moveSelectedUp();
             break;
 
-        case CTRL+Key_Down:
+        case Qt::CtrlModifier+Qt::Key_Down:
             moveSelectedDown();
             break;
     }

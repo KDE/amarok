@@ -3787,8 +3787,8 @@ ContextBrowser::eventFilter( QObject *o, QEvent *e )
         {
             switch( e->key() )
             {
-            case Key_Return:
-            case Key_Enter:
+            case Qt::Key_Return:
+            case Qt::Key_Enter:
             {
                 Q3CheckListItem *item = new Q3CheckListItem( m_labelListView, m_addLabelEdit->text(), Q3CheckListItem::CheckBox );
                 item->setOn( true );
@@ -3804,7 +3804,7 @@ ContextBrowser::eventFilter( QObject *o, QEvent *e )
 	{
 	   switch ( e->key() )
 	   {
-	   case Key_Escape:
+	   case Qt::Key_Escape:
 	   {
 	   	lyricsSearchTextHide();
 		return true;

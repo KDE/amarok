@@ -210,7 +210,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         a->setIcon( Amarok::icon( "configure" ) );
         a->setDelayed( false ); //TODO should be done by KDirOperator
 
-        actionCollection->action( "delete" )->setShortcut( KShortcut( SHIFT + Key_Delete ) );
+        actionCollection->action( "delete" )->setShortcut( KShortcut( Qt::ShiftModifier + Qt::Key_Delete ) );
 
         a = new KActionMenu( i18n("Bookmarks"), "bookmark", actionCollection, "bookmarks" );
         a->setDelayed( false );

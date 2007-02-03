@@ -1225,7 +1225,7 @@ MediaView::MediaView( QWidget* parent, MediaDevice *device )
 void
 MediaView::keyPressEvent( QKeyEvent *e )
 {
-    if( e->key() == Key_Delete )
+    if( e->key() == Qt::Key_Delete )
         m_device->deleteFromDevice();
     else
         K3ListView::keyPressEvent( e );
@@ -3759,7 +3759,7 @@ MediaQueue::removeSelected()
 void
 MediaQueue::keyPressEvent( QKeyEvent *e )
 {
-    if( e->key() == Key_Delete )
+    if( e->key() == Qt::Key_Delete )
         removeSelected();
     else
         K3ListView::keyPressEvent( e );
