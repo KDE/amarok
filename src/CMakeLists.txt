@@ -289,6 +289,7 @@ kde4_add_ui3_files(amarok_LIB_SRCS
    Options7.ui 
    Options8.ui 
    dbsetup.ui 
+   deletedialogbase.ui
 #   firstrunwizard.ui 
    newdynamic.ui 
    organizecollectiondialog.ui 
