@@ -114,11 +114,12 @@ namespace Collection {
 
 Item::Item( Q3ListView *parent )
     : Q3CheckListItem( parent, "/", Q3CheckListItem::CheckBox  )
-    , m_lister( true )
+    , m_lister( this )
     , m_url( "file:/" )
     , m_listed( false )
     , m_fullyDisabled( false )
 {
+    m_lister.setDelayedMimeTypes( true );
     //Since we create the "/" checklistitem here, we need to enable it if needed
     if ( CollectionSetup::instance()->m_dirs.contains( "/" ) )
         static_cast<Q3CheckListItem*>( this )->setOn(true);
@@ -131,11 +132,12 @@ Item::Item( Q3ListView *parent )
 
 Item::Item( Q3ListViewItem *parent, const KUrl &url , bool full_disable /* default=false */ )
     : Q3CheckListItem( parent, url.fileName(), Q3CheckListItem::CheckBox )
-    , m_lister( true )
+    , m_lister( this )
     , m_url( url )
     , m_listed( false )
     , m_fullyDisabled( full_disable )
 {
+    m_lister.setDelayedMimeTypes( true );
     m_lister.setDirOnlyMode( true );
     setExpandable( true );
     connect( &m_lister, SIGNAL(newItems( const KFileItemList& )), SLOT(newItems( const KFileItemList& )) );
@@ -164,7 +166,7 @@ Item::setOpen( bool b )
 {
     if ( !m_listed )
     {
-        m_lister.openURL( m_url, true );
+        m_lister.openUrl( m_url, true );
         m_listed = true;
     }
 
@@ -204,7 +206,7 @@ Item::stateChange( bool b )
             {
                 // Since the dir "/" starts with '/', we need a hack to stop it removing
                 // itself (it being the only path with a trailing '/')
-                if ( (*diriter).startsWith( m_url.path(1) ) && *diriter != "/" )
+                if ( (*diriter).startsWith( m_url.path( KUrl::AddTrailingSlash) ) && *diriter != "/" )
                     diriter = cs_m_dirs.erase(diriter);
                 else
                     ++diriter;
@@ -224,7 +226,7 @@ Item::stateChange( bool b )
         QStringList::Iterator diriter = cs_m_dirs.begin();
         while ( diriter != cs_m_dirs.end() )
         {
-            if ( (*diriter).startsWith( m_url.path(1) ) )   //path(1) adds a trailing '/'
+            if ( (*diriter).startsWith( m_url.path( KUrl::AddTrailingSlash ) ) )   //path(1) adds a trailing '/'
             {
                 if ( CollectionSetup::instance()->recursive() ||
                      !QFile::exists( *diriter ) )
@@ -255,7 +257,7 @@ Item::activate()
 void
 Item::newItems( const KFileItemList &list ) //SLOT
 {
-    for( KFileItemListIterator it( list ); *it; ++it )
+    for( KFileItemList::const_iterator it = list.begin(); it != list.end(); ++it )
     {
         //Fully disable (always appears off and grayed-out) if it is "/proc", "/sys" or
         //"/dev" or one of their children. This is because we will never scan them, so we
@@ -294,7 +296,7 @@ Item::paintCell( QPainter * p, const QColorGroup & cg, int column, int width, in
     // Figure out if a child folder is activated
     for ( QStringList::const_iterator iter = cs_m_dirs.begin(); iter != cs_m_dirs.end();
             ++iter )
-        if ( ( *iter ).startsWith( m_url.path(1) ) )
+        if ( ( *iter ).startsWith( m_url.path( KUrl::AddTrailingSlash ) ) )
             if ( *iter != "/" ) // "/" should not match as a child of "/"
                 dirty = true;
 
