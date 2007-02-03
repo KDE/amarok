@@ -30,7 +30,7 @@
 class LIBAMAROK_EXPORT Medium
 {
 public:
-    typedef QList<const Medium> List;
+    typedef QList<Medium> List;
 
     static const uint AUTODETECTED = 0;
     static const uint ID = 1;
