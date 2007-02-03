@@ -115,21 +115,21 @@ MagnatuneArtistInfoBox::extractArtistInfo( QString artistPage )
     QString trimmedHtml;
 
 
-    int sectionStart = artistPage.find( "<!-- ARTISTBODY -->" );
-    int sectionEnd = artistPage.find( "<!-- /ARTISTBODY -->", sectionStart );
+    int sectionStart = artistPage.indexOf( "<!-- ARTISTBODY -->" );
+    int sectionEnd = artistPage.indexOf( "<!-- /ARTISTBODY -->", sectionStart );
 
     trimmedHtml = artistPage.mid( sectionStart, sectionEnd - sectionStart );
 
-    int buyStartIndex = trimmedHtml.find( "<!-- PURCHASE -->" );
+    int buyStartIndex = trimmedHtml.indexOf( "<!-- PURCHASE -->" );
     int buyEndIndex;
 
     //we are going to integrate the buying of music (I hope) so remove these links
 
     while ( buyStartIndex != -1 )
     {
-        buyEndIndex = trimmedHtml.find( "<!-- /PURCHASE -->", buyStartIndex ) + 18;
+        buyEndIndex = trimmedHtml.indexOf( "<!-- /PURCHASE -->", buyStartIndex ) + 18;
         trimmedHtml.remove( buyStartIndex, buyEndIndex - buyStartIndex );
-        buyStartIndex = trimmedHtml.find( "<!-- PURCHASE -->", buyStartIndex );
+        buyStartIndex = trimmedHtml.indexOf( "<!-- PURCHASE -->", buyStartIndex );
     }
 
 
