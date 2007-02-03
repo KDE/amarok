@@ -1099,9 +1099,9 @@ bool XineEngine::metaDataForUrl(const KUrl &url, Engine::SimpleMetaBundle &b)
                     QString::fromUtf8(
                         xine_get_meta_info(tmpstream, XINE_META_INFO_TRACK_NUMBER));
                 if( b.tracknr.isEmpty() )
-                    b.tracknr = url.filename();
+                    b.tracknr = url.fileName();
             } else {
-                b.title = QString(i18n("Track %1")).arg(url.filename());
+                b.title = QString(i18n("Track %1")).arg(url.fileName());
                 b.album = i18n("AudioCD");
             }
         }
