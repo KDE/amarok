@@ -177,7 +177,7 @@ ColumnsDialog::ColumnsDialog()
       m_list( new ColumnList( this ) )
 {
     setCaption( i18n( "Playlist Columns" ) );
-    dlg.setModal( false );
+    setModal( false );
 
     setMainWidget( m_list );
     enableButtonApply( false );
@@ -192,13 +192,13 @@ ColumnsDialog::~ColumnsDialog()
 void ColumnsDialog::slotApply()
 {
     apply();
-    KDialog::slotApply();
+    KDialog::slotButtonClicked( KDialog::Apply );
 }
 
 void ColumnsDialog::slotOk()
 {
     apply();
-    KDialog::slotOk();
+    KDialog::slotButtonClicked( KDialog::Ok );
 }
 
 void ColumnsDialog::hide()
