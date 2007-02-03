@@ -1070,7 +1070,7 @@ void App::slotConfigToolBars()
     PlaylistWindow* const pw = playlistWindow();
     KEditToolbar dialog( pw->actionCollection(), pw->xmlFile(), true, pw );
 
-    dialog.showButtonApply( false );
+    dialog.showButton( KEditToolbar::Apply, false );
 
     if( dialog.exec() )
     {
