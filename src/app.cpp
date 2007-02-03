@@ -244,7 +244,7 @@ namespace
         {
             debug() << "WARNING: urlToDevice needs to be reimplemented with KDE4 technology, it's just a stub at the moment" << endl;
             /*DCOPRef mediamanager( "kded", "mediamanager" );
-            DCOPReply reply = mediamanager.call( "properties(QString)", deviceUrl.fileName() );*/
+            DCOPReply reply = mediamanager.call( "properties(QString)", deviceUrl.fileName() );
             QStringList properties = reply;
 
             if (!reply.isValid() || properties.count() < 6)
@@ -256,7 +256,8 @@ namespace
             {
                 debug() << "Reply from mediamanager " << properties[5] << endl;
                 return properties[5];
-            }
+            }*/
+            return QString();
         }
 
         return device;
