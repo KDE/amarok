@@ -504,7 +504,7 @@ void App::initGlobalShortcuts()
 #endif
 
     KGlobalAccel::self()->setConfigGroup( "Shortcuts" );
-    KGlobalAccel::self()->readSettings( KGlobal::config() );
+    KGlobalAccel::self()->readSettings( KGlobal::config().data() );
 
 
 // FIXME Is this still needed with KDE4? 
