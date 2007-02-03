@@ -52,9 +52,14 @@
 Statistics *Statistics::s_instance = 0;
 
 Statistics::Statistics( QWidget *parent, const char *name )
-    : KDialogBase( KDialogBase::Swallow, 0, parent, name, false, 0, Close )
+    : KDialog( parent )
     , m_timer( new QTimer( this ) )
 {
+    setModal( false );
+    setButtons( Close );
+    setDefaultButton( Close );
+    showButtonSeparator( true );
+
     s_instance = this;
 
     // Gives the window a small title bar, and skips a taskbar entry

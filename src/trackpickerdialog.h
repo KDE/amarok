@@ -20,14 +20,14 @@
 
 #if HAVE_TUNEPIMP
 
-#include <kdialogbase.h>
+#include <kdialog.h>
 
 #include "ktrm.h"
 
 class TrackPickerDialogBase;
 
 
-class TrackPickerDialog : public KDialogBase
+class TrackPickerDialog : public KDialog
 {
     Q_OBJECT
 

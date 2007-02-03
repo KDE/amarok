@@ -30,7 +30,7 @@ class QPalette;
 class Q3VBox;
 class QLineEdit;
 class QComboBox;
-class KDialogBase;
+class KDialog;
 class KTabBar;
 class KTextEdit;
 
@@ -192,7 +192,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         Browser::ToolBar* m_wikiToolBar;
         QLineEdit*    m_wikiLocaleEdit;
         QComboBox*    m_wikiLocaleCombo;
-        KDialogBase*  m_wikiConfigDialog;
+        KDialog*  m_wikiConfigDialog;
 
         QString       m_HTMLSource;
         QStringList   m_metadataHistory;

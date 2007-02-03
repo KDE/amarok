@@ -80,7 +80,7 @@
 #include <kaction.h>
 #include <kapplication.h>
 #include <kcursor.h>         //setOverrideCursor()
-#include <kdialogbase.h>
+#include <kdialog.h>
 #include <kglobalsettings.h> //rename()
 #include <kiconeffect.h>
 #include <kiconloader.h>     //slotShowContextMenu()

@@ -6,7 +6,7 @@
 #ifndef SMARTPLAYLISTEDITOR_H
 #define SMARTPLAYLISTEDITOR_H
 
-#include <kdialogbase.h> //baseclass
+#include <kdialog.h> //baseclass
 #include <qdom.h>
 #include <q3hbox.h>       //baseclass
 #include <q3ptrlist.h>    //definition required
@@ -25,7 +25,7 @@ class Q3VGroupBox;
 
 class CriteriaEditor;
 
-class SmartPlaylistEditor : public KDialogBase
+class SmartPlaylistEditor : public KDialog
 {
 Q_OBJECT
     friend class CriteriaEditor;

@@ -1353,8 +1353,12 @@ QDomElement LastFmEntry::xml() const
 ////////////////////////////////////////////////////////////////////////////
 
 StreamEditor::StreamEditor( QWidget *parent, const QString &title, const QString &url, bool readonly )
-    : KDialogBase( parent, "StreamEditor", true, QString::null, Ok|Cancel)
+    : KDialog( parent, "StreamEditor", true, QString::null, Ok|Cancel)
 {
+    setModal( true );
+    setButtons( Ok | Cancel );
+    showButtonSeparator( true );
+
     makeGridMainWidget( 2, Qt::Horizontal );
 
     QLabel *nameLabel = new QLabel( i18n("&Name:"), mainWidget() );
@@ -2963,14 +2967,21 @@ PodcastEpisode::showContextMenu( const QPoint &position )
 }
 
 
-class AssociatePodcastDialog : public KDialogBase
+class AssociatePodcastDialog : public KDialog
 {
     KUrlRequester *m_urlRequester;
 
     public:
     AssociatePodcastDialog( PodcastEpisode *item )
-        : KDialogBase( Amarok::mainWindow(), "associatepodcastdialog", true, i18n("Select Local File for %1").arg(item->title()), Ok|Cancel, Ok, false )
+        : KDialog( Amarok::mainWindow() )
     {
+        setCaption( i18n("Select Local File for %1").arg(item->title()) );
+        setModal( true );
+        setButtons( Ok | Cancel );
+        setDefaultButton( Ok );
+        showButtonSeparator( false );
+
+
         KVBox* vbox = makeVBoxMainWidget();
         vbox->setSpacing( KDialog::spacingHint() );
 
@@ -2985,7 +2996,7 @@ void
 PodcastEpisode::associateWithLocalFile()
 {
     AssociatePodcastDialog d( this );
-    if( d.exec() == KDialogBase::Accepted )
+    if( d.exec() == KDialog::Accepted )
     {
         if( !d.url().isLocalFile() || !QFileInfo( d.url().path() ).isFile() )
             Amarok::StatusBar::instance()->shortMessage( i18n( "Invalid local podcast URL." ) );

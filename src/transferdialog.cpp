@@ -30,8 +30,13 @@
 #include <kpushbutton.h>
 
 TransferDialog::TransferDialog( MediaDevice *mdev )
-        : KDialogBase( Amarok::mainWindow(), "transferdialog", true, QString::null, Ok|Cancel, Ok )
+        : KDialog( Amarok::mainWindow() )
 {
+    setModal( true );
+    setButtons( Ok|Cancel );
+    setDefaultButton( Ok );
+    showButtonSeparator( true );
+
     m_dev = mdev;
     m_accepted = false;
     m_sort1LastIndex = m_sort2LastIndex = -1;
@@ -112,7 +117,7 @@ void
 TransferDialog::slotOk()
 {
     m_accepted = true;
-    KDialogBase::slotOk();
+    KDialog::slotOk();
 
     m_dev->setFirstSort( m_sort1->currentText() );
     m_dev->setSecondSort( m_sort2->currentText() );
@@ -123,7 +128,7 @@ void
 TransferDialog::slotCancel()
 {
     m_accepted = false;
-    KDialogBase::slotCancel();
+    KDialog::slotCancel();
 }
 
 void

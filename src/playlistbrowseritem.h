@@ -14,7 +14,7 @@
 #include "podcastbundle.h"
 #include "podcastsettings.h"
 
-#include <kdialogbase.h> // StreamEditor baseclass
+#include <kdialog.h> // StreamEditor baseclass
 #include <kio/job.h>
 #include <klineedit.h>
 #include <k3listview.h>
@@ -497,7 +497,7 @@ class LastFmEntry : public StreamEntry
         static const int RTTI = 1008;    //lastfm item
 };
 
-class StreamEditor : public KDialogBase
+class StreamEditor : public KDialog
 {
     public:
         StreamEditor( QWidget *parent, const QString &title, const QString &url, bool readonly = false );

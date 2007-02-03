@@ -53,8 +53,12 @@ EqualizerSetup* EqualizerSetup::s_instance = 0;
 
 
 EqualizerSetup::EqualizerSetup()
-        : KDialogBase( Amarok::mainWindow(), 0, false, 0, 0, Ok, false )
+        : KDialog( Amarok::mainWindow(), 0, false, 0, 0, Ok, false )
 {
+    dialog->setModal( false );
+    dialog->setButtons( Ok );
+    dialog->showButtonSeparator( false );
+
     using Amarok::Slider;
 
     s_instance = this;

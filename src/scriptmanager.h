@@ -26,7 +26,7 @@
 
 #include <qmap.h>
 
-#include <kdialogbase.h>      //baseclass
+#include <kdialog.h>      //baseclass
 #include <kurl.h>
 
 class MetaBundle;
@@ -53,7 +53,7 @@ class KProcIO;
  * @see http://amarok.kde.org/amarokwiki/index.php/Script-Writing_HowTo
  */
 
-class ScriptManager : public KDialogBase, public EngineObserver
+class ScriptManager : public KDialog, public EngineObserver
 {
     Q_OBJECT
 

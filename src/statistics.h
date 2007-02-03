@@ -16,7 +16,7 @@
 
 #include "playlistwindow.h"
 
-#include <kdialogbase.h>    //baseclass
+#include <kdialog.h>    //baseclass
 #include <k3listview.h>      //baseclass
 
 #include <QTimer>
@@ -31,7 +31,7 @@ class StatisticsList;
 class StatisticsItem;
 class StatisticsDetailedItem;
 
-class Statistics : public KDialogBase
+class Statistics : public KDialog
 {
         Q_OBJECT
 

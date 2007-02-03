@@ -33,8 +33,13 @@
 #include <kwin.h>
 
 DeviceConfigureDialog::DeviceConfigureDialog( const Medium &medium )
-        : KDialogBase( Amarok::mainWindow(), "deviceconfiguredialog", true, QString("Select Plugin for " + medium.name()), Ok|Cancel, Ok, false )
+        : KDialog( Amarok::mainWindow() )
 {
+    setCaption( i18n("Select Plugin for %1").arg( medium.name() ) );
+    setModal( true );
+    setButtons( Ok | Cancel );
+    showButtonSeparator( true );
+
     m_medium = new Medium( medium );
     kapp->setTopWidget( this );
     setCaption( KDialog::makeStandardCaption( i18n( "Configure Media Device" ) ) );
@@ -123,7 +128,7 @@ DeviceConfigureDialog::~DeviceConfigureDialog()
 void
 DeviceConfigureDialog::slotCancel()
 {
-    KDialogBase::slotCancel( );
+    KDialog::slotCancel( );
 }
 
 void
@@ -152,7 +157,7 @@ DeviceConfigureDialog::slotOk()
     MediaBrowser::instance()->updateStats();
     MediaBrowser::instance()->updateDevices();
 
-    KDialogBase::slotOk();
+    KDialog::slotOk();
 }
 
 #include "deviceconfiguredialog.moc"

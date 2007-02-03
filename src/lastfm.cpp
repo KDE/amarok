@@ -1047,8 +1047,11 @@ void Bundle::detach() {
 // CLASS LastFm::LoginDialog
 ////////////////////////////////////////////////////////////////////////////////
 LoginDialog::LoginDialog( QWidget *parent )
-    : KDialogBase( parent, "LastfmLogin", true, QString::null, Ok|Cancel)
+    : KDialog( parent, "LastfmLogin", true, QString::null, Ok|Cancel)
 {
+    setModal( true );
+    setButtons( Ok | Cancel );
+
     makeGridMainWidget( 1, Qt::Horizontal );
     new QLabel( i18n( "To use last.fm with Amarok, you need a last.fm profile." ), mainWidget() );
 
@@ -1071,7 +1074,7 @@ void LoginDialog::slotOk()
     AmarokConfig::setScrobblerUsername( m_userLineEdit->text() );
     AmarokConfig::setScrobblerPassword( m_passLineEdit->text() );
 
-    KDialogBase::slotOk();
+    KDialog::slotOk();
 }
 
 
@@ -1079,8 +1082,13 @@ void LoginDialog::slotOk()
 // CLASS LastFm::CustomStationDialog
 ////////////////////////////////////////////////////////////////////////////////
 CustomStationDialog::CustomStationDialog( QWidget *parent )
-    : KDialogBase( parent, "LastfmCustomStation", true, i18n( "Create Custom Station" ) , Ok|Cancel)
+    : KDialog( parent, "LastfmCustomStation", true, i18n( "Create Custom Station" ) , Ok|Cancel)
 {
+    setCaption( i18n( "Create Custom Station" ) );
+    setModal( true );
+    setButtons( Ok | Cancel );
+
+
     makeVBoxMainWidget();
 
     new QLabel( i18n( "Enter the name of a band or artist you like:\n(You can enter multiple artists separated by commas)" ), mainWidget() );

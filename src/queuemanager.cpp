@@ -286,8 +286,13 @@ QueueList::contentsDropEvent( QDropEvent *e )
 QueueManager *QueueManager::s_instance = 0;
 
 QueueManager::QueueManager( QWidget *parent, const char *name )
-    : KDialogBase( KDialogBase::Swallow, 0, parent, name, false, 0, Ok|Apply|Cancel )
+    : KDialog( parent )
 {
+    setModal( false );
+    setButtons( Ok|Apply|Cancel );
+    setDefaultButton( Ok );
+    showButtonSeparator( true );
+
     s_instance = this;
 
     // Gives the window a small title bar, and skips a taskbar entry

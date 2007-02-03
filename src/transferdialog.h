@@ -21,7 +21,7 @@
 //Added by qt3to4:
 #include <Q3PtrList>
 #include <QLabel>
-#include <kdialogbase.h>
+#include <kdialog.h>
 
 class KComboBox;
 class TransferDialog;
@@ -29,7 +29,7 @@ class TransferDialog;
 /**
 	@author Jeff Mitchell <kde-dev@emailgoeshere.com>
 */
-class LIBAMAROK_EXPORT TransferDialog : public KDialogBase
+class LIBAMAROK_EXPORT TransferDialog : public KDialog
 {
     Q_OBJECT
 

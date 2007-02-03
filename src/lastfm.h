@@ -260,7 +260,7 @@ namespace LastFm
 
     };
 
-    class LoginDialog : public KDialogBase
+    class LoginDialog : public KDialog
     {
         Q_OBJECT
 
@@ -276,7 +276,7 @@ namespace LastFm
 
     };
 
-    class CustomStationDialog : public KDialogBase
+    class CustomStationDialog : public KDialog
     {
         Q_OBJECT
 

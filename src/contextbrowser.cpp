@@ -3640,7 +3640,13 @@ ContextBrowser::wikiConfig() // SLOT
     else // other
         index = 6;
 
-    m_wikiConfigDialog = new KDialogBase( this, 0, true, 0, KDialogBase::Ok|KDialogBase::Apply|KDialogBase::Cancel );
+    m_wikiConfigDialog = new KDialog( this );
+
+    m_wikiConfigDialog->setModal( true );
+    m_wikiConfigDialog->setButtons( Ok | Cancel | Apply );
+    m_wikiConfigDialog->showButtonSeparator( true );
+
+
     kapp->setTopWidget( m_wikiConfigDialog );
     m_wikiConfigDialog->setCaption( KDialog::makeStandardCaption( i18n( "Wikipedia Locale" ) ) );
     KVBox *box = m_wikiConfigDialog->makeVBoxMainWidget();
@@ -3717,7 +3723,13 @@ ContextBrowser::showLabelsDialog()
     QStringList allLabels = CollectionDB::instance()->labelList();
     QStringList trackLabels = CollectionDB::instance()->getLabels( currentUrl.path(), CollectionDB::typeUser );
     debug() << "Showing add label dialog" << endl;
-    KDialogBase *dialog = new KDialogBase( this, 0, false, QString::null, KDialogBase::Ok|KDialogBase::Cancel );
+    KDialog *dialog = new KDialog( this );
+
+    dialog->setModal( false );
+    dialog->setButtons( Ok | Cancel );
+    dialog->showButtonSeparator( true );
+
+
     dialog->makeVBoxMainWidget();
 
     m_addLabelEdit = new ClickLineEdit( i18n( "Add new label" ), dialog->mainWidget() );

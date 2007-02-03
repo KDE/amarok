@@ -23,7 +23,7 @@
 #include <q3hbox.h>
 //Added by qt3to4:
 #include <Q3ValueList>
-#include <kdialogbase.h>
+#include <kdialog.h>
 
 class K3ListView;
 class KPushButton;
@@ -55,7 +55,7 @@ private:
     bool m_changed;
 };
 
-class ColumnsDialog: public KDialogBase
+class ColumnsDialog: public KDialog
 {
     Q_OBJECT
 public:

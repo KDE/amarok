@@ -466,13 +466,19 @@ DaapClient::getSession( const QString& host )
 void
 DaapClient::customClicked()
 {
-    class AddHostDialog : public KDialogBase
+    class AddHostDialog : public KDialog
     {
 
         public:
             AddHostDialog( QWidget *parent )
-                : KDialogBase( parent, "DaapAddHostDialog", true, i18n( "Add Computer" ) , Ok|Cancel)
+                : KDialog( parent )
             {
+
+                setCaption( i18n( "Add Computer" ) );
+                setModal( true );
+                setButtons( Ok | Cancel );
+                showButtonSeparator( true );
+
                 m_base = new AddHostBase( this, "DaapAddHostBase" );
                 m_base->m_downloadPixmap->setPixmap( QPixmap( KIconLoader::global()->iconPath( Amarok::icon( "download" ), -K3Icon::SizeEnormous ) ) );
                 m_base->m_hostName->setFocus();
@@ -511,12 +517,17 @@ DaapClient::newHost( const QString& serviceName, const QString& host, const QStr
 void
 DaapClient::passwordPrompt()
 {
-    class PasswordDialog : public KDialogBase
+    class PasswordDialog : public KDialog
     {
         public:
             PasswordDialog( QWidget *parent )
-            : KDialogBase( parent, "PasswordDialog", true, i18n( "Password Required" ) , Ok|Cancel)
+            : KDialog( parent )
             {
+                setCaption( i18n( "Password Required" ) );
+                setModal( true );
+                setButtons( Ok | Cancel );
+                showButtonSeparator( true );
+
                 makeHBoxMainWidget();
 
                 KGuiItem ok( KStandardGuiItem::ok() );

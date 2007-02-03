@@ -65,23 +65,31 @@ PodcastSettings::PodcastSettings( const QString &title, const QString &save, con
 }
 
 PodcastSettingsDialog::PodcastSettingsDialog( PodcastSettings *settings, QWidget* parent )
-                            : KDialogBase(  parent, 0, true, i18nc("change options", "Configure %1").arg( settings->m_title )
-                            , KDialogBase::User1|KDialogBase::Ok|KDialogBase::Cancel
-                            , KDialogBase::Ok, true
-                            , KGuiItem(i18n("Reset"), "reset" ) )
+                            : KDialog( parent )
         , m_settings( settings )
 {
+    setCaption( i18nc("change options", "Configure %1").arg( settings->m_title ) );
+    setModal( true );
+    setButtons( Ok | Cancel | User1 );
+    setButtonGuiItem( User1, i18n("Reset") );
+    setDefaultButton( Ok );
+    showButtonSeparator( true );
+
     init();
     setSettings( settings );
 }
 
 PodcastSettingsDialog::PodcastSettingsDialog( const Q3PtrList<PodcastSettings> &list, const QString &caption, QWidget* parent )
-    : KDialogBase(  parent, 0, true, i18nc("change options", "Configure %1").arg( caption )
-            , KDialogBase::User1|KDialogBase::Ok|KDialogBase::Cancel
-                    , KDialogBase::Ok, true
-                    , KGuiItem(i18n("Reset"), "reset" ) )
+    : KDialog(  parent )
         , m_settingsList( list )
 {
+    setCaption( i18nc("change options", "Configure %1").arg( caption ) );
+    setModal( true );
+    setButtons( Ok | Cancel | User1 );
+    setButtonGuiItem( User1, i18n("Reset") );
+    setDefaultButton( Ok );
+    showButtonSeparator( true );
+
     init();
     m_settings = m_settingsList.first();
     if( !m_settings->m_saveLocation.endsWith( "/" ) )
@@ -170,7 +178,7 @@ void PodcastSettingsDialog::slotOk()       //slot
             m_settings->m_fetch = AUTOMATIC;
     }
 
-    KDialogBase::slotOk();
+    KDialog::slotOk();
 }
 
 // KUrlRequester doesn't provide us with convenient functions for adding trailing slashes

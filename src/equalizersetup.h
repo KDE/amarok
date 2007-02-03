@@ -21,7 +21,7 @@
 #include <q3ptrlist.h>           //stack alloc
 //Added by qt3to4:
 #include <Q3ValueList>
-#include <kdialogbase.h>
+#include <kdialog.h>
 
 class EqualizerGraph;
 class Q3GroupBox;
@@ -32,7 +32,7 @@ class KMenu;
 namespace Amarok { class Slider; }
 
 
-class EqualizerSetup : public KDialogBase
+class EqualizerSetup : public KDialog
 {
     Q_OBJECT
 

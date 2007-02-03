@@ -137,11 +137,16 @@ ScriptManager* ScriptManager::s_instance = 0;
 
 
 ScriptManager::ScriptManager( QWidget *parent, const char *name )
-        : KDialogBase( parent, name, false, QString::null, Close, Close, true )
+        : KDialog( parent, name, false, QString::null, Close, Close, true )
         , EngineObserver( EngineController::instance() )
         , m_gui( new ScriptManagerBase( this ) )
 {
     DEBUG_BLOCK
+    setModal( false );
+    setButtons( Close );
+    setDefaultButton( Close );
+    showButtonSeparator( true );
+
 
     s_instance = this;
 
@@ -652,7 +657,7 @@ ScriptManager::slotAboutScript()
 
     KAboutDialog* about = new KAboutDialog( KAboutDialog::AbtTabbed|KAboutDialog::AbtProduct,
                                             QString::null,
-                                            KDialogBase::Ok, KDialogBase::Ok, this );
+                                            KDialog::Ok, KDialog::Ok, this );
     kapp->setTopWidget( about );
     about->setCaption( KDialog::makeStandardCaption( i18n( "About %1" ).arg( name ) ) );
     about->setProduct( "", "", "", "" );

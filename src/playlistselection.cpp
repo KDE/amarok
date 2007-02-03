@@ -71,12 +71,16 @@ void PlaylistSelection::loadChildren( Q3ListViewItem* browserParent, Q3ListViewI
 ////////////////////////////////
 namespace ConfigDynamic
 {
-    KDialogBase* basicDialog( QWidget* parent )
+    KDialog* basicDialog( QWidget* parent )
     {
-        KDialogBase* dialog = new KDialogBase( parent, "new dynamic", true,
-                              i18n("Create Dynamic Playlist"),
-                              KDialogBase::Ok | KDialogBase::Cancel,
-                              KDialogBase::Ok, true );
+        KDialog* dialog = new KDialog( parent );
+        dialog->setCaption( i18n("Create Dynamic Playlist") );
+        dialog->setModal( true );
+        dialog->setButtons( Ok | Cancel );
+        dialog->setDefaultButton( Ok );
+        dialog->showButtonSeparator( true );
+
+
         kapp->setTopWidget( dialog );
         dialog->setCaption( i18n("Dynamic Mode") );
         NewDynamic* nd = new NewDynamic( dialog, "new dynamic");
@@ -89,7 +93,7 @@ namespace ConfigDynamic
 
     void dynamicDialog( QWidget* parent )
     {
-        KDialogBase* dialog = basicDialog( parent );
+        KDialog* dialog = basicDialog( parent );
         NewDynamic*  nd     = static_cast<NewDynamic*>(dialog->mainWidget());
         nd->m_mixLabel->setText( i18n("Add Dynamic Playlist") );
 
@@ -99,7 +103,7 @@ namespace ConfigDynamic
 
     void editDynamicPlaylist( QWidget* parent, DynamicMode* mode )
     {
-        KDialogBase* dialog = basicDialog( parent );
+        KDialog* dialog = basicDialog( parent );
         NewDynamic*  nd     = static_cast<NewDynamic*>(dialog->mainWidget());
 
         nd->m_name->setText( mode->title() );

@@ -3057,11 +3057,17 @@ QString PlaylistDialog::getSaveFileName( const QString &suggestion, bool propose
 }
 
 PlaylistDialog::PlaylistDialog()
-    : KDialogBase( PlaylistWindow::self(), "saveplaylist", true /*modal*/,
-                   i18n( "Save Playlist" ), Ok | Cancel | User1, Ok, false /*separator*/,
-                   KGuiItem( i18n( "Save to location..." ), SmallIconSet( Amarok::icon( "files" ) ) ) )
+    : KDialog( PlaylistWindow::self() )
     , customChosen( false )
 {
+    setCaption( i18n( "Save Playlist" ) );
+    setModal( true );
+    setButtons( Ok | Cancel | User1 );
+    setDefaultButton( Ok );
+    showButtonSeparator( false );
+    setButtonGuiItem( User1, i18n( "Save to location..." ) ); //SmallIconSet( Amarok::icon( "files" ) )
+
+
     KVBox *vbox = makeVBoxMainWidget();
     QLabel *label = new QLabel( i18n( "&Enter a name for the playlist:" ), vbox );
     edit = new KLineEdit( vbox );
@@ -3089,7 +3095,7 @@ void PlaylistDialog::slotOk()
             i18n( "A playlist named \"%1\" already exists. Do you want to overwrite it?" ).arg( edit->text() ),
             i18n( "Overwrite Playlist?" ), i18n( "Overwrite" ) ) == KMessageBox::Continue )
     {
-        KDialogBase::slotOk();
+        KDialog::slotOk();
     }
 }
 

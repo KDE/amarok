@@ -67,7 +67,7 @@
 #include <kconfig.h>
 #include <kcombobox.h>
 #include <kcursor.h>
-#include <kdialogbase.h>
+#include <kdialog.h>
 #include <kglobal.h>
 #include <kiconloader.h>    //renderView()
 #include <klocale.h>
@@ -729,7 +729,7 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
 void
 CollectionView::setupDirs()  //SLOT
 {
-    KDialogBase dialog( this, 0, false );
+    KDialog dialog( this, 0, false );
     kapp->setTopWidget( &dialog );
     dialog.setCaption( KDialog::makeStandardCaption( i18n("Configure Collection") ) );
 
@@ -1786,7 +1786,7 @@ CollectionView::organizeFiles( const KUrl::List &urls, const QString &caption, b
     }
 
     OrganizeCollectionDialogBase base( m_parent, "OrganizeFiles", true, caption,
-            KDialogBase::Ok|KDialogBase::Cancel|KDialogBase::Details );
+            KDialog::Ok|KDialog::Cancel|KDialog::Details );
     KVBox* page = base.makeVBoxMainWidget();
 
     OrganizeCollectionDialog dialog( page );
@@ -1824,7 +1824,7 @@ CollectionView::organizeFiles( const KUrl::List &urls, const QString &caption, b
 
     base.setInitialSize( QSize( 450, 350 ) );
 
-    if( base.exec() == KDialogBase::Accepted )
+    if( base.exec() == KDialog::Accepted )
     {
         AmarokConfig::setOrganizeDirectory( dialog.folderCombo->currentItem() );
         AmarokConfig::setOverwriteFiles( dialog.overwriteCheck->isChecked() );

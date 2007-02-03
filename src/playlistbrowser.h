@@ -279,7 +279,7 @@ class PlaylistBrowserView : public K3ListView
         Q3ListViewItem   *m_marker;       //track that has the drag/drop marker under it
 };
 
-class PlaylistDialog: public KDialogBase
+class PlaylistDialog: public KDialog
 {
     Q_OBJECT
     public:

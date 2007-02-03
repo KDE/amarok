@@ -37,8 +37,14 @@
 #include <kstandarddirs.h> //locate()
 
 EqualizerPresetManager::EqualizerPresetManager( QWidget *parent, const char *name )
-        : KDialogBase( parent, name, true, i18n("Presets"), Ok | Cancel | Default, Ok, true )
+        : KDialog( parent )
 {
+    setCaption( i18n("Presets") );
+    setModal( true );
+    setButtons( Ok | Cancel | Default );
+    setDefaultButton( Ok );
+    showButtonSeparator( true );
+
     QWidget *mainWidget = new QWidget( this );
     setMainWidget( mainWidget );
     Q3HBoxLayout *mainLayout = new Q3HBoxLayout( mainWidget, 0, spacingHint() );

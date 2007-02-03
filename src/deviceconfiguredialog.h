@@ -18,7 +18,7 @@
 #include <QCheckBox>
 #include <QRadioButton>
 
-#include <kdialogbase.h>
+#include <kdialog.h>
 
 class MediaBrowser;
 class Medium;
@@ -26,7 +26,7 @@ class Medium;
 /**
     @author Jeff Mitchell <kde-dev@emailgoeshere.com>
 */
-class DeviceConfigureDialog : public KDialogBase
+class DeviceConfigureDialog : public KDialog
 {
     Q_OBJECT
 

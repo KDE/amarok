@@ -4,7 +4,7 @@
 #ifndef AMAROK_PODCASTSETTINGS_H
 #define AMAROK_PODCASTSETTINGS_H
 
-#include "kdialogbase.h"    //baseclass
+#include "kdialog.h"    //baseclass
 
 #include <kurl.h>
 
@@ -45,7 +45,7 @@ class PodcastSettings
 };
 
 
-class PodcastSettingsDialog : public KDialogBase
+class PodcastSettingsDialog : public KDialog
 {
     Q_OBJECT
 

@@ -16,7 +16,7 @@
 
 #include "playlistitem.h"
 
-#include <kdialogbase.h>    //baseclass
+#include <kdialog.h>    //baseclass
 #include <k3listview.h>      //baseclass
 
 #include <qmap.h>
@@ -72,7 +72,7 @@ class QueueList : public K3ListView
         void    changed();
 };
 
-class QueueManager : public KDialogBase
+class QueueManager : public KDialog
 {
         Q_OBJECT
 

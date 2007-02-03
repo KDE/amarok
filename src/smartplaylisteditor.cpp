@@ -65,9 +65,14 @@ QStringList m_expandableDbFields;
 
 
 SmartPlaylistEditor::SmartPlaylistEditor( QString defaultName, QWidget *parent, const char *name )
-    : KDialogBase( parent, name, true, i18n("Create Smart Playlist"),
-      Ok|Cancel, Ok, true )
+    : KDialog( parent )
 {
+    setCaption( i18n("Create Smart Playlist") );
+    setModal( true );
+    setButtons( Ok | Cancel );
+    setDefaultButton( Ok );
+    showButtonSeparator( true );
+
     init(defaultName);
     addCriteriaAny();
     addCriteriaAll();
@@ -75,9 +80,16 @@ SmartPlaylistEditor::SmartPlaylistEditor( QString defaultName, QWidget *parent, 
 
 
 SmartPlaylistEditor::SmartPlaylistEditor( QWidget *parent, QDomElement xml, const char *name)
-    : KDialogBase( parent, name, true, i18n("Edit Smart Playlist"),
+    : KDialog( parent, name, true, i18n("Edit Smart Playlist"),
       Ok|Cancel, Ok, true )
 {
+    setCaption( i18n("Edit Smart Playlist") );
+    setModal( true );
+    setButtons( Ok | Cancel );
+    setDefaultButton( Ok );
+    showButtonSeparator( true );
+
+
     init( xml.attribute( "name" ) );
     // matches
     QDomNodeList matchesList =  xml.elementsByTagName( "matches" );
@@ -1004,7 +1016,7 @@ void CriteriaEditor::loadCriteriaList( int valueType, QString condition )
         case String:
         case AutoCompletionString:
             items << i18n( "contains" ) << i18n( "does not contain" ) << i18n( "is" ) << i18n( "is not" )
-                  << i18n( "starts with" ) << i18n( "does not start with" ) 
+                  << i18n( "starts with" ) << i18n( "does not start with" )
                   << i18n( "ends with" ) << i18n( "does not end with" );
             break;
 

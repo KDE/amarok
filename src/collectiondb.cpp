@@ -60,7 +60,7 @@
 #include <kcharsets.h>            //setHTMLLyrics()
 #include <kcombobox.h>
 #include <kconfig.h>
-#include <kdialogbase.h>          //checkDatabase()
+#include <kdialog.h>          //checkDatabase()
 #include <kglobal.h>
 #include <kinputdialog.h>         //setupCoverFetcher()
 #include <klineedit.h>            //setupCoverFetcher()
@@ -5317,13 +5317,12 @@ CollectionDB::checkDatabase()
         if ( needsUpdate )
         {
 
-            KDialogBase *dialog = new KDialogBase( KDialogBase::Swallow,
-                                                   Qt::WType_TopLevel|Qt::WStyle_Customize|Qt::WStyle_DialogBorder,
-                                                   0,
-                                                   "Update database warning dialog",
-                                                   false,
-                                                   i18n( "Updating database" ),
-                                                   0 );
+            KDialog *dialog = new KDialog( 0 );
+            dialog->setCaption( i18n( "Updating database" ) );
+            dialog->setModal( false );
+            dialog->showButtonSeparator( false );
+
+
             /* TODO: remove the standard window controls from the dialog window, the user should not be able
                      to close, minimize, maximize the dialog
                      add additional text, e.g. Amarok is currently updating your database. This may take a while.

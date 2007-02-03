@@ -20,7 +20,7 @@
 #include <QCheckBox>
 //Added by qt3to4:
 #include <QLabel>
-#include <kdialogbase.h>
+#include <kdialog.h>
 #include <kurl.h>
 #include "deletedialogbase.h"
 
@@ -43,7 +43,7 @@ protected slots:
     virtual void slotShouldDelete(bool shouldDelete);
 };
 
-class DeleteDialog : public KDialogBase
+class DeleteDialog : public KDialog
 {
     Q_OBJECT
 

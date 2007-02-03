@@ -42,7 +42,7 @@ class TransferDialog;
 
 class KAction;
 class KComboBox;
-class KDialogBase;
+class KDialog;
 class KProgress;
 class KPushButton;
 class KShellProcess;

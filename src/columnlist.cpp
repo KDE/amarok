@@ -173,9 +173,12 @@ void ColumnList::setChanged() //slot
 }
 
 ColumnsDialog::ColumnsDialog()
-    : KDialogBase( PlaylistWindow::self(), 0, false, i18n( "Playlist Columns" ) ),
+    : KDialog( PlaylistWindow::self() ),
       m_list( new ColumnList( this ) )
 {
+    setCaption( i18n( "Playlist Columns" ) );
+    dlg.setModal( false );
+
     setMainWidget( m_list );
     enableButtonApply( false );
     connect( m_list, SIGNAL( changed() ), this, SLOT( slotChanged() ) );
@@ -189,18 +192,18 @@ ColumnsDialog::~ColumnsDialog()
 void ColumnsDialog::slotApply()
 {
     apply();
-    KDialogBase::slotApply();
+    KDialog::slotApply();
 }
 
 void ColumnsDialog::slotOk()
 {
     apply();
-    KDialogBase::slotOk();
+    KDialog::slotOk();
 }
 
 void ColumnsDialog::hide()
 {
-    KDialogBase::hide();
+    KDialog::hide();
     delete this;
 }
 

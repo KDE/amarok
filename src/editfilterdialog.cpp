@@ -30,11 +30,17 @@
 #include "metabundle.h"
 
 EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, const QString &text )
-    : KDialogBase( Plain, i18n("Edit Filter"), User1|User2|Default|Ok|Cancel,
-      Cancel, parent, "editfilter", /*modal*/true, /*separator*/false ),
+    : KDialog( parent ),
       m_minMaxRadio(0),
       m_filterText(text)
 {
+    setCaption( i18n("Edit Filter") );
+    setModal( true );
+    setButtons( User1|User2|Default|Ok|Cancel );
+    setDefaultButton( Cancel );
+    showButtonSeparator( true );
+
+
     // Redefine "Default" button
     KGuiItem defaultButton( i18n("&Append"), "add" );
     setButtonWhatsThis( Default, i18n( "<qt><p>By clicking here you can add the defined condition. The \"OK\" button will "

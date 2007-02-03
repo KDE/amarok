@@ -22,7 +22,7 @@
 
 #include "equalizersetup.h"
 
-#include <kdialogbase.h>      //baseclass
+#include <kdialog.h>      //baseclass
 //Added by qt3to4:
 #include <Q3ValueList>
 
@@ -30,7 +30,7 @@ class QPushButton;
 class QStringList;
 class K3ListView;
 
-class EqualizerPresetManager : public KDialogBase
+class EqualizerPresetManager : public KDialog
 {
     Q_OBJECT
 

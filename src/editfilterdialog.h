@@ -10,7 +10,7 @@
 #include <Q3VBoxLayout>
 #include <QLabel>
 
-#include <kdialogbase.h>
+#include <kdialog.h>
 
 class QWidget;
 class Q3VBoxLayout;
@@ -23,7 +23,7 @@ class QSpinBox;
 class QStringList;
 class KComboBox;
 
-class EditFilterDialog : public KDialogBase
+class EditFilterDialog : public KDialog
 {
     Q_OBJECT
     public:

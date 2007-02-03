@@ -24,7 +24,7 @@
 #include <k3listview.h>       //baseclass
 #include <QStringList>     //stack allocated
 #include <kurl.h>            //stack allocated
-#include <kdialogbase.h>     //baseclass
+#include <kdialog.h>     //baseclass
 #include <kprogress.h>
 
 #include "multitabbar.h"     //baseclass
@@ -389,22 +389,26 @@ class CollectionView : public K3ListView, public DropProxyTarget
         Q3ValueList<int>         m_flatColumnWidths;
 };
 
-// why is signal detailsClicked() missing from KDialogBase?
-class OrganizeCollectionDialogBase : public KDialogBase
+// why is signal detailsClicked() missing from KDialog?
+class OrganizeCollectionDialogBase : public KDialog
 {
     Q_OBJECT
     public:
     OrganizeCollectionDialogBase( QWidget *parent=0, const char *name=0, bool modal=true,
             const QString &caption=QString::null,
             int buttonMask=Ok|Apply|Cancel )
-        : KDialogBase( parent, name, modal, caption, buttonMask )
+        : KDialog( parent )
     {
+        setCaption( caption );
+        setModal( modal );
+        setButtons( buttonMask );
+        showButtonSeparator( true );
     }
 
     signals:
         void detailsClicked();
     public slots:
-        void slotDetails() { KDialogBase::slotDetails(); emit detailsClicked(); adjustSize(); }
+        void slotDetails() { KDialog::slotDetails(); emit detailsClicked(); adjustSize(); }
 };
 
 inline QPixmap *CollectionItem::star() { return s_star; }

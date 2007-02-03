@@ -13,7 +13,7 @@
 #include <k3listview.h>
 
 class NewDynamic;
-class KDialogBase;
+class KDialog;
 class DynamicMode;
 
 //this is a widget used in newdynamic.ui
@@ -38,7 +38,7 @@ namespace ConfigDynamic
     void editDynamicPlaylist( QWidget* parent, DynamicMode* mode );
     void loadDynamicMode( DynamicMode* saveMe, NewDynamic* dialog );
 
-    KDialogBase* basicDialog( QWidget* parent );
+    KDialog* basicDialog( QWidget* parent );
 }
 
 class SelectionListItem : public Q3CheckListItem

@@ -52,8 +52,13 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
 TrackPickerDialog::TrackPickerDialog(const QString &name, const KTRMResultList &results, QWidget *parent)
-        : KDialogBase(parent, name.latin1(), true, QString::null, Ok | Cancel, Ok, true)
+        : KDialog(parent, name.latin1(), true, QString::null, Ok | Cancel, Ok, true)
 {
+    setModal( true );
+    setButtons( Ok | Cancel );
+    setDefaultButton( Ok );
+    showButtonSeparator( true );
+
     kapp->setTopWidget( this );
     setCaption( KDialog::makeStandardCaption( i18n("MusicBrainz Results") ) );
 
