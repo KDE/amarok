@@ -9,6 +9,7 @@
 #include <QPixmap>
 #include <QEvent>
 
+#include <kconfig.h>
 #include <kurl.h> // recursiveUrlExpand
 #include <kprocio.h> //Amarok::ProcIO
 #include <kio/netaccess.h>
@@ -17,7 +18,6 @@
 #include "amarok_export.h"
 
 class KActionCollection;
-class KConfig;
 class QColor;
 class QDateTime;
 class QEvent;
@@ -63,7 +63,7 @@ namespace Amarok
      */
     /* FIXME: This function can lead to very bizarre and hard to figure bugs.
               While we don`t fix it properly, use it like this: amarok::config( Group )->readNumEntry( ... ) */
-    KConfig *config( const QString &group = "General" ); //defined in app.cpp
+    KSharedConfig::Ptr config( const QString &group = "General" ); //defined in app.cpp
 
     /**
      * @return the KActionCollection used by Amarok
