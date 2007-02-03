@@ -9,7 +9,7 @@
 
 #include <QLabel>
 #include <q3valuelist.h>      //stack allocated
-#include <q3vbox.h>           //baseclass
+//#include <q3vbox.h>           //baseclass
 //Added by qt3to4:
 #include <QKeyEvent>
 #include <Q3CString>
@@ -20,7 +20,7 @@
 #include <QResizeEvent>
 #include <QEvent>
 #include <QPaintEvent>
-
+#include <QWidget>
 #include <k3listview.h>       //baseclass
 #include <QStringList>     //stack allocated
 #include <kurl.h>            //stack allocated
@@ -65,7 +65,7 @@ namespace CollectionBrowserIds
     };
 }
 
-class CollectionBrowser: public Q3VBox
+class CollectionBrowser: public QWidget
 {
     Q_OBJECT
     friend class CollectionView;
@@ -99,7 +99,7 @@ class CollectionBrowser: public Q3VBox
         // For iPod-style browsing
         KAction           *m_ipodIncrement, *m_ipodDecrement;
         class KToolBar    *m_ipodToolbar;
-        class Q3HBox       *m_ipodHbox;
+        class QWidget       *m_ipodHbox;
 
         KToggleAction     *m_showDividerAction;
         KRadioAction      *m_treeViewAction;

@@ -61,6 +61,10 @@
 #include <QToolTip>       //QToolTip::add()
 #include <q3header.h>
 #include <QRegExp>
+#include <QToolButton>
+#include <QIcon>
+#include <QWidget>
+
 
 #include <kactioncollection.h>
 #include <kapplication.h>   //kapp
@@ -95,7 +99,7 @@ class CoverFetcher;
 CollectionBrowser *CollectionBrowser::s_instance = 0;
 
 CollectionBrowser::CollectionBrowser( const char* name )
-    : Q3VBox( 0, name )
+    : QWidget( 0, name )
     , m_cat1Menu( new KMenu( this ) )
     , m_cat2Menu( new KMenu( this ) )
     , m_cat3Menu( new KMenu( this ) )
@@ -104,20 +108,21 @@ CollectionBrowser::CollectionBrowser( const char* name )
 {
     s_instance = this;
 
-    setSpacing( 4 );
+//     setSpacing( 4 );
 
     m_toolbar = new Browser::ToolBar( this );
 
     { //<Search LineEdit>
-        KToolBarButton *button;
-        KToolBar* searchToolBar = new Browser::ToolBar( this );
-
-        button       = new KToolBarButton( "locationbar_erase", 0, searchToolBar );
+        QToolButton *button;
+        QToolBar* searchToolBar = new Browser::ToolBar( this );
+        button       = new QToolButton( searchToolBar );
+        button->setIcon( QIcon("locationbar_erase") );
         m_searchEdit = new ClickLineEdit( i18n( "Enter search terms here" ), searchToolBar );
         m_searchEdit->installEventFilter( this );
         KPushButton *filterButton = new KPushButton( "...", searchToolBar );
         filterButton->setObjectName( "filter" );
-        searchToolBar->setStretchableWidget( m_searchEdit );
+//      do we need this still?
+//         searchToolBar->setStretchableWidget( m_searchEdit );
 
         m_searchEdit->setFrame( Q3Frame::Sunken );
         connect( button, SIGNAL( clicked() ), SLOT( slotClearFilter() ) );
@@ -134,11 +139,13 @@ CollectionBrowser::CollectionBrowser( const char* name )
     // hidden when not in iPod browsing mode; it is shown and hidden
     // in CollectionView::setViewMode().  m_ipodHbox holds m_timeFilter
     // and m_ipodToolbar
-    m_ipodHbox = new Q3HBox( this );
-    m_ipodHbox->setSpacing( 7 );  // looks better
+    m_ipodHbox = new QWidget( this );
+    QHBoxLayout *layout = new QHBoxLayout;
+    m_ipodHbox->setLayout(layout);
+//     m_ipodHbox->setSpacing( 7 );  // looks better
 
-    m_timeFilter = new KComboBox( m_ipodHbox, "timeFilter" );
-    m_ipodHbox->setStretchFactor( m_timeFilter, 1 );
+    m_timeFilter = new KComboBox( m_ipodHbox /*, "timeFilter"*/ );
+    m_ipodHbox->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
     // Allow the combobox to shrink so the iPod buttons are still visible
     m_timeFilter->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     m_timeFilter->insertItem( i18n( "Entire Collection" ) );
@@ -152,7 +159,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     // m_ipodToolbar just holds the forward and back buttons, which are
     // plugged below
     m_ipodToolbar = new Browser::ToolBar( m_ipodHbox );
-    m_ipodHbox->setStretchFactor( m_ipodToolbar, 0 );
+    //m_ipodHbox->setStretchFactor( m_ipodToolbar, 0 );
     m_ipodToolbar->setIconText( KToolBar::IconOnly, false );
 
 
