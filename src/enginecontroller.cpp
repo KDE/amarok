@@ -145,7 +145,7 @@ EngineController::loadEngine( const QString &engineName )
     DEBUG_BLOCK
 
     QString query = "[X-KDE-Amarok-plugintype] == 'engine' and [X-KDE-Amarok-name] != '%1'";
-    KServiceOfferList offers = PluginManager::query( query.arg( engineName ) );
+    KService::List offers = PluginManager::query( query.arg( engineName ) );
 
     // sort by rank, QValueList::operator[] is O(n), so this is quite inefficient
     #define rank( x ) (x)->property( "X-KDE-Amarok-rank" ).toInt()
@@ -159,7 +159,7 @@ EngineController::loadEngine( const QString &engineName )
     query = "[X-KDE-Amarok-plugintype] == 'engine' and [X-KDE-Amarok-name] == '%1'";
     offers = PluginManager::query( query.arg( engineName ) ) + offers;
 
-    oldForeachType( KServiceOfferList, offers ) {
+    oldForeachType( KService::List, offers ) {
         Amarok::Plugin *plugin = PluginManager::createFromService( *it );
 
         if( plugin ) {
@@ -264,7 +264,7 @@ bool EngineController::canDecode( const KUrl &url ) //static
 
 bool EngineController::installDistroCodec( const QString& engine /*Filetype type*/)
 {
-    KService::Ptr service = KTrader::self()->query( "Amarok/CodecInstall"
+    KService::Ptr service = KServiceTypeTrader::self()->query( "Amarok/CodecInstall"
         , QString("[X-KDE-Amarok-codec] == 'mp3' and [X-KDE-Amarok-engine] == '%1'").arg(engine) ).first();
     if( service )
     {

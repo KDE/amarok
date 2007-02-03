@@ -53,7 +53,7 @@ class PluginManager
          * @return            A list of services that satisfy the query
          * @see               http://developer.kde.org/documentation/library/kdeqt/tradersyntax.html
          */
-        static KServiceOfferList query( const QString& constraint = QString::null );
+        static KService::List query( const QString& constraint = QString::null );
 
         /**
          * Load and instantiate plugin from query

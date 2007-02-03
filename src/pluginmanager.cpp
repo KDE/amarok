@@ -40,7 +40,7 @@ PluginManager::m_store;
 // PUBLIC INTERFACE
 /////////////////////////////////////////////////////////////////////////////////////
 
-KTrader::OfferList
+KService::List
 PluginManager::query( const QString& constraint )
 {
     // Add versioning constraint
