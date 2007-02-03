@@ -58,7 +58,7 @@
                         <set>AlignVCenter</set>
                     </property>
                 </widget>
-                <widget class="KActiveLabel">
+                <widget class="QLabel">
                     <property name="name">
                         <cstring>kActiveLabel3</cstring>
                     </property>
@@ -93,7 +93,7 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="KActiveLabel">
+                <widget class="QLabel">
                     <property name="name">
                         <cstring>kActiveLabel1</cstring>
                     </property>
@@ -239,7 +239,7 @@
                 </widget>
             </vbox>
         </widget>
-        <widget class="KActiveLabel">
+        <widget class="QLabel">
             <property name="name">
                 <cstring>kActiveLabel2</cstring>
             </property>
@@ -292,7 +292,6 @@
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>kactivelabel.h</includehint>
     <includehint>klineedit.h</includehint>
 </includehints>
 </UI>
