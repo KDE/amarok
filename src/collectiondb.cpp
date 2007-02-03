@@ -2483,8 +2483,8 @@ CollectionDB::albumListOfArtist( const QString &artist, bool withUnknown, bool w
         return query( "SELECT DISTINCT album.name, lower( album.name ) AS __discard FROM tags, album, artist WHERE "
                       "tags.album = album.id AND tags.artist = artist.id "
                       "AND lower(artist.name) = lower('" + escapeString( artist ) + "') " +
-                      ( withUnknown ? QString::null : "AND album.name <> '' " ) +
-                      ( withCompilations ? QString::null : "AND tags.sampler = " + boolF() ) + deviceidSelection() +
+                      ( withUnknown ? QString() : "AND album.name <> '' " ) +
+                      ( withCompilations ? QString() : "AND tags.sampler = " + boolF() ) + deviceidSelection() +
                       " ORDER BY lower( album.name );" );
     }
     else
@@ -2492,8 +2492,8 @@ CollectionDB::albumListOfArtist( const QString &artist, bool withUnknown, bool w
         return query( "SELECT DISTINCT album.name FROM tags, album, artist WHERE "
                       "tags.album = album.id AND tags.artist = artist.id "
                       "AND lower(artist.name) = lower('" + escapeString( artist ) + "') " +
-                      ( withUnknown ? QString::null : "AND album.name <> '' " ) +
-                      ( withCompilations ? QString::null : "AND tags.sampler = " + boolF() ) + deviceidSelection() +
+                      ( withUnknown ? QString() : "AND album.name <> '' " ) +
+                      ( withCompilations ? QString() : "AND tags.sampler = " + boolF() ) + deviceidSelection() +
                       " ORDER BY lower( album.name );" );
     }
 }
@@ -2506,16 +2506,16 @@ CollectionDB::artistAlbumList( bool withUnknown, bool withCompilations )
     {
         return query( "SELECT DISTINCT artist.name, album.name, lower( album.name ) AS __discard FROM tags, album, artist WHERE "
                       "tags.album = album.id AND tags.artist = artist.id " +
-                      ( withUnknown ? QString::null : "AND album.name <> '' AND artist.name <> '' " ) +
-                      ( withCompilations ? QString::null : "AND tags.sampler = " + boolF() ) + deviceidSelection() +
+                      ( withUnknown ? QString() : "AND album.name <> '' AND artist.name <> '' " ) +
+                      ( withCompilations ? QString() : "AND tags.sampler = " + boolF() ) + deviceidSelection() +
                       " ORDER BY lower( album.name );" );
     }
     else
     {
         return query( "SELECT DISTINCT artist.name, album.name FROM tags, album, artist WHERE "
                       "tags.album = album.id AND tags.artist = artist.id " +
-                      ( withUnknown ? QString::null : "AND album.name <> '' AND artist.name <> '' " ) +
-                      ( withCompilations ? QString::null : "AND tags.sampler = " + boolF() ) + deviceidSelection() +
+                      ( withUnknown ? QString() : "AND album.name <> '' AND artist.name <> '' " ) +
+                      ( withCompilations ? QString() : "AND tags.sampler = " + boolF() ) + deviceidSelection() +
                       " ORDER BY lower( album.name );" );
     }
 }
@@ -3221,7 +3221,7 @@ CollectionDB::urlFromUniqueId( const QString &id )
             "SELECT deviceid, url "
             "FROM uniqueid%1 "
             "WHERE uniqueid = '%2';" )
-                .arg( scanning ? "_temp" : QString::null )
+                .arg( scanning ? "_temp" : QString() )
                 .arg( id ), true );
 
     if( urls.empty() && scanning )
@@ -3249,7 +3249,7 @@ CollectionDB::uniqueIdFromUrl( const KUrl &url )
             "SELECT uniqueid "
             "FROM uniqueid%1 "
             "WHERE deviceid = %2 AND url = '%3';" )
-                .arg( scanning ? "_temp" : QString::null )
+                .arg( scanning ? "_temp" : QString() )
                 .arg( currdeviceid )
                 .arg( currurl ), true );
 
