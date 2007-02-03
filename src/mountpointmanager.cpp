@@ -27,8 +27,6 @@
 #include "pluginmanager.h"
 #include "statusbar.h"
 
-#include <ktrader.h>
-
 #include <QFile>
 #include <QStringList>
 #include <QTimer>
