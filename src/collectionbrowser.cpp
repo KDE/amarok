@@ -1804,7 +1804,7 @@ CollectionView::organizeFiles( const KUrl::List &urls, const QString &caption, b
 
     OrganizeCollectionDialog dialog( page );
     dialog.folderCombo->insertStringList( folders, 0 );
-    dialog.folderCombo->setCurrentItem( AmarokConfig::organizeDirectory() );
+    //dialog.folderCombo->setCurrentItem( AmarokConfig::organizeDirectory() ); //disabling for now
     dialog.overwriteCheck->setChecked( AmarokConfig::overwriteFiles() );
     dialog.filetypeCheck->setChecked( AmarokConfig::groupByFiletype() );
     dialog.initialCheck->setChecked( AmarokConfig::groupArtists() );
@@ -1821,7 +1821,7 @@ CollectionView::organizeFiles( const KUrl::List &urls, const QString &caption, b
 
     if( dialog.customschemeCheck->isChecked() )
     {
-        base.setButton( OrganizeCollectionDialog::Details, true );
+        base.setButtons( KDialog::Details );
     }
     else
     {
