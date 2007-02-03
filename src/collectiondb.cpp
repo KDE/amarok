@@ -3556,7 +3556,7 @@ CollectionDB::bundlesByUrls( const KUrl::List& urls )
                             b.setUrl( url );
                             // FIXME: more context for i18n after string freeze
                             b.setTitle( QString( "%1 %2 %3%4" )
-                                  .arg( url.filename(),
+                                  .arg( url.fileName(),
                                      i18n( "from" ),
                                      url.hasHost() ? url.host() : QString(),
                                      url.directory( false ) ) );
