@@ -42,7 +42,6 @@ class QStringList;
 class KAction;
 class KComboBox;
 class KMenu;
-class KRadioAction;
 class KTabBar;
 class KToolBar;
 class KToggleAction;
@@ -102,9 +101,10 @@ class CollectionBrowser: public QWidget
         class QWidget       *m_ipodHbox;
 
         KToggleAction     *m_showDividerAction;
-        KRadioAction      *m_treeViewAction;
-        KRadioAction      *m_flatViewAction;
-        KRadioAction      *m_ipodViewAction;
+        KAction      *m_treeViewAction;
+        KAction      *m_flatViewAction;
+        KAction      *m_ipodViewAction;
+        QActionGroup *m_viewAction;
         class KActionMenu *m_tagfilterMenuButton;
 
         KMenu* m_categoryMenu;

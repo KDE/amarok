@@ -173,13 +173,34 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     m_configureAction = new KAction( KIcon(Amarok::icon( "configure" )), i18n( "Configure Folders" ), this );
     connect( m_configureAction, SIGNAL( triggered( bool ) ), this, SLOT( setupDirs() ) );
+
     ac->addAction( "Configure", m_configureAction );
-    m_treeViewAction = new KRadioAction( i18n( "Tree View" ), "view_tree", 0, m_view, SLOT( setTreeMode() ), ac, "Tree View" );
-    m_flatViewAction = new KRadioAction( i18n( "Flat View" ), "view_detailed", 0, m_view, SLOT( setFlatMode() ), ac, "Flat View" );
-    m_ipodViewAction = new KRadioAction( i18n( "iPod View" ), Amarok::icon("device"), 0, m_view, SLOT( setIpodMode() ), ac, "iPod View" );
-    m_treeViewAction->setExclusiveGroup("view mode");
-    m_flatViewAction->setExclusiveGroup("view mode");
-    m_ipodViewAction->setExclusiveGroup("view mode");
+
+    m_treeViewAction = new KAction(this);
+    m_treeViewAction->setText(i18n( "Tree View" ));
+    m_treeViewAction->setIcon(KIcon("view_tree"));
+    ac->addAction("Tree View", m_treeViewAction);
+    connect( m_treeViewAction, SIGNAL( trigger() ), m_view, SLOT(setTreeMode()) );
+
+    m_flatViewAction = new KAction(this);
+    m_flatViewAction->setText(i18n( "Flat View" ));
+    m_flatViewAction->setIcon(KIcon("view_detailed"));
+    ac->addAction("Tree View", m_flatViewAction);
+    connect( m_flatViewAction, SIGNAL( trigger() ), m_view, SLOT(setFlatMode()) );
+
+    m_ipodViewAction = new KAction(this);
+    m_ipodViewAction->setText(i18n( "iPod View" ));
+    m_ipodViewAction->setIcon(KIcon(Amarok::icon("device")));
+    ac->addAction("iPod View", m_ipodViewAction);
+    connect( m_flatViewAction, SIGNAL( trigger() ), m_view, SLOT(setIpodMode()) );
+
+
+    QActionGroup *m_viewAction = new QActionGroup(this);
+    m_viewAction->setExclusive( true );
+    m_viewAction->addAction( m_treeViewAction );
+    m_viewAction->addAction( m_flatViewAction );
+    m_viewAction->addAction( m_ipodViewAction );
+
     switch( m_view->m_viewMode )
       {
       case CollectionView::modeTreeView:
