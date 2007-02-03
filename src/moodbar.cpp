@@ -1350,7 +1350,7 @@ Moodbar::moodFilename( const KUrl &url, bool withMusic )
           + path.replace('/', ',') + ".mood";
 
         // Creates the path if necessary
-        path = ::locateLocal( "data", "amarok/moods/" + path );
+        path = KStandardDirs::locateLocal( "data", "amarok/moods/" + path );
       }
 
     return path;
