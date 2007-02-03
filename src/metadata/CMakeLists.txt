@@ -5,8 +5,6 @@ add_subdirectory( rmff )
 add_subdirectory( aac )
 
 message(STATUS "${CMAKE_CURRENT_SOURCE_DIR}: skipped subdir $(MP4_SUBDIR)")
-include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
-
 
 ########### next target ###############
 
