@@ -11,12 +11,13 @@
     </keywords>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <version/>
-    <description/>
+    <version></version>
+    <description></description>
     <ignoreparts/>
     <secondaryLanguages/>
-    <defaultencoding/>
+    <defaultencoding></defaultencoding>
     <projectname>amarok</projectname>
+    <versioncontrol>kdevsubversion</versioncontrol>
   </general>
   <kdevautoproject>
     <general>
@@ -32,7 +33,7 @@
       <abortonerror>false</abortonerror>
       <numberofjobs>1</numberofjobs>
       <dontact>false</dontact>
-      <makebin>unsermake</makebin>
+      <makebin>make</makebin>
       <envvars>
         <envvar value="1" name="WANT_AUTOCONF_2_5" />
         <envvar value="1" name="WANT_AUTOMAKE_1_6" />
@@ -45,8 +46,8 @@
       <cxxflags>\s-O0 -g3 -Wall</cxxflags>
     </compiler>
     <run>
-      <mainprogram/>
-      <programargs/>
+      <mainprogram>/data/kdesvn/extragear/multimedia/amarok</mainprogram>
+      <programargs></programargs>
       <terminal>false</terminal>
       <autocompile>false</autocompile>
       <envvars/>
@@ -55,23 +56,28 @@
       <runarguments>
         <amarok/>
       </runarguments>
+      <globaldebugarguments></globaldebugarguments>
+      <globalcwd>/data/kdesvn/extragear/multimedia/amarok</globalcwd>
+      <useglobalprogram>false</useglobalprogram>
+      <autoinstall>false</autoinstall>
+      <autokdesu>false</autokdesu>
     </run>
     <configurations>
       <default>
         <configargs>--enable-debug=full</configargs>
-        <builddir/>
-        <topsourcedir/>
-        <cppflags/>
-        <ldflags/>
+        <builddir>/data/kdesvn/build/extragear/multimedia/amarok</builddir>
+        <topsourcedir>/data/kdesvn/extragear/multimedia/amarok</topsourcedir>
+        <cppflags></cppflags>
+        <ldflags></ldflags>
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevpgf77options</f77compiler>
-        <ccompilerbinary/>
-        <cxxcompilerbinary/>
-        <f77compilerbinary/>
-        <cflags/>
-        <cxxflags/>
-        <f77flags/>
+        <ccompilerbinary></ccompilerbinary>
+        <cxxcompilerbinary></cxxcompilerbinary>
+        <f77compilerbinary></f77compilerbinary>
+        <cflags></cflags>
+        <cxxflags></cxxflags>
+        <f77flags></f77flags>
         <envvars/>
       </default>
     </configurations>
@@ -87,8 +93,6 @@
       <group pattern="*.po" name="Translations" />
       <group pattern="AUTHORS,COPYING,ChangeLog,INSTALL,README,TODO,NEWS" name="GNU" />
       <group pattern="*" name="Others" />
-      <hidenonprojectfiles>false</hidenonprojectfiles>
-      <hidenonlocation>false</hidenonlocation>
     </groups>
     <tree>
       <hidenonprojectfiles>false</hidenonprojectfiles>
@@ -117,14 +121,14 @@
     <general>
       <dbgshell>/usr/bin/libtool</dbgshell>
       <programargs/>
-      <gdbpath/>
+      <gdbpath></gdbpath>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
       <runappinappdirectory>true</runappinappdirectory>
-      <configGdbScript/>
-      <runShellScript/>
-      <runGdbScript/>
+      <configGdbScript></configGdbScript>
+      <runShellScript></runShellScript>
+      <runGdbScript></runGdbScript>
     </general>
     <display>
       <staticmembers>false</staticmembers>
@@ -176,7 +180,7 @@
     </codecompletion>
     <references/>
     <creategettersetter>
-      <prefixGet/>
+      <prefixGet></prefixGet>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
@@ -185,10 +189,10 @@
     </creategettersetter>
     <qt>
       <used>true</used>
-      <version>3</version>
+      <version>4</version>
       <root>/usr/share/qt3</root>
-      <includestyle>3</includestyle>
-      <designerintegration>EmbeddedKDevDesigner</designerintegration>
+      <includestyle>4</includestyle>
+      <designerintegration>ExternalDesigner</designerintegration>
       <qmake>/usr/bin/qmake-qt3</qmake>
       <designer>/usr/bin/designer</designer>
       <designerpluginpaths/>
@@ -226,13 +230,13 @@
   </kdevcvsservice>
   <kdevdocumentation>
     <projectdoc>
-      <docsystem/>
-      <docurl/>
-      <usermanualurl/>
+      <docsystem></docsystem>
+      <docurl></docurl>
+      <usermanualurl></usermanualurl>
     </projectdoc>
   </kdevdocumentation>
   <ctagspart>
-    <customArguments/>
+    <customArguments></customArguments>
     <customTagfilePath>/home/ian/workspace/local/amarok/tags</customTagfilePath>
     <activeTagsFiles/>
   </ctagspart>

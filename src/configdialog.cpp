@@ -76,8 +76,6 @@ namespace Amarok {
 }
 
 
-int AmarokConfigDialog::s_currentPage = 0;
-
 //////////////////////////////////////////////////////////////////////////////////////////
 // PUBLIC
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -186,18 +184,19 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     addPage( opt9,   i18n( "Media Devices" ), Amarok::icon( "device" ), i18n( "Configure Portable Player Support" ) );
 
     // Show information labels (must be done after insertions)
-    QObjectList *list = queryList( "QLabel", "infoPixmap" );
-    QPixmap const info = KIconLoader::global()->iconPath( "messagebox_info", -K3Icon::SizeHuge );
-    for( QObject *label = list->first(); label; label = list->next() )
-        static_cast<QLabel*>(label)->setPixmap( info );
-    delete list;
+    {
+        QObjectList list = queryList( "QLabel", "infoPixmap" );
+        QPixmap const info = KIconLoader::global()->iconPath( "messagebox_info", -K3Icon::SizeHuge );
+        for( int labelI = 0; labelI < list.size(); labelI++ )
+            qobject_cast<QLabel*>( list.at(labelI) )->setPixmap( info );
+    }
 
     //stop KFont Requesters getting stupidly large
-    list = queryList( "QLabel", "m_sampleLabel" );
-    for( QObject *label = list->first(); label; label = list->next() )
-        static_cast<QLabel*>(label)->setMaximumWidth( 250 );
-    delete list;
-
+    {
+        QObjectList list = queryList( "QLabel", "m_sampleLabel" );
+        for( int labelI = 0; labelI < list.size(); labelI++ )
+            qobject_cast<QLabel*>( list.at( labelI ) )->setMaximumWidth( 250 );
+    }
     connect( m_deviceManager, SIGNAL(changed()), SLOT(updateButtons()) );
     connect( m_soundSystem, SIGNAL(activated( int )), SLOT(updateButtons()) );
     connect( aboutEngineButton, SIGNAL(clicked()), SLOT(aboutEngine()) );
@@ -213,9 +212,6 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
 AmarokConfigDialog::~AmarokConfigDialog()
 {
     DEBUG_FUNC_INFO
-
-    s_currentPage = activePageIndex();
-
     delete m_engineConfig;
     delete m_deviceManager;
 }
@@ -230,18 +226,16 @@ void AmarokConfigDialog::addPage( QWidget *page, const QString &itemName, const 
     KConfigDialog::addPage( page, itemName, pixmapName, header, manage );
 }
 
-
 /** Show page by object name */
 void AmarokConfigDialog::showPageByName( const Q3CString& page )
 {
     for( uint index = 0; index < m_pageList.count(); index++ ) {
         if ( m_pageList[index]->name() == page ) {
-            KConfigDialog::showPage( index );
+            KConfigDialog::setCurrentPage( qobject_cast<KPageWidgetItem*>( m_pageList[index] ) );
             return;
         }
     }
 }
-
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // PROTECTED SLOTS
@@ -280,7 +274,7 @@ void AmarokConfigDialog::updateSettings()
     // When sound system has changed, update engine config page
     if ( m_soundSystem->currentText() != m_pluginAmarokName[AmarokConfig::soundSystem()] ) {
         AmarokConfig::setSoundSystem( m_pluginName[m_soundSystem->currentText()] );
-        emit settingsChanged();
+        emit settingsChanged( name() );
         soundSystemChanged();
     }
 
@@ -293,7 +287,7 @@ void AmarokConfigDialog::updateSettings()
     int dbType = Amarok::databaseTypeCode( m_opt7->dbSetupFrame->databaseEngine->currentText() );
     if ( dbType != AmarokConfig::databaseEngine().toInt() ) {
         AmarokConfig::setDatabaseEngine( QString::number( dbType ) );
-        emit settingsChanged();
+        emit settingsChanged( name() );
     }
 
     m_deviceManager->finished();

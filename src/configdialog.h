@@ -43,11 +43,7 @@ class AmarokConfigDialog : public KConfigDialog
 
         void addPage( QWidget *page, const QString &itemName, const QString &pixmapName,
                       const QString &header=QString::null, bool manage=true);
-
         void showPageByName( const Q3CString& page );
-
-        static int s_currentPage;
-
     protected slots:
         void updateButtons();
         void updateSettings();
