@@ -3098,7 +3098,8 @@ void PlaylistDialog::slotOk()
             i18n( "A playlist named \"%1\" already exists. Do you want to overwrite it?" ).arg( edit->text() ),
             i18n( "Overwrite Playlist?" ), i18n( "Overwrite" ) ) == KMessageBox::Continue )
     {
-        KDialog::slotOk();
+        //KDialog::slotOk();
+        slotButtonClicked( Ok );
     }
 }
 

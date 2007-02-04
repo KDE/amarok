@@ -88,7 +88,8 @@ void
 MediumPluginManagerDialog::slotOk()
 {
     m_manager->finished();
-    KPageDialog::slotOk();
+    //KPageDialog::slotOk();
+    slotButtonClicked( Ok );
 }
 
 MediumPluginManager::MediumPluginManager( QWidget *widget, const bool nographics )
@@ -329,7 +330,7 @@ ManualDeviceAdder::slotOk()
             MediaDeviceManager::instance()->getDevice( getMedium()->name() ) == NULL )
     {
         m_successful = true;
-        KPageDialog::slotOk( );
+        slotButtonClicked( Ok );
     }
     else
     {

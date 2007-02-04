@@ -118,7 +118,8 @@ void
 TransferDialog::slotOk()
 {
     m_accepted = true;
-    KDialog::slotOk();
+    //KDialog::slotOk();
+    slotButtonClicked( Ok );
 
     m_dev->setFirstSort( m_sort1->currentText() );
     m_dev->setSecondSort( m_sort2->currentText() );
