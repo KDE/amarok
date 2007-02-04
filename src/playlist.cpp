@@ -77,6 +77,7 @@
 #include <q3valuelist.h>      //addHybridTracks()
 #include <q3valuevector.h>    //playNextTrack()
 #include <QLayout>
+#include <QDesktopWidget>
 
 #include <kaction.h>
 #include <ktoggleaction.h>
@@ -97,6 +98,7 @@
 #include <kstandarddirs.h>   //KGlobal::dirs()
 #include <kstandardaction.h>
 #include <kstringhandler.h>  //::showContextMenu()
+#include <k3urldrag.h>
 
 extern "C"
 {
@@ -790,8 +792,8 @@ void Playlist::saveLayout(KSharedConfigPtr config, const QString &group) const
 
 void Playlist::restoreLayout(KSharedConfigPtr config, const QString &group)
 {
-  KConfigGroup group(config, group);
-  int version = group.readNumEntry("ColumnsVersion", 0);
+  KConfigGroup configGroup(config, group);
+  int version = configGroup.readNumEntry("ColumnsVersion", 0);
 
   Q3ValueList<int> iorder; //internal ordering
   if( version )
@@ -844,7 +846,7 @@ void Playlist::restoreLayout(KSharedConfigPtr config, const QString &group)
   // move sections in the correct sequence: from lowest to highest index position
   // otherwise we move a section from an index, which modifies
   // all index numbers to the right of the moved one
-  cols = group.readListEntry("ColumnOrder");
+  cols = configGroup.readListEntry("ColumnOrder");
   const int colCount = columns();
   for (i = 0; i < colCount; ++i)   // final index positions from lowest to highest
   {
@@ -2773,7 +2775,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 
         const int mouseOverColumn = header()->sectionAt( me->pos().x() );
 
-        KMenu popup;
+        Q3PopupMenu popup;
         if( mouseOverColumn >= 0 )
             popup.insertItem( i18n("&Hide %1").arg( columnText( mouseOverColumn ) ), HIDE ); //TODO
 
