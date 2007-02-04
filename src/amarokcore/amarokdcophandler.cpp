@@ -1038,7 +1038,7 @@ namespace Amarok
 
     void DcopMediaBrowserHandler::queueList( KUrl::List urls )
     {
-        MediaBrowser::queue()->addURLs( urls );
+        MediaBrowser::queue()->addUrls( urls );
     }
 
     void DcopMediaBrowserHandler::transfer()

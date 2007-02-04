@@ -812,7 +812,7 @@ GenericMediaDevice::listDir( const QString &dir )
         m_dirLister->updateDirectory( KUrl::fromPathOrUrl(dir) );
     else
     {
-        m_dirLister->openURL( KUrl::fromPathOrUrl(dir), true, true );
+        m_dirLister->openUrl( KUrl::fromPathOrUrl(dir), true, true );
         m_mfm[dir]->setListed( true );
     }
 }

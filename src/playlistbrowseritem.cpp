@@ -917,7 +917,7 @@ void PlaylistEntry::showContextMenu( const QPoint &position )
             PlaylistBrowser::instance()->removeSelectedItems();
             break;
         case MEDIADEVICE_COPY:
-            MediaBrowser::queue()->addURLs( tracksURL(), text(0) );
+            MediaBrowser::queue()->addUrls( tracksURL(), text(0) );
             break;
         case MEDIADEVICE_SYNC:
             MediaBrowser::queue()->syncPlaylist( text(0), url() );
@@ -3443,7 +3443,7 @@ void SmartPlaylist::showContextMenu( const QPoint &position )
             {
                 const QString playlist = text(0);
                 const QStringList values = CollectionDB::instance()->query( query() );
-                MediaBrowser::queue()->addURLs( CollectionDB::instance()->URLsFromSqlDrag( values ), playlist );
+                MediaBrowser::queue()->addUrls( CollectionDB::instance()->URLsFromSqlDrag( values ), playlist );
             }
             break;
         case MEDIADEVICE_SYNC:

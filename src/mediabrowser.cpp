@@ -1475,11 +1475,11 @@ MediaView::contentsDropEvent( QDropEvent *e )
             QString query = data.section( "\n", 1 );
             QStringList values = CollectionDB::instance()->query( query );
             list = CollectionDB::instance()->URLsFromSqlDrag( values );
-            MediaBrowser::queue()->addURLs( list, playlist );
+            MediaBrowser::queue()->addUrls( list, playlist );
         }
         else if ( K3URLDrag::decode( e, list ) )
         {
-            MediaBrowser::queue()->addURLs( list );
+            MediaBrowser::queue()->addUrls( list );
         }
     }
 }
@@ -2370,7 +2370,7 @@ MediaQueue::addUrl( const KUrl &url, MediaItem *item )
 }
 
 void
-MediaQueue::addURLs( const KUrl::List urls, const QString &playlistName )
+MediaQueue::addUrls( const KUrl::List urls, const QString &playlistName )
 {
     KUrl::List::ConstIterator it = urls.begin();
     for ( ; it != urls.end(); ++it )
@@ -3656,11 +3656,11 @@ MediaQueue::slotDropped( QDropEvent* e, Q3ListViewItem* parent, Q3ListViewItem* 
             QString query = data.section( "\n", 1 );
             QStringList values = CollectionDB::instance()->query( query );
             list = CollectionDB::instance()->URLsFromSqlDrag( values );
-            addURLs( list, playlist );
+            addUrls( list, playlist );
         }
         else if ( K3URLDrag::decode( e, list ) )
         {
-            addURLs( list );
+            addUrls( list );
         }
     }
     else if( Q3ListViewItem *i = currentItem() )

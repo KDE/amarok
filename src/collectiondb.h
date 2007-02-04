@@ -759,7 +759,7 @@ class QueryBuilder
 
         void setGoogleFilter( int defaultTables, QString query );
 
-        void addURLFilters( const QStringList& filter );
+        void addUrlFilters( const QStringList& filter );
 
         void addFilter( int tables, const QString& filter);
         void addFilter( int tables, qint64 value, const QString& filter, int mode = modeNormal, bool exact = false );

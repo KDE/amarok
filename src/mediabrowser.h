@@ -152,7 +152,7 @@ class MediaQueue : public K3ListView, public DropProxyTarget
         void syncPlaylist( const QString &playlistName, const KUrl &url, bool loading=false );
         void addUrl( const KUrl& url, MetaBundle *bundle=NULL, const QString &playlistName=QString::null );
         void addUrl( const KUrl& url, MediaItem *item );
-        void addURLs( const KUrl::List urls, const QString &playlistName=QString::null );
+        void addUrls( const KUrl::List urls, const QString &playlistName=QString::null );
 
         void URLsAdded(); // call after finishing adding single urls
 

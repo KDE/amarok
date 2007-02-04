@@ -3495,7 +3495,7 @@ CollectionDB::bundlesByUrls( const KUrl::List& urls )
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valURL );
             qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valIsCompilation );
 
-            qb.addURLFilters( paths );
+            qb.addUrlFilters( paths );
             qb.setOptions( QueryBuilder::optRemoveDuplicates );
 
             const QStringList values = qb.run();
@@ -4496,7 +4496,7 @@ CollectionDB::updateTags( const QString &url, const MetaBundle &bundle, const bo
     qb.addReturnValue( QueryBuilder::tabGenre, QueryBuilder::valID );
     qb.addReturnValue( QueryBuilder::tabYear, QueryBuilder::valID );
 
-    qb.addURLFilters ( QStringList( url ) );
+    qb.addUrlFilters ( QStringList( url ) );
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     QStringList values = qb.run();
 
@@ -6795,7 +6795,7 @@ QueryBuilder::countReturnValues()
 }
 
 void
-QueryBuilder::addURLFilters( const QStringList& filter )
+QueryBuilder::addUrlFilters( const QStringList& filter )
 {
     if ( !filter.isEmpty() )
     {

@@ -502,7 +502,7 @@ FileBrowser::contextMenuActivated( int id )
         break;
 
     case MediaDevice:
-        MediaBrowser::queue()->addURLs( selectedItems() );
+        MediaBrowser::queue()->addUrls( selectedItems() );
         break;
 
     case SelectAllFiles:

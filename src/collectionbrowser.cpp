@@ -1568,7 +1568,7 @@ CollectionView::rmbPressed( Q3ListViewItem* item, const QPoint& point, int ) //S
                 Playlist::instance()->insertMedia( selection, Playlist::Queue );
                 break;
             case MEDIA_DEVICE:
-                MediaBrowser::queue()->addURLs( selection );
+                MediaBrowser::queue()->addUrls( selection );
                 break;
             case BURN_COMPOSER:
                 K3bExporter::instance()->exportComposer( trueItemText );
