@@ -307,15 +307,47 @@ ContextBrowser::ContextBrowser( const char *name )
     m_wikiTab = new Q3VBox(this, "wiki_tab");
 
     m_wikiToolBar = new Browser::ToolBar( m_wikiTab );
-    m_wikiToolBar->insertButton( "back", WIKI_BACK, false, i18n("Back") );
-    m_wikiToolBar->insertButton( "forward", WIKI_FORWARD, false, i18n("Forward") );
+
+    act = new KAction(KIcon( "back" ), i18n("Back"), this);
+    connect(act, SIGNAL(triggered()), this, SLOT(wikiHistoryBack()));
+    m_wikiToolBar->addAction(act);
+    //m_wikiToolBar->insertButton( "back", WIKI_BACK, false, i18n("Back") );
+
+    act = new KAction(KIcon( "forward" ), i18n("Forward"), this);
+    connect(act, SIGNAL(triggered()), this, SLOT(wikiHistoryForward()));
+    m_wikiToolBar->addAction(act);
+    //m_wikiToolBar->insertButton( "forward", WIKI_FORWARD, false, i18n("Forward") );
+
+
     m_wikiToolBar->insertLineSeparator();
-    m_wikiToolBar->insertButton( Amarok::icon( "artist" ), WIKI_ARTIST, false, i18n("Artist Page") );
-    m_wikiToolBar->insertButton( Amarok::icon( "album" ), WIKI_ALBUM, false, i18n("Album Page") );
-    m_wikiToolBar->insertButton( Amarok::icon( "track" ), WIKI_TITLE, false, i18n("Title Page") );
+
+    act = new KAction(KIcon( "artist" ), i18n("Artist Page"), this);
+    connect(act, SIGNAL(triggered()), this, SLOT(wikiArtistPage()));
+    m_wikiToolBar->addAction(act);
+    //m_wikiToolBar->insertButton( Amarok::icon( "artist" ), WIKI_ARTIST, false, i18n("Artist Page") );
+
+    act = new KAction(KIcon( "album" ), i18n("Album Page"), this);
+    connect(act, SIGNAL(triggered()), this, SLOT(wikiAlbumPage()));
+    m_wikiToolBar->addAction(act);
+    //m_wikiToolBar->insertButton( Amarok::icon( "album" ), WIKI_ALBUM, false, i18n("Album Page") );
+
+    act = new KAction(KIcon( "track" ), i18n("Title Page"), this);
+    connect(act, SIGNAL(triggered()), this, SLOT(wikiTitlePage()));
+    m_wikiToolBar->addAction(act);
+    //m_wikiToolBar->insertButton( Amarok::icon( "track" ), WIKI_TITLE, false, i18n("Title Page") );
+
     m_wikiToolBar->insertLineSeparator();
-    m_wikiToolBar->insertButton( Amarok::icon( "external" ), WIKI_BROWSER, true, i18n("Open in external browser") );
-    m_wikiToolBar->insertButton( Amarok::icon( "change_language" ), WIKI_CONFIG, true, i18n("Change Locale") );
+    
+
+    act = new KAction(KIcon( "external" ), i18n("Open in external browser"), this);
+    connect(act, SIGNAL(triggered()), this, SLOT(wikiExternalPage()));
+    m_wikiToolBar->addAction(act);
+    //m_wikiToolBar->insertButton( Amarok::icon( "external" ), WIKI_BROWSER, true, i18n("Open in external browser") );
+
+    act = new KAction(KIcon( "change_language" ), i18n("Change Locale"), this);
+    connect(act, SIGNAL(triggered()), this, SLOT(wikiConfig()));
+    m_wikiToolBar->addAction(act);
+    //m_wikiToolBar->insertButton( Amarok::icon( "change_language" ), WIKI_CONFIG, true, i18n("Change Locale") );
 
     m_wikiToolBar->setDelayedPopup( WIKI_BACK, m_wikiBackPopup );
     m_wikiToolBar->setDelayedPopup( WIKI_FORWARD, m_wikiForwardPopup );
@@ -369,13 +401,13 @@ ContextBrowser::ContextBrowser( const char *name )
     //connect( m_lyricsToolBar->getButton( LYRICS_REFRESH ), SIGNAL(clicked( int )), SLOT(lyricsRefresh()) );
     //connect( m_lyricsToolBar->getButton( LYRICS_BROWSER ), SIGNAL(clicked( int )), SLOT(lyricsExternalPage()) );
 
-    connect( m_wikiToolBar->getButton( WIKI_BACK    ), SIGNAL(clicked( int )), SLOT(wikiHistoryBack()) );
-    connect( m_wikiToolBar->getButton( WIKI_FORWARD ), SIGNAL(clicked( int )), SLOT(wikiHistoryForward()) );
-    connect( m_wikiToolBar->getButton( WIKI_ARTIST  ), SIGNAL(clicked( int )), SLOT(wikiArtistPage()) );
-    connect( m_wikiToolBar->getButton( WIKI_ALBUM   ), SIGNAL(clicked( int )), SLOT(wikiAlbumPage()) );
-    connect( m_wikiToolBar->getButton( WIKI_TITLE   ), SIGNAL(clicked( int )), SLOT(wikiTitlePage()) );
-    connect( m_wikiToolBar->getButton( WIKI_BROWSER ), SIGNAL(clicked( int )), SLOT(wikiExternalPage()) );
-    connect( m_wikiToolBar->getButton( WIKI_CONFIG  ), SIGNAL(clicked( int )), SLOT(wikiConfig()) );
+   // connect( m_wikiToolBar->getButton( WIKI_BACK    ), SIGNAL(clicked( int )), SLOT(wikiHistoryBack()) );
+    //connect( m_wikiToolBar->getButton( WIKI_FORWARD ), SIGNAL(clicked( int )), SLOT(wikiHistoryForward()) );
+    //connect( m_wikiToolBar->getButton( WIKI_ARTIST  ), SIGNAL(clicked( int )), SLOT(wikiArtistPage()) );
+    //connect( m_wikiToolBar->getButton( WIKI_ALBUM   ), SIGNAL(clicked( int )), SLOT(wikiAlbumPage()) );
+    //connect( m_wikiToolBar->getButton( WIKI_TITLE   ), SIGNAL(clicked( int )), SLOT(wikiTitlePage()) );
+   // connect( m_wikiToolBar->getButton( WIKI_BROWSER ), SIGNAL(clicked( int )), SLOT(wikiExternalPage()) );
+    //connect( m_wikiToolBar->getButton( WIKI_CONFIG  ), SIGNAL(clicked( int )), SLOT(wikiConfig()) );
 
     connect( m_wikiBackPopup,    SIGNAL(activated( int )), SLOT(wikiBackPopupActivated( int )) );
     connect( m_wikiForwardPopup, SIGNAL(activated( int )), SLOT(wikiForwardPopupActivated( int )) );
