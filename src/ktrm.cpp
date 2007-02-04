@@ -798,7 +798,7 @@ void KTRMLookup::lookupResult( KIO::Job* job )
         }
      }
 
-     qSort(d->results);
+     //qSort(d->results);
 
      finished();
 #else
