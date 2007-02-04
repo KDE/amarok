@@ -451,13 +451,13 @@ MetaBundle::init( const KFileMetaInfo& info )
         m_uniqueId = itemid.isValid() ? itemid.string() : QString::null;
 
         // because whoever designed KMetaInfoItem is a donkey
-        #define makeSane( x ) if( x == "---" ) x = null;
+        #define makeSane( x ) if( x.string() == "---" ) x = null;
         QString null;
         makeSane( m_artist );
         makeSane( m_album );
         makeSane( m_comment );
         makeSane( m_genre  );
-        makeSane( m_title );
+        if ( m_title == "---" ) m_title.clear();
         #undef makeSane
 
         m_isValidMedia = true;
@@ -1506,7 +1506,7 @@ MetaBundle::save( TagLib::FileRef* fileref )
     return returnval;
 }
 
-bool MetaBundle::save( Q3TextStream &stream, const QStringList &attributes ) const
+bool MetaBundle::save( QTextStream &stream, const QStringList &attributes ) const
 {
     QDomDocument qDomSucksItNeedsADocument;
     QDomElement item = qDomSucksItNeedsADocument.createElement( "item" );

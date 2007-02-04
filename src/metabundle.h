@@ -177,7 +177,7 @@ public:
     bool save( TagLib::FileRef* fileref = 0 );
 
     /** Saves the MetaBundle's data as XML to a text stream. */
-    bool save( Q3TextStream &stream, const QStringList &attributes = QStringList() ) const;
+    bool save( QTextStream &stream, const QStringList &attributes = QStringList() ) const;
 
     /** Returns whether the url referred to is a local file */
     bool isFile() const;
