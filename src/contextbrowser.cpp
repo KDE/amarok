@@ -215,7 +215,7 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_cuefile( NULL )
 {
     s_instance = this;
-    setObjectName( name);
+    setObjectName( name );
 
     s_wikiLocale = AmarokConfig::wikipediaLocale();
 
