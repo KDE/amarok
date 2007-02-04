@@ -227,13 +227,37 @@ ContextBrowser::ContextBrowser( const char *name )
 
     m_lyricsToolBar = new Browser::ToolBar( m_lyricsTab );
     m_lyricsToolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
-    m_lyricsToolBar->insertButton( Amarok::icon( "refresh" ), LYRICS_REFRESH, true, i18n("Refresh") );
-    m_lyricsToolBar->insertButton( Amarok::icon( "add_lyrics" ), LYRICS_ADD, true, i18n("Add") );
-    m_lyricsToolBar->insertButton( Amarok::icon( "edit" ), LYRICS_EDIT, true, i18n("Edit") );
-    m_lyricsToolBar->setToggle( LYRICS_EDIT, true );
-    m_lyricsToolBar->insertButton( Amarok::icon( "search" ), LYRICS_SEARCH, true, i18n("Search") );
+
+    KAction *act = new KAction(KIcon( "refresh" ), i18n("Refresh"), this);
+    connect(act, SIGNAL(triggered()), this, SLOT(lyricsRefresh()));
+    m_lyricsToolBar->addAction(act);
+    // m_lyricsToolBar->insertButton( Amarok::icon( "refresh" ), LYRICS_REFRESH, true, i18n("Refresh") );
+
+ 
+    act = new KAction(KIcon( "add_lyrics" ), i18n("Add"), this);
+    connect(act, SIGNAL(triggered()), this, SLOT(lyricsAdd()));
+    m_lyricsToolBar->addAction(act);
+    //m_lyricsToolBar->insertButton( Amarok::icon( "add_lyrics" ), LYRICS_ADD, true, i18n("Add") );
+
+    act = new KAction(KIcon( "edit" ), i18n("Edit"), this);
+    connect(act, SIGNAL(triggered()), this, SLOT(lyricsEditToggle()));
+    m_lyricsToolBar->addAction(act);
+    //m_lyricsToolBar->insertButton( Amarok::icon( "edit" ), LYRICS_EDIT, true, i18n("Edit") );
+    //m_lyricsToolBar->setToggle( LYRICS_EDIT, true ); TODO!!! <- how to do with actions?
+
+
+    act = new KAction(KIcon( "search" ), i18n("Search"), this);
+    connect(act, SIGNAL(triggered()), this, SLOT(lyricsSearch()));
+    m_lyricsToolBar->addAction(act);
+    //m_lyricsToolBar->insertButton( Amarok::icon( "search" ), LYRICS_SEARCH, true, i18n("Search") );
+
     m_lyricsToolBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
-    m_lyricsToolBar->insertButton( Amarok::icon( "external" ), LYRICS_BROWSER, true, i18n("Open in external browser") );
+
+    act = new KAction(KIcon( "external" ), i18n("Open in external browser"), this);
+    connect(act, SIGNAL(triggered()), this, SLOT(lyricsExternalPage()));
+    m_lyricsToolBar->addAction(act);
+
+    //m_lyricsToolBar->insertButton( Amarok::icon( "external" ), LYRICS_BROWSER, true, i18n("Open in external browser") );
 
     { //Search text inside lyrics. Code inspired/copied from playlistwindow.cpp
        m_lyricsTextBar = new KToolBar( m_lyricsTab, "NotMainToolBar" );
@@ -338,11 +362,11 @@ ContextBrowser::ContextBrowser( const char *name )
     connect( m_wikiPage,         SIGNAL( popupMenu( const QString&, const QPoint& ) ),
              this,               SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
 
-    connect( m_lyricsToolBar->getButton( LYRICS_ADD ),     SIGNAL(clicked( int )), SLOT(lyricsAdd()) );
-    connect( m_lyricsToolBar->getButton( LYRICS_EDIT ),    SIGNAL(toggled( int )), SLOT(lyricsEditToggle()) );
-    connect( m_lyricsToolBar->getButton( LYRICS_SEARCH ),  SIGNAL(clicked( int )), SLOT(lyricsSearch()) );
-    connect( m_lyricsToolBar->getButton( LYRICS_REFRESH ), SIGNAL(clicked( int )), SLOT(lyricsRefresh()) );
-    connect( m_lyricsToolBar->getButton( LYRICS_BROWSER ), SIGNAL(clicked( int )), SLOT(lyricsExternalPage()) );
+    //connect( m_lyricsToolBar->getButton( LYRICS_ADD ),     SIGNAL(clicked( int )), SLOT(lyricsAdd()) );
+    //connect( m_lyricsToolBar->getButton( LYRICS_EDIT ),    SIGNAL(toggled( int )), SLOT(lyricsEditToggle()) );
+    //connect( m_lyricsToolBar->getButton( LYRICS_SEARCH ),  SIGNAL(clicked( int )), SLOT(lyricsSearch()) );
+    //connect( m_lyricsToolBar->getButton( LYRICS_REFRESH ), SIGNAL(clicked( int )), SLOT(lyricsRefresh()) );
+    //connect( m_lyricsToolBar->getButton( LYRICS_BROWSER ), SIGNAL(clicked( int )), SLOT(lyricsExternalPage()) );
 
     connect( m_wikiToolBar->getButton( WIKI_BACK    ), SIGNAL(clicked( int )), SLOT(wikiHistoryBack()) );
     connect( m_wikiToolBar->getButton( WIKI_FORWARD ), SIGNAL(clicked( int )), SLOT(wikiHistoryForward()) );
