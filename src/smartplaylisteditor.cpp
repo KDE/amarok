@@ -82,8 +82,7 @@ SmartPlaylistEditor::SmartPlaylistEditor( QString defaultName, QWidget *parent, 
 
 
 SmartPlaylistEditor::SmartPlaylistEditor( QWidget *parent, QDomElement xml, const char *name)
-    : KDialog( parent, name, true, i18n("Edit Smart Playlist"),
-      Ok|Cancel, Ok, true )
+    : KDialog( parent )
 {
     setCaption( i18n("Edit Smart Playlist") );
     setModal( true );
@@ -139,14 +138,14 @@ SmartPlaylistEditor::SmartPlaylistEditor( QWidget *parent, QDomElement xml, cons
         //random is always the last one.
         int dbfield = orderby.attribute( "field" ) == "random" ? m_dbFields.count() : m_dbFields.findIndex( orderby.attribute( "field" ) );
 
-        m_orderCombo->setCurrentItem( dbfield );
+        m_orderCombo->setCurrentIndex( dbfield );
         updateOrderTypes( dbfield );
         if ( orderby.attribute( "order" ) == "DESC" || orderby.attribute( "order" ) == "weighted" )
-            m_orderTypeCombo->setCurrentItem( 1 );
+            m_orderTypeCombo->setCurrentIndex( 1 );
         else if ( orderby.attribute( "order" ) == "ratingweighted" )
-            m_orderTypeCombo->setCurrentItem( 2 );
+            m_orderTypeCombo->setCurrentIndex( 2 );
         else
-            m_orderTypeCombo->setCurrentItem( 0 );
+            m_orderTypeCombo->setCurrentIndex( 0 );
     }
     // limit
     if  ( xml.hasAttribute( "maxresults" ) ) {
@@ -161,7 +160,7 @@ SmartPlaylistEditor::SmartPlaylistEditor( QWidget *parent, QDomElement xml, cons
         QDomElement expandby = expandbyList.item(0).toElement(); // we only allow one orderby node
 
         int dbfield = m_expandableFields.findIndex( expandby.attribute( "field" ) );
-        m_expandCombo->setCurrentItem( dbfield );
+        m_expandCombo->setCurrentIndex( dbfield );
     }
 }
 
@@ -337,7 +336,7 @@ void SmartPlaylistEditor::updateOrderTypes( int index )
         m_orderTypeCombo->insertItem( i18n("Descending") );
     }
     if( currentOrderType < m_orderTypeCombo->count() )
-        m_orderTypeCombo->setCurrentItem( currentOrderType );
+        m_orderTypeCombo->setCurrentIndex( currentOrderType );
     m_orderTypeCombo->setFont(m_orderTypeCombo->font());  // invalidate size hint
     m_orderTypeCombo->updateGeometry();
 }
@@ -466,7 +465,7 @@ CriteriaEditor::CriteriaEditor( SmartPlaylistEditor *editor, QWidget *parent, in
 
         //Set the selected field
 
-        m_fieldCombo->setCurrentItem( field );
+        m_fieldCombo->setCurrentIndex( field );
         slotFieldSelected( field );
         int valueType = getValueType( field );
         //Load the right set of criterias for this type, in the dialog
@@ -491,9 +490,9 @@ CriteriaEditor::CriteriaEditor( SmartPlaylistEditor *editor, QWidget *parent, in
             }
             case Rating:
             {
-                m_comboBox->setCurrentItem( ratingToIndex( values.first().toInt() ) );
+                m_comboBox->setCurrentIndex( ratingToIndex( values.first().toInt() ) );
                 if( condition == i18n("is between") )
-                    m_comboBox2->setCurrentItem( ratingToIndex( values.last().toInt() ) );
+                    m_comboBox2->setCurrentIndex( ratingToIndex( values.last().toInt() ) );
                 break;
             }
             case Date:
@@ -502,11 +501,11 @@ CriteriaEditor::CriteriaEditor( SmartPlaylistEditor *editor, QWidget *parent, in
                     m_intSpinBox1->setValue( values.first().toInt() );
                     QString period = criteria.attribute("period");
                     if (period=="days" || period.isEmpty() )
-                        m_dateCombo->setCurrentItem(0);
+                        m_dateCombo->setCurrentIndex(0);
                     else if (period=="months")
-                        m_dateCombo->setCurrentItem(1);
+                        m_dateCombo->setCurrentIndex(1);
                     else
-                        m_dateCombo->setCurrentItem(2);
+                        m_dateCombo->setCurrentIndex(2);
                 }
                 else {
                     QDateTime dt;
@@ -526,11 +525,11 @@ CriteriaEditor::CriteriaEditor( SmartPlaylistEditor *editor, QWidget *parent, in
                     m_intSpinBox2->setValue( values.last().toInt() );
                 QString period = criteria.attribute( "period" );
                 if ( period == "seconds" || period.isEmpty() ) //for compatibility
-                    m_lengthCombo->setCurrentItem( 0 );
+                    m_lengthCombo->setCurrentIndex( 0 );
                 else if ( period == "minutes" )
-                    m_lengthCombo->setCurrentItem( 1 );
+                    m_lengthCombo->setCurrentIndex( 1 );
                 else
-                    m_lengthCombo->setCurrentItem( 2 );
+                    m_lengthCombo->setCurrentIndex( 2 );
                 break;
             }
             default: ;
@@ -878,11 +877,9 @@ void CriteriaEditor::loadEditWidgets()
     /* Store lastCriteria. This information is used above to decide whether it's necessary to change the Widgets */
     m_lastCriteria = m_criteriaCombo->currentText();
 
-    QObjectList* list = m_editBox->queryList( "QWidget" );
-    for( QObject *obj = list->first(); obj; obj = list->next()  )
-        static_cast<QWidget*>(obj)->deleteLater();
-
-    delete list;
+    QObjectList list = m_editBox->queryList( "QWidget" );
+    for( QObjectList::const_iterator it = list.begin(); it != list.end(); ++it )
+        static_cast<QWidget*>( *it )->deleteLater();
 
     switch( valueType ) {
 
@@ -921,7 +918,7 @@ void CriteriaEditor::loadEditWidgets()
 
             if( m_criteriaCombo->currentText() == i18n("is between") ) {
                 m_rangeLabel = new QLabel( i18n("and"), m_editBox );
-                m_rangeLabel->setAlignment( AlignCenter );
+                m_rangeLabel->setAlignment( Qt::AlignHCenter );
                 m_rangeLabel->show();
                 m_intSpinBox2 = new QSpinBox( m_editBox );
                 if( yearField ) {
@@ -943,7 +940,7 @@ void CriteriaEditor::loadEditWidgets()
 
             if( m_criteriaCombo->currentText() == i18n("is between") ) {
                 m_rangeLabel = new QLabel( i18n("and"), m_editBox );
-                m_rangeLabel->setAlignment( AlignCenter );
+                m_rangeLabel->setAlignment( Qt::AlignHCenter );
                 m_rangeLabel->show();
                 m_comboBox2 = new KComboBox( false, m_editBox );
                 m_comboBox2->insertStringList( list );
@@ -971,7 +968,7 @@ void CriteriaEditor::loadEditWidgets()
                 m_dateEdit1->show();
                 if( m_criteriaCombo->currentText() == i18n("is between") ) {
                     m_rangeLabel = new QLabel( i18n("and"), m_editBox );
-                    m_rangeLabel->setAlignment( AlignCenter );
+                    m_rangeLabel->setAlignment( Qt::AlignHCenter );
                     m_rangeLabel->show();
                     m_dateEdit2 = new Q3DateEdit( QDate::currentDate(), m_editBox);
                     m_dateEdit2->show();
@@ -990,7 +987,7 @@ void CriteriaEditor::loadEditWidgets()
             m_intSpinBox1->show();
             if( m_criteriaCombo->currentText() == i18n("is between") ) {
                 m_rangeLabel = new QLabel( i18n("and"), m_editBox );
-                m_rangeLabel->setAlignment( AlignCenter );
+                m_rangeLabel->setAlignment( Qt::AlignHCenter );
                 m_rangeLabel->show();
                 m_intSpinBox2 = new QSpinBox( m_editBox );
                 m_intSpinBox2->setMaxValue( maxValue );
@@ -1045,7 +1042,7 @@ void CriteriaEditor::loadCriteriaList( int valueType, QString condition )
     if ( !condition.isEmpty() ) {
         int index = items.findIndex( condition );
         if (index!=-1)
-            m_criteriaCombo->setCurrentItem( index );
+            m_criteriaCombo->setCurrentIndex( index );
     }
 }
 
