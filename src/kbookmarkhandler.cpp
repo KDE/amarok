@@ -32,11 +32,11 @@ KBookmarkHandler::KBookmarkHandler( KDirOperator *parent, KMenu* rootmenu )
 {
     const QString file = Amarok::saveLocation() + "fileBrowserBookmarks.xml";
 
-    KBookmarkManager *manager = KBookmarkManager::managerForFile( file, false );
+    // FIXME: which dbus object?
+    KBookmarkManager *manager = KBookmarkManager::managerForFile( file, "", false );
     manager->setUpdate( true );
-    manager->setShowNSBookmarks( false );
 
-    new KBookmarkMenu( manager, this, rootmenu, 0, true );
+    new KBookmarkMenu( manager, this, rootmenu, 0 );
 }
 
 QString
