@@ -190,6 +190,11 @@ bool AtomicString::operator==( const AtomicString &other ) const
     return m_string == other.m_string;
 }
 
+bool AtomicString::operator!=( const AtomicString &other ) const
+{
+    return m_string != other.m_string;
+}
+
 // needs to be called holding the lock
 inline void AtomicString::deref( Data *s )
 {

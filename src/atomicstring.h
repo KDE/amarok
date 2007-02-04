@@ -97,6 +97,12 @@ public:
     bool operator==( const AtomicString &other ) const;
 
     /**
+     * This operation takes constant time.
+     * @return whether this string and \p string are not equivalent
+     */
+    bool operator!=( const AtomicString &other ) const;
+
+    /**
      * Returns a reference to this string, avoiding copies if possible.
      *
      * @return the string.
