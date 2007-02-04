@@ -53,7 +53,6 @@
 #include <krun.h>
 #include <kstandarddirs.h>     //podcast loading icons
 #include <kstringhandler.h>
-#include <ktrader.h>
 #include <kurlrequester.h>
 #include <krandom.h>
 #include <kvbox.h>
@@ -307,8 +306,9 @@ void PlaylistCategory::setXml( const QDomElement &xml )
 
                 QDomDocument xml;
                 QFile xmlFile( xmlLocation );
-                Q3TextStream stream( &xmlFile );
-                stream.setEncoding( Q3TextStream::UnicodeUTF8 );
+                QTextStream stream( &xmlFile );
+                stream.setCodec( QTextCodec::codecForName( "UTF-8" );
+                stream.setAutoDetectUnicode( true );
 
                 if( !xmlFile.open( QIODevice::ReadOnly ) || !xml.setContent( stream.read() ) )
                 {
