@@ -29,6 +29,7 @@
 #include <QSignalMapper>
 #include <QToolTip>
 #include <q3vbox.h>
+#include <QAbstractButton>
 
 #include <kapplication.h>
 #include <k3activelabel.h>
@@ -219,7 +220,7 @@ MediumPluginManager::finished()
         (*it)->configButton()->setEnabled( (*it)->pluginCombo()->currentText() != i18n( "Do not handle" ) );
     }
 
-    KConfig *config = Amarok::config( "MediaBrowser" );
+    KSharedConfig::Ptr config = Amarok::config( "MediaBrowser" );
     for( DeletedMap::Iterator dit = m_deletedMap.begin();
             dit != m_deletedMap.end();
             ++dit )
@@ -277,7 +278,8 @@ ManualDeviceAdder::ManualDeviceAdder( MediumPluginManager* mpm )
     kapp->setTopWidget( this );
     setCaption( KDialog::makeStandardCaption( i18n( "Add New Device") ) );
 
-    KHBox* hbox = makeHBoxMainWidget();
+    KHBox* hbox = new KHBox( this );
+    setMainWidget( hbox );
     hbox->setSpacing( KDialog::spacingHint() );
 
     Q3VBox* vbox1 = new Q3VBox( hbox );
@@ -318,14 +320,10 @@ ManualDeviceAdder::~ManualDeviceAdder()
 }
 
 void
-ManualDeviceAdder::slotCancel()
+ManualDeviceAdder::slotButtonClicked( KDialog::ButtonCode button)
 {
-    KPageDialog::slotCancel( );
-}
-
-void
-ManualDeviceAdder::slotOk()
-{
+    if( button != KDialog::Ok )
+        KDialog::slotButtonClicked( button );
     if( getMedium( true ) && !getMedium()->name().isEmpty() &&
             MediaDeviceManager::instance()->getDevice( getMedium()->name() ) == NULL )
     {
@@ -403,7 +401,7 @@ MediaDeviceConfig::MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, 
     if( !m_medium )
         return;
 
-    KConfig *config = Amarok::config( "MediaBrowser" );
+    KSharedConfig::Ptr config = Amarok::config( "MediaBrowser" );
     m_oldPlugin = config->readEntry( m_medium->id(), QString() );
     if( !m_oldPlugin.isEmpty() )
         m_new = false;
@@ -451,7 +449,7 @@ MediaDeviceConfig::MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, 
             m_pluginCombo->setCurrentItem( (*it)->name() );
     }
 
-    m_configButton = new KPushButton( SmallIconSet( Amarok::icon( "configure" ) ), QString::null, this );
+    m_configButton = new KPushButton( KIcon(SmallIconSet( Amarok::icon( "configure" ) )), QString::null, this );
     connect( m_configButton, SIGNAL(clicked()), SLOT(configureDevice()) );
     m_configButton->setEnabled( !m_new && m_pluginCombo->currentText() != i18n( "Do not handle" ) );
     QToolTip::add( m_configButton, i18n( "Configure device settings" ) );
@@ -501,13 +499,13 @@ MediaDeviceConfig::setOldPlugin( const QString &oldPlugin )
     m_oldPlugin = oldPlugin;
 }
 
-QButton *
+QAbstractButton *
 MediaDeviceConfig::configButton()
 {
     return m_configButton;
 }
 
-QButton *
+QAbstractButton *
 MediaDeviceConfig::removeButton()
 {
     return m_removeButton;

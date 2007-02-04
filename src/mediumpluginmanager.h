@@ -27,7 +27,7 @@
 #include <kpagedialog.h>
 #include <klocale.h>
 
-class QButton;
+class QAbstractButton;
 class Q3GroupBox;
 class QLabel;
 class QSignalMapper;
@@ -55,8 +55,8 @@ class MediaDeviceConfig : public Q3HBox
         void setOldPlugin( const QString &oldPlugin );
         QString plugin();
         KComboBox *pluginCombo();
-        QButton *configButton();
-        QButton *removeButton();
+        QAbstractButton *configButton();
+        QAbstractButton *removeButton();
         Medium *medium();
         bool isNew();
 
@@ -73,8 +73,8 @@ class MediaDeviceConfig : public Q3HBox
         Medium *m_medium;
         QString m_oldPlugin;
         KComboBox * m_pluginCombo;
-        QButton *m_configButton;
-        QButton *m_removeButton;
+        QAbstractButton *m_configButton;
+        QAbstractButton *m_removeButton;
         bool m_new;
 };
 
@@ -143,8 +143,7 @@ class ManualDeviceAdder : public KPageDialog
         QString getPlugin() const { return m_selectedPlugin; }
 
     private slots:
-        void slotCancel();
-        void slotOk();
+        void slotButtonClicked( KDialog::ButtonCode);
         void comboChanged( const QString & );
 
     private:
