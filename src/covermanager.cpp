@@ -38,6 +38,7 @@
 #include <Q3PtrList>
 #include <Q3Frame>
 #include <QDropEvent>
+#include <QToolButton>
 
 #include <kapplication.h>
 #include <kconfig.h>
@@ -103,7 +104,7 @@ CoverManager::CoverManager()
     // Sets caption and icon correctly (needed e.g. for GNOME)
     kapp->setTopWidget( this );
     setCaption( KDialog::makeStandardCaption( i18n("Cover Manager") ) );
-    setWindowFlags( WDestructiveClose );
+    setAttribute( Qt::WA_DeleteOnClose );
     setMargin( 4 );
 
     //artist listview
@@ -148,7 +149,8 @@ CoverManager::CoverManager()
     { //<Search LineEdit>
         Q3HBox *searchBox = new Q3HBox( hbox );
         KToolBar* searchToolBar = new Browser::ToolBar( searchBox );
-        KToolBarButton *button = new KToolBarButton( "locationbar_erase", 0, searchToolBar );
+        QToolButton *button = new QToolButton( searchToolBar );
+        button->setIcon( KIcon( "locationbar_erase") );
         m_searchEdit = new ClickLineEdit( i18n( "Enter search terms here" ), searchToolBar );
         m_searchEdit->setFrame( Q3Frame::Sunken );
 
@@ -277,9 +279,10 @@ void CoverManager::init()
 
 
 CoverViewDialog::CoverViewDialog( const QString& artist, const QString& album, QWidget *parent )
-    : QDialog( parent, 0, false, Qt::WDestructiveClose | Qt::WType_TopLevel | Qt::WNoAutoErase )
+    : QDialog( parent, 0, false, Qt::WType_TopLevel | Qt::WNoAutoErase )
     , m_pixmap( CollectionDB::instance()->albumImage( artist, album, false, 0 ) )
 {
+    setAttribute( Qt::WA_DeleteOnClose );
     KWin::setType( winId(), NET::Utility );
     kapp->setTopWidget( this );
     setCaption( KDialog::makeStandardCaption( i18n("%1 - %2").arg( artist, album ) ) );

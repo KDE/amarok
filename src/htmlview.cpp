@@ -160,21 +160,21 @@ HTMLView::loadStyleSheet()
         const QColor gradientColor = bgColor;
 
         if ( !m_bgGradientImage ) {
-            m_bgGradientImage = new KTempFile( locateLocal( "tmp", "gradient" ), ".png", 0600 );
+            m_bgGradientImage = new KTempFile( KStandardDirs::locateLocal( "tmp", "gradient" ), ".png", 0600 );
             QImage image = KImageEffect::gradient( QSize( 600, 1 ), gradientColor, gradientColor.light( 130 ), KImageEffect::PipeCrossGradient );
             image.save( m_bgGradientImage->file(), "PNG" );
             m_bgGradientImage->close();
         }
 
         if ( !m_headerGradientImage ) {
-            m_headerGradientImage = new KTempFile( locateLocal( "tmp", "gradient_header" ), ".png", 0600 );
+            m_headerGradientImage = new KTempFile( KStandardDirs::locateLocal( "tmp", "gradient_header" ), ".png", 0600 );
             QImage imageH = KImageEffect::unbalancedGradient( QSize( 1, 10 ), bgColor, gradientColor.light( 130 ), KImageEffect::VerticalGradient, 100, -100 );
             imageH.copy( 0, 1, 1, 9 ).save( m_headerGradientImage->file(), "PNG" );
             m_headerGradientImage->close();
         }
 
         if ( !m_shadowGradientImage ) {
-            m_shadowGradientImage = new KTempFile( locateLocal( "tmp", "gradient_shadow" ), ".png", 0600 );
+            m_shadowGradientImage = new KTempFile( KStandardDirs::locateLocal( "tmp", "gradient_shadow" ), ".png", 0600 );
             QImage imageS = KImageEffect::unbalancedGradient( QSize( 1, 10 ), baseColor, Qt::gray, KImageEffect::VerticalGradient, 100, -100 );
             imageS.save( m_shadowGradientImage->file(), "PNG" );
             m_shadowGradientImage->close();

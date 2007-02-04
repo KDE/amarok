@@ -151,7 +151,7 @@ void TrackToolTip::setTrack( const MetaBundle &tags, bool force )
                       // moodbar is saved in m_moodbarURL so we don't have
                       // to re-save it every second.
                       left << playlist->columnText( column );
-                      QString filename = ::locateLocal( "data",
+                      QString filename = KStandardDirs::locateLocal( "data",
                                                         "amarok/mood_tooltip.png" );
                       int height = QFontMetrics( QToolTip::font() ).height() - 2;
 

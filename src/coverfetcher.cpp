@@ -123,7 +123,7 @@ CoverLabel::CoverLabel ( QWidget * parent, const char * name, Qt::WFlags f )
 
 
 void CoverLabel::mouseReleaseEvent(QMouseEvent *pEvent) {
-    if (pEvent->button() == LeftButton || pEvent->button() == RightButton)
+    if (pEvent->button() == Qt::LeftButton || pEvent->button() == Qt::RightButton)
     {
         Amarok::coverContextMenu( this, pEvent->globalPos(), m_artist, m_album, false );
     }

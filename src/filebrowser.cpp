@@ -61,6 +61,7 @@
 #include <QLabel>
 #include <QTimer>
 #include <QToolTip>
+#include <QToolButton>
 //Added by qt3to4:
 #include <Q3PtrList>
 #include <Q3Frame>
@@ -106,7 +107,10 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
 
     { //Filter LineEdit
         KToolBar* searchToolBar = new Browser::ToolBar( this );
-        KToolBarButton *button = new KToolBarButton( "locationbar_erase", 0, searchToolBar );
+
+        QToolButton *button = new QToolButton( searchToolBar );
+        button->setIcon( KIcon( "locationbar_erase") );
+
         m_filter = new ClickLineEdit( i18n( "Enter search terms here" ), searchToolBar );
 
         searchToolBar->setStretchableWidget( m_filter );
@@ -316,7 +320,8 @@ void FileBrowser::setUrl( const QString &url )
 KUrl::List FileBrowser::selectedItems()
 {
     KUrl::List list;
-    for( KFileItemListIterator it( m_dir->selectedItems()->count() ? *m_dir->selectedItems() : *m_dir->view()->items() ); *it; ++it )
+    const KFileItemList &source = m_dir->selectedItems()->count() ? *m_dir->selectedItems() : *m_dir->view()->items();
+    for( KFileItemList::const_iterator it = source.begin(); it != source.end(); ++it )
         list.append( (*it)->url() );
 
     return list;
