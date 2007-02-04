@@ -193,7 +193,7 @@ QString ContextBrowser::s_wikiLocale = "en";
 
 
 ContextBrowser::ContextBrowser( const char *name )
-        : KTabWidget( 0, name )
+        : KTabWidget( 0 )
         , EngineObserver( EngineController::instance() )
         , m_dirtyCurrentTrackPage( true )
         , m_dirtyLyricsPage( true )
@@ -215,6 +215,8 @@ ContextBrowser::ContextBrowser( const char *name )
         , m_cuefile( NULL )
 {
     s_instance = this;
+    setObjectName( name);
+
     s_wikiLocale = AmarokConfig::wikipediaLocale();
 
     m_contextTab = new Q3VBox(this, "context_tab");
