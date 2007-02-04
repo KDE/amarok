@@ -32,8 +32,10 @@
 #include <QLayout>
 #include <QPushButton>
 #include <QStringList>
-#include <q3textstream.h>   //presets
+#include <QTextStream>   //presets
 #include <QToolTip>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <q3vbox.h>
 //Added by qt3to4:
 #include <Q3GridLayout>
@@ -53,11 +55,11 @@ EqualizerSetup* EqualizerSetup::s_instance = 0;
 
 
 EqualizerSetup::EqualizerSetup()
-        : KDialog( Amarok::mainWindow(), 0, false, 0, 0, Ok, false )
+        : KDialog( Amarok::mainWindow() )
 {
-    dialog->setModal( false );
-    dialog->setButtons( Ok );
-    dialog->showButtonSeparator( false );
+    setModal( false );
+    setButtons( Ok );
+    showButtonSeparator( false );
 
     using Amarok::Slider;
 
@@ -70,24 +72,31 @@ EqualizerSetup::EqualizerSetup()
     KWin::setType( winId(), NET::Utility );
     KWin::setState( winId(), NET::SkipTaskbar );
 
-    KVBox* vbox = makeVBoxMainWidget();
-    vbox->setSpacing( KDialog::spacingHint() );
+    QWidget* vbox( this );
+    QVBoxLayout *vboxLayout = new QVBoxLayout;
+    vbox->setLayout( vboxLayout );
+    vboxLayout->setSpacing( KDialog::spacingHint() );
 
     // BEGIN Presets
-    Q3HBox* presetBox = new Q3HBox( vbox );
-    presetBox->setSpacing( KDialog::spacingHint() );
+    QWidget* presetBox = new QWidget( vbox );
+    QHBoxLayout *presetLayout = new QHBoxLayout;
+    presetLayout->setSpacing( KDialog::spacingHint() );
+    presetBox->setLayout( presetLayout );
 
-    new QLabel( i18n("Presets:"), presetBox );
+    presetLayout->addWidget( new QLabel( i18n("Presets:") ) );
 
-    m_presetCombo = new KComboBox( presetBox );
+    m_presetCombo = new KComboBox;
+    presetLayout->addWidget( m_presetCombo );
     m_presetCombo->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred ) );
 
-    QPushButton* presetAdd = new QPushButton( presetBox );
+    QPushButton* presetAdd = new QPushButton;
+    presetLayout->addWidget( presetAdd );
     presetAdd->setIconSet( SmallIconSet( Amarok::icon( "add_playlist" ) ) );
     QToolTip::add( presetAdd, i18n("Add new preset") );
     connect( presetAdd, SIGNAL( clicked() ), SLOT( addPreset() ) );
 
-    QPushButton* presetConf = new QPushButton( presetBox );
+    QPushButton* presetConf = new QPushButton;
+    presetLayout->addWidget( presetConf );
     presetConf->setIconSet( SmallIconSet( Amarok::icon( "configure" ) ) );
     QToolTip::add( presetConf, i18n("Manage presets") );
     connect( presetConf, SIGNAL( clicked() ), SLOT( editPresets() ) );
@@ -98,6 +107,7 @@ EqualizerSetup::EqualizerSetup()
 
     // BEGIN GroupBox
     m_groupBoxSliders = new Q3GroupBox( 1, Qt::Vertical, i18n("Enable Equalizer"), vbox );
+    vboxLayout->addWidget( m_groupBoxSliders );
     m_groupBoxSliders->setCheckable( true );
     m_groupBoxSliders->setChecked( AmarokConfig::equalizerEnabled() );
     m_groupBoxSliders->setInsideMargin( KDialog::marginHint() );
@@ -135,7 +145,7 @@ EqualizerSetup::EqualizerSetup()
     for ( int i = 0; i < 10; i++ ) {
         Slider *slider = new Slider( Qt::Vertical, slidersLayoutWidget );
         QLabel *label  = new QLabel( slidersLayoutWidget );
-        label->setBuddy( bandLabels[i] );
+        label->setText( bandLabels[i] );
 
         slider->setMinValue( -100 );
         slider->setMaxValue( +100 );
@@ -155,11 +165,11 @@ EqualizerSetup::EqualizerSetup()
 
     Q3VBox* graphVBox = new Q3VBox( graphGBox );
     QLabel* graphLabel1 = new QLabel(graphVBox);
-    graphLabel1->setBuddy("+20 db");
+    graphLabel1->setText("+20 db");
     QLabel* graphLabel2 = new QLabel(graphVBox);
-    graphLabel2->setBuddy("0 db");
+    graphLabel2->setText("0 db");
     QLabel* graphLabel3 = new QLabel(graphVBox);
-    graphLabel3->setBuddy("-20 db");
+    graphLabel3->setText("-20 db");
     graphLabel1->setAlignment( Qt::AlignRight | Qt::AlignTop );
     graphLabel2->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
     graphLabel3->setAlignment( Qt::AlignRight | Qt::AlignBottom );
@@ -218,7 +228,7 @@ EqualizerSetup::setPreset( QString name )
     }
 
     if ( found ) {
-        m_presetCombo->setCurrentItem( i );
+        m_presetCombo->setCurrentIndex( i );
         presetChanged( name );
     }
 }
@@ -248,8 +258,8 @@ EqualizerSetup::loadPresets()
     if ( !file.exists() )
         file.setFileName( KStandardDirs::locate( "data", "amarok/data/equalizer_presets.xml" ) );
 
-    Q3TextStream stream( &file );
-    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
+    QTextStream stream( &file );
+    stream.setEncoding( QTextStream::UnicodeUTF8 );
 
     QDomDocument d;
 
@@ -330,8 +340,8 @@ EqualizerSetup::savePresets()
         e.appendChild( i );
     }
 
-    Q3TextStream stream( &file );
-    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
+    QTextStream stream( &file );
+    stream.setEncoding( QTextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     stream << doc.toString();
     file.close();
@@ -433,7 +443,7 @@ EqualizerSetup::updatePresets(QString selectTitle)
     if ( newIndex == -1 )
         newIndex = m_manualPos;
 
-    m_presetCombo->setCurrentItem( newIndex );
+    m_presetCombo->setCurrentIndex( newIndex );
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -494,7 +504,7 @@ EqualizerSetup::setEqualizerParameters() //SLOT
 void
 EqualizerSetup::sliderChanged() //SLOT
 {
-    m_presetCombo->setCurrentItem( m_manualPos );
+    m_presetCombo->setCurrentIndex( m_manualPos );
 
     Q3ValueList<int> gains;
     for ( uint i = 0; i < m_bandSliders.count(); i++ )
