@@ -91,6 +91,7 @@
 #include <kmessagebox.h>
 #include <kmenu.h>
 #include <krandomsequence.h> //random Mode
+#include <krandom.h>
 #include <kstandarddirs.h>   //KGlobal::dirs()
 #include <kstandardaction.h>
 #include <kstringhandler.h>  //::showContextMenu()
@@ -174,7 +175,7 @@ namespace Glow
 Playlist *Playlist::s_instance = 0;
 
 Playlist::Playlist( QWidget *parent )
-        : K3ListView( parent, "ThePlaylist" )
+        : K3ListView( parent )
         , EngineObserver( EngineController::instance() )
         , m_startupTime_t( QDateTime::currentDateTime().toTime_t() )
         , m_oldestTime_t( CollectionDB::instance()->query( "SELECT MIN( createdate ) FROM statistics;" ).first().toInt() )
@@ -212,7 +213,7 @@ Playlist::Playlist( QWidget *parent )
         , m_proposeOverwriting( false )
 {
     s_instance = this;
-
+    setObjectName( "ThePlaylist" );
     connect( CollectionDB::instance(), SIGNAL(fileMoved(const QString&,
             const QString&, const QString&)), SLOT(updateEntriesUrl(const QString&,
             const QString&, const QString&)) );
