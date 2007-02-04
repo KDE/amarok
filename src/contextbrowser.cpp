@@ -324,12 +324,12 @@ ContextBrowser::ContextBrowser( const char *name )
 
     connect( this, SIGNAL( currentChanged( QWidget* ) ), SLOT( tabChanged( QWidget* ) ) );
 
-    connect( m_currentTrackPage->browserExtension(), SIGNAL( openURLRequest( const KUrl &, const KParts::URLArgs & ) ),
-             this,                                   SLOT( openURLRequest( const KUrl & ) ) );
-    connect( m_lyricsPage->browserExtension(),       SIGNAL( openURLRequest( const KUrl &, const KParts::URLArgs & ) ),
-             this,                                   SLOT( openURLRequest( const KUrl & ) ) );
-    connect( m_wikiPage->browserExtension(),         SIGNAL( openURLRequest( const KUrl &, const KParts::URLArgs & ) ),
-             this,                                   SLOT( openURLRequest( const KUrl & ) ) );
+    connect( m_currentTrackPage->browserExtension(), SIGNAL( openUrlRequest( const KUrl &, const KParts::URLArgs & ) ),
+             this,                                   SLOT( openUrlRequest( const KUrl & ) ) );
+    connect( m_lyricsPage->browserExtension(),       SIGNAL( openUrlRequest( const KUrl &, const KParts::URLArgs & ) ),
+             this,                                   SLOT( openUrlRequest( const KUrl & ) ) );
+    connect( m_wikiPage->browserExtension(),         SIGNAL( openUrlRequest( const KUrl &, const KParts::URLArgs & ) ),
+             this,                                   SLOT( openUrlRequest( const KUrl & ) ) );
 
     connect( m_currentTrackPage, SIGNAL( popupMenu( const QString&, const QPoint& ) ),
              this,               SLOT( slotContextMenu( const QString&, const QPoint& ) ) );
@@ -424,7 +424,7 @@ void ContextBrowser::setFont( const QFont &newFont )
 // PUBLIC SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void ContextBrowser::openURLRequest( const KUrl &url )
+void ContextBrowser::openUrlRequest( const KUrl &url )
 {
     QString artist, album, track;
     Amarok::albumArtistTrackFromUrl( url.path(), artist, album, track );
@@ -575,7 +575,7 @@ void ContextBrowser::openURLRequest( const KUrl &url )
     }
 
     else
-        HTMLView::openURLRequest( url );
+        HTMLView::openUrlRequest( url );
 }
 
 

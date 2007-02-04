@@ -318,7 +318,7 @@ HTMLView::set( const QString& data )
 }
 
 
-void HTMLView::openURLRequest( const KUrl &url )
+void HTMLView::openUrlRequest( const KUrl &url )
 {
     // here, http urls are streams. For webpages we use externalurl
     // NOTE there have been no links to streams! http now used for wiki tab.

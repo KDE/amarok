@@ -521,7 +521,7 @@ FileBrowser::gotoCurrentFolder()
     const KUrl &url = EngineController::instance()->bundle().url();
     KUrl dirURL = KUrl::fromPathOrUrl( url.directory() );
 
-    m_combo->seturL( dirURL );
+    m_combo->setUrl( dirURL );
     setUrl( dirURL );
 }
 
@@ -676,7 +676,7 @@ SearchPane::searchTextChanged( const QString &text )
 
     m_filter = QRegExp( text.contains( "*" ) ? text : '*'+text+'*', false, true );
 
-    m_lister->openURL( searchURL() );
+    m_lister->openUrl( searchURL() );
 
     m_listView->setText( i18n( "Searching..." ) );
 }
@@ -695,7 +695,7 @@ SearchPane::searchMatches( const KFileItemList &list )
 void
 SearchPane::searchComplete()
 {
-    //KDirLister crashes if you call openURL() from a slot
+    //KDirLister crashes if you call openUrl() from a slot
     //connected to KDirLister::complete()
     //TODO fix crappy KDElibs
 
@@ -708,7 +708,7 @@ SearchPane::_searchComplete()
     if ( !m_dirs.isEmpty() ) {
         KUrl url = m_dirs.first();
         m_dirs.pop_front();
-        m_lister->openURL( url );
+        m_lister->openUrl( url );
     }
     else
         m_listView->setText( i18n("No results found") ); //only displayed if the listview is empty

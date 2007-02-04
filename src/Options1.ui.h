@@ -50,7 +50,7 @@ void Options1::init()
 #ifdef Q_WS_MAC
             "open"
 #else
-            "kfmclient openURL"
+            "kfmclient openUrl"
 #endif
       )
     {

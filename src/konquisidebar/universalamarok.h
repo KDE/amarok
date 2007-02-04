@@ -94,7 +94,7 @@ public slots:
     void sendNext() { checkForAmarok(); playerStub->next(); }
     void sendMute() { checkForAmarok(); playerStub->mute(); }
     void volChanged(int vol);
-    void openURLRequest( const KUrl & );
+    void openUrlRequest( const KUrl & );
     void checkForAmarok();
     void noAmarokRunning();
     void runAmarok();

@@ -133,9 +133,9 @@ UniversalAmarok::UniversalAmarok(KInstance *inst,QObject *parent,QWidget *widget
     kDebug() << "Connecting widget signal" << endl;
 
     connect( widget,                      SIGNAL( emitURL( const KUrl &)),
-             this,                        SLOT( openURLRequest( const KUrl &) ) );
-    connect( browser->browserExtension(), SIGNAL( openURLRequest( const KUrl &, const KParts::URLArgs & ) ),
-             this,                        SLOT( openURLRequest( const KUrl & ) ) );
+             this,                        SLOT( openUrlRequest( const KUrl &) ) );
+    connect( browser->browserExtension(), SIGNAL( openUrlRequest( const KUrl &, const KParts::URLArgs & ) ),
+             this,                        SLOT( openUrlRequest( const KUrl & ) ) );
     widget->show();
 }
 
@@ -208,7 +208,7 @@ void UniversalAmarok::updateBrowser(const QString& file)
         browser->write(text);
         browser->end();
     } else
-    browser->openURL(file);
+    browser->openUrl(file);
 }
 
 
@@ -238,9 +238,9 @@ QString UniversalAmarok::getCurrentPlaying()
 
 
 /*!
-    \fn UniversalAmarok::openURLRequest( const KUrl &url )
+    \fn UniversalAmarok::openUrlRequest( const KUrl &url )
  */
-void UniversalAmarok::openURLRequest( const KUrl &url )
+void UniversalAmarok::openUrlRequest( const KUrl &url )
 {
    if( ! url.isValid() ) return;
    if (url.url() == "run:amarok") {

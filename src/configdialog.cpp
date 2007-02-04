@@ -435,7 +435,7 @@ QString AmarokConfigDialog::externalBrowser() const
                  "open" :
 #else
                  m_opt1->kComboBox_browser->currentText() == i18n( "Default KDE Browser" ) ?
-                 "kfmclient openURL" :
+                 "kfmclient openUrl" :
 #endif
                  m_opt1->kComboBox_browser->currentText().toLower() :
              m_opt1->kLineEdit_customBrowser->text().toLower();

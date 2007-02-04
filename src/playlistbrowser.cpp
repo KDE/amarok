@@ -2432,7 +2432,7 @@ KUrl::List PlaylistBrowser::recurse( const KUrl &url )
     KDirLister lister( false );
     lister.setAutoUpdate( false );
     lister.setAutoErrorHandlingEnabled( false, 0 );
-    lister.openURL( url );
+    lister.openUrl( url );
 
     while( !lister.isFinished() )
         kapp->eventLoop()->processEvents( QEventLoop::ExcludeUserInput );

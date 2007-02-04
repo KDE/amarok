@@ -52,7 +52,7 @@ class TagDialog : public TagDialogBase
         void lyricsChanged( const QString& );
 
     public slots:
-        void openURLRequest(const KUrl &url );
+        void openUrlRequest(const KUrl &url );
 
     private slots:
         void accept();

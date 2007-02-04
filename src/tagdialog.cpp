@@ -432,8 +432,8 @@ void TagDialog::init()
     const QStringList favoriteLabels = CollectionDB::instance()->favoriteLabels();
     QString html = generateHTML( favoriteLabels );
     m_labelCloud->set( html );
-    connect( m_labelCloud->browserExtension(), SIGNAL( openURLRequest( const KUrl &, const KParts::URLArgs & ) ),
-             this,                             SLOT( openURLRequest( const KUrl & ) ) );
+    connect( m_labelCloud->browserExtension(), SIGNAL( openUrlRequest( const KUrl &, const KParts::URLArgs & ) ),
+             this,                             SLOT( openUrlRequest( const KUrl & ) ) );
 
     // looks better to have a blank label than 0, we can't do this in
     // the UI file due to bug in Designer
@@ -1401,7 +1401,7 @@ TagDialog::generateHTML( const QStringList &labels )
 }
 
 void
-TagDialog::openURLRequest(const KUrl &url )         //SLOT
+TagDialog::openUrlRequest(const KUrl &url )         //SLOT
 {
     DEBUG_BLOCK
     if ( url.protocol() == "label" )

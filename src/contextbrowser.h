@@ -63,7 +63,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         virtual bool eventFilter( QObject *o, QEvent *e ); //required by the labels dialog
 
     public slots:
-        void openURLRequest(const KUrl &url );
+        void openUrlRequest(const KUrl &url );
         void collectionScanStarted();
         void collectionScanDone( bool changed );
         void renderView();

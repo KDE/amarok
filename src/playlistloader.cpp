@@ -365,7 +365,7 @@ UrlLoader::recurse( const KUrl &url )
     KDirLister lister( false );
     lister.setAutoUpdate( false );
     lister.setAutoErrorHandlingEnabled( false, 0 );
-    if ( !lister.openURL( url ) )
+    if ( !lister.openUrl( url ) )
         return KUrl::List();
 
     // Fucking KDirLister sometimes hangs on remote media, so we add a timeout
@@ -409,7 +409,7 @@ recursiveUrlExpand( const KUrl &url, int maxURLs )
     MyDirLister lister( false );
     lister.setAutoUpdate( false );
     lister.setAutoErrorHandlingEnabled( false, 0 );
-    if ( !lister.openURL( url ) )
+    if ( !lister.openUrl( url ) )
         return KUrl::List();
 
     // Fucking KDirLister sometimes hangs on remote media, so we add a timeout
