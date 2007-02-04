@@ -72,8 +72,9 @@ QueueItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width,
 //////////////////////////////////////////////////////////////////////////////////////////
 
 QueueList::QueueList( QWidget *parent, const char *name )
-            : K3ListView( parent, name )
+            : K3ListView( parent )
 {
+    setObjectName( name );
     addColumn( i18n("Name") );
     setResizeMode( Q3ListView::LastColumn );
     setSelectionMode( Q3ListView::Extended );
@@ -375,12 +376,11 @@ QueueManager::addItems( Q3ListViewItem *after )
     if( !after )
         after = m_listview->lastChild();
 
-    Q3PtrList<Q3ListViewItem> list = Playlist::instance()->selectedItems();
+    QList<Q3ListViewItem*> list = Playlist::instance()->selectedItems();
 
     bool item_added = false;
-    for( Q3ListViewItem *item = list.first(); item; item = list.next() )
-    {
-        #define item static_cast<PlaylistItem*>(item)
+    for( QList<Q3ListViewItem*>::const_iterator it = list.begin(); it != list.end(); ++it ) {
+        #define item static_cast<PlaylistItem*>(*it)
         Q3ValueList<PlaylistItem*> current = m_map.values();
 
         if( current.find( item ) == current.end() ) //avoid duplication
@@ -465,8 +465,8 @@ QueueManager::removeQueuedItem( PlaylistItem *item )
     if( removableItem )
     {
         //Remove the key from the map, so we can re-queue the item
-        QMapIterator<Q3ListViewItem*, PlaylistItem*> end(  m_map.end() );
-        for( QMapIterator<Q3ListViewItem*, PlaylistItem*> it = m_map.begin(); it != end; ++it )
+        QMap<Q3ListViewItem*, PlaylistItem*>::iterator end =  m_map.end();
+        for( QMap<Q3ListViewItem*, PlaylistItem*>::iterator it = m_map.begin(); it != end; ++it )
         {
             if( it.data() == item )
             {
@@ -528,7 +528,7 @@ QueueManager::removeSelected() //SLOT
     for( Q3ListViewItem *item = selected.first(); item; item = selected.next() )
     {
         //Remove the key from the map, so we can re-queue the item
-        QMapIterator<Q3ListViewItem*, PlaylistItem*> it = m_map.find( item );
+        QMap<Q3ListViewItem*, PlaylistItem*>::iterator it = m_map.find( item );
 
         m_map.remove( it );
 
