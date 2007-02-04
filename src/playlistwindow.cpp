@@ -591,23 +591,25 @@ void PlaylistWindow::createGUI()
     const QStringList::ConstIterator last = list.fromLast();
     for( QStringList::ConstIterator it = list.constBegin(); it != end; ++it )
     {
-        KToolBarButton* const button = m_toolbar->findChild<KToolBarButton*>( (*it).latin1() );
+        QToolButton* const button = m_toolbar->findChild<QToolButton*>( (*it).latin1() );
 
         if ( it == last ) {
             //if the user has no PlayerWindow, he MUST have the menu action plugged
             //NOTE this is not saved to the local XMLFile, which is what the user will want
-            if ( !AmarokConfig::showPlayerWindow() && !AmarokConfig::showMenuBar() && !button )
+            if ( !AmarokConfig::showMenuBar() && !button )
                 m_toolbar->addAction( actionCollection()->action( "amarok_menu" ) );
         }
 
         if ( button ) {
-            button->modeChange();
-            button->setFocusPolicy( QWidget::NoFocus );
+//TODO: can we delete modeChange safely? It doesn't appear to have a direct QToolButton equiv... is it still needed?
+//             button->modeChange();
+            button->setFocusPolicy( Qt::NoFocus );
         }
     }
 
     m_toolbar->setToolButtonStyle( Qt::ToolButtonIconOnly ); //default appearance
-    conserveMemory();
+//TODO: is this okay to remove? kdelibs-todo talks about removing it
+//    conserveMemory();
     setUpdatesEnabled( true );
 }
 
@@ -901,11 +903,11 @@ void PlaylistWindow::slotAddLocation( bool directPlay ) //SLOT
     // open a file selector to add media to the playlist
     KUrl::List files;
     //files = KFileDialog::getOpenURLs( QString::null, "*.*|" + i18n("All Files"), this, i18n("Add Media") );
-    KFileDialog dlg( QString::null, "*.*|", this, "openMediaDialog", true );
+    KFileDialog dlg( KUrl(QString::null), QString("*.*|"), this );
     dlg.setCaption( directPlay ? i18n("Play Media (Files or URLs)") : i18n("Add Media (Files or URLs)") );
     dlg.setMode( KFile::Files | KFile::Directory );
     dlg.exec();
-    files = dlg.selectedURLs();
+    files = dlg.selectedUrls();
     if( files.isEmpty() ) return;
     const int options = directPlay ? Playlist::Append | Playlist::DirectPlay : Playlist::Append;
 
@@ -1124,7 +1126,7 @@ void PlaylistWindow::toolsMenuAboutToShow() //SLOT
 void PlaylistWindow::showHide() //SLOT
 {
 #ifdef Q_WS_X11
-    const KWin::WindowInfo info = KWin::windowInfo( winId() );
+    const KWin::WindowInfo info = KWin::windowInfo( winId(), 0, 0 );
     const uint desktop = KWin::currentDesktop();
     const bool isOnThisDesktop = info.isOnDesktop( desktop );
     const bool isShaded = false;
@@ -1151,7 +1153,7 @@ void PlaylistWindow::showHide() //SLOT
 void PlaylistWindow::activate()
 {
 #ifdef Q_WS_X11
-    const KWin::WindowInfo info = KWin::windowInfo( winId() );
+    const KWin::WindowInfo info = KWin::windowInfo( winId(), 0, 0 );
 
     if( KWinModule( NULL, KWinModule::INFO_DESKTOP ).activeWindow() != winId())
         setShown( true );
@@ -1167,7 +1169,7 @@ void PlaylistWindow::activate()
 bool PlaylistWindow::isReallyShown() const
 {
 #ifdef Q_WS_X11
-    const KWin::WindowInfo info = KWin::windowInfo( winId() );
+    const KWin::WindowInfo info = KWin::windowInfo( winId(), 0, 0 );
     return isShown() && !info.isMinimized() && info.isOnDesktop( KWin::currentDesktop() );
 #else
     return isShown();
@@ -1211,13 +1213,13 @@ void DynamicBar::init()
     connect(Playlist::instance()->qscrollview(), SIGNAL(dynamicModeChanged(const DynamicMode*)),
                                                    SLOT(slotNewDynamicMode(const DynamicMode*)));
 
-    KPushButton* editDynamicButton = new KPushButton( i18n("Edit"), this, "DynamicModeEdit" );
+    KPushButton* editDynamicButton = new KPushButton( i18n("Edit"), this );
     connect( editDynamicButton, SIGNAL(clicked()), Playlist::instance()->qscrollview(), SLOT(editActiveDynamicMode()) );
 
-    KPushButton* repopButton = new KPushButton( i18n("Repopulate"), this, "DynamicModeRepopulate" );
+    KPushButton* repopButton = new KPushButton( i18n("Repopulate"), this );
     connect( repopButton, SIGNAL(clicked()), Playlist::instance()->qscrollview(), SLOT(repopulate()) );
 
-    KPushButton* disableButton = new KPushButton( i18n("Turn Off"), this, "DynamicModeDisable" );
+    KPushButton* disableButton = new KPushButton( i18n("Turn Off"), this );
     connect( disableButton, SIGNAL(clicked()), Playlist::instance()->qscrollview(), SLOT(disableDynamicMode()) );
 
     slotNewDynamicMode( Playlist::instance()->dynamicMode() );
