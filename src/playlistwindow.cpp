@@ -208,7 +208,7 @@ PlaylistWindow::PlaylistWindow()
     KAction *toggleFocus = new KAction( i18n( "Toggle Focus" ), "reload", Qt::ControlModifier + Qt::Key_Tab, this, SLOT( slotToggleFocus() ), ac, "toggle_focus" );
 
 
-    { // KAction idiocy -- shortcuts don't work until they've been plugged into a menu
+    /*{ // KAction idiocy -- shortcuts don't work until they've been plugged into a menu
         KMenu asdf;
 
         playPause->plug( &asdf );
@@ -220,7 +220,7 @@ PlaylistWindow::PlaylistWindow()
         seekForward->unplug( &asdf );
         seekBackward->unplug( &asdf );
         toggleFocus->unplug( &asdf );
-    }
+    }*/
 
 
     new Amarok::MenuAction( ac );
@@ -279,11 +279,12 @@ void PlaylistWindow::init()
         bar->setMovingEnabled( false ); //removes the ugly frame
 
         playlist = new Playlist( m_browsers->container() );
-        actionCollection()->action( "playlist_clear")->plug( bar );
-        actionCollection()->action( "playlist_save")->plug( bar );
+        bar->addAction( actionCollection()->action( "playlist_clear") );
+        bar->addAction( actionCollection()->action( "playlist_save") );
         bar->addSeparator();
-        actionCollection()->action( "playlist_undo")->plug( bar );
-        actionCollection()->action( "playlist_redo")->plug( bar );
+        bar->addAction( actionCollection()->action( "playlist_undo") );
+        bar->addAction( actionCollection()->action( "playlist_redo") );
+
         bar->boxLayout()->addStretch();
         QWidget *button = new KToolBarButton( "locationbar_erase", 1, bar );
         QLabel *filter_label = new QLabel( i18n("S&earch:") + ' ', bar );
@@ -329,60 +330,61 @@ void PlaylistWindow::init()
 
     //BEGIN Actions menu
     KMenu *actionsMenu = new KMenu( m_menubar );
-    actionCollection()->action("playlist_playmedia")->plug( actionsMenu );
-    actionCollection()->action("lastfm_play")->plug( actionsMenu );
-    actionCollection()->action("play_audiocd")->plug( actionsMenu );
-    actionsMenu->insertSeparator();
-    actionCollection()->action("prev")->plug( actionsMenu );
-    actionCollection()->action("play_pause")->plug( actionsMenu );
-    actionCollection()->action("stop")->plug( actionsMenu );
-    actionCollection()->action("next")->plug( actionsMenu );
-    actionsMenu->insertSeparator();
-    actionCollection()->action(KStandardAction::name(KStandardAction::Quit))->plug( actionsMenu );
+    actionsMenu->addAction( actionCollection()->action("playlist_playmedia") );
+    actionsMenu->addAction( actionCollection()->action("lastfm_play") );
+    actionsMenu->addAction( actionCollection()->action("play_audiocd") );
+    actionsMenu->addSeparator();
+    actionsMenu->addAction( actionCollection()->action("prev") );
+    actionsMenu->addAction( actionCollection()->action("play_pause") );
+    actionsMenu->addAction( actionCollection()->action("stop") );
+    actionsMenu->addAction( actionCollection()->action("next") );
+    actionsMenu->addSeparator();
+    actionsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Quit)) );
+
 
     connect( actionsMenu, SIGNAL( aboutToShow() ), SLOT( actionsMenuAboutToShow() ) );
     //END Actions menu
 
     //BEGIN Playlist menu
     KMenu *playlistMenu = new KMenu( m_menubar );
-    actionCollection()->action("playlist_add")->plug( playlistMenu );
-    actionCollection()->action("stream_add")->plug( playlistMenu );
-    actionCollection()->action("lastfm_add")->plug( playlistMenu );
-    actionCollection()->action("playlist_save")->plug( playlistMenu );
-    actionCollection()->action("playlist_burn")->plug( playlistMenu );
+    playlistMenu->addAction( actionCollection()->action("playlist_add") );
+    playlistMenu->addAction( actionCollection()->action("stream_add") );
+    playlistMenu->addAction( actionCollection()->action("lastfm_add") );
+    playlistMenu->addAction( actionCollection()->action("playlist_save") );
+    playlistMenu->addAction( actionCollection()->action("playlist_burn") );
+    playlistMenu->addSeparator();
+    playlistMenu->addAction( actionCollection()->action("playlist_undo") );
+    playlistMenu->addAction( actionCollection()->action("playlist_redo") );
     playlistMenu->insertSeparator();
-    actionCollection()->action("playlist_undo")->plug( playlistMenu );
-    actionCollection()->action("playlist_redo")->plug( playlistMenu );
-    playlistMenu->insertSeparator();
-    actionCollection()->action("playlist_clear")->plug( playlistMenu );
-    actionCollection()->action("playlist_shuffle")->plug( playlistMenu );
-    //this one has no real context with regard to the menu
-    //actionCollection()->action("playlist_copy")->plug( playlistMenu );
-    playlistMenu->insertSeparator();
-    actionCollection()->action("queue_selected")->plug( playlistMenu );
-    actionCollection()->action("playlist_remove_duplicates")->plug( playlistMenu );
-    actionCollection()->action("playlist_select_all")->plug( playlistMenu );
+    playlistMenu->addAction( actionCollection()->action("playlist_clear") );
+    playlistMenu->addAction( actionCollection()->action("playlist_shuffle") );
+
+    playlistMenu->addSeparator();
+    playlistMenu->addAction( actionCollection()->action("queue_selected") );
+    playlistMenu->addAction( actionCollection()->action("playlist_remove_duplicates") );
+    playlistMenu->addAction( actionCollection()->action("playlist_select_all") );
+
     //END Playlist menu
 
     //BEGIN Mode menu
     KMenu *modeMenu = new KMenu( m_menubar );
-    actionCollection()->action("repeat")->plug( modeMenu );
+    modeMenu->addAction( actionCollection()->action("repeat") );
     KSelectAction *random = static_cast<KSelectAction*>( actionCollection()->action("random_mode") );
-    random->plug( modeMenu );
-    random->popupMenu()->insertSeparator();
-    actionCollection()->action("favor_tracks")->plug( random->popupMenu() );
+    modeMenu->addAction( random );
+    random->popupMenu()->addSeparator();
+    random->popupMenu()->AddAction( actionCollection()->action("favor_tracks") );
     //END Mode menu
 
     //BEGIN Tools menu
     m_toolsMenu = new KMenu( m_menubar );
     m_toolsMenu->insertItem( SmallIconSet( Amarok::icon( "covermanager" ) ), i18n("&Cover Manager"), Amarok::Menu::ID_SHOW_COVER_MANAGER );
-    actionCollection()->action("queue_manager")->plug( m_toolsMenu );
+    m_toolsMenu->addAction( actionCollection()->action("queue_manager") );
     m_toolsMenu->insertItem( SmallIconSet( Amarok::icon( "visualizations" ) ), i18n("&Visualizations"), Amarok::Menu::ID_SHOW_VIS_SELECTOR );
     m_toolsMenu->insertItem( SmallIconSet( Amarok::icon( "equalizer") ), i18n("&Equalizer"), kapp, SLOT( slotConfigEqualizer() ), 0, Amarok::Menu::ID_CONFIGURE_EQUALIZER );
-    actionCollection()->action("script_manager")->plug( m_toolsMenu );
-    actionCollection()->action("statistics")->plug( m_toolsMenu );
-    m_toolsMenu->insertSeparator();
-    actionCollection()->action("update_collection")->plug( m_toolsMenu );
+    m_toolsMenu->addAction( actionCollection()->action("script_manager") );
+    m_toolsMenu->addAction( actionCollection()->action("statistics") );
+    m_toolsMenu->addSeparator();
+    m_toolsMenu->addAction( actionCollection()->action("update_collection") );
     m_toolsMenu->insertItem( SmallIconSet( Amarok::icon( "rescan" ) ), i18n("&Rescan Collection"), Amarok::Menu::ID_RESCAN_COLLECTION );
 
     #if defined HAVE_LIBVISUAL
@@ -400,19 +402,19 @@ void PlaylistWindow::init()
     //TODO use KStandardAction or KMainWindow
 #ifndef Q_WS_MAC
     static_cast<KToggleAction *>(actionCollection()->action(KStandardAction::name(KStandardAction::ShowMenubar)))->setChecked( AmarokConfig::showMenuBar() );
-    actionCollection()->action(KStandardAction::name(KStandardAction::ShowMenubar))->plug( m_settingsMenu );
+    m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::ShowMenubar)) );
     m_settingsMenu->insertItem( AmarokConfig::showToolbar() ? i18n( "Hide Toolbar" ) : i18n("Show Toolbar"), ID_SHOW_TOOLBAR );
-    m_settingsMenu->insertSeparator();
+    m_settingsMenu->addSeparator();
 #endif
 
 #ifdef Q_WS_MAC
     // plug it first, as this item will be moved to the applications first menu
-    actionCollection()->action(KStandardAction::name(KStandardAction::Preferences))->plug( m_settingsMenu );
+    m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Preferences)) );
 #endif
-    actionCollection()->action("options_configure_globals")->plug( m_settingsMenu );
-    actionCollection()->action(KStandardAction::name(KStandardAction::KeyBindings))->plug( m_settingsMenu );
-    actionCollection()->action(KStandardAction::name(KStandardAction::ConfigureToolbars))->plug( m_settingsMenu );
-    actionCollection()->action(KStandardAction::name(KStandardAction::Preferences))->plug( m_settingsMenu );
+    m_settingsMenu->addAction( actionCollection()->action("options_configure_globals") );
+    m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::KeyBindings)) );
+    m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::ConfigureToolbars)) );
+    m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Preferences)) );
 
     connect( m_settingsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );
     //END Settings menu
@@ -554,6 +556,8 @@ void PlaylistWindow::createGUI()
 
     m_toolbar->clear();
 
+
+    /* FIXME: Is this still necessary?
     //KActions don't unplug themselves when the widget that is plugged is deleted!
     //we need to unplug to detect if the menu is plugged in App::applySettings()
     //TODO report to bugs.kde.org
@@ -561,7 +565,7 @@ void PlaylistWindow::createGUI()
      KActionPtrList actions = actionCollection()->actions();
      for( KActionPtrList::Iterator it = actions.begin(), end = actions.end(); it != end; ++it )
          (*it)->unplug( m_toolbar );
-
+    */
     KXMLGUIBuilder builder( this );
     KXMLGUIFactory factory( &builder, this );
 
@@ -593,7 +597,7 @@ void PlaylistWindow::createGUI()
             //if the user has no PlayerWindow, he MUST have the menu action plugged
             //NOTE this is not saved to the local XMLFile, which is what the user will want
             if ( !AmarokConfig::showPlayerWindow() && !AmarokConfig::showMenuBar() && !button )
-                actionCollection()->action( "amarok_menu" )->plug( m_toolbar );
+                m_toolbar->addAction( actionCollection()->action( "amarok_menu" ) );
         }
 
         if ( button ) {
