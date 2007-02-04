@@ -29,12 +29,14 @@
 //Added by qt3to4:
 #include <Q3ValueList>
 
-#include <dcopref.h>
-#include <dcopclient.h>
+//#include <dcopref.h>
+//#include <dcopclient.h>
 
 
 K3bExporter *K3bExporter::s_instance = 0;
 
+// FIXME: implement me!
+#if 0
 bool K3bExporter::isAvailable() //static
 {
     return !KStandardDirs::findExe( "k3b" ).isNull();
@@ -259,4 +261,4 @@ K3bExporter::K3bOpenMode K3bExporter::openMode()
 
     return Abort;
 }
-
+#endif
