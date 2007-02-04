@@ -40,14 +40,14 @@ void PixmapViewer::drawContents( QPainter * p, int clipx, int clipy, int clipw, 
 }
 
 void PixmapViewer::contentsMousePressEvent(QMouseEvent *event) {
-    if(LeftButton == event->button()) {
+    if(Qt::LeftButton == event->button()) {
         m_currentPos = event->globalPos();
         m_isDragging = true;
     }
 }
 
 void PixmapViewer::contentsMouseReleaseEvent(QMouseEvent *event) {
-    if(LeftButton == event->button()) {
+    if(Qt::LeftButton == event->button()) {
         m_currentPos = event->globalPos();
         m_isDragging = false;
     }

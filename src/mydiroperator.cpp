@@ -38,7 +38,7 @@ MyDirOperator::reenableDeleteKey()
     KActionCollection* dirActionCollection = static_cast<KActionCollection*>(KDirOperator::child("KDirOperator::myActionCollection"));
     if( dirActionCollection )
     {
-        KAction* trash = dirActionCollection->action("trash");
+        QAction* trash = dirActionCollection->action("trash");
         if(trash)
             trash->setEnabled(false);
     }
