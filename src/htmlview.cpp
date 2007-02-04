@@ -13,9 +13,11 @@
 #include <QClipboard>
 #include <QFile> // External CSS opening
 #include <QImage> // External CSS opening
+#include <Q3TextStream>
 
 #include <kapplication.h> //kapp
 #include <kactioncollection.h>
+#include <kaction.h>
 #include <kglobal.h> //kapp
 #include <kimageeffect.h> // gradient background image
 #include <kmenu.h>
@@ -28,8 +30,9 @@ KTemporaryFile *HTMLView::m_shadowGradientImage = 0;
 int HTMLView::m_instances = 0;
 
 HTMLView::HTMLView( QWidget *parentWidget, const char *widgetname, const bool DNDEnabled, const bool JScriptEnabled )
-        : KHTMLPart( parentWidget, widgetname )
+        : KHTMLPart( parentWidget )
 {
+    setObjectName( widgetname );
     m_instances++;
     setJavaEnabled( false );
     setPluginsEnabled( false );
@@ -38,18 +41,24 @@ HTMLView::HTMLView( QWidget *parentWidget, const char *widgetname, const bool DN
     setJScriptEnabled( JScriptEnabled );
 
     KActionCollection* ac = actionCollection();
-    ac->setAutoConnectShortcuts( true );
-    m_copy = KStandardAction::copy( this, SLOT( copyText() ), ac, "htmlview_copy" );
-    m_selectAll = KStandardAction::selectAll( this, SLOT( selectAll() ), ac, "htmlview_select_all" );
+    //ac->setAutoConnectShortcuts( true );
+
+    m_copy = KStandardAction::copy( this, SLOT( copyText() ), this );
+    ac->addAction( "htmlview_copy", m_copy );
+    m_selectAll = KStandardAction::selectAll( this, SLOT( selectAll() ), this );
+    ac->addAction( "htmlview_select_all", m_selectAll );
+
+
+/* Hopefully not necessary anymore?
     {
         KMenu m;
-        m_copy->plug( &m );
-        m_selectAll->plug( &m );
+        m.addAction( m_copy );
+        m.addAction( m_selectAll );
 
         m_copy->unplug( &m );
         m_selectAll->unplug( &m );
     }
-
+*/
     connect( this, SIGNAL( selectionChanged() ), SLOT( enableCopyAction() ) );
     enableCopyAction();
 }
