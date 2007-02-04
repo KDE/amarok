@@ -3214,9 +3214,9 @@ void ContextBrowser::showLyrics( const QString &url )
     QString title  = EngineController::instance()->bundle().title();
     QString artist = EngineController::instance()->bundle().artist();
 
-    if( title.contains("PREVIEW: buy it at www.magnatune.com", true) >= 1 )
+    if( title.contains("PREVIEW: buy it at www.magnatune.com", true) )
         title = title.remove(" (PREVIEW: buy it at www.magnatune.com)");
-    if( artist.contains("PREVIEW: buy it at www.magnatune.com", true) >= 1 )
+    if( artist.contains("PREVIEW: buy it at www.magnatune.com", true) )
         artist = artist.remove(" (PREVIEW: buy it at www.magnatune.com)");
 
     if ( title.isEmpty() ) {
@@ -3228,11 +3228,11 @@ void ContextBrowser::showLyrics( const QString &url )
         if ( h != -1 )
         {
             title = prettyTitle.mid( h+1 ).trimmed();
-            if( title.contains("PREVIEW: buy it at www.magnatune.com", true) >= 1 )
+            if( title.contains("PREVIEW: buy it at www.magnatune.com", true) )
                 title = title.remove(" (PREVIEW: buy it at www.magnatune.com)");
             if ( artist.isEmpty() ) {
                 artist = prettyTitle.mid( 0, h ).trimmed();
-                if( artist.contains("PREVIEW: buy it at www.magnatune.com", true) >= 1 )
+                if( artist.contains("PREVIEW: buy it at www.magnatune.com", true) )
                     artist = artist.remove(" (PREVIEW: buy it at www.magnatune.com)");
             }
 
@@ -3241,7 +3241,7 @@ void ContextBrowser::showLyrics( const QString &url )
 
     m_lyricSearchUrl = QString( "http://www.google.com/search?ie=UTF-8&q=lyrics+%1+%2" )
         .arg( KUrl::encode_string_no_slash( '"' + artist + '"' ),
-              KUrl::encode_string_no_slash( '"' + title  + '"' );
+              KUrl::encode_string_no_slash( '"' + title  + '"' ) );
 
     m_lyricsToolBar->getButton( LYRICS_BROWSER )->setEnabled(false);
 
