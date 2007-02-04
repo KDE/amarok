@@ -53,6 +53,7 @@
 #include <q3hbox.h>
 #include <QLayout>
 #include <QLineEdit>
+#include <QBuffer>
 #include <q3listview.h>
 #include <QTimer>
 #include <QToolTip>
@@ -72,6 +73,7 @@
 #include <kmenu.h>
 #include <kstandarddirs.h>
 #include <ktextedit.h>
+#include <kvbox.h>
 
 
 #include <unistd.h> //usleep()
@@ -3643,13 +3645,14 @@ ContextBrowser::wikiConfig() // SLOT
     m_wikiConfigDialog = new KDialog( this );
 
     m_wikiConfigDialog->setModal( true );
-    m_wikiConfigDialog->setButtons( Ok | Cancel | Apply );
+    m_wikiConfigDialog->setButtons( KDialog::Ok | KDialog::Cancel | KDialog::Apply );
     m_wikiConfigDialog->showButtonSeparator( true );
 
 
     kapp->setTopWidget( m_wikiConfigDialog );
     m_wikiConfigDialog->setCaption( KDialog::makeStandardCaption( i18n( "Wikipedia Locale" ) ) );
-    KVBox *box = m_wikiConfigDialog->makeVBoxMainWidget();
+    KVBox *box = new KVBox( this );
+    m_wikiConfigDialog->setMainWidget( box );
 
     m_wikiLocaleCombo = new QComboBox( box );
     m_wikiLocaleCombo->insertStringList( localeList );
@@ -3726,7 +3729,7 @@ ContextBrowser::showLabelsDialog()
     KDialog *dialog = new KDialog( this );
 
     dialog->setModal( false );
-    dialog->setButtons( Ok | Cancel );
+    dialog->setButtons( KDialog::Ok | KDialog::Cancel );
     dialog->showButtonSeparator( true );
 
 
