@@ -145,7 +145,7 @@ PluginManager::getService( const Plugin* plugin )
 {
     if ( !plugin ) {
         warning() << k_funcinfo << "pointer == NULL\n";
-        return 0;
+        return KService::Ptr(0);
     }
 
     //search plugin in store
@@ -153,7 +153,7 @@ PluginManager::getService( const Plugin* plugin )
 
     if ( iter == m_store.end() ) {
         warning() << k_funcinfo << "Plugin not found in store.\n";
-	return 0;
+	return KService::Ptr(0);
     }
 
     return (*iter).service;

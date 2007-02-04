@@ -49,7 +49,7 @@ MediaDeviceManager::MediaDeviceManager()
     }
     //load manual devices
     QStringList manualDevices;
-    KConfig *config = Amarok::config( "MediaBrowser" );
+    KSharedConfigPtr config = Amarok::config( "MediaBrowser" );
     QMap<QString,QString> savedDevices = config->entryMap( "MediaBrowser" );
     QMap<QString,QString>::Iterator qit;
     QString curr, currMountPoint, currName;
