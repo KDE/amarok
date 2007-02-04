@@ -2505,16 +2505,19 @@ Playlist::contentsDropEvent( QDropEvent *e )
     }
 
     else {
-        if( e->mimeData()->hasFormat( "amarok-sql" ) ) {
-            QString data( e->mimeData()->data( "amarok-sql" ) );
+         QString data;
+         QString subtype;
+         Q3TextDrag::decode( e, data, subtype );
+
+         debug() << "QTextDrag::subtype(): " << subtype << endl;
+
+        if( subtype == "amarok-sql" ) {
             setSorting( NO_SORT );
             QString query = data.section( "\n", 1 );
             ThreadManager::instance()->queueJob( new SqlLoader( query, after ) );
         }
-
-        else if( e->mimeData()->hasFormat( "dynamic" ) ) {
+        else if( subtype == "dynamic" ) {
             // Deserialize pointer
-            QString data( e->mimeData()->data( "dynamic" ) );
             DynamicEntry* entry = reinterpret_cast<DynamicEntry*>( data.toULongLong() );
 
             loadDynamicMode( entry );
@@ -3779,7 +3782,7 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
     enum { REPOPULATE, ENABLEDYNAMIC };
     if( item == 0 )
     {
-        KMenu popup;
+        Q3PopupMenu popup;
         popup.addAction( Amarok::actionCollection()->action("playlist_save") );
         popup.addAction( Amarok::actionCollection()->action("playlist_clear") );
         DynamicMode *m = 0;
@@ -3820,7 +3823,9 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
     for( MyIt it( this, MyIt::Selected ); *it; ++it )
         itemCount++;
 
-    PrettyPopupMenu popup;
+    //FIXME: renable PrettyPopupMenu!
+    //PrettyPopupMenu popup;
+    Q3PopupMenu popup;
 
 //     if(itemCount==1)
 //         popup.insertTitle( KStringHandler::rsqueeze( MetaBundle( item ).prettyTitle(), 50 ));
@@ -3864,7 +3869,7 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
             popup.changeItem( PLAY_NEXT, SmallIconSet( Amarok::icon( "dequeue_track" ) ), i18n("&Dequeue Track") );
     } else {
         if ( queueToggle )
-            popup.changeItem( PLAY_NEXT, i18n( "Toggle &Queue Status (1 track)", "Toggle &Queue Status (%n tracks)", itemCount ) );
+            popup.changeItem( PLAY_NEXT, i18np( "Toggle &Queue Status (1 track)", "Toggle &Queue Status (%n tracks)", itemCount ) );
         else
             // remember, queueToggled only gets set to false if there are items queued and not queued.
             // so, if queueToggled is false, all items have the same queue status as the first item.
@@ -3949,6 +3954,7 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
     popup.setItemEnabled( COPY_TO_COLLECTION, !isLocked() && item->isKioUrl() );
     popup.setItemEnabled( VIEW, item->url().isLocalFile() || itemCount == 1 ); // disable for CDAudio multiselection
 
+    /*
     if( m_customSubmenuItem.count() > 0 )
         popup.insertSeparator();
     Q3ValueList<QString> submenuTexts = m_customSubmenuItem.keys();
@@ -3972,9 +3978,9 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
             menu->insertItem( (*it), id );
             m_customIdItem[id]= (*keyIt) + ' ' + (*it);
         }
-    }
+    }*/
 
-    const QPoint pos( p.x() - popup.sidePixmapWidth(), p.y() + 3 );
+    const QPoint pos( p.x()/* - popup.sidePixmapWidth()*/, p.y() + 3 );
     int menuItemId = popup.exec( pos );
     PLItemList in, out;
 
@@ -4238,7 +4244,7 @@ void Playlist::contentsWheelEvent( QWheelEvent *e )
         for( int i = 1; i <= abs(n); ++i )
         {
             const int dest = pos + s*i;
-            if( kClamp( dest, 0, int( m_nextTracks.count() ) - 1 ) != dest )
+            if( qBound( dest, 0, int( m_nextTracks.count() ) - 1 ) != dest )
                 break;
             PlaylistItem* const p = m_nextTracks.at( dest );
             if( changed.findRef( p ) == -1 )
@@ -4724,7 +4730,7 @@ Playlist::slotEraseMarker() //SLOT
 }
 
 void
-Playlist::showTagDialog( Q3PtrList<Q3ListViewItem> items )
+Playlist::showTagDialog( QList<Q3ListViewItem*> items )
 {
     /// the tag dialog was once modal, because we thought that damage would occur
     /// when passing playlist items into the editor and it was removed from the playlist.
@@ -4764,9 +4770,9 @@ Playlist::showTagDialog( Q3PtrList<Q3ListViewItem> items )
     else {
         //edit multiple tracks in tag dialog
         KUrl::List urls;
-        for( Q3ListViewItem *item = items.first(); item; item = items.next() )
-            if ( item->isVisible() )
-                urls << static_cast<PlaylistItem*>( item )->url();
+        for( QList<Q3ListViewItem*>::const_iterator it = items.begin(); it != items.end(); ++it )
+            if ( (*it)->isVisible() )
+                urls << static_cast<PlaylistItem*>( *it )->url();
 
         TagDialog *dialog = new TagDialog( urls, instance() );
         dialog->show();
@@ -4820,8 +4826,12 @@ Playlist::showTagDialog( Q3PtrList<Q3ListViewItem> items )
             // layouts
             Q3HBoxLayout *layout1 = new Q3HBoxLayout( 0, 0, 6 );
             layout1->addItem( new QSpacerItem( 181, 20, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
-            layout1->addWidget( new KPushButton( KStandardGuiItem::ok(), this, "OkButton" ) );
-            layout1->addWidget( new KPushButton( KStandardGuiItem::cancel(), this, "CancelButton" ) );
+            KPushButton *b = new KPushButton( KStandardGuiItem::ok(), this );
+            b->setObjectName( "OkButton" );
+            layout1->addWidget( b );
+            b = new KPushButton( KStandardGuiItem::cancel(), this );
+            b->setObjectName( "CancelButton" );
+            layout1->addWidget( b );
 
             Q3GridLayout *layout2 = new Q3GridLayout( 0, 2, 2, 0, 6 );
             layout2->QLayout::add( textLabel2 );

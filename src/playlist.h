@@ -319,7 +319,7 @@ class Playlist : private K3ListView, public EngineObserver, public Amarok::ToolT
         bool saveState( QStringList& );
         void setCurrentTrack( PlaylistItem* );
         void setCurrentTrackPixmap( int state = -1 );
-        void showTagDialog( Q3PtrList<Q3ListViewItem> items );
+        void showTagDialog( QList<Q3ListViewItem*> items );
         void sortQueuedItems();
         void switchState( QStringList&, QStringList& );
         void saveSelectedAsPlaylist();
