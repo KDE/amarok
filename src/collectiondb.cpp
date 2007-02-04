@@ -1831,9 +1831,9 @@ CollectionDB::createDragPixmap( const KUrl::List &urls, QString textOverRide )
     p.begin( &pmdrag );
     p.setBackgroundMode( Qt::TransparentMode );
     for ( int i = 0; i < covers; i++ )
-        bitBlt( &pmdrag, i * coverSpacing, i * coverSpacing, &coverPm[i], 0, Qt::CopyROP );
+        bitBlt( &pmdrag, i * coverSpacing, i * coverSpacing, &coverPm[i], 0 );
 
-    bitBlt( &pmdrag, 0, pixmapH - fontH, &pmtext, 0, Qt::CopyROP );
+    bitBlt( &pmdrag, 0, pixmapH - fontH, &pmtext, 0 );
     p.end();
 
     QBitmap pmdragMask( pmdrag.size(), true );
@@ -1841,9 +1841,9 @@ CollectionDB::createDragPixmap( const KUrl::List &urls, QString textOverRide )
     {
         QBitmap coverMask( coverPm[i].width(), coverPm[i].height() );
         coverMask.fill( Qt::color1 );
-        bitBlt( &pmdragMask, i * coverSpacing, i * coverSpacing, &coverMask, 0, Qt::CopyROP );
+        bitBlt( &pmdragMask, i * coverSpacing, i * coverSpacing, &coverMask, 0 );
     }
-    bitBlt( &pmdragMask, 0, pixmapH - fontH, &pmtextMask, 0, Qt::CopyROP );
+    bitBlt( &pmdragMask, 0, pixmapH - fontH, &pmtextMask, 0 );
     pmdrag.setMask( pmdragMask );
 
     return pmdrag;
@@ -2146,7 +2146,7 @@ CollectionDB::findDirectoryImage( const QString& artist, const QString& album, u
     QString deviceIds;
     oldForeachType( IdList, list )
     {
-        if ( !deviceIds.isEmpty() ) deviceIds += ',';
+        if ( !deviceIds.isEmpty() ) deviceIds = deviceIds + ",";
         deviceIds += QString::number(*it);
     }
 
@@ -2181,7 +2181,7 @@ CollectionDB::findDirectoryImage( const QString& artist, const QString& album, u
         QRegExp iTunesArt( "^AlbumArt_.*Large" );
         for ( uint i = 0; i < values.count(); i++ )
         {
-            matches = values[i].contains( "front", false ) + values[i].contains( "cover", false ) + values[i].contains( "folder", false ) + values[i].contains( iTunesArt );
+             matches = values[i].count( "front", Qt::CaseInsensitive ) + values[i].count( "cover", Qt::CaseInsensitive ) + values[i].count( "folder", Qt::CaseInsensitive ) + values[i].count( iTunesArt );
             if ( matches > maxmatches )
             {
                 image = values[i];
@@ -3726,7 +3726,7 @@ CollectionDB::getSongRating( const QString &url )
     QStringList values = qb.run();
 
     if( values.count() )
-        return kClamp( values.first().toInt(), 0, 10 );
+        return qBound( 0, values.first().toInt(), 10 );
 
     return 0;
 }
