@@ -502,9 +502,9 @@ void ContextBrowser::openURLRequest( const KUrl &url )
     else if ( url.protocol() == "musicbrainz" )
     {
         const QString url = "http://www.musicbrainz.org/taglookup.html?artist=%1&album=%2&track=%3";
-        Amarok::invokeBrowser( url.arg( KUrl::encode_string_no_slash( artist, 106 /*utf-8*/ ),
-        KUrl::encode_string_no_slash( album, 106 /*utf-8*/ ),
-        KUrl::encode_string_no_slash( track, 106 /*utf-8*/ ) ) );
+        Amarok::invokeBrowser( url.arg( KUrl::encode_string_no_slash( artist ),
+        KUrl::encode_string_no_slash( album ),
+        KUrl::encode_string_no_slash( track ) ) );
     }
 
     else if ( url.protocol() == "externalurl" )
@@ -552,7 +552,7 @@ void ContextBrowser::openURLRequest( const KUrl &url )
     else if( url.protocol() == "ggartist" )
     {
         const QString url2 = QString( "http://www.google.com/musicsearch?q=%1&res=artist" )
-            .arg( KUrl::encode_string_no_slash( unescapeHTMLAttr( url.path() ).replace( " ", "+" ), 106 /*utf-8*/ ) );
+            .arg( KUrl::encode_string_no_slash( unescapeHTMLAttr( url.path() ).replace( " ", "+" ) ) );
         Amarok::invokeBrowser( url2 );
     }
 
@@ -3240,8 +3240,8 @@ void ContextBrowser::showLyrics( const QString &url )
     }
 
     m_lyricSearchUrl = QString( "http://www.google.com/search?ie=UTF-8&q=lyrics+%1+%2" )
-        .arg( KUrl::encode_string_no_slash( '"' + artist + '"', 106 /*utf-8*/ ),
-              KUrl::encode_string_no_slash( '"' + title  + '"', 106 /*utf-8*/ ) );
+        .arg( KUrl::encode_string_no_slash( '"' + artist + '"' ),
+              KUrl::encode_string_no_slash( '"' + title  + '"' );
 
     m_lyricsToolBar->getButton( LYRICS_BROWSER )->setEnabled(false);
 
@@ -3701,7 +3701,7 @@ QString
 ContextBrowser::wikiURL( const QString &item )
 {
     return QString( "http://%1.wikipedia.org/wiki/" ).arg( wikiLocale() )
-        + KUrl::encode_string_no_slash( item, 106 /*utf-8*/ );
+        + KUrl::encode_string_no_slash( item );
 }
 
 void
