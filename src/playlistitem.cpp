@@ -357,7 +357,7 @@ int PlaylistItem::ratingAtPoint( int x ) //static
 {
     Playlist* const pl = Playlist::instance();
     x -= pl->header()->sectionPos( Rating );
-    return kClamp( ( x - 1 ) / ( star()->width() + pl->itemMargin() ) + 1, 1, 5 ) * 2;
+    return qBound( ( x - 1 ) / ( star()->width() + pl->itemMargin() ) + 1, 1, 5 ) * 2;
 }
 
 int PlaylistItem::ratingColumnWidth() //static
@@ -518,9 +518,9 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
     if( !painter || !listView() || width <= 0 || height() == 0 )
         return;
 
-    static const QImage currentTrackLeft  = KStandardDirs::locate( "data", "amarok/images/currenttrack_bar_left.png" );
-    static const QImage currentTrackMid   = KStandardDirs::locate( "data", "amarok/images/currenttrack_bar_mid.png" );
-    static const QImage currentTrackRight = KStandardDirs::locate( "data", "amarok/images/currenttrack_bar_right.png" );
+    static const QImage currentTrackLeft( KStandardDirs::locate( "data", "amarok/images/currenttrack_bar_left.png" ) );
+    static const QImage currentTrackMid( KStandardDirs::locate( "data", "amarok/images/currenttrack_bar_mid.png" ) );
+    static const QImage currentTrackRight( KStandardDirs::locate( "data", "amarok/images/currenttrack_bar_right.png" ) );
 
     if( column == Mood  &&  !moodbar().dataExists() )
       moodbar().load();  // Only has an effect the first time
@@ -534,7 +534,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
     const bool isCurrent = this == listView()->currentTrack();
 
     QPixmap buf( width, height() );
-    QPainter p( &buf, true );
+    QPainter p( &buf );
 
     if( isCurrent )
     {
@@ -854,12 +854,12 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
 
 void PlaylistItem::drawRating( QPainter *p )
 {
-    int Qt::gray = 0;
+    int gray = 0;
     if( this == listView()->m_hoveredRating || ( isSelected() && listView()->m_selCount > 1 &&
         listView()->m_hoveredRating && listView()->m_hoveredRating->isSelected() ) )
     {
         const int pos = listView()->viewportToContents( listView()->viewport()->mapFromGlobal( QCursor::pos() ) ).x();
-        Qt::gray = ratingAtPoint( pos );
+        gray = ratingAtPoint( pos );
     }
 
     drawRating( p, ( rating() + 1 ) / 2, Qt::gray / 2, rating() % 2 );
