@@ -23,7 +23,7 @@
 #include <QApplication>
 #include <QThread>
 
-class MetaBundle::XmlLoader::ThreadedLoader: public QObject, public QThread
+class MetaBundle::XmlLoader::ThreadedLoader: public QThread
 {
     Q_OBJECT
     QObject *m_target;
