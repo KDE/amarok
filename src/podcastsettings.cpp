@@ -18,6 +18,7 @@
 #include <QPushButton>
 #include <QRadioButton>
 #include <QLabel>
+#include <QTextEdit>
 //Added by qt3to4:
 #include <Q3PtrList>
 
@@ -71,7 +72,7 @@ PodcastSettingsDialog::PodcastSettingsDialog( PodcastSettings *settings, QWidget
     setCaption( i18nc("change options", "Configure %1").arg( settings->m_title ) );
     setModal( true );
     setButtons( Ok | Cancel | User1 );
-    setButtonGuiItem( User1, i18n("Reset") );
+    setButtonGuiItem( User1, KGuiItem( i18n("Reset") ) );
     setDefaultButton( Ok );
     showButtonSeparator( true );
 
@@ -86,7 +87,7 @@ PodcastSettingsDialog::PodcastSettingsDialog( const Q3PtrList<PodcastSettings> &
     setCaption( i18nc("change options", "Configure %1").arg( caption ) );
     setModal( true );
     setButtons( Ok | Cancel | User1 );
-    setButtonGuiItem( User1, i18n("Reset") );
+    setButtonGuiItem( User1, KGuiItem( i18n("Reset") ) );
     setDefaultButton( Ok );
     showButtonSeparator( true );
 
@@ -177,18 +178,12 @@ void PodcastSettingsDialog::slotOk()       //slot
         else
             m_settings->m_fetch = AUTOMATIC;
     }
-
-    KDialog::slotOk();
 }
 
 // KUrlRequester doesn't provide us with convenient functions for adding trailing slashes
 QString PodcastSettingsDialog::requesterSaveLocation()
 {
-    QString url = m_ps->m_saveLocation->url();
-    if( url.endsWith( "/" ) )
-        return url;
-    else
-        return url + '/';
+    return m_ps->m_saveLocation->url().path( KUrl::AddTrailingSlash );
 }
 
 void PodcastSettingsDialog::setSettings( PodcastSettings *settings )
