@@ -16,6 +16,7 @@
 
 #include <kapplication.h>
 #include <kconfig.h>
+#include <kconfiggroup.h>
 #include <kglobal.h>
 #include <kmacroexpander.h>
 
@@ -195,7 +196,7 @@ QStringList TagGuesser::schemeStrings()
 
 void TagGuesser::setSchemeStrings( const QStringList &schemes )
 {
-    KConfig *cfg = KGlobal::config();
+    KSharedConfigPtr cfg = Amarok::config();
     {
         KConfigGroup group( cfg, "TagGuesser" );
         group.writeEntry( "Filename schemes", schemes );

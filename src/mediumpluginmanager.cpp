@@ -261,8 +261,14 @@ MediumPluginManager::newDevice()
 /////////////////////////////////////////////////////////////////////
 
 ManualDeviceAdder::ManualDeviceAdder( MediumPluginManager* mpm )
-: KPageDialog( Amarok::mainWindow(), "manualdeviceadder", true, QString::null, Ok|Cancel, Ok )
+: KPageDialog( Amarok::mainWindow() )
 {
+    setObjectName( "manualdeviceadder" );
+    setModal( true );
+    setButtons( Ok | Cancel );
+    setDefaultButton( Ok );
+
+
     m_mpm = mpm;
     m_successful = false;
     m_newMed = 0;
