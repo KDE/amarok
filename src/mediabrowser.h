@@ -35,7 +35,6 @@
 
 class MediaBrowser;
 class MediaDevice;
-class MediaItemTip;
 class MediaView;
 class SpaceLabel;
 class TransferDialog;
@@ -331,7 +330,6 @@ class MediaView : public K3ListView
 
         QWidget *m_parent;
         MediaDevice *m_device;
-        MediaItemTip *m_toolTip;
 };
 
 

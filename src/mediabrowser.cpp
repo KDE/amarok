@@ -1184,8 +1184,7 @@ MediaItem::createToolTip()
             break;
     }
 
-    if( !text.isEmpty() )
-        setToolTip( text );
+    //if( !text.isEmpty() ) setToolTip( text );
 }
 
 MediaView::MediaView( QWidget* parent, MediaDevice *device )
@@ -1209,7 +1208,7 @@ MediaView::MediaView( QWidget* parent, MediaDevice *device )
     addColumn( i18n( "Remote Media" ) );
 
     KActionCollection* ac = new KActionCollection( this );
-    KStandardAction::selectAll( this, SLOT( selectAll() ), ac, "mediabrowser_select_all" );
+    KStandardAction::selectAll( this, SLOT( selectAll() ), ac );
 
     connect( this, SIGNAL( contextMenuRequested( Q3ListViewItem*, const QPoint&, int ) ),
              this,   SLOT( rmbPressed( Q3ListViewItem*, const QPoint&, int ) ) );
@@ -1275,7 +1274,6 @@ MediaView::slotExpand( Q3ListViewItem *item )
 
 MediaView::~MediaView()
 {
-    delete m_toolTip;
 }
 
 
@@ -1537,7 +1535,7 @@ MediaView::newDirectory( MediaItem *parent )
 void
 MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/, bool constructing )
 {
-    debug() << "mediumAdded: " << (medium ? medium->properties():"null") << endl;
+    debug() << "mediumAdded: " << (medium ? medium->properties() : QStringList()) << endl;
     if( medium )
     {
         QString handler = Amarok::config( "MediaBrowser" )->readEntry( medium->id(), QString() );
@@ -3609,7 +3607,7 @@ MediaQueue::MediaQueue(MediaBrowser *parent)
     itemCountChanged();
 
     KActionCollection* ac = new KActionCollection( this );
-    KStandardAction::selectAll( this, SLOT( selectAll() ), ac, "MediaQueue" );
+    KStandardAction::selectAll( this, SLOT( selectAll() ), ac );
 
     connect( this, SIGNAL( contextMenuRequested( Q3ListViewItem*, const QPoint&, int ) ),
             SLOT( slotShowContextMenu( Q3ListViewItem*, const QPoint&, int ) ) );
