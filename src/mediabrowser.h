@@ -43,13 +43,13 @@ class TransferDialog;
 class KAction;
 class KComboBox;
 class KDialog;
-class KProgress;
 class KPushButton;
 class KShellProcess;
 
 class Q3DragObject;
 class QLabel;
 class QPalette;
+class QProgressBar;
 
 class LIBAMAROK_EXPORT MediaItem : public K3ListViewItem
 {
@@ -267,7 +267,7 @@ class MediaBrowser : public Q3VBox
 
         SpaceLabel*      m_stats;
         Q3HBox*           m_progressBox;
-        KProgress*       m_progress;
+        QProgressBar*       m_progress;
         Q3VBox*           m_views;
         KPushButton*     m_cancelButton;
         //KPushButton*     m_playlistButton;

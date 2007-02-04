@@ -40,7 +40,6 @@
 #include "transferdialog.h"
 #include "browserToolBar.h"
 
-#include <qvbuttongroup.h>
 #include <QCheckBox>
 #include <QDateTime>
 #include <QDir>
@@ -50,8 +49,10 @@
 #include <q3header.h>
 #include <QImage>
 #include <QLabel>
+#include <QListIterator>
 #include <QObject>
 #include <QPainter>
+#include <QProgressBar>
 #include <QRadioButton>
 #include <q3simplerichtext.h>
 #include <QTimer>
@@ -79,7 +80,6 @@
 #include <k3multipledrag.h>
 #include <kmenu.h>
 #include <kprocess.h>
-#include <kprogress.h>
 #include <kpushbutton.h>
 #include <krun.h>
 #include <kstandarddirs.h> //locate file
@@ -326,7 +326,7 @@ MediaBrowser::MediaBrowser( const char *name )
     m_views = new Q3VBox( this );
     m_queue = new MediaQueue( this );
     m_progressBox  = new Q3HBox( this );
-    m_progress     = new KProgress( m_progressBox );
+    m_progress     = new QProgressBar( m_progressBox );
     m_cancelButton = new KPushButton( SmallIconSet( Amarok::icon( "cancel" ) ), i18n("Cancel"), m_progressBox );
 
 
@@ -564,7 +564,8 @@ MediaBrowser::activateDevice( int index, bool skipDummy )
             m_toolbar->show();
         }
     }
-    m_deviceCombo->setCurrentItem( index-1 );
+    QString dev = m_deviceCombo
+    m_deviceCombo->setCurrentIndex( index-1 );
 
     updateButtons();
     queue()->computeSize();
@@ -649,7 +650,7 @@ MediaBrowser::updateDevices()
         m_deviceCombo->insertItem( name, i );
         if( it == m_currentDevice )
         {
-            m_deviceCombo->setCurrentItem( i );
+            m_deviceCombo->setCurrentItem( name );
         }
         i++;
     }
@@ -731,7 +732,7 @@ MediaBrowser::transcode( const KUrl &src, const QString &filetype )
     while( m_waitForTranscode && sm->transcodeScriptRunning() != QString::null )
     {
         usleep( 10000 );
-        kapp->processEvents( 100 );
+        kapp->processEvents( QEventLoop::AllEvents );
     }
 
     return m_transcodedUrl;
@@ -1383,13 +1384,9 @@ MediaView::acceptDrag( QDropEvent *e ) const
     if( e->source() == MediaBrowser::queue()->viewport() )
         return false;
 
-    QString data;
-    Q3CString subtype;
-    Q3TextDrag::decode( e, data, subtype );
-
     return e->source() == viewport()
-        || subtype == "amarok-sql"
-        || K3URLDrag::canDecode( e );
+        || e->mimeData()->hasFormat( "amarok-sql" )
+        || KUrl::List::canDecode( e->mimeData() );
 }
 
 void
@@ -1464,21 +1461,18 @@ MediaView::contentsDropEvent( QDropEvent *e )
     }
     else
     {
-        QString data;
-        Q3CString subtype;
-        Q3TextDrag::decode( e, data, subtype );
-        KUrl::List list;
-
-        if( subtype == "amarok-sql" )
+        if( e->mimeData()->hasFormat( "amarok-sql" ) )
         {
+            QString data( e->mimeData()->data( "amarok-sql" ) );
             QString playlist = data.section( "\n", 0, 0 );
             QString query = data.section( "\n", 1 );
             QStringList values = CollectionDB::instance()->query( query );
-            list = CollectionDB::instance()->URLsFromSqlDrag( values );
+            KUrl::List list = CollectionDB::instance()->URLsFromSqlDrag( values );
             MediaBrowser::queue()->addUrls( list, playlist );
         }
-        else if ( K3URLDrag::decode( e, list ) )
+        else if ( KUrl::List::canDecode( e->mimeData() ) )
         {
+            KUrl::List list = KUrl::List::fromMimeData( e->mimeData() );
             MediaBrowser::queue()->addUrls( list );
         }
     }
@@ -2022,7 +2016,7 @@ MediaDevice::configString( const QString &name, const QString &defValue )
     QString configName = "MediaDevice";
     if( !uniqueId().isEmpty() )
         configName += '_' + uniqueId();
-    KConfig *config = Amarok::config( configName );
+    KSharedConfigPtr config = Amarok::config( configName );
     return config->readEntry( name, defValue );
 }
 
@@ -2032,7 +2026,7 @@ MediaDevice::setConfigString( const QString &name, const QString &value )
     QString configName = "MediaDevice";
     if( !uniqueId().isEmpty() )
         configName += '_' + uniqueId();
-    KConfig *config = Amarok::config( configName );
+    KSharedConfigPtr config = Amarok::config( configName );
     config->writeEntry( name, value );
 }
 
@@ -2042,7 +2036,7 @@ MediaDevice::configBool( const QString &name, bool defValue )
     QString configName = "MediaDevice";
     if( !uniqueId().isEmpty() )
         configName += '_' + uniqueId();
-    KConfig *config = Amarok::config( configName );
+    KSharedConfigPtr config = Amarok::config( configName );
     return config->readBoolEntry( name, defValue );
 }
 
@@ -2052,7 +2046,7 @@ MediaDevice::setConfigBool( const QString &name, bool value )
     QString configName = "MediaDevice";
     if( !uniqueId().isEmpty() )
         configName += '_' + uniqueId();
-    KConfig *config = Amarok::config( configName );
+    KSharedConfigPtr config = Amarok::config( configName );
     config->writeEntry( name, value );
 }
 
@@ -2091,7 +2085,7 @@ MediaQueue::syncPlaylist( const QString &name, const QString &query, bool loadin
     item->m_playlistName = name;
     item->setText( 0, name );
     item->m_flags |= MediaItem::SmartPlaylist;
-    m_parent->m_progress->setTotalSteps( m_parent->m_progress->totalSteps() + 1 );
+    m_parent->m_progress->setRange( 0, m_parent->m_progress->maximum() + 1 );
     itemCountChanged();
     if( !loading )
         URLsAdded();
@@ -2106,7 +2100,7 @@ MediaQueue::syncPlaylist( const QString &name, const KUrl &url, bool loading )
     item->setData( url.url() );
     item->m_playlistName = name;
     item->setText( 0, name );
-    m_parent->m_progress->setTotalSteps( m_parent->m_progress->totalSteps() + 1 );
+    m_parent->m_progress->setRange( 0, m_parent->m_progress->maximum() + 1 );
     itemCountChanged();
     if( !loading )
         URLsAdded();
@@ -2332,7 +2326,7 @@ MediaQueue::addUrl( const KUrl& url2, MetaBundle *bundle, const QString &playlis
     item->setText( 0, text);
 
     m_parent->updateButtons();
-    m_parent->m_progress->setTotalSteps( m_parent->m_progress->totalSteps() + 1 );
+    m_parent->m_progress->setRange( 0, m_parent->m_progress->maximum() + 1 );
     addItemToSize( item );
     itemCountChanged();
 }
@@ -2363,7 +2357,7 @@ MediaQueue::addUrl( const KUrl &url, MediaItem *item )
     newitem->setText( 0, text);
     newitem->setBundle( bundle );
     m_parent->updateButtons();
-    m_parent->m_progress->setTotalSteps( m_parent->m_progress->totalSteps() + 1 );
+    m_parent->m_progress->setRange( 0, m_parent->m_progress->maximum() + 1 );
     addItemToSize( item );
     itemCountChanged();
 
@@ -2498,7 +2492,7 @@ MediaDevice::kioCopyTrack( const KUrl &src, const KUrl &dst )
         else
         {
             usleep(10000);
-            kapp->processEvents( 100 );
+            kapp->processEvents( QEventLoop::ExcludeUserInputEvents );
         }
     }
 
@@ -2791,7 +2785,7 @@ MediaDevice::syncStatsFromDevice( MediaItem *root )
         it = static_cast<MediaItem *>( root->firstChild() );
     }
 
-    kapp->processEvents( 100 );
+    kapp->processEvents( QEventLoop::ExcludeUserInputEvents );
 
     for( ; it; it = static_cast<MediaItem *>( it->nextSibling() ) )
     {
@@ -2893,7 +2887,7 @@ MediaDevice::syncStatsToDevice( MediaItem *root )
         it = static_cast<MediaItem *>( root->firstChild() );
     }
 
-    kapp->processEvents( 100 );
+    kapp->processEvents( QEventLoop::ExcludeUserInputEvents );
 
     for( ; it; it = static_cast<MediaItem *>( it->nextSibling() ) )
     {
@@ -2966,7 +2960,7 @@ MediaDevice::transferFiles()
             delete transferredItem;
             setProgress( progress() + 1 );
             m_parent->m_queue->itemCountChanged();
-            kapp->processEvents( 100 );
+            kapp->processEvents( QEventLoop::ExcludeUserInputEvents );
             continue;
         }
 
@@ -2991,7 +2985,7 @@ MediaDevice::transferFiles()
         }
 
         if( bundles.count() > 1 )
-            setProgress( progress(), MediaBrowser::instance()->m_progress->totalSteps() + bundles.count() - 1 );
+            setProgress( progress(), MediaBrowser::instance()->m_progress->maximum() + bundles.count() - 1 );
 
         QString playlist = transferredItem->m_playlistName;
         for( BundleList::const_iterator it = bundles.begin();
@@ -3133,7 +3127,7 @@ MediaDevice::transferFiles()
         }
         m_parent->updateStats();
 
-        kapp->processEvents( 100 );
+        kapp->processEvents( QEventLoop::ExcludeUserInputEvents );
     }
     synchronizeDevice();
     unlockDevice();
@@ -3209,15 +3203,15 @@ MediaDevice::transferFiles()
 int
 MediaDevice::progress() const
 {
-    return m_parent->m_progress->progress();
+    return m_parent->m_progress->value();
 }
 
 void
 MediaDevice::setProgress( const int progress, const int total )
 {
     if( total != -1 )
-        m_parent->m_progress->setTotalSteps( total );
-    m_parent->m_progress->setProgress( progress );
+        m_parent->m_progress->setRange( 0, total );
+    m_parent->m_progress->setValue( progress );
     m_parent->m_progressBox->show();
 }
 
@@ -3474,8 +3468,9 @@ MediaQueue::save( const QString &path )
         transferlist.appendChild( i );
     }
 
-    Q3TextStream stream( &file );
-    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
+    QTextStream stream( &file );
+    stream.setCodec( QTextCodec::codecForName( "UTF-8" ) );
+    stream.setAutoDetectUnicode( true );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     stream << newdoc.toString();
 }
@@ -3491,8 +3486,9 @@ MediaQueue::load( const QString& filename )
 
     clearItems();
 
-    Q3TextStream stream( &file );
-    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
+    QTextStream stream( &file );
+    stream.setCodec( QTextCodec::codecForName( "UTF-8" ) );
+    stream.setAutoDetectUnicode( true );
 
     QDomDocument d;
     QString er;
@@ -3631,13 +3627,10 @@ MediaQueue::MediaQueue(MediaBrowser *parent)
 bool
 MediaQueue::acceptDrag( QDropEvent *e ) const
 {
-    QString data;
-    Q3CString subtype;
-    Q3TextDrag::decode( e, data, subtype );
 
     return e->source() == viewport()
-        || subtype == "amarok-sql"
-        || K3URLDrag::canDecode( e );
+        || e->mimeData()->hasFormat( "amarok-sql" )
+        || KUrl::List::canDecode( e->mimeData() );
 }
 
 void
@@ -3645,22 +3638,20 @@ MediaQueue::slotDropped( QDropEvent* e, Q3ListViewItem* parent, Q3ListViewItem* 
 {
     if( e->source() != viewport() )
     {
-        QString data;
-        Q3CString subtype;
-        Q3TextDrag::decode( e, data, subtype );
-        KUrl::List list;
-
-        if( subtype == "amarok-sql" )
+        if( e->mimeData()->hasFormat( "amarok-sql" ) )
         {
+            QString data( e->mimeData()->data( "amarok-sql" ) );
             QString playlist = data.section( "\n", 0, 0 );
             QString query = data.section( "\n", 1 );
             QStringList values = CollectionDB::instance()->query( query );
-            list = CollectionDB::instance()->URLsFromSqlDrag( values );
+            KUrl::List list = CollectionDB::instance()->URLsFromSqlDrag( values );
             addUrls( list, playlist );
         }
-        else if ( K3URLDrag::decode( e, list ) )
+        else if ( KUrl::List::canDecode( e->mimeData() ) )
         {
-            addUrls( list );
+            KUrl::List list = KUrl::List::fromMimeData( e->mimeData() );
+            if (!list.isEmpty() )
+                addUrls( list );
         }
     }
     else if( Q3ListViewItem *i = currentItem() )
@@ -3736,17 +3727,19 @@ MediaQueue::subtractItemFromSize( const MediaItem *item, bool unconditionally ) 
 void
 MediaQueue::removeSelected()
 {
-    Q3PtrList<Q3ListViewItem>  selected = selectedItems();
+    QList<Q3ListViewItem*>  selected = selectedItems();
 
-    for( Q3ListViewItem *item = selected.first(); item; item = selected.next() )
+    QListIterator<Q3ListViewItem*> iter( selected );
+    while( iter.hasNext() )
     {
+        Q3ListViewItem *item = iter.next();
         if( !(static_cast<MediaItem *>(item)->flags() & MediaItem::Transferring) )
         {
             subtractItemFromSize( static_cast<MediaItem *>(item) );
             delete item;
             if( m_parent->currentDevice() && m_parent->currentDevice()->isTransferring() )
             {
-                MediaBrowser::instance()->m_progress->setTotalSteps( MediaBrowser::instance()->m_progress->totalSteps() - 1 );
+                MediaBrowser::instance()->m_progress->setRange( 0, MediaBrowser::instance()->m_progress->maximum() - 1 );
             }
         }
     }
@@ -3780,7 +3773,7 @@ MediaQueue::slotShowContextMenu( Q3ListViewItem* item, const QPoint& point, int 
     if( !childCount() )
         return;
 
-    KMenu menu( this );
+    Q3PopupMenu menu( this );
 
     enum Actions { REMOVE_SELECTED, CLEAR_ALL, START_TRANSFER };
 
