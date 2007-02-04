@@ -110,7 +110,7 @@ XineStrEntry::entryChanged(const QString & val)
 ////////////////////
 /// XineIntEntry
 ////////////////////
-XineIntEntry::XineIntEntry(KIntSpinBox* input, const Q3CString & key, xine_t *xine, XineConfigDialog* xcf)
+XineIntEntry::XineIntEntry(QSpinBox* input, const Q3CString & key, xine_t *xine, XineConfigDialog* xcf)
   : XineGeneralEntry(key,xine,xcf)
 {
     xine_cfg_entry_t ent;

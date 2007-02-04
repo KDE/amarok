@@ -231,7 +231,7 @@ void SmartPlaylistEditor::init(QString defaultName)
     m_limitCheck = new QCheckBox( i18n("Limit to"), hbox1 );
     Q3HBox *limitBox = new Q3HBox( hbox1 );
     limitBox->setSpacing( 5 );
-    m_limitSpin = new KIntSpinBox( limitBox );
+    m_limitSpin = new QSpinBox( limitBox );
     m_limitSpin->setMinValue( 1 );
     m_limitSpin->setMaxValue( 1000 );
     m_limitSpin->setValue( 15 );
@@ -905,7 +905,7 @@ void CriteriaEditor::loadEditWidgets()
         {
             bool yearField = m_fieldCombo->currentText() == i18n("Year");
 
-            m_intSpinBox1 = new KIntSpinBox( m_editBox );
+            m_intSpinBox1 = new QSpinBox( m_editBox );
             int maxValue = 1000;
             if( yearField ) {
                 maxValue = QDate::currentDate().year();
@@ -919,7 +919,7 @@ void CriteriaEditor::loadEditWidgets()
                 m_rangeLabel = new QLabel( i18n("and"), m_editBox );
                 m_rangeLabel->setAlignment( AlignCenter );
                 m_rangeLabel->show();
-                m_intSpinBox2 = new KIntSpinBox( m_editBox );
+                m_intSpinBox2 = new QSpinBox( m_editBox );
                 if( yearField ) {
                     maxValue = QDate::currentDate().year();
                     m_intSpinBox2->setValue( maxValue );
@@ -952,7 +952,7 @@ void CriteriaEditor::loadEditWidgets()
         {
             if( m_criteriaCombo->currentText() == i18n("is in the last") ||
                 m_criteriaCombo->currentText() == i18n("is not in the last") ) {
-                m_intSpinBox1 = new KIntSpinBox( m_editBox );
+                m_intSpinBox1 = new QSpinBox( m_editBox );
                 m_intSpinBox1->setMinValue( 1 );
                 m_intSpinBox1->show();
                 m_dateCombo = new KComboBox( m_editBox );
@@ -979,7 +979,7 @@ void CriteriaEditor::loadEditWidgets()
 
         case Length:
         {
-            m_intSpinBox1 = new KIntSpinBox( m_editBox );
+            m_intSpinBox1 = new QSpinBox( m_editBox );
             int maxValue = 1000;
             m_intSpinBox1->setMaxValue( maxValue );
             m_intSpinBox1->setFocus();
@@ -988,7 +988,7 @@ void CriteriaEditor::loadEditWidgets()
                 m_rangeLabel = new QLabel( i18n("and"), m_editBox );
                 m_rangeLabel->setAlignment( AlignCenter );
                 m_rangeLabel->show();
-                m_intSpinBox2 = new KIntSpinBox( m_editBox );
+                m_intSpinBox2 = new QSpinBox( m_editBox );
                 m_intSpinBox2->setMaxValue( maxValue );
                 m_intSpinBox2->show();
             }

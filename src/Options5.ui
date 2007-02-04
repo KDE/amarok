@@ -399,7 +399,7 @@
                                         <cstring>kcfg_OsdDuration</cstring>
                                     </property>
                                 </widget>
-                                <widget class="KIntSpinBox" row="0" column="1">
+                                <widget class="QSpinBox" row="0" column="1">
                                     <property name="name">
                                         <cstring>kcfg_OsdDuration</cstring>
                                     </property>

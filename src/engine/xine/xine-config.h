@@ -84,7 +84,7 @@ class XineIntEntry : public XineGeneralEntry
     Q_OBJECT
 
     public:
-        XineIntEntry(KIntSpinBox* input, const Q3CString & key, xine_t *xine, XineConfigDialog* xcf);
+        XineIntEntry(QSpinBox* input, const Q3CString & key, xine_t *xine, XineConfigDialog* xcf);
         XineIntEntry(const QString& key, xine_t *xine, XineConfigDialog* xcf);
         void save();
 

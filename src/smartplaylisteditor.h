@@ -15,7 +15,7 @@
 #include <klineedit.h>   //inline function
 
 class KComboBox;
-class KIntSpinBox;
+class QSpinBox;
 class KLineEdit;
 class QCheckBox;
 class Q3DateEdit;
@@ -67,7 +67,7 @@ Q_OBJECT
 
         //limit widgets
         QCheckBox *m_limitCheck;
-        KIntSpinBox *m_limitSpin;
+        QSpinBox *m_limitSpin;
         //order by widgets
         QCheckBox *m_orderCheck;
         KComboBox *m_orderCombo;
@@ -123,8 +123,8 @@ Q_OBJECT
         KLineEdit *m_lineEdit;
         KComboBox *m_comboBox;
         KComboBox *m_comboBox2;
-        KIntSpinBox *m_intSpinBox1;
-        KIntSpinBox *m_intSpinBox2;
+        QSpinBox *m_intSpinBox1;
+        QSpinBox *m_intSpinBox2;
         Q3DateEdit *m_dateEdit1;
         Q3DateEdit *m_dateEdit2;
         KComboBox *m_dateCombo;

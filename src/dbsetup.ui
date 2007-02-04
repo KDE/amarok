@@ -98,7 +98,7 @@
                                             <string>Database:</string>
                                         </property>
                                     </widget>
-                                    <widget class="KIntSpinBox" row="0" column="3">
+                                    <widget class="QSpinBox" row="0" column="3">
                                         <property name="name">
                                             <cstring>kcfg_MySqlPort</cstring>
                                         </property>
@@ -277,7 +277,7 @@
                                             <string>Database:</string>
                                         </property>
                                     </widget>
-                                    <widget class="KIntSpinBox" row="0" column="3">
+                                    <widget class="QSpinBox" row="0" column="3">
                                         <property name="name">
                                             <cstring>kcfg_PostgresqlPort</cstring>
                                         </property>
