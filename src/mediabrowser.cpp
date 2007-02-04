@@ -522,7 +522,7 @@ MediaBrowser::activateDevice( int index, bool skipDummy )
 {
     if( currentDevice() && currentDevice()->customAction() )
     {
-        currentDevice()->customAction()->unplug( m_toolbar );
+        m_toolbar->removeAction( currentDevice()->customAction() );
         m_toolbar->hide();
         m_toolbar->show();
     }
@@ -559,7 +559,7 @@ MediaBrowser::activateDevice( int index, bool skipDummy )
         if( currentDevice()->customAction() )
         {
             m_toolbar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
-            currentDevice()->customAction()->plug( m_toolbar );
+            m_toolbar->addAction( currentDevice()->customAction() );
             m_toolbar->hide();
             m_toolbar->show();
         }
