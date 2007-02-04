@@ -26,6 +26,7 @@
 //Added by qt3to4:
 #include <QResizeEvent>
 #include <QPaintEvent>
+#include <QStyleOptionFrame>
 
 #include <kapplication.h>
 #include <kconfig.h>
@@ -40,8 +41,8 @@ QColor PrettyPopupMenu::s_sidePixmapColor;
 // public
 ////////////////////////////////////////////////////////////////////////////////
 
-PrettyPopupMenu::PrettyPopupMenu( QWidget* parent, const char* name )
-    : KMenu( parent, name )
+PrettyPopupMenu::PrettyPopupMenu( QWidget* parent )
+    : KMenu( parent )
 {
     // Must be initialized so that we know the size on first invocation
     if ( s_sidePixmap.isNull() )
@@ -68,14 +69,14 @@ PrettyPopupMenu::generateSidePixmap()
 QRect
 PrettyPopupMenu::sideImageRect() const
 {
-    return QStyle::visualRect( QRect( frameWidth(), frameWidth(), s_sidePixmap.width(),
-                                      height() - 2*frameWidth() ), this );
+    return QStyle::visualRect( layoutDirection(), rect(), QRect( frameWidth(), frameWidth(),
+                s_sidePixmap.width(), height() - 2*frameWidth() ) );
 }
 
 QColor
 PrettyPopupMenu::calcPixmapColor()
 {
-    KConfig *config = KGlobal::config();
+    KSharedConfigPtr config = KGlobal::config();
     config->setGroup("WM");
     QColor color = QApplication::palette().active().highlight();
 //     QColor activeTitle = QApplication::palette().active().background();
@@ -89,8 +90,8 @@ PrettyPopupMenu::calcPixmapColor()
     inactiveTitle.hsv(&h2, &s2, &v2);
     QApplication::palette().active().background().hsv(&h3, &s3, &v3);
 
-    if ( (qAbs(h1-h3)+kAbs(s1-s3)+kAbs(v1-v3) < qAbs(h2-h3)+kAbs(s2-s3)+kAbs(v2-v3)) &&
-            ((qAbs(h1-h3)+kAbs(s1-s3)+kAbs(v1-v3) < 32) || (s1 < 32)) && (s2 > s1))
+    if ( (qAbs(h1-h3)+qAbs(s1-s3)+qAbs(v1-v3) < qAbs(h2-h3)+qAbs(s2-s3)+qAbs(v2-v3)) &&
+            ((qAbs(h1-h3)+qAbs(s1-s3)+qAbs(v1-v3) < 32) || (s1 < 32)) && (s2 > s1))
         color = inactiveTitle;
     else
         color = activeTitle;
@@ -141,8 +142,10 @@ void PrettyPopupMenu::resizeEvent(QResizeEvent * e)
 {
     KMenu::resizeEvent( e );
 
+#if 0
     setFrameRect( QStyle::visualRect( QRect( s_sidePixmap.width(), 0,
                                       width() - s_sidePixmap.width(), height() ), this ) );
+#endif
 }
 
 //Workaround Qt3.3.x sizing bug, by ensuring we're always wide enough.
@@ -158,9 +161,16 @@ PrettyPopupMenu::paintEvent( QPaintEvent* e )
     generateSidePixmap();
 
     QPainter p( this );
+    p.setClipRegion(e->region());
+
+    QStyleOptionFrame frOpt;
+    frOpt.init(this);
+    frOpt.lineWidth = frameWidth();
+    frOpt.midLineWidth = 0;
+    style()->drawPrimitive( QStyle::PE_FrameMenu, &frOpt, &p, this);
 
     QRect r = sideImageRect();
-    r.setTop( r.bottom() - s_sidePixmap.height() );
+    r.setBottom( r.bottom() - s_sidePixmap.height() );
     if ( r.intersects( e->rect() ) )
     {
         QRect drawRect = r.intersect( e->rect() ).intersect( sideImageRect() );
@@ -169,18 +179,9 @@ PrettyPopupMenu::paintEvent( QPaintEvent* e )
         p.drawImage( drawRect.topLeft(), s_sidePixmap, pixRect );
     }
 
+    KMenu::paintEvent( e );
+
     p.setClipRegion( e->region() );
-
-
-    //NOTE The order is important here. drawContents() must be called before drawPrimitive(),
-    //     otherwise we get rendering glitches.
-
-    drawContents( &p );
-
-    style().drawPrimitive( QStyle::PE_PanelPopup, &p,
-                           QRect( 0, 0, width(), height() ),
-                           colorGroup(), QStyle::Style_Default,
-                           QStyleOption( frameWidth(), 0 ) );
 }
 
 

@@ -47,7 +47,7 @@ class PrettyPopupMenu : public KMenu
         Q_OBJECT
 
     public:
-        PrettyPopupMenu( QWidget *parent = 0, const char *name = 0 );
+        PrettyPopupMenu( QWidget *parent = 0 );
 
         int sidePixmapWidth() const { return s_sidePixmap.width(); }
 
