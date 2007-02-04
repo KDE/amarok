@@ -470,8 +470,7 @@ void ScrobblerSubmitter::performHandshake()
                 .arg( CLIENT_VERSION )
                 .arg( m_username )
                 .arg( currentTime )
-                .arg( KMD5( KMD5( m_password.utf8() ).hexDigest() +
-                currentTime ).hexDigest() );
+                .arg( QString::fromAscii( KMD5( KMD5( m_password.utf8().hexDigest() + currentTime ) ).hexDigest() ) );
     }
 
     else
