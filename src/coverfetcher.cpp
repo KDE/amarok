@@ -14,6 +14,7 @@
 
 #include <qdom.h>
 #include <q3hbox.h>
+#include <q3popupmenu.h>
 #include <QLabel>
 #include <QLayout>
 #include <QRegExp>
@@ -41,10 +42,10 @@
 void
 Amarok::coverContextMenu( QWidget *parent, QPoint point, const QString &artist, const QString &album, bool showCoverManager )
 {
-        KMenu menu;
+        Q3PopupMenu menu;
         enum { SHOW, FETCH, CUSTOM, DELETE, MANAGER };
 
-        menu.insertTitle( i18n( "Cover Image" ) );
+        menu.setTitle( i18n( "Cover Image" ) );
 
         menu.insertItem( SmallIconSet( Amarok::icon( "zoom" ) ), i18n( "&Show Fullsize" ), SHOW );
         menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n( "&Fetch From amazon.%1" ).arg( CoverManager::amazonTld() ), FETCH );
@@ -103,7 +104,7 @@ Amarok::coverContextMenu( QWidget *parent, QPoint point, const QString &artist, 
                 startPath = url.directory();
             }
 
-            KUrl file = KFileDialog::getImageOpenURL( startPath, parent, i18n("Select Cover Image File") );
+            KUrl file = KFileDialog::getImageOpenUrl( startPath, parent, i18n("Select Cover Image File") );
             if ( !file.isEmpty() )
                 CollectionDB::instance()->setAlbumImage( artist, album, file );
             break;
@@ -221,7 +222,7 @@ CoverFetcher::startFetch()
 
     // Bug 97901: Import cover from amazon france doesn't work properly
     // (we have to set "mode=music-fr" instead of "mode=music")
-    QString musicMode = AmarokConfig::amazonLocale() == "fr" ? "music-fr" : "music";
+    QString musicMode = "music";
     //Amazon Japan isn't on xml.amazon.com
     QString tld = "com";
     int mibenum = 4;  // latin1
@@ -232,12 +233,14 @@ CoverFetcher::startFetch()
     }
     else if( AmarokConfig::amazonLocale() == "ca" )
         musicMode = "music-ca";
+    else if( AmarokConfig::amazonLocale() == "fr" )
+        musicMode = "music-fr";
 
     QString url;
     // changed to type=lite because it makes less traffic
     url = "http://xml.amazon." + tld
         + "/onca/xml3?t=webservices-20&dev-t=" + LICENSE
-        + "&KeywordSearch=" + KUrl::encode_string_no_slash( query, mibenum )
+        + "&KeywordSearch=" + KUrl::encode_string_no_slash( query /*, mibenum */ ) // FIXME: we will have to find something else
         + "&mode=" + musicMode
         + "&type=lite&locale=" + AmarokConfig::amazonLocale()
         + "&page=1&f=xml";
@@ -448,7 +451,7 @@ CoverFetcher::attemptAnotherFetch()
             hbox1->addWidget( amazonLocale );
 
             int currentLocale = CoverFetcher::localeStringToID( AmarokConfig::amazonLocale() );
-            amazonLocale->setCurrentItem( currentLocale );
+            amazonLocale->setCurrentIndex( currentLocale );
 
             KPushButton* cancelButton = new KPushButton( KStandardGuiItem::cancel(), this );
             KPushButton* searchButton = new KPushButton( i18n("&Search"), this );
@@ -461,7 +464,7 @@ CoverFetcher::attemptAnotherFetch()
             Q3VBoxLayout *vbox = new Q3VBoxLayout( this, 8, 8 );
             vbox->addLayout( hbox1 );
             vbox->addWidget( new QLabel( "<qt>" + text, this ) );
-            vbox->addWidget( new KLineEdit( keyword, this, "Query" ) );
+            vbox->addWidget( new KLineEdit( keyword, this ) );
             vbox->addLayout( hbox2 );
 
             searchButton->setDefault( true );
@@ -535,7 +538,8 @@ CoverFetcher::getUserQuery( QString explanation )
     {
     case QDialog::Accepted:
         m_userQuery = dialog.query();
-        m_queries = m_userQuery;
+        m_queries.clear();
+        m_queries << m_userQuery;
         startFetch();
         break;
     default:
@@ -560,13 +564,13 @@ CoverFetcher::getUserQuery( QString explanation )
             QLabel      *labelName = new QLabel( this );
             Q3HBox       *buttons   = new Q3HBox( this );
             KPushButton *save      = new KPushButton( KStandardGuiItem::save(), buttons );
-            KPushButton *newsearch = new KPushButton( i18n( "Ne&w Search..." ), buttons, "NewSearch" );
-            KPushButton *nextcover = new KPushButton( i18n( "&Next Cover" ), buttons, "NextCover" );
+            KPushButton *newsearch = new KPushButton( i18n( "Ne&w Search..." ), buttons );
+            KPushButton *nextcover = new KPushButton( i18n( "&Next Cover" ), buttons );
             KPushButton *cancel    = new KPushButton( KStandardGuiItem::cancel(), buttons );
 
             labelPix ->setAlignment( Qt::AlignHCenter );
             labelName->setAlignment( Qt::AlignHCenter );
-            labelPix ->setPixmap( cover );
+            labelPix ->setPixmap( QPixmap( cover ) );
             labelName->setText( productname );
 
             save->setDefault( true );
