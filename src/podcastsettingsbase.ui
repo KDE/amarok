@@ -170,7 +170,7 @@
                 <string>Save location:</string>
             </property>
         </widget>
-        <widget class="KURLRequester" row="1" column="2" rowspan="1" colspan="4">
+        <widget class="KUrlRequester" row="1" column="2" rowspan="1" colspan="4">
             <property name="name">
                 <cstring>m_saveLocation</cstring>
             </property>
