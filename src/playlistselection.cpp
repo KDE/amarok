@@ -31,9 +31,10 @@
 #include <k3listview.h>
 #include <klocale.h>
 
-PlaylistSelection::PlaylistSelection( QWidget* parent, char* name )
-    : K3ListView( parent, name )
+PlaylistSelection::PlaylistSelection( QWidget* parent )
+    : K3ListView( parent )
 {
+    setObjectName( "playlist selection" );
     addColumn( i18n("Select Playlists") );
     setRootIsDecorated( true );
     PlaylistBrowserView* browserTree = PlaylistBrowser::instance()->getListView();
@@ -76,8 +77,8 @@ namespace ConfigDynamic
         KDialog* dialog = new KDialog( parent );
         dialog->setCaption( i18n("Create Dynamic Playlist") );
         dialog->setModal( true );
-        dialog->setButtons( Ok | Cancel );
-        dialog->setDefaultButton( Ok );
+        dialog->setButtons( KDialog::Ok | KDialog::Cancel );
+        dialog->setDefaultButton( KDialog::Ok );
         dialog->showButtonSeparator( true );
 
 

@@ -99,7 +99,7 @@ void
 Options5::slotPositionChanged()
 {
     kcfg_OsdScreen->blockSignals( true );
-    kcfg_OsdScreen->setCurrentItem( m_pOSDPreview->screen() );
+    kcfg_OsdScreen->setCurrentIndex( m_pOSDPreview->screen() );
     kcfg_OsdScreen->blockSignals( false );
 
     // Update button states (e.g. "Apply")

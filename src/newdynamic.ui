@@ -67,7 +67,7 @@
                 </size>
             </property>
         </spacer>
-        <widget class="KIntSpinBox" row="6" column="5">
+        <widget class="QSpinBox" row="6" column="5">
             <property name="name">
                 <cstring>m_upcomingIntSpinBox</cstring>
             </property>
@@ -153,7 +153,7 @@
                 </size>
             </property>
         </spacer>
-        <widget class="KIntSpinBox" row="5" column="5">
+        <widget class="QSpinBox" row="5" column="5">
             <property name="name">
                 <cstring>m_previousIntSpinBox</cstring>
             </property>
@@ -353,7 +353,6 @@
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>knuminput.h</includehint>
     <includehint>knuminput.h</includehint>
     <includehint>playlistselection.h</includehint>
 </includehints>
