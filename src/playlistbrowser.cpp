@@ -52,9 +52,9 @@
 #include <QCustomEvent>
 #include <QPaintEvent>
 #include <Q3PtrList>
+#include <QSplitter>
 
 #include <kaction.h>
-#include <kactionclasses.h>
 #include <kactioncollection.h>
 #include <kapplication.h>
 #include <kfiledialog.h>       //openPlaylist()
@@ -172,7 +172,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     browserBox->setSpacing( 3 );
 
     //<Toolbar>
-    addMenuButton  = new KActionMenu( i18n("Add"), Amarok::icon( "add_playlist" ), m_ac );
+    addMenuButton  = new KActionMenu( KIcon( Amarok::icon( "add_playlist" ) ), i18n("Add"), m_ac );
     addMenuButton->setDelayed( false );
 
     KMenu *playlistMenu = new KMenu( this );
@@ -188,8 +188,10 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     addMenu->insertItem( i18n("Podcast..."), PODCAST );
     connect( addMenu, SIGNAL( activated(int) ), SLOT( slotAddMenu(int) ) );
 
-    renameButton   = new KAction( i18n("Rename"), "editclear", 0, this, SLOT( renameSelectedItem() ), m_ac );
-    removeButton   = new KAction( i18n("Delete"), Amarok::icon( "remove" ), 0, this, SLOT( removeSelectedItems() ), m_ac );
+    renameButton   = new KAction( KIcon( "editclear" ), i18n("Rename"), m_ac );
+    connect( renameButton, SIGNAL( triggered( bool ) ), this, SLOT( renameSelectedItem() ) );
+    removeButton   = new KAction( KIcon( Amarok::icon( "remove" ) ), i18n("Delete"), m_ac );
+    connect( removeButton, SIGNAL( triggered( bool ) ), this, SLOT( removeSelectedItems() ) );
 
     m_toolbar = new Browser::ToolBar( browserBox );
     m_toolbar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
@@ -339,8 +341,8 @@ PlaylistBrowser::~PlaylistBrowser()
             Q3ListViewItem *item = m_dynamicEntries.at( i );
             list.append( item->text(0) );
         }
-
-        Amarok::config( "PlaylistBrowser" )->writeEntry( "Sorting", m_listview->sortOrder() );
+        int sortorder = m_listview->sortOrder() == Qt::AscendingOrder ? 0 : 1;
+        Amarok::config( "PlaylistBrowser" )->writeEntry( "Sorting", sortorder );
         Amarok::config( "PlaylistBrowser" )->writeEntry( "Podcast Interval", m_podcastTimerInterval );
         Amarok::config( "PlaylistBrowser" )->writeEntry( "Podcast Folder Open", m_podcastCategory->isOpen() );
         Amarok::config( "PlaylistBrowser" )->writeEntry( "InfoPane Height", m_infoPane->getHeight() );
@@ -672,7 +674,7 @@ void PlaylistBrowser::addSmartPlaylist( Q3ListViewItem *parent ) //SLOT
                 if( KMessageBox::warningContinueCancel(
                     PlaylistWindow::self(),
                     i18n( "A Smart Playlist named \"%1\" already exists. Do you want to overwrite it?" ).arg( dialog.name() ),
-                    i18n( "Overwrite Playlist?" ), i18n( "Overwrite" ) ) == KMessageBox::Continue )
+                    i18n( "Overwrite Playlist?" ), KGuiItem( i18n( "Overwrite" ) ) ) == KMessageBox::Continue )
                 {
                     delete item;
                     break;
@@ -1046,7 +1048,7 @@ PlaylistBrowser::fixDynamicPlaylistPath( Q3ListViewItem *item )
 QString
 PlaylistBrowser::guessPathFromPlaylistName( QString name )
 {
-    Q3ListViewItem *item = m_listview->findItem( name, 0, Qt::ExactMatch );
+    Q3ListViewItem *item = m_listview->findItem( name, 0, Q3ListView::ExactMatch );
     PlaylistBrowserEntry *entry = dynamic_cast<PlaylistBrowserEntry*>( item );
     if ( entry )
         return entry->name();
@@ -1843,7 +1845,7 @@ void PlaylistBrowser::openPlaylist( Q3ListViewItem *parent ) //SLOT
 {
     // open a file selector to add playlists to the playlist browser
     QStringList files;
-    files = KFileDialog::getOpenFileNames( QString::null, "*.m3u *.pls *.xspf|" + i18n("Playlist Files"), this, i18n("Import Playlists") );
+    files = KFileDialog::getOpenFileNames( KUrl(), "*.m3u *.pls *.xspf|" + i18n("Playlist Files"), this, i18n("Import Playlists") );
 
     const QStringList::ConstIterator end  = files.constEnd();
     for( QStringList::ConstIterator it = files.constBegin(); it != end; ++it )
@@ -1930,7 +1932,7 @@ void PlaylistBrowser::savePlaylist( PlaylistEntry *item )
 PlaylistBrowserEntry *
 PlaylistBrowser::findItem( QString &t, int c ) const
 {
-    return static_cast<PlaylistBrowserEntry *>( m_listview->findItem( t, c, Qt::ExactMatch ) );
+    return static_cast<PlaylistBrowserEntry *>( m_listview->findItem( t, c, Q3ListView::ExactMatch ) );
 }
 
 bool PlaylistBrowser::createPlaylist( Q3ListViewItem *parent, bool current, QString title )
@@ -2210,7 +2212,7 @@ void PlaylistBrowser::removeSelectedItems() //SLOT
 
     if( playlistCount ) message += "<li>" + i18np( "1 playlist", "%n playlists", playlistCount )  + "</li>";
 
-    if( smartyCount   ) message += "<li>" + i18pn( "1 smart playlist", "%n smart playlists", smartyCount ) + "</li>";
+    if( smartyCount   ) message += "<li>" + i18np( "1 smart playlist", "%n smart playlists", smartyCount ) + "</li>";
 
     if( dynamicCount  ) message += "<li>" + i18np( "1 dynamic playlist", "%n dynamic playlists", dynamicCount ) + "</li>";
 
@@ -2388,7 +2390,7 @@ void PlaylistBrowser::saveXSPF( PlaylistEntry *item, bool append )
     QFile file( item->url().path() );
     file.open( QIODevice::WriteOnly );
 
-    Q3TextStream stream ( &file );
+    QTextStream stream ( &file );
 
     playlist->save( stream, 2 );
 
@@ -2436,14 +2438,14 @@ KUrl::List PlaylistBrowser::recurse( const KUrl &url )
     lister.openUrl( url );
 
     while( !lister.isFinished() )
-        kapp->eventLoop()->processEvents( QEventLoop::ExcludeUserInput );
+        kapp->processEvents( QEventLoop::ExcludeUserInput );
 
     KFileItemList items = lister.items(); //returns QPtrList, so we MUST only do it once!
     KUrl::List urls;
     FileMap files;
-    for( KFileItem *item = items.first(); item; item = items.next() ) {
-        if( item->isFile() ) { files[item->name()] = item->url(); continue; }
-        if( item->isDir() ) urls += recurse( item->url() );
+    oldForeachType( KFileItemList, items ) {
+        if( (*it)->isFile() ) { files[(*it)->name()] = (*it)->url(); continue; }
+        if( (*it)->isDir() ) urls += recurse( (*it)->url() );
     }
 
     oldForeachType( FileMap, files )
@@ -2559,9 +2561,10 @@ void PlaylistBrowser::showContextMenu( Q3ListViewItem *item, const QPoint &p, in
 ////////////////////////////////////////////////////////////////////////////
 
 PlaylistBrowserView::PlaylistBrowserView( QWidget *parent, const char *name )
-    : K3ListView( parent, name )
+    : K3ListView( parent )
     , m_marker( 0 )
 {
+    setObjectName( name );
     addColumn( i18n("Playlists") );
 
     setSelectionMode( Q3ListView::Extended );
@@ -2761,7 +2764,7 @@ void PlaylistBrowserView::viewportPaintEvent( QPaintEvent *e )
             drawItemHighlighter( &painter, m_marker );
         else //when dragging on a track we draw a line marker
             painter.fillRect( drawDropVisualizer( 0, 0, m_marker ),
-                                   QBrush( colorGroup().highlight(), QBrush::Dense4Pattern ) );
+                                   QBrush( colorGroup().highlight(), Qt::Dense4Pattern ) );
     }
 }
 
@@ -3066,7 +3069,7 @@ PlaylistDialog::PlaylistDialog()
     setButtons( Ok | Cancel | User1 );
     setDefaultButton( Ok );
     showButtonSeparator( false );
-    setButtonGuiItem( User1, i18n( "Save to location..." ) ); //SmallIconSet( Amarok::icon( "files" ) )
+    setButtonGuiItem( User1, KGuiItem( i18n( "Save to location..." ) ) ); //SmallIconSet( Amarok::icon( "files" ) )
 
 
     KVBox *vbox = new KVBox( this );
@@ -3096,7 +3099,7 @@ void PlaylistDialog::slotOk()
         KMessageBox::warningContinueCancel(
             PlaylistWindow::self(),
             i18n( "A playlist named \"%1\" already exists. Do you want to overwrite it?" ).arg( edit->text() ),
-            i18n( "Overwrite Playlist?" ), i18n( "Overwrite" ) ) == KMessageBox::Continue )
+            i18n( "Overwrite Playlist?" ), KGuiItem( i18n( "Overwrite" ) ) ) == KMessageBox::Continue )
     {
         //KDialog::slotOk();
         slotButtonClicked( Ok );
@@ -3110,7 +3113,7 @@ void PlaylistDialog::slotTextChanged( const QString &s )
 
 void PlaylistDialog::slotCustomPath()
 {
-   result = KFileDialog::getSaveFileName( ":saveplaylists", "*.m3u" );
+   result = KFileDialog::getSaveFileName( KUrl( "kfiledialog:///saveplaylists" ), "*.m3u" );
    if( !result.isNull() )
    {
       edit->setText( result );
