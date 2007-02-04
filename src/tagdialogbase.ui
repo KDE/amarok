@@ -281,7 +281,7 @@
                             <enum>PlainText</enum>
                         </property>
                         <property name="buddy" stdset="0">
-                            <cstring>QSpinBox_track</cstring>
+                            <cstring>qSpinBox_track</cstring>
                         </property>
                     </widget>
                     <widget class="QLayoutWidget" row="8" column="1">
@@ -380,7 +380,7 @@
                             </property>
                             <widget class="QSpinBox">
                                 <property name="name">
-                                    <cstring>QSpinBox_track</cstring>
+                                    <cstring>qSpinBox_track</cstring>
                                 </property>
                                 <property name="sizePolicy">
                                     <sizepolicy>
@@ -408,12 +408,12 @@
                                     <string>&amp;Year:</string>
                                 </property>
                                 <property name="buddy" stdset="0">
-                                    <cstring>QSpinBox_year</cstring>
+                                    <cstring>qSpinBox_year</cstring>
                                 </property>
                             </widget>
                             <widget class="QSpinBox">
                                 <property name="name">
-                                    <cstring>QSpinBox_year</cstring>
+                                    <cstring>qSpinBox_year</cstring>
                                 </property>
                                 <property name="sizePolicy">
                                     <sizepolicy>
@@ -506,12 +506,12 @@
                                     <string>&amp;Disc Number:</string>
                                 </property>
                                 <property name="buddy" stdset="0">
-                                    <cstring>QSpinBox_discNumber</cstring>
+                                    <cstring>qSpinBox_discNumber</cstring>
                                 </property>
                             </widget>
                             <widget class="QSpinBox">
                                 <property name="name">
-                                    <cstring>QSpinBox_discNumber</cstring>
+                                    <cstring>qSpinBox_discNumber</cstring>
                                 </property>
                                 <property name="sizePolicy">
                                     <sizepolicy>
@@ -694,7 +694,7 @@
                     </widget>
                     <widget class="QSpinBox" row="0" column="2">
                         <property name="name">
-                            <cstring>QSpinBox_score</cstring>
+                            <cstring>qSpinBox_score</cstring>
                         </property>
                         <property name="sizePolicy">
                             <sizepolicy>
@@ -797,16 +797,16 @@
     <tabstop>kComboBox_artist</tabstop>
     <tabstop>kComboBox_composer</tabstop>
     <tabstop>kComboBox_album</tabstop>
-    <tabstop>QSpinBox_discNumber</tabstop>
+    <tabstop>qSpinBox_discNumber</tabstop>
     <tabstop>kComboBox_genre</tabstop>
-    <tabstop>QSpinBox_track</tabstop>
-    <tabstop>QSpinBox_year</tabstop>
+    <tabstop>qSpinBox_track</tabstop>
+    <tabstop>qSpinBox_year</tabstop>
     <tabstop>kTextEdit_comment</tabstop>
     <tabstop>pushButton_musicbrainz</tabstop>
     <tabstop>pushButton_guessTags</tabstop>
     <tabstop>pushButton_setFilenameSchemes</tabstop>
     <tabstop>kTextEdit_lyrics</tabstop>
-    <tabstop>QSpinBox_score</tabstop>
+    <tabstop>qSpinBox_score</tabstop>
     <tabstop>kComboBox_rating</tabstop>
     <tabstop>kLineEdit_location</tabstop>
     <tabstop>pushButton_open</tabstop>

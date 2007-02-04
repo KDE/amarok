@@ -280,11 +280,11 @@ TagDialog::guessFromFilename() //SLOT
     if( !guesser.album().isNull() )
         kComboBox_album->setCurrentText( guesser.album() );
     if( !guesser.track().isNull() )
-        kIntSpinBox_track->setValue( guesser.track().toInt() );
+        qSpinBox_track->setValue( guesser.track().toInt() );
     if( !guesser.comment().isNull() )
         kTextEdit_comment->setText( guesser.comment() );
     if( !guesser.year().isNull() )
-        kIntSpinBox_year->setValue( guesser.year().toInt() );
+        qSpinBox_year->setValue( guesser.year().toInt() );
     if( !guesser.composer().isNull() )
         kComboBox_composer->setCurrentText( guesser.composer() );
     if( !guesser.genre().isNull() )
@@ -319,7 +319,7 @@ TagDialog::queryDone( KTRMResultList results, QString error ) //SLOT
     else {
         if ( !results.isEmpty() )
         {
-            TrackPickerDialog* t = new TrackPickerDialog( m_mbTrack.filename(), results, this );
+            TrackPickerDialog* t = new TrackPickerDialog( m_mbTrack.fileName(), results, this );
             t->show();
             connect( t, SIGNAL( finished() ), SLOT( resetMusicbrainz() ) ); // clear m_mbTrack
         }
@@ -349,8 +349,8 @@ TagDialog::fillSelected( KTRMResult selected ) //SLOT
         if ( !selected.title().isEmpty() )    kLineEdit_title->setText( selected.title() );
         if ( !selected.artist().isEmpty() )   kComboBox_artist->setCurrentText( selected.artist() );
         if ( !selected.album().isEmpty() )    kComboBox_album->setCurrentText( selected.album() );
-        if ( selected.track() != 0 )          kIntSpinBox_track->setValue( selected.track() );
-        if ( selected.year() != 0 )           kIntSpinBox_year->setValue( selected.year() );
+        if ( selected.track() != 0 )          qSpinBox_track->setValue( selected.track() );
+        if ( selected.year() != 0 )           qSpinBox_year->setValue( selected.year() );
     } else {
         MetaBundle mb;
         mb.setPath( m_mbTrack.path() );
@@ -383,7 +383,7 @@ void TagDialog::init()
     // delete itself when closing
     setAttribute( Qt::WA_DeleteOnClose );
 
-    KConfig *config = Amarok::config( "TagDialog" );
+    KSharedConfigPtr config = Amarok::config( "TagDialog" );
 
     kTabWidget->addTab( summaryTab, i18n( "Summary" ) );
     kTabWidget->addTab( tagsTab, i18n( "Tags" ) );
@@ -424,8 +424,8 @@ void TagDialog::init()
     //m_labelCloud = new KHTMLPart( labels_favouriteLabelsFrame );
     m_labelCloud = new HTMLView( labels_favouriteLabelsFrame );
     m_labelCloud->view()->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored, false );
-    m_labelCloud->view()->setVScrollBarMode( Q3ScrollView::AlwaysOff );
-    m_labelCloud->view()->setHScrollBarMode( Q3ScrollView::AlwaysOff );
+    //m_labelCloud->view()->setVScrollBarMode( Q3ScrollView::AlwaysOff );
+    //m_labelCloud->view()->setHScrollBarMode( Q3ScrollView::AlwaysOff );
 
     new Q3VBoxLayout( labels_favouriteLabelsFrame );
     labels_favouriteLabelsFrame->layout()->add( m_labelCloud->view() );
@@ -437,10 +437,10 @@ void TagDialog::init()
 
     // looks better to have a blank label than 0, we can't do this in
     // the UI file due to bug in Designer
-    kIntSpinBox_track->setSpecialValueText( " " );
-    kIntSpinBox_year->setSpecialValueText( " " );
-    kIntSpinBox_score->setSpecialValueText( " " );
-    kIntSpinBox_discNumber->setSpecialValueText( " " );
+    qSpinBox_track->setSpecialValueText( " " );
+    qSpinBox_year->setSpecialValueText( " " );
+    qSpinBox_score->setSpecialValueText( " " );
+    qSpinBox_discNumber->setSpecialValueText( " " );
 
     if( !AmarokConfig::useRatings() )
     {
@@ -449,17 +449,17 @@ void TagDialog::init()
     }
     if( !AmarokConfig::useScores() )
     {
-        kIntSpinBox_score->hide();
+        qSpinBox_score->hide();
         scoreLabel->hide();
     }
 
     //HACK due to deficiency in Qt that will be addressed in version 4
     // QSpinBox doesn't emit valueChanged if you edit the value with
     // the lineEdit until you change the keyboard focus
-    connect( kIntSpinBox_year->child( "qt_spinbox_edit" ),  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
-    connect( kIntSpinBox_track->child( "qt_spinbox_edit" ), SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
-    connect( kIntSpinBox_score->child( "qt_spinbox_edit" ), SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
-    connect( kIntSpinBox_discNumber->child( "qt_spinbox_edit" ), SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
+    connect( qSpinBox_year->child( "qt_spinbox_edit" ),  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
+    connect( qSpinBox_track->child( "qt_spinbox_edit" ), SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
+    connect( qSpinBox_score->child( "qt_spinbox_edit" ), SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
+    connect( qSpinBox_discNumber->child( "qt_spinbox_edit" ), SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
 
     // Connects for modification check
     connect( kLineEdit_title,   SIGNAL(textChanged( const QString& )),  SLOT(checkModified()) );
@@ -473,9 +473,9 @@ void TagDialog::init()
     connect( kComboBox_genre,   SIGNAL(textChanged( const QString& )),  SLOT(checkModified()) );
     connect( kComboBox_rating,  SIGNAL(activated( int )),               SLOT(checkModified()) );
     connect( kComboBox_rating,  SIGNAL(textChanged( const QString& )),  SLOT(checkModified()) );
-    connect( kIntSpinBox_track, SIGNAL(valueChanged( int )),            SLOT(checkModified()) );
-    connect( kIntSpinBox_year,  SIGNAL(valueChanged( int )),            SLOT(checkModified()) );
-    connect( kIntSpinBox_score, SIGNAL(valueChanged( int )),            SLOT(checkModified()) );
+    connect( qSpinBox_track, SIGNAL(valueChanged( int )),            SLOT(checkModified()) );
+    connect( qSpinBox_year,  SIGNAL(valueChanged( int )),            SLOT(checkModified()) );
+    connect( qSpinBox_score, SIGNAL(valueChanged( int )),            SLOT(checkModified()) );
     connect( kTextEdit_comment, SIGNAL(textChanged()),                  SLOT(checkModified()) );
     connect( kTextEdit_lyrics,  SIGNAL(textChanged()),                  SLOT(checkModified()) );
     connect( kTextEdit_selectedLabels, SIGNAL(textChanged()),           SLOT(checkModified()) );
@@ -657,16 +657,16 @@ void TagDialog::readTags()
     kComboBox_artist       ->setCurrentText( m_bundle.artist() );
     kComboBox_album        ->setCurrentText( m_bundle.album() );
     kComboBox_genre        ->setCurrentText( m_bundle.genre() );
-    kComboBox_rating       ->setCurrentItem( m_bundle.rating() ? m_bundle.rating() - 1 : 0 );
-    kIntSpinBox_track      ->setValue( m_bundle.track() );
+    kComboBox_rating       ->setCurrentIndex( m_bundle.rating() ? m_bundle.rating() - 1 : 0 );
+    qSpinBox_track      ->setValue( m_bundle.track() );
     kComboBox_composer     ->setCurrentText( m_bundle.composer() );
-    kIntSpinBox_year       ->setValue( m_bundle.year() );
-    kIntSpinBox_score      ->setValue( static_cast<int>(m_bundle.score()) );
-    kIntSpinBox_discNumber ->setValue( m_bundle.discNumber() );
+    qSpinBox_year       ->setValue( m_bundle.year() );
+    qSpinBox_score      ->setValue( static_cast<int>(m_bundle.score()) );
+    qSpinBox_discNumber ->setValue( m_bundle.discNumber() );
     kTextEdit_comment      ->setText( m_bundle.comment() );
 
     bool extended = m_bundle.hasExtendedMetaInformation();
-    kIntSpinBox_discNumber->setEnabled( extended );
+    qSpinBox_discNumber->setEnabled( extended );
     kComboBox_composer->setEnabled( extended );
 
 
@@ -722,9 +722,9 @@ void TagDialog::readTags()
     kComboBox_album->setEnabled( local );
     kComboBox_genre->setEnabled( local );
     kComboBox_rating->setEnabled( local );
-    kIntSpinBox_track->setEnabled( local );
-    kIntSpinBox_year->setEnabled( local );
-    kIntSpinBox_score->setEnabled( local );
+    qSpinBox_track->setEnabled( local );
+    qSpinBox_year->setEnabled( local );
+    qSpinBox_score->setEnabled( local );
     kTextEdit_comment->setEnabled( local );
     kTextEdit_selectedLabels->setEnabled( local );
     m_labelCloud->view()->setEnabled( local );
@@ -779,15 +779,15 @@ TagDialog::setMultipleTracksMode()
     kComboBox_composer->setCurrentText( "" );
     kLineEdit_title->setText( "" );
     kTextEdit_comment->setText( "" );
-    kIntSpinBox_track->setValue( kIntSpinBox_track->minValue() );
-    kIntSpinBox_discNumber->setValue( kIntSpinBox_discNumber->minValue() );
-    kIntSpinBox_year->setValue( kIntSpinBox_year->minValue() );
+    qSpinBox_track->setValue( qSpinBox_track->minValue() );
+    qSpinBox_discNumber->setValue( qSpinBox_discNumber->minValue() );
+    qSpinBox_year->setValue( qSpinBox_year->minValue() );
 
-    kIntSpinBox_score->setValue( kIntSpinBox_score->minValue() );
+    qSpinBox_score->setValue( qSpinBox_score->minValue() );
     kComboBox_rating->setCurrentItem(  0 );
 
     kLineEdit_title->setEnabled( false );
-    kIntSpinBox_track->setEnabled( false );
+    qSpinBox_track->setEnabled( false );
 
     pushButton_musicbrainz->hide();
     pushButton_guessTags->hide();
@@ -807,7 +807,7 @@ TagDialog::setSingleTrackMode()
     kTabWidget->setTabEnabled( lyricsTab, true );
 
     kLineEdit_title->setEnabled( true );
-    kIntSpinBox_track->setEnabled( true );
+    qSpinBox_track->setEnabled( true );
 
     pushButton_musicbrainz->show();
     pushButton_guessTags->show();
@@ -898,19 +898,19 @@ TagDialog::readMultipleTracks()
     }
     if (year) {
         m_bundle.setYear( first.year() );
-        kIntSpinBox_year->setValue( first.year() );
+        qSpinBox_year->setValue( first.year() );
     }
     if (discNumber) {
         m_bundle.setDiscNumber( first.discNumber() );
-        kIntSpinBox_discNumber->setValue( first.discNumber() );
+        qSpinBox_discNumber->setValue( first.discNumber() );
     }
     if (score) {
         m_bundle.setScore( first.score() );
-        kIntSpinBox_score->setValue( static_cast<int>( first.score() ) );
+        qSpinBox_score->setValue( static_cast<int>( first.score() ) );
     }
     if (rating) {
         m_bundle.setRating( first.rating() );
-        kComboBox_rating->setCurrentItem( first.rating() ? first.rating() - 1 : 0 );
+        kComboBox_rating->setCurrentIndex( first.rating() ? first.rating() - 1 : 0 );
     }
 
     m_currentURL = m_urlList.begin();
@@ -1001,20 +1001,20 @@ TagDialog::changes()
     modified |= !equalString( kComboBox_artist->lineEdit()->text(), m_bundle.artist() );
     modified |= !equalString( kComboBox_album->lineEdit()->text(), m_bundle.album() );
     modified |= !equalString( kComboBox_genre->lineEdit()->text(), m_bundle.genre() );
-    modified |= kIntSpinBox_year->value()  != m_bundle.year();
-    modified |= kIntSpinBox_discNumber->value()  != m_bundle.discNumber();
+    modified |= qSpinBox_year->value()  != m_bundle.year();
+    modified |= qSpinBox_discNumber->value()  != m_bundle.discNumber();
     modified |= !equalString( kComboBox_composer->lineEdit()->text(), m_bundle.composer() );
 
     modified |= !equalString( kTextEdit_comment->text(), m_bundle.comment() );
 
     if (!m_urlList.count() || m_perTrack) { //ignore these on MultipleTracksMode
         modified |= !equalString( kLineEdit_title->text(), m_bundle.title() );
-        modified |= kIntSpinBox_track->value() != m_bundle.track();
+        modified |= qSpinBox_track->value() != m_bundle.track();
     }
     if (modified)
         result |= TagDialog::TAGSCHANGED;
 
-    if (kIntSpinBox_score->value() != m_bundle.score())
+    if (qSpinBox_score->value() != m_bundle.score())
         result |= TagDialog::SCORECHANGED;
     if (kComboBox_rating->currentItem() != ( m_bundle.rating() ? m_bundle.rating() - 1 : 0 ) )
         result |= TagDialog::RATINGCHANGED;
@@ -1050,16 +1050,16 @@ TagDialog::storeTags( const KUrl &kurl )
         mb.setAlbum( kComboBox_album->currentText() );
         mb.setComment( kTextEdit_comment->text() );
         mb.setGenre( kComboBox_genre->currentText() );
-        mb.setTrack( kIntSpinBox_track->value() );
-        mb.setYear( kIntSpinBox_year->value() );
-        mb.setDiscNumber( kIntSpinBox_discNumber->value() );
+        mb.setTrack( qSpinBox_track->value() );
+        mb.setYear( qSpinBox_year->value() );
+        mb.setDiscNumber( qSpinBox_discNumber->value() );
         mb.setLength( m_bundle.length() );
         mb.setBitrate( m_bundle.bitrate() );
         mb.setSampleRate( m_bundle.sampleRate() );
         storedTags.replace( url, mb );
     }
     if( result & TagDialog::SCORECHANGED )
-        storedScores.replace( url, kIntSpinBox_score->value() );
+        storedScores.replace( url, qSpinBox_score->value() );
     if( result & TagDialog::RATINGCHANGED )
         storedRatings.replace( url, kComboBox_rating->currentItem() ? kComboBox_rating->currentItem() + 1 : 0 );
     if( result & TagDialog::LYRICSCHANGED ) {
@@ -1286,21 +1286,21 @@ TagDialog::applyToAllTracks()
             changed |= TagDialog::TAGSCHANGED;
         }
 
-        if( kIntSpinBox_year->value() && kIntSpinBox_year->value() != mb.year() ||
-                !kIntSpinBox_year->value() && m_bundle.year() ) {
-            mb.setYear( kIntSpinBox_year->value() );
+        if( qSpinBox_year->value() && qSpinBox_year->value() != mb.year() ||
+                !qSpinBox_year->value() && m_bundle.year() ) {
+            mb.setYear( qSpinBox_year->value() );
             changed |= TagDialog::TAGSCHANGED;
         }
-        if( kIntSpinBox_discNumber->value() && kIntSpinBox_discNumber->value() != mb.discNumber() ||
-                !kIntSpinBox_discNumber->value() && m_bundle.discNumber() ) {
-            mb.setDiscNumber( kIntSpinBox_discNumber->value() );
+        if( qSpinBox_discNumber->value() && qSpinBox_discNumber->value() != mb.discNumber() ||
+                !qSpinBox_discNumber->value() && m_bundle.discNumber() ) {
+            mb.setDiscNumber( qSpinBox_discNumber->value() );
             changed |= TagDialog::TAGSCHANGED;
         }
 
-        if( kIntSpinBox_score->value() && kIntSpinBox_score->value() != mb.score() ||
-                !kIntSpinBox_score->value() && m_bundle.score() )
+        if( qSpinBox_score->value() && qSpinBox_score->value() != mb.score() ||
+                !qSpinBox_score->value() && m_bundle.score() )
         {
-            mb.setScore( kIntSpinBox_score->value() );
+            mb.setScore( qSpinBox_score->value() );
             changed |= TagDialog::SCORECHANGED;
         }
 
