@@ -3246,7 +3246,7 @@ void ContextBrowser::showLyrics( const QString &url )
 
     m_lyricsToolBar->getButton( LYRICS_BROWSER )->setEnabled(false);
 
-    if( ( !cached || url == "reload" ) && !ScriptManager::instance()->lyricsScriptRunning() ) {
+    if( ( !cached || url == "reload" ) && ! ScriptManager::instance()->lyricsScriptRunning().isEmtpy() ) {
         const QStringList scripts = ScriptManager::instance()->lyricsScripts();
         lyrics =
               i18n( "Sorry, no lyrics script running.") + "<br />\n" +
@@ -3733,8 +3733,8 @@ ContextBrowser::showLabelsDialog()
     dialog->setButtons( KDialog::Ok | KDialog::Cancel );
     dialog->showButtonSeparator( true );
 
-
-    dialog->makeVBoxMainWidget();
+    KVBox *vbox = new KVBox( this );
+    dialog->setMainWidget( vbox );
 
     m_addLabelEdit = new ClickLineEdit( i18n( "Add new label" ), dialog->mainWidget() );
     m_addLabelEdit->installEventFilter( this );
