@@ -51,6 +51,7 @@
 #include <QPixmap>
 #include <QMouseEvent>
 #include <Q3GridLayout>
+#include <Q3TextDrag>
 #include "prettypopupmenu.h"
 #include "scriptmanager.h"
 #include "sliderwidget.h"
@@ -328,8 +329,13 @@ Playlist::Playlist( QWidget *parent )
 
 
     KActionCollection* const ac = Amarok::actionCollection();
-    KAction *copy = KStandardAction::copy( this, SLOT( copyToClipboard() ), ac, "playlist_copy" );
-    KStandardAction::selectAll( this, SLOT( selectAll() ), ac, "playlist_select_all" );
+    KAction *copy = KStandardAction::copy( this );
+    connect( copy, SIGNAL( triggered( bool ) ), this, SLOT( copyToClipboard() ) );
+    ac->addAction( "playlist_copy", copy );
+    KAction *selectAll = KStandardAction::selectAll( this );
+    connect( selectAll, SIGNAL( triggered( bool ) ), this, SLOT( selectAll() ) );
+    ac->addAction( "playlist_select_all", selectAll );
+
 
     m_clearButton = new KAction( i18nc( "clear playlist", "&Clear" ), Amarok::icon( "playlist_clear" ), 0, this, SLOT( clear() ), ac, "playlist_clear" );
     m_undoButton  = KStandardAction::undo( this, SLOT( undo() ), ac, "playlist_undo" );
@@ -755,7 +761,7 @@ Playlist::restoreSession()
 */
 void Playlist::saveLayout(KConfig *config, const QString &group) const
 {
-  KConfigGroup group(config, group);
+  KConfigGroup configGroup(config, group);
   QStringList names, widths, order;
 
   const int colCount = columns();
@@ -766,12 +772,12 @@ void Playlist::saveLayout(KConfig *config, const QString &group) const
     widths << QString::number(columnWidth(i));
     order << QString::number(thisHeader->mapToIndex(i));
   }
-  group.writeEntry("ColumnsVersion", 1);
-  group.writeEntry("ColumnNames", names);
-  group.writeEntry("ColumnWidths", widths);
-  group.writeEntry("ColumnOrder", order);
-  group.writeEntry("SortColumn", columnSorted());
-  group.writeEntry("SortAscending", ascendingSort());
+  configGroup.writeEntry("ColumnsVersion", 1);
+  configGroup.writeEntry("ColumnNames", names);
+  configGroup.writeEntry("ColumnWidths", widths);
+  configGroup.writeEntry("ColumnOrder", order);
+  configGroup.writeEntry("SortColumn", columnSorted());
+  configGroup.writeEntry("SortAscending", ascendingSort());
 }
 
 void Playlist::restoreLayout(KConfig *config, const QString &group)
