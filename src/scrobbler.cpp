@@ -470,7 +470,7 @@ void ScrobblerSubmitter::performHandshake()
                 .arg( CLIENT_VERSION )
                 .arg( m_username )
                 .arg( currentTime )
-                .arg( QString::fromAscii( KMD5( KMD5( m_password.utf8().hexDigest() + currentTime ) ).hexDigest() ) );
+                .arg( QString::fromAscii( KMD5( KMD5( m_password.utf8() ).hexDigest() + QByteArray( currentTime ) ).hexDigest() ) );
     }
 
     else
@@ -566,10 +566,11 @@ void ScrobblerSubmitter::performSubmit()
 
             const QString count = QString::number( submitCounter );
 
+            // FIXME: we have to find something different for doing the encode_string_no_slash to utf-8
             data +=
-                    "a["  + count + "]=" + KUrl::encode_string_no_slash( itemFromQueue->artist(), 106 /*utf-8*/ ) +
-                    "&t[" + count + "]=" + KUrl::encode_string_no_slash( itemFromQueue->title(), 106 /*utf-8*/ ) +
-                    "&b[" + count + "]=" + KUrl::encode_string_no_slash( itemFromQueue->album(), 106 /*utf-8*/ ) +
+                    "a["  + count + "]=" + KUrl::encode_string_no_slash( itemFromQueue->artist() ) +
+                    "&t[" + count + "]=" + KUrl::encode_string_no_slash( itemFromQueue->title() ) +
+                    "&b[" + count + "]=" + KUrl::encode_string_no_slash( itemFromQueue->album() ) +
                     "&m[" + count + "]=" +
                     "&l[" + count + "]=" + QString::number( itemFromQueue->length() ) +
                     "&i[" + count + "]=" + KUrl::encode_string_no_slash( playStartTime.toString( "yyyy-MM-dd hh:mm:ss" ) );
