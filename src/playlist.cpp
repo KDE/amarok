@@ -4570,7 +4570,7 @@ Playlist::saveSelectedAsPlaylist()
 void Playlist::initStarPixmaps()
 {
     const int h = fontMetrics().height() + itemMargin() * 2 - 4 + ( ( fontMetrics().height() % 2 ) ? 1 : 0 );
-    QImage img = QImage( KStandardDirs::locate( "data", "amarok/images/star.png" ) ).smoothScale( h, h, QImage::ScaleMin );
+    QImage img = QImage( KStandardDirs::locate( "data", "amarok/images/star.png" ) ).scaled( h, h, Qt::KeepAspectRatio );
     PlaylistItem::s_star = new QPixmap( img );
 
     PlaylistItem::s_grayedStar = new QPixmap;
@@ -4579,7 +4579,7 @@ void Playlist::initStarPixmaps()
     PlaylistItem::s_grayedStar->convertFromImage( img );
 
     QImage small = QImage( KStandardDirs::locate( "data", "amarok/images/smallstar.png" ) );
-    PlaylistItem::s_smallStar = new QPixmap( small.smoothScale( h, h, QImage::ScaleMin ) );
+    PlaylistItem::s_smallStar = new QPixmap( small.scaled( h, h, Qt::KeepAspectRatio ) );
 }
 
 void
