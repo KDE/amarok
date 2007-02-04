@@ -228,34 +228,34 @@ ContextBrowser::ContextBrowser( const char *name )
     m_lyricsToolBar = new Browser::ToolBar( m_lyricsTab );
     m_lyricsToolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
-    KAction *act = new KAction(KIcon( "refresh" ), i18n("Refresh"), this);
-    connect(act, SIGNAL(triggered()), this, SLOT(lyricsRefresh()));
-    m_lyricsToolBar->addAction(act);
+    lyricsRefreshAction = new KAction(KIcon( "refresh" ), i18n("Refresh"), this);
+    connect(lyricsRefreshAction, SIGNAL(triggered()), this, SLOT(lyricsRefresh()));
+    m_lyricsToolBar->addAction(lyricsRefreshAction);
     // m_lyricsToolBar->insertButton( Amarok::icon( "refresh" ), LYRICS_REFRESH, true, i18n("Refresh") );
 
 
-    act = new KAction(KIcon( "add_lyrics" ), i18n("Add"), this);
-    connect(act, SIGNAL(triggered()), this, SLOT(lyricsAdd()));
-    m_lyricsToolBar->addAction(act);
+    addLyricsAction = new KAction(KIcon( "add_lyrics" ), i18n("Add"), this);
+    connect(addLyricsAction, SIGNAL(triggered()), this, SLOT(lyricsAdd()));
+    m_lyricsToolBar->addAction(addLyricsAction);
     //m_lyricsToolBar->insertButton( Amarok::icon( "add_lyrics" ), LYRICS_ADD, true, i18n("Add") );
 
-    act = new KAction(KIcon( "edit" ), i18n("Edit"), this);
-    connect(act, SIGNAL(triggered()), this, SLOT(lyricsEditToggle()));
-    m_lyricsToolBar->addAction(act);
+    lyricsEditToggleAction = new KAction(KIcon( "edit" ), i18n("Edit"), this);
+    connect(lyricsEditToggleAction, SIGNAL(triggered()), this, SLOT(lyricsEditToggle()));
+    m_lyricsToolBar->addAction(lyricsEditToggleAction);
     //m_lyricsToolBar->insertButton( Amarok::icon( "edit" ), LYRICS_EDIT, true, i18n("Edit") );
     //m_lyricsToolBar->setToggle( LYRICS_EDIT, true ); TODO!!! <- how to do with actions?
 
 
-    act = new KAction(KIcon( "search" ), i18n("Search"), this);
-    connect(act, SIGNAL(triggered()), this, SLOT(lyricsSearch()));
-    m_lyricsToolBar->addAction(act);
+    lyricsSearchAction = new KAction(KIcon( "search" ), i18n("Search"), this);
+    connect(lyricsSearchAction, SIGNAL(triggered()), this, SLOT(lyricsSearch()));
+    m_lyricsToolBar->addAction(lyricsSearchAction);
     //m_lyricsToolBar->insertButton( Amarok::icon( "search" ), LYRICS_SEARCH, true, i18n("Search") );
 
     m_lyricsToolBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
 
-    act = new KAction(KIcon( "external" ), i18n("Open in external browser"), this);
-    connect(act, SIGNAL(triggered()), this, SLOT(lyricsExternalPage()));
-    m_lyricsToolBar->addAction(act);
+    lyricsExternalPageAction = new KAction(KIcon( "external" ), i18n("Open in external browser"), this);
+    connect(lyricsExternalPageAction, SIGNAL(triggered()), this, SLOT(lyricsExternalPage()));
+    m_lyricsToolBar->addAction(lyricsExternalPageAction);
 
     //m_lyricsToolBar->insertButton( Amarok::icon( "external" ), LYRICS_BROWSER, true, i18n("Open in external browser") );
 
@@ -308,45 +308,46 @@ ContextBrowser::ContextBrowser( const char *name )
 
     m_wikiToolBar = new Browser::ToolBar( m_wikiTab );
 
-    act = new KAction(KIcon( "back" ), i18n("Back"), this);
-    connect(act, SIGNAL(triggered()), this, SLOT(wikiHistoryBack()));
-    m_wikiToolBar->addAction(act);
+
+    wikiHistoryBackAction = new KAction(KIcon( "back" ), i18n("Back"), this);
+    connect(wikiHistoryBackAction, SIGNAL(triggered()), this, SLOT(wikiHistoryBack()));
+    m_wikiToolBar->addAction(wikiHistoryBackAction);
     //m_wikiToolBar->insertButton( "back", WIKI_BACK, false, i18n("Back") );
 
-    act = new KAction(KIcon( "forward" ), i18n("Forward"), this);
-    connect(act, SIGNAL(triggered()), this, SLOT(wikiHistoryForward()));
-    m_wikiToolBar->addAction(act);
+    wikiHistoryForwardAction = new KAction(KIcon( "forward" ), i18n("Forward"), this);
+    connect(wikiHistoryForwardAction, SIGNAL(triggered()), this, SLOT(wikiHistoryForward()));
+    m_wikiToolBar->addAction(wikiHistoryForwardAction);
     //m_wikiToolBar->insertButton( "forward", WIKI_FORWARD, false, i18n("Forward") );
 
 
     m_wikiToolBar->addSeparator();
 
-    act = new KAction(KIcon( "artist" ), i18n("Artist Page"), this);
-    connect(act, SIGNAL(triggered()), this, SLOT(wikiArtistPage()));
-    m_wikiToolBar->addAction(act);
+    wikiArtistPageAction = new KAction(KIcon( "artist" ), i18n("Artist Page"), this);
+    connect(wikiArtistPageAction, SIGNAL(triggered()), this, SLOT(wikiArtistPage()));
+    m_wikiToolBar->addAction(wikiArtistPageAction);
     //m_wikiToolBar->insertButton( Amarok::icon( "artist" ), WIKI_ARTIST, false, i18n("Artist Page") );
 
-    act = new KAction(KIcon( "album" ), i18n("Album Page"), this);
-    connect(act, SIGNAL(triggered()), this, SLOT(wikiAlbumPage()));
-    m_wikiToolBar->addAction(act);
+    wikiAlbumPageAction = new KAction(KIcon( "album" ), i18n("Album Page"), this);
+    connect(wikiAlbumPageAction, SIGNAL(triggered()), this, SLOT(wikiAlbumPage()));
+    m_wikiToolBar->addAction(wikiAlbumPageAction);
     //m_wikiToolBar->insertButton( Amarok::icon( "album" ), WIKI_ALBUM, false, i18n("Album Page") );
 
-    act = new KAction(KIcon( "track" ), i18n("Title Page"), this);
-    connect(act, SIGNAL(triggered()), this, SLOT(wikiTitlePage()));
-    m_wikiToolBar->addAction(act);
+    wikiTitlePageAction = new KAction(KIcon( "track" ), i18n("Title Page"), this);
+    connect(wikiTitlePageAction, SIGNAL(triggered()), this, SLOT(wikiTitlePage()));
+    m_wikiToolBar->addAction(wikiTitlePageAction);
     //m_wikiToolBar->insertButton( Amarok::icon( "track" ), WIKI_TITLE, false, i18n("Title Page") );
 
     m_wikiToolBar->addSeparator();
 
 
-    act = new KAction(KIcon( "external" ), i18n("Open in external browser"), this);
-    connect(act, SIGNAL(triggered()), this, SLOT(wikiExternalPage()));
-    m_wikiToolBar->addAction(act);
+    wikiExternalPageAction = new KAction(KIcon( "external" ), i18n("Open in external browser"), this);
+    connect(wikiExternalPageAction, SIGNAL(triggered()), this, SLOT(wikiExternalPage()));
+    m_wikiToolBar->addAction(wikiExternalPageAction);
     //m_wikiToolBar->insertButton( Amarok::icon( "external" ), WIKI_BROWSER, true, i18n("Open in external browser") );
 
-    act = new KAction(KIcon( "change_language" ), i18n("Change Locale"), this);
-    connect(act, SIGNAL(triggered()), this, SLOT(wikiConfig()));
-    m_wikiToolBar->addAction(act);
+    wikiConfigAction = new KAction(KIcon( "change_language" ), i18n("Change Locale"), this);
+    connect(wikiConfigAction, SIGNAL(triggered()), this, SLOT(wikiConfig()));
+    m_wikiToolBar->addAction(wikiConfigAction);
     //m_wikiToolBar->insertButton( Amarok::icon( "change_language" ), WIKI_CONFIG, true, i18n("Change Locale") );
 
     m_wikiToolBar->setDelayedPopup( WIKI_BACK, m_wikiBackPopup );
@@ -830,9 +831,13 @@ void ContextBrowser::engineStateChanged( Engine::State state, Engine::State oldS
             }
             else // current tab is wikitab, disable some buttons.
             {
-                m_wikiToolBar->setItemEnabled( WIKI_ARTIST, false );
-                m_wikiToolBar->setItemEnabled( WIKI_ALBUM, false );
-                m_wikiToolBar->setItemEnabled( WIKI_TITLE, false );
+                
+                wikiArtistPageAction->setEnabled(false);
+                wikiAlbumPageAction->setEnabled(false);
+                wikiTitlePageAction->setEnabled(false);
+                //m_wikiToolBar->setItemEnabled( WIKI_ARTIST, false );
+                //m_wikiToolBar->setItemEnabled( WIKI_ALBUM, false );
+                //m_wikiToolBar->setItemEnabled( WIKI_TITLE, false );
             }
             blockSignals( false );
             break;
@@ -843,9 +848,12 @@ void ContextBrowser::engineStateChanged( Engine::State state, Engine::State oldS
             blockSignals( true );
             setTabEnabled( m_lyricsTab, true );
             setTabEnabled( m_wikiTab, true );
-            m_wikiToolBar->setItemEnabled( WIKI_ARTIST, true );
-            m_wikiToolBar->setItemEnabled( WIKI_ALBUM, true );
-            m_wikiToolBar->setItemEnabled( WIKI_TITLE, true );
+            wikiArtistPageAction->setEnabled(true);
+            wikiAlbumPageAction->setEnabled(true);
+            wikiTitlePageAction->setEnabled(true);
+            //m_wikiToolBar->setItemEnabled( WIKI_ARTIST, true );
+            //m_wikiToolBar->setItemEnabled( WIKI_ALBUM, true );
+            //m_wikiToolBar->setItemEnabled( WIKI_TITLE, true );
             blockSignals( false );
             break;
 
@@ -3904,7 +3912,8 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory, bool r
     if ( !m_dirtyWikiPage || m_wikiJob ) return;
 
     // Disable the Open in a Browser button, because while loading it would open wikipedia main page.
-    m_wikiToolBar->setItemEnabled( WIKI_BROWSER, false );
+    //m_wikiToolBar->setItemEnabled( WIKI_BROWSER, false );
+    wikiExternalPageAction->setEnabled( false );
 
     m_HTMLSource="";
     m_HTMLSource.append(
@@ -4002,8 +4011,10 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory, bool r
     for ( uint i=0; i<count; i++, --it )
         m_wikiForwardPopup->insertItem( SmallIconSet( "wiki" ), *it, i );
 
-    m_wikiToolBar->setItemEnabled( WIKI_BACK, m_wikiBackHistory.size() > 1 );
-    m_wikiToolBar->setItemEnabled( WIKI_FORWARD, m_wikiForwardHistory.size() > 0 );
+    wikiHistoryBackAction->setEnabled(  m_wikiBackHistory.size() > 1 );
+    wikiHistoryForwardAction->setEnabled(  m_wikiForwardHistory.size() > 0 );
+    //m_wikiToolBar->setItemEnabled( WIKI_BACK, m_wikiBackHistory.size() > 1 );
+    //m_wikiToolBar->setItemEnabled( WIKI_FORWARD, m_wikiForwardHistory.size() > 0 );
 
     m_wikiBaseUrl = m_wikiCurrentUrl.mid(0 , m_wikiCurrentUrl.find("wiki/"));
     m_wikiJob = KIO::storedGet( m_wikiCurrentUrl, false, false );
@@ -4019,8 +4030,10 @@ void
 ContextBrowser::wikiHistoryBack() //SLOT
 {
     //Disable the button as history may be empty. Reenabled later by showWikipedia.
-    m_wikiToolBar->setItemEnabled( WIKI_BACK, false );
-    m_wikiToolBar->setItemEnabled( WIKI_FORWARD, false );
+    wikiHistoryBackAction->setEnabled(  false );
+    wikiHistoryForwardAction->setEnabled(  false );
+    //m_wikiToolBar->setItemEnabled( WIKI_BACK, false );
+    //m_wikiToolBar->setItemEnabled( WIKI_FORWARD, false );
 
     m_wikiForwardHistory += m_wikiBackHistory.last();
     m_wikiBackHistory.pop_back();
@@ -4035,8 +4048,11 @@ void
 ContextBrowser::wikiHistoryForward() //SLOT
 {
     //Disable the button as history may be empty. Reenabled later by showWikipedia.
-    m_wikiToolBar->setItemEnabled( WIKI_FORWARD, false );
-    m_wikiToolBar->setItemEnabled( WIKI_BACK, false );
+    wikiHistoryBackAction->setEnabled(  false );
+    wikiHistoryForwardAction->setEnabled(  false );
+
+    //m_wikiToolBar->setItemEnabled( WIKI_FORWARD, false );
+    //m_wikiToolBar->setItemEnabled( WIKI_BACK, false );
 
     m_wikiBackHistory += m_wikiForwardHistory.last();
     m_wikiForwardHistory.pop_back();
@@ -4150,7 +4166,8 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
     m_wiki = QString( storedJob->data() );
 
     // Enable the Open in a Brower button, Disabled while loading, guz it would open wikipedia main page.
-    m_wikiToolBar->setItemEnabled( WIKI_BROWSER, true );
+    //m_wikiToolBar->setItemEnabled( WIKI_BROWSER, true );
+    wikiExternalPageAction->setEnabled( true );
 
     // FIXME: Get a safer Regexp here, to match only inside of <head> </head> at least.
     if ( m_wiki.contains( "charset=utf-8"  ) ) {

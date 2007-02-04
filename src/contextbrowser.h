@@ -221,6 +221,21 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         Q3ListView*    m_labelListView;
 
         CueFile      *m_cuefile;
+
+        //time for some action(s)
+
+        KAction * lyricsRefreshAction;
+        KAction * addLyricsAction;
+        KAction * lyricsEditToggleAction;
+        KAction * lyricsSearchAction;
+        KAction * lyricsExternalPageAction;
+        KAction * wikiHistoryBackAction;
+        KAction * wikiHistoryForwardAction;
+        KAction * wikiArtistPageAction;
+        KAction * wikiAlbumPageAction;
+        KAction * wikiTitlePageAction;
+        KAction * wikiExternalPageAction;
+        KAction * wikiConfigAction;
 };
 
 #endif /* AMAROK_CONTEXTBROWSER_H */
