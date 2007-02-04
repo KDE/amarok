@@ -264,11 +264,12 @@ ContextBrowser::ContextBrowser( const char *name )
        m_lyricsTextBar->hide();
        m_lyricsTextBarShowed=false;
 
-       m_lyricsTextBar->setIconSize( 22, false ); //looks more sensible
-       m_lyricsTextBar->setFlat( true ); //removes the ugly frame
-       m_lyricsTextBar->setMovingEnabled( false ); //removes the ugly frame
-
-       m_lyricsTextBar->boxLayout()->addStretch();
+       m_lyricsTextBar->setIconSize( QSize(22, 22) ); //looks more sensible
+      
+       //TODO find kde4 equivelant
+      // m_lyricsTextBar->setFlat( true ); //removes the ugly frame
+      // m_lyricsTextBar->setMovingEnabled( false ); //removes the ugly frame
+      // m_lyricsTextBar->boxLayout()->addStretch();
 
        QWidget *button = new KToolBarButton( "locationbar_erase", 1, m_lyricsTextBar );
        QLabel *filter_label = new QLabel( i18n("S&earch:") + ' ', m_lyricsTextBar );
