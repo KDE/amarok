@@ -56,6 +56,7 @@
 #include <ktrader.h>
 #include <kurlrequester.h>
 #include <krandom.h>
+#include <kvbox.h>
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -2982,7 +2983,9 @@ class AssociatePodcastDialog : public KDialog
         showButtonSeparator( false );
 
 
-        KVBox* vbox = makeVBoxMainWidget();
+        KVBox *vbox = new KVBox( this );
+        setMainWidget( vbox );
+
         vbox->setSpacing( KDialog::spacingHint() );
 
         m_urlRequester = new KUrlRequester( vbox );

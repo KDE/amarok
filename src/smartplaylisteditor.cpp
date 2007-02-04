@@ -32,6 +32,8 @@
 #include <q3vbox.h>
 #include <q3vgroupbox.h>
 
+#include <kvbox.h>
+
 enum Fields
 {
     FArtist = 0,
@@ -166,7 +168,9 @@ SmartPlaylistEditor::SmartPlaylistEditor( QWidget *parent, QDomElement xml, cons
 
 void SmartPlaylistEditor::init(QString defaultName)
 {
-    makeVBoxMainWidget();
+    KVBox *vbox = new KVBox( this );
+    setMainWidget( vbox );
+
 
     m_fields.clear();
     m_fields << i18n("Artist") << i18n("Composer") << i18n("Album") << i18n("Genre") << i18n("Title") << i18n("Length")

@@ -28,6 +28,7 @@
 #include <klineedit.h>
 #include <klocale.h>
 #include <kpushbutton.h>
+#include <kvbox.h>
 
 TransferDialog::TransferDialog( MediaDevice *mdev )
         : KDialog( Amarok::mainWindow() )
@@ -44,8 +45,8 @@ TransferDialog::TransferDialog( MediaDevice *mdev )
     kapp->setTopWidget( this );
     setCaption( KDialog::makeStandardCaption( i18n( "Transfer Queue to Device" ) ) );
 
-    KVBox* vbox = makeVBoxMainWidget();
-    vbox->setSpacing( KDialog::spacingHint() );
+    KVBox *vbox = new KVBox( this );
+    setMainWidget( vbox );
 
     QString transferDir = mdev->getTransferDir();
 

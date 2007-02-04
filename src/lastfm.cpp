@@ -42,6 +42,7 @@
 #include <kprotocolmanager.h>
 #include <kshortcut.h>
 #include <kurl.h>
+#include <kvbox.h>
 
 #include <time.h>
 #include <unistd.h>
@@ -1089,7 +1090,9 @@ CustomStationDialog::CustomStationDialog( QWidget *parent )
     setButtons( Ok | Cancel );
 
 
-    makeVBoxMainWidget();
+    KVBox *vbox = new KVBox( this );
+    setMainWidget( vbox );
+
 
     new QLabel( i18n( "Enter the name of a band or artist you like:\n(You can enter multiple artists separated by commas)" ), mainWidget() );
 

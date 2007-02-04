@@ -38,6 +38,7 @@
 #include <klineedit.h>
 #include <klocale.h>
 #include <kpushbutton.h>
+#include <kvbox.h>
 
 using Amarok::escapeHTML;
 using Amarok::escapeHTMLAttr;
@@ -45,12 +46,19 @@ using Amarok::escapeHTMLAttr;
 typedef QMap<QString, Medium*> MediumMap;
 
 MediumPluginManagerDialog::MediumPluginManagerDialog()
-        : KPageDialog( Amarok::mainWindow(), "mediumpluginmanagerdialog", false, QString::null, Ok|Cancel, Ok )
+        : KPageDialog( Amarok::mainWindow() )
 {
+    setObjectName( "mediumpluginmanagerdialog" );
+    setModal( false );
+    setButtons( Ok | Cancel );
+    setDefaultButton( Ok );
+
     kapp->setTopWidget( this );
     setCaption( KDialog::makeStandardCaption( i18n( "Manage Devices and Plugins" ) ) );
 
-    KVBox* vbox = makeVBoxMainWidget();
+    KVBox *vbox = new KVBox( this );
+    setMainWidget( vbox );
+
     vbox->setSpacing( KDialog::spacingHint() );
     vbox->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
 

@@ -70,6 +70,7 @@
 #include <kpushbutton.h>
 #include <kstandarddirs.h>     //KGlobal::dirs()
 #include <k3urldrag.h>          //dragObject()
+#include <kvbox.h>
 
 #include <cstdio>              //rename() in renamePlaylist()
 
@@ -3068,7 +3069,9 @@ PlaylistDialog::PlaylistDialog()
     setButtonGuiItem( User1, i18n( "Save to location..." ) ); //SmallIconSet( Amarok::icon( "files" ) )
 
 
-    KVBox *vbox = makeVBoxMainWidget();
+    KVBox *vbox = new KVBox( this );
+    setMainWidget( vbox );
+
     QLabel *label = new QLabel( i18n( "&Enter a name for the playlist:" ), vbox );
     edit = new KLineEdit( vbox );
     edit->setFocus();

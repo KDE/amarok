@@ -233,7 +233,7 @@ ContextBrowser::ContextBrowser( const char *name )
     m_lyricsToolBar->addAction(act);
     // m_lyricsToolBar->insertButton( Amarok::icon( "refresh" ), LYRICS_REFRESH, true, i18n("Refresh") );
 
- 
+
     act = new KAction(KIcon( "add_lyrics" ), i18n("Add"), this);
     connect(act, SIGNAL(triggered()), this, SLOT(lyricsAdd()));
     m_lyricsToolBar->addAction(act);
@@ -265,7 +265,7 @@ ContextBrowser::ContextBrowser( const char *name )
        m_lyricsTextBarShowed=false;
 
        m_lyricsTextBar->setIconSize( QSize(22, 22) ); //looks more sensible
-      
+
        //TODO find kde4 equivelant
       // m_lyricsTextBar->setFlat( true ); //removes the ugly frame
       // m_lyricsTextBar->setMovingEnabled( false ); //removes the ugly frame
@@ -319,7 +319,7 @@ ContextBrowser::ContextBrowser( const char *name )
     //m_wikiToolBar->insertButton( "forward", WIKI_FORWARD, false, i18n("Forward") );
 
 
-    m_wikiToolBar->insertLineSeparator();
+    m_wikiToolBar->addSeparator();
 
     act = new KAction(KIcon( "artist" ), i18n("Artist Page"), this);
     connect(act, SIGNAL(triggered()), this, SLOT(wikiArtistPage()));
@@ -336,8 +336,8 @@ ContextBrowser::ContextBrowser( const char *name )
     m_wikiToolBar->addAction(act);
     //m_wikiToolBar->insertButton( Amarok::icon( "track" ), WIKI_TITLE, false, i18n("Title Page") );
 
-    m_wikiToolBar->insertLineSeparator();
-    
+    m_wikiToolBar->addSeparator();
+
 
     act = new KAction(KIcon( "external" ), i18n("Open in external browser"), this);
     connect(act, SIGNAL(triggered()), this, SLOT(wikiExternalPage()));
