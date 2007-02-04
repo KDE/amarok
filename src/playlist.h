@@ -177,8 +177,8 @@ class Playlist : private K3ListView, public EngineObserver, public Amarok::ToolT
         void unlock();
 
         //reimplemented to save columns by name instead of index, to be more resilient to reorderings and such
-        void saveLayout(KConfig *config, const QString &group) const;
-        void restoreLayout(KConfig *config, const QString &group);
+        void saveLayout(KSharedConfigPtr config, const QString &group) const;
+        void restoreLayout(KSharedConfigPtr config, const QString &group);
 
         //ATF-related functions
         bool checkFileStatus( PlaylistItem * item );

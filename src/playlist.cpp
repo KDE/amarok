@@ -84,6 +84,7 @@
 #include <kcursor.h>         //setOverrideCursor()
 #include <kdialog.h>
 #include <kglobalsettings.h> //rename()
+#include <kconfiggroup.h>
 #include <kiconeffect.h>
 #include <kiconloader.h>     //slotShowContextMenu()
 #include <kio/job.h>         //deleteSelectedFiles()
@@ -337,11 +338,18 @@ Playlist::Playlist( QWidget *parent )
     ac->addAction( "playlist_select_all", selectAll );
 
 
-    m_clearButton = new KAction( i18nc( "clear playlist", "&Clear" ), Amarok::icon( "playlist_clear" ), 0, this, SLOT( clear() ), ac, "playlist_clear" );
-    m_undoButton  = KStandardAction::undo( this, SLOT( undo() ), ac, "playlist_undo" );
-    m_redoButton  = KStandardAction::redo( this, SLOT( redo() ), ac, "playlist_redo" );
-    m_undoButton ->setIcon( Amarok::icon( "undo" ) );
-    m_redoButton ->setIcon( Amarok::icon( "redo" ) );
+    m_clearButton = new KAction( this );
+    m_clearButton->setText( i18nc( "clear playlist", "&Clear" ) );
+    m_clearButton->setIcon( KIcon( Amarok::icon( "playlist_clear" ) ) );
+    ac->addAction("playlist_clear", m_clearButton);
+    connect( m_clearButton, SIGNAL( triggered( bool ) ), this, SLOT( clear) );
+
+    m_undoButton  = KStandardAction::undo( this, SLOT( undo() ), this );
+    ac->addAction("playlist_undo", m_undoButton);
+    m_redoButton  = KStandardAction::redo( this, SLOT( redo() ), this );
+    ac->addAction("playlist_redo", m_redoButton);
+    m_undoButton ->setIcon( KIcon( Amarok::icon( "undo" ) ) );
+    m_redoButton ->setIcon( KIcon( Amarok::icon( "redo" ) ) );
 
     KAction *a = new KAction( this );
     a->setText(i18n( "&Repopulate" ));
@@ -759,7 +767,7 @@ Playlist::restoreSession()
     Copyright (C) 2000,2003 Charles Samuels <charles@kde.org>
     Copyright (C) 2000 Peter Putzer
 */
-void Playlist::saveLayout(KConfig *config, const QString &group) const
+void Playlist::saveLayout(KSharedConfigPtr config, const QString &group) const
 {
   KConfigGroup configGroup(config, group);
   QStringList names, widths, order;
@@ -780,7 +788,7 @@ void Playlist::saveLayout(KConfig *config, const QString &group) const
   configGroup.writeEntry("SortAscending", ascendingSort());
 }
 
-void Playlist::restoreLayout(KConfig *config, const QString &group)
+void Playlist::restoreLayout(KSharedConfigPtr config, const QString &group)
 {
   KConfigGroup group(config, group);
   int version = group.readNumEntry("ColumnsVersion", 0);
