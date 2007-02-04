@@ -143,7 +143,7 @@ namespace Amarok
         return verboseTimeSince( dt );
     }
 
-    extern KConfig *config( const QString& );
+    extern KSharedConfigPtr config( const QString& );
 
     /**
     * Function that must be used when separating contextBrowser escaped urls
