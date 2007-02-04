@@ -115,6 +115,7 @@ OSDWidget::volChanged( unsigned char volume )
 void
 OSDWidget::show() //virtual
 {
+#if 0
 #ifdef Q_WS_X11
     if ( !isEnabled() || m_text.isEmpty() )
         return;
@@ -262,11 +263,13 @@ OSDWidget::determineMetrics( const uint M )
     newPos += screen.topLeft();
 
     return QRect( newPos, rect.size() );
+#endif
 }
 
 void
 OSDWidget::render( const uint M, const QSize &size )
 {
+#if 0
     /// render with margin/spacing @param M and @param size
 
     QPoint point;
@@ -476,6 +479,7 @@ OSDWidget::render( const uint M, const QSize &size )
     p.setFont( font() );
     p.drawText( rect, align, m_text );
     p.end();
+#endif
 }
 
 bool
@@ -513,8 +517,10 @@ OSDWidget::unsetColors()
 void
 OSDWidget::setScreen( int screen )
 {
+#if 0
     const int n = QApplication::desktop()->numScreens();
     m_screen = (screen >= n) ? n-1 : screen;
+#endif
 }
 
 bool
@@ -557,6 +563,7 @@ void OSDPreviewWidget::mousePressEvent( QMouseEvent *event )
 
 void OSDPreviewWidget::mouseReleaseEvent( QMouseEvent * /*event*/ )
 {
+#if 0
     if( m_dragging )
     {
         m_dragging = false;
@@ -574,11 +581,13 @@ void OSDPreviewWidget::mouseReleaseEvent( QMouseEvent * /*event*/ )
             emit positionChanged();
         }
     }
+#endif
 }
 
 
 void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 {
+#if 0
     if( m_dragging && this == mouseGrabber() )
     {
         // Here we implement a "snap-to-grid" like positioning system for the preview widget
@@ -619,6 +628,7 @@ void OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 
         move( destination );
     }
+#endif
 }
 
 
@@ -640,6 +650,7 @@ Amarok::OSD::OSD(): OSDWidget( 0 )
 void
 Amarok::OSD::show( const MetaBundle &bundle ) //slot
 {
+#if 0
 #ifdef Q_WS_X11
     QString text = "";
     if( bundle.url().isEmpty() )
@@ -765,6 +776,7 @@ Amarok::OSD::show( const MetaBundle &bundle ) //slot
 #else
     Q_UNUSED( bundle );
 #endif
+#endif
 }
 
 void
@@ -809,6 +821,7 @@ Amarok::OSD::forceToggleOSD()
 void
 Amarok::OSD::slotCoverChanged( const QString &artist, const QString &album )
 {
+#if 0
     if( AmarokConfig::osdCover() && artist == EngineController::instance()->bundle().artist()
                                  && album  == EngineController::instance()->bundle().album()  )
     {
@@ -819,11 +832,13 @@ Amarok::OSD::slotCoverChanged( const QString &artist, const QString &album )
         else
             setImage( location );
     }
+#endif
 }
 
 void
 Amarok::OSD::slotImageChanged( const QString &remoteURL )
 {
+#if 0
     QString url = EngineController::instance()->bundle().url().url();
     PodcastEpisodeBundle peb;
     if( CollectionDB::instance()->getPodcastEpisodeBundle( url, &peb ) )
@@ -841,6 +856,7 @@ Amarok::OSD::slotImageChanged( const QString &remoteURL )
             }
         }
     }
+#endif
 }
 
 
