@@ -15,7 +15,6 @@
 #include <k3iconview.h>
 #include <QDialog>
 #include <QPixmap>
-#include <Q3ProgressBar>
 
 class Q3ListViewItem;
 class CoverViewItem;
@@ -27,7 +26,7 @@ class QLabel;
 class K3ListView;
 class CoverView;
 class Q3HBox;
-class KProgress;
+class QProgressBar;
 class Q3HBoxLayout;
 class PixmapViewer;
 
@@ -72,13 +71,15 @@ class CoverManager : public QSplitter
 
         void init();
 
+    private slots:
+        void setCustomSelectedCovers();
+        void fetchSelectedCovers();
+        void deleteSelectedCovers();
+        void viewSelectedCover();
     private:
         enum View { AllAlbums=0, AlbumsWithCover, AlbumsWithoutCover };
 
         void loadCover( const QString &, const QString & );
-        void setCustomSelectedCovers();
-        void fetchSelectedCovers();
-        void deleteSelectedCovers();
         Q3PtrList<CoverViewItem> selectedItems();
 
         K3ListView      *m_artistView;
@@ -94,8 +95,8 @@ class CoverManager : public QSplitter
 
         //status bar widgets
         QLabel         *m_statusLabel;
-        Q3HBox          *m_progressBox;
-        Q3ProgressBar   *m_progress;
+        Q3HBox         *m_progressBox;
+        QProgressBar   *m_progress;
         QString         m_oldStatusText;
 
         QTimer         *m_timer;              //search filter timer

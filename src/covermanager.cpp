@@ -25,6 +25,7 @@
 #include <QPalette>    //paintItem()
 #include <QPixmap>
 #include <qpoint.h>
+#include <QProgressBar>
 #include <q3progressdialog.h>
 #include <QRect>
 #include <QStringList>
@@ -39,7 +40,6 @@
 #include <Q3Frame>
 #include <QDropEvent>
 #include <QToolButton>
-#include <Q3ProgressBar>
 
 #include <kapplication.h>
 #include <kconfig.h>
@@ -185,12 +185,19 @@ CoverManager::CoverManager()
 
     KToolBar* toolBar = new KToolBar( hbox );
     toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
-//     toolBar->setFrameShape( Q3Frame::NoFrame );
-//     toolBar->insertButton( "view_choose", 1, m_viewMenu, true, i18n( "View" ) );
-    toolBar->addAction( QIcon("view_choose"), i18n("View" ) );
+//TODO port to kde4
+//    toolBar->setFrameShape( Q3Frame::NoFrame );
+    {
+        QAction* viewMenuAction = new QAction( KIcon( "view_choose" ), i18n( "View" ), this );
+        viewMenuAction->setMenu( m_viewMenu );
+        toolBar->addAction( viewMenuAction );
+    }
     #ifdef AMAZON_SUPPORT
-    toolBar->addAction( "babelfish", 2, m_amazonLocaleMenu, true, i18n( "Amazon Locale" ) );
-
+    {
+        QAction* localeMenuAction = new QAction( KIcon( "babelfish" ),  i18n( "Amazon Locale" ), this )
+        localeMenuAction->setMenu( m_amazonLocaleMenu );
+        toolBar->addAction( localeMenuAction );
+    }
     QString locale = AmarokConfig::amazonLocale();
     m_currentLocale = CoverFetcher::localeStringToID( locale );
     m_amazonLocaleMenu->setItemChecked( m_currentLocale, true );
@@ -210,8 +217,8 @@ CoverManager::CoverManager()
     m_statusBar->addWidget( m_progressBox = new Q3HBox( m_statusBar ), 1, true );
     KPushButton *stopButton = new KPushButton( KGuiItem(i18n("Abort"), "stop"), m_progressBox );
     connect( stopButton, SIGNAL(clicked()), SLOT(stopFetching()) );
-    m_progress = new Q3ProgressBar( m_progressBox );
-    m_progress->setCenterIndicator( true );
+    m_progress = new QProgressBar( m_progressBox );
+    m_progress->setTextVisible( true );
 
     const int h = m_statusLabel->height() + 3;
     m_statusLabel->setFixedHeight( h );
@@ -501,50 +508,50 @@ void CoverManager::showCoverMenu( Q3IconViewItem *item, const QPoint &p ) //SLOT
     menu.addTitle( i18n( "Cover Image" ) );
 
     Q3PtrList<CoverViewItem> selected = selectedItems();
-    if( selected.count() > 1 ) {
-        menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n( "&Fetch Selected Covers" ), FETCH );
-        menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "Set &Custom Cover for Selected Albums" ), CUSTOM );
-        menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n( "&Unset Selected Covers" ), DELETE );
+    const int nSelected = selected.count();
+
+    QAction* fetchSelectedAction = new QAction( SmallIconSet( Amarok::icon( "download" ) )
+        , i18np( "&Fetch From amazon.%1", "&Fetch Selected Covers", nSelected, CoverManager::amazonTld() )
+        , &menu );
+    connect( fetchSelectedAction, SIGNAL( triggered() ), this, SLOT( fetchSelectedCovers() ) );
+
+    QAction* setCustomAction = new QAction( SmallIconSet( Amarok::icon( "files" ) )
+        , i18np( "Set &Custom Cover", "Set &Custom Cover for Selected Albums", nSelected )
+        , &menu );
+    connect( setCustomAction, SIGNAL( triggered() ), this, SLOT( setCustomSelectedCovers() ) );
+    QAction* unsetAction = new QAction( SmallIconSet( Amarok::icon( "remove" ) ), i18np( "&Unset Cover", "&Unset Selected Covers", nSelected ), &menu );
+    connect( unsetAction, SIGNAL( triggered() ), this, SLOT ( deleteSelectedCovers() ) );
+
+    if( nSelected > 1 ) {
+        menu.addAction( fetchSelectedAction );
+        menu.addAction( setCustomAction );
+        menu.addAction( unsetAction );
     }
     else {
-        menu.insertItem( SmallIconSet( Amarok::icon( "zoom" ) ), i18n( "&Show Fullsize" ), SHOW );
-        menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n( "&Fetch From amazon.%1" ).arg( CoverManager::amazonTld() ), FETCH );
-        menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "Set &Custom Cover" ), CUSTOM );
+        QAction* viewAction = new QAction( SmallIconSet( Amarok::icon( "zoom" ) ), i18n( "&Show Fullsize" ), &menu );
+        connect( viewAction, SIGNAL( triggered() ), this, SLOT( viewSelectedCover() ) );
+        viewAction ->setEnabled( item->hasCover() );
+        unsetAction->setEnabled( item->canRemoveCover() );
+        menu.addAction( viewAction );
+        menu.addAction( fetchSelectedAction );
+        menu.addAction( setCustomAction );
         menu.insertSeparator();
 
-        menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n( "&Unset Cover" ), DELETE );
-        menu.setItemEnabled( SHOW, item->hasCover() );
-        menu.setItemEnabled( DELETE, item->canRemoveCover() );
+        menu.addAction( unsetAction );
     }
     #ifndef AMAZON_SUPPORT
-    menu.setItemEnabled( FETCH, false );
+        fetchSelectedAction->setEnabled( false );
     #endif
 
-    switch( menu.exec(p) ) {
-        case SHOW:
-            viewCover( item->artist(), item->album(), this );
-            break;
-
-        #ifdef AMAZON_SUPPORT
-        case FETCH:
-            fetchSelectedCovers();
-            break;
-        #endif
-
-        case CUSTOM:
-        {
-            setCustomSelectedCovers();
-            break;
-        }
-
-        case DELETE:
-            deleteSelectedCovers();
-            break;
-
-        default: ;
-    }
+    menu.exec( p );
 
     #undef item
+}
+
+void CoverManager::viewSelectedCover()
+{
+    CoverViewItem* item = selectedItems().first();
+    viewCover( item->artist(), item->album(), this );
 }
 
 void CoverManager::coverItemExecuted( Q3IconViewItem *item ) //SLOT
@@ -681,11 +688,8 @@ void CoverManager::stopFetching()
 
     //delete all cover fetchers
     QObjectList list = queryList( "CoverFetcher" );
-//    for( QObject *obj = list->first(); obj; obj = list->next()  )
-    oldForeachType( QObjectList, list )
-        (*it)->deleteLater();
-
-    delete list;
+    for( int i = 0; i < list.size(); ++i  )
+        list.at(i)->deleteLater();
 
     m_fetchingCovers = 0;
     updateStatusBar();
@@ -789,13 +793,13 @@ void CoverManager::updateStatusBar()
     //cover fetching info
     if( m_fetchingCovers ) {
         //update the progress bar
-        m_progress->setTotalSteps( m_fetchingCovers );
-        m_progress->setProgress( m_coversFetched + m_coverErrors );
+        m_progress->setMaximum( m_fetchingCovers );
+        m_progress->setValue( m_coversFetched + m_coverErrors );
         if( m_progressBox->isHidden() )
             m_progressBox->show();
 
         //update the status text
-        if( m_coversFetched + m_coverErrors >= m_progress->totalSteps() ) {
+        if( m_coversFetched + m_coverErrors >= m_progress->value() ) {
             //fetching finished
             text = i18n( "Finished." );
             if( m_coverErrors )
@@ -1031,10 +1035,12 @@ void CoverViewItem::dropped( QDropEvent *e, const Q3ValueList<Q3IconDragItem> & 
 {
     if( Q3ImageDrag::canDecode( e ) ) {
        if( hasCover() ) {
+           KGuiItem continueButton = KStandardGuiItem::cont();
+           continueButton.setText( i18n("&Overwrite") ); 
            int button = KMessageBox::warningContinueCancel( iconView(),
                             i18n( "Are you sure you want to overwrite this cover?"),
                             i18n("Overwrite Confirmation"),
-                            i18n("&Overwrite") );
+                            continueButton );
            if( button == KMessageBox::Cancel )
                return;
        }
