@@ -433,7 +433,7 @@ void CoverManager::slotArtistSelected( Q3ListViewItem *item ) //SLOT
     qb.setOptions( QueryBuilder::optNoCompilations );
 
     if ( item != m_artistView->firstChild() )
-        qb.addMatches( QueryBuilder::tabArtist, artist );
+        qb.addMatch( QueryBuilder::tabArtist, artist );
 
     albums = qb.run();
 
