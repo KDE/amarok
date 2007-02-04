@@ -12,7 +12,7 @@
 
 class MyDirLister : public KDirLister {
 public:
-    MyDirLister( bool delayedMimeTypes ) : KDirLister( delayedMimeTypes ) { }
+    MyDirLister( bool delayedMimeTypes ) : KDirLister() { setDelayedMimeTypes( delayedMimeTypes ); }
 
 protected:
     virtual bool matchesMimeFilter( const KFileItem *item ) const {
