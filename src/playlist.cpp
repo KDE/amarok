@@ -81,6 +81,7 @@
 
 #include <kaction.h>
 #include <ktoggleaction.h>
+#include <kselectaction.h>
 #include <kapplication.h>
 #include <kcursor.h>         //setOverrideCursor()
 #include <kdialog.h>
@@ -2568,7 +2569,7 @@ Playlist::viewportPaintEvent( QPaintEvent *e )
         QPainter p( viewport() );
         p.fillRect(
                 drawDropVisualizer( 0, 0, m_marker ),
-                QBrush( colorGroup().highlight().dark(), QBrush::Dense4Pattern ) );
+                QBrush( colorGroup().highlight().dark(), Qt::Dense4Pattern ) );
     }
     else if( m_showHelp && isEmpty() ) {
         QPainter p( viewport() );
@@ -3135,8 +3136,8 @@ Playlist::saveXML( const QString &path )
     if( !file.open( QIODevice::WriteOnly ) ) return;
 
     QString buffer;
-    Q3TextStream stream( &buffer, QIODevice::WriteOnly );
-    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
+    QTextStream stream( &buffer, QIODevice::WriteOnly );
+    stream.setEncoding( QTextStream::UnicodeUTF8 );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 
     QString dynamic;
@@ -3375,7 +3376,7 @@ Playlist::shuffle() //SLOT
     if( dynamicMode() )
         return;
 
-    Q3PtrList<Q3ListViewItem> list;
+    QList<Q3ListViewItem*> list;
 
     setSorting( NO_SORT );
 
@@ -3385,15 +3386,15 @@ Playlist::shuffle() //SLOT
 
     // we do it in two steps because the iterator doesn't seem
     // to like it when we do takeItem and ++it in the same loop
-    for( Q3ListViewItem *item = list.first(); item; item = list.next() )
-        takeItem( item );
+    for( QList<Q3ListViewItem*>::iterator it = list.begin(); it != list.end(); ++it )
+        takeItem( *it );
 
     //shuffle
-    KRandomSequence( (long)KRandom::random() ).randomize( &list );
+    KRandomSequence( (long)KRandom::random() ).randomize( list );
 
     //reinsert in new order
-    for( Q3ListViewItem *item = list.first(); item; item = list.next() )
-        insertItem( item );
+    for( QList<Q3ListViewItem*>::iterator it = list.begin(); it != list.end(); ++it )
+        insertItem( *it );
 
     updateNextPrev();
 }
