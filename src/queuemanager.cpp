@@ -127,11 +127,11 @@ QueueList::keyPressEvent( QKeyEvent *e )
             removeSelected();
             break;
 
-        case Qt::CtrlModifier+Qt::Key_Up:
+        case Qt::ControlModifier+Qt::Key_Up:
             moveSelectedUp();
             break;
 
-        case Qt::CtrlModifier+Qt::Key_Down:
+        case Qt::ControlModifier+Qt::Key_Down:
             moveSelectedDown();
             break;
     }

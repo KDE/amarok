@@ -78,6 +78,7 @@
 #include <QLayout>
 
 #include <kaction.h>
+#include <ktoggleaction.h>
 #include <kapplication.h>
 #include <kcursor.h>         //setOverrideCursor()
 #include <kdialog.h>
@@ -335,13 +336,46 @@ Playlist::Playlist( QWidget *parent )
     m_undoButton ->setIcon( Amarok::icon( "undo" ) );
     m_redoButton ->setIcon( Amarok::icon( "redo" ) );
 
-    new KAction( i18n( "&Repopulate" ), Amarok::icon( "playlist_refresh" ), 0, this, SLOT( repopulate() ), ac, "repopulate" );
-    new KAction( i18n( "S&huffle" ), "rebuild", Qt::CTRL+Qt::Key_H, this, SLOT( shuffle() ), ac, "playlist_shuffle" );
-    KAction *gotoCurrent = new KAction( i18n( "&Go To Current Track" ), Amarok::icon( "music" ), Qt::CTRL+Qt::Key_J, this, SLOT( showCurrentTrack() ), ac, "playlist_show" );
-    new KAction( i18n( "&Remove Duplicate && Dead Entries" ), 0, this, SLOT( removeDuplicates() ), ac, "playlist_remove_duplicates" );
-    new KAction( i18n( "&Queue Selected Tracks" ), Amarok::icon( "queue_track" ), Qt::CTRL+Qt::Key_D, this, SLOT( queueSelected() ), ac, "queue_selected" );
-    KToggleAction *stopafter = new KToggleAction( i18n( "&Stop Playing After Track" ), Amarok::icon( "stop" ), Qt::CTRL+Qt::ALT+Qt::Key_V,
-                            this, SLOT( toggleStopAfterCurrentItem() ), ac, "stop_after" );
+    KAction *a = new KAction( this );
+    a->setText(i18n( "&Repopulate" ));
+    a->setIcon( KIcon( Amarok::icon( "playlist_refresh" ) ) );
+    ac->addAction("repopulate", a);
+    connect( a, SIGNAL( triggered( bool ) ), this, SLOT( repopulate() ) );
+
+    a = new KAction( this );
+    a->setShortcut( Qt::ControlModifier+Qt::Key_H );
+    a->setText(i18n( "S&huffle" ));
+    a->setIcon( KIcon( Amarok::icon( "rebuild" ) ) );
+    ac->addAction("playlist_shuffle", a);
+    connect( a, SIGNAL( triggered( bool ) ), this, SLOT( shuffle() ) );
+
+    KAction *gotoCurrent = new KAction( this  );
+    gotoCurrent->setShortcut( Qt::ControlModifier+Qt::Key_J );
+    gotoCurrent->setText(i18n( "&Go To Current Track" ));
+    gotoCurrent->setIcon( KIcon( Amarok::icon( "music" ) ) );
+    ac->addAction("playlist_show", gotoCurrent);
+    connect( gotoCurrent, SIGNAL( triggered( bool ) ), this, SLOT( showCurrentTrack() ) );
+
+    a = new KAction( this );
+    a->setText(i18n( "&Remove Duplicate && Dead Entries" ));
+    ac->addAction("playlist_remove_duplicates", a);
+    connect( a, SIGNAL( triggered( bool ) ), this, SLOT( removeDuplicates() ) );
+
+
+    a = new KAction( this );
+    a->setShortcut( Qt::ControlModifier+Qt::Key_D );
+    a->setText(i18n( "&Queue Selected Tracks" ));
+    a->setIcon( KIcon( Amarok::icon( "queue_track" ) ) );
+    ac->addAction("queue_selected", a);
+    connect( a, SIGNAL( triggered( bool ) ), this, SLOT( queueSelected() ) );
+
+    KToggleAction *stopafter = new KToggleAction( this );
+    stopafter->setShortcut( Qt::ControlModifier+Qt::AltModifier+Qt::Key_V );
+    stopafter->setText(i18n( "&Stop Playing After Track" ));
+    stopafter->setIcon( KIcon( Amarok::icon( "stop" ) ) );
+    ac->addAction("stop_after", stopafter);
+    connect( stopafter, SIGNAL( triggered( bool ) ), this, SLOT( toggleStopAfterCurrentItem() ) );
+
 
 /*    { // KAction idiocy -- shortcuts don't work until they've been plugged into a menu
         KMenu asdf;
