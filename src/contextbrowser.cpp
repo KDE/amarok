@@ -272,7 +272,8 @@ ContextBrowser::ContextBrowser( const char *name )
 
 
     m_lyricsPage = new HTMLView( m_lyricsTab, "lyrics_page", true /* DNDEnabled */, false /* No JScript */ );
-    m_lyricsTextEdit = new KTextEdit ( m_lyricsTab, "lyrics_text_edit");
+    m_lyricsTextEdit = new KTextEdit ( m_lyricsTab );
+    m_lyricsTextEdit->setObjectName( "lyrics_text_edit" );
     m_lyricsTextEdit->setTextFormat( Qt::PlainText );
     m_lyricsTextEdit->hide();
 
