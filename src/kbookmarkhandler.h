@@ -34,6 +34,9 @@ public:
     /// KBookmarkOwner interface:
     virtual void openBookmarkURL( const QString &url );
     virtual QString currentURL() const;
+
+    // FIXME: Implement me!
+    virtual void openBookmark(const KBookmark&, Qt::MouseButtons, Qt::KeyboardModifiers) {};
 };
 
 #endif // _KBOOKMARKHANDLER_H_

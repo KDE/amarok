@@ -37,6 +37,7 @@
 #include <k3listview.h>
 #include <k3urldrag.h>
 #include <klocale.h>
+#include <kconfiggroup.h>
 #include <kmenu.h>
 #include <kpushbutton.h>     ///@see SearchPane
   ///@see ctor
@@ -156,7 +157,8 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         m_dir->setEnableDirHighlighting( true );
         m_dir->setMode( KFile::Mode((int)KFile::Files | (int)KFile::Directory) ); //allow selection of multiple files + dirs
         m_dir->setOnlyDoubleClickSelectsFiles( true ); //Amarok type settings
-        m_dir->readConfig( Amarok::config( "Filebrowser" ) );
+        KConfigGroup cg(Amarok::config( "Filebrowser" ), "Filebrowser");
+        m_dir->readConfig( &cg  );
         m_dir->setView( KFile::Default ); //will set userconfigured view, will load URL
         m_dir->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Expanding );
         m_dir->setAcceptDrops( true );
@@ -177,7 +179,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
     }
 
     {
-        Q3PopupMenu* const menu = static_cast<KActionMenu*>(actionCollection->action("popupMenu"))->popupMenu();
+        KMenu* const menu = static_cast<KActionMenu*>(actionCollection->action("popupMenu"))->popupMenu();
 
         menu->clear();
         menu->insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), MakePlaylist );
@@ -198,11 +200,11 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         menu->insertSeparator();
         menu->insertItem( i18n( "&Select All Files" ), SelectAllFiles );
         menu->insertSeparator();
-        actionCollection->action( "delete" )->setIcon( Amarok::icon( "remove" ) );
-        actionCollection->action( "delete" )->plug( menu );
+        actionCollection->action( "delete" )->setIcon( KIcon( Amarok::icon( "remove" ) ) );
+        menu->addAction( actionCollection->action( "delete" ) );
         menu->insertSeparator();
         menu->insertItem( SmallIconSet( Amarok::icon( "info" ) ), i18n( "Edit Track &Information..." ), EditTags );
-        actionCollection->action( "properties" )->plug( menu );
+        menu->addAction( actionCollection->action( "properties" ) );
 
         menu->setItemEnabled( BurnCd, K3bExporter::isAvailable() );
 
@@ -214,54 +216,62 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         KActionMenu *a;
 
         a = static_cast<KActionMenu*>( actionCollection->action( "sorting menu" ) );
-        a->setIcon( Amarok::icon( "configure" ) );
+        a->setIcon( KIcon( Amarok::icon( "configure" ) ) );
         a->setDelayed( false ); //TODO should be done by KDirOperator
 
-        actionCollection->action( "delete" )->setShortcut( KShortcut( Qt::ShiftModifier + Qt::Key_Delete ) );
+        static_cast<KAction*>(actionCollection->action( "delete" ))->setShortcut( KShortcut( Qt::ShiftModifier + Qt::Key_Delete ) );
 
-        a = new KActionMenu( i18n("Bookmarks"), "bookmark", actionCollection, "bookmarks" );
+        a = new KActionMenu( this );
+
+        a->setText( i18n("Bookmarks") );
+        a->setIcon(KIcon("bookmark"));
+        actionCollection->addAction( "bookmarks", a );
+
         a->setDelayed( false );
 
         new KBookmarkHandler( m_dir, a->popupMenu() );
     }
 
     {
-        if ( KAction *a = actionCollection->action( "up" ) )
-            a->plug( toolbar );
-        if ( KAction *a = actionCollection->action( "back" ) )
-            a->plug( toolbar );
-        if ( KAction *a = actionCollection->action( "forward" ) )
-            a->plug( toolbar );
-        if ( KAction *a = actionCollection->action( "home" ) )
-            a->plug( toolbar );
-        if ( KAction *a = actionCollection->action( "reload" ) ) {
-            a->setIcon( Amarok::icon( "refresh" ) );
-            a->plug( toolbar );
+        if ( QAction *a = actionCollection->action( "up" ) )
+            toolbar->addAction(a);
+        if ( QAction *a = actionCollection->action( "back" ) )
+            toolbar->addAction(a);
+        if ( QAction *a = actionCollection->action( "forward" ) )
+            toolbar->addAction(a);
+        if ( QAction *a = actionCollection->action( "home" ) )
+            toolbar->addAction(a);
+        if ( QAction *a = actionCollection->action( "reload" ) ) {
+            a->setIcon( KIcon(Amarok::icon( "refresh" )) );
+            toolbar->addAction(a);
         }
 
-        toolbar->insertLineSeparator();
+        toolbar->addSeparator();
 
-        if ( KAction *a = actionCollection->action( "short view" ) )
-            a->plug( toolbar );
-        if ( KAction *a = actionCollection->action( "detailed view" ) )
-            a->plug( toolbar );
+        if ( QAction *a = actionCollection->action( "short view" ) )
+            toolbar->addAction(a);
+        if ( QAction *a = actionCollection->action( "detailed view" ) )
+            toolbar->addAction(a);
 
-        toolbar->insertLineSeparator();
+        toolbar->addSeparator();
 
-        if ( KAction *a = actionCollection->action( "sorting menu" ) )
-            a->plug( toolbar );
-        if ( KAction *a = actionCollection->action( "bookmarks" ) )
-            a->plug( toolbar );
+        if ( QAction *a = actionCollection->action( "sorting menu" ) )
+            toolbar->addAction(a);
+        if ( QAction *a = actionCollection->action( "bookmarks" ) )
+            toolbar->addAction(a);
 
 
-        KAction *gotoCurrent = new KAction( i18n("Go To Current Track Folder"), Amarok::icon( "music" ), 0,
-                                            this, SLOT( gotoCurrentFolder() ), actionCollection );
-        gotoCurrent->plug( toolbar );
+        KAction *gotoCurrent = new KAction( i18n("Go To Current Track Folder"), this );
+        actionCollection->addAction("Go To Current Track Folder", gotoCurrent);
+        gotoCurrent->setIcon( KIcon(Amarok::icon( "music" )) );
+        connect( gotoCurrent, SIGNAL( triggered() ), this, SLOT(  gotoCurrentFolder() ) );
 
-        disconnect( actionCollection->action( "up" ), SIGNAL( activated() ), m_dir, SLOT( cdUp() ) );
-        connect( actionCollection->action( "up" ), SIGNAL( activated() ), m_dir, SLOT( myCdUp() ) );
-        disconnect( actionCollection->action( "home" ), SIGNAL( activated() ), m_dir, SLOT( home() ) );
-        connect( actionCollection->action( "home" ), SIGNAL( activated() ), m_dir, SLOT( myHome() ) );
+        toolbar->addAction(gotoCurrent);
+
+        disconnect( actionCollection->action( "up" ), SIGNAL( triggered() ), m_dir, SLOT( cdUp() ) );
+        connect( actionCollection->action( "up" ), SIGNAL( triggered() ), m_dir, SLOT( myCdUp() ) );
+        disconnect( actionCollection->action( "home" ), SIGNAL( triggered() ), m_dir, SLOT( home() ) );
+        connect( actionCollection->action( "home" ), SIGNAL( triggered() ), m_dir, SLOT( myHome() ) );
     }
 
     connect( m_filter, SIGNAL(textChanged( const QString& )), SLOT(setFilter( const QString& )) );
@@ -284,8 +294,8 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
 FileBrowser::~FileBrowser()
 {
     KSharedConfigPtr c = Amarok::config( "Filebrowser" );
-
-    m_dir->writeConfig( c ); //uses currently set group
+    KConfigGroup cg(Amarok::config( "Filebrowser" ), "Filebrowser");
+    m_dir->writeConfig( &cg ); //uses currently set group
 
     c->writePathEntry( "Location", m_dir->url().url() );
     c->writePathEntry( "Dir History", m_combo->urls() );
@@ -439,7 +449,7 @@ FileBrowser::prepareContextMenu()
 {
     const KFileItemList &items = *m_dir->selectedItems();
     static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( SavePlaylist,
-        items.count() > 1 || ( items.count() == 1 && items.getFirst()->isDir() ) );
+        items.count() > 1 || ( items.count() == 1 && items.first()->isDir() ) );
     static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( QueueTrack,
         items.count() == 1  );
     static_cast<KActionMenu*>(m_dir->actionCollection()->action("popupMenu"))->popupMenu()->setItemVisible( QueueTracks,
@@ -533,8 +543,8 @@ FileBrowser::selectAll()
     KFileItemList list( *m_dir->view()->items() );
 
     // Select all items which represent files
-    for( KFileItem* item = list.first(); item; item = list.next() )
-        m_dir->view()->setSelected( item, item->isFile() );
+    for( KFileItemList::const_iterator it = list.begin(); it != list.end(); ++it)
+        m_dir->view()->setSelected( *it, (*it)->isFile() );
 }
 
 #include <QPainter>
@@ -560,11 +570,11 @@ public:
 
     virtual Q3DragObject *dragObject()
     {
-        Q3PtrList<Q3ListViewItem> items = selectedItems();
+        QList<Q3ListViewItem*> items = selectedItems();
         KUrl::List urls;
-
-        for( Item *item = static_cast<Item*>( items.first() ); item; item = static_cast<Item*>( items.next() ) )
-            urls += item->m_url;
+        for( QList<Q3ListViewItem*>::const_iterator it = items.begin(); it != items.end(); ++it) {
+            urls += ( static_cast<Item*>(*it) )->m_url;
+        }
 
         return new K3URLDrag( urls, this );
     }
