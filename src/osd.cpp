@@ -29,12 +29,12 @@
 #include <QEvent>
 
 #include <kapplication.h>
-#include <kpixmap.h>
 #include <kpixmapeffect.h>
 #include <kstandarddirs.h>   //locate
 
 #include <QBitmap>
 #include <QPainter>
+#include <QPixmap>
 #include <QRegExp>
 #include <QTimer>
 #include <q3valuevector.h>
@@ -60,8 +60,8 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
         , m_rating( 0 )
         , m_volume( false )
 {
-    setFocusPolicy( NoFocus );
-    setBackgroundMode( NoBackground );
+    setFocusPolicy( Qt::NoFocus );
+    setBackgroundMode( Qt::NoBackground );  //Qt3 support
     unsetColors();
 
     connect( m_timer, SIGNAL(timeout()), SLOT(hide()) );
@@ -133,7 +133,7 @@ OSDWidget::show() //virtual
     else if( m_translucency )
     {
         const QRect unite = oldGeometry.unite( newGeometry );
-        KPixmap pix = QPixmap::grabWindow( qt_xrootwin(), unite.x(), unite.y(), unite.width(), unite.height() );
+        QPixmap pix = QPixmap::grabWindow( qt_xrootwin(), unite.x(), unite.y(), unite.width(), unite.height() );
 
         QPoint p = oldGeometry.topLeft() - unite.topLeft();
         bitBlt( &pix, p, &m_screenshot );
@@ -196,7 +196,7 @@ OSDWidget::determineMetrics( const uint M )
 
     if( m_rating )
     {
-        KPixmap star;
+        QPixmap star;
         star.load( KStandardDirs::locate( "data", "amarok/images/star.png" ) );
         if( rect.width() < star.width() * 5 )
             rect.setWidth( star.width() * 5 ); //changes right edge position
@@ -302,7 +302,7 @@ OSDWidget::render( const uint M, const QSize &size )
 
     if( m_translucency )
     {
-        KPixmap background( m_screenshot );
+        QPixmap background( m_screenshot );
         KPixmapEffect::fade( background, 0.80, backgroundColor() );
         p.drawPixmap( 0, 0, background );
     }
@@ -360,7 +360,7 @@ OSDWidget::render( const uint M, const QSize &size )
         r.setLeft( rect.left() + rect.width() / 2 - vol.width() / 2 );
         r.setTop( size.height() / 2 - vol.height() / 2);
 
-        KPixmap pixmapGradient;
+        QPixmap pixmapGradient;
         { // gradient
             QBitmap mask;
             mask.resize( vol.size() );
@@ -380,7 +380,7 @@ OSDWidget::render( const uint M, const QSize &size )
 
         if( m_translucency )
         {
-            KPixmap background( m_screenshot );
+            QPixmap background( m_screenshot );
             KPixmapEffect::fade( background, 0.80, backgroundColor() );
             bitBlt( &vol, -r.left(), -r.top(), &background );
         }
@@ -413,7 +413,7 @@ OSDWidget::render( const uint M, const QSize &size )
         m_volume = false;
     }
 
-    KPixmap star;
+    QPixmap star;
     star.load( KStandardDirs::locate( "data", "amarok/images/star.png" ) );
     int graphicsHeight = 0;
 
@@ -441,7 +441,7 @@ OSDWidget::render( const uint M, const QSize &size )
 
         if( m_rating % 2 )
         {
-            KPixmap halfStar;
+            QPixmap halfStar;
             halfStar.load( KStandardDirs::locate( "data", "amarok/images/smallstar.png" ) );
             p.drawPixmap( r.left() + star.width() * ( m_rating / 2 ), r.top(), halfStar );
         }
@@ -548,7 +548,7 @@ void OSDPreviewWidget::mousePressEvent( QMouseEvent *event )
 {
     m_dragOffset = event->pos();
 
-    if( event->button() == LeftButton && !m_dragging ) {
+    if( event->button() == Qt::LeftButton && !m_dragging ) {
         grabMouse( KCursor::sizeAllCursor() );
         m_dragging = true;
     }
