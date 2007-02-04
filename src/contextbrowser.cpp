@@ -292,9 +292,12 @@ ContextBrowser::ContextBrowser( const char *name )
 
        connect ( m_lyricsSearchText, SIGNAL(textChanged(const QString &)), this, SLOT(lyricsSearchText(const QString & )) );
        connect ( m_lyricsSearchText, SIGNAL(returnPressed()), this, (SLOT(lyricsSearchTextNext())) );
-       Amarok::actionCollection()->setAutoConnectShortcuts ( true );
-       new KAction( i18n("Search text in lyric"), KShortcut("/"), this,SLOT( lyricsSearchTextShow() ), Amarok::actionCollection(), "search_text_lyric");
-       Amarok::actionCollection()->setAutoConnectShortcuts ( false );
+      
+       //TODO: following were broken in 1.4, needs serious consideration
+       //Amarok::actionCollection()->setAutoConnectShortcuts ( true );
+       //new KAction( i18n("Search text in lyric"), KShortcut("/"), this,SLOT( lyricsSearchTextShow() ), Amarok::actionCollection(), "search_text_lyric");
+       //Amarok::actionCollection()->setAutoConnectShortcuts ( false );
+       
     }
 
 
@@ -3317,7 +3320,7 @@ void ContextBrowser::showLyrics( const QString &url )
     
 
 
-    if( ( !cached || url == "reload" ) && ! ScriptManager::instance()->lyricsScriptRunning().isEmtpy() ) {
+    if( ( !cached || url == "reload" ) && ! ScriptManager::instance()->lyricsScriptRunning().isEmpty() ) {
         const QStringList scripts = ScriptManager::instance()->lyricsScripts();
         lyrics =
               i18n( "Sorry, no lyrics script running.") + "<br />\n" +
