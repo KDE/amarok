@@ -39,7 +39,6 @@
 #include <Q3ValueList>
 #include <QCustomEvent>
 
-#include <dcopref.h>
 #include <kapplication.h>
 #include <kurl.h>
 
@@ -129,34 +128,7 @@ UrlLoader::UrlLoader( const KUrl::List &urls, Q3ListViewItem *after, int options
             else
                 m_URLs += url;
         }
-
-        // Note: remove for kde 4 - we don't need to be hacking around KFileDialog,
-        // it has been fixed for kde 3.5.3
-        else if( protocol == "media" || url.url().startsWith( "system:/media/" ) )
-        {
-            QString path = url.path( -1 );
-            if( url.url().startsWith( "system:/media/" ) )
-                path = path.mid( 6 );
-            // url looks like media:/device/path
-            DCOPRef mediamanager( "kded", "mediamanager" );
-            QString device = path.mid( 1 ); // remove first slash
-            const int slash = device.find( '/' );
-            const QString filePath = device.mid( slash ); // extract relative path
-            device = device.left( slash ); // extract device
-            DCOPReply reply = mediamanager.call( "properties(QString)", device );
-
-            if( reply.isValid() ) {
-                const QStringList properties = reply;
-                // properties[6] is the mount point
-                KUrl localUrl = KUrl( properties[6] + filePath );
-
-                // add urls
-                if( QFileInfo( localUrl.path() ).isDir() )
-                    m_URLs += recurse( localUrl );
-                else
-                    m_URLs += localUrl;
-            }
-        }
+        //code for handling media:/ or system:/media urls removed because of original comment
 
         else if( PlaylistFile::isPlaylistFile( url ) ) {
             debug() << "remote playlist" << endl;
@@ -195,7 +167,8 @@ UrlLoader::doJob()
     setProgressTotalSteps( m_URLs.count() );
 
     KUrl::List urls;
-    for( for_iterators( KUrl::List, m_URLs ); it != end && !isAborted(); ++it )
+    int count = 0;
+    for( KUrl::List::ConstIterator it = m_URLs.begin(), end = m_URLs.end(); it != end && !isAborted(); ++it, ++count )
     {
         const KUrl &url = *it;
 
@@ -221,7 +194,7 @@ UrlLoader::doJob()
             (EngineController::canDecode( url ) ? urls : m_badURLs) += url;
         }
 
-        if( urls.count() == OPTIMUM_BUNDLE_COUNT || it == last ) {
+        if( urls.count() == OPTIMUM_BUNDLE_COUNT || count == m_URLs.count() - 1 ) {
             QApplication::postEvent( this, new TagsEvent( CollectionDB::instance()->bundlesByUrls( urls ) ) );
             urls.clear();
         }
@@ -374,14 +347,14 @@ UrlLoader::recurse( const KUrl &url )
     watchdog.start();
 
     while( !lister.isFinished() && !isAborted() && watchdog.elapsed() < timeout )
-        kapp->eventLoop()->processEvents( QEventLoop::ExcludeUserInput );
+        kapp->processEvents( QEventLoop::ExcludeUserInput );
 
     KFileItemList items = lister.items(); //returns QPtrList, so we MUST only do it once!
     KUrl::List urls;
     FileMap files;
-    for( KFileItem *item = items.first(); item; item = items.next() ) {
-        if( item->isFile() ) { files[item->name()] = item->url(); continue; }
-        if( item->isDir() ) urls += recurse( item->url() );
+    oldForeachType( KFileItemList, items ) {
+        if( (*it)->isFile() ) { files[(*it)->name()] = (*it)->url(); continue; }
+        if( (*it)->isDir() ) urls += recurse( (*it)->url() );
     }
 
     oldForeachType( FileMap, files )
@@ -418,23 +391,23 @@ recursiveUrlExpand( const KUrl &url, int maxURLs )
     watchdog.start();
 
     while( !lister.isFinished() && watchdog.elapsed() < timeout )
-        kapp->eventLoop()->processEvents( QEventLoop::ExcludeUserInput );
+        kapp->processEvents( QEventLoop::ExcludeUserInput );
 
     KFileItemList items = lister.items(); //returns QPtrList, so we MUST only do it once!
     KUrl::List urls;
     FileMap files;
-    for( KFileItem *item = items.first(); item; item = items.next() ) {
+    oldForeachType( KFileItemList, items ) {
         if( maxURLs >= 0 && (int)(urls.count() + files.count()) >= maxURLs )
             break;
-        if( item->isFile()
-                && !PlaylistFile::isPlaylistFile( item->url().fileName() )
+        if( (*it)->isFile()
+                && !PlaylistFile::isPlaylistFile( (*it)->url().fileName() )
                 )
         {
-            files[item->name()] = item->url();
+            files[(*it)->name()] = (*it)->url();
             continue;
         }
-        if( item->isDir() )
-            urls += recursiveUrlExpand( item->url(), maxURLs - urls.count() - files.count() );
+        if( (*it)->isDir() )
+            urls += recursiveUrlExpand( (*it)->url(), maxURLs - urls.count() - files.count() );
     }
 
     oldForeachType( FileMap, files )
@@ -1000,7 +973,7 @@ RemotePlaylistFetcher::RemotePlaylistFetcher( const KUrl &source, Q3ListViewItem
 {
     //We keep the extension so the UrlLoader knows what file type it is
     const QString path = source.path();
-    m_temp = new KTempFile();
+    m_temp = new KTemporaryFile();
     m_temp->setSuffix( path.mid( path.lastIndexOf( '.' ) ) );
     m_temp->open();
 
