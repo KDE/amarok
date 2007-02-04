@@ -38,7 +38,7 @@
 #include <Q3CString>
 #include <Q3ValueList>
 
-#include <dcopref.h>
+//#include <dcopref.h>
 #include <kapplication.h>
 #include <klocale.h>
 #include <kmessagebox.h>
@@ -277,8 +277,9 @@ main_loop:
 
             m_dataMutex.unlock();
 
-            if( !m_reader->parseContinue() )
-                ::warning() << "parseContinue() failed: " << errorString() << endl << data << endl;
+            if( !m_reader->parseContinue() ) {
+               // ::warning() << "parseContinue() failed: " << errorString() << endl << data << endl;
+            }
         }
     }
 
@@ -349,7 +350,7 @@ ScanController::slotReadReady()
     m_dataMutex.unlock();
 }
 
-bool
+/*bool
 ScanController::requestPause()
 {
     DEBUG_BLOCK
@@ -379,7 +380,7 @@ ScanController::requestAcknowledged()
         m_isPaused = true;
     else
         m_isPaused = false;
-}
+}*/
 
 void
 ScanController::slotFileMoved( const QString &/*src*/, const QString &/*dest*/)

@@ -73,7 +73,7 @@ class ScanController : public ThreadManager::DependentJob, public QXmlDefaultHan
         ScanController( CollectionDB* parent, bool incremental, const QStringList& folders = QStringList() );
         ~ScanController();
         static ScanController* instance();
-        
+
         virtual void completeJob( void );
 
         bool isIncremental() const { return m_incremental; }
@@ -88,8 +88,8 @@ class ScanController : public ThreadManager::DependentJob, public QXmlDefaultHan
         void scanDone( bool changed );
 
     public slots:
-        bool requestPause();
-        bool requestUnpause();
+        //bool requestPause();
+        //bool requestUnpause();
         void requestAcknowledged();
         void slotFileMoved( const QString &src, const QString &dest );
 

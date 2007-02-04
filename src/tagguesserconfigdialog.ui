@@ -20,7 +20,7 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="KListView" row="0" column="0" rowspan="7" colspan="1">
+        <widget class="K3ListView" row="0" column="0" rowspan="7" colspan="1">
             <column>
                 <property name="text">
                     <string>File Name Scheme</string>
@@ -209,7 +209,7 @@ Note that the order in which the schemes appear in the list is relevant, since t
 <layoutfunctions spacing="KDialog::spacingHint"/>
 <includehints>
     <includehint>kdialog.h</includehint>
-    <includehint>klistview.h</includehint>
+    <includehint>k3listview.h</includehint>
     <includehint>kpushbutton.h</includehint>
     <includehint>kpushbutton.h</includehint>
     <includehint>kpushbutton.h</includehint>
