@@ -987,7 +987,7 @@ PlaylistFile::loadSMIL( Q3TextStream &stream )
 
 /// @class RemotePlaylistFetcher
 
-#include <ktempfile.h>
+#include <ktemporaryfile.h>
 #include <kio/job.h>
 #include <klocale.h>
 
@@ -1000,10 +1000,11 @@ RemotePlaylistFetcher::RemotePlaylistFetcher( const KUrl &source, Q3ListViewItem
 {
     //We keep the extension so the UrlLoader knows what file type it is
     const QString path = source.path();
-    m_temp = new KTempFile( QString::null /*use default prefix*/, path.mid( path.lastIndexOf( '.' ) ) );
-    m_temp->setAutoDelete( true );
+    m_temp = new KTempFile();
+    m_temp->setSuffix( path.mid( path.lastIndexOf( '.' ) ) );
+    m_temp->open();
 
-    m_destination.setPath( m_temp->name() );
+    m_destination.setPath( m_temp->fileName() );
 
     KIO::Job *job = KIO::file_copy( m_source, m_destination,
             -1,      /* permissions, this means "do what you think" */

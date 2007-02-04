@@ -11,7 +11,7 @@
 #include <khtmlview.h>
 
 class KAction;
-class KTempFile;
+class KTemporaryFile;
 
 class HTMLView : public KHTMLPart
 {
@@ -27,9 +27,9 @@ class HTMLView : public KHTMLPart
         static void paletteChange();
 
     private:
-        static KTempFile *m_bgGradientImage;
-        static KTempFile *m_headerGradientImage;
-        static KTempFile *m_shadowGradientImage;
+        static KTemporaryFile *m_bgGradientImage;
+        static KTemporaryFile *m_headerGradientImage;
+        static KTemporaryFile *m_shadowGradientImage;
         static int m_instances;
 
         KAction *m_selectAll;

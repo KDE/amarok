@@ -828,8 +828,10 @@ DaapDownloader::doJob()
         m_ready = false;
         debug() << "downloading " << (*urlIt).path() << endl;
         setProgressTotalSteps( 100 );
-        KTempFile* tempNewFile = new KTempFile( QString(), '.' + QFileInfo( (*urlIt).path() ).extension() );
-        tempNewFile->setAutoDelete( true );
+        KTemporaryFile* tempNewFile = new KTempFile();
+        tempNewFile->setSuffix( '.' + QFileInfo( (*urlIt).path() ).extension() );
+        tempNewFile->open();
+
         m_tempFileList.append( tempNewFile );
         http->getDaap( (*urlIt).path() + (*urlIt).query(), tempNewFile->file() );
         while( !m_ready && !isAborted() )

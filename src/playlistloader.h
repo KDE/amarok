@@ -183,7 +183,7 @@ class RemotePlaylistFetcher : public QObject
     Q3ListViewItem *m_after;
     bool m_playFirstUrl;
     int m_options;
-    class KTempFile *m_temp;
+    class KTemporaryFile *m_temp;
 
 public:
     RemotePlaylistFetcher( const KUrl &source, Q3ListViewItem *after, int options = 0 );

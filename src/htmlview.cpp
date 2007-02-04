@@ -20,11 +20,11 @@
 #include <kimageeffect.h> // gradient background image
 #include <kmenu.h>
 #include <kstandarddirs.h> //locate file
-#include <ktempfile.h>
+#include <ktemporaryfile.h>
 
-KTempFile *HTMLView::m_bgGradientImage = 0;
-KTempFile *HTMLView::m_headerGradientImage = 0;
-KTempFile *HTMLView::m_shadowGradientImage = 0;
+KTemporaryFile *HTMLView::m_bgGradientImage = 0;
+KTemporaryFile *HTMLView::m_headerGradientImage = 0;
+KTemporaryFile *HTMLView::m_shadowGradientImage = 0;
 int HTMLView::m_instances = 0;
 
 HTMLView::HTMLView( QWidget *parentWidget, const char *widgetname, const bool DNDEnabled, const bool JScriptEnabled )
@@ -160,30 +160,38 @@ HTMLView::loadStyleSheet()
         const QColor gradientColor = bgColor;
 
         if ( !m_bgGradientImage ) {
-            m_bgGradientImage = new KTempFile( KStandardDirs::locateLocal( "tmp", "gradient" ), ".png", 0600 );
-            QImage image = KImageEffect::gradient( QSize( 600, 1 ), gradientColor, gradientColor.light( 130 ), KImageEffect::PipeCrossGradient );
-            image.save( m_bgGradientImage->file(), "PNG" );
-            m_bgGradientImage->close();
+            m_bgGradientImage = new KTemporaryFile();
+            m_bgGradientImage->setPrefix( KStandardDirs::locateLocal( "tmp", "gradient" ) );
+            m_bgGradientImage->setSuffix( ".png" );
+            if ( m_bgGradientImage->open() ) {
+                QImage image = KImageEffect::gradient( QSize( 600, 1 ), gradientColor, gradientColor.light( 130 ), KImageEffect::PipeCrossGradient );
+                image.save( m_bgGradientImage->fileName(), "PNG" );
+                m_bgGradientImage->close();
+            }
         }
 
         if ( !m_headerGradientImage ) {
-            m_headerGradientImage = new KTempFile( KStandardDirs::locateLocal( "tmp", "gradient_header" ), ".png", 0600 );
-            QImage imageH = KImageEffect::unbalancedGradient( QSize( 1, 10 ), bgColor, gradientColor.light( 130 ), KImageEffect::VerticalGradient, 100, -100 );
-            imageH.copy( 0, 1, 1, 9 ).save( m_headerGradientImage->file(), "PNG" );
-            m_headerGradientImage->close();
+            m_headerGradientImage = new KTemporaryFile();
+            m_headerGradientImage->setPrefix( KStandardDirs::locateLocal( "tmp", "gradient_header" ) );
+            m_headerGradientImage->setSuffix( ".png" );
+            if ( m_headerGradientImage->open() ) {
+                QImage imageH = KImageEffect::unbalancedGradient( QSize( 1, 10 ), bgColor, gradientColor.light( 130 ), KImageEffect::VerticalGradient, 100, -100 );
+                imageH.copy( 0, 1, 1, 9 ).save( m_headerGradientImage->fileName(), "PNG" );
+                m_headerGradientImage->close();
+            }
         }
 
         if ( !m_shadowGradientImage ) {
-            m_shadowGradientImage = new KTempFile( KStandardDirs::locateLocal( "tmp", "gradient_shadow" ), ".png", 0600 );
-            QImage imageS = KImageEffect::unbalancedGradient( QSize( 1, 10 ), baseColor, Qt::gray, KImageEffect::VerticalGradient, 100, -100 );
-            imageS.save( m_shadowGradientImage->file(), "PNG" );
-            m_shadowGradientImage->close();
+            m_shadowGradientImage = new KTemporaryFile();
+            // KStandardDirs::locateLocal( "tmp", "gradient_shadow" ), ".png", 0600 );
+            m_shadowGradientImage->setPrefix( KStandardDirs::locateLocal( "tmp", "gradient_shadow" ) );
+            m_shadowGradientImage->setSuffix( ".png" );
+            if ( m_shadowGradientImage->open() ) {
+                QImage imageS = KImageEffect::unbalancedGradient( QSize( 1, 10 ), baseColor, Qt::gray, KImageEffect::VerticalGradient, 100, -100 );
+                imageS.save( m_shadowGradientImage->fileName(), "PNG" );
+                m_shadowGradientImage->close();
+            }
         }
-
-        //unlink the files for us on deletion
-        m_bgGradientImage->setAutoDelete( true );
-        m_headerGradientImage->setAutoDelete( true );
-        m_shadowGradientImage->setAutoDelete( true );
 
         //we have to set the color for body due to a KHTML bug
         //KHTML sets the base color but not the text color
