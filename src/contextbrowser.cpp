@@ -226,7 +226,7 @@ ContextBrowser::ContextBrowser( const char *name )
     m_lyricsTab = new Q3VBox(this, "lyrics_tab");
 
     m_lyricsToolBar = new Browser::ToolBar( m_lyricsTab );
-    m_lyricsToolBar->setIconText( KToolBar::IconTextRight, false );
+    m_lyricsToolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
     m_lyricsToolBar->insertButton( Amarok::icon( "refresh" ), LYRICS_REFRESH, true, i18n("Refresh") );
     m_lyricsToolBar->insertButton( Amarok::icon( "add_lyrics" ), LYRICS_ADD, true, i18n("Add") );
     m_lyricsToolBar->insertButton( Amarok::icon( "edit" ), LYRICS_EDIT, true, i18n("Edit") );
