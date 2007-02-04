@@ -2505,20 +2505,16 @@ Playlist::contentsDropEvent( QDropEvent *e )
     }
 
     else {
-        QString data;
-        QString subtype;
-        Q3TextDrag::decode( e, data, subtype );
-
-        debug() << "QTextDrag::subtype(): " << subtype << endl;
-
-        if( subtype == "amarok-sql" ) {
+        if( e->mimeData()->hasFormat( "amarok-sql" ) ) {
+            QString data( e->mimeData()->data( "amarok-sql" ) );
             setSorting( NO_SORT );
             QString query = data.section( "\n", 1 );
             ThreadManager::instance()->queueJob( new SqlLoader( query, after ) );
         }
 
-        else if( subtype == "dynamic" ) {
+        else if( e->mimeData()->hasFormat( "dynamic" ) ) {
             // Deserialize pointer
+            QString data( e->mimeData()->data( "dynamic" ) );
             DynamicEntry* entry = reinterpret_cast<DynamicEntry*>( data.toULongLong() );
 
             loadDynamicMode( entry );
