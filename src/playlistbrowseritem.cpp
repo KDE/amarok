@@ -307,7 +307,7 @@ void PlaylistCategory::setXml( const QDomElement &xml )
                 QDomDocument xml;
                 QFile xmlFile( xmlLocation );
                 QTextStream stream( &xmlFile );
-                stream.setCodec( QTextCodec::codecForName( "UTF-8" );
+                stream.setCodec( QTextCodec::codecForName( "UTF-8" ) );
                 stream.setAutoDetectUnicode( true );
 
                 if( !xmlFile.open( QIODevice::ReadOnly ) || !xml.setContent( stream.read() ) )
