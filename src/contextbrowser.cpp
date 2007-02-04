@@ -3176,10 +3176,10 @@ ContextBrowser::getEncodedImage( const QString &imageUrl )
     //debug() << "Encoding imageUrl: " << imageUrl << endl;
     const QImage img( imageUrl );
     QByteArray ba;
-    QBuffer buffer( ba );
+    QBuffer buffer( &ba, 0 );
     buffer.open( QIODevice::WriteOnly );
     img.save( &buffer, "PNG" ); // writes image into ba in PNG format
-    const QString coverImage = QString( "data:image/png;base64,%1" ).arg( KCodecs::base64Encode( ba ) );
+    const QString coverImage = QString( "data:image/png;base64,%1" ).arg( KCodecs::base64Encode( ba ).data() );
     //debug() << "Encoded imageUrl: " << coverImage << endl;
     return coverImage;
 }
