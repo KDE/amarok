@@ -354,8 +354,9 @@ ContextBrowser::ContextBrowser( const char *name )
     m_wikiToolBar->addAction(wikiConfigAction);
     //m_wikiToolBar->insertButton( Amarok::icon( "change_language" ), WIKI_CONFIG, true, i18n("Change Locale") );
 
-    m_wikiToolBar->setDelayedPopup( WIKI_BACK, m_wikiBackPopup );
-    m_wikiToolBar->setDelayedPopup( WIKI_FORWARD, m_wikiForwardPopup );
+    //TODO: Figure out how to handle these with KActions
+    //m_wikiToolBar->setDelayedPopup( WIKI_BACK, m_wikiBackPopup );
+    //m_wikiToolBar->setDelayedPopup( WIKI_FORWARD, m_wikiForwardPopup );
 
     m_wikiPage = new HTMLView( m_wikiTab, "wiki_page", true /* DNDEnabled */ );
 
