@@ -191,10 +191,10 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     removeButton   = new KAction( i18n("Delete"), Amarok::icon( "remove" ), 0, this, SLOT( removeSelectedItems() ), m_ac );
 
     m_toolbar = new Browser::ToolBar( browserBox );
-    m_toolbar->setIconText( KToolBar::IconTextRight, false ); //we want the open button to have text on right
+    m_toolbar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
     addMenuButton->plug( m_toolbar );
 
-    m_toolbar->setIconText( KToolBar::IconOnly, false );      //default appearance
+    m_toolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );      //default appearance
     m_toolbar->insertLineSeparator();
     renameButton->plug( m_toolbar);
     removeButton->plug( m_toolbar );

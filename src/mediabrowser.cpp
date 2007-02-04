@@ -254,7 +254,7 @@ MediaBrowser::MediaBrowser( const char *name )
     setSpacing( 4 );
 
     m_toolbar = new Browser::ToolBar( this );
-    m_toolbar->setIconText( KToolBar::IconTextRight, false );
+    m_toolbar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
     m_toolbar->insertButton( "connect_creating", CONNECT, true, i18n("Connect") );
     QToolTip::add( m_toolbar->getButton(CONNECT), i18n( "Connect media device" ) );
@@ -271,7 +271,7 @@ MediaBrowser::MediaBrowser( const char *name )
     m_toolbar->insertButton( Amarok::icon( "add_playlist" ), CUSTOM, SIGNAL( clicked() ), this, SLOT( customClicked() ), true, "custom" );
     QToolTip::add( m_toolbar->getButton(TRANSFER), i18n( "Transfer tracks to media device" ) );
 
-    m_toolbar->setIconText( KToolBar::IconOnly, false );
+    m_toolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
 
     m_toolbar->insertButton( Amarok::icon( "configure" ), CONFIGURE, true, i18n("Configure") );
     QToolTip::add( m_toolbar->getButton(CONFIGURE), i18n( "Configure device" ) );
@@ -558,7 +558,7 @@ MediaBrowser::activateDevice( int index, bool skipDummy )
         currentDevice()->view()->show();
         if( currentDevice()->customAction() )
         {
-            m_toolbar->setIconText( KToolBar::IconTextRight, false );
+            m_toolbar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
             currentDevice()->customAction()->plug( m_toolbar );
             m_toolbar->hide();
             m_toolbar->show();

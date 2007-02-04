@@ -184,7 +184,7 @@ CoverManager::CoverManager()
     #endif
 
     KToolBar* toolBar = new KToolBar( hbox );
-    toolBar->setIconText( KToolBar::IconTextRight );
+    toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
     toolBar->setFrameShape( Q3Frame::NoFrame );
     toolBar->insertButton( "view_choose", 1, m_viewMenu, true, i18n( "View" ) );
     #ifdef AMAZON_SUPPORT

@@ -87,7 +87,7 @@ DEBUG_BLOCK
     customButton->setText( i18n("Add computer") );
 
     toolbar = CollectionBrowser::instance()->getToolBar();
-    toolbar->setIconText( KToolBar::IconTextRight, false );
+    toolbar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
     m_broadcastButton = new KToolBarButton( "connect_creating", 0, toolbar, "broadcast_button",
                                                           i18n("Share My Music") );
     m_broadcastButton->setToggle( true );

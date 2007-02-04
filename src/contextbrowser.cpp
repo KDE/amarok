@@ -232,7 +232,7 @@ ContextBrowser::ContextBrowser( const char *name )
     m_lyricsToolBar->insertButton( Amarok::icon( "edit" ), LYRICS_EDIT, true, i18n("Edit") );
     m_lyricsToolBar->setToggle( LYRICS_EDIT, true );
     m_lyricsToolBar->insertButton( Amarok::icon( "search" ), LYRICS_SEARCH, true, i18n("Search") );
-    m_lyricsToolBar->setIconText( KToolBar::IconOnly, false );
+    m_lyricsToolBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
     m_lyricsToolBar->insertButton( Amarok::icon( "external" ), LYRICS_BROWSER, true, i18n("Open in external browser") );
 
     { //Search text inside lyrics. Code inspired/copied from playlistwindow.cpp

@@ -581,7 +581,7 @@ void PlaylistWindow::createGUI()
          << "toolbutton_burn_menu"
          << "toolbutton_amarok_menu";
 
-    m_toolbar->setIconText( KToolBar::IconTextRight, false ); //we want some buttons to have text on right
+    m_toolbar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
     const QStringList::ConstIterator end  = list.constEnd();
     const QStringList::ConstIterator last = list.fromLast();
@@ -602,7 +602,7 @@ void PlaylistWindow::createGUI()
         }
     }
 
-    m_toolbar->setIconText( KToolBar::IconOnly, false ); //default appearance
+    m_toolbar->setToolButtonStyle( Qt::ToolButtonIconOnly ); //default appearance
     conserveMemory();
     setUpdatesEnabled( true );
 }
