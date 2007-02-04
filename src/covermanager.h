@@ -15,6 +15,7 @@
 #include <k3iconview.h>
 #include <QDialog>
 #include <QPixmap>
+#include <Q3ProgressBar>
 
 class Q3ListViewItem;
 class CoverViewItem;
@@ -94,7 +95,7 @@ class CoverManager : public QSplitter
         //status bar widgets
         QLabel         *m_statusLabel;
         Q3HBox          *m_progressBox;
-        KProgress      *m_progress;
+        Q3ProgressBar   *m_progress;
         QString         m_oldStatusText;
 
         QTimer         *m_timer;              //search filter timer

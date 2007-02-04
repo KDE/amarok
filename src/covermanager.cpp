@@ -39,6 +39,7 @@
 #include <Q3Frame>
 #include <QDropEvent>
 #include <QToolButton>
+#include <Q3ProgressBar>
 
 #include <kapplication.h>
 #include <kconfig.h>
@@ -51,7 +52,6 @@
 #include <k3multipledrag.h>
 #include <kio/netaccess.h>
 #include <kmenu.h>    //showCoverMenu()
-#include <kprogress.h>
 #include <kpushbutton.h>
 #include <ksqueezedtextlabel.h> //status label
 #include <kstandarddirs.h>   //KGlobal::dirs()
@@ -185,10 +185,11 @@ CoverManager::CoverManager()
 
     KToolBar* toolBar = new KToolBar( hbox );
     toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
-    toolBar->setFrameShape( Q3Frame::NoFrame );
-    toolBar->insertButton( "view_choose", 1, m_viewMenu, true, i18n( "View" ) );
+//     toolBar->setFrameShape( Q3Frame::NoFrame );
+//     toolBar->insertButton( "view_choose", 1, m_viewMenu, true, i18n( "View" ) );
+    toolBar->addAction( QIcon("view_choose"), i18n("View" ) );
     #ifdef AMAZON_SUPPORT
-    toolBar->insertButton( "babelfish", 2, m_amazonLocaleMenu, true, i18n( "Amazon Locale" ) );
+    toolBar->addAction( "babelfish", 2, m_amazonLocaleMenu, true, i18n( "Amazon Locale" ) );
 
     QString locale = AmarokConfig::amazonLocale();
     m_currentLocale = CoverFetcher::localeStringToID( locale );
@@ -209,7 +210,7 @@ CoverManager::CoverManager()
     m_statusBar->addWidget( m_progressBox = new Q3HBox( m_statusBar ), 1, true );
     KPushButton *stopButton = new KPushButton( KGuiItem(i18n("Abort"), "stop"), m_progressBox );
     connect( stopButton, SIGNAL(clicked()), SLOT(stopFetching()) );
-    m_progress = new KProgress( m_progressBox );
+    m_progress = new Q3ProgressBar( m_progressBox );
     m_progress->setCenterIndicator( true );
 
     const int h = m_statusLabel->height() + 3;
@@ -497,7 +498,7 @@ void CoverManager::showCoverMenu( Q3IconViewItem *item, const QPoint &p ) //SLOT
 
     KMenu menu;
 
-    menu.insertTitle( i18n( "Cover Image" ) );
+    menu.addTitle( i18n( "Cover Image" ) );
 
     Q3PtrList<CoverViewItem> selected = selectedItems();
     if( selected.count() > 1 ) {
@@ -679,9 +680,10 @@ void CoverManager::stopFetching()
     m_fetchCounter = 0;
 
     //delete all cover fetchers
-    QObjectList* list = queryList( "CoverFetcher" );
-    for( QObject *obj = list->first(); obj; obj = list->next()  )
-        obj->deleteLater();
+    QObjectList list = queryList( "CoverFetcher" );
+//    for( QObject *obj = list->first(); obj; obj = list->next()  )
+    oldForeachType( QObjectList, list )
+        (*it)->deleteLater();
 
     delete list;
 
@@ -720,7 +722,7 @@ void CoverManager::setCustomSelectedCovers()
         url.setPath( values.first() );
         startPath = url.directory();
     }
-    KUrl file = KFileDialog::getImageOpenURL( startPath, this, i18n( "Select Cover Image File" ) );
+    KUrl file = KFileDialog::getImageOpenUrl( startPath, this, i18n( "Select Cover Image File" ) );
     if ( !file.isEmpty() ) {
         kapp->processEvents();    //it may takes a while so process pending events
         QString tmpFile;
