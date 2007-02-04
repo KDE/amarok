@@ -29,7 +29,7 @@ public:
    void tearDown();
 
    // player functions
-   int  setURL(const char *url, 
+   int  setUrl(const char *url, 
                int playerIndex,
                bool islocal = true);
    bool done(int playerIndex);
@@ -200,7 +200,7 @@ private:
    static bool sendmessage(int fd, msgid m, unsigned char *buf, int sz);
    static bool sendrequest(int fd, msgid m) { return (sendmessage(fd, m, 0, 0)); }
    static bool sendready(int fd) { return (sendrequest(fd, READY)); }
-   static bool sendsetURL(int fd, const char *url, bool islocal);
+   static bool sendsetUrl(int fd, const char *url, bool islocal);
    static bool sendstart(int fd, bool fadin, unsigned long fadetime);
    static bool sendstop(int fd) { return (sendrequest(fd, STOP)); }
    static bool sendpause(int fd) { return (sendrequest(fd, PAUSE)); }

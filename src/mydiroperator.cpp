@@ -17,7 +17,7 @@ MyDirOperator::myHome()
 {
     KUrl u;
     u.setPath( m_medium ? m_medium->mountPoint() : QDir::homePath() );
-    setURL(u, true);
+    setUrl(u, true);
 }
 
 void
@@ -27,7 +27,7 @@ MyDirOperator::myCdUp()
     tmp.cd( QString::fromLatin1(".."));
     if( m_medium && !tmp.path().startsWith( m_medium->mountPoint() ) )
         tmp.setPath( m_medium->mountPoint() );
-    setURL(tmp, true);
+    setUrl(tmp, true);
 }
 
 

@@ -321,7 +321,7 @@ HelixEngine::load( const KUrl &url, bool isStream )
          setFadeout(true, m_xfadeLength, m_current);
       }
       Engine::Base::load( url, false ); // we don't crossfade streams ?? do we load the base here ??
-      PlayerControl::setURL( QFile::encodeName( url.url() ), nextPlayer, !isStream );
+      PlayerControl::setUrl( QFile::encodeName( url.url() ), nextPlayer, !isStream );
       m_isStream = false;
    }
    else
@@ -338,11 +338,11 @@ HelixEngine::load( const KUrl &url, bool isStream )
    m_url = url;
 
    if (url.isLocalFile())
-      PlayerControl::setURL( QFile::encodeName( url.url() ), nextPlayer, !m_isStream );
+      PlayerControl::setUrl( QFile::encodeName( url.url() ), nextPlayer, !m_isStream );
    else
    {
       m_isStream = true;
-      PlayerControl::setURL( QFile::encodeName( url.url() ), nextPlayer, !m_isStream );
+      PlayerControl::setUrl( QFile::encodeName( url.url() ), nextPlayer, !m_isStream );
    }
 
    return true;

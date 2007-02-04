@@ -2638,7 +2638,7 @@ CollectionDB::getPodcastChannels()
     oldForeach( values )
     {
         PodcastChannelBundle pcb;
-        pcb.setURL         ( KUrl::fromPathOrUrl(*it) );
+        pcb.setUrl         ( KUrl::fromPathOrUrl(*it) );
         pcb.setTitle       ( *++it );
         pcb.setLink        ( KUrl::fromPathOrUrl(*++it) );
         pcb.setImageURL    ( KUrl::fromPathOrUrl(*++it) );
@@ -2676,7 +2676,7 @@ CollectionDB::getPodcastEpisodes( const KUrl &parent, bool onlyNew, int limit )
     {
         PodcastEpisodeBundle peb;
         peb.setDBId        ( (*it).toInt() );
-        peb.setURL         ( KUrl::fromPathOrUrl(*++it) );
+        peb.setUrl         ( KUrl::fromPathOrUrl(*++it) );
         if( *++it != "NULL" )
             peb.setLocalURL    ( KUrl::fromPathOrUrl(*it) );
         peb.setParent      ( KUrl::fromPathOrUrl(*++it) );
@@ -2711,7 +2711,7 @@ CollectionDB::getPodcastEpisodeById( int id )
     oldForeach( values )
     {
         peb.setDBId        ( id );
-        peb.setURL         ( KUrl::fromPathOrUrl(*it) );
+        peb.setUrl         ( KUrl::fromPathOrUrl(*it) );
         if( *++it != "NULL" )
             peb.setLocalURL( KUrl::fromPathOrUrl(*it) );
         peb.setParent      ( KUrl::fromPathOrUrl(*++it) );
@@ -2773,7 +2773,7 @@ CollectionDB::getPodcastChannelBundle( const KUrl &url, PodcastChannelBundle *pc
 
     oldForeach( values )
     {
-        pcb->setURL         ( KUrl::fromPathOrUrl(*it) );
+        pcb->setUrl         ( KUrl::fromPathOrUrl(*it) );
         pcb->setTitle       ( *++it );
         pcb->setLink        ( KUrl::fromPathOrUrl(*++it) );
         if( *++it != "NULL" )

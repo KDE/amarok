@@ -101,7 +101,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
     }
 
     KActionCollection* ac = new KActionCollection( this );
-    KStandardAction::selectAll( this, SLOT( selectAll() ), ac, "filebrowser_select_all" );
+    KStandardAction::selectAll( this, SLOT( selectAll() ), ac );
 
     KToolBar *toolbar = new Browser::ToolBar( this );
 
@@ -113,7 +113,8 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
 
         m_filter = new ClickLineEdit( i18n( "Enter search terms here" ), searchToolBar );
 
-        searchToolBar->setStretchableWidget( m_filter );
+        // still needed
+        //searchToolBar->setStretchableWidget( m_filter );
 
         connect( button, SIGNAL(clicked()), m_filter, SLOT(clear()) );
 
@@ -135,14 +136,15 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         box->setBackgroundMode( Qt::PaletteBase );
 
         //folder selection combo box
-        m_combo = new KUrlComboBox( KUrlComboBox::Directories, true, box, "path combo" );
+        m_combo = new KUrlComboBox( KUrlComboBox::Directories, true, box );
+        m_combo->setObjectName( "path combo" );
 
         if (!m_medium){
             m_combo->setCompletionObject( new KUrlCompletion( KUrlCompletion::DirCompletion ) );
             m_combo->setAutoDeleteCompletionObject( true );
         }
         m_combo->setMaxItems( 9 );
-        m_combo->setURLs( Amarok::config( "Filebrowser" )->readPathListEntry( "Dir History" ) );
+        m_combo->setUrls( Amarok::config( "Filebrowser" )->readPathListEntry( "Dir History" ) );
 
         if (!m_medium)
             m_combo->lineEdit()->setText( location->path() );
@@ -295,23 +297,23 @@ void FileBrowser::setUrl( const KUrl &url )
 {
     m_dir->setFocus();
     if (!m_medium)
-        m_dir->setURL( url, true );
+        m_dir->setUrl( url, true );
     else {
         QString urlpath = url.isLocalFile() ? url.path() : url.prettyUrl();
         KUrl newURL( urlpath.prepend( m_medium->mountPoint() ).remove("..") );
         //debug() << "set-url-kurl: changing to: " << newURL.path() << endl;
-        m_dir->setURL( newURL, true );
+        m_dir->setUrl( newURL, true );
     }
 }
 
 void FileBrowser::setUrl( const QString &url )
 {
     if (!m_medium)
-        m_dir->setURL( KUrl(url), true );
+        m_dir->setUrl( KUrl(url), true );
     else{
         KUrl newURL( QString(url).prepend( m_medium->mountPoint() ).remove("..") );
         //debug() << "set-url-qstring: changing to: " << newURL.path() << endl;
-        m_dir->setURL( newURL, true );
+        m_dir->setUrl( newURL, true );
     }
 }
 
@@ -412,7 +414,7 @@ FileBrowser::urlChanged( const KUrl &u )
     urls.remove( url );
     urls.prepend( url );
 
-    m_combo->setURLs( urls, KUrlComboBox::RemoveBottom );
+    m_combo->setUrls( urls, KUrlComboBox::RemoveBottom );
 }
 
 inline void
@@ -519,7 +521,7 @@ FileBrowser::gotoCurrentFolder()
     const KUrl &url = EngineController::instance()->bundle().url();
     KUrl dirURL = KUrl::fromPathOrUrl( url.directory() );
 
-    m_combo->setURL( dirURL );
+    m_combo->seturL( dirURL );
     setUrl( dirURL );
 }
 

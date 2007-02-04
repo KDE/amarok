@@ -115,7 +115,7 @@ public:
    void play(const char *url, int playerIndex = ALL_PLAYERS,
              bool fadein = false, bool fadeout = false,
              unsigned long fadetime = 0);                            // play the file, setting it as the current url; wait for it to finish
-   int  setURL(const char *url, 
+   int  setUrl(const char *url, 
                int playerIndex = ALL_PLAYERS,
                bool islocal = true);                                 // set the current url
    bool done(int playerIndex = ALL_PLAYERS);                         // test to see if the player(s) is(are) done

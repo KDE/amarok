@@ -3554,7 +3554,7 @@ MediaQueue::load( const QString& filename )
             else if(node.nodeName() == "PodcastRSS" )
                 peb.setParent( KUrl::fromPathOrUrl( node.firstChild().toText().nodeValue() ) );
             else if(node.nodeName() == "PodcastURL" )
-                peb.setURL( KUrl::fromPathOrUrl( node.firstChild().toText().nodeValue() ) );
+                peb.setUrl( KUrl::fromPathOrUrl( node.firstChild().toText().nodeValue() ) );
         }
 
         if( podcast )

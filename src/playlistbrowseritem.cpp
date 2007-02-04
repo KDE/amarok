@@ -2431,7 +2431,7 @@ PodcastEpisode::PodcastEpisode( Q3ListViewItem *parent, Q3ListViewItem *after,
 
     KUrl parentUrl = static_cast<PodcastChannel*>(parent)->url();
     m_bundle.setDBId( -1 );
-    m_bundle.setURL( link );
+    m_bundle.setUrl( link );
     m_bundle.setParent( parentUrl );
     m_bundle.setTitle( title );
     m_bundle.setSubtitle( subtitle );
@@ -2987,7 +2987,7 @@ class AssociatePodcastDialog : public KDialog
 
         m_urlRequester = new KUrlRequester( vbox );
         if( dynamic_cast<PodcastChannel *>(item->parent()) )
-        m_urlRequester->setURL( static_cast<PodcastChannel *>(item->parent())->saveLocation() );
+        m_urlRequester->setUrl( static_cast<PodcastChannel *>(item->parent())->saveLocation() );
     }
     KUrl url() const { return KUrl::fromPathOrUrl( m_urlRequester->url() ); }
 };

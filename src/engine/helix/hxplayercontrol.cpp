@@ -219,10 +219,10 @@ void PlayerControl::init(const char *corelibpath, const char *pluginslibpath, co
                      int len = strlen((const char *)&buf[1]); // not that this would prevent a crash...
                      if (m_inited)
                      {
-                        cerr << "CHILD " << m_index << " setURL for " << (const char *)&buf[1] << 
+                        cerr << "CHILD " << m_index << " setUrl for " << (const char *)&buf[1] << 
                            ",islocal=" << islocal << ",len=" << len << endl;
                         if (sz == len + 2) 
-                           player->setURL((const char *)&buf[1], 0, islocal); // remember, we sent the null...
+                           player->setUrl((const char *)&buf[1], 0, islocal); // remember, we sent the null...
                         else
                            cerr << "CHILD " << m_index << " sz not right in SETURL, sz=" << sz << endl;
                      }
@@ -558,10 +558,10 @@ void PlayerControl::start(int playerIndex, bool fadein, unsigned long fadetime)
    sendstart(m_children[playerIndex].m_pipeB[1], fadein, fadetime);
 }
 
-int PlayerControl::setURL(const char *url, int playerIndex, bool islocal)
+int PlayerControl::setUrl(const char *url, int playerIndex, bool islocal)
 {
    m_children[playerIndex].islocal = islocal;
-   if (sendsetURL(m_children[playerIndex].m_pipeB[1], url, islocal))
+   if (sendsetUrl(m_children[playerIndex].m_pipeB[1], url, islocal))
       return 0;
 
    return -1;
@@ -1178,7 +1178,7 @@ bool PlayerControl::sendmessage(int fd, msgid m, unsigned char *buf, int sz)
    return (ret == (sz + 5));
 }
 
-bool PlayerControl::sendsetURL(int fd, const char *url, bool islocal)
+bool PlayerControl::sendsetUrl(int fd, const char *url, bool islocal)
 {
    int len = strlen(url);
    unsigned char* buf = new unsigned char[ len + 2 ];

@@ -454,7 +454,7 @@ class StreamEntry : public PlaylistBrowserEntry
         StreamEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const QDomElement &xmlDefinition );
         ~StreamEntry() { };
 
-        void  setURL  ( KUrl u )    { m_url = u; }
+        void  setUrl  ( KUrl u )    { m_url = u; }
         void  setTitle( QString t ) { m_title = t; }
 
         void  setup();

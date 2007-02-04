@@ -195,7 +195,7 @@ void PodcastSettingsDialog::setSettings( PodcastSettings *settings )
 {
     QString saveLocation = settings->m_saveLocation;
 
-    m_ps->m_saveLocation->setURL( saveLocation );
+    m_ps->m_saveLocation->setUrl( saveLocation );
     m_ps->m_autoFetchCheck->setChecked( settings->m_autoScan );
 
     if( settings->m_fetch == STREAM )

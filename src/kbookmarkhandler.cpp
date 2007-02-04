@@ -48,5 +48,5 @@ KBookmarkHandler::currentURL() const
 void
 KBookmarkHandler::openBookmarkURL( const QString &url )
 {
-    static_cast<KDirOperator*>(parent())->setURL( KUrl(url), true );
+    static_cast<KDirOperator*>(parent())->setUrl( KUrl(url), true );
 }

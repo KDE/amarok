@@ -54,7 +54,7 @@ class PodcastChannelBundle
         /// The id which the parent folder has in the database
         int     parentId()    const;
 
-        void    setURL( const KUrl &u );
+        void    setUrl( const KUrl &u );
         void    setTitle( const QString &t );
         void    setAuthor( const QString &a );
         void    setLink( const KUrl &l );
@@ -105,7 +105,7 @@ inline const QString &PodcastChannelBundle::description() const { return m_descr
 inline const QString &PodcastChannelBundle::copyright()   const { return m_copyright; }
 inline int     PodcastChannelBundle::parentId()    const { return m_parentId; }
 
-inline void    PodcastChannelBundle::setURL         ( const KUrl &u )    { m_url = u; }
+inline void    PodcastChannelBundle::setUrl         ( const KUrl &u )    { m_url = u; }
 inline void    PodcastChannelBundle::setTitle       ( const QString &t ) { m_title = t; }
 inline void    PodcastChannelBundle::setAuthor      ( const QString &a ) { m_author = a; }
 inline void    PodcastChannelBundle::setLink        ( const KUrl &l )    { m_link = l; }
@@ -184,7 +184,7 @@ class PodcastEpisodeBundle
         bool    isNew()       const;
 
         void    setDBId( const int i );
-        void    setURL( const KUrl &u );
+        void    setUrl( const KUrl &u );
         void    setLocalURL( const KUrl &u );
         void    setParent( const KUrl &u );
         void    setAuthor( const QString &a );
@@ -235,7 +235,7 @@ inline const QString &PodcastEpisodeBundle::guid()        const { return m_guid;
 inline bool           PodcastEpisodeBundle::isNew()       const { return m_isNew; }
 
 inline void    PodcastEpisodeBundle::setDBId( const int i )             { m_id = i; }
-inline void    PodcastEpisodeBundle::setURL( const KUrl &u )            { m_url = u; }
+inline void    PodcastEpisodeBundle::setUrl( const KUrl &u )            { m_url = u; }
 inline void    PodcastEpisodeBundle::setLocalURL( const KUrl &u )       { m_localUrl = u; }
 inline void    PodcastEpisodeBundle::setParent( const KUrl &u )         { m_parent = u; }
 inline void    PodcastEpisodeBundle::setAuthor( const QString &a )      { m_author = a; }

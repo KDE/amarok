@@ -492,7 +492,7 @@ void PlaylistBrowser::editStreamURL( StreamEntry *item, const bool readonly )
     if( dialog.exec() == QDialog::Accepted )
     {
         item->setTitle( dialog.name() );
-        item->setURL( dialog.url() );
+        item->setUrl( dialog.url() );
         item->setText(0, dialog.name() );
     }
 }

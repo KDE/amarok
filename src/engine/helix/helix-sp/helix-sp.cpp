@@ -1488,14 +1488,14 @@ void HelixSimplePlayer::setDirectPCMVolume(int vol)
 }
 
 
-int HelixSimplePlayer::setURL(const char *file, int playerIndex, bool islocal)
+int HelixSimplePlayer::setUrl(const char *file, int playerIndex, bool islocal)
 {
    if (playerIndex == ALL_PLAYERS)
    {
       int i;
 
       for (i=0; i<nNumPlayers; i++)
-         setURL(file, i);
+         setUrl(file, i);
    }
    else
    {
@@ -1600,7 +1600,7 @@ int HelixSimplePlayer::getPluginInfo(int index,
 
 void HelixSimplePlayer::play(const char *file, int playerIndex, bool fadein, bool fadeout, unsigned long fadetime)
 {
-   if (!setURL(file, playerIndex))
+   if (!setUrl(file, playerIndex))
       play(playerIndex, fadein, fadeout, fadetime);
 }
 
@@ -1725,7 +1725,7 @@ void HelixSimplePlayer::start(int playerIndex, bool fadein, unsigned long fadeti
 
 void HelixSimplePlayer::start(const char *file, int playerIndex, bool fadein, unsigned long fadetime)
 {
-   setURL(file, playerIndex);
+   setUrl(file, playerIndex);
    start(playerIndex, fadein, fadetime);
 }
 
