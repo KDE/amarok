@@ -15,7 +15,7 @@
 #include "statusbar.h"       //for status messages
 #include "tagdialog.h"
 #include "tagguesser.h"
-#include "tagguesserconfigdialog.h"
+#include "ui_tagguesserconfigdialog.h"
 #include "trackpickerdialog.h"
 
 #include <taglib/tfile.h> //TagLib::File::isWritable
@@ -264,8 +264,10 @@ TagDialog::loadCover( const QString &artist, const QString &album )
 void
 TagDialog::setFileNameSchemes() //SLOT
 {
-    TagGuesserConfigDialog* dialog = new TagGuesserConfigDialog(this, "child");
-    dialog->exec();
+    KDialog *kDialog = new KDialog(this);
+    Ui::TagGuesserConfigDialog* dialog = new Ui::TagGuesserConfigDialog();
+    dialog->setupUi(kDialog);
+    kDialog->exec();
 }
 
 

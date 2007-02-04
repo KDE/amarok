@@ -32,61 +32,61 @@ add_subdirectory( device )
 
 set(libsqlite_la_SRCS )
 if(SQLITE_FOUND)
-	set(libsqlite_SRCS 
-			    sqlite/alter.c 
-			    sqlite/analyze.c 
-			    sqlite/attach.c 
-			    sqlite/auth.c 
-			    sqlite/btree.c 
-			    sqlite/build.c 
-			    sqlite/callback.c 
-			    sqlite/complete.c 
-			    sqlite/date.c 
-			    sqlite/delete.c 
-			    sqlite/expr.c 
-			    sqlite/func.c 
-			    sqlite/hash.c 
-			    sqlite/insert.c 
-			    sqlite/legacy.c 
-			    sqlite/main.c 
-			    sqlite/opcodes.c 
-			    sqlite/os.c 
-			    sqlite/os_unix.c 
-			    sqlite/os_win.c 
-			    sqlite/pager.c 
-			    sqlite/parse.c 
-			    sqlite/pragma.c 
-			    sqlite/prepare.c 
-			    sqlite/printf.c 
-			    sqlite/random.c 
-			    sqlite/select.c 
-			    sqlite/table.c 
-				sqlite/tokenize.c 
-			    sqlite/trigger.c 
-			    sqlite/update.c 
-			    sqlite/utf.c 
-			    sqlite/util.c 
-			    sqlite/vacuum.c 
-				sqlite/vdbe.c 
-				sqlite/vdbeapi.c 
-				sqlite/vdbeaux.c 
-				sqlite/vdbefifo.c 
-				sqlite/vdbemem.c 
+	set(libsqlite_SRCS
+			    sqlite/alter.c
+			    sqlite/analyze.c
+			    sqlite/attach.c
+			    sqlite/auth.c
+			    sqlite/btree.c
+			    sqlite/build.c
+			    sqlite/callback.c
+			    sqlite/complete.c
+			    sqlite/date.c
+			    sqlite/delete.c
+			    sqlite/expr.c
+			    sqlite/func.c
+			    sqlite/hash.c
+			    sqlite/insert.c
+			    sqlite/legacy.c
+			    sqlite/main.c
+			    sqlite/opcodes.c
+			    sqlite/os.c
+			    sqlite/os_unix.c
+			    sqlite/os_win.c
+			    sqlite/pager.c
+			    sqlite/parse.c
+			    sqlite/pragma.c
+			    sqlite/prepare.c
+			    sqlite/printf.c
+			    sqlite/random.c
+			    sqlite/select.c
+			    sqlite/table.c
+				sqlite/tokenize.c
+			    sqlite/trigger.c
+			    sqlite/update.c
+			    sqlite/utf.c
+			    sqlite/util.c
+			    sqlite/vacuum.c
+				sqlite/vdbe.c
+				sqlite/vdbeapi.c
+				sqlite/vdbeaux.c
+				sqlite/vdbefifo.c
+				sqlite/vdbemem.c
 				sqlite/where.c
 )
 endif(SQLITE_FOUND)
 
 
-include_directories( 
-	${CMAKE_SOURCE_DIR}/amarok/src/amarokcore 
-#	${CMAKE_SOURCE_DIR}/amarok/src/klegendary 
-#	${CMAKE_SOURCE_DIR}/amarok/src/analyzers 
-	${CMAKE_SOURCE_DIR}/amarok/src/plugin 
-	${CMAKE_SOURCE_DIR}/amarok/src/statusbar 
+include_directories(
+	${CMAKE_SOURCE_DIR}/amarok/src/amarokcore
+#	${CMAKE_SOURCE_DIR}/amarok/src/klegendary
+#	${CMAKE_SOURCE_DIR}/amarok/src/analyzers
+	${CMAKE_SOURCE_DIR}/amarok/src/plugin
+	${CMAKE_SOURCE_DIR}/amarok/src/statusbar
 	${CMAKE_SOURCE_DIR}/amarok/src/mediadevice
 	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wma
-	${CMAKE_SOURCE_DIR}/amarok/src 
-	${KDE4_INCLUDE_DIR} 
+	${CMAKE_SOURCE_DIR}/amarok/src
+	${KDE4_INCLUDE_DIR}
 	${QT_INCLUDES}  )
 
 if(MP4V2_FOUND)
@@ -98,75 +98,75 @@ set(tagmplib_SRCS
 	${CMAKE_SOURCE_DIR}/amarok/src/metadata/mp4/taglib_mp4filetyperesolver.cpp
 	)
 else(MP4V2_FOUND)
-set(tagmplib_SRCS	
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/taglib_mp4filetyperesolver.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4file.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4itunestag.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4isobox.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4isofullbox.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4skipbox.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4moovbox.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4mvhdbox.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4ilstbox.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/boxfactory.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4fourcc.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4udtabox.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4metabox.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4tagsproxy.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4mdiabox.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4minfbox.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4audioproperties.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4hdlrbox.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4stblbox.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4audiosampleentry.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4stsdbox.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4sampleentry.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4trakbox.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4propsproxy.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunesnambox.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunesartbox.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunesalbbox.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunescvrbox.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunesgenbox.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunestrknbox.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunesdaybox.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunescmtbox.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunesgrpbox.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/ituneswrtbox.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunesdiskbox.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunestmpobox.cpp 
+set(tagmplib_SRCS
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/taglib_mp4filetyperesolver.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4file.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4itunestag.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4isobox.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4isofullbox.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4skipbox.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4moovbox.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4mvhdbox.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4ilstbox.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/boxfactory.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4fourcc.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4udtabox.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4metabox.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4tagsproxy.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4mdiabox.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4minfbox.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4audioproperties.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4hdlrbox.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4stblbox.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4audiosampleentry.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4stsdbox.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4sampleentry.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4trakbox.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4propsproxy.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunesnambox.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunesartbox.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunesalbbox.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunescvrbox.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunesgenbox.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunestrknbox.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunesdaybox.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunescmtbox.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunesgrpbox.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/ituneswrtbox.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunesdiskbox.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunestmpobox.cpp
 	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunesdatabox.cpp
 )
 endif(MP4V2_FOUND)
 
 
 set(libtagwma_SRCS
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wma/wmaattribute.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wma/wmaproperties.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wma/wmatag.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wma/wmafile.cpp 
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wma/wmaattribute.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wma/wmaproperties.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wma/wmatag.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wma/wmafile.cpp
 	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wma/taglib_wmafiletyperesolver.cpp
 )
 
-set(libtagaac_SRCS 
+set(libtagaac_SRCS
 	${CMAKE_SOURCE_DIR}/amarok/src/metadata/aac/aacfiletyperesolver.cpp
 )
 
-set(libmetadata_SRCS 
+set(libmetadata_SRCS
 	${CMAKE_SOURCE_DIR}/amarok/src/metadata/tplugins.cpp
 	)
 
-set(libtagrealmedia_SRCS 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/rmff/rmff.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/rmff/taglib_realmediafile.cpp 
+set(libtagrealmedia_SRCS
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/rmff/rmff.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/rmff/taglib_realmediafile.cpp
 	${CMAKE_SOURCE_DIR}/amarok/src/metadata/rmff/taglib_realmediafiletyperesolver.cpp
 )
 
 
-set(libtagaudible_SRCS 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/audible/audibleproperties.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/audible/audibletag.cpp 
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/audible/taglib_audiblefile.cpp 
+set(libtagaudible_SRCS
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/audible/audibleproperties.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/audible/audibletag.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/audible/taglib_audiblefile.cpp
 	${CMAKE_SOURCE_DIR}/amarok/src/metadata/audible/taglib_audiblefiletyperesolver.cpp
 	)
 
@@ -176,104 +176,104 @@ set(libamarokcore_SRCS
 	${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/crashhandler.cpp
 )
 
-set(libplugin_SRCS 
+set(libplugin_SRCS
 	${CMAKE_SOURCE_DIR}/amarok/src/plugin/plugin.cpp
 	)
 
-# set(libanalyzers_SRCS 
-#     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/analyzerbase.cpp 
-#     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/analyzerfactory.cpp 
-#     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/baranalyzer.cpp 
-#     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/blockanalyzer.cpp 
-#     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/glanalyzer.cpp 
-#     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/glanalyzer2.cpp 
-#     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/glanalyzer3.cpp 
-#     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/sonogram.cpp 
-#     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/turbine.cpp 
+# set(libanalyzers_SRCS
+#     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/analyzerbase.cpp
+#     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/analyzerfactory.cpp
+#     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/baranalyzer.cpp
+#     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/blockanalyzer.cpp
+#     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/glanalyzer.cpp
+#     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/glanalyzer2.cpp
+#     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/glanalyzer3.cpp
+#     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/sonogram.cpp
+#     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/turbine.cpp
 #     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/boomanalyzer.cpp
 # )
 
-set(libstatusbar_SRCS 
-    ${CMAKE_SOURCE_DIR}/amarok/src/statusbar/statusBarBase.cpp 
-    ${CMAKE_SOURCE_DIR}/amarok/src/statusbar/statusbar.cpp 
-    ${CMAKE_SOURCE_DIR}/amarok/src/statusbar/overlayWidget.cpp 
-    ${CMAKE_SOURCE_DIR}/amarok/src/statusbar/popupMessage.cpp 
-    ${CMAKE_SOURCE_DIR}/amarok/src/statusbar/progressBar.cpp 
-    ${CMAKE_SOURCE_DIR}/amarok/src/statusbar/squeezedtextlabel.cpp 
+set(libstatusbar_SRCS
+    ${CMAKE_SOURCE_DIR}/amarok/src/statusbar/statusBarBase.cpp
+    ${CMAKE_SOURCE_DIR}/amarok/src/statusbar/statusbar.cpp
+    ${CMAKE_SOURCE_DIR}/amarok/src/statusbar/overlayWidget.cpp
+    ${CMAKE_SOURCE_DIR}/amarok/src/statusbar/popupMessage.cpp
+    ${CMAKE_SOURCE_DIR}/amarok/src/statusbar/progressBar.cpp
+    ${CMAKE_SOURCE_DIR}/amarok/src/statusbar/squeezedtextlabel.cpp
     ${CMAKE_SOURCE_DIR}/amarok/src/statusbar/queueLabel.cpp
 	)
 
 ########### next target ###############
 
-set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS} ${libmetadata_SRCS} ${libsqlite_SRCS} ${tagmplib_SRCS} ${libtagrealmedia_SRCS} ${libtagaudible_SRCS} ${libtagaac_SRCS} ${libtagwma_SRCS} # ${libanalyzers_SRCS} 
-   Options1.ui.h 
-   actionclasses.cpp 
-   app.cpp 
-   collectionbrowser.cpp 
-   collectiondb.cpp 
-   columnlist.cpp 
-   configdialog.cpp 
-   contextbrowser.cpp 
-   coverfetcher.cpp 
-   covermanager.cpp 
-   cuefile.cpp 
-   dbsetup.ui.h 
-   deviceconfiguredialog.cpp 
-   devicemanager.cpp 
-   directorylist.cpp 
-   dynamicmode.cpp 
-   enginebase.cpp 
-   enginecontroller.cpp 
-   engineobserver.cpp 
-   equalizergraph.cpp 
-   equalizerpresetmanager.cpp 
-   equalizersetup.cpp 
-   expression.cpp 
-   fht.cpp 
-   filebrowser.cpp 
-   htmlview.cpp 
-   iconloader.cpp 
-   k3bexporter.cpp 
-   kbookmarkhandler.cpp 
-   ktrm.cpp 
-   mediabrowser.cpp 
+set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS} ${libmetadata_SRCS} ${libsqlite_SRCS} ${tagmplib_SRCS} ${libtagrealmedia_SRCS} ${libtagaudible_SRCS} ${libtagaac_SRCS} ${libtagwma_SRCS} # ${libanalyzers_SRCS}
+   Options1.ui.h
+   actionclasses.cpp
+   app.cpp
+   collectionbrowser.cpp
+   collectiondb.cpp
+   columnlist.cpp
+   configdialog.cpp
+   contextbrowser.cpp
+   coverfetcher.cpp
+   covermanager.cpp
+   cuefile.cpp
+   dbsetup.ui.h
+   deviceconfiguredialog.cpp
+   devicemanager.cpp
+   directorylist.cpp
+   dynamicmode.cpp
+   enginebase.cpp
+   enginecontroller.cpp
+   engineobserver.cpp
+   equalizergraph.cpp
+   equalizerpresetmanager.cpp
+   equalizersetup.cpp
+   expression.cpp
+   fht.cpp
+   filebrowser.cpp
+   htmlview.cpp
+   iconloader.cpp
+   k3bexporter.cpp
+   kbookmarkhandler.cpp
+   ktrm.cpp
+   mediabrowser.cpp
    mediadevicemanager.cpp
-   medium.cpp 
-   mediumpluginmanager.cpp 
-   metabundle.cpp 
-   moodbar.cpp 
-   mountpointmanager.cpp 
-   mydiroperator.cpp 
-   osd.cpp 
-   pixmapviewer.cpp 
-   playlist.cpp 
-   playlistbrowser.cpp 
-   playlistbrowseritem.cpp 
-   playlistitem.cpp 
-   playlistloader.cpp 
-   playlistselection.cpp 
-   playlistwindow.cpp 
-   pluginmanager.cpp 
-   podcastsettings.cpp 
-   prettypopupmenu.cpp 
-   queuemanager.cpp 
-   refreshimages.cpp 
-   scancontroller.cpp 
-   scriptmanager.cpp 
-   scrobbler.cpp 
+   medium.cpp
+   mediumpluginmanager.cpp
+   metabundle.cpp
+   moodbar.cpp
+   mountpointmanager.cpp
+   mydiroperator.cpp
+   osd.cpp
+   pixmapviewer.cpp
+   playlist.cpp
+   playlistbrowser.cpp
+   playlistbrowseritem.cpp
+   playlistitem.cpp
+   playlistloader.cpp
+   playlistselection.cpp
+   playlistwindow.cpp
+   pluginmanager.cpp
+   podcastsettings.cpp
+   prettypopupmenu.cpp
+   queuemanager.cpp
+   refreshimages.cpp
+   scancontroller.cpp
+   scriptmanager.cpp
+   scrobbler.cpp
    #sidebarwidget.cpp
-   sliderwidget.cpp 
-   smartplaylisteditor.cpp 
-   socketserver.cpp 
-   statistics.cpp 
-   systray.cpp 
-   tagdialog.cpp 
-   tagguesser.cpp 
-   threadmanager.cpp 
-   trackpickerdialog.cpp 
-   tracktooltip.cpp 
-   transferdialog.cpp 
-   xmlloader.cpp 
+   sliderwidget.cpp
+   smartplaylisteditor.cpp
+   socketserver.cpp
+   statistics.cpp
+   systray.cpp
+   tagdialog.cpp
+   tagguesser.cpp
+   threadmanager.cpp
+   trackpickerdialog.cpp
+   tracktooltip.cpp
+   transferdialog.cpp
+   xmlloader.cpp
    xspfplaylist.cpp )
 
 kde4_add_kcfg_files(amarok_LIB_SRCS ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokconfig.kcfgc)
@@ -282,23 +282,26 @@ kde4_add_kcfg_files(amarok_LIB_SRCS ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/am
 
 kde4_automoc(${amarok_LIB_SRCS})
 
-kde4_add_ui3_files(amarok_LIB_SRCS 
-   Options1.ui 
-   Options2.ui 
-   Options4.ui 
-   Options5.ui 
-   Options7.ui 
-   Options8.ui 
-   dbsetup.ui 
+kde4_add_ui3_files(amarok_LIB_SRCS
+   Options1.ui
+   Options2.ui
+   Options4.ui
+   Options5.ui
+   Options7.ui
+   Options8.ui
+   dbsetup.ui
    deletedialogbase.ui
-#   firstrunwizard.ui 
-   newdynamic.ui 
-   organizecollectiondialog.ui 
-   podcastsettingsbase.ui 
-   scriptmanagerbase.ui 
-   tagdialogbase.ui 
-   tagguesserconfigdialog.ui 
+#   firstrunwizard.ui
+   newdynamic.ui
+   organizecollectiondialog.ui
+   podcastsettingsbase.ui
+   scriptmanagerbase.ui
+   tagdialogbase.ui
+#   tagguesserconfigdialog.ui
    trackpickerdialogbase.ui )
+
+kde4_add_ui_files(amarok_LIB_SRCS
+    tagguesserconfigdialog.ui )
 
 kde4_add_library(amarok SHARED ${amarok_LIB_SRCS})
 
@@ -311,8 +314,8 @@ install(TARGETS amarok DESTINATION ${LIB_INSTALL_DIR} )
 ########### next target ###############
 
 set(amarokapp_SRCS main.cpp )
-		
-		
+
+
 
 kde4_automoc(${amarokapp_SRCS})
 
