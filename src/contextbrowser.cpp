@@ -273,6 +273,7 @@ ContextBrowser::ContextBrowser( const char *name )
 
        //QWidget *button = new KToolBarButton( "locationbar_erase", 1, m_lyricsTextBar );
        QAction* clearAction = new QAction("locationbar_erase", this );
+       clearAction->setToolTip( i18n( "Clear search text in lyric" ) );
        m_lyricsTextBar->addAction( clearAction );
        QLabel *filter_label = new QLabel( i18n("S&earch:") + ' ', m_lyricsTextBar );
        m_lyricsSearchText = new ClickLineEdit( i18n( "Search text in lyric" ), m_lyricsTextBar );
@@ -284,7 +285,6 @@ ContextBrowser::ContextBrowser( const char *name )
        m_lyricsSearchText->setFrame( Q3Frame::Sunken );
        m_lyricsSearchText->installEventFilter( this ); //we intercept keyEvents
 
-       QToolTip::add( button, i18n( "Clear search text in lyric" ) );
        QString filtertip = i18n( "Write to search this word in lyric, from the begin. Press enter to search next match" );
 
        QToolTip::add( m_lyricsSearchText, filtertip );
