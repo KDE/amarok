@@ -353,7 +353,7 @@ MediaBrowser::MediaBrowser( const char *name )
             it != mmap.end();
             it++ )
     {
-        QString handler = Amarok::config( "MediaBrowser" )->readEntry( (*it)->id() );
+        QString handler = Amarok::config( "MediaBrowser" )->readEntry( (*it)->id(), QString() );
         //debug() << "[MediaBrowser] (*it)->id() = " << (*it)->id() << ", handler = " << handler << endl;
         if( handler.isEmpty() )
         {
@@ -1542,7 +1542,7 @@ MediaBrowser::mediumAdded( const Medium *medium, QString /*name*/, bool construc
     debug() << "mediumAdded: " << (medium? medium->properties():"null") << endl;
     if( medium )
     {
-        QString handler = Amarok::config( "MediaBrowser" )->readEntry( medium->id() );
+        QString handler = Amarok::config( "MediaBrowser" )->readEntry( medium->id(), QString() );
         if( handler.isEmpty() )
         {
             if( !constructing && medium->isAutodetected() )
