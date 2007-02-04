@@ -286,7 +286,7 @@ MediaBrowser::MediaBrowser( const char *name )
         m_searchEdit = new ClickLineEdit( i18n( "Enter search terms here" ), searchToolBar );
         KPushButton *filterButton = new KPushButton( "...", searchToolBar );
         filterButton->setObjectName( "filter" );
-        searchToolBar->setStretchableWidget( m_searchEdit );
+        m_searchEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
         m_searchEdit->setFrame( Q3Frame::Sunken );
 
         connect( button, SIGNAL( clicked() ), m_searchEdit, SLOT( clear() ) );

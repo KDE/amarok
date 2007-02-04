@@ -125,7 +125,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
         KPushButton *filterButton = new KPushButton( "...", searchToolBar );
         filterButton->setObjectName( "filter" );
 //      do we need this still?
-//         searchToolBar->setStretchableWidget( m_searchEdit );
+        m_searchEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
 
         m_searchEdit->setFrame( Q3Frame::Sunken );
         connect( button, SIGNAL( clicked() ), SLOT( slotClearFilter() ) );

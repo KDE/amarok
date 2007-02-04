@@ -154,7 +154,7 @@ CoverManager::CoverManager()
         m_searchEdit = new ClickLineEdit( i18n( "Enter search terms here" ), searchToolBar );
         m_searchEdit->setFrame( Q3Frame::Sunken );
 
-        searchToolBar->setStretchableWidget( m_searchEdit );
+        m_searchEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
         connect( button, SIGNAL(clicked()), m_searchEdit, SLOT(clear()) );
 
         QToolTip::add( button, i18n( "Clear search field" ) );

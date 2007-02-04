@@ -85,7 +85,7 @@ Statistics::Statistics( QWidget *parent, const char *name )
         QWidget *button = new KToolBarButton( "locationbar_erase", 1, bar );
         m_lineEdit = new ClickLineEdit( i18n( "Enter search terms here" ), bar );
 
-        bar->setStretchableWidget( m_lineEdit );
+        m_lineEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
         m_lineEdit->setFrame( Q3Frame::Sunken );
         m_lineEdit->installEventFilter( this ); //we intercept keyEvents
 

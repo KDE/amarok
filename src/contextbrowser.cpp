@@ -271,24 +271,24 @@ ContextBrowser::ContextBrowser( const char *name )
       // m_lyricsTextBar->setMovingEnabled( false ); //removes the ugly frame
       // m_lyricsTextBar->boxLayout()->addStretch();
 
-       QWidget *button = new KToolBarButton( "locationbar_erase", 1, m_lyricsTextBar );
+       //QWidget *button = new KToolBarButton( "locationbar_erase", 1, m_lyricsTextBar );
+       QAction* clearAction = new QAction("locationbar_erase", this );
+       m_lyricsTextBar->addAction( clearAction );
        QLabel *filter_label = new QLabel( i18n("S&earch:") + ' ', m_lyricsTextBar );
        m_lyricsSearchText = new ClickLineEdit( i18n( "Search text in lyric" ), m_lyricsTextBar );
        filter_label->setBuddy( m_lyricsSearchText );
+       connect( clearAction, SIGNAL( triggered() ), m_lyricsSearchText, SLOT(clear()) );
 
-       m_lyricsTextBar->setStretchableWidget(m_lyricsSearchText );
+       m_lyricsSearchText->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
 
        m_lyricsSearchText->setFrame( Q3Frame::Sunken );
        m_lyricsSearchText->installEventFilter( this ); //we intercept keyEvents
-
-       connect( button, SIGNAL(clicked()), m_lyricsSearchText, SLOT(clear()) );
 
        QToolTip::add( button, i18n( "Clear search text in lyric" ) );
        QString filtertip = i18n( "Write to search this word in lyric, from the begin. Press enter to search next match" );
 
        QToolTip::add( m_lyricsSearchText, filtertip );
 
-       connect ( button, SIGNAL(clicked()), m_lyricsSearchText, SLOT(clear()) );
        connect ( m_lyricsSearchText, SIGNAL(textChanged(const QString &)), this, SLOT(lyricsSearchText(const QString & )) );
        connect ( m_lyricsSearchText, SIGNAL(returnPressed()), this, (SLOT(lyricsSearchTextNext())) );
        Amarok::actionCollection()->setAutoConnectShortcuts ( true );

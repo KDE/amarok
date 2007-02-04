@@ -114,8 +114,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
 
         m_filter = new ClickLineEdit( i18n( "Enter search terms here" ), searchToolBar );
 
-        // still needed
-        //searchToolBar->setStretchableWidget( m_filter );
+         m_filter->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
 
         connect( button, SIGNAL(clicked()), m_filter, SLOT(clear()) );
 

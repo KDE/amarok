@@ -289,7 +289,7 @@ void PlaylistWindow::init()
         QLabel *filter_label = new QLabel( i18n("S&earch:") + ' ', bar );
         m_lineEdit = new ClickLineEdit( i18n( "Playlist Search" ), bar );
         filter_label->setBuddy( m_lineEdit );
-        bar->setStretchableWidget( m_lineEdit );
+        m_lineEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
         KPushButton *filterButton = new KPushButton( "...", bar );
         filterButton->setObjectName( "filter" );
         filterButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
