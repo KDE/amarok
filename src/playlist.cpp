@@ -2430,7 +2430,7 @@ void
 Playlist::contentsDragEnterEvent( QDragEnterEvent *e )
 {
     QString data;
-    Q3CString subtype;
+    QString subtype;
     Q3TextDrag::decode( e, data, subtype );
 
     e->accept(
@@ -2445,11 +2445,7 @@ Playlist::contentsDragMoveEvent( QDragMoveEvent* e )
 {
     if( !e->isAccepted() ) return;
 
-    #if KDE_IS_VERSION( 3, 3, 91 )
-    const bool ctrlPressed = KApplication::keyboardMouseState() & Qt::ControlModifier;
-    #else
-    const bool ctrlPressed = KApplication::keyboardModifiers() & ControlMask;
-    #endif
+    const bool ctrlPressed = KApplication::keyboardModifiers() & Qt::ControlModifier;
 
     //Get the closest item _before_ the cursor
     const QPoint p = contentsToViewport( e->pos() );
@@ -2501,16 +2497,15 @@ Playlist::contentsDropEvent( QDropEvent *e )
         movableDropEvent( parent, after );
         if( dynamicMode() && static_cast<PlaylistItem *>(after)->isDynamicEnabled() )
         {
-            Q3PtrList<Q3ListViewItem> items = selectedItems();
-            Q3ListViewItem *item;
-            for( item = items.first(); item; item = items.next() )
-                static_cast<PlaylistItem *>(item)->setDynamicEnabled( true );
+            QList<Q3ListViewItem*> items = selectedItems();
+            for(QList<Q3ListViewItem*>::const_iterator it = items.begin(); it!=items.end(); ++it )
+                static_cast<PlaylistItem *>(*it)->setDynamicEnabled( true );
         }
     }
 
     else {
         QString data;
-        Q3CString subtype;
+        QString subtype;
         Q3TextDrag::decode( e, data, subtype );
 
         debug() << "QTextDrag::subtype(): " << subtype << endl;
