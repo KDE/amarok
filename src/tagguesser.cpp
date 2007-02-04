@@ -133,7 +133,7 @@ QString FileNameScheme::genre() const
 
 QString FileNameScheme::composeRegExp( const QString &s ) const
 {
-    QMap<QString, QString> substitutions;
+    QHash<QString, QString> substitutions;
 
     KConfigGroup config(KGlobal::config(), "TagGuesser");
 
