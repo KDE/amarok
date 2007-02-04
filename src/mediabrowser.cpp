@@ -224,6 +224,11 @@ MediaBrowser::MediaBrowser( const char *name )
         , m_currentDevice( m_devices.end() )
         , m_waitForTranscode( false )
         , m_quitting( false )
+        , m_connectAction( 0 )
+        , m_disconnectAction( 0 )
+        , m_customAction( 0 )
+        , m_configAction( 0 )
+        , m_transferAction( 0 )
 {
     s_instance = this;
 
@@ -259,38 +264,38 @@ MediaBrowser::MediaBrowser( const char *name )
     m_toolbar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
     //TODO: how to fix getButton
-    KAction *act = new KAction(KIcon("connect_creating"), i18n("Connect"), this);
-    connect(act, SIGNAL(triggered()), this, SLOT(connectClicked()));
-    m_toolbar->addAction(act);
+    m_connectAction = new KAction(KIcon("connect_creating"), i18n("Connect"), this);
+    connect(m_connectAction, SIGNAL(triggered()), this, SLOT(connectClicked()));
+    m_toolbar->addAction(m_connectAction);
 //     m_toolbar->insertButton( "connect_creating", CONNECT, true, i18n("Connect") );
 //     QToolTip::add( m_toolbar->getButton(CONNECT), i18n( "Connect media device" ) );
 
-    act = new KAction(KIcon("player_eject"), i18n("Disconnect"), this);
-    connect(act, SIGNAL(triggered()), this, SLOT(disconnectClicked()));
-    m_toolbar->addAction(act);
+    m_disconnectAction = new KAction(KIcon("player_eject"), i18n("Disconnect"), this);
+    connect(m_disconnectAction, SIGNAL(triggered()), this, SLOT(disconnectClicked()));
+    m_toolbar->addAction(m_disconnectAction);
 //     m_toolbar->insertButton( "player_eject", DISCONNECT, true, i18n("Disconnect") );
 //     QToolTip::add( m_toolbar->getButton(DISCONNECT), i18n( "Disconnect media device" ) );
 
-    act = new KAction(KIcon("rebuild"), i18n("Transfer"), this);
-    connect(act, SIGNAL(triggered()), this, SLOT(transferClicked()));
-    m_toolbar->addAction(act);
+    m_transferAction = new KAction(KIcon("rebuild"), i18n("Transfer"), this);
+    connect(m_transferAction, SIGNAL(triggered()), this, SLOT(transferClicked()));
+    m_toolbar->addAction(m_transferAction);
 //     m_toolbar->insertButton( "rebuild", TRANSFER, true, i18n("Transfer") );
 //     QToolTip::add( m_toolbar->getButton(TRANSFER), i18n( "Transfer tracks to media device" ) );
 
     m_toolbar->addSeparator();
 
    // m_toolbar->setIconText( KToolBar::IconTextRight, true );
-    act = new KAction(KIcon( "add_playlist" ), i18n("custom"), this);
-    connect(act, SIGNAL(triggered()), this, SLOT(custom()));
-    m_toolbar->addAction(act);
+    m_customAction = new KAction(KIcon( "add_playlist" ), i18n("custom"), this);
+    connect(m_customAction, SIGNAL(triggered()), this, SLOT(custom()));
+    m_toolbar->addAction(m_customAction);
 //     m_toolbar->insertButton( Amarok::icon( "add_playlist" ), CUSTOM, SIGNAL( clicked() ), this, SLOT( customClicked() ), true, "custom" );
 //     QToolTip::add( m_toolbar->getButton(TRANSFER), i18n( "Transfer tracks to media device" ) );
 
     m_toolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
 
-    act = new KAction(KIcon("configure"), i18n("Configure"), this);
-    connect(act, SIGNAL(triggered()), this, SLOT(config()));
-    m_toolbar->addAction(act);
+    m_configAction = new KAction(KIcon("configure"), i18n("Configure"), this);
+    connect(m_configAction, SIGNAL(triggered()), this, SLOT(config()));
+    m_toolbar->addAction(m_configAction);
 //     m_toolbar->insertButton( Amarok::icon( "configure" ), CONFIGURE, true, i18n("Configure") );
 //     QToolTip::add( m_toolbar->getButton(CONFIGURE), i18n( "Configure device" ) );
 
@@ -880,6 +885,7 @@ MediaItem::setBundle( MetaBundle *bundle )
             MediaBrowser::instance()->m_itemMap[itemUrl] = this;
     }
     MediaBrowser::instance()->m_itemMapMutex.unlock();
+    createToolTip();
 }
 
 void MediaItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align )
@@ -1019,6 +1025,7 @@ MediaItem::setType( Type type )
             setPixmap(0, *s_pixDirectory);
             break;
     }
+    createToolTip();
 }
 
 void
@@ -1128,27 +1135,15 @@ MediaItem::compare( Q3ListViewItem *i, int col, bool ascending ) const
     return K3ListViewItem::compare(i, col, ascending);
 }
 
-class MediaItemTip : public QToolTip
+void
+MediaItem::createToolTip()
 {
-    public:
-    MediaItemTip( Q3ListView *listview )
-    : QToolTip( listview->viewport() )
-    , m_view( listview )
-    {}
-    virtual ~MediaItemTip() {}
-    protected:
-    virtual void maybeTip( const QPoint &p )
+    QString text;
+    switch( type() )
     {
-        MediaItem *i = dynamic_cast<MediaItem *>(m_view->itemAt( m_view->viewportToContents( p ) ) );
-        if( !i )
-            return;
-
-        QString text;
-        switch( i->type() )
-        {
         case MediaItem::TRACK:
             {
-                const MetaBundle *b = i->bundle();
+                const MetaBundle *b = bundle();
                 if( b )
                 {
                     if( b->track() )
@@ -1187,15 +1182,11 @@ class MediaItemTip : public QToolTip
             break;
         default:
             break;
-        }
-
-        if( !text.isEmpty() && !text.isNull() )
-            QToolTip::tip( m_view->itemRect( i ), text );
     }
 
-    Q3ListView *m_view;
-};
-
+    if( !text.isEmpty() )
+        setToolTip( text );
+}
 
 MediaView::MediaView( QWidget* parent, MediaDevice *device )
     : K3ListView( parent )
@@ -1234,8 +1225,6 @@ MediaView::MediaView( QWidget* parent, MediaDevice *device )
 
     connect( this, SIGNAL( doubleClicked( Q3ListViewItem*, const QPoint&, int ) ),
              this,   SLOT( invokeItem( Q3ListViewItem*, const QPoint &, int ) ) );
-
-    m_toolTip = new MediaItemTip( this );
 }
 
 void
@@ -1809,39 +1798,28 @@ MediaBrowser::configSelectPlugin( int index )
 void
 MediaBrowser::updateButtons()
 {
-    if( !m_toolbar->getButton(CONNECT) ||
-            !m_toolbar->getButton(DISCONNECT) ||
-            !m_toolbar->getButton(TRANSFER) ) //TODO add CUSTOM
+    if( !connectAction() || !disconnectAction() || !transferAction() )
         return;
 
     if( currentDevice() )
     {
-        if( currentDevice()->m_transfer )
-            m_toolbar->showItem( TRANSFER );
-        else
-            m_toolbar->hideItem( TRANSFER );
+        transferAction()->setVisible( currentDevice()->m_transfer );
+        customAction()->setVisible( currentDevice()->m_customButton );
+        configAction()->setVisible( currentDevice()->m_configure );
 
-        if( currentDevice()->m_customButton )
-            m_toolbar->showItem( CUSTOM );
-        else
-            m_toolbar->hideItem( CUSTOM );
-
-        if( currentDevice()->m_configure )
-            m_toolbar->showItem( CONFIGURE );
-        else
-            m_toolbar->hideItem( CONFIGURE );
-
-        m_toolbar->getButton(CONNECT)->setEnabled( !currentDevice()->isConnected() );
-        m_toolbar->getButton(DISCONNECT)->setEnabled( currentDevice()->isConnected() );
-        m_toolbar->getButton(TRANSFER)->setEnabled( currentDevice()->isConnected() && m_queue->childCount() > 0 );
-        m_toolbar->getButton( CUSTOM )->setEnabled( true );
+        connectAction()->setEnabled( !currentDevice()->isConnected() );
+        disconnectAction()->setEnabled( currentDevice()->isConnected() );
+        transferAction()->setEnabled( currentDevice()->isConnected() && m_queue->childCount() > 0 );
+        if( customAction() )
+            customAction()->setEnabled( true );
     }
     else
     {
-        m_toolbar->getButton( CONNECT )->setEnabled( false );
-        m_toolbar->getButton( DISCONNECT )->setEnabled( false );
-        m_toolbar->getButton( TRANSFER )->setEnabled( false );
-        m_toolbar->getButton( CUSTOM )->setEnabled( false );
+        connectAction()->setEnabled( false );
+        disconnectAction()->setEnabled( false );
+        transferAction()->setEnabled( false );
+        if( customAction() )
+            customAction()->setEnabled( false );
     }
 }
 
@@ -2573,7 +2551,7 @@ MediaBrowser::cancelClicked()
 void
 MediaBrowser::transferClicked()
 {
-    m_toolbar->getButton(TRANSFER)->setEnabled( false );
+    transferAction()->setEnabled( false );
     if( currentDevice()
             && currentDevice()->isConnected()
             && !currentDevice()->isTransferring() )
@@ -2643,8 +2621,8 @@ MediaBrowser::disconnectClicked()
         }
     }
 
-    m_toolbar->getButton(TRANSFER)->setEnabled( false );
-    m_toolbar->getButton(DISCONNECT)->setEnabled( false );
+    transferAction()->setEnabled( false );
+    disconnectAction()->setEnabled( false );
 
     if( currentDevice() )
     {
@@ -2951,7 +2929,7 @@ MediaDevice::transferFiles()
     setCanceled( false );
 
     m_transferring = true;
-    m_parent->m_toolbar->getButton(MediaBrowser::TRANSFER)->setEnabled( false );
+    m_parent->transferAction()->setEnabled( false );
 
     setProgress( 0, m_parent->m_queue->childCount() );
 
@@ -3235,7 +3213,7 @@ MediaDevice::fileTransferFinished()  //SLOT
 {
     m_parent->updateStats();
     m_parent->m_progressBox->hide();
-    m_parent->m_toolbar->getButton(MediaBrowser::TRANSFER)->setEnabled( isConnected() && m_parent->queue()->childCount() > 0 );
+    m_parent->transferAction()->setEnabled( isConnected() && m_parent->queue()->childCount() > 0 );
     m_wait = false;
 }
 

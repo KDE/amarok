@@ -98,6 +98,7 @@ class LIBAMAROK_EXPORT MediaItem : public K3ListViewItem
 
         int compare( Q3ListViewItem *i, int col, bool ascending ) const;
         int flags() const { return m_flags; }
+        void createToolTip();
 
         void paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align );
 
@@ -187,8 +188,6 @@ class MediaBrowser : public Q3VBox
     friend class MediaItem;
 
     public:
-        enum { CONNECT, DISCONNECT, TRANSFER, CONFIGURE, CUSTOM };
-
         static bool isAvailable();
         LIBAMAROK_EXPORT static MediaBrowser *instance() { return s_instance; }
         LIBAMAROK_EXPORT static MediaQueue *queue() { return s_instance ? s_instance->m_queue : 0; }
@@ -215,7 +214,12 @@ class MediaBrowser : public Q3VBox
 
         KUrl getProxyUrl( const KUrl& daapUrl ) const;
         KToolBar* getToolBar() const { return m_toolbar; }
-
+        KAction *connectAction() const { return m_connectAction; }
+        KAction *disconnectAction() const { return m_disconnectAction; }
+        KAction *transferAction() const { return m_transferAction; }
+        KAction *configAction() const { return m_configAction; }
+        KAction *customAction() const { return m_customAction; }
+ 
     signals:
         void availabilityChanged( bool isAvailable );
 
@@ -281,6 +285,11 @@ class MediaBrowser : public Q3VBox
         KService::List m_plugins;
         bool             m_haveDevices;
         bool             m_quitting;
+        KAction *m_connectAction;
+        KAction *m_disconnectAction;
+        KAction *m_customAction;
+        KAction *m_configAction;
+        KAction *m_transferAction;
 };
 
 class MediaView : public K3ListView
@@ -355,7 +364,7 @@ class LIBAMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
         MediaView *view();
 
         /**
-         * @retrun a KAction that will be plugged into the media device browser toolbar
+         * @return a KAction that will be plugged into the media device browser toolbar
          */
         virtual KAction *customAction() { return 0; }
 
