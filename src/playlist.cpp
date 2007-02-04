@@ -798,7 +798,7 @@ void Playlist::restoreLayout(KSharedConfigPtr config, const QString &group)
   Q3ValueList<int> iorder; //internal ordering
   if( version )
   {
-    QStringList names = group.readListEntry("ColumnNames");
+    QStringList names = configGroup.readListEntry("ColumnNames");
     for( int i = 0, n = names.count(); i < n; ++i )
     {
         bool found = false;
@@ -833,7 +833,7 @@ void Playlist::restoreLayout(KSharedConfigPtr config, const QString &group)
   }
 
 
-  QStringList cols = group.readListEntry("ColumnWidths");
+  QStringList cols = configGroup.readListEntry("ColumnWidths");
   int i = 0;
   { // scope the iterators
     QStringList::ConstIterator it = cols.constBegin();
@@ -862,11 +862,11 @@ void Playlist::restoreLayout(KSharedConfigPtr config, const QString &group)
     }
   }
 
-  if ( group.hasKey("SortColumn") )
+  if ( configGroup.hasKey("SortColumn") )
   {
-    const int sort = group.readNumEntry("SortColumn");
+    const int sort = configGroup.readNumEntry("SortColumn");
     if( sort >= 0 && uint(sort) < iorder.count() )
-        setSorting(iorder[group.readNumEntry("SortColumn")], group.readBoolEntry("SortAscending", true));
+        setSorting(iorder[configGroup.readNumEntry("SortColumn")], configGroup.readBoolEntry("SortAscending", true));
   }
 
   if( !AmarokConfig::useScores() )
