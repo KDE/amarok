@@ -887,7 +887,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
 
     KUrl url( urlString );
 
-    KMenu menu;
+    Q3PopupMenu menu;
     KUrl::List urls( url );
     QString artist, album, track; // track unused here
     Amarok::albumArtistTrackFromUrl( url.path(), artist, album, track );
@@ -928,7 +928,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     {
         url = KUrl::fromPathOrUrl( url.url().replace( QRegExp( "^stream:" ), "http:" ) );
         urls = KUrl::List( url );
-        menu.insertTitle( i18n("Podcast"), TITLE );
+//        menu.insertTitle( i18n("Podcast"), TITLE );
         menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), MAKE );
         menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), i18n( "&Queue Podcast" ), ASNEXT );
@@ -939,7 +939,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     {
         //TODO it would be handy and more usable to have this menu under the cover one too
 
-        menu.insertTitle( i18n("Track"), TITLE );
+//        menu.insertTitle( i18n("Track"), TITLE );
         menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), MAKE );
         menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
         menu.insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), i18n( "&Queue Track" ), ASNEXT );
@@ -953,7 +953,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         {
             urls = expandURL( url );
 
-            menu.changeTitle( TITLE, i18n("Artist") );
+//            menu.changeTitle( TITLE, i18n("Artist") );
             menu.changeItem( INFO,   i18n("Edit Artist &Information..." ) );
             menu.changeItem( ASNEXT, i18n("&Queue Artist's Songs") );
         }
@@ -961,7 +961,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         {
             urls = expandURL( url );
 
-            menu.changeTitle( TITLE, i18n("Album") );
+//            menu.changeTitle( TITLE, i18n("Album") );
             menu.changeItem( INFO,   i18n("Edit Album &Information..." ) );
             menu.changeItem( ASNEXT, i18n("&Queue Album") );
         }
@@ -969,7 +969,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         {
             urls = expandURL( url );
 
-            menu.changeTitle( TITLE, i18n("Album Disc") );
+//            menu.changeTitle( TITLE, i18n("Album Disc") );
             menu.changeItem( INFO,   i18n("Edit Album Disc &Information..." ) );
             menu.changeItem( ASNEXT, i18n("&Queue Album Disc") );
         }
@@ -977,7 +977,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         {
             urls = expandURL( url );
 
-            menu.changeTitle( TITLE, i18n("Compilation") );
+//            menu.changeTitle( TITLE, i18n("Compilation") );
             menu.changeItem( INFO,   i18n("Edit Album &Information..." ) );
             menu.changeItem( ASNEXT, i18n("&Queue Album") );
         }
@@ -985,7 +985,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         {
             urls = expandURL( url );
 
-            menu.changeTitle( TITLE, i18n("Compilation Disc") );
+//            menu.changeTitle( TITLE, i18n("Compilation Disc") );
             menu.changeItem( INFO,   i18n("Edit Compilation Disc &Information..." ) );
             menu.changeItem( ASNEXT, i18n("&Queue Compilation Disc") );
         }
