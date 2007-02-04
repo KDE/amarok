@@ -187,7 +187,7 @@ void Medium::loadUserLabel()
 
 	if ( cfg.hasKey(entry_name) )
 	{
-		m_properties[USER_LABEL] = cfg.readEntry(entry_name);
+		m_properties[USER_LABEL] = cfg.readEntry(entry_name, QString());
 	}
 	else
 	{
