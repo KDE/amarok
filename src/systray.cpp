@@ -48,10 +48,10 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
 
     setAcceptDrops( true );
 
-    ac->action( "prev"        )->plug( contextMenu() );
-    ac->action( "play_pause"  )->plug( contextMenu() );
-    ac->action( "stop"        )->plug( contextMenu() );
-    ac->action( "next"        )->plug( contextMenu() );
+    contextMenu()->addAction( ac->action( "prev"       ) );
+    contextMenu()->addAction( ac->action( "play_pause" ) );
+    contextMenu()->addAction( ac->action( "play_pause" ) );
+    contextMenu()->addAction( ac->action( "next"       ) );
 
     //seems to be necessary
     KAction *quit = actionCollection()->action( "file_quit" );
@@ -261,24 +261,25 @@ Amarok::TrayIcon::setLastFm( bool lastFmActive )
 
     if( lastFmActive )
     {
-        ac->action( "play_pause" )->unplug( contextMenu() );
+        contextMenu()->removeAction( ac->action( "play_pause" ) );
         // items are inserted in reverse order!
-        ac->action( "ban" ) ->plug( contextMenu(), 4 );
-        ac->action( "love" )->plug( contextMenu(), 4 );
-        ac->action( "skip" )->plug( contextMenu(), 4 );
-        separatorId = contextMenu()->insertSeparator( 4 );
+        contextMenu()->addAction( ac->action( "ban" ) );
+        contextMenu()->addAction( ac->action( "love" ) );
+        contextMenu()->addAction( ac->action( "skip" ) );
+        contextMenu()->addSeparator();
 
         m_lastFmMode = true;
     }
     else
     {
-        ac->action( "play_pause" )->plug( contextMenu(), 2 );
-        ac->action( "ban" ) ->unplug( contextMenu() );
-        ac->action( "love" )->unplug( contextMenu() );
-        ac->action( "skip" )->unplug( contextMenu() );
 
-        if( separatorId != 0 )
-            contextMenu()->removeItem( separatorId ); // kill separator
+        contextMenu()->addAction( ac->action( "play_pause" ) );
+        // items are inserted in reverse order!
+        contextMenu()->removeAction( ac->action( "ban" ) );
+        contextMenu()->removeAction( ac->action( "love" ) );
+        contextMenu()->removeAction( ac->action( "skip" ) );
+
+        //contextMenu()->removeSeparator();
         m_lastFmMode = false;
    }
 }

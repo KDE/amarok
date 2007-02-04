@@ -193,12 +193,12 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     m_toolbar = new Browser::ToolBar( browserBox );
     m_toolbar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
-    addMenuButton->plug( m_toolbar );
+    m_toolbar->addAction( addMenuButton );
 
     m_toolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );      //default appearance
-    m_toolbar->insertLineSeparator();
-    renameButton->plug( m_toolbar);
-    removeButton->plug( m_toolbar );
+    m_toolbar->addSeparator();
+    m_toolbar->addAction( renameButton );
+    m_toolbar->addAction( removeButton );
 
     renameButton->setEnabled( false );
     removeButton->setEnabled( false );
