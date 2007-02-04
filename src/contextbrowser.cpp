@@ -240,6 +240,7 @@ ContextBrowser::ContextBrowser( const char *name )
     //m_lyricsToolBar->insertButton( Amarok::icon( "add_lyrics" ), LYRICS_ADD, true, i18n("Add") );
 
     lyricsEditToggleAction = new KAction(KIcon( "edit" ), i18n("Edit"), this);
+    lyricsEditToggleAction->setCheckable ( true );
     connect(lyricsEditToggleAction, SIGNAL(triggered()), this, SLOT(lyricsEditToggle()));
     m_lyricsToolBar->addAction(lyricsEditToggleAction);
     //m_lyricsToolBar->insertButton( Amarok::icon( "edit" ), LYRICS_EDIT, true, i18n("Edit") );
@@ -3311,7 +3312,10 @@ void ContextBrowser::showLyrics( const QString &url )
         .arg( KUrl::encode_string_no_slash( '"' + artist + '"' ),
               KUrl::encode_string_no_slash( '"' + title  + '"' ) );
 
-    m_lyricsToolBar->getButton( LYRICS_BROWSER )->setEnabled(false);
+    //m_lyricsToolBar->getButton( LYRICS_BROWSER )->setEnabled(false);
+    wikiExternalPageAction->setEnabled(false);
+    
+
 
     if( ( !cached || url == "reload" ) && ! ScriptManager::instance()->lyricsScriptRunning().isEmtpy() ) {
         const QStringList scripts = ScriptManager::instance()->lyricsScripts();
@@ -3493,7 +3497,8 @@ ContextBrowser::lyricsResult( Q3CString cXmlDoc, bool cached ) //SLOT
     m_lyricsPage->view()->setContentsPos(0, 0);
     saveHtmlData(); // Send html code to file
 
-    m_lyricsToolBar->getButton( LYRICS_BROWSER )->setEnabled( !m_lyricCurrentUrl.isEmpty() );
+    wikiExternalPageAction->setEnabled( !m_lyricCurrentUrl.isEmpty() );
+    //m_lyricsToolBar->getButton( LYRICS_BROWSER )->setEnabled( !m_lyricCurrentUrl.isEmpty() );
     m_dirtyLyricsPage = false;
 }
 
@@ -3514,7 +3519,8 @@ ContextBrowser::lyricsAdd() //SLOT
 void
 ContextBrowser::lyricsEditToggle() //SLOT
 {
-    if ( m_lyricsToolBar->getButton( LYRICS_EDIT )->isOn() )
+    if (lyricsEditToggleAction->isChecked () )
+    //if ( m_lyricsToolBar->getButton( LYRICS_EDIT )->isOn() )
     {
         m_lyricsBeingEditedUrl    = EngineController::instance()->bundle().url().path();
         m_lyricsBeingEditedArtist = EngineController::instance()->bundle().artist();
