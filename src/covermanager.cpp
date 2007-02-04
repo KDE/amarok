@@ -194,7 +194,7 @@ CoverManager::CoverManager()
     }
     #ifdef AMAZON_SUPPORT
     {
-        QAction* localeMenuAction = new QAction( KIcon( "babelfish" ),  i18n( "Amazon Locale" ), this )
+        QAction* localeMenuAction = new QAction( KIcon( "babelfish" ),  i18n( "Amazon Locale" ), this );
         localeMenuAction->setMenu( m_amazonLocaleMenu );
         toolBar->addAction( localeMenuAction );
     }
@@ -1036,7 +1036,7 @@ void CoverViewItem::dropped( QDropEvent *e, const Q3ValueList<Q3IconDragItem> & 
     if( Q3ImageDrag::canDecode( e ) ) {
        if( hasCover() ) {
            KGuiItem continueButton = KStandardGuiItem::cont();
-           continueButton.setText( i18n("&Overwrite") ); 
+           continueButton.setText( i18n("&Overwrite") );
            int button = KMessageBox::warningContinueCancel( iconView(),
                             i18n( "Are you sure you want to overwrite this cover?"),
                             i18n("Overwrite Confirmation"),
