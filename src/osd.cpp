@@ -80,7 +80,7 @@ OSDWidget::show( const QString &text, QImage newImage )
         m_cover = newImage;
         int w = m_scaledCover.width();
         int h = m_scaledCover.height();
-        m_scaledCover = m_cover.smoothScale(w, h);
+        m_scaledCover = m_cover.scaled( w, h );
     }
     show();
 #else
@@ -210,10 +210,10 @@ OSDWidget::determineMetrics( const uint M )
     {
         const int availableWidth = max.width() - rect.width() - M; //WILL be >= (minImageSize.width() - M)
 
-        m_scaledCover = m_cover.smoothScale(
+        m_scaledCover = m_cover.scaled(
                 qMin( availableWidth, m_cover.width() ),
                 qMin( rect.height(), m_cover.height() ),
-                QImage::ScaleMin ); //this will force us to be with our bounds
+                Qt::KeepAspectRatio ); //this will force us to be with our bounds
 
         int shadowWidth = 0;
         if( m_drawShadow && !m_scaledCover.hasAlpha() &&
@@ -333,7 +333,7 @@ OSDWidget::render( const uint M, const QSize &size )
                 shadow.load( folder + file );
             else {
                 shadow.load( KStandardDirs::locate( "data", "amarok/images/shadow_albumcover.png" ) );
-                shadow = shadow.smoothScale( m_scaledCover.width() + shadowSize, m_scaledCover.height() + shadowSize );
+                shadow = shadow.scaled( m_scaledCover.width() + shadowSize, m_scaledCover.height() + shadowSize );
                 shadow.save( folder + file, "PNG" );
             }
 
