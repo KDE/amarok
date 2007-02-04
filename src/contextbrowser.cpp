@@ -3971,7 +3971,8 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory, bool r
         }
 
         //Hack to make wiki searches work with magnatune preview tracks
-        if (tmpWikiStr.contains( QString("PREVIEW: buy it at www.magnatune.com") ) >= 1 ) {
+
+        if ( tmpWikiStr.contains( "PREVIEW: buy it at www.magnatune.com" ) ) {
             tmpWikiStr = tmpWikiStr.remove(" (PREVIEW: buy it at www.magnatune.com)" );
             int index = tmpWikiStr.find( '-' );
             if ( index != -1 ) {
