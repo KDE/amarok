@@ -122,14 +122,14 @@ bool
 MediumPluginManager::detectDevices( const bool redetect, const bool nographics )
 {
     bool foundNew = false;
-    KConfig *config = Amarok::config( "MediaBrowser" );
+    KSharedConfigPtr config = Amarok::config( "MediaBrowser" );
     if( redetect )
         DeviceManager::instance()->reconcileMediumMap();
     MediumMap mmap = MediaDeviceManager::instance()->getMediumMap();
     for( MediumMap::Iterator it = mmap.begin(); it != mmap.end(); it++ )
     {
-        if( !config->readEntry( (*it)->id() ).isEmpty() &&
-                config->readEntry( (*it)->id() ) == "deleted" && !redetect)
+        if( !config->readEntry( (*it)->id(), QString() ).isEmpty() &&
+                config->readEntry( (*it)->id(), QString() ) == "deleted" && !redetect)
         {
             debug() << "skipping: deleted" << endl;
             continue;
@@ -239,7 +239,7 @@ MediumPluginManager::newDevice()
     ManualDeviceAdder* mda = new ManualDeviceAdder( this );
     if( mda->exec() == QDialog::Accepted && mda->successful() )
     {
-        if( !Amarok::config( "MediaBrowser" )->readEntry( mda->getMedium()->id() ).isNull() )
+        if( !Amarok::config( "MediaBrowser" )->readEntry( mda->getMedium()->id(), QString() ).isNull() )
         {
             //abort!  Can't have the same device defined twice...should never
             //happen due to name checking earlier...right?
@@ -397,7 +397,7 @@ MediaDeviceConfig::MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, 
         return;
 
     KConfig *config = Amarok::config( "MediaBrowser" );
-    m_oldPlugin = config->readEntry( m_medium->id() );
+    m_oldPlugin = config->readEntry( m_medium->id(), QString() );
     if( !m_oldPlugin.isEmpty() )
         m_new = false;
 
@@ -440,7 +440,7 @@ MediaDeviceConfig::MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, 
             it != MediaBrowser::instance()->getPlugins().end();
             ++it ){
         m_pluginCombo->insertItem( (*it)->name() );
-        if ( (*it)->property( "X-KDE-Amarok-name" ).toString() == config->readEntry( medium->id() ) )
+        if ( (*it)->property( "X-KDE-Amarok-name" ).toString() == config->readEntry( medium->id(), QString() ) )
             m_pluginCombo->setCurrentItem( (*it)->name() );
     }
 
