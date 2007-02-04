@@ -21,9 +21,11 @@
 #include <kprocess.h>         //Vis::Selector
 #include <kwin.h>             //Vis::Selector
 #include <kstandarddirs.h>    //locateLocal()
+#include <kdialog.h>
 #include <QToolTip>         //Vis::Selector ctor
 //Added by qt3to4:
 #include <Q3CString>
+#include <Q3PopupMenu>
 #include <QPaintEvent>
 #include "socketserver.h"
 #include <sys/socket.h>
@@ -235,7 +237,7 @@ Vis::Selector::rightButton( Q3ListViewItem* qitem, const QPoint& pos, int )
 
     Item *item = static_cast<Item*>( qitem );
 
-    KMenu menu( this );
+    Q3PopupMenu menu( this );
     menu.insertItem( i18n( "Fullscreen" ), 0 );
 
     if( !item->m_proc || !item->m_proc->isRunning() )

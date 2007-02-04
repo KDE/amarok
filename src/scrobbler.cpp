@@ -22,6 +22,7 @@
 
 #include <QDateTime>
 #include <q3deepcopy.h>
+#include <Q3TextStream>
 
 #include <kapplication.h>
 #include <kio/job.h>
