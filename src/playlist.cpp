@@ -343,9 +343,8 @@ Playlist::Playlist( QWidget *parent )
     KToggleAction *stopafter = new KToggleAction( i18n( "&Stop Playing After Track" ), Amarok::icon( "stop" ), Qt::CTRL+Qt::ALT+Qt::Key_V,
                             this, SLOT( toggleStopAfterCurrentItem() ), ac, "stop_after" );
 
-    { // KAction idiocy -- shortcuts don't work until they've been plugged into a menu
+/*    { // KAction idiocy -- shortcuts don't work until they've been plugged into a menu
         KMenu asdf;
-
         copy->plug( &asdf );
         stopafter->plug( &asdf );
         gotoCurrent->plug( &asdf );
@@ -353,7 +352,7 @@ Playlist::Playlist( QWidget *parent )
         copy->unplug( &asdf );
         stopafter->unplug( &asdf );
         gotoCurrent->unplug( &asdf );
-    }
+    }*/
 
     //ensure we update action enabled states when repeat Playlist is toggled
     connect( ac->action( "repeat" ), SIGNAL(activated( int )), SLOT(updateNextPrev()) );
@@ -3738,14 +3737,14 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
     if( item == 0 )
     {
         KMenu popup;
-        Amarok::actionCollection()->action("playlist_save")->plug( &popup );
-        Amarok::actionCollection()->action("playlist_clear")->plug( &popup );
+        popup.addAction( Amarok::actionCollection()->action("playlist_save") );
+        popup.addAction( Amarok::actionCollection()->action("playlist_clear") );
         DynamicMode *m = 0;
         if(dynamicMode())
              popup.insertItem( SmallIconSet( Amarok::icon( "dynamic" ) ), i18n("Repopulate"), REPOPULATE);
         else
         {
-            Amarok::actionCollection()->action("playlist_shuffle")->plug( &popup );
+                popup.addAction( Amarok::actionCollection()->action("playlist_shuffle") );
                 m = PlaylistBrowser::instance()->findDynamicModeByTitle( AmarokConfig::lastDynamicMode() );
                 if( m )
                     popup.insertItem( SmallIconSet( Amarok::icon( "dynamic" ) ), i18n("L&oad %1").arg( m->title().replace( '&', "&&" ) ), ENABLEDYNAMIC);
@@ -3788,10 +3787,10 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
     if( isCurrent && isLastFm )
     {
         KActionCollection *ac = Amarok::actionCollection();
-        if( ac->action( "skip" ) ) ac->action( "skip" )->plug( &popup );
-        if( ac->action( "love" ) ) ac->action( "love" )->plug( &popup );
-        if( ac->action( "ban" ) ) ac->action( "ban" )->plug( &popup );
-        popup.insertSeparator();
+        if( ac->action( "skip" ) ) popup.addAction( ac->action( "skip" ) );
+        if( ac->action( "love" ) ) popup.addAction( ac->action( "love" ) );
+        if( ac->action( "ban" ) ) popup.addAction( ac->action( "ban" ) );
+        popup.addSeparator();
     }
 
     if( !isCurrent || !isPlaying )
@@ -3799,7 +3798,7 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
                 ? i18n( "&Restart" )
                 : i18n( "&Play" ), PLAY );
     if( isCurrent && !isLastFm && isPlaying )
-        Amarok::actionCollection()->action( "pause" )->plug( &popup );
+        popup.addAction( Amarok::actionCollection()->action( "pause" ) );
 
     // Begin queue entry logic
     popup.insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), i18n("&Queue Selected Tracks"), PLAY_NEXT );
@@ -3844,7 +3843,7 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
 
     if( itemCount == 1 )
     {
-        Amarok::actionCollection()->action( "stop_after" )->plug( &popup );
+        popup.addAction( Amarok::actionCollection()->action( "stop_after" ) );
         dynamic_cast<KToggleAction *>( Amarok::actionCollection()->action( "stop_after" ) )->setChecked( m_stopAfterTrack == item );
     }
 
