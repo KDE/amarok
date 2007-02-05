@@ -86,6 +86,15 @@ include_directories(
 	${CMAKE_SOURCE_DIR}/amarok/src/mediadevice
 	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wma
 	${CMAKE_SOURCE_DIR}/amarok/src
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/aac
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/audible
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/mp4
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/rmff
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/speex
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/trueaudio
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wav
+	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wavpack
 	${KDE4_INCLUDE_DIR}
 	${QT_INCLUDES}  )
 
@@ -210,7 +219,6 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
    actionclasses.cpp
    app.cpp
    atomicstring.cpp
-   browserbar.cpp
    clicklineedit.cpp
    collectionbrowser.cpp
    collectiondb.cpp
@@ -250,7 +258,6 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
    metabundlesaver.cpp
    moodbar.cpp
    mountpointmanager.cpp
-   multitabbar.cpp
    mydiroperator.cpp
    osd.cpp
    pixmapviewer.cpp
@@ -269,7 +276,7 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
    scancontroller.cpp
    scriptmanager.cpp
    scrobbler.cpp
-   #sidebarwidget.cpp
+   sidebarwidget.cpp
    sliderwidget.cpp
    smartplaylisteditor.cpp
    socketserver.cpp
