@@ -66,6 +66,12 @@ class SideBar: public KHBox
             return m_widgets->count() - 1;
         }
 
+        void removeWidget( QWidget *widget )
+        {
+            m_widgets->removeWidget( widget );
+        }
+
+
         QWidget *at( int index ) const { return m_widgets->widget( index ); }
 
         int currentIndex() const { return m_current; }

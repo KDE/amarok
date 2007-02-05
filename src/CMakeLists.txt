@@ -78,7 +78,7 @@ endif(SQLITE_FOUND)
 
 
 include_directories(
-#	${CMAKE_SOURCE_DIR}/amarok/src/amarokcore
+	${CMAKE_SOURCE_DIR}/amarok/src/amarokcore
 #	${CMAKE_SOURCE_DIR}/amarok/src/klegendary
 #	${CMAKE_SOURCE_DIR}/amarok/src/analyzers
 	${CMAKE_SOURCE_DIR}/amarok/src/plugin
@@ -321,7 +321,7 @@ kde4_add_ui_files(amarok_LIB_SRCS
 
 kde4_add_library(amarok SHARED ${amarok_LIB_SRCS})
 
-target_link_libraries(amarok amarokcore ${KDE4_KUTILS_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_KHTML_LIBS} ${KDE4_KNEWSTUFF_LIBS} ${TAGLIB_LIBRARIES} 
+target_link_libraries(amarok ${KDE4_KUTILS_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_KHTML_LIBS} ${KDE4_KNEWSTUFF_LIBS} ${TAGLIB_LIBRARIES}
 ${SQLITE_LIBRARIES} ${KDE4_KDE3SUPPORT_LIBS})
 
 set_target_properties(amarok PROPERTIES VERSION 1.0.0 SOVERSION 1 )

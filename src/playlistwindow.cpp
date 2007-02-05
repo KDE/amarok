@@ -19,7 +19,7 @@
 #include "actionclasses.h"    //see toolbar construction
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "browserbar.h"
+#include "sidebar.h"
 #include "clicklineedit.h"    //m_lineEdit
 #include "collectionbrowser.h"
 #include "contextbrowser.h"
@@ -289,19 +289,19 @@ void PlaylistWindow::init()
     //via the App::m_pPlaylistWindow pointer since App::m_pPlaylistWindow is not defined until
     //the above ctor returns it causes a crash unless we do the initialisation in 2 stages.
 
-    m_browsers = new BrowserBar( this );
+    m_browsers = new SideBar( this, new KVBox );
 
     //<Dynamic Mode Status Bar />
-    DynamicBar *dynamicBar = new DynamicBar( m_browsers->container());
+    DynamicBar *dynamicBar = new DynamicBar( m_browsers->contentsWidget() );
 
     Q3Frame *playlist;
 
     { //<Search LineEdit>
-        KToolBar *bar = new KToolBar( m_browsers->container(), "NotMainToolBar" );
+        KToolBar *bar = new KToolBar( m_browsers->contentsWidget(), "NotMainToolBar" );
         bar->setIconDimensions( 22 ); //looks more sensible
         bar->setMovable( false ); //removes the ugly frame
 
-        playlist = new Playlist( m_browsers->container() );
+        playlist = new Playlist( m_browsers->contentsWidget() );
         bar->addAction( actionCollection()->action( "playlist_clear") );
         bar->addAction( actionCollection()->action( "playlist_save") );
         bar->addSeparator();
@@ -340,7 +340,7 @@ void PlaylistWindow::init()
 
 
     dynamicBar->init();
-    m_toolbar = new Amarok::ToolBar( m_browsers->container(), "mainToolBar" );
+    m_toolbar = new Amarok::ToolBar( m_browsers->contentsWidget(), "mainToolBar" );
 #ifndef Q_WS_MAC
     m_toolbar->setShown( AmarokConfig::showToolbar() );
 #endif
@@ -488,15 +488,17 @@ void PlaylistWindow::init()
 
         #define addBrowserMacro( Type, name, text, icon ) { \
             Debug::Block block( name ); \
-            m_browsers->addBrowser( name, new Type( name ), text, icon ); }
+             m_browsers->addWidget( KIcon( icon ), text, new Type( name ) ); \
+             m_browserNames.append( name ); }
 
         #define addInstBrowserMacro( Type, name, text, icon ) { \
-            Debug::Block block( name ); \
-            m_browsers->addBrowser( name, Type::instance(), text, icon ); }
+             m_browsers->addWidget( KIcon( icon ), text, Type::instance() ); \
+             m_browserNames.append( name ); }
 
         addBrowserMacro( ContextBrowser, "ContextBrowser", i18n("Context"), Amarok::icon( "info" ) )
         addBrowserMacro( CollectionBrowser, "CollectionBrowser", i18n("Collection"), Amarok::icon( "collection" ) )
-        m_browsers->makeDropProxy( "CollectionBrowser", CollectionView::instance() );
+        //FIXME: figure this out
+        //m_browsers->makeDropProxy( "CollectionBrowser", CollectionView::instance() );
         addInstBrowserMacro( PlaylistBrowser, "PlaylistBrowser", i18n("Playlists"), Amarok::icon( "playlist" ) )
 
         //DEBUG: Comment out the addBrowserMacro line and uncomment the m_browsers line (passing in a vfat device name) to see the "virtual root" functionality
@@ -512,7 +514,8 @@ void PlaylistWindow::init()
             //to re-enable mediabrowser hiding, uncomment this:
             //connect( MediaBrowser::instance(), SIGNAL( availabilityChanged( bool ) ),
             //         this, SLOT( mbAvailabilityChanged( bool ) ) );
-            m_browsers->makeDropProxy( "MediaBrowser", MediaBrowser::queue() );
+            //FIXME: figure this out
+            //m_browsers->makeDropProxy( "MediaBrowser", MediaBrowser::queue() );
 
         }
         #undef addBrowserMacro
@@ -550,12 +553,18 @@ void PlaylistWindow::slotEditFilter() //SLOT
 
 void PlaylistWindow::addBrowser( const QString &name, QWidget *browser, const QString &text, const QString &icon )
 {
-    if( !m_browsers->browser( name ) )
-        m_browsers->addBrowser( name, browser, text, icon );
-    if( name == "MediaBrowser" )
+    if( !m_browserNames.contains( name ) )
     {
-        m_browsers->makeDropProxy( "MediaBrowser", MediaBrowser::queue() );
+        m_browsers->addWidget( KIcon(Amarok::icon( icon )), text, browser );
+        m_browserNames.append( name );
     }
+}
+
+void PlaylistWindow::showBrowser( const QString &name )
+{
+    const int index = m_browserNames.indexOf( name );
+    if( index >= 0 )
+        m_browsers->showWidget( index );
 }
 
 
@@ -698,29 +707,6 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
             return true;
         }
 
-        if( e->state() & Qt::ControlModifier )
-        {
-            int n = -1;
-            switch( e->key() )
-            {
-                case Qt::Key_0: n = 0; break;
-                case Qt::Key_1: n = 1; break;
-                case Qt::Key_2: n = 2; break;
-                case Qt::Key_3: n = 3; break;
-                case Qt::Key_4: n = 4; break;
-                case Qt::Key_5: n = 5; break;
-            }
-            if( n == 0 )
-            {
-                m_browsers->closeCurrentBrowser();
-                return true;
-            }
-            else if( n > 0 && n <= m_browsers->visibleCount() )
-            {
-                m_browsers->showHideVisibleBrowser( n - 1 );
-                return true;
-            }
-        }
 
         if( o == m_lineEdit ) //the search lineedit
         {
@@ -1053,8 +1039,8 @@ void PlaylistWindow::playAudioCD() //SLOT
     }
     else
     { // Default behaviour
-        m_browsers->showBrowser( "FileBrowser" );
-        FileBrowser *fb = static_cast<FileBrowser *>( m_browsers->browser("FileBrowser") );
+        showBrowser( "FileBrowser" );
+        FileBrowser *fb = static_cast<FileBrowser *>( m_browsers->at( m_browserNames.indexOf( "FileBrowser" ) ) );
         fb->setUrl( KUrl("audiocd:/Wav/") );
     }
 }
@@ -1082,10 +1068,8 @@ void PlaylistWindow::showStatistics() //SLOT
 
 void PlaylistWindow::slotToggleFocus() //SLOT
 {
-    if( m_browsers->currentBrowser() && ( Playlist::instance()->hasFocus() || m_lineEdit->hasFocus() ) )
-        m_browsers->currentBrowser()->setFocus();
-    else
-        Playlist::instance()->setFocus();
+    if( m_browsers->currentWidget() && ( Playlist::instance()->hasFocus() || m_lineEdit->hasFocus() ) )
+        m_browsers->currentWidget()->setFocus();
 }
 
 void PlaylistWindow::slotToggleMenu() //SLOT
@@ -1206,15 +1190,16 @@ PlaylistWindow::mbAvailabilityChanged( bool isAvailable ) //SLOT
 {
     if( isAvailable )
     {
-        if( m_browsers->indexForName( "MediaBrowser" ) == -1 )
-            m_browsers->addBrowser( "MediaBrowser", MediaBrowser::instance(), i18n( "Media Device" ), Amarok::icon( "device" ) );
+        if( m_browserNames.indexOf( "MediaBrowser" ) == -1 )
+            addBrowser( "MediaBrowser", MediaBrowser::instance(), i18n( "Media Device" ), Amarok::icon( "device" ) );
     }
     else
     {
-        if( m_browsers->indexForName( "MediaBrowser" ) != -1 )
+        if( m_browserNames.indexOf( "MediaBrowser" ) != -1 )
         {
             showBrowser( "CollectionBrowser" );
-            m_browsers->removeMediaBrowser( MediaBrowser::instance() );
+            //removeMediaBrowser( MediaBrowser::instance() );
+            m_browsers->removeWidget( MediaBrowser::instance() );
         }
     }
 }

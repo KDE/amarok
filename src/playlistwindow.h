@@ -16,7 +16,7 @@
 #ifndef AMAROK_PLAYLISTWINDOW_H
 #define AMAROK_PLAYLISTWINDOW_H
 
-#include "browserbar.h"
+//#include "browserbar.h"
 
 #include <q3hbox.h>          //baseclass for DynamicBox
 #include <qwidget.h>        //baseclass
@@ -33,6 +33,7 @@ class CollectionBrowser;
 class ContextBrowser;
 class MediaBrowser;
 class QMenuBar;
+class SideBar;
 class KMenu;
 class KToolBar;
 class QLabel;
@@ -59,7 +60,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         void recreateGUI();
 
         //allows us to switch browsers from within other browsers etc
-        void showBrowser( const QString& name ) { m_browsers->showBrowser( name ); }
+        void showBrowser( const QString& name );
         void addBrowser( const QString &name, QWidget *widget, const QString &text, const QString &icon );
 
         //takes into account minimized, multiple desktops, etc.
@@ -71,6 +72,8 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         static PlaylistWindow *self() { return s_instance; }
 
         void activate();
+
+        SideBar *sideBar() const { return m_browsers; };
 
     public slots:
         void showHide();
@@ -113,7 +116,8 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         QMenuBar      *m_menubar;
         KMenu    *m_toolsMenu;
         KMenu    *m_settingsMenu;
-        BrowserBar    *m_browsers;
+        SideBar    *m_browsers;
+        QStringList m_browserNames;
         KMenu    *m_searchMenu;
         ClickLineEdit *m_lineEdit;
         KToolBar      *m_toolbar;

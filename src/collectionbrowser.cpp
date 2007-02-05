@@ -10,7 +10,8 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "browserbar.h"
+//#include "browserbar.h"
+#include "sidebar.h"
 #include "browserToolBar.h"
 #include "clicklineedit.h"
 #include "collectionbrowser.h"
@@ -561,7 +562,7 @@ CollectionView::CollectionView( CollectionBrowser* parent )
              this,                      SLOT( scanStarted() ) );
     connect( CollectionDB::instance(), SIGNAL( scanDone( bool ) ),
              this,                      SLOT( scanDone( bool ) ) );
-    connect( BrowserBar::instance(),   SIGNAL( browserActivated( int ) ),
+    connect( PlaylistWindow::self()->sideBar(),   SIGNAL( widgetActivated( int ) ),
              this,                      SLOT( renderView() ) ); // renderView() checks if current tab is this
 
     connect( this,           SIGNAL( expanded( Q3ListViewItem* ) ),
@@ -726,7 +727,7 @@ CollectionView::renderView(bool force /* = false */)  //SLOT
     if(!force && !m_dirty )
         return;
 
-    if( BrowserBar::instance()->currentBrowser() != m_parent )
+    if( PlaylistWindow::self()->sideBar()->currentWidget() != m_parent )
     {
         // the collectionbrowser is intensive for sql, so we only renderView() if the tab
         // is currently active.  else, wait until user focuses it.
