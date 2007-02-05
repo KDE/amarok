@@ -20,6 +20,7 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "sidebar.h"
+#include "sidebar.moc"
 #include "clicklineedit.h"    //m_lineEdit
 #include "collectionbrowser.h"
 #include "contextbrowser.h"

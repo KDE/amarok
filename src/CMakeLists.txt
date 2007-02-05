@@ -276,6 +276,7 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
    scancontroller.cpp
    scriptmanager.cpp
    scrobbler.cpp
+   sidebar.h
    sidebarwidget.cpp
    sliderwidget.cpp
    smartplaylisteditor.cpp
