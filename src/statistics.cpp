@@ -40,6 +40,7 @@
 #include <q3simplerichtext.h>
 #include <QTimer>
 #include <QToolTip>
+#include <Q3PopupMenu>
 #include <q3vbox.h>
 //Added by qt3to4:
 #include <Q3Frame>
@@ -247,7 +248,7 @@ StatisticsList::renderView()
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valArtistID );
     //I can't get the correct value w/o using a subquery, and querybuilder doesn't support those
-    a = QString::number( qb.run().count() );
+    a = QStringList( QString::number( qb.run().count() ) );
 
     m_artistItem = new StatisticsItem( i18n("Favorite Artists"), this, m_mostplayedItem );
     m_artistItem->setSubtext( i18np("%n artist", "%n artists", a[0].toInt()) );
@@ -259,7 +260,7 @@ StatisticsList::renderView()
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valAlbumID );
     //I can't get the correct value w/o using a subquery, and querybuilder doesn't support those
-    a = QString::number( qb.run().count() );
+    a = QStringList( QString::number( qb.run().count() ) );
 
     m_albumItem = new StatisticsItem( i18n("Favorite Albums"), this, m_artistItem );
     m_albumItem->setSubtext( i18np("%n album", "%n albums", a[0].toInt()) );
@@ -271,7 +272,7 @@ StatisticsList::renderView()
     qb.setOptions( QueryBuilder::optRemoveDuplicates );
     qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valGenreID );
     //I can't get the correct value w/o using a subquery, and querybuilder doesn't support those
-    a = QString::number( qb.run().count() );
+    a = QStringList(QString::number( qb.run().count() ));
 
     m_genreItem = new StatisticsItem( i18n("Favorite Genres"), this, m_albumItem );
     m_genreItem->setSubtext( i18np("%n genre", "%n genres", a[0].toInt()) );
@@ -645,7 +646,7 @@ StatisticsList::showContextMenu( Q3ListViewItem *item, const QPoint &p, int )  /
 
     bool hasSQL = !( item->itemType() == StatisticsDetailedItem::TRACK ); //track is url
 
-    KMenu menu( this );
+    Q3PopupMenu menu( this );
     enum Actions { APPEND, QUEUE, INFO };
 
     menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
