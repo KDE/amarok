@@ -64,14 +64,16 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     setButtonToolTip(User2, i18n( "Remove last appended filter" ) );
     setButtonGuiItem( User2, user2Button );
 
-    m_mainLay = new Q3VBoxLayout( plainPage() );
+    setMainWidget( new QWidget( this ) );
+
+    m_mainLay = new Q3VBoxLayout( mainWidget() );
     m_mainLay->activate();
 
     // no filter rule available
     m_appended = false;
 
     // text explanation of this dialog
-    QLabel *label1 = new QLabel( plainPage() );
+    QLabel *label1 = new QLabel( mainWidget() );
     label1->setObjectName( "label1" );
     label1->setText( i18n("<p>Edit the filter for finding tracks with specific attributes"
                              ", e.g. you can look for a track that has a length of three minutes.</p>") );
@@ -79,8 +81,8 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     m_mainLay->addItem( new QSpacerItem( 10, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
 
     // choosing keyword filtering
-    Q3HBoxLayout *keywordLayout = new Q3HBoxLayout( plainPage() );
-    QLabel *label3 = new QLabel( i18n("Attribute:"), plainPage() );
+    Q3HBoxLayout *keywordLayout = new Q3HBoxLayout( mainWidget() );
+    QLabel *label3 = new QLabel( i18n("Attribute:"), mainWidget() );
     label3->setObjectName( "label3" );
     Q3WhatsThis::add( label3,
       i18nc("you can translate the keyword as you will do for the combobox",
@@ -102,7 +104,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
            "<b>track</b> (i.e. the track number), and <b>year</b>.</p>") );
     keywordLayout->addWidget( label3 );
     keywordLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
-    m_comboKeyword = new QComboBox( plainPage(), "keywordComboBox");
+    m_comboKeyword = new QComboBox( mainWidget(), "keywordComboBox");
     QToolTip::add( m_comboKeyword, i18n("Select an attribute for the filter") );
     label3->setBuddy( m_comboKeyword );
 
@@ -184,7 +186,8 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
 
     keywordLayout->addWidget( m_comboKeyword );
     keywordLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
-    m_editKeyword = new KLineEdit( plainPage(), "editKeywordBox" );
+    m_editKeyword = new KLineEdit( mainWidget() );
+    m_editKeyword->setObjectName( "editKeywordBox" );
     Q3WhatsThis::add( m_editKeyword, i18n("<p>Type the attribute value or the text to look for here.</p>") );
     keywordLayout->addWidget( m_editKeyword );
     m_mainLay->addLayout( keywordLayout );
@@ -192,7 +195,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     connect(m_comboKeyword, SIGNAL(activated(int)), this, SLOT(selectedKeyword(int)));
 
     // group of options on numeric attribute keywords: a value <,>,= ... or a value between Min and Max
-    m_groupBox = new Q3GroupBox( plainPage(), "groupBox" );
+    m_groupBox = new Q3GroupBox( mainWidget(), "groupBox" );
     m_groupBox->setTitle( i18n( "Attribute value is" ) );
     m_mainLay->addWidget( m_groupBox );
     m_mainLay->addItem( new QSpacerItem( 10, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
@@ -255,12 +258,12 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
 
     connect( m_comboCondition, SIGNAL(activated(int)), SLOT(chooseCondition(int)) );
 
-    Q3HBoxLayout *otherOptionsLayout = new Q3HBoxLayout( plainPage() );
+    Q3HBoxLayout *otherOptionsLayout = new Q3HBoxLayout( mainWidget() );
     otherOptionsLayout->setAlignment( Qt::AlignHCenter );
     m_mainLay->addLayout( otherOptionsLayout );
 
     // the groupbox to select the action filter
-    m_groupBox2 = new Q3GroupBox( plainPage(), "groupBox2" );
+    m_groupBox2 = new Q3GroupBox( mainWidget(), "groupBox2" );
     m_groupBox2->setTitle( i18n( "Filter action" ) );
     otherOptionsLayout->addWidget( m_groupBox2 );
 
@@ -308,7 +311,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
 
     Q3VBoxLayout* verticalCondLay = new Q3VBoxLayout( otherOptionsLayout, 15, 0 );
 
-    m_groupBox3 = new Q3GroupBox( plainPage(), "groupBox3" );
+    m_groupBox3 = new Q3GroupBox( mainWidget(), "groupBox3" );
     m_groupBox3->setTitle( i18n( "Appending condition" ) );
     verticalCondLay->addWidget( m_groupBox3 );
 
@@ -328,7 +331,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
 
     otherOptionsLayout->addItem( new QSpacerItem( 10, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
 
-    m_prefixNOT = new QCheckBox( i18n("Invert condition"), plainPage(), "prefixNOT" );
+    m_prefixNOT = new QCheckBox( i18n("Invert condition"), mainWidget(), "prefixNOT" );
     QToolTip::add( m_prefixNOT,
       i18n("Check this box to negate the defined filter condition"));
     Q3WhatsThis::add( m_prefixNOT,
