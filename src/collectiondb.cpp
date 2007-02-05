@@ -114,7 +114,7 @@ const int CollectionDB::DATABASE_PODCAST_TABLES_VERSION = 2;
 const int CollectionDB::DATABASE_AFT_VERSION = 2;
         // persistent table. you should provide code to convert the data when bumping this
 const int CollectionDB::DATABASE_DEVICES_VERSION = 1;
-const int CollectionDB::MONITOR_INTERVAL = 60
+const int CollectionDB::MONITOR_INTERVAL = 60;
 
 using Amarok::QStringx;
 
