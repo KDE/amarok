@@ -408,7 +408,7 @@ PlaylistCategory::showContextMenu( const QPoint &position )
     while( parentCat->parent() )
         parentCat = parentCat->parent();
 
-    
+
     #define connectDirect( act, theSlot ) \
       connect( act, SIGNAL( triggered() ), PlaylistBrowser::instance(), SLOT( theSlot ) );
     if( isFolder() ) {
@@ -425,8 +425,8 @@ PlaylistCategory::showContextMenu( const QPoint &position )
     class MenuActions : public QObject
     {
         public:
-            MenuActions( PlaylistCategory* parent ) 
-                : QObject( parent ) 
+            MenuActions( PlaylistCategory* parent )
+                : QObject( parent )
                 , isPodcastFolder( false ) { }
             bool isPodcastFolder;
         public slots:
@@ -442,7 +442,7 @@ PlaylistCategory::showContextMenu( const QPoint &position )
             void refreshPodcasts() { PlaylistBrowser::instance()->refreshPodcasts( parentCat ); }
             void configurePodcasts() { PlaylistBrowser::instance()->configurePodcasts( parentCat ); }
             void changeInterval() { PlaylistBrowser::instance()->changePodcastInterval(); }
-            void addSubfolder() 
+            void addSubfolder()
             {
                 Q3ListViewItem *tracker = parentCat->firstChild();
                 PlaylistCategory *newFolder = 0;
@@ -471,10 +471,10 @@ PlaylistCategory::showContextMenu( const QPoint &position )
             #undef parentCat
     };
     MenuActions ma(this);
-    
+
     if( parentCat == static_cast<Q3ListViewItem*>( PlaylistBrowser::instance()->m_playlistCategory) )
     {
-        
+
         menu.addAction( SmallIconSet(Amarok::icon( "add_playlist" )), i18n("Create Playlist..."), &ma, SLOT( createPlaylist() ) );
         menu.addAction( SmallIconSet(Amarok::icon( "add_playlist" )), i18n("Import Playlist..."), &ma, SLOT( playlistImport() ) );
     }
@@ -856,7 +856,7 @@ void PlaylistEntry::showContextMenu( const QPoint &position )
     class MenuActions : public QObject
     {
         public:
-            MenuActions(PlaylistEntry* parent) 
+            MenuActions(PlaylistEntry* parent)
             : QObject( parent )
             , m_parent( parent ) { }
         public slots:
@@ -939,7 +939,7 @@ void PlaylistEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, i
     //flicker-free drawing
     static QPixmap buffer;
     buffer.resize( width, height() );
-    
+
     if( buffer.isNull() )
     {
         K3ListViewItem::paintCell( p, cg, column, width, align );
@@ -3469,7 +3469,7 @@ void ShoutcastBrowser::setOpen( bool open )
     if ( !m_downloading )
     {
         m_downloading = true;
-        m_cj = KIO::copy( "http://www.shoutcast.com/sbin/newxml.phtml", tmpfile, false );
+        m_cj = KIO::copy( KUrl("http://www.shoutcast.com/sbin/newxml.phtml"), KUrl(tmpfile), false );
         connect( m_cj, SIGNAL( copyingDone( KIO::Job*, const KUrl&, const KUrl&, bool, bool))
                 , this, SLOT(doneGenreDownload(KIO::Job*, const KUrl&, const KUrl&, bool, bool )));
         connect( m_cj, SIGNAL( result( KIO::Job* )), this, SLOT( jobFinished( KIO::Job* )));
