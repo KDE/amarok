@@ -89,7 +89,7 @@ namespace Amarok {
 
         QString proxy;
 
-        if ( KProtocolManager::proxyForURL( kurl ) !=
+        if ( KProtocolManager::proxyForUrl( kurl ) !=
                 QString::fromLatin1( "DIRECT" ) ) {
             KProtocolManager::slaveProtocol ( kurl, proxy );
         }
@@ -137,11 +137,12 @@ ScriptManager* ScriptManager::s_instance = 0;
 
 
 ScriptManager::ScriptManager( QWidget *parent, const char *name )
-        : KDialog( parent, name, false, QString::null, Close, Close, true )
+        : KDialog( parent )
         , EngineObserver( EngineController::instance() )
         , m_gui( new ScriptManagerBase( this ) )
 {
     DEBUG_BLOCK
+    setObjectName( name );
     setModal( false );
     setButtons( Close );
     setDefaultButton( Close );
@@ -159,7 +160,8 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
 
     setMainWidget( m_gui );
     m_gui->listView->setRootIsDecorated( true );
-    m_gui->listView->setFullWidth( true );
+    //m_gui->listView->setFullWidth( true );
+    m_gui->listView->setResizeMode( Q3ListView::AllColumns );
     m_gui->listView->setShowSortIndicator( true );
 
 
