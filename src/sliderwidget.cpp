@@ -107,7 +107,7 @@ Amarok::Slider::mouseMoveEvent( QMouseEvent *e )
 void
 Amarok::Slider::slideEvent( QMouseEvent *e )
 {
-    QRect rect = style()->subControlRect( QStyle::CC_Slider, QStyleOptionComplex(), QStyle::SC_SliderHandle, this );
+    QRect rect = style()->subControlRect( QStyle::CC_Slider, new QStyleOptionComplex(), QStyle::SC_SliderHandle, this );
     QSlider::setValue( orientation() == Qt::Horizontal
         ? ((QApplication::reverseLayout())
           ? Q3RangeControl::valueFromPosition( width() - (e->pos().x() - rect.width()/2),  width()  + rect.width() )
