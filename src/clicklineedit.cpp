@@ -29,8 +29,9 @@
 
 
 ClickLineEdit::ClickLineEdit( const QString &msg, QWidget *parent, const char* name ) :
-        KLineEdit( parent, name )
+        KLineEdit( parent )
 {
+    setObjectName( name );
     mDrawClickMsg = true;
     setClickMessage( msg );
 }
@@ -73,7 +74,7 @@ void ClickLineEdit::drawContents( QPainter *p )
 
         // Add two pixel margin on the left side
         cr.rLeft() += 3;
-        p->drawText( cr, AlignAuto | AlignVCenter, mClickMessage );
+        p->drawText( cr, Qt::AlignAuto | Qt::AlignVCenter, mClickMessage );
         p->setPen( tmp );
     }
 }

@@ -27,6 +27,7 @@
 #include <Q3ValueList>
 #include <QEvent>
 #include <kglobal.h>
+#include <kapplication.h>
 
 #include "debug.h"
 #include "tooltip.h"

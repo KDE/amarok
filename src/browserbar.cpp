@@ -31,6 +31,7 @@
 #include <Q3PtrList>
 #include <QEvent>
 #include <Q3VBoxLayout>
+#include <Q3VBox>
 
 
 // we emulate a qsplitter, mostly for historic reasons, but there are still a few advantages
