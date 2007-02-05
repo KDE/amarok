@@ -100,6 +100,22 @@
     #include "inotify/inotify-syscalls.h"
 #endif
 
+
+        //bump DATABASE_VERSION whenever changes to the table structure are made.
+        // This erases tags, album, artist, composer, genre, year, images, embed, directory and related_artists tables.
+const int CollectionDB::DATABASE_VERSION = 35;
+        // Persistent Tables hold data that is somehow valuable to the user, and can't be erased when rescaning.
+        // When bumping this, write code to convert the data!
+const int CollectionDB::DATABASE_PERSISTENT_TABLES_VERSION = 19;
+        // Bumping this erases stats table. If you ever need to, write code to convert the data!
+const int CollectionDB::DATABASE_STATS_VERSION = 12;
+        // When bumping this, you should provide code to convert the data.
+const int CollectionDB::DATABASE_PODCAST_TABLES_VERSION = 2;
+const int CollectionDB::DATABASE_AFT_VERSION = 2;
+        // persistent table. you should provide code to convert the data when bumping this
+const int CollectionDB::DATABASE_DEVICES_VERSION = 1;
+
+
 using Amarok::QStringx;
 
 #define DEBUG 0

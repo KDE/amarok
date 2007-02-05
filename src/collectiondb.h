@@ -535,19 +535,19 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
     private:
         //bump DATABASE_VERSION whenever changes to the table structure are made.
         // This erases tags, album, artist, composer, genre, year, images, embed, directory and related_artists tables.
-        static const int DATABASE_VERSION = 35;
+        static const int DATABASE_VERSION;
         // Persistent Tables hold data that is somehow valuable to the user, and can't be erased when rescaning.
         // When bumping this, write code to convert the data!
-        static const int DATABASE_PERSISTENT_TABLES_VERSION = 19;
+        static const int DATABASE_PERSISTENT_TABLES_VERSION;
         // Bumping this erases stats table. If you ever need to, write code to convert the data!
-        static const int DATABASE_STATS_VERSION = 12;
+        static const int DATABASE_STATS_VERSION;
         // When bumping this, you should provide code to convert the data.
-        static const int DATABASE_PODCAST_TABLES_VERSION = 2;
-        static const int DATABASE_AFT_VERSION = 2;
+        static const int DATABASE_PODCAST_TABLES_VERSION;
+        static const int DATABASE_AFT_VERSION;
         // persistent table. you should provide code to convert the data when bumping this
-        static const int DATABASE_DEVICES_VERSION = 1;
+        static const int DATABASE_DEVICES_VERSION;
 
-        static const int MONITOR_INTERVAL = 60; //sec
+        static const int MONITOR_INTERVAL; //sec
 
         static QDir largeCoverDir();
         static QDir tagCoverDir();
