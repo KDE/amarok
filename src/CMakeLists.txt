@@ -12,7 +12,6 @@ else(KONQSIDEBAR_INCLUDE_DIR)
     MESSAGE(STATUS "Konqueror sidebar will not be compiled.")
 endif(KONQSIDEBAR_INCLUDE_DIR)
 
-
 ADD_DEFINITIONS(${TAGLIB_CFLAGS})
 
 add_subdirectory( amarokcore )
@@ -95,6 +94,7 @@ include_directories(
 	${CMAKE_SOURCE_DIR}/amarok/src/metadata/trueaudio
 	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wav
 	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wavpack
+	${CMAKE_BINARY_DIR}/amarok/src #for amarokconfig.h
 	${KDE4_INCLUDE_DIR}
 	${QT_INCLUDES}  )
 

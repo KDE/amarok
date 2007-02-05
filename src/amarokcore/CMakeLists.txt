@@ -1,4 +1,7 @@
-include_directories( ${CMAKE_SOURCE_DIR}/amarok/src ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
+include_directories( 
+	${CMAKE_SOURCE_DIR}/amarok/src 
+	${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  
+	${CMAKE_BINARY_DIR}/amarok/src  )
 
 ############### next target ##########################
 
