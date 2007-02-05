@@ -41,6 +41,12 @@
 //Added by qt3to4:
 #include <QCustomEvent>
 
+//disabling for now
+#if HAVE_TUNEPIMP
+    #undef HAVE_TUNEPIMP
+    #define HAVE_TUNEPIMP 0
+#endif
+
 #if HAVE_TUNEPIMP
 
 #if HAVE_TUNEPIMP >= 5
