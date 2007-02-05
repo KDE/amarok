@@ -53,6 +53,7 @@
 #include <kmenu.h>
 #include <krun.h>
 #include <kstandarddirs.h>     //podcast loading icons
+#include <kmimetypetrader.h>
 #include <kstringhandler.h>
 #include <kurlrequester.h>
 #include <krandom.h>
@@ -1331,7 +1332,7 @@ StreamEditor::StreamEditor( QWidget *parent, const QString &title, const QString
     setModal( true );
     showButtonSeparator( true );
 
-    makeGridMainWidget( 2, Qt::Horizontal );
+    //makeGridMainWidget( 2, Qt::Horizontal );
 
     QLabel *nameLabel = new QLabel( i18n("&Name:"), mainWidget() );
     m_nameLineEdit = new KLineEdit( title, mainWidget() );
@@ -2792,7 +2793,7 @@ PodcastEpisode::slotDoubleClicked()
 void
 PodcastEpisode::showContextMenu( const QPoint &position )
 {
-    KMenu menu( listView() );
+    Q3PopupMenu menu( listView() );
 
     enum Actions { LOAD, APPEND, QUEUE, GET, ASSOCIATE, DELETE, MEDIA_DEVICE, LISTENED, NEW, OPEN_WITH /* has to be last */ };
     menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), LOAD );
@@ -2914,7 +2915,7 @@ PodcastEpisode::showContextMenu( const QPoint &position )
                 {
                     KUrl::List urlList;
                     urlList.append( isOnDisk() ? localUrl() : url() );
-                    KRun::displayOpenWithDialog( urlList );
+                    KRun::displayOpenWithDialog( urlList, 0 );
                 }
                 break;
 
@@ -2931,7 +2932,7 @@ PodcastEpisode::showContextMenu( const QPoint &position )
                 urlList.append( isOnDisk() ? localUrl() : url() );
                 if( it != offers.end() )
                 {
-                    KRun::run(**it, urlList);
+                    KRun::run(**it, urlList, 0);
                 }
             }
             break;
@@ -2963,7 +2964,7 @@ class AssociatePodcastDialog : public KDialog
         if( dynamic_cast<PodcastChannel *>(item->parent()) )
         m_urlRequester->setUrl( static_cast<PodcastChannel *>(item->parent())->saveLocation() );
     }
-    KUrl url() const { return KUrl::fromPathOrUrl( m_urlRequester->url() ); }
+    KUrl url() const { return m_urlRequester->url(); }
 };
 
 void
