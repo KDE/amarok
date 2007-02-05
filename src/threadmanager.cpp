@@ -244,7 +244,7 @@ ThreadManager::Thread::Thread()
 
 ThreadManager::Thread::~Thread()
 {
-    Q_ASSERT( finished() );
+    Q_ASSERT( isFinished() );
 }
 
 QThread*
