@@ -46,14 +46,14 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     setButtonWhatsThis( Default, i18n( "<qt><p>By clicking here you can add the defined condition. The \"OK\" button will "
                                         "close the dialog and apply the defined filter. With this button you can add more than "
                                         "one condition to create a more complex filtering condition.</p></qt>" ) );
-    setButtonTip(Default, i18n( "Add this filter condition to the list" ) );
+    setButtonToolTip(Default, i18n( "Add this filter condition to the list" ) );
     setButtonGuiItem( Default, defaultButton );
 
     // define "User1" button
     KGuiItem user1Button( i18n("&Clear"), "remove" );
     setButtonWhatsThis( User1, i18n( "<p>By clicking here you will clear the filter. If you intend to "
                                      "undo the last appending just click on the \"Undo\" button.</p>" ) );
-    setButtonTip(User1, i18n( "Clear the filter" ) );
+    setButtonToolTip(User1, i18n( "Clear the filter" ) );
     setButtonGuiItem( User1, user1Button );
 
     // define "User2" button
@@ -61,7 +61,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
        "to avoid two buttons (\"Cancel\" and \"Undo\") with same label in the same dialog", "&Undo"), "undo" );
     setButtonWhatsThis( User2, i18n( "<p>Clicking here will remove the last appended filter. "
                 "You cannot undo more than one action.</p>" ) );
-    setButtonTip(User2, i18n( "Remove last appended filter" ) );
+    setButtonToolTip(User2, i18n( "Remove last appended filter" ) );
     setButtonGuiItem( User2, user2Button );
 
     m_mainLay = new Q3VBoxLayout( plainPage() );
