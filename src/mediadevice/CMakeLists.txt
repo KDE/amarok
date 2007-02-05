@@ -9,7 +9,7 @@ if(NJB_FOUND)
 	add_subdirectory(njb)
 endif(NJB_FOUND)		
 
-MESSAGE(STATUS "Readd ipod directory")
+MESSAGE(STATUS "Read ipod directory")
 #add_subdirectory(ipod)
 
 
