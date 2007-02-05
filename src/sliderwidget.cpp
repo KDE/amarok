@@ -43,6 +43,8 @@
 #include <QMouseEvent>
 #include <QHideEvent>
 #include <QEvent>
+#include <QStyle>
+#include <Q3RangeControl>
 
 #include <kiconloader.h>
 #include <kimageeffect.h>
@@ -88,7 +90,7 @@ Amarok::Slider::mouseMoveEvent( QMouseEvent *e )
         //feels better, but using set value of 20 is bad of course
         QRect rect( -20, -20, width()+40, height()+40 );
 
-        if ( orientation() == Horizontal && !rect.contains( e->pos() ) ) {
+        if ( orientation() == Qt::Horizontal && !rect.contains( e->pos() ) ) {
             if ( !m_outside )
                 QSlider::setValue( m_prevValue );
             m_outside = true;
@@ -104,11 +106,13 @@ Amarok::Slider::mouseMoveEvent( QMouseEvent *e )
 void
 Amarok::Slider::slideEvent( QMouseEvent *e )
 {
+    QRect rect = QStyle().subControlRect( QStyle::CC_Slider, QStyleOptionComplex(), QStyle::SC_SliderHandle, this );
+
     QSlider::setValue( orientation() == Qt::Horizontal
         ? ((QApplication::reverseLayout())
           ? Q3RangeControl::valueFromPosition( width() - (e->pos().x() - sliderRect().width()/2),  width()  + sliderRect().width() )
-          : Q3RangeControl::valueFromPosition( e->pos().x() - sliderRect().width()/2,  width()  - sliderRect().width() ) )
-        : Q3RangeControl::valueFromPosition( e->pos().y() - sliderRect().height()/2, height() - sliderRect().height() ) );
+          : Q3RangeControl::valueFromPosition( e->pos().x() - rect.width()/2,  width()  - rect.width() ) )
+        : Q3RangeControl::valueFromPosition( e->pos().y() - rect.height()/2, height() - rect.height() ) );
 }
 
 void
