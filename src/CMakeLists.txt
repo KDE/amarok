@@ -206,6 +206,7 @@ set(libstatusbar_SRCS
 ########### next target ###############
 
 set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS} ${libmetadata_SRCS} ${libsqlite_SRCS} ${tagmplib_SRCS} ${libtagrealmedia_SRCS} ${libtagaudible_SRCS} ${libtagaac_SRCS} ${libtagwma_SRCS} # ${libanalyzers_SRCS}
+   atomicstring.cpp
    Options1.ui.h
    actionclasses.cpp
    app.cpp

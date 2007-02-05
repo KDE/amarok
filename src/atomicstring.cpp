@@ -159,7 +159,7 @@ const QString *AtomicString::ptr() const
 {
     if( m_string )
         return m_string;
-    return &QString::null;
+    return &QString();
 }
 
 uint AtomicString::refcount() const
