@@ -225,6 +225,7 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
    devicemanager.cpp
    directorylist.cpp
    dynamicmode.cpp
+   editfilterdialog.cpp
    enginebase.cpp
    enginecontroller.cpp
    engineobserver.cpp
@@ -234,6 +235,7 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
    expression.cpp
    fht.cpp
    filebrowser.cpp
+   hintlineedit.cpp
    htmlview.cpp
    iconloader.cpp
    k3bexporter.cpp
@@ -245,6 +247,7 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
    medium.cpp
    mediumpluginmanager.cpp
    metabundle.cpp
+   metabundlesaver.cpp
    moodbar.cpp
    mountpointmanager.cpp
    mydiroperator.cpp
