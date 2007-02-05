@@ -15,6 +15,7 @@
 #include <kapplication.h> //invokeMailer()
 #include <kdebug.h>       //kBacktrace()
 #include <kdeversion.h>
+#include <kglobal.h>
 #include <klocale.h>
 #include <k3tempfile.h>
 #include <ktoolinvocation.h>
@@ -124,8 +125,10 @@ namespace Amarok
             cpucount = QString::number( cpuCount );
 #endif
 
-
-            body = body.arg( AmarokConfig::soundSystem() )
+            KSharedConfigPtr config = KGlobal::config();
+            config->setGroup( "Playback" );
+            QString soundSystem = config->readEntry( "Sound System", QString() );
+            body = body.arg( soundSystem )
                     .arg( qVersion() )
                     .arg( TAGLIB_MAJOR_VERSION )
                     .arg( TAGLIB_MINOR_VERSION )
@@ -206,7 +209,7 @@ namespace Amarok
             else
                 useful = false;
 
-            subject += QString("[%1]").arg( AmarokConfig::soundSystem().remove( QRegExp("-?engine") ) );
+            subject += QString("[%1]").arg( soundSystem.remove( QRegExp("-?engine") ) );
 
             std::cout << subject.toLatin1().constData() << std::endl;
 

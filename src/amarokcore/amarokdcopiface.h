@@ -20,7 +20,6 @@
 #ifndef AMAROK_DCOPIFACE_H
 #define AMAROK_DCOPIFACE_H
 
-#include <dcopobject.h>
 #include <kurl.h>
 #include <QStringList>
 //Added by qt3to4:
@@ -31,11 +30,12 @@
 ///////////////////////////////////////////////////////////////////////
 
 
-class AmarokPlayerInterface : virtual public DCOPObject
+class AmarokPlayerInterface : virtual public QObject
 {
-   K_DCOP
+    Q_OBJECT
+    Q_CLASSINFO("D-Bus Interface", "org.kde.Amarok.Player" );
 
-k_dcop:
+public Q_SLOTS:
    virtual QString version() = 0;                           ///< returns amarok version string
 
    virtual bool dynamicModeStatus() = 0;                    ///< Return dynamic mode status.
@@ -118,11 +118,12 @@ k_dcop:
 };
 
 
-class AmarokPlaylistInterface : virtual public DCOPObject
+class AmarokPlaylistInterface : virtual public QObject
 {
-   K_DCOP
+   Q_OBJECT
+   Q_CLASSINFO( "D-Bus Interface", "org.kde.Amarok.Playlist" )
 
-k_dcop:
+public Q_SLOTS:
    virtual int  getActiveIndex() = 0;                       ///< Return the index of the currently active track. -1 if none.
    virtual int  getTotalTrackCount() = 0;                   ///< Return number of tracks in playlist. 0 if none.
    virtual QString saveCurrentPlaylist() = 0;               ///< Saves the current playlist to current.xml and returns its path.
@@ -148,11 +149,12 @@ k_dcop:
 };
 
 
-class AmarokPlaylistBrowserInterface : virtual public DCOPObject
+class AmarokPlaylistBrowserInterface : virtual public QObject
 {
-   K_DCOP
+   Q_OBJECT
+   Q_CLASSINFO( "D-Bus Interface", "org.kde.Amarok.PlaylistBrowser" )
 
-k_dcop:
+public Q_SLOTS:
    virtual void addPodcast(const QString &) = 0;            ///< Add a podcast entry to the playlist browser.
    virtual void scanPodcasts() = 0;                         ///< Scan all podcasts for updates.
    virtual void addPlaylist(const QString &) = 0;           ///< Add a playlist to the playlist browser.
@@ -160,11 +162,12 @@ k_dcop:
 };
 
 
-class AmarokContextBrowserInterface : virtual public DCOPObject
+class AmarokContextBrowserInterface : virtual public QObject
 {
-   K_DCOP
+   Q_OBJECT
+   Q_CLASSINFO( "D-Bus Interface", "org.kde.Amarok.ContextBrowser" )
 
-k_dcop:
+public Q_SLOTS:
    virtual void showCurrentTrack() = 0;                     ///< Show the current track in the context browser.
    virtual void showLyrics() = 0;                           ///< Show the lyrics tab in the context browser.
    virtual void showWiki() = 0;                             ///< Show the wikipedia tab in the context browser.
@@ -172,11 +175,12 @@ k_dcop:
 };
 
 
-class AmarokCollectionInterface : virtual public DCOPObject
+class AmarokCollectionInterface : virtual public QObject
 {
-   K_DCOP
+   Q_OBJECT
+   Q_CLASSINFO( "D-Bus Interface", "org.kde.Amarok.Collection" )
 
-k_dcop:
+public Q_SLOTS:
    virtual int totalAlbums() = 0;                          ///< Returns the total of albums in the collection.
    virtual int totalArtists() = 0;                         ///< Returns the total of artists in the collection.
    virtual int totalComposers() = 0;                       ///< Returns the total of composers in the collection.
@@ -202,11 +206,12 @@ k_dcop:
 };
 
 
-class AmarokScriptInterface : virtual public DCOPObject
+class AmarokScriptInterface : virtual public QObject
 {
-   K_DCOP
+   Q_OBJECT
+   Q_CLASSINFO( "D-Bus Interface", "org.kde.Amarok.Script" )
 
-k_dcop:
+public Q_SLOTS:
    virtual bool runScript(const QString& name) = 0;         ///< Starts the script with the given name. Returns true on success.
    virtual bool stopScript(const QString& name) = 0;        ///< Stops the script with the given name. Returns true on success.
    virtual QStringList listRunningScripts() = 0;            ///< Returns a list of all currently running scripts.
@@ -218,7 +223,7 @@ k_dcop:
    virtual QString proxyForProtocol(const QString& protocol) = 0;  ///< Returns the proxy that should be used for the given protocol
 };
 
-
+/* replaced by Solid, remove later
 class AmarokDevicesInterface : virtual public DCOPObject
 {
    K_DCOP
@@ -228,13 +233,14 @@ k_dcop:
    virtual void mediumRemoved(QString name) = 0;         ///< Called when there is a mediumRemoved event
    virtual void mediumChanged(QString name) = 0;         ///< Called when there is a mediumChanged event
    virtual QStringList showDeviceList() = 0;                 ///< Call to display the MediaDeviceManager's current device list
-};
+};*/
 
-class AmarokMediaBrowserInterface : virtual public DCOPObject
+class AmarokMediaBrowserInterface : virtual public QObject
 {
-    K_DCOP
+    Q_OBJECT
+    Q_CLASSINFO( "D-Bus Interface", "org.kde.Amarok.MediaBrowser" )
 
-k_dcop:
+public Q_SLOTS:
    virtual void deviceConnect() = 0;                     ///< Connect the current media device
    virtual void deviceDisconnect() = 0;                  ///< Disconnect the current media device
    virtual void deviceSwitch( QString name ) = 0;        ///< Switch the current media device
