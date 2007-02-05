@@ -2561,7 +2561,7 @@ void PodcastEpisode::createLocalDir( const KUrl &localDir )
     QString localDirString = localDir.path();
     if( !QFile::exists( localDirString ) )
     {
-        QString parentDirString = localDir.directory( true, true );
+        QString parentDirString = localDir.directory();
         createLocalDir( parentDirString );
         QDir dir( localDirString );
         dir.mkdir( localDirString );
@@ -2641,7 +2641,7 @@ PodcastEpisode::addToMediaDevice()
 void
 PodcastEpisode::setLocalUrlBase( const QString &s )
 {
-    QString filename = m_localUrl.filename();
+    QString filename = m_localUrl.fileName();
     QString newL = s + filename;
     m_localUrl = KUrl::fromPathOrUrl( newL );
 }
@@ -2709,7 +2709,7 @@ PodcastEpisode::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
         return;
     }
 
-    QPainter pBuf( &buffer, true );
+    QPainter pBuf( &buffer );
     // use alternate background
 #if KDE_VERSION < KDE_MAKE_VERSION(3,3,91)
     pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor() );
@@ -2804,7 +2804,7 @@ PodcastEpisode::showContextMenu( const QPoint &position )
     if( isOnDisk() )
         mimetype = KMimeType::findByFileContent( localUrl().path(), &accuracy );
     if( accuracy <= 0 )
-        mimetype = KMimeType::findByURL( url() );
+        mimetype = KMimeType::findByUrl( url() );
     KService::List offers = KMimeTypeTrader::self()->query( mimetype->name(), "Type == 'Application'" );
     if( offers.empty() || (offers.size()==1 && offers.first()->name()=="Amarok") )
     {
@@ -3369,7 +3369,7 @@ void SmartPlaylist::slotDoubleClicked()
 
 void SmartPlaylist::showContextMenu( const QPoint &position )
 {
-    KMenu menu( listView() );
+    Q3PopupMenu menu( listView() );
 
     enum Actions { LOAD, ADD, QUEUE, EDIT, REMOVE, MEDIADEVICE_COPY, MEDIADEVICE_SYNC };
 
