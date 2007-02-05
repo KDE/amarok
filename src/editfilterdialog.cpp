@@ -235,7 +235,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     connect(m_spinMax1, SIGNAL(valueChanged(int)), this, SLOT(maxSpinChanged(int)));
 
     Q3HBoxLayout *filesizeLayout = new Q3HBoxLayout( vertLayout );
-    filesizeLayout->setAlignment( AlignLeft );
+    filesizeLayout->setAlignment( Qt::AlignLeft );
     m_filesizeLabel = new QLabel( i18n("Unit:"), m_groupBox );
     m_filesizeLabel->setObjectName( "filesizeLabel" );
     filesizeLayout->addWidget( m_filesizeLabel );
@@ -256,7 +256,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     connect( m_comboCondition, SIGNAL(activated(int)), SLOT(chooseCondition(int)) );
 
     Q3HBoxLayout *otherOptionsLayout = new Q3HBoxLayout( plainPage() );
-    otherOptionsLayout->setAlignment( AlignHCenter );
+    otherOptionsLayout->setAlignment( Qt::AlignHCenter );
     m_mainLay->addLayout( otherOptionsLayout );
 
     // the groupbox to select the action filter
