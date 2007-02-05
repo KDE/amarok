@@ -45,6 +45,7 @@
 #include <QEvent>
 #include <QStyle>
 #include <Q3RangeControl>
+#include <QStyleOptionComplex>
 
 #include <kiconloader.h>
 #include <kimageeffect.h>
@@ -106,11 +107,10 @@ Amarok::Slider::mouseMoveEvent( QMouseEvent *e )
 void
 Amarok::Slider::slideEvent( QMouseEvent *e )
 {
-    QRect rect = QStyle().subControlRect( QStyle::CC_Slider, QStyleOptionComplex(), QStyle::SC_SliderHandle, this );
-
+    QRect rect = style()->subControlRect( QStyle::CC_Slider, QStyleOptionComplex(), QStyle::SC_SliderHandle, this );
     QSlider::setValue( orientation() == Qt::Horizontal
         ? ((QApplication::reverseLayout())
-          ? Q3RangeControl::valueFromPosition( width() - (e->pos().x() - sliderRect().width()/2),  width()  + sliderRect().width() )
+          ? Q3RangeControl::valueFromPosition( width() - (e->pos().x() - rect.width()/2),  width()  + rect.width() )
           : Q3RangeControl::valueFromPosition( e->pos().x() - rect.width()/2,  width()  - rect.width() ) )
         : Q3RangeControl::valueFromPosition( e->pos().y() - rect.height()/2, height() - rect.height() ) );
 }
