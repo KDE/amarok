@@ -90,7 +90,7 @@ class ScanController : public ThreadManager::DependentJob, public QXmlDefaultHan
     public slots:
         //bool requestPause();
         //bool requestUnpause();
-        void requestAcknowledged();
+        //void requestAcknowledged();
         void slotFileMoved( const QString &src, const QString &dest );
 
     private slots:
