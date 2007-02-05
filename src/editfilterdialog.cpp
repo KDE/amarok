@@ -23,7 +23,7 @@
 #include <kmessagebox.h>
 
 
-#include "amarokcore/amarokconfig.h"
+#include "amarokconfig.h"
 #include "collectiondb.h"
 #include "debug.h"
 #include "editfilterdialog.h"
