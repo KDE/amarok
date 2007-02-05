@@ -44,6 +44,7 @@
 #include <QTimer>
 //Added by qt3to4:
 #include <QPixmap>
+#include <Q3PopupMenu>
 
 #include <kaboutdialog.h>
 #include <kapplication.h>
@@ -416,11 +417,10 @@ ScriptManager::slotInstallScript( const QString& path )
     QString _path = path;
 
     if( path.isNull() ) {
-        _path = KFileDialog::getOpenFileName( QString::null,
+        _path = KFileDialog::getOpenFileName( KUrl(),
             "*.amarokscript.tar *.amarokscript.tar.bz2 *.amarokscript.tar.gz|"
             + i18n( "Script Packages (*.amarokscript.tar, *.amarokscript.tar.bz2, *.amarokscript.tar.gz)" )
-            , this
-            , i18n( "Select Script Package" ) );
+            , this );
         if( _path.isNull() ) return false;
     }
 
@@ -514,7 +514,7 @@ ScriptManager::slotUninstallScript()
 {
     const QString name = m_gui->listView->currentItem()->text( 0 );
 
-    if( KMessageBox::warningContinueCancel( 0, i18n( "Are you sure you want to uninstall the script '%1'?" ).arg( name ), i18n("Uninstall Script"), i18n("Uninstall") ) == KMessageBox::Cancel )
+    if( KMessageBox::warningContinueCancel( this, i18n( "Are you sure you want to uninstall the script '%1'?" ).arg( name ), i18n("Uninstall Script"), KGuiItem( i18n("Uninstall") ) ) == KMessageBox::Cancel )
         return;
 
     if( m_scripts.find( name ) == m_scripts.end() )
@@ -641,7 +641,7 @@ ScriptManager::slotConfigureScript()
     const KUrl url = m_scripts[name].url;
     QDir::setCurrent( url.directory() );
 
-    m_scripts[name].process->writeStdin( "configure" );
+    m_scripts[name].process->writeStdin( QString("configure") );
 }
 
 
@@ -657,9 +657,11 @@ ScriptManager::slotAboutScript()
         return;
     }
 
-    KAboutDialog* about = new KAboutDialog( KAboutDialog::AbtTabbed|KAboutDialog::AbtProduct,
-                                            QString::null,
-                                            KDialog::Ok, KDialog::Ok, this );
+    KAboutDialog* about = new KAboutDialog( KAboutDialog::Tabbed|KAboutDialog::Product,
+                                            QString::null, this );
+    about->setButtons( KDialog::Ok );
+    about->setDefaultButton( KDialog::Ok );
+
     kapp->setTopWidget( about );
     about->setCaption( KDialog::makeStandardCaption( i18n( "About %1" ).arg( name ) ) );
     about->setProduct( "", "", "", "" );
@@ -693,8 +695,8 @@ ScriptManager::slotShowContextMenu( Q3ListViewItem* item, const QPoint& pos )
         if( it.data().li == item ) break;
 
     enum { SHOW_LOG, EDIT };
-    KMenu menu;
-    menu.insertTitle( i18n( "Debugging" ) );
+    Q3PopupMenu menu;
+    menu.setTitle( i18n( "Debugging" ) );
     menu.insertItem( SmallIconSet( Amarok::icon( "clock" ) ), i18n( "Show Output &Log" ), SHOW_LOG );
     menu.insertItem( SmallIconSet( Amarok::icon( "edit" ) ), i18n( "&Edit" ), EDIT );
     menu.setItemEnabled( SHOW_LOG, it.data().process );
