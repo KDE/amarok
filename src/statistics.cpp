@@ -44,6 +44,7 @@
 //Added by qt3to4:
 #include <Q3Frame>
 #include <QPaintEvent>
+#include <QToolButton>
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// CLASS Statistics
@@ -78,11 +79,10 @@ Statistics::Statistics( QWidget *parent, const char *name )
 
     { //<Search LineEdit>
         KToolBar *bar = new Browser::ToolBar( box );
-        bar->setIconSize( 22, false ); //looks more sensible
-        bar->setFlat( true ); //removes the ugly frame
-        bar->setMovingEnabled( false ); //removes the ugly frame
+        bar->setIconDimensions( 22 ); //looks more sensible
+        bar->setMovable( false ); //removes the ugly frame
 
-        QWidget *button = new KToolBarButton( "locationbar_erase", 1, bar );
+        QWidget *button = new QToolButton( bar );
         m_lineEdit = new ClickLineEdit( i18n( "Enter search terms here" ), bar );
 
         m_lineEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
@@ -128,7 +128,7 @@ Statistics::slotSetFilter() //SLOT
 //////////////////////////////////////////////////////////////////////////////////////////
 
 StatisticsList::StatisticsList( QWidget *parent, const char *name )
-    : K3ListView( parent, name )
+    : K3ListView( parent )
     , m_currentItem( 0 )
     , m_expanded( false )
 {
@@ -707,7 +707,7 @@ StatisticsItem::StatisticsItem( QString text, StatisticsList *parent, K3ListView
 void
 StatisticsItem::setIcon( const QString &icon )
 {
-    QString path = kapp->iconLoader()->iconPath( icon, -K3Icon::SizeHuge );
+    QString path = KIconLoader::global()->iconPath( icon, -K3Icon::SizeHuge );
     path.replace( "32x32", "48x48" ); //HACK fucking KIconLoader only returns 32x32 max. Why?
 
 //     debug() << "ICONPATH: " << path << endl;
@@ -792,7 +792,7 @@ StatisticsItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
 
     buffer.fill( fillColor );
 
-    QPainter pBuf( &buffer, true );
+    QPainter pBuf( &buffer );
 
     K3ListView *lv = static_cast<K3ListView *>( listView() );
 
@@ -822,14 +822,14 @@ StatisticsItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
         name = KStringHandler::rPixelSqueeze( name, pBuf.fontMetrics(), _width );
     }
 
-    pBuf.drawText( text_x, 0, width, textHeight, AlignVCenter, name );
+    pBuf.drawText( text_x, 0, width, textHeight, Qt::AlignVCenter, name );
 
     if( !m_subText.isEmpty() )
     {
         font.setBold( false );
         pBuf.setFont( font );
 
-        pBuf.drawText( text_x, fmName.height() + 1, width, textHeight, AlignVCenter, m_subText );
+        pBuf.drawText( text_x, fmName.height() + 1, width, textHeight, Qt::AlignVCenter, m_subText );
     }
 
     if( m_isExpanded )
@@ -892,7 +892,7 @@ StatisticsDetailedItem::paintCell( QPainter *p, const QColorGroup &cg, int colum
         return;
     }
 
-    QPainter pBuf( &buffer, true );
+    QPainter pBuf( &buffer );
     // use alternate background
 #if KDE_VERSION < KDE_MAKE_VERSION(3,3,91)
     pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor() );
@@ -933,7 +933,7 @@ StatisticsDetailedItem::paintCell( QPainter *p, const QColorGroup &cg, int colum
         name = KStringHandler::rPixelSqueeze( name, pBuf.fontMetrics(), _width );
     }
 
-    pBuf.drawText( text_x, 0, width, textHeight, AlignVCenter, name );
+    pBuf.drawText( text_x, 0, width, textHeight, Qt::AlignVCenter, name );
 
     if( showDetails )
     {
@@ -941,7 +941,7 @@ StatisticsDetailedItem::paintCell( QPainter *p, const QColorGroup &cg, int colum
         text_x = lv->treeStepSize() + 3;
         font.setItalic( true );
         pBuf.setPen( isSelected() ? _cg.highlightedText() : _cg.text().dark() );
-        pBuf.drawText( text_x, textHeight, width, fm.lineSpacing(), AlignVCenter, m_subText );
+        pBuf.drawText( text_x, textHeight, width, fm.lineSpacing(), Qt::AlignVCenter, m_subText );
     }
 
     pBuf.end();
