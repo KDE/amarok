@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <kconfig.h>
+#include <kconfiggroup.h>
 #include <kdeversion.h>
 #include <kdialog.h>
 #include <kglobal.h>
