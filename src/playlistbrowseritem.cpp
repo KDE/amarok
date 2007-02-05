@@ -1260,7 +1260,7 @@ void StreamEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, int
 void
 StreamEntry::showContextMenu( const QPoint &position )
 {
-    KMenu menu( listView() );
+    Q3PopupMenu menu( listView() );
     enum Actions { LOAD, APPEND, QUEUE, EDIT, REMOVE };
 
     menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), LOAD );
@@ -1325,10 +1325,10 @@ QDomElement LastFmEntry::xml() const
 ////////////////////////////////////////////////////////////////////////////
 
 StreamEditor::StreamEditor( QWidget *parent, const QString &title, const QString &url, bool readonly )
-    : KDialog( parent, "StreamEditor", true, QString::null, Ok|Cancel)
+    : KDialog( parent )
 {
+    setObjectName( "StreamEditor" );
     setModal( true );
-    setButtons( Ok | Cancel );
     showButtonSeparator( true );
 
     makeGridMainWidget( 2, Qt::Horizontal );
@@ -1343,14 +1343,14 @@ StreamEditor::StreamEditor( QWidget *parent, const QString &title, const QString
     m_urlLineEdit->setReadOnly( readonly );
     urlLabel->setBuddy( m_urlLineEdit );
 
-    if( !readonly )
+    if( !readonly ) {
         m_nameLineEdit->setFocus();
+        setButtons( Ok | Cancel );
+    }
     else
     {
         // In case of readonly ok button makes no sense
-        showButtonOK( false );
-        // Change Cancel to Close button
-        setButtonCancel( KStandardGuiItem::close() );
+        setButtons( Close );
     }
 
     QSize min( 480, 110 );
@@ -1456,7 +1456,7 @@ DynamicEntry::slotDoubleClicked()
 void
 DynamicEntry::showContextMenu( const QPoint &position )
 {
-    KMenu menu( listView() );
+    Q3PopupMenu menu( listView() );
 
     enum Actions { LOAD, RENAME, REMOVE, EDIT };
     menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), LOAD );
@@ -2271,7 +2271,7 @@ PodcastChannel::slotAnimation()
 void
 PodcastChannel::showContextMenu( const QPoint &position )
 {
-    KMenu menu( listView() );
+    Q3PopupMenu menu( listView() );
 
     enum Actions { LOAD, APPEND, QUEUE, DELETE, RESCAN, LISTENED, NEW, CONFIG };
 
