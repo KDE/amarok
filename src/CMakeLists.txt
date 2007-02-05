@@ -239,6 +239,7 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
    k3bexporter.cpp
    kbookmarkhandler.cpp
    ktrm.cpp
+   lastfm.cpp
    mediabrowser.cpp
    mediadevicemanager.cpp
    medium.cpp
