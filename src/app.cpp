@@ -507,7 +507,7 @@ void App::initGlobalShortcuts()
     KGlobalAccel::self()->readSettings( KGlobal::config().data() );
 
 
-// FIXME Is this still needed with KDE4? 
+// FIXME Is this still needed with KDE4?
 #if 0
     //TODO fix kde accel system so that kactions find appropriate global shortcuts
     //     and there is only one configure shortcuts dialog
@@ -1191,6 +1191,22 @@ void App::quit()
 namespace Amarok
 {
     /// @see amarok.h
+
+    //TODO remove these, they suck, do a generic getImage
+
+    QPixmap getPNG( const QString &filename )
+    {
+        QString file = !filename.endsWith( ".png", false ) ? "amarok/images/%1.png" : "amarok/images/%1";
+
+        return QPixmap( KStandardDirs::locate( "data", file.arg( filename ) ), "PNG" );
+    }
+
+    QPixmap getJPG( const QString &filename )
+    {
+        QString file = !filename.endsWith( ".jpg", false ) ? "amarok/images/%1.jpg" : "amarok/images/%1";
+
+        return QPixmap( KStandardDirs::locate( "data", QString( "amarok/images/%1.jpg" ).arg( filename ) ), "JPEG" );
+    }
 
     QWidget *mainWindow()
     {
