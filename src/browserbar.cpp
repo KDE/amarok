@@ -24,6 +24,7 @@
 #include <QPainter>
 #include <QSignalMapper> //m_mapper
 #include <QStyle>        //Amarok::Splitter
+#include <QStyleOption>  //Amarok::Splitter
 #include <QToolTip>
 //Added by qt3to4:
 #include <QPaintEvent>
@@ -51,12 +52,19 @@ namespace Amarok
         virtual void paintEvent( QPaintEvent* )
         {
             QPainter p( this );
-            parentWidget()->style().drawPrimitive( QStyle::PE_Splitter, &p, rect(), colorGroup(), QStyle::Style_Horizontal );
+            QStyleOptionFrame option;
+            option.initFrom( this ); //state,direction,rect,palette & fM
+            option.state = QStyle::State_None; //it's vertical, not horizontal!
+            if( isEnabled() )
+                option.state |= QStyle::State_Enabled;
+
+            parentWidget()->style()->drawControl( QStyle::CE_Splitter, &option, &p, this );
         }
 
-        virtual void styleChange( QStyle& )
+        virtual void styleChange( QStyle *s )
         {
-            setFixedWidth( style().pixelMetric( QStyle::PM_SplitterWidth, this ) );
+            if( s )
+                setFixedWidth( s->pixelMetric( QStyle::PM_SplitterWidth, 0, this ) );
         }
 
         virtual void mouseMoveEvent( QMouseEvent *e )
@@ -79,10 +87,10 @@ BrowserBar::BrowserBar( QWidget *parent )
         , m_mapper( new QSignalMapper( this ) )
 {
     m_tabManagementButton = new QPushButton( SmallIconSet(Amarok::icon( "configure" )), 0, this, "tab_managment_button" );
-    connect (m_tabManagementButton, SIGNAL(clicked()), SLOT(showBrowserSelectionMenu()));
-    m_tabManagementButton->setIsMenuButton ( true ); //deprecated, but since I cannot add menu directly to button it is needed.
+//     connect( m_tabManagementButton, SIGNAL(clicked()), SLOT( showBrowserSelectionMenu()) );
+//     m_tabManagementButton->setMenu( );
 
-    QToolTip::add (m_tabManagementButton, i18n("Manage tabs"));
+    QToolTip::add( m_tabManagementButton, i18n("Manage tabs") );
 
 
     m_tabBar = new MultiTabBar( MultiTabBar::Vertical, this );
@@ -260,7 +268,7 @@ BrowserBar::addBrowser( const QString &identifier, QWidget *widget, const QStrin
 
     m_tabBar->appendTab( SmallIcon( icon ), id, title, identifier );
     tab = m_tabBar->tab( id );
-    tab->setFocusPolicy( QWidget::NoFocus ); //FIXME you can focus on the tab, but they respond to no input!
+    tab->setFocusPolicy( Qt::NoFocus ); //FIXME you can focus on the tab, but they respond to no input!
 
     //we use a SignalMapper to show/hide the corresponding browser when tabs are clicked
     connect( tab, SIGNAL(clicked()), m_mapper, SLOT(map()) );
