@@ -2,18 +2,18 @@ include_directories( ${CMAKE_SOURCE_DIR}/amarok/src ${CMAKE_SOURCE_DIR}/amarok/s
 
 ########### next target ###############
 
-set(libamarok_massstorage-device_PART_SRCS massstoragedevicehandler.cpp )
+set(amarok_massstorage-device_PART_SRCS massstoragedevicehandler.cpp )
 
-kde4_automoc(${libamarok_massstorage-device_PART_SRCS})
+kde4_automoc(${amarok_massstorage-device_PART_SRCS})
 
-kde4_add_plugin(libamarok_massstorage-device WITH_PREFIX 
-${libamarok_massstorage-device_PART_SRCS})
+kde4_add_plugin(amarok_massstorage-device WITH_PREFIX 
+${amarok_massstorage-device_PART_SRCS})
 
-kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} libamarok_massstorage-device )
+kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} amarok_massstorage-device )
 
-target_link_libraries(libamarok_massstorage-device  ${KDE4_KDECORE_LIBS} )
+target_link_libraries(amarok_massstorage-device amarok ${KDE4_KDECORE_LIBS} )
 
-install(TARGETS libamarok_massstorage-device DESTINATION ${PLUGIN_INSTALL_DIR} )
+install(TARGETS amarok_massstorage-device DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 
 ########### install files ###############

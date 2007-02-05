@@ -2,18 +2,18 @@ include_directories( ${CMAKE_SOURCE_DIR}/amarok/src ${CMAKE_SOURCE_DIR}/amarok/s
 
 ########### next target ###############
 
-set(libamarok_smb-device_PART_SRCS smbdevicehandler.cpp )
+set(amarok_smb-device_PART_SRCS smbdevicehandler.cpp )
 
-kde4_automoc(${libamarok_smb-device_PART_SRCS})
+kde4_automoc(${amarok_smb-device_PART_SRCS})
 
-kde4_add_plugin(libamarok_smb-device WITH_PREFIX
-${libamarok_smb-device_PART_SRCS})
+kde4_add_plugin(amarok_smb-device WITH_PREFIX
+${amarok_smb-device_PART_SRCS})
 
-kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} libamarok_smb-device )
+kde4_install_libtool_file( ${PLUGIN_INSTALL_DIR} amarok_smb-device )
 
-target_link_libraries(libamarok_smb-device  ${KDE4_KDECORE_LIBS} )
+target_link_libraries(amarok_smb-device amarok  ${KDE4_KDECORE_LIBS} )
 
-install( TARGETS libamarok_smb-device DESTINATION ${PLUGIN_INSTALL_DIR} )
+install( TARGETS amarok_smb-device DESTINATION ${PLUGIN_INSTALL_DIR} )
 
 
 ########### install files ###############
