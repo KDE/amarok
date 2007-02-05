@@ -26,7 +26,7 @@
 
 namespace Amarok
 {
-    static QPixmap
+    static QImage
     loadOverlay( const char *iconName )
     {
         return QImage( KStandardDirs::locate( "data", QString( "amarok/images/b_%1.png" ).arg( iconName ) ), "PNG" ).smoothScale( 10, 10 );
@@ -46,7 +46,7 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
 {
     KActionCollection* const ac = Amarok::actionCollection();
 
-    setAcceptDrops( true );
+    //setAcceptDrops( true );
 
     contextMenu()->addAction( ac->action( "prev"       ) );
     contextMenu()->addAction( ac->action( "play_pause" ) );
@@ -54,17 +54,17 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
     contextMenu()->addAction( ac->action( "next"       ) );
 
     //seems to be necessary
-    KAction *quit = actionCollection()->action( "file_quit" );
+    QAction *quit = actionCollection()->action( "file_quit" );
     quit->disconnect();
     connect( quit, SIGNAL(activated()), kapp, SLOT(quit()) );
 
-    baseIcon     = KSystemTray::loadIcon( "amarok" );
+    baseIcon     = KSystemTrayIcon::loadIcon( "amarok" );
     playOverlay  = Amarok::loadOverlay( "play" );
     pauseOverlay = Amarok::loadOverlay( "pause" );
     overlayVisible = false;
 
     //paintIcon();
-    setPixmap( baseIcon );
+    setIcon( baseIcon );
 }
 
 bool
@@ -75,11 +75,11 @@ Amarok::TrayIcon::event( QEvent *e )
     case QEvent::Drop:
     case QEvent::Wheel:
     case QEvent::DragEnter:
-        return Amarok::genericEventHandler( this, e );
-
+        //return Amarok::genericEventHandler( this, e );
+        ;
     case QEvent::Timer:
         if( static_cast<QTimerEvent*>(e)->timerId() != blinkTimerID )
-            return KSystemTray::event( e );
+            return KSystemTrayIcon::event( e );
 
         // if we're playing, blink icon
         if ( overlay == &playOverlay )
@@ -152,18 +152,23 @@ Amarok::TrayIcon::engineNewMetaData( const MetaBundle &bundle, bool /*trackChang
 void
 Amarok::TrayIcon::engineTrackPositionChanged( long position, bool /*userSeek*/ )
 {
+/*
     mergeLevel = trackLength ? ((baseIcon.height() + 1) * position) / trackLength : -1;
     paintIcon( mergeLevel );
+*/
 }
+
 
 void
 Amarok::TrayIcon::paletteChange( const QPalette & op )
 {
+/*
     if ( palette().active().highlight() == op.active().highlight() || alternateIcon.isNull() )
         return;
 
     alternateIcon.resize( 0, 0 );
     paintIcon( mergeLevel, true );
+*/
 }
 
 void
@@ -175,20 +180,21 @@ Amarok::TrayIcon::paintIcon( int mergePixels, bool force )
          return;
     mergePixelsCache = mergePixels;
 
-    if ( mergePixels < 0 )
-        return blendOverlay( baseIcon );
+    if ( mergePixels < 0 ) {}
+        //return blendOverlay( baseIcon );
 
     // make up the grayed icon
     if ( grayedIcon.isNull() )
     {
-        QImage tmpTrayIcon = baseIcon.convertToImage();
-        KIconEffect::semiTransparent( tmpTrayIcon );
-        grayedIcon = tmpTrayIcon;
+        //QImage tmpTrayIcon = baseIcon.convertToImage();
+        //KIconEffect::semiTransparent( tmpTrayIcon );
+        //grayedIcon = tmpTrayIcon;
     }
 
     // make up the alternate icon (use hilight color but more saturated)
     if ( alternateIcon.isNull() )
     {
+        #if 0
         QImage tmpTrayIcon = baseIcon.convertToImage();
         // eros: this looks cool with dark red blue or green but sucks with
         // other colors (such as kde default's pale pink..). maybe the effect
@@ -199,12 +205,13 @@ Amarok::TrayIcon::paintIcon( int mergePixels, bool force )
         saturatedColor.setHsv( hue, sat > 200 ? 200 : sat, value < 100 ? 100 : value );
         KIconEffect::colorize( tmpTrayIcon, saturatedColor/* Qt::blue */, 0.9 );
         alternateIcon = tmpTrayIcon;
+        #endif
     }
 
-    if ( mergePixels >= alternateIcon.height() )
-        return blendOverlay( grayedIcon );
-    if ( mergePixels == 0 )
-        return blendOverlay( alternateIcon );
+    if ( mergePixels >= alternateIcon.height() ) {}
+        //return blendOverlay( grayedIcon );
+    if ( mergePixels == 0 ) {}
+        //return blendOverlay( alternateIcon );
 
     // mix [ grayed <-> colored ] icons
     QPixmap tmpTrayPixmap = alternateIcon;
@@ -216,6 +223,7 @@ Amarok::TrayIcon::paintIcon( int mergePixels, bool force )
 void
 Amarok::TrayIcon::blendOverlay( QPixmap &sourcePixmap )
 {
+    #if 0
     if ( !overlayVisible || !overlay || overlay->isNull() )
         return setPixmap( sourcePixmap ); // @since 3.2
 
@@ -247,6 +255,7 @@ Amarok::TrayIcon::blendOverlay( QPixmap &sourcePixmap )
     copyBlt( &sourcePixmapCopy, opX,opY, &sourceCropped, 0,0, opW,opH );
 
     setPixmap( sourcePixmapCopy ); // @since 3.2
+    #endif
 }
 
 void

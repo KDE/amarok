@@ -43,7 +43,8 @@ private:
     void blendOverlay( QPixmap &sourcePixmap );
 
     long trackLength, mergeLevel;
-    QPixmap baseIcon, grayedIcon, alternateIcon;
+    QIcon baseIcon;
+    QPixmap grayedIcon, alternateIcon;
     QPixmap playOverlay, pauseOverlay;
     QPixmap *overlay;   // the current overlay (may be NULL)
     int blinkTimerID;   // timer ID returned by QObject::startTimer()
