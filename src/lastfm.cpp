@@ -42,6 +42,7 @@
 #include <kprotocolmanager.h>
 #include <kshortcut.h>
 #include <kurl.h>
+#include <khbox.h>
 #include <kvbox.h>
 
 #include <time.h>
@@ -108,7 +109,8 @@ AmarokHttp::slotData(KIO::Job*, const QByteArray& data)
     else if ( m_result.size() == 0 ) {
         m_result = data;
     }
-    else if ( m_result.resize( m_result.size() + data.size() ) ) {
+    else {
+        m_result.resize( m_result.size() + data.size() );
         memcpy( m_result.end(), data.data(),  data.size() );
     }
 }
@@ -141,14 +143,20 @@ Controller::Controller()
     , m_service( 0 )
 {
     KActionCollection* ac = Amarok::actionCollection();
-    m_actionList.append( new KAction( i18n( "Ban" ), Amarok::icon( "remove" ),
-                         KKey( Qt::CTRL | Qt::Key_B ), this, SLOT( ban() ), ac, "ban" ) );
+    KAction *action = new KAction( KIcon( Amarok::icon( "remove" ) ), i18n( "Ban" ), ac );
+    connect( action, SIGNAL( triggered( bool ) ), this, SLOT( ban() ) );
+    action->setShortcut( QKeySequence( Qt::CTRL | Qt::Key_B ) );
+    m_actionList.append( action );
 
-    m_actionList.append( new KAction( i18n( "Love" ), Amarok::icon( "love" ),
-                         KKey( Qt::CTRL | Qt::Key_L ), this, SLOT( love() ), ac, "love" ) );
+    action = new KAction( KIcon( Amarok::icon( "love" ) ), i18n( "Love" ), ac );
+    connect( action, SIGNAL( triggered( bool ) ), this, SLOT( love() ) );
+    action->setShortcut( QKeySequence( Qt::CTRL | Qt::Key_L ) );
+    m_actionList.append( action );
 
-    m_actionList.append( new KAction( i18n( "Skip" ), Amarok::icon( "next" ),
-                         KKey( Qt::CTRL | Qt::Key_K ), this, SLOT( skip() ), ac, "skip" ) );
+    action = new KAction( KIcon( Amarok::icon( "next" ) ), i18n( "Skip" ), ac );
+    connect( action, SIGNAL( triggered( bool ) ), this, SLOT(  skip() ) );
+    action->setShortcut( QKeySequence( Qt::CTRL | Qt::Key_K ) );
+    m_actionList.append( action );
     setActionsEnabled( false );
 }
 
@@ -404,7 +412,7 @@ WebService::handshake( const QString& username, const QString& password )
             .arg( APP_VERSION )             //Muesli-approved: Amarok version, and Amarok-as-platform
             .arg( QString("Amarok") )
             .arg( QString( Q3Url( username ).encodedPathAndQuery() ) )
-            .arg( KMD5( m_password.utf8() ).hexDigest() )
+            .arg( KMD5( m_password.utf8() ).hexDigest().data() )
             .arg( "0" );
 
     http.get( path );
@@ -907,7 +915,7 @@ WebService::recommend( int type, QString username, QString artist, QString token
     uint currentTime = QDateTime::currentDateTime( Qt::UTC ).toTime_t();
     QString challenge = QString::number( currentTime );
 
-    Q3CString md5pass = KMD5( KMD5( m_password.utf8() ).hexDigest() + currentTime ).hexDigest();
+    QByteArray md5pass = KMD5( KMD5( m_password.utf8() ).hexDigest().append( QString::number( currentTime ).toLocal8Bit() ) ).hexDigest();
 
     QString token = QString( "user=%1&auth=%2&nonce=%3recipient=%4" )
                        .arg( QString( Q3Url( currentUsername() ).encodedPathAndQuery() ) )
@@ -1048,21 +1056,24 @@ void Bundle::detach() {
 // CLASS LastFm::LoginDialog
 ////////////////////////////////////////////////////////////////////////////////
 LoginDialog::LoginDialog( QWidget *parent )
-    : KDialog( parent, "LastfmLogin", true, QString::null, Ok|Cancel)
+    : KDialog( parent )
 {
     setModal( true );
     setButtons( Ok | Cancel );
 
-    makeGridMainWidget( 1, Qt::Horizontal );
-    new QLabel( i18n( "To use last.fm with Amarok, you need a last.fm profile." ), mainWidget() );
+    //makeGridMainWidget( 1, Qt::Horizontal );
+    KVBox* vbox = new KVBox( this );
+    setMainWidget( vbox );
+    new QLabel( i18n( "To use last.fm with Amarok, you need a last.fm profile." ), vbox );
 
-    makeGridMainWidget( 2, Qt::Horizontal );
-    QLabel *nameLabel = new QLabel( i18n("&Username:"), mainWidget() );
-    m_userLineEdit = new KLineEdit( mainWidget() );
+    //makeGridMainWidget( 2, Qt::Horizontal );
+    KHBox* hbox = new KHBox( vbox );
+    QLabel *nameLabel = new QLabel( i18n("&Username:"), hbox );
+    m_userLineEdit = new KLineEdit( hbox );
     nameLabel->setBuddy( m_userLineEdit );
 
-    QLabel *passLabel = new QLabel( i18n("&Password:"), mainWidget() );
-    m_passLineEdit = new KLineEdit( mainWidget() );
+    QLabel *passLabel = new QLabel( i18n("&Password:"), hbox );
+    m_passLineEdit = new KLineEdit( hbox );
     m_passLineEdit->setEchoMode( QLineEdit::Password );
     passLabel->setBuddy( m_passLineEdit );
 
@@ -1070,12 +1081,14 @@ LoginDialog::LoginDialog( QWidget *parent )
 }
 
 
-void LoginDialog::slotOk()
+void LoginDialog::slotButtonClicked( ButtonCode button )
 {
-    AmarokConfig::setScrobblerUsername( m_userLineEdit->text() );
-    AmarokConfig::setScrobblerPassword( m_passLineEdit->text() );
+    if ( button == Ok ) {
+        AmarokConfig::setScrobblerUsername( m_userLineEdit->text() );
+        AmarokConfig::setScrobblerPassword( m_passLineEdit->text() );
+    }
 
-    KDialog::slotOk();
+    KDialog::slotButtonClicked( button );
 }
 
 
@@ -1083,7 +1096,7 @@ void LoginDialog::slotOk()
 // CLASS LastFm::CustomStationDialog
 ////////////////////////////////////////////////////////////////////////////////
 CustomStationDialog::CustomStationDialog( QWidget *parent )
-    : KDialog( parent, "LastfmCustomStation", true, i18n( "Create Custom Station" ) , Ok|Cancel)
+    : KDialog( parent )
 {
     setCaption( i18n( "Create Custom Station" ) );
     setModal( true );
@@ -1096,7 +1109,7 @@ CustomStationDialog::CustomStationDialog( QWidget *parent )
 
     new QLabel( i18n( "Enter the name of a band or artist you like:\n(You can enter multiple artists separated by commas)" ), mainWidget() );
 
-    m_edit = new KLineEdit( mainWidget(), "CustomStationEdit" );
+    m_edit = new KLineEdit( mainWidget() );
     m_edit->setFocus();
 }
 
