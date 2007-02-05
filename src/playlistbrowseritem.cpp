@@ -40,6 +40,7 @@
 #include <Q3ValueList>
 #include <QCustomEvent>
 #include <Q3PtrList>
+#include <Q3PopupMenu>
 
 #include <kapplication.h>      //Used for Shoutcast random name generation
 #include <kdeversion.h>        //KDE_VERSION ifndefs.  Remove this once we reach a kde 4 dep
@@ -1052,7 +1053,7 @@ void PlaylistTrackItem::slotDoubleClicked()
 
 void PlaylistTrackItem::showContextMenu( const QPoint &position )
 {
-    KMenu menu( listView() );
+    Q3PopupMenu menu( listView() );
     enum Actions { LOAD, APPEND, QUEUE, BURN, REMOVE, INFO };
 
     menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), LOAD );
@@ -1214,7 +1215,7 @@ void StreamEntry::paintCell( QPainter *p, const QColorGroup &cg, int column, int
     }
 
     QPainter pBuf( &buffer );
-    pBuf.setClipping( true )
+    pBuf.setClipping( true );
     // use alternate background
 #if KDE_VERSION < KDE_MAKE_VERSION(3,3,91)
     pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor() );
