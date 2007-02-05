@@ -1,3 +1,19 @@
+INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE3_INCLUDE_DIR} ${QT_INCLUDE_DIR}  )
+
+
+########### next target ###############
+
+SET(tagrealmedia_STAT_SRCS
+rmff.cpp
+taglib_realmediafile.cpp
+taglib_realmediafiletyperesolver.cpp
+)
+
+kde4_automoc(${tagrealmedia_STAT_SRCS})
+
+ADD_LIBRARY(tagrealmedia STATIC ${tagrealmedia_STAT_SRCS})
+
+
 ########### install files ###############
 
 

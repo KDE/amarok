@@ -1,8 +1,51 @@
-
-include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
+INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE3_INCLUDE_DIR} ${QT_INCLUDE_DIR}  )
 
 
 ########### next target ###############
+
+SET(tagm4a_STAT_SRCS
+taglib_mp4filetyperesolver.cpp
+mp4file.cpp
+mp4itunestag.cpp
+mp4isobox.cpp
+mp4isofullbox.cpp
+mp4skipbox.cpp
+mp4moovbox.cpp
+mp4mvhdbox.cpp
+mp4ilstbox.cpp
+boxfactory.cpp
+mp4fourcc.cpp
+mp4udtabox.cpp
+mp4metabox.cpp
+mp4tagsproxy.cpp
+mp4mdiabox.cpp
+mp4minfbox.cpp
+mp4audioproperties.cpp
+mp4hdlrbox.cpp
+mp4stblbox.cpp
+mp4audiosampleentry.cpp
+mp4stsdbox.cpp
+mp4sampleentry.cpp
+mp4trakbox.cpp
+mp4propsproxy.cpp
+itunesnambox.cpp
+itunesartbox.cpp
+itunesalbbox.cpp
+itunescvrbox.cpp
+itunesgenbox.cpp
+itunestrknbox.cpp
+itunesdaybox.cpp
+itunescmtbox.cpp
+itunesgrpbox.cpp
+ituneswrtbox.cpp
+itunesdiskbox.cpp
+itunestmpobox.cpp
+itunesdatabox.cpp
+)
+
+kde4_automoc(${tagm4a_STAT_SRCS})
+
+ADD_LIBRARY(tagm4a STATIC ${tagm4a_STAT_SRCS})
 
 
 ########### install files ###############

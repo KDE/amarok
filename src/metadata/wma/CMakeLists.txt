@@ -1,5 +1,19 @@
+INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE3_INCLUDE_DIR} ${QT_INCLUDE_DIR}  )
+
 
 ########### next target ###############
+
+SET(tagwma_STAT_SRCS
+wmaattribute.cpp
+wmaproperties.cpp
+wmatag.cpp
+wmafile.cpp
+taglib_wmafiletyperesolver.cpp
+)
+
+kde4_automoc(${tagwma_STAT_SRCS})
+
+ADD_LIBRARY(tagwma STATIC ${tagwma_STAT_SRCS})
 
 
 ########### install files ###############

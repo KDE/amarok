@@ -1,12 +1,25 @@
+ADD_SUBDIRECTORY( speex ) 
+ADD_SUBDIRECTORY( wavpack ) 
+ADD_SUBDIRECTORY( trueaudio ) 
+ADD_SUBDIRECTORY( wma ) 
+ADD_SUBDIRECTORY( audible ) 
+ADD_SUBDIRECTORY( rmff ) 
+ADD_SUBDIRECTORY( aac ) 
+ADD_SUBDIRECTORY( wav ) 
 
-add_subdirectory( wma )
-add_subdirectory( audible )
-add_subdirectory( rmff )
-add_subdirectory( aac )
+MESSAGE(STATUS "${CMAKE_CURRENT_SOURCE_DIR}: skipped subdir $(MP4_SUBDIR)")
+INCLUDE_DIRECTORIES( ${CMAKE_SOURCE_DIR}/amarok/src ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE3_INCLUDE_DIR} ${QT_INCLUDE_DIR}  )
 
-message(STATUS "${CMAKE_CURRENT_SOURCE_DIR}: skipped subdir $(MP4_SUBDIR)")
 
 ########### next target ###############
+
+SET(metadata_STAT_SRCS
+tplugins.cpp
+)
+
+kde4_automoc(${metadata_STAT_SRCS})
+
+ADD_LIBRARY(metadata STATIC ${metadata_STAT_SRCS})
 
 
 ########### install files ###############
@@ -24,10 +37,10 @@ message(STATUS "${CMAKE_CURRENT_SOURCE_DIR}: skipped subdir $(MP4_SUBDIR)")
 #MP4_LDADD = m4a/libtagm4a.la
 #endif
 #
-#SUBDIRS = wma audible rmff $(MP4_SUBDIR) aac
+#SUBDIRS = speex wavpack trueaudio wma audible rmff $(MP4_SUBDIR) aac wav
 #
 #
-#INCLUDES           = $(all_includes) $(taglib_includes)
+#INCLUDES           = -I$(top_srcdir)/amarok/src $(all_includes) $(taglib_includes)
 #METASOURCES        = AUTO
 #libmetadata_la_LDFLAGS  = $(all_libraries)
 #noinst_LTLIBRARIES = libmetadata.la
@@ -39,7 +52,11 @@ message(STATUS "${CMAKE_CURRENT_SOURCE_DIR}: skipped subdir $(MP4_SUBDIR)")
 #                     tplugins.h
 #
 #libmetadata_la_LIBADD = \
+#                     speex/libtagspeex.la \
+#                     trueaudio/libtagtrueaudio.la \
+#                     wavpack/libtagwavpack.la \
 #                     wma/libtagwma.la \
+#                     wav/libtagwav.la \
 #                     rmff/libtagrealmedia.la \
 #                     $(MP4_LDADD) \
 #                     aac/libtagaac.la \

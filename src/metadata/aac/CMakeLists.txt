@@ -1,8 +1,15 @@
-
-include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
+INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE3_INCLUDE_DIR} ${QT_INCLUDE_DIR}  )
 
 
 ########### next target ###############
+
+SET(tagaac_STAT_SRCS
+aacfiletyperesolver.cpp
+)
+
+kde4_automoc(${tagaac_STAT_SRCS})
+
+ADD_LIBRARY(tagaac STATIC ${tagaac_STAT_SRCS})
 
 
 ########### install files ###############
