@@ -130,7 +130,8 @@ void
 TransferDialog::slotCancel()
 {
     m_accepted = false;
-    KDialog::slotCancel();
+    //KDialog::slotCancel();
+    slotButtonClicked( Cancel );
 }
 
 void
