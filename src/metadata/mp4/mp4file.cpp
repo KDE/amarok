@@ -40,7 +40,7 @@ namespace TagLib {
 
 MP4::File::File(const char *file,
         bool readProperties,
-        Properties::ReadStyle propertiesStyle,
+        TagLib::AudioProperties::ReadStyle propertiesStyle,
         MP4FileHandle handle) : TagLib::File(file),
         mp4tag(NULL), properties(NULL)
 {

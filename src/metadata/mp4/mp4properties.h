@@ -47,7 +47,7 @@ namespace TagLib {
                 /*!
                  * Initialize this structure
                  */
-                Properties(Properties::ReadStyle style);
+                Properties(TagLib::AudioProperties::ReadStyle style);
 
                 /*!
                  * Destroys this MP4 Properties instance.

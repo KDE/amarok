@@ -40,7 +40,7 @@ namespace TagLib {
                  * false, \a propertiesStyle is ignored.
                  */
                 File(const char *file, bool readProperties = true,
-                        Properties::ReadStyle propertiesStyle = Properties::Average,
+                        TagLib::AudioProperties::ReadStyle propertiesStyle = TagLib::AudioProperties::Average,
                         MP4FileHandle handle=MP4_INVALID_FILE_HANDLE);
 
                 /*!
@@ -65,7 +65,7 @@ namespace TagLib {
                  */
                 virtual bool save();
 
-                void read(bool readProperties, Properties::ReadStyle propertiesStyle);
+                void read(bool readProperties, TagLib::AudioProperties::ReadStyle propertiesStyle);
 
                 MP4::Tag *getMP4Tag() const;
 

@@ -101,11 +101,11 @@ include_directories(
 if(MP4V2_FOUND)
 include_directories( ${MP4V2_INCLUDE_DIR} )
 set(tagmplib_SRCS
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/mp4/mp4properties.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/mp4/mp4tag.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/mp4/mp4file.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/mp4/taglib_mp4filetyperesolver.cpp
-	)
+        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/mp4/mp4file.cpp
+        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/mp4/mp4tag.cpp
+        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/mp4/mp4properties.cpp
+        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/mp4/taglib_mp4filetyperesolver.cpp
+)
 else(MP4V2_FOUND)
 set(tagmplib_SRCS
 	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/taglib_mp4filetyperesolver.cpp
@@ -148,6 +148,35 @@ set(tagmplib_SRCS
 )
 endif(MP4V2_FOUND)
 
+set(libtagwav_SRCS
+        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/wav/wavfile.cpp
+        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/wav/wavfiletyperesolver.h
+        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/wav/wavfile.h
+        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/wav/wavproperties.cpp
+        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/wav/wavfiletyperesolver.cpp
+        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/wav/wavproperties.h
+)
+
+set(libtagtrueaudio_SRCS
+        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/trueaudio/taglib_trueaudiofiletyperesolver.cpp
+        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/trueaudio/ttafile.cpp
+        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/trueaudio/ttaproperties.cpp
+)
+
+set(libtagwavpack_SRCS
+        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/wavpack/taglib_wavpackfiletyperesolver.cpp
+        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/wavpack/wvfile.cpp
+        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/wavpack/wvproperties.cpp
+)
+
+set(libtagspeex_SRCS
+        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/speex/speexfile.cpp
+        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/speex/speexproperties.h
+        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/speex/speexfile.h
+        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/speex/taglib_speexfiletyperesolver.cpp
+        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/speex/speexproperties.cpp
+        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/speex/taglib_speexfiletyperesolver.h
+)
 
 set(libtagwma_SRCS
 	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wma/wmaattribute.cpp
@@ -238,7 +267,11 @@ set(libstatusbar_SRCS
 
 ########### next target ###############
 
-set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS} ${libmetadata_SRCS} ${libsqlite_SRCS} ${tagmplib_SRCS} ${libtagrealmedia_SRCS} ${libtagaudible_SRCS} ${libtagaac_SRCS} ${libtagwma_SRCS} # ${libanalyzers_SRCS}
+set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS} ${libmetadata_SRCS}
+        ${libsqlite_SRCS} ${tagmplib_SRCS} ${libtagrealmedia_SRCS} ${libtagaudible_SRCS}
+        ${libtagaac_SRCS} ${libtagwma_SRCS} ${libtagwavpack_SRCS} ${libtagwav_SRCS}
+        ${libtagspeex_SRCS} ${libtagtrueaudio_SRCS}
+        # ${libanalyzers_SRCS}
    ${libtagspeex_SRCS} ${libtagwav_SRCS} ${libtagwavpack_SRCS} ${libtagtrueaudio_SRCS}
    Options1.ui.h
    actionclasses.cpp
@@ -349,7 +382,7 @@ kde4_add_ui_files(amarok_LIB_SRCS
 kde4_add_library(amarok SHARED ${amarok_LIB_SRCS})
 
 target_link_libraries(amarok ${KDE4_KUTILS_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_KHTML_LIBS} ${KDE4_KNEWSTUFF_LIBS} ${TAGLIB_LIBRARIES}
-${SQLITE_LIBRARIES} ${KDE4_KDE3SUPPORT_LIBS})
+${SQLITE_LIBRARIES} ${KDE4_KDE3SUPPORT_LIBS} ${MP4V2_LIBRARY})
 
 set_target_properties(amarok PROPERTIES VERSION 1.0.0 SOVERSION 1 )
 install(TARGETS amarok DESTINATION ${LIB_INSTALL_DIR} )
