@@ -229,6 +229,7 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
    covermanager.cpp
    cuefile.cpp
    dbsetup.ui.h
+   deletedialog.cpp
    deviceconfiguredialog.cpp
    devicemanager.cpp
    directorylist.cpp
