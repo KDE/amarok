@@ -36,7 +36,7 @@ public:
     virtual QPair<QString, QRect> toolTipText( QWidget *widget, const QPoint &pos ) const = 0;
 };
 
-class ToolTip: public Q3Frame, public QToolTip
+class ToolTip: public Q3Frame/*, public QToolTip*/
 {
     Q_OBJECT
 
