@@ -3,23 +3,23 @@
 #include <QLabel>
 #include <qfont.h>
 
-HintLineEdit::HintLineEdit( const QString &hint, const QString &text, QWidget *parent, const char *name )
-   : KLineEdit( text, 0, name )
+HintLineEdit::HintLineEdit( const QString &hint, const QString &text, QWidget *parent )
+   : KLineEdit( text, 0 )
    , m_vbox( new Q3VBox( parent ) )
 {
     init();
     m_hint->setText( hint );
 }
 
-HintLineEdit::HintLineEdit( const QString &text, QWidget *parent, const char *name )
-   : KLineEdit( text, 0, name )
+HintLineEdit::HintLineEdit( const QString &text, QWidget *parent )
+   : KLineEdit( text, 0 )
    , m_vbox( new Q3VBox( parent ) )
 {
     init();
 }
 
-HintLineEdit::HintLineEdit( QWidget *parent, const char *name )
-   : KLineEdit( 0, name )
+HintLineEdit::HintLineEdit( QWidget *parent )
+   : KLineEdit( 0 )
    , m_vbox( new Q3VBox( parent ) )
 {
     init();
