@@ -61,21 +61,22 @@ void ClickLineEdit::setText( const QString &txt )
 /////////////////////////////////////////////////////////////////////////////////////
 
 //#include <kiconloader.h>
-void ClickLineEdit::drawContents( QPainter *p )
+void ClickLineEdit::paintEvent( QPaintEvent *ev )
 {
-    KLineEdit::drawContents( p );
+    KLineEdit::paintEvent( ev );
 
     if ( mDrawClickMsg == true && !hasFocus() ) {
-        QPen tmp = p->pen();
-        p->setPen( palette().color( QPalette::Disabled, QColorGroup::Text ) );
+        QPainter p( this );
+        QPen tmp = p.pen();
+        p.setPen( palette().color( QPalette::Disabled, QColorGroup::Text ) );
         QRect cr = contentsRect();
 
         //p->drawPixmap( 3, 3, SmallIcon("filter") );
 
         // Add two pixel margin on the left side
         cr.rLeft() += 3;
-        p->drawText( cr, Qt::AlignAuto | Qt::AlignVCenter, mClickMessage );
-        p->setPen( tmp );
+        p.drawText( cr, Qt::AlignAuto | Qt::AlignVCenter, mClickMessage );
+        p.setPen( tmp );
     }
 }
 

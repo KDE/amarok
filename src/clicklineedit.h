@@ -46,7 +46,7 @@ class ClickLineEdit : public KLineEdit
         virtual void setText( const QString& txt );
 
     protected:
-        virtual void drawContents( QPainter *p );
+        virtual void paintEvent( QPaintEvent *ev );
         virtual void dropEvent( QDropEvent *ev );
         virtual void focusInEvent( QFocusEvent *ev );
         virtual void focusOutEvent( QFocusEvent *ev );
