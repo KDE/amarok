@@ -45,6 +45,7 @@
 #include <QEvent>
 #include <QStyle>
 #include <Q3RangeControl>
+#include <Q3PopupMenu>
 #include <QStyleOptionComplex>
 
 #include <kiconloader.h>
@@ -104,24 +105,38 @@ Amarok::Slider::mouseMoveEvent( QMouseEvent *e )
     else QSlider::mouseMoveEvent( e );
 }
 
+class IReallyHateProtected : public Q3RangeControl {
+    public: int valueFromPosition( int a, int b) {
+        return Q3RangeControl::valueFromPosition(a, b);
+    }
+    public: static int sValueFromPosition( int a, int b) {
+        return IReallyHateProtected().valueFromPosition(a, b);
+    }
+};
+
 void
 Amarok::Slider::slideEvent( QMouseEvent *e )
 {
-    QRect rect = style()->subControlRect( QStyle::CC_Slider, new QStyleOptionComplex(), QStyle::SC_SliderHandle, this );
+
+    QStyleOptionComplex complex;
+    QRect rect = style()->subControlRect( QStyle::CC_Slider, &complex , QStyle::SC_SliderHandle, this );
+
     QSlider::setValue( orientation() == Qt::Horizontal
         ? ((QApplication::reverseLayout())
-          ? Q3RangeControl::valueFromPosition( width() - (e->pos().x() - rect.width()/2),  width()  + rect.width() )
-          : Q3RangeControl::valueFromPosition( e->pos().x() - rect.width()/2,  width()  - rect.width() ) )
-        : Q3RangeControl::valueFromPosition( e->pos().y() - rect.height()/2, height() - rect.height() ) );
+          ? IReallyHateProtected::sValueFromPosition( width() - (e->pos().x() - rect.width()/2),  width()  + rect.width() )
+          : IReallyHateProtected::sValueFromPosition( e->pos().x() - rect.width()/2,  width()  - rect.width() ) )
+        : IReallyHateProtected::sValueFromPosition( e->pos().y() - rect.height()/2, height() - rect.height() ) );
 }
 
 void
 Amarok::Slider::mousePressEvent( QMouseEvent *e )
 {
+    QStyleOptionComplex complex;
+    QRect rect = style()->subControlRect( QStyle::CC_Slider, &complex , QStyle::SC_SliderHandle, this );
     m_sliding   = true;
     m_prevValue = QSlider::value();
 
-    if ( !sliderRect().contains( e->pos() ) )
+    if ( !rect.contains( e->pos() ) )
         mouseMoveEvent( e );
 }
 
@@ -190,8 +205,8 @@ Amarok::PrettySlider::slideEvent( QMouseEvent *e )
 {
     if( m_mode == Pretty  ||  m_showingMoodbar )
       QSlider::setValue( orientation() == Qt::Horizontal
-          ? Q3RangeControl::valueFromPosition( e->pos().x(), width()-2 )
-          : Q3RangeControl::valueFromPosition( e->pos().y(), height()-2 ) );
+          ? IReallyHateProtected::sValueFromPosition( e->pos().x(), width()-2 )
+          : IReallyHateProtected::sValueFromPosition( e->pos().y(), height()-2 ) );
     else
       Amarok::Slider::slideEvent( e );
 }
@@ -229,7 +244,7 @@ Amarok::PrettySlider::paintEvent( QPaintEvent *e )
       }
 
     QPixmap  buf( size() );
-    QPainter p( &buf, this );
+    QPainter p( &buf );
 
     buf.fill( parentWidget()->backgroundColor() );
 
@@ -370,7 +385,6 @@ Amarok::VolumeSlider::VolumeSlider( QWidget *parent, uint max )
     , m_animTimer( new QTimer( this ) )
     , m_pixmapInset( QPixmap( KStandardDirs::locate( "data","amarok/images/volumeslider-inset.png" ) ) )
 {
-    setWindowFlags( getWindowFlags() | Qt::WNoAutoErase );
     setFocusPolicy( Qt::NoFocus );
 
     // BEGIN Calculate handle animation pixmaps for mouse-over effect
@@ -430,8 +444,8 @@ Amarok::VolumeSlider::slotAnimTimer() //SLOT
 void
 Amarok::VolumeSlider::contextMenuEvent( QContextMenuEvent *e )
 {
-    KMenu menu;
-    menu.insertTitle( i18n( "Volume" ) );
+    Q3PopupMenu menu;
+    menu.setTitle( i18n( "Volume" ) );
     menu.insertItem(  i18n(   "100%" ), 100 );
     menu.insertItem(  i18n(    "80%" ),  80 );
     menu.insertItem(  i18n(    "60%" ),  60 );
@@ -457,7 +471,7 @@ Amarok::VolumeSlider::contextMenuEvent( QContextMenuEvent *e )
 void
 Amarok::VolumeSlider::slideEvent( QMouseEvent *e )
 {
-    QSlider::setValue( Q3RangeControl::valueFromPosition( e->pos().x(), width()-2 ) );
+    QSlider::setValue( IReallyHateProtected::sValueFromPosition( e->pos().x(), width()-2 ) );
 }
 
 void
@@ -506,7 +520,7 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 void
 Amarok::VolumeSlider::hideEvent( QHideEvent* )
 {
-    setBackgroundMode( PaletteBackground ); // Required to prevent erasing
+    setBackgroundMode( Qt::PaletteBackground ); // Required to prevent erasing
 }
 
 void
@@ -514,7 +528,7 @@ Amarok::VolumeSlider::showEvent( QShowEvent* )
 {
     // HACK To prevent ugly uninitialised background when the window is shown,
     //      needed because we use NoBackground to prevent flickering while painting
-    setBackgroundMode( NoBackground );
+    setBackgroundMode( Qt::NoBackground );
 }
 
 void
