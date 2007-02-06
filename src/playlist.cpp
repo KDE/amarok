@@ -421,8 +421,8 @@ Playlist::Playlist( QWidget *parent )
 
     m_undoCounter = m_undoList.count();
 
-    m_undoButton->setEnabled( !m_undoList.isEmpty() );
-    m_redoButton->setEnabled( false );
+    //m_undoButton->setEnabled( !m_undoList.isEmpty() );
+    //m_redoButton->setEnabled( false );
 
     engineStateChanged( EngineController::engine()->state() ); //initialise state of UI
     paletteChange( palette() ); //sets up glowColors
@@ -3020,7 +3020,7 @@ Playlist::slotSingleClick()
 }
 
 void
-Playlist::customEvent( QCustomEvent *e )
+Playlist::customEvent( QEvent *e )
 {
     if( e->type() == (int)UrlLoader::JobFinishedEvent ) {
         refreshNextTracks( 0 );
@@ -4270,9 +4270,9 @@ void
 Playlist::lock()
 {
    if( m_lockStack == 0 ) {
-      m_clearButton->setEnabled( false );
-      m_undoButton->setEnabled( false );
-      m_redoButton->setEnabled( false );
+      //m_clearButton->setEnabled( false );
+      //m_undoButton->setEnabled( false );
+      //m_redoButton->setEnabled( false );
    }
 
    m_lockStack++;
@@ -4286,9 +4286,9 @@ Playlist::unlock()
    m_lockStack--;
 
    if( m_lockStack == 0 ) {
-      m_clearButton->setEnabled( true );
-      m_undoButton->setEnabled( !m_undoList.isEmpty() );
-      m_redoButton->setEnabled( !m_redoList.isEmpty() );
+      //m_clearButton->setEnabled( true );
+      //m_undoButton->setEnabled( !m_undoList.isEmpty() );
+      //m_redoButton->setEnabled( !m_redoList.isEmpty() );
    }
 }
 

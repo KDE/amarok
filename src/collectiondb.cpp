@@ -5800,7 +5800,7 @@ CollectionDB::scanModifiedDirs()
 
 
 void
-CollectionDB::customEvent( QCustomEvent *e )
+CollectionDB::customEvent( QEvent *e )
 {
     if ( e->type() == (int)ScanController::JobFinishedEvent )
     {

@@ -213,7 +213,7 @@ class PlaylistEntry :  public PlaylistBrowserEntry
         void slotAnimation();
 
     private:
-        void customEvent( QCustomEvent* e );
+        void customEvent( QEvent* e );
         void startAnimation();
         void stopAnimation();
 

@@ -339,7 +339,7 @@ class Playlist : private K3ListView, public EngineObserver, public Amarok::ToolT
         void contentsMouseMoveEvent( QMouseEvent *e ) { Q3ListView::contentsMouseMoveEvent( e ); }
         #endif
 
-        void customEvent( QCustomEvent* );
+        void customEvent( QEvent* );
         bool eventFilter( QObject*, QEvent* );
         void paletteChange( const QPalette& );
         void rename( Q3ListViewItem*, int );

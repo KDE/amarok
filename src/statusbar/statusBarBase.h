@@ -22,6 +22,7 @@
 
 #include "progressBar.h" //convenience
 #include "amarok_export.h"
+#include "threadmanager.h"
 #include <qwidget.h>     //baseclass
 #include <qmap.h>        //stack allocated
 #include <q3valuelist.h>  //stack allocated
@@ -143,6 +144,8 @@ namespace KDE
          */
         void shortMessage( const QString &text, bool longShort = false );
 
+        void shortMessageThreadSafe( const QString &text );
+
         /** Stop anticipating progress from sender() */
         void endProgressOperation();
 
@@ -185,9 +188,11 @@ namespace KDE
 
     protected:
         virtual void polish();
-        virtual void customEvent( QCustomEvent* );
+        virtual void customEvent( QEvent* );
         virtual void paintEvent( QPaintEvent* );
         virtual bool event( QEvent* );
+
+         class ShortMessageEvent;
 
         /**
          * You must parent the widget to the statusbar, we won't do that
@@ -212,6 +217,7 @@ namespace KDE
         };
 
         void updateTotalProgress();
+        ProgressBar &newProgressOperationInternal( QObject *owner );
         bool allDone(); ///@return true if all progress operations are complete
         void pruneProgressBars(); /// deletes old progress bars
         void writeLogFile( const QString &text );
@@ -233,6 +239,7 @@ namespace KDE
         int                  m_shortLongType;
 
         QLayout *m_otherWidgetLayout;
+
     };
 }
 #endif

@@ -196,7 +196,7 @@ class PlaylistBrowser : public Q3VBox
         bool deletePlaylists( Q3PtrList<PlaylistEntry> items );
         bool deletePlaylists( KUrl::List items );
 
-        void customEvent( QCustomEvent* e );
+        void customEvent( QEvent* e );
         void saveM3U( PlaylistEntry *, bool append );
         void savePLS( PlaylistEntry *, bool append );
         void saveXSPF( PlaylistEntry *, bool append );

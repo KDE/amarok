@@ -204,7 +204,7 @@ UrlLoader::doJob()
 }
 
 void
-UrlLoader::customEvent( QCustomEvent *e)
+UrlLoader::customEvent( QEvent *e)
 {
     //DEBUG_BLOCK
     #define e static_cast<TagsEvent*>(e)

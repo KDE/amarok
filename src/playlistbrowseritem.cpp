@@ -727,7 +727,7 @@ void PlaylistEntry::removeTrack( Q3ListViewItem *item, bool isLast )
 }
 
 
-void PlaylistEntry::customEvent( QCustomEvent *e )
+void PlaylistEntry::customEvent( QEvent *e )
 {
     if( e->type() != (int)PlaylistReader::JobFinishedEvent )
         return;

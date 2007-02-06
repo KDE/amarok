@@ -566,7 +566,7 @@ class LIBAMAROK_EXPORT CollectionDB : public QObject, public EngineObserver
         //of Composer table
         void updateGroupBy();
 
-        void customEvent( QCustomEvent * );
+        void customEvent( QEvent * );
 
         // helpers for embedded images
         QString loadHashFile( const Q3CString& hash, uint width );

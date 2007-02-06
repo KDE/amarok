@@ -351,11 +351,16 @@ StatusBar::longMessageThreadSafe( const QString &text, int /*type*/ )
 }
 
 void
-StatusBar::customEvent( QCustomEvent *e )
+StatusBar::customEvent( QEvent *event )
 {
-    QString *s = static_cast<QString*>( e->data() );
-    longMessage( *s );
-    delete s;
+    if( QCustomEvent *e = dynamic_cast<QCustomEvent*>( event ) ) {
+        QString *s = static_cast<QString*>( e->data() );
+        if( e->type() == 1000 )
+            longMessage( *s );
+        else if( e->type() == 1001 )
+            shortMessage( *s );
+        delete s;
+    }
 }
 
 
@@ -372,7 +377,7 @@ StatusBar::allDone()
 }
 
 ProgressBar&
-StatusBar::newProgressOperation( QObject *owner )
+StatusBar::newProgressOperationInternal( QObject *owner )
 {
     SHOULD_BE_GUI
 
@@ -390,7 +395,7 @@ StatusBar::newProgressOperation( QObject *owner )
 
     m_popupProgress->reposition();
 
-    connect( owner, SIGNAL(destroyed( QObject* )), SLOT(endProgressOperation( QObject* )) );
+    //connect( owner, SIGNAL(destroyed( QObject* )), SLOT(endProgressOperation( QObject* )), Qt::DirectConnection );
 
     // so we can show the correct progress information
     // after the ProgressBar is setup
@@ -401,6 +406,21 @@ StatusBar::newProgressOperation( QObject *owner )
 
     return *m_progressMap[ owner ];
 }
+
+void StatusBar::shortMessageThreadSafe( const QString &text )
+{
+    QCustomEvent *e = new QCustomEvent( 1001 );
+    e->setData( new QString( text ) );
+    QApplication::postEvent( this, e );
+}
+
+ProgressBar&
+StatusBar::newProgressOperation( QObject *owner )
+{
+    connect( owner, SIGNAL(destroyed( QObject* )), SLOT(endProgressOperation( QObject* )) );
+    return newProgressOperationInternal( owner );
+}
+
 
 ProgressBar&
 StatusBar::newProgressOperation( KIO::Job *job )

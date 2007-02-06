@@ -2493,7 +2493,7 @@ void PlaylistBrowser::currentItemChanged( Q3ListViewItem *item )    //SLOT
 }
 
 
-void PlaylistBrowser::customEvent( QCustomEvent *e )
+void PlaylistBrowser::customEvent( QEvent *e )
 {
     // If a playlist is found in collection folders it will be automatically added to the playlist browser
     // The ScanController sends a PlaylistFoundEvent when a playlist is found.

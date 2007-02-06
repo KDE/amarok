@@ -120,7 +120,7 @@ protected:
     /// reimplemented from ThreadManager::Job
     virtual bool doJob();
     virtual void completeJob();
-    virtual void customEvent( QCustomEvent* );
+    virtual void customEvent( QEvent* );
 
     void loadXml( const KUrl& );
 
