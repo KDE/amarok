@@ -68,7 +68,7 @@ X-KDE-Library=libamarok_nfs-device
 
 X-KDE-Amarok-authors=Maximilian Kossick
 X-KDE-Amarok-email=maximilian.kossick@googlemail.com
-X-KDE-Amarok-framework-version=28
+X-KDE-Amarok-framework-version=29
 X-KDE-Amarok-name=nfs-device
 X-KDE-Amarok-plugintype=device
 X-KDE-Amarok-rank=100
