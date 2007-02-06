@@ -163,7 +163,8 @@ PlaylistWindow::PlaylistWindow()
     ac->addAction( "playlist_save", action );
 
 #ifndef Q_WS_MAC
-    KStandardAction::showMenubar( this, SLOT(slotToggleMenu()), ac );
+    KAction *showMenu = KStandardAction::showMenubar( this, SLOT(slotToggleMenu()), this );
+    ac->addAction( KStandardAction::name(KStandardAction::ShowMenubar), showMenu );
 #endif
 
 

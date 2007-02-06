@@ -1,5 +1,6 @@
 
 add_subdirectory( void )
+add_subdirectory( xine )
 
 message(STATUS "${CMAKE_CURRENT_SOURCE_DIR}: skipped subdir $(XINE_ENGINE_SUBDIR)")
 message(STATUS "${CMAKE_CURRENT_SOURCE_DIR}: skipped subdir $(NMM_ENGINE_SUBDIR)")
