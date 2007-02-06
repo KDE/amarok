@@ -18,7 +18,7 @@
 #include <kdialog.h>
 #include <kglobal.h>
 #include <kiconloader.h>
-#include <kio/job.h>
+#include <kio/deletejob.h>
 #include <klocale.h>
 #include <kstandardguiitem.h>
 #include <kurl.h>
