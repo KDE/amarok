@@ -270,13 +270,28 @@ PlaylistWindow::PlaylistWindow()
 //     new KAction( i18n( "Play" ), Amarok::icon( "play" ), 0, ec, SLOT( play() ), ac, "play" );
 //     new KAction( i18n( "Pause" ), Amarok::icon( "pause" ), 0, ec, SLOT( pause() ), ac, "pause" );
 //     new KAction( i18n( "Next Track" ), Amarok::icon( "next" ), 0, ec, SLOT( next() ), ac, "next" );
-    KAction *previous = new KAction( KIcon(Amarok::icon( "back" )), i18n( "Previous Track" ), ac );
+    KAction *previous = new KAction( this );
+    previous->setIcon( KIcon(Amarok::icon( "back" )) );
+    previous->setText( i18n( "Previous Track" ) );
+    ac->addAction( "prev", previous );
     connect( previous, SIGNAL(triggered(bool)), SLOT( previous() ) );
-    KAction *play = new KAction( KIcon(Amarok::icon( "play" )), i18n( "Play" ), ac );
+
+    KAction *play = new KAction( this );
+    play->setIcon( KIcon(Amarok::icon( "play" )) );
+    play->setText( i18n( "Play" ) );
+    ac->addAction( "play", play );
     connect( play, SIGNAL(triggered(bool)), SLOT( play() ));
-    KAction *pause = new KAction( KIcon(Amarok::icon( "pause" )), i18n( "Pause" ), ac );
+
+    KAction *pause = new KAction( this );
+    pause->setIcon( KIcon(Amarok::icon( "pause" )) );
+    pause->setText( i18n( "Pause" ));
+    ac->addAction( "pause", pause );
     connect( pause, SIGNAL(triggered(bool)), SLOT( pause() ) );
-    KAction *next = new KAction( KIcon(Amarok::icon( "next" )), i18n( "Next Track" ), ac );
+
+    KAction *next = new KAction( this );
+    next->setIcon( KIcon(Amarok::icon( "next" )) );
+    next->setText( i18n( "Next Track" ) );
+    ac->addAction( "next", next );
     connect( next, SIGNAL(triggered(bool)), SLOT( next() ) );
 
 //     KAction *toggleFocus = new KAction( i18n( "Toggle Focus" ), "reload", Qt::ControlModifier + Qt::Key_Tab, this, SLOT( slotToggleFocus() ), ac, "toggle_focus" );
