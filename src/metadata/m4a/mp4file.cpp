@@ -55,7 +55,7 @@ public:
 //! function to fill the tags with converted proxy data, which has been parsed out of the file previously
 static void fillTagFromProxy( MP4::Mp4TagsProxy& proxy, MP4::Tag& mp4tag );
 
-MP4::File::File(const char *file, bool , AudioProperties::ReadStyle  )
+MP4::File::File(const char *file, bool , TagLib::AudioProperties::ReadStyle  )
 	:TagLib::File( file )
 {
   // create member container

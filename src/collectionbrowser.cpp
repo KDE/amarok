@@ -44,7 +44,7 @@
 #include <QDragMoveEvent>
 #include <QPaintEvent>
 
-#include <taglib/tfile.h>   //TagLib::File::isWritable
+#include <tfile.h>   //TagLib::File::isWritable
 
 #include <unistd.h>         //CollectionView ctor
 

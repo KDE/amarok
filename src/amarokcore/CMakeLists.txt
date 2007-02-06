@@ -23,4 +23,4 @@ include_directories(
 #qt4_add_dbus_adaptor( libamarokcore_SRCS org.kde.Amarok.xml amarokdcophandler.h DcopPlayerHandler PlayerHandler )
 
 install(FILES  amarok.kcfg DESTINATION ${KCFG_INSTALL_DIR} )
-install(FILES org.kde.Amarok.xml DESTINATION ${DBUS_INTERFACES_DIR})
+#install(FILES org.kde.Amarok.xml DESTINATION ${DBUS_INTERFACES_DIR})

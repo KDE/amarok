@@ -29,7 +29,7 @@
 #include <QFile> //decodePath()
 #include <q3cstring.h>
 #include <QString>
-#include <taglib/fileref.h>
+#include <fileref.h>
 
 #include <config.h>
 

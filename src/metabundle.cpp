@@ -34,25 +34,25 @@
 //Added by qt3to4:
 #include <Q3ValueList>
 #include <Q3CString>
-#include <taglib/attachedpictureframe.h>
-#include <taglib/fileref.h>
-#include <taglib/id3v1genres.h> //used to load genre list
-#include <taglib/mpegfile.h>
-#include <taglib/tag.h>
-#include <taglib/tstring.h>
-#include <taglib/tlist.h>
-#include <taglib/apetag.h>
-#include <taglib/id3v2tag.h>
-#include <taglib/id3v1tag.h>
-#include <taglib/mpcfile.h>
-#include <taglib/mpegfile.h>
-#include <taglib/oggfile.h>
-#include <taglib/oggflacfile.h>
-#include <taglib/vorbisfile.h>
-#include <taglib/flacfile.h>
-#include <taglib/textidentificationframe.h>
-#include <taglib/uniquefileidentifierframe.h>
-#include <taglib/xiphcomment.h>
+#include <attachedpictureframe.h>
+#include <fileref.h>
+#include <id3v1genres.h> //used to load genre list
+#include <mpegfile.h>
+#include <tag.h>
+#include <tstring.h>
+#include <tlist.h>
+#include <apetag.h>
+#include <id3v2tag.h>
+#include <id3v1tag.h>
+#include <mpcfile.h>
+#include <mpegfile.h>
+#include <oggfile.h>
+#include <oggflacfile.h>
+#include <vorbisfile.h>
+#include <flacfile.h>
+#include <textidentificationframe.h>
+#include <uniquefileidentifierframe.h>
+#include <xiphcomment.h>
 
 #include <config.h>
 #ifdef HAVE_MP4V2

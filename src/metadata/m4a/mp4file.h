@@ -77,7 +77,7 @@ namespace TagLib {
        * false, \a propertiesStyle is ignored.
        */
       File(const char *file, bool readProperties = true,
-           AudioProperties::ReadStyle propertiesStyle = AudioProperties::Average);
+           TagLib::AudioProperties::ReadStyle propertiesStyle = TagLib::AudioProperties::Average);
 
       /*!
        * Destroys this instance of the File.

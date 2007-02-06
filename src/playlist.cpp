@@ -4905,8 +4905,8 @@ Playlist::addCustomColumn()
     }
 }
 
-#include <taglib/fileref.h>
-#include <taglib/tag.h>
+#include <fileref.h>
+#include <tag.h>
 #include <krandom.h>
 
 TagWriter::TagWriter( PlaylistItem *item, const QString &oldTag, const QString &newTag, const int col, const bool updateView )

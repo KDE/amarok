@@ -534,8 +534,8 @@ void App::initGlobalShortcuts()
 // METHODS
 /////////////////////////////////////////////////////////////////////////////////////
 
-#include <taglib/id3v1tag.h>
-#include <taglib/tbytevector.h>
+#include <id3v1tag.h>
+#include <tbytevector.h>
 #include <QTextCodec>
 #include <kglobal.h>
 

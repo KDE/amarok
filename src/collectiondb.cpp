@@ -79,7 +79,7 @@
 #include <ctime>                 //query()
 #include <unistd.h>              //usleep()
 
-#include <taglib/audioproperties.h>
+#include <audioproperties.h>
 
 #include "sqlite/sqlite3.h"
 

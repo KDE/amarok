@@ -18,7 +18,7 @@
 #include "ui_tagguesserconfigdialog.h"
 #include "trackpickerdialog.h"
 
-#include <taglib/tfile.h> //TagLib::File::isWritable
+#include <tfile.h> //TagLib::File::isWritable
 
 #include <qdom.h>
 #include <QFile>
