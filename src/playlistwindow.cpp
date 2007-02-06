@@ -134,49 +134,101 @@ PlaylistWindow::PlaylistWindow()
 
     KStandardAction::configureToolbars( kapp, SLOT( slotConfigToolBars() ), ac );
     KStandardAction::keyBindings( kapp, SLOT( slotConfigShortcuts() ), ac );
-    KStandardAction::keyBindings( kapp, SLOT( slotConfigGlobalShortcuts() ), ac);
+    //KStandardAction::keyBindings( kapp, SLOT( slotConfigGlobalShortcuts() ), ac);
     KStandardAction::preferences( kapp, SLOT( slotConfigAmarok() ), ac );
-    ac->action("options_configure_globals")->setIcon( KIcon( Amarok::icon( "configure" ) ) );
+//    ac->action("options_configure_globals")->setIcon( KIcon( Amarok::icon( "configure" ) ) );
     ac->action(KStandardAction::name(KStandardAction::KeyBindings))->setIcon( KIcon( Amarok::icon( "configure" ) ) );
     ac->action(KStandardAction::name(KStandardAction::ConfigureToolbars))->setIcon( KIcon( Amarok::icon( "configure" ) ) );
     ac->action(KStandardAction::name(KStandardAction::Preferences))->setIcon( KIcon( Amarok::icon( "configure" ) ) );
 
     KStandardAction::quit( kapp, SLOT( quit() ), ac );
 //TODO: Is the right?
-    KStandardAction::open( this, "playlist_add", ac )->setText( i18n("&Add Media...") );
-    ac->action( "playlist_add" )->setIcon( KIcon( Amarok::icon( "files" ) ) );
-    KStandardAction::open( this, "stream_add", ac )->setText( i18n("&Add Stream...") );
-    ac->action( "stream_add" )->setIcon( KIcon( Amarok::icon( "files" ) ) );
-    KStandardAction::save( this, "playlist_save", ac )->setText( i18n("&Save Playlist As...") );
-    ac->action( "playlist_save" )->setIcon( KIcon( Amarok::icon(  "save" ) ) );
+    //KStandardAction::open( this, "playlist_add", ac )->setText( i18n("&Add Media...") );
+    KAction *action = new KAction( this );
+    action->setIcon( KIcon( Amarok::icon( "files" ) ) );
+    action->setText( i18n("&Add Media...") );
+    ac->addAction( "playlist_add", action );
+
+    //KStandardAction::open( this, "stream_add", ac )->setText( i18n("&Add Stream...") );
+    action = new KAction( this );
+    action->setIcon( KIcon( Amarok::icon( "files" ) ) );
+    action->setText( i18n("&Add Stream...") );
+    ac->addAction( "stream_add", action );
+
+
+    //KStandardAction::save( this, "playlist_save", ac )->setText( i18n("&Save Playlist As...") );
+    action = new KAction( this );
+    action->setIcon( KIcon( Amarok::icon( "save" ) ) );
+    action->setText( i18n("&Save Playlist As...") );
+    ac->addAction( "playlist_save", action );
+
 #ifndef Q_WS_MAC
     KStandardAction::showMenubar( this, SLOT(slotToggleMenu()), ac );
 #endif
 
 
-    KAction *burn = new KAction( KIcon(Amarok::icon( "burn" )), i18n( "Burn Current Playlist" ), ac);
+    KAction *burn = new KAction( this );
+    burn->setText( i18n( "Burn Current Playlist" ) );
+    burn->setIcon( KIcon(Amarok::icon( "burn" )) );
+    ac->addAction( "playlist_burn", burn );
     connect(burn, SIGNAL(triggered(bool)), SLOT(slotBurnPlaylist()));
     actionCollection()->action("playlist_burn")->setEnabled( K3bExporter::isAvailable() );
-    KAction *playact = new KAction( KIcon(Amarok::icon( "files" )), i18n("Play Media..."), ac);
+
+    KAction *playact = new KAction( this );
+    playact->setText( i18n("Play Media...") );
+    playact->setIcon( KIcon(Amarok::icon( "files" )) );
+    ac->addAction( "playlist_playmedia", playact );
     connect(playact, SIGNAL(triggered(bool)), SLOT(slotPlayMedia()));
-    KAction *acd = new KAction( KIcon( Amarok::icon( "album" ) ), i18n("Play Audio CD"), ac);
+
+    KAction *acd = new KAction( this );
+    acd->setText(  i18n("Play Audio CD") );
+    acd->setIcon(  KIcon( Amarok::icon( "album" ) ) );
+    ac->addAction( "play_audiocd", acd );
     connect(acd, SIGNAL(triggered(bool)), SLOT(playAudioCD()));
-    KAction *playPause = new KAction( KIcon( Amarok::icon( "play" ) ), i18n( "&Play/Pause" ), ac);
+
+    KAction *playPause = new KAction( this );
+    playPause->setText( i18n( "&Play/Pause" ) );
+    playPause->setIcon( KIcon( Amarok::icon( "play" ) ) );
+    ac->addAction( "play_pause", playPause );
     playPause->setShortcut( Qt::Key_Space );
     connect( playPause, SIGNAL(triggered(bool)), SLOT(playPause()));
-    KAction *script = new KAction( KIcon(Amarok::icon( "scripts" )), i18n("Script Manager"), ac);
+
+    KAction *script = new KAction( this );
+    script->setText( i18n("Script Manager") );
+    script->setIcon( KIcon(Amarok::icon( "scripts" )) );
+    ac->addAction( "script_manager", script );
     connect(script, SIGNAL(triggered(bool)), SLOT(showScriptSelector()));
-    KAction *queue = new KAction( KIcon( Amarok::icon( "queue" )), i18n( "Queue Manager" ), ac);
+
+    KAction *queue = new KAction( this );
+    queue->setText( i18n( "Queue Manager" ) );
+    queue->setIcon( KIcon( Amarok::icon( "queue" )) );
+    ac->addAction( "queue_manager", queue );
     connect(queue, SIGNAL(triggered(bool)), SLOT(showQueueManager()));
-    KAction *seekForward = new KAction( KIcon( Amarok::icon( "fastforward" ) ), i18n("&Seek Forward"), ac);
+
+    KAction *seekForward = new KAction( this );
+    seekForward->setText( i18n("&Seek Forward") );
+    seekForward->setIcon( KIcon( Amarok::icon( "fastforward" ) ) );
+    ac->addAction( "seek_forward", seekForward );
     seekForward->setShortcut( Qt::Key_Right );
     connect(seekForward, SIGNAL(triggered(bool)), SLOT(seekForward()));
-    KAction *seekBackward = new KAction( KIcon(Amarok::icon( "rewind" )), i18n( "&Seek Backward" ), ac );
+
+    KAction *seekBackward = new KAction( this );
+    seekBackward->setText( i18n( "&Seek Backward" ) );
+    seekBackward->setIcon( KIcon(Amarok::icon( "rewind" )) );
+    ac->addAction( "seek_backward", seekBackward );
     seekBackward->setShortcut(Qt::Key_Left);
     connect(seekBackward, SIGNAL(triggered(bool)), SLOT(seekBackward()));
-    KAction *statistics = new KAction( KIcon(Amarok::icon( "info" )), i18n( "Statistics" ), ac );
+
+    KAction *statistics = new KAction( this );
+    statistics->setText( i18n( "Statistics" ) );
+    statistics->setIcon( KIcon(Amarok::icon( "info" )) );
+    ac->addAction( "statistics", statistics );
     connect(statistics, SIGNAL(triggered(bool)), SLOT(showStatistics()));
-    KAction *update = new KAction( KIcon(Amarok::icon( "refresh")), i18n( "Update Collection" ), actionCollection());
+
+    KAction *update = new KAction( this );
+    update->setText( i18n( "Update Collection" ) );
+    update->setIcon( KIcon(Amarok::icon( "refresh")) );
+    actionCollection()->addAction( "update_collection", update );
     connect(update, SIGNAL(triggered(bool)), SLOT(scanModifiedDirs()));
 
     m_lastfmTags << "Alternative" << "Ambient" << "Chill Out" << "Classical" << "Dance"
@@ -212,7 +264,7 @@ PlaylistWindow::PlaylistWindow()
     addLastfmMenu->insertItem( i18n( "Custom Station" ), this, SLOT( addLastfmCustom() ) );
     addLastfmMenu->insertItem( i18n( "Global Tag Radio" ), addTagRadioMenu );
 
-    ac->action( "options_configure_globals" )->setText( i18n( "Configure &Global Shortcuts..." ) );
+//    ac->action( "options_configure_globals" )->setText( i18n( "Configure &Global Shortcuts..." ) );
 
 //     new KAction( i18n( "Previous Track" ), Amarok::icon( "back" ), 0, ec, SLOT( previous() ), ac, "prev" );
 //     new KAction( i18n( "Play" ), Amarok::icon( "play" ), 0, ec, SLOT( play() ), ac, "play" );
@@ -438,7 +490,7 @@ void PlaylistWindow::init()
     // plug it first, as this item will be moved to the applications first menu
     m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Preferences)) );
 #endif
-    m_settingsMenu->addAction( actionCollection()->action("options_configure_globals") );
+//    m_settingsMenu->addAction( actionCollection()->action("options_configure_globals") );
     m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::KeyBindings)) );
     m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::ConfigureToolbars)) );
     m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Preferences)) );

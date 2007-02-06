@@ -150,7 +150,7 @@ Menu::Menu()
 
     safePlug( ac, KStandardAction::name(KStandardAction::ConfigureToolbars), this );
     safePlug( ac, KStandardAction::name(KStandardAction::KeyBindings), this );
-    safePlug( ac, "options_configure_globals", this ); //we created this one
+//    safePlug( ac, "options_configure_globals", this ); //we created this one
     safePlug( ac, KStandardAction::name(KStandardAction::Preferences), this );
 
     insertSeparator();
