@@ -66,7 +66,6 @@ email                : markey@web.de
 #include <kstandarddirs.h>
 #include <kaboutdata.h>
 #include <kio/copyjob.h>
-#include <kio/job.h>
 
 #include <QEvent>              //genericEventHandler()
 #include <QEventLoop>          //applySettings()
