@@ -58,7 +58,7 @@
 #include <kactioncollection.h>
 #include <kapplication.h>
 #include <kfiledialog.h>       //openPlaylist()
-#include <kio/job.h>           //deleteSelectedPlaylists()
+#include <kio/deletejob.h>     //deleteSelectedPlaylists()
 #include <kiconloader.h>       //smallIcon
 #include <kinputdialog.h>
 #include <klineedit.h>         //rename()
