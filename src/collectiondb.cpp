@@ -3552,7 +3552,7 @@ CollectionDB::bundlesByUrls( const KUrl::List& urls )
             {
                 for( BundleList::Iterator jt = buns50.begin(), end = buns50.end(); jt != end; ++jt )
                 {
-                    if ( ( *jt ).url().path() == ( *it ) )
+                    if ( ( *jt ).url().path() == ( *it ))
                     {
                         bundles += *jt;
                         buns50.remove( jt );
@@ -7756,7 +7756,9 @@ QueryBuilder::run()
     QStringList rs = CollectionDB::instance()->query( m_query );
     //calling code is unaware of the dynamic collection implementation, it simply expects an URL
     if( m_deviceidPos > 0 )
+    {
         return cleanURL( rs );
+    }
     else
         return rs;
 }
@@ -8052,9 +8054,12 @@ QueryBuilder::cleanURL( QStringList result )
             QString rpath = *it;
             int deviceid = (*(++it)).toInt();
             QString abspath = MountPointManager::instance()->getAbsolutePath( deviceid, rpath );
-            it = result.remove(--it);
-            result.insert( it, abspath );
-            it = result.remove( it );
+            it--;
+            it = result.erase(it);
+            it = result.insert( it, abspath );
+            //result.insert( it, abspath );     //worked in qt3, crashes in qt4
+            it++;       //workaround for a bug (imo) in qt. after insert(it, abspath) it points AT the inserted item, not at the one after it!
+            it = result.erase( it );
             //we advanced the iterator over two fields in this iteration
             ++count;
         }
