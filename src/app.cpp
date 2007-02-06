@@ -764,7 +764,7 @@ App::applyColorScheme()
         AltBase = KGlobalSettings::alternateBackgroundColor();
 
         playlistWindow()->unsetPalette();
-        browserBar->unsetPalette();
+        //browserBar->unsetPalette();
         contextBrowser->unsetPalette();
 
 //        PlayerWidget::determineAmarokColors();

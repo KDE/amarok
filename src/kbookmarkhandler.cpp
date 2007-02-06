@@ -36,7 +36,7 @@ KBookmarkHandler::KBookmarkHandler( KDirOperator *parent, KMenu* rootmenu )
     KBookmarkManager *manager = KBookmarkManager::managerForFile( file, "", false );
     manager->setUpdate( true );
 
-    new KBookmarkMenu( manager, this, rootmenu, 0 );
+    new KBookmarkMenu( manager, this, rootmenu, new KActionCollection(this) );
 }
 
 QString
