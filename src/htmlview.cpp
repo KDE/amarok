@@ -141,7 +141,7 @@ HTMLView::loadStyleSheet()
         QString tmpCSS = eCSSts.read();
         ExternalCSS.close();
 
-        tmpCSS.replace( "./", KUrl::fromPathOrUrl( CSSLocation ).directory( false ) );
+        tmpCSS.replace( "./", KUrl::fromPathOrUrl( CSSLocation ).directory() );
         tmpCSS.replace( "AMAROK_FONTSIZE-2", pxSize );
         tmpCSS.replace( "AMAROK_FONTSIZE", pxSize );
         tmpCSS.replace( "AMAROK_FONTSIZE+2", pxSize );
