@@ -24,9 +24,14 @@
 
 using Amarok::StatusBar;
 
-volatile uint ThreadManager::threadIdCounter = 1; //main thread grabs zero
-QMutex* ThreadManager::threadIdMutex = new QMutex();
 
+class ThreadManager::JobCompletedEvent: public QCustomEvent
+{
+public:
+    static const int Type = 1321;
+    JobCompletedEvent( Job *j ): QCustomEvent( Type ), job( j ) { }
+    Job *job;
+};
 
 ThreadManager::ThreadManager()
 {
@@ -162,8 +167,8 @@ ThreadManager::event( QEvent *e )
 {
     switch( e->type() )
     {
-    case JobEvent: {
-        Job *job = static_cast<Job*>( e );
+    case JobCompletedEvent::Type: {
+        Job *job = static_cast<JobCompletedEvent*>( e )->job;
         DebugStream d = debug() << "Job ";
         const Q3CString name = job->name();
         Thread *thread = job->m_thread;
@@ -179,6 +184,7 @@ ThreadManager::event( QEvent *e )
         else d << "aborted";
 
         m_jobs.remove( job );
+        delete job;
 
         d << ": " << name;
         d << ". Jobs pending: " << jobCount( name );
@@ -227,15 +233,6 @@ ThreadManager::event( QEvent *e )
 }
 
 
-//Taken from Qt 4 src/corelib/thread/qthread_unix.cpp
-static pthread_once_t current_thread_key_once = PTHREAD_ONCE_INIT;
-static pthread_key_t current_thread_key;
-static void create_current_thread_key()
-{
-    debug() << "Creating pthread key, exit value is " << pthread_key_create(&current_thread_key, NULL) << endl;
-}
-
-
 /// @class ThreadManager::Thread
 
 ThreadManager::Thread::Thread()
@@ -247,37 +244,19 @@ ThreadManager::Thread::~Thread()
     Q_ASSERT( isFinished() );
 }
 
-QThread*
-ThreadManager::Thread::getRunning()
-{
-    pthread_once( &current_thread_key_once, create_current_thread_key );
-    return reinterpret_cast<QThread *>( pthread_getspecific( current_thread_key ) );
-}
-
-QString
-ThreadManager::Thread::threadId()
-{
-    if (!getRunning())
-        return "None";
-    else
-    {
-        QString s;
-        return s.sprintf( "%p", getRunning() );
-    }
-}
-
 void
 ThreadManager::Thread::runJob( Job *job )
 {
     job->m_thread = this;
-    job->m_parentThreadId = m_threadId;
 
     if ( job->isAborted() )
-        QApplication::postEvent( ThreadManager::instance(), job );
+        QApplication::postEvent( ThreadManager::instance(), new JobCompletedEvent( job ) );
 
     else {
         m_job = job;
-        start( Thread::IdlePriority ); //will wait() first if necessary
+        if( isRunning() )
+            wait();
+        start( Thread::IdlePriority );
 
         QApplication::postEvent(
                 ThreadManager::instance(),
@@ -296,15 +275,10 @@ ThreadManager::Thread::run()
     if ( AmarokConfig::databaseEngine().toInt() == DbConnection::sqlite )
         CollectionDB::instance()->releasePreviousConnection( this );
 
-    //register this thread so that it can be returned in a static getRunning() function
-    m_threadId = ThreadManager::getNewThreadId();
-    pthread_once( &current_thread_key_once, create_current_thread_key );
-    pthread_setspecific( current_thread_key, this );
-
     if( m_job )
     {
         m_job->m_aborted |= !m_job->doJob();
-        QApplication::postEvent( ThreadManager::instance(), m_job );
+        QApplication::postEvent( ThreadManager::instance(), new JobCompletedEvent( m_job ) );
     }
 
     // almost always the thread doesn't finish until after the
@@ -340,8 +314,8 @@ ThreadManager::Job::Job( const char *name )
 
 ThreadManager::Job::~Job()
 {
-    if( m_thread->running() && m_thread->job() == this )
-        warning() << "Deleting a job before its thread has finished with it!\n";
+    /*if( m_thread->running() && m_thread->job() == this )
+        warning() << "Deleting a job before its thread has finished with it!\n";*/
 }
 
 void
@@ -385,7 +359,7 @@ ThreadManager::Job::incrementProgress()
 }
 
 void
-ThreadManager::Job::customEvent( QCustomEvent *e )
+ThreadManager::Job::customEvent( QEvent *e )
 {
     int progress = static_cast<ProgressEvent*>(e)->progress;
 
@@ -413,6 +387,7 @@ ThreadManager::DependentJob::DependentJob( QObject *dependent, const char *name 
     : Job( name )
     , m_dependent( dependent )
 {
+    Q_ASSERT( dependent != this );
     connect( dependent, SIGNAL(destroyed()), SLOT(abort()) );
 
     QApplication::postEvent( dependent, new QCustomEvent( JobStartedEvent ) );

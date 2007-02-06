@@ -100,10 +100,6 @@ public:
     static ThreadManager *instance();
     static void deleteInstance();
 
-    static volatile uint getNewThreadId();
-    static QMutex *threadIdMutex;
-    static volatile uint threadIdCounter;
-
     /**
      * If the ThreadManager is already handling a job of this type then the job
      * will be queued, otherwise the job will be processed immediately. Allocate
@@ -194,14 +190,8 @@ public:
 
         Job *job() const { return m_job; }
 
-        static QThread* getRunning();
-        static QString  threadId();
-        const uint localThreadId() const { return m_threadId; }
-
     private:
         Job *m_job;
-
-        uint m_threadId;
 
         //private so I don't break something in the distant future
         ~Thread();
@@ -307,8 +297,6 @@ public:
          */
         //void setVisible( bool );
 
-        uint parentThreadId() { return m_parentThreadId; }
-
     protected:
         /**
          * Executed inside the thread, this should be reimplemented to do the
@@ -325,7 +313,7 @@ public:
         virtual void completeJob() = 0;
 
         /// be sure to call the base function in your reimplementation
-        virtual void customEvent( QCustomEvent* );
+        virtual void customEvent( QEvent* );
 
     private:
         char const * const m_name;
@@ -335,7 +323,6 @@ public:
         uint m_percentDone;
         uint m_progressDone;
         uint m_totalSteps;
-        uint m_parentThreadId;
 
         QString m_description;
         QString m_status;
@@ -393,14 +380,17 @@ public:
 protected:
     ThreadManager( const ThreadManager& );
     ThreadManager &operator=( const ThreadManager& );
+private:
+    class JobCompletedEvent;
 };
 
 //useful debug thingy
-#define DEBUG_THREAD_FUNC_INFO { Debug::mutex.lock(); kDebug() << Debug::indent() << k_funcinfo << "thread: " << ThreadManager::Thread::threadId() << endl; Debug::mutex.unlock(); }
+#define DEBUG_THREAD_FUNC_INFO kDebug() << Debug::indent() << k_funcinfo << "thread: " << long( QThread::currentThread() ) << endl;
 
-#define SHOULD_BE_GUI if( ThreadManager::Thread::getRunning() ) warning() \
-    << __PRETTY_FUNCTION__ <<  " should not be Threaded, but is running in " << \
-    ThreadManager::Thread::getRunning() <<endl;
+#define SHOULD_BE_GUI if( QThread::currentThread() != QCoreApplication::instance()->thread() ) std::cout \
+    << "Should not be Threaded, but is running in" << \
+    long (QThread::currentThread()) <<std::endl;
+
 
 inline ThreadManager*
 ThreadManager::instance()
@@ -416,14 +406,5 @@ ThreadManager::deleteInstance()
     delete instance();
 }
 
-inline volatile uint
-ThreadManager::getNewThreadId()
-{
-    uint temp;
-    threadIdMutex->lock();
-    temp = threadIdCounter++;
-    threadIdMutex->unlock();
-    return temp;
-}
 
 #endif

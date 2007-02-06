@@ -43,6 +43,7 @@ email                : markey@web.de
 #include "refreshimages.h"
 #include "scriptmanager.h"
 #include "scrobbler.h"
+#include "sidebar.h"
 #include "statusbar.h"
 #include "systray.h"
 #include "threadmanager.h"
@@ -756,7 +757,7 @@ App::applyColorScheme()
     QColorGroup group;
     using Amarok::ColorScheme::AltBase;
     int h, s, v;
-    QWidget* const browserBar = playlistWindow()->findChild<QWidget*>( "BrowserBar" );
+    QWidget* const browserBar = static_cast<QWidget*>( playlistWindow()->sideBar() );
     QWidget* const contextBrowser = static_cast<QWidget*>( ContextBrowser::instance() );
 
     if( AmarokConfig::schemeKDE() )

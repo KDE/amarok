@@ -120,7 +120,7 @@ EngineController::loadEngine() //static
     if( !AmarokConfig::soundSystem().isEmpty() && engineName != AmarokConfig::soundSystem() ) {
         //AmarokConfig::soundSystem() is empty on the first-ever-run
 
-        Amarok::StatusBar::instance()->longMessage( i18n(
+        Amarok::StatusBar::instance()->longMessageThreadSafe( i18n(
                 "Sorry, the '%1' could not be loaded, instead we have loaded the '%2'." )
                         .arg( AmarokConfig::soundSystem() )
                         .arg( engineName ),

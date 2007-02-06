@@ -4792,7 +4792,7 @@ DbConnection * CollectionDB::getMyConnection()
     connectionMutex->lock();
 
     DbConnection *dbConn;
-    QThread *currThread = ThreadManager::Thread::getRunning();
+    QThread *currThread = QThread::currentThread();
 
     if (threadConnections->contains(currThread))
     {

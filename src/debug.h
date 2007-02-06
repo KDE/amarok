@@ -15,7 +15,7 @@
 #include <sys/time.h>
 
 #include <QApplication>
-
+#include <iostream>
 
 /**
  * @namespace Debug
