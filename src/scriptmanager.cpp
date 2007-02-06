@@ -648,6 +648,7 @@ ScriptManager::slotConfigureScript()
 void
 ScriptManager::slotAboutScript()
 {
+#if 0    
     const QString name = m_gui->listView->currentItem()->text( 0 );
     QFile readme( m_scripts[name].url.directory( false ) + "README" );
     QFile license( m_scripts[name].url.directory( false ) + "COPYING" );
@@ -675,6 +676,7 @@ ScriptManager::slotAboutScript()
 
     about->setInitialSize( QSize( 500, 350 ) );
     about->show();
+#endif
 }
 
 
