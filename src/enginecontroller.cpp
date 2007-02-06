@@ -264,10 +264,11 @@ bool EngineController::canDecode( const KUrl &url ) //static
 
 bool EngineController::installDistroCodec( const QString& engine /*Filetype type*/)
 {
-    KService::Ptr service = KServiceTypeTrader::self()->query( "Amarok/CodecInstall"
-        , QString("[X-KDE-Amarok-codec] == 'mp3' and [X-KDE-Amarok-engine] == '%1'").arg(engine) ).first();
-    if( service )
+    KService::List services = KServiceTypeTrader::self()->query( "Amarok/CodecInstall"
+        , QString("[X-KDE-Amarok-codec] == 'mp3' and [X-KDE-Amarok-engine] == '%1'").arg(engine) );
+    if( !services.isEmpty() )
     {
+        KService::Ptr service = services.first(); //list is not empty
         QString installScript = service->exec();
         if( !installScript.isNull() ) //just a sanity check
         {
