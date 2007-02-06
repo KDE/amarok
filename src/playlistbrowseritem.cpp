@@ -45,6 +45,8 @@
 #include <kapplication.h>      //Used for Shoutcast random name generation
 #include <kdeversion.h>        //KDE_VERSION ifndefs.  Remove this once we reach a kde 4 dep
 #include <kiconloader.h>       //smallIcon
+#include <kio/copyjob.h>
+#include <kio/deletejob.h>
 #include <kio/jobclasses.h>    //podcast retrieval
 #include <kio/job.h>           //podcast retrieval
 #include <klocale.h>
