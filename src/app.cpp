@@ -1136,15 +1136,10 @@ void App::setMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic )
 
 KIO::Job *App::trashFiles( const KUrl::List &files )
 {
-#if KDE_IS_VERSION( 3, 3, 91 )
     KIO::Job *job = KIO::trash( files, true /*show progress*/ );
     Amarok::StatusBar::instance()->newProgressOperation( job ).setDescription( i18n("Moving files to trash") );
     connect( job, SIGNAL( result( KIO::Job* ) ), this, SLOT( slotTrashResult( KIO::Job* ) ) );
     return job;
-#else
-    KIO::Job* job = KIO::move( files, KGlobalSettings::trashPath() );
-    return job;
-#endif
 }
 
 void App::setRating( int n )
