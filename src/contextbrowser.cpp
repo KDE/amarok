@@ -66,6 +66,7 @@
 #include <kfiledialog.h>
 #include <kglobal.h>
 #include <kiconloader.h>
+#include <kio/deletejob.h>
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 #include <kcodecs.h> // for data: URLs
