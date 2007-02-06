@@ -82,6 +82,7 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
     hbox->add( label );
 
     alabel = new K3ActiveLabel( this );
+    alabel->setObjectName( "label" );
     alabel->setTextFormat( Qt::RichText );
     alabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
     alabel->setPalette( p );
