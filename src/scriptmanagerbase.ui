@@ -19,7 +19,7 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QListView" row="0" column="0" rowspan="9" colspan="1">
+        <widget class="K3ListView" row="0" column="0" rowspan="9" colspan="1">
             <column>
                 <property name="text">
                     <string>Scripts</string>
@@ -132,4 +132,7 @@
 </includes>
 <layoutdefaults spacing="6" margin="0"/>
 <layoutfunctions spacing="KDialog::spacingHint"/>
+<includehints>
+    <includehint>k3listview.h</includehint>
+</includehints>
 </UI>
