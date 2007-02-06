@@ -41,7 +41,7 @@ namespace TagLib {
          * AudioProperties API.
          */
 
-        class Properties : public AudioProperties
+        class Properties : public TagLib::AudioProperties
         {
             public:
                 /*!

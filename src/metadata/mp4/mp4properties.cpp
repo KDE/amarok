@@ -42,7 +42,7 @@ using namespace TagLib;
 // public members
 ////////////////////////////////////////////////////////////////////////////////
 
-MP4::Properties::Properties(TagLib::AudioProperties::ReadStyle style) : AudioProperties(style)
+MP4::Properties::Properties(TagLib::AudioProperties::ReadStyle style) : TagLib::AudioProperties(style)
 {
     m_length = 0;
     m_bitrate = 0;

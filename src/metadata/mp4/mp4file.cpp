@@ -180,7 +180,7 @@ bool MP4::File::isOpen()
 // private members
 ////////////////////////////////////////////////////////////////////////////////
 
-void MP4::File::read(bool readProperties, Properties::ReadStyle propertiesStyle)
+void MP4::File::read(bool readProperties, TagLib::AudioProperties::ReadStyle propertiesStyle)
 {
     properties =  new MP4::Properties(propertiesStyle);
     mp4tag = new MP4::Tag();

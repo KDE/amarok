@@ -382,7 +382,11 @@ kde4_add_ui_files(amarok_LIB_SRCS
 kde4_add_library(amarok SHARED ${amarok_LIB_SRCS})
 
 target_link_libraries(amarok ${KDE4_KUTILS_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_KHTML_LIBS} ${KDE4_KNEWSTUFF_LIBS} ${TAGLIB_LIBRARIES}
-${SQLITE_LIBRARIES} ${KDE4_KDE3SUPPORT_LIBS} ${MP4V2_LIBRARY})
+${SQLITE_LIBRARIES} ${KDE4_KDE3SUPPORT_LIBS})
+
+if(MP4V2_FOUND)
+target_link_libraries(amarok ${MP4V2_LIBRARY})
+endif(MP4V2_FOUND)
 
 set_target_properties(amarok PROPERTIES VERSION 1.0.0 SOVERSION 1 )
 install(TARGETS amarok DESTINATION ${LIB_INSTALL_DIR} )
