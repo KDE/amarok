@@ -14,7 +14,6 @@
 #include <kurl.h> // recursiveUrlExpand
 #include <kprocio.h> //Amarok::ProcIO
 #include <kio/netaccess.h>
-#include <kdeversion.h>
 
 #include "amarok_export.h"
 
@@ -154,11 +153,7 @@ namespace Amarok
     /** Transform url into a file url if possible */
     inline KUrl mostLocalURL( const KUrl &url )
     {
-#if KDE_VERSION < KDE_MAKE_VERSION(3,5,0)
-        return url;
-#else
         return KIO::NetAccess::mostLocalUrl( url, mainWindow() );
-#endif
     }
 
     /**

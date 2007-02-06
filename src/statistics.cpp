@@ -21,7 +21,6 @@
 #include "tagdialog.h"         //showContextMenu()
 
 #include <kapplication.h>
-#include <kdeversion.h>        //KDE_VERSION ifndefs.  Remove this once we reach a kde 4 dep
 #include <kiconloader.h>
 #include <klocale.h>
 #include <kmenu.h>
@@ -772,11 +771,7 @@ StatisticsItem::paintCell( QPainter *p, const QColorGroup &cg, int column, int w
     }
     else //alternate colours
     {
-    #if KDE_VERSION < KDE_MAKE_VERSION(3,3,91)
-        fillColor = isSelected() ? cg.highlight() : backgroundColor();
-    #else
         fillColor = isSelected() ? cg.highlight() : backgroundColor(0);
-    #endif
         textColor = isSelected() ? cg.highlightedText() : cg.text();
     }
 

@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include <kconfiggroup.h>
-#include <kdeversion.h>
 #include <kdialog.h>
 #include <kglobal.h>
 #include <kiconloader.h>
