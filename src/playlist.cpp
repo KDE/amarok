@@ -4418,8 +4418,9 @@ void Playlist::ensureItemCentered( Q3ListViewItem *item )
         return;
 
     //HACK -- apparently the various metrics aren't reliable while the UI is still updating & stuff
-    m_itemToReallyCenter = item;
-    QTimer::singleShot( 0, this, SLOT( reallyEnsureItemCentered() ) );
+    // FIXME: disabled when porting
+    //m_itemToReallyCenter = item;
+    //QTimer::singleShot( 0, this, SLOT( reallyEnsureItemCentered() ) );
 }
 
 void
