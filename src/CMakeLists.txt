@@ -150,11 +150,8 @@ endif(MP4V2_FOUND)
 
 set(libtagwav_SRCS
         ${CMAKE_SOURCE_DIR}/amarok/src/metadata/wav/wavfile.cpp
-        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/wav/wavfiletyperesolver.h
-        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/wav/wavfile.h
         ${CMAKE_SOURCE_DIR}/amarok/src/metadata/wav/wavproperties.cpp
         ${CMAKE_SOURCE_DIR}/amarok/src/metadata/wav/wavfiletyperesolver.cpp
-        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/wav/wavproperties.h
 )
 
 set(libtagtrueaudio_SRCS
@@ -171,11 +168,8 @@ set(libtagwavpack_SRCS
 
 set(libtagspeex_SRCS
         ${CMAKE_SOURCE_DIR}/amarok/src/metadata/speex/speexfile.cpp
-        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/speex/speexproperties.h
-        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/speex/speexfile.h
         ${CMAKE_SOURCE_DIR}/amarok/src/metadata/speex/taglib_speexfiletyperesolver.cpp
         ${CMAKE_SOURCE_DIR}/amarok/src/metadata/speex/speexproperties.cpp
-        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/speex/taglib_speexfiletyperesolver.h
 )
 
 set(libtagwma_SRCS
@@ -206,30 +200,6 @@ set(libtagaudible_SRCS
 	${CMAKE_SOURCE_DIR}/amarok/src/metadata/audible/audibletag.cpp
 	${CMAKE_SOURCE_DIR}/amarok/src/metadata/audible/taglib_audiblefile.cpp
 	${CMAKE_SOURCE_DIR}/amarok/src/metadata/audible/taglib_audiblefiletyperesolver.cpp
-	)
-
-set(libtagspeex_SRCS
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/speex/speexproperties.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/speex/speexfile.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/speex/taglib_speexfiletyperesolver.cpp
-	)
-
-set(libtagwav_SRCS
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wav/wavfile.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wav/wavproperties.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wav/wavfiletyperesolver.cpp
-	)
-
-set(libtagtrueaudio_SRCS
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/trueaudio/ttafile.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/trueaudio/ttaproperties.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/trueaudio/taglib_trueaudiofiletyperesolver.cpp
-	)
-
-set(libtagwavpack_SRCS
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wavpack/wvfile.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wavpack/wvproperties.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wavpack/taglib_wavpackfiletyperesolver.cpp
 	)
 
 
@@ -272,7 +242,6 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
         ${libtagaac_SRCS} ${libtagwma_SRCS} ${libtagwavpack_SRCS} ${libtagwav_SRCS}
         ${libtagspeex_SRCS} ${libtagtrueaudio_SRCS}
         # ${libanalyzers_SRCS}
-   ${libtagspeex_SRCS} ${libtagwav_SRCS} ${libtagwavpack_SRCS} ${libtagtrueaudio_SRCS}
    Options1.ui.h
    actionclasses.cpp
    app.cpp
