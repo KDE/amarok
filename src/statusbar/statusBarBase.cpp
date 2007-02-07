@@ -41,7 +41,7 @@
 #include <QObject> //polish()
 #include <QPainter>
 #include <QPalette>
-#include <q3progressbar.h>
+#include <qprogressbar.h>
 #include <QStyle>   //class CloseButton
 #include <QTimer>
 #include <QToolButton>
@@ -110,7 +110,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 
     KHBox *mainProgressBarBox = new KHBox( this );
     QToolButton *b1 = new QToolButton( mainProgressBarBox, "cancelButton" );
-    m_mainProgressBar  = new Q3ProgressBar( mainProgressBarBox, "mainProgressBar" );
+    m_mainProgressBar  = new QProgressBar( mainProgressBarBox);
     QToolButton *b2 = new QToolButton( mainProgressBarBox, "showAllProgressDetails" );
     mainProgressBarBox->setSpacing( 2 );
     mainProgressBarBox->hide();
@@ -526,7 +526,7 @@ StatusBar::hideMainProgressBar()
 
         resetMainText();
 
-        m_mainProgressBar->setProgress( 0 );
+        m_mainProgressBar->setValue( 0 );
         progressBox()->hide();
     }
 }
@@ -604,8 +604,8 @@ StatusBar::updateTotalProgress()
     if( totalSteps == 0 && progress == 0 )
         return;
 
-    m_mainProgressBar->setTotalSteps( totalSteps );
-    m_mainProgressBar->setProgress( progress );
+    m_mainProgressBar->setMaximum( totalSteps );
+    m_mainProgressBar->setValue( progress );
 
     pruneProgressBars();
 }

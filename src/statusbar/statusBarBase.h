@@ -34,6 +34,7 @@
 
 class QLabel;
 class QTimer;
+class QProgressBar;
 
 namespace KIO { class Job; }
 
@@ -230,7 +231,7 @@ namespace KDE
         QWidget *shortLongButton()            { return findChild<QWidget*>( "shortLongButton" ); }
 
         OverlayWidget *m_popupProgress;
-        Q3ProgressBar  *m_mainProgressBar;
+        QProgressBar  *m_mainProgressBar;
 
         ProgressMap          m_progressMap;
         Q3ValueList<QWidget*> m_messageQueue;
