@@ -21,7 +21,6 @@
 #include "magnatunedatabasehandler.h"
 #include "magnatunelistview.h"
 
-#include <kdeversion.h>
 #include <klocale.h>
 
 #include <qcolor.h>
@@ -39,9 +38,7 @@ MagnatuneListView::MagnatuneListView( QWidget * parent )
 
     setShowSortIndicator ( true );
 
-    #if KDE_VERSION >= KDE_MAKE_VERSION(3,4,0)
     setShadeSortColumn( false );
-    #endif
 
 }
 
