@@ -1,0 +1,12 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node>
+  <interface name="org.kde.Amarok.ContextBrowser">
+    <method name="showCurrentTrack"/>
+    <method name="showLyrics"/>
+    <method name="showWiki"/>
+    <method name="showLyrics" >
+      <arg name="lyrics" type="s" direction="in"/>
+    </method>
+  </interface>
+</node>

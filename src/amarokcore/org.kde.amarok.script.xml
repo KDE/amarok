@@ -1,0 +1,42 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node>
+  <interface name="org.kde.Amarok.Script">
+    <method name="runScript" >
+      <arg name="name" type="s" direction="in"/>
+      <arg type="b" direction="out"/>
+    </method>
+    <method name="stopScript" >
+      <arg name="name" type="s" direction="in"/>
+      <arg type="b" direction="out"/>
+    </method>
+    <method name="listRunningScripts" >
+      <arg type="as" direction="out"/>
+    </method>
+    <method name="addCustomMenuItem" >
+      <arg name="submenu" type="s" direction="in"/>
+      <arg name="itemTitle" type="s" direction="in"/>
+    </method>
+    <method name="removeCustomMenuItem" >
+      <arg name="submenu" type="s" direction="in"/>
+      <arg name="itemTitle" type="s" direction="in"/>
+    </method> 
+    <method name="readConfig" >
+      <arg name="name" type="s" direction="in"/>
+      <arg type="s" direction="out"/>
+    </method>
+    <method name="readListConfig" >
+      <arg name="name" type="s" direction="in"/>
+      <arg type="as" direction="out"/>
+    </method>
+    </method>
+    <method name="proxyForUrl" >
+      <arg name="url" type="s" direction="in"/>
+      <arg type="s" direction="out"/>
+    </method>
+    <method name="proxyForProtocol" >
+      <arg name="protocol" type="s" direction="in"/>
+      <arg type="s" direction="out"/>
+    </method>
+  </interface>
+</node>
