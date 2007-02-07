@@ -27,6 +27,9 @@
 #include <QFocusEvent>
 #include <QDropEvent>
 
+#ifdef __GNUC__
+#warning This class is obsolete. Use KLineEdit::setClickMessage
+#endif
 
 ClickLineEdit::ClickLineEdit( const QString &msg, QWidget *parent, const char* name ) :
         KLineEdit( parent )

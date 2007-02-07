@@ -62,6 +62,7 @@
 #include <ktar.h>
 #include <ktextedit.h>
 #include <kwin.h>
+#include <k3aboutdialog.h>
 
 #include <knewstuff/downloaddialog.h> // knewstuff script fetching
 #include <knewstuff/engine.h>         // "
@@ -647,7 +648,7 @@ ScriptManager::slotConfigureScript()
 void
 ScriptManager::slotAboutScript()
 {
-#if 0    
+
     const QString name = m_gui->listView->currentItem()->text( 0 );
     QFile readme( m_scripts[name].url.directory( false ) + "README" );
     QFile license( m_scripts[name].url.directory( false ) + "COPYING" );
@@ -657,7 +658,7 @@ ScriptManager::slotAboutScript()
         return;
     }
 
-    KAboutDialog* about = new KAboutDialog( KAboutDialog::Tabbed|KAboutDialog::Product,
+    K3AboutDialog* about = new K3AboutDialog( K3AboutDialog::Tabbed|K3AboutDialog::Product,
                                             QString::null, this );
     about->setButtons( KDialog::Ok );
     about->setDefaultButton( KDialog::Ok );
@@ -675,7 +676,6 @@ ScriptManager::slotAboutScript()
 
     about->setInitialSize( QSize( 500, 350 ) );
     about->show();
-#endif
 }
 
 
