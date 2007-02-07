@@ -14,7 +14,7 @@
 #include <q3process.h>
 //Added by qt3to4:
 #include <QMouseEvent>
-
+#include <QDesktopWidget>
 #include <kstandarddirs.h>
 #include "splash.h"
 
@@ -31,7 +31,8 @@ Splash::Splash()
     QPixmap splash( path );
     resize( splash.size() );
     setBackgroundPixmap( splash );
-    setFocusPolicy( NoFocus );
+    //TODO port it
+    //setFocusPolicy( NoFocus );
 
     //NOTE Don't break Xinerama!
     const QRect d = QApplication::desktop()->screenGeometry( QApplication::desktop()->screenNumber( QPoint() ) );

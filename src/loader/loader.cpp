@@ -210,7 +210,7 @@ isSplashEnabled()
 {
     //determine whether splash-screen is enabled in amarokrc
 //    KInstance instance("amarok"); // KGlobal::dirs() crashes without
-    (void)KGlobal::config(); // the kubuntu special directory is not present without this
+    //(void)KGlobal::config(); // the kubuntu special directory is not present without this
     QStringList dirs = KGlobal::dirs()->findAllResources( "config", "amarokrc" );
 
     for( QStringList::iterator path = dirs.begin();
@@ -220,15 +220,13 @@ isSplashEnabled()
         QFile file( *path );
         if ( file.open( QIODevice::ReadOnly ) )
         {
-            QString line;
-            while( file.readLine( line, 2000 ) != -1 )
-                if ( line.contains( "Show Splashscreen" ) )
-                {
-                    if( line.contains( "false" ) )
-                        return false;
-                    else
-                        return true;
-                }
+	    while (!file.atEnd()) {
+		    QByteArray line = file.readLine();
+		    if( line.contains( "false" ) )
+			    return false;
+		    else
+			    return true;
+	    }
         }
     }
 
