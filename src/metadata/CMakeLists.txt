@@ -7,7 +7,6 @@ set(libtagmp4_SRCS
         ${CMAKE_SOURCE_DIR}/amarok/src/metadata/mp4/mp4properties.cpp
         ${CMAKE_SOURCE_DIR}/amarok/src/metadata/mp4/taglib_mp4filetyperesolver.cpp
 )
-target_link_libraries(amarok_taglib ${MP4V2_LIBRARY})
 else(MP4V2_FOUND)
 ADD_SUBDIRECTORY( m4a ) 
 set(libtagmp4_SRCS
@@ -130,7 +129,9 @@ kde4_add_library(amarok_taglib SHARED ${amarok_taglib_SRCS})
 
 set_target_properties(amarok_taglib PROPERTIES VERSION 1.0.0 SOVERSION 1 )
 target_link_libraries(amarok_taglib ${TAGLIB_LIBRARIES})
-
+if(MP4V2_FOUND)
+target_link_libraries(amarok_taglib ${MP4V2_LIBRARY})
+endif(MP4V2_FOUND)
 
 ########### install files ###############
 
