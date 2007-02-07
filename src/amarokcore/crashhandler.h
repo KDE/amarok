@@ -12,7 +12,7 @@
 #define CRASH_H
 
 #include <kcrash.h> //for main.cpp
-
+#include <amarok_export.h>
 namespace Amarok
 {
     /**
@@ -22,7 +22,7 @@ namespace Amarok
      * I'm not entirely sure why this had to be inside a class, but it
      * wouldn't work otherwise *shrug*
      */
-    class Crash
+    class AMAROK_EXPORT Crash
     {
     public:
         static void crashHandler( int signal );
