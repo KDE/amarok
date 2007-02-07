@@ -110,7 +110,7 @@ VERSION 1.4.5
       the horizontal scrollbar if necessary. (BR 134221)
     * Some .rm files would make Amarok crash. (BR 137695)
     * Remember 'User Cover Art for Folder Icons' when organizing files.
-      (BR 138582)
+      (BR 138562)
     * "Listening since..." has been changed to the more clear "First
       Played..."  Patch by Andrew Ash <ash211@gmail.com>. (BR 131727)
     * Fixed regression: the DEL key no longer worked in the 
