@@ -103,7 +103,7 @@ signals:
     void resetConfig(xine_t *xine);
 };
 
-class Fader : public QObject, public QThread
+class Fader : public QThread
 {
     XineEngine         *m_engine;
     xine_t             *m_xine;
@@ -125,7 +125,7 @@ public:
    void finish();
 };
 
-class OutFader : public QObject, public QThread
+class OutFader : public QThread
 {
     XineEngine *m_engine;
     bool        m_terminated;

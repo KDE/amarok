@@ -300,7 +300,7 @@
                                                         <cstring>hostLineEdit</cstring>
                                                     </property>
                                                 </widget>
-                                                <widget class="KIntSpinBox">
+                                                <widget class="QSpinBox">
                                                     <property name="name">
                                                         <cstring>portIntBox</cstring>
                                                     </property>
@@ -446,7 +446,7 @@
                                                                 <cstring>cddb_server</cstring>
                                                             </property>
                                                         </widget>
-                                                        <widget class="KIntSpinBox">
+                                                        <widget class="QSpinBox">
                                                             <property name="name">
                                                                 <cstring>cddb_port</cstring>
                                                             </property>

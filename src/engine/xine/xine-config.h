@@ -14,6 +14,7 @@
 #define XINECONFIG_H
 
 #include "plugin/pluginconfig.h"
+//#include "plugin/pluginconfig.moc"
 #include "xineconfigbase.h"
 
 #include <xine.h>

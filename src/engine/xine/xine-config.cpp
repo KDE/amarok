@@ -309,4 +309,5 @@ XineConfigDialog::save()//SLOT
     }
 }
 
+#include "pluginconfig.moc"
 #include "xine-config.moc"

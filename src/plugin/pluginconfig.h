@@ -3,7 +3,7 @@
 
 #ifndef AMAROK_PLUGINCONFIG_H
 #define AMAROK_PLUGINCONFIG_H
-
+#include "amarok_export.h"
 #include <QObject>
 
 class QWidget;
@@ -14,7 +14,7 @@ namespace Amarok
      * Class to allow user configuration of your plugin; you provide a GUI widget via view()
      */
 
-    class PluginConfig : public QObject
+    class AMAROK_EXPORT PluginConfig : public QObject
     {
         Q_OBJECT
 
@@ -42,7 +42,6 @@ namespace Amarok
             virtual void save() = 0;
     };
 }
-
 
 #endif /*AMAROK_PLUGINCONFIG_H*/
 

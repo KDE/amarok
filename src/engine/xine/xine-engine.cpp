@@ -546,7 +546,7 @@ XineEngine::fadeOut( uint fadeLength, bool* terminate, bool exiting )
     const float originalVol = Engine::Base::makeVolumeLogarithmic( m_volume ) * m_preamp;
 
     // On shutdown, limit fadeout to 3 secs max, so that we don't risk getting killed
-    const int length = exiting ? qMin( fadeLength, 3000 ) : fadeLength;
+    const int length = exiting ? qMin( (int)fadeLength, 3000 ) : fadeLength;
 
     if( length > 0 && isPlaying )
     {
@@ -1141,7 +1141,7 @@ bool XineEngine::getAudioCDContents(const QString &device, KUrl::List &urls)
 	    emit statusText(i18n("Failed CD device lookup in xine engine"));
 	    return false;
 	}
-        config.str_value = (char *)device.toLatin1();
+        config.str_value = (char *)device.toLatin1().data();
         xine_config_update_entry(m_xine, &config);
     }
 
@@ -1170,8 +1170,8 @@ bool XineEngine::flushBuffer()
 //////////////////////////////////////////////////////////////////////////////
 
 Fader::Fader( XineEngine *engine, uint fadeMs )
-   : QObject( engine )
-   , QThread()
+   : /*QObject( engine ),*/
+    QThread()
    , m_engine( engine )
    , m_xine( engine->m_xine )
    , m_decrease( engine->m_stream )
@@ -1294,8 +1294,8 @@ Fader::finish()
 //////////////////////////////////////////////////////////////////////////////
 
 OutFader::OutFader( XineEngine *engine, uint fadeLength )
-   : QObject( engine )
-   , QThread()
+   : /*QObject( engine ),*/
+     QThread()
    , m_engine( engine )
    , m_terminated( false )
    , m_fadeLength( fadeLength )

@@ -24,7 +24,7 @@ add_subdirectory( vis )
 add_subdirectory( metadata )
 add_subdirectory( engine )
 add_subdirectory( mediadevice )
-MESSAGE(STATUS "readd collectionscanner")
+MESSAGE(STATUS "read collectionscanner")
 #add_subdirectory( collectionscanner )
 #add_subdirectory( device ) #not necessary at the moment, enable again when devicemanager has been ported to Solid
 
@@ -96,6 +96,7 @@ set(libamarokcore_SRCS
 
 set(libplugin_SRCS
 	${CMAKE_SOURCE_DIR}/amarok/src/plugin/plugin.cpp
+        ${CMAKE_SOURCE_DIR}/amarok/src/plugin/pluginconfig.h
 	)
 
 # set(libanalyzers_SRCS
