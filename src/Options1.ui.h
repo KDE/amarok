@@ -26,6 +26,7 @@ void Options1::init()
     browsers << "konqueror" << "firefox" << "opera" << "galeon" << "epiphany"
              << "safari" << "mozilla";
 
+#if 0
     // Remove browsers which are not actually installed
     for( QStringList::Iterator it = browsers.begin(), end = browsers.end(); it != end; ) {
         if( KStandardDirs::findExe( *it ).isEmpty() )
@@ -33,6 +34,7 @@ void Options1::init()
         else
             ++it;
     }
+#endif
 #ifdef Q_WS_MAC
     if ( KStandardDirs::findExe( "open" ) != QString::null )
         browsers.prepend( i18n( "Default Browser" ) );
