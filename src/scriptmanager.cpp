@@ -46,7 +46,6 @@
 #include <QPixmap>
 #include <Q3PopupMenu>
 
-#include <kaboutdialog.h>
 #include <kapplication.h>
 #include <kfiledialog.h>
 #include <kiconloader.h>
