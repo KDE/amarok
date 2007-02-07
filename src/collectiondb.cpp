@@ -3563,8 +3563,7 @@ CollectionDB::bundlesByUrls( const KUrl::List& urls )
                 {
                     KUrl url = KUrl::fromPathOrUrl( *it );
 
-#if 0
-                    if( !MediaBrowser::instance()->getBundle( url, &b ) )
+                    if( true /* !MediaBrowser::instance()->getBundle( url, &b ) */ )
                     {
                         if( url.isLocalFile() )
                         {
@@ -3610,7 +3609,6 @@ CollectionDB::bundlesByUrls( const KUrl::List& urls )
                             }
                         }
                     }
-#endif
                 }
                 bundles += b;
 
