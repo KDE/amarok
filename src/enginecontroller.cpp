@@ -121,9 +121,7 @@ EngineController::loadEngine() //static
         //AmarokConfig::soundSystem() is empty on the first-ever-run
 
         Amarok::StatusBar::instance()->longMessageThreadSafe( i18n(
-                "Sorry, the '%1' could not be loaded, instead we have loaded the '%2'." )
-                        .arg( AmarokConfig::soundSystem() )
-                        .arg( engineName ),
+                "Sorry, the '%1' could not be loaded, instead we have loaded the '%2'.", AmarokConfig::soundSystem(), engineName ),
                 KDE::StatusBar::Sorry );
 
         AmarokConfig::setSoundSystem( engineName );

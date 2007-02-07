@@ -293,12 +293,12 @@ ContextBrowser::ContextBrowser( const char *name )
 
        connect ( m_lyricsSearchText, SIGNAL(textChanged(const QString &)), this, SLOT(lyricsSearchText(const QString & )) );
        connect ( m_lyricsSearchText, SIGNAL(returnPressed()), this, (SLOT(lyricsSearchTextNext())) );
-      
+
        //TODO: following were broken in 1.4, needs serious consideration
        //Amarok::actionCollection()->setAutoConnectShortcuts ( true );
        //new KAction( i18n("Search text in lyric"), KShortcut("/"), this,SLOT( lyricsSearchTextShow() ), Amarok::actionCollection(), "search_text_lyric");
        //Amarok::actionCollection()->setAutoConnectShortcuts ( false );
-       
+
     }
 
 
@@ -837,7 +837,7 @@ void ContextBrowser::engineStateChanged( Engine::State state, Engine::State oldS
             }
             else // current tab is wikitab, disable some buttons.
             {
-                
+
                 wikiArtistPageAction->setEnabled(false);
                 wikiAlbumPageAction->setEnabled(false);
                 wikiTitlePageAction->setEnabled(false);
@@ -1412,7 +1412,7 @@ void CurrentTrackJob::showHome()
                     << i18np( "1 Artist", "%n Artists", artistCount.toInt() )
                     << i18np( "1 Album",  "%n Albums",  albumCount.toInt() )
                     << i18np( "1 Genre",  "%n Genres",  genreCount.toInt() )
-                    << i18n( "%1 Play-time" ).arg ( playTime ) ) );
+                    << i18n( "%1 Play-time", playTime  ) ) );
 
     m_shownAlbums = showHomeByAlbums();
 
@@ -3319,7 +3319,7 @@ void ContextBrowser::showLyrics( const QString &url )
 
     //m_lyricsToolBar->getButton( LYRICS_BROWSER )->setEnabled(false);
     wikiExternalPageAction->setEnabled(false);
-    
+
 
 
     if( ( !cached || url == "reload" ) && ! ScriptManager::instance()->lyricsScriptRunning().isEmpty() ) {
