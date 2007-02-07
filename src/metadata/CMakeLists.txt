@@ -128,6 +128,7 @@ kde4_automoc(${amarok_taglib_SRCS})
 
 kde4_add_library(amarok_taglib STATIC ${amarok_taglib_SRCS})
 
+# Laurent : strange a static lib with so name ?
 set_target_properties(amarok_taglib PROPERTIES VERSION 1.0.0 SOVERSION 1 )
 target_link_libraries(amarok_taglib ${TAGLIB_LIBRARIES})
 

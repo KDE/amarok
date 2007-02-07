@@ -1,7 +1,6 @@
 
 message(STATUS "${CMAKE_CURRENT_SOURCE_DIR}: skipped subdir $(XMMSWRAPPER_BUILD)")
 message(STATUS "${CMAKE_CURRENT_SOURCE_DIR}: skipped subdir $(LIBVISUAL_BUILD)")
-include_directories( ${KDE4_INCLUDE_DIR} ${QT_INCLUDES}  )
 
 
 ########### install files ###############
