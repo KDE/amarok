@@ -232,7 +232,7 @@ kde4_add_ui3_files(amarok_LIB_SRCS
 kde4_add_ui_files(amarok_LIB_SRCS
     tagguesserconfigdialog.ui )
 
-kde4_add_library(amarok STATIC ${amarok_LIB_SRCS})
+kde4_add_library(amarok SHARED ${amarok_LIB_SRCS})
 
 target_link_libraries(amarok
         ${KDE4_KUTILS_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_KHTML_LIBS} ${KDE4_KNEWSTUFF_LIBS}
