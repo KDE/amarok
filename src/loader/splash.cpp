@@ -32,7 +32,7 @@ Splash::Splash()
     resize( splash.size() );
     setBackgroundPixmap( splash );
     //TODO port it
-    //setFocusPolicy( NoFocus );
+    setFocusPolicy( Qt::NoFocus );
 
     //NOTE Don't break Xinerama!
     const QRect d = QApplication::desktop()->screenGeometry( QApplication::desktop()->screenNumber( QPoint() ) );

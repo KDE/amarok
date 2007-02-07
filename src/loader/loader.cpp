@@ -24,11 +24,11 @@
 #include <QString>
 //Added by qt3to4:
 #include <QTimerEvent>
-//#include <kinstance.h>
 #include <kglobal.h>
 #include <kstandarddirs.h>
 #include "splash.h"
-
+#include <QDBusConnection>
+#include <QDBusConnectionInterface>
 extern "C"
 {
     #include <unistd.h> //usleep
@@ -73,7 +73,7 @@ main( int argc, char *argv[] )
 
                     Q3Process proc( QString("amarokapp") );
                     proc.setCommunication( 0 ); //show everything
-                    proc.addArgument( arg );
+		    proc.addArgument( arg );
                     proc.start();
 
                     while( proc.isRunning() )
@@ -120,15 +120,9 @@ main( int argc, char *argv[] )
 bool
 amarokIsRunning()
 {
-    Q3Process proc( QString( "dcop" ) );
-    proc.start();
-    while( proc.isRunning() )
-        ::usleep( 100 );
-
-    while( proc.canReadLineStdout() )
-        if ( proc.readLineStdout() == "amarok" )
-            return true;
-
+    //TODO verify service name
+    if(QDBusConnection::sessionBus().interface()->isServiceRegistered("amarok.kde.org"))
+	    return true;
     return false;
 }
 
