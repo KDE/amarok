@@ -14,7 +14,6 @@
 
 #include <kapplication.h> //invokeMailer()
 #include <kdebug.h>       //kBacktrace()
-#include <kdeversion.h>
 #include <kglobal.h>
 #include <klocale.h>
 #include <k3tempfile.h>

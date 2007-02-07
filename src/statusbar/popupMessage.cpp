@@ -221,7 +221,7 @@ void PopupMessage::dissolveMask()
 {
     if( m_stage == 1 )
     {
-        repaint( false );
+        repaint();
         QPainter maskPainter(&m_mask);
 
         m_mask.fill(Qt::black);
