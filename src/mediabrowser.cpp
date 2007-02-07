@@ -62,6 +62,7 @@
 //Added by qt3to4:
 #include <QPixmap>
 #include <Q3ValueList>
+#include <Q3PopupMenu>
 #include <QKeyEvent>
 #include <Q3Frame>
 #include <QDropEvent>

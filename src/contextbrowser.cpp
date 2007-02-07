@@ -53,6 +53,7 @@
 #include <khbox.h>
 #include <QLayout>
 #include <QLineEdit>
+#include <Q3PopupMenu>
 #include <QBuffer>
 #include <q3listview.h>
 #include <QTimer>

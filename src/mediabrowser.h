@@ -11,7 +11,6 @@
 #include "amarok_export.h"
 #include "browserToolBar.h"
 #include "medium.h"
-#include "multitabbar.h"     //baseclass
 #include "plugin/plugin.h"   //baseclass
 #include "pluginmanager.h"
 
@@ -130,7 +129,7 @@ class AMAROK_EXPORT MediaItem : public K3ListViewItem
         mutable MetaBundle *m_bundle;
 };
 
-class MediaQueue : public K3ListView, public DropProxyTarget
+class MediaQueue : public K3ListView
 {
     Q_OBJECT
 

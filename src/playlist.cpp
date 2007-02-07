@@ -52,6 +52,7 @@
 #include <QMouseEvent>
 #include <Q3GridLayout>
 #include <Q3TextDrag>
+#include <Q3PopupMenu>
 #include "prettypopupmenu.h"
 #include "scriptmanager.h"
 #include "sliderwidget.h"

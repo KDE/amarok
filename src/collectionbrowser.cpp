@@ -43,6 +43,7 @@
 #include <QDropEvent>
 #include <QDragMoveEvent>
 #include <QPaintEvent>
+#include <Q3PopupMenu>
 
 #include <tfile.h>   //TagLib::File::isWritable
 

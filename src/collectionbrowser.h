@@ -26,7 +26,7 @@
 #include <kurl.h>            //stack allocated
 #include <kdialog.h>     //baseclass
 
-#include "multitabbar.h"     //baseclass
+//#include "multitabbar.h"     //baseclass
 #include "collectiondb.h"
 #include "amarok_export.h"
 
@@ -203,7 +203,7 @@ class CollectionItem : public K3ListViewItem {
 };
 
 
-class CollectionView : public K3ListView, public DropProxyTarget
+class CollectionView : public K3ListView
 {
     Q_OBJECT
     friend class CollectionBrowser;
