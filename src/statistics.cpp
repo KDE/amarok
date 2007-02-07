@@ -13,7 +13,6 @@
 
 #include "amarok.h"             //oldForeach macro
 #include "browserToolBar.h"     //search toolbar
-#include "clicklineedit.h"
 #include "collectiondb.h"
 #include "debug.h"
 #include "playlist.h"
@@ -83,7 +82,8 @@ Statistics::Statistics( QWidget *parent, const char *name )
         bar->setMovable( false ); //removes the ugly frame
 
         QWidget *button = new QToolButton( bar );
-        m_lineEdit = new ClickLineEdit( i18n( "Enter search terms here" ), bar );
+        m_lineEdit = new KLineEdit( bar );
+        m_lineEdit->setClickMessage( i18n( "Enter search terms here" ) );
 
         m_lineEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
         m_lineEdit->setFrame( Q3Frame::Sunken );

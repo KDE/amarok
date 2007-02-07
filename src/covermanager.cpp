@@ -5,7 +5,6 @@
 #include "amarok.h"
 #include "amarokconfig.h"
 #include "browserToolBar.h"
-#include "clicklineedit.h"
 #include "debug.h"
 #include "collectionbrowser.h" //manipulateThe()
 #include "collectiondb.h"
@@ -62,6 +61,7 @@
 #include <kurl.h>
 #include <k3urldrag.h>
 #include <kwin.h>
+#include <klineedit.h>
 
 static QString artistToSelectInInitFunction;
 CoverManager *CoverManager::s_instance = 0;
@@ -151,7 +151,8 @@ CoverManager::CoverManager()
         KToolBar* searchToolBar = new Browser::ToolBar( searchBox );
         QToolButton *button = new QToolButton( searchToolBar );
         button->setIcon( KIcon( "locationbar_erase") );
-        m_searchEdit = new ClickLineEdit( i18n( "Enter search terms here" ), searchToolBar );
+        m_searchEdit = new KLineEdit( searchToolBar );
+        m_searchEdit->setClickMessage( i18n( "Enter search terms here" ) );
         m_searchEdit->setFrame( Q3Frame::Sunken );
 
         m_searchEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);

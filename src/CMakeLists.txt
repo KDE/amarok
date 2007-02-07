@@ -131,7 +131,7 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
    actionclasses.cpp
    app.cpp
    atomicstring.cpp
-   clicklineedit.cpp
+#   clicklineedit.cpp
    collectionbrowser.cpp
    collectiondb.cpp
    columnlist.cpp

@@ -28,7 +28,7 @@
 #include <QPaintEvent>
 #include <kxmlguiclient.h>  //baseclass (for XMLGUI)
 
-class ClickLineEdit;
+class KLineEdit;
 class CollectionBrowser;
 class ContextBrowser;
 class MediaBrowser;
@@ -119,7 +119,7 @@ class PlaylistWindow : public QWidget, public KXMLGUIClient
         SideBar    *m_browsers;
         QStringList m_browserNames;
         KMenu    *m_searchMenu;
-        ClickLineEdit *m_lineEdit;
+        KLineEdit *m_lineEdit;
         KToolBar      *m_toolbar;
         QTimer        *m_timer;  //search filter timer
         QStringList    m_lastfmTags;

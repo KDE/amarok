@@ -23,7 +23,7 @@
 //Added by qt3to4:
 #include <QPaintEvent>
 
-class ClickLineEdit;
+class KLineEdit;
 class QColor;
 class QTimer;
 
@@ -47,7 +47,7 @@ class Statistics : public KDialog
 
     private:
         StatisticsList *m_listView;
-        ClickLineEdit  *m_lineEdit;
+        KLineEdit  *m_lineEdit;
         QTimer         *m_timer;
 
         static Statistics *s_instance;

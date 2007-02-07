@@ -31,7 +31,7 @@
 #include <ktoolbar.h>     //baseclass
 #include <kurl.h>         //stack allocated
 
-class ClickLineEdit;
+class KLineEdit;
 class QTimer;
 class KActionCollection;
 class KFileItem;
@@ -83,7 +83,7 @@ private:
 
     KUrlComboBox  *m_combo;
     KDirOperator  *m_dir;
-    ClickLineEdit *m_filter;
+    KLineEdit *m_filter;
     Medium        *m_medium;
 };
 
@@ -119,7 +119,7 @@ private slots:
 private:
     KUrl searchURL() const { return static_cast<FileBrowser*>(parentWidget())->url(); }
 
-    QLineEdit  *m_lineEdit;
+    KLineEdit  *m_lineEdit;
     KURLView   *m_listView;
     KDirLister *m_lister;
     QRegExp     m_filter;

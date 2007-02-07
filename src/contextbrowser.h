@@ -9,7 +9,6 @@
 #define AMAROK_CONTEXTBROWSER_H
 
 //#include "amarokdcophandler.h"
-#include "clicklineedit.h"
 #include "engineobserver.h"
 
 #include <ktabwidget.h>
@@ -20,7 +19,7 @@
 #include <Q3CString>
 #include <QEvent>
 
-class ClickLineEdit;
+class KLineEdit;
 class CollectionDB;
 class Color;
 class HTMLView;
@@ -173,7 +172,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         QString       m_lyricsBeingEditedUrl;
         QString       m_lyricsBeingEditedArtist;
         QString       m_lyricsBeingEditedTitle;
-	ClickLineEdit* m_lyricsSearchText;
+	KLineEdit* m_lyricsSearchText;
 	KToolBar*     m_lyricsTextBar;
 	bool          m_lyricsTextBarShowed;
 
@@ -217,7 +216,7 @@ class ContextBrowser : public KTabWidget, public EngineObserver
 
         bool          m_browseLabels;
         QString       m_label;
-        ClickLineEdit* m_addLabelEdit;
+        KLineEdit* m_addLabelEdit;
         Q3ListView*    m_labelListView;
 
         CueFile      *m_cuefile;

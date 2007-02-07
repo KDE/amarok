@@ -14,7 +14,6 @@
 #include "app.h"
 #include "browserToolBar.h"
 #include "debug.h"
-#include "clicklineedit.h"
 #include "collectiondb.h"
 #include "collectionbrowser.h"
 #include "colorgenerator.h"
@@ -279,7 +278,8 @@ ContextBrowser::ContextBrowser( const char *name )
        clearAction->setToolTip( i18n( "Clear search text in lyric" ) );
        m_lyricsTextBar->addAction( clearAction );
        QLabel *filter_label = new QLabel( i18n("S&earch:") + ' ', m_lyricsTextBar );
-       m_lyricsSearchText = new ClickLineEdit( i18n( "Search text in lyric" ), m_lyricsTextBar );
+       m_lyricsSearchText = new KLineEdit( m_lyricsTextBar );
+       m_lyricsSearchText->setClickMessage(i18n( "Search text in lyric" ) );
        filter_label->setBuddy( m_lyricsSearchText );
        connect( clearAction, SIGNAL( triggered() ), m_lyricsSearchText, SLOT(clear()) );
 
@@ -3815,7 +3815,8 @@ ContextBrowser::showLabelsDialog()
     KVBox *vbox = new KVBox( this );
     dialog->setMainWidget( vbox );
 
-    m_addLabelEdit = new ClickLineEdit( i18n( "Add new label" ), dialog->mainWidget() );
+    m_addLabelEdit = new KLineEdit( dialog->mainWidget() );
+    m_addLabelEdit->setClickMessage( i18n( "Add new label" ) );
     m_addLabelEdit->installEventFilter( this );
     m_addLabelEdit->setFrame( Q3Frame::Sunken );
     m_addLabelEdit->setToolTip( i18n( "Enter a new label and press Return to add it" ) );

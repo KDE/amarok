@@ -18,7 +18,7 @@
 
 class Q3ListViewItem;
 class CoverViewItem;
-class ClickLineEdit;
+class KLineEdit;
 class KPushButton;
 class KMenu;
 class QToolButton;
@@ -84,7 +84,7 @@ class CoverManager : public QSplitter
 
         K3ListView      *m_artistView;
         CoverView      *m_coverView;
-        ClickLineEdit  *m_searchEdit;
+        KLineEdit  *m_searchEdit;
         KPushButton    *m_fetchButton;
         KMenu     *m_amazonLocaleMenu;
         KMenu     *m_viewMenu;

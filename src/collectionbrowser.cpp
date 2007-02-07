@@ -13,7 +13,6 @@
 //#include "browserbar.h"
 #include "sidebar.h"
 #include "browserToolBar.h"
-#include "clicklineedit.h"
 #include "collectionbrowser.h"
 #include "collectiondb.h"
 #include "covermanager.h"
@@ -84,6 +83,7 @@
 #include <ktoggleaction.h>
 #include <kactionmenu.h>
 #include <kvbox.h>
+#include <klineedit.h>
  //ctor
 #include <kio/job.h>
 #include <kpushbutton.h>
@@ -115,7 +115,8 @@ CollectionBrowser::CollectionBrowser( const char* name )
         QToolBar* searchToolBar = new Browser::ToolBar( this );
         button       = new QToolButton( searchToolBar );
         button->setIcon( QIcon("locationbar_erase") );
-        m_searchEdit = new ClickLineEdit( i18n( "Enter search terms here" ), searchToolBar );
+        m_searchEdit = new KLineEdit(  searchToolBar );
+        m_searchEdit->setClickMessage( i18n("Enter search terms here" ) );
         m_searchEdit->installEventFilter( this );
         KPushButton *filterButton = new KPushButton( "...", searchToolBar );
         filterButton->setObjectName( "filter" );

@@ -21,7 +21,6 @@
 #include "amarokconfig.h"
 #include "sidebar.h"
 #include "sidebar.moc"
-#include "clicklineedit.h"    //m_lineEdit
 #include "collectionbrowser.h"
 #include "contextbrowser.h"
 #include "debug.h"
@@ -383,7 +382,8 @@ void PlaylistWindow::init()
         QWidget *button = new QToolButton( bar );
         button->setIcon(QPixmap("locationbar_erase"));
         QLabel *filter_label = new QLabel( i18n("S&earch:") + ' ', bar );
-        m_lineEdit = new ClickLineEdit( i18n( "Playlist Search" ), bar );
+        m_lineEdit = new KLineEdit( bar );
+        m_lineEdit->setClickMessage( i18n( "Playlist Search" ) );
         filter_label->setBuddy( m_lineEdit );
         m_lineEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
         KPushButton *filterButton = new KPushButton( "...", bar );

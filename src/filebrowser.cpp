@@ -23,7 +23,6 @@
 
 #include "amarok.h"
 #include "browserToolBar.h"
-#include "clicklineedit.h"
 #include "enginecontroller.h"
 #include "filebrowser.h"
 #include "k3bexporter.h"
@@ -43,6 +42,7 @@
   ///@see ctor
 #include <kurlcombobox.h>
 #include <kurlcompletion.h>
+#include <klineedit.h>
 
 #include "mediabrowser.h"
 #include "medium.h"
@@ -112,7 +112,8 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         QToolButton *button = new QToolButton( searchToolBar );
         button->setIcon( KIcon( "locationbar_erase") );
 
-        m_filter = new ClickLineEdit( i18n( "Enter search terms here" ), searchToolBar );
+        m_filter = new KLineEdit( searchToolBar );
+        m_filter->setClickMessage( i18n( "Enter search terms here" ) );
 
          m_filter->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
 
@@ -632,7 +633,8 @@ SearchPane::SearchPane( FileBrowser *parent )
         //box->setMargin( 5 );
         box->setBackgroundMode( Qt::PaletteBase );
 
-        m_lineEdit = new ClickLineEdit( i18n("Search here..."), box );
+        m_lineEdit = new KLineEdit( box );
+        m_lineEdit->setClickMessage( i18n("Search here...") );
         connect( m_lineEdit, SIGNAL(textChanged( const QString& )), SLOT(searchTextChanged( const QString& )) );
 
         m_listView = new KURLView( container );

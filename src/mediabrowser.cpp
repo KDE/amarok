@@ -13,7 +13,6 @@
 #include "amarokconfig.h"
 #include "app.h"
 #include "browserToolBar.h"
-#include "clicklineedit.h"
 #include "collectiondb.h"
 #include "colorgenerator.h"
 #include "contextbrowser.h"
@@ -309,7 +308,8 @@ MediaBrowser::MediaBrowser( const char *name )
         QToolButton *button = new QToolButton( searchToolBar );
 //         button.icon = QIcon("locationbar_erase");
         button->setIcon( KIcon( "locationbar_erase" ) );
-        m_searchEdit = new ClickLineEdit( i18n( "Enter search terms here" ), searchToolBar );
+        m_searchEdit = new KLineEdit( searchToolBar );
+        m_searchEdit->setClickMessage( i18n( "Enter search terms here" ) );
         KPushButton *filterButton = new KPushButton( "...", searchToolBar );
         filterButton->setObjectName( "filter" );
         m_searchEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
