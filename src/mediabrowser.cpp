@@ -127,7 +127,6 @@ class SpaceLabel : public QLabel {
         : QLabel(parent)
     {
         m_total = m_used = m_scheduled = 0;
-        setBackgroundMode(Qt::NoBackground);
     }
 
     void paintEvent(QPaintEvent *e)

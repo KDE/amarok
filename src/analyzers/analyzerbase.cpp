@@ -215,7 +215,7 @@ Analyzer::Base2D::resizeEvent( QResizeEvent *e )
 {
     m_background.resize( size() );
     m_canvas.resize( size() );
-    m_background.fill( backgroundColor() );
+
     eraseCanvas(); //this is necessary
 
     QWidget::resizeEvent( e );
@@ -224,7 +224,6 @@ Analyzer::Base2D::resizeEvent( QResizeEvent *e )
 void
 Analyzer::Base2D::paletteChange( const QPalette& )
 {
-    m_background.fill( backgroundColor() );
     eraseCanvas();
 }
 

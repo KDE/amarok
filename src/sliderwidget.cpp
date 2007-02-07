@@ -246,7 +246,6 @@ Amarok::PrettySlider::paintEvent( QPaintEvent *e )
     QPixmap  buf( size() );
     QPainter p( &buf );
 
-    buf.fill( parentWidget()->backgroundColor() );
 
     if ( orientation() == Qt::Vertical )
     {
@@ -430,12 +429,12 @@ Amarok::VolumeSlider::slotAnimTimer() //SLOT
 {
     if ( m_animEnter ) {
         m_animCount++;
-        repaint( false );
+        repaint( );
         if ( m_animCount == ANIM_MAX - 1 )
             m_animTimer->stop();
     } else {
         m_animCount--;
-        repaint( false );
+        repaint();
         if ( m_animCount == 0 )
             m_animTimer->stop();
     }
@@ -515,20 +514,6 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
     p.end();
 
     bitBlt( this, 0, 0, &buf );
-}
-
-void
-Amarok::VolumeSlider::hideEvent( QHideEvent* )
-{
-    setBackgroundMode( Qt::PaletteBackground ); // Required to prevent erasing
-}
-
-void
-Amarok::VolumeSlider::showEvent( QShowEvent* )
-{
-    // HACK To prevent ugly uninitialised background when the window is shown,
-    //      needed because we use NoBackground to prevent flickering while painting
-    setBackgroundMode( Qt::NoBackground );
 }
 
 void

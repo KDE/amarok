@@ -890,11 +890,7 @@ StatisticsDetailedItem::paintCell( QPainter *p, const QColorGroup &cg, int colum
 
     QPainter pBuf( &buffer );
     // use alternate background
-#if KDE_VERSION < KDE_MAKE_VERSION(3,3,91)
     pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor() );
-#else
-    pBuf.fillRect( buffer.rect(), isSelected() ? cg.highlight() : backgroundColor(0) );
-#endif
 
     K3ListView *lv = static_cast<K3ListView *>( listView() );
 

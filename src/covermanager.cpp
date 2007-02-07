@@ -413,7 +413,7 @@ void CoverManager::slotArtistSelected( Q3ListViewItem *item ) //SLOT
     //NOTE we MUST show the dialog, otherwise the closeEvents get processed
     // in the processEvents() calls below, GRUMBLE! Qt sux0rs
     progress.show();
-    progress.repaint( false );  //ensures the dialog isn't blank
+    progress.repaint();  //ensures the dialog isn't blank
 
     //this is an extra processEvent call for the sake of init() and aesthetics
     //it isn't necessary

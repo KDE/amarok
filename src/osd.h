@@ -57,7 +57,6 @@ class OSDWidget : public QWidget
          */
         void setDuration( int ms ) { m_duration = ms; }
         void setTextColor( const QColor &color ) { setPaletteForegroundColor( color ); }
-        void setBackgroundColor(const QColor &color ) { setPaletteBackgroundColor( color ); }
         void setOffset( int y ) { m_y = y; }
         void setAlignment( Alignment alignment ) { m_alignment = alignment; }
         void setImage( const QImage &image ) { m_cover = image; }
@@ -120,7 +119,6 @@ public:
 
 public slots:
     void setTextColor( const QColor &color ) { OSDWidget::setTextColor( color ); doUpdate(); }
-    void setBackgroundColor(const QColor &color ) { OSDWidget::setBackgroundColor( color ); doUpdate(); }
     void setDrawShadow( bool b ) { OSDWidget::setDrawShadow( b ); doUpdate(); }
     void setFont( const QFont &font ) { OSDWidget::setFont( font ); doUpdate(); }
     void setScreen( int screen ) { OSDWidget::setScreen( screen ); doUpdate(); }
@@ -128,7 +126,6 @@ public slots:
     {
         if( use ) {
             OSDWidget::setTextColor( fg );
-            OSDWidget::setBackgroundColor( bg );
         } else
             unsetColors();
         doUpdate();

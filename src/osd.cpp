@@ -61,7 +61,6 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
         , m_volume( false )
 {
     setFocusPolicy( Qt::NoFocus );
-    setBackgroundMode( Qt::NoBackground );  //Qt3 support
     unsetColors();
 
     connect( m_timer, SIGNAL(timeout()), SLOT(hide()) );
@@ -798,7 +797,6 @@ Amarok::OSD::applySettings()
     if( AmarokConfig::osdUseCustomColors() )
     {
         setTextColor( AmarokConfig::osdTextColor() );
-        setBackgroundColor( AmarokConfig::osdBackgroundColor() );
     }
     else unsetColors();
 }

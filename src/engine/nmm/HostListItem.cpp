@@ -172,8 +172,6 @@ void HostListItem::paintCell(QPainter * p, const QColorGroup & cg, int column, i
   else if( column == HostListItem::Volume )
   {
     QPixmap buf( width, height() );
-    QColor bg = listView()->viewport()->backgroundColor();
-    buf.fill( bg );
 
     bitBlt( &buf, 0, 0, pixmapVolume( PixInset ) );
 

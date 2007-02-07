@@ -1845,7 +1845,6 @@ CollectionDB::createDragPixmap( const KUrl::List &urls, QString textOverRide )
 
     // compose image
     p.begin( &pmdrag );
-    p.setBackgroundMode( Qt::TransparentMode );
     for ( int i = 0; i < covers; i++ )
         bitBlt( &pmdrag, i * coverSpacing, i * coverSpacing, &coverPm[i], 0 );
 

@@ -232,7 +232,7 @@ PlaylistWindow::PlaylistWindow()
     actionCollection()->addAction( "update_collection", update );
     connect(update, SIGNAL(triggered(bool)), SLOT(scanModifiedDirs()));
 
-    m_lastfmTags << "Alternative" << "Ambient" << "Chill Out" << "Classical" << "Dance"
+    m_lastfmTags << "Alternative" <<  "Ambient" << "Chill Out" << "Classical" << "Dance"
                  << "Electronica" << "Favorites" << "Heavy Metal" << "Hip Hop" << "Indie Rock"
                  << "Industrial" << "Japanese" << "Pop" << "Psytrance" << "Rap" << "Rock"
                  << "Soundtrack" << "Techno" << "Trance";
@@ -523,12 +523,14 @@ void PlaylistWindow::init()
     m_menubar->insertItem( i18n( "&Help" ), Amarok::Menu::helpMenu() );
 
 
-    Q3BoxLayout *layV = new Q3VBoxLayout( this );
+//     Q3BoxLayout *layV = new Q3VBoxLayout( this );
+    QVBoxLayout *layV = new QVBoxLayout;
     layV->addWidget( m_menubar );
     layV->addWidget( m_browsers, 1 );
     layV->addWidget( m_toolbar );
     layV->addSpacing( 2 );
     layV->addWidget( statusbar );
+    this->setLayout( layV );
 
     //The volume slider later becomes our FocusProxy, so all wheelEvents get redirected to it
     m_toolbar->setFocusPolicy( Qt::WheelFocus );

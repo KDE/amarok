@@ -7,13 +7,13 @@
 #include <q3valuelist.h>
 #include <q3valuevector.h>
 //Added by qt3to4:
-#include <Q3VBoxLayout>
+#include <QVBoxLayout>
 #include <QLabel>
 
 #include <kdialog.h>
 
 class QWidget;
-class Q3VBoxLayout;
+class QVBoxLayout;
 class QComboBox;
 class QCheckBox;
 class QLineEdit;
@@ -36,7 +36,7 @@ class EditFilterDialog : public KDialog
         void filterChanged( const QString &filter );
 
     private:
-        Q3VBoxLayout *m_mainLay;
+        QVBoxLayout *m_mainLay;
 
         QCheckBox *m_prefixNOT;
         QComboBox *m_comboKeyword;

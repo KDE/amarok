@@ -131,8 +131,7 @@ namespace Amarok
 
         protected:
             virtual void paintEvent( QPaintEvent* );
-            virtual void hideEvent( QHideEvent* );
-            virtual void showEvent( QShowEvent* );
+
             virtual void enterEvent( QEvent* );
             virtual void leaveEvent( QEvent* );
             virtual void paletteChange( const QPalette& );
