@@ -3130,6 +3130,7 @@ InfoPane::InfoPane( QWidget *parent )
           m_storedHeight( 100 )
 {
     KVBox *container = new KVBox( this );
+    container->setObjectName( "container" );
     container->hide();
 
     {
