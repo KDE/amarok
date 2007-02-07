@@ -49,21 +49,16 @@
 #include <kstandarddirs.h>     //loading icons
 #include <k3tempfile.h>
 #include <ktoolbar.h>
+#include <dnssd/remoteservice.h>
+#include <dnssd/servicebase.h>
+#include <dnssd/servicebrowser.h>
 
-
-#if DNSSD_SUPPORT
-    #include <dnssd/remoteservice.h>
-    #include <dnssd/servicebase.h>
-    #include <dnssd/servicebrowser.h>
-#endif
 
 AMAROK_EXPORT_PLUGIN( DaapClient )
 
 DaapClient::DaapClient()
     : MediaDevice()
-#if DNSSD_SUPPORT
     , m_browser( 0 )
-#endif
     , m_connected( false )
     , m_sharingServer( 0 )
     , m_broadcastServerCheckBox( 0 )
@@ -102,9 +97,7 @@ DEBUG_BLOCK
 
 DaapClient::~DaapClient()
 {
-#if DNSSD_SUPPORT
     delete m_browser;
-#endif
 }
 
 bool
@@ -136,7 +129,6 @@ DaapClient::openDevice(bool /* silent=false */)
 {
     DEBUG_BLOCK
     m_connected = true;
-#if DNSSD_SUPPORT
     if ( !m_browser )
     {
         m_browser = new DNSSD::ServiceBrowser("_daap._tcp");
@@ -147,7 +139,6 @@ DaapClient::openDevice(bool /* silent=false */)
                       this,   SLOT( serverOffline ( DNSSD::RemoteService::Ptr ) ) );
         m_browser->startBrowse();
     }
-#endif
     QStringList sl = AmarokConfig::manuallyAddedServers();
     oldForeach( sl )
     {
@@ -181,11 +172,9 @@ DaapClient::closeDevice()
     }
     m_connected = false;
     m_servers.clear();
-#if DNSSD_SUPPORT
     m_serverItemMap.clear();
     delete m_browser;
     m_browser = 0;
-#endif
     delete m_sharingServer;
     m_sharingServer = 0;
 
@@ -327,7 +316,6 @@ DaapClient::downloadSongs( KUrl::List urls )
 void
 DaapClient::serverOffline( DNSSD::RemoteService::Ptr service )
 {
-#if DNSSD_SUPPORT
     DEBUG_BLOCK
     QString key =  serverKey( service.data() );
     if( m_serverItemMap.contains( key ) )
@@ -344,32 +332,27 @@ DaapClient::serverOffline( DNSSD::RemoteService::Ptr service )
     }
     else
         warning() << "removing non-existant service" << endl;
-#endif
 }
 
-#if DNSSD_SUPPORT
 QString
 DaapClient::serverKey( const DNSSD::RemoteService* service ) const
 {
     return ServerItem::key( service->hostName(), service->port() );
 }
-#endif
+
 
 void
 DaapClient::foundDaap( DNSSD::RemoteService::Ptr service )
 {
-#if DNSSD_SUPPORT
     DEBUG_BLOCK
 
     connect( service, SIGNAL( resolved( bool ) ), this, SLOT( resolvedDaap( bool ) ) );
     service->resolveAsync();
-#endif
 }
 
 void
 DaapClient::resolvedDaap( bool success )
 {
-#if DNSSD_SUPPORT
     DEBUG_BLOCK
     const DNSSD::RemoteService* service =  dynamic_cast<const DNSSD::RemoteService*>(sender());
     if( !success || !service ) return;
@@ -380,7 +363,6 @@ DaapClient::resolvedDaap( bool success )
         return;
 
     m_serverItemMap[ serverKey( service ) ] = newHost( service->serviceName(), service->hostName(), ip, service->port() );
-#endif
 }
 
 void

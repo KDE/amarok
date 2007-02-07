@@ -18,24 +18,12 @@
 #include "mediabrowser.h"
 #include "threadmanager.h"
 
-#include <kdeversion.h>
 #include <kdialog.h>
 #include <k3tempfile.h>
 //Added by qt3to4:
 #include <Q3ValueList>
 #include <QPixmap>
-
-#define DNSSD_SUPPORT KDE_IS_VERSION(3,4,0)
-
-#if DNSSD_SUPPORT
-    #include <dnssd/remoteservice.h> //for DNSSD::RemoteService::Ptr
-#else
-namespace DNSSD {
-    namespace RemoteService {
-        class Ptr {}; //HACK Dummy class, so that daapclient.moc compiles
-    }
-}
-#endif
+#include <dnssd/remoteservice.h> //for DNSSD::RemoteService::Ptr
 
 namespace DNSSD {
     class ServiceBrowser;
@@ -106,10 +94,8 @@ class DaapClient : public MediaDevice
         ServerItem* newHost( const QString& serviceName, const QString& host, const QString& ip, const qint16 port );
         void downloadSongs( KUrl::List urls );
         QString resolve( const QString& hostname );
-#if DNSSD_SUPPORT
         QString serverKey( const DNSSD::RemoteService* service ) const;
         DNSSD::ServiceBrowser* m_browser;
-#endif
         /// @return true if track is already in the local collection
         const bool trackExistsInCollection( MetaBundle *bundle );
 
