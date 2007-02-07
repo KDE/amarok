@@ -101,13 +101,6 @@
 #include <kstringhandler.h>  //::showContextMenu()
 #include <k3urldrag.h>
 
-extern "C"
-{
-    #if KDE_VERSION < KDE_MAKE_VERSION(3,3,91)
-    #include <X11/Xlib.h>    //ControlMask in contentsDragMoveEvent()
-    #endif
-}
-
 #include "playlist.h"
 
 namespace Amarok
@@ -256,10 +249,7 @@ Playlist::Playlist( QWidget *parent )
     //setItemMargin( 1 ); //aesthetics
 
     setMouseTracking( true );
-
-    #if KDE_IS_VERSION( 3, 3, 91 )
     setShadeSortColumn( true );
-    #endif
 
     for( int i = 0; i < MetaBundle::NUM_COLUMNS; ++i )
     {

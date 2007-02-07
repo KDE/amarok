@@ -87,13 +87,6 @@
 #include <kio/job.h>
 #include <kpushbutton.h>
 
-extern "C"
-{
-    #if KDE_VERSION < KDE_MAKE_VERSION(3,3,91)
-    #include <X11/Xlib.h>    //ControlMask in contentsDragMoveEvent()
-    #endif
-}
-
 using namespace CollectionBrowserIds;
 
 //namespace Amarok { extern KConfig *config( const QString& ); }
@@ -1637,17 +1630,13 @@ CollectionView::setViewMode( int mode, bool rerender /*=true*/ )
 
     if( m_viewMode == modeIpodView )
     {
-        #if KDE_VERSION >= KDE_MAKE_VERSION(3,4,0)
         setShadeSortColumn( false );
-        #endif
         m_parent->m_ipodDecrement->setEnabled( m_currentDepth > 0 );
         m_parent->ipodToolbar( true );
     }
     else
     {
-        #if KDE_VERSION >= KDE_MAKE_VERSION(3,4,0)
         setShadeSortColumn( true );
-        #endif
         m_parent->ipodToolbar( false );
     }
 
@@ -4438,28 +4427,8 @@ CollectionItem::paintCell ( QPainter * painter, const QColorGroup & cg,
         QColor bg = isSelected()  ? _cg.highlight()
             : isAlternate() ? listView()->alternateBackground()
             : listView()->viewport()->backgroundColor();
-#if KDE_IS_VERSION( 3, 3, 91 )
-        if( listView()->shadeSortColumn() && !isSelected() && listView()->columnSorted() == column )
-        {
-            /* from klistview.cpp
-               Copyright (C) 2000 Reginald Stadlbauer <reggie@kde.org>
-               Copyright (C) 2000,2003 Charles Samuels <charles@kde.org>
-               Copyright (C) 2000 Peter Putzer */
-            if ( bg == Qt::black )
-                bg = QColor(55, 55, 55);  // dark gray
-            else
-            {
-                int h,s,v;
-                bg.hsv(&h, &s, &v);
-                if ( v > 175 )
-                    bg = bg.dark(104);
-                else
-                    bg = bg.light(120);
-            }
-        }
-#endif
-
-        buf.fill( bg );
+        
+	buf.fill( bg );
 
         int rating = text(column).toInt();
         int i = 1, x = 1;
