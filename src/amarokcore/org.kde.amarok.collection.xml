@@ -1,0 +1,76 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node>
+  <interface name="org.kde.Amarok.Collection">
+    <method name="totalAlbums" >
+      <arg type="i" direction="out"/>
+    </method>
+    <method name="totalArtists" >
+      <arg type="i" direction="out"/>
+    </method>
+    <method name="totalComposers" >
+      <arg type="i" direction="out"/>
+    </method>
+    <method name="totalCompilations" >
+      <arg type="i" direction="out"/>
+    </method>
+    <method name="totalGenres" >
+      <arg type="i" direction="out"/>
+    </method>
+    <method name="totalTracks" >
+      <arg type="i" direction="out"/>
+    </method>
+    <method name="isDirInCollection" >
+      <arg type="b" direction="out"/>
+      <arg name="name" type="s" direction="in"/>
+    </method>
+    <method name="scanCollection" />
+    <method name="scanCollectionChanges" />
+    <method name="scanPause" />
+    <method name="scanUnpause" />
+    <method name="scannerAcknowledged" />
+    <method name="disableAutoScoring" >
+      <arg name="disable" type="b" direction="in"/>
+    </method>
+    <method name="moveFile" >
+      <arg type="b" direction="out"/>
+      <arg name="oldURL" type="s" direction="in"/>
+      <arg name="newURL" type="s" direction="in"/>
+      <arg name="overwrite" type="b" direction="in"/>
+    </method>
+    <method name="query" >
+      <arg name="sql" type="s" direction="in"/>
+      <arg type="as" direction="out"/>
+    </method>
+    <method name="similarArtists" >
+      <arg name="artists" type="i" direction="in"/>
+      <arg type="as" direction="out"/>
+    </method>
+    <method name="migrateFile" >
+      <arg name="oldURL" type="s" direction="in"/>
+      <arg name="newURL" type="s" direction="in"/>
+    </method>
+    <method name="addLabels" >
+      <arg name="url" type="s" direction="in"/>
+      <arg name="label" type="as" direction="in"/>
+      <arg type="i" direction="out"/>
+    </method>
+    <method name="removeLabels" >
+      <arg name="url" type="s" direction="in"/>
+      <arg name="oldLabel" type="as" direction="in"/>
+    </method>
+    <method name="deviceId" >
+      <arg name="url" type="s" direction="in"/>
+      <arg type="i" direction="out"/>
+    </method>
+    <method name="relativePath" >
+      <arg name="url" type="s" direction="in"/>
+      <arg type="s" direction="out"/>
+    </method>
+    <method name="absolutePath" >
+      <arg name="deviceid" type="i" direction="in"/>
+      <arg name="relativePath" type="s" direction="in"/>
+      <arg type="s" direction="out"/>
+    </method>
+  </interface>
+</node>

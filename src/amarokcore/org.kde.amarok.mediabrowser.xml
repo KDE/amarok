@@ -1,0 +1,25 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node>
+  <interface name="org.kde.Amarok.ContextBrowser">
+    <method name="deviceConnect"/>
+    <method name="deviceDisconnect"/>
+    <method name="transfer"/>
+    <method name="deviceSwitch" >
+      <arg name="name" type="s" direction="in"/>
+    </method>
+    <method name="deviceList" >
+      <arg type="as" direction="out"/>
+    </method>
+    <method name="queue" >
+      <arg name="url" type="s" direction="in"/>
+    </method>
+    <method name="queueList" >
+      <arg name="url" type="as" direction="in"/>
+    </method>
+    <method name="transcodingFinished" >
+      <arg name="src" type="s" direction="in"/>
+      <arg name="dest" type="s" direction="in"/>
+    </method>
+  </interface>
+</node>
