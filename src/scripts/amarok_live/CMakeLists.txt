@@ -1,2 +1,2 @@
-install( FILES  amarok_live.py README  			amarok.live.remaster.part1.sh  			amarok.live.remaster.part2.sh DESTINATION ${DATA_INSTALL_DIR}/amarok/scripts/amarok_live)
+install( PROGRAMS  amarok_live.py README  			amarok.live.remaster.part1.sh  			amarok.live.remaster.part2.sh DESTINATION ${DATA_INSTALL_DIR}/amarok/scripts/amarok_live)
 
