@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2004-2006 by Mark Kretschmann <markey@web.de>           *
- *                      2005 by Seb Ruiz <me@sebruiz.net>                  *
+ *                 2005-2007 by Seb Ruiz <me@sebruiz.net>                  *
  *                      2006 by Alexandre Oliveira <aleprj@gmail.com>      *
  *                      2006 by Martin Ellis <martin.ellis@kdemail.net>    *
  *                                                                         *
@@ -46,6 +46,7 @@
 #include <QPixmap>
 #include <Q3PopupMenu>
 
+#include <kaboutdialog.h>
 #include <kapplication.h>
 #include <kfiledialog.h>
 #include <kiconloader.h>
@@ -62,7 +63,6 @@
 #include <ktar.h>
 #include <ktextedit.h>
 #include <kwin.h>
-#include <k3aboutdialog.h>
 
 #include <knewstuff/downloaddialog.h> // knewstuff script fetching
 #include <knewstuff/engine.h>         // "
@@ -658,7 +658,7 @@ ScriptManager::slotAboutScript()
         return;
     }
 
-    K3AboutDialog* about = new K3AboutDialog( K3AboutDialog::Tabbed|K3AboutDialog::Product,
+    KAboutDialog* about = new KAboutDialog( KAboutDialog::Tabbed|KAboutDialog::Product,
                                             QString::null, this );
     about->setButtons( KDialog::Ok );
     about->setDefaultButton( KDialog::Ok );
