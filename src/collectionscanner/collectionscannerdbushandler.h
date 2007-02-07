@@ -15,21 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef COLLECTIONSCANNER_DCOP_HANDLER_H
-#define COLLECTIONSCANNER_DCOP_HANDLER_H
+#ifndef COLLECTIONSCANNER_DBUS_HANDLER_H
+#define COLLECTIONSCANNER_DBUS_HANDLER_H
 
-#include "collectionscannerdcopiface.h"
 
 #include <QObject>
 
 #include <kapplication.h>
 
-class DcopCollectionScannerHandler : public QObject, virtual public CollectionScannerInterface
+class DbusCollectionScannerHandler : public QObject
 {
       Q_OBJECT
 
    public:
-      DcopCollectionScannerHandler();
+      DbusCollectionScannerHandler();
 
    signals:
       void pauseRequest();

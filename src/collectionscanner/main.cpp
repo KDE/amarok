@@ -68,7 +68,7 @@ int main( int argc, char *argv[] )
     const bool importplaylists  = args->isSet( "importplaylists" );
     const bool restart          = args->isSet( "restart" );
 
-    KApplication::disableAutoDcopRegistration();
+    //KApplication::disableAutoDcopRegistration();
 
     CollectionScanner scanner( folders, recursive, incremental, importplaylists, restart );
 

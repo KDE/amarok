@@ -21,7 +21,7 @@
 
 #include "amarok.h"
 #include "collectionscanner.h"
-#include "collectionscannerdcophandler.h"
+#include "collectionscannerdbushandler.h"
 #include "debug.h"
 
 #include <cerrno>
@@ -43,7 +43,6 @@
 #include <Q3CString>
 #include <Q3ValueList>
 
-#include <dcopref.h>
 #include <kglobal.h>
 #include <klocale.h>
 
@@ -62,7 +61,7 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
         , m_logfile( Amarok::saveLocation( QString::null ) + "collection_scan.log"  )
         , m_pause( false )
 {
-    DcopCollectionScannerHandler* dcsh = new DcopCollectionScannerHandler();
+    DbusCollectionScannerHandler* dcsh = new DbusCollectionScannerHandler();
     connect( dcsh, SIGNAL(pauseRequest()), this, SLOT(pause()) );
     connect( dcsh, SIGNAL(unpauseRequest()), this, SLOT(resume()) );
     kapp->setName( QString( "amarokcollectionscanner" ).ascii() );

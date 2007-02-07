@@ -1,5 +1,5 @@
 /***************************************************************************
-                          collectionscannerdcopiface.h  -  DCOP Interface
+                          collectionscannerdcophandler.cpp  -  DCOP Implementation
                              -------------------
     begin                : 16/08/05
     copyright            : (C) 2006 by Jeff Mitchell
@@ -15,23 +15,30 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef COLLECTIONSCANNER_DCOPIFACE_H
-#define COLLECTIONSCANNER_DCOPIFACE_H
+#include "collectionscannerdbushandler.h"
+#include <scanneradaptor.h>
 
-#include <dcopobject.h>
+/////////////////////////////////////////////////////////////////////////////////////
+// class DbusCollectionScannerHandler
+/////////////////////////////////////////////////////////////////////////////////////
 
-///////////////////////////////////////////////////////////////////////
-// WARNING! Please ask on #amarok before modifying the DCOP interface!
-///////////////////////////////////////////////////////////////////////
+DbusCollectionScannerHandler::DbusCollectionScannerHandler()
+        : QObject( kapp )
+    {
+    (void)new ScannerAdaptor(this);
+    QDBusConnection::sessionBus().registerObject(QLatin1String("/Scanner"), this); 
+    }
 
+    void DbusCollectionScannerHandler::pause()
+    {
+        //do nothing for now
+        emit pauseRequest();
+    }
 
-class CollectionScannerInterface : virtual public DCOPObject
-{
-   K_DCOP
+    void DbusCollectionScannerHandler::unpause()
+    {
+        //do nothing for now
+        emit unpauseRequest();
+    }
 
-k_dcop:
-    virtual void pause() = 0;                           ///< Pause the scanner
-    virtual void unpause() = 0;                         ///< Unpause the scanner
-};
-
-#endif
+#include "collectionscannerdbushandler.moc"
