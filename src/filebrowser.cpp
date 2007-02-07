@@ -624,6 +624,7 @@ SearchPane::SearchPane( FileBrowser *parent )
         , m_lister( 0 )
 {
     KVBox *container = new KVBox( this );
+    container->setObjectName( "container" );
     container->hide();
 
     {
