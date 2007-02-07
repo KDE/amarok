@@ -60,7 +60,6 @@
 #include <QWheelEvent>
 #include <QCloseEvent>
 #include <QShowEvent>
-#include <Q3VBoxLayout>
 #include <Q3Frame>
 #include <QPaintEvent>
 #include <Q3PopupMenu>
@@ -523,7 +522,6 @@ void PlaylistWindow::init()
     m_menubar->insertItem( i18n( "&Help" ), Amarok::Menu::helpMenu() );
 
 
-//     Q3BoxLayout *layV = new Q3VBoxLayout( this );
     QVBoxLayout *layV = new QVBoxLayout;
     layV->addWidget( m_menubar );
     layV->addWidget( m_browsers, 1 );
