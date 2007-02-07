@@ -17,6 +17,9 @@
 #include <QApplication>
 #include <iostream>
 
+#include "amarok_export.h"
+
+
 /**
  * @namespace Debug
  * @short kdebug with indentation functionality and convenience macros
@@ -49,7 +52,7 @@
 
 namespace Debug
 {
-    extern QMutex mutex; // defined in app.cpp
+    extern AMAROK_EXPORT QMutex mutex; // defined in app.cpp
 
     // we can't use a statically instantiated QCString for the indent, because
     // static namespaces are unique to each dlopened library. So we piggy back
