@@ -1,8 +1,11 @@
 
 add_subdirectory( void )
+if(XINE_FOUND)
 add_subdirectory( xine )
-
+else(XINE_FOUND)
 message(STATUS "${CMAKE_CURRENT_SOURCE_DIR}: skipped subdir $(XINE_ENGINE_SUBDIR)")
+endif(XINE_FOUND)
+
 message(STATUS "${CMAKE_CURRENT_SOURCE_DIR}: skipped subdir $(NMM_ENGINE_SUBDIR)")
 message(STATUS "${CMAKE_CURRENT_SOURCE_DIR}: skipped subdir $(HELIX_ENGINE_SUBDIR)")
 message(STATUS "${CMAKE_CURRENT_SOURCE_DIR}: skipped subdir $(GST10_ENGINE_SUBDIR)")
