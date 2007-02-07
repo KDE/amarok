@@ -92,9 +92,11 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
     hbox = new Q3HBoxLayout( m_layout );
 
     hbox->addItem( new QSpacerItem( 4, 4, QSizePolicy::Expanding, QSizePolicy::Preferred ) );
-    hbox->add( new KPushButton( KStandardGuiItem::close(), this ) );
+    KPushButton *button = new KPushButton( KStandardGuiItem::close(), this );
+    button->setObjectName( "closeButton" );
+    hbox->add( button );
 
-    connect( findChild<KPushButton*>( "closeButton" ), SIGNAL(clicked()), SLOT(close()) );
+    connect( button, SIGNAL(clicked()), SLOT(close()) );
 }
 
 void PopupMessage::addWidget( QWidget *widget )

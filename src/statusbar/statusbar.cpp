@@ -185,17 +185,14 @@ StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 
     // ugly because of translation requirements
     if( !title.isEmpty() && !artist.isEmpty() && !album.isEmpty() )
-        title = i18nc( "track by artist on album", "<b>%1</b> by <b>%2</b> on <b>%3</b>" )
-                .arg( title, artist, album );
+        title = i18nc( "track by artist on album", "<b>%1</b> by <b>%2</b> on <b>%3</b>", title, artist, album );
 
     else if( !title.isEmpty() && !artist.isEmpty() )
-        title = i18nc( "track by artist", "<b>%1</b> by <b>%2</b>" )
-                .arg( title, artist );
+        title = i18nc( "track by artist", "<b>%1</b> by <b>%2</b>", title, artist );
 
     else if( !album.isEmpty() )
         // we try for pretty title as it may come out better
-        title = i18nc( "track on album", "<b>%1</b> on <b>%2</b>" )
-               .arg( prettyTitle, album );
+        title = i18nc( "track on album", "<b>%1</b> on <b>%2</b>", prettyTitle, album );
     else
         title = "<b>" + prettyTitle + "</b>";
 
@@ -209,7 +206,7 @@ StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
         title += ')';
     }
 
-    setMainText( i18n( "Playing: %1" ).arg( title ) );
+    setMainText( i18n( "Playing: %1", title ) );
 
     m_slider->newBundle( bundle );
     engineTrackLengthChanged( bundle.length() );
@@ -222,11 +219,10 @@ StatusBar::slotItemCountChanged( int newCount, int newLength,  //total
 {
     const bool hasSel = ( selCount > 1 ), hasVis = ( visCount != newCount );
 
-    QString text = ( hasSel && hasVis ) ? i18n( "%1 selected of %2 visible tracks" )
-                                          .arg( selCount ).arg( visCount )
+    QString text = ( hasSel && hasVis ) ? i18n( "%1 selected of %2 visible tracks",selCount, visCount )
                  : ( hasVis && newCount == 1 ) ? i18n( "0 visible of 1 track" )
-                 : ( hasVis ) ? i18n( "%1 visible of %2 tracks" ).arg( visCount).arg( newCount )
-                 : ( hasSel ) ? i18n( "%1 selected of %2 tracks" ).arg( selCount ).arg( newCount )
+                 : ( hasVis ) ? i18n( "%1 visible of %2 tracks", visCount, newCount )
+                 : ( hasSel ) ? i18n( "%1 selected of %2 tracks", selCount, newCount )
                  : i18np( "1 track", "%n tracks", newCount );
 
     int getValue = 0;
@@ -241,11 +237,11 @@ StatusBar::slotItemCountChanged( int newCount, int newLength,  //total
         getValue = newLength;
 
     if( getValue )
-        m_itemCountLabel->setText( i18nc( "X visible/selected tracks (time) ", "%1 (%2)" ).arg( text, MetaBundle::fuzzyTime( getValue ) ) );
+        m_itemCountLabel->setText( i18nc( "X visible/selected tracks (time) ", "%1 (%2)", text, MetaBundle::fuzzyTime( getValue ) ) );
     else
         m_itemCountLabel->setText( text );
 
-    m_itemCountLabel->setToolTip(  i18n( "Play-time: %1" ).arg( MetaBundle::veryPrettyTime( getValue ) ) );
+    m_itemCountLabel->setToolTip(  i18n( "Play-time: %1", MetaBundle::veryPrettyTime( getValue ) ) );
 }
 
 void

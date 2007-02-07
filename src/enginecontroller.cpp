@@ -249,8 +249,7 @@ bool EngineController::canDecode( const KUrl &url ) //static
                     i18n( "<p>The %1 claims it <b>cannot</b> play MP3 files."
                         "<p>You may want to choose a different engine from the <i>Configure Dialog</i>, or examine "
                         "the installation of the multimedia-framework that the current engine uses. "
-                        "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok HandBook</i>." )
-                    .arg( AmarokConfig::soundSystem() ), KDE::StatusBar::Error );
+                        "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok HandBook</i>.", AmarokConfig::soundSystem() ), KDE::StatusBar::Error );
 
         // Cache this result for the next lookup
         if ( !ext.isEmpty() )

@@ -382,6 +382,7 @@ MetaBundle::operator=( const MetaBundle& bundle )
 bool
 MetaBundle::checkExists()
 {
+    debug() << "MetaBundle path is " << url().url() << endl;
     m_exists = !isFile() || QFile::exists( url().path() );
 
     return m_exists;
@@ -1213,9 +1214,9 @@ MetaBundle::fuzzyTime( int time )
     else if ( day )
         return days.arg( hr ? hours : "" ).simplified();
     else if ( hr )
-        return i18n( "%1:%2 hours" ).arg( hr ).arg( zeroPad( min ) );
+        return i18n( "%1:%2 hours", hr, zeroPad( min ) );
     else
-        return i18n( "%1:%2").arg( min ).arg( zeroPad( secs ) );
+        return i18n( "%1:%2", min,zeroPad( secs ) );
 }
 
 QString

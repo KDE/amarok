@@ -711,7 +711,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
     if ( MetaBundle( m_currentURL ).artist() != bundle.artist() )
         m_dirtyWikiPage = true;
     // Prepend stream metadata history item to list
-    if ( !m_metadataHistory.first().contains( bundle.prettyTitle() ) )
+    if ( !m_metadataHistory.isEmpty() && !m_metadataHistory.first().contains( bundle.prettyTitle() ) )
     {
         newMetaData = true;
         const QString timeString = KGlobal::locale()->formatTime( QTime::currentTime() ).replace(" ", "&nbsp;"); // don't break over lines
