@@ -28,7 +28,7 @@
 #include <QPair>
 #include <QPushButton>
 #include <QToolTip>
-#include <q3vbox.h>
+#include <kvbox.h>
 #include <QCheckBox>
 //Added by qt3to4:
 #include <Q3ValueList>

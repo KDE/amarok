@@ -146,7 +146,7 @@ PlaylistBrowser *PlaylistBrowser::s_instance = 0;
 
 
 PlaylistBrowser::PlaylistBrowser( const char *name )
-        : Q3VBox( 0, name )
+        : KVBox( 0 )
         , m_polished( false )
         , m_playlistCategory( 0 )
         , m_streamsCategory( 0 )
@@ -168,7 +168,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 {
     s_instance = this;
 
-    Q3VBox *browserBox = new Q3VBox( this );
+    KVBox *browserBox = new KVBox( this );
     browserBox->setSpacing( 3 );
 
     //<Toolbar>
@@ -253,7 +253,7 @@ PlaylistBrowser::polish()
 //     BrowserBar::instance()->restoreWidth();
 //     blockSignals( false );
 
-    Q3VBox::polish();
+    KVBox::polish();
 
     /// Podcasting is always initialised in the ctor because of autoscanning
 
@@ -3125,16 +3125,16 @@ void PlaylistDialog::slotCustomPath()
 
 
 InfoPane::InfoPane( QWidget *parent )
-        : Q3VBox( parent ),
+        : KVBox( parent ),
           m_enable( false ),
           m_storedHeight( 100 )
 {
-    Q3Frame *container = new Q3VBox( this, "container" );
+    KVBox *container = new KVBox( this );
     container->hide();
 
     {
-        Q3Frame *box = new Q3HBox( container );
-        box->setMargin( 3 );
+        KHBox  *box = new KHBox( container );
+        //box->setMargin( 3 );
         box->setBackgroundMode( Qt::PaletteBase );
 
         m_infoBrowser = new HTMLView( box, "extended_info" );

@@ -57,7 +57,7 @@
 #include "tagdialog.h"
 
 #include <QDir>
-#include <q3hbox.h>
+#include <khbox.h>
 #include <q3iconview.h>
 #include <QLabel>
 #include <QTimer>
@@ -75,7 +75,7 @@
 //BEGIN Constructor/destructor
 
 FileBrowser::FileBrowser( const char * name, Medium * medium )
-        : Q3VBox( 0, name )
+        : KVBox( 0 )
 {
     KActionCollection *actionCollection;
     SearchPane *searchPane;
@@ -123,15 +123,15 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
     }
 
     { //Directory Listing
-        Q3VBox *container; Q3HBox *box;
+        KVBox *container; KHBox *box;
 
-        container = new Q3VBox( this );
+        container = new KVBox( this );
         container->setFrameStyle( m_filter->frameStyle() );
         container->setMargin( 3 );
         container->setSpacing( 2 );
         container->setBackgroundMode( Qt::PaletteBase );
 
-        box = new Q3HBox( container );
+        box = new KHBox( container );
         box->setMargin( 3 );
         box->setBackgroundMode( Qt::PaletteBase );
 
@@ -618,17 +618,17 @@ private:
 
 
 SearchPane::SearchPane( FileBrowser *parent )
-        : Q3VBox( parent )
+        : KVBox( parent )
         , m_lineEdit( 0 )
         , m_listView( 0 )
         , m_lister( 0 )
 {
-    Q3Frame *container = new Q3VBox( this, "container" );
+    KVBox *container = new KVBox( this );
     container->hide();
 
     {
-        Q3Frame *box = new Q3HBox( container );
-        box->setMargin( 5 );
+        KHBox *box = new KHBox( container );
+        //box->setMargin( 5 );
         box->setBackgroundMode( Qt::PaletteBase );
 
         m_lineEdit = new ClickLineEdit( i18n("Search here..."), box );
@@ -637,7 +637,7 @@ SearchPane::SearchPane( FileBrowser *parent )
         m_listView = new KURLView( container );
 
         container->setFrameStyle( m_listView->frameStyle() );
-        container->setMargin( 5 );
+        //container->setMargin( 5 );
         container->setBackgroundMode( Qt::PaletteBase );
 
         m_listView->setFrameStyle( Q3Frame::NoFrame );

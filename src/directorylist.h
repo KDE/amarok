@@ -21,7 +21,7 @@
 
 #include <QCheckBox>  //inlined functions
 #include <q3listview.h>  //baseclass
-#include <q3vbox.h>      //baseclass
+#include <kvbox.h>      //baseclass
 
 #include <kdirlister.h> //stack allocated
 #include <kurl.h>       //stack allocated
@@ -42,7 +42,7 @@ public:
 
 };
 
-class CollectionSetup : public Q3VBox
+class CollectionSetup : public KVBox
 {
     friend class Collection::Item;
 

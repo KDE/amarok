@@ -23,13 +23,13 @@
 #include <QDateTime>
 #include <q3datetimeedit.h>    //loadEditWidgets()
 #include <q3frame.h>
-#include <q3hbox.h>
+#include <khbox.h>
 #include <QLabel>
 #include <QLayout>
 #include <QObject>
 #include <QStringList>
 #include <QToolButton>
-#include <q3vbox.h>
+#include <kvbox.h>
 #include <q3vgroupbox.h>
 
 #include <kvbox.h>
@@ -191,7 +191,7 @@ void SmartPlaylistEditor::init(QString defaultName)
     m_expandableDbFields.clear();
     m_expandableDbFields << "artist.name" << "composer.name" << "album.name" << "genre.name" << "year.name" << "labels.name";
 
-    Q3HBox *hbox = new Q3HBox( mainWidget() );
+    KHBox *hbox = new KHBox( mainWidget() );
     hbox->setSpacing( 5 );
     new QLabel( i18n("Playlist name:"), hbox );
     m_nameLineEdit = new KLineEdit( defaultName, hbox );
@@ -200,7 +200,7 @@ void SmartPlaylistEditor::init(QString defaultName)
     sep->setFrameStyle( Q3Frame::HLine | Q3Frame::Sunken );
 
     //match box (any)
-    Q3HBox *matchAnyBox = new Q3HBox( mainWidget() );
+    KHBox *matchAnyBox = new KHBox( mainWidget() );
     m_matchAnyCheck = new QCheckBox( i18n("Match Any of the following conditions" ), matchAnyBox );
     matchAnyBox->setStretchFactor( new QWidget( matchAnyBox ), 1 );
 
@@ -208,7 +208,7 @@ void SmartPlaylistEditor::init(QString defaultName)
     m_criteriaAnyGroupBox = new Q3VGroupBox( QString::null, mainWidget() );
 
     //match box (all)
-    Q3HBox *matchAllBox = new Q3HBox( mainWidget() );
+    KHBox *matchAllBox = new KHBox( mainWidget() );
     m_matchAllCheck = new QCheckBox( i18n("Match All of the following conditions" ), matchAllBox );
     matchAllBox->setStretchFactor( new QWidget( matchAllBox ), 1 );
 
@@ -216,9 +216,9 @@ void SmartPlaylistEditor::init(QString defaultName)
     m_criteriaAllGroupBox = new Q3VGroupBox( QString::null, mainWidget() );
 
     //order box
-    Q3HBox *hbox2 = new Q3HBox( mainWidget() );
+    KHBox *hbox2 = new KHBox( mainWidget() );
     m_orderCheck = new QCheckBox( i18n("Order by"), hbox2 );
-    Q3HBox *orderBox = new Q3HBox( hbox2 );
+    KHBox *orderBox = new KHBox( hbox2 );
     orderBox->setSpacing( 5 );
     //fields combo
     m_orderCombo = new KComboBox( orderBox );
@@ -230,9 +230,9 @@ void SmartPlaylistEditor::init(QString defaultName)
     hbox2->setStretchFactor( new QWidget( hbox2 ), 1 );
 
     //limit box
-    Q3HBox *hbox1 = new Q3HBox( mainWidget() );
+    KHBox *hbox1 = new KHBox( mainWidget() );
     m_limitCheck = new QCheckBox( i18n("Limit to"), hbox1 );
-    Q3HBox *limitBox = new Q3HBox( hbox1 );
+    KHBox *limitBox = new KHBox( hbox1 );
     limitBox->setSpacing( 5 );
     m_limitSpin = new QSpinBox( limitBox );
     m_limitSpin->setMinValue( 1 );
@@ -242,16 +242,16 @@ void SmartPlaylistEditor::init(QString defaultName)
     hbox1->setStretchFactor( new QWidget( hbox1 ), 1 );
 
     //Expand By
-    Q3HBox *hbox3 = new Q3HBox( mainWidget() );
+    KHBox *hbox3 = new KHBox( mainWidget() );
     m_expandCheck = new QCheckBox( i18n("Expand by"), hbox3 );
-    Q3HBox *expandBox = new Q3HBox( hbox3 );
+    KHBox *expandBox = new KHBox( hbox3 );
     expandBox->setSpacing( 5 );
     m_expandCombo = new KComboBox( expandBox );
     m_expandCombo->insertStringList( m_expandableFields );
     hbox3->setStretchFactor( new QWidget( hbox3 ), 1 );
 
     //add stretch
-    static_cast<Q3HBox *>(mainWidget())->setStretchFactor(new QWidget(mainWidget()), 1);
+    static_cast<KHBox *>(mainWidget())->setStretchFactor(new QWidget(mainWidget()), 1);
 
     connect( m_matchAnyCheck, SIGNAL( toggled(bool) ), m_criteriaAnyGroupBox, SLOT( setEnabled(bool) ) );
     connect( m_matchAllCheck, SIGNAL( toggled(bool) ), m_criteriaAllGroupBox, SLOT( setEnabled(bool) ) );
@@ -419,7 +419,7 @@ QDomElement SmartPlaylistEditor::result()
 ////////////////////////////////////////////////////////////////////////////
 
 CriteriaEditor::CriteriaEditor( SmartPlaylistEditor *editor, QWidget *parent, int criteriaType, QDomElement criteria )
-    : Q3HBox( parent )
+    : KHBox( parent )
     , m_playlistEditor( editor )
     , m_currentValueType( -1 )
 {
@@ -430,7 +430,7 @@ CriteriaEditor::CriteriaEditor( SmartPlaylistEditor *editor, QWidget *parent, in
 
     m_criteriaCombo = new KComboBox( this );
 
-    m_editBox = new Q3HBox( this );
+    m_editBox = new KHBox( this );
     m_editBox->setSpacing( 5 );
     setStretchFactor( m_editBox, 1 );
 

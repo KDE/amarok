@@ -32,7 +32,7 @@
 #include <Q3PtrList>
 #include <QEvent>
 #include <Q3VBoxLayout>
-#include <Q3VBox>
+#include <KVBox>
 
 
 // we emulate a qsplitter, mostly for historic reasons, but there are still a few advantages
@@ -79,9 +79,9 @@ BrowserBar* BrowserBar::s_instance = 0;
 BrowserBar::BrowserBar( QWidget *parent )
         : QWidget( parent, "BrowserBar" )
         , EngineObserver( EngineController::instance() )
-        , m_playlistBox( new Q3VBox( this ) )
+        , m_playlistBox( new KVBox( this ) )
         , m_divider( new Amarok::Splitter( this ) )
-        , m_browserBox( new Q3VBox( this ) )
+        , m_browserBox( new KVBox( this ) )
         , m_currentIndex( -1 )
         , m_lastIndex( -1 )
         , m_mapper( new QSignalMapper( this ) )

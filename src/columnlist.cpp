@@ -22,7 +22,7 @@
 #include <q3header.h>
 #include <QPainter>
 #include <QToolTip>
-#include <q3vbox.h>
+#include <kvbox.h>
 //Added by qt3to4:
 #include <Q3ValueList>
 #include <k3listview.h>
@@ -59,11 +59,11 @@ public:
 };
 
 ColumnList::ColumnList( QWidget *parent, const char *name )
-    : Q3HBox( parent, name ), m_changed( true )
+    : KHBox( parent), m_changed( true )
 {
     setSpacing( 5 );
 
-    Q3VBox *buttonbox = new Q3VBox( this );
+    KVBox *buttonbox = new KVBox( this );
 
     m_up = new KPushButton( KGuiItem( QString::null, "up" ), buttonbox );
     QToolTip::add( m_up, i18n( "Move column up" ) );

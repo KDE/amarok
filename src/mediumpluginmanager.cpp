@@ -28,7 +28,7 @@
 #include <QLayout>
 #include <QSignalMapper>
 #include <QToolTip>
-#include <q3vbox.h>
+#include <kvbox.h>
 #include <QAbstractButton>
 
 #include <kapplication.h>
@@ -65,12 +65,12 @@ MediumPluginManagerDialog::MediumPluginManagerDialog()
 
     m_location = new Q3GroupBox( 1, Qt::Vertical, i18n( "Devices" ), vbox );
     m_location->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred ) );
-    m_devicesBox = new Q3VBox( m_location );
+    m_devicesBox = new KVBox( m_location );
     m_devicesBox->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding ) );
 
     m_manager = new MediumPluginManager( m_devicesBox );
 
-    Q3HBox *hbox = new Q3HBox( vbox );
+    KHBox *hbox = new KHBox( vbox );
     KPushButton *detectDevices = new KPushButton( i18n( "Autodetect Devices" ), hbox);
     detectDevices->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
     connect( detectDevices, SIGNAL( clicked() ), m_manager, SLOT( redetectDevices() ) );
@@ -282,7 +282,7 @@ ManualDeviceAdder::ManualDeviceAdder( MediumPluginManager* mpm )
     setMainWidget( hbox );
     hbox->setSpacing( KDialog::spacingHint() );
 
-    Q3VBox* vbox1 = new Q3VBox( hbox );
+    KVBox* vbox1 = new KVBox( hbox );
 
     new QLabel( i18n( "Select the plugin to use with this device:"), vbox1 );
     m_mdaCombo = new KComboBox( false, vbox1 );
@@ -391,7 +391,7 @@ ManualDeviceAdder::getMedium( bool recreate )
 }
 
 MediaDeviceConfig::MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, const bool nographics, QWidget *parent, const char *name )
-: Q3HBox( parent, name )
+: KHBox( parent )
 , m_manager( mgr )
 , m_medium( medium )
 , m_configButton( 0 )

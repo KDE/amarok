@@ -23,7 +23,7 @@
 #include <QFile>
 #include <QLayout>
 #include <QPushButton>
-#include <q3vbox.h>
+#include <kvbox.h>
 #include <QTextStream>
 //Added by qt3to4:
 #include <Q3HBoxLayout>

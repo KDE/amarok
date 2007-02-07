@@ -18,7 +18,7 @@
 
 #include <QLayout>
 #include <qmap.h>
-#include <q3hbox.h>
+#include <khbox.h>
 //Added by qt3to4:
 #include <QLabel>
 #include <Q3ValueList>
@@ -31,7 +31,7 @@ class QAbstractButton;
 class Q3GroupBox;
 class QLabel;
 class QSignalMapper;
-class Q3VBox;
+class KVBox;
 class KComboBox;
 class KLineEdit;
 class Medium;
@@ -44,7 +44,7 @@ typedef QMap<QString, Medium*> DeletedMap;
     @author Martin Aumueller <aumuell@reserv.at>
 */
 
-class MediaDeviceConfig : public Q3HBox
+class MediaDeviceConfig : public KHBox
 {
     Q_OBJECT
 
@@ -126,7 +126,7 @@ class MediumPluginManagerDialog : public KPageDialog
 
     private:
 
-        Q3VBox *m_devicesBox;
+        KVBox *m_devicesBox;
         Q3GroupBox *m_location;
         MediumPluginManager *m_manager;
 };

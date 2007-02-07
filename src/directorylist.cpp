@@ -22,6 +22,7 @@
 
 #include <kfileitem.h>
 #include <klocale.h>
+#include <kvbox.h>
 
 #include <QFile>
 #include <QLabel>
@@ -33,7 +34,7 @@ CollectionSetup* CollectionSetup::s_instance;
 
 
 CollectionSetup::CollectionSetup( QWidget *parent )
-        : Q3VBox( parent, "CollectionSetup" )
+        : KVBox( parent )
 {
     s_instance = this;
 

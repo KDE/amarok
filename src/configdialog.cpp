@@ -48,7 +48,7 @@ email                : markey@web.de
 #include <qspinbox.h>
 #include <QTextCodec>
 #include <QToolTip>
-#include <q3vbox.h>
+#include <kvbox.h>
 //Added by qt3to4:
 #include <Q3CString>
 #include <Q3Frame>
@@ -99,10 +99,10 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
 #ifdef Q_WS_X11
     Options5 *opt5 = new Options5( 0, "OSD" );
 #endif
-    Q3VBox    *opt6 = new Q3VBox;
+    KVBox    *opt6 = new KVBox;
             m_opt7 = new Options7( 0, "Collection" );
     Options8 *opt8 = new Options8( 0, "Scrobbler" );
-    Q3VBox    *opt9 = new Q3VBox;
+    KVBox    *opt9 = new KVBox;
 
     // Sound System
     opt6->setName( "Engine" );
@@ -150,15 +150,15 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     // Media Devices
     opt9->setName( "Media Devices" );
     opt9->setSpacing( KDialog::spacingHint() );
-    Q3VBox *topbox = new Q3VBox( opt9 );
+    KVBox *topbox = new KVBox( opt9 );
     topbox->setSpacing( KDialog::spacingHint() );
     Q3GroupBox *mediaBox  = new Q3GroupBox( 2, Qt::Horizontal, i18n("Media Devices"), topbox );
     mediaBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
-    Q3VBox *vbox = new Q3VBox( mediaBox );
+    KVBox *vbox = new KVBox( mediaBox );
     vbox->setSpacing( KDialog::spacingHint() );
     m_deviceManager = new MediumPluginManager( vbox );
 
-    Q3HBox *hbox = new Q3HBox( topbox );
+    KHBox *hbox = new KHBox( topbox );
     hbox->setSpacing( KDialog::spacingHint() );
     hbox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
     KPushButton *autodetect = new KPushButton( i18n( "Autodetect Devices" ), hbox );

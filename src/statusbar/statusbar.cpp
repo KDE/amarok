@@ -34,7 +34,7 @@
 #include <kiconloader.h>
 #include <klocale.h>
 
-#include <q3hbox.h>
+#include <khbox.h>
 #include <QLayout>
 #include <QTimer>
 

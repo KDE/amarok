@@ -20,7 +20,7 @@
 #ifndef AMAROK_COLUMNLIST_H
 #define AMAROK_COLUMNLIST_H
 
-#include <q3hbox.h>
+#include <khbox.h>
 //Added by qt3to4:
 #include <Q3ValueList>
 #include <kdialog.h>
@@ -29,7 +29,7 @@ class K3ListView;
 class KPushButton;
 template<class T> class Q3ValueList;
 
-class ColumnList: public Q3HBox
+class ColumnList: public KHBox
 {
     Q_OBJECT
 public:

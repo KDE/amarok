@@ -21,7 +21,7 @@
 #include <kurl.h>
 #include <qdom.h>
 #include <q3ptrlist.h>
-#include <q3vbox.h>
+#include <kvbox.h>
 //Added by qt3to4:
 #include <QDragLeaveEvent>
 #include <QKeyEvent>
@@ -52,7 +52,7 @@ class PlaylistBrowserView;
 class PlaylistTrackItem;
 
 
-class PlaylistBrowser : public Q3VBox
+class PlaylistBrowser : public KVBox
 {
         Q_OBJECT
     friend class DynamicMode;
@@ -399,7 +399,7 @@ fileDirPath( const QString &filePath )
 
 
 
-class InfoPane : public Q3VBox
+class InfoPane : public KVBox
 {
     Q_OBJECT
 

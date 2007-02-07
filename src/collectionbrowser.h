@@ -9,7 +9,7 @@
 
 #include <QLabel>
 #include <q3valuelist.h>      //stack allocated
-//#include <q3vbox.h>           //baseclass
+//#include <kvbox.h>           //baseclass
 //Added by qt3to4:
 #include <QKeyEvent>
 #include <Q3CString>

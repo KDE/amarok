@@ -27,7 +27,7 @@ class HTMLView;
 class KMenu;
 class MetaBundle;
 class QPalette;
-class Q3VBox;
+class KVBox;
 class QLineEdit;
 class QComboBox;
 class KDialog;
@@ -151,9 +151,9 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         HTMLView    *m_lyricsPage;
         HTMLView    *m_wikiPage;
 
-        Q3VBox        *m_contextTab;
-        Q3VBox        *m_lyricsTab;
-        Q3VBox        *m_wikiTab;
+        KVBox        *m_contextTab;
+        KVBox        *m_lyricsTab;
+        KVBox        *m_wikiTab;
         // These controls are used to dictate whether the page should be rebuilt
         // true -> need rebuild
         bool          m_dirtyCurrentTrackPage;

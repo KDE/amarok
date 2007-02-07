@@ -25,7 +25,7 @@ email                : markey@web.de
 
 class QComboBox;
 class Q3GroupBox;
-class Q3VBox;
+class KVBox;
 
 namespace Amarok {
     class PluginConfig;

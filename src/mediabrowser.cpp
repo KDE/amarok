@@ -219,7 +219,7 @@ class DummyMediaDevice : public MediaDevice
 
 
 MediaBrowser::MediaBrowser( const char *name )
-        : Q3VBox( 0, name )
+        : KVBox( 0)
         , m_timer( new QTimer( this ) )
         , m_currentDevice( m_devices.end() )
         , m_waitForTranscode( false )
@@ -349,9 +349,9 @@ MediaBrowser::MediaBrowser( const char *name )
         m_pluginAmarokName[(*it)->property( "X-KDE-Amarok-name" ).toString()] = (*it)->name();
     }
 
-    m_views = new Q3VBox( this );
+    m_views = new KVBox( this );
     m_queue = new MediaQueue( this );
-    m_progressBox  = new Q3HBox( this );
+    m_progressBox  = new KHBox( this );
     m_progress     = new QProgressBar( m_progressBox );
     m_cancelButton = new KPushButton( KIcon( Amarok::icon( "cancel" ) ), i18n("Cancel"), m_progressBox );
 

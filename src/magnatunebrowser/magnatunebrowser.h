@@ -35,10 +35,10 @@
 
 #include <QCheckBox>
 #include <QComboBox>
-#include <q3hbox.h>
+#include <khbox.h>
 #include <q3popupmenu.h>
 #include <QPushButton>
-#include <q3vbox.h>
+#include <kvbox.h>
 
 
 
@@ -48,7 +48,7 @@ Implemented as a singleton
 
 @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class MagnatuneBrowser : public Q3VBox
+class MagnatuneBrowser : public KVBox
 {
     Q_OBJECT
 
@@ -232,8 +232,8 @@ private:
     MagnatunePurchaseHandler  *m_purchaseHandler;
     MagnatuneRedownloadHandler *m_redownloadHandler;
 
-    Q3HBox       *m_topPanel;
-    Q3VBox       *m_bottomPanel;
+    KHBox       *m_topPanel;
+    KVBox       *m_bottomPanel;
     QPushButton *m_advancedFeaturesButton;
     QPushButton *m_updateListButton;
     QPushButton *m_purchaseAlbumButton;

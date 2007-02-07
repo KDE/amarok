@@ -18,7 +18,7 @@
 #include <q3groupbox.h>
 #include <QLabel>
 #include <QLayout>
-#include <q3vbox.h>
+#include <kvbox.h>
 //Added by qt3to4:
 #include <Q3PtrList>
 
@@ -55,7 +55,7 @@ TransferDialog::TransferDialog( MediaDevice *mdev )
     new QLabel( i18n( "Your music will be transferred to:\n%1" )
                     .arg( transferDir ), location );
 
-    Q3VBox *vbox2 = new Q3VBox( vbox );
+    KVBox *vbox2 = new KVBox( vbox );
     QSpacerItem *spacer = new QSpacerItem( 0, 25 );
     QLayout *vlayout = vbox2->layout();
     if( vlayout )
@@ -100,7 +100,7 @@ TransferDialog::TransferDialog( MediaDevice *mdev )
     connect( m_sort1, SIGNAL( activated(int) ), SLOT( sort1_activated(int)) );
     connect( m_sort2, SIGNAL( activated(int) ), SLOT( sort2_activated(int)) );
 
-    Q3VBox *vbox3 = new Q3VBox( vbox );
+    KVBox *vbox3 = new KVBox( vbox );
     QSpacerItem *spacer2 = new QSpacerItem( 0, 25 );
     QLayout *vlayout2 = vbox3->layout();
     if( vlayout2 )

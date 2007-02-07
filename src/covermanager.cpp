@@ -32,7 +32,7 @@
 #include <QToolTip>
 #include <QTimer>    //search filter timer
 #include <QToolTip>
-#include <q3vbox.h>
+#include <kvbox.h>
 //Added by qt3to4:
 #include <Q3HBoxLayout>
 #include <Q3ValueList>
@@ -140,14 +140,14 @@ CoverManager::CoverManager()
         item->setPixmap( 0, SmallIcon("personal") );
     }
 
-    Q3VBox *vbox = new Q3VBox( this );
-    Q3HBox *hbox = new Q3HBox( vbox );
+    KVBox *vbox = new KVBox( this );
+    KHBox *hbox = new KHBox( vbox );
 
     vbox->setSpacing( 4 );
     hbox->setSpacing( 4 );
 
     { //<Search LineEdit>
-        Q3HBox *searchBox = new Q3HBox( hbox );
+        KHBox *searchBox = new KHBox( hbox );
         KToolBar* searchToolBar = new Browser::ToolBar( searchBox );
         QToolButton *button = new QToolButton( searchToolBar );
         button->setIcon( KIcon( "locationbar_erase") );
@@ -214,7 +214,7 @@ CoverManager::CoverManager()
     KStatusBar *m_statusBar = new KStatusBar( vbox );
     m_statusBar->addWidget( m_statusLabel = new KSqueezedTextLabel( m_statusBar ), 4 );
     m_statusLabel->setIndent( 3 );
-    m_statusBar->addWidget( m_progressBox = new Q3HBox( m_statusBar ), 1, true );
+    m_statusBar->addWidget( m_progressBox = new KHBox( m_statusBar ), 1, true );
     KPushButton *stopButton = new KPushButton( KGuiItem(i18n("Abort"), "stop"), m_progressBox );
     connect( stopButton, SIGNAL(clicked()), SLOT(stopFetching()) );
     m_progress = new QProgressBar( m_progressBox );

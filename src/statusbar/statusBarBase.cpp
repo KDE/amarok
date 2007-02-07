@@ -46,7 +46,7 @@
 #include <QTimer>
 #include <QToolButton>
 #include <QToolTip> //QToolTip::palette()
-#include <q3vbox.h>
+#include <kvbox.h>
 //Added by qt3to4:
 #include <Q3HBoxLayout>
 #include <QCustomEvent>
@@ -102,13 +102,13 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     //we need extra spacing due to the way we paint the surrounding boxes
     Q3BoxLayout *layout = new Q3HBoxLayout( mainlayout, /*spacing*/5 );
 
-    Q3HBox *statusBarTextBox = new Q3HBox( this, "statusBarTextBox" );
+    KHBox *statusBarTextBox = new KHBox( this );
     m_mainTextLabel = new KDE::SqueezedTextLabel( statusBarTextBox, "mainTextLabel" );
     QToolButton *shortLongButton = new QToolButton( statusBarTextBox );
     shortLongButton->setObjectName( "shortLongButton" );
     shortLongButton->hide();
 
-    Q3HBox *mainProgressBarBox = new Q3HBox( this, "progressBox" );
+    KHBox *mainProgressBarBox = new KHBox( this );
     QToolButton *b1 = new QToolButton( mainProgressBarBox, "cancelButton" );
     m_mainProgressBar  = new Q3ProgressBar( mainProgressBarBox, "mainProgressBar" );
     QToolButton *b2 = new QToolButton( mainProgressBarBox, "showAllProgressDetails" );

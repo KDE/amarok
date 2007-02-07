@@ -265,7 +265,7 @@ namespace Amarok
 
 #include <QLabel>
 #include <QLayout>
-#include <q3vbox.h>
+#include <kvbox.h>
 #include <kdialog.h>
 #include <kpushbutton.h>
 #include <kstdguiitem.h>

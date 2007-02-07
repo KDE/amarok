@@ -24,7 +24,7 @@
 #include <konqsidebarplugin.h>
 #include <dcopclient.h>
 #include <QSlider>
-#include <q3vbox.h>
+#include <kvbox.h>
 //Added by qt3to4:
 #include <QEvent>
 #include <QDragEnterEvent>
@@ -42,7 +42,7 @@ class DCOPClient;
 class QFileInfo;
 class QDateTime;
 
-class amarokWidget : public Q3VBox
+class amarokWidget : public KVBox
 {
 Q_OBJECT
 public:

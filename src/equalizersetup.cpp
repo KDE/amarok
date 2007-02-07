@@ -36,7 +36,7 @@
 #include <QToolTip>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <q3vbox.h>
+#include <kvbox.h>
 //Added by qt3to4:
 #include <Q3GridLayout>
 #include <Q3ValueList>
@@ -163,7 +163,7 @@ EqualizerSetup::EqualizerSetup()
     Q3GroupBox* graphGBox = new Q3GroupBox( 2, Qt::Horizontal, 0, vbox );
     graphGBox->setInsideMargin( KDialog::marginHint() );
 
-    Q3VBox* graphVBox = new Q3VBox( graphGBox );
+    KVBox* graphVBox = new KVBox( graphGBox );
     QLabel* graphLabel1 = new QLabel(graphVBox);
     graphLabel1->setText("+20 db");
     QLabel* graphLabel2 = new QLabel(graphVBox);

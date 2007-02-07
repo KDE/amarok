@@ -24,7 +24,7 @@
 #ifndef FILESELECTOR_WIDGET_H
 #define FILESELECTOR_WIDGET_H
 
-#include <q3vbox.h>        //baseclass
+#include <kvbox.h>        //baseclass
 //Added by qt3to4:
 #include <QDropEvent>
 #include <kdiroperator.h> //some inline functions
@@ -50,7 +50,7 @@ class Medium;
 */
 
 
-class FileBrowser : public Q3VBox
+class FileBrowser : public KVBox
 {
     Q_OBJECT
 
@@ -100,7 +100,7 @@ class Q3ListViewItem;
 ///@author Max Howell
 ///@short Widget for recursive searching of current FileBrowser location
 
-class SearchPane : public Q3VBox
+class SearchPane : public KVBox
 {
     Q_OBJECT
 

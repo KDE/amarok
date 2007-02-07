@@ -16,7 +16,7 @@
 #include "pluginmanager.h"
 
 #include <QMutex>
-#include <q3vbox.h>           //baseclass
+#include <kvbox.h>           //baseclass
 #include <QDateTime>
 //Added by qt3to4:
 #include <QKeyEvent>
@@ -26,7 +26,7 @@
 #include <QPixmap>
 #include <QDropEvent>
 #include <QPaintEvent>
-
+#include <khbox.h>
 #include <k3listview.h>       //baseclass
 #include <kurl.h>            //stack allocated
 #include <kio/global.h>      //filesize_t
@@ -176,7 +176,7 @@ class MediaQueue : public K3ListView, public DropProxyTarget
 };
 
 
-class MediaBrowser : public Q3VBox
+class MediaBrowser : public KVBox
 {
     Q_OBJECT
     friend class DeviceConfigureDialog;
@@ -269,12 +269,12 @@ class MediaBrowser : public Q3VBox
         QString m_transcodeSrc;
 
         SpaceLabel*      m_stats;
-        Q3HBox*           m_progressBox;
+        KHBox*           m_progressBox;
         QProgressBar*       m_progress;
-        Q3VBox*           m_views;
+        KVBox*           m_views;
         KPushButton*     m_cancelButton;
         //KPushButton*     m_playlistButton;
-        Q3VBox*           m_configBox;
+        KVBox*           m_configBox;
         KComboBox*       m_configPluginCombo;
         KComboBox*       m_deviceCombo;
         Browser::ToolBar*m_toolbar;

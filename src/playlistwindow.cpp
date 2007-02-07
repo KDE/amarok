@@ -54,7 +54,7 @@
 #include <QSizePolicy>      //qspaceritem in dynamic bar
 #include <QTimer>           //search filter timer
 #include <QToolTip>         //QToolTip::add()
-#include <q3vbox.h>            //contains the playlist
+#include <kvbox.h>            //contains the playlist
 //Added by qt3to4:
 #include <QContextMenuEvent>
 #include <QWheelEvent>
@@ -1277,7 +1277,7 @@ PlaylistWindow::mbAvailabilityChanged( bool isAvailable ) //SLOT
 /// DynamicBar
 //////////////////////////////////////////////////////////////////////////////////////////
 DynamicBar::DynamicBar(QWidget* parent)
-       : Q3HBox( parent, "DynamicModeStatusBar" )
+       : KHBox( parent)
 {
     m_titleWidget = new DynamicTitle(this);
 

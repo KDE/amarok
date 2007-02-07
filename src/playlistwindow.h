@@ -18,7 +18,7 @@
 
 //#include "browserbar.h"
 
-#include <q3hbox.h>          //baseclass for DynamicBox
+#include <khbox.h>          //baseclass for DynamicBox
 #include <qwidget.h>        //baseclass
 //Added by qt3to4:
 #include <QShowEvent>
@@ -148,7 +148,7 @@ class DynamicTitle : public QWidget
         QFont m_font;
 };
 
-class DynamicBar : public Q3HBox
+class DynamicBar : public KHBox
 {
     Q_OBJECT
     public:

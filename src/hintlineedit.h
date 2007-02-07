@@ -5,7 +5,7 @@
 //Added by qt3to4:
 #include <QLabel>
 
-class Q3VBox;
+class KVBox;
 class QLabel;
 class QWidget;
 
@@ -22,7 +22,7 @@ public:
     virtual void setHint( const QString &hint );
 private:
     void init();
-    Q3VBox *m_vbox;
+    KVBox *m_vbox;
     QLabel *m_hint;
 };
 

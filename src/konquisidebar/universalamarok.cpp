@@ -52,7 +52,7 @@
 #define HTML_FILE KGlobal::dirs()->saveLocation( "data", "amarok/", true ) + "contextbrowser.html"
 
 amarokWidget::amarokWidget( QWidget * parent, const char * name, Qt::WFlags f )
-                 : Q3VBox(parent, name, f)
+                 : KVBox(parent, name, f)
 {
     setAcceptDrops(true);
 }

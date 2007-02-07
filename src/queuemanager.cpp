@@ -37,7 +37,7 @@
 #include <q3ptrlist.h>
 #include <q3simplerichtext.h>
 #include <QToolTip>
-#include <q3vbox.h>
+#include <kvbox.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// CLASS QueueItem
@@ -304,14 +304,14 @@ QueueManager::QueueManager( QWidget *parent, const char *name )
     setCaption( KDialog::makeStandardCaption( i18n("Queue Manager") ) );
     setInitialSize( QSize( 400, 260 ) );
 
-    Q3VBox *mainBox = new Q3VBox( this );
+    KVBox *mainBox = new KVBox( this );
     setMainWidget( mainBox );
 
-    Q3HBox *box = new Q3HBox( mainWidget() );
+    KHBox *box = new KHBox( mainWidget() );
     box->setSpacing( 5 );
     m_listview = new QueueList( box );
 
-    Q3VBox *buttonBox = new Q3VBox( box );
+    KVBox *buttonBox = new KVBox( box );
     m_up     = new KPushButton( KGuiItem( QString::null, "up" ), buttonBox );
     m_down   = new KPushButton( KGuiItem( QString::null, "down" ), buttonBox );
     m_remove = new KPushButton( KGuiItem( QString::null, Amarok::icon( "dequeue_track" ) ), buttonBox );

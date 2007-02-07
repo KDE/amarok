@@ -49,8 +49,8 @@
 #include <QImage>
 #include <QRegExp>
 #include <q3textstream.h>  // External CSS reading
-#include <q3vbox.h> //wiki tab
-#include <q3hbox.h>
+#include <kvbox.h> //wiki tab
+#include <khbox.h>
 #include <QLayout>
 #include <QLineEdit>
 #include <QBuffer>
@@ -220,11 +220,11 @@ ContextBrowser::ContextBrowser( const char *name )
 
     s_wikiLocale = AmarokConfig::wikipediaLocale();
 
-    m_contextTab = new Q3VBox(this, "context_tab");
+    m_contextTab = new KVBox(this);
 
     m_currentTrackPage = new HTMLView( m_contextTab, "current_track_page", true /* DNDEnabled */ );
 
-    m_lyricsTab = new Q3VBox(this, "lyrics_tab");
+    m_lyricsTab = new KVBox(this);
 
     m_lyricsToolBar = new Browser::ToolBar( m_lyricsTab );
     m_lyricsToolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
@@ -309,7 +309,7 @@ ContextBrowser::ContextBrowser( const char *name )
     m_lyricsTextEdit->setTextFormat( Qt::PlainText );
     m_lyricsTextEdit->hide();
 
-    m_wikiTab = new Q3VBox(this, "wiki_tab");
+    m_wikiTab = new KVBox(this);
 
     m_wikiToolBar = new Browser::ToolBar( m_wikiTab );
 
@@ -3736,7 +3736,7 @@ ContextBrowser::wikiConfig() // SLOT
     m_wikiLocaleCombo = new QComboBox( box );
     m_wikiLocaleCombo->insertStringList( localeList );
 
-    Q3HBox  *hbox       = new Q3HBox( box );
+    KHBox  *hbox       = new KHBox( box );
     QLabel *otherLabel = new QLabel( i18n( "Locale: " ), hbox );
     m_wikiLocaleEdit   = new QLineEdit( "en", hbox );
 

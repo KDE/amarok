@@ -13,7 +13,7 @@
 #include "statusbar.h"
 
 #include <qdom.h>
-#include <q3hbox.h>
+#include <khbox.h>
 #include <q3popupmenu.h>
 #include <QLabel>
 #include <QLayout>
@@ -562,7 +562,7 @@ CoverFetcher::getUserQuery( QString explanation )
 
             QLabel      *labelPix  = new QLabel( this );
             QLabel      *labelName = new QLabel( this );
-            Q3HBox       *buttons   = new Q3HBox( this );
+            KHBox       *buttons   = new KHBox( this );
             KPushButton *save      = new KPushButton( KStandardGuiItem::save(), buttons );
             KPushButton *newsearch = new KPushButton( i18n( "Ne&w Search..." ), buttons );
             KPushButton *nextcover = new KPushButton( i18n( "&Next Cover" ), buttons );

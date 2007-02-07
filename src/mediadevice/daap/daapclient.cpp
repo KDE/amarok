@@ -538,7 +538,7 @@ DaapClient::passwordPrompt()
                 QLabel* passIcon = new QLabel( mainWidget() );
                 passIcon->setObjectName( "passicon" );
                 passIcon->setPixmap( QPixmap( KIconLoader::global()->iconPath( "password", -K3Icon::SizeHuge ) ) );
-                Q3HBox* loginArea = new Q3HBox( mainWidget(), "passhbox" );
+                KHBox* loginArea = new KHBox( mainWidget(), "passhbox" );
                 new QLabel( i18n( "Password:"), loginArea, "passlabel" );
                 m_input = new KPasswordEdit( loginArea, "passedit" );
                 m_input->setFocus();

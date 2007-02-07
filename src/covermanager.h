@@ -25,7 +25,7 @@ class QToolButton;
 class QLabel;
 class K3ListView;
 class CoverView;
-class Q3HBox;
+class KHBox;
 class QProgressBar;
 class Q3HBoxLayout;
 class PixmapViewer;
@@ -95,7 +95,7 @@ class CoverManager : public QSplitter
 
         //status bar widgets
         QLabel         *m_statusLabel;
-        Q3HBox         *m_progressBox;
+        KHBox         *m_progressBox;
         QProgressBar   *m_progress;
         QString         m_oldStatusText;
 

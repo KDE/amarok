@@ -8,7 +8,7 @@
 
 #include <kdialog.h> //baseclass
 #include <qdom.h>
-#include <q3hbox.h>       //baseclass
+#include <khbox.h>       //baseclass
 #include <q3ptrlist.h>    //definition required
 //Added by qt3to4:
 #include <QLabel>
@@ -82,7 +82,7 @@ Q_OBJECT
 
 
 
-class CriteriaEditor : public Q3HBox
+class CriteriaEditor : public KHBox
 {
 Q_OBJECT
     public:
@@ -119,7 +119,7 @@ Q_OBJECT
         QToolButton *m_removeButton;
 
         //editing widgets
-        Q3HBox *m_editBox;
+        KHBox *m_editBox;
         KLineEdit *m_lineEdit;
         KComboBox *m_comboBox;
         KComboBox *m_comboBox2;

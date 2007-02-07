@@ -27,8 +27,8 @@
 #include <QLayout>
 #include <QLabel>
 #include <QTimer>
-#include <q3vbox.h>
-#include <q3hbox.h>
+#include <kvbox.h>
+#include <khbox.h>
 
 #include "amarok.h"
 #include "playlist.h"

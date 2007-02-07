@@ -20,7 +20,7 @@
 #ifndef KDEOVERLAYWIDGET_H
 #define KDEOVERLAYWIDGET_H
 
-#include <q3hbox.h>
+#include <khbox.h>
 //Added by qt3to4:
 #include <QEvent>
 #include <Q3Frame>

@@ -40,7 +40,7 @@
 #include <QTimer>
 #include <QToolTip>
 #include <Q3PopupMenu>
-#include <q3vbox.h>
+#include <kvbox.h>
 //Added by qt3to4:
 #include <Q3Frame>
 #include <QPaintEvent>
@@ -71,10 +71,10 @@ Statistics::Statistics( QWidget *parent, const char *name )
     setCaption( KDialog::makeStandardCaption( i18n("Collection Statistics") ) );
     setInitialSize( QSize( 400, 550 ) );
 
-    Q3VBox *mainBox = new Q3VBox( this );
+    KVBox *mainBox = new KVBox( this );
     setMainWidget( mainBox );
 
-    Q3VBox *box = new Q3VBox( mainWidget() );
+    KVBox *box = new KVBox( mainWidget() );
     box->setSpacing( 5 );
 
     { //<Search LineEdit>

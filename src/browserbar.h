@@ -30,7 +30,7 @@ class MultiTabBarTab;
 class DropProxyTarget;
 class KUrl;
 class QSignalMapper;
-class Q3VBox;
+class KVBox;
 
 
 class BrowserBar : public QWidget, public EngineObserver
@@ -42,8 +42,8 @@ public:
    ~BrowserBar();
 
     LIBAMAROK_EXPORT static BrowserBar* instance() { return s_instance; }
-    Q3VBox *container() const { return m_playlistBox; }
-    Q3VBox *browserBox() const { return m_browserBox; }
+    KVBox *container() const { return m_playlistBox; }
+    KVBox *browserBox() const { return m_browserBox; }
 
     QWidget *browser( const QString& ) const;
     QWidget *browser( int index ) const { if( index < 0 ) index = 0; return m_browsers[index]; }
@@ -87,12 +87,12 @@ private:
 
     LIBAMAROK_EXPORT static BrowserBar    *s_instance;
     uint           m_pos;         ///the x-axis position of m_divider
-    Q3VBox         *m_playlistBox; ///parent to playlist, playlist filter and toolbar
+    KVBox         *m_playlistBox; ///parent to playlist, playlist filter and toolbar
     QWidget       *m_divider;     ///a qsplitter like widget
     MultiTabBar   *m_tabBar;
     BrowserList    m_browsers;
     BrowserIdMap   m_browserIds;
-    Q3VBox         *m_browserBox;  ///parent widget to the browsers
+    KVBox         *m_browserBox;  ///parent widget to the browsers
     int            m_currentIndex;
     int            m_lastIndex;
     QSignalMapper *m_mapper;      ///maps tab clicks to browsers
