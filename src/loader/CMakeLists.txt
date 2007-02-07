@@ -4,7 +4,7 @@ set(amarok_bin_SRCS loader.cpp splash.cpp )
 
 kde4_automoc(${amarok_bin_SRCS})
 
-kde4_add_executable(amarok_bin ${amarok_bin_SRCS})
+kde4_add_executable(amarok_bin NOGUI ${amarok_bin_SRCS})
 
 set_target_properties(amarok_bin PROPERTIES OUTPUT_NAME amarok)
 
