@@ -25,6 +25,7 @@
 #include "taglib.h"
 #include "tstring.h"
 #include "tag.h"
+#include "amarok_export.h"
 
 namespace TagLib
 {
@@ -32,7 +33,7 @@ namespace TagLib
   {
     class File;
 
-    class Tag : public TagLib::Tag
+    class AMAROK_TAGLIB_EXPORT Tag : public TagLib::Tag
     {
     public:
       /*!

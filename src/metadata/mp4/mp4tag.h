@@ -24,6 +24,7 @@ email                : andrew.leadbetter@gmail.com
 #include <tag.h>
 #include "mp4file.h"
 #include <mp4.h>
+#include "amarok_export.h"
 
 namespace TagLib {
 
@@ -31,7 +32,7 @@ namespace TagLib {
         /*!
          * This implements the generic TagLib::Tag API
          */
-        class Tag : public TagLib::Tag
+        class AMAROK_TAGLIB_EXPORT Tag : public TagLib::Tag
         {
             public:
                 static const int Undefined = -1;
