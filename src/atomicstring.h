@@ -56,7 +56,7 @@
 #include <q3ptrlist.h>
 #include <QMutex>
 
-class LIBAMAROK_EXPORT AtomicString
+class AMAROK_EXPORT AtomicString
 {
 public:
     /**

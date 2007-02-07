@@ -32,7 +32,7 @@
 
 class KUrl;
 
-class LIBAMAROK_EXPORT AtomicURL
+class AMAROK_EXPORT AtomicURL
 {
     AtomicString m_beginning;
     AtomicString m_directory;

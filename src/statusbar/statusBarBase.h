@@ -127,7 +127,7 @@ namespace KDE
          * Generally you should use these, as it is very easy for a user to not notice
          * statusBar messages.
          */
-        void longMessage( const QString &text, int type = Information ) LIBAMAROK_EXPORT ;
+        void longMessage( const QString &text, int type = Information ) AMAROK_EXPORT ;
 
         void longMessageThreadSafe( const QString &text, int type = Information );
 

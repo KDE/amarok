@@ -35,7 +35,7 @@ public:
     * @return true if the executable of K3B is found
     */
     // FIXME: implement me!
-    LIBAMAROK_EXPORT static bool isAvailable() { return false; };
+    AMAROK_EXPORT static bool isAvailable() { return false; };
 
 
     /**
@@ -44,7 +44,7 @@ public:
     * @param openmode The mode of the album
     */
     // FIXME: implement me!
-    LIBAMAROK_EXPORT void exportTracks( const KUrl::List &urls, int openmode=-1 ) {};
+    AMAROK_EXPORT void exportTracks( const KUrl::List &urls, int openmode=-1 ) {};
 
     /**
     * Exports the current playlist to K3B. The mode @p openmode will be used
@@ -104,7 +104,7 @@ private:
     bool startNewK3bProject( DCOPRef &ref, int mode );
     K3bOpenMode openMode();*/
 
-    LIBAMAROK_EXPORT static K3bExporter *s_instance;
+    AMAROK_EXPORT static K3bExporter *s_instance;
 };
 
 

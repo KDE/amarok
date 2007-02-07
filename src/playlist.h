@@ -90,7 +90,7 @@ class Playlist : private K3ListView, public EngineObserver, public Amarok::ToolT
     public:
         ~Playlist();
 
-        LIBAMAROK_EXPORT static Playlist *instance() { return s_instance; }
+        AMAROK_EXPORT static Playlist *instance() { return s_instance; }
         static QString defaultPlaylistPath();
         static const int NO_SORT = 200;
 
@@ -113,7 +113,7 @@ class Playlist : private K3ListView, public EngineObserver, public Amarok::ToolT
         /** Add media to the playlist
          *  @param options you can OR these together, see the enum
          *  @param sql     Sql program to execute */
-        LIBAMAROK_EXPORT void insertMedia( KUrl::List, int options = Append );
+        AMAROK_EXPORT void insertMedia( KUrl::List, int options = Append );
         void insertMediaSql( const QString& sql, int options = Append );
 
         // Dynamic mode functions
@@ -127,8 +127,8 @@ class Playlist : private K3ListView, public EngineObserver, public Amarok::ToolT
         void burnSelectedTracks( int projectType = -1 );
         int  currentTrackIndex( bool onlyCountVisible = true );
         bool isEmpty()       const  { return childCount() == 0; }
-        LIBAMAROK_EXPORT bool isTrackBefore() const;
-        LIBAMAROK_EXPORT bool isTrackAfter()  const;
+        AMAROK_EXPORT bool isTrackBefore() const;
+        AMAROK_EXPORT bool isTrackAfter()  const;
         void restoreSession();          // called during initialisation
         void setPlaylistName( const QString &name, bool proposeOverwriting = false ) { m_playlistName = name; m_proposeOverwriting = proposeOverwriting; }
         void proposePlaylistName( const QString &name, bool proposeOverwriting = false ) { if( isEmpty() || m_playlistName==i18n("Untitled") ) m_playlistName = name; m_proposeOverwriting = proposeOverwriting; }
@@ -305,7 +305,7 @@ class Playlist : private K3ListView, public EngineObserver, public Amarok::ToolT
         Playlist( QWidget* );
         Playlist( const Playlist& ); //not defined
 
-        LIBAMAROK_EXPORT static Playlist *s_instance;
+        AMAROK_EXPORT static Playlist *s_instance;
 
         void countChanged();
 

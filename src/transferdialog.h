@@ -29,7 +29,7 @@ class TransferDialog;
 /**
 	@author Jeff Mitchell <kde-dev@emailgoeshere.com>
 */
-class LIBAMAROK_EXPORT TransferDialog : public KDialog
+class AMAROK_EXPORT TransferDialog : public KDialog
 {
     Q_OBJECT
 

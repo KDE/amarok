@@ -3,15 +3,21 @@
 #ifndef _AMAROK_EXPORT_H_
 #define _AMAROK_EXPORT_H_
 
-#include <config.h>
+#include <kdemacros.h>
 
-#ifdef __KDE_HAVE_GCC_VISIBILITY
-#define LIBAMAROK_NO_EXPORT __attribute__ ((visibility("hidden")))
-#define LIBAMAROK_EXPORT __attribute__ ((visibility("default")))
-#else
-#define LIBAMAROK_NO_EXPORT
-#define LIBAMAROK_EXPORT
-#endif
- 
+#ifdef Q_WS_WIN
+
+#ifndef AMAROK_EXPORT
+# ifdef MAKE_AMAROK_LIB
+#  define AMAROK_EXPORT KDE_EXPORT
+# else
+#  define AMAROK_EXPORT KDE_IMPORT
+# endif
 #endif
 
+#else // not windows
+
+#define AMAROK_EXPORT KDE_EXPORT
+#endif /* not windows */
+
+#endif /* _AMAROK_EXPORT_H */

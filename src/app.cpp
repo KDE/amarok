@@ -112,7 +112,7 @@ appleEventProcessor(const AppleEvent *ae, AppleEvent *, long /*handlerRefCon*/)
 }
 #endif
 
-LIBAMAROK_EXPORT KAboutData aboutData( "amarok",
+AMAROK_EXPORT KAboutData aboutData( "amarok",
     I18N_NOOP( "Amarok" ), APP_VERSION,
     I18N_NOOP( "The audio player for KDE" ), KAboutData::License_GPL,
     I18N_NOOP( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2007, The Amarok Development Squad" ),

@@ -217,7 +217,7 @@ class CollectionView : public K3ListView, public DropProxyTarget
         CollectionView( CollectionBrowser* parent );
         ~CollectionView();
 
-        LIBAMAROK_EXPORT static CollectionView* instance() { return m_instance; }
+        AMAROK_EXPORT static CollectionView* instance() { return m_instance; }
 
         void setFilter( const QString &filter )     { m_filter = filter; }
         void setTimeFilter( const uint timeFilter ) { m_timeFilter = timeFilter; }
@@ -257,7 +257,7 @@ class CollectionView : public K3ListView, public DropProxyTarget
         void cat1Menu( int id, bool rerender = true );
         void cat2Menu( int id, bool rerender = true );
         void cat3Menu( int id, bool rerender = true );
-        void organizeFiles( const KUrl::List &list, const QString &caption, bool addToCollection=false ) LIBAMAROK_EXPORT;
+        void organizeFiles( const KUrl::List &list, const QString &caption, bool addToCollection=false ) AMAROK_EXPORT;
 
     private slots:
         void setupDirs();
@@ -352,7 +352,7 @@ class CollectionView : public K3ListView, public DropProxyTarget
         void safeClear();
 
     //attributes:
-        LIBAMAROK_EXPORT static CollectionView* m_instance;
+        AMAROK_EXPORT static CollectionView* m_instance;
 
         CollectionBrowser* m_parent;
 

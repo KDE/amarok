@@ -4,5 +4,5 @@ ClassName=AmarokConfig
 Singleton=true
 Mutators=true
 MemberVariables=private
-Visibility=LIBAMAROK_EXPORT
+Visibility=AMAROK_EXPORT
 IncludeFiles=amarok_export.h

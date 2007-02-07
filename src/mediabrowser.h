@@ -50,7 +50,7 @@ class QLabel;
 class QPalette;
 class QProgressBar;
 
-class LIBAMAROK_EXPORT MediaItem : public K3ListViewItem
+class AMAROK_EXPORT MediaItem : public K3ListViewItem
 {
     public:
         MediaItem( Q3ListView* parent );
@@ -188,8 +188,8 @@ class MediaBrowser : public KVBox
 
     public:
         static bool isAvailable();
-        LIBAMAROK_EXPORT static MediaBrowser *instance() { return s_instance; }
-        LIBAMAROK_EXPORT static MediaQueue *queue() { return s_instance ? s_instance->m_queue : 0; }
+        AMAROK_EXPORT static MediaBrowser *instance() { return s_instance; }
+        AMAROK_EXPORT static MediaQueue *queue() { return s_instance ? s_instance->m_queue : 0; }
 
         MediaBrowser( const char *name );
         virtual ~MediaBrowser();
@@ -253,7 +253,7 @@ class MediaBrowser : public KVBox
 
         KLineEdit* m_searchEdit;
         QTimer *m_timer;
-        LIBAMAROK_EXPORT static MediaBrowser *s_instance;
+        AMAROK_EXPORT static MediaBrowser *s_instance;
 
         Q3ValueList<MediaDevice *> m_devices;
         Q3ValueList<MediaDevice *>::iterator m_currentDevice;
@@ -307,9 +307,9 @@ class MediaView : public K3ListView
 
         MediaView( QWidget *parent, MediaDevice *device );
         virtual ~MediaView();
-        LIBAMAROK_EXPORT KUrl::List nodeBuildDragList( MediaItem* item, int flags=OnlySelected );
+        AMAROK_EXPORT KUrl::List nodeBuildDragList( MediaItem* item, int flags=OnlySelected );
         int getSelectedLeaves(MediaItem *parent, Q3PtrList<MediaItem> *list, int flags=OnlySelected );
-        LIBAMAROK_EXPORT MediaItem *newDirectory( MediaItem* parent );
+        AMAROK_EXPORT MediaItem *newDirectory( MediaItem* parent );
         bool setFilter( const QString &filter, MediaItem *parent=NULL );
 
     private slots:
@@ -337,7 +337,7 @@ class MediaView : public K3ListView
    all items are stored in a hierarchy of MediaItems,
    when items are manipulated the MediaItems have to be updated accordingly */
 
-class LIBAMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
+class AMAROK_EXPORT MediaDevice : public QObject, public Amarok::Plugin
 {
     Q_OBJECT
     friend class DeviceConfigureDialog;

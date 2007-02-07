@@ -21,7 +21,7 @@ namespace Amarok
 {
     class PluginConfig;
 
-    class LIBAMAROK_EXPORT Plugin
+    class AMAROK_EXPORT Plugin
     {
         public:
             virtual ~Plugin();

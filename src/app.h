@@ -39,7 +39,7 @@ class Playlist;
 class PlaylistWindow;
 class MediaDeviceManager;
 
-class LIBAMAROK_EXPORT App : public KApplication, public EngineObserver
+class AMAROK_EXPORT App : public KApplication, public EngineObserver
 {
     Q_OBJECT
     public:

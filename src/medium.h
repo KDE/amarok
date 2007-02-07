@@ -27,7 +27,7 @@
 #include <QList>
 #include <kurl.h>
 
-class LIBAMAROK_EXPORT Medium
+class AMAROK_EXPORT Medium
 {
 public:
     typedef QList<Medium> List;

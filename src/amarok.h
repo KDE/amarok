@@ -121,7 +121,7 @@ namespace Amarok
      * @param directory will be created if not existing, you MUST end the string
      *                  with '/'
      */
-    LIBAMAROK_EXPORT QString saveLocation( const QString &directory = QString::null ); //defined in collectionreader.cpp
+    AMAROK_EXPORT QString saveLocation( const QString &directory = QString::null ); //defined in collectionreader.cpp
 
     KIO::Job *trashFiles( const KUrl::List &files ); //defined in app.cpp
 
@@ -129,8 +129,8 @@ namespace Amarok
      * For recursively expanding the contents of a directory into a KUrl::List
      * (playlists are ignored)
      */
-    LIBAMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl &url, int maxURLs = -1 ); //defined in playlistloader.cpp
-    LIBAMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl::List &urls, int maxURLs = -1 ); //defined in playlistloader.cpp
+    AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl &url, int maxURLs = -1 ); //defined in playlistloader.cpp
+    AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl::List &urls, int maxURLs = -1 ); //defined in playlistloader.cpp
 
     QString verboseTimeSince( const QDateTime &datetime ); //defined in contextbrowser.cpp
 
@@ -207,28 +207,28 @@ namespace Amarok
     /**
      * Maps the icon name to a system icon or custom Amarok icon, depending on the settings.
      */
-    LIBAMAROK_EXPORT QString icon( const QString& name ); //defined in iconloader.cpp
+    AMAROK_EXPORT QString icon( const QString& name ); //defined in iconloader.cpp
 
     /**
      * Removes accents from the string
      * @param path The original path.
      * @return The cleaned up path.
      */
-    LIBAMAROK_EXPORT QString cleanPath( const QString &path ); //defined in app.cpp
+    AMAROK_EXPORT QString cleanPath( const QString &path ); //defined in app.cpp
 
     /**
      * Replaces all non-ASCII characters with '_'.
      * @param path The original path.
      * @return The ASCIIfied path.
      */
-    LIBAMAROK_EXPORT QString asciiPath( const QString &path ); //defined in app.cpp
+    AMAROK_EXPORT QString asciiPath( const QString &path ); //defined in app.cpp
 
     /**
      * Transform path into one valid on VFAT file systems
      * @param path The original path.
      * @return The cleaned up path.
      */
-    LIBAMAROK_EXPORT QString vfatPath( const QString &path ); //defined in app.cpp
+    AMAROK_EXPORT QString vfatPath( const QString &path ); //defined in app.cpp
 
     /**
      * Compare both strings from left to right and remove the common part from input
@@ -236,15 +236,15 @@ namespace Amarok
      * @param ref a reference to compare input with.
      * @return The cleaned up string.
      */
-    LIBAMAROK_EXPORT QString decapitateString( const QString &input, const QString &ref );
+    AMAROK_EXPORT QString decapitateString( const QString &input, const QString &ref );
 
     /*
      * Transform to be usable within HTML/HTML attributes
      * defined in contextbrowser.cpp
      */
-    LIBAMAROK_EXPORT QString escapeHTML( const QString &s );
-    LIBAMAROK_EXPORT QString escapeHTMLAttr( const QString &s );
-    LIBAMAROK_EXPORT QString unescapeHTMLAttr( const QString &s );
+    AMAROK_EXPORT QString escapeHTML( const QString &s );
+    AMAROK_EXPORT QString escapeHTMLAttr( const QString &s );
+    AMAROK_EXPORT QString unescapeHTMLAttr( const QString &s );
 
     /* defined in scriptmanager.cpp */
     /**
@@ -270,7 +270,7 @@ namespace Amarok
     * happens to be called in the forked process
     * See bug #103750 for more information.
     */
-    class LIBAMAROK_EXPORT ProcIO : public KProcIO {
+    class AMAROK_EXPORT ProcIO : public KProcIO {
         public:
         ProcIO(); // ctor sets the textcodec to UTF-8, in scriptmanager.cpp
         virtual int commSetupDoneC() {
@@ -288,7 +288,7 @@ namespace Amarok
      * happens to be called in the forked process
      * See bug #103750 for more information.
      */
-    class LIBAMAROK_EXPORT Process : public KProcess {
+    class AMAROK_EXPORT Process : public KProcess {
         public:
         Process( QObject *parent = 0 ) : KProcess( parent ) {}
         virtual int commSetupDoneC() {

@@ -55,7 +55,7 @@ namespace LastFm {
  *
  */
 
-class LIBAMAROK_EXPORT MetaBundle
+class AMAROK_EXPORT MetaBundle
 {
 
 public:
@@ -87,7 +87,7 @@ public:
         NUM_COLUMNS
     };
 
-    class LIBAMAROK_EXPORT EmbeddedImage {
+    class AMAROK_EXPORT EmbeddedImage {
     public:
         EmbeddedImage() {}
         EmbeddedImage( const TagLib::ByteVector& data, const TagLib::String& description );
@@ -128,23 +128,23 @@ public:
     enum Compilation { CompilationNo = 0, CompilationYes = 1, CompilationUnknown = -1 };
 
     /// Creates an empty MetaBundle
-    LIBAMAROK_EXPORT MetaBundle();
+    AMAROK_EXPORT MetaBundle();
 
     /// Creates a MetaBundle for url, tags will be obtained and set
-    LIBAMAROK_EXPORT explicit MetaBundle( const KUrl &url,
+    AMAROK_EXPORT explicit MetaBundle( const KUrl &url,
                                           bool noCache = false,
                                           TagLib::AudioProperties::ReadStyle = TagLib::AudioProperties::Fast,
                                           EmbeddedImageList* images = 0 );
 
     /** For the StreamProvider */
-    LIBAMAROK_EXPORT MetaBundle( const QString &title,
+    AMAROK_EXPORT MetaBundle( const QString &title,
             const QString &streamUrl,
             const int bitrate,
             const QString &genre,
             const QString &streamName,
             const KUrl &url );
 
-    LIBAMAROK_EXPORT MetaBundle( const MetaBundle &bundle );
+    AMAROK_EXPORT MetaBundle( const MetaBundle &bundle );
 
     ~MetaBundle();
 
