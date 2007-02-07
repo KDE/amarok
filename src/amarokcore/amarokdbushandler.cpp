@@ -56,10 +56,10 @@
 namespace Amarok
 {
 /////////////////////////////////////////////////////////////////////////////////////
-// class DcopPlayerHandler
+// class DbusPlayerHandler
 /////////////////////////////////////////////////////////////////////////////////////
 
-    DcopPlayerHandler::DcopPlayerHandler()
+    DbusPlayerHandler::DbusPlayerHandler()
         : DCOPObject( "player" )
         , QObject( kapp )
     {
@@ -70,17 +70,17 @@ namespace Amarok
         }
     }
 
-    QString DcopPlayerHandler::version()
+    QString DbusPlayerHandler::version()
     {
         return APP_VERSION;
     }
 
-    bool DcopPlayerHandler::dynamicModeStatus()
+    bool DbusPlayerHandler::dynamicModeStatus()
     {
         return Amarok::dynamicMode();
     }
 
-    bool DcopPlayerHandler::equalizerEnabled()
+    bool DbusPlayerHandler::equalizerEnabled()
     {
         if(EngineController::hasEngineProperty( "HasEqualizer" ))
             return AmarokConfig::equalizerEnabled();
@@ -88,56 +88,56 @@ namespace Amarok
             return false;
     }
 
-    bool DcopPlayerHandler::osdEnabled()
+    bool DbusPlayerHandler::osdEnabled()
     {
         return AmarokConfig::osdEnabled();
     }
 
-    bool DcopPlayerHandler::isPlaying()
+    bool DbusPlayerHandler::isPlaying()
     {
         return EngineController::engine()->state() == Engine::Playing;
     }
 
-    bool DcopPlayerHandler::randomModeStatus()
+    bool DbusPlayerHandler::randomModeStatus()
     {
         return AmarokConfig::randomMode();
     }
 
-    bool DcopPlayerHandler::repeatPlaylistStatus()
+    bool DbusPlayerHandler::repeatPlaylistStatus()
     {
         return Amarok::repeatPlaylist();
     }
 
-    bool DcopPlayerHandler::repeatTrackStatus()
+    bool DbusPlayerHandler::repeatTrackStatus()
     {
         return Amarok::repeatTrack();
     }
 
-    int DcopPlayerHandler::getVolume()
+    int DbusPlayerHandler::getVolume()
     {
         return EngineController::engine() ->volume();
     }
 
-    int DcopPlayerHandler::sampleRate()
+    int DbusPlayerHandler::sampleRate()
     {
         return EngineController::instance()->bundle().sampleRate();
     }
 
-    float DcopPlayerHandler::score()
+    float DbusPlayerHandler::score()
     {
         const MetaBundle &bundle = EngineController::instance()->bundle();
         float score = CollectionDB::instance()->getSongPercentage( bundle.url().path() );
         return score;
     }
 
-    int DcopPlayerHandler::rating()
+    int DbusPlayerHandler::rating()
     {
         const MetaBundle &bundle = EngineController::instance()->bundle();
         int rating = CollectionDB::instance()->getSongRating( bundle.url().path() );
         return rating;
     }
 
-    int  DcopPlayerHandler::status()
+    int  DbusPlayerHandler::status()
     {
         // <0 - error, 0 - stopped, 1 - paused, 2 - playing
         switch( EngineController::engine()->state() )
@@ -153,107 +153,107 @@ namespace Amarok
         return -1;
     }
 
-    int DcopPlayerHandler::trackCurrentTime()
+    int DbusPlayerHandler::trackCurrentTime()
     {
         return EngineController::instance()->trackPosition() / 1000;
     }
 
-    int DcopPlayerHandler::trackCurrentTimeMs()
+    int DbusPlayerHandler::trackCurrentTimeMs()
     {
         return EngineController::instance()->trackPosition();
     }
 
-    int DcopPlayerHandler::trackPlayCounter()
+    int DbusPlayerHandler::trackPlayCounter()
     {
         const MetaBundle &bundle = EngineController::instance()->bundle();
         int count = CollectionDB::instance()->getPlayCount( bundle.url().path() );
         return count;
     }
 
-    int DcopPlayerHandler::trackTotalTime()
+    int DbusPlayerHandler::trackTotalTime()
     {
         return EngineController::instance()->bundle().length();
     }
 
-    QStringList DcopPlayerHandler::labels()
+    QStringList DbusPlayerHandler::labels()
     {
         const MetaBundle &bundle = EngineController::instance()->bundle();
         return CollectionDB::instance()->getLabels( bundle.url().path(), CollectionDB::typeUser );
     }
 
-    QString DcopPlayerHandler::album()
+    QString DbusPlayerHandler::album()
     {
         return EngineController::instance()->bundle().album();
     }
 
-    QString DcopPlayerHandler::artist()
+    QString DbusPlayerHandler::artist()
     {
         return EngineController::instance()->bundle().artist();
     }
 
-    QString DcopPlayerHandler::bitrate()
+    QString DbusPlayerHandler::bitrate()
     {
         return EngineController::instance()->bundle().prettyBitrate();
     }
 
-    QString DcopPlayerHandler::comment()
+    QString DbusPlayerHandler::comment()
     {
         return EngineController::instance()->bundle().comment();
     }
 
-    QString DcopPlayerHandler::coverImage()
+    QString DbusPlayerHandler::coverImage()
     {
         const MetaBundle &bundle = EngineController::instance()->bundle();
         QString image = CollectionDB::instance()->albumImage( bundle, 0 );
         return image;
     }
 
-    QString DcopPlayerHandler::currentTime()
+    QString DbusPlayerHandler::currentTime()
     {
         return MetaBundle::prettyLength( EngineController::instance()->trackPosition() / 1000 ,true );
     }
 
-    QString DcopPlayerHandler::encodedURL()
+    QString DbusPlayerHandler::encodedURL()
     {
         return EngineController::instance()->bundle().url().url();
     }
 
-    QString DcopPlayerHandler::engine()
+    QString DbusPlayerHandler::engine()
     {
         return AmarokConfig::soundSystem();
     }
 
-    QString DcopPlayerHandler::genre()
+    QString DbusPlayerHandler::genre()
     {
         return EngineController::instance()->bundle().genre();
     }
 
-    QString DcopPlayerHandler::lyrics()
+    QString DbusPlayerHandler::lyrics()
     {
         return CollectionDB::instance()->getLyrics( EngineController::instance()->bundle().url().path() );
     }
 
-    QString DcopPlayerHandler::lyricsByPath( QString path )
+    QString DbusPlayerHandler::lyricsByPath( QString path )
     {
         return CollectionDB::instance()->getLyrics( path );
     }
 
-    QString DcopPlayerHandler::lastfmStation()
+    QString DbusPlayerHandler::lastfmStation()
     {
        return LastFm::Controller::stationDescription(); //return QString::null if not playing
     }
 
-    QString DcopPlayerHandler::nowPlaying()
+    QString DbusPlayerHandler::nowPlaying()
     {
         return EngineController::instance()->bundle().prettyTitle();
     }
 
-    QString DcopPlayerHandler::path()
+    QString DbusPlayerHandler::path()
     {
         return EngineController::instance()->bundle().url().path();
     }
 
-    QString DcopPlayerHandler::setContextStyle(const QString& msg)
+    QString DbusPlayerHandler::setContextStyle(const QString& msg)
     {
         AmarokConfig::setContextBrowserStyleSheet( msg );
         ContextBrowser::instance()->reloadStyleSheet();
@@ -264,17 +264,17 @@ namespace Amarok
             return "No such theme '"+msg+"' exists, default theme applied.";
     }
 
-    QString DcopPlayerHandler::title()
+    QString DbusPlayerHandler::title()
     {
         return EngineController::instance()->bundle().title();
     }
 
-    QString DcopPlayerHandler::totalTime()
+    QString DbusPlayerHandler::totalTime()
     {
         return EngineController::instance()->bundle().prettyLength();
     }
 
-    QString DcopPlayerHandler::track()
+    QString DbusPlayerHandler::track()
     {
         if ( EngineController::instance()->bundle().track() != 0 )
             return QString::number( EngineController::instance()->bundle().track() );
@@ -282,7 +282,7 @@ namespace Amarok
             return QString();
     }
 
-    QString DcopPlayerHandler::type()
+    QString DbusPlayerHandler::type()
     {
        if (EngineController::instance()->bundle().url().protocol() == "lastfm")
           return QString("LastFm Stream");
@@ -290,102 +290,102 @@ namespace Amarok
           return EngineController::instance()->bundle().type();
     }
 
-    QString DcopPlayerHandler::year()
+    QString DbusPlayerHandler::year()
     {
         return QString::number( EngineController::instance()->bundle().year() );
     }
 
-    void DcopPlayerHandler::configEqualizer()
+    void DbusPlayerHandler::configEqualizer()
     {
         if(EngineController::hasEngineProperty( "HasEqualizer" ))
             EqualizerSetup::instance()->show();
             EqualizerSetup::instance()->raise();
     }
 
-    void DcopPlayerHandler::enableOSD(bool enable)
+    void DbusPlayerHandler::enableOSD(bool enable)
     {
         Amarok::OSD::instance()->setEnabled( enable );
         AmarokConfig::setOsdEnabled( enable );
     }
 
-    void DcopPlayerHandler::enableRandomMode( bool enable )
+    void DbusPlayerHandler::enableRandomMode( bool enable )
     {
         static_cast<KSelectAction*>(Amarok::actionCollection()->action( "random_mode" ))
             ->setCurrentItem( enable ? AmarokConfig::EnumRandomMode::Tracks : AmarokConfig::EnumRandomMode::Off );
     }
 
-    void DcopPlayerHandler::enableRepeatPlaylist( bool enable )
+    void DbusPlayerHandler::enableRepeatPlaylist( bool enable )
     {
         static_cast<KSelectAction*>( Amarok::actionCollection()->action( "repeat" ) )
                ->setCurrentItem( enable ? AmarokConfig::EnumRepeat::Playlist : AmarokConfig::EnumRepeat::Off );
     }
 
-     void DcopPlayerHandler::enableRepeatTrack( bool enable)
+     void DbusPlayerHandler::enableRepeatTrack( bool enable)
     {
         static_cast<KSelectAction*>( Amarok::actionCollection()->action( "repeat" ) )
                ->setCurrentItem( enable ? AmarokConfig::EnumRepeat::Track : AmarokConfig::EnumRepeat::Off );
     }
 
-    void DcopPlayerHandler::mediaDeviceMount()
+    void DbusPlayerHandler::mediaDeviceMount()
     {
         if ( MediaBrowser::instance()->currentDevice() )
             MediaBrowser::instance()->currentDevice()->connectDevice();
     }
 
-    void DcopPlayerHandler::mediaDeviceUmount()
+    void DbusPlayerHandler::mediaDeviceUmount()
     {
         if ( MediaBrowser::instance()->currentDevice() )
             MediaBrowser::instance()->currentDevice()->disconnectDevice();
     }
 
-    void DcopPlayerHandler::mute()
+    void DbusPlayerHandler::mute()
     {
         EngineController::instance()->mute();
     }
 
-    void DcopPlayerHandler::next()
+    void DbusPlayerHandler::next()
     {
         EngineController::instance() ->next();
     }
 
-    void DcopPlayerHandler::pause()
+    void DbusPlayerHandler::pause()
     {
         EngineController::instance()->pause();
     }
 
-    void DcopPlayerHandler::play()
+    void DbusPlayerHandler::play()
     {
         EngineController::instance() ->play();
     }
 
-    void DcopPlayerHandler::playPause()
+    void DbusPlayerHandler::playPause()
     {
         EngineController::instance() ->playPause();
     }
 
-    void DcopPlayerHandler::prev()
+    void DbusPlayerHandler::prev()
     {
         EngineController::instance() ->previous();
     }
 
-    void DcopPlayerHandler::queueForTransfer( KUrl url )
+    void DbusPlayerHandler::queueForTransfer( KUrl url )
     {
         MediaBrowser::queue()->addUrl( url );
         MediaBrowser::queue()->URLsAdded();
     }
 
-    void DcopPlayerHandler::seek(int s)
+    void DbusPlayerHandler::seek(int s)
     {
         if ( s > 0 && EngineController::engine()->state() != Engine::Empty )
             EngineController::instance()->seek( s * 1000 );
     }
 
-    void DcopPlayerHandler::seekRelative(int s)
+    void DbusPlayerHandler::seekRelative(int s)
     {
         EngineController::instance() ->seekRelative( s * 1000 );
     }
 
-    void DcopPlayerHandler::setEqualizer(int preamp, int band60, int band170, int band310,
+    void DbusPlayerHandler::setEqualizer(int preamp, int band60, int band170, int band310,
         int band600, int band1k, int band3k, int band6k, int band12k, int band14k, int band16k)
     {
         if( EngineController::hasEngineProperty( "HasEqualizer" ) ) {
@@ -402,7 +402,7 @@ namespace Amarok
         }
     }
 
-    void DcopPlayerHandler::setEqualizerEnabled( bool active )
+    void DbusPlayerHandler::setEqualizerEnabled( bool active )
     {
         EngineController::engine()->setEqualizerEnabled( active );
         AmarokConfig::setEqualizerEnabled( active );
@@ -411,7 +411,7 @@ namespace Amarok
             EqualizerSetup::instance()->setActive( active );
     }
 
-    void DcopPlayerHandler::setEqualizerPreset( QString name )
+    void DbusPlayerHandler::setEqualizerPreset( QString name )
     {
         if( EngineController::hasEngineProperty( "HasEqualizer" ) ) {
             bool instantiated = EqualizerSetup::isInstantiated();
@@ -422,23 +422,23 @@ namespace Amarok
         }
     }
 
-    void DcopPlayerHandler::setLyricsByPath( const QString& url, const QString& lyrics )
+    void DbusPlayerHandler::setLyricsByPath( const QString& url, const QString& lyrics )
     {
         CollectionDB::instance()->setLyrics( url, lyrics );
     }
 
-    void DcopPlayerHandler::setScore( float score )
+    void DbusPlayerHandler::setScore( float score )
     {
         const QString &url = EngineController::instance()->bundle().url().path();
         CollectionDB::instance()->setSongPercentage(url, score);
     }
 
-    void DcopPlayerHandler::setScoreByPath( const QString &url, float score )
+    void DbusPlayerHandler::setScoreByPath( const QString &url, float score )
     {
         CollectionDB::instance()->setSongPercentage(url, score);
     }
 
-    void DcopPlayerHandler::setBpm( float bpm )
+    void DbusPlayerHandler::setBpm( float bpm )
     {
         MetaBundle bundle = EngineController::instance()->bundle();
         bundle.setBpm( bpm );
@@ -446,7 +446,7 @@ namespace Amarok
         CollectionDB::instance()->updateTags( bundle.url().path(), bundle, true );
     }
 
-    void DcopPlayerHandler::setBpmByPath( const QString &url, float bpm )
+    void DbusPlayerHandler::setBpmByPath( const QString &url, float bpm )
     {
         MetaBundle bundle( url );
         bundle.setBpm(bpm);
@@ -454,28 +454,28 @@ namespace Amarok
         CollectionDB::instance()->updateTags( bundle.url().path(), bundle, true );
     }
 
-    void DcopPlayerHandler::setRating( int rating )
+    void DbusPlayerHandler::setRating( int rating )
     {
         const QString &url = EngineController::instance()->bundle().url().path();
         CollectionDB::instance()->setSongRating(url, rating);
     }
 
-    void DcopPlayerHandler::setRatingByPath( const QString &url, int rating )
+    void DbusPlayerHandler::setRatingByPath( const QString &url, int rating )
     {
         CollectionDB::instance()->setSongRating(url, rating);
     }
 
-    void DcopPlayerHandler::setVolume(int volume)
+    void DbusPlayerHandler::setVolume(int volume)
     {
         EngineController::instance()->setVolume(volume);
     }
 
-    void DcopPlayerHandler::setVolumeRelative(int ticks)
+    void DbusPlayerHandler::setVolumeRelative(int ticks)
     {
         EngineController::instance()->increaseVolume(ticks);
     }
 
-    void DcopPlayerHandler::showBrowser( QString browser )
+    void DbusPlayerHandler::showBrowser( QString browser )
     {
         if ( browser == "context" )
             PlaylistWindow::self()->showBrowser( "ContextBrowser" );
@@ -489,33 +489,33 @@ namespace Amarok
             PlaylistWindow::self()->showBrowser( "FileBrowser" );
     }
 
-    void DcopPlayerHandler::showOSD()
+    void DbusPlayerHandler::showOSD()
     {
         Amarok::OSD::instance()->forceToggleOSD();
     }
 
-    void DcopPlayerHandler::stop()
+    void DbusPlayerHandler::stop()
     {
         EngineController::instance() ->stop();
     }
 
-    void DcopPlayerHandler::transferDeviceFiles()
+    void DbusPlayerHandler::transferDeviceFiles()
     {
         if ( MediaBrowser::instance()->currentDevice() )
             MediaBrowser::instance()->currentDevice()->transferFiles();
     }
 
-    void DcopPlayerHandler::volumeDown()
+    void DbusPlayerHandler::volumeDown()
     {
         EngineController::instance()->decreaseVolume();
     }
 
-    void DcopPlayerHandler::volumeUp()
+    void DbusPlayerHandler::volumeUp()
     {
         EngineController::instance()->increaseVolume();
     }
 
-    void DcopPlayerHandler::transferCliArgs( QStringList args )
+    void DbusPlayerHandler::transferCliArgs( QStringList args )
     {
         DEBUG_BLOCK
 
@@ -554,61 +554,61 @@ namespace Amarok
     }
 
 /////////////////////////////////////////////////////////////////////////////////////
-// class DcopPlaylistHandler
+// class DbusPlaylistHandler
 /////////////////////////////////////////////////////////////////////////////////////
 
-    DcopPlaylistHandler::DcopPlaylistHandler()
+    DbusPlaylistHandler::DbusPlaylistHandler()
         : DCOPObject( "playlist" )
         , QObject( kapp )
     {}
 
-    int  DcopPlaylistHandler::getActiveIndex()
+    int  DbusPlaylistHandler::getActiveIndex()
     {
         return Playlist::instance()->currentTrackIndex( false );
     }
 
-    int  DcopPlaylistHandler::getTotalTrackCount()
+    int  DbusPlaylistHandler::getTotalTrackCount()
     {
         return Playlist::instance()->totalTrackCount();
     }
 
-    QString DcopPlaylistHandler::saveCurrentPlaylist()
+    QString DbusPlaylistHandler::saveCurrentPlaylist()
     {
         Playlist::instance()->saveXML( Playlist::defaultPlaylistPath() );
         return Playlist::defaultPlaylistPath();
     }
 
-    void DcopPlaylistHandler::addMedia(const KUrl &url)
+    void DbusPlaylistHandler::addMedia(const KUrl &url)
     {
         Playlist::instance()->appendMedia(url);
     }
 
-    void DcopPlaylistHandler::addMediaList(const KUrl::List &urls)
+    void DbusPlaylistHandler::addMediaList(const KUrl::List &urls)
     {
         Playlist::instance()->insertMedia(urls);
     }
 
-    void DcopPlaylistHandler::clearPlaylist()
+    void DbusPlaylistHandler::clearPlaylist()
     {
         Playlist::instance()->clear();
     }
 
-    void DcopPlaylistHandler::playByIndex(int index)
+    void DbusPlaylistHandler::playByIndex(int index)
     {
         Playlist::instance()->activateByIndex( index );
     }
 
-    void DcopPlaylistHandler::playMedia( const KUrl &url )
+    void DbusPlaylistHandler::playMedia( const KUrl &url )
     {
         Playlist::instance()->insertMedia( url, Playlist::DirectPlay | Playlist::Unique);
     }
 
-    void DcopPlaylistHandler::popupMessage( const QString& msg )
+    void DbusPlaylistHandler::popupMessage( const QString& msg )
     {
         StatusBar::instance()->longMessageThreadSafe( msg );
     }
 
-    void DcopPlaylistHandler::removeCurrentTrack()
+    void DbusPlaylistHandler::removeCurrentTrack()
     {
         PlaylistItem* const item = Playlist::instance()->currentTrack();
         if ( item ) {
@@ -622,7 +622,7 @@ namespace Amarok
         }
     }
 
-    void DcopPlaylistHandler::removeByIndex( int index )
+    void DbusPlaylistHandler::removeByIndex( int index )
     {
         PlaylistItem* const item =
             static_cast<PlaylistItem*>( Playlist::instance()->itemAtIndex( index ) );
@@ -633,37 +633,37 @@ namespace Amarok
         }
     }
 
-    void DcopPlaylistHandler::repopulate()
+    void DbusPlaylistHandler::repopulate()
     {
         Playlist::instance()->repopulate();
     }
 
-    void DcopPlaylistHandler::saveM3u( const QString& path, bool relativePaths )
+    void DbusPlaylistHandler::saveM3u( const QString& path, bool relativePaths )
     {
         Playlist::instance()->saveM3U( path, relativePaths );
     }
 
-    void DcopPlaylistHandler::setStopAfterCurrent( bool on )
+    void DbusPlaylistHandler::setStopAfterCurrent( bool on )
     {
         Playlist::instance()->setStopAfterCurrent( on );
     }
 
-    void DcopPlaylistHandler::shortStatusMessage(const QString& msg)
+    void DbusPlaylistHandler::shortStatusMessage(const QString& msg)
     {
         StatusBar::instance()->shortMessage( msg );
     }
 
-    void DcopPlaylistHandler::shufflePlaylist()
+    void DbusPlaylistHandler::shufflePlaylist()
     {
         Playlist::instance()->shuffle();
     }
 
-    void DcopPlaylistHandler::togglePlaylist()
+    void DbusPlaylistHandler::togglePlaylist()
     {
         PlaylistWindow::self()->showHide();
     }
 
-    QStringList DcopPlaylistHandler::filenames()
+    QStringList DbusPlaylistHandler::filenames()
     {
         Playlist *p_inst = Playlist::instance();
         QStringList songlist;
@@ -682,7 +682,7 @@ namespace Amarok
         return songlist;
     }
 
-    QString DcopPlaylistHandler::currentTrackUniqueId()
+    QString DbusPlaylistHandler::currentTrackUniqueId()
     {
         if( Playlist::instance()->currentItem() )
             return Playlist::instance()->currentItem()->uniqueId();
@@ -690,108 +690,108 @@ namespace Amarok
     }
 
 /////////////////////////////////////////////////////////////////////////////////////
-// class DcopPlaylistBrowserHandler
+// class DbusPlaylistBrowserHandler
 /////////////////////////////////////////////////////////////////////////////////////
 
-    DcopPlaylistBrowserHandler::DcopPlaylistBrowserHandler()
+    DbusPlaylistBrowserHandler::DbusPlaylistBrowserHandler()
         : DCOPObject( "playlistbrowser" )
         , QObject( kapp )
     {}
 
-    void DcopPlaylistBrowserHandler::addPodcast( const QString &url )
+    void DbusPlaylistBrowserHandler::addPodcast( const QString &url )
     {
         PlaylistBrowser::instance()->addPodcast( url );
     }
 
-    void DcopPlaylistBrowserHandler::scanPodcasts()
+    void DbusPlaylistBrowserHandler::scanPodcasts()
     {
         PlaylistBrowser::instance()->scanPodcasts();
     }
 
-    void DcopPlaylistBrowserHandler::addPlaylist( const QString &url )
+    void DbusPlaylistBrowserHandler::addPlaylist( const QString &url )
     {
         PlaylistBrowser::instance()->addPlaylist( url );
     }
 
-    int DcopPlaylistBrowserHandler::loadPlaylist( const QString &playlist )
+    int DbusPlaylistBrowserHandler::loadPlaylist( const QString &playlist )
     {
         return PlaylistBrowser::instance()->loadPlaylist( playlist );
     }
 
 /////////////////////////////////////////////////////////////////////////////////////
-// class DcopContextBrowserHandler
+// class DbusContextBrowserHandler
 /////////////////////////////////////////////////////////////////////////////////////
 
-    DcopContextBrowserHandler::DcopContextBrowserHandler()
+    DbusContextBrowserHandler::DbusContextBrowserHandler()
         : DCOPObject( "contextbrowser" )
         , QObject( kapp )
     {}
 
-    void DcopContextBrowserHandler::showCurrentTrack()
+    void DbusContextBrowserHandler::showCurrentTrack()
     {
         ContextBrowser::instance()->showCurrentTrack();
     }
 
-    void DcopContextBrowserHandler::showLyrics()
+    void DbusContextBrowserHandler::showLyrics()
     {
         ContextBrowser::instance()->showLyrics();
     }
 
-    void DcopContextBrowserHandler::showWiki()
+    void DbusContextBrowserHandler::showWiki()
     {
         ContextBrowser::instance()->showWikipedia();
     }
 
-    void DcopContextBrowserHandler::showLyrics( const Q3CString& lyrics )
+    void DbusContextBrowserHandler::showLyrics( const Q3CString& lyrics )
     {
         ContextBrowser::instance()->lyricsResult( lyrics );
     }
 
 /////////////////////////////////////////////////////////////////////////////////////
-// class DcopCollectionHandler
+// class DbusCollectionHandler
 /////////////////////////////////////////////////////////////////////////////////////
 
-    DcopCollectionHandler::DcopCollectionHandler()
+    DbusCollectionHandler::DbusCollectionHandler()
         : DCOPObject( "collection" )
         , QObject( kapp )
     {}
 
-    int DcopCollectionHandler::totalAlbums()
+    int DbusCollectionHandler::totalAlbums()
     {
         QStringList albums = CollectionDB::instance()->query( "SELECT COUNT( id ) FROM album;" );
         QString total = albums[0];
         return total.toInt();
     }
 
-    int DcopCollectionHandler::totalArtists()
+    int DbusCollectionHandler::totalArtists()
     {
         QStringList artists = CollectionDB::instance()->query( "SELECT COUNT( id ) FROM artist;" );
         QString total = artists[0];
         return total.toInt();
     }
 
-    int DcopCollectionHandler::totalComposers()
+    int DbusCollectionHandler::totalComposers()
     {
         QStringList composers = CollectionDB::instance()->query( "SELECT COUNT( id ) FROM composer;" );
         QString total = composers[0];
         return total.toInt();
     }
 
-    int DcopCollectionHandler::totalCompilations()
+    int DbusCollectionHandler::totalCompilations()
     {
         QStringList comps = CollectionDB::instance()->query( "SELECT COUNT( DISTINCT album ) FROM tags WHERE sampler = 1;" );
         QString total = comps[0];
         return total.toInt();
     }
 
-    int DcopCollectionHandler::totalGenres()
+    int DbusCollectionHandler::totalGenres()
     {
         QStringList genres = CollectionDB::instance()->query( "SELECT COUNT( id ) FROM genre;" );
         QString total = genres[0];
         return total.toInt();
     }
 
-    int DcopCollectionHandler::totalTracks()
+    int DbusCollectionHandler::totalTracks()
     {
         QStringList tracks = CollectionDB::instance()->query( "SELECT COUNT( url ) FROM tags;" );
         QString total = tracks[0];
@@ -799,42 +799,42 @@ namespace Amarok
         return final;
     }
 
-    bool DcopCollectionHandler::isDirInCollection( const QString& path )
+    bool DbusCollectionHandler::isDirInCollection( const QString& path )
     {
         return CollectionDB::instance()->isDirInCollection( path );
     }
 
-    bool DcopCollectionHandler::moveFile( const QString &oldURL, const QString &newURL, bool overwrite )
+    bool DbusCollectionHandler::moveFile( const QString &oldURL, const QString &newURL, bool overwrite )
     {
         return CollectionDB::instance()->moveFile( oldURL, newURL, overwrite );
     }
 
-    QStringList DcopCollectionHandler::query( const QString& sql )
+    QStringList DbusCollectionHandler::query( const QString& sql )
     {
         return CollectionDB::instance()->query( sql );
     }
 
-    QStringList DcopCollectionHandler::similarArtists( int artists )
+    QStringList DbusCollectionHandler::similarArtists( int artists )
     {
         return CollectionDB::instance()->similarArtists( EngineController::instance()->bundle().artist(), artists );
     }
 
-    void DcopCollectionHandler::migrateFile( const QString &oldURL, const QString &newURL )
+    void DbusCollectionHandler::migrateFile( const QString &oldURL, const QString &newURL )
     {
         CollectionDB::instance()->migrateFile( oldURL, newURL );
     }
 
-    void DcopCollectionHandler::scanCollection()
+    void DbusCollectionHandler::scanCollection()
     {
         CollectionDB::instance()->startScan();
     }
 
-    void DcopCollectionHandler::scanCollectionChanges()
+    void DbusCollectionHandler::scanCollectionChanges()
     {
         CollectionDB::instance()->scanModifiedDirs();
     }
 
-    void DcopCollectionHandler::scanPause()
+    void DbusCollectionHandler::scanPause()
     {
         if( ScanController::instance() )
             ScanController::instance()->requestPause();
@@ -842,7 +842,7 @@ namespace Amarok
             debug() << "No ScanController instance available" << endl;
     }
 
-    void DcopCollectionHandler::scanUnpause()
+    void DbusCollectionHandler::scanUnpause()
     {
         if( ScanController::instance() )
             ScanController::instance()->requestUnpause();
@@ -850,7 +850,7 @@ namespace Amarok
             debug() << "No ScanController instance available" << endl;
     }
 
-    void DcopCollectionHandler::scannerAcknowledged()
+    void DbusCollectionHandler::scannerAcknowledged()
     {
         DEBUG_BLOCK
         if( ScanController::instance() )
@@ -859,7 +859,7 @@ namespace Amarok
             debug() << "No ScanController instance available" << endl;
     }
 
-    int DcopCollectionHandler::addLabels( const QString &url, const QStringList &labels )
+    int DbusCollectionHandler::addLabels( const QString &url, const QStringList &labels )
     {
         CollectionDB *db = CollectionDB::instance();
         QString uid = db->getUniqueId( url );
@@ -872,67 +872,67 @@ namespace Amarok
         return count;
     }
 
-    void DcopCollectionHandler::removeLabels( const QString &url, const QStringList &oldLabels )
+    void DbusCollectionHandler::removeLabels( const QString &url, const QStringList &oldLabels )
     {
         CollectionDB::instance()->removeLabels( url, oldLabels, CollectionDB::typeUser );
     }
 
-    void DcopCollectionHandler::disableAutoScoring( bool disable )
+    void DbusCollectionHandler::disableAutoScoring( bool disable )
     {
         CollectionDB::instance()->disableAutoScoring( disable );
     }
 
-    int DcopCollectionHandler::deviceId( const QString &url )
+    int DbusCollectionHandler::deviceId( const QString &url )
     {
         return MountPointManager::instance()->getIdForUrl( url );
     }
 
-    QString DcopCollectionHandler::relativePath( const QString &url )
+    QString DbusCollectionHandler::relativePath( const QString &url )
     {
         int deviceid = deviceId( url );
         return MountPointManager::instance()->getRelativePath( deviceid, url );
     }
 
-    QString DcopCollectionHandler::absolutePath( int deviceid, const QString &relativePath )
+    QString DbusCollectionHandler::absolutePath( int deviceid, const QString &relativePath )
     {
         return MountPointManager::instance()->getAbsolutePath( deviceid, relativePath );
     }
 
 /////////////////////////////////////////////////////////////////////////////////////
-// class DcopScriptHandler
+// class DbusScriptHandler
 /////////////////////////////////////////////////////////////////////////////////////
 
-    DcopScriptHandler::DcopScriptHandler()
+    DbusScriptHandler::DbusScriptHandler()
         : DCOPObject( "script" )
         , QObject( kapp )
     {}
 
-    bool DcopScriptHandler::runScript(const QString& name)
+    bool DbusScriptHandler::runScript(const QString& name)
     {
         return ScriptManager::instance()->runScript(name);
     }
 
-    bool DcopScriptHandler::stopScript(const QString& name)
+    bool DbusScriptHandler::stopScript(const QString& name)
     {
         return ScriptManager::instance()->stopScript(name);
     }
 
-    QStringList DcopScriptHandler::listRunningScripts()
+    QStringList DbusScriptHandler::listRunningScripts()
     {
         return ScriptManager::instance()->listRunningScripts();
     }
 
-    void DcopScriptHandler::addCustomMenuItem(QString submenu, QString itemTitle )
+    void DbusScriptHandler::addCustomMenuItem(QString submenu, QString itemTitle )
     {
         Playlist::instance()->addCustomMenuItem( submenu, itemTitle );
     }
 
-    void DcopScriptHandler::removeCustomMenuItem(QString submenu, QString itemTitle )
+    void DbusScriptHandler::removeCustomMenuItem(QString submenu, QString itemTitle )
     {
         Playlist::instance()->removeCustomMenuItem( submenu, itemTitle );
     }
 
-    QString DcopScriptHandler::readConfig(const QString& key)
+    QString DbusScriptHandler::readConfig(const QString& key)
     {
         QString cleanKey = key;
         KConfigSkeletonItem* configItem = AmarokConfig::self()->findItem(cleanKey.remove(' '));
@@ -942,7 +942,7 @@ namespace Amarok
             return QString();
     }
 
-    QStringList DcopScriptHandler::readListConfig(const QString& key)
+    QStringList DbusScriptHandler::readListConfig(const QString& key)
     {
         QString cleanKey = key;
         KConfigSkeletonItem* configItem = AmarokConfig::self()->findItem(cleanKey.remove(' '));
@@ -960,94 +960,94 @@ namespace Amarok
         return stringList;
     }
 
-    QString DcopScriptHandler::proxyForUrl(const QString& url)
+    QString DbusScriptHandler::proxyForUrl(const QString& url)
     {
         return Amarok::proxyForUrl( url );
     }
 
-    QString DcopScriptHandler::proxyForProtocol(const QString& protocol)
+    QString DbusScriptHandler::proxyForProtocol(const QString& protocol)
     {
         return Amarok::proxyForProtocol( protocol );
     }
 
 /////////////////////////////////////////////////////////////////////////////////////
-// class DcopDevicesHandler
+// class DbusDevicesHandler
 /////////////////////////////////////////////////////////////////////////////////////
 
-    DcopDevicesHandler::DcopDevicesHandler()
+    DbusDevicesHandler::DbusDevicesHandler()
         : DCOPObject( "devices" )
         , QObject( kapp )
     {}
 
-    void DcopDevicesHandler::mediumAdded(QString name)
+    void DbusDevicesHandler::mediumAdded(QString name)
     {
         DeviceManager::instance()->mediumAdded(name);
     }
 
-    void DcopDevicesHandler::mediumRemoved(QString name)
+    void DbusDevicesHandler::mediumRemoved(QString name)
     {
         DeviceManager::instance()->mediumRemoved(name);
     }
 
-    void DcopDevicesHandler::mediumChanged(QString name)
+    void DbusDevicesHandler::mediumChanged(QString name)
     {
         DeviceManager::instance()->mediumChanged(name);
     }
 
-    QStringList DcopDevicesHandler::showDeviceList()
+    QStringList DbusDevicesHandler::showDeviceList()
     {
         return DeviceManager::instance()->getDeviceStringList();
     }
 
 /////////////////////////////////////////////////////////////////////////////////////
-// class DcopDevicesHandler
+// class DbusDevicesHandler
 /////////////////////////////////////////////////////////////////////////////////////
 
-    DcopMediaBrowserHandler::DcopMediaBrowserHandler()
+    DbusMediaBrowserHandler::DbusMediaBrowserHandler()
         : DCOPObject( "mediabrowser" )
         , QObject( kapp )
     {}
 
-    void DcopMediaBrowserHandler::deviceConnect()
+    void DbusMediaBrowserHandler::deviceConnect()
     {
         if ( MediaBrowser::instance()->currentDevice() )
             MediaBrowser::instance()->currentDevice()->connectDevice();
     }
 
-    void DcopMediaBrowserHandler::deviceDisconnect()
+    void DbusMediaBrowserHandler::deviceDisconnect()
     {
         if ( MediaBrowser::instance()->currentDevice() )
             MediaBrowser::instance()->currentDevice()->disconnectDevice();
     }
 
-    QStringList DcopMediaBrowserHandler::deviceList()
+    QStringList DbusMediaBrowserHandler::deviceList()
     {
         return MediaBrowser::instance()->deviceNames();
     }
 
-    void DcopMediaBrowserHandler::deviceSwitch( QString name )
+    void DbusMediaBrowserHandler::deviceSwitch( QString name )
     {
         MediaBrowser::instance()->deviceSwitch( name );
     }
 
-    void DcopMediaBrowserHandler::queue( KUrl url )
+    void DbusMediaBrowserHandler::queue( KUrl url )
     {
         MediaBrowser::queue()->addUrl( url );
         MediaBrowser::queue()->URLsAdded();
     }
 
-    void DcopMediaBrowserHandler::queueList( KUrl::List urls )
+    void DbusMediaBrowserHandler::queueList( KUrl::List urls )
     {
         MediaBrowser::queue()->addUrls( urls );
     }
 
-    void DcopMediaBrowserHandler::transfer()
+    void DbusMediaBrowserHandler::transfer()
     {
         if ( MediaBrowser::instance()->currentDevice() )
             MediaBrowser::instance()->currentDevice()->transferFiles();
     }
 
-    void DcopMediaBrowserHandler::transcodingFinished( QString src, QString dest )
+    void DbusMediaBrowserHandler::transcodingFinished( QString src, QString dest )
     {
         MediaBrowser::instance()->transcodingFinished( src, dest );
     }

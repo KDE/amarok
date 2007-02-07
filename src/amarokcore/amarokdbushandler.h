@@ -29,12 +29,12 @@ class AmarokConfig;
 namespace Amarok
 {
 
-class DcopPlayerHandler : public QObject, virtual public AmarokPlayerInterface
+class DbusPlayerHandler : public QObject, virtual public AmarokPlayerInterface
 {
       Q_OBJECT
 
    public:
-      DcopPlayerHandler();
+      DbusPlayerHandler();
 
    public:
       virtual QString version();
@@ -115,12 +115,12 @@ class DcopPlayerHandler : public QObject, virtual public AmarokPlayerInterface
 };
 
 
-class DcopPlaylistHandler : public QObject, virtual public AmarokPlaylistInterface
+class DbusPlaylistHandler : public QObject, virtual public AmarokPlaylistInterface
 {
         Q_OBJECT
 
    public:
-      DcopPlaylistHandler();
+      DbusPlaylistHandler();
 
    public:
       virtual int     getActiveIndex();
@@ -144,12 +144,12 @@ class DcopPlaylistHandler : public QObject, virtual public AmarokPlaylistInterfa
       virtual QStringList filenames();
 };
 
-class DcopPlaylistBrowserHandler : public QObject, virtual public AmarokPlaylistBrowserInterface
+class DbusPlaylistBrowserHandler : public QObject, virtual public AmarokPlaylistBrowserInterface
 {
         Q_OBJECT
 
    public:
-      DcopPlaylistBrowserHandler();
+      DbusPlaylistBrowserHandler();
 
    public:
       virtual void addPodcast( const QString &url );
@@ -158,12 +158,12 @@ class DcopPlaylistBrowserHandler : public QObject, virtual public AmarokPlaylist
       virtual int loadPlaylist( const QString &playlist );
 };
 
-class DcopContextBrowserHandler : public QObject, virtual public AmarokContextBrowserInterface
+class DbusContextBrowserHandler : public QObject, virtual public AmarokContextBrowserInterface
 {
         Q_OBJECT
 
    public:
-      DcopContextBrowserHandler();
+      DbusContextBrowserHandler();
 
    public:
       virtual void showCurrentTrack();
@@ -173,12 +173,12 @@ class DcopContextBrowserHandler : public QObject, virtual public AmarokContextBr
 };
 
 
-class DcopCollectionHandler : public QObject, virtual public AmarokCollectionInterface
+class DbusCollectionHandler : public QObject, virtual public AmarokCollectionInterface
 {
    Q_OBJECT
 
    public:
-       DcopCollectionHandler();
+       DbusCollectionHandler();
 
    public /* DCOP */ slots:
       virtual int totalAlbums();
@@ -206,12 +206,12 @@ class DcopCollectionHandler : public QObject, virtual public AmarokCollectionInt
 };
 
 
-class DcopScriptHandler : public QObject, virtual public AmarokScriptInterface
+class DbusScriptHandler : public QObject, virtual public AmarokScriptInterface
 {
    Q_OBJECT
 
    public:
-       DcopScriptHandler();
+       DbusScriptHandler();
 
    public /* DCOP */ slots:
       virtual bool runScript(const QString&);
@@ -225,12 +225,12 @@ class DcopScriptHandler : public QObject, virtual public AmarokScriptInterface
       virtual QString proxyForProtocol(const QString& protocol);
 };
 
-class DcopDevicesHandler : public QObject, virtual public AmarokDevicesInterface
+class DbusDevicesHandler : public QObject, virtual public AmarokDevicesInterface
 {
    Q_OBJECT
 
    public:
-       DcopDevicesHandler();
+       DbusDevicesHandler();
 
    public /* DCOP */ slots:
       virtual void mediumAdded(QString name);
@@ -239,12 +239,12 @@ class DcopDevicesHandler : public QObject, virtual public AmarokDevicesInterface
       virtual QStringList showDeviceList();
 };
 
-class DcopMediaBrowserHandler : public QObject, virtual public AmarokMediaBrowserInterface
+class DbusMediaBrowserHandler : public QObject, virtual public AmarokMediaBrowserInterface
 {
     Q_OBJECT
 
     public:
-        DcopMediaBrowserHandler();
+        DbusMediaBrowserHandler();
 
     public /* DCOP */ slots:
       virtual void deviceConnect();
