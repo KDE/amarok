@@ -41,7 +41,7 @@
 #include <QObject> //polish()
 #include <QPainter>
 #include <QPalette>
-#include <qprogressbar.h>
+#include <QProgressBar>
 #include <QStyle>   //class CloseButton
 #include <QTimer>
 #include <QToolButton>
@@ -109,6 +109,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     shortLongButton->hide();
 
     KHBox *mainProgressBarBox = new KHBox( this );
+    mainProgressBarBox->setObjectName( "progressBox" );
     QToolButton *b1 = new QToolButton( mainProgressBarBox, "cancelButton" );
     m_mainProgressBar  = new QProgressBar( mainProgressBarBox);
     QToolButton *b2 = new QToolButton( mainProgressBarBox, "showAllProgressDetails" );
