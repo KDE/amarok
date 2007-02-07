@@ -1,0 +1,54 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node>
+  <interface name="org.kde.Amarok.Playlist">
+    <method name="getActiveIndex" >
+      <arg type="i" direction="out"/>
+    </method>
+    <method name="getTotalTrackCount" >
+      <arg type="i" direction="out"/>
+    </method>
+    <method name="saveCurrentPlaylist" >
+      <arg type="s" direction="out"/>
+    </method>
+    <method name="addMedia" >
+      <arg name="url" type="s" direction="in"/>
+    </method>
+    <method name="addMediaList" >
+      <arg name="url" type="as" direction="in"/>
+    </method>
+    <method name="clearPlaylist" />
+    <method name="currentTrackUniqueId" >
+      <arg type="s" direction="out"/>
+    </method>
+    <method name="playByIndex" >
+      <arg name="name" type="i" direction="in"/>
+    </method>
+    <method name="playMedia" >
+      <arg name="url" type="s" direction="in"/>
+    </method>
+    <method name="popupMessage" >
+      <arg name="url" type="s" direction="in"/>
+    </method>
+    <method name="removeCurrentTrack" />
+    <method name="repopulate" />
+    <method name="removeByIndex" >
+      <arg name="url" type="i" direction="in"/>
+    </method>
+    <method name="saveM3u" >
+      <arg name="path" type="s" direction="in"/>
+      <arg name="relativePaths" type="b" direction="in"/>
+    </method>
+    <method name="setStopAfterCurrent" >
+      <arg name="val" type="b" direction="in"/>
+    </method>
+    <method name="shortStatusMessage" >
+      <arg name="val" type="s" direction="in"/>
+    </method>
+    <method name="shufflePlaylist" />
+    <method name="togglePlaylist" />
+    <method name="filenames" >
+      <arg type="as" direction="out"/>
+    </method>
+  </interface>
+</node>
