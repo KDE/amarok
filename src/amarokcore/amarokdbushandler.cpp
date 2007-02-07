@@ -1,5 +1,5 @@
 /***************************************************************************
-                         amarokdcophandler.cpp  -  DCOP Implementation
+                         amarokdbushandler.cpp  -  D-Bus Implementation
                             -------------------
    begin                : Sat Oct 11 2003
    copyright            : (C) 2003 by Stanislav Karchebny
@@ -21,7 +21,7 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
-#include "amarokdcophandler.h"
+#include "amarokdbushandler.h"
 #include "app.h" //transferCliArgs
 #include "debug.h"
 #include "collectiondb.h"
@@ -48,7 +48,6 @@
 #include <Q3ValueList>
 #include <Q3CString>
 
-#include <dcopclient.h>
 #include <kactioncollection.h>
 #include <kstartupinfo.h>
 

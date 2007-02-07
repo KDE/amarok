@@ -1,5 +1,5 @@
 /***************************************************************************
-                          amarokdcophandler.h  -  DCOP Implementation
+                          amarokdbushandler.h  -  D-Bus Implementation
                              -------------------
     begin                : Sat Oct 11 2003
     copyright            : (C) 2003 by Stanislav Karchebny
@@ -17,19 +17,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef AMAROK_DCOP_HANDLER_H
-#define AMAROK_DCOP_HANDLER_H
+#ifndef AMAROK_DBUS_HANDLER_H
+#define AMAROK_DBUS_HANDLER_H
 
 #include <QObject>
 //Added by qt3to4:
 #include <Q3CString>
-#include "amarokdcopiface.h"
 class AmarokConfig;
 
 namespace Amarok
 {
 
-class DbusPlayerHandler : public QObject, virtual public AmarokPlayerInterface
+class DbusPlayerHandler : public QObject
 {
       Q_OBJECT
 
@@ -115,7 +114,7 @@ class DbusPlayerHandler : public QObject, virtual public AmarokPlayerInterface
 };
 
 
-class DbusPlaylistHandler : public QObject, virtual public AmarokPlaylistInterface
+class DbusPlaylistHandler : public QObject
 {
         Q_OBJECT
 
@@ -144,7 +143,7 @@ class DbusPlaylistHandler : public QObject, virtual public AmarokPlaylistInterfa
       virtual QStringList filenames();
 };
 
-class DbusPlaylistBrowserHandler : public QObject, virtual public AmarokPlaylistBrowserInterface
+class DbusPlaylistBrowserHandler : public QObject
 {
         Q_OBJECT
 
@@ -158,7 +157,7 @@ class DbusPlaylistBrowserHandler : public QObject, virtual public AmarokPlaylist
       virtual int loadPlaylist( const QString &playlist );
 };
 
-class DbusContextBrowserHandler : public QObject, virtual public AmarokContextBrowserInterface
+class DbusContextBrowserHandler : public QObject
 {
         Q_OBJECT
 
@@ -173,7 +172,7 @@ class DbusContextBrowserHandler : public QObject, virtual public AmarokContextBr
 };
 
 
-class DbusCollectionHandler : public QObject, virtual public AmarokCollectionInterface
+class DbusCollectionHandler : public QObject
 {
    Q_OBJECT
 
@@ -206,7 +205,7 @@ class DbusCollectionHandler : public QObject, virtual public AmarokCollectionInt
 };
 
 
-class DbusScriptHandler : public QObject, virtual public AmarokScriptInterface
+class DbusScriptHandler : public QObject
 {
    Q_OBJECT
 
@@ -225,7 +224,7 @@ class DbusScriptHandler : public QObject, virtual public AmarokScriptInterface
       virtual QString proxyForProtocol(const QString& protocol);
 };
 
-class DbusDevicesHandler : public QObject, virtual public AmarokDevicesInterface
+class DbusDevicesHandler : public QObject
 {
    Q_OBJECT
 
@@ -239,7 +238,7 @@ class DbusDevicesHandler : public QObject, virtual public AmarokDevicesInterface
       virtual QStringList showDeviceList();
 };
 
-class DbusMediaBrowserHandler : public QObject, virtual public AmarokMediaBrowserInterface
+class DbusMediaBrowserHandler : public QObject
 {
     Q_OBJECT
 
