@@ -20,9 +20,9 @@
  ***************************************************************************/
 
 #include <tstring.h>
-#include <wmafile.h>
-#include <wmatag.h>
-#include <wmaproperties.h>
+#include "wmafile.h"
+#include "wmatag.h"
+#include "wmaproperties.h"
 
 using namespace TagLib;
 

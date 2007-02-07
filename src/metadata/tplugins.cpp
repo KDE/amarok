@@ -23,7 +23,10 @@
 #include <debug.h>
 
 #include <QFile>
+
+#ifdef KMIMETYPE_RESOLVER
 #include <kmimetype.h>
+#endif
 
 #include <fileref.h>
 #include <tfile.h>
@@ -60,6 +63,7 @@
 #include <mpcfile.h>
 
 
+#ifdef KMIMETYPE_RESOLVER
 class MimeTypeFileTypeResolver : public TagLib::FileRef::FileTypeResolver
 {
     TagLib::File *createFile(const char *fileName,
@@ -125,10 +129,13 @@ TagLib::File *MimeTypeFileTypeResolver::createFile(const char *fileName,
 
     return 0;
 }
+#endif
 
 void registerTaglibPlugins()
 {
-    //TagLib::FileRef::addFileTypeResolver(new MimeTypeFileTypeResolver);
+#ifdef KMIMETYPE_RESOLVER
+    TagLib::FileRef::addFileTypeResolver(new MimeTypeFileTypeResolver);
+#endif
     TagLib::FileRef::addFileTypeResolver(new MP4FileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new WMAFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new RealMediaFileTypeResolver);

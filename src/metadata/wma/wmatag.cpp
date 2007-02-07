@@ -19,7 +19,7 @@
  *   MA  02110-1301  USA                                                   *
  ***************************************************************************/
 
-#include <wmatag.h>
+#include "wmatag.h"
 
 using namespace TagLib;
 

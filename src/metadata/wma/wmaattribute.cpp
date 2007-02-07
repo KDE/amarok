@@ -19,8 +19,8 @@
  *   MA  02110-1301  USA                                                   *
  ***************************************************************************/
 
-#include <wmaattribute.h>
-#include <wmafile.h>
+#include "wmaattribute.h"
+#include "wmafile.h"
 
 using namespace TagLib;
 

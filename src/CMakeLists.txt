@@ -83,124 +83,10 @@ include_directories(
 	${CMAKE_SOURCE_DIR}/amarok/src/plugin
 	${CMAKE_SOURCE_DIR}/amarok/src/statusbar
 	${CMAKE_SOURCE_DIR}/amarok/src/mediadevice
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wma
 	${CMAKE_SOURCE_DIR}/amarok/src
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/aac
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/audible
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/mp4
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/rmff
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/speex
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/trueaudio
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wav
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wavpack
 	${CMAKE_BINARY_DIR}/amarok/src #for amarokconfig.h
 	${KDE4_INCLUDE_DIR}
 	${QT_INCLUDES}  )
-
-if(MP4V2_FOUND)
-include_directories( ${MP4V2_INCLUDE_DIR} )
-set(tagmplib_SRCS
-        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/mp4/mp4file.cpp
-        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/mp4/mp4tag.cpp
-        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/mp4/mp4properties.cpp
-        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/mp4/taglib_mp4filetyperesolver.cpp
-)
-else(MP4V2_FOUND)
-set(tagmplib_SRCS
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/taglib_mp4filetyperesolver.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4file.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4itunestag.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4isobox.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4isofullbox.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4skipbox.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4moovbox.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4mvhdbox.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4ilstbox.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/boxfactory.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4fourcc.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4udtabox.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4metabox.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4tagsproxy.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4mdiabox.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4minfbox.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4audioproperties.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4hdlrbox.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4stblbox.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4audiosampleentry.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4stsdbox.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4sampleentry.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4trakbox.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/mp4propsproxy.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunesnambox.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunesartbox.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunesalbbox.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunescvrbox.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunesgenbox.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunestrknbox.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunesdaybox.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunescmtbox.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunesgrpbox.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/ituneswrtbox.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunesdiskbox.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunestmpobox.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/m4a/itunesdatabox.cpp
-)
-endif(MP4V2_FOUND)
-
-set(libtagwav_SRCS
-        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/wav/wavfile.cpp
-        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/wav/wavproperties.cpp
-        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/wav/wavfiletyperesolver.cpp
-)
-
-set(libtagtrueaudio_SRCS
-        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/trueaudio/taglib_trueaudiofiletyperesolver.cpp
-        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/trueaudio/ttafile.cpp
-        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/trueaudio/ttaproperties.cpp
-)
-
-set(libtagwavpack_SRCS
-        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/wavpack/taglib_wavpackfiletyperesolver.cpp
-        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/wavpack/wvfile.cpp
-        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/wavpack/wvproperties.cpp
-)
-
-set(libtagspeex_SRCS
-        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/speex/speexfile.cpp
-        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/speex/taglib_speexfiletyperesolver.cpp
-        ${CMAKE_SOURCE_DIR}/amarok/src/metadata/speex/speexproperties.cpp
-)
-
-set(libtagwma_SRCS
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wma/wmaattribute.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wma/wmaproperties.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wma/wmatag.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wma/wmafile.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/wma/taglib_wmafiletyperesolver.cpp
-)
-
-set(libtagaac_SRCS
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/aac/aacfiletyperesolver.cpp
-)
-
-set(libmetadata_SRCS
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/tplugins.cpp
-	)
-
-set(libtagrealmedia_SRCS
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/rmff/rmff.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/rmff/taglib_realmediafile.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/rmff/taglib_realmediafiletyperesolver.cpp
-)
-
-
-set(libtagaudible_SRCS
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/audible/audibleproperties.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/audible/audibletag.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/audible/taglib_audiblefile.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/metadata/audible/taglib_audiblefiletyperesolver.cpp
-	)
 
 
 set(libamarokcore_SRCS
@@ -238,9 +124,7 @@ set(libstatusbar_SRCS
 ########### next target ###############
 
 set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS} ${libmetadata_SRCS}
-        ${libsqlite_SRCS} ${tagmplib_SRCS} ${libtagrealmedia_SRCS} ${libtagaudible_SRCS}
-        ${libtagaac_SRCS} ${libtagwma_SRCS} ${libtagwavpack_SRCS} ${libtagwav_SRCS}
-        ${libtagspeex_SRCS} ${libtagtrueaudio_SRCS}
+        ${libsqlite_SRCS}
         # ${libanalyzers_SRCS}
    Options1.ui.h
    actionclasses.cpp
@@ -350,12 +234,13 @@ kde4_add_ui_files(amarok_LIB_SRCS
 
 kde4_add_library(amarok STATIC ${amarok_LIB_SRCS})
 
-target_link_libraries(amarok ${KDE4_KUTILS_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_KHTML_LIBS} ${KDE4_KNEWSTUFF_LIBS} ${TAGLIB_LIBRARIES}
-${SQLITE_LIBRARIES} ${KDE4_KDE3SUPPORT_LIBS})
-
-if(MP4V2_FOUND)
-target_link_libraries(amarok ${MP4V2_LIBRARY})
-endif(MP4V2_FOUND)
+target_link_libraries(amarok
+        ${KDE4_KUTILS_LIBS} ${KDE4_KDEUI_LIBS} ${KDE4_KHTML_LIBS} ${KDE4_KNEWSTUFF_LIBS}
+        ${TAGLIB_LIBRARIES}
+        ${SQLITE_LIBRARIES}
+        ${KDE4_KDE3SUPPORT_LIBS}
+        amarok_taglib
+)
 
 set_target_properties(amarok PROPERTIES VERSION 1.0.0 SOVERSION 1 )
 install(TARGETS amarok DESTINATION ${LIB_INSTALL_DIR} )
