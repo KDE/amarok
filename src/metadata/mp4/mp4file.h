@@ -24,14 +24,14 @@ email                : andrew.leadbetter@gmail.com
 
 #include <tfile.h>
 #include "mp4properties.h"
-
+#include <amarok_export.h>
 namespace TagLib { 
 
     namespace MP4 {
 
         class Tag;
 
-        class File : public TagLib::File
+        class AMAROK_TAGLIB_EXPORT File : public TagLib::File
         {
             public:
                 /*!

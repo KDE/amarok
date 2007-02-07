@@ -45,7 +45,7 @@
 
 #include <tfile.h>
 #include <audioproperties.h>
-
+#include <amarok_export.h>
 #include "mp4fourcc.h"
 
 namespace TagLib {
@@ -68,7 +68,7 @@ namespace TagLib {
      * information specific to mp4 itunes files. (TODO)
      */
 
-    class File : public TagLib::File
+    class AMAROK_TAGLIB_EXPORT File : public TagLib::File
     {
     public:
       /*!
