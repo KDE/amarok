@@ -299,7 +299,7 @@ ManualDeviceAdder::ManualDeviceAdder( MediumPluginManager* mpm )
     m_mdaName = new HintLineEdit( QString::null, vbox1);
     nameLabel->setBuddy( m_mdaName );
     m_mdaName->setHint( i18n( "Example: My_Ipod" ) );
-    QToolTip::add( m_mdaName, i18n( "Enter a name for the device.  The name must be unique across all devices, including autodetected devices.  It must not contain the pipe ( | ) character." ) );
+    m_mdaName->setToolTip( i18n( "Enter a name for the device.  The name must be unique across all devices, including autodetected devices.  It must not contain the pipe ( | ) character." ) );
 
     new QLabel( "", vbox1 );
     QLabel* mpLabel = new QLabel( vbox1 );
@@ -307,7 +307,7 @@ ManualDeviceAdder::ManualDeviceAdder( MediumPluginManager* mpm )
     m_mdaMountPoint = new HintLineEdit( QString::null, vbox1);
     mpLabel->setBuddy( m_mdaMountPoint );
     m_mdaMountPoint->setHint( i18n( "Example: /mnt/ipod" ) );
-    QToolTip::add( m_mdaMountPoint, i18n( "Enter the device's mount point.  Some devices (such as iRiver iFP devices) may not have a mount point and this can be ignored.  All other devices (iPods, UMS/VFAT devices) should enter the mount point here." ) );
+    m_mdaMountPoint->setToolTip( i18n( "Enter the device's mount point.  Some devices (such as iRiver iFP devices) may not have a mount point and this can be ignored.  All other devices (iPods, UMS/VFAT devices) should enter the mount point here." ) );
 
     connect( m_mdaCombo, SIGNAL( activated(const QString&) ), this, SLOT( comboChanged(const QString&) ) );
 }
@@ -452,11 +452,11 @@ MediaDeviceConfig::MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, 
     m_configButton = new KPushButton( KIcon(SmallIconSet( Amarok::icon( "configure" ) )), QString::null, this );
     connect( m_configButton, SIGNAL(clicked()), SLOT(configureDevice()) );
     m_configButton->setEnabled( !m_new && m_pluginCombo->currentText() != i18n( "Do not handle" ) );
-    QToolTip::add( m_configButton, i18n( "Configure device settings" ) );
+    m_configButton->setToolTip( i18n( "Configure device settings" ) );
 
     m_removeButton = new KPushButton( i18n( "Remove" ), this );
     connect( m_removeButton, SIGNAL(clicked()), SLOT(deleteDevice()) );
-    QToolTip::add( m_removeButton, i18n( "Remove entries corresponding to this device from configuration file" ) );
+    m_removeButton->setToolTip( i18n( "Remove entries corresponding to this device from configuration file" ) );
 
     connect( m_pluginCombo, SIGNAL(activated(const QString&)), m_manager, SLOT(slotChanged()) );
     connect( this, SIGNAL(changed()), m_manager, SLOT(slotChanged()) );

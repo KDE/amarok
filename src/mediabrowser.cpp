@@ -268,19 +268,19 @@ MediaBrowser::MediaBrowser( const char *name )
     connect(m_connectAction, SIGNAL(triggered()), this, SLOT(connectClicked()));
     m_toolbar->addAction(m_connectAction);
 //     m_toolbar->insertButton( "connect_creating", CONNECT, true, i18n("Connect") );
-//     QToolTip::add( m_toolbar->getButton(CONNECT), i18n( "Connect media device" ) );
+//     m_toolbar->getButton(CONNECT)->setToolTip( i18n( "Connect media device" ) );
 
     m_disconnectAction = new KAction(KIcon("player_eject"), i18n("Disconnect"), this);
     connect(m_disconnectAction, SIGNAL(triggered()), this, SLOT(disconnectClicked()));
     m_toolbar->addAction(m_disconnectAction);
 //     m_toolbar->insertButton( "player_eject", DISCONNECT, true, i18n("Disconnect") );
-//     QToolTip::add( m_toolbar->getButton(DISCONNECT), i18n( "Disconnect media device" ) );
+//     m_toolbar->getButton(DISCONNECT)->setToolTip( i18n( "Disconnect media device" ) );
 
     m_transferAction = new KAction(KIcon("rebuild"), i18n("Transfer"), this);
     connect(m_transferAction, SIGNAL(triggered()), this, SLOT(transferClicked()));
     m_toolbar->addAction(m_transferAction);
 //     m_toolbar->insertButton( "rebuild", TRANSFER, true, i18n("Transfer") );
-//     QToolTip::add( m_toolbar->getButton(TRANSFER), i18n( "Transfer tracks to media device" ) );
+//     m_toolbar->getButton(TRANSFER)->setToolTip( i18n( "Transfer tracks to media device" ) );
 
     m_toolbar->addSeparator();
 
@@ -289,7 +289,7 @@ MediaBrowser::MediaBrowser( const char *name )
     connect(m_customAction, SIGNAL(triggered()), this, SLOT(custom()));
     m_toolbar->addAction(m_customAction);
 //     m_toolbar->insertButton( Amarok::icon( "add_playlist" ), CUSTOM, SIGNAL( clicked() ), this, SLOT( customClicked() ), true, "custom" );
-//     QToolTip::add( m_toolbar->getButton(TRANSFER), i18n( "Transfer tracks to media device" ) );
+//     m_toolbar->getButton(TRANSFER)->setToolTip( i18n( "Transfer tracks to media device" ) );
 
     m_toolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
 
@@ -297,7 +297,7 @@ MediaBrowser::MediaBrowser( const char *name )
     connect(m_configAction, SIGNAL(triggered()), this, SLOT(config()));
     m_toolbar->addAction(m_configAction);
 //     m_toolbar->insertButton( Amarok::icon( "configure" ), CONFIGURE, true, i18n("Configure") );
-//     QToolTip::add( m_toolbar->getButton(CONFIGURE), i18n( "Configure device" ) );
+//     m_toolbar->getButton(CONFIGURE)->setToolTip( i18n( "Configure device" ) );
 
 
     m_deviceCombo = new KComboBox( this );
@@ -318,9 +318,9 @@ MediaBrowser::MediaBrowser( const char *name )
         connect( button, SIGNAL( clicked() ), m_searchEdit, SLOT( clear() ) );
         connect( filterButton, SIGNAL( clicked() ), SLOT( slotEditFilter() ) );
 
-        QToolTip::add( button, i18n( "Clear filter" ) );
-        QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to search" ) );
-        QToolTip::add( filterButton, i18n( "Click to edit filter" ) );
+        button->setToolTip( i18n( "Clear filter" ) );
+        m_searchEdit->setToolTip( i18n( "Enter space-separated terms to search" ) );
+        filterButton->setToolTip( i18n( "Click to edit filter" ) );
     } //</Search LineEdit>
 
     connect( m_timer, SIGNAL( timeout() ), SLOT( slotSetFilter() ) );
@@ -1852,7 +1852,7 @@ MediaBrowser::updateStats()
     }
 
     m_stats->setText(text);
-    QToolTip::add( m_stats, text );
+    m_stats->setToolTip( text );
 }
 
 

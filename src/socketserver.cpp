@@ -172,7 +172,7 @@ Vis::Selector::Selector( QWidget *parent )
 
     setSorting( 0 );
     setColumnWidthMode( 0, Q3ListView::Maximum );
-    QToolTip::add( viewport(), i18n( "Right-click on item for context menu" ) );
+    viewport()->setToolTip( i18n( "Right-click on item for context menu" ) );
     addColumn( QString() );
     addColumn( QString() );
     reinterpret_cast<QWidget*>(header())->hide();

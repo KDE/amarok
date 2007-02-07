@@ -11,7 +11,7 @@
 #include <QCheckBox>
 #include <qspinbox.h>
 #include <QToolTip>
-#include <q3whatsthis.h>
+
 //Added by qt3to4:
 #include <Q3HBoxLayout>
 #include <Q3VBoxLayout>
@@ -84,7 +84,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     Q3HBoxLayout *keywordLayout = new Q3HBoxLayout( mainWidget() );
     QLabel *label3 = new QLabel( i18n("Attribute:"), mainWidget() );
     label3->setObjectName( "label3" );
-    Q3WhatsThis::add( label3,
+    label3->setWhatsThis(
       i18nc("you can translate the keyword as you will do for the combobox",
            "<p>Here you can choose to <i>Simple Search</i> directly or to use "
            "some keywords to specify some attributes, such as the artist name "
@@ -105,7 +105,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     keywordLayout->addWidget( label3 );
     keywordLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
     m_comboKeyword = new QComboBox( mainWidget(), "keywordComboBox");
-    QToolTip::add( m_comboKeyword, i18n("Select an attribute for the filter") );
+    m_comboKeyword->setToolTip( i18n("Select an attribute for the filter") );
     label3->setBuddy( m_comboKeyword );
 
     m_comboKeyword->insertItem( i18n("Simple Search") );
@@ -188,7 +188,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     keywordLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
     m_editKeyword = new KLineEdit( mainWidget() );
     m_editKeyword->setObjectName( "editKeywordBox" );
-    Q3WhatsThis::add( m_editKeyword, i18n("<p>Type the attribute value or the text to look for here.</p>") );
+    m_editKeyword->setWhatsThis( i18n("<p>Type the attribute value or the text to look for here.</p>") );
     keywordLayout->addWidget( m_editKeyword );
     m_mainLay->addLayout( keywordLayout );
     m_mainLay->addItem( new QSpacerItem( 10, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
@@ -270,25 +270,25 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     Q3VBoxLayout* ratioLay = new Q3VBoxLayout( m_groupBox2, 15, 0 );
 
     m_checkALL = new QRadioButton( i18n("Match all words"), m_groupBox2, "checkall" );
-    QToolTip::add( m_checkALL,
+    m_checkALL->setToolTip(
       i18n("<p>Check this box to look for the tracks that contains all the words you typed "
            "in the related Simple Search edit box</p>"));
     ratioLay->addWidget( m_checkALL );
 
     m_checkAtLeastOne = new QRadioButton( i18n("Match any word"), m_groupBox2, "checkor");
-    QToolTip::add( m_checkAtLeastOne,
+    m_checkAtLeastOne->setToolTip(
       i18n("<p>Check this box to look for the tracks that contains at least one of the words "
            "you typed in the related Simple Search edit box</p>"));
     ratioLay->addWidget( m_checkAtLeastOne );
 
     m_checkExactly = new QRadioButton( i18n("Exact match"), m_groupBox2, "checkexactly");
-    QToolTip::add( m_checkExactly,
+    m_checkExactly->setToolTip(
       i18n("<p>Check this box to look for all the tracks that contains exactly the words you typed "
            "in the related Simple Search edit box</p>"));
     ratioLay->addWidget( m_checkExactly );
 
     m_checkExclude = new QRadioButton( i18n("Exclude"), m_groupBox2, "checkexclude");
-    QToolTip::add( m_checkExclude,
+    m_checkExclude->setToolTip(
       i18n("<p>Check this box to look for all the tracks that do not contain the words you typed "
            "in the related Simple Search edit box</p>"));
     ratioLay->addWidget( m_checkExclude );
@@ -318,13 +318,13 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     Q3VBoxLayout* ratioLay2 = new Q3VBoxLayout( m_groupBox3, 15, 0 );
 
     m_checkAND = new QRadioButton( i18nc("AND logic condition", "AND"), m_groupBox3, "checkAND" );
-    QToolTip::add( m_checkAND,
+    m_checkAND->setToolTip(
       i18n("<p>Check this box if you want add another condition and you want that the filter "
            "to match both the previous conditions and this new one</p>"));
     ratioLay2->addWidget( m_checkAND );
 
     m_checkOR = new QRadioButton( i18nc("OR logic condition", "OR"), m_groupBox3, "checkOR" );
-    QToolTip::add( m_checkOR,
+    m_checkOR->setToolTip(
       i18n("<p>Check this box if you want add another condition and you want that the filter "
            "to match either the previous conditions or this new one</p>"));
     ratioLay2->addWidget( m_checkOR );
@@ -332,9 +332,9 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     otherOptionsLayout->addItem( new QSpacerItem( 10, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
 
     m_prefixNOT = new QCheckBox( i18n("Invert condition"), mainWidget(), "prefixNOT" );
-    QToolTip::add( m_prefixNOT,
+    m_prefixNOT->setToolTip(
       i18n("Check this box to negate the defined filter condition"));
-    Q3WhatsThis::add( m_prefixNOT,
+    m_prefixNOT->setWhatsThis(
       i18n("<p>If this option is checked the defined filter condition will be negated."
            "This means that, for example, you can define a filter that looks for all "
            "tracks that are not of a specific album, artist, and so on.</p>"));
@@ -478,11 +478,11 @@ void EditFilterDialog::setMinMaxValueSpins()
     m_spinMax2->hide();
 
     // fix tooltip
-    QToolTip::add( m_spinMin1, "" );
-    QToolTip::add( m_spinMin2, i18n("Seconds") );
+    m_spinMin1->setToolTip( "" );
+    m_spinMin2->setToolTip( i18n("Seconds") );
 
-    QToolTip::add( m_spinMax1, "" );
-    QToolTip::add( m_spinMax2, i18n("Seconds") );
+    m_spinMax1->setToolTip( "" );
+    m_spinMax2->setToolTip( i18n("Seconds") );
 }
 
 // SLOTS
@@ -525,8 +525,8 @@ void EditFilterDialog::selectedKeyword(int index) // SLOT
         m_spinMax2->show();
         m_spinMin1->setValue( 1 );
         m_spinMax1->setValue( 5 );
-        QToolTip::add( m_spinMin1, i18n("Minutes") );
-        QToolTip::add( m_spinMax1, i18n("Minutes") );
+        m_spinMin1->setToolTip( i18n("Minutes") );
+        m_spinMax1->setToolTip( i18n("Minutes") );
 
         // fix the maximum values to reduce spinboxes size
         m_spinMin1->setMaxValue( 240 );

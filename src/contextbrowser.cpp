@@ -289,7 +289,7 @@ ContextBrowser::ContextBrowser( const char *name )
 
        QString filtertip = i18n( "Write to search this word in lyric, from the begin. Press enter to search next match" );
 
-       QToolTip::add( m_lyricsSearchText, filtertip );
+       m_lyricsSearchText->setToolTip( filtertip );
 
        connect ( m_lyricsSearchText, SIGNAL(textChanged(const QString &)), this, SLOT(lyricsSearchText(const QString & )) );
        connect ( m_lyricsSearchText, SIGNAL(returnPressed()), this, (SLOT(lyricsSearchTextNext())) );
@@ -3741,7 +3741,7 @@ ContextBrowser::wikiConfig() // SLOT
     m_wikiLocaleEdit   = new QLineEdit( "en", hbox );
 
     otherLabel->setBuddy( m_wikiLocaleEdit );
-    QToolTip::add( m_wikiLocaleEdit, i18n( "2-letter language code for your Wikipedia locale" ) );
+    m_wikiLocaleEdit->setToolTip( i18n( "2-letter language code for your Wikipedia locale" ) );
 
     connect( m_wikiLocaleCombo,  SIGNAL( activated(int) ), SLOT( wikiConfigChanged(int) ) );
     connect( m_wikiConfigDialog, SIGNAL( applyClicked() ), SLOT( wikiConfigApply() ) );
@@ -3817,7 +3817,7 @@ ContextBrowser::showLabelsDialog()
     m_addLabelEdit = new ClickLineEdit( i18n( "Add new label" ), dialog->mainWidget() );
     m_addLabelEdit->installEventFilter( this );
     m_addLabelEdit->setFrame( Q3Frame::Sunken );
-    QToolTip::add( m_addLabelEdit, i18n( "Enter a new label and press Return to add it" ) );
+    m_addLabelEdit->setToolTip( i18n( "Enter a new label and press Return to add it" ) );
 
     m_labelListView = new Q3ListView( dialog->mainWidget() );
     m_labelListView->addColumn( i18n( "Label" ) );

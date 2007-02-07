@@ -304,7 +304,7 @@ AnalyzerContainer::AnalyzerContainer( QWidget *parent )
         : QWidget( parent, "AnalyzerContainer" )
         , m_child( 0 )
 {
-    QToolTip::add( this, i18n( "Click for more analyzers" ) );
+    this->setToolTip( i18n( "Click for more analyzers" ) );
     changeAnalyzer();
 }
 
@@ -457,7 +457,7 @@ VolumeAction::plug( QWidget *w, int index )
     m_slider->setValue( AmarokConfig::masterVolume() );
     m_slider->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Ignored );
 
-    QToolTip::add( m_slider, i18n( "Volume control" ) );
+    m_slider->setToolTip( i18n( "Volume control" ) );
 
     EngineController* const ec = EngineController::instance();
     connect( m_slider, SIGNAL(sliderMoved( int )), ec, SLOT(setVolume( int )) );

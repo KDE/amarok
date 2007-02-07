@@ -509,7 +509,7 @@ void TagDialog::init()
 #if HAVE_TUNEPIMP
     connect( pushButton_musicbrainz, SIGNAL(clicked()), SLOT(musicbrainzQuery()) );
 #else
-    QToolTip::add( pushButton_musicbrainz, i18n("Please install MusicBrainz to enable this functionality") );
+    pushButton_musicbrainz->setToolTip( i18n("Please install MusicBrainz to enable this functionality") );
 #endif
 
     connect( pushButton_guessTags, SIGNAL(clicked()), SLOT( guessFromFilename() ) );

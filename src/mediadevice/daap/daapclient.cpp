@@ -92,8 +92,8 @@ DEBUG_BLOCK
                                                           i18n("Share My Music") );
     m_broadcastButton->setToggle( true );
 
-    QToolTip::add( customButton,      i18n( "List music from a remote host" ) );
-    QToolTip::add( m_broadcastButton, i18n( "If this button is checked, then your music will be exported to the network" ) );
+    customButton->setToolTip(      i18n( "List music from a remote host" ) );
+    m_broadcastButton->setToolTip( i18n( "If this button is checked, then your music will be exported to the network" ) );
 
     connect( m_broadcastButton, SIGNAL( toggled(int) ), SLOT( broadcastButtonToggled() ) );
 
@@ -623,7 +623,7 @@ DaapClient::addConfigElements( QWidget * parent )
     m_removeDuplicatesCheckBox = new QCheckBox( "Hide songs in my collection", parent );
     m_removeDuplicatesCheckBox->setChecked( m_removeDuplicates );
 
-    QToolTip::add( m_removeDuplicatesCheckBox, i18n( "Enabling this may reduce connection times" ) );
+    m_removeDuplicatesCheckBox->setToolTip( i18n( "Enabling this may reduce connection times" ) );
 }
 
 

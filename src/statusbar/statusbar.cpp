@@ -245,7 +245,7 @@ StatusBar::slotItemCountChanged( int newCount, int newLength,  //total
     else
         m_itemCountLabel->setText( text );
 
-    QToolTip::add( m_itemCountLabel,  i18n( "Play-time: %1" ).arg( MetaBundle::veryPrettyTime( getValue ) ) );
+    m_itemCountLabel->setToolTip(  i18n( "Play-time: %1" ).arg( MetaBundle::veryPrettyTime( getValue ) ) );
 }
 
 void

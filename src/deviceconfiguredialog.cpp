@@ -71,14 +71,14 @@ DeviceConfigureDialog::DeviceConfigureDialog( const Medium &medium )
         m_connectEdit = new HintLineEdit( device->m_preconnectcmd, vbox );
         m_connectEdit->setHint( i18n( "Example: mount %d" ) );
         connectLabel->setBuddy( m_connectEdit );
-        QToolTip::add( m_connectEdit, i18n( "Set a command to be run before connecting to your device (e.g. a mount command) here.\n%d is replaced by the device node, %m by the mount point.\nEmpty commands are not executed." ) );
+        m_connectEdit->setToolTip( i18n( "Set a command to be run before connecting to your device (e.g. a mount command) here.\n%d is replaced by the device node, %m by the mount point.\nEmpty commands are not executed." ) );
 
         disconnectLabel = new QLabel( vbox );
         disconnectLabel->setText( i18n( "Post-&disconnect command:" ) );
         m_disconnectEdit = new HintLineEdit( device->m_postdisconnectcmd, vbox );
         disconnectLabel->setBuddy( m_disconnectEdit );
         m_disconnectEdit->setHint( i18n( "Example: eject %d" ) );
-        QToolTip::add( m_disconnectEdit, i18n( "Set a command to be run after disconnecting from your device (e.g. an eject command) here.\n%d is replaced by the device node, %m by the mount point.\nEmpty commands are not executed." ) );
+        m_disconnectEdit->setToolTip( i18n( "Set a command to be run after disconnecting from your device (e.g. an eject command) here.\n%d is replaced by the device node, %m by the mount point.\nEmpty commands are not executed." ) );
 
         // transcode
         m_transcodeCheck = new QCheckBox( vbox );
@@ -109,8 +109,8 @@ DeviceConfigureDialog::DeviceConfigureDialog( const Medium &medium )
         transcodeGroup->setEnabled( sm->transcodeScriptRunning() != QString::null && device->m_transcode );
         if( sm->transcodeScriptRunning().isNull() )
         {
-            QToolTip::add( m_transcodeCheck, i18n( "For this feature, a script of type \"Transcode\" has to be running" ) );
-            QToolTip::add( transcodeGroup, i18n( "For this feature, a script of type \"Transcode\" has to be running" ) );
+            m_transcodeCheck->setToolTip( i18n( "For this feature, a script of type \"Transcode\" has to be running" ) );
+            transcodeGroup->setToolTip( i18n( "For this feature, a script of type \"Transcode\" has to be running" ) );
         }
 
         device->addConfigElements( vbox );

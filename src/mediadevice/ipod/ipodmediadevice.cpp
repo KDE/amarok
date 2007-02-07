@@ -2403,12 +2403,12 @@ IpodMediaDevice::addConfigElements( QWidget *parent )
 {
     m_autoDeletePodcastsCheck = new QCheckBox( parent );
     m_autoDeletePodcastsCheck->setText( i18n( "&Automatically delete podcasts" ) );
-    QToolTip::add( m_autoDeletePodcastsCheck, i18n( "Automatically delete podcast shows already played when connecting device" ) );
+    m_autoDeletePodcastsCheck->setToolTip( i18n( "Automatically delete podcast shows already played when connecting device" ) );
     m_autoDeletePodcastsCheck->setChecked( m_autoDeletePodcasts );
 
     m_syncStatsCheck = new QCheckBox( parent );
     m_syncStatsCheck->setText( i18n( "&Synchronize with Amarok statistics" ) );
-    QToolTip::add( m_syncStatsCheck, i18n( "Synchronize with Amarok statistics and submit tracks played to last.fm" ) );
+    m_syncStatsCheck->setToolTip( i18n( "Synchronize with Amarok statistics and submit tracks played to last.fm" ) );
     m_syncStatsCheck->setChecked( m_syncStats );
 }
 

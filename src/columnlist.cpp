@@ -66,11 +66,11 @@ ColumnList::ColumnList( QWidget *parent, const char *name )
     KVBox *buttonbox = new KVBox( this );
 
     m_up = new KPushButton( KGuiItem( QString::null, "up" ), buttonbox );
-    QToolTip::add( m_up, i18n( "Move column up" ) );
+    m_up->setToolTip( i18n( "Move column up" ) );
     connect( m_up, SIGNAL( clicked() ), this, SLOT( moveUp() ) );
 
     m_down = new KPushButton( KGuiItem( QString::null, "down" ), buttonbox );
-    QToolTip::add( m_down, i18n( "Move column down" ) );
+    m_down->setToolTip( i18n( "Move column down" ) );
     connect( m_down, SIGNAL( clicked() ), this, SLOT( moveDown() ) );
 
     m_list = new K3ListView( this );

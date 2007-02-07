@@ -132,9 +132,9 @@ CollectionBrowser::CollectionBrowser( const char* name )
         connect( button, SIGNAL( clicked() ), SLOT( slotClearFilter() ) );
         connect( filterButton, SIGNAL( clicked() ), SLOT( slotEditFilter() ) );
 
-        QToolTip::add( button, i18n( "Clear search field" ) );
-        QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to search in the collection" ) );
-        QToolTip::add( filterButton, i18n( "Click to edit collection filter" ) );
+        button->setToolTip( i18n( "Clear search field" ) );
+        m_searchEdit->setToolTip( i18n( "Enter space-separated terms to search in the collection" ) );
+        filterButton->setToolTip( i18n( "Click to edit collection filter" ) );
     } //</Search LineEdit>
 
 

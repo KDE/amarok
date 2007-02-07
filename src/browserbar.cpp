@@ -90,7 +90,7 @@ BrowserBar::BrowserBar( QWidget *parent )
 //     connect( m_tabManagementButton, SIGNAL(clicked()), SLOT( showBrowserSelectionMenu()) );
 //     m_tabManagementButton->setMenu( );
 
-    QToolTip::add( m_tabManagementButton, i18n("Manage tabs") );
+    m_tabManagementButton->setToolTip( i18n("Manage tabs") );
 
 
     m_tabBar = new MultiTabBar( MultiTabBar::Vertical, this );

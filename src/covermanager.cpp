@@ -157,8 +157,8 @@ CoverManager::CoverManager()
         m_searchEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
         connect( button, SIGNAL(clicked()), m_searchEdit, SLOT(clear()) );
 
-        QToolTip::add( button, i18n( "Clear search field" ) );
-        QToolTip::add( m_searchEdit, i18n( "Enter space-separated terms to search in the albums" ) );
+        button->setToolTip( i18n( "Clear search field" ) );
+        m_searchEdit->setToolTip( i18n( "Enter space-separated terms to search in the albums" ) );
 
         hbox->setStretchFactor( searchBox, 1 );
     } //</Search LineEdit>

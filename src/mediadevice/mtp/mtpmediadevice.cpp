@@ -79,7 +79,7 @@ MtpMediaDevice::MtpMediaDevice() : MediaDevice()
     KToolBarButton *customButton = MediaBrowser::instance()->getToolBar()->getButton( MediaBrowser::CUSTOM );
     customButton->setText( i18n("Special device functions") );
     QToolTip::remove( customButton );
-    QToolTip::add( customButton, i18n( "Special functions of your device" ) );
+    customButton->setToolTip( i18n( "Special functions of your device" ) );
 
     mtpFileTypes[LIBMTP_FILETYPE_WAV] = "wav";
     mtpFileTypes[LIBMTP_FILETYPE_MP3] = "mp3";
@@ -1366,7 +1366,7 @@ MtpMediaDevice::addConfigElements( QWidget *parent )
 
     m_folderStructureBox = new QLineEdit( parent );
     m_folderStructureBox->setText( m_folderStructure );
-    QToolTip::add( m_folderStructureBox,
+    m_folderStructureBox->setToolTip(
         i18n( "Files copied to the device will be placed in this folder." ) + '\n'
         + i18n( "/ is used as folder separator." ) + '\n'
         + i18n( "%a will be replaced with the artist name, ")

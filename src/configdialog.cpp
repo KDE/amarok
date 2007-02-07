@@ -113,8 +113,8 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     m_soundSystem       = new QComboBox( false, groupBox );
     aboutEngineButton   = new QPushButton( i18n("About"), groupBox );
 
-    QToolTip::add( m_soundSystem, i18n("Click to select the sound system to use for playback.") );
-    QToolTip::add( aboutEngineButton, i18n("Click to get the plugin information.") );
+    m_soundSystem->setToolTip( i18n("Click to select the sound system to use for playback.") );
+    aboutEngineButton->setToolTip( i18n("Click to get the plugin information.") );
 
     /// Populate the engine selection combo box
     KService::List offers = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'engine'" );

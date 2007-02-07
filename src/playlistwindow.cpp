@@ -398,13 +398,13 @@ void PlaylistWindow::init()
                 playlist, SLOT(setFilterSlot( const QString& )) );
         connect( filterButton, SIGNAL( clicked() ), SLOT( slotEditFilter() ) );
 
-        QToolTip::add( button, i18n( "Clear search field" ) );
+        button->setToolTip( i18n( "Clear search field" ) );
         QString filtertip = i18n( "Enter space-separated terms to search in the playlist.\n\n"
                                   "Advanced, Google-esque syntax is also available;\n"
                                   "see the handbook (The Playlist section of chapter 4) for details." );
 
-        QToolTip::add( m_lineEdit, filtertip );
-        QToolTip::add( filterButton, i18n( "Click to edit playlist filter" ) );
+        m_lineEdit->setToolTip( filtertip );
+        filterButton->setToolTip( i18n( "Click to edit playlist filter" ) );
     } //</Search LineEdit>
 
 

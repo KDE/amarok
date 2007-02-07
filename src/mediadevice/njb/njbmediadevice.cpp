@@ -91,7 +91,7 @@ NjbMediaDevice::NjbMediaDevice(): MediaDevice()
     KToolBarButton* customButton = MediaBrowser::instance()->getToolBar()->getButton( MediaBrowser::CUSTOM );
     customButton->setText( i18n("Special device functions") );
     QToolTip::remove( customButton );
-    QToolTip::add( customButton, i18n( "Special functions of your jukebox" ) );
+    customButton->setToolTip( i18n( "Special functions of your jukebox" ) );
 }
 
 

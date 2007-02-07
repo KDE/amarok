@@ -126,7 +126,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     mainlayout->setStretchFactor( m_otherWidgetLayout, 4 );
 
     shortLongButton->setIconSet( SmallIconSet( "edit_add" ) );
-    QToolTip::add( shortLongButton, i18n( "Show details" ) );
+    shortLongButton->setToolTip( i18n( "Show details" ) );
     connect( shortLongButton, SIGNAL(clicked()), SLOT(showShortLongDetails()) );
 
     b1->setIconSet( SmallIconSet( "cancel" ) );

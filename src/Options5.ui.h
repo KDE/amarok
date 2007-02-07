@@ -86,7 +86,7 @@ void Options5::init()
                 "<pre>%19</pre>"
             "Will not show <b>Score: <i>%score</i></b> if the track has no score." );
 
-    QToolTip::add( kcfg_OsdText, text.args( QStringList()
+    kcfg_OsdText->setToolTip( text.args( QStringList()
             // we don't translate these, it is not sensible to do so
             << "%title"  << "%album"   << "%artist"  << "%genre"     << "%bitrate"
             << "%year "  << "%length"  << "%track"   << "%filename"  << "%directory"

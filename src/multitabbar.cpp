@@ -541,7 +541,7 @@ MultiTabBarButton::MultiTabBarButton( const QPixmap& pic, const QString& text, Q
     setFixedHeight( 24 );
     setFixedWidth( 24 );
 
-//     QToolTip::add( this, text );  // Deactivated cause it's annoying
+//     this->setToolTip( text );  // Deactivated cause it's annoying
     connect( this, SIGNAL( clicked() ), this, SLOT( slotClicked() ) );
     connect( m_animTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
     connect( m_dragSwitchTimer, SIGNAL( timeout() ), this, SLOT( slotDragSwitchTimer() ) );
@@ -563,7 +563,7 @@ MultiTabBarButton::MultiTabBarButton( const QString& text, Q3PopupMenu *popup,
     setFixedHeight( 24 );
     setFixedWidth( 24 );
     m_id = id;
-//     QToolTip::add( this, text );
+//     this->setToolTip( text );
 
     connect( this, SIGNAL( clicked() ), this, SLOT( slotClicked() ) );
     connect( m_animTimer, SIGNAL( timeout() ), this, SLOT( slotAnimTimer() ) );
@@ -584,7 +584,7 @@ void MultiTabBarButton::setText( const QString& text )
 {
     QPushButton::setText( text );
     m_text = text;
-//     QToolTip::add( this, text );
+//     this->setToolTip( text );
 }
 
 void MultiTabBarButton::proxyDrops( DropProxyTarget *finalDropTarget )

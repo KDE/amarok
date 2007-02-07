@@ -63,7 +63,7 @@ HelixConfigEntry::HelixConfigEntry( QWidget *parent,
     connect( (QWidget *) m_w, SIGNAL(textChanged( const QString& )), this, SLOT(slotStringChanged( const QString& )) );
     connect( (QWidget *) m_w, SIGNAL(textChanged( const QString& )), pluginConfig, SIGNAL(viewChanged()) );
 
-    QToolTip::add( (QWidget *) m_w, "<qt>" + tooltip );
+    (QWidget *) m_w->setToolTip( "<qt>" + tooltip );
 
     QLabel* d = new QLabel( parent );
     d->setBuddy( description + ':' );
@@ -92,7 +92,7 @@ HelixConfigEntry::HelixConfigEntry( QWidget *parent,
     connect( m_w, SIGNAL(textChanged( const QString& )), this, SLOT(slotStringChanged( const QString& )) );
     connect( m_w, SIGNAL(textChanged( const QString& )), pluginConfig, SIGNAL(viewChanged()) );
 
-    QToolTip::add( m_w, "<qt>" + tooltip );
+    m_w->setToolTip( "<qt>" + tooltip );
 
     QLabel* d = new QLabel( parent );
     d->setBuddy( description + ':' );

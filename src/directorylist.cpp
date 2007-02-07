@@ -46,8 +46,8 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_recursive = new QCheckBox( i18n("&Scan folders recursively"), this );
     m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), this );
 
-    QToolTip::add( m_recursive, i18n( "If selected, Amarok will read all subfolders." ) );
-    QToolTip::add( m_monitor,   i18n( "If selected, folders will automatically get rescanned when the content is modified, e.g. when a new file was added." ) );
+    m_recursive->setToolTip( i18n( "If selected, Amarok will read all subfolders." ) );
+    m_monitor->setToolTip(   i18n( "If selected, folders will automatically get rescanned when the content is modified, e.g. when a new file was added." ) );
 
     // Read config values
     //we have to detect if this is the actual first run and not get the collectionFolders in that case

@@ -318,11 +318,11 @@ QueueManager::QueueManager( QWidget *parent, const char *name )
     m_add    = new KPushButton( KGuiItem( QString::null, Amarok::icon( "queue_track" ) ), buttonBox );
     m_clear  = new KPushButton( KGuiItem( QString::null, Amarok::icon( "playlist_clear" ) ), buttonBox );
 
-    QToolTip::add( m_up,     i18n( "Move up" ) );
-    QToolTip::add( m_down,   i18n( "Move down" ) );
-    QToolTip::add( m_remove, i18n( "Remove" ) );
-    QToolTip::add( m_add,    i18n( "Enqueue track" ) );
-    QToolTip::add( m_clear,  i18n( "Clear queue" ) );
+    m_up->setToolTip(     i18n( "Move up" ) );
+    m_down->setToolTip(   i18n( "Move down" ) );
+    m_remove->setToolTip( i18n( "Remove" ) );
+    m_add->setToolTip(    i18n( "Enqueue track" ) );
+    m_clear->setToolTip(  i18n( "Clear queue" ) );
 
     m_up->setEnabled( false );
     m_down->setEnabled( false );
