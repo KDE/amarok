@@ -92,7 +92,7 @@ TagLib::File *MimeTypeFileTypeResolver::createFile(const char *fileName,
     }
     else if( mimetype->is( "audio/mp4" ) || mimetype->is( "video/mp4" ) )
     {
-        return new TagLib::MP4::File(fileName, readProperties, propertiesStyle);
+        //return new TagLib::MP4::File(fileName, readProperties, propertiesStyle);
     }
     else if( mimetype->is( "audio/x-ms-wma" )
             || mimetype->is( "video/x-ms-asf" )
