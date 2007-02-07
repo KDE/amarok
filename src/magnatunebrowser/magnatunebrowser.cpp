@@ -49,7 +49,7 @@ MagnatuneBrowser::MagnatuneBrowser( const char *name )
     debug() << "Magnatune browser starting..." << endl;
     m_listView = new MagnatuneListView( spliter );
 
-    m_popupMenu = new Q3PopupMenu( spliter, "MagnatuneMenu" );
+    m_popupMenu = new QMenu( spliter);
     m_artistInfobox = new MagnatuneArtistInfoBox( spliter, "ArtistInfoBox" );
 
 
@@ -228,15 +228,15 @@ void MagnatuneBrowser::menuAboutToShow( )
     switch ( selectedItem->depth() )
     {
     case 0:
-        m_popupMenu->insertItem( i18n( "Add artist to playlist" ), this, SLOT( addSelectionToPlaylist() ) );
+        m_popupMenu->addAction( i18n( "Add artist to playlist" ), this, SLOT( addSelectionToPlaylist() ) );
         break;
     case 1:
-        m_popupMenu->insertItem( i18n( "Add album to playlist" ), this, SLOT( addSelectionToPlaylist() ) );
-        m_popupMenu->insertItem( i18n( "Purchase album" ), this, SLOT( purchaseSelectedAlbum() ) );
+        m_popupMenu->addAction( i18n( "Add album to playlist" ), this, SLOT( addSelectionToPlaylist() ) );
+        m_popupMenu->addAction( i18n( "Purchase album" ), this, SLOT( purchaseSelectedAlbum() ) );
         break;
     case 2:
-        m_popupMenu->insertItem( i18n( "Add track to playlist" ), this, SLOT( addSelectionToPlaylist() ) );
-        m_popupMenu->insertItem( i18n( "Purchase album" ), this, SLOT( purchaseAlbumContainingSelectedTrack() ) );
+        m_popupMenu->addAction( i18n( "Add track to playlist" ), this, SLOT( addSelectionToPlaylist() ) );
+        m_popupMenu->addAction( i18n( "Purchase album" ), this, SLOT( purchaseAlbumContainingSelectedTrack() ) );
     }
 }
 

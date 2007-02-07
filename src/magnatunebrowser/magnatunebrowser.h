@@ -228,7 +228,7 @@ private:
     MagnatuneListView         *m_listView;
     MagnatuneArtistInfoBox    *m_artistInfobox;
     QString                    m_currentInfoUrl;
-    Q3PopupMenu                *m_popupMenu;
+    QMenu                *m_popupMenu;
     MagnatunePurchaseHandler  *m_purchaseHandler;
     MagnatuneRedownloadHandler *m_redownloadHandler;
 
