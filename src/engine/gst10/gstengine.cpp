@@ -311,9 +311,9 @@ GstEngine::canDecode( const KUrl &url ) const
 
     // We had some bug reports claiming that video files cause crashes in canDecode(),
     // so don't try to decode them
-    if ( url.fileName().lower().endsWith( ".mov" ) ||
-         url.fileName().lower().endsWith( ".avi" ) ||
-         url.fileName().lower().endsWith( ".wmv" ) )
+    if ( url.fileName().toLower().endsWith( ".mov" ) ||
+         url.fileName().toLower().endsWith( ".avi" ) ||
+         url.fileName().toLower().endsWith( ".wmv" ) )
         return false;
 
     debug() << "Can decode for " << url.prettyUrl() << endl;
@@ -1070,10 +1070,10 @@ GstEngine::createPipeline()
     debug() << "Output Params: " << GstConfig::outputParams() << endl;
 
     // Let gst construct the output element from a string
-    Q3CString output  = GstConfig::soundOutput().latin1();
+    Q3CString output  = GstConfig::soundOutput().toLatin1();
     if ( GstConfig::useCustomOutputParams() ) {
         output += ' ';
-        output += GstConfig::outputParams().latin1();
+        output += GstConfig::outputParams().toLatin1();
     }
 
     m_gst_pipeline = gst_pipeline_new( "pipeline" );
@@ -1087,7 +1087,7 @@ GstEngine::createPipeline()
 
     /* setting device property for AudioSink*/
     if ( GstConfig::useCustomSoundDevice() && !GstConfig::soundDevice().isEmpty() )
-        g_object_set( G_OBJECT(m_gst_audiosink), "device", GstConfig::soundDevice().latin1(), NULL );
+        g_object_set( G_OBJECT(m_gst_audiosink), "device", GstConfig::soundDevice().toLatin1(), NULL );
 
     m_gst_equalizer = GST_ELEMENT( gst_equalizer_new() );
     gst_bin_add( GST_BIN( m_gst_audiobin ), m_gst_equalizer );
@@ -1170,7 +1170,7 @@ GstEngine::setupAudioCD( const QString& device, unsigned track, bool pause )
         {
             // TODO: allow user to configure default device rather than falling back to gstreamer default when no device passed in
             if ( !device.isNull() )
-                g_object_set( G_OBJECT(m_gst_src), "device", device.latin1(), NULL );
+                g_object_set( G_OBJECT(m_gst_src), "device", device.toLatin1(), NULL );
             if ( track )
                 g_object_set (G_OBJECT (m_gst_src), "track", track, NULL);
             if ( filled || gst_element_link( m_gst_src, m_gst_audiobin ) )

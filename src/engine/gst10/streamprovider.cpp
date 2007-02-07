@@ -140,7 +140,7 @@ StreamProvider::sendRequest() //SLOT
                                      .arg( auth ? "Authorization: Basic " + authString + "\r\n" : "" );
 
     debug() << "Sending request:\n" << request << endl;
-    m_sockRemote.writeBlock( request.latin1(), request.length() );
+    m_sockRemote.write( request.toLatin1(), request.length() );
 }
 
 
@@ -150,7 +150,7 @@ StreamProvider::readRemote() //SLOT
     m_connectSuccess = true;
     Q_LONG index = 0;
     Q_LONG bytesWrite = 0;
-    const Q_LONG bytesRead = m_sockRemote.readBlock( m_pBuf, BUFSIZE );
+    const Q_LONG bytesRead = m_sockRemote.read( m_pBuf, BUFSIZE );
     if ( bytesRead == -1 ) { emit sigError(); return; }
 
     if ( !m_headerFinished )
@@ -274,7 +274,7 @@ StreamProvider::transmitData( const QString &data )
 
     Engine::SimpleMetaBundle bundle;
 
-    QString title = codec->toUnicode( extractStr( data, "StreamTitle" ).latin1() );
+    QString title = codec->toUnicode( extractStr( data, "StreamTitle" ).toLatin1() );
     if (title.contains('-'))
     {
        bundle.artist = title.section('-',0,0).trimmed();
@@ -285,13 +285,13 @@ StreamProvider::transmitData( const QString &data )
     }
     else // just copy as is...
     {
-       bundle.title = codec->toUnicode( extractStr( data, "StreamTitle" ).latin1() );
+       bundle.title = codec->toUnicode( extractStr( data, "StreamTitle" ).toLatin1() );
     }
 
     bundle.bitrate.setNum(m_bitRate);
-    bundle.genre = codec->toUnicode( m_streamGenre.latin1() );
+    bundle.genre = codec->toUnicode( m_streamGenre.toLatin1() );
 
-    bundle.album = codec->toUnicode( m_streamName.trimmed().latin1() );
+    bundle.album = codec->toUnicode( m_streamName.trimmed().toLatin1() );
 
     emit m_engine.gstMetaData( bundle );
 }

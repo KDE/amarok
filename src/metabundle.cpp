@@ -97,7 +97,7 @@ bool MetaBundle::EmbeddedImage::save( const QDir& dir ) const
     QFile   file( dir.filePath( hash() ) );
 
     if( file.open( QIODevice::WriteOnly | QIODevice::Unbuffered ) ) {
-        const Q_LONG s = file.writeBlock( m_data.data(), m_data.size() );
+        const Q_LONG s = file.write( m_data.data(), m_data.size() );
         if( s >= 0 && Q_ULONG( s ) == m_data.size() ) {
             debug() << "EmbeddedImage::save " << file.name() << endl;
             return true;
@@ -1643,7 +1643,7 @@ MetaBundle::readUniqueId( TagLib::FileRef* fileref )
 
     if( qfile.open( QIODevice::Unbuffered | QIODevice::ReadOnly ) )
     {
-        if( ( readlen = qfile.readBlock( databuf, 8192 ) ) > 0 )
+        if( ( readlen = qfile.read( databuf, 8192 ) ) > 0 )
         {
             md5.update( databuf, readlen );
             md5.update( size.setNum( (ulong)qfile.size() ) );

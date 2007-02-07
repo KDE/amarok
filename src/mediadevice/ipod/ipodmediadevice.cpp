@@ -415,7 +415,7 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
 
     QString type = pathname.section('.', -1).toLower();
 
-    track->ipod_path = g_strdup( ipodPath(pathname).latin1() );
+    track->ipod_path = g_strdup( ipodPath(pathname).toLatin1() );
     debug() << "on iPod: " << track->ipod_path << ", podcast=" << podcastInfo << endl;
 
     if( metaBundle.isValidMedia() || !metaBundle.title().isEmpty() )
@@ -610,7 +610,7 @@ IpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle)
     QDir dir = finfo.dir();
     while ( !dir.exists() )
     {
-        QString path = dir.absPath();
+        QString path = dir.absolutePath();
         QDir parentdir;
         QDir create;
         do
@@ -621,7 +621,7 @@ IpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle)
         }
         while( !path.isEmpty() && !(path==mountPoint()) && !parentdir.exists() );
         debug() << "trying to create \"" << path << "\"" << endl;
-        if(!create.mkdir( create.absPath() ))
+        if(!create.mkdir( create.absolutePath() ))
         {
             break;
         }
@@ -1003,7 +1003,7 @@ IpodMediaDevice::initializeIpod()
     if(!pathExists( itunesDir(), &realPath) )
     {
         dir.setPath(realPath);
-        dir.mkdir(dir.absPath());
+        dir.mkdir(dir.absolutePath());
     }
     if(!dir.exists())
         return false;
@@ -1011,7 +1011,7 @@ IpodMediaDevice::initializeIpod()
     if(!pathExists( itunesDir( "Music" ), &realPath) )
     {
         dir.setPath(realPath);
-        dir.mkdir(dir.absPath());
+        dir.mkdir(dir.absolutePath());
     }
     if(!dir.exists())
         return false;
@@ -1019,7 +1019,7 @@ IpodMediaDevice::initializeIpod()
     if(!pathExists( itunesDir( "iTunes" ), &realPath) )
     {
         dir.setPath(realPath);
-        dir.mkdir(dir.absPath());
+        dir.mkdir(dir.absolutePath());
     }
     if(!dir.exists())
         return false;
@@ -1205,7 +1205,7 @@ IpodMediaDevice::openDevice( bool silent )
     {
         QString real;
         QString ipod;
-        ipod.sprintf( itunesDir( "Music:f%02d" ).latin1(), i );
+        ipod.sprintf( itunesDir( "Music:f%02d" ).toLatin1(), i );
         if(!pathExists( ipod, &real ) )
         {
             QDir dir( real );
@@ -1968,15 +1968,15 @@ IpodMediaDevice::determineURLOnDevice(const MetaBundle &bundle)
         int music_dirs = itdb_musicdirs_number(m_itdb) > 1 ? itdb_musicdirs_number(m_itdb) : 20;
         int dir = num % music_dirs;
         QString dirname;
-        dirname.sprintf( "%s:Music:f%02d", itunesDir().latin1(), dir );
+        dirname.sprintf( "%s:Music:f%02d", itunesDir().toLatin1(), dir );
         if( !pathExists( dirname ) )
         {
-            QString realdir = realPath(dirname.latin1());
+            QString realdir = realPath(dirname.toLatin1());
             QDir qdir( realdir );
             qdir.mkdir( realdir );
         }
         QString filename;
-        filename.sprintf( ":kpod%07d.%s", num, type.latin1() );
+        filename.sprintf( ":kpod%07d.%s", num, type.toLatin1() );
         trackpath = dirname + filename;
     }
     while( pathExists( trackpath, &realpath ) );

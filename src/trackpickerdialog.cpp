@@ -54,7 +54,7 @@ private:
 TrackPickerDialog::TrackPickerDialog(const QString &name, const KTRMResultList &results, QWidget *parent)
         : KDialog(parent)
 {
-    setObjectName( name.latin1() );
+    setObjectName( name.toLatin1() );
     setModal( true );
     setButtons( Ok | Cancel );
     setDefaultButton( Ok );

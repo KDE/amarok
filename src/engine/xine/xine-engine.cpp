@@ -1141,7 +1141,7 @@ bool XineEngine::getAudioCDContents(const QString &device, KUrl::List &urls)
 	    emit statusText(i18n("Failed CD device lookup in xine engine"));
 	    return false;
 	}
-        config.str_value = (char *)device.latin1();
+        config.str_value = (char *)device.toLatin1();
         xine_config_update_entry(m_xine, &config);
     }
 

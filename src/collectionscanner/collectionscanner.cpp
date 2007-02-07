@@ -298,7 +298,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
             QFile log( m_logfile );
             if( log.open( QIODevice::WriteOnly ) ) {
                 Q3CString cPath = path.utf8();
-                log.writeBlock( cPath, cPath.length() );
+                log.write( cPath, cPath.length() );
                 log.close();
             }
         }

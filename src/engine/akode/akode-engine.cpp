@@ -99,7 +99,7 @@ AkodeEngine::unpause()
 bool
 AkodeEngine::canDecode( const KUrl &url ) const
 {
-    const QString ext = url.path().right( 4 ).lower();
+    const QString ext = url.path().right( 4 ).toLower();
 
     return ext == ".mp3" || ext == ".ogg" || ext == ".wav" || ext ==".mpc" || ext == "flac";
 }

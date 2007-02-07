@@ -764,7 +764,7 @@ void MultiTabBarTab::setTabsPosition( MultiTabBar::MultiTabBarPosition pos )
         if ( !d->pix.isNull() ) {
             QMatrix temp; // (1.0F, 0.0F, 0.0F, -1.0F, 0.0F, 0.0F);
             temp.rotate( 180 );
-            d->pix = d->pix.xForm( temp );
+            d->pix = d->pix.transformed( temp );
             setIconSet( d->pix );
         }
     }
@@ -789,7 +789,7 @@ void MultiTabBarTab::setIcon( const QPixmap& icon )
                 rotateMatrix.rotate( 90 );
             else
                 rotateMatrix.rotate( -90 );
-            QPixmap pic = icon.xForm( rotateMatrix ); //TODO FIX THIS, THIS SHOWS WINDOW
+            QPixmap pic = icon.transformed( rotateMatrix ); //TODO FIX THIS, THIS SHOWS WINDOW
             d->pix = pic;
             setIconSet( pic );
         } else setIconSet( icon );

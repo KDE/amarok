@@ -253,12 +253,12 @@ QString TagGuesser::capitalizeWords( const QString &s )
         return s;
 
     QString result = s;
-    result[ 0 ] = result[ 0 ].upper();
+    result[ 0 ] = result[ 0 ].toUpper();
 
     const QRegExp wordRegExp( "\\s\\w" );
     int i = result.find( wordRegExp );
     while ( i > -1 ) {
-        result[ i + 1 ] = result[ i + 1 ].upper();
+        result[ i + 1 ] = result[ i + 1 ].toUpper();
         i = result.find( wordRegExp, ++i );
     }
 

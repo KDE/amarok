@@ -110,10 +110,10 @@ MetaBundleSaver::prepareToSave()
 
     Q_LONG actualreadlen, actualwritelen;
 
-    while( ( actualreadlen = orig.readBlock( m_databuf, m_maxlen ) ) > 0 )
+    while( ( actualreadlen = orig.read( m_databuf, m_maxlen ) ) > 0 )
     {
         md5sum.update( m_databuf, actualreadlen );
-        if( ( actualwritelen = copy.writeBlock( m_databuf, actualreadlen ) ) != actualreadlen )
+        if( ( actualwritelen = copy.write( m_databuf, actualreadlen ) ) != actualreadlen )
         {
             debug() << "Error during copying of original file data to copy!" << endl;
             return 0;
@@ -203,7 +203,7 @@ MetaBundleSaver::doSave()
         goto fail_remove_copy;
     }
 
-    while( ( actualreadlen = origRenamedFile.readBlock( m_databuf, m_maxlen ) ) > 0 )
+    while( ( actualreadlen = origRenamedFile.read( m_databuf, m_maxlen ) ) > 0 )
         md5sum.update( m_databuf, actualreadlen );
 
     if( actualreadlen == -1 )

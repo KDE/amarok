@@ -96,7 +96,7 @@ void MagnatuneRedownloadHandler::redownload( QString storedInfoFileName )
 {
 
     QDir purchaseInfoDir( Amarok::saveLocation( "magnatune.com/purchases/" ) );
-    QString absFileName = purchaseInfoDir.absPath() + '/' + storedInfoFileName;
+    QString absFileName = purchaseInfoDir.absolutePath() + '/' + storedInfoFileName;
 
    debug() << "Redownload file: " << absFileName << endl;
 

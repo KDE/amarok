@@ -317,7 +317,7 @@ Controller::stationDescription( QString url )
         const QStringList words = QStringList::split( " ", QString( artists ).remove( "," ) );
         oldForeach( words ) {
             QString capitalized = *it;
-            capitalized.replace( 0, 1, (*it)[0].upper() );
+            capitalized.replace( 0, 1, (*it)[0].toUpper() );
             artists.replace( *it, capitalized );
         }
 

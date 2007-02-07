@@ -1370,7 +1370,7 @@ Moodbar::copyFile( const QString &srcPath, const QString &dstPath )
   file.setFileName( dstPath );
   if( !file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     return false;
-  bool res = ( uint( file.writeBlock( contents ) ) == contents.size() );
+  bool res = ( uint( file.write( contents ) ) == contents.size() );
   file.close();
   return res;
 }

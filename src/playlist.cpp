@@ -407,7 +407,7 @@ Playlist::Playlist( QWidget *parent )
     QStringList undos = m_undoDir.entryList( QString("*.xml"), QDir::Files, QDir::Time );
 
     oldForeach( undos )
-        m_undoList.append( m_undoDir.absPath() + '/' + (*it) );
+        m_undoList.append( m_undoDir.absolutePath() + '/' + (*it) );
 
     m_undoCounter = m_undoList.count();
 
@@ -4473,7 +4473,7 @@ Playlist::saveState( QStringList &list )
       QString fileName;
       m_undoCounter %= AmarokConfig::undoLevels();
       fileName.setNum( m_undoCounter++ );
-      fileName.prepend( m_undoDir.absPath() + '/' );
+      fileName.prepend( m_undoDir.absolutePath() + '/' );
       fileName.append( ".xml" );
 
       if ( list.count() >= (uint)AmarokConfig::undoLevels() )

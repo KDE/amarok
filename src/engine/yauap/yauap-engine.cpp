@@ -593,7 +593,7 @@ yauapEngine::getAudioCDContents(const QString &device, KUrl::List &urls)
     debug() << "Getting AudioCD contents..." << endl;
 
     if( !dbus_g_proxy_call (remote_object, "get_audio_cd_contents", &error,
-        G_TYPE_STRING,(char*)device.latin1(),G_TYPE_INVALID,G_TYPE_STRV, &reply_list, G_TYPE_INVALID) )
+        G_TYPE_STRING,(char*)device.toLatin1(),G_TYPE_INVALID,G_TYPE_STRV, &reply_list, G_TYPE_INVALID) )
     {
         debug() << "get_audio_cd_contents failed " << error->message <<  endl;
         g_error_free(error);

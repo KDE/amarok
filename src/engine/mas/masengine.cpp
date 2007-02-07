@@ -128,9 +128,9 @@ bool MasEngine::canDecode( const KUrl &url ) const
 
     KFileItem fileItem( KFileItem::Unknown, KFileItem::Unknown, url, false ); //false = determineMimeType straight away
     KMimeType::Ptr mimetype = fileItem.determineMimeType();
-    debug() << "mimetype: " << mimetype->name().latin1() << endl;
+    debug() << "mimetype: " << mimetype->name().toLatin1() << endl;
 
-    playable = list.contains( mimetype->name().latin1() );
+    playable = list.contains( mimetype->name().toLatin1() );
     if ( !playable )
       warning() << "Mimetype is not playable by MAS (" << url << ")" << endl;
 
@@ -170,7 +170,7 @@ bool MasEngine::load( const KUrl& url, bool stream )
     /* send fresh data to MAS */;
     masc_setup_package( &pkg, pbuf, sizeof pbuf, MASC_PACKAGE_STATIC );
     masc_pushk_int16( &pkg, (char*)"pos", pos );
-    //masc_push_string( &pkg, (char *)m_url.path().latin1() );
+    //masc_push_string( &pkg, (char *)m_url.path().toLatin1() );
 
     Q3CString cs= QFile::encodeName( m_url.path());
     const char *pcs = cs;

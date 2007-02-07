@@ -444,7 +444,7 @@ PlaylistCategory::showContextMenu( const QPoint &position )
             void newPodcast() { PlaylistBrowser::instance()->addPodcast( parentCat ); }
             void refreshPodcasts() { PlaylistBrowser::instance()->refreshPodcasts( parentCat ); }
             void configurePodcasts() { PlaylistBrowser::instance()->configurePodcasts( parentCat ); }
-            void changeInterval() { PlaylistBrowser::instance()->changePodcastInterval(); }
+            void start() { PlaylistBrowser::instance()->changePodcastInterval(); }
             void addSubfolder()
             {
                 Q3ListViewItem *tracker = parentCat->firstChild();
@@ -505,7 +505,7 @@ PlaylistCategory::showContextMenu( const QPoint &position )
         menu.insertSeparator();
         menu.addAction( SmallIconSet( Amarok::icon( "configure" ) ), i18n( "&Configure Podcasts..." ), &ma, SLOT( configurePodcasts ) );
         if( parentCat == this )
-            menu.addAction( SmallIconSet( Amarok::icon( "configure" ) ), i18n("Scan Interval..."), &ma, SLOT( changeInterval() ) );
+            menu.addAction( SmallIconSet( Amarok::icon( "configure" ) ), i18n("Scan Interval..."), &ma, SLOT( start() ) );
     }
 
     menu.insertSeparator();
@@ -2596,7 +2596,7 @@ void PodcastEpisode::downloadResult( KIO::Job * transferJob )
     debug() << "filename: " << m_localUrl.path() << endl;
     QFile *localFile = new QFile( m_localUrl.path() );
     localFile->open( QIODevice::WriteOnly );
-    localFile->writeBlock( m_podcastEpisodeJob->data() );
+    localFile->write( m_podcastEpisodeJob->data() );
     localFile->close();
 
     setLocalUrl( m_localUrl );

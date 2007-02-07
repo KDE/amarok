@@ -75,7 +75,7 @@ void ClickLineEdit::paintEvent( QPaintEvent *ev )
 
         // Add two pixel margin on the left side
         cr.rLeft() += 3;
-        p.drawText( cr, Qt::AlignAuto | Qt::AlignVCenter, mClickMessage );
+        p.drawText( cr, Qt::AlignLeft | Qt::AlignVCenter, mClickMessage );
         p.setPen( tmp );
     }
 }

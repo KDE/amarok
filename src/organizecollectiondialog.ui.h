@@ -36,7 +36,7 @@ QString OrganizeCollectionDialog::buildDestination( const QString &format, const
     args["artist"] = artist;
     args["albumartist"] = albumartist;
     args["folder"] = folderCombo->currentText();
-    args["initial"] = albumartist.mid( 0, 1 ).upper();
+    args["initial"] = albumartist.mid( 0, 1 ).toUpper();
     args["filetype"] = mb.url().path().section( ".", -1 ).toLower();
     QString track;
     if ( mb.track() )

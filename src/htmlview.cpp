@@ -106,7 +106,7 @@ void HTMLView::paletteChange() {
 QString
 HTMLView::loadStyleSheet()
 {
-    QString themeName = AmarokConfig::contextBrowserStyleSheet().latin1();
+    QString themeName = AmarokConfig::contextBrowserStyleSheet().toLatin1();
     const QString file = KGlobal::dirs()->findResource( "data","amarok/themes/" + themeName + "/stylesheet.css" );
 
     QString styleSheet;

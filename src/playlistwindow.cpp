@@ -695,7 +695,7 @@ void PlaylistWindow::createGUI()
     const QStringList::ConstIterator last = list.fromLast();
     for( QStringList::ConstIterator it = list.constBegin(); it != end; ++it )
     {
-        QToolButton* const button = m_toolbar->findChild<QToolButton*>( (*it).latin1() );
+        QToolButton* const button = m_toolbar->findChild<QToolButton*>( (*it).toLatin1() );
 
         if ( it == last ) {
             //if the user has no PlayerWindow, he MUST have the menu action plugged

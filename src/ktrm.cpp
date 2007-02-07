@@ -192,7 +192,7 @@ protected:
 
             if(useProxy) {
                 KUrl proxy = KProtocolManager::proxyFor("http");
-                tp_SetProxy(m_pimp, proxy.host().latin1(), short(proxy.port()));
+                tp_SetProxy(m_pimp, proxy.host().toLatin1(), short(proxy.port()));
             }
         }
 #else
@@ -875,7 +875,7 @@ double stringSimilarity(QString s1, QString s2)
 
     while(p1 < l1 && p2 < l2) {
         c1 = s1.at(p1); c2 = s2.at(p2);
-        if( c1.upper() == c2.upper()) {
+        if( c1.toUpper() == c2.toUpper()) {
             ++nCommon;
             ++p1; ++p2;
         }

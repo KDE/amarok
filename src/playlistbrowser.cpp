@@ -1826,7 +1826,7 @@ bool PlaylistBrowser::savePlaylist( const QString &path, const Q3ValueList<KUrl>
         if (url.protocol() == "file" ) {
             if ( relative ) {
                 const QFileInfo fi(file);
-                stream << KUrl::relativePath(fi.dirPath(), url.path());
+                stream << KUrl::relativePath(fi.path(), url.path());
             } else
                 stream << url.path();
         } else {

@@ -518,7 +518,7 @@ void App::initGlobalShortcuts()
 
     for( uint i = 0; i < list.count(); ++i )
     {
-        KAction *action = ac->action( list.name( i ).latin1() );
+        KAction *action = ac->action( list.name( i ).toLatin1() );
 
         if( action )
         {
@@ -1364,20 +1364,20 @@ namespace Amarok
 
     QString decapitateString( const QString &input, const QString &ref )
     {
-        QString t = ref.upper();
+        QString t = ref.toUpper();
         int length = t.length();
         int commonLength = 0;
         while( length > 0 )
         {
-            if ( input.upper().startsWith( t ) )
+            if ( input.toUpper().startsWith( t ) )
             {
                 commonLength = t.length();
-                t = ref.upper().left( t.length() + length/2 );
+                t = ref.toUpper().left( t.length() + length/2 );
                 length = length/2;
             }
             else
             {
-                t = ref.upper().left( t.length() - length/2 );
+                t = ref.toUpper().left( t.length() - length/2 );
                 length = length/2;
             }
         }

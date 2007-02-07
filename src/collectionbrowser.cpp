@@ -4601,7 +4601,7 @@ DividerItem::paintCell ( QPainter * p, const QColorGroup & cg,
     if( column == 0 )  // For iPod viewing mode
       {
         QFontMetrics fm( p->fontMetrics() );
-        int x = !QApplication::reverseLayout() ? 25 : width - 25;
+        int x = !QApplication::isRightToLeft() ? 25 : width - 25;
         int y = fm.ascent() + (height() - fm.height())/2;
         p->drawText( x, y, m_text );
       }
@@ -4687,7 +4687,7 @@ DividerItem::createGroup(const QString& src, int cat)
         }
         */
         if ( !ret.isEmpty()  &&  ret.at(0).isLetterOrNumber() )
-          ret = ret.left( 1 ).upper();
+          ret = ret.left( 1 ).toUpper();
         else
           return "";
         /*else

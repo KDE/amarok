@@ -122,7 +122,7 @@ Amarok::Slider::slideEvent( QMouseEvent *e )
     QRect rect = style()->subControlRect( QStyle::CC_Slider, &complex , QStyle::SC_SliderHandle, this );
 
     QSlider::setValue( orientation() == Qt::Horizontal
-        ? ((QApplication::reverseLayout())
+        ? ((QApplication::isRightToLeft())
           ? IReallyHateProtected::sValueFromPosition( width() - (e->pos().x() - rect.width()/2),  width()  + rect.width() )
           : IReallyHateProtected::sValueFromPosition( e->pos().x() - rect.width()/2,  width()  - rect.width() ) )
         : IReallyHateProtected::sValueFromPosition( e->pos().y() - rect.height()/2, height() - rect.height() ) );

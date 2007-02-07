@@ -190,7 +190,7 @@ void MagnatunePurchaseHandler::saveDownloadInfo( QString infoXml )
 
     QDir purchaseDir( Amarok::saveLocation( "magnatune.com/purchases/" ) );
 
-    debug() << "magnatune save location" << purchaseDir.absPath() << endl;
+    debug() << "magnatune save location" << purchaseDir.absolutePath() << endl;
 
     //if directory does not exist, create it
     if ( ! purchaseDir.exists () )
@@ -203,7 +203,7 @@ void MagnatunePurchaseHandler::saveDownloadInfo( QString infoXml )
     QString artistName = artist.getName();
     QString fileName = artistName + " - " + m_currentAlbum.getName();
 
-    QFile file( purchaseDir.absPath() + "/" + fileName );
+    QFile file( purchaseDir.absolutePath() + "/" + fileName );
 
     //Skip if file already exists
     if ( file.exists () )

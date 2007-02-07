@@ -145,7 +145,7 @@ NjbPlaylist::setName( const QString& fileName)
         sqlite_get_table_printf( m_kionjb->m_db,
         "SELECT id FROM playlists WHERE name='%q'",
         &result, &nrow, &ncolumn, &errmsg,
-        playlistName.latin1());
+        playlistName.toLatin1());
         if( errmsg) {
         m_kionjb->warning( errmsg);
         free( errmsg);
@@ -165,7 +165,7 @@ NjbPlaylist::setName( const QString& fileName)
         return ERR_COULD_NOT_WRITE;
         }*/
 
-    if ( NJB_Playlist_Set_Name( m_playlist, unescapefilename(fileName).latin1() ) == NJB_FAILURE )
+    if ( NJB_Playlist_Set_Name( m_playlist, unescapefilename(fileName).toLatin1() ) == NJB_FAILURE )
     {
         debug() << __PRETTY_FUNCTION__ << ": NJB_Playlist_Set_Name failed\n";
         return ERR_COULD_NOT_WRITE;

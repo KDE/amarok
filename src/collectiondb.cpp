@@ -6342,10 +6342,10 @@ MySqlConnection::MySqlConnection( const MySqlConfig* config )
 //         if ( config->username().isEmpty() )
 //             pApp->slotConfigAmarok("MySql");
 
-        if ( mysql_real_connect( m_db, config->host().latin1(),
-                                       config->username().latin1(),
-                                       config->password().latin1(),
-                                       config->database().latin1(),
+        if ( mysql_real_connect( m_db, config->host().toLatin1(),
+                                       config->username().toLatin1(),
+                                       config->password().toLatin1(),
+                                       config->database().toLatin1(),
                                        config->port(),
                                        NULL, CLIENT_COMPRESS ) )
         {
@@ -6354,9 +6354,9 @@ MySqlConnection::MySqlConnection( const MySqlConfig* config )
 #if MYSQL_VERSION_ID >= 40113
             // now set the right charset for the connection
             QStringList my_qslist = query( "SHOW VARIABLES LIKE 'character_set_database'" );
-            if( !my_qslist.isEmpty() && !mysql_set_character_set( m_db, const_cast<char *>( my_qslist[1].latin1() ) ) )
+            if( !my_qslist.isEmpty() && !mysql_set_character_set( m_db, const_cast<char *>( my_qslist[1].toLatin1() ) ) )
                 //charset was updated
-                debug() << "Connection Charset is now: " << my_qslist[1].latin1() << endl;
+                debug() << "Connection Charset is now: " << my_qslist[1].toLatin1() << endl;
             else
                 error() << "Failed to set database charset\n";
 #endif
@@ -6369,15 +6369,15 @@ MySqlConnection::MySqlConnection( const MySqlConfig* config )
 
             if ( mysql_real_connect(
                     m_db,
-                    config->host().latin1(),
-                    config->username().latin1(),
-                    config->password().latin1(),
+                    config->host().toLatin1(),
+                    config->username().toLatin1(),
+                    config->password().toLatin1(),
                     NULL,
                     config->port(),
                     NULL, CLIENT_COMPRESS))
             {
                 if ( mysql_query(m_db,
-                    QString( "CREATE DATABASE " + config->database() ).latin1() ) )
+                    QString( "CREATE DATABASE " + config->database() ).toLatin1() ) )
                     { m_connected = true; m_initialized = true; }
                 else
                     { setMysqlError(); }

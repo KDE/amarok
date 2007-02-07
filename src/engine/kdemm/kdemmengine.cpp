@@ -111,9 +111,9 @@ bool KDEMMEngine::canDecode( const KUrl &url ) const
 
     KFileItem fileItem( KFileItem::Unknown, KFileItem::Unknown, url, false ); //false = determineMimeType straight away
     KMimeType::Ptr mimetype = fileItem.determineMimeType();
-    kDebug() << "mimetype: " << mimetype->name().latin1() << endl;
+    kDebug() << "mimetype: " << mimetype->name().toLatin1() << endl;
 
-    return list.contains( mimetype->name().latin1() );
+    return list.contains( mimetype->name().toLatin1() );
 }  // canDecode
 
 
