@@ -96,8 +96,8 @@ set(libamarokcore_SRCS
 
 set(libplugin_SRCS
 	${CMAKE_SOURCE_DIR}/amarok/src/plugin/plugin.cpp
-        ${CMAKE_SOURCE_DIR}/amarok/src/plugin/pluginconfig.h
-	)
+        ${CMAKE_SOURCE_DIR}/amarok/src/plugin/pluginconfig.cpp
+)
 
 # set(libanalyzers_SRCS
 #     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/analyzerbase.cpp
