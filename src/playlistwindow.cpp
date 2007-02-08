@@ -405,25 +405,10 @@ void PlaylistWindow::init()
         filterButton->setToolTip( i18n( "Click to edit playlist filter" ) );
         bar->addWidget( filterButton );
 
-
-//TODO: what gets done with this?
-//         bar->boxLayout()->addStretch();
-//         QWidget *button = new QToolButton( QICON(Amarok::Icon("locationbar_erase")), 1, bar );
-
-//         m_lineEdit = new KLineEdit( bar );
-//         m_lineEdit->setClickMessage( i18n( "Playlist Search" ) );
-//         filter_label->setBuddy( m_lineEdit );
-//         m_lineEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
-//         KPushButton *filterButton = new KPushButton( "...", bar );
-//         filterButton->setObjectName( "filter" );
-//         filterButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
-
-//         m_lineEdit->setFrame( Q3Frame::Sunken );
-//         m_lineEdit->installEventFilter( this ); //we intercept keyEvents
-
-        connect( clearButton, SIGNAL(clicked()), m_lineEdit, SLOT(clear()) );
-        connect( m_lineEdit, SIGNAL(textChanged( const QString& )),
-                playlist, SLOT(setFilterSlot( const QString& )) );
+        connect( clearButton,  SIGNAL( clicked() ),
+                 m_lineEdit,     SLOT( clear() ) );
+        connect( m_lineEdit,   SIGNAL( textChanged( const QString& ) ),
+                 playlist,       SLOT( setFilterSlot( const QString& ) ) );
         connect( filterButton, SIGNAL( clicked() ), SLOT( slotEditFilter() ) );
     } //</Search LineEdit>
 
