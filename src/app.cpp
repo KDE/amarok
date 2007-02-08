@@ -987,7 +987,7 @@ void App::engineStateChanged( Engine::State state, Engine::State oldState )
         if ( oldState == Engine::Paused )
             Amarok::OSD::instance()->OSDWidget::show( i18nc( "state, as in playing", "Play" ) );
         if ( !bundle.prettyTitle().isEmpty() )
-            m_pPlaylistWindow->setCaption( i18n("Amarok - %1").arg( bundle.veryNiceTitle() ) );
+            m_pPlaylistWindow->setCaption( i18n("Amarok - %1", bundle.veryNiceTitle() ) );
         break;
 
     case Engine::Paused:
