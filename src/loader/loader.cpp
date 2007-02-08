@@ -26,6 +26,7 @@
 #include <QTimerEvent>
 #include <kglobal.h>
 #include <kstandarddirs.h>
+#include <kcomponentdata.h>
 #include "splash.h"
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
@@ -203,7 +204,7 @@ bool
 isSplashEnabled()
 {
     //determine whether splash-screen is enabled in amarokrc
-//    KInstance instance("amarok"); // KGlobal::dirs() crashes without
+    KComponentData instance("amarok"); // KGlobal::dirs() crashes without
     //(void)KGlobal::config(); // the kubuntu special directory is not present without this
     QStringList dirs = KGlobal::dirs()->findAllResources( "config", "amarokrc" );
 
