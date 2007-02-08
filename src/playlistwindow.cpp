@@ -142,12 +142,14 @@ PlaylistWindow::PlaylistWindow()
 //TODO: Is the right?
     //KStandardAction::open( this, "playlist_add", ac )->setText( i18n("&Add Media...") );
     KAction *action = new KAction( this );
+    connect( action, SIGNAL( triggered(bool) ), this, SLOT( slotAddLocation() ) );
     action->setIcon( KIcon( Amarok::icon( "files" ) ) );
     action->setText( i18n("&Add Media...") );
     ac->addAction( "playlist_add", action );
 
     //KStandardAction::open( this, "stream_add", ac )->setText( i18n("&Add Stream...") );
     action = new KAction( this );
+    connect( action, SIGNAL( triggered(bool) ), this, SLOT( slotAddStream() ) );
     action->setIcon( KIcon( Amarok::icon( "files" ) ) );
     action->setText( i18n("&Add Stream...") );
     ac->addAction( "stream_add", action );
@@ -155,6 +157,7 @@ PlaylistWindow::PlaylistWindow()
 
     //KStandardAction::save( this, "playlist_save", ac )->setText( i18n("&Save Playlist As...") );
     action = new KAction( this );
+    connect( action, SIGNAL( triggered(bool) ), this, SLOT( savePlaylist() ) );
     action->setIcon( KIcon( Amarok::icon( "save" ) ) );
     action->setText( i18n("&Save Playlist As...") );
     ac->addAction( "playlist_save", action );
