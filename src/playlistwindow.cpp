@@ -59,7 +59,6 @@
 #include <QWheelEvent>
 #include <QCloseEvent>
 #include <QShowEvent>
-#include <Q3Frame>
 #include <QPaintEvent>
 #include <Q3PopupMenu>
 

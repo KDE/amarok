@@ -106,30 +106,33 @@ CollectionBrowser::CollectionBrowser( const char* name )
 {
     s_instance = this;
 
+    KVBox *browserLayout = new KVBox( this );
+
 //     setSpacing( 4 );
 
-    m_toolbar = new Browser::ToolBar( this );
+    m_toolbar = new Browser::ToolBar( browserLayout );
 
     { //<Search LineEdit>
-        QToolButton *button;
-        QToolBar* searchToolBar = new Browser::ToolBar( this );
-        button       = new QToolButton( searchToolBar );
+        QToolBar    *searchToolBar = new Browser::ToolBar( browserLayout );
+
+        QToolButton *button        = new QToolButton( searchToolBar );
         button->setIcon( QIcon("locationbar_erase") );
-        m_searchEdit = new KLineEdit(  searchToolBar );
+        button->setToolTip( i18n( "Clear search field" ) );
+
+        m_searchEdit = new KLineEdit( searchToolBar );
         m_searchEdit->setClickMessage( i18n("Enter search terms here" ) );
-        m_searchEdit->installEventFilter( this );
+        m_searchEdit->installEventFilter( this ); // capture key presses
+        m_searchEdit->setFrame( QFrame::Sunken );
+        m_searchEdit->setToolTip( i18n( "Enter space-separated terms to search in the collection" ) );
+        searchToolBar->addWidget( m_searchEdit );
+
         KPushButton *filterButton = new KPushButton( "...", searchToolBar );
         filterButton->setObjectName( "filter" );
-//      do we need this still?
-        m_searchEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
+        filterButton->setToolTip( i18n( "Click to edit collection filter" ) );
+        searchToolBar->addWidget( filterButton );
 
-        m_searchEdit->setFrame( Q3Frame::Sunken );
         connect( button, SIGNAL( clicked() ), SLOT( slotClearFilter() ) );
         connect( filterButton, SIGNAL( clicked() ), SLOT( slotEditFilter() ) );
-
-        button->setToolTip( i18n( "Clear search field" ) );
-        m_searchEdit->setToolTip( i18n( "Enter space-separated terms to search in the collection" ) );
-        filterButton->setToolTip( i18n( "Click to edit collection filter" ) );
     } //</Search LineEdit>
 
 
@@ -138,13 +141,13 @@ CollectionBrowser::CollectionBrowser( const char* name )
     // hidden when not in iPod browsing mode; it is shown and hidden
     // in CollectionView::setViewMode().  m_ipodHbox holds m_timeFilter
     // and m_ipodToolbar
-    m_ipodHbox = new QWidget( this );
+    QWidget *m_timeHBox = new QWidget( browserLayout );
     QHBoxLayout *layout = new QHBoxLayout;
-    m_ipodHbox->setLayout(layout);
-//     m_ipodHbox->setSpacing( 7 );  // looks better
+    m_timeHBox->setLayout( layout );
+    m_timeHBox->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 
-    m_timeFilter = new KComboBox( m_ipodHbox /*, "timeFilter"*/ );
-    m_ipodHbox->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
+    m_timeFilter = new KComboBox( m_timeHBox );
+    m_timeFilter->setObjectName( "timeFilter" );
     // Allow the combobox to shrink so the iPod buttons are still visible
     m_timeFilter->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     m_timeFilter->insertItem( i18n( "Entire Collection" ) );
@@ -157,8 +160,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
 
     // m_ipodToolbar just holds the forward and back buttons, which are
     // plugged below
-    m_ipodToolbar = new Browser::ToolBar( m_ipodHbox );
-    //m_ipodHbox->setStretchFactor( m_ipodToolbar, 0 );
+    m_ipodToolbar = new Browser::ToolBar( m_timeHBox );
     m_ipodToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
 
 
@@ -4429,7 +4431,7 @@ CollectionItem::paintCell ( QPainter * painter, const QColorGroup & cg,
         QColor bg = isSelected()  ? _cg.highlight()
             : isAlternate() ? listView()->alternateBackground()
             : listView()->viewport()->backgroundColor();
-        
+
 	buf.fill( bg );
 
         int rating = text(column).toInt();
