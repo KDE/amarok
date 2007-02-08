@@ -1172,7 +1172,7 @@ QWidget *App::mainWindow() const
 void App::quit()
 {
     emit prepareToQuit();
-    if( MediaBrowser::instance()->blockQuit() )
+    if( MediaBrowser::instance() && MediaBrowser::instance()->blockQuit() )
     {
         // don't quit yet, as some media devices still have to finish transferring data
         QTimer::singleShot( 100, this, SLOT( quit() ) );

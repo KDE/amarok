@@ -79,6 +79,7 @@ MagnatuneBrowser::MagnatuneBrowser( const char *name )
 void MagnatuneBrowser::itemExecuted( Q3ListViewItem * item )
 {
     DEBUG_BLOCK;
+    if ( !item ) return;
     switch ( item->depth() )
     {
     case 2:
