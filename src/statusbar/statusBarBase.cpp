@@ -30,6 +30,7 @@
 #include <kiconloader.h>
 #include <klocale.h>
 #include <kstandardguiitem.h>
+#include <kicon.h>
 
 #include <QApplication>
 #include <QDateTime>      //writeLogFile()
@@ -48,14 +49,10 @@
 #include <QToolTip> //QToolTip::palette()
 #include <kvbox.h>
 //Added by qt3to4:
-#include <Q3HBoxLayout>
 #include <QCustomEvent>
-#include <Q3GridLayout>
-#include <Q3Frame>
 #include <QEvent>
 #include <QPaintEvent>
 #include <QStyleOption>
-#include <Q3TextStream>
 
 //segregated classes
 #include "popupMessage.h"
@@ -97,10 +94,16 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
         , m_logCounter( -1 )
 {
     setObjectName( name );
-    Q3BoxLayout *mainlayout = new Q3HBoxLayout( this, 2, /*spacing*/5 );
+    QHBoxLayout *mainlayout = new QHBoxLayout;
+    mainlayout->setSpacing( 5 );
+    this->setLayout( mainlayout );
 
     //we need extra spacing due to the way we paint the surrounding boxes
-    Q3BoxLayout *layout = new Q3HBoxLayout( mainlayout, /*spacing*/5 );
+//TODO: Do we still need to stack layouts?
+//     Q3BoxLayout *layout = new Q3HBoxLayout( mainlayout, /*spacing*/5 );
+   QHBoxLayout *layout = new QHBoxLayout;
+    layout->setSpacing( 5 );
+    mainlayout->addLayout( layout );
 
     KHBox *statusBarTextBox = new KHBox( this );
     m_mainTextLabel = new KDE::SqueezedTextLabel( statusBarTextBox, "mainTextLabel" );
@@ -110,29 +113,31 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 
     KHBox *mainProgressBarBox = new KHBox( this );
     mainProgressBarBox->setObjectName( "progressBox" );
-    QToolButton *b1 = new QToolButton( mainProgressBarBox, "cancelButton" );
+    QToolButton *b1 = new QToolButton( mainProgressBarBox ); //cancelbutton
     m_mainProgressBar  = new QProgressBar( mainProgressBarBox);
-    QToolButton *b2 = new QToolButton( mainProgressBarBox, "showAllProgressDetails" );
+    QToolButton *b2 = new QToolButton( mainProgressBarBox ); //showprogressdetails button
     mainProgressBarBox->setSpacing( 2 );
     mainProgressBarBox->hide();
 
-    layout->add( statusBarTextBox );
-    layout->add( mainProgressBarBox );
+    layout->addWidget( statusBarTextBox );
+    layout->addWidget( mainProgressBarBox );
     layout->setStretchFactor( statusBarTextBox, 3 );
     layout->setStretchFactor( mainProgressBarBox, 1 );
 
-    m_otherWidgetLayout = new Q3HBoxLayout( mainlayout, /*spacing*/5 );
+    m_otherWidgetLayout = new QHBoxLayout;
+    m_otherWidgetLayout->setSpacing( 5 );
+    mainlayout->addLayout( m_otherWidgetLayout );
 
     mainlayout->setStretchFactor( layout, 6 );
     mainlayout->setStretchFactor( m_otherWidgetLayout, 4 );
 
-    shortLongButton->setIconSet( SmallIconSet( "edit_add" ) );
+    shortLongButton->setIcon( KIcon( "edit_add" ) );
     shortLongButton->setToolTip( i18n( "Show details" ) );
     connect( shortLongButton, SIGNAL(clicked()), SLOT(showShortLongDetails()) );
 
-    b1->setIconSet( SmallIconSet( "cancel" ) );
-    b2->setIconSet( SmallIconSet( "2uparrow") );
-    b2->setToggleButton( true );
+    b1->setIcon( KIcon( "cancel" ) );
+    b2->setIcon( KIcon( "2uparrow") );
+    b2->setCheckable( true );
     b1->setToolTip( i18n( "Abort all background-operations" ) );
     b2->setToolTip( i18n( "Show progress detail" ) );
     connect( b1, SIGNAL(clicked()), SLOT(abortAllProgressOperations()) );
@@ -140,16 +145,16 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 
     m_popupProgress = new OverlayWidget( this, mainProgressBarBox, "popupProgress" );
     m_popupProgress->setMargin( 1 );
-    m_popupProgress->setFrameStyle( Q3Frame::Panel | Q3Frame::Raised );
-    m_popupProgress->setFrameShape( Q3Frame::StyledPanel );
+    m_popupProgress->setFrameStyle( QFrame::Panel | QFrame::Raised );
+    m_popupProgress->setFrameShape( QFrame::StyledPanel );
     m_popupProgress->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-   (new Q3GridLayout( m_popupProgress, 1 /*rows*/, 3 /*cols*/, 6, 3 ))->setAutoAdd( true );
+   (new QGridLayout( m_popupProgress, 1 /*rows*/, 3 /*cols*/, 6, 3 ))->setAutoAdd( true );
 }
 
 void
 StatusBar::addWidget( QWidget *widget )
 {
-    m_otherWidgetLayout->add( widget );
+    m_otherWidgetLayout->addWidget( widget );
 }
 
 
@@ -692,8 +697,8 @@ StatusBar::writeLogFile( const QString &text )
     }
     else if( !file.open( QIODevice::WriteOnly|QIODevice::Append ) ) return;
 
-    Q3TextStream stream( &file );
-    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
+    QTextStream stream( &file );
+    stream.setCodec( "UTF8" );
 
     stream << "[" << KGlobal::locale()->formatDateTime( QDateTime::currentDateTime() ) << "] " << text << endl;
 }
