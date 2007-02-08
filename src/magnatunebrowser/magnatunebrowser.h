@@ -138,7 +138,7 @@ private slots:
      * Triggers a parse of the file to get the info added to the databse
      * @param downLoadJob The calling download Job
      */
-    void listDownloadComplete( KIO::Job* downLoadJob);
+    void listDownloadComplete( KJob* downLoadJob);
 
     /**
      * Slot for catching cancelled list downloads
@@ -244,7 +244,7 @@ private:
     bool         m_purchaseInProgress;
     bool         m_polished;
 
-    KIO::TransferJob * m_listDownloadJob;
+    KIO::FileCopyJob * m_listDownloadJob;
 };
 
 

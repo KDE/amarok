@@ -29,6 +29,7 @@ MagnatuneXmlParser::MagnatuneXmlParser( QString filename )
 {
     m_currentArtist = "";
     m_sFileName = filename;
+    debug() << "Creating MagnatuneXmlParser" << endl;
 }
 
 
@@ -38,6 +39,7 @@ MagnatuneXmlParser::~MagnatuneXmlParser()
 bool 
 MagnatuneXmlParser::doJob( )
 {
+    debug() << "MagnatuneXmlParser::doJob" << endl;
     readConfigFile( m_sFileName );
     return true;
 }

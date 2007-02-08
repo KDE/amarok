@@ -350,19 +350,26 @@ bool MagnatuneBrowser::updateMagnatuneList()
 {
     //download new list from magnatune
 
-    m_listDownloadJob = KIO::storedGet( KUrl( "http://magnatune.com/info/album_info.xml" ), false, false );
-    Amarok::StatusBar::instance() ->newProgressOperation( m_listDownloadJob )
-    .setDescription( i18n( "Downloading Magnatune.com Database" ) )
-    .setAbortSlot( this, SLOT( listDownloadCancelled() ) );
+     debug() << "MagnatuneBrowser: start downloading xml file" << endl;
 
-    connect( m_listDownloadJob, SIGNAL( result( KIO::Job* ) ), SLOT( listDownloadComplete( KIO::Job* ) ) );
+    m_listDownloadJob = KIO::file_copy( KUrl( "http://magnatune.com/info/album_info.xml" ), KUrl("/tmp/album_info.xml"), -1, true, false, true );
+    //Amarok::StatusBar::instance() ->newProgressOperation( m_listDownloadJob )
+    //.setDescription( i18n( "Downloading Magnatune.com Database" ) )
+    //.setAbortSlot( this, SLOT( listDownloadCancelled() ) );
+
+    connect( m_listDownloadJob, SIGNAL( result( KJob * ) ),
+            this, SLOT( listDownloadComplete( KJob * ) ) );
+
+    //connect( m_listDownloadJob, SIGNAL( result( KIO::Job* ) ), SLOT( listDownloadComplete( KIO::Job* ) ) );
 
     return true;
 }
 
 
-void MagnatuneBrowser::listDownloadComplete( KIO::Job * downLoadJob )
+void MagnatuneBrowser::listDownloadComplete( KJob * downLoadJob )
 {
+
+   debug() << "MagnatuneBrowser: xml file download complete" << endl;
 
     if ( downLoadJob != m_listDownloadJob )
         return ; //not the right job, so let's ignore it
@@ -375,11 +382,11 @@ void MagnatuneBrowser::listDownloadComplete( KIO::Job * downLoadJob )
     }
 
 
-    KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( downLoadJob );
-    QString list = QString( storedJob->data() );
+    //KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( downLoadJob );
+    //QString list = QString( storedJob->data() );
 
 
-    QFile file( "/tmp/album_info.xml" );
+ /*   QFile file( "/tmp/album_info.xml" );
 
     if ( file.exists() )
         file.remove();
@@ -389,9 +396,9 @@ void MagnatuneBrowser::listDownloadComplete( KIO::Job * downLoadJob )
         QTextStream stream( &file );
         stream << list;
         file.close();
-    }
+    }*/
 
-
+    debug() << "MagnatuneBrowser: create xml parser" << endl;
     MagnatuneXmlParser * parser = new MagnatuneXmlParser( "/tmp/album_info.xml" );
     connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
 
@@ -451,6 +458,8 @@ void MagnatuneBrowser::genreChanged()
 
 void MagnatuneBrowser::doneParsing()
 {
+
+    debug() << "MagnatuneBrowser: done parsing" << endl;
     updateList();
     updateGenreBox( );
     updateList(); // stupid stupid hack....
