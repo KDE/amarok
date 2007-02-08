@@ -29,8 +29,7 @@ add_subdirectory( vis )
 add_subdirectory( metadata )
 add_subdirectory( engine )
 add_subdirectory( mediadevice )
-MESSAGE(STATUS "read collectionscanner")
-#add_subdirectory( collectionscanner )
+add_subdirectory( collectionscanner )
 #add_subdirectory( device ) #not necessary at the moment, enable again when devicemanager has been ported to Solid
 
 

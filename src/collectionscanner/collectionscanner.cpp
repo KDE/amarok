@@ -42,10 +42,10 @@
 //Added by qt3to4:
 #include <Q3CString>
 #include <Q3ValueList>
-
+#include <QDBusReply>
 #include <kglobal.h>
 #include <klocale.h>
-
+#include <amarok_collection_interface.h>
 
 CollectionScanner::CollectionScanner( const QStringList& folders,
                                       bool recursive,
@@ -62,6 +62,7 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
         , m_pause( false )
 {
     DbusCollectionScannerHandler* dcsh = new DbusCollectionScannerHandler();
+    amarokCollectionInterface = new OrgKdeAmarokCollectionInterface("org.kde.amarok", "/Collection", QDBusConnection::sessionBus());
     connect( dcsh, SIGNAL(pauseRequest()), this, SLOT(pause()) );
     connect( dcsh, SIGNAL(unpauseRequest()), this, SLOT(resume()) );
     kapp->setName( QString( "amarokcollectionscanner" ).ascii() );
@@ -75,6 +76,7 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
 CollectionScanner::~CollectionScanner()
 {
     DEBUG_BLOCK
+    delete amarokCollectionInterface;
 }
 
 void
@@ -172,8 +174,6 @@ CollectionScanner::doJob() //SLOT
 void
 CollectionScanner::readDir( const QString& dir, QStringList& entries )
 {
-//TODO:port to dbus
-    static DCOPRef dcopRef( "amarok", "collection" );
 
     // linux specific, but this fits the 90% rule
     if( dir.startsWith( "/dev" ) || dir.startsWith( "/sys" ) || dir.startsWith( "/proc" ) )
@@ -255,9 +255,11 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
 
             bool isInCollection = false;
             if( m_incremental )
-//TODO:port to dbus
-                dcopRef.call( "isDirInCollection", file ).get( isInCollection );
-
+	    {
+            QDBusReply<bool> reply = amarokCollectionInterface->isDirInCollection(file); 
+	    if(reply.isValid())
+		 isInCollection=reply;
+	    }
             if( !m_incremental || !isInCollection )
                 // we MUST add a '/' after the dirname
                 readDir( file + '/', entries );
@@ -285,8 +287,6 @@ CollectionScanner::scanFiles( const QStringList& entries )
     QStringList images;
 
     int itemCount = 0;
-//TODO: Port to dbus
-    DCOPRef dcopRef( "amarok", "collection" );
 
     oldForeachType( QStringList, entries ) {
         const QString path = *it;
@@ -371,14 +371,13 @@ CollectionScanner::scanFiles( const QStringList& entries )
             kapp->processEvents();  // let DCOP through!
             if( m_pause )
             {
-//TODO Port to dbus
-                dcopRef.send( "scannerAcknowledged" );
+                amarokCollectionInterface->scannerAcknowledged();
                 while( m_pause )
                 {
                     sleep( 1 );
                     kapp->processEvents();
                 }
-                dcopRef.send( "scannerAcknowledged" );
+		amarokCollectionInterface->scannerAcknowledged();
             }
         }
 
@@ -470,7 +469,7 @@ CollectionScanner::writeElement( const QString& name, const AttributeMap& attrib
     element.save( stream, 0 );
 
 
-    std::cout << text.utf8() << std::endl;
+    //std::cout << text.utf8() << std::endl;
 }
 
 

@@ -38,7 +38,6 @@
 #include <Q3CString>
 #include <Q3ValueList>
 
-//#include <dcopref.h>
 #include <kapplication.h>
 #include <klocale.h>
 #include <kmessagebox.h>
@@ -350,14 +349,14 @@ ScanController::slotReadReady()
     m_dataMutex.unlock();
 }
 
-/*bool
+bool
 ScanController::requestPause()
 {
     DEBUG_BLOCK
     debug() << "Attempting to pause the collection scanner..." << endl;
-    DCOPRef dcopRef( "amarokcollectionscanner", "scanner" );
+    //DCOPRef dcopRef( "amarokcollectionscanner", "scanner" );
     m_lastCommandPaused = true;
-    return dcopRef.send( "pause" );
+    return false;//dcopRef.send( "pause" );
 }
 
 bool
@@ -365,9 +364,9 @@ ScanController::requestUnpause()
 {
     DEBUG_BLOCK
     debug() << "Attempting to unpause the collection scanner..." << endl;
-    DCOPRef dcopRef( "amarokcollectionscanner", "scanner" );
+    //DCOPRef dcopRef( "amarokcollectionscanner", "scanner" );
     m_lastCommandPaused = false;
-    return dcopRef.send( "unpause" );
+    return false;//dcopRef.send( "unpause" );
 }
 
 void
@@ -380,7 +379,7 @@ ScanController::requestAcknowledged()
         m_isPaused = true;
     else
         m_isPaused = false;
-}*/
+}
 
 void
 ScanController::slotFileMoved( const QString &/*src*/, const QString &/*dest*/)

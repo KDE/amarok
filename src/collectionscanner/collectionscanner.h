@@ -32,6 +32,7 @@
 #include <Q3MemArray>
 
 #include <kapplication.h>
+#include <amarok_collection_interface.h>
 
 typedef QMap<QString, QString> AttributeMap;
 
@@ -112,6 +113,7 @@ private:
     } KDE_PACKED;
 
     Q3MemArray<direntry> m_processedDirs;
+    OrgKdeAmarokCollectionInterface *amarokCollectionInterface;
 };
 
 

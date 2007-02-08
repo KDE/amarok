@@ -4,15 +4,19 @@ include_directories( ${CMAKE_SOURCE_DIR}/amarok/src ${KDE4_INCLUDE_DIR} ${QT_INC
 
 ########### next target ###############
 
-set(amarokcollectionscanner_SRCS main.cpp collectionscanner.cpp )
+set(amarokcollectionscanner_SRCS main.cpp collectionscanner.cpp collectionscannerdbushandler.cpp)
 
-qt4_add_dbus_adaptor( amarokcollectionscanner_SRCS org.kde.amarok.scanner.xml collectionscannerdcophandler.h DbusCollectionScannerHandler )
+set(amarok_collection_xml  ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/org.kde.amarok.collection.xml)
+QT4_ADD_DBUS_INTERFACE( amarokcollectionscanner_SRCS ${amarok_collection_xml} amarok_collection_interface )
+
+
+qt4_add_dbus_adaptor( amarokcollectionscanner_SRCS org.kde.amarok.scanner.xml collectionscannerdbushandler.h DbusCollectionScannerHandler )
 
 kde4_automoc(${amarokcollectionscanner_SRCS})
 
 kde4_add_executable(amarokcollectionscanner ${amarokcollectionscanner_SRCS})
 
-target_link_libraries(amarokcollectionscanner  ${KDE4_KDECORE_LIBS} metadata amarok )
+target_link_libraries(amarokcollectionscanner  ${KDE4_KDECORE_LIBS} amarok_taglib amarok ${KDE4_KDE3SUPPORT_LIBS} ${QT_QT3SUPPORT_LIBRARY} )
 
 install(TARGETS amarokcollectionscanner DESTINATION ${BIN_INSTALL_DIR} )
 
