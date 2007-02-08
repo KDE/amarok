@@ -20,6 +20,7 @@
 #include "amarok.h"
 #include "debug.h"
 #include "magnatunealbumdownloader.h"
+#include "magnatunealbumdownloader.moc"
 #include "magnatunedatabasehandler.h"
 #include "magnatunetypes.h"
 #include "statusbar.h"

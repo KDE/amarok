@@ -129,10 +129,10 @@ set(libmagnatunebrowser_SRCS
 	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser/magnatunedownloadinfo.cpp
 	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser/magnatunealbumdownloader.cpp)
 
-#magnatunedownloaddialogbase.ui 
-#        magnatunepurchasedialogbase.ui 
-#        magnatuneredownloaddialogbase.ui
-
+kde4_add_ui3_files(libmagnatunebrowser_SRCS
+	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser/magnatunedownloaddialogbase.ui
+	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser/magnatunepurchasedialogbase.ui
+	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser/magnatuneredownloaddialogbase.ui)
 
 
 # set(libanalyzers_SRCS
@@ -161,7 +161,7 @@ set(libstatusbar_SRCS
 ########### next target ###############
 
 set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
-        ${libsqlite_SRCS}
+        ${libsqlite_SRCS} ${libmagnatunebrowser_SRCS}
         # ${libanalyzers_SRCS}
    Options1.ui.h
    actionclasses.cpp

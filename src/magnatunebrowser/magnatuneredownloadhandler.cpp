@@ -18,7 +18,7 @@
 */
 
 #include "magnatuneredownloadhandler.h"
-
+#include "magnatuneredownloadhandler.moc"
 
 #include "amarok.h"
 #include "debug.h"

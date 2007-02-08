@@ -64,7 +64,7 @@
                         <cstring>formatComboBox</cstring>
                     </property>
                 </widget>
-                <widget class="KURLRequester" row="1" column="1">
+                <widget class="KUrlRequester" row="1" column="1">
                     <property name="name">
                         <cstring>downloadTargetURLRequester</cstring>
                     </property>

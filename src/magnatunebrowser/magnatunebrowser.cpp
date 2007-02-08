@@ -39,8 +39,9 @@ Boston, MA 02110-1301, USA.
 MagnatuneBrowser *MagnatuneBrowser::s_instance = 0;
 
 MagnatuneBrowser::MagnatuneBrowser( const char *name )
-        : KVBox( 0, name )
+        : KVBox( 0)
 {
+    setObjectName(name);
     DEBUG_BLOCK
     initTopPanel( );
 
@@ -291,7 +292,7 @@ void MagnatuneBrowser::purchaseAlbumContainingSelectedTrack( )
 
 void MagnatuneBrowser::initTopPanel( )
 {
-    m_topPanel = new KHBox( this, "topPanel", 0 );
+    m_topPanel = new KHBox( this);
     m_topPanel->setMaximumHeight( 24 );
     m_topPanel->setSpacing( 2 );
     m_topPanel->setMargin( 2 );
@@ -310,12 +311,12 @@ void MagnatuneBrowser::initTopPanel( )
 
 void MagnatuneBrowser::initBottomPanel()
 {
-    m_bottomPanel = new KVBox( this, "bottomPanel", 0 );
+    m_bottomPanel = new KVBox( this );
     m_bottomPanel->setMaximumHeight( 54 );
     m_bottomPanel->setSpacing( 2 );
     m_bottomPanel->setMargin( 2 );
 
-    KHBox *hBox = new KHBox( m_bottomPanel, "bottomHBox", 0 );
+    KHBox *hBox = new KHBox( m_bottomPanel);
     hBox->setMaximumHeight( 24 );
     hBox->setSpacing( 2 );
     //hBox->setMargin( 2 );
