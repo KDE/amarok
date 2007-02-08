@@ -775,7 +775,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
                         if( file.open( QIODevice::ReadOnly ) )
                         {
                             debug() << "[CUEFILE]: " << *it << " - Opened, looking for the matching FILE stanza." << endl;
-                            Q3TextStream stream( &file );
+                            QTextStream stream( &file );
                             QString line;
 
                             while ( !stream.atEnd() && !foundCueFile)
@@ -873,8 +873,8 @@ void ContextBrowser::saveHtmlData()
 {
     QFile exportedDocument( Amarok::saveLocation() + "contextbrowser.html" );
     exportedDocument.open(QIODevice::WriteOnly);
-    Q3TextStream stream( &exportedDocument );
-    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
+    QTextStream stream( &exportedDocument );
+    stream.setCodec( "UTF8" );
     stream << m_HTMLSource // the pure html data..
         .replace( "<html>", QString( "<html><head><style type=\"text/css\">%1</style></head>" ).arg( HTMLView::loadStyleSheet() ) ); // and the stylesheet code
     exportedDocument.close();

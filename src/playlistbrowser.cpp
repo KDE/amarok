@@ -403,8 +403,8 @@ PlaylistCategory* PlaylistBrowser::loadStreams()
 {
     QFile file( streamBrowserCache() );
 
-    Q3TextStream stream( &file );
-    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
+    QTextStream stream( &file );
+    stream.setCodec( "UTF8" );
 
     QDomDocument d;
     QDomElement e;
@@ -440,8 +440,8 @@ void PlaylistBrowser::loadCoolStreams()
     if( !file.open( QIODevice::ReadOnly ) )
         return;
 
-    Q3TextStream stream( &file );
-    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
+    QTextStream stream( &file );
+    stream.setCodec( "UTF8" );
 
     QDomDocument d;
 
@@ -517,8 +517,8 @@ void PlaylistBrowser::saveStreams()
     // Only open the file after all data is ready. If it crashes, data is not lost!
     if ( !file.open( QIODevice::WriteOnly ) ) return;
 
-    Q3TextStream stream( &file );
-    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
+    QTextStream stream( &file );
+    stream.setCodec( "UTF8" );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     stream << temp;
 }
@@ -533,8 +533,8 @@ void PlaylistBrowser::loadLastfmStreams( const bool subscriber /*false*/ )
 {
     QFile file( Amarok::saveLocation() + "lastfmbrowser_save.xml" );
 
-    Q3TextStream stream( &file );
-    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
+    QTextStream stream( &file );
+    stream.setCodec( "UTF8" );
 
     QDomDocument d;
     QDomElement e;
@@ -638,8 +638,8 @@ void PlaylistBrowser::saveLastFm()
     // Only open the file after all data is ready. If it crashes, data is not lost!
     if ( !file.open( QIODevice::WriteOnly ) ) return;
 
-    Q3TextStream stream( &file );
-    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
+    QTextStream stream( &file );
+    stream.setCodec( "UTF8" );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     stream << temp;
 }
@@ -695,8 +695,8 @@ PlaylistCategory* PlaylistBrowser::loadSmartPlaylists()
 {
 
     QFile file( smartplaylistBrowserCache() );
-    Q3TextStream stream( &file );
-    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
+    QTextStream stream( &file );
+    stream.setCodec( "UTF8" );
     Q3ListViewItem *after = m_playlistCategory;
 
     QDomDocument d;
@@ -957,8 +957,8 @@ void PlaylistBrowser::saveSmartPlaylists( PlaylistCategory *smartCategory )
     // Only open the file after all data is ready. If it crashes, data is not lost!
     if ( !file.open( QIODevice::WriteOnly ) ) return;
 
-    Q3TextStream smart( &file );
-    smart.setEncoding( Q3TextStream::UnicodeUTF8 );
+    QTextStream smart( &file );
+    smart.setEncoding( QTextStream::UnicodeUTF8 );
     smart << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     smart << temp;
 }
@@ -978,8 +978,8 @@ PlaylistCategory* PlaylistBrowser::loadDynamics()
 {
     QFile file( dynamicBrowserCache() );
 
-    Q3TextStream stream( &file );
-    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
+    QTextStream stream( &file );
+    stream.setCodec( "UTF8" );
 
     QDomDocument d;
     QDomElement e;
@@ -1066,7 +1066,7 @@ void PlaylistBrowser::saveDynamics()
     Amarok::config( "PlaylistBrowser" )->writeEntry( "Dynamic Suggest Previous Count", m_suggestedDynamic->previousCount() );
 
     QFile file( dynamicBrowserCache() );
-    Q3TextStream stream( &file );
+    QTextStream stream( &file );
 
     QDomDocument doc;
     QDomElement dynamicB = m_dynamicCategory->xml();
@@ -1081,7 +1081,7 @@ void PlaylistBrowser::saveDynamics()
     // Only open the file after all data is ready. If it crashes, data is not lost!
     if ( !file.open( QIODevice::WriteOnly ) ) return;
 
-    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
+    stream.setCodec( "UTF8" );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     stream << temp;
 }
@@ -1119,8 +1119,8 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
     DEBUG_BLOCK
 
     QFile file( podcastBrowserCache() );
-    Q3TextStream stream( &file );
-    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
+    QTextStream stream( &file );
+    stream.setCodec( "UTF8" );
 
     QDomDocument d;
     QDomElement e;
@@ -1612,8 +1612,8 @@ PlaylistCategory* PlaylistBrowser::loadPlaylists()
 {
     QFile file( playlistBrowserCache() );
 
-    Q3TextStream stream( &file );
-    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
+    QTextStream stream( &file );
+    stream.setCodec( "UTF8" );
 
     QDomDocument d;
     QDomElement e;
@@ -1798,7 +1798,7 @@ bool PlaylistBrowser::savePlaylist( const QString &path, const Q3ValueList<KUrl>
         return false;
     }
 
-    Q3TextStream stream( &file );
+    QTextStream stream( &file );
     stream << "#EXTM3U\n";
 
     KUrl::List urls;
@@ -1871,8 +1871,8 @@ void PlaylistBrowser::savePlaylists()
     // Only open the file after all data is ready. If it crashes, data is not lost!
     if ( !file.open( QIODevice::WriteOnly ) ) return;
 
-    Q3TextStream stream( &file );
-    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
+    QTextStream stream( &file );
+    stream.setCodec( "UTF8" );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     stream << temp;
 }
@@ -2346,7 +2346,7 @@ void PlaylistBrowser::saveM3U( PlaylistEntry *item, bool append )
 
     if( append ? file.open( QIODevice::WriteOnly | QIODevice::Append ) : file.open( QIODevice::WriteOnly ) )
     {
-        Q3TextStream stream( &file );
+        QTextStream stream( &file );
         if( !append )
             stream << "#EXTM3U\n";
         Q3PtrList<TrackItemInfo> trackList = append ? item->droppedTracks() : item->trackList();
@@ -2404,7 +2404,7 @@ void PlaylistBrowser::savePLS( PlaylistEntry *item, bool append )
 
     if( append ? file.open( QIODevice::WriteOnly | QIODevice::Append ) : file.open( QIODevice::WriteOnly ) )
     {
-        Q3TextStream stream( &file );
+        QTextStream stream( &file );
         Q3PtrList<TrackItemInfo> trackList = append ? item->droppedTracks() : item->trackList();
         stream << "NumberOfEntries=" << trackList.count() << endl;
         int c=1;

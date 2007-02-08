@@ -18,17 +18,17 @@ XSPFPlaylist::XSPFPlaylist( )
     appendChild( root );
 }
 
-XSPFPlaylist::XSPFPlaylist( Q3TextStream &stream )
+XSPFPlaylist::XSPFPlaylist( QTextStream &stream )
 {
     loadXSPF( stream );
 }
 
 bool
-XSPFPlaylist::loadXSPF( Q3TextStream &stream )
+XSPFPlaylist::loadXSPF( QTextStream &stream )
 {
     QString errorMsg;
     int errorLine, errorColumn;
-    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
+    stream.setCodec( "UTF8" );
     if (!setContent(stream.read(), &errorMsg, &errorLine, &errorColumn))
     {
         debug() << "[XSPFPlaylist]: Error loading xml file: " "(" << errorMsg << ")"

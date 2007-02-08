@@ -524,7 +524,7 @@ PlaylistFile::PlaylistFile( const QString &path )
         return;
     }
 
-    Q3TextStream stream( &file );
+    QTextStream stream( &file );
 
     switch( format( m_path ) ) {
     case M3U: loadM3u( stream ); break;
@@ -547,7 +547,7 @@ PlaylistFile::PlaylistFile( const QString &path )
 }
 
 bool
-PlaylistFile::loadM3u( Q3TextStream &stream )
+PlaylistFile::loadM3u( QTextStream &stream )
 {
     const QString directory = m_path.left( m_path.lastIndexOf( '/' ) + 1 );
     MetaBundle b;
@@ -592,7 +592,7 @@ PlaylistFile::loadM3u( Q3TextStream &stream )
 }
 
 bool
-PlaylistFile::loadPls( Q3TextStream &stream )
+PlaylistFile::loadPls( QTextStream &stream )
 {
     // Counted number of "File#=" lines.
     unsigned int entryCnt = 0;
@@ -715,7 +715,7 @@ PlaylistFile::loadPls( Q3TextStream &stream )
 }
 
 bool
-PlaylistFile::loadXSPF( Q3TextStream &stream )
+PlaylistFile::loadXSPF( QTextStream &stream )
 {
     XSPFPlaylist* doc = new XSPFPlaylist( stream );
 
@@ -781,7 +781,7 @@ PlaylistFile::loadPls_extractIndex( const QString &str ) const
 }
 
 bool
-PlaylistFile::loadRealAudioRam( Q3TextStream &stream )
+PlaylistFile::loadRealAudioRam( QTextStream &stream )
 {
     MetaBundle b;
     QString url;
@@ -803,14 +803,14 @@ PlaylistFile::loadRealAudioRam( Q3TextStream &stream )
 }
 
 bool
-PlaylistFile::loadASX( Q3TextStream &stream )
+PlaylistFile::loadASX( QTextStream &stream )
 {
     //adapted from Kaffeine 0.7
     MetaBundle b;
     QDomDocument doc;
     QString errorMsg;
     int errorLine, errorColumn;
-    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
+    stream.setCodec( "UTF8" );
 
     QString content = stream.read();
 
@@ -907,7 +907,7 @@ PlaylistFile::loadASX( Q3TextStream &stream )
 }
 
 bool
-PlaylistFile::loadSMIL( Q3TextStream &stream )
+PlaylistFile::loadSMIL( QTextStream &stream )
 {
 	// adapted from Kaffeine 0.7
 	QDomDocument doc;
@@ -917,7 +917,7 @@ PlaylistFile::loadSMIL( Q3TextStream &stream )
         return false;
     }
 	QDomElement root = doc.documentElement();
-	stream.setEncoding ( Q3TextStream::UnicodeUTF8 );
+	stream.setEncoding ( QTextStream::UnicodeUTF8 );
 
 	if( root.nodeName().toLower() != "smil" )
        return false;

@@ -3127,7 +3127,7 @@ Playlist::saveXML( const QString &path )
 
     QString buffer;
     QTextStream stream( &buffer, QIODevice::WriteOnly );
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    stream.setCodec( "UTF8" );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 
     QString dynamic;
@@ -3166,8 +3166,8 @@ Playlist::saveXML( const QString &path )
 
     stream << "</playlist>\n";
 
-    Q3TextStream fstream( &file );
-    fstream.setEncoding( Q3TextStream::UnicodeUTF8 );
+    QTextStream fstream( &file );
+    fstream.setCodec( "UTF8" );
     fstream << buffer;
 }
 

@@ -19,7 +19,7 @@
 #include "xmlloader.h"    //baseclass
 
 class Q3ListViewItem;
-class Q3TextStream;
+class QTextStream;
 class PlaylistItem;
 class PLItemList;
 class XMLData;
@@ -65,13 +65,13 @@ public:
 
 protected:
     /// make these virtual if you need to
-    bool loadM3u( Q3TextStream& );
-    bool loadPls( Q3TextStream& );
+    bool loadM3u( QTextStream& );
+    bool loadPls( QTextStream& );
     unsigned int loadPls_extractIndex( const QString &str ) const;
-    bool loadRealAudioRam( Q3TextStream& );
-    bool loadASX( Q3TextStream& );
-    bool loadSMIL( Q3TextStream& );
-    bool loadXSPF( Q3TextStream& );
+    bool loadRealAudioRam( QTextStream& );
+    bool loadASX( QTextStream& );
+    bool loadSMIL( QTextStream& );
+    bool loadXSPF( QTextStream& );
     QString m_path;
     QString m_error;
     BundleList m_bundles;

@@ -43,7 +43,7 @@ class XSPFPlaylist : public QDomDocument
 {
 public:
     XSPFPlaylist();
-    XSPFPlaylist( Q3TextStream &stream );
+    XSPFPlaylist( QTextStream &stream );
 
 public:
     /* convenience functions */
@@ -80,7 +80,7 @@ public:
 
 
 private:
-    bool loadXSPF( Q3TextStream& );
+    bool loadXSPF( QTextStream& );
 };
 
 #endif // XSPFPlaylist_H

@@ -13,7 +13,7 @@
 #include <QClipboard>
 #include <QFile> // External CSS opening
 #include <QImage> // External CSS opening
-#include <Q3TextStream>
+#include <QTextStream>
 
 #include <kapplication.h> //kapp
 #include <kactioncollection.h>
@@ -137,7 +137,7 @@ HTMLView::loadStyleSheet()
                 .arg( AmarokConfig::schemeAmarok() ? fg : gradientColor.name() )
                 .arg( fontFamily );
 
-        Q3TextStream eCSSts( &ExternalCSS );
+        QTextStream eCSSts( &ExternalCSS );
         QString tmpCSS = eCSSts.read();
         ExternalCSS.close();
 

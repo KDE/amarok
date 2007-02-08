@@ -151,7 +151,7 @@ EqualizerPresetManager::slotDefault()
     QFile file( KStandardDirs::locate( "data", "amarok/data/equalizer_presets.xml" ) );
 
     QTextStream stream( &file );
-    stream.setEncoding( QTextStream::UnicodeUTF8 );
+    stream.setCodec( "UTF8" );
 
     QDomDocument d;
 

@@ -26,7 +26,7 @@
 
 class KFileMetaInfo;
 class QDir;
-class Q3TextStream;
+class QTextStream;
 template<class T> class Q3ValueList;
 namespace TagLib {
     class ByteVector;

@@ -22,7 +22,7 @@
 
 #include <QDateTime>
 #include <q3deepcopy.h>
-#include <Q3TextStream>
+#include <QTextStream>
 
 #include <kapplication.h>
 #include <kio/job.h>
@@ -1074,8 +1074,8 @@ void ScrobblerSubmitter::saveSubmitQueue()
     QDomNode submitNode = newdoc.importNode( submitQueue, true );
     newdoc.appendChild( submitNode );
 
-    Q3TextStream stream( &file );
-    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
+    QTextStream stream( &file );
+    stream.setCodec( "UTF8" );
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     stream << newdoc.toString();
     file.close();
@@ -1093,8 +1093,8 @@ void ScrobblerSubmitter::readSubmitQueue()
         return;
     }
 
-    Q3TextStream stream( &file );
-    stream.setEncoding( Q3TextStream::UnicodeUTF8 );
+    QTextStream stream( &file );
+    stream.setCodec( "UTF8" );
 
     QDomDocument d;
     if( !d.setContent( stream.read() ) )

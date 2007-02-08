@@ -769,8 +769,7 @@ ScriptManager::scriptFinished( KProcess* process ) //SLOT
 
     // Check if there was an error on exit
     if( process->normalExit() && process->exitStatus() != 0 )
-        KMessageBox::detailedError( 0, i18n( "The script '%1' exited with error code: %2" )
-                                           .arg( it.key() ).arg( process->exitStatus() )
+        KMessageBox::detailedError( 0, i18n( "The script '%1' exited with error code: %2", it.key(), process->exitStatus() )
                                            ,it.data().log );
 
     // Destroy script process
