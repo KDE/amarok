@@ -39,7 +39,7 @@
 #include "statistics.h"
 #include "statusbar.h"
 #include "threadmanager.h"
-//#include "magnatunebrowser/magnatunebrowser.h"
+#include "magnatunebrowser/magnatunebrowser.h"
 
 #include <QEvent>           //eventFilter()
 #include <qfont.h>
@@ -580,7 +580,7 @@ void PlaylistWindow::init()
 
         addBrowserMacro( FileBrowser, "FileBrowser", i18n("Files"), Amarok::icon( "files" ) )
         //Add Magnatune browser
-        //addInstBrowserMacro( MagnatuneBrowser, "MagnatuneBrowser", i18n("Magnatune"), Amarok::icon( "magnatune" ) )
+        addInstBrowserMacro( MagnatuneBrowser, "MagnatuneBrowser", i18n("Magnatune"), Amarok::icon( "magnatune" ) )
 
         //new MediaBrowser( "MediaBrowser" );
         if( MediaBrowser::isAvailable() )
