@@ -105,6 +105,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
     KStandardAction::selectAll( this, SLOT( selectAll() ), ac );
 
     KToolBar *toolbar = new Browser::ToolBar( this );
+    toolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
 
     { //Filter LineEdit
         KToolBar* searchToolBar = new Browser::ToolBar( this );
