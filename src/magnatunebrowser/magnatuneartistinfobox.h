@@ -70,7 +70,7 @@ public:
 
 protected:
 
-    KIO::TransferJob *m_infoDownloadJob;
+     KIO::StoredTransferJob *m_infoDownloadJob;
 
     /**
      * Helper function for extracting only the part of the artist page 
@@ -93,7 +93,7 @@ protected slots:
      * Slot for recieving notifications from the download KIO::Job
      * @param downLoadJob The job that has completed
      */
-    void infoDownloadComplete( KIO::Job *downLoadJob );
+    void infoDownloadComplete( KJob *downLoadJob);
 
 };
 

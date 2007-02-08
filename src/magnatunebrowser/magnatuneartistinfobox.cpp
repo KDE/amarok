@@ -36,15 +36,15 @@ MagnatuneArtistInfoBox::~MagnatuneArtistInfoBox()
 bool
 MagnatuneArtistInfoBox::displayArtistInfo( KUrl url )
 {
-    debug() << "displayArtistInfo started" << endl;
+    debug() << "MagnatuneArtistInfoBox: displayArtistInfo started" << endl;
 
     // first get the entire artist html page
     QString tempFile;
     QString orgHtml;
 
-    m_infoDownloadJob = KIO::storedGet( url, false, false );
-    Amarok::StatusBar::instance() ->newProgressOperation( m_infoDownloadJob ).setDescription( i18n( "Fetching Artist Info" ) );
-    connect( m_infoDownloadJob, SIGNAL( result( KIO::Job* ) ), SLOT( infoDownloadComplete( KIO::Job* ) ) );
+    m_infoDownloadJob = KIO::storedGet( url, false, true );
+    //Amarok::StatusBar::instance() ->newProgressOperation( m_infoDownloadJob ).setDescription( i18n( "Fetching Artist Info" ) );
+    connect( m_infoDownloadJob, SIGNAL(result(KJob *)), SLOT( infoDownloadComplete( KJob*) ) );
 
 
     return true;
@@ -82,9 +82,9 @@ MagnatuneArtistInfoBox::displayAlbumInfo( MagnatuneAlbum *album )
 }
 
 void
-MagnatuneArtistInfoBox::infoDownloadComplete( KIO::Job * downLoadJob )
+MagnatuneArtistInfoBox::infoDownloadComplete( KJob *downLoadJob)
 {
-
+    
     if ( !downLoadJob->error() == 0 )
     {
         //TODO: error handling here
@@ -93,9 +93,10 @@ MagnatuneArtistInfoBox::infoDownloadComplete( KIO::Job * downLoadJob )
     if ( downLoadJob != m_infoDownloadJob )
         return ; //not the right job, so let's ignore it
 
-    KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( downLoadJob );
-    QString info = QString( storedJob->data() );
+     
 
+    QString info = ((KIO::StoredTransferJob* )downLoadJob)->data();
+    debug() << "MagnatuneArtistInfoBox: Artist info downloaded: "<< info << endl;
     QString trimmedInfo = extractArtistInfo( info );
 
     //debug() << "html: " << trimmedInfo << endl;
