@@ -22,7 +22,6 @@
 #include <config.h>
 #include "amarok_export.h"
 #include "amarokconfig.h"
-//#include "amarokdcophandler.h"
 #include "engineobserver.h"  //baseclass
 #include "dynamicmode.h"
 #include "playlistwindow.h"  //friend

@@ -31,10 +31,9 @@ Boston, MA 02110-1301, USA.
 #include <QSplitter>
 #include <q3dragobject.h>
 #include <QLabel>
-//Added by qt3to4:
-#include <Q3PopupMenu>
+#include <QMenu>
 
-#include <Q3TextStream>
+#include <QTextStream>
 
 MagnatuneBrowser *MagnatuneBrowser::s_instance = 0;
 
@@ -386,7 +385,7 @@ void MagnatuneBrowser::listDownloadComplete( KIO::Job * downLoadJob )
 
     if ( file.open( QIODevice::WriteOnly ) )
     {
-        Q3TextStream stream( &file );
+        QTextStream stream( &file );
         stream << list;
         file.close();
     }

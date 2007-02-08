@@ -17,7 +17,7 @@ email                : markey@web.de
 
 #include "amarok.h"
 #include "amarokconfig.h"
-//#include "amarokdcophandler.h"
+#include "amarokdbushandler.h"
 #include "app.h"
 #include "atomicstring.h"
 #include "config.h"
@@ -169,14 +169,14 @@ App::App()
 #endif
 
     //needs to be created before the wizard
-//     new Amarok::DcopPlayerHandler(); // Must be created first
-//     new Amarok::DcopPlaylistHandler();
-//     new Amarok::DcopPlaylistBrowserHandler();
-//     new Amarok::DcopContextBrowserHandler();
-//     new Amarok::DcopCollectionHandler();
-//     new Amarok::DcopMediaBrowserHandler();
-//     new Amarok::DcopScriptHandler();
-//     new Amarok::DcopDevicesHandler();
+     new Amarok::DbusPlayerHandler(); // Must be created first
+     new Amarok::DbusPlaylistHandler();
+     new Amarok::DbusPlaylistBrowserHandler();
+     new Amarok::DbusContextBrowserHandler();
+     new Amarok::DbusCollectionHandler();
+     new Amarok::DbusMediaBrowserHandler();
+     new Amarok::DbusScriptHandler();
+     new Amarok::DbusDevicesHandler();
 
     // tell AtomicString that this is the GUI thread
     if ( !AtomicString::isMainThread() )
