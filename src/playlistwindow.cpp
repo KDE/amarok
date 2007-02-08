@@ -361,7 +361,7 @@ void PlaylistWindow::init()
     //<Dynamic Mode Status Bar />
     DynamicBar *dynamicBar = new DynamicBar( m_browsers->contentsWidget() );
 
-    Q3Frame *playlist;
+    QFrame *playlist;
 
     { //<Search LineEdit>
         KToolBar *bar = new KToolBar( m_browsers->contentsWidget(), "NotMainToolBar" );
@@ -376,35 +376,55 @@ void PlaylistWindow::init()
         bar->addAction( actionCollection()->action( "playlist_undo") );
         bar->addAction( actionCollection()->action( "playlist_redo") );
 
-//TODO: what gets done with this?
-//         bar->boxLayout()->addStretch();
-//         QWidget *button = new QToolButton( QICON(Amarok::Icon("locationbar_erase")), 1, bar );
-        QWidget *button = new QToolButton( bar );
-        button->setIcon(QPixmap("locationbar_erase"));
+
+        QWidget *clearButton = new QToolButton( bar );
+        clearButton->setIcon(QPixmap("locationbar_erase"));
+        clearButton->setToolTip( i18n( "Clear search field" ) );
+        bar->addWidget( clearButton );
+
         QLabel *filter_label = new QLabel( i18n("S&earch:") + ' ', bar );
+        bar->addWidget( filter_label );
+
         m_lineEdit = new KLineEdit( bar );
         m_lineEdit->setClickMessage( i18n( "Playlist Search" ) );
-        filter_label->setBuddy( m_lineEdit );
         m_lineEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
-        KPushButton *filterButton = new KPushButton( "...", bar );
-        filterButton->setObjectName( "filter" );
-        filterButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
-
-        m_lineEdit->setFrame( Q3Frame::Sunken );
+        m_lineEdit->setFrame( QFrame::Sunken );
         m_lineEdit->installEventFilter( this ); //we intercept keyEvents
+        filter_label->setBuddy( m_lineEdit );
 
-        connect( button, SIGNAL(clicked()), m_lineEdit, SLOT(clear()) );
-        connect( m_lineEdit, SIGNAL(textChanged( const QString& )),
-                playlist, SLOT(setFilterSlot( const QString& )) );
-        connect( filterButton, SIGNAL( clicked() ), SLOT( slotEditFilter() ) );
-
-        button->setToolTip( i18n( "Clear search field" ) );
         QString filtertip = i18n( "Enter space-separated terms to search in the playlist.\n\n"
                                   "Advanced, Google-esque syntax is also available;\n"
                                   "see the handbook (The Playlist section of chapter 4) for details." );
-
         m_lineEdit->setToolTip( filtertip );
+
+        bar->addWidget( m_lineEdit );
+
+        KPushButton *filterButton = new KPushButton( "...", bar );
+        filterButton->setObjectName( "filter" );
+        filterButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
         filterButton->setToolTip( i18n( "Click to edit playlist filter" ) );
+        bar->addWidget( filterButton );
+
+
+//TODO: what gets done with this?
+//         bar->boxLayout()->addStretch();
+//         QWidget *button = new QToolButton( QICON(Amarok::Icon("locationbar_erase")), 1, bar );
+
+//         m_lineEdit = new KLineEdit( bar );
+//         m_lineEdit->setClickMessage( i18n( "Playlist Search" ) );
+//         filter_label->setBuddy( m_lineEdit );
+//         m_lineEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
+//         KPushButton *filterButton = new KPushButton( "...", bar );
+//         filterButton->setObjectName( "filter" );
+//         filterButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
+
+//         m_lineEdit->setFrame( Q3Frame::Sunken );
+//         m_lineEdit->installEventFilter( this ); //we intercept keyEvents
+
+        connect( clearButton, SIGNAL(clicked()), m_lineEdit, SLOT(clear()) );
+        connect( m_lineEdit, SIGNAL(textChanged( const QString& )),
+                playlist, SLOT(setFilterSlot( const QString& )) );
+        connect( filterButton, SIGNAL( clicked() ), SLOT( slotEditFilter() ) );
     } //</Search LineEdit>
 
 
@@ -533,7 +553,7 @@ void PlaylistWindow::init()
     //The volume slider later becomes our FocusProxy, so all wheelEvents get redirected to it
     m_toolbar->setFocusPolicy( Qt::WheelFocus );
     m_toolbar->setMovable( false );
-    playlist->setMargin( 2 );
+    playlist->setContentsMargins( 2,2,2,2 );
     playlist->installEventFilter( this ); //we intercept keyEvents
 
 
