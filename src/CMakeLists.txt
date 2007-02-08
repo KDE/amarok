@@ -14,6 +14,11 @@ endif(KONQSIDEBAR_INCLUDE_DIR)
 
 ADD_DEFINITIONS(${TAGLIB_CFLAGS})
 
+if(MP4V2_FOUND)
+ADD_DEFINITIONS(-DHAVE_MP4V2)
+include_directories( ${MP4V2_INCLUDE_DIR} )
+endif(MP4V2_FOUND)
+
 add_subdirectory( amarokcore )
 add_subdirectory( data )
 add_subdirectory( images )
@@ -124,7 +129,7 @@ set(libstatusbar_SRCS
 
 ########### next target ###############
 
-set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS} ${libmetadata_SRCS}
+set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
         ${libsqlite_SRCS}
         # ${libanalyzers_SRCS}
    Options1.ui.h
