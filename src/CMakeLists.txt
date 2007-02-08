@@ -242,6 +242,10 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
 
 kde4_add_kcfg_files(amarok_LIB_SRCS ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokconfig.kcfgc)
 
+set(amarok_collectionscanner_xml  ${CMAKE_SOURCE_DIR}/amarok/src/collectionscanner/org.kde.amarok.scanner.xml)
+QT4_ADD_DBUS_INTERFACE( amarok_LIB_SRCS ${amarok_collectionscanner_xml} amarok_collection_scanner_interface )
+
+
 
 
 kde4_automoc(${amarok_LIB_SRCS})

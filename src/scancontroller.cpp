@@ -41,7 +41,7 @@
 #include <kapplication.h>
 #include <klocale.h>
 #include <kmessagebox.h>
-
+#include <amarok_collection_scanner_interface.h>
 ////////////////////////////////////////////////////////////////////////////////
 // class ScanController
 ////////////////////////////////////////////////////////////////////////////////
@@ -354,9 +354,10 @@ ScanController::requestPause()
 {
     DEBUG_BLOCK
     debug() << "Attempting to pause the collection scanner..." << endl;
-    //DCOPRef dcopRef( "amarokcollectionscanner", "scanner" );
+    OrgKdeAmarokScannerInterface scanner("org.kde.amarok", "/Scanner", QDBusConnection::sessionBus());
+    QDBusReply<void> reply = scanner.pause();
     m_lastCommandPaused = true;
-    return false;//dcopRef.send( "pause" );
+    return reply.isValid();
 }
 
 bool
@@ -364,9 +365,11 @@ ScanController::requestUnpause()
 {
     DEBUG_BLOCK
     debug() << "Attempting to unpause the collection scanner..." << endl;
-    //DCOPRef dcopRef( "amarokcollectionscanner", "scanner" );
+    //TODO verify it
+    OrgKdeAmarokScannerInterface scanner("org.kde.amarok", "/Scanner", QDBusConnection::sessionBus());
+    QDBusReply<void> reply = scanner.unpause();
     m_lastCommandPaused = false;
-    return false;//dcopRef.send( "unpause" );
+    return reply.isValid();
 }
 
 void
