@@ -381,7 +381,7 @@ void PlaylistWindow::init()
 
 
         QWidget *clearButton = new QToolButton( bar );
-        clearButton->setIcon(QPixmap("locationbar_erase"));
+        clearButton->setIcon( KIcon("locationbar_erase") );
         clearButton->setToolTip( i18n( "Clear search field" ) );
         bar->addWidget( clearButton );
 

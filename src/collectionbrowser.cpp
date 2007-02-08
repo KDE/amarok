@@ -118,7 +118,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
         searchToolBar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
 
         QToolButton *clearButton   = new QToolButton( searchToolBar );
-        clearButton->setIcon( QIcon("locationbar_erase") );
+        clearButton->setIcon( KIcon("locationbar_erase") );
         clearButton->setToolTip( i18n( "Clear search field" ) );
         searchToolBar->addWidget( clearButton );
 
