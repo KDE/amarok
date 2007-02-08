@@ -18,7 +18,6 @@
 
 
 #include <QCheckBox>
-//Added by qt3to4:
 #include <QLabel>
 #include <kdialog.h>
 #include <kurl.h>
@@ -28,7 +27,6 @@ class QStringList;
 class K3ListBox;
 class KGuiItem;
 class QLabel;
-class Q3WidgetStack;
 
 class DeleteDialogBase : public QWidget, public Ui::DeleteDialogBase
 {
