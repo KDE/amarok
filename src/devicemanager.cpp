@@ -23,7 +23,8 @@
 #include <QTimer>
 //Added by qt3to4:
 #include <Q3CString>
-
+#include <QDBusInterface>
+#include <QDBusReply>
 #include <kapplication.h>
 
 typedef Medium::List MediumList;
@@ -266,11 +267,11 @@ QString DeviceManager::convertMediaUrlToDevice( QString url )
 {
     //do we still need this?
     QString device;
-    /*if ( url.startsWith( "media:" ) || url.startsWith( "system:" ) )
+    if ( url.startsWith( "media:" ) || url.startsWith( "system:" ) )
     {
         KUrl devicePath( url );
-        DCOPRef mediamanager( "kded", "mediamanager" );
-        DCOPReply reply = mediamanager.call( "properties(QString)", devicePath.fileName() );
+	QDBusInterface mediamanager( "org.kde.kded", "/modules/mediamanager", "org.kde.MediaManager" );
+	QDBusReply<QStringList> reply = mediamanager.call( "properties",devicePath.fileName() );
         if ( reply.isValid() ) {
             QStringList properties = reply;
             device = properties[ 5 ];
@@ -279,7 +280,7 @@ QString DeviceManager::convertMediaUrlToDevice( QString url )
             device = QString();
     }
     else
-        device = url;*/
+        device = url;
 
     return device;
 }

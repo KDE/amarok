@@ -79,7 +79,8 @@ email                : markey@web.de
 //Added by qt3to4:
 #include <QCloseEvent>
 #include <Q3CString>
-
+#include <QDBusInterface>
+#include <QDBusReply>
 
 QMutex Debug::mutex;
 QMutex Amarok::globalDirsMutex;
@@ -244,21 +245,17 @@ namespace
         if (deviceUrl.protocol() == "media" || deviceUrl.protocol() == "system")
         {
             debug() << "WARNING: urlToDevice needs to be reimplemented with KDE4 technology, it's just a stub at the moment" << endl;
-            /*DCOPRef mediamanager( "kded", "mediamanager" );
-            DCOPReply reply = mediamanager.call( "properties(QString)", deviceUrl.fileName() );
-            QStringList properties = reply;
-
-            if (!reply.isValid() || properties.count() < 6)
-            {
-                debug() << "Invalid reply from mediamanager" << endl;
-                return QString();
-            }
-            else
-            {
-                debug() << "Reply from mediamanager " << properties[5] << endl;
-                return properties[5];
-            }*/
-            return QString();
+           QDBusInterface mediamanager( "org.kde.kded", "/modules/mediamanager", "org.kde.MediaManager" );
+           QDBusReply<QStringList> reply = mediamanager.call( "properties",deviceUrl.fileName() );
+           if (!reply.isValid()) {
+		debug() << "Invalid reply from mediamanager" << endl;
+               return QString();
+           }
+	   QStringList properties = reply;
+	   if( properties.count()< 6 )
+		return QString();
+	  debug() << "Reply from mediamanager " << properties[5] << endl;
+          return properties[5];
         }
 
         return device;
