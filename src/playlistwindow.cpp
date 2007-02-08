@@ -364,6 +364,7 @@ void PlaylistWindow::init()
 
     { //<Search LineEdit>
         KToolBar *bar = new KToolBar( m_browsers->contentsWidget(), "NotMainToolBar" );
+        bar->setToolButtonStyle( Qt::ToolButtonIconOnly );
         bar->setFixedHeight( 30 ); //FIXME This is just a hack
         bar->setIconDimensions( 22 ); //looks more sensible
         bar->setMovable( false ); //removes the ugly frame
