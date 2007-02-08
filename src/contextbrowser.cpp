@@ -2369,8 +2369,8 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
                     )
                 .arg( i18np( "Track played once", "Track played %n times", playtimes ),
                       statsHTML( score, rating, false ),
-                      i18n( "Last played: %1" ).arg( Amarok::verboseTimeSince( lastPlay ) ),
-                      i18n( "First played: %1" ).arg( Amarok::verboseTimeSince( firstPlay ) ) ) );
+                      i18n( "Last played: %1", Amarok::verboseTimeSince( lastPlay ) ),
+                      i18n( "First played: %1", Amarok::verboseTimeSince( firstPlay ) ) ) );
     }
     else
         m_HTMLSource.append( i18n( "Never played before" ) );
@@ -2600,7 +2600,7 @@ CurrentTrackJob::showUserLabels( const MetaBundle &currentTrack )
                 "<div id='songlabels_box' class='box'>\n"
                 "<div id='songlabels-header' class='box-header' onCLick=\"toggleBlock('T_SL');window.location.href='togglebox:sl';\" style='cursor: pointer;'>\n"
                 "<span id='songlabels_box-header-title' class='box-header-title'>\n"
-                + i18n( " Labels for %1 " ).arg( escapeHTML( title ) ) +
+                + i18n( " Labels for %1 ", escapeHTML( title ) ) +
                 "</span>\n"
                 "</div>\n"
                 "<table class='box-body' id='T_SL' width='100%' border='0' cellspacing='0' cellpadding='1'>\n" );
@@ -2615,7 +2615,7 @@ CurrentTrackJob::showUserLabels( const MetaBundle &currentTrack )
         }
     }
     m_HTMLSource.append( "</td></tr>\n" );
-    m_HTMLSource.append( "<tr><td><a id='songlabels_box_addlabel' href='show:editLabels'>" + i18n( "Add labels to %1" ).arg( escapeHTML( title ) ) + "</a></td></tr>\n" );
+    m_HTMLSource.append( "<tr><td><a id='songlabels_box_addlabel' href='show:editLabels'>" + i18n( "Add labels to %1", escapeHTML( title ) ) + "</a></td></tr>\n" );
     m_HTMLSource.append(
             "</table>\n"
             "</div>\n" );
@@ -2648,7 +2648,7 @@ void CurrentTrackJob::showArtistsFaves( const QString &artist, uint artist_id )
                 "<div id='favoritesby_box' class='box'>\n"
                 "<div id='favoritesby-header' class='box-header' onClick=\"toggleBlock('T_FT'); window.location.href='togglebox:ft';\" style='cursor: pointer;'>\n"
                 "<span id='favoritesby_box-header-title' class='box-header-title'>\n"
-                + i18n( "Favorite Tracks by %1" ).arg( artistName ) +
+                + i18n( "Favorite Tracks by %1", artistName ) +
                 "</span>\n"
                 "</div>\n"
                 "<table class='box-body' id='T_FT' width='100%' border='0' cellspacing='0' cellpadding='0'>\n" );
@@ -2702,7 +2702,7 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
                 "<div id='albums_box' class='box'>\n"
                 "<div id='albums_box-header' class='box-header'>\n"
                 "<span id='albums_box-header-title' class='box-header-title'>\n"
-                + i18n( "Albums by %1" ).arg( artistName ) +
+                + i18n( "Albums by %1", artistName ) +
                 "</span>\n"
                 "</div>\n"
                 "<table id='albums_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>\n" );
@@ -2804,7 +2804,7 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
                                                     << QString::number( artist_id )
                                                     << values[ i + 1 ] //album.id
                                                     << escapeHTMLAttr( discNumber )
-                                                    << i18n( "Disc %1" ).arg( discNumber ) ) );
+                                                    << i18n( "Disc %1", discNumber ) ) );
                     }
                     QString track = albumValues[j + 2].trimmed();
                     if( track.length() > 0 ) {
@@ -2866,7 +2866,7 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
                 "<div id='albums_box' class='box'>\n"
                 "<div id='albums_box-header' class='box-header'>\n"
                 "<span id='albums_box-header-title' class='box-header-title'>\n"
-                + i18n( "Compilations with %1" ).arg( artistName ) +
+                + i18n( "Compilations with %1", artistName ) +
                 "</span>\n"
                 "</div>\n"
                 "<table id='albums_box-body' class='box-body' width='100%' border='0' cellspacing='0' cellpadding='0'>\n" );
@@ -3042,8 +3042,7 @@ QString CurrentTrackJob::statsHTML( int score, int rating, bool statsbox ) //sta
 
     if( AmarokConfig::useRatings() )
     {
-        contents += QString( "<tr title='%1'>\n" ).arg( i18n( "Rating: %1" )
-                                                      .arg( MetaBundle::ratingDescription( rating ) ) ) +
+        contents += QString( "<tr title='%1'>\n" ).arg( i18n( "Rating: %1", MetaBundle::ratingDescription( rating ) ) ) +
                     "<td class='ratingBox' align='right' colspan='2'>\n";
         if( rating )
         {
