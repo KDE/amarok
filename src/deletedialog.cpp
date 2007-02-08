@@ -40,8 +40,8 @@
 // DeleteWidget implementation
 //////////////////////////////////////////////////////////////////////////////
 
-DeleteWidget::DeleteWidget(QWidget *parent, const char *name)
-    : DeleteDialogBase(parent, name)
+DeleteWidget::DeleteWidget(QWidget *parent)
+    : DeleteDialogBase(parent)
 {
     KConfigGroup messageGroup(KGlobal::config(), "FileRemover");
 
@@ -96,7 +96,8 @@ DeleteDialog::DeleteDialog(QWidget *parent, const char *name) :
     setDefaultButton( Cancel );
     showButtonSeparator( true );
 
-    m_widget = new DeleteWidget(this, "delete_dialog_widget");
+    m_widget = new DeleteWidget(this);
+    m_widget->setObjectName("delete_dialog_widget");
     setMainWidget(m_widget);
 
     m_widget->setMinimumSize(400, 300);

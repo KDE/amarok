@@ -22,7 +22,7 @@
 #include <QLabel>
 #include <kdialog.h>
 #include <kurl.h>
-#include "deletedialogbase.h"
+#include "ui_deletedialogbase.h"
 
 class QStringList;
 class K3ListBox;
@@ -30,12 +30,21 @@ class KGuiItem;
 class QLabel;
 class Q3WidgetStack;
 
+class DeleteDialogBase : public QWidget, public Ui::DeleteDialogBase
+{
+public:
+  DeleteDialogBase( QWidget *parent ) : QWidget( parent ) {
+    setupUi( this );
+  }
+};
+
+
 class DeleteWidget : public DeleteDialogBase
 {
     Q_OBJECT
 
 public:
-    DeleteWidget(QWidget *parent = 0, const char *name = 0);
+    DeleteWidget(QWidget *parent = 0);
 
     void setFiles(const KUrl::List &files);
 

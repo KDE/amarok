@@ -193,8 +193,8 @@ void UniversalAmarok::updateBrowser(const QString& file)
     QFile f_file(file);
     if( f_file.open(QIODevice::ReadOnly) )
     {
-        Q3TextStream stream( &f_file );
-        stream.setEncoding( Q3TextStream::UnicodeUTF8 );
+        QTextStream stream( &f_file );
+	stream.setCodec( "UTF8" );
         QString line;
         while ( !stream.atEnd() ) {
             line = stream.readLine(); // line of text excluding '\n'
