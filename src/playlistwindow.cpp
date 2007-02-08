@@ -380,7 +380,7 @@ void PlaylistWindow::init()
         bar->addAction( actionCollection()->action( "playlist_redo") );
 
 
-        QWidget *clearButton = new QToolButton( bar );
+        QToolButton *clearButton = new QToolButton( bar );
         clearButton->setIcon( KIcon("locationbar_erase") );
         clearButton->setToolTip( i18n( "Clear search field" ) );
         bar->addWidget( clearButton );
