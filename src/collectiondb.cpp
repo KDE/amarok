@@ -4667,7 +4667,10 @@ CollectionDB::getLyrics( const QString &url )
     QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
     QStringList values = query( QString( "SELECT lyrics FROM lyrics WHERE url = '%2' AND deviceid = %1;" )
                 .arg( deviceid ).arg( escapeString( rpath ) ) );
-    return values[0];
+    if ( !values.isEmpty() )
+        return values[0];
+    else
+        return QString();
 }
 
 void CollectionDB::removeInvalidAmazonInfo( const QString& md5sum )
