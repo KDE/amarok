@@ -23,6 +23,7 @@
 #include <QObject>
 //Added by qt3to4:
 #include <Q3CString>
+#include <kurl.h>
 class AmarokConfig;
 
 namespace Amarok
@@ -108,8 +109,6 @@ class DbusPlayerHandler : public QObject
       virtual void volumeDown();
       virtual void volumeUp();
       virtual void transferDeviceFiles();
-
-    private:
       virtual void transferCliArgs( QStringList args );
 };
 
@@ -168,7 +167,7 @@ class DbusContextBrowserHandler : public QObject
       virtual void showCurrentTrack();
       virtual void showLyrics();
       virtual void showWiki();
-      virtual void showLyrics( const Q3CString& lyrics );
+      virtual void showLyrics( const QString& lyrics );
 };
 
 

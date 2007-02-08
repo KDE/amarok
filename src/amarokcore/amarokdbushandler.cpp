@@ -51,6 +51,14 @@
 #include <kactioncollection.h>
 #include <kstartupinfo.h>
 
+#include <collectionadaptor.h>
+#include <contextbrowseradaptor.h>
+#include <mediabrowseradaptor.h>
+#include <playeradaptor.h>
+#include <playlistadaptor.h>
+#include <playlistbrowseadaptor.h>
+#include <scriptadaptor.h>
+
 
 namespace Amarok
 {
@@ -59,14 +67,10 @@ namespace Amarok
 /////////////////////////////////////////////////////////////////////////////////////
 
     DbusPlayerHandler::DbusPlayerHandler()
-        : DCOPObject( "player" )
-        , QObject( kapp )
+        : QObject( kapp )
     {
-        // Register with DCOP
-        if ( !kapp->dcopClient()->isRegistered() ) {
-            kapp->dcopClient()->registerAs( "amarok", false );
-            kapp->dcopClient()->setDefaultObject( objId() );
-        }
+	 (void)new PlayerAdaptor(this);
+	 QDBusConnection::sessionBus().registerObject("/Player", this);
     }
 
     QString DbusPlayerHandler::version()
@@ -557,9 +561,11 @@ namespace Amarok
 /////////////////////////////////////////////////////////////////////////////////////
 
     DbusPlaylistHandler::DbusPlaylistHandler()
-        : DCOPObject( "playlist" )
-        , QObject( kapp )
-    {}
+        : QObject( kapp )
+    {
+         (void)new PlaylistAdaptor(this);
+         QDBusConnection::sessionBus().registerObject("/PlayerList", this);
+    }
 
     int  DbusPlaylistHandler::getActiveIndex()
     {
@@ -693,9 +699,11 @@ namespace Amarok
 /////////////////////////////////////////////////////////////////////////////////////
 
     DbusPlaylistBrowserHandler::DbusPlaylistBrowserHandler()
-        : DCOPObject( "playlistbrowser" )
-        , QObject( kapp )
-    {}
+        :QObject( kapp )
+    {
+         (void)new PlaylistBrowserAdaptor(this);
+         QDBusConnection::sessionBus().registerObject("/PlaylistBrowser", this);
+    }
 
     void DbusPlaylistBrowserHandler::addPodcast( const QString &url )
     {
@@ -722,9 +730,11 @@ namespace Amarok
 /////////////////////////////////////////////////////////////////////////////////////
 
     DbusContextBrowserHandler::DbusContextBrowserHandler()
-        : DCOPObject( "contextbrowser" )
-        , QObject( kapp )
-    {}
+        : QObject( kapp )
+    {
+         (void)new ContextBrowserAdaptor(this);
+         QDBusConnection::sessionBus().registerObject("/ContextBrowser", this);
+    }
 
     void DbusContextBrowserHandler::showCurrentTrack()
     {
@@ -741,7 +751,7 @@ namespace Amarok
         ContextBrowser::instance()->showWikipedia();
     }
 
-    void DbusContextBrowserHandler::showLyrics( const Q3CString& lyrics )
+    void DbusContextBrowserHandler::showLyrics( const QString& lyrics )
     {
         ContextBrowser::instance()->lyricsResult( lyrics );
     }
@@ -751,9 +761,11 @@ namespace Amarok
 /////////////////////////////////////////////////////////////////////////////////////
 
     DbusCollectionHandler::DbusCollectionHandler()
-        : DCOPObject( "collection" )
-        , QObject( kapp )
-    {}
+        : QObject( kapp )
+    {
+         (void)new CollectionAdaptor(this);
+         QDBusConnection::sessionBus().registerObject("/Collection", this);
+    }
 
     int DbusCollectionHandler::totalAlbums()
     {
@@ -902,9 +914,11 @@ namespace Amarok
 /////////////////////////////////////////////////////////////////////////////////////
 
     DbusScriptHandler::DbusScriptHandler()
-        : DCOPObject( "script" )
-        , QObject( kapp )
-    {}
+        : QObject( kapp )
+    {
+         (void)new ScriptAdaptor(this);
+         QDBusConnection::sessionBus().registerObject("/Script", this);
+    }
 
     bool DbusScriptHandler::runScript(const QString& name)
     {
@@ -974,8 +988,7 @@ namespace Amarok
 /////////////////////////////////////////////////////////////////////////////////////
 
     DbusDevicesHandler::DbusDevicesHandler()
-        : DCOPObject( "devices" )
-        , QObject( kapp )
+        : QObject( kapp )
     {}
 
     void DbusDevicesHandler::mediumAdded(QString name)
@@ -1003,9 +1016,11 @@ namespace Amarok
 /////////////////////////////////////////////////////////////////////////////////////
 
     DbusMediaBrowserHandler::DbusMediaBrowserHandler()
-        : DCOPObject( "mediabrowser" )
-        , QObject( kapp )
-    {}
+        : QObject( kapp )
+    {
+         (void)new MediaBrowserAdaptor(this);
+         QDBusConnection::sessionBus().registerObject("/MediaBrowser", this);
+    }
 
     void DbusMediaBrowserHandler::deviceConnect()
     {

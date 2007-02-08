@@ -1,7 +1,7 @@
 <!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
 "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
 <node>
-  <interface name="org.kde.Amarok.ContextBrowser">
+  <interface name="org.kde.Amarok.MediaBrowser">
     <method name="deviceConnect"/>
     <method name="deviceDisconnect"/>
     <method name="transfer"/>

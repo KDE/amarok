@@ -19,18 +19,6 @@ include_directories(
 #install(TARGETS amarokcore DESTINATION ${LIB_INSTALL_DIR} )
 
 
-#generate D-Bus files
-#qt4_add_dbus_adaptor( libamarokcore_SRCS org.kde.Amarok.xml amarokdcophandler.h DcopPlayerHandler PlayerHandler )
-
-
-qt4_add_dbus_adaptor( libamarokcore_SRCS org.kde.amarok.collection.xml amarokdbushandler.h DbusCollectionHandler)
-qt4_add_dbus_adaptor( libamarokcore_SRCS org.kde.amarok.contextbrowser.xml amarokdbushandler.h DbusContextBrowserHandler)
-qt4_add_dbus_adaptor( libamarokcore_SRCS org.kde.amarok.mediabrowser.xml amarokdbushandler.h DbusMediaBrowserHandler)
-qt4_add_dbus_adaptor( libamarokcore_SRCS org.kde.amarok.player.xml amarokdbushandler.h DbusPlayerHandler)
-qt4_add_dbus_adaptor( libamarokcore_SRCS org.kde.amarok.playlist.xml amarokdbushandler.h DbusPlaylistHandler)
-qt4_add_dbus_adaptor( libamarokcore_SRCS org.kde.amarok.playlistbrowse.xml amarokdbushandler.h DbusPlaylistBrowserHandler)
-qt4_add_dbus_adaptor( libamarokcore_SRCS org.kde.amarok.script.xml amarokdbushandler.h DbusScriptHandler)
-
 install(FILES  amarok.kcfg DESTINATION ${KCFG_INSTALL_DIR} )
 install(FILES org.kde.amarok.collection.xml
 	      org.kde.amarok.contextbrowser.xml

@@ -97,7 +97,15 @@ include_directories(
 set(libamarokcore_SRCS
 #	${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokdcophandler.cpp
 	${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/crashhandler.cpp
-)
+	)
+qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.collection.xml ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokdbushandler.h Amarok::DbusCollectionHandler)
+qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.contextbrowser.xml ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokdbushandler.h Amarok::DbusContextBrowserHandler)
+qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.mediabrowser.xml ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokdbushandler.h Amarok::DbusMediaBrowserHandler)
+qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.player.xml ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokdbushandler.h Amarok::DbusPlayerHandler)
+qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.playlist.xml ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokdbushandler.h Amarok::DbusPlaylistHandler)
+qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.playlistbrowse.xml ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokdbushandler.h Amarok::DbusPlaylistBrowserHandler)
+qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.script.xml ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokdbushandler.h Amarok::DbusScriptHandler)
+
 
 set(libplugin_SRCS
 	${CMAKE_SOURCE_DIR}/amarok/src/plugin/plugin.cpp

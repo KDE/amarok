@@ -165,7 +165,6 @@
       <arg type="i" direction="in"/>
       <arg type="i" direction="in"/>
       <arg type="i" direction="in"/>
-      <arg type="i" direction="in"/>
     </method>
    <method name="setEqualizerEnabled" >
       <arg name="active" type="b" direction="in"/>
