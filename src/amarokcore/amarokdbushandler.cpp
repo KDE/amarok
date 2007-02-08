@@ -1053,4 +1053,4 @@ namespace Amarok
 
 } //namespace Amarok
 
-#include "amarokdcophandler.moc"
+#include "amarokdbushandler.moc"
