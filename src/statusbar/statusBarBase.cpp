@@ -101,7 +101,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     //we need extra spacing due to the way we paint the surrounding boxes
 //TODO: Do we still need to stack layouts?
 //     Q3BoxLayout *layout = new Q3HBoxLayout( mainlayout, /*spacing*/5 );
-   QHBoxLayout *layout = new QHBoxLayout;
+    QHBoxLayout *layout = new QHBoxLayout;
     layout->setSpacing( 5 );
     mainlayout->addLayout( layout );
 
@@ -114,8 +114,10 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     KHBox *mainProgressBarBox = new KHBox( this );
     mainProgressBarBox->setObjectName( "progressBox" );
     QToolButton *b1 = new QToolButton( mainProgressBarBox ); //cancelbutton
+    b1->setObjectName( "cancelButton" );
     m_mainProgressBar  = new QProgressBar( mainProgressBarBox);
     QToolButton *b2 = new QToolButton( mainProgressBarBox ); //showprogressdetails button
+    b2->setObjectName( "showAllProgressDetails" );
     mainProgressBarBox->setSpacing( 2 );
     mainProgressBarBox->hide();
 
