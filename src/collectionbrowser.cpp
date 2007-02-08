@@ -66,6 +66,7 @@
 #include <QToolButton>
 #include <QIcon>
 #include <QWidget>
+#include <QVBoxLayout>
 
 
 #include <kactioncollection.h>
@@ -82,7 +83,7 @@
 #include <kstandarddirs.h>   //KGlobal::dirs()
 #include <ktoggleaction.h>
 #include <kactionmenu.h>
-#include <kvbox.h>
+// #include <kvbox.h>
 #include <klineedit.h>
  //ctor
 #include <kio/job.h>
@@ -106,18 +107,20 @@ CollectionBrowser::CollectionBrowser( const char* name )
 {
     s_instance = this;
 
-    KVBox *browserLayout = new KVBox( this );
+    QVBoxLayout *browserLayout = new QVBoxLayout;
 
-//     setSpacing( 4 );
-
-    m_toolbar = new Browser::ToolBar( browserLayout );
+    m_toolbar = new Browser::ToolBar( this );
+    m_toolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
+    browserLayout->addWidget( m_toolbar );
 
     { //<Search LineEdit>
-        QToolBar    *searchToolBar = new Browser::ToolBar( browserLayout );
+        QToolBar    *searchToolBar = new Browser::ToolBar( this );
+        searchToolBar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
 
-        QToolButton *button        = new QToolButton( searchToolBar );
-        button->setIcon( QIcon("locationbar_erase") );
-        button->setToolTip( i18n( "Clear search field" ) );
+        QToolButton *clearButton   = new QToolButton( searchToolBar );
+        clearButton->setIcon( QIcon("locationbar_erase") );
+        clearButton->setToolTip( i18n( "Clear search field" ) );
+        searchToolBar->addWidget( clearButton );
 
         m_searchEdit = new KLineEdit( searchToolBar );
         m_searchEdit->setClickMessage( i18n("Enter search terms here" ) );
@@ -131,7 +134,9 @@ CollectionBrowser::CollectionBrowser( const char* name )
         filterButton->setToolTip( i18n( "Click to edit collection filter" ) );
         searchToolBar->addWidget( filterButton );
 
-        connect( button, SIGNAL( clicked() ), SLOT( slotClearFilter() ) );
+        browserLayout->addWidget( searchToolBar );
+
+        connect( clearButton,  SIGNAL( clicked() ), SLOT( slotClearFilter() ) );
         connect( filterButton, SIGNAL( clicked() ), SLOT( slotEditFilter() ) );
     } //</Search LineEdit>
 
@@ -141,7 +146,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     // hidden when not in iPod browsing mode; it is shown and hidden
     // in CollectionView::setViewMode().  m_ipodHbox holds m_timeFilter
     // and m_ipodToolbar
-    QWidget *m_timeHBox = new QWidget( browserLayout );
+    QWidget *m_timeHBox = new QWidget( this );
     QHBoxLayout *layout = new QHBoxLayout;
     m_timeHBox->setLayout( layout );
     m_timeHBox->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
@@ -156,18 +161,23 @@ CollectionBrowser::CollectionBrowser( const char* name )
     m_timeFilter->insertItem( i18n( "Added Within One Month" ) );
     m_timeFilter->insertItem( i18n( "Added Within Three Months" ) );
     m_timeFilter->insertItem( i18n( "Added Within One Year" ) );
+    layout->addWidget( m_timeFilter );
 
 
     // m_ipodToolbar just holds the forward and back buttons, which are
     // plugged below
     m_ipodToolbar = new Browser::ToolBar( m_timeHBox );
     m_ipodToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
+    layout->addWidget( m_ipodToolbar );
 
+    browserLayout->addWidget( m_timeHBox );
 
     KActionCollection* ac = new KActionCollection( this );
 
     m_view = new CollectionView( this );
     m_view->installEventFilter( this );
+
+    browserLayout->addWidget( m_view );
 
     m_configureAction = new KAction( KIcon(Amarok::icon( "configure" )), i18n( "Configure Folders" ), this );
     connect( m_configureAction, SIGNAL( triggered( bool ) ), this, SLOT( setupDirs() ) );
@@ -254,6 +264,7 @@ CollectionBrowser::CollectionBrowser( const char* name )
     //connect ( m_treeViewAction, SIGNAL ( toggled(bool) ), m_tagfilterMenuButton, SLOT( setEnabled (bool) ) );
 
     layoutToolbar();
+    setLayout( browserLayout );
 
     m_categoryMenu = m_tagfilterMenuButton->popupMenu();
     m_categoryMenu->insertItem( i18n( "Artist" ), m_view, SLOT( presetMenu( int ) ), 0, IdArtist );
