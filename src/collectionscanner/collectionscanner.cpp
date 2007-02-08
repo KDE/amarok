@@ -52,7 +52,7 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
                                       bool incremental,
                                       bool importPlaylists,
                                       bool restart )
-        : KApplication( /*allowStyles*/ false, /*GUIenabled*/ false )
+        : KApplication( /*GUIenabled*/ false )
         , m_importPlaylists( importPlaylists )
         , m_folders( folders )
         , m_recursively( recursive )
@@ -109,9 +109,9 @@ CollectionScanner::doJob() //SLOT
             warning() << "Failed to open log file " << logFile.name() << " read-only"
             << endl;
         else {
-            Q3TextStream logStream;
+            QTextStream logStream;
             logStream.setDevice(&logFile);
-            logStream.setEncoding(Q3TextStream::UnicodeUTF8);
+            logStream.setEncoding(QTextStream::UnicodeUTF8);
             lastFile = logStream.read();
             logFile.close();
         }
@@ -121,9 +121,9 @@ CollectionScanner::doJob() //SLOT
             warning() << "Failed to open folder file " << folderFile.name()
             << " read-only" << endl;
         else {
-            Q3TextStream folderStream;
+            QTextStream folderStream;
             folderStream.setDevice(&folderFile);
-            folderStream.setEncoding(Q3TextStream::UnicodeUTF8);
+            folderStream.setEncoding(QTextStream::UnicodeUTF8);
             entries = QStringList::split( "\n", folderStream.read() );
         }
 
@@ -147,8 +147,8 @@ CollectionScanner::doJob() //SLOT
 
         QFile folderFile( Amarok::saveLocation( QString::null ) + "collection_scan.files"   );
         folderFile.open( QIODevice::WriteOnly );
-        Q3TextStream stream( &folderFile );
-        stream.setEncoding(Q3TextStream::UnicodeUTF8);
+        QTextStream stream( &folderFile );
+        stream.setEncoding(QTextStream::UnicodeUTF8);
         stream << entries.join( "\n" );
         folderFile.close();
     }
@@ -172,6 +172,7 @@ CollectionScanner::doJob() //SLOT
 void
 CollectionScanner::readDir( const QString& dir, QStringList& entries )
 {
+//TODO:port to dbus
     static DCOPRef dcopRef( "amarok", "collection" );
 
     // linux specific, but this fits the 90% rule
@@ -254,6 +255,7 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
 
             bool isInCollection = false;
             if( m_incremental )
+//TODO:port to dbus
                 dcopRef.call( "isDirInCollection", file ).get( isInCollection );
 
             if( !m_incremental || !isInCollection )
@@ -283,7 +285,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
     QStringList images;
 
     int itemCount = 0;
-
+//TODO: Port to dbus
     DCOPRef dcopRef( "amarok", "collection" );
 
     oldForeachType( QStringList, entries ) {
@@ -369,6 +371,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
             kapp->processEvents();  // let DCOP through!
             if( m_pause )
             {
+//TODO Port to dbus
                 dcopRef.send( "scannerAcknowledged" );
                 while( m_pause )
                 {
@@ -463,8 +466,9 @@ CollectionScanner::writeElement( const QString& name, const AttributeMap& attrib
     }
 
     QString text;
-    Q3TextStream stream( &text, QIODevice::WriteOnly );
+    QTextStream stream( &text, QIODevice::WriteOnly );
     element.save( stream, 0 );
+
 
     std::cout << text.utf8() << std::endl;
 }
