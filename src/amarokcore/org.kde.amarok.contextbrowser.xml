@@ -6,7 +6,7 @@
     <method name="showLyrics"/>
     <method name="showWiki"/>
     <method name="showLyrics" >
-      <arg name="lyrics" type="s" direction="in"/>
+      <arg name="lyrics" type="ay" direction="in"/>
     </method>
   </interface>
 </node>

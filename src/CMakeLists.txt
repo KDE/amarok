@@ -95,7 +95,7 @@ include_directories(
 
 
 set(libamarokcore_SRCS
-#	${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokdcophandler.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokdbushandler.cpp
 	${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/crashhandler.cpp
 	)
 qt4_add_dbus_adaptor( libamarokcore_SRCS amarokcore/org.kde.amarok.collection.xml ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokdbushandler.h Amarok::DbusCollectionHandler)

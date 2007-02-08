@@ -313,20 +313,26 @@ namespace Amarok
 
     void DbusPlayerHandler::enableRandomMode( bool enable )
     {
+#if 0	    
         static_cast<KSelectAction*>(Amarok::actionCollection()->action( "random_mode" ))
             ->setCurrentItem( enable ? AmarokConfig::EnumRandomMode::Tracks : AmarokConfig::EnumRandomMode::Off );
+#endif	
     }
 
     void DbusPlayerHandler::enableRepeatPlaylist( bool enable )
     {
+#if 0	    
         static_cast<KSelectAction*>( Amarok::actionCollection()->action( "repeat" ) )
                ->setCurrentItem( enable ? AmarokConfig::EnumRepeat::Playlist : AmarokConfig::EnumRepeat::Off );
+#endif	
     }
 
      void DbusPlayerHandler::enableRepeatTrack( bool enable)
     {
+#if 0	    
         static_cast<KSelectAction*>( Amarok::actionCollection()->action( "repeat" ) )
                ->setCurrentItem( enable ? AmarokConfig::EnumRepeat::Track : AmarokConfig::EnumRepeat::Off );
+#endif	
     }
 
     void DbusPlayerHandler::mediaDeviceMount()
@@ -615,6 +621,7 @@ namespace Amarok
 
     void DbusPlaylistHandler::removeCurrentTrack()
     {
+#if 0	    
         PlaylistItem* const item = Playlist::instance()->currentTrack();
         if ( item ) {
             if( item->isBeingRenamed() )
@@ -625,17 +632,20 @@ namespace Amarok
                 delete item;
             }
         }
+#endif	
     }
 
     void DbusPlaylistHandler::removeByIndex( int index )
     {
-        PlaylistItem* const item =
+#if 0
+    	    PlaylistItem* const item =
             static_cast<PlaylistItem*>( Playlist::instance()->itemAtIndex( index ) );
 
         if ( item ) {
             Playlist::instance()->removeItem( item );
             delete item;
         }
+#endif	
     }
 
     void DbusPlaylistHandler::repopulate()
@@ -751,7 +761,7 @@ namespace Amarok
         ContextBrowser::instance()->showWikipedia();
     }
 
-    void DbusContextBrowserHandler::showLyrics( const QString& lyrics )
+    void DbusContextBrowserHandler::showLyrics( const QByteArray& lyrics )
     {
         ContextBrowser::instance()->lyricsResult( lyrics );
     }
@@ -846,28 +856,34 @@ namespace Amarok
     }
 
     void DbusCollectionHandler::scanPause()
-    {
+    {	   
+#if 0	    
         if( ScanController::instance() )
             ScanController::instance()->requestPause();
         else
             debug() << "No ScanController instance available" << endl;
+#endif	
     }
 
     void DbusCollectionHandler::scanUnpause()
     {
+#if 0	    
         if( ScanController::instance() )
             ScanController::instance()->requestUnpause();
         else
             debug() << "No ScanController instance available" << endl;
+#endif	
     }
 
     void DbusCollectionHandler::scannerAcknowledged()
     {
+#if 0	    
         DEBUG_BLOCK
         if( ScanController::instance() )
             ScanController::instance()->requestAcknowledged();
         else
             debug() << "No ScanController instance available" << endl;
+#endif	
     }
 
     int DbusCollectionHandler::addLabels( const QString &url, const QStringList &labels )

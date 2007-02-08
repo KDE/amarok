@@ -3393,7 +3393,7 @@ void ContextBrowser::showLyrics( const QString &url )
 
 
 void
-ContextBrowser::lyricsResult( Q3CString cXmlDoc, bool cached ) //SLOT
+ContextBrowser::lyricsResult( QByteArray cXmlDoc, bool cached ) //SLOT
 {
     QDomDocument doc;
     QString xmldoc = QString::fromUtf8( cXmlDoc );
