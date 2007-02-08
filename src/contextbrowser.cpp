@@ -2981,7 +2981,7 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
 
                     QString tracktitle_formated;
                     QString tracktitle;
-                    tracktitle = escapeHTML( i18n("%1 - %2").arg( albumValues[j + 5], albumValues[j] ) );
+                    tracktitle = escapeHTML( i18n("%1 - %2", albumValues[j + 5], albumValues[j] ) );
                     tracktitle_formated = "<span class='album-song-title'>\n";
                     if( i==vectorPlace && albumValues[j + 2].toInt() == m_currentTrack.track() && discNumber.toInt() == m_currentTrack.discNumber() )
                         tracktitle_formated += "<i>\n";
@@ -3457,7 +3457,7 @@ ContextBrowser::lyricsResult( Q3CString cXmlDoc, bool cached ) //SLOT
                 const QString artist = l.item( i ).toElement().attribute( "artist" );
                 const QString title  = l.item( i ).toElement().attribute( "title" );
 
-                lyrics += "<a href='show:suggestLyric-" + url + "'>\n" + i18n("%1 - %2").arg( artist, title );
+                lyrics += "<a href='show:suggestLyric-" + url + "'>\n" + i18n("%1 - %2", artist, title );
                 lyrics += "</a><br/>\n";
             }
         }

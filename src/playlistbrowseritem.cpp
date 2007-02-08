@@ -1035,7 +1035,7 @@ PlaylistTrackItem::PlaylistTrackItem( Q3ListViewItem *parent, Q3ListViewItem *af
     if( p && p->text( 0 ).contains( info->artist() ) )
         setText( 0, info->title() );
     else
-        setText( 0, i18n("%1 - %2").arg( info->artist(), info->title() ) );
+        setText( 0, i18n("%1 - %2", info->artist(), info->title() ) );
 }
 
 const KUrl &PlaylistTrackItem::url()

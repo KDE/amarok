@@ -1053,7 +1053,7 @@ MetaBundle::prettyTitle() const
     if( s.isEmpty() )
         s = title();
     else
-        s = i18n("%1 - %2").arg( artist(), title() );
+        s = i18n("%1 - %2", artist(), title() );
 
     if( s.isEmpty() ) s = prettyTitle( filename() );
 

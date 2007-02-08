@@ -112,7 +112,8 @@ class ToggleLabel : public QLabel
 
             m_tooltipShowing = true;
 
-            QString tip = m_action->isChecked() ? i18n("%1: on") : i18n("%1: off");
+            QString action = m_action->text().remove('&');
+            QString tip = m_action->isChecked() ? i18n("%1: on", action) : i18n("%1: off", action);
 
             if( !isEnabled() )
                 tip += i18n("&nbsp;<br>&nbsp;<i>Disabled</i>");
@@ -123,7 +124,7 @@ class ToggleLabel : public QLabel
             m_tooltip->setShowCloseButton( false );
             m_tooltip->setShowCounter( false );
             m_tooltip->setMaskEffect( KDE::PopupMessage::Plain );
-            m_tooltip->setText( tip.arg(m_action->text().remove('&') ) );
+            m_tooltip->setText( tip );
             m_tooltip->setImage( m_action->icon().pixmap(QSize(22, 22)) );
 
             m_tooltip->reposition();

@@ -294,7 +294,7 @@ CoverViewDialog::CoverViewDialog( const QString& artist, const QString& album, Q
     setAttribute( Qt::WA_DeleteOnClose );
     KWin::setType( winId(), NET::Utility );
     kapp->setTopWidget( this );
-    setCaption( KDialog::makeStandardCaption( i18n("%1 - %2").arg( artist, album ) ) );
+    setCaption( KDialog::makeStandardCaption( i18n("%1 - %2", artist, album ) ) );
 
     m_layout = new Q3HBoxLayout( this );
     m_layout->setAutoAdd( true );

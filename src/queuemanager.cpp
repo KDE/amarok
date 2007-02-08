@@ -385,7 +385,7 @@ QueueManager::addItems( Q3ListViewItem *after )
 
         if( current.find( item ) == current.end() ) //avoid duplication
         {
-            QString title = i18n("%1 - %2").arg( item->artist(), item->title() );
+            QString title = i18n("%1 - %2", item->artist(), item->title() );
 
             after = new QueueItem( m_listview, after, title );
             m_map[ after ] = item;
@@ -428,7 +428,7 @@ QueueManager::addQueuedItem( PlaylistItem *item )
     Q3ValueList<PlaylistItem*>         current = m_map.values();
     Q3ValueListIterator<PlaylistItem*> newItem = current.find( item );
 
-    QString title = i18n("%1 - %2").arg( item->artist(), item->title() );
+    QString title = i18n("%1 - %2", item->artist(), item->title() );
 
     if( newItem == current.end() ) //avoid duplication
     {
@@ -458,7 +458,7 @@ QueueManager::removeQueuedItem( PlaylistItem *item )
     Q3ValueList<PlaylistItem*>         current = m_map.values();
     Q3ValueListIterator<PlaylistItem*> newItem = current.find( item );
 
-    QString title = i18n("%1 - %2").arg( item->artist(), item->title() );
+    QString title = i18n("%1 - %2", item->artist(), item->title() );
 
     Q3ListViewItem *removableItem = m_listview->findItem( title, 0 );
 
@@ -502,7 +502,7 @@ QueueManager::insertItems()
 
     for( PlaylistItem *item = list.first(); item; item = list.next() )
     {
-        QString title = i18n("%1 - %2").arg( item->artist(), item->title() );
+        QString title = i18n("%1 - %2", item->artist(), item->title() );
 
         last = new QueueItem( m_listview, last, title );
         m_map[ last ] = item;

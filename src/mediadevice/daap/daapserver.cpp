@@ -73,7 +73,7 @@ DaapServer::readSql()
             #if DNSSD_SUPPORT
                 KUser current;
                 if( !m_service )
-                    m_service = new DNSSD::PublicService( i18n("%1's Amarok Share").arg( current.fullName() ), "_daap._tcp", line.toInt() );
+                    m_service = new DNSSD::PublicService( i18n("%1's Amarok Share", current.fullName() ), "_daap._tcp", line.toInt() );
                     debug() << "port number: " << line.toInt() << endl;
                 m_service->publishAsync();
             #endif

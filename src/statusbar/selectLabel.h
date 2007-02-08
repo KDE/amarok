@@ -129,9 +129,7 @@ class SelectLabel : public QLabel
 
             m_tooltipShowing = true;
 
-            QString tip = i18n("%1: %2")
-                          .arg( m_action->text().remove( '&' ) )
-                          .arg( m_action->currentText().remove( '&' ) );
+            QString tip = i18n("%1: %2", m_action->text().remove( '&' ),  m_action->currentText().remove( '&' ) );
 
             if( !isEnabled() )
                 tip += i18n("&nbsp;<br>&nbsp;<i>Disabled</i>");
@@ -139,8 +137,7 @@ class SelectLabel : public QLabel
                      m_action == Amarok::actionCollection()->action( "random_mode" ) ) //hack?
             {
                 KSelectAction *a = static_cast<KSelectAction*>( Amarok::actionCollection()->action( "favor_tracks" ) );
-                tip += QString("<br><br>") + i18n("%1: %2")
-                                             .arg( a->text().remove( '&' ), a->currentText().remove( '&' ) );
+                tip += QString("<br><br>") + i18n("%1: %2", a->text().remove( '&' ), a->currentText().remove( '&' ) );
             }
 
             tip += "&nbsp;";

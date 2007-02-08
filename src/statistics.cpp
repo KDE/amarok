@@ -352,7 +352,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
 
         for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
         {
-            QString name = i18n("%1. %2 - %3").arg( QString::number(c),
+            QString name = i18n("%1. %2 - %3", QString::number(c),
                     fave[i].isEmpty() ? i18n( "Unknown" ) : fave[i],
                     fave[i+1].isEmpty() ? i18n( "Unknown" ) : fave[i+1]);
             QString score = locale->formatNumber( fave[i+3].toDouble(), 0 );
@@ -386,11 +386,11 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
 
         for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
         {
-            QString name = i18n("%1. %2 - %3").arg( QString::number(c),
+            QString name = i18n("%1. %2 - %3", QString::number(c),
                     fave[i].isEmpty() ? i18n( "Unknown" ) : fave[i],
                     fave[i+1].isEmpty() ? i18n( "Unknown" ) : fave[i+1]);
             double plays  = fave[i+3].toDouble();
-            QString subtext = i18n("%1: %2").arg( i18n( "Playcount" ) ).arg( plays );
+            QString subtext = i18n("%1: %2", i18n( "Playcount" ), plays );
             m_last = new StatisticsDetailedItem( name, subtext, item, m_last );
             m_last->setItemType( StatisticsDetailedItem::TRACK );
             m_last->setUrl( fave[i+2] );
@@ -421,8 +421,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
 
         for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
         {
-            QString name   = i18n("%1. %2").arg( QString::number(c),
-                    fave[i].isEmpty() ? i18n( "Unknown" ) : fave[i] );
+            QString name   = i18n("%1. %2", QString::number(c), fave[i].isEmpty() ? i18n( "Unknown" ) : fave[i] );
             QString score  = locale->formatNumber( fave[i+1].toDouble(), 2 );
             QString rating = locale->formatNumber( fave[i+2].toDouble() / 2.0, 2 );
             m_last = new StatisticsDetailedItem( name, subText( score, rating ), item, m_last );
@@ -468,7 +467,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
         for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
         {
             const bool isSampler = (fave[i+6] == trueValue);
-            QString name = i18n("%1. %2 - %3").arg( QString::number(c),
+            QString name = i18n("%1. %2 - %3", QString::number(c),
                     fave[i].isEmpty() ? i18n( "Unknown" ) : fave[i],
                     isSampler ? i18n( "Various Artists" ) :
                         ( fave[i+1].isEmpty() ? i18n( "Unknown" ) : fave[i+1] ) );
@@ -507,7 +506,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
 
         for( uint i=0; i < fave.count(); i += qb.countReturnValues() )
         {
-            QString name = i18n("%1. %2").arg( QString::number(c),
+            QString name = i18n("%1. %2", QString::number(c),
                     fave[i].isEmpty() ? i18n( "Unknown" ) : fave[i] );
             QString score  = locale->formatNumber( fave[i+1].toDouble(), 2 );
             QString rating = locale->formatNumber( fave[i+2].toDouble() / 2.0, 2 );
@@ -548,7 +547,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
 
         for( uint i=0; i < newest.count(); i += qb.countReturnValues() )
         {
-            QString name = i18n("%1. %2 - %3").arg( QString::number(c),
+            QString name = i18n("%1. %2 - %3", QString::number(c),
                     newest[i].isEmpty() ? i18n( "Unknown" ) : newest[i],
                     newest[i+1].isEmpty() ? i18n( "Unknown" ) : newest[i+1] );
             QDateTime added = QDateTime();
