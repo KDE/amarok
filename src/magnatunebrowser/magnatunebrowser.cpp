@@ -73,6 +73,7 @@ MagnatuneBrowser::MagnatuneBrowser( const char *name )
     m_purchaseInProgress = 0;
 
     m_polished = false;
+    polish( );  //FIXME not happening when shown for some reason
 
 }
 
