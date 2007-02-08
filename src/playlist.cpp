@@ -2763,7 +2763,7 @@ Playlist::eventFilter( QObject *o, QEvent *e )
 
         Q3PopupMenu popup;
         if( mouseOverColumn >= 0 )
-            popup.insertItem( i18n("&Hide %1").arg( columnText( mouseOverColumn ) ), HIDE ); //TODO
+            popup.insertItem( i18n("&Hide %1", columnText( mouseOverColumn ) ), HIDE ); //TODO
 
         KMenu sub;
         for( int i = 0; i < columns(); ++i ) //columns() references a property
@@ -3536,7 +3536,7 @@ Playlist::copyToClipboard( const Q3ListViewItem *item ) const //SLOT
         QApplication::clipboard()->setText( text, QClipboard::Clipboard );
         QApplication::clipboard()->setText( text, QClipboard::Selection );
 
-        Amarok::OSD::instance()->OSDWidget::show( i18n( "Copied: %1" ).arg( text ),
+        Amarok::OSD::instance()->OSDWidget::show( i18n( "Copied: %1", text ),
                                  QImage(CollectionDB::instance()->albumImage(*playlistItem )) );
     }
 }
@@ -3784,7 +3784,7 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
                 popup.addAction( Amarok::actionCollection()->action("playlist_shuffle") );
                 m = PlaylistBrowser::instance()->findDynamicModeByTitle( AmarokConfig::lastDynamicMode() );
                 if( m )
-                    popup.insertItem( SmallIconSet( Amarok::icon( "dynamic" ) ), i18n("L&oad %1").arg( m->title().replace( '&', "&&" ) ), ENABLEDYNAMIC);
+                    popup.insertItem( SmallIconSet( Amarok::icon( "dynamic" ) ), i18n("L&oad %1", m->title().replace( '&', "&&" )), ENABLEDYNAMIC);
         }
         switch(popup.exec(p))
         {
@@ -3923,12 +3923,12 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
     if( itemCount > 1 )
         popup.insertItem( trackColumn
                         ? i18n("Iteratively Assign Track &Numbers")
-                        : i18n("&Write '%1' for Selected Tracks")
-                        .arg( KStringHandler::rsqueeze( tag, 30 ).replace( "&", "&&" ) ), FILL_DOWN );
+                        : i18n("&Write '%1' for Selected Tracks",  KStringHandler::rsqueeze( tag, 30 ).replace( "&", "&&" ) )
+                        , FILL_DOWN );
 
     popup.insertItem( SmallIconSet( Amarok::icon( "edit" ) ), (itemCount == 1
-            ? i18n( "&Edit Tag '%1'" )
-            : i18n( "&Edit '%1' Tag for Selected Tracks" )).arg( tagName ), EDIT );
+            ? i18n( "&Edit Tag '%1'", tagName )
+            : i18n( "&Edit '%1' Tag for Selected Tracks", tagName )), EDIT );
 
     popup.insertItem( SmallIconSet( Amarok::icon( "info" ) )
         , item->url().isLocalFile() ?
@@ -4506,7 +4506,7 @@ Playlist::switchState( QStringList &loadFromMe, QStringList &saveToMe )
     m_undoDirt = true;
     //switch to a previously saved state, remember current state
     KUrl url; url.setPath( loadFromMe.last() );
-    loadFromMe.pop_back();
+    loadFromMe.removeLast();
 
     //save current state
     saveState( saveToMe );
@@ -4983,7 +4983,7 @@ TagWriter::completeJob()
         // we write a space for some reason I cannot recall
         m_item->setExactText( m_tagType, m_oldTagString.isEmpty() ? " " : m_oldTagString );
         Amarok::StatusBar::instance()->longMessage( i18n(
-                "Sorry, the tag for %1 could not be changed." ).arg( m_item->url().fileName() ), KDE::StatusBar::Sorry );
+                "Sorry, the tag for %1 could not be changed.", m_item->url().fileName() ), KDE::StatusBar::Sorry );
         break;
 
     case false:

@@ -316,7 +316,7 @@ TagDialog::queryDone( KTRMResultList results, QString error ) //SLOT
 #if HAVE_TUNEPIMP
 
     if ( !error.isEmpty() ) {
-        KMessageBox::sorry( this, i18n( "Tunepimp (MusicBrainz tagging library) returned the following error: \"%1\"." ).arg(error) );
+        KMessageBox::sorry( this, i18n( "Tunepimp (MusicBrainz tagging library) returned the following error: \"%1\".", error) );
     }
     else {
         if ( !results.isEmpty() )
@@ -636,21 +636,21 @@ void TagDialog::readTags()
 {
     bool local = m_bundle.url().isLocalFile();
 
-    setCaption( KDialog::makeStandardCaption( i18n("Track Information: %1 by %2").arg( m_bundle.title(),  m_bundle.artist() ) ) );
+    setCaption( KDialog::makeStandardCaption( i18n("Track Information: %1 by %2", m_bundle.title(),  m_bundle.artist() ) ) );
 
     QString niceTitle;
     if ( m_bundle.album().isEmpty() ) {
         if( !m_bundle.title().isEmpty() ) {
             if( !m_bundle.artist().isEmpty() )
-                niceTitle = i18n( "<b>%1</b> by <b>%2</b>" ).arg( m_bundle.title(),  m_bundle.artist() );
+                niceTitle = i18n( "<b>%1</b> by <b>%2</b>", m_bundle.title(),  m_bundle.artist() );
             else
-                niceTitle = QString( "<b>%1</b>" ).arg( m_bundle.title() );
+                niceTitle = QString( "<b>%1</b>").arg( m_bundle.title() );
         }
         else niceTitle = m_bundle.prettyTitle();
     }
     else {
-        niceTitle = i18n( "<b>%1</b> by <b>%2</b> on <b>%3</b>" )
-            .arg( m_bundle.title(), m_bundle.artist(), m_bundle.album() );
+        niceTitle = i18n( "<b>%1</b> by <b>%2</b> on <b>%3</b>" ,
+            m_bundle.title(), m_bundle.artist(), m_bundle.album() );
     }
     trackArtistAlbumLabel->setText( niceTitle );
     trackArtistAlbumLabel2->setText( niceTitle );
@@ -1425,7 +1425,7 @@ TagDialog::writeTag( MetaBundle &mb, bool updateCB )
     Q3CString path = QFile::encodeName( mb.url().path() );
     if ( !TagLib::File::isWritable( path ) ) {
         Amarok::StatusBar::instance()->longMessage( i18n(
-           "The file %1 is not writable." ).arg( mb.url().fileName() ), KDE::StatusBar::Error );
+           "The file %1 is not writable.", mb.url().fileName() ), KDE::StatusBar::Error );
         return false;
     }
 
@@ -1465,7 +1465,7 @@ TagDialogWriter::doJob()
         Q3CString path = QFile::encodeName( m_tags[i].url().path() );
         if ( !TagLib::File::isWritable( path ) ) {
             Amarok::StatusBar::instance()->longMessageThreadSafe( i18n(
-                "The file %1 is not writable." ).arg( m_tags[i].url().fileName() ), KDE::StatusBar::Error );
+                "The file %1 is not writable.", m_tags[i].url().fileName() ), KDE::StatusBar::Error );
             m_failed += true;
             continue;
         }
@@ -1498,7 +1498,7 @@ TagDialogWriter::completeJob()
         CollectionView::instance()->databaseChanged();
      if ( m_failCount )
         Amarok::StatusBar::instance()->longMessage( i18n(
-                        "Sorry, the tag for the following files could not be changed:\n" ).arg( m_failedURLs.join( ";\n" ) ), KDE::StatusBar::Error );
+                        "Sorry, the tag for the following files could not be changed:\n", m_failedURLs.join( ";\n" ) ), KDE::StatusBar::Error );
 }
 
 

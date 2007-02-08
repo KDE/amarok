@@ -105,7 +105,7 @@ OSDWidget::volChanged( unsigned char volume )
     {
         m_volume = true;
         m_newvolume = volume;
-        m_text = m_newvolume ? i18n("Volume: %1%").arg( m_newvolume ) : i18n("Mute");
+        m_text = m_newvolume ? i18n("Volume: %1%", m_newvolume) : i18n("Mute");
 
         show();
     }

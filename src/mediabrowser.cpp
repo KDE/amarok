@@ -661,11 +661,11 @@ MediaBrowser::updateDevices()
         QString name = (*it)->name();
         if( !(*it)->deviceNode().isEmpty() )
         {
-            name = i18n( "%1 at %2" ).arg( name, (*it)->deviceNode() );
+            name = i18n( "%1 at %2", name, (*it)->deviceNode() );
         }
         if( (*it)->hasMountPoint() && !(*it)->mountPoint().isEmpty() )
         {
-            name += i18n( " (mounted at %1)" ).arg( (*it)->mountPoint() );
+            name += i18n( " (mounted at %1)", (*it)->mountPoint() );
         }
         m_deviceCombo->insertItem( name, i );
         if( it == m_currentDevice )
@@ -1662,7 +1662,7 @@ MediaBrowser::mediumRemoved( const Medium *medium, QString name )
                     Amarok::StatusBar::instance()->longMessage(
                             i18n( "The device %1 was removed before it was disconnected. "
                                 "In order to avoid possible data loss, press the \"Disconnect\" "
-                                "button before disconnecting the device." ).arg( name ),
+                                "button before disconnecting the device.", name ),
                             KDE::StatusBar::Warning );
                 }
                 else
@@ -1832,13 +1832,13 @@ MediaBrowser::updateStats()
     QString text = i18np( "1 track in queue", "%n tracks in queue", m_queue->childCount() );
     if(m_queue->childCount() > 0)
     {
-        text += i18n(" (%1)").arg( KIO::convertSize( queued ) );
+        text += i18n(" (%1)", KIO::convertSize( queued ) );
     }
 
     KIO::filesize_t total, avail;
     if( currentDevice() && currentDevice()->getCapacity(&total, &avail) )
     {
-        text += i18n( " - %1 of %2 available" ).arg( KIO::convertSize( avail ) ).arg( KIO::convertSize( total ) );
+        text += i18n( " - %1 of %2 available", KIO::convertSize( avail ), KIO::convertSize( total ) );
 
         m_stats->m_used = total-avail;
         m_stats->m_total = total;
@@ -2103,7 +2103,7 @@ MediaDevice::bundlesToSync( const QString &name, const KUrl &url )
     BundleList bundles;
     if( !PlaylistFile::isPlaylistFile( url ) )
     {
-        Amarok::StatusBar::instance()->longMessage( i18n( "Not a playlist file: %1" ).arg( url.path() ),
+        Amarok::StatusBar::instance()->longMessage( i18n( "Not a playlist file: %1", url.path() ),
                 KDE::StatusBar::Sorry );
         return bundles;
     }
@@ -2111,7 +2111,7 @@ MediaDevice::bundlesToSync( const QString &name, const KUrl &url )
     PlaylistFile playlist( url.path() );
     if( playlist.isError() )
     {
-        Amarok::StatusBar::instance()->longMessage( i18n( "Failed to load playlist: %1" ).arg( url.path() ),
+        Amarok::StatusBar::instance()->longMessage( i18n( "Failed to load playlist: %1", url.path() ),
                 KDE::StatusBar::Sorry );
         return bundles;
     }
@@ -2246,7 +2246,7 @@ MediaQueue::addUrl( const KUrl& url2, MetaBundle *bundle, const QString &playlis
 
         if( playlist.isError() )
         {
-            Amarok::StatusBar::instance()->longMessage( i18n( "Failed to load playlist: %1" ).arg( url.path() ),
+            Amarok::StatusBar::instance()->longMessage( i18n( "Failed to load playlist: %1", url.path() ),
                     KDE::StatusBar::Sorry );
             return;
         }
@@ -2288,7 +2288,7 @@ MediaQueue::addUrl( const KUrl& url2, MetaBundle *bundle, const QString &playlis
             if( it->url() == url )
             {
                 Amarok::StatusBar::instance()->shortMessage(
-                        i18n( "Track already queued for transfer: %1" ).arg( url.url() ) );
+                        i18n( "Track already queued for transfer: %1", url.url() ) );
                 return;
             }
         }
@@ -2446,7 +2446,7 @@ int MediaDevice::sysCall( const QString &command )
     sysProc->clearArguments();
     (*sysProc) << command;
     if (!sysProc->start( KProcess::Block, KProcess::AllOutput ))
-        kFatal() << i18n("could not execute %1").arg(command.local8Bit().data()) << endl;
+        kFatal() << i18n("could not execute %1", command.local8Bit().data()) << endl;
 
     return (sysProc->exitStatus());
 }
@@ -2505,7 +2505,7 @@ MediaDevice::kioCopyTrack( const KUrl &src, const KUrl &dst )
                 tryToRemove = true;
                 // probably s.th. went wrong
                 Amarok::StatusBar::instance()->longMessage(
-                        i18n( "Media Device: Reading tags from %1 failed" ).arg( dst.prettyUrl() ),
+                        i18n( "Media Device: Reading tags from %1 failed", dst.prettyUrl() ),
                         KDE::StatusBar::Error );
             }
         }
@@ -3037,7 +3037,7 @@ MediaDevice::transferFiles()
 
                 if( !isPlayable( *bundle ) )
                 {
-                    Amarok::StatusBar::instance()->shortMessage( i18n( "Track not playable on media device: %1" ).arg( bundle->url().path() ),
+                    Amarok::StatusBar::instance()->shortMessage( i18n( "Track not playable on media device: %1", bundle->url().path() ),
                             KDE::StatusBar::Sorry );
                     unplayable += (*it).url();
                     transferredItem->setFailed();
@@ -3057,7 +3057,7 @@ MediaDevice::transferFiles()
                 if( !isCanceled() )
                 {
                     Amarok::StatusBar::instance()->longMessage(
-                            i18n( "Failed to copy track to media device: %1" ).arg( bundle->url().path() ),
+                            i18n( "Failed to copy track to media device: %1", bundle->url().path() ),
                             KDE::StatusBar::Sorry );
                     transferredItem->setFailed();
                 }

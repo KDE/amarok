@@ -526,7 +526,7 @@ GstEngine::metaDataForUrl(const KUrl &url, Engine::SimpleMetaBundle &b)
     if ( url.protocol() == "cdda" )
     {
         // TODO: gstreamer doesn't support cddb natively, but could perhaps use libkcddb?
-        b.title = QString( i18n( "Track %1" ) ).arg( url.host() );
+        b.title = QString( i18n( "Track %1", url.host() ) );
         b.album = i18n( "AudioCD" );
 
         if ( setupAudioCD( url.query().remove( QRegExp( "^\\?" ) ), url.host().toUInt(), true ) )
@@ -1021,7 +1021,7 @@ GstEngine::createElement( const Q3CString& factoryName, GstElement* bin, const Q
         KMessageBox::error( 0,
             i18n( "<h3>GStreamer could not create the element: <i>%1</i></h3> "
                   "<p>Please make sure that you have installed all necessary GStreamer plugins (e.g. OGG and MP3), and run <i>'gst-register'</i> afterwards.</p>"
-                  "<p>For further assistance consult the GStreamer manual, and join #gstreamer on irc.freenode.net.</p>" ).arg( factoryName ) );
+                  "<p>For further assistance consult the GStreamer manual, and join #gstreamer on irc.freenode.net.</p>", factoryName ) );
         gst_object_unref( GST_OBJECT( bin ) );
     }
 
@@ -1194,7 +1194,7 @@ GstEngine::sendBufferStatus()
 {
     if ( m_streamBuffering ) {
         const int percent = (int) ( (float) m_streamBufIndex / STREAMBUF_MIN * 105.0 );
-        emit statusText( i18n( "Buffering.. %1%" ).arg( MIN( percent, 100 ) ) );
+        emit statusText( i18n( "Buffering.. %1%" , MIN( percent, 100 ) ) );
     }
 }
 //#endif

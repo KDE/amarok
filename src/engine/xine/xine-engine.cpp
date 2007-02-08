@@ -823,7 +823,7 @@ XineEngine::customEvent( QCustomEvent *e )
     }   break;
 
     case 3004:
-        emit statusText( i18n("Redirecting to: ").arg( *message ) );
+        emit statusText( i18n("Redirecting to: ", *message ) );
         load( KUrl( *message ), false );
         play();
         delete message;
@@ -1101,7 +1101,7 @@ bool XineEngine::metaDataForUrl(const KUrl &url, Engine::SimpleMetaBundle &b)
                 if( b.tracknr.isEmpty() )
                     b.tracknr = url.fileName();
             } else {
-                b.title = QString(i18n("Track %1")).arg(url.fileName());
+                b.title = QString(i18n("Track %1", url.fileName()));
                 b.album = i18n("AudioCD");
             }
         }

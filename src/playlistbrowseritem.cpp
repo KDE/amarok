@@ -2937,7 +2937,7 @@ class AssociatePodcastDialog : public KDialog
     AssociatePodcastDialog( PodcastEpisode *item )
         : KDialog( Amarok::mainWindow() )
     {
-        setCaption( i18n("Select Local File for %1").arg(item->title()) );
+        setCaption( i18n("Select Local File for %1",item->title()) );
         setModal( true );
         setButtons( Ok | Cancel );
         setDefaultButton( Ok );
@@ -3053,7 +3053,7 @@ void SmartPlaylist::setXml( const QDomElement &xml )
                 genres = CollectionDB::instance()->genreList();
             }
             oldForeach( genres ) {
-                m_after = new SmartPlaylist( item, m_after, i18n( "%1" ).arg( *it ),
+                m_after = new SmartPlaylist( item, m_after, i18n( "%1", (*it) ),
                                              QString(queryChildren).replace(
                                                  "(*ExpandString*)", *it)  );
             }
@@ -3063,7 +3063,7 @@ void SmartPlaylist::setXml( const QDomElement &xml )
                 artists = CollectionDB::instance()->artistList();
             }
             oldForeach( artists ) {
-                m_after = new SmartPlaylist( item, m_after, i18n( "By %1" ).arg( *it ),
+                m_after = new SmartPlaylist( item, m_after, i18n( "By %1", (*it) ),
                                              QString(queryChildren).replace(
                                                  "(*ExpandString*)", *it)  );
             }

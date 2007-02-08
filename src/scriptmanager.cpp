@@ -437,7 +437,7 @@ ScriptManager::slotInstallScript( const QString& path )
     const QString scriptFolder = destination + archiveDir->entries().first();
     if( QFile::exists( scriptFolder ) ) {
         KMessageBox::error( 0, i18n( "A script with the name '%1' is already installed. "
-                                     "Please uninstall it first." ).arg( archiveDir->entries().first() ) );
+                                     "Please uninstall it first.", archiveDir->entries().first() ) );
         return false;
     }
 
@@ -514,7 +514,7 @@ ScriptManager::slotUninstallScript()
 {
     const QString name = m_gui->listView->currentItem()->text( 0 );
 
-    if( KMessageBox::warningContinueCancel( this, i18n( "Are you sure you want to uninstall the script '%1'?" ).arg( name ), i18n("Uninstall Script"), KGuiItem( i18n("Uninstall") ) ) == KMessageBox::Cancel )
+    if( KMessageBox::warningContinueCancel( this, i18n( "Are you sure you want to uninstall the script '%1'?", name ), i18n("Uninstall Script"), KGuiItem( i18n("Uninstall") ) ) == KMessageBox::Cancel )
         return;
 
     if( m_scripts.find( name ) == m_scripts.end() )
@@ -597,7 +597,7 @@ ScriptManager::slotRunScript( bool silent )
     {
         if( !silent )
             KMessageBox::sorry( 0, i18n( "<p>Could not start the script <i>%1</i>.</p>"
-                                         "<p>Please make sure that the file has execute (+x) permissions.</p>" ).arg( name ) );
+                                         "<p>Please make sure that the file has execute (+x) permissions.</p>", name ) );
         delete script;
         return false;
     }
@@ -664,11 +664,11 @@ ScriptManager::slotAboutScript()
     about->setDefaultButton( KDialog::Ok );
 
     kapp->setTopWidget( about );
-    about->setCaption( KDialog::makeStandardCaption( i18n( "About %1" ).arg( name ) ) );
+    about->setCaption( KDialog::makeStandardCaption( i18n( "About %1", name ) ) );
     about->setProduct( "", "", "", "" );
     // Get rid of the confusing KDE version text
     QLabel* product = about->mainWidget()->findChild<QLabel*>( "version" );
-    if( product ) product->setText( i18n( "%1 Amarok Script" ).arg( name ) );
+    if( product ) product->setText( i18n( "%1 Amarok Script", name ));
 
     about->addTextPage( i18n( "About" ), readme.readAll(), true );
     if( license.open( QIODevice::ReadOnly ) )

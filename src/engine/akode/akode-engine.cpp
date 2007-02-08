@@ -183,7 +183,7 @@ AkodeEngine::event( QEvent *e )
     case 3002:
         m_player->stop();
         emit trackEnded();
-        emit infoMessage( i18n("Unable to decode <i>%1</i>").arg( m_url.prettyUrl()) );
+        emit infoMessage( i18n("Unable to decode <i>%1</i>", m_url.prettyUrl()) );
         break;
 
     default:

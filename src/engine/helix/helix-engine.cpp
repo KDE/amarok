@@ -131,7 +131,7 @@ void HelixEngine::notifyUser(unsigned long code, const char *moreinfo, const cha
 {
    QString *err = HelixErrors::errorText(code);
    if (err)
-      emit statusText(i18n("Helix Core returned error: %1 %2 %3").arg(QString(*err)).arg(QString(moreinfo)).arg(QString(moreinfourl)));
+      emit statusText(i18n("Helix Core returned error: %1 %2 %3", QString(*err), QString(moreinfo), QString(moreinfourl)));
    else
       emit statusText(i18n("Helix Core returned error: <unknown>"));
 }
@@ -140,7 +140,7 @@ void HelixEngine::interruptUser(unsigned long code, const char *moreinfo, const 
 {
    QString *err = HelixErrors::errorText(code);
    if (err)
-      emit infoMessage(i18n("Helix Core returned error: %1 %1 %1").arg(QString(*err)).arg(QString(moreinfo)).arg(QString(moreinfourl)));
+      emit infoMessage(i18n("Helix Core returned error: %1 %1 %1", QString(*err), QString(moreinfo), QString(moreinfourl)));
    else
       emit infoMessage(i18n("Helix Core returned error: <unknown>"));
 
@@ -151,13 +151,13 @@ void HelixEngine::interruptUser(unsigned long code, const char *moreinfo, const 
 
 void HelixEngine::onContacting(const char *host)
 {
-   emit statusText( i18n("Contacting: %1").arg( QString(host) ) );
+   emit statusText( i18n("Contacting: %1", QString(host) ) );
 }
 
 void HelixEngine::onBuffering(int pcnt)
 {
    if (pcnt != 100) // let's not report that...
-      emit statusText( i18n( "Buffering %1%" ).arg( pcnt ) );
+      emit statusText( i18n( "Buffering %1%" , pcnt ) );
 }
 
 
@@ -294,7 +294,7 @@ HelixEngine::load( const KUrl &url, bool isStream )
    {
       const QString path = url.path();
       const QString ext  = path.mid( path.lastIndexOf( '.' ) + 1 ).toLower();
-      emit statusText( i18n("No plugin found for the %1 format").arg(ext) );
+      emit statusText( i18n("No plugin found for the %1 format", ext) );
       return false;
    }
 
