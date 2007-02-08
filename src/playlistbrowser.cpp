@@ -46,7 +46,6 @@
 #include <Q3ValueList>
 #include <QDragEnterEvent>
 #include <QKeyEvent>
-#include <Q3Frame>
 #include <QDropEvent>
 #include <QDragMoveEvent>
 #include <QCustomEvent>
@@ -169,13 +168,13 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     s_instance = this;
 
     KVBox *browserBox = new KVBox( this );
-    browserBox->setSpacing( 3 );
+//     browserBox->setSpacing( 3 );
 
     //<Toolbar>
     addMenuButton  = new KActionMenu( KIcon( Amarok::icon( "add_playlist" ) ), i18n("Add"), m_ac );
     addMenuButton->setDelayed( false );
 
-    KMenu *playlistMenu = new KMenu( this );
+    KMenu *playlistMenu = new KMenu( browserBox );
     playlistMenu->insertItem( i18n("New..."), PLAYLIST );
     playlistMenu->insertItem( i18n("Import Existing..."), PLAYLIST_IMPORT );
     connect( playlistMenu, SIGNAL( activated(int) ), SLOT( slotAddPlaylistMenu(int) ) );
@@ -194,7 +193,8 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
     connect( removeButton, SIGNAL( triggered( bool ) ), this, SLOT( removeSelectedItems() ) );
 
     m_toolbar = new Browser::ToolBar( browserBox );
-    m_toolbar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+    m_toolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
+    m_toolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
     m_toolbar->addAction( addMenuButton );
 
     m_toolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );      //default appearance
@@ -228,7 +228,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
              this,         SLOT( currentItemChanged( Q3ListViewItem * ) ) );
     connect( CollectionDB::instance(), SIGNAL( scanDone( bool ) ), SLOT( collectionScanDone() ) );
 
-    setMinimumWidth( m_toolbar->sizeHint().width() );
+//     setMinimumWidth( m_toolbar->sizeHint().width() );
 
     m_infoPane = new InfoPane( m_splitter );
 
@@ -3140,7 +3140,7 @@ InfoPane::InfoPane( QWidget *parent )
 
         m_infoBrowser = new HTMLView( box, "extended_info" );
 
-        container->setFrameStyle( Q3Frame::StyledPanel );
+        container->setFrameStyle( QFrame::StyledPanel );
         container->setMargin( 3 );
         container->setBackgroundMode( Qt::PaletteBase );
     }
