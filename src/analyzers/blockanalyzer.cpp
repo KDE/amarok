@@ -24,11 +24,11 @@
 //Added by qt3to4:
 #include <QContextMenuEvent>
 #include <QResizeEvent>
-
+#include <Q3PopupMenu>
 
 static inline uint myMax( uint v1, uint v2 ) { return v1 > v2 ? v1 : v2; }
 
-namespace Amarok { extern KConfig *config( const QString& ); }
+namespace Amarok { extern  KSharedConfig::Ptr config( const QString& ); }
 
 
 BlockAnalyzer::BlockAnalyzer( QWidget *parent )
@@ -424,7 +424,7 @@ BlockAnalyzer::contextMenuEvent( QContextMenuEvent *e )
 
     const uint ids[] = { 50, 33, 25, 20, 10 };
 
-    KMenu menu;
+    Q3PopupMenu menu;
     menu.insertTitle( i18n( "Framerate" ) );
 
     for( uint x = 0; x < 5; ++x )

@@ -149,11 +149,12 @@ void BarAnalyzer::analyze( const Scope &s )
         for ( uint c = 0; c < m_roofMem[i].size(); ++c )
             //bitBlt( m_pComposePixmap, x, m_roofMem[i]->at( c ), m_roofPixmaps[ c ] );
             bitBlt( canvas(), x, m_roofMem[i][c], &m_pixRoof[ NUM_ROOFS - 1 - c ] );
-
+//TODO port it to kde4
+#if 0
         //blt the bar
         bitBlt( canvas(), x, height() - y2,
                 gradient(), y2 * COLUMN_WIDTH, height() - y2, COLUMN_WIDTH, y2, Qt::CopyROP );
-
+#endif
         m_roofMem[i].push_back( height() - roofVector[i] - 2 );
 
         //set roof parameters for the NEXT draw
