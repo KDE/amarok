@@ -49,7 +49,7 @@ namespace ShadowEngine
 
 
 OSDWidget::OSDWidget( QWidget *parent, const char *name )
-        : QWidget( parent, name, Qt::WType_TopLevel | Qt::WNoAutoErase | Qt::WStyle_Customize | Qt::WX11BypassWM | Qt::WStyle_StaysOnTop )
+        : QWidget( parent, Qt::WType_TopLevel | Qt::WNoAutoErase | Qt::WStyle_Customize | Qt::WX11BypassWM | Qt::WStyle_StaysOnTop )
         , m_duration( 2000 )
         , m_timer( new QTimer( this ) )
         , m_alignment( Middle )
@@ -60,6 +60,7 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
         , m_rating( 0 )
         , m_volume( false )
 {
+    setObjectName( name );
     setFocusPolicy( Qt::NoFocus );
     unsetColors();
 

@@ -36,6 +36,7 @@ CollectionSetup* CollectionSetup::s_instance;
 CollectionSetup::CollectionSetup( QWidget *parent )
         : KVBox( parent )
 {
+    setObjectName( "CollectionSetup" );
     s_instance = this;
 
     (new QLabel( i18n(

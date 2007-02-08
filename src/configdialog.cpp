@@ -62,6 +62,10 @@ email                : markey@web.de
 #include <kpushbutton.h>
 #include <kstandarddirs.h>
 
+
+#undef Q_WS_X11 //HACK: The OSD is broken anyway
+
+
 namespace Amarok {
     int databaseTypeCode( const QString type )
     {
@@ -265,7 +269,8 @@ void AmarokConfigDialog::updateSettings()
     Amarok::OSD::instance()->applySettings();
 #endif
 
-    findChild<CollectionSetup*>("CollectionSetup")->writeConfig();
+    CollectionSetup* cs = findChild<CollectionSetup*>("CollectionSetup");
+    if ( cs ) cs->writeConfig();
 
     if ( m_engineConfig ) m_engineConfig->save();
 
