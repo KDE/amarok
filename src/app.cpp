@@ -1010,7 +1010,7 @@ void App::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
     Amarok::OSD::instance()->show( bundle );
     if ( !bundle.prettyTitle().isEmpty() )
-        m_pPlaylistWindow->setCaption( i18n("Amarok - %1").arg( bundle.veryNiceTitle() ) );
+        m_pPlaylistWindow->setCaption( i18n("Amarok - %1", bundle.veryNiceTitle() ) );
 
     TrackToolTip::instance()->setTrack( bundle );
 }
