@@ -673,27 +673,27 @@ void TagDialog::readTags()
 
 
     QString summaryText, statisticsText;
-    const QString body2cols = i18nc( "<tr><td>Label:</td><td><b>Value</b></td></tr>", "<tr><td><nobr>%1:</nobr></td><td><b>%2</b></td></tr>" );
+    const QString body2cols = "<tr><td><nobr>%1</nobr></td><td><b>%2</b></td></tr>";
     const QString body1col = "<tr><td colspan=2>%1</td></td></tr>";
     const QString emptyLine = "<tr><td colspan=2></td></tr>";
 
     summaryText = "<table width=100%><tr><td width=50%><table>";
-    summaryText += body2cols.arg( i18n("Length"), unknownSafe( m_bundle.prettyLength() ) );
-    summaryText += body2cols.arg( i18n("Bitrate"), unknownSafe( m_bundle.prettyBitrate() ) );
-    summaryText += body2cols.arg( i18n("Samplerate"), unknownSafe( m_bundle.prettySampleRate() ) );
-    summaryText += body2cols.arg( i18n("Size"), unknownSafe( m_bundle.prettyFilesize()  ) );
-    summaryText += body2cols.arg( i18n("Format"), unknownSafe( m_bundle.type() ) );
+    summaryText += body2cols.arg( i18n("Length:"), unknownSafe( m_bundle.prettyLength() ) );
+    summaryText += body2cols.arg( i18n("Bitrate:"), unknownSafe( m_bundle.prettyBitrate() ) );
+    summaryText += body2cols.arg( i18n("Samplerate:"), unknownSafe( m_bundle.prettySampleRate() ) );
+    summaryText += body2cols.arg( i18n("Size:"), unknownSafe( m_bundle.prettyFilesize()  ) );
+    summaryText += body2cols.arg( i18n("Format:"), unknownSafe( m_bundle.type() ) );
 
     summaryText += "</table></td><td width=50%><table>";
     if( AmarokConfig::useScores() )
-        summaryText += body2cols.arg( i18n("Score"), QString::number( static_cast<int>( m_bundle.score() ) ) );
+        summaryText += body2cols.arg( i18n("Score:"), QString::number( static_cast<int>( m_bundle.score() ) ) );
     if( AmarokConfig::useRatings() )
-        summaryText += body2cols.arg( i18n("Rating"), m_bundle.prettyRating() );
+        summaryText += body2cols.arg( i18n("Rating:"), m_bundle.prettyRating() );
 
-    summaryText += body2cols.arg( i18n("Playcount"), QString::number( m_bundle.playCount() ) );
-    summaryText += body2cols.arg( i18n("First Played"),
+    summaryText += body2cols.arg( i18n("Playcount:"), QString::number( m_bundle.playCount() ) );
+    summaryText += body2cols.arg( i18n("First Played:"),
                    m_bundle.playCount() ? KGlobal::locale()->formatDate( CollectionDB::instance()->getFirstPlay( m_bundle.url().path() ).date() , true ) : i18n("Never") );
-    summaryText += body2cols.arg( i18nc("a single item (singular)", "Last Played"),
+    summaryText += body2cols.arg( i18nc("a single item (singular)", "Last Played:"),
                    m_bundle.playCount() ? KGlobal::locale()->formatDate( CollectionDB::instance()->getLastPlay( m_bundle.url().path() ).date() , true ) : i18n("Never") );
 
     summaryText += "</table></td></tr></table>";
@@ -919,19 +919,19 @@ TagDialog::readMultipleTracks()
 
     trackArtistAlbumLabel2->setText( i18np( "Editing 1 file", "Editing %n files", songCount ) );
 
-    const QString body = i18nc( "<tr><td>Label:</td><td><b>Value</b></td></tr>", "<tr><td><nobr>%1:</nobr></td><td><b>%2</b></td></tr>" );
+    const QString body = "<tr><td><nobr>%1:</nobr></td><td><b>%2</b></td></tr>";
     QString statisticsText = "<table>";
 
     if( AmarokConfig::useRatings() ) {
-        statisticsText += body.arg( i18n( "Rated Songs" ) , QString::number( ratingCount )  );
+        statisticsText += body.arg( i18n( "Rated Songs:" ) , QString::number( ratingCount )  );
         if ( ratingCount )
-            statisticsText += body.arg( i18n( "Average Rating" ) , QString::number( (float)ratingSum / (float)ratingCount/2.0, 'f', 1  ) );
+            statisticsText += body.arg( i18n( "Average Rating:" ) , QString::number( (float)ratingSum / (float)ratingCount/2.0, 'f', 1  ) );
     }
 
     if( AmarokConfig::useRatings() ) {
-        statisticsText += body.arg( i18n( "Scored Songs" ) , QString::number( scoreCount )  );
+        statisticsText += body.arg( i18n( "Scored Songs:" ) , QString::number( scoreCount )  );
         if ( scoreCount )
-            statisticsText += body.arg( i18n( "Average Score" ) , QString::number( scoreSum / scoreCount, 'f', 1 ) );
+            statisticsText += body.arg( i18n( "Average Score:" ) , QString::number( scoreSum / scoreCount, 'f', 1 ) );
     }
 
 
