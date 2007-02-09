@@ -46,7 +46,7 @@
 #include <QPixmap>
 #include <Q3PopupMenu>
 
-#include <k3aboutdialog.h>
+#include <kaboutdialog.h>
 #include <kapplication.h>
 #include <kfiledialog.h>
 #include <kiconloader.h>
@@ -658,7 +658,7 @@ ScriptManager::slotAboutScript()
         return;
     }
 
-    K3AboutDialog* about = new K3AboutDialog( K3AboutDialog::Tabbed|K3AboutDialog::Product,
+    KAboutDialog* about = new KAboutDialog( KAboutDialog::Tabbed|KAboutDialog::Product,
                                               QString::null, this );
     about->setButtons( KDialog::Ok );
     about->setDefaultButton( KDialog::Ok );
