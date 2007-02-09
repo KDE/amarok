@@ -607,7 +607,7 @@ const QStringList TagDialog::statisticsData() {
         qb.setLimit( 0, 1 );
         values = qb.run();
         data += i18n( "Favorite by this Artist" );
-        data += values[0];
+        data += values.isEmpty() ? QString() : values[0];
 
         if ( !m_bundle.album().isEmpty() ) {
             // Favorite track on this album
@@ -619,7 +619,7 @@ const QStringList TagDialog::statisticsData() {
             qb.setLimit( 0, 1 );
             values = qb.run();
             data += i18n( "Favorite on this Album" );
-            data += values[0];
+            data += values.isEmpty() ? QString() : values[0];
         }
 
         // Related Artists
