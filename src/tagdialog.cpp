@@ -458,10 +458,10 @@ void TagDialog::init()
     //HACK due to deficiency in Qt that will be addressed in version 4
     // QSpinBox doesn't emit valueChanged if you edit the value with
     // the lineEdit until you change the keyboard focus
-    connect( qSpinBox_year->child( "qt_spinbox_edit" ),  SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
-    connect( qSpinBox_track->child( "qt_spinbox_edit" ), SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
-    connect( qSpinBox_score->child( "qt_spinbox_edit" ), SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
-    connect( qSpinBox_discNumber->child( "qt_spinbox_edit" ), SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
+    connect( qSpinBox_year,  SIGNAL(valueChanged( int )), SLOT(checkModified()) );
+    connect( qSpinBox_track, SIGNAL(valueChanged( int )), SLOT(checkModified()) );
+    connect( qSpinBox_score, SIGNAL(valueChanged( int )), SLOT(checkModified()) );
+    connect( qSpinBox_discNumber, SIGNAL(valueChanged( int )), SLOT(checkModified()) );
 
     // Connects for modification check
     connect( kLineEdit_title,   SIGNAL(textChanged( const QString& )),  SLOT(checkModified()) );
