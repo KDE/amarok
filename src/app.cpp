@@ -422,7 +422,7 @@ void App::initGlobalShortcuts()
 
 //    m_pGlobalAccel->insert( "play", i18n( "Play" ), 0, KKey("WIN+x"), 0, ec, SLOT( play() ), true, true );
     action = new KAction( i18n( "Play" ), m_pPlaylistWindow );
-    action->setGlobalShortcut( KShortcut( "Ctrl+Alt+x" ) );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_X ) );
     connect( action, SIGNAL( triggered() ), ec, SLOT( play() ) );
 
 //    m_pGlobalAccel->insert( "pause", i18n( "Pause" ), 0, 0, 0, ec, SLOT( pause() ), true, true );
@@ -431,49 +431,49 @@ void App::initGlobalShortcuts()
 
 //    m_pGlobalAccel->insert( "play_pause", i18n( "Play/Pause" ), 0, KKey("WIN+c"), 0, ec, SLOT( playPause() ), true, true );
     action = new KAction( i18n( "Play/Pause" ), m_pPlaylistWindow );
-    action->setGlobalShortcut( KShortcut( "Ctrl+Alt+c" ) );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_C ) );
     connect( action, SIGNAL( triggered() ), ec, SLOT( playPause() ) );
 
 //    m_pGlobalAccel->insert( "stop", i18n( "Stop" ), 0, KKey("WIN+v"), 0, ec, SLOT( stop() ), true, true );
     action = new KAction( i18n( "Stop" ), m_pPlaylistWindow );
-    action->setGlobalShortcut( KShortcut( "Ctrl+Alt+v" ) );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_V ) );
     connect( action, SIGNAL( triggered() ), ec, SLOT( stop() ) );
 
 //    m_pGlobalAccel->insert( "stop_after_global", i18n( "Stop Playing After Current Track" ), 0, KKey("WIN+CTRL+v"), 0, Playlist::instance()->qscrollview(), SLOT( toggleStopAfterCurrentTrack() ), true, true );
     action = new KAction( i18n( "Stop Playing After Current Track" ), m_pPlaylistWindow );
-    action->setGlobalShortcut( KShortcut( "Win+Ctrl+v" ) );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::CTRL + Qt::Key_V ) );
     connect( action, SIGNAL( triggered() ), Playlist::instance()->qscrollview(), SLOT( toggleStopAfterCurrentTrack() ) );
 
 //    m_pGlobalAccel->insert( "next", i18n( "Next Track" ), 0, KKey("WIN+b"), 0, ec, SLOT( next() ), true, true );
     action = new KAction( i18n( "Next Track" ), m_pPlaylistWindow );
-    action->setGlobalShortcut( KShortcut( "Ctrl+Alt+b" ) );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_B ) );
     connect( action, SIGNAL( triggered() ), ec, SLOT( next() ) );
 
 //    m_pGlobalAccel->insert( "prev", i18n( "Previous Track" ), 0, KKey("WIN+z"), 0, ec, SLOT( previous() ), true, true );
     action = new KAction( i18n( "Previous Track" ), m_pPlaylistWindow );
-    action->setGlobalShortcut( KShortcut( "Ctrl+Alt+z" ) );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_Z ) );
     connect( action, SIGNAL( triggered() ), ec, SLOT( previous() ) );
 
 //    m_pGlobalAccel->insert( "volup", i18n( "Increase Volume" ), 0, KKey("WIN+KP_Add"), 0, ec, SLOT( increaseVolume() ), true, true );
     action = new KAction( i18n( "Increase Volume" ), m_pPlaylistWindow );
-    action->setGlobalShortcut( KShortcut( "Ctrl+Alt+KP_Add" ) );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_Plus ) );
     connect( action, SIGNAL( triggered() ), ec, SLOT( increaseVolume() ) );
 
 //    m_pGlobalAccel->insert( "voldn", i18n( "Decrease Volume" ), 0, KKey("WIN+KP_Subtract"), 0, ec, SLOT( decreaseVolume() ), true, true );
     action = new KAction( i18n( "Decrease Volume" ), m_pPlaylistWindow );
-    action->setGlobalShortcut( KShortcut( "Ctrl+Alt+KP_Subtract" ) );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_Minus ) );
     connect( action, SIGNAL( triggered() ), ec, SLOT( decreaseVolume() ) );
 
 
 //    m_pGlobalAccel->insert( "seekforward", i18n( "Seek Forward" ), 0, KKey("WIN+Shift+KP_Add"), 0, ec, SLOT( seekForward() ), true, true );
     action = new KAction( i18n( "Seek Forward" ), m_pPlaylistWindow );
-    action->setGlobalShortcut( KShortcut( "Ctrl+Alt+Shift+KP_Add" ) );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_Plus ) );
     connect( action, SIGNAL( triggered() ), ec, SLOT( seekForward() ) );
 
 
 //    m_pGlobalAccel->insert( "seekbackward", i18n( "Seek Backward" ), 0, KKey("WIN+Shift+KP_Subtract"), 0, ec, SLOT( seekBackward() ), true, true );
     action = new KAction( i18n( "Seek Backward" ), m_pPlaylistWindow );
-    action->setGlobalShortcut( KShortcut( "Ctrl+Alt+Shift+KP_Subtract" ) );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_Minus ) );
     connect( action, SIGNAL( triggered() ), ec, SLOT( seekbackward() ) );
 
 
