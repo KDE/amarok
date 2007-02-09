@@ -246,8 +246,8 @@ ensureContrast( const QColor &bg, const QColor &fg, uint _amount = 150 )
     int bh, bs, bv;
     int fh, fs, fv;
 
-    bg.getHsv( bh, bs, bv );
-    fg.getHsv( fh, fs, fv );
+    bg.getHsv( &bh, &bs, &bv );
+    fg.getHsv( &fh, &fs, &fv );
 
     int dv = abs( bv - fv );
 
@@ -425,7 +425,7 @@ BlockAnalyzer::contextMenuEvent( QContextMenuEvent *e )
     const uint ids[] = { 50, 33, 25, 20, 10 };
 
     Q3PopupMenu menu;
-    menu.insertTitle( i18n( "Framerate" ) );
+    menu.setTitle( i18n( "Framerate" ) );
 
     for( uint x = 0; x < 5; ++x )
     {
