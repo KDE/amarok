@@ -32,6 +32,7 @@
 #include <sys/wait.h>     //waitpid
 #include <taglib.h>
 #include <unistd.h>       //write, getpid
+#include <string.h>
 
 
 
@@ -226,15 +227,16 @@ namespace Amarok
                 body += kBacktrace();
 
                 //TODO startup notification
-                KToolInvocation::invokeMailer(
-                        /*to*/          "amarok-backtraces@lists.sf.net",
-                        /*cc*/          QString(),
-                        /*bcc*/         QString(),
-                        /*subject*/     subject,
-                        /*body*/        body,
-                        /*messageFile*/ QString(),
-                        /*attachURLs*/  QStringList(),
-                        /*startup_id*/  "" );
+//                 KToolInvocation::invokeMailer(
+//                         /*to*/          "amarok-backtraces@lists.sf.net",
+//                         /*cc*/          QString(),
+//                         /*bcc*/         QString(),
+//                         /*subject*/     subject,
+//                         /*body*/        body,
+//                         /*messageFile*/ QString(),
+//                         /*attachURLs*/  QStringList(),
+//                         /*startup_id*/  "" );
+                std::cout << body.toLatin1().data();
             }
             else {
                 std::cout << i18n( "\nAmarok has crashed! We are terribly sorry about this :(\n\n"
