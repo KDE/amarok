@@ -1268,11 +1268,10 @@ MetaBundle::ratingDescription( int r )
 QStringList
 MetaBundle::ratingList()
 {
-    QString s = i18nc( "rating - description", "%1 - %2" );
     QStringList list;
     list += ratingDescription( 0 );
     for ( int i = 2; i<=10; i++ )
-        list += s.arg( prettyRating( i, true ) ).arg( ratingDescription( i ) );
+        list += i18nc( "rating - description", "%1 - %2", prettyRating( i, true ), ratingDescription( i ) );
     return list;
 }
 
