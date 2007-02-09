@@ -313,6 +313,7 @@ ContextBrowser::ContextBrowser( const char *name )
     m_wikiTab = new KVBox(this);
 
     m_wikiToolBar = new Browser::ToolBar( m_wikiTab );
+    m_wikiToolBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
 
 
     wikiHistoryBackAction = new KAction(KIcon( "back" ), i18n("Back"), this);
