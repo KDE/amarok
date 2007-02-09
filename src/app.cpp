@@ -476,19 +476,25 @@ void App::initGlobalShortcuts()
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_Minus ) );
     connect( action, SIGNAL( triggered() ), ec, SLOT( seekbackward() ) );
 
+//    m_pGlobalAccel->insert( "playlist_add", i18n( "Add Media..." ), 0, KKey("WIN+a"), 0, m_pPlaylistWindow, SLOT( slotAddLocation() ), true, true );
+    action = new KAction( i18n( "Add Media..." ), m_pPlaylistWindow );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_A ) );
+    connect( action, SIGNAL( triggered() ), m_pPlaylistWindow, SLOT( slotAddLocation() ) );
 
-#if 0
-    m_pGlobalAccel->insert( "playlist_add", i18n( "Add Media..." ), 0, KKey("WIN+a"), 0,
-                            m_pPlaylistWindow, SLOT( slotAddLocation() ), true, true );
-    m_pGlobalAccel->insert( "show", i18n( "Toggle Playlist Window" ), 0, KKey("WIN+p"), 0,
-                            m_pPlaylistWindow, SLOT( showHide() ), true, true );
+//    m_pGlobalAccel->insert( "show", i18n( "Toggle Playlist Window" ), 0, KKey("WIN+p"), 0, m_pPlaylistWindow, SLOT( showHide() ), true, true );
+    action = new KAction( i18n( "Toggle Playlist Window" ), m_pPlaylistWindow );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_P ) );
+    connect( action, SIGNAL( triggered() ), m_pPlaylistWindow, SLOT( showHide() ) );
+
 #ifdef Q_WS_X11
-    m_pGlobalAccel->insert( "osd", i18n( "Show OSD" ), 0, KKey("WIN+o"), 0,
-                            Amarok::OSD::instance(), SLOT( forceToggleOSD() ), true, true );
+//    m_pGlobalAccel->insert( "osd", i18n( "Show OSD" ), 0, KKey("WIN+o"), 0, Amarok::OSD::instance(), SLOT( forceToggleOSD() ), true, true );
+    action = new KAction( i18n( "Show OSD" ), m_pPlaylistWindow );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_O ) );
+    connect( action, SIGNAL( triggered() ), Amarok::OSD::instance(), SLOT( forceToggleOSD() ) );
 #endif
+#if 0
     m_pGlobalAccel->insert( "mute", i18n( "Mute Volume" ), 0, KKey("WIN+m"), 0,
                             ec, SLOT( mute() ), true, true );
-
     m_pGlobalAccel->insert( "rating1", i18n( "Rate Current Track: 1" ), 0, KKey("WIN+1"), 0,
                             this, SLOT( setRating1() ), true, true );
     m_pGlobalAccel->insert( "rating2", i18n( "Rate Current Track: 2" ), 0, KKey("WIN+2"), 0,
