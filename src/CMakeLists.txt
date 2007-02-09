@@ -301,12 +301,13 @@ install(TARGETS amarokapp DESTINATION ${BIN_INSTALL_DIR})
 
 ########### install files ###############
 
-install( FILES amarok.desktop DESTINATION ${XDG_APPS_DIR} )
-install(FILES  amarok.profile.xml DESTINATION ${DATA_INSTALL_DIR}/profiles )
+install(FILES amarok.desktop DESTINATION ${XDG_APPS_DIR} )
+install(FILES amarok.profile.xml DESTINATION ${DATA_INSTALL_DIR}/profiles )
 install(FILES amarokrc DESTINATION ${CONFIG_INSTALL_DIR})
-install( FILES amarok_plugin.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
-install(FILES  amarokui.rc      amarokui_xmms.rc DESTINATION ${DATA_INSTALL_DIR}/amarok)
-install(FILES  amarok_append.desktop DESTINATION ${DATA_INSTALL_DIR}/konqueror/servicemenus)
+install(FILES amarok_plugin.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
+install(FILES amarokui.rc amarokui_xmms.rc DESTINATION ${DATA_INSTALL_DIR}/amarok)
+install(FILES data/magnatune_logo.png DESTINATION ${DATA_INSTALL_DIR}/amarok/data)
+install(FILES amarok_append.desktop DESTINATION ${DATA_INSTALL_DIR}/konqueror/servicemenus)
 
 kde4_install_icons( ${ICON_INSTALL_DIR} )
 
