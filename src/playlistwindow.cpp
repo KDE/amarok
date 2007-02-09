@@ -319,7 +319,7 @@ PlaylistWindow::PlaylistWindow()
     new Amarok::MenuAction( ac );
     new Amarok::StopAction( ac );
     new Amarok::PlayPauseAction( ac );
-//    new Amarok::AnalyzerAction( ac );
+    new Amarok::AnalyzerAction( ac );
     new Amarok::RepeatAction( ac );
     new Amarok::RandomAction( ac );
     new Amarok::FavorAction( ac );

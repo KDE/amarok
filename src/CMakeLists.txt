@@ -82,7 +82,7 @@ endif(SQLITE_FOUND)
 
 include_directories(
 	${CMAKE_SOURCE_DIR}/amarok/src/amarokcore
-#	${CMAKE_SOURCE_DIR}/amarok/src/analyzers
+	${CMAKE_SOURCE_DIR}/amarok/src/analyzers
 	${CMAKE_SOURCE_DIR}/amarok/src/plugin
 	${CMAKE_SOURCE_DIR}/amarok/src/statusbar
 	${CMAKE_SOURCE_DIR}/amarok/src/mediadevice

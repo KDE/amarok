@@ -266,12 +266,13 @@ PlayPauseAction::engineStateChanged( Engine::State state,  Engine::State /*oldSt
 //////////////////////////////////////////////////////////////////////////////////////////
 // AnalyzerAction
 //////////////////////////////////////////////////////////////////////////////////////////
-#if 0
 #include "analyzerbase.h"
 
 AnalyzerAction::AnalyzerAction( KActionCollection *ac )
-        : KAction( i18n( "Analyzer" ), 0, ac, "toolbar_analyzer" )
+        : KAction(0 )
 {
+    setText(i18n( "Analyzer" ));
+    ac->addAction("toolbar_analyzer", this);
     setShortcutConfigurable( false );
 }
 
@@ -286,15 +287,18 @@ AnalyzerAction::plug( QWidget *w, int index )
 
     if( bar && KAuthorized::authorizeKAction( name() ) )
     {
-        const int id = KAction::getToolButtonID();
+        //const int id = KAction::getToolButtonID();
 
-        addContainer( w, id );
+        //addContainer( w, id );
+	w->addAction( this );
         connect( w, SIGNAL( destroyed() ), SLOT( slotDestroyed() ) );
-        QWidget *container = new AnalyzerContainer( w );
-        bar->insertWidget( id, 0, container, index );
-        bar->setItemAutoSized( id, true );
 
-        return containerCount() - 1;
+	QWidget *container = new AnalyzerContainer( w );
+	//TODO porting
+        //bar->insertWidget( id, 0, container, index );
+        //bar->setItemAutoSized( id, true );
+
+        return associatedWidgets().count() - 1;
     }
     else return -1;
 }
@@ -345,7 +349,6 @@ AnalyzerContainer::contextMenuEvent( QContextMenuEvent *e)
     Q_UNUSED(e);
 #endif
 }
-#endif
 //////////////////////////////////////////////////////////////////////////////////////////
 // ToggleAction
 //////////////////////////////////////////////////////////////////////////////////////////
