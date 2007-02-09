@@ -1985,12 +1985,14 @@ Playlist::restoreCurrentTrack()
 
     if ( !(m_currentTrack && ( m_currentTrack->url() == url  || !m_currentTrack->url().isEmpty() && url.isEmpty() ) ) )
     {
-        PlaylistItem* item;
+        PlaylistItem* item = 0;
 
-        for( item = firstChild();
-             item && item->url() != url;
-             item = item->nextSibling() )
-        {}
+        if ( !url.isEmpty() ) {
+            for( item = firstChild();
+                item && item->url() != url;
+                item = item->nextSibling() )
+            {}
+        }
 
         setCurrentTrack( item ); //set even if NULL
     }
