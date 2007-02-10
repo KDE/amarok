@@ -69,18 +69,19 @@ Statistics::Statistics( QWidget *parent, const char *name )
     setCaption( KDialog::makeStandardCaption( i18n("Collection Statistics") ) );
     setInitialSize( QSize( 400, 550 ) );
 
-    KVBox *mainBox = new KVBox( this );
-    setMainWidget( mainBox );
-
-    KVBox *box = new KVBox( mainWidget() );
-    box->setSpacing( 5 );
+    KVBox *box = new KVBox( this );
+    setMainWidget( box );
 
     { //<Search LineEdit>
         KToolBar *bar = new Browser::ToolBar( box );
         bar->setIconDimensions( 22 ); //looks more sensible
         bar->setMovable( false ); //removes the ugly frame
+        bar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
 
-        QWidget *button = new QToolButton( bar );
+        QToolButton *clearButton = new QToolButton( bar );
+        clearButton->setIcon( KIcon("locationbar_erase") );
+        clearButton->setToolTip( i18n( "Clear search field" ) );
+
         m_lineEdit = new KLineEdit( bar );
         m_lineEdit->setClickMessage( i18n( "Enter search terms here" ) );
 
@@ -88,12 +89,10 @@ Statistics::Statistics( QWidget *parent, const char *name )
         m_lineEdit->setFrame( QFrame::Sunken );
         m_lineEdit->installEventFilter( this ); //we intercept keyEvents
 
-        connect( button,     SIGNAL( clicked() )      , m_lineEdit  , SLOT( clear() ) );
+        connect( clearButton,SIGNAL( clicked() )      , m_lineEdit  , SLOT( clear() ) );
         connect( m_timer,    SIGNAL( timeout() )                    , SLOT( slotSetFilter() ) );
         connect( m_lineEdit, SIGNAL( textChanged( const QString& ) ), SLOT( slotSetFilterTimeout() ) );
         connect( m_lineEdit, SIGNAL( returnPressed() )              , SLOT( slotSetFilter() ) );
-
-        button->setToolTip( i18n( "Clear search field" ) );
     } //</Search LineEdit>
 
     m_listView = new StatisticsList( box );
