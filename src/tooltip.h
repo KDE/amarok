@@ -21,7 +21,6 @@
 #define AMAROK_TOOLTIP_H
 
 #include <QToolTip>
-#include <q3frame.h>
 #include <qpoint.h>
 #include <QTimer>
 //Added by qt3to4:
@@ -36,7 +35,7 @@ public:
     virtual QPair<QString, QRect> toolTipText( QWidget *widget, const QPoint &pos ) const = 0;
 };
 
-class ToolTip: public Q3Frame/*, public QToolTip*/
+class ToolTip: public QFrame/*, public QToolTip*/
 {
     Q_OBJECT
 
@@ -48,8 +47,7 @@ public:
     static void updateTip();
 
 private slots:
-    void showTip();
-    void hideTip();
+    void showTip();    void hideTip();
 
 private:
     ToolTip( ToolTipClient *client, QWidget *parent );

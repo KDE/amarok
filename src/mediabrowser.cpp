@@ -63,7 +63,6 @@
 #include <Q3ValueList>
 #include <Q3PopupMenu>
 #include <QKeyEvent>
-#include <Q3Frame>
 #include <QDropEvent>
 #include <Q3CString>
 #include <QPaintEvent>
@@ -313,7 +312,7 @@ MediaBrowser::MediaBrowser( const char *name )
         KPushButton *filterButton = new KPushButton( "...", searchToolBar );
         filterButton->setObjectName( "filter" );
         m_searchEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
-        m_searchEdit->setFrame( Q3Frame::Sunken );
+        m_searchEdit->setFrame( QFrame::Sunken );
 
         connect( button, SIGNAL( clicked() ), m_searchEdit, SLOT( clear() ) );
         connect( filterButton, SIGNAL( clicked() ), SLOT( slotEditFilter() ) );

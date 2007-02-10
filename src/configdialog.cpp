@@ -51,7 +51,6 @@ email                : markey@web.de
 #include <kvbox.h>
 //Added by qt3to4:
 #include <Q3CString>
-#include <Q3Frame>
 #include <QPixmap>
 
 #include <kapplication.h> //kapp
@@ -172,7 +171,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     add->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
     connect( add, SIGNAL(clicked()), m_deviceManager, SLOT(newDevice()) );
 
-    Q3Frame *frame = new Q3Frame( topbox );
+    QFrame *frame = new QFrame( topbox );
     frame->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
     // add pages

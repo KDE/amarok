@@ -22,7 +22,6 @@
 
 #include <qpoint.h>
 //Added by qt3to4:
-#include <Q3Frame>
 #include <QEvent>
 
 
@@ -30,7 +29,7 @@ namespace KDE {
 
 
 OverlayWidget::OverlayWidget( QWidget *parent, QWidget *anchor, const char* name )
-        : Q3Frame( parent->parentWidget(), name )
+        : QFrame( parent->parentWidget(), name )
         , m_anchor( anchor )
         , m_parent( parent )
 {
@@ -86,7 +85,7 @@ OverlayWidget::event( QEvent *e )
     if ( e->type() == QEvent::ChildInserted )
         adjustSize();
 
-    return Q3Frame::event( e );
+    return QFrame::event( e );
 }
 
 }

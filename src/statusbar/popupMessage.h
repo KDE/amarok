@@ -32,7 +32,6 @@
 #include <QPixmap>
 //Added by qt3to4:
 #include <QTimerEvent>
-#include <Q3Frame>
 
 namespace KDE
 {
@@ -88,7 +87,7 @@ namespace KDE
 
     private:
         QVBoxLayout *m_layout;
-        Q3Frame      *m_countdownFrame;
+        QFrame      *m_countdownFrame;
         QWidget     *m_anchor;
         QWidget     *m_parent;
         QBitmap      m_mask;

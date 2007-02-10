@@ -23,11 +23,10 @@
 #include <khbox.h>
 //Added by qt3to4:
 #include <QEvent>
-#include <Q3Frame>
 
 namespace KDE
 {
-    class OverlayWidget : public Q3Frame
+    class OverlayWidget : public QFrame
     {
     public:
         /**

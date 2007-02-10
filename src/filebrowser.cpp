@@ -65,7 +65,6 @@
 #include <QToolButton>
 //Added by qt3to4:
 #include <Q3PtrList>
-#include <Q3Frame>
 #include <QDropEvent>
 #include <Q3PopupMenu>
 #include <QPaintEvent>
@@ -169,7 +168,7 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         //TODO: Find out a way to fix this?
         //m_dir->setDropOptions( KFileView::AutoOpenDirs );
 
-        static_cast<Q3Frame*>(m_dir->viewWidget())->setFrameStyle( Q3Frame::NoFrame );
+        static_cast<QFrame*>(m_dir->viewWidget())->setFrameStyle( QFrame::NoFrame );
         static_cast<Q3IconView*>(m_dir->viewWidget())->setSpacing( 1 );
 
         actionCollection = m_dir->actionCollection();
@@ -644,7 +643,7 @@ SearchPane::SearchPane( FileBrowser *parent )
         //container->setMargin( 5 );
         container->setBackgroundMode( Qt::PaletteBase );
 
-        m_listView->setFrameStyle( Q3Frame::NoFrame );
+        m_listView->setFrameStyle( QFrame::NoFrame );
         connect( m_listView, SIGNAL(executed( Q3ListViewItem* )), SLOT(activate( Q3ListViewItem* )) );
     }
 

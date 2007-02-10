@@ -19,11 +19,11 @@
 
 #include <QApplication>
 #include <QCursor>
+#include <QFrame>
 #include <QPainter>
 #include <QPixmap>
 #include <q3simplerichtext.h>
 //Added by qt3to4:
-#include <Q3Frame>
 #include <Q3ValueList>
 #include <QEvent>
 #include <kglobal.h>
@@ -123,12 +123,12 @@ void Amarok::ToolTip::updateTip() //static
 }
 
 Amarok::ToolTip::ToolTip( ToolTipClient *client, QWidget *parent )
-    : Q3Frame(0,  0, Qt::WStyle_Customize | Qt::WStyle_NoBorder | Qt::WStyle_Tool | Qt::WStyle_StaysOnTop | Qt::WX11BypassWM | Qt::WNoAutoErase ),
+    : QFrame(0,  0, Qt::WStyle_Customize | Qt::WStyle_NoBorder | Qt::WStyle_Tool | Qt::WStyle_StaysOnTop | Qt::WX11BypassWM | Qt::WNoAutoErase ),
 //      QToolTip( ),
       m_client( client )
 {
     s_tooltips.append( this );
-    Q3Frame::setPalette( QToolTip::palette() );
+    QFrame::setPalette( QToolTip::palette() );
     connect( &m_timer, SIGNAL( timeout() ), this, SLOT( hideTip() ) );
 }
 
@@ -172,7 +172,7 @@ void Amarok::ToolTip::hideTip()
 {
     if( !isVisible() )
         return;
-    Q3Frame::hide();
+    QFrame::hide();
     //QToolTip::parentWidget()->update();
     m_timer.stop();
     s_hack = 0;

@@ -41,7 +41,6 @@
 #include <Q3PopupMenu>
 #include <kvbox.h>
 //Added by qt3to4:
-#include <Q3Frame>
 #include <QPaintEvent>
 #include <QToolButton>
 
@@ -86,7 +85,7 @@ Statistics::Statistics( QWidget *parent, const char *name )
         m_lineEdit->setClickMessage( i18n( "Enter search terms here" ) );
 
         m_lineEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
-        m_lineEdit->setFrame( Q3Frame::Sunken );
+        m_lineEdit->setFrame( QFrame::Sunken );
         m_lineEdit->installEventFilter( this ); //we intercept keyEvents
 
         connect( button,     SIGNAL( clicked() )      , m_lineEdit  , SLOT( clear() ) );

@@ -55,8 +55,8 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
                 , m_timeout( timeout )
                 , m_showCounter( true )
 {
-    setFrameStyle( Q3Frame::Panel | Q3Frame::Raised );
-    setFrameShape( Q3Frame::StyledPanel );
+    setFrameStyle( QFrame::Panel | QFrame::Raised );
+    setFrameShape( QFrame::StyledPanel );
     setWindowFlags( Qt::WX11BypassWM );
 
     QPalette p = QToolTip::palette();
@@ -70,9 +70,9 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
 
     hbox = new QHBoxLayout( m_layout, 12 );
 
-    hbox->addWidget( m_countdownFrame = new Q3Frame( this, "counterVisual" ) );
+    hbox->addWidget( m_countdownFrame = new QFrame( this, "counterVisual" ) );
     m_countdownFrame->setFixedWidth( fontMetrics().width( "X" ) );
-    m_countdownFrame->setFrameStyle( Q3Frame::Plain | Q3Frame::Box );
+    m_countdownFrame->setFrameStyle( QFrame::Plain | QFrame::Box );
     m_countdownFrame->setPaletteForegroundColor( paletteBackgroundColor().dark() );
 
     label = new QLabel( this );
@@ -112,7 +112,7 @@ void PopupMessage::setShowCloseButton( const bool show )
 void PopupMessage::setShowCounter( const bool show )
 {
     m_showCounter = show;
-    findChild<Q3Frame*>( "counterVisual" )->setShown( show );
+    findChild<QFrame*>( "counterVisual" )->setShown( show );
     adjustSize();
 }
 
@@ -196,7 +196,7 @@ void PopupMessage::countDown()
         return;
     }
 
-    Q3Frame *&h = m_countdownFrame;
+    QFrame *&h = m_countdownFrame;
 
     if( m_counter < h->height() - 3 )
         QPainter( h ).fillRect( 2, 2, h->width() - 4, m_counter, palette().active().highlight() );

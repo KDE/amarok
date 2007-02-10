@@ -35,6 +35,7 @@
 #include <QApplication>
 #include <QDateTime>      //writeLogFile()
 #include <QFile>          //writeLogFile()
+#include <QFrame>
 #include <QPushButton>
 #include <QLabel>
 #include <QLayout>
@@ -145,7 +146,6 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     connect( b2, SIGNAL(toggled( bool )), SLOT(toggleProgressWindow( bool )) );
 
     m_popupProgress = new OverlayWidget( this, mainProgressBarBox, "popupProgress" );
-    m_popupProgress->setMargin( 1 );
     m_popupProgress->setFrameStyle( QFrame::Panel | QFrame::Raised );
     m_popupProgress->setFrameShape( QFrame::StyledPanel );
     m_popupProgress->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );

@@ -38,7 +38,6 @@
 #include <QDragEnterEvent>
 #include <QKeyEvent>
 #include <QEvent>
-#include <Q3Frame>
 #include <QDropEvent>
 #include <QDragMoveEvent>
 #include <QPaintEvent>

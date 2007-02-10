@@ -34,7 +34,6 @@
 #include <QLabel>
 #include <Q3ValueList>
 #include <QEvent>
-#include <Q3Frame>
 #include <Q3CString>
 #include <Q3PtrList>
 #include "scriptmanager.h"
@@ -285,7 +284,7 @@ ContextBrowser::ContextBrowser( const char *name )
 
        m_lyricsSearchText->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
 
-       m_lyricsSearchText->setFrame( Q3Frame::Sunken );
+       m_lyricsSearchText->setFrame( QFrame::Sunken );
        m_lyricsSearchText->installEventFilter( this ); //we intercept keyEvents
 
        QString filtertip = i18n( "Write to search this word in lyric, from the begin. Press enter to search next match" );
@@ -3818,7 +3817,7 @@ ContextBrowser::showLabelsDialog()
     m_addLabelEdit = new KLineEdit( dialog->mainWidget() );
     m_addLabelEdit->setClickMessage( i18n( "Add new label" ) );
     m_addLabelEdit->installEventFilter( this );
-    m_addLabelEdit->setFrame( Q3Frame::Sunken );
+    m_addLabelEdit->setFrame( QFrame::Sunken );
     m_addLabelEdit->setToolTip( i18n( "Enter a new label and press Return to add it" ) );
 
     m_labelListView = new Q3ListView( dialog->mainWidget() );

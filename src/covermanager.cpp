@@ -35,7 +35,6 @@
 //Added by qt3to4:
 #include <Q3ValueList>
 #include <Q3PtrList>
-#include <Q3Frame>
 #include <QDropEvent>
 #include <QToolButton>
 
@@ -152,7 +151,7 @@ CoverManager::CoverManager()
         button->setIcon( KIcon( "locationbar_erase") );
         m_searchEdit = new KLineEdit( searchToolBar );
         m_searchEdit->setClickMessage( i18n( "Enter search terms here" ) );
-        m_searchEdit->setFrame( Q3Frame::Sunken );
+        m_searchEdit->setFrame( QFrame::Sunken );
 
         m_searchEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
         connect( button, SIGNAL(clicked()), m_searchEdit, SLOT(clear()) );
@@ -186,7 +185,7 @@ CoverManager::CoverManager()
     KToolBar* toolBar = new KToolBar( hbox );
     toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 //TODO port to kde4
-//    toolBar->setFrameShape( Q3Frame::NoFrame );
+//    toolBar->setFrameShape( QFrame::NoFrame );
     {
         QAction* viewMenuAction = new QAction( KIcon( "view_choose" ), i18n( "View" ), this );
         viewMenuAction->setMenu( m_viewMenu );

@@ -281,7 +281,7 @@ Amarok::CrashHandlerWidget::CrashHandlerWidget()
         QVBoxLayout *lay = new QVBoxLayout( layout );
         QLabel *label = new QLabel( this );
         label->setPixmap( KStandardDirs::locate( "data", "drkonqi/pics/konqi.png" ) );
-        label->setFrameStyle( Q3Frame::Plain | Q3Frame::Box );
+        label->setFrameStyle( QFrame::Plain | QFrame::Box );
         lay->add( label );
         lay->addItem( new QSpacerItem( 3, 3, QSizePolicy::Minimum, QSizePolicy::Expanding ) );
     }

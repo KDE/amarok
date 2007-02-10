@@ -22,7 +22,6 @@
 #include <QCheckBox>
 //Added by qt3to4:
 #include <Q3GridLayout>
-#include <Q3Frame>
 #include <QPixmap>
 
 #include <klineedit.h>
@@ -275,7 +274,7 @@ HelixConfigDialogBase::HelixConfigDialogBase( HelixEngine *engine, Amarok::Plugi
 
     sv->setResizePolicy( Q3ScrollView::AutoOneFit );
     sv->setHScrollBarMode( Q3ScrollView::AlwaysOff );
-    sv->setFrameShape( Q3Frame::NoFrame );
+    sv->setFrameShape( QFrame::NoFrame );
     sv->addChild( parent );
 
     grid = new Q3GridLayout( parent, /*rows*/20, /*cols*/2, /*margin*/10, /*spacing*/10 );

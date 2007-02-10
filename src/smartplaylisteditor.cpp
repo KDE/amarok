@@ -196,8 +196,8 @@ void SmartPlaylistEditor::init(QString defaultName)
     new QLabel( i18n("Playlist name:"), hbox );
     m_nameLineEdit = new KLineEdit( defaultName, hbox );
 
-    Q3Frame *sep = new Q3Frame( mainWidget() );
-    sep->setFrameStyle( Q3Frame::HLine | Q3Frame::Sunken );
+    QFrame *sep = new QFrame( mainWidget() );
+    sep->setFrameStyle( QFrame::HLine | QFrame::Sunken );
 
     //match box (any)
     KHBox *matchAnyBox = new KHBox( mainWidget() );
