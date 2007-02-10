@@ -27,7 +27,10 @@
 
 
 MagnatuneAlbumDownloader::MagnatuneAlbumDownloader()
-{}
+{
+    m_tempDir.setAutoRemove( false );
+
+}
 
 
 MagnatuneAlbumDownloader::~MagnatuneAlbumDownloader()
@@ -63,15 +66,15 @@ void MagnatuneAlbumDownloader::downloadCover( QString albumCoverUrlString, QStri
     KUrl downloadUrl( albumCoverUrlString );
 
     debug() << "Download Cover: " << downloadUrl.url() << " to: " << m_tempDir.name() << fileName << endl;
-
+   
     m_albumDownloadJob = KIO::file_copy( downloadUrl, KUrl( m_tempDir.name() + fileName ), -1, true, false, false );
 
     connect( m_albumDownloadJob, SIGNAL( result( KJob* ) ), SLOT( coverDownloadComplete( KJob* ) ) );
 
-
-    Amarok::StatusBar::instance() ->newProgressOperation( m_albumDownloadJob )
-    .setDescription( i18n( "Downloading album cover" ) )
-    .setAbortSlot( this, SLOT( coverDownloadAborted() ) );
+    //FIXME: What to do with progress information?
+    //Amarok::StatusBar::instance() ->newProgressOperation( m_albumDownloadJob )
+    //.setDescription( i18n( "Downloading album cover" ) )
+    //.setAbortSlot( this, SLOT( coverDownloadAborted() ) );
 }
 
 

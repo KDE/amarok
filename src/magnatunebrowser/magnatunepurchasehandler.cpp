@@ -95,6 +95,8 @@ void MagnatunePurchaseHandler::showPurchaseDialog(  QString coverTempLocation )
     if ( m_currentAlbum.getId() != 0 )
     {
 
+        debug() << "showing purchase dialog with image: " << coverTempLocation + m_currentAlbumCoverName << endl;
+
         KTempDir tempDir;
         m_purchaseDialog->setAlbum( m_currentAlbum );
         m_purchaseDialog->setCover( coverTempLocation + m_currentAlbumCoverName );
@@ -113,7 +115,9 @@ void MagnatunePurchaseHandler::processPayment( QString ccNumber, QString expYear
     debug() << "purchase url : " << debugPurchaseURL << endl;
 
     m_resultDownloadJob = KIO::storedGet( KUrl( purchaseURL ), false, false );
-    Amarok::StatusBar::instance() ->newProgressOperation( m_resultDownloadJob ).setDescription( i18n( "Processing Payment" ) );
+    
+    //FIXME:
+    //Amarok::StatusBar::instance() ->newProgressOperation( m_resultDownloadJob ).setDescription( i18n( "Processing Payment" ) );
 
     connect( m_resultDownloadJob, SIGNAL( result( KIO::Job* ) ), SLOT( xmlDownloadComplete( KIO::Job* ) ) );
 
