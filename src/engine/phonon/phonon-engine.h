@@ -8,8 +8,6 @@
  *                                                                         *
  ***************************************************************************/
 
-// A lot of this was based on noatuns phonon engine.
-
 #ifndef PHONON_ENGINE_H
 #define PHONON_ENGINE_H
 
@@ -62,7 +60,7 @@ class AMAROK_PHONON_ENGINE_EXPORT PhononEngine : public Engine::Base
     virtual Engine::State state() const;
 
     Phonon::MediaObject *m_mediaObject;
-    Phonon::AudioPath *m_audioPath;
+    Phonon::AudioPath   *m_audioPath;
     Phonon::AudioOutput *m_audioOutput;
 
 private slots:
@@ -83,9 +81,9 @@ public:
 //     uint               m_fadeLength;
 //     bool               m_paused;
 //     bool               m_terminated;
-// 
+//
 //     virtual void run();
-// 
+//
 // public:
 //     Fader( XineEngine *, uint fadeLengthMs );
 //    ~Fader();

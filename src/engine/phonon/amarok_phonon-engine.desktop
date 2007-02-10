@@ -8,8 +8,8 @@ ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-plugintype=engine
 X-KDE-Amarok-name=phonon-engine
-X-KDE-Amarok-authors=Dan Meltzer
-X-KDE-Amarok-email=hydrogen@notyetimplemented.com
+X-KDE-Amarok-authors=Dan Meltzer, Seb Ruiz
+X-KDE-Amarok-email=hydrogen@notyetimplemented.com, me@sebruiz.net
 X-KDE-Amarok-rank=255
 X-KDE-Amarok-version=1
 X-KDE-Amarok-framework-version=29
