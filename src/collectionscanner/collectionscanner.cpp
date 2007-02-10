@@ -469,7 +469,7 @@ CollectionScanner::writeElement( const QString& name, const AttributeMap& attrib
     element.save( stream, 0 );
 
 
-    //std::cout << text.utf8() << std::endl;
+    std::cout << text.utf8().data() << std::endl;
 }
 
 
