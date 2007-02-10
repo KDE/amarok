@@ -210,39 +210,3 @@ PhononEngine::canDecode( const KUrl &url ) const
 }
 
 //TODO: Configuration?
-
-// Amarok::PluginConfig*
-// XineEngine::configure() const
-// {
-//     XineConfigDialog* xcf = new XineConfigDialog( m_xine );
-//     connect(xcf, SIGNAL( settingsSaved() ), this, SLOT( configChanged() ));
-//     connect(this, SIGNAL( resetConfig(xine_t*) ), xcf, SLOT( reset(xine_t*) ));
-//     return xcf;
-// }
-//
-// //SLOT
-// void XineEngine::configChanged()
-// {
-//     //reset xine to load new audio plugin
-//     if( m_currentAudioPlugin != XineCfg::outputPlugin() )
-//     {
-//         stop();
-//         xine_config_save( m_xine, configPath() );
-//         if( m_stream )     xine_close( m_stream );
-//         if( m_eventQueue ) xine_event_dispose_queue( m_eventQueue );
-//         m_eventQueue = NULL;
-//         if( m_stream )     xine_dispose( m_stream );
-//         m_stream = NULL;
-//         if( m_audioPort )  xine_close_audio_driver( m_xine, m_audioPort );
-//         m_audioPort = NULL;
-//         if( m_post )       xine_post_dispose( m_xine, m_post );
-//         m_post = NULL;
-//         if( m_xine )       xine_exit( m_xine );
-//         m_xine = NULL;
-//         init();
-//         setEqualizerEnabled( m_equalizerEnabled );
-//         if( m_equalizerEnabled )
-//             setEqualizerParameters( m_intPreamp, m_equalizerGains );
-//         emit resetConfig(m_xine);
-//     }
-// }

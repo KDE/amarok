@@ -70,41 +70,4 @@ public:
     PhononEngine();
 };
 
-// class Fader : public QThread
-// {
-//     XineEngine         *m_engine;
-//     xine_t             *m_xine;
-//     xine_stream_t      *m_decrease;
-//     xine_stream_t      *m_increase;
-//     xine_audio_port_t  *m_port;
-//     xine_post_t        *m_post;
-//     uint               m_fadeLength;
-//     bool               m_paused;
-//     bool               m_terminated;
-//
-//     virtual void run();
-//
-// public:
-//     Fader( XineEngine *, uint fadeLengthMs );
-//    ~Fader();
-//    void pause();
-//    void resume();
-//    void finish();
-// };
-
-/*class OutFader : public QThread
-{
-    XineEngine *m_engine;
-    bool        m_terminated;
-    uint        m_fadeLength;
-
-    virtual void run();
-
-public:
-    OutFader( XineEngine *, uint fadeLengthMs );
-    ~OutFader();
-
-   void finish();
-};*/
-
 #endif
