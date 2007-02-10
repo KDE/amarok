@@ -51,7 +51,7 @@ void MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo * info )
 
     m_albumDownloadJob = KIO::file_copy( downloadUrl, KUrl( m_tempDir.name() + m_currentAlbumFileName ), -1, true, false, false );
 
-    connect( m_albumDownloadJob, SIGNAL( result( KIO::Job* ) ), SLOT( albumDownloadComplete( KIO::Job* ) ) );
+    connect( m_albumDownloadJob, SIGNAL( result( KJob* ) ), SLOT( albumDownloadComplete( KJob* ) ) );
 
     Amarok::StatusBar::instance() ->newProgressOperation( m_albumDownloadJob )
     .setDescription( i18n( "Downloading album" ) )
@@ -66,7 +66,8 @@ void MagnatuneAlbumDownloader::downloadCover( QString albumCoverUrlString, QStri
 
     m_albumDownloadJob = KIO::file_copy( downloadUrl, KUrl( m_tempDir.name() + fileName ), -1, true, false, false );
 
-    connect( m_albumDownloadJob, SIGNAL( result( KIO::Job* ) ), SLOT( coverDownloadComplete( KIO::Job* ) ) );
+    connect( m_albumDownloadJob, SIGNAL( result( KJob* ) ), SLOT( coverDownloadComplete( KJob* ) ) );
+
 
     Amarok::StatusBar::instance() ->newProgressOperation( m_albumDownloadJob )
     .setDescription( i18n( "Downloading album cover" ) )
@@ -75,7 +76,7 @@ void MagnatuneAlbumDownloader::downloadCover( QString albumCoverUrlString, QStri
 
 
 
-void MagnatuneAlbumDownloader::albumDownloadComplete( KIO::Job * downloadJob )
+void MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 {
 
     debug() << "album download complete" << endl;
@@ -117,7 +118,7 @@ void MagnatuneAlbumDownloader::albumDownloadComplete( KIO::Job * downloadJob )
 
         m_albumDownloadJob = KIO::file_copy( downloadUrl, KUrl( finalAlbumPath + "/cover.jpg" ), -1, true, false, false );
 
-        connect( m_albumDownloadJob, SIGNAL( result( KIO::Job* ) ), SLOT( coverAddComplete( KIO::Job* ) ) );
+        connect( m_albumDownloadJob, SIGNAL( result( KJob* ) ), SLOT( coverAddComplete( KJob* ) ) );
 
         Amarok::StatusBar::instance() ->newProgressOperation( m_albumDownloadJob )
         .setDescription( i18n( "Adding album cover to collection" ) )
@@ -131,7 +132,7 @@ void MagnatuneAlbumDownloader::albumDownloadComplete( KIO::Job * downloadJob )
 
 }
 
-void MagnatuneAlbumDownloader::coverDownloadComplete( KIO::Job * downloadJob )
+void MagnatuneAlbumDownloader::coverDownloadComplete( KJob * downloadJob )
 {
   debug() << "cover download complete" << endl;
 
@@ -170,7 +171,7 @@ void MagnatuneAlbumDownloader::coverDownloadAborted( )
     emit( coverDownloadComplete( false ) );
 }
 
-void MagnatuneAlbumDownloader::coverAddComplete(KIO::Job * downloadJob)
+void MagnatuneAlbumDownloader::coverAddComplete(KJob * downloadJob)
 {
 
     debug() << "cover add complete" << endl;

@@ -72,13 +72,13 @@ protected slots:
      * Unzip the downloaded album
      * @param downLoadJob 
      */
-    void albumDownloadComplete( KIO::Job* downloadJob );
+    void albumDownloadComplete( KJob* downloadJob );
     void albumDownloadAborted();
 
-    void coverDownloadComplete( KIO::Job* downloadJob );
+    void coverDownloadComplete( KJob* downloadJob );
     void coverDownloadAborted();
 
-    void coverAddComplete( KIO::Job* downloadJob );
+    void coverAddComplete( KJob* downloadJob );
     void coverAddAborted();
 
 };
