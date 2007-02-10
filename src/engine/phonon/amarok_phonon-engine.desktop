@@ -1,0 +1,17 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+Name=Phonon Engine
+X-KDE-Library=libamarok_phonon-engine
+Comment=Plugin for Amarok
+ServiceTypes=Amarok/Plugin
+
+X-KDE-Amarok-plugintype=engine
+X-KDE-Amarok-name=phonon-engine
+X-KDE-Amarok-authors=Dan Meltzer
+X-KDE-Amarok-email=hydrogen@notyetimplemented.com
+X-KDE-Amarok-rank=255
+X-KDE-Amarok-version=1
+X-KDE-Amarok-framework-version=29
+
+
