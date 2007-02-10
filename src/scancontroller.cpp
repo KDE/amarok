@@ -277,7 +277,7 @@ main_loop:
             m_dataMutex.unlock();
 
             if( !m_reader->parseContinue() ) {
-               // ::warning() << "parseContinue() failed: " << errorString() << endl << data << endl;
+                debug() << "parseContinue() failed: " << errorString() << endl << QString( data ) << endl;
             }
         }
     }
