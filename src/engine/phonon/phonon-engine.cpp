@@ -136,14 +136,14 @@ PhononEngine::stop()
 void
 PhononEngine::pause()
 {
-    if( !m_mediaObject )
+    if( m_mediaObject )
         m_mediaObject->pause();
 }
 
 void
 PhononEngine::unpause()
 {
-    if( !m_mediaObject )
+    if( m_mediaObject )
         m_mediaObject->pause();
 }
 
