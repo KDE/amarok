@@ -19,9 +19,7 @@
 #include <QLayout>
 #include <QRegExp>
 //Added by qt3to4:
-#include <Q3HBoxLayout>
 #include <QMouseEvent>
-#include <Q3VBoxLayout>
 
 #include <kapplication.h>
 #include <kcombobox.h>
@@ -446,7 +444,7 @@ CoverFetcher::attemptAnotherFetch()
             else
                 connect( amazonLocale, SIGNAL( activated(int) ),
                         fetcher, SLOT( changeLocale(int) ) );
-            Q3HBoxLayout *hbox1 = new Q3HBoxLayout( 8 );
+            QHBoxLayout *hbox1 = new QHBoxLayout( 8 );
             hbox1->addWidget( new QLabel( i18n( "Amazon Locale: " ), this ) );
             hbox1->addWidget( amazonLocale );
 
@@ -456,12 +454,12 @@ CoverFetcher::attemptAnotherFetch()
             KPushButton* cancelButton = new KPushButton( KStandardGuiItem::cancel(), this );
             KPushButton* searchButton = new KPushButton( i18n("&Search"), this );
 
-            Q3HBoxLayout *hbox2 = new Q3HBoxLayout( 8 );
+            QHBoxLayout *hbox2 = new QHBoxLayout( 8 );
             hbox2->addItem( new QSpacerItem( 160, 8, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
             hbox2->addWidget( searchButton );
             hbox2->addWidget( cancelButton );
 
-            Q3VBoxLayout *vbox = new Q3VBoxLayout( this, 8, 8 );
+            QVBoxLayout *vbox = new QVBoxLayout( this, 8, 8 );
             vbox->addLayout( hbox1 );
             vbox->addWidget( new QLabel( "<qt>" + text, this ) );
             vbox->addWidget( new KLineEdit( keyword, this ) );
@@ -558,7 +556,7 @@ CoverFetcher::getUserQuery( QString explanation )
             KWin::setType( winId(), NET::Utility );
             KWin::setState( winId(), NET::SkipTaskbar );
 
-            (new Q3VBoxLayout( this ))->setAutoAdd( true );
+            (new QVBoxLayout( this ))->setAutoAdd( true );
 
             QLabel      *labelPix  = new QLabel( this );
             QLabel      *labelName = new QLabel( this );

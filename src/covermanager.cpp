@@ -33,7 +33,6 @@
 #include <QToolTip>
 #include <kvbox.h>
 //Added by qt3to4:
-#include <Q3HBoxLayout>
 #include <Q3ValueList>
 #include <Q3PtrList>
 #include <Q3Frame>
@@ -296,7 +295,7 @@ CoverViewDialog::CoverViewDialog( const QString& artist, const QString& album, Q
     kapp->setTopWidget( this );
     setCaption( KDialog::makeStandardCaption( i18n("%1 - %2", artist, album ) ) );
 
-    m_layout = new Q3HBoxLayout( this );
+    m_layout = new QHBoxLayout( this );
     m_layout->setAutoAdd( true );
     m_pixmapViewer = new PixmapViewer( this, m_pixmap );
 

@@ -42,12 +42,10 @@
 #include <Q3PtrList>
 #include <QPaintEvent>
 #include <QDragMoveEvent>
-#include <Q3VBoxLayout>
 #include <QDragLeaveEvent>
 #include <QResizeEvent>
 #include <QDropEvent>
 #include <QDragEnterEvent>
-#include <Q3HBoxLayout>
 #include <QPixmap>
 #include <QMouseEvent>
 #include <Q3GridLayout>
@@ -4818,7 +4816,7 @@ Playlist::showTagDialog( QList<Q3ListViewItem*> items )
             textLabel3->setBuddy( lineEdit2 );
 
             // layouts
-            Q3HBoxLayout *layout1 = new Q3HBoxLayout( 0, 0, 6 );
+            QHBoxLayout *layout1 = new QHBoxLayout( 0, 0, 6 );
             layout1->addItem( new QSpacerItem( 181, 20, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
             KPushButton *b = new KPushButton( KStandardGuiItem::ok(), this );
             b->setObjectName( "OkButton" );
@@ -4833,7 +4831,7 @@ Playlist::showTagDialog( QList<Q3ListViewItem*> items )
             layout2->QLayout::add( textLabel3 );
             layout2->QLayout::add( lineEdit2 );
 
-            Q3VBoxLayout *Form1Layout = new Q3VBoxLayout( this, 11, 6, "Form1Layout");
+            QVBoxLayout *Form1Layout = new QVBoxLayout( this, 11, 6, "Form1Layout");
             Form1Layout->addWidget( textLabel1 );
             Form1Layout->addWidget( groupBox1 );
             Form1Layout->addLayout( layout2 );

@@ -26,8 +26,6 @@
 #include <kvbox.h>
 #include <QTextStream>
 //Added by qt3to4:
-#include <Q3HBoxLayout>
-#include <Q3VBoxLayout>
 #include <Q3ValueList>
 
 #include <kapplication.h>
@@ -48,7 +46,7 @@ EqualizerPresetManager::EqualizerPresetManager( QWidget *parent, const char *nam
 
     QWidget *mainWidget = new QWidget( this );
     setMainWidget( mainWidget );
-    Q3HBoxLayout *mainLayout = new Q3HBoxLayout( mainWidget, 0, spacingHint() );
+    QHBoxLayout *mainLayout = new QHBoxLayout( mainWidget, 0, spacingHint() );
 
     m_presetsView = new K3ListView( mainWidget );
     m_presetsView->setObjectName( "presetListView" );
@@ -58,7 +56,7 @@ EqualizerPresetManager::EqualizerPresetManager( QWidget *parent, const char *nam
     connect(m_presetsView, SIGNAL( doubleClicked ( Q3ListViewItem*, const QPoint&, int ) ), SLOT( slotRename() ));
     mainLayout->addWidget( m_presetsView );
 
-    Q3VBoxLayout* buttonsLayout = new Q3VBoxLayout( mainLayout );
+    QVBoxLayout* buttonsLayout = new QVBoxLayout( mainLayout );
 
     m_renameBtn = new QPushButton( i18n("&Rename"), mainWidget, "renameBtn" );
     m_deleteBtn = new QPushButton( i18n("&Delete"), mainWidget, "deleteBtn" );

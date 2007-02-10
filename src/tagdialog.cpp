@@ -34,7 +34,6 @@
 #include <Q3ValueList>
 #include <Q3CString>
 #include <QPixmap>
-#include <Q3VBoxLayout>
 
 #include <kapplication.h>
 #include <kcombobox.h>
@@ -429,7 +428,7 @@ void TagDialog::init()
     //m_labelCloud->view()->setVScrollBarMode( Q3ScrollView::AlwaysOff );
     //m_labelCloud->view()->setHScrollBarMode( Q3ScrollView::AlwaysOff );
 
-    new Q3VBoxLayout( labels_favouriteLabelsFrame );
+    new QVBoxLayout( labels_favouriteLabelsFrame );
     labels_favouriteLabelsFrame->layout()->add( m_labelCloud->view() );
     const QStringList favoriteLabels = CollectionDB::instance()->favoriteLabels();
     QString html = generateHTML( favoriteLabels );

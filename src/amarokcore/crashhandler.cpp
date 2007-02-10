@@ -275,10 +275,10 @@ namespace Amarok
 
 Amarok::CrashHandlerWidget::CrashHandlerWidget()
 {
-    Q3BoxLayout *layout = new Q3HBoxLayout( this, 18, 12 );
+    QBoxLayout *layout = new QHBoxLayout( this, 18, 12 );
 
     {
-        Q3BoxLayout *lay = new Q3VBoxLayout( layout );
+        QVBoxLayout *lay = new QVBoxLayout( layout );
         QLabel *label = new QLabel( this );
         label->setPixmap( KStandardDirs::locate( "data", "drkonqi/pics/konqi.png" ) );
         label->setFrameStyle( Q3Frame::Plain | Q3Frame::Box );
@@ -286,7 +286,7 @@ Amarok::CrashHandlerWidget::CrashHandlerWidget()
         lay->addItem( new QSpacerItem( 3, 3, QSizePolicy::Minimum, QSizePolicy::Expanding ) );
     }
 
-    layout = new Q3VBoxLayout( layout, 6 );
+    layout = new QVBoxLayout( layout, 6 );
 
     layout->add( new QLabel( /*i18n*/(
             "<p>" "Amarok has crashed! We are terribly sorry about this :("
@@ -296,7 +296,7 @@ Amarok::CrashHandlerWidget::CrashHandlerWidget()
                   "as soon as possible."
             "<p>" "Thanks for choosing Amarok.<br>" ), this ) );
 
-    layout = new Q3HBoxLayout( layout, 6 );
+    layout = new QHBoxLayout( layout, 6 );
 
     layout->addItem( new QSpacerItem( 6, 6, QSizePolicy::Expanding ) );
     layout->add( new KPushButton( KGuiItem( i18n("Send Email"), "mail_send" ), this, "email" ) );

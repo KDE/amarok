@@ -36,10 +36,8 @@
 #include <QToolTip>
 #include <kguiitem.h>
 //Added by qt3to4:
-#include <Q3HBoxLayout>
 #include <QTimerEvent>
 #include <QPixmap>
-#include <Q3VBoxLayout>
 
 namespace KDE
 {
@@ -64,13 +62,13 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
     QPalette p = QToolTip::palette();
     setPalette( p );
 
-    Q3HBoxLayout *hbox;
+    QHBoxLayout *hbox;
     QLabel *label;
     K3ActiveLabel *alabel;
 
-    m_layout = new Q3VBoxLayout( this, 9 /*margin*/, 6 /*spacing*/ );
+    m_layout = new QVBoxLayout( this, 9 /*margin*/, 6 /*spacing*/ );
 
-    hbox = new Q3HBoxLayout( m_layout, 12 );
+    hbox = new QHBoxLayout( m_layout, 12 );
 
     hbox->addWidget( m_countdownFrame = new Q3Frame( this, "counterVisual" ) );
     m_countdownFrame->setFixedWidth( fontMetrics().width( "X" ) );
@@ -89,7 +87,7 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
 
     hbox->add( alabel );
 
-    hbox = new Q3HBoxLayout( m_layout );
+    hbox = new QHBoxLayout( m_layout );
 
     hbox->addItem( new QSpacerItem( 4, 4, QSizePolicy::Expanding, QSizePolicy::Preferred ) );
     KPushButton *button = new KPushButton( KStandardGuiItem::close(), this );

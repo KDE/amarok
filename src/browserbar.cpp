@@ -31,7 +31,6 @@
 #include <QMouseEvent>
 #include <Q3PtrList>
 #include <QEvent>
-#include <Q3VBoxLayout>
 #include <KVBox>
 
 
@@ -109,7 +108,7 @@ BrowserBar::BrowserBar( QWidget *parent )
     m_tabBar->setFixedWidth( m_pos );
     m_tabBar->move( 0, 25 );
 
-    Q3VBoxLayout *layout = new Q3VBoxLayout( m_browserBox );
+    QVBoxLayout *layout = new QVBoxLayout( m_browserBox );
     layout->addSpacing( 3 ); // aesthetics
     layout->setAutoAdd( true );
 

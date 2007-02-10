@@ -13,8 +13,6 @@
 #include <QToolTip>
 
 //Added by qt3to4:
-#include <Q3HBoxLayout>
-#include <Q3VBoxLayout>
 
 #include <kglobal.h>
 #include <klineedit.h>
@@ -81,7 +79,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     m_mainLay->addItem( new QSpacerItem( 10, 10, QSizePolicy::Expanding, QSizePolicy::Minimum ) );
 
     // choosing keyword filtering
-    Q3HBoxLayout *keywordLayout = new Q3HBoxLayout( mainWidget() );
+    QHBoxLayout *keywordLayout = new QHBoxLayout( mainWidget() );
     QLabel *label3 = new QLabel( i18n("Attribute:"), mainWidget() );
     label3->setObjectName( "label3" );
     label3->setWhatsThis(
@@ -200,10 +198,10 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     m_mainLay->addWidget( m_groupBox );
     m_mainLay->addItem( new QSpacerItem( 10, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
 
-    Q3VBoxLayout *vertLayout = new Q3VBoxLayout( m_groupBox, 15, 5 );
+    QVBoxLayout *vertLayout = new QVBoxLayout( m_groupBox, 15, 5 );
 
     // choose other keyword parameters: smaller than, greater than, equal to...
-    Q3HBoxLayout *paramLayout = new Q3HBoxLayout( vertLayout );
+    QHBoxLayout *paramLayout = new QHBoxLayout( vertLayout );
 
     m_comboCondition = new QComboBox( m_groupBox, "valuecondition");
     m_comboCondition->insertItem( i18n("smaller than") );
@@ -237,7 +235,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
 
     connect(m_spinMax1, SIGNAL(valueChanged(int)), this, SLOT(maxSpinChanged(int)));
 
-    Q3HBoxLayout *filesizeLayout = new Q3HBoxLayout( vertLayout );
+    QHBoxLayout *filesizeLayout = new QHBoxLayout( vertLayout );
     filesizeLayout->setAlignment( Qt::AlignLeft );
     m_filesizeLabel = new QLabel( i18n("Unit:"), m_groupBox );
     m_filesizeLabel->setObjectName( "filesizeLabel" );
@@ -258,7 +256,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
 
     connect( m_comboCondition, SIGNAL(activated(int)), SLOT(chooseCondition(int)) );
 
-    Q3HBoxLayout *otherOptionsLayout = new Q3HBoxLayout( mainWidget() );
+    QHBoxLayout *otherOptionsLayout = new QHBoxLayout( mainWidget() );
     otherOptionsLayout->setAlignment( Qt::AlignHCenter );
     m_mainLay->addLayout( otherOptionsLayout );
 
@@ -267,7 +265,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     m_groupBox2->setTitle( i18n( "Filter action" ) );
     otherOptionsLayout->addWidget( m_groupBox2 );
 
-    Q3VBoxLayout* ratioLay = new Q3VBoxLayout( m_groupBox2, 15, 0 );
+    QVBoxLayout* ratioLay = new QVBoxLayout( m_groupBox2, 15, 0 );
 
     m_checkALL = new QRadioButton( i18n("Match all words"), m_groupBox2, "checkall" );
     m_checkALL->setToolTip(
@@ -309,13 +307,13 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     // some vertical space
     otherOptionsLayout->addItem( new QSpacerItem( 50, 5, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
 
-    Q3VBoxLayout* verticalCondLay = new Q3VBoxLayout( otherOptionsLayout, 15, 0 );
+    QVBoxLayout* verticalCondLay = new QVBoxLayout( otherOptionsLayout, 15, 0 );
 
     m_groupBox3 = new Q3GroupBox( mainWidget(), "groupBox3" );
     m_groupBox3->setTitle( i18n( "Appending condition" ) );
     verticalCondLay->addWidget( m_groupBox3 );
 
-    Q3VBoxLayout* ratioLay2 = new Q3VBoxLayout( m_groupBox3, 15, 0 );
+    QVBoxLayout* ratioLay2 = new QVBoxLayout( m_groupBox3, 15, 0 );
 
     m_checkAND = new QRadioButton( i18nc("AND logic condition", "AND"), m_groupBox3, "checkAND" );
     m_checkAND->setToolTip(

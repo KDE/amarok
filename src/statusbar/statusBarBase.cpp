@@ -100,7 +100,6 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 
     //we need extra spacing due to the way we paint the surrounding boxes
 //TODO: Do we still need to stack layouts?
-//     Q3BoxLayout *layout = new Q3HBoxLayout( mainlayout, /*spacing*/5 );
     QHBoxLayout *layout = new QHBoxLayout;
     layout->setSpacing( 5 );
     mainlayout->addLayout( layout );

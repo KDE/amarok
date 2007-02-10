@@ -23,14 +23,11 @@
 #include <QLabel>
 #include <QLayout>
 #include <QSlider>
-//Added by qt3to4:
-#include <Q3HBoxLayout>
-#include <Q3VBoxLayout>
 
 EqualizerDialog::EqualizerDialog()
 {
-    Q3BoxLayout* overallLayout = new Q3HBoxLayout(this, 5, -1, "overallLayout");
-    Q3BoxLayout* sliderLayout  = new Q3VBoxLayout(this, 5, -1, "sliderLayout");
+    QHBoxLayout* overallLayout = new QHBoxLayout(this, 5, -1, "overallLayout");
+    QVBoxLayout* sliderLayout  = new QVBoxLayout(this, 5, -1, "sliderLayout");
 
     QSlider*    preampSlider  = new QSlider(-100,100,1,0,QSlider::Vertical,this, "preampSlider");
     QLabel*     preampLabel   = new QLabel("Pre-amp",this);

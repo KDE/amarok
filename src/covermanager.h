@@ -8,7 +8,6 @@
 #include <q3ptrlist.h>
 #include <QSplitter>
 //Added by qt3to4:
-#include <Q3HBoxLayout>
 #include <QDropEvent>
 #include <Q3ValueList>
 #include <QLabel>
@@ -27,7 +26,7 @@ class K3ListView;
 class CoverView;
 class KHBox;
 class QProgressBar;
-class Q3HBoxLayout;
+class QHBoxLayout;
 class PixmapViewer;
 
 class CoverManager : public QSplitter
@@ -164,7 +163,7 @@ class CoverViewDialog : public QDialog {
         CoverViewDialog(const QString& artist, const QString& album, QWidget *parent);
 
     private:
-        Q3HBoxLayout *m_layout;
+        QHBoxLayout *m_layout;
         QPixmap m_pixmap;
         PixmapViewer *m_pixmapViewer;
         QLabel *m_label;
