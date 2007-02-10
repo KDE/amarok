@@ -351,7 +351,6 @@ ScanController::slotReadReady()
     while( m_scanner->readln( line, true, 0 ) != -1 ) {
         if( !line.startsWith( "exepath=" ) ) // skip binary location info from scanner
             m_xmlData += line;
-        debug() << line << endl;
     }
     m_dataMutex.unlock();
 }
