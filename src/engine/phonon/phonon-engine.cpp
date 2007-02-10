@@ -95,11 +95,11 @@ PhononEngine::load( const KUrl &url, bool isStream )
 
     if( Engine::Base::load( url, isStream ) )
     {
-        debug() << "***********************************************" << endl;
-        debug() << "Loaded file " << url.prettyUrl() << endl;
         m_mediaObject->setUrl( url );
         return true;
     }
+
+    debug() << "Could not load file " << url.prettyUrl() << endl;
 //     m_mediaObject->setUrl( KUrl() );
     return false;
 }
@@ -112,9 +112,9 @@ PhononEngine::play( uint offset )
 
     if( m_mediaObject )
     {
-        debug() << "***********************************************" << endl;
-        debug() << "Playing file " << m_mediaObject->url().prettyUrl() << endl;
         m_mediaObject->play();
+
+        connect( m_mediaObject, SIGNAL( finished() ), SIGNAL( trackEnded() ) );
 
         emit stateChanged( Engine::Playing );
         return true;
@@ -130,21 +130,30 @@ void
 PhononEngine::stop()
 {
     if( m_mediaObject )
+    {
         m_mediaObject->stop();
+        emit stateChanged( Engine::Empty );
+    }
 }
 
 void
 PhononEngine::pause()
 {
     if( m_mediaObject )
+    {
         m_mediaObject->pause();
+        emit stateChanged( Engine::Paused );
+    }
 }
 
 void
 PhononEngine::unpause()
 {
     if( m_mediaObject )
+    {
         m_mediaObject->pause();
+        emit stateChanged( Engine::Playing );
+    }
 }
 
 //taken verbatim from noatun
