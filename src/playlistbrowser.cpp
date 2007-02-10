@@ -1,7 +1,7 @@
 /***************************************************************************
  * copyright            : (c) 2004 Pierpaolo Di Panfilo                    *
  *                        (c) 2004 Mark Kretschmann <markey@web.de>        *
- *                        (c) 2005-2006 Seb Ruiz <me@sebruiz.net>          *
+ *                        (c) 2005-2007 Seb Ruiz <me@sebruiz.net>          *
  *                        (c) 2005 Gábor Lehel <illissius@gmail.com>       *
  *                        (c) 2005 Christian Muehlhaeuser <chris@chris.de> *
  *                        (c) 2006 Alexandre Oliveira <aleprj@gmail.com>   *
@@ -234,6 +234,8 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     m_podcastCategory = loadPodcasts();
 
+    polish();
+
     setSpacing( 4 );
     setFocusProxy( m_listview );
 }
@@ -413,7 +415,7 @@ PlaylistCategory* PlaylistBrowser::loadStreams()
 
     if( !file.open( QIODevice::ReadOnly ) || !d.setContent( stream.read() ) )
     { /*Couldn't open the file or it had invalid content, so let's create an empty element*/
-        return new PlaylistCategory( m_listview, after , i18n("Radio Streams") );
+        return new PlaylistCategory( m_listview, after, i18n("Radio Streams") );
     }
     else {
         e = d.namedItem( "category" ).toElement();
