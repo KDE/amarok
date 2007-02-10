@@ -48,7 +48,6 @@
 #include <QDragEnterEvent>
 #include <QPixmap>
 #include <QMouseEvent>
-#include <Q3GridLayout>
 #include <Q3TextDrag>
 #include <Q3PopupMenu>
 #include "prettypopupmenu.h"
@@ -66,6 +65,7 @@
 #include <QEvent>
 #include <QFile>           //undo system
 #include <q3header.h>         //eventFilter()
+#include <QGridLayout>
 #include <QLabel>          //showUsageMessage()
 #include <QPainter>
 #include <QPen>            //slotGlowTimer()
@@ -4825,7 +4825,7 @@ Playlist::showTagDialog( QList<Q3ListViewItem*> items )
             b->setObjectName( "CancelButton" );
             layout1->addWidget( b );
 
-            Q3GridLayout *layout2 = new Q3GridLayout( 0, 2, 2, 0, 6 );
+            QGridLayout *layout2 = new QGridLayout( 0, 2, 2, 0, 6 );
             layout2->QLayout::add( textLabel2 );
             layout2->QLayout::add( lineEdit1 );
             layout2->QLayout::add( textLabel3 );

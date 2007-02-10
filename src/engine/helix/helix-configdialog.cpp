@@ -21,7 +21,6 @@
 #include <QFileInfo>
 #include <QCheckBox>
 //Added by qt3to4:
-#include <Q3GridLayout>
 #include <QPixmap>
 
 #include <klineedit.h>
@@ -56,7 +55,7 @@ HelixConfigEntry::HelixConfigEntry( QWidget *parent,
          , m_valueChanged( false )
          , m_stringValue( defaultvalue )
 {
-    Q3GridLayout *grid = (Q3GridLayout*)parent->layout();
+    QGridLayout *grid = (QGridLayout*)parent->layout();
 
     m_w = new KLineEdit( m_stringValue, parent );
     connect( (QWidget *) m_w, SIGNAL(textChanged( const QString& )), this, SLOT(slotStringChanged( const QString& )) );
@@ -83,7 +82,7 @@ HelixConfigEntry::HelixConfigEntry( QWidget *parent,
    , m_valueChanged( false )
    , m_stringValue( defaultvalue )
 {
-    Q3GridLayout *grid = (Q3GridLayout*)parent->layout();
+    QGridLayout *grid = (QGridLayout*)parent->layout();
 
     m_key = str;
 
@@ -115,7 +114,7 @@ HelixSoundDevice::HelixSoundDevice( QWidget *parent,
                                     HelixEngine *engine )
    : deviceComboBox(0), checkBox_outputDevice(0), lineEdit_outputDevice(0), m_changed(false), m_engine(engine)
 {
-   Q3GridLayout *grid = (Q3GridLayout*)parent->layout();
+   QGridLayout *grid = (QGridLayout*)parent->layout();
 
    deviceComboBox = new KComboBox( false, parent );
    deviceComboBox->setObjectName( "deviceComboBox" );
@@ -264,7 +263,7 @@ HelixConfigDialogBase::HelixConfigDialogBase( HelixEngine *engine, Amarok::Plugi
     int row = 0;
     QString currentPage;
     QWidget *parent = 0;
-    Q3GridLayout *grid = 0;
+    QGridLayout *grid = 0;
     Q3ScrollView *sv = 0;
 
     QString pageName( i18n("Main") );
@@ -277,7 +276,7 @@ HelixConfigDialogBase::HelixConfigDialogBase( HelixEngine *engine, Amarok::Plugi
     sv->setFrameShape( QFrame::NoFrame );
     sv->addChild( parent );
 
-    grid = new Q3GridLayout( parent, /*rows*/20, /*cols*/2, /*margin*/10, /*spacing*/10 );
+    grid = new QGridLayout( parent, /*rows*/20, /*cols*/2, /*margin*/10, /*spacing*/10 );
     grid->setColStretch( 0, 1 );
     grid->setColStretch( 1, 1 );
 
@@ -357,7 +356,7 @@ HelixConfigDialogBase::HelixConfigDialogBase( HelixEngine *engine, Amarok::Plugi
     if( sv )
        sv->setMinimumWidth( le->sizeHint().width() );
 
-    grid = new Q3GridLayout( parent, /*rows*/1, /*cols*/1, /*margin*/2, /*spacing*/1 );
+    grid = new QGridLayout( parent, /*rows*/1, /*cols*/1, /*margin*/2, /*spacing*/1 );
     grid->addMultiCellWidget( le, 0, 1, 0, 1, 0 );
     le->setWordWrap(Q3TextEdit::NoWrap);
 
