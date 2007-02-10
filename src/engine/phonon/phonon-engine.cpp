@@ -93,10 +93,10 @@ PhononEngine::load( const KUrl &url, bool isStream )
 {
     DEBUG_BLOCK
 
-    Amarok::StatusBar::instance()->longMessage( "Loading file" );
-
     if( Engine::Base::load( url, isStream ) )
     {
+        debug() << "***********************************************" << endl;
+        debug() << "Loaded file " << url.prettyUrl() << endl;
         m_mediaObject->setUrl( url );
         return true;
     }
@@ -112,10 +112,17 @@ PhononEngine::play( uint offset )
 
     if( m_mediaObject )
     {
+        debug() << "***********************************************" << endl;
+        debug() << "Playing file " << m_mediaObject->url().prettyUrl() << endl;
         m_mediaObject->play();
+
+        emit stateChanged( Engine::Playing );
         return true;
     }
-    Amarok::StatusBar::instance()->longMessage( "Cannot Play File", KDE::StatusBar::Sorry );
+
+    debug() << "Could not play file " << m_mediaObject->url().prettyUrl() << endl;
+    emit stateChanged( Engine::Empty );
+
     return false;
 }
 
