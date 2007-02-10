@@ -77,7 +77,6 @@ ScanController::ScanController( CollectionDB* parent, bool incremental, const QS
 
     ScanController::setInstance( this );
     m_reader->setContentHandler( this );
-    m_reader->parse( m_source, true );
 
     connect( this, SIGNAL( scanDone( bool ) ), MountPointManager::instance(), SLOT( updateStatisticsURLs( bool ) ) );
 
@@ -257,6 +256,8 @@ ScanController::doJob()
 main_loop:
     uint delayCount = 100;
 
+    bool sessionStarted = false;
+
     /// Main Loop
     while( !isAborted() ) {
         if( m_xmlData.isNull() ) {
@@ -275,8 +276,13 @@ main_loop:
             m_xmlData = QString::null;
 
             m_dataMutex.unlock();
-
-            if( !m_reader->parseContinue() ) {
+            if ( !sessionStarted )
+                if ( m_reader->parse( m_source, true ) ) { //start a new session
+                    sessionStarted = true;
+                }
+                else 
+                    debug() << "Incremental parsing failed: " << errorString() << endl << QString( data ) << endl;
+            else if( !m_reader->parseContinue() ) {
                 debug() << "parseContinue() failed: " << errorString() << endl << QString( data ) << endl;
             }
         }
@@ -345,6 +351,7 @@ ScanController::slotReadReady()
     while( m_scanner->readln( line, true, 0 ) != -1 ) {
         if( !line.startsWith( "exepath=" ) ) // skip binary location info from scanner
             m_xmlData += line;
+        debug() << line << endl;
     }
     m_dataMutex.unlock();
 }
