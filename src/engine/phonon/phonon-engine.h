@@ -35,9 +35,6 @@ class AMAROK_PHONON_ENGINE_EXPORT PhononEngine : public Engine::Base
 {
     Q_OBJECT
 
-    friend class Fader;
-    friend class OutFader;
-
    ~PhononEngine();
 
     virtual bool init();
@@ -63,8 +60,8 @@ class AMAROK_PHONON_ENGINE_EXPORT PhononEngine : public Engine::Base
     Phonon::AudioPath   *m_audioPath;
     Phonon::AudioOutput *m_audioOutput;
 
-private slots:
-    void configChanged();
+// private slots:
+//     void configChanged();
 
 public:
     PhononEngine();

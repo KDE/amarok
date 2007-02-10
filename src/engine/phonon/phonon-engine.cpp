@@ -47,9 +47,9 @@ extern "C"
 
 PhononEngine::PhononEngine()
         : EngineBase()
-        , m_mediaObject(0)
-        , m_audioPath(0)
-        , m_audioOutput(0)
+        , m_mediaObject( 0 )
+        , m_audioPath  ( 0 )
+        , m_audioOutput( 0 )
 {
     debug() << "Yay for Phonon being constructed" << endl;
 }
@@ -105,7 +105,6 @@ PhononEngine::load( const KUrl &url, bool isStream )
 }
 
 
-
 bool
 PhononEngine::play( uint offset )
 {
@@ -144,7 +143,7 @@ PhononEngine::unpause()
 //taken verbatim from noatun
 Engine::State PhononEngine::convertState( Phonon::State s )
 {
-    switch(s)
+    switch( s )
     {
         case Phonon::PlayingState:
             return Engine::Playing;
@@ -162,8 +161,9 @@ Engine::State PhononEngine::convertState( Phonon::State s )
 Engine::State
 PhononEngine::state() const
 {
-    if(m_mediaObject);
-        return PhononEngine::convertState(m_mediaObject->state());
+    if( m_mediaObject );
+        return convertState( m_mediaObject->state() );
+
     return Engine::Empty;
 }
 
@@ -210,3 +210,5 @@ PhononEngine::canDecode( const KUrl &url ) const
 }
 
 //TODO: Configuration?
+
+#include "phonon-engine.moc"
