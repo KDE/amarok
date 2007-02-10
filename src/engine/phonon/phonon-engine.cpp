@@ -151,7 +151,7 @@ PhononEngine::unpause()
 {
     if( m_mediaObject )
     {
-        m_mediaObject->pause();
+        m_mediaObject->play();
         emit stateChanged( Engine::Playing );
     }
 }
@@ -205,7 +205,7 @@ void
 PhononEngine::seek( uint ms )
 {
     if( m_mediaObject && ms >=0 )
-        m_mediaObject->seek(ms);
+        m_mediaObject->seek( ms );
 }
 
 void
