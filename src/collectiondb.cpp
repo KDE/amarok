@@ -8043,29 +8043,25 @@ QueryBuilder::cleanURL( QStringList result )
 {
     //this method replaces the fields for relative path and devive/media id with a
     //single field containing the absolute path for each row
-    //TODO Max improve this code
     int count = 1;
-    for( QStringList::Iterator it = result.begin(), end = result.end(); it != end; )
+    for( QMutableStringListIterator iter( result ); iter.hasNext(); )
     {
         QString rpath;
         if ( (count % (m_returnValues + 1)) + 1== m_deviceidPos )
         {
             //this block is reached when the iterator points at the relative path
             //deviceid is next
-            QString rpath = *it;
-            int deviceid = (*(++it)).toInt();
+            QString rpath = iter.next();
+            int deviceid = iter.peekNext().toInt();
             QString abspath = MountPointManager::instance()->getAbsolutePath( deviceid, rpath );
-            it--;
-            it = result.erase(it);
-            it = result.insert( it, abspath );
-            //result.insert( it, abspath );     //worked in qt3, crashes in qt4
-            it++;       //workaround for a bug (imo) in qt. after insert(it, abspath) it points AT the inserted item, not at the one after it!
-            it = result.erase( it );
+            iter.setValue( abspath );
+            iter.next();
+            iter.remove();
             //we advanced the iterator over two fields in this iteration
             ++count;
         }
         else
-            ++it;
+            iter.next();
         ++count;
     }
     return result;
