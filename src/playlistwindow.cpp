@@ -187,13 +187,6 @@ PlaylistWindow::PlaylistWindow()
     ac->addAction( "play_audiocd", acd );
     connect(acd, SIGNAL(triggered(bool)), SLOT(playAudioCD()));
 
-    KAction *playPause = new KAction( this );
-    playPause->setText( i18n( "&Play/Pause" ) );
-    playPause->setIcon( KIcon( Amarok::icon( "play" ) ) );
-    ac->addAction( "play_pause", playPause );
-    playPause->setShortcut( Qt::Key_Space );
-    connect( playPause, SIGNAL(triggered(bool)), SLOT(playPause()));
-
     KAction *script = new KAction( this );
     script->setText( i18n("Script Manager") );
     script->setIcon( KIcon(Amarok::icon( "scripts" )) );
