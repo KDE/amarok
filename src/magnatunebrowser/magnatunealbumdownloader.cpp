@@ -43,13 +43,17 @@ void MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo * info )
     m_currentAlbumId = info->getAlbumId();
 
     KUrl downloadUrl = info->getCompleteDownloadUrl();
+    m_currentAlbumUnpackLocation = info->getUnpackLocation();
+    debug() << "Download: " << downloadUrl.url() << " to: " << m_currentAlbumUnpackLocation << endl;
+   
+
     m_currentAlbumFileName = downloadUrl.fileName( false );
 
-    m_currentAlbumUnpackLocation = info->getUnpackLocation();
+   
 
 
 
-    debug() << "Download: " << downloadUrl.url() << " to: " << m_currentAlbumUnpackLocation << endl;
+    
     debug() << "Using temporary location: " << m_tempDir.name() + m_currentAlbumFileName << endl;
 
     m_albumDownloadJob = KIO::file_copy( downloadUrl, KUrl( m_tempDir.name() + m_currentAlbumFileName ), -1, true, false, false );

@@ -119,12 +119,12 @@ void MagnatunePurchaseHandler::processPayment( QString ccNumber, QString expYear
     //FIXME:
     //Amarok::StatusBar::instance() ->newProgressOperation( m_resultDownloadJob ).setDescription( i18n( "Processing Payment" ) );
 
-    connect( m_resultDownloadJob, SIGNAL( result( KIO::Job* ) ), SLOT( xmlDownloadComplete( KIO::Job* ) ) );
+    connect( m_resultDownloadJob, SIGNAL( result( KJob* ) ), SLOT( xmlDownloadComplete( KJob* ) ) );
 
 
 }
 
-void MagnatunePurchaseHandler::xmlDownloadComplete( KIO::Job * downloadJob )
+void MagnatunePurchaseHandler::xmlDownloadComplete( KJob * downloadJob )
 {
 
     debug() << "xml download complete" << endl;
