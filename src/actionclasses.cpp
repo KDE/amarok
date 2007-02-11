@@ -608,7 +608,7 @@ StopAction::StopAction( KActionCollection *ac )
 {
     setText(i18n( "Stop" ));
     setIcon(KIcon(Amarok::icon( "stop" )));
-    //EngineController::instance(), SLOT( stop() )
+    connect( this, SIGNAL( triggered() ), EngineController::instance(), SLOT( stop() ) );
     ac->addAction("stop", this);
 }
 
