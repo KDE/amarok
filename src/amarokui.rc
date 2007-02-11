@@ -1,6 +1,7 @@
 <!DOCTYPE kpartgui>
 <kpartgui name="amarok" version="17">
-<ToolBar name="mainToolBar"><Text>Playlist Toolbar</Text>
+<!--<ToolBar name="mainToolBar" position="left">
+<Text>Playlist Toolbar</Text>
 
  <Action name="prev" />
  <Action name="play_pause" />
@@ -16,5 +17,5 @@
  <Action name="toolbar_volume" />
 
 </ToolBar>
-
+-->
 </kpartgui>

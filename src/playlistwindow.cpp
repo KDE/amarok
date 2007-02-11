@@ -698,7 +698,14 @@ void PlaylistWindow::createGUI()
          << "toolbutton_amarok_menu";
 
     m_toolbar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
-
+    m_toolbar->addAction( actionCollection()->action("prev") );
+    m_toolbar->addAction( actionCollection()->action("play_pause") );
+    m_toolbar->addAction( actionCollection()->action("stop") );
+    m_toolbar->addAction( actionCollection()->action("next") );
+    m_toolbar->addSeparator();
+    m_toolbar->addAction( actionCollection()->action("toolbar_analyzer") );
+    m_toolbar->addSeparator();
+    m_toolbar->addAction( actionCollection()->action("toolbar_volume") );
     const QStringList::ConstIterator end  = list.constEnd();
     const QStringList::ConstIterator last = list.fromLast();
     for( QStringList::ConstIterator it = list.constBegin(); it != end; ++it )
