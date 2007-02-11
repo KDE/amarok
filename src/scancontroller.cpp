@@ -426,7 +426,6 @@ ScanController::startElement( const QString&, const QString& localName, const QS
     // compilation   Folder to check for compilation
     // filesize      Size of the track in bytes
 
-
     if( localName == "dud" || localName == "tags" || localName == "playlist" ) {
         incrementProgress();
     }
@@ -498,10 +497,11 @@ ScanController::startElement( const QString&, const QString& localName, const QS
 
     else if( localName == "image" ) {
         // Deserialize CoverBundle list
-        QStringList list = QStringList::split( "AMAROK_MAGIC", attrs.value( "list" ), true );
+        QString data = attrs.value( "list" );
+        QStringList list = data.split( "AMAROK_MAGIC" );
         Q3ValueList< QPair<QString, QString> > covers;
 
-        for( uint i = 0; i < list.count(); ) {
+        for( uint i = 0; i + 1 < list.count(); ) {
             covers += qMakePair( list[i], list[i + 1] );
             i += 2;
         }
