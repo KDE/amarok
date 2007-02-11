@@ -275,7 +275,7 @@ PlaylistWindow::PlaylistWindow()
     previous->setIcon( KIcon(Amarok::icon( "back" )) );
     previous->setText( i18n( "Previous Track" ) );
     ac->addAction( "prev", previous );
-    connect( previous, SIGNAL(triggered(bool)), SLOT( previous() ) );
+    connect( previous, SIGNAL(triggered(bool)), ec, SLOT( previous() ) );
 
     KAction *play = new KAction( this );
     play->setIcon( KIcon(Amarok::icon( "play" )) );
@@ -293,7 +293,7 @@ PlaylistWindow::PlaylistWindow()
     next->setIcon( KIcon(Amarok::icon( "next" )) );
     next->setText( i18n( "Next Track" ) );
     ac->addAction( "next", next );
-    connect( next, SIGNAL(triggered(bool)), SLOT( next() ) );
+    connect( next, SIGNAL(triggered(bool)), ec, SLOT( next() ) );
 
 //     KAction *toggleFocus = new KAction( i18n( "Toggle Focus" ), "reload", Qt::ControlModifier + Qt::Key_Tab, this, SLOT( slotToggleFocus() ), ac, "toggle_focus" );
     KAction *toggleFocus = new KAction(i18n( "Toggle Focus" ), ac);
