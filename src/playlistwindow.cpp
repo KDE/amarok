@@ -131,9 +131,7 @@ PlaylistWindow::PlaylistWindow()
 
     KStandardAction::configureToolbars( kapp, SLOT( slotConfigToolBars() ), ac );
     KStandardAction::keyBindings( kapp, SLOT( slotConfigShortcuts() ), ac );
-    //KStandardAction::keyBindings( kapp, SLOT( slotConfigGlobalShortcuts() ), ac);
     KStandardAction::preferences( kapp, SLOT( slotConfigAmarok() ), ac );
-//    ac->action("options_configure_globals")->setIcon( KIcon( Amarok::icon( "configure" ) ) );
     ac->action(KStandardAction::name(KStandardAction::KeyBindings))->setIcon( KIcon( Amarok::icon( "configure" ) ) );
     ac->action(KStandardAction::name(KStandardAction::ConfigureToolbars))->setIcon( KIcon( Amarok::icon( "configure" ) ) );
     ac->action(KStandardAction::name(KStandardAction::Preferences))->setIcon( KIcon( Amarok::icon( "configure" ) ) );

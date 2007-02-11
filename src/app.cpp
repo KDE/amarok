@@ -1065,11 +1065,6 @@ void App::slotConfigShortcuts()
     KKeyDialog::configure( Amarok::actionCollection(), KKeyChooser::LetterShortcutsAllowed, m_pPlaylistWindow );
 }
 
-void App::slotConfigGlobalShortcuts()
-{
-    //FIXME: Remove this. In KDE4 there is only one dialog for local and global shortcuts.
-}
-
 void App::slotConfigToolBars()
 {
     PlaylistWindow* const pw = playlistWindow();

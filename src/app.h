@@ -82,7 +82,6 @@ class AMAROK_EXPORT App : public KApplication, public EngineObserver
         void applySettings( bool firstTime = false );
         void slotConfigAmarok( const Q3CString& page = Q3CString() );
         void slotConfigShortcuts();
-        void slotConfigGlobalShortcuts();
         void slotConfigToolBars();
         void slotConfigEqualizer();
         void setUseScores( bool use );
