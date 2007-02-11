@@ -1,7 +1,5 @@
 
-add_subdirectory( amarok_live )
 add_subdirectory( common )
-add_subdirectory( lyrics_astraweb )
 add_subdirectory( lyrics_lyrc )
 add_subdirectory( playlist2html )
 add_subdirectory( ruby_debug )
