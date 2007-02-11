@@ -954,7 +954,7 @@ CoverViewItem::CoverViewItem( Q3IconView *parent, Q3IconViewItem *after, const Q
     , m_artist( artist )
     , m_album( album )
     , m_coverImagePath( CollectionDB::instance()->albumImage( m_artist, m_album, false, 0, &m_embedded ) )
-    , m_coverPixmap( 0 )
+    , m_coverPixmap( )
 {
     setDragEnabled( true );
     setDropEnabled( true );
