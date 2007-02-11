@@ -3823,15 +3823,18 @@ CollectionDB::setSongRating( const QString &url, int rating, bool toggleHalf )
     }
 
     bool ok = true;
-    int prev = values[4].toInt( &ok );
-    if( ok && toggleHalf && prev == rating )
+    if ( !values.isEmpty() )
     {
-        if( rating == 1 )
-            rating = 0;
-        else if( rating % 2 ) //.5
-            rating++;
-        else
-            rating--;
+        int prev = values[4].toInt( &ok );
+        if( ok && toggleHalf && prev == rating )
+        {
+            if( rating == 1 )
+                rating = 0;
+            else if( rating % 2 ) //.5
+                rating++;
+            else
+                rating--;
+        }
     }
 
     // check boundaries
