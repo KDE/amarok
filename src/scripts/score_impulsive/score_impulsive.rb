@@ -14,7 +14,7 @@ loop do
     case args[0]
         when "configure"
             msg  = 'This script does not require any configuration.'
-            `dcop amarok playlist popupMessage "#{msg}"`
+            `qdbus org.kde.amarok /PlayerList popupMessage "#{msg}"`
 
         when "requestNewScore"
             url = args[1]
@@ -26,6 +26,6 @@ loop do
 
             newscore = ( ( prevscore + percentage ) / 2 ).to_i
 
-            system( "dcop", "amarok", "player", "setScoreByPath", URI::decode( url ), newscore.to_s )
+            system( "qdbus", "org.kde.amarok", "/Player", "setScoreByPath", URI::decode( url ), newscore.to_s )
     end
 end

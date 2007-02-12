@@ -16,22 +16,22 @@ EXEC_PATH = None
 # (since it does currently not work on my computer :)
 #
 def _initDcopCallPlayer(call):
-    return os.popen("dcop amarok player %s"%call)
+    return os.popen("qdbus org.kde.amarok  /Player %s"%call)
 
 def _dcopCallPlayer(call):
     return _initDcopCallPlayer(call)
 
 def _initDcopCallPlayerArg(call, val):
-    return os.popen("dcop amarok player %s %s"%(call,val))
+    return os.popen("qdbus org.kde.amarok  /Player %s %s"%(call,val))
 
 def _dcopCallPlayerArg(call, val):
     return _initDcopCallPlayerArg(call, val).read()
 
 def _initDcopCallPlaylist(call):
-    return os.popen("dcop amarok playlist %s"%call)
+    return os.popen("qdbus org.kde.amarok /PlayerList %s"%call)
 
 def _initDcopCallPlaylistArg(call, val):
-    return os.popen("dcop amarok playlist %s %s"%(call,val))
+    return os.popen("qdbus org.kde.amarok /PlayerList %s %s"%(call,val))
 
 def _dcopCallPlaylistArg(call, val):
     return _initDcopCallPlaylistArg(call, val).read()
