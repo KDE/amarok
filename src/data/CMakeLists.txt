@@ -8,5 +8,6 @@ install(
         grid.png
         wirl1.png
         wirl2.png
+	magnatune_logo.png
         DESTINATION ${DATA_INSTALL_DIR}/amarok/data
 )
