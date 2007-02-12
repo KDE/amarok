@@ -86,14 +86,14 @@ namespace Amarok
     {
         public:
             AnalyzerAction( KActionCollection* );
-            virtual int plug( QWidget *, int index = -1 );
+            virtual QWidget* createWidget( QWidget *);
     };
 
     class VolumeAction : public KAction, public EngineObserver
     {
         public:
             VolumeAction( KActionCollection* );
-            virtual int plug( QWidget *, int index = -1 );
+            virtual QWidget* createWidget( QWidget * );
         private:
             void engineVolumeChanged( int value );
             QPointer<Amarok::VolumeSlider> m_slider;

@@ -276,8 +276,8 @@ AnalyzerAction::AnalyzerAction( KActionCollection *ac )
     setShortcutConfigurable( false );
 }
 
-int
-AnalyzerAction::plug( QWidget *w, int index )
+QWidget*
+AnalyzerAction::createWidget( QWidget *w )
 {
     //NOTE the analyzer will be deleted when the toolbar is deleted or cleared()
     //we are not designed for unplugging() yet so there would be a leak if that happens
@@ -290,7 +290,7 @@ AnalyzerAction::plug( QWidget *w, int index )
         //const int id = KAction::getToolButtonID();
 
         //addContainer( w, id );
-	w->addAction( this );
+	//w->addAction( this ); //PORTING
         connect( w, SIGNAL( destroyed() ), SLOT( slotDestroyed() ) );
 
 	QWidget *container = new AnalyzerContainer( w );
@@ -298,9 +298,9 @@ AnalyzerAction::plug( QWidget *w, int index )
         //bar->insertWidget( id, 0, container, index );
         //bar->setItemAutoSized( id, true );
 
-        return associatedWidgets().count() - 1;
+        return container;
     }
-    else return -1;
+    else return 0;
 }
 
 
@@ -448,8 +448,8 @@ VolumeAction::VolumeAction( KActionCollection *ac )
     ac->addAction("toolbar_volume", this);
 }
 
-int
-VolumeAction::plug( QWidget *w, int index )
+QWidget*
+VolumeAction::createWidget( QWidget *w )
 {
     //NOTE we only support one plugging currently
 
@@ -466,10 +466,7 @@ VolumeAction::plug( QWidget *w, int index )
     connect( m_slider, SIGNAL(sliderMoved( int )), ec, SLOT(setVolume( int )) );
     connect( m_slider, SIGNAL(sliderReleased( int )), ec, SLOT(setVolume( int )) );
 
-     // Porting
-    //static_cast<KToolBar*>(w)->insertWidget( KAction::getToolButtonID(), 0, m_slider, index );
-
-    return 0;
+    return m_slider;
 }
 
 void
@@ -538,8 +535,8 @@ BurnMenuAction::BurnMenuAction( KActionCollection *ac )
     ac->addAction("burn_menu", this);
 }
 
-int
-BurnMenuAction::plug( QWidget *w, int index )
+QWidget*
+BurnMenuAction::createWidget( QWidget *w )
 {
     KToolBar *bar = dynamic_cast<KToolBar*>(w);
 
