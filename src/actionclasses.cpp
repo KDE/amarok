@@ -555,9 +555,11 @@ BurnMenuAction::createWidget( QWidget *w )
         //button->setName( "toolbutton_burn_menu" );
         //button->setIcon( "k3b" );
 
-        return associatedWidgets().count() - 1;
+        //return associatedWidgets().count() - 1;
+        return 0;
     }
-    else return -1;
+    //else return -1;
+    else return 0;
 }
 
 BurnMenu::BurnMenu()

@@ -180,7 +180,7 @@ namespace Amarok
     {
         public:
             BurnMenuAction( KActionCollection* );
-            virtual int plug( QWidget*, int index = -1 );
+            virtual QWidget* createWidget( QWidget* );
     };
 
     class StopMenu : public KMenu
