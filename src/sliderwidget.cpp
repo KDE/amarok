@@ -492,19 +492,28 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
         buf.fill( parentWidget(), pos() );
     else {
         buf.fill( colorGroup().background() );
-//         QPainter p( &buf );
-//         p.fillRect( rect(), qApp->palette().brush( QPalette::Active, QColorGroup::Background ) );
+//        QPainter p( &buf );
+ //       p.fillRect( rect(), qApp->palette().brush( QPalette::Active, QColorGroup::Background ) );
     }
 
     const int padding = 7;
     const int offset = int( double( ( width() - 2 * padding ) * value() ) / maxValue() );
-
-    bitBlt( &buf, 0, 0, &m_pixmapGradient, 0, 0, offset + padding );
-    bitBlt( &buf, 0, 0, &m_pixmapInset );
-    bitBlt( &buf, offset - m_handlePixmaps[0].width() / 2 + padding, 0, &m_handlePixmaps[m_animCount] );
+    QPainter p( &buf );
+    {   //bitBlt( &buf, 0, 0, &m_pixmapGradient, 0, 0, offset + padding );
+        const QRectF bounds( 0, 0, offset + padding, m_pixmapGradient.height() );
+        p.drawPixmap( bounds, m_pixmapGradient, bounds );
+    }
+    {  //bitBlt( &buf, 0, 0, &m_pixmapInset );
+        const QRectF bounds( 0, 0, m_pixmapInset.width(), m_pixmapInset.height() );
+        p.drawPixmap( bounds, m_pixmapInset, bounds );
+    }
+    { //bitBlt( &buf, offset - m_handlePixmaps[0].width() / 2 + padding, 0, &m_handlePixmaps[m_animCount] );
+        const QRectF targetBounds( offset - m_handlePixmaps[0].width() / 2 + padding, 0, m_handlePixmaps[m_animCount].width(), m_handlePixmaps[m_animCount].height() );
+        const QRectF srcBounds( 0, 0, m_handlePixmaps[m_animCount].width(), m_handlePixmaps[m_animCount].height() );
+        p.drawPixmap( targetBounds, m_handlePixmaps[m_animCount], srcBounds );
+    }
 
     // Draw percentage number
-    QPainter p( &buf );
     p.setPen( palette().color( QPalette::Disabled, QColorGroup::Text ).dark() );
     QFont font;
     font.setPixelSize( 9 );
@@ -513,7 +522,11 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
     p.drawText( rect, Qt::AlignRight | Qt::AlignVCenter, QString::number( value() ) + '%' );
     p.end();
 
-    bitBlt( this, 0, 0, &buf );
+    { //bitBlt( this, 0, 0, &buf );
+        QPainter result( this );
+        const QRectF bounds( 0, 0, buf.width(), buf.height() );
+        result.drawPixmap( bounds, buf, bounds );
+    }
 }
 
 void
