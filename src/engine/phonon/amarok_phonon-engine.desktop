@@ -2,6 +2,10 @@
 Encoding=UTF-8
 Type=Service
 Name=Phonon Engine
+Name[da]=Phonon-motor
+Name[el]=Μηχανή Phonon
+Name[pt]=Motor Phonon
+Name[pt_BR]=Motor Phonon
 X-KDE-Library=libamarok_phonon-engine
 Comment=Plugin for Amarok
 Comment[af]=Inprop module vir Amarok
