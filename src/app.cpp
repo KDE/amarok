@@ -188,7 +188,7 @@ App::App()
     appleEventProcessorUPP = AEEventHandlerUPP(appleEventProcessor);
     AEInstallEventHandler(kCoreEventClass, kAEReopenApplication, appleEventProcessorUPP, (long)this, true);
 #endif
-
+    QDBusConnection::sessionBus().registerService("org.kde.amarok");
     QTimer::singleShot( 0, this, SLOT( continueInit() ) );
 }
 
