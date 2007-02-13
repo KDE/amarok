@@ -122,9 +122,6 @@
       <header>k3listbox.h</header>
     </customwidget>
   </customwidgets>
-  <includes>
-    <include location="local" >klistbox.h</include>
-  </includes>
   <connections>
     <connection>
       <sender>ddShouldDelete</sender>
