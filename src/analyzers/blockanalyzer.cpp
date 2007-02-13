@@ -67,7 +67,6 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
 
    QWidget::resizeEvent( e );
 
-   canvas()->resize( size() );
    background()->resize( size() );
 
    const uint oldRows = m_rows;

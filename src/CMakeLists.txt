@@ -136,14 +136,14 @@ kde4_add_ui3_files(libmagnatunebrowser_SRCS
 set(libanalyzers_SRCS
      ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/analyzerbase.cpp
      ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/analyzerfactory.cpp
-     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/baranalyzer.cpp
+     #${CMAKE_SOURCE_DIR}/amarok/src/analyzers/baranalyzer.cpp
      ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/blockanalyzer.cpp
      ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/glanalyzer.cpp
      ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/glanalyzer2.cpp
      ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/glanalyzer3.cpp
-     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/sonogram.cpp
-     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/turbine.cpp
-     ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/boomanalyzer.cpp
+     #${CMAKE_SOURCE_DIR}/amarok/src/analyzers/sonogram.cpp
+     #${CMAKE_SOURCE_DIR}/amarok/src/analyzers/turbine.cpp
+     #${CMAKE_SOURCE_DIR}/amarok/src/analyzers/boomanalyzer.cpp
  )
 
 set(libstatusbar_SRCS

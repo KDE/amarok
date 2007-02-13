@@ -85,7 +85,6 @@ class Base2D : public Base<QWidget>
 Q_OBJECT
 public:
     const QPixmap *background() const { return &m_background; }
-    const QPixmap *canvas()     const { return &m_canvas; }
 
 private slots:
     void draw() { drawFrame(); }
@@ -96,18 +95,13 @@ protected:
     virtual void init() {}
 
     QPixmap *background() { return &m_background; }
-    QPixmap     *canvas() { return &m_canvas; }
-    void    eraseCanvas() { bitBlt( canvas(), 0, 0, background() ); }
 
-    void paintEvent( QPaintEvent* ) { if( !m_canvas.isNull() ) bitBlt( this, 0, 0, canvas() ); }
     void resizeEvent( QResizeEvent* );
-    void paletteChange( const class QPalette& );
 
     void polish();
 
 private:
     QPixmap m_background;
-    QPixmap m_canvas;
 };
 
 
