@@ -126,10 +126,12 @@ OSDWidget::show() //virtual
 
     if( newGeometry.width() > 0 && newGeometry.height() > 0 )
     {
-        render( M, newGeometry.size() );
+        m_m = M;
+        m_size = newGeometry.size();
+        //render( M, newGeometry.size() );
         setGeometry( newGeometry );
         QWidget::show();
-        bitBlt( this, 0, 0, &m_buffer );
+//        bitBlt( this, 0, 0, &m_buffer );
 
         if( m_duration ) //duration 0 -> stay forever
             m_timer->start( m_duration, true ); //calls hide()
@@ -244,9 +246,12 @@ OSDWidget::determineMetrics( const uint M )
 }
 
 void
-OSDWidget::render( const uint M, const QSize &size )
+OSDWidget::paintEvent( QPaintEvent* )
 {
     /// render with margin/spacing @param M and @param size
+
+    uint M = m_m;
+    QSize size = m_size;
 
     QPoint point;
     QRect rect( point, size );
@@ -441,6 +446,8 @@ OSDWidget::render( const uint M, const QSize &size )
     p.setFont( font() );
     p.drawText( rect, align, m_text );
     p.end();
+
+    bitBlt( this, 0, 0, &m_buffer );
 }
 
 bool

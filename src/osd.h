@@ -72,10 +72,8 @@ class OSDWidget : public QWidget
         /** determine new size and position */
         QRect determineMetrics( const uint marginMetric );
 
-        /** render OSD */
-        void render( const uint marginMetric, const QSize &size );
-
         /** reimplemented */
+        virtual void paintEvent( QPaintEvent* );
         virtual void mousePressEvent( QMouseEvent* );
         virtual bool event( QEvent* );
 
@@ -84,6 +82,8 @@ class OSDWidget : public QWidget
         /** distance from screen edge */
         static const int MARGIN = 15;
 
+        uint        m_m;
+        QSize       m_size;
         int         m_duration;
         QTimer     *m_timer;
         Alignment   m_alignment;
