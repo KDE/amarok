@@ -357,7 +357,7 @@ ScriptManager::requestNewScore( const QString &url, double prevscore, int playco
 void
 ScriptManager::findScripts() //SLOT
 {
-    const QStringList allFiles = KGlobal::dirs()->findAllResources( "data", "amarok/scripts/*", true );
+    const QStringList allFiles = KGlobal::dirs()->findAllResources( "data", "amarok/scripts/*",KStandardDirs::Recursive );
 
     // Add found scripts to listview:
     {
