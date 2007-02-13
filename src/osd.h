@@ -98,7 +98,6 @@ class OSDWidget : public QWidget
         // need a whole MetaBundle to draw the moodbar on the fly
         MetaBundle  m_moodbarBundle;
         QPixmap     m_scaledCover;
-        QPixmap     m_buffer;
 };
 
 

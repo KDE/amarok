@@ -248,6 +248,8 @@ OSDWidget::determineMetrics( const uint M )
 void
 OSDWidget::paintEvent( QPaintEvent* )
 {
+    DEBUG_BLOCK
+
     /// render with margin/spacing @param M and @param size
 
     uint M = m_m;
@@ -281,8 +283,7 @@ OSDWidget::paintEvent( QPaintEvent* )
 
     int align = Qt::AlignCenter | Qt::WordBreak;
 
-    m_buffer.resize( rect.size() );
-    QPainter p( &m_buffer );
+    QPainter p( this );
 
     p.fillRect( rect, backgroundColor() );
 
@@ -445,9 +446,6 @@ OSDWidget::paintEvent( QPaintEvent* )
     p.setPen( foregroundColor() );
     p.setFont( font() );
     p.drawText( rect, align, m_text );
-    p.end();
-
-    bitBlt( this, 0, 0, &m_buffer );
 }
 
 bool
@@ -459,9 +457,7 @@ OSDWidget::event( QEvent *e )
         if( !AmarokConfig::osdUseCustomColors() )
             unsetColors(); //use new palette's colours
         return true;
-    case QEvent::Paint:
-        bitBlt( this, 0, 0, &m_buffer );
-        return true;
+
     default:
         return QWidget::event( e );
     }
