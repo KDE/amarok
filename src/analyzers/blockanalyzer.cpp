@@ -157,8 +157,10 @@ BlockAnalyzer::paintEvent( QPaintEvent* )
 
    Analyzer::interpolate( s, m_scope );
 
+   QPainter p( this );
+ 
    // Paint the background
-   bitBlt( this, 0, 0, background() );
+   p.drawPixmap( 0, 0, *background() );
 
    for( uint y, x = 0; x < m_scope.size(); ++x )
    {
@@ -183,18 +185,18 @@ BlockAnalyzer::paintEvent( QPaintEvent* )
       if( m_fade_intensity[x] > 0 ) {
          const uint offset = --m_fade_intensity[x];
          const uint y = m_y + (m_fade_pos[x] * (HEIGHT+1));
-         bitBlt( this, x*(WIDTH+1), y, &m_fade_bars[offset], 0, 0, WIDTH, height() - y );
+         p.drawPixmap( x*(WIDTH+1), y, m_fade_bars[offset], 0, 0, WIDTH, height() - y );
       }
 
       if( m_fade_intensity[x] == 0 )
          m_fade_pos[x] = m_rows;
 
       //REMEMBER: y is a number from 0 to m_rows, 0 means all blocks are glowing, m_rows means none are
-      bitBlt( this, x*(WIDTH+1), y*(HEIGHT+1) + m_y, bar(), 0, y*(HEIGHT+1) );
+      p.drawPixmap( x*(WIDTH+1), y*(HEIGHT+1) + m_y, *bar(), 0, y*(HEIGHT+1), -1, -1 );
    }
 
    for( uint x = 0; x < m_store.size(); ++x )
-      bitBlt( this, x*(WIDTH+1), int(m_store[x])*(HEIGHT+1) + m_y, &m_topBarPixmap );
+      p.drawPixmap( x*(WIDTH+1), int(m_store[x])*(HEIGHT+1) + m_y, m_topBarPixmap );
 }
 
 
@@ -413,6 +415,8 @@ BlockAnalyzer::paletteChange( const QPalette& ) //virtual
 void
 BlockAnalyzer::drawBackground()
 {
+    DEBUG_BLOCK
+    
     const QColor bg = palette().active().background();
     const QColor bgdark = bg.dark( 112 );
 
