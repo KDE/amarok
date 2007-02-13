@@ -246,7 +246,6 @@ OSDWidget::determineMetrics( const uint M )
 void
 OSDWidget::render( const uint M, const QSize &size )
 {
-#if 0
     /// render with margin/spacing @param M and @param size
 
     QPoint point;
@@ -275,7 +274,7 @@ OSDWidget::render( const uint M, const QSize &size )
         shadowColor = v > 128 ? Qt::black : Qt::white;
     }
 
-    int align = Qt::AlignCenter | WordBreak;
+    int align = Qt::AlignCenter | Qt::WordBreak;
 
     m_buffer.resize( rect.size() );
     QPainter p( &m_buffer );
@@ -442,7 +441,6 @@ OSDWidget::render( const uint M, const QSize &size )
     p.setFont( font() );
     p.drawText( rect, align, m_text );
     p.end();
-#endif
 }
 
 bool
