@@ -180,10 +180,10 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
 
     const uint count = queue.count();
     if( length )
-        menu->addTitle( i18np( "1 Queued Track (%1)", "%n Queued Tracks (%1)", count )
+        menu->addTitle( i18np( "1 Queued Track (%1)", "%1 Queued Tracks (%1)", count )
                            .arg( MetaBundle::prettyLength( length, true ) ) );
     else
-        menu->addTitle( i18np( "1 Queued Track", "%n Queued Tracks", count ) );
+        menu->addTitle( i18np( "1 Queued Track", "%1 Queued Tracks", count ) );
     menu->addAction(Amarok::actionCollection()->action( "queue_manager" ));
 
     menu->insertItem( SmallIconSet( Amarok::icon( "rewind" ) ),
@@ -204,7 +204,7 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
         {
             menus.append( new KMenu );
             menu->insertSeparator();
-            menu->insertItem( i18np( "1 More Track", "%n More Tracks", count - i + 1 ), menus.getLast() );
+            menu->insertItem( i18np( "1 More Track", "%1 More Tracks", count - i + 1 ), menus.getLast() );
             menu = menus.getLast();
         }
     }
@@ -271,7 +271,7 @@ void QueueLabel::showToolTip()
         }
         if( length )
             text += QString("<center>%1</center>")
-                    .arg( i18np( "1 track (%1)", "%n tracks (%1)", count )
+                    .arg( i18np( "1 track (%1)", "%1 tracks (%1)", count )
                           .arg( MetaBundle::prettyLength( length, true ) ) );
     }
 

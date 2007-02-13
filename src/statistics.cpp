@@ -229,14 +229,14 @@ StatisticsList::renderView()
     a = qb.run();
 
     m_trackItem = new StatisticsItem( i18n("Favorite Tracks"), this, 0 );
-    m_trackItem->setSubtext( i18np("%n track", "%n tracks", a[0].toInt()) );
+    m_trackItem->setSubtext( i18np("%1 track", "%1 tracks", a[0].toInt()) );
 
     qb.clear();
     qb.addReturnFunctionValue( QueryBuilder::funcSum, QueryBuilder::tabStats, QueryBuilder::valPlayCounter );
     a = qb.run();
 
     m_mostplayedItem = new StatisticsItem( i18n("Most Played Tracks"), this, m_trackItem );
-    m_mostplayedItem->setSubtext( i18np("%n play", "%n plays", a[0].toInt()) );
+    m_mostplayedItem->setSubtext( i18np("%1 play", "%1 plays", a[0].toInt()) );
 
     qb.clear();
     //qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabArtist, QueryBuilder::valID );
@@ -248,7 +248,7 @@ StatisticsList::renderView()
     a = QStringList( QString::number( qb.run().count() ) );
 
     m_artistItem = new StatisticsItem( i18n("Favorite Artists"), this, m_mostplayedItem );
-    m_artistItem->setSubtext( i18np("%n artist", "%n artists", a[0].toInt()) );
+    m_artistItem->setSubtext( i18np("%1 artist", "%1 artists", a[0].toInt()) );
 
     qb.clear();
     //qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabAlbum, QueryBuilder::valID );
@@ -260,7 +260,7 @@ StatisticsList::renderView()
     a = QStringList( QString::number( qb.run().count() ) );
 
     m_albumItem = new StatisticsItem( i18n("Favorite Albums"), this, m_artistItem );
-    m_albumItem->setSubtext( i18np("%n album", "%n albums", a[0].toInt()) );
+    m_albumItem->setSubtext( i18np("%1 album", "%1 albums", a[0].toInt()) );
 
     qb.clear();
     //qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabGenre, QueryBuilder::valID );
@@ -272,7 +272,7 @@ StatisticsList::renderView()
     a = QStringList(QString::number( qb.run().count() ));
 
     m_genreItem = new StatisticsItem( i18n("Favorite Genres"), this, m_albumItem );
-    m_genreItem->setSubtext( i18np("%n genre", "%n genres", a[0].toInt()) );
+    m_genreItem->setSubtext( i18np("%1 genre", "%1 genres", a[0].toInt()) );
 
     qb.clear();
     qb.addReturnFunctionValue( QueryBuilder::funcMin, QueryBuilder::tabStats, QueryBuilder::valCreateDate );

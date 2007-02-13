@@ -573,7 +573,7 @@ Playlist::insertMedia( KUrl::List list, int options )
             }
         }
         if ( alreadyOnPlaylist )
-            Amarok::StatusBar::instance()->shortMessage( i18np("One track was already in the playlist, so it was not added.", "%n tracks were already in the playlist, so they were not added.", alreadyOnPlaylist ) );
+            Amarok::StatusBar::instance()->shortMessage( i18np("One track was already in the playlist, so it was not added.", "%1 tracks were already in the playlist, so they were not added.", alreadyOnPlaylist ) );
     }
 
     insertMediaInternal( list, after, options );
@@ -3821,7 +3821,7 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
 //     if(itemCount==1)
 //         popup.insertTitle( KStringHandler::rsqueeze( MetaBundle( item ).prettyTitle(), 50 ));
 //     else
-//         popup.insertTitle(i18n("1 Track", "%n Selected Tracks", itemCount));
+//         popup.insertTitle(i18n("1 Track", "%1 Selected Tracks", itemCount));
 
     if( isCurrent && isLastFm )
     {
@@ -3860,7 +3860,7 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
             popup.changeItem( PLAY_NEXT, SmallIconSet( Amarok::icon( "dequeue_track" ) ), i18n("&Dequeue Track") );
     } else {
         if ( queueToggle )
-            popup.changeItem( PLAY_NEXT, i18np( "Toggle &Queue Status (1 track)", "Toggle &Queue Status (%n tracks)", itemCount ) );
+            popup.changeItem( PLAY_NEXT, i18np( "Toggle &Queue Status (1 track)", "Toggle &Queue Status (%1 tracks)", itemCount ) );
         else
             // remember, queueToggled only gets set to false if there are items queued and not queued.
             // so, if queueToggled is false, all items have the same queue status as the first item.
@@ -3907,14 +3907,14 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
     KMenu fileMenu;
     if( CollectionDB::instance()->isDirInCollection( item->url().directory() ) )
     {
-        fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18np("&Organize File...", "&Organize %n Files...", itemCount), ORGANIZE );
+        fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18np("&Organize File...", "&Organize %1 Files...", itemCount), ORGANIZE );
     }
     else
     {
-        fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18np("&Copy Track to Collection...", "&Copy %n Tracks to Collection...", itemCount), COPY_TO_COLLECTION );
-        fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18np("&Move Track to Collection...", "&Move %n Tracks to Collection...", itemCount), MOVE_TO_COLLECTION );
+        fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18np("&Copy Track to Collection...", "&Copy %1 Tracks to Collection...", itemCount), COPY_TO_COLLECTION );
+        fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18np("&Move Track to Collection...", "&Move %1 Tracks to Collection...", itemCount), MOVE_TO_COLLECTION );
     }
-    fileMenu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18np("&Delete File...", "&Delete %n Selected Files...", itemCount ), this, SLOT( deleteSelectedFiles() ), Qt::SHIFT+Qt::Key_Delete, DELETE );
+    fileMenu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18np("&Delete File...", "&Delete %1 Selected Files...", itemCount ), this, SLOT( deleteSelectedFiles() ), Qt::SHIFT+Qt::Key_Delete, DELETE );
     popup.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n("Manage &Files"), &fileMenu, FILE_MENU );
 
     if( itemCount == 1 )
@@ -3932,8 +3932,8 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
 
     popup.insertItem( SmallIconSet( Amarok::icon( "info" ) )
         , item->url().isLocalFile() ?
-              i18np( "Edit Track &Information...",  "Edit &Information for %n Tracks...", itemCount):
-              i18np( "Track &Information...",  "&Information for %n Tracks...", itemCount)
+              i18np( "Edit Track &Information...",  "Edit &Information for %1 Tracks...", itemCount):
+              i18np( "Track &Information...",  "&Information for %1 Tracks...", itemCount)
         , VIEW );
 
     popup.setItemEnabled( EDIT, canRename ); //only enable for columns that have editable tags

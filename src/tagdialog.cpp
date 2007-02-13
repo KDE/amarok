@@ -825,7 +825,7 @@ void
 TagDialog::readMultipleTracks()
 {
 
-    setCaption( KDialog::makeStandardCaption( i18np("1 Track", "Information for %n Tracks", m_urlList.count()) ) );
+    setCaption( KDialog::makeStandardCaption( i18np("1 Track", "Information for %1 Tracks", m_urlList.count()) ) );
 
     //Check which fields are the same for all selected tracks
     const KUrl::List::ConstIterator end = m_urlList.end();
@@ -916,7 +916,7 @@ TagDialog::readMultipleTracks()
 
     m_currentURL = m_urlList.begin();
 
-    trackArtistAlbumLabel2->setText( i18np( "Editing 1 file", "Editing %n files", songCount ) );
+    trackArtistAlbumLabel2->setText( i18np( "Editing 1 file", "Editing %1 files", songCount ) );
 
     const QString body = "<tr><td><nobr>%1:</nobr></td><td><b>%2</b></td></tr>";
     QString statisticsText = "<table>";

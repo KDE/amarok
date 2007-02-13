@@ -1533,8 +1533,8 @@ CollectionView::rmbPressed( Q3ListViewItem* item, const QPoint& point, int ) //S
         menu.insertSeparator();
 
         KMenu fileMenu;
-        fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18np( "&Organize File..." , "&Organize %n Files..." , selection.count() ) , ORGANIZE );
-        fileMenu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18np( "&Delete File..." , "&Delete %n Files..." , selection.count() ) , DELETE );
+        fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18np( "&Organize File..." , "&Organize %1 Files..." , selection.count() ) , ORGANIZE );
+        fileMenu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18np( "&Delete File..." , "&Delete %1 Files..." , selection.count() ) , DELETE );
         menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "Manage &Files" ), &fileMenu, FILE_MENU );
 
         if( (cat == IdAlbum || cat == IdVisYearAlbum) && siblingSelection.count() == 1 ) // cover fetch isn't multiselection capable
@@ -1558,7 +1558,7 @@ CollectionView::rmbPressed( Q3ListViewItem* item, const QPoint& point, int ) //S
         menu.insertSeparator();
 
         menu.insertItem( SmallIconSet( Amarok::icon( "info" ) )
-            , i18np( "Edit Track &Information...",  "Edit &Information for %n Tracks...", selection.count())
+            , i18np( "Edit Track &Information...",  "Edit &Information for %1 Tracks...", selection.count())
             , this, SLOT( showTrackInfo() ), 0, INFO );
 
         switch( menu.exec( point ) )
@@ -1928,7 +1928,7 @@ CollectionView::organizeFiles( const KUrl::List &urls, const QString &caption, b
         if( !m_organizingFileCancelled && skipped.count() > 0 )
         {
             QString longMsg = i18np( "The following file could not be organized: ",
-                    "The following %n files could not be organized: ", skipped.count() );
+                    "The following %1 files could not be organized: ", skipped.count() );
             bool first = true;
             for( KUrl::List::iterator it = skipped.begin();
                     it != skipped.end();
@@ -1943,7 +1943,7 @@ CollectionView::organizeFiles( const KUrl::List &urls, const QString &caption, b
             longMsg += i18n( "." );
 
             QString shortMsg = i18np( "Sorry, one file could not be organized.",
-                    "Sorry, %n files could not be organized.", skipped.count() );
+                    "Sorry, %1 files could not be organized.", skipped.count() );
             Amarok::StatusBar::instance()->shortLongMessage( shortMsg, longMsg, KDE::StatusBar::Sorry );
         }
         else if ( m_organizingFileCancelled )
@@ -2010,14 +2010,14 @@ CollectionView::contentsDropEvent( QDropEvent *e )
         QString msg;
         if( dropped > 0 )
             msg += i18np( "One file already in collection",
-                    "%n files already in collection", dropped );
+                    "%1 files already in collection", dropped );
         if( invalid > 0 )
             if( msg.isEmpty() )
                 msg += i18np( "One dropped file is invalid",
-                        "%n dropped files are invalid", invalid );
+                        "%1 dropped files are invalid", invalid );
             else
                 msg += i18np( ", one dropped file is invalid",
-                        ", %n dropped files are invalid", invalid );
+                        ", %1 dropped files are invalid", invalid );
         if( !msg.isEmpty() )
             Amarok::StatusBar::instance()->shortMessage( msg );
         if( cleanList.count() > 0 )
@@ -2972,22 +2972,22 @@ CollectionView::allForCategory( const int cat, const int num ) const
         // The singular forms shouldn't get used
         case IdAlbum:
         case IdVisYearAlbum:
-            return i18np( "Album", "All %n Albums", num );
+            return i18np( "Album", "All %1 Albums", num );
             break;
         case IdArtist:
-            return i18np( "Artist", "All %n Artists", num );
+            return i18np( "Artist", "All %1 Artists", num );
             break;
         case IdComposer:
-            return i18np( "Composer", "All %n Composers", num );
+            return i18np( "Composer", "All %1 Composers", num );
             break;
         case IdGenre:
-            return i18np( "Genre", "All %n Genres", num );
+            return i18np( "Genre", "All %1 Genres", num );
             break;
         case IdYear:
-            return i18np( "Year", "All %n Years", num );
+            return i18np( "Year", "All %1 Years", num );
             break;
         case IdLabel:
-            return i18np( "Label", "All %n Labels", num );
+            return i18np( "Label", "All %1 Labels", num );
             break;
     }
 

@@ -1008,7 +1008,7 @@ void ScrobblerSubmitter::announceSubmit( SubmitItem *item, int tracks, bool succ
 
             _long = "<p>";
             _long  = i18np( "'%1' and one other track submitted",
-                           "'%1' and %n other tracks submitted", tracks-1 )
+                           "'%1' and %1 other tracks submitted", tracks-1 )
                             .arg( item->title() );
         }
     }
@@ -1021,7 +1021,7 @@ void ScrobblerSubmitter::announceSubmit( SubmitItem *item, int tracks, bool succ
             _short = i18n( "Failed to submit several tracks to last.fm" );
             _long  = "<p>";
             _long  = i18np( "Failed to submit '%1' and one other track",
-                           "Failed to submit '%1' and %n other tracks", tracks-1 )
+                           "Failed to submit '%1' and %1 other tracks", tracks-1 )
                       .arg( item->title() );
         }
     }
@@ -1029,7 +1029,7 @@ void ScrobblerSubmitter::announceSubmit( SubmitItem *item, int tracks, bool succ
     if ( m_submitQueue.count() + m_fakeQueue.count() > 0 )
     {
         _long += "<p>";
-        _long += i18np( "One track still in queue", "%n tracks still in queue",
+        _long += i18np( "One track still in queue", "%1 tracks still in queue",
                 m_submitQueue.count() + m_fakeQueue.count() );
     }
 

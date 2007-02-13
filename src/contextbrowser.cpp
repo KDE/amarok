@@ -110,7 +110,7 @@ namespace Amarok
         //TODO "last week" = maybe within 7 days, but prolly before last sunday
 
         if( datediff >= 7 )  // return difference in weeks
-            return i18np( "One week ago", "%n weeks ago", (datediff+3)/7 );
+            return i18np( "One week ago", "%1 weeks ago", (datediff+3)/7 );
 
         if( datediff == -1 )
             return i18n( "Tomorrow" );
@@ -120,16 +120,16 @@ namespace Amarok
         if( timediff >= 24*60*60 /*24 hours*/ )  // return difference in days
             return datediff == 1 ?
                     i18n( "Yesterday" ) :
-                    i18np( "One day ago", "%n days ago", (timediff+12*60*60)/(24*60*60) );
+                    i18np( "One day ago", "%1 days ago", (timediff+12*60*60)/(24*60*60) );
 
         if( timediff >= 90*60 /*90 minutes*/ )  // return difference in hours
-            return i18np( "One hour ago", "%n hours ago", (timediff+30*60)/(60*60) );
+            return i18np( "One hour ago", "%1 hours ago", (timediff+30*60)/(60*60) );
 
         //TODO are we too specific here? Be more fuzzy? ie, use units of 5 minutes, or "Recently"
 
         if( timediff >= 0 )  // return difference in minutes
             return timediff/60 ?
-                    i18np( "One minute ago", "%n minutes ago", (timediff+30)/60 ) :
+                    i18np( "One minute ago", "%1 minutes ago", (timediff+30)/60 ) :
                     i18n( "Within the last minute" );
 
         return i18n( "The future" );
@@ -1409,10 +1409,10 @@ void CurrentTrackJob::showHome()
             .args( QStringList()
                     << escapeHTMLAttr( "externalurl://amarok.kde.org" )
                     << escapeHTMLAttr( KIconLoader::global()->iconPath( "amarok", -K3Icon::SizeEnormous ) )
-                    << i18np( "1 Track",  "%n Tracks",  songCount.toInt() )
-                    << i18np( "1 Artist", "%n Artists", artistCount.toInt() )
-                    << i18np( "1 Album",  "%n Albums",  albumCount.toInt() )
-                    << i18np( "1 Genre",  "%n Genres",  genreCount.toInt() )
+                    << i18np( "1 Track",  "%1 Tracks",  songCount.toInt() )
+                    << i18np( "1 Artist", "%1 Artists", artistCount.toInt() )
+                    << i18np( "1 Album",  "%1 Albums",  albumCount.toInt() )
+                    << i18np( "1 Genre",  "%1 Genres",  genreCount.toInt() )
                     << i18n( "%1 Play-time", playTime  ) ) );
 
     m_shownAlbums = showHomeByAlbums();
@@ -1517,7 +1517,7 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
                     "<span class='album-length'>%3</span>\n"
                     "</td>\n")
                 .args( QStringList()
-                    << i18np( "Single", "%n Tracks",  albumValues.count() / qb.countReturnValues() )
+                    << i18np( "Single", "%1 Tracks",  albumValues.count() / qb.countReturnValues() )
                     << albumYear
                     << albumLength) );
 
@@ -2367,7 +2367,7 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
                     "<span>%3</span><br />\n"
                     "<span>%4</span>\n"
                     )
-                .arg( i18np( "Track played once", "Track played %n times", playtimes ),
+                .arg( i18np( "Track played once", "Track played %1 times", playtimes ),
                       statsHTML( score, rating, false ),
                       i18n( "Last played: %1", Amarok::verboseTimeSince( lastPlay ) ),
                       i18n( "First played: %1", Amarok::verboseTimeSince( firstPlay ) ) ) );
@@ -2777,7 +2777,7 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
                         << escapeHTMLAttr( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] ) // album.name
                         << albumImageTitleAttr
                         << escapeHTMLAttr( albumImage )
-                        << i18np( "Single", "%n Tracks",  albumValues.count() / qb.countReturnValues() )
+                        << i18np( "Single", "%1 Tracks",  albumValues.count() / qb.countReturnValues() )
                         << QString::number( artist_id )
                         << values[ i + 1 ] //album.id
                         << escapeHTML( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] )
@@ -2939,7 +2939,7 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
                         << escapeHTMLAttr( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] ) // album.name
                         << albumImageTitleAttr
                         << escapeHTMLAttr( albumImage )
-                        << i18np( "Single", "%n Tracks",  albumValues.count() / qb.countReturnValues() )
+                        << i18np( "Single", "%1 Tracks",  albumValues.count() / qb.countReturnValues() )
                         << values[ i + 1 ] //album.id
                         << escapeHTML( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] )
                         << albumYear

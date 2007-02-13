@@ -1322,7 +1322,7 @@ IpodMediaDevice::updateArtwork()
     }
 
     Amarok::StatusBar::instance()->shortMessage(
-            i18np( "Updated artwork for one track", "Updated artwork for %n tracks", updateCount ) );
+            i18np( "Updated artwork for one track", "Updated artwork for %1 tracks", updateCount ) );
 }
 
 
@@ -2148,7 +2148,7 @@ IpodMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
                     item->type() == MediaItem::ORPHANED )
             {
                 menu.insertItem( SmallIconSet( Amarok::icon( "edit" ) ),
-                        i18np( "Edit &Information...", "Edit &Information for %n Tracks...", urls.count()),
+                        i18np( "Edit &Information...", "Edit &Information for %1 Tracks...", urls.count()),
                         RENAME );
             }
             break;
@@ -2181,7 +2181,7 @@ IpodMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
             menu.setItemEnabled( DELETE_PLAYED, !locked );
         }
         menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ),
-                i18np( "Delete Track from iPod", "Delete %n Tracks from iPod", urls.count() ),
+                i18np( "Delete Track from iPod", "Delete %1 Tracks from iPod", urls.count() ),
                 DELETE_FROM_IPOD );
         menu.setItemEnabled( DELETE_FROM_IPOD, !locked && urls.count() > 0 );
     }
@@ -2324,9 +2324,9 @@ IpodMediaDevice::rmbPressed( Q3ListViewItem* qitem, const QPoint& point, int )
                     }
 
                     if( dupes > 0 )
-                        Amarok::StatusBar::instance()->shortMessage( i18n(
+                        Amarok::StatusBar::instance()->shortMessage( i18np(
                                     "One duplicate track not added to database",
-                                    "%n duplicate tracks not added to database", dupes ) );
+                                    "%1 duplicate tracks not added to database", dupes ) );
                 }
                 break;
             case DELETE_PLAYED:

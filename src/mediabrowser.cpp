@@ -1828,7 +1828,7 @@ MediaBrowser::updateStats()
 
     KIO::filesize_t queued = m_queue->totalSize();
 
-    QString text = i18np( "1 track in queue", "%n tracks in queue", m_queue->childCount() );
+    QString text = i18np( "1 track in queue", "%1 tracks in queue", m_queue->childCount() );
     if(m_queue->childCount() > 0)
     {
         text += i18n(" (%1)", KIO::convertSize( queued ) );
@@ -2678,7 +2678,7 @@ MediaDevice::connectDevice( bool silent )
 
         if(numFiles > 0)
         {
-            m_parent->m_stats->setText( i18np( "1 track to be deleted", "%n tracks to be deleted", numFiles ) );
+            m_parent->m_stats->setText( i18np( "1 track to be deleted", "%1 tracks to be deleted", numFiles ) );
 
             setProgress( 0, numFiles );
 
@@ -2694,7 +2694,7 @@ MediaDevice::connectDevice( bool silent )
             {
                 Amarok::StatusBar::instance()->shortMessage(
                         i18np( "Purged 1 podcasts already played",
-                            "Purged %n podcasts already played",
+                            "Purged %1 podcasts already played",
                             numDeleted ) );
             }
 
@@ -3127,25 +3127,25 @@ MediaDevice::transferFiles()
     if( unplayable.count() > 0 )
     {
         msg = i18np( "One track not playable on media device",
-                "%n tracks not playable on media device", unplayable.count() );
+                "%1 tracks not playable on media device", unplayable.count() );
     }
     if( existing.count() > 0 )
     {
         if( msg.isEmpty() )
             msg = i18np( "One track already on media device",
-                    "%n tracks already on media device", existing.count() );
+                    "%1 tracks already on media device", existing.count() );
         else
             msg += i18np( ", one track already on media device",
-                    ", %n tracks already on media device", existing.count() );
+                    ", %1 tracks already on media device", existing.count() );
     }
     if( transcodeFail > 0 )
     {
         if( msg.isEmpty() )
             msg = i18np( "One track was not transcoded",
-                    "%n tracks were not transcoded", transcodeFail );
+                    "%1 tracks were not transcoded", transcodeFail );
         else
             msg += i18np( ", one track was not transcoded",
-                    ", %n tracks were not transcoded", transcodeFail );
+                    ", %1 tracks were not transcoded", transcodeFail );
 
         const ScriptManager* const sm = ScriptManager::instance();
         if( !sm->transcodeScriptRunning().isEmpty() )
@@ -3234,12 +3234,12 @@ MediaDevice::deleteFromDevice(MediaItem *item, int flags )
         //NOTE we assume that currentItem is the main target
         int numFiles  = m_view->getSelectedLeaves(item, &list, MediaView::OnlySelected | ((flags & OnlyPlayed) ? MediaView::OnlyPlayed : MediaView::None) );
 
-        m_parent->m_stats->setText( i18np( "1 track to be deleted", "%n tracks to be deleted", numFiles ) );
+        m_parent->m_stats->setText( i18np( "1 track to be deleted", "%1 tracks to be deleted", numFiles ) );
         if( numFiles > 0 && (flags & DeleteTrack) )
         {
             int button = KMessageBox::warningContinueCancel( m_parent,
                     i18np( "<p>You have selected 1 track to be <b>irreversibly</b> deleted.",
-                        "<p>You have selected %n tracks to be <b>irreversibly</b> deleted.",
+                        "<p>You have selected %1 tracks to be <b>irreversibly</b> deleted.",
                         numFiles
                         ),
                     QString::null,

@@ -222,7 +222,7 @@ StatusBar::slotItemCountChanged( int newCount, int newLength,  //total
                  : ( hasVis && newCount == 1 ) ? i18n( "0 visible of 1 track" )
                  : ( hasVis ) ? i18n( "%1 visible of %2 tracks", visCount, newCount )
                  : ( hasSel ) ? i18n( "%1 selected of %2 tracks", selCount, newCount )
-                 : i18np( "1 track", "%n tracks", newCount );
+                 : i18np( "1 track", "%1 tracks", newCount );
 
     int getValue = 0;
 

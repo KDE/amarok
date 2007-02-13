@@ -1205,9 +1205,9 @@ MetaBundle::fuzzyTime( int time )
         }
     }
 
-    QString weeks = i18np( "1 week %1", "%n weeks %1", week );
-    QString days = i18np( "1 day %1", "%n days %1", day );
-    QString hours = i18np( "1 hour", "%n hours", hr );
+    QString weeks = i18np( "1 week %1", "%1 weeks %1", week );
+    QString days = i18np( "1 day %1", "%1 days %1", day );
+    QString hours = i18np( "1 hour", "%1 hours", hr );
 
     if( week )
         return weeks.arg( day ? days.arg("") : "" ).simplified();
