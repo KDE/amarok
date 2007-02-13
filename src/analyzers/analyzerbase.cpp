@@ -52,10 +52,7 @@ template<class W> bool
 Analyzer::Base<W>::event( QEvent *e )
 {
     switch( e->type() ) {
-/*    case QEvent::Paint:
-        if( !canvas()->isNull() )
-            bitBlt( this, 0, 0, canvas() );
-        return true; //no propagate event*/
+
     case QEvent::Hide:
         m_timer.stop();
         break;
