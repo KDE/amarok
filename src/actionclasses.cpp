@@ -279,6 +279,10 @@ AnalyzerAction::AnalyzerAction( KActionCollection *ac )
 QWidget*
 AnalyzerAction::createWidget( QWidget *w )
 {
+    // FIXME disabled for now
+    return 0;
+
+
     //NOTE the analyzer will be deleted when the toolbar is deleted or cleared()
     //we are not designed for unplugging() yet so there would be a leak if that happens
     //but it's a rare event and unplugging is complicated.
