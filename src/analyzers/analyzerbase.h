@@ -88,7 +88,7 @@ public:
     const QPixmap *canvas()     const { return &m_canvas; }
 
 private slots:
-    void draw() { drawFrame(); bitBlt( this, 0, 0, canvas() ); }
+    void draw() { drawFrame(); }
 
 protected:
     Base2D( QWidget*, uint timeout, uint scopeSize = 7 );

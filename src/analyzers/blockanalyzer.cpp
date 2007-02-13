@@ -367,6 +367,8 @@ ensureContrast( const QColor &bg, const QColor &fg, uint _amount = 150 )
 void
 BlockAnalyzer::paletteChange( const QPalette& ) //virtual
 {
+   DEBUG_BLOCK
+
    const QColor bg = palette().active().background();
    const QColor fg = ensureContrast( bg, KGlobalSettings::activeTitleColor() );
 
