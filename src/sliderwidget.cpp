@@ -485,33 +485,20 @@ Amarok::VolumeSlider::wheelEvent( QWheelEvent *e )
 void
 Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 {
-    QPixmap buf( size() );
-
-    // Erase background
-    if( parentWidget()->backgroundPixmap() )
-        buf.fill( parentWidget(), pos() );
-    else {
-        buf.fill( colorGroup().background() );
-//        QPainter p( &buf );
- //       p.fillRect( rect(), qApp->palette().brush( QPalette::Active, QColorGroup::Background ) );
-    }
+    QPainter p( this );
 
     const int padding = 7;
     const int offset = int( double( ( width() - 2 * padding ) * value() ) / maxValue() );
-    QPainter p( &buf );
-    {   //bitBlt( &buf, 0, 0, &m_pixmapGradient, 0, 0, offset + padding );
-        const QRectF bounds( 0, 0, offset + padding, m_pixmapGradient.height() );
-        p.drawPixmap( bounds, m_pixmapGradient, bounds );
-    }
-    {  //bitBlt( &buf, 0, 0, &m_pixmapInset );
-        const QRectF bounds( 0, 0, m_pixmapInset.width(), m_pixmapInset.height() );
-        p.drawPixmap( bounds, m_pixmapInset, bounds );
-    }
-    { //bitBlt( &buf, offset - m_handlePixmaps[0].width() / 2 + padding, 0, &m_handlePixmaps[m_animCount] );
-        const QRectF targetBounds( offset - m_handlePixmaps[0].width() / 2 + padding, 0, m_handlePixmaps[m_animCount].width(), m_handlePixmaps[m_animCount].height() );
-        const QRectF srcBounds( 0, 0, m_handlePixmaps[m_animCount].width(), m_handlePixmaps[m_animCount].height() );
-        p.drawPixmap( targetBounds, m_handlePixmaps[m_animCount], srcBounds );
-    }
+
+    const QRectF boundsG( 0, 0, offset + padding, m_pixmapGradient.height() );
+    p.drawPixmap( boundsG, m_pixmapGradient, boundsG );
+
+    const QRectF boundsI( 0, 0, m_pixmapInset.width(), m_pixmapInset.height() );
+    p.drawPixmap( boundsI, m_pixmapInset, boundsI );
+    
+    const QRectF targetBounds( offset - m_handlePixmaps[0].width() / 2 + padding, 0, m_handlePixmaps[m_animCount].width(), m_handlePixmaps[m_animCount].height() );
+    const QRectF srcBounds( 0, 0, m_handlePixmaps[m_animCount].width(), m_handlePixmaps[m_animCount].height() );
+    p.drawPixmap( targetBounds, m_handlePixmaps[m_animCount], srcBounds );
 
     // Draw percentage number
     p.setPen( palette().color( QPalette::Disabled, QColorGroup::Text ).dark() );
@@ -520,13 +507,6 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
     p.setFont( font );
     const QRect rect( 0, 0, 34, 15 );
     p.drawText( rect, Qt::AlignRight | Qt::AlignVCenter, QString::number( value() ) + '%' );
-    p.end();
-
-    { //bitBlt( this, 0, 0, &buf );
-        QPainter result( this );
-        const QRectF bounds( 0, 0, buf.width(), buf.height() );
-        result.drawPixmap( bounds, buf, bounds );
-    }
 }
 
 void
