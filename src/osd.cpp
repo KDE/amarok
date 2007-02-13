@@ -611,7 +611,6 @@ Amarok::OSD::OSD(): OSDWidget( 0 )
 void
 Amarok::OSD::show( const MetaBundle &bundle ) //slot
 {
-#if 0
 #ifdef Q_WS_X11
     QString text = "";
     if( bundle.url().isEmpty() )
@@ -718,7 +717,7 @@ Amarok::OSD::show( const MetaBundle &bundle ) //slot
             if ( location.find( "nocover" ) != -1 )
                 setImage( Amarok::icon() );
             else
-                setImage( location );
+                setImage( QImage( location ) );
         }
 
         text = text.trimmed();
@@ -736,7 +735,6 @@ Amarok::OSD::show( const MetaBundle &bundle ) //slot
     OSDWidget::show( text );
 #else
     Q_UNUSED( bundle );
-#endif
 #endif
 }
 
