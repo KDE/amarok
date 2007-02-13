@@ -33,6 +33,7 @@
 #include <kstandarddirs.h>   //locate
 
 #include <QBitmap>
+#include <QDesktopWidget>
 #include <QPainter>
 #include <QPixmap>
 #include <QRegExp>
@@ -56,7 +57,6 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
         , m_screen( 0 )
         , m_y( MARGIN )
         , m_drawShadow( false )
-        , m_translucency( false )
         , m_rating( 0 )
         , m_volume( false )
 {
@@ -115,7 +115,6 @@ OSDWidget::volChanged( unsigned char volume )
 void
 OSDWidget::show() //virtual
 {
-#if 0
 #ifdef Q_WS_X11
     if ( !isEnabled() || m_text.isEmpty() )
         return;
@@ -124,26 +123,6 @@ OSDWidget::show() //virtual
 
     const QRect oldGeometry = QRect( pos(), size() );
     const QRect newGeometry = determineMetrics( M );
-
-    if( m_translucency && !isShown() || !newGeometry.intersects( oldGeometry ) )
-        m_screenshot = QPixmap::grabWindow( qt_xrootwin(),
-                newGeometry.x(), newGeometry.y(),
-                newGeometry.width(), newGeometry.height() );
-
-
-    else if( m_translucency )
-    {
-        const QRect unite = oldGeometry.unite( newGeometry );
-        QPixmap pix = QPixmap::grabWindow( qt_xrootwin(), unite.x(), unite.y(), unite.width(), unite.height() );
-
-        QPoint p = oldGeometry.topLeft() - unite.topLeft();
-        bitBlt( &pix, p, &m_screenshot );
-
-        m_screenshot.resize( newGeometry.size() );
-
-        p = newGeometry.topLeft() - unite.topLeft();
-        bitBlt( &m_screenshot, 0, 0, &pix, p.x(), p.y() );
-    }
 
     if( newGeometry.width() > 0 && newGeometry.height() > 0 )
     {
@@ -177,9 +156,8 @@ OSDWidget::determineMetrics( const uint M )
     m_text.replace( QRegExp("\n+"), "\n" );
 
     // The osd cannot be larger than the screen
-    QRect rect = fontMetrics().boundingRect( 0, 0,
-            max.width() - image.width(), max.height(),
-            AlignCenter | WordBreak, m_text );
+    QRect rect = fontMetrics().boundingRect( 0, 0, max.width() - image.width(), max.height(),
+            Qt::AlignCenter | Qt::WordBreak, m_text );
 
     if( m_volume )
     {
@@ -189,7 +167,7 @@ OSDWidget::determineMetrics( const uint M )
 
         QRect tmpRect = fontMetrics().boundingRect( 0, 0,
             max.width() - image.width(), max.height() - fontMetrics().height(),
-            AlignCenter | WordBreak, tmp );
+            Qt::AlignCenter | Qt::WordBreak, tmp );
         tmpRect.setHeight( tmpRect.height() + fontMetrics().height() / 2 );
 
         rect = tmpRect;
@@ -263,7 +241,6 @@ OSDWidget::determineMetrics( const uint M )
     newPos += screen.topLeft();
 
     return QRect( newPos, rect.size() );
-#endif
 }
 
 void
@@ -303,14 +280,7 @@ OSDWidget::render( const uint M, const QSize &size )
     m_buffer.resize( rect.size() );
     QPainter p( &m_buffer );
 
-    if( m_translucency )
-    {
-        QPixmap background( m_screenshot );
-        KPixmapEffect::fade( background, 0.80, backgroundColor() );
-        p.drawPixmap( 0, 0, background );
-    }
-    else
-        p.fillRect( rect, backgroundColor() );
+    p.fillRect( rect, backgroundColor() );
 
     p.setPen( backgroundColor().dark() );
     p.drawRoundRect( rect, xround, yround );
@@ -381,14 +351,7 @@ OSDWidget::render( const uint M, const QSize &size )
             pixmapGradient.setMask( mask );
         }
 
-        if( m_translucency )
-        {
-            QPixmap background( m_screenshot );
-            KPixmapEffect::fade( background, 0.80, backgroundColor() );
-            bitBlt( &vol, -r.left(), -r.top(), &background );
-        }
-        else
-            vol.fill( backgroundColor() );
+        vol.fill( backgroundColor() );
 
         { // vol ( bg-alpha )
             static QBitmap mask;
@@ -793,7 +756,6 @@ Amarok::OSD::applySettings()
     setScreen( AmarokConfig::osdScreen() );
     setFont( AmarokConfig::osdFont() );
     setDrawShadow( AmarokConfig::osdDrawShadow() );
-    setTranslucency( AmarokConfig::osdUseFakeTranslucency() );
 
     if( AmarokConfig::osdUseCustomColors() )
     {

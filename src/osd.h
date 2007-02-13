@@ -63,7 +63,6 @@ class OSDWidget : public QWidget
         void setScreen( int screen );
         void setText( const QString &text ) { m_text = text; }
         void setDrawShadow( const bool b ) { m_drawShadow = b; }
-        void setTranslucency( const bool b ) { m_translucency = b; }
         void setRating( const short rating ) { if ( isEnabled() ) m_rating = rating; }
         void setMoodbar( void ) { m_moodbarBundle = MetaBundle(); }
         void setMoodbar( const MetaBundle &bundle )
@@ -91,7 +90,6 @@ class OSDWidget : public QWidget
         int         m_screen;
         uint        m_y;
         bool        m_drawShadow;
-        bool        m_translucency;
         short       m_rating;
         unsigned char m_newvolume;
         bool        m_volume;
@@ -100,7 +98,6 @@ class OSDWidget : public QWidget
         // need a whole MetaBundle to draw the moodbar on the fly
         MetaBundle  m_moodbarBundle;
         QPixmap     m_scaledCover;
-        QPixmap     m_screenshot;
         QPixmap     m_buffer;
 };
 
