@@ -279,32 +279,10 @@ AnalyzerAction::AnalyzerAction( KActionCollection *ac )
 QWidget*
 AnalyzerAction::createWidget( QWidget *w )
 {
-    // FIXME disabled for now
-    return 0;
+	QWidget* container = new AnalyzerContainer( w );
+    container->setFixedWidth( 300 );
 
-
-    //NOTE the analyzer will be deleted when the toolbar is deleted or cleared()
-    //we are not designed for unplugging() yet so there would be a leak if that happens
-    //but it's a rare event and unplugging is complicated.
-
-    KToolBar *bar = dynamic_cast<KToolBar*>(w);
-
-    if( bar && KAuthorized::authorizeKAction( name() ) )
-    {
-        //const int id = KAction::getToolButtonID();
-
-        //addContainer( w, id );
-	//w->addAction( this ); //PORTING
-        connect( w, SIGNAL( destroyed() ), SLOT( slotDestroyed() ) );
-
-	QWidget *container = new AnalyzerContainer( w );
-	//TODO porting
-        //bar->insertWidget( id, 0, container, index );
-        //bar->setItemAutoSized( id, true );
-
-        return container;
-    }
-    else return 0;
+    return container;
 }
 
 

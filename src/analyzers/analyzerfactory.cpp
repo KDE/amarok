@@ -40,8 +40,9 @@
 
 QWidget *Analyzer::Factory::createAnalyzer( QWidget *parent )
 {
-    //new XmmsWrapper(); //toplevel
+    return new BlockAnalyzer( parent );
 
+#if 0
     QWidget *analyzer = 0;
 
     switch( AmarokConfig::currentAnalyzer() )
@@ -83,10 +84,14 @@ QWidget *Analyzer::Factory::createAnalyzer( QWidget *parent )
     }
 
     return analyzer;
+#endif
 }
 
 QWidget *Analyzer::Factory::createPlaylistAnalyzer( QWidget *parent)
 {
+    return new BlockAnalyzer( parent );
+
+#if 0
     QWidget *analyzer = 0;
     switch( AmarokConfig::currentPlaylistAnalyzer() )
     {
@@ -124,4 +129,5 @@ QWidget *Analyzer::Factory::createPlaylistAnalyzer( QWidget *parent)
             break;
     }
     return analyzer;
+#endif
 }

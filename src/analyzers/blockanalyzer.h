@@ -38,6 +38,7 @@ public:
 protected:
     virtual void transform( Scope& );
     virtual void analyze( const Scope& );
+    virtual void paintEvent( QPaintEvent* );
     virtual void resizeEvent( QResizeEvent* );
     virtual void contextMenuEvent( QContextMenuEvent* );
     virtual void paletteChange( const QPalette& );
@@ -53,6 +54,7 @@ private:
     QPixmap m_barPixmap;
     QPixmap m_topBarPixmap;
     Scope m_scope;               //so we don't create a vector every frame
+    Scope m_scopeSource;
     std::vector<float> m_store;  //current bar heights
     std::vector<float> m_yscale;
 
