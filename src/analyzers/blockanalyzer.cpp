@@ -63,6 +63,8 @@ BlockAnalyzer::~BlockAnalyzer()
 void
 BlockAnalyzer::resizeEvent( QResizeEvent *e )
 {
+   DEBUG_BLOCK
+
    QWidget::resizeEvent( e );
 
    canvas()->resize( size() );
@@ -133,7 +135,7 @@ BlockAnalyzer::transform( Analyzer::Scope &s ) //pure virtual
 void
 BlockAnalyzer::analyze( const Analyzer::Scope &s )
 {
-    m_scopeSource = s;
+    Analyzer::interpolate( s, m_scope );
     update();
 }
 
@@ -153,9 +155,6 @@ BlockAnalyzer::paintEvent( QPaintEvent* )
    // m_yscale looks similar to: { 0.7, 0.5, 0.25, 0.15, 0.1, 0 }
    // if it contains 6 elements there are 5 rows in the analyzer
 
-   const Analyzer::Scope s = m_scopeSource;
-
-   Analyzer::interpolate( s, m_scope );
 
    QPainter p( this );
  

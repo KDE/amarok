@@ -54,7 +54,6 @@ private:
     QPixmap m_barPixmap;
     QPixmap m_topBarPixmap;
     Scope m_scope;               //so we don't create a vector every frame
-    Scope m_scopeSource;
     std::vector<float> m_store;  //current bar heights
     std::vector<float> m_yscale;
 
