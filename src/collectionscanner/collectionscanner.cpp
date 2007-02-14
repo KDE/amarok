@@ -368,14 +368,14 @@ CollectionScanner::scanFiles( const QStringList& entries )
 
         if( itemCount % 20 == 0 )
         {
-            kapp->processEvents();  // let DCOP through!
+//             kapp->processEvents();  // let DCOP through!
             if( m_pause )
             {
                 amarokCollectionInterface->scannerAcknowledged();
                 while( m_pause )
                 {
                     sleep( 1 );
-                    kapp->processEvents();
+//                     kapp->processEvents();
                 }
 		amarokCollectionInterface->scannerAcknowledged();
             }
