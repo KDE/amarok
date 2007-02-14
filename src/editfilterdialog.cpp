@@ -64,7 +64,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
 
     setMainWidget( new QWidget( this ) );
 
-    m_mainLay = new QVBoxLayout( );
+    m_mainLay = new QVBoxLayout( mainWidget() );
     m_mainLay->activate();
 
     // no filter rule available
