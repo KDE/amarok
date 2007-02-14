@@ -414,6 +414,15 @@ Amarok::VolumeSlider::slotAnimTimer() //SLOT
 }
 
 void
+Amarok::VolumeSlider::mousePressEvent( QMouseEvent *e )
+{
+    if( e->button() != RightButton ) {
+        Amarok::Slider::mousePressEvent( e );
+        slideEvent( e );
+    }
+}
+                
+void
 Amarok::VolumeSlider::contextMenuEvent( QContextMenuEvent *e )
 {
     KPopupMenu menu;
