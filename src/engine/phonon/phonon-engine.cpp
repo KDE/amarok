@@ -196,7 +196,7 @@ uint
 PhononEngine::length() const
 {
     if( m_mediaObject )
-        return m_mediaObject->totalTime();
+        return ( m_mediaObject->totalTime() / 1000 );
 
     return 0;
 }
