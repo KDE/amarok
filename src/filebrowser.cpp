@@ -268,10 +268,10 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
 
         toolbar->addAction(gotoCurrent);
 
-        disconnect( actionCollection->action( "up" ), SIGNAL( triggered() ), m_dir, SLOT( cdUp() ) );
-        connect( actionCollection->action( "up" ), SIGNAL( triggered() ), m_dir, SLOT( myCdUp() ) );
-        disconnect( actionCollection->action( "home" ), SIGNAL( triggered() ), m_dir, SLOT( home() ) );
-        connect( actionCollection->action( "home" ), SIGNAL( triggered() ), m_dir, SLOT( myHome() ) );
+        //disconnect( actionCollection->action( "up" ), SIGNAL( triggered() ), m_dir, SLOT( cdUp() ) );
+        //connect( actionCollection->action( "up" ), SIGNAL( triggered() ), m_dir, SLOT( myCdUp() ) );
+        //disconnect( actionCollection->action( "home" ), SIGNAL( triggered() ), m_dir, SLOT( home() ) );
+        //connect( actionCollection->action( "home" ), SIGNAL( triggered() ), m_dir, SLOT( myHome() ) );
     }
 
     connect( m_filter, SIGNAL(textChanged( const QString& )), SLOT(setFilter( const QString& )) );

@@ -23,8 +23,10 @@ MyDirOperator::myHome()
 void
 MyDirOperator::myCdUp()
 {
+    //KUrl tmp( url() );
+    //tmp.cd( QString::fromLatin1(".."));
+    //cdUp();
     KUrl tmp( url() );
-    tmp.cd( QString::fromLatin1(".."));
     if( m_medium && !tmp.path().startsWith( m_medium->mountPoint() ) )
         tmp.setPath( m_medium->mountPoint() );
     setUrl(tmp, true);
