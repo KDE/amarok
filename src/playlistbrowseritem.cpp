@@ -48,6 +48,7 @@
 #include <kio/deletejob.h>
 #include <kio/jobclasses.h>    //podcast retrieval
 #include <kio/job.h>           //podcast retrieval
+#include <kjobuidelegate.h>
 #include <klocale.h>
 #include <kmessagebox.h>       //podcast info box
 #include <kmimetype.h>
@@ -3461,9 +3462,9 @@ void ShoutcastBrowser::setOpen( bool open )
     {
         m_downloading = true;
         m_cj = KIO::copy( KUrl("http://www.shoutcast.com/sbin/newxml.phtml"), KUrl(tmpfile), false );
-        connect( m_cj, SIGNAL( copyingDone( KIO::Job*, const KUrl&, const KUrl&, bool, bool))
-                , this, SLOT(doneGenreDownload(KIO::Job*, const KUrl&, const KUrl&, bool, bool )));
-        connect( m_cj, SIGNAL( result( KIO::Job* )), this, SLOT( jobFinished( KIO::Job* )));
+        connect( m_cj, SIGNAL( copyingDone( KIO::Job*, const KUrl&, const KUrl&, time_t, bool, bool))
+                , this, SLOT(doneGenreDownload(KIO::Job*, const KUrl&, const KUrl&, time_t, bool, bool )));
+        connect( m_cj, SIGNAL( result( KJob* )), this, SLOT( jobFinished( KJob* )));
     }
 
     Q3ListViewItem::setOpen( open );
@@ -3479,9 +3480,9 @@ void ShoutcastBrowser::slotAnimation()
     s_iconCounter++;
 }
 
-void ShoutcastBrowser::doneGenreDownload( KIO::Job *job, const KUrl &from, const KUrl &to, bool directory, bool renamed )
+void ShoutcastBrowser::doneGenreDownload( KIO::Job *job, const KUrl &from, const KUrl &to, time_t mtime, bool directory, bool renamed )
 {
-    Q_UNUSED( job ); Q_UNUSED( from ); Q_UNUSED( directory ); Q_UNUSED( renamed );
+    Q_UNUSED( job ); Q_UNUSED( from ); Q_UNUSED( directory ); Q_UNUSED( renamed ); Q_UNUSED( mtime );
 
     QDomDocument doc( "genres" );
     QFile file( to.path() );
@@ -3569,14 +3570,14 @@ void ShoutcastBrowser::doneGenreDownload( KIO::Job *job, const KUrl &from, const
     setOpen( true );
 }
 
-void ShoutcastBrowser::jobFinished( KIO::Job *job )
+void ShoutcastBrowser::jobFinished( KJob *job )
 {
     m_downloading = false;
     m_animationTimer.stop();
     setPixmap( 0, SmallIcon( Amarok::icon( "files" ) ) );
 
     if ( job->error() )
-        job->showErrorDialog( 0 );
+        job->uiDelegate()->showErrorMessage();
 }
 
 ShoutcastGenre::ShoutcastGenre( ShoutcastBrowser *browser, Q3ListViewItem *after, QString genre )
@@ -3628,10 +3629,10 @@ void ShoutcastGenre::startGenreDownload( QString genre, QString tmppath )
 {
     QString tmpfile = tmppath + "/amarok-list-" + genre + "-" + KRandom::randomString(10) + ".xml";
     KIO::CopyJob *cj = KIO::copy( "http://www.shoutcast.com/sbin/newxml.phtml?genre=" + genre, tmpfile, false );
-    connect( cj, SIGNAL( copyingDone     ( KIO::Job*, const KUrl&, const KUrl&, bool, bool ) ),
-             this,   SLOT( doneListDownload( KIO::Job*, const KUrl&, const KUrl&, bool, bool ) ) );
-    connect( cj, SIGNAL( result     ( KIO::Job* ) ),
-             this,   SLOT( jobFinished( KIO::Job* ) ) );
+    connect( cj, SIGNAL( copyingDone     ( KIO::Job*, const KUrl&, const KUrl&, time_t, bool, bool ) ),
+             this,   SLOT( doneListDownload( KIO::Job*, const KUrl&, const KUrl&, time_t, bool, bool ) ) );
+    connect( cj, SIGNAL( result     ( KJob* ) ),
+             this,   SLOT( jobFinished( KJob* ) ) );
     m_totalJobs++;
 }
 
@@ -3645,9 +3646,9 @@ void ShoutcastGenre::slotAnimation()
     s_iconCounter++;
 }
 
-void ShoutcastGenre::doneListDownload( KIO::Job *job, const KUrl &from, const KUrl &to, bool directory, bool renamed )
+void ShoutcastGenre::doneListDownload( KIO::Job *job, const KUrl &from, const KUrl &to, time_t mtime, bool directory, bool renamed )
 {
-    Q_UNUSED( job ); Q_UNUSED( from ); Q_UNUSED( directory ); Q_UNUSED( renamed );
+    Q_UNUSED( job ); Q_UNUSED( from ); Q_UNUSED( directory ); Q_UNUSED( renamed ); Q_UNUSED( mtime );
 
     m_completedJobs++;
 
@@ -3700,14 +3701,14 @@ void ShoutcastGenre::doneListDownload( KIO::Job *job, const KUrl &from, const KU
     }
 }
 
-void ShoutcastGenre::jobFinished( KIO::Job *job )
+void ShoutcastGenre::jobFinished( KJob *job )
 {
     m_downloading = false;
     m_animationTimer.stop();
     setPixmap( 0, SmallIcon( Amarok::icon( "files" ) ) );
 
     if( job->error() )
-        job->showErrorDialog( 0 );
+        job->uiDelegate()->showErrorMessage();
 }
 
 #include "playlistbrowseritem.moc"

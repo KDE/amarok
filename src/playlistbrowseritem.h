@@ -592,8 +592,8 @@ class ShoutcastBrowser : public PlaylistCategory
         virtual void slotDoubleClicked();
 
     private slots:
-        void doneGenreDownload( KIO::Job *job, const KUrl &from, const KUrl &to, bool directory, bool renamed );
-        void jobFinished( KIO::Job *job );
+        void doneGenreDownload( KIO::Job *job, const KUrl &from, const KUrl &to, time_t mtime, bool directory, bool renamed );
+        void jobFinished( KJob *job );
         void slotAnimation();
 
     private:
@@ -622,8 +622,8 @@ class ShoutcastGenre : public PlaylistCategory
         virtual void slotDoubleClicked();
 
     private slots:
-        void doneListDownload( KIO::Job *job, const KUrl &from, const KUrl &to, bool directory, bool renamed );
-        void jobFinished( KIO::Job *job );
+        void doneListDownload( KIO::Job *job, const KUrl &from, const KUrl &to, time_t mtime, bool directory, bool renamed );
+        void jobFinished( KJob *job );
         void slotAnimation();
 
     private:
