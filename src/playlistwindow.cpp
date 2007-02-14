@@ -527,6 +527,8 @@ void PlaylistWindow::init()
     layV->addWidget( m_toolbar );
     layV->addSpacing( 2 );
     layV->addWidget( statusbar );
+    layV->setMargin( 0 );
+    layV->setSpacing( 0 );
     this->setLayout( layV );
 
     //The volume slider later becomes our FocusProxy, so all wheelEvents get redirected to it
