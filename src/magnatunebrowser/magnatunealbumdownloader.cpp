@@ -45,15 +45,15 @@ void MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo * info )
     KUrl downloadUrl = info->getCompleteDownloadUrl();
     m_currentAlbumUnpackLocation = info->getUnpackLocation();
     debug() << "Download: " << downloadUrl.url() << " to: " << m_currentAlbumUnpackLocation << endl;
-   
+
 
     m_currentAlbumFileName = downloadUrl.fileName( false );
 
-   
 
 
 
-    
+
+
     debug() << "Using temporary location: " << m_tempDir.name() + m_currentAlbumFileName << endl;
 
     m_albumDownloadJob = KIO::file_copy( downloadUrl, KUrl( m_tempDir.name() + m_currentAlbumFileName ), -1, true, false, false );
@@ -70,7 +70,7 @@ void MagnatuneAlbumDownloader::downloadCover( QString albumCoverUrlString, QStri
     KUrl downloadUrl( albumCoverUrlString );
 
     debug() << "Download Cover: " << downloadUrl.url() << " to: " << m_tempDir.name() << fileName << endl;
-   
+
     m_albumDownloadJob = KIO::file_copy( downloadUrl, KUrl( m_tempDir.name() + fileName ), -1, true, false, false );
 
     connect( m_albumDownloadJob, SIGNAL( result( KJob* ) ), SLOT( coverDownloadComplete( KJob* ) ) );
@@ -98,7 +98,7 @@ void MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 
     //ok, now we have the .zip file downloaded. All we need is to unpack it to the desired location and add it to the collection.
 
-    QString unzipString = "unzip \""+m_tempDir.name() + m_currentAlbumFileName + "\" -d \"" + m_currentAlbumUnpackLocation + "\" &";
+    QString unzipString = "unzip " + KProcess::quote( m_tempDir.name() + m_currentAlbumFileName ) + " -d " + KProcess::quote( m_currentAlbumUnpackLocation ) + " &";
 
     debug() << "unpacking: " << unzipString << endl;
 
