@@ -112,7 +112,7 @@
 // Moodbar is meant to have a very small footprint, since there are
 // lots of MetaBundle's floating around that aren't going to be
 // displayed.  Most of the data in loaded Moodbars is implicitly
-// shared anyway (unless you call detach()), so it's reasonable to
+// shared anyway, so it's reasonable to
 // pass them around by value.
 //
 // Much care has been taken to absolutely minimize the amount of time
@@ -677,7 +677,7 @@ MoodServer::clearJobs( void )
     // external) while the mutex is locked.
     m_mutex.lock();
     Q3ValueList<ProcData> queueCopy
-      = Q3DeepCopy< Q3ValueList<ProcData> > ( m_jobQueue );
+      = Q3ValueList<ProcData> ( m_jobQueue );
     m_jobQueue.clear();
     m_mutex.unlock();
 
@@ -791,23 +791,6 @@ Moodbar::reset( void )
   m_url     = KUrl();
   m_hueSort = 0;
   m_state   = Unloaded;
-
-  m_mutex.unlock();
-}
-
-
-// Make a copy of all of our implicitly shared data
-void
-Moodbar::detach( void )
-{
-  m_mutex.lock();
-
-  m_data = Q3DeepCopy<ColorList>(m_data);
-  m_pixmap.detach();
-
-  // Apparently this is the wrong hack -- don't detach urls
-  //QString url( QDeepCopy<QString>( m_url.url() ) );
-  //m_url = KUrl::fromPathOrUrl( url );
 
   m_mutex.unlock();
 }

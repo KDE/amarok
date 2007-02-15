@@ -29,8 +29,7 @@
  *
  * Added note: due to QString's thread unsafe refcounting, special precautions have to be
  * taken to avoid memory corruption, while still maintaining some level of efficiency.
- * We deepCopy strings, unless we are in the same thread that *first* used
- * AtomicStrings. Also, deletions from other threads are delayed until that first thread
+ * Also, deletions from other threads are delayed until that first thread
  * calls AtomicString again. Thus, we would appear to leak memory if many AtomicStrings
  * are deleted in a different thread than the main thread, and the main thread would
  * never call AtomicString again. But this is unlikely since the GUI thread is the one
@@ -114,12 +113,6 @@ public:
      * @return the string
      */
     inline operator QString() const { return string(); }
-
-    /**
-     * Useful for threading.
-     * @return a deep copy of the string
-     */
-    QString deepCopy() const;
 
     /**
      * For convenience. Equivalent to isNull().

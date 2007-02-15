@@ -28,7 +28,6 @@
 #include <kio/jobclasses.h>
 #include <kio/netaccess.h>
 #include <kcodecs.h>
-#include <q3deepcopy.h>
 #include <qdom.h>
 #include <QFile> //decodePath()
 //Added by qt3to4:
@@ -66,16 +65,6 @@
 #include "lastfm.h"
 #include "metabundle.h"
 #include "podcastbundle.h"
-
-
-namespace Amarok {
-    KUrl detachedKURL( const KUrl &url ) {
-        KUrl urlCopy;
-        if (!url.isEmpty())
-            urlCopy = KUrl(url.url());
-        return urlCopy;
-    }
-}
 
 
 MetaBundle::EmbeddedImage::EmbeddedImage( const TagLib::ByteVector& data, const TagLib::String& description )
@@ -1796,45 +1785,3 @@ void MetaBundle::setFilesize( int bytes )
 
 void MetaBundle::setFileType( int type ) { m_type = type; }
 
-void MetaBundle::detach()
-{
-    // FIXME: we'd do that, but unfortunately it does not exist
-    //m_url.detach();
-    m_url = Amarok::detachedKURL( m_url );
-
-    m_title = Q3DeepCopy<QString>(m_title);
-    m_artist = m_artist.deepCopy();
-    m_albumArtist = m_albumArtist.deepCopy();
-    m_album = m_album.deepCopy();
-    m_comment = m_comment.deepCopy();
-    m_composer = m_composer.deepCopy();
-    m_genre = m_genre.deepCopy();
-    m_streamName = Q3DeepCopy<QString>(m_streamName);
-    m_streamUrl = Q3DeepCopy<QString>(m_streamUrl);
-
-    if( m_moodbar != 0 )
-      m_moodbar->detach();
-
-    m_uniqueId = Q3DeepCopy<QString>( m_uniqueId );
-
-    if ( m_podcastBundle )
-         setPodcastBundle( Q3DeepCopy<PodcastEpisodeBundle>( *m_podcastBundle ) );
-    if ( m_lastFmBundle )
-         setLastFmBundle( Q3DeepCopy<LastFm::Bundle>( *m_lastFmBundle ) );
-}
-
-
-void PodcastEpisodeBundle::detach()
-{
-    m_url = Amarok::detachedKURL( m_url );
-    m_localUrl = Amarok::detachedKURL( m_localUrl );
-    m_parent = Amarok::detachedKURL( m_parent );
-
-    m_author = Q3DeepCopy<QString>(m_author);
-    m_title = Q3DeepCopy<QString>(m_title);
-    m_subtitle = Q3DeepCopy<QString>(m_subtitle);
-    m_description = Q3DeepCopy<QString>(m_subtitle);
-    m_date =  Q3DeepCopy<QString>(m_date);
-    m_type = Q3DeepCopy<QString>(m_type);
-    m_guid = Q3DeepCopy<QString>(m_guid);
-}

@@ -1452,7 +1452,6 @@ TagDialogWriter::TagDialogWriter( const QMap<QString, MetaBundle> tagsToChange )
     QMap<QString, MetaBundle>::ConstIterator end = tagsToChange.end();
     for(QMap<QString, MetaBundle>::ConstIterator it = tagsToChange.begin(); it != end; ++it ) {
         MetaBundle mb = it.data();
-        mb.detach();
         m_tags += mb;
     }
 }

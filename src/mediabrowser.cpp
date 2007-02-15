@@ -478,7 +478,7 @@ MediaBrowser::getBundle( const KUrl &url, MetaBundle *bundle ) const
         return false;
 
     if( bundle )
-        *bundle = Q3DeepCopy<MetaBundle>( *(*it)->bundle() );
+        *bundle = *(*it)->bundle();
 
     return true;
 }

@@ -200,11 +200,6 @@ namespace Amarok
     QStringList splitPath( QString path ); //defined in playlistbrowser.cpp
 
     /**
-     * Creates a copy of of the KUrl instance, that doesn't have any QStrings sharing memory.
-    **/
-    KUrl detachedKURL( const KUrl &url ); //defined in metabundle.cpp
-
-    /**
      * Maps the icon name to a system icon or custom Amarok icon, depending on the settings.
      */
     AMAROK_EXPORT QString icon( const QString& name ); //defined in iconloader.cpp

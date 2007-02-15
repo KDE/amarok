@@ -17,7 +17,6 @@
   Boston, MA 02110-1301, USA.
 */
 
-#include <q3deepcopy.h>
 #include <kurl.h>
 #include "debug.h"
 

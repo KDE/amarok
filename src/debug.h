@@ -7,7 +7,6 @@
 
 #include <kdebug.h>
 #include <q3cstring.h>
-#include <q3deepcopy.h>
 #include <QMutex>
 #include <QObject>
 //Added by qt3to4:
@@ -75,7 +74,7 @@ namespace Debug
 
     inline Q3CString indent()
     {
-        return Q3DeepCopy<Q3CString>( modifieableIndent() );
+        return modifieableIndent();
     }
     #undef qApp
 

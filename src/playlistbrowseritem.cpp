@@ -71,7 +71,7 @@ class PlaylistReader : public ThreadManager::DependentJob
     public:
         PlaylistReader( QObject *recipient, const QString &path )
                 : ThreadManager::DependentJob( recipient, "PlaylistReader" )
-                , m_path( Q3DeepCopy<QString>( path ) ) {}
+                , m_path( path ) {}
 
         virtual bool doJob() {
             DEBUG_BLOCK
@@ -87,12 +87,6 @@ class PlaylistReader : public ThreadManager::DependentJob
         virtual void completeJob() {
             DEBUG_BLOCK
             PlaylistFile pf = PlaylistFile( m_path );
-            bundles = Q3DeepCopy<BundleList>( bundles );
-            title = Q3DeepCopy<QString>( title );
-            for( BundleList::iterator it = bundles.begin();
-                    it != bundles.end();
-                    ++it )
-                *it = Q3DeepCopy<MetaBundle>( *it );
             ThreadManager::DependentJob::completeJob();
         }
 
@@ -3114,8 +3108,7 @@ void SmartPlaylist::setXml( const QDomElement &xml )
 QString SmartPlaylist::query()
 {
     if ( m_sqlForTags.isEmpty() ) m_sqlForTags = xmlToQuery( m_xml );
-    // duplicate string, thread-safely (QDeepCopy is not thread-safe)
-    return  QString( m_sqlForTags.unicode(), m_sqlForTags.length() )
+    return  m_sqlForTags
            .replace( "(*CurrentTimeT*)" ,
                      QString::number(QDateTime::currentDateTime().toTime_t()) )
            .replace( "(*ListOfFields*)" , QueryBuilder::dragSQLFields() )

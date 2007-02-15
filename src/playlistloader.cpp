@@ -59,11 +59,10 @@ struct XMLData
 
 class TagsEvent : public QCustomEvent {
 public:
-    TagsEvent( const Q3ValueList<XMLData> &x ) : QCustomEvent( 1001 ), xml( Q3DeepCopy<Q3ValueList<XMLData> >( x ) ) { }
-    TagsEvent( const BundleList &bees ) : QCustomEvent( 1000 ), bundles( Q3DeepCopy<BundleList>( bees ) ) {
+    TagsEvent( const Q3ValueList<XMLData> &x ) : QCustomEvent( 1001 ), xml( Q3ValueList<XMLData>( x ) ) { }
+    TagsEvent( const BundleList &bees ) : QCustomEvent( 1000 ), bundles( bees ) {
         for( BundleList::Iterator it = bundles.begin(), end = bundles.end(); it != end; ++it )
         {
-            (*it).detach();
             /// @see MetaBundle for explanation of audioproperties < 0
             if( (*it).length() <= 0 || (*it).bitrate() <= 0 )
                 (*it).readTags( TagLib::AudioProperties::Fast, 0 );
@@ -103,7 +102,6 @@ UrlLoader::UrlLoader( const KUrl::List &urls, Q3ListViewItem *after, int options
 
     oldForeachType( KUrl::List, urls ) {
         const KUrl url = Amarok::mostLocalURL( *it );
-        // FIXME: url needs detach()ing
         const QString protocol = url.protocol();
 
         if( protocol == "seek" )
@@ -471,7 +469,7 @@ UrlLoader::loadXml( const KUrl &url )
 void UrlLoader::slotNewBundle( const MetaBundle &bundle, const XmlAttributeList &atts )
 {
     XMLData data;
-    data.bundle = Q3DeepCopy<MetaBundle>( bundle );
+    data.bundle = bundle;
     for( int i = 0, n = atts.count(); i < n; ++i )
     {
         if( atts[i].first == "queue_index" )
@@ -1027,7 +1025,7 @@ RemotePlaylistFetcher::result( KIO::Job *job )
 
 SqlLoader::SqlLoader( const QString &sql, Q3ListViewItem *after, int options )
         : UrlLoader( KUrl::List(), after, options )
-        , m_sql( Q3DeepCopy<QString>( sql ) )
+        , m_sql( sql )
 {
     // Ovy: just until we make sure every SQL query from dynamic playlists is handled
     // correctly

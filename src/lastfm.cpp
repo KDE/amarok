@@ -24,7 +24,6 @@
 #include "lastfm.h"
 #include "statusbar.h"      //showError()
 
-#include <q3deepcopy.h>
 #include <qdom.h>
 #include <q3http.h>
 #include <QLabel>
@@ -424,7 +423,7 @@ WebService::handshake( const QString& username, const QString& password )
     if ( http.error() != Q3Http::NoError )
         return false;
 
-    const QString result( Q3DeepCopy<QString>( http.readAll() ) );
+    const QString result( http.readAll() );
 
     debug() << "result: " << result << endl;
 
@@ -502,7 +501,7 @@ WebService::changeStation( QString url )
         return false;
     }
 
-    const QString result( Q3DeepCopy<QString>( http.readAll() ) );
+    const QString result( http.readAll() );
     const int errCode = parameter( "error", result ).toInt();
 
     if ( errCode )
@@ -1044,13 +1043,6 @@ Bundle::Bundle( const Bundle& lhs )
     , m_artistUrl( lhs.m_artistUrl )
     , m_titleUrl( lhs.m_titleUrl )
 {}
-
-void Bundle::detach() {
-    m_imageUrl = Q3DeepCopy<QString>(m_imageUrl);
-    m_albumUrl = Q3DeepCopy<QString>(m_albumUrl);
-    m_artistUrl = Q3DeepCopy<QString>(m_artistUrl);
-    m_titleUrl = Q3DeepCopy<QString>(m_titleUrl);
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 // CLASS LastFm::LoginDialog

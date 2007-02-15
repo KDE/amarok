@@ -21,7 +21,6 @@
 #include <unistd.h>
 
 #include <QDateTime>
-#include <q3deepcopy.h>
 #include <QTextStream>
 
 #include <kapplication.h>
@@ -69,7 +68,7 @@ Scrobbler::~Scrobbler()
  */
 void Scrobbler::similarArtists( const QString & artist )
 {
-    QString safeArtist = Q3DeepCopy<QString>( artist );
+    QString safeArtist = artist;
     if ( AmarokConfig::retrieveSimilarArtists() )
     {
 //         Request looks like this:

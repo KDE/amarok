@@ -337,7 +337,6 @@ void
 Amarok::PrettySlider::newBundle( const MetaBundle &bundle )
 {
     m_bundle = bundle;
-    m_bundle.detach();
 
     // This is the easiest way to tell if the bundle refers
     // to a real track, or if we're STOP'd.
@@ -448,7 +447,7 @@ Amarok::VolumeSlider::mousePressEvent( QMouseEvent *e )
         slideEvent( e );
     }
 }
-                
+
 void
 Amarok::VolumeSlider::contextMenuEvent( QContextMenuEvent *e )
 {
@@ -504,7 +503,7 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 
     const QRectF boundsI( 0, 0, m_pixmapInset.width(), m_pixmapInset.height() );
     p.drawPixmap( boundsI, m_pixmapInset, boundsI );
-    
+
     const QRectF targetBounds( offset - m_handlePixmaps[0].width() / 2 + padding, 0, m_handlePixmaps[m_animCount].width(), m_handlePixmaps[m_animCount].height() );
     const QRectF srcBounds( 0, 0, m_handlePixmaps[m_animCount].width(), m_handlePixmaps[m_animCount].height() );
     p.drawPixmap( targetBounds, m_handlePixmaps[m_animCount], srcBounds );

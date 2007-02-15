@@ -47,7 +47,6 @@
 
 #include <QBuffer>
 #include <QCheckBox>
-#include <q3deepcopy.h>
 #include <QEventLoop>
 #include <QFile>
 #include <qmap.h>
@@ -5043,9 +5042,9 @@ class SimilarArtistsInsertionJob : public ThreadManager::DependentJob
 public:
     SimilarArtistsInsertionJob( CollectionDB *parent, const QString &s, const QStringList &list )
             : ThreadManager::DependentJob( parent, "SimilarArtistsInsertionJob" )
-            , artist( Q3DeepCopy<QString>(s) )
-            , escapedArtist( parent->escapeString( Q3DeepCopy<QString>(s) ) )
-            , suggestions( Q3DeepCopy<QStringList>(list) )
+            , artist( s )
+            , escapedArtist( parent->escapeString( s ) )
+            , suggestions( list )
     {}
 };
 

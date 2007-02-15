@@ -30,7 +30,6 @@
 #include "scancontroller.h"
 #include "statusbar.h"
 
-#include <q3deepcopy.h>
 #include <QFileInfo>
 #include <QTextCodec>
 //Added by qt3to4:
@@ -62,7 +61,7 @@ ScanController::ScanController( CollectionDB* parent, bool incremental, const QS
     : DependentJob( parent, "CollectionScanner" )
     , QXmlDefaultHandler()
     , m_scanner( new Amarok::ProcIO() )
-    , m_folders( Q3DeepCopy<QStringList>( folders ) )
+    , m_folders( folders )
     , m_incremental( incremental )
     , m_hasChanged( false )
     , m_source( new QXmlInputSource() )
@@ -271,7 +270,7 @@ main_loop:
         else {
             m_dataMutex.lock();
 
-            Q3DeepCopy<QString> data = m_xmlData;
+            QString data = m_xmlData;
             m_source->setData( data );
             m_xmlData = QString::null;
 
@@ -280,7 +279,7 @@ main_loop:
                 if ( m_reader->parse( m_source, true ) ) { //start a new session
                     sessionStarted = true;
                 }
-                else 
+                else
                     debug() << "Incremental parsing failed: " << errorString() << endl << QString( data ) << endl;
             else if( !m_reader->parseContinue() ) {
                 debug() << "parseContinue() failed: " << errorString() << endl << QString( data ) << endl;

@@ -42,7 +42,6 @@
 #include "threadmanager.h"
 
 #include <QDateTime>
-#include <q3deepcopy.h>
 #include <qdom.h>
 #include <QImage>
 #include <QRegExp>
@@ -1174,14 +1173,14 @@ public:
     CurrentTrackJob( ContextBrowser *parent )
         : ThreadManager::DependentJob( parent, "CurrentTrackJob" )
         , b( parent )
-        , m_currentTrack( Q3DeepCopy<MetaBundle>( EngineController::instance()->bundle() ) )
+        , m_currentTrack( EngineController::instance()->bundle() )
         , m_isStream( EngineController::engine()->isStream() )
     {
         for( QStringList::iterator it = b->m_metadataHistory.begin();
                 it != b->m_metadataHistory.end();
                 ++it )
         {
-            m_metadataHistory += Q3DeepCopy<QString>( *it );
+            m_metadataHistory +=  *it ;
         }
     }
 
@@ -1217,8 +1216,8 @@ private:
         for( QStringList::iterator it = m_shownAlbums.begin();
                 it != m_shownAlbums.end();
                 ++it )
-            b->m_shownAlbums.append( Q3DeepCopy<QString>( *it ) );
-        b->m_HTMLSource = Q3DeepCopy<QString>( m_HTMLSource );
+            b->m_shownAlbums.append( *it );
+        b->m_HTMLSource = m_HTMLSource;
         b->m_currentTrackPage->set( m_HTMLSource );
         b->m_dirtyCurrentTrackPage = false;
         b->saveHtmlData(); // Send html code to file

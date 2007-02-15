@@ -198,8 +198,6 @@ class PodcastEpisodeBundle
         void    setGuid( const QString &g );
         void    setNew( const bool &b );
 
-        void detach(); // for being able to apply QDeepCopy<>
-
     private:
         int     m_id;
         KUrl    m_url;
