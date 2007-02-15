@@ -453,26 +453,28 @@ Amarok::VolumeSlider::contextMenuEvent( QContextMenuEvent *e )
 {
     QMenu menu;
     menu.setTitle( i18n( "Volume" ) );
-    menu.addAction(  i18n(   "100%" ) )->setData(100);
-    menu.addAction(  i18n(    "80%" ) )->setData(80);
-    menu.addAction(  i18n(    "60%" ) )->setData(60);
-    menu.addAction(  i18n(    "40%" ) )->setData(40);
-    menu.addAction(  i18n(    "20%" ) )->setData(20);
-    menu.addAction(  i18n(     "0%" ) )->setData(0);
+    menu.addAction(  i18n(   "100%" ) )->setData( 100 );
+    menu.addAction(  i18n(    "80%" ) )->setData(  80 );
+    menu.addAction(  i18n(    "60%" ) )->setData(  60 );
+    menu.addAction(  i18n(    "40%" ) )->setData(  40 );
+    menu.addAction(  i18n(    "20%" ) )->setData(  20 );
+    menu.addAction(  i18n(     "0%" ) )->setData(   0 );
 
     if( EngineController::hasEngineProperty( "HasEqualizer" ) )
     {
         menu.insertSeparator();
-        menu.addAction( SmallIconSet( "equalizer" ), i18n( "&Equalizer" ),
-                kapp, SLOT( slotConfigEqualizer() ) );
+        menu.addAction( SmallIconSet( "equalizer" ), i18n( "&Equalizer" ), kapp, SLOT( slotConfigEqualizer() ) )
+            ->setData( -1 );
     }
 
-    const int n = menu.exec( mapToGlobal( e->pos() ) )->data().toInt();
-
-    if( n >= 0 )
-    {
-        QSlider::setValue( n );
-        emit sliderReleased( n );
+    QAction* a = menu.exec( mapToGlobal( e->pos() ) );
+    if( a ) {
+        const int n = a->data().toInt();
+        if( n >= 0 )
+        {
+            QSlider::setValue( n );
+            emit sliderReleased( n );
+        }
     }
 }
 
