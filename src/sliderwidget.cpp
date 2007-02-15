@@ -35,7 +35,7 @@
 #include <QTimer>
 //Added by qt3to4:
 #include <QContextMenuEvent>
-#include <Q3PointArray>
+#include <QMenu>
 #include <QShowEvent>
 #include <QWheelEvent>
 #include <QPaintEvent>
@@ -45,7 +45,7 @@
 #include <QEvent>
 #include <QStyle>
 #include <Q3RangeControl>
-#include <Q3PopupMenu>
+#include <QPolygon>
 #include <QStyleOptionComplex>
 
 #include <kiconloader.h>
@@ -275,7 +275,7 @@ Amarok::PrettySlider::paintEvent( QPaintEvent *e )
     //<Triangle Marker>
     if( m_mode == Pretty )
       {
-        Q3PointArray pa( 3 );
+        QPolygon pa( 3 );
         pa.setPoint( 0, pos - 3, 1 );
         pa.setPoint( 1, pos + 3, 1 );
         pa.setPoint( 2, pos,     5 );
@@ -285,7 +285,7 @@ Amarok::PrettySlider::paintEvent( QPaintEvent *e )
 
     else if( m_mode == Normal )
       {
-        Q3PointArray pa( 3 );
+        QPolygon pa( 3 );
         pa.setPoint( 0, pos - 5, 1 );
         pa.setPoint( 1, pos + 5, 1 );
         pa.setPoint( 2, pos,     9 );
@@ -451,23 +451,24 @@ Amarok::VolumeSlider::mousePressEvent( QMouseEvent *e )
 void
 Amarok::VolumeSlider::contextMenuEvent( QContextMenuEvent *e )
 {
-    Q3PopupMenu menu;
+    QMenu menu;
     menu.setTitle( i18n( "Volume" ) );
-    menu.insertItem(  i18n(   "100%" ), 100 );
-    menu.insertItem(  i18n(    "80%" ),  80 );
-    menu.insertItem(  i18n(    "60%" ),  60 );
-    menu.insertItem(  i18n(    "40%" ),  40 );
-    menu.insertItem(  i18n(    "20%" ),  20 );
-    menu.insertItem(  i18n(     "0%" ),   0 );
+    menu.addAction(  i18n(   "100%" ) )->setData(100);
+    menu.addAction(  i18n(    "80%" ) )->setData(80);
+    menu.addAction(  i18n(    "60%" ) )->setData(60);
+    menu.addAction(  i18n(    "40%" ) )->setData(40);
+    menu.addAction(  i18n(    "20%" ) )->setData(20);
+    menu.addAction(  i18n(     "0%" ) )->setData(0);
 
     if( EngineController::hasEngineProperty( "HasEqualizer" ) )
     {
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet( "equalizer" ), i18n( "&Equalizer" ),
+        menu.addAction( SmallIconSet( "equalizer" ), i18n( "&Equalizer" ),
                 kapp, SLOT( slotConfigEqualizer() ) );
     }
 
-    const int n = menu.exec( mapToGlobal( e->pos() ) );
+    const int n = menu.exec( mapToGlobal( e->pos() ) )->data().toInt();
+
     if( n >= 0 )
     {
         QSlider::setValue( n );
