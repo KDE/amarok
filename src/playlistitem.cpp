@@ -27,6 +27,7 @@
 #include "enginecontroller.h"
 #include "playlist.h"
 #include "sliderwidget.h"
+#include "starmanager.h"
 
 #include <qcursor.h>
 #include <qheader.h>
@@ -355,12 +356,12 @@ int PlaylistItem::ratingAtPoint( int x ) //static
 {
     Playlist* const pl = Playlist::instance();
     x -= pl->header()->sectionPos( Rating );
-    return kClamp( ( x - 1 ) / ( star()->width() + pl->itemMargin() ) + 1, 1, 5 ) * 2;
+    return kClamp( ( x - 1 ) / ( StarManager::instance()->getGreyStar()->width() + pl->itemMargin() ) + 1, 1, 5 ) * 2;
 }
 
 int PlaylistItem::ratingColumnWidth() //static
 {
-    return star()->width() * 5 + Playlist::instance()->itemMargin() * 6;
+    return StarManager::instance()->getGreyStar()->width() * 5 + Playlist::instance()->itemMargin() * 6;
 }
 
 void PlaylistItem::update() const
@@ -866,24 +867,24 @@ void PlaylistItem::drawRating( QPainter *p )
 void PlaylistItem::drawRating( QPainter *p, int stars, int graystars, bool half )
 {
     int i = 1, x = 1;
-    const int y = height() / 2 - star()->height() / 2;
+    const int y = height() / 2 - StarManager::instance()->getGreyStar()->height() / 2;
     if( half )
-       i++;
+        i++;
     //We use multiple pre-colored stars instead of coloring here to keep things speedy
     for(; i <= stars; ++i )
     {
-        bitBlt( p->device(), x, y, star() );
-        x += star()->width() + listView()->itemMargin();
+        bitBlt( p->device(), x, y, StarManager::instance()->getStar( half ? stars -1 : stars ) );
+        x += StarManager::instance()->getGreyStar()->width() + listView()->itemMargin();
     }
     if( half )
     {
-        bitBlt( p->device(), x, y, smallStar() );
-        x += star()->width() + listView()->itemMargin();
+        bitBlt( p->device(), x, y, StarManager::instance()->getHalfStar() );
+        x += StarManager::instance()->getGreyStar()->width() + listView()->itemMargin();
     }
     for(; i <= graystars; ++i )
     {
-        bitBlt( p->device(), x, y, grayedStar() );
-        x += star()->width() + listView()->itemMargin();
+        bitBlt( p->device(), x, y, StarManager::instance()->getGreyStar() );
+        x += StarManager::instance()->getGreyStar()->width() + listView()->itemMargin();
     }
 }
 
@@ -1124,7 +1125,3 @@ void PlaylistItem::decrementLengths()
         listView()->m_visLength -= length();
     }
 }
-
-QPixmap *PlaylistItem::s_star = 0;
-QPixmap *PlaylistItem::s_grayedStar = 0;
-QPixmap *PlaylistItem::s_smallStar = 0;

@@ -39,6 +39,7 @@
 #include "prettypopupmenu.h"
 #include "scriptmanager.h"
 #include "sliderwidget.h"
+#include "starmanager.h"
 #include "statusbar.h"       //for status messages
 #include "tagdialog.h"
 #include "threadmanager.h"
@@ -1734,7 +1735,7 @@ QPair<QString, QRect> Playlist::toolTipText( QWidget*, const QPoint &pos ) const
     int dright = QApplication::desktop()->screenGeometry( qscrollview() ).topRight().x();
     t.setWidth( dright - globalRect.left() );
     if( col == PlaylistItem::Rating )
-        globalRect.setRight( kMin( dright, kMax( globalRect.left() + t.widthUsed(), globalRect.left() + ( PlaylistItem::star()->width() + 1 ) * ( ( item->rating() + 1 ) / 2 ) ) ) );
+        globalRect.setRight( kMin( dright, kMax( globalRect.left() + t.widthUsed(), globalRect.left() + ( StarManager::instance()->getGreyStar()->width() + 1 ) * ( ( item->rating() + 1 ) / 2 ) ) ) );
     else
         globalRect.setRight( kMin( globalRect.left() + t.widthUsed(), dright ) );
     globalRect.setBottom( globalRect.top() + kMax( irect.height(), t.height() ) - 1 );
@@ -4098,9 +4099,6 @@ void
 Playlist::fontChange( const QFont &old )
 {
     KListView::fontChange( old );
-    delete PlaylistItem::s_star;
-    delete PlaylistItem::s_smallStar;
-    delete PlaylistItem::s_grayedStar;
     initStarPixmaps();
     triggerUpdate();
 }
@@ -4522,17 +4520,7 @@ Playlist::saveSelectedAsPlaylist()
 
 void Playlist::initStarPixmaps()
 {
-    const int h = fontMetrics().height() + itemMargin() * 2 - 4 + ( ( fontMetrics().height() % 2 ) ? 1 : 0 );
-    QImage img = QImage( locate( "data", "amarok/images/star.png" ) ).smoothScale( h, h, QImage::ScaleMin );
-    PlaylistItem::s_star = new QPixmap( img );
-
-    PlaylistItem::s_grayedStar = new QPixmap;
-    QImage imgGray (img);
-    KIconEffect::toGray( imgGray, 1.0 );
-    PlaylistItem::s_grayedStar->convertFromImage( img );
-
-    QImage small = QImage( locate( "data", "amarok/images/smallstar.png" ) );
-    PlaylistItem::s_smallStar = new QPixmap( small.smoothScale( h, h, QImage::ScaleMin ) );
+    StarManager::instance()->reinitStars( fontMetrics().height(), itemMargin() );
 }
 
 void

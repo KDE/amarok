@@ -167,9 +167,6 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
 
         static bool s_pixmapChanged;
         static const QString &editingText();
-        static QPixmap *s_star;
-        static QPixmap *s_grayedStar;
-        static QPixmap *s_smallStar;
 };
 
 class PLItemList: public QPtrList<PlaylistItem>
@@ -182,9 +179,5 @@ class PLItemList: public QPtrList<PlaylistItem>
         inline PLItemList &operator<<( PlaylistItem *item ) { append( item ); return *this; }
 };
 
-
-inline QPixmap *PlaylistItem::star() { return s_star; }
-inline QPixmap *PlaylistItem::grayedStar() { return s_grayedStar; }
-inline QPixmap *PlaylistItem::smallStar() { return s_smallStar; }
 
 #endif

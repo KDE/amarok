@@ -169,9 +169,9 @@ class ContextBrowser : public KTabWidget, public EngineObserver
         QString       m_lyricsBeingEditedUrl;
         QString       m_lyricsBeingEditedArtist;
         QString       m_lyricsBeingEditedTitle;
-	ClickLineEdit* m_lyricsSearchText;
-	KToolBar*     m_lyricsTextBar;
-	bool          m_lyricsTextBarShowed;
+        ClickLineEdit* m_lyricsSearchText;
+        KToolBar*     m_lyricsTextBar;
+        bool          m_lyricsTextBarShowed;
 
 
         QString       m_wiki;

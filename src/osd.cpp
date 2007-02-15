@@ -22,6 +22,7 @@
 #include "playlistitem.h"    //ditto
 #include "podcastbundle.h"
 #include "qstringx.h"
+#include "starmanager.h"
 
 #include <kapplication.h>
 #include <kpixmap.h>
@@ -30,6 +31,7 @@
 
 #include <qbitmap.h>
 #include <qpainter.h>
+#include <qpixmap.h>
 #include <qregexp.h>
 #include <qtimer.h>
 #include <qvaluevector.h>
@@ -60,6 +62,8 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     unsetColors();
 
     connect( m_timer, SIGNAL(timeout()), SLOT(hide()) );
+    connect( CollectionDB::instance(), SIGNAL( ratingChanged( const QString&, int ) ),
+             this, SLOT( ratingChanged( const QString&, int ) ) );
 
     //or crashes, KWin bug I think, crashes in QWidget::icon()
     kapp->setTopWidget( this );
@@ -87,11 +91,19 @@ OSDWidget::show( const QString &text, QImage newImage )
 void
 OSDWidget::ratingChanged( const short rating )
 {
-    m_text = '\n' + i18n( "Rating changed" );
+    //m_text = '\n' + i18n( "Rating changed" );
     setRating( rating ); //Checks isEnabled() before doing anything
 
-    show();
+    if( isShown() )
+        show();
+}
 
+void
+OSDWidget::ratingChanged( const QString& path, int rating )
+{
+    const MetaBundle &currentTrack = EngineController::instance()->bundle();
+    if( currentTrack.isFile() && currentTrack.url().path() == path )
+        ratingChanged( rating );
 }
 
 void
@@ -191,11 +203,10 @@ OSDWidget::determineMetrics( const uint M )
 
     if( m_rating )
     {
-        KPixmap star;
-        star.load( locate( "data", "amarok/images/star.png" ) );
-        if( rect.width() < star.width() * 5 )
-            rect.setWidth( star.width() * 5 ); //changes right edge position
-        rect.setHeight( rect.height() + star.height() + M ); //changes bottom edge pos
+        QPixmap* star = StarManager::instance()->getStar( 1 );
+        if( rect.width() < star->width() * 5 )
+            rect.setWidth( star->width() * 5 ); //changes right edge position
+        rect.setHeight( rect.height() + star->height() + M ); //changes bottom edge pos
     }
 
     if( useMoodbar() )
@@ -408,8 +419,7 @@ OSDWidget::render( const uint M, const QSize &size )
         m_volume = false;
     }
 
-    KPixmap star;
-    star.load( locate( "data", "amarok/images/star.png" ) );
+    QPixmap* star = StarManager::instance()->getStar( m_rating / 2 );
     int graphicsHeight = 0;
 
     if( useMoodbar() )
@@ -418,32 +428,31 @@ OSDWidget::render( const uint M, const QSize &size )
           = m_moodbarBundle.moodbar().draw( rect.width(), MOODBAR_HEIGHT );
         QRect r( rect );
         r.setTop( rect.bottom() - moodbar.height()
-                  - (m_rating ? star.height() + M : 0) );
+                  - (m_rating ? star->height() + M : 0) );
         graphicsHeight += moodbar.height() + M;
 
         p.drawPixmap( r.left(), r.top(), moodbar );
         m_moodbarBundle = MetaBundle();
     }
 
-    if( m_rating > 1 )
+    if( m_rating > 0 )
     {
         QRect r( rect );
 
         //Align to center...
-        r.setLeft(( rect.left() + rect.width() / 2 ) - star.width() * m_rating / 4 );
-        r.setTop( rect.bottom() - star.height() );
-        graphicsHeight += star.height() + M;
+        r.setLeft(( rect.left() + rect.width() / 2 ) - star->width() * m_rating / 4 );
+        r.setTop( rect.bottom() - star->height() );
+        graphicsHeight += star->height() + M;
 
         if( m_rating % 2 )
         {
-            KPixmap halfStar;
-            halfStar.load( locate( "data", "amarok/images/smallstar.png" ) );
-            p.drawPixmap( r.left() + star.width() * ( m_rating / 2 ), r.top(), halfStar );
+            QPixmap* halfStar = StarManager::instance()->getHalfStar( 1 );
+            p.drawPixmap( r.left() + star->width() * ( m_rating / 2 ), r.top(), *halfStar );
         }
 
         for( int i = 0; i < m_rating/2; i++ )
         {
-            p.drawPixmap( r.left() + i * star.width(), r.top(), star );
+            p.drawPixmap( r.left() + i * star->width(), r.top(), *star );
         }
 
         m_rating = 0;

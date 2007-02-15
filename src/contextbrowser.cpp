@@ -32,10 +32,12 @@
 #include "podcastbundle.h"
 #include "qstringx.h"
 #include "scriptmanager.h"
+#include "starmanager.h"
 #include "statusbar.h"
 #include "tagdialog.h"
 #include "threadmanager.h"
 
+#include <qbuffer.h>
 #include <qdatetime.h>
 #include <qdeepcopy.h>
 #include <qdom.h>
@@ -2964,11 +2966,32 @@ QString CurrentTrackJob::statsHTML( int score, int rating, bool statsbox ) //sta
         if( rating )
         {
             contents += "<nobr>\n";
+
+            QImageIO fullStarIO;
+            fullStarIO.setImage( StarManager::instance()->getStarImage( rating/2 ) );
+            fullStarIO.setFormat( "PNG" );
+            QBuffer fullStarBuf;
+            fullStarBuf.open( IO_WriteOnly );
+            fullStarIO.setIODevice( &fullStarBuf );
+            fullStarIO.write();
+            fullStarBuf.close();
+            QCString fullStar = KCodecs::base64Encode( fullStarBuf.buffer(), true );
+
+            QImageIO halfStarIO;
+            halfStarIO.setImage( StarManager::instance()->getHalfStarImage() );
+            halfStarIO.setFormat( "PNG" );
+            QBuffer halfStarBuf;
+            halfStarBuf.open( IO_WriteOnly );
+            halfStarIO.setIODevice( &halfStarBuf );
+            halfStarIO.write();
+            halfStarBuf.close();
+            QCString halfStar = KCodecs::base64Encode( halfStarBuf.buffer(), true );
+
             const QString img = "<img src='%1' height='13px' class='ratingStar'></img>\n";
             for( int i = 0, n = rating / 2; i < n; ++i )
-                contents += img.arg( locate( "data", "amarok/images/star.png" ) );
+                contents += img.arg( "data:image/png;base64," + fullStar );
             if( rating % 2 )
-                contents += img.arg( locate( "data", "amarok/images/smallstar.png" ) );
+                contents += img.arg( "data:image/png;base64," + halfStar );
             contents += "</nobr>\n";
         }
         else
@@ -4281,7 +4304,11 @@ void ContextBrowser::ratingOrScoreOrLabelsChanged( const QString &path ) //SLOT
 {
     const MetaBundle &currentTrack = EngineController::instance()->bundle();
 
-    if( (currentTrack.isFile() && currentTrack.url().path() == path) || m_browseLabels )
+    //Always refresh if using ratings, otherwise suggested songs and other songs by artist that
+    //have their ratings changed in the playlist won't be reflected until the context browser refreshes
+    //which can be confusing, and looks less polished/professional
+    //This can be changed if it slows things down too much...
+    if( m_browseLabels || ( currentTrack.isFile() && ( currentTrack.url().path() == path || AmarokConfig::useRatings() ) ) )
         refreshCurrentTrackPage();
 }
 

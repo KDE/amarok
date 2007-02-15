@@ -133,6 +133,7 @@ libamarok_la_SOURCES = \
     sliderwidget.cpp \
     smartplaylisteditor.cpp \
     socketserver.cpp \
+	starmanager.cpp \
     statistics.cpp \
     systray.cpp \
     tagdialog.cpp \
