@@ -170,9 +170,6 @@ class CollectionItem : public KListViewItem {
 
         virtual void setPixmap(int column, const QPixmap & pix);
 
-        static QPixmap *star();
-        static QPixmap *smallStar();
-
         /// convenience functions
         CollectionView *listView() const { return reinterpret_cast<CollectionView*>( KListViewItem::listView() ); }
 
@@ -188,9 +185,6 @@ class CollectionItem : public KListViewItem {
         int m_cat;
         bool m_isUnknown;
         bool m_isSampler;
-
-        static QPixmap *s_star;
-        static QPixmap *s_smallStar;
 };
 
 
@@ -284,6 +278,8 @@ class CollectionView : public KListView, public DropProxyTarget
         * Cancel Organizing files
         */
         void cancelOrganizingFiles();
+
+        void ratingChanged( const QString&, int );
 
     private:
         enum Tag { Title = 0, Artist, Composer, Album, Genre, Length, DiscNumber, Track, Year,
@@ -396,10 +392,6 @@ class OrganizeCollectionDialogBase : public KDialogBase
     public slots:
         void slotDetails() { KDialogBase::slotDetails(); emit detailsClicked(); adjustSize(); }
 };
-
-inline QPixmap *CollectionItem::star() { return s_star; }
-inline QPixmap *CollectionItem::smallStar() { return s_smallStar; }
-
 
 
 #endif /* AMAROK_COLLECTIONBROWSER_H */
