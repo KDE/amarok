@@ -55,12 +55,13 @@ class QueueList : public QListWidget
         bool    isEmpty() { return ( count() == 0 ); }
 
     public slots:
-        void    moveSelectedUp();
-        void    moveSelectedDown();
+        void    moveSelectedUp() { moveSelected( -1 ); }
+        void    moveSelectedDown() { moveSelected( 1 ); }
         void    removeSelected();
         virtual void    clear();
 
     private:
+        void    moveSelected( int direction );
         void    dragEnterEvent( QDragEnterEvent *e );
         void    dragMoveEvent( QDragMoveEvent* e );
         void    dropEvent( QDropEvent *e );

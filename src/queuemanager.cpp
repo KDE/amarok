@@ -145,7 +145,7 @@ QueueList::hasSelection()
 }
 
 void
-QueueList::moveSelectedUp() // SLOT
+QueueList::moveSelected( int direction )
 {
     QList<QListWidgetItem *> selected = selectedItems();
     bool item_moved = false;
@@ -154,44 +154,16 @@ QueueList::moveSelectedUp() // SLOT
     // this would only work for sequentially ordered items
     foreach( QListWidgetItem* it, selected )
     {
-        if( it == item(0) )
+        int position = row( it );
+        if( (direction < 0 && position == 0 ) || ( direction > 0 && position == count() - 1 ) )
             continue;
-
-        QListWidgetItem *after;
-
-        it == item(1) ?
-            after = 0:
-            after = item( row( it ) - 2 );
-
-        //moveItem( it, 0, after );
-
-        insertItem( row( after ), takeItem( row( it ) ) );
+        insertItem( position + direction, takeItem( position ) );
         item_moved = true;
     }
 
-    scrollToItem( selected.first() );
-
-    if( item_moved )
-        emit changed();
-}
-
-void
-QueueList::moveSelectedDown() // SLOT
-{
-    bool item_moved = false;
-    QList<QListWidgetItem *> list = selectedItems();
-    for( int i = list.size() -1; i >= 0; i-- )
-    {
-        int indexOfRow = row( list.at(i) );
-        QListWidgetItem *after = item( indexOfRow + 1 );
-
-        if( !after )
-            continue;
-        insertItem( row( after ), takeItem( indexOfRow ) );
-        item_moved = true;
-    }
-
-    scrollToItem( list.last() );
+    scrollToItem( selected.first() ); //apparently this deselects?
+    foreach( QListWidgetItem* it, selected )
+        it->setSelected( true );
 
     if( item_moved )
         emit changed();
@@ -371,7 +343,7 @@ QueueManager::addItems( QListWidgetItem *after )
             QString title = i18n("%1 - %2", item->artist(), item->title() );
 
             QListWidgetItem* createdItem = new QueueItem( title );
-            m_listview->insertItem( m_listview->row( after ), createdItem );
+            m_listview->insertItem( m_listview->row( after+1 ), createdItem );
             m_map[ createdItem ] = item;
             item_added = true;
         }
@@ -417,7 +389,7 @@ QueueManager::addQueuedItem( PlaylistItem *item )
     if( newItem == current.end() ) //avoid duplication
     {
         QueueItem* createdItem = new QueueItem( title );
-        m_listview->insertItem( m_listview->row(after), createdItem );
+        m_listview->insertItem( m_listview->row( after +1 ), createdItem );
         m_map[ createdItem ] = item;
     }
 }
@@ -483,16 +455,17 @@ void
 QueueManager::insertItems()
 {
     QList<PlaylistItem*> list = Playlist::instance()->m_nextTracks;
-    QListWidgetItem *last = 0;
+    //QListWidgetItem *last = 0;
 
     foreach( PlaylistItem *item, list )
     {
         QString title = i18n("%1 - %2", item->artist(), item->title() );
 
         QueueItem* createdItem = new QueueItem( title );
-        m_listview->insertItem( m_listview->row( createdItem ), createdItem );
+        debug() << "Inserting " << title << " at " << createdItem + 1 << endl;
+        m_listview->addItem( createdItem );
         m_map[ createdItem ] = item;
-        last = createdItem;
+      //  last = createdItem;
     }
 
     updateButtons();

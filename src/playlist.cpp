@@ -3596,6 +3596,7 @@ Playlist::showQueueManager()
 void
 Playlist::changeFromQueueManager( QList<PlaylistItem*> list )
 {
+DEBUG_BLOCK
     QList<PlaylistItem*> oldQueue = m_nextTracks;
     m_nextTracks = list;
 
@@ -3614,8 +3615,8 @@ Playlist::changeFromQueueManager( QList<PlaylistItem*> list )
     // repaint newly queued or altered queue items
     if( dynamicMode() )
         sortQueuedItems();
-    else
-        refreshNextTracks(0);
+//    else
+//        refreshNextTracks(0);
 }
 
 void
@@ -4435,6 +4436,7 @@ Playlist::reallyEnsureItemCentered()
 void
 Playlist::refreshNextTracks( int from )
 {
+DEBUG_BLOCK
     // This function scans the m_nextTracks list starting from the 'from'
     // position and from there on updates the progressive numbering on related
     // items and repaints them. In short it performs an update subsequent to
@@ -4442,7 +4444,7 @@ Playlist::refreshNextTracks( int from )
 
     //start on the 'from'-th item of the list
     
-    //PORT functionality sort of changed, since QList doesn't keep track of current. 
+    //PORT functionality sort of changed, since QList doesn't have QPtrList's concept of current
     //...but using current never made much sense anyways as far as I can tell. - IAM
 
     for( int i = (from == -1) ? 0 : from;
