@@ -445,7 +445,7 @@ BlockAnalyzer::contextMenuEvent( QContextMenuEvent *e )
     {
         const uint v = ids[x];
 
-        menu.insertItem( i18n( "%1 fps" ).arg( 1000/v ), v );
+        menu.insertItem( i18n( "%1 fps", 1000/v ), v );
         menu.setItemChecked( v, v == timeout() );
     }
 
