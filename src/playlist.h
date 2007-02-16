@@ -234,7 +234,6 @@ class Playlist : private K3ListView, public EngineObserver, public Amarok::ToolT
         void editActiveDynamicMode();
         void rebuildDynamicModeCache();
         void repopulate();
-        void safeClear();
         void scoreChanged( const QString &path, float score );
         void ratingChanged( const QString &path, int rating );
         void fileMoved( const QString &srcPath, const QString &dstPath );

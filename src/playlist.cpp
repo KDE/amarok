@@ -463,7 +463,7 @@ Playlist::~Playlist()
     if( AmarokConfig::savePlaylist() && m_lockStack == 0 ) saveXML( defaultPlaylistPath() );
 
     //speed up quit a little
-    safeClear();   //our implementation is slow
+    K3ListView::clear();   //our implementation is slow
     Amarok::ToolTip::remove( viewport() );
     blockSignals( true ); //might help
     s_instance = 0;
@@ -2170,8 +2170,6 @@ Playlist::appendMedia( const KUrl &url )
 void
 Playlist::clear() //SLOT
 {
-    DEBUG_BLOCK
-
     if( isLocked() || renameLineEdit()->isVisible() ) return;
 
     disableDynamicMode();
@@ -2203,44 +2201,11 @@ Playlist::clear() //SLOT
     // something to bear in mind, if there is any event in the loop
     // that depends on a PlaylistItem, we are about to crash Amarok
     // never unlock() the Playlist until it is safe!
-    safeClear();
+    K3ListView::clear();
     m_total = 0;
     m_albums.clear();
 
     setPlaylistName( i18n( "Untitled" ) );
-}
-
-/**
- * Workaround for Qt 3.3.5 bug in QListView::clear()
- * @see http://lists.kde.org/?l=kde-devel&m=113113845120155&w=2
- * @see BUG 116004
- */
-void
-Playlist::safeClear()
-{
-    /* 3.3.5 and 3.3.6 have bad K3ListView::clear() functions.
-       3.3.5 forgets to clear the pointer to the highlighted item.
-       3.3.6 forgets to clear the pointer to the last dragged item */
-    if ( strcmp( qVersion(), "3.3.5" ) == 0
-         || strcmp( qVersion(), "3.3.6" ) == 0 )
-    {
-        bool block = signalsBlocked();
-        blockSignals( true );
-        clearSelection();
-
-        Q3ListViewItem *c = firstChild();
-        Q3ListViewItem *n;
-        while( c ) {
-            n = c->nextSibling();
-            if ( !static_cast<PlaylistItem *>( c )->isEmpty() ) //avoid deleting markers
-                delete c;
-            c = n;
-        }
-        blockSignals( block );
-        triggerUpdate();
-    }
-    else
-        K3ListView::clear();
 }
 
 void
@@ -4532,7 +4497,7 @@ Playlist::switchState( QStringList &loadFromMe, QStringList &saveToMe )
     m_nextTracks.clear();
     emit queueChanged( QList<PlaylistItem*>(), prev );
     ThreadManager::instance()->abortAllJobsNamed( "TagWriter" );
-    safeClear();
+    K3ListView::clear();
     m_total = 0;
     m_albums.clear();
 
