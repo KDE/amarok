@@ -200,7 +200,7 @@ bool PlaylistItem::isQueued() const
 
 int PlaylistItem::queuePosition() const
 {
-    return listView()->m_nextTracks.findRef( this );
+    return listView()->m_nextTracks.indexOf( const_cast<PlaylistItem*>(this) );
 }
 
 void PlaylistItem::setEnabled()
@@ -726,7 +726,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
         }
     }
     /// Track action symbols
-    const int  queue       = listView()->m_nextTracks.findRef( this ) + 1;
+    const int  queue       = listView()->m_nextTracks.indexOf( this ) + 1;
     const bool stop        = ( this == listView()->m_stopAfterTrack );
     const bool repeat      = Amarok::repeatTrack() && isCurrent;
 

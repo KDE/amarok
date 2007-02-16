@@ -52,8 +52,8 @@ QueueLabel::QueueLabel( QWidget *parent, const char *name )
     , m_tooltipShowing( false )
     , m_tooltipHidden( false )
 {
-    connect( this,                 SIGNAL( queueChanged( const PLItemList &, const PLItemList & ) ),
-             Playlist::instance(), SIGNAL( queueChanged( const PLItemList &, const PLItemList & ) ) );
+    connect( this,                 SIGNAL( queueChanged( const QList<PlaylistItem*> &, const QList<PlaylistItem*> & ) ),
+             Playlist::instance(), SIGNAL( queueChanged( const QList<PlaylistItem*> &, const QList<PlaylistItem*> & ) ) );
 
     connect( CollectionDB::instance(), SIGNAL( coverChanged( const QString &, const QString & ) ),
              this, SLOT( slotCoverChanged( const QString &, const QString & ) ) );
@@ -64,16 +64,16 @@ QueueLabel::QueueLabel( QWidget *parent, const char *name )
 
 void QueueLabel::update() //SLOT
 {
-    PLItemList &queue = Playlist::instance()->m_nextTracks;
+    QList<PlaylistItem*> &queue = Playlist::instance()->m_nextTracks;
     setNum( queue.count() );
     if( isVisible() )
-        getCover( queue.getFirst()->artist(), queue.getFirst()->album() );
+        getCover( queue.first()->artist(), queue.first()->album() );
 }
 
 void QueueLabel::slotCoverChanged( const QString &artist, const QString &album ) //SLOT
 {
-    PLItemList &queue = Playlist::instance()->m_nextTracks;
-    if( isVisible() && queue.getFirst()->artist().string() == artist && queue.getFirst()->album().string() == album )
+    QList<PlaylistItem*> &queue = Playlist::instance()->m_nextTracks;
+    if( isVisible() && queue.first()->artist().string() == artist && queue.first()->album().string() == album )
         getCover( artist, album );
 }
 
@@ -153,6 +153,7 @@ void QueueLabel::aboutToShow()
 
 void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
 {
+    DEBUG_BLOCK
     hideToolTip();
 
     if( m_timer.isActive() )  // if the user clicks again when (right after) the menu is open,
@@ -162,14 +163,14 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
     }
 
     Playlist *pl = Playlist::instance();
-    PLItemList &queue = pl->m_nextTracks;
+    QList<PlaylistItem*> &queue = pl->m_nextTracks;
     if( queue.isEmpty() )
         return;
 
     int length = 0;
-    for( Q3PtrListIterator<PlaylistItem> it( queue ); *it; ++it )
+    foreach( PlaylistItem* it, queue )
     {
-        const int s = (*it)->length();
+        const int s = it->length();
         if( s > 0 ) length += s;
     }
 
@@ -189,16 +190,14 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
     menu->insertItem( SmallIconSet( Amarok::icon( "rewind" ) ),
                       count > 1 ? i18n( "&Dequeue All Tracks" ) : i18n( "&Dequeue Track" ), 0 );
     menu->insertSeparator();
-
     uint i = 1;
-    Q3PtrListIterator<PlaylistItem> it( queue );
-    it.toFirst();
 
     while( i <= count )
     {
-        for( uint n = qMin( i + MAX_TO_SHOW - 1, count ); i <= n; ++i, ++it )
+        for( uint n = qMin( i + MAX_TO_SHOW - 1, count ); i <= n; ++i )
             menu->insertItem(
-                KStringHandler::rsqueeze( i18n( "%1. %2" ).arg( i ).arg( veryNiceTitle( *it ) ), 50 ), i );
+                KStringHandler::rsqueeze( i18n( "%1. %2", i, veryNiceTitle( queue.at(i-1) ) ), 50 ), i );
+        Debug::stamp();
 
         if( i < count )
         {
@@ -210,21 +209,21 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
     }
 
     menu = menus.getFirst();
-
+Debug::stamp();
     int mx, my;
     const int   mw      = menu->sizeHint().width(),
                 mh      = menu->sizeHint().height(),
                 sy      = mapFrom( Amarok::StatusBar::instance(), QPoint( 0, 0 ) ).y(),
                 sheight = Amarok::StatusBar::instance()->height();
     const QRect dr      = QApplication::desktop()->availableGeometry( this );
-
+Debug::stamp();
     if( mapYToGlobal( sy ) - mh > dr.y() )
        my = mapYToGlobal( sy ) - mh;
     else if( mapYToGlobal( sy + sheight ) + mh < dr.y() + dr.height() )
        my = mapYToGlobal( sy + sheight );
     else
        my = mapToGlobal( mouseEvent->pos() ).y();
-
+Debug::stamp();
     mx = mapXToGlobal( 0 ) - ( mw - width() ) / 2;
 
     menu->exec( QPoint( mx, my ) );
@@ -243,6 +242,7 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
         if( selected )
             pl->ensureItemCentered( selected );
     }*/
+Debug::stamp();
 }
 
 void QueueLabel::showToolTip()
@@ -254,7 +254,7 @@ void QueueLabel::showToolTip()
 
     Playlist     *pl    = Playlist::instance();
     const uint    count = pl->m_nextTracks.count();
-    PlaylistItem *item  = pl->m_nextTracks.getFirst();
+    PlaylistItem *item  = pl->m_nextTracks.first();
 
     if( !item )
         return;
@@ -264,9 +264,9 @@ void QueueLabel::showToolTip()
     if( count > 1 )
     {
         int length = 0;
-        for( Q3PtrListIterator<PlaylistItem> it( pl->m_nextTracks ); *it; ++it )
+        foreach( PlaylistItem* it, pl->m_nextTracks )
         {
-            const int s = (*it)->length();
+            const int s = it->length();
             if( s > 0 ) length += s;
         }
         if( length )

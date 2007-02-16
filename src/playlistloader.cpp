@@ -263,7 +263,7 @@ UrlLoader::customEvent( QEvent *e)
                     Playlist::instance()->setCurrentTrack( item );
 
                 else if( (*it).queue > 0 ) {
-                    PLItemList &m_nextTracks = Playlist::instance()->m_nextTracks;
+                    QList<PlaylistItem*> &m_nextTracks = Playlist::instance()->m_nextTracks;
                     int count = m_nextTracks.count();
 
                     for( int c = count; c < (*it).queue; c++ )
@@ -295,15 +295,14 @@ void
 UrlLoader::completeJob()
 {
     DEBUG_BLOCK
-    const PLItemList &newQueue = Playlist::instance()->m_nextTracks;
-    Q3PtrListIterator<PlaylistItem> it( newQueue );
-    PLItemList added;
-    for( it.toFirst(); *it; ++it )
-        if( !m_oldQueue.containsRef( *it ) )
-            added << (*it);
+    const QList<PlaylistItem*> &newQueue = Playlist::instance()->m_nextTracks;
+    QList<PlaylistItem*> added;
+    foreach(PlaylistItem* it, newQueue)
+        if( !m_oldQueue.contains( it ) )
+            added << it;
 
     if( !added.isEmpty() )
-        emit queueChanged( added, PLItemList() );
+        emit queueChanged( added, QList<PlaylistItem*>() );
 
     if ( !m_badURLs.isEmpty() ) {
         QString text = i18n("These media could not be loaded into the playlist: " );

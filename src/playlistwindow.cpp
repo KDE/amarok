@@ -602,7 +602,7 @@ void PlaylistWindow::init()
 
     connect( playlist, SIGNAL( itemCountChanged(     int, int, int, int, int, int ) ),
              statusbar,  SLOT( slotItemCountChanged( int, int, int, int, int, int ) ) );
-    connect( playlist, SIGNAL( queueChanged( const PLItemList &, const PLItemList & ) ),
+    connect( playlist, SIGNAL( queueChanged( const QList<PlaylistItem*> &, const QList<PlaylistItem*> & ) ),
              statusbar,  SLOT( updateQueueLabel() ) );
     connect( playlist, SIGNAL( aboutToClear() ), m_lineEdit, SLOT( clear() ) );
     Amarok::MessageQueue::instance()->sendMessages();
@@ -806,7 +806,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
                 pl->m_filtertimer->stop(); //HACK HACK HACK
                 if( e->state() & Qt::ControlModifier )
                 {
-                    PLItemList in, out;
+                    QList<PlaylistItem*> in, out;
                     if( e->state() & Qt::ShiftModifier )
                         for( It it( pl, It::Visible ); PlaylistItem *x = static_cast<PlaylistItem*>( *it ); ++it )
                         {

@@ -207,7 +207,7 @@ class Playlist : private K3ListView, public EngineObserver, public Amarok::ToolT
     signals:
         void aboutToClear();
         void itemCountChanged( int newCount, int newLength, int visCount, int visLength, int selCount, int selLength );
-        void queueChanged( const PLItemList &queued, const PLItemList &dequeued );
+        void queueChanged( const QList<PlaylistItem*> &queued, const QList<PlaylistItem*> &dequeued );
         void columnsChanged();
         void dynamicModeChanged( const DynamicMode *newMode );
 
@@ -248,7 +248,7 @@ class Playlist : private K3ListView, public EngineObserver, public Amarok::ToolT
         void setStopAfterMode( int mode );
         void showCurrentTrack() { ensureItemCentered( m_currentTrack ); }
         void showQueueManager();
-        void changeFromQueueManager(Q3PtrList<PlaylistItem> list);
+        void changeFromQueueManager( QList<PlaylistItem*> list );
         void shuffle();
         void undo();
         void updateMetaData( const MetaBundle& );
@@ -293,7 +293,7 @@ class Playlist : private K3ListView, public EngineObserver, public Amarok::ToolT
         void slotSingleClick();
         void slotContentsMoving();
         void slotRepeatTrackToggled( int mode );
-        void slotQueueChanged( const PLItemList &in, const PLItemList &out);
+        void slotQueueChanged( const QList<PlaylistItem*> &in, const QList<PlaylistItem*> &out);
         void slotUseScores( bool use );
         void slotUseRatings( bool use );
         void slotMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic );
@@ -369,7 +369,7 @@ class Playlist : private K3ListView, public EngineObserver, public Amarok::ToolT
         //NOTE these container types were carefully chosen
         Q3PtrList<PlaylistAlbum> m_prevAlbums; //the previously played albums in Entire Albums mode
         PLItemList m_prevTracks;    //the previous history
-        PLItemList m_nextTracks;    //the tracks to be played after the current track
+        QList<PlaylistItem*> m_nextTracks;    //the tracks to be played after the current track
 
         QString m_filter;
         QString m_prevfilter;

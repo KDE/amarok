@@ -17,31 +17,31 @@
 #include "playlistitem.h"
 
 #include <kdialog.h>    //baseclass
-#include <k3listview.h>      //baseclass
+#include <QListWidget>      //baseclass
+#include <QListWidgetItem> //baseclass
 
 #include <qmap.h>
 //Added by qt3to4:
-#include <QDragEnterEvent>
-#include <QDropEvent>
-#include <QDragMoveEvent>
-#include <QKeyEvent>
-#include <QPaintEvent>
+class QDragEnterEvent;
+class QDropEvent;
+class QDragMoveEvent;
+class QKeyEvent;
+class QPaintEvent;
 #include <Q3PtrList>
 
 class KPushButton;
 
-class QueueItem : public K3ListViewItem
+class QueueItem : public QListWidgetItem
 {
-    public:
-        QueueItem( Q3ListView *parent, Q3ListViewItem *after, QString t )
-            : K3ListViewItem( parent, after, t )
-        { };
-
+ 
+     public:
+        QueueItem( const QString& s ) : QListWidgetItem( s ) { }
+#if 0
         void paintCell( QPainter *p, const QColorGroup &cg, int column, int width, int align );
-
+#endif
 };
 
-class QueueList : public K3ListView
+class QueueList : public QListWidget
 {
         Q_OBJECT
 
@@ -52,8 +52,7 @@ class QueueList : public K3ListView
         ~QueueList() {};
 
         bool    hasSelection();
-        bool    isEmpty() { return ( childCount() == 0 ); }
-        Q3PtrList<Q3ListViewItem>  selectedItems();
+        bool    isEmpty() { return ( count() == 0 ); }
 
     public slots:
         void    moveSelectedUp();
@@ -62,11 +61,11 @@ class QueueList : public K3ListView
         virtual void    clear();
 
     private:
-        void    contentsDragEnterEvent( QDragEnterEvent *e );
-        void    contentsDragMoveEvent( QDragMoveEvent* e );
-        void    contentsDropEvent( QDropEvent *e );
+        void    dragEnterEvent( QDragEnterEvent *e );
+        void    dragMoveEvent( QDragMoveEvent* e );
+        void    dropEvent( QDropEvent *e );
         void    keyPressEvent( QKeyEvent *e );
-        void    viewportPaintEvent( QPaintEvent* );
+        void    paintEvent( QPaintEvent* );
 
      signals:
         void    changed();
@@ -80,14 +79,14 @@ class QueueManager : public KDialog
         QueueManager( QWidget *parent = 0, const char *name = 0 );
         ~QueueManager();
 
-        Q3PtrList<PlaylistItem> newQueue();
+        QList<PlaylistItem* > newQueue();
 
         static QueueManager *instance() { return s_instance; }
 
     public slots:
         void    applyNow();
-        void    addItems( Q3ListViewItem *after = 0 ); /// For the add button (uses selected playlist tracks)
-        void    changeQueuedItems( const PLItemList &in, const PLItemList &out );  /// For keeping queue/dequeue in sync
+        void    addItems( QListWidgetItem *after = 0 ); /// For the add button (uses selected playlist tracks)
+        void    changeQueuedItems( const QList<PlaylistItem*> &in, const QList<PlaylistItem*> &out );  /// For keeping queue/dequeue in sync
         void    updateButtons();
 
     private slots:
@@ -99,7 +98,7 @@ class QueueManager : public KDialog
         void    addQueuedItem( PlaylistItem *item );
         void    removeQueuedItem( PlaylistItem *item );
 
-        QMap<Q3ListViewItem*, PlaylistItem*> m_map;
+        QMap<QListWidgetItem*, PlaylistItem*> m_map;
         QueueList   *m_listview;
         KPushButton *m_up;
         KPushButton *m_down;

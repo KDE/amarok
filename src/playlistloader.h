@@ -114,7 +114,7 @@ public:
     static const uint OPTIMUM_BUNDLE_COUNT = 50;
 
 signals:
-    void queueChanged( const PLItemList &, const PLItemList & );
+void queueChanged( const QList<PlaylistItem*> &, const QList<PlaylistItem*> & );
 
 protected:
     /// reimplemented from ThreadManager::Job
@@ -139,7 +139,7 @@ private:
     bool          m_coloring;
     int           m_options;
     Debug::Block  m_block;
-    Q3PtrList<PlaylistItem> m_oldQueue;
+    QList<PlaylistItem*> m_oldQueue;
     QXmlInputSource  *m_xmlSource;
     Q3ValueList<XMLData> m_xml;
     KUrl m_currentURL;

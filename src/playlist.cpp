@@ -302,8 +302,8 @@ Playlist::Playlist( QWidget *parent )
              this,       SLOT( activate( Q3ListViewItem* ) ) );
     connect( this,     SIGNAL( mouseButtonPressed( int, Q3ListViewItem*, const QPoint&, int ) ),
              this,       SLOT( slotMouseButtonPressed( int, Q3ListViewItem*, const QPoint&, int ) ) );
-    connect( this,     SIGNAL( queueChanged(     const PLItemList &, const PLItemList & ) ),
-             this,       SLOT( slotQueueChanged( const PLItemList &, const PLItemList & ) ) );
+    connect( this,     SIGNAL( queueChanged(     const QList<PlaylistItem*> &, const QList<PlaylistItem*> & ) ),
+             this,       SLOT( slotQueueChanged( const QList<PlaylistItem*> &, const QList<PlaylistItem*> & ) ) );
     connect( this,     SIGNAL( itemRenamed( Q3ListViewItem*, const QString&, int ) ),
              this,       SLOT( writeTag( Q3ListViewItem*, const QString&, int ) ) );
     connect( this,     SIGNAL( aboutToClear() ),
@@ -544,7 +544,7 @@ Playlist::insertMedia( KUrl::List list, int options )
             }
         } else {
             // We add the track after the last track on queue, or after current if the queue is empty
-            after = m_nextTracks.isEmpty() ? currentTrack() : m_nextTracks.getLast();
+            after = m_nextTracks.isEmpty() ? currentTrack() : m_nextTracks.last();
             // If there's no tracks on the queue, and there's no current track, fall back to the last item
             if ( !after )
                 after = lastItem();
@@ -1027,13 +1027,12 @@ Playlist::playNextTrack( bool forceNext )
     {
         if( !m_nextTracks.isEmpty() )
         {
-            item = m_nextTracks.first();
-            m_nextTracks.remove();
+            item = m_nextTracks.takeFirst();
             if ( dynamicMode() )
                 // move queued track to the top of the playlist, to prevent it from being played twice
                 // this is done automatically by most queue changing functions, but not if the user manually moves the track
                 moveItem( item, 0, m_currentTrack );
-            emit queueChanged( PLItemList(), PLItemList( item ) );
+            emit queueChanged( QList<PlaylistItem*>(), QList<PlaylistItem*>() << item );
         }
 
         else if( Amarok::entireAlbums() && m_currentTrack && m_currentTrack->nextInAlbum() )
@@ -1346,7 +1345,7 @@ Playlist::setSelectedRatings( int rating )
 void
 Playlist::queueSelected()
 {
-    PLItemList in, out;
+    QList<PlaylistItem*> in, out;
     Q3PtrList<Q3ListViewItem> dynamicList;
 
     for( MyIt it( this, MyIt::Selected ); *it; ++it )
@@ -1354,13 +1353,13 @@ Playlist::queueSelected()
         // Dequeuing selection with dynamic doesn't work due to the moving of the track after the last queued
         if( dynamicMode() )
         {
-            ( !m_nextTracks.containsRef( *it ) ? in : out ).append( *it );
+            ( !m_nextTracks.contains( *it ) ? in : out ).append( *it );
             dynamicList.append( *it );
         }
         else
         {
             queue( *it, true );
-            ( m_nextTracks.containsRef( *it ) ? in : out ).append( *it );
+            ( m_nextTracks.contains( *it ) ? in : out ).append( *it );
         }
 
     }
@@ -1368,7 +1367,7 @@ Playlist::queueSelected()
     if( dynamicMode() )
     {
         Q3ListViewItem *item = dynamicList.first();
-        if( m_nextTracks.containsRef( static_cast<PlaylistItem*>(item) ) )
+        if( m_nextTracks.contains( static_cast<PlaylistItem*>(item) ) )
         {
             for( item = dynamicList.last(); item; item = dynamicList.prev() )
                 queue( item, true );
@@ -1388,7 +1387,7 @@ Playlist::queue( Q3ListViewItem *item, bool multi, bool invertQueue )
 {
     #define item static_cast<PlaylistItem*>(item)
 
-    const int  queueIndex  = m_nextTracks.findRef( item );
+    const int  queueIndex  = m_nextTracks.indexOf( item );
     const bool isQueued    = queueIndex != -1;
 
     if( isQueued )
@@ -1396,7 +1395,7 @@ Playlist::queue( Q3ListViewItem *item, bool multi, bool invertQueue )
         if( invertQueue )
         {
             //remove the item, this is better way than remove( item )
-            m_nextTracks.remove( queueIndex ); //sets current() to next item
+            m_nextTracks.removeAt( queueIndex ); //sets current() to next item
 
             if( dynamicMode() ) // we move the item after the last queued item to preserve the ordered 'queue'.
             {
@@ -1446,10 +1445,10 @@ Playlist::queue( Q3ListViewItem *item, bool multi, bool invertQueue )
         if( isQueued ) //no longer
         {
             if( invertQueue )
-                emit queueChanged( PLItemList(), PLItemList( item ) );
+                emit queueChanged( QList<PlaylistItem*>(), QList<PlaylistItem*>() << item );
         }
         else
-            emit queueChanged( PLItemList( item ), PLItemList() );
+            emit queueChanged( QList<PlaylistItem*>() << item, QList<PlaylistItem*>() );
     }
 
     #undef item
@@ -1459,7 +1458,7 @@ void
 Playlist::sortQueuedItems() // used by dynamic mode
 {
     PlaylistItem *last = m_currentTrack;
-    for( PlaylistItem *item = m_nextTracks.first(); item; item = m_nextTracks.next() )
+    foreach( PlaylistItem *item, m_nextTracks )
     {
         if( item->itemAbove() != last )
             item->moveItem( last );
@@ -1492,7 +1491,7 @@ void Playlist::setStopAfterItem( PlaylistItem *item ) {
     }
     else if( item == m_currentTrack )
         setStopAfterMode( StopAfterCurrent );
-    else if( item == m_nextTracks.getLast() )
+    else if( item == m_nextTracks.last() )
         setStopAfterMode( StopAfterQueue );
     else
         setStopAfterMode( StopAfterQueue );
@@ -1559,7 +1558,7 @@ void Playlist::setStopAfterMode( int mode )
             m_stopAfterTrack = m_currentTrack;
             break;
         case StopAfterQueue:
-            m_stopAfterTrack = m_nextTracks.count() ? m_nextTracks.getLast() : m_currentTrack;
+            m_stopAfterTrack = m_nextTracks.count() ? m_nextTracks.last() : m_currentTrack;
             break;
     }
 
@@ -1722,8 +1721,8 @@ Playlist::activate( Q3ListViewItem *item )
 
     //if we are playing something from the next tracks
     //list, remove it from the list
-    if( m_nextTracks.removeRef( item ) )
-        emit queueChanged( PLItemList(), PLItemList( item ) );
+    if( m_nextTracks.takeAt( m_nextTracks.indexOf(item) ) )
+        emit queueChanged( QList<PlaylistItem*>(), QList<PlaylistItem*>() << item );
 
     //looks bad painting selected and glowing
     //only do when user explicitly activates an item though
@@ -1915,8 +1914,8 @@ BundleList
 Playlist::nextTracks() const
 {
     BundleList list;
-    for( Q3PtrListIterator<PlaylistItem> it( m_nextTracks ); *it; ++it )
-        list << (**it);
+    foreach( PlaylistItem* it, m_nextTracks )
+        list << *it;
     return list;
 }
 
@@ -2183,9 +2182,9 @@ Playlist::clear() //SLOT
             setStopAfterMode( DoNotStop );
         }
     }
-    const PLItemList prev = m_nextTracks;
+    const QList<PlaylistItem*> prev = m_nextTracks;
     m_nextTracks.clear();
-    emit queueChanged( PLItemList(), prev );
+    emit queueChanged( QList<PlaylistItem*>(), prev );
 
     // Update player button states
     Amarok::actionCollection()->action( "play" )->setEnabled( false );
@@ -3015,7 +3014,7 @@ Playlist::customEvent( QEvent *e )
 {
     if( e->type() == (int)UrlLoader::JobFinishedEvent ) {
         refreshNextTracks( 0 );
-        PLItemList in, out;
+        QList<PlaylistItem*> in, out;
 
         // Disable help if playlist is populated
         if ( !isEmpty() )
@@ -3028,7 +3027,7 @@ Playlist::customEvent( QEvent *e )
 
                 if ( jt != m_queueList.end() ) {
                     queue( *it );
-                    ( m_nextTracks.containsRef( *it ) ? in : out ).append( *it );
+                    ( m_nextTracks.contains( *it ) ? in : out ).append( *it );
                     m_queueList.remove( jt );
                 }
             }
@@ -3143,11 +3142,11 @@ Playlist::saveXML( const QString &path )
 
     for( MyIt it( this, MyIt::All ); *it; ++it )
     {
-        const PlaylistItem *item = *it;
+        PlaylistItem *item = *it;
         if( item->isEmpty() ) continue;  // Skip marker items and such
 
         QStringList attributes;
-        const int queueIndex = m_nextTracks.findRef( item );
+        const int queueIndex = m_nextTracks.indexOf( item );
         if ( queueIndex != -1 )
             attributes << "queue_index" << QString::number( queueIndex + 1 );
         else if ( item == currentTrack() )
@@ -3333,7 +3332,7 @@ Playlist::repopulate() //SLOT
     for( ; *it; ++it )
     {
         PlaylistItem *item = static_cast<PlaylistItem *>(*it);
-        int     queueIndex = m_nextTracks.findRef( item );
+        int     queueIndex = m_nextTracks.indexOf( item );
         bool    isQueued   = queueIndex != -1;
         bool    isMarker   = item->isEmpty();
         // markers are used by playlistloader, and removing them is not good
@@ -3396,7 +3395,7 @@ Playlist::removeSelectedItems() //SLOT
 
     //assemble a list of what needs removing
     //calling removeItem() iteratively is more efficient if they are in _reverse_ order, hence the prepend()
-    PLItemList queued, list;
+    QList<PlaylistItem*> queued, list;
     int dontReplaceDynamic = 0;
 
     for( PlaylistIterator it( this, MyIt::Selected ); *it; ++it )
@@ -3438,18 +3437,18 @@ Playlist::removeSelectedItems() //SLOT
     //remove the items
     if( queued.count() )
     {
-        for( Q3ListViewItem *item = queued.first(); item; item = queued.next() )
-            removeItem( static_cast<PlaylistItem*>( item ), true );
+        foreach( PlaylistItem *item, queued )
+            removeItem( item, true );
 
-        emit queueChanged( PLItemList(), queued );
+        emit queueChanged( QList<PlaylistItem*>(), queued );
 
-        for( Q3ListViewItem *item = queued.first(); item; item = queued.next() )
+        foreach( PlaylistItem *item, queued )
             delete item;
     }
 
-    for( Q3ListViewItem *item = list.first(); item; item = list.next() )
+    foreach( PlaylistItem *item, list )
     {
-        removeItem( static_cast<PlaylistItem*>( item ) );
+        removeItem( item );
         delete item;
     }
 
@@ -3595,18 +3594,19 @@ Playlist::showQueueManager()
 }
 
 void
-Playlist::changeFromQueueManager(Q3PtrList<PlaylistItem> list)
+Playlist::changeFromQueueManager( QList<PlaylistItem*> list )
 {
-    PLItemList oldQueue = m_nextTracks;
+    QList<PlaylistItem*> oldQueue = m_nextTracks;
     m_nextTracks = list;
 
-    PLItemList in, out;
+    QList<PlaylistItem*> in, out;
     // make sure we repaint items no longer queued
-    for( PlaylistItem* item = oldQueue.first(); item; item = oldQueue.next() )
-        if( !m_nextTracks.containsRef( item ) )
+    foreach( PlaylistItem* item, oldQueue )
+        if( !m_nextTracks.contains( item ) )
             out << item;
-    for( PlaylistItem* item = m_nextTracks.first(); item; item = m_nextTracks.next() )
-        if( !oldQueue.containsRef( item ) )
+
+    foreach( PlaylistItem* item, m_nextTracks )
+        if( !oldQueue.contains( item ) )
             in << item;
 
     emit queueChanged( in, out );
@@ -3615,7 +3615,7 @@ Playlist::changeFromQueueManager(Q3PtrList<PlaylistItem> list)
     if( dynamicMode() )
         sortQueuedItems();
     else
-        refreshNextTracks();
+        refreshNextTracks(0);
 }
 
 void
@@ -3844,10 +3844,10 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
 
     bool queueToggle = false;
     MyIt it( this, MyIt::Selected );
-    bool firstQueued = ( m_nextTracks.findRef( *it ) != -1 );
+    bool firstQueued = m_nextTracks.contains( *it );
 
     for( ++it ; *it; ++it ) {
-        if ( ( m_nextTracks.findRef( *it ) != -1 ) != firstQueued ) {
+        if ( m_nextTracks.contains( *it ) != firstQueued ) {
             queueToggle = true;
             break;
         }
@@ -3872,8 +3872,8 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
     // End queue entry logic
 
     bool afterCurrent = false;
-    if(  !m_nextTracks.isEmpty() ? m_nextTracks.getLast() : m_currentTrack  )
-        for( MyIt it( !m_nextTracks.isEmpty() ? m_nextTracks.getLast() : m_currentTrack, MyIt::Visible ); *it; ++it )
+    if(  !m_nextTracks.isEmpty() ? m_nextTracks.last() : m_currentTrack  )
+        for( MyIt it( !m_nextTracks.isEmpty() ? m_nextTracks.last() : m_currentTrack, MyIt::Visible ); *it; ++it )
             if( *it == item )
             {
                 afterCurrent = true;
@@ -3973,7 +3973,7 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
 
     const QPoint pos( p.x()/* - popup.sidePixmapWidth()*/, p.y() + 3 );
     int menuItemId = popup.exec( pos );
-    PLItemList in, out;
+    QList<PlaylistItem*> in, out;
 
     switch( menuItemId )
     {
@@ -4077,20 +4077,20 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
         {
             //use "in" for the other just because it's there and not used otherwise
             for( MyIt it( this, MyIt::Unselected | MyIt::Visible ); *it; ++it )
-                ( m_nextTracks.containsRef( *it ) ? in : out ).append( *it );
+                ( m_nextTracks.contains( *it ) ? in : out ).append( *it );
 
             if( !in.isEmpty() || !out.isEmpty() )
             {
                 saveUndoState();
 
-                for( PlaylistItem *it = out.first(); it; it = out.next() )
+                foreach( PlaylistItem *it, out )
                     removeItem( it, true );
                 if( !out.isEmpty() )
-                    emit queueChanged( PLItemList(), out );
-                for( PlaylistItem *it = out.first(); it; it = out.next() )
+                    emit queueChanged( QList<PlaylistItem*>(), out );
+                foreach( PlaylistItem *it, out )
                     delete it;
 
-                for( PlaylistItem *it = in.first(); it; it = in.next() )
+                foreach( PlaylistItem *it, in )
                 {
                     removeItem( it );
                     delete it;
@@ -4394,8 +4394,8 @@ Playlist::removeItem( PlaylistItem *item, bool multi )
     }
 
     //keep m_nextTracks queue synchronized
-    if( m_nextTracks.removeRef( item ) && !multi )
-       emit queueChanged( PLItemList(), PLItemList( item ) );
+    if( m_nextTracks.takeAt( m_nextTracks.indexOf( item ) ) && !multi )
+       emit queueChanged( QList<PlaylistItem*>(), QList<PlaylistItem*>() << item );
 
     //keep recent buffer synchronized
     removeFromPreviousTracks( item ); //removes all pointers to item
@@ -4441,12 +4441,15 @@ Playlist::refreshNextTracks( int from )
     // a renumbering/order changing at some point of the m_nextTracks list.
 
     //start on the 'from'-th item of the list
+    
+    //PORT functionality sort of changed, since QList doesn't keep track of current. 
+    //...but using current never made much sense anyways as far as I can tell. - IAM
 
-    for( PlaylistItem* item = (from == -1) ? m_nextTracks.current() : m_nextTracks.at( from );
-         item;
-         item = m_nextTracks.next() )
+    for( int i = (from == -1) ? 0 : from;
+         i < m_nextTracks.size();
+         ++i )
     {
-        item->update();
+        m_nextTracks.at(i)->update();
     }
 }
 
@@ -4517,9 +4520,9 @@ Playlist::switchState( QStringList &loadFromMe, QStringList &saveToMe )
     Glow::reset();
     m_prevTracks.clear();
     m_prevAlbums.clear();
-    const PLItemList prev = m_nextTracks;
+    const QList<PlaylistItem*> prev = m_nextTracks;
     m_nextTracks.clear();
-    emit queueChanged( PLItemList(), prev );
+    emit queueChanged( QList<PlaylistItem*>(), prev );
     ThreadManager::instance()->abortAllJobsNamed( "TagWriter" );
     safeClear();
     m_total = 0;
@@ -4621,10 +4624,10 @@ void Playlist::slotContentsMoving()
 }
 
 void
-Playlist::slotQueueChanged( const PLItemList &/*in*/, const PLItemList &out)
+Playlist::slotQueueChanged( const QList<PlaylistItem*> &/*in*/, const QList<PlaylistItem*> &out)
 {
-    for( Q3PtrListIterator<PlaylistItem> it( out ); *it; ++it )
-        (*it)->update();
+    foreach(PlaylistItem* it, out )
+        it->update();
     refreshNextTracks( 0 );
     updateNextPrev();
 }
