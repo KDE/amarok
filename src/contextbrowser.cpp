@@ -2977,21 +2977,22 @@ QString CurrentTrackJob::statsHTML( int score, int rating, bool statsbox ) //sta
             fullStarBuf.close();
             QCString fullStar = KCodecs::base64Encode( fullStarBuf.buffer(), true );
 
-            QImageIO halfStarIO;
-            halfStarIO.setImage( StarManager::instance()->getHalfStarImage() );
-            halfStarIO.setFormat( "PNG" );
-            QBuffer halfStarBuf;
-            halfStarBuf.open( IO_WriteOnly );
-            halfStarIO.setIODevice( &halfStarBuf );
-            halfStarIO.write();
-            halfStarBuf.close();
-            QCString halfStar = KCodecs::base64Encode( halfStarBuf.buffer(), true );
-
             const QString img = "<img src='%1' height='13px' class='ratingStar'></img>\n";
             for( int i = 0, n = rating / 2; i < n; ++i )
                 contents += img.arg( "data:image/png;base64," + fullStar );
             if( rating % 2 )
+            {
+                QImageIO halfStarIO;
+                halfStarIO.setImage( StarManager::instance()->getHalfStarImage() );
+                halfStarIO.setFormat( "PNG" );
+                QBuffer halfStarBuf;
+                halfStarBuf.open( IO_WriteOnly );
+                halfStarIO.setIODevice( &halfStarBuf );
+                halfStarIO.write();
+                halfStarBuf.close();
+                QCString halfStar = KCodecs::base64Encode( halfStarBuf.buffer(), true );
                 contents += img.arg( "data:image/png;base64," + halfStar );
+            }
             contents += "</nobr>\n";
         }
         else
