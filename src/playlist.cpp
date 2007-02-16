@@ -334,7 +334,7 @@ Playlist::Playlist( QWidget *parent )
     m_clearButton->setText( i18nc( "clear playlist", "&Clear" ) );
     m_clearButton->setIcon( KIcon( Amarok::icon( "playlist_clear" ) ) );
     ac->addAction("playlist_clear", m_clearButton);
-    connect( m_clearButton, SIGNAL( triggered( bool ) ), this, SLOT( clear) );
+    connect( m_clearButton, SIGNAL( triggered() ), this, SLOT( clear() ) );
 
     m_undoButton  = KStandardAction::undo( this, SLOT( undo() ), this );
     ac->addAction("playlist_undo", m_undoButton);
@@ -2170,6 +2170,8 @@ Playlist::appendMedia( const KUrl &url )
 void
 Playlist::clear() //SLOT
 {
+    DEBUG_BLOCK
+
     if( isLocked() || renameLineEdit()->isVisible() ) return;
 
     disableDynamicMode();
