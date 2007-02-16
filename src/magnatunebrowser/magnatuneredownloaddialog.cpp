@@ -17,7 +17,7 @@
  Boston, MA 02110-1301, USA.
 */
 
-
+#include "debug.h"
 #include "magnatuneredownloaddialog.h"
 
 #include <QPushButton>
@@ -39,9 +39,15 @@ MagnatuneRedownloadDialog::~MagnatuneRedownloadDialog()
 void MagnatuneRedownloadDialog::setRedownloadItems( QStringList items )
 {
 
-    for ( QStringList::Iterator it = items.begin(); it != items.end(); ++it ) {
-       new K3ListViewItem(redownloadListView, (*it));
-    }
+     QStringListIterator it(items);
+     while ( it.hasNext() ) {
+
+           QString currentItem = it.next();
+           debug() << "Adding item to redownload dialog: " << currentItem << endl;
+           new Q3ListViewItem(redownloadListView, currentItem);
+     }
+
+     debug() << "Nothing more to add..." << endl;
 
 }
 

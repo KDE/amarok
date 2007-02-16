@@ -480,6 +480,8 @@ void MagnatuneBrowser::updateGenreBox()
 
 void MagnatuneBrowser::processRedownload( )
 {
+    debug() << "Process redownload" << endl;
+
     if ( m_redownloadHandler == 0 )
     {
         m_redownloadHandler = new MagnatuneRedownloadHandler( this );

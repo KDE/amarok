@@ -46,6 +46,8 @@ MagnatuneRedownloadHandler::~MagnatuneRedownloadHandler()
 void MagnatuneRedownloadHandler::showRedownloadDialog( )
 {
 
+     debug() << "Show redownload dialog" << endl;
+
     QStringList previousDownloads = GetPurchaseList();
 
     if (previousDownloads.isEmpty()) {
@@ -71,23 +73,29 @@ void MagnatuneRedownloadHandler::showRedownloadDialog( )
 
 QStringList MagnatuneRedownloadHandler::GetPurchaseList( )
 {
+   
+    debug() << "MagnatuneRedownloadHandler::GetPurchaseList( )" << endl;
+    
+    QStringList returnList;
     QDir purchaseInfoDir( Amarok::saveLocation( "magnatune.com/purchases/" ) );
+
+    if ( !purchaseInfoDir.exists () ) {
+      return returnList;
+    }
 
     purchaseInfoDir.setFilter( QDir::Files);
     purchaseInfoDir.setSorting( QDir::Name );
 
     const QFileInfoList list = purchaseInfoDir.entryInfoList();
     QFileInfoList::const_iterator it( list.begin() );
-    QFileInfo *fi;
-
-    QStringList returnList;
+    QFileInfo fi;
 
     while ( it != list.end() ) {
-        *fi = *it;
-        returnList.append(fi->fileName());
+        fi = *it;
+        returnList.append( fi.fileName() );
         ++it;
     }
-
+     debug() << "Done parsing previous purchases!" << endl;
     return returnList;
 
 }
