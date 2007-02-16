@@ -815,9 +815,9 @@ void CoverManager::updateStatusBar()
             if ( values.count() >= 2 )
             {
                 if( values[0].isEmpty() )
-                    text = i18n( "Fetching cover for %1..." ).arg( values[1] );
+                    text = i18n( "Fetching cover for %1..." , values[1] );
                 else
-                    text = i18n( "Fetching cover for %1 - %2..." ).arg( values[0], values[1] );
+                    text = i18n( "Fetching cover for %1 - %2...", values[0], values[1] );
             }
         }
         else if( m_fetchingCovers ) {
@@ -849,7 +849,7 @@ void CoverManager::updateStatusBar()
         }
 
         if( !m_filter.isEmpty() )
-            text = i18np( "1 result for \"%1\"", "%1 results for \"%1\"", totalCounter ).arg( m_filter );
+            text = i18np( "1 result for \"%1\"", "%1 results for \"%1\"", totalCounter, m_filter );
         else if( m_artistView->selectedItem() ) {
             text = i18np( "1 album", "%1 albums", totalCounter );
             if( m_artistView->selectedItem() != m_artistView->firstChild() ) //showing albums by an artist
@@ -862,7 +862,7 @@ void CoverManager::updateStatusBar()
         }
 
         if( missingCounter )
-            text += i18n(" - ( <b>%1</b> without cover )" ).arg( missingCounter );
+            text += i18n(" - ( <b>%1</b> without cover )", missingCounter );
 
         #ifdef AMAZON_SUPPORT
         m_fetchButton->setEnabled( missingCounter );
@@ -937,8 +937,7 @@ void CoverView::setStatusText( Q3IconViewItem *item )
     //FIXME: Don't rely on other independent code, use an sql query
     if( item->artist().isEmpty() ) sampler = true;
 
-    QString tipContent = i18n( "%1 - %2" ).arg( sampler ? i18n("Various Artists") : item->artist() )
-                                          .arg( item->album() );
+    QString tipContent = i18n( "%1 - %2", sampler ? i18n("Various Artists") : item->artist() , item->album() );
 
     CoverManager::instance()->setStatusText( tipContent );
 
