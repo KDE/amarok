@@ -1721,8 +1721,10 @@ Playlist::activate( Q3ListViewItem *item )
 
     //if we are playing something from the next tracks
     //list, remove it from the list
-    if( m_nextTracks.takeAt( m_nextTracks.indexOf(item) ) )
-        emit queueChanged( QList<PlaylistItem*>(), QList<PlaylistItem*>() << item );
+    //FIXME index sometimes becomes -1. That can't be right.
+//    const int index = m_nextTracks.indexOf( item );
+//    if( index < m_nextTracks.size() && m_nextTracks.takeAt( index ) )
+//        emit queueChanged( QList<PlaylistItem*>(), QList<PlaylistItem*>() << item );
 
     //looks bad painting selected and glowing
     //only do when user explicitly activates an item though
