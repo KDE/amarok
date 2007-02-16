@@ -16,6 +16,7 @@ namespace Amarok {
     void coverContextMenu(  QWidget *parent, QPoint point, const QString &artist, const QString &album, bool showCoverManager = true );
 }
 
+class KJob;
 
 class CoverLabel : public QLabel {
     public:
@@ -73,8 +74,8 @@ signals:
     void result( CoverFetcher* );
 
 private slots:
-    void finishedXmlFetch( KIO::Job* job );
-    void finishedImageFetch( KIO::Job* job );
+    void finishedXmlFetch( KJob * job );
+    void finishedImageFetch( KJob * job );
     void changeLocale( int id );
 
 private:
@@ -104,7 +105,7 @@ private:
     void finish();
 
     /// The fetch failed, finish up and log an error message
-    void finishWithError( const QString &message, KIO::Job *job = 0 );
+    void finishWithError( const QString &message, KJob *job = 0 );
 
     /// Prompt the user for a query
     void getUserQuery( QString explanation = QString::null );

@@ -34,6 +34,7 @@
 #include <kmessagebox.h>
 #include <kmenu.h>
 #include <kpushbutton.h>
+#include <kvbox.h>
 #include <kwin.h>
 
 
@@ -46,7 +47,7 @@ Amarok::coverContextMenu( QWidget *parent, QPoint point, const QString &artist, 
         menu.setTitle( i18n( "Cover Image" ) );
 
         menu.insertItem( SmallIconSet( Amarok::icon( "zoom" ) ), i18n( "&Show Fullsize" ), SHOW );
-        menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n( "&Fetch From amazon.%1" ).arg( CoverManager::amazonTld() ), FETCH );
+        menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n( "&Fetch From amazon.%1", CoverManager::amazonTld() ), FETCH );
         menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "Set &Custom Cover" ), CUSTOM );
         bool disable = !album.isEmpty(); // disable setting covers for unknown albums
         menu.setItemEnabled( FETCH, disable );
@@ -244,8 +245,8 @@ CoverFetcher::startFetch()
         + "&page=1&f=xml";
     debug() << url << endl;
 
-    KIO::TransferJob* job = KIO::storedGet( url, false, false );
-    connect( job, SIGNAL(result( KIO::Job* )), SLOT(finishedXmlFetch( KIO::Job* )) );
+    KJob* job = KIO::storedGet( url, false, false );
+    connect( job, SIGNAL(result( KJob* )), SLOT(finishedXmlFetch( KJob* )) );
 
     Amarok::StatusBar::instance()->newProgressOperation( job );
 }
@@ -256,7 +257,7 @@ CoverFetcher::startFetch()
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void
-CoverFetcher::finishedXmlFetch( KIO::Job *job ) //SLOT
+CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
 {
     DEBUG_BLOCK
 
@@ -315,10 +316,11 @@ CoverFetcher::finishedXmlFetch( KIO::Job *job ) //SLOT
         QString asin = node.namedItem( "Asin" ).firstChild().toText().nodeValue();
         QString name = node.namedItem( "ProductName" ).firstChild().toText().nodeValue();
 
-    const QDomNode  artists = node.namedItem("Artists");
-    // in most cases, Amazon only sends one Artist in Artists
-    QString artist = "";
-    if (!artists.isNull()) artist = artists.namedItem( "Artist" ).firstChild().toText().nodeValue();
+        const QDomNode  artists = node.namedItem("Artists");
+        // in most cases, Amazon only sends one Artist in Artists
+        QString artist = "";
+        if (!artists.isNull())
+            artist = artists.namedItem( "Artist" ).firstChild().toText().nodeValue();
 
         debug() << "name:" << name << " artist:" << artist << " url:" << coverUrl << endl;
 
@@ -336,7 +338,7 @@ CoverFetcher::finishedXmlFetch( KIO::Job *job ) //SLOT
 
 
 void
-CoverFetcher::finishedImageFetch( KIO::Job *job ) //SLOT
+CoverFetcher::finishedImageFetch( KJob *job ) //SLOT
 {
     if( job->error() ) {
         debug() << "finishedImageFetch(): KIO::error(): " << job->error() << endl;
@@ -375,9 +377,8 @@ CoverFetcher::attemptAnotherFetch()
     if( !m_coverUrls.isEmpty() ) {
         // Amazon suggested some more cover URLs to try before we
         // try a different query
-
-        KIO::TransferJob* job = KIO::storedGet( KUrl(m_coverUrls.front()), false, false );
-        connect( job, SIGNAL(result( KIO::Job* )), SLOT(finishedImageFetch( KIO::Job* )) );
+        KJob* job = KIO::storedGet( KUrl(m_coverUrls.front()), false, false );
+        connect( job, SIGNAL(result( KJob* )), SLOT(finishedImageFetch( KJob* )) );
 
         Amarok::StatusBar::instance()->newProgressOperation( job );
 
@@ -552,15 +553,17 @@ CoverFetcher::getUserQuery( QString explanation )
         CoverFoundDialog( QWidget *parent, const QImage &cover, const QString &productname )
                 : KDialog( parent )
         {
+            setButtons( None );
+            showButtonSeparator( false );
             // Gives the window a small title bar, and skips a taskbar entry
-            KWin::setType( winId(), NET::Utility );
-            KWin::setState( winId(), NET::SkipTaskbar );
+            //KWin::setType( winId(), NET::Utility );
+            //KWin::setState( winId(), NET::SkipTaskbar );
+            KVBox *box = new KVBox( this );
+            setMainWidget(box);
 
-            (new QVBoxLayout( this ))->setAutoAdd( true );
-
-            QLabel      *labelPix  = new QLabel( this );
-            QLabel      *labelName = new QLabel( this );
-            KHBox       *buttons   = new KHBox( this );
+            QLabel      *labelPix  = new QLabel( box );
+            QLabel      *labelName = new QLabel( box );
+            KHBox       *buttons   = new KHBox( box );
             KPushButton *save      = new KPushButton( KStandardGuiItem::save(), buttons );
             KPushButton *newsearch = new KPushButton( i18n( "Ne&w Search..." ), buttons );
             KPushButton *nextcover = new KPushButton( i18n( "&Next Cover" ), buttons );
@@ -629,7 +632,7 @@ CoverFetcher::finish()
 }
 
 void
-CoverFetcher::finishWithError( const QString &message, KIO::Job *job )
+CoverFetcher::finishWithError( const QString &message, KJob *job )
 {
     if( job )
         warning() << message << " KIO::error(): " << job->errorText() << endl;
