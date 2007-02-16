@@ -49,7 +49,10 @@ void MagnatuneDownloadDialog::downloadButtonClicked( )
     if (m_currentDownloadInfo == 0) return;
 
     m_currentDownloadInfo->setFormatSelection(formatComboBox->currentText());
-    m_currentDownloadInfo->setUnpackUrl( downloadTargetURLRequester->url().url() );
+    
+    KUrl unpackLocation = downloadTargetURLRequester->url();
+    unpackLocation.adjustPath(KUrl::AddTrailingSlash);
+    m_currentDownloadInfo->setUnpackUrl( unpackLocation.directory( KUrl::ObeyTrailingSlash ) );
 
     emit( downloadAlbum( m_currentDownloadInfo ) );
 

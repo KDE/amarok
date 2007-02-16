@@ -47,11 +47,7 @@ void MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo * info )
     debug() << "Download: " << downloadUrl.url() << " to: " << m_currentAlbumUnpackLocation << endl;
 
 
-    m_currentAlbumFileName = downloadUrl.fileName( false );
-
-
-
-
+    m_currentAlbumFileName = downloadUrl.fileName();
 
 
     debug() << "Using temporary location: " << m_tempDir.name() + m_currentAlbumFileName << endl;
