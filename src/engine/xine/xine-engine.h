@@ -60,7 +60,7 @@ class AMAROK_XINE_ENGINE_EXPORT XineEngine : public Engine::Base
     virtual void fadeOut( uint fadeLength, bool* terminate, bool exiting = false );
 
     static  void XineEventListener( void*, const xine_event_t* );
-    virtual void customEvent( QCustomEvent* );
+    virtual void customEvent( QEvent* );
     virtual void timerEvent( QTimerEvent* );
 
     virtual void playlistChanged();

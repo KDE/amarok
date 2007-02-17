@@ -795,45 +795,47 @@ XineEngine::configure() const
 }
 
 void
-XineEngine::customEvent( QCustomEvent *e )
+XineEngine::customEvent( QEvent *event )
 {
-    #define message static_cast<QString*>(e->data())
+    if( QCustomEvent *e = dynamic_cast<QCustomEvent*>( event ) ) {
+        #define message static_cast<QString*>(e->data())
 
-    switch( e->type() )
-    {
-    case 3000: //XINE_EVENT_UI_PLAYBACK_FINISHED
-        emit trackEnded();
-        break;
+        switch( e->type() )
+        {
+        case 3000: //XINE_EVENT_UI_PLAYBACK_FINISHED
+            emit trackEnded();
+            break;
 
-    case 3001:
-        emit infoMessage( (*message).arg( m_url.prettyUrl() ) );
-        delete message;
-        break;
+        case 3001:
+            emit infoMessage( (*message).arg( m_url.prettyUrl() ) );
+            delete message;
+            break;
 
-    case 3002:
-        emit statusText( *message );
-        delete message;
-        break;
+        case 3002:
+            emit statusText( *message );
+            delete message;
+            break;
 
-    case 3003: { //meta info has changed
-        debug() << "Metadata received." << endl;
-        const Engine::SimpleMetaBundle bundle = fetchMetaData();
-        m_currentBundle = bundle;
-        emit metaData( bundle );
-    }   break;
+        case 3003: { //meta info has changed
+            debug() << "Metadata received." << endl;
+            const Engine::SimpleMetaBundle bundle = fetchMetaData();
+            m_currentBundle = bundle;
+            emit metaData( bundle );
+        }   break;
 
-    case 3004:
-        emit statusText( i18n("Redirecting to: ", *message ) );
-        load( KUrl( *message ), false );
-        play();
-        delete message;
-        break;
+        case 3004:
+            emit statusText( i18n("Redirecting to: ", *message ) );
+            load( KUrl( *message ), false );
+            play();
+            delete message;
+            break;
 
-    default:
-        ;
+        default:
+            ;
+        }
+
+        #undef message
     }
-
-    #undef message
 }
 //SLOT
 void XineEngine::configChanged()
