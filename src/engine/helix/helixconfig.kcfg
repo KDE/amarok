@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Author: Paul Cifarelli, paul@cifarelli.net -->
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
+      http://www.kde.org/standards/kcfg/1.0/kcfg.xsd" >
+    <kcfgfile name="amarokrc"/>
+    <include>config.h</include>
+
+    <group name="Helix-Engine">
+        <entry key="Core Directory" type="String">
+            <label>Helix/Realplay core directory</label>
+            <whatsthis>This is the directory where clntcore.so is located</whatsthis>
+            <default code="true">HELIX_LIBS "/common"</default>
+        </entry>
+        <entry key="Plugin Directory" type="String">
+            <label>Helix/Realplay plugins directory</label>
+            <whatsthis>This is the directory where, for example, vorbisrend.so is located</whatsthis>
+            <default code="true">HELIX_LIBS "/plugins"</default>
+        </entry>
+        <entry key="Codecs Directory" type="String">
+            <label>Helix/Realplay codecs directory</label>
+            <whatsthis>This is the directory where, for example, cvt1.so is located</whatsthis>
+            <default code="true">HELIX_LIBS "/codecs"</default>
+        </entry>
+        <entry key="Output plugin" type="String">
+            <label>Output plugin</label>
+            <whatsthis>OSS vs ALSA</whatsthis>
+            <default code="true">"oss"</default>
+        </entry>
+        <entry key="Device" type="String">
+            <label>Device</label>
+            <whatsthis>ALSA Device</whatsthis>
+            <default code="true">"default"</default>
+        </entry>
+        <entry key="Device enabled" type="Bool">
+            <label>DeviceEnabled</label>
+            <whatsthis>Is the device selected</whatsthis>
+            <default code="true">false</default>
+        </entry>
+    </group>
+
+</kcfg>
+
