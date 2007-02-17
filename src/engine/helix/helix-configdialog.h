@@ -15,9 +15,9 @@
 #include <q3ptrlist.h>
 #include <QTabWidget>
 #include <kvbox.h>
-#include <QGridLayout>
+#include <Q3GridLayout>
 
-class QGridLayout;
+class Q3GridLayout;
 class KComboBox;
 class QCheckBox;
 class KLineEdit;

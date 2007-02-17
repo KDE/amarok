@@ -35,7 +35,7 @@
 
 #include "helix-engine.h"
 #include "helix-configdialog.h"
-#include "config/helixconfig.h"
+#include "helixconfig.h"
 #include "helix-errors.h"
 #include "helix-sp.h"
 #include "hxplayercontrol.h"
@@ -50,8 +50,9 @@ using namespace std;
 extern "C"
 {
     #include <unistd.h>
-#include <QAbstractEventDispatcher>
 }
+
+#include <QAbstractEventDispatcher>
 
 #define HELIX_ENGINE_TIMER 10  // 10 ms timer
 #define SCOPE_MAX_BEHIND   200    // 200 postmix buffers
@@ -885,7 +886,7 @@ HelixEngine::setEqualizerParameters( int preamp, const Q3ValueList<int>& bandGai
 {
    m_preamp = ( preamp + 100 ) / 2;
 
-   m_equalizerGains.resize( bandGains.count() );
+   PlayerControl::m_equalizerGains.resize( bandGains.count() );
    for ( uint i = 0; i < bandGains.count(); i++ )
       m_equalizerGains[i] = ( *bandGains.at( i ) + 100 ) / 2;
 
