@@ -385,15 +385,19 @@ HelixSimplePlayer::HelixSimplePlayer() :
 #endif
    m_AlsaCapableCore(false),
    m_nDevID(-1),
+#ifdef USE_HELIX_ALSA
    m_pAlsaMixerHandle(NULL),
    m_pAlsaMasterMixerElem(NULL),
    m_pAlsaPCMMixerElem(NULL),
    m_alsaDevice("default"),
+#endif
    m_urlchanged(0),
    m_volBefore(-1),
-   m_volAtStart(-1),
-   m_MvolBefore(-1),
+   m_volAtStart(-1)
+#ifdef USE_HELIX_ALSA
+   ,m_MvolBefore(-1),
    m_MvolAtStart(-1)
+#endif
 {
 
    pthread_mutexattr_t ma;
@@ -895,8 +899,10 @@ void HelixSimplePlayer::tearDown()
       delete ppctrl[i];
   }
 
+#ifdef USE_HELIX_ALSA
    if (pAudioDevice)
       pAudioDevice->Release();
+#endif
 
    if (pAudioDeviceResponse)
       pAudioDeviceResponse->Release();
@@ -1503,7 +1509,9 @@ int HelixSimplePlayer::setUrl(const char *file, int playerIndex, bool islocal)
       if (len >= MAXPATHLEN)
          return -1;;
 
+#ifdef USE_HELIX_ALSA
       print2stderr("SETURL MASTER VOL: %d\n",getDirectMasterVolume());
+#endif
 
       if (ppctrl[playerIndex]->pszURL)
          delete [] ppctrl[playerIndex]->pszURL;
@@ -1699,7 +1707,9 @@ void HelixSimplePlayer::start(int playerIndex, bool fadein, unsigned long fadeti
       if (!ppctrl[playerIndex]->pszURL)
          return;
 
+#ifdef USE_HELIX_ALSA
       print2stderr("START MASTER VOL: %d\n",getDirectMasterVolume());
+#endif
 
       if (bEnableVerboseMode)
       {
