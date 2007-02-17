@@ -1194,14 +1194,14 @@ MetaBundle::fuzzyTime( int time )
         }
     }
 
-    QString weeks = i18np( "1 week %1", "%1 weeks %1", week );
-    QString days = i18np( "1 day %1", "%1 days %1", day );
+    QString weeks = i18np( "1 week ", "%1 weeks ", week );
+    QString days = i18np( "1 day ", "%1 days ", day );
     QString hours = i18np( "1 hour", "%1 hours", hr );
 
     if( week )
-        return weeks.arg( day ? days.arg("") : "" ).simplified();
+        return ( weeks + ( day ? days.arg("") : "" ) ).simplified();
     else if ( day )
-        return days.arg( hr ? hours : "" ).simplified();
+        return ( days + ( hr ? hours : "" ) ).simplified();
     else if ( hr )
         return i18n( "%1:%2 hours", hr, zeroPad( min ) );
     else
