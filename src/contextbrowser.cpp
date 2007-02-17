@@ -3321,7 +3321,7 @@ void ContextBrowser::showLyrics( const QString &url )
 
 
 
-    if( ( !cached || url == "reload" ) && ! ScriptManager::instance()->lyricsScriptRunning().isEmpty() ) {
+    if( ( !cached || url == "reload" ) && ScriptManager::instance()->lyricsScriptRunning().isEmpty() ) {
         const QStringList scripts = ScriptManager::instance()->lyricsScripts();
         lyrics =
               i18n( "Sorry, no lyrics script running.") + "<br />\n" +
