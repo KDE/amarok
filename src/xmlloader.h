@@ -48,6 +48,7 @@
 
 /** The type used for extra XML attributes not recognized. */
 typedef Q3ValueList< QPair<QString, QString> > XmlAttributeList;
+Q_DECLARE_METATYPE(XmlAttributeList)
 
 
 class MetaBundle::XmlLoader: public QObject, public QXmlDefaultHandler

@@ -127,6 +127,8 @@ App::App()
 {
     DEBUG_BLOCK
 
+    qRegisterMetaType<MetaBundle>();
+
 #ifdef Q_WS_MAC
     // this is inspired by OpenSceneGraph: osgDB/FilePath.cpp
 

@@ -84,6 +84,7 @@ UrlLoader::UrlLoader( const KUrl::List &urls, Q3ListViewItem *after, int options
         , m_oldQueue( Playlist::instance()->m_nextTracks )
         , m_xmlSource( 0 )
 {
+    qRegisterMetaType<XmlAttributeList>();
 
     connect( this,                 SIGNAL( queueChanged( const PLItemList &, const PLItemList & ) ),
              Playlist::instance(), SLOT( queueChanged( const PLItemList &, const PLItemList & ) ) );

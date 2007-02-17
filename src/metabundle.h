@@ -434,6 +434,9 @@ private:
     int getRand();
 };
 
+Q_DECLARE_METATYPE(MetaBundle)
+
+
 /// for your convenience
 typedef Q3ValueList<MetaBundle> BundleList;
 
