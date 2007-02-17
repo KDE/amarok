@@ -311,7 +311,7 @@ class PodcastEpisode : public PlaylistBrowserEntry
 
     private slots:
         void abortDownload();
-        void downloadResult( KIO::Job * transferJob );
+        void downloadResult( KJob * transferJob );
         void slotAnimation();
         void redirected( KIO::Job * job,const KUrl & redirectedUrl );
 

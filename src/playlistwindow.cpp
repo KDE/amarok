@@ -202,14 +202,14 @@ PlaylistWindow::PlaylistWindow()
     seekForward->setIcon( KIcon( Amarok::icon( "fastforward" ) ) );
     ac->addAction( "seek_forward", seekForward );
     seekForward->setShortcut( Qt::Key_Right );
-    connect(seekForward, SIGNAL(triggered(bool)), SLOT(seekForward()));
+    connect(seekForward, SIGNAL(triggered(bool)), ec, SLOT(seekForward()));
 
     KAction *seekBackward = new KAction( this );
     seekBackward->setText( i18n( "&Seek Backward" ) );
     seekBackward->setIcon( KIcon(Amarok::icon( "rewind" )) );
     ac->addAction( "seek_backward", seekBackward );
     seekBackward->setShortcut(Qt::Key_Left);
-    connect(seekBackward, SIGNAL(triggered(bool)), SLOT(seekBackward()));
+    connect(seekBackward, SIGNAL(triggered(bool)), ec, SLOT(seekBackward()));
 
     KAction *statistics = new KAction( this );
     statistics->setText( i18n( "Statistics" ) );
@@ -221,7 +221,7 @@ PlaylistWindow::PlaylistWindow()
     update->setText( i18n( "Update Collection" ) );
     update->setIcon( KIcon(Amarok::icon( "refresh")) );
     actionCollection()->addAction( "update_collection", update );
-    connect(update, SIGNAL(triggered(bool)), SLOT(scanModifiedDirs()));
+    connect(update, SIGNAL(triggered(bool)), CollectionDB::instance(), SLOT(scanModifiedDirs()));
 
     m_lastfmTags << "Alternative" <<  "Ambient" << "Chill Out" << "Classical" << "Dance"
                  << "Electronica" << "Favorites" << "Heavy Metal" << "Hip Hop" << "Indie Rock"
@@ -272,13 +272,13 @@ PlaylistWindow::PlaylistWindow()
     play->setIcon( KIcon(Amarok::icon( "play" )) );
     play->setText( i18n( "Play" ) );
     ac->addAction( "play", play );
-    connect( play, SIGNAL(triggered(bool)), SLOT( play() ));
+    connect( play, SIGNAL(triggered(bool)), ec, SLOT( play() ));
 
     KAction *pause = new KAction( this );
     pause->setIcon( KIcon(Amarok::icon( "pause" )) );
     pause->setText( i18n( "Pause" ));
     ac->addAction( "pause", pause );
-    connect( pause, SIGNAL(triggered(bool)), SLOT( pause() ) );
+    connect( pause, SIGNAL(triggered(bool)), ec, SLOT( pause() ) );
 
     KAction *next = new KAction( this );
     next->setIcon( KIcon(Amarok::icon( "next" )) );

@@ -26,8 +26,8 @@
 #include "statusBarBase.h"
 #include "threadmanager.h"
 
-#include <kio/job.h>
 #include <kiconloader.h>
+#include <kjob.h>
 #include <klocale.h>
 #include <kstandardguiitem.h>
 #include <kicon.h>
@@ -430,7 +430,7 @@ StatusBar::newProgressOperation( QObject *owner )
 
 
 ProgressBar&
-StatusBar::newProgressOperation( KIO::Job *job )
+StatusBar::newProgressOperation( KJob *job )
 {
     SHOULD_BE_GUI
 
@@ -439,9 +439,9 @@ StatusBar::newProgressOperation( KIO::Job *job )
 
     if(!allDone())
         toggleProgressWindowButton()->show();
-    connect( job, SIGNAL(result( KIO::Job* )), SLOT(endProgressOperation()) );
+    connect( job, SIGNAL(result( KJob* )), SLOT(endProgressOperation()) );
     //TODO connect( job, SIGNAL(infoMessage( KIO::Job *job, const QString& )), SLOT() );
-    connect( job, SIGNAL(percent( KIO::Job*, unsigned long )), SLOT(setProgress( KIO::Job*, unsigned long )) );
+    connect( job, SIGNAL(percent( KJob*, unsigned long )), SLOT(setProgress( KJob*, unsigned long )) );
 
     return bar;
 }
@@ -450,7 +450,7 @@ void
 StatusBar::endProgressOperation()
 {
     QObject *owner = const_cast<QObject*>( sender() ); //HACK deconsting it
-    KIO::Job *job = dynamic_cast<KIO::Job*>( owner );
+    KJob *job = dynamic_cast<KJob*>( owner );
 
     //FIXME doesn't seem to work for KIO::DeleteJob, it has it's own error handler and returns no error too
     // if you try to delete http urls for instance <- KDE SUCKS!
@@ -545,7 +545,7 @@ StatusBar::setProgress( int steps )
 }
 
 void
-StatusBar::setProgress( KIO::Job *job, unsigned long percent )
+StatusBar::setProgress( KJob *job, unsigned long percent )
 {
     setProgress( static_cast<QObject*>( job ), percent );
 }

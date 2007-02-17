@@ -2529,9 +2529,9 @@ PodcastEpisode::downloadMedia()
                     ? i18n( "Downloading Podcast Media" )
                     : i18n( "Downloading Podcast \"%1\"", title() ) )
             .setAbortSlot( this, SLOT( abortDownload()) )
-            .setProgressSignal( m_podcastEpisodeJob, SIGNAL( percent( KIO::Job *, unsigned long ) ) );
+            .setProgressSignal( m_podcastEpisodeJob, SIGNAL( percent( KJob *, unsigned long ) ) );
 
-    connect( m_podcastEpisodeJob, SIGNAL(  result( KIO::Job * ) ), SLOT( downloadResult( KIO::Job * ) ) );
+    connect( m_podcastEpisodeJob, SIGNAL(  result( KJob * ) ), SLOT( downloadResult( KJob * ) ) );
     connect( m_podcastEpisodeJob, SIGNAL( redirection( KIO::Job *,const KUrl& ) ), SLOT( redirected( KIO::Job *,const KUrl& ) ) );
 }
 
@@ -2571,7 +2571,7 @@ PodcastEpisode::abortDownload() //SLOT
     updatePixmap();
 }
 
-void PodcastEpisode::downloadResult( KIO::Job * transferJob )
+void PodcastEpisode::downloadResult( KJob * transferJob )
 {
     DEBUG_BLOCK
     emit downloadFinished();

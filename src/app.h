@@ -30,8 +30,10 @@ namespace Amarok {
     class TrayIcon;
 }
 
+
 namespace KIO { class Job; }
 
+class KJob;
 class KActionCollection;
 class KConfig;
 class MetaBundle;
@@ -91,7 +93,7 @@ class AMAROK_EXPORT App : public KApplication, public EngineObserver
         void quit();
 
     private slots:
-        void slotTrashResult( KIO::Job *job );
+        void slotTrashResult( KJob *job );
 
     private:
         void initGlobalShortcuts();

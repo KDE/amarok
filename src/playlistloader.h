@@ -23,8 +23,7 @@ class QTextStream;
 class PlaylistItem;
 class PLItemList;
 class XMLData;
-
-namespace KIO { class Job; }
+class KJob;
 
 
 /**
@@ -190,7 +189,7 @@ public:
    ~RemotePlaylistFetcher();
 
 private slots:
-    void result( KIO::Job* );
+    void result( KJob* );
     void abort() { delete this; }
 };
 

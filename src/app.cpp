@@ -60,6 +60,8 @@ email                : markey@web.de
 #include <kglobalaccel.h>        //initGlobalShortcuts()
 #include <kglobalsettings.h>     //applyColorScheme()
 #include <kiconloader.h>         //amarok Icon
+#include <kjob.h>
+#include <kjobuidelegate.h>
 #include <kkeydialog.h>          //slotConfigShortcuts()
 #include <klocale.h>
 #include <kmessagebox.h>         //applySettings(), genericEventHandler()
@@ -474,7 +476,7 @@ void App::initGlobalShortcuts()
 //    m_pGlobalAccel->insert( "seekbackward", i18n( "Seek Backward" ), 0, KKey("WIN+Shift+KP_Subtract"), 0, ec, SLOT( seekBackward() ), true, true );
     action = new KAction( i18n( "Seek Backward" ), m_pPlaylistWindow );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_Minus ) );
-    connect( action, SIGNAL( triggered() ), ec, SLOT( seekbackward() ) );
+    connect( action, SIGNAL( triggered() ), ec, SLOT( seekBackward() ) );
 
 //    m_pGlobalAccel->insert( "playlist_add", i18n( "Add Media..." ), 0, KKey("WIN+a"), 0, m_pPlaylistWindow, SLOT( slotAddLocation() ), true, true );
     action = new KAction( i18n( "Add Media..." ), m_pPlaylistWindow );
@@ -1136,7 +1138,7 @@ KIO::Job *App::trashFiles( const KUrl::List &files )
 {
     KIO::Job *job = KIO::trash( files, true /*show progress*/ );
     Amarok::StatusBar::instance()->newProgressOperation( job ).setDescription( i18n("Moving files to trash") );
-    connect( job, SIGNAL( result( KIO::Job* ) ), this, SLOT( slotTrashResult( KIO::Job* ) ) );
+    connect( job, SIGNAL( result( KJob* ) ), this, SLOT( slotTrashResult( KJob* ) ) );
     return job;
 }
 
@@ -1159,10 +1161,10 @@ void App::setRating( int n )
         Playlist::instance()->setSelectedRatings( n );
 }
 
-void App::slotTrashResult( KIO::Job *job )
+void App::slotTrashResult( KJob *job )
 {
     if( job->error() )
-        job->showErrorDialog( PlaylistWindow::self() );
+        job->uiDelegate()->showErrorMessage();
 }
 
 QWidget *App::mainWindow() const

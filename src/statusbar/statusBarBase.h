@@ -35,8 +35,7 @@
 class QLabel;
 class QTimer;
 class QProgressBar;
-
-namespace KIO { class Job; }
+class KJob;
 
 //TODO
 // * concept of a temporary message that is removed when a qobject parent is deleted
@@ -106,7 +105,7 @@ namespace KDE
         /**
          * Monitor progress for a KIO::Job, very handy.
          */
-        ProgressBar &newProgressOperation( KIO::Job* );
+        ProgressBar &newProgressOperation( KJob* );
 
         void incrementProgressTotalSteps( const QObject *owner, int inc = 1 );
         void incrementProgress( const QObject *owner );
@@ -180,7 +179,7 @@ namespace KDE
 
     private slots:
         /** For internal use against KIO::Jobs */
-        void setProgress( KIO::Job*, unsigned long percent );
+        void setProgress( KJob*, unsigned long percent );
         void showMainProgressBar();
         void hideMainProgressBar();
         void updateProgressAppearance();

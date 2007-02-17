@@ -86,7 +86,7 @@ UrlLoader::UrlLoader( const KUrl::List &urls, Q3ListViewItem *after, int options
 {
 
     connect( this,                 SIGNAL( queueChanged( const PLItemList &, const PLItemList & ) ),
-             Playlist::instance(), SIGNAL( queueChanged( const PLItemList &, const PLItemList & ) ) );
+             Playlist::instance(), SLOT( queueChanged( const PLItemList &, const PLItemList & ) ) );
 
     Playlist::instance()->lock(); // prevent user removing items as this could be bad
 
@@ -985,7 +985,7 @@ RemotePlaylistFetcher::RemotePlaylistFetcher( const KUrl &source, Q3ListViewItem
     Amarok::StatusBar::instance()->newProgressOperation( job )
             .setDescription( i18n("Retrieving Playlist") );
 
-    connect( job, SIGNAL(result( KIO::Job* )), SLOT(result( KIO::Job* )) );
+    connect( job, SIGNAL(result( KJob* )), SLOT(result( KJob* )) );
 
     Playlist::instance()->lock();
 }
@@ -998,7 +998,7 @@ RemotePlaylistFetcher::~RemotePlaylistFetcher()
 }
 
 void
-RemotePlaylistFetcher::result( KIO::Job *job )
+RemotePlaylistFetcher::result( KJob *job )
 {
     if( job->error() ) {
         error() << "Couldn't download remote playlist\n";
