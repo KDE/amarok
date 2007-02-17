@@ -19,8 +19,15 @@ ${CMAKE_CURRENT_SOURCE_DIR}/helix-sp/helix-include/common/log
 
 FIND_PACKAGE(Alsa)
 if (ALSA_FOUND)
-add_definitions( -DUSE_HELIX_ALSA -DHAVE_SND_PCM_RESUME )
+
+add_definitions( -DUSE_HELIX_ALSA )
+
+if (HAVE_SND_PCM_RESUME)
+add_definitions( -DHAVE_SND_PCM_RESUME )
+endif(HAVE_SND_PCM_RESUME)
+
 set ( ALSA_LIBS ${ASOUND_LIBRARY} )
+
 endif(ALSA_FOUND)
 
 add_definitions( -DHELIX_LIBS='"'${HELIX_LIBRARY_PATH}'"' -DHELIX_CONFIG_DISABLE_ATOMIC_OPERATORS -include ${CMAKE_CURRENT_SOURCE_DIR}/helix-sp/helixdefines.h )
