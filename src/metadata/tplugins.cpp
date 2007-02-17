@@ -131,7 +131,7 @@ TagLib::File *MimeTypeFileTypeResolver::createFile(const char *fileName,
 }
 #endif
 
-AMAROK_TAGLIB_EXPORT void registerTaglibPlugins()
+AMAROK_EXPORT void registerTaglibPlugins()
 {
 #ifdef KMIMETYPE_RESOLVER
     TagLib::FileRef::addFileTypeResolver(new MimeTypeFileTypeResolver);

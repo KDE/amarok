@@ -31,7 +31,7 @@ namespace Phonon {
     class AudioOutput;
 }
 
-class AMAROK_PHONON_ENGINE_EXPORT PhononEngine : public Engine::Base
+class AMAROK_EXPORT PhononEngine : public Engine::Base
 {
     Q_OBJECT
 

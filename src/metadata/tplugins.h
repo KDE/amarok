@@ -23,6 +23,6 @@
 #define METADATA_TPLUGIN_H
 #include <amarok_export.h>
 
-void AMAROK_TAGLIB_EXPORT registerTaglibPlugins();
+void AMAROK_EXPORT registerTaglibPlugins();
 
 #endif

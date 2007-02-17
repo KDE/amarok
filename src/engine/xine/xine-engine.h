@@ -26,7 +26,7 @@ extern "C"
 
 class XineConfigDialog;
 
-class AMAROK_XINE_ENGINE_EXPORT XineEngine : public Engine::Base
+class AMAROK_EXPORT XineEngine : public Engine::Base
 {
     Q_OBJECT
 
