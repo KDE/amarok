@@ -283,7 +283,7 @@ StatisticsList::renderView()
         firstPlay.setTime_t( a[0].toUInt() );
 
     m_newestItem = new StatisticsItem( i18n("Newest Items"), this, m_genreItem );
-    m_newestItem->setSubtext( i18n("First played %1").arg( Amarok::verboseTimeSince( firstPlay ) ) );
+    m_newestItem->setSubtext( i18n("First played %1", Amarok::verboseTimeSince( firstPlay ) ) );
 
     m_trackItem     ->setIcon( Amarok::icon("track") );
     m_mostplayedItem->setIcon( Amarok::icon("mostplayed") );
@@ -550,7 +550,7 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
                     newest[i+1].isEmpty() ? i18n( "Unknown" ) : newest[i+1] );
             QDateTime added = QDateTime();
             added.setTime_t( newest[i+4].toUInt() );
-            QString subtext = i18n("Added: %1").arg( Amarok::verboseTimeSince( added ) );
+            QString subtext = i18n("Added: %1", Amarok::verboseTimeSince( added ) );
             m_last = new StatisticsDetailedItem( name, subtext, item, m_last );
             m_last->setItemType( StatisticsDetailedItem::HISTORY );
             QString url = QString("%1 @@@ %2").arg( newest[i+2] ).arg( newest[i+3] );
@@ -567,11 +567,11 @@ StatisticsList::expandInformation( StatisticsItem *item, bool refresh )
 QString StatisticsList::subText( const QString &score, const QString &rating ) //static
 {
     if( AmarokConfig::useScores() && AmarokConfig::useRatings() )
-        return i18n( "Score: %1 Rating: %2" ).arg( score ).arg( rating );
+        return i18n( "Score: %1 Rating: %2", score, rating );
     else if( AmarokConfig::useScores() )
-        return i18n( "Score: %1" ).arg( score );
+        return i18n( "Score: %1", score );
     else if( AmarokConfig::useRatings() )
-        return i18n( "Rating: %1" ).arg( rating );
+        return i18n( "Rating: %1", rating );
     else
         return QString();
 }

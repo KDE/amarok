@@ -675,8 +675,9 @@ void PlaylistBrowser::addSmartPlaylist( Q3ListViewItem *parent ) //SLOT
             if ( sp && sp->title() == dialog.name() ) {
                 if( KMessageBox::warningContinueCancel(
                     PlaylistWindow::self(),
-                    i18n( "A Smart Playlist named \"%1\" already exists. Do you want to overwrite it?" ).arg( dialog.name() ),
-                    i18n( "Overwrite Playlist?" ), KGuiItem( i18n( "Overwrite" ) ) ) == KMessageBox::Continue )
+                    i18n( "A Smart Playlist named \"%1\" already exists. Do you want to overwrite it?", dialog.name() ),
+                    i18n( "Overwrite Playlist?" ), KGuiItem( i18n( "Overwrite" ) ) ) ==
+KMessageBox::Continue )
                 {
                     delete item;
                     break;
@@ -824,7 +825,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
         QueryBuilder qbTemp( qb );
         qbTemp.addMatch( QueryBuilder::tabArtist, *it );
 
-        last = new SmartPlaylist( item, last, i18n( "By %1" ).arg( *it ), qbTemp.query() );
+        last = new SmartPlaylist( item, last, i18n( "By %1", *it ), qbTemp.query() );
         last->setKept( false );
     }
 
@@ -844,7 +845,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
         QueryBuilder qbTemp( qb );
         qbTemp.addMatch( QueryBuilder::tabArtist, *it );
 
-        last = new SmartPlaylist( item, last, i18n( "By %1" ).arg( *it ), qbTemp.query() );
+        last = new SmartPlaylist( item, last, i18n( "By %1", *it ), qbTemp.query() );
         last->setKept( false );
     }
 
@@ -864,7 +865,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
         QueryBuilder qbTemp( qb );
         qbTemp.addMatch( QueryBuilder::tabArtist, *it );
 
-        last = new SmartPlaylist( item, last, i18n( "By %1" ).arg( *it ), qbTemp.query( true ) );
+        last = new SmartPlaylist( item, last, i18n( "By %1", *it ), qbTemp.query( true ));
         last->setKept( false );
     }
 
@@ -910,7 +911,7 @@ void PlaylistBrowser::loadDefaultSmartPlaylists()
         QueryBuilder qbTemp( qb );
         qbTemp.addMatch( QueryBuilder::tabGenre, *it );
 
-        last = new SmartPlaylist( item, last, i18n( "%1" ).arg( *it ), qbTemp.query( true ) );
+        last = new SmartPlaylist( item, last, i18n( "%1", *it ), qbTemp.query( true ) );
         last->setKept( false );
     }
 
@@ -1321,7 +1322,8 @@ void PlaylistBrowser::configurePodcasts( Q3ListViewItem *parent )
         }
     }
     if( !podcastChannelList.isEmpty() )
-        configurePodcasts( podcastChannelList, i18nc( "Podcasts contained in %1", "All in %1").arg( parent->text( 0 ) ) );
+        configurePodcasts( podcastChannelList, i18nc( "Podcasts contained in %1", 
+                           "All in %1", parent->text( 0 ) ) );
 }
 
 void PlaylistBrowser::configureSelectedPodcasts()
@@ -1444,8 +1446,8 @@ void PlaylistBrowser::addPodcast( const KUrl& origUrl, Q3ListViewItem *parent )
     if( channel )
     {
         Amarok::StatusBar::instance()->longMessage(
-                i18n( "Already subscribed to feed %1 as %2" )
-                .arg( url.prettyUrl(), channel->title() ),
+                i18n( "Already subscribed to feed %1 as %2", url.prettyUrl(),
+                     channel->title() ),
                 KDE::StatusBar::Sorry );
         return;
     }
@@ -3050,9 +3052,9 @@ QString PlaylistDialog::getSaveFileName( const QString &suggestion, bool propose
         if( QFileInfo( path.arg( suggestion ) ).exists() && !proposeOverwriting )
         {
             int n = 2;
-            while( QFileInfo( path.arg( i18n( "%1 (%2)" ).arg( suggestion, QString::number( n ) ) ) ).exists() )
+            while( QFileInfo( path.arg( i18n( "%1 (%2)", suggestion, QString::number( n ) ) ) ).exists() )
                 n++;
-            dialog.edit->setText( i18n( "%1 (%2)" ).arg( suggestion, QString::number( n ) ) );
+            dialog.edit->setText( i18n( "%1 (%2)", suggestion, QString::number( n ) ) );
         }
         else
           dialog.edit->setText( suggestion );
@@ -3100,7 +3102,7 @@ void PlaylistDialog::slotOk()
     if( !QFileInfo( result ).exists() ||
         KMessageBox::warningContinueCancel(
             PlaylistWindow::self(),
-            i18n( "A playlist named \"%1\" already exists. Do you want to overwrite it?" ).arg( edit->text() ),
+            i18n( "A playlist named \"%1\" already exists. Do you want to overwrite it?", edit->text() ),
             i18n( "Overwrite Playlist?" ), KGuiItem( i18n( "Overwrite" ) ) ) == KMessageBox::Continue )
     {
         //KDialog::slotOk();

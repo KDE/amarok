@@ -137,8 +137,8 @@ void Options2::uninstallPushButton_clicked()
         return;
 
     if( KMessageBox::warningContinueCancel( 0,
-        i18n( "<p>Are you sure you want to uninstall the theme <strong>%1</strong>?</p>" ).arg( name ),
-        i18n("Uninstall Theme") ) == KMessageBox::Cancel )
+        i18n( "<p>Are you sure you want to uninstall the theme <strong>%1</strong>?</p>", name ),
+        i18n( "Uninstall Theme" ) ) == KMessageBox::Cancel )
         return;
 
     if ( name == AmarokConfig::contextBrowserStyleSheet() ) {

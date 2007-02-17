@@ -103,7 +103,7 @@ namespace Amarok
         if( datediff >= 6*7 /*six weeks*/ ) {  // return absolute month/year
             const KCalendarSystem *cal = KGlobal::locale()->calendar();
             const QDate date = datetime.date();
-            return i18nc( "monthname year", "%1 %2" ).arg( cal->monthName(date), cal->yearString(date, false) );
+            return i18nc( "monthname year", "%1 %2", cal->monthName(date), cal->yearString(date, false) );
         }
 
         //TODO "last week" = maybe within 7 days, but prolly before last sunday
@@ -181,7 +181,7 @@ static
 QString albumImageTooltip( const QString &albumImage, int size )
 {
     if ( albumImage == CollectionDB::instance()->notAvailCover( false, size ) )
-        return escapeHTMLAttr( i18n( "Click to fetch cover from amazon.%1, right-click for menu." ).arg( CoverManager::amazonTld() ) );
+        return escapeHTMLAttr( i18n( "Click to fetch cover from amazon.%1, right-click for menu.", CoverManager::amazonTld() ) );
 
     return escapeHTMLAttr( i18n( "Click for information from Amazon, right-click for menu." ) );
 }
@@ -1550,7 +1550,7 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
                                 << albumValues[6]
                                 << reqResult[ i + 1 ] //album.id
                                 << escapeHTMLAttr( discNumber )
-                                << i18n( "Disc %1" ).arg( discNumber ) ) );
+                                << i18n( "Disc %1", discNumber ) ) );
                 }
                 QString track = albumValues[j + 2].trimmed();
                 if( track.length() > 0 )
@@ -2053,7 +2053,7 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
                 << imageAttr
                 << escapeHTML( peb.author().isEmpty()
                     ? i18n( "Podcast" )
-                    : i18n( "Podcast by %1" ).arg( peb.author() ) )
+                    : i18n( "Podcast by %1", peb.author() ) )
                 << ( peb.localUrl().isValid()
                     ? "<br />\n" + escapeHTML( i18n( "(Cached)" ) )
                     : "" )
@@ -2083,7 +2083,7 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
             "<div id='albums_box-header' class='box-header'>\n"
             "<span id='albums_box-header-title' class='box-header-title'>\n"
             + ( channelInDB
-                ? i18n( "Episodes from %1" ).arg( escapeHTML( pcb.title() ) )
+                ? i18n( "Episodes from %1", escapeHTML( pcb.title() ) )
                 : i18n( "Episodes from this Channel" )
               )
             + "</span>\n"
@@ -2186,7 +2186,7 @@ void CurrentTrackJob::showBrowseArtistHeader( const QString &artist )
             "<tr>\n"
             "<td id='artist-wikipedia'>\n"
             + QString( "<a id='artist-wikipedia-a' href='wikipedia:%1'>\n" ).arg( escapeHTMLAttr( artist + b->wikiArtistPostfix() ) )
-            + i18n( "Wikipedia Information for %1" ).arg( escapeHTML( artist ) ) +
+            + i18n( "Wikipedia Information for %1", escapeHTML( artist ) ) +
             "</a>\n"
             "</td>\n"
             "</tr>\n");
@@ -2194,7 +2194,7 @@ void CurrentTrackJob::showBrowseArtistHeader( const QString &artist )
             "<tr>\n"
             "<td id='artist-google'>\n"
             + QString( "<a id='artist-google-a' href='ggartist:%1'>\n" ).arg( escapeHTMLAttr( artist ) )
-            + i18n( "Google Musicsearch for %1" ).arg( escapeHTML( artist ) ) +
+            + i18n( "Google Musicsearch for %1", escapeHTML( artist ) ) +
             "</a>\n"
             "</td>\n"
             "</tr>\n"
@@ -2250,7 +2250,7 @@ CurrentTrackJob::showBrowseLabelHeader( const QString &label )
             "<tr>\n"
             "<td id='label-lastfm'>\n"
             + QString( "<a id='label-lastfm-a' href='externalurl://www.last.fm/tag/%1'>\n" ).arg( escapeHTMLAttr( label ) )
-            + i18n( "Last.fm Information for %1" ).arg( escapeHTML( label ) ) +
+            + i18n( "Last.fm Information for %1", escapeHTML( label ) ) +
             "</a>\n"
             "</td>\n"
             "</tr>\n");
@@ -2450,7 +2450,7 @@ void CurrentTrackJob::showRelatedArtists( const QString &artist, const QStringLi
                 "<span id='related_box-header-title' class='box-header-title'>%1</span>\n"
                 "</div>\n"
                 "<table class='box-body' id='T_RA' width='100%' border='0' cellspacing='0' cellpadding='1'>\n" )
-            .arg( i18n( "Artists Related to %1" ).arg( escapeHTML( artist ) ) ) );
+            .arg( i18n( "Artists Related to %1", escapeHTML( artist ) ) ) );
     m_HTMLSource.append( "<tr><td>\n" );
     for ( uint i = 0; i < relArtists.count(); i += 1 )
     {
@@ -2551,7 +2551,7 @@ CurrentTrackJob::showSongsWithLabel( const QString &label )
                 "<div id='suggested_box' class='box'>\n"
                 "<div id='suggested_box-header' class='box-header' onClick=\"toggleBlock('T_SS'); window.location.href='togglebox:ss';\" style='cursor: pointer;'>\n"
                 "<span id='suggested_box-header-title' class='box-header-title'>\n"
-                + i18n( "Songs with label %1" ).arg( label ) +
+                + i18n( "Songs with label %1", label ) +
                 "</span>\n"
                 "</div>\n"
                 "<table class='box-body' id='T_' width='100%' border='0' cellspacing='0' cellpadding='0'>\n" );
@@ -2963,7 +2963,7 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
                                              .args( QStringList()
                                                     << values[ i + 1 ] //album.id
                                                     << escapeHTMLAttr( discNumber )
-                                                    << i18n( "Disc %1" ).arg( discNumber ) ) );
+                                                    << i18n( "Disc %1", discNumber ) ) );
                     }
 
                     QString track = albumValues[j + 2].trimmed();
@@ -3474,7 +3474,7 @@ ContextBrowser::lyricsResult( QByteArray cXmlDoc, bool cached ) //SLOT
         lyrics.prepend( "<font size='2'><b>\n" + title + "</b><br/><u>\n" + artist+ "</font></u></font><br/>\n" );
 
         if( !cached ) {
-            lyrics.append( "<br/><br/><i>\n" + i18n( "Powered by %1 (%2)" ).arg( site, site_url ) + "</i>\n" );
+            lyrics.append( "<br/><br/><i>\n" + i18n( "Powered by %1 (%2)", site, site_url ) + "</i>\n" );
             CollectionDB::instance()->setLyrics( EngineController::instance()->bundle().url().path(), xmldoc, EngineController::instance()->bundle().uniqueId() );
         }
     }

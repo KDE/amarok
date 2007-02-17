@@ -291,7 +291,7 @@ RioKarmaMediaDevice::openDevice( bool silent )
     if( !dir.exists() )
     {
         Amarok::StatusBar::instance()->longMessage(
-                i18n( "Media device: Mount point %1 does not exist" ).arg( mountPoint() ),
+                i18n( "Media device: Mount point %1 does not exist", mountPoint() ),
                 KDE::StatusBar::Error );
         return false;
     }

@@ -35,7 +35,7 @@
 DeviceConfigureDialog::DeviceConfigureDialog( const Medium &medium )
         : KDialog( Amarok::mainWindow() )
 {
-    setCaption( i18n("Select Plugin for %1").arg( medium.name() ) );
+    setCaption( i18n("Select Plugin for %1", medium.name() ) );
     setModal( true );
     setButtons( Ok | Cancel );
     showButtonSeparator( true );
@@ -89,7 +89,7 @@ DeviceConfigureDialog::DeviceConfigureDialog( const Medium &medium )
         QString format = "mp3";
         if( !device->supportedFiletypes().isEmpty() )
             format = device->supportedFiletypes().first();
-        transcodeGroup->setTitle( i18n( "Transcode to preferred format (%1) for device" ).arg( format ) );
+        transcodeGroup->setTitle( i18n( "Transcode to preferred format (%1) for device", format ) );
         m_transcodeAlways = new QRadioButton( transcodeGroup );
         m_transcodeAlways->setText( i18n( "Whenever possible" ) );
         m_transcodeAlways->setChecked( device->m_transcodeAlways );

@@ -528,14 +528,14 @@ IfpMediaDevice::deleteItemFromDevice( MediaItem *item, int /*flags*/ )
         case MediaItem::DIRECTORY:
             err = ifp_delete_dir_recursive( &m_ifpdev, encodedPath );
             debug() << "Deleting folder: " << encodedPath << endl;
-            checkResult( err, i18n("Directory cannot be deleted: '%1'").arg(encodedPath) );
+            checkResult( err, i18n( "Directory cannot be deleted: '%1'", encodedPath ) );
             break;
 
         default:
             err = ifp_delete( &m_ifpdev, encodedPath );
             debug() << "Deleting file: " << encodedPath << endl;
             count += 1;
-            checkResult( err, i18n("File does not exist: '%1'").arg(encodedPath) );
+            checkResult( err, i18n( "File does not exist: '%1'", encodedPath ) );
             break;
     }
     if( err == 0 ) //success
@@ -566,7 +566,7 @@ void
 IfpMediaDevice::listDir( const QString &dir )
 {
     int err = ifp_list_dirs( &m_ifpdev, QFile::encodeName( dir ), listDirCallback, this );
-    checkResult( err, i18n("Cannot enter directory: '%1'").arg(dir) );
+    checkResult( err, i18n( "Cannot enter directory: '%1'", dir ) );
 }
 
 // will be called by 'ifp_list_dirs'

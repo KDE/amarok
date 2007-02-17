@@ -473,7 +473,7 @@ DaapClient::customClicked()
     if( dialog.exec() == QDialog::Accepted ) {
         QString ip = resolve( dialog.m_base->m_hostName->text() );
         if( ip == "0" )
-            Amarok::StatusBar::instance()->shortMessage( i18n("Could not resolve %1.").arg( dialog.m_base->m_hostName->text() ) );
+            Amarok::StatusBar::instance()->shortMessage( i18n("Could not resolve %1.", dialog.m_base->m_hostName->text() ) );
         else
         {
             QString key = ServerItem::key( dialog.m_base->m_hostName->text(), dialog.m_base->m_portInput->value() );
@@ -731,7 +731,7 @@ ServerItem::setOpen( bool o )
         startAnimation();
         connect( &m_animationTimer, SIGNAL(timeout()), this, SLOT(slotAnimation()) );
 
-        setText( 0, i18n( "Loading %1").arg( text( 0 ) ) );
+        setText( 0, i18n( "Loading %1", text( 0 ) ) );
 
         Daap::Reader* reader = new Daap::Reader( m_ip, m_port, this,
                                                  QString::null, m_daapClient, ( m_ip + ":3689" ).ascii() );
@@ -777,7 +777,7 @@ ServerItem::httpError( const QString& errorString )
 {
     stopAnimation();
     resetTitle();
-    Amarok::StatusBar::instance()->longMessage( i18n( "The following error occurred while trying to connect to the remote server:<br>%1").arg( errorString ) );
+    Amarok::StatusBar::instance()->longMessage( i18n( "The following error occurred while trying to connect to the remote server:<br>%1", errorString ) );
     m_reader->deleteLater();
     m_reader = 0;
     m_loaded = false;

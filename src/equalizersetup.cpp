@@ -391,7 +391,7 @@ EqualizerSetup::addPreset()
     if (ok) {
         // Check if the new preset title exists
         if ( m_presets.find( title ) != m_presets.end() ) {
-            int button = KMessageBox::warningYesNo( this, i18n( "A preset with the name %1 already exists. Overwrite?" ).arg( title ) );
+            int button = KMessageBox::warningYesNo( this, i18n( "A preset with the name %1 already exists. Overwrite?", title ) );
 
             if ( button != KMessageBox::Yes )
                 return;

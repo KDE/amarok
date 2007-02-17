@@ -629,7 +629,7 @@ IpodMediaDevice::copyTrackToDevice(const MetaBundle &bundle)
     if ( !dir.exists() )
     {
         Amarok::StatusBar::instance()->longMessage(
-                i18n( "Media Device: Creating directory for file %1 failed" ).arg( url.path() ),
+                i18n( "Media Device: Creating directory for file %1 failed", url.path() ),
                 KDE::StatusBar::Error );
         return NULL;
     }
@@ -932,9 +932,8 @@ IpodMediaDevice::createLockFile( bool silent )
     if( m_lockFile->exists() )
     {
         ok = false;
-        msg = i18n( "Media Device: iPod mounted at %1 already locked. " ).arg( mountPoint() );
-        msg += i18n( "If you are sure that this is an error, then remove the file %1 and try again." )
-           .arg( lockFilePath );
+        msg = i18n( "Media Device: iPod mounted at %1 already locked. ", mountPoint() );
+        msg += i18n( "If you are sure that this is an error, then remove the file %1 and try again." , lockFilePath );
 
         if( !silent )
         {
@@ -978,7 +977,7 @@ IpodMediaDevice::initializeIpod()
     if( !dir.exists() )
     {
         Amarok::StatusBar::instance()->longMessage(
-                i18n("Media device: Mount point %1 does not exist").arg(mountPoint()),
+                i18n("Media device: Mount point %1 does not exist", mountPoint() ),
                 KDE::StatusBar::Error );
         return false;
     }
@@ -1028,7 +1027,7 @@ IpodMediaDevice::initializeIpod()
         return false;
 
     Amarok::StatusBar::instance()->longMessage(
-            i18n("Media Device: Initialized iPod mounted at %1").arg(mountPoint()),
+            i18n("Media Device: Initialized iPod mounted at %1", mountPoint() ),
             KDE::StatusBar::Information );
 
     return true;
@@ -1047,7 +1046,7 @@ IpodMediaDevice::openDevice( bool silent )
     if( m_itdb )
     {
         Amarok::StatusBar::instance()->longMessage(
-                i18n("Media Device: iPod at %1 already opened").arg(mountPoint()),
+                i18n("Media Device: iPod at %1 already opened", mountPoint() ),
                 KDE::StatusBar::Sorry );
         return false;
     }
@@ -1119,7 +1118,7 @@ IpodMediaDevice::openDevice( bool silent )
     if( !m_itdb && canInitialize )
     {
         QString msg = i18n( "Media Device: could not find iTunesDB on device mounted at %1. "
-                "Should I try to initialize your iPod?" ).arg( mountPoint() );
+                "Should I try to initialize your iPod?", mountPoint() );
 
         if( !silent
                 && KMessageBox::warningContinueCancel( m_parent, msg, i18n( "Initialize iPod?" ),
@@ -1134,7 +1133,7 @@ IpodMediaDevice::openDevice( bool silent )
                 }
 
                 Amarok::StatusBar::instance()->longMessage(
-                        i18n("Media Device: Failed to initialize iPod mounted at %1").arg(mountPoint()),
+                        i18n("Media Device: Failed to initialize iPod mounted at %1", mountPoint() ),
                         KDE::StatusBar::Sorry );
 
                 return false;
@@ -1215,7 +1214,7 @@ IpodMediaDevice::openDevice( bool silent )
             {
                 debug() << "failed to create hash dir " << real << endl;
                 Amarok::StatusBar::instance()->longMessage(
-                        i18n("Media device: Failed to create directory %1").arg(real),
+                        i18n( "Media device: Failed to create directory %1", real ),
                         KDE::StatusBar::Error );
                 return false;
             }

@@ -449,13 +449,13 @@ PlaylistCategory::showContextMenu( const QPoint &position )
 
                 for( c = 0 ; isCategory( tracker ); tracker = tracker->nextSibling() )
                 {
-                    if( tracker->text(0).startsWith( i18n("Folder") ) )
+                    if( tracker->text(0).startsWith( i18n( "Folder" ) ) )
                         c++;
                     if( !isCategory( tracker->nextSibling() ) )
                         break;
                 }
-                name = i18n("Folder");
-                if( c ) name = i18n("Folder %1").arg(c);
+                name = i18n( "Folder" );
+                if( c ) name = i18n( "Folder %1", c );
                 if( tracker == parentCat->firstChild() && !isCategory( tracker ) ) tracker = 0;
 
                 newFolder = new PlaylistCategory( parentCat, tracker, name, true );
@@ -2527,7 +2527,7 @@ PodcastEpisode::downloadMedia()
     Amarok::StatusBar::instance()->newProgressOperation( m_podcastEpisodeJob )
             .setDescription( title().isEmpty()
                     ? i18n( "Downloading Podcast Media" )
-                    : i18n( "Downloading Podcast \"%1\"" ).arg( title() ) )
+                    : i18n( "Downloading Podcast \"%1\"", title() ) )
             .setAbortSlot( this, SLOT( abortDownload()) )
             .setProgressSignal( m_podcastEpisodeJob, SIGNAL( percent( KIO::Job *, unsigned long ) ) );
 
@@ -3068,7 +3068,7 @@ void SmartPlaylist::setXml( const QDomElement &xml )
                 composers = CollectionDB::instance()->composerList();
             }
             oldForeach( composers ) {
-                m_after = new SmartPlaylist( item, m_after, i18n( "By %1" ).arg( *it ),
+                m_after = new SmartPlaylist( item, m_after, i18n( "By %1", *it ),
                                              QString(queryChildren).replace(
                                                  "(*ExpandString*)", *it)  );
             }
@@ -3078,7 +3078,7 @@ void SmartPlaylist::setXml( const QDomElement &xml )
                 albums = CollectionDB::instance()->albumList();
             }
             oldForeach( albums ) {
-                m_after = new SmartPlaylist( item, m_after, i18n( "%1" ).arg( *it ),
+                m_after = new SmartPlaylist( item, m_after, i18n( "%1", *it ),
                                              QString(queryChildren).replace(
                                                  "(*ExpandString*)", *it)  );
             }
@@ -3088,7 +3088,7 @@ void SmartPlaylist::setXml( const QDomElement &xml )
                 years = CollectionDB::instance()->yearList();
             }
             oldForeach( years ) {
-                m_after = new SmartPlaylist( item, m_after, i18n( "%1" ).arg( *it ),
+                m_after = new SmartPlaylist( item, m_after, i18n( "%1", *it ),
                                              QString(queryChildren).replace(
                                                  "(*ExpandString*)", *it)  );
             }
@@ -3098,7 +3098,7 @@ void SmartPlaylist::setXml( const QDomElement &xml )
                 labels = CollectionDB::instance()->labelList();
             }
             oldForeach( labels ) {
-                m_after = new SmartPlaylist( item, m_after, i18n( "%1" ).arg( *it ), QString(queryChildren).replace("(*ExpandString*)", *it)  );
+                m_after = new SmartPlaylist( item, m_after, i18n( "%1", *it ), QString(queryChildren).replace("(*ExpandString*)", *it)  );
             }
         }
     }

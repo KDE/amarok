@@ -69,7 +69,7 @@ PodcastSettingsDialog::PodcastSettingsDialog( PodcastSettings *settings, QWidget
                             : KDialog( parent )
         , m_settings( settings )
 {
-    setCaption( i18nc("change options", "Configure %1").arg( settings->m_title ) );
+    setCaption( i18nc("change options", "Configure %1", settings->m_title ) );
     setModal( true );
     setButtons( Ok | Cancel | User1 );
     setButtonGuiItem( User1, KGuiItem( i18n("Reset") ) );
@@ -84,7 +84,7 @@ PodcastSettingsDialog::PodcastSettingsDialog( const Q3PtrList<PodcastSettings> &
     : KDialog(  parent )
         , m_settingsList( list )
 {
-    setCaption( i18nc("change options", "Configure %1").arg( caption ) );
+    setCaption( i18nc("change options", "Configure %1", caption ) );
     setModal( true );
     setButtons( Ok | Cancel | User1 );
     setButtonGuiItem( User1, KGuiItem( i18n("Reset") ) );

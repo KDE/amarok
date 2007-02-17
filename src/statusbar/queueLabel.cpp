@@ -275,7 +275,7 @@ void QueueLabel::showToolTip()
                           .arg( MetaBundle::prettyLength( length, true ) ) );
     }
 
-    text += i18n( "Next: %1" ).arg( veryNiceTitle( item, true /*bold*/ ) );
+    text += i18n( "Next: %1", veryNiceTitle( item, true /*bold*/ ) );
 
     m_tooltip = new KDE::PopupMessage( parentWidget()->parentWidget(), this, 0 );
     m_tooltip->setShowCloseButton( false );
@@ -303,9 +303,9 @@ QString QueueLabel::veryNiceTitle( PlaylistItem* item, bool bold ) const
     const QString artist = item->artist()->trimmed(),
                   title =  item->title().trimmed();
     if( !artist.isEmpty() && !title.isEmpty() )
-       return ( bold ? i18n( "<b>%1</b> by <b>%2</b>" ) : i18n( "%1 by %2" ) ).arg( title ).arg( artist );
+       return ( bold ? i18n( "<b>%1</b> by <b>%2</b>" ) : i18n( "%1 by %2" ), title, artist );
     else
-       return QString( "<b>%1</b>" ).arg( MetaBundle::prettyTitle( item->filename() ) );
+       return QString( "<b>%1</b>").arg( MetaBundle::prettyTitle( item->filename() ) );
 }
 
 

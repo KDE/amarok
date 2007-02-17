@@ -1539,7 +1539,7 @@ CollectionView::rmbPressed( Q3ListViewItem* item, const QPoint& point, int ) //S
 
         if( (cat == IdAlbum || cat == IdVisYearAlbum) && siblingSelection.count() == 1 ) // cover fetch isn't multiselection capable
         {
-            menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n( "&Fetch Cover From amazon.%1" ).arg( CoverManager::amazonTld() ), this, SLOT( fetchCover() ), 0, FETCH );
+            menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n( "&Fetch Cover From amazon.%1", CoverManager::amazonTld() ), this, SLOT( fetchCover() ), 0, FETCH );
             #ifndef AMAZON_SUPPORT
             menu.setItemEnabled( FETCH, false );
             #endif

@@ -65,10 +65,10 @@ QString OrganizeCollectionDialog::buildFormatTip() const
             continue;
         args[MetaBundle::exactColumnName( i ).toLower()] = MetaBundle::prettyColumnName( i );
     }
-    args["albumartist"] = i18n( "%1 or %2" ).arg( "Album Artist, The" , "The Album Artist" );
+    args["albumartist"] = i18nc( "%1 or %2", "Album Artist, The" , "The Album Artist" );
     args["thealbumartist"] = "The Album Artist";
     args["theartist"] = "The Artist";
-    args["artist"] = i18n( "%1 or %2" ).arg( "Artist, The" , "The Artist" );
+    args["artist"] = i18nc( "%1 or %2", "Artist, The" , "The Artist" );
     args["folder"] = i18n( "Collection Base Folder" );
     args["initial"] = i18n( "Artist's Initial" );
     args["filetype"] = i18n( "File Extension of Source" );
