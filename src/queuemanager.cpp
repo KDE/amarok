@@ -401,7 +401,6 @@ QueueManager::removeQueuedItem( PlaylistItem *item )
     if( !pl ) return; //should never happen
 
     const int index = pl->m_nextTracks.indexOf( item );
-
     QListWidgetItem *after;
     if( !index ) after = 0;
     else
@@ -411,23 +410,24 @@ QueueManager::removeQueuedItem( PlaylistItem *item )
             find = index - 1;
         after = m_listview->item( find );
     }
-
     Q3ValueList<PlaylistItem*>         current = m_map.values();
     Q3ValueListIterator<PlaylistItem*> newItem = current.find( item );
 
     QString title = i18n("%1 - %2", item->artist(), item->title() );
 
-    QListWidgetItem *removableItem = m_listview->findItems( title, 0 ).first();
-
-    if( removableItem )
+    QList<QListWidgetItem*> items = m_listview->findItems( title, 0 );
+     
+    if( items.count() > 0 )
     {
+        QListWidgetItem *removableItem = items.first();
         //Remove the key from the map, so we can re-queue the item
-        QMap<QListWidgetItem*, PlaylistItem*>::iterator end =  m_map.end();
-        for( QMap<QListWidgetItem*, PlaylistItem*>::iterator it = m_map.begin(); it != end; ++it )
+        QMapIterator<QListWidgetItem*, PlaylistItem*> it(m_map);
+        while( it.hasNext() )
         {
-            if( it.data() == item )
+            it.next();
+            if( it.value() == item )
             {
-                m_map.remove( it );
+                m_map.remove( it.key() );
 
                 //Remove the item from the queuelist
                 m_listview->takeItem( m_listview->row( removableItem ) );
@@ -462,7 +462,6 @@ QueueManager::insertItems()
         QString title = i18n("%1 - %2", item->artist(), item->title() );
 
         QueueItem* createdItem = new QueueItem( title );
-        debug() << "Inserting " << title << " at " << createdItem + 1 << endl;
         m_listview->addItem( createdItem );
         m_map[ createdItem ] = item;
       //  last = createdItem;

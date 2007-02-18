@@ -3567,22 +3567,18 @@ Playlist::showQueueManager()
 void
 Playlist::changeFromQueueManager( QList<PlaylistItem*> list )
 {
-DEBUG_BLOCK
     QList<PlaylistItem*> oldQueue = m_nextTracks;
     m_nextTracks = list;
-
     QList<PlaylistItem*> in, out;
     // make sure we repaint items no longer queued
+ 
     foreach( PlaylistItem* item, oldQueue )
         if( !m_nextTracks.contains( item ) )
             out << item;
-
     foreach( PlaylistItem* item, m_nextTracks )
         if( !oldQueue.contains( item ) )
             in << item;
-
     emit queueChanged( in, out );
-
     // repaint newly queued or altered queue items
     if( dynamicMode() )
         sortQueuedItems();

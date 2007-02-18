@@ -66,7 +66,7 @@ void QueueLabel::update() //SLOT
 {
     QList<PlaylistItem*> &queue = Playlist::instance()->m_nextTracks;
     setNum( queue.count() );
-    if( isVisible() )
+    if( isVisible() && queue.count() > 0 )
         getCover( queue.first()->artist(), queue.first()->album() );
 }
 
