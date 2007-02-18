@@ -509,16 +509,16 @@ void CoverManager::showCoverMenu( Q3IconViewItem *item, const QPoint &p ) //SLOT
     Q3PtrList<CoverViewItem> selected = selectedItems();
     const int nSelected = selected.count();
 
-    QAction* fetchSelectedAction = new QAction( SmallIconSet( Amarok::icon( "download" ) )
+    QAction* fetchSelectedAction = new QAction( KIcon( Amarok::icon( "download" ) )
         , i18np( "&Fetch From amazon.%1", "&Fetch Selected Covers", nSelected, CoverManager::amazonTld() )
         , &menu );
     connect( fetchSelectedAction, SIGNAL( triggered() ), this, SLOT( fetchSelectedCovers() ) );
 
-    QAction* setCustomAction = new QAction( SmallIconSet( Amarok::icon( "files" ) )
+    QAction* setCustomAction = new QAction( KIcon( Amarok::icon( "files" ) )
         , i18np( "Set &Custom Cover", "Set &Custom Cover for Selected Albums", nSelected )
         , &menu );
     connect( setCustomAction, SIGNAL( triggered() ), this, SLOT( setCustomSelectedCovers() ) );
-    QAction* unsetAction = new QAction( SmallIconSet( Amarok::icon( "remove" ) ), i18np( "&Unset Cover", "&Unset Selected Covers", nSelected ), &menu );
+    QAction* unsetAction = new QAction( KIcon( Amarok::icon( "remove" ) ), i18np( "&Unset Cover", "&Unset Selected Covers", nSelected ), &menu );
     connect( unsetAction, SIGNAL( triggered() ), this, SLOT ( deleteSelectedCovers() ) );
 
     if( nSelected > 1 ) {
@@ -527,7 +527,7 @@ void CoverManager::showCoverMenu( Q3IconViewItem *item, const QPoint &p ) //SLOT
         menu.addAction( unsetAction );
     }
     else {
-        QAction* viewAction = new QAction( SmallIconSet( Amarok::icon( "zoom" ) ), i18n( "&Show Fullsize" ), &menu );
+        QAction* viewAction = new QAction( KIcon( Amarok::icon( "zoom" ) ), i18n( "&Show Fullsize" ), &menu );
         connect( viewAction, SIGNAL( triggered() ), this, SLOT( viewSelectedCover() ) );
         viewAction ->setEnabled( item->hasCover() );
         unsetAction->setEnabled( item->canRemoveCover() );

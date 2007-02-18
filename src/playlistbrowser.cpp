@@ -3073,7 +3073,7 @@ PlaylistDialog::PlaylistDialog()
     setButtons( Ok | Cancel | User1 );
     setDefaultButton( Ok );
     showButtonSeparator( false );
-    setButtonGuiItem( User1, KGuiItem( i18n( "Save to location..." ) ) ); //SmallIconSet( Amarok::icon( "files" ) )
+    setButtonGuiItem( User1, KGuiItem( i18n( "Save to location..." ) ) ); //KIcon( Amarok::icon( "files" ) )
 
 
     KVBox *vbox = new KVBox( this );

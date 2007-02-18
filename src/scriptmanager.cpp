@@ -201,13 +201,13 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     connect( m_gui->configureButton, SIGNAL( clicked() ), SLOT( slotConfigureScript() ) );
     connect( m_gui->aboutButton,     SIGNAL( clicked() ), SLOT( slotAboutScript() ) );
 
-    m_gui->installButton  ->setIconSet( SmallIconSet( Amarok::icon( "files" ) ) );
-    m_gui->retrieveButton ->setIconSet( SmallIconSet( Amarok::icon( "download" ) ) );
-    m_gui->uninstallButton->setIconSet( SmallIconSet( Amarok::icon( "remove" ) ) );
-    m_gui->runButton      ->setIconSet( SmallIconSet( Amarok::icon( "play" ) ) );
-    m_gui->stopButton     ->setIconSet( SmallIconSet( Amarok::icon( "stop" ) ) );
-    m_gui->configureButton->setIconSet( SmallIconSet( Amarok::icon( "configure" ) ) );
-    m_gui->aboutButton    ->setIconSet( SmallIconSet( Amarok::icon( "info" ) ) );
+    m_gui->installButton  ->setIconSet( KIcon( Amarok::icon( "files" ) ) );
+    m_gui->retrieveButton ->setIconSet( KIcon( Amarok::icon( "download" ) ) );
+    m_gui->uninstallButton->setIconSet( KIcon( Amarok::icon( "remove" ) ) );
+    m_gui->runButton      ->setIconSet( KIcon( Amarok::icon( "play" ) ) );
+    m_gui->stopButton     ->setIconSet( KIcon( Amarok::icon( "stop" ) ) );
+    m_gui->configureButton->setIconSet( KIcon( Amarok::icon( "configure" ) ) );
+    m_gui->aboutButton    ->setIconSet( KIcon( Amarok::icon( "info" ) ) );
 
     QSize sz = sizeHint();
     setMinimumSize( qMax( 350, sz.width() ), qMax( 250, sz.height() ) );
@@ -698,8 +698,8 @@ ScriptManager::slotShowContextMenu( Q3ListViewItem* item, const QPoint& pos )
     enum { SHOW_LOG, EDIT };
     Q3PopupMenu menu;
     menu.setTitle( i18n( "Debugging" ) );
-    menu.insertItem( SmallIconSet( Amarok::icon( "clock" ) ), i18n( "Show Output &Log" ), SHOW_LOG );
-    menu.insertItem( SmallIconSet( Amarok::icon( "edit" ) ), i18n( "&Edit" ), EDIT );
+    menu.insertItem( KIcon( Amarok::icon( "clock" ) ), i18n( "Show Output &Log" ), SHOW_LOG );
+    menu.insertItem( KIcon( Amarok::icon( "edit" ) ), i18n( "&Edit" ), EDIT );
     menu.setItemEnabled( SHOW_LOG, it.data().process );
     const int id = menu.exec( pos );
 

@@ -46,18 +46,18 @@ Amarok::coverContextMenu( QWidget *parent, QPoint point, const QString &artist, 
 
         menu.setTitle( i18n( "Cover Image" ) );
 
-        menu.insertItem( SmallIconSet( Amarok::icon( "zoom" ) ), i18n( "&Show Fullsize" ), SHOW );
-        menu.insertItem( SmallIconSet( Amarok::icon( "download" ) ), i18n( "&Fetch From amazon.%1", CoverManager::amazonTld() ), FETCH );
-        menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "Set &Custom Cover" ), CUSTOM );
+        menu.insertItem( KIcon( Amarok::icon( "zoom" ) ), i18n( "&Show Fullsize" ), SHOW );
+        menu.insertItem( KIcon( Amarok::icon( "download" ) ), i18n( "&Fetch From amazon.%1", CoverManager::amazonTld() ), FETCH );
+        menu.insertItem( KIcon( Amarok::icon( "files" ) ), i18n( "Set &Custom Cover" ), CUSTOM );
         bool disable = !album.isEmpty(); // disable setting covers for unknown albums
         menu.setItemEnabled( FETCH, disable );
         menu.setItemEnabled( CUSTOM, disable );
         menu.insertSeparator();
 
-        menu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18n( "&Unset Cover" ), DELETE );
+        menu.insertItem( KIcon( Amarok::icon( "remove" ) ), i18n( "&Unset Cover" ), DELETE );
         if ( showCoverManager ) {
             menu.insertSeparator();
-            menu.insertItem( SmallIconSet( Amarok::icon( "covermanager" ) ), i18n( "Cover &Manager" ), MANAGER );
+            menu.insertItem( KIcon( Amarok::icon( "covermanager" ) ), i18n( "Cover &Manager" ), MANAGER );
         }
         #ifndef AMAZON_SUPPORT
         menu.setItemEnabled( FETCH, false );

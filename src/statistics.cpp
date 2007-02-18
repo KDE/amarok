@@ -645,12 +645,12 @@ StatisticsList::showContextMenu( Q3ListViewItem *item, const QPoint &p, int )  /
     Q3PopupMenu menu( this );
     enum Actions { APPEND, QUEUE, INFO };
 
-    menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
-    menu.insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), i18n( "&Queue Track" ), QUEUE );
+    menu.insertItem( KIcon( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
+    menu.insertItem( KIcon( Amarok::icon( "queue_track" ) ), i18n( "&Queue Track" ), QUEUE );
 
     menu.insertSeparator();
 
-    menu.insertItem( SmallIconSet( Amarok::icon( "info" ) ), i18n( "Edit Track &Information..." ), INFO );
+    menu.insertItem( KIcon( Amarok::icon( "info" ) ), i18n( "Edit Track &Information..." ), INFO );
 
     switch( menu.exec( p ) )
     {

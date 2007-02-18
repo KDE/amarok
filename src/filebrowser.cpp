@@ -182,28 +182,28 @@ FileBrowser::FileBrowser( const char * name, Medium * medium )
         KMenu* const menu = static_cast<KActionMenu*>(actionCollection->action("popupMenu"))->popupMenu();
 
         menu->clear();
-        menu->insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), MakePlaylist );
-        menu->insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), AppendToPlaylist );
-        menu->insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), i18n( "&Queue Track" ), QueueTrack );
-        menu->insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), i18n( "&Queue Tracks" ), QueueTracks );
+        menu->insertItem( KIcon( Amarok::icon( "files" ) ), i18n( "&Load" ), MakePlaylist );
+        menu->insertItem( KIcon( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), AppendToPlaylist );
+        menu->insertItem( KIcon( Amarok::icon( "queue_track" ) ), i18n( "&Queue Track" ), QueueTrack );
+        menu->insertItem( KIcon( Amarok::icon( "queue_track" ) ), i18n( "&Queue Tracks" ), QueueTracks );
 
-        menu->insertItem( SmallIconSet( Amarok::icon( "save" ) ), i18n( "&Save as Playlist..." ), SavePlaylist );
+        menu->insertItem( KIcon( Amarok::icon( "save" ) ), i18n( "&Save as Playlist..." ), SavePlaylist );
         menu->insertSeparator();
 
         if (!m_medium)
-            menu->insertItem( SmallIconSet( Amarok::icon( "device" ) ), i18n( "&Transfer to Media Device" ), MediaDevice );
+            menu->insertItem( KIcon( Amarok::icon( "device" ) ), i18n( "&Transfer to Media Device" ), MediaDevice );
 
-        menu->insertItem( SmallIconSet( Amarok::icon( "collection" ) ), i18n( "&Organize Files..." ), OrganizeFiles );
-        menu->insertItem( SmallIconSet( Amarok::icon( "collection" ) ), i18n( "&Copy Files to Collection..." ), CopyToCollection );
-        menu->insertItem( SmallIconSet( Amarok::icon( "collection" ) ), i18n( "&Move Files to Collection..." ), MoveToCollection );
-        menu->insertItem( SmallIconSet( Amarok::icon( "burn" ) ), i18n("Burn to CD..."), BurnCd );
+        menu->insertItem( KIcon( Amarok::icon( "collection" ) ), i18n( "&Organize Files..." ), OrganizeFiles );
+        menu->insertItem( KIcon( Amarok::icon( "collection" ) ), i18n( "&Copy Files to Collection..." ), CopyToCollection );
+        menu->insertItem( KIcon( Amarok::icon( "collection" ) ), i18n( "&Move Files to Collection..." ), MoveToCollection );
+        menu->insertItem( KIcon( Amarok::icon( "burn" ) ), i18n("Burn to CD..."), BurnCd );
         menu->insertSeparator();
         menu->insertItem( i18n( "&Select All Files" ), SelectAllFiles );
         menu->insertSeparator();
         actionCollection->action( "delete" )->setIcon( KIcon( Amarok::icon( "remove" ) ) );
         menu->addAction( actionCollection->action( "delete" ) );
         menu->insertSeparator();
-        menu->insertItem( SmallIconSet( Amarok::icon( "info" ) ), i18n( "Edit Track &Information..." ), EditTags );
+        menu->insertItem( KIcon( Amarok::icon( "info" ) ), i18n( "Edit Track &Information..." ), EditTags );
         menu->addAction( actionCollection->action( "properties" ) );
 
         menu->setItemEnabled( BurnCd, K3bExporter::isAvailable() );

@@ -3750,13 +3750,13 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
         popup.addAction( Amarok::actionCollection()->action("playlist_clear") );
         DynamicMode *m = 0;
         if(dynamicMode())
-             popup.insertItem( SmallIconSet( Amarok::icon( "dynamic" ) ), i18n("Repopulate"), REPOPULATE);
+             popup.insertItem( KIcon( Amarok::icon( "dynamic" ) ), i18n("Repopulate"), REPOPULATE);
         else
         {
                 popup.addAction( Amarok::actionCollection()->action("playlist_shuffle") );
                 m = PlaylistBrowser::instance()->findDynamicModeByTitle( AmarokConfig::lastDynamicMode() );
                 if( m )
-                    popup.insertItem( SmallIconSet( Amarok::icon( "dynamic" ) ), i18n("L&oad %1", m->title().replace( '&', "&&" )), ENABLEDYNAMIC);
+                    popup.insertItem( KIcon( Amarok::icon( "dynamic" ) ), i18n("L&oad %1", m->title().replace( '&', "&&" )), ENABLEDYNAMIC);
         }
         switch(popup.exec(p))
         {
@@ -3805,14 +3805,14 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
     }
 
     if( !isCurrent || !isPlaying )
-        popup.insertItem( SmallIconSet( Amarok::icon( "play" ) ), isCurrent && isPlaying
+        popup.insertItem( KIcon( Amarok::icon( "play" ) ), isCurrent && isPlaying
                 ? i18n( "&Restart" )
                 : i18n( "&Play" ), PLAY );
     if( isCurrent && !isLastFm && isPlaying )
         popup.addAction( Amarok::actionCollection()->action( "pause" ) );
 
     // Begin queue entry logic
-    popup.insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), i18n("&Queue Selected Tracks"), PLAY_NEXT );
+    popup.insertItem( KIcon( Amarok::icon( "queue_track" ) ), i18n("&Queue Selected Tracks"), PLAY_NEXT );
 
     bool queueToggle = false;
     MyIt it( this, MyIt::Selected );
@@ -3829,7 +3829,7 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
         if ( !firstQueued )
             popup.changeItem( PLAY_NEXT, i18n( "&Queue Track" ) );
         else
-            popup.changeItem( PLAY_NEXT, SmallIconSet( Amarok::icon( "dequeue_track" ) ), i18n("&Dequeue Track") );
+            popup.changeItem( PLAY_NEXT, KIcon( Amarok::icon( "dequeue_track" ) ), i18n("&Dequeue Track") );
     } else {
         if ( queueToggle )
             popup.changeItem( PLAY_NEXT, i18np( "Toggle &Queue Status (1 track)", "Toggle &Queue Status (%1 tracks)", itemCount ) );
@@ -3839,7 +3839,7 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
             if ( !firstQueued )
                 popup.changeItem( PLAY_NEXT, i18n( "&Queue Selected Tracks" ) );
             else
-                popup.changeItem( PLAY_NEXT, SmallIconSet( Amarok::icon( "dequeue_track" ) ), i18n("&Dequeue Selected Tracks") );
+                popup.changeItem( PLAY_NEXT, KIcon( Amarok::icon( "dequeue_track" ) ), i18n("&Dequeue Selected Tracks") );
     }
     // End queue entry logic
 
@@ -3860,7 +3860,7 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
 
     if( isCurrent && itemCount == 1 )
     {
-        popup.insertItem( SmallIconSet( Amarok::icon( "repeat_track" ) ), i18n( "&Repeat Track" ), REPEAT );
+        popup.insertItem( KIcon( Amarok::icon( "repeat_track" ) ), i18n( "&Repeat Track" ), REPEAT );
         popup.setItemChecked( REPEAT, Amarok::repeatTrack() );
     }
 
@@ -3868,29 +3868,29 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
 
     if( itemCount > 1 )
     {
-        popup.insertItem( SmallIconSet( Amarok::icon( "playlist" ) ), i18n("&Set as Playlist (Crop)"), CROP_PLAYLIST );
-        popup.insertItem( SmallIconSet( Amarok::icon( "save" ) ), i18n("S&ave as Playlist..."), SAVE_PLAYLIST );
+        popup.insertItem( KIcon( Amarok::icon( "playlist" ) ), i18n("&Set as Playlist (Crop)"), CROP_PLAYLIST );
+        popup.insertItem( KIcon( Amarok::icon( "save" ) ), i18n("S&ave as Playlist..."), SAVE_PLAYLIST );
     }
 
-    popup.insertItem( SmallIconSet( Amarok::icon( "remove_from_playlist" ) ), i18n( "Re&move From Playlist" ), this, SLOT( removeSelectedItems() ), Qt::Key_Delete, REMOVE );
+    popup.insertItem( KIcon( Amarok::icon( "remove_from_playlist" ) ), i18n( "Re&move From Playlist" ), this, SLOT( removeSelectedItems() ), Qt::Key_Delete, REMOVE );
 
     popup.insertSeparator();
 
     KMenu fileMenu;
     if( CollectionDB::instance()->isDirInCollection( item->url().directory() ) )
     {
-        fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18np("&Organize File...", "&Organize %1 Files...", itemCount), ORGANIZE );
+        fileMenu.insertItem( KIcon( "filesaveas" ), i18np("&Organize File...", "&Organize %1 Files...", itemCount), ORGANIZE );
     }
     else
     {
-        fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18np("&Copy Track to Collection...", "&Copy %1 Tracks to Collection...", itemCount), COPY_TO_COLLECTION );
-        fileMenu.insertItem( SmallIconSet( "filesaveas" ), i18np("&Move Track to Collection...", "&Move %1 Tracks to Collection...", itemCount), MOVE_TO_COLLECTION );
+        fileMenu.insertItem( KIcon( "filesaveas" ), i18np("&Copy Track to Collection...", "&Copy %1 Tracks to Collection...", itemCount), COPY_TO_COLLECTION );
+        fileMenu.insertItem( KIcon( "filesaveas" ), i18np("&Move Track to Collection...", "&Move %1 Tracks to Collection...", itemCount), MOVE_TO_COLLECTION );
     }
-    fileMenu.insertItem( SmallIconSet( Amarok::icon( "remove" ) ), i18np("&Delete File...", "&Delete %1 Selected Files...", itemCount ), this, SLOT( deleteSelectedFiles() ), Qt::SHIFT+Qt::Key_Delete, DELETE );
-    popup.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n("Manage &Files"), &fileMenu, FILE_MENU );
+    fileMenu.insertItem( KIcon( Amarok::icon( "remove" ) ), i18np("&Delete File...", "&Delete %1 Selected Files...", itemCount ), this, SLOT( deleteSelectedFiles() ), Qt::SHIFT+Qt::Key_Delete, DELETE );
+    popup.insertItem( KIcon( Amarok::icon( "files" ) ), i18n("Manage &Files"), &fileMenu, FILE_MENU );
 
     if( itemCount == 1 )
-        popup.insertItem( SmallIconSet( Amarok::icon( "editcopy" ) ), i18n( "&Copy Tags to Clipboard" ), COPY );
+        popup.insertItem( KIcon( Amarok::icon( "editcopy" ) ), i18n( "&Copy Tags to Clipboard" ), COPY );
 
     if( itemCount > 1 )
         popup.insertItem( trackColumn
@@ -3898,11 +3898,11 @@ Playlist::showContextMenu( Q3ListViewItem *item, const QPoint &p, int col ) //SL
                         : i18n("&Write '%1' for Selected Tracks",  KStringHandler::rsqueeze( tag, 30 ).replace( "&", "&&" ) )
                         , FILL_DOWN );
 
-    popup.insertItem( SmallIconSet( Amarok::icon( "edit" ) ), (itemCount == 1
+    popup.insertItem( KIcon( Amarok::icon( "edit" ) ), (itemCount == 1
             ? i18n( "&Edit Tag '%1'", tagName )
             : i18n( "&Edit '%1' Tag for Selected Tracks", tagName )), EDIT );
 
-    popup.insertItem( SmallIconSet( Amarok::icon( "info" ) )
+    popup.insertItem( KIcon( Amarok::icon( "info" ) )
         , item->url().isLocalFile() ?
               i18np( "Edit Track &Information...",  "Edit &Information for %1 Tracks...", itemCount):
               i18np( "Track &Information...",  "&Information for %1 Tracks...", itemCount)

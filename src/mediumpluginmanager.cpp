@@ -449,7 +449,7 @@ MediaDeviceConfig::MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, 
             m_pluginCombo->setCurrentItem( (*it)->name() );
     }
 
-    m_configButton = new KPushButton( KIcon(SmallIconSet( Amarok::icon( "configure" ) )), QString::null, this );
+    m_configButton = new KPushButton( KIcon(KIcon( Amarok::icon( "configure" ) )), QString::null, this );
     connect( m_configButton, SIGNAL(clicked()), SLOT(configureDevice()) );
     m_configButton->setEnabled( !m_new && m_pluginCombo->currentText() != i18n( "Do not handle" ) );
     m_configButton->setToolTip( i18n( "Configure device settings" ) );

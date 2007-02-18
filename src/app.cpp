@@ -896,12 +896,12 @@ bool Amarok::genericEventHandler( QWidget *recipient, QEvent *e )
             //FIXME this isn't a good way to determine if there is a currentTrack, need playlist() function
             const bool b = EngineController::engine()->loaded();
 
-            popup.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ),
+            popup.insertItem( KIcon( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ),
                               Playlist::Append );
-            popup.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "Append && &Play" ),
+            popup.insertItem( KIcon( Amarok::icon( "add_playlist" ) ), i18n( "Append && &Play" ),
                               Playlist::DirectPlay | Playlist::Append );
             if( b )
-                popup.insertItem( SmallIconSet( Amarok::icon( "fast_forward" ) ), i18n( "&Queue Track" ),
+                popup.insertItem( KIcon( Amarok::icon( "fast_forward" ) ), i18n( "&Queue Track" ),
                               Playlist::Queue );
             popup.insertSeparator();
             popup.insertItem( i18n( "&Cancel" ), 0 );

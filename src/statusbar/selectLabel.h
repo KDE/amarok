@@ -111,7 +111,7 @@ class SelectLabel : public QLabel
         void setEnabled( bool /*on*/ )
         {
             if( !m_action->currentIcon().isNull() )
-                setPixmap( SmallIconSet( m_action->currentIcon() ).pixmap( QIcon::Small, QIcon::Disabled ) );
+                setPixmap( KIcon( m_action->currentIcon() ).pixmap( QIcon::Small, QIcon::Disabled ) );
         }
 
     private slots:

@@ -126,10 +126,10 @@ Menu::Menu()
 
     insertSeparator();
 
-    insertItem( SmallIconSet( Amarok::icon( "covermanager" ) ), i18n( "C&over Manager" ), ID_SHOW_COVER_MANAGER );
+    insertItem( KIcon( Amarok::icon( "covermanager" ) ), i18n( "C&over Manager" ), ID_SHOW_COVER_MANAGER );
     safePlug( ac, "queue_manager", this );
-    insertItem( SmallIconSet( Amarok::icon( "visualizations" ) ), i18n( "&Visualizations" ), ID_SHOW_VIS_SELECTOR );
-    insertItem( SmallIconSet( Amarok::icon( "equalizer" ) ), i18n( "E&qualizer" ), kapp, SLOT( slotConfigEqualizer() ), 0, ID_CONFIGURE_EQUALIZER );
+    insertItem( KIcon( Amarok::icon( "visualizations" ) ), i18n( "&Visualizations" ), ID_SHOW_VIS_SELECTOR );
+    insertItem( KIcon( Amarok::icon( "equalizer" ) ), i18n( "E&qualizer" ), kapp, SLOT( slotConfigEqualizer() ), 0, ID_CONFIGURE_EQUALIZER );
     safePlug( ac, "script_manager", this );
     safePlug( ac, "statistics", this );
 
@@ -137,7 +137,7 @@ Menu::Menu()
 
 
     safePlug( ac, "update_collection", this );
-    insertItem( SmallIconSet( Amarok::icon( "rescan" ) ), i18n("&Rescan Collection"), ID_RESCAN_COLLECTION );
+    insertItem( KIcon( Amarok::icon( "rescan" ) ), i18n("&Rescan Collection"), ID_RESCAN_COLLECTION );
     setItemEnabled( ID_RESCAN_COLLECTION, !ThreadManager::instance()->isJobPending( "CollectionScanner" ) );
 
 #ifndef Q_WS_MAC
@@ -155,7 +155,7 @@ Menu::Menu()
 
     insertSeparator();
 
-    insertItem( SmallIconSet("help"), i18n( "&Help" ), helpMenu( this ) );
+    insertItem( KIcon("help"), i18n( "&Help" ), helpMenu( this ) );
 
     insertSeparator();
 
@@ -323,7 +323,7 @@ AnalyzerContainer::contextMenuEvent( QContextMenuEvent *e)
 {
 #if defined HAVE_LIBVISUAL
     KMenu menu;
-    menu.insertItem( SmallIconSet( Amarok::icon( "visualizations" ) ), i18n("&Visualizations"), Menu::ID_SHOW_VIS_SELECTOR );
+    menu.insertItem( KIcon( Amarok::icon( "visualizations" ) ), i18n("&Visualizations"), Menu::ID_SHOW_VIS_SELECTOR );
 
     if( menu.exec( mapToGlobal( e->pos() ) ) == Menu::ID_SHOW_VIS_SELECTOR )
         Menu::instance()->slotActivated( Menu::ID_SHOW_VIS_SELECTOR );

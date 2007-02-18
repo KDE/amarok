@@ -367,9 +367,9 @@ ContextBrowser::ContextBrowser( const char *name )
     connect( m_cuefile, SIGNAL(newCuePoint( long, long, long )),
              Scrobbler::instance(), SLOT(subTrack( long, long, long )) );
 
-    addTab( m_contextTab, SmallIconSet( Amarok::icon( "music" ) ),  i18n( "Music" ) );
-    addTab( m_lyricsTab,  SmallIconSet( Amarok::icon( "lyrics" ) ), i18n( "Lyrics" ) );
-    addTab( m_wikiTab,    SmallIconSet( Amarok::icon( "artist" ) ), i18n( "Artist" ) );
+    addTab( m_contextTab, KIcon( Amarok::icon( "music" ) ),  i18n( "Music" ) );
+    addTab( m_lyricsTab,  KIcon( Amarok::icon( "lyrics" ) ), i18n( "Lyrics" ) );
+    addTab( m_wikiTab,    KIcon( Amarok::icon( "artist" ) ), i18n( "Artist" ) );
 
     setTabEnabled( m_lyricsTab, false );
     setTabEnabled( m_wikiTab, false );
@@ -1002,25 +1002,25 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
         url = KUrl::fromPathOrUrl( url.url().replace( QRegExp( "^stream:" ), "http:" ) );
         urls = KUrl::List( url );
 //        menu.insertTitle( i18n("Podcast"), TITLE );
-        menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), MAKE );
-        menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
-        menu.insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), i18n( "&Queue Podcast" ), ASNEXT );
+        menu.insertItem( KIcon( Amarok::icon( "files" ) ), i18n( "&Load" ), MAKE );
+        menu.insertItem( KIcon( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
+        menu.insertItem( KIcon( Amarok::icon( "queue_track" ) ), i18n( "&Queue Podcast" ), ASNEXT );
         //menu.insertSeparator();
-        //menu.insertItem( SmallIconSet( "down" ), i18n( "&Download" ), DOWNLOAD );
+        //menu.insertItem( KIcon( "down" ), i18n( "&Download" ), DOWNLOAD );
     }
     else if( url.protocol() == "file" || url.protocol() == "artist" || url.protocol() == "album" || url.protocol() == "compilation" || url.protocol() == "albumdisc" || url.protocol() == "compilationdisc")
     {
         //TODO it would be handy and more usable to have this menu under the cover one too
 
 //        menu.insertTitle( i18n("Track"), TITLE );
-        menu.insertItem( SmallIconSet( Amarok::icon( "files" ) ), i18n( "&Load" ), MAKE );
-        menu.insertItem( SmallIconSet( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
-        menu.insertItem( SmallIconSet( Amarok::icon( "queue_track" ) ), i18n( "&Queue Track" ), ASNEXT );
+        menu.insertItem( KIcon( Amarok::icon( "files" ) ), i18n( "&Load" ), MAKE );
+        menu.insertItem( KIcon( Amarok::icon( "add_playlist" ) ), i18n( "&Append to Playlist" ), APPEND );
+        menu.insertItem( KIcon( Amarok::icon( "queue_track" ) ), i18n( "&Queue Track" ), ASNEXT );
         if( MediaBrowser::isAvailable() )
-            menu.insertItem( SmallIconSet( Amarok::icon( "device" ) ), i18n( "&Transfer to Media Device" ), MEDIA_DEVICE );
+            menu.insertItem( KIcon( Amarok::icon( "device" ) ), i18n( "&Transfer to Media Device" ), MEDIA_DEVICE );
 
         menu.insertSeparator();
-        menu.insertItem( SmallIconSet( Amarok::icon( "info" ) ), i18n( "Edit Track &Information..." ), INFO );
+        menu.insertItem( KIcon( Amarok::icon( "info" ) ), i18n( "Edit Track &Information..." ), INFO );
 
         if ( url.protocol() == "artist" )
         {
@@ -4017,11 +4017,11 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory, bool r
     if( count > 0 )
         it--;
     for ( uint i=0; i<count; i++, --it )
-        m_wikiBackPopup->insertItem( SmallIconSet( "wiki" ), *it, i );
+        m_wikiBackPopup->insertItem( KIcon( "wiki" ), *it, i );
     count = m_wikiForwardHistory.count();
     it = m_wikiForwardHistory.fromLast();
     for ( uint i=0; i<count; i++, --it )
-        m_wikiForwardPopup->insertItem( SmallIconSet( "wiki" ), *it, i );
+        m_wikiForwardPopup->insertItem( KIcon( "wiki" ), *it, i );
 
     wikiHistoryBackAction->setEnabled(  m_wikiBackHistory.size() > 1 );
     wikiHistoryForwardAction->setEnabled(  m_wikiForwardHistory.size() > 0 );

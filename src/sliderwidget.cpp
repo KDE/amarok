@@ -48,6 +48,7 @@
 #include <QPolygon>
 #include <QStyleOptionComplex>
 
+#include <kicon.h>
 #include <kiconloader.h>
 #include <kimageeffect.h>
 #include <klocale.h>
@@ -463,7 +464,7 @@ Amarok::VolumeSlider::contextMenuEvent( QContextMenuEvent *e )
     if( EngineController::hasEngineProperty( "HasEqualizer" ) )
     {
         menu.insertSeparator();
-        menu.addAction( SmallIconSet( "equalizer" ), i18n( "&Equalizer" ), kapp, SLOT( slotConfigEqualizer() ) )
+        menu.addAction( KIcon( "equalizer" ), i18n( "&Equalizer" ), kapp, SLOT( slotConfigEqualizer() ) )
             ->setData( -1 );
     }
 

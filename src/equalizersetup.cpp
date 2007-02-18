@@ -91,13 +91,13 @@ EqualizerSetup::EqualizerSetup()
 
     QPushButton* presetAdd = new QPushButton;
     presetLayout->addWidget( presetAdd );
-    presetAdd->setIconSet( SmallIconSet( Amarok::icon( "add_playlist" ) ) );
+    presetAdd->setIconSet( KIcon( Amarok::icon( "add_playlist" ) ) );
     presetAdd->setToolTip( i18n("Add new preset") );
     connect( presetAdd, SIGNAL( clicked() ), SLOT( addPreset() ) );
 
     QPushButton* presetConf = new QPushButton;
     presetLayout->addWidget( presetConf );
-    presetConf->setIconSet( SmallIconSet( Amarok::icon( "configure" ) ) );
+    presetConf->setIconSet( KIcon( Amarok::icon( "configure" ) ) );
     presetConf->setToolTip( i18n("Manage presets") );
     connect( presetConf, SIGNAL( clicked() ), SLOT( editPresets() ) );
 
