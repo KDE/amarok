@@ -53,9 +53,9 @@ public:
 
         QString result;
         int start = 0;
-        for( int pos = rxArg.search( *this );
+        for( int pos = rxArg.indexIn( *this );
                 pos != -1;
-                pos = rxArg.search( *this, start ) )
+                pos = rxArg.indexIn( *this, start ) )
         {
             int len = rxArg.matchedLength();
             QString p = rxArg.capturedTexts()[0].mid(1, len-1);
@@ -83,9 +83,9 @@ public:
 
         QString result;
         int start = 0;
-        for( int pos = rxOptArg.search( *this );
+        for( int pos = rxOptArg.indexIn( *this );
                 pos != -1;
-                pos = rxOptArg.search( *this, start ) )
+                pos = rxOptArg.indexIn( *this, start ) )
         {
             int len = rxOptArg.matchedLength();
             QStringx opt = rxOptArg.capturedTexts()[0].mid(1, len-2);

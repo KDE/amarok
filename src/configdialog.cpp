@@ -108,12 +108,13 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     KVBox    *opt9 = new KVBox;
 
     // Sound System
-    opt6->setName( "Engine" );
+    opt6->setObjectName( "Engine" );
     opt6->setSpacing( KDialog::spacingHint() );
     QWidget *groupBox, *aboutEngineButton;
     groupBox            = new Q3GroupBox( 2, Qt::Horizontal, i18n("Sound System"), opt6 );
     m_engineConfigFrame = new Q3GroupBox( 1, Qt::Horizontal, opt6 );
-    m_soundSystem       = new QComboBox( false, groupBox );
+    m_soundSystem       = new QComboBox;
+    m_soundSystem->setParent( groupBox );
     aboutEngineButton   = new QPushButton( i18n("About"), groupBox );
 
     m_soundSystem->setToolTip( i18n("Click to select the sound system to use for playback.") );
@@ -151,7 +152,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
     new CollectionSetup( m_opt7->collectionFoldersBox ); //TODO this widget doesn't update the apply/ok buttons
 
     // Media Devices
-    opt9->setName( "Media Devices" );
+    opt9->setObjectName( "Media Devices" );
     opt9->setSpacing( KDialog::spacingHint() );
     KVBox *topbox = new KVBox( opt9 );
     topbox->setSpacing( KDialog::spacingHint() );
@@ -278,7 +279,7 @@ void AmarokConfigDialog::updateSettings()
     // When sound system has changed, update engine config page
     if ( m_soundSystem->currentText() != m_pluginAmarokName[AmarokConfig::soundSystem()] ) {
         AmarokConfig::setSoundSystem( m_pluginName[m_soundSystem->currentText()] );
-        emit settingsChanged( name() );
+        emit settingsChanged( objectName() );
         soundSystemChanged();
     }
 
@@ -291,7 +292,7 @@ void AmarokConfigDialog::updateSettings()
     int dbType = Amarok::databaseTypeCode( m_opt7->dbSetupFrame->databaseEngine->currentText() );
     if ( dbType != AmarokConfig::databaseEngine().toInt() ) {
         AmarokConfig::setDatabaseEngine( QString::number( dbType ) );
-        emit settingsChanged( name() );
+        emit settingsChanged( objectName() );
     }
 
     m_deviceManager->finished();
@@ -324,7 +325,7 @@ void AmarokConfigDialog::updateSettings()
  */
 void AmarokConfigDialog::updateWidgets()
 {
-    m_soundSystem->setCurrentText( m_pluginAmarokName[AmarokConfig::soundSystem()] );
+    m_soundSystem->setItemText(  m_opt1->kcfg_AlterMood->currentIndex(), m_pluginAmarokName[AmarokConfig::soundSystem()] );
     soundSystemChanged();
 }
 
@@ -336,7 +337,7 @@ void AmarokConfigDialog::updateWidgets()
  */
 void AmarokConfigDialog::updateWidgetsDefault()
 {
-    m_soundSystem->setCurrentItem( 0 );
+    m_soundSystem->setCurrentIndex( 0 );
 }
 
 
@@ -418,7 +419,7 @@ void AmarokConfigDialog::soundSystemChanged()
     }
 
     const bool hasCrossfade = EngineController::hasEngineProperty( "HasCrossfade" );
-    const bool crossfadeOn = m_opt4->kcfg_Crossfade->isOn();
+    const bool crossfadeOn = m_opt4->kcfg_Crossfade->isChecked();
     // Enable crossfading option when available
     m_opt4->kcfg_Crossfade->setEnabled( hasCrossfade );
     m_opt4->kcfg_CrossfadeLength->setEnabled( hasCrossfade && crossfadeOn );
