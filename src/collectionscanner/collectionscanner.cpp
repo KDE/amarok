@@ -65,7 +65,7 @@ CollectionScanner::CollectionScanner( const QStringList& folders,
     amarokCollectionInterface = new OrgKdeAmarokCollectionInterface("org.kde.amarok", "/Collection", QDBusConnection::sessionBus());
     connect( dcsh, SIGNAL(pauseRequest()), this, SLOT(pause()) );
     connect( dcsh, SIGNAL(unpauseRequest()), this, SLOT(resume()) );
-    kapp->setName( QString( "amarokcollectionscanner" ).ascii() );
+    kapp->setObjectName( QString( "amarokcollectionscanner" ).toAscii() );
     if( !restart )
         QFile::remove( m_logfile );
 
@@ -108,28 +108,28 @@ CollectionScanner::doJob() //SLOT
         QFile logFile( m_logfile );
         QString lastFile;
         if ( !logFile.open( QIODevice::ReadOnly ) )
-            warning() << "Failed to open log file " << logFile.name() << " read-only"
+            warning() << "Failed to open log file " << logFile.fileName() << " read-only"
             << endl;
         else {
             QTextStream logStream;
             logStream.setDevice(&logFile);
-            logStream.setEncoding(QTextStream::UnicodeUTF8);
-            lastFile = logStream.read();
+            logStream.setCodec(QTextCodec::codecForName( "UTF-8" ) );
+            lastFile = logStream.readAll();
             logFile.close();
         }
 
         QFile folderFile( Amarok::saveLocation( QString::null ) + "collection_scan.files"   );
         if ( !folderFile.open( QIODevice::ReadOnly ) )
-            warning() << "Failed to open folder file " << folderFile.name()
+            warning() << "Failed to open folder file " << folderFile.fileName()
             << " read-only" << endl;
         else {
             QTextStream folderStream;
             folderStream.setDevice(&folderFile);
-            folderStream.setEncoding(QTextStream::UnicodeUTF8);
-            entries = QStringList::split( "\n", folderStream.read() );
+            folderStream.setCodec( QTextCodec::codecForName( "UTF-8" ) );
+            entries = folderStream.readAll().split( "\n" );
         }
 
-        for( int count = entries.findIndex( lastFile ) + 1; count; --count )
+        for( int count = entries.indexOf( lastFile ) + 1; count; --count )
             entries.pop_front();
 
     }
@@ -150,7 +150,7 @@ CollectionScanner::doJob() //SLOT
         QFile folderFile( Amarok::saveLocation( QString::null ) + "collection_scan.files"   );
         folderFile.open( QIODevice::WriteOnly );
         QTextStream stream( &folderFile );
-        stream.setEncoding(QTextStream::UnicodeUTF8);
+        stream.setCodec( QTextCodec::codecForName("UTF-8") );
         stream << entries.join( "\n" );
         folderFile.close();
     }
@@ -299,7 +299,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
         if( !m_logfile.isEmpty() ) {
             QFile log( m_logfile );
             if( log.open( QIODevice::WriteOnly ) ) {
-                Q3CString cPath = path.utf8();
+                Q3CString cPath = path.toUtf8();
                 log.write( cPath, cPath.length() );
                 log.close();
             }
@@ -316,7 +316,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
 
         else {
             MetaBundle::EmbeddedImageList images;
-            MetaBundle mb( KUrl::fromPathOrUrl( path ), true, TagLib::AudioProperties::Fast, &images );
+            MetaBundle mb( KUrl( path ), true, TagLib::AudioProperties::Fast, &images );
             const AttributeMap attributes = readTags( mb );
 
             if( !attributes.empty() ) {
@@ -446,12 +446,12 @@ CollectionScanner::writeElement( const QString& name, const AttributeMap& attrib
         // There are at least some characters that Qt cannot categorize which make the resulting
         // xml document ill-formed and prevent the parser from processing the remaining document.
         // Because of this we skip attributes containing characters not belonging to any category.
-        QString data = it.data();
+        QString data = it.value();
         const unsigned len = data.length();
         bool nonPrint = false;
         for( unsigned i = 0; i < len; i++ )
         {
-            if( data.ref( i ).category() == QChar::NoCategory )
+            if( data[i].category() == QChar::NoCategory )
             {
                 nonPrint = true;
                 break;
@@ -461,7 +461,7 @@ CollectionScanner::writeElement( const QString& name, const AttributeMap& attrib
         if( nonPrint )
             continue;
 
-        element.setAttribute( it.key(), it.data() );
+        element.setAttribute( it.key(), it.value() );
     }
 
     QString text;
@@ -469,7 +469,7 @@ CollectionScanner::writeElement( const QString& name, const AttributeMap& attrib
     element.save( stream, 0 );
 
 
-    std::cout << text.utf8().data() << std::endl;
+    std::cout << text.toUtf8().data() << std::endl;
 }
 
 
