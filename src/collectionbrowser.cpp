@@ -341,7 +341,7 @@ CollectionBrowser::slotSetFilter() //SLOT
     m_timer->stop();
     m_view->m_dirty = true;
     m_view->setFilter( m_searchEdit->text() );
-    m_view->setTimeFilter( m_timeFilter->currentItem() );
+    m_view->setTimeFilter( m_timeFilter->currentIndex() );
     m_view->renderView();
     if ( m_returnPressed )
         appendSearchResults();
@@ -965,7 +965,7 @@ CollectionView::slotExpand( Q3ListViewItem* item )  //SLOT
                 if( VisYearAlbum == 1 )
                 {
                     tmptext = item->text( 0 );
-                    QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
+                    QString year = tmptext.left( tmptext.indexOf( i18n(" - ") ) );
                     yearAlbumCalc( year, tmptext );
                     qb.addMatch( QueryBuilder::tabYear, year, false, true );
                     if ( isUnknown )
@@ -1025,7 +1025,7 @@ CollectionView::slotExpand( Q3ListViewItem* item )  //SLOT
                 if( VisYearAlbum == 1 )
                 {
                     tmptext = item->parent()->text( 0 );
-                    QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
+                    QString year = tmptext.left( tmptext.indexOf( i18n(" - ") ) );
                     yearAlbumCalc( year, tmptext );
                     qb.addMatch( QueryBuilder::tabYear, year, false, true );
                     if ( isUnknown )
@@ -1046,7 +1046,7 @@ CollectionView::slotExpand( Q3ListViewItem* item )  //SLOT
             if( VisYearAlbum == 2 )
             {
                 tmptext = item->text( 0 );
-                QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
+                QString year = tmptext.left( tmptext.indexOf( i18n(" - ") ) );
                 yearAlbumCalc( year, tmptext );
                 qb.addMatch( QueryBuilder::tabYear, year, false, true );
                 if ( isUnknown )
@@ -1100,7 +1100,7 @@ CollectionView::slotExpand( Q3ListViewItem* item )  //SLOT
                 if( VisYearAlbum == 1 )
                 {
                     tmptext = item->parent()->parent()->text( 0 );
-                    QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
+                    QString year = tmptext.left( tmptext.indexOf( i18n(" - ") ) );
                     yearAlbumCalc( year, tmptext );
                     qb.addMatch( QueryBuilder::tabYear, year, false, true );
                     if ( isUnknown )
@@ -1123,7 +1123,7 @@ CollectionView::slotExpand( Q3ListViewItem* item )  //SLOT
             if( VisYearAlbum == 2 )
             {
                 tmptext = item->parent()->text( 0 );
-                QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
+                QString year = tmptext.left( tmptext.indexOf( i18n(" - ") ) );
                 yearAlbumCalc( year, tmptext );
                 qb.addMatch( QueryBuilder::tabYear, year, false, true );
                 if ( isUnknown )
@@ -1138,7 +1138,7 @@ CollectionView::slotExpand( Q3ListViewItem* item )  //SLOT
             if( VisYearAlbum == 3 )
             {
                 tmptext = item->text( 0 );
-                QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
+                QString year = tmptext.left( tmptext.indexOf( i18n(" - ") ) );
                 yearAlbumCalc( year, tmptext );
                 qb.addMatch( QueryBuilder::tabYear, year, false, true );
                 if ( isUnknown )
@@ -1753,7 +1753,7 @@ CollectionView::fetchCover() //SLOT
     {
         // we can't use lastIndexOf since an album may have " - " within it.
         QString sep = i18n(" - ");
-        album = album.right( album.length() - sep.length() - album.find( sep ) );
+        album = album.right( album.length() - sep.length() - album.indexOf( sep ) );
     }
 
     // find the first artist's name
@@ -1880,7 +1880,7 @@ CollectionView::organizeFiles( const KUrl::List &urls, const QString &caption, b
 
     if( base.exec() == KDialog::Accepted )
     {
-        AmarokConfig::setOrganizeDirectory( dialog.folderCombo->currentItem() );
+        AmarokConfig::setOrganizeDirectory( dialog.folderCombo->currentIndex() );
         AmarokConfig::setOverwriteFiles( dialog.overwriteCheck->isChecked() );
         AmarokConfig::setGroupByFiletype( dialog.filetypeCheck->isChecked() );
         AmarokConfig::setGroupArtists( dialog.initialCheck->isChecked() );
@@ -2247,7 +2247,7 @@ CollectionView::getTrueItemText( int cat, Q3ListViewItem* item ) const
         CollectionItem* collectItem = static_cast<CollectionItem*>( item );
         trueItemText = collectItem->getSQLText( 0 );
         if ( cat == IdVisYearAlbum && !collectItem->isUnknown() )
-            trueItemText = trueItemText.right( trueItemText.length() - trueItemText.find( i18n( " - " ) ) - i18n( " - " ).length() );
+            trueItemText = trueItemText.right( trueItemText.length() - trueItemText.indexOf( i18n( " - " ) ) - i18n( " - " ).length() );
     }
     else
     {
@@ -2469,7 +2469,7 @@ CollectionView::listSelected()
                 if( VisYearAlbum == 1 )
                 {
                     tmptext = item->text( 0 );
-                    QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
+                    QString year = tmptext.left( tmptext.indexOf( i18n(" - ") ) );
                     yearAlbumCalc( year, tmptext );
                     qb.addMatch( QueryBuilder::tabYear, year, false, true );
                     if ( unknownText )
@@ -2546,7 +2546,7 @@ CollectionView::listSelected()
                         if( VisYearAlbum == 1 )
                         {
                             tmptext = item->text( 0 );
-                            QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
+                            QString year = tmptext.left( tmptext.indexOf( i18n(" - ") ) );
                             yearAlbumCalc( year, tmptext );
                             qb.addMatch( QueryBuilder::tabYear, year, false, true );
                             if ( unknownText )
@@ -2565,7 +2565,7 @@ CollectionView::listSelected()
                     if( VisYearAlbum == 2 )
                     {
                         tmptext = child->text( 0 );
-                        QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
+                        QString year = tmptext.left( tmptext.indexOf( i18n(" - ") ) );
                         yearAlbumCalc( year, tmptext );
                         qb.addMatch( QueryBuilder::tabYear, year, false, true );
                         if ( unknownText )
@@ -2650,7 +2650,7 @@ CollectionView::listSelected()
                             if( VisYearAlbum == 1 )
                             {
                                 tmptext = item->text( 0 );
-                                QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
+                                QString year = tmptext.left( tmptext.indexOf( i18n(" - ") ) );
                                 yearAlbumCalc( year, tmptext );
                                 qb.addMatch( QueryBuilder::tabYear, year, false, true );
                                 if ( unknownText )
@@ -2668,7 +2668,7 @@ CollectionView::listSelected()
                         if( VisYearAlbum == 2 )
                         {
                             tmptext = child->text( 0 );
-                            QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
+                            QString year = tmptext.left( tmptext.indexOf( i18n(" - ") ) );
                             yearAlbumCalc( year, tmptext );
                             qb.addMatch( QueryBuilder::tabYear, year, false, true );
                             if ( unknownText )
@@ -2683,7 +2683,7 @@ CollectionView::listSelected()
                         if( VisYearAlbum == 3 )
                         {
                             tmptext = grandChild->text( 0 );
-                            QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
+                            QString year = tmptext.left( tmptext.indexOf( i18n(" - ") ) );
                             yearAlbumCalc( year, tmptext );
                             qb.addMatch( QueryBuilder::tabYear, year, false, true );
                             if ( unknownText )
@@ -3081,7 +3081,7 @@ CollectionView::incrementDepth( bool rerender /*= true*/ )
         if( cat == IdVisYearAlbum )
         {
             QString tmptext = item->text( 0 );
-            QString year = tmptext.left( tmptext.find( i18n(" - ") ) );
+            QString year = tmptext.left( tmptext.indexOf( i18n(" - ") ) );
             yearAlbumCalc( year, tmptext );
             if( !item->isUnknown() )
                 m_ipodFilters[m_currentDepth] << tmptext;
@@ -3583,7 +3583,7 @@ CollectionView::yearAlbumCalc( QString &year, QString &text )
         year = "";
 
     text = text.right( text.length() -
-                       text.find( i18n(" - ") ) -
+                       text.indexOf( i18n(" - ") ) -
                        i18n(" - ").length() );
 }
 
@@ -4540,8 +4540,8 @@ CollectionItem::compare( Q3ListViewItem* i, int col, bool ascending ) const
 
     switch( m_cat ) {
         case IdVisYearAlbum:
-            a = a.left( a.find( i18n(" - ") ) );
-            b = b.left( b.find( i18n(" - ") ) );
+            a = a.left( a.indexOf( i18n(" - ") ) );
+            b = b.left( b.indexOf( i18n(" - ") ) );
             // "?" are the last ones
             if ( a == "?" )
                 return 1;
@@ -4677,7 +4677,7 @@ DividerItem::createGroup(const QString& src, int cat)
     QString ret;
     switch (cat) {
     case IdVisYearAlbum: {
-        ret = src.left( src.find(" - ") );
+        ret = src.left( src.indexOf(" - ") );
         break;
     }
     case IdYear: {
@@ -4724,8 +4724,8 @@ DividerItem::shareTheSameGroup(const QString& itemStr, const QString& divStr, in
 
     switch (cat) {
     case IdVisYearAlbum: {
-        QString sa = itemStr.left( itemStr.find( i18n(" - ") ) );
-        QString sb = divStr.left(  divStr.find( i18n(" - ") ) );
+        QString sa = itemStr.left( itemStr.indexOf( i18n(" - ") ) );
+        QString sb = divStr.left(  divStr.indexOf( i18n(" - ") ) );
         if (sa == sb) {
             inGroup = true;
         }

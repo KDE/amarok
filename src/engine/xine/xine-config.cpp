@@ -258,7 +258,7 @@ bool
 XineConfigDialog::hasChanged() const
 {
     showHidePluginConfigs();
-    if(XineCfg::outputPlugin() != ((m_view->deviceComboBox->currentItem() == 0) ? "auto" : m_view->deviceComboBox->currentText()))
+    if(XineCfg::outputPlugin() != ((m_view->deviceComboBox->currentIndex() == 0) ? "auto" : m_view->deviceComboBox->currentText()))
         return true;
 
     Q3PtrListIterator<XineGeneralEntry> it( m_entries );
@@ -297,7 +297,7 @@ XineConfigDialog::save()//SLOT
     if(hasChanged())
     {
         //its not Autodetect really, its just auto
-        XineCfg::setOutputPlugin((m_view->deviceComboBox->currentItem() == 0)
+        XineCfg::setOutputPlugin((m_view->deviceComboBox->currentIndex() == 0)
             ? "auto" : m_view->deviceComboBox->currentText());
         XineGeneralEntry* entry;
         for(entry = m_entries.first(); entry; entry=m_entries.next())

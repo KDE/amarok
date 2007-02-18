@@ -118,7 +118,7 @@ Options5::showEvent( QShowEvent* )
     useCustomColorsToggled( kcfg_OsdUseCustomColors->isChecked() );
 
     m_pOSDPreview->setFont( kcfg_OsdFont->font() );
-    m_pOSDPreview->setScreen( kcfg_OsdScreen->currentItem() );
+    m_pOSDPreview->setScreen( kcfg_OsdScreen->currentIndex() );
     m_pOSDPreview->setShown( kcfg_OsdEnabled->isChecked() );
 }
 

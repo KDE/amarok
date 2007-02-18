@@ -357,7 +357,7 @@ QueueManager::addItems( QListWidgetItem *after )
 void
 QueueManager::changeQueuedItems( const QList<PlaylistItem*> &in, const QList<PlaylistItem*> &out ) //SLOT
 {
-    foreach( PlaylistItem* it, in ) 
+    foreach( PlaylistItem* it, in )
         addQueuedItem( it );
     foreach( PlaylistItem* it, out )
         removeQueuedItem( it );

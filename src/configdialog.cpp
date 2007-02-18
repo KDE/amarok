@@ -311,7 +311,7 @@ void AmarokConfigDialog::updateSettings()
     // The following makes everything with a moodbar redraw itself.
     Amarok::setMoodbarPrefs( m_opt1->kcfg_ShowMoodbar->isChecked(),
                              m_opt1->kcfg_MakeMoodier->isChecked(),
-                             m_opt1->kcfg_AlterMood->currentItem(),
+                             m_opt1->kcfg_AlterMood->currentIndex(),
                              m_opt1->kcfg_MoodsWithMusic->isChecked() );
 }
 

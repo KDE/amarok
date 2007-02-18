@@ -60,7 +60,7 @@ MediaDeviceManager::MediaDeviceManager()
         {
             curr = qit.key();
             curr = curr.remove( "manual|" );
-            currName = curr.left( curr.find( '|' ) );
+            currName = curr.left( curr.indexOf( '|' ) );
             currMountPoint = curr.remove( currName + '|' );
             manualDevices.append( "false" );           //autodetected
             manualDevices.append( qit.key() );          //id

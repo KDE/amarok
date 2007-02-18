@@ -92,10 +92,10 @@ TransferDialog::TransferDialog( MediaDevice *mdev )
     m_sort2->setCurrentItem( mdev->m_secondSort );
     m_sort3->setCurrentItem( mdev->m_thirdSort );
 
-    m_label2->setDisabled( m_sort1->currentItem() == 0 );
-    m_sort2->setDisabled( m_sort1->currentItem() == 0 );
-    m_label3->setDisabled( m_sort2->currentItem() == 0 );
-    m_sort3->setDisabled( m_sort2->currentItem() == 0 );
+    m_label2->setDisabled( m_sort1->currentIndex() == 0 );
+    m_sort2->setDisabled( m_sort1->currentIndex() == 0 );
+    m_label3->setDisabled( m_sort2->currentIndex() == 0 );
+    m_sort3->setDisabled( m_sort2->currentIndex() == 0 );
 
     connect( m_sort1, SIGNAL( activated(int) ), SLOT( sort1_activated(int)) );
     connect( m_sort2, SIGNAL( activated(int) ), SLOT( sort2_activated(int)) );

@@ -73,7 +73,7 @@ GenericMediaDeviceConfigDialog::removeSupportedButtonClicked()
             temp = convert->currentText();
 
             convert->setCurrentText( item->text() );
-            convert->removeItem( convert->currentItem() );
+            convert->removeItem( convert->currentIndex() );
 
             if( temp == item->text() )
                 convert->setCurrentItem( 0 );

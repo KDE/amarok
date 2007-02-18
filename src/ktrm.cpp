@@ -880,8 +880,8 @@ double stringSimilarity(QString s1, QString s2)
             ++p1; ++p2;
         }
         else {
-            x1 = s1.find(c2,p1,false);
-            x2 = s2.find(c1,p2,false);
+            x1 = s1.indexOf(c2,p1,Qt::CaseInsensitive);
+            x2 = s2.indexOf(c1,p2,Qt::CaseInsensitive);
 
             if( (x1 == x2 || -1 == x1) || (-1 != x2 && x1 > x2) )
                 ++p2;

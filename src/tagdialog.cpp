@@ -1017,7 +1017,7 @@ TagDialog::changes()
 
     if (qSpinBox_score->value() != m_bundle.score())
         result |= TagDialog::SCORECHANGED;
-    if (kComboBox_rating->currentItem() != ( m_bundle.rating() ? m_bundle.rating() - 1 : 0 ) )
+    if (kComboBox_rating->currentIndex() != ( m_bundle.rating() ? m_bundle.rating() - 1 : 0 ) )
         result |= TagDialog::RATINGCHANGED;
 
     if (!m_urlList.count() || m_perTrack) { //ignore these on MultipleTracksMode
@@ -1062,7 +1062,7 @@ TagDialog::storeTags( const KUrl &kurl )
     if( result & TagDialog::SCORECHANGED )
         storedScores.replace( url, qSpinBox_score->value() );
     if( result & TagDialog::RATINGCHANGED )
-        storedRatings.replace( url, kComboBox_rating->currentItem() ? kComboBox_rating->currentItem() + 1 : 0 );
+        storedRatings.replace( url, kComboBox_rating->currentIndex() ? kComboBox_rating->currentIndex() + 1 : 0 );
     if( result & TagDialog::LYRICSCHANGED ) {
         if ( kTextEdit_lyrics->text().isEmpty() )
             storedLyrics.replace( url, QString::null );
@@ -1305,10 +1305,10 @@ TagDialog::applyToAllTracks()
             changed |= TagDialog::SCORECHANGED;
         }
 
-        if( kComboBox_rating->currentItem() && kComboBox_rating->currentItem() != m_bundle.rating() - 1 ||
-                !kComboBox_rating->currentItem() && m_bundle.rating() )
+        if( kComboBox_rating->currentIndex() && kComboBox_rating->currentIndex() != m_bundle.rating() - 1 ||
+                !kComboBox_rating->currentIndex() && m_bundle.rating() )
         {
-            mb.setRating( kComboBox_rating->currentItem() ? kComboBox_rating->currentItem() + 1 : 0 );
+            mb.setRating( kComboBox_rating->currentIndex() ? kComboBox_rating->currentIndex() + 1 : 0 );
             changed |= TagDialog::RATINGCHANGED;
         }
         storeTags( *it, changed, mb );

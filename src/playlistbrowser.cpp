@@ -113,7 +113,7 @@ namespace Amarok {
         const static QChar sep( '/' );
         int bOffset = 0, sOffset = 0;
 
-        int pos = path.find( sep, bOffset );
+        int pos = path.indexOf( sep, bOffset );
 
         while ( pos != -1 ) {
             if ( pos > sOffset && pos <= (int)path.length() ) {
@@ -123,7 +123,7 @@ namespace Amarok {
                 }
             }
             bOffset = pos + 1;
-            pos = path.find( sep, bOffset );
+            pos = path.indexOf( sep, bOffset );
         }
 
         int length = path.length() - 1;
@@ -1322,7 +1322,7 @@ void PlaylistBrowser::configurePodcasts( Q3ListViewItem *parent )
         }
     }
     if( !podcastChannelList.isEmpty() )
-        configurePodcasts( podcastChannelList, i18nc( "Podcasts contained in %1", 
+        configurePodcasts( podcastChannelList, i18nc( "Podcasts contained in %1",
                            "All in %1", parent->text( 0 ) ) );
 }
 

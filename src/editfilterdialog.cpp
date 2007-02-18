@@ -385,7 +385,7 @@ QString EditFilterDialog::keywordConditionString(const QString& keyword) const
     QString result, unit;
 
     if (m_vector.at(m_selectedIndex) == "size")
-        switch (m_comboUnitSize->currentItem())
+        switch (m_comboUnitSize->currentIndex())
         {
             case 1:
                 // kbytes
@@ -397,7 +397,7 @@ QString EditFilterDialog::keywordConditionString(const QString& keyword) const
                 break;
         }
 
-    switch(m_comboCondition->currentItem())
+    switch(m_comboCondition->currentIndex())
     {
         case 0:
             // less than...

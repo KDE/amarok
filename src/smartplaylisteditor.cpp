@@ -323,7 +323,7 @@ void SmartPlaylistEditor::removeCriteriaAll( CriteriaEditor *criteria )
 
 void SmartPlaylistEditor::updateOrderTypes( int index )
 {
-    int currentOrderType = m_orderTypeCombo->currentItem();
+    int currentOrderType = m_orderTypeCombo->currentIndex();
     if( index == m_orderCombo->count()-1 ) {  // random order selected
         m_orderTypeCombo->clear();
         m_orderTypeCombo->insertItem( i18n("Completely Random") );
@@ -387,15 +387,15 @@ QDomElement SmartPlaylistEditor::result()
     // Order By
     if( m_orderCheck->isChecked() ) {
         QDomElement orderby = doc.createElement("orderby");
-        if (m_orderCombo->currentItem() != m_orderCombo->count()-1) {
-            orderby.setAttribute( "field", m_dbFields[ m_orderCombo->currentItem() ] );
-            orderby.setAttribute( "order", m_orderTypeCombo->currentItem() == 1 ? "DESC" : "ASC" );
+        if (m_orderCombo->currentIndex() != m_orderCombo->count()-1) {
+            orderby.setAttribute( "field", m_dbFields[ m_orderCombo->currentIndex() ] );
+            orderby.setAttribute( "order", m_orderTypeCombo->currentIndex() == 1 ? "DESC" : "ASC" );
         } else {
             orderby.setAttribute( "field", "random" );
             QString order;
-            if ( m_orderTypeCombo->currentItem() == 0 )
+            if ( m_orderTypeCombo->currentIndex() == 0 )
                 order = "random";
-            else if ( m_orderTypeCombo->currentItem() == 1 )
+            else if ( m_orderTypeCombo->currentIndex() == 1 )
                 order = "weighted";
             else
                 order = "ratingweighted";
@@ -407,7 +407,7 @@ QDomElement SmartPlaylistEditor::result()
 
     if( m_expandCheck->isChecked() ) {
         QDomElement expandBy = doc.createElement("expandby");
-        expandBy.setAttribute( "field", m_expandableFields[ m_expandCombo->currentItem() ] );
+        expandBy.setAttribute( "field", m_expandableFields[ m_expandCombo->currentIndex() ] );
         smartplaylist.appendChild( expandBy );
     }
 
@@ -548,7 +548,7 @@ CriteriaEditor::~CriteriaEditor()
 QDomElement CriteriaEditor::getDomSearchCriteria( QDomDocument &doc )
 {
     QDomElement criteria = doc.createElement( "criteria" );
-    QString field = m_dbFields[ m_fieldCombo->currentItem() ];
+    QString field = m_dbFields[ m_fieldCombo->currentIndex() ];
     QString condition = m_criteriaCombo->currentText();
 
     criteria.setAttribute( "condition", condition );
@@ -556,7 +556,7 @@ QDomElement CriteriaEditor::getDomSearchCriteria( QDomDocument &doc )
 
     QStringList values;
     // Get the proper value(s)
-    switch( getValueType( m_fieldCombo->currentItem() ) ) {
+    switch( getValueType( m_fieldCombo->currentIndex() ) ) {
          case String: // fall through
          case AutoCompletionString:
             values << m_lineEdit->text();
@@ -571,9 +571,9 @@ QDomElement CriteriaEditor::getDomSearchCriteria( QDomDocument &doc )
          }
          case Rating:
          {
-            values << QString::number( indexToRating( m_comboBox->currentItem() ) );
+            values << QString::number( indexToRating( m_comboBox->currentIndex() ) );
             if( condition == i18n("is between")  )
-                    values << QString::number( indexToRating( m_comboBox2->currentItem() ) );
+                    values << QString::number( indexToRating( m_comboBox2->currentIndex() ) );
             break;
          }
          case Date:
@@ -581,7 +581,7 @@ QDomElement CriteriaEditor::getDomSearchCriteria( QDomDocument &doc )
             if( condition == i18n("is in the last") || condition == i18n("is not in the last") ) {
                 values << QString::number( m_intSpinBox1->value() );
                 // 0 = days; 1=months; 2=years
-                criteria.setAttribute( "period", !m_dateCombo->currentItem() ? "days" : (m_dateCombo->currentItem() == 1 ? "months" : "years") );
+                criteria.setAttribute( "period", !m_dateCombo->currentIndex() ? "days" : (m_dateCombo->currentIndex() == 1 ? "months" : "years") );
             }
             else {
                 values << QString::number( QDateTime( m_dateEdit1->date() ).toTime_t() );
@@ -595,7 +595,7 @@ QDomElement CriteriaEditor::getDomSearchCriteria( QDomDocument &doc )
          {
             values << QString::number( m_intSpinBox1->value() );
             // 0 = seconds, 1=minutes, 2=hours
-            criteria.setAttribute( "period", !m_lengthCombo->currentItem() ? "seconds" : (m_lengthCombo->currentItem() == 1 ? "minutes" : "hours") );
+            criteria.setAttribute( "period", !m_lengthCombo->currentIndex() ? "seconds" : (m_lengthCombo->currentIndex() == 1 ? "minutes" : "hours") );
             if( condition == i18n( "is between" ) ) {
                 values << QString::number( m_intSpinBox2->value() );
             }
@@ -616,7 +616,7 @@ QDomElement CriteriaEditor::getDomSearchCriteria( QDomDocument &doc )
 QString CriteriaEditor::getSearchCriteria()
 {
     QString searchCriteria;
-    QString field = m_dbFields[ m_fieldCombo->currentItem() ];
+    QString field = m_dbFields[ m_fieldCombo->currentIndex() ];
     QString criteria = m_criteriaCombo->currentText();
 
     if( field.isEmpty() )
@@ -628,7 +628,7 @@ QString CriteriaEditor::getSearchCriteria()
         searchCriteria += field;
 
     QString value;
-    switch( getValueType( m_fieldCombo->currentItem() ) ) {
+    switch( getValueType( m_fieldCombo->currentIndex() ) ) {
         case String:
         case AutoCompletionString:
             value = m_lineEdit->text();
@@ -641,9 +641,9 @@ QString CriteriaEditor::getSearchCriteria()
             break;
         case Rating:
         {
-            value = QString::number( indexToRating( m_comboBox->currentItem() ) );
+            value = QString::number( indexToRating( m_comboBox->currentIndex() ) );
             if( criteria == i18n("is between")  )
-                value += " AND " + QString::number( indexToRating( m_comboBox2->currentItem() ) );
+                value += " AND " + QString::number( indexToRating( m_comboBox2->currentIndex() ) );
             break;
         }
         case Date:
@@ -651,9 +651,9 @@ QString CriteriaEditor::getSearchCriteria()
             if( criteria == i18n("is in the last") || criteria == i18n("is not in the last") ) {
                 int n = m_intSpinBox1->value();
                 int time;
-                if( m_dateCombo->currentItem() == 0 ) //days
+                if( m_dateCombo->currentIndex() == 0 ) //days
                     time=86400*n;
-                else if( m_dateCombo->currentItem() == 1 ) //months
+                else if( m_dateCombo->currentIndex() == 1 ) //months
                     time=86400*30*n;
                 else time=86400*365*n; //years
                 value += "(*CurrentTimeT*)" + QString(" - %1 AND ").arg(time) + "(*CurrentTimeT*)";
@@ -674,9 +674,9 @@ QString CriteriaEditor::getSearchCriteria()
         {
             int n = m_intSpinBox1->value();
             int time;
-            if( m_lengthCombo->currentItem() == 0 ) //seconds
+            if( m_lengthCombo->currentIndex() == 0 ) //seconds
                 time = n;
-            else if( m_lengthCombo->currentItem() == 1 ) //minutes
+            else if( m_lengthCombo->currentIndex() == 1 ) //minutes
                 time = 60*n;
             else
                 time = 3600*n; //hours
@@ -684,9 +684,9 @@ QString CriteriaEditor::getSearchCriteria()
             if( criteria == i18n("is between")  ) {
                 int n2 = m_intSpinBox2->value();
                 int time2;
-                if( m_lengthCombo->currentItem() == 0 ) //seconds
+                if( m_lengthCombo->currentIndex() == 0 ) //seconds
                     time2 = n2;
-                else if( m_lengthCombo->currentItem() == 1 ) //minutes
+                else if( m_lengthCombo->currentIndex() == 1 ) //minutes
                     time2 = 60*n2;
                 else
                     time2 = 3600*n2; //hours
@@ -804,7 +804,7 @@ void CriteriaEditor::slotFieldSelected( int field )
         m_comboBox->clear();
         m_comboBox->completionObject()->clear();
 
-        int currentField = m_fieldCombo->currentItem();
+        int currentField = m_fieldCombo->currentIndex();
         if( currentField == FArtist ) //artist
            items = CollectionDB::instance()->artistList();
         else if( currentField == FComposer ) //composer
@@ -837,14 +837,14 @@ void CriteriaEditor::slotFieldSelected( int field )
                      && fs != "sunrpc"
                      && fs != "none"
                      && device != "tmpfs"
-                     && device.find("shm") == -1
+                     && device.indexOf("shm") == -1
                      && mountpoint != "/dev/swap"
                      && mountpoint != "/dev/pts"
-                     && mountpoint.find("/proc") != 0
-                     && mountpoint.find("/sys") != 0
-                     || fs.find( "smb" ) != -1
-                     || fs.find( "cifs" ) != -1
-                     || fs.find( "nfs" ) != -1
+                     && mountpoint.indexOf("/proc") != 0
+                     && mountpoint.indexOf("/sys") != 0
+                     || fs.indexOf( "smb" ) != -1
+                     || fs.indexOf( "cifs" ) != -1
+                     || fs.indexOf( "nfs" ) != -1
                 )
                     items << mountpoint;
             }
@@ -863,7 +863,7 @@ void CriteriaEditor::slotFieldSelected( int field )
 
 void CriteriaEditor::loadEditWidgets()
 {
-    int valueType = getValueType( m_fieldCombo->currentItem() );
+    int valueType = getValueType( m_fieldCombo->currentIndex() );
 
     if( m_currentValueType == valueType && !(
         m_criteriaCombo->currentText() == i18n( "is between" ) ||

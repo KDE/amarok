@@ -221,10 +221,10 @@ StreamProvider::processHeader( Q_LONG &index, Q_LONG bytesRead )
             debug() << "Got shoutcast header: '" << m_headerStr << "'" << endl;
             // Handle redirection
             QString loc( "Location: " );
-            int index = m_headerStr.find( loc );
+            int index = m_headerStr.indexOf( loc );
             if ( index >= 0 ) {
                 int start = index + loc.length();
-                int end = m_headerStr.find( "\n", index );
+                int end = m_headerStr.indexOf( "\n", index );
                 m_url = m_headerStr.mid( start, end - start - 1 );
                 debug() << "Stream redirected to: " << m_url << endl;
                 m_sockRemote.close();
@@ -313,7 +313,7 @@ StreamProvider::restartNoIcy()
 QString
 StreamProvider::extractStr( const QString &str, const QString &key ) const
 {
-    int index = str.find( key, 0, true );
+    int index = str.indexOf( key, 0, true );
 
     if ( index == -1 )
         return QString();
@@ -323,8 +323,8 @@ StreamProvider::extractStr( const QString &str, const QString &key ) const
         // String looks like this:
         // StreamTitle='foobar';StreamUrl='http://shn.mthN.net';
 
-        index = str.find( "'", index ) + 1;
-        int indexEnd = str.find( "';", index );
+        index = str.indexOf( "'", index ) + 1;
+        int indexEnd = str.indexOf( "';", index );
         return str.mid( index, indexEnd - index );
     }
 }
