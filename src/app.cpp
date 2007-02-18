@@ -1225,9 +1225,9 @@ namespace Amarok
 
     bool invokeBrowser( const QString& url )
     {
-        //URL can be in whatever forms KUrl::fromPathOrUrl understands - ie most.
+        //URL can be in whatever forms KUrl understands - ie most.
         const QString cmd = "%1 \"%2\"";
-        return KRun::runCommand( cmd.arg( AmarokConfig::externalBrowser(), KUrl::fromPathOrUrl( url ).url() ) ) > 0;
+        return KRun::runCommand( cmd.arg( AmarokConfig::externalBrowser(), KUrl( url ).url() ) ) > 0;
     }
 
     namespace ColorScheme

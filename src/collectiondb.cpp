@@ -488,7 +488,7 @@ CollectionDB::URLsFromSqlDrag( const QStringList &values ) const
         const QString &rel = *it;
         it++;
         int id = (*it).toInt();
-        urls += KUrl::fromPathOrUrl( MountPointManager::instance()->getAbsolutePath( id, rel ) );
+        urls += KUrl( MountPointManager::instance()->getAbsolutePath( id, rel ) );
         for( int i = 0;
                 i < QueryBuilder::dragFieldCount-1 && it != values.end();
                 i++ )
@@ -1661,7 +1661,7 @@ CollectionDB::createDragPixmapFromSQL( const QString &sql, QString textOverRide 
     KUrl::List list;
     oldForeach( values )
     {
-        KUrl u = KUrl::fromPathOrUrl( *it );
+        KUrl u = KUrl( *it );
         if( u.isValid() )
             list += u;
     }
@@ -1949,7 +1949,7 @@ CollectionDB::podcastImage( const QString &remoteURL, const bool withShadow, uin
     {
         s = notAvailCover( withShadow, width );
 
-        const KUrl url = KUrl::fromPathOrUrl( remoteURL );
+        const KUrl url = KUrl( remoteURL );
         if( url.isValid() ) //KIO crashes with invalid URLs
         {
             KIO::Job *job = KIO::storedGet( url, false, false );
@@ -2267,7 +2267,7 @@ CollectionDB::findEmbeddedImage( const QString& artist, const QString& album, ui
         QString result = loadHashFile( hash, width );
         if ( result.isEmpty() ) {
             // need to get original from file first
-            MetaBundle mb(  KUrl::fromPathOrUrl( values.last() ) );
+            MetaBundle mb(  KUrl( values.last() ) );
             if ( extractEmbeddedImage( mb, hash ) ) {
                 // try again, as should be possible now
                 result = loadHashFile( hash, width );
@@ -2652,10 +2652,10 @@ CollectionDB::getPodcastChannels()
     oldForeach( values )
     {
         PodcastChannelBundle pcb;
-        pcb.setUrl         ( KUrl::fromPathOrUrl(*it) );
+        pcb.setUrl         ( KUrl(*it) );
         pcb.setTitle       ( *++it );
-        pcb.setLink        ( KUrl::fromPathOrUrl(*++it) );
-        pcb.setImageURL    ( KUrl::fromPathOrUrl(*++it) );
+        pcb.setLink        ( KUrl(*++it) );
+        pcb.setImageURL    ( KUrl(*++it) );
         pcb.setDescription ( *++it );
         pcb.setCopyright   ( *++it );
         pcb.setParentId    ( (*++it).toInt() );
@@ -2690,10 +2690,10 @@ CollectionDB::getPodcastEpisodes( const KUrl &parent, bool onlyNew, int limit )
     {
         PodcastEpisodeBundle peb;
         peb.setDBId        ( (*it).toInt() );
-        peb.setUrl         ( KUrl::fromPathOrUrl(*++it) );
+        peb.setUrl         ( KUrl(*++it) );
         if( *++it != "NULL" )
-            peb.setLocalURL    ( KUrl::fromPathOrUrl(*it) );
-        peb.setParent      ( KUrl::fromPathOrUrl(*++it) );
+            peb.setLocalURL    ( KUrl(*it) );
+        peb.setParent      ( KUrl(*++it) );
         peb.setGuid        ( *++it );
         peb.setTitle       ( *++it );
         if( *++it != NULL )
@@ -2725,10 +2725,10 @@ CollectionDB::getPodcastEpisodeById( int id )
     oldForeach( values )
     {
         peb.setDBId        ( id );
-        peb.setUrl         ( KUrl::fromPathOrUrl(*it) );
+        peb.setUrl         ( KUrl(*it) );
         if( *++it != "NULL" )
-            peb.setLocalURL( KUrl::fromPathOrUrl(*it) );
-        peb.setParent      ( KUrl::fromPathOrUrl(*++it) );
+            peb.setLocalURL( KUrl(*it) );
+        peb.setParent      ( KUrl(*++it) );
         peb.setGuid        ( *++it );
         peb.setTitle       ( *++it );
         peb.setSubtitle    ( *++it );
@@ -2787,11 +2787,11 @@ CollectionDB::getPodcastChannelBundle( const KUrl &url, PodcastChannelBundle *pc
 
     oldForeach( values )
     {
-        pcb->setUrl         ( KUrl::fromPathOrUrl(*it) );
+        pcb->setUrl         ( KUrl(*it) );
         pcb->setTitle       ( *++it );
-        pcb->setLink        ( KUrl::fromPathOrUrl(*++it) );
+        pcb->setLink        ( KUrl(*++it) );
         if( *++it != "NULL" )
-            pcb->setImageURL( KUrl::fromPathOrUrl(*it) );
+            pcb->setImageURL( KUrl(*it) );
         pcb->setDescription ( *++it );
         pcb->setCopyright   ( *++it );
         pcb->setParentId    ( (*++it).toInt() );
@@ -3560,7 +3560,7 @@ CollectionDB::bundlesByUrls( const KUrl::List& urls )
 
                 // if we get here, we didn't find an entry
                 {
-                    KUrl url = KUrl::fromPathOrUrl( *it );
+                    KUrl url = KUrl( *it );
 
                     if( true /* !MediaBrowser::instance()->getBundle( url, &b ) */ )
                     {
@@ -4001,7 +4001,7 @@ CollectionDB::organizeFile( const KUrl &src, const OrganizeCollectionDialog &dia
          tmp = QString( dialog.folderCombo->currentText() + "/amarok-tmp-%1." + extension ).arg( count );
          count++;
       } while( QFile::exists( tmp ) );
-      tmpSrc = KUrl::fromPathOrUrl( tmp );
+      tmpSrc = KUrl( tmp );
 
       KIO::FileCopyJob *job = 0;
       if( copy )
@@ -4064,7 +4064,7 @@ CollectionDB::organizeFile( const KUrl &src, const OrganizeCollectionDialog &dia
    //Use cover image for folder icon
    if( !m_moveFileJobCancelled && dialog.coverCheck->isChecked() && !mb.artist().isEmpty() && !mb.album().isEmpty() )
    {
-      KUrl dstURL = KUrl::fromPathOrUrl( dest );
+      KUrl dstURL = KUrl( dest );
       dstURL.cleanPath();
 
       QString path  = dstURL.directory();
@@ -4111,8 +4111,8 @@ CollectionDB::moveFile( const QString &src, const QString &dest, bool overwrite,
     }
 
     // Escape URL.
-    KUrl srcURL = KUrl::fromPathOrUrl( src );
-    KUrl dstURL = KUrl::fromPathOrUrl( dest );
+    KUrl srcURL = KUrl( src );
+    KUrl dstURL = KUrl( dest );
 
     // Clean it.
     srcURL.cleanPath();

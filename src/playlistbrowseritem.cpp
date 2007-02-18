@@ -1143,7 +1143,7 @@ StreamEntry::StreamEntry( Q3ListViewItem *parent, Q3ListViewItem *after, const Q
 
     m_title = xmlDefinition.attribute( "name" );
     QDomElement e = xmlDefinition.namedItem( "url" ).toElement();
-    m_url  = KUrl::fromPathOrUrl( e.text() );
+    m_url  = KUrl( e.text() );
 
 
     if( m_title.isEmpty() )
@@ -1700,7 +1700,7 @@ PodcastChannel::setSettings( PodcastSettings *newSettings )
         {
             //create the local directory first
             PodcastEpisode::createLocalDir( newSettings->saveLocation() );
-            KIO::CopyJob* m_podcastMoveJob = KIO::move( copyList, KUrl::fromPathOrUrl( newSettings->saveLocation() ), false );
+            KIO::CopyJob* m_podcastMoveJob = KIO::move( copyList, KUrl( newSettings->saveLocation() ), false );
             Amarok::StatusBar::instance()->newProgressOperation( m_podcastMoveJob )
                     .setDescription( i18n( "Moving Podcasts" ) );
         }
@@ -1925,7 +1925,7 @@ PodcastChannel::setXml( const QDomNode &xml, const int feedType )
 
     m_bundle = PodcastChannelBundle( m_url, t, a, l, d, c, settings );
     delete settings;
-    m_bundle.setImageURL( KUrl::fromPathOrUrl( img ) );
+    m_bundle.setImageURL( KUrl( img ) );
 
     m_bundle.setParentId( m_parent->id() );
     if( !m_updating )
@@ -2347,7 +2347,7 @@ PodcastEpisode::PodcastEpisode( Q3ListViewItem *parent, Q3ListViewItem *after,
                 if( n.toElement().attribute( "rel" ) == "enclosure" )
                 {
                     const QString weblink = n.toElement().attribute( "href" );
-                    link = KUrl::fromPathOrUrl( weblink );
+                    link = KUrl( weblink );
                 }
             }
         }
@@ -2384,7 +2384,7 @@ PodcastEpisode::PodcastEpisode( Q3ListViewItem *parent, Q3ListViewItem *after,
 
         const QString weblink = xml.namedItem( "enclosure" ).toElement().attribute( "url" );
 
-        link     = KUrl::fromPathOrUrl( weblink );
+        link     = KUrl( weblink );
     }
 
     if( title.isEmpty() )
@@ -2514,9 +2514,9 @@ PodcastEpisode::downloadMedia()
     KUrl m_localDir;
     PodcastChannel *channel = dynamic_cast<PodcastChannel*>(m_parent);
     if( channel )
-        m_localDir = KUrl::fromPathOrUrl( channel->saveLocation() );
+        m_localDir = KUrl( channel->saveLocation() );
     else
-        m_localDir = KUrl::fromPathOrUrl( PodcastSettings("Podcasts").saveLocation() );
+        m_localDir = KUrl( PodcastSettings("Podcasts").saveLocation() );
     createLocalDir( m_localDir );
 
     //filename might get changed by redirects later.
@@ -2632,7 +2632,7 @@ PodcastEpisode::setLocalUrlBase( const QString &s )
 {
     QString filename = m_localUrl.fileName();
     QString newL = s + filename;
-    m_localUrl = KUrl::fromPathOrUrl( newL );
+    m_localUrl = KUrl( newL );
 }
 
 void

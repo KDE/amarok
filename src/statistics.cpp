@@ -171,7 +171,7 @@ StatisticsList::startDrag()
 
     if( item->itemType() == StatisticsDetailedItem::TRACK )
     {
-        list += KUrl::fromPathOrUrl( item->url() );
+        list += KUrl( item->url() );
         drag->addDragObject( new K3URLDrag( list, viewport() ) );
         drag->setPixmap( CollectionDB::createDragPixmap(list),
                          QPoint( CollectionDB::DRAGPIXMAP_OFFSET_X,
@@ -657,13 +657,13 @@ StatisticsList::showContextMenu( Q3ListViewItem *item, const QPoint &p, int )  /
         case APPEND:
             hasSQL ?
                 Playlist::instance()->insertMediaSql( item->getSQL() ):
-                Playlist::instance()->insertMedia( KUrl::fromPathOrUrl( item->url() ) );
+                Playlist::instance()->insertMedia( KUrl( item->url() ) );
             break;
 
         case QUEUE:
             hasSQL ?
                 Playlist::instance()->insertMediaSql( item->getSQL(), Playlist::Queue ):
-                Playlist::instance()->insertMedia( KUrl::fromPathOrUrl( item->url() ), Playlist::Queue );
+                Playlist::instance()->insertMedia( KUrl( item->url() ), Playlist::Queue );
             break;
 
         case INFO:
@@ -674,7 +674,7 @@ StatisticsList::showContextMenu( Q3ListViewItem *item, const QPoint &p, int )  /
             }
             else
             {
-                TagDialog* dialog = new TagDialog( KUrl::fromPathOrUrl( item->url() ), Statistics::instance() );
+                TagDialog* dialog = new TagDialog( KUrl( item->url() ), Statistics::instance() );
                 dialog->show();
             }
     }
@@ -994,7 +994,7 @@ KUrl::List
 StatisticsDetailedItem::getURLs()
 {
     if( itemType() == StatisticsDetailedItem::TRACK )
-        return KUrl::List( KUrl::fromPathOrUrl(url()) );
+        return KUrl::List( KUrl(url()) );
 
     QueryBuilder qb;
     QString query = QString::null;
@@ -1028,7 +1028,7 @@ StatisticsDetailedItem::getURLs()
     QStringList values = qb.run();
     KUrl::List urls;
     oldForeach( values )
-        urls += KUrl::fromPathOrUrl( *it );
+        urls += KUrl( *it );
     return urls;
 }
 

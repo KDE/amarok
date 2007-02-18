@@ -569,12 +569,12 @@ PlaylistFile::loadM3u( QTextStream &stream )
                 url.prepend( "file://" );
 
             if( KUrl::isRelativeUrl( url ) ) {
-                KUrl kurl( KUrl::fromPathOrUrl( directory + line ) );
+                KUrl kurl( KUrl( directory + line ) );
                 kurl.cleanPath();
                 b.setPath( kurl.path() );
             }
             else {
-                b.setUrl( KUrl::fromPathOrUrl( line ) );
+                b.setUrl( KUrl( line ) );
             }
 
             // Ensure that we always have a title: use the URL as fallback
@@ -670,7 +670,7 @@ PlaylistFile::loadPls( QTextStream &stream )
             if (index > numberOfEntries || index == 0)
                 continue;
             tmp = (*i).section('=', 1).trimmed();
-            m_bundles[index - 1].setUrl(KUrl::fromPathOrUrl(tmp));
+            m_bundles[index - 1].setUrl(KUrl(tmp));
             // Ensure that if the entry has no title, we show at least the URL as title
             m_bundles[index - 1].setTitle(tmp);
             continue;

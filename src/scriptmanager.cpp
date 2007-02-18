@@ -455,7 +455,7 @@ ScriptManager::slotInstallScript( const QString& path )
                                      "Please inform the package maintainer about this error.</p>" ) );
 
         // Delete directory recursively
-        KIO::NetAccess::del( KUrl::fromPathOrUrl( scriptFolder ), 0 );
+        KIO::NetAccess::del( KUrl( scriptFolder ), 0 );
     }
 
     return false;
@@ -523,7 +523,7 @@ ScriptManager::slotUninstallScript()
     const QString directory = m_scripts[name].url.directory();
 
     // Delete directory recursively
-    const KUrl url = KUrl::fromPathOrUrl( directory );
+    const KUrl url = KUrl( directory );
     if( !KIO::NetAccess::del( url, 0 ) ) {
         KMessageBox::sorry( 0, i18n( "<p>Could not uninstall this script.</p><p>The ScriptManager can only uninstall scripts which have been installed as packages.</p>" ) );
         return;
@@ -859,7 +859,7 @@ void
 ScriptManager::loadScript( const QString& path )
 {
     if( !path.isEmpty() ) {
-        const KUrl url = KUrl::fromPathOrUrl( path );
+        const KUrl url = KUrl( path );
         QString name = url.fileName();
         QString type = "generic";
 

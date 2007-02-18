@@ -716,12 +716,12 @@ MediaBrowser::deviceSwitch( const QString &name )
 void
 MediaBrowser::transcodingFinished( const QString &src, const QString &dst )
 {
-    KUrl srcJob = KUrl::fromPathOrUrl( m_transcodeSrc );
-    KUrl srcResult = KUrl::fromPathOrUrl( src );
+    KUrl srcJob = KUrl( m_transcodeSrc );
+    KUrl srcResult = KUrl( src );
 
     if( srcJob.path() == srcResult.path() )
     {
-        m_transcodedUrl = KUrl::fromPathOrUrl( dst );
+        m_transcodedUrl = KUrl( dst );
         m_waitForTranscode = false;
     }
     else
@@ -2960,7 +2960,7 @@ MediaDevice::transferFiles()
             if( transferredItem->flags() & MediaItem::SmartPlaylist )
                 bundles = bundlesToSync( transferredItem->text( 0 ), transferredItem->data() );
             else
-                bundles = bundlesToSync( transferredItem->text( 0 ), KUrl::fromPathOrUrl( transferredItem->data() ) );
+                bundles = bundlesToSync( transferredItem->text( 0 ), KUrl( transferredItem->data() ) );
         }
         else if( transferredItem->bundle() )
             bundles += *transferredItem->bundle();
@@ -3538,9 +3538,9 @@ MediaQueue::load( const QString& filename )
             else if(node.nodeName() == "PodcastAuthor" )
                 peb.setAuthor( node.firstChild().toText().nodeValue() );
             else if(node.nodeName() == "PodcastRSS" )
-                peb.setParent( KUrl::fromPathOrUrl( node.firstChild().toText().nodeValue() ) );
+                peb.setParent( KUrl( node.firstChild().toText().nodeValue() ) );
             else if(node.nodeName() == "PodcastURL" )
-                peb.setUrl( KUrl::fromPathOrUrl( node.firstChild().toText().nodeValue() ) );
+                peb.setUrl( KUrl( node.firstChild().toText().nodeValue() ) );
         }
 
         if( podcast )
@@ -3554,7 +3554,7 @@ MediaQueue::load( const QString& filename )
         {
             QString smart = elem.attribute( "smartplaylist" );
             if( smart.isEmpty() )
-                syncPlaylist( playlist, KUrl::fromPathOrUrl( playlistdata ), true );
+                syncPlaylist( playlist, KUrl( playlistdata ), true );
             else
                 syncPlaylist( playlist, playlistdata, true );
         }

@@ -60,13 +60,13 @@ XSPFPlaylist::annotation()
 KUrl
 XSPFPlaylist::info()
 {
-    return KUrl::fromPathOrUrl( documentElement().namedItem( "info" ).firstChild().nodeValue() );
+    return KUrl( documentElement().namedItem( "info" ).firstChild().nodeValue() );
 }
 
 KUrl
 XSPFPlaylist::location()
 {
-    return KUrl::fromPathOrUrl( documentElement().namedItem( "location" ).firstChild().nodeValue() );
+    return KUrl( documentElement().namedItem( "location" ).firstChild().nodeValue() );
 }
 
 QString
@@ -78,7 +78,7 @@ XSPFPlaylist::identifier()
 KUrl
 XSPFPlaylist::image()
 {
-    return KUrl::fromPathOrUrl( documentElement().namedItem( "image" ).firstChild().nodeValue() );
+    return KUrl( documentElement().namedItem( "image" ).firstChild().nodeValue() );
 }
 
 QDateTime
@@ -90,7 +90,7 @@ XSPFPlaylist::date()
 KUrl
 XSPFPlaylist::license()
 {
-    return KUrl::fromPathOrUrl( documentElement().namedItem( "license" ).firstChild().nodeValue() );
+    return KUrl( documentElement().namedItem( "license" ).firstChild().nodeValue() );
 }
 
 KUrl::List
@@ -115,7 +115,7 @@ XSPFPlaylist::attribution()
 KUrl
 XSPFPlaylist::link()
 {
-    return KUrl::fromPathOrUrl( documentElement().namedItem( "link" ).firstChild().nodeValue() );
+    return KUrl( documentElement().namedItem( "link" ).firstChild().nodeValue() );
 }
 
 void

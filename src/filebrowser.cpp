@@ -529,7 +529,7 @@ inline void
 FileBrowser::gotoCurrentFolder()
 {
     const KUrl &url = EngineController::instance()->bundle().url();
-    KUrl dirURL = KUrl::fromPathOrUrl( url.directory() );
+    KUrl dirURL = KUrl( url.directory() );
 
     m_combo->setUrl( dirURL );
     setUrl( dirURL );

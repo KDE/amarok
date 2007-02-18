@@ -3932,7 +3932,7 @@ CollectionView::renderFlatModeView( bool /*=false*/ )
                         item->setText( *it_c, (*it).isNull() ? "0" : (*it) );
                         break;
                     case Filename:
-                        item->setText( *it_c, KUrl::fromPathOrUrl( (*it).right( (*it).length() -1 ) ).fileName() );
+                        item->setText( *it_c, KUrl( (*it).right( (*it).length() -1 ) ).fileName() );
                         break;
                     case Filesize:
                         item->setText( *it_c, MetaBundle::prettyFilesize( (*it).toInt() ) );

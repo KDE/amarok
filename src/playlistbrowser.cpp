@@ -579,11 +579,11 @@ void PlaylistBrowser::loadLastfmStreams( const bool subscriber /*false*/ )
 
     if( subscriber )
     {
-        url = KUrl::fromPathOrUrl( QString("lastfm://user/%1/personal").arg( user ) );
+        url = KUrl( QString("lastfm://user/%1/personal").arg( user ) );
         last = new LastFmEntry( m_lastfmCategory, last, url, i18n( "Personal Radio" ) );
         last->setKept( false );
 
-        url = KUrl::fromPathOrUrl( QString("lastfm://user/%1/loved").arg( user ) );
+        url = KUrl( QString("lastfm://user/%1/loved").arg( user ) );
         last = new LastFmEntry( m_lastfmCategory, last, url, i18n( "Loved Radio" ) );
         last->setKept( false );
     }
@@ -1147,7 +1147,7 @@ PlaylistCategory* PlaylistBrowser::loadPodcasts()
             PlaylistCategory *p = new PlaylistCategory( m_listview, after, e );
             p->setId( 0 );
             //delete the file, it is deprecated
-            KIO::del( KUrl::fromPathOrUrl( podcastBrowserCache() ) );
+            KIO::del( KUrl( podcastBrowserCache() ) );
 
             if( !m_podcastItemsToScan.isEmpty() )
                 m_podcastTimer->start( m_podcastTimerInterval );
@@ -1305,7 +1305,7 @@ void PlaylistBrowser::addPodcast( Q3ListViewItem *parent )
 
     if( ok && !name.isEmpty() )
     {
-        addPodcast( KUrl::fromPathOrUrl( name ), parent );
+        addPodcast( KUrl( name ), parent );
     }
 }
 
@@ -2933,7 +2933,7 @@ void PlaylistBrowserView::startDrag()
         else if( isStream( *it ) )
         {
             urls     += static_cast<StreamEntry*>(*it)->url();
-            itemList += KUrl::fromPathOrUrl( "stream://" );
+            itemList += KUrl( "stream://" );
             pixText = (*it)->text(0);
         }
 
@@ -2986,7 +2986,7 @@ void PlaylistBrowserView::startDrag()
                 child = child->nextSibling();
             }
             urls += tmp;
-            itemList += KUrl::fromPathOrUrl( item->url().url() );
+            itemList += KUrl( item->url().url() );
             pixText = (*it)->text(0);
             #undef item
         }
@@ -3001,7 +3001,7 @@ void PlaylistBrowserView::startDrag()
                 textdrag->setSubtype( "amarok-sql" );
                 drag->addDragObject( textdrag );
             }
-            itemList += KUrl::fromPathOrUrl( QString("smartplaylist://%1").arg( item->text(0) ) );
+            itemList += KUrl( QString("smartplaylist://%1").arg( item->text(0) ) );
             pixText = (*it)->text(0);
         }
 
@@ -3015,7 +3015,7 @@ void PlaylistBrowserView::startDrag()
             Q3TextDrag *textdrag = new Q3TextDrag( str, 0 );
             textdrag->setSubtype( "dynamic" );
             drag->addDragObject( textdrag );
-            itemList += KUrl::fromPathOrUrl( QString("dynamic://%1").arg( item->text(0) ) );
+            itemList += KUrl( QString("dynamic://%1").arg( item->text(0) ) );
             pixText = (*it)->text(0);
         }
 

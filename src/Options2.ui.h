@@ -146,7 +146,7 @@ void Options2::uninstallPushButton_clicked()
         ContextBrowser::instance()->reloadStyleSheet();
     }
 
-    KUrl themeDir( KUrl::fromPathOrUrl( Amarok::saveLocation( "themes/" ) ) );
+    KUrl themeDir( KUrl( Amarok::saveLocation( "themes/" ) ) );
     themeDir.addPath( name );
 
     if( !KIO::NetAccess::del( themeDir, 0 ) ) {

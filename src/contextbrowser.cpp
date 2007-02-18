@@ -384,7 +384,7 @@ ContextBrowser::ContextBrowser( const char *name )
     m_showFavoriteAlbums = Amarok::config( "ContextBrowser" )->readBoolEntry( "ShowFavoriteAlbums", true );
 
     // Delete folder with the cached coverimage shadow pixmaps
-    KIO::del( KUrl::fromPathOrUrl( Amarok::saveLocation( "covershadow-cache/" ) ), false, false );
+    KIO::del( KUrl( Amarok::saveLocation( "covershadow-cache/" ) ), false, false );
 
     connect( this, SIGNAL( currentChanged( QWidget* ) ), SLOT( tabChanged( QWidget* ) ) );
 
@@ -630,7 +630,7 @@ void ContextBrowser::openUrlRequest( const KUrl &url )
 
     else if( url.protocol() == "stream" )
     {
-        Playlist::instance()->insertMedia( KUrl::fromPathOrUrl( url.url().replace( QRegExp( "^stream:" ), "http:" ) ), Playlist::DefaultOptions );
+        Playlist::instance()->insertMedia( KUrl( url.url().replace( QRegExp( "^stream:" ), "http:" ) ), Playlist::DefaultOptions );
     }
 
     else if( url.protocol() == "compilationdisc" || url.protocol() == "albumdisc" )
@@ -999,7 +999,7 @@ void ContextBrowser::slotContextMenu( const QString& urlString, const QPoint& po
     }
     else if( url.protocol() == "stream" )
     {
-        url = KUrl::fromPathOrUrl( url.url().replace( QRegExp( "^stream:" ), "http:" ) );
+        url = KUrl( url.url().replace( QRegExp( "^stream:" ), "http:" ) );
         urls = KUrl::List( url );
 //        menu.insertTitle( i18n("Podcast"), TITLE );
         menu.insertItem( KIcon( Amarok::icon( "files" ) ), i18n( "&Load" ), MAKE );
@@ -4464,7 +4464,7 @@ ContextBrowser::expandURL( const KUrl &url )
         {
             QStringList trackUrls = CollectionDB::instance()->artistTracks( QString::number( artist_id ) );
             oldForeach( trackUrls )
-                urls += KUrl::fromPathOrUrl( *it );
+                urls += KUrl( *it );
         }
     }
     else if( protocol == "album" ) {
@@ -4473,7 +4473,7 @@ ContextBrowser::expandURL( const KUrl &url )
 
         QStringList trackUrls = CollectionDB::instance()->albumTracks( artist, album );
         oldForeach( trackUrls ) {
-            urls += KUrl::fromPathOrUrl( *it );
+            urls += KUrl( *it );
         }
     }
     else if( protocol == "albumdisc" ) {
@@ -4482,7 +4482,7 @@ ContextBrowser::expandURL( const KUrl &url )
 
         QStringList trackUrls = CollectionDB::instance()->albumDiscTracks( artist, album, discnumber );
         oldForeach( trackUrls ) {
-            urls += KUrl::fromPathOrUrl( *it );
+            urls += KUrl( *it );
         }
     }
     else if( protocol == "compilation" ) {
@@ -4495,7 +4495,7 @@ ContextBrowser::expandURL( const KUrl &url )
         QStringList values = qb.run();
 
         for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it ) {
-            urls += KUrl::fromPathOrUrl( *it );
+            urls += KUrl( *it );
         }
     }
     else if( protocol == "compilationdisc") {
@@ -4511,7 +4511,7 @@ ContextBrowser::expandURL( const KUrl &url )
         QStringList values = qb.run();
 
         for( QStringList::ConstIterator it = values.begin(), end = values.end(); it != end; ++it ) {
-            urls += KUrl::fromPathOrUrl( *it );
+            urls += KUrl( *it );
         }
     }
 
@@ -4524,12 +4524,12 @@ ContextBrowser::expandURL( const KUrl &url )
 
         QStringList trackUrls = CollectionDB::instance()->albumTracks( artistID, albumID );
         oldForeach( trackUrls ) {
-            urls += KUrl::fromPathOrUrl( *it );
+            urls += KUrl( *it );
         }
     }
 
     else if( protocol == "stream" ) {
-        urls += KUrl::fromPathOrUrl( url.url().replace( QRegExp( "^stream:" ), "http:" ) );
+        urls += KUrl( url.url().replace( QRegExp( "^stream:" ), "http:" ) );
     }
 
     return urls;

@@ -2158,7 +2158,7 @@ Playlist::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
 void
 Playlist::appendMedia( const QString &path )
 {
-    appendMedia( KUrl::fromPathOrUrl( path ) );
+    appendMedia( KUrl( path ) );
 }
 
 void
@@ -3685,7 +3685,7 @@ Playlist::fileMoved( const QString &srcPath, const QString &dstPath )
         PlaylistItem *item = static_cast<PlaylistItem*>( *it );
         if ( item->url().path() == srcPath )
         {
-            item->setUrl( KUrl::fromPathOrUrl( dstPath ) );
+            item->setUrl( KUrl( dstPath ) );
             item->filter( m_filter );
         }
     }
@@ -4573,7 +4573,7 @@ Playlist::slotMouseButtonPressed( int button, Q3ListViewItem *after, const QPoin
     case Qt::MidButton:
     {
         const QString path = QApplication::clipboard()->text( QClipboard::Selection );
-        const KUrl url = KUrl::fromPathOrUrl( path );
+        const KUrl url = KUrl( path );
 
         if( url.isValid() )
             insertMediaInternal( url, static_cast<PlaylistItem*>(after ? after : lastItem()) );

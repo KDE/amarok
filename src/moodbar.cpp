@@ -616,7 +616,7 @@ MoodServer::slotMoodbarPrefs( bool show, bool moodier, int alter, bool withMusic
 void
 MoodServer::slotFileDeleted( const QString &path )
 {
-    QString mood = Moodbar::moodFilename( KUrl::fromPathOrUrl( path ) );
+    QString mood = Moodbar::moodFilename( KUrl( path ) );
     if( mood.isEmpty()  ||  !QFile::exists( mood ) )
       return;
 
@@ -630,8 +630,8 @@ MoodServer::slotFileDeleted( const QString &path )
 void
 MoodServer::slotFileMoved( const QString &srcPath, const QString &dstPath )
 {
-    QString srcMood = Moodbar::moodFilename( KUrl::fromPathOrUrl( srcPath ) );
-    QString dstMood = Moodbar::moodFilename( KUrl::fromPathOrUrl( dstPath ) );
+    QString srcMood = Moodbar::moodFilename( KUrl( srcPath ) );
+    QString dstMood = Moodbar::moodFilename( KUrl( dstPath ) );
 
     if( srcMood.isEmpty()   ||  dstMood.isEmpty()  ||
         srcMood == dstMood  ||  !QFile::exists( srcMood ) )

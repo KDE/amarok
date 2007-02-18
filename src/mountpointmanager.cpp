@@ -150,7 +150,7 @@ MountPointManager::getIdForUrl( KUrl url )
 int
 MountPointManager::getIdForUrl( const QString &url )
 {
-    return getIdForUrl( KUrl::fromPathOrUrl( url ) );
+    return getIdForUrl( KUrl( url ) );
 }
 
 bool
@@ -253,7 +253,7 @@ QString
 MountPointManager::getRelativePath( const int deviceId, const QString& absolutePath ) const
 {
     KUrl url;
-    getRelativePath( deviceId, KUrl::fromPathOrUrl( absolutePath ), url );
+    getRelativePath( deviceId, KUrl( absolutePath ), url );
     return url.path();
 }
 
