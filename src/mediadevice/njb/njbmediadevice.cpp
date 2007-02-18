@@ -394,7 +394,7 @@ NjbMediaDevice::downloadToCollection()
             track_id.setNum( auxItem->track()->id() );
             filepath = path + auxItem->bundle()->url().path();
 
-            if( NJB_Get_Track( m_njb, auxItem->track()->id(), auxItem->bundle()->filesize(), filepath.utf8(), progressCallback, this)
+            if( NJB_Get_Track( m_njb, auxItem->track()->id(), auxItem->bundle()->filesize(), filepath.toUtf8(), progressCallback, this)
                 != NJB_SUCCESS )
             {
                 debug() << "Get Track failed. " << endl;
@@ -450,7 +450,7 @@ NjbMediaDevice::copyTrackToDevice(const MetaBundle& bundle)
     taggedTrack->writeToSongid( songid );
     m_busy = true;
     kapp->processEvents( 100 );
-    if(NJB_Send_Track (m_njb, bundle.url().path().utf8(), songid, progressCallback, this, &id) != NJB_SUCCESS)
+    if(NJB_Send_Track (m_njb, bundle.url().path().toUtf8(), songid, progressCallback, this, &id) != NJB_SUCCESS)
     {
         debug() << ": NJB_Send_Track failed\n";
         if (NJB_Error_Pending(m_njb))
@@ -491,7 +491,7 @@ NjbMediaDevice::copyTrackFromDevice( MediaItem *item )
     NjbTrack *track((*it));
 
     QString filename = item->bundle()->directory() + track->bundle()->filename();
-    if( NJB_Get_Track( m_njb, track->id(), track->bundle()->filesize(), filename.utf8(), progressCallback, this)
+    if( NJB_Get_Track( m_njb, track->id(), track->bundle()->filesize(), filename.toUtf8(), progressCallback, this)
         != NJB_SUCCESS )
     {
         debug() << "Get Track failed. " << endl;

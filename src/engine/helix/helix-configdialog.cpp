@@ -215,7 +215,7 @@ HelixSoundDevice::save()
 
       HelixConfig::setDevice( lineEdit_outputDevice->text() );
       if (checkBox_outputDevice->isChecked())
-         m_engine->setDevice( lineEdit_outputDevice->text().utf8() );
+         m_engine->setDevice( lineEdit_outputDevice->text().toUtf8() );
       else
          m_engine->setDevice("default");
       HelixConfig::setDeviceenabled( checkBox_outputDevice->isChecked() );
@@ -288,21 +288,21 @@ HelixConfigDialogBase::HelixConfigDialogBase( HelixEngine *engine, Amarok::Plugi
     m_core = new HelixConfigEntry( parent, engine->m_coredir,
                                    config, row,
                                    i18n("Helix/Realplay core directory"),
-                                   HelixConfig::coreDirectory().utf8(),
+                                   HelixConfig::coreDirectory().toUtf8(),
                                    i18n("This is the directory where clntcore.so is located"));
     ++row;
     engine->m_pluginsdir = HelixConfig::pluginDirectory();
     m_plugin = new HelixConfigEntry( parent, engine->m_pluginsdir,
                                      config, row,
                                      i18n("Helix/Realplay plugins directory"),
-                                     HelixConfig::pluginDirectory().utf8(),
+                                     HelixConfig::pluginDirectory().toUtf8(),
                                      i18n("This is the directory where, for example, vorbisrend.so is located"));
     ++row;
     engine->m_codecsdir = HelixConfig::codecsDirectory();
     m_codec = new HelixConfigEntry( parent, engine->m_codecsdir,
                                      config, row,
                                      i18n("Helix/Realplay codecs directory"),
-                                     HelixConfig::codecsDirectory().utf8(),
+                                     HelixConfig::codecsDirectory().toUtf8(),
                                      i18n("This is the directory where, for example, cvt1.so is located"));
     ++row;
     grid->addMultiCellWidget( new KSeparator( Qt::Horizontal, parent ), row, row, 0, 1 );

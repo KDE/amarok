@@ -690,7 +690,7 @@ GstEngine::load( const KUrl& url, bool stream )  //SLOT
 
        if (src)
        {
-          debug() << "******* Got src element for URI " << url.prettyUrl().utf8() << endl;
+          debug() << "******* Got src element for URI " << url.prettyUrl().toUtf8() << endl;
 
           m_gst_src = src;
 

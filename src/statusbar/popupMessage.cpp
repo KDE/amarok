@@ -66,9 +66,14 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
     QLabel *label;
     K3ActiveLabel *alabel;
 
-    m_layout = new QVBoxLayout( this, 9 /*margin*/, 6 /*spacing*/ );
+    m_layout = new QVBoxLayout;
+    m_layout->setParent( this );
+    m_layout->setMargin( 9 );
+    m_layout->setSpacing( 6 );
 
-    hbox = new QHBoxLayout( m_layout, 12 );
+    hbox = new QHBoxLayout;
+    hbox->setParent( m_layout );
+    hbox->setSpacing( 12 );
 
     hbox->addWidget( m_countdownFrame = new QFrame( this, "counterVisual" ) );
     m_countdownFrame->setFixedWidth( fontMetrics().width( "X" ) );
@@ -77,42 +82,44 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
 
     label = new QLabel( this );
     label->setObjectName( "image" );
-    hbox->add( label );
+    hbox->addWidget( label );
 
-    alabel = new K3ActiveLabel( this );
+    alabel = new K3ActiveLabel;
+    alabel->setParent( this );
     alabel->setObjectName( "label" );
     alabel->setTextFormat( Qt::RichText );
     alabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
     alabel->setPalette( p );
 
-    hbox->add( alabel );
+    hbox->addWidget( alabel );
 
-    hbox = new QHBoxLayout( m_layout );
+    hbox = new QHBoxLayout;
+    hbox->setParent( m_layout );
 
     hbox->addItem( new QSpacerItem( 4, 4, QSizePolicy::Expanding, QSizePolicy::Preferred ) );
     KPushButton *button = new KPushButton( KStandardGuiItem::close(), this );
     button->setObjectName( "closeButton" );
-    hbox->add( button );
+    hbox->addWidget( button );
 
     connect( button, SIGNAL(clicked()), SLOT(close()) );
 }
 
 void PopupMessage::addWidget( QWidget *widget )
 {
-    m_layout->add( widget );
+    m_layout->addWidget( widget );
     adjustSize();
 }
 
 void PopupMessage::setShowCloseButton( const bool show )
 {
-    findChild<KPushButton*>( "closeButton" )->setShown( show );
+    findChild<KPushButton*>( "closeButton" )->setVisible( show );
     adjustSize();
 }
 
 void PopupMessage::setShowCounter( const bool show )
 {
     m_showCounter = show;
-    findChild<QFrame*>( "counterVisual" )->setShown( show );
+    findChild<QFrame*>( "counterVisual" )->setVisible( show );
     adjustSize();
 }
 
@@ -201,7 +208,7 @@ void PopupMessage::countDown()
     if( m_counter < h->height() - 3 )
         QPainter( h ).fillRect( 2, 2, h->width() - 4, m_counter, palette().active().highlight() );
 
-    if( !hasMouse() )
+    if( !testAttribute(Qt::WA_UnderMouse))
         m_counter++;
 
     if( m_counter > h->height() )

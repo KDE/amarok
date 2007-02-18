@@ -206,13 +206,13 @@ HelixEngine::init()
    {
       setOutputSink( HelixSimplePlayer::ALSA );
       if (HelixConfig::deviceenabled())
-         setDevice( HelixConfig::device().utf8() );
+         setDevice( HelixConfig::device().toUtf8() );
       else
          setDevice("default");
    }
 
 
-   if (!stat(m_coredir.utf8(), &s) && !stat(m_pluginsdir.utf8(), &s) && !stat(m_codecsdir.utf8(), &s))
+   if (!stat(m_coredir.toUtf8(), &s) && !stat(m_pluginsdir.toUtf8(), &s) && !stat(m_codecsdir.toUtf8(), &s))
    {
       long vol=0;
       bool eqenabled=false;
@@ -229,7 +229,7 @@ HelixEngine::init()
          PlayerControl::tearDown();
       }
 
-      PlayerControl::init(m_coredir.utf8(), m_pluginsdir.utf8(), m_codecsdir.utf8(), 2);
+      PlayerControl::init(m_coredir.toUtf8(), m_pluginsdir.toUtf8(), m_codecsdir.toUtf8(), 2);
       if (PlayerControl::initDirectSS())
       {
          fallbackToOSS();

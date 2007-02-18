@@ -215,45 +215,45 @@ MediaItem
 
     if( bundle.title().isEmpty() )
     {
-        trackmeta->title = qstrdup( i18n( "Unknown title" ).utf8() );
+        trackmeta->title = qstrdup( i18n( "Unknown title" ).toUtf8() );
     }
     else
     {
-        trackmeta->title = qstrdup( bundle.title().utf8() );
+        trackmeta->title = qstrdup( bundle.title().toUtf8() );
     }
 
     if( bundle.album().isEmpty() )
     {
-        trackmeta->album = qstrdup( i18n( "Unknown album" ).utf8() );
+        trackmeta->album = qstrdup( i18n( "Unknown album" ).toUtf8() );
     }
     else
     {
-        trackmeta->album = qstrdup( bundle.album().string().utf8() );
+        trackmeta->album = qstrdup( bundle.album().string().toUtf8() );
     }
 
     if( bundle.artist().isEmpty() )
     {
-        trackmeta->artist = qstrdup( i18n( "Unknown artist" ).utf8() );
+        trackmeta->artist = qstrdup( i18n( "Unknown artist" ).toUtf8() );
     }
     else
     {
-        trackmeta->artist = qstrdup( bundle.artist().string().utf8() );
+        trackmeta->artist = qstrdup( bundle.artist().string().toUtf8() );
     }
 
     if( bundle.genre().isEmpty() )
     {
-        trackmeta->genre = qstrdup( i18n( "Unknown genre" ).utf8() );
+        trackmeta->genre = qstrdup( i18n( "Unknown genre" ).toUtf8() );
     }
     else
     {
-        trackmeta->genre = qstrdup( bundle.genre().string().utf8() );
+        trackmeta->genre = qstrdup( bundle.genre().string().toUtf8() );
     }
 
     if( bundle.year() > 0 )
     {
         QString date;
         QTextOStream( &date ) << bundle.year() << "0101T0000.0";
-        trackmeta->date = qstrdup( date.utf8() );
+        trackmeta->date = qstrdup( date.toUtf8() );
     }
     else
     {
@@ -271,7 +271,7 @@ MediaItem
     }
     if( !bundle.filename().isEmpty() )
     {
-        trackmeta->filename = qstrdup( bundle.filename().utf8() );
+        trackmeta->filename = qstrdup( bundle.filename().toUtf8() );
     }
     trackmeta->filesize = bundle.filesize();
 
@@ -526,7 +526,7 @@ LIBMTP_album_t
     {
         debug() << "creating new album " << endl;
         album_object = LIBMTP_new_album_t();
-        album_object->name = qstrdup( items->first()->bundle()->album().string().utf8() );
+        album_object->name = qstrdup( items->first()->bundle()->album().string().toUtf8() );
         album_object->tracks = (uint32_t *) malloc(items->count() * sizeof(uint32_t));
         int i = 0;
         for( MtpMediaItem *it = dynamic_cast<MtpMediaItem*>(items->first()); it; it = dynamic_cast<MtpMediaItem*>(items->next()) )
@@ -574,13 +574,13 @@ MtpMediaDevice::checkFolderStructure( const MetaBundle &bundle, bool create )
             .replace( QRegExp( "%b" ), album )
             .replace( QRegExp( "%g" ), genre );
         // check if it exists
-        uint32_t check_folder = subfolderNameToID( (*it).utf8(), m_folders, parent_id );
+        uint32_t check_folder = subfolderNameToID( (*it).toUtf8(), m_folders, parent_id );
         // create if not exists (if requested)
         if( check_folder == 0 )
         {
             if( create )
             {
-                check_folder = createFolder( (*it).utf8() , parent_id );
+                check_folder = createFolder( (*it).toUtf8() , parent_id );
                 if( check_folder == 0 )
                 {
                     m_critical_mutex.unlock();
@@ -593,7 +593,7 @@ MtpMediaDevice::checkFolderStructure( const MetaBundle &bundle, bool create )
                 return 0;
             }
         }
-        completePath += (*it).utf8() + '/';
+        completePath += (*it).toUtf8() + '/';
         // set new parent
         parent_id = check_folder;
     }
@@ -699,7 +699,7 @@ MtpMediaDevice::downloadSelectedItemsToCollection()
         {
             QString filename = tempdir.name() + it->bundle()->filename();
             int ret = LIBMTP_Get_Track_To_File(
-                    m_device, it->track()->id(), filename.utf8(),
+                    m_device, it->track()->id(), filename.toUtf8(),
                     progressCallback, this
                   );
             if( ret != 0 )
@@ -891,7 +891,7 @@ MtpMediaDevice::playlistFromItem( MtpMediaItem *item )
         return;
     m_critical_mutex.lock();
     LIBMTP_playlist_t *metadata = LIBMTP_new_playlist_t();
-    metadata->name = qstrdup( item->text( 0 ).utf8() );
+    metadata->name = qstrdup( item->text( 0 ).toUtf8() );
     uint32_t *tracks = ( uint32_t* )malloc( sizeof( uint32_t ) * item->childCount() );
     uint32_t i = 0;
     for( MtpMediaItem *it = dynamic_cast<MtpMediaItem *>(item->firstChild());

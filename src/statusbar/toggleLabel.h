@@ -92,7 +92,7 @@ class ToggleLabel : public QLabel
     public slots:
         void setChecked( bool on )
         {
-            setPixmap( m_action->iconSet().pixmap( QIcon::Small, on ? QIcon::Normal : QIcon::Disabled ) );
+            setPixmap( m_action->icon().pixmap( QIcon::Small, on ? QIcon::Normal : QIcon::Disabled ) );
         }
 
         void setEnabled( bool /*on*/ ) { }
@@ -100,7 +100,7 @@ class ToggleLabel : public QLabel
     private slots:
         void aboutToShow()
         {
-            if( hasMouse() && !m_tooltipHidden )
+            if( testAttribute(Qt::WA_UnderMouse) && !m_tooltipHidden )
                 showToolTip();
         }
 

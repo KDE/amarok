@@ -75,7 +75,7 @@ namespace Amarok
             /// we flip the value for vertical sliders
             int adjustValue( int v ) const
             {
-               int mp = (minValue() + maxValue()) / 2;
+               int mp = (minimum() + maximum()) / 2;
                return orientation() == Qt::Vertical ? mp - (v - mp) : v;
             }
 

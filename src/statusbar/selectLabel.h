@@ -117,7 +117,7 @@ class SelectLabel : public QLabel
     private slots:
         void aboutToShow()
         {
-            if( hasMouse() && !m_tooltipHidden )
+            if( testAttribute(Qt::WA_UnderMouse) && !m_tooltipHidden )
                 showToolTip();
         }
 

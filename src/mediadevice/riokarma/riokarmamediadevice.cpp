@@ -110,7 +110,7 @@ MediaItem
         return 0;
     }
 
-    int fid = lk_rio_write( m_rio, bundle.url().path().utf8() );
+    int fid = lk_rio_write( m_rio, bundle.url().path().toUtf8() );
 
     if( fid < 0 )
     {
@@ -301,7 +301,7 @@ RioKarmaMediaDevice::openDevice( bool silent )
 
     QString genericError = i18n( "Could not connect to Rio Karma" );
 
-    char *mount = qstrdup( mountPoint().utf8() );
+    char *mount = qstrdup( mountPoint().toUtf8() );
     m_rio = lk_karma_connect( mount );
 
     debug() << "Rio karma : " << m_rio << endl;

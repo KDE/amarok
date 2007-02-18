@@ -35,7 +35,7 @@ ContentFetcher::ContentFetcher( const QString & hostname, quint16 port, const QS
  , m_selfDestruct( false )
 {
     connect( this, SIGNAL( stateChanged( int ) ), this , SLOT( checkForErrors( int ) ) );
-    Q3CString pass = password.utf8();
+    Q3CString pass = password.toUtf8();
     if( !password.isNull() )
     {
         m_authorize = "Basic " + KCodecs::base64Encode( "none:" + pass );

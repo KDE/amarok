@@ -180,10 +180,10 @@ NjbTrack::~NjbTrack()
 void
 NjbTrack::writeToSongid( njb_songid_t *songid )
 {
-    NJB_Songid_Addframe( songid, NJB_Songid_Frame_New_Filename( m_bundle.filename().utf8() ) );
+    NJB_Songid_Addframe( songid, NJB_Songid_Frame_New_Filename( m_bundle.filename().toUtf8() ) );
     NJB_Songid_Addframe( songid, NJB_Songid_Frame_New_Filesize( m_bundle.filesize() ) );
     NJB_Songid_Addframe( songid, NJB_Songid_Frame_New_Codec( "mp3" ) ); //for now
-    NJB_Songid_Addframe( songid, NJB_Songid_Frame_New_Title( m_bundle.title().utf8() ) );
+    NJB_Songid_Addframe( songid, NJB_Songid_Frame_New_Title( m_bundle.title().toUtf8() ) );
     NJB_Songid_Addframe( songid, NJB_Songid_Frame_New_Album( m_bundle.album().ptr()->utf8() ) );
     NJB_Songid_Addframe( songid, NJB_Songid_Frame_New_Genre( m_bundle.genre().ptr()->utf8() ) );
     NJB_Songid_Addframe( songid, NJB_Songid_Frame_New_Artist( m_bundle.artist().ptr()->utf8() ) );

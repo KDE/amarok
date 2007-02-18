@@ -419,9 +419,9 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
     debug() << "on iPod: " << track->ipod_path << ", podcast=" << podcastInfo << endl;
 
     if( metaBundle.isValidMedia() || !metaBundle.title().isEmpty() )
-        track->title = g_strdup( metaBundle.title().utf8() );
+        track->title = g_strdup( metaBundle.title().toUtf8() );
     else
-        track->title = g_strdup( metaBundle.url().filename().utf8() );
+        track->title = g_strdup( metaBundle.url().filename().toUtf8() );
     track->album = g_strdup( metaBundle.album()->utf8() );
     track->artist = g_strdup( metaBundle.artist()->utf8() );
     track->genre = g_strdup( metaBundle.genre()->utf8() );
@@ -467,7 +467,7 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
     }
     else
     {
-        track->filetype = g_strdup( type.utf8() );
+        track->filetype = g_strdup( type.toUtf8() );
     }
 
     track->composer = g_strdup( metaBundle.composer()->utf8() );
@@ -509,10 +509,10 @@ IpodMediaDevice::updateTrackInDB( IpodMediaItem *item, const QString &pathname,
         track->flag4 = 0x01; // also show description on iPod
         QString plaindesc = podcastInfo->description;
         plaindesc.replace( QRegExp("<[^>]*>"), "" );
-        track->description = g_strdup( plaindesc.utf8() );
-        track->subtitle = g_strdup( plaindesc.utf8() );
-        track->podcasturl = g_strdup( podcastInfo->url.utf8() );
-        track->podcastrss = g_strdup( podcastInfo->rss.utf8() );
+        track->description = g_strdup( plaindesc.toUtf8() );
+        track->subtitle = g_strdup( plaindesc.toUtf8() );
+        track->podcasturl = g_strdup( podcastInfo->url.toUtf8() );
+        track->podcastrss = g_strdup( podcastInfo->rss.toUtf8() );
         //track->category = g_strdup( i18n( "Unknown" ) );
         track->time_released = itdb_time_host_to_mac( podcastInfo->date.toTime_t() );
         //track->compilation = 0x01; // this should have made the ipod play a sequence of podcasts
@@ -1433,7 +1433,7 @@ IpodMediaDevice::renameItem( Q3ListViewItem *i ) // SLOT
     m_dbChanged = true;
 
     g_free(item->m_playlist->name);
-    item->m_playlist->name = g_strdup( item->text( 0 ).utf8() );
+    item->m_playlist->name = g_strdup( item->text( 0 ).toUtf8() );
 }
 
 void
@@ -1444,7 +1444,7 @@ IpodMediaDevice::playlistFromItem(IpodMediaItem *item)
 
     m_dbChanged = true;
 
-    item->m_playlist = itdb_playlist_new(item->text(0).utf8(), false /* dumb playlist */ );
+    item->m_playlist = itdb_playlist_new(item->text(0).toUtf8(), false /* dumb playlist */ );
     itdb_playlist_add(m_itdb, item->m_playlist, -1);
     for(IpodMediaItem *it = dynamic_cast<IpodMediaItem *>(item->firstChild());
             it;

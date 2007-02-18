@@ -116,8 +116,8 @@ StreamProvider::sendRequest() //SLOT
 {
     DEBUG_BLOCK
 
-    const Q3CString username = m_url.user().utf8();
-    const Q3CString password = m_url.pass().utf8();
+    const Q3CString username = m_url.user().toUtf8();
+    const Q3CString password = m_url.pass().toUtf8();
     const QString authString = KCodecs::base64Encode( username + ':' + password );
     const bool auth = !( username.isEmpty() && password.isEmpty() );
 

@@ -30,15 +30,21 @@
 namespace KDE {
 
 SqueezedTextLabel::SqueezedTextLabel( const QString &text , QWidget *parent, const char *name )
- : QLabel ( parent, name ) {
-  setSizePolicy(QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ));
-  fullText = text;
-  squeezeTextToLabel();
+ : QLabel() 
+{
+    setParent( parent );
+    setObjectName( name );
+    setSizePolicy(QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ));
+    fullText = text;
+    squeezeTextToLabel();
 }
 
 SqueezedTextLabel::SqueezedTextLabel( QWidget *parent, const char *name )
- : QLabel ( parent, name ) {
-  setSizePolicy(QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ));
+ : QLabel() 
+{
+    setObjectName( name );
+    setParent( parent );
+    setSizePolicy(QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ));
 }
 
 void SqueezedTextLabel::resizeEvent( QResizeEvent * ) {
