@@ -1016,7 +1016,8 @@ void PlaylistWindow::slotAddStream() //SLOT
 
     if ( !ok ) return;
 
-    KUrl::List media( KUrl( url ) );
+    KUrl::List media;
+    media << KUrl( url );
     Playlist::instance()->insertMedia( media );
 }
 

@@ -517,7 +517,7 @@ void ContextBrowser::openUrlRequest( const KUrl &url )
     {
         if ( url.path().contains( "suggestLyric-" ) )
         {
-            QString _url = url.url().mid( url.url().find( QString( "-" ) ) +1 );
+            QString _url = url.url().mid( url.url().indexOf( QString( "-" ) ) +1 );
             debug() << "Clicked lyrics URL: " << _url << endl;
             m_dirtyLyricsPage = true;
             showLyrics( _url );
@@ -3297,7 +3297,7 @@ void ContextBrowser::showLyrics( const QString &url )
            The fact that it often (but not always) has artist name together, can be bad,
            but at least the user will hopefully get nice suggestions. */
         QString prettyTitle = EngineController::instance()->bundle().prettyTitle();
-        int h = prettyTitle.find( '-' );
+        int h = prettyTitle.indexOf( '-' );
         if ( h != -1 )
         {
             title = prettyTitle.mid( h+1 ).trimmed();
@@ -3976,7 +3976,7 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory, bool r
 
         if ( tmpWikiStr.contains( "PREVIEW: buy it at www.magnatune.com" ) ) {
             tmpWikiStr = tmpWikiStr.remove(" (PREVIEW: buy it at www.magnatune.com)" );
-            int index = tmpWikiStr.find( '-' );
+            int index = tmpWikiStr.indexOf( '-' );
             if ( index != -1 ) {
                 tmpWikiStr = tmpWikiStr.left (index - 1);
             }
@@ -4028,7 +4028,7 @@ void ContextBrowser::showWikipedia( const QString &url, bool fromHistory, bool r
     //m_wikiToolBar->setItemEnabled( WIKI_BACK, m_wikiBackHistory.size() > 1 );
     //m_wikiToolBar->setItemEnabled( WIKI_FORWARD, m_wikiForwardHistory.size() > 0 );
 
-    m_wikiBaseUrl = m_wikiCurrentUrl.mid(0 , m_wikiCurrentUrl.find("wiki/"));
+    m_wikiBaseUrl = m_wikiCurrentUrl.mid(0 , m_wikiCurrentUrl.indexOf("wiki/"));
     m_wikiJob = KIO::storedGet( m_wikiCurrentUrl, false, false );
 
     Amarok::StatusBar::instance()->newProgressOperation( m_wikiJob )
@@ -4186,7 +4186,7 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
          m_wiki = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
     }
 
-    if( m_wiki.find( "var wgArticleId = 0" ) != -1 )
+    if( m_wiki.indexOf( "var wgArticleId = 0" ) != -1 )
     {
         // article was not found
         if( m_wikiCurrentEntry.endsWith( wikiArtistPostfix() ) )
@@ -4215,27 +4215,27 @@ ContextBrowser::wikiResult( KIO::Job* job ) //SLOT
 
     m_wikiLanguages = QString::null;
     // Get the available language list
-    if ( m_wiki.find("<div id=\"p-lang\" class=\"portlet\">") != -1 )
+    if ( m_wiki.indexOf("<div id=\"p-lang\" class=\"portlet\">") != -1 )
     {
-        m_wikiLanguages = m_wiki.mid( m_wiki.find("<div id=\"p-lang\" class=\"portlet\">") );
-        m_wikiLanguages = m_wikiLanguages.mid( m_wikiLanguages.find("<ul>") );
-        m_wikiLanguages = m_wikiLanguages.mid( 0, m_wikiLanguages.find( "</div>" ) );
+        m_wikiLanguages = m_wiki.mid( m_wiki.indexOf("<div id=\"p-lang\" class=\"portlet\">") );
+        m_wikiLanguages = m_wikiLanguages.mid( m_wikiLanguages.indexOf("<ul>") );
+        m_wikiLanguages = m_wikiLanguages.mid( 0, m_wikiLanguages.indexOf( "</div>" ) );
     }
 
     QString copyright;
     QString copyrightMark = "<li id=\"f-copyright\">";
-    if ( m_wiki.find( copyrightMark ) != -1 )
+    if ( m_wiki.indexOf( copyrightMark ) != -1 )
     {
-        copyright = m_wiki.mid( m_wiki.find(copyrightMark) + copyrightMark.length() );
-        copyright = copyright.mid( 0, copyright.find( "</li>" ) );
+        copyright = m_wiki.mid( m_wiki.indexOf(copyrightMark) + copyrightMark.length() );
+        copyright = copyright.mid( 0, copyright.indexOf( "</li>" ) );
         copyright.replace( "<br />", QString::null );
         //only one br at the beginning
         copyright.prepend( "<br />" );
     }
 
     // Ok lets remove the top and bottom parts of the page
-    m_wiki = m_wiki.mid( m_wiki.find( "<h1 class=\"firstHeading\">" ) );
-    m_wiki = m_wiki.mid( 0, m_wiki.find( "<div class=\"printfooter\">" ) );
+    m_wiki = m_wiki.mid( m_wiki.indexOf( "<h1 class=\"firstHeading\">" ) );
+    m_wiki = m_wiki.mid( 0, m_wiki.indexOf( "<div class=\"printfooter\">" ) );
     // Adding back license information
     m_wiki += copyright;
     m_wiki.append( "</div>" );
