@@ -781,7 +781,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
                             {
                                 line = stream.readLine().simplified();
 
-                                if( line.startsWith( "file", false ) )
+                                if( line.startsWith( "file", Qt::CaseInsensitive ) )
                                 {
                                     line = line.mid( 5 ).remove( '"' );
 

@@ -88,7 +88,7 @@ bool CueFile::load(int mediaLength)
             {
                 line = stream.readLine().simplified();
 
-                if( line.startsWith( "title", false ) )
+                if( line.startsWith( "title", Qt::CaseInsensitive ) )
                 {
                     title = line.mid( 6 ).remove( '"' );
                     if( mode == BEGIN )
@@ -101,7 +101,7 @@ bool CueFile::load(int mediaLength)
                         debug() << "Title: " << title << endl;
                 }
 
-                else if( line.startsWith( "performer", false ))
+                else if( line.startsWith( "performer", Qt::CaseInsensitive ))
                 {
                     artist = line.mid( 10 ).remove( '"' );
                     if( mode == BEGIN )
@@ -114,7 +114,7 @@ bool CueFile::load(int mediaLength)
                         debug() << "Artist: " << artist << endl;
                 }
 
-                else if( line.startsWith( "track", false ) )
+                else if( line.startsWith( "track", Qt::CaseInsensitive ) )
                 {
                     if( mode == TRACK_FOUND )
                     {
@@ -140,7 +140,7 @@ bool CueFile::load(int mediaLength)
                     debug() << "Track: " << track << endl;
                     mode = TRACK_FOUND;
                 }
-                else if( line.startsWith( "index", false ) )
+                else if( line.startsWith( "index", Qt::CaseInsensitive ) )
                 {
                     if( mode == TRACK_FOUND)
                     {
@@ -154,7 +154,7 @@ bool CueFile::load(int mediaLength)
 
                              if( prevIndex != -1 && !index00Present ) // set the prev track's length if there is INDEX01 present, but no INDEX00
                             {
-                            	length = index - prevIndex; 
+                            	length = index - prevIndex;
                             	debug() << "Setting length of track " << (*this)[prevIndex].getTitle() << " to " << length << " msecs." << endl;
                             	(*this)[prevIndex].setLength(length);
                             }
@@ -216,7 +216,7 @@ bool CueFile::load(int mediaLength)
         return true;
     }
 
-    else 
+    else
         return false;
 }
 

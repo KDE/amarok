@@ -3572,7 +3572,7 @@ CollectionView::manipulateThe( QString &str, bool reverse )
 bool
 CollectionView::endsInThe( const QString & text )
 {
-    return text.endsWith( ", the", false );
+    return text.endsWith( ", the", Qt::CaseInsensitive );
 }
 
 // avoid code duplication
@@ -4055,7 +4055,7 @@ CollectionView::renderTreeModeView( bool /*=false*/ )
                 //Dividers for "The Who" should be created as "W", not "T", because
                 //that's how we sort it
                 QString actualStr = *it;
-                if ( m_cat1 == IdArtist && actualStr.startsWith( "the ", false ) )
+                if ( m_cat1 == IdArtist && actualStr.startsWith( "the ", Qt::CaseInsensitive ) )
                     manipulateThe( actualStr, true );
 
                 QString headerStr = DividerItem::createGroup( actualStr, m_cat1);
@@ -4370,7 +4370,7 @@ CollectionView::renderIpodModeView( bool /*=false*/ )
                 //because that's how we sort it
                 QString actualStr = item->text( 0 );
                 if ( m_cat == IdArtist &&
-                        actualStr.startsWith( "the ", false ) )
+                        actualStr.startsWith( "the ", Qt::CaseInsensitive ) )
                     manipulateThe( actualStr, true );
 
                 QString headerStr = DividerItem::createGroup( actualStr, m_cat );
@@ -4559,9 +4559,9 @@ CollectionItem::compare( Q3ListViewItem* i, int col, bool ascending ) const
                 return -1;
         //For artists, we sort by ignoring "The" eg "The Who" sorts as if it were "Who"
         case IdArtist:
-            if ( a.startsWith( "the ", false ) )
+            if ( a.startsWith( "the ", Qt::CaseInsensitive ) )
                 CollectionView::manipulateThe( a, true );
-            if ( b.startsWith( "the ", false ) )
+            if ( b.startsWith( "the ", Qt::CaseInsensitive ) )
                 CollectionView::manipulateThe( b, true );
             break;
     }
@@ -4747,7 +4747,7 @@ DividerItem::shareTheSameGroup(const QString& itemStr, const QString& divStr, in
     }
     case IdArtist:
         //"The Who" should count as being in "W" and not "T"
-        if ( tmp.startsWith( "the ", false ) )
+        if ( tmp.startsWith( "the ", Qt::CaseInsensitive ) )
             CollectionView::manipulateThe( tmp, true );
         //Fall through
     default:
@@ -4755,7 +4755,7 @@ DividerItem::shareTheSameGroup(const QString& itemStr, const QString& divStr, in
             if (divStr == "0-9" && QChar(tmp.at(0)).isDigit()) {
                 inGroup = true;
             }
-            else if (tmp.startsWith(divStr, 0)) {
+            else if (tmp.startsWith(divStr, Qt::CaseInsensitive)) {
                 inGroup = true;
             }
         }

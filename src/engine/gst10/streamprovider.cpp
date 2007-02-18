@@ -238,7 +238,7 @@ StreamProvider::processHeader( Q_LONG &index, Q_LONG bytesRead )
             m_streamGenre = m_headerStr.section( "icy-genre:", 1, 1, QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0 );
             m_streamUrl = m_headerStr.section( "icy-url:", 1, 1, QString::SectionCaseInsensitiveSeps ).section( "\r", 0, 0 );
 
-            if ( m_streamUrl.startsWith( "www.", true ) )
+            if ( m_streamUrl.startsWith( "www.", Qt::CaseInsensitive ) )
                 m_streamUrl.prepend( "http://" );
 
             m_headerFinished = true;

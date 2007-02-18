@@ -21,14 +21,14 @@ protected:
             EngineController::canDecode( item->url() ) ||
             item->url().protocol() == "audiocd" ||
             PlaylistFile::isPlaylistFile( item->name() ) ||
-            item->name().endsWith( ".mp3", false ) || //for now this is less confusing for the user
-            item->name().endsWith( ".aa", false ) || //for adding to iPod
-            item->name().endsWith( ".mp4", false ) || //for adding to iPod
-            item->name().endsWith( ".m4v", false ) || //for adding to iPod
-            item->name().endsWith( ".m4b", false ) || //for adding to iPod
-            item->name().endsWith( ".ogg", false ) ||
-            item->name().endsWith( ".flac", false ) ||
-            item->name().endsWith( ".wma", false );
+            item->name().endsWith( ".mp3", Qt::CaseInsensitive ) || //for now this is less confusing for the user
+            item->name().endsWith( ".aa", Qt::CaseInsensitive ) || //for adding to iPod
+            item->name().endsWith( ".mp4", Qt::CaseInsensitive ) || //for adding to iPod
+            item->name().endsWith( ".m4v", Qt::CaseInsensitive ) || //for adding to iPod
+            item->name().endsWith( ".m4b", Qt::CaseInsensitive ) || //for adding to iPod
+            item->name().endsWith( ".ogg", Qt::CaseInsensitive ) ||
+            item->name().endsWith( ".flac", Qt::CaseInsensitive ) ||
+            item->name().endsWith( ".wma", Qt::CaseInsensitive );
     }
 };
 

@@ -420,11 +420,11 @@ GenericMediaDevice::openDevice( bool /*silent*/ )
         if( m_medium.mountPoint() == (*mountiter)->mountPoint() )
             m_medium.setFsType( (*mountiter)->mountType() );
     }
-    m_actuallyVfat = m_medium.fsType() == 
+    m_actuallyVfat = m_medium.fsType() ==
 #ifdef __FreeBSD__
         "msdosfs"
 #else
-        "vfat" 
+        "vfat"
 #endif
         ? true : false;
     m_connected = true;
@@ -502,7 +502,7 @@ GenericMediaDevice::newDirectory( const QString &name, MediaItem *parent )
     QString cleanedName = cleanPath( name );
     QString fullPath = fullName + '/' + cleanedName;
     Q3CString dirPath = QFile::encodeName( fullPath );
-    debug() << "Creating directory: " << dirPath << endl;    
+    debug() << "Creating directory: " << dirPath << endl;
     const KUrl url( dirPath );
 
     if( !KIO::NetAccess::mkdir( url, m_parent ) ) //failed
@@ -622,7 +622,7 @@ GenericMediaDevice::checkAndBuildLocation( const QString& location )
 
         if( !KIO::NetAccess::exists( url, false, m_parent ) )
         {
-            debug() << "directory does not exist, creating..." << url << endl;            
+            debug() << "directory does not exist, creating..." << url << endl;
             if( !KIO::NetAccess::mkdir(url, m_view ) ) //failed
             {
                 debug() << "Failed to create directory " << url << endl;
@@ -889,10 +889,10 @@ GenericMediaDevice::addTrackToList( int type, KUrl url, int /*size*/ )
     //or just update the list in the plugin as appropriate
     else if( type == MediaItem::TRACK ) //file
     {
-        if( baseName.endsWith( "mp3", false ) || baseName.endsWith( "wma", false ) ||
-            baseName.endsWith( "wav", false ) || baseName.endsWith( "ogg", false ) ||
-            baseName.endsWith( "asf", false ) || baseName.endsWith( "flac", false ) ||
-            baseName.endsWith( "aac", false ) || baseName.endsWith( "m4a", false ) )
+        if( baseName.endsWith( "mp3", Qt::CaseInsensitive ) || baseName.endsWith( "wma", Qt::CaseInsensitive ) ||
+            baseName.endsWith( "wav", Qt::CaseInsensitive ) || baseName.endsWith( "ogg", Qt::CaseInsensitive ) ||
+            baseName.endsWith( "asf", Qt::CaseInsensitive ) || baseName.endsWith( "flac", Qt::CaseInsensitive ) ||
+            baseName.endsWith( "aac", Qt::CaseInsensitive ) || baseName.endsWith( "m4a", Qt::CaseInsensitive ) )
 
             newItem->getViewItem()->setType( MediaItem::TRACK );
 

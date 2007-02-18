@@ -24,7 +24,7 @@ class String
 end
 
 def showLyrics( lyrics )
-    system("dcop", "amarok", "contextbrowser", "showLyrics", lyrics)
+    system("qdbus", "org.kde.amarok", "/ContextBrowser", "showLyrics", lyrics)
 end
 
 
@@ -112,7 +112,7 @@ def fetchLyrics( artist, title, url )
     proxy_host = nil
     proxy_port = nil
     if ( @proxy == nil )
-        @proxy = `dcop amarok script proxyForUrl #{@page_url.shellquote}"`
+        @proxy = `qdbus org.kde.amarok /Script proxyForUrl #{@page_url.shellquote}"`
     end
     proxy_uri = URI.parse( @proxy )
     if ( proxy_uri.class != URI::Generic )
@@ -125,7 +125,7 @@ def fetchLyrics( artist, title, url )
 
     unless response.code == "200"
 #         error "HTTP Error: #{response.message}"
-        `dcop amarok contextbrowser showLyrics ""`
+        `qdbus org.kde.amarok /ContextBrowser showLyrics ""`
         return
     end
 
@@ -179,7 +179,7 @@ loop do
 
     case command
         when "configure"
-            `dcop amarok playlist popupMessage "This script does not require any configuration."`
+            `qdbus org.kde.amarok /Playlist popupMessage "This script does not require any configuration."`
 
         when "fetchLyrics"
             args = message.split()

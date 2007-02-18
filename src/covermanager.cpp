@@ -78,9 +78,9 @@ class ArtistItem : public K3ListViewItem
         QString a = text(0);
         QString b = i->text(0);
 
-        if ( a.startsWith( "the ", false ) )
+        if ( a.startsWith( "the ", Qt::CaseInsensitive ) )
             CollectionView::manipulateThe( a, true );
-        if ( b.startsWith( "the ", false ) )
+        if ( b.startsWith( "the ", Qt::CaseInsensitive ) )
             CollectionView::manipulateThe( b, true );
 
         return QString::localeAwareCompare( a.toLower(), b.toLower() );

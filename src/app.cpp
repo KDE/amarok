@@ -1194,14 +1194,14 @@ namespace Amarok
 
     QPixmap getPNG( const QString &filename )
     {
-        QString file = !filename.endsWith( ".png", false ) ? "amarok/images/%1.png" : "amarok/images/%1";
+        QString file = !filename.endsWith( ".png", Qt::CaseInsensitive ) ? "amarok/images/%1.png" : "amarok/images/%1";
 
         return QPixmap( KStandardDirs::locate( "data", file.arg( filename ) ), "PNG" );
     }
 
     QPixmap getJPG( const QString &filename )
     {
-        QString file = !filename.endsWith( ".jpg", false ) ? "amarok/images/%1.jpg" : "amarok/images/%1";
+        QString file = !filename.endsWith( ".jpg", Qt::CaseInsensitive ) ? "amarok/images/%1.jpg" : "amarok/images/%1";
 
         return QPixmap( KStandardDirs::locate( "data", QString( "amarok/images/%1.jpg" ).arg( filename ) ), "JPEG" );
     }

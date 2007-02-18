@@ -589,9 +589,9 @@ IfpMediaDevice::addTrackToList( int type, QString name, int /*size*/ )
 
     else if( type == IFP_FILE ) //file
     {
-        if( name.endsWith( "mp3", false ) || name.endsWith( "wma", false ) ||
-            name.endsWith( "wav", false ) || name.endsWith( "ogg", false ) ||
-            name.endsWith( "asf", false ) )
+        if( name.endsWith( "mp3", Qt::CaseInsensitive ) || name.endsWith( "wma", Qt::CaseInsensitive ) ||
+            name.endsWith( "wav", Qt::CaseInsensitive ) || name.endsWith( "ogg", Qt::CaseInsensitive ) ||
+            name.endsWith( "asf", Qt::CaseInsensitive ) )
 
             m_last->setType( MediaItem::TRACK );
 

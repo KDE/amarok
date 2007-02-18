@@ -1122,10 +1122,10 @@ MediaItem::compare( Q3ListViewItem *i, int col, bool ascending ) const
     else if( item && item->type() == MediaItem::ARTIST )
     {
         QString key1 = key( col, ascending );
-        if( key1.startsWith( "the ", false ) )
+        if( key1.startsWith( "the ", Qt::CaseInsensitive ) )
             key1 = key1.mid( 4 );
         QString key2 = i->key( col, ascending );
-        if( key2.startsWith( "the ", false ) )
+        if( key2.startsWith( "the ", Qt::CaseInsensitive ) )
             key2 = key2.mid( 4 );
 
        return key1.localeAwareCompare( key2 );

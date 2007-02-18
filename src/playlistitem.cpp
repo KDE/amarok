@@ -491,9 +491,9 @@ PlaylistItem::compare( Q3ListViewItem *i, int col, bool ascending ) const
                 return compare( i, Album, ascending );
             else
             {
-                if( a.startsWith( "the ", false ) )
+                if( a.startsWith( "the ", Qt::CaseInsensitive ) )
                     a = a.mid( 4 );
-                if( b.startsWith( "the ", false ) )
+                if( b.startsWith( "the ", Qt::CaseInsensitive ) )
                     b = b.mid( 4 );
             }
             break;
@@ -680,7 +680,7 @@ void PlaylistItem::paintCell( QPainter *painter, const QColorGroup &cg, int colu
         QColor bg = isSelected()  ? _cg.highlight()
                     : isAlternate() ? listView()->alternateBackground()
                     : listView()->viewport()->backgroundColor();
-        
+
 	const QColor textc = isSelected() ? _cg.highlightedText() : _cg.text();
 
         buf.fill( bg );

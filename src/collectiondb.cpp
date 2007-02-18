@@ -6320,8 +6320,8 @@ void SqliteConnection::sqlite_like_new( sqlite3_context *context, int argc, sqli
 
     int result = 0;
     if ( begin && end ) result = ( text.find( pattern, 0, 0 ) != -1);
-    else if ( begin ) result = text.endsWith( pattern, 0 );
-    else if ( end ) result = text.startsWith( pattern, 0 );
+    else if ( begin ) result = text.endsWith( pattern, Qt::CaseInsensitive );
+    else if ( end ) result = text.startsWith( pattern, Qt::CaseInsensitive );
     else result = ( text.toLower() == pattern.toLower() );
 
     sqlite3_result_int( context, result );
