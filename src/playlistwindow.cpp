@@ -93,8 +93,8 @@ namespace Amarok
     class ToolBar : public KToolBar
     {
     public:
-        ToolBar( QWidget *parent, const char *name )
-            : KToolBar( parent, name )
+        ToolBar( QMainWindow *parent, const char *name )
+            : KToolBar( name, parent, Qt::BottomToolBarArea, false, false, false )
         {}
 
     protected:
@@ -113,8 +113,9 @@ namespace Amarok
 PlaylistWindow *PlaylistWindow::s_instance = 0;
 
 PlaylistWindow::PlaylistWindow()
-        : QWidget( 0, "PlaylistWindow", Qt::WGroupLeader )
-        , KXMLGUIClient()
+        //: QWidget( 0, "PlaylistWindow", Qt::WGroupLeader )
+        //, KXMLGUIClient()
+	:KMainWindow( 0, "PlaylistWindow", Qt::WGroupLeader )
         , m_lastBrowser( 0 )
 {
     s_instance = this;
@@ -124,7 +125,7 @@ PlaylistWindow::PlaylistWindow()
 
     KActionCollection* const ac = actionCollection();
     const EngineController* const ec = EngineController::instance();
-
+    
     ac->setAssociatedWidget( this );
 
     new K3bExporter();
@@ -325,6 +326,7 @@ PlaylistWindow::PlaylistWindow()
         resize( AmarokConfig::playlistWindowSize() );
         move( AmarokConfig::playlistWindowPos() );
     }
+    m_browsers = new SideBar( this, new KVBox );
 }
 
 PlaylistWindow::~PlaylistWindow()
@@ -348,9 +350,6 @@ void PlaylistWindow::init()
     //this function is necessary because Amarok::actionCollection() returns our actionCollection
     //via the App::m_pPlaylistWindow pointer since App::m_pPlaylistWindow is not defined until
     //the above ctor returns it causes a crash unless we do the initialisation in 2 stages.
-
-    m_browsers = new SideBar( this, new KVBox );
-
     //<Dynamic Mode Status Bar />
     DynamicBar *dynamicBar = new DynamicBar( m_browsers->contentsWidget() );
 
@@ -408,16 +407,17 @@ void PlaylistWindow::init()
 
 
     dynamicBar->init();
-    m_toolbar = new Amarok::ToolBar( m_browsers->contentsWidget(), "mainToolBar" );
+    this->toolBars().clear();
+    m_toolbar = new Amarok::ToolBar( this, "mainToolBar" );
 #ifndef Q_WS_MAC
     m_toolbar->setShown( AmarokConfig::showToolbar() );
 #endif
-    QWidget *statusbar = new Amarok::StatusBar( this );
-
+    Amarok::StatusBar *statusbar = new Amarok::StatusBar( this );
+    setStatusBar(statusbar);
     QAction* repeatAction = Amarok::actionCollection()->action( "repeat" );
     connect( repeatAction, SIGNAL( activated( int ) ), playlist, SLOT( slotRepeatTrackToggled( int ) ) );
 
-    m_menubar = new KMenuBar( this );
+    m_menubar = menuBar();//new MenuBar( this );
 #ifndef Q_WS_MAC
     m_menubar->setShown( AmarokConfig::showMenuBar() );
 #endif
@@ -526,16 +526,18 @@ void PlaylistWindow::init()
     layV->addWidget( m_browsers, 1 );
     layV->addWidget( m_toolbar );
     layV->addSpacing( 2 );
-    layV->addWidget( statusbar );
+    //layV->addWidget( statusbar );
     layV->setMargin( 0 );
     layV->setSpacing( 0 );
     this->setLayout( layV );
 
+    addToolBar( Qt::BottomToolBarArea, m_toolbar );
     //The volume slider later becomes our FocusProxy, so all wheelEvents get redirected to it
     m_toolbar->setFocusPolicy( Qt::WheelFocus );
     m_toolbar->setMovable( false );
     playlist->setContentsMargins( 2,2,2,2 );
     playlist->installEventFilter( this ); //we intercept keyEvents
+    setCentralWidget((QWidget *)m_browsers);
 
 
     //<XMLGUI>
@@ -605,6 +607,7 @@ void PlaylistWindow::init()
     connect( playlist, SIGNAL( queueChanged( const QList<PlaylistItem*> &, const QList<PlaylistItem*> & ) ),
              statusbar,  SLOT( updateQueueLabel() ) );
     connect( playlist, SIGNAL( aboutToClear() ), m_lineEdit, SLOT( clear() ) );
+    
     Amarok::MessageQueue::instance()->sendMessages();
 }
 
@@ -690,15 +693,6 @@ void PlaylistWindow::createGUI()
          << "toolbutton_burn_menu"
          << "toolbutton_amarok_menu";
 
-    m_toolbar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
-    m_toolbar->addAction( actionCollection()->action("prev") );
-    m_toolbar->addAction( actionCollection()->action("play_pause") );
-    m_toolbar->addAction( actionCollection()->action("stop") );
-    m_toolbar->addAction( actionCollection()->action("next") );
-    m_toolbar->addSeparator();
-    m_toolbar->addAction( actionCollection()->action("toolbar_analyzer") );
-    m_toolbar->addSeparator();
-    m_toolbar->addAction( actionCollection()->action("toolbar_volume") );
     const QStringList::ConstIterator end  = list.constEnd();
     const QStringList::ConstIterator last = list.fromLast();
     for( QStringList::ConstIterator it = list.constBegin(); it != end; ++it )
@@ -720,6 +714,10 @@ void PlaylistWindow::createGUI()
     }
 
     m_toolbar->setToolButtonStyle( Qt::ToolButtonIconOnly ); //default appearance
+    m_toolbar->setMovable( false );
+    m_toolbar->setAllowedAreas( Qt::BottomToolBarArea );
+    KToolBar::setToolBarsLocked( true );
+    m_toolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
 //TODO: is this okay to remove? kdelibs-todo talks about removing it
 //    conserveMemory();
     setUpdatesEnabled( true );
@@ -1018,7 +1016,7 @@ void PlaylistWindow::slotAddStream() //SLOT
 
     KUrl::List media;
     media << KUrl( url );
-    Playlist::instance()->insertMedia( media );
+    Playlist::instance()->insertMedia( media, Playlist::Append|Playlist::DirectPlay );
 }
 
 
@@ -1040,7 +1038,7 @@ void PlaylistWindow::addLastfmPersonal() //SLOT
     const KUrl url( QString( "lastfm://user/%1/personal" )
                     .arg( AmarokConfig::scrobblerUsername() ) );
 
-    Playlist::instance()->insertMedia( url );
+    Playlist::instance()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
 }
 
 
@@ -1062,7 +1060,7 @@ void PlaylistWindow::addLastfmNeighbor() //SLOT
     const KUrl url( QString( "lastfm://user/%1/neighbours" )
                     .arg( AmarokConfig::scrobblerUsername() ) );
 
-    Playlist::instance()->insertMedia( url );
+    Playlist::instance()->insertMedia( url, Playlist::Append|Playlist::DirectPlay );
 }
 
 
@@ -1082,7 +1080,7 @@ void PlaylistWindow::addLastfmCustom() //SLOT
     if( token.isEmpty() ) return;
 
     const KUrl url( "lastfm://artistnames/" + token );
-    Playlist::instance()->insertMedia( url );
+    Playlist::instance()->insertMedia( url, Playlist::Append|Playlist::DirectPlay  );
 }
 
 
@@ -1104,7 +1102,7 @@ void PlaylistWindow::addLastfmGlobaltag( int id ) //SLOT
     const QString tag = m_lastfmTags[id].toLower();
     const KUrl url( "lastfm://globaltags/" + tag );
 
-    Playlist::instance()->insertMedia( url );
+    Playlist::instance()->insertMedia( url, Playlist::Append|Playlist::DirectPlay  );
 }
 
 

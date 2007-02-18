@@ -91,7 +91,7 @@ namespace SingleShotPool
 
 
 StatusBar::StatusBar( QWidget *parent, const char *name )
-        : QWidget( parent )
+        : QStatusBar( parent )
         , m_logCounter( -1 )
 {
     setObjectName( name );
@@ -106,6 +106,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     mainlayout->addLayout( layout );
 
     KHBox *statusBarTextBox = new KHBox( this );
+    addPermanentWidget( statusBarTextBox );
     m_mainTextLabel = new KDE::SqueezedTextLabel( statusBarTextBox, "mainTextLabel" );
     QToolButton *shortLongButton = new QToolButton( statusBarTextBox );
     shortLongButton->setObjectName( "shortLongButton" );

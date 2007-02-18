@@ -27,7 +27,7 @@
 #include <QCloseEvent>
 #include <QPaintEvent>
 #include <kxmlguiclient.h>  //baseclass (for XMLGUI)
-
+#include <kmainwindow.h>
 class KLineEdit;
 class CollectionBrowser;
 class ContextBrowser;
@@ -45,7 +45,7 @@ class QTimer;
   *
   * This is the main window widget (the Playlist not Player).
   */
-class PlaylistWindow : public QWidget, public KXMLGUIClient
+class PlaylistWindow : public KMainWindow//public QWidget, public KXMLGUIClient
 {
         Q_OBJECT
 

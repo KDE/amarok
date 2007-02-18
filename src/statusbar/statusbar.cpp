@@ -64,7 +64,6 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
         , m_pauseTimer( new QTimer( this ) )
 {
     s_instance = this; //static member
-
     // total songs count
     m_itemCountLabel = new QLabel( this );
     m_itemCountLabel->setAlignment( Qt::AlignCenter );

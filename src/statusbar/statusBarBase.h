@@ -31,7 +31,7 @@
 #include <QCustomEvent>
 #include <QLabel>
 #include <QPaintEvent>
-
+#include <QStatusBar>
 class QLabel;
 class QTimer;
 class QProgressBar;
@@ -82,7 +82,7 @@ namespace KDE
      * @see KDE::ProgressBar
      */
 
-    class StatusBar : public QWidget
+    class StatusBar : public QStatusBar
     {
         Q_OBJECT
 
