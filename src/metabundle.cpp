@@ -70,7 +70,7 @@
 MetaBundle::EmbeddedImage::EmbeddedImage( const TagLib::ByteVector& data, const TagLib::String& description )
     : m_description( TStringToQString( description ) )
 {
-    m_data.duplicate( data.data(), data.size() );
+    m_data = QByteArray( data.data(), data.size() );
 }
 
 const Q3CString &MetaBundle::EmbeddedImage::hash() const
@@ -87,13 +87,13 @@ bool MetaBundle::EmbeddedImage::save( const QDir& dir ) const
 
     if( file.open( QIODevice::WriteOnly | QIODevice::Unbuffered ) ) {
         const Q_LONG s = file.write( m_data.data(), m_data.size() );
-        if( s >= 0 && Q_ULONG( s ) == m_data.size() ) {
-            debug() << "EmbeddedImage::save " << file.name() << endl;
+        if( s >= 0 && Q_LONG( s ) == m_data.size() ) {
+            debug() << "EmbeddedImage::save " << file.fileName() << endl;
             return true;
         }
         file.remove();
     }
-    debug() << "EmbeddedImage::save failed! " << file.name() << endl;
+    debug() << "EmbeddedImage::save failed! " << file.fileName() << endl;
     return false;
 }
 
@@ -272,7 +272,7 @@ MetaBundle::MetaBundle( const QString& title,
         , m_lastFmBundle( 0 )
 	, m_isSearchDirty(true)
 {
-    if( title.contains( '-' ) )
+    if( title.count( '-' ) )
     {
         m_title  = title.section( '-', 1, 1 ).trimmed();
         m_artist = title.section( '-', 0, 0 ).trimmed();
@@ -604,7 +604,7 @@ MetaBundle::readTags( TagLib::AudioProperties::ReadStyle readStyle, EmbeddedImag
 
         if ( !disc.isEmpty() )
         {
-            int i = disc.find ('/');
+            int i = disc.indexOf('/');
             if ( i != -1 )
                 // disc.right( i ).toInt() is total number of discs, we don't use this at the moment
                 setDiscNumber( disc.left( i ).toInt() );
@@ -828,13 +828,13 @@ QString MetaBundle::prettyText( int column ) const
 
 bool MetaBundle::matchesSimpleExpression( const QString &expression, const Q3ValueList<int> &columns ) const
 {
-    const QStringList terms = QStringList::split( ' ', expression.toLower() );
+    const QStringList terms = QString( expression.toLower() ).split( ' ' );
     bool matches = true;
-    for( uint x = 0; matches && x < terms.count(); ++x )
+    for( int x = 0; matches && x < terms.count(); ++x )
     {
-        uint y = 0, n = columns.count();
+        int y = 0, n = columns.count();
         for(; y < n; ++y )
-            if ( prettyText( columns[y] ).toLower().contains( terms[x] ) )
+            if ( prettyText( columns[y] ).toLower().count( terms[x] ) )
                 break;
         matches = ( y < n );
     }
@@ -845,7 +845,7 @@ bool MetaBundle::matchesSimpleExpression( const QString &expression, const Q3Val
 void MetaBundle::reactToChanges( const Q3ValueList<int>& columns)
 {
     // mark search dirty if we need to
-    for (uint i = 0; !m_isSearchDirty && i < columns.count(); i++)
+    for (int i = 0; !m_isSearchDirty && i < columns.count(); i++)
         if ((m_searchColumns & (1 << columns[i])) > 0)
             m_isSearchDirty = true;
 }
@@ -870,7 +870,7 @@ bool MetaBundle::matchesFast(const QStringList &terms, ColumnMask columnMask) co
         // threads, but it's *highly* unlikely that something bad will happen
         m_isSearchDirty = false;
         m_searchColumns = columnMask;
-        m_searchStr.setLength(0);
+        m_searchStr.resize(0);
 
         for (int i = 0; i < NUM_COLUMNS; i++) {
             if ((columnMask & (1 << i)) > 0) {
@@ -881,8 +881,8 @@ bool MetaBundle::matchesFast(const QStringList &terms, ColumnMask columnMask) co
     }
 
     // now search
-    for (uint i = 0; i < terms.count(); i++) {
-        if (!m_searchStr.contains(terms[i])) return false;
+    for (int i = 0; i < terms.count(); i++) {
+        if (!m_searchStr.count(terms[i])) return false;
     }
 
     return true;
@@ -965,7 +965,7 @@ bool MetaBundle::matchesParsedExpression( const ParsedExpression &data, const Q3
                         condition = v.toFloat() > w.toFloat();
                     else if( column == Length )
                     {
-                        int g = v.find( ':' ), h = w.find( ':' );
+                        int g = v.indexOf( ':' ), h = w.indexOf( ':' );
                         condition = v.left( g ).toInt() > w.left( h ).toInt() ||
                                     ( v.left( g ).toInt() == w.left( h ).toInt() &&
                                       v.mid( g + 1 ).toInt() > w.mid( h + 1 ).toInt() );
@@ -981,7 +981,7 @@ bool MetaBundle::matchesParsedExpression( const ParsedExpression &data, const Q3
                         condition = v.toFloat() < w.toFloat();
                     else if( column == Length )
                     {
-                        int g = v.find( ':' ), h = w.find( ':' );
+                        int g = v.indexOf( ':' ), h = w.indexOf( ':' );
                         condition = v.left( g ).toInt() < w.left( h ).toInt() ||
                                     ( v.left( g ).toInt() == w.left( h ).toInt() &&
                                       v.mid( g + 1 ).toInt() < w.mid( h + 1 ).toInt() );
@@ -997,12 +997,12 @@ bool MetaBundle::matchesParsedExpression( const ParsedExpression &data, const Q3
                         condition = v.toFloat() == w.toFloat();
                     else if( column == Length )
                     {
-                        int g = v.find( ':' ), h = w.find( ':' );
+                        int g = v.indexOf( ':' ), h = w.indexOf( ':' );
                         condition = v.left( g ).toInt() == w.left( h ).toInt() &&
                                     v.mid( g + 1 ).toInt() == w.mid( h + 1 ).toInt();
                     }
                     else
-                        condition = v.contains( q, false );
+                        condition = v.count( q, Qt::CaseInsensitive );
                 }
                 if( condition == ( e.negate ? false : true ) )
                 {
@@ -1014,7 +1014,7 @@ bool MetaBundle::matchesParsedExpression( const ParsedExpression &data, const Q3
             {
                 for( int it = 0, end = defaults.size(); it != end; ++it )
                 {
-                    b = prettyText( defaults[it] ).contains( e.text, false ) == ( e.negate ? false : true );
+                    b = prettyText( defaults[it] ).count( e.text, Qt::CaseInsensitive ) == ( e.negate ? false : true );
                     if( ( e.negate && !b ) || ( !e.negate && b ) )
                         break;
                 }
@@ -1080,7 +1080,7 @@ MetaBundle::prettyTitle( const QString &filename ) //static
 
     //remove file extension, s/_/ /g and decode %2f-like sequences
     s = s.left( s.lastIndexOf( '.' ) ).replace( '_', ' ' );
-    s = KUrl::decode_string( s );
+    s = QUrl::fromPercentEncoding( s.toAscii() );
 
     return s;
 }

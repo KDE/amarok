@@ -146,7 +146,7 @@ public:
 
     AMAROK_EXPORT MetaBundle( const MetaBundle &bundle );
 
-    ~MetaBundle();
+    virtual ~MetaBundle();
 
     MetaBundle& operator=( const MetaBundle& bundle );
     bool operator==( const MetaBundle& bundle ) const;

@@ -31,6 +31,7 @@ class SpeexFileTypeResolver : public TagLib::FileRef::FileTypeResolver
     TagLib::File *createFile(const char *fileName,
             bool readAudioProperties,
             TagLib::AudioProperties::ReadStyle audioPropertiesStyle) const;
+    ~SpeexFileTypeResolver() {};
 };
 
 #endif
