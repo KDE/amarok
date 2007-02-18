@@ -62,7 +62,7 @@ RefreshImages::RefreshImages()
         KIO::Scheduler::scheduleJob( job );
 
         //Amarok::StatusBar::instance()->newProgressOperation( job );
-        job->setName( md5sum.ascii() );
+        job->setName( md5sum.toAscii() );
         it++; //iterate to the next set
 
         m_jobInfo[md5sum] = JobInfo( asin, locale, it == end );

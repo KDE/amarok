@@ -411,7 +411,7 @@ WebService::handshake( const QString& username, const QString& password )
             .arg( APP_VERSION )             //Muesli-approved: Amarok version, and Amarok-as-platform
             .arg( QString("Amarok") )
             .arg( QString( Q3Url( username ).encodedPathAndQuery() ) )
-            .arg( KMD5( m_password.utf8() ).hexDigest().data() )
+            .arg( KMD5( m_password.toUtf8() ).hexDigest().data() )
             .arg( "0" );
 
     http.get( path );
@@ -914,7 +914,7 @@ WebService::recommend( int type, QString username, QString artist, QString token
     uint currentTime = QDateTime::currentDateTime( Qt::UTC ).toTime_t();
     QString challenge = QString::number( currentTime );
 
-    QByteArray md5pass = KMD5( KMD5( m_password.utf8() ).hexDigest().append( QString::number( currentTime ).toLocal8Bit() ) ).hexDigest();
+    QByteArray md5pass = KMD5( KMD5( m_password.toUtf8() ).hexDigest().append( QString::number( currentTime ).toLocal8Bit() ) ).hexDigest();
 
     QString token = QString( "user=%1&auth=%2&nonce=%3recipient=%4" )
                        .arg( QString( Q3Url( currentUsername() ).encodedPathAndQuery() ) )
@@ -922,10 +922,10 @@ WebService::recommend( int type, QString username, QString artist, QString token
                        .arg( QString( Q3Url( challenge ).encodedPathAndQuery() ) )
                        .arg( QString( Q3Url( username ).encodedPathAndQuery() ) );
 
-    Q3HttpRequestHeader header( "POST", "/1.0/rw/recommend.php?" + token.utf8() );
+    Q3HttpRequestHeader header( "POST", "/1.0/rw/recommend.php?" + token.toUtf8() );
     header.setValue( "Host", "wsdev.audioscrobbler.com" );
     header.setContentType( "application/x-www-form-urlencoded" );
-    http->request( header, modeToken.utf8() );
+    http->request( header, modeToken.toUtf8() );
 }
 
 
@@ -950,7 +950,7 @@ WebService::parameter( const QString keyName, const QString data ) const
         if ( values[0] == keyName )
         {
             values.remove( values.at(0) );
-            return QString::fromUtf8( values.join( "=" ).ascii() );
+            return QString::fromUtf8( values.join( "=" ).toAscii() );
         }
     }
 
@@ -970,7 +970,7 @@ WebService::parameterArray( const QString keyName, const QString data ) const
         if ( values[0].startsWith( keyName ) )
         {
             values.remove( values.at(0) );
-            result.append( QString::fromUtf8( values.join( "=" ).ascii() ) );
+            result.append( QString::fromUtf8( values.join( "=" ).toAscii() ) );
         }
     }
 

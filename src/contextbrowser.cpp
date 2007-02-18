@@ -3361,7 +3361,7 @@ void ContextBrowser::showLyrics( const QString &url )
 
     if( cached && url.isEmpty() )
     {
-        lyricsResult( lyrics.utf8(), true );
+        lyricsResult( lyrics.toUtf8(), true );
     }
     else
     {

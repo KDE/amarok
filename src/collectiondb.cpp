@@ -2263,7 +2263,7 @@ CollectionDB::findEmbeddedImage( const QString& artist, const QString& album, ui
     }
 
     if ( values.count() == 2 ) {
-        Q3CString hash = values.first().utf8();
+        Q3CString hash = values.first().toUtf8();
         QString result = loadHashFile( hash, width );
         if ( result.isEmpty() ) {
             // need to get original from file first
@@ -2294,7 +2294,7 @@ CollectionDB::findMetaBundleImage( const MetaBundle& trackInformation, uint widt
         Q3CString hash;
         QString result;
         if( !values.empty() ) { // file in collection, so we know the hash
-            hash = values.first().utf8();
+            hash = values.first().toUtf8();
             result = loadHashFile( hash, width );
         }
         if ( result.isEmpty() ) {
@@ -6124,7 +6124,7 @@ QStringList SqliteConnection::query( const QString& statement, bool /*suppressDe
                 ::usleep( 100000 );      // Sleep 100 msec
                 debug() << "sqlite3_prepare: BUSY counter: " << busyCnt << endl;
             }
-            error = sqlite3_prepare( m_db, statement.utf8(), -1, &stmt, &tail );
+            error = sqlite3_prepare( m_db, statement.toUtf8(), -1, &stmt, &tail );
         }
         while ( SQLITE_BUSY==error && busyCnt++ < 120 );
 
@@ -6216,7 +6216,7 @@ int SqliteConnection::insert( const QString& statement, const QString& /* table 
                 ::usleep( 100000 );      // Sleep 100 msec
                 debug() << "sqlite3_prepare: BUSY counter: " << busyCnt << endl;
             }
-            error = sqlite3_prepare( m_db, statement.utf8(), -1, &stmt, &tail );
+            error = sqlite3_prepare( m_db, statement.toUtf8(), -1, &stmt, &tail );
         }
         while ( SQLITE_BUSY==error && busyCnt++ < 120 );
 
@@ -6405,7 +6405,7 @@ QStringList MySqlConnection::query( const QString& statement, bool suppressDebug
 {
     QStringList values;
 
-    if ( !mysql_query( m_db, statement.utf8() ) )
+    if ( !mysql_query( m_db, statement.toUtf8() ) )
     {
         MYSQL_RES* result;
         if ( ( result = mysql_use_result( m_db ) ) )
@@ -6444,7 +6444,7 @@ QStringList MySqlConnection::query( const QString& statement, bool suppressDebug
 
 int MySqlConnection::insert( const QString& statement, const QString& /* table */ )
 {
-    mysql_query( m_db, statement.utf8() );
+    mysql_query( m_db, statement.toUtf8() );
     if ( mysql_errno( m_db ) )
     {
         debug() << "MYSQL INSERT FAILED: " << mysql_error( m_db ) << "\n" << "FAILED INSERT: " << statement << endl;
@@ -6483,7 +6483,7 @@ PostgresqlConnection::PostgresqlConnection( const PostgresqlConfig* config )
       "' user='" + config->username() +
       "' password='" + config->password() + '\'';
 
-    m_db = PQconnectdb( conninfo.utf8() );
+    m_db = PQconnectdb( conninfo.toUtf8() );
 
     if (!m_db)
     {
@@ -6520,7 +6520,7 @@ QStringList PostgresqlConnection::query( const QString& statement, bool suppress
     PGresult* result;
     ExecStatusType status;
 
-    result = PQexec(m_db, statement.utf8());
+    result = PQexec(m_db, statement.toUtf8());
     if (result == NULL)
     {
         if ( !suppressDebug )
@@ -6570,7 +6570,7 @@ int PostgresqlConnection::insert( const QString& statement, const QString& table
     QString curvalSql;
     int id;
 
-    result = PQexec(m_db, statement.utf8());
+    result = PQexec(m_db, statement.toUtf8());
     if (result == NULL)
     {
         debug() << "POSTGRESQL INSERT FAILED: " << PQerrorMessage( m_db ) << "\n" << "FAILED SQL: " << statement << "\n";
@@ -6592,7 +6592,7 @@ int PostgresqlConnection::insert( const QString& statement, const QString& table
     if (table.find("_temp") > 0) _table = table.left(table.find("_temp"));
 
     curvalSql = QString("SELECT currval('%1_seq');").arg(_table);
-    result = PQexec(m_db, curvalSql.utf8());
+    result = PQexec(m_db, curvalSql.toUtf8());
     if (result == NULL)
     {
         debug() << "POSTGRESQL INSERT FAILED: " << PQerrorMessage( m_db ) << "\n" << "FAILED SQL: " << curvalSql << "\n";
@@ -8033,7 +8033,7 @@ QueryBuilder::getField(const QString &tableValue, int *table, qint64 *value)
     }
     else
     {
-        qFatal("invalid table.value: %s", tableValue.ascii());
+        qFatal("invalid table.value: %s", tableValue.toAscii());
         return false;
     }
 }

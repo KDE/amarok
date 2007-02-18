@@ -469,7 +469,7 @@ void ScrobblerSubmitter::performHandshake()
                 .arg( CLIENT_VERSION )
                 .arg( m_username )
                 .arg( currentTime )
-                .arg( QString::fromAscii( KMD5( KMD5( m_password.utf8() ).hexDigest() + QByteArray( currentTime ) ).hexDigest() ) );
+                .arg( QString::fromAscii( KMD5( KMD5( m_password.toUtf8() ).hexDigest() + QByteArray( currentTime ) ).hexDigest() ) );
     }
 
     else
@@ -536,8 +536,8 @@ void ScrobblerSubmitter::performSubmit()
         data =
                 "u=" + KUrl::encode_string_no_slash( m_username ) +
                 "&s=" +
-                KUrl::encode_string_no_slash( KMD5( KMD5( m_password.utf8() ).hexDigest() +
-                m_challenge.utf8() ).hexDigest() );
+                KUrl::encode_string_no_slash( KMD5( KMD5( m_password.toUtf8() ).hexDigest() +
+                m_challenge.toUtf8() ).hexDigest() );
 
         m_submitQueue.first();
         for ( int submitCounter = 0; submitCounter < 10; submitCounter++ )
@@ -587,7 +587,7 @@ void ScrobblerSubmitter::performSubmit()
     m_submitResultBuffer = "";
 
     m_inProgress = true;
-    KIO::TransferJob* job = KIO::http_post( m_submitUrl, data.utf8(), false );
+    KIO::TransferJob* job = KIO::http_post( m_submitUrl, data.toUtf8(), false );
     job->addMetaData( "content-type", "Content-Type: application/x-www-form-urlencoded" );
 
     // Loop in reverse order, which helps when items are later fetched from

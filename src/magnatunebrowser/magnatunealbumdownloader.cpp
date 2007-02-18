@@ -98,7 +98,7 @@ void MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 
     debug() << "unpacking: " << unzipString << endl;
 
-    system( unzipString.ascii() );
+    system( unzipString.toAscii() );
 
 
 

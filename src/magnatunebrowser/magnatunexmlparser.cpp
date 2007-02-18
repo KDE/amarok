@@ -138,7 +138,7 @@ MagnatuneXmlParser::parseAlbum( QDomElement e )
 
 
             if ( sElementName == "albumname" )
-                //printf(("|--+" + childElement.text() + "\n").ascii());
+                //printf(("|--+" + childElement.text() + "\n").toAscii());
                 //m_currentAlbumItem = new MagnatuneListViewAlbumItem( m_currentArtistItem);
                 m_pCurrentAlbum->setName( childElement.text() );
 
