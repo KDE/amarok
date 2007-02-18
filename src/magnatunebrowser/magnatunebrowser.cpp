@@ -300,11 +300,16 @@ void MagnatuneBrowser::initTopPanel( )
 
     new QLabel ( i18n( "Genre: " ), m_topPanel, "genreLabel", 0 );
 
-    m_genreComboBox = new QComboBox( false, m_topPanel, "genreComboBox" );
+    m_genreComboBox = new QComboBox;
+    m_genreComboBox->setParent( m_topPanel );
+    m_genreComboBox->setObjectName( "genreComboBox" );
 
     updateGenreBox();
 
-    m_advancedFeaturesButton = new QPushButton( i18n( "Advanced" ), m_topPanel, "advancedButton" );
+    m_advancedFeaturesButton = new QPushButton;
+    m_advancedFeaturesButton->setParent( m_topPanel );
+    m_advancedFeaturesButton->setText( i18n( "Advanced" ) );
+    m_advancedFeaturesButton->setObjectName( "advancedButton" );
     connect( m_advancedFeaturesButton, SIGNAL( clicked() ), this, SLOT( processRedownload() ) );
 
     connect( m_genreComboBox, SIGNAL( activated ( int ) ), this, SLOT( genreChanged() ) );
@@ -322,17 +327,26 @@ void MagnatuneBrowser::initBottomPanel()
     hBox->setSpacing( 2 );
     //hBox->setMargin( 2 );
 
-    m_purchaseAlbumButton = new QPushButton( i18n( "Purchase Album" ), m_bottomPanel, "purchaseButton" );
-    m_purchaseAlbumButton->setIconSet( SmallIconSet( Amarok::icon( "download" ) ) );
+    m_purchaseAlbumButton = new QPushButton;
+    m_purchaseAlbumButton->setParent( m_bottomPanel );
+    m_purchaseAlbumButton->setText( i18n( "Purchase Album" ) );
+    m_purchaseAlbumButton->setObjectName( "purchaseButton" );
+    m_purchaseAlbumButton->setIcon( KIcon( Amarok::icon( "download" ) ) );
     m_purchaseAlbumButton->setEnabled( false );
     m_purchaseAlbumButton->setMaximumHeight( 24 );
 
-    m_updateListButton = new QPushButton( i18n( "Update" ), hBox, "updateButton" );
-    m_updateListButton->setIconSet( SmallIconSet( Amarok::icon( "rescan" ) ) );
-    m_showInfoToggleButton = new QPushButton( i18n( "Show Info" ) , hBox, "showInfoCheckbox" );
-    m_showInfoToggleButton->setToggleButton( true );
-    m_showInfoToggleButton->setIconSet( SmallIconSet( Amarok::icon( "info" ) ) );
-    m_showInfoToggleButton->setOn( true );
+    m_updateListButton = new QPushButton;
+    m_updateListButton->setParent( hBox );
+    m_updateListButton->setText( i18n( "Update" ) );
+    m_updateListButton->setObjectName( "updateButton" );
+    m_updateListButton->setIcon( KIcon( Amarok::icon( "rescan" ) ) );
+    m_showInfoToggleButton = new QPushButton;
+    m_showInfoToggleButton->setText( i18n( "Show Info" ) );
+    m_showInfoToggleButton->setParent( hBox );
+    m_showInfoToggleButton->setObjectName( "showInfoCheckbox" );
+    m_showInfoToggleButton->setCheckable( true );
+    m_showInfoToggleButton->setIcon( KIcon( Amarok::icon( "info" ) ) );
+    m_showInfoToggleButton->setChecked( true );
 
     m_isInfoShown = true;
 
@@ -471,7 +485,7 @@ void MagnatuneBrowser::updateGenreBox()
     const QStringList genres = MagnatuneDatabaseHandler::instance() ->getAlbumGenres();
 
     m_genreComboBox->clear();
-    m_genreComboBox->insertItem ( "All" , 0 ); // should not be i18n'ed as it is
+    m_genreComboBox->insertItem( "All" , 0 ); // should not be i18n'ed as it is
     //used as a trigger in the code in the database handler.
 
     oldForeach( genres )

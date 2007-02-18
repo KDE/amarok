@@ -532,7 +532,7 @@ namespace Amarok
         //NOTE I have no idea why we need to do this, I never get startup notification from
         //the amarok binary anyway --mxcl
         debug() << "Startup ID: " << args.first() << endl;
-        kapp->setStartupId( args.first().local8Bit() );
+        kapp->setStartupId( args.first().toLocal8Bit() );
 #ifdef Q_WS_X11
         // currently X11 only
         KStartupInfo::appStarted();
@@ -544,7 +544,7 @@ namespace Amarok
 
         QStringList::ConstIterator it = args.constBegin();
         for( int i = 1; i < argc; ++i, ++it ) {
-            argv[i] = qstrdup( (*it).local8Bit() );
+            argv[i] = qstrdup( (*it).toLocal8Bit() );
             debug() << "Extracted: " << argv[i] << endl;
         }
 

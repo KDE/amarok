@@ -125,7 +125,7 @@ void QueueLabel::setNum( int num )
 
         p.setFont( f );
         p.setPen( colorGroup().highlightedText() );
-        p.setBrush( colorGroup().highlight().dark() );
+        p.setBrush( QColorGroup(palette()).highlight().dark() );
         p.drawText( pix.rect(), Qt::AlignCenter | Qt::TextSingleLine, text );
 
         p.end();
@@ -147,7 +147,7 @@ void QueueLabel::leaveEvent( QEvent* )
 
 void QueueLabel::aboutToShow()
 {
-    if( hasMouse() && !m_tooltipHidden )
+    if( testAttribute(Qt::WA_UnderMouse) && !m_tooltipHidden )
         showToolTip();
 }
 
@@ -187,7 +187,7 @@ void QueueLabel::mousePressEvent( QMouseEvent* mouseEvent )
         menu->addTitle( i18np( "1 Queued Track", "%1 Queued Tracks", count ) );
     menu->addAction(Amarok::actionCollection()->action( "queue_manager" ));
 
-    menu->insertItem( SmallIconSet( Amarok::icon( "rewind" ) ),
+    menu->insertItem( KIcon( Amarok::icon( "rewind" ) ),
                       count > 1 ? i18n( "&Dequeue All Tracks" ) : i18n( "&Dequeue Track" ), 0 );
     menu->insertSeparator();
     uint i = 1;
@@ -303,7 +303,7 @@ QString QueueLabel::veryNiceTitle( PlaylistItem* item, bool bold ) const
     const QString artist = item->artist()->trimmed(),
                   title =  item->title().trimmed();
     if( !artist.isEmpty() && !title.isEmpty() )
-       return ( bold ? i18n( "<b>%1</b> by <b>%2</b>" ) : i18n( "%1 by %2" ), title, artist );
+       return ( bold ? i18n( "<b>%1</b> by <b>%2</b>" ) : i18n( "%1 by %2", title, artist ) );
     else
        return QString( "<b>%1</b>").arg( MetaBundle::prettyTitle( item->filename() ) );
 }

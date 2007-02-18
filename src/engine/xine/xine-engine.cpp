@@ -164,7 +164,7 @@ XineEngine::makeNewStream()
 {
    m_currentAudioPlugin = XineCfg::outputPlugin();
 
-   m_audioPort = xine_open_audio_driver( m_xine, XineCfg::outputPlugin().local8Bit(), NULL );
+   m_audioPort = xine_open_audio_driver( m_xine, XineCfg::outputPlugin().toLocal8Bit(), NULL );
    if( !m_audioPort ) {
       //TODO make engine method that is the same but parents the dialog for us
       KMessageBox::error( 0, i18n("xine was unable to initialize any audio drivers.") );
@@ -376,7 +376,7 @@ XineEngine::determineAndShowErrorMessage()
 void
 XineEngine::stop()
 {
-    if( s_fader && s_fader->running() )
+    if( s_fader && s_fader->isRunning() )
         s_fader->resume(); // safety call if the engine is in the pause state
 
     if ( !m_stream )
@@ -409,7 +409,7 @@ XineEngine::pause()
 
     if( xine_get_param( m_stream, XINE_PARAM_SPEED ) != XINE_SPEED_PAUSE )
     {
-        if( s_fader && s_fader->running() )
+        if( s_fader && s_fader->isRunning() )
             s_fader->pause();
 
         xine_set_param( m_stream, XINE_PARAM_SPEED, XINE_SPEED_PAUSE );
@@ -427,7 +427,7 @@ XineEngine::unpause()
 
     if( xine_get_param( m_stream, XINE_PARAM_SPEED ) == XINE_SPEED_PAUSE )
     {
-        if( s_fader && s_fader->running() )
+        if( s_fader && s_fader->isRunning() )
             s_fader->resume();
 
         xine_set_param( m_stream, XINE_PARAM_SPEED, XINE_SPEED_NORMAL );

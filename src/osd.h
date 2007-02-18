@@ -128,7 +128,7 @@ public slots:
     }
 
 private:
-    inline void doUpdate() { if( isShown() ) show(); }
+    inline void doUpdate() { if( !isHidden() ) show(); }
 
 signals:
     void positionChanged();

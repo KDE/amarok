@@ -157,7 +157,7 @@ class Playlist : private K3ListView, public EngineObserver, public Amarok::ToolT
         bool removeCustomMenuItem( const QString &submenu, const QString &itemTitle );
 
         void setFont( const QFont &f ) { K3ListView::setFont( f ); } //made public for convenience
-        void unsetFont()               { K3ListView::unsetFont(); }
+        void unsetFont()               { K3ListView::setFont(QFont()); }
 
         PlaylistItem *firstChild() const { return static_cast<PlaylistItem*>( K3ListView::firstChild() ); }
         PlaylistItem *lastItem()   const { return static_cast<PlaylistItem*>( K3ListView::lastItem() ); }
