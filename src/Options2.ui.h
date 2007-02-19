@@ -182,7 +182,7 @@ void Options2::updateStyleComboBox()
     oldForeach (styleList) sortedList.append(QFileInfo( *it ).dir().dirName());
     sortedList.append( "Default" );
     sortedList.sort();
-    oldForeach(sortedList) styleComboBox->insertItem(*it);
+    oldForeach(sortedList) styleComboBox->addItem(*it);
 
     styleComboBox->setCurrentItem(AmarokConfig::contextBrowserStyleSheet());
 }

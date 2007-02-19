@@ -129,7 +129,7 @@ AmarokConfigDialog::AmarokConfigDialog( QWidget *parent, const char* name, KConf
         if( (*it)->property( "X-KDE-Amarok-name" ).toString() == "void-engine"
             && AmarokConfig::soundSystem() != "void-engine" ) continue;
 
-        m_soundSystem->insertItem( (*it)->name() );
+        m_soundSystem->addItem( (*it)->name() );
         // Save name properties in QMap for lookup
         m_pluginName[(*it)->name()] = (*it)->property( "X-KDE-Amarok-name" ).toString();
         m_pluginAmarokName[(*it)->property( "X-KDE-Amarok-name" ).toString()] = (*it)->name();

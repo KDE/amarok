@@ -323,7 +323,7 @@ AnalyzerContainer::contextMenuEvent( QContextMenuEvent *e)
 {
 #if defined HAVE_LIBVISUAL
     KMenu menu;
-    menu.insertItem( KIcon( Amarok::icon( "visualizations" ) ), i18n("&Visualizations"), Menu::ID_SHOW_VIS_SELECTOR );
+    menu.addItem( KIcon( Amarok::icon( "visualizations" ) ), i18n("&Visualizations"), Menu::ID_SHOW_VIS_SELECTOR );
 
     if( menu.exec( mapToGlobal( e->pos() ) ) == Menu::ID_SHOW_VIS_SELECTOR )
         Menu::instance()->slotActivated( Menu::ID_SHOW_VIS_SELECTOR );

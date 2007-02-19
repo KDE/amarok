@@ -42,7 +42,7 @@ void Options5::init()
 
     const int numScreens = QApplication::desktop()->numScreens();
     for( int i = 0; i < numScreens; i++ )
-        kcfg_OsdScreen->insertItem( QString::number( i ) );
+        kcfg_OsdScreen->addItem( QString::number( i ) );
 
     connect( kcfg_OsdDrawShadow,      SIGNAL( toggled(bool) ),
              m_pOSDPreview,           SLOT( setDrawShadow(bool) ) );

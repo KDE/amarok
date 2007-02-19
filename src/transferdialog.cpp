@@ -81,10 +81,10 @@ TransferDialog::TransferDialog( MediaDevice *mdev )
     KComboBox * comboTemp;
     for( comboTemp = m_combolist->first(); comboTemp; comboTemp = m_combolist->next() )
     {
-        comboTemp->insertItem( i18n("None") );
-        comboTemp->insertItem( i18n("Artist") );
-        comboTemp->insertItem( i18n("Album") );
-        comboTemp->insertItem( i18n("Genre") );
+        comboTemp->addItem( i18n("None") );
+        comboTemp->addItem( i18n("Artist") );
+        comboTemp->addItem( i18n("Album") );
+        comboTemp->addItem( i18n("Genre") );
         comboTemp->setCurrentItem( 0 );
     }
 
@@ -139,16 +139,16 @@ TransferDialog::sort1_activated( int index )
 {
     //sort3
     if( m_sort2LastIndex > 0 )
-        m_sort3->insertItem( m_sort2->text( m_sort2LastIndex ), m_sort2LastIndex );
+        m_sort3->addItem( m_sort2->text( m_sort2LastIndex ), m_sort2LastIndex );
     if( m_sort1LastIndex > 0 )
-        m_sort3->insertItem( m_sort1->text( m_sort1LastIndex ), m_sort1LastIndex );
+        m_sort3->addItem( m_sort1->text( m_sort1LastIndex ), m_sort1LastIndex );
     if( index > 0 )
         m_sort3->removeItem( index );
     m_sort3->setCurrentItem( 0 );
     m_sort3->setDisabled( true );
     //sort2
     if( m_sort1LastIndex > 0 )
-        m_sort2->insertItem( m_sort1->text( m_sort1LastIndex ), m_sort1LastIndex );
+        m_sort2->addItem( m_sort1->text( m_sort1LastIndex ), m_sort1LastIndex );
     if( index > 0 )
         m_sort2->removeItem( index );
     m_sort2->setCurrentItem( 0 );
@@ -166,7 +166,7 @@ TransferDialog::sort2_activated( int index )
 {
     //sort3
     if( m_sort2LastIndex > 0 )
-        m_sort3->insertItem( m_sort2->text( m_sort2LastIndex ), m_sort2LastIndex );
+        m_sort3->addItem( m_sort2->text( m_sort2LastIndex ), m_sort2LastIndex );
     if( index > 0 )
         m_sort3->removeItem( index );
     m_sort3->setCurrentItem( 0 );

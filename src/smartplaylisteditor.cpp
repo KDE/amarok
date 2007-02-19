@@ -223,7 +223,7 @@ void SmartPlaylistEditor::init(QString defaultName)
     //fields combo
     m_orderCombo = new KComboBox( orderBox );
     m_orderCombo->insertStringList( m_fields );
-    m_orderCombo->insertItem( i18n("Random") );
+    m_orderCombo->addItem( i18n("Random") );
     //order type
     m_orderTypeCombo = new KComboBox( orderBox );
     updateOrderTypes(0); // populate the new m_orderTypeCombo
@@ -326,14 +326,14 @@ void SmartPlaylistEditor::updateOrderTypes( int index )
     int currentOrderType = m_orderTypeCombo->currentIndex();
     if( index == m_orderCombo->count()-1 ) {  // random order selected
         m_orderTypeCombo->clear();
-        m_orderTypeCombo->insertItem( i18n("Completely Random") );
-        m_orderTypeCombo->insertItem( i18n("Score Weighted") );
-        m_orderTypeCombo->insertItem( i18n("Rating Weighted") );
+        m_orderTypeCombo->addItem( i18n("Completely Random") );
+        m_orderTypeCombo->addItem( i18n("Score Weighted") );
+        m_orderTypeCombo->addItem( i18n("Rating Weighted") );
     }
     else {  // ordinary order column selected
         m_orderTypeCombo->clear();
-        m_orderTypeCombo->insertItem( i18n("Ascending") );
-        m_orderTypeCombo->insertItem( i18n("Descending") );
+        m_orderTypeCombo->addItem( i18n("Ascending") );
+        m_orderTypeCombo->addItem( i18n("Descending") );
     }
     if( currentOrderType < m_orderTypeCombo->count() )
         m_orderTypeCombo->setCurrentIndex( currentOrderType );
@@ -957,9 +957,9 @@ void CriteriaEditor::loadEditWidgets()
                 m_intSpinBox1->setMinimum( 1 );
                 m_intSpinBox1->show();
                 m_dateCombo = new KComboBox( m_editBox );
-                m_dateCombo->insertItem( i18n("Days") );
-                m_dateCombo->insertItem( i18n("Months") );
-                m_dateCombo->insertItem( i18n("Years") );
+                m_dateCombo->addItem( i18n("Days") );
+                m_dateCombo->addItem( i18n("Months") );
+                m_dateCombo->addItem( i18n("Years") );
                 m_dateCombo->show();
             }
             else {
@@ -994,9 +994,9 @@ void CriteriaEditor::loadEditWidgets()
                 m_intSpinBox2->show();
             }
             m_lengthCombo = new KComboBox( m_editBox );
-            m_lengthCombo->insertItem( i18n( "Seconds" ) );
-            m_lengthCombo->insertItem( i18n( "Minutes" ) );
-            m_lengthCombo->insertItem( i18n( "Hours" ) );
+            m_lengthCombo->addItem( i18n( "Seconds" ) );
+            m_lengthCombo->addItem( i18n( "Minutes" ) );
+            m_lengthCombo->addItem( i18n( "Hours" ) );
             m_lengthCombo->show();
         }
 

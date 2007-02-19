@@ -666,7 +666,7 @@ MediaBrowser::updateDevices()
         {
             name += i18n( " (mounted at %1)", (*it)->mountPoint() );
         }
-        m_deviceCombo->insertItem( name, i );
+        m_deviceCombo->addItem( name, i );
         if( it == m_currentDevice )
         {
             m_deviceCombo->setCurrentItem( name );

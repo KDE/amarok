@@ -433,12 +433,12 @@ CoverFetcher::attemptAnotherFetch()
 
             // amazon combo box
             KComboBox* amazonLocale = new KComboBox( this );
-            amazonLocale->insertItem( i18n("International"), CoverFetcher::International );
-            amazonLocale->insertItem( i18n("Canada"), CoverFetcher::Canada );
-            amazonLocale->insertItem( i18n("France"), CoverFetcher::France );
-            amazonLocale->insertItem( i18n("Germany"), CoverFetcher::Germany );
-            amazonLocale->insertItem( i18n("Japan"), CoverFetcher::Japan);
-            amazonLocale->insertItem( i18n("United Kingdom"), CoverFetcher::UK );
+            amazonLocale->addItem( i18n("International"), CoverFetcher::International );
+            amazonLocale->addItem( i18n("Canada"), CoverFetcher::Canada );
+            amazonLocale->addItem( i18n("France"), CoverFetcher::France );
+            amazonLocale->addItem( i18n("Germany"), CoverFetcher::Germany );
+            amazonLocale->addItem( i18n("Japan"), CoverFetcher::Japan);
+            amazonLocale->addItem( i18n("United Kingdom"), CoverFetcher::UK );
             if( CoverManager::instance() )
                 connect( amazonLocale, SIGNAL( activated(int) ),
                         CoverManager::instance(), SLOT( changeLocale(int) ) );

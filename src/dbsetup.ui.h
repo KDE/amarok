@@ -18,7 +18,7 @@ void DbSetup::init()
 {
     configStack->raiseWidget( 0 );
 #ifdef USE_MYSQL
-    databaseEngine->insertItem( "MySQL", -1 );
+    databaseEngine->addItem( "MySQL", -1 );
     if (AmarokConfig::databaseEngine() == QString::number(DbConnection::mysql))
     {
         databaseEngine->setCurrentItem("MySQL");
@@ -27,7 +27,7 @@ void DbSetup::init()
 #endif
 
 #ifdef USE_POSTGRESQL
-    databaseEngine->insertItem( "Postgresql", -1 );
+    databaseEngine->addItem( "Postgresql", -1 );
     if (AmarokConfig::databaseEngine() == QString::number(DbConnection::postgresql))
     {
         databaseEngine->setCurrentItem("Postgresql");

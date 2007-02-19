@@ -432,7 +432,7 @@ EqualizerSetup::updatePresets(QString selectTitle)
     m_presetCombo->clear();
     QStringList::Iterator titlesEnd = titles.end();
     for ( QStringList::Iterator it = titles.begin(); it != titlesEnd; ++it ) {
-        m_presetCombo->insertItem( *it );
+        m_presetCombo->addItem( *it );
         if ( *it == selectTitle )
             newIndex = i;
         if ( *it == i18n("Manual") )
