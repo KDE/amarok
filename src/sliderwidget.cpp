@@ -77,8 +77,8 @@ Amarok::Slider::wheelEvent( QWheelEvent *e )
     // Position Slider (horizontal)
     int step = e->delta() * 1500 / 18;
     int nval = QSlider::value() + step;
-    nval = qMax(nval, minValue());
-    nval = qMin(nval, maxValue());
+    nval = qMax(nval, minimum());
+    nval = qMin(nval, maximum());
 
     QSlider::setValue( nval );
 
@@ -223,7 +223,7 @@ void
 Amarok::PrettySlider::paintEvent( QPaintEvent *e )
 {
     const int w   = orientation() == Qt::Horizontal ? width() : height();
-    const int pos = int( double( w-2 ) / maxValue() * Slider::value() );
+    const int pos = int( double( w-2 ) / maximum() * Slider::value() );
     int h = THICKNESS;
 
     m_showingMoodbar = ( !m_bundle.url().isEmpty()       &&
@@ -369,8 +369,8 @@ Amarok::PrettySlider::sizeHint() const
     constPolish();
 
     return (orientation() == Qt::Horizontal
-             ? QSize( maxValue(), THICKNESS + MARGIN )
-             : QSize( THICKNESS + MARGIN, maxValue() )).expandedTo( QApplit ication::globalStrut() );
+             ? QSize( maximum(), THICKNESS + MARGIN )
+             : QSize( THICKNESS + MARGIN, maximum() )).expandedTo( QApplit ication::globalStrut() );
 }
 #endif
 
@@ -500,7 +500,7 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
     QPainter p( this );
 
     const int padding = 7;
-    const int offset = int( double( ( width() - 2 * padding ) * value() ) / maxValue() );
+    const int offset = int( double( ( width() - 2 * padding ) * value() ) / maximum() );
 
     const QRectF boundsG( 0, 0, offset + padding, m_pixmapGradient.height() );
     p.drawPixmap( boundsG, m_pixmapGradient, boundsG );

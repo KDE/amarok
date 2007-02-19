@@ -121,7 +121,7 @@ EqualizerSetup::EqualizerSetup()
 
     // BEGIN Preamp slider
     m_slider_preamp = new Slider( Qt::Vertical, slidersLayoutWidget, 100 );
-    m_slider_preamp->setMinValue( -100 );
+    m_slider_preamp->setMinimum( -100 );
     m_slider_preamp->setTickmarks( QSlider::Right );
     m_slider_preamp->setTickInterval( 100 );
     connect( m_slider_preamp, SIGNAL( valueChanged( int ) ), SLOT( setEqualizerParameters() ) );
@@ -147,8 +147,8 @@ EqualizerSetup::EqualizerSetup()
         QLabel *label  = new QLabel( slidersLayoutWidget );
         label->setText( bandLabels[i] );
 
-        slider->setMinValue( -100 );
-        slider->setMaxValue( +100 );
+        slider->setMinimum( -100 );
+        slider->setMaximum( +100 );
         slider->setMinimumWidth( minWidth );
         slidersGridLayout->addMultiCellWidget(slider, 0, 0, 2 * i + 2, 2 * i + 3, Qt::AlignHCenter );
         slidersGridLayout->addMultiCellWidget(label, 1, 1, 2 * i + 2, 2 * i + 3, Qt::AlignHCenter );

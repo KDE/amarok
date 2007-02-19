@@ -137,8 +137,8 @@ StatusBar::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
     switch ( state ) {
     case Engine::Empty:
         m_slider->setEnabled( false );
-        m_slider->setMinValue( 0 ); //needed because setMaxValue() calls with bogus values can change minValue
-        m_slider->setMaxValue( 0 );
+        m_slider->setMinimum( 0 ); //needed because setMaximum() calls with bogus values can change minValue
+        m_slider->setMaximum( 0 );
 	m_slider->newBundle( MetaBundle() ); // Set an empty bundle
         m_timeLabel->setEnabled( false ); //must be done after the setValue() above, due to a signal connection
         m_timeLabel2->setEnabled( false );
@@ -254,8 +254,8 @@ StatusBar::engineTrackPositionChanged( long position, bool /*userSeek*/ )
 void
 StatusBar::engineTrackLengthChanged( long length )
 {
-    m_slider->setMinValue( 0 );
-    m_slider->setMaxValue( length * 1000 );
+    m_slider->setMinimum( 0 );
+    m_slider->setMaximum( length * 1000 );
     m_slider->setEnabled( length > 0 );
     m_timeLength = MetaBundle::prettyTime( length ).length()+1; // account for - in remaining time
 }

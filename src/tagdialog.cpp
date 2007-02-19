@@ -780,11 +780,11 @@ TagDialog::setMultipleTracksMode()
     kComboBox_composer->setCurrentText( "" );
     kLineEdit_title->setText( "" );
     kTextEdit_comment->setText( "" );
-    qSpinBox_track->setValue( qSpinBox_track->minValue() );
-    qSpinBox_discNumber->setValue( qSpinBox_discNumber->minValue() );
-    qSpinBox_year->setValue( qSpinBox_year->minValue() );
+    qSpinBox_track->setValue( qSpinBox_track->minimum() );
+    qSpinBox_discNumber->setValue( qSpinBox_discNumber->minimum() );
+    qSpinBox_year->setValue( qSpinBox_year->minimum() );
 
-    qSpinBox_score->setValue( qSpinBox_score->minValue() );
+    qSpinBox_score->setValue( qSpinBox_score->minimum() );
     kComboBox_rating->setCurrentItem(  0 );
 
     kLineEdit_title->setEnabled( false );

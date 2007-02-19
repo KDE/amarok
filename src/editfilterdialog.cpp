@@ -460,19 +460,19 @@ void EditFilterDialog::setMinMaxValueSpins()
 {
     // setting some spin box options and limit values
     m_spinMin1->setValue( 0 );
-    m_spinMin1->setMinValue( 0 );
-    m_spinMin1->setMaxValue( 100000000 );
+    m_spinMin1->setMinimum( 0 );
+    m_spinMin1->setMaximum( 100000000 );
 
-    m_spinMin2->setMinValue( 0 );
-    m_spinMin2->setMaxValue( 59 );
+    m_spinMin2->setMinimum( 0 );
+    m_spinMin2->setMaximum( 59 );
     m_spinMin2->hide();
 
     m_spinMax1->setValue( 0 );
-    m_spinMax1->setMinValue( 0 );
-    m_spinMax1->setMaxValue( 100000000 );
+    m_spinMax1->setMinimum( 0 );
+    m_spinMax1->setMaximum( 100000000 );
 
-    m_spinMax2->setMinValue( 0 );
-    m_spinMax2->setMaxValue( 59 );
+    m_spinMax2->setMinimum( 0 );
+    m_spinMax2->setMaximum( 59 );
     m_spinMax2->hide();
 
     // fix tooltip
@@ -527,8 +527,8 @@ void EditFilterDialog::selectedKeyword(int index) // SLOT
         m_spinMax1->setToolTip( i18n("Minutes") );
 
         // fix the maximum values to reduce spinboxes size
-        m_spinMin1->setMaxValue( 240 );
-        m_spinMax1->setMaxValue( 240 );
+        m_spinMin1->setMaximum( 240 );
+        m_spinMax1->setMaximum( 240 );
 
         valueWanted();
     }

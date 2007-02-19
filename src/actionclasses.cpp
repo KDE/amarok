@@ -85,7 +85,7 @@ MenuAction::plug( QWidget *w, int index )
 {
     KToolBar *bar = dynamic_cast<KToolBar*>(w);
 
-    if( bar && KAuthorized::authorizeKAction( name() ) )
+    if( bar && KAuthorized::authorizeKAction( objectName() ) )
     {
         //const int id = KAction::getToolButtonID();
 
@@ -101,7 +101,7 @@ MenuAction::plug( QWidget *w, int index )
 
         //KToolBarButton* button = bar->getButton( id );
         //button->setPopup( Amarok::Menu::instance() );
-        //button->setName( "toolbutton_amarok_menu" );
+        //button->setObjectName( "toolbutton_amarok_menu" );
         //button->setIcon( "amarok" );
 
         return associatedWidgets().count() - 1;
@@ -226,7 +226,7 @@ PlayPauseAction::PlayPauseAction( KActionCollection *ac )
 
     engineStateChanged( EngineController::engine()->state() );
 
-    connect( this, SIGNAL(activated()), EngineController::instance(), SLOT(playPause()) );
+    connect( this, SIGNAL(triggered()), EngineController::instance(), SLOT(playPause()) );
 }
 
 void
@@ -304,7 +304,7 @@ void AnalyzerContainer::changeAnalyzer()
 {
     delete m_child;
     m_child = Analyzer::Factory::createPlaylistAnalyzer( this );
-    m_child->setName( "ToolBarAnalyzer" );
+    m_child->setObjectName( "ToolBarAnalyzer" );
     m_child->resize( size() );
     m_child->show();
 }
@@ -383,7 +383,7 @@ void SelectAction::setCurrentItem( int n )
     m_function( n );
     KSelectAction::setCurrentItem( n );
     AmarokConfig::writeConfig(); //So we don't lose the setting when crashing
-    if( announce ) emit activated( n );
+    if( announce ) emit triggered( n );
 }
 
 void SelectAction::setEnabled( bool b )
@@ -438,7 +438,7 @@ VolumeAction::createWidget( QWidget *w )
     delete static_cast<Amarok::VolumeSlider*>( m_slider ); //just in case, remember, we only support one plugging!
 
     m_slider = new Amarok::VolumeSlider( w, Amarok::VOLUME_MAX );
-    m_slider->setName( "ToolBarVolume" );
+    m_slider->setObjectName( "ToolBarVolume" );
     m_slider->setValue( AmarokConfig::masterVolume() );
     m_slider->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Ignored );
 
@@ -534,7 +534,7 @@ BurnMenuAction::createWidget( QWidget *w )
 
         //KToolBarButton* button = bar->getButton( id );
         //button->setPopup( Amarok::BurnMenu::instance() );
-        //button->setName( "toolbutton_burn_menu" );
+        //button->setObjectName( "toolbutton_burn_menu" );
         //button->setIcon( "k3b" );
 
         //return associatedWidgets().count() - 1;
@@ -613,7 +613,7 @@ StopAction::plug( QWidget *w, int index )
 
         //KToolBarButton* button = bar->getButton( id );
         //button->setDelayedPopup( Amarok::StopMenu::instance() );
-        //button->setName( "toolbutton_stop_menu" );
+        //button->setObjectName( "toolbutton_stop_menu" );
         //button->setIcon( Amarok::icon( "stop" ) );
         //button->setEnabled( EngineController::instance()->engine()->loaded() );  // Disable button at startup
 
