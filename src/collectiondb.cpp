@@ -5413,9 +5413,9 @@ CollectionDB::updateGroupBy()
     if ( version && version < 32 )
     {
         KSharedConfigPtr config = Amarok::config( "Collection Browser" );
-        int m_cat1 = config->readEntry( "Category1" );
-        int m_cat2 = config->readEntry( "Category2" );
-        int m_cat3 = config->readEntry( "Category3" );
+        int m_cat1 = config->readEntry( "Category1", int(0) );
+        int m_cat2 = config->readEntry( "Category2", int(0) );
+        int m_cat3 = config->readEntry( "Category3", int(0) );
         m_cat1 = m_cat1 ? ( m_cat1 > 2 ? m_cat1 << 1 : m_cat1 ) : CollectionBrowserIds::IdArtist;
         m_cat2 = m_cat2 ? ( m_cat2 > 2 ? m_cat2 << 1 : m_cat2 ) : CollectionBrowserIds::IdAlbum;
         m_cat3 = m_cat3 ? ( m_cat3 > 2 ? m_cat3 << 1 : m_cat3 ) : CollectionBrowserIds::IdNone;
