@@ -27,7 +27,9 @@
 
 MagnatuneArtistInfoBox::MagnatuneArtistInfoBox( QWidget *parentWidget, const char *widgetname )
         : KHTMLPart( parentWidget )
-{}
+{
+    setObjectName(widgetname);
+}
 
 
 MagnatuneArtistInfoBox::~MagnatuneArtistInfoBox()
@@ -84,7 +86,7 @@ MagnatuneArtistInfoBox::displayAlbumInfo( MagnatuneAlbum *album )
 void
 MagnatuneArtistInfoBox::infoDownloadComplete( KJob *downLoadJob)
 {
-    
+
     if ( !downLoadJob->error() == 0 )
     {
         //TODO: error handling here
@@ -93,7 +95,7 @@ MagnatuneArtistInfoBox::infoDownloadComplete( KJob *downLoadJob)
     if ( downLoadJob != m_infoDownloadJob )
         return ; //not the right job, so let's ignore it
 
-     
+
 
     QString info = ((KIO::StoredTransferJob* )downLoadJob)->data();
     debug() << "MagnatuneArtistInfoBox: Artist info downloaded: "<< info << endl;

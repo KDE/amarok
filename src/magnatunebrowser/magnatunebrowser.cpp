@@ -298,7 +298,8 @@ void MagnatuneBrowser::initTopPanel( )
     m_topPanel->setSpacing( 2 );
     m_topPanel->setMargin( 2 );
 
-    new QLabel ( i18n( "Genre: " ), m_topPanel, "genreLabel", 0 );
+    QLabel *label = new QLabel ( i18n( "Genre: " ), m_topPanel );
+    label->setObjectName( "genreLabel" );
 
     m_genreComboBox = new QComboBox;
     m_genreComboBox->setParent( m_topPanel );
@@ -485,11 +486,11 @@ void MagnatuneBrowser::updateGenreBox()
     const QStringList genres = MagnatuneDatabaseHandler::instance() ->getAlbumGenres();
 
     m_genreComboBox->clear();
-    m_genreComboBox->insertItem( "All" , 0 ); // should not be i18n'ed as it is
+    m_genreComboBox->addItem( "All" , 0 ); // should not be i18n'ed as it is
     //used as a trigger in the code in the database handler.
 
     oldForeach( genres )
-    m_genreComboBox->insertItem( ( *it ), -1 );
+    m_genreComboBox->addItem( ( *it ), -1 );
 }
 
 void MagnatuneBrowser::processRedownload( )

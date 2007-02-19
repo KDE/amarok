@@ -115,7 +115,7 @@ void MagnatunePurchaseHandler::processPayment( QString ccNumber, QString expYear
     debug() << "purchase url : " << debugPurchaseURL << endl;
 
     m_resultDownloadJob = KIO::storedGet( KUrl( purchaseURL ), false, false );
-    
+
     //FIXME:
     //Amarok::StatusBar::instance() ->newProgressOperation( m_resultDownloadJob ).setDescription( i18n( "Processing Payment" ) );
 
@@ -199,7 +199,7 @@ void MagnatunePurchaseHandler::saveDownloadInfo( QString infoXml )
     //if directory does not exist, create it
     if ( ! purchaseDir.exists () )
     {
-        purchaseDir.mkdir( ".", false );
+        purchaseDir.mkdir( "." );
     }
 
     //Create file name

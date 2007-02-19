@@ -66,7 +66,7 @@ bool MagnatuneDownloadInfo::initFromString( QString downloadInfoString )
 
     // lets make sure that this is actually a valid result
 
-    int testIndex = downloadInfoString.find( "<RESULT>" );
+    int testIndex = downloadInfoString.indexOf( "<RESULT>" );
     if ( testIndex == -1 )
     {
         return false;
@@ -75,10 +75,10 @@ bool MagnatuneDownloadInfo::initFromString( QString downloadInfoString )
     int startIndex;
     int endIndex;
 
-    startIndex = downloadInfoString.find( "<DL_USERNAME>", 0, false );
+    startIndex = downloadInfoString.indexOf( "<DL_USERNAME>", 0, Qt::CaseInsensitive );
     if ( startIndex != -1 )
     {
-        endIndex = downloadInfoString.find( "</DL_USERNAME>", 0, false );
+        endIndex = downloadInfoString.indexOf( "</DL_USERNAME>", 0, Qt::CaseInsensitive );
         if ( endIndex != -1 )
         {
             startIndex += 13;
@@ -97,10 +97,10 @@ bool MagnatuneDownloadInfo::initFromString( QString downloadInfoString )
     }
 
 
-    startIndex = downloadInfoString.find( "<DL_PASSWORD>", 0, false );
+    startIndex = downloadInfoString.indexOf( "<DL_PASSWORD>", 0, Qt::CaseInsensitive );
     if ( startIndex != -1 )
     {
-        endIndex = downloadInfoString.find( "</DL_PASSWORD>", 0, false );
+        endIndex = downloadInfoString.indexOf( "</DL_PASSWORD>", 0, Qt::CaseInsensitive );
         if ( endIndex != -1 )
         {
             startIndex += 13;
@@ -118,10 +118,10 @@ bool MagnatuneDownloadInfo::initFromString( QString downloadInfoString )
     }
 
 
-    startIndex = downloadInfoString.find( "<URL_WAVZIP>", 0, false );
+    startIndex = downloadInfoString.indexOf( "<URL_WAVZIP>", 0, Qt::CaseInsensitive );
     if ( startIndex != -1 )
     {
-        endIndex = downloadInfoString.find( "</URL_WAVZIP>", 0, false );
+        endIndex = downloadInfoString.indexOf( "</URL_WAVZIP>", 0, Qt::CaseInsensitive );
         if ( endIndex != -1 )
         {
             startIndex += 12;
@@ -131,10 +131,10 @@ bool MagnatuneDownloadInfo::initFromString( QString downloadInfoString )
         }
     }
 
-    startIndex = downloadInfoString.find( "<URL_128KMP3ZIP>", 0, false );
+    startIndex = downloadInfoString.indexOf( "<URL_128KMP3ZIP>", 0, Qt::CaseInsensitive );
     if ( startIndex != -1 )
     {
-        endIndex = downloadInfoString.find( "</URL_128KMP3ZIP>", 0, false );
+        endIndex = downloadInfoString.indexOf( "</URL_128KMP3ZIP>", 0, Qt::CaseInsensitive );
         if ( endIndex != -1 )
         {
             startIndex += 16;
@@ -144,10 +144,10 @@ bool MagnatuneDownloadInfo::initFromString( QString downloadInfoString )
         }
     }
 
-    startIndex = downloadInfoString.find( "<URL_OGGZIP>", 0, false );
+    startIndex = downloadInfoString.indexOf( "<URL_OGGZIP>", 0, Qt::CaseInsensitive );
     if ( startIndex != -1 )
     {
-        endIndex = downloadInfoString.find( "</URL_OGGZIP>", 0, false );
+        endIndex = downloadInfoString.indexOf( "</URL_OGGZIP>", 0, Qt::CaseInsensitive );
         if ( endIndex != -1 )
         {
             startIndex += 12;
@@ -157,10 +157,10 @@ bool MagnatuneDownloadInfo::initFromString( QString downloadInfoString )
         }
     }
 
-    startIndex = downloadInfoString.find( "<URL_VBRZIP>", 0, false );
+    startIndex = downloadInfoString.indexOf( "<URL_VBRZIP>", 0, Qt::CaseInsensitive );
     if ( startIndex != -1 )
     {
-        endIndex = downloadInfoString.find( "</URL_VBRZIP>", 0, false );
+        endIndex = downloadInfoString.indexOf( "</URL_VBRZIP>", 0, Qt::CaseInsensitive );
         if ( endIndex != -1 )
         {
             startIndex += 12;
@@ -170,10 +170,10 @@ bool MagnatuneDownloadInfo::initFromString( QString downloadInfoString )
         }
     }
 
-    startIndex = downloadInfoString.find( "<URL_FLACZIP>", 0, false );
+    startIndex = downloadInfoString.indexOf( "<URL_FLACZIP>", 0, Qt::CaseInsensitive );
     if ( startIndex != -1 )
     {
-        endIndex = downloadInfoString.find( "</URL_FLACZIP>", 0, false );
+        endIndex = downloadInfoString.indexOf( "</URL_FLACZIP>", 0, Qt::CaseInsensitive );
         if ( endIndex != -1 )
         {
             startIndex += 13;
@@ -183,10 +183,10 @@ bool MagnatuneDownloadInfo::initFromString( QString downloadInfoString )
         }
     }
 
-    startIndex = downloadInfoString.find( "<DL_MSG>", 0, false );
+    startIndex = downloadInfoString.indexOf( "<DL_MSG>", 0, Qt::CaseInsensitive );
     if ( startIndex != -1 )
     {
-        endIndex = downloadInfoString.find( "</DL_MSG>", 0, false );
+        endIndex = downloadInfoString.indexOf( "</DL_MSG>", 0, Qt::CaseInsensitive );
         if ( endIndex != -1 )
         {
             startIndex += 9;

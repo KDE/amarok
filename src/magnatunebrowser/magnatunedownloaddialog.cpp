@@ -49,7 +49,7 @@ void MagnatuneDownloadDialog::downloadButtonClicked( )
     if (m_currentDownloadInfo == 0) return;
 
     m_currentDownloadInfo->setFormatSelection(formatComboBox->currentText());
-    
+
     KUrl unpackLocation = downloadTargetURLRequester->url();
     unpackLocation.adjustPath(KUrl::AddTrailingSlash);
     m_currentDownloadInfo->setUnpackUrl( unpackLocation.directory( KUrl::ObeyTrailingSlash ) );
@@ -72,7 +72,7 @@ void MagnatuneDownloadDialog::setDownloadInfo( MagnatuneDownloadInfo * info )
 
     for ( it = formatMap.begin(); it != formatMap.end(); ++it )
     {
-        formatComboBox->insertItem( it.key() );
+        formatComboBox->addItem( it.key() );
     }
 
     infoEdit->setText( info->getDownloadMessage() );
