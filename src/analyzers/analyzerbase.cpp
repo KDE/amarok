@@ -202,7 +202,7 @@ Analyzer::Base2D::polish()
 
     //we use polish for initialzing (instead of ctor)
     //because we need to know the widget's final size
-    QWidget::polish();
+    QWidget::ensurePolished();
 
     init(); //virtual
 }
@@ -210,7 +210,7 @@ Analyzer::Base2D::polish()
 void
 Analyzer::Base2D::resizeEvent( QResizeEvent *e )
 {
-    m_background.resize( size() );
+    m_background = QPixmap( size() );
 
     QWidget::resizeEvent( e );
 }

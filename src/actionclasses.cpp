@@ -287,9 +287,10 @@ AnalyzerAction::createWidget( QWidget *w )
 
 
 AnalyzerContainer::AnalyzerContainer( QWidget *parent )
-        : QWidget( parent, "AnalyzerContainer" )
+        : QWidget( parent )
         , m_child( 0 )
 {
+    setObjectName(  "AnalyzerContainer" );
     this->setToolTip( i18n( "Click for more analyzers" ) );
     changeAnalyzer();
 }
@@ -621,6 +622,7 @@ StopAction::plug( QWidget *w, int index )
     }
     else return QAction::plug( w, index );
     */
+    return 1;
 }
 
 StopMenu::StopMenu()

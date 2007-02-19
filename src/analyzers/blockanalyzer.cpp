@@ -52,7 +52,7 @@ BlockAnalyzer::BlockAnalyzer( QWidget *parent )
 
     // mxcl says null pixmaps cause crashes, so let's play it safe
     for ( uint i = 0; i < FADE_SIZE; ++i )
-        m_fade_bars[i].resize( 1, 1 );
+        m_fade_bars[i] = QPixmap( 1, 1 );
 }
 
 BlockAnalyzer::~BlockAnalyzer()
@@ -65,9 +65,7 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
 {
    DEBUG_BLOCK
 
-   QWidget::resizeEvent( e );
-
-   background()->resize( size() );
+   Analyzer::Base2D::resizeEvent( e );
 
    const uint oldRows = m_rows;
 
@@ -82,10 +80,10 @@ BlockAnalyzer::resizeEvent( QResizeEvent *e )
    m_scope.resize( m_columns );
 
    if( m_rows != oldRows ) {
-      m_barPixmap.resize( WIDTH, m_rows*(HEIGHT+1) );
+      m_barPixmap = QPixmap( WIDTH, m_rows*(HEIGHT+1) );
 
       for ( uint i = 0; i < FADE_SIZE; ++i )
-         m_fade_bars[i].resize( WIDTH, m_rows*(HEIGHT+1) );
+         m_fade_bars[i] = QPixmap( WIDTH, m_rows*(HEIGHT+1) );
 
       m_yscale.resize( m_rows + 1 );
 
@@ -331,28 +329,28 @@ ensureContrast( const QColor &bg, const QColor &fg, uint _amount = 150 )
 
 //         STAMP
 
-        return QColor( fh, fs, fv, QColor::Hsv );
+        return QColor::fromHsv( fh, fs, fv );
     }
 
 //     STAMP
 
     if( fv > bv && bv > amount )
-        return QColor( fh, fs, bv - amount, QColor::Hsv );
+        return QColor::fromHsv( fh, fs, bv - amount );
 
 //     STAMP
 
     if( fv < bv && fv > amount )
-        return QColor( fh, fs, fv - amount, QColor::Hsv );
+        return QColor::fromHsv( fh, fs, fv - amount );
 
 //     STAMP
 
     if( fv > bv && (255 - fv > amount) )
-        return QColor( fh, fs, fv + amount, QColor::Hsv );
+        return QColor::fromHsv( fh, fs, fv + amount );
 
 //     STAMP
 
     if( fv < bv && (255 - bv > amount ) )
-        return QColor( fh, fs, bv + amount, QColor::Hsv );
+        return QColor::fromHsv( fh, fs, bv + amount );
 
 //     STAMP
 //     debug() << "Something went wrong!\n";
@@ -391,7 +389,7 @@ BlockAnalyzer::paletteChange( const QPalette& ) //virtual
       //make a complimentary fadebar colour
       //TODO dark is not always correct, dumbo!
       int h,s,v; palette().active().background().dark( 150 ).getHsv( &h, &s, &v );
-      const QColor fg( h + 120, s, v, QColor::Hsv );
+      const QColor fg = QColor::fromHsv( h + 120, s, v );
 
       const double dr = fg.red() - bg.red();
       const double dg = fg.green() - bg.green();

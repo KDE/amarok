@@ -649,7 +649,7 @@ void App::applySettings( bool firstTime )
     {   // delete unneeded cover images from cache
         const QString size = QString::number( AmarokConfig::coverPreviewSize() ) + '@';
         const QDir cacheDir = Amarok::saveLocation( "albumcovers/cache/" );
-        const QStringList obsoleteCovers = cacheDir.entryList( "*" );
+        const QStringList obsoleteCovers = cacheDir.entryList( QStringList("*") );
         oldForeach( obsoleteCovers )
             if ( !(*it).startsWith( size  ) && !(*it).startsWith( "50@" ) )
                 QFile( cacheDir.filePath( *it ) ).remove();
@@ -771,9 +771,9 @@ App::applyColorScheme()
     {
         AltBase = KGlobalSettings::alternateBackgroundColor();
 
-        playlistWindow()->unsetPalette();
-        //browserBar->unsetPalette();
-        contextBrowser->unsetPalette();
+        playlistWindow()->setPalette(QPalette());
+        //browserBar->setPalette(QPalette());
+        contextBrowser->setPalette(QPalette());
 
 //        PlayerWidget::determineAmarokColors();
     }
@@ -804,7 +804,7 @@ App::applyColorScheme()
         //group.setColor( QColorGroup::BrightText, QColor( 0xff, 0x40, 0x40 ) ); //GlowColor
 
         AltBase.getHsv( &h, &s, &v );
-        group.setColor( QColorGroup::Midlight, QColor( h, s/3, (int)(v * 1.2), QColor::Hsv ) ); //column separator in playlist
+        group.setColor( QColorGroup::Midlight, QColor::fromHsv( h, s/3, (int)(v * 1.2) ) ); //column separator in playlist
 
         //TODO set all colours, even button colours, that way we can change the dark,
         //light, etc. colours and Amarok scheme will look much better
@@ -817,7 +817,7 @@ App::applyColorScheme()
 
         //all children() derive their palette from this
         playlistWindow()->setPalette( QPalette( group, group, group ) );
-        browserBar->unsetPalette();
+        browserBar->setPalette(QPalette());
         contextBrowser->setPalette( QPalette( group, group, group ) );
     }
 
@@ -831,15 +831,15 @@ App::applyColorScheme()
 
         //TODO use the ensureContrast function you devised in BlockAnalyzer
 
-        bg.hsv( &h, &s, &v );
+        bg.getHsv( &h, &s, &v );
         v += (v < 128) ? +50 : -50;
         v &= 255; //ensures 0 <= v < 256
         AltBase.setHsv( h, s, v );
 
-        fg.hsv( &h, &s, &v );
+        fg.getHsv( &h, &s, &v );
         v += (v < 128) ? +150 : -150;
         v &= 255; //ensures 0 <= v < 256
-        QColor highlight( h, s, v, QColor::Hsv );
+        QColor highlight = QColor::fromHsv( h, s, v );
 
         group.setColor( QColorGroup::Base, bg );
         group.setColor( QColorGroup::Background, bg.dark( 115 ) );
@@ -855,7 +855,7 @@ App::applyColorScheme()
         // allow the user to choose two colours
         browserBar->setPalette( QPalette( group, group, group ) );
         contextBrowser->setPalette( QPalette( group, group, group ) );
-        playlistWindow()->unsetPalette();
+        playlistWindow()->setPalette(QPalette());
     }
 
 #if 0
@@ -884,7 +884,7 @@ bool Amarok::genericEventHandler( QWidget *recipient, QEvent *e )
     {
     case QEvent::DragEnter:
         #define e static_cast<QDropEvent*>(e)
-        e->accept( KUrl::List::canDecode( e->mimeData() ) );
+        e->setAccepted( KUrl::List::canDecode( e->mimeData() ) );
         break;
 
     case QEvent::Drop:
@@ -1061,7 +1061,7 @@ void App::slotConfigAmarok( const Q3CString& page )
 
     dialog->show();
     dialog->raise();
-    dialog->setActiveWindow();
+    dialog->activateWindow();
 }
 
 void App::slotConfigShortcuts()
@@ -1285,9 +1285,9 @@ namespace Amarok
         QChar nul[] = { 0 };
         QChar *replacements[] = { a, A, e, E, i, I, o, O, u, U, nul };
 
-        for( uint i = 0; i < result.length(); i++ )
+        for( int i = 0; i < result.length(); i++ )
         {
-            QChar c = result.ref( i );
+            QChar c = result[ i ];
             for( uint n = 0; replacements[n][0] != QChar(0); n++ )
             {
                 for( uint k=0; replacements[n][k] != QChar(0); k++ )
@@ -1298,7 +1298,7 @@ namespace Amarok
                     }
                 }
             }
-            result.ref( i ) = c;
+            result[ i ] = c;
         }
         return result;
     }
@@ -1306,14 +1306,14 @@ namespace Amarok
     QString asciiPath( const QString &path )
     {
         QString result = path;
-        for( uint i = 0; i < result.length(); i++ )
+        for( int i = 0; i < result.length(); i++ )
         {
-            QChar c = result.ref( i );
+            QChar c = result[ i ];
             if( c > QChar(0x7f) || c == QChar(0) )
             {
                 c = '_';
             }
-            result.ref( i ) = c;
+            result[ i ] = c;
         }
         return result;
     }
@@ -1322,15 +1322,15 @@ namespace Amarok
     {
         QString s = path;
 
-        for( uint i = 0; i < s.length(); i++ )
+        for( int i = 0; i < s.length(); i++ )
         {
-            QChar c = s.ref( i );
+            QChar c = s[ i ];
             if( c < QChar(0x20)
                     || c=='*' || c=='?' || c=='<' || c=='>'
                     || c=='|' || c=='"' || c==':' || c=='/'
                     || c=='\\' )
                 c = '_';
-            s.ref( i ) = c;
+            s[ i ] = c;
         }
 
         uint len = s.length();
