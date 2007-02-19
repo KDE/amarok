@@ -102,11 +102,12 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
            "<b>track</b> (i.e. the track number), and <b>year</b>.</p>") );
     keywordLayout->addWidget( label3 );
     keywordLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
-    m_comboKeyword = new QComboBox( mainWidget(), "keywordComboBox");
+    m_comboKeyword = new QComboBox( mainWidget() );
+    m_comboKeyword->setObjectName( "keywordComboBox" );
     m_comboKeyword->setToolTip( i18n("Select an attribute for the filter") );
     label3->setBuddy( m_comboKeyword );
 
-    m_comboKeyword->insertItem( i18n("Simple Search") );
+    m_comboKeyword->addItem( i18n("Simple Search") );
     m_vector.push_back("Simple Search");
     if( metaBundleKeywords )
     {
@@ -119,63 +120,63 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
             if( !AmarokConfig::useScores() && i == MetaBundle::Score )
                 continue;
 
-            m_comboKeyword->insertItem( MetaBundle::prettyColumnName( i ) );
+            m_comboKeyword->addItem( MetaBundle::prettyColumnName( i ) );
             m_vector.push_back( MetaBundle::exactColumnName( i ).toLower() );
         }
     }
     else
     {
-        m_comboKeyword->insertItem( i18n("Album") );
+        m_comboKeyword->addItem( i18n("Album") );
         m_vector.push_back( "album" );
-        m_comboKeyword->insertItem( i18n("Artist") );
+        m_comboKeyword->addItem( i18n("Artist") );
         m_vector.push_back( "artist" );
-        m_comboKeyword->insertItem( i18n("Bitrate") );
+        m_comboKeyword->addItem( i18n("Bitrate") );
         m_vector.push_back( "bitrate" );
-        m_comboKeyword->insertItem( i18n("BPM") );
+        m_comboKeyword->addItem( i18n("BPM") );
         m_vector.push_back( "bpm" );
-        m_comboKeyword->insertItem( i18n("Comment") );
+        m_comboKeyword->addItem( i18n("Comment") );
         m_vector.push_back( "comment" );
-        m_comboKeyword->insertItem( i18n("Composer") );
+        m_comboKeyword->addItem( i18n("Composer") );
         m_vector.push_back( "composer" );
-        m_comboKeyword->insertItem( i18n("Directory") );
+        m_comboKeyword->addItem( i18n("Directory") );
         m_vector.push_back( "directory" );
-        m_comboKeyword->insertItem( i18n("Disc Number") );
+        m_comboKeyword->addItem( i18n("Disc Number") );
         m_vector.push_back( "disc" );
-        m_comboKeyword->insertItem( i18n("Filename") );
+        m_comboKeyword->addItem( i18n("Filename") );
         m_vector.push_back( "filename" );
-        m_comboKeyword->insertItem( i18n("Mount Point") );
+        m_comboKeyword->addItem( i18n("Mount Point") );
         m_vector.push_back( "mountpoint" );
-        m_comboKeyword->insertItem( i18n("Filetype") );
+        m_comboKeyword->addItem( i18n("Filetype") );
         m_vector.push_back( "filetype" );
-        m_comboKeyword->insertItem( i18n("Genre") );
+        m_comboKeyword->addItem( i18n("Genre") );
         m_vector.push_back( "genre" );
-        m_comboKeyword->insertItem( i18n("Length") );
+        m_comboKeyword->addItem( i18n("Length") );
         m_vector.push_back( "length" );
-        m_comboKeyword->insertItem( i18n("Label") );
+        m_comboKeyword->addItem( i18n("Label") );
         m_vector.push_back( "label" );
-        m_comboKeyword->insertItem( i18n("Lyrics") );
+        m_comboKeyword->addItem( i18n("Lyrics") );
         m_vector.push_back( "lyrics" );
-        m_comboKeyword->insertItem( i18n("Play Count") );
+        m_comboKeyword->addItem( i18n("Play Count") );
         m_vector.push_back( "playcount" );
         if( AmarokConfig::useRatings() )
         {
-            m_comboKeyword->insertItem( i18n("Rating") );
+            m_comboKeyword->addItem( i18n("Rating") );
             m_vector.push_back( "rating" );
         }
-        m_comboKeyword->insertItem( i18n("Sample Rate") );
+        m_comboKeyword->addItem( i18n("Sample Rate") );
         m_vector.push_back( "samplerate" );
         if( AmarokConfig::useScores() )
         {
-            m_comboKeyword->insertItem( i18n("Score") );
+            m_comboKeyword->addItem( i18n("Score") );
             m_vector.push_back( "score" );
         }
-        m_comboKeyword->insertItem( i18n("File Size") );
+        m_comboKeyword->addItem( i18n("File Size") );
         m_vector.push_back( "size" );
-        m_comboKeyword->insertItem( i18n("Title") );
+        m_comboKeyword->addItem( i18n("Title") );
         m_vector.push_back( "title" );
-        m_comboKeyword->insertItem( i18n("Track") );
+        m_comboKeyword->addItem( i18n("Track") );
         m_vector.push_back( "track" );
-        m_comboKeyword->insertItem( i18n("Year") );
+        m_comboKeyword->addItem( i18n("Year") );
         m_vector.push_back( "year" );
     }
 
@@ -198,24 +199,30 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     m_mainLay->addWidget( m_groupBox );
     m_mainLay->addItem( new QSpacerItem( 10, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
 
-    QVBoxLayout *vertLayout = new QVBoxLayout( m_groupBox, 15, 5 );
+    QVBoxLayout *vertLayout = new QVBoxLayout( m_groupBox );
+    vertLayout->setMargin( 15 );
+    vertLayout->setSpacing( 5 );
 
     // choose other keyword parameters: smaller than, greater than, equal to...
-    QHBoxLayout *paramLayout = new QHBoxLayout( vertLayout );
+    QHBoxLayout *paramLayout = new QHBoxLayout();
+    vertLayout->addLayout( paramLayout );
 
-    m_comboCondition = new QComboBox( m_groupBox, "valuecondition");
-    m_comboCondition->insertItem( i18n("smaller than") );
-    m_comboCondition->insertItem( i18n("larger than") );
-    m_comboCondition->insertItem( i18n("equal to") );
-    m_comboCondition->insertItem( i18n("between") );
+    m_comboCondition = new QComboBox( m_groupBox );
+    m_comboCondition->setObjectName( "valuecondition" );
+    m_comboCondition->addItem( i18n("smaller than") );
+    m_comboCondition->addItem( i18n("larger than") );
+    m_comboCondition->addItem( i18n("equal to") );
+    m_comboCondition->addItem( i18n("between") );
     paramLayout->addWidget( m_comboCondition );
     paramLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Fixed, QSizePolicy::Minimum ) );
 
-    m_spinMin1 = new QSpinBox( m_groupBox, "minimum1" );
+    m_spinMin1 = new QSpinBox( m_groupBox );
+    m_spinMin1->setObjectName( "minimum1" );
     paramLayout->addWidget( m_spinMin1 );
     paramLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
 
-    m_spinMin2 = new QSpinBox( m_groupBox, "minimum2" );
+    m_spinMin2 = new QSpinBox( m_groupBox );
+    m_spinMin2->setObjectName( "minimum2" );
     paramLayout->addWidget( m_spinMin2 );
     paramLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
 
@@ -226,26 +233,30 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     paramLayout->addWidget( m_andLabel );
     paramLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
 
-    m_spinMax1 = new QSpinBox( m_groupBox, "maximum1" );
+    m_spinMax1 = new QSpinBox( m_groupBox );
+    m_spinMax1->setObjectName( "maximum1" );
     paramLayout->addWidget( m_spinMax1 );
     paramLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
 
-    m_spinMax2 = new QSpinBox( m_groupBox, "maximum2" );
+    m_spinMax2 = new QSpinBox( m_groupBox );
+    m_spinMax2->setObjectName( "maximum2" );
     paramLayout->addWidget( m_spinMax2 );
 
     connect(m_spinMax1, SIGNAL(valueChanged(int)), this, SLOT(maxSpinChanged(int)));
 
-    QHBoxLayout *filesizeLayout = new QHBoxLayout( vertLayout );
+    QHBoxLayout *filesizeLayout = new QHBoxLayout();
+    vertLayout->addLayout( filesizeLayout );
     filesizeLayout->setAlignment( Qt::AlignLeft );
     m_filesizeLabel = new QLabel( i18n("Unit:"), m_groupBox );
     m_filesizeLabel->setObjectName( "filesizeLabel" );
     filesizeLayout->addWidget( m_filesizeLabel );
     filesizeLayout->addItem( new QSpacerItem( 5, 10, QSizePolicy::Fixed, QSizePolicy::Minimum ) );
-    m_comboUnitSize = new QComboBox( m_groupBox, "comboUnitSize" );
+    m_comboUnitSize = new QComboBox( m_groupBox );
+    m_comboUnitSize->setObjectName( "comboUnitSize" );
     m_filesizeLabel->setBuddy( m_comboUnitSize );
-    m_comboUnitSize->insertItem( i18n("B (1 Byte)") );
-    m_comboUnitSize->insertItem( i18n("KB (1024 Bytes)") );
-    m_comboUnitSize->insertItem( i18n("MB (1024 KB)") );
+    m_comboUnitSize->addItem( i18n("B (1 Byte)") );
+    m_comboUnitSize->addItem( i18n("KB (1024 Bytes)") );
+    m_comboUnitSize->addItem( i18n("MB (1024 KB)") );
     filesizeLayout->addWidget( m_comboUnitSize );
 
     // type text selected
@@ -265,27 +276,33 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     m_groupBox2->setTitle( i18n( "Filter action" ) );
     otherOptionsLayout->addWidget( m_groupBox2 );
 
-    QVBoxLayout* ratioLay = new QVBoxLayout( m_groupBox2, 15, 0 );
+    QVBoxLayout* ratioLay = new QVBoxLayout( m_groupBox2 );
+    ratioLay->setMargin( 15 );
+    ratioLay->setSpacing( 0 );
 
-    m_checkALL = new QRadioButton( i18n("Match all words"), m_groupBox2, "checkall" );
+    m_checkALL = new QRadioButton( i18n("Match all words"), m_groupBox2 );
+    m_checkALL->setObjectName( "checkall" );
     m_checkALL->setToolTip(
       i18n("<p>Check this box to look for the tracks that contains all the words you typed "
            "in the related Simple Search edit box</p>"));
     ratioLay->addWidget( m_checkALL );
 
-    m_checkAtLeastOne = new QRadioButton( i18n("Match any word"), m_groupBox2, "checkor");
+    m_checkAtLeastOne = new QRadioButton( i18n("Match any word"), m_groupBox2 );
+    m_checkAtLeastOne->setObjectName( "checkor" );
     m_checkAtLeastOne->setToolTip(
       i18n("<p>Check this box to look for the tracks that contains at least one of the words "
            "you typed in the related Simple Search edit box</p>"));
     ratioLay->addWidget( m_checkAtLeastOne );
 
-    m_checkExactly = new QRadioButton( i18n("Exact match"), m_groupBox2, "checkexactly");
+    m_checkExactly = new QRadioButton( i18n("Exact match"), m_groupBox2 );
+    m_checkExactly->setObjectName( "checkexactly" );
     m_checkExactly->setToolTip(
       i18n("<p>Check this box to look for all the tracks that contains exactly the words you typed "
            "in the related Simple Search edit box</p>"));
     ratioLay->addWidget( m_checkExactly );
 
-    m_checkExclude = new QRadioButton( i18n("Exclude"), m_groupBox2, "checkexclude");
+    m_checkExclude = new QRadioButton( i18n("Exclude"), m_groupBox2 );
+    m_checkExclude->setObjectName( "checkexclude" );
     m_checkExclude->setToolTip(
       i18n("<p>Check this box to look for all the tracks that do not contain the words you typed "
            "in the related Simple Search edit box</p>"));
@@ -307,21 +324,29 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
     // some vertical space
     otherOptionsLayout->addItem( new QSpacerItem( 50, 5, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
 
-    QVBoxLayout* verticalCondLay = new QVBoxLayout( otherOptionsLayout, 15, 0 );
+    QVBoxLayout* verticalCondLay = new QVBoxLayout();
+    otherOptionsLayout->addLayout( verticalCondLay );
+    verticalCondLay->setMargin(15);
+    verticalCondLay->setSpacing(0);
 
     m_groupBox3 = new Q3GroupBox( mainWidget(), "groupBox3" );
     m_groupBox3->setTitle( i18n( "Appending condition" ) );
     verticalCondLay->addWidget( m_groupBox3 );
 
-    QVBoxLayout* ratioLay2 = new QVBoxLayout( m_groupBox3, 15, 0 );
+    QVBoxLayout* ratioLay2 = new QVBoxLayout( m_groupBox3 );
+    ratioLay2->setMargin(15);
+    ratioLay2->setSpacing(0);
 
-    m_checkAND = new QRadioButton( i18nc("AND logic condition", "AND"), m_groupBox3, "checkAND" );
+
+    m_checkAND = new QRadioButton( i18nc("AND logic condition", "AND"), m_groupBox3 );
+    m_checkAND->setObjectName( "checkAND" );
     m_checkAND->setToolTip(
       i18n("<p>Check this box if you want add another condition and you want that the filter "
            "to match both the previous conditions and this new one</p>"));
     ratioLay2->addWidget( m_checkAND );
 
-    m_checkOR = new QRadioButton( i18nc("OR logic condition", "OR"), m_groupBox3, "checkOR" );
+    m_checkOR = new QRadioButton( i18nc("OR logic condition", "OR"), m_groupBox3 );
+    m_checkOR->setObjectName( "checkOR" );
     m_checkOR->setToolTip(
       i18n("<p>Check this box if you want add another condition and you want that the filter "
            "to match either the previous conditions or this new one</p>"));
@@ -329,7 +354,8 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
 
     otherOptionsLayout->addItem( new QSpacerItem( 10, 10, QSizePolicy::Minimum, QSizePolicy::Minimum ) );
 
-    m_prefixNOT = new QCheckBox( i18n("Invert condition"), mainWidget(), "prefixNOT" );
+    m_prefixNOT = new QCheckBox( i18n("Invert condition"), mainWidget() );
+    m_prefixNOT->setObjectName( "prefixNOT" );
     m_prefixNOT->setToolTip(
       i18n("Check this box to negate the defined filter condition"));
     m_prefixNOT->setWhatsThis(
@@ -486,7 +512,7 @@ void EditFilterDialog::setMinMaxValueSpins()
 // SLOTS
 void EditFilterDialog::selectedKeyword(int index) // SLOT
 {
-    debug() << "you selected index " << index << ": '" << m_comboKeyword->text(index) << "'" << endl;
+    debug() << "you selected index " << index << ": '" << m_comboKeyword->currentText() << "'" << endl;
     m_groupBox2->setEnabled( false );
     m_comboUnitSize->setEnabled( false );
     m_filesizeLabel->setEnabled( false );
@@ -539,7 +565,7 @@ void EditFilterDialog::selectedKeyword(int index) // SLOT
         m_comboUnitSize->setEnabled( true );
         m_spinMin1->setValue( 1 );
         m_spinMax1->setValue( 3 );
-        m_comboUnitSize->setCurrentItem( 2 );
+        m_comboUnitSize->setCurrentIndex( 2 );
         valueWanted();
     }
     else if( key=="year" )
@@ -714,7 +740,7 @@ void EditFilterDialog::slotDefault() // SLOT
         if (m_checkOR->isChecked())
             m_filterText += "OR ";
     }
-    QStringList list = QStringList::split( " ", m_editKeyword->text() );
+    QStringList list = m_editKeyword->text().split( " " );
     const QString key = m_vector[m_selectedIndex];
     if( m_selectedIndex == 0 )
     {
