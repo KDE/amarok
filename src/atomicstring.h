@@ -178,12 +178,12 @@ private:
     class Data;
     friend class Data;
 
-    void ref( Data* );
+    void ref( Data* ) const;
     void deref( Data* );
 
     static void checkLazyDeletes();
 
-    Data *m_string;
+    mutable Data *m_string;
 
     // static data
     static set_type s_store;    // main string store

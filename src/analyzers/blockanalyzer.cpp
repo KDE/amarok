@@ -45,7 +45,7 @@ BlockAnalyzer::BlockAnalyzer( QWidget *parent )
         , m_fade_pos( 1 << 8, 50 ) //vector<uint>
         , m_fade_intensity( 1 << 8, 32 ) //vector<uint>
 {
-    changeTimeout( Amarok::config( "General" )->readNumEntry( "Timeout", 20 ) );
+    changeTimeout( Amarok::config( "General" )->readEntry( "Timeout", 20 ) );
 
     setMinimumSize( MIN_COLUMNS*(WIDTH+1) -1, MIN_ROWS*(HEIGHT+1) -1 ); //-1 is padding, no drawing takes place there
     setMaximumWidth( MAX_COLUMNS*(WIDTH+1) -1 );
@@ -156,7 +156,7 @@ BlockAnalyzer::paintEvent( QPaintEvent* )
 
 
    QPainter p( this );
- 
+
    // Paint the background
    p.drawPixmap( 0, 0, *background() );
 
@@ -416,7 +416,7 @@ void
 BlockAnalyzer::drawBackground()
 {
     DEBUG_BLOCK
-    
+
     const QColor bg = palette().active().background();
     const QColor bgdark = bg.dark( 112 );
 

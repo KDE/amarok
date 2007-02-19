@@ -70,8 +70,11 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     m_itemCountLabel->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
 
     //positionBox
-    QWidget *positionBox = new QWidget( this, "positionBox" );
-    QHBoxLayout *box = new QHBoxLayout( positionBox, 1, 3 );
+    QWidget *positionBox = new QWidget( this );
+    positionBox->setObjectName( "positionBox" );
+    QHBoxLayout *box = new QHBoxLayout( positionBox );
+    box->setMargin(1);
+    box->setSpacing(3);
 
     m_slider = new Amarok::PrettySlider( Qt::Horizontal, Amarok::PrettySlider::Normal,
 					 positionBox );
@@ -86,7 +89,10 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 
     // TODO Both labels need tooltips (string freeze?)
     QWidget *hbox = new QWidget( this );
-    QHBoxLayout *layout = new QHBoxLayout( hbox, 0, 2 );
+    QHBoxLayout *layout = new QHBoxLayout( hbox );
+    layout->setMargin(0);
+    layout->setSpacing(2);
+
     layout->addSpacing( 3 );
     layout->addWidget( m_queueLabel = new QueueLabel( hbox ) );
     layout->addWidget( new SelectLabel( static_cast<Amarok::SelectAction*>( Amarok::action( "repeat" ) ), hbox ) );

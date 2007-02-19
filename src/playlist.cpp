@@ -422,7 +422,7 @@ Playlist::Playlist( QWidget *parent )
 
     setDynamicMode( 0 );
 
-    m_smartResizing = Amarok::config( "PlaylistWindow" )->readBoolEntry( "Smart Resizing", true );
+    m_smartResizing = Amarok::config( "PlaylistWindow" )->readEntry( "Smart Resizing", true );
 
     columnOrderChanged();
     //cause the column fractions to be updated, but in a safe way, ie no specific column
@@ -736,7 +736,7 @@ Playlist::restoreSession()
 {
     KUrl url;
 
-    if ( Amarok::config()->readBoolEntry( "First 1.4 Run", true ) ) {
+    if ( Amarok::config()->readEntry( "First 1.4 Run", true ) ) {
         // On first startup of 1.4, we load a special playlist with an intro track
         url.setPath( KStandardDirs::locate( "data", "amarok/data/firstrun.m3u" ) );
         Amarok::config()->writeEntry( "First 1.4 Run", false );
@@ -783,7 +783,7 @@ void Playlist::saveLayout(KSharedConfigPtr config, const QString &group) const
 void Playlist::restoreLayout(KSharedConfigPtr config, const QString &group)
 {
   KConfigGroup configGroup(config, group);
-  int version = configGroup.readNumEntry("ColumnsVersion", 0);
+  int version = configGroup.readEntry("ColumnsVersion", 0);
 
   Q3ValueList<int> iorder; //internal ordering
   if( version )
@@ -854,9 +854,9 @@ void Playlist::restoreLayout(KSharedConfigPtr config, const QString &group)
 
   if ( configGroup.hasKey("SortColumn") )
   {
-    const int sort = configGroup.readNumEntry("SortColumn");
+    const int sort = configGroup.readEntry("SortColumn");
     if( sort >= 0 && uint(sort) < iorder.count() )
-        setSorting(iorder[configGroup.readNumEntry("SortColumn")], configGroup.readBoolEntry("SortAscending", true));
+        setSorting(iorder[configGroup.readEntry("SortColumn")], configGroup.readEntry("SortAscending", true));
   }
 
   if( !AmarokConfig::useScores() )
@@ -3571,7 +3571,7 @@ Playlist::changeFromQueueManager( QList<PlaylistItem*> list )
     m_nextTracks = list;
     QList<PlaylistItem*> in, out;
     // make sure we repaint items no longer queued
- 
+
     foreach( PlaylistItem* item, oldQueue )
         if( !m_nextTracks.contains( item ) )
             out << item;
@@ -4410,7 +4410,7 @@ DEBUG_BLOCK
     // a renumbering/order changing at some point of the m_nextTracks list.
 
     //start on the 'from'-th item of the list
-    
+
     //PORT functionality sort of changed, since QList doesn't have QPtrList's concept of current
     //...but using current never made much sense anyways as far as I can tell. - IAM
 

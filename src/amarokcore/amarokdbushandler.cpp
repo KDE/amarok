@@ -311,28 +311,28 @@ namespace Amarok
         AmarokConfig::setOsdEnabled( enable );
     }
 
-    void DbusPlayerHandler::enableRandomMode( bool enable )
+    void DbusPlayerHandler::enableRandomMode( bool /*enable*/ )
     {
-#if 0	    
+#if 0
         static_cast<KSelectAction*>(Amarok::actionCollection()->action( "random_mode" ))
             ->setCurrentItem( enable ? AmarokConfig::EnumRandomMode::Tracks : AmarokConfig::EnumRandomMode::Off );
-#endif	
+#endif
     }
 
-    void DbusPlayerHandler::enableRepeatPlaylist( bool enable )
+    void DbusPlayerHandler::enableRepeatPlaylist( bool /*enable*/ )
     {
-#if 0	    
+#if 0
         static_cast<KSelectAction*>( Amarok::actionCollection()->action( "repeat" ) )
                ->setCurrentItem( enable ? AmarokConfig::EnumRepeat::Playlist : AmarokConfig::EnumRepeat::Off );
-#endif	
+#endif
     }
 
-     void DbusPlayerHandler::enableRepeatTrack( bool enable)
+     void DbusPlayerHandler::enableRepeatTrack( bool /*enable*/)
     {
-#if 0	    
+#if 0
         static_cast<KSelectAction*>( Amarok::actionCollection()->action( "repeat" ) )
                ->setCurrentItem( enable ? AmarokConfig::EnumRepeat::Track : AmarokConfig::EnumRepeat::Off );
-#endif	
+#endif
     }
 
     void DbusPlayerHandler::mediaDeviceMount()
@@ -621,7 +621,7 @@ namespace Amarok
 
     void DbusPlaylistHandler::removeCurrentTrack()
     {
-#if 0	    
+#if 0
         PlaylistItem* const item = Playlist::instance()->currentTrack();
         if ( item ) {
             if( item->isBeingRenamed() )
@@ -632,10 +632,10 @@ namespace Amarok
                 delete item;
             }
         }
-#endif	
+#endif
     }
 
-    void DbusPlaylistHandler::removeByIndex( int index )
+    void DbusPlaylistHandler::removeByIndex( int /*index*/ )
     {
 #if 0
     	    PlaylistItem* const item =
@@ -645,7 +645,7 @@ namespace Amarok
             Playlist::instance()->removeItem( item );
             delete item;
         }
-#endif	
+#endif
     }
 
     void DbusPlaylistHandler::repopulate()
@@ -856,34 +856,34 @@ namespace Amarok
     }
 
     void DbusCollectionHandler::scanPause()
-    {	   
-#if 0	    
+    {
+#if 0
         if( ScanController::instance() )
             ScanController::instance()->requestPause();
         else
             debug() << "No ScanController instance available" << endl;
-#endif	
+#endif
     }
 
     void DbusCollectionHandler::scanUnpause()
     {
-#if 0	    
+#if 0
         if( ScanController::instance() )
             ScanController::instance()->requestUnpause();
         else
             debug() << "No ScanController instance available" << endl;
-#endif	
+#endif
     }
 
     void DbusCollectionHandler::scannerAcknowledged()
     {
-#if 0	    
+#if 0
         DEBUG_BLOCK
         if( ScanController::instance() )
             ScanController::instance()->requestAcknowledged();
         else
             debug() << "No ScanController instance available" << endl;
-#endif	
+#endif
     }
 
     int DbusCollectionHandler::addLabels( const QString &url, const QStringList &labels )

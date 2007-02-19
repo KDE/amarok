@@ -39,7 +39,7 @@ MountPointManager::MountPointManager()
     , m_noDeviceManager( false )
 {
 
-    if ( !Amarok::config( "Collection" )->readBoolEntry( "DynamicCollection", true ) )
+    if ( !Amarok::config( "Collection" )->readEntry( "DynamicCollection", true ) )
     {
         debug() << "Dynamic Collection deactivated in amarokrc, not loading plugins, not connecting signals" << endl;
         return;

@@ -75,7 +75,7 @@ class SelectLabel : public QLabel
             int n = currentItem();
             do //TODO doesn't handle all of them being disabled, but we don't do that anyways.
             {
-                n = ( uint( n ) == m_action->items().count() - 1 ) ? 0 : n + 1;
+                n = ( int( n ) == m_action->items().count() - 1 ) ? 0 : n + 1;
             } while ( !m_action->menu()->isItemEnabled( n ) );
             if( isEnabled() )
             {
@@ -111,7 +111,7 @@ class SelectLabel : public QLabel
         void setEnabled( bool /*on*/ )
         {
             if( !m_action->currentIcon().isNull() )
-                setPixmap( KIcon( m_action->currentIcon() ).pixmap( QIcon::Small, QIcon::Disabled ) );
+                setPixmap( KIcon( m_action->currentIcon() ).pixmap( style()->pixelMetric(QStyle::PM_SmallIconSize), QIcon::Disabled ) );
         }
 
     private slots:
@@ -147,9 +147,8 @@ class SelectLabel : public QLabel
             m_tooltip->setShowCounter( false );
             m_tooltip->setMaskEffect( KDE::PopupMessage::Plain );
             m_tooltip->setText( tip );
-            const QPixmap pix = KIconLoader::global()
-                                ->loadIconSet( m_action->currentIcon(), K3Icon::Toolbar, K3Icon::SizeHuge )
-                                .pixmap( QIcon::Large, m_action->isEnabled()
+            const QPixmap pix = KIcon( m_action->currentIcon() )
+                                .pixmap( style()->pixelMetric(QStyle::PM_SmallIconSize), m_action->isEnabled()
                                                           ? QIcon::Normal
                                                           : QIcon::Disabled );
             m_tooltip->setImage( pix );

@@ -32,6 +32,7 @@
 #include <kiconloader.h>
 #include <QIcon>
 #include <QLabel>
+#include <QStyle>
 #include <QTimer>
 #include <QToolTip>
 //Added by qt3to4:
@@ -92,7 +93,7 @@ class ToggleLabel : public QLabel
     public slots:
         void setChecked( bool on )
         {
-            setPixmap( m_action->icon().pixmap( QIcon::Small, on ? QIcon::Normal : QIcon::Disabled ) );
+            setPixmap( m_action->icon().pixmap( style()->pixelMetric(QStyle::PM_SmallIconSize), on ? QIcon::Normal : QIcon::Disabled ) );
         }
 
         void setEnabled( bool /*on*/ ) { }

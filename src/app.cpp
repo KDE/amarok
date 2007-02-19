@@ -609,7 +609,7 @@ void App::applySettings( bool firstTime )
     //and always if the trayicon isn't showing
     QWidget* main_window = mainWindow();
 #ifdef Q_WS_X11
-    if( ( main_window && firstTime && !Amarok::config()->readBoolEntry( "HiddenOnExit", false ) ) || ( main_window && !AmarokConfig::showTrayIcon() ) )
+    if( ( main_window && firstTime && !Amarok::config()->readEntry( "HiddenOnExit", false ) ) || ( main_window && !AmarokConfig::showTrayIcon() ) )
 #endif
     {
         main_window->show();
@@ -669,7 +669,7 @@ App::continueInit()
     DEBUG_BLOCK
     const KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
     bool restoreSession = args->count() == 0 || args->isSet( "append" ) || args->isSet( "enqueue" )
-                                || Amarok::config()->readBoolEntry( "AppendAsDefault", false );
+                                || Amarok::config()->readEntry( "AppendAsDefault", false );
 
     // Make this instance so it can start receiving signals
     MoodServer::instance();
@@ -678,7 +678,7 @@ App::continueInit()
     //const QStringList oldCollectionFolders = MountPointManager::instance()->collectionFolders();
 
 
-    if ( Amarok::config()->readBoolEntry( "First Run", true ) || args->isSet( "wizard" ) ) {
+    if ( Amarok::config()->readEntry( "First Run", true ) || args->isSet( "wizard" ) ) {
         std::cout << "STARTUP\n" << std::flush; //hide the splashscreen
         firstRunWizard();
         Amarok::config()->writeEntry( "First Run", false );
@@ -1107,7 +1107,7 @@ void App::firstRunWizard()
         wizard.writeCollectionConfig();
 
         // If wizard is invoked at runtime, rescan collection if folder setup has changed
-        if ( !Amarok::config()->readBoolEntry( "First Run", true ) &&
+        if ( !Amarok::config()->readEntry( "First Run", true ) &&
              oldCollectionFolders != MountPointManager::instance()->collectionFolders() )
             CollectionDB::instance()->startScan();
 

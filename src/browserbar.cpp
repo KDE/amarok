@@ -147,7 +147,7 @@ int
 BrowserBar::restoreWidth()
 {
     const int index = indexForName( Amarok::config( "BrowserBar" )->readEntry( "CurrentPane" ) );
-    const int width = Amarok::config( "BrowserBar" )->readNumEntry( "Width", browser( index )->sizeHint().width() );
+    const int width = Amarok::config( "BrowserBar" )->readEntry( "Width", browser( index )->sizeHint().width() );
 
     m_browserBox->resize( width, height() );
     m_pos = m_browserBox->width() + m_tabBar->width();

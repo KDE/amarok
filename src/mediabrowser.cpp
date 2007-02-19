@@ -2027,7 +2027,7 @@ MediaDevice::configBool( const QString &name, bool defValue )
     if( !uniqueId().isEmpty() )
         configName += '_' + uniqueId();
     KSharedConfigPtr config = Amarok::config( configName );
-    return config->readBoolEntry( name, defValue );
+    return config->readEntry( name, defValue );
 }
 
 void

@@ -391,7 +391,7 @@ void TagDialog::init()
     kTabWidget->addTab( lyricsTab, i18n( "Lyrics" ) );
     kTabWidget->addTab( statisticsTab, i18n( "Statistics" ) );
     kTabWidget->addTab( labelsTab, i18n( "Labels" ) );
-    kTabWidget->setCurrentPage( config->readNumEntry( "CurrentTab", 0 ) );
+    kTabWidget->setCurrentPage( config->readEntry( "CurrentTab", 0 ) );
 
     const QStringList artists = CollectionDB::instance()->artistList();
     kComboBox_artist->insertStringList( artists );

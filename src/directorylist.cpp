@@ -55,7 +55,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     //there won't be any anyway and accessing them creates a Sqlite database, even if the user wants to
     //use another database
     //bug 131719 131724
-    if( !Amarok::config()->readBoolEntry( "First Run", true ) )
+    if( !Amarok::config()->readEntry( "First Run", true ) )
         m_dirs = MountPointManager::instance()->collectionFolders();
 
     m_recursive->setChecked( AmarokConfig::scanRecursively() );

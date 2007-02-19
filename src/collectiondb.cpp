@@ -5276,12 +5276,12 @@ CollectionDB::initialize()
         //make sure that there is no call to MountPointManager in CollectionDB's ctor
         //or in methods called from the ctor.
         if ( adminValue( "Database Devices Version" ).isEmpty()
-             && Amarok::config( "CollectionBrowser" )->readNumEntry( "Database Devices Version", 0 ) == 0 )
+             && Amarok::config( "CollectionBrowser" )->readEntry( "Database Devices Version", 0 ) == 0 )
         {
             createDevicesTable();
         }
         else if ( adminValue( "Database Devices Version" ).toInt() != DATABASE_DEVICES_VERSION
-              || Amarok::config( "Collection Browser" )->readNumEntry( "Database Devices Version", 0 ) != DATABASE_DEVICES_VERSION )
+              || Amarok::config( "Collection Browser" )->readEntry( "Database Devices Version", 0 ) != DATABASE_DEVICES_VERSION )
         {
             int prev = adminValue( "Database Devices Version" ).toInt();
 
@@ -5329,14 +5329,14 @@ CollectionDB::checkDatabase()
         */
 
         bool needsUpdate = ( adminValue( "Database Stats Version" ).toInt() != DATABASE_STATS_VERSION
-                           || Amarok::config( "Collection Browser" )->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION
-                           || Amarok::config( "Collection Browser" )->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION
+                           || Amarok::config( "Collection Browser" )->readEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION
+                           || Amarok::config( "Collection Browser" )->readEntry( "Database Version", 0 ) != DATABASE_VERSION
                            || adminValue( "Database Version" ).toInt() != DATABASE_VERSION
-                           || Amarok::config( "Collection Browser" )->readNumEntry( "Database Persistent Tables Version", 0 ) != DATABASE_PERSISTENT_TABLES_VERSION
+                           || Amarok::config( "Collection Browser" )->readEntry( "Database Persistent Tables Version", 0 ) != DATABASE_PERSISTENT_TABLES_VERSION
                            || adminValue( "Database Persistent Tables Version" ).toInt() != DATABASE_PERSISTENT_TABLES_VERSION
-                           || Amarok::config( "Collection Browser" )->readNumEntry( "Database Podcast Tables Version", 0 ) != DATABASE_PODCAST_TABLES_VERSION
+                           || Amarok::config( "Collection Browser" )->readEntry( "Database Podcast Tables Version", 0 ) != DATABASE_PODCAST_TABLES_VERSION
                            || adminValue( "Database Podcast Tables Version" ).toInt() != DATABASE_PODCAST_TABLES_VERSION
-                           || Amarok::config( "Collection Browser" )->readNumEntry( "Database AFT Version", 0 ) != DATABASE_AFT_VERSION
+                           || Amarok::config( "Collection Browser" )->readEntry( "Database AFT Version", 0 ) != DATABASE_AFT_VERSION
                            || adminValue( "Database AFT Version" ).toInt() != DATABASE_AFT_VERSION );
 
         if ( needsUpdate )
@@ -5373,7 +5373,7 @@ CollectionDB::checkDatabase()
             updateGroupBy();
 
             //remove database file if version is incompatible
-            if ( Amarok::config( "Collection Browser" )->readNumEntry( "Database Version", 0 ) != DATABASE_VERSION
+            if ( Amarok::config( "Collection Browser" )->readEntry( "Database Version", 0 ) != DATABASE_VERSION
                  || adminValue( "Database Version" ).toInt() != DATABASE_VERSION )
             {
                 debug() << "Rebuilding database!" << endl;
@@ -5408,14 +5408,14 @@ CollectionDB::updateGroupBy()
     //meanings of the values were changed due to the addition of the Composer table.
     int version = adminValue( "Database Version" ).toInt();
     if (!version) // an even older update
-       version = Amarok::config( "Collection Browser" )->readNumEntry( "Database Version", 0 );
+       version = Amarok::config( "Collection Browser" )->readEntry( "Database Version", 0 );
 
     if ( version && version < 32 )
     {
         KSharedConfigPtr config = Amarok::config( "Collection Browser" );
-        int m_cat1 = config->readNumEntry( "Category1" );
-        int m_cat2 = config->readNumEntry( "Category2" );
-        int m_cat3 = config->readNumEntry( "Category3" );
+        int m_cat1 = config->readEntry( "Category1" );
+        int m_cat2 = config->readEntry( "Category2" );
+        int m_cat3 = config->readEntry( "Category3" );
         m_cat1 = m_cat1 ? ( m_cat1 > 2 ? m_cat1 << 1 : m_cat1 ) : CollectionBrowserIds::IdArtist;
         m_cat2 = m_cat2 ? ( m_cat2 > 2 ? m_cat2 << 1 : m_cat2 ) : CollectionBrowserIds::IdAlbum;
         m_cat3 = m_cat3 ? ( m_cat3 > 2 ? m_cat3 << 1 : m_cat3 ) : CollectionBrowserIds::IdNone;
@@ -5429,7 +5429,7 @@ void
 CollectionDB::updateStatsTables()
 {
     if ( adminValue( "Database Stats Version" ).toInt() != DATABASE_STATS_VERSION
-          || Amarok::config( "Collection Browser" )->readNumEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION )
+          || Amarok::config( "Collection Browser" )->readEntry( "Database Stats Version", 0 ) != DATABASE_STATS_VERSION )
     {
         debug() << "Different database stats version detected! Stats table will be updated or rebuilt." << endl;
 
@@ -5455,9 +5455,9 @@ CollectionDB::updateStatsTables()
 
         /* If config returns 3 or lower, it came from an Amarok version that was not aware of
            admin table, so we can't trust this table at all */
-        if( !prev || ( Amarok::config( "Collection Browser" )->readNumEntry( "Database Stats Version", 0 )
-                  && Amarok::config( "Collection Browser" )->readNumEntry( "Database Stats Version", 0 ) <= 3  ) )
-            prev = Amarok::config( "Collection Browser" )->readNumEntry( "Database Stats Version", 0 );
+        if( !prev || ( Amarok::config( "Collection Browser" )->readEntry( "Database Stats Version", 0 )
+                  && Amarok::config( "Collection Browser" )->readEntry( "Database Stats Version", 0 ) <= 3  ) )
+            prev = Amarok::config( "Collection Browser" )->readEntry( "Database Stats Version", 0 );
 
         //pre somewhere in the 1.3-1.4 timeframe, the version wasn't stored in the DB, so try to guess it
         const QString q = "SELECT COUNT( %1 ) FROM statistics;";

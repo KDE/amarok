@@ -529,9 +529,9 @@ CollectionView::CollectionView( CollectionBrowser* parent )
     //<READ CONFIG>
         KSharedConfigPtr config = Amarok::config( "Collection Browser" );
 
-        m_cat1 = config->readNumEntry( "Category1", IdArtist );
-        m_cat2 = config->readNumEntry( "Category2", IdAlbum );
-        m_cat3 = config->readNumEntry( "Category3", IdNone );
+        m_cat1 = config->readEntry( "Category1", IdArtist );
+        m_cat2 = config->readEntry( "Category2", IdAlbum );
+        m_cat3 = config->readEntry( "Category3", IdNone );
 
 #define saneCat(x) (x==IdAlbum||x==IdArtist||x==IdComposer||x==IdGenre||x==IdYear \
         ||x==IdNone \
@@ -549,8 +549,8 @@ CollectionView::CollectionView( CollectionBrowser* parent )
         }
 #undef saneCat
 
-        m_viewMode = config->readNumEntry( "ViewMode", modeTreeView );
-        m_showDivider = config->readBoolEntry( "ShowDivider", true);
+        m_viewMode = config->readEntry( "ViewMode", modeTreeView );
+        m_showDivider = config->readEntry( "ShowDivider", true);
         updateTrackDepth();
 
         m_flatColumnWidths.clear();

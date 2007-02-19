@@ -56,7 +56,11 @@ class OSDWidget : public QWidget
          * To force an update call show();
          */
         void setDuration( int ms ) { m_duration = ms; }
-        void setTextColor( const QColor &color ) { setPaletteForegroundColor( color ); }
+        void setTextColor( const QColor &color ) {
+            QPalette palette;
+            palette.setColor(foregroundRole(), color);
+            setPalette(palette);
+        }
         void setOffset( int y ) { m_y = y; }
         void setAlignment( Alignment alignment ) { m_alignment = alignment; }
         void setImage( const QImage &image ) { m_cover = image; }
@@ -118,7 +122,7 @@ public slots:
     void setDrawShadow( bool b ) { OSDWidget::setDrawShadow( b ); doUpdate(); }
     void setFont( const QFont &font ) { OSDWidget::setFont( font ); doUpdate(); }
     void setScreen( int screen ) { OSDWidget::setScreen( screen ); doUpdate(); }
-    void setUseCustomColors( const bool use, const QColor &fg, const QColor &bg )
+    void setUseCustomColors( const bool use, const QColor &fg, const QColor &/*bg*/ )
     {
         if( use ) {
             OSDWidget::setTextColor( fg );

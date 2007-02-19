@@ -374,14 +374,14 @@ ContextBrowser::ContextBrowser( const char *name )
     setTabEnabled( m_lyricsTab, false );
     setTabEnabled( m_wikiTab, false );
 
-    m_showRelated   = Amarok::config( "ContextBrowser" )->readBoolEntry( "ShowRelated", true );
-    m_showSuggested = Amarok::config( "ContextBrowser" )->readBoolEntry( "ShowSuggested", true );
-    m_showFaves     = Amarok::config( "ContextBrowser" )->readBoolEntry( "ShowFaves", true );
-    m_showLabels    = Amarok::config( "ContextBrowser" )->readBoolEntry( "ShowLabels", true );
+    m_showRelated   = Amarok::config( "ContextBrowser" )->readEntry( "ShowRelated", true );
+    m_showSuggested = Amarok::config( "ContextBrowser" )->readEntry( "ShowSuggested", true );
+    m_showFaves     = Amarok::config( "ContextBrowser" )->readEntry( "ShowFaves", true );
+    m_showLabels    = Amarok::config( "ContextBrowser" )->readEntry( "ShowLabels", true );
 
-    m_showFreshPodcasts  = Amarok::config( "ContextBrowser" )->readBoolEntry( "ShowFreshPodcasts", true );
-    m_showNewestAlbums   = Amarok::config( "ContextBrowser" )->readBoolEntry( "ShowNewestAlbums", true );
-    m_showFavoriteAlbums = Amarok::config( "ContextBrowser" )->readBoolEntry( "ShowFavoriteAlbums", true );
+    m_showFreshPodcasts  = Amarok::config( "ContextBrowser" )->readEntry( "ShowFreshPodcasts", true );
+    m_showNewestAlbums   = Amarok::config( "ContextBrowser" )->readEntry( "ShowNewestAlbums", true );
+    m_showFavoriteAlbums = Amarok::config( "ContextBrowser" )->readEntry( "ShowFavoriteAlbums", true );
 
     // Delete folder with the cached coverimage shadow pixmaps
     KIO::del( KUrl( Amarok::saveLocation( "covershadow-cache/" ) ), false, false );

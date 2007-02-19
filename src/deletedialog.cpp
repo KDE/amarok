@@ -45,7 +45,7 @@ DeleteWidget::DeleteWidget(QWidget *parent)
 {
     KConfigGroup messageGroup(KGlobal::config(), "FileRemover");
 
-    bool deleteInstead = messageGroup.readBoolEntry("deleteInsteadOfTrash", false);
+    bool deleteInstead = messageGroup.readEntry("deleteInsteadOfTrash", false);
     slotShouldDelete(deleteInstead);
     ddShouldDelete->setChecked(deleteInstead);
 }

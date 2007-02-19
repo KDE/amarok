@@ -61,7 +61,7 @@ namespace Amarok
      * @param group Will pre-set the KConfig object to this group.
      */
     /* FIXME: This function can lead to very bizarre and hard to figure bugs.
-              While we don`t fix it properly, use it like this: amarok::config( Group )->readNumEntry( ... ) */
+              While we don`t fix it properly, use it like this: amarok::config( Group )->readEntry( ... ) */
     KSharedConfig::Ptr config( const QString &group = "General" ); //defined in app.cpp
 
     /**

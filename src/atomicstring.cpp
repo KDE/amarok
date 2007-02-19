@@ -93,7 +93,7 @@
 class AtomicString::Data: public QString
 {
 public:
-    uint refcount;
+    mutable uint refcount;
     Data(): refcount( 0 ) { }
     Data( const QString &s ): QString( s ), refcount( 0 ) { }
 };
@@ -143,9 +143,17 @@ bool AtomicString::isEmpty() const
 
 const QString *AtomicString::ptr() const
 {
-    if( m_string )
-        return m_string;
-    return &QString();
+    if( !m_string ) {
+        Data *s = new Data( QString() );  // note: s is a shallow copy
+        s_storeMutex.lock();
+        m_string = static_cast<Data*>( *( s_store.insert( s ).first ) );
+        ref( m_string );
+        uint rc = s->refcount;
+        s_storeMutex.unlock();
+        if ( !rc ) delete( s );	// already present
+    }
+
+    return m_string;
 }
 
 uint AtomicString::refcount() const
@@ -199,9 +207,9 @@ inline void AtomicString::deref( Data *s )
 }
 
 // needs to be called holding the lock
-inline void AtomicString::ref( Data *s )
+inline void AtomicString::ref( Data *s ) const
 {
-    checkLazyDeletes();         // a good time to do this
+    //checkLazyDeletes();         // a good time to do this
     if( s )
         s->refcount++;
 }
