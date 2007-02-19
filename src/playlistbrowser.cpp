@@ -211,7 +211,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name )
 
     m_listview = new PlaylistBrowserView( m_splitter );
 
-    int sort = Amarok::config( "PlaylistBrowser" )->readEntry( "Sorting", Qt::Ascending );
+    int sort = Amarok::config( "PlaylistBrowser" )->readEntry( "Sorting", int(Qt::Ascending) );
     m_listview->setSorting( 0, sort == Qt::Ascending ? true : false );
 
     m_podcastTimerInterval = Amarok::config( "PlaylistBrowser" )->readEntry( "Podcast Interval", 14400000 );
