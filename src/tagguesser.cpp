@@ -159,7 +159,7 @@ QStringList TagGuesser::schemeStrings()
 {
     QStringList schemes;
 
-    schemes = Amarok::config( "TagGuesser" )->readListEntry( "Filename schemes" );
+    schemes = Amarok::config( "TagGuesser" )->readEntry( "Filename schemes", QStringList() );
 
     if ( schemes.isEmpty() ) {
         schemes += "%track - %title";

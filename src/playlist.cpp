@@ -788,7 +788,7 @@ void Playlist::restoreLayout(KSharedConfigPtr config, const QString &group)
   Q3ValueList<int> iorder; //internal ordering
   if( version )
   {
-    QStringList names = configGroup.readListEntry("ColumnNames");
+    QStringList names = configGroup.readEntry("ColumnNames", QStringList());
     for( int i = 0, n = names.count(); i < n; ++i )
     {
         bool found = false;
@@ -823,7 +823,7 @@ void Playlist::restoreLayout(KSharedConfigPtr config, const QString &group)
   }
 
 
-  QStringList cols = configGroup.readListEntry("ColumnWidths");
+  QStringList cols = configGroup.readEntry("ColumnWidths", QStringList());
   int i = 0;
   { // scope the iterators
     QStringList::ConstIterator it = cols.constBegin();
@@ -836,7 +836,7 @@ void Playlist::restoreLayout(KSharedConfigPtr config, const QString &group)
   // move sections in the correct sequence: from lowest to highest index position
   // otherwise we move a section from an index, which modifies
   // all index numbers to the right of the moved one
-  cols = configGroup.readListEntry("ColumnOrder");
+  cols = configGroup.readEntry("ColumnOrder", QStringList());
   const int colCount = columns();
   for (i = 0; i < colCount; ++i)   // final index positions from lowest to highest
   {

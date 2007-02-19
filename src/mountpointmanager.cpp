@@ -397,7 +397,7 @@ MountPointManager::collectionFolders( )
     IdList ids = getMountedDeviceIds();
     oldForeachType( IdList, ids )
     {
-        QStringList rpaths = folders->readListEntry( QString::number( *it ) );
+        QStringList rpaths = folders->readEntry( QString::number( *it ), QStringList() );
         for( QStringList::ConstIterator strIt = rpaths.begin(), end = rpaths.end(); strIt != end; ++strIt )
         {
             QString absPath;

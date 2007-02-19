@@ -369,7 +369,7 @@ ScriptManager::findScripts() //SLOT
     // Handle auto-run:
 
     KSharedConfigPtr config = Amarok::config( "ScriptManager" );
-    const QStringList runningScripts = config->readListEntry( "Running Scripts" );
+    const QStringList runningScripts = config->readEntry( "Running Scripts", QStringList() );
 
     {
         oldForeach( runningScripts )
