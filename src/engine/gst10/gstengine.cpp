@@ -303,6 +303,7 @@ GstEngine::init()
 bool
 GstEngine::canDecode( const KURL &url ) const
 {
+    bool ismp3 = false;
 
     // We had some bug reports claiming that video files cause crashes in canDecode(),
     // so don't try to decode them
@@ -310,6 +311,9 @@ GstEngine::canDecode( const KURL &url ) const
          url.fileName().lower().endsWith( ".avi" ) ||
          url.fileName().lower().endsWith( ".wmv" ) )
         return false;
+
+    if ( url.fileName().lower().endsWith( ".mp3" ) )
+       ismp3 = true;
 
     debug() << "Can decode for " << url.prettyURL() << endl;
     int count = 0;
@@ -690,9 +694,9 @@ GstEngine::load( const KURL& url, bool stream )  //SLOT
           m_gst_src = src;
 
           gst_bin_add( GST_BIN( m_gst_pipeline ), m_gst_src );
-          g_object_set( G_OBJECT(m_gst_src), "location", static_cast<const char*>( QFile::encodeName( url.url() ) ),
+          //g_object_set( G_OBJECT(m_gst_src), "location", static_cast<const char*>( QFile::encodeName( url.url() ) ),
                         //                   "iradio-mode", true,
-                                              NULL );
+                        //                    NULL );
 
           //gchar *name;
           //gboolean mdenabled = false;
