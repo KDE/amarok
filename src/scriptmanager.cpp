@@ -184,10 +184,10 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
 
     // Restore the open/closed state of the category items
     KSharedConfigPtr config = Amarok::config( "ScriptManager" );
-    m_generalCategory  ->setOpen( config->readEntry( "General category open" ) );
-    m_lyricsCategory   ->setOpen( config->readEntry( "Lyrics category open" ) );
-    m_scoreCategory    ->setOpen( config->readEntry( "Score category State" ) );
-    m_transcodeCategory->setOpen( config->readEntry( "Transcode category open" ) );
+    m_generalCategory  ->setOpen( config->readEntry( "General category open", false ) );
+    m_lyricsCategory   ->setOpen( config->readEntry( "Lyrics category open", false ) );
+    m_scoreCategory    ->setOpen( config->readEntry( "Score category State", false ) );
+    m_transcodeCategory->setOpen( config->readEntry( "Transcode category open", false ) );
 
     connect( m_gui->listView, SIGNAL( currentChanged( Q3ListViewItem* ) ), SLOT( slotCurrentChanged( Q3ListViewItem* ) ) );
     connect( m_gui->listView, SIGNAL( doubleClicked ( Q3ListViewItem*, const QPoint&, int ) ), SLOT( slotRunScript() ) );
