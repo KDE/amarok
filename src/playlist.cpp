@@ -854,9 +854,9 @@ void Playlist::restoreLayout(KSharedConfigPtr config, const QString &group)
 
   if ( configGroup.hasKey("SortColumn") )
   {
-    const int sort = configGroup.readEntry("SortColumn");
+    const int sort = configGroup.readEntry("SortColumn", int(0));
     if( sort >= 0 && uint(sort) < iorder.count() )
-        setSorting(iorder[configGroup.readEntry("SortColumn")], configGroup.readEntry("SortAscending", true));
+        setSorting(iorder[configGroup.readEntry("SortColumn", int(0))], configGroup.readEntry("SortAscending", true));
   }
 
   if( !AmarokConfig::useScores() )
