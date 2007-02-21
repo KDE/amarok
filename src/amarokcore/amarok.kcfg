@@ -61,6 +61,11 @@
         <whatsthis>A rating is 1 to 5 stars, set manually by you to describe how well you like a given track.</whatsthis>
         <default>false</default>
     </entry>
+    <entry key="Custom Ratings Colors" type="Bool">
+        <label>Whether to use custom colors for ratings stars</label>
+        <whatsthis>Selects whether the user wants to use custom colors for ratings stars.</whatsthis>
+        <default>false</default>
+    </entry>
     <entry key="Repeat" type="Enum">
         <label>Which track(s) to play repeatedly</label>
         <whatsthis>Whether to repeat the current track, the current album, or the current playlist indefinitely, or neither.</whatsthis>

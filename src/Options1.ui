@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>425</width>
-            <height>686</height>
+            <height>690</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -23,58 +23,490 @@
     <property name="caption">
         <string>General</string>
     </property>
-    <vbox>
+    <widget class="QGroupBox">
         <property name="name">
-            <cstring>unnamed</cstring>
+            <cstring>generalBox</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>1</x>
+                <y>1</y>
+                <width>423</width>
+                <height>262</height>
+            </rect>
         </property>
         <property name="margin">
             <number>0</number>
         </property>
-        <widget class="QGroupBox">
+        <property name="title">
+            <string>General Options</string>
+        </property>
+        <vbox>
             <property name="name">
-                <cstring>generalBox</cstring>
+                <cstring>unnamed</cstring>
+            </property>
+            <widget class="QCheckBox">
+                <property name="name">
+                    <cstring>kcfg_ShowSplashscreen</cstring>
+                </property>
+                <property name="text">
+                    <string>Sho&amp;w splash-screen on startup</string>
+                </property>
+                <property name="accel">
+                    <string>Alt+W</string>
+                </property>
+                <property name="toolTip" stdset="0">
+                    <string>Check to enable the splashscreen during Amarok startup.</string>
+                </property>
+                <property name="whatsThis" stdset="0">
+                    <string>Check to enable the splashscreen during Amarok startup.</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox">
+                <property name="name">
+                    <cstring>kcfg_ShowTrayIcon</cstring>
+                </property>
+                <property name="text">
+                    <string>Show tray &amp;icon</string>
+                </property>
+                <property name="toolTip" stdset="0">
+                    <string>Check to enable the Amarok system tray icon.</string>
+                </property>
+                <property name="whatsThis" stdset="0">
+                    <string>Check to enable the Amarok system tray icon.</string>
+                </property>
+            </widget>
+            <widget class="QLayoutWidget">
+                <property name="name">
+                    <cstring>layout5</cstring>
+                </property>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <spacer>
+                        <property name="name">
+                            <cstring>spacer3_2</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Fixed</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>16</width>
+                                <height>21</height>
+                            </size>
+                        </property>
+                    </spacer>
+                    <widget class="QCheckBox">
+                        <property name="name">
+                            <cstring>kcfg_AnimateTrayIcon</cstring>
+                        </property>
+                        <property name="enabled">
+                            <bool>false</bool>
+                        </property>
+                        <property name="text">
+                            <string>F&amp;lash tray icon when playing</string>
+                        </property>
+                        <property name="toolTip" stdset="0">
+                            <string>Check to animate the Amarok system tray icon.</string>
+                        </property>
+                        <property name="whatsThis" stdset="0">
+                            <string>Check to animate the Amarok system tray icon.</string>
+                        </property>
+                    </widget>
+                </hbox>
+            </widget>
+            <widget class="QCheckBox">
+                <property name="name">
+                    <cstring>kcfg_ShowPlayerWindow</cstring>
+                </property>
+                <property name="text">
+                    <string>Show player window</string>
+                </property>
+                <property name="toolTip" stdset="0">
+                    <string>Check to enable an extra player window.</string>
+                </property>
+                <property name="whatsThis" stdset="0">
+                    <string>Check to enable an extra player window.</string>
+                </property>
+            </widget>
+            <widget class="QLayoutWidget">
+                <property name="name">
+                    <cstring>layout4</cstring>
+                </property>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QLabel">
+                        <property name="name">
+                            <cstring>textLabel1</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Default si&amp;ze for cover previews:</string>
+                        </property>
+                        <property name="buddy" stdset="0">
+                            <cstring>kcfg_CoverPreviewSize</cstring>
+                        </property>
+                        <property name="toolTip" stdset="0">
+                            <string>Size of the cover image in the context viewer in pixels.</string>
+                        </property>
+                        <property name="whatsThis" stdset="0">
+                            <string>Size of the cover image in the context viewer in pixels.</string>
+                        </property>
+                    </widget>
+                    <widget class="QSpinBox">
+                        <property name="name">
+                            <cstring>kcfg_CoverPreviewSize</cstring>
+                        </property>
+                        <property name="suffix">
+                            <string>px</string>
+                        </property>
+                        <property name="maxValue">
+                            <number>300</number>
+                        </property>
+                        <property name="minValue">
+                            <number>50</number>
+                        </property>
+                        <property name="value">
+                            <number>100</number>
+                        </property>
+                        <property name="toolTip" stdset="0">
+                            <string>Size of the cover images in the context viewer in pixels.</string>
+                        </property>
+                        <property name="whatsThis" stdset="0">
+                            <string>Size of the cover images in the context viewer in pixels.</string>
+                        </property>
+                    </widget>
+                    <spacer>
+                        <property name="name">
+                            <cstring>spacer7</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>30</width>
+                                <height>20</height>
+                            </size>
+                        </property>
+                    </spacer>
+                </hbox>
+            </widget>
+            <widget class="QLayoutWidget">
+                <property name="name">
+                    <cstring>layout7</cstring>
+                </property>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QLabel">
+                        <property name="name">
+                            <cstring>textLabel1_2</cstring>
+                        </property>
+                        <property name="minimumSize">
+                            <size>
+                                <width>150</width>
+                                <height>0</height>
+                            </size>
+                        </property>
+                        <property name="text">
+                            <string>External web &amp;browser:</string>
+                        </property>
+                        <property name="buddy" stdset="0">
+                            <cstring>kComboBox_browser</cstring>
+                        </property>
+                    </widget>
+                    <widget class="KComboBox">
+                        <property name="name">
+                            <cstring>kComboBox_browser</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>7</hsizetype>
+                                <vsizetype>0</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="minimumSize">
+                            <size>
+                                <width>150</width>
+                                <height>0</height>
+                            </size>
+                        </property>
+                        <property name="toolTip" stdset="0">
+                            <string>Choose the external web browser to be used by Amarok.</string>
+                        </property>
+                    </widget>
+                    <spacer>
+                        <property name="name">
+                            <cstring>spacer7_2</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>50</width>
+                                <height>21</height>
+                            </size>
+                        </property>
+                    </spacer>
+                </hbox>
+            </widget>
+            <widget class="QLayoutWidget">
+                <property name="name">
+                    <cstring>layout8</cstring>
+                </property>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QCheckBox">
+                        <property name="name">
+                            <cstring>checkBox_customBrowser</cstring>
+                        </property>
+                        <property name="enabled">
+                            <bool>true</bool>
+                        </property>
+                        <property name="minimumSize">
+                            <size>
+                                <width>150</width>
+                                <height>0</height>
+                            </size>
+                        </property>
+                        <property name="text">
+                            <string>Use &amp;another browser:</string>
+                        </property>
+                    </widget>
+                    <widget class="KLineEdit">
+                        <property name="name">
+                            <cstring>kLineEdit_customBrowser</cstring>
+                        </property>
+                        <property name="enabled">
+                            <bool>false</bool>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>7</hsizetype>
+                                <vsizetype>0</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                            </sizepolicy>
+                        </property>
+                        <property name="minimumSize">
+                            <size>
+                                <width>150</width>
+                                <height>0</height>
+                            </size>
+                        </property>
+                        <property name="toolTip" stdset="0">
+                            <string>Enter filename of external web browser.</string>
+                        </property>
+                    </widget>
+                    <spacer>
+                        <property name="name">
+                            <cstring>spacer7_2_3</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>50</width>
+                                <height>21</height>
+                            </size>
+                        </property>
+                    </spacer>
+                </hbox>
+            </widget>
+        </vbox>
+    </widget>
+    <widget class="QGroupBox">
+        <property name="name">
+            <cstring>groupBox2</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>590</y>
+                <width>423</width>
+                <height>91</height>
+            </rect>
+        </property>
+        <property name="margin">
+            <number>0</number>
+        </property>
+        <property name="title">
+            <string>Playlist-Window Options</string>
+        </property>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>kcfg_SavePlaylist</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>11</x>
+                    <y>26</y>
+                    <width>401</width>
+                    <height>25</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>&amp;Remember current playlist on exit</string>
+            </property>
+            <property name="accel">
+                <string>Alt+R</string>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>If checked, Amarok saves the current playlist on quit and restores it when restarted.&lt;br&gt;</string>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>If checked, Amarok saves the current playlist on quit and restores it when restarted.</string>
+            </property>
+        </widget>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>kcfg_AutoShowContextBrowser</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>11</x>
+                    <y>88</y>
+                    <width>401</width>
+                    <height>25</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Switch to Conte&amp;xt Browser on track change</string>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>Switch to the context browser, when playing a track.&lt;br&gt;</string>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>Switch to the context browser, when playing a track.</string>
+            </property>
+        </widget>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>kcfg_RelativePlaylist</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>11</x>
+                    <y>57</y>
+                    <width>401</width>
+                    <height>25</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Manuall&amp;y saved playlists use relative path</string>
+            </property>
+            <property name="accel">
+                <string>Alt+Y</string>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>If checked, Amarok uses a relative path for the tracks of manually saved playlists</string>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>If checked, Amarok uses a relative path for the tracks of manually saved playlists</string>
+            </property>
+        </widget>
+    </widget>
+    <widget class="QGroupBox">
+        <property name="name">
+            <cstring>componentsBox</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>270</y>
+                <width>423</width>
+                <height>320</height>
+            </rect>
+        </property>
+        <property name="margin">
+            <number>0</number>
+        </property>
+        <property name="title">
+            <string>Components</string>
+        </property>
+        <widget class="QFrame">
+            <property name="name">
+                <cstring>moodFrame</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>230</y>
+                    <width>401</width>
+                    <height>83</height>
+                </rect>
+            </property>
+            <property name="frameShape">
+                <enum>NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Raised</enum>
+            </property>
+            <property name="lineWidth">
+                <number>0</number>
             </property>
             <property name="margin">
                 <number>0</number>
-            </property>
-            <property name="title">
-                <string>General Options</string>
             </property>
             <vbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>0</number>
+                </property>
                 <widget class="QCheckBox">
                     <property name="name">
-                        <cstring>kcfg_ShowSplashscreen</cstring>
+                        <cstring>kcfg_ShowMoodbar</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>true</bool>
                     </property>
                     <property name="text">
-                        <string>Sho&amp;w splash-screen on startup</string>
+                        <string>Use &amp;moods</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+M</string>
+                    </property>
+                    <property name="checked">
+                        <bool>true</bool>
                     </property>
                     <property name="toolTip" stdset="0">
-                        <string>Check to enable the splashscreen during Amarok startup.</string>
+                        <string>Displays a visual representation of the current track in the slider bar of the player window and a column in the playlist window.</string>
                     </property>
                     <property name="whatsThis" stdset="0">
-                        <string>Check to enable the splashscreen during Amarok startup.</string>
-                    </property>
-                </widget>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>kcfg_ShowTrayIcon</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Show tray &amp;icon</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Check to enable the Amarok system tray icon.</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Check to enable the Amarok system tray icon.</string>
+                        <string>Displays a visual representation of the current track in the slider bar of the player window and a column in the playlist window.</string>
                     </property>
                 </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>layout5</cstring>
+                        <cstring>layout8_2_2</cstring>
                     </property>
                     <hbox>
                         <property name="name">
@@ -82,7 +514,7 @@
                         </property>
                         <spacer>
                             <property name="name">
-                                <cstring>spacer3_2</cstring>
+                                <cstring>spacerMoodier</cstring>
                             </property>
                             <property name="orientation">
                                 <enum>Horizontal</enum>
@@ -99,88 +531,50 @@
                         </spacer>
                         <widget class="QCheckBox">
                             <property name="name">
-                                <cstring>kcfg_AnimateTrayIcon</cstring>
+                                <cstring>kcfg_MakeMoodier</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>true</bool>
+                            </property>
+                            <property name="text">
+                                <string>Ma&amp;ke moodier:</string>
+                            </property>
+                            <property name="accel">
+                                <string>Alt+K</string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>When enabled, the hue distribution is quantised and respread evenly, giving a prettier but less meaningful output.</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>When enabled, the hue distribution is quantised and respread evenly, giving a prettier but less meaningful output.</string>
+                            </property>
+                        </widget>
+                        <widget class="QComboBox">
+                            <item>
+                                <property name="text">
+                                    <string>Happy Like a Rainbow</string>
+                                </property>
+                            </item>
+                            <item>
+                                <property name="text">
+                                    <string>Angry as Hell</string>
+                                </property>
+                            </item>
+                            <item>
+                                <property name="text">
+                                    <string>Frozen in the Arctic</string>
+                                </property>
+                            </item>
+                            <property name="name">
+                                <cstring>kcfg_AlterMood</cstring>
                             </property>
                             <property name="enabled">
                                 <bool>false</bool>
                             </property>
-                            <property name="text">
-                                <string>&amp;Flash tray icon when playing</string>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>Check to animate the Amarok system tray icon.</string>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Check to animate the Amarok system tray icon.</string>
-                            </property>
-                        </widget>
-                    </hbox>
-                </widget>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>kcfg_ShowPlayerWindow</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Show player window</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Check to enable an extra player window.</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Check to enable an extra player window.</string>
-                    </property>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout4</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>textLabel1</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Default si&amp;ze for cover previews:</string>
-                            </property>
-                            <property name="buddy" stdset="0">
-                                <cstring>kcfg_CoverPreviewSize</cstring>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>Size of the cover image in the context viewer in pixels.</string>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Size of the cover image in the context viewer in pixels.</string>
-                            </property>
-                        </widget>
-                        <widget class="QSpinBox">
-                            <property name="name">
-                                <cstring>kcfg_CoverPreviewSize</cstring>
-                            </property>
-                            <property name="suffix">
-                                <string>px</string>
-                            </property>
-                            <property name="maxValue">
-                                <number>300</number>
-                            </property>
-                            <property name="minValue">
-                                <number>50</number>
-                            </property>
-                            <property name="value">
-                                <number>100</number>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>Size of the cover images in the context viewer in pixels.</string>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Size of the cover images in the context viewer in pixels.</string>
-                            </property>
                         </widget>
                         <spacer>
                             <property name="name">
-                                <cstring>spacer7</cstring>
+                                <cstring>spacer7_2_2_2</cstring>
                             </property>
                             <property name="orientation">
                                 <enum>Horizontal</enum>
@@ -190,7 +584,7 @@
                             </property>
                             <property name="sizeHint">
                                 <size>
-                                    <width>30</width>
+                                    <width>130</width>
                                     <height>20</height>
                                 </size>
                             </property>
@@ -199,457 +593,605 @@
                 </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>layout7</cstring>
+                        <cstring>layout7_2_2</cstring>
                     </property>
                     <hbox>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>textLabel1_2</cstring>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>150</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>External web &amp;browser:</string>
-                            </property>
-                            <property name="buddy" stdset="0">
-                                <cstring>kComboBox_browser</cstring>
-                            </property>
-                        </widget>
-                        <widget class="KComboBox">
-                            <property name="name">
-                                <cstring>kComboBox_browser</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>7</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>150</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>Choose the external web browser to be used by Amarok.</string>
-                            </property>
-                        </widget>
                         <spacer>
                             <property name="name">
-                                <cstring>spacer7_2</cstring>
+                                <cstring>spacerWithMusic</cstring>
                             </property>
                             <property name="orientation">
                                 <enum>Horizontal</enum>
                             </property>
                             <property name="sizeType">
-                                <enum>Expanding</enum>
+                                <enum>Fixed</enum>
                             </property>
                             <property name="sizeHint">
                                 <size>
-                                    <width>50</width>
+                                    <width>16</width>
                                     <height>21</height>
                                 </size>
                             </property>
                         </spacer>
-                    </hbox>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout8</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
                         <widget class="QCheckBox">
                             <property name="name">
-                                <cstring>checkBox_customBrowser</cstring>
-                            </property>
-                            <property name="enabled">
-                                <bool>true</bool>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>150</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>Use &amp;another browser:</string>
-                            </property>
-                        </widget>
-                        <widget class="KLineEdit">
-                            <property name="name">
-                                <cstring>kLineEdit_customBrowser</cstring>
-                            </property>
-                            <property name="enabled">
-                                <bool>false</bool>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>7</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>150</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>Enter filename of external web browser.</string>
-                            </property>
-                        </widget>
-                        <spacer>
-                            <property name="name">
-                                <cstring>spacer7_2_3</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>50</width>
-                                    <height>21</height>
-                                </size>
-                            </property>
-                        </spacer>
-                    </hbox>
-                </widget>
-            </vbox>
-        </widget>
-        <widget class="QGroupBox">
-            <property name="name">
-                <cstring>componentsBox</cstring>
-            </property>
-            <property name="margin">
-                <number>0</number>
-            </property>
-            <property name="title">
-                <string>Components</string>
-            </property>
-            <vbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>kcfg_UseScores</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Use &amp;scores</string>
-                    </property>
-                    <property name="checked">
-                        <bool>false</bool>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Scores for tracks are calculated automatically, based on your listening habits.</string>
-                    </property>
-                </widget>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>kcfg_UseRatings</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Use ratings</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>You can assign ratings to tracks manually, from 1 to 5 stars.</string>
-                    </property>
-                </widget>
-                <widget class="Line">
-                    <property name="name">
-                        <cstring>line1</cstring>
-                    </property>
-                    <property name="frameShape">
-                        <enum>HLine</enum>
-                    </property>
-                    <property name="frameShadow">
-                        <enum>Sunken</enum>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                </widget>
-                <widget class="KActiveLabel">
-                    <property name="name">
-                        <cstring>moodbarHelpLabel</cstring>
-                    </property>
-                    <property name="text">
-                        <string>You need the &lt;a href='http://amarok.kde.org/wiki/Moodbar'&gt;moodbar package&lt;/a&gt; installed to enable the moodbar feature.</string>
-                    </property>
-                </widget>
-                <widget class="QFrame">
-                    <property name="name">
-                        <cstring>moodFrame</cstring>
-                    </property>
-                    <property name="frameShape">
-                        <enum>NoFrame</enum>
-                    </property>
-                    <property name="frameShadow">
-                        <enum>Raised</enum>
-                    </property>
-                    <property name="lineWidth">
-                        <number>0</number>
-                    </property>
-                    <property name="margin">
-                        <number>0</number>
-                    </property>
-                    <vbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>0</number>
-                        </property>
-                        <property name="spacing">
-                            <number>0</number>
-                        </property>
-                        <widget class="QCheckBox">
-                            <property name="name">
-                                <cstring>kcfg_ShowMoodbar</cstring>
+                                <cstring>kcfg_MoodsWithMusic</cstring>
                             </property>
                             <property name="enabled">
                                 <bool>true</bool>
                             </property>
                             <property name="text">
-                                <string>Use &amp;moods</string>
+                                <string>Stor&amp;e mood data files with music</string>
                             </property>
-                            <property name="checked">
-                                <bool>true</bool>
+                            <property name="accel">
+                                <string>Alt+E</string>
                             </property>
                             <property name="toolTip" stdset="0">
-                                <string>Displays a visual representation of the current track in the slider bar of the player window and a column in the playlist window.</string>
+                                <string>Enabling this option stores Mood data files with the music files. Disabling stores them in your home folder.</string>
                             </property>
                             <property name="whatsThis" stdset="0">
-                                <string>Displays a visual representation of the current track in the slider bar of the player window and a column in the playlist window.</string>
+                                <string>Enabling this option stores Mood data files with the music files. Namely, the mood file for /music/file.mp3 will be /music/file.mood.  Disabling stores them in your home folder.</string>
                             </property>
                         </widget>
-                        <widget class="QLayoutWidget">
-                            <property name="name">
-                                <cstring>layout8_2_2</cstring>
-                            </property>
-                            <hbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <spacer>
-                                    <property name="name">
-                                        <cstring>spacerMoodier</cstring>
-                                    </property>
-                                    <property name="orientation">
-                                        <enum>Horizontal</enum>
-                                    </property>
-                                    <property name="sizeType">
-                                        <enum>Fixed</enum>
-                                    </property>
-                                    <property name="sizeHint">
-                                        <size>
-                                            <width>16</width>
-                                            <height>21</height>
-                                        </size>
-                                    </property>
-                                </spacer>
-                                <widget class="QCheckBox">
-                                    <property name="name">
-                                        <cstring>kcfg_MakeMoodier</cstring>
-                                    </property>
-                                    <property name="enabled">
-                                        <bool>true</bool>
-                                    </property>
-                                    <property name="text">
-                                        <string>Make m&amp;oodier:</string>
-                                    </property>
-                                    <property name="toolTip" stdset="0">
-                                        <string>When enabled, the hue distribution is quantised and respread evenly, giving a prettier but less meaningful output.</string>
-                                    </property>
-                                    <property name="whatsThis" stdset="0">
-                                        <string>When enabled, the hue distribution is quantised and respread evenly, giving a prettier but less meaningful output.</string>
-                                    </property>
-                                </widget>
-                                <widget class="QComboBox">
-                                    <item>
-                                        <property name="text">
-                                            <string>Happy Like a Rainbow</string>
-                                        </property>
-                                    </item>
-                                    <item>
-                                        <property name="text">
-                                            <string>Angry as Hell</string>
-                                        </property>
-                                    </item>
-                                    <item>
-                                        <property name="text">
-                                            <string>Frozen in the Arctic</string>
-                                        </property>
-                                    </item>
-                                    <property name="name">
-                                        <cstring>kcfg_AlterMood</cstring>
-                                    </property>
-                                    <property name="enabled">
-                                        <bool>false</bool>
-                                    </property>
-                                </widget>
-                                <spacer>
-                                    <property name="name">
-                                        <cstring>spacer7_2_2_2</cstring>
-                                    </property>
-                                    <property name="orientation">
-                                        <enum>Horizontal</enum>
-                                    </property>
-                                    <property name="sizeType">
-                                        <enum>Expanding</enum>
-                                    </property>
-                                    <property name="sizeHint">
-                                        <size>
-                                            <width>130</width>
-                                            <height>20</height>
-                                        </size>
-                                    </property>
-                                </spacer>
-                            </hbox>
-                        </widget>
-                        <widget class="QLayoutWidget">
-                            <property name="name">
-                                <cstring>layout7_2_2</cstring>
-                            </property>
-                            <hbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <spacer>
-                                    <property name="name">
-                                        <cstring>spacerWithMusic</cstring>
-                                    </property>
-                                    <property name="orientation">
-                                        <enum>Horizontal</enum>
-                                    </property>
-                                    <property name="sizeType">
-                                        <enum>Fixed</enum>
-                                    </property>
-                                    <property name="sizeHint">
-                                        <size>
-                                            <width>16</width>
-                                            <height>21</height>
-                                        </size>
-                                    </property>
-                                </spacer>
-                                <widget class="QCheckBox">
-                                    <property name="name">
-                                        <cstring>kcfg_MoodsWithMusic</cstring>
-                                    </property>
-                                    <property name="enabled">
-                                        <bool>true</bool>
-                                    </property>
-                                    <property name="text">
-                                        <string>Stor&amp;e mood data files with music</string>
-                                    </property>
-                                    <property name="toolTip" stdset="0">
-                                        <string>Enabling this option stores Mood data files with the music files. Disabling stores them in your home folder.</string>
-                                    </property>
-                                    <property name="whatsThis" stdset="0">
-                                        <string>Enabling this option stores Mood data files with the music files. Namely, the mood file for /music/file.mp3 will be /music/file.mood.  Disabling stores them in your home folder.</string>
-                                    </property>
-                                </widget>
-                            </hbox>
-                        </widget>
-                    </vbox>
+                    </hbox>
                 </widget>
             </vbox>
         </widget>
-        <widget class="QGroupBox">
+        <widget class="KActiveLabel">
             <property name="name">
-                <cstring>groupBox2</cstring>
+                <cstring>moodbarHelpLabel</cstring>
             </property>
-            <property name="margin">
-                <number>0</number>
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>180</y>
+                    <width>401</width>
+                    <height>45</height>
+                </rect>
             </property>
-            <property name="title">
-                <string>Playlist-Window Options</string>
+            <property name="text">
+                <string>You need the &lt;a href='http://amarok.kde.org/wiki/Moodbar'&gt;moodbar package&lt;/a&gt; installed to enable the moodbar feature.</string>
             </property>
-            <vbox>
+        </widget>
+        <widget class="Line">
+            <property name="name">
+                <cstring>line1</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>170</y>
+                    <width>401</width>
+                    <height>16</height>
+                </rect>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="QFrame">
+            <property name="name">
+                <cstring>ratingsFrame</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>20</x>
+                    <y>101</y>
+                    <width>381</width>
+                    <height>70</height>
+                </rect>
+            </property>
+            <property name="frameShape">
+                <enum>NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Raised</enum>
+            </property>
+            <widget class="QPushButton">
                 <property name="name">
-                    <cstring>unnamed</cstring>
+                    <cstring>fivestar_1</cstring>
                 </property>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>kcfg_SavePlaylist</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Remember current playlist on exit</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>If checked, Amarok saves the current playlist on quit and restores it when restarted.&lt;br&gt;</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>If checked, Amarok saves the current playlist on quit and restores it when restarted.</string>
-                    </property>
-                </widget>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>kcfg_RelativePlaylist</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Manually sa&amp;ved playlists use relative path</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>If checked, Amarok uses a relative path for the tracks of manually saved playlists</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>If checked, Amarok uses a relative path for the tracks of manually saved playlists</string>
-                    </property>
-                </widget>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>kcfg_AutoShowContextBrowser</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Switch to Context &amp;Browser on track change</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Switch to the context browser, when playing a track.&lt;br&gt;</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Switch to the context browser, when playing a track.</string>
-                    </property>
-                </widget>
-            </vbox>
+                <property name="geometry">
+                    <rect>
+                        <x>0</x>
+                        <y>0</y>
+                        <width>22</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string></string>
+                </property>
+                <property name="pixmap">
+                    <pixmap>image0</pixmap>
+                </property>
+                <property name="flat">
+                    <bool>true</bool>
+                </property>
+                <property name="scaledContents" stdset="0">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>fivestar_2</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>20</x>
+                        <y>0</y>
+                        <width>22</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string></string>
+                </property>
+                <property name="pixmap">
+                    <pixmap>image0</pixmap>
+                </property>
+                <property name="flat">
+                    <bool>true</bool>
+                </property>
+                <property name="scaledContents" stdset="0">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>fivestar_3</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>40</x>
+                        <y>0</y>
+                        <width>22</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string></string>
+                </property>
+                <property name="pixmap">
+                    <pixmap>image0</pixmap>
+                </property>
+                <property name="flat">
+                    <bool>true</bool>
+                </property>
+                <property name="scaledContents" stdset="0">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>fivestar_4</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>60</x>
+                        <y>0</y>
+                        <width>22</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string></string>
+                </property>
+                <property name="pixmap">
+                    <pixmap>image0</pixmap>
+                </property>
+                <property name="flat">
+                    <bool>true</bool>
+                </property>
+                <property name="scaledContents" stdset="0">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>fourstar_2</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>190</x>
+                        <y>0</y>
+                        <width>22</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string></string>
+                </property>
+                <property name="pixmap">
+                    <pixmap>image0</pixmap>
+                </property>
+                <property name="flat">
+                    <bool>true</bool>
+                </property>
+                <property name="scaledContents" stdset="0">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>fourstar_3</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>210</x>
+                        <y>0</y>
+                        <width>22</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string></string>
+                </property>
+                <property name="pixmap">
+                    <pixmap>image0</pixmap>
+                </property>
+                <property name="flat">
+                    <bool>true</bool>
+                </property>
+                <property name="scaledContents" stdset="0">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>threestar_2</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>340</x>
+                        <y>0</y>
+                        <width>22</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string></string>
+                </property>
+                <property name="pixmap">
+                    <pixmap>image0</pixmap>
+                </property>
+                <property name="flat">
+                    <bool>true</bool>
+                </property>
+                <property name="scaledContents" stdset="0">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>fourstar_4</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>230</x>
+                        <y>0</y>
+                        <width>22</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string></string>
+                </property>
+                <property name="pixmap">
+                    <pixmap>image0</pixmap>
+                </property>
+                <property name="flat">
+                    <bool>true</bool>
+                </property>
+                <property name="scaledContents" stdset="0">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>threestar_1</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>320</x>
+                        <y>0</y>
+                        <width>22</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string></string>
+                </property>
+                <property name="pixmap">
+                    <pixmap>image0</pixmap>
+                </property>
+                <property name="flat">
+                    <bool>true</bool>
+                </property>
+                <property name="scaledContents" stdset="0">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>fivestar_5</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>80</x>
+                        <y>0</y>
+                        <width>22</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string></string>
+                </property>
+                <property name="pixmap">
+                    <pixmap>image0</pixmap>
+                </property>
+                <property name="flat">
+                    <bool>true</bool>
+                </property>
+                <property name="scaledContents" stdset="0">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>fourstar_1</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>170</x>
+                        <y>0</y>
+                        <width>22</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string></string>
+                </property>
+                <property name="pixmap">
+                    <pixmap>image0</pixmap>
+                </property>
+                <property name="flat">
+                    <bool>true</bool>
+                </property>
+                <property name="scaledContents" stdset="0">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>twostar_1</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>50</x>
+                        <y>40</y>
+                        <width>22</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string></string>
+                </property>
+                <property name="pixmap">
+                    <pixmap>image0</pixmap>
+                </property>
+                <property name="flat">
+                    <bool>true</bool>
+                </property>
+                <property name="scaledContents" stdset="0">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>twostar_2</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>70</x>
+                        <y>40</y>
+                        <width>22</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string></string>
+                </property>
+                <property name="pixmap">
+                    <pixmap>image0</pixmap>
+                </property>
+                <property name="flat">
+                    <bool>true</bool>
+                </property>
+                <property name="scaledContents" stdset="0">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>onestar_1</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>190</x>
+                        <y>40</y>
+                        <width>22</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string></string>
+                </property>
+                <property name="pixmap">
+                    <pixmap>image0</pixmap>
+                </property>
+                <property name="flat">
+                    <bool>true</bool>
+                </property>
+                <property name="scaledContents" stdset="0">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>halfstar</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>310</x>
+                        <y>40</y>
+                        <width>22</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string></string>
+                </property>
+                <property name="pixmap">
+                    <pixmap>image0</pixmap>
+                </property>
+                <property name="flat">
+                    <bool>true</bool>
+                </property>
+                <property name="scaledContents" stdset="0">
+                    <bool>true</bool>
+                </property>
+            </widget>
+            <widget class="QPushButton">
+                <property name="name">
+                    <cstring>threestar_3</cstring>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>360</x>
+                        <y>0</y>
+                        <width>22</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <property name="text">
+                    <string></string>
+                </property>
+                <property name="pixmap">
+                    <pixmap>image0</pixmap>
+                </property>
+                <property name="flat">
+                    <bool>true</bool>
+                </property>
+                <property name="scaledContents" stdset="0">
+                    <bool>true</bool>
+                </property>
+            </widget>
+        </widget>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>kcfg_UseScores</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>11</x>
+                    <y>26</y>
+                    <width>401</width>
+                    <height>25</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>&amp;Use scores</string>
+            </property>
+            <property name="accel">
+                <string>Alt+U</string>
+            </property>
+            <property name="checked">
+                <bool>false</bool>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>Scores for tracks are calculated automatically, based on your listening habits.</string>
+            </property>
         </widget>
         <spacer>
             <property name="name">
-                <cstring>spacer5</cstring>
+                <cstring>spacerCustomRatings</cstring>
             </property>
             <property name="orientation">
-                <enum>Vertical</enum>
+                <enum>Horizontal</enum>
             </property>
             <property name="sizeType">
                 <enum>Expanding</enum>
             </property>
             <property name="sizeHint">
                 <size>
-                    <width>20</width>
-                    <height>152</height>
+                    <width>8</width>
+                    <height>21</height>
                 </size>
             </property>
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>80</y>
+                    <width>8</width>
+                    <height>21</height>
+                </rect>
+            </property>
         </spacer>
-    </vbox>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>kcfg_CustomRatingsColors</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>20</x>
+                    <y>75</y>
+                    <width>160</width>
+                    <height>25</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Use custom colors</string>
+            </property>
+        </widget>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>kcfg_UseRatings</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>50</y>
+                    <width>401</width>
+                    <height>25</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Use &amp;ratings</string>
+            </property>
+            <property name="accel">
+                <string>Alt+R</string>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>You can assign ratings to tracks manually, from 1 to 5 stars.</string>
+            </property>
+        </widget>
+    </widget>
 </widget>
+<images>
+    <image name="image0">
+        <data format="XPM.GZ" length="4833">789c8597596f23470e80dfe75718c3b7c182e9eabb11ec834fc9873cbeaf601fc86ec9966df994cfc5fef794483633934d10c836fcb9582cde55fee5dbd2d9de68e9db2f5f9ee7349fb64bed153d2d7deb5e66b38fdffef3efff7ef99aa64b8baf2c5b4abffeebcb57dc5c6a9720499290640b8613e110ff22eb941b07657e7256f90be742e4a7c6a9ed076791c7a1732efbd784d3f817615a71167db0e55c0a17ce95c88f8ced3c7e74d6f306cea29fd159f583b3e8a75367d18f5bce8df0b63389be67e3ccfcd97716fd78e22cfaf1d459edefedcbedbc63e75af4cf85b33edeb8616cfef1b5b39eb7e72cf6c28b7166fb53678df7b5b3fadf388b3d503a8b3d40c6b9eaa35767d9cf37c6a5e53f73d6f3769d55bedf5f2789ac6bfcf2de1fda33ce4cdfbb716eeb6fce1acf1de3c2f2bbe7acf573605cdafe2b67f5efd359f20bb97165febe38b3c453fd2bfa7cd0a67165fea97c9db416ff1de3b1e9d77a6d12567bf8c159ed9d1ab7969fc2b8d378e2ba304579c93769bd719457fd524f2184cae221f51bd250a8fd3c35ae4cfec1b8b6fa06e3c6eaffc859d651f215b2d0c7efdab8327b969d459e9e8d7bfd57c68df587c43be4c1e20b685c1b9f0b17c1e283cfce927f96f911ca40d63fcbce7afebd31eb3a91b3fa37376ead9e64dea5759606a94f546eb23499883d9bc69932bef4acf22cf594725c1f8bfca9b3c8d3aa711e82c82bb73de3817111a4fe2171d67e1a1b97ba8e87ce5a8f12bfb48b2cfae8ceb85206894f9666135bff2e5c45d6fae894a3393a3f5be13aaeb7729eca4ff2d6ce3f5b701ef2b1c95f0aa7715dfb4de657519675d0fc8d8c9ba0f527f12faab234fd8fc695f1ab716dfa3f84ebb2089dec5f779678d381711d74beae398b7f540b3751bfd6e39ab1c9033b6bbd07e326687dcb3c2da8ecf47cfa301e9bbe37e389c94b3c0a2edba0f5f361dc194b3c8b36eed77acf9c453fab7f6d95587e6e8d83c957c25dc9668fdc5fc538b2c6e3a6e754e7adcc836252b6a9d69bccffb2ad535d67e98fb2ab538befaab3e8439947e5b84e82f6ffa17165f1bd7096fcc1ccb8b67a981b375a0f20f92d2775b078493dd54c75aaef0de9dfba75167fea2eb2f683dc5771388d753fbe396b7fca7c6b52ea2c5e57ce621fcbfdd26464f1812767ed8f63e3ced665de34c464fe9e1bb3d5b3f45bc3dca67a7fc9fba7697b46a9bf66cc13cb8fcc8b66c2960f3832b6f3988dad1e2828b799c53371d6f9766b9c5b7f4afe286983f5c3aeb3be177ace6c1ecc9cb51f6a678def8a7169f351fca710f5a93d9db3d64febacf9981aa76a2f5e3b6b7d5d1af7f6df3aebfb67e4acf93f72d6f972675cd83c7d77d67cac3bebfdfce9acf7eb87b3c66b665cdabc5feed9f44bfd51caade59395dbc4fc3f33cecc9f9b9e35bf786fdccfffc459e7ffc059eb7fe2acefcfd459df13dbceda5f4367bddffed8affdf0665c243a6f769c351f6367f51f7ad6fcefcf9dd57e72567fd959e3dd3a6bbc3b677daf34ce6affadb3dadbdb57263a5f46ce7adf8e9dd5dededfbe5e2f9cb5de5b678df7bb71a5fa59f767dccf77cd57d6f7136c185b7e79d359f3159cf53df7e8acf19e19f7f57ee5acef9b0d67f5b733b6fa844b63f38f07ceea9fcc3fca5b9bef58199b3dbce5acefa53567bd6fee8c73d54f95b3fa3b34b6fcc3b3b3f6dba1b3f6afe6a788fb6bad9f1f3f08f19b90b18ddff0f3dafefc2fe4bb284948f1b7f1e2e73fca4ff012af708ad77883b77f2f8f33bc8b9aeff1011ff1099f718e2ff88a6ff88e1ff8196da33fc92fe30aaee21aaee3060e70889bb885dbb88323dc8d7a407df941be8dd2dfa3ec5e94dac7033cc4233cc6133cc5333cc78bffb327c18029669863812556d1ef1a9ba8168080a1850ec608daaf30814bb882296ec035dc486426700b33b8837b78c0213cc2133ce367af3f7a93c01c5e700b5ee10d6fe11d093ee01396610556f104d6601d36a2d77abf0da2f41036610bb6b1841d18c12e7c873dd887033884233886133885b318297d3fc558e114cee1021208d1e01432c8a180122aa8e3c5190f2322c63bb507995aea62bc37698c9f34a14bba822d9ad235ddd02dcde80e87744f0f7fc823d1233de1363d634d737aa1577aa3ebf8047ba70ffaa4655aa1555aa375b37f0c298e6923ca0fb0a1212cd3266dd136edd08876e93bedd13e1dd0211d997e88f6031dd3099d624e67744e17f15f8b40296594cb273ef61632aa5ff34515d5d43032707c19449fd6e993db283b8217ee62fc0630fa31bf1cdf037c493bb1724ef98a162d30e56bcae185467cc3b731dfa0f935f919dff13daef1033ff2133fc77d039e73d41da55ff90d268b8afba17ea27d30a18edff9833f7999577895d7a88421aff31b6fc0e04ff5c6314acc031ef2266cc4c7ce036ff12ca66a10ff75d95eacfd2ccf3b0bfd38e651ac93f7d83b77f84e47d1e6f1222e0bf9c5ef3ff7a3f690766f4ffd0490aa85affffbf5cbef985d44a8</data>
+    </image>
+</images>
 <connections>
     <connection>
         <sender>kcfg_ShowTrayIcon</sender>
@@ -670,16 +1212,28 @@
         <slot>setEnabled(bool)</slot>
     </connection>
     <connection>
+        <sender>kcfg_MakeMoodier</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>General</receiver>
+        <slot>slotUpdateMoodFrame()</slot>
+    </connection>
+    <connection>
         <sender>kcfg_ShowMoodbar</sender>
         <signal>toggled(bool)</signal>
         <receiver>General</receiver>
         <slot>slotUpdateMoodFrame()</slot>
     </connection>
     <connection>
-        <sender>kcfg_MakeMoodier</sender>
+        <sender>kcfg_UseRatings</sender>
         <signal>toggled(bool)</signal>
         <receiver>General</receiver>
-        <slot>slotUpdateMoodFrame()</slot>
+        <slot>slotUpdateRatingsFrame()</slot>
+    </connection>
+    <connection>
+        <sender>kcfg_CustomRatingsColors</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>General</receiver>
+        <slot>slotUpdateRatingsFrame()</slot>
     </connection>
 </connections>
 <includes>
@@ -687,6 +1241,7 @@
 </includes>
 <slots>
     <slot>slotUpdateMoodFrame()</slot>
+    <slot>slotUpdateRatingsFrame()</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>
