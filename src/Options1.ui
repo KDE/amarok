@@ -496,9 +496,6 @@
                                             <property name="flat">
                                                 <bool>true</bool>
                                             </property>
-                                            <property name="scaledContents" stdset="0">
-                                                <bool>true</bool>
-                                            </property>
                                         </widget>
                                         <widget class="QPushButton">
                                             <property name="name">
@@ -511,9 +508,6 @@
                                                 <pixmap>image0</pixmap>
                                             </property>
                                             <property name="flat">
-                                                <bool>true</bool>
-                                            </property>
-                                            <property name="scaledContents" stdset="0">
                                                 <bool>true</bool>
                                             </property>
                                         </widget>
@@ -530,9 +524,6 @@
                                             <property name="flat">
                                                 <bool>true</bool>
                                             </property>
-                                            <property name="scaledContents" stdset="0">
-                                                <bool>true</bool>
-                                            </property>
                                         </widget>
                                         <widget class="QPushButton">
                                             <property name="name">
@@ -547,9 +538,6 @@
                                             <property name="flat">
                                                 <bool>true</bool>
                                             </property>
-                                            <property name="scaledContents" stdset="0">
-                                                <bool>true</bool>
-                                            </property>
                                         </widget>
                                         <widget class="QPushButton">
                                             <property name="name">
@@ -562,9 +550,6 @@
                                                 <pixmap>image0</pixmap>
                                             </property>
                                             <property name="flat">
-                                                <bool>true</bool>
-                                            </property>
-                                            <property name="scaledContents" stdset="0">
                                                 <bool>true</bool>
                                             </property>
                                         </widget>
@@ -614,9 +599,6 @@
                                             <property name="flat">
                                                 <bool>true</bool>
                                             </property>
-                                            <property name="scaledContents" stdset="0">
-                                                <bool>true</bool>
-                                            </property>
                                         </widget>
                                         <widget class="QPushButton">
                                             <property name="name">
@@ -629,9 +611,6 @@
                                                 <pixmap>image0</pixmap>
                                             </property>
                                             <property name="flat">
-                                                <bool>true</bool>
-                                            </property>
-                                            <property name="scaledContents" stdset="0">
                                                 <bool>true</bool>
                                             </property>
                                         </widget>
@@ -648,9 +627,6 @@
                                             <property name="flat">
                                                 <bool>true</bool>
                                             </property>
-                                            <property name="scaledContents" stdset="0">
-                                                <bool>true</bool>
-                                            </property>
                                         </widget>
                                         <widget class="QPushButton">
                                             <property name="name">
@@ -663,9 +639,6 @@
                                                 <pixmap>image0</pixmap>
                                             </property>
                                             <property name="flat">
-                                                <bool>true</bool>
-                                            </property>
-                                            <property name="scaledContents" stdset="0">
                                                 <bool>true</bool>
                                             </property>
                                         </widget>
@@ -715,9 +688,6 @@
                                             <property name="flat">
                                                 <bool>true</bool>
                                             </property>
-                                            <property name="scaledContents" stdset="0">
-                                                <bool>true</bool>
-                                            </property>
                                         </widget>
                                         <widget class="QPushButton">
                                             <property name="name">
@@ -730,9 +700,6 @@
                                                 <pixmap>image0</pixmap>
                                             </property>
                                             <property name="flat">
-                                                <bool>true</bool>
-                                            </property>
-                                            <property name="scaledContents" stdset="0">
                                                 <bool>true</bool>
                                             </property>
                                         </widget>
@@ -749,9 +716,6 @@
                                             <property name="flat">
                                                 <bool>true</bool>
                                             </property>
-                                            <property name="scaledContents" stdset="0">
-                                                <bool>true</bool>
-                                            </property>
                                         </widget>
                                     </hbox>
                                 </widget>
@@ -763,11 +727,11 @@
                                         <enum>Horizontal</enum>
                                     </property>
                                     <property name="sizeType">
-                                        <enum>Expanding</enum>
+                                        <enum>Fixed</enum>
                                     </property>
                                     <property name="sizeHint">
                                         <size>
-                                            <width>21</width>
+                                            <width>70</width>
                                             <height>20</height>
                                         </size>
                                     </property>
@@ -794,7 +758,7 @@
                                     </property>
                                     <property name="sizeHint">
                                         <size>
-                                            <width>20</width>
+                                            <width>53</width>
                                             <height>20</height>
                                         </size>
                                     </property>
@@ -826,9 +790,6 @@
                                             <property name="flat">
                                                 <bool>true</bool>
                                             </property>
-                                            <property name="scaledContents" stdset="0">
-                                                <bool>true</bool>
-                                            </property>
                                         </widget>
                                         <widget class="QPushButton">
                                             <property name="name">
@@ -841,9 +802,6 @@
                                                 <pixmap>image0</pixmap>
                                             </property>
                                             <property name="flat">
-                                                <bool>true</bool>
-                                            </property>
-                                            <property name="scaledContents" stdset="0">
                                                 <bool>true</bool>
                                             </property>
                                         </widget>
@@ -861,8 +819,8 @@
                                     </property>
                                     <property name="sizeHint">
                                         <size>
-                                            <width>61</width>
-                                            <height>21</height>
+                                            <width>60</width>
+                                            <height>20</height>
                                         </size>
                                     </property>
                                 </spacer>
@@ -879,9 +837,6 @@
                                     <property name="flat">
                                         <bool>true</bool>
                                     </property>
-                                    <property name="scaledContents" stdset="0">
-                                        <bool>true</bool>
-                                    </property>
                                 </widget>
                                 <spacer>
                                     <property name="name">
@@ -895,8 +850,8 @@
                                     </property>
                                     <property name="sizeHint">
                                         <size>
-                                            <width>61</width>
-                                            <height>21</height>
+                                            <width>60</width>
+                                            <height>20</height>
                                         </size>
                                     </property>
                                 </spacer>
@@ -913,9 +868,6 @@
                                     <property name="flat">
                                         <bool>true</bool>
                                     </property>
-                                    <property name="scaledContents" stdset="0">
-                                        <bool>true</bool>
-                                    </property>
                                 </widget>
                                 <spacer>
                                     <property name="name">
@@ -925,12 +877,12 @@
                                         <enum>Horizontal</enum>
                                     </property>
                                     <property name="sizeType">
-                                        <enum>Expanding</enum>
+                                        <enum>Fixed</enum>
                                     </property>
                                     <property name="sizeHint">
                                         <size>
-                                            <width>81</width>
-                                            <height>21</height>
+                                            <width>92</width>
+                                            <height>20</height>
                                         </size>
                                     </property>
                                 </spacer>
