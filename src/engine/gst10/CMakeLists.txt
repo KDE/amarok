@@ -1,10 +1,10 @@
 
-add_subdirectory( config )
+#add_subdirectory( config )
 add_subdirectory( equalizer )
 
-include_directories( 
+include_directories(
 ${CMAKE_SOURCE_DIR}/amarok/src/engine/gst10/config
-${CMAKE_SOURCE_DIR}/amarok/src/plugin 
+${CMAKE_SOURCE_DIR}/amarok/src/plugin
 ${CMAKE_SOURCE_DIR}/amarok/src
 ${CMAKE_BINARY_DIR}/amarok/src #for amarokconfig.h
 ${KDE4_INCLUDE_DIR} ${QT_INCLUDES} ${GOBJECT_INCLUDE_DIR} ${GSTREAMER_INCLUDE_DIR}  )
@@ -13,9 +13,9 @@ add_definitions( ${GOBJECT_DEFINITIONS} ${GSTREAMER_DEFINITIONS} )
 
 ########### next target ###############
 
-set(amarok_gst10engine_plugin_PART_SRCS 
-	gstconfigdialog.cpp 
-	gstengine.cpp 
+set(amarok_gst10engine_plugin_PART_SRCS
+	gstconfigdialog.cpp
+	gstengine.cpp
 	streamprovider.cpp
 	streamsrc.cpp
 	equalizer/gstequalizer.cpp
