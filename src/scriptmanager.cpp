@@ -868,7 +868,7 @@ ScriptManager::loadScript( const QString& path )
         K3ListViewItem* li = 0;
         const QString specPath = info.path() + '/' + info.baseName( true ) + ".spec";
         if( QFile::exists( specPath ) ) {
-            KConfig spec( specPath, true, false );
+            KConfig spec( specPath, KConfig::NoGlobals );
             if( spec.hasKey( "name" ) )
                 name = spec.readEntry( "name" );
             if( spec.hasKey( "type" ) ) {

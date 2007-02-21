@@ -3427,7 +3427,7 @@ ContextBrowser::lyricsResult( QByteArray cXmlDoc, bool cached ) //SLOT
     m_lyricCurrentUrl = el.attribute( "page_url" );
 
     ScriptManager* const sm = ScriptManager::instance();
-    KConfig spec( sm->specForScript( sm->lyricsScriptRunning() ), true, false );
+    KConfig spec( sm->specForScript( sm->lyricsScriptRunning() ),  KConfig::NoGlobals );
     spec.setGroup( "Lyrics" );
 
     m_lyricAddUrl = spec.readPathEntry( "add_url" );

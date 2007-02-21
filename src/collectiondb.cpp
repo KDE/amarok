@@ -68,7 +68,6 @@
 #include <klocale.h>
 #include <kcodecs.h>
 #include <kmessagebox.h>
-#include <ksimpleconfig.h>
 #include <kstandarddirs.h>
 #include <kio/job.h>
 #include <kio/netaccess.h>
@@ -4076,7 +4075,7 @@ CollectionDB::organizeFile( const KUrl &src, const OrganizeCollectionDialog &dia
          //if ( thumb.load( cover ) ){
          //thumb.save(path + "/.front.png", "PNG", -1 ); //hide files
 
-         KSimpleConfig config(path + "/.directory");
+         KConfig config(path + "/.directory");
          config.setGroup("Desktop Entry");
 
          if( !config.hasKey("Icon") )
