@@ -1,7 +1,7 @@
 // (c) 2004 Mark Kretschmann <markey@web.de>
 // See COPYING file for licensing information.
 
-#include "config/gstconfig.h"
+#include "gstconfig.h"
 #include "gstconfigdialog.h"
 #include "gstengine.h"
 

@@ -23,7 +23,7 @@
 
 #include "debug.h"
 
-#include "config/gstconfig.h"
+#include "gstconfig.h"
 #include "equalizer/gstequalizer.h"
 #include "enginebase.h"
 #include "gstengine.h"
@@ -695,9 +695,9 @@ GstEngine::load( const KUrl& url, bool stream )  //SLOT
           m_gst_src = src;
 
           gst_bin_add( GST_BIN( m_gst_pipeline ), m_gst_src );
-          g_object_set( G_OBJECT(m_gst_src), "location", static_cast<const char*>( QFile::encodeName( url.url() ) ),
+          //g_object_set( G_OBJECT(m_gst_src), "location", static_cast<const char*>( QFile::encodeName( url.url() ) ),
                         //                   "iradio-mode", true,
-                                              NULL );
+                        //                      NULL );
 
           //gchar *name;
           //gboolean mdenabled = false;
@@ -1021,7 +1021,7 @@ GstEngine::createElement( const Q3CString& factoryName, GstElement* bin, const Q
         KMessageBox::error( 0,
             i18n( "<h3>GStreamer could not create the element: <i>%1</i></h3> "
                   "<p>Please make sure that you have installed all necessary GStreamer plugins (e.g. OGG and MP3), and run <i>'gst-register'</i> afterwards.</p>"
-                  "<p>For further assistance consult the GStreamer manual, and join #gstreamer on irc.freenode.net.</p>", factoryName ) );
+                  "<p>For further assistance consult the GStreamer manual, and join #gstreamer on irc.freenode.net.</p>", QString(factoryName) ) );
         gst_object_unref( GST_OBJECT( bin ) );
     }
 

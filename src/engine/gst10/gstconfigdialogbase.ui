@@ -28,9 +28,9 @@
             </property>
             <property name="paletteBackgroundColor">
                 <color>
-                    <red>255</red>
-                    <green>255</green>
-                    <blue>255</blue>
+                    <Qt::red>255</Qt::red>
+                    <Qt::green>255</Qt::green>
+                    <Qt::blue>255</Qt::blue>
                 </color>
             </property>
             <property name="frameShape">
@@ -49,7 +49,7 @@
                 <pixmap>image0</pixmap>
             </property>
             <property name="alignment">
-                <set>AlignCenter</set>
+                <set>Qt::AlignCenter</set>
             </property>
         </widget>
         <spacer>
@@ -57,7 +57,7 @@
                 <cstring>spacer2_2</cstring>
             </property>
             <property name="orientation">
-                <enum>Vertical</enum>
+                <enum>Qt::Vertical</enum>
             </property>
             <property name="sizeType">
                 <enum>Fixed</enum>
@@ -88,7 +88,7 @@
                         <string>Custom sound device. Example: /dev/dsp2</string>
                     </property>
                 </widget>
-                <widget class="KIntSpinBox" row="5" column="1">
+                <widget class="QSpinBox" row="5" column="1">
                     <property name="name">
                         <cstring>kIntSpinBox_fadeout</cstring>
                     </property>
@@ -124,7 +124,7 @@
                         <enum>Sunken</enum>
                     </property>
                     <property name="orientation">
-                        <enum>Horizontal</enum>
+                        <enum>Qt::Horizontal</enum>
                     </property>
                 </widget>
                 <widget class="QCheckBox" row="1" column="0">
@@ -232,7 +232,7 @@
                 <cstring>spacer2</cstring>
             </property>
             <property name="orientation">
-                <enum>Vertical</enum>
+                <enum>Qt::Vertical</enum>
             </property>
             <property name="sizeType">
                 <enum>Expanding</enum>

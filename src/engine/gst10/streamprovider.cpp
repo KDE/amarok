@@ -133,7 +133,7 @@ StreamProvider::sendRequest() //SLOT
                                      "%4"
                                      "%5"
                                      "\r\n" )
-                                     .arg( m_url.path( -1 ).isEmpty() ? "/" : m_url.path( -1 ) + m_url.query() )
+                                     .arg( m_url.path( KUrl::RemoveTrailingSlash ).isEmpty() ? "/" : m_url.path( KUrl::RemoveTrailingSlash ) + m_url.query() )
                                      .arg( m_url.host() )
                                      .arg( version )
                                      .arg( m_icyMode ? "Icy-MetaData:1\r\n" : "" )
@@ -313,7 +313,7 @@ StreamProvider::restartNoIcy()
 QString
 StreamProvider::extractStr( const QString &str, const QString &key ) const
 {
-    int index = str.indexOf( key, 0, true );
+    int index = str.indexOf( key, 0, Qt::CaseSensitive );
 
     if ( index == -1 )
         return QString();
