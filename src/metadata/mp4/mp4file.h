@@ -31,7 +31,7 @@ namespace TagLib {
 
         class Tag;
 
-        class AMAROK_EXPORT File : public TagLib::File
+        class AMAROK_TAGLIB_EXPORT File : public TagLib::File
         {
             public:
                 /*!

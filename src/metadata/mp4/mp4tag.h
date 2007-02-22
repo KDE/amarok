@@ -32,7 +32,7 @@ namespace TagLib {
         /*!
          * This implements the generic TagLib::Tag API
          */
-        class AMAROK_EXPORT Tag : public TagLib::Tag
+        class AMAROK_TAGLIB_EXPORT Tag : public TagLib::Tag
         {
             public:
                 static const int Undefined = -1;

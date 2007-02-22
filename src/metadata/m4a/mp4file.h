@@ -68,7 +68,7 @@ namespace TagLib {
      * information specific to mp4 itunes files. (TODO)
      */
 
-    class AMAROK_EXPORT File : public TagLib::File
+    class AMAROK_TAGLIB_EXPORT File : public TagLib::File
     {
     public:
       /*!
