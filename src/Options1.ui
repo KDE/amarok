@@ -1217,6 +1217,102 @@
         <receiver>General</receiver>
         <slot>slotUpdateRatingsFrame()</slot>
     </connection>
+    <connection>
+        <sender>halfstar</sender>
+        <signal>clicked()</signal>
+        <receiver>General</receiver>
+        <slot>slotPickColorHalf()</slot>
+    </connection>
+    <connection>
+        <sender>onestar_1</sender>
+        <signal>clicked()</signal>
+        <receiver>General</receiver>
+        <slot>slotPickColorOne()</slot>
+    </connection>
+    <connection>
+        <sender>twostar_1</sender>
+        <signal>clicked()</signal>
+        <receiver>General</receiver>
+        <slot>slotPickColorTwo()</slot>
+    </connection>
+    <connection>
+        <sender>twostar_2</sender>
+        <signal>clicked()</signal>
+        <receiver>General</receiver>
+        <slot>slotPickColorTwo()</slot>
+    </connection>
+    <connection>
+        <sender>threestar_1</sender>
+        <signal>clicked()</signal>
+        <receiver>General</receiver>
+        <slot>slotPickColorThree()</slot>
+    </connection>
+    <connection>
+        <sender>threestar_2</sender>
+        <signal>clicked()</signal>
+        <receiver>General</receiver>
+        <slot>slotPickColorThree()</slot>
+    </connection>
+    <connection>
+        <sender>threestar_3</sender>
+        <signal>clicked()</signal>
+        <receiver>General</receiver>
+        <slot>slotPickColorThree()</slot>
+    </connection>
+    <connection>
+        <sender>fourstar_1</sender>
+        <signal>clicked()</signal>
+        <receiver>General</receiver>
+        <slot>slotPickColorFour()</slot>
+    </connection>
+    <connection>
+        <sender>fourstar_2</sender>
+        <signal>clicked()</signal>
+        <receiver>General</receiver>
+        <slot>slotPickColorFour()</slot>
+    </connection>
+    <connection>
+        <sender>fourstar_3</sender>
+        <signal>clicked()</signal>
+        <receiver>General</receiver>
+        <slot>slotPickColorFour()</slot>
+    </connection>
+    <connection>
+        <sender>fourstar_4</sender>
+        <signal>clicked()</signal>
+        <receiver>General</receiver>
+        <slot>slotPickColorFour()</slot>
+    </connection>
+    <connection>
+        <sender>fivestar_1</sender>
+        <signal>clicked()</signal>
+        <receiver>General</receiver>
+        <slot>slotPickColorFive()</slot>
+    </connection>
+    <connection>
+        <sender>fivestar_2</sender>
+        <signal>clicked()</signal>
+        <receiver>General</receiver>
+        <slot>slotPickColorFive()</slot>
+    </connection>
+    <connection>
+        <sender>fivestar_3</sender>
+        <signal>clicked()</signal>
+        <receiver>General</receiver>
+        <slot>slotPickColorFive()</slot>
+    </connection>
+    <connection>
+        <sender>fivestar_4</sender>
+        <signal>clicked()</signal>
+        <receiver>General</receiver>
+        <slot>slotPickColorFive()</slot>
+    </connection>
+    <connection>
+        <sender>fivestar_5</sender>
+        <signal>clicked()</signal>
+        <receiver>General</receiver>
+        <slot>slotPickColorFive()</slot>
+    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">Options1.ui.h</include>
@@ -1224,6 +1320,12 @@
 <slots>
     <slot>slotUpdateMoodFrame()</slot>
     <slot>slotUpdateRatingsFrame()</slot>
+    <slot>slotPickColorOne()</slot>
+    <slot>slotPickColorTwo()</slot>
+    <slot>slotPickColorThree()</slot>
+    <slot>slotPickColorFour()</slot>
+    <slot>slotPickColorFive()</slot>
+    <slot>slotPickColorHalf()</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>

@@ -14,10 +14,12 @@
 #include <config.h>
 
 #include "amarokconfig.h"
+#include "debug.h"
 #include "moodbar.h"
 #include "starmanager.h"
-#include <kstandarddirs.h>
 
+#include <kcolordialog.h>
+#include <kstandarddirs.h>
 
 void Options1::init()
 {
@@ -63,8 +65,6 @@ void Options1::init()
         checkBox_customBrowser->setChecked( true );
     }
 }
-
-
 
 void Options1::slotUpdateMoodFrame()
 {
@@ -130,5 +130,71 @@ void Options1::slotUpdateRatingsFrame()
 
         halfstar->setPixmap( *StarManager::instance()->getHalfStar() );
         halfstar->setEnabled( enableStars );
+    }
+}
+
+void Options1::slotPickColorHalf()
+{
+    QColor halfStar;
+    int result = KColorDialog::getColor( halfStar );
+    if( result == KColorDialog::Accepted )
+    {
+        StarManager::instance()->setHalfColor( halfStar );
+        slotUpdateRatingsFrame();
+    }
+}
+
+void Options1::slotPickColorOne()
+{
+    QColor oneStar;
+    int result = KColorDialog::getColor( oneStar );
+    if( result == KColorDialog::Accepted )
+    {
+        StarManager::instance()->setColor( 1, oneStar );
+        slotUpdateRatingsFrame();
+    }
+}
+
+void Options1::slotPickColorTwo()
+{
+    QColor twoStar;
+    int result = KColorDialog::getColor( twoStar );
+    if( result == KColorDialog::Accepted )
+    {
+        StarManager::instance()->setColor( 2, twoStar );
+        slotUpdateRatingsFrame();
+    }
+}
+
+void Options1::slotPickColorThree()
+{
+    QColor threeStar;
+    int result = KColorDialog::getColor( threeStar );
+    if( result == KColorDialog::Accepted )
+    {
+        StarManager::instance()->setColor( 3, threeStar );
+        slotUpdateRatingsFrame();
+    }
+}
+
+void Options1::slotPickColorFour()
+{
+    QColor fourStar;
+    int result = KColorDialog::getColor( fourStar );
+    if( result == KColorDialog::Accepted )
+    {
+        StarManager::instance()->setColor( 4, fourStar );
+        slotUpdateRatingsFrame();
+    }
+}
+
+void Options1::slotPickColorFive()
+{
+    QColor fiveStar;
+    int result = KColorDialog::getColor( fiveStar );
+    if( result == KColorDialog::Accepted )
+    {
+        StarManager::instance()->setColor( 5, fiveStar );
+        slotUpdateRatingsFrame();
     }
 }

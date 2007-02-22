@@ -34,9 +34,15 @@ class StarManager : public QObject
         QImage& getGreyStarImage() { return m_greyedStar; }
         QImage& getHalfStarImage( int num = -1 );
 
-        void reinitStars( int height, int margin );
+        bool setColor( int starNum, const QColor &color );
+        bool setHalfColor( const QColor &color );
+
+        void reinitStars( int height = -1, int margin = -1 );
 
     private:
+
+        int m_height;
+        int m_margin;
 
         //cached stars...why both?  For faster conversion when drawing context browser
         QPixmap m_starPix;
@@ -45,16 +51,12 @@ class StarManager : public QObject
         QImage m_greyedStar;
         QPixmap m_halfStarPix;
         QImage m_halfStar;
-        QPixmap m_oneStarPix;
-        QImage m_oneStar;
-        QPixmap m_twoStarPix;
-        QImage m_twoStar;
-        QPixmap m_threeStarPix;
-        QImage m_threeStar;
-        QPixmap m_fourStarPix;
-        QImage m_fourStar;
-        QPixmap m_fiveStarPix;
-        QImage m_fiveStar;
+
+        QImage m_images[5];
+        QPixmap m_pixmaps[5];
+
+        QColor m_colors[5];
+        QColor m_halfStarColor;
 };
 
 #endif
