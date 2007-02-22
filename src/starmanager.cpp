@@ -12,6 +12,7 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
+#include "debug.h"
 #include "metabundle.h"
 #include "starmanager.h"
 
@@ -56,10 +57,9 @@ StarManager::reinitStars( int height, int margin )
     QImage star = QImage( locate( "data", "amarok/images/star.png" ) ).smoothScale( hval, hval, QImage::ScaleMin );
     m_star = star.copy();
     m_starPix.convertFromImage( star );
-    QImage greystar = QImage( star );
-    KIconEffect::toGray( greystar, 1.0 );
-    m_greyedStar = greystar.copy();
-    m_greyedStarPix.convertFromImage( greystar );
+    m_greyedStar = star.copy();
+    KIconEffect::toGray( m_greyedStar, 1.0 );
+    m_greyedStarPix.convertFromImage( m_greyedStar );
     QImage half = QImage( locate( "data", "amarok/images/smallstar.png" ) ).smoothScale( hval, hval, QImage::ScaleMin );
     m_halfStar = half.copy();
     if( AmarokConfig::customRatingsColors() )
@@ -117,7 +117,6 @@ StarManager::setColor( int starNum, const QColor &color )
     if( starNum < 1 || starNum > 5 )
         return false;
     m_colors[starNum - 1] = color;
-    reinitStars();
     return true;
 }
 
@@ -125,7 +124,6 @@ bool
 StarManager::setHalfColor( const QColor &color )
 {
     m_halfStarColor = color;
-    reinitStars();
     return true;
 }
 
