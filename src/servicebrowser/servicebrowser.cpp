@@ -28,9 +28,47 @@ ServiceBrowser::ServiceBrowser( const char *name )
 {
 
     m_serviceSelectionList = new KListWidget(this);
-    new QListWidgetItem(tr("Dummy service 1"), m_serviceSelectionList);
-    new QListWidgetItem(tr("Dummy service 2"), m_serviceSelectionList);
-    new QListWidgetItem(tr("Dummy Service 3"), m_serviceSelectionList);
+
+
+    ServiceBase * testService1 = new ServiceBase( "Dummy service 1" );
+    ServiceBase * testService2 = new ServiceBase( "Dummy service 2" );
+    ServiceBase * testService3 = new ServiceBase( "Dummy service 3" );
+
+    addService( testService1 );
+    addService( testService2 );
+    addService( testService3 );
+
+    showService( "Dummy service 3" );
+}
+
+
+
+void ServiceBrowser::addService( ServiceBase * service ) {
+
+    //insert service into service map
+    m_services[service->getName()] = service;
+
+    //insert service name and image service selection list
+    new QListWidgetItem( service->getName(), m_serviceSelectionList );
+    
+
+}
+
+void ServiceBrowser::showService( QString name ) {
+
+    
+    ServiceBase * service = 0;
+    if ( m_services.contains( name ) )
+       service = m_services.value( name );
+
+    if ( service != 0 ) {
+
+        m_serviceSelectionList->reparent ( 0,  QPoint( 0,0 ) );
+        service->reparent ( this,  QPoint( 0,0 ), true );
+
+    }
+
+
 }
 
 

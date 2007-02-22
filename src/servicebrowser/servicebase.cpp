@@ -17,9 +17,16 @@ the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 Boston, MA 02110-1301, USA.
 */
 
+#include "servicebase.h"
 
 #include "amarok.h"
 #include "debug.h"
+
+#include <khbox.h>
+
+#include <QFrame>
+#include <QLabel>
+#include <QSplitter>
 
 
 ServiceBase *ServiceBase::s_instance = 0;
@@ -31,11 +38,45 @@ ServiceBase::ServiceBase( QString name )
     DEBUG_BLOCK
 
     m_name = name;
-    m_topPanel = new KVBox( this);
-    QSplitter *spliter = new QSplitter( Qt::Vertical, this );
-    m_contentList = new KListWidget( spliter );
-    m_infoBox = new m_infoBox( spliter, "infoBox" );
+
+    m_topPanel = new KVBox( this );
+
+    m_topPanel->setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
+    m_topPanel->setLineWidth(2);
+    //m_topPanel->setFixedHeight( 50 );
+
+    KHBox * commonPanel = new KHBox ( m_topPanel );
+
+
+    m_homeButton = new QPushButton( "Home", commonPanel );
+
+    QLabel * nameLabel = new QLabel( commonPanel );
+    nameLabel->setText( m_name );
+    nameLabel->setAlignment(Qt::AlignTop | Qt::AlignCenter);
+   
+    QSplitter *splitter = new QSplitter( Qt::Vertical, this );
+    m_contentList = new KListWidget( splitter );
+
+    m_infoBox = new KHTMLPart( splitter );
+    //m_infoBox->view()->widget()->setFrameStyle(QFrame::StyledPanel | QFrame::Plain); //kdelibs error?
+
+
+    QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" " 
+                       "CONTENT=\"text/html; charset=iso-8859-1\"></HEAD><BODY>";
+    infoHtml += "<div align=\"center\"><strong>";
+    infoHtml += "Hello there";
+    infoHtml += "</strong><br><br>I am ";
+    infoHtml += m_name;
+    infoHtml += "</div></BODY></HTML>";
+
+    m_infoBox->begin();
+    m_infoBox->write(infoHtml);
+    m_infoBox->end();
+
     m_bottomPanel = new KVBox( this );
+    m_bottomPanel->setFixedHeight( 50 );
+    m_bottomPanel->setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
+    m_bottomPanel->setLineWidth(2);
 
 }
 

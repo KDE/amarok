@@ -27,6 +27,7 @@
 #include <klistwidget.h>
 #include <kvbox.h>
 
+#include <QPushButton>
 
 
 
@@ -35,7 +36,7 @@ A very basic composite widget used as a base for building service browsers.
 
 @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class MagnatuneBrowser : public KVBox
+class ServiceBase : public KVBox
 {
     Q_OBJECT
 
@@ -79,6 +80,9 @@ private:
 
     KListWidget *m_contentList;
     KHTMLPart   *m_infoBox;
+
+    QPushButton *m_homeButton;
+
     KVBox       *m_topPanel;
     KVBox       *m_bottomPanel;
     bool         m_isInfoShown;
@@ -89,10 +93,6 @@ private:
     QPixmap      m_pixmap;
 
 };
-
-
-protected:
-
 
 
 #endif

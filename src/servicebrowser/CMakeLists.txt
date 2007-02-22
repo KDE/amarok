@@ -13,6 +13,7 @@ include_directories( ../../src/ ../../src/amarokcore ../../src/analyzers ../../s
 
 set(libservicebrowser_SRCS
                                 servicebrowser.cpp
+                                servicebase.cpp
 
 )
 

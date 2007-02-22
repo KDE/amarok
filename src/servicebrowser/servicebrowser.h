@@ -20,6 +20,8 @@
 #ifndef AMAROKSERVICEBROWSER_H
 #define AMAROKSERVICEBROWSER_H
 
+#include "servicebase.h"
+
 #include <klistwidget.h>
 #include <kvbox.h>
 #include <QMap>
@@ -52,6 +54,8 @@ public:
         return s_instance;
     }
 
+    void addService( ServiceBase * service );
+
 private:
 
     static ServiceBrowser *s_instance;
@@ -60,10 +64,12 @@ private:
     KListWidget * m_serviceSelectionList;
 
     ServiceBrowser( const char *name );
-
-    //QMap<ServiceBase> m_services;
     
-   
+    void showService( QString name );
+
+    QMap<QString, ServiceBase *> m_services;
+
+    
 };
 
 

@@ -134,7 +134,8 @@ kde4_add_ui3_files(libmagnatunebrowser_SRCS
 	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser/magnatuneredownloaddialogbase.ui)
 
 set(libservicebrowser_SRCS
-        ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/servicebrowser.cpp)
+        ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/servicebrowser.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/servicebase.cpp)
 
 
 set(libanalyzers_SRCS
