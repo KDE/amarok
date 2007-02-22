@@ -87,6 +87,7 @@ include_directories(
 	${CMAKE_SOURCE_DIR}/amarok/src/statusbar
 	${CMAKE_SOURCE_DIR}/amarok/src/mediadevice
 	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser
+        ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser
 	${CMAKE_SOURCE_DIR}/amarok/src
 	${CMAKE_BINARY_DIR}/amarok/src #for amarokconfig.h
 	${KDE4_INCLUDE_DIR}
@@ -132,6 +133,9 @@ kde4_add_ui3_files(libmagnatunebrowser_SRCS
 	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser/magnatunepurchasedialogbase.ui
 	${CMAKE_SOURCE_DIR}/amarok/src/magnatunebrowser/magnatuneredownloaddialogbase.ui)
 
+set(libservicebrowser_SRCS
+        ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/servicebrowser.cpp)
+
 
 set(libanalyzers_SRCS
      ${CMAKE_SOURCE_DIR}/amarok/src/analyzers/analyzerbase.cpp
@@ -159,7 +163,7 @@ set(libstatusbar_SRCS
 ########### next target ###############
 
 set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
-        ${libsqlite_SRCS} ${libmagnatunebrowser_SRCS}
+        ${libsqlite_SRCS} ${libmagnatunebrowser_SRCS} ${libservicebrowser_SRCS}
         ${libanalyzers_SRCS}
    Options1.ui.h
    actionclasses.cpp
