@@ -64,6 +64,10 @@ public:
     QPixmap getPixmap();
 
 
+signals:
+
+    void home();
+
 private slots:
 
     /**
@@ -71,6 +75,8 @@ private slots:
      * @param show If true the info box is shown, if false it is hidden
      */
     void showInfo(bool show);
+
+    void homeButtonClicked();
 
 private:
 

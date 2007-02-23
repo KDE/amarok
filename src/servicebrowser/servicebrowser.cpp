@@ -26,19 +26,27 @@ ServiceBrowser *ServiceBrowser::s_instance = 0;
 ServiceBrowser::ServiceBrowser( const char *name )
         : KVBox( 0)
 {
+    
 
-    m_serviceSelectionList = new KListWidget(this);
-
+    debug() << "ServiceBrowser starting..." << endl;
+    m_serviceSelectionList = new QListWidget( this );
+    connect(m_serviceSelectionList, SIGNAL( itemDoubleClicked  ( QListWidgetItem *) ), this, SLOT( serviceSelected( QListWidgetItem *) ) );
+    
+    debug() << "Setting up dummy services..." << endl;
 
     ServiceBase * testService1 = new ServiceBase( "Dummy service 1" );
     ServiceBase * testService2 = new ServiceBase( "Dummy service 2" );
     ServiceBase * testService3 = new ServiceBase( "Dummy service 3" );
 
+    debug() << "Adding dummy services to list..." << endl;
+
     addService( testService1 );
     addService( testService2 );
     addService( testService3 );
 
-    showService( "Dummy service 3" );
+    m_currentService = 0;
+
+    
 }
 
 
@@ -50,8 +58,17 @@ void ServiceBrowser::addService( ServiceBase * service ) {
 
     //insert service name and image service selection list
     new QListWidgetItem( service->getName(), m_serviceSelectionList );
+
+    connect( service, SIGNAL( home() ), this, SLOT( home() ) );
     
 
+}
+
+
+void ServiceBrowser::serviceSelected( QListWidgetItem * item ) {
+    
+    debug() << "Show service: " <<  item->text() << endl;
+    showService(  item->text() );
 }
 
 void ServiceBrowser::showService( QString name ) {
@@ -65,11 +82,25 @@ void ServiceBrowser::showService( QString name ) {
 
         m_serviceSelectionList->reparent ( 0,  QPoint( 0,0 ) );
         service->reparent ( this,  QPoint( 0,0 ), true );
+        m_currentService = service;
 
     }
 
 
 }
+
+void ServiceBrowser::home()
+{
+
+    if ( m_currentService != 0 ) {
+        m_currentService->reparent( 0,  QPoint( 0, 0 ) );
+        m_serviceSelectionList->reparent( this,  QPoint( 0,0 ), true );
+        m_currentService = 0;
+    }
+
+}
+
+
 
 
 #include "servicebrowser.moc"

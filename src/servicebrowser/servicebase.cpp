@@ -49,6 +49,7 @@ ServiceBase::ServiceBase( QString name )
 
 
     m_homeButton = new QPushButton( "Home", commonPanel );
+    connect( m_homeButton, SIGNAL( clicked( bool ) ), this, SLOT( homeButtonClicked( ) ) );
 
     QLabel * nameLabel = new QLabel( commonPanel );
     nameLabel->setText( m_name );
@@ -128,6 +129,13 @@ void ServiceBase::setPixmap( QPixmap pixmap )
 QPixmap ServiceBase::getPixmap( )
 {
     return m_pixmap;
+}
+
+void ServiceBase::homeButtonClicked( ) 
+{
+
+    emit( home() );
+
 }
 
 

@@ -61,15 +61,20 @@ private:
     static ServiceBrowser *s_instance;
 
 
-    KListWidget * m_serviceSelectionList;
+    QListWidget * m_serviceSelectionList;
 
     ServiceBrowser( const char *name );
     
     void showService( QString name );
 
     QMap<QString, ServiceBase *> m_services;
+    ServiceBase * m_currentService;
 
-    
+private slots:
+
+    void serviceSelected( QListWidgetItem * item );
+    void home();
+
 };
 
 
