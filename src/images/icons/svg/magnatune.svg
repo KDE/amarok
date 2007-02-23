@@ -9,15 +9,15 @@
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="744.09448819"
    height="1052.3622047"
    id="svg29256"
    sodipodi:version="0.32"
-   inkscape:version="0.44"
-   sodipodi:docbase="/home/me/src/svn/amarok/multimedia/amarok/src/images/icons/svg"
-   sodipodi:docname="sources.svg">
+   inkscape:version="0.43"
+   sodipodi:docbase="/home/arklinux/Downloads/Multimedia/amarok/multimedia/amarok/src/images/icons/svg"
+   sodipodi:docname="magnatune.svg">
   <defs
      id="defs29258">
     <linearGradient
@@ -9088,14 +9088,14 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="4"
-     inkscape:cx="159.99865"
-     inkscape:cy="946.84976"
+     inkscape:cx="109.49865"
+     inkscape:cy="700.84976"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      inkscape:window-width="1024"
      inkscape:window-height="717"
      inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-y="24"
      showguides="true"
      inkscape:guide-bbox="true"
      showgrid="true" />
@@ -18373,7 +18373,8 @@
        id="g8187"
        inkscape:export-filename="/home/me/amarok/hi64-action-amarok_magnatune.png"
        inkscape:export-xdpi="180"
-       inkscape:export-ydpi="180">
+       inkscape:export-ydpi="180"
+       transform="matrix(1,0,0,-1,0,700.9536)">
       <use
          style="stroke:url(#linearGradient6144)"
          height="1052.3622"
@@ -18407,7 +18408,7 @@
     </g>
     <g
        id="g8195"
-       transform="translate(0.97593,-4.898629)"
+       transform="matrix(1,0,0,-1,0.97593,705.8523)"
        inkscape:export-filename="/home/me/amarok/hi16action-amarok_magnatune.png"
        inkscape:export-xdpi="65.454544"
        inkscape:export-ydpi="65.454544">
