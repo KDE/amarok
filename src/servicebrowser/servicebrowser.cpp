@@ -21,6 +21,8 @@ Boston, MA 02110-1301, USA.
 #include "debug.h"
 #include "servicebrowser.h"
 
+#include <kiconloader.h> 
+
 ServiceBrowser *ServiceBrowser::s_instance = 0;
 
 ServiceBrowser::ServiceBrowser( const char *name )
@@ -30,13 +32,23 @@ ServiceBrowser::ServiceBrowser( const char *name )
 
     debug() << "ServiceBrowser starting..." << endl;
     m_serviceSelectionList = new QListWidget( this );
+    m_serviceSelectionList->setIconSize ( QSize(32, 32 ) );
+    m_serviceSelectionList->setSpacing ( 4 );
     connect(m_serviceSelectionList, SIGNAL( itemDoubleClicked  ( QListWidgetItem *) ), this, SLOT( serviceSelected( QListWidgetItem *) ) );
     
     debug() << "Setting up dummy services..." << endl;
 
     ServiceBase * testService1 = new ServiceBase( "Dummy service 1" );
+    testService1->setShortDescription("A very friendly service!");
+    testService1->setIcon( KIcon( Amarok::icon( "amarok_magnatune" ) ) );
+
     ServiceBase * testService2 = new ServiceBase( "Dummy service 2" );
+    testService2->setShortDescription("Slightly grumpy in the morning!");
+    testService2->setIcon( KIcon( Amarok::icon( "download" ) ) );
+
     ServiceBase * testService3 = new ServiceBase( "Dummy service 3" );
+    testService3->setShortDescription("do NOT select this service");
+    testService3->setIcon( KIcon( Amarok::icon( "info" ) ) );
 
     debug() << "Adding dummy services to list..." << endl;
 
@@ -57,7 +69,12 @@ void ServiceBrowser::addService( ServiceBase * service ) {
     m_services[service->getName()] = service;
 
     //insert service name and image service selection list
-    new QListWidgetItem( service->getName(), m_serviceSelectionList );
+    QListWidgetItem * serviceListItem = new QListWidgetItem( service->getName() , m_serviceSelectionList );
+    serviceListItem->setTextAlignment( Qt::AlignHCenter );
+    serviceListItem->setIcon( service->getIcon() );
+    
+
+   
 
     connect( service, SIGNAL( home() ), this, SLOT( home() ) );
     

@@ -60,8 +60,8 @@ public:
     QString getShortDescription();
     void setLongDescription( QString longDescription );
     QString getLongDescription();
-    void setPixmap( QPixmap pixmap );
-    QPixmap getPixmap();
+    void setIcon( QIcon pixmap );
+    QIcon getIcon();
 
 
 signals:
@@ -96,7 +96,7 @@ private:
     QString      m_name;
     QString      m_shortDescription;
     QString      m_longDescription;
-    QPixmap      m_pixmap;
+    QIcon        m_icon;
 
 };
 

@@ -96,6 +96,7 @@ void ServiceBase::showInfo( bool show )
     }
 }
 
+
 QString ServiceBase::getName( )
 {
     return m_name;
@@ -121,21 +122,19 @@ QString ServiceBase::getLongDescription( )
     return m_longDescription;
 }
 
-void ServiceBase::setPixmap( QPixmap pixmap )
+void ServiceBase::setIcon( QIcon icon )
 {
-    m_pixmap = pixmap;
+    m_icon = icon;
 }
 
-QPixmap ServiceBase::getPixmap( )
+QIcon ServiceBase::getIcon( )
 {
-    return m_pixmap;
+    return m_icon;
 }
 
 void ServiceBase::homeButtonClicked( ) 
 {
-
     emit( home() );
-
 }
 
 
