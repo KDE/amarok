@@ -325,7 +325,8 @@ void AmarokConfigDialog::updateSettings()
  */
 void AmarokConfigDialog::updateWidgets()
 {
-    m_soundSystem->setItemText(  m_opt1->kcfg_AlterMood->currentIndex(), m_pluginAmarokName[AmarokConfig::soundSystem()] );
+    int current = m_soundSystem->findText( m_pluginAmarokName[AmarokConfig::soundSystem()] );
+    m_soundSystem->setCurrentIndex( current );
     soundSystemChanged();
 }
 
