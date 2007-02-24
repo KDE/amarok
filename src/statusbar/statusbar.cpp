@@ -66,11 +66,14 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     s_instance = this; //static member
     // total songs count
     m_itemCountLabel = new QLabel( this );
+    addPermanentWidget(m_itemCountLabel);
+    addPermanentWidget(m_itemCountLabel);
     m_itemCountLabel->setAlignment( Qt::AlignCenter );
     m_itemCountLabel->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Fixed );
 
     //positionBox
     QWidget *positionBox = new QWidget( this );
+    addPermanentWidget(positionBox);
     positionBox->setObjectName( "positionBox" );
     QHBoxLayout *box = new QHBoxLayout( positionBox );
     box->setMargin(1);
@@ -89,6 +92,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 
     // TODO Both labels need tooltips (string freeze?)
     QWidget *hbox = new QWidget( this );
+    addPermanentWidget(hbox);
     QHBoxLayout *layout = new QHBoxLayout( hbox );
     layout->setMargin(0);
     layout->setSpacing(2);
@@ -100,9 +104,9 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     layout->addSpacing( 3 );
 
     //TODO reimplement insertChild() instead
-    addWidget( m_itemCountLabel );
-    addWidget( hbox );
-    addWidget( positionBox );
+    addPermanentWidget( m_itemCountLabel );
+    addPermanentWidget( hbox );
+    addPermanentWidget( positionBox );
 
     box->addSpacing( 3 );
     box->addWidget( m_timeLabel );

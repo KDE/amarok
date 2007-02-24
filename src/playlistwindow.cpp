@@ -413,7 +413,7 @@ void PlaylistWindow::init()
 #ifndef Q_WS_MAC
     m_toolbar->setShown( AmarokConfig::showToolbar() );
 #endif
-    Amarok::StatusBar *statusbar = new Amarok::StatusBar( playlist );
+    Amarok::StatusBar *statusbar = new Amarok::StatusBar( this );
     setStatusBar(statusbar);
     QAction* repeatAction = Amarok::actionCollection()->action( "repeat" );
     connect( repeatAction, SIGNAL( activated( int ) ), playlist, SLOT( slotRepeatTrackToggled( int ) ) );

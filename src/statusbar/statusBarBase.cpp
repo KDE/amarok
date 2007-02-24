@@ -97,7 +97,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     setObjectName( name );
     QHBoxLayout *mainlayout = new QHBoxLayout;
     mainlayout->setSpacing( 5 );
-    this->setLayout( mainlayout );
+    //this->setLayout( mainlayout );
 
     //we need extra spacing due to the way we paint the surrounding boxes
 //TODO: Do we still need to stack layouts?
@@ -105,13 +105,14 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     layout->setSpacing( 5 );
     mainlayout->addLayout( layout );
 
-    KHBox *statusBarTextBox = new KHBox( this );
-    addPermanentWidget( statusBarTextBox );
-    m_mainTextLabel = new KDE::SqueezedTextLabel( statusBarTextBox, "mainTextLabel" );
-    QToolButton *shortLongButton = new QToolButton( statusBarTextBox );
+    //KHBox *statusBarTextBox = new KHBox( this );
+    m_mainTextLabel = new KDE::SqueezedTextLabel( 0, "mainTextLabel" );
+    addPermanentWidget( m_mainTextLabel );
+    QToolButton *shortLongButton = new QToolButton( 0 );
     shortLongButton->setObjectName( "shortLongButton" );
     shortLongButton->hide();
-
+    QStatusBar::addWidget(shortLongButton);
+    
     KHBox *mainProgressBarBox = new KHBox( this );
     mainProgressBarBox->setObjectName( "progressBox" );
     QToolButton *b1 = new QToolButton( mainProgressBarBox ); //cancelbutton
@@ -121,10 +122,10 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     b2->setObjectName( "showAllProgressDetails" );
     mainProgressBarBox->setSpacing( 2 );
     mainProgressBarBox->hide();
-
-    layout->addWidget( statusBarTextBox );
+    QStatusBar::addWidget(mainProgressBarBox);
+//    layout->addWidget( statusBarTextBox );
     layout->addWidget( mainProgressBarBox );
-    layout->setStretchFactor( statusBarTextBox, 3 );
+//    layout->setStretchFactor( statusBarTextBox, 3 );
     layout->setStretchFactor( mainProgressBarBox, 1 );
 
     m_otherWidgetLayout = new QHBoxLayout;
@@ -147,6 +148,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     connect( b2, SIGNAL(toggled( bool )), SLOT(toggleProgressWindow( bool )) );
 
     m_popupProgress = new OverlayWidget( this, mainProgressBarBox, "popupProgress" );
+    QStatusBar::addWidget( m_popupProgress );
     m_popupProgress->setFrameStyle( QFrame::Panel | QFrame::Raised );
     m_popupProgress->setFrameShape( QFrame::StyledPanel );
     m_popupProgress->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
@@ -157,6 +159,7 @@ void
 StatusBar::addWidget( QWidget *widget )
 {
     m_otherWidgetLayout->addWidget( widget );
+    QStatusBar::addWidget( widget );
 }
 
 
