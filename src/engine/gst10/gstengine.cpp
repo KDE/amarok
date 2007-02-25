@@ -22,6 +22,7 @@
 #define DEBUG_PREFIX "Gst-Engine"
 
 #include "debug.h"
+#include <amarokconfig.h>
 
 #include "config/gstconfig.h"
 #include "equalizer/gstequalizer.h"
@@ -897,7 +898,7 @@ void GstEngine::timerEvent( QTimerEvent* )
     // Are we currently fading?
     if ( m_fadeValue > 0.0 )
     {
-        m_fadeValue -= ( GstConfig::fadeoutDuration() ) ?  1.0 / GstConfig::fadeoutDuration() * TIMER_INTERVAL : 1.0;
+        m_fadeValue -= ( AmarokConfig::fadeoutLength() ) ?  1.0 / AmarokConfig::fadeoutLength() * TIMER_INTERVAL : 1.0;
 
         // Fade finished?
         if ( m_fadeValue <= 0.0 ) {

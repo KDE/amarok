@@ -88,31 +88,6 @@
                         <string>Custom sound device. Example: /dev/dsp2</string>
                     </property>
                 </widget>
-                <widget class="KIntSpinBox" row="5" column="1">
-                    <property name="name">
-                        <cstring>kIntSpinBox_fadeout</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>1</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="suffix">
-                        <string> msec</string>
-                    </property>
-                    <property name="maxValue">
-                        <number>10000</number>
-                    </property>
-                    <property name="lineStep">
-                        <number>100</number>
-                    </property>
-                    <property name="value">
-                        <number>2000</number>
-                    </property>
-                </widget>
                 <widget class="Line" row="3" column="0" rowspan="1" colspan="2">
                     <property name="name">
                         <cstring>line1</cstring>
@@ -144,25 +119,6 @@
                     </property>
                     <property name="toolTip" stdset="0">
                         <string>Use custom sound device</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="5" column="0">
-                    <property name="name">
-                        <cstring>textLabel1_2</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>5</hsizetype>
-                            <vsizetype>5</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Fade-out:</string>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>kIntSpinBox_fadeout</cstring>
                     </property>
                 </widget>
                 <widget class="QLabel" row="0" column="0">
