@@ -226,6 +226,7 @@ ContextBrowser::ContextBrowser( const char *name )
 
     m_lyricsToolBar = new Browser::ToolBar( m_lyricsTab );
     m_lyricsToolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+    m_lyricsToolBar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum);
 
     lyricsRefreshAction = new KAction(KIcon( "refresh" ), i18n("Refresh"), this);
     connect(lyricsRefreshAction, SIGNAL(triggered()), this, SLOT(lyricsRefresh()));
@@ -312,6 +313,7 @@ ContextBrowser::ContextBrowser( const char *name )
 
     m_wikiToolBar = new Browser::ToolBar( m_wikiTab );
     m_wikiToolBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
+    m_wikiToolBar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum);
 
 
     wikiHistoryBackAction = new KAction(KIcon( "back" ), i18n("Back"), this);
