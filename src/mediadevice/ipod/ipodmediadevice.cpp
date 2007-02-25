@@ -350,8 +350,11 @@ IpodMediaDevice::slotIpodAction( int id )
                 int index = id - SET_IPOD_MODEL;
                 if( m_itdb && m_itdb->device )
                 {
+                    gchar model[PATH_MAX];
+                    g_snprintf (model, PATH_MAX, "x%s", table[index].model_number);
+
                     itdb_device_set_sysinfo( m_itdb->device,
-                            "ModelNumStr", table[index].model_number );
+                            "ModelNumStr", model );
 
                     Amarok::StatusBar::instance()->shortMessage(
                             i18n( "Setting iPod model to %1 GB %2 (x%3)" )
