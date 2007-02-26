@@ -1,4 +1,4 @@
-# Copyright (c) 2006 Harald Sitter <harald.sitter@kdemail.net>
+  # Copyright (c) 2006-2007 Harald Sitter <harald.sitter@kdemail.net>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to
@@ -22,11 +22,11 @@
 # NOTE: for description of beats see 'calc beats' in #amaork
 
 # Class for storing good values
-Stock = Struct.new( "Stock", :amount, :max, :beats, :deliverybeat, :version )
+# # # Stock = Struct.new( "Stock", :amount, :max, :beats, :deliverybeat, :version )
+Stock = Struct.new( "Stock", :version, :amount, :max, :beats, :deliverybeat, :machine )
 
-# Class for storing costum replies
-Reply = Struct.new( "Reply", :reply, :version )
-
+# Class for storing custom replies
+Reply = Struct.new( "Reply", :version, :reply )
 
 class BARPlugin < Plugin
 
@@ -34,7 +34,7 @@ class BARPlugin < Plugin
   # Initialize Database
   ####
   def initialize()
-    super
+  super
     if @registry.has_key?(:stock)
       @stock = @registry[:stock]
     else
@@ -43,9 +43,12 @@ class BARPlugin < Plugin
 
     if @registry.has_key?(:reply)
       @reply = @registry[:reply]
-    else
+     else
       @reply = Hash.new
     end
+
+    @stockversion = "2"
+    @replyversion = "1"
   end
 
   ####
@@ -54,6 +57,42 @@ class BARPlugin < Plugin
   def save
     @registry[:stock] = @stock
     @registry[:reply] = @reply
+  end
+
+  ####
+  # Majorcheck
+  ####
+  def majorcheck( m, name, nick )
+    # if the order is in our db, check whether we still have some of it - if yes: reduze amount by one
+    if @stock[name].amount.to_f <= 0
+      @available = false
+      # if we don't have the order anymore - check whether the deliverybeat equals nil, if this is case tell the user to reorder
+      if @machine == false
+        @machine = true
+      end
+      if @stock[name].deliverybeat != nil
+        # check whether the reordered good is available - if not, tell the user it's in progress and how long to go
+        delivery( m, name )
+        if @available != true
+          if @machine
+            order = "tells #{nick} that our #{name} is broken, but fortunately a technician is already working on it (#{@togo.to_s} minutes)."
+          else
+            order = "tells #{nick} that we are out of #{name} but a new delivery is already in progress (#{@togo.to_s} minutes)."
+          end
+          @bot.action m.replyto, order; return
+        end
+        # tell _the ordering user_ to reorder because we are out of the ordered good
+      else
+        if @machine
+          m.reply( "#{m.sourcenick}: Our #{name} machine seems to be broken, maybe you should get someone to repair it."); return
+        else
+          m.reply( "#{m.sourcenick}: We are out of #{name}, you should reorder some of it."); return
+        end
+      end
+    end
+    # decrease amount of ordered good by one
+    @stock[name].amount = @stock[name].amount.to_i - 1
+    @available = true
   end
 
   ####
@@ -98,56 +137,61 @@ class BARPlugin < Plugin
   def handle_add( m, params )
     # lame auth check
     # TODO: need to get a look into new auth system
-    if m.sourcenick.to_s != "apachelogger"
-      m.reply( "sorry, not yet available for public use" )
-      return
-    end
+#     if m.sourcenick.to_s != "apachelogger"
+#       m.reply( "sorry, not yet available for public use" )
+#       return
+#     end
 
     name         = params[:name].downcase
+    machine      = params[:machine].downcase
     amount       = params[:amount]
     beats        = params[:beats]
-    # temp check whether values got entered in proper order etc.
-    if amount.to_s.scan(/^([0-9]+)/).length == 0
-      m.reply( "You have to define amount and beats - note that items which names consits of more than 2 words don't work yet")
-      return
+
+      # caluclate beats for one good and multiply with 100 -> better for later use
+      beats = beats.to_f / amount.to_f
+      beats *= 100
+
+      # tag version || current amount || maximal amount || beats for one good || deliverybeat (always 'nil' if not reordered) || linked machine
+    if machine == "-"
+      stock = Stock.new( @stockversion, amount, amount, beats, nil, machine )
+      @stock[name] = stock
+
+      m.reply( "#{name} added" )
+    elsif machine == "yes"
+      name += "_machine"
+      stock = Stock.new( @stockversion, amount, amount, beats, nil, machine )
+      @stock[name] = stock
+
+      m.reply( "#{name} added" )
+    elsif machine == "no" and @stock.has_key?( name + "_machine" )
+      machine = name + "_machine"
+      stock = Stock.new( @stockversion, amount, amount, beats, nil, machine )
+      @stock[name] = stock
+
+      m.reply( "#{name} added" )
+    else
+      m.reply( "Please first create the machine which should be linked to (same syntax, just replace the machine name with 'yes'), or use '-' to inidcate that there is no machine." ); return
     end
-    # !!!tag version!!!
-    version      = "1"
-
-    # caluclate beats for one good and multiply with 100 -> better for later use
-    beats = beats.to_f / amount.to_f
-    beats *= 100
-
-    # current amount || maximal amount || beats for one good || deliverybeat (always 'nil' if not reordered) || tag version
-    stock = Stock.new( amount, amount, beats, nil, version )
-    @stock[name] = stock
-
-    m.reply( "done" )
   end
 
   ####
   # Add reply for defined Good
   ####
-  def handle_add( m, params )
+  def handle_add_reply( m, params )
     # lame auth check
     # TODO: need to get a look into new auth system
-    if m.sourcenick.to_s != "apachelogger"
-      m.reply( "sorry, not yet available for public use" )
-      return
-    end
 
     name    = params[:name].downcase
-    reply   = params[:reply]
-    version = "1"  # !!!tag version!!!
+    reply   = params[:reply].to_s
 
     # check whether good is in database
-    status( name, @stock )
-    if @inreg == false
-      m.reply( "#{name} does not exist." ); return
-    end
+#     status( name, @stock )
+#     if @inreg == false
+#       m.reply( "#{name} does not exist." ); return
+#     end
 
     # Put data into database, should be understandable ^^
-    stock = Reply.new( reply, version )
+    reply = Reply.new( @replyversion, reply )
     @reply[name] = reply
 
     m.reply( "done" )
@@ -166,12 +210,26 @@ class BARPlugin < Plugin
     m.reply( "done" )
   end
 
+  ####
+  # List all items in Database
+  ####
   def handle_list( m, params )
     if @stock.length == 0
       m.reply( "Nothing available." ); return
     end
 
     m.reply "Finite goods: #{@stock.keys.sort.join(', ')}"
+  end
+
+  ####
+  # List all custom replies in Database
+  ####
+  def handle_list_reply( m, params )
+    if @reply.length == 0
+      m.reply( "Nothing available." ); return
+    end
+
+    m.reply "Custom replies: #{@reply.keys.sort.join(', ')}"
   end
 
   ####
@@ -185,11 +243,11 @@ class BARPlugin < Plugin
     end
 
     cmd = @stock[name]
-    m.reply( "Amount: #{cmd.amount} ||| Max: #{cmd.max} ||| 1 good per #{cmd.beats} beats ||| #{if @stock[name].deliverybeat != nil; @stock[name].deliverybeat; end } ||| Tag version: #{cmd.version}" )
+    m.reply( "#{if cmd.machine == "-"; "No linked machine |||"; else; "Linked machine: " + cmd.machine + " |||"; end } Amount: #{cmd.amount} ||| Max: #{cmd.max} ||| 1 good per #{cmd.beats} beats ||| #{if cmd.deliverybeat != nil; cmd.deliverybeat.to_s + " |||"; end } Tag version: #{cmd.version}" )
   end
 
   ####
-  # Show costum reply
+  # Show custom reply
   ####
   def handle_show_reply( m, params )
     name = params[:name].downcase
@@ -200,7 +258,7 @@ class BARPlugin < Plugin
     end
 
     cmd = @reply[name]
-    m.reply( "Reply: #{cmd.reply} ||| Tag version: #{cmd.version}" )
+    m.reply( "Reply: \"#{cmd.reply}\" ||| Tag version: #{cmd.version}" )
   end
 
   ####
@@ -208,29 +266,33 @@ class BARPlugin < Plugin
   ####
   def handle_reorder( m, params )
     name         = params[:name].downcase
-    #     cur_y        = Time.new.strftime '%Y'
-    #     cur_d        = Time.new.strftime '%j'
-    #     cur_h        = Time.new.strftime '%H'
-    #     cur_m        = Time.new.strftime '%M'
-    #     cur_s        = Time.new.strftime '%S'
-    #     cur_beat     = ((cur_y.to_i * 31536000) + (cur_d.to_i * 86400) + (cur_h.to_i * 3600) + (cur_m.to_i * 60) + cur_s.to_i)
     beat_cur     = Time.new.strftime '%Y%j%H%M%S'
 
-    unless @stock.has_key?( name )
-      m.reply( "#{name} does not exist." ); return
-    end
+     status( name, @stock )
+     if @inreg == false
+       m.reply( "#{name} does not exist." ); return
+     end
 
+    # check status of delivery if beat != nil (aka someone reordered) - either tell it is avail. again or tell how long to wait
     if @stock[name].deliverybeat != nil
       delivery( m, name )
       if @available == true
         m.reply( "#{m.sourcenick}: #{name} is again available now." ); return
       else
-        m.reply( "#{m.sourcenick}: #{name} has already been ordered (#{@togo.to_s} minutes)." ); return
+        if @stock[name].machine == "yes"
+          m.reply( "#{m.sourcenick}: technican is already working (#{@togo.to_s} minutes)." ); return
+        else
+          m.reply( "#{m.sourcenick}: #{name} has already been ordered (#{@togo.to_s} minutes)." ); return
+        end
       end
     end
 
     if @stock[name].amount.to_f >= ((@stock[name].max.to_f * 25) / 100)
-      m.reply( " #{m.sourcenick}: We still have enough #{name}, no need to reorder." ); return
+      if @stock[name].machine == "yes"
+        m.reply( " #{m.sourcenick}: #{name} machine is working like a charm." ); return
+      else
+        m.reply( " #{m.sourcenick}: We still have enough #{name}, no need to reorder." ); return
+      end
     end
 
     # run calculation after checks to save resources if not needed
@@ -239,7 +301,11 @@ class BARPlugin < Plugin
     @stock[name].deliverybeat = deliverybeat
     @registry[:stock] = @stock
 
-    m.reply( "Billy Kay is on his way to the supplier....")
+    if @stock[name].machine == "yes"
+      m.reply( "A technican is on the way....")
+    else
+      m.reply( "Billy Kay is on his way to the store....")
+    end
 
     #     NOTE: needs new registry hashes for beat per amount and for beat at time
     #           of order
@@ -266,7 +332,6 @@ class BARPlugin < Plugin
   # Main Process, takes care of usual order cmd (check availability, delivery status, special order etc.)
   ####
   def process( m, params )
-
     order      = nil
     @available = false
     @togo      = nil
@@ -284,26 +349,22 @@ class BARPlugin < Plugin
       nick = nick.reverse
     end
     name = name.downcase
-
     # check whether the order is in our database
     if @stock.has_key?( name )
-      # if the order is in our db, check whether we still have some of it - if yes: reduze amount by one
-      if @stock[name].amount.to_f <= 0
-        # if we don't have the order anymore - check whether the deliverybeat equals nil, if this is case tell the user to reorder
-        if @stock[name].deliverybeat != nil
-          # check whether the reordered good is available - if not, tell the user it's in progress and how long to go
-          delivery( m, name )
-          if @available != true
-            order = "tells #{nick} that we are out of #{name} but a new delivery is already in progress (#{@togo.to_s} minutes)."
-            @bot.action m.replyto, order; return
-          end
-          # tell _the ordering user_ to reorder because we are out of the ordered good
-        else
-          m.reply( "#{m.sourcenick}: We are out of #{name}, you should reorder some of it."); return
+      @machine = nil
+      majorcheck( m, name, nick )
+      if @available != true
+        return
+      end
+      if @stock[name].machine == "yes"
+        m.reply( "You can't ORDER machines. (try repair)" ); return
+      elsif @stock[name].machine != "-"
+        @machine = false
+        majorcheck( m, @stock[name].machine, nick )
+        if @available != true
+          return
         end
       end
-      # decrease amount of ordered good by one
-      @stock[name].amount = @stock[name].amount.to_i - 1
     end
 
     # !!!! special feature if someone stands something for everyone !!!!
@@ -316,11 +377,12 @@ class BARPlugin < Plugin
     end
 
     order = case name
-      # please keep alphabetical order!!!!!!!
+      # list of replies we can't move to registry yet, because multi-word-calls don't work properly
+      # TODO: fix that god damn multi-word bug
     when "bed" then
       "is placing a cot for #{nick} in the corner of #{m.target}."
     when "beer" then
-      "gives #{name} a nice frosty mug of #{name}."
+      "gives #{nick} a nice frosty mug of #{name}."
     when "birthday package" then
       "is running to the corner shop to get a birthday present."
     when "breakfast" then
@@ -359,11 +421,24 @@ class BARPlugin < Plugin
       "gives #{nick} a nice hot cup of #{name}."
     when "tea, earl grey, hot" then
       "is replicating a hot cup of earl grey for captain #{nick}."
+    when "whore" then
+      "slides apachelogger down the bar to #{nick}."
     when "wine" then
       "pours #{nick} a delicious glass from the channel's wine cellar."
     else
       "slides #{name} down the bar to #{nick}"
     end
+
+#     status( name, @reply )
+#     if @inreg != false
+#       order = @reply[name].reply
+# #       m.reply( order.class.to_s )
+# #       m.reply( "registry -> reply" )
+# 
+#       order.gsub!( "<name>", name )
+#       order.gsub!( "<nick>", nick )
+#       order.gsub!( "<target>", m.target.to_s )
+#     end
 
     @bot.action m.replyto, order
     if name == "birthday package"
@@ -379,14 +454,17 @@ end
 plugin = BARPlugin.new
 plugin.register("order")
 
-
-plugin.map 'order *wish',                       :action => 'process'
-# plugin.map 'order :wish for *nick',              :action => 'process'
-plugin.map 'order-adm add :name :amount :beats', :action => 'handle_add',    :auth => '80'
 # TODO: point out how to make it work with 2 or more word names
-plugin.map 'order-adm del :name',                :action => 'handle_del',    :auth => 'brain'
+plugin.map 'order *wish',                        :action => 'process'
+plugin.map 'order-adm add :name :machine :amount :beats', :action => 'handle_add',
+                                                          :auth_path => 'add',
+                                                          :requirements => {:amount => /^\d+$/, :beats => /^\d+$/}
+# plugin.map 'order-adm add-reply :name *reply',   :action => 'handle_add_reply'
+# plugin.map 'order-adm del :name',                :action => 'handle_del'
 plugin.map 'order-adm list',                     :action => 'handle_list'
+plugin.map 'order-adm list-reply',               :action => 'handle_list_reply'
 plugin.map 'order-adm show :name',               :action => 'handle_show'
-# plugin.map 'order-adm show-reply :name',         :action => 'handle_show_reply'
+plugin.map 'order-adm show-reply :name',         :action => 'handle_show_reply'
 plugin.map 'reorder :name',                      :action => 'handle_reorder'
 plugin.map 'reorder reset :name',                :action => 'handle_reorder_reset'
+plugin.map 'repair :name',                       :action => 'handle_reorder'
