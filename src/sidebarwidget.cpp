@@ -255,7 +255,9 @@ void SideBarButton::paintEvent( QPaintEvent* )
     p.drawPixmap( width() / 2 - iconSize().width() / 2, 0, icon().pixmap( iconSize() ) );
     p.translate( fontMetrics().size( Qt::TextShowMnemonic, text() ).height(), 0 );
     p.rotate( -90 );
-    p.drawText( 10, 0, QAbstractItemDelegate::elidedText( fontMetrics(), pos - 10, Qt::ElideRight, text() ) );
+
+    const QString txt = text().replace( "&", "" );
+    p.drawText( 10, 0, QAbstractItemDelegate::elidedText( fontMetrics(), pos - 10, Qt::ElideRight, txt ) );
 }
 
 #include "sidebarwidget.moc"
