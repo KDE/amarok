@@ -250,13 +250,14 @@ void SideBarButton::paintEvent( QPaintEvent* )
     p.setBrush( c );
     p.drawRect( rect() );
 
+    const QString txt = text().replace( "&", "" );
+
     const int pos = qMin( height(), height() / 2 + heightHint() / 2 ) - iconSize().height();
+
     p.translate( 0, pos );
     p.drawPixmap( width() / 2 - iconSize().width() / 2, 0, icon().pixmap( iconSize() ) );
-    p.translate( fontMetrics().size( Qt::TextShowMnemonic, text() ).height(), 0 );
+    p.translate( fontMetrics().size( Qt::TextShowMnemonic, txt ).height(), 0 );
     p.rotate( -90 );
-
-    const QString txt = text().replace( "&", "" );
     p.drawText( 10, 0, QAbstractItemDelegate::elidedText( fontMetrics(), pos - 10, Qt::ElideRight, txt ) );
 }
 
