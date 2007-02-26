@@ -24,11 +24,12 @@
 #include "amarok.h"
 
 #include <khtml_part.h>
-#include <klistwidget.h>
+//#include <klistwidget.h>
 #include <kvbox.h>
 
 #include <QPushButton>
-
+#include <QSplitter>
+#include <QTreeView>
 
 
 /**
@@ -68,7 +69,7 @@ signals:
 
     void home();
 
-private slots:
+protected slots:
 
     /**
      * Toggles the info area on and off
@@ -78,13 +79,14 @@ private slots:
 
     void homeButtonClicked();
 
-private:
+protected:
 
     
 
     static ServiceBase *s_instance;
 
-    KListWidget *m_contentList;
+    QSplitter *m_mainSplitter;
+    QTreeView *m_contentView;
     KHTMLPart   *m_infoBox;
 
     QPushButton *m_homeButton;
@@ -92,6 +94,7 @@ private:
     KVBox       *m_topPanel;
     KVBox       *m_bottomPanel;
     bool         m_isInfoShown;
+    bool         m_polished;
 
     QString      m_name;
     QString      m_shortDescription;

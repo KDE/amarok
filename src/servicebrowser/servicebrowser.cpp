@@ -20,6 +20,7 @@ Boston, MA 02110-1301, USA.
 
 #include "debug.h"
 #include "servicebrowser.h"
+#include "magnatunestore/magnatunebrowser.h"
 
 #include <kiconloader.h> 
 
@@ -38,9 +39,7 @@ ServiceBrowser::ServiceBrowser( const char *name )
     
     debug() << "Setting up dummy services..." << endl;
 
-    ServiceBase * testService1 = new ServiceBase( "Dummy service 1" );
-    testService1->setShortDescription("A very friendly service!");
-    testService1->setIcon( KIcon( Amarok::icon( "amarok_magnatune" ) ) );
+    ServiceBase * testService1 = new MagnatuneBrowser( "Dummy service 1" );
 
     ServiceBase * testService2 = new ServiceBase( "Dummy service 2" );
     testService2->setShortDescription("Slightly grumpy in the morning!");
@@ -70,7 +69,7 @@ void ServiceBrowser::addService( ServiceBase * service ) {
 
     //insert service name and image service selection list
     QListWidgetItem * serviceListItem = new QListWidgetItem( service->getName() , m_serviceSelectionList );
-    serviceListItem->setTextAlignment( Qt::AlignHCenter );
+    //serviceListItem->setTextAlignment( Qt::AlignHCenter );
     serviceListItem->setIcon( service->getIcon() );
     
 

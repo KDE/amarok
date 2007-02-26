@@ -26,7 +26,8 @@ Boston, MA 02110-1301, USA.
 
 #include <QFrame>
 #include <QLabel>
-#include <QSplitter>
+
+#include <QDirModel>
 
 
 ServiceBase *ServiceBase::s_instance = 0;
@@ -41,8 +42,10 @@ ServiceBase::ServiceBase( QString name )
 
     m_topPanel = new KVBox( this );
 
-    m_topPanel->setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
-    m_topPanel->setLineWidth(2);
+    m_topPanel->setFrameStyle( QFrame::StyledPanel | QFrame::Plain );
+    m_topPanel->setLineWidth( 2 );
+    m_topPanel->setSpacing( 2 );
+    m_topPanel->setMargin( 2 );
     //m_topPanel->setFixedHeight( 50 );
 
     KHBox * commonPanel = new KHBox ( m_topPanel );
@@ -55,10 +58,10 @@ ServiceBase::ServiceBase( QString name )
     nameLabel->setText( m_name );
     nameLabel->setAlignment(Qt::AlignTop | Qt::AlignCenter);
    
-    QSplitter *splitter = new QSplitter( Qt::Vertical, this );
-    m_contentList = new KListWidget( splitter );
+    m_mainSplitter = new QSplitter( Qt::Vertical, this );
+    m_contentView = new QTreeView( m_mainSplitter );
 
-    m_infoBox = new KHTMLPart( splitter );
+    m_infoBox = new KHTMLPart( m_mainSplitter );
     //m_infoBox->view()->widget()->setFrameStyle(QFrame::StyledPanel | QFrame::Plain); //kdelibs error?
 
 
@@ -78,6 +81,16 @@ ServiceBase::ServiceBase( QString name )
     m_bottomPanel->setFixedHeight( 50 );
     m_bottomPanel->setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
     m_bottomPanel->setLineWidth(2);
+    m_bottomPanel->setSpacing( 2 );
+    m_bottomPanel->setMargin( 2 );
+
+
+
+    QDirModel * dirModel = new QDirModel ( m_contentView );
+
+    m_contentView->setModel( dirModel );
+    m_contentView->setWindowTitle(QObject::tr("Simple Tree Model"));
+    m_contentView->show();
 
 }
 
@@ -136,7 +149,6 @@ void ServiceBase::homeButtonClicked( )
 {
     emit( home() );
 }
-
 
 
 

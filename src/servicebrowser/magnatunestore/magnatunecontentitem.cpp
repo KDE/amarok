@@ -1,0 +1,156 @@
+/*
+Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Library General Public
+License as published by the Free Software Foundation; either
+version 2 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Library General Public License for more details.
+
+You should have received a copy of the GNU Library General Public License
+along with this library; see the file COPYING.LIB.  If not, write to
+the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+Boston, MA 02110-1301, USA.
+*/
+
+
+#include "magnatunecontentitem.h"
+
+
+#include "debug.h"
+#include "magnatunedatabasehandler.h"
+
+
+
+MagnatuneContentItem::MagnatuneContentItem(MagnatuneArtist artist, MagnatuneContentItem *parent )
+{
+    m_content.artistValue = new MagnatuneArtist( artist );
+    m_type = MAGNATUNE_ARTIST;
+    m_parent = parent;
+    m_hasPopulatedChildItems = false;
+}
+
+
+MagnatuneContentItem::MagnatuneContentItem( MagnatuneAlbum album, MagnatuneContentItem *parent )
+{
+    m_content.albumValue = new MagnatuneAlbum ( album );
+    m_type = MAGNATUNE_ALBUM;
+    m_parent = parent;
+    m_hasPopulatedChildItems = false;
+}
+
+
+MagnatuneContentItem::MagnatuneContentItem( MagnatuneTrack track, MagnatuneContentItem *parent )
+{
+    m_content.trackValue = new MagnatuneTrack (track );
+    m_type = MAGNATUNE_TRACK;
+    m_parent = parent;
+    m_hasPopulatedChildItems = true;
+}
+
+MagnatuneContentItem::MagnatuneContentItem( )
+{
+    m_type = MAGNATUNE_ROOT;
+    m_parent = 0;
+    m_hasPopulatedChildItems = false;
+}
+
+
+ MagnatuneContentItem::~MagnatuneContentItem()
+ {
+     qDeleteAll(m_childItems);
+ }
+
+ MagnatuneContentItem *MagnatuneContentItem::child(int row)
+ {
+
+    if ( !m_hasPopulatedChildItems )
+        populateChildItems();
+    return m_childItems.value(row);
+
+ }
+
+ int MagnatuneContentItem::childCount() const
+ {
+     if ( !m_hasPopulatedChildItems )
+         populateChildItems();
+     return m_childItems.count();
+ }
+
+ int MagnatuneContentItem::columnCount() const
+ {
+     return 1; //FIXME!!
+ }
+
+QVariant MagnatuneContentItem::data(int column) const  //FIXME!!! do We need more columns (for track length and so on...)
+{
+   switch ( m_type ) {
+       case MAGNATUNE_ARTIST:
+           return  m_content.artistValue->getName();
+       case MAGNATUNE_ALBUM:
+           return  m_content.albumValue->getName();
+       case MAGNATUNE_TRACK:
+           return  m_content.trackValue->getName();
+       default:
+           return QVariant();
+    }
+
+}
+
+MagnatuneContentItem *MagnatuneContentItem::parent()
+ {
+     return m_parent;
+ }
+
+int MagnatuneContentItem::row() const
+{
+    if (m_parent){
+        if ( !m_hasPopulatedChildItems )
+            populateChildItems();
+        return m_parent->GetChildItems().indexOf(const_cast<MagnatuneContentItem*>(this));
+    }
+    return 0;
+} 
+
+QList<MagnatuneContentItem*> MagnatuneContentItem::GetChildItems() const {
+    if ( !m_hasPopulatedChildItems )
+        populateChildItems();
+
+    return m_childItems;
+}
+
+void MagnatuneContentItem::populateChildItems() const {
+
+    switch ( m_type ) {
+       case MAGNATUNE_ROOT: {
+           MagnatuneArtistList artists = MagnatuneDatabaseHandler::instance()->getArtistsByGenre( "All" );
+           MagnatuneArtistList::iterator it;
+           for ( it = artists.begin(); it != artists.end(); ++it ) {
+               m_childItems.append( new MagnatuneContentItem( (*it), const_cast<MagnatuneContentItem*>( this ) ) );
+           }
+           break; }
+       case MAGNATUNE_ARTIST: {
+           MagnatuneAlbumList albums = MagnatuneDatabaseHandler::instance()->getAlbumsByArtistId( m_content.artistValue->getId(), "All" );
+           MagnatuneAlbumList::iterator it;
+           for ( it = albums.begin(); it != albums.end(); ++it ) {
+               m_childItems.append( new MagnatuneContentItem( (*it), const_cast<MagnatuneContentItem*>( this ) ) );
+           }
+           break; }
+       case MAGNATUNE_ALBUM: {
+           MagnatuneTrackList tracks = MagnatuneDatabaseHandler::instance()->getTracksByAlbumId( m_content.albumValue->getId() );
+           MagnatuneTrackList::iterator it;
+           for ( it = tracks.begin(); it != tracks.end(); ++it ) {
+               m_childItems.append( new MagnatuneContentItem( (*it), const_cast<MagnatuneContentItem*>( this ) ) );
+           }
+           break; }
+    }
+
+
+    m_hasPopulatedChildItems = true;
+
+}
+ 
