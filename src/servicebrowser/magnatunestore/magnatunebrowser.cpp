@@ -535,11 +535,14 @@ void MagnatuneBrowser::polish( )
         m_model = new MagnatuneContentModel ( this );
 
 
-        m_contentView->setModel( m_model );
+       
         m_contentView->setWindowTitle(QObject::tr("Simple Tree Model"));
-        //m_contentView->setRootIsDecorated (true);
+        m_contentView->setSortingEnabled ( true );
+        m_contentView->sortByColumn ( 0, Qt::AscendingOrder ); 
+        m_contentView->setModel( m_model );
 
         //updateList( );
+
         m_infoBox->begin( KUrl( KStandardDirs::locate( "data", "amarok/data/" ) ) );
         m_infoBox->write( "<table align='center' border='0'><tbody align='center' valign='top'>"
           "<tr align='center'><td><div align='center'>"

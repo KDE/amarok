@@ -145,6 +145,18 @@ int MagnatuneContentModel::rowCount(const QModelIndex &parent) const
 
 } 
 
+bool MagnatuneContentModel::hasChildren ( const QModelIndex & parent ) const {
+
+    MagnatuneContentItem* item;
+
+     if (!parent.isValid())
+         item = m_rootContentItem;
+     else
+         item = static_cast<MagnatuneContentItem*>(parent.internalPointer());
+
+    return item->hasChildren();
+}
+
 
 
 

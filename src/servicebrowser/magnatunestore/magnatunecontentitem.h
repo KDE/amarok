@@ -55,6 +55,7 @@ public:
     MagnatuneContentItem * parent();
     int getType();
     QList<MagnatuneContentItem*> GetChildItems() const;
+    bool hasChildren () const ;
 
 private:
 

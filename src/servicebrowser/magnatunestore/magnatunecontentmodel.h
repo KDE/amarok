@@ -64,6 +64,8 @@ public:
     
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
+    bool hasChildren ( const QModelIndex & parent = QModelIndex() ) const;
+
  };
 
  #endif

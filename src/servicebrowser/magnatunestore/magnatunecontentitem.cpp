@@ -153,4 +153,8 @@ void MagnatuneContentItem::populateChildItems() const {
     m_hasPopulatedChildItems = true;
 
 }
- 
+
+bool MagnatuneContentItem::hasChildren () const {
+    if ( m_type != MAGNATUNE_TRACK ) return true;
+    return false;
+}
