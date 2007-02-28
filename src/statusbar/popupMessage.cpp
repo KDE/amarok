@@ -66,8 +66,7 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
     QLabel *label;
     K3ActiveLabel *alabel;
 
-    m_layout = new QVBoxLayout;
-    m_layout->setParent( this );
+    m_layout = new QVBoxLayout( this );
     m_layout->setMargin( 9 );
     m_layout->setSpacing( 6 );
 
@@ -75,7 +74,9 @@ PopupMessage::PopupMessage( QWidget *parent, QWidget *anchor, int timeout, const
     hbox->setParent( m_layout );
     hbox->setSpacing( 12 );
 
-    hbox->addWidget( m_countdownFrame = new QFrame( this, "counterVisual" ) );
+    m_countdownFrame = new QFrame( this );
+    m_countdownFrame->setObjectName( "counterVisual" );
+    hbox->addWidget( m_countdownFrame );
     m_countdownFrame->setFixedWidth( fontMetrics().width( "X" ) );
     m_countdownFrame->setFrameStyle( QFrame::Plain | QFrame::Box );
     m_countdownFrame->setPaletteForegroundColor( paletteBackgroundColor().dark() );
