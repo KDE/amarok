@@ -3798,9 +3798,9 @@ CollectionDB::setSongRating( const QString &url, int rating, bool toggleHalf )
 
     bool ok = true;
     int prev = values[4].toInt( &ok );
-    if( ok && toggleHalf && prev == rating )
+    if( ok && toggleHalf && ( prev == rating || prev == 1 ) )
     {
-        if( rating == 1 )
+        if( prev == 1 )
             rating = 0;
         else if( rating % 2 ) //.5
             rating++;
