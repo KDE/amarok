@@ -314,7 +314,7 @@ void MagnatuneBrowser::initTopPanel( )
     m_advancedFeaturesButton->setObjectName( "advancedButton" );
     connect( m_advancedFeaturesButton, SIGNAL( clicked() ), this, SLOT( processRedownload() ) );
 
-    connect( m_genreComboBox, SIGNAL( activated ( int ) ), this, SLOT( genreChanged() ) );
+    connect( m_genreComboBox, SIGNAL( currentIndexChanged ( const QString ) ), this, SLOT( genreChanged( QString ) ) );
 }
 
 void MagnatuneBrowser::initBottomPanel()
@@ -464,10 +464,11 @@ void MagnatuneBrowser::updateList()
     //m_contentList->repaintContents(); */
 }
 
-void MagnatuneBrowser::genreChanged()
+void MagnatuneBrowser::genreChanged( QString genre )
 {
-    debug() << "Genre changed..." << endl;
-    updateList( );
+    debug() << "Genre changed to: " << genre << endl;
+    //updateList( );
+    m_model->setGenre( genre );
 }
 
 

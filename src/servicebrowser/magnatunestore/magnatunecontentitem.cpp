@@ -26,8 +26,9 @@ Boston, MA 02110-1301, USA.
 
 
 
-MagnatuneContentItem::MagnatuneContentItem(MagnatuneArtist artist, MagnatuneContentItem *parent )
+MagnatuneContentItem::MagnatuneContentItem(MagnatuneArtist artist, QString genre, MagnatuneContentItem *parent )
 {
+    m_genre = genre;
     m_content.artistValue = new MagnatuneArtist( artist );
     m_type = MAGNATUNE_ARTIST;
     m_parent = parent;
@@ -35,8 +36,10 @@ MagnatuneContentItem::MagnatuneContentItem(MagnatuneArtist artist, MagnatuneCont
 }
 
 
-MagnatuneContentItem::MagnatuneContentItem( MagnatuneAlbum album, MagnatuneContentItem *parent )
+MagnatuneContentItem::MagnatuneContentItem( MagnatuneAlbum album, QString genre, MagnatuneContentItem *parent )
 {
+
+    m_genre = genre;
     m_content.albumValue = new MagnatuneAlbum ( album );
     m_type = MAGNATUNE_ALBUM;
     m_parent = parent;
@@ -44,16 +47,19 @@ MagnatuneContentItem::MagnatuneContentItem( MagnatuneAlbum album, MagnatuneConte
 }
 
 
-MagnatuneContentItem::MagnatuneContentItem( MagnatuneTrack track, MagnatuneContentItem *parent )
+MagnatuneContentItem::MagnatuneContentItem( MagnatuneTrack track, QString genre, MagnatuneContentItem *parent )
 {
+
+    m_genre = genre;
     m_content.trackValue = new MagnatuneTrack (track );
     m_type = MAGNATUNE_TRACK;
     m_parent = parent;
     m_hasPopulatedChildItems = true;
 }
 
-MagnatuneContentItem::MagnatuneContentItem( )
+MagnatuneContentItem::MagnatuneContentItem( QString genre )
 {
+    m_genre = genre;
     m_type = MAGNATUNE_ROOT;
     m_parent = 0;
     m_hasPopulatedChildItems = false;
@@ -127,24 +133,24 @@ void MagnatuneContentItem::populateChildItems() const {
 
     switch ( m_type ) {
        case MAGNATUNE_ROOT: {
-           MagnatuneArtistList artists = MagnatuneDatabaseHandler::instance()->getArtistsByGenre( "All" );
+           MagnatuneArtistList artists = MagnatuneDatabaseHandler::instance()->getArtistsByGenre( m_genre );
            MagnatuneArtistList::iterator it;
            for ( it = artists.begin(); it != artists.end(); ++it ) {
-               m_childItems.append( new MagnatuneContentItem( (*it), const_cast<MagnatuneContentItem*>( this ) ) );
+               m_childItems.append( new MagnatuneContentItem( (*it), m_genre, const_cast<MagnatuneContentItem*>( this ) ) );
            }
            break; }
        case MAGNATUNE_ARTIST: {
-           MagnatuneAlbumList albums = MagnatuneDatabaseHandler::instance()->getAlbumsByArtistId( m_content.artistValue->getId(), "All" );
+           MagnatuneAlbumList albums = MagnatuneDatabaseHandler::instance()->getAlbumsByArtistId( m_content.artistValue->getId(), m_genre );
            MagnatuneAlbumList::iterator it;
            for ( it = albums.begin(); it != albums.end(); ++it ) {
-               m_childItems.append( new MagnatuneContentItem( (*it), const_cast<MagnatuneContentItem*>( this ) ) );
+               m_childItems.append( new MagnatuneContentItem( (*it), m_genre, const_cast<MagnatuneContentItem*>( this ) ) );
            }
            break; }
        case MAGNATUNE_ALBUM: {
            MagnatuneTrackList tracks = MagnatuneDatabaseHandler::instance()->getTracksByAlbumId( m_content.albumValue->getId() );
            MagnatuneTrackList::iterator it;
            for ( it = tracks.begin(); it != tracks.end(); ++it ) {
-               m_childItems.append( new MagnatuneContentItem( (*it), const_cast<MagnatuneContentItem*>( this ) ) );
+               m_childItems.append( new MagnatuneContentItem( (*it), m_genre,  const_cast<MagnatuneContentItem*>( this ) ) );
            }
            break; }
     }

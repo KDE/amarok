@@ -43,10 +43,11 @@ private:
     private:
 
     MagnatuneContentItem *m_rootContentItem;
+    QString m_genre;
 
 public:
     
-    MagnatuneContentModel(QObject *parent = 0);
+    MagnatuneContentModel(QObject *parent = 0, QString genre = "All");
     
     ~MagnatuneContentModel();
 
@@ -65,6 +66,8 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
     bool hasChildren ( const QModelIndex & parent = QModelIndex() ) const;
+
+    void setGenre( QString genre );
 
  };
 

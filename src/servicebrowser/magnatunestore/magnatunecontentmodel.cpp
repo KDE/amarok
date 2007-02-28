@@ -22,10 +22,11 @@
 #include "magnatunedatabasehandler.h"
 
 
-MagnatuneContentModel::MagnatuneContentModel(QObject *parent )
+MagnatuneContentModel::MagnatuneContentModel(QObject *parent, QString genre )
      : QAbstractItemModel(parent)
 {
-     m_rootContentItem = new MagnatuneContentItem( );
+     m_genre = genre;
+     m_rootContentItem = new MagnatuneContentItem( m_genre );
 }
 
 MagnatuneContentModel::~MagnatuneContentModel()
@@ -155,6 +156,15 @@ bool MagnatuneContentModel::hasChildren ( const QModelIndex & parent ) const {
          item = static_cast<MagnatuneContentItem*>(parent.internalPointer());
 
     return item->hasChildren();
+}
+
+void MagnatuneContentModel::setGenre( QString genre ) {
+
+    m_genre = genre;
+    delete m_rootContentItem;
+    m_rootContentItem = new MagnatuneContentItem( m_genre );
+    reset();
+
 }
 
 

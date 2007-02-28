@@ -38,10 +38,10 @@ union contentTypeUnion
 class MagnatuneContentItem
 {
 public:
-    MagnatuneContentItem( MagnatuneArtist content, MagnatuneContentItem *parent );
-    MagnatuneContentItem( MagnatuneAlbum content, MagnatuneContentItem *parent );
-    MagnatuneContentItem( MagnatuneTrack content, MagnatuneContentItem *parent );
-    MagnatuneContentItem( );
+    MagnatuneContentItem( MagnatuneArtist content, QString genre, MagnatuneContentItem *parent );
+    MagnatuneContentItem( MagnatuneAlbum content, QString genre, MagnatuneContentItem *parent );
+    MagnatuneContentItem( MagnatuneTrack content, QString genre, MagnatuneContentItem *parent );
+    MagnatuneContentItem( QString genre );
 
 
 
@@ -62,6 +62,7 @@ private:
     mutable QList<MagnatuneContentItem*> m_childItems;
 
     contentTypeUnion m_content; 
+    QString m_genre;
 
     int m_type;
     mutable bool m_hasPopulatedChildItems;

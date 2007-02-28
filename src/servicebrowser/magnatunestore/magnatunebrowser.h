@@ -145,7 +145,7 @@ private slots:
     /**
      * Slot called when the genre combo box selection changes. Triggers an update of the list view.
      */
-    void genreChanged();
+    void genreChanged( QString genre);
 
     /**
      * Slot called when the parsing of the Magnatuin xml file is completed.
