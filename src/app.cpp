@@ -406,8 +406,7 @@ void App::initCliArgs( int argc, char *argv[] ) //static
             { "wizard", I18N_NOOP( "Run first-run wizard" ), 0 },
             { "engine <name>", I18N_NOOP( "Use the <name> engine" ), 0 },
             { "cwd <directory>", I18N_NOOP( "Base for relative filenames/URLs" ), 0 },
-            { "cdplay <device>", I18N_NOOP("Play an AudioCD from <device>"), 0 },
-            //FIXME: after string freeze { "cdplay <device>", I18N_NOOP("Play an AudioCD from <device> or system:/media/<device>"), 0 },
+            { "cdplay <device>", I18N_NOOP("Play an AudioCD from <device> or system:/media/<device>"), 0 },
             { 0, 0, 0 }
         };
 

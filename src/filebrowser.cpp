@@ -352,8 +352,7 @@ void FileBrowser::playlistFromURLs( const KUrl::List &urls )
 
     if( PlaylistBrowser::savePlaylist( path, urls ) )
     {
-        //FIXME: uncomment after string freeze
-        //Amarok::StatusBar::instance()->shortMessage( "Playlist saved to playlist browser" );
+        Amarok::StatusBar::instance()->shortMessage( "Playlist saved to playlist browser" );
     }
 }
 

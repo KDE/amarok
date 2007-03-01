@@ -86,12 +86,13 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     // the two time labels. m_timeLable is the left one,
     // m_timeLabel2 the right one.
     m_timeLabel = new TimeLabel( positionBox );
+    m_timeLabel->setToolTip( i18n( "The amount of time elapsed in current song" ) );
     m_slider->setMinimumWidth( m_timeLabel->width() );
 
     m_timeLabel2 = new TimeLabel( positionBox );
+    m_timeLabel->setToolTip( i18n( "The amount of time remaining in current song" ) );
     m_slider->setMinimumWidth( m_timeLabel2->width() );
 
-    // TODO Both labels need tooltips (string freeze?)
     QWidget *hbox = new QWidget( this );
     addPermanentWidget(hbox);
     QHBoxLayout *layout = new QHBoxLayout( hbox );
