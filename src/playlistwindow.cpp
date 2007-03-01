@@ -100,8 +100,9 @@ namespace Amarok
     {
     public:
         ToolBar( QMainWindow *parent, const char *name )
-            : KToolBar( name, parent, Qt::BottomToolBarArea, false, false, false )
-        {}
+            : KToolBar( name, parent, Qt::TopToolBarArea, false, false, false )
+        {
+        }
 
     protected:
         virtual void
@@ -164,8 +165,8 @@ void PlaylistWindow::init()
     //via the App::m_pPlaylistWindow pointer since App::m_pPlaylistWindow is not defined until
     //the above ctor returns it causes a crash unless we do the initialisation in 2 stages.
     //<Dynamic Mode Status Bar />
-    DynamicBar *dynamicBar = new DynamicBar( m_browsers->contentsWidget() );
     KVBox *playlistwindow = new KVBox;
+    DynamicBar *dynamicBar = new DynamicBar( playlistwindow );
     Playlist *playlist = new Playlist( playlistwindow ); //Playlist
     KToolBar *plBar = new KToolBar( playlistwindow, "PlaylistToolBar" ); //This is our clear/undo/redo/save buttons
 
@@ -1298,7 +1299,8 @@ void PlaylistWindow::createMenus()
 DynamicBar::DynamicBar(QWidget* parent)
        : KHBox( parent)
 {
-    m_titleWidget = new DynamicTitle(this);
+    setObjectName( "dynamicBar" );
+    m_titleWidget = new DynamicTitle( this );
 
     setSpacing( KDialog::spacingHint() );
     QWidget *spacer = new QWidget( this );
@@ -1339,8 +1341,10 @@ void DynamicBar::changeTitle(const QString& title)
 /// DynamicTitle
 //////////////////////////////////////////////////////////////////////////////////////////
 DynamicTitle::DynamicTitle(QWidget* w)
-    : QWidget(w, "dynamic title")
+    : QWidget()
 {
+    setParent( w );
+    setObjectName( "dynamicTitle" );
     m_font.setBold( true );
     setTitle("");
 }
@@ -1356,11 +1360,12 @@ void DynamicTitle::setTitle(const QString& newTitle)
 void DynamicTitle::paintEvent(QPaintEvent* /*e*/)
 {
     QPainter p;
-    p.begin( this, false );
+    p.begin( this );
     QPen pen( colorGroup().highlightedText(), 0, Qt::NoPen );
     p.setPen( pen );
     p.setBrush( colorGroup().highlight() );
     p.setFont(m_font);
+
 
     QFontMetrics fm(m_font);
     int textHeight = fm.height();
