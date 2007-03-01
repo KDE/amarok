@@ -433,16 +433,6 @@ QueueManager::removeQueuedItem( PlaylistItem *item )
 
     const int index = pl->m_nextTracks.findRef( item );
 
-    QListViewItem *after;
-    if( !index ) after = 0;
-    else
-    {
-        int find = m_listview->childCount();
-        if( index - 1 <= find )
-            find = index - 1;
-        after = m_listview->itemAtIndex( find );
-    }
-
     QValueList<PlaylistItem*>         current = m_map.values();
     QValueListIterator<PlaylistItem*> newItem = current.find( item );
 
