@@ -1044,7 +1044,7 @@ void App::slotConfigAmarok( const Q3CString& page )
         //KConfigDialog didn't find an instance of this dialog, so lets create it :
         dialog = new AmarokConfigDialog( m_pPlaylistWindow, "settings", AmarokConfig::self() );
 
-        connect( dialog, SIGNAL(settingsChanged()), SLOT(applySettings()) );
+        connect( dialog, SIGNAL(settingsChanged(const QString&)), SLOT(applySettings()) );
     }
 
     //FIXME it seems that if the dialog is on a different desktop it gets lost
