@@ -264,7 +264,8 @@ set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
    tracktooltip.cpp
    transferdialog.cpp
    xmlloader.cpp
-   xspfplaylist.cpp )
+   xspfplaylist.cpp 
+   dockwidget.cpp )
 
 kde4_add_kcfg_files(amarok_LIB_SRCS ${CMAKE_SOURCE_DIR}/amarok/src/amarokcore/amarokconfig.kcfgc)
 
@@ -332,7 +333,7 @@ install(FILES amarok.desktop DESTINATION ${XDG_APPS_DIR} )
 install(FILES amarok.profile.xml DESTINATION ${DATA_INSTALL_DIR}/profiles )
 install(FILES amarokrc DESTINATION ${CONFIG_INSTALL_DIR})
 install(FILES amarok_plugin.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
-install(FILES amarokui.rc amarokui_xmms.rc DESTINATION ${DATA_INSTALL_DIR}/amarok)
+install(FILES amarokui.rc DESTINATION ${DATA_INSTALL_DIR}/amarok)
 install(FILES amarok_append.desktop DESTINATION ${DATA_INSTALL_DIR}/konqueror/servicemenus)
 
 kde4_install_icons( ${ICON_INSTALL_DIR} )

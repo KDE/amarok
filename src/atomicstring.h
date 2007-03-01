@@ -43,7 +43,7 @@
 #ifndef AMAROK_ATOMICSTRING_H
 #define AMAROK_ATOMICSTRING_H
 
-#include "config.h"
+#include <config.h>
 #if __GNUC__ >= 3
     #include <ext/hash_set>
 #else
@@ -52,7 +52,7 @@
 #include "amarok_export.h"
 
 #include <QString>
-#include <q3ptrlist.h>
+#include <Q3PtrList>
 #include <QMutex>
 
 class AMAROK_EXPORT AtomicString

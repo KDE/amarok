@@ -18,23 +18,18 @@
 #include "socketserver.h"       //Vis::Selector::showInstance()
 #include "threadmanager.h"
 
-#include <QPixmap>
-#include <QToolTip>
-//Added by qt3to4:
-#include <QContextMenuEvent>
-#include <QResizeEvent>
-#include <Q3PopupMenu>
-#include <QMouseEvent>
-
-#include <kaction.h>
 #include <khelpmenu.h>
 #include <kiconloader.h>
 #include <klocale.h>
 #include <kstandarddirs.h>
 #include <ktoolbar.h>
-
 #include <kurl.h>
 #include <kauthorized.h>
+
+#include <QPixmap>
+#include <QToolTip>
+#include <Q3PopupMenu>
+
 
 namespace Amarok
 {

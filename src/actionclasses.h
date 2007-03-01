@@ -15,11 +15,8 @@
 #include <kactioncollection.h>
 #include <ktoggleaction.h>
 #include <kselectaction.h>
+
 #include <QPointer>
-//Added by qt3to4:
-#include <QResizeEvent>
-#include <QMouseEvent>
-#include <QContextMenuEvent>
 
 class KActionCollection;
 class KHelpMenu;

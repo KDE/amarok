@@ -17,6 +17,7 @@
 #define AMAROK_PLAYLISTWINDOW_H
 
 //#include "browserbar.h"
+#include "amarok_export.h"
 
 #include <khbox.h>          //baseclass for DynamicBox
 #include <qwidget.h>        //baseclass
@@ -28,6 +29,7 @@
 #include <QPaintEvent>
 #include <kxmlguiclient.h>  //baseclass (for XMLGUI)
 #include <kmainwindow.h>
+// #include <phonon/phononnamespace.h>
 class KLineEdit;
 class CollectionBrowser;
 class ContextBrowser;
@@ -38,14 +40,18 @@ class KMenu;
 class KToolBar;
 class QLabel;
 class QTimer;
+class K3ListViewSearchLineWidget;
 
+// namespace Phonon {
+//     class VideoWidget;
+// }
 /**
   * @class PlaylistWindow
   * @short The PlaylistWindow widget class.
   *
   * This is the main window widget (the Playlist not Player).
   */
-class PlaylistWindow : public KMainWindow//public QWidget, public KXMLGUIClient
+class /*AMAROK_EXPORT*/ PlaylistWindow : public KMainWindow//public QWidget, public KXMLGUIClient
 {
         Q_OBJECT
 
@@ -72,6 +78,9 @@ class PlaylistWindow : public KMainWindow//public QWidget, public KXMLGUIClient
         static PlaylistWindow *self() { return s_instance; }
 
         void activate();
+
+        void showVideo( bool );
+//         Phonon::VideoWidget *videoWidget() { return m_videoWidget; }
 
         SideBar *sideBar() const { return m_browsers; };
 
@@ -119,14 +128,19 @@ class PlaylistWindow : public KMainWindow//public QWidget, public KXMLGUIClient
         SideBar    *m_browsers;
         QStringList m_browserNames;
         KMenu    *m_searchMenu;
-        KLineEdit *m_lineEdit;
+        //KLineEdit *m_lineEdit;
+	K3ListViewSearchLineWidget *m_searchLine;
         KToolBar      *m_toolbar;
         QTimer        *m_timer;  //search filter timer
         QStringList    m_lastfmTags;
         MediaBrowser  *m_currMediaBrowser;
 
+        void    createActions();
+        void    createMenus();
         int m_lastBrowser;
         int m_searchField;
+//         Phonon::VideoWidget *m_videoWidget;
+        ContextBrowser *cb;
 
         static PlaylistWindow *s_instance;
 };

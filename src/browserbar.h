@@ -14,11 +14,10 @@
 #include "amarok_export.h"  //AMAROK_EXPORT
 #include "engineobserver.h" //baseclass
 
-#include <qwidget.h>        //baseclass
-#include <q3valuevector.h>   //stack allocated
-#include <qmap.h>           //stack allocated
+#include <QWidget>        //baseclass
+#include <Q3ValueVector>   //stack allocated
+#include <QMap>           //stack allocated
 #include <QPushButton>
-//Added by qt3to4:
 #include <QEvent>
 #include <QMouseEvent>
 

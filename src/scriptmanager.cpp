@@ -213,7 +213,8 @@ ScriptManager::ScriptManager( QWidget *parent, const char *name )
     setMinimumSize( qMax( 350, sz.width() ), qMax( 250, sz.height() ) );
     resize( sizeHint() );
 
-    connect( this, SIGNAL(lyricsScriptChanged()), ContextBrowser::instance(), SLOT( lyricsScriptChanged() ) );
+//FIXME: contex tbrowser changes
+//     connect( this, SIGNAL(lyricsScriptChanged()), ContextBrowser::instance(), SLOT( lyricsScriptChanged() ) );
 
     // Delay this call via eventloop, because it's a bit slow and would block
     QTimer::singleShot( 0, this, SLOT( findScripts() ) );

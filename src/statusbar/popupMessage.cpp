@@ -342,6 +342,7 @@ void PopupMessage::slideMask()
             if( m_offset < 0 )
                 deleteLater();
     }
+
 }
 
 }

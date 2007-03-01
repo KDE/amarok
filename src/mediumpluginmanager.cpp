@@ -41,7 +41,6 @@
 #include <kpushbutton.h>
 #include <kvbox.h>
 
-using Amarok::escapeHTML;
 using Amarok::escapeHTMLAttr;
 
 typedef QMap<QString, Medium*> MediumMap;
@@ -412,24 +411,24 @@ MediaDeviceConfig::MediaDeviceConfig( Medium *medium, MediumPluginManager *mgr, 
     const QString labelTextNone = i18n( "(none)" );
     QString row = "<tr><td>%1</td><td>%2</td></tr>";
     QString table;
-    table += row.arg( escapeHTML( i18n( "Autodetected:" ) ),
-            escapeHTML( medium->isAutodetected() ? i18n("Yes") : i18n("No") ) );
-    table += row.arg( escapeHTML( i18n( "ID:" ) ),
-            escapeHTML( medium->id() ) );
-    table += row.arg( escapeHTML( i18n( "Name:" ) ),
-            escapeHTML( medium->name() ) );
-    table += row.arg( escapeHTML( i18n( "Label:" ) ),
-            escapeHTML( medium->label().isEmpty() ? labelTextNone : medium->label() ) );
-    table += row.arg( escapeHTML( i18n( "User Label:" ) ),
-            escapeHTML( medium->userLabel().isEmpty() ? labelTextNone : medium->userLabel() ) );
-    table += row.arg( escapeHTML( i18n( "Device Node:" ) ),
-            escapeHTML( medium->deviceNode().isEmpty() ? labelTextNone : medium->deviceNode() ) );
-    table += row.arg( escapeHTML( i18n( "Mount Point:" ) ),
-            escapeHTML( medium->mountPoint().isEmpty() ? labelTextNone : medium->mountPoint() ) );
-    table += row.arg( escapeHTML( i18n( "Mime Type:" ) ),
-            escapeHTML( medium->mimeType().isEmpty() ? labelTextNone : medium->mimeType() ) );
+    table += row.arg( Qt::escape( i18n( "Autodetected:" ) ),
+            Qt::escape( medium->isAutodetected() ? i18n("Yes") : i18n("No") ) );
+    table += row.arg( Qt::escape( i18n( "ID:" ) ),
+            Qt::escape( medium->id() ) );
+    table += row.arg( Qt::escape( i18n( "Name:" ) ),
+            Qt::escape( medium->name() ) );
+    table += row.arg( Qt::escape( i18n( "Label:" ) ),
+            Qt::escape( medium->label().isEmpty() ? labelTextNone : medium->label() ) );
+    table += row.arg( Qt::escape( i18n( "User Label:" ) ),
+            Qt::escape( medium->userLabel().isEmpty() ? labelTextNone : medium->userLabel() ) );
+    table += row.arg( Qt::escape( i18n( "Device Node:" ) ),
+            Qt::escape( medium->deviceNode().isEmpty() ? labelTextNone : medium->deviceNode() ) );
+    table += row.arg( Qt::escape( i18n( "Mount Point:" ) ),
+            Qt::escape( medium->mountPoint().isEmpty() ? labelTextNone : medium->mountPoint() ) );
+    table += row.arg( Qt::escape( i18n( "Mime Type:" ) ),
+            Qt::escape( medium->mimeType().isEmpty() ? labelTextNone : medium->mimeType() ) );
 
-    QString title = escapeHTML( i18n( "Device information for %1").arg(medium->name() ) );
+    QString title = Qt::escape( i18n( "Device information for %1").arg(medium->name() ) );
     QString details = QString( "<em>%1</em><br />" "<table>%2</table>" ).arg( title, table );
 
     (void)new QLabel( i18n("Name: "), this );

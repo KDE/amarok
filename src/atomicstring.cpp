@@ -17,13 +17,10 @@
   Boston, MA 02110-1301, USA.
 */
 
-#include <config.h>
 #ifdef HAVE_STDINT_H
 #include <stdint.h>
 #endif
-#include <QString>
 //Added by qt3to4:
-#include <Q3PtrList>
 #include <pthread.h>
 
 #include "atomicstring.h"

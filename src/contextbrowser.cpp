@@ -53,6 +53,7 @@
 #include <Q3PopupMenu>
 #include <QBuffer>
 #include <q3listview.h>
+#include <QTextDocument>
 #include <QTimer>
 #include <QToolTip>
 
@@ -79,12 +80,6 @@
 
 namespace Amarok
 {
-    QString escapeHTML( const QString &s )
-    {
-        return QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" );
-        // .replace( "%", "%25" ) has to be the first(!) one, otherwise we would do things like converting spaces into %20 and then convert them into %25%20
-    }
-
     QString escapeHTMLAttr( const QString &s )
     {
         return QString(s).replace( "%", "%25" ).replace( "'", "%27" ).replace( "\"", "%22" ).replace( "#", "%23" ).replace( "?", "%3F" );
@@ -172,7 +167,6 @@ namespace Amarok
 
 
 using Amarok::QStringx;
-using Amarok::escapeHTML;
 using Amarok::escapeHTMLAttr;
 using Amarok::unescapeHTMLAttr;
 
@@ -225,7 +219,8 @@ ContextBrowser::ContextBrowser( const char *name )
     m_lyricsTab = new KVBox(this);
 
     m_lyricsToolBar = new Browser::ToolBar( m_lyricsTab );
-    m_lyricsToolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+    m_lyricsToolBar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
+    m_lyricsToolBar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum);
     m_lyricsToolBar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum);
 
     lyricsRefreshAction = new KAction(KIcon( "refresh" ), i18n("Refresh"), this);
@@ -313,7 +308,7 @@ ContextBrowser::ContextBrowser( const char *name )
 
     m_wikiToolBar = new Browser::ToolBar( m_wikiTab );
     m_wikiToolBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
-    m_wikiToolBar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum);
+    m_wikiToolBar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
 
 
     wikiHistoryBackAction = new KAction(KIcon( "back" ), i18n("Back"), this);
@@ -717,7 +712,7 @@ void ContextBrowser::engineNewMetaData( const MetaBundle& bundle, bool trackChan
     {
         newMetaData = true;
         const QString timeString = KGlobal::locale()->formatTime( QTime::currentTime() ).replace(" ", "&nbsp;"); // don't break over lines
-        m_metadataHistory.prepend( QString( "<td valign='top'>" + timeString + "&nbsp;</td><td align='left'>" + escapeHTML( bundle.prettyTitle() ) + "</td>" ) );
+        m_metadataHistory.prepend( QString( "<td valign='top'>" + timeString + "&nbsp;</td><td align='left'>" + Qt::escape( bundle.prettyTitle() ) + "</td>" ) );
     }
 
     if ( currentPage() == m_contextTab && ( bundle.url() != m_currentURL || newMetaData || !trackChanged ) )
@@ -1477,7 +1472,7 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
                 .args( QStringList()
                     << stID + reqResult[i+1] ));
 
-        QString albumName = escapeHTML( reqResult[ i ].isEmpty() ? i18n( "Unknown album" ) : reqResult[ i ] );
+        QString albumName = Qt::escape( reqResult[ i ].isEmpty() ? i18n( "Unknown album" ) : reqResult[ i ] );
 
         QString artistName = albumValues[5].isEmpty() ? i18n( "Unknown artist" ) : albumValues[5];
 
@@ -1505,7 +1500,7 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
                     << albumImageTitleAttr
                     << escapeHTMLAttr( albumImage )
                     << escapeHTMLAttr( artistName )
-                    << escapeHTML( artistName )
+                    << Qt::escape( artistName )
                     << albumValues[6]
                     << reqResult[ i + 1 ] //album.id
                     << albumName ) );
@@ -1571,7 +1566,7 @@ CurrentTrackJob::constructHTMLAlbums( const QStringList &reqResult, QString &htm
                         "<div class='album-song'>\n"
                         "<a href=\"file:" + escapeHTMLAttr( albumValues[j + 1] ) + "\">\n"
                         + track +
-                        "<span class='album-song-title'>\n" + escapeHTML( albumValues[j] ) + "</span>&nbsp;"
+                        "<span class='album-song-title'>\n" + Qt::escape( albumValues[j] ) + "</span>&nbsp;"
                         + length +
                         "</a>\n"
                         "</div>\n" );
@@ -1664,12 +1659,12 @@ CurrentTrackJob::showHomeByAlbums()
                                         << pcb.link().url().replace( QRegExp( "^http:" ), "externalurl:" )
                                         << escapeHTMLAttr( imageAttr )
                                         << escapeHTMLAttr( image )
-                                        << escapeHTML( ep.duration() ? MetaBundle::prettyTime( ep.duration() ) : QString( "" ) )
+                                        << Qt::escape( ep.duration() ? MetaBundle::prettyTime( ep.duration() ) : QString( "" ) )
                                         << ( ep.localUrl().isValid()
                                             ? ep.localUrl().url()
                                             : ep.url().url().replace( QRegExp( "^http:" ), "stream:" ) )
-                                        << escapeHTML( pcb.title() + ": " + ep.title() )
-                                        << escapeHTML( date )
+                                        << Qt::escape( pcb.title() + ": " + ep.title() )
+                                        << Qt::escape( date )
                                         << "none"
                                         << QString::number( i )
                                      )
@@ -1886,24 +1881,24 @@ void CurrentTrackJob::showLastFm( const MetaBundle &currentTrack )
             "</table>\n"
             "</div>\n" )
             .args( QStringList()
-            << escapeHTML( LastFm::Controller::stationDescription() )  //1
+            << Qt::escape( LastFm::Controller::stationDescription() )  //1
             << artistUrl  //2
-            << escapeHTML( currentTrack.artist() ) //3
+            << Qt::escape( currentTrack.artist() ) //3
             << titleUrl //4
-            << escapeHTML( currentTrack.title() ) //5
+            << Qt::escape( currentTrack.title() ) //5
             << albumUrl //6
-            << escapeHTML( currentTrack.album() ) //7
+            << Qt::escape( currentTrack.album() ) //7
             << albumUrl //8
             << coverImage //9
             << escapeHTMLAttr( currentTrack.album() )//10
             << escapeHTMLAttr( userpage ) //11
             << escapeHTMLAttr( userpage ) //12
             << escapeHTMLAttr( lastfmIcon ) //13
-            << escapeHTML( i18n( "Skip" ) ) //14
+            << Qt::escape( i18n( "Skip" ) ) //14
             << escapeHTMLAttr( skipIcon ) //15
-            << escapeHTML( i18n( "Love" ) ) //16
+            << Qt::escape( i18n( "Love" ) ) //16
             << escapeHTMLAttr( loveIcon ) //17
-            << escapeHTML( i18n( "Ban" ) ) //18
+            << Qt::escape( i18n( "Ban" ) ) //18
             << escapeHTMLAttr( banIcon ) //19
                 ) );
 
@@ -1966,12 +1961,12 @@ void CurrentTrackJob::showStream( const MetaBundle &currentTrack )
                 "</div>\n" )
                 .args( QStringList()
                         << i18n( "Stream Details" )
-                        << escapeHTML( currentTrack.prettyTitle() )
-                        << escapeHTML( currentTrack.streamName() )
-                        << escapeHTML( currentTrack.genre() )
-                        << escapeHTML( currentTrack.prettyBitrate() )
-                        << escapeHTML( currentTrack.streamUrl() )
-                        << escapeHTML( currentTrack.prettyUrl() ) ) );
+                        << Qt::escape( currentTrack.prettyTitle() )
+                        << Qt::escape( currentTrack.streamName() )
+                        << Qt::escape( currentTrack.genre() )
+                        << Qt::escape( currentTrack.prettyBitrate() )
+                        << Qt::escape( currentTrack.streamUrl() )
+                        << Qt::escape( currentTrack.prettyUrl() ) ) );
 
     addMetaHistory();
 
@@ -2046,18 +2041,18 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
                 "</table>\n"
                 "</div>\n" )
             .args( QStringList()
-                << escapeHTML( pcb.title() )
-                << escapeHTML( peb.title() )
+                << Qt::escape( pcb.title() )
+                << Qt::escape( peb.title() )
                 << ( pcb.link().isValid()
                     ? pcb.link().url().replace( QRegExp( "^http:" ), "externalurl:" )
                     : "current://track" )
                 << image
                 << imageAttr
-                << escapeHTML( peb.author().isEmpty()
+                << Qt::escape( peb.author().isEmpty()
                     ? i18n( "Podcast" )
                     : i18n( "Podcast by %1", peb.author() ) )
                 << ( peb.localUrl().isValid()
-                    ? "<br />\n" + escapeHTML( i18n( "(Cached)" ) )
+                    ? "<br />\n" + Qt::escape( i18n( "(Cached)" ) )
                     : "" )
                 )
             );
@@ -2085,7 +2080,7 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
             "<div id='albums_box-header' class='box-header'>\n"
             "<span id='albums_box-header-title' class='box-header-title'>\n"
             + ( channelInDB
-                ? i18n( "Episodes from %1", escapeHTML( pcb.title() ) )
+                ? i18n( "Episodes from %1", Qt::escape( pcb.title() ) )
                 : i18n( "Episodes from this Channel" )
               )
             + "</span>\n"
@@ -2122,12 +2117,12 @@ void CurrentTrackJob::showPodcast( const MetaBundle &currentTrack )
                     "<div class='album-body' style='display:%6;' id='IDE%7'>\n" )
                 .args( QStringList()
                     << QString::number( i )
-                    << escapeHTML( ep.duration() ? MetaBundle::prettyTime( ep.duration() ) : QString( "" ) )
+                    << Qt::escape( ep.duration() ? MetaBundle::prettyTime( ep.duration() ) : QString( "" ) )
                     << ( ep.localUrl().isValid()
                         ? ep.localUrl().url()
                         : ep.url().url().replace( QRegExp( "^http:" ), "stream:" ) )
-                    << escapeHTML( ep.title() )
-                    << escapeHTML( date )
+                    << Qt::escape( ep.title() )
+                    << Qt::escape( date )
                     << (peb.url() == ep.url() ? "block" : "none" )
                     << QString::number( i )
                     )
@@ -2152,7 +2147,7 @@ void CurrentTrackJob::showBrowseArtistHeader( const QString &artist )
     bool linkback = ( b->m_contextBackHistory.size() > 0 );
     QString back = ( linkback
             ? "<a id='artist-back-a' href='artistback://back'>\n"
-            + escapeHTML( i18n( "<- Back" ) )
+            + Qt::escape( i18n( "<- Back" ) )
             + "</a>\n"
             : QString( "" )
             );
@@ -2167,8 +2162,8 @@ void CurrentTrackJob::showBrowseArtistHeader( const QString &artist )
                 "<td><div id='current_box-header-nav' class='box-header-nav'>%3</div></td>\n"
                 "</tr></table>\n"
                 "</div>\n" )
-            .arg( escapeHTML( artist ) )
-            .arg( escapeHTML( i18n( "Browse Artist" ) ) )
+            .arg( Qt::escape( artist ) )
+            .arg( Qt::escape( i18n( "Browse Artist" ) ) )
             .arg( back ) );
     m_HTMLSource.append(
             "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>\n"
@@ -2188,7 +2183,7 @@ void CurrentTrackJob::showBrowseArtistHeader( const QString &artist )
             "<tr>\n"
             "<td id='artist-wikipedia'>\n"
             + QString( "<a id='artist-wikipedia-a' href='wikipedia:%1'>\n" ).arg( escapeHTMLAttr( artist + b->wikiArtistPostfix() ) )
-            + i18n( "Wikipedia Information for %1", escapeHTML( artist ) ) +
+            + i18n( "Wikipedia Information for %1", Qt::escape( artist ) ) +
             "</a>\n"
             "</td>\n"
             "</tr>\n");
@@ -2196,7 +2191,7 @@ void CurrentTrackJob::showBrowseArtistHeader( const QString &artist )
             "<tr>\n"
             "<td id='artist-google'>\n"
             + QString( "<a id='artist-google-a' href='ggartist:%1'>\n" ).arg( escapeHTMLAttr( artist ) )
-            + i18n( "Google Musicsearch for %1", escapeHTML( artist ) ) +
+            + i18n( "Google Musicsearch for %1", Qt::escape( artist ) ) +
             "</a>\n"
             "</td>\n"
             "</tr>\n"
@@ -2216,7 +2211,7 @@ CurrentTrackJob::showBrowseLabelHeader( const QString &label )
     bool linkback = ( b->m_contextBackHistory.size() > 0 );
     QString back = ( linkback
             ? "<a id='artist-back-a' href='artistback://back'>\n"
-            + escapeHTML( i18n( "<- Back" ) )
+            + Qt::escape( i18n( "<- Back" ) )
             + "</a>\n"
             : QString( "" )
             );
@@ -2231,8 +2226,8 @@ CurrentTrackJob::showBrowseLabelHeader( const QString &label )
                 "<td><div id='current_box-header-nav' class='box-header-nav'>%3</div></td>\n"
                 "</tr></table>\n"
                 "</div>\n" )
-            .arg( escapeHTML( label ) )
-            .arg( escapeHTML( i18n( "Browse Label" ) ) )
+            .arg( Qt::escape( label ) )
+            .arg( Qt::escape( i18n( "Browse Label" ) ) )
             .arg( back ) );
     m_HTMLSource.append(
             "<table id='current_box-table' class='box-body' width='100%' cellpadding='0' cellspacing='0'>\n"
@@ -2252,7 +2247,7 @@ CurrentTrackJob::showBrowseLabelHeader( const QString &label )
             "<tr>\n"
             "<td id='label-lastfm'>\n"
             + QString( "<a id='label-lastfm-a' href='externalurl://www.last.fm/tag/%1'>\n" ).arg( escapeHTMLAttr( label ) )
-            + i18n( "Last.fm Information for %1", escapeHTML( label ) ) +
+            + i18n( "Last.fm Information for %1", Qt::escape( label ) ) +
             "</a>\n"
             "</td>\n"
             "</tr>\n");
@@ -2318,9 +2313,9 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
                     "</div>\n"
                     )
                 .args( QStringList()
-                        << escapeHTML( currentTrack.title() )
-                        << escapeHTML( currentTrack.artist() )
-                        << escapeHTML( currentTrack.album() )
+                        << Qt::escape( currentTrack.title() )
+                        << Qt::escape( currentTrack.artist() )
+                        << Qt::escape( currentTrack.album() )
                         << ( isCompilation ? "" : escapeHTMLAttr( currentTrack.artist() ) )
                         << escapeHTMLAttr( currentTrack.album() )
                         << escapeHTMLAttr( albumImage )
@@ -2329,7 +2324,7 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
                         << escapeHTMLAttr( currentTrack.artist() )
                         << escapeHTMLAttr( currentTrack.album() )
                         << escapeHTMLAttr( currentTrack.title() )
-                        << escapeHTML( KStandardDirs::locate( "data", "amarok/images/musicbrainz.png" ) ) )
+                        << Qt::escape( KStandardDirs::locate( "data", "amarok/images/musicbrainz.png" ) ) )
                 : QString ( //no title
                         "<span id='current_box-header-prettytitle' class='box-header-prettytitle'>%1</span> "
                         "</div>\n"
@@ -2342,7 +2337,7 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
                         "</td>\n"
                         "<td id='current_box-information-td' align='right'>\n"
                         )
-                .arg( escapeHTML( currentTrack.prettyTitle() ) )
+                .arg( Qt::escape( currentTrack.prettyTitle() ) )
                 .arg( escapeHTMLAttr( currentTrack.artist() ) )
                 .arg( escapeHTMLAttr( currentTrack.album() ) )
                 .arg( escapeHTMLAttr( albumImage ) )
@@ -2424,11 +2419,11 @@ void CurrentTrackJob::showCurrentArtistHeader( const MetaBundle &currentTrack )
                     "<td class='song'>\n"
                     "<a href=\"seek:" + QString::number(it.key()) + "\">\n"
                     "<span class='album-song-trackno'>\n" + QString::number(it.data().getTrackNumber()) + "&nbsp;</span>\n"
-                    "<span class='album-song-title'>\n" + escapeHTML( it.data().getTitle() ) + "</span>\n"
+                    "<span class='album-song-title'>\n" + Qt::escape( it.data().getTitle() ) + "</span>\n"
                     "<span class='song-separator'>\n"
                     + i18n("&#xa0;&#8211; ") +
                     "</span>\n"
-                    "<span class='album-song-title'>\n" + escapeHTML( it.data().getArtist() ) + "</span>\n"
+                    "<span class='album-song-title'>\n" + Qt::escape( it.data().getArtist() ) + "</span>\n"
                     "<span class='album-song-time'>&nbsp;(" + MetaBundle::prettyTime( it.data().getLength()/1000, false ) + ")</span>\n"
                     "</a>\n"
                     "</td>\n"
@@ -2452,14 +2447,14 @@ void CurrentTrackJob::showRelatedArtists( const QString &artist, const QStringLi
                 "<span id='related_box-header-title' class='box-header-title'>%1</span>\n"
                 "</div>\n"
                 "<table class='box-body' id='T_RA' width='100%' border='0' cellspacing='0' cellpadding='1'>\n" )
-            .arg( i18n( "Artists Related to %1", escapeHTML( artist ) ) ) );
+            .arg( i18n( "Artists Related to %1", Qt::escape( artist ) ) ) );
     m_HTMLSource.append( "<tr><td>\n" );
     for ( uint i = 0; i < relArtists.count(); i += 1 )
     {
         bool isInCollection = !CollectionDB::instance()->albumListOfArtist( relArtists[i] ).isEmpty();
         m_HTMLSource.append(
                 ( isInCollection ? "" : "<i>" )
-                + QString( "<a href='artist:" ) + escapeHTMLAttr( relArtists[i] ) + "'>" + escapeHTML( relArtists[i] ) + "</a>"
+                + QString( "<a href='artist:" ) + escapeHTMLAttr( relArtists[i] ) + "'>" + Qt::escape( relArtists[i] ) + "</a>"
                 + ( isInCollection ? "" : "</i>" )
                 );
         if( i != relArtists.count()-1 )
@@ -2510,10 +2505,10 @@ void CurrentTrackJob::showSuggestedSongs( const QStringList &relArtists )
                     "<tr class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>\n"
                     "<td class='song'>\n"
                     "<a href=\"file:" + escapeHTMLAttr ( values[i] ) + "\">\n"
-                    "<span class='album-song-title'>\n"+ escapeHTML( values[i + 2] ) + "</span>\n"
+                    "<span class='album-song-title'>\n"+ Qt::escape( values[i + 2] ) + "</span>\n"
                     "<span class='song-separator'>\n"
                     + i18n("&#xa0;&#8211; ") +
-                    "</span><span class='album-song-title'>\n" + escapeHTML( values[i + 1] ) + "</span>\n"
+                    "</span><span class='album-song-title'>\n" + Qt::escape( values[i + 1] ) + "</span>\n"
                     "</a>\n"
                     "</td>\n"
                     "<td>\n" + statsHTML( static_cast<int>( values[i + 3].toFloat() ), values[i + 4].toInt() ) + "</td>\n"
@@ -2563,10 +2558,10 @@ CurrentTrackJob::showSongsWithLabel( const QString &label )
                     "<tr class='" + QString( (i % 8) ? "box-row-alt" : "box-row" ) + "'>\n"
                     "<td class='song'>\n"
                     "<a href=\"file:" + escapeHTMLAttr ( values[i] ) + "\">\n"
-                    "<span class='album-song-title'>\n"+ escapeHTML( values[i + 2] ) + "</span>\n"
+                    "<span class='album-song-title'>\n"+ Qt::escape( values[i + 2] ) + "</span>\n"
                     "<span class='song-separator'>\n"
                     + i18n("&#xa0;&#8211; ") +
-                    "</span><span class='album-song-title'>\n" + escapeHTML( values[i + 1] ) + "</span>\n"
+                    "</span><span class='album-song-title'>\n" + Qt::escape( values[i + 1] ) + "</span>\n"
                     "</a>\n"
                     "</td>\n"
                     "<td>\n" + statsHTML( static_cast<int>( values[i + 3].toFloat() ), values[i + 4].toInt() ) + "</td>\n"
@@ -2601,7 +2596,7 @@ CurrentTrackJob::showUserLabels( const MetaBundle &currentTrack )
                 "<div id='songlabels_box' class='box'>\n"
                 "<div id='songlabels-header' class='box-header' onCLick=\"toggleBlock('T_SL');window.location.href='togglebox:sl';\" style='cursor: pointer;'>\n"
                 "<span id='songlabels_box-header-title' class='box-header-title'>\n"
-                + i18n( " Labels for %1 ", escapeHTML( title ) ) +
+                + i18n( " Labels for %1 ", Qt::escape( title ) ) +
                 "</span>\n"
                 "</div>\n"
                 "<table class='box-body' id='T_SL' width='100%' border='0' cellspacing='0' cellpadding='1'>\n" );
@@ -2612,11 +2607,11 @@ CurrentTrackJob::showUserLabels( const MetaBundle &currentTrack )
         {
             if( it != values.begin() )
                 m_HTMLSource.append( ", \n" );
-            m_HTMLSource.append( "<a href='showlabel:" + escapeHTMLAttr( *it ) + "'>" + escapeHTML( *it ) + "</a>" );
+            m_HTMLSource.append( "<a href='showlabel:" + escapeHTMLAttr( *it ) + "'>" + Qt::escape( *it ) + "</a>" );
         }
     }
     m_HTMLSource.append( "</td></tr>\n" );
-    m_HTMLSource.append( "<tr><td><a id='songlabels_box_addlabel' href='show:editLabels'>" + i18n( "Add labels to %1", escapeHTML( title ) ) + "</a></td></tr>\n" );
+    m_HTMLSource.append( "<tr><td><a id='songlabels_box_addlabel' href='show:editLabels'>" + i18n( "Add labels to %1", Qt::escape( title ) ) + "</a></td></tr>\n" );
     m_HTMLSource.append(
             "</table>\n"
             "</div>\n" );
@@ -2627,7 +2622,7 @@ CurrentTrackJob::showUserLabels( const MetaBundle &currentTrack )
 
 void CurrentTrackJob::showArtistsFaves( const QString &artist, uint artist_id )
 {
-    QString artistName = artist.isEmpty() ? escapeHTML( i18n( "This Artist" ) ) : escapeHTML( artist );
+    QString artistName = artist.isEmpty() ? Qt::escape( i18n( "This Artist" ) ) : Qt::escape( artist );
     QueryBuilder qb;
     QStringList values;
 
@@ -2659,7 +2654,7 @@ void CurrentTrackJob::showArtistsFaves( const QString &artist, uint artist_id )
                     "<tr class='" + QString( (i % 6) ? "box-row-alt" : "box-row" ) + "'>\n"
                     "<td class='song'>\n"
                     "<a href=\"file:" + escapeHTMLAttr ( values[i + 1] ) + "\">\n"
-                    "<span class='album-song-title'>\n" + escapeHTML( values[i] ) + "</span>\n"
+                    "<span class='album-song-title'>\n" + Qt::escape( values[i] ) + "</span>\n"
                     "</a>\n"
                     "</td>\n"
                     "<td>\n" + statsHTML( static_cast<int>( values[i + 2].toFloat() ), values[i + 3].toInt() ) + "</td>\n"
@@ -2680,7 +2675,7 @@ void CurrentTrackJob::showArtistsFaves( const QString &artist, uint artist_id )
 void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, uint album_id )
 {
     DEBUG_BLOCK
-    QString artistName = artist.isEmpty() ? escapeHTML( i18n( "This Artist" ) ) : escapeHTML( artist );
+    QString artistName = artist.isEmpty() ? Qt::escape( i18n( "This Artist" ) ) : Qt::escape( artist );
     QueryBuilder qb;
     QStringList values;
     // <Albums by this artist>
@@ -2781,7 +2776,7 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
                         << i18np( "Single", "%1 Tracks",  albumValues.count() / qb.countReturnValues() )
                         << QString::number( artist_id )
                         << values[ i + 1 ] //album.id
-                        << escapeHTML( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] )
+                        << Qt::escape( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] )
                         << albumYear
                         << albumLength
                         << ( i!=vectorPlace ? "none" : "block" ) /* shows it if it's the current track album */
@@ -2826,7 +2821,7 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
                             "<div class='album-song'>\n"
                             "<a href=\"file:" + escapeHTMLAttr ( albumValues[j + 1] ) + "\">\n"
                             + track +
-                            "<span class='album-song-title'>\n" + (current?"<i>":"") + escapeHTML( albumValues[j] ) + (current?"</i>":"") + "</span>&nbsp;"
+                            "<span class='album-song-title'>\n" + (current?"<i>":"") + Qt::escape( albumValues[j] ) + (current?"</i>":"") + "</span>&nbsp;"
                             + length +
                             "</a>\n"
                             "</div>\n" );
@@ -2846,7 +2841,7 @@ void CurrentTrackJob::showArtistsAlbums( const QString &artist, uint artist_id, 
 
 void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artist_id, uint album_id )
 {
-    QString artistName = artist.isEmpty() ? escapeHTML( i18n( "This Artist" ) ) : escapeHTML( artist );
+    QString artistName = artist.isEmpty() ? Qt::escape( i18n( "This Artist" ) ) : Qt::escape( artist );
     QueryBuilder qb;
     QStringList values;
     // <Compilations with this artist>
@@ -2942,7 +2937,7 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
                         << escapeHTMLAttr( albumImage )
                         << i18np( "Single", "%1 Tracks",  albumValues.count() / qb.countReturnValues() )
                         << values[ i + 1 ] //album.id
-                        << escapeHTML( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] )
+                        << Qt::escape( values[ i ].isEmpty() ? i18n( "Unknown" ) : values[ i ] )
                         << albumYear
                         << albumLength
                         << ( i!=vectorPlace ? "none" : "block" ) /* shows it if it's the current track album */
@@ -2982,7 +2977,7 @@ void CurrentTrackJob::showArtistsCompilations( const QString &artist, uint artis
 
                     QString tracktitle_formated;
                     QString tracktitle;
-                    tracktitle = escapeHTML( i18n("%1 - %2", albumValues[j + 5], albumValues[j] ) );
+                    tracktitle = Qt::escape( i18n("%1 - %2", albumValues[j + 5], albumValues[j] ) );
                     tracktitle_formated = "<span class='album-song-title'>\n";
                     if( i==vectorPlace && albumValues[j + 2].toInt() == m_currentTrack.track() && discNumber.toInt() == m_currentTrack.discNumber() )
                         tracktitle_formated += "<i>\n";

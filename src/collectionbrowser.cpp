@@ -10,8 +10,6 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
-//#include "browserbar.h"
-#include "sidebar.h"
 #include "browserToolBar.h"
 #include "collectionbrowser.h"
 #include "collectiondb.h"
@@ -27,48 +25,18 @@
 #include "organizecollectiondialog.h"
 #include "playlist.h"       //insertMedia()
 #include "playlistbrowser.h"
+#include "sidebar.h"
 #include "statusbar.h"
 #include "tagdialog.h"
 #include "threadmanager.h"
 #include "qstringx.h"
-//Added by qt3to4:
-#include <QResizeEvent>
-#include <QMouseEvent>
-#include <Q3ValueList>
-#include <QDragEnterEvent>
-#include <QKeyEvent>
-#include <QEvent>
-#include <QDropEvent>
-#include <QDragMoveEvent>
-#include <QPaintEvent>
-#include <Q3PopupMenu>
 
 #include <tfile.h>   //TagLib::File::isWritable
 
 #include <unistd.h>         //CollectionView ctor
 
-#include <QApplication>
-#include <q3cstring.h>
-#include <q3dragobject.h>
-#include <QLayout>        //infobox
-#include <qmap.h>
-#include <QPainter>
-#include <QPixmap>
-#include <q3ptrlist.h>
-#include <QPushButton>
-#include <q3simplerichtext.h>
-#include <QTimer>
-#include <QToolButton>
-#include <QToolTip>       //QToolTip::add()
-#include <q3header.h>
-#include <QRegExp>
-#include <QToolButton>
-#include <QIcon>
-#include <QWidget>
-#include <QVBoxLayout>
-
-
 #include <kactioncollection.h>
+#include <kactionmenu.h>
 #include <kapplication.h>   //kapp
 #include <kconfig.h>
 #include <kcombobox.h>
@@ -76,14 +44,32 @@
 #include <kdialog.h>
 #include <kglobal.h>
 #include <kiconloader.h>    //renderView()
+#include <klineedit.h>
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kmenu.h>
 #include <kstandarddirs.h>   //KGlobal::dirs()
 #include <ktoggleaction.h>
-#include <kactionmenu.h>
-// #include <kvbox.h>
-#include <klineedit.h>
+
+#include <QApplication>
+#include <Q3DragObject>
+#include <Q3Header>
+#include <QIcon>
+#include <QLayout>        //infobox
+#include <QMap>
+#include <QMouseEvent>
+#include <QPainter>
+#include <Q3PopupMenu>
+#include <Q3PtrList>
+#include <QPushButton>
+#include <QRegExp>
+#include <Q3SimpleRichText>
+#include <QTimer>
+#include <QToolButton>
+#include <QToolTip>       //QToolTip::add()
+#include <QVBoxLayout>
+
+
  //ctor
 #include <kio/job.h>
 #include <kpushbutton.h>

@@ -24,7 +24,7 @@
 #include "statusBarBase.h"  //baseclass
 #include "queueLabel.h"
 
-#include <q3valuestack.h>
+#include <Q3ValueStack>
 //Added by qt3to4:
 #include <QLabel>
 

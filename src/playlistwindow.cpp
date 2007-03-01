@@ -41,10 +41,11 @@
 #include "threadmanager.h"
 #include "magnatunebrowser/magnatunebrowser.h"
 #include "servicebrowser/servicebrowser.h"
+#include "dockwidget.h"
 
 #include <QEvent>           //eventFilter()
-#include <qfont.h>
-#include <q3header.h>
+#include <QFont>
+#include <Q3Header>
 #include <QLayout>
 #include <QLabel>           //search filter label
 
@@ -52,6 +53,8 @@
 #include <QPen>
 
 #include <QSizePolicy>      //qspaceritem in dynamic bar
+#include <QSpacerItem>
+#include <QStackedWidget>   //ContextBrowser holder
 #include <QTimer>           //search filter timer
 #include <QToolTip>         //QToolTip::add()
 #include <kvbox.h>            //contains the playlist
@@ -59,6 +62,7 @@
 #include <QContextMenuEvent>
 #include <QWheelEvent>
 #include <QCloseEvent>
+//#include <QDockWidget>
 #include <QShowEvent>
 #include <QPaintEvent>
 #include <Q3PopupMenu>
@@ -76,13 +80,14 @@
 #include <kmenu.h>
 #include <kpushbutton.h>
 #include <kstandarddirs.h>    //Welcome Tab, locate welcome.html
+#include <kstatusbar.h>
 #include <ktoolbar.h>
    //createGUI()
 #include <kxmlguibuilder.h>   //XMLGUI
 #include <kxmlguifactory.h>   //XMLGUI
-
 #include <fixx11h.h>
-
+#include <k3listviewsearchline.h>
+// #include <phonon/ui/videowidget.h>
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -124,202 +129,9 @@ PlaylistWindow::PlaylistWindow()
     // Sets caption and icon correctly (needed e.g. for GNOME)
     kapp->setTopWidget( this );
 
-    KActionCollection* const ac = actionCollection();
-    const EngineController* const ec = EngineController::instance();
-    
-    ac->setAssociatedWidget( this );
+    createActions();
 
     new K3bExporter();
-
-    KStandardAction::configureToolbars( kapp, SLOT( slotConfigToolBars() ), ac );
-    KStandardAction::keyBindings( kapp, SLOT( slotConfigShortcuts() ), ac );
-    KStandardAction::preferences( kapp, SLOT( slotConfigAmarok() ), ac );
-    ac->action(KStandardAction::name(KStandardAction::KeyBindings))->setIcon( KIcon( Amarok::icon( "configure" ) ) );
-    ac->action(KStandardAction::name(KStandardAction::ConfigureToolbars))->setIcon( KIcon( Amarok::icon( "configure" ) ) );
-    ac->action(KStandardAction::name(KStandardAction::Preferences))->setIcon( KIcon( Amarok::icon( "configure" ) ) );
-
-    KStandardAction::quit( kapp, SLOT( quit() ), ac );
-//TODO: Is the right?
-    //KStandardAction::open( this, "playlist_add", ac )->setText( i18n("&Add Media...") );
-    KAction *action = new KAction( this );
-    connect( action, SIGNAL( triggered(bool) ), this, SLOT( slotAddLocation() ) );
-    action->setIcon( KIcon( Amarok::icon( "files" ) ) );
-    action->setText( i18n("&Add Media...") );
-    ac->addAction( "playlist_add", action );
-
-    //KStandardAction::open( this, "stream_add", ac )->setText( i18n("&Add Stream...") );
-    action = new KAction( this );
-    connect( action, SIGNAL( triggered(bool) ), this, SLOT( slotAddStream() ) );
-    action->setIcon( KIcon( Amarok::icon( "files" ) ) );
-    action->setText( i18n("&Add Stream...") );
-    ac->addAction( "stream_add", action );
-
-
-    //KStandardAction::save( this, "playlist_save", ac )->setText( i18n("&Save Playlist As...") );
-    action = new KAction( this );
-    connect( action, SIGNAL( triggered(bool) ), this, SLOT( savePlaylist() ) );
-    action->setIcon( KIcon( Amarok::icon( "save" ) ) );
-    action->setText( i18n("&Save Playlist As...") );
-    ac->addAction( "playlist_save", action );
-
-#ifndef Q_WS_MAC
-    KAction *showMenu = KStandardAction::showMenubar( this, SLOT(slotToggleMenu()), this );
-    ac->addAction( KStandardAction::name(KStandardAction::ShowMenubar), showMenu );
-#endif
-
-
-    KAction *burn = new KAction( this );
-    burn->setText( i18n( "Burn Current Playlist" ) );
-    burn->setIcon( KIcon(Amarok::icon( "burn" )) );
-    ac->addAction( "playlist_burn", burn );
-    connect(burn, SIGNAL(triggered(bool)), SLOT(slotBurnPlaylist()));
-    actionCollection()->action("playlist_burn")->setEnabled( K3bExporter::isAvailable() );
-
-    KAction *playact = new KAction( this );
-    playact->setText( i18n("Play Media...") );
-    playact->setIcon( KIcon(Amarok::icon( "files" )) );
-    ac->addAction( "playlist_playmedia", playact );
-    connect(playact, SIGNAL(triggered(bool)), SLOT(slotPlayMedia()));
-
-    KAction *acd = new KAction( this );
-    acd->setText(  i18n("Play Audio CD") );
-    acd->setIcon(  KIcon( Amarok::icon( "album" ) ) );
-    ac->addAction( "play_audiocd", acd );
-    connect(acd, SIGNAL(triggered(bool)), SLOT(playAudioCD()));
-
-    KAction *script = new KAction( this );
-    script->setText( i18n("Script Manager") );
-    script->setIcon( KIcon(Amarok::icon( "scripts" )) );
-    ac->addAction( "script_manager", script );
-    connect(script, SIGNAL(triggered(bool)), SLOT(showScriptSelector()));
-
-    KAction *queue = new KAction( this );
-    queue->setText( i18n( "Queue Manager" ) );
-    queue->setIcon( KIcon( Amarok::icon( "queue" )) );
-    ac->addAction( "queue_manager", queue );
-    connect(queue, SIGNAL(triggered(bool)), SLOT(showQueueManager()));
-
-    KAction *seekForward = new KAction( this );
-    seekForward->setText( i18n("&Seek Forward") );
-    seekForward->setIcon( KIcon( Amarok::icon( "fastforward" ) ) );
-    ac->addAction( "seek_forward", seekForward );
-    seekForward->setShortcut( Qt::Key_Right );
-    connect(seekForward, SIGNAL(triggered(bool)), ec, SLOT(seekForward()));
-
-    KAction *seekBackward = new KAction( this );
-    seekBackward->setText( i18n( "&Seek Backward" ) );
-    seekBackward->setIcon( KIcon(Amarok::icon( "rewind" )) );
-    ac->addAction( "seek_backward", seekBackward );
-    seekBackward->setShortcut(Qt::Key_Left);
-    connect(seekBackward, SIGNAL(triggered(bool)), ec, SLOT(seekBackward()));
-
-    KAction *statistics = new KAction( this );
-    statistics->setText( i18n( "Statistics" ) );
-    statistics->setIcon( KIcon(Amarok::icon( "info" )) );
-    ac->addAction( "statistics", statistics );
-    connect(statistics, SIGNAL(triggered(bool)), SLOT(showStatistics()));
-
-    KAction *update = new KAction( this );
-    update->setText( i18n( "Update Collection" ) );
-    update->setIcon( KIcon(Amarok::icon( "refresh")) );
-    actionCollection()->addAction( "update_collection", update );
-    connect(update, SIGNAL(triggered(bool)), CollectionDB::instance(), SLOT(scanModifiedDirs()));
-
-    m_lastfmTags << "Alternative" <<  "Ambient" << "Chill Out" << "Classical" << "Dance"
-                 << "Electronica" << "Favorites" << "Heavy Metal" << "Hip Hop" << "Indie Rock"
-                 << "Industrial" << "Japanese" << "Pop" << "Psytrance" << "Rap" << "Rock"
-                 << "Soundtrack" << "Techno" << "Trance";
-
-    KMenu* playTagRadioMenu = new KMenu( this );
-    int id = 0;
-    oldForeach( m_lastfmTags ) {
-        playTagRadioMenu->insertItem( *it, this, SLOT( playLastfmGlobaltag( int ) ), 0, id );
-        ++id;
-    }
-
-    KMenu* addTagRadioMenu = new KMenu( this );
-    id = 0;
-    oldForeach( m_lastfmTags ) {
-        addTagRadioMenu->insertItem( *it, this, SLOT( addLastfmGlobaltag( int ) ), 0, id );
-        ++id;
-    }
-
-    KActionMenu* playLastfm = new KActionMenu( KIcon(Amarok::icon("audioscrobbler")), i18n( "Play las&t.fm Stream" ), ac);
-    KMenu* playLastfmMenu = playLastfm->popupMenu();
-    playLastfmMenu->insertItem( i18n( "Personal Radio" ), this, SLOT( playLastfmPersonal() ) );
-    playLastfmMenu->insertItem( i18n( "Neighbor Radio" ), this, SLOT( playLastfmNeighbor() ) );
-    playLastfmMenu->insertItem( i18n( "Custom Station" ), this, SLOT( playLastfmCustom() ) );
-    playLastfmMenu->insertItem( i18n( "Global Tag Radio" ), playTagRadioMenu );
-
-    KActionMenu* addLastfm = new KActionMenu( KIcon(Amarok::icon("audioscrobbler")), i18n( "Add las&t.fm Stream" ), ac);
-    KMenu* addLastfmMenu = addLastfm->popupMenu();
-    addLastfmMenu->insertItem( i18n( "Personal Radio" ), this, SLOT( addLastfmPersonal() ) );
-    addLastfmMenu->insertItem( i18n( "Neighbor Radio" ), this, SLOT( addLastfmNeighbor() ) );
-    addLastfmMenu->insertItem( i18n( "Custom Station" ), this, SLOT( addLastfmCustom() ) );
-    addLastfmMenu->insertItem( i18n( "Global Tag Radio" ), addTagRadioMenu );
-
-//    ac->action( "options_configure_globals" )->setText( i18n( "Configure &Global Shortcuts..." ) );
-
-//     new KAction( i18n( "Previous Track" ), Amarok::icon( "back" ), 0, ec, SLOT( previous() ), ac, "prev" );
-//     new KAction( i18n( "Play" ), Amarok::icon( "play" ), 0, ec, SLOT( play() ), ac, "play" );
-//     new KAction( i18n( "Pause" ), Amarok::icon( "pause" ), 0, ec, SLOT( pause() ), ac, "pause" );
-//     new KAction( i18n( "Next Track" ), Amarok::icon( "next" ), 0, ec, SLOT( next() ), ac, "next" );
-    KAction *previous = new KAction( this );
-    previous->setIcon( KIcon(Amarok::icon( "back" )) );
-    previous->setText( i18n( "Previous Track" ) );
-    ac->addAction( "prev", previous );
-    connect( previous, SIGNAL(triggered(bool)), ec, SLOT( previous() ) );
-
-    KAction *play = new KAction( this );
-    play->setIcon( KIcon(Amarok::icon( "play" )) );
-    play->setText( i18n( "Play" ) );
-    ac->addAction( "play", play );
-    connect( play, SIGNAL(triggered(bool)), ec, SLOT( play() ));
-
-    KAction *pause = new KAction( this );
-    pause->setIcon( KIcon(Amarok::icon( "pause" )) );
-    pause->setText( i18n( "Pause" ));
-    ac->addAction( "pause", pause );
-    connect( pause, SIGNAL(triggered(bool)), ec, SLOT( pause() ) );
-
-    KAction *next = new KAction( this );
-    next->setIcon( KIcon(Amarok::icon( "next" )) );
-    next->setText( i18n( "Next Track" ) );
-    ac->addAction( "next", next );
-    connect( next, SIGNAL(triggered(bool)), ec, SLOT( next() ) );
-
-//     KAction *toggleFocus = new KAction( i18n( "Toggle Focus" ), "reload", Qt::ControlModifier + Qt::Key_Tab, this, SLOT( slotToggleFocus() ), ac, "toggle_focus" );
-    KAction *toggleFocus = new KAction(i18n( "Toggle Focus" ), ac);
-    toggleFocus->setShortcut( Qt::ControlModifier + Qt::Key_Tab );
-    connect( toggleFocus, SIGNAL(triggered(bool)), SLOT( slotToggleFocus() ));
-
-
-    /*{ // KAction idiocy -- shortcuts don't work until they've been plugged into a menu
-        KMenu asdf;
-
-        playPause->plug( &asdf );
-        seekForward->plug( &asdf );
-        seekBackward->plug( &asdf );
-        toggleFocus->plug( &asdf );
-
-        playPause->unplug( &asdf );
-        seekForward->unplug( &asdf );
-        seekBackward->unplug( &asdf );
-        toggleFocus->unplug( &asdf );
-    }*/
-
-
-    new Amarok::MenuAction( ac );
-    new Amarok::StopAction( ac );
-    new Amarok::PlayPauseAction( ac );
-    new Amarok::AnalyzerAction( ac );
-    new Amarok::RepeatAction( ac );
-    new Amarok::RandomAction( ac );
-    new Amarok::FavorAction( ac );
-    new Amarok::VolumeAction( ac );
-
-    if( K3bExporter::isAvailable() )
-        new Amarok::BurnMenuAction( ac );
 
     if( AmarokConfig::playlistWindowSize().isValid() ) {
         // if first ever run, use sizeHint(), and let
@@ -342,7 +154,7 @@ PlaylistWindow::~PlaylistWindow()
 ///////// public interface
 
 /**
- * This function will initialize the playlist window.
+ * This funtion will initialize the playlist window.
  */
 void PlaylistWindow::init()
 {
@@ -353,208 +165,109 @@ void PlaylistWindow::init()
     //the above ctor returns it causes a crash unless we do the initialisation in 2 stages.
     //<Dynamic Mode Status Bar />
     DynamicBar *dynamicBar = new DynamicBar( m_browsers->contentsWidget() );
+    KVBox *playlistwindow = new KVBox;
+    KToolBar *plBar = new KToolBar( playlistwindow, "PlaylistToolBar" ); //This is our clear/undo/redo/save buttons
+    Playlist *playlist = new Playlist( playlistwindow ); //Playlist
+    m_toolbar = new Amarok::ToolBar( this, "mainToolBar" );
 
-    QFrame *playlist;
-
-    { //<Search LineEdit>
-        KToolBar *bar = new KToolBar( m_browsers->contentsWidget(), "NotMainToolBar" );
-        bar->setToolButtonStyle( Qt::ToolButtonIconOnly );
-        bar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
-        bar->setIconDimensions( 22 ); //looks more sensible
-        bar->setMovable( false ); //removes the ugly frame
-
-        playlist = new Playlist( m_browsers->contentsWidget() );
-        bar->addAction( actionCollection()->action( "playlist_clear") );
-        bar->addAction( actionCollection()->action( "playlist_save") );
-        bar->addSeparator();
-        bar->addAction( actionCollection()->action( "playlist_undo") );
-        bar->addAction( actionCollection()->action( "playlist_redo") );
+    { //START Playlist toolbar
+        plBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
+        plBar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
+        plBar->setIconDimensions( 22 );
+        plBar->setMovable( false );
+        plBar->addAction( actionCollection()->action( "playlist_clear") );
+        plBar->addAction( actionCollection()->action( "playlist_save") );
+        plBar->addSeparator();
+        plBar->addAction( actionCollection()->action( "playlist_undo") );
+        plBar->addAction( actionCollection()->action( "playlist_redo") );
+    //END Playlist Toolbar
+    }
 
 
-        QToolButton *clearButton = new QToolButton( bar );
-        clearButton->setIcon( KIcon("locationbar_erase") );
-        clearButton->setToolTip( i18n( "Clear search field" ) );
-        bar->addWidget( clearButton );
 
-        QLabel *filter_label = new QLabel( i18n("S&earch:") + ' ', bar );
-        bar->addWidget( filter_label );
-
-        m_lineEdit = new KLineEdit( bar );
-        m_lineEdit->setClickMessage( i18n( "Playlist Search" ) );
-        m_lineEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
-        m_lineEdit->setFrame( QFrame::Sunken );
-        m_lineEdit->installEventFilter( this ); //we intercept keyEvents
-        filter_label->setBuddy( m_lineEdit );
-
-        QString filtertip = i18n( "Enter space-separated terms to search in the playlist.\n\n"
-                                  "Advanced, Google-esque syntax is also available;\n"
-                                  "see the handbook (The Playlist section of chapter 4) for details." );
-        m_lineEdit->setToolTip( filtertip );
-
-        bar->addWidget( m_lineEdit );
-
-        KPushButton *filterButton = new KPushButton( "...", bar );
-        filterButton->setObjectName( "filter" );
-        filterButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
-        filterButton->setToolTip( i18n( "Click to edit playlist filter" ) );
-        bar->addWidget( filterButton );
-
-        connect( clearButton,  SIGNAL( clicked() ),
-                 m_lineEdit,     SLOT( clear() ) );
-        connect( m_lineEdit,   SIGNAL( textChanged( const QString& ) ),
-                 playlist,       SLOT( setFilterSlot( const QString& ) ) );
-        connect( filterButton, SIGNAL( clicked() ), SLOT( slotEditFilter() ) );
-    } //</Search LineEdit>
-
+    { //TODO: <Slider>
+#if 0
+        Amarok::PrettySlider *m_slider = new Amarok::PrettySlider( Qt::Horizontal,
+                                     Amarok::PrettySlider::Normal, m_toolbar );
+        QLabel *m_timeLabel = new TimeLabel( positionBox );
+        QLabel *m_timeLabel2;
+#endif
+    }
 
     dynamicBar->init();
     this->toolBars().clear();
-    m_toolbar = new Amarok::ToolBar( this, "mainToolBar" );
+    m_searchLine = new K3ListViewSearchLineWidget( playlist, m_toolbar );
+
+    { //BEGIN Maintoolbar
+        QString filtertip = i18n( "Enter space-separated terms to search in the playlist.\n\n" );
+        m_searchLine->setToolTip( filtertip );
+        KPushButton *filterButton = new KPushButton( "...", m_toolbar );
+        filterButton->setObjectName( "filter" );
+        filterButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
+        filterButton->setToolTip( i18n( "Click to edit playlist filter" ) );
+        m_toolbar->addAction( actionCollection()->action( "prev" ) );
+        m_toolbar->addAction( actionCollection()->action( "play_pause" ) );
+        m_toolbar->addAction( actionCollection()->action( "stop" ) );
+        m_toolbar->addAction( actionCollection()->action( "next" ) );
+        m_toolbar->addSeparator();
+        m_toolbar->addAction( actionCollection()->action( "toolbar_analyzer" ) );
+        m_toolbar->addSeparator();
+        m_toolbar->addAction( actionCollection()->action( "toolbar_volume" ) );
+        m_toolbar->addSeparator();
+        QStackedWidget *spacer = new QStackedWidget(); //FIXME: ugly hack
+        QSpacerItem *spacerItem = new QSpacerItem( 0, 0 );
+        spacer->layout()->addItem( spacerItem );
+        m_toolbar->addWidget( spacer ); 
+        m_toolbar->addWidget( m_searchLine );
+        m_toolbar->addWidget( filterButton );
 #ifndef Q_WS_MAC
-    m_toolbar->setShown( AmarokConfig::showToolbar() );
+        m_toolbar->setShown( AmarokConfig::showToolbar() );
 #endif
-    Amarok::StatusBar *statusbar = new Amarok::StatusBar( this );
-    setStatusBar(statusbar);
+        connect( filterButton, SIGNAL( clicked() ), SLOT( slotEditFilter() ) );
+    //END MainToolBar 
+    }
+    Amarok::StatusBar *statusbar = new Amarok::StatusBar( playlistwindow );
     QAction* repeatAction = Amarok::actionCollection()->action( "repeat" );
     connect( repeatAction, SIGNAL( activated( int ) ), playlist, SLOT( slotRepeatTrackToggled( int ) ) );
 
-    m_menubar = menuBar();//new MenuBar( this );
-#ifndef Q_WS_MAC
-    m_menubar->setShown( AmarokConfig::showMenuBar() );
-#endif
+    createMenus();
 
-    //BEGIN Actions menu
-    KMenu *actionsMenu = new KMenu( m_menubar );
-    actionsMenu->addAction( actionCollection()->action("playlist_playmedia") );
-    actionsMenu->addAction( actionCollection()->action("lastfm_play") );
-    actionsMenu->addAction( actionCollection()->action("play_audiocd") );
-    actionsMenu->addSeparator();
-    actionsMenu->addAction( actionCollection()->action("prev") );
-    actionsMenu->addAction( actionCollection()->action("play_pause") );
-    actionsMenu->addAction( actionCollection()->action("stop") );
-    actionsMenu->addAction( actionCollection()->action("next") );
-    actionsMenu->addSeparator();
-    actionsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Quit)) );
+    QStackedWidget *cbCover = new QStackedWidget();
+    cb = new ContextBrowser( "contextBrowser" );
+    cbCover->addWidget( cb );
+//     m_videoWidget = new Phonon::VideoWidget( this );
+//     cbCover->addWidget( m_videoWidget );
+//     m_videoWidget->hide();
+    setCentralWidget( cbCover );
 
+    DockWidget *browsersDockWidget = new DockWidget();
+    browsersDockWidget->setWidget( m_browsers );
+    addDockWidget( Qt::LeftDockWidgetArea, browsersDockWidget );
 
-    connect( actionsMenu, SIGNAL( aboutToShow() ), SLOT( actionsMenuAboutToShow() ) );
-    //END Actions menu
+    DockWidget *playlistWidget = new DockWidget();
+    playlistWidget->setWidget( playlistwindow );
+    addDockWidget( Qt::RightDockWidgetArea, playlistWidget );
 
-    //BEGIN Playlist menu
-    KMenu *playlistMenu = new KMenu( m_menubar );
-    playlistMenu->addAction( actionCollection()->action("playlist_add") );
-    playlistMenu->addAction( actionCollection()->action("stream_add") );
-    playlistMenu->addAction( actionCollection()->action("lastfm_add") );
-    playlistMenu->addAction( actionCollection()->action("playlist_save") );
-    playlistMenu->addAction( actionCollection()->action("playlist_burn") );
-    playlistMenu->addSeparator();
-    playlistMenu->addAction( actionCollection()->action("playlist_undo") );
-    playlistMenu->addAction( actionCollection()->action("playlist_redo") );
-    playlistMenu->insertSeparator();
-    playlistMenu->addAction( actionCollection()->action("playlist_clear") );
-    playlistMenu->addAction( actionCollection()->action("playlist_shuffle") );
-
-    playlistMenu->addSeparator();
-    playlistMenu->addAction( actionCollection()->action("queue_selected") );
-    playlistMenu->addAction( actionCollection()->action("playlist_remove_duplicates") );
-    playlistMenu->addAction( actionCollection()->action("playlist_select_all") );
-
-    //END Playlist menu
-
-    //BEGIN Mode menu
-    KMenu *modeMenu = new KMenu( m_menubar );
-    modeMenu->addAction( actionCollection()->action("repeat") );
-    KSelectAction *random = static_cast<KSelectAction*>( actionCollection()->action("random_mode") );
-    modeMenu->addAction( random );
-    random->menu()->addSeparator();
-    random->menu()->addAction( actionCollection()->action("favor_tracks") );
-    //END Mode menu
-
-    //BEGIN Tools menu
-    m_toolsMenu = new KMenu( m_menubar );
-    m_toolsMenu->insertItem( KIcon( Amarok::icon( "covermanager" ) ), i18n("&Cover Manager"), Amarok::Menu::ID_SHOW_COVER_MANAGER );
-    m_toolsMenu->addAction( actionCollection()->action("queue_manager") );
-    m_toolsMenu->insertItem( KIcon( Amarok::icon( "visualizations" ) ), i18n("&Visualizations"), Amarok::Menu::ID_SHOW_VIS_SELECTOR );
-    m_toolsMenu->insertItem( KIcon( Amarok::icon( "equalizer") ), i18n("&Equalizer"), kapp, SLOT( slotConfigEqualizer() ), 0, Amarok::Menu::ID_CONFIGURE_EQUALIZER );
-    m_toolsMenu->addAction( actionCollection()->action("script_manager") );
-    m_toolsMenu->addAction( actionCollection()->action("statistics") );
-    m_toolsMenu->addSeparator();
-    m_toolsMenu->addAction( actionCollection()->action("update_collection") );
-    m_toolsMenu->insertItem( KIcon( Amarok::icon( "rescan" ) ), i18n("&Rescan Collection"), Amarok::Menu::ID_RESCAN_COLLECTION );
-
-    #if defined HAVE_LIBVISUAL
-    m_toolsMenu->setItemEnabled( Amarok::Menu::ID_SHOW_VIS_SELECTOR, true );
-    #else
-    m_toolsMenu->setItemEnabled( Amarok::Menu::ID_SHOW_VIS_SELECTOR, false );
-    #endif
-
-    connect( m_toolsMenu, SIGNAL( aboutToShow() ), SLOT( toolsMenuAboutToShow() ) );
-    connect( m_toolsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );
-    //END Tools menu
-
-    //BEGIN Settings menu
-    m_settingsMenu = new KMenu( m_menubar );
-    //TODO use KStandardAction or KMainWindow
-#ifndef Q_WS_MAC
-    static_cast<KToggleAction *>(actionCollection()->action(KStandardAction::name(KStandardAction::ShowMenubar)))->setChecked( AmarokConfig::showMenuBar() );
-    m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::ShowMenubar)) );
-    m_settingsMenu->insertItem( AmarokConfig::showToolbar() ? i18n( "Hide Toolbar" ) : i18n("Show Toolbar"), ID_SHOW_TOOLBAR );
-    m_settingsMenu->addSeparator();
-#endif
-
-#ifdef Q_WS_MAC
-    // plug it first, as this item will be moved to the applications first menu
-    m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Preferences)) );
-#endif
-//    m_settingsMenu->addAction( actionCollection()->action("options_configure_globals") );
-    m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::KeyBindings)) );
-    m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::ConfigureToolbars)) );
-    m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Preferences)) );
-
-    connect( m_settingsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );
-    //END Settings menu
-
-    m_menubar->insertItem( i18n( "E&ngage" ), actionsMenu );
-    m_menubar->insertItem( i18n( "&Playlist" ), playlistMenu );
-    m_menubar->insertItem( i18n( "&Mode" ), modeMenu );
-    m_menubar->insertItem( i18n( "&Tools" ), m_toolsMenu );
-    m_menubar->insertItem( i18n( "&Settings" ), m_settingsMenu );
-    m_menubar->insertItem( i18n( "&Help" ), Amarok::Menu::helpMenu() );
-
-
-    QVBoxLayout *layV = new QVBoxLayout;
-    layV->addWidget( m_menubar );
-    layV->addWidget( m_browsers, 1 );
-    layV->addWidget( m_toolbar );
-    layV->addSpacing( 2 );
-    //layV->addWidget( statusbar );
-    layV->setMargin( 0 );
-    layV->setSpacing( 0 );
-    this->setLayout( layV );
-
-    addToolBar( Qt::BottomToolBarArea, m_toolbar );
-    //The volume slider later becomes our FocusProxy, so all wheelEvents get redirected to it
+    addToolBar( Qt::TopToolBarArea, m_toolbar );
     m_toolbar->setFocusPolicy( Qt::WheelFocus );
     m_toolbar->setMovable( false );
     playlist->setContentsMargins( 2,2,2,2 );
     playlist->installEventFilter( this ); //we intercept keyEvents
-    setCentralWidget((QWidget *)m_browsers);
 
 
     //<XMLGUI>
-    {
-        QString xmlFile = Amarok::config()->readEntry( "XMLFile", "amarokui.rc" );
-
-        // this bug can bite you if you are a pre 1.2 user, we
-        // deleted amarokui_first.rc, but we must still support it
-        // NOTE 1.4.1 we remove amarokui_xmms.rc too, so we can only be this ui.rc
-        xmlFile = "amarokui.rc";
-
-        setXMLFile( xmlFile );
-        createGUI(); //NOTE we implement this
-    }
+//     {
+//         QString xmlFile = Amarok::config()->readEntry( "XMLFile", "amarokui.rc" );
+// 
+//         // this bug can bite you if you are a pre 1.2 user, we
+//         // deleted amarokui_first.rc, but we must still support it
+//         // NOTE 1.4.1 we remove amarokui_xmms.rc too, so we can only be this ui.rc
+//         xmlFile = "amarokui.rc";
+// 
+//         setXMLFile( xmlFile );
+//         createGUI(); //NOTE we implement this
+//     }
     //</XMLGUI>
-
 
     //<Browsers>
     {
@@ -569,7 +282,7 @@ void PlaylistWindow::init()
              m_browsers->addWidget( KIcon( icon ), text, Type::instance() ); \
              m_browserNames.append( name ); }
 
-        addBrowserMacro( ContextBrowser, "ContextBrowser", i18n("Context"), Amarok::icon( "info" ) )
+//         addBrowserMacro( ContextBrowser, "ContextBrowser", i18n("Context"), Amarok::icon( "info" ) )
         addBrowserMacro( CollectionBrowser, "CollectionBrowser", i18n("Collection"), Amarok::icon( "collection" ) )
         //FIXME: figure this out
         //m_browsers->makeDropProxy( "CollectionBrowser", CollectionView::instance() );
@@ -608,22 +321,22 @@ void PlaylistWindow::init()
              statusbar,  SLOT( slotItemCountChanged( int, int, int, int, int, int ) ) );
     connect( playlist, SIGNAL( queueChanged( const QList<PlaylistItem*> &, const QList<PlaylistItem*> & ) ),
              statusbar,  SLOT( updateQueueLabel() ) );
-    connect( playlist, SIGNAL( aboutToClear() ), m_lineEdit, SLOT( clear() ) );
+//    connect( playlist, SIGNAL( aboutToClear() ), m_lineEdit, SLOT( clear() ) );
     
     Amarok::MessageQueue::instance()->sendMessages();
 }
 
 void PlaylistWindow::slotSetFilter( const QString &filter ) //SLOT
 {
-    m_lineEdit->setText( filter );
+//    m_lineEdit->setText( filter );
 }
 
 void PlaylistWindow::slotEditFilter() //SLOT
 {
-    EditFilterDialog *fd = new EditFilterDialog( this, true, m_lineEdit->text() );
+    EditFilterDialog *fd = new EditFilterDialog( this, true, "" );
     connect( fd, SIGNAL(filterChanged(const QString &)), SLOT(slotSetFilter(const QString &)) );
     if( fd->exec() )
-        m_lineEdit->setText( fd->filter() );
+        m_searchLine->searchLine()->updateSearch( fd->filter() );
     delete fd;
 }
 
@@ -643,6 +356,22 @@ void PlaylistWindow::showBrowser( const QString &name )
         m_browsers->showWidget( index );
 }
 
+void PlaylistWindow::showVideo( bool show )
+{
+#if 0
+//     show ? m_videoWidget->show() : m_videoWidget->hide();
+    if( show )
+    {
+        m_videoWidget->show();
+        cb->hide();
+    }
+    else
+    {
+        m_videoWidget->hide();
+        cb->show();
+    }
+#endif
+}
 
 /**
  * Reload the amarokui.rc xml file.
@@ -650,8 +379,10 @@ void PlaylistWindow::showBrowser( const QString &name )
  */
 void PlaylistWindow::recreateGUI()
 {
+#if 0
     reloadXML();
     createGUI();
+#endif
 }
 
 
@@ -786,7 +517,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
         }
 
 
-        if( o == m_lineEdit ) //the search lineedit
+        if( o == m_searchLine ) //the search lineedit
         {
             Q3ListViewItem *item;
             switch( e->key() )
@@ -802,7 +533,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
             case Qt::Key_Return:
             case Qt::Key_Enter:
                 item = *It( pl, It::Visible );
-                m_lineEdit->clear();
+                //m_lineEdit->clear();
                 pl->m_filtertimer->stop(); //HACK HACK HACK
                 if( e->state() & Qt::ControlModifier )
                 {
@@ -846,7 +577,7 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
                 return true;
 
             case Qt::Key_Escape:
-                m_lineEdit->clear();
+                m_searchLine->searchLine()->updateSearch("");
                 return true;
 
             default:
@@ -887,8 +618,8 @@ bool PlaylistWindow::eventFilter( QObject *o, QEvent *e )
             }
             if( ( ( e->key() >= Qt::Key_0 && e->key() <= Qt::Key_Z ) || e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Escape ) && ( !e->state() || e->state() == Qt::ShiftModifier ) ) //only if shift or no modifier key is pressed and 0-Z or backspace or escape
             {
-                m_lineEdit->setFocus();
-                QApplication::sendEvent( m_lineEdit, e );
+                m_searchLine->setFocus();
+                QApplication::sendEvent( m_searchLine, e );
                 return true;
             }
         }
@@ -1118,9 +849,9 @@ void PlaylistWindow::playAudioCD() //SLOT
     }
     else
     { // Default behaviour
-        showBrowser( "FileBrowser" );
-        FileBrowser *fb = static_cast<FileBrowser *>( m_browsers->at( m_browserNames.indexOf( "FileBrowser" ) ) );
-        fb->setUrl( KUrl("audiocd:/Wav/") );
+//        showBrowser( "FileBrowser" );
+//        FileBrowser *fb = static_cast<FileBrowser *>( m_browsers->at( m_browserNames.indexOf( "FileBrowser" ) ) );
+        //fb->setUrl( KUrl("audiocd:/Wav/") );
     }
 }
 
@@ -1147,7 +878,7 @@ void PlaylistWindow::showStatistics() //SLOT
 
 void PlaylistWindow::slotToggleFocus() //SLOT
 {
-    if( m_browsers->currentWidget() && ( Playlist::instance()->hasFocus() || m_lineEdit->hasFocus() ) )
+    if( m_browsers->currentWidget() && ( Playlist::instance()->hasFocus() || m_searchLine->hasFocus() ) )
         m_browsers->currentWidget()->setFocus();
 }
 
@@ -1281,6 +1012,282 @@ PlaylistWindow::mbAvailabilityChanged( bool isAvailable ) //SLOT
             m_browsers->removeWidget( MediaBrowser::instance() );
         }
     }
+}
+
+void PlaylistWindow::createActions()
+{
+    KActionCollection* const ac = actionCollection();
+    const EngineController* const ec = EngineController::instance();
+
+    KStandardAction::configureToolbars( kapp, SLOT( slotConfigToolBars() ), ac );
+    KStandardAction::keyBindings( kapp, SLOT( slotConfigShortcuts() ), ac );
+    KStandardAction::preferences( kapp, SLOT( slotConfigAmarok() ), ac );
+    ac->action(KStandardAction::name(KStandardAction::KeyBindings))->setIcon( KIcon( Amarok::icon( "configure" ) ) );
+    ac->action(KStandardAction::name(KStandardAction::ConfigureToolbars))->setIcon( KIcon( Amarok::icon( "configure" ) ) );
+    ac->action(KStandardAction::name(KStandardAction::Preferences))->setIcon( KIcon( Amarok::icon( "configure" ) ) );
+
+    KStandardAction::quit( kapp, SLOT( quit() ), ac );
+    KAction *action = new KAction( this );
+    connect( action, SIGNAL( triggered(bool) ), this, SLOT( slotAddLocation() ) );
+    action->setIcon( KIcon( Amarok::icon( "files" ) ) );
+    action->setText( i18n("&Add Media...") );
+    ac->addAction( "playlist_add", action );
+
+    action = new KAction( this );
+    connect( action, SIGNAL( triggered(bool) ), this, SLOT( slotAddStream() ) );
+    action->setIcon( KIcon( Amarok::icon( "files" ) ) );
+    action->setText( i18n("&Add Stream...") );
+    ac->addAction( "stream_add", action );
+
+    action = new KAction( this );
+    connect( action, SIGNAL( triggered(bool) ), this, SLOT( savePlaylist() ) );
+    action->setIcon( KIcon( Amarok::icon( "save" ) ) );
+    action->setText( i18n("&Save Playlist As...") );
+    ac->addAction( "playlist_save", action );
+
+#ifndef Q_WS_MAC
+    KAction *showMenu = KStandardAction::showMenubar( this, SLOT(slotToggleMenu()), this );
+    ac->addAction( KStandardAction::name(KStandardAction::ShowMenubar), showMenu );
+#endif
+
+
+    KAction *burn = new KAction( this );
+    burn->setText( i18n( "Burn Current Playlist" ) );
+    burn->setIcon( KIcon(Amarok::icon( "burn" )) );
+    ac->addAction( "playlist_burn", burn );
+    connect(burn, SIGNAL(triggered(bool)), SLOT(slotBurnPlaylist()));
+    actionCollection()->action("playlist_burn")->setEnabled( K3bExporter::isAvailable() );
+
+    KAction *playact = new KAction( this );
+    playact->setText( i18n("Play Media...") );
+    playact->setIcon( KIcon(Amarok::icon( "files" )) );
+    ac->addAction( "playlist_playmedia", playact );
+    connect(playact, SIGNAL(triggered(bool)), SLOT(slotPlayMedia()));
+
+    KAction *acd = new KAction( this );
+    acd->setText(  i18n("Play Audio CD") );
+    acd->setIcon(  KIcon( Amarok::icon( "album" ) ) );
+    ac->addAction( "play_audiocd", acd );
+    connect(acd, SIGNAL(triggered(bool)), SLOT(playAudioCD()));
+
+    KAction *script = new KAction( this );
+    script->setText( i18n("Script Manager") );
+    script->setIcon( KIcon(Amarok::icon( "scripts" )) );
+    ac->addAction( "script_manager", script );
+    connect(script, SIGNAL(triggered(bool)), SLOT(showScriptSelector()));
+
+    KAction *queue = new KAction( this );
+    queue->setText( i18n( "Queue Manager" ) );
+    queue->setIcon( KIcon( Amarok::icon( "queue" )) );
+    ac->addAction( "queue_manager", queue );
+    connect(queue, SIGNAL(triggered(bool)), SLOT(showQueueManager()));
+
+    KAction *seekForward = new KAction( this );
+    seekForward->setText( i18n("&Seek Forward") );
+    seekForward->setIcon( KIcon( Amarok::icon( "fastforward" ) ) );
+    ac->addAction( "seek_forward", seekForward );
+    seekForward->setShortcut( Qt::Key_Right );
+    connect(seekForward, SIGNAL(triggered(bool)), ec, SLOT(seekForward()));
+
+    KAction *seekBackward = new KAction( this );
+    seekBackward->setText( i18n( "&Seek Backward" ) );
+    seekBackward->setIcon( KIcon(Amarok::icon( "rewind" )) );
+    ac->addAction( "seek_backward", seekBackward );
+    seekBackward->setShortcut(Qt::Key_Left);
+    connect(seekBackward, SIGNAL(triggered(bool)), ec, SLOT(seekBackward()));
+
+    KAction *statistics = new KAction( this );
+    statistics->setText( i18n( "Statistics" ) );
+    statistics->setIcon( KIcon(Amarok::icon( "info" )) );
+    ac->addAction( "statistics", statistics );
+    connect(statistics, SIGNAL(triggered(bool)), SLOT(showStatistics()));
+
+    KAction *update = new KAction( this );
+    update->setText( i18n( "Update Collection" ) );
+    update->setIcon( KIcon(Amarok::icon( "refresh")) );
+    actionCollection()->addAction( "update_collection", update );
+    connect(update, SIGNAL(triggered(bool)), CollectionDB::instance(), SLOT(scanModifiedDirs()));
+
+    m_lastfmTags << "Alternative" <<  "Ambient" << "Chill Out" << "Classical" << "Dance"
+                 << "Electronica" << "Favorites" << "Heavy Metal" << "Hip Hop" << "Indie Rock"
+                 << "Industrial" << "Japanese" << "Pop" << "Psytrance" << "Rap" << "Rock"
+                 << "Soundtrack" << "Techno" << "Trance";
+
+    KMenu* playTagRadioMenu = new KMenu( this );
+    int id = 0;
+    oldForeach( m_lastfmTags ) {
+        playTagRadioMenu->insertItem( *it, this, SLOT( playLastfmGlobaltag( int ) ), 0, id );
+        ++id;
+    }
+
+    KMenu* addTagRadioMenu = new KMenu( this );
+    id = 0;
+    oldForeach( m_lastfmTags ) {
+        addTagRadioMenu->insertItem( *it, this, SLOT( addLastfmGlobaltag( int ) ), 0, id );
+        ++id;
+    }
+
+    KActionMenu* playLastfm = new KActionMenu( KIcon(Amarok::icon("audioscrobbler")), i18n( "Play las&t.fm Stream" ), ac);
+    KMenu* playLastfmMenu = playLastfm->popupMenu();
+    playLastfmMenu->insertItem( i18n( "Personal Radio" ), this, SLOT( playLastfmPersonal() ) );
+    playLastfmMenu->insertItem( i18n( "Neighbor Radio" ), this, SLOT( playLastfmNeighbor() ) );
+    playLastfmMenu->insertItem( i18n( "Custom Station" ), this, SLOT( playLastfmCustom() ) );
+    playLastfmMenu->insertItem( i18n( "Global Tag Radio" ), playTagRadioMenu );
+
+    KActionMenu* addLastfm = new KActionMenu( KIcon(Amarok::icon("audioscrobbler")), i18n( "Add las&t.fm Stream" ), ac);
+    KMenu* addLastfmMenu = addLastfm->popupMenu();
+    addLastfmMenu->insertItem( i18n( "Personal Radio" ), this, SLOT( addLastfmPersonal() ) );
+    addLastfmMenu->insertItem( i18n( "Neighbor Radio" ), this, SLOT( addLastfmNeighbor() ) );
+    addLastfmMenu->insertItem( i18n( "Custom Station" ), this, SLOT( addLastfmCustom() ) );
+    addLastfmMenu->insertItem( i18n( "Global Tag Radio" ), addTagRadioMenu );
+
+    KAction *previous = new KAction( this );
+    previous->setIcon( KIcon(Amarok::icon( "back" )) );
+    previous->setText( i18n( "Previous Track" ) );
+    ac->addAction( "prev", previous );
+    connect( previous, SIGNAL(triggered(bool)), ec, SLOT( previous() ) );
+
+    KAction *play = new KAction( this );
+    play->setIcon( KIcon(Amarok::icon( "play" )) );
+    play->setText( i18n( "Play" ) );
+    ac->addAction( "play", play );
+    connect( play, SIGNAL(triggered(bool)), ec, SLOT( play() ));
+
+    KAction *pause = new KAction( this );
+    pause->setIcon( KIcon(Amarok::icon( "pause" )) );
+    pause->setText( i18n( "Pause" ));
+    ac->addAction( "pause", pause );
+    connect( pause, SIGNAL(triggered(bool)), ec, SLOT( pause() ) );
+
+    KAction *next = new KAction( this );
+    next->setIcon( KIcon(Amarok::icon( "next" )) );
+    next->setText( i18n( "Next Track" ) );
+    ac->addAction( "next", next );
+    connect( next, SIGNAL(triggered(bool)), ec, SLOT( next() ) );
+
+    KAction *toggleFocus = new KAction(i18n( "Toggle Focus" ), ac);
+    toggleFocus->setShortcut( Qt::ControlModifier + Qt::Key_Tab );
+    connect( toggleFocus, SIGNAL(triggered(bool)), SLOT( slotToggleFocus() ));
+
+    new Amarok::MenuAction( ac );
+    new Amarok::StopAction( ac );
+    new Amarok::PlayPauseAction( ac );
+    new Amarok::AnalyzerAction( ac );
+    new Amarok::RepeatAction( ac );
+    new Amarok::RandomAction( ac );
+    new Amarok::FavorAction( ac );
+    new Amarok::VolumeAction( ac );
+
+    if( K3bExporter::isAvailable() )
+        new Amarok::BurnMenuAction( ac );
+
+    ac->setAssociatedWidget( this );
+}
+
+void PlaylistWindow::createMenus()
+{
+    m_menubar = menuBar();//new MenuBar( this );
+#ifndef Q_WS_MAC
+    m_menubar->setShown( AmarokConfig::showMenuBar() );
+#endif
+
+    //BEGIN Actions menu
+    KMenu *actionsMenu = new KMenu( m_menubar );
+    actionsMenu->addAction( actionCollection()->action("playlist_playmedia") );
+    actionsMenu->addAction( actionCollection()->action("lastfm_play") );
+    actionsMenu->addAction( actionCollection()->action("play_audiocd") );
+    actionsMenu->addSeparator();
+    actionsMenu->addAction( actionCollection()->action("prev") );
+    actionsMenu->addAction( actionCollection()->action("play_pause") );
+    actionsMenu->addAction( actionCollection()->action("stop") );
+    actionsMenu->addAction( actionCollection()->action("next") );
+    actionsMenu->addSeparator();
+    actionsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Quit)) );
+
+
+    connect( actionsMenu, SIGNAL( aboutToShow() ), SLOT( actionsMenuAboutToShow() ) );
+    //END Actions menu
+
+    //BEGIN Playlist menu
+    KMenu *playlistMenu = new KMenu( m_menubar );
+    playlistMenu->addAction( actionCollection()->action("playlist_add") );
+    playlistMenu->addAction( actionCollection()->action("stream_add") );
+    playlistMenu->addAction( actionCollection()->action("lastfm_add") );
+    playlistMenu->addAction( actionCollection()->action("playlist_save") );
+    playlistMenu->addAction( actionCollection()->action("playlist_burn") );
+    playlistMenu->addSeparator();
+    playlistMenu->addAction( actionCollection()->action("playlist_undo") );
+    playlistMenu->addAction( actionCollection()->action("playlist_redo") );
+    playlistMenu->insertSeparator();
+    playlistMenu->addAction( actionCollection()->action("playlist_clear") );
+    playlistMenu->addAction( actionCollection()->action("playlist_shuffle") );
+
+    playlistMenu->addSeparator();
+    playlistMenu->addAction( actionCollection()->action("queue_selected") );
+    playlistMenu->addAction( actionCollection()->action("playlist_remove_duplicates") );
+    playlistMenu->addAction( actionCollection()->action("playlist_select_all") );
+
+    //END Playlist menu
+
+    //BEGIN Mode menu
+    KMenu *modeMenu = new KMenu( m_menubar );
+    modeMenu->addAction( actionCollection()->action("repeat") );
+    KSelectAction *random = static_cast<KSelectAction*>( actionCollection()->action("random_mode") );
+    modeMenu->addAction( random );
+    random->menu()->addSeparator();
+    random->menu()->addAction( actionCollection()->action("favor_tracks") );
+    //END Mode menu
+
+    //BEGIN Tools menu
+    m_toolsMenu = new KMenu( m_menubar );
+    m_toolsMenu->insertItem( KIcon( Amarok::icon( "covermanager" ) ), i18n("&Cover Manager"), Amarok::Menu::ID_SHOW_COVER_MANAGER );
+    m_toolsMenu->addAction( actionCollection()->action("queue_manager") );
+    m_toolsMenu->insertItem( KIcon( Amarok::icon( "visualizations" ) ), i18n("&Visualizations"), Amarok::Menu::ID_SHOW_VIS_SELECTOR );
+    m_toolsMenu->insertItem( KIcon( Amarok::icon( "equalizer") ), i18n("&Equalizer"), kapp, SLOT( slotConfigEqualizer() ), 0, Amarok::Menu::ID_CONFIGURE_EQUALIZER );
+    m_toolsMenu->addAction( actionCollection()->action("script_manager") );
+    m_toolsMenu->addAction( actionCollection()->action("statistics") );
+    m_toolsMenu->addSeparator();
+    m_toolsMenu->addAction( actionCollection()->action("update_collection") );
+    m_toolsMenu->insertItem( KIcon( Amarok::icon( "rescan" ) ), i18n("&Rescan Collection"), Amarok::Menu::ID_RESCAN_COLLECTION );
+
+    #if defined HAVE_LIBVISUAL
+    m_toolsMenu->setItemEnabled( Amarok::Menu::ID_SHOW_VIS_SELECTOR, true );
+    #else
+    m_toolsMenu->setItemEnabled( Amarok::Menu::ID_SHOW_VIS_SELECTOR, false );
+    #endif
+
+    connect( m_toolsMenu, SIGNAL( aboutToShow() ), SLOT( toolsMenuAboutToShow() ) );
+    connect( m_toolsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );
+    //END Tools menu
+
+    //BEGIN Settings menu
+    m_settingsMenu = new KMenu( m_menubar );
+    //TODO use KStandardAction or KMainWindow
+#ifndef Q_WS_MAC
+    static_cast<KToggleAction *>(actionCollection()->action(KStandardAction::name(KStandardAction::ShowMenubar)))->setChecked( AmarokConfig::showMenuBar() );
+    m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::ShowMenubar)) );
+    m_settingsMenu->insertItem( AmarokConfig::showToolbar() ? i18n( "Hide Toolbar" ) : i18n("Show Toolbar"), ID_SHOW_TOOLBAR );
+    m_settingsMenu->addSeparator();
+#endif
+
+#ifdef Q_WS_MAC
+    // plug it first, as this item will be moved to the applications first menu
+    m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Preferences)) );
+#endif
+//    m_settingsMenu->addAction( actionCollection()->action("options_configure_globals") );
+    m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::KeyBindings)) );
+    m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::ConfigureToolbars)) );
+    m_settingsMenu->addAction( actionCollection()->action(KStandardAction::name(KStandardAction::Preferences)) );
+
+    connect( m_settingsMenu, SIGNAL( activated(int) ), SLOT( slotMenuActivated(int) ) );
+    //END Settings menu
+
+    m_menubar->insertItem( i18n( "E&ngage" ), actionsMenu );
+    m_menubar->insertItem( i18n( "&Playlist" ), playlistMenu );
+    m_menubar->insertItem( i18n( "&Mode" ), modeMenu );
+    m_menubar->insertItem( i18n( "&Tools" ), m_toolsMenu );
+    m_menubar->insertItem( i18n( "&Settings" ), m_settingsMenu );
+    m_menubar->insertItem( i18n( "&Help" ), Amarok::Menu::helpMenu() );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

@@ -237,7 +237,6 @@ namespace Amarok
      * Transform to be usable within HTML/HTML attributes
      * defined in contextbrowser.cpp
      */
-    AMAROK_EXPORT QString escapeHTML( const QString &s );
     AMAROK_EXPORT QString escapeHTMLAttr( const QString &s );
     AMAROK_EXPORT QString unescapeHTMLAttr( const QString &s );
 

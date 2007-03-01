@@ -19,11 +19,12 @@
 #define AMAROK_APP_H
 
 #include <config.h>
+
 #include "amarok_export.h"
 #include "engineobserver.h" //baseclass
 #include <kapplication.h>   //baseclass
 #include <kurl.h>
-//Added by qt3to4:
+
 #include <Q3CString>
 
 namespace Amarok {

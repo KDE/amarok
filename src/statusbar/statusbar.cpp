@@ -35,6 +35,7 @@
 
 #include <khbox.h>
 #include <QLayout>
+#include <QTextDocument>
 #include <QTimer>
 
 // stuff that must be included last
@@ -175,13 +176,13 @@ StatusBar::engineStateChanged( Engine::State state, Engine::State /*oldState*/ )
 void
 StatusBar::engineNewMetaData( const MetaBundle &bundle, bool /*trackChanged*/ )
 {
-    #define escapeHTML(s) QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" )
-    QString title       = escapeHTML( bundle.title() );
-    QString prettyTitle = escapeHTML( bundle.prettyTitle() );
-    QString artist      = escapeHTML( bundle.artist() );
-    QString album       = escapeHTML( bundle.album() );
-    QString length      = escapeHTML( bundle.prettyLength() );
-    #undef escapeHTML
+//     #define Qt::escape(s) QString(s).replace( "&", "&amp;" ).replace( "<", "&lt;" ).replace( ">", "&gt;" )
+    QString title       = Qt::escape( bundle.title() );
+    QString prettyTitle = Qt::escape( bundle.prettyTitle() );
+    QString artist      = Qt::escape( bundle.artist() );
+    QString album       = Qt::escape( bundle.album() );
+    QString length      = Qt::escape( bundle.prettyLength() );
+//     #undef escapeHTML
 
     if ( bundle.artist() == QString("Mike Oldfield") && bundle.title() == QString("Amarok") ) {
         longMessage( i18n(

@@ -20,7 +20,6 @@ email                : markey@web.de
 #include "amarokdbushandler.h"
 #include "app.h"
 #include "atomicstring.h"
-#include "config.h"
 #include "configdialog.h"
 #include "contextbrowser.h"
 #include "collectionbrowser.h"
@@ -51,15 +50,17 @@ email                : markey@web.de
 
 #include <iostream>
 
+#include <kaboutdata.h>
 #include <kaction.h>
-#include <kconfigdialogmanager.h>
-#include <kcombobox.h>           //firstRunWizard()
 #include <kcmdlineargs.h>        //initCliArgs()
+#include <kcombobox.h>           //firstRunWizard()
+#include <kconfigdialogmanager.h>
 #include <kcursor.h>             //Amarok::OverrideCursor
 #include <kedittoolbar.h>        //slotConfigToolbars()
 #include <kglobalaccel.h>        //initGlobalShortcuts()
 #include <kglobalsettings.h>     //applyColorScheme()
 #include <kiconloader.h>         //amarok Icon
+#include <kio/copyjob.h>
 #include <kjob.h>
 #include <kjobuidelegate.h>
 #include <kkeydialog.h>          //slotConfigShortcuts()
@@ -67,22 +68,19 @@ email                : markey@web.de
 #include <kmessagebox.h>         //applySettings(), genericEventHandler()
 #include <krun.h>                //Amarok::invokeBrowser()
 #include <kstandarddirs.h>
-#include <kaboutdata.h>
-#include <kio/copyjob.h>
 
+#include <QCloseEvent>
+#include <QDBusInterface>
+#include <QDBusReply>
 #include <QEvent>              //genericEventHandler()
 #include <QEventLoop>          //applySettings()
 #include <QFile>
 #include <QObject>         //applyColorScheme()
 #include <QPalette>            //applyColorScheme()
-#include <q3popupmenu.h>          //genericEventHandler
+#include <Q3PopupMenu>          //genericEventHandler
 #include <QTimer>              //showHyperThreadingWarning()
 #include <QToolTip>            //default tooltip for trayicon
-//Added by qt3to4:
-#include <QCloseEvent>
-#include <Q3CString>
-#include <QDBusInterface>
-#include <QDBusReply>
+
 
 QMutex Debug::mutex;
 QMutex Amarok::globalDirsMutex;

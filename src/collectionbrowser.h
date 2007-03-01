@@ -7,28 +7,28 @@
 #ifndef AMAROK_COLLECTIONBROWSER_H
 #define AMAROK_COLLECTIONBROWSER_H
 
-#include <QLabel>
-#include <q3valuelist.h>      //stack allocated
-//#include <kvbox.h>           //baseclass
-//Added by qt3to4:
-#include <QKeyEvent>
+#include "collectiondb.h"
+#include "amarok_export.h"
+
+#include <kdialog.h>     //baseclass
+#include <k3listview.h>       //baseclass
+#include <kurl.h>            //stack allocated
+
 #include <Q3CString>
-#include <QPixmap>
 #include <QDragEnterEvent>
 #include <QDragMoveEvent>
 #include <QDropEvent>
-#include <QResizeEvent>
 #include <QEvent>
+#include <QKeyEvent>
+#include <QLabel>
 #include <QPaintEvent>
+#include <QPixmap>
+#include <QResizeEvent>
+#include <Q3ValueList>      //stack allocated
 #include <QWidget>
-#include <k3listview.h>       //baseclass
-#include <QStringList>     //stack allocated
-#include <kurl.h>            //stack allocated
-#include <kdialog.h>     //baseclass
 
-//#include "multitabbar.h"     //baseclass
-#include "collectiondb.h"
-#include "amarok_export.h"
+#include <QStringList>     //stack allocated
+
 
 class ClickLineEdit;
 class CollectionDB;

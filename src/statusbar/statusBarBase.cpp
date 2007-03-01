@@ -100,7 +100,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     //this->setLayout( mainlayout );
 
     //we need extra spacing due to the way we paint the surrounding boxes
-//TODO: Do we still need to stack layouts?
+    //TODO: Do we still need to stack layouts?
     QHBoxLayout *layout = new QHBoxLayout;
     layout->setSpacing( 5 );
     mainlayout->addLayout( layout );
@@ -158,7 +158,10 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
 void
 StatusBar::addWidget( QWidget *widget )
 {
-    m_otherWidgetLayout->addWidget( widget );
+//    m_otherWidgetLayout->addWidget( widget );
+    QStatusBar::addWidget( widget );
+    QStatusBar::addWidget( widget );
+    QStatusBar::addWidget( widget );
     QStatusBar::addWidget( widget );
 }
 

@@ -18,6 +18,7 @@
 #include <Q3ValueList>
 #include <QTimerEvent>
 #include <phonon/phononnamespace.h>
+// #include <phonon/ui/videowidget.h>
 #include "amarok_export.h"
 
 extern "C"
@@ -29,6 +30,7 @@ namespace Phonon {
     class MediaObject;
     class AudioPath;
     class AudioOutput;
+//     class VideoPath;
 }
 
 class AMAROK_PHONON_ENGINE_EXPORT PhononEngine : public Engine::Base
@@ -59,6 +61,7 @@ class AMAROK_PHONON_ENGINE_EXPORT PhononEngine : public Engine::Base
     Phonon::MediaObject *m_mediaObject;
     Phonon::AudioPath   *m_audioPath;
     Phonon::AudioOutput *m_audioOutput;
+//     Phonon::VideoPath *m_videoPath;
 
 // private slots:
 //     void configChanged();
