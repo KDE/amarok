@@ -90,20 +90,20 @@ main( int argc, char *argv[] )
     }
 
     if ( isRunning ) {
-        QStringList dcop_args;
-        dcop_args << "dcop" << "amarok" << "player" << "transferCliArgs" << "[";
+        QStringList dbus_args;
+        dbus_args << "qdbus" << "org.kde.amarok" << "/Player" << "transferCliArgs" << "[";
 
         // We transmit our DESKTOP_STARTUP_ID, so amarokapp can stop the startup animation
-        dcop_args += std::getenv( "DESKTOP_STARTUP_ID" ); //will be interptreted as latin1
+        dbus_args += std::getenv( "DESKTOP_STARTUP_ID" ); //will be interptreted as latin1
 
         // relative URLs should be interpreted correctly by amarokapp
         // so we need to pass the current working directory
-        dcop_args << "--cwd" << QDir::currentPath();
+        dbus_args << "--cwd" << QDir::currentPath();
 
-        dcop_args += args;
-        dcop_args += "]";
+        dbus_args += args;
+        dbus_args += "]";
 
-        Q3Process proc( dcop_args );
+        Q3Process proc( dbus_args );
         proc.start();
         while( proc.isRunning() )
             ::usleep( 100 );

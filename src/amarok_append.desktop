@@ -95,7 +95,7 @@ Name[xx]=xxAppend & Playxx
 Name[zh_CN]=追加并播放
 Name[zh_TW]=加入播放清單 & 播放
 Icon=amarok
-Exec=dcop amarok playlist playMedia %U
+Exec=qdbus org.kde.amarok /PlayerList playMedia %U
 
 [Desktop Action queueTrack]
 Name=Queue Track
