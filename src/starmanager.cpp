@@ -33,12 +33,12 @@ StarManager* StarManager::instance()
 
 StarManager::StarManager()
 {
-    m_colors[0] = QColor( 0, 255, 0 );
-    m_colors[1] = QColor( 168, 0, 172 );
-    m_colors[2] = QColor( 255, 0, 0 );
-    m_colors[3] = QColor( 0, 0, 255 );
-    m_colors[4] = QColor( 168, 172, 0 );
-    m_halfStarColor = QColor( 0, 168, 172 );
+    m_colors[0] = AmarokConfig::starColorOne();
+    m_colors[1] = AmarokConfig::starColorTwo();
+    m_colors[2] = AmarokConfig::starColorThree();
+    m_colors[3] = AmarokConfig::starColorFour();
+    m_colors[4] = AmarokConfig::starColorFive();
+    m_halfStarColor = AmarokConfig::starColorHalf();
     m_margin = 1;
     m_height = 20;
 }

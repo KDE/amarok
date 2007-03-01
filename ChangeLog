@@ -4,10 +4,14 @@ Amarok ChangeLog
 
 
 VERSION 1.4.6
-  BUGFIXES:
-	* Right-click on volume slider would change the volume. (BR 141672)
+  CHANGES:
+    * First rating star now lets you toggle between no rating, half a star,
+      and one full star.
 
-  
+  BUGFIXES:
+    * Right-click on volume slider would change the volume. (BR 141672)
+
+
 VERSION 1.4.5
   FEATURES:
     * Added support for custom song labels. Labels can be managed

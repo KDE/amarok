@@ -141,6 +141,7 @@ void Options1::slotPickColorHalf()
     int result = KColorDialog::getColor( halfStar );
     if( result == KColorDialog::Accepted )
     {
+        AmarokConfig::setStarColorHalf( halfStar );
         StarManager::instance()->setHalfColor( halfStar );
         slotUpdateRatingsFrame();
     }
@@ -152,6 +153,7 @@ void Options1::slotPickColorOne()
     int result = KColorDialog::getColor( oneStar );
     if( result == KColorDialog::Accepted )
     {
+        AmarokConfig::setStarColorOne( oneStar );
         StarManager::instance()->setColor( 1, oneStar );
         slotUpdateRatingsFrame();
     }
@@ -163,6 +165,7 @@ void Options1::slotPickColorTwo()
     int result = KColorDialog::getColor( twoStar );
     if( result == KColorDialog::Accepted )
     {
+        AmarokConfig::setStarColorTwo( twoStar );
         StarManager::instance()->setColor( 2, twoStar );
         slotUpdateRatingsFrame();
     }
@@ -174,6 +177,7 @@ void Options1::slotPickColorThree()
     int result = KColorDialog::getColor( threeStar );
     if( result == KColorDialog::Accepted )
     {
+        AmarokConfig::setStarColorThree( threeStar );
         StarManager::instance()->setColor( 3, threeStar );
         slotUpdateRatingsFrame();
     }
@@ -185,6 +189,7 @@ void Options1::slotPickColorFour()
     int result = KColorDialog::getColor( fourStar );
     if( result == KColorDialog::Accepted )
     {
+        AmarokConfig::setStarColorFour( fourStar );
         StarManager::instance()->setColor( 4, fourStar );
         slotUpdateRatingsFrame();
     }
@@ -196,6 +201,7 @@ void Options1::slotPickColorFive()
     int result = KColorDialog::getColor( fiveStar );
     if( result == KColorDialog::Accepted )
     {
+        AmarokConfig::setStarColorFive( fiveStar );
         StarManager::instance()->setColor( 5, fiveStar );
         slotUpdateRatingsFrame();
     }

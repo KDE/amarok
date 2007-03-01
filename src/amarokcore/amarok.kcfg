@@ -513,6 +513,30 @@
         <whatsthis>The color to use as background color in the playlist. The color is specified in RGB, a comma-separated list containing three integers between 0 and 255.</whatsthis>
         <default>#000000</default>
     </entry>
+    <entry key="Star Color Half" type="Color">
+        <label>Color for half rating star</label>
+        <whatsthis>The color to use for a half rating star, if not the default.</whatsthis>
+    </entry>
+    <entry key="Star Color One" type="Color">
+        <label>Color for single rating star</label>
+        <whatsthis>The color to use for a single rating star, if not the default.</whatsthis>
+    </entry>
+    <entry key="Star Color Two" type="Color">
+        <label>Color for two rating stars</label>
+        <whatsthis>The color to use for two rating stars, if not the default.</whatsthis>
+    </entry>
+    <entry key="Star Color Three" type="Color">
+        <label>Color for three rating stars</label>
+        <whatsthis>The color to use for three rating stars, if not the default.</whatsthis>
+    </entry>
+    <entry key="Star Color Four" type="Color">
+        <label>Color for four rating stars</label>
+        <whatsthis>The color to use for four rating stars, if not the default.</whatsthis>
+    </entry>
+    <entry key="Star Color Five" type="Color">
+        <label>Color for five rating stars</label>
+        <whatsthis>The color to use for five rating stars, if not the default.</whatsthis>
+    </entry>
 </group>
 
 <group name="Session">
