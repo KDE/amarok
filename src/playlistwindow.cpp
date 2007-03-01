@@ -182,6 +182,12 @@ void PlaylistWindow::init()
         plBar->addSeparator();
         plBar->addAction( actionCollection()->action( "playlist_undo") );
         plBar->addAction( actionCollection()->action( "playlist_redo") );
+	QLabel *repeatLabel = new QLabel( i18n( "Repeat: " ), plBar );
+	plBar->addWidget( repeatLabel );
+	plBar->addAction( actionCollection()->action( "repeat" ) );
+	QLabel *randomLabel = new QLabel( i18n( "  Random: " ), plBar );
+	plBar->addWidget( randomLabel ); 
+	plBar->addAction( actionCollection()->action( "random_mode" ) );
     //END Playlist Toolbar
     }
 
