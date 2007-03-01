@@ -182,13 +182,18 @@ void PlaylistWindow::init()
         plBar->addSeparator();
         plBar->addAction( actionCollection()->action( "playlist_undo") );
         plBar->addAction( actionCollection()->action( "playlist_redo") );
-	QLabel *repeatLabel = new QLabel( i18n( "Repeat: " ), plBar );
-	plBar->addWidget( repeatLabel );
-	plBar->addAction( actionCollection()->action( "repeat" ) );
-	QLabel *randomLabel = new QLabel( i18n( "  Random: " ), plBar );
-	plBar->addWidget( randomLabel ); 
-	plBar->addAction( actionCollection()->action( "random_mode" ) );
     //END Playlist Toolbar
+    }
+    { //START Playlist Statusbar
+      KToolBar *plTwoolBar = new KToolBar( playlistwindow );
+      plTwoolBar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
+      plTwoolBar->setMovable( false );
+      QLabel *repeatLabel = new QLabel( i18n( "Repeat: " ), plTwoolBar );
+      plTwoolBar->addWidget( repeatLabel );
+      plTwoolBar->addAction( actionCollection()->action( "repeat" ) );
+      QLabel *randomLabel = new QLabel( i18n( "  Random: " ), plTwoolBar );
+      plTwoolBar->addWidget( randomLabel ); 
+      plTwoolBar->addAction( actionCollection()->action( "random_mode" ) );
     }
 
 
