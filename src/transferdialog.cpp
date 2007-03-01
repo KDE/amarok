@@ -112,6 +112,8 @@ TransferDialog::TransferDialog( MediaDevice *mdev )
     convertSpaces->setChecked( mdev->getSpacesToUnderscores() );
 
     connect( convertSpaces, SIGNAL( toggled(bool) ), this, SLOT( convertSpaces_toggled(bool) ) );
+    connect(this,SIGNAL(okClicked()),this,SLOT(slotOk()));
+    connect(this,SIGNAL(cancelClicked()),this,SLOT(slotCancel()));
 }
 
 void

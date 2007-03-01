@@ -75,7 +75,6 @@ PodcastSettingsDialog::PodcastSettingsDialog( PodcastSettings *settings, QWidget
     setButtonGuiItem( User1, KGuiItem( i18n("Reset") ) );
     setDefaultButton( Ok );
     showButtonSeparator( true );
-
     init();
     setSettings( settings );
 }
@@ -120,6 +119,8 @@ PodcastSettingsDialog::init()
         connect( m_ps->m_addToMediaDeviceCheck, SIGNAL(clicked()),              SLOT(checkModified()) );
         connect( m_ps->m_downloadRadio,  SIGNAL(clicked()),                     SLOT(checkModified()) );
         connect( m_ps->m_purgeCheck,     SIGNAL(clicked()),                     SLOT(checkModified()) );
+	connect(this,SIGNAL(okClicked()),this,SLOT(slotOk()));
+	connect(this,SIGNAL(user1Clicked()), this,SLOT(slotUser1()));
 }
 
 bool

@@ -77,6 +77,7 @@ MediumPluginManagerDialog::MediumPluginManagerDialog()
     KPushButton *addButton = new KPushButton( i18n( "Add Device..." ), hbox );
     addButton->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed ) );
     connect( addButton, SIGNAL( clicked() ), m_manager, SLOT( newDevice() ) );
+    connect( this,SIGNAL(okClicked()),this,SLOT(slotOk()));
 }
 
 MediumPluginManagerDialog::~MediumPluginManagerDialog()

@@ -3087,6 +3087,7 @@ PlaylistDialog::PlaylistDialog()
     connect( edit, SIGNAL( textChanged( const QString & ) ),
              this, SLOT( slotTextChanged( const QString& ) ) );
     connect( this, SIGNAL( user1Clicked() ), SLOT( slotCustomPath() ) );
+    connect(this,SIGNAL(okClicked()),this,SLOT(slotOk()));
 }
 
 void PlaylistDialog::slotOk()

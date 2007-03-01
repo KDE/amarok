@@ -382,6 +382,10 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, bool metaBundleKeywords, co
 
     // setup Min Max Value spin
     setMinMaxValueSpins();
+    connect(this,SIGNAL(okClicked()),this,SLOT(slotOk()));
+    connect(this,SIGNAL(defaultClicked()),this,SLOT(slotDefault()));
+    connect(this,SIGNAL(user1Clicked()),this,SLOT(slotUser1()));
+    connect(this,SIGNAL(user2Clicked()),this,SLOT(slotUser2()));
 }
 
 EditFilterDialog::~EditFilterDialog()
