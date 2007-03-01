@@ -226,7 +226,7 @@ void PlaylistWindow::init()
         connect( filterButton, SIGNAL( clicked() ), SLOT( slotEditFilter() ) );
     //END MainToolBar 
     }
-    Amarok::StatusBar *statusbar = new Amarok::StatusBar( playlistwindow );
+    Amarok::StatusBar *statusbar = new Amarok::StatusBar( this );
     QAction* repeatAction = Amarok::actionCollection()->action( "repeat" );
     connect( repeatAction, SIGNAL( activated( int ) ), playlist, SLOT( slotRepeatTrackToggled( int ) ) );
 
@@ -239,6 +239,7 @@ void PlaylistWindow::init()
 //     cbCover->addWidget( m_videoWidget );
 //     m_videoWidget->hide();
     setCentralWidget( cbCover );
+    setStatusBar( statusbar );
 
     DockWidget *browsersDockWidget = new DockWidget();
     browsersDockWidget->setWidget( m_browsers );
