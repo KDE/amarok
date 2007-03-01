@@ -164,3 +164,7 @@ bool MagnatuneContentItem::hasChildren () const {
     if ( m_type != MAGNATUNE_TRACK ) return true;
     return false;
 }
+
+contentTypeUnion MagnatuneContentItem::getContentUnion ( ) { return m_content; }
+
+int MagnatuneContentItem::getType()  { return m_type; }

@@ -170,6 +170,9 @@ private slots:
      */
     void polish();
 
+    void treeItemSelected( const QModelIndex & index );
+    void infoChanged ( QString infoHtml );
+
 private:
     /**
      * Helper function that initializes the button panel below the list view

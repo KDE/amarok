@@ -534,6 +534,7 @@ void MagnatuneBrowser::polish( )
 
 
         m_model = new MagnatuneContentModel ( this );
+        connect ( m_model, SIGNAL( infoChanged ( QString ) ), this, SLOT( infoChanged ( QString ) ) );
 
 
        
@@ -541,6 +542,8 @@ void MagnatuneBrowser::polish( )
         m_contentView->setSortingEnabled ( true );
         m_contentView->sortByColumn ( 0, Qt::AscendingOrder ); 
         m_contentView->setModel( m_model );
+
+        connect( m_contentView, SIGNAL( pressed ( const QModelIndex & ) ), this, SLOT( treeItemSelected( const QModelIndex & ) ) );
 
         //updateList( );
 
@@ -556,6 +559,21 @@ void MagnatuneBrowser::polish( )
         m_infoBox->end();
 
     }
+
+}
+
+
+void MagnatuneBrowser::treeItemSelected( const QModelIndex & index ) {
+
+    m_model->requestHtmlInfo( index );
+
+}
+
+void MagnatuneBrowser::infoChanged ( QString infoHtml ) {
+
+    m_infoBox->begin( );
+    m_infoBox->write( infoHtml );
+    m_infoBox->end();
 
 }
 

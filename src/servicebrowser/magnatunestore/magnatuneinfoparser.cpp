@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2006  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 
  This library is free software; you can redistribute it and/or
  modify it under the terms of the GNU Library General Public
@@ -17,43 +17,40 @@
  Boston, MA 02110-1301, USA.
 */
 
-#include "debug.h"
-#include "magnatuneartistinfobox.h"
-#include "magnatunedatabasehandler.h"
+#include "magnatuneinfoparser.h"
 
-#include <khtmlview.h>
+#include "debug.h"
+#include "magnatunedatabasehandler.h"
 
 #include <QFile>
 
-MagnatuneArtistInfoBox::MagnatuneArtistInfoBox( QWidget *parentWidget, const char *widgetname )
-        : KHTMLPart( parentWidget )
+MagnatuneInfoParser::MagnatuneInfoParser(  )
+  : QObject()
+
 {
-    setObjectName(widgetname);
 }
 
 
-MagnatuneArtistInfoBox::~MagnatuneArtistInfoBox()
+MagnatuneInfoParser::~MagnatuneInfoParser()
 {}
 
-bool
-MagnatuneArtistInfoBox::displayArtistInfo( KUrl url )
-{
-    debug() << "MagnatuneArtistInfoBox: displayArtistInfo started" << endl;
+
+void MagnatuneInfoParser::getInfo( MagnatuneArtist *artist ) {
+ 
+    debug() << "MagnatuneInfoParser: getInfo about artist" << endl;
 
     // first get the entire artist html page
-    QString tempFile;
-    QString orgHtml;
+   /* QString tempFile;
+    QString orgHtml;*/
 
-    m_infoDownloadJob = KIO::storedGet( url, false, true );
+    m_infoDownloadJob = KIO::storedGet( artist->getHomeURL(), false, true );
     //Amarok::StatusBar::instance() ->newProgressOperation( m_infoDownloadJob ).setDescription( i18n( "Fetching Artist Info" ) );
-    connect( m_infoDownloadJob, SIGNAL(result(KJob *)), SLOT( infoDownloadComplete( KJob*) ) );
+    connect( m_infoDownloadJob, SIGNAL(result(KJob *)), SLOT( artistInfoDownloadComplete( KJob*) ) );
 
-
-    return true;
 }
 
-bool
-MagnatuneArtistInfoBox::displayAlbumInfo( MagnatuneAlbum *album )
+
+void MagnatuneInfoParser::getInfo( MagnatuneAlbum *album )
 {
     const MagnatuneArtist artist = MagnatuneDatabaseHandler::instance()->getArtistById( album->getArtistId() );
     const QString artistName = artist.getName();
@@ -74,17 +71,11 @@ MagnatuneArtistInfoBox::displayAlbumInfo( MagnatuneAlbum *album )
     infoHtml += "<br><br>From Magnatune.com</div>";
     infoHtml += "</BODY></HTML>";
 
-    resetScrollBars();
-    begin();
-    write( infoHtml );
-    end();
-    show();
-
-    return true;
+    emit ( info( infoHtml ) );
 }
 
 void
-MagnatuneArtistInfoBox::infoDownloadComplete( KJob *downLoadJob)
+MagnatuneInfoParser::artistInfoDownloadComplete( KJob *downLoadJob )
 {
 
     if ( !downLoadJob->error() == 0 )
@@ -97,23 +88,18 @@ MagnatuneArtistInfoBox::infoDownloadComplete( KJob *downLoadJob)
 
 
 
-    QString info = ((KIO::StoredTransferJob* )downLoadJob)->data();
-    debug() << "MagnatuneArtistInfoBox: Artist info downloaded: "<< info << endl;
-    QString trimmedInfo = extractArtistInfo( info );
+    QString infoString = ((KIO::StoredTransferJob* )downLoadJob)->data();
+    debug() << "MagnatuneInfoParser: Artist info downloaded: " << infoString << endl;
+    infoString = extractArtistInfo( infoString );
 
     //debug() << "html: " << trimmedInfo << endl;
 
-    resetScrollBars();
-    this->begin();
-    this->write( trimmedInfo );
-    this->end();
-    this->show();
-
+    emit ( info( infoString ) );
 
 }
 
 QString
-MagnatuneArtistInfoBox::extractArtistInfo( QString artistPage )
+MagnatuneInfoParser::extractArtistInfo( QString artistPage )
 {
     QString trimmedHtml;
 
@@ -146,13 +132,13 @@ MagnatuneArtistInfoBox::extractArtistInfo( QString artistPage )
     return infoHtml;
 }
 
-void MagnatuneArtistInfoBox::resetScrollBars( )
+/*void MagnatuneInfoParser::resetScrollBars( )
 {
     //note: the scrollbar methods never return 0
     view()->horizontalScrollBar()->setValue(0);
     view()->verticalScrollBar()->setValue(0);
-}
+}*/
 
 
-#include "magnatuneartistinfobox.moc"
+#include "magnatuneinfoparser.moc"
 

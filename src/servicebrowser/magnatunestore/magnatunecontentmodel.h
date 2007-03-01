@@ -23,14 +23,15 @@
 
 #include "magnatunetypes.h"
 
-#include <QAbstractItemModel>
+#include <../servicemodelbase.h>
 #include <QMap>
 #include <QModelIndex>
 #include <QVariant>
 
 #include "magnatunecontentitem.h"
+#include "magnatuneinfoparser.h"
 
-class MagnatuneContentModel : public QAbstractItemModel
+class MagnatuneContentModel : public ServiceModelBase
 {
     Q_OBJECT
 
@@ -44,6 +45,11 @@ private:
 
     MagnatuneContentItem *m_rootContentItem;
     QString m_genre;
+    MagnatuneInfoParser * m_infoParser;
+
+private slots:
+
+    void infoParsed( QString infoHtml );
 
 public:
     
@@ -67,7 +73,12 @@ public:
 
     bool hasChildren ( const QModelIndex & parent = QModelIndex() ) const;
 
+    void requestHtmlInfo ( const QModelIndex & index ) const;
+
     void setGenre( QString genre );
+
+//signals:
+    //void infoChanged ( QString infoHtml );
 
  };
 

@@ -23,10 +23,13 @@
 
 
 MagnatuneContentModel::MagnatuneContentModel(QObject *parent, QString genre )
-     : QAbstractItemModel(parent)
+     : ServiceModelBase(parent)
 {
      m_genre = genre;
      m_rootContentItem = new MagnatuneContentItem( m_genre );
+     m_infoParser = new MagnatuneInfoParser();
+     connect( m_infoParser, SIGNAL (info ( QString ) ), this, SLOT( infoParsed( QString ) ) );
+     
 }
 
 MagnatuneContentModel::~MagnatuneContentModel()
@@ -168,7 +171,31 @@ void MagnatuneContentModel::setGenre( QString genre ) {
 }
 
 
+void MagnatuneContentModel::requestHtmlInfo ( const QModelIndex & index ) const {
 
+
+    MagnatuneContentItem* item;
+
+    if (!index.isValid())
+        item = m_rootContentItem;
+    else
+        item = static_cast<MagnatuneContentItem*>(index.internalPointer());
+
+
+   switch ( item->getType() ) {
+       case MAGNATUNE_ARTIST:
+           m_infoParser->getInfo( item->getContentUnion().artistValue );
+           break;
+       case MAGNATUNE_ALBUM:
+           m_infoParser->getInfo( item->getContentUnion().albumValue );
+           break;
+     }
+
+}
+
+void MagnatuneContentModel::infoParsed( QString infoHtml ) {
+    emit( infoChanged ( infoHtml ) );
+}
 
 
 

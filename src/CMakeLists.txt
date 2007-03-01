@@ -136,10 +136,11 @@ set(libplugin_SRCS
 
 set(libservicebrowser_SRCS
         ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/servicebrowser.cpp
-	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/servicebase.cpp)
+	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/servicebase.cpp
+        ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/servicemodelbase.cpp)
 
 set(libmagnatunestore_SRCS
-	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatuneartistinfobox.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatuneinfoparser.cpp
 	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatunebrowser.cpp
 	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatunedownloaddialog.cpp
 	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore/magnatunepurchasedialog.cpp
