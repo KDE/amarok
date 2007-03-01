@@ -167,7 +167,7 @@ class Playlist : private KListView, public EngineObserver, public Amarok::ToolTi
         void saveLayout(KConfig *config, const QString &group) const;
         void restoreLayout(KConfig *config, const QString &group);
 
-        //ATF-related functions
+        //AFT-related functions
         bool checkFileStatus( PlaylistItem * item );
         void addToUniqueMap( const QString uniqueid, PlaylistItem* item );
         void removeFromUniqueMap( const QString uniqueid, PlaylistItem* item );

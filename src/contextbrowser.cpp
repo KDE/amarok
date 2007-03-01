@@ -360,6 +360,8 @@ ContextBrowser::ContextBrowser( const char *name )
              this, SLOT( tagsChanged( const QString&, const QString& ) ) );
     connect( CollectionDB::instance(), SIGNAL( ratingChanged( const QString&, int ) ),
              this, SLOT( ratingOrScoreOrLabelsChanged( const QString& ) ) );
+    connect( StarManager::instance(), SIGNAL( ratingsColorsChanged() ),
+             this, SLOT( ratingOrScoreOrLabelsChanged( const QString& ) ) );
     connect( CollectionDB::instance(), SIGNAL( scoreChanged( const QString&, float ) ),
              this, SLOT( ratingOrScoreOrLabelsChanged( const QString& ) ) );
     connect( CollectionDB::instance(), SIGNAL( labelsChanged( const QString& ) ),
@@ -2965,10 +2967,11 @@ QString CurrentTrackJob::statsHTML( int score, int rating, bool statsbox ) //sta
                     "<td class='ratingBox' align='right' colspan='2'>\n";
         if( rating )
         {
+            bool half = rating%2;
             contents += "<nobr>\n";
 
             QImageIO fullStarIO;
-            fullStarIO.setImage( StarManager::instance()->getStarImage( rating/2 ) );
+            fullStarIO.setImage( StarManager::instance()->getStarImage( half ? rating/2 + 1 : rating/2 ) );
             fullStarIO.setFormat( "PNG" );
             QBuffer fullStarBuf;
             fullStarBuf.open( IO_WriteOnly );
@@ -2983,7 +2986,7 @@ QString CurrentTrackJob::statsHTML( int score, int rating, bool statsbox ) //sta
             if( rating % 2 )
             {
                 QImageIO halfStarIO;
-                halfStarIO.setImage( StarManager::instance()->getHalfStarImage() );
+                halfStarIO.setImage( StarManager::instance()->getHalfStarImage( half ? rating/2 + 1 : rating/2 ) );
                 halfStarIO.setFormat( "PNG" );
                 QBuffer halfStarBuf;
                 halfStarBuf.open( IO_WriteOnly );

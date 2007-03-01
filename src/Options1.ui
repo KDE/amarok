@@ -390,7 +390,7 @@
                             </property>
                             <property name="sizeHint">
                                 <size>
-                                    <width>20</width>
+                                    <width>40</width>
                                     <height>21</height>
                                 </size>
                             </property>
@@ -413,7 +413,7 @@
                         </widget>
                         <spacer>
                             <property name="name">
-                                <cstring>spacer19_2</cstring>
+                                <cstring>spacer19_1</cstring>
                             </property>
                             <property name="orientation">
                                 <enum>Horizontal</enum>
@@ -423,7 +423,40 @@
                             </property>
                             <property name="sizeHint">
                                 <size>
-                                    <width>241</width>
+                                    <width>20</width>
+                                    <height>21</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="QCheckBox">
+                            <property name="name">
+                                <cstring>kcfg_FixedHalfStarColor</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>0</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>Separate half-star color</string>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer19_2</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Fixed</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>40</width>
                                     <height>21</height>
                                 </size>
                             </property>
@@ -758,7 +791,7 @@
                                     </property>
                                     <property name="sizeHint">
                                         <size>
-                                            <width>53</width>
+                                            <width>46</width>
                                             <height>20</height>
                                         </size>
                                     </property>
@@ -881,7 +914,7 @@
                                     </property>
                                     <property name="sizeHint">
                                         <size>
-                                            <width>92</width>
+                                            <width>88</width>
                                             <height>20</height>
                                         </size>
                                     </property>
@@ -1218,6 +1251,12 @@
         <slot>slotUpdateRatingsFrame()</slot>
     </connection>
     <connection>
+        <sender>kcfg_FixedHalfStarColor</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>General</receiver>
+        <slot>slotFixedHalfStarColor()</slot>
+    </connection>
+    <connection>
         <sender>halfstar</sender>
         <signal>clicked()</signal>
         <receiver>General</receiver>
@@ -1326,6 +1365,7 @@
     <slot>slotPickColorFour()</slot>
     <slot>slotPickColorFive()</slot>
     <slot>slotPickColorHalf()</slot>
+    <slot>slotFixedHalfStarColor()</slot>
 </slots>
 <functions>
     <function access="private" specifier="non virtual">init()</function>

@@ -90,6 +90,7 @@ void Options1::slotUpdateRatingsFrame()
 {
     kcfg_CustomRatingsColors->setEnabled( kcfg_UseRatings->isChecked() );
     bool enableStars = kcfg_UseRatings->isChecked() && kcfg_CustomRatingsColors->isChecked();
+    kcfg_FixedHalfStarColor->setEnabled( enableStars );
 
     AmarokConfig::setCustomRatingsColors( enableStars );
 
@@ -133,6 +134,13 @@ void Options1::slotUpdateRatingsFrame()
 
     halfstar->setPixmap( *StarManager::instance()->getHalfStar() );
     halfstar->setEnabled( enableStars );
+}
+
+void Options1::slotFixedHalfStarColor()
+{
+    bool checked = kcfg_FixedHalfStarColor->isChecked();
+    AmarokConfig::setFixedHalfStarColor( kcfg_FixedHalfStarColor->isChecked() );
+    slotUpdateRatingsFrame();
 }
 
 void Options1::slotPickColorHalf()

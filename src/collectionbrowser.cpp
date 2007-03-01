@@ -4398,14 +4398,15 @@ CollectionItem::paintCell ( QPainter * painter, const QColorGroup & cg,
         int rating = text(column).toInt();
         int i = 1, x = 1;
         const int y = height() / 2 - StarManager::instance()->getGreyStar()->height() / 2;
+        bool half = rating%2;
         for(; i <= rating/2; ++i )
         {
-            bitBlt( p.device(), x, y, StarManager::instance()->getStar( rating/2 ) );
+            bitBlt( p.device(), x, y, StarManager::instance()->getStar( half ? rating/2 + 1 : rating/2 ) );
             x += StarManager::instance()->getGreyStar()->width() + listView()->itemMargin();
         }
-        if( rating%2 )
+        if( half )
         {
-            bitBlt( p.device(), x, y, StarManager::instance()->getHalfStar() );
+            bitBlt( p.device(), x, y, StarManager::instance()->getHalfStar( rating/2 + 1 ) );
             x += StarManager::instance()->getGreyStar()->width() + listView()->itemMargin();
         }
 

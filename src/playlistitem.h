@@ -87,9 +87,6 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
         Playlist *listView() const { return reinterpret_cast<Playlist*>( KListViewItem::listView() ); }
         PlaylistItem *nextSibling() const { return static_cast<PlaylistItem*>( KListViewItem::nextSibling() ); }
 
-        static QPixmap *star();
-        static QPixmap *grayedStar();
-        static QPixmap *smallStar();
         static int ratingAtPoint( int x );
         static int ratingColumnWidth();
 
@@ -127,7 +124,7 @@ class LIBAMAROK_EXPORT PlaylistItem : public MetaBundle, public KListViewItem
 
         virtual void paintCell( QPainter*, const QColorGroup&, int, int, int );
         void drawRating( QPainter *p );
-        void drawRating( QPainter *p, int stars, int graystars, bool half );
+        void drawRating( QPainter *p, int stars, int greystars, bool half );
         void drawMood( QPainter *p, int width, int height );
         virtual void moodbarJobEvent( int newState );
 

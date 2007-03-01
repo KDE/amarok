@@ -12,8 +12,11 @@
 
 #include "amarok.h"
 #include "amarokconfig.h"
+#include "collectionbrowser.h"
+#include "contextbrowser.h"
 #include "debug.h"
 #include "metabundle.h"
+#include "playlist.h"
 #include "starmanager.h"
 
 #include <kiconeffect.h>
@@ -71,14 +74,25 @@ StarManager::reinitStars( int height, int margin )
     for( int i = 0; i < 5; i++ )
     {
         tempstar = star.copy();
+        temphalfstar = half.copy();
         if( AmarokConfig::customRatingsColors() )
         {
             KIconEffect::colorize( tempstar, m_colors[i], 1.0 );
+            if( !AmarokConfig::fixedHalfStarColor() )
+                KIconEffect::colorize( temphalfstar, m_colors[i], 1.0 );
         }
         m_images[i] = tempstar.copy();
+        m_halfimages[i] = temphalfstar.copy();
         m_pixmaps[i].convertFromImage( tempstar );
+        m_halfpixmaps[i].convertFromImage( temphalfstar );
         tempstar.reset();
+        temphalfstar.reset();
     }
+    if( Playlist::instance() ) Playlist::instance()->qscrollview()->viewport()->update();
+    if( CollectionView::instance() &&
+            CollectionView::instance()->viewMode() == CollectionView::modeFlatView )
+        CollectionView::instance()->triggerUpdate();
+    emit ratingsColorsChanged();
 }
 
 QPixmap*
@@ -100,15 +114,21 @@ StarManager::getStarImage( int num )
 }
 
 QPixmap*
-StarManager::getHalfStar( int /*num*/  )
+StarManager::getHalfStar( int num )
 {
-    return &m_halfStarPix;
+    if( AmarokConfig::fixedHalfStarColor() || num == -1 )
+        return &m_halfStarPix;
+    else
+        return &m_halfpixmaps[num - 1];
 }
 
 QImage&
-StarManager::getHalfStarImage( int /*num*/  )
+StarManager::getHalfStarImage( int num  )
 {
-    return m_halfStar;
+    if( AmarokConfig::fixedHalfStarColor() || num == -1 )
+        return m_halfStar;
+    else
+        return m_halfimages[num - 1];
 }
 
 bool

@@ -864,7 +864,7 @@ void PlaylistItem::drawRating( QPainter *p )
     drawRating( p, ( rating() + 1 ) / 2, gray / 2, rating() % 2 );
 }
 
-void PlaylistItem::drawRating( QPainter *p, int stars, int graystars, bool half )
+void PlaylistItem::drawRating( QPainter *p, int stars, int greystars, bool half )
 {
     int i = 1, x = 1;
     const int y = height() / 2 - StarManager::instance()->getGreyStar()->height() / 2;
@@ -873,15 +873,15 @@ void PlaylistItem::drawRating( QPainter *p, int stars, int graystars, bool half 
     //We use multiple pre-colored stars instead of coloring here to keep things speedy
     for(; i <= stars; ++i )
     {
-        bitBlt( p->device(), x, y, StarManager::instance()->getStar( half ? stars -1 : stars ) );
+        bitBlt( p->device(), x, y, StarManager::instance()->getStar( stars ) );
         x += StarManager::instance()->getGreyStar()->width() + listView()->itemMargin();
     }
     if( half )
     {
-        bitBlt( p->device(), x, y, StarManager::instance()->getHalfStar() );
+        bitBlt( p->device(), x, y, StarManager::instance()->getHalfStar( stars ) );
         x += StarManager::instance()->getGreyStar()->width() + listView()->itemMargin();
     }
-    for(; i <= graystars; ++i )
+    for(; i <= greystars; ++i )
     {
         bitBlt( p->device(), x, y, StarManager::instance()->getGreyStar() );
         x += StarManager::instance()->getGreyStar()->width() + listView()->itemMargin();

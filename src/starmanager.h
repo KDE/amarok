@@ -39,6 +39,9 @@ class StarManager : public QObject
 
         void reinitStars( int height = -1, int margin = -1 );
 
+    signals:
+        void ratingsColorsChanged();
+
     private:
 
         int m_height;
@@ -53,7 +56,9 @@ class StarManager : public QObject
         QImage m_halfStar;
 
         QImage m_images[5];
+        QImage m_halfimages[5];
         QPixmap m_pixmaps[5];
+        QPixmap m_halfpixmaps[5];
 
         QColor m_colors[5];
         QColor m_halfStarColor;

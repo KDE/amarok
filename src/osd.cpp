@@ -419,7 +419,7 @@ OSDWidget::render( const uint M, const QSize &size )
         m_volume = false;
     }
 
-    QPixmap* star = StarManager::instance()->getStar( m_rating / 2 );
+    QPixmap* star = StarManager::instance()->getStar( m_rating/2 );
     int graphicsHeight = 0;
 
     if( useMoodbar() )
@@ -444,10 +444,13 @@ OSDWidget::render( const uint M, const QSize &size )
         r.setTop( rect.bottom() - star->height() );
         graphicsHeight += star->height() + M;
 
-        if( m_rating % 2 )
+        bool half = m_rating%2;
+
+        if( half )
         {
-            QPixmap* halfStar = StarManager::instance()->getHalfStar( 1 );
+            QPixmap* halfStar = StarManager::instance()->getHalfStar( m_rating/2 + 1 );
             p.drawPixmap( r.left() + star->width() * ( m_rating / 2 ), r.top(), *halfStar );
+            star = StarManager::instance()->getStar( m_rating/2 + 1 );
         }
 
         for( int i = 0; i < m_rating/2; i++ )
