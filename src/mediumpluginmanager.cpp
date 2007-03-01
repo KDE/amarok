@@ -181,7 +181,7 @@ MediumPluginManager::redetectDevices()
                                                                    "error, ensure that the DBUS and HAL daemons are running\n"
                                                                    "and KDE was built with support for them. You can test this\n"
                                                                    "by running\n"
-                                                                   "     \"dcop kded mediamanager fullList\"\n"
+                                                                   "     \"qdbus org.kde.kded /modules/mediamanager fullList\"\n"
                                                                    "in a Konsole window.") );
     }
     else

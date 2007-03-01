@@ -29,9 +29,6 @@
 //Added by qt3to4:
 #include <Q3ValueList>
 
-//#include <dcopref.h>
-//#include <dcopclient.h>
-
 
 K3bExporter *K3bExporter::s_instance = 0;
 
