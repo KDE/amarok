@@ -9,6 +9,7 @@ VERSION 1.4.6
       and one full star.
 
   BUGFIXES:
+    * Fix detection of vfat devices on FreeBSD. (BR 141614)
     * Right-click on volume slider would change the volume. (BR 141672)
 
 
