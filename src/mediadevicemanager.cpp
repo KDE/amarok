@@ -112,7 +112,7 @@ void MediaDeviceManager::slotMediumAdded( const Medium *m, QString id)
     {
         if ( m->fsType() == "manual" ||
                 ( !m->deviceNode().startsWith( "/dev/hd" ) &&
-                  (m->fsType() == "vfat" || m->fsType() == "hfsplus") ) )
+                  (m->fsType() == "vfat" || m->fsType() == "hfsplus" || m->fsType() == "msdosfs" ) ) )
             // add other fsTypes that should be auto-detected here later
         {
             if ( m_mediumMap.contains( m->name() ) )
