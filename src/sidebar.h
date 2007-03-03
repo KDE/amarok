@@ -21,7 +21,7 @@
 #define AMAROK_SIDEBAR_H
 
 #include <QIcon>
-#include <QSplitter>
+#include <QFrame>
 #include <QStackedWidget>
 #include <khbox.h>
 #include "sidebarwidget.h"
@@ -39,14 +39,14 @@ class SideBar: public KHBox
         SideBar( QWidget *parent, QWidget *contentsWidget = 0 )
             : super( parent )
             , m_bar( new SideBarWidget( this ) )
-            , m_splitter( new QSplitter( this ) )
-            , m_widgets( new QStackedWidget( m_splitter ) )
+            , m_frame( new KHBox( this ) )
+            , m_widgets( new QStackedWidget( m_frame ) )
             , m_current( -1 )
         {
             connect( m_bar, SIGNAL( opened( int ) ), SLOT( openWidget( int ) ) );
             connect( m_bar, SIGNAL( closed() ), SLOT( closeWidgets() ) );
-            m_splitter->hide();
-            m_splitter->addWidget( m_widgets );
+            m_frame->hide();
+            m_widgets->setParent( m_frame );
             setContentsWidget( contentsWidget );
         }
 
@@ -90,9 +90,8 @@ class SideBar: public KHBox
     private slots:
         void openWidget( int index )
         {
-            m_contentsWidget->setParent( m_splitter );
-            m_splitter->addWidget( m_contentsWidget );
-            m_splitter->show();
+            m_contentsWidget->setParent( m_frame );
+            m_frame->show();
             m_widgets->setCurrentIndex( index );
             m_current = index;
             emit widgetActivated( currentIndex() );
@@ -102,7 +101,7 @@ class SideBar: public KHBox
         void closeWidgets()
         {
             m_contentsWidget->setParent( this );
-            m_splitter->hide();
+            m_frame->hide();
             m_current = -1;
             emit widgetActivated( currentIndex() );
             emit widgetActivated( currentWidget() );
@@ -110,7 +109,7 @@ class SideBar: public KHBox
 
     private:
         SideBarWidget *m_bar;
-        QSplitter *m_splitter;
+        KHBox *m_frame;
         QStackedWidget *m_widgets;
         QWidget *m_contentsWidget;
         int m_current;
