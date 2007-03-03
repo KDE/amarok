@@ -431,8 +431,6 @@ QueueManager::removeQueuedItem( PlaylistItem *item )
     Playlist *pl = Playlist::instance();
     if( !pl ) return; //should never happen
 
-    const int index = pl->m_nextTracks.findRef( item );
-
     QValueList<PlaylistItem*>         current = m_map.values();
     QValueListIterator<PlaylistItem*> newItem = current.find( item );
 
