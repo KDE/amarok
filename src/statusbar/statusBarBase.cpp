@@ -112,7 +112,7 @@ StatusBar::StatusBar( QWidget *parent, const char *name )
     shortLongButton->setObjectName( "shortLongButton" );
     shortLongButton->hide();
     QStatusBar::addWidget(shortLongButton);
-    
+
     KHBox *mainProgressBarBox = new KHBox( this );
     mainProgressBarBox->setObjectName( "progressBox" );
     QToolButton *b1 = new QToolButton( mainProgressBarBox ); //cancelbutton
@@ -159,9 +159,6 @@ void
 StatusBar::addWidget( QWidget *widget )
 {
 //    m_otherWidgetLayout->addWidget( widget );
-    QStatusBar::addWidget( widget );
-    QStatusBar::addWidget( widget );
-    QStatusBar::addWidget( widget );
     QStatusBar::addWidget( widget );
 }
 
