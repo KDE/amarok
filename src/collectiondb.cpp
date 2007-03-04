@@ -3576,7 +3576,7 @@ CollectionDB::bundlesByUrls( const KUrl::List& urls )
                                   .arg( url.fileName(),
                                      i18n( "from" ),
                                      url.hasHost() ? url.host() : QString(),
-                                     url.directory( false ) ) );
+                                     url.directory() ) );
                         }
 
                         // check if it's a podcast
