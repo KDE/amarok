@@ -1158,6 +1158,7 @@ IpodMediaDevice::openDevice( bool silent )
             {
             case ITDB_IPOD_MODEL_VIDEO_WHITE:
             case ITDB_IPOD_MODEL_VIDEO_BLACK:
+            case ITDB_IPOD_MODEL_VIDEO_U2:
                 m_supportsVideo = true;
                 debug() << "detected video-capable iPod" << endl;
                 break;
