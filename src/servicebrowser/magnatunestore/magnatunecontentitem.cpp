@@ -84,7 +84,7 @@ MagnatuneContentItem::MagnatuneContentItem( QString genre )
  {
      if ( !m_hasPopulatedChildItems )
          populateChildItems();
-     ServiceModelItemBase::childCount();
+     return m_childItems.count();
  }
 
  int MagnatuneContentItem::columnCount() const
@@ -117,7 +117,7 @@ int MagnatuneContentItem::row() const
     return 0;
 } 
 
-QList<ServiceModelItemBase*> MagnatuneContentItem::GetChildItems() const {
+QList<ServiceModelItemBase*> MagnatuneContentItem::getChildItems() const {
     if ( !m_hasPopulatedChildItems )
         populateChildItems();
 

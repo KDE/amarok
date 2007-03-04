@@ -105,6 +105,8 @@ protected:
     QString      m_longDescription;
     QIcon        m_icon;
 
+    KUrl::List   m_urlsToInsert;
+
     void addToPlaylist( ServiceModelItemBase * item );
 
 };

@@ -1,6 +1,6 @@
 #include "servicemodelitembase.h"
 
-QString ServiceModelItemBase::getUrl() {
+/*QString ServiceModelItemBase::getUrl() {
     return QString();
 } 
 
@@ -11,12 +11,12 @@ ServiceModelItemBase *ServiceModelItemBase::child(int row) {
 int ServiceModelItemBase::childCount() const {
      return m_childItems.count();
 }
-
+*/
 ServiceModelItemBase *ServiceModelItemBase::parent() {
     return m_parent;
 }
 
-QList<ServiceModelItemBase*> ServiceModelItemBase::getChildItems() const {
+/*QList<ServiceModelItemBase*> ServiceModelItemBase::getChildItems() const {
     return m_childItems;
 }
 
@@ -28,4 +28,4 @@ bool ServiceModelItemBase::hasChildren () const {
 
 int ServiceModelItemBase::columnCount() const {
     return 1;
-}
+}*/

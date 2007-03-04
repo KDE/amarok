@@ -55,7 +55,7 @@ public:
     int row() const;
     /*MagnatuneContentItem * parent();*/
     int getType();
-    QList<ServiceModelItemBase*> GetChildItems() const;
+    QList<ServiceModelItemBase*> getChildItems() const;
     bool hasChildren () const;
     contentTypeUnion getContentUnion ( );
     QString getUrl();

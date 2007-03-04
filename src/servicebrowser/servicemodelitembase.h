@@ -10,14 +10,14 @@ public:
 
     virtual QVariant data(int column) const = 0;
 
-    ServiceModelItemBase *child(int row);
-    int childCount() const;
-    int columnCount() const;
-    int row() const;
+    virtual ServiceModelItemBase *child(int row) = 0;
+    virtual int childCount() const = 0;
+    virtual int columnCount() const = 0;
+    virtual int row() const = 0;
     ServiceModelItemBase * parent();
-    QList<ServiceModelItemBase*> getChildItems() const;
-    bool hasChildren () const;
-    QString getUrl();
+    virtual QList<ServiceModelItemBase*> getChildItems() const = 0;
+    virtual bool hasChildren () const = 0;
+    virtual QString getUrl() = 0;
 
 
 protected:

@@ -62,6 +62,8 @@ ServiceBase::ServiceBase( QString name )
     m_mainSplitter = new QSplitter( Qt::Vertical, this );
     m_contentView = new QTreeView( m_mainSplitter );
 
+    connect( m_contentView, SIGNAL( doubleClicked ( const QModelIndex & ) ), this, SLOT( itemActivated ( const QModelIndex & ) ) );
+
     m_infoBox = new KHTMLPart( m_mainSplitter );
     //m_infoBox->view()->widget()->setFrameStyle(QFrame::StyledPanel | QFrame::Plain); //kdelibs error?
 
@@ -153,6 +155,8 @@ void ServiceBase::homeButtonClicked( )
 
 void ServiceBase::itemActivated ( const QModelIndex & index ) {
 
+
+    debug() << "ServiceBase::itemActivated item double clicked: " << endl;
     if (!index.isValid())
         return;
     else {
@@ -160,15 +164,21 @@ void ServiceBase::itemActivated ( const QModelIndex & index ) {
        addToPlaylist( item );
     }
 
+    Playlist::instance()->proposePlaylistName( "test" );
+    Playlist::instance()->insertMedia( m_urlsToInsert , Playlist::Append);
+    m_urlsToInsert.clear();
+
  }
 
 void ServiceBase::addToPlaylist( ServiceModelItemBase * item ) {
     
+
+    debug() << "ServiceBase::addToPlaylist sadding item: " << item->data(0) << endl;
     if (! item->hasChildren() ) {
         QString url = item->getUrl();
+        debug() << "ServiceBase::addToPlaylist url to add: " << url << endl;
         if ( !url.isEmpty() ) {
-            Playlist * playlist = Playlist::instance();
-            playlist->insertMedia( KUrl( url ) );
+            m_urlsToInsert += KUrl( url );
         }
     } else {
         QList<ServiceModelItemBase*> childItems = item->getChildItems();
