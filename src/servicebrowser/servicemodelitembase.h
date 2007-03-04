@@ -22,7 +22,7 @@ public:
 
 protected:
      mutable QList<ServiceModelItemBase*> m_childItems;
-     ServiceModelItemBase *m_parent;;
+     ServiceModelItemBase *m_parent;
 };
 
 #endif
