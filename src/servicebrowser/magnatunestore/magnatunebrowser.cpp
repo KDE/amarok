@@ -368,9 +368,9 @@ bool MagnatuneBrowser::updateMagnatuneList()
      debug() << "MagnatuneBrowser: start downloading xml file" << endl;
 
     m_listDownloadJob = KIO::file_copy( KUrl( "http://magnatune.com/info/album_info.xml" ), KUrl("/tmp/album_info.xml"), -1, true, false, true );
-    //Amarok::StatusBar::instance() ->newProgressOperation( m_listDownloadJob )
-    //.setDescription( i18n( "Downloading Magnatune.com Database" ) )
-    //.setAbortSlot( this, SLOT( listDownloadCancelled() ) );
+    Amarok::StatusBar::instance() ->newProgressOperation( m_listDownloadJob )
+    .setDescription( i18n( "Downloading Magnatune.com Database" ) )
+    .setAbortSlot( this, SLOT( listDownloadCancelled() ) );
 
     connect( m_listDownloadJob, SIGNAL( result( KJob * ) ),
             this, SLOT( listDownloadComplete( KJob * ) ) );
