@@ -14,7 +14,7 @@ else(HELIX_FOUND)
 endif(HELIX_FOUND)
 
 if (GSTREAMER_FOUND)
-add_subdirectory( gst10 )
+#add_subdirectory( gst10 )
 else(GSTREAMER_FOUND)
    MESSAGE(STATUS "GStreamer was not found. GStreamer engine will not be built")
 endif(GSTREAMER_FOUND)

@@ -192,7 +192,7 @@ void PlaylistWindow::init()
       plTwoolBar->addWidget( repeatLabel );
       plTwoolBar->addAction( actionCollection()->action( "repeat" ) );
       QLabel *randomLabel = new QLabel( i18n( "  Random: " ), plTwoolBar );
-      plTwoolBar->addWidget( randomLabel ); 
+      plTwoolBar->addWidget( randomLabel );
       plTwoolBar->addAction( actionCollection()->action( "random_mode" ) );
     }
 
@@ -230,14 +230,14 @@ void PlaylistWindow::init()
         QStackedWidget *spacer = new QStackedWidget(); //FIXME: ugly hack
         QSpacerItem *spacerItem = new QSpacerItem( 0, 0 );
         spacer->layout()->addItem( spacerItem );
-        m_toolbar->addWidget( spacer ); 
+        m_toolbar->addWidget( spacer );
         m_toolbar->addWidget( m_searchLine );
         m_toolbar->addWidget( filterButton );
 #ifndef Q_WS_MAC
         m_toolbar->setShown( AmarokConfig::showToolbar() );
 #endif
         connect( filterButton, SIGNAL( clicked() ), SLOT( slotEditFilter() ) );
-    //END MainToolBar 
+    //END MainToolBar
     }
     Amarok::StatusBar *statusbar = new Amarok::StatusBar( this );
     QAction* repeatAction = Amarok::actionCollection()->action( "repeat" );
@@ -254,9 +254,7 @@ void PlaylistWindow::init()
     setCentralWidget( cbCover );
     setStatusBar( statusbar );
 
-    DockWidget *browsersDockWidget = new DockWidget();
-    browsersDockWidget->setWidget( m_browsers );
-    addDockWidget( Qt::LeftDockWidgetArea, browsersDockWidget );
+    addDockWidget( Qt::LeftDockWidgetArea, m_browsers );
 
     DockWidget *playlistWidget = new DockWidget();
     playlistWidget->setWidget( playlistwindow );
@@ -272,12 +270,12 @@ void PlaylistWindow::init()
     //<XMLGUI>
 //     {
 //         QString xmlFile = Amarok::config()->readEntry( "XMLFile", "amarokui.rc" );
-// 
+//
 //         // this bug can bite you if you are a pre 1.2 user, we
 //         // deleted amarokui_first.rc, but we must still support it
 //         // NOTE 1.4.1 we remove amarokui_xmms.rc too, so we can only be this ui.rc
 //         xmlFile = "amarokui.rc";
-// 
+//
 //         setXMLFile( xmlFile );
 //         createGUI(); //NOTE we implement this
 //     }
@@ -336,7 +334,7 @@ void PlaylistWindow::init()
     connect( playlist, SIGNAL( queueChanged( const QList<PlaylistItem*> &, const QList<PlaylistItem*> & ) ),
              statusbar,  SLOT( updateQueueLabel() ) );
 //    connect( playlist, SIGNAL( aboutToClear() ), m_lineEdit, SLOT( clear() ) );
-    
+
     Amarok::MessageQueue::instance()->sendMessages();
 }
 
