@@ -90,6 +90,8 @@ include_directories(
         ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser
         ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/magnatunestore
 	${CMAKE_SOURCE_DIR}/amarok/src
+	${CMAKE_SOURCE_DIR}/amarok/src/meta
+	${CMAKE_SOURCE_DIR}/amarok/src/collection
 	${CMAKE_BINARY_DIR}/amarok/src #for amarokconfig.h
 	${KDE4_INCLUDE_DIR}
 	${QT_INCLUDES}  )
@@ -190,6 +192,7 @@ set(libstatusbar_SRCS
 set(amarok_LIB_SRCS ${libamarokcore_SRCS} ${libplugin_SRCS} ${libstatusbar_SRCS}
         ${libsqlite_SRCS} ${libservicebrowser_SRCS}
         ${libmagnatunestore_SRCS} ${libanalyzers_SRCS}
+   collection/sqlmeta.cpp
    Options1.ui.h
    actionclasses.cpp
    app.cpp
