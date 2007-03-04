@@ -307,7 +307,7 @@ void PlaylistWindow::init()
         //addInstBrowserMacro( MagnatuneBrowser, "MagnatuneBrowser", i18n("Magnatune"), Amarok::icon( "magnatune" ) )
         addInstBrowserMacro( ServiceBrowser, "ServiceBrowser", i18n("Services"), Amarok::icon( "magnatune" ) )
 
-        //new MediaBrowser( "MediaBrowser" );
+        new MediaBrowser( "MediaBrowser" );
         if( MediaBrowser::isAvailable() )
         {
             addInstBrowserMacro( MediaBrowser, "MediaBrowser", i18n("Devices"), Amarok::icon( "device" ) )
