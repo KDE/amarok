@@ -21,6 +21,7 @@ Boston, MA 02110-1301, USA.
 #ifndef AMAROKMAGNATUENTREEITEM_H
 #define AMAROKMAGNATUENTREEITEM_H
 
+#include "../servicemodelitembase.h"
 #include "magnatunetypes.h"
 
 #include <QList>
@@ -35,7 +36,7 @@ union contentTypeUnion
     MagnatuneTrack * trackValue;
 };
 
-class MagnatuneContentItem
+class MagnatuneContentItem : public ServiceModelItemBase
 {
 public:
     MagnatuneContentItem( MagnatuneArtist content, QString genre, MagnatuneContentItem *parent );
@@ -52,15 +53,16 @@ public:
     int columnCount() const;
     QVariant data(int column) const;
     int row() const;
-    MagnatuneContentItem * parent();
+    /*MagnatuneContentItem * parent();*/
     int getType();
-    QList<MagnatuneContentItem*> GetChildItems() const;
-    bool hasChildren () const ;
+    QList<ServiceModelItemBase*> GetChildItems() const;
+    bool hasChildren () const;
     contentTypeUnion getContentUnion ( );
+    QString getUrl();
 
 private:
 
-    mutable QList<MagnatuneContentItem*> m_childItems;
+    /*mutable QList<MagnatuneContentItem*> m_childItems;*/
 
     contentTypeUnion m_content; 
     QString m_genre;
@@ -68,7 +70,7 @@ private:
     int m_type;
     mutable bool m_hasPopulatedChildItems;
 
-    MagnatuneContentItem *m_parent;
+    /*MagnatuneContentItem *m_parent;*/
 
     void populateChildItems() const;
 };

@@ -122,7 +122,7 @@ QModelIndex MagnatuneContentModel::parent(const QModelIndex &index) const
      }
 
      MagnatuneContentItem *childItem = static_cast<MagnatuneContentItem*>(index.internalPointer());
-     MagnatuneContentItem *parentItem = childItem->parent();
+     MagnatuneContentItem *parentItem = static_cast<MagnatuneContentItem*>(childItem->parent() );
 
      if (parentItem == m_rootContentItem)
          //debug() << "MagnatuneContentModel::parent, root item... " << endl; 

@@ -137,6 +137,7 @@ set(libplugin_SRCS
 set(libservicebrowser_SRCS
         ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/servicebrowser.cpp
 	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/servicebase.cpp
+	${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/servicemodelitembase.cpp
         ${CMAKE_SOURCE_DIR}/amarok/src/servicebrowser/servicemodelbase.cpp)
 
 set(libmagnatunestore_SRCS

@@ -21,6 +21,7 @@ Boston, MA 02110-1301, USA.
 
 #include "amarok.h"
 #include "debug.h"
+#include "playlist.h"
 
 #include <khbox.h>
 
@@ -150,7 +151,32 @@ void ServiceBase::homeButtonClicked( )
     emit( home() );
 }
 
+void ServiceBase::itemActivated ( const QModelIndex & index ) {
 
+    if (!index.isValid())
+        return;
+    else {
+       ServiceModelItemBase * item = static_cast<ServiceModelItemBase*>(index.internalPointer());
+       addToPlaylist( item );
+    }
+
+ }
+
+void ServiceBase::addToPlaylist( ServiceModelItemBase * item ) {
+    
+    if (! item->hasChildren() ) {
+        QString url = item->getUrl();
+        if ( !url.isEmpty() ) {
+            Playlist * playlist = Playlist::instance();
+            playlist->insertMedia( KUrl( url ) );
+        }
+    } else {
+        QList<ServiceModelItemBase*> childItems = item->getChildItems();
+        for (int i = 0; i < childItems.size(); ++i) {
+            addToPlaylist( childItems.at(i) );
+        }
+    }
+}
 
 
 

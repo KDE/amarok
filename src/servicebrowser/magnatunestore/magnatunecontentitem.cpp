@@ -76,7 +76,7 @@ MagnatuneContentItem::MagnatuneContentItem( QString genre )
 
     if ( !m_hasPopulatedChildItems )
         populateChildItems();
-    return m_childItems.value(row);
+    return dynamic_cast<MagnatuneContentItem*>( m_childItems.value( row ) );
 
  }
 
@@ -84,7 +84,7 @@ MagnatuneContentItem::MagnatuneContentItem( QString genre )
  {
      if ( !m_hasPopulatedChildItems )
          populateChildItems();
-     return m_childItems.count();
+     ServiceModelItemBase::childCount();
  }
 
  int MagnatuneContentItem::columnCount() const
@@ -107,22 +107,17 @@ QVariant MagnatuneContentItem::data(int column) const  //FIXME!!! do We need mor
 
 }
 
-MagnatuneContentItem *MagnatuneContentItem::parent()
- {
-     return m_parent;
- }
-
 int MagnatuneContentItem::row() const
 {
     if (m_parent){
         if ( !m_hasPopulatedChildItems )
             populateChildItems();
-        return m_parent->GetChildItems().indexOf(const_cast<MagnatuneContentItem*>(this));
+        return m_parent->getChildItems().indexOf(const_cast<MagnatuneContentItem*>(this));
     }
     return 0;
 } 
 
-QList<MagnatuneContentItem*> MagnatuneContentItem::GetChildItems() const {
+QList<ServiceModelItemBase*> MagnatuneContentItem::GetChildItems() const {
     if ( !m_hasPopulatedChildItems )
         populateChildItems();
 
@@ -168,3 +163,12 @@ bool MagnatuneContentItem::hasChildren () const {
 contentTypeUnion MagnatuneContentItem::getContentUnion ( ) { return m_content; }
 
 int MagnatuneContentItem::getType()  { return m_type; }
+
+QString MagnatuneContentItem::getUrl() {
+
+    if ( m_type == MAGNATUNE_TRACK ) {
+        return m_content.trackValue->getHifiURL();
+    } else {
+        return QString();
+    }
+}

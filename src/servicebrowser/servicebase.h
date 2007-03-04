@@ -22,6 +22,7 @@
 
 
 #include "amarok.h"
+#include "servicemodelitembase.h"
 
 #include <khtml_part.h>
 //#include <klistwidget.h>
@@ -79,6 +80,9 @@ protected slots:
 
     void homeButtonClicked();
 
+    void itemActivated ( const QModelIndex & index );
+
+
 protected:
 
     
@@ -100,6 +104,8 @@ protected:
     QString      m_shortDescription;
     QString      m_longDescription;
     QIcon        m_icon;
+
+    void addToPlaylist( ServiceModelItemBase * item );
 
 };
 
